@@ -347,6 +347,8 @@ int FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, double y
   double cost = 0.0001;
   int i = 0;
   const auto constPositions = positions;
+
+  const int maxNumberCandidates = mLF->layer()->maximumPointLabelCandidates();
   for ( QgsPalLayerSettings::PredefinedPointPosition position : constPositions )
   {
     double alpha = 0.0;
@@ -452,8 +454,9 @@ int FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, double y
       lPos << new LabelPosition( i, labelX, labelY, labelWidth, labelHeight, angle, cost, this, false, quadrant );
       //TODO - tweak
       cost += 0.001;
+      if ( lPos.size() >= maxNumberCandidates )
+        break;
     }
-
     ++i;
   }
 
@@ -466,12 +469,12 @@ int FeaturePart::createCandidatesAroundPoint( double x, double y, QList< LabelPo
   double labelHeight = getLabelHeight( angle );
   double distanceToLabel = getLabelDistance();
 
-  int numberCandidates = mLF->layer()->pal->point_p;
+  const int maxNumberCandidates = mLF->layer()->maximumPointLabelCandidates();
 
   int icost = 0;
   int inc = 2;
 
-  double candidateAngleIncrement = 2 * M_PI / numberCandidates; /* angle bw 2 pos */
+  double candidateAngleIncrement = 2 * M_PI / maxNumberCandidates; /* angle bw 2 pos */
 
   /* various angles */
   double a90  = M_PI_2;
@@ -501,7 +504,7 @@ int FeaturePart::createCandidatesAroundPoint( double x, double y, QList< LabelPo
 
   int i;
   double angleToCandidate;
-  for ( i = 0, angleToCandidate = M_PI_4; i < numberCandidates; i++, angleToCandidate += candidateAngleIncrement )
+  for ( i = 0, angleToCandidate = M_PI_4; i < maxNumberCandidates; i++, angleToCandidate += candidateAngleIncrement )
   {
     double labelX = x;
     double labelY = y;
@@ -571,10 +574,10 @@ int FeaturePart::createCandidatesAroundPoint( double x, double y, QList< LabelPo
 
     double cost;
 
-    if ( numberCandidates == 1 )
+    if ( maxNumberCandidates == 1 )
       cost = 0.0001;
     else
-      cost = 0.0001 + 0.0020 * double( icost ) / double( numberCandidates - 1 );
+      cost = 0.0001 + 0.0020 * double( icost ) / double( maxNumberCandidates - 1 );
 
 
     if ( mLF->permissibleZonePrepared() )
@@ -589,14 +592,14 @@ int FeaturePart::createCandidatesAroundPoint( double x, double y, QList< LabelPo
 
     icost += inc;
 
-    if ( icost == numberCandidates )
+    if ( icost == maxNumberCandidates )
     {
-      icost = numberCandidates - 1;
+      icost = maxNumberCandidates - 1;
       inc = -2;
     }
-    else if ( icost > numberCandidates )
+    else if ( icost > maxNumberCandidates )
     {
-      icost = numberCandidates - 2;
+      icost = maxNumberCandidates - 2;
       inc = -2;
     }
 
@@ -630,7 +633,7 @@ int FeaturePart::createCandidatesAlongLine( QList< LabelPosition * > &lPos, Poin
   //prefer to label along straightish segments:
   int candidates = createCandidatesAlongLineNearStraightSegments( lPos, mapShape );
 
-  if ( candidates < mLF->layer()->pal->line_p )
+  if ( candidates < mLF->layer()->maximumLineLabelCandidates() )
   {
     // but not enough candidates yet, so fallback to labeling near whole line's midpoint
     candidates = createCandidatesAlongLineNearMidpoint( lPos, mapShape, candidates > 0 ? 0.01 : 0.0 );
@@ -732,7 +735,7 @@ int FeaturePart::createCandidatesAlongLineNearStraightSegments( QList<LabelPosit
   }
 
   double lineStepDistance = ( totalLineLength - labelWidth ); // distance to move along line with each candidate
-  lineStepDistance = std::min( std::min( labelHeight, labelWidth ), lineStepDistance / mLF->layer()->pal->line_p );
+  lineStepDistance = std::min( std::min( labelHeight, labelWidth ), lineStepDistance / mLF->layer()->maximumLineLabelCandidates() );
 
   double distanceToEndOfSegment = 0.0;
   int lastNodeInSegment = 0;
@@ -904,7 +907,7 @@ int FeaturePart::createCandidatesAlongLineNearMidpoint( QList<LabelPosition *> &
 
   if ( totalLineLength > labelWidth )
   {
-    lineStepDistance = std::min( std::min( labelHeight, labelWidth ), lineStepDistance / mLF->layer()->pal->line_p );
+    lineStepDistance = std::min( std::min( labelHeight, labelWidth ), lineStepDistance / mLF->layer()->maximumLineLabelCandidates() );
   }
   else if ( !line->isClosed() ) // line length < label width => centering label position
   {
@@ -1266,7 +1269,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos
   }
 
   QLinkedList<LabelPosition *> positions;
-  double delta = std::max( li->label_height / 6, total_distance / mLF->layer()->pal->line_p );
+  double delta = std::max( li->label_height / 6, total_distance / mLF->layer()->maximumLineLabelCandidates() );
 
   pal::LineArrangementFlags flags = mLF->arrangementFlags();
   if ( flags == 0 )

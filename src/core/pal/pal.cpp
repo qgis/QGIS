@@ -331,13 +331,13 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       switch ( feat->feature->getGeosType() )
       {
         case GEOS_POINT:
-          max_p = point_p;
+          max_p = feat->feature->layer()->maximumPointLabelCandidates();
           break;
         case GEOS_LINESTRING:
-          max_p = line_p;
+          max_p = feat->feature->layer()->maximumLineLabelCandidates();
           break;
         case GEOS_POLYGON:
-          max_p = poly_p;
+          max_p = feat->feature->layer()->maximumPolygonLabelCandidates();
           break;
       }
 
