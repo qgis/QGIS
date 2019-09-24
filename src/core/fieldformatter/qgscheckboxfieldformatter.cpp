@@ -17,8 +17,8 @@
 #include <QObject>
 
 #include "qgscheckboxfieldformatter.h"
-#include "qgsapplication.h"
 #include "qgsvectorlayer.h"
+#include "qgsapplication.h"
 
 
 QString QgsCheckBoxFieldFormatter::id() const
@@ -31,34 +31,46 @@ QString QgsCheckBoxFieldFormatter::representValue( QgsVectorLayer *layer, int fi
   Q_UNUSED( cache )
 
 
-  enum BoolValue {_FALSE, _TRUE, _NULL};
-  BoolValue boolValue = _NULL;
+  bool isNull = value.isNull();
+  bool boolValue = false;
+  QString textValue = QgsApplication::nullRepresentation();
 
   const QVariant::Type fieldType = layer->fields().at( fieldIndex ).type();
   if ( fieldType == QVariant::Bool )
   {
-    if ( value.toBool() )
-      boolValue = _TRUE;
-    else
-      boolValue = _FALSE;
+    boolValue = value.toBool();
   }
   else
   {
-    if ( config.contains( QStringLiteral( "CheckedState" ) ) && value == config[ QStringLiteral( "CheckedState" ) ] )
-      boolValue = _TRUE;
-    else if ( config.contains( QStringLiteral( "UncheckedState" ) ) && value == config[ QStringLiteral( "UncheckedState" ) ] )
-      boolValue = _FALSE;
+    if ( !value.canConvert<QString>() )
+    {
+      isNull = true;
+      textValue = QObject::tr( "(invalid)" );
+    }
     else
-      boolValue = _NULL;
+    {
+      if ( config.contains( QStringLiteral( "CheckedState" ) ) && value.toString() == config[ QStringLiteral( "CheckedState" ) ].toString() )
+      {
+        boolValue = true;
+      }
+      else if ( config.contains( QStringLiteral( "UncheckedState" ) ) && value.toString() == config[ QStringLiteral( "UncheckedState" ) ].toString() )
+      {
+        boolValue = false;
+      }
+      else
+      {
+        isNull = true;
+        textValue = QStringLiteral( "(%1)" ).arg( value.toString() );
+      }
+    }
   }
 
-  switch ( boolValue )
+  if ( isNull )
   {
-    case _NULL:
-      return QgsApplication::nullRepresentation();
-    case _TRUE:
-      return QObject::tr( "true" );
-    case _FALSE:
-      return QObject::tr( "false" );
+    return textValue;
   }
+  if ( boolValue )
+    return QObject::tr( "true" );
+  else
+    return QObject::tr( "false" );
 }
