@@ -30,6 +30,19 @@ QString QgsCheckBoxFieldFormatter::representValue( QgsVectorLayer *layer, int fi
 {
   Q_UNUSED( cache )
 
+  /*
+  This foillows this logic:
+
+  if field type is bool:
+    NULL => nullRepresentation
+    true => tr("true")
+    false => tr("false")
+  else
+    if cannot convert to string (like json integer list) => (invalid)
+    if == checkedstate => tr("true")
+    if == uncheckedstate => tr("false")
+    else (value.toString)
+  */
 
   bool isNull = value.isNull();
   bool boolValue = false;
