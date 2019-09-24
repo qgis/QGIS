@@ -249,6 +249,9 @@ class CORE_EXPORT QgsConditionalStyle
      */
     bool writeXml( QDomNode &node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
+    bool operator==( const QgsConditionalStyle &other ) const;
+    bool operator!=( const QgsConditionalStyle &other ) const;
+
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode

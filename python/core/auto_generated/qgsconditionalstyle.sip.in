@@ -258,6 +258,9 @@ Reads vector conditional style specific state from layer Dom node.
 Write vector conditional style specific state from layer Dom node.
 %End
 
+    bool operator==( const QgsConditionalStyle &other ) const;
+    bool operator!=( const QgsConditionalStyle &other ) const;
+
     SIP_PYOBJECT __repr__();
 %MethodCode
     QString str;
