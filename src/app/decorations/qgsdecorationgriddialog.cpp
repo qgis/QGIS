@@ -185,9 +185,29 @@ void QgsDecorationGridDialog::buttonBox_rejected()
 
 void QgsDecorationGridDialog::mGridTypeComboBox_currentIndexChanged( int index )
 {
-  mLineSymbolButton->setEnabled( index == QgsDecorationGrid::Line );
+  switch ( index )
+  {
+    case ( QgsDecorationGrid::Marker ):
+    {
+      mMarkerSymbolButton->setVisible( true );
+      mMarkerSymbolButton->setEnabled( true );
+      mMarkerSymbolLabel->setVisible( true );
+      mLineSymbolButton->setVisible( false );
+      mLineSymbolLabel->setVisible( false );
+      break;
+    }
+    case ( QgsDecorationGrid::Line ):
+    {
+      mLineSymbolButton->setVisible( true );
+      mLineSymbolButton->setEnabled( true );
+      mLineSymbolLabel->setVisible( true );
+      mMarkerSymbolButton->setVisible( false );
+      mMarkerSymbolLabel->setVisible( false );
+      break;
+    }
+  }
+
   // mCrossWidthSpinBox->setEnabled( index == QgsDecorationGrid::Cross );
-  mMarkerSymbolButton->setEnabled( index == QgsDecorationGrid::Marker );
 }
 
 void QgsDecorationGridDialog::mPbtnUpdateFromExtents_clicked()
