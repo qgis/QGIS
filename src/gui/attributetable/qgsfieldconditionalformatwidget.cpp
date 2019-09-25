@@ -357,7 +357,7 @@ void QgsEditConditionalFormatRuleWidget::setFormattingFromStyle( const QgsCondit
   mFontItalicBtn->setChecked( font.italic() );
   mFontStrikethroughBtn->setChecked( font.strikeOut() );
   mFontUnderlineBtn->setChecked( font.underline() );
-  mFontFamilyCmbBx->setFont( font );
+  mFontFamilyCmbBx->setCurrentFont( font );
 }
 
 void QgsEditConditionalFormatRuleWidget::setPresets( const QList<QgsConditionalStyle> &styles )
