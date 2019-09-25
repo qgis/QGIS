@@ -179,7 +179,7 @@ class GUI_EXPORT QgsEditConditionalFormatRuleWidget : public QgsPanelWidget, pri
     /**
      * Emitted when a user has opted to cancel the rule modification.
      */
-    void cancelled();
+    void canceled();
 
   private:
     QgsVectorLayer *mLayer = nullptr;

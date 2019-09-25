@@ -114,7 +114,7 @@ void QgsFieldConditionalFormatWidget::editStyle( int editIndex, const QgsConditi
     ruleWidget->acceptPanel();
   } );
 
-  connect( ruleWidget, &QgsEditConditionalFormatRuleWidget::cancelled, this, [ = ]
+  connect( ruleWidget, &QgsEditConditionalFormatRuleWidget::canceled, this, [ = ]
   {
     mPanelHandled = true;
     ruleWidget->acceptPanel();
@@ -269,7 +269,7 @@ QgsEditConditionalFormatRuleWidget::QgsEditConditionalFormatRuleWidget( QWidget 
   mFontItalicBtn->setMaximumSize( buttonSize, buttonSize );
 
   connect( mSaveRule, &QAbstractButton::clicked, this, &QgsEditConditionalFormatRuleWidget::ruleSaved );
-  connect( mCancelButton, &QAbstractButton::clicked, this, &QgsEditConditionalFormatRuleWidget::cancelled );
+  connect( mCancelButton, &QAbstractButton::clicked, this, &QgsEditConditionalFormatRuleWidget::canceled );
   connect( mDeleteButton, &QAbstractButton::clicked, this, &QgsEditConditionalFormatRuleWidget::ruleDeleted );
 
   connect( btnBuildExpression, &QAbstractButton::clicked, this, &QgsEditConditionalFormatRuleWidget::setExpression );

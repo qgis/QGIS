@@ -142,7 +142,7 @@ Emitted when a user has opted to save the current rule.
 Emitted when a user has opted to deleted the current rule.
 %End
 
-    void cancelled();
+    void canceled();
 %Docstring
 Emitted when a user has opted to cancel the rule modification.
 %End
