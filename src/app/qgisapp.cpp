@@ -4724,6 +4724,15 @@ void QgisApp::about()
     versionString += "<td colspan=2>" + tr( "This copy of QGIS writes debugging output." ) + "</td>";
 #endif
 
+#ifdef WITH_BINDINGS
+    if ( mPythonUtils && mPythonUtils->isEnabled() )
+    {
+      versionString += tr( "</tr><tr><td>Active python plugins</td><td colspan=3>" );
+      const QStringList activePlugins = mPythonUtils->listActivePlugins();
+      versionString += activePlugins.join( "; <br>" ) + "</td>";
+    }
+#endif
+
     versionString += QLatin1String( "</tr></table></div></body></html>" );
 
     sAbt->setVersion( versionString );
