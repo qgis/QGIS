@@ -416,9 +416,9 @@ void QgsVectorLayer::selectByRect( QgsRectangle &rect, QgsVectorLayer::SelectBeh
   QgsFeatureIds newSelection;
 
   QgsFeatureIterator features = getFeatures( QgsFeatureRequest()
-                                             .setFilterRect( rect )
-                                             .setFlags( QgsFeatureRequest::ExactIntersect | QgsFeatureRequest::NoGeometry )
-                                             .setNoAttributes() );
+                                .setFilterRect( rect )
+                                .setFlags( QgsFeatureRequest::ExactIntersect | QgsFeatureRequest::NoGeometry )
+                                .setNoAttributes() );
 
   QgsFeature feat;
   while ( features.nextFeature( feat ) )
@@ -4388,7 +4388,7 @@ QString QgsVectorLayer::htmlMetadata() const
     else
     {
       QString typeString( QStringLiteral( "%1 (%2)" ).arg( QgsWkbTypes::geometryDisplayString( geometryType() ),
-                                                           QgsWkbTypes::displayString( wkbType() ) ) );
+                          QgsWkbTypes::displayString( wkbType() ) ) );
       myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Geometry" ) + QStringLiteral( "</td><td>" ) + typeString + QStringLiteral( "</td></tr>\n" );
     }
 
@@ -4564,7 +4564,7 @@ bool QgsVectorLayer::deleteStyleFromDatabase( const QString &styleId, QString &m
 
 
 void QgsVectorLayer::saveStyleToDatabase( const QString &name, const QString &description,
-                                          bool useAsDefault, const QString &uiFileContent, QString &msgError )
+    bool useAsDefault, const QString &uiFileContent, QString &msgError )
 {
 
   QString sldStyle, qmlStyle;
@@ -4585,8 +4585,8 @@ void QgsVectorLayer::saveStyleToDatabase( const QString &name, const QString &de
   sldStyle = sldDocument.toString();
 
   QgsProviderRegistry::instance()->saveStyle( mProviderKey,
-                                              mDataSource, qmlStyle, sldStyle, name,
-                                              description, uiFileContent, useAsDefault, msgError );
+      mDataSource, qmlStyle, sldStyle, name,
+      description, uiFileContent, useAsDefault, msgError );
 }
 
 
