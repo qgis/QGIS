@@ -690,10 +690,10 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     case Qt::DisplayRole:
     case Qt::ToolTipRole:
       return mFieldFormatters.at( index.column() )->representValue( layer(),
-                                                                    fieldId,
-                                                                    mWidgetConfigs.at( index.column() ),
-                                                                    mAttributeWidgetCaches.at( index.column() ),
-                                                                    val );
+             fieldId,
+             mWidgetConfigs.at( index.column() ),
+             mAttributeWidgetCaches.at( index.column() ),
+             val );
 
     case Qt::EditRole:
       return val;
