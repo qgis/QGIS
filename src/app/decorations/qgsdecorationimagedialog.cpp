@@ -221,7 +221,7 @@ void QgsDecorationImageDialog::drawImage()
   if ( !missing )
   {
     QPixmap  px( maxLength, maxLength );
-    px.fill();
+    px.fill( Qt::transparent );
 
     QPainter painter;
     painter.begin( &px );
@@ -245,7 +245,7 @@ void QgsDecorationImageDialog::drawImage()
   else
   {
     QPixmap  px( 200, 200 );
-    px.fill();
+    px.fill( Qt::transparent );
     QPainter painter;
     painter.begin( &px );
     QFont font( QStringLiteral( "time" ), 12, QFont::Bold );
