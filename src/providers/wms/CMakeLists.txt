@@ -21,7 +21,6 @@ IF (WITH_GUI)
     qgsxyzconnectiondialog.cpp
   )
   SET(WMS_GUI_MOC_HDRS
-    qgswmsprovidergui.h
     qgswmssourceselect.h
     qgswmsdataitemguiproviders.h
     qgstilescalewidget.h
