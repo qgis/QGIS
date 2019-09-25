@@ -377,7 +377,7 @@ void QgsImageOperation::distanceTransform( QImage &image, const DistanceTransfor
   }
 
   //first convert to 1 bit alpha mask array
-  double *array = new double[ image.width() * image.height()];
+  double *array = new double[ static_cast< qgssize >( image.width() ) * image.height()];
   ConvertToArrayPixelOperation convertToArray( image.width(), array, properties.shadeExterior );
   runPixelOperation( image, convertToArray );
 
@@ -402,7 +402,7 @@ void QgsImageOperation::distanceTransform( QImage &image, const DistanceTransfor
 
 void QgsImageOperation::ConvertToArrayPixelOperation::operator()( QRgb &rgb, const int x, const int y )
 {
-  int idx = y * mWidth + x;
+  qgssize idx = y * static_cast< qgssize >( mWidth ) + x;
   if ( mExterior )
   {
     if ( qAlpha( rgb ) > 0 )
