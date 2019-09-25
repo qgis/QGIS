@@ -66,7 +66,7 @@
 #define ERR(message) QgsError(message,"GDAL provider")
 
 static QString PROVIDER_KEY = QStringLiteral( "gdal" );
-static QString PROVIDER_DESCRIPTION = QStringLiteral( "GDAL provider" );
+static QString PROVIDER_DESCRIPTION = QStringLiteral( "GDAL data provider" );
 
 // To avoid potential races when destroying related instances ("main" and clones)
 static QMutex gGdaProviderMutex( QMutex::Recursive );
