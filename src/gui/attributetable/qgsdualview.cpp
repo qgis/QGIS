@@ -54,6 +54,9 @@ QgsDualView::QgsDualView( QWidget *parent )
 
   mConditionalFormatWidget->hide();
 
+  QgsSettings settings;
+  mConditionalSplitter->restoreState( settings.value( QStringLiteral( "/qgis/attributeTable/splitterState" ), QByteArray() ).toByteArray() );
+
   mPreviewColumnsMenu = new QMenu( this );
   mActionPreviewColumnsMenu->setMenu( mPreviewColumnsMenu );
 
@@ -94,6 +97,12 @@ QgsDualView::QgsDualView( QWidget *parent )
   connect( buttonGroup, qgis::overload< QAbstractButton *, bool >::of( &QButtonGroup::buttonToggled ), this, &QgsDualView::panZoomGroupButtonToggled );
   mFlashButton->setChecked( QgsSettings().value( QStringLiteral( "/qgis/attributeTable/featureListHighlightFeature" ), true ).toBool() );
   connect( mFlashButton, &QToolButton::clicked, this, &QgsDualView::flashButtonClicked );
+}
+
+QgsDualView::~QgsDualView()
+{
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "/qgis/attributeTable/splitterState" ), mConditionalSplitter->saveState() );
 }
 
 void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsFeatureRequest &request,

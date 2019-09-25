@@ -81,6 +81,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * \param parent  The parent widget
      */
     explicit QgsDualView( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsDualView() override;
 
     /**
      * Has to be called to initialize the dual view.
