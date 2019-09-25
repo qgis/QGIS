@@ -190,7 +190,7 @@ void QgsDecorationNorthArrowDialog::drawNorthArrow()
     }
 
     QPixmap  myPainterPixmap( maxLength, maxLength );
-    myPainterPixmap.fill();
+    myPainterPixmap.fill( Qt::transparent );
 
     QPainter myQPainter;
     myQPainter.begin( &myPainterPixmap );
@@ -230,7 +230,7 @@ void QgsDecorationNorthArrowDialog::drawNorthArrow()
   else
   {
     QPixmap  myPainterPixmap( 200, 200 );
-    myPainterPixmap.fill();
+    myPainterPixmap.fill( Qt::transparent );
     QPainter myQPainter;
     myQPainter.begin( &myPainterPixmap );
     QFont myQFont( QStringLiteral( "time" ), 12, QFont::Bold );
