@@ -4727,7 +4727,7 @@ void QgisApp::about()
 #ifdef WITH_BINDINGS
     if ( mPythonUtils && mPythonUtils->isEnabled() )
     {
-      versionString += tr( "</tr><tr><td>Active python plugins</td><td colspan=3>" );
+      versionString += "</tr><tr><td>" + tr( "Active python plugins" ) + "</td><td colspan=3>";
       const QStringList activePlugins = mPythonUtils->listActivePlugins();
       versionString += activePlugins.join( "; <br>" ) + "</td>";
     }
