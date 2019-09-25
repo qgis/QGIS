@@ -29,6 +29,7 @@ class QgsFeatureRequest;
 class QSignalMapper;
 class QgsMapLayerAction;
 class QgsScrollArea;
+class QgsFieldConditionalFormatWidget;
 
 /**
  * \ingroup gui
@@ -388,6 +389,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void updateEditSelectionProgress( int progress, int count );
     void panOrZoomToFeature( const QgsFeatureIds &featureset );
 
+    QgsFieldConditionalFormatWidget *mConditionalFormatWidget = nullptr;
     QgsAttributeEditorContext mEditorContext;
     QgsAttributeTableModel *mMasterModel = nullptr;
     QgsAttributeTableFilterModel *mFilterModel = nullptr;
