@@ -40,9 +40,8 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
 
     enum GridStyle
     {
-      Line = 0, //solid lines
-      //      Cross = 1, //only draw line crossings
-      Marker = 1 //user-defined marker
+      Line = 0, // lines
+      Marker //markers
     };
 
     enum GridAnnotationPosition
