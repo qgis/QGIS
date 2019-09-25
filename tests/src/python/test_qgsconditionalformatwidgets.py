@@ -17,7 +17,7 @@ from qgis.gui import QgsEditConditionalFormatRuleWidget
 from qgis.testing import (start_app,
                           unittest,
                           )
-from utilities import unitTestDataPath
+from utilities import unitTestDataPath, getTestFont
 from qgis.PyQt.QtGui import QColor
 
 start_app()
@@ -60,6 +60,36 @@ class TestPyQgsConditionalFormatWidgets(unittest.TestCase):
         w = QgsEditConditionalFormatRuleWidget()
         w.loadStyle(c)
         self.assertEqual(w.currentStyle(), c)
+
+        f = getTestFont()
+        c.setFont(f)
+        w = QgsEditConditionalFormatRuleWidget()
+        w.loadStyle(c)
+        self.assertEqual(w.currentStyle().font(), c.font())
+
+        f.setBold(True)
+        c.setFont(f)
+        w = QgsEditConditionalFormatRuleWidget()
+        w.loadStyle(c)
+        self.assertEqual(w.currentStyle().font().bold(), True)
+
+        f.setItalic(True)
+        c.setFont(f)
+        w = QgsEditConditionalFormatRuleWidget()
+        w.loadStyle(c)
+        self.assertEqual(w.currentStyle().font().italic(), True)
+
+        f.setStrikeOut(True)
+        c.setFont(f)
+        w = QgsEditConditionalFormatRuleWidget()
+        w.loadStyle(c)
+        self.assertEqual(w.currentStyle().font().strikeOut(), True)
+
+        f.setUnderline(True)
+        c.setFont(f)
+        w = QgsEditConditionalFormatRuleWidget()
+        w.loadStyle(c)
+        self.assertEqual(w.currentStyle().font().underline(), True)
 
 
 if __name__ == '__main__':
