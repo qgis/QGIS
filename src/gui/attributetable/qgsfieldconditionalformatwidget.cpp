@@ -21,6 +21,7 @@
 #include "qgsstyle.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsguiutils.h"
 
 //
 // QgsFieldConditionalFormatWidget
@@ -189,10 +190,14 @@ void QgsFieldConditionalFormatWidget::reloadStyles()
   mModel->clear();
 
   const auto constGetStyles = getStyles();
+
+  const QSize size( Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 10, Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 2 );
+  listView->setIconSize( size );
+
   for ( const QgsConditionalStyle &style : constGetStyles )
   {
     QStandardItem *item = new QStandardItem( style.displayText() );
-    item->setIcon( QIcon( style.renderPreview() ) );
+    item->setIcon( QIcon( style.renderPreview( size ) ) );
     mModel->appendRow( item );
   }
 }
@@ -252,6 +257,16 @@ QgsEditConditionalFormatRuleWidget::QgsEditConditionalFormatRuleWidget( QWidget 
   mFontItalicBtn->setChecked( false );
   mFontStrikethroughBtn->setChecked( false );
   mFontUnderlineBtn->setChecked( false );
+
+  const int buttonSize = QgsGuiUtils::scaleIconSize( 24 );
+  mFontUnderlineBtn->setMinimumSize( buttonSize, buttonSize );
+  mFontUnderlineBtn->setMaximumSize( buttonSize, buttonSize );
+  mFontStrikethroughBtn->setMinimumSize( buttonSize, buttonSize );
+  mFontStrikethroughBtn->setMaximumSize( buttonSize, buttonSize );
+  mFontBoldBtn->setMinimumSize( buttonSize, buttonSize );
+  mFontBoldBtn->setMaximumSize( buttonSize, buttonSize );
+  mFontItalicBtn->setMinimumSize( buttonSize, buttonSize );
+  mFontItalicBtn->setMaximumSize( buttonSize, buttonSize );
 
   connect( mSaveRule, &QAbstractButton::clicked, this, &QgsEditConditionalFormatRuleWidget::ruleSaved );
   connect( mCancelButton, &QAbstractButton::clicked, this, &QgsEditConditionalFormatRuleWidget::cancelled );
