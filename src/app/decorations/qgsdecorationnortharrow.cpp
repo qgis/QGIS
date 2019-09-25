@@ -79,6 +79,7 @@ void QgsDecorationNorthArrow::saveToProject()
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/OutlineColor" ), QgsSymbolLayerUtils::encodeColor( mOutlineColor ) );
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Size" ), mSize );
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/SvgPath" ), mSvgPath );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Rotation" ), mRotationInt );
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Automatic" ), mAutomatic );
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginH" ), mMarginHorizontal );
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginV" ), mMarginVertical );
