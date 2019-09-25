@@ -42,6 +42,7 @@
 #include "qgsgui.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsshortcutsmanager.h"
+#include "qgsfieldconditionalformatwidget.h"
 
 
 QgsDualView::QgsDualView( QWidget *parent )
@@ -52,7 +53,10 @@ QgsDualView::QgsDualView( QWidget *parent )
   connect( mFeatureListView, &QgsFeatureListView::currentEditSelectionChanged, this, &QgsDualView::featureListCurrentEditSelectionChanged );
   connect( mFeatureListView, &QgsFeatureListView::currentEditSelectionProgressChanged, this, &QgsDualView::updateEditSelectionProgress );
 
-  mConditionalFormatWidget->hide();
+  mConditionalFormatWidgetStack->hide();
+  mConditionalFormatWidget = new QgsFieldConditionalFormatWidget( this );
+  mConditionalFormatWidgetStack->setMainPanel( mConditionalFormatWidget );
+  mConditionalFormatWidget->setDockMode( true );
 
   QgsSettings settings;
   mConditionalSplitter->restoreState( settings.value( QStringLiteral( "/qgis/attributeTable/splitterState" ), QByteArray() ).toByteArray() );
@@ -556,8 +560,7 @@ bool QgsDualView::saveEditChanges()
 
 void QgsDualView::openConditionalStyles()
 {
-  mConditionalFormatWidget->setVisible( !mConditionalFormatWidget->isVisible() );
-  mConditionalFormatWidget->viewRules();
+  mConditionalFormatWidgetStack->setVisible( !mConditionalFormatWidgetStack->isVisible() );
 }
 
 void QgsDualView::setMultiEditEnabled( bool enabled )

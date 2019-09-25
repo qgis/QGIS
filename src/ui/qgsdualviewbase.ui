@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="currentIndex">
-   <number>1</number>
+   <number>0</number>
   </property>
   <widget class="QWidget" name="mPageTableView">
    <layout class="QGridLayout" name="gridLayout_3">
@@ -40,7 +40,7 @@
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QgsFieldConditionalFormatWidget" name="mConditionalFormatWidget" native="true">
+      <widget class="QgsPanelWidgetStack" name="mConditionalFormatWidgetStack" native="true">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>0</horstretch>
@@ -407,9 +407,9 @@
    <header>attributetable/qgsfeaturelistview.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsFieldConditionalFormatWidget</class>
+   <class>QgsPanelWidgetStack</class>
    <extends>QWidget</extends>
-   <header>attributetable/qgsfieldconditionalformatwidget.h</header>
+   <header>qgspanelwidgetstack.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
