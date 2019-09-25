@@ -127,10 +127,13 @@ class CORE_EXPORT QgsConditionalStyle
     bool matches( const QVariant &value, QgsExpressionContext &context ) const;
 
     /**
-     * \brief Render a preview icon of the rule.
+     * \brief Render a preview icon of the rule, at the specified \a size.
+     *
+     * If \a size is not specified, a default size will be used.
+     *
      * \returns QPixmap preview of the style
      */
-    QPixmap renderPreview() const;
+    QPixmap renderPreview( const QSize &size = QSize() ) const;
 
     /**
      * \brief Set the name of the style.  Names are optional but handy for display

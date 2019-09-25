@@ -110,9 +110,11 @@ Check if the rule matches using the given value and feature
 :return: ``True`` of the rule matches against the given feature
 %End
 
-    QPixmap renderPreview() const;
+    QPixmap renderPreview( const QSize &size = QSize() ) const;
 %Docstring
-Render a preview icon of the rule.
+Render a preview icon of the rule, at the specified ``size``.
+
+If ``size`` is not specified, a default size will be used.
 
 :return: QPixmap preview of the style
 %End

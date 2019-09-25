@@ -193,9 +193,9 @@ bool QgsConditionalStyle::matches( const QVariant &value, QgsExpressionContext &
   return exp.evaluate( &context ).toBool();
 }
 
-QPixmap QgsConditionalStyle::renderPreview() const
+QPixmap QgsConditionalStyle::renderPreview( const QSize &size ) const
 {
-  QPixmap pixmap( 64, 32 );
+  QPixmap pixmap( size.isValid() ? size.width() : 64, size.isValid() ? size.height() : 32 );
   pixmap.fill( Qt::transparent );
 
   QPainter painter( &pixmap );
@@ -203,10 +203,14 @@ QPixmap QgsConditionalStyle::renderPreview() const
   if ( validBackgroundColor() )
     painter.setBrush( mBackColor );
 
-  QRect rect = QRect( 0, 0, 64, 32 );
+  QRect rect = QRect( 0, 0, pixmap.width(), pixmap.height() );
   painter.setPen( Qt::NoPen );
   painter.drawRect( rect );
-  painter.drawPixmap( 8, 8, icon() );
+  const QPixmap symbolIcon = icon();
+  if ( !symbolIcon.isNull() )
+  {
+    painter.drawPixmap( ( pixmap.width() / 3 - symbolIcon.width() ) / 2, ( pixmap.height() - symbolIcon.height() ) / 2, symbolIcon );
+  }
 
   if ( validTextColor() )
     painter.setPen( mTextColor );
@@ -216,7 +220,7 @@ QPixmap QgsConditionalStyle::renderPreview() const
   painter.setRenderHint( QPainter::Antialiasing );
   painter.setRenderHint( QPainter::HighQualityAntialiasing );
   painter.setFont( font() );
-  rect = QRect( 32, 0, 32, 32 );
+  rect = QRect( pixmap.width() / 3, 0, 2 * pixmap.width() / 3, pixmap.height() );
   painter.drawText( rect, Qt::AlignCenter, QStringLiteral( "abc\n123" ) );
   painter.end();
   return pixmap;
