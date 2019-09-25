@@ -28,7 +28,7 @@
      <number>0</number>
     </property>
     <item row="0" column="0">
-     <widget class="QSplitter" name="splitter">
+     <widget class="QSplitter" name="mConditionalSplitter">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>

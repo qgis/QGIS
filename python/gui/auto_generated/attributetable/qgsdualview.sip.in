@@ -48,6 +48,7 @@ Constructor
 
 :param parent: The parent widget
 %End
+    ~QgsDualView();
 
     void init( QgsVectorLayer *layer,
                QgsMapCanvas *mapCanvas,
