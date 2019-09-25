@@ -83,13 +83,7 @@ email                : sherman at mrcc.com
 #endif
 
 static const QString TEXT_PROVIDER_KEY = QStringLiteral( "ogr" );
-static const QString TEXT_PROVIDER_DESCRIPTION =
-  QStringLiteral( "OGR data provider" )
-  + " (compiled against GDAL/OGR library version "
-  + GDAL_RELEASE_NAME
-  + ", running against GDAL/OGR library version "
-  + GDALVersionInfo( "RELEASE_NAME" )
-  + ')';
+static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "OGR data provider" );
 
 static OGRwkbGeometryType ogrWkbGeometryTypeFromName( const QString &typeName );
 
