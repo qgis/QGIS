@@ -31,6 +31,7 @@ The QgsDateTimeEdit class is a QDateTimeEdit with the capability of setting/read
 Constructor for QgsDateTimeEdit
 The current date and time is used by default.
 The widget is allowing null by default.
+If allow null is disabled, you should check allowNull before getting values from the widget.
 %End
 
     void setAllowNull( bool allowNull );
@@ -58,15 +59,29 @@ setDateTime set the date time in the widget and handles null date times.
 
     QDateTime dateTime() const;
 %Docstring
-dateTime returns the date time which can eventually be a null date/time
+dateTime returns the date time which can be a null date/time
 
 .. note::
 
-    You mustn't call date() or time() because they can't return a NULL value.
+   Before QGIS 3.10, you mustn't call date() or time() because they can't return a NULL value.
 
 .. note::
 
    since QDateTimeEdit.dateTime() is not virtual, dateTime must be called for QgsDateTimeEdit
+%End
+
+    QTime time() const;
+%Docstring
+time returns the time which can be a null time.
+
+.. versionadded:: 3.10
+%End
+
+    QDate date() const;
+%Docstring
+date returns the date which can be a null date.
+
+.. versionadded:: 3.10
 %End
 
     virtual void clear();

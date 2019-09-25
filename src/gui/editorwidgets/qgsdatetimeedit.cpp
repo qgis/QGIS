@@ -275,3 +275,27 @@ QDateTime QgsDateTimeEdit::dateTime() const
     return QDateTimeEdit::dateTime();
   }
 }
+
+QTime QgsDateTimeEdit::time() const
+{
+  if ( mAllowNull && mIsNull )
+  {
+    return QTime();
+  }
+  else
+  {
+    return QDateTimeEdit::time();
+  }
+}
+
+QDate QgsDateTimeEdit::date() const
+{
+  if ( mAllowNull && mIsNull )
+  {
+    return QDate();
+  }
+  else
+  {
+    return QDateTimeEdit::date();
+  }
+}
