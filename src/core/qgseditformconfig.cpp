@@ -242,6 +242,13 @@ void QgsEditFormConfig::setInitFilePath( const QString &filePath )
 {
   d.detach();
   d->mInitFilePath = filePath;
+
+  // if this is an URL, download file as there is a good chance it will be used later
+  if ( !filePath.isEmpty() && !QUrl::fromUserInput( filePath ).isLocalFile() )
+  {
+    // any existing download will not be restarted!
+    QgsApplication::instance()->networkContentFetcherRegistry()->fetch( filePath, QgsNetworkContentFetcherRegistry::DownloadImmediately );
+  }
 }
 
 QgsEditFormConfig::PythonInitCodeSource QgsEditFormConfig::initCodeSource() const
