@@ -28,7 +28,7 @@ The QgsDateTimeEdit class is a QDateTimeEdit with the capability of setting/read
 
     explicit QgsDateTimeEdit( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsDateTimeEdit
+Constructor for QgsDateTimeEdit.
 The current date and time is used by default.
 The widget is allowing null by default.
 If allow null is disabled, you should check allowNull before getting values from the widget.
@@ -50,16 +50,16 @@ If the widget allows setting null date/time.
 
     void setDateTime( const QDateTime &dateTime );
 %Docstring
-setDateTime set the date time in the widget and handles null date times.
+Set the date time in the widget and handles null date times.
 
 .. note::
 
-   since QDateTimeEdit.setDateTime() is not virtual, setDateTime must be called for QgsDateTimeEdit.
+   Since QDateTimeEdit.setDateTime() is not virtual, setDateTime must be called for QgsDateTimeEdit.
 %End
 
     QDateTime dateTime() const;
 %Docstring
-dateTime returns the date time which can be a null date/time
+Returns the date time which can be a null date/time.
 
 .. note::
 
@@ -67,19 +67,19 @@ dateTime returns the date time which can be a null date/time
 
 .. note::
 
-   since QDateTimeEdit.dateTime() is not virtual, dateTime must be called for QgsDateTimeEdit
+   Since QDateTimeEdit.dateTime() is not virtual, dateTime must be called for QgsDateTimeEdit.
 %End
 
     QTime time() const;
 %Docstring
-time returns the time which can be a null time.
+Returns the time which can be a null time.
 
 .. versionadded:: 3.10
 %End
 
     QDate date() const;
 %Docstring
-date returns the date which can be a null date.
+Returns the date which can be a null date.
 
 .. versionadded:: 3.10
 %End
@@ -87,11 +87,11 @@ date returns the date which can be a null date.
     virtual void clear();
 
 %Docstring
-Set the current date as NULL
+Set the current date as NULL.
 
 .. note::
 
-   if the widget is not configured to accept NULL dates, this will have no effect
+   If the widget is not configured to accept NULL dates, this will have no effect.
 %End
 
     void setEmpty();
@@ -105,9 +105,9 @@ Resets the widget to show no value (ie, an "unknown" state).
 
     void valueChanged( const QDateTime &date );
 %Docstring
-signal emitted whenever the value changes.
+Signal emitted whenever the value changes.
 
-:param date: the new date/time value.
+:param date: The new date/time value.
 %End
 
   protected:
