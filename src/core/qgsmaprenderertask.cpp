@@ -226,11 +226,11 @@ bool QgsMapRendererTask::run()
       exportDetails.georeferencedSections << georef;
     }
 
-    mGeoPdfExporter->finalize( pdfComponents, mFileName, exportDetails );
+    const bool res = mGeoPdfExporter->finalize( pdfComponents, mFileName, exportDetails );
     mGeoPdfExporter.reset();
     mTempPainter.reset();
     mPrinter.reset();
-    return true;
+    return res;
 #endif
   }
   else
