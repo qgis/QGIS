@@ -225,6 +225,7 @@ class BatchPanelFillWidget(QToolButton):
         # mark the parameter variables as highlighted for discoverability
         highlighted_vars = expression_context.highlightedVariables()
         highlighted_vars.extend(list(params.keys()))
+        highlighted_vars.append('row_number')
         expression_context.setHighlightedVariables(highlighted_vars)
 
         dlg = QgsExpressionBuilderDialog(layer=None, context=context.expressionContext())
