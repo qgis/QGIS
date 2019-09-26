@@ -645,7 +645,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
     details.useOgcBestPracticeFormatGeoreferencing = settings.useOgcBestPracticeFormatGeoreferencing;
     details.useIso32000ExtensionFormatGeoreferencing = settings.useIso32000ExtensionFormatGeoreferencing;
 
-    geoPdfExporter->finalize( pdfComponents, filePath, details );
+    if ( !geoPdfExporter->finalize( pdfComponents, filePath, details ) )
+      result = PrintError;
   }
   else
   {
