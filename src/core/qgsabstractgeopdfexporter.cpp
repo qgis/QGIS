@@ -162,7 +162,7 @@ bool QgsAbstractGeoPdfExporter::saveTemporaryLayers()
       // write out features to disk
       const QgsFeatureList features = it.value();
       QString layerName;
-      QgsVectorFileWriter writer( filePath, QString(), features.first().fields(), features.first().geometry().wkbType(), QgsCoordinateReferenceSystem(), QStringLiteral( "GPKG" ), QStringList(), QStringList(), nullptr, QgsVectorFileWriter::NoSymbology, nullptr, &layerName );
+      QgsVectorFileWriter writer( filePath, QString(), features.first().fields(), features.first().geometry().wkbType(), QgsCoordinateReferenceSystem(), QStringLiteral( "GPKG" ), QStringList(), QStringList(), nullptr, QgsVectorFileWriter::NoSymbology, QgsFeatureSink::RegeneratePrimaryKey, &layerName );
       if ( writer.hasError() )
       {
         mErrorMessage = writer.errorMessage();
