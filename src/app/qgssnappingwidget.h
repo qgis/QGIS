@@ -42,7 +42,7 @@ class QgsProject;
 /**
   * A widget which lets the user defines settings for snapping on a project
   * The widget can be displayed as a toolbar, in the status bar or as dialog/widget.
-  * The display mode is automatically chose based on the parent widget type.
+  * The display mode is automatically chosen based on the parent widget type.
   */
 class APP_EXPORT QgsSnappingWidget : public QWidget
 {

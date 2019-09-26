@@ -59,7 +59,7 @@ class APP_EXPORT QgsSnappingLayerTreeModel : public QSortFilterProxyModel
       AvoidIntersectionColumn
     };
 
-    QgsSnappingLayerTreeModel( QgsProject *project, QObject *parent = nullptr );
+    QgsSnappingLayerTreeModel( QgsProject *project, QgsMapCanvas *canvas, QObject *parent = nullptr );
 
     int columnCount( const QModelIndex &parent ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
@@ -89,6 +89,7 @@ class APP_EXPORT QgsSnappingLayerTreeModel : public QSortFilterProxyModel
     bool nodeShown( QgsLayerTreeNode *node ) const;
 
     QgsProject *mProject = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
     QString mFilterText;
     QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> mIndividualLayerSettings;
     QgsLayerTreeModel *mLayerTreeModel = nullptr;
