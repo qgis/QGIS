@@ -130,7 +130,6 @@ class TestQgsEditFormConfig(unittest.TestCase):
 
         layer.setEditFormConfig(config)
         form = QgsAttributeForm(layer, next(layer.getFeatures()))
-        form.show()
         label = form.findChild(QLabel, 'label')
         self.assertIsNotNone(label)
         self.assertEqual(label.text(), 'Flying Monkey')
