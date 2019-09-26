@@ -31,7 +31,9 @@ class QgsRasterMatrix
       opGE,
       opLE,
       opAND,
-      opOR
+      opOR,
+      opMIN,
+      opMAX
     };
 
     enum OneArgOperator
@@ -46,6 +48,7 @@ class QgsRasterMatrix
       opSIGN,
       opLOG,
       opLOG10,
+      opABS,
     };
 
     QgsRasterMatrix();
@@ -91,6 +94,8 @@ Subtracts another matrix from this one
     bool lesserEqual( const QgsRasterMatrix &other );
     bool logicalAnd( const QgsRasterMatrix &other );
     bool logicalOr( const QgsRasterMatrix &other );
+    bool max( const QgsRasterMatrix &other );
+    bool min( const QgsRasterMatrix &other );
 
     bool squareRoot();
     bool sinus();
@@ -102,6 +107,7 @@ Subtracts another matrix from this one
     bool changeSign();
     bool log();
     bool log10();
+    bool absoluteValue();
 
 };
 

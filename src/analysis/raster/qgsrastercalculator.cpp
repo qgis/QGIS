@@ -220,8 +220,8 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
         }
       }
 
-      QgsRasterMatrix resultMatrix;
-      resultMatrix.setNodataValue( outputNodataValue );
+      // 1 row X mNumOutputColumns matrix
+      QgsRasterMatrix resultMatrix( mNumOutputColumns, 1, nullptr, outputNodataValue );
 
       _rasterData.clear();
       for ( const auto &layerRef : inputBlocks )

@@ -43,7 +43,9 @@ class ANALYSIS_EXPORT QgsRasterMatrix
       opGE,         // >=
       opLE,         // <=
       opAND,
-      opOR
+      opOR,
+      opMIN,
+      opMAX
     };
 
     enum OneArgOperator
@@ -58,6 +60,7 @@ class ANALYSIS_EXPORT QgsRasterMatrix
       opSIGN,
       opLOG,
       opLOG10,
+      opABS,
     };
 
     //! Takes ownership of data array
@@ -108,6 +111,8 @@ class ANALYSIS_EXPORT QgsRasterMatrix
     bool lesserEqual( const QgsRasterMatrix &other );
     bool logicalAnd( const QgsRasterMatrix &other );
     bool logicalOr( const QgsRasterMatrix &other );
+    bool max( const QgsRasterMatrix &other );
+    bool min( const QgsRasterMatrix &other );
 
     bool squareRoot();
     bool sinus();
@@ -119,6 +124,7 @@ class ANALYSIS_EXPORT QgsRasterMatrix
     bool changeSign();
     bool log();
     bool log10();
+    bool absoluteValue();
 
   private:
     int mColumns = 0;
