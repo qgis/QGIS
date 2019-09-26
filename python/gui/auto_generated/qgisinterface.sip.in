@@ -1150,6 +1150,16 @@ like usual.
 More information here: http://qt-project.org/forums/viewthread/27098
 %End
 
+    virtual void locatorSearch( const QString &searchText ) = 0;
+%Docstring
+This will perforom a search in the locator bar
+by setting the line edit text and display the results
+
+:param searchText: the text to search for
+
+.. versionadded:: 3.10
+%End
+
     virtual void registerLocatorFilter( QgsLocatorFilter *filter /Transfer/ ) = 0;
 %Docstring
 Registers a locator ``filter`` for the app's locator bar. Ownership of the filter is transferred to the

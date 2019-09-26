@@ -971,6 +971,14 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void preloadForm( const QString &uifile ) = 0;
 
     /**
+     * This will perforom a search in the locator bar
+     * by setting the line edit text and display the results
+     * \param searchText the text to search for
+     * \since QGIS 3.10
+     */
+    virtual void locatorSearch( const QString &searchText ) = 0;
+
+    /**
      * Registers a locator \a filter for the app's locator bar. Ownership of the filter is transferred to the
      * locator.
      * \warning Plugins which register filters to the locator bar must take care to correctly call
