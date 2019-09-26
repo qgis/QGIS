@@ -296,6 +296,7 @@
 %Include auto_generated/geometry/qgswkbptr.sip
 %Include auto_generated/./3d/qgs3drendererregistry.sip
 %Include auto_generated/./3d/qgsabstract3drenderer.sip
+%Include auto_generated/fieldformatter/qgscheckboxfieldformatter.sip
 %Include auto_generated/fieldformatter/qgsrangefieldformatter.sip
 %Include auto_generated/fieldformatter/qgsdatetimefieldformatter.sip
 %Include auto_generated/fieldformatter/qgsfallbackfieldformatter.sip

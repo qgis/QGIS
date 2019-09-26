@@ -29,7 +29,11 @@ This is an abstract base class and will always need to be subclassed.
 #include "qgsfieldformatter.h"
 %End
   public:
+
     QgsFieldFormatter();
+%Docstring
+Default constructor
+%End
 
     virtual ~QgsFieldFormatter();
 
