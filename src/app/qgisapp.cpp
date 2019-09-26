@@ -4428,74 +4428,68 @@ void QgisApp::about()
     sAbt = new QgsAbout( this );
     QString versionString = QStringLiteral( "<html><body><div align='center'><table width='100%'>" );
 
-    versionString += QLatin1String( "<tr>" );
-    versionString += "<td>" + tr( "QGIS version" )       + "</td><td>" + Qgis::QGIS_VERSION + "</td><td>";
-
+    versionString += QStringLiteral( "<tr><td>%1</td><td>%2</td><td>" ).arg( tr( "QGIS version" ), Qgis::QGIS_VERSION );
 
     if ( QString( Qgis::QGIS_DEV_VERSION ) == QLatin1String( "exported" ) )
     {
-      versionString += tr( "QGIS code branch" ) + QStringLiteral( "</td><td><a href=\"https://github.com/qgis/QGIS/tree/release-%1_%2\">Release %1.%2</a></td>" )
-                       .arg( Qgis::QGIS_VERSION_INT / 10000 ).arg( Qgis::QGIS_VERSION_INT / 100 % 100 );
+      versionString += QStringLiteral( "%1</td><td><a href=\"https://github.com/qgis/QGIS/tree/release-%1_%2\">Release %1.%2</a></td>" )
+                       .arg( tr( "QGIS code branch" ) ).arg( Qgis::QGIS_VERSION_INT / 10000 ).arg( Qgis::QGIS_VERSION_INT / 100 % 100 );
     }
     else
     {
-      versionString += tr( "QGIS code revision" ) + QStringLiteral( "</td><td><a href=\"https://github.com/qgis/QGIS/commit/%1\">%1</a></td>" ).arg( Qgis::QGIS_DEV_VERSION );
+      versionString += QStringLiteral( "%1</td><td><a href=\"https://github.com/qgis/QGIS/commit/%1\">%1</a></td>" ).arg( tr( "QGIS code revision" ) ).arg( Qgis::QGIS_DEV_VERSION );
     }
 
     versionString += QLatin1String( "</tr><tr>" );
 
-    versionString += "<td>" + tr( "Compiled against Qt" ) + "</td><td>" + QT_VERSION_STR + "</td>";
-    versionString += "<td>" + tr( "Running against Qt" )  + "</td><td>" + qVersion() + "</td>";
+    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Compiled against Qt" ), QT_VERSION_STR );
+    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Running against Qt" ), qVersion() );
 
     versionString += QLatin1String( "</tr><tr>" );
 
-    versionString += "<td>" + tr( "Compiled against GDAL/OGR" ) + "</td><td>" + GDAL_RELEASE_NAME + "</td>";
-    versionString += "<td>" + tr( "Running against GDAL/OGR" )  + "</td><td>" + GDALVersionInfo( "RELEASE_NAME" ) + "</td>";
+    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Compiled against GDAL/OGR" ), GDAL_RELEASE_NAME );
+    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Running against GDAL/OGR" ), GDALVersionInfo( "RELEASE_NAME" ) );
 
     versionString += QLatin1String( "</tr><tr>" );
 
-    versionString += "<td>" + tr( "Compiled against GEOS" ) + "</td><td>" + GEOS_CAPI_VERSION + "</td>";
-    versionString += "<td>" + tr( "Running against GEOS" ) + "</td><td>" + GEOSversion() + "</td>";
+    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Compiled against GEOS" ), GEOS_CAPI_VERSION );
+    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Running against GEOS" ), GEOSversion() );
 
     versionString += QLatin1String( "</tr><tr>" );
 
-    versionString += "<td>" + tr( "PostgreSQL Client Version" ) + "</td><td>";
+    versionString += QStringLiteral( "<td>%1</td><td>" ).arg( tr( "PostgreSQL Client Version" ) );
 #ifdef HAVE_POSTGRESQL
     versionString += QStringLiteral( PG_VERSION );
 #else
     versionString += tr( "No support" );
 #endif
-    versionString += QLatin1String( "</td>" );
 
-    versionString += "<td>" +  tr( "SpatiaLite Version" ) + "</td><td>";
-    versionString += spatialite_version();
-    versionString += QLatin1String( "</td>" );
+    versionString += QStringLiteral( "</td><td>%1</td><td>%2</td>" ).arg( tr( "SpatiaLite Version" ), spatialite_version() );
 
     versionString += QLatin1String( "</tr><tr>" );
 
-    versionString += "<td>" + tr( "QWT Version" ) + "</td><td>" + QWT_VERSION_STR + "</td>";
-    versionString += "<td>" + tr( "QScintilla2 Version" ) + "</td><td>" + QSCINTILLA_VERSION_STR + "</td>";
+    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "QWT Version" ), QWT_VERSION_STR );
+    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "QScintilla2 Version" ), QSCINTILLA_VERSION_STR );
 
     versionString += QLatin1String( "</tr><tr>" );
 
 #ifdef PROJ_HAS_INFO
     PJ_INFO info = proj_info();
-    versionString += "<td>" + tr( "Compiled against PROJ" ) + "</td><td>" + QString::number( PJ_VERSION ) + "</td>";
-    versionString += "<td>" + tr( "Running against PROJ" ) + "</td><td>" + info.version + "</td>";
+    versionString += QStringLiteral( "<td>%1</td><td>%2.%3.%4</td>" ).arg( tr( "Compiled against PROJ" ) ).arg( PROJ_VERSION_MAJOR ).arg( PROJ_VERSION_MINOR ).arg( PROJ_VERSION_PATCH );
+    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Running against PROJ" ) ).arg( info.release );
 #else
-    versionString += "<td>" + tr( "PROJ.4 Version" ) + "</td><td colspan=3>" + QString::number( PJ_VERSION ) + "</td>";
+    versionString += QStringLiteral( "<td>%1</td><td colspan=3>%2</td>" ).arg( tr( "PROJ.4 Version" ), QString::number( PJ_VERSION ) );
 #endif
 
 #ifdef QGISDEBUG
-    versionString += "</tr><tr><td colspan=4>" + tr( "This copy of QGIS writes debugging output." ) + "</td>";
+    versionString += QStringLiteral( "</tr><tr><td colspan=4>%1</td>" ).arg( tr( "This copy of QGIS writes debugging output." ) );
 #endif
 
 #ifdef WITH_BINDINGS
     if ( mPythonUtils && mPythonUtils->isEnabled() )
     {
-      versionString += "</tr><tr><td>" + tr( "Active python plugins" ) + "</td><td colspan=3>";
       const QStringList activePlugins = mPythonUtils->listActivePlugins();
-      versionString += activePlugins.join( "; <br>" ) + "</td>";
+      versionString += QStringLiteral( "</tr><tr><td>%1</td><td colspan=3>%2</td>" ).arg( tr( "Active python plugins" ), activePlugins.join( "; <br>" ) );
     }
 #endif
 
