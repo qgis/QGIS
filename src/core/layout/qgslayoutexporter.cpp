@@ -475,7 +475,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( QgsAbstractLay
 
 QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &filePath, const QgsLayoutExporter::PdfExportSettings &s )
 {
-  if ( !mLayout )
+  if ( !mLayout || mLayout->pageCollection()->pageCount() == 0 )
     return PrintError;
 
   PdfExportSettings settings = s;
@@ -1059,6 +1059,9 @@ void QgsLayoutExporter::preparePrint( QgsLayout *layout, QPrinter &printer, bool
 
 QgsLayoutExporter::ExportResult QgsLayoutExporter::print( QPrinter &printer )
 {
+  if ( mLayout->pageCollection()->pageCount() == 0 )
+    return PrintError;
+
   preparePrint( mLayout, printer, true );
   QPainter p;
   if ( !p.begin( &printer ) )
