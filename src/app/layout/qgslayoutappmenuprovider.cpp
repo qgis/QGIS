@@ -125,6 +125,8 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
         layout->pageCollection()->deletePage( page );
       }
     } );
+    if ( layout->pageCollection()->pageCount() < 2 )
+      removePageAction->setEnabled( false );
     menu->addAction( removePageAction );
 
     menu->addSeparator();
