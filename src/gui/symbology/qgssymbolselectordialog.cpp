@@ -385,6 +385,9 @@ QgsSymbolWidgetContext QgsSymbolSelectorWidget::context() const
 
 void QgsSymbolSelectorWidget::loadSymbol( QgsSymbol *symbol, SymbolLayerItem *parent )
 {
+  if ( !symbol )
+    return;
+
   if ( !parent )
   {
     mSymbol = symbol;
@@ -449,6 +452,9 @@ void QgsSymbolSelectorWidget::updateUi()
 
 void QgsSymbolSelectorWidget::updatePreview()
 {
+  if ( !mSymbol )
+    return;
+
   std::unique_ptr< QgsSymbol > symbolClone( mSymbol->clone() );
   QImage preview = symbolClone->bigSymbolPreviewImage( &mPreviewExpressionContext );
   lblPreview->setPixmap( QPixmap::fromImage( preview ) );
