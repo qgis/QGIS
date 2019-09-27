@@ -84,6 +84,12 @@ QgsLayoutHtmlWidget::QgsLayoutHtmlWidget( QgsLayoutFrame *frame )
   registerDataDefinedButton( mUrlDDBtn, QgsLayoutObject::SourceUrl );
 }
 
+void QgsLayoutHtmlWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayout )
+{
+  if ( mItemPropertiesWidget )
+    mItemPropertiesWidget->setMasterLayout( masterLayout );
+}
+
 bool QgsLayoutHtmlWidget::setNewItem( QgsLayoutItem *item )
 {
   QgsLayoutFrame *frame = qobject_cast< QgsLayoutFrame * >( item );

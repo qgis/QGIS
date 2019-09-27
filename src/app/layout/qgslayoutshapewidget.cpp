@@ -68,6 +68,12 @@ QgsLayoutShapeWidget::QgsLayoutShapeWidget( QgsLayoutItemShape *shape )
   }
 }
 
+void QgsLayoutShapeWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayout )
+{
+  if ( mItemPropertiesWidget )
+    mItemPropertiesWidget->setMasterLayout( masterLayout );
+}
+
 bool QgsLayoutShapeWidget::setNewItem( QgsLayoutItem *item )
 {
   if ( item->type() != QgsLayoutItemRegistry::LayoutShape )

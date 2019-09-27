@@ -56,6 +56,12 @@ QgsLayoutPolygonWidget::QgsLayoutPolygonWidget( QgsLayoutItemPolygon *polygon )
   }
 }
 
+void QgsLayoutPolygonWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayout )
+{
+  if ( mItemPropertiesWidget )
+    mItemPropertiesWidget->setMasterLayout( masterLayout );
+}
+
 bool QgsLayoutPolygonWidget::setNewItem( QgsLayoutItem *item )
 {
   if ( item->type() != QgsLayoutItemRegistry::LayoutPolygon )

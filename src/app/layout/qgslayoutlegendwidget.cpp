@@ -183,6 +183,12 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend )
   connect( mItemFontButton, &QgsFontButton::changed, this, &QgsLayoutLegendWidget::itemFontChanged );
 }
 
+void QgsLayoutLegendWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayout )
+{
+  if ( mItemPropertiesWidget )
+    mItemPropertiesWidget->setMasterLayout( masterLayout );
+}
+
 void QgsLayoutLegendWidget::setGuiElements()
 {
   if ( !mLegend )

@@ -34,6 +34,7 @@ class QgsLayoutScaleBarWidget: public QgsLayoutItemBaseWidget, public QgsExpress
 
   public:
     explicit QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBar );
+    void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 
     QgsExpressionContext createExpressionContext() const override;
   protected:

@@ -185,6 +185,12 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
   blockAllSignals( false );
 }
 
+void QgsLayoutMapWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayout )
+{
+  if ( mItemPropertiesWidget )
+    mItemPropertiesWidget->setMasterLayout( masterLayout );
+}
+
 void QgsLayoutMapWidget::setReportTypeString( const QString &string )
 {
   mAtlasCheckBox->setTitle( tr( "Controlled by %1" ).arg( string == tr( "atlas" ) ? tr( "Atlas" ) : tr( "Report" ) ) );

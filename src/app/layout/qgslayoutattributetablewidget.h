@@ -31,6 +31,7 @@ class QgsLayoutAttributeTableWidget: public QgsLayoutItemBaseWidget, private Ui:
     QgsLayoutAttributeTableWidget( QgsLayoutFrame *frame );
 
     void setReportTypeString( const QString &string ) override;
+    void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 
   protected:
 

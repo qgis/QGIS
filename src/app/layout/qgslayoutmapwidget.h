@@ -39,6 +39,7 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
 
   public:
     explicit QgsLayoutMapWidget( QgsLayoutItemMap *item );
+    void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 
     void setReportTypeString( const QString &string ) override;
     void setDesignerInterface( QgsLayoutDesignerInterface *iface ) override;

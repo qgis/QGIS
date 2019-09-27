@@ -159,6 +159,12 @@ void QgsLayoutAttributeTableWidget::setReportTypeString( const QString &string )
   }
 }
 
+void QgsLayoutAttributeTableWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayout )
+{
+  if ( mItemPropertiesWidget )
+    mItemPropertiesWidget->setMasterLayout( masterLayout );
+}
+
 bool QgsLayoutAttributeTableWidget::setNewItem( QgsLayoutItem *item )
 {
   QgsLayoutFrame *frame = qobject_cast< QgsLayoutFrame * >( item );

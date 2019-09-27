@@ -31,6 +31,7 @@ class QgsLayoutShapeWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayou
     Q_OBJECT
   public:
     explicit QgsLayoutShapeWidget( QgsLayoutItemShape *shape );
+    void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 
   protected:
 
