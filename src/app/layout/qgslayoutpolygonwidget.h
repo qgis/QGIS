@@ -29,6 +29,7 @@ class QgsLayoutPolygonWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLay
     Q_OBJECT
   public:
     explicit QgsLayoutPolygonWidget( QgsLayoutItemPolygon *polygon );
+    void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 
   protected:
 

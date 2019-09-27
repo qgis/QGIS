@@ -1185,6 +1185,7 @@ void QgsLayoutDesignerDialog::showItemOptions( QgsLayoutItem *item, bool bringPa
 
   widget->setDesignerInterface( iface() );
   widget->setReportTypeString( reportTypeString() );
+  widget->setMasterLayout( mMasterLayout );
 
   if ( QgsLayoutPagePropertiesWidget *ppWidget = qobject_cast< QgsLayoutPagePropertiesWidget * >( widget.get() ) )
     connect( ppWidget, &QgsLayoutPagePropertiesWidget::pageOrientationChanged, this, &QgsLayoutDesignerDialog::pageOrientationChanged );
@@ -3809,6 +3810,7 @@ void QgsLayoutDesignerDialog::createLayoutPropertiesWidget()
 
   mLayoutPropertiesWidget = new QgsLayoutPropertiesWidget( mGeneralDock, mLayout );
   mLayoutPropertiesWidget->setDockMode( true );
+  mLayoutPropertiesWidget->setMasterLayout( mMasterLayout );
   mGeneralPropertiesStack->setMainPanel( mLayoutPropertiesWidget );
 
   mGuideWidget = new QgsLayoutGuideWidget( mGuideDock, mLayout, mView );

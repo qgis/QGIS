@@ -152,6 +152,12 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   }
 }
 
+void QgsLayoutScaleBarWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayout )
+{
+  if ( mItemPropertiesWidget )
+    mItemPropertiesWidget->setMasterLayout( masterLayout );
+}
+
 QgsExpressionContext QgsLayoutScaleBarWidget::createExpressionContext() const
 {
   QgsExpressionContext context = mScalebar->createExpressionContext();

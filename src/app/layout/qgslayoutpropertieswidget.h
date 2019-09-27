@@ -21,12 +21,15 @@
 #include "qgspanelwidget.h"
 
 class QgsLayout;
+class QgsMasterLayoutInterface;
 
 class QgsLayoutPropertiesWidget: public QgsPanelWidget, private Ui::QgsLayoutWidgetBase
 {
     Q_OBJECT
   public:
     QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout *layout );
+
+    void setMasterLayout( QgsMasterLayoutInterface *masterLayout );
 
   public slots:
 

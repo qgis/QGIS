@@ -33,6 +33,7 @@ class QgsLayoutPictureWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLay
 
   public:
     explicit QgsLayoutPictureWidget( QgsLayoutItemPicture *picture );
+    void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 
     //! Add the icons of the standard directories to the preview
     void addStandardDirectoriesToPreview();

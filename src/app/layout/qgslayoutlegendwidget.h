@@ -34,6 +34,7 @@ class QgsLayoutLegendWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayo
 
   public:
     explicit QgsLayoutLegendWidget( QgsLayoutItemLegend *legend );
+    void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 
     //! Updates the legend layers and groups
     void updateLegend();
