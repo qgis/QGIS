@@ -60,6 +60,7 @@ class QgsLayoutPropertiesWidget: public QgsPanelWidget, private Ui::QgsLayoutWid
 
     void updateSnappingElements();
     void blockSignals( bool block );
+    bool mBlockVariableUpdates = false;
 
 };
 
