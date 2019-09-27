@@ -971,9 +971,9 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void preloadForm( const QString &uifile ) = 0;
 
     /**
-     * This will perforom a search in the locator bar
-     * by setting the line edit text and display the results
-     * \param searchText the text to search for
+     * This will perform a search in the locator bar
+     * by setting the line edit text to \a searchText
+     * and automatically displaying any results.
      * \since QGIS 3.10
      */
     virtual void locatorSearch( const QString &searchText ) = 0;

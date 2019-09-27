@@ -1152,10 +1152,9 @@ More information here: http://qt-project.org/forums/viewthread/27098
 
     virtual void locatorSearch( const QString &searchText ) = 0;
 %Docstring
-This will perforom a search in the locator bar
-by setting the line edit text and display the results
-
-:param searchText: the text to search for
+This will perform a search in the locator bar
+by setting the line edit text to ``searchText``
+and automatically displaying any results.
 
 .. versionadded:: 3.10
 %End
