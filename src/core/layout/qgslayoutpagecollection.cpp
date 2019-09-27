@@ -50,9 +50,14 @@ void QgsLayoutPageCollection::setPageStyleSymbol( QgsFillSymbol *symbol )
 
   for ( QgsLayoutItemPage *page : qgis::as_const( mPages ) )
   {
+    page->setPageStyleSymbol( symbol->clone() );
     page->update();
   }
+}
 
+const QgsFillSymbol *QgsLayoutPageCollection::pageStyleSymbol() const
+{
+  return mPageStyleSymbol.get();
 }
 
 void QgsLayoutPageCollection::beginPageSizeChange()
@@ -402,6 +407,8 @@ bool QgsLayoutPageCollection::readXml( const QDomElement &e, const QDomDocument 
   {
     QDomElement pageElement = pageList.at( i ).toElement();
     std::unique_ptr< QgsLayoutItemPage > page( new QgsLayoutItemPage( mLayout ) );
+    if ( mPageStyleSymbol )
+      page->setPageStyleSymbol( mPageStyleSymbol->clone() );
     page->readXml( pageElement, document, context );
     page->finalizeRestoreFromXml();
     mPages.append( page.get() );
@@ -721,5 +728,4 @@ void QgsLayoutPageCollection::createDefaultPageStyleSymbol()
   properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
   mPageStyleSymbol.reset( QgsFillSymbol::createSimple( properties ) );
 }
-
 
