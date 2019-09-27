@@ -94,8 +94,24 @@ Subtracts another matrix from this one
     bool lesserEqual( const QgsRasterMatrix &other );
     bool logicalAnd( const QgsRasterMatrix &other );
     bool logicalOr( const QgsRasterMatrix &other );
+
     bool max( const QgsRasterMatrix &other );
+%Docstring
+Calculates the maximum value between two matrices
+
+:return: ``True`` on success
+
+.. versionadded:: 3.10
+%End
+
     bool min( const QgsRasterMatrix &other );
+%Docstring
+Calculates the minimum value between two matrices
+
+:return: ``True`` on success
+
+.. versionadded:: 3.10
+%End
 
     bool squareRoot();
     bool sinus();
@@ -107,7 +123,15 @@ Subtracts another matrix from this one
     bool changeSign();
     bool log();
     bool log10();
+
     bool absoluteValue();
+%Docstring
+Calculates the absolute value
+
+:return: ``True`` on success
+
+.. versionadded:: 3.10
+%End
 
 };
 

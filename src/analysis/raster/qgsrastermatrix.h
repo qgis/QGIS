@@ -111,7 +111,19 @@ class ANALYSIS_EXPORT QgsRasterMatrix
     bool lesserEqual( const QgsRasterMatrix &other );
     bool logicalAnd( const QgsRasterMatrix &other );
     bool logicalOr( const QgsRasterMatrix &other );
+
+    /**
+     * Calculates the maximum value between two matrices
+     * \return TRUE on success
+     * \since QGIS 3.10
+     */
     bool max( const QgsRasterMatrix &other );
+
+    /**
+     * Calculates the minimum value between two matrices
+     * \return TRUE on success
+     * \since QGIS 3.10
+     */
     bool min( const QgsRasterMatrix &other );
 
     bool squareRoot();
@@ -124,6 +136,12 @@ class ANALYSIS_EXPORT QgsRasterMatrix
     bool changeSign();
     bool log();
     bool log10();
+
+    /**
+     * Calculates the absolute value
+     * \return TRUE on success
+     * \since QGIS 3.10
+     */
     bool absoluteValue();
 
   private:
