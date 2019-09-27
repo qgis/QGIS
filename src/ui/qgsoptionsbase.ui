@@ -103,7 +103,7 @@
            <string>General</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/general.svg</normaloff>:/images/themes/default/propertyicons/general.svg</iconset>
           </property>
          </item>
@@ -115,7 +115,7 @@
            <string>System</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/system.svg</normaloff>:/images/themes/default/propertyicons/system.svg</iconset>
           </property>
          </item>
@@ -127,7 +127,7 @@
            <string>CRS</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/CRS.svg</normaloff>:/images/themes/default/propertyicons/CRS.svg</iconset>
           </property>
          </item>
@@ -139,7 +139,7 @@
            <string>Data sources</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/attributes.svg</normaloff>:/images/themes/default/propertyicons/attributes.svg</iconset>
           </property>
          </item>
@@ -151,7 +151,7 @@
            <string>Rendering</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/rendering.svg</normaloff>:/images/themes/default/propertyicons/rendering.svg</iconset>
           </property>
          </item>
@@ -163,7 +163,7 @@
            <string>Canvas and legend</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/overlay.svg</normaloff>:/images/themes/default/propertyicons/overlay.svg</iconset>
           </property>
          </item>
@@ -175,7 +175,7 @@
            <string>Map tools</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/map_tools.svg</normaloff>:/images/themes/default/propertyicons/map_tools.svg</iconset>
           </property>
          </item>
@@ -187,7 +187,7 @@
            <string>Colors</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/colors.svg</normaloff>:/images/themes/default/propertyicons/colors.svg</iconset>
           </property>
          </item>
@@ -199,7 +199,7 @@
            <string>Digitizing</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/digitizing.svg</normaloff>:/images/themes/default/propertyicons/digitizing.svg</iconset>
           </property>
          </item>
@@ -211,7 +211,7 @@
            <string>Print layouts</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/mIconLayout.svg</normaloff>:/images/themes/default/mIconLayout.svg</iconset>
           </property>
          </item>
@@ -223,7 +223,7 @@
            <string>GDAL</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/gdal.svg</normaloff>:/images/themes/default/propertyicons/gdal.svg</iconset>
           </property>
          </item>
@@ -235,7 +235,7 @@
            <string>Variables</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
           </property>
          </item>
@@ -247,7 +247,7 @@
            <string>Authentication</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/locked.svg</normaloff>:/images/themes/default/locked.svg</iconset>
           </property>
          </item>
@@ -259,7 +259,7 @@
            <string>Network</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/network_and_proxy.svg</normaloff>:/images/themes/default/propertyicons/network_and_proxy.svg</iconset>
           </property>
          </item>
@@ -271,7 +271,7 @@
            <string>Locator</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/search.svg</normaloff>:/images/themes/default/search.svg</iconset>
           </property>
          </item>
@@ -283,7 +283,7 @@
            <string>Advanced</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/mIconWarning.svg</normaloff>:/images/themes/default/mIconWarning.svg</iconset>
           </property>
          </item>
@@ -295,7 +295,7 @@
            <string>Configure GPU for processing algorithms</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/mIconGPU.svg</normaloff>:/images/themes/default/mIconGPU.svg</iconset>
           </property>
          </item>
@@ -361,8 +361,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>843</width>
-                <height>832</height>
+                <width>848</width>
+                <height>943</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -815,7 +815,7 @@
                        <string/>
                       </property>
                       <property name="icon">
-                       <iconset resource="../../images/images.qrc">
+                       <iconset>
                         <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
                       </property>
                      </widget>
@@ -953,7 +953,7 @@
                        <string/>
                       </property>
                       <property name="icon">
-                       <iconset resource="../../images/images.qrc">
+                       <iconset>
                         <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
                       </property>
                      </widget>
@@ -967,7 +967,7 @@
                        <string/>
                       </property>
                       <property name="icon">
-                       <iconset resource="../../images/images.qrc">
+                       <iconset>
                         <normaloff>:/images/themes/default/mActionUndo.svg</normaloff>:/images/themes/default/mActionUndo.svg</iconset>
                       </property>
                      </widget>
@@ -1005,33 +1005,13 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QComboBox" name="cmbEnableMacros">
+                     <widget class="QComboBox" name="mEnableMacrosComboBox">
                       <property name="currentIndex">
-                       <number>0</number>
+                       <number>-1</number>
                       </property>
                       <property name="sizeAdjustPolicy">
                        <enum>QComboBox::AdjustToContents</enum>
                       </property>
-                      <item>
-                       <property name="text">
-                        <string>Never</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>Ask</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>For this session only</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>Always (not recommended)</string>
-                       </property>
-                      </item>
                      </widget>
                     </item>
                     <item>
@@ -1098,8 +1078,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>541</width>
-                <height>1072</height>
+                <width>545</width>
+                <height>1114</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1138,7 +1118,7 @@
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../images/images.qrc">
+                     <iconset>
                       <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
                     </property>
                    </widget>
@@ -1152,7 +1132,7 @@
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../images/images.qrc">
+                     <iconset>
                       <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                     </property>
                    </widget>
@@ -1205,7 +1185,7 @@
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../images/images.qrc">
+                     <iconset>
                       <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
                     </property>
                    </widget>
@@ -1219,7 +1199,7 @@
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../images/images.qrc">
+                     <iconset>
                       <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                     </property>
                    </widget>
@@ -1252,7 +1232,7 @@
                      <string>…</string>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../images/images.qrc">
+                     <iconset>
                       <normaloff>:/images/themes/default/mActionArrowDown.svg</normaloff>:/images/themes/default/mActionArrowDown.svg</iconset>
                     </property>
                    </widget>
@@ -1286,7 +1266,7 @@
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../images/images.qrc">
+                     <iconset>
                       <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
                     </property>
                    </widget>
@@ -1300,7 +1280,7 @@
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../images/images.qrc">
+                     <iconset>
                       <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                     </property>
                    </widget>
@@ -1332,7 +1312,7 @@
                      <string>…</string>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../images/images.qrc">
+                     <iconset>
                       <normaloff>:/images/themes/default/mActionArrowUp.svg</normaloff>:/images/themes/default/mActionArrowUp.svg</iconset>
                     </property>
                    </widget>
@@ -1368,7 +1348,7 @@
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../images/images.qrc">
+                     <iconset>
                       <normaloff>:/images/themes/default/mActionUndo.svg</normaloff>:/images/themes/default/mActionUndo.svg</iconset>
                     </property>
                    </widget>
@@ -1410,7 +1390,7 @@
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../images/images.qrc">
+                     <iconset>
                       <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                     </property>
                    </widget>
@@ -1430,7 +1410,7 @@
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../images/images.qrc">
+                     <iconset>
                       <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
                     </property>
                    </widget>
@@ -1446,10 +1426,10 @@
                     <property name="title">
                      <string>Current environment variables (read-only - bold indicates modified at startup)</string>
                     </property>
-                    <property name="collapsed">
+                    <property name="collapsed" stdset="0">
                      <bool>false</bool>
                     </property>
-                    <property name="saveCollapsedState">
+                    <property name="saveCollapsedState" stdset="0">
                      <bool>true</bool>
                     </property>
                     <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -1634,8 +1614,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>552</width>
-                <height>398</height>
+                <width>561</width>
+                <height>421</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -1662,7 +1642,7 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QgsProjectionSelectionWidget" name="leProjectGlobalCrs">
+                   <widget class="QgsProjectionSelectionWidget" name="leProjectGlobalCrs" native="true">
                     <property name="minimumSize">
                      <size>
                       <width>0</width>
@@ -1748,7 +1728,7 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QgsProjectionSelectionWidget" name="leLayerGlobalCrs">
+                   <widget class="QgsProjectionSelectionWidget" name="leLayerGlobalCrs" native="true">
                     <property name="enabled">
                      <bool>false</bool>
                     </property>
@@ -1833,8 +1813,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>857</width>
-                <height>830</height>
+                <width>533</width>
+                <height>678</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -2092,7 +2072,7 @@
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../images/images.qrc">
+                     <iconset>
                       <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                     </property>
                    </widget>
@@ -2149,8 +2129,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>674</width>
-                <height>965</height>
+                <width>702</width>
+                <height>1139</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_22">
@@ -2935,8 +2915,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>501</width>
-                <height>298</height>
+                <width>532</width>
+                <height>309</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3246,8 +3226,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>604</width>
-                <height>609</height>
+                <width>611</width>
+                <height>652</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3537,7 +3517,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     <property name="value">
                      <number>200</number>
                     </property>
-                    <property name="showClearButton">
+                    <property name="showClearButton" stdset="0">
                      <bool>true</bool>
                     </property>
                    </widget>
@@ -3565,7 +3545,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                        <string>…</string>
                       </property>
                       <property name="icon">
-                       <iconset resource="../../images/images.qrc">
+                       <iconset>
                         <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
                       </property>
                      </widget>
@@ -3579,7 +3559,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                        <string>…</string>
                       </property>
                       <property name="icon">
-                       <iconset resource="../../images/images.qrc">
+                       <iconset>
                         <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                       </property>
                      </widget>
@@ -3593,7 +3573,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                        <string>…</string>
                       </property>
                       <property name="icon">
-                       <iconset resource="../../images/images.qrc">
+                       <iconset>
                         <normaloff>:/images/themes/default/mActionUndo.svg</normaloff>:/images/themes/default/mActionUndo.svg</iconset>
                       </property>
                      </widget>
@@ -3620,7 +3600,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                        <string>…</string>
                       </property>
                       <property name="icon">
-                       <iconset resource="../../images/images.qrc">
+                       <iconset>
                         <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
                       </property>
                      </widget>
@@ -3634,7 +3614,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                        <string>…</string>
                       </property>
                       <property name="icon">
-                       <iconset resource="../../images/images.qrc">
+                       <iconset>
                         <normaloff>:/images/themes/default/mActionFileSave.svg</normaloff>:/images/themes/default/mActionFileSave.svg</iconset>
                       </property>
                      </widget>
@@ -3690,8 +3670,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>157</width>
-                <height>265</height>
+                <width>181</width>
+                <height>318</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -3723,7 +3703,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../images/images.qrc">
+                     <iconset>
                       <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
                     </property>
                    </widget>
@@ -3744,7 +3724,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../images/images.qrc">
+                     <iconset>
                       <normaloff>:/images/themes/default/mActionEditPaste.svg</normaloff>:/images/themes/default/mActionEditPaste.svg</iconset>
                     </property>
                    </widget>
@@ -3758,7 +3738,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../images/images.qrc">
+                     <iconset>
                       <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
                     </property>
                    </widget>
@@ -3772,7 +3752,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../images/images.qrc">
+                     <iconset>
                       <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                     </property>
                    </widget>
@@ -3786,7 +3766,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../images/images.qrc">
+                     <iconset>
                       <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
                     </property>
                    </widget>
@@ -3807,7 +3787,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../images/images.qrc">
+                     <iconset>
                       <normaloff>:/images/themes/default/mActionFileSave.svg</normaloff>:/images/themes/default/mActionFileSave.svg</iconset>
                     </property>
                    </widget>
@@ -3858,8 +3838,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>857</width>
-                <height>830</height>
+                <width>574</width>
+                <height>827</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4467,8 +4447,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>480</width>
-                <height>543</height>
+                <width>472</width>
+                <height>572</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -4658,7 +4638,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../images/images.qrc">
+                     <iconset>
                       <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
                     </property>
                    </widget>
@@ -4672,7 +4652,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../images/images.qrc">
+                     <iconset>
                       <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                     </property>
                    </widget>
@@ -4736,8 +4716,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>412</width>
-                <height>372</height>
+                <width>509</width>
+                <height>367</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -4905,8 +4885,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>857</width>
-                <height>830</height>
+                <width>640</width>
+                <height>753</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -5064,7 +5044,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                          <string/>
                         </property>
                         <property name="icon">
-                         <iconset resource="../../images/images.qrc">
+                         <iconset>
                           <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
                         </property>
                        </widget>
@@ -5078,7 +5058,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                          <string/>
                         </property>
                         <property name="icon">
-                         <iconset resource="../../images/images.qrc">
+                         <iconset>
                           <normaloff>:/images/themes/default/mActionDeleteSelected.svg</normaloff>:/images/themes/default/mActionDeleteSelected.svg</iconset>
                         </property>
                        </widget>
@@ -5125,10 +5105,10 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                  <property name="checkable">
                   <bool>true</bool>
                  </property>
-                 <property name="collapsed">
+                 <property name="collapsed" stdset="0">
                   <bool>false</bool>
                  </property>
-                 <property name="saveCollapsedState">
+                 <property name="saveCollapsedState" stdset="0">
                   <bool>true</bool>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_1">
@@ -5148,7 +5128,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../images/images.qrc">
+                     <iconset>
                       <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                     </property>
                    </widget>
@@ -5162,7 +5142,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../images/images.qrc">
+                     <iconset>
                       <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
                     </property>
                    </widget>
@@ -5407,7 +5387,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.SF NS Text'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Noto Sans'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
@@ -5627,7 +5607,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>chbAskToSaveProjectChanges</tabstop>
   <tabstop>mLayerDeleteConfirmationChkBx</tabstop>
   <tabstop>chbWarnOldProjectVersion</tabstop>
-  <tabstop>cmbEnableMacros</tabstop>
+  <tabstop>mEnableMacrosComboBox</tabstop>
   <tabstop>mOptionsScrollArea_03</tabstop>
   <tabstop>mBtnAddSVGPath</tabstop>
   <tabstop>mBtnRemoveSVGPath</tabstop>
@@ -5806,9 +5786,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>mOpenClDevicesCombo</tabstop>
   <tabstop>mGPUInfoTextBrowser</tabstop>
  </tabstops>
- <resources>
-  <include location="../../images/images.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>mOptionsListWidget</sender>
