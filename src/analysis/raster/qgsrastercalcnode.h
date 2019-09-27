@@ -70,6 +70,9 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
       opSIGN,       // change sign
       opLOG,
       opLOG10,
+      opABS,
+      opMAX,
+      opMIN,
       opNONE,
     };
 
