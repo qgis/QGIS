@@ -18,7 +18,7 @@
 #include "qgsrastermatrix.h"
 #include <cstring>
 #include <cmath>
-#include<algorithm>
+#include <algorithm>
 
 QgsRasterMatrix::QgsRasterMatrix( int nCols, int nRows, double *data, double nodataValue )
   : mColumns( nCols )
