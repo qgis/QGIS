@@ -514,7 +514,7 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
 
   // setup user interface
   setupUi( this );
-  this->layout()->setContentsMargins( 0, 0, 0, 0 );
+  layout()->setContentsMargins( 0, 0, 0, 0 );
 
   mExpressionWidget->setLayer( mLayer );
   btnChangeCategorizedSymbol->setLayer( mLayer );
@@ -535,8 +535,11 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   }
 
   mCategorizedSymbol.reset( QgsSymbol::defaultSymbol( mLayer->geometryType() ) );
-  btnChangeCategorizedSymbol->setSymbolType( mCategorizedSymbol->type() );
-  btnChangeCategorizedSymbol->setSymbol( mCategorizedSymbol->clone() );
+  if ( mCategorizedSymbol )
+  {
+    btnChangeCategorizedSymbol->setSymbolType( mCategorizedSymbol->type() );
+    btnChangeCategorizedSymbol->setSymbol( mCategorizedSymbol->clone() );
+  }
 
   mModel = new QgsCategorizedSymbolRendererModel( this );
   mModel->setRenderer( mRenderer.get() );
