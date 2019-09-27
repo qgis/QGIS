@@ -244,6 +244,13 @@ class GUI_EXPORT QgsLayoutItemPropertiesWidget: public QWidget, private Ui::QgsL
      */
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout );
 
+    /**
+     * Updates the variables widget, refreshing the values of variables shown.
+     *
+     * \since QGIS 3.10
+     */
+    void updateVariables();
+
   protected slots:
     //! Initializes data defined buttons to current atlas coverage layer
     void initializeDataDefinedButtons();
@@ -302,7 +309,6 @@ class GUI_EXPORT QgsLayoutItemPropertiesWidget: public QWidget, private Ui::QgsL
     void setValuesForGuiNonPositionElements();
 
     void variablesChanged();
-    void updateVariables();
 
   private:
 
