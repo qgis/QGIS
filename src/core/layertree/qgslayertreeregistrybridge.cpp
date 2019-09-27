@@ -38,7 +38,7 @@ QgsLayerTreeRegistryBridge::QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root,
 
 void QgsLayerTreeRegistryBridge::setLayerInsertionPoint( QgsLayerTreeGroup *parentGroup, int index )
 {
-  mInsertionPoint.parent = parentGroup;
+  mInsertionPoint.group = parentGroup;
   mInsertionPoint.position = index;
 }
 
@@ -71,7 +71,7 @@ void QgsLayerTreeRegistryBridge::layersAdded( const QList<QgsMapLayer *> &layers
   }
 
   // add new layers to the right place
-  mInsertionPoint.parent->insertChildNodes( mInsertionPoint.position, nodes );
+  mInsertionPoint.group->insertChildNodes( mInsertionPoint.position, nodes );
 
   // tell other components that layers have been added - this signal is used in QGIS to auto-select the first layer
   emit addedLayersToLayerTree( layers );
