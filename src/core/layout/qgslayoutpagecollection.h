@@ -232,8 +232,10 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
     /**
      * Returns the symbol to use for drawing pages in the collection.
      * \see setPageStyleSymbol()
+     *
+     * \deprecated Use QgsLayoutItemPage::pageStyleSymbol() instead.
      */
-    const QgsFillSymbol *pageStyleSymbol() const { return mPageStyleSymbol.get(); }
+    Q_DECL_DEPRECATED const QgsFillSymbol *pageStyleSymbol() const SIP_DEPRECATED;
 
     /**
      * Should be called before changing any page item sizes, and followed by a call to

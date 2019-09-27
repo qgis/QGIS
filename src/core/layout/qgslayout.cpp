@@ -797,14 +797,6 @@ bool QgsLayout::accept( QgsStyleEntityVisitorInterface *visitor ) const
     if ( !layoutItem->accept( visitor ) )
       return false;
   }
-
-  if ( pageCollection()->pageStyleSymbol() )
-  {
-    QgsStyleSymbolEntity entity( pageCollection()->pageStyleSymbol() );
-    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, QStringLiteral( "page" ), QObject::tr( "Page" ) ) ) )
-      return false;
-  }
-
   return true;
 }
 
