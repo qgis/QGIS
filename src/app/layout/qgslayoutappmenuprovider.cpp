@@ -116,6 +116,7 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
     {
       mDesigner->showItemOptions( page, true );
     } );
+    menu->addAction( pagePropertiesAction );
 
     if ( mDesigner->guideWidget() )
     {
