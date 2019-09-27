@@ -507,38 +507,41 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   viewGraduated->setStyle( new QgsGraduatedSymbolRendererViewStyle( viewGraduated ) );
 
   mGraduatedSymbol.reset( QgsSymbol::defaultSymbol( mLayer->geometryType() ) );
-  btnChangeGraduatedSymbol->setSymbolType( mGraduatedSymbol->type() );
-  btnChangeGraduatedSymbol->setSymbol( mGraduatedSymbol->clone() );
-
-  methodComboBox->blockSignals( true );
-  methodComboBox->addItem( tr( "Color" ), ColorMode );
-  switch ( mGraduatedSymbol->type() )
+  if ( mGraduatedSymbol )
   {
-    case QgsSymbol::Marker:
+    btnChangeGraduatedSymbol->setSymbolType( mGraduatedSymbol->type() );
+    btnChangeGraduatedSymbol->setSymbol( mGraduatedSymbol->clone() );
+
+    methodComboBox->blockSignals( true );
+    methodComboBox->addItem( tr( "Color" ), ColorMode );
+    switch ( mGraduatedSymbol->type() )
     {
-      methodComboBox->addItem( tr( "Size" ), SizeMode );
-      minSizeSpinBox->setValue( 1 );
-      maxSizeSpinBox->setValue( 8 );
-      break;
+      case QgsSymbol::Marker:
+      {
+        methodComboBox->addItem( tr( "Size" ), SizeMode );
+        minSizeSpinBox->setValue( 1 );
+        maxSizeSpinBox->setValue( 8 );
+        break;
+      }
+      case QgsSymbol::Line:
+      {
+        methodComboBox->addItem( tr( "Size" ), SizeMode );
+        minSizeSpinBox->setValue( .1 );
+        maxSizeSpinBox->setValue( 2 );
+        break;
+      }
+      case QgsSymbol::Fill:
+      {
+        //set button and label invisible to avoid display of a single item combobox
+        methodComboBox->hide();
+        labelMethod->hide();
+        break;
+      }
+      case QgsSymbol::Hybrid:
+        break;
     }
-    case QgsSymbol::Line:
-    {
-      methodComboBox->addItem( tr( "Size" ), SizeMode );
-      minSizeSpinBox->setValue( .1 );
-      maxSizeSpinBox->setValue( 2 );
-      break;
-    }
-    case QgsSymbol::Fill:
-    {
-      //set button and label invisible to avoid display of a single item combobox
-      methodComboBox->hide();
-      labelMethod->hide();
-      break;
-    }
-    case QgsSymbol::Hybrid:
-      break;
+    methodComboBox->blockSignals( false );
   }
-  methodComboBox->blockSignals( false );
 
   connect( mExpressionWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsGraduatedSymbolRendererWidget::graduatedColumnChanged );
   connect( viewGraduated, &QAbstractItemView::doubleClicked, this, &QgsGraduatedSymbolRendererWidget::rangesDoubleClicked );
@@ -565,7 +568,7 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   QMenu *advMenu = new QMenu( this );
 
   advMenu->addAction( tr( "Symbol Levels…" ), this, SLOT( showSymbolLevels() ) );
-  if ( mGraduatedSymbol->type() == QgsSymbol::Marker )
+  if ( mGraduatedSymbol && mGraduatedSymbol->type() == QgsSymbol::Marker )
   {
     QAction *actionDdsLegend = advMenu->addAction( tr( "Data-defined Size Legend…" ) );
     // only from Qt 5.6 there is convenience addAction() with new style connection
