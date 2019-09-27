@@ -99,6 +99,7 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
   connect( QgsProject::instance(), &QgsProject::metadataChanged, this, &QgsLayoutPropertiesWidget::updateVariables );
   connect( &mLayout->renderContext(), &QgsLayoutRenderContext::dpiChanged, this, &QgsLayoutPropertiesWidget::updateVariables );
   connect( mLayout->pageCollection(), &QgsLayoutPageCollection::changed, this, &QgsLayoutPropertiesWidget::updateVariables );
+  connect( mLayout, &QgsLayout::variablesChanged, this, &QgsLayoutPropertiesWidget::updateVariables );
 
   updateGui();
 }
@@ -255,11 +256,16 @@ void QgsLayoutPropertiesWidget::forceVectorToggled()
 
 void QgsLayoutPropertiesWidget::variablesChanged()
 {
+  mBlockVariableUpdates = true;
   QgsExpressionContextUtils::setLayoutVariables( mLayout, mVariableEditor->variablesInActiveScope() );
+  mBlockVariableUpdates = false;
 }
 
 void QgsLayoutPropertiesWidget::updateVariables()
 {
+  if ( mBlockVariableUpdates )
+    return;
+
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
           << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
