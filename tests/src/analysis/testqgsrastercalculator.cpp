@@ -581,7 +581,7 @@ void TestQgsRasterCalculator::findNodes()
   QVERIFY( ! errorString.isEmpty() );
 
   // Test new abs, min, max
-  errorString = QString();
+  errorString.clear();
   node = QgsRasterCalcNode::parseRasterCalcString( QStringLiteral( "abs(2)" ), errorString );
   QVERIFY( node );
   QVERIFY( errorString.isEmpty() );
