@@ -648,6 +648,7 @@ ELSE(NOT MSVC)
 ENDIF(NOT MSVC)
 
 SET(QGIS_CORE_MOC_HDRS
+  qgis.h
   qgsabstractcontentcache.h
   qgsabstractdatabaseproviderconnection.h
   qgsapplication.h
@@ -909,7 +910,6 @@ SET(QGIS_CORE_HDRS
 
   qgstessellator.h
 
-  qgis.h
   qgis_sip.h
   qgsabstractgeopdfexporter.h
   qgsabstractproviderconnection.h

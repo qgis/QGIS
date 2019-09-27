@@ -1333,7 +1333,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     toggleMapTips( true );
   }
 
-  mTrustedMacros = false;
+  mPythonMacrosEnabled = false;
 
   // setup drag drop
   setAcceptDrops( true );
@@ -6185,7 +6185,7 @@ void QgisApp::fileRevert()
 
 void QgisApp::enableProjectMacros()
 {
-  mTrustedMacros = true;
+  mPythonMacrosEnabled = true;
 
   // load macros
   QgsPythonRunner::run( QStringLiteral( "qgis.utils.reloadProjectMacros()" ) );
@@ -6289,18 +6289,15 @@ bool QgisApp::addProject( const QString &projectFile )
     {
       if ( !QgsProject::instance()->readEntry( QStringLiteral( "Macros" ), QStringLiteral( "/pythonCode" ), QString() ).isEmpty() )
       {
-        int enableMacros = settings.value( QStringLiteral( "qgis/enableMacros" ), 1 ).toInt();
-        // 0 = never, 1 = ask, 2 = just for this session, 3 = always
+        Qgis::PythonMacroMode enableMacros = settings.enumValue( QStringLiteral( "qgis/enableMacros" ), Qgis::PythonMacroMode::Ask );
 
-        if ( enableMacros == 3 || enableMacros == 2 )
+        if ( enableMacros == Qgis::PythonMacroMode::Always || enableMacros == Qgis::PythonMacroMode::SessionOnly )
         {
           enableProjectMacros();
         }
-        else if ( enableMacros == 1 ) // ask
+        else if ( enableMacros == Qgis::PythonMacroMode::Ask )
         {
           // create the notification widget for macros
-
-
           QToolButton *btnEnableMacros = new QToolButton();
           btnEnableMacros->setText( tr( "Enable Macros" ) );
           btnEnableMacros->setStyleSheet( QStringLiteral( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" ) );
@@ -6439,7 +6436,7 @@ bool QgisApp::fileSave()
   }
 
   // run the saved project macro
-  if ( mTrustedMacros )
+  if ( mPythonMacrosEnabled )
   {
     QgsPythonRunner::run( QStringLiteral( "qgis.utils.saveProjectMacro();" ) );
   }
@@ -11849,12 +11846,12 @@ void QgisApp::closeProject()
   QgsCanvasRefreshBlocker refreshBlocker;
 
   // unload the project macros before changing anything
-  if ( mTrustedMacros )
+  if ( mPythonMacrosEnabled )
   {
     QgsPythonRunner::run( QStringLiteral( "qgis.utils.unloadProjectMacros();" ) );
   }
 
-  mTrustedMacros = false;
+  mPythonMacrosEnabled = false;
 
   mLegendExpressionFilterButton->setExpressionText( QString() );
   mLegendExpressionFilterButton->setChecked( false );
