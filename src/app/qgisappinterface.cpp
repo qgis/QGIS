@@ -772,6 +772,12 @@ QgsStatusBar *QgisAppInterface::statusBarIface()
   return qgis->statusBarIface();
 }
 
+void QgisAppInterface::locatorSearch( const QString &searchText )
+{
+  qgis->mLocatorWidget->invalidateResults();
+  qgis->mLocatorWidget->search( searchText );
+}
+
 void QgisAppInterface::registerLocatorFilter( QgsLocatorFilter *filter )
 {
   qgis->mLocatorWidget->locator()->registerFilter( filter );

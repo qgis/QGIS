@@ -273,6 +273,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QList<QgsMapLayer *> editableLayers( bool modified = false ) const override;
     int messageTimeout() override;
     QgsStatusBar *statusBarIface() override;
+    void locatorSearch( const QString &searchText ) override;
     void registerLocatorFilter( QgsLocatorFilter *filter ) override;
     void deregisterLocatorFilter( QgsLocatorFilter *filter ) override;
     void invalidateLocatorResults() override;

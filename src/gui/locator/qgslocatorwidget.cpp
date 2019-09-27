@@ -146,6 +146,7 @@ void QgsLocatorWidget::search( const QString &string )
 {
   mLineEdit->setText( string );
   window()->activateWindow(); // window must also be active - otherwise floating docks can steal keystrokes
+  scheduleDelayedPopup();
   mLineEdit->setFocus();
   performSearch();
 }
