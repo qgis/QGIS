@@ -44,6 +44,7 @@ int QgisEvent = QEvent::User + 1;
  */
 class CORE_EXPORT Qgis
 {
+    Q_GADGET
   public:
     // Version constants
     //
@@ -93,6 +94,19 @@ class CORE_EXPORT Qgis
       ARGB32 = 12, //!< Color, alpha, red, green, blue, 4 bytes the same as QImage::Format_ARGB32
       ARGB32_Premultiplied = 13 //!< Color, alpha, red, green, blue, 4 bytes  the same as QImage::Format_ARGB32_Premultiplied
     };
+
+    /**
+     * Authorisation to run Python Macros
+     * \since QGIS 3.10
+     */
+    enum class PythonMacroMode
+    {
+      Never = 0, //!< Macros are never run
+      Ask = 1, //!< User is prompt before runnning
+      SessionOnly = 2, //!< Only during this session
+      Always = 3 //!< Macros are always run
+    };
+    Q_ENUM( PythonMacroMode )
 
     /**
      * Identify search radius in mm
@@ -437,7 +451,7 @@ template<class T> QString qgsEnumValueToKey( const T &value ) SIP_SKIP
 {
   QMetaEnum metaEnum = QMetaEnum::fromType<T>();
   Q_ASSERT( metaEnum.isValid() );
-  return QString::fromUtf8( metaEnum.valueToKey( value ) );
+  return QString::fromUtf8( metaEnum.valueToKey( static_cast<int>( value ) ) );
 }
 
 /**
