@@ -29,7 +29,7 @@ import filecmp
 import tempfile
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsApplication, QgsFeatureRequest, NULL
+from qgis.core import QgsApplication, QgsFeatureRequest, QgsSettings, NULL
 import unittest
 
 # Get a backup, we will patch this one later
@@ -424,6 +424,13 @@ def start_app(cleanup=True):
 
         os.environ['QGIS_CUSTOM_CONFIG_PATH'] = tempfile.mkdtemp('', 'QGIS-PythonTestConfigPath')
         QGISAPP.initQgis()
+
+        # Make sure geopackages are not written-to, during tests
+        # See https://github.com/qgis/QGIS/issues/25830
+        # NOTE: this needs to happen _after_ QgsApplication::initQgis()
+        #       as any previously-set value would otherwise disappear.
+        QgsSettings().setValue("/qgis/walForSqlite3", False)
+
         print(QGISAPP.showSettings())
 
         def debug_log_message(message, tag, level):
