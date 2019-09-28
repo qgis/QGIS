@@ -23,7 +23,7 @@
  ***************************************************************************/
 """
 
-from qgis.PyQt.QtCore import (pyqtSignal, QObject, QCoreApplication, QFile,
+from qgis.PyQt.QtCore import (pyqtSignal, qVersion, QObject, QCoreApplication, QFile,
                               QDir, QDirIterator, QDate, QUrl, QFileInfo,
                               QLocale, QByteArray)
 from qgis.PyQt.QtXml import QDomDocument
@@ -322,7 +322,10 @@ class Repositories(QObject):
         # url.addQueryItem('qgis', '.'.join([str(int(s)) for s in [v[0], v[1:3]]]) ) # don't include the bugfix version!
 
         self.mRepositories[key]["QRequest"] = QNetworkRequest(url)
-        self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest.FollowRedirectsAttribute, True)
+        qtVersion = [int(v) for v in qVersion().split('.')]
+        if qtVersion >= [5, 6, 0]:
+            # QNetworkRequest.FollowRedirectsAttribute has been introduced in QT 5.6
+            self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest.FollowRedirectsAttribute, True)
         authcfg = self.mRepositories[key]["authcfg"]
         if authcfg and isinstance(authcfg, str):
             if not QgsApplication.authManager().updateNetworkRequest(
