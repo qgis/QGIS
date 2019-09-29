@@ -45,7 +45,7 @@ class CORE_EXPORT QgsTessellator
 
     /**
      * Creates tessellator with a specified \a bounds of input geometry coordinates.
-     * This constructor allows the tesselator to map input coordinates to a desirable range for numerically
+     * This constructor allows the tessellator to map input coordinates to a desirable range for numerically
      * stability during calculations.
      * \since QGIS 3.10
      */
