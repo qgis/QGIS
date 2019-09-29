@@ -23,6 +23,7 @@
 #include "qgspolygon.h"
 #include "qgstriangle.h"
 #include "qgis_sip.h"
+#include "qgsgeometryengine.h"
 
 #include "poly2tri.h"
 
@@ -310,18 +311,19 @@ static QgsPolygon *_transform_polygon_to_new_base( const QgsPolygon &polygon, co
 
 static bool _check_intersecting_rings( const QgsPolygon &polygon )
 {
-  QList<QgsGeometry> geomRings;
-  geomRings << QgsGeometry( polygon.exteriorRing()->clone() );
+  std::vector< std::unique_ptr< QgsGeometryEngine > > ringEngines;
+  ringEngines.reserve( 1 + polygon.numInteriorRings() );
+  ringEngines.emplace_back( QgsGeometry::createGeometryEngine( polygon.exteriorRing() ) );
   for ( int i = 0; i < polygon.numInteriorRings(); ++i )
-    geomRings << QgsGeometry( polygon.interiorRing( i )->clone() );
+    ringEngines.emplace_back( QgsGeometry::createGeometryEngine( polygon.interiorRing( i ) ) );
 
   // we need to make sure that the polygon has no rings with self-intersection: that may
   // crash the tessellator. The original geometry maybe have been valid and the self-intersection
   // was introduced when transforming to a new base (in a rare case when all points are not in the same plane)
 
-  for ( int i = 0; i < geomRings.count(); ++i )
+  for ( const std::unique_ptr< QgsGeometryEngine > &ring : ringEngines )
   {
-    if ( !geomRings[i].isSimple() )
+    if ( !ring->isSimple() )
       return false;
   }
 
@@ -342,14 +344,25 @@ static bool _check_intersecting_rings( const QgsPolygon &polygon )
   // TODO: Handle the situation better - rather than just detecting the problem, try to fix
   // it by converting touching rings into one ring.
 
-  if ( polygon.numInteriorRings() > 0 )
+  if ( ringEngines.size() > 1 )
   {
-    for ( int i = 0; i < geomRings.count(); ++i )
-      for ( int j = i + 1; j < geomRings.count(); ++j )
+    for ( int i = 0; i < ringEngines.size(); ++i )
+    {
+      std::unique_ptr< QgsGeometryEngine > &first = ringEngines.at( i );
+      if ( polygon.numInteriorRings() > 1 )
+        first->prepareGeometry();
+
+      // TODO this is inefficient - QgsGeometryEngine::intersects only works with QgsAbstractGeometry
+      // objects and accordingly we have to use those, instead of the previously build geos
+      // representations available in ringEngines
+      // This needs addressing by extending the QgsGeometryEngine relation tests to allow testing against
+      // another QgsGeometryEngine object.
+      for ( int interiorRing = i; interiorRing < polygon.numInteriorRings(); ++interiorRing )
       {
-        if ( geomRings[i].intersects( geomRings[j] ) )
+        if ( first->intersects( polygon.interiorRing( interiorRing ) ) )
           return false;
       }
+    }
   }
   return true;
 }
