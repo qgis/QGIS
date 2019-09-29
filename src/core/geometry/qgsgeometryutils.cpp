@@ -1603,6 +1603,25 @@ double QgsGeometryUtils::triangleArea( double aX, double aY, double bX, double b
   return 0.5 * std::abs( ( aX - cX ) * ( bY - aY ) - ( aX - bX ) * ( cY - aY ) );
 }
 
+void QgsGeometryUtils::weightedPointInTriangle( const double aX, const double aY, const double bX, const double bY, const double cX, const double cY,
+    double weightB, double weightC, double &pointX, double &pointY )
+{
+  // if point will be outside of the triangle, invert weights
+  if ( weightB + weightC > 1 )
+  {
+    weightB = 1 - weightB;
+    weightC = 1 - weightC;
+  }
+
+  const double rBx = weightB * ( bX - aX );
+  const double rBy = weightB * ( bY - aY );
+  const double rCx = weightC * ( cX - aX );
+  const double rCy = weightC * ( cY - aY );
+
+  pointX = rBx + rCx + aX;
+  pointY = rBy + rCy + aY;
+}
+
 bool QgsGeometryUtils::setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point )
 {
   bool rc = false;
