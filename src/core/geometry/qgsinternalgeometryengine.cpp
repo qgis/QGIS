@@ -25,10 +25,13 @@
 #include "qgslinesegment.h"
 #include "qgscircle.h"
 #include "qgslogger.h"
+#include "qgstessellator.h"
+#include "qgsfeedback.h"
 #include <QTransform>
 #include <functional>
 #include <memory>
 #include <queue>
+#include <random>
 
 QgsInternalGeometryEngine::QgsInternalGeometryEngine( const QgsGeometry &geometry )
   : mGeometry( geometry.constGet() )
@@ -1035,4 +1038,132 @@ QgsGeometry QgsInternalGeometryEngine::variableWidthBufferByM( int segments ) co
   };
 
   return variableWidthBuffer( segments, widthByM );
+}
+
+QVector<QgsPointXY> QgsInternalGeometryEngine::randomPointsInPolygon( const QgsGeometry &polygon, int count,
+    const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed, QgsFeedback *feedback )
+{
+  if ( polygon.type() != QgsWkbTypes::PolygonGeometry || count == 0 )
+    return QVector< QgsPointXY >();
+
+  // step 1 - tessellate the polygon to triangles
+  QgsRectangle bounds = polygon.boundingBox();
+  QgsTessellator t( bounds, false, false, false, true );
+
+  if ( polygon.isMultipart() )
+  {
+    const QgsMultiSurface *ms = qgsgeometry_cast< const QgsMultiSurface * >( polygon.constGet() );
+    for ( int i = 0; i < ms->numGeometries(); ++i )
+    {
+      if ( feedback && feedback->isCanceled() )
+        return QVector< QgsPointXY >();
+
+      if ( QgsPolygon *poly = qgsgeometry_cast< QgsPolygon * >( ms->geometryN( i ) ) )
+      {
+        t.addPolygon( *poly, 0 );
+      }
+      else
+      {
+        std::unique_ptr< QgsPolygon > p( qgsgeometry_cast< QgsPolygon * >( ms->geometryN( i )->segmentize() ) );
+        t.addPolygon( *p, 0 );
+      }
+    }
+  }
+  else
+  {
+    if ( const QgsPolygon *poly = qgsgeometry_cast< const QgsPolygon * >( polygon.constGet() ) )
+    {
+      t.addPolygon( *poly, 0 );
+    }
+    else
+    {
+      std::unique_ptr< QgsPolygon > p( qgsgeometry_cast< QgsPolygon * >( polygon.constGet()->segmentize() ) );
+      t.addPolygon( *p, 0 );
+    }
+  }
+
+  if ( feedback && feedback->isCanceled() )
+    return QVector< QgsPointXY >();
+
+  const QVector<float> triangleData = t.data();
+  if ( triangleData.empty() )
+    return QVector< QgsPointXY >(); //hm
+
+  // calculate running sum of triangle areas
+  std::vector< double > cumulativeAreas;
+  cumulativeAreas.reserve( t.dataVerticesCount() / 3 );
+  double totalArea = 0;
+  for ( auto it = triangleData.constBegin(); it != triangleData.constEnd(); )
+  {
+    if ( feedback && feedback->isCanceled() )
+      return QVector< QgsPointXY >();
+
+    const float aX = *it++;
+    ( void )it++; // z
+    const float aY = -( *it++ );
+    const float bX = *it++;
+    ( void )it++; // z
+    const float bY = -( *it++ );
+    const float cX = *it++;
+    ( void )it++; // z
+    const float cY = -( *it++ );
+
+    const double area = QgsGeometryUtils::triangleArea( aX, aY, bX, bY, cX, cY );
+    totalArea += area;
+    cumulativeAreas.emplace_back( totalArea );
+  }
+
+  std::random_device rd;
+  std::mt19937 mt( seed == 0 ? rd() : seed );
+  std::uniform_real_distribution<> uniformDist( 0, 1 );
+
+  // selects a random triangle, weighted by triangle area
+  auto selectRandomTriangle = [&cumulativeAreas, totalArea]( double random )->int
+  {
+    int triangle = 0;
+    const double target = random * totalArea;
+    for ( auto it = cumulativeAreas.begin(); it != cumulativeAreas.end(); ++it, triangle++ )
+    {
+      if ( *it > target )
+        return triangle;
+    }
+    Q_ASSERT_X( false, "QgsInternalGeometryEngine::randomPointsInPolygon", "Invalid random triangle index" );
+    return 0; // no warnings
+  };
+
+
+  QVector<QgsPointXY> result;
+  result.reserve( count );
+  for ( int i = 0; i < count; )
+  {
+    if ( feedback && feedback->isCanceled() )
+      return QVector< QgsPointXY >();
+
+    const double triangleIndexRnd = uniformDist( mt );
+    // pick random triangle, weighted by triangle area
+    const int triangleIndex = selectRandomTriangle( triangleIndexRnd );
+
+    // generate a random point inside this triangle
+    const double weightB = uniformDist( mt );
+    const double weightC = uniformDist( mt );
+    double x;
+    double y;
+
+    // get triangle
+    const double aX = triangleData.at( triangleIndex * 9 ) + bounds.xMinimum();
+    const double aY = -triangleData.at( triangleIndex * 9 + 2 ) + bounds.yMinimum();
+    const double bX = triangleData.at( triangleIndex * 9 + 3 ) + bounds.xMinimum();
+    const double bY = -triangleData.at( triangleIndex * 9 + 5 ) + bounds.yMinimum();
+    const double cX = triangleData.at( triangleIndex * 9 + 6 ) + bounds.xMinimum();
+    const double cY = -triangleData.at( triangleIndex * 9 + 8 ) + bounds.yMinimum();
+    QgsGeometryUtils::weightedPointInTriangle( aX, aY, bX, bY, cX, cY, weightB, weightC, x, y );
+
+    QgsPointXY candidate( x, y );
+    if ( acceptPoint( candidate ) )
+    {
+      result << QgsPointXY( x, y );
+      i++;
+    }
+  }
+  return result;
 }

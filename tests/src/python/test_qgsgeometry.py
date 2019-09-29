@@ -5229,6 +5229,36 @@ class TestQgsGeometry(unittest.TestCase):
             self.assertEqual(res, t[3],
                              "mismatch for {}, expected:\n{}\nGot:\n{}\n".format(t[0], t[3], res[0].where() if res else ''))
 
+    def testRandomPoints(self):
+        """
+        Test QgsGeometry.randomPointsInPolygon.
+
+        This just test the Python operation of this function -- more tests in testqgsgeometry.cpp
+        """
+
+        # no random points inside null geometry
+        g = QgsGeometry()
+        with self.assertRaises(ValueError):
+            res = g.randomPointsInPolygon(100)
+        # no random points inside linestring
+        g = QgsGeometry.fromWkt('LineString(4 5, 6 6)')
+        with self.assertRaises(TypeError):
+            res = g.randomPointsInPolygon(100)
+        # good!
+        g = QgsGeometry.fromWkt('Polygon(( 5 15, 10 15, 10 20, 5 20, 5 15 ), (6 16, 8 16, 8 18, 6 16 ))')
+        res = g.randomPointsInPolygon(100)
+        self.assertEqual(len(res), 100)
+        g = QgsGeometry.fromWkt('MultiPolygon((( 5 15, 10 15, 10 20, 5 20, 5 15 ), (6 16, 8 16, 8 18, 6 16 )), (( 105 115, 110 115, 110 120, 105 120, 105 115 ), (106 116, 108 116, 108 118, 106 116 )))')
+        res = g.randomPointsInPolygon(100)
+        self.assertEqual(len(res), 100)
+        res2 = g.randomPointsInPolygon(100)
+        self.assertNotEqual(res, res2)
+
+        # with seed
+        res = g.randomPointsInPolygon(100, seed=123123)
+        res2 = g.randomPointsInPolygon(100, seed=123123)
+        self.assertEqual(res, res2)
+
     def renderGeometry(self, geom, use_pen, as_polygon=False, as_painter_path=False):
         image = QImage(200, 200, QImage.Format_RGB32)
         image.fill(QColor(0, 0, 0))

@@ -2325,6 +2325,22 @@ QgsGeometry QgsGeometry::extrude( double x, double y )
   return engine.extrude( x, y );
 }
 
+QVector<QgsPointXY> QgsGeometry::randomPointsInPolygon( int count, const std::function<bool( const QgsPointXY & )> &acceptPoint, unsigned long seed, QgsFeedback *feedback )
+{
+  if ( type() != QgsWkbTypes::PolygonGeometry )
+    return QVector< QgsPointXY >();
+
+  return QgsInternalGeometryEngine::randomPointsInPolygon( *this, count, acceptPoint, seed, feedback );
+}
+
+QVector<QgsPointXY> QgsGeometry::randomPointsInPolygon( int count, unsigned long seed, QgsFeedback *feedback )
+{
+  if ( type() != QgsWkbTypes::PolygonGeometry )
+    return QVector< QgsPointXY >();
+
+  return QgsInternalGeometryEngine::randomPointsInPolygon( *this, count, []( const QgsPointXY & ) { return true; }, seed, feedback );
+}
+
 QByteArray QgsGeometry::asWkb() const
 {
   return d->geometry ? d->geometry->asWkb() : QByteArray();
