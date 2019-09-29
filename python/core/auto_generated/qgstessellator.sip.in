@@ -32,11 +32,13 @@ Optionally provides extrusion by adding triangles that serve as walls when extru
 Creates tessellator with a specified origin point of the world (in map coordinates)
 %End
 
-    QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals = false, bool addBackFaces = false );
+    QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false );
 %Docstring
 Creates tessellator with a specified ``bounds`` of input geometry coordinates.
 This constructor allows the tessellator to map input coordinates to a desirable range for numerically
 stability during calculations.
+
+If ``noZ`` is ``True``, then a 2-dimensional tesselation only will be performed and all z coordinates will be ignored.
 
 .. versionadded:: 3.10
 %End

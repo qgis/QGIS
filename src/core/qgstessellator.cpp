@@ -78,13 +78,14 @@ QgsTessellator::QgsTessellator( double originX, double originY, bool addNormals,
   init();
 }
 
-QgsTessellator::QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals, bool addBackFaces )
+QgsTessellator::QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals, bool addBackFaces, bool noZ )
   : mBounds( bounds )
   , mOriginX( mBounds.xMinimum() )
   , mOriginY( mBounds.yMinimum() )
   , mAddNormals( addNormals )
   , mInvertNormals( invertNormals )
   , mAddBackFaces( addBackFaces )
+  , mNoZ( noZ )
 {
   init();
 }
@@ -227,7 +228,7 @@ struct float_pair_hash
   }
 };
 
-static void _ringToPoly2tri( const QgsLineString *ring, std::vector<p2t::Point *> &polyline, QHash<p2t::Point *, float> &zHash )
+static void _ringToPoly2tri( const QgsLineString *ring, std::vector<p2t::Point *> &polyline, QHash<p2t::Point *, float> *zHash )
 {
   const int pCount = ring->numPoints();
 
@@ -242,7 +243,6 @@ static void _ringToPoly2tri( const QgsLineString *ring, std::vector<p2t::Point *
   {
     const float x = *srcXData++;
     const float y = *srcYData++;
-    const float z = *srcZData++;
 
     auto res = foundPoints.insert( std::make_pair( x, y ) );
     if ( !res.second )
@@ -253,7 +253,10 @@ static void _ringToPoly2tri( const QgsLineString *ring, std::vector<p2t::Point *
 
     p2t::Point *pt2 = new p2t::Point( x, y );
     polyline.push_back( pt2 );
-    zHash[pt2] = z;
+    if ( zHash )
+    {
+      ( *zHash )[pt2] = *srcZData++;
+    }
   }
 }
 
@@ -421,7 +424,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
 {
   const QgsLineString *exterior = qgsgeometry_cast< const QgsLineString * >( polygon.exteriorRing() );
 
-  const QVector3D pNormal = _calculateNormal( exterior, mOriginX, mOriginY, mInvertNormals );
+  const QVector3D pNormal = !mNoZ ? _calculateNormal( exterior, mOriginX, mOriginY, mInvertNormals ) : QVector3D();
   const int pCount = exterior->numPoints();
 
   if ( pCount == 4 && polygon.numInteriorRings() == 0 )
@@ -429,10 +432,10 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     // polygon is a triangle - write vertices to the output data array without triangulation
     const double *xData = exterior->xData();
     const double *yData = exterior->yData();
-    const double *zData = exterior->zData();
+    const double *zData = !mNoZ ? exterior->zData() : nullptr;
     for ( int i = 0; i < 3; i++ )
     {
-      mData << *xData++ - mOriginX << *zData++ << - *yData++ + mOriginY;
+      mData << *xData++ - mOriginX << ( mNoZ ? 0 : *zData++ ) << - *yData++ + mOriginY;
       if ( mAddNormals )
         mData << pNormal.x() << pNormal.z() << - pNormal.y();
     }
@@ -442,7 +445,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
       // the same triangle with reversed order of coordinates and inverted normal
       for ( int i = 2; i >= 0; i-- )
       {
-        mData << exterior->xAt( i ) - mOriginX << exterior->zAt( i ) << - exterior->yAt( i ) + mOriginY;
+        mData << exterior->xAt( i ) - mOriginX << ( mNoZ ? 0 : exterior->zAt( i ) ) << - exterior->yAt( i ) + mOriginY;
         if ( mAddNormals )
           mData << -pNormal.x() << -pNormal.z() << pNormal.y();
       }
@@ -450,11 +453,11 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
   }
   else
   {
-    if ( !qgsDoubleNear( pNormal.length(), 1, 0.001 ) )
+    if ( !mNoZ && !qgsDoubleNear( pNormal.length(), 1, 0.001 ) )
       return;  // this should not happen - pNormal should be normalized to unit length
 
     std::unique_ptr<QMatrix4x4> toNewBase, toOldBase;
-    if ( pNormal != QVector3D( 0, 0, 1 ) )
+    if ( !mNoZ && pNormal != QVector3D( 0, 0, 1 ) )
     {
       // this is not a horizontal plane - need to reproject the polygon to a new base so that
       // we can do the triangulation in a plane
@@ -524,7 +527,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
 
     // polygon exterior
     std::vector<p2t::Point *> polyline;
-    _ringToPoly2tri( qgsgeometry_cast< const QgsLineString * >( polygonNew->exteriorRing() ), polyline, z );
+    _ringToPoly2tri( qgsgeometry_cast< const QgsLineString * >( polygonNew->exteriorRing() ), polyline, mNoZ ? nullptr : &z );
     polylinesToDelete << polyline;
 
     std::unique_ptr<p2t::CDT> cdt( new p2t::CDT( polyline ) );
@@ -535,7 +538,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
       std::vector<p2t::Point *> holePolyline;
       const QgsLineString *hole = qgsgeometry_cast< const QgsLineString *>( polygonNew->interiorRing( i ) );
 
-      _ringToPoly2tri( hole, holePolyline, z );
+      _ringToPoly2tri( hole, holePolyline, mNoZ ? nullptr : &z );
 
       cdt->AddHole( holePolyline );
       polylinesToDelete << holePolyline;
@@ -555,12 +558,12 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
         for ( int j = 0; j < 3; ++j )
         {
           p2t::Point *p = t->GetPoint( j );
-          QVector4D pt( p->x, p->y, z[p], 0 );
+          QVector4D pt( p->x, p->y, mNoZ ? 0 : z[p], 0 );
           if ( toOldBase )
             pt = *toOldBase * pt;
           const double fx = ( pt.x() / scaleX ) - mOriginX + pt0.x();
           const double fy = ( pt.y() / scaleY ) - mOriginY + pt0.y();
-          const double fz = pt.z() + extrusionHeight + pt0.z();
+          const double fz = mNoZ ? 0 : ( pt.z() + extrusionHeight + pt0.z() );
           mData << fx << fz << -fy;
           if ( mAddNormals )
             mData << pNormal.x() << pNormal.z() << - pNormal.y();
@@ -572,12 +575,12 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
           for ( int j = 2; j >= 0; --j )
           {
             p2t::Point *p = t->GetPoint( j );
-            QVector4D pt( p->x, p->y, z[p], 0 );
+            QVector4D pt( p->x, p->y, mNoZ ? 0 : z[p], 0 );
             if ( toOldBase )
               pt = *toOldBase * pt;
             const double fx = ( pt.x() / scaleX ) - mOriginX + pt0.x();
             const double fy = ( pt.y() / scaleY ) - mOriginY + pt0.y();
-            const double fz = pt.z() + extrusionHeight + pt0.z();
+            const double fz = mNoZ ? 0 : ( pt.z() + extrusionHeight + pt0.z() );
             mData << fx << fz << -fy;
             if ( mAddNormals )
               mData << -pNormal.x() << -pNormal.z() << pNormal.y();
