@@ -1084,19 +1084,25 @@ void QgsLineString::transform( const QTransform &t, double zTranslate, double zS
   int nPoints = numPoints();
   bool hasZ = is3D();
   bool hasM = isMeasure();
+  double *x = mX.data();
+  double *y = mY.data();
+  double *z = hasZ ? mZ.data() : nullptr;
+  double *m = hasM ? mM.data() : nullptr;
   for ( int i = 0; i < nPoints; ++i )
   {
-    qreal x, y;
-    t.map( mX.at( i ), mY.at( i ), &x, &y );
-    mX[i] = x;
-    mY[i] = y;
+    double xOut, yOut;
+    t.map( *x, *y, &xOut, &yOut );
+    *x++ = xOut;
+    *y++ = yOut;
     if ( hasZ )
     {
-      mZ[i] = mZ.at( i ) * zScale + zTranslate;
+      *z = *z * zScale + zTranslate;
+      z++;
     }
     if ( hasM )
     {
-      mM[i] = mM.at( i ) * mScale + mTranslate;
+      *m = *m * mScale + mTranslate;
+      m++;
     }
   }
   clearCache();
