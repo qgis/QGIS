@@ -231,7 +231,7 @@ static void _ringToPoly2tri( const QgsLineString *ring, std::vector<p2t::Point *
     const float y = *srcYData++;
     const float z = *srcZData++;
 
-    const bool found = std::find_if( polyline.begin(), polyline.end(), [x, y]( p2t::Point *&p ) { return *p == p2t::Point( x, y ); } ) != polyline.end();
+    const bool found = std::find_if( polyline.begin(), polyline.end(), [x, y]( p2t::Point *&p ) { return p->x == x && p->y == y; } ) != polyline.end();
 
     if ( found )
     {
