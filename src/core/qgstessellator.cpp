@@ -346,7 +346,7 @@ static bool _check_intersecting_rings( const QgsPolygon &polygon )
 
   if ( ringEngines.size() > 1 )
   {
-    for ( auto i = 0; i < ringEngines.size(); ++i )
+    for ( size_t i = 0; i < ringEngines.size(); ++i )
     {
       std::unique_ptr< QgsGeometryEngine > &first = ringEngines.at( i );
       if ( polygon.numInteriorRings() > 1 )
@@ -357,7 +357,7 @@ static bool _check_intersecting_rings( const QgsPolygon &polygon )
       // representations available in ringEngines
       // This needs addressing by extending the QgsGeometryEngine relation tests to allow testing against
       // another QgsGeometryEngine object.
-      for ( int interiorRing = i; interiorRing < polygon.numInteriorRings(); ++interiorRing )
+      for ( int interiorRing = static_cast< int >( i ); interiorRing < polygon.numInteriorRings(); ++interiorRing )
       {
         if ( first->intersects( polygon.interiorRing( interiorRing ) ) )
           return false;
