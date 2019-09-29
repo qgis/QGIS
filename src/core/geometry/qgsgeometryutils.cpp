@@ -1598,6 +1598,11 @@ bool QgsGeometryUtils::linesIntersection3D( const QgsVector3D &La1, const QgsVec
   return true;
 }
 
+double QgsGeometryUtils::triangleArea( double aX, double aY, double bX, double bY, double cX, double cY )
+{
+  return 0.5 * std::abs( ( aX - cX ) * ( bY - aY ) - ( aX - bX ) * ( cY - aY ) );
+}
+
 bool QgsGeometryUtils::setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point )
 {
   bool rc = false;

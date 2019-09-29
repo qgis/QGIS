@@ -76,6 +76,8 @@ class TestQgsGeometryUtils: public QObject
     void testSegmentizeArcHalfCircle();
     void testSegmentizeArcHalfCircleOtherDirection();
     void testSegmentizeArcFullCircle();
+    void testTriangleArea_data();
+    void testTriangleArea();
 };
 
 
@@ -1345,6 +1347,37 @@ void TestQgsGeometryUtils::testSegmentizeArcFullCircle()
   QGSCOMPARENEAR( points[3].y(), yoff + 1.0, 0.00001 );
   QGSCOMPARENEAR( points[4].x(), xoff + 0.0, 0.00001 );
   QGSCOMPARENEAR( points[4].y(), yoff + 0.0, 0.00001 );
+}
+
+void TestQgsGeometryUtils::testTriangleArea_data()
+{
+  QTest::addColumn<double>( "aX" );
+  QTest::addColumn<double>( "aY" );
+  QTest::addColumn<double>( "bX" );
+  QTest::addColumn<double>( "bY" );
+  QTest::addColumn<double>( "cX" );
+  QTest::addColumn<double>( "cY" );
+  QTest::addColumn<double>( "expectedResult" );
+
+  QTest::newRow( "area 1" ) << 15.0 << 15.0 << 23.0 << 30.0 << 50.0 << 25.0 << 222.5;
+  QTest::newRow( "area 2" ) << 23.0 << 30.0 << 15.0 << 15.0 << 50.0 << 25.0 << 222.5;
+  QTest::newRow( "area 3" ) << 15.0 << 15.0 << 50.0 << 25.0 << 23.0 << 30.0 << 222.5;
+  QTest::newRow( "area 4" ) << -15.0 << 15.0 << -50.0 << 25.0 << -23.0 << 30.0 << 222.5;
+  QTest::newRow( "area 5" ) << 15.0 << 15.0 << 15.0 << 15.0 << 15.0 << 15.0 << 0.0;
+  QTest::newRow( "area 6" ) << 29.0 << 23.0 << 35.0 << 18.0 << 29.0 << 10.0 << 39.0;
+}
+
+void TestQgsGeometryUtils::testTriangleArea()
+{
+  QFETCH( double, aX );
+  QFETCH( double, aY );
+  QFETCH( double, bX );
+  QFETCH( double, bY );
+  QFETCH( double, cX );
+  QFETCH( double, cY );
+  QFETCH( double, expectedResult );
+
+  QGSCOMPARENEAR( QgsGeometryUtils::triangleArea( aX, aY, bX, bY, cX, cY ), expectedResult, 0.0000001 );
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtils )

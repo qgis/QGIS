@@ -627,6 +627,14 @@ An algorithm to calculate an (approximate) intersection of two lines in 3D.
        # (True, PyQt5.QtGui.QgsVector3D(0.0, 5.0, 5.0))
 %End
 
+    static double triangleArea( double aX, double aY, double bX, double bY, double cX, double cY );
+%Docstring
+Returns the area of the triangle denoted by the points (``aX``, ``aY``), (``bX``, ``bY``) and
+(``cX``, ``cY``).
+
+.. versionadded:: 3.10
+%End
+
     static bool setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point );
 %Docstring
 A Z dimension is added to ``point`` if one of the point in the list
