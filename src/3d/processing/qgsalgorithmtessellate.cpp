@@ -89,7 +89,7 @@ QgsFeatureList QgsTessellateAlgorithm::processFeature( const QgsFeature &feature
     else
     {
       QgsRectangle bounds = f.geometry().boundingBox();
-      QgsTessellator t( bounds.xMinimum(), bounds.yMinimum(), false );
+      QgsTessellator t( bounds, false );
 
       if ( f.geometry().isMultipart() )
       {
