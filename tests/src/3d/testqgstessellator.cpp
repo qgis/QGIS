@@ -101,6 +101,7 @@ bool checkTriangleOutput( const QVector<float> &data, bool withNormals, const QL
     TriangleCoords out( dataRaw, withNormals );
     if ( exp != out )
     {
+      qDebug() << i;
       qDebug() << "expected:";
       exp.dump();
       qDebug() << "got:";
@@ -136,6 +137,7 @@ class TestQgsTessellator : public QObject
     void testCrashSelfIntersection();
     void testCrashEmptyPolygon();
     void testBoundsScaling();
+    void testNoZ();
 
   private:
 };
@@ -367,6 +369,21 @@ void TestQgsTessellator::testBoundsScaling()
   QgsTessellator t2( polygon.boundingBox(), true );
   t2.addPolygon( polygon, 0 );
   QVERIFY( checkTriangleOutput( t2.data(), true, tc ) );
+}
+
+void TestQgsTessellator::testNoZ()
+{
+  // test tessellation with no z support
+  QgsPolygon polygonZ;
+  polygonZ.fromWkt( "POLYGONZ((1 1 1, 2 1 1, 3 2 1, 1 2 1, 1 1 1))" );
+
+  QList<TriangleCoords> tc;
+  tc << TriangleCoords( QVector3D( 0, 1, 0 ), QVector3D( 1, 0, 0 ), QVector3D( 2, 1, 0 ) );
+  tc << TriangleCoords( QVector3D( 0, 1, 0 ), QVector3D( 0, 0, 0 ), QVector3D( 1, 0, 0 ) );
+
+  QgsTessellator t( polygonZ.boundingBox(), false, false, false, true );
+  t.addPolygon( polygonZ, 0 );
+  QVERIFY( checkTriangleOutput( t.data(), false, tc ) );
 }
 
 
