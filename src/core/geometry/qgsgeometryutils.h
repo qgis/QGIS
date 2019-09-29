@@ -672,6 +672,26 @@ class CORE_EXPORT QgsGeometryUtils
     static double triangleArea( double aX, double aY, double bX, double bY, double cX, double cY );
 
     /**
+     * Returns a weighted point inside the triangle denoted by the points (\a aX, \a aY), (\a bX, \a bY) and
+     * (\a cX, \a cY).
+     *
+     * \param aX x-coordinate of first vertex in triangle
+     * \param aY y-coordinate of first vertex in triangle
+     * \param bX x-coordinate of second vertex in triangle
+     * \param bY y-coordinate of second vertex in triangle
+     * \param cX x-coordinate of third vertex in triangle
+     * \param cY y-coordinate of third vertex in triangle
+     * \param weightB weighting factor along axis A-B (between 0 and 1)
+     * \param weightC weighting factor along axis A-C (between 0 and 1)
+     * \param pointX x-coordinate of generated point
+     * \param pointY y-coordinate of generated point
+     *
+     * \since QGIS 3.10
+     */
+    static void weightedPointInTriangle( double aX, double aY, double bX, double bY, double cX, double cY,
+                                         double weightB, double weightC, double &pointX SIP_OUT, double &pointY SIP_OUT );
+
+    /**
      * A Z dimension is added to \a point if one of the point in the list
      * \a points is in 3D. Moreover, the Z value of \a point is updated with.
      *
