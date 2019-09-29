@@ -110,21 +110,18 @@ static bool _isRingCounterClockWise( const QgsCurve &ring )
   return a > 0; // clockwise if a is negative
 }
 
-static void _makeWalls( const QgsCurve &ring, bool ccw, float extrusionHeight, QVector<float> &data, bool addNormals, double originX, double originY )
+static void _makeWalls( const QgsLineString &ring, bool ccw, float extrusionHeight, QVector<float> &data, bool addNormals, double originX, double originY )
 {
   // we need to find out orientation of the ring so that the triangles we generate
   // face the right direction
   // (for exterior we want clockwise order, for holes we want counter-clockwise order)
   bool is_counter_clockwise = _isRingCounterClockWise( ring );
 
-  QgsVertexId::VertexType vt;
   QgsPoint pt;
-
-  QgsPoint ptPrev;
-  ring.pointAt( is_counter_clockwise == ccw ? 0 : ring.numPoints() - 1, ptPrev, vt );
+  QgsPoint ptPrev = ring.pointN( is_counter_clockwise == ccw ? 0 : ring.numPoints() - 1 );
   for ( int i = 1; i < ring.numPoints(); ++i )
   {
-    ring.pointAt( is_counter_clockwise == ccw ? i : ring.numPoints() - i - 1, pt, vt );
+    pt = ring.pointN( is_counter_clockwise == ccw ? i : ring.numPoints() - i - 1 );
     float x0 = ptPrev.x() - originX, y0 = ptPrev.y() - originY;
     float x1 = pt.x() - originX, y1 = pt.y() - originY;
     float z0 = std::isnan( ptPrev.z() ) ? 0 : ptPrev.z();
@@ -136,24 +133,22 @@ static void _makeWalls( const QgsCurve &ring, bool ccw, float extrusionHeight, Q
   }
 }
 
-static QVector3D _calculateNormal( const QgsCurve *curve, double originX, double originY, bool invertNormal )
+static QVector3D _calculateNormal( const QgsLineString *curve, double originX, double originY, bool invertNormal )
 {
-  QgsVertexId::VertexType vt;
-  QgsPoint pt1, pt2;
-
   // if it is just plain 2D curve there is no need to calculate anything
   // because it will be a flat horizontally oriented patch
-  if ( !QgsWkbTypes::hasZ( curve->wkbType() ) )
+  if ( !QgsWkbTypes::hasZ( curve->wkbType() ) || curve->isEmpty() )
     return QVector3D( 0, 0, 1 );
 
   // often we have 3D coordinates, but Z is the same for all vertices
   // so in order to save calculation and avoid possible issues with order of vertices
   // (the calculation below may decide that a polygon faces downwards)
   bool sameZ = true;
-  curve->pointAt( 0, pt1, vt );
+  QgsPoint pt1 = curve->pointN( 0 );
+  QgsPoint pt2;
   for ( int i = 1; i < curve->numPoints(); i++ )
   {
-    curve->pointAt( i, pt2, vt );
+    pt2 = curve->pointN( i );
     if ( pt1.z() != pt2.z() )
     {
       sameZ = false;
@@ -169,14 +164,14 @@ static QVector3D _calculateNormal( const QgsCurve *curve, double originX, double
   // Order of vertices is important here as it determines the front/back face of the polygon
 
   double nx = 0, ny = 0, nz = 0;
-  for ( int i = 0; i < curve->numPoints() - 1; i++ )
-  {
-    curve->pointAt( i, pt1, vt );
-    curve->pointAt( i + 1, pt2, vt );
+  pt1 = curve->pointN( 0 );
 
-    // shift points by the tessellator's origin - this does not affect normal calculation and it may save us from losing some precision
-    pt1.setX( pt1.x() - originX );
-    pt1.setY( pt1.y() - originY );
+  // shift points by the tessellator's origin - this does not affect normal calculation and it may save us from losing some precision
+  pt1.setX( pt1.x() - originX );
+  pt1.setY( pt1.y() - originY );
+  for ( int i = 1; i < curve->numPoints(); i++ )
+  {
+    pt2 = curve->pointN( i );
     pt2.setX( pt2.x() - originX );
     pt2.setY( pt2.y() - originY );
 
@@ -186,6 +181,8 @@ static QVector3D _calculateNormal( const QgsCurve *curve, double originX, double
     nx += ( pt1.y() - pt2.y() ) * ( pt1.z() + pt2.z() );
     ny += ( pt1.z() - pt2.z() ) * ( pt1.x() + pt2.x() );
     nz += ( pt1.x() - pt2.x() ) * ( pt1.y() + pt2.y() );
+
+    pt1 = pt2;
   }
 
   QVector3D normal( nx, ny, nz );
@@ -218,21 +215,20 @@ static void _normalVectorToXYVectors( const QVector3D &pNormal, QVector3D &pXVec
 }
 
 
-static void _ringToPoly2tri( const QgsCurve *ring, std::vector<p2t::Point *> &polyline, QHash<p2t::Point *, float> &zHash )
+static void _ringToPoly2tri( const QgsLineString *ring, std::vector<p2t::Point *> &polyline, QHash<p2t::Point *, float> &zHash )
 {
-  QgsVertexId::VertexType vt;
-  QgsPoint pt;
-
   const int pCount = ring->numPoints();
 
   polyline.reserve( pCount );
 
+  const double *srcXData = ring->xData();
+  const double *srcYData = ring->yData();
+  const double *srcZData = ring->zData();
   for ( int i = 0; i < pCount - 1; ++i )
   {
-    ring->pointAt( i, pt, vt );
-    const float x = pt.x();
-    const float y = pt.y();
-    const float z = pt.z();
+    const float x = *srcXData++;
+    const float y = *srcYData++;
+    const float z = *srcZData++;
 
     const bool found = std::find_if( polyline.begin(), polyline.end(), [x, y]( p2t::Point *&p ) { return *p == p2t::Point( x, y ); } ) != polyline.end();
 
@@ -255,18 +251,29 @@ inline double _round_coord( double x )
 }
 
 
-static QgsCurve *_transform_ring_to_new_base( const QgsCurve &curve, const QgsPoint &pt0, const QMatrix4x4 *toNewBase, float scaleX, float scaleY )
+static QgsCurve *_transform_ring_to_new_base( const QgsLineString &curve, const QgsPoint &pt0, const QMatrix4x4 *toNewBase, float scaleX, float scaleY )
 {
   int count = curve.numPoints();
-  QVector<QgsPoint> pts;
-  pts.reserve( count );
-  QgsVertexId::VertexType vt;
+  QVector<double> x;
+  QVector<double> y;
+  QVector<double> z;
+  x.resize( count );
+  y.resize( count );
+  z.resize( count );
+  double *xData = x.data();
+  double *yData = y.data();
+  double *zData = z.data();
+
+  const double *srcXData = curve.xData();
+  const double *srcYData = curve.yData();
+  const double *srcZData = curve.is3D() ? curve.zData() : nullptr;
+
   for ( int i = 0; i < count; ++i )
   {
-    QgsPoint pt;
-    curve.pointAt( i, pt, vt );
-    QgsPoint pt2( QgsWkbTypes::PointZ, pt.x() - pt0.x(), pt.y() - pt0.y(), std::isnan( pt.z() ) ? 0 : pt.z() - pt0.z() );
-    QVector4D v( pt2.x(), pt2.y(), pt2.z(), 0 );
+    QVector4D v( *srcXData++ - pt0.x(),
+                 *srcYData++ - pt0.y(),
+                 srcZData ? *srcZData++ - pt0.z() : 0,
+                 0 );
     if ( toNewBase )
       v = toNewBase->map( v );
 
@@ -284,19 +291,20 @@ static QgsCurve *_transform_ring_to_new_base( const QgsCurve &curve, const QgsPo
     //    can get problems with this test when points are pretty much on a straight line.
     //    I suggest you round to 10 decimals for stability and you can live with that
     //    precision.
-
-    pts << QgsPoint( QgsWkbTypes::PointZ, _round_coord( v.x() ), _round_coord( v.y() ), _round_coord( v.z() ) );
+    *xData++ = _round_coord( v.x() );
+    *yData++ = _round_coord( v.y() );
+    *zData++ = _round_coord( v.z() );
   }
-  return new QgsLineString( pts );
+  return new QgsLineString( x, y, z );
 }
 
 
 static QgsPolygon *_transform_polygon_to_new_base( const QgsPolygon &polygon, const QgsPoint &pt0, const QMatrix4x4 *toNewBase, float scaleX, float scaleY )
 {
   QgsPolygon *p = new QgsPolygon;
-  p->setExteriorRing( _transform_ring_to_new_base( *polygon.exteriorRing(), pt0, toNewBase, scaleX, scaleY ) );
+  p->setExteriorRing( _transform_ring_to_new_base( *qgsgeometry_cast< const QgsLineString * >( polygon.exteriorRing() ), pt0, toNewBase, scaleX, scaleY ) );
   for ( int i = 0; i < polygon.numInteriorRings(); ++i )
-    p->addInteriorRing( _transform_ring_to_new_base( *polygon.interiorRing( i ), pt0, toNewBase, scaleX, scaleY ) );
+    p->addInteriorRing( _transform_ring_to_new_base( *qgsgeometry_cast< const QgsLineString * >( polygon.interiorRing( i ) ), pt0, toNewBase, scaleX, scaleY ) );
   return p;
 }
 
@@ -371,7 +379,7 @@ double _minimum_distance_between_coordinates( const QgsPolygon &polygon )
 
 void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeight )
 {
-  const QgsCurve *exterior = polygon.exteriorRing();
+  const QgsLineString *exterior = qgsgeometry_cast< const QgsLineString * >( polygon.exteriorRing() );
 
   const QVector3D pNormal = _calculateNormal( exterior, mOriginX, mOriginY, mInvertNormals );
   const int pCount = exterior->numPoints();
@@ -379,12 +387,12 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
   if ( pCount == 4 && polygon.numInteriorRings() == 0 )
   {
     // polygon is a triangle - write vertices to the output data array without triangulation
-    QgsPoint pt;
-    QgsVertexId::VertexType vt;
+    const double *xData = exterior->xData();
+    const double *yData = exterior->yData();
+    const double *zData = exterior->zData();
     for ( int i = 0; i < 3; i++ )
     {
-      exterior->pointAt( i, pt, vt );
-      mData << pt.x() - mOriginX << pt.z() << - pt.y() + mOriginY;
+      mData << *xData++ - mOriginX << *zData++ << - *yData++ + mOriginY;
       if ( mAddNormals )
         mData << pNormal.x() << pNormal.z() << - pNormal.y();
     }
@@ -394,8 +402,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
       // the same triangle with reversed order of coordinates and inverted normal
       for ( int i = 2; i >= 0; i-- )
       {
-        exterior->pointAt( i, pt, vt );
-        mData << pt.x() - mOriginX << pt.z() << - pt.y() + mOriginY;
+        mData << exterior->xAt( i ) - mOriginX << exterior->zAt( i ) << - exterior->yAt( i ) + mOriginY;
         if ( mAddNormals )
           mData << -pNormal.x() << -pNormal.z() << pNormal.y();
       }
@@ -477,7 +484,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
 
     // polygon exterior
     std::vector<p2t::Point *> polyline;
-    _ringToPoly2tri( polygonNew->exteriorRing(), polyline, z );
+    _ringToPoly2tri( qgsgeometry_cast< const QgsLineString * >( polygonNew->exteriorRing() ), polyline, z );
     polylinesToDelete << polyline;
 
     std::unique_ptr<p2t::CDT> cdt( new p2t::CDT( polyline ) );
@@ -486,7 +493,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     for ( int i = 0; i < polygonNew->numInteriorRings(); ++i )
     {
       std::vector<p2t::Point *> holePolyline;
-      const QgsCurve *hole = polygonNew->interiorRing( i );
+      const QgsLineString *hole = qgsgeometry_cast< const QgsLineString *>( polygonNew->interiorRing( i ) );
 
       _ringToPoly2tri( hole, holePolyline, z );
 
@@ -552,7 +559,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     _makeWalls( *exterior, false, extrusionHeight, mData, mAddNormals, mOriginX, mOriginY );
 
     for ( int i = 0; i < polygon.numInteriorRings(); ++i )
-      _makeWalls( *polygon.interiorRing( i ), true, extrusionHeight, mData, mAddNormals, mOriginX, mOriginY );
+      _makeWalls( *qgsgeometry_cast< const QgsLineString * >( polygon.interiorRing( i ) ), true, extrusionHeight, mData, mAddNormals, mOriginX, mOriginY );
   }
 }
 
