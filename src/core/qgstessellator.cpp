@@ -31,6 +31,7 @@
 #include <QMatrix4x4>
 #include <QVector3D>
 #include <algorithm>
+#include <unordered_set>
 
 
 static void make_quad( float x0, float y0, float z0, float x1, float y1, float z1, float height, QVector<float> &data, bool addNormals )
@@ -215,6 +216,16 @@ static void _normalVectorToXYVectors( const QVector3D &pNormal, QVector3D &pXVec
   pYVector = QVector3D::normal( pNormal, pXVector );
 }
 
+struct float_pair_hash
+{
+  std::size_t operator()( const std::pair<float, float> pair ) const
+  {
+    std::size_t h1 = std::hash<float>()( pair.first );
+    std::size_t h2 = std::hash<float>()( pair.second );
+
+    return h1 ^ h2;
+  }
+};
 
 static void _ringToPoly2tri( const QgsLineString *ring, std::vector<p2t::Point *> &polyline, QHash<p2t::Point *, float> &zHash )
 {
@@ -225,16 +236,18 @@ static void _ringToPoly2tri( const QgsLineString *ring, std::vector<p2t::Point *
   const double *srcXData = ring->xData();
   const double *srcYData = ring->yData();
   const double *srcZData = ring->zData();
+  std::unordered_set<std::pair<float, float>, float_pair_hash> foundPoints;
+
   for ( int i = 0; i < pCount - 1; ++i )
   {
     const float x = *srcXData++;
     const float y = *srcYData++;
     const float z = *srcZData++;
 
-    const bool found = std::find_if( polyline.begin(), polyline.end(), [x, y]( p2t::Point *&p ) { return p->x == x && p->y == y; } ) != polyline.end();
-
-    if ( found )
+    auto res = foundPoints.insert( std::make_pair( x, y ) );
+    if ( !res.second )
     {
+      // already used this point, don't add a second time
       continue;
     }
 
