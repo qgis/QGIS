@@ -384,22 +384,36 @@ static bool _check_intersecting_rings( const QgsPolygon &polygon )
 double _minimum_distance_between_coordinates( const QgsPolygon &polygon )
 {
   double min_d = 1e20;
-  auto it = polygon.vertices_begin();
 
-  if ( it == polygon.vertices_end() )
-    return min_d;
+  std::vector< const QgsLineString * > rings;
+  rings.reserve( 1 + polygon.numInteriorRings() );
+  rings.emplace_back( qgsgeometry_cast< const QgsLineString * >( polygon.exteriorRing() ) );
+  for ( int i = 0; i < polygon.numInteriorRings(); ++i )
+    rings.emplace_back( qgsgeometry_cast< const QgsLineString * >( polygon.interiorRing( i ) ) );
 
-  QgsPoint p0 = *it;
-  ++it;
-  for ( ; it != polygon.vertices_end(); ++it )
+  for ( const QgsLineString *ring : rings )
   {
-    QgsPoint p1 = *it;
-    double d = p0.distance( p1 );
-    if ( d < min_d )
-      min_d = d;
-    p0 = p1;
+    const int numPoints = ring->numPoints();
+    if ( numPoints <= 1 )
+      continue;
+
+    const double *srcXData = ring->xData();
+    const double *srcYData = ring->yData();
+    double x0 = *srcXData++;
+    double y0 = *srcYData++;
+    for ( int i = 1; i < numPoints; ++i )
+    {
+      double x1 = *srcXData++;
+      double y1 = *srcYData++;
+      double d = ( x0 - x1 ) * ( x0 - x1 ) + ( y0 - y1 ) * ( y0 - y1 );
+      if ( d < min_d )
+        min_d = d;
+      x0 = x1;
+      y0 = y1;
+    }
   }
-  return min_d;
+
+  return min_d != 1e20 ? std::sqrt( min_d ) : 1e20;
 }
 
 
