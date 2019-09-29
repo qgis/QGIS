@@ -534,6 +534,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
 
       std::vector<p2t::Triangle *> triangles = cdt->GetTriangles();
 
+      mData.reserve( mData.size() + triangles.size() * ( ( mAddNormals ? 6 : 3 ) * ( mAddBackFaces ? 2 : 1 ) ) );
       for ( size_t i = 0; i < triangles.size(); ++i )
       {
         p2t::Triangle *t = triangles[i];
