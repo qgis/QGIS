@@ -47,6 +47,7 @@ class QgsMapToPixel;
 class QPainter;
 class QgsPolygon;
 class QgsLineString;
+class QgsFeedback;
 
 /**
  * Polyline as represented as a vector of two-dimensional points.
@@ -1446,6 +1447,79 @@ class CORE_EXPORT QgsGeometry
 
     //! Returns an extruded version of this geometry.
     QgsGeometry extrude( double x, double y );
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns a list of \a count random points generated inside a (multi)polygon geometry.
+     *
+     * Optionally, a specific random \a seed can be used when generating points. If \a seed
+     * is 0, then a completely random sequence of points will be generated.
+     *
+     * If the source geometry is not a (multi)polygon, an empty list will be returned.
+     *
+     * The \a acceptPoint function is used to filter result candidates. If the function returns
+     * FALSE, then the point will not be accepted and another candidate generated.
+     *
+     * The optional \a feedback argument can be used to provide cancellation support during
+     * the point generation.
+     *
+     * \since QGIS 3.10
+     */
+    QVector< QgsPointXY > randomPointsInPolygon( int count, const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed = 0, QgsFeedback *feedback = nullptr );
+
+    /**
+     * Returns a list of \a count random points generated inside a (multi)polygon geometry.
+     *
+     * Optionally, a specific random \a seed can be used when generating points. If \a seed
+     * is 0, then a completely random sequence of points will be generated.
+     *
+     * If the source geometry is not a (multi)polygon, an empty list will be returned.
+     *
+     * The optional \a feedback argument can be used to provide cancellation support during
+     * the point generation.
+     *
+     * \since QGIS 3.10
+     */
+    QVector< QgsPointXY > randomPointsInPolygon( int count, unsigned long seed = 0, QgsFeedback *feedback = nullptr );
+    ///@cond PRIVATE
+#else
+
+    /**
+     * Returns a list of \a count random points generated inside a (multi)polygon geometry.
+     *
+     * Optionally, a specific random \a seed can be used when generating points. If \a seed
+     * is 0, then a completely random sequence of points will be generated.
+     *
+     * This method works only with (multi)polygon geometry types. If the geometry
+     * is not a polygon type, a TypeError will be raised. If the geometry
+     * is null, a ValueError will be raised.
+     *
+     * \since QGIS 3.10
+     */
+    SIP_PYOBJECT randomPointsInPolygon( int count, unsigned long seed = 0 ) SIP_TYPEHINT( QgsPolylineXY );
+    % MethodCode
+    const QgsWkbTypes::GeometryType type = sipCpp->type();
+    if ( sipCpp->isNull() )
+    {
+      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Cannot generate points inside a null geometry." ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else if ( type != QgsWkbTypes::PolygonGeometry )
+    {
+      PyErr_SetString( PyExc_TypeError, QStringLiteral( "Cannot generate points inside a %1 geometry. Only Polygon types are permitted." ).arg( QgsWkbTypes::displayString( sipCpp->wkbType() ) ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      const sipMappedType *qvector_type = sipFindMappedType( "QVector<QgsPointXY>" );
+      sipRes = sipConvertFromNewType( new QVector< QgsPointXY >( sipCpp->randomPointsInPolygon( a0, a1 ) ), qvector_type, Py_None );
+    }
+    % End
+
+
+#endif
+///@endcond
 
     /**
      * Export the geometry to WKB

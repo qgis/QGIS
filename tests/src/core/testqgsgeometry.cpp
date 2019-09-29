@@ -160,6 +160,8 @@ class TestQgsGeometry : public QObject
 
     void emptyJson();
 
+    void testRandomPointsInPolygon();
+
   private:
     //! A helper method to do a render check to see if the geometry op is as expected
     bool renderCheck( const QString &testName, const QString &comment = QString(), int mismatchCount = 0 );
@@ -17618,6 +17620,77 @@ void TestQgsGeometry::emptyJson()
   QCOMPARE( QgsCurvePolygon().asJson(), expected );
   QCOMPARE( QgsPolygon().asJson(), expected );
   QCOMPARE( QgsTriangle().asJson(), expected );
+}
+
+void TestQgsGeometry::testRandomPointsInPolygon()
+{
+  // null geometry
+  QVector< QgsPointXY > points = QgsGeometry().randomPointsInPolygon( 100 );
+  QVERIFY( points.empty() );
+
+  // not polygon geometry
+  points = QgsGeometry::fromWkt( QStringLiteral( "Point( 4 5 )" ) ).randomPointsInPolygon( 100 );
+  QVERIFY( points.empty() );
+  points = QgsGeometry::fromWkt( QStringLiteral( "LineString( 4 5, 6 7 )" ) ).randomPointsInPolygon( 100 );
+  QVERIFY( points.empty() );
+
+  // zero point count
+  points = QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 5 15, 10 15, 10 20, 5 20, 5 15 ))" ) ).randomPointsInPolygon( 0 );
+  QVERIFY( points.empty() );
+
+  // valid polygon
+  QgsGeometry g = QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 5 15, 10 15, 10 20, 5 20, 5 15 ), (6 16, 8 16, 8 18, 6 16 ))" ) );
+  points = g.randomPointsInPolygon( 10000 );
+  QCOMPARE( points.count(), 10000 );
+  for ( const QgsPointXY &p : qgis::as_const( points ) )
+    QVERIFY( g.intersects( QgsGeometry::fromPointXY( p ) ) );
+
+  // valid multipolygon
+  g = QgsGeometry::fromWkt( QStringLiteral( "MultiPolygon((( 5 15, 10 15, 10 20, 5 20, 5 15 ), (6 16, 8 16, 8 18, 6 16 )), (( 105 115, 110 115, 110 120, 105 120, 105 115 ), (106 116, 108 116, 108 118, 106 116 )))" ) );
+  points = g.randomPointsInPolygon( 10000 );
+  QCOMPARE( points.count(), 10000 );
+  bool foundp1Point = false;
+  bool foundp2Point = false;
+  for ( const QgsPointXY &p : qgis::as_const( points ) )
+  {
+    QVERIFY( g.intersects( QgsGeometry::fromPointXY( p ) ) );
+    foundp1Point |= p.x() < 100;
+    foundp2Point |= p.x() > 100;
+  }
+  QVERIFY( foundp1Point );
+  QVERIFY( foundp2Point );
+
+  // with seed
+  g = QgsGeometry::fromWkt( QStringLiteral( "MultiPolygon((( 5 15, 10 15, 10 20, 5 20, 5 15 ), (6 16, 8 16, 8 18, 6 16 )), (( 105 115, 110 115, 110 120, 105 120, 105 115 ), (106 116, 108 116, 108 118, 106 116 )))" ) );
+  QVector< QgsPointXY > points1 = g.randomPointsInPolygon( 100, 200 );
+  QCOMPARE( points1.count(), 100 );
+  QVector< QgsPointXY > points2 = g.randomPointsInPolygon( 100, 200 );
+  QCOMPARE( points2.count(), 100 );
+  QCOMPARE( points1, points2 );
+
+  // no seed
+  points1 = g.randomPointsInPolygon( 100 );
+  QCOMPARE( points1.count(), 100 );
+  points2 = g.randomPointsInPolygon( 100 );
+  QCOMPARE( points2.count(), 100 );
+  QVERIFY( points1 != points2 );
+
+  // with filter
+  points = g.randomPointsInPolygon( 10000, []( const QgsPointXY & p )->bool
+  {
+    return p.x() > 100;
+  } );
+  QCOMPARE( points.count(), 10000 );
+  foundp1Point = false;
+  foundp2Point = false;
+  for ( const QgsPointXY &p : qgis::as_const( points ) )
+  {
+    QVERIFY( g.intersects( QgsGeometry::fromPointXY( p ) ) );
+    foundp1Point |= p.x() < 100;
+    foundp2Point |= p.x() > 100;
+  }
+  QVERIFY( !foundp1Point );
+  QVERIFY( foundp2Point );
 }
 
 QGSTEST_MAIN( TestQgsGeometry )

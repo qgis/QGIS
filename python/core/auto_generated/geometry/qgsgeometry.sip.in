@@ -1464,6 +1464,41 @@ by calling `error()` on the returned geometry.
 Returns an extruded version of this geometry.
 %End
 
+
+    SIP_PYOBJECT randomPointsInPolygon( int count, unsigned long seed = 0 ) /TypeHint="QgsPolylineXY"/;
+%Docstring
+Returns a list of ``count`` random points generated inside a (multi)polygon geometry.
+
+Optionally, a specific random ``seed`` can be used when generating points. If ``seed``
+is 0, then a completely random sequence of points will be generated.
+
+This method works only with (multi)polygon geometry types. If the geometry
+is not a polygon type, a TypeError will be raised. If the geometry
+is null, a ValueError will be raised.
+
+.. versionadded:: 3.10
+%End
+%MethodCode
+    const QgsWkbTypes::GeometryType type = sipCpp->type();
+    if ( sipCpp->isNull() )
+    {
+      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Cannot generate points inside a null geometry." ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else if ( type != QgsWkbTypes::PolygonGeometry )
+    {
+      PyErr_SetString( PyExc_TypeError, QStringLiteral( "Cannot generate points inside a %1 geometry. Only Polygon types are permitted." ).arg( QgsWkbTypes::displayString( sipCpp->wkbType() ) ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      const sipMappedType *qvector_type = sipFindMappedType( "QVector<QgsPointXY>" );
+      sipRes = sipConvertFromNewType( new QVector< QgsPointXY >( sipCpp->randomPointsInPolygon( a0, a1 ) ), qvector_type, Py_None );
+    }
+%End
+
+
+
     QByteArray asWkb() const;
 %Docstring
 Export the geometry to WKB
