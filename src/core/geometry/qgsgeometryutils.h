@@ -664,6 +664,14 @@ class CORE_EXPORT QgsGeometryUtils
                                      QgsVector3D &intersection  SIP_OUT );
 
     /**
+     * Returns the area of the triangle denoted by the points (\a aX, \a aY), (\a bX, \a bY) and
+     * (\a cX, \a cY).
+     *
+     * \since QGIS 3.10
+     */
+    static double triangleArea( double aX, double aY, double bX, double bY, double cX, double cY );
+
+    /**
      * A Z dimension is added to \a point if one of the point in the list
      * \a points is in 3D. Moreover, the Z value of \a point is updated with.
      *
