@@ -346,7 +346,7 @@ static bool _check_intersecting_rings( const QgsPolygon &polygon )
 
   if ( ringEngines.size() > 1 )
   {
-    for ( int i = 0; i < ringEngines.size(); ++i )
+    for ( auto i = 0; i < ringEngines.size(); ++i )
     {
       std::unique_ptr< QgsGeometryEngine > &first = ringEngines.at( i );
       if ( polygon.numInteriorRings() > 1 )
