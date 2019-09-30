@@ -48,7 +48,7 @@ class CORE_EXPORT QgsTessellator
      * This constructor allows the tessellator to map input coordinates to a desirable range for numerically
      * stability during calculations.
      *
-     * If \a noZ is TRUE, then a 2-dimensional tesselation only will be performed and all z coordinates will be ignored.
+     * If \a noZ is TRUE, then a 2-dimensional tessellation only will be performed and all z coordinates will be ignored.
      *
      * \since QGIS 3.10
      */
