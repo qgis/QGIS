@@ -197,7 +197,9 @@ class GUI_EXPORT QgsGui : public QObject
      * Returns true if python macros are currently allowed to be run
      * If the global option is to ask user, a modal dialog will be shown
      * \param lambda a pointer to a lambda method. If specified, the dialog is not modal,
-     * a message bar is shown with a button to enable macro and run the lambda
+     * a message bar is shown with a button to enable macro and run the lambda.
+     * In such case messageBar should be provided too.
+     * \param messageBar the message bar from the application to display non modal message
      */
     static bool pythonMacroAllowed( void ( *lambda )() = nullptr, QgsMessageBar *messageBar = nullptr ) SIP_SKIP;
 

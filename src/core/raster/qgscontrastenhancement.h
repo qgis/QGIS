@@ -54,6 +54,7 @@ class CORE_EXPORT QgsContrastEnhancement
       UserDefinedEnhancement
     };
 
+    //! Constructor
     QgsContrastEnhancement( Qgis::DataType datatype = Qgis::DataType::Byte );
     QgsContrastEnhancement( const QgsContrastEnhancement &ce );
     ~QgsContrastEnhancement();

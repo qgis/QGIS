@@ -533,7 +533,7 @@ void QgsWcsProvider::setQueryItem( QUrl &url, const QString &item, const QString
 bool QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int pixelWidth, int pixelHeight, void *block, QgsRasterBlockFeedback *feedback )
 {
   // TODO: set block to null values, move that to function and call only if fails
-  memset( block, 0, pixelWidth * pixelHeight * QgsRasterBlock::typeSize( dataType( bandNo ) ) );
+  memset( block, 0, pixelWidth * pixelHeight * QgsRasterBlock::typeSize( static_cast<int>( dataType( bandNo ) ) ) );
 
   // Requested extent must at least partially overlap coverage extent, otherwise
   // server gives error. QGIS usually does not request blocks outside raster extent
@@ -601,7 +601,7 @@ bool QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int
       // Rotate counter clockwise
       // If GridOffsets With GeoServer,
       QgsDebugMsg( QStringLiteral( "Rotating raster" ) );
-      int pixelSize = QgsRasterBlock::typeSize( dataType( bandNo ) );
+      int pixelSize = QgsRasterBlock::typeSize( static_cast<int>( dataType( bandNo ) ) );
       QgsDebugMsg( QStringLiteral( "pixelSize = %1" ).arg( pixelSize ) );
       int size = width * height * pixelSize;
       void *tmpData = malloc( size );

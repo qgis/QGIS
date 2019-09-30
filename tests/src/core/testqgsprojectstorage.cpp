@@ -91,7 +91,7 @@ class MemoryStorage : public QgsProjectStorage
 
       if ( !mProjects.contains( projectName ) )
       {
-        context.pushMessage( "project not found", Qgis::Critical );
+        context.pushMessage( "project not found", Qgis::MessageLevel::Critical );
         return false;
       }
 
