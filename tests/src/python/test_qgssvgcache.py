@@ -112,6 +112,14 @@ class TestQgsSvgCache(unittest.TestCase):
 
         self.assertTrue(self.imageCheck('Remote SVG missing', 'waiting_svg', image))
 
+    def testRemoteSVGSync(self):
+        """Test fetching remote svg."""
+        url = 'http://localhost:{}/qgis_local_server/QGIS_logo_2017.svg'.format(str(TestQgsSvgCache.port))
+        image, in_cache = QgsApplication.svgCache().svgAsImage(url, 100, fill=QColor(0, 0, 0), stroke=QColor(0, 0, 0),
+                                                               strokeWidth=0.1, widthScaleFactor=1, synchrone=1)
+        # first should be correct image
+        self.assertTrue(self.imageCheck('Remote SVG sync', 'remote_svg_sync', image))
+
     def imageCheck(self, name, reference_image, image):
         self.report += "<h2>Render {}</h2>\n".format(name)
         temp_dir = QDir.tempPath() + '/'
