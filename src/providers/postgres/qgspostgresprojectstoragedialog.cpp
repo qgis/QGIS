@@ -51,7 +51,7 @@ QgsPostgresProjectStorageDialog::QgsPostgresProjectStorageDialog( bool saving, Q
     setWindowTitle( tr( "Load project from PostgreSQL" ) );
   }
 
-  connect( mCboConnection, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPostgresProjectStorageDialog::populateSchemas );
+  connect( mCboConnection, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), this, &QgsPostgresProjectStorageDialog::populateSchemas );
 
   mLblProjectsNotAllowed->setVisible( false );
 
@@ -61,9 +61,10 @@ QgsPostgresProjectStorageDialog::QgsPostgresProjectStorageDialog( bool saving, Q
   // If possible, set the item currently displayed database
   QString toSelect = QgsPostgresConn::selectedConnection();
   mCboConnection->setCurrentIndex( mCboConnection->findText( toSelect ) );
+  populateProjects();
 
-  connect( mCboSchema, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPostgresProjectStorageDialog::populateProjects );
-  connect( mCboProject, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPostgresProjectStorageDialog::projectChanged );
+  connect( mCboSchema, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), this, &QgsPostgresProjectStorageDialog::populateProjects );
+  connect( mCboProject, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), this, &QgsPostgresProjectStorageDialog::projectChanged );
 
   projectChanged();
 }
