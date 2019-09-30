@@ -196,7 +196,7 @@ void QgsDecorationTitle::render( const QgsMapSettings &mapSettings, QgsRenderCon
                     << QPointF( deviceWidth, yOffset * 2 + textHeight )
                     << QPointF( 0, yOffset * 2 + textHeight );
       yOffset = yOffset + textHeight - textDescent;
-      xOffset = deviceWidth / 2;
+      xOffset = deviceWidth / 2 + xOffset;
       horizontalAlignment = QgsTextRenderer::AlignCenter;
       break;
     case BottomCenter: // Bottom Center
@@ -205,7 +205,7 @@ void QgsDecorationTitle::render( const QgsMapSettings &mapSettings, QgsRenderCon
                     << QPointF( deviceWidth, deviceHeight - ( yOffset * 2 + textHeight ) )
                     << QPointF( 0, deviceHeight - ( yOffset * 2 + textHeight ) );
       yOffset = deviceHeight - yOffset - textDescent;
-      xOffset = deviceWidth / 2;
+      xOffset = deviceWidth / 2 + xOffset;
       horizontalAlignment = QgsTextRenderer::AlignCenter;
       break;
     default:
