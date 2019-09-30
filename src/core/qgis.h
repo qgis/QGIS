@@ -102,7 +102,7 @@ class CORE_EXPORT Qgis
     enum class PythonMacroMode
     {
       Never = 0, //!< Macros are never run
-      Ask = 1, //!< User is prompt before runnning
+      Ask = 1, //!< User is prompt before running
       SessionOnly = 2, //!< Only during this session
       Always = 3 //!< Macros are always run
     };
