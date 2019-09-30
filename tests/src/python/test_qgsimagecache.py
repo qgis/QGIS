@@ -84,6 +84,13 @@ class TestQgsImageCache(unittest.TestCase):
 
         self.assertTrue(self.imageCheck('Remote image missing', 'waiting_image', image))
 
+    def testRemoteImageSync(self):
+        """Test fetching remote image."""
+        url = 'http://localhost:{}/qgis_local_server/logo_2017.png'.format(str(TestQgsImageCache.port))
+        image, in_cache = QgsApplication.imageCache().pathAsImage(url, QSize(100, 100), 1.0, True, synchrone=1)
+        # first should be correct image
+        self.assertTrue(self.imageCheck('Remote image sync', 'remote_image_sync', image))
+
     def imageCheck(self, name, reference_image, image):
         self.report += "<h2>Render {}</h2>\n".format(name)
         temp_dir = QDir.tempPath() + '/'
