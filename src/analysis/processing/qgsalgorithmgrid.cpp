@@ -1,0 +1,527 @@
+/***************************************************************************
+                         qgsalgorithmgrid.cpp
+                         ---------------------
+    begin                : August 2019
+    copyright            : (C) 2019 by Clemens Raffler
+    email                : clemens dot raffler at gmail dot com
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+//Disclaimer:This feature was developed by: Michael Minn, 2010
+
+#include "qgsalgorithmgrid.h"
+#include "qgswkbtypes.h"
+#include "qgsvectorlayer.h"
+
+///@cond PRIVATE
+
+QString QgsGridAlgorithm::name() const
+{
+  return QStringLiteral( "creategrid" );
+}
+
+QString QgsGridAlgorithm::displayName() const
+{
+  return QObject::tr( "Create Grid" );
+}
+
+QStringList QgsGridAlgorithm::tags() const
+{
+  return QObject::tr( "grid,lines,polygons,vector,create,fishnet,diamond,hexagon" ).split( ',' );
+}
+
+QString QgsGridAlgorithm::group() const
+{
+  return QObject::tr( "Vector creation" );
+}
+
+QString QgsGridAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorcreation" );
+}
+
+void QgsGridAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  //add selection parameter for grid type
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "TYPE" ), QObject::tr( "Grid type" ), QStringList() << QObject::tr( "Point" ) << QObject::tr( "Line" ) << QObject::tr( "Rectangle (Polygon)" ) << QObject::tr( "Diamond (Polygon)" ) << QObject::tr( "Hexagon (Polygon)" ), false, 0 ) );
+
+  //add extent parameter for grid
+  addParameter( new QgsProcessingParameterExtent(QStringLiteral("EXTENT"), QObject::tr( "Grid extent" )));
+
+  //add Distance Parameter for horizontal and vertical spacing
+  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "HSPACING"), QObject::tr( "Horizontal Spacing" ), 1, QString( "CRS" ), false, 0, 1000000000.0));
+  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "VSPACING"), QObject::tr( "Vertical Spacing" ), 1, QString( "CRS" ), false, 0, 1000000000.0));
+
+  //add Distance Parameter for horizontal and vertical overlay
+  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "HOVERLAY"), QObject::tr( "Horizontal Overlay" ), 0, QString( "CRS" ), false, 0, 1000000000.0));
+  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "VOVERLAY"), QObject::tr( "Vertical Overlay" ), 0, QString( "CRS" ), false, 0, 1000000000.0));
+
+  //add Coordinate Reference System parameter
+  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Grid CRS" ), QStringLiteral( "ProjectCrs" )));
+
+  //add FeatureSink as output parameter
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr("Grid"), QgsProcessing::TypeVectorPolygon ) );
+}
+
+QString QgsGridAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm creates a grid layer of different shapes (rectangle, diamond, hexagon).\n\n"
+                      "The parameters Horizontal and Vertical Spacing define the horizontal and vertical resolution of the grid.\n\n"
+                      "Help for horizontal overlay.\n\n"
+                      "The grid creation will be performed with regards to the specified coordinate reference system." );
+}
+
+QgsGridAlgorithm *QgsGridAlgorithm::createInstance() const
+{
+  return new QgsGridAlgorithm();
+}
+
+bool QgsGridAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  //retrieve grid type
+  mIdx = parameterAsEnum( parameters, QStringLiteral( "TYPE" ), context);
+
+  //retrieve spacing and overlay parameter values
+  mHSpacing = parameterAsDouble( parameters, QStringLiteral( "HSPACING" ), context );
+  mVSpacing = parameterAsDouble( parameters, QStringLiteral( "VSPACING" ), context );
+  mHOverlay = parameterAsDouble( parameters, QStringLiteral( "HOVERLAY" ), context );
+  mVOverlay = parameterAsDouble( parameters, QStringLiteral( "VOVERLAY" ), context );
+
+  //retrieve geom parameters
+  mCrs = parameterAsCrs( parameters, QStringLiteral("CRS"), context);
+  mGridExtent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, mCrs);
+
+  return true;
+}
+
+QVariantMap QgsGridAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  //check if parameter values are valid
+  if( mHSpacing <= 0 or mVSpacing <= 0)
+    throw QgsProcessingException( QObject::tr( "Invalid grid spacing. horizontal: '%1', vertical: '%2'" ).arg( mHSpacing ).arg( mVSpacing ));
+
+  if( mGridExtent.width() < mHSpacing ) //check if grid extent is smaller than horizontal spacing
+    throw QgsProcessingException( QObject::tr( "Horizontal spacing is too large for the covered area."));
+
+  if( mGridExtent.height() < mVSpacing) //check if grid extent is smaller than vertical spacing
+    throw QgsProcessingException( QObject::tr( "Vertical spacing is too large for the covered area."));
+
+  if( mHSpacing <= mHOverlay or mVSpacing <= mVOverlay)
+    throw QgsProcessingException( QObject::tr( "Invalid overlay: horizontal: '%1', vertical: '%2'").arg( mHOverlay ).arg( mVOverlay ));
+
+  //add grid fields
+  QgsFields fields = QgsFields();
+  fields.append(QgsField(QStringLiteral( "id "), QVariant::Int));
+  fields.append(QgsField(QStringLiteral( "left" ), QVariant::Double));
+  fields.append(QgsField(QStringLiteral( "top" ), QVariant::Double));
+  fields.append(QgsField(QStringLiteral( "right" ), QVariant::Double));
+  fields.append(QgsField(QStringLiteral( "bottom" ), QVariant::Double));
+
+  //define output WKB-type
+  QgsWkbTypes::Type outputWkb;
+  if( mIdx == 0 )
+  {
+    outputWkb = QgsWkbTypes::Point;
+  }
+  else if ( mIdx == 1 )
+  {
+    outputWkb = QgsWkbTypes::LineString;
+  }
+  else
+  {
+    outputWkb = QgsWkbTypes::Polygon;
+  }
+
+  //output sink
+  QString dest;
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, outputWkb, mCrs ) );
+  if ( !sink )
+    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+
+  feedback->setProgress(0);
+  //select calculation method based on grid type selection
+  switch ( mIdx )
+  {
+    case 0: //point
+      createPointGrid(sink, feedback);
+      break;
+    case 1: //line
+      createLineGrid(sink, feedback);
+      break;
+    case 2: //rectangle
+      createRectangleGrid(sink, feedback);
+      break;
+    case 3: //diamond
+      createDiamondGrid(sink, feedback);
+      break;
+    case 4: //hexagon
+      createHexagonGrid(sink, feedback);
+      break;
+    default:
+      break; //no default needed
+  }
+
+
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  return outputs;
+}
+
+void QgsGridAlgorithm::createPointGrid(std::unique_ptr< QgsFeatureSink > &sink, QgsProcessingFeedback *feedback)
+{
+  QgsFeature f = QgsFeature();
+
+  int cols =  static_cast<int>( std::ceil(mGridExtent.width()) / (mHSpacing - mHOverlay) );
+  int rows = static_cast<int>( std::ceil(mGridExtent.height()) / (mVSpacing - mVOverlay) );
+
+  int id = 1;
+  int cnt = 0;
+  int cellcnt = rows * cols;
+  double cnt_log = static_cast<double>(cellcnt) * 0.01;
+
+  for(int col = 0; col < cols; col++)
+  {
+    for(int row = 0; row < rows; row++)
+    {
+      double x = mGridExtent.xMinimum() + (col * mHSpacing - col * mHOverlay);
+      double y = mGridExtent.yMaximum() - (row * mVSpacing - row * mVOverlay);
+
+      f.setGeometry(QgsGeometry().fromPointXY(QgsPoint( x, y )));
+      f.setAttributes(QgsAttributes() << id << x << y << x + mHSpacing << y + mVSpacing);
+      sink->addFeature(f, QgsFeatureSink::FastInsert);
+
+      id++;
+      cnt++;
+
+      if(std::fmod(static_cast<double>(cnt),cnt_log) == 0)
+      {
+        feedback->setProgress((static_cast<double>(cnt)/ static_cast<double>(cellcnt)) * 100 );
+      }
+      if ( feedback && feedback->isCanceled() )
+        break;
+    }
+  if ( feedback && feedback->isCanceled() )
+    break;
+  }
+}
+
+void QgsGridAlgorithm::createLineGrid( std::unique_ptr< QgsFeatureSink > &sink, QgsProcessingFeedback *feedback)
+{
+  QgsFeature f = QgsFeature();
+
+  QVector<double> hSpace;
+  if( mHOverlay > 0)
+  {
+    hSpace = QVector<double>()<< mHSpacing - mHOverlay << mHOverlay;
+  }
+  else
+  {
+    hSpace = QVector<double>()<< mHSpacing << mHSpacing;
+  }
+
+  QVector<double> vSpace;
+  if( mVOverlay > 0)
+  {
+    vSpace = QVector<double>()<< mVSpacing - mVOverlay << mVOverlay;
+  }
+  else
+  {
+    vSpace = QVector<double>()<< mVSpacing << mVSpacing;
+  }
+
+  int cnt = 0;
+  int id = 1;
+
+  //latitude lines
+  double cnt_max = mGridExtent.height() / mVSpacing;
+  double cnt_log = cnt_max * 0.01;
+  double y = mGridExtent.yMaximum();
+
+  while(y >= mGridExtent.yMinimum())
+  {
+    if( feedback && feedback->isCanceled() )
+      break;
+
+    QgsPoint pt1 = QgsPoint(mGridExtent.xMinimum(), y);
+    QgsPoint pt2 = QgsPoint(mGridExtent.xMaximum(), y);
+    QVector<QgsPoint> lineNodes = QVector<QgsPoint>() << pt1 << pt2;
+
+    QgsPolyline line = QgsPolyline(lineNodes);
+    f.setGeometry(QgsGeometry::fromPolyline(line));
+    f.setAttributes(QgsAttributes() << id << mGridExtent.xMinimum() << y << mGridExtent.xMaximum() << y);
+    sink->addFeature(f, QgsFeatureSink::FastInsert);
+    y = y - vSpace[cnt % 2];
+
+    id++;
+    cnt++;
+
+    if(std::fmod(static_cast<double>(cnt),cnt_log) == 0)
+    {
+      //use 50 as count multiplicator because only half of the features are processed at this point
+      feedback->setProgress( ((static_cast<double>(cnt)/ cnt_max) * 50) );
+    }
+  }
+  //set progress to 50 manually in case the division doesn't amount to 50.
+  feedback->setProgress(50);
+
+  //longitude lines
+  cnt = 0;
+
+  //latitude lines
+  cnt_max = mGridExtent.width() / mHSpacing;
+  cnt_log = cnt_max * 0.01;
+  double x = mGridExtent.xMinimum();
+
+  while(x <= mGridExtent.xMaximum())
+  {
+    if( feedback && feedback->isCanceled() )
+      break;
+
+    QgsPoint pt1 = QgsPoint(x, mGridExtent.yMaximum());
+    QgsPoint pt2 = QgsPoint(x, mGridExtent.yMinimum());
+    QVector<QgsPoint> lineNodes = QVector<QgsPoint>() << pt1 << pt2;
+
+    QgsPolyline line = QgsPolyline(lineNodes);
+    f.setGeometry(QgsGeometry::fromPolyline(line));
+    f.setAttributes(QgsAttributes() << id << x << mGridExtent.yMaximum() << x << mGridExtent.yMinimum());
+    sink->addFeature(f, QgsFeatureSink::FastInsert);
+    x = x + hSpace[cnt % 2];
+
+    id++;
+    cnt++;
+
+    if(std::fmod(static_cast<double>(cnt),cnt_log) == 0)
+    {
+      //use 50 as count multiplicator because only half of the features are processed at this point
+      feedback->setProgress(static_cast<double>(50) + ((static_cast<double>(cnt)/ cnt_max) * 50) );
+    }
+  }
+  //set progress to 50 manually in case the division doesn't amount to 50.
+  feedback->setProgress(100);
+}
+
+void QgsGridAlgorithm::createRectangleGrid(  std::unique_ptr< QgsFeatureSink > &sink, QgsProcessingFeedback *feedback )
+{
+  QgsFeature f = QgsFeature();
+
+  int cols = static_cast<int>(mGridExtent.width()/(mHSpacing - mHOverlay));
+  int rows = static_cast<int>(mGridExtent.height()/(mVSpacing - mVOverlay));
+
+  int id = 1;
+  int cnt = 0;
+  int cellcnt = rows * cols;
+  double cnt_log = static_cast<double>(cellcnt) * 0.01;
+
+  for(int col = 0; col < cols; col++)
+  {
+    if( feedback && feedback->isCanceled())
+      break;
+
+    double x1 = mGridExtent.xMinimum() + (col * mHSpacing - col * mHOverlay);
+    double x2 = x1 + mHSpacing;
+
+    for(int row = 0; row < rows; row++)
+    {
+      double y1 = mGridExtent.yMaximum() - (row * mVSpacing - row * mVOverlay);
+      double y2 = y1 - mVSpacing;
+
+      QgsPolylineXY polyline = QVector<QgsPointXY>();
+      polyline << QgsPointXY(x1,y1);
+      polyline << QgsPointXY(x2,y1);
+      polyline << QgsPointXY(x2,y2);
+      polyline << QgsPointXY(x1,y2);
+      polyline << QgsPointXY(x1,y1);
+
+      QgsPolygonXY polygon = QVector<QgsPolylineXY>() << polyline;
+
+      f.setGeometry(QgsGeometry().fromPolygonXY(polygon));
+      f.setAttributes(QgsAttributes() << id << x1 << y1 << x2 << y2);
+      sink->addFeature(f, QgsFeatureSink::FastInsert);
+
+      id++;
+      cnt++;
+
+      if(std::fmod(static_cast<double>(cnt),cnt_log) == 0)
+      {
+        feedback->setProgress((static_cast<double>(cnt)/ static_cast<double>(cellcnt)) * 100 );
+      }
+
+      if( feedback && feedback->isCanceled())
+        break;
+    }
+  }
+}
+
+void QgsGridAlgorithm::createDiamondGrid( std::unique_ptr< QgsFeatureSink > &sink, QgsProcessingFeedback *feedback)
+{
+  QgsFeature f = QgsFeature();
+
+  double halfHSpacing = mHSpacing / 2;
+  double halfVSpacing = mVSpacing / 2;
+
+  double halfHOverlay = mHOverlay / 2;
+  double halfVOverlay = mVOverlay / 2;
+
+  int cols =  static_cast<int>( std::ceil(mGridExtent.width()) / (halfHSpacing - halfHOverlay) );
+  int rows = static_cast<int>( std::ceil(mGridExtent.height()) / (mVSpacing - halfVOverlay) );
+
+  int id = 1;
+  int cnt = 0;
+  int cellcnt = rows * cols;
+  double cnt_log = static_cast<double>(cellcnt) * 0.01;
+
+  for( int col = 0; col < cols; col++)
+  {
+    if( feedback && feedback->isCanceled())
+      break;
+
+    double x = mGridExtent.xMinimum() - (col * halfHOverlay);
+    double x1 = x + ((col + 0) * halfHSpacing);
+    double x2 = x + ((col + 1) * halfHSpacing);
+    double x3 = x + ((col + 2) * halfHSpacing);
+
+    for (int row = 0; row < rows; row++) {
+      double y = mGridExtent.yMaximum() + (row * halfVOverlay);
+
+      double y1;
+      double y2;
+      double y3;
+
+      if ((col % 2) == 0)
+      {
+        y1 = y - (((row * 2) + 0) * halfVSpacing);
+        y2 = y - (((row * 2) + 1) * halfVSpacing);
+        y3 = y - (((row * 2) + 2) * halfVSpacing);
+      }
+      else
+      {
+        y1 = y - (((row * 2) + 1) * halfVSpacing);
+        y2 = y - (((row * 2) + 2) * halfVSpacing);
+        y3 = y - (((row * 2) + 3) * halfVSpacing);
+      }
+
+      QgsPolylineXY polyline = QVector<QgsPointXY>();
+      polyline << QgsPointXY(x1,y2);
+      polyline << QgsPointXY(x2,y1);
+      polyline << QgsPointXY(x3,y2);
+      polyline << QgsPointXY(x2,y3);
+      polyline << QgsPointXY(x1,y2);
+
+      QgsPolygonXY polygon = QVector<QgsPolylineXY>() << polyline;
+
+      f.setGeometry(QgsGeometry().fromPolygonXY(polygon));
+      f.setAttributes(QgsAttributes() << id << x1 << y1 << x3 << y3);
+      sink->addFeature(f, QgsFeatureSink::FastInsert);
+
+      id++;
+      cnt++;
+
+      if(std::fmod(static_cast<double>(cnt),cnt_log) == 0)
+      {
+        feedback->setProgress((static_cast<double>(cnt)/ static_cast<double>(cellcnt)) * 100 );
+      }
+
+      if( feedback && feedback->isCanceled())
+        break;
+    }
+  }
+}
+
+void QgsGridAlgorithm::createHexagonGrid(std::unique_ptr<QgsFeatureSink> &sink, QgsProcessingFeedback *feedback)
+{
+  QgsFeature f = QgsFeature();
+
+  // To preserve symmetry, hspacing is fixed relative to vspacing
+  double xVertexLo = 0.288675134594813 * mVSpacing;
+  double xVertexHi = 0.577350269189626 * mVSpacing;
+
+  mHSpacing = xVertexLo + xVertexHi;
+
+  mHOverlay = mHSpacing - mHOverlay;
+
+  if(mHOverlay < 0)
+  {
+    throw QgsProcessingException( QObject::tr( "To preserve symmetry, hspacing is fixed relative to vspacing\n hspacing is fixed at: %1 and hoverlay is fixed at: %2 hoverlay cannot be negative. Increase hoverlay.").arg( mHSpacing ).arg( mHOverlay ));
+  }
+
+  double halfVSpacing = mVSpacing / 2;
+
+  int cols =  static_cast<int>( std::ceil(mGridExtent.width()) / (mHOverlay) );
+  int rows = static_cast<int>( std::ceil(mGridExtent.height()) / (mVSpacing - mVOverlay) );
+
+  int id = 1;
+  int cnt = 0;
+  int cellcnt = rows * cols;
+  double cnt_log = static_cast<double>(cellcnt) * 0.01;
+
+  for( int col = 0; col < cols; col++)
+  {
+    if( feedback && feedback->isCanceled())
+      break;
+
+    // (column + 1) and (row + 1) calculation is used to maintain
+    // topology between adjacent shapes and avoid overlaps/holes
+    // due to rounding errors
+
+    double x1 = mGridExtent.xMinimum() + (col * mHOverlay);
+    double x2 = x1 + (xVertexHi - xVertexLo);
+    double x3 = mGridExtent.xMinimum() + (col * mHOverlay) + mHSpacing;
+    double x4 = x3 + (xVertexHi - xVertexLo);
+
+    for( int row = 0; row < rows; row++)
+    {
+      double y1;
+      double y2;
+      double y3;
+
+      if((col % 2) == 0)
+      {
+        y1 = mGridExtent.yMaximum() + (row * mVOverlay) - (((row * 2) + 0) * halfVSpacing);
+        y2 = mGridExtent.yMaximum() + (row * mVOverlay) - (((row * 2) + 1) * halfVSpacing);
+        y3 = mGridExtent.yMaximum() + (row * mVOverlay) - (((row * 2) + 2) * halfVSpacing);
+      }
+      else
+      {
+        y1 = mGridExtent.yMaximum() + (row * mVOverlay) - (((row * 2) + 1) * halfVSpacing);
+        y2 = mGridExtent.yMaximum() + (row * mVOverlay) - (((row * 2) + 2) * halfVSpacing);
+        y3 = mGridExtent.yMaximum() + (row * mVOverlay) - (((row * 2) + 3) * halfVSpacing);
+      }
+
+      QgsPolylineXY polyline = QVector<QgsPointXY>();
+      polyline << QgsPointXY(x1,y2);
+      polyline << QgsPointXY(x2,y1);
+      polyline << QgsPointXY(x3,y1);
+      polyline << QgsPointXY(x4,y2);
+      polyline << QgsPointXY(x3,y3);
+      polyline << QgsPointXY(x2,y3);
+      polyline << QgsPointXY(x1,y2);
+
+      QgsPolygonXY polygon = QVector<QgsPolylineXY>() << polyline;
+
+      f.setGeometry(QgsGeometry().fromPolygonXY(polygon));
+      f.setAttributes(QgsAttributes() << id << x1 << y1 << x4 << y3);
+      sink->addFeature(f, QgsFeatureSink::FastInsert);
+
+      id++;
+      cnt++;
+
+      if(std::fmod(static_cast<double>(cnt),cnt_log) == 0)
+      {
+        feedback->setProgress((static_cast<double>(cnt)/ static_cast<double>(cellcnt)) * 100 );
+      }
+
+      if( feedback && feedback->isCanceled())
+        break;
+    }
+  }
+}
+
+///@endcond
