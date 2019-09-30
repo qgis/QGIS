@@ -5,7 +5,6 @@
 %Include auto_generated/expression/qgsexpressionnodeimpl.sip
 %Include auto_generated/expression/qgsexpressionfunction.sip
 %Include auto_generated/qgstessellator.sip
-%Include auto_generated/qgis.sip
 %Include auto_generated/qgsabstractproviderconnection.sip
 %Include auto_generated/qgsabstractdatabaseproviderconnection.sip
 %Include auto_generated/qgsaction.sip
@@ -335,6 +334,7 @@
 %Include auto_generated/validity/qgsvaliditycheckregistry.sip
 %Include auto_generated/gps/qgsqtlocationconnection.sip
 %Include auto_generated/gps/qgsgpsconnectionregistry.sip
+%Include auto_generated/qgis.sip
 %Include auto_generated/qgsabstractcontentcache.sip
 %Include auto_generated/qgsapplication.sip
 %Include auto_generated/qgsactionscoperegistry.sip
