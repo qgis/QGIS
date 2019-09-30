@@ -2096,11 +2096,19 @@ void QgisApp::readSettings()
   // Read legacy settings
   readRecentProjects();
 
-  // this is a new session! reset enable macros value to "ask"
-  // whether set to "just for this session"
-  if ( settings.value( QStringLiteral( "qgis/enableMacros" ), 1 ).toInt() == 2 )
+  // this is a new session, reset enable macros value  when they are set for session
+  Qgis::PythonMacroMode macroMode = settings.enumValue( QStringLiteral( "qgis/enableMacros" ), Qgis::PythonMacroMode::Ask );
+  switch ( macroMode )
   {
-    settings.setValue( QStringLiteral( "qgis/enableMacros" ), 1 );
+    case Qgis::PythonMacroMode::NotForThisSession:
+    case Qgis::PythonMacroMode::SessionOnly:
+      settings.setEnumValue( QStringLiteral( "qgis/enableMacros" ), Qgis::PythonMacroMode::Ask );
+      break;
+
+    case Qgis::PythonMacroMode::Always:
+    case Qgis::PythonMacroMode::Never:
+    case Qgis::PythonMacroMode::Ask:
+      break;
   }
 }
 
@@ -6297,29 +6305,8 @@ bool QgisApp::addProject( const QString &projectFile )
         }
         else if ( enableMacros == Qgis::PythonMacroMode::Ask )
         {
-          // create the notification widget for macros
-          QToolButton *btnEnableMacros = new QToolButton();
-          btnEnableMacros->setText( tr( "Enable Macros" ) );
-          btnEnableMacros->setStyleSheet( QStringLiteral( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" ) );
-          btnEnableMacros->setCursor( Qt::PointingHandCursor );
-          btnEnableMacros->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
-
-          QgsMessageBarItem *macroMsg = new QgsMessageBarItem(
-            tr( "Security warning" ),
-            tr( "project macros have been disabled." ),
-            btnEnableMacros,
-            Qgis::Warning,
-            0,
-            mInfoBar );
-
-          connect( btnEnableMacros, &QToolButton::clicked, this, [this, macroMsg]
-          {
-            enableProjectMacros();
-            mInfoBar->popWidget( macroMsg );
-          } );
-
-          // display the macros notification widget
-          mInfoBar->pushItem( macroMsg );
+          auto lambda = []() {QgisApp::instance()->enableProjectMacros();};
+          QgsGui::pythonMacroAllowed( lambda, mInfoBar );
         }
       }
     }

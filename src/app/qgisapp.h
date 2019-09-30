@@ -237,7 +237,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /**
      * Attempts to run a Python script
      * \param filePath full path to Python script
-     * \since QGIS 2.7
      */
     void runScript( const QString &filePath );
 

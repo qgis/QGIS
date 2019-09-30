@@ -70,7 +70,8 @@ The Qgis class provides global constants for use throughout the application.
       Never,
       Ask,
       SessionOnly,
-      Always
+      Always,
+      NotForThisSession,
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;

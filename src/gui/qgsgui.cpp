@@ -15,6 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
+
+#include <QScreen>
+#include <QDesktopWidget>
+#include <QMessageBox>
+
 #include "qgsgui.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgslayertreeembeddedwidgetregistry.h"
@@ -49,9 +54,9 @@
 #include "qgsproviderregistry.h"
 #include "qgsproviderguiregistry.h"
 #include "qgsprojectstorageguiregistry.h"
+#include "qgsmessagebar.h"
+#include "qgsmessagebaritem.h"
 
-#include <QScreen>
-#include <QDesktopWidget>
 
 QgsGui *QgsGui::instance()
 {
@@ -229,6 +234,66 @@ QgsGui::QgsGui()
   mWidgetStateHelper = new QgsWidgetStateHelper();
   mProcessingRecentAlgorithmLog = new QgsProcessingRecentAlgorithmLog();
   mProcessingGuiRegistry = new QgsProcessingGuiRegistry();
+}
 
+bool QgsGui::pythonMacroAllowed( void ( *lambda )(), QgsMessageBar *messageBar )
+{
+  Qgis::PythonMacroMode macroMode = QgsSettings().enumValue( QStringLiteral( "qgis/enableMacros" ), Qgis::PythonMacroMode::Ask );
 
+  switch ( macroMode )
+  {
+    case Qgis::PythonMacroMode::SessionOnly:
+    case Qgis::PythonMacroMode::Always:
+      return true;
+    case Qgis::PythonMacroMode::Never:
+    case Qgis::PythonMacroMode::NotForThisSession:
+      return false;
+    case Qgis::PythonMacroMode::Ask:
+      if ( !lambda )
+      {
+        QMessageBox msgBox( QMessageBox::Information, "Python Macros",
+                            tr( "Python macros are currently disabled. Do you allow this macro to run?" ) );
+        QAbstractButton *stopSessionButton = msgBox.addButton( tr( "Don't ask anymore" ), QMessageBox::DestructiveRole );
+        msgBox.addButton( tr( "No" ), QMessageBox::NoRole );
+        QAbstractButton *yesButton = msgBox.addButton( tr( "Yes" ), QMessageBox::YesRole );
+        QAbstractButton *clicked = msgBox.clickedButton();
+        if ( clicked == stopSessionButton )
+        {
+          QgsSettings().setEnumValue( QStringLiteral( "qgis/enableMacros" ), Qgis::PythonMacroMode::NotForThisSession );
+        }
+        return clicked == yesButton;
+      }
+      else
+      {
+        // create the notification widget for macros
+        Q_ASSERT( messageBar );
+        if ( messageBar )
+        {
+          QToolButton *btnEnableMacros = new QToolButton();
+          btnEnableMacros->setText( tr( "Enable Macros" ) );
+          btnEnableMacros->setStyleSheet( QStringLiteral( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" ) );
+          btnEnableMacros->setCursor( Qt::PointingHandCursor );
+          btnEnableMacros->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
+
+          QgsMessageBarItem *macroMsg = new QgsMessageBarItem(
+            tr( "Security warning" ),
+            tr( "Python macros cannot currently be run." ),
+            btnEnableMacros,
+            Qgis::Warning,
+            0,
+            messageBar );
+
+          connect( btnEnableMacros, &QToolButton::clicked, [ = ]()
+          {
+            lambda();
+            messageBar->popWidget( macroMsg );
+          } );
+
+          // display the macros notification widget
+          messageBar->pushItem( macroMsg );
+        }
+
+        return false;
+      }
+  }
 }
