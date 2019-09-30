@@ -38,7 +38,7 @@ Creates tessellator with a specified ``bounds`` of input geometry coordinates.
 This constructor allows the tessellator to map input coordinates to a desirable range for numerically
 stability during calculations.
 
-If ``noZ`` is ``True``, then a 2-dimensional tesselation only will be performed and all z coordinates will be ignored.
+If ``noZ`` is ``True``, then a 2-dimensional tessellation only will be performed and all z coordinates will be ignored.
 
 .. versionadded:: 3.10
 %End
