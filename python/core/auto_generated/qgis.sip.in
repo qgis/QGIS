@@ -65,7 +65,7 @@ The Qgis class provides global constants for use throughout the application.
       ARGB32_Premultiplied
     };
 
-    enum class PythonMacroMode
+    enum PythonMacroMode
     {
       Never,
       Ask,

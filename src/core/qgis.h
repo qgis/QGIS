@@ -99,7 +99,7 @@ class CORE_EXPORT Qgis
      * Authorisation to run Python Macros
      * \since QGIS 3.10
      */
-    enum class PythonMacroMode
+    enum PythonMacroMode
     {
       Never = 0, //!< Macros are never run
       Ask = 1, //!< User is prompt before running
