@@ -205,7 +205,7 @@ void QgsOgrProvider::repack()
     QString packedDbf( mFilePath.left( mFilePath.size() - 4 ) + "_packed.dbf" );
     if ( QFile::exists( packedDbf ) )
     {
-      QgsMessageLog::logMessage( tr( "Possible corruption after REPACK detected. %1 still exists. This may point to a permission or locking problem of the original DBF." ).arg( packedDbf ), tr( "OGR" ), Qgis::Critical );
+      QgsMessageLog::logMessage( tr( "Possible corruption after REPACK detected. %1 still exists. This may point to a permission or locking problem of the original DBF." ).arg( packedDbf ), tr( "OGR" ), Qgis::MessageLevel::Critical );
 
       mOgrSqlLayer.reset();
       mOgrOrigLayer.reset();
@@ -222,7 +222,7 @@ void QgsOgrProvider::repack()
 
       if ( !mOgrOrigLayer )
       {
-        QgsMessageLog::logMessage( tr( "Original layer could not be reopened." ) + " " + errCause, tr( "OGR" ), Qgis::Critical );
+        QgsMessageLog::logMessage( tr( "Original layer could not be reopened." ) + " " + errCause, tr( "OGR" ), Qgis::MessageLevel::Critical );
         mValid = false;
       }
 
@@ -6623,7 +6623,7 @@ QgsTransaction *QgsOgrProviderMetadata::createTransaction( const QString &connSt
   if ( !ds )
   {
     QgsMessageLog::logMessage( QObject::tr( "Cannot open transaction on %1, since it is is not currently opened" ).arg( connString ),
-                               QObject::tr( "OGR" ), Qgis::Critical );
+                               QObject::tr( "OGR" ), Qgis::MessageLevel::Critical );
     return nullptr;
   }
 

@@ -142,7 +142,7 @@ bool QgsGeoPackageProjectStorage::readProject( const QString &uri, QIODevice *de
   QgsGeoPackageProjectUri projectUri = decodeUri( uri );
   if ( !projectUri.valid )
   {
-    context.pushMessage( QObject::tr( "Invalid URI for GeoPackage OGR provider: " ) + uri, Qgis::Critical );
+    context.pushMessage( QObject::tr( "Invalid URI for GeoPackage OGR provider: " ) + uri, Qgis::MessageLevel::Critical );
     return false;
   }
 
@@ -155,7 +155,7 @@ bool QgsGeoPackageProjectStorage::readProject( const QString &uri, QIODevice *de
   int status = database.open_v2( projectUri.database, SQLITE_OPEN_READWRITE, nullptr );
   if ( status != SQLITE_OK )
   {
-    context.pushMessage( QObject::tr( "Could not connect to the database: " ) + projectUri.database, Qgis::Critical );
+    context.pushMessage( QObject::tr( "Could not connect to the database: " ) + projectUri.database, Qgis::MessageLevel::Critical );
     return false;
   }
   else
@@ -228,7 +228,7 @@ bool QgsGeoPackageProjectStorage::writeProject( const QString &uri, QIODevice *d
                .arg( projectUri.database,
                      errCause );
 
-    context.pushMessage( errCause, Qgis::Critical );
+    context.pushMessage( errCause, Qgis::MessageLevel::Critical );
     return false;
   }
 
@@ -259,7 +259,7 @@ bool QgsGeoPackageProjectStorage::writeProject( const QString &uri, QIODevice *d
                              .arg( uri,
                                    errCause );
 
-    context.pushMessage( errCause, Qgis::Critical );
+    context.pushMessage( errCause, Qgis::MessageLevel::Critical );
     return false;
   }
   return true;

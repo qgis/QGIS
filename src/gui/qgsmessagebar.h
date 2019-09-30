@@ -64,10 +64,10 @@ class GUI_EXPORT QgsMessageBar: public QFrame
      * Display a widget as a message on the bar after hiding the currently visible one
      *  and putting it in a stack.
      * \param widget message widget to display
-     * \param level is Qgis::Info, Warning, Critical or Success
+     * \param level is Qgis::MessageLevel::Info, Warning, Critical or Success
      * \param duration timeout duration of message in seconds, 0 value indicates no timeout
      */
-    QgsMessageBarItem *pushWidget( QWidget *widget SIP_TRANSFER, Qgis::MessageLevel level = Qgis::Info, int duration = 0 );
+    QgsMessageBarItem *pushWidget( QWidget *widget SIP_TRANSFER, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 0 );
 
     /**
      * Remove the passed widget from the bar (if previously added),
@@ -85,12 +85,12 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     static QgsMessageBarItem *createMessage( QWidget *widget, QWidget *parent = nullptr ) SIP_FACTORY;
 
     //! convenience method for pushing a message to the bar
-    void pushMessage( const QString &text, Qgis::MessageLevel level = Qgis::Info, int duration = 5 ) { pushMessage( QString(), text, level, duration ); }
+    void pushMessage( const QString &text, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 5 ) { pushMessage( QString(), text, level, duration ); }
     //! convenience method for pushing a message with title to the bar
-    void pushMessage( const QString &title, const QString &text, Qgis::MessageLevel level = Qgis::Info, int duration = 5 );
+    void pushMessage( const QString &title, const QString &text, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 5 );
 
     //! convenience method for pushing a message to the bar with a detail text which be shown when pressing a "more" button
-    void pushMessage( const QString &title, const QString &text, const QString &showMore, Qgis::MessageLevel level = Qgis::Info, int duration = 5 );
+    void pushMessage( const QString &title, const QString &text, const QString &showMore, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 5 );
 
     QgsMessageBarItem *currentItem() { return mCurrentItem; }
 

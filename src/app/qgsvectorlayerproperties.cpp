@@ -1238,11 +1238,11 @@ void QgsVectorLayerProperties::saveStyleAs()
 
         if ( !msgError.isNull() )
         {
-          QgisApp::instance()->messageBar()->pushMessage( infoWindowTitle, msgError, Qgis::Warning, QgisApp::instance()->messageTimeout() );
+          QgisApp::instance()->messageBar()->pushMessage( infoWindowTitle, msgError, Qgis::MessageLevel::Warning, QgisApp::instance()->messageTimeout() );
         }
         else
         {
-          QgisApp::instance()->messageBar()->pushMessage( infoWindowTitle, tr( "Style saved" ), Qgis::Info, QgisApp::instance()->messageTimeout() );
+          QgisApp::instance()->messageBar()->pushMessage( infoWindowTitle, tr( "Style saved" ), Qgis::MessageLevel::Info, QgisApp::instance()->messageTimeout() );
         }
         break;
       }
@@ -2071,6 +2071,6 @@ void QgsVectorLayerProperties::deleteAuxiliaryField( int index )
     const int timeout = QgisApp::instance()->messageTimeout();
     const QString errors = mLayer->auxiliaryLayer()->commitErrors().join( QStringLiteral( "\n  " ) );
     const QString msg = QObject::tr( "Unable to remove auxiliary field (%1)" ).arg( errors );
-    QgisApp::instance()->messageBar()->pushMessage( title, msg, Qgis::Warning, timeout );
+    QgisApp::instance()->messageBar()->pushMessage( title, msg, Qgis::MessageLevel::Warning, timeout );
   }
 }

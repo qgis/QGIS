@@ -12,6 +12,7 @@ Qgis.None = Qgis.MessageLevel.None
 Qgis.MessageLevel.None.__doc__ = ""
 Qgis.MessageLevel.__doc__ = 'Level for messages\nThis will be used both for message log and message bar in application.\n\n' + '* ``Info``: ' + Qgis.MessageLevel.Info.__doc__ + '\n' + '* ``Warning``: ' + Qgis.MessageLevel.Warning.__doc__ + '\n' + '* ``Critical``: ' + Qgis.MessageLevel.Critical.__doc__ + '\n' + '* ``Success``: ' + Qgis.MessageLevel.Success.__doc__ + '\n' + '* ``None``: ' + Qgis.MessageLevel.None.__doc__
 # --
+Qgis.MessageLevel.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.UnknownDataType = Qgis.DataType.UnknownDataType
 Qgis.DataType.UnknownDataType.__doc__ = "Unknown or unspecified type"

@@ -1142,7 +1142,7 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPointXY &point, QgsR
     }
     else
     {
-      if ( sourceDataType( i ) == Qgis::Float32 )
+      if ( sourceDataType( i ) == Qgis::DataType::Float32 )
       {
         // Insert a float QVariant so that QgsMapToolIdentify::identifyRasterLayer()
         // can print a string without an excessive precision
@@ -1257,25 +1257,25 @@ Qgis::DataType QgsGdalProvider::sourceDataType( int bandNo ) const
     // if the band has scale or offset to apply change dataType
     switch ( myDataType )
     {
-      case Qgis::UnknownDataType:
-      case Qgis::ARGB32:
-      case Qgis::ARGB32_Premultiplied:
+      case Qgis::DataType::UnknownDataType:
+      case Qgis::DataType::ARGB32:
+      case Qgis::DataType::ARGB32_Premultiplied:
         return myDataType;
-      case Qgis::Byte:
-      case Qgis::UInt16:
-      case Qgis::Int16:
-      case Qgis::UInt32:
-      case Qgis::Int32:
-      case Qgis::Float32:
-      case Qgis::CInt16:
-        myDataType = Qgis::Float32;
+      case Qgis::DataType::Byte:
+      case Qgis::DataType::UInt16:
+      case Qgis::DataType::Int16:
+      case Qgis::DataType::UInt32:
+      case Qgis::DataType::Int32:
+      case Qgis::DataType::Float32:
+      case Qgis::DataType::CInt16:
+        myDataType = Qgis::DataType::Float32;
         break;
-      case Qgis::Float64:
-      case Qgis::CInt32:
-      case Qgis::CFloat32:
-        myDataType = Qgis::Float64;
+      case Qgis::DataType::Float64:
+      case Qgis::DataType::CInt32:
+      case Qgis::DataType::CFloat32:
+        myDataType = Qgis::DataType::Float64;
         break;
-      case Qgis::CFloat64:
+      case Qgis::DataType::CFloat64:
         return myDataType;
     }
   }
@@ -1287,7 +1287,7 @@ Qgis::DataType QgsGdalProvider::dataType( int bandNo ) const
   if ( mMaskBandExposedAsAlpha && bandNo == mBandCount )
     return dataTypeFromGdal( GDT_Byte );
 
-  if ( bandNo <= 0 || bandNo > mGdalDataType.count() ) return Qgis::UnknownDataType;
+  if ( bandNo <= 0 || bandNo > mGdalDataType.count() ) return Qgis::DataType::UnknownDataType;
 
   return dataTypeFromGdal( mGdalDataType[bandNo - 1] );
 }

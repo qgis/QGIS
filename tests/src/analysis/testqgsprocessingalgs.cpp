@@ -899,7 +899,7 @@ void TestQgsProcessingAlgs::rasterLogicOp_data()
                                << 0ULL << 1ULL << 5ULL
                                << QVector< double > { 1, 0, 0, 0, 0, 0 }
                                << 3 << 2
-                               << -9999.0 << static_cast< int >( Qgis::Float32 );
+                               << -9999.0 << static_cast< int >( Qgis::DataType::Float32 );
   QTest::newRow( "nodata" ) << QVector< double > { 1, -9999, 0, 0, 0, 0 }
                             << QVector< double > { 1, 0, 1, 1, 0, 1 }
                             << QVector< double > { 1, 2, 0, -9999, 0, -1 }
@@ -909,7 +909,7 @@ void TestQgsProcessingAlgs::rasterLogicOp_data()
                             << 2ULL << 1ULL << 3ULL
                             << QVector< double > { 1, -9999, 0, -9999, 0, 0 }
                             << 3 << 2
-                            << -9999.0 << static_cast< int >( Qgis::Float32 );
+                            << -9999.0 << static_cast< int >( Qgis::DataType::Float32 );
   QTest::newRow( "nodata as false" ) << QVector< double > { 1, -9999, 0, 0, 0, 0 }
                                      << QVector< double > { 1, 0, 1, 1, 0, 1 }
                                      << QVector< double > { 1, 2, 0, -9999, 0, -1 }
@@ -919,7 +919,7 @@ void TestQgsProcessingAlgs::rasterLogicOp_data()
                                      << 0ULL << 1ULL << 5ULL
                                      << QVector< double > { 1, 0, 0, 0, 0, 0 }
                                      << 3 << 2
-                                     << -9999.0 << static_cast< int >( Qgis::Float32 );
+                                     << -9999.0 << static_cast< int >( Qgis::DataType::Float32 );
   QTest::newRow( "missing block 1" ) << QVector< double > {}
                                      << QVector< double > { 1, 0, 1, 1, 0, 1 }
                                      << QVector< double > { 1, 2, 0, -9999, 0, -1 }
@@ -929,7 +929,7 @@ void TestQgsProcessingAlgs::rasterLogicOp_data()
                                      << 6ULL << 0ULL << 0ULL
                                      << QVector< double > { -9999, -9999, -9999, -9999, -9999, -9999 }
                                      << 3 << 2
-                                     << -9999.0 << static_cast< int >( Qgis::Float32 );
+                                     << -9999.0 << static_cast< int >( Qgis::DataType::Float32 );
   QTest::newRow( "missing block 1 nodata as false" ) << QVector< double > {}
       << QVector< double > { 1, 0, 1, 1, 0, 1 }
       << QVector< double > { 1, 2, 0, -9999, 0, -1 }
@@ -939,7 +939,7 @@ void TestQgsProcessingAlgs::rasterLogicOp_data()
       << 0ULL << 0ULL << 6ULL
       << QVector< double > { 0, 0, 0, 0, 0, 0 }
       << 3 << 2
-      << -9999.0 << static_cast< int >( Qgis::Float32 );
+      << -9999.0 << static_cast< int >( Qgis::DataType::Float32 );
   QTest::newRow( "missing block 2" ) << QVector< double > { 1, 0, 1, 1, 0, 1 }
                                      << QVector< double > {}
                                      << QVector< double > { 1, 2, 0, -9999, 0, -1 }
@@ -949,7 +949,7 @@ void TestQgsProcessingAlgs::rasterLogicOp_data()
                                      << 6ULL << 0ULL << 0ULL
                                      << QVector< double > { -9999, -9999, -9999, -9999, -9999, -9999 }
                                      << 3 << 2
-                                     << -9999.0 << static_cast< int >( Qgis::Float32 );
+                                     << -9999.0 << static_cast< int >( Qgis::DataType::Float32 );
   QTest::newRow( "missing block 2 nodata as false" ) << QVector< double > { 1, 0, 1, 1, 0, 1 }
       << QVector< double > {}
       << QVector< double > { 1, 2, 0, -9999, 0, -1 }
@@ -959,7 +959,7 @@ void TestQgsProcessingAlgs::rasterLogicOp_data()
       << 0ULL << 0ULL << 6ULL
       << QVector< double > { 0, 0, 0, 0, 0, 0 }
       << 3 << 2
-      << -9999.0 << static_cast< int >( Qgis::Float32 );
+      << -9999.0 << static_cast< int >( Qgis::DataType::Float32 );
   QTest::newRow( "missing block 3" ) << QVector< double > { 1, 0, 1, 1, 0, 1 }
                                      << QVector< double > { 1, 2, 0, -9999, 0, -1 }
                                      << QVector< double > {}
@@ -969,7 +969,7 @@ void TestQgsProcessingAlgs::rasterLogicOp_data()
                                      << 6ULL << 0ULL << 0ULL
                                      << QVector< double > { -9999, -9999, -9999, -9999, -9999, -9999 }
                                      << 3 << 2
-                                     << -9999.0 << static_cast< int >( Qgis::Float32 );
+                                     << -9999.0 << static_cast< int >( Qgis::DataType::Float32 );
   QTest::newRow( "missing block 3 nodata as false" ) << QVector< double > { 1, 0, 1, 1, 0, 1 }
       << QVector< double > { 1, 2, 0, -9999, 0, -1 }
       << QVector< double > {}
@@ -979,7 +979,7 @@ void TestQgsProcessingAlgs::rasterLogicOp_data()
       << 0ULL << 0ULL << 6ULL
       << QVector< double > { 0, 0, 0, 0, 0, 0 }
       << 3 << 2
-      << -9999.0 << static_cast< int >( Qgis::Float32 );
+      << -9999.0 << static_cast< int >( Qgis::DataType::Float32 );
 }
 
 void TestQgsProcessingAlgs::rasterLogicOp()
@@ -1029,7 +1029,7 @@ void TestQgsProcessingAlgs::rasterLogicOp()
     std::unique_ptr< QgsRasterFileWriter > writer = qgis::make_unique< QgsRasterFileWriter >( filename );
     writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
     writer->setOutputFormat( QStringLiteral( "GTiff" ) );
-    std::unique_ptr<QgsRasterDataProvider > dp( writer->createOneBandRaster( Qgis::Float32, nCols, nRows, input[ii].empty() ? badExtent : extent, crs ) );
+    std::unique_ptr<QgsRasterDataProvider > dp( writer->createOneBandRaster( Qgis::DataType::Float32, nCols, nRows, input[ii].empty() ? badExtent : extent, crs ) );
     QVERIFY( dp->isValid() );
     dp->setNoDataValue( 1, -9999 );
     std::unique_ptr< QgsRasterBlock > block( dp->block( 1, input[ii].empty() ? badExtent : extent, nCols, nRows ) );

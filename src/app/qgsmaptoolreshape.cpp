@@ -58,7 +58,7 @@ void QgsMapToolReshape::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     else if ( error == 2 )
     {
       //problem with coordinate transformation
-      emit messageEmitted( tr( "Cannot transform the point to the layers coordinate system" ), Qgis::Warning );
+      emit messageEmitted( tr( "Cannot transform the point to the layers coordinate system" ), Qgis::MessageLevel::Warning );
       return;
     }
 
@@ -160,7 +160,7 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
 
           if ( geom.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers(), ignoreFeatures ) != 0 )
           {
-            emit messageEmitted( tr( "An error was reported during intersection removal" ), Qgis::Critical );
+            emit messageEmitted( tr( "An error was reported during intersection removal" ), Qgis::MessageLevel::Critical );
             vlayer->destroyEditCommand();
             stopCapturing();
             return;
@@ -168,7 +168,7 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
 
           if ( geom.isEmpty() ) //intersection removal might have removed the whole geometry
           {
-            emit messageEmitted( tr( "The feature cannot be reshaped because the resulting geometry is empty" ), Qgis::Critical );
+            emit messageEmitted( tr( "The feature cannot be reshaped because the resulting geometry is empty" ), Qgis::MessageLevel::Critical );
             vlayer->destroyEditCommand();
             return;
           }

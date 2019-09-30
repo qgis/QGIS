@@ -62,7 +62,7 @@ QVariant QgsQuickMessageLogModel::data( const QModelIndex &index, int role ) con
   else if ( role == MessageTagRole )
     return mMessages.at( index.row() ).tag;
   else if ( role == MessageLevelRole )
-    return mMessages.at( index.row() ).level;
+    return QVariant::fromValue( mMessages.at( index.row() ).level );
 
   return QVariant();
 }

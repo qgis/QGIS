@@ -72,6 +72,7 @@ class CORE_EXPORT Qgis
       Success = 3,
       None = 4
     };
+    Q_ENUM( MessageLevel )
 
     /**
      * Raster data types.

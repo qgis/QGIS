@@ -977,7 +977,7 @@ Emitted when the canvas has been assigned a different map theme.
 .. versionadded:: 3.0
 %End
 
-    void messageEmitted( const QString &title, const QString &message, Qgis::MessageLevel = Qgis::Info );
+    void messageEmitted( const QString &title, const QString &message, Qgis::MessageLevel = Qgis::MessageLevel::Info );
 %Docstring
 emit a message (usually to be displayed in a message bar)
 %End

@@ -49,7 +49,7 @@ const QgsProject *QgsConfigCache::project( const QString &path )
       if ( !badLayerHandler->badLayers().isEmpty() )
       {
         QString errorMsg = QStringLiteral( "Layer(s) %1 not valid" ).arg( badLayerHandler->badLayers().join( ',' ) );
-        QgsMessageLog::logMessage( errorMsg, QStringLiteral( "Server" ), Qgis::Critical );
+        QgsMessageLog::logMessage( errorMsg, QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
         throw QgsServerException( QStringLiteral( "Layer(s) not valid" ) );
       }
       mProjectCache.insert( path, prj.release() );
@@ -59,7 +59,7 @@ const QgsProject *QgsConfigCache::project( const QString &path )
     {
       QgsMessageLog::logMessage(
         tr( "Error when loading project file '%1': %2 " ).arg( path, prj->error() ),
-        QStringLiteral( "Server" ), Qgis::Critical );
+        QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
     }
   }
   QgsProject::setInstance( mProjectCache[ path ] );
@@ -72,13 +72,13 @@ QDomDocument *QgsConfigCache::xmlDocument( const QString &filePath )
   QFile configFile( filePath );
   if ( !configFile.exists() )
   {
-    QgsMessageLog::logMessage( "Error, configuration file '" + filePath + "' does not exist", QStringLiteral( "Server" ), Qgis::Critical );
+    QgsMessageLog::logMessage( "Error, configuration file '" + filePath + "' does not exist", QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
     return nullptr;
   }
 
   if ( !configFile.open( QIODevice::ReadOnly ) )
   {
-    QgsMessageLog::logMessage( "Error, cannot open configuration file '" + filePath + "'", QStringLiteral( "Server" ), Qgis::Critical );
+    QgsMessageLog::logMessage( "Error, cannot open configuration file '" + filePath + "'", QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
     return nullptr;
   }
 
@@ -93,7 +93,7 @@ QDomDocument *QgsConfigCache::xmlDocument( const QString &filePath )
     if ( !xmlDoc->setContent( &configFile, true, &errorMsg, &line, &column ) )
     {
       QgsMessageLog::logMessage( "Error parsing file '" + filePath +
-                                 QStringLiteral( "': parse error %1 at row %2, column %3" ).arg( errorMsg ).arg( line ).arg( column ), QStringLiteral( "Server" ), Qgis::Critical );
+                                 QStringLiteral( "': parse error %1 at row %2, column %3" ).arg( errorMsg ).arg( line ).arg( column ), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
       delete xmlDoc;
       return nullptr;
     }

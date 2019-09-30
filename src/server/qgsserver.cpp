@@ -96,8 +96,8 @@ void QgsServer::setupNetworkAccessManager()
   QString cacheDirectory = sSettings.cacheDirectory();
   cache->setCacheDirectory( cacheDirectory );
   cache->setMaximumCacheSize( cacheSize );
-  QgsMessageLog::logMessage( QStringLiteral( "cacheDirectory: %1" ).arg( cache->cacheDirectory() ), QStringLiteral( "Server" ), Qgis::Info );
-  QgsMessageLog::logMessage( QStringLiteral( "maximumCacheSize: %1" ).arg( cache->maximumCacheSize() ), QStringLiteral( "Server" ), Qgis::Info );
+  QgsMessageLog::logMessage( QStringLiteral( "cacheDirectory: %1" ).arg( cache->cacheDirectory() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+  QgsMessageLog::logMessage( QStringLiteral( "maximumCacheSize: %1" ).arg( cache->maximumCacheSize() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
   nam->setCache( cache );
 }
 
@@ -111,7 +111,7 @@ QFileInfo QgsServer::defaultProjectFile()
   QFileInfoList projectFiles = currentDir.entryInfoList( nameFilterList, QDir::Files, QDir::Name );
   for ( int x = 0; x < projectFiles.size(); x++ )
   {
-    QgsMessageLog::logMessage( projectFiles.at( x ).absoluteFilePath(), QStringLiteral( "Server" ), Qgis::Info );
+    QgsMessageLog::logMessage( projectFiles.at( x ).absoluteFilePath(), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
   }
   if ( projectFiles.isEmpty() )
   {
@@ -122,7 +122,7 @@ QFileInfo QgsServer::defaultProjectFile()
 
 void QgsServer::printRequestParameters( const QMap< QString, QString> &parameterMap, Qgis::MessageLevel logLevel )
 {
-  if ( logLevel > Qgis::Info )
+  if ( logLevel > Qgis::MessageLevel::Info )
   {
     return;
   }
@@ -130,7 +130,7 @@ void QgsServer::printRequestParameters( const QMap< QString, QString> &parameter
   QMap< QString, QString>::const_iterator pIt = parameterMap.constBegin();
   for ( ; pIt != parameterMap.constEnd(); ++pIt )
   {
-    QgsMessageLog::logMessage( pIt.key() + ":" + pIt.value(), QStringLiteral( "Server" ), Qgis::Info );
+    QgsMessageLog::logMessage( pIt.key() + ":" + pIt.value(), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
   }
 }
 
@@ -151,11 +151,11 @@ QString QgsServer::configPath( const QString &defaultConfigPath, const QString &
       if ( getenv( "QGIS_PROJECT_FILE" ) )
       {
         cfPath = getenv( "QGIS_PROJECT_FILE" );
-        QgsMessageLog::logMessage( QStringLiteral( "Using configuration file path from environment: %1" ).arg( cfPath ), QStringLiteral( "Server" ), Qgis::Info );
+        QgsMessageLog::logMessage( QStringLiteral( "Using configuration file path from environment: %1" ).arg( cfPath ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
       }
       else  if ( ! defaultConfigPath.isEmpty() )
       {
-        QgsMessageLog::logMessage( QStringLiteral( "Using default configuration file path: %1" ).arg( defaultConfigPath ), QStringLiteral( "Server" ), Qgis::Info );
+        QgsMessageLog::logMessage( QStringLiteral( "Using default configuration file path: %1" ).arg( defaultConfigPath ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
       }
     }
     else
@@ -201,7 +201,7 @@ bool QgsServer::init()
   QgsApplication::init();
 
 #if defined(SERVER_SKIP_ECW)
-  QgsMessageLog::logMessage( "Skipping GDAL ECW drivers in server.", "Server", Qgis::Info );
+  QgsMessageLog::logMessage( "Skipping GDAL ECW drivers in server.", "Server", Qgis::MessageLevel::Info );
   QgsApplication::skipGdalDriver( "ECW" );
   QgsApplication::skipGdalDriver( "JP2ECW" );
 #endif
@@ -233,12 +233,12 @@ bool QgsServer::init()
 
   // Instantiate the plugin directory so that providers are loaded
   QgsProviderRegistry::instance( QgsApplication::pluginPath() );
-  QgsMessageLog::logMessage( "Prefix  PATH: " + QgsApplication::prefixPath(), QStringLiteral( "Server" ), Qgis::Info );
-  QgsMessageLog::logMessage( "Plugin  PATH: " + QgsApplication::pluginPath(), QStringLiteral( "Server" ), Qgis::Info );
-  QgsMessageLog::logMessage( "PkgData PATH: " + QgsApplication::pkgDataPath(), QStringLiteral( "Server" ), Qgis::Info );
-  QgsMessageLog::logMessage( "User DB PATH: " + QgsApplication::qgisUserDatabaseFilePath(), QStringLiteral( "Server" ), Qgis::Info );
-  QgsMessageLog::logMessage( "Auth DB PATH: " + QgsApplication::qgisAuthDatabaseFilePath(), QStringLiteral( "Server" ), Qgis::Info );
-  QgsMessageLog::logMessage( "SVG PATHS: " + QgsApplication::svgPaths().join( QDir::listSeparator() ), QStringLiteral( "Server" ), Qgis::Info );
+  QgsMessageLog::logMessage( "Prefix  PATH: " + QgsApplication::prefixPath(), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+  QgsMessageLog::logMessage( "Plugin  PATH: " + QgsApplication::pluginPath(), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+  QgsMessageLog::logMessage( "PkgData PATH: " + QgsApplication::pkgDataPath(), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+  QgsMessageLog::logMessage( "User DB PATH: " + QgsApplication::qgisUserDatabaseFilePath(), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+  QgsMessageLog::logMessage( "Auth DB PATH: " + QgsApplication::qgisAuthDatabaseFilePath(), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+  QgsMessageLog::logMessage( "SVG PATHS: " + QgsApplication::svgPaths().join( QDir::listSeparator() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
 
   QgsApplication::createDatabase(); //init qgis.db (e.g. necessary for user crs)
 
@@ -253,7 +253,7 @@ bool QgsServer::init()
   if ( projectFileInfo.exists() )
   {
     defaultConfigFilePath = projectFileInfo.absoluteFilePath();
-    QgsMessageLog::logMessage( "Using default project file: " + defaultConfigFilePath, QStringLiteral( "Server" ), Qgis::Info );
+    QgsMessageLog::logMessage( "Using default project file: " + defaultConfigFilePath, QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
   }
   else
   {
@@ -281,7 +281,7 @@ bool QgsServer::init()
   sServiceRegistry->init( modulePath,  sServerInterface );
 
   sInitialized = true;
-  QgsMessageLog::logMessage( QStringLiteral( "Server initialized" ), QStringLiteral( "Server" ), Qgis::Info );
+  QgsMessageLog::logMessage( QStringLiteral( "Server initialized" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
   return true;
 }
 
@@ -304,7 +304,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
 
   qApp->processEvents();
 
-  if ( logLevel == Qgis::Info )
+  if ( logLevel == Qgis::MessageLevel::Info )
   {
     time.start();
   }
@@ -323,7 +323,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
   }
   catch ( QgsMapServiceException &e )
   {
-    QgsMessageLog::logMessage( "Parse input exception: " + e.message(), QStringLiteral( "Server" ), Qgis::Critical );
+    QgsMessageLog::logMessage( "Parse input exception: " + e.message(), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
     requestHandler.setServiceException( e );
   }
 
@@ -354,7 +354,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
   {
     // Internal server error
     response.sendError( 500, QStringLiteral( "Internal Server Error" ) );
-    QgsMessageLog::logMessage( ex.what(), QStringLiteral( "Server" ), Qgis::Critical );
+    QgsMessageLog::logMessage( ex.what(), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
   }
 
   // Plugins may have set exceptions
@@ -419,13 +419,13 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
     {
       responseDecorator.write( ex );
       QString format;
-      QgsMessageLog::logMessage( ex.formatResponse( format ), QStringLiteral( "Server" ), Qgis::Info );
+      QgsMessageLog::logMessage( ex.formatResponse( format ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
     }
     catch ( QgsException &ex )
     {
       // Internal server error
       response.sendError( 500, QStringLiteral( "Internal Server Error" ) );
-      QgsMessageLog::logMessage( ex.what(), QStringLiteral( "Server" ), Qgis::Critical );
+      QgsMessageLog::logMessage( ex.what(), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
     }
   }
 
@@ -439,7 +439,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
   {
     // Internal server error
     response.sendError( 500, QStringLiteral( "Internal Server Error" ) );
-    QgsMessageLog::logMessage( ex.what(), QStringLiteral( "Server" ), Qgis::Critical );
+    QgsMessageLog::logMessage( ex.what(), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
   }
 
 
@@ -447,9 +447,9 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
   // to a deleted request handler from Python bindings
   sServerInterface->clearRequestHandler();
 
-  if ( logLevel == Qgis::Info )
+  if ( logLevel == Qgis::MessageLevel::Info )
   {
-    QgsMessageLog::logMessage( "Request finished in " + QString::number( time.elapsed() ) + " ms", QStringLiteral( "Server" ), Qgis::Info );
+    QgsMessageLog::logMessage( "Request finished in " + QString::number( time.elapsed() ) + " ms", QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
   }
 }
 
@@ -460,11 +460,11 @@ void QgsServer::initPython()
   // Init plugins
   if ( ! QgsServerPlugins::initPlugins( sServerInterface ) )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "No server python plugins are available" ), QStringLiteral( "Server" ), Qgis::Info );
+    QgsMessageLog::logMessage( QStringLiteral( "No server python plugins are available" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
   }
   else
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Server python plugins loaded" ), QStringLiteral( "Server" ), Qgis::Info );
+    QgsMessageLog::logMessage( QStringLiteral( "Server python plugins loaded" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
   }
 }
 #endif

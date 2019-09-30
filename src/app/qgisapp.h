@@ -1527,7 +1527,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void extentChanged();
     void showRotation();
 
-    void displayMapToolMessage( const QString &message, Qgis::MessageLevel level = Qgis::Info );
+    void displayMapToolMessage( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
     void displayMessage( const QString &title, const QString &message, Qgis::MessageLevel level );
     void removeMapToolMessage();
     void updateMouseCoordinatePrecision();

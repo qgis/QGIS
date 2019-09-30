@@ -81,31 +81,31 @@ class CORE_EXPORT QgsRasterBlock
     static int typeSize( int dataType )
     {
       // Modified and extended copy from GDAL
-      switch ( dataType )
+      switch ( static_cast<Qgis::DataType>( dataType ) )
       {
-        case Qgis::Byte:
+        case Qgis::DataType::Byte:
           return 1;
 
-        case Qgis::UInt16:
-        case Qgis::Int16:
+        case Qgis::DataType::UInt16:
+        case Qgis::DataType::Int16:
           return 2;
 
-        case Qgis::UInt32:
-        case Qgis::Int32:
-        case Qgis::Float32:
-        case Qgis::CInt16:
+        case Qgis::DataType::UInt32:
+        case Qgis::DataType::Int32:
+        case Qgis::DataType::Float32:
+        case Qgis::DataType::CInt16:
           return 4;
 
-        case Qgis::Float64:
-        case Qgis::CInt32:
-        case Qgis::CFloat32:
+        case Qgis::DataType::Float64:
+        case Qgis::DataType::CInt32:
+        case Qgis::DataType::CFloat32:
           return 8;
 
-        case Qgis::CFloat64:
+        case Qgis::DataType::CFloat64:
           return 16;
 
-        case Qgis::ARGB32:
-        case Qgis::ARGB32_Premultiplied:
+        case Qgis::DataType::ARGB32:
+        case Qgis::DataType::ARGB32_Premultiplied:
           return 4;
 
         default:
@@ -116,7 +116,7 @@ class CORE_EXPORT QgsRasterBlock
     // Data type in bytes
     int dataTypeSize() const
     {
-      return typeSize( mDataType );
+      return typeSize( static_cast<int>( mDataType ) );
     }
 
     //! Returns TRUE if data type is numeric
@@ -242,7 +242,7 @@ class CORE_EXPORT QgsRasterBlock
      */
     const quint8 *byteData() const SIP_SKIP
     {
-      if ( mDataType != Qgis::Byte )
+      if ( mDataType != Qgis::DataType::Byte )
         return nullptr;
       return static_cast< const quint8 * >( mData );
     }
@@ -691,7 +691,7 @@ class CORE_EXPORT QgsRasterBlock
     bool mValid = true;
 
     // Data type
-    Qgis::DataType mDataType = Qgis::UnknownDataType;
+    Qgis::DataType mDataType = Qgis::DataType::UnknownDataType;
 
     // Data type size in bytes, to make bits() fast
     int mTypeSize = 0;
@@ -741,22 +741,22 @@ inline double QgsRasterBlock::readValue( void *data, Qgis::DataType type, qgssiz
 
   switch ( type )
   {
-    case Qgis::Byte:
+    case Qgis::DataType::Byte:
       return static_cast< double >( ( static_cast< quint8 * >( data ) )[index] );
-    case Qgis::UInt16:
+    case Qgis::DataType::UInt16:
       return static_cast< double >( ( static_cast< quint16 * >( data ) )[index] );
-    case Qgis::Int16:
+    case Qgis::DataType::Int16:
       return static_cast< double >( ( static_cast< qint16 * >( data ) )[index] );
-    case Qgis::UInt32:
+    case Qgis::DataType::UInt32:
       return static_cast< double >( ( static_cast< quint32 * >( data ) )[index] );
-    case Qgis::Int32:
+    case Qgis::DataType::Int32:
       return static_cast< double >( ( static_cast< qint32 * >( data ) )[index] );
-    case Qgis::Float32:
+    case Qgis::DataType::Float32:
       return static_cast< double >( ( static_cast< float * >( data ) )[index] );
-    case Qgis::Float64:
+    case Qgis::DataType::Float64:
       return static_cast< double >( ( static_cast< double * >( data ) )[index] );
     default:
-      QgsDebugMsg( QStringLiteral( "Data type %1 is not supported" ).arg( type ) );
+      QgsDebugMsg( QStringLiteral( "Data type %1 is not supported" ).arg( static_cast<int>( type ) ) );
       break;
   }
 
@@ -769,29 +769,29 @@ inline void QgsRasterBlock::writeValue( void *data, Qgis::DataType type, qgssize
 
   switch ( type )
   {
-    case Qgis::Byte:
+    case Qgis::DataType::Byte:
       ( static_cast< quint8 * >( data ) )[index] = static_cast< quint8 >( value );
       break;
-    case Qgis::UInt16:
+    case Qgis::DataType::UInt16:
       ( static_cast< quint16 * >( data ) )[index] = static_cast< quint16 >( value );
       break;
-    case Qgis::Int16:
+    case Qgis::DataType::Int16:
       ( static_cast< qint16 * >( data ) )[index] = static_cast< qint16 >( value );
       break;
-    case Qgis::UInt32:
+    case Qgis::DataType::UInt32:
       ( static_cast< quint32 * >( data ) )[index] = static_cast< quint32 >( value );
       break;
-    case Qgis::Int32:
+    case Qgis::DataType::Int32:
       ( static_cast< qint32 * >( data ) )[index] = static_cast< qint32 >( value );
       break;
-    case Qgis::Float32:
+    case Qgis::DataType::Float32:
       ( static_cast< float * >( data ) )[index] = static_cast< float >( value );
       break;
-    case Qgis::Float64:
+    case Qgis::DataType::Float64:
       ( static_cast< double * >( data ) )[index] = value;
       break;
     default:
-      QgsDebugMsg( QStringLiteral( "Data type %1 is not supported" ).arg( type ) );
+      QgsDebugMsg( QStringLiteral( "Data type %1 is not supported" ).arg( static_cast<int>( type ) ) );
       break;
   }
 }

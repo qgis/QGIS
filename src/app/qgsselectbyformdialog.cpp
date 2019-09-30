@@ -98,7 +98,7 @@ void QgsSelectByFormDialog::zoomToFeatures( const QString &filter )
     {
       mMessageBar->pushMessage( QString(),
                                 tr( "Zoomed to %n matching feature(s)", "number of matching features", featureCount ),
-                                Qgis::Info,
+                                Qgis::MessageLevel::Info,
                                 timeout );
     }
   }
@@ -106,7 +106,7 @@ void QgsSelectByFormDialog::zoomToFeatures( const QString &filter )
   {
     mMessageBar->pushMessage( QString(),
                               tr( "No matching features found" ),
-                              Qgis::Info,
+                              Qgis::MessageLevel::Info,
                               timeout );
   }
 }
@@ -138,7 +138,7 @@ void QgsSelectByFormDialog::flashFeatures( const QString &filter )
   {
     mMessageBar->pushMessage( QString(),
                               tr( "No matching features found" ),
-                              Qgis::Info,
+                              Qgis::MessageLevel::Info,
                               timeout );
   }
 }

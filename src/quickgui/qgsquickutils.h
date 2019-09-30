@@ -138,7 +138,7 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
       */
     Q_INVOKABLE static void logMessage( const QString &message,
                                         const QString &tag = QString( "QgsQuick" ),
-                                        Qgis::MessageLevel level = Qgis::Warning );
+                                        Qgis::MessageLevel level = Qgis::MessageLevel::Warning );
 
     /**
       * QgsQuickFeatureLayerPair factory for tuple of QgsFeature and QgsVectorLayer used in QgsQUick library.

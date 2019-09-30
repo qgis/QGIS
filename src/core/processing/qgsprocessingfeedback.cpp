@@ -32,27 +32,27 @@ void QgsProcessingFeedback::setProgressText( const QString & )
 
 void QgsProcessingFeedback::reportError( const QString &error, bool )
 {
-  QgsMessageLog::logMessage( error, tr( "Processing" ), Qgis::Critical );
+  QgsMessageLog::logMessage( error, tr( "Processing" ), Qgis::MessageLevel::Critical );
 }
 
 void QgsProcessingFeedback::pushInfo( const QString &info )
 {
-  QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
+  QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::MessageLevel::Info );
 }
 
 void QgsProcessingFeedback::pushCommandInfo( const QString &info )
 {
-  QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
+  QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::MessageLevel::Info );
 }
 
 void QgsProcessingFeedback::pushDebugInfo( const QString &info )
 {
-  QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
+  QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::MessageLevel::Info );
 }
 
 void QgsProcessingFeedback::pushConsoleInfo( const QString &info )
 {
-  QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
+  QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::MessageLevel::Info );
 }
 
 void QgsProcessingFeedback::pushVersionInfo( const QgsProcessingProvider *provider )

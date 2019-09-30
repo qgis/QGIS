@@ -115,7 +115,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         else if ( error == 2 )
         {
           //problem with coordinate transformation
-          emit messageEmitted( tr( "Coordinate transform error. Cannot transform the point to the layers coordinate system" ), Qgis::Warning );
+          emit messageEmitted( tr( "Coordinate transform error. Cannot transform the point to the layers coordinate system" ), Qgis::MessageLevel::Warning );
           return;
         }
 
@@ -207,7 +207,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
       if ( ( !isGeometryEmpty ) && QgsWkbTypes::isSingleType( vlayer->wkbType() ) )
       {
-        emit messageEmitted( tr( "Add part: Feature geom is single part and you've added more than one" ), Qgis::Warning );
+        emit messageEmitted( tr( "Add part: Feature geom is single part and you've added more than one" ), Qgis::MessageLevel::Warning );
       }
 
       return;
@@ -238,7 +238,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       break;
   }
 
-  emit messageEmitted( errorMessage, Qgis::Warning );
+  emit messageEmitted( errorMessage, Qgis::MessageLevel::Warning );
   vlayer->destroyEditCommand();
 }
 
@@ -272,7 +272,7 @@ bool QgsMapToolAddPart::checkSelection()
 
   if ( !selectionErrorMsg.isEmpty() )
   {
-    emit messageEmitted( tr( "Could not add part. %1" ).arg( selectionErrorMsg ), Qgis::Warning );
+    emit messageEmitted( tr( "Could not add part. %1" ).arg( selectionErrorMsg ), Qgis::MessageLevel::Warning );
   }
 
   return selectionErrorMsg.isEmpty();

@@ -80,7 +80,7 @@ void TestQgsMeshLayerInterpolator::testExportRasterBand()
   QCOMPARE( block->height(), 10 );
   QVERIFY( block->isValid() );
   QVERIFY( !block->isEmpty() );
-  QCOMPARE( block->dataType(), Qgis::Float64 );
+  QCOMPARE( block->dataType(), Qgis::DataType::Float64 );
   QVERIFY( block->hasNoDataValue() );
   QVERIFY( block->hasNoData() );
 

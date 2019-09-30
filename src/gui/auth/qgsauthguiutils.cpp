@@ -69,7 +69,7 @@ bool QgsAuthGuiUtils::isDisabled( QgsMessageBar *msgbar, int timeout )
   {
     msgbar->pushMessage( QObject::tr( "Authentication System" ),
                          QObject::tr( "DISABLED. Resources authenticating via the system can not be accessed" ),
-                         Qgis::Critical, timeout );
+                         Qgis::MessageLevel::Critical, timeout );
     return true;
   }
   return false;
@@ -84,7 +84,7 @@ void QgsAuthGuiUtils::setMasterPassword( QgsMessageBar *msgbar, int timeout )
   {
     msgbar->pushMessage( QgsApplication::authManager()->authManTag(),
                          QObject::tr( "Master password already set." ),
-                         Qgis::Info, timeout );
+                         Qgis::MessageLevel::Info, timeout );
     return;
   }
   ( void )QgsApplication::authManager()->setMasterPassword( true );
@@ -96,7 +96,7 @@ void QgsAuthGuiUtils::clearCachedMasterPassword( QgsMessageBar *msgbar, int time
     return;
 
   QString msg( QObject::tr( "Master password not cleared because it is not set." ) );
-  Qgis::MessageLevel level( Qgis::Info );
+  Qgis::MessageLevel level( Qgis::MessageLevel::Info );
 
   if ( QgsApplication::authManager()->masterPasswordIsSet() )
   {
@@ -105,7 +105,7 @@ void QgsAuthGuiUtils::clearCachedMasterPassword( QgsMessageBar *msgbar, int time
     if ( QgsApplication::authManager()->masterPasswordIsSet() )
     {
       msg = QObject::tr( "Master password FAILED to be cleared." );
-      level = Qgis::Warning;
+      level = Qgis::MessageLevel::Warning;
     }
   }
 
@@ -118,13 +118,13 @@ void QgsAuthGuiUtils::resetMasterPassword( QgsMessageBar *msgbar, int timeout, Q
     return;
 
   QString msg( QObject::tr( "Master password reset" ) );
-  Qgis::MessageLevel level( Qgis::Info );
+  Qgis::MessageLevel level( Qgis::MessageLevel::Info );
 
   // check that a master password is even set in auth db
   if ( !QgsApplication::authManager()->masterPasswordHashInDatabase() )
   {
     msg = QObject::tr( "Master password reset: NO current password hash in database" );
-    msgbar->pushMessage( QgsApplication::authManager()->authManTag(), msg, Qgis::Warning, 0 );
+    msgbar->pushMessage( QgsApplication::authManager()->authManTag(), msg, Qgis::MessageLevel::Warning, 0 );
     return;
   }
 
@@ -144,7 +144,7 @@ void QgsAuthGuiUtils::resetMasterPassword( QgsMessageBar *msgbar, int timeout, Q
   if ( !QgsApplication::authManager()->resetMasterPassword( newpass, oldpass, keepbackup, &backuppath ) )
   {
     msg = QObject::tr( "Master password FAILED to be reset" );
-    level = Qgis::Warning;
+    level = Qgis::MessageLevel::Warning;
   }
 
   if ( !backuppath.isEmpty() )
@@ -163,7 +163,7 @@ void QgsAuthGuiUtils::clearCachedAuthenticationConfigs( QgsMessageBar *msgbar, i
 
   QgsApplication::authManager()->clearAllCachedConfigs();
   QString msg = QObject::tr( "Cached authentication configurations for session cleared" );
-  msgbar->pushMessage( QgsApplication::authManager()->authManTag(), msg, Qgis::Info, timeout );
+  msgbar->pushMessage( QgsApplication::authManager()->authManTag(), msg, Qgis::MessageLevel::Info, timeout );
 }
 
 void QgsAuthGuiUtils::removeAuthenticationConfigs( QgsMessageBar *msgbar, int timeout, QWidget *parent )
@@ -182,12 +182,12 @@ void QgsAuthGuiUtils::removeAuthenticationConfigs( QgsMessageBar *msgbar, int ti
   }
 
   QString msg( QObject::tr( "Authentication configurations removed." ) );
-  Qgis::MessageLevel level( Qgis::Info );
+  Qgis::MessageLevel level( Qgis::MessageLevel::Info );
 
   if ( !QgsApplication::authManager()->removeAllAuthenticationConfigs() )
   {
     msg = QObject::tr( "Authentication configurations FAILED to be removed." );
-    level = Qgis::Warning;
+    level = Qgis::MessageLevel::Warning;
   }
 
   msgbar->pushMessage( QgsApplication::authManager()->authManTag(), msg, level, timeout );
@@ -215,13 +215,13 @@ void QgsAuthGuiUtils::eraseAuthenticationDatabase( QgsMessageBar *msgbar, int ti
   }
 
   QString msg( QObject::tr( "Active authentication database erased." ) );
-  Qgis::MessageLevel level( Qgis::Warning );
+  Qgis::MessageLevel level( Qgis::MessageLevel::Warning );
 
   QString backuppath;
   if ( !QgsApplication::authManager()->eraseAuthenticationDatabase( true, &backuppath ) )
   {
     msg = QObject::tr( "Authentication database FAILED to be erased." );
-    level = Qgis::Warning;
+    level = Qgis::MessageLevel::Warning;
   }
   else
   {
@@ -229,7 +229,7 @@ void QgsAuthGuiUtils::eraseAuthenticationDatabase( QgsMessageBar *msgbar, int ti
     {
       msg += QObject::tr( " (backup: %1)" ).arg( backuppath );
     }
-    level = Qgis::Critical;
+    level = Qgis::MessageLevel::Critical;
   }
 
   timeout = 0; // no timeout, so user can read restart message
@@ -278,14 +278,14 @@ void QgsAuthGuiUtils::passwordHelperDelete( QgsMessageBar *msgbar, int timeout, 
   if ( ! QgsApplication::authManager()->passwordHelperDelete() )
   {
     msg = QgsApplication::authManager()->passwordHelperErrorMessage();
-    level = Qgis::Warning;
+    level = Qgis::MessageLevel::Warning;
   }
   else
   {
     msg = QObject::tr( "Master password was successfully deleted from your %1" )
           .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME );
 
-    level = Qgis::Info;
+    level = Qgis::MessageLevel::Info;
   }
   msgbar->pushMessage( QObject::tr( "Password helper delete" ), msg, level, timeout );
 }
@@ -298,19 +298,19 @@ void QgsAuthGuiUtils::passwordHelperSync( QgsMessageBar *msgbar, int timeout )
   {
     msg = QObject::tr( "Master password is not set and cannot be stored in your %1." )
           .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME );
-    level = Qgis::Warning;
+    level = Qgis::MessageLevel::Warning;
   }
   else if ( ! QgsApplication::authManager()->passwordHelperSync() )
   {
     msg = QgsApplication::authManager()->passwordHelperErrorMessage();
-    level = Qgis::Warning;
+    level = Qgis::MessageLevel::Warning;
   }
   else
   {
     msg = QObject::tr( "Master password has been successfully stored in your %1." )
           .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME );
 
-    level = Qgis::Info;
+    level = Qgis::MessageLevel::Info;
   }
   msgbar->pushMessage( QObject::tr( "Password helper write" ), msg, level, timeout );
 }
@@ -322,7 +322,7 @@ void QgsAuthGuiUtils::passwordHelperEnable( bool enabled, QgsMessageBar *msgbar,
                 .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME ) :
                 QObject::tr( "Your %1 will <b>not be used anymore</b> to store and retrieve the master password." )
                 .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME );
-  msgbar->pushMessage( QObject::tr( "Password helper write" ), msg, Qgis::Info, timeout );
+  msgbar->pushMessage( QObject::tr( "Password helper write" ), msg, Qgis::MessageLevel::Info, timeout );
 }
 
 void QgsAuthGuiUtils::passwordHelperLoggingEnable( bool enabled, QgsMessageBar *msgbar, int timeout )

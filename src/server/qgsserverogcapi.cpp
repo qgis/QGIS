@@ -74,12 +74,12 @@ void QgsServerOgcApi::executeRequest( const QgsServerApiContext &context ) const
   auto hasMatch { false };
   for ( const auto &h : mHandlers )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Checking API path %1 for %2 " ).arg( path, h->path().pattern() ), QStringLiteral( "Server" ), Qgis::Info );
+    QgsMessageLog::logMessage( QStringLiteral( "Checking API path %1 for %2 " ).arg( path, h->path().pattern() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
     if ( h->path().match( path ).hasMatch() )
     {
       hasMatch = true;
       // Execute handler
-      QgsMessageLog::logMessage( QStringLiteral( "Found API handler %1" ).arg( QString::fromStdString( h->operationId() ) ), QStringLiteral( "Server" ), Qgis::Info );
+      QgsMessageLog::logMessage( QStringLiteral( "Found API handler %1" ).arg( QString::fromStdString( h->operationId() ) ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
       // May throw QgsServerApiBadRequestException or JSON exceptions on serializing
       try
       {

@@ -35,7 +35,6 @@
 #include "qgstabwidget.h"
 #include "qgssettings.h"
 #include "qgsscrollarea.h"
-#include "qgsgui.h"
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsvectorlayerutils.h"
 #include "qgsqmlwidgetwrapper.h"
@@ -580,14 +579,14 @@ void QgsAttributeForm::pushSelectedFeaturesMessage()
   {
     mMessageBar->pushMessage( QString(),
                               tr( "%n matching feature(s) selected", "matching features", count ),
-                              Qgis::Info,
+                              Qgis::MessageLevel::Info,
                               messageTimeout() );
   }
   else
   {
     mMessageBar->pushMessage( QString(),
                               tr( "No matching features found" ),
-                              Qgis::Warning,
+                              Qgis::MessageLevel::Warning,
                               messageTimeout() );
   }
 }
@@ -683,12 +682,12 @@ bool QgsAttributeForm::saveMultiEdits()
   {
     mLayer->endEditCommand();
     mLayer->triggerRepaint();
-    mMultiEditMessageBarItem = new QgsMessageBarItem( tr( "Attribute changes for multiple features applied." ), Qgis::Success, messageTimeout() );
+    mMultiEditMessageBarItem = new QgsMessageBarItem( tr( "Attribute changes for multiple features applied." ), Qgis::MessageLevel::Success, messageTimeout() );
   }
   else
   {
     mLayer->destroyEditCommand();
-    mMultiEditMessageBarItem = new QgsMessageBarItem( tr( "Changes could not be applied." ), Qgis::Warning, messageTimeout() );
+    mMultiEditMessageBarItem = new QgsMessageBarItem( tr( "Changes could not be applied." ), Qgis::MessageLevel::Warning, messageTimeout() );
   }
 
   if ( !mButtonBox->isVisible() )
@@ -859,7 +858,7 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QVariant
         connect( msgLabel, &QLabel::linkActivated, this, &QgsAttributeForm::multiEditMessageClicked );
         clearMultiEditMessages();
 
-        mMultiEditUnsavedMessageBarItem = new QgsMessageBarItem( msgLabel, Qgis::Warning );
+        mMultiEditUnsavedMessageBarItem = new QgsMessageBarItem( msgLabel, Qgis::MessageLevel::Warning );
         if ( !mButtonBox->isVisible() )
           mMessageBar->pushItem( mMultiEditUnsavedMessageBarItem );
       }

@@ -45,7 +45,7 @@ QGeoPositionInfoSource  *QgsQuickPositionKit::gpsSource()
                                .arg( tr( "Unable to create default GPS Position Source" ) )
                                .arg( QString::number( ( long )source->error() ) )
                                , QStringLiteral( "QgsQuick" )
-                               , Qgis::Warning );
+                               , Qgis::MessageLevel::Warning );
     return nullptr;
   }
   else

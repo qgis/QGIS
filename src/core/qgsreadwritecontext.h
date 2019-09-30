@@ -42,7 +42,7 @@ class CORE_EXPORT QgsReadWriteContext
     struct ReadWriteMessage
     {
         //! Construct a container for QgsReadWriteContext error or warning messages
-        ReadWriteMessage( const QString &message, Qgis::MessageLevel level = Qgis::Warning, const QStringList &categories = QStringList() )
+        ReadWriteMessage( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Warning, const QStringList &categories = QStringList() )
           : mMessage( message )
           , mLevel( level )
           , mCategories( categories )
@@ -80,7 +80,7 @@ class CORE_EXPORT QgsReadWriteContext
      * Append a message to the context
      * \since QGIS 3.2
      */
-    void pushMessage( const QString &message, Qgis::MessageLevel level = Qgis::Warning );
+    void pushMessage( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Warning );
 
     /**
      * Push a category to the stack

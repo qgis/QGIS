@@ -52,7 +52,7 @@ void QgsRasterBooleanLogicAlgorithmBase::initAlgorithm( const QVariantMap & )
   noDataValueParam->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( noDataValueParam.release() );
 
-  std::unique_ptr< QgsProcessingParameterDefinition > typeChoice = QgsRasterAnalysisUtils::createRasterTypeParameter( QStringLiteral( "DATA_TYPE" ), QObject::tr( "Output data type" ), Qgis::Float32 );
+  std::unique_ptr< QgsProcessingParameterDefinition > typeChoice = QgsRasterAnalysisUtils::createRasterTypeParameter( QStringLiteral( "DATA_TYPE" ), QObject::tr( "Output data type" ), Qgis::DataType::Float32 );
   typeChoice->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( typeChoice.release() );
 

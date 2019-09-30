@@ -147,32 +147,32 @@ Qgis::DataType QgsGdalProviderBase::dataTypeFromGdal( const GDALDataType gdalDat
   switch ( gdalDataType )
   {
     case GDT_Byte:
-      return Qgis::Byte;
+      return Qgis::DataType::Byte;
     case GDT_UInt16:
-      return Qgis::UInt16;
+      return Qgis::DataType::UInt16;
     case GDT_Int16:
-      return Qgis::Int16;
+      return Qgis::DataType::Int16;
     case GDT_UInt32:
-      return Qgis::UInt32;
+      return Qgis::DataType::UInt32;
     case GDT_Int32:
-      return Qgis::Int32;
+      return Qgis::DataType::Int32;
     case GDT_Float32:
-      return Qgis::Float32;
+      return Qgis::DataType::Float32;
     case GDT_Float64:
-      return Qgis::Float64;
+      return Qgis::DataType::Float64;
     case GDT_CInt16:
-      return Qgis::CInt16;
+      return Qgis::DataType::CInt16;
     case GDT_CInt32:
-      return Qgis::CInt32;
+      return Qgis::DataType::CInt32;
     case GDT_CFloat32:
-      return Qgis::CFloat32;
+      return Qgis::DataType::CFloat32;
     case GDT_CFloat64:
-      return Qgis::CFloat64;
+      return Qgis::DataType::CFloat64;
     case GDT_Unknown:
     case GDT_TypeCount:
-      return Qgis::UnknownDataType;
+      return Qgis::DataType::UnknownDataType;
   }
-  return Qgis::UnknownDataType;
+  return Qgis::DataType::UnknownDataType;
 }
 
 int QgsGdalProviderBase::colorInterpretationFromGdal( const GDALColorInterp gdalColorInterpretation ) const

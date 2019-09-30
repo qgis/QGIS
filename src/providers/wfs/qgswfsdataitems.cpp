@@ -92,7 +92,7 @@ void QgsWfsLayerItem::copyStyle()
     // TODO: how to emit message from provider (which does not know about QgisApp)
     QgisApp::instance()->messageBar()->pushMessage( tr( "Cannot copy style" ),
         errorMsg,
-        Qgis::Critical, messageTimeout() );
+        Qgis::MessageLevel::Critical, messageTimeout() );
 #endif
     return;
   }
@@ -110,7 +110,7 @@ void QgsWfsLayerItem::copyStyle()
     // TODO: how to emit message from provider (which does not know about QgisApp)
     QgisApp::instance()->messageBar()->pushMessage( tr( "Cannot copy style" ),
         errorMsg,
-        Qgis::Critical, messageTimeout() );
+        Qgis::MessageLevel::Critical, messageTimeout() );
 #endif
     return;
   }

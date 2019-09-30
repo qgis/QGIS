@@ -1054,7 +1054,7 @@ void QgsAuthOAuth2Edit::configReplyFinished()
     else
     {
       QString errorMsg = tr( "Downloading configuration failed with error: %1" ).arg( configReply->errorString() );
-      QgsMessageLog::logMessage( errorMsg, QStringLiteral( "OAuth2" ), Qgis::Critical );
+      QgsMessageLog::logMessage( errorMsg, QStringLiteral( "OAuth2" ), Qgis::MessageLevel::Critical );
     }
   }
   mDownloading = false;
@@ -1091,7 +1091,7 @@ void QgsAuthOAuth2Edit::registerReplyFinished()
   else
   {
     QString errorMsg = QStringLiteral( "Client registration failed with error: %1" ).arg( registerReply->errorString() );
-    QgsMessageLog::logMessage( errorMsg, QStringLiteral( "OAuth2" ), Qgis::Critical );
+    QgsMessageLog::logMessage( errorMsg, QStringLiteral( "OAuth2" ), Qgis::MessageLevel::Critical );
   }
   mDownloading = false;
   registerReply->deleteLater();
@@ -1102,7 +1102,7 @@ void QgsAuthOAuth2Edit::networkError( QNetworkReply::NetworkError error )
   QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
   qWarning() << "QgsAuthOAuth2Edit::onNetworkError: " << error << ": " << reply->errorString();
   QString errorMsg = QStringLiteral( "Network error: %1" ).arg( reply->errorString() );
-  QgsMessageLog::logMessage( errorMsg, QStringLiteral( "OAuth2" ), Qgis::Critical );
+  QgsMessageLog::logMessage( errorMsg, QStringLiteral( "OAuth2" ), Qgis::MessageLevel::Critical );
   qDebug() << "QgsAuthOAuth2Edit::onNetworkError: " << reply->readAll();
 }
 

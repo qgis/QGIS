@@ -636,8 +636,8 @@ void QgsRasterLayerProperties::sync()
 {
   QgsSettings myQSettings;
 
-  if ( mRasterLayer->dataProvider()->dataType( 1 ) == Qgis::ARGB32
-       || mRasterLayer->dataProvider()->dataType( 1 ) == Qgis::ARGB32_Premultiplied )
+  if ( mRasterLayer->dataProvider()->dataType( 1 ) == Qgis::DataType::ARGB32
+       || mRasterLayer->dataProvider()->dataType( 1 ) == Qgis::DataType::ARGB32_Premultiplied )
   {
     gboxNoDataValue->setEnabled( false );
     gboxCustomTransparency->setEnabled( false );
@@ -1309,8 +1309,8 @@ void QgsRasterLayerProperties::setTransparencyCell( int row, int column, double 
     QString valueString;
     switch ( provider->sourceDataType( 1 ) )
     {
-      case Qgis::Float32:
-      case Qgis::Float64:
+      case Qgis::DataType::Float32:
+      case Qgis::DataType::Float64:
         lineEdit->setValidator( new QDoubleValidator( nullptr ) );
         if ( !std::isnan( value ) )
         {

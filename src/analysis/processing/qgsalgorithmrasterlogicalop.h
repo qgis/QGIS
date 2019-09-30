@@ -53,7 +53,7 @@ class ANALYSIS_EXPORT QgsRasterBooleanLogicAlgorithmBase : public QgsProcessingA
   private:
 
     std::vector< QgsRasterAnalysisUtils::RasterLogicInput > mInputs;
-    Qgis::DataType mDataType = Qgis::Float32;
+    Qgis::DataType mDataType = Qgis::DataType::Float32;
     double mNoDataValue = -9999;
     int mLayerWidth;
     int mLayerHeight;

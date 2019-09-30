@@ -97,8 +97,8 @@ class QgsAmsProvider : public QgsRasterDataProvider
     QgsRectangle extent() const override { return mExtent; }
     QString lastErrorTitle() override { return mErrorTitle; }
     QString lastError() override { return mError; }
-    Qgis::DataType dataType( int /*bandNo*/ ) const override { return Qgis::ARGB32; }
-    Qgis::DataType sourceDataType( int /*bandNo*/ ) const override { return Qgis::ARGB32; }
+    Qgis::DataType dataType( int /*bandNo*/ ) const override { return Qgis::DataType::ARGB32; }
+    Qgis::DataType sourceDataType( int /*bandNo*/ ) const override { return Qgis::DataType::ARGB32; }
     QgsRasterInterface *clone() const override;
     QString htmlMetadata() override;
     bool supportsLegendGraphic() const override { return true; }

@@ -91,8 +91,8 @@ bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
 
     // Data types may differ (?)
     bool typesOk = true;
-    compare( QStringLiteral( "Source data type" ), verifiedProvider->sourceDataType( band ), expectedProvider->sourceDataType( band ), mReport, typesOk );
-    compare( QStringLiteral( "Data type" ), verifiedProvider->dataType( band ), expectedProvider->dataType( band ), mReport, typesOk );
+    compare( QStringLiteral( "Source data type" ), static_cast<int>( verifiedProvider->sourceDataType( band ) ), static_cast<int>( expectedProvider->sourceDataType( band ) ), mReport, typesOk );
+    compare( QStringLiteral( "Data type" ), static_cast<int>( verifiedProvider->dataType( band ) ), static_cast<int>( expectedProvider->dataType( band ) ), mReport, typesOk );
 
     // Check nodata
     bool noDataOk = true;

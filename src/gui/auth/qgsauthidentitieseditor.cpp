@@ -305,7 +305,7 @@ void QgsAuthIdentitiesEditor::btnAddIdentity_clicked()
       if ( !QgsApplication::authManager()->storeCertIdentity( bundle.first, bundle.second ) )
       {
         messageBar()->pushMessage( tr( "ERROR storing identity bundle in authentication database." ),
-                                   Qgis::Critical );
+                                   Qgis::MessageLevel::Critical );
       }
       populateIdentitiesView();
       mRootCertIdentItem->setExpanded( true );
@@ -329,7 +329,7 @@ void QgsAuthIdentitiesEditor::btnRemoveIdentity_clicked()
   if ( digest.isEmpty() )
   {
     messageBar()->pushMessage( tr( "Certificate id missing." ),
-                               Qgis::Warning );
+                               Qgis::MessageLevel::Warning );
     return;
   }
 
@@ -353,7 +353,7 @@ void QgsAuthIdentitiesEditor::btnRemoveIdentity_clicked()
   if ( !QgsApplication::authManager()->removeCertIdentity( digest ) )
   {
     messageBar()->pushMessage( tr( "ERROR removing cert identity from authentication database for id %1:" ).arg( digest ),
-                               Qgis::Critical );
+                               Qgis::MessageLevel::Critical );
     return;
   }
 

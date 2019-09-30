@@ -300,13 +300,13 @@ void QgsAuthServersEditor::btnRemoveServer_clicked()
   if ( digest.isEmpty() )
   {
     messageBar()->pushMessage( tr( "SSL custom config id missing" ),
-                               Qgis::Warning );
+                               Qgis::MessageLevel::Warning );
     return;
   }
   if ( hostport.isEmpty() )
   {
     messageBar()->pushMessage( tr( "SSL custom config host:port missing" ),
-                               Qgis::Warning );
+                               Qgis::MessageLevel::Warning );
     return;
   }
 
@@ -332,7 +332,7 @@ void QgsAuthServersEditor::btnRemoveServer_clicked()
   {
     messageBar()->pushMessage( tr( "ERROR removing SSL custom config from authentication database for host:port, id %1:" )
                                .arg( hostport, digest ),
-                               Qgis::Critical );
+                               Qgis::MessageLevel::Critical );
     return;
   }
 
@@ -356,13 +356,13 @@ void QgsAuthServersEditor::btnEditServer_clicked()
   if ( digest.isEmpty() )
   {
     messageBar()->pushMessage( tr( "SSL custom config id missing." ),
-                               Qgis::Warning );
+                               Qgis::MessageLevel::Warning );
     return;
   }
   if ( hostport.isEmpty() )
   {
     messageBar()->pushMessage( tr( "SSL custom config host:port missing." ),
-                               Qgis::Warning );
+                               Qgis::MessageLevel::Warning );
     return;
   }
 

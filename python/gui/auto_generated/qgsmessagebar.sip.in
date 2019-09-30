@@ -36,13 +36,13 @@ The message bar will take ownership of the item.
 :param item: Item to display
 %End
 
-    QgsMessageBarItem *pushWidget( QWidget *widget /Transfer/, Qgis::MessageLevel level = Qgis::Info, int duration = 0 );
+    QgsMessageBarItem *pushWidget( QWidget *widget /Transfer/, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 0 );
 %Docstring
 Display a widget as a message on the bar after hiding the currently visible one
 and putting it in a stack.
 
 :param widget: message widget to display
-:param level: is Qgis.Info, Warning, Critical or Success
+:param level: is Qgis.MessageLevel.Info, Warning, Critical or Success
 :param duration: timeout duration of message in seconds, 0 value indicates no timeout
 %End
 
@@ -69,16 +69,16 @@ make out a widget containing title and message to be displayed on the bar
 make out a widget containing title and message to be displayed on the bar
 %End
 
-    void pushMessage( const QString &text, Qgis::MessageLevel level = Qgis::Info, int duration = 5 );
+    void pushMessage( const QString &text, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 5 );
 %Docstring
 convenience method for pushing a message to the bar
 %End
-    void pushMessage( const QString &title, const QString &text, Qgis::MessageLevel level = Qgis::Info, int duration = 5 );
+    void pushMessage( const QString &title, const QString &text, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 5 );
 %Docstring
 convenience method for pushing a message with title to the bar
 %End
 
-    void pushMessage( const QString &title, const QString &text, const QString &showMore, Qgis::MessageLevel level = Qgis::Info, int duration = 5 );
+    void pushMessage( const QString &title, const QString &text, const QString &showMore, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 5 );
 %Docstring
 convenience method for pushing a message to the bar with a detail text which be shown when pressing a "more" button
 %End

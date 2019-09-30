@@ -219,7 +219,7 @@ class CORE_EXPORT QgsRasterInterface
      * Returns source data type for the band specified by number,
      *  source data type may be shorter than dataType
     */
-    virtual Qgis::DataType sourceDataType( int bandNo ) const { return mInput ? mInput->sourceDataType( bandNo ) : Qgis::UnknownDataType; }
+    virtual Qgis::DataType sourceDataType( int bandNo ) const { return mInput ? mInput->sourceDataType( static_cast<int>( bandNo ) ) : Qgis::DataType::UnknownDataType; }
 
     /**
      * Gets the extent of the interface.
@@ -227,7 +227,7 @@ class CORE_EXPORT QgsRasterInterface
      */
     virtual QgsRectangle extent() const { return mInput ? mInput->extent() : QgsRectangle(); }
 
-    int dataTypeSize( int bandNo ) { return QgsRasterBlock::typeSize( dataType( bandNo ) ); }
+    int dataTypeSize( int bandNo ) { return QgsRasterBlock::typeSize( static_cast<int>( dataType( bandNo ) ) ); }
 
     //! Gets number of bands
     virtual int bandCount() const = 0;

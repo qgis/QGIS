@@ -75,7 +75,7 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       QgisApp::instance()->messageBar()->pushMessage(
         tr( "Coordinate transform error" ),
         tr( "Cannot transform the point to the layers coordinate system" ),
-        Qgis::Info,
+        Qgis::MessageLevel::Info,
         QgisApp::instance()->messageTimeout() );
       return;
     }
@@ -101,7 +101,7 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       QgisApp::instance()->messageBar()->pushMessage(
         tr( "No features were split" ),
         tr( "If there are selected features, the split tool only applies to those. If you would like to split all features under the split line, clear the selection." ),
-        Qgis::Warning,
+        Qgis::MessageLevel::Warning,
         QgisApp::instance()->messageTimeout() );
     }
     else if ( returnCode == QgsGeometry::OperationResult::GeometryEngineError )
@@ -109,7 +109,7 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       QgisApp::instance()->messageBar()->pushMessage(
         tr( "No feature split done" ),
         tr( "Cut edges detected. Make sure the line splits features into multiple parts." ),
-        Qgis::Warning,
+        Qgis::MessageLevel::Warning,
         QgisApp::instance()->messageTimeout() );
     }
     else if ( returnCode == QgsGeometry::OperationResult::InvalidBaseGeometry )
@@ -117,7 +117,7 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       QgisApp::instance()->messageBar()->pushMessage(
         tr( "No feature split done" ),
         tr( "The geometry is invalid. Please repair before trying to split it." ),
-        Qgis::Warning,
+        Qgis::MessageLevel::Warning,
         QgisApp::instance()->messageTimeout() );
     }
     else if ( returnCode != QgsGeometry::OperationResult::Success )
@@ -126,7 +126,7 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       QgisApp::instance()->messageBar()->pushMessage(
         tr( "No feature split done" ),
         tr( "An error occurred during splitting." ),
-        Qgis::Warning,
+        Qgis::MessageLevel::Warning,
         QgisApp::instance()->messageTimeout() );
     }
 

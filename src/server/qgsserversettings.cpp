@@ -70,7 +70,7 @@ void QgsServerSettings::initSettings()
                               QStringLiteral( "Log level" ),
                               QString(),
                               QVariant::Int,
-                              QVariant( Qgis::None ),
+                              QVariant::fromValue( Qgis::MessageLevel::None ),
                               QVariant()
                             };
   mSettings[ sLogLevel.envVar ] = sLogLevel;
@@ -321,20 +321,20 @@ void QgsServerSettings::logSummary() const
   const QMetaEnum metaEnumSrc( QMetaEnum::fromType<QgsServerSettingsEnv::Source>() );
   const QMetaEnum metaEnumEnv( QMetaEnum::fromType<QgsServerSettingsEnv::EnvVar>() );
 
-  QgsMessageLog::logMessage( "Qgis Server Settings: ", "Server", Qgis::Info );
+  QgsMessageLog::logMessage( "Qgis Server Settings: ", "Server", Qgis::MessageLevel::Info );
   for ( Setting s : mSettings )
   {
     const QString src = metaEnumSrc.valueToKey( s.src );
     const QString var = metaEnumEnv.valueToKey( s.envVar );
 
     const QString msg = "  - " + var + " / '" + s.iniKey + "' (" + s.descr + "): '" + value( s.envVar ).toString() + "' (read from " + src + ")";
-    QgsMessageLog::logMessage( msg, "Server", Qgis::Info );
+    QgsMessageLog::logMessage( msg, "Server", Qgis::MessageLevel::Info );
   }
 
   if ( ! iniFile().isEmpty() )
   {
     const QString msg = "Ini file used to initialize settings: " + iniFile();
-    QgsMessageLog::logMessage( msg, "Server", Qgis::Info );
+    QgsMessageLog::logMessage( msg, "Server", Qgis::MessageLevel::Info );
   }
 }
 

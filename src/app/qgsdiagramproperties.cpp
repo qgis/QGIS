@@ -723,7 +723,7 @@ void QgsDiagramProperties::apply()
     QgisApp::instance()->messageBar()->pushMessage(
       tr( "Diagrams: No attributes added." ),
       tr( "You did not add any attributes to this diagram layer. Please specify the attributes to visualize on the diagrams or disable diagrams." ),
-      Qgis::Warning );
+      Qgis::MessageLevel::Warning );
   }
 
   if ( mDiagramType == DIAGRAM_NAME_TEXT )

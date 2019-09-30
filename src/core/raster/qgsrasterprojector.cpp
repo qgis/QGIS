@@ -59,7 +59,7 @@ Qgis::DataType QgsRasterProjector::dataType( int bandNo ) const
 {
   if ( mInput ) return mInput->dataType( bandNo );
 
-  return Qgis::UnknownDataType;
+  return Qgis::DataType::UnknownDataType;
 }
 
 
@@ -798,7 +798,7 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
     return new QgsRasterBlock();
   }
 
-  qgssize pixelSize = static_cast<qgssize>( QgsRasterBlock::typeSize( mInput->dataType( bandNo ) ) );
+  qgssize pixelSize = static_cast<qgssize>( QgsRasterBlock::typeSize( static_cast<int>( mInput->dataType( bandNo ) ) ) );
 
   std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock( inputBlock->dataType(), width, height ) );
   if ( inputBlock->hasNoDataValue() )

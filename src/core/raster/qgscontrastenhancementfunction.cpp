@@ -41,7 +41,7 @@ QgsContrastEnhancementFunction::QgsContrastEnhancementFunction( const QgsContras
 
 int QgsContrastEnhancementFunction::enhance( double value )
 {
-  if ( mQgsRasterDataType == Qgis::Byte )
+  if ( mQgsRasterDataType == Qgis::DataType::Byte )
   {
     return static_cast<int>( value );
   }

@@ -361,37 +361,37 @@ QString QgsRasterLayer::htmlMetadata() const
   // Just use the first band
   switch ( mDataProvider->sourceDataType( 1 ) )
   {
-    case Qgis::Byte:
+    case Qgis::DataType::Byte:
       myMetadata += tr( "Byte - Eight bit unsigned integer" );
       break;
-    case Qgis::UInt16:
+    case Qgis::DataType::UInt16:
       myMetadata += tr( "UInt16 - Sixteen bit unsigned integer " );
       break;
-    case Qgis::Int16:
+    case Qgis::DataType::Int16:
       myMetadata += tr( "Int16 - Sixteen bit signed integer " );
       break;
-    case Qgis::UInt32:
+    case Qgis::DataType::UInt32:
       myMetadata += tr( "UInt32 - Thirty two bit unsigned integer " );
       break;
-    case Qgis::Int32:
+    case Qgis::DataType::Int32:
       myMetadata += tr( "Int32 - Thirty two bit signed integer " );
       break;
-    case Qgis::Float32:
+    case Qgis::DataType::Float32:
       myMetadata += tr( "Float32 - Thirty two bit floating point " );
       break;
-    case Qgis::Float64:
+    case Qgis::DataType::Float64:
       myMetadata += tr( "Float64 - Sixty four bit floating point " );
       break;
-    case Qgis::CInt16:
+    case Qgis::DataType::CInt16:
       myMetadata += tr( "CInt16 - Complex Int16 " );
       break;
-    case Qgis::CInt32:
+    case Qgis::DataType::CInt32:
       myMetadata += tr( "CInt32 - Complex Int32 " );
       break;
-    case Qgis::CFloat32:
+    case Qgis::DataType::CFloat32:
       myMetadata += tr( "CFloat32 - Complex Float32 " );
       break;
-    case Qgis::CFloat64:
+    case Qgis::DataType::CFloat64:
       myMetadata += tr( "CFloat64 - Complex Float64 " );
       break;
     default:
@@ -652,7 +652,7 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   //decide what type of layer this is...
   //TODO Change this to look at the color interp and palette interp to decide which type of layer it is
   QgsDebugMsgLevel( "bandCount = " + QString::number( mDataProvider->bandCount() ), 4 );
-  QgsDebugMsgLevel( "dataType = " + QString::number( mDataProvider->dataType( 1 ) ), 4 );
+  QgsDebugMsgLevel( "dataType = " + QString::number( static_cast<int>( mDataProvider->dataType( 1 ) ) ), 4 );
   if ( ( mDataProvider->bandCount() > 1 ) )
   {
     // handle singleband gray with alpha
@@ -669,8 +669,8 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
       mRasterType = Multiband;
     }
   }
-  else if ( mDataProvider->dataType( 1 ) == Qgis::ARGB32
-            ||  mDataProvider->dataType( 1 ) == Qgis::ARGB32_Premultiplied )
+  else if ( mDataProvider->dataType( 1 ) == Qgis::DataType::ARGB32
+            ||  mDataProvider->dataType( 1 ) == Qgis::DataType::ARGB32_Premultiplied )
   {
     mRasterType = ColorLayer;
   }
@@ -1239,7 +1239,7 @@ bool QgsRasterLayer::defaultContrastEnhancementSettings(
   }
   else if ( dynamic_cast<QgsMultiBandColorRenderer *>( renderer() ) )
   {
-    if ( QgsRasterBlock::typeSize( dataProvider()->sourceDataType( 1 ) ) == 1 )
+    if ( QgsRasterBlock::typeSize( static_cast<int>( dataProvider()->sourceDataType( 1 ) ) ) == 1 )
     {
       key = QStringLiteral( "multiBandSingleByte" );
       defaultAlg = QgsContrastEnhancement::contrastEnhancementAlgorithmString(

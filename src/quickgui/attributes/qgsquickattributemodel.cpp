@@ -169,7 +169,7 @@ bool QgsQuickAttributeModel::save()
   if ( !mFeatureLayerPair.layer()->updateFeature( feat ) )
     QgsMessageLog::logMessage( tr( "Cannot update feature" ),
                                QStringLiteral( "QgsQuick" ),
-                               Qgis::Warning );
+                               Qgis::MessageLevel::Warning );
 
   // This calls lower-level I/O functions which shouldn't be used
   // in a Q_INVOKABLE because they can make the UI unresponsive.
@@ -183,7 +183,7 @@ bool QgsQuickAttributeModel::save()
     else
       QgsMessageLog::logMessage( tr( "Feature %1 could not be fetched after commit" ).arg( mFeatureLayerPair.feature().id() ),
                                  QStringLiteral( "QgsQuick" ),
-                                 Qgis::Warning );
+                                 Qgis::MessageLevel::Warning );
   }
   return rv;
 }
@@ -203,7 +203,7 @@ bool QgsQuickAttributeModel::deleteFeature()
   if ( !mFeatureLayerPair.layer()->deleteFeature( mFeatureLayerPair.feature().id() ) )
     QgsMessageLog::logMessage( tr( "Cannot delete feature" ),
                                QStringLiteral( "QgsQuick" ),
-                               Qgis::Warning );
+                               Qgis::MessageLevel::Warning );
 
   rv = commit();
 
@@ -251,7 +251,7 @@ void QgsQuickAttributeModel::resetAttributes()
                                        fields.at( i ).name(),
                                        exp.parserErrorString() ),
                                      QStringLiteral( "QgsQuick" ),
-                                     Qgis::Warning );
+                                     Qgis::MessageLevel::Warning );
 
         QVariant value = exp.evaluate( &expressionContext );
 
@@ -261,7 +261,7 @@ void QgsQuickAttributeModel::resetAttributes()
                                        fields.at( i ).name(),
                                        exp.evalErrorString() ),
                                      QStringLiteral( "QgsQuick" ),
-                                     Qgis::Warning );
+                                     Qgis::MessageLevel::Warning );
 
         mFeatureLayerPair.feature().setAttribute( i, value );
       }
@@ -285,7 +285,7 @@ void QgsQuickAttributeModel::create()
   {
     QgsMessageLog::logMessage( tr( "Feature could not be added" ),
                                QStringLiteral( "QgsQuick" ),
-                               Qgis::Critical );
+                               Qgis::MessageLevel::Critical );
   }
   commit();
 }
@@ -296,7 +296,7 @@ bool QgsQuickAttributeModel::commit()
   {
     QgsMessageLog::logMessage( tr( "Could not save changes. Rolling back." ),
                                QStringLiteral( "QgsQuick" ),
-                               Qgis::Critical );
+                               Qgis::MessageLevel::Critical );
     mFeatureLayerPair.layer()->rollBack();
     return false;
   }
@@ -316,7 +316,7 @@ bool QgsQuickAttributeModel::startEditing()
   {
     QgsMessageLog::logMessage( tr( "Cannot start editing" ),
                                QStringLiteral( "QgsQuick" ),
-                               Qgis::Warning );
+                               Qgis::MessageLevel::Warning );
     return false;
   }
   else

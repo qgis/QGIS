@@ -107,7 +107,7 @@ QStringList makeKeyTokens_( const QString &scope, const QString &key )
     {
 
       QString errorString = QObject::tr( "Entry token invalid : '%1'. The token will not be saved to file." ).arg( keyToken );
-      QgsMessageLog::logMessage( errorString, QString(), Qgis::Critical );
+      QgsMessageLog::logMessage( errorString, QString(), Qgis::MessageLevel::Critical );
 
     }
 
@@ -1471,11 +1471,11 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
     if ( write() )
     {
       setTitle( localeFileName );
-      QgsMessageLog::logMessage( tr( "Translated project saved with locale prefix %1" ).arg( newFileName ), QObject::tr( "Project translation" ), Qgis::Success );
+      QgsMessageLog::logMessage( tr( "Translated project saved with locale prefix %1" ).arg( newFileName ), QObject::tr( "Project translation" ), Qgis::MessageLevel::Success );
     }
     else
     {
-      QgsMessageLog::logMessage( tr( "Error saving translated project with locale prefix %1" ).arg( newFileName ), QObject::tr( "Project translation" ), Qgis::Critical );
+      QgsMessageLog::logMessage( tr( "Error saving translated project with locale prefix %1" ).arg( newFileName ), QObject::tr( "Project translation" ), Qgis::MessageLevel::Critical );
     }
   }
   return true;

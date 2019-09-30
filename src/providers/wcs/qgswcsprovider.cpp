@@ -880,7 +880,7 @@ Qgis::DataType QgsWcsProvider::sourceDataType( int bandNo ) const
 {
   if ( bandNo < 0 || bandNo > mSrcGdalDataType.size() )
   {
-    return Qgis::UnknownDataType;
+    return Qgis::DataType::UnknownDataType;
   }
 
   return dataTypeFromGdal( mSrcGdalDataType[bandNo - 1] );
@@ -890,7 +890,7 @@ Qgis::DataType QgsWcsProvider::dataType( int bandNo ) const
 {
   if ( bandNo < 0 || bandNo > mGdalDataType.size() )
   {
-    return Qgis::UnknownDataType;
+    return Qgis::DataType::UnknownDataType;
   }
 
   return dataTypeFromGdal( mGdalDataType[bandNo - 1] );

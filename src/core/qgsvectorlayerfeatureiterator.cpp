@@ -361,7 +361,7 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature &f )
 
   if ( guard.hasStackOverflow() )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Stack overflow, too many nested feature iterators.\nIterated layers:\n%3\n..." ).arg( mSource->id(), guard.topFrames() ), QObject::tr( "General" ), Qgis::Critical );
+    QgsMessageLog::logMessage( QObject::tr( "Stack overflow, too many nested feature iterators.\nIterated layers:\n%3\n..." ).arg( mSource->id(), guard.topFrames() ), QObject::tr( "General" ), Qgis::MessageLevel::Critical );
     return false;
   }
 
@@ -702,7 +702,7 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
 
   if ( guard.hasStackOverflow() )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Stack overflow when preparing field %1 of layer %2.\nLast frames:\n%3\n..." ).arg( mSource->fields().at( fieldIdx ).name(), mSource->id(), guard.topFrames() ), QObject::tr( "General" ), Qgis::Critical );
+    QgsMessageLog::logMessage( QObject::tr( "Stack overflow when preparing field %1 of layer %2.\nLast frames:\n%3\n..." ).arg( mSource->fields().at( fieldIdx ).name(), mSource->id(), guard.topFrames() ), QObject::tr( "General" ), Qgis::MessageLevel::Critical );
     return;
   }
 
@@ -856,7 +856,7 @@ bool QgsVectorLayerFeatureIterator::checkGeometryValidity( const QgsFeature &fea
     {
       if ( !feature.geometry().isGeosValid() )
       {
-        QgsMessageLog::logMessage( QObject::tr( "Geometry error: One or more input features have invalid geometry." ), QString(), Qgis::Critical );
+        QgsMessageLog::logMessage( QObject::tr( "Geometry error: One or more input features have invalid geometry." ), QString(), Qgis::MessageLevel::Critical );
         if ( mRequest.invalidGeometryCallback() )
         {
           mRequest.invalidGeometryCallback()( feature );
@@ -869,7 +869,7 @@ bool QgsVectorLayerFeatureIterator::checkGeometryValidity( const QgsFeature &fea
     case QgsFeatureRequest::GeometryAbortOnInvalid:
       if ( !feature.geometry().isGeosValid() )
       {
-        QgsMessageLog::logMessage( QObject::tr( "Geometry error: One or more input features have invalid geometry." ), QString(), Qgis::Critical );
+        QgsMessageLog::logMessage( QObject::tr( "Geometry error: One or more input features have invalid geometry." ), QString(), Qgis::MessageLevel::Critical );
         close();
         if ( mRequest.invalidGeometryCallback() )
         {

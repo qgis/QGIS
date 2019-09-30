@@ -126,7 +126,7 @@ void QgsWfs3APIHandler::handleRequest( const QgsServerApiContext &context ) cons
   }
   else
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Could not find schema.json in %1, please check your server configuration" ).arg( f.fileName() ), QStringLiteral( "Server" ), Qgis::Critical );
+    QgsMessageLog::logMessage( QStringLiteral( "Could not find schema.json in %1, please check your server configuration" ).arg( f.fileName() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
     throw QgsServerApiInternalServerError( QStringLiteral( "Could not find schema.json" ) );
   }
 
@@ -1343,7 +1343,7 @@ void QgsWfs3StaticHandler::handleRequest( const QgsServerApiContext &context ) c
   const QString filePath { staticPath( context ) + '/' + staticFilePath };
   if ( ! QFile::exists( filePath ) )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Static file was not found: %1" ).arg( filePath ), QStringLiteral( "Server" ), Qgis::Info );
+    QgsMessageLog::logMessage( QStringLiteral( "Static file was not found: %1" ).arg( filePath ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
     throw QgsServerApiNotFoundError( QStringLiteral( "Static file %1 was not found" ).arg( staticFilePath ) );
   }
 

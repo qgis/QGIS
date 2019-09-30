@@ -90,7 +90,7 @@ void QgsMapCanvasTracer::reportError( QgsTracer::PathError err, bool addingVerte
   if ( message.isEmpty() )
     return;
 
-  mLastMessage = new QgsMessageBarItem( tr( "Tracing" ), message, Qgis::Warning,
+  mLastMessage = new QgsMessageBarItem( tr( "Tracing" ), message, Qgis::MessageLevel::Warning,
                                         QgsSettings().value( QStringLiteral( "/qgis/messageTimeout" ), 5 ).toInt() );
   mMessageBar->pushItem( mLastMessage );
 }

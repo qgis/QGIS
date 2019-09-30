@@ -78,7 +78,7 @@ QUrl QgsHelp::helpUrl( const QString &key )
 
     helpPath = QStringLiteral( "%1/%2" ).arg( fullPath, key );
 
-    QgsMessageLog::logMessage( QObject::tr( "Trying to open help using key '%1'. Full URI is '%2'…" ).arg( key ).arg( helpPath ), QObject::tr( "QGIS Help" ), Qgis::Info );
+    QgsMessageLog::logMessage( QObject::tr( "Trying to open help using key '%1'. Full URI is '%2'…" ).arg( key ).arg( helpPath ), QObject::tr( "QGIS Help" ), Qgis::MessageLevel::Info );
 
     if ( helpPath.startsWith( QLatin1String( "http" ) ) )
     {

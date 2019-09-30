@@ -60,7 +60,7 @@ void QgsMapToolCircle3Tangents::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       mCircle = QgsCircle().from3Tangents( mPoints.at( 0 ), mPoints.at( 1 ), mPoints.at( 2 ), mPoints.at( 3 ), mPoints.at( 4 ), mPoints.at( 5 ) );
       if ( mCircle.isEmpty() )
       {
-        QgisApp::instance()->messageBar()->pushMessage( tr( "Error" ), tr( "At least two segments are parallels" ), Qgis::Critical, QgisApp::instance()->messageTimeout() );
+        QgisApp::instance()->messageBar()->pushMessage( tr( "Error" ), tr( "At least two segments are parallels" ), Qgis::MessageLevel::Critical, QgisApp::instance()->messageTimeout() );
         mPoints.clear();
         delete mTempRubberBand;
         mTempRubberBand = nullptr;

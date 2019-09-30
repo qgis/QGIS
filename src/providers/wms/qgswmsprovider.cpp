@@ -1291,7 +1291,7 @@ Qgis::DataType QgsWmsProvider::dataType( int bandNo ) const
 Qgis::DataType QgsWmsProvider::sourceDataType( int bandNo ) const
 {
   Q_UNUSED( bandNo )
-  return Qgis::ARGB32;
+  return Qgis::DataType::ARGB32;
 }
 
 int QgsWmsProvider::bandCount() const
@@ -4053,7 +4053,7 @@ void QgsWmsTiledImageDownloadHandler::repeatTileRequest( QNetworkRequest const &
   if ( stat.errors < 100 )
   {
     QgsMessageLog::logMessage( tr( "repeat tileRequest %1 tile %2(retry %3)" )
-                               .arg( tileReqNo ).arg( tileNo ).arg( retry ), tr( "WMS" ), Qgis::Info );
+                               .arg( tileReqNo ).arg( tileNo ).arg( retry ), tr( "WMS" ), Qgis::MessageLevel::Info );
   }
   QgsDebugMsg( QStringLiteral( "repeat tileRequest %1 %2(retry %3) for url: %4" ).arg( tileReqNo ).arg( tileNo ).arg( retry ).arg( url ) );
   request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), retry );
