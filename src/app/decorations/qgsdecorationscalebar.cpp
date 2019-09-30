@@ -310,7 +310,10 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
   mSettings.setNumberOfSegments( mStyleIndex == 3 ? 2 : 1 );
   mSettings.setUnitsPerSegment( mStyleIndex == 3 ? unitsPerSegment / 2 : unitsPerSegment );
   mSettings.setUnitLabel( scaleBarUnitLabel );
-
+  if ( mPlacement == TopCenter || mPlacement == BottomCenter )
+  {
+    mSettings.setLabelHorizontalPlacement( QgsScaleBarSettings::LabelCenteredSegment );
+  }
   QgsScaleBarRenderer::ScaleBarContext scaleContext;
   scaleContext.segmentWidth = mStyleIndex == 3 ? segmentSize / 2 : segmentSize;
   scaleContext.scale = mapSettings.scale();
@@ -370,7 +373,12 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
       originY = deviceHeight - originY - size.height();
       break;
     case TopCenter:
+      originX = deviceWidth / 2 - size.width() / 2 + originX;
+      break;
     case BottomCenter:
+      originX = deviceWidth / 2 - size.width() / 2 + originX;
+      originY = deviceHeight - originY - size.height();
+      break;
     default:
       QgsDebugMsg( QStringLiteral( "Unsupported placement index of %1" ).arg( static_cast<int>( mPlacement ) ) );
   }
