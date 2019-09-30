@@ -175,7 +175,7 @@ void QgsDoubleSpinBox::setSpecialValueText( const QString &txt )
   else
   {
     QDoubleSpinBox::setSpecialValueText( txt );
-    mLineEdit->setNullValue( SPECIAL_TEXT_WHEN_EMPTY );
+    mLineEdit->setNullValue( txt );
   }
 }
 
