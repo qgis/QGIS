@@ -57,6 +57,7 @@ class TestQgsRangeWidgetWrapper : public QObject
     std::unique_ptr<QgsRangeWidgetWrapper> widget0; // For field 0
     std::unique_ptr<QgsRangeWidgetWrapper> widget1; // For field 1
     std::unique_ptr<QgsRangeWidgetWrapper> widget2; // For field 2
+    std::unique_ptr<QgsRangeWidgetWrapper> widget3; // For field 3
     std::unique_ptr<QgsVectorLayer> vl;
 };
 
@@ -92,23 +93,25 @@ void TestQgsRangeWidgetWrapper::init()
   // default precision = 0
   QgsField dfield2( "number_def",  QVariant::Double );
   fields.append( dfield2 );
+  // simple int
+  fields.append( QgsField( "simplenumber", QVariant::Int ) );
   vl->dataProvider()->addAttributes( fields );
   vl->updateFields();
   QVERIFY( vl.get() );
   QVERIFY( vl->isValid() );
-  // Add feature 1:1:123.123456789:123.123456789:POINT( 1 1 )
+  // Add feature 1:1:123.123456789:123.123456789:NULL:POINT( 1 1 )
   QgsFeature feat1( vl->fields(),  1 );
   feat1.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POINT( 1 1 )" ) ) );
   feat1.setAttribute( QStringLiteral( "id" ), 1 );
   feat1.setAttribute( QStringLiteral( "number" ), 123.123456789 );
   feat1.setAttribute( QStringLiteral( "number_def" ), 123.123456789 );
   vl->dataProvider()->addFeature( feat1 );
-  // Add feature 2:2:NULL:NULL:POINT( 2 2 )
+  // Add feature 2:2:NULL:NULL:NULL:POINT( 2 2 )
   QgsFeature feat2( vl->fields(),  2 );
   feat2.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POINT( 2 2 )" ) ) );
   feat2.setAttribute( QStringLiteral( "id" ), 2 );
   vl->dataProvider()->addFeature( feat2 );
-  // Add feature 3:3:-123.123456789:-123.123456789:POINT( 3 3 )
+  // Add feature 3:3:-123.123456789:-123.123456789:NULL:POINT( 3 3 )
   QgsFeature feat3( vl->fields(),  3 );
   feat3.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POINT( 3 3 )" ) ) );
   feat3.setAttribute( QStringLiteral( "number" ), -123.123456789 );
@@ -122,6 +125,7 @@ void TestQgsRangeWidgetWrapper::init()
   widget0 = qgis::make_unique<QgsRangeWidgetWrapper>( vl.get(), 0, nullptr, nullptr );
   widget1 = qgis::make_unique<QgsRangeWidgetWrapper>( vl.get(), 1, nullptr, nullptr );
   widget2 = qgis::make_unique<QgsRangeWidgetWrapper>( vl.get(), 2, nullptr, nullptr );
+  widget3 = qgis::make_unique<QgsRangeWidgetWrapper>( vl.get(), 3, nullptr, nullptr );
   QVERIFY( widget1.get() );
 }
 
@@ -339,55 +343,92 @@ void TestQgsRangeWidgetWrapper::test_focus()
   QVariantMap cfg;
   cfg.insert( QStringLiteral( "AllowNull" ), true );
 
+  //QgsDoubleSpinBox
   widget1->setConfig( cfg );
   QgsDoubleSpinBox *editor1 = qobject_cast<QgsDoubleSpinBox *>( widget1->createWidget( w ) );
   QVERIFY( editor1 );
   widget1->initWidget( editor1 );
+  widget3->setValue( QVariant( QVariant::Double ) );
 
+  //QgsDoubleSpinBox
   widget2->setConfig( cfg );
   QgsDoubleSpinBox *editor2 = qobject_cast<QgsDoubleSpinBox *>( widget2->createWidget( w ) );
   QVERIFY( editor2 );
   widget2->initWidget( editor2 );
+  widget3->setValue( QVariant( QVariant::Double ) );
+
+  //QgsSpinBox
+  widget3->setConfig( cfg );
+  QgsSpinBox *editor3 = qobject_cast<QgsSpinBox *>( widget3->createWidget( w ) );
+  QVERIFY( editor3 );
+  widget3->initWidget( editor3 );
+  widget3->setValue( QVariant( QVariant::Int ) );
 
   QVERIFY( widget1->value().isNull() );
   QVERIFY( widget2->value().isNull() );
+  QVERIFY( widget3->value().isNull() );
   QVERIFY( !editor1->mLineEdit->hasFocus() );
   QVERIFY( !editor2->mLineEdit->hasFocus() );
+  QVERIFY( !editor3->mLineEdit->hasFocus() );
   QCOMPARE( editor1->mLineEdit->text(), QStringLiteral( "nope" ) );
   QCOMPARE( editor2->mLineEdit->text(), QStringLiteral( "nope" ) );
+  QCOMPARE( editor3->mLineEdit->text(), QStringLiteral( "nope" ) );
 
   editor1->mLineEdit->setFocus();
   QVERIFY( widget1->value().isNull() );
   QVERIFY( widget2->value().isNull() );
+  QVERIFY( widget3->value().isNull() );
   QVERIFY( editor1->mLineEdit->hasFocus() );
   QVERIFY( !editor2->mLineEdit->hasFocus() );
+  QVERIFY( !editor3->mLineEdit->hasFocus() );
   QCOMPARE( editor1->mLineEdit->text(), QStringLiteral( "" ) );
   QCOMPARE( editor2->mLineEdit->text(), QStringLiteral( "nope" ) );
+  QCOMPARE( editor3->mLineEdit->text(), QStringLiteral( "nope" ) );
 
   editor2->mLineEdit->setFocus();
   QVERIFY( widget1->value().isNull() );
   QVERIFY( widget2->value().isNull() );
+  QVERIFY( widget3->value().isNull() );
   QVERIFY( !editor1->mLineEdit->hasFocus() );
   QVERIFY( editor2->mLineEdit->hasFocus() );
+  QVERIFY( !editor3->mLineEdit->hasFocus() );
   QCOMPARE( editor1->mLineEdit->text(), QStringLiteral( "nope" ) );
   QCOMPARE( editor2->mLineEdit->text(), QStringLiteral( "" ) );
+  QCOMPARE( editor3->mLineEdit->text(), QStringLiteral( "nope" ) );
+
+  editor3->mLineEdit->setFocus();
+  QVERIFY( widget1->value().isNull() );
+  QVERIFY( widget2->value().isNull() );
+  QVERIFY( widget3->value().isNull() );
+  QVERIFY( !editor1->mLineEdit->hasFocus() );
+  QVERIFY( !editor2->mLineEdit->hasFocus() );
+  QVERIFY( editor3->mLineEdit->hasFocus() );
+  QCOMPARE( editor1->mLineEdit->text(), QStringLiteral( "nope" ) );
+  QCOMPARE( editor2->mLineEdit->text(), QStringLiteral( "nope" ) );
+  QCOMPARE( editor3->mLineEdit->text(), QStringLiteral( "" ) );
 
   editor1->mLineEdit->setFocus();
   editor1->mLineEdit->setText( QString( "151.000000000" ) );
   QVERIFY( !widget1->value().isNull() );
   QVERIFY( widget2->value().isNull() );
+  QVERIFY( widget3->value().isNull() );
   QVERIFY( editor1->mLineEdit->hasFocus() );
   QVERIFY( !editor2->mLineEdit->hasFocus() );
+  QVERIFY( !editor3->mLineEdit->hasFocus() );
   QCOMPARE( editor1->mLineEdit->text(), QStringLiteral( "151.000000000" ) );
   QCOMPARE( editor2->mLineEdit->text(), QStringLiteral( "nope" ) );
+  QCOMPARE( editor3->mLineEdit->text(), QStringLiteral( "nope" ) );
 
   editor2->mLineEdit->setFocus();
+  QVERIFY( widget0->value().isNull() );
   QVERIFY( !widget1->value().isNull() );
   QVERIFY( widget2->value().isNull() );
   QVERIFY( !editor1->mLineEdit->hasFocus() );
   QVERIFY( editor2->mLineEdit->hasFocus() );
+  QVERIFY( !editor3->mLineEdit->hasFocus() );
   QCOMPARE( editor1->mLineEdit->text(), QStringLiteral( "151.000000000" ) );
   QCOMPARE( editor2->mLineEdit->text(), QStringLiteral( "" ) );
+  QCOMPARE( editor3->mLineEdit->text(), QStringLiteral( "nope" ) );
 
 }
 
