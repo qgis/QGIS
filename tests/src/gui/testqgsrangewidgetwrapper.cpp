@@ -349,9 +349,6 @@ void TestQgsRangeWidgetWrapper::test_focus()
   QVERIFY( editor2 );
   widget2->initWidget( editor2 );
 
-  editor1->mLineEdit->setNullValue( QgsApplication::nullRepresentation() );
-  editor2->mLineEdit->setNullValue( QgsApplication::nullRepresentation() );
-
   QVERIFY( widget1->value().isNull() );
   QVERIFY( widget2->value().isNull() );
   QVERIFY( !editor1->mLineEdit->hasFocus() );
