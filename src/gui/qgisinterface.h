@@ -570,7 +570,6 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual QgsLayerTreeRegistryBridge::InsertionPoint layerTreeInsertionPoint() = 0;
 
-
   public slots: // TODO: do these functions really need to be slots?
 
     /* Exposed functions */

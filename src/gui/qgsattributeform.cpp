@@ -20,6 +20,7 @@
 #include "qgsattributeformrelationeditorwidget.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgsfeatureiterator.h"
+#include "qgsgui.h"
 #include "qgsproject.h"
 #include "qgspythonrunner.h"
 #include "qgsrelationwidgetwrapper.h"
@@ -1744,13 +1745,12 @@ void QgsAttributeForm::initPython()
 
       case QgsEditFormConfig::CodeSourceEnvironment:
       case QgsEditFormConfig::CodeSourceNone:
-      default:
         // Nothing to do: the function code should be already in the environment
         break;
     }
 
     // If we have a function code, run it
-    if ( ! initCode.isEmpty() )
+    if ( !initCode.isEmpty() && QgsGui::pythonMacroAllowed() )
     {
       QgsPythonRunner::run( initCode );
     }
