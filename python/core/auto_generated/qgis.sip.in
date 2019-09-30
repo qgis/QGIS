@@ -38,7 +38,7 @@ The Qgis class provides global constants for use throughout the application.
     static const char *QGIS_DEV_VERSION;
 
 
-    enum MessageLevel
+    enum class MessageLevel
     {
       Info,
       Warning,
@@ -47,7 +47,7 @@ The Qgis class provides global constants for use throughout the application.
       None
     };
 
-    enum DataType
+    enum class DataType
     {
       UnknownDataType,
       Byte,
