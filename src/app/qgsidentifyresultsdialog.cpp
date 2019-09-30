@@ -618,17 +618,14 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     if ( foundLinks )
     {
       QLabel *valueLabel = new QLabel( links );
-      valueLabel->setWordWrap( true );
       valueLabel->setOpenExternalLinks( true );
       attrItem->setData( 1, Qt::DisplayRole, QString() );
       attrItem->treeWidget()->setItemWidget( attrItem, 1, valueLabel );
     }
     else
     {
-      auto valueLabel { qgis::make_unique<QLabel>( value ) };
-      valueLabel->setWordWrap( true );
-      attrItem->setData( 1, Qt::DisplayRole, QString() );
-      attrItem->treeWidget()->setItemWidget( attrItem, 1, valueLabel.release() );
+      attrItem->setData( 1, Qt::DisplayRole, value );
+      attrItem->treeWidget()->setItemWidget( attrItem, 1, nullptr );
     }
 
     if ( fields.at( i ).name() == vlayer->displayField() )
