@@ -36,8 +36,12 @@ from qgis.core import (QgsApplication,
                        QgsSpatialIndex,
                        QgsExpression,
                        QgsDistanceArea,
+                       QgsPropertyDefinition,
                        QgsProcessing,
                        QgsProcessingException,
+                       QgsProcessingParameters,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterNumber,
                        QgsProcessingParameterDistance,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
@@ -51,8 +55,8 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class RandomPointsPolygons(QgisAlgorithm):
-
     INPUT = 'INPUT'
+    VALUE = 'VALUE'
     EXPRESSION = 'EXPRESSION'
     MIN_DISTANCE = 'MIN_DISTANCE'
     STRATEGY = 'STRATEGY'
@@ -85,9 +89,24 @@ class RandomPointsPolygons(QgisAlgorithm):
                                                      self.strategies,
                                                      False,
                                                      0))
-        self.addParameter(QgsProcessingParameterExpression(self.EXPRESSION,
-                                                           self.tr('Expression'),
-                                                           parentLayerParameterName=self.INPUT))
+        value_param = QgsProcessingParameterNumber(self.VALUE,
+                                                   self.tr('Point count or density'),
+                                                   QgsProcessingParameterNumber.Double,
+                                                   1,
+                                                   minValue=0)
+        value_param.setIsDynamic(True)
+        value_param.setDynamicLayerParameterName(self.INPUT)
+        value_param.setDynamicPropertyDefinition(
+            QgsPropertyDefinition("Value", self.tr("Point count or density"), QgsPropertyDefinition.Double))
+        self.addParameter(value_param)
+
+        # deprecated expression parameter - overrides value parameter if set
+        exp_param = QgsProcessingParameterExpression(self.EXPRESSION,
+                                                     self.tr('Expression'), optional=True,
+                                                     parentLayerParameterName=self.INPUT)
+        exp_param.setFlags(exp_param.flags() | QgsProcessingParameterDefinition.FlagHidden)
+        self.addParameter(exp_param)
+
         self.addParameter(QgsProcessingParameterDistance(self.MIN_DISTANCE,
                                                          self.tr('Minimum distance between points'),
                                                          None, self.INPUT, True, 0, 1000000000))
@@ -112,18 +131,27 @@ class RandomPointsPolygons(QgisAlgorithm):
         else:
             minDistance = None
 
-        expression = QgsExpression(self.parameterAsString(parameters, self.EXPRESSION, context))
-        if expression.hasParserError():
-            raise QgsProcessingException(expression.parserErrorString())
-
         expressionContext = self.createExpressionContext(parameters, context, source)
-        expression.prepare(expressionContext)
+        dynamic_value = QgsProcessingParameters.isDynamic(parameters, "VALUE")
+        value_property = None
+        if self.EXPRESSION in parameters and parameters[self.EXPRESSION] is not None:
+            expression = QgsExpression(self.parameterAsString(parameters, self.EXPRESSION, context))
+            value = None
+            if expression.hasParserError():
+                raise QgsProcessingException(expression.parserErrorString())
+            expression.prepare(expressionContext)
+        else:
+            expression = None
+            if dynamic_value:
+                value_property = parameters["VALUE"]
+            value = self.parameterAsDouble(parameters, self.VALUE, context)
 
         fields = QgsFields()
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               fields, QgsWkbTypes.Point, source.sourceCrs(), QgsFeatureSink.RegeneratePrimaryKey)
+                                               fields, QgsWkbTypes.Point, source.sourceCrs(),
+                                               QgsFeatureSink.RegeneratePrimaryKey)
         if sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
@@ -144,12 +172,17 @@ class RandomPointsPolygons(QgisAlgorithm):
             current_progress = total * current
             feedback.setProgress(current_progress)
 
-            expressionContext.setFeature(f)
-            value = expression.evaluate(expressionContext)
-            if expression.hasEvalError():
-                feedback.pushInfo(
-                    self.tr('Evaluation error for feature ID {}: {}').format(f.id(), expression.evalErrorString()))
-                continue
+            this_value = value
+            if value_property is not None or expression is not None:
+                expressionContext.setFeature(f)
+                if value_property:
+                    this_value, _ = value_property.valueAsDouble(expressionContext, value)
+                else:
+                    this_value = expression.evaluate(expressionContext)
+                    if expression.hasEvalError():
+                        feedback.pushInfo(
+                            self.tr('Evaluation error for feature ID {}: {}').format(f.id(), expression.evalErrorString()))
+                        continue
 
             fGeom = f.geometry()
             engine = QgsGeometry.createGeometryEngine(fGeom.constGet())
@@ -157,9 +190,9 @@ class RandomPointsPolygons(QgisAlgorithm):
 
             bbox = fGeom.boundingBox()
             if strategy == 0:
-                pointCount = int(value)
+                pointCount = int(this_value)
             else:
-                pointCount = int(round(value * da.measureArea(fGeom)))
+                pointCount = int(round(this_value * da.measureArea(fGeom)))
 
             if pointCount == 0:
                 feedback.pushInfo("Skip feature {} as number of points for it is 0.".format(f.id()))
