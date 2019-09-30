@@ -1023,8 +1023,12 @@ QString QgsPostgresConn::postgisVersion()
   QgsDebugMsg( QStringLiteral( "Checking for raster support" ) );
   if ( mPostgisVersionMajor >= 2 )
   {
-    mRasterAvailable = true;
-    QgsDebugMsg( QStringLiteral( "Raster support available!" ) );
+    QgsPostgresResult result( PQexec( QStringLiteral( "SELECT oid FROM pg_catalog.pg_type WHERE typname='raster'" ) ) );
+    if ( result.PQntuples() >= 1 )
+    {
+      mRasterAvailable = true;
+      QgsDebugMsg( QStringLiteral( "Raster support available!" ) );
+    }
   }
 
   return mPostgisVersionInfo;
