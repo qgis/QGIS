@@ -352,20 +352,24 @@ void TestQgsRangeWidgetWrapper::test_focus()
   editor1->mLineEdit->setNullValue( QgsApplication::nullRepresentation() );
   editor2->mLineEdit->setNullValue( QgsApplication::nullRepresentation() );
 
-  QVERIFY( editor1->mLineEdit->isNull() );
-  QVERIFY( editor2->mLineEdit->isNull() );
+  QVERIFY( widget1->value().isNull() );
+  QVERIFY( widget2->value().isNull() );
   QVERIFY( !editor1->mLineEdit->hasFocus() );
   QVERIFY( !editor2->mLineEdit->hasFocus() );
   QCOMPARE( editor1->mLineEdit->text(), QStringLiteral( "nope" ) );
   QCOMPARE( editor2->mLineEdit->text(), QStringLiteral( "nope" ) );
 
   editor1->mLineEdit->setFocus();
+  QVERIFY( widget1->value().isNull() );
+  QVERIFY( widget2->value().isNull() );
   QVERIFY( editor1->mLineEdit->hasFocus() );
   QVERIFY( !editor2->mLineEdit->hasFocus() );
   QCOMPARE( editor1->mLineEdit->text(), QStringLiteral( "" ) );
   QCOMPARE( editor2->mLineEdit->text(), QStringLiteral( "nope" ) );
 
   editor2->mLineEdit->setFocus();
+  QVERIFY( widget1->value().isNull() );
+  QVERIFY( widget2->value().isNull() );
   QVERIFY( !editor1->mLineEdit->hasFocus() );
   QVERIFY( editor2->mLineEdit->hasFocus() );
   QCOMPARE( editor1->mLineEdit->text(), QStringLiteral( "nope" ) );
@@ -373,14 +377,16 @@ void TestQgsRangeWidgetWrapper::test_focus()
 
   editor1->mLineEdit->setFocus();
   editor1->mLineEdit->setText( QString( "151.000000000" ) );
-  QVERIFY( !editor1->mLineEdit->isNull() );
-  QVERIFY( editor2->mLineEdit->isNull() );
+  QVERIFY( !widget1->value().isNull() );
+  QVERIFY( widget2->value().isNull() );
   QVERIFY( editor1->mLineEdit->hasFocus() );
   QVERIFY( !editor2->mLineEdit->hasFocus() );
   QCOMPARE( editor1->mLineEdit->text(), QStringLiteral( "151.000000000" ) );
   QCOMPARE( editor2->mLineEdit->text(), QStringLiteral( "nope" ) );
 
   editor2->mLineEdit->setFocus();
+  QVERIFY( !widget1->value().isNull() );
+  QVERIFY( widget2->value().isNull() );
   QVERIFY( !editor1->mLineEdit->hasFocus() );
   QVERIFY( editor2->mLineEdit->hasFocus() );
   QCOMPARE( editor1->mLineEdit->text(), QStringLiteral( "151.000000000" ) );
