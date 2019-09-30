@@ -24,7 +24,6 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 import os
 import random
 
-from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsApplication,
                        QgsField,
@@ -35,19 +34,15 @@ from qgis.core import (QgsApplication,
                        QgsPointXY,
                        QgsWkbTypes,
                        QgsSpatialIndex,
-                       QgsFeatureRequest,
                        QgsExpression,
                        QgsDistanceArea,
-                       QgsProject,
                        QgsProcessing,
                        QgsProcessingException,
                        QgsProcessingParameterDistance,
-                       QgsProcessingParameterNumber,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterExpression,
-                       QgsProcessingParameterEnum,
-                       QgsProcessingParameterDefinition)
+                       QgsProcessingParameterEnum)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
@@ -95,7 +90,7 @@ class RandomPointsPolygons(QgisAlgorithm):
                                                            parentLayerParameterName=self.INPUT))
         self.addParameter(QgsProcessingParameterDistance(self.MIN_DISTANCE,
                                                          self.tr('Minimum distance between points'),
-                                                         0, self.INPUT, False, 0, 1000000000))
+                                                         None, self.INPUT, True, 0, 1000000000))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
                                                             self.tr('Random points'),
                                                             type=QgsProcessing.TypeVectorPoint))
@@ -112,7 +107,10 @@ class RandomPointsPolygons(QgisAlgorithm):
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         strategy = self.parameterAsEnum(parameters, self.STRATEGY, context)
-        minDistance = self.parameterAsDouble(parameters, self.MIN_DISTANCE, context)
+        if self.MIN_DISTANCE in parameters and parameters[self.MIN_DISTANCE] is not None:
+            minDistance = self.parameterAsDouble(parameters, self.MIN_DISTANCE, context)
+        else:
+            minDistance = None
 
         expression = QgsExpression(self.parameterAsString(parameters, self.EXPRESSION, context))
         if expression.hasParserError():
@@ -167,7 +165,9 @@ class RandomPointsPolygons(QgisAlgorithm):
                 feedback.pushInfo("Skip feature {} as number of points for it is 0.".format(f.id()))
                 continue
 
-            index = QgsSpatialIndex()
+            index = None
+            if minDistance:
+                index = QgsSpatialIndex()
             points = dict()
 
             nPoints = 0
@@ -187,14 +187,15 @@ class RandomPointsPolygons(QgisAlgorithm):
                 p = QgsPointXY(rx, ry)
                 geom = QgsGeometry.fromPointXY(p)
                 if engine.contains(geom.constGet()) and \
-                        vector.checkMinDistance(p, index, minDistance, points):
+                        (not minDistance or vector.checkMinDistance(p, index, minDistance, points)):
                     f = QgsFeature(nPoints)
                     f.initAttributes(1)
                     f.setFields(fields)
                     f.setAttribute('id', pointId)
                     f.setGeometry(geom)
                     sink.addFeature(f, QgsFeatureSink.FastInsert)
-                    index.addFeature(f)
+                    if minDistance:
+                        index.addFeature(f)
                     points[nPoints] = p
                     nPoints += 1
                     pointId += 1
