@@ -21,16 +21,27 @@ __author__ = 'Alexander Bruy'
 __date__ = 'September 2013'
 __copyright__ = '(C) 2013, Alexander Bruy'
 
-import os
+# This will get replaced with a git SHA1 when you do a git archive
 
-from qgis.core import QgsProcessingUtils
+__revision__ = '$Format:%H$'
+
+import os
 
 from qgis.PyQt.QtGui import QIcon
 
+from qgis.core import (QgsRasterFileWriter,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterExtent,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterRasterDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
-
-from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -38,21 +49,31 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 class rasterize_over(GdalAlgorithm):
 
     INPUT = 'INPUT'
-    INPUT_RASTER = 'INPUT_RASTER'
     FIELD = 'FIELD'
-
-    def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'rasterize.png'))
+    INPUT_RASTER = 'INPUT_RASTER'
+    ADD = 'ADD'
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
-        self.addParameter(ParameterTableField(self.FIELD,
-                                              self.tr('Attribute field'), self.INPUT))
-        self.addParameter(ParameterRaster(self.INPUT_RASTER,
-                                          self.tr('Existing raster layer'), False))
+        self.units = [self.tr("Pixels"),
+                      self.tr("Georeferenced units")]
+
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input vector layer')))
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT_RASTER, self.tr('Input raster layer')))
+        self.addParameter(QgsProcessingParameterField(self.FIELD,
+                                                      self.tr('Field to use for a burn-in value'),
+                                                      None,
+                                                      self.INPUT,
+                                                      QgsProcessingParameterField.Numeric,
+                                                      optional=False))
+        add_param = QgsProcessingParameterBoolean(self.ADD,
+                                                     self.tr('Adds the new value to the existing raster'),
+                                                     defaultValue=False)
+        add_param.setFlags(add_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(add_param)
 
     def name(self):
         return 'rasterize_over'
@@ -66,24 +87,28 @@ class rasterize_over(GdalAlgorithm):
     def groupId(self):
         return 'vectorconversion'
 
+    def icon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'rasterize.png'))
+
     def commandName(self):
         return 'gdal_rasterize'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        context = dataobjects.createContext()
-        inLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        inRasterLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_RASTER), context)
+        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
+        inLayer = self.parameterAsRasterLayer(parameters, self.INPUT_RASTER, context)
 
-        ogrLayer = GdalUtils.ogrConnectionStringFromLayer(inLayer)
-        ogrRasterLayer = GdalUtils.ogrConnectionStringFromLayer(inRasterLayer)
+        arguments = ['-l']
+        arguments.append(layerName)
 
-        arguments = []
-        arguments.append('-a')
-        arguments.append(str(self.getParameterValue(self.FIELD)))
+        fieldName = self.parameterAsString(parameters, self.FIELD, context)
+        if fieldName:
+            arguments.append('-a')
+            arguments.append(fieldName)
 
-        arguments.append('-l')
-        arguments.append(GdalUtils.ogrLayerName(inLayer))
+        if self.parameterAsBool(parameters, self.ADD, context):
+            arguments.append('-add')
+
         arguments.append(ogrLayer)
-        arguments.append(ogrRasterLayer)
+        arguments.append(inLayer.source())
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
