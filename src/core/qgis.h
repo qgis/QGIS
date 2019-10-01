@@ -64,7 +64,7 @@ class CORE_EXPORT Qgis
      * \brief Level for messages
      * This will be used both for message log and message bar in application.
      */
-    enum class MessageLevel SIP_MONKEYPATCH_SCOPEENUM : int
+    enum class MessageLevel SIP_MONKEYPATCH_SCOPEENUM
     {
       Info = 0,
       Warning = 1,
@@ -78,7 +78,7 @@ class CORE_EXPORT Qgis
      * Raster data types.
      *  This is modified and extended copy of GDALDataType.
      */
-    enum class DataType SIP_MONKEYPATCH_SCOPEENUM : int
+    enum class DataType SIP_MONKEYPATCH_SCOPEENUM
     {
       UnknownDataType = 0, //!< Unknown or unspecified type
       Byte = 1, //!< Eight bit unsigned integer (quint8)
@@ -100,7 +100,7 @@ class CORE_EXPORT Qgis
      * Authorisation to run Python Macros
      * \since QGIS 3.10
      */
-    enum class PythonMacroMode : int
+    enum class PythonMacroMode
     {
       Never = 0, //!< Macros are never run
       Ask = 1, //!< User is prompt before running
