@@ -30,7 +30,7 @@ QString QgsGridAlgorithm::name() const
 
 QString QgsGridAlgorithm::displayName() const
 {
-  return QObject::tr( "Create Grid" );
+  return QObject::tr( "Create grid" );
 }
 
 QStringList QgsGridAlgorithm::tags() const
