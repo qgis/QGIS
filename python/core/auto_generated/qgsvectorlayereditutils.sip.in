@@ -60,6 +60,20 @@ Deletes a vertex from a feature.
 .. versionadded:: 2.14
 %End
 
+ QgsGeometry::OperationResult addRing( const QVector<QgsPointXY> &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = 0 ) /Deprecated/;
+%Docstring
+Adds a ring to polygon/multipolygon features
+
+:param ring: ring to add
+:param targetFeatureIds: if specified, only these features will be the candidates for adding a ring. Otherwise
+                         all intersecting features are tested and the ring is added to the first valid feature.
+:param modifiedFeatureId: if specified, feature ID for feature that ring was added to will be stored in this parameter
+
+:return: OperationResult result code: success or reason of failure
+
+.. deprecated:: in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+%End
+
     QgsGeometry::OperationResult addRing( const QgsPointSequence &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = 0 );
 %Docstring
 Adds a ring to polygon/multipolygon features
@@ -88,7 +102,7 @@ Adds a ring to polygon/multipolygon features
    available in python bindings as addCurvedRing
 %End
 
-    QgsGeometry::OperationResult addPart( const QList<QgsPointXY> &ring, QgsFeatureId featureId );
+ QgsGeometry::OperationResult addPart( const QVector<QgsPointXY> &ring, QgsFeatureId featureId ) /Deprecated/;
 %Docstring
 Adds a new part polygon to a multipart feature
 
@@ -97,6 +111,8 @@ Adds a new part polygon to a multipart feature
          - QgsGeometry.AddPartNotMultiGeometry
          - QgsGeometry.InvalidBaseGeometry
          - QgsGeometry.InvalidInput
+
+.. deprecated:: in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
 %End
 
     QgsGeometry::OperationResult addPart( const QgsPointSequence &ring, QgsFeatureId featureId );
@@ -140,6 +156,24 @@ Translates feature by dx, dy
 :return: 0 in case of success
 %End
 
+ QgsGeometry::OperationResult splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false ) /Deprecated/;
+%Docstring
+Splits parts cut by the given line
+
+:param splitLine: line that splits the layer feature parts
+:param topologicalEditing: ``True`` if topological editing is enabled
+
+:return: - QgsGeometry.InvalidBaseGeometry
+         - QgsGeometry.Success
+         - QgsGeometry.InvalidInput
+         - QgsGeometry.NothingHappened if a selection is present but no feature has been split
+         - QgsGeometry.InvalidBaseGeometry
+         - QgsGeometry.GeometryEngineError
+         - QgsGeometry.SplitCannotSplitPoint
+
+.. deprecated:: in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+%End
+
     QgsGeometry::OperationResult splitParts( const QgsPointSequence &splitLine, bool topologicalEditing = false );
 %Docstring
 Splits parts cut by the given line
@@ -154,6 +188,19 @@ Splits parts cut by the given line
          - QgsGeometry.InvalidBaseGeometry
          - QgsGeometry.GeometryEngineError
          - QgsGeometry.SplitCannotSplitPoint
+%End
+
+ QgsGeometry::OperationResult splitFeatures( const QgsPointSequence &splitLine, bool topologicalEditing = false ) /Deprecated/;
+%Docstring
+Splits features cut by the given line
+
+:param splitLine: line that splits the layer features
+:param topologicalEditing: ``True`` if topological editing is enabled
+
+:return: 0 in case of success,
+         4 if there is a selection but no feature split
+
+.. deprecated:: in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
 %End
 
     QgsGeometry::OperationResult splitFeatures( const QgsPointSequence &splitLine, bool topologicalEditing = false );

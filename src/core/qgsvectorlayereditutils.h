@@ -77,6 +77,17 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * all intersecting features are tested and the ring is added to the first valid feature.
      * \param modifiedFeatureId if specified, feature ID for feature that ring was added to will be stored in this parameter
      * \return OperationResult result code: success or reason of failure
+     * \deprecated in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+     */
+    Q_DECL_DEPRECATED QgsGeometry::OperationResult addRing( const QVector<QgsPointXY> &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = nullptr ) SIP_DEPRECATED;
+
+    /**
+     * Adds a ring to polygon/multipolygon features
+     * \param ring ring to add
+     * \param targetFeatureIds if specified, only these features will be the candidates for adding a ring. Otherwise
+     * all intersecting features are tested and the ring is added to the first valid feature.
+     * \param modifiedFeatureId if specified, feature ID for feature that ring was added to will be stored in this parameter
+     * \return OperationResult result code: success or reason of failure
      */
     QgsGeometry::OperationResult addRing( const QgsPointSequence &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = nullptr );
 
@@ -98,8 +109,9 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * - QgsGeometry::AddPartNotMultiGeometry
      * - QgsGeometry::InvalidBaseGeometry
      * - QgsGeometry::InvalidInput
+     * \deprecated in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
      */
-    QgsGeometry::OperationResult addPart( const QList<QgsPointXY> &ring, QgsFeatureId featureId );
+    Q_DECL_DEPRECATED QgsGeometry::OperationResult addPart( const QVector<QgsPointXY> &ring, QgsFeatureId featureId ) SIP_DEPRECATED;
 
     /**
      * Adds a new part polygon to a multipart feature
@@ -146,8 +158,33 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      *  - QgsGeometry::InvalidBaseGeometry
      *  - QgsGeometry::GeometryEngineError
      *  - QgsGeometry::SplitCannotSplitPoint
+     * \deprecated in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+     */
+    Q_DECL_DEPRECATED QgsGeometry::OperationResult splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false ) SIP_DEPRECATED;
+
+    /**
+     * Splits parts cut by the given line
+     * \param splitLine line that splits the layer feature parts
+     * \param topologicalEditing TRUE if topological editing is enabled
+     * \returns  - QgsGeometry::InvalidBaseGeometry
+     *  - QgsGeometry::Success
+     *  - QgsGeometry::InvalidInput
+     *  - QgsGeometry::NothingHappened if a selection is present but no feature has been split
+     *  - QgsGeometry::InvalidBaseGeometry
+     *  - QgsGeometry::GeometryEngineError
+     *  - QgsGeometry::SplitCannotSplitPoint
      */
     QgsGeometry::OperationResult splitParts( const QgsPointSequence &splitLine, bool topologicalEditing = false );
+
+    /**
+     * Splits features cut by the given line
+     * \param splitLine line that splits the layer features
+     * \param topologicalEditing TRUE if topological editing is enabled
+     * \returns 0 in case of success,
+     *  4 if there is a selection but no feature split
+     * \deprecated in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+     */
+    Q_DECL_DEPRECATED QgsGeometry::OperationResult splitFeatures( const QgsPointSequence &splitLine, bool topologicalEditing = false ) SIP_DEPRECATED;
 
     /**
      * Splits features cut by the given line

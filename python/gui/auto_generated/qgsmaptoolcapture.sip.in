@@ -219,7 +219,7 @@ List of digitized points
 
 :return: List of points
 
-.. deprecated:: in QGIS 3.12 - will be removed in QGIS 4.0
+.. deprecated:: in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant returns QgsPoint objects instead of QgsPointXY.
 %End
 
 
@@ -238,7 +238,7 @@ Set the points on which to work
 
 :param pointList: A list of points
 
-.. deprecated:: in QGIS 3.12 - will be removed in QGIS 4.0
+.. deprecated:: in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
 %End
 
     void setPoints( const QgsPointSequence &pointList );
