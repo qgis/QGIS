@@ -118,6 +118,16 @@ QgsVectorLayer::EditResult QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId f
   return !geometry.isNull() ? QgsVectorLayer::Success : QgsVectorLayer::EmptyGeometry;
 }
 
+QgsGeometry::OperationResult QgsVectorLayerEditUtils::addRing( const QVector<QgsPointXY> &ring, const QgsFeatureIds &targetFeatureIds, QgsFeatureId *modifiedFeatureId )
+{
+  QgsPointSequence l;
+  for ( QVector<QgsPointXY>::const_iterator it = ring.constBegin(); it != ring.constEnd(); ++it )
+  {
+    l <<  QgsPoint( *it );
+  }
+  return addRing( l, targetFeatureIds,  modifiedFeatureId );
+}
+
 QgsGeometry::OperationResult QgsVectorLayerEditUtils::addRing( const QgsPointSequence &ring, const QgsFeatureIds &targetFeatureIds, QgsFeatureId *modifiedFeatureId )
 {
   QgsLineString *ringLine = new QgsLineString( ring );
