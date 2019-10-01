@@ -174,10 +174,10 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::addRing( QgsCurve *ring, c
   return addRingReturnCode;
 }
 
-QgsGeometry::OperationResult QgsVectorLayerEditUtils::addPart( const QList<QgsPointXY> &points, QgsFeatureId featureId )
+QgsGeometry::OperationResult QgsVectorLayerEditUtils::addPart( const QVector<QgsPointXY> &points, QgsFeatureId featureId )
 {
   QgsPointSequence l;
-  for ( QList<QgsPointXY>::const_iterator it = points.constBegin(); it != points.constEnd(); ++it )
+  for ( QVector<QgsPointXY>::const_iterator it = points.constBegin(); it != points.constEnd(); ++it )
   {
     l <<  QgsPoint( *it );
   }
@@ -274,6 +274,15 @@ int QgsVectorLayerEditUtils::translateFeature( QgsFeatureId featureId, double dx
   return errorCode;
 }
 
+QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing )
+{
+  QgsPointSequence l;
+  for ( QVector<QgsPointXY>::const_iterator it = splitLine.constBegin(); it != splitLine.constEnd(); ++it )
+  {
+    l <<  QgsPoint( *it );
+  }
+  return splitFeatures( l, topologicalEditing );
+}
 
 QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsPointSequence &splitLine, bool topologicalEditing )
 {
@@ -384,6 +393,16 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsPo
   }
 
   return returnCode;
+}
+
+QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing )
+{
+  QgsPointSequence l;
+  for ( QVector<QgsPointXY>::const_iterator it = splitLine.constBegin(); it != splitLine.constEnd(); ++it )
+  {
+    l <<  QgsPoint( *it );
+  }
+  return splitParts( l, topologicalEditing );
 }
 
 QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitParts( const QgsPointSequence &splitLine, bool topologicalEditing )

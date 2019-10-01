@@ -850,7 +850,7 @@ Splits this geometry according to a given line.
 
 :return: OperationResult a result code: success or reason of failure
 
-.. deprecated:: in QGIS 3.12 - will be removed in QGIS 4.0
+.. deprecated:: in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
 %End
 
     OperationResult splitGeometry( const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries /Out/, bool topological, QgsPointSequence &topologyTestPoints /Out/ );
