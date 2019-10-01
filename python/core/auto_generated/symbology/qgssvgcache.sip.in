@@ -34,7 +34,7 @@ Constructor for QgsSvgCache.
 %End
 
     QImage svgAsImage( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                       double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio = 0 );
+                       double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio = 0, bool synchrone = false );
 %Docstring
 Gets SVG as QImage.
 
@@ -46,10 +46,11 @@ Gets SVG as QImage.
 :param widthScaleFactor: width scale factor
 :param fitsInCache:
 :param fixedAspectRatio: fixed aspect ratio (optional)
+:param synchrone: (optional)
 %End
 
     QPicture svgAsPicture( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                           double widthScaleFactor, bool forceVectorOutput = false, double fixedAspectRatio = 0 );
+                           double widthScaleFactor, bool forceVectorOutput = false, double fixedAspectRatio = 0, bool synchrone = false );
 %Docstring
 Gets SVG  as QPicture&.
 
@@ -61,10 +62,11 @@ Gets SVG  as QPicture&.
 :param widthScaleFactor: width scale factor
 :param forceVectorOutput:
 :param fixedAspectRatio: fixed aspect ratio (optional)
+:param synchrone: (optional)
 %End
 
     QSizeF svgViewboxSize( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                           double widthScaleFactor, double fixedAspectRatio = 0 );
+                           double widthScaleFactor, double fixedAspectRatio = 0, bool synchrone = false );
 %Docstring
 Calculates the viewbox size of a (possibly cached) SVG file.
 
@@ -75,6 +77,7 @@ Calculates the viewbox size of a (possibly cached) SVG file.
 :param strokeWidth: width of stroke
 :param widthScaleFactor: width scale factor
 :param fixedAspectRatio: fixed aspect ratio (optional)
+:param synchrone: (optional)
 
 :return: viewbox size set in SVG file
 
@@ -82,7 +85,7 @@ Calculates the viewbox size of a (possibly cached) SVG file.
 %End
 
     void containsParams( const QString &path, bool &hasFillParam, QColor &defaultFillColor, bool &hasStrokeParam, QColor &defaultStrokeColor, bool &hasStrokeWidthParam,
-                         double &defaultStrokeWidth ) const;
+                         double &defaultStrokeWidth, bool synchrone = false ) const;
 %Docstring
 Tests if an svg file contains parameters for fill, stroke color, stroke width. If yes, possible default values are returned. If there are several
 default values in the svg file, only the first one is considered*
@@ -92,7 +95,8 @@ default values in the svg file, only the first one is considered*
                          bool &hasFillOpacityParam, bool &hasDefaultFillOpacity, double &defaultFillOpacity,
                          bool &hasStrokeParam, bool &hasDefaultStrokeColor, QColor &defaultStrokeColor,
                          bool &hasStrokeWidthParam, bool &hasDefaultStrokeWidth, double &defaultStrokeWidth,
-                         bool &hasStrokeOpacityParam, bool &hasDefaultStrokeOpacity, double &defaultStrokeOpacity ) const /PyName=containsParamsV3/;
+                         bool &hasStrokeOpacityParam, bool &hasDefaultStrokeOpacity, double &defaultStrokeOpacity,
+                         bool synchrone = false ) const /PyName=containsParamsV3/;
 %Docstring
 Tests if an svg file contains parameters for fill, stroke color, stroke width. If yes, possible default values are returned. If there are several
 default values in the svg file, only the first one is considered.
@@ -113,6 +117,7 @@ default values in the svg file, only the first one is considered.
 :param hasStrokeOpacityParam: will be ``True`` if stroke opacity param present in SVG
 :param hasDefaultStrokeOpacity: will be ``True`` if stroke opacity param has a default value specified
 :param defaultStrokeOpacity: will be set to default stroke opacity specified in SVG, if present
+:param synchrone: (optional)
 
 .. note::
 
@@ -121,13 +126,13 @@ default values in the svg file, only the first one is considered.
 .. versionadded:: 2.14
 %End
 
-    QByteArray getImageData( const QString &path ) const;
+    QByteArray getImageData( const QString &path, bool synchrone = false ) const;
 %Docstring
 Gets image data
 %End
 
     QByteArray svgContent( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                           double widthScaleFactor, double fixedAspectRatio = 0 );
+                           double widthScaleFactor, double fixedAspectRatio = 0, bool synchrone = false );
 %Docstring
 Gets SVG content
 %End

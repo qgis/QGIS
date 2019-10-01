@@ -252,8 +252,9 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
      * The \a missingContent byte array is returned if the \a path could not be resolved or is broken. If
      * the \a path corresponds to a remote URL, then \a fetchingContent will be returned while the content
      * is in the process of being fetched.
+     * The \a synchrone boolean forces to wait for loading before returning result
      */
-    QByteArray getContent( const QString &path, const QByteArray &missingContent, const QByteArray &fetchingContent ) const
+    QByteArray getContent( const QString &path, const QByteArray &missingContent, const QByteArray &fetchingContent, bool synchrone = false ) const
     {
       // is it a path to local file?
       QFile file( path );
@@ -307,7 +308,8 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
       QMutexLocker locker( &mMutex );
 
       // already a request in progress for this url
-      if ( mPendingRemoteUrls.contains( path ) )
+      // force requesting remote url if synchrone mode
+      if ( mPendingRemoteUrls.contains( path ) && !synchrone )
         return fetchingContent;
 
       if ( mRemoteContentCache.contains( path ) )
@@ -367,7 +369,23 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
         QMetaObject::invokeMethod( const_cast< QgsAbstractContentCacheBase * >( qobject_cast< const QgsAbstractContentCacheBase * >( this ) ), "onRemoteContentFetched", Qt::QueuedConnection, Q_ARG( QString, path ), Q_ARG( bool, true ) );
       } );
 
-      QgsApplication::taskManager()->addTask( task );
+      if ( synchrone )
+      {
+        if ( task->run() )
+        {
+          if ( mRemoteContentCache.contains( path ) )
+          {
+            delete task;
+            // We got the file!
+            return *mRemoteContentCache[ path ];
+          }
+        }
+        delete task;
+      }
+      else
+      {
+        QgsApplication::taskManager()->addTask( task );
+      }
       return fetchingContent;
     }
 

@@ -117,7 +117,7 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
      * If the resultant raster was of a sufficiently small size to store in the cache, then \a fitsInCache
      * will be set to TRUE.
      */
-    QImage pathAsImage( const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache SIP_OUT );
+    QImage pathAsImage( const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache SIP_OUT, bool synchrone = false );
 
     /**
      * Returns the original size (in pixels) of the image at the specified \a path.
@@ -129,7 +129,7 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
      *
      * If the image could not be read then an invalid QSize is returned.
      */
-    QSize originalSize( const QString &path ) const;
+    QSize originalSize( const QString &path, bool synchrone = false ) const;
 
   signals:
 
@@ -140,7 +140,7 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
 
   private:
 
-    QImage renderImage( const QString &path, QSize size, const bool keepAspectRatio, const double opacity ) const;
+    QImage renderImage( const QString &path, QSize size, const bool keepAspectRatio, const double opacity, bool synchrone = false ) const;
 
     //! SVG content to be rendered if SVG file was not found.
     QByteArray mMissingSvg;

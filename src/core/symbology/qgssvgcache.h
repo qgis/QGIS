@@ -119,9 +119,10 @@ class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache< QgsSvgCacheEntry
      * \param widthScaleFactor width scale factor
      * \param fitsInCache
      * \param fixedAspectRatio fixed aspect ratio (optional)
+     * \param synchrone (optional)
      */
     QImage svgAsImage( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                       double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio = 0 );
+                       double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio = 0, bool synchrone = false );
 
     /**
      * Gets SVG  as QPicture&.
@@ -133,9 +134,10 @@ class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache< QgsSvgCacheEntry
      * \param widthScaleFactor width scale factor
      * \param forceVectorOutput
      * \param fixedAspectRatio fixed aspect ratio (optional)
+     * \param synchrone (optional)
      */
     QPicture svgAsPicture( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                           double widthScaleFactor, bool forceVectorOutput = false, double fixedAspectRatio = 0 );
+                           double widthScaleFactor, bool forceVectorOutput = false, double fixedAspectRatio = 0, bool synchrone = false );
 
     /**
      * Calculates the viewbox size of a (possibly cached) SVG file.
@@ -146,17 +148,18 @@ class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache< QgsSvgCacheEntry
      * \param strokeWidth width of stroke
      * \param widthScaleFactor width scale factor
      * \param fixedAspectRatio fixed aspect ratio (optional)
+     * \param synchrone (optional)
      * \returns viewbox size set in SVG file
      * \since QGIS 2.14
      */
     QSizeF svgViewboxSize( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                           double widthScaleFactor, double fixedAspectRatio = 0 );
+                           double widthScaleFactor, double fixedAspectRatio = 0, bool synchrone = false );
 
     /**
      * Tests if an svg file contains parameters for fill, stroke color, stroke width. If yes, possible default values are returned. If there are several
       default values in the svg file, only the first one is considered*/
     void containsParams( const QString &path, bool &hasFillParam, QColor &defaultFillColor, bool &hasStrokeParam, QColor &defaultStrokeColor, bool &hasStrokeWidthParam,
-                         double &defaultStrokeWidth ) const;
+                         double &defaultStrokeWidth, bool synchrone = false ) const;
 
     /**
      * Tests if an svg file contains parameters for fill, stroke color, stroke width. If yes, possible default values are returned. If there are several
@@ -177,6 +180,7 @@ class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache< QgsSvgCacheEntry
      * \param hasStrokeOpacityParam will be TRUE if stroke opacity param present in SVG
      * \param hasDefaultStrokeOpacity will be TRUE if stroke opacity param has a default value specified
      * \param defaultStrokeOpacity will be set to default stroke opacity specified in SVG, if present
+     * \param synchrone (optional)
      * \note available in Python bindings as containsParamsV3
      * \since QGIS 2.14
      */
@@ -184,14 +188,15 @@ class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache< QgsSvgCacheEntry
                          bool &hasFillOpacityParam, bool &hasDefaultFillOpacity, double &defaultFillOpacity,
                          bool &hasStrokeParam, bool &hasDefaultStrokeColor, QColor &defaultStrokeColor,
                          bool &hasStrokeWidthParam, bool &hasDefaultStrokeWidth, double &defaultStrokeWidth,
-                         bool &hasStrokeOpacityParam, bool &hasDefaultStrokeOpacity, double &defaultStrokeOpacity ) const SIP_PYNAME( containsParamsV3 );
+                         bool &hasStrokeOpacityParam, bool &hasDefaultStrokeOpacity, double &defaultStrokeOpacity,
+                         bool synchrone = false ) const SIP_PYNAME( containsParamsV3 );
 
     //! Gets image data
-    QByteArray getImageData( const QString &path ) const;
+    QByteArray getImageData( const QString &path, bool synchrone = false ) const;
 
     //! Gets SVG content
     QByteArray svgContent( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                           double widthScaleFactor, double fixedAspectRatio = 0 );
+                           double widthScaleFactor, double fixedAspectRatio = 0, bool synchrone = false );
 
   signals:
 
@@ -213,12 +218,12 @@ class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache< QgsSvgCacheEntry
 
   private:
 
-    void replaceParamsAndCacheSvg( QgsSvgCacheEntry *entry );
+    void replaceParamsAndCacheSvg( QgsSvgCacheEntry *entry, bool synchrone = false );
     void cacheImage( QgsSvgCacheEntry *entry );
     void cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput = false );
     //! Returns entry from cache or creates a new entry if it does not exist already
     QgsSvgCacheEntry *cacheEntry( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                                  double widthScaleFactor, double fixedAspectRatio = 0 );
+                                  double widthScaleFactor, double fixedAspectRatio = 0, bool synchrone = false );
 
     //! Replaces parameters in elements of a dom node and calls method for all child nodes
     void replaceElemParams( QDomElement &elem, const QColor &fill, const QColor &stroke, double strokeWidth );
