@@ -74,6 +74,7 @@ MACRO (ADD_QGIS_TEST TESTSRC)
   #SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES
   #  INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
   #  INSTALL_RPATH_USE_LINK_PATH true )
+  set_tests_properties(${TESTNAME} PROPERTIES FIXTURES_REQUIRED SOURCETREE)
 ENDMACRO (ADD_QGIS_TEST)
 
 #############################################################
@@ -88,7 +89,7 @@ SET(TESTS
  testqgsreclassifyutils.cpp
  testqgsalignraster.cpp
  testqgsnetworkanalysis.cpp
- testqgsninecellfilters.cpp 
+ testqgsninecellfilters.cpp
  testqgsmeshcalculator.cpp
  testqgsmeshcontours.cpp
 )

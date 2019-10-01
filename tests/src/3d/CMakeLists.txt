@@ -72,6 +72,7 @@ MACRO (ADD_QGIS_TEST testname testsrc)
   #SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES
   #  INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
   #  INSTALL_RPATH_USE_LINK_PATH true )
+  set_tests_properties(qgis_${testname} PROPERTIES FIXTURES_REQUIRED SOURCETREE)
 ENDMACRO (ADD_QGIS_TEST)
 
 ADD_QGIS_TEST(3dutilstest testqgs3dutils.cpp)

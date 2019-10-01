@@ -963,6 +963,12 @@ IF (ENABLE_TESTS)
   ADD_SUBDIRECTORY(tests)
   SET (CTEST_BINARY_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/output/bin" )
   MESSAGE (STATUS "Ctest Binary Directory set to: ${CTEST_BINARY_DIRECTORY}")
+
+  ADD_TEST(NAME   logGitStatus COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/chkgitstatus.sh log)
+  ADD_TEST(NAME checkGitStatus COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/chkgitstatus.sh check)
+  set_tests_properties(logGitStatus   PROPERTIES FIXTURES_SETUP   SOURCETREE)
+  set_tests_properties(checkGitStatus PROPERTIES FIXTURES_CLEANUP SOURCETREE)
+
 ENDIF (ENABLE_TESTS)
 
 #############################################################

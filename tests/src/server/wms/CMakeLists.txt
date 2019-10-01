@@ -69,6 +69,7 @@ MACRO (ADD_QGIS_TEST TESTSRC)
     qgis_server
   )
   ADD_TEST(${TESTNAME} ${CMAKE_BINARY_DIR}/output/bin/${TESTNAME} -maxwarnings 10000)
+  set_tests_properties(${TESTNAME} PROPERTIES FIXTURES_REQUIRED SOURCETREE)
 ENDMACRO (ADD_QGIS_TEST)
 
 #############################################################

@@ -3,7 +3,7 @@
 #####################################################
 # Don't forget to include output directory, otherwise
 # the UI file won't be wrapped!
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR} 
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/expression
@@ -32,7 +32,7 @@ INCLUDE_DIRECTORIES(SYSTEM
 #qtests in the executable file list as the moc is
 #directly included in the sources
 #and should not be compiled twice. Trying to include
-#them in will cause an error at build time 
+#them in will cause an error at build time
 
 #No relinking and full RPATH for the install tree
 #See: http://www.cmake.org/Wiki/CMake_RPATH_handling#No_relinking_and_full_RPATH_for_the_install_tree
@@ -55,6 +55,7 @@ MACRO (ADD_QGIS_TEST TESTSRC)
   #SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES
   #  INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
   #  INSTALL_RPATH_USE_LINK_PATH true )
+  set_tests_properties(${TESTNAME} PROPERTIES FIXTURES_REQUIRED SOURCETREE)
 ENDMACRO (ADD_QGIS_TEST)
 
 #############################################################
