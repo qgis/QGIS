@@ -69,7 +69,7 @@ from .warp import warp
 from .pansharp import pansharp
 
 from .extractprojection import ExtractProjection
-# from .rasterize_over import rasterize_over
+from .rasterize_over import rasterize_over
 
 from .Buffer import Buffer
 from .ClipVectorByExtent import ClipVectorByExtent
@@ -174,7 +174,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             pansharp(),
             # rasterize(),
             ExtractProjection(),
-            # rasterize_over(),
+            rasterize_over(),
             # ----- OGR tools -----
             Buffer(),
             ClipVectorByExtent(),
