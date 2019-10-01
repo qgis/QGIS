@@ -478,8 +478,8 @@ void QgsLayoutMapGridWidget::initAnnotationDirectionBox( QComboBox *c, QgsLayout
 bool QgsLayoutMapGridWidget::hasPredefinedScales() const
 {
   // first look at project's scales
-  QStringList scales( QgsProject::instance()->readListEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ) ) );
-  bool hasProjectScales( QgsProject::instance()->readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) ) );
+  const QVector< double > scales = QgsProject::instance()->mapScales();
+  bool hasProjectScales( QgsProject::instance()->useProjectScales() );
   if ( !hasProjectScales || scales.isEmpty() )
   {
     // default to global map tool scales

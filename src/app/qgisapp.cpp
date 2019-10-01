@@ -3615,6 +3615,8 @@ void QgisApp::setupConnections()
   // project crs connections
   connect( QgsProject::instance(), &QgsProject::crsChanged, this, &QgisApp::projectCrsChanged );
 
+  connect( QgsProject::instance(), &QgsProject::mapScalesChanged, this, [ = ] { mScaleWidget->updateScales(); } );
+
   connect( QgsProject::instance(), &QgsProject::missingDatumTransforms, this, [ = ]( const QStringList & transforms )
   {
     QString message = tr( "Transforms are not installed: %1 " ).arg( transforms.join( QStringLiteral( " ," ) ) );
@@ -6264,10 +6266,10 @@ bool QgisApp::addProject( const QString &projectFile )
     applyProjectSettingsToCanvas( mMapCanvas );
 
     //load project scales
-    bool projectScales = QgsProject::instance()->readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) );
+    bool projectScales = QgsProject::instance()->useProjectScales();
     if ( projectScales )
     {
-      mScaleWidget->updateScales( QgsProject::instance()->readListEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ) ) );
+      mScaleWidget->updateScales();
     }
 
     mMapCanvas->updateScale();
@@ -12698,8 +12700,6 @@ void QgisApp::projectProperties( const QString &currentPage )
   connect( pp, &QgsProjectProperties::displayPrecisionChanged, this,
            &QgisApp::updateMouseCoordinatePrecision );
 
-  connect( pp, &QgsProjectProperties::scalesChanged, mScaleWidget,
-           &QgsStatusBarScaleWidget::updateScales );
   QApplication::restoreOverrideCursor();
 
   if ( !currentPage.isEmpty() )

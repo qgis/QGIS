@@ -4385,27 +4385,25 @@ void QgsLayoutDesignerDialog::loadPredefinedScalesFromProject()
 QVector<double> QgsLayoutDesignerDialog::predefinedScales() const
 {
   QgsProject *project = mMasterLayout->layoutProject();
-  QVector<qreal> projectScales;
   // first look at project's scales
-  QStringList scales( project->readListEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ) ) );
-  bool hasProjectScales( project->readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) ) );
-  if ( !hasProjectScales || scales.isEmpty() )
+  QVector< double > projectScales = project->mapScales();
+  bool hasProjectScales( project->useProjectScales() );
+  if ( !hasProjectScales || projectScales.isEmpty() )
   {
     // default to global map tool scales
     QgsSettings settings;
     QString scalesStr( settings.value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString() );
-    scales = scalesStr.split( ',' );
-  }
+    QStringList scales = scalesStr.split( ',' );
 
-  for ( auto scaleIt = scales.constBegin(); scaleIt != scales.constEnd(); ++scaleIt )
-  {
-    QStringList parts( scaleIt->split( ':' ) );
-    if ( parts.size() == 2 )
+    for ( auto scaleIt = scales.constBegin(); scaleIt != scales.constEnd(); ++scaleIt )
     {
-      projectScales.push_back( parts[1].toDouble() );
+      QStringList parts( scaleIt->split( ':' ) );
+      if ( parts.size() == 2 )
+      {
+        projectScales.push_back( parts[1].toDouble() );
+      }
     }
   }
-
   return projectScales;
 }
 

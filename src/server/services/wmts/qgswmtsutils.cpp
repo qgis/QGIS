@@ -201,24 +201,28 @@ namespace QgsWmts
     QgsSettings settings;
     QStringList scaleList = settings.value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString().split( ',' );
     //load project scales
-    bool projectScales = project->readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) );
-    if ( projectScales )
+    bool useProjectScales = project->useProjectScales();
+    const QVector< double >projectScales = project->mapScales();
+    if ( useProjectScales && projectScales.empty() )
     {
-      scaleList = project->readListEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ) );
+      scale = *std::min_element( projectScales.begin(), projectScales.end() );
     }
-    // get min and max scales
-    if ( !scaleList.isEmpty() )
+    else
     {
-      for ( const QString &scaleText : scaleList )
+      // get min and max scales
+      if ( !scaleList.isEmpty() )
       {
-        double scaleValue = scaleText.toDouble();
-        if ( scale == -1.0 )
+        for ( const QString &scaleText : scaleList )
         {
-          scale = scaleValue;
-        }
-        else if ( scaleValue < scale )
-        {
-          scale = scaleValue;
+          double scaleValue = scaleText.toDouble();
+          if ( scale == -1.0 )
+          {
+            scale = scaleValue;
+          }
+          else if ( scaleValue < scale )
+          {
+            scale = scaleValue;
+          }
         }
       }
     }

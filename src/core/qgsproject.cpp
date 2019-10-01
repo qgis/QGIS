@@ -58,6 +58,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsstyleentityvisitor.h"
 
+#include <algorithm>
 #include <QApplication>
 #include <QFileInfo>
 #include <QDomNode>
@@ -3186,6 +3187,58 @@ void QgsProject::setProjectColors( const QgsNamedColorList &colors )
   writeEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Labels" ), customColorLabels );
   mProjectScope.reset();
   emit projectColorsChanged();
+}
+
+void QgsProject::setMapScales( const QVector<double> &scales )
+{
+  // sort scales in descending order
+  QVector< double > sorted = scales;
+  std::sort( sorted.begin(), sorted.end(), std::greater<double>() );
+
+  if ( sorted == mapScales() )
+    return;
+
+  QStringList store;
+  store.reserve( sorted.size() );
+  for ( double scale : qgis::as_const( sorted ) )
+    store << QStringLiteral( "1:%1" ).arg( scale );
+
+  writeEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ), store );
+  emit mapScalesChanged();
+}
+
+QVector<double> QgsProject::mapScales() const
+{
+  const QStringList scales = readListEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ) );
+  QVector<double> res;
+  for ( const QString &scale : scales )
+  {
+    const QStringList parts = scale.split( ':' );
+    if ( parts.size() != 2 )
+      continue;
+
+    bool ok = false;
+    const double denominator = QLocale().toDouble( parts[1], &ok );
+    if ( ok )
+    {
+      res << denominator;
+    }
+  }
+  return res;
+}
+
+void QgsProject::setUseProjectScales( bool enabled )
+{
+  if ( enabled == useProjectScales() )
+    return;
+
+  writeEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ), enabled );
+  emit mapScalesChanged();
+}
+
+bool QgsProject::useProjectScales() const
+{
+  return readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) );
 }
 
 void QgsProject::generateTsFile( const QString &locale )

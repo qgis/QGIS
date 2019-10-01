@@ -1285,6 +1285,35 @@ class TestQgsProject(unittest.TestCase):
             # Reload
             self.assertTrue(project.read(uri))
 
+    def testMapScales(self):
+        p = QgsProject()
+        self.assertFalse(p.mapScales())
+        self.assertFalse(p.useProjectScales())
+
+        spy = QSignalSpy(p.mapScalesChanged)
+        p.setMapScales([])
+        self.assertEqual(len(spy), 0)
+        p.setUseProjectScales(False)
+        self.assertEqual(len(spy), 0)
+
+        p.setMapScales([5000, 6000, 3000, 4000])
+        # scales must be sorted
+        self.assertEqual(p.mapScales(), [6000.0, 5000.0, 4000.0, 3000.0])
+        self.assertEqual(len(spy), 1)
+        p.setMapScales([5000, 6000, 3000, 4000])
+        self.assertEqual(len(spy), 1)
+        self.assertEqual(p.mapScales(), [6000.0, 5000.0, 4000.0, 3000.0])
+        p.setMapScales([5000, 6000, 3000, 4000, 1000])
+        self.assertEqual(len(spy), 2)
+        self.assertEqual(p.mapScales(), [6000.0, 5000.0, 4000.0, 3000.0, 1000.0])
+
+        p.setUseProjectScales(True)
+        self.assertEqual(len(spy), 3)
+        p.setUseProjectScales(True)
+        self.assertEqual(len(spy), 3)
+        p.setUseProjectScales(False)
+        self.assertEqual(len(spy), 4)
+
 
 if __name__ == '__main__':
     unittest.main()

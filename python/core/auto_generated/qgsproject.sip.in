@@ -1074,6 +1074,56 @@ Sets the ``colors`` for the project's color scheme (see QgsProjectColorScheme).
 .. versionadded:: 3.6
 %End
 
+    void setMapScales( const QVector<double> &scales );
+%Docstring
+Sets the list of custom project map ``scales``.
+
+The ``scales`` list consists of a list of scale denominator values, e.g.
+1000 for a 1:1000 scale.
+
+.. seealso:: :py:func:`mapScales`
+
+.. seealso:: :py:func:`mapScalesChanged`
+
+.. versionadded:: 3.10
+%End
+
+    QVector<double> mapScales() const;
+%Docstring
+Returns the list of custom project map scales.
+
+The scales list consists of a list of scale denominator values, e.g.
+1000 for a 1:1000 scale.
+
+.. seealso:: :py:func:`setMapScales`
+
+.. seealso:: :py:func:`mapScalesChanged`
+
+.. versionadded:: 3.10
+%End
+
+    void setUseProjectScales( bool enabled );
+%Docstring
+Sets whether project mapScales() are ``enabled``.
+
+.. seealso:: :py:func:`useProjectScales`
+
+.. seealso:: :py:func:`setMapScales`
+
+.. versionadded:: 3.10
+%End
+
+    bool useProjectScales() const;
+%Docstring
+Returns ``True`` if project mapScales() are enabled.
+
+.. seealso:: :py:func:`setUseProjectScales`
+
+.. seealso:: :py:func:`mapScales`
+
+.. versionadded:: 3.10
+%End
+
     void generateTsFile( const QString &locale );
 %Docstring
 Triggers the collection strings of .qgs to be included in ts file and calls writeTsFile()
@@ -1453,6 +1503,17 @@ Emitted when the project dirty status changes.
 .. versionadded:: 3.2
 %End
 
+
+    void mapScalesChanged();
+%Docstring
+Emitted when the list of custom project map scales changes.
+
+.. seealso:: :py:func:`mapScales`
+
+.. seealso:: :py:func:`setMapScales`
+
+.. versionadded:: 3.10
+%End
 
   public slots:
 
