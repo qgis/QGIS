@@ -1154,6 +1154,7 @@ bool QgsVectorLayer::deleteSelectedFeatures( int *deletedCount )
 static const QgsPointSequence vectorPointXY2pointSequence( const QVector<QgsPointXY> &points )
 {
   QgsPointSequence pts;
+  pts.reserve( points.size() );
   QVector<const QgsPointXY>::iterator it = points.constBegin();
   while ( it != points.constEnd() )
   {
@@ -1230,35 +1231,20 @@ QgsGeometry::OperationResult QgsVectorLayer::addRing( QgsCurve *ring, QgsFeature
 
 QgsGeometry::OperationResult QgsVectorLayer::addPart( const QList<QgsPointXY> &points )
 {
-  if ( !mValid || !mEditBuffer || !mDataProvider )
-    return QgsGeometry::OperationResult::LayerNotEditable;
-
-  //number of selected features must be 1
-
-  if ( mSelectedFeatureIds.empty() )
+  QgsPointSequence pts;
+  pts.reserve( points.size() );
+  for ( QList<QgsPointXY>::const_iterator it = points.constBegin(); it != points.constEnd() ; ++it )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Number of selected features < 1" ), 3 );
-    return QgsGeometry::OperationResult::SelectionIsEmpty;
+    pts.append( QgsPoint( *it ) );
   }
-  else if ( mSelectedFeatureIds.size() > 1 )
-  {
-    QgsDebugMsgLevel( QStringLiteral( "Number of selected features > 1" ), 3 );
-    return QgsGeometry::OperationResult::SelectionIsGreaterThanOne;
-  }
-
-  QgsVectorLayerEditUtils utils( this );
-  QgsGeometry::OperationResult result = utils.addPart( points, *mSelectedFeatureIds.constBegin() );
-
-  if ( result == QgsGeometry::OperationResult::Success )
-    updateExtents();
-  return result;
+  return addPart( pts );
 }
 
 QgsGeometry::OperationResult QgsVectorLayer::addPart( const QVector<QgsPointXY> &points )
 {
-
   return addPart( vectorPointXY2pointSequence( points ) );
 }
+
 QgsGeometry::OperationResult QgsVectorLayer::addPart( const QgsPointSequence &points )
 {
   if ( !mValid || !mEditBuffer || !mDataProvider )
