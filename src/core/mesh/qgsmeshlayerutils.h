@@ -24,6 +24,7 @@
 #include "qgsrectangle.h"
 #include "qgsmaptopixel.h"
 #include "qgsmeshdataprovider.h"
+#include "qgsmeshrenderersettings.h"
 
 #include <QVector>
 #include <QSize>
@@ -31,6 +32,8 @@
 ///@cond PRIVATE
 
 class QgsMeshTimeSettings;
+class QgsTriangularMesh;
+class QgsMeshDataBlock;
 
 /**
  * \ingroup core
@@ -94,6 +97,19 @@ class CORE_EXPORT QgsMeshLayerUtils
     static double interpolateFromFacesData(
       const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3,
       double val, const QgsPointXY &pt );
+
+    /**
+    * Interpolate values on vertices from values on faces
+    *
+    * \since QGIS 3.12
+    */
+    static QVector<double> interpolateFromFacesData(
+      QVector<double> valuesOnFaces,
+      QgsMesh *nativeMesh,
+      QgsTriangularMesh *triangularMesh,
+      QgsMeshDataBlock *active,
+      QgsMeshRendererScalarSettings::DataInterpolationMethod method
+    );
 
     /**
      * Calculates the bounding box of the triangle

@@ -15,6 +15,7 @@
 %Include auto_generated/raster/qgsrastercalcnode.sip
 %Include auto_generated/raster/qgstotalcurvaturefilter.sip
 %Include auto_generated/mesh/qgsmeshcalculator.sip
+%Include auto_generated/mesh/qgsmeshcontours.sip
 %Include auto_generated/vector/qgsgeometrysnapper.sip
 %Include auto_generated/vector/qgsgeometrysnappersinglesource.sip
 %Include auto_generated/vector/qgszonalstatistics.sip

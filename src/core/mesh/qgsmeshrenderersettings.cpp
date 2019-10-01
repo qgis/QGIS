@@ -91,12 +91,34 @@ double QgsMeshRendererScalarSettings::opacity() const { return mOpacity; }
 
 void QgsMeshRendererScalarSettings::setOpacity( double opacity ) { mOpacity = opacity; }
 
+QgsMeshRendererScalarSettings::DataInterpolationMethod QgsMeshRendererScalarSettings::dataInterpolationMethod() const
+{
+  return mDataInterpolationMethod;
+}
+
+void QgsMeshRendererScalarSettings::setDataInterpolationMethod( const QgsMeshRendererScalarSettings::DataInterpolationMethod &dataInterpolationMethod )
+{
+  mDataInterpolationMethod = dataInterpolationMethod;
+}
+
 QDomElement QgsMeshRendererScalarSettings::writeXml( QDomDocument &doc ) const
 {
   QDomElement elem = doc.createElement( QStringLiteral( "scalar-settings" ) );
   elem.setAttribute( QStringLiteral( "min-val" ), mClassificationMinimum );
   elem.setAttribute( QStringLiteral( "max-val" ), mClassificationMaximum );
   elem.setAttribute( QStringLiteral( "opacity" ), mOpacity );
+
+  QString methodTxt;
+  switch ( mDataInterpolationMethod )
+  {
+    case None:
+      methodTxt = QStringLiteral( "none" );
+      break;
+    case NeighbourAverage:
+      methodTxt = QStringLiteral( "neighbour-average" );
+      break;
+  }
+  elem.setAttribute( QStringLiteral( "interpolation-method" ), methodTxt );
   QDomElement elemShader = mColorRampShader.writeXml( doc );
   elem.appendChild( elemShader );
   return elem;
@@ -107,6 +129,15 @@ void QgsMeshRendererScalarSettings::readXml( const QDomElement &elem )
   mClassificationMinimum = elem.attribute( QStringLiteral( "min-val" ) ).toDouble();
   mClassificationMaximum = elem.attribute( QStringLiteral( "max-val" ) ).toDouble();
   mOpacity = elem.attribute( QStringLiteral( "opacity" ) ).toDouble();
+  QString methodTxt = elem.attribute( QStringLiteral( "interpolation-method" ) );
+  if ( QStringLiteral( "neighbour-average" ) == methodTxt )
+  {
+    mDataInterpolationMethod = DataInterpolationMethod::NeighbourAverage;
+  }
+  else
+  {
+    mDataInterpolationMethod = DataInterpolationMethod::None;
+  }
   QDomElement elemShader = elem.firstChildElement( QStringLiteral( "colorrampshader" ) );
   mColorRampShader.readXml( elemShader );
 }

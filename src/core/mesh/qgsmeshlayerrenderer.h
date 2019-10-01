@@ -61,6 +61,7 @@ struct CORE_NO_EXPORT QgsMeshLayerRendererCache
   bool mScalarDataOnVertices = true;
   double mScalarDatasetMinimum = std::numeric_limits<double>::quiet_NaN();
   double mScalarDatasetMaximum = std::numeric_limits<double>::quiet_NaN();
+  QgsMeshRendererScalarSettings::DataInterpolationMethod mDataInterpolationMethod = QgsMeshRendererScalarSettings::None;
 
   // vector dataset
   QgsMeshDatasetIndex mActiveVectorDatasetIndex;

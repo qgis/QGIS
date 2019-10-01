@@ -17,6 +17,7 @@
 
 #include "qgsmeshlayerutils.h"
 #include "qgsmeshtimesettings.h"
+#include "qgstriangularmesh.h"
 
 #include <limits>
 #include <QTime>
@@ -119,6 +120,59 @@ double QgsMeshLayerUtils::interpolateFromFacesData( const QgsPointXY &p1, const 
     return std::numeric_limits<double>::quiet_NaN();
 
   return val;
+}
+
+QVector<double> QgsMeshLayerUtils::interpolateFromFacesData( QVector<double> valuesOnFaces, QgsMesh *nativeMesh,
+    QgsTriangularMesh *triangularMesh,
+    QgsMeshDataBlock *active,
+    QgsMeshRendererScalarSettings::DataInterpolationMethod method )
+{
+  Q_UNUSED( triangularMesh )
+
+  assert( nativeMesh );
+  assert( active );
+  assert( method == QgsMeshRendererScalarSettings::NeighbourAverage );
+
+  // assuming that native vertex count = triangular vertex count
+  assert( nativeMesh->vertices.size() == triangularMesh->vertices().size() );
+  int vertexCount = triangularMesh->vertices().size();
+
+  QVector<double> res( vertexCount, 0.0 );
+  // for face datasets do simple average of the valid values of all faces that contains this vertex
+  QVector<int> count( vertexCount, 0 );
+
+  for ( int i = 0; i < nativeMesh->faces.size(); ++i )
+  {
+    if ( active->active( i ) )
+    {
+      double val = valuesOnFaces[ i ];
+      if ( !std::isnan( val ) )
+      {
+        // assign for all vertices
+        const auto &face = nativeMesh->faces.at( i );
+        for ( int j = 0; j < face.size(); ++j )
+        {
+          int vertexIndex = face[j];
+          res[vertexIndex] += val;
+          count[vertexIndex] += 1;
+        }
+      }
+    }
+  }
+
+  for ( int i = 0; i < vertexCount; ++i )
+  {
+    if ( count.at( i ) > 0 )
+    {
+      res[i] = res[i] / double( count.at( i ) );
+    }
+    else
+    {
+      res[i] = std::numeric_limits<double>::quiet_NaN();
+    }
+  }
+
+  return res;
 }
 
 QgsRectangle QgsMeshLayerUtils::triangleBoundingBox( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3 )

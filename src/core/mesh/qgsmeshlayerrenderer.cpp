@@ -80,9 +80,11 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
 
   // Find out if we can use cache up to date. If yes, use it and return
   const int datasetGroupCount = layer->dataProvider()->datasetGroupCount();
+  const QgsMeshRendererScalarSettings::DataInterpolationMethod method = mRendererSettings.scalarSettings( datasetIndex.group() ).dataInterpolationMethod();
   QgsMeshLayerRendererCache *cache = layer->rendererCache();
   if ( ( cache->mDatasetGroupsCount == datasetGroupCount ) &&
-       ( cache->mActiveScalarDatasetIndex == datasetIndex ) )
+       ( cache->mActiveScalarDatasetIndex == datasetIndex ) &&
+       ( cache->mDataInterpolationMethod ==  method ) )
   {
     mScalarDatasetValues = cache->mScalarDatasetValues;
     mScalarActiveFaceFlagValues = cache->mScalarActiveFaceFlagValues;
@@ -113,6 +115,19 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
                                     0,
                                     mNativeMesh.faces.count() );
 
+    // for data on faces, there could be request to interpolate the data to vertices
+    if ( ( !mScalarDataOnVertices ) && ( method != QgsMeshRendererScalarSettings::None ) )
+    {
+      mScalarDataOnVertices = true;
+      mScalarDatasetValues = QgsMeshLayerUtils::interpolateFromFacesData(
+                               mScalarDatasetValues,
+                               &mNativeMesh,
+                               &mTriangularMesh,
+                               &mScalarActiveFaceFlagValues,
+                               method
+                             );
+    }
+
     const QgsMeshDatasetMetadata datasetMetadata = layer->dataProvider()->datasetMetadata( datasetIndex );
     mScalarDatasetMinimum = datasetMetadata.minimum();
     mScalarDatasetMaximum = datasetMetadata.maximum();
@@ -121,6 +136,7 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
   // update cache
   cache->mDatasetGroupsCount = datasetGroupCount;
   cache->mActiveScalarDatasetIndex = datasetIndex;
+  cache->mDataInterpolationMethod = method;
   cache->mScalarDatasetValues = mScalarDatasetValues;
   cache->mScalarActiveFaceFlagValues = mScalarActiveFaceFlagValues;
   cache->mScalarDataOnVertices = mScalarDataOnVertices;
