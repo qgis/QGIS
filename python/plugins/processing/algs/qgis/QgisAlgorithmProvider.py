@@ -179,7 +179,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 FindProjection(),
                 GeometryByExpression(),
                 GeometryConvert(),
-                #Grid(),
                 Heatmap(),
                 Hillshade(),
                 HubDistanceLines(),
