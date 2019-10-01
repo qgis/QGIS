@@ -141,7 +141,7 @@ void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag
       levelString = QStringLiteral( "SUCCESS" );
       colorName = settings.value( QStringLiteral( "colors/success" ), QString() ).toString();
       break;
-    case Qgis::MessageLevel::None:
+    case Qgis::MessageLevel::Undefined:
       levelString = QStringLiteral( "NONE" );
       colorName = settings.value( QStringLiteral( "colors/default" ), QString() ).toString();
       break;

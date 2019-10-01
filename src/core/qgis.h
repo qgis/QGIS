@@ -70,7 +70,7 @@ class CORE_EXPORT Qgis
       Warning = 1,
       Critical = 2,
       Success = 3,
-      None = 4
+      Undefined = 4
     };
     Q_ENUM( MessageLevel )
 

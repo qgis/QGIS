@@ -70,7 +70,7 @@ void QgsServerSettings::initSettings()
                               QStringLiteral( "Log level" ),
                               QString(),
                               QVariant::Int,
-                              QVariant::fromValue( Qgis::MessageLevel::None ),
+                              QVariant::fromValue( Qgis::MessageLevel::Undefined ),
                               QVariant()
                             };
   mSettings[ sLogLevel.envVar ] = sLogLevel;

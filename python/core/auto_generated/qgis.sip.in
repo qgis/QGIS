@@ -44,7 +44,7 @@ The Qgis class provides global constants for use throughout the application.
       Warning,
       Critical,
       Success,
-      None
+      Undefined
     };
 
     enum class DataType
