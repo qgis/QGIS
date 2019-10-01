@@ -185,7 +185,7 @@ static QByteArray _readDtmData( QgsRasterDataProvider *provider, const QgsRectan
   QByteArray data;
   if ( block )
   {
-    block->convert( Qgis::Float32 ); // currently we expect just floats
+    block->convert( Qgis::DataType::Float32 ); // currently we expect just floats
     data = block->data();
     data.detach();  // this should make a deep copy
 
@@ -257,7 +257,7 @@ QByteArray QgsDemHeightMapGenerator::renderSynchronously( int x, int y, int z )
   QByteArray data;
   if ( block )
   {
-    block->convert( Qgis::Float32 ); // currently we expect just floats
+    block->convert( Qgis::DataType::Float32 ); // currently we expect just floats
     data = block->data();
     data.detach();  // this should make a deep copy
   }
@@ -276,7 +276,7 @@ float QgsDemHeightMapGenerator::heightAt( double x, double y )
   if ( mDtmCoarseData.isEmpty() )
   {
     std::unique_ptr< QgsRasterBlock > block( mDtm->dataProvider()->block( 1, rect, res, res ) );
-    block->convert( Qgis::Float32 );
+    block->convert( Qgis::DataType::Float32 );
     mDtmCoarseData = block->data();
     mDtmCoarseData.detach();  // make a deep copy
   }

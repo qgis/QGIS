@@ -483,11 +483,11 @@ Qgis::DataType QgsGrassRasterProvider::sourceDataType( int bandNo ) const
   switch ( mGrassDataType )
   {
     case CELL_TYPE:
-      return Qgis::Int32;
+      return Qgis::DataType::Int32;
     case FCELL_TYPE:
-      return Qgis::Float32;
+      return Qgis::DataType::Float32;
     case DCELL_TYPE:
-      return Qgis::Float64;
+      return Qgis::DataType::Float64;
   }
   return Qgis::UnknownDataType;
 }

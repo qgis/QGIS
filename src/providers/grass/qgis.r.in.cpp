@@ -114,13 +114,13 @@ int main( int argc, char **argv )
   RASTER_MAP_TYPE grass_type;
   switch ( qgis_type )
   {
-    case Qgis::Int32:
+    case Qgis::DataType::Int32:
       grass_type = CELL_TYPE;
       break;
-    case Qgis::Float32:
+    case Qgis::DataType::Float32:
       grass_type = FCELL_TYPE;
       break;
-    case Qgis::Float64:
+    case Qgis::DataType::Float64:
       grass_type = DCELL_TYPE;
       break;
     default:
