@@ -2028,7 +2028,8 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
   if ( !context.renderContext().forceVectorOutput() && !rotated )
   {
     QImage img = QgsApplication::svgCache()->svgAsImage( path, size, fillColor, strokeColor, strokeWidth,
-                 context.renderContext().scaleFactor(), fitsInCache, aspectRatio );
+                 context.renderContext().scaleFactor(), fitsInCache, aspectRatio,
+                 ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ) );
     if ( fitsInCache && img.width() > 1 )
     {
       usePict = false;
@@ -2052,7 +2053,8 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
   {
     p->setOpacity( context.opacity() );
     QPicture pct = QgsApplication::svgCache()->svgAsPicture( path, size, fillColor, strokeColor, strokeWidth,
-                   context.renderContext().scaleFactor(), context.renderContext().forceVectorOutput(), aspectRatio );
+                   context.renderContext().scaleFactor(), context.renderContext().forceVectorOutput(), aspectRatio,
+                   ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ) );
     if ( pct.width() > 1 )
     {
       p->save();
@@ -2447,7 +2449,8 @@ bool QgsSvgMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFa
   }
 
   const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( path, size, fillColor, strokeColor, strokeWidth,
-                                 context.renderContext().scaleFactor(), mFixedAspectRatio );
+                                 context.renderContext().scaleFactor(), mFixedAspectRatio,
+                                 ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ) );
 
   QSvgRenderer r( svgContent );
   if ( !r.isValid() )
@@ -2523,7 +2526,8 @@ QRectF QgsSvgMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &c
   }
 
   QSizeF svgViewbox = QgsApplication::svgCache()->svgViewboxSize( path, scaledSize, fillColor, strokeColor, strokeWidth,
-                      context.renderContext().scaleFactor(), mFixedAspectRatio );
+                      context.renderContext().scaleFactor(), mFixedAspectRatio,
+                      ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ) );
 
   double scaledHeight = svgViewbox.isValid() ? scaledSize * svgViewbox.height() / svgViewbox.width() : scaledSize;
 
@@ -2721,7 +2725,7 @@ void QgsRasterMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderCont
   opacity *= context.opacity();
 
   bool cached;
-  QImage img = QgsApplication::imageCache()->pathAsImage( path, QSize( width, preservedAspectRatio() ? 0 : width * aspectRatio ), preservedAspectRatio(), opacity, cached );
+  QImage img = QgsApplication::imageCache()->pathAsImage( path, QSize( width, preservedAspectRatio() ? 0 : width * aspectRatio ), preservedAspectRatio(), opacity, cached, ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ) );
   if ( !img.isNull() )
   {
     if ( context.selected() )

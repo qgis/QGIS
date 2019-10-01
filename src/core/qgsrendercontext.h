@@ -72,6 +72,7 @@ class CORE_EXPORT QgsRenderContext
       Antialiasing             = 0x80,  //!< Use antialiasing while drawing
       RenderPartialOutput      = 0x100, //!< Whether to make extra effort to update map image with partially rendered layers (better for interactive map canvas). Added in QGIS 3.0
       RenderPreviewJob         = 0x200, //!< Render is a 'canvas preview' render, and shortcuts should be taken to ensure fast rendering
+      RenderBlocking           = 0x400, //!< Render and load remote sources in the same thread to ensure rendering remote sources (svg and images). WARNING: this flag must NEVER be used from GUI based applications (like the main QGIS application) or crashes will result. Only for use in external scripts or QGIS server.
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 

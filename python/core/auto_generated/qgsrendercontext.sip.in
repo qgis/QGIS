@@ -41,6 +41,7 @@ to be rendered etc.
       Antialiasing,
       RenderPartialOutput,
       RenderPreviewJob,
+      RenderBlocking,
     };
     typedef QFlags<QgsRenderContext::Flag> Flags;
 
