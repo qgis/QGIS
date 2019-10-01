@@ -155,6 +155,7 @@ SET(QGIS_ANALYSIS_SRCS
   mesh/qgsmeshcalcnode.cpp
   mesh/qgsmeshcalculator.cpp
   mesh/qgsmeshcalcutils.cpp
+  mesh/qgsmeshcontours.cpp
 
   network/qgsgraph.cpp
   network/qgsgraphbuilder.cpp
@@ -286,6 +287,7 @@ SET(QGIS_ANALYSIS_HDRS
   mesh/qgsmeshcalcnode.h
   mesh/qgsmeshcalculator.h
   mesh/qgsmeshcalcutils.h
+  mesh/qgsmeshcontours.h
 
   vector/qgsgeometrysnapper.h
   vector/qgsgeometrysnappersinglesource.h

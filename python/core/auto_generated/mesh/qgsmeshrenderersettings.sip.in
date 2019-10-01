@@ -83,6 +83,14 @@ Represents a mesh renderer settings for scalar datasets
 #include "qgsmeshrenderersettings.h"
 %End
   public:
+    enum DataInterpolationMethod
+    {
+
+      None,
+
+      NeighbourAverage,
+    };
+
     QgsColorRampShader colorRampShader() const;
 %Docstring
 Returns color ramp shader function
@@ -112,6 +120,22 @@ Returns opacity
     void setOpacity( double opacity );
 %Docstring
 Sets opacity
+%End
+
+    DataInterpolationMethod dataInterpolationMethod() const;
+%Docstring
+Returns the type of interpolation to use to
+convert face defined datasets to
+values on vertices
+
+.. versionadded:: 3.12
+%End
+
+    void setDataInterpolationMethod( const DataInterpolationMethod &dataInterpolationMethod );
+%Docstring
+Sets data interpolation method
+
+.. versionadded:: 3.12
 %End
 
     QDomElement writeXml( QDomDocument &doc ) const;
