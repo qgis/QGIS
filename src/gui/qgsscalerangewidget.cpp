@@ -71,10 +71,14 @@ QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
 
 void QgsScaleRangeWidget::reloadProjectScales()
 {
-  bool projectScales = QgsProject::instance()->readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) );
+  bool projectScales = QgsProject::instance()->useProjectScales();
   if ( projectScales )
   {
-    QStringList scalesList = QgsProject::instance()->readListEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ) );
+    QStringList scalesList;
+    const QVector< double >projectScales = QgsProject::instance()->mapScales();
+    scalesList.reserve( projectScales.size() );
+    for ( double scale : projectScales )
+      scalesList << QStringLiteral( "1:%1" ).arg( scale );
     mMinimumScaleWidget->updateScales( scalesList );
     mMaximumScaleWidget->updateScales( scalesList );
   }

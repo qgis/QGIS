@@ -1118,6 +1118,52 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void setProjectColors( const QgsNamedColorList &colors );
 
     /**
+     * Sets the list of custom project map \a scales.
+     *
+     * The \a scales list consists of a list of scale denominator values, e.g.
+     * 1000 for a 1:1000 scale.
+     *
+     * \see mapScales()
+     * \see mapScalesChanged()
+     *
+     * \since QGIS 3.10
+     */
+    void setMapScales( const QVector<double> &scales );
+
+    /**
+     * Returns the list of custom project map scales.
+     *
+     * The scales list consists of a list of scale denominator values, e.g.
+     * 1000 for a 1:1000 scale.
+     *
+     * \see setMapScales()
+     * \see mapScalesChanged()
+     *
+     * \since QGIS 3.10
+     */
+    QVector<double> mapScales() const;
+
+    /**
+     * Sets whether project mapScales() are \a enabled.
+     *
+     * \see useProjectScales()
+     * \see setMapScales()
+     *
+     * \since QGIS 3.10
+     */
+    void setUseProjectScales( bool enabled );
+
+    /**
+     * Returns TRUE if project mapScales() are enabled.
+     *
+     * \see setUseProjectScales()
+     * \see mapScales()
+     *
+     * \since QGIS 3.10
+     */
+    bool useProjectScales() const;
+
+    /**
      * Triggers the collection strings of .qgs to be included in ts file and calls writeTsFile()
      * \since QGIS 3.4
      */
@@ -1470,6 +1516,16 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.8
      */
     void collectAttachedFiles( QgsStringMap &files SIP_INOUT ) SIP_SKIP;
+
+    /**
+     * Emitted when the list of custom project map scales changes.
+     *
+     * \see mapScales()
+     * \see setMapScales()
+     *
+     * \since QGIS 3.10
+     */
+    void mapScalesChanged();
 
   public slots:
 

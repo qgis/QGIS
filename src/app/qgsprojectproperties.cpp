@@ -365,18 +365,17 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   pbnCanvasColor->setDefaultColor( defaultCanvasColor );
 
   //get project scales
-  QStringList myScales = QgsProject::instance()->readListEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ) );
-  if ( !myScales.isEmpty() )
+  const QVector< double > projectScales = QgsProject::instance()->mapScales();
+  if ( !projectScales.isEmpty() )
   {
-    const auto constMyScales = myScales;
-    for ( const QString &scale : constMyScales )
+    for ( double scale : projectScales )
     {
-      addScaleToScaleList( scale );
+      addScaleToScaleList( QStringLiteral( "1:%1" ).arg( scale ) );
     }
   }
   connect( lstScales, &QListWidget::itemChanged, this, &QgsProjectProperties::scaleItemChanged );
 
-  grpProjectScales->setChecked( QgsProject::instance()->readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) ) );
+  grpProjectScales->setChecked( QgsProject::instance()->useProjectScales() );
 
   mLayerCapabilitiesModel = new QgsLayerCapabilitiesModel( QgsProject::instance(), this );
   mLayerCapabilitiesModel->setLayerTreeModel( new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot(), mLayerCapabilitiesModel ) );
@@ -1098,31 +1097,30 @@ void QgsProjectProperties::apply()
     QgisApp::instance()->mapOverviewCanvas()->setBackgroundColor( canvasColor );
 
   //save project scales
-  QStringList myScales;
-  myScales.reserve( lstScales->count() );
+  QVector< double > projectScales;
+  projectScales.reserve( lstScales->count() );
   for ( int i = 0; i < lstScales->count(); ++i )
   {
-    myScales.append( lstScales->item( i )->text() );
+    const QString scaleText = lstScales->item( i )->text();
+    const QStringList parts = scaleText.split( ':' );
+    if ( parts.size() == 2 )
+    {
+      bool ok = false;
+      const double scale = parts.at( 1 ).toDouble( &ok );
+      if ( ok )
+        projectScales.append( scale );
+    }
   }
 
-  if ( !myScales.isEmpty() )
+  if ( !projectScales.isEmpty() )
   {
-    QgsProject::instance()->writeEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ), myScales );
-    QgsProject::instance()->writeEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ), grpProjectScales->isChecked() );
+    QgsProject::instance()->setMapScales( projectScales );
+    QgsProject::instance()->setUseProjectScales( grpProjectScales->isChecked() );
   }
   else
   {
-    QgsProject::instance()->removeEntry( QStringLiteral( "Scales" ), QStringLiteral( "/" ) );
-  }
-
-  //use global or project scales depending on checkbox state
-  if ( grpProjectScales->isChecked() )
-  {
-    emit scalesChanged( myScales );
-  }
-  else
-  {
-    emit scalesChanged();
+    QgsProject::instance()->setMapScales( QVector< double >() );
+    QgsProject::instance()->setUseProjectScales( false );
   }
 
   const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
