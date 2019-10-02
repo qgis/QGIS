@@ -15,7 +15,7 @@ import os
 import filecmp
 
 from qgis.core import (QgsApplication, QgsVectorLayer, QgsReadWriteContext, QgsEditFormConfig,
-                       QgsFetchedContent, QgsAttributeEditorContainer, QgsFeature)
+                       QgsFetchedContent, QgsAttributeEditorContainer, QgsFeature, QgsSettings)
 from qgis.gui import QgsGui, QgsAttributeForm
 
 from qgis.testing import start_app, unittest
@@ -35,6 +35,7 @@ class TestQgsEditFormConfig(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         QgsGui.editorWidgetRegistry().initEditors()
+        QgsSettings().clear()
 
         # Bring up a simple HTTP server
         os.chdir(unitTestDataPath() + '')
@@ -111,11 +112,13 @@ class TestQgsEditFormConfig(unittest.TestCase):
         config.setInitCodeSource(QgsEditFormConfig.CodeSourceFile)
 
         uiLocal = os.path.join(
-            unitTestDataPath(), '/qgis_local_server/layer_attribute_form.ui')
+            unitTestDataPath(), 'qgis_local_server/layer_attribute_form.ui')
         config.setUiForm(uiLocal)
 
         pyUrl = 'http://localhost:' + \
             str(self.port) + '/qgis_local_server/layer_attribute_form.py'
+
+        QgsSettings().setEnumValue('qgis/enableMacros', Qgis.PythonMacroMode.Always)
 
         config.setInitFilePath(pyUrl)
         config.setInitFunction('formOpen')
