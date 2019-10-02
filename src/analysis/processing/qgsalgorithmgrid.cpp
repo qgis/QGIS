@@ -189,9 +189,10 @@ void QgsGridAlgorithm::createPointGrid(std::unique_ptr< QgsFeatureSink > &sink, 
 
   for(long long col = 0; col < cols; col++)
   {
+  double x = mGridExtent.xMinimum() + (col * mHSpacing - col * mHOverlay);
+
     for(long long row = 0; row < rows; row++)
     {
-      double x = mGridExtent.xMinimum() + (col * mHSpacing - col * mHOverlay);
       double y = mGridExtent.yMaximum() - (row * mVSpacing - row * mVOverlay);
 
       f.setGeometry(QgsGeometry().fromPointXY(QgsPoint( x, y )));
