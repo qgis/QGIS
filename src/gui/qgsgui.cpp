@@ -256,6 +256,8 @@ bool QgsGui::pythonMacroAllowed( void ( *lambda )(), QgsMessageBar *messageBar )
         QAbstractButton *stopSessionButton = msgBox.addButton( tr( "Don't ask anymore" ), QMessageBox::DestructiveRole );
         msgBox.addButton( tr( "No" ), QMessageBox::NoRole );
         QAbstractButton *yesButton = msgBox.addButton( tr( "Yes" ), QMessageBox::YesRole );
+        msgBox.exec();
+
         QAbstractButton *clicked = msgBox.clickedButton();
         if ( clicked == stopSessionButton )
         {

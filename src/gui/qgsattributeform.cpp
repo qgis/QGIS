@@ -35,7 +35,6 @@
 #include "qgstabwidget.h"
 #include "qgssettings.h"
 #include "qgsscrollarea.h"
-#include "qgsgui.h"
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsvectorlayerutils.h"
 #include "qgsqmlwidgetwrapper.h"
@@ -1750,9 +1749,15 @@ void QgsAttributeForm::initPython()
     }
 
     // If we have a function code, run it
-    if ( !initCode.isEmpty() && QgsGui::pythonMacroAllowed() )
+    if ( !initCode.isEmpty() )
     {
-      QgsPythonRunner::run( initCode );
+      if ( QgsGui::pythonMacroAllowed() )
+        QgsPythonRunner::run( initCode );
+      else
+        mMessageBar->pushMessage( QString(),
+                                  tr( "Python macro could not be run due to missing permissions." ),
+                                  Qgis::MessageLevel::Warning,
+                                  messageTimeout() );
     }
 
     QgsPythonRunner::run( QStringLiteral( "import inspect" ) );

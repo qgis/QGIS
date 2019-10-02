@@ -153,6 +153,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mEnableMacrosComboBox->addItem( tr( "Never" ), QVariant::fromValue( Qgis::PythonMacroMode::Never ) );
   mEnableMacrosComboBox->addItem( tr( "Ask" ), QVariant::fromValue( Qgis::PythonMacroMode::Ask ) );
   mEnableMacrosComboBox->addItem( tr( "For this session only" ), QVariant::fromValue( Qgis::PythonMacroMode::SessionOnly ) );
+  mEnableMacrosComboBox->addItem( tr( "Not during this session" ), QVariant::fromValue( Qgis::PythonMacroMode::NotForThisSession ) );
   mEnableMacrosComboBox->addItem( tr( "Always (not recommended)" ), QVariant::fromValue( Qgis::PythonMacroMode::Always ) );
 
   mIdentifyHighlightColorButton->setColorDialogTitle( tr( "Identify Highlight Color" ) );
