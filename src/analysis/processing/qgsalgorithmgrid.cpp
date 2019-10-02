@@ -73,10 +73,16 @@ void QgsGridAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsGridAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates a grid layer of different shapes (rectangle, diamond, hexagon).\n\n"
-                      "The parameters Horizontal and Vertical Spacing define the horizontal and vertical resolution of the grid.\n\n"
-                      "Help for horizontal overlay.\n\n"
-                      "The grid creation will be performed with regards to the specified coordinate reference system." );
+  return QObject::tr( "This algorithm creates a vector layer with a grid covering a given extent. "
+                      "Elements in the grid can be points, lines or polygons. The size and/or "
+                      "placement of each element in the grid is defined using a horizontal and "
+                      "vertical spacing. The CRS of the output layer must be defined. The grid extent "
+                      "and the spacing values must be expressed in the coordinates and units of "
+                      "this CRS. The top-left point (minX, maxY) is used as the reference point. "
+                      "That means that, at that point, an element is guaranteed to be placed. "
+                      "Unless the width and height of the selected extent is a multiple of the "
+                      "selected spacing, that is not true for the other points that define that extent."
+                      );
 }
 
 QgsGridAlgorithm *QgsGridAlgorithm::createInstance() const
