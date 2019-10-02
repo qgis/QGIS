@@ -111,7 +111,7 @@ bool QgsGridAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProce
 QVariantMap QgsGridAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   //check if parameter values are valid
-  if( mHSpacing <= 0 or mVSpacing <= 0)
+  if( mHSpacing <= 0 || mVSpacing <= 0)
     throw QgsProcessingException( QObject::tr( "Invalid grid spacing. horizontal: '%1', vertical: '%2'" ).arg( mHSpacing ).arg( mVSpacing ));
 
   if( mGridExtent.width() < mHSpacing ) //check if grid extent is smaller than horizontal spacing
@@ -120,7 +120,7 @@ QVariantMap QgsGridAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
   if( mGridExtent.height() < mVSpacing) //check if grid extent is smaller than vertical spacing
     throw QgsProcessingException( QObject::tr( "Vertical spacing is too large for the covered area."));
 
-  if( mHSpacing <= mHOverlay or mVSpacing <= mVOverlay)
+  if( mHSpacing <= mHOverlay || mVSpacing <= mVOverlay)
     throw QgsProcessingException( QObject::tr( "Invalid overlay: horizontal: '%1', vertical: '%2'").arg( mHOverlay ).arg( mVOverlay ));
 
   //add grid fields
@@ -131,19 +131,15 @@ QVariantMap QgsGridAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
   fields.append(QgsField(QStringLiteral( "right" ), QVariant::Double));
   fields.append(QgsField(QStringLiteral( "bottom" ), QVariant::Double));
 
-  //define output WKB-type
-  QgsWkbTypes::Type outputWkb;
-  if( mIdx == 0 )
+  QgsWkbTypes::Type outputWkb = QgsWkbTypes::Polygon;
+  switch ( mIdx )
   {
-    outputWkb = QgsWkbTypes::Point;
-  }
-  else if ( mIdx == 1 )
-  {
-    outputWkb = QgsWkbTypes::LineString;
-  }
-  else
-  {
-    outputWkb = QgsWkbTypes::Polygon;
+    case 0:
+      outputWkb = QgsWkbTypes::Point;
+      break;
+    case 1:
+      outputWkb = QgsWkbTypes::LineString;
+      break;
   }
 
   //output sink
@@ -171,8 +167,6 @@ QVariantMap QgsGridAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
     case 4: //hexagon
       createHexagonGrid(sink, feedback);
       break;
-    default:
-      break; //no default needed
   }
 
 
