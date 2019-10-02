@@ -6,8 +6,8 @@ QgsProcessingParameterNumber|MIN|minimum value (for range)|QgsProcessingParamete
 QgsProcessingParameterNumber|MAX|maximum value (for range)|QgsProcessingParameterNumber.Double|1.0|False|None|None
 QgsProcessingParameterNumber|RNEW|new value(for range)|QgsProcessingParameterNumber.Double|2.0|False|None|None
 QgsProcessingParameterEnum|ROPERATOR|operator (for range)|[0] <=;[1] <
-QgsProcessingParameterBoolean|NODATAOPT|replace no data values|True
+QgsProcessingParameterBoolean|NODATAOPT|replace no data values|False
 QgsProcessingParameterNumber|NODATA|new value for no data values|QgsProcessingParameterNumber.Double|0.0|False|None|None
-QgsProcessingParameterBoolean|OTHEROPT|replace other values|True
+QgsProcessingParameterBoolean|OTHEROPT|replace other values|False
 QgsProcessingParameterNumber|OTHERS|new value for other values|QgsProcessingParameterNumber.Double|0.0|False|None|None
 QgsProcessingParameterRasterDestination|RESULT|Reclassified Grid
