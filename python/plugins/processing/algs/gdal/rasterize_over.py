@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'September 2013'
 __copyright__ = '(C) 2013, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
@@ -36,10 +32,7 @@ from qgis.core import (QgsRasterFileWriter,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterString,
-                       QgsProcessingParameterEnum,
-                       QgsProcessingParameterExtent,
-                       QgsProcessingParameterBoolean,
-                       QgsProcessingParameterRasterDestination)
+                       QgsProcessingParameterBoolean)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
@@ -52,6 +45,7 @@ class rasterize_over(GdalAlgorithm):
     FIELD = 'FIELD'
     INPUT_RASTER = 'INPUT_RASTER'
     ADD = 'ADD'
+    EXTRA = 'EXTRA'
 
     def __init__(self):
         super().__init__()
@@ -62,18 +56,28 @@ class rasterize_over(GdalAlgorithm):
 
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input vector layer')))
+
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT_RASTER, self.tr('Input raster layer')))
+
         self.addParameter(QgsProcessingParameterField(self.FIELD,
-                                                      self.tr('Field to use for a burn-in value'),
+                                                      self.tr('Field to use for burn in value'),
                                                       None,
                                                       self.INPUT,
                                                       QgsProcessingParameterField.Numeric,
                                                       optional=False))
+
         add_param = QgsProcessingParameterBoolean(self.ADD,
-                                                     self.tr('Adds the new value to the existing raster'),
+                                                     self.tr('Add burn in values to existing raster values'),
                                                      defaultValue=False)
         add_param.setFlags(add_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(add_param)
+
+        extra_param = QgsProcessingParameterString(self.EXTRA,
+                                                   self.tr('Additional command-line parameters'),
+                                                   defaultValue=None,
+                                                   optional=True)
+        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(extra_param)
 
     def name(self):
         return 'rasterize_over'
@@ -107,6 +111,10 @@ class rasterize_over(GdalAlgorithm):
 
         if self.parameterAsBool(parameters, self.ADD, context):
             arguments.append('-add')
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
 
         arguments.append(ogrLayer)
         arguments.append(inLayer.source())
