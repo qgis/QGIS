@@ -46,6 +46,7 @@ class rasterize_over(GdalAlgorithm):
     INPUT_RASTER = 'INPUT_RASTER'
     ADD = 'ADD'
     EXTRA = 'EXTRA'
+    BURN = 'BURN'
 
     def __init__(self):
         super().__init__()
@@ -64,7 +65,13 @@ class rasterize_over(GdalAlgorithm):
                                                       None,
                                                       self.INPUT,
                                                       QgsProcessingParameterField.Numeric,
-                                                      optional=False))
+                                                      optional=True))
+
+        self.addParameter(QgsProcessingParameterNumber(self.BURN,
+                                                       self.tr('A fixed value to burn'),
+                                                       type=QgsProcessingParameterNumber.Double,
+                                                       defaultValue=0.0,
+                                                       optional=True))
 
         add_param = QgsProcessingParameterBoolean(self.ADD,
                                                      self.tr('Add burn in values to existing raster values'),
@@ -108,6 +115,9 @@ class rasterize_over(GdalAlgorithm):
         if fieldName:
             arguments.append('-a')
             arguments.append(fieldName)
+        else:
+            arguments.append('-burn')
+            arguments.append(self.parameterAsDouble(parameters, self.BURN, context))
 
         if self.parameterAsBool(parameters, self.ADD, context):
             arguments.append('-add')
