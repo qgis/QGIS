@@ -57,12 +57,12 @@ void QgsGridAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterExtent(QStringLiteral("EXTENT"), QObject::tr( "Grid extent" )));
 
   //add Distance Parameter for horizontal and vertical spacing
-  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "HSPACING"), QObject::tr( "Horizontal Spacing" ), 1, QString( "CRS" ), false, 0, 1000000000.0));
-  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "VSPACING"), QObject::tr( "Vertical Spacing" ), 1, QString( "CRS" ), false, 0, 1000000000.0));
+  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "HSPACING"), QObject::tr( "Horizontal spacing" ), 1, QStringLiteral( "CRS" ), false, 0, 1000000000.0));
+  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "VSPACING"), QObject::tr( "Vertical spacing" ), 1, QStringLiteral( "CRS" ), false, 0, 1000000000.0));
 
   //add Distance Parameter for horizontal and vertical overlay
-  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "HOVERLAY"), QObject::tr( "Horizontal Overlay" ), 0, QString( "CRS" ), false, 0, 1000000000.0));
-  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "VOVERLAY"), QObject::tr( "Vertical Overlay" ), 0, QString( "CRS" ), false, 0, 1000000000.0));
+  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "HOVERLAY"), QObject::tr( "Horizontal overlay" ), 0, QStringLiteral( "CRS" ), false, 0, 1000000000.0));
+  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "VOVERLAY"), QObject::tr( "Vertical overlay" ), 0, QStringLiteral( "CRS" ), false, 0, 1000000000.0));
 
   //add Coordinate Reference System parameter
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Grid CRS" ), QStringLiteral( "ProjectCrs" )));
