@@ -87,9 +87,13 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
             if executing:
                 # parameter is not a vector layer - try to convert to a source compatible with OGR
                 # and extract selection if required
+                if 'gpkg' in QgsVectorFileWriter.supportedFormatExtensions():
+                    preferred_format = 'gpkg'
+                else:
+                    preferred_format = 'shp'
                 ogr_data_path = self.parameterAsCompatibleSourceLayerPath(parameters, parameter_name, context,
                                                                           QgsVectorFileWriter.supportedFormatExtensions(),
-                                                                          'gpkg',
+                                                                          preferred_format,
                                                                           feedback=feedback)
                 ogr_layer_name = GdalUtils.ogrLayerName(ogr_data_path)
             else:
