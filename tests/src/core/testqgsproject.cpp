@@ -25,6 +25,7 @@
 #include "qgsunittypes.h"
 #include "qgsvectorlayer.h"
 #include "qgssymbollayerutils.h"
+#include "qgslayoutmanager.h"
 
 class TestQgsProject : public QObject
 {
@@ -457,6 +458,12 @@ void TestQgsProject::testReadFlags()
   QVERIFY( !layers.value( QStringLiteral( "polys20170310142652234" ) )->isValid() );
   QCOMPARE( qobject_cast< QgsVectorLayer * >( layers.value( QStringLiteral( "lines20170310142652255" ) ) )->renderer()->type(), QStringLiteral( "categorizedSymbol" ) );
   QCOMPARE( qobject_cast< QgsVectorLayer * >( layers.value( QStringLiteral( "polys20170310142652234" ) ) )->renderer()->type(), QStringLiteral( "categorizedSymbol" ) );
+
+
+  QString project3Path = QString( TEST_DATA_DIR ) + QStringLiteral( "/layouts/layout_casting.qgs" );
+  QgsProject p3;
+  QVERIFY( p3.read( project3Path, QgsProject::FlagDontLoadLayouts ) );
+  QCOMPARE( p3.layoutManager()->layouts().count(), 0 );
 }
 
 void TestQgsProject::testSetGetCrs()

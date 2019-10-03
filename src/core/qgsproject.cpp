@@ -1416,7 +1416,8 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   emit labelingEngineSettingsChanged();
 
   mAnnotationManager->readXml( doc->documentElement(), context );
-  mLayoutManager->readXml( doc->documentElement(), *doc );
+  if ( !( flags & QgsProject::FlagDontLoadLayouts ) )
+    mLayoutManager->readXml( doc->documentElement(), *doc );
   mBookmarkManager->readXml( doc->documentElement(), *doc );
 
   // reassign change dependencies now that all layers are loaded
