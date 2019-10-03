@@ -244,16 +244,24 @@ bool QgsGui::pythonMacroAllowed( void ( *lambda )(), QgsMessageBar *messageBar )
   {
     case Qgis::PythonMacroMode::SessionOnly:
     case Qgis::PythonMacroMode::Always:
+      if ( lambda )
+        lambda();
       return true;
     case Qgis::PythonMacroMode::Never:
     case Qgis::PythonMacroMode::NotForThisSession:
+      if ( messageBar )
+      {
+        messageBar->pushMessage( tr( "Python Macros" ),
+                                 tr( "Python macros are currently disabled and will not be run" ),
+                                 Qgis::MessageLevel::Warning );
+      }
       return false;
     case Qgis::PythonMacroMode::Ask:
       if ( !lambda )
       {
-        QMessageBox msgBox( QMessageBox::Information, "Python Macros",
+        QMessageBox msgBox( QMessageBox::Information, tr( "Python Macros" ),
                             tr( "Python macros are currently disabled. Do you allow this macro to run?" ) );
-        QAbstractButton *stopSessionButton = msgBox.addButton( tr( "Don't ask anymore" ), QMessageBox::DestructiveRole );
+        QAbstractButton *stopSessionButton = msgBox.addButton( tr( "Don't Ask Anymore" ), QMessageBox::DestructiveRole );
         msgBox.addButton( tr( "No" ), QMessageBox::NoRole );
         QAbstractButton *yesButton = msgBox.addButton( tr( "Yes" ), QMessageBox::YesRole );
         msgBox.exec();

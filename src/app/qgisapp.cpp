@@ -6297,17 +6297,8 @@ bool QgisApp::addProject( const QString &projectFile )
     {
       if ( !QgsProject::instance()->readEntry( QStringLiteral( "Macros" ), QStringLiteral( "/pythonCode" ), QString() ).isEmpty() )
       {
-        Qgis::PythonMacroMode enableMacros = settings.enumValue( QStringLiteral( "qgis/enableMacros" ), Qgis::PythonMacroMode::Ask );
-
-        if ( enableMacros == Qgis::PythonMacroMode::Always || enableMacros == Qgis::PythonMacroMode::SessionOnly )
-        {
-          enableProjectMacros();
-        }
-        else if ( enableMacros == Qgis::PythonMacroMode::Ask )
-        {
-          auto lambda = []() {QgisApp::instance()->enableProjectMacros();};
-          QgsGui::pythonMacroAllowed( lambda, mInfoBar );
-        }
+        auto lambda = []() {QgisApp::instance()->enableProjectMacros();};
+        QgsGui::pythonMacroAllowed( lambda, mInfoBar );
       }
     }
 #endif

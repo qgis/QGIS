@@ -16,7 +16,7 @@ import filecmp
 
 from qgis.core import (QgsApplication, QgsVectorLayer, QgsReadWriteContext, QgsEditFormConfig,
                        QgsFetchedContent, QgsAttributeEditorContainer, QgsFeature, QgsSettings,
-                       Qgis)
+                       Qgis, QgsNetworkContentFetcherRegistry)
 from qgis.gui import QgsGui, QgsAttributeForm
 
 from qgis.testing import start_app, unittest
