@@ -132,13 +132,7 @@ void topolTest::setTestCanceled()
 
 bool topolTest::testCanceled()
 {
-  if ( mTestCanceled )
-  {
-    mTestCanceled = false;
-    return true;
-  }
-
-  return false;
+  return mTestCanceled;
 }
 
 ErrorList topolTest::checkDanglingLines( QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent )
@@ -1114,6 +1108,11 @@ ErrorList topolTest::checkyLineEndsCoveredByPoints( QgsVectorLayer *layer1, QgsV
     }
   }
   return errorList;
+}
+
+void topolTest::resetCanceledFlag()
+{
+  mTestCanceled = false;
 }
 
 ErrorList topolTest::checkPointInPolygon( QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent )

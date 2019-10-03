@@ -324,8 +324,13 @@ void checkDock::fix()
 
 void checkDock::runTests( ValidateType type )
 {
+  mTest->resetCanceledFlag();
+
   for ( int i = 0; i < mTestTable->rowCount(); ++i )
   {
+    if ( mTest->testCanceled() )
+      break;
+
     QString testName = mTestTable->item( i, 0 )->text();
     QString layer1Str = mTestTable->item( i, 3 )->text();
     QString layer2Str = mTestTable->item( i, 4 )->text();
@@ -375,8 +380,6 @@ void checkDock::runTests( ValidateType type )
       rb->show();
       mRbErrorMarkers << rb;
     }
-    disconnect( &progress, &QProgressDialog::canceled, mTest, &topolTest::setTestCanceled );
-    disconnect( mTest, &topolTest::progress, &progress, &QProgressDialog::setValue );
     mErrorList << errors;
   }
   mToggleRubberband->setChecked( true );
