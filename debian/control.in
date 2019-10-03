@@ -17,13 +17,13 @@ Build-Depends:
  libgdal-dev (>= 1.11),
  libgeos-dev (>= 3.0.0),
  libgsl-dev,
-#sid         buster        bionic disco# libosgearth-dev,
+#sid         buster        bionic disco eoan# libosgearth-dev,
  libpq-dev,
  libproj-dev,
  libqca-qt5-2-dev,
  libqca-qt5-2-plugins,
-#sid         buster        bionic disco# libqscintilla2-qt5-dev,
-#    stretch        xenial             # libqt5scintilla2-dev,
+#sid         buster        bionic disco eoan# libqscintilla2-qt5-dev,
+#    stretch        xenial                  # libqt5scintilla2-dev,
  libqt5opengl5-dev,
  libqt5serialport5-dev,
  libqt5sql5-sqlite,
@@ -61,11 +61,11 @@ Build-Depends:
  python3-sip,
  python3-termcolor,
  python3-yaml,
-#sid         buster        bionic disco# qt3d5-dev,
-#sid         buster        bionic disco# qt3d-assimpsceneimport-plugin,
-#sid         buster        bionic disco# qt3d-defaultgeometryloader-plugin,
-#sid         buster        bionic disco# qt3d-gltfsceneio-plugin,
-#sid         buster        bionic disco# qt3d-scene2d-plugin,
+#sid         buster        bionic disco eoan# qt3d5-dev,
+#sid         buster        bionic disco eoan# qt3d-assimpsceneimport-plugin,
+#sid         buster        bionic disco eoan# qt3d-defaultgeometryloader-plugin,
+#sid         buster        bionic disco eoan# qt3d-gltfsceneio-plugin,
+#sid         buster        bionic disco eoan# qt3d-scene2d-plugin,
  qt5keychain-dev,
  qtbase5-dev,
 #!xenial# qtbase5-private-dev,
@@ -123,7 +123,7 @@ Architecture: all
 Depends:
  libjs-jquery,
  libjs-leaflet,
-#sid         buster        bionic disco# qml-module-qtcharts,
+#sid         buster        bionic disco eoan# qml-module-qtcharts,
  ${misc:Depends}
 Description: QGIS - architecture-independent data
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
@@ -132,22 +132,22 @@ Description: QGIS - architecture-independent data
  This package contains architecture-independent supporting data files for use
  with QGIS.
 
-#sid         buster        bionic disco#Package: libqgis-3d{QGIS_ABI}
-#sid         buster        bionic disco#Architecture: any
-#sid         buster        bionic disco#Section: libs
-#sid         buster        bionic disco#Depends:
-#sid         buster        bionic disco# qt3d-assimpsceneimport-plugin,
-#sid         buster        bionic disco# qt3d-defaultgeometryloader-plugin,
-#sid         buster        bionic disco# qt3d-gltfsceneio-plugin,
-#sid         buster        bionic disco# qt3d-scene2d-plugin,
-#sid         buster        bionic disco# ${shlibs:Depends},
-#sid         buster        bionic disco# ${misc:Depends}
-#sid         buster        bionic disco#Description: QGIS - shared 3d library
-#sid         buster        bionic disco# QGIS is a Geographic Information System (GIS) which manages, analyzes and
-#sid         buster        bionic disco# display databases of geographic information.
-#sid         buster        bionic disco# .
-#sid         buster        bionic disco# This package contains the shared 3d library.
-#sid         buster        bionic disco#
+#sid         buster        bionic disco eoan#Package: libqgis-3d{QGIS_ABI}
+#sid         buster        bionic disco eoan#Architecture: any
+#sid         buster        bionic disco eoan#Section: libs
+#sid         buster        bionic disco eoan#Depends:
+#sid         buster        bionic disco eoan# qt3d-assimpsceneimport-plugin,
+#sid         buster        bionic disco eoan# qt3d-defaultgeometryloader-plugin,
+#sid         buster        bionic disco eoan# qt3d-gltfsceneio-plugin,
+#sid         buster        bionic disco eoan# qt3d-scene2d-plugin,
+#sid         buster        bionic disco eoan# ${shlibs:Depends},
+#sid         buster        bionic disco eoan# ${misc:Depends}
+#sid         buster        bionic disco eoan#Description: QGIS - shared 3d library
+#sid         buster        bionic disco eoan# QGIS is a Geographic Information System (GIS) which manages, analyzes and
+#sid         buster        bionic disco eoan# display databases of geographic information.
+#sid         buster        bionic disco eoan# .
+#sid         buster        bionic disco eoan# This package contains the shared 3d library.
+#sid         buster        bionic disco eoan#
 Package: libqgis-analysis{QGIS_ABI}
 Architecture: any
 Section: libs
@@ -278,9 +278,9 @@ Depends:
  libqgis-server{QGIS_ABI} (= ${binary:Version}),
  libqgisgrass{GRASSVER}-{QGIS_ABI} (= ${binary:Version}),
  libqgispython{QGIS_ABI} (= ${binary:Version}),
-#sid         buster        bionic disco# libqgis-3d{QGIS_ABI} (= ${binary:Version}),
-#sid         buster        bionic disco# libqscintilla2-qt5-dev,
-#    stretch        xenial             # libqt5scintilla2-dev,
+#sid         buster        bionic disco eoan# libqgis-3d{QGIS_ABI} (= ${binary:Version}),
+#sid         buster        bionic disco eoan# libqscintilla2-qt5-dev,
+#    stretch        xenial                  # libqt5scintilla2-dev,
  libqt5svg5-dev,
  libqt5webkit5-dev,
  libqwt-qt5-dev,
@@ -309,7 +309,7 @@ Architecture: any
 Section: debug
 Priority: extra
 Depends:
-#sid         buster        bionic disco# libqgis-3d{QGIS_ABI} (= ${binary:Version}),
+#sid         buster        bionic disco eoan# libqgis-3d{QGIS_ABI} (= ${binary:Version}),
  libqgis-analysis{QGIS_ABI} (= ${binary:Version}),
  libqgis-app{QGIS_ABI} (= ${binary:Version}),
  libqgis-core{QGIS_ABI} (= ${binary:Version}),

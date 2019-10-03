@@ -1,5 +1,5 @@
-#sid buster bionic disco#usr/lib/python*/*-packages/qgis/3d/__init__.py
-#sid buster bionic disco#usr/lib/python*/*-packages/qgis/_3d.so
+#sid buster bionic disco eoan#usr/lib/python*/*-packages/qgis/3d/__init__.py
+#sid buster bionic disco eoan#usr/lib/python*/*-packages/qgis/_3d.so
 usr/lib/python*/*-packages/qgis/_analysis.so
 usr/lib/python*/*-packages/qgis/_core.so
 usr/lib/python*/*-packages/qgis/_gui.so

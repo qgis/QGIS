@@ -1,5 +1,5 @@
 usr/include/qgis/*
-#sid buster bionic disco#usr/lib/libqgis_3d.so
+#sid buster bionic disco eoan#usr/lib/libqgis_3d.so
 usr/lib/libqgis_analysis.so
 usr/lib/libqgis_app.so
 usr/lib/libqgis_core.so
