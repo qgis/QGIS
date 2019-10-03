@@ -98,7 +98,7 @@ class TestQgsEditFormConfig(unittest.TestCase):
             str(self.port) + '/qgis_local_server/layer_attribute_form.ui'
         config.setUiForm(uiUrl)
         self.assertEqual(config.layout(), QgsEditFormConfig.UiFileLayout)
-        content = QgsApplication.networkContentFetcherRegistry().fetch(uiUrl)
+        content = QgsApplication.networkContentFetcherRegistry().fetch(uiUrl, QgsNetworkContentFetcherRegistry.DownloadImmediately)
         self.assertTrue(content is not None)
         while True:
             if content.status() in (QgsFetchedContent.Finished, QgsFetchedContent.Failed):
@@ -124,7 +124,7 @@ class TestQgsEditFormConfig(unittest.TestCase):
         config.setInitFilePath(pyUrl)
         config.setInitFunction('formOpen')
 
-        content = QgsApplication.networkContentFetcherRegistry().fetch(pyUrl)
+        content = QgsApplication.networkContentFetcherRegistry().fetch(pyUrl, QgsNetworkContentFetcherRegistry.DownloadImmediately)
         self.assertTrue(content is not None)
         while True:
             if content.status() in (QgsFetchedContent.Finished, QgsFetchedContent.Failed):
