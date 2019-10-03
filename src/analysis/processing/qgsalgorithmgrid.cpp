@@ -51,24 +51,18 @@ QString QgsGridAlgorithm::groupId() const
 
 void QgsGridAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  //add selection parameter for grid type
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "TYPE" ), QObject::tr( "Grid type" ), QStringList() << QObject::tr( "Point" ) << QObject::tr( "Line" ) << QObject::tr( "Rectangle (Polygon)" ) << QObject::tr( "Diamond (Polygon)" ) << QObject::tr( "Hexagon (Polygon)" ), false, 0 ) );
 
-  //add extent parameter for grid
   addParameter( new QgsProcessingParameterExtent(QStringLiteral("EXTENT"), QObject::tr( "Grid extent" )));
 
-  //add Distance Parameter for horizontal and vertical spacing
   addParameter( new QgsProcessingParameterDistance( QStringLiteral( "HSPACING"), QObject::tr( "Horizontal spacing" ), 1, QStringLiteral( "CRS" ), false, 0, 1000000000.0));
   addParameter( new QgsProcessingParameterDistance( QStringLiteral( "VSPACING"), QObject::tr( "Vertical spacing" ), 1, QStringLiteral( "CRS" ), false, 0, 1000000000.0));
 
-  //add Distance Parameter for horizontal and vertical overlay
   addParameter( new QgsProcessingParameterDistance( QStringLiteral( "HOVERLAY"), QObject::tr( "Horizontal overlay" ), 0, QStringLiteral( "CRS" ), false, 0, 1000000000.0));
   addParameter( new QgsProcessingParameterDistance( QStringLiteral( "VOVERLAY"), QObject::tr( "Vertical overlay" ), 0, QStringLiteral( "CRS" ), false, 0, 1000000000.0));
 
-  //add Coordinate Reference System parameter
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Grid CRS" ), QStringLiteral( "ProjectCrs" )));
 
-  //add FeatureSink as output parameter
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr("Grid"), QgsProcessing::TypeVectorPolygon ) );
 }
 
@@ -93,16 +87,11 @@ QgsGridAlgorithm *QgsGridAlgorithm::createInstance() const
 
 bool QgsGridAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  //retrieve grid type
   mIdx = parameterAsEnum( parameters, QStringLiteral( "TYPE" ), context);
-
-  //retrieve spacing and overlay parameter values
   mHSpacing = parameterAsDouble( parameters, QStringLiteral( "HSPACING" ), context );
   mVSpacing = parameterAsDouble( parameters, QStringLiteral( "VSPACING" ), context );
   mHOverlay = parameterAsDouble( parameters, QStringLiteral( "HOVERLAY" ), context );
   mVOverlay = parameterAsDouble( parameters, QStringLiteral( "VOVERLAY" ), context );
-
-  //retrieve geom parameters
   mCrs = parameterAsCrs( parameters, QStringLiteral("CRS"), context);
   mGridExtent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, mCrs);
 
@@ -111,7 +100,6 @@ bool QgsGridAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProce
 
 QVariantMap QgsGridAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  //check if parameter values are valid
   if( mHSpacing <= 0 || mVSpacing <= 0)
     throw QgsProcessingException( QObject::tr( "Invalid grid spacing. horizontal: '%1', vertical: '%2'" ).arg( mHSpacing ).arg( mVSpacing ));
 
@@ -124,7 +112,6 @@ QVariantMap QgsGridAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
   if( mHSpacing <= mHOverlay || mVSpacing <= mVOverlay)
     throw QgsProcessingException( QObject::tr( "Invalid overlay: horizontal: '%1', vertical: '%2'").arg( mHOverlay ).arg( mVOverlay ));
 
-  //add grid fields
   QgsFields fields = QgsFields();
   fields.append(QgsField(QStringLiteral( "id "), QVariant::LongLong));
   fields.append(QgsField(QStringLiteral( "left" ), QVariant::Double));
@@ -143,14 +130,13 @@ QVariantMap QgsGridAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
       break;
   }
 
-  //output sink
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, outputWkb, mCrs ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   feedback->setProgress(0);
-  //select calculation method based on grid type selection
+
   switch ( mIdx )
   {
     case 0: //point
