@@ -44,7 +44,7 @@ QVariantMap QgsServerOgcApiHandler::values( const QgsServerApiContext &context )
   const auto constParameters { parameters( context ) };
   for ( const auto &p : constParameters )
   {
-    // value() calls the validators and throw an exception if validation fails
+    // value() calls the validators and throws an exception if validation fails
     result[p.name()] = p.value( context );
   }
   const auto match { path().match( context.request()->url().toString() ) };
@@ -84,19 +84,24 @@ void QgsServerOgcApiHandler::handleRequest( const QgsServerApiContext &context )
 
 QString QgsServerOgcApiHandler::contentTypeForAccept( const QString &accept ) const
 {
-
-  QString result;
-  const auto constMimes { QgsServerOgcApi::contentTypeMimes() };
-  for ( const auto &ct : constMimes )
+  for ( auto it = QgsServerOgcApi::contentTypeMimes().constBegin();
+        it != QgsServerOgcApi::contentTypeMimes().constEnd(); ++it )
   {
-    if ( accept.contains( ct ) )
+    const auto constValues = it.value();
+    for ( const auto &value : constValues )
     {
-      result = ct;
-      break;
+      if ( accept.contains( value, Qt::CaseSensitivity::CaseInsensitive ) )
+      {
+        return value;
+      }
     }
   }
-  return result;
+  // Log level info because this is not completely unexpected
+  QgsMessageLog::logMessage( QStringLiteral( "Content type for accept %1 not found!" ).arg( accept ),
+                             QStringLiteral( "Server" ),
+                             Qgis::Info );
 
+  return QString();
 }
 
 void QgsServerOgcApiHandler::write( json &data, const QgsServerApiContext &context, const json &htmlMetadata ) const
@@ -115,10 +120,11 @@ void QgsServerOgcApiHandler::write( json &data, const QgsServerApiContext &conte
     case QgsServerOgcApi::ContentType::GEOJSON:
     case QgsServerOgcApi::ContentType::JSON:
     case QgsServerOgcApi::ContentType::OPENAPI3:
-      jsonDump( data, context, QgsServerOgcApi::contentTypeMimes().value( contentType ) );
+      jsonDump( data, context, QgsServerOgcApi::contentTypeMimes().value( contentType ).first() );
       break;
   }
 }
+
 void QgsServerOgcApiHandler::write( QVariant &data, const QgsServerApiContext &context, const QVariantMap &htmlMetadata ) const
 {
   json j = QgsJsonUtils::jsonFromVariant( data );
@@ -153,7 +159,7 @@ std::string QgsServerOgcApiHandler::href( const QgsServerApiContext &context, co
   url.setPath( url.path() + extraPath );
 
   // (re-)add extension
-  // JSON is the default anyway, we don'n need to add it
+  // JSON is the default anyway so we don't need to add it
   if ( ! extension.isEmpty() )
   {
     // Remove trailing slashes if any.
@@ -171,7 +177,7 @@ std::string QgsServerOgcApiHandler::href( const QgsServerApiContext &context, co
 void QgsServerOgcApiHandler::jsonDump( json &data, const QgsServerApiContext &context, const QString &contentType ) const
 {
   // Do not append timestamp to openapi
-  if ( contentType != QgsServerOgcApi::contentTypeMimes().value( QgsServerOgcApi::ContentType::OPENAPI3 ) )
+  if ( ! QgsServerOgcApi::contentTypeMimes().value( QgsServerOgcApi::ContentType::OPENAPI3 ).contains( contentType, Qt::CaseSensitivity::CaseInsensitive ) )
   {
     QDateTime time { QDateTime::currentDateTime() };
     time.setTimeSpec( Qt::TimeSpec::UTC );
@@ -399,8 +405,17 @@ QgsServerOgcApi::ContentType QgsServerOgcApiHandler::contentTypeFromRequest( con
     const QString ctFromAccept { contentTypeForAccept( accept ) };
     if ( ! ctFromAccept.isEmpty() )
     {
-      result = QgsServerOgcApi::contentTypeMimes().key( ctFromAccept );
-      found = true;
+      auto it = QgsServerOgcApi::contentTypeMimes().constBegin();
+      while ( ! found && it != QgsServerOgcApi::contentTypeMimes().constEnd() )
+      {
+        int idx = it.value().indexOf( ctFromAccept );
+        if ( idx >= 0 )
+        {
+          found = true;
+          result = it.key();
+        }
+        it++;
+      }
     }
     else
     {
