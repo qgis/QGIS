@@ -28,6 +28,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsgeos.h"
+#include "qgsgeometrycollection.h"
 #include <cmath>
 #include <set>
 #include <map>
@@ -1269,9 +1270,8 @@ ErrorList topolTest::checkMultipart( QgsVectorLayer *layer1, QgsVectorLayer *lay
       QgsMessageLog::logMessage( tr( "Missing geometry in multipart check." ), tr( "Topology plugin" ) );
       continue;
     }
-    if ( !_canExportToGeos( g ) )
-      continue;
-    if ( g.isMultipart() )
+
+    if ( g.isMultipart() && qgsgeometry_cast< const QgsGeometryCollection *>( g.constGet() )->numGeometries() > 1 )
     {
       QgsRectangle r = g.boundingBox();
       QList<FeatureLayer> fls;
