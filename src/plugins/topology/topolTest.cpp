@@ -753,11 +753,7 @@ ErrorList topolTest::checkValid( QgsVectorLayer *layer1, QgsVectorLayer *layer2,
       continue;
     }
 
-    geos::unique_ptr gGeos = QgsGeos::asGeos( g );
-    if ( !gGeos )
-      continue;
-
-    if ( !GEOSisValid_r( QgsGeos::getGEOSHandler(), gGeos.get() ) )
+    if ( !g.isGeosValid() )
     {
       QgsRectangle r = g.boundingBox();
       QList<FeatureLayer> fls;
