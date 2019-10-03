@@ -387,6 +387,9 @@ ErrorList topolTest::checkOverlaps( QgsVectorLayer *layer1, QgsVectorLayer *laye
       continue;
     }
 
+    std::unique_ptr< QgsGeometryEngine > engine1( QgsGeometry::createGeometryEngine( g1.constGet() ) );
+    engine1->prepareGeometry();
+
     QgsRectangle bb = g1.boundingBox();
 
     QList<QgsFeatureId> crossingIds;
@@ -397,7 +400,7 @@ ErrorList topolTest::checkOverlaps( QgsVectorLayer *layer1, QgsVectorLayer *laye
 
     bool duplicate = false;
 
-    QgsGeometry canvasExtentPoly = QgsGeometry::fromWkt( qgsInterface->mapCanvas()->extent().asWktPolygon() );
+    QgsGeometry canvasExtentPoly = QgsGeometry::fromRect( qgsInterface->mapCanvas()->extent() );
 
     for ( ; cit != crossingIdsEnd; ++cit )
     {
@@ -416,21 +419,14 @@ ErrorList topolTest::checkOverlaps( QgsVectorLayer *layer1, QgsVectorLayer *laye
         continue;
       }
 
-      if ( !_canExportToGeos( g2 ) )
-      {
-        QgsMessageLog::logMessage( tr( "Failed to import second geometry into GEOS in overlaps test." ), tr( "Topology plugin" ) );
-        continue;
-      }
-
       if ( !g2.isGeosValid() )
       {
         QgsMessageLog::logMessage( tr( "Skipping invalid second geometry of feature %1 in overlaps test." ).arg( it->feature.id() ), tr( "Topology plugin" ) );
         continue;
       }
 
-
       qDebug() << "checking overlap for" << it->feature.id();
-      if ( g1.overlaps( g2 ) )
+      if ( engine1->overlaps( g2.constGet() ) )
       {
         duplicate = true;
         duplicateIds->append( mFeatureMap2[*cit].feature.id() );
