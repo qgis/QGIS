@@ -16,16 +16,17 @@
 class QgsProject : QObject, QgsExpressionContextGenerator, QgsExpressionContextScopeGenerator, QgsProjectTranslator
 {
 %Docstring
-Reads and writes project states.
+Encapsulates a QGIS project, including sets of map layers and their styles,
+layouts, annotations, canvases, etc.
 
-\note
+QgsProject is available both as a singleton (QgsProject.instance()) and for use as
+standalone objects. The QGIS project singleton always gives access to the canonical project reference
+open within the main QGIS application.
 
-Has two general kinds of state to make persistent.  (I.e., to read and
-write.)  First, QGIS proprietary information.  Second plug-in information.
+.. note::
 
-A singleton since there shall only be one active project at a time; and
-provides canonical location for plug-ins and main app to find/set
-properties.
+   QgsProject has two general kinds of state to make persistent. (I.e., to read and
+   write.) First, QGIS proprietary information. Second plugin information.
 %End
 
 %TypeHeaderCode
@@ -109,9 +110,7 @@ Returns QFileInfo object for the project's associated file.
 
 .. seealso:: :py:func:`fileName`
 
-.. versionadded:: 2.9
-
-.. deprecated:: Use absoluteFilePath(), baseName() or lastModifiedTime() instead
+.. deprecated:: since QGIS 3.2 use absoluteFilePath(), baseName() or lastModifiedTime() instead
 %End
 
     QgsProjectStorage *projectStorage() const;
