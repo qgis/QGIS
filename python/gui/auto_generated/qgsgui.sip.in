@@ -159,6 +159,7 @@ Returns the screen at the given global ``point`` (pixel).
 .. versionadded:: 3.10
 %End
 
+
   private:
     QgsGui( const QgsGui &other );
 };

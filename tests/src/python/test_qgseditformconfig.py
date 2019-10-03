@@ -14,18 +14,15 @@ import qgis  # NOQA
 import os
 import filecmp
 
-from qgis.core import (QgsApplication,
-                       QgsVectorLayer,
-                       QgsReadWriteContext,
-                       QgsEditFormConfig,
-                       QgsFetchedContent,
-                       QgsAttributeEditorContainer,
-                       )
-from qgis.gui import QgsGui
+from qgis.core import (QgsApplication, QgsVectorLayer, QgsReadWriteContext, QgsEditFormConfig,
+                       QgsFetchedContent, QgsAttributeEditorContainer, QgsFeature, QgsSettings,
+                       Qgis, QgsNetworkContentFetcherRegistry)
+from qgis.gui import QgsGui, QgsAttributeForm
 
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtXml import QDomDocument, QDomElement
 from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtWidgets import QLabel
 from utilities import unitTestDataPath
 import socketserver
 import threading
@@ -39,6 +36,7 @@ class TestQgsEditFormConfig(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         QgsGui.editorWidgetRegistry().initEditors()
+        QgsSettings().clear()
 
         # Bring up a simple HTTP server
         os.chdir(unitTestDataPath() + '')
@@ -54,6 +52,9 @@ class TestQgsEditFormConfig(unittest.TestCase):
     def createLayer(self):
         self.layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
                                     "addfeat", "memory")
+        f = QgsFeature()
+        pr = self.layer.dataProvider()
+        assert pr.addFeatures([f])
         return self.layer
 
     def testReadWriteXml(self):
@@ -97,13 +98,49 @@ class TestQgsEditFormConfig(unittest.TestCase):
             str(self.port) + '/qgis_local_server/layer_attribute_form.ui'
         config.setUiForm(uiUrl)
         self.assertEqual(config.layout(), QgsEditFormConfig.UiFileLayout)
-        content = QgsApplication.networkContentFetcherRegistry().fetch(uiUrl)
+        content = QgsApplication.networkContentFetcherRegistry().fetch(uiUrl, QgsNetworkContentFetcherRegistry.DownloadImmediately)
         self.assertTrue(content is not None)
         while True:
             if content.status() in (QgsFetchedContent.Finished, QgsFetchedContent.Failed):
                 break
             app.processEvents()
         self.assertEqual(content.status(), QgsFetchedContent.Finished)
+
+    # Failing on Travis, seg faut in event loop, no idea why
+    """
+    @unittest.expectedFailure
+    def testFormPy(self):
+        layer = self.createLayer()
+        config = layer.editFormConfig()
+
+        config.setInitCodeSource(QgsEditFormConfig.CodeSourceFile)
+
+        uiLocal = os.path.join(
+            unitTestDataPath(), 'qgis_local_server/layer_attribute_form.ui')
+        config.setUiForm(uiLocal)
+
+        pyUrl = 'http://localhost:' + \
+            str(self.port) + '/qgis_local_server/layer_attribute_form.py'
+
+        QgsSettings().setEnumValue('qgis/enableMacros', Qgis.Always)
+
+        config.setInitFilePath(pyUrl)
+        config.setInitFunction('formOpen')
+
+        content = QgsApplication.networkContentFetcherRegistry().fetch(pyUrl, QgsNetworkContentFetcherRegistry.DownloadImmediately)
+        self.assertTrue(content is not None)
+        while True:
+            if content.status() in (QgsFetchedContent.Finished, QgsFetchedContent.Failed):
+                break
+            app.processEvents()
+        self.assertEqual(content.status(), QgsFetchedContent.Finished)
+
+        layer.setEditFormConfig(config)
+        form = QgsAttributeForm(layer, next(layer.getFeatures()))
+        label = form.findChild(QLabel, 'label')
+        self.assertIsNotNone(label)
+        self.assertEqual(label.text(), 'Flying Monkey')
+    """
 
     def testReadOnly(self):
         layer = self.createLayer()

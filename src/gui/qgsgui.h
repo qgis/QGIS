@@ -37,6 +37,7 @@ class QgsWindowManagerInterface;
 class QgsDataItemGuiProviderRegistry;
 class QgsProviderGuiRegistry;
 class QgsProjectStorageGuiRegistry;
+class QgsMessageBar;
 
 /**
  * \ingroup gui
@@ -191,6 +192,17 @@ class GUI_EXPORT QgsGui : public QObject
      * \since QGIS 3.10
      */
     static QScreen *findScreenAt( QPoint point );
+
+    /**
+     * Returns true if python macros are currently allowed to be run
+     * If the global option is to ask user, a modal dialog will be shown
+     * \param lambda a pointer to a lambda method. If specified, the dialog is not modal,
+     * a message is shown with a button to enable macro.
+     * The lambda will be run either if macros are currently allowed or if the user accepts the message.
+     * The \a messageBar must be given in such case.
+     * \param messageBar the message bar must be provided if a lambda method is used.
+     */
+    static bool pythonMacroAllowed( void ( *lambda )() = nullptr, QgsMessageBar *messageBar = nullptr ) SIP_SKIP;
 
   private:
 

@@ -29,6 +29,9 @@ The Qgis class provides global constants for use throughout the application.
 #include "qgis.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
     static const QString QGIS_VERSION;
     static const int QGIS_VERSION_INT;
     static const QString QGIS_RELEASE_NAME;
@@ -60,6 +63,15 @@ The Qgis class provides global constants for use throughout the application.
       CFloat64,
       ARGB32,
       ARGB32_Premultiplied
+    };
+
+    enum PythonMacroMode
+    {
+      Never,
+      Ask,
+      SessionOnly,
+      Always,
+      NotForThisSession,
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
