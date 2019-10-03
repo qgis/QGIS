@@ -1363,8 +1363,7 @@ QgsSpatialIndex *topolTest::createIndex( QgsVectorLayer *layer, const QgsRectang
 
     if ( testCanceled() )
     {
-      delete index;
-      return nullptr;
+      return index;
     }
 
     if ( f.hasGeometry() )
