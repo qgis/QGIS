@@ -109,11 +109,11 @@ class TestGdalAlgorithms(unittest.TestCase):
         self.assertIsNotNone(alg)
         parameters = {'INPUT': 'testmem'}
         feedback = QgsProcessingFeedback()
-        # check that memory layer is automatically saved out to shape when required by GDAL algorithms
+        # check that memory layer is automatically saved out to geopackage when required by GDAL algorithms
         ogr_data_path, ogr_layer_name = alg.getOgrCompatibleSource('INPUT', parameters, context, feedback,
                                                                    executing=True)
         self.assertTrue(ogr_data_path)
-        self.assertTrue(ogr_data_path.endswith('.shp'))
+        self.assertTrue(ogr_data_path.endswith('.gpkg'))
         self.assertTrue(os.path.exists(ogr_data_path))
         self.assertTrue(ogr_layer_name)
 
@@ -198,11 +198,11 @@ class TestGdalAlgorithms(unittest.TestCase):
         self.assertIsNotNone(alg)
         parameters = {'INPUT': QgsProcessingFeatureSourceDefinition('testmem', True)}
         feedback = QgsProcessingFeedback()
-        # check that memory layer is automatically saved out to shape when required by GDAL algorithms
+        # check that memory layer is automatically saved out to geopackage when required by GDAL algorithms
         ogr_data_path, ogr_layer_name = alg.getOgrCompatibleSource('INPUT', parameters, context, feedback,
                                                                    executing=True)
         self.assertTrue(ogr_data_path)
-        self.assertTrue(ogr_data_path.endswith('.shp'))
+        self.assertTrue(ogr_data_path.endswith('.gpkg'))
         self.assertTrue(os.path.exists(ogr_data_path))
         self.assertTrue(ogr_layer_name)
 
