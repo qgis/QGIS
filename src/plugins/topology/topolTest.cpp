@@ -301,12 +301,6 @@ ErrorList topolTest::checkDuplicates( QgsVectorLayer *layer1, QgsVectorLayer *la
         continue;
       }
 
-      if ( !_canExportToGeos( g2 ) )
-      {
-        QgsMessageLog::logMessage( tr( "Failed to import second geometry into GEOS in duplicate geometry test." ), tr( "Topology plugin" ) );
-        continue;
-      }
-
       if ( g1.isGeosEqual( g2 ) )
       {
         duplicate = true;
