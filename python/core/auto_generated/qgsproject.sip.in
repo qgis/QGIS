@@ -237,6 +237,7 @@ Clears the project, removing all settings and resetting it back to an empty, def
     enum ReadFlag
     {
       FlagDontResolveLayers,
+      FlagDontLoadLayouts,
     };
     typedef QFlags<QgsProject::ReadFlag> ReadFlags;
 
