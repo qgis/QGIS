@@ -39,17 +39,30 @@ QgsLayoutItemHtml::QgsLayoutItemHtml( QgsLayout *layout )
   : QgsLayoutMultiFrame( layout )
 {
   mHtmlUnitsToLayoutUnits = htmlUnitsToLayoutUnits();
-  mWebPage = qgis::make_unique< QgsWebPage >();
-  mWebPage->setIdentifier( tr( "Layout HTML item" ) );
-  mWebPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
-  mWebPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
 
-  //This makes the background transparent. Found on http://blog.qt.digia.com/blog/2009/06/30/transparent-qwebview-or-qwebpage/
-  QPalette palette = mWebPage->palette();
-  palette.setBrush( QPalette::Base, Qt::transparent );
-  mWebPage->setPalette( palette );
+  // only possible on the main thread!
+  if ( QThread::currentThread() == QApplication::instance()->thread() )
+  {
+    mWebPage = qgis::make_unique< QgsWebPage >();
+  }
+  else
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Cannot load HTML content in background threads" ) );
+  }
 
-  mWebPage->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
+  if ( mWebPage )
+  {
+    mWebPage->setIdentifier( tr( "Layout HTML item" ) );
+    mWebPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
+    mWebPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
+
+    //This makes the background transparent. Found on http://blog.qt.digia.com/blog/2009/06/30/transparent-qwebview-or-qwebpage/
+    QPalette palette = mWebPage->palette();
+    palette.setBrush( QPalette::Base, Qt::transparent );
+    mWebPage->setPalette( palette );
+
+    mWebPage->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
+  }
 
   //a html item added to a layout needs to have the initial expression context set,
   //otherwise fields in the html aren't correctly evaluated until atlas preview feature changes (#9457)
@@ -223,7 +236,11 @@ double QgsLayoutItemHtml::maxFrameWidth() const
 
 void QgsLayoutItemHtml::recalculateFrameSizes()
 {
-  if ( frameCount() < 1 ) return;
+  if ( frameCount() < 1 )
+    return;
+
+  if ( !mWebPage )
+    return;
 
   QSize contentsSize = mWebPage->mainFrame()->contentsSize();
 
@@ -245,6 +262,9 @@ void QgsLayoutItemHtml::recalculateFrameSizes()
 
 void QgsLayoutItemHtml::renderCachedImage()
 {
+  if ( !mWebPage )
+    return;
+
   //render page to cache image
   mRenderedPage = QImage( mWebPage->viewportSize(), QImage::Format_ARGB32 );
   if ( mRenderedPage.isNull() )
