@@ -15,12 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
+
 #include "qgsfields.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgsgeometrycollection.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorlayerexporter.h"
 #include "qgsproviderregistry.h"
@@ -28,6 +30,7 @@
 #include "qgsexception.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsabstractgeometry.h"
 
 #include <QProgressDialog>
 
@@ -275,6 +278,9 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
       fields[fldIdx].setName( fields.at( fldIdx ).name().toLower() );
     }
 
+    // This code does not make much sense anymore except for POINT
+    // because since commit 1aa0091e7a368ded all POLYGON and LINESTRING are
+    // reported as MULTI from the OGR provider and shapefiles.
     if ( !forceSinglePartGeom )
     {
       // convert wkbtype to multipart (see #5547)
@@ -302,6 +308,13 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
           break;
       }
     }
+  }
+
+  bool convertGeometryToSinglePart = false;
+  if ( forceSinglePartGeom && QgsWkbTypes::isMultiType( wkbType ) )
+  {
+    wkbType = QgsWkbTypes::singleType( wkbType );
+    convertGeometryToSinglePart = true;
   }
 
   QgsVectorLayerExporter *writer =
@@ -398,6 +411,27 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
         return ErrProjection;
       }
     }
+
+    // Handles conversion to single-part
+    if ( convertGeometryToSinglePart && fet.geometry().isMultipart() )
+    {
+      QgsGeometry singlePartGeometry { fet.geometry() };
+      // We want a failure if the geometry cannot be converted to single-part without data loss!
+      // check if there are more than one part
+      const QgsGeometryCollection *c = qgsgeometry_cast<QgsGeometryCollection *>( singlePartGeometry.constGet() );
+      if ( ( c && c->partCount() > 1 ) || ! singlePartGeometry.convertToSingleType() )
+      {
+        delete writer;
+        QString msg = QObject::tr( "Failed to transform a feature with ID '%1' to single part. Writing stopped." )
+                      .arg( fet.id() );
+        QgsMessageLog::logMessage( msg, QObject::tr( "Vector import" ) );
+        if ( errorMessage )
+          *errorMessage += '\n' + msg;
+        return ErrFeatureWriteFailed;
+      }
+      fet.setGeometry( singlePartGeometry );
+    }
+
     if ( !writer->addFeature( fet ) )
     {
       if ( writer->errorCode() && errorMessage )
