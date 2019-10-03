@@ -64,9 +64,9 @@ checkDock::checkDock( QgisInterface *qIface, QWidget *parent )
   mTestTable = mConfigureDialog->rulesTable();
 
   QgsMapCanvas *canvas = qIface->mapCanvas();// mQgisApp->mapCanvas();
-  mRBFeature1 = new QgsRubberBand( canvas );
-  mRBFeature2 = new QgsRubberBand( canvas );
-  mRBConflict = new QgsRubberBand( canvas );
+  mRBFeature1.reset( new QgsRubberBand( canvas ) );
+  mRBFeature2.reset( new QgsRubberBand( canvas ) );
+  mRBConflict.reset( new QgsRubberBand( canvas ) );
 
   mRBFeature1->setColor( QColor( 0, 0, 255, 65 ) );
   mRBFeature2->setColor( QColor( 0, 255, 0, 65 ) );
@@ -130,9 +130,12 @@ void checkDock::updateRubberBands( bool visible )
 {
   if ( !visible )
   {
-    mRBConflict->reset();
-    mRBFeature1->reset();
-    mRBFeature2->reset();
+    if ( mRBConflict )
+      mRBConflict->reset();
+    if ( mRBFeature1 )
+      mRBFeature1->reset();
+    if ( mRBFeature2 )
+      mRBFeature2->reset();
 
     clearVertexMarkers();
   }
