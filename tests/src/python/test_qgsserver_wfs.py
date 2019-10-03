@@ -561,6 +561,17 @@ class TestQgsServerWFS(QgsServerTestBase):
                                  reference_base_name='wfs_describeFeatureType_1_1_0_geometryless',
                                  project_file=project_file)
 
+    def test_getFeatureFeatureIdJson(self):
+        """Test GetFeature with featureid JSON format and various content types"""
+
+        for ct in ('GeoJSON', 'application/vnd.geo+json', 'application/json', 'application/geo+json'):
+            self.wfs_request_compare(
+                "GetFeature",
+                '1.0.0',
+                ("OUTPUTFORMAT=%s" % ct)
+                + "&SRSNAME=EPSG:4326&TYPENAME=testlayer&FEATUREID=testlayer.0",
+                'wfs_getFeature_1_0_0_featureid_0_json')
+
 
 if __name__ == '__main__':
     unittest.main()
