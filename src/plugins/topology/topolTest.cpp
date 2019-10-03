@@ -407,6 +407,9 @@ ErrorList topolTest::checkOverlaps( QgsVectorLayer *layer1, QgsVectorLayer *laye
 
     for ( ; cit != crossingIdsEnd; ++cit )
     {
+      if ( testCanceled() )
+        break;
+
       duplicate = false;
       // skip itself
       if ( mFeatureMap2[*cit].feature.id() == it->feature.id() )
