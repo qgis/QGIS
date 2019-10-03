@@ -75,18 +75,15 @@ class QgsBookmarkManager;
 
 /**
  * \ingroup core
- * Reads and writes project states.
+ * Encapsulates a QGIS project, including sets of map layers and their styles,
+ * layouts, annotations, canvases, etc.
  *
- * \note
+ * QgsProject is available both as a singleton (QgsProject::instance()) and for use as
+ * standalone objects. The QGIS project singleton always gives access to the canonical project reference
+ * open within the main QGIS application.
  *
- * Has two general kinds of state to make persistent. (I.e., to read and
+ * \note QgsProject has two general kinds of state to make persistent. (I.e., to read and
  * write.) First, QGIS proprietary information. Second plugin information.
- *
- * A singleton since there shall only be one active project at a time; and
- * provides canonical location for plugins and main app to find/set
- * properties.
- *
-
 */
 
 class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenerator, public QgsExpressionContextScopeGenerator, public QgsProjectTranslator
@@ -165,8 +162,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * replacements that are aware of the fact that projects may be saved in other project storages.
      *
      * \see fileName()
-     * \since QGIS 2.9
-     * \deprecated QGIS 3.2 Use absoluteFilePath(), baseName() or lastModifiedTime() instead
+     * \deprecated since QGIS 3.2 use absoluteFilePath(), baseName() or lastModifiedTime() instead
      */
     Q_DECL_DEPRECATED QFileInfo fileInfo() const SIP_DEPRECATED;
 
@@ -596,19 +592,19 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Set a list of layers which should not be taken into account on map identification
-     * \deprecated QGIS 3.4 use QgsMapLayer::setFlags() instead
+     * \deprecated since QGIS 3.4 use QgsMapLayer::setFlags() instead
      */
     Q_DECL_DEPRECATED void setNonIdentifiableLayers( const QList<QgsMapLayer *> &layers );
 
     /**
      * Set a list of layers which should not be taken into account on map identification
-     * \deprecated QGIS 3.4 use QgsMapLayer::setFlags() instead
+     * \deprecated since QGIS 3.4 use QgsMapLayer::setFlags() instead
      */
     Q_DECL_DEPRECATED void setNonIdentifiableLayers( const QStringList &layerIds );
 
     /**
      * Gets the list of layers which currently should not be taken into account on map identification
-     * \deprecated QGIS 3.4 use QgsMapLayer::setFlags() instead
+     * \deprecated since QGIS 3.4 use QgsMapLayer::setFlags() instead
      */
     Q_DECL_DEPRECATED QStringList nonIdentifiableLayers() const;
 
@@ -1095,7 +1091,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * removed from the project. The set of layers may be configured by users in project properties.
      * and it is mainly a hint for the user interface to protect users from removing layers that important
      * in the project. The removeMapLayer(), removeMapLayers() calls do not block removal of layers listed here.
-     * \deprecated QGIS 3.4 use QgsMapLayer::flags() instead
+     * \deprecated since QGIS 3.4 use QgsMapLayer::flags() instead
      * \since QGIS 3.2
      */
     Q_DECL_DEPRECATED QSet<QgsMapLayer *> requiredLayers() const;
@@ -1105,7 +1101,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * removed from the project. The set of layers may be configured by users in project properties.
      * and it is mainly a hint for the user interface to protect users from removing layers that important
      * in the project. The removeMapLayer(), removeMapLayers() calls do not block removal of layers listed here.
-     * \deprecated QGIS 3.4 use QgsMapLayer::setFlags() instead
+     * \deprecated since QGIS 3.4 use QgsMapLayer::setFlags() instead
      * \since QGIS 3.2
      */
     Q_DECL_DEPRECATED void setRequiredLayers( const QSet<QgsMapLayer *> &layers );
@@ -1278,7 +1274,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Emitted when the list of layer which are excluded from map identification changes
-     * \deprecated QGIS 3.4
+     * \deprecated since QGIS 3.4
      */
     Q_DECL_DEPRECATED void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
 
