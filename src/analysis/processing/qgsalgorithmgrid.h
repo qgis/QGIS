@@ -34,42 +34,42 @@
  */
 class QgsGridAlgorithm : public QgsProcessingAlgorithm
 {
-    public:
+  public:
 
-        QgsGridAlgorithm() = default;
-        void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-        QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCreateGrid.svg") ); }
-        QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmCreateGrid.svg" ) ); }
-        QString name() const override;
-        QString displayName() const override;
-        QStringList tags() const override;
-        QString group() const override;
-        QString groupId() const override;
-        QString shortHelpString() const override;
-        QgsGridAlgorithm *createInstance() const override SIP_FACTORY;
+    QgsGridAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCreateGrid.svg" ) ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmCreateGrid.svg" ) ); }
+    QString name() const override;
+    QString displayName() const override;
+    QStringList tags() const override;
+    QString group() const override;
+    QString groupId() const override;
+    QString shortHelpString() const override;
+    QgsGridAlgorithm *createInstance() const override SIP_FACTORY;
 
-    protected:
-      bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * ) override;
-      QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                    QgsProcessingContext &context,
-                                    QgsProcessingFeedback *feedback ) override;
+  protected:
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context,
+                                  QgsProcessingFeedback *feedback ) override;
 
 
-    private:
-      int mIdx;
-      QgsRectangle mGridExtent;
-      QgsCoordinateReferenceSystem mCrs;
-      double mHSpacing;
-      double mVSpacing;
-      double mHOverlay;
-      double mVOverlay;
+  private:
+    int mIdx;
+    QgsRectangle mGridExtent;
+    QgsCoordinateReferenceSystem mCrs;
+    double mHSpacing;
+    double mVSpacing;
+    double mHOverlay;
+    double mVOverlay;
 
-      //define grid creation methods
-      void createPointGrid( std::unique_ptr< QgsFeatureSink > &sink, QgsProcessingFeedback * feedback );
-      void createLineGrid( std::unique_ptr< QgsFeatureSink > &sink, QgsProcessingFeedback *feedback );
-      void createRectangleGrid( std::unique_ptr< QgsFeatureSink > &sink, QgsProcessingFeedback *feedback );
-      void createDiamondGrid( std::unique_ptr< QgsFeatureSink> &sink, QgsProcessingFeedback *feedback );
-      void createHexagonGrid( std::unique_ptr< QgsFeatureSink> &sink, QgsProcessingFeedback *feedback );
+    //define grid creation methods
+    void createPointGrid( std::unique_ptr< QgsFeatureSink > &sink, QgsProcessingFeedback *feedback );
+    void createLineGrid( std::unique_ptr< QgsFeatureSink > &sink, QgsProcessingFeedback *feedback );
+    void createRectangleGrid( std::unique_ptr< QgsFeatureSink > &sink, QgsProcessingFeedback *feedback );
+    void createDiamondGrid( std::unique_ptr< QgsFeatureSink> &sink, QgsProcessingFeedback *feedback );
+    void createHexagonGrid( std::unique_ptr< QgsFeatureSink> &sink, QgsProcessingFeedback *feedback );
 };
 
 
