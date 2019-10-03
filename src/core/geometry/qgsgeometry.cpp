@@ -2329,7 +2329,8 @@ QgsGeometry QgsGeometry::extrude( double x, double y )
   return engine.extrude( x, y );
 }
 
-QVector<QgsPointXY> QgsGeometry::randomPointsInPolygon( int count, const std::function<bool( const QgsPointXY & )> &acceptPoint, unsigned long seed, QgsFeedback *feedback )
+///@cond PRIVATE // avoid dox warning
+QVector<QgsPointXY> QgsGeometry::randomPointsInPolygon( int count, const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed, QgsFeedback *feedback )
 {
   if ( type() != QgsWkbTypes::PolygonGeometry )
     return QVector< QgsPointXY >();
@@ -2344,6 +2345,7 @@ QVector<QgsPointXY> QgsGeometry::randomPointsInPolygon( int count, unsigned long
 
   return QgsInternalGeometryEngine::randomPointsInPolygon( *this, count, []( const QgsPointXY & ) { return true; }, seed, feedback );
 }
+///@endcond
 
 QByteArray QgsGeometry::asWkb() const
 {
