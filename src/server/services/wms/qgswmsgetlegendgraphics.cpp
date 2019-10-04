@@ -154,16 +154,31 @@ namespace QgsWms
                                     parameters[QgsWmsParameter::BBOX] );
     }
     // If we have a contextual legend (BBOX is set)
-    // make sure (SRC)WIDTH and/or (SRC)HEIGHT are set, default to 800x600
+    // make sure (SRC)WIDTH and (SRC)HEIGHT are set, default to 800px width
+    // height is calculated from that value, respecting the aspect
     if ( ! parameters.bbox().isEmpty() )
     {
+      // Calculate ratio from bbox
+      QgsRectangle bbox { parameters.bboxAsRectangle() };
+      QString crs = parameters.crs();
+      if ( crs.compare( QStringLiteral( "CRS:84" ), Qt::CaseInsensitive ) == 0 )
+      {
+        bbox.invert();
+      }
+      QgsCoordinateReferenceSystem outputCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
+      if ( outputCrs.hasAxisInverted() )
+      {
+        bbox.invert();
+      }
+      const double ratio { bbox.width() / bbox.height() };
+      int defaultHeight { static_cast<int>( 800 / ratio ) };
       if ( parameters.width().isEmpty() && parameters.srcWidth().isEmpty() )
       {
         parameters.set( QgsWmsParameter::SRCWIDTH, 800 );
       }
       if ( parameters.height().isEmpty() && parameters.srcHeight().isEmpty() )
       {
-        parameters.set( QgsWmsParameter::SRCHEIGHT, 600 );
+        parameters.set( QgsWmsParameter::SRCHEIGHT, defaultHeight );
       }
     }
   }
@@ -173,6 +188,7 @@ namespace QgsWms
 
     const QgsWmsParameters parameters = context.parameters();
     std::unique_ptr<QgsLayerTreeModel> model( new QgsLayerTreeModel( &tree ) );
+    std::unique_ptr<QgsMapSettings> mapSettings;
 
     if ( context.scaleDenominator() > 0 )
     {
@@ -182,40 +198,27 @@ namespace QgsWms
     // content based legend
     if ( ! parameters.bbox().isEmpty() )
     {
-      QgsRenderer renderer( context );
-      const QgsRenderer::HitTest symbols = renderer.symbols();
-      for ( QgsLayerTreeNode *node : tree.children() )
+      mapSettings = qgis::make_unique<QgsMapSettings>();
+      mapSettings->setOutputSize( context.mapSize() );
+      // Inverted axis?
+      QgsRectangle bbox { parameters.bboxAsRectangle() };
+      QString crs = parameters.crs();
+      if ( crs.compare( QStringLiteral( "CRS:84" ), Qt::CaseInsensitive ) == 0 )
       {
-        QgsLayerTreeLayer *layer = QgsLayerTree::toLayer( node );
-
-        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer->layer() );
-        if ( !vl || !vl->renderer() )
-          continue;
-
-        QList<int> order;
-        int i = 0;
-
-        for ( const QgsLegendSymbolItem &item : vl->renderer()->legendSymbolItems() )
-        {
-          const QString prop = QgsSymbolLayerUtils::symbolProperties( item.legacyRuleKey() );
-          if ( symbols[vl].contains( prop ) )
-          {
-            order.append( i );
-          }
-          ++i;
-        }
-
-        // either remove the whole layer or just filter out some items
-        if ( order.isEmpty() )
-        {
-          tree.removeChildNode( layer );
-        }
-        else
-        {
-          QgsMapLayerLegendUtils::setLegendNodeOrder( layer, order );
-          model->refreshLayerLegend( layer );
-        }
+        bbox.invert();
       }
+      QgsCoordinateReferenceSystem outputCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
+      if ( outputCrs.hasAxisInverted() )
+      {
+        bbox.invert();
+      }
+      mapSettings->setDestinationCrs( outputCrs );
+      mapSettings->setExtent( bbox );
+      QgsRenderer renderer( context );
+      QList<QgsMapLayer *> layers = context.layersToRender();
+      renderer.configureLayers( layers, mapSettings.get() );
+      mapSettings->setLayers( context.layersToRender() );
+      model->setLegendFilterByMap( mapSettings.get() );
     }
 
     // if legend is not based on rendering rules
