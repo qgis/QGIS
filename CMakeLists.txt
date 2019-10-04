@@ -1,6 +1,6 @@
 #############################################################
 # CMake settings
-CMAKE_MINIMUM_REQUIRED(VERSION 3.1.0)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.7.0)
 SET(CMAKE_COLOR_MAKEFILE ON)
 # set path to additional CMake modules
 SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
