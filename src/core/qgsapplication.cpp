@@ -236,7 +236,7 @@ void QgsApplication::init( QString profileFolder )
 #else
     setPluginPath( ABISYM( mBuildOutputPath ) + '/' + QStringLiteral( QGIS_PLUGIN_SUBDIR ) );
 #endif
-    setPkgDataPath( ABISYM( mBuildSourcePath ) ); // directly source path - used for: doc, resources, svg
+    setPkgDataPath( ABISYM( mBuildOutputPath ) ); // directly source path - used for: doc, resources, svg
     ABISYM( mLibraryPath ) = ABISYM( mBuildOutputPath ) + '/' + QGIS_LIB_SUBDIR + '/';
 #if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
     ABISYM( mLibexecPath ) = ABISYM( mBuildOutputPath ) + '/' + QGIS_LIBEXEC_SUBDIR + '/' + ABISYM( mCfgIntDir ) + '/';
@@ -765,7 +765,7 @@ QString QgsApplication::resolvePkgPath()
   }
 
   if ( ABISYM( mRunningFromBuildDir ) )
-    return ABISYM( mBuildSourcePath );
+    return ABISYM( mBuildOutputPath );
   else
     return prefixPath + '/' + QStringLiteral( QGIS_DATA_SUBDIR );
 }

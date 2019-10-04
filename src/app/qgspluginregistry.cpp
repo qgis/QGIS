@@ -577,7 +577,7 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
     // start - temporary fix for issue #5879, more above
     if ( QgsApplication::isRunningFromBuildDir() )
     {
-      QgsApplication::setPkgDataPath( QgsApplication::buildSourcePath() );
+      QgsApplication::setPkgDataPath( QgsApplication::buildOutputPath() );
     }
     // end - temporary fix for issue #5879
   }
