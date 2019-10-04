@@ -570,9 +570,9 @@ namespace QgsWms
         }
 
         // rotation
-        if ( static_cast<int>( cMapParams.mRotation ) == 0 )
+        if ( cMapParams.mRotation == 0 )
         {
-          map->setMapRotation( static_cast<double>( cMapParams.mRotation ) );
+          map->setMapRotation( cMapParams.mRotation );
         }
       }
 
