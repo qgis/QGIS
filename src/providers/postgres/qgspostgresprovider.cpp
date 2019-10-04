@@ -3186,7 +3186,9 @@ long QgsPostgresProvider::featureCount() const
   // use estimated metadata even when there is a where clause,
   // although we get an incorrect feature count for the subset
   // - but make huge dataset usable.
-  if ( !mIsQuery && mUseEstimatedMetadata )
+  // don't use it on view because it will always return 0 (view as no rows)
+  const QgsPostgresProvider::Relkind type = relkind();
+  if ( !mIsQuery && mUseEstimatedMetadata && type != Relkind::View )
   {
     sql = QStringLiteral( "SELECT reltuples::bigint FROM pg_catalog.pg_class WHERE oid=regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
   }
