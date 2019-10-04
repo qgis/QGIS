@@ -167,10 +167,10 @@ class QgsServerAPITestBase(QgsServerTestBase):
 
         return response
 
-    def compareContentType(self, url, headers, content_type):
+    def compareContentType(self, url, headers, content_type, project=QgsProject()):
         request = QgsBufferServerRequest(url, headers=headers)
         response = QgsBufferServerResponse()
-        self.server.handleRequest(request, response, QgsProject())
+        self.server.handleRequest(request, response, project)
         self.assertEqual(response.headers()['Content-Type'], content_type)
 
     @classmethod
@@ -264,6 +264,24 @@ class QgsServerAPITest(QgsServerAPITestBase):
         # File extension must take precedence over Accept header
         self.compareContentType('http://server.qgis.org/wfs3.html', {'Accept': 'application/json'}, 'text/html')
         self.compareContentType('http://server.qgis.org/wfs3.json', {'Accept': 'text/html'}, 'application/json')
+        # Alias request (we ask for json but we get geojson)
+        project = QgsProject()
+        project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
+        self.compareContentType(
+            'http://server.qgis.org/wfs3/collections/testlayer%20èé/items?bbox=8.203495,44.901482,8.203497,44.901484',
+            {'Accept': 'application/json'}, 'application/geo+json',
+            project=project
+        )
+        self.compareContentType(
+            'http://server.qgis.org/wfs3/collections/testlayer%20èé/items?bbox=8.203495,44.901482,8.203497,44.901484',
+            {'Accept': 'application/vnd.geo+json'}, 'application/geo+json',
+            project=project
+        )
+        self.compareContentType(
+            'http://server.qgis.org/wfs3/collections/testlayer%20èé/items?bbox=8.203495,44.901482,8.203497,44.901484',
+            {'Accept': 'application/geojson'}, 'application/geo+json',
+            project=project
+        )
 
     def test_wfs3_landing_page_json(self):
         """Test WFS3 API landing page in JSON format"""

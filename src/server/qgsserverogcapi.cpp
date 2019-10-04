@@ -22,13 +22,17 @@
 #include "qgsmessagelog.h"
 #include "qgsapplication.h"
 
-QMap<QgsServerOgcApi::ContentType, QString> QgsServerOgcApi::sContentTypeMime = [ ]() -> QMap<QgsServerOgcApi::ContentType, QString>
+QMap<QgsServerOgcApi::ContentType, QStringList> QgsServerOgcApi::sContentTypeMime = [ ]() -> QMap<QgsServerOgcApi::ContentType, QStringList>
 {
-  QMap<QgsServerOgcApi::ContentType, QString> map;
-  map[QgsServerOgcApi::ContentType::JSON] = QStringLiteral( "application/json" );
-  map[QgsServerOgcApi::ContentType::GEOJSON] = QStringLiteral( "application/geo+json" );
-  map[QgsServerOgcApi::ContentType::HTML] = QStringLiteral( "text/html" );
-  map[QgsServerOgcApi::ContentType::OPENAPI3] = QStringLiteral( "application/openapi+json;version=3.0" );
+  QMap<QgsServerOgcApi::ContentType, QStringList> map;
+  map[QgsServerOgcApi::ContentType::JSON] = QStringList { QStringLiteral( "application/json" ) };
+  map[QgsServerOgcApi::ContentType::GEOJSON] = QStringList {
+    QStringLiteral( "application/geo+json" ),
+    QStringLiteral( "application/vnd.geo+json" ),
+    QStringLiteral( "application/geojson" )
+  };
+  map[QgsServerOgcApi::ContentType::HTML] = QStringList { QStringLiteral( "text/html" ) };
+  map[QgsServerOgcApi::ContentType::OPENAPI3] = QStringList { QStringLiteral( "application/openapi+json;version=3.0" ) };
   return map;
 }();
 
@@ -99,7 +103,7 @@ void QgsServerOgcApi::executeRequest( const QgsServerApiContext &context ) const
   }
 }
 
-const QMap<QgsServerOgcApi::ContentType, QString> QgsServerOgcApi::contentTypeMimes()
+const QMap<QgsServerOgcApi::ContentType, QStringList> QgsServerOgcApi::contentTypeMimes()
 {
   return sContentTypeMime;
 }
@@ -135,12 +139,34 @@ QString QgsServerOgcApi::contentTypeToExtension( const ContentType &ct )
 
 QgsServerOgcApi::ContentType QgsServerOgcApi::contenTypeFromExtension( const std::string &extension )
 {
-  return sContentTypeMime.key( QString::fromStdString( extension ) );
+  const QString exts = QString::fromStdString( extension );
+  for ( auto it = QgsServerOgcApi::contentTypeMimes().constBegin();
+        it != QgsServerOgcApi::contentTypeMimes().constEnd();
+        ++it )
+  {
+    const auto constValues = it.value();
+    for ( const auto &value : constValues )
+    {
+      if ( value.contains( exts, Qt::CaseSensitivity::CaseInsensitive ) )
+      {
+        return it.key();
+      }
+    }
+  }
+  // Default to JSON, but log a warning!
+  QgsMessageLog::logMessage( QStringLiteral( "Content type for extension %1 not found! Returning default (JSON)" ).arg( exts ),
+                             QStringLiteral( "Server" ),
+                             Qgis::Warning );
+  return QgsServerOgcApi::ContentType::JSON;
 }
 
 std::string QgsServerOgcApi::mimeType( const QgsServerOgcApi::ContentType &contentType )
 {
-  return sContentTypeMime.value( contentType, QString() ).toStdString();
+  if ( ! sContentTypeMime.contains( contentType ) )
+  {
+    return "";
+  }
+  return sContentTypeMime.value( contentType ).first().toStdString();
 }
 
 const std::vector<std::shared_ptr<QgsServerOgcApiHandler> > QgsServerOgcApi::handlers() const
