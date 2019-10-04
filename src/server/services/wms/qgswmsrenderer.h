@@ -128,6 +128,9 @@ namespace QgsWms
        */
       QByteArray getFeatureInfo( const QString &version = "1.3.0" );
 
+      /**
+       * Configures \a layers for rendering optionally considering the map \a settings
+       */
       void configureLayers( QList<QgsMapLayer *> &layers, QgsMapSettings *settings = nullptr );
 
     private:
