@@ -570,7 +570,7 @@ namespace QgsWms
         }
 
         // rotation
-        if ( static_cast<int>( cMapParams.mRotation ) != 0 )
+        if ( static_cast<int>( cMapParams.mRotation ) == 0 )
         {
           map->setMapRotation( static_cast<double>( cMapParams.mRotation ) );
         }
@@ -1097,8 +1097,8 @@ namespace QgsWms
     int height = mWmsParameters.heightAsInt();
     if ( ( i != -1 && j != -1 && width != 0 && height != 0 ) && ( width != outputImage->width() || height != outputImage->height() ) )
     {
-      i *= static_cast<int>( outputImage->width() /  width );
-      j *= static_cast<int>( outputImage->height() / height );
+      i *= ( outputImage->width() /  static_cast<double>( width ) );
+      j *= ( outputImage->height() / static_cast<double>( height ) );
     }
 
     // init search variables
