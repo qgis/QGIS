@@ -3332,20 +3332,35 @@ long QgsPostgresProvider::featureCount() const
   // use estimated metadata even when there is a where clause,
   // although we get an incorrect feature count for the subset
   // - but make huge dataset usable.
+  long num = 0;
   if ( !mIsQuery && mUseEstimatedMetadata )
   {
-    sql = QStringLiteral( "SELECT reltuples::bigint FROM pg_catalog.pg_class WHERE oid=regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
+    // parse explain output to estimate feature count
+    // we don't use pg_class reltuples because it returns 0 for view
+    sql = QStringLiteral( "EXPLAIN (FORMAT JSON) SELECT count(*) FROM %1%2" ).arg( mQuery, filterWhereClause() );
+    QgsPostgresResult result( connectionRO()->PQexec( sql ) );
+
+    const QString json = result.PQgetvalue( 0, 0 );
+    const QVariantList explain = QgsJsonUtils::parseJson( json ).toList();
+    const QVariantMap countPlan = explain.count() ? explain[0].toMap().value( "Plan" ).toMap() : QVariantMap();
+    const QVariantList queryPlan = countPlan.value( "Plans" ).toList();
+    const QVariant nbRows = queryPlan.count() ? queryPlan[0].toMap().value( "Plan Rows" ) : QVariant();
+
+    if ( nbRows.isValid() )
+      num = nbRows.toInt();
+    else
+      QgsLogger::warning( QStringLiteral( "Cannot parse JSON explain result to estimate feature count (%1) : %2" ).arg( sql, json ) );
   }
   else
   {
     sql = QStringLiteral( "SELECT count(*) FROM %1%2" ).arg( mQuery, filterWhereClause() );
+    QgsPostgresResult result( connectionRO()->PQexec( sql ) );
+
+    QgsDebugMsg( "number of features as text: " + result.PQgetvalue( 0, 0 ) );
+
+    num = result.PQgetvalue( 0, 0 ).toLong();
   }
 
-  QgsPostgresResult result( connectionRO()->PQexec( sql ) );
-
-  QgsDebugMsg( "number of features as text: " + result.PQgetvalue( 0, 0 ) );
-
-  long num = result.PQgetvalue( 0, 0 ).toLong();
   mShared->setFeaturesCounted( num );
 
   QgsDebugMsg( "number of features: " + QString::number( num ) );
