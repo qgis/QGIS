@@ -1,3 +1,63 @@
+# Folders to install
+FILE(GLOB_RECURSE CPT_CITY_QGIS_MIN_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} cpt-city-qgis-min/*)
+FILE(GLOB_RECURSE THEMES_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} themes/*)
+FILE(GLOB_RECURSE DATA_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} data/*)
+FILE(GLOB_RECURSE METADATA_ISO_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} metadata-ISO/*)
+FILE(GLOB_RECURSE PALETTES_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} palettes/*)
+
+# Individual files to install (for srs.db, see below)
+SET(RESOURCES_FILES
+  qgis.db
+  symbology-style.xml
+  spatialite.db
+  customization.xml
+  2to3migration.txt
+  qgis_global_settings.ini
+  ${CPT_CITY_QGIS_MIN_FILES}
+  ${THEMES_FILES}
+  ${DATA_FILES}
+  ${METADATA_ISO_FILES}
+  ${PALETTES_FILES}
+)
+
+# OpenCL, also install opencl_programs
+IF (HAVE_OPENCL)
+  FILE(GLOB_RECURSE OPENCL_PROGRAMS_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} opencl_programs/*)
+  SET(RESOURCES_FILES ${RESOURCES_FILES} ${OPENCL_PROGRAMS_FILES})
+ENDIF (HAVE_OPENCL)
+
+# Server, also install server subdirectory
+IF (WITH_SERVER)
+  FILE(GLOB_RECURSE SERVER_RESOURCE_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} server/*)
+  SET(RESOURCES_FILES ${RESOURCES_FILES} ${SERVER_RESOURCE_FILES})
+ENDIF (WITH_SERVER)
+
+# Apple specific handling
+IF (APPLE)
+  # ASN.1 definition files of PKIX elements
+  SET(RESOURCES_FILES ${RESOURCES_FILES} pkcs8.asn)
+ENDIF (APPLE)
+
+# On build copy all resource files to build folder
+FOREACH(RESOURCE_FILE ${RESOURCES_FILES})
+  ADD_CUSTOM_COMMAND(
+    OUTPUT "${CMAKE_BINARY_DIR}/output/resources/${RESOURCE_FILE}"
+    COMMAND cmake -E copy
+      "${CMAKE_CURRENT_SOURCE_DIR}/${RESOURCE_FILE}"
+      "${CMAKE_BINARY_DIR}/output/resources/${RESOURCE_FILE}"
+    DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${RESOURCE_FILE}"
+  )
+  LIST(APPEND RESOURCE_FILES_DEST
+    "${CMAKE_BINARY_DIR}/output/resources/${RESOURCE_FILE}")
+ENDFOREACH(RESOURCE_FILE)
+
+# Install resources to system resource folder
+FOREACH(RESOURCE_FILE ${RESOURCES_FILES})
+  GET_FILENAME_COMPONENT(PATH_NAME "resources/${RESOURCE_FILE}" PATH)
+  INSTALL( FILES "resources/${RESOURCE_FILE}" DESTINATION ${PATH_NAME})
+ENDFOREACH()
+
+# srs.db -- spcial handling because there is a switch and rename depending on proj version
 IF (PROJ_VERSION_MAJOR GREATER 5)
   MESSAGE(STATUS "Using PROJ 6 srs database.")
   SET(SRSDB srs6.db)
@@ -6,31 +66,15 @@ ELSE (PROJ_VERSION_MAJOR GREATER 5)
   SET(SRSDB srs.db)
 ENDIF (PROJ_VERSION_MAJOR GREATER 5)
 
+ADD_CUSTOM_COMMAND(
+  OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/srs.db"
+  COMMAND cmake -E copy
+    "${CMAKE_CURRENT_SOURCE_DIR}/${SRSDB}"
+    "${CMAKE_CURRENT_BINARY_DIR}/srs.db"
+  DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${SRSDB}"
+)
+LIST(APPEND RESOURCE_FILES_DEST
+  "${CMAKE_CURRENT_BINARY_DIR}/srs.db")
 INSTALL(FILES ${SRSDB} DESTINATION ${QGIS_DATA_DIR}/resources RENAME srs.db)
 
-INSTALL(FILES
-              qgis.db
-              symbology-style.xml
-              spatialite.db
-              customization.xml
-              2to3migration.txt
-              qgis_global_settings.ini
-        DESTINATION ${QGIS_DATA_DIR}/resources)
-INSTALL(DIRECTORY cpt-city-qgis-min DESTINATION ${QGIS_DATA_DIR}/resources)
-INSTALL(DIRECTORY themes DESTINATION ${QGIS_DATA_DIR}/resources)
-INSTALL(DIRECTORY data DESTINATION ${QGIS_DATA_DIR}/resources)
-INSTALL(DIRECTORY metadata-ISO DESTINATION ${QGIS_DATA_DIR}/resources)
-INSTALL(DIRECTORY palettes DESTINATION ${QGIS_DATA_DIR}/resources)
-IF (HAVE_OPENCL)
-INSTALL(DIRECTORY opencl_programs DESTINATION ${QGIS_DATA_DIR}/resources)
-ENDIF (HAVE_OPENCL)
-
-IF (WITH_SERVER)
-        INSTALL(DIRECTORY server DESTINATION ${QGIS_DATA_DIR}/resources)
-ENDIF (WITH_SERVER)
-
-IF (APPLE)
-  # ASN.1 definition files of PKIX elements
-  INSTALL(FILES pkcs8.asn
-          DESTINATION ${QGIS_DATA_DIR}/resources)
-ENDIF (APPLE)
+ADD_CUSTOM_TARGET(resources ALL DEPENDS ${RESOURCE_FILES_DEST})
