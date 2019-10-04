@@ -418,7 +418,7 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
       QgsGeometry singlePartGeometry { fet.geometry() };
       // We want a failure if the geometry cannot be converted to single-part without data loss!
       // check if there are more than one part
-      const QgsGeometryCollection *c = qgsgeometry_cast<QgsGeometryCollection *>( singlePartGeometry.constGet() );
+      const QgsGeometryCollection *c = qgsgeometry_cast<const QgsGeometryCollection *>( singlePartGeometry.constGet() );
       if ( ( c && c->partCount() > 1 ) || ! singlePartGeometry.convertToSingleType() )
       {
         delete writer;
