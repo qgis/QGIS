@@ -570,7 +570,7 @@ namespace QgsWms
         }
 
         // rotation
-        if ( cMapParams.mRotation == 0 )
+        if ( cMapParams.mRotation )
         {
           map->setMapRotation( cMapParams.mRotation );
         }

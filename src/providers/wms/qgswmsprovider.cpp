@@ -3461,8 +3461,15 @@ QgsImageFetcher *QgsWmsProvider::getLegendGraphicFetcher( const QgsMapSettings *
   {
     scale = mapSettings->scale();
     mapExtent = mapSettings->visibleExtent();
-    QgsCoordinateTransform ct { mapSettings->destinationCrs(), crs(), mapSettings->transformContext() };
-    mapExtent = ct.transformBoundingBox( mapExtent );
+    try
+    {
+      QgsCoordinateTransform ct { mapSettings->destinationCrs(), crs(), mapSettings->transformContext() };
+      mapExtent = ct.transformBoundingBox( mapExtent );
+    }
+    catch ( QgsCsException & )
+    {
+      // Can't reproject
+    }
   }
   else
   {
