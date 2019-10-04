@@ -3461,6 +3461,8 @@ QgsImageFetcher *QgsWmsProvider::getLegendGraphicFetcher( const QgsMapSettings *
   {
     scale = mapSettings->scale();
     mapExtent = mapSettings->visibleExtent();
+    QgsCoordinateTransform ct { mapSettings->destinationCrs(), crs(), mapSettings->transformContext() };
+    mapExtent = ct.transformBoundingBox( mapExtent );
   }
   else
   {
