@@ -423,9 +423,13 @@ double _minimum_distance_between_coordinates( const QgsPolygon &polygon )
 void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeight )
 {
   const QgsLineString *exterior = qgsgeometry_cast< const QgsLineString * >( polygon.exteriorRing() );
+  if ( !exterior )
+    return;
 
   const QVector3D pNormal = !mNoZ ? _calculateNormal( exterior, mOriginX, mOriginY, mInvertNormals ) : QVector3D();
   const int pCount = exterior->numPoints();
+  if ( pCount == 0 )
+    return;
 
   if ( pCount == 4 && polygon.numInteriorRings() == 0 )
   {
