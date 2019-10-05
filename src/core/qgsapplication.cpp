@@ -979,9 +979,9 @@ QString QgsApplication::srsDatabaseFilePath()
     if ( !QFile( tempCopy ).exists() )
     {
 #if PROJ_VERSION_MAJOR>=6
-      QFile f( pkgDataPath() + "/resources/srs6.db" );
+      QFile f( buildSourcePath() + "/resources/srs6.db" );
 #else
-      QFile f( pkgDataPath() + "/resources/srs.db" );
+      QFile f( buildSourcePath() + "/resources/srs.db" );
 #endif
       if ( !f.copy( tempCopy ) )
       {
