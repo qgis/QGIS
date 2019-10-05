@@ -130,11 +130,14 @@ QgsMapToolEdit::TopologicalResult QgsMapToolEdit::addTopologicalPoints( const QV
     return QgsMapToolEdit::InvalidLayer;
   }
 
+  Q_NOWARN_DEPRECATED_PUSH
   QVector<QgsPointXY>::const_iterator list_it = vertices.constBegin();
   for ( ; list_it != vertices.constEnd(); ++list_it )
   {
     vlayer->addTopologicalPoints( *list_it );
   }
+  Q_NOWARN_DEPRECATED_POP
+
   return QgsMapToolEdit::Success;
 }
 
