@@ -888,6 +888,48 @@ class GUI_EXPORT QgsPointPatternFillSymbolLayerWidget: public QgsSymbolLayerWidg
     void mVerticalOffsetUnitWidget_changed();
 };
 
+
+//////////
+
+#include "ui_widget_randommarkerfill.h"
+
+class QgsRandomMarkerFillSymbolLayer;
+
+/**
+ * \ingroup gui
+ * \class QgsRandomMarkerFillSymbolLayerWidget
+ */
+class GUI_EXPORT QgsRandomMarkerFillSymbolLayerWidget: public QgsSymbolLayerWidget, private Ui::WidgetRandomMarkerFill
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsRandomMarkerFillSymbolLayerWidget.
+     * \param vl associated vector layer
+     * \param parent parent widget
+     */
+    QgsRandomMarkerFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Creates a new QgsRandomMarkerFillSymbolLayerWidget.
+     * \param vl associated vector layer
+     */
+    static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsRandomMarkerFillSymbolLayerWidget( vl ); }
+
+    void setSymbolLayer( QgsSymbolLayer *layer ) override;
+    QgsSymbolLayer *symbolLayer() override;
+
+  private:
+    QgsRandomMarkerFillSymbolLayer *mLayer = nullptr;
+
+  private slots:
+
+    void countChanged( int d );
+    void seedChanged( int d );
+};
+
 /////////
 
 #include "ui_widget_fontmarker.h"

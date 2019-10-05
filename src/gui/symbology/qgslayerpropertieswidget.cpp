@@ -87,6 +87,7 @@ static void _initWidgetFunctions()
   _initWidgetFunction( QStringLiteral( "CentroidFill" ), QgsCentroidFillSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "LinePatternFill" ), QgsLinePatternFillSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "PointPatternFill" ), QgsPointPatternFillSymbolLayerWidget::create );
+  _initWidgetFunction( QStringLiteral( "RandomMarkerFill" ), QgsRandomMarkerFillSymbolLayerWidget::create );
 
   _initWidgetFunction( QStringLiteral( "GeometryGenerator" ), QgsGeometryGeneratorSymbolLayerWidget::create );
 

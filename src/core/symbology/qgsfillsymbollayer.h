@@ -1704,6 +1704,106 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
 /**
  * \ingroup core
+ * \class QgsRandomMarkerFillSymbolLayer
+ *
+ * A fill symbol layer which places markers at random locations within polygons.
+ *
+ * \since QGIS 3.12
+ */
+class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
+{
+  public:
+
+    /**
+     * Constructor for QgsRandomMarkerFillSymbolLayer, with the specified \a pointCount.
+     *
+     * Optionally a specific random number \a seed can be used when generating points. A \a seed of 0 indicates that
+     * a truely random sequence should be used.
+     */
+    QgsRandomMarkerFillSymbolLayer( int pointCount = 1, unsigned long seed = 0 );
+
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+
+    QString layerType() const override;
+    void startRender( QgsSymbolRenderContext &context ) override;
+    void stopRender( QgsSymbolRenderContext &context ) override;
+    void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
+    QgsStringMap properties() const override;
+    QgsRandomMarkerFillSymbolLayer *clone() const override SIP_FACTORY;
+
+    void setColor( const QColor &color ) override;
+    QColor color() const override;
+
+    QgsSymbol *subSymbol() override;
+    bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
+
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
+    QgsUnitTypes::RenderUnit outputUnit() const override;
+
+    void setMapUnitScale( const QgsMapUnitScale &scale ) override;
+    QgsMapUnitScale mapUnitScale() const override;
+
+    QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    bool hasDataDefinedProperties() const override;
+
+    /**
+     * Returns the count of random points to render in the fill.
+     *
+     * \see setPointCount()
+     */
+    int pointCount() const;
+
+    /**
+     * Sets the \a count of random points to render in the fill.
+     *
+     * \see pointCount()
+     */
+    void setPointCount( int count );
+
+    /**
+     * Returns the random number seed to use when generating points, or 0 if
+     * a truely random sequence should be used.
+     *
+     * \see setSeed()
+     */
+    unsigned long seed() const;
+
+    /**
+     * Sets the random number \a seed to use when generating points, or 0 if
+     * a truely random sequence should be used.
+     *
+     * \see seed()
+     */
+    void setSeed( unsigned long seed );
+
+    /**
+     * Returns TRUE if point markers should be clipped to the polygon boundary.
+     *
+     * \see setClipPoints()
+     */
+    bool clipPoints() const;
+
+    /**
+     * Sets whether point markers should be \a clipped to the polygon boundary.
+     *
+     * \see clipPoints()
+     */
+    void setClipPoints( bool clipped );
+
+  private:
+#ifdef SIP_RUN
+    QgsRandomMarkerFillSymbolLayer( const QgsRandomMarkerFillSymbolLayer &other );
+#endif
+
+    std::unique_ptr< QgsMarkerSymbol > mMarker;
+    int mPointCount = 1;
+    unsigned long mSeed = 0;
+    bool mClipPoints = false;
+};
+
+
+/**
+ * \ingroup core
  * \class QgsCentroidFillSymbolLayer
  */
 class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer

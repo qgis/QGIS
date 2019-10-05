@@ -4109,3 +4109,68 @@ void QgsGeometryGeneratorSymbolLayerWidget::updateSymbolType()
 
   emit symbolChanged();
 }
+
+//
+// QgsRandomMarkerFillSymbolLayerWidget
+//
+
+
+QgsRandomMarkerFillSymbolLayerWidget::QgsRandomMarkerFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent ):
+  QgsSymbolLayerWidget( parent, vl )
+{
+  setupUi( this );
+  mPointCountSpinBox->setShowClearButton( true );
+  mPointCountSpinBox->setClearValue( 100 );
+  mSeedSpinBox->setShowClearButton( true );
+  mSeedSpinBox->setClearValue( 0 );
+  connect( mPointCountSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsRandomMarkerFillSymbolLayerWidget::countChanged );
+  connect( mSeedSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsRandomMarkerFillSymbolLayerWidget::seedChanged );
+  connect( mClipPointsCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
+  {
+    if ( mLayer )
+    {
+      mLayer->setClipPoints( checked );
+      emit changed();
+    }
+  } );
+}
+
+void QgsRandomMarkerFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
+{
+  if ( !layer || layer->layerType() != QLatin1String( "RandomMarkerFill" ) )
+  {
+    return;
+  }
+
+  mLayer = static_cast<QgsRandomMarkerFillSymbolLayer *>( layer );
+  whileBlocking( mPointCountSpinBox )->setValue( mLayer->pointCount() );
+  whileBlocking( mSeedSpinBox )->setValue( mLayer->seed() );
+  whileBlocking( mClipPointsCheckBox )->setChecked( mLayer->clipPoints() );
+
+  registerDataDefinedButton( mPointCountDdbtn, QgsSymbolLayer::PropertyPointCount );
+  registerDataDefinedButton( mSeedDdbtn, QgsSymbolLayer::PropertyRandomSeed );
+  registerDataDefinedButton( mClipPointsDdbtn, QgsSymbolLayer::PropertyClipPoints );
+}
+
+QgsSymbolLayer *QgsRandomMarkerFillSymbolLayerWidget::symbolLayer()
+{
+  return mLayer;
+}
+
+void QgsRandomMarkerFillSymbolLayerWidget::countChanged( int d )
+{
+  if ( mLayer )
+  {
+    mLayer->setPointCount( d );
+    emit changed();
+  }
+}
+
+void QgsRandomMarkerFillSymbolLayerWidget::seedChanged( int d )
+{
+  if ( mLayer )
+  {
+    mLayer->setSeed( d );
+    emit changed();
+  }
+}
