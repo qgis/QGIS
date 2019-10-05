@@ -1158,7 +1158,7 @@ class VectorTable(Table):
         def selectedCrs():
             return crsSelector.crs()
 
-        addButton = QPushButton(self.tr('Load layer'))
+        addButton = QPushButton(self.tr('Load Layer'))
         addButton.clicked.connect(lambda: self.addLayer(selectedGeometryType(), selectedCrs()))
         btns = QDialogButtonBox(QDialogButtonBox.Cancel)
         btns.addButton(addButton, QDialogButtonBox.ActionRole)
