@@ -166,7 +166,8 @@ namespace QgsWms
         bbox.invert();
       }
       QgsCoordinateReferenceSystem outputCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
-      if ( outputCrs.hasAxisInverted() )
+      if ( parameters.versionAsNumber() >= QgsProjectVersion( 1, 3, 0 ) &&
+           outputCrs.hasAxisInverted() )
       {
         bbox.invert();
       }
@@ -208,7 +209,8 @@ namespace QgsWms
         bbox.invert();
       }
       QgsCoordinateReferenceSystem outputCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
-      if ( outputCrs.hasAxisInverted() )
+      if ( parameters.versionAsNumber() >= QgsProjectVersion( 1, 3, 0 ) &&
+           outputCrs.hasAxisInverted() )
       {
         bbox.invert();
       }
