@@ -239,7 +239,6 @@ void QgsGridAlgorithm::createLineGrid( std::unique_ptr< QgsFeatureSink > &sink, 
 
   //latitude lines
   double cntMax = mGridExtent.height() / mVSpacing;
-  double cntLog = cntMax * 0.01;
 
   int thisProgress = 0;
   int lastProgress = 0;
@@ -279,7 +278,6 @@ void QgsGridAlgorithm::createLineGrid( std::unique_ptr< QgsFeatureSink > &sink, 
 
   //latitude lines
   cntMax = mGridExtent.width() / mHSpacing;
-  cntLog = cntMax * 0.01;
 
   lastProgress = 50;
 
