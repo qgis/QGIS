@@ -350,7 +350,7 @@ class PGRasterTable(PGTable, RasterTable):
 
     def mimeUri(self):
         # QGIS has no provider for PGRasters, let's use GDAL
-        uri = u"raster:gdal:%s:%s" % (self.name, re.sub(":", "\:", self.gdalUri()))
+        uri = u"raster:gdal:{}:{}".format(self.name, re.sub(":", r"\:", self.gdalUri()))
         return uri
 
     def toMapLayer(self):
