@@ -22,11 +22,25 @@ email                : brush.tyler@gmail.com
 from builtins import str
 from builtins import range
 
-from qgis.PyQt.QtCore import Qt, QObject, pyqtSignal
-from qgis.PyQt.QtWidgets import QApplication, QAction, QMenu, QInputDialog, QMessageBox
+from qgis.PyQt.QtCore import Qt, QObject, pyqtSignal, QByteArray
+
+from qgis.PyQt.QtWidgets import (
+    QFormLayout,
+    QComboBox,
+    QCheckBox,
+    QDialogButtonBox,
+    QPushButton,
+    QLabel,
+    QApplication,
+    QAction,
+    QMenu,
+    QInputDialog,
+    QMessageBox,
+    QDialog
+)
+
 from qgis.PyQt.QtGui import QKeySequence, QIcon
 
-from qgis.gui import QgsMessageBar
 from qgis.core import (
     Qgis,
     QgsApplication,
@@ -35,7 +49,17 @@ from qgis.core import (
     QgsWkbTypes,
     QgsProviderConnectionException,
     QgsProviderRegistry,
+    QgsVectorLayer,
+    QgsRasterLayer,
+    QgsProject,
+    QgsMessageLog
 )
+
+from qgis.gui import (
+    QgsMessageBarItem,
+    QgsProjectionSelectionWidget
+)
+
 from ..db_plugins import createDbPlugin
 
 
@@ -297,8 +321,6 @@ class Database(DbItemObject):
         return "row_number() over ()"
 
     def toSqlLayer(self, sql, geomCol, uniqueCol, layerName="QueryLayer", layerType=None, avoidSelectById=False, filter=""):
-        from qgis.core import QgsVectorLayer, QgsRasterLayer
-
         if uniqueCol is None:
             if hasattr(self, 'uniqueIdFunction'):
                 uniqueFct = self.uniqueIdFunction()
@@ -552,22 +574,6 @@ class Database(DbItemObject):
                 table = self.tablesFactory(t, self, schema)
                 ret.append(table)
 
-                # Similarly to what to browser does, if the geom type is generic geometry,
-                # we additionnly add three copies of the layer to allow importing
-                if isinstance(table, VectorTable):
-                    if table.geomType == 'GEOMETRY':
-                        point_table = self.tablesFactory(t, self, schema)
-                        point_table.geomType = 'POINT'
-                        ret.append(point_table)
-
-                        line_table = self.tablesFactory(t, self, schema)
-                        line_table.geomType = 'LINESTRING'
-                        ret.append(line_table)
-
-                        poly_table = self.tablesFactory(t, self, schema)
-                        poly_table.geomType = 'POLYGON'
-                        ret.append(poly_table)
-
         return ret
 
     def createTable(self, table, fields, schema=None):
@@ -743,11 +749,16 @@ class Table(DbItemObject):
         layerType = "raster" if self.type == Table.RasterType else "vector"
         return u"%s:%s:%s:%s" % (layerType, self.database().dbplugin().providerName(), self.name, self.uri().uri(False))
 
-    def toMapLayer(self):
-        from qgis.core import QgsVectorLayer, QgsRasterLayer
-
+    def toMapLayer(self, geometryType=None, crs=None):
         provider = self.database().dbplugin().providerName()
-        uri = self.uri().uri(False)
+        dataSourceUri = self.uri()
+        if geometryType:
+            dataSourceUri.setWkbType(QgsWkbTypes.parseType(geometryType))
+
+        if crs:
+            dataSourceUri.setSrid(str(crs.postgisSrid()))
+
+        uri = dataSourceUri.uri(False)
         if self.type == Table.RasterType:
             return QgsRasterLayer(uri, self.name, provider)
         return QgsVectorLayer(uri, self.name, provider)
@@ -992,6 +1003,10 @@ class Table(DbItemObject):
 
         return False
 
+    def addExtraContextMenuEntries(self, menu):
+        """Called whenever a context menu is shown for this table. Can be used to add additional actions to the menu."""
+        pass
+
 
 class VectorTable(Table):
 
@@ -1099,6 +1114,71 @@ class VectorTable(Table):
                 return True
 
         return Table.runAction(self, action)
+
+    def addLayer(self, geometryType=None, crs=None):
+        layer = self.toMapLayer(geometryType, crs)
+        layers = QgsProject.instance().addMapLayers([layer])
+        if len(layers) != 1:
+            QgsMessageLog.logMessage(self.tr("{layer} is an invalid layer - not loaded").format(layer=layer.publicSource()))
+            msgLabel = QLabel(self.tr("{layer} is an invalid layer and cannot be loaded. Please check the <a href=\"#messageLog\">message log</a> for further info.").format(layer=layer.publicSource()), self.mainWindow.infoBar)
+            msgLabel.setWordWrap(True)
+            msgLabel.linkActivated.connect(self.mainWindow.iface.mainWindow().findChild(QWidget, "MessageLog").show)
+            msgLabel.linkActivated.connect(self.mainWindow.iface.mainWindow().raise_)
+            self.mainWindow.infoBar.pushItem(QgsMessageBarItem(msgLabel, Qgis.Warning))
+
+    def showAdvancedVectorDialog(self):
+        dlg = QDialog()
+        dlg.setObjectName('dbManagerAdvancedVectorDialog')
+        settings = QgsSettings()
+        dlg.restoreGeometry(settings.value("/DB_Manager/advancedAddDialog/geometry", QByteArray(), type=QByteArray))
+        layout = QFormLayout()
+        dlg.setLayout(layout)
+        dlg.setWindowTitle(self.tr('Add layer {}').format(self.name))
+        geometryTypeComboBox = QComboBox()
+        geometryTypeComboBox.addItem(self.tr('Point'), 'POINT')
+        geometryTypeComboBox.addItem(self.tr('Line'), 'LINESTRING')
+        geometryTypeComboBox.addItem(self.tr('Polygon'), 'POLYGON')
+        layout.addRow(self.tr('Geometry Type'), geometryTypeComboBox)
+        zCheckBox = QCheckBox(self.tr('With Z'))
+        mCheckBox = QCheckBox(self.tr('With M'))
+        layout.addRow(zCheckBox)
+        layout.addRow(mCheckBox)
+        crsSelector = QgsProjectionSelectionWidget()
+        layout.addRow(self.tr('CRS'), crsSelector)
+
+        def selectedGeometryType():
+            geomType = geometryTypeComboBox.currentData()
+            if zCheckBox.isChecked():
+                geomType += 'Z'
+            if mCheckBox.isChecked():
+                geomType += 'M'
+
+            return geomType
+
+        def selectedCrs():
+            return crsSelector.crs()
+
+        addButton = QPushButton(self.tr('Load layer'))
+        addButton.clicked.connect(lambda: self.addLayer(selectedGeometryType(), selectedCrs()))
+        btns = QDialogButtonBox(QDialogButtonBox.Cancel)
+        btns.addButton(addButton, QDialogButtonBox.ActionRole)
+
+        layout.addRow(btns)
+
+        addButton.clicked.connect(dlg.accept)
+        btns.accepted.connect(dlg.accept)
+        btns.rejected.connect(dlg.reject)
+
+        dlg.exec_()
+
+        settings = QgsSettings()
+        settings.setValue("/DB_Manager/advancedAddDialog/geometry", dlg.saveGeometry())
+
+    def addExtraContextMenuEntries(self, menu):
+        """Called whenever a context menu is shown for this table. Can be used to add additional actions to the menu."""
+
+        if self.geomType == 'GEOMETRY':
+            menu.addAction(self.tr("Advanced add layer…"), self.showAdvancedVectorDialog)
 
 
 class RasterTable(Table):
