@@ -299,6 +299,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     void createAuxiliaryField();
     void updateShapeFrameStatus();
     void updateBufferFrameStatus();
+    void updateShadowFrameStatus();
 };
 
 
