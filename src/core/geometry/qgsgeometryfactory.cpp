@@ -207,15 +207,19 @@ std::unique_ptr< QgsMultiPolygon > QgsGeometryFactory::fromMultiPolygonXY( const
 
 std::unique_ptr<QgsLineString> QgsGeometryFactory::linestringFromPolyline( const QgsPolylineXY &polyline )
 {
+  const int size = polyline.size();
   QVector< double > x;
-  x.reserve( polyline.size() );
+  x.resize( size );
   QVector< double > y;
-  y.reserve( polyline.size() );
-  QgsPolylineXY::const_iterator it = polyline.constBegin();
-  for ( ; it != polyline.constEnd(); ++it )
+  y.resize( size );
+  double *destX = x.data();
+  double *destY = y.data();
+  const QgsPointXY *src = polyline.data();
+  for ( int i = 0; i < size; ++i )
   {
-    x << it->x();
-    y << it->y();
+    *destX++ = src->x();
+    *destY++ = src->y();
+    src++;
   }
   std::unique_ptr< QgsLineString > line = qgis::make_unique< QgsLineString >( x, y );
   return line;
