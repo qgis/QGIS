@@ -2914,13 +2914,32 @@ QgsGeometry QgsGeometry::fromQPointF( QPointF point )
 
 QgsGeometry QgsGeometry::fromQPolygonF( const QPolygonF &polygon )
 {
+  QVector< double > x;
+  QVector< double > y;
+  x.resize( polygon.count() );
+  y.resize( polygon.count() );
+  double *xData = x.data();
+  double *yData = y.data();
+
+  const QPointF *src = polygon.data();
+  for ( int i  = 0 ; i < polygon.size(); ++ i )
+  {
+    *xData++ = src->x();
+    *yData++ = src->y();
+    src++;
+  }
+
+  std::unique_ptr < QgsLineString > ring = qgis::make_unique< QgsLineString >( x, y );
+
   if ( polygon.isClosed() )
   {
-    return QgsGeometry::fromPolygonXY( createPolygonFromQPolygonF( polygon ) );
+    std::unique_ptr< QgsPolygon > poly = qgis::make_unique< QgsPolygon >();
+    poly->setExteriorRing( ring.release() );
+    return QgsGeometry( std::move( poly ) );
   }
   else
   {
-    return QgsGeometry::fromPolylineXY( createPolylineFromQPolygonF( polygon ) );
+    return QgsGeometry( std::move( ring ) );
   }
 }
 
