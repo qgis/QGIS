@@ -1178,7 +1178,7 @@ class VectorTable(Table):
         """Called whenever a context menu is shown for this table. Can be used to add additional actions to the menu."""
 
         if self.geomType == 'GEOMETRY':
-            menu.addAction(self.tr("Advanced add layer…"), self.showAdvancedVectorDialog)
+            menu.addAction(self.tr("Add Layer (Advanced)…"), self.showAdvancedVectorDialog)
 
 
 class RasterTable(Table):
