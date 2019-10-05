@@ -135,6 +135,9 @@ class QgsSymbolLayer
       PropertyArrowType,
       PropertyOffsetX,
       PropertyOffsetY,
+      PropertyPointCount,
+      PropertyRandomSeed,
+      PropertyClipPoints,
     };
 
     static const QgsPropertiesDefinition &propertyDefinitions();

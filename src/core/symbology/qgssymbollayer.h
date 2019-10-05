@@ -177,6 +177,9 @@ class CORE_EXPORT QgsSymbolLayer
       PropertyArrowType, //!< Arrow type
       PropertyOffsetX, //!< Horizontal offset
       PropertyOffsetY, //!< Vertical offset
+      PropertyPointCount, //!< Point count
+      PropertyRandomSeed, //!< Random number seed
+      PropertyClipPoints, //!< Whether markers should be clipped to polygon boundaries
     };
 
     /**

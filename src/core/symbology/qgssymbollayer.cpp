@@ -93,9 +93,11 @@ void QgsSymbolLayer::initPropertyDefinitions()
     { QgsSymbolLayer::PropertyArrowStartWidth, QgsPropertyDefinition( "arrowStartWidth", QObject::tr( "Arrow line start width" ), QgsPropertyDefinition::StrokeWidth, origin )},
     { QgsSymbolLayer::PropertyArrowHeadLength, QgsPropertyDefinition( "arrowHeadLength", QObject::tr( "Arrow head length" ), QgsPropertyDefinition::DoublePositive, origin )},
     { QgsSymbolLayer::PropertyArrowHeadThickness, QgsPropertyDefinition( "arrowHeadThickness", QObject::tr( "Arrow head thickness" ), QgsPropertyDefinition::DoublePositive, origin )},
-    { QgsSymbolLayer::PropertyArrowHeadType, QgsPropertyDefinition( "arrowHeadType", QgsPropertyDefinition::DataTypeString, QObject::tr( "Arrow head type" ), QObject::tr( "string " ) + QLatin1String( "[<b>single</b>|<b>reversed</b>|<b>double</b>]" ) )},
-    { QgsSymbolLayer::PropertyArrowType, QgsPropertyDefinition( "arrowType", QgsPropertyDefinition::DataTypeString, QObject::tr( "Arrow type" ), QObject::tr( "string " ) + QLatin1String( "[<b>plain</b>|<b>lefthalf</b>|<b>righthalf</b>]" ) )},
-
+    { QgsSymbolLayer::PropertyArrowHeadType, QgsPropertyDefinition( "arrowHeadType", QgsPropertyDefinition::DataTypeString, QObject::tr( "Arrow head type" ), QObject::tr( "string " ) + QLatin1String( "[<b>single</b>|<b>reversed</b>|<b>double</b>]" ), origin )},
+    { QgsSymbolLayer::PropertyArrowType, QgsPropertyDefinition( "arrowType", QgsPropertyDefinition::DataTypeString, QObject::tr( "Arrow type" ), QObject::tr( "string " ) + QLatin1String( "[<b>plain</b>|<b>lefthalf</b>|<b>righthalf</b>]" ), origin )},
+    { QgsSymbolLayer::PropertyPointCount, QgsPropertyDefinition( "pointCount", QObject::tr( "Point count" ), QgsPropertyDefinition::IntegerPositive, origin )},
+    { QgsSymbolLayer::PropertyRandomSeed, QgsPropertyDefinition( "randomSeed", QgsPropertyDefinition::DataTypeNumeric, QObject::tr( "Random number seed" ), QObject::tr( "integer > 0, or 0 for completely random sequence" ), origin )},
+    { QgsSymbolLayer::PropertyClipPoints, QgsPropertyDefinition( "clipPoints", QObject::tr( "Clip markers" ), QgsPropertyDefinition::Boolean, origin )},
   };
 }
 
