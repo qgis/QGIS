@@ -1003,12 +1003,11 @@ QStringList QgsApplication::svgPaths()
   //local directories to search when looking for an SVG with a given basename
   //defined by user in options dialog
   QgsSettings settings;
-  QStringList pathList = settings.value( QStringLiteral( "svg/searchPathsForSVG" ) ).toStringList();
+  const QStringList pathList = settings.value( QStringLiteral( "svg/searchPathsForSVG" ) ).toStringList();
 
   // maintain user set order while stripping duplicates
   QStringList paths;
-  const auto constPathList = pathList;
-  for ( const QString &path : constPathList )
+  for ( const QString &path : pathList )
   {
     if ( !paths.contains( path ) )
       paths.append( path );
