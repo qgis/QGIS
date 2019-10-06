@@ -1441,10 +1441,11 @@ void QgsTextFormatWidget::mShapeTypeCmbBx_currentIndexChanged( int )
   mShapeSVGPathFrame->setVisible( isSVG );
   mBackgroundSymbolButton->setVisible( isMarker );
 
-  // symbology SVG renderer only supports size^2 scaling, so we only use the x size spinbox
+  // symbology SVG and marker renderers only support size^2 scaling,
+  // so we only use the x size spinbox
   mShapeSizeYLabel->setVisible( !isSVG && !isMarker );
   mShapeSizeYSpnBx->setVisible( !isSVG && !isMarker );
-  mShapeSizeYDDBtn->setVisible( !isSVG && !isMarker && mWidgetMode == Labeling );
+  mShapeSizeYDDBtn->setVisible( !isSVG && !isMarker );
   mShapeSizeXLabel->setText( tr( "Size%1" ).arg( !isSVG && !isMarker ? tr( " X" ) : QString() ) );
 
   // SVG parameter setting doesn't support color's alpha component yet
