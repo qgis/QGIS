@@ -4764,9 +4764,9 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
   // two values are both replaced in the final .arg call of the string construction.
 
   QString sql = QString( "INSERT INTO layer_styles("
-                         "f_table_catalog,f_table_schema,f_table_name,f_geometry_column,styleName,styleQML,styleSLD,useAsDefault,description%11"
+                         "f_table_catalog,f_table_schema,f_table_name,f_geometry_column,styleName,styleQML,styleSLD,useAsDefault,description,owner%11"
                          ") VALUES ("
-                         "%1,%2,%3,%4,%5,XMLPARSE(DOCUMENT %16),XMLPARSE(DOCUMENT %17),%8,%9%12"
+                         "%1,%2,%3,%4,%5,XMLPARSE(DOCUMENT %16),XMLPARSE(DOCUMENT %17),%8,%9,%10%12"
                          ")" )
                 .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
                 .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
@@ -4775,6 +4775,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
                 .arg( QgsPostgresConn::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) )
                 .arg( useAsDefault ? "true" : "false" )
                 .arg( QgsPostgresConn::quotedValue( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ) )
+                .arg( "CURRENT_USER" )
                 .arg( uiFileColumn )
                 .arg( uiFileValue )
                 // Must be the final .arg replacement - see above
@@ -4812,6 +4813,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
                    ",styleQML=XMLPARSE(DOCUMENT %12)"
                    ",styleSLD=XMLPARSE(DOCUMENT %13)"
                    ",description=%4"
+                   ",owner=%5"
                    " WHERE f_table_catalog=%6"
                    " AND f_table_schema=%7"
                    " AND f_table_name=%8"
@@ -4819,6 +4821,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
                    " AND styleName=%10" )
           .arg( useAsDefault ? "true" : "false" )
           .arg( QgsPostgresConn::quotedValue( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ) )
+          .arg( "CURRENT_USER" )
           .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
           .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
           .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
