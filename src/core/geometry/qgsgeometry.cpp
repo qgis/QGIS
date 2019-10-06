@@ -2935,9 +2935,11 @@ QgsGeometry QgsGeometry::fromQPolygonF( const QPolygonF &polygon )
 
 QgsPolygonXY QgsGeometry::createPolygonFromQPolygonF( const QPolygonF &polygon )
 {
+  Q_NOWARN_DEPRECATED_PUSH
   QgsPolygonXY result;
   result << createPolylineFromQPolygonF( polygon );
   return result;
+  Q_NOWARN_DEPRECATED_POP
 }
 
 QgsPolylineXY QgsGeometry::createPolylineFromQPolygonF( const QPolygonF &polygon )
