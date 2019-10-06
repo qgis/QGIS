@@ -293,7 +293,7 @@ bool QgsGui::pythonMacroAllowed( void ( *lambda )(), QgsMessageBar *messageBar )
             0,
             messageBar );
 
-          connect( btnEnableMacros, &QToolButton::clicked, [ = ]()
+          connect( btnEnableMacros, &QToolButton::clicked, messageBar, [ = ]()
           {
             lambda();
             messageBar->popWidget( macroMsg );
@@ -306,4 +306,5 @@ bool QgsGui::pythonMacroAllowed( void ( *lambda )(), QgsMessageBar *messageBar )
         return false;
       }
   }
+  return false;
 }
