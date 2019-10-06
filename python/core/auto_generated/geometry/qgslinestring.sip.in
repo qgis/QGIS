@@ -90,6 +90,13 @@ Any z or m values present in the input coordinates will be interpolated along wi
 .. versionadded:: 3.10
 %End
 
+    static QgsLineString *fromQPolygonF( const QPolygonF &polygon ) /Factory/;
+%Docstring
+Returns a new linestring from a QPolygonF ``polygon`` input.
+
+.. versionadded:: 3.10
+%End
+
     virtual bool equals( const QgsCurve &other ) const;
 
 

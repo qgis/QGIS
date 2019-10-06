@@ -242,6 +242,26 @@ QgsLineString *QgsLineString::fromBezierCurve( const QgsPoint &start, const QgsP
   return new QgsLineString( x, y, z, m );
 }
 
+QgsLineString *QgsLineString::fromQPolygonF( const QPolygonF &polygon )
+{
+  QVector< double > x;
+  QVector< double > y;
+  x.resize( polygon.count() );
+  y.resize( polygon.count() );
+  double *xData = x.data();
+  double *yData = y.data();
+
+  const QPointF *src = polygon.data();
+  for ( int i  = 0 ; i < polygon.size(); ++ i )
+  {
+    *xData++ = src->x();
+    *yData++ = src->y();
+    src++;
+  }
+
+  return new QgsLineString( x, y );
+}
+
 bool QgsLineString::equals( const QgsCurve &other ) const
 {
   const QgsLineString *otherLine = qgsgeometry_cast< const QgsLineString * >( &other );
