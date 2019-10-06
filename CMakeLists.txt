@@ -543,10 +543,10 @@ IF (PEDANTIC)
     # unavoidable - we can't avoid these, as older, supported compilers do not support removing the redundant move
     SET(_warnings "${_warnings} -Wno-redundant-move")
 
-    IF(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 8.0)
+    IF(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 7.9.999)
       # heaps of these thrown by Qt headers at the moment (sep 2019)
       SET(_warnings "${_warnings} -Wno-deprecated-copy")
-    ENDIF(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 8.0)
+    ENDIF(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 7.9.999)
 
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${_warnings}")
 
