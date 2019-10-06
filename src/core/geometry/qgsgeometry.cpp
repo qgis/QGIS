@@ -2386,31 +2386,36 @@ QPointF QgsGeometry::asQPointF() const
 
 QPolygonF QgsGeometry::asQPolygonF() const
 {
-  QPolygonF result;
-  QgsPolylineXY polyline;
-  QgsWkbTypes::Type type = wkbType();
-  if ( type == QgsWkbTypes::LineString || type == QgsWkbTypes::LineString25D )
+  const QgsWkbTypes::Type type = wkbType();
+  const QgsLineString *line = nullptr;
+  if ( QgsWkbTypes::flatType( type ) == QgsWkbTypes::LineString )
   {
-    polyline = asPolyline();
+    line = qgsgeometry_cast< const QgsLineString * >( constGet() );
   }
-  else if ( type == QgsWkbTypes::Polygon || type == QgsWkbTypes::Polygon25D )
+  else if ( QgsWkbTypes::flatType( type ) == QgsWkbTypes::Polygon )
   {
-    QgsPolygonXY polygon = asPolygon();
-    if ( polygon.empty() )
-      return result;
-    polyline = polygon.at( 0 );
+    const QgsPolygon *polygon = qgsgeometry_cast< const QgsPolygon * >( constGet() );
+    if ( polygon )
+      line = qgsgeometry_cast< const QgsLineString * >( polygon->exteriorRing() );
+  }
+
+  if ( line )
+  {
+    const double *srcX = line->xData();
+    const double *srcY = line->yData();
+    const int count = line->numPoints();
+    QPolygonF res( count );
+    QPointF *dest = res.data();
+    for ( int i = 0; i < count; ++i )
+    {
+      *dest++ = QPointF( *srcX++, *srcY++ );
+    }
+    return res;
   }
   else
   {
-    return result;
+    return QPolygonF();
   }
-
-  result.reserve( polyline.count() );
-  for ( const QgsPointXY &p : qgis::as_const( polyline ) )
-  {
-    result << p.toQPointF();
-  }
-  return result;
 }
 
 bool QgsGeometry::deleteRing( int ringNum, int partNum )
