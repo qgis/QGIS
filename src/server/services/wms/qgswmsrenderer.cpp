@@ -127,7 +127,7 @@ namespace QgsWms
     std::unique_ptr<QImage> image;
     const qreal dpmm = mContext.dotsPerMm();
     const QSizeF minSize = renderer.minimumSize();
-    const QSize size( minSize.width() * dpmm, minSize.height() * dpmm );
+    const QSize size( static_cast<int>( minSize.width() * dpmm ), static_cast<int>( minSize.height() * dpmm ) );
     image.reset( createImage( size ) );
 
     // configure painter
@@ -290,7 +290,7 @@ namespace QgsWms
     std::unique_ptr<QgsPrintLayout> layout( sourceLayout->clone() );
 
     //atlas print?
-    QgsLayoutAtlas *atlas = 0;
+    QgsLayoutAtlas *atlas = nullptr;
     QStringList atlasPk = mWmsParameters.atlasPk();
     if ( !atlasPk.isEmpty() ) //atlas print requested?
     {
@@ -566,7 +566,7 @@ namespace QgsWms
         // scale
         if ( cMapParams.mScale > 0 )
         {
-          map->setScale( cMapParams.mScale );
+          map->setScale( static_cast<double>( cMapParams.mScale ) );
         }
 
         // rotation
@@ -609,8 +609,8 @@ namespace QgsWms
       //grid space x / y
       if ( cMapParams.mGridX > 0 && cMapParams.mGridY > 0 )
       {
-        map->grid()->setIntervalX( cMapParams.mGridX );
-        map->grid()->setIntervalY( cMapParams.mGridY );
+        map->grid()->setIntervalX( static_cast<double>( cMapParams.mGridX ) );
+        map->grid()->setIntervalY( static_cast<double>( cMapParams.mGridY ) );
       }
     }
 
@@ -958,7 +958,7 @@ namespace QgsWms
       throw QgsException( QStringLiteral( "createImage: image could not be created, check for out of memory conditions" ) );
     }
 
-    const qreal dpm = mContext.dotsPerMm() * 1000.0;
+    const int dpm = static_cast<int>( mContext.dotsPerMm() * 1000.0 );
     image->setDotsPerMeterX( dpm );
     image->setDotsPerMeterY( dpm );
 
@@ -1097,7 +1097,7 @@ namespace QgsWms
     int height = mWmsParameters.heightAsInt();
     if ( ( i != -1 && j != -1 && width != 0 && height != 0 ) && ( width != outputImage->width() || height != outputImage->height() ) )
     {
-      i *= ( outputImage->width() / static_cast<double>( width ) );
+      i *= ( outputImage->width() /  static_cast<double>( width ) );
       j *= ( outputImage->height() / static_cast<double>( height ) );
     }
 
@@ -2587,7 +2587,7 @@ namespace QgsWms
         if ( param.mBufferSize > 0 )
         {
           bufferSettings.setEnabled( true );
-          bufferSettings.setSize( param.mBufferSize );
+          bufferSettings.setSize( static_cast<double>( param.mBufferSize ) );
         }
 
         textFormat.setBuffer( bufferSettings );

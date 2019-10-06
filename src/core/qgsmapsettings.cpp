@@ -224,6 +224,8 @@ void QgsMapSettings::updateDerived()
   QgsDebugMsgLevel( QStringLiteral( "Recalced pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mVisibleExtent.width() / mMapUnitsPerPixel ), qgsDoubleToString( mVisibleExtent.height() / mMapUnitsPerPixel ) ), 5 );
   QgsDebugMsgLevel( QStringLiteral( "Scale (assuming meters as map units) = 1:%1" ).arg( qgsDoubleToString( mScale ) ), 5 );
   QgsDebugMsgLevel( QStringLiteral( "Rotation: %1 degrees" ).arg( mRotation ), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "Extent: %1" ).arg( mExtent.asWktCoordinates() ), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "Visible Extent: %1" ).arg( mVisibleExtent.asWktCoordinates() ), 5 );
 
   mValid = true;
 }
