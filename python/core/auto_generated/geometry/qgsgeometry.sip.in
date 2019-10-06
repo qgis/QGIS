@@ -2026,7 +2026,7 @@ geometry will be a polyline.
 .. versionadded:: 2.7
 %End
 
-    static QgsPolylineXY createPolylineFromQPolygonF( const QPolygonF &polygon ) /Factory/;
+ static QgsPolylineXY createPolylineFromQPolygonF( const QPolygonF &polygon ) /Deprecated/;
 %Docstring
 Creates a QgsPolylineXY from a QPolygonF.
 
@@ -2035,9 +2035,11 @@ Creates a QgsPolylineXY from a QPolygonF.
 :return: :py:class:`QgsPolylineXY`
 
 .. seealso:: :py:func:`createPolygonFromQPolygonF`
+
+.. deprecated:: use QgsGeometry.fromQPolygonF() or QgsLineString.fromQPolygonF() instead.
 %End
 
-    static QgsPolygonXY createPolygonFromQPolygonF( const QPolygonF &polygon ) /Factory/;
+ static QgsPolygonXY createPolygonFromQPolygonF( const QPolygonF &polygon ) /Deprecated/;
 %Docstring
 Creates a QgsPolygonXYfrom a QPolygonF.
 
@@ -2046,6 +2048,8 @@ Creates a QgsPolygonXYfrom a QPolygonF.
 :return: :py:class:`QgsPolygon`
 
 .. seealso:: :py:func:`createPolylineFromQPolygonF`
+
+.. deprecated:: use QgsGeometry.fromQPolygonF() or QgsLineString.fromQPolygonF() instead.
 %End
 
 
