@@ -236,7 +236,7 @@ void QgsApplication::init( QString profileFolder )
 #else
     setPluginPath( ABISYM( mBuildOutputPath ) + '/' + QStringLiteral( QGIS_PLUGIN_SUBDIR ) );
 #endif
-    setPkgDataPath( ABISYM( mBuildOutputPath ) ); // directly source path - used for: doc, resources, svg
+    setPkgDataPath( ABISYM( mBuildOutputPath ) + QStringLiteral( "/data" ) ); // in buildDir/data - used for: doc, resources, svg
     ABISYM( mLibraryPath ) = ABISYM( mBuildOutputPath ) + '/' + QGIS_LIB_SUBDIR + '/';
 #if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
     ABISYM( mLibexecPath ) = ABISYM( mBuildOutputPath ) + '/' + QGIS_LIBEXEC_SUBDIR + '/' + ABISYM( mCfgIntDir ) + '/';
@@ -489,7 +489,9 @@ void QgsApplication::setPluginPath( const QString &pluginPath )
 void QgsApplication::setPkgDataPath( const QString &pkgDataPath )
 {
   ABISYM( mPkgDataPath ) = pkgDataPath;
-  QString mySvgPath = pkgDataPath + ( ABISYM( mRunningFromBuildDir ) ? "/images/svg/" : "/svg/" );
+
+  QString mySvgPath = pkgDataPath + QStringLiteral( "/svg/" );
+
   // avoid duplicate entries
   if ( !ABISYM( mDefaultSvgPaths ).contains( mySvgPath ) )
     ABISYM( mDefaultSvgPaths ) << mySvgPath;
@@ -531,6 +533,7 @@ QString QgsApplication::pluginPath()
 {
   return ABISYM( mPluginPath );
 }
+
 QString QgsApplication::pkgDataPath()
 {
   if ( ABISYM( mPkgDataPath ).isNull() )
@@ -538,6 +541,7 @@ QString QgsApplication::pkgDataPath()
   else
     return ABISYM( mPkgDataPath );
 }
+
 QString QgsApplication::defaultThemePath()
 {
   return QStringLiteral( ":/images/themes/default/" );
@@ -765,7 +769,7 @@ QString QgsApplication::resolvePkgPath()
   }
 
   if ( ABISYM( mRunningFromBuildDir ) )
-    return ABISYM( mBuildOutputPath );
+    return ABISYM( mBuildOutputPath ) + QStringLiteral( "/data" );
   else
     return prefixPath + '/' + QStringLiteral( QGIS_DATA_SUBDIR );
 }

@@ -1,3 +1,5 @@
+INCLUDE(CopyResources)
+
 # include doxygen documentation
 SET (WITH_APIDOC FALSE CACHE BOOL "Determines whether the QGIS API doxygen documentation should be built")
 
@@ -19,13 +21,30 @@ IF(TXT2TAGS_EXECUTABLE)
   ADD_CUSTOM_TARGET (t2tdoc ALL DEPENDS ${QGIS_DOC_FILES} ${t2tfiles})
 ELSE(TXT2TAGS_EXECUTABLE)
   SET(QGIS_DOC_FILES
-    ${CMAKE_SOURCE_DIR}/INSTALL
+    ../INSTALL
   )
 ENDIF(TXT2TAGS_EXECUTABLE)
 
-SET(QGIS_DOC_FILES ${QGIS_DOC_FILES} index.html news.html developersmap.html nohelp.html favicon.ico style.css AUTHORS CONTRIBUTORS SPONSORS DONORS TRANSLATORS LICENSE)
+SET(QGIS_DOC_FILES 
+  ${QGIS_DOC_FILES} 
+  index.html 
+  news.html 
+  developersmap.html 
+  nohelp.html 
+  favicon.ico 
+  style.css 
+  AUTHORS 
+  CONTRIBUTORS 
+  SPONSORS 
+  DONORS 
+  TRANSLATORS 
+  LICENSE
+)
 
-INSTALL(FILES ${QGIS_DOC_FILES} DESTINATION ${QGIS_DATA_DIR}/doc)
+ADD_QGIS_RESOURCES("${CMAKE_CURRENT_SOURCE_DIR}" doc DEST_DOC_FILES "${QGIS_DOC_FILES}")
+
+ADD_CUSTOM_TARGET(doc ALL DEPENDS ${DEST_DOC_FILES})
+
 INSTALL(FILES ../images/icons/qgis-icon-60x60.png DESTINATION ${QGIS_DATA_DIR}/doc/images)
 
 # Sponsor images
