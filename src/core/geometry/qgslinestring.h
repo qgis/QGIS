@@ -104,6 +104,13 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     static QgsLineString *fromBezierCurve( const QgsPoint &start, const QgsPoint &controlPoint1, const QgsPoint &controlPoint2, const QgsPoint &end, int segments = 30 ) SIP_FACTORY;
 
+    /**
+     * Returns a new linestring from a QPolygonF \a polygon input.
+     *
+     * \since QGIS 3.10
+     */
+    static QgsLineString *fromQPolygonF( const QPolygonF &polygon ) SIP_FACTORY;
+
     bool equals( const QgsCurve &other ) const override;
 
 #ifndef SIP_RUN

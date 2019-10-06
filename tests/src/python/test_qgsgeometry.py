@@ -38,8 +38,8 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsProject
 )
-from qgis.PyQt.QtCore import QDir
-from qgis.PyQt.QtGui import QImage, QPainter, QPen, QColor, QBrush, QPainterPath
+from qgis.PyQt.QtCore import QDir, QPointF
+from qgis.PyQt.QtGui import QImage, QPainter, QPen, QColor, QBrush, QPainterPath, QPolygonF
 
 from qgis.testing import (
     start_app,
@@ -5258,6 +5258,14 @@ class TestQgsGeometry(unittest.TestCase):
         res = g.randomPointsInPolygon(100, seed=123123)
         res2 = g.randomPointsInPolygon(100, seed=123123)
         self.assertEqual(res, res2)
+
+    def testLineStringFromQPolygonF(self):
+        line = QgsLineString.fromQPolygonF(QPolygonF())
+        self.assertEqual(line.asWkt(0), 'LineString EMPTY')
+        line = QgsLineString.fromQPolygonF(QPolygonF([QPointF(1, 2), QPointF(3, 4)]))
+        self.assertEqual(line.asWkt(1), 'LineString (1 2, 3 4)')
+        line = QgsLineString.fromQPolygonF(QPolygonF([QPointF(1.5, 2.5), QPointF(3, 4), QPointF(3, 6.5), QPointF(1.5, 2.5)]))
+        self.assertEqual(line.asWkt(1), 'LineString (1.5 2.5, 3 4, 3 6.5, 1.5 2.5)')
 
     def renderGeometry(self, geom, use_pen, as_polygon=False, as_painter_path=False):
         image = QImage(200, 200, QImage.Format_RGB32)
