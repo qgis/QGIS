@@ -62,6 +62,7 @@ class GPKGDBConnector(DBConnector):
         DBConnector.__init__(self, uri)
         self.dbname = uri.database()
         self.connection = connection
+        self._current_thread = None
         md = QgsProviderRegistry.instance().providerMetadata(connection.providerName())
         # QgsAbstractDatabaseProviderConnection instance
         self.core_connection = md.findConnection(connection.connectionName())
