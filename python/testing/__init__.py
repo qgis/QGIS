@@ -394,6 +394,11 @@ def start_app(cleanup=True):
     except NameError:
         myGuiFlag = True  # All test will run qgis in gui mode
 
+        try:
+            sys.argv
+        except AttributeError:
+            sys.argv = ['']
+
         # In python3 we need to convert to a bytes object (or should
         # QgsApplication accept a QString instead of const char* ?)
         try:
