@@ -207,6 +207,9 @@ QPolygonF QgsSymbol::_getPolygonRing( QgsRenderContext &context, const QgsCurve 
     mtp.transformInPlace( ptr->rx(), ptr->ry() );
   }
 
+  if ( !poly.empty() && !poly.isClosed() )
+    poly << poly.at( 0 );
+
   return poly;
 }
 
