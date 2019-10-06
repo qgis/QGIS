@@ -52,7 +52,8 @@ from qgis.core import (
     QgsVectorLayer,
     QgsRasterLayer,
     QgsProject,
-    QgsMessageLog
+    QgsMessageLog,
+    QgsCoordinateReferenceSystem
 )
 
 from qgis.gui import (
@@ -745,6 +746,11 @@ class Table(DbItemObject):
         uri.setDataSource(schema, self.name, geomCol if geomCol else None, None, uniqueCol.name if uniqueCol else "")
         return uri
 
+    def crs(self):
+        """Returns the CRS of this table or an invalid CRS if this is not a spatial table
+        This should be overwritten by any additional db plugins"""
+        return QgsCoordinateReferenceSystem()
+
     def mimeUri(self):
         layerType = "raster" if self.type == Table.RasterType else "vector"
         return u"%s:%s:%s:%s" % (layerType, self.database().dbplugin().providerName(), self.name, self.uri().uri(False))
@@ -1144,6 +1150,7 @@ class VectorTable(Table):
         layout.addRow(zCheckBox)
         layout.addRow(mCheckBox)
         crsSelector = QgsProjectionSelectionWidget()
+        crsSelector.setCrs(self.crs())
         layout.addRow(self.tr('CRS'), crsSelector)
 
         def selectedGeometryType():

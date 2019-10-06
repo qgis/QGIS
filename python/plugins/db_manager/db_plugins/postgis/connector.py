@@ -27,7 +27,7 @@ from builtins import range
 from functools import cmp_to_key
 
 from qgis.PyQt.QtCore import QRegExp, QFile, QCoreApplication
-from qgis.core import Qgis, QgsCredentials, QgsDataSourceUri
+from qgis.core import Qgis, QgsCredentials, QgsDataSourceUri, QgsCoordinateReferenceSystem
 
 from ..connector import DBConnector
 from ..plugin import ConnectionError, DbError, Table
@@ -641,6 +641,23 @@ class PostGisDBConnector(DBConnector):
         res = self._fetchone(c)
         self._close_cursor(c)
         return res[0] if res is not None else None
+
+    def getCrs(self, srid):
+        if not self.has_spatial:
+            return QgsCoordinateReferenceSystem()
+
+        try:
+            c = self._execute(None, "SELECT proj4text FROM spatial_ref_sys WHERE srid = '%d'" % srid)
+        except DbError:
+            return QgsCoordinateReferenceSystem()
+        res = self._fetchone(c)
+        self._close_cursor(c)
+        if res is None:
+            return QgsCoordinateReferenceSystem()
+
+        proj4text = res[0]
+        crs = QgsCoordinateReferenceSystem.fromProj4(proj4text)
+        return crs
 
     def getSpatialRefInfo(self, srid):
         if not self.has_spatial:

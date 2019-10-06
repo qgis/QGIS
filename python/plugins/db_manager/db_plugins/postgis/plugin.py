@@ -269,6 +269,9 @@ class PGTable(Table):
 
         return PGTableInfo(self)
 
+    def crs(self):
+        return self.database().connector.getCrs(self.srid)
+
     def tableDataModel(self, parent):
         from .data_model import PGTableDataModel
 
