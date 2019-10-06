@@ -7,7 +7,7 @@ SET (WITH_APIDOC FALSE CACHE BOOL "Determines whether the QGIS API doxygen docum
 SET (WITH_TXT2TAGS_PDF FALSE CACHE BOOL "Determines whether PDF should be generate for the txt2tags documentation")
 
 # include Qt documentation
-SET (QT_DOC_URL "http://doc.qt.io/qt-5/" CACHE STRING "URL for Qt docs")
+SET (QT_DOC_URL "https://doc.qt.io/qt-5/" CACHE STRING "URL for Qt docs")
 
 INCLUDE(Txt2Tags)
 FIND_TXT2TAGS()
