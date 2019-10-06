@@ -42,7 +42,7 @@ ENDIF (APPLE)
 
 ADD_QGIS_RESOURCES("${CMAKE_CURRENT_SOURCE_DIR}" resources DEST_RESOURCE_FILES "${RESOURCES_FILES}")
 
-# srs.db -- spcial handling because there is a switch and rename depending on proj version
+# srs.db -- special handling because there is a switch and rename depending on proj version
 IF (PROJ_VERSION_MAJOR GREATER 5)
   MESSAGE(STATUS "Using PROJ 6 srs database.")
   SET(SRSDB srs6.db)
