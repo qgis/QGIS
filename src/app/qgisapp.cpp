@@ -702,9 +702,7 @@ void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
         mySelector->setCrs( defaultCrs );
       }
 
-      bool waiting = QApplication::overrideCursor() && QApplication::overrideCursor()->shape() == Qt::WaitCursor;
-      if ( waiting )
-        QApplication::setOverrideCursor( Qt::ArrowCursor );
+      QgsTemporaryCursorRestoreOverride cursorOverride;
 
       if ( mySelector->exec() )
       {
@@ -712,9 +710,6 @@ void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
         srs = mySelector->crs();
         sAuthId = srs.authid();
       }
-
-      if ( waiting )
-        QApplication::restoreOverrideCursor();
 
       delete mySelector;
       break;
