@@ -1240,14 +1240,14 @@ class TestQgsProject(unittest.TestCase):
         red = int(s.value("qgis/default_canvas_color_red", 255))
         green = int(s.value("qgis/default_canvas_color_green", 255))
         blue = int(s.value("qgis/default_canvas_color_blue", 255))
-        # test default canvas backgroud color
+        # test default canvas background color
         self.assertEqual(p.backgroundColor(), QColor(red, green, blue))
         spy = QSignalSpy(p.backgroundColorChanged)
         p.setBackgroundColor(QColor(0, 0, 0))
         self.assertEqual(len(spy), 1)
         # test customized canvas background color
         self.assertEqual(p.backgroundColor(), QColor(0, 0, 0))
-        # test signal _not_ emmitted when color doesn't actually change
+        # test signal not emitted when color doesn't actually change
         p.setBackgroundColor(QColor(0, 0, 0))
         self.assertEqual(len(spy), 1)
 
@@ -1266,7 +1266,7 @@ class TestQgsProject(unittest.TestCase):
         self.assertEqual(len(spy), 1)
         # test customized feature selection color
         self.assertEqual(p.selectionColor(), QColor(0, 0, 0, 50))
-        # test signal _not_ emmitted when color doesn't actually change
+        # test signal not emitted when color doesn't actually change
         p.setSelectionColor(QColor(0, 0, 0, 50))
         self.assertEqual(len(spy), 1)
 
