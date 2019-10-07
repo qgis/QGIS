@@ -712,7 +712,7 @@ void QgsProject::setTransformContext( const QgsCoordinateTransformContext &conte
 
 void QgsProject::clear()
 {
-  QgsSettings s;
+  QgsSettings settings;
 
   mProjectScope.reset();
   mFile.setFileName( QString() );
@@ -725,7 +725,7 @@ void QgsProject::clear()
   mTrustLayerMetadata = false;
   mCustomVariables.clear();
   mMetadata = QgsProjectMetadata();
-  if ( !s.value( QStringLiteral( "projects/anonymize_new_projects" ), false, QgsSettings::Core ).toBool() )
+  if ( !settings.value( QStringLiteral( "projects/anonymize_new_projects" ), false, QgsSettings::Core ).toBool() )
   {
     mMetadata.setCreationDateTime( QDateTime::currentDateTime() );
     mMetadata.setAuthor( QgsApplication::userFullName() );
@@ -768,8 +768,13 @@ void QgsProject::clear()
   writeEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false );
 
   //copy default units to project
-  writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/DistanceUnits" ), s.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString() );
-  writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/AreaUnits" ), s.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString() );
+  writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/DistanceUnits" ), settings.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString() );
+  writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/AreaUnits" ), settings.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString() );
+
+  int red = settings.value( QStringLiteral( "qgis/default_canvas_color_red" ), 255 ).toInt();
+  int green = settings.value( QStringLiteral( "qgis/default_canvas_color_green" ), 255 ).toInt();
+  int blue = settings.value( QStringLiteral( "qgis/default_canvas_color_blue" ), 255 ).toInt();
+  setBackgroundColor( QColor( red, green, blue ) );
 
   removeAllMapLayers();
   mRootGroup->clear();
@@ -3188,6 +3193,20 @@ void QgsProject::setProjectColors( const QgsNamedColorList &colors )
   writeEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Labels" ), customColorLabels );
   mProjectScope.reset();
   emit projectColorsChanged();
+}
+
+void QgsProject::setBackgroundColor( const QColor &color )
+{
+  writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), color.red() );
+  writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), color.green() );
+  writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), color.blue() );
+}
+
+QColor QgsProject::backgroundColor() const
+{
+  return QColor( readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), 255 ),
+                 readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), 255 ),
+                 readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), 255 ) );
 }
 
 void QgsProject::setMapScales( const QVector<double> &scales )

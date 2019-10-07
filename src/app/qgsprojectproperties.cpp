@@ -351,17 +351,13 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   pbnSelectionColor->setAllowOpacity( true );
 
   //get the color for map canvas background and set button color accordingly (default white)
-  myRedInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), 255 );
-  myGreenInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), 255 );
-  myBlueInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), 255 );
-  myColor = QColor( myRedInt, myGreenInt, myBlueInt );
   myRedInt = settings.value( QStringLiteral( "qgis/default_canvas_color_red" ), 255 ).toInt();
   myGreenInt = settings.value( QStringLiteral( "qgis/default_canvas_color_green" ), 255 ).toInt();
   myBlueInt = settings.value( QStringLiteral( "qgis/default_canvas_color_blue" ), 255 ).toInt();
   QColor defaultCanvasColor = QColor( myRedInt, myGreenInt, myBlueInt );
 
   pbnCanvasColor->setContext( QStringLiteral( "gui" ) );
-  pbnCanvasColor->setColor( myColor );
+  pbnCanvasColor->setColor( QgsProject::instance()->backgroundColor() );
   pbnCanvasColor->setDefaultColor( defaultCanvasColor );
 
   //get project scales
@@ -1081,20 +1077,17 @@ void QgsProjectProperties::apply()
 
 
   //set the color for canvas
-  QColor canvasColor = pbnCanvasColor->color();
-  QgsProject::instance()->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), canvasColor.red() );
-  QgsProject::instance()->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), canvasColor.green() );
-  QgsProject::instance()->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), canvasColor.blue() );
+  QgsProject::instance()->setBackgroundColor( pbnCanvasColor->color() );
 
   const auto constMapCanvases = QgisApp::instance()->mapCanvases();
   for ( QgsMapCanvas *canvas : constMapCanvases )
   {
-    canvas->setCanvasColor( canvasColor );
+    canvas->setCanvasColor( pbnCanvasColor->color() );
     canvas->setSelectionColor( selectionColor );
     canvas->enableMapTileRendering( mMapTileRenderingCheckBox->isChecked() );
   }
   if ( QgisApp::instance()->mapOverviewCanvas() )
-    QgisApp::instance()->mapOverviewCanvas()->setBackgroundColor( canvasColor );
+    QgisApp::instance()->mapOverviewCanvas()->setBackgroundColor( pbnCanvasColor->color() );
 
   //save project scales
   QVector< double > projectScales;

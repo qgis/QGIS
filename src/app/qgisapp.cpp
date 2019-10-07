@@ -2035,17 +2035,13 @@ void QgisApp::readRecentProjects()
 
 void QgisApp::applyProjectSettingsToCanvas( QgsMapCanvas *canvas )
 {
-  int red = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), 255 );
-  int green = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), 255 );
-  int blue = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), 255 );
-  QColor myColor = QColor( red, green, blue );
-  canvas->setCanvasColor( myColor );
+  canvas->setCanvasColor( QgsProject::instance()->backgroundColor() );
 
   int alpha = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorAlphaPart" ), 255 );
-  red = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorRedPart" ), 255 );
-  green = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorGreenPart" ), 255 );
-  blue = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorBluePart" ), 0 );
-  myColor = QColor( red, green, blue, alpha );
+  int red = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorRedPart" ), 255 );
+  int green = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorGreenPart" ), 255 );
+  int blue = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorBluePart" ), 0 );
+  QColor myColor = QColor( red, green, blue, alpha );
   canvas->setSelectionColor( myColor );
 }
 
@@ -5700,17 +5696,8 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   prj->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorBluePart" ), blue );
   prj->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorAlphaPart" ), alpha );
 
-  //set the canvas to the default background color
-  //the default can be set in qgisoptions
-  //use project properties to override the color on a per project basis
-  red = settings.value( QStringLiteral( "qgis/default_canvas_color_red" ), 255 ).toInt();
-  green = settings.value( QStringLiteral( "qgis/default_canvas_color_green" ), 255 ).toInt();
-  blue = settings.value( QStringLiteral( "qgis/default_canvas_color_blue" ), 255 ).toInt();
-  prj->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), red );
-  prj->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), green );
-  prj->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), blue );
-
-  mOverviewCanvas->setBackgroundColor( QColor( red, green, blue ) );
+  //set the canvas to the default project background color
+  mOverviewCanvas->setBackgroundColor( prj->backgroundColor() );
   applyProjectSettingsToCanvas( mMapCanvas );
 
   prj->setDirty( false );
@@ -6265,11 +6252,7 @@ bool QgisApp::addProject( const QString &projectFile )
     mProjectLastModified = QgsProject::instance()->lastModified();
 
     setTitleBarText_( *this );
-    int  myRedInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), 255 );
-    int  myGreenInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), 255 );
-    int  myBlueInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), 255 );
-    QColor myColor = QColor( myRedInt, myGreenInt, myBlueInt );
-    mOverviewCanvas->setBackgroundColor( myColor );
+    mOverviewCanvas->setBackgroundColor( QgsProject::instance()->backgroundColor() );
 
     applyProjectSettingsToCanvas( mMapCanvas );
 
