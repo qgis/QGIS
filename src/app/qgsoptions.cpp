@@ -453,18 +453,23 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mLogCanvasRefreshChkBx->setChecked( mSettings->value( QStringLiteral( "/Map/logCanvasRefreshEvent" ), false ).toBool() );
 
   //set the default projection behavior radio buttons
-  if ( mSettings->value( QStringLiteral( "/Projections/defaultBehavior" ), "prompt" ).toString() == QLatin1String( "prompt" ) )
+  const QgsOptions::UnknownLayerCrsBehavior mode = QgsSettings().enumValue( QStringLiteral( "/projections/unknownCrsBehavior" ), QgsOptions::UnknownLayerCrsBehavior::NoAction, QgsSettings::App );
+  switch ( mode )
   {
-    radPromptForProjection->setChecked( true );
+    case NoAction:
+      radCrsNoAction->setChecked( true );
+      break;
+    case PromptUserForCrs:
+      radPromptForProjection->setChecked( true );
+      break;
+    case UseProjectCrs:
+      radUseProjectProjection->setChecked( true );
+      break;
+    case UseDefaultCrs:
+      radUseGlobalProjection->setChecked( true );
+      break;
   }
-  else if ( mSettings->value( QStringLiteral( "/Projections/defaultBehavior" ), "prompt" ).toString() == QLatin1String( "useProject" ) )
-  {
-    radUseProjectProjection->setChecked( true );
-  }
-  else //useGlobal
-  {
-    radUseGlobalProjection->setChecked( true );
-  }
+
   QString myLayerDefaultCrs = mSettings->value( QStringLiteral( "/Projections/layerDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString();
   mLayerDefaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( myLayerDefaultCrs );
   leLayerGlobalCrs->setCrs( mLayerDefaultCrs );
@@ -1570,15 +1575,19 @@ void QgsOptions::saveOptions()
   //projection defined...
   if ( radPromptForProjection->isChecked() )
   {
-    mSettings->setValue( QStringLiteral( "/Projections/defaultBehavior" ), "prompt" );
+    mSettings->setEnumValue( QStringLiteral( "/projections/unknownCrsBehavior" ), QgsOptions::UnknownLayerCrsBehavior::PromptUserForCrs, QgsSettings::App );
   }
   else if ( radUseProjectProjection->isChecked() )
   {
-    mSettings->setValue( QStringLiteral( "/Projections/defaultBehavior" ), "useProject" );
+    mSettings->setEnumValue( QStringLiteral( "/projections/unknownCrsBehavior" ), QgsOptions::UnknownLayerCrsBehavior::UseProjectCrs, QgsSettings::App );
   }
-  else //assumes radUseGlobalProjection is checked
+  else if ( radCrsNoAction->isChecked() )
   {
-    mSettings->setValue( QStringLiteral( "/Projections/defaultBehavior" ), "useGlobal" );
+    mSettings->setEnumValue( QStringLiteral( "/projections/unknownCrsBehavior" ), QgsOptions::UnknownLayerCrsBehavior::NoAction, QgsSettings::App );
+  }
+  else
+  {
+    mSettings->setEnumValue( QStringLiteral( "/projections/unknownCrsBehavior" ), QgsOptions::UnknownLayerCrsBehavior::UseDefaultCrs, QgsSettings::App );
   }
 
   mSettings->setValue( QStringLiteral( "/Projections/layerDefaultCrs" ), mLayerDefaultCrs.authid() );

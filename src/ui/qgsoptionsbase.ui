@@ -1614,15 +1614,55 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>561</width>
-                <height>421</height>
+                <width>857</width>
+                <height>827</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
+               <item row="4" column="0">
+                <widget class="QgsCollapsibleGroupBox" name="mDefaultDatumTransformGroupBox">
+                 <property name="title">
+                  <string>Default Datum Transformations</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_10">
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="label_40">
+                    <property name="text">
+                     <string>Enter default datum transformations which will be used in any newly created project</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QCheckBox" name="mShowDatumTransformDialogCheckBox">
+                    <property name="text">
+                     <string>Ask for datum transformation if several are available</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="Line" name="line_2">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QgsDatumTransformTableWidget" name="mDefaultDatumTransformTableWidget" native="true"/>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item row="5" column="0">
+                <widget class="QCheckBox" name="mPlanimetricMeasurementsComboBox">
+                 <property name="text">
+                  <string>Planimetric measurements</string>
+                 </property>
+                </widget>
+               </item>
                <item row="2" column="0">
                 <widget class="QgsCollapsibleGroupBox" name="grpProjectProjection">
                  <property name="title">
-                  <string>CRS for New Projects</string>
+                  <string>CRS for Projects</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_27" columnstretch="0,1">
                   <item row="0" column="0" colspan="2">
@@ -1671,26 +1711,23 @@
                  </layout>
                 </widget>
                </item>
-               <item row="6" column="0">
-                <spacer name="verticalSpacer">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
                <item row="3" column="0">
                 <widget class="QgsCollapsibleGroupBox" name="grpProjectionBehavior">
                  <property name="title">
-                  <string>CRS for New Layers</string>
+                  <string>CRS for Layers</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_14" columnstretch="0,1">
-                  <item row="0" column="0" colspan="2">
+                  <item row="0" column="1">
+                   <widget class="QgsProjectionSelectionWidget" name="leLayerGlobalCrs" native="true">
+                    <property name="enabled">
+                     <bool>true</bool>
+                    </property>
+                    <property name="focusPolicy">
+                     <enum>Qt::StrongFocus</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0" colspan="2">
                    <widget class="QLabel" name="label_8">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -1706,7 +1743,28 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="0">
+                  <item row="4" column="0" colspan="2">
+                   <widget class="QRadioButton" name="radUseProjectProjection">
+                    <property name="text">
+                     <string>Use pro&amp;ject CRS</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_16">
+                    <property name="text">
+                     <string>Default CRS for layers</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="0" colspan="2">
+                   <widget class="QRadioButton" name="radUseGlobalProjection">
+                    <property name="text">
+                     <string>&amp;Use default layer CRS</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0" colspan="2">
                    <widget class="QRadioButton" name="radPromptForProjection">
                     <property name="text">
                      <string>Pro&amp;mpt for CRS</string>
@@ -1714,71 +1772,27 @@
                    </widget>
                   </item>
                   <item row="2" column="0">
-                   <widget class="QRadioButton" name="radUseProjectProjection">
+                   <widget class="QRadioButton" name="radCrsNoAction">
                     <property name="text">
-                     <string>Use pro&amp;ject CRS</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="0">
-                   <widget class="QRadioButton" name="radUseGlobalProjection">
-                    <property name="text">
-                     <string>&amp;Use a default CRS</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="1">
-                   <widget class="QgsProjectionSelectionWidget" name="leLayerGlobalCrs" native="true">
-                    <property name="enabled">
-                     <bool>false</bool>
-                    </property>
-                    <property name="focusPolicy">
-                     <enum>Qt::StrongFocus</enum>
+                     <string>Leave as an unknown CRS (take no action)</string>
                     </property>
                    </widget>
                   </item>
                  </layout>
                 </widget>
                </item>
-               <item row="4" column="0">
-                <widget class="QgsCollapsibleGroupBox" name="mDefaultDatumTransformGroupBox">
-                 <property name="title">
-                  <string>Default Datum Transformations</string>
+               <item row="6" column="0">
+                <spacer name="verticalSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
                  </property>
-                 <layout class="QGridLayout" name="gridLayout_10">
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="label_40">
-                    <property name="text">
-                     <string>Enter default datum transformations which will be used in any newly created project</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="0">
-                   <widget class="QCheckBox" name="mShowDatumTransformDialogCheckBox">
-                    <property name="text">
-                     <string>Ask for datum transformation if several are available</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="Line" name="line_2">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="0">
-                   <widget class="QgsDatumTransformTableWidget" name="mDefaultDatumTransformTableWidget" native="true"/>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item row="5" column="0">
-                <widget class="QCheckBox" name="mPlanimetricMeasurementsComboBox">
-                 <property name="text">
-                  <string>Planimetric measurements</string>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
                  </property>
-                </widget>
+                </spacer>
                </item>
               </layout>
              </widget>
@@ -5631,11 +5645,13 @@ p, li { white-space: pre-wrap; }
   <tabstop>radProjectUseCrsOfFirstLayer</tabstop>
   <tabstop>radProjectUseDefaultCrs</tabstop>
   <tabstop>leProjectGlobalCrs</tabstop>
+  <tabstop>leLayerGlobalCrs</tabstop>
+  <tabstop>radCrsNoAction</tabstop>
   <tabstop>radPromptForProjection</tabstop>
   <tabstop>radUseProjectProjection</tabstop>
   <tabstop>radUseGlobalProjection</tabstop>
-  <tabstop>leLayerGlobalCrs</tabstop>
   <tabstop>mShowDatumTransformDialogCheckBox</tabstop>
+  <tabstop>mPlanimetricMeasurementsComboBox</tabstop>
   <tabstop>mOptionsScrollArea_11</tabstop>
   <tabstop>cbxAttributeTableDocked</tabstop>
   <tabstop>mComboCopyFeatureFormat</tabstop>
@@ -5817,22 +5833,6 @@ p, li { white-space: pre-wrap; }
     <hint type="destinationlabel">
      <x>753</x>
      <y>126</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>radUseGlobalProjection</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>leLayerGlobalCrs</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>290</x>
-     <y>295</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>367</x>
-     <y>315</y>
     </hint>
    </hints>
   </connection>

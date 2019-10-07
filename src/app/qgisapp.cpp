@@ -549,6 +549,22 @@ static QgsMessageOutput *messageOutputViewer_()
 
 static void customSrsValidation_( QgsCoordinateReferenceSystem &srs )
 {
+  const QgsOptions::UnknownLayerCrsBehavior mode = QgsSettings().enumValue( QStringLiteral( "/projections/unknownCrsBehavior" ), QgsOptions::UnknownLayerCrsBehavior::NoAction, QgsSettings::App );
+  switch ( mode )
+  {
+    case QgsOptions::UnknownLayerCrsBehavior::NoAction:
+      return;
+
+    case QgsOptions::UnknownLayerCrsBehavior::UseDefaultCrs:
+      srs.createFromOgcWmsCrs( QgsSettings().value( QStringLiteral( "Projections/layerDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString() );
+      break;
+
+    case QgsOptions::UnknownLayerCrsBehavior::PromptUserForCrs:
+    case QgsOptions::UnknownLayerCrsBehavior::UseProjectCrs:
+      // can't take any action immediately for these -- we may be in a background thread
+      break;
+  }
+
   if ( QThread::currentThread() != QApplication::instance()->thread() )
   {
     // Running in a background thread -- we can't queue this connection, because
@@ -646,62 +662,73 @@ void QgisApp::onActiveLayerChanged( QgsMapLayer *layer )
 
 /*
  * This function contains forced validation of CRS used in QGIS.
- * There are 3 options depending on the settings:
+ * There are 4 options depending on the settings:
  * - ask for CRS using projection selecter
  * - use project's CRS
  * - use predefined global CRS
+ * - take no action (leave as unknown CRS)
  */
 void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
 {
   static QString sAuthId = QString();
-  QgsSettings mySettings;
-  QString myDefaultProjectionOption = mySettings.value( QStringLiteral( "Projections/defaultBehavior" ), "prompt" ).toString();
-  if ( myDefaultProjectionOption == QLatin1String( "prompt" ) )
+
+  const QgsOptions::UnknownLayerCrsBehavior mode = QgsSettings().enumValue( QStringLiteral( "/projections/unknownCrsBehavior" ), QgsOptions::UnknownLayerCrsBehavior::NoAction, QgsSettings::App );
+  switch ( mode )
   {
-    // \note this class is not a descendent of QWidget so we can't pass
-    // it in the ctor of the layer projection selector
+    case QgsOptions::UnknownLayerCrsBehavior::NoAction:
+      break;
 
-    QgsProjectionSelectionDialog *mySelector = new QgsProjectionSelectionDialog();
-    mySelector->setMessage( srs.validationHint() ); //shows a generic message, if not specified
-    if ( sAuthId.isNull() )
-      sAuthId = QgsProject::instance()->crs().authid();
-
-    QgsCoordinateReferenceSystem defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( sAuthId );
-    if ( defaultCrs.isValid() )
+    case QgsOptions::UnknownLayerCrsBehavior::UseDefaultCrs:
     {
-      mySelector->setCrs( defaultCrs );
-    }
-
-    bool waiting = QApplication::overrideCursor() && QApplication::overrideCursor()->shape() == Qt::WaitCursor;
-    if ( waiting )
-      QApplication::setOverrideCursor( Qt::ArrowCursor );
-
-    if ( mySelector->exec() )
-    {
-      QgsDebugMsg( "Layer srs set from dialog: " + QString::number( mySelector->crs().srsid() ) );
-      srs = mySelector->crs();
+      srs.createFromOgcWmsCrs( QgsSettings().value( QStringLiteral( "Projections/layerDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString() );
       sAuthId = srs.authid();
+      visibleMessageBar()->pushMessage( tr( "CRS was undefined" ), tr( "defaulting to CRS %1 - %2" ).arg( sAuthId, srs.description() ), Qgis::Warning, messageTimeout() );
+      break;
     }
 
-    if ( waiting )
-      QApplication::restoreOverrideCursor();
+    case QgsOptions::UnknownLayerCrsBehavior::PromptUserForCrs:
+    {
+      // \note this class is not a descendent of QWidget so we can't pass
+      // it in the ctor of the layer projection selector
 
-    delete mySelector;
-  }
-  else if ( myDefaultProjectionOption == QLatin1String( "useProject" ) )
-  {
-    // XXX TODO: Change project to store selected CS as 'projectCRS' not 'selectedWkt'
-    sAuthId = QgsProject::instance()->crs().authid();
-    srs.createFromOgcWmsCrs( sAuthId );
-    QgsDebugMsg( "Layer srs set from project: " + sAuthId );
-    visibleMessageBar()->pushMessage( tr( "CRS was undefined" ), tr( "defaulting to project CRS %1 - %2" ).arg( sAuthId, srs.description() ), Qgis::Warning, messageTimeout() );
-  }
-  else ///Projections/defaultBehavior==useGlobal
-  {
-    sAuthId = mySettings.value( QStringLiteral( "Projections/layerDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString();
-    srs.createFromOgcWmsCrs( sAuthId );
-    QgsDebugMsg( "Layer srs set from default: " + sAuthId );
-    visibleMessageBar()->pushMessage( tr( "CRS was undefined" ), tr( "defaulting to CRS %1 - %2" ).arg( sAuthId, srs.description() ), Qgis::Warning, messageTimeout() );
+      QgsProjectionSelectionDialog *mySelector = new QgsProjectionSelectionDialog();
+      mySelector->setMessage( srs.validationHint() ); //shows a generic message, if not specified
+      if ( sAuthId.isNull() )
+        sAuthId = QgsProject::instance()->crs().authid();
+
+      QgsCoordinateReferenceSystem defaultCrs( sAuthId );
+      if ( defaultCrs.isValid() )
+      {
+        mySelector->setCrs( defaultCrs );
+      }
+
+      bool waiting = QApplication::overrideCursor() && QApplication::overrideCursor()->shape() == Qt::WaitCursor;
+      if ( waiting )
+        QApplication::setOverrideCursor( Qt::ArrowCursor );
+
+      if ( mySelector->exec() )
+      {
+        QgsDebugMsg( "Layer srs set from dialog: " + QString::number( mySelector->crs().srsid() ) );
+        srs = mySelector->crs();
+        sAuthId = srs.authid();
+      }
+
+      if ( waiting )
+        QApplication::restoreOverrideCursor();
+
+      delete mySelector;
+      break;
+    }
+
+    case QgsOptions::UnknownLayerCrsBehavior::UseProjectCrs:
+    {
+      // XXX TODO: Change project to store selected CS as 'projectCRS' not 'selectedWkt'
+      srs = QgsProject::instance()->crs();
+      sAuthId = srs.authid();
+      QgsDebugMsg( "Layer srs set from project: " + sAuthId );
+      visibleMessageBar()->pushMessage( tr( "CRS was undefined" ), tr( "defaulting to project CRS %1 - %2" ).arg( sAuthId, srs.description() ), Qgis::Warning, messageTimeout() );
+      break;
+    }
   }
 }
 
