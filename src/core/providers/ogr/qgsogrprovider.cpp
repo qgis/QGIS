@@ -809,7 +809,13 @@ void QgsOgrProvider::addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer
     layerGeomType = fdef.GetGeomType();
   }
 
-  QgsDebugMsg( QStringLiteral( "id = %1 name = %2 layerGeomType = %3" ).arg( i ).arg( layerName ).arg( layerGeomType ) );
+  QString longDescription;
+  if ( mGDALDriverName == QLatin1String( "OAPIF" ) || mGDALDriverName == QLatin1String( "WFS3" ) )
+  {
+    longDescription = layer->GetMetadataItem( "TITLE" );
+  }
+
+  QgsDebugMsg( QStringLiteral( "id = %1 name = %2 layerGeomType = %3 longDescription = %4" ).arg( i ).arg( layerName ).arg( layerGeomType ). arg( longDescription ) );
 
   if ( slowGeomTypeRetrieval || wkbFlatten( layerGeomType ) != wkbUnknown )
   {
@@ -823,7 +829,8 @@ void QgsOgrProvider::addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer
                         << layerName
                         << QString::number( layerFeatureCount )
                         << geom
-                        << geometryColumnName;
+                        << geometryColumnName
+                        << longDescription;
 
     mSubLayerList << parts.join( QgsDataProvider::SUBLAYER_SEPARATOR );
   }
@@ -894,7 +901,8 @@ void QgsOgrProvider::addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer
                           << layerName
                           << QString::number( fCount.value( countIt.key() ) )
                           << geom
-                          << geometryColumnName;
+                          << geometryColumnName
+                          << longDescription;
 
       QString sl = parts.join( QgsDataProvider::SUBLAYER_SEPARATOR );
       QgsDebugMsg( "sub layer: " + sl );
@@ -5956,6 +5964,13 @@ QgsOgrLayerUniquePtr QgsOgrLayer::ExecuteSQL( const QByteArray &sql )
                                     QString::fromUtf8( sql ),
                                     ds,
                                     hSqlLayer );
+}
+
+QString QgsOgrLayer::GetMetadataItem( const QString &key, const QString &domain )
+{
+  QMutexLocker locker( &ds->mutex );
+  return GDALGetMetadataItem( hLayer, key.toUtf8().constData(),
+                              domain.toUtf8().constData() );
 }
 
 QMutex &QgsOgrFeatureDefn::mutex()

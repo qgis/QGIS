@@ -5412,6 +5412,9 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
       def.layerName = elements[1];
       def.count = elements[2].toInt();
       def.type = elements[3];
+      // ignore geometry column name at elements[4]
+      if ( elements.count() >= 6 )
+        def.description = elements[5];
       if ( lastLayerId != def.layerId )
       {
         int count = ++mapLayerNameToCount[def.layerName];

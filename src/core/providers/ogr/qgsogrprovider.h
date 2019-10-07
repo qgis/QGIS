@@ -734,6 +734,9 @@ class QgsOgrLayer
 
     //! Wrapper of GDALDatasetExecuteSQL().
     QgsOgrLayerUniquePtr ExecuteSQL( const QByteArray &sql );
+
+    // Wrapper of GDALGetMetadataItem()
+    QString GetMetadataItem( const QString &key, const QString &domain = QString() );
 };
 
 /**
