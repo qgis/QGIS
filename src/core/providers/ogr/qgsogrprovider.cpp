@@ -2319,7 +2319,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 
   if ( inTransaction )
   {
-    commitTransaction();
+    if ( ! commitTransaction() ) return false;
   }
 
   if ( mTransaction )
@@ -2510,7 +2510,7 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds &id )
 
   if ( inTransaction )
   {
-    commitTransaction();
+    if ( ! commitTransaction() ) return false;
   }
 
   if ( mTransaction )
