@@ -495,11 +495,6 @@ void QgsCoordinateReferenceSystem::validate()
   // try to validate using custom validation routines
   if ( sCustomSrsValidation )
     sCustomSrsValidation( *this );
-
-  if ( !d->mIsValid )
-  {
-    *this = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
-  }
 }
 
 bool QgsCoordinateReferenceSystem::createFromSrid( const long id )
