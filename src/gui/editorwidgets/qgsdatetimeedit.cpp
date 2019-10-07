@@ -60,7 +60,7 @@ void QgsDateTimeEdit::clear()
 {
   if ( mAllowNull )
   {
-    displayNull();
+    displayCurrentDate();
 
     // Check if it's really changed or crash, see GH #29937
     if ( ! dateTime().isNull() )
@@ -76,10 +76,6 @@ void QgsDateTimeEdit::clear()
     disconnect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
     emit dateTimeChanged( QDateTime() );
     connect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
-
-    // otherwise, NULL is not displayed in the line edit
-    // this might not be the right way to do it
-    clearFocus();
   }
 }
 
@@ -280,6 +276,7 @@ void QgsDateTimeEdit::setDateTime( const QDateTime &dateTime )
   if ( !dateTime.isValid() || dateTime.isNull() )
   {
     clear();
+    displayNull();
   }
   // Check if it's really changed or crash, see GH #29937
   else if ( dateTime != QgsDateTimeEdit::dateTime() )
