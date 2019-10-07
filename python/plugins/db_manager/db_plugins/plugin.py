@@ -1139,7 +1139,7 @@ class VectorTable(Table):
         dlg.restoreGeometry(settings.value("/DB_Manager/advancedAddDialog/geometry", QByteArray(), type=QByteArray))
         layout = QFormLayout()
         dlg.setLayout(layout)
-        dlg.setWindowTitle(self.tr('Add layer {}').format(self.name))
+        dlg.setWindowTitle(self.tr('Add Layer {}').format(self.name))
         geometryTypeComboBox = QComboBox()
         geometryTypeComboBox.addItem(self.tr('Point'), 'POINT')
         geometryTypeComboBox.addItem(self.tr('Line'), 'LINESTRING')
