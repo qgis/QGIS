@@ -99,8 +99,23 @@ class TestQgsCoordinateReferenceSystem: public QObject
     QStringList myAuthIdStrings;
     QString mTempFolder;
     QString testESRIWkt( int i, QgsCoordinateReferenceSystem &crs );
+
+    static bool sValidateCalled;
+
+    static void testValidationCrs( QgsCoordinateReferenceSystem &crs )
+    {
+      sValidateCalled = true;
+
+      crs.createFromString( QStringLiteral( "EPSG:3111" ) );
+    }
+
+    static void testNoActionValidationCrs( QgsCoordinateReferenceSystem & )
+    {
+      sValidateCalled = true;
+    }
 };
 
+bool TestQgsCoordinateReferenceSystem::sValidateCalled = false;
 
 void TestQgsCoordinateReferenceSystem::initTestCase()
 {
@@ -625,6 +640,7 @@ void TestQgsCoordinateReferenceSystem::fromStringCache()
   QgsCoordinateReferenceSystem::invalidateCache();
   QVERIFY( !QgsCoordinateReferenceSystem::sStringCache.contains( "EPSG:3113" ) );
 }
+
 void TestQgsCoordinateReferenceSystem::isValid()
 {
   QgsCoordinateReferenceSystem myCrs;
@@ -632,14 +648,36 @@ void TestQgsCoordinateReferenceSystem::isValid()
   QVERIFY( myCrs.isValid() );
   debugPrint( myCrs );
 }
+
 void TestQgsCoordinateReferenceSystem::validate()
 {
-  QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrid( GEOSRID );
+  // no validator set
+  QgsCoordinateReferenceSystem::setCustomCrsValidation( nullptr );
+  QgsCoordinateReferenceSystem myCrs( QStringLiteral( "EPSG:28356" ) );
   myCrs.validate();
   QVERIFY( myCrs.isValid() );
-  debugPrint( myCrs );
+  QCOMPARE( myCrs.authid(), QStringLiteral( "EPSG:28356" ) );
+  myCrs = QgsCoordinateReferenceSystem();
+  myCrs.validate();
+  // no change, no custom function
+  QVERIFY( !myCrs.isValid() );
+
+  QgsCoordinateReferenceSystem::setCustomCrsValidation( &TestQgsCoordinateReferenceSystem::testValidationCrs );
+  myCrs.validate();
+  QVERIFY( myCrs.isValid() );
+  QCOMPARE( myCrs.authid(), QStringLiteral( "EPSG:3111" ) );
+  QVERIFY( sValidateCalled );
+  sValidateCalled = false;
+
+  myCrs = QgsCoordinateReferenceSystem();
+  QgsCoordinateReferenceSystem::setCustomCrsValidation( &TestQgsCoordinateReferenceSystem::testNoActionValidationCrs );
+  myCrs.validate();
+  QVERIFY( !myCrs.isValid() );
+  QVERIFY( sValidateCalled );
+
+  QgsCoordinateReferenceSystem::setCustomCrsValidation( nullptr );
 }
+
 void TestQgsCoordinateReferenceSystem::equality()
 {
   QgsCoordinateReferenceSystem myCrs;
