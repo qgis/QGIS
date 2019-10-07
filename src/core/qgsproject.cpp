@@ -3079,11 +3079,13 @@ QgsCoordinateReferenceSystem QgsProject::defaultCrsForNewLayers() const
 {
   QgsSettings settings;
   QgsCoordinateReferenceSystem defaultCrs;
-  if ( settings.value( QStringLiteral( "/Projections/defaultBehavior" ), QStringLiteral( "prompt" ) ).toString() == QStringLiteral( "useProject" )
-       || settings.value( QStringLiteral( "/Projections/defaultBehavior" ), QStringLiteral( "prompt" ) ).toString() == QStringLiteral( "prompt" ) )
+
+  // TODO QGIS 4.0 -- remove this method, and place it somewhere in app (where it belongs)
+  // in the meantime, we have a slightly hacky way to read the settings key using an enum which isn't available (since it lives in app)
+  if ( settings.value( QStringLiteral( "/projections/unknownCrsBehavior" ), QStringLiteral( "NoAction" ), QgsSettings::App ).toString() == QStringLiteral( "UseProjectCrs" )
+       || settings.value( QStringLiteral( "/projections/unknownCrsBehavior" ), 0, QgsSettings::App ).toString() == 2 )
   {
     // for new layers if the new layer crs method is set to either prompt or use project, then we use the project crs
-    // (since "prompt" has no meaning here - the prompt will always be shown, it's just deciding on the default choice in the prompt!)
     defaultCrs = crs();
   }
   else
