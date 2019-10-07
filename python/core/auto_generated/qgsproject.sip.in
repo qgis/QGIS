@@ -1092,6 +1092,24 @@ Returns the default background color used by default map canvases.
 .. versionadded:: 3.10
 %End
 
+    void setSelectionColor( const QColor &color );
+%Docstring
+Sets the ``color`` used to highlight selected features.
+
+.. seealso:: :py:func:`selectionColor`
+
+.. versionadded:: 3.10
+%End
+
+    QColor selectionColor() const;
+%Docstring
+Returns the color used to highlight selected features
+
+.. seealso:: :py:func:`setSelectionColor`
+
+.. versionadded:: 3.10
+%End
+
     void setMapScales( const QVector<double> &scales );
 %Docstring
 Sets the list of custom project map ``scales``.

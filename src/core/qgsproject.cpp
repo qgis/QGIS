@@ -776,6 +776,12 @@ void QgsProject::clear()
   int blue = settings.value( QStringLiteral( "qgis/default_canvas_color_blue" ), 255 ).toInt();
   setBackgroundColor( QColor( red, green, blue ) );
 
+  red = settings.value( QStringLiteral( "qgis/default_selection_color_red" ), 255 ).toInt();
+  green = settings.value( QStringLiteral( "qgis/default_selection_color_green" ), 255 ).toInt();
+  blue = settings.value( QStringLiteral( "qgis/default_selection_color_blue" ), 0 ).toInt();
+  int alpha = settings.value( QStringLiteral( "qgis/default_selection_color_alpha" ), 255 ).toInt();
+  setSelectionColor( QColor( red, green, blue, alpha ) );
+
   removeAllMapLayers();
   mRootGroup->clear();
 
@@ -3207,6 +3213,22 @@ QColor QgsProject::backgroundColor() const
   return QColor( readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), 255 ),
                  readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), 255 ),
                  readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), 255 ) );
+}
+
+void QgsProject::setSelectionColor( const QColor &color )
+{
+  writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorRedPart" ), color.red() );
+  writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorGreenPart" ), color.green() );
+  writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorBluePart" ), color.blue() );
+  writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorAlphaPart" ), color.alpha() );
+}
+
+QColor QgsProject::selectionColor() const
+{
+  return QColor( readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorRedPart" ), 255 ),
+                 readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorGreenPart" ), 255 ),
+                 readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorBluePart" ), 255 ),
+                 readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorAlphaPart" ), 255 ) );
 }
 
 void QgsProject::setMapScales( const QVector<double> &scales )
