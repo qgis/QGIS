@@ -27,7 +27,7 @@ start_app()
 
 
 def createLayerWithFivePoints():
-    layer = QgsVectorLayer("Point?field=id:integer&field=fldtxt:string&field=fldint:integer",
+    layer = QgsVectorLayer("Point?crs=EPSG:4326&field=id:integer&field=fldtxt:string&field=fldint:integer",
                            "addfeat", "memory")
     pr = layer.dataProvider()
     f = QgsFeature()

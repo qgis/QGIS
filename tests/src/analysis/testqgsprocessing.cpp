@@ -223,7 +223,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       p.addMapLayer( layer3111 );
 
       QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
-      QString raster1 = testDataDir + "tenbytenraster.asc";
+      QString raster1 = testDataDir + "landsat_4326.tif";
       QFileInfo fi1( raster1 );
       QgsRasterLayer *r1 = new QgsRasterLayer( fi1.filePath(), "R1" );
       QVERIFY( r1->isValid() );
@@ -2219,7 +2219,7 @@ void TestQgsProcessing::parameterCrs()
   QgsProject p;
   p.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 28353 ) );
   QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
-  QString raster1 = testDataDir + "tenbytenraster.asc";
+  QString raster1 = testDataDir + "landsat_4326.tif";
   QString raster2 = testDataDir + "landsat.tif";
   QFileInfo fi1( raster1 );
   QgsRasterLayer *r1 = new QgsRasterLayer( fi1.filePath(), "R1" );
@@ -2296,8 +2296,8 @@ void TestQgsProcessing::parameterCrs()
   QCOMPARE( def->valueAsPythonString( "EPSG:12003", context ), QStringLiteral( "'EPSG:12003'" ) );
   QCOMPARE( def->valueAsPythonString( "ProjectCrs", context ), QStringLiteral( "'ProjectCrs'" ) );
   QCOMPARE( def->valueAsPythonString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QStringLiteral( "'c:\\\\test\\\\new data\\\\test.dat'" ) );
-  QCOMPARE( def->valueAsPythonString( raster1, context ), QString( "'" ) + testDataDir + QStringLiteral( "tenbytenraster.asc'" ) );
-  QCOMPARE( def->valueAsPythonString( r1->id(), context ), QString( "'" ) + testDataDir + QStringLiteral( "tenbytenraster.asc'" ) );
+  QCOMPARE( def->valueAsPythonString( raster1, context ), QString( "'" ) + testDataDir + QStringLiteral( "landsat_4326.tif'" ) );
+  QCOMPARE( def->valueAsPythonString( r1->id(), context ), QString( "'" ) + testDataDir + QStringLiteral( "landsat_4326.tif'" ) );
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"a\"=1')" ) );
   QCOMPARE( def->valueAsPythonString( "uri='complex' username=\"complex\"", context ), QStringLiteral( "'uri=\\'complex\\' username=\\\"complex\\\"'" ) );
 
@@ -2492,7 +2492,7 @@ void TestQgsProcessing::parameterExtent()
   // setup a context
   QgsProject p;
   QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
-  QString raster1 = testDataDir + "tenbytenraster.asc";
+  QString raster1 = testDataDir + "landsat_4326.tif";
   QString raster2 = testDataDir + "landsat.tif";
   QFileInfo fi1( raster1 );
   QgsRasterLayer *r1 = new QgsRasterLayer( fi1.filePath(), "R1" );
@@ -2550,10 +2550,10 @@ void TestQgsProcessing::parameterExtent()
   QCOMPARE( QgsProcessingParameters::parameterAsExtent( def.get(), params, context ),  r1->extent() );
   QCOMPARE( QgsProcessingParameters::parameterAsExtentCrs( def.get(), params, context ).authid(), QStringLiteral( "EPSG:4326" ) );
   ext = QgsProcessingParameters::parameterAsExtent( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
-  QGSCOMPARENEAR( ext.xMinimum(), 1535375, 100 );
-  QGSCOMPARENEAR( ext.xMaximum(), 1535475, 100 );
-  QGSCOMPARENEAR( ext.yMinimum(),  5083255, 100 );
-  QGSCOMPARENEAR( ext.yMaximum(), 5083355, 100 );
+  QGSCOMPARENEAR( ext.xMinimum(), 17.942777, 0.001 );
+  QGSCOMPARENEAR( ext.xMaximum(), 17.944704, 0.001 );
+  QGSCOMPARENEAR( ext.yMinimum(),  30.229681, 0.001 );
+  QGSCOMPARENEAR( ext.yMaximum(), 30.231616, 0.001 );
 
   // layer as parameter
   params.insert( "non_optional", QVariant::fromValue( r1 ) );
@@ -2561,63 +2561,63 @@ void TestQgsProcessing::parameterExtent()
   QCOMPARE( QgsProcessingParameters::parameterAsExtent( def.get(), params, context ),  r1->extent() );
   QCOMPARE( QgsProcessingParameters::parameterAsExtentCrs( def.get(), params, context ).authid(), QStringLiteral( "EPSG:4326" ) );
   ext = QgsProcessingParameters::parameterAsExtent( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
-  QGSCOMPARENEAR( ext.xMinimum(), 1535375, 100 );
-  QGSCOMPARENEAR( ext.xMaximum(), 1535475, 100 );
-  QGSCOMPARENEAR( ext.yMinimum(),  5083255, 100 );
-  QGSCOMPARENEAR( ext.yMaximum(), 5083355, 100 );
+  QGSCOMPARENEAR( ext.xMinimum(), 17.942777, 0.001 );
+  QGSCOMPARENEAR( ext.xMaximum(), 17.944704, 0.001 );
+  QGSCOMPARENEAR( ext.yMinimum(),  30.229681, 0.001 );
+  QGSCOMPARENEAR( ext.yMaximum(), 30.231616, 0.001 );
   QgsGeometry gExt = QgsProcessingParameters::parameterAsExtentGeometry( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
   QCOMPARE( gExt.constGet()->vertexCount(), 5 );
   ext = gExt.boundingBox();
-  QGSCOMPARENEAR( ext.xMinimum(), 1535375, 100 );
-  QGSCOMPARENEAR( ext.xMaximum(), 1535475, 100 );
-  QGSCOMPARENEAR( ext.yMinimum(),  5083255, 100 );
-  QGSCOMPARENEAR( ext.yMaximum(), 5083355, 100 );
+  QGSCOMPARENEAR( ext.xMinimum(), 17.942777, 0.001 );
+  QGSCOMPARENEAR( ext.xMaximum(), 17.944704, 0.001 );
+  QGSCOMPARENEAR( ext.yMinimum(),  30.229681, 0.001 );
+  QGSCOMPARENEAR( ext.yMaximum(), 30.231616, 0.001 );
 
   // using feature source definition
   params.insert( "non_optional",  QgsProcessingFeatureSourceDefinition( r1->id() ) );
   QCOMPARE( QgsProcessingParameters::parameterAsExtentCrs( def.get(), params, context ).authid(), QStringLiteral( "EPSG:4326" ) );
   ext = QgsProcessingParameters::parameterAsExtent( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
-  QGSCOMPARENEAR( ext.xMinimum(), 1535375, 100 );
-  QGSCOMPARENEAR( ext.xMaximum(), 1535475, 100 );
-  QGSCOMPARENEAR( ext.yMinimum(),  5083255, 100 );
-  QGSCOMPARENEAR( ext.yMaximum(), 5083355, 100 );
+  QGSCOMPARENEAR( ext.xMinimum(), 17.942777, 0.001 );
+  QGSCOMPARENEAR( ext.xMaximum(), 17.944704, 0.001 );
+  QGSCOMPARENEAR( ext.yMinimum(),  30.229681, 0.001 );
+  QGSCOMPARENEAR( ext.yMaximum(), 30.231616, 0.001 );
   gExt = QgsProcessingParameters::parameterAsExtentGeometry( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
   QCOMPARE( gExt.constGet()->vertexCount(), 5 );
   ext = gExt.boundingBox();
-  QGSCOMPARENEAR( ext.xMinimum(), 1535375, 100 );
-  QGSCOMPARENEAR( ext.xMaximum(), 1535475, 100 );
-  QGSCOMPARENEAR( ext.yMinimum(),  5083255, 100 );
-  QGSCOMPARENEAR( ext.yMaximum(), 5083355, 100 );
+  QGSCOMPARENEAR( ext.xMinimum(), 17.942777, 0.001 );
+  QGSCOMPARENEAR( ext.xMaximum(), 17.944704, 0.001 );
+  QGSCOMPARENEAR( ext.yMinimum(),  30.229681, 0.001 );
+  QGSCOMPARENEAR( ext.yMaximum(), 30.231616, 0.001 );
   params.insert( "non_optional",  QgsProcessingFeatureSourceDefinition( QgsProperty::fromValue( QVariant::fromValue( r1 ) ) ) );
   QCOMPARE( QgsProcessingParameters::parameterAsExtentCrs( def.get(), params, context ).authid(), QStringLiteral( "EPSG:4326" ) );
   ext = QgsProcessingParameters::parameterAsExtent( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
-  QGSCOMPARENEAR( ext.xMinimum(), 1535375, 100 );
-  QGSCOMPARENEAR( ext.xMaximum(), 1535475, 100 );
-  QGSCOMPARENEAR( ext.yMinimum(),  5083255, 100 );
-  QGSCOMPARENEAR( ext.yMaximum(), 5083355, 100 );
+  QGSCOMPARENEAR( ext.xMinimum(), 17.942777, 0.001 );
+  QGSCOMPARENEAR( ext.xMaximum(), 17.944704, 0.001 );
+  QGSCOMPARENEAR( ext.yMinimum(),  30.229681, 0.001 );
+  QGSCOMPARENEAR( ext.yMaximum(), 30.231616, 0.001 );
   gExt = QgsProcessingParameters::parameterAsExtentGeometry( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
   QCOMPARE( gExt.constGet()->vertexCount(), 5 );
   ext = gExt.boundingBox();
-  QGSCOMPARENEAR( ext.xMinimum(), 1535375, 100 );
-  QGSCOMPARENEAR( ext.xMaximum(), 1535475, 100 );
-  QGSCOMPARENEAR( ext.yMinimum(),  5083255, 100 );
-  QGSCOMPARENEAR( ext.yMaximum(), 5083355, 100 );
+  QGSCOMPARENEAR( ext.xMinimum(), 17.942777, 0.001 );
+  QGSCOMPARENEAR( ext.xMaximum(), 17.944704, 0.001 );
+  QGSCOMPARENEAR( ext.yMinimum(),  30.229681, 0.001 );
+  QGSCOMPARENEAR( ext.yMaximum(), 30.231616, 0.001 );
 
   // using output layer definition, e.g. from a previous model child algorithm
   params.insert( "non_optional",  QgsProcessingOutputLayerDefinition( r1->id() ) );
   QCOMPARE( QgsProcessingParameters::parameterAsExtentCrs( def.get(), params, context ).authid(), QStringLiteral( "EPSG:4326" ) );
   ext = QgsProcessingParameters::parameterAsExtent( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
-  QGSCOMPARENEAR( ext.xMinimum(), 1535375, 100 );
-  QGSCOMPARENEAR( ext.xMaximum(), 1535475, 100 );
-  QGSCOMPARENEAR( ext.yMinimum(),  5083255, 100 );
-  QGSCOMPARENEAR( ext.yMaximum(), 5083355, 100 );
+  QGSCOMPARENEAR( ext.xMinimum(), 17.942777, 0.001 );
+  QGSCOMPARENEAR( ext.xMaximum(), 17.944704, 0.001 );
+  QGSCOMPARENEAR( ext.yMinimum(),  30.229681, 0.001 );
+  QGSCOMPARENEAR( ext.yMaximum(), 30.231616, 0.001 );
   gExt = QgsProcessingParameters::parameterAsExtentGeometry( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
   QCOMPARE( gExt.constGet()->vertexCount(), 5 );
   ext = gExt.boundingBox();
-  QGSCOMPARENEAR( ext.xMinimum(), 1535375, 100 );
-  QGSCOMPARENEAR( ext.xMaximum(), 1535475, 100 );
-  QGSCOMPARENEAR( ext.yMinimum(),  5083255, 100 );
-  QGSCOMPARENEAR( ext.yMaximum(), 5083355, 100 );
+  QGSCOMPARENEAR( ext.xMinimum(), 17.942777, 0.001 );
+  QGSCOMPARENEAR( ext.xMaximum(), 17.944704, 0.001 );
+  QGSCOMPARENEAR( ext.yMinimum(),  30.229681, 0.001 );
+  QGSCOMPARENEAR( ext.yMaximum(), 30.231616, 0.001 );
 
   // string representing a non-project layer source
   params.insert( "non_optional", raster2 );
@@ -2730,8 +2730,8 @@ void TestQgsProcessing::parameterExtent()
 
   QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
   QCOMPARE( def->valueAsPythonString( "1,2,3,4", context ), QStringLiteral( "'1,2,3,4'" ) );
-  QCOMPARE( def->valueAsPythonString( r1->id(), context ), QString( "'" ) + testDataDir + QStringLiteral( "tenbytenraster.asc'" ) );
-  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( r1 ), context ), QString( "'" ) + testDataDir + QStringLiteral( "tenbytenraster.asc'" ) );
+  QCOMPARE( def->valueAsPythonString( r1->id(), context ), QString( "'" ) + testDataDir + QStringLiteral( "landsat_4326.tif'" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( r1 ), context ), QString( "'" ) + testDataDir + QStringLiteral( "landsat_4326.tif'" ) );
   QCOMPARE( def->valueAsPythonString( raster2, context ), QString( "'" ) + testDataDir + QStringLiteral( "landsat.tif'" ) );
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"a\"=1')" ) );
   QCOMPARE( def->valueAsPythonString( QgsRectangle( 11, 12, 13, 14 ), context ), QStringLiteral( "'11, 13, 12, 14'" ) );
@@ -6546,10 +6546,10 @@ void TestQgsProcessing::combineLayerExtent()
 
   // with reprojection
   ext = QgsProcessingUtils::combineLayerExtents( QList< QgsMapLayer *>() << r1.get() << r2.get(), QgsCoordinateReferenceSystem::fromEpsgId( 3785 ), context );
-  QGSCOMPARENEAR( ext.xMinimum(), 1995320, 10 );
+  QGSCOMPARENEAR( ext.xMinimum(), 1535375.0, 10 );
   QGSCOMPARENEAR( ext.xMaximum(), 2008833, 10 );
   QGSCOMPARENEAR( ext.yMinimum(), 3523084, 10 );
-  QGSCOMPARENEAR( ext.yMaximum(), 3536664, 10 );
+  QGSCOMPARENEAR( ext.yMaximum(), 5083355, 10 );
 }
 
 void TestQgsProcessing::processingFeatureSource()
