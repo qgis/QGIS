@@ -33,7 +33,8 @@ from qgis.core import (QgsProject,
                        QgsRasterLayer,
                        QgsMapLayer,
                        QgsExpressionContextUtils,
-                       QgsProjectColorScheme)
+                       QgsProjectColorScheme,
+                       QgsSettings)
 from qgis.gui import (QgsLayerTreeMapCanvasBridge,
                       QgsMapCanvas)
 
@@ -1231,6 +1232,33 @@ class TestQgsProject(unittest.TestCase):
         project.setDirty(False)
         project.setCrs(QgsCoordinateReferenceSystem('EPSG:3148'))
         self.assertFalse(project.isDirty())
+
+    def testBackgroundColor(self):
+        p = QgsProject()
+        s = QgsSettings()
+
+        red = int(s.value("qgis/default_canvas_color_red", 255))
+        green = int(s.value("qgis/default_canvas_color_green", 255))
+        blue = int(s.value("qgis/default_canvas_color_blue", 255))
+        # test default canvas backgroud color
+        self.assertEqual(p.backgroundColor(), QColor(red, green, blue))
+        p.setBackgroundColor(QColor(0, 0, 0))
+        # test customized canvas background color
+        self.assertEqual(p.backgroundColor(), QColor(0, 0, 0))
+
+    def testSelectionColor(self):
+        p = QgsProject()
+        s = QgsSettings()
+
+        red = int(s.value("qgis/default_selection_color_red", 255))
+        green = int(s.value("qgis/default_selection_color_green", 255))
+        blue = int(s.value("qgis/default_selection_color_blue", 0))
+        alpha = int(s.value("qgis/default_selection_color_alpha", 255))
+        # test default feature selection color
+        self.assertEqual(p.selectionColor(), QColor(red, green, blue, alpha))
+        p.setSelectionColor(QColor(0, 0, 0, 50))
+        # test customized feature selection color
+        self.assertEqual(p.selectionColor(), QColor(0, 0, 0, 50))
 
     def testColorScheme(self):
         p = QgsProject.instance()
