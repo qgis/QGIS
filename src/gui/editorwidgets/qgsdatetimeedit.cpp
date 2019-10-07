@@ -232,6 +232,7 @@ void QgsDateTimeEdit::displayNull( bool updateCalendar )
     // a date selected in calendar widget
     QDateTimeEdit::setDateTime( minimumDateTime() );
   }
+  lineEdit()->setCursorPosition( lineEdit()->text().length() );
   lineEdit()->setText( QgsApplication::nullRepresentation() );
   connect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
 }
