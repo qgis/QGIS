@@ -20,6 +20,7 @@
 #include "qgslayertreeutils.h"
 #include "qgsvectorlayer.h"
 #include "qgisapp.h"
+#include "qgsprojectionselectiondialog.h"
 
 QgsLayerTreeViewNoCrsIndicatorProvider::QgsLayerTreeViewNoCrsIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )
@@ -32,7 +33,19 @@ void QgsLayerTreeViewNoCrsIndicatorProvider::onIndicatorClicked( const QModelInd
   if ( !QgsLayerTree::isLayer( node ) )
     return;
 
-  // TODO
+  QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
+  if ( !layer )
+    return;
+
+  QgsProjectionSelectionDialog selector( QgisApp::instance() );
+  selector.setMessage( QString() );
+  if ( selector.exec() )
+  {
+    QgsCoordinateReferenceSystem crs = selector.crs();
+    layer->setCrs( selector.crs() );
+    layer->triggerRepaint();
+    updateLayerIndicator( layer );
+  }
 }
 
 bool QgsLayerTreeViewNoCrsIndicatorProvider::acceptLayer( QgsMapLayer *layer )
