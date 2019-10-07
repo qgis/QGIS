@@ -59,7 +59,7 @@
 //! The length of the string "+lat_1="
 const int LAT_PREFIX_LEN = 7;
 
-CUSTOM_CRS_VALIDATION QgsCoordinateReferenceSystem::mCustomSrsValidation = nullptr;
+CUSTOM_CRS_VALIDATION QgsCoordinateReferenceSystem::sCustomSrsValidation = nullptr;
 
 QReadWriteLock QgsCoordinateReferenceSystem::sSrIdCacheLock;
 QHash< long, QgsCoordinateReferenceSystem > QgsCoordinateReferenceSystem::sSrIdCache;
@@ -493,8 +493,8 @@ void QgsCoordinateReferenceSystem::validate()
   d.detach();
 
   // try to validate using custom validation routines
-  if ( mCustomSrsValidation )
-    mCustomSrsValidation( *this );
+  if ( sCustomSrsValidation )
+    sCustomSrsValidation( *this );
 
   if ( !d->mIsValid )
   {
@@ -2037,12 +2037,12 @@ int QgsCoordinateReferenceSystem::openDatabase( const QString &path, sqlite3_dat
 
 void QgsCoordinateReferenceSystem::setCustomCrsValidation( CUSTOM_CRS_VALIDATION f )
 {
-  mCustomSrsValidation = f;
+  sCustomSrsValidation = f;
 }
 
 CUSTOM_CRS_VALIDATION QgsCoordinateReferenceSystem::customCrsValidation()
 {
-  return mCustomSrsValidation;
+  return sCustomSrsValidation;
 }
 
 void QgsCoordinateReferenceSystem::debugPrint()
