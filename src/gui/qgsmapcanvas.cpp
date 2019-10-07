@@ -1823,7 +1823,27 @@ void QgsMapCanvas::setSelectionColor( const QColor &color )
     return;
 
   mSettings.setSelectionColor( color );
-  refresh();
+
+  if ( mCache )
+  {
+    bool hasSelectedFeatures = false;
+    const auto layers = mSettings.layers();
+    for ( QgsMapLayer *layer : layers )
+    {
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+      if ( vlayer && vlayer->selectedFeatureCount() )
+      {
+        hasSelectedFeatures = true;
+        break;
+      }
+    }
+
+    if ( hasSelectedFeatures )
+    {
+      mCache->clear();
+      refresh();
+    }
+  }
 }
 
 QColor QgsMapCanvas::selectionColor() const
