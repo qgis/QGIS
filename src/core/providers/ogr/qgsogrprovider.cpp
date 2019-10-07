@@ -2402,7 +2402,7 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 
   if ( inTransaction )
   {
-    commitTransaction();
+    if ( ! commitTransaction() ) return false;
   }
 
   if ( mTransaction )
