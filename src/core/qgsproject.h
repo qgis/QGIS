@@ -1748,6 +1748,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QString mHomePath;
     mutable QString mCachedHomePath;
 
+    QColor mBackgroundColor;
+    QColor mSelectionColor;
+
     mutable QgsProjectPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable
     bool mAutoTransaction = false;       // transaction grouped editing
     bool mEvaluateDefaultValues = false; // evaluate default values immediately

@@ -1247,6 +1247,9 @@ class TestQgsProject(unittest.TestCase):
         self.assertEqual(len(spy), 1)
         # test customized canvas background color
         self.assertEqual(p.backgroundColor(), QColor(0, 0, 0))
+        # test signal _not_ emmitted when color doesn't actually change
+        p.setBackgroundColor(QColor(0, 0, 0))
+        self.assertEqual(len(spy), 1)
 
     def testSelectionColor(self):
         p = QgsProject()
@@ -1263,6 +1266,9 @@ class TestQgsProject(unittest.TestCase):
         self.assertEqual(len(spy), 1)
         # test customized feature selection color
         self.assertEqual(p.selectionColor(), QColor(0, 0, 0, 50))
+        # test signal _not_ emmitted when color doesn't actually change
+        p.setSelectionColor(QColor(0, 0, 0, 50))
+        self.assertEqual(len(spy), 1)
 
     def testColorScheme(self):
         p = QgsProject.instance()
