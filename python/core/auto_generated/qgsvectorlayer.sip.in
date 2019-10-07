@@ -352,6 +352,8 @@ Constructor for LayerOptions.
 
       QgsCoordinateReferenceSystem fallbackCrs;
 
+      bool allowInvalidCrs;
+
     };
 
     explicit QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),

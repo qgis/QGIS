@@ -1679,6 +1679,7 @@ this method is now deprecated and always return false, because circular dependen
 
 
 
+
 };
 
 QFlags<QgsMapLayer::LayerFlag> operator|(QgsMapLayer::LayerFlag f1, QFlags<QgsMapLayer::LayerFlag> f2);

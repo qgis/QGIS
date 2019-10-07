@@ -120,6 +120,7 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
   layer->setLegendUrl( legendUrl() );
   layer->setLegendUrlFormat( legendUrlFormat() );
   layer->setDependencies( dependencies() );
+  layer->mShouldValidateCrs = mShouldValidateCrs;
   layer->setCrs( crs() );
   layer->setCustomProperties( mCustomProperties );
 }
@@ -764,7 +765,7 @@ void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSign
 {
   mCRS = srs;
 
-  if ( isSpatial() && !mCRS.isValid() )
+  if ( mShouldValidateCrs && isSpatial() && !mCRS.isValid() )
   {
     mCRS.setValidationHint( tr( "Specify CRS for layer %1" ).arg( name() ) );
     mCRS.validate();

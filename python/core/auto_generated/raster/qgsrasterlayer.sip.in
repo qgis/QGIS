@@ -114,6 +114,8 @@ Constructor for LayerOptions.
 
       QgsCoordinateTransformContext transformContext;
 
+      bool allowInvalidCrs;
+
     };
 
     explicit QgsRasterLayer( const QString &uri,
