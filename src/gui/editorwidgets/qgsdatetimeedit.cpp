@@ -165,7 +165,7 @@ void QgsDateTimeEdit::focusInEvent( QFocusEvent *event )
   if ( mAllowNull && mIsNull && !mCurrentPressEvent )
   {
     QAbstractSpinBox::focusInEvent( event );
-    if ( lineEdit()->text() == QgsApplication::nullRepresentation() )
+    if ( mAllowNull && mIsNull )
     {
       displayCurrentDate();
     }
