@@ -104,6 +104,7 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
   protected:
     void mousePressEvent( QMouseEvent *event ) override;
     void focusOutEvent( QFocusEvent *event ) override;
+    void focusInEvent( QFocusEvent *event ) override;
     void wheelEvent( QWheelEvent *event ) override;
     void showEvent( QShowEvent *event ) override;
 
@@ -120,6 +121,7 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     QAction *mClearAction;
 
     void displayNull( bool updateCalendar = false );
+    void displayCurrentDate();
 
     //! reset the value to current date time
     void resetBeforeChange( int delta );

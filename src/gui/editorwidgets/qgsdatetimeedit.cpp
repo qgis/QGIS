@@ -160,6 +160,23 @@ void QgsDateTimeEdit::focusOutEvent( QFocusEvent *event )
   }
 }
 
+void QgsDateTimeEdit::focusInEvent( QFocusEvent *event )
+{
+  if ( mAllowNull && mIsNull && !mCurrentPressEvent )
+  {
+    QAbstractSpinBox::focusInEvent( event );
+    if ( lineEdit()->text() == QgsApplication::nullRepresentation() )
+    {
+      displayCurrentDate();
+    }
+    emit editingFinished();
+  }
+  else
+  {
+    QDateTimeEdit::focusInEvent( event );
+  }
+}
+
 void QgsDateTimeEdit::wheelEvent( QWheelEvent *event )
 {
   // dateTime might have been set to minimum in calendar mode
@@ -216,6 +233,13 @@ void QgsDateTimeEdit::displayNull( bool updateCalendar )
     QDateTimeEdit::setDateTime( minimumDateTime() );
   }
   lineEdit()->setText( QgsApplication::nullRepresentation() );
+  connect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
+}
+
+void QgsDateTimeEdit::displayCurrentDate()
+{
+  disconnect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
+  QDateTimeEdit::setDateTime( QDateTime::currentDateTime() );
   connect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
 }
 
