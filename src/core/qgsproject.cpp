@@ -3206,6 +3206,8 @@ void QgsProject::setBackgroundColor( const QColor &color )
   writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), color.red() );
   writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), color.green() );
   writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), color.blue() );
+
+  emit backgroundColorChanged();
 }
 
 QColor QgsProject::backgroundColor() const
@@ -3221,6 +3223,8 @@ void QgsProject::setSelectionColor( const QColor &color )
   writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorGreenPart" ), color.green() );
   writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorBluePart" ), color.blue() );
   writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorAlphaPart" ), color.alpha() );
+
+  emit selectionColorChanged();
 }
 
 QColor QgsProject::selectionColor() const
