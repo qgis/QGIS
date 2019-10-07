@@ -103,6 +103,7 @@ class AlgorithmsTest(object):
 
         print('Running alg: "{}"'.format(defs['algorithm']))
         alg = QgsApplication.processingRegistry().createAlgorithmById(defs['algorithm'])
+        self.assertIsNotNone(alg)
 
         parameters = {}
         if isinstance(params, list):
