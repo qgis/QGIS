@@ -3627,6 +3627,31 @@ void QgisApp::setupConnections()
     mMapCanvas->setLabelingEngineSettings( QgsProject::instance()->labelingEngineSettings() );
   } );
 
+  connect( QgsProject::instance(), &QgsProject::backgroundColorChanged, this, [ = ]
+  {
+    const QColor backgroundColor = QgsProject::instance()->backgroundColor();
+    const auto constMapCanvases = mapCanvases();
+    for ( QgsMapCanvas *canvas : constMapCanvases )
+    {
+      canvas->setCanvasColor( backgroundColor );
+    }
+    if ( mapOverviewCanvas() )
+    {
+      mapOverviewCanvas()->setBackgroundColor( backgroundColor );
+      mapOverviewCanvas()->refresh();
+    }
+  } );
+
+  connect( QgsProject::instance(), &QgsProject::selectionColorChanged, this, [ = ]
+  {
+    const QColor selectionColor = QgsProject::instance()->selectionColor();
+    const auto constMapCanvases = mapCanvases();
+    for ( QgsMapCanvas *canvas : constMapCanvases )
+    {
+      canvas->setSelectionColor( selectionColor );
+    }
+  } );
+
   // connect legend signals
   connect( this, &QgisApp::activeLayerChanged,
            this, &QgisApp::activateDeactivateLayerRelatedActions );
