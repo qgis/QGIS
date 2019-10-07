@@ -1064,21 +1064,15 @@ void QgsProjectProperties::apply()
     QgsProject::instance()->setEllipsoid( mEllipsoidList[ mEllipsoidIndex ].acronym );
   }
 
-  //set the color for selections
+  //set the color for selections and canvas background color
   QgsProject::instance()->setSelectionColor( pbnSelectionColor->color() );
-
-  //set the color for canvas
   QgsProject::instance()->setBackgroundColor( pbnCanvasColor->color() );
 
   const auto constMapCanvases = QgisApp::instance()->mapCanvases();
   for ( QgsMapCanvas *canvas : constMapCanvases )
   {
-    canvas->setCanvasColor( pbnCanvasColor->color() );
-    canvas->setSelectionColor( pbnSelectionColor->color() );
     canvas->enableMapTileRendering( mMapTileRenderingCheckBox->isChecked() );
   }
-  if ( QgisApp::instance()->mapOverviewCanvas() )
-    QgisApp::instance()->mapOverviewCanvas()->setBackgroundColor( pbnCanvasColor->color() );
 
   //save project scales
   QVector< double > projectScales;
@@ -1488,8 +1482,6 @@ void QgsProjectProperties::apply()
   {
     canvas->refresh();
   }
-  if ( QgisApp::instance()->mapOverviewCanvas() )
-    QgisApp::instance()->mapOverviewCanvas()->refresh();
 }
 
 void QgsProjectProperties::showProjectionsTab()
