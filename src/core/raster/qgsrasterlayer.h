@@ -188,6 +188,21 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
        */
       QgsCoordinateTransformContext transformContext = QgsCoordinateTransformContext();
 
+      /**
+       * Controls whether the layer is allowed to have an invalid/unknown CRS.
+       *
+       * If TRUE, then no validation will be performed on the layer's CRS and the layer
+       * layer's crs() may be invalid() (i.e. the layer will have no georeferencing available
+       * and will be treated as having purely numerical coordinates).
+       *
+       * If FALSE (the default), the layer's CRS will be validated using QgsCoordinateReferenceSystem::validate(),
+       * which may cause a blocking, user-facing dialog asking users to manually select the correct CRS for the
+       * layer.
+       *
+       * \since QGIS 3.10
+       */
+      bool allowInvalidCrs = false;
+
     };
 
     /**

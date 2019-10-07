@@ -161,26 +161,6 @@ QgsBrowserLayerProperties::QgsBrowserLayerProperties( QWidget *parent )
   } );
 }
 
-class ProjectionSettingRestorer
-{
-  public:
-
-    ProjectionSettingRestorer()
-    {
-      QgsSettings settings;
-      previousSetting = settings.value( QStringLiteral( "/Projections/defaultBehavior" ) ).toString();
-      settings.setValue( QStringLiteral( "/Projections/defaultBehavior" ), QStringLiteral( "useProject" ) );
-    }
-
-    ~ProjectionSettingRestorer()
-    {
-      QgsSettings settings;
-      settings.setValue( QStringLiteral( "/Projections/defaultBehavior" ), previousSetting );
-    }
-
-    QString previousSetting;
-};
-
 void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
 {
   QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item );
@@ -191,13 +171,6 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
 
   QgsMapLayerType type = layerItem->mapLayerType();
   QString layerMetadata = tr( "Error" );
-  QgsCoordinateReferenceSystem layerCrs;
-
-  QString defaultProjectionOption = QgsSettings().value( QStringLiteral( "Projections/defaultBehavior" ), "prompt" ).toString();
-  // temporarily override /Projections/defaultBehavior to avoid dialog prompt
-  // TODO - remove when there is a cleaner way to block the unknown projection dialog!
-  ProjectionSettingRestorer restorer;
-  ( void )restorer; // no warnings
 
   mLayer.reset();
 
@@ -211,14 +184,17 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
     {
       QgsDebugMsg( QStringLiteral( "creating raster layer" ) );
       // should copy code from addLayer() to split uri ?
-      mLayer = qgis::make_unique< QgsRasterLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey() );
+      QgsRasterLayer::LayerOptions options;
+      options.allowInvalidCrs = true;
+      mLayer = qgis::make_unique< QgsRasterLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
       break;
     }
 
     case QgsMapLayerType::MeshLayer:
     {
       QgsDebugMsg( QStringLiteral( "creating mesh layer" ) );
-      const QgsMeshLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+      QgsMeshLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+      options.allowInvalidCrs = true;
       mLayer = qgis::make_unique < QgsMeshLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
       break;
     }
@@ -226,7 +202,8 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
     case QgsMapLayerType::VectorLayer:
     {
       QgsDebugMsg( QStringLiteral( "creating vector layer" ) );
-      const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+      QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+      options.allowInvalidCrs = true;
       mLayer = qgis::make_unique < QgsVectorLayer>( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
       break;
     }
@@ -249,7 +226,6 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
   {
     bool ok = false;
     mLayer->loadDefaultMetadata( ok );
-    layerCrs = mLayer->crs();
     layerMetadata = mLayer->htmlMetadata();
 
     mMapCanvas->setDestinationCrs( mLayer->crs() );
@@ -266,15 +242,6 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
   QString myStyle = QgsApplication::reportStyleSheet();
   mMetadataTextBrowser->document()->setDefaultStyleSheet( myStyle );
   mMetadataTextBrowser->setHtml( layerMetadata );
-
-// report if layer was set to to project crs without prompt (may give a false positive)
-  if ( defaultProjectionOption == QLatin1String( "prompt" ) )
-  {
-    QgsCoordinateReferenceSystem defaultCrs =
-      QgsProject::instance()->crs();
-    if ( layerCrs == defaultCrs )
-      mNoticeLabel->setText( "NOTICE: Layer CRS set from project (" + defaultCrs.authid() + ')' );
-  }
 
   if ( mNoticeLabel->text().isEmpty() )
   {

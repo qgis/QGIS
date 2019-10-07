@@ -88,6 +88,8 @@ Constructor for LayerOptions with optional ``transformContext``.
 %End
 
       QgsCoordinateTransformContext transformContext;
+
+      bool allowInvalidCrs;
     };
 
     explicit QgsMeshLayer( const QString &path = QString(), const QString &baseName = QString(), const QString &providerLib = QStringLiteral( "mesh_memory" ),

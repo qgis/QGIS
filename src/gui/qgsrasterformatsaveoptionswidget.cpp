@@ -302,22 +302,10 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
   bool tmpLayer = false;
   if ( !( mRasterLayer && rasterLayer->dataProvider() ) && ! mRasterFileName.isNull() )
   {
-    // temporarily override /Projections/defaultBehavior to avoid dialog prompt
-    // this is taken from qgsbrowserdockwidget.cpp
-    // TODO - integrate this into qgis core
-    QgsSettings settings;
-    QString defaultProjectionOption = settings.value( QStringLiteral( "Projections/defaultBehavior" ), "prompt" ).toString();
-    if ( settings.value( QStringLiteral( "Projections/defaultBehavior" ), "prompt" ).toString() == QLatin1String( "prompt" ) )
-    {
-      settings.setValue( QStringLiteral( "Projections/defaultBehavior" ), "useProject" );
-    }
     tmpLayer = true;
-    rasterLayer = new QgsRasterLayer( mRasterFileName, QFileInfo( mRasterFileName ).baseName(), QStringLiteral( "gdal" ) );
-    // restore /Projections/defaultBehavior
-    if ( defaultProjectionOption == QLatin1String( "prompt" ) )
-    {
-      settings.setValue( QStringLiteral( "Projections/defaultBehavior" ), defaultProjectionOption );
-    }
+    QgsRasterLayer::LayerOptions options;
+    options.allowInvalidCrs = true;
+    rasterLayer = new QgsRasterLayer( mRasterFileName, QFileInfo( mRasterFileName ).baseName(), QStringLiteral( "gdal" ), options );
   }
 
   if ( mProvider == QLatin1String( "gdal" ) && mPyramids )

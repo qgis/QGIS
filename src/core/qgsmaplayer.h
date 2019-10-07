@@ -1533,6 +1533,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Read flags. It's up to the subclass to respect these when restoring state from XML
     QgsMapLayer::ReadFlags mReadFlags = nullptr;
 
+    /**
+     * TRUE if the layer's CRS should be validated and invalid CRSes are not permitted.
+     *
+     * \since QGIS 3.10
+     */
+    bool mShouldValidateCrs = true;
+
   private:
 
     virtual QString baseURI( PropertyType type ) const;
