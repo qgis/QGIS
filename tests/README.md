@@ -33,9 +33,13 @@ For python tests, you can run a specific test inside a unit file
 with something like this:
 
 ```
- QGIS_PREFIX_PATH=output PYTHONPATH=output/python:$PYTHONPATH \
-   python ${srcdir}/tests/src/python/test_qgsvectorfilewriter.py
-   TestQgsVectorLayer.testOverwriteLayer
+ srcdir=?    # define this
+ builddir=?  # define this
+ ODIR=${builddir}/output
+ export QGIS_PREFIX_PATH=$ODIR
+ export PYTHONPATH=$ODIR/python:$ODIR/python/plugins:tests/src/python:python:$PYTHONPATH
+ python3 ${srcdir}/python/plugins/processing/tests/QgisAlgorithmsTest.py
+ python3 ${srcdir}/python/plugins/processing/tests/QgisAlgorithmsTest.py TestQgisAlgorithms.testParameterPythonImport
 ```
 
 If you get `Could not connect to any X display` errors it means that your build
