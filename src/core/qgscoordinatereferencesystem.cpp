@@ -487,7 +487,7 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
 
 void QgsCoordinateReferenceSystem::validate()
 {
-  if ( d->mIsValid )
+  if ( d->mIsValid || !sCustomSrsValidation )
     return;
 
   d.detach();
