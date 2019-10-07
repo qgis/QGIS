@@ -109,12 +109,12 @@ ifneq (,$(findstring $(DISTRIBUTION),"sid buster"))
 	CMAKE_OPTS += -DPOSTGRES_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpq.so
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid buster bionic disco"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid buster bionic disco eoan"))
 	CMAKE_OPTS += \
 		-DWITH_3D=TRUE \
 		-DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid buster disco"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid buster disco eoan"))
 # Qt3DExtras intentionally removed from debian (#895386) and in turn ubuntu
 	CMAKE_OPTS += \
 		-DCMAKE_PREFIX_PATH=$(realpath external/qt3dextra-headers/cmake) \
