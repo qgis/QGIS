@@ -1807,6 +1807,8 @@ void QgsMapCanvas::setCanvasColor( const QColor &color )
   // background of QGraphicsScene
   mScene->setBackgroundBrush( bgBrush );
 
+  refresh();
+
   emit canvasColorChanged();
 }
 
@@ -1817,7 +1819,12 @@ QColor QgsMapCanvas::canvasColor() const
 
 void QgsMapCanvas::setSelectionColor( const QColor &color )
 {
+  if ( mSettings.selectionColor() == color )
+    return;
+
   mSettings.setSelectionColor( color );
+
+  refresh();
 }
 
 QColor QgsMapCanvas::selectionColor() const
