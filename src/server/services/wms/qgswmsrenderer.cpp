@@ -1060,11 +1060,7 @@ namespace QgsWms
     mapSettings.setFlag( QgsMapSettings::UseRenderingOptimization );
 
     // set selection color
-    int myRed = mProject->readNumEntry( "Gui", "/SelectionColorRedPart", 255 );
-    int myGreen = mProject->readNumEntry( "Gui", "/SelectionColorGreenPart", 255 );
-    int myBlue = mProject->readNumEntry( "Gui", "/SelectionColorBluePart", 0 );
-    int myAlpha = mProject->readNumEntry( "Gui", "/SelectionColorAlphaPart", 255 );
-    mapSettings.setSelectionColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
+    mapSettings.setSelectionColor( mProject->selectionColor() );
   }
 
   QDomDocument QgsRenderer::featureInfoDocument( QList<QgsMapLayer *> &layers, const QgsMapSettings &mapSettings,

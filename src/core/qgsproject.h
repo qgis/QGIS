@@ -1132,6 +1132,22 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QColor backgroundColor() const;
 
     /**
+     * Sets the \a color used to highlight selected features.
+     *
+     * \see selectionColor()
+     * \since QGIS 3.10
+     */
+    void setSelectionColor( const QColor &color );
+
+    /**
+     * Returns the color used to highlight selected features
+     *
+     * \see setSelectionColor()
+     * \since QGIS 3.10
+     */
+    QColor selectionColor() const;
+
+    /**
      * Sets the list of custom project map \a scales.
      *
      * The \a scales list consists of a list of scale denominator values, e.g.
