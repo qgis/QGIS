@@ -1412,6 +1412,24 @@ Emitted whenever the project's color scheme has been changed.
 .. versionadded:: 3.6
 %End
 
+    void backgroundColorChanged();
+%Docstring
+Emitted whenever the project's canvas background color has been changed.
+
+.. seealso:: :py:func:`setBackgroundColor`
+
+.. versionadded:: 3.10
+%End
+
+    void selectionColorChanged();
+%Docstring
+Emitted whenever the project's selection color has been changed.
+
+.. seealso:: :py:func:`setSelectionColor`
+
+.. versionadded:: 3.10
+%End
+
 
     void layersWillBeRemoved( const QStringList &layerIds );
 %Docstring

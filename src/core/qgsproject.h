@@ -1421,6 +1421,22 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void projectColorsChanged();
 
+    /**
+     * Emitted whenever the project's canvas background color has been changed.
+
+     * \see setBackgroundColor()
+     * \since QGIS 3.10
+     */
+    void backgroundColorChanged();
+
+    /**
+     * Emitted whenever the project's selection color has been changed.
+
+     * \see setSelectionColor()
+     * \since QGIS 3.10
+     */
+    void selectionColorChanged();
+
     //
     // signals from QgsMapLayerRegistry
     //
