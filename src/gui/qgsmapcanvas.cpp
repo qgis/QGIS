@@ -1823,7 +1823,14 @@ void QgsMapCanvas::setSelectionColor( const QColor &color )
     return;
 
   mSettings.setSelectionColor( color );
-
+  QgsDebugMsg( "XXXXXXXXXXXXXXXXX" );
+  QgsDebugMsg( "XXXXXXXXXXXXXXXXX" );
+  QgsDebugMsg( "XXXXXXXXXXXXXXXXX" );
+  QgsDebugMsg( "XXXXXXXXXXXXXXXXX" );
+  QgsDebugMsg( "XXXXXXXXXXXXXXXXX" );
+  QgsDebugMsg( "XXXXXXXXXXXXXXXXX" );
+  QgsDebugMsg( "XXXXXXXXXXXXXXXXX" );
+  QgsDebugMsg( "XXXXXXXXXXXXXXXXX" );
   refresh();
 }
 
