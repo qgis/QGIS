@@ -70,6 +70,12 @@ static bool tableExists( QgsPostgresConn &conn, const QString &name )
   return res.PQgetvalue( 0, 0 ).toInt() > 0;
 }
 
+static bool columnExists( QgsPostgresConn &conn, const QString &table, const QString &column )
+{
+  QgsPostgresResult res( conn.PQexec( "SELECT COUNT(*) FROM information_schema.columns WHERE table_name=" + QgsPostgresConn::quotedValue( table ) + " and column_name=" + QgsPostgresConn::quotedValue( column ) ) );
+  return res.PQgetvalue( 0, 0 ).toInt() > 0;
+}
+
 QgsPostgresPrimaryKeyType
 QgsPostgresProvider::pkType( const QgsField &f ) const
 {
@@ -4738,6 +4744,19 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
       errCause = QObject::tr( "Unable to save layer style. It's not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin" ).arg( dsUri.username() );
       conn->unref();
       return false;
+    }
+  }
+  else
+  {
+    if ( !columnExists( *conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
+    {
+      QgsPostgresResult res( conn->PQexec( "ALTER TABLE layer_styles ADD COLUMN type varchar(30) NULL" ) );
+      if ( res.PQresultStatus() != PGRES_COMMAND_OK )
+      {
+        errCause = QObject::tr( "Unable to add column type to layer_styles table. Maybe this is due to table permissions (user=%1). Please contact your database admin" ).arg( dsUri.username() );
+        conn->unref();
+        return false;
+      }
     }
   }
 
