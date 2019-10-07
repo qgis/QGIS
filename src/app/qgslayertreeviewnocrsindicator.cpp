@@ -37,7 +37,7 @@ void QgsLayerTreeViewNoCrsIndicatorProvider::onIndicatorClicked( const QModelInd
 
 bool QgsLayerTreeViewNoCrsIndicatorProvider::acceptLayer( QgsMapLayer *layer )
 {
-  return layer &&  layer->isSpatial() && !layer->crs().isValid();
+  return layer && layer->isValid() && layer->isSpatial() && !layer->crs().isValid();
 }
 
 QString QgsLayerTreeViewNoCrsIndicatorProvider::iconName( QgsMapLayer *layer )
