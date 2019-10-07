@@ -4853,8 +4853,6 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
     sql = QStringLiteral( "BEGIN; %1; %2; COMMIT;" ).arg( removeDefaultSql, sql );
   }
 
-  QgsDebugMsg( QStringLiteral( "-------------------------COSTA NOVA: %1 " ).arg( sql ) );
-
   res = conn->PQexec( sql );
 
   bool saved = res.PQresultStatus() == PGRES_COMMAND_OK;
