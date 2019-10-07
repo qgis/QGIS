@@ -43,8 +43,7 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsMeasureDialog::showHelp );
 
   // hide 3D related options
-  verticalDistanceCbx->hide();
-  horizontalDistanceCbx->hide();
+  extraDistanceCbx->hide();
   editHorizontalTotal->hide();
   totalHorizontalDistanceLabel->hide();
 

@@ -61,9 +61,8 @@ Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, Qt::Windo
 
   connect( buttonBox, &QDialogButtonBox::rejected, this, &Qgs3DMeasureDialog::reject );
   connect( mUnitsCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &Qgs3DMeasureDialog::unitsChanged );
-  connect( verticalDistanceCbx, &QCheckBox::toggled, this, &Qgs3DMeasureDialog::updateTable );
-  connect( horizontalDistanceCbx, &QCheckBox::toggled, this, &Qgs3DMeasureDialog::updateTable );
-  connect( horizontalDistanceCbx, &QCheckBox::toggled, this, &Qgs3DMeasureDialog::updateTotal );
+  connect( extraDistanceCbx, &QCheckBox::toggled, this, &Qgs3DMeasureDialog::updateTable );
+  connect( extraDistanceCbx, &QCheckBox::toggled, this, &Qgs3DMeasureDialog::updateTotal );
 }
 
 void Qgs3DMeasureDialog::saveWindowLocation()
@@ -72,8 +71,7 @@ void Qgs3DMeasureDialog::saveWindowLocation()
   settings.setValue( QStringLiteral( "Windows/3DMeasure/geometry" ), saveGeometry() );
   const QString &key = "/Windows/3DMeasure/h";
   settings.setValue( key, height() );
-  settings.setValue( "/Windows/3DMeasure/horizontalChecked", horizontalDistanceCbx->isChecked() );
-  settings.setValue( "/Windows/3DMeasure/verticalChecked", verticalDistanceCbx->isChecked() );
+  settings.setValue( "/Windows/3DMeasure/extraChecked", extraDistanceCbx->isChecked() );
 
 }
 
@@ -83,8 +81,7 @@ void Qgs3DMeasureDialog::restorePosition()
   restoreGeometry( settings.value( QStringLiteral( "Windows/3DMeasure/geometry" ) ).toByteArray() );
   int wh = settings.value( QStringLiteral( "Windows/3DMeasure/h" ), 200 ).toInt();
   resize( width(), wh );
-  horizontalDistanceCbx->setChecked( settings.value( QStringLiteral( "/Windows/3DMeasure/horizontalChecked" ), true ).toBool() );
-  verticalDistanceCbx->setChecked( settings.value( QStringLiteral( "/Windows/3DMeasure/verticalChecked" ), true ).toBool() );
+  extraDistanceCbx->setChecked( settings.value( QStringLiteral( "/Windows/3DMeasure/extraChecked" ), false ).toBool() );
 }
 
 void Qgs3DMeasureDialog::addPoint()
@@ -223,12 +220,9 @@ void Qgs3DMeasureDialog::setupTableHeader()
 {
   // Set the table header to show displayed unit
   QStringList headers;
-  if ( horizontalDistanceCbx->isChecked() )
+  if ( extraDistanceCbx->isChecked() )
   {
     headers << tr( "Horizontal Distance" );
-  }
-  if ( verticalDistanceCbx->isChecked() )
-  {
     headers << tr( "Vertical Distance" );
   }
   headers << tr( "3D Distance" );
@@ -248,12 +242,9 @@ void Qgs3DMeasureDialog::setupTableHeader()
 void Qgs3DMeasureDialog::addMeasurement( double distance, double verticalDistance, double horizontalDistance )
 {
   QStringList content;
-  if ( horizontalDistanceCbx->isChecked() )
+  if ( extraDistanceCbx->isChecked() )
   {
     content << QLocale().toString( convertLength( horizontalDistance, mDisplayedDistanceUnit ), 'f', mDecimalPlaces );
-  }
-  if ( verticalDistanceCbx->isChecked() )
-  {
     content << QLocale().toString( convertLength( verticalDistance, mDisplayedDistanceUnit ), 'f', mDecimalPlaces );
   }
   content << QLocale().toString( convertLength( distance, mDisplayedDistanceUnit ), 'f', mDecimalPlaces );
@@ -271,8 +262,8 @@ void Qgs3DMeasureDialog::updateTotal()
   // Update total with new displayed unit
   editTotal->setText( formatDistance( convertLength( mTotal, mDisplayedDistanceUnit ) ) );
   editHorizontalTotal->setText( formatDistance( convertLength( mHorizontalTotal, mDisplayedDistanceUnit ) ) );
-  editHorizontalTotal->setVisible( horizontalDistanceCbx->isChecked() );
-  totalHorizontalDistanceLabel->setVisible( horizontalDistanceCbx->isChecked() );
+  editHorizontalTotal->setVisible( extraDistanceCbx->isChecked() );
+  totalHorizontalDistanceLabel->setVisible( extraDistanceCbx->isChecked() );
 }
 
 void Qgs3DMeasureDialog::updateTable()
