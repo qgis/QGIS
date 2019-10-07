@@ -1116,6 +1116,22 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void setProjectColors( const QgsNamedColorList &colors );
 
     /**
+     * Sets the default background \a color used by default map canvases.
+     *
+     * \see backgroundColor()
+     * \since QGIS 3.10
+     */
+    void setBackgroundColor( const QColor &color );
+
+    /**
+     * Returns the default background color used by default map canvases.
+     *
+     * \see setBackgroundColor()
+     * \since QGIS 3.10
+     */
+    QColor backgroundColor() const;
+
+    /**
      * Sets the list of custom project map \a scales.
      *
      * The \a scales list consists of a list of scale denominator values, e.g.
