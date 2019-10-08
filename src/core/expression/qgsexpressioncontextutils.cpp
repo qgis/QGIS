@@ -370,7 +370,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::mapSettingsScope( const Qg
   // IMPORTANT: ANY CHANGES HERE ALSO NEED TO BE MADE TO QgsLayoutItemMap::createExpressionContext()
   // (rationale is described in QgsLayoutItemMap::createExpressionContext() )
 
-  scope->addFunction( QStringLiteral( "is_layer_visible" ), new GetLayerVisibility( mapSettings.layers() ) );
+  scope->addFunction( QStringLiteral( "is_layer_visible" ), new GetLayerVisibility( mapSettings.layers(), mapSettings.scale() ) );
 
   // IMPORTANT: ANY CHANGES HERE ALSO NEED TO BE MADE TO QgsLayoutItemMap::createExpressionContext()
   // (rationale is described in QgsLayoutItemMap::createExpressionContext() )
@@ -763,7 +763,7 @@ void QgsExpressionContextUtils::registerContextFunctions()
 {
   QgsExpression::registerFunction( new GetNamedProjectColor( nullptr ) );
   QgsExpression::registerFunction( new GetLayoutItemVariables( nullptr ) );
-  QgsExpression::registerFunction( new GetLayerVisibility( QList<QgsMapLayer *>() ) );
+  QgsExpression::registerFunction( new GetLayerVisibility( QList<QgsMapLayer *>(), 0.0 ) );
   QgsExpression::registerFunction( new GetProcessingParameterValue( QVariantMap() ) );
   QgsExpression::registerFunction( new GetCurrentFormFieldValue( ) );
 }
@@ -789,9 +789,10 @@ bool QgsScopedExpressionFunction::isStatic( const QgsExpressionNodeFunction *nod
 // GetLayerVisibility
 //
 
-QgsExpressionContextUtils::GetLayerVisibility::GetLayerVisibility( const QList<QgsMapLayer *> &layers )
+QgsExpressionContextUtils::GetLayerVisibility::GetLayerVisibility( const QList<QgsMapLayer *> &layers, double scale )
   : QgsScopedExpressionFunction( QStringLiteral( "is_layer_visible" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "id" ) ), QStringLiteral( "General" ) )
   , mLayers( _qgis_listRawToQPointer( layers ) )
+  , mScale( scale )
 {}
 
 QVariant QgsExpressionContextUtils::GetLayerVisibility::func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -801,18 +802,25 @@ QVariant QgsExpressionContextUtils::GetLayerVisibility::func( const QVariantList
     return false;
   }
 
+  bool isVisible = false;
   QgsMapLayer *layer = QgsExpressionUtils::getMapLayer( values.at( 0 ), parent );
-  if ( layer )
+  if ( layer && mLayers.contains( layer ) )
   {
-    return mLayers.contains( layer );
+    isVisible = true;
+    if ( layer->hasScaleBasedVisibility() && !qgsDoubleNear( mScale, 0.0 ) )
+    {
+      if ( ( !qgsDoubleNear( layer->minimumScale(), 0.0 ) && mScale > layer->minimumScale() ) ||
+           ( !qgsDoubleNear( layer->maximumScale(), 0.0 ) && mScale < layer->maximumScale() ) )
+      {
+        isVisible = false;
+      }
+    }
   }
-  else
-  {
-    return false;
-  }
+
+  return isVisible;
 }
 
 QgsScopedExpressionFunction *QgsExpressionContextUtils::GetLayerVisibility::clone() const
 {
-  return new GetLayerVisibility( _qgis_listQPointerToRaw( mLayers ) );
+  return new GetLayerVisibility( _qgis_listQPointerToRaw( mLayers ), mScale );
 }

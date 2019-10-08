@@ -318,13 +318,14 @@ class CORE_EXPORT QgsExpressionContextUtils
     class GetLayerVisibility : public QgsScopedExpressionFunction
     {
       public:
-        GetLayerVisibility( const QList<QgsMapLayer *> &layers );
+        GetLayerVisibility( const QList<QgsMapLayer *> &layers, double scale = 0 );
         QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override;
         QgsScopedExpressionFunction *clone() const override;
 
       private:
 
         const QList< QPointer< QgsMapLayer > > mLayers;
+        double mScale;
 
     };
 
