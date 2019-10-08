@@ -57,6 +57,8 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
   , mShared( new QgsWFSSharedData( uri ) )
 {
   mShared->mCaps = caps;
+  mShared->mServerMaxFeatures = caps.maxFeatures;
+
   connect( mShared.get(), &QgsWFSSharedData::raiseError, this, &QgsWFSProvider::pushErrorSlot );
   connect( mShared.get(), &QgsWFSSharedData::extentUpdated, this, &QgsWFSProvider::fullExtentCalculated );
 
@@ -66,14 +68,14 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
     return;
   }
 
-  //create mSourceCRS from url if possible [WBC 111221] refactored from GetFeatureGET()
+  //create mSourceCrs from url if possible [WBC 111221] refactored from GetFeatureGET()
   QString srsname = mShared->mURI.SRSName();
   if ( !srsname.isEmpty() )
   {
     if ( srsname == QLatin1String( "EPSG:900913" ) )
-      mShared->mSourceCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:3857" ) );
+      mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:3857" ) );
     else
-      mShared->mSourceCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( srsname );
+      mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( srsname );
   }
 
   // Must be called first to establish the version, in case we are in auto-detection
@@ -118,11 +120,12 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
   //Failed to detect feature type from describeFeatureType -> get first feature from layer to detect type
   if ( mShared->mWKBType == QgsWkbTypes::Unknown )
   {
-    QgsWFSFeatureDownloader downloader( mShared.get() );
-    connect( &downloader, static_cast<void ( QgsWFSFeatureDownloader::* )( QVector<QgsWFSFeatureGmlIdPair> )>( &QgsWFSFeatureDownloader::featureReceived ),
+    auto downloader = qgis::make_unique<QgsFeatureDownloader>();
+    downloader->setImpl( qgis::make_unique<QgsWFSFeatureDownloaderImpl>( mShared.get(), downloader.get() ) );
+    connect( downloader.get(), static_cast<void ( QgsFeatureDownloader::* )( QVector<QgsFeatureUniqueIdPair> )>( &QgsFeatureDownloader::featureReceived ),
              this, &QgsWFSProvider::featureReceivedAnalyzeOneFeature );
-    downloader.run( false, /* serialize features */
-                    1 /* maxfeatures */ );
+    downloader->run( false, /* serialize features */
+                     1 /* maxfeatures */ );
   }
 
   qRegisterMetaType<QgsRectangle>( "QgsRectangle" );
@@ -645,7 +648,7 @@ void QgsWFSProvider::pushErrorSlot( const QString &errorMsg )
   pushError( errorMsg );
 }
 
-void QgsWFSProvider::featureReceivedAnalyzeOneFeature( QVector<QgsWFSFeatureGmlIdPair> list )
+void QgsWFSProvider::featureReceivedAnalyzeOneFeature( QVector<QgsFeatureUniqueIdPair> list )
 {
   if ( list.size() != 0 )
   {
@@ -764,7 +767,7 @@ bool QgsWFSProvider::setSubsetString( const QString &theSQL, bool updateFeatureC
 
 QgsAbstractFeatureSource *QgsWFSProvider::featureSource() const
 {
-  QgsWFSFeatureSource *fs = new QgsWFSFeatureSource( this );
+  auto fs = new QgsBackgroundCachedFeatureSource( mShared );
   /*connect( fs, SIGNAL( extentRequested( const QgsRectangle & ) ),
            this, SLOT( extendExtent( const QgsRectangle & ) ) );*/
   return fs;
@@ -798,34 +801,12 @@ QString QgsWFSProvider::geometryAttribute() const
 
 QgsCoordinateReferenceSystem QgsWFSProvider::crs() const
 {
-  return mShared->mSourceCRS;
+  return mShared->mSourceCrs;
 }
 
 QgsRectangle QgsWFSProvider::extent() const
 {
-  // Some servers return completely buggy extent in their capabilities response
-  // so mix it with the extent actually got from the downloaded features
-  QgsRectangle computedExtent( mShared->computedExtent() );
-  QgsDebugMsgLevel( QStringLiteral( "computedExtent: " ) + computedExtent.toString(), 4 );
-  QgsDebugMsgLevel( QStringLiteral( "mCapabilityExtent: " ) + mShared->mCapabilityExtent.toString(), 4 );
-
-  // If we didn't get any feature, then return capabilities extent.
-  if ( computedExtent.isNull() )
-    return mShared->mCapabilityExtent;
-
-  // If the capabilities extent is completely off from the features, then
-  // use feature extent.
-  // Case of standplaats layer of http://geodata.nationaalgeoregister.nl/bag/wfs
-  if ( !computedExtent.intersects( mShared->mCapabilityExtent ) )
-    return computedExtent;
-
-  if ( mShared->downloadFinished() )
-  {
-    return computedExtent;
-  }
-
-  computedExtent.combineExtentWith( mShared->mCapabilityExtent );
-  return computedExtent;
+  return mShared->consolidatedExtent();
 }
 
 bool QgsWFSProvider::isValid() const
@@ -835,7 +816,7 @@ bool QgsWFSProvider::isValid() const
 
 QgsFeatureIterator QgsWFSProvider::getFeatures( const QgsFeatureRequest &request ) const
 {
-  return QgsFeatureIterator( new QgsWFSFeatureIterator( new QgsWFSFeatureSource( this ), true, request ) );
+  return QgsFeatureIterator( new QgsBackgroundCachedFeatureIterator( new QgsBackgroundCachedFeatureSource( mShared ), true, mShared, request ) );
 }
 
 bool QgsWFSProvider::addFeatures( QgsFeatureList &flist, Flags flags )
@@ -925,10 +906,10 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     QStringList::const_iterator idIt = idList.constBegin();
     featureIt = flist.begin();
 
-    QVector<QgsWFSFeatureGmlIdPair> serializedFeatureList;
+    QVector<QgsFeatureUniqueIdPair> serializedFeatureList;
     for ( ; idIt != idList.constEnd() && featureIt != flist.end(); ++idIt, ++featureIt )
     {
-      serializedFeatureList.push_back( QgsWFSFeatureGmlIdPair( *featureIt, *idIt ) );
+      serializedFeatureList.push_back( QgsFeatureUniqueIdPair( *featureIt, *idIt ) );
     }
     mShared->serializeFeatures( serializedFeatureList );
 
@@ -985,7 +966,7 @@ bool QgsWFSProvider::deleteFeatures( const QgsFeatureIds &id )
   for ( ; idIt != id.constEnd(); ++idIt )
   {
     //find out feature id
-    QString gmlid = mShared->findGmlId( *idIt );
+    QString gmlid = mShared->findUniqueId( *idIt );
     if ( gmlid.isEmpty() )
     {
       QgsDebugMsg( QStringLiteral( "Cannot identify feature of id %1" ).arg( *idIt ) );
@@ -1041,7 +1022,7 @@ bool QgsWFSProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
   QgsGeometryMap::const_iterator geomIt = geometry_map.constBegin();
   for ( ; geomIt != geometry_map.constEnd(); ++geomIt )
   {
-    QString gmlid = mShared->findGmlId( geomIt.key() );
+    QString gmlid = mShared->findUniqueId( geomIt.key() );
     if ( gmlid.isEmpty() )
     {
       QgsDebugMsg( QStringLiteral( "Cannot identify feature of id %1" ).arg( geomIt.key() ) );
@@ -1134,7 +1115,7 @@ bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   QgsChangedAttributesMap::const_iterator attIt = attr_map.constBegin();
   for ( ; attIt != attr_map.constEnd(); ++attIt )
   {
-    QString gmlid = mShared->findGmlId( attIt.key() );
+    QString gmlid = mShared->findUniqueId( attIt.key() );
     if ( gmlid.isEmpty() )
     {
       QgsDebugMsg( QStringLiteral( "Cannot identify feature of id %1" ).arg( attIt.key() ) );
@@ -1765,19 +1746,19 @@ bool QgsWFSProvider::getCapabilities()
     if ( thisLayerName == mShared->mCaps.featureTypes[i].name )
     {
       const QgsRectangle &r = mShared->mCaps.featureTypes[i].bbox;
-      if ( mShared->mSourceCRS.authid().isEmpty() && mShared->mCaps.featureTypes[i].crslist.size() != 0 )
+      if ( mShared->mSourceCrs.authid().isEmpty() && mShared->mCaps.featureTypes[i].crslist.size() != 0 )
       {
-        mShared->mSourceCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mShared->mCaps.featureTypes[i].crslist[0] );
+        mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mShared->mCaps.featureTypes[i].crslist[0] );
       }
       if ( !r.isNull() )
       {
         if ( mShared->mCaps.featureTypes[i].bboxSRSIsWGS84 )
         {
           QgsCoordinateReferenceSystem src = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "CRS:84" ) );
-          QgsCoordinateTransform ct( src, mShared->mSourceCRS, transformContext() );
+          QgsCoordinateTransform ct( src, mShared->mSourceCrs, transformContext() );
           QgsDebugMsgLevel( "latlon ext:" + r.toString(), 4 );
           QgsDebugMsgLevel( "src:" + src.authid(), 4 );
-          QgsDebugMsgLevel( "dst:" + mShared->mSourceCRS.authid(), 4 );
+          QgsDebugMsgLevel( "dst:" + mShared->mSourceCrs.authid(), 4 );
 
           mShared->mCapabilityExtent = ct.transformBoundingBox( r, QgsCoordinateTransform::ForwardTransform );
         }
