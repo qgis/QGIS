@@ -271,18 +271,29 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString &definition )
   locker.unlock();
 
   bool result = false;
-  QRegularExpression reCrsId( "^(epsg|postgis|internal|user)\\:(\\d+)$", QRegularExpression::CaseInsensitiveOption );
+  QRegularExpression reCrsId( QStringLiteral( "^(epsg|esri|osgeo|ignf|zangi|iau2000|postgis|internal|user)\\:(\\w+)$" ), QRegularExpression::CaseInsensitiveOption );
   QRegularExpressionMatch match = reCrsId.match( definition );
   if ( match.capturedStart() == 0 )
   {
     QString authName = match.captured( 1 ).toLower();
-    CrsType type = InternalCrsId;
     if ( authName == QLatin1String( "epsg" ) )
-      type = EpsgCrsId;
-    if ( authName == QLatin1String( "postgis" ) )
-      type = PostgisCrsId;
-    long id = match.captured( 2 ).toLong();
-    result = createFromId( id, type );
+    {
+      result = createFromOgcWmsCrs( definition );
+    }
+    else if ( authName == QLatin1String( "postgis" ) )
+    {
+      const long id = match.captured( 2 ).toLong();
+      result = createFromId( id, PostgisCrsId );
+    }
+    else if ( authName == QLatin1String( "esri" ) || authName == QLatin1String( "osgeo" ) || authName == QLatin1String( "ignf" ) || authName == QLatin1String( "zangi" ) || authName == QLatin1String( "iau2000" ) )
+    {
+      result = createFromOgcWmsCrs( definition );
+    }
+    else
+    {
+      const long id = match.captured( 2 ).toLong();
+      result = createFromId( id, InternalCrsId );
+    }
   }
   else
   {
