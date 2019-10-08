@@ -84,7 +84,7 @@ for my $dist (@dists) {
 
 	system("git checkout debian/control" )==0 or die "git checkout failed: $!";
 
-	$deps .= ",cmake-curses-gui,ccache,expect,qt5-default,libyaml-tiny-perl,python3-autopep8";
+	$deps .= ",cmake-curses-gui,ccache,expect,qt5-default,libyaml-tiny-perl";
 
 	my @deps;
 	my %deps;
