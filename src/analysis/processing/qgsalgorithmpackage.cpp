@@ -169,7 +169,7 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
   }
 
   if ( errored )
-    throw QgsProcessingException( QObject::tr( "Error obtained while packaging one or more layers." ) );
+    feedback->reportError( QObject::tr( "Error obtained while packaging one or more layers." ) );
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), packagePath );
