@@ -71,18 +71,14 @@ class CORE_EXPORT QgsRasterLayerRenderer : public QgsMapLayerRenderer
     QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRenderContext &rendererContext );
     ~QgsRasterLayerRenderer() override;
 
-    void setPainter( QPainter *painter ) override;
     bool render() override;
     QgsFeedback *feedback() const override;
 
   private:
 
-    QPainter *mPainter = nullptr;
-    const QgsMapToPixel *mMapToPixel = nullptr;
     QgsRasterViewPort *mRasterViewPort = nullptr;
 
     QgsRasterPipe *mPipe = nullptr;
-    QgsRenderContext &mContext;
 
     //! feedback class for cancellation and preview generation
     QgsRasterLayerRendererFeedback *mFeedback = nullptr;
