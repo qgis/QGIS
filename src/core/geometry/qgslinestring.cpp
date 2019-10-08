@@ -518,6 +518,62 @@ json QgsLineString::asJsonObject( int precision ) const
   };
 }
 
+QString QgsLineString::asKml( int precision ) const
+{
+  QString kml;
+  if ( isRing() )
+  {
+    kml.append( QLatin1String( "<LinearRing>" ) );
+  }
+  else
+  {
+    kml.append( QLatin1String( "<LineString>" ) );
+  }
+  bool z = is3D();
+  kml.append( QLatin1String( "<altitudeMode>" ) );
+  if ( z )
+  {
+    kml.append( QLatin1String( "absolute" ) );
+  }
+  else
+  {
+    kml.append( QLatin1String( "clampToGround" ) );
+  }
+  kml.append( QLatin1String( "</altitudeMode>" ) );
+  kml.append( QLatin1String( "<coordinates>" ) );
+
+  int nPoints = mX.size();
+  for ( int i = 0; i < nPoints; ++i )
+  {
+    if ( i > 0 )
+    {
+      kml.append( QLatin1String( " " ) );
+    }
+    kml.append( qgsDoubleToString( mX[i], precision ) );
+    kml.append( QLatin1String( "," ) );
+    kml.append( qgsDoubleToString( mY[i], precision ) );
+    if ( z )
+    {
+      kml.append( QLatin1String( "," ) );
+      kml.append( qgsDoubleToString( mZ[i], precision ) );
+    }
+    else
+    {
+      kml.append( QLatin1String( ",0" ) );
+    }
+  }
+  kml.append( QLatin1String( "</coordinates>" ) );
+  if ( isRing() )
+  {
+    kml.append( QLatin1String( "</LinearRing>" ) );
+  }
+  else
+  {
+    kml.append( QLatin1String( "</LineString>" ) );
+  }
+  return kml;
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests.

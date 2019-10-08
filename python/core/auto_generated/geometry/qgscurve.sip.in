@@ -150,6 +150,9 @@ Returns a reversed copy of the curve, where the direction of the curve has been 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
 
+    virtual QString asKml( int precision = 17 ) const;
+
+
     virtual QgsCurve *segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 
 %Docstring

@@ -149,6 +149,8 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
 
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 
+    QString asKml( int precision = 17 ) const override;
+
     /**
      * Returns a geometry without curves. Caller takes ownership
      * \param tolerance segmentation tolerance
