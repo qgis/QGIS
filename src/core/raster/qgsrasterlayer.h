@@ -201,7 +201,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
        *
        * \since QGIS 3.10
        */
-      bool allowInvalidCrs = false;
+      bool skipCrsValidation = false;
 
     };
 

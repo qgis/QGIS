@@ -214,7 +214,7 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
   {
     QgsVectorLayer::LayerOptions options { transformContext };
     options.loadDefaultStyle = false;
-    options.allowInvalidCrs = true;
+    options.skipCrsValidation = true;
     std::unique_ptr< QgsVectorLayer > layer = qgis::make_unique<QgsVectorLayer>( string, name, QStringLiteral( "ogr" ), options );
     if ( layer->isValid() )
     {
@@ -225,7 +225,7 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
   {
     QgsRasterLayer::LayerOptions rasterOptions;
     rasterOptions.loadDefaultStyle = false;
-    rasterOptions.allowInvalidCrs = true;
+    rasterOptions.skipCrsValidation = true;
     std::unique_ptr< QgsRasterLayer > rasterLayer( new QgsRasterLayer( string, name, QStringLiteral( "gdal" ), rasterOptions ) );
     if ( rasterLayer->isValid() )
     {
@@ -235,7 +235,7 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
   if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::Mesh )
   {
     QgsMeshLayer::LayerOptions meshOptions;
-    meshOptions.allowInvalidCrs = true;
+    meshOptions.skipCrsValidation = true;
     std::unique_ptr< QgsMeshLayer > meshLayer( new QgsMeshLayer( string, name, QStringLiteral( "mdal" ), meshOptions ) );
     if ( meshLayer->isValid() )
     {

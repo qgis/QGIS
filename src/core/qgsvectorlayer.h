@@ -478,7 +478,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
        *
        * \since QGIS 3.10
        */
-      bool allowInvalidCrs = false;
+      bool skipCrsValidation = false;
 
     };
 

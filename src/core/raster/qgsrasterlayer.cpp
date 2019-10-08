@@ -117,7 +117,7 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
   , QSTRING_NOT_SET( QStringLiteral( "Not Set" ) )
   , TRSTRING_NOT_SET( tr( "Not Set" ) )
 {
-  mShouldValidateCrs = !options.allowInvalidCrs;
+  mShouldValidateCrs = !options.skipCrsValidation;
 
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   setProviderType( providerKey );

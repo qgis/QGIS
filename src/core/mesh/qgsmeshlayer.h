@@ -121,7 +121,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
        *
        * \since QGIS 3.10
        */
-      bool allowInvalidCrs = false;
+      bool skipCrsValidation = false;
     };
 
     /**
