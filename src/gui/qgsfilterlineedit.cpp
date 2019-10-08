@@ -211,7 +211,7 @@ bool QgsFilterLineEdit::event( QEvent *event )
   if ( event->type() == QEvent::ReadOnlyChange || event->type() == QEvent::EnabledChange )
     updateClearIcon();
 
-  return QLineEdit::event( event );;
+  return QLineEdit::event( event );
 }
 
 /// @cond PRIVATE
