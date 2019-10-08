@@ -783,17 +783,7 @@ static OGRwkbGeometryType ogrWkbGeometryTypeFromName( const QString &typeName )
 
 void QgsOgrProvider::addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer, bool withFeatureCount ) const
 {
-  QgsOgrFeatureDefn &fdef = layer->GetLayerDefn();
-  // Get first column name,
-  // TODO: add support for multiple
-  QString geometryColumnName;
-  if ( fdef.GetGeomFieldCount() )
-  {
-    OGRGeomFieldDefnH geomH = fdef.GetGeomFieldDefn( 0 );
-    geometryColumnName = QString::fromUtf8( OGR_GFld_GetNameRef( geomH ) );
-  }
   QString layerName = QString::fromUtf8( layer->name() );
-  OGRwkbGeometryType layerGeomType = fdef.GetGeomType();
 
   if ( !mIsSubLayer && ( layerName == QLatin1String( "layer_styles" ) ||
                          layerName == QLatin1String( "qgis_projects" ) ) )
@@ -802,10 +792,32 @@ void QgsOgrProvider::addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer
     // qgis_projects (coming from http://plugins.qgis.org/plugins/QgisGeopackage/)
     return;
   }
+  // Get first column name,
+  // TODO: add support for multiple
+  QString geometryColumnName;
+  OGRwkbGeometryType layerGeomType = wkbUnknown;
+  const bool slowGeomTypeRetrieval =
+    mGDALDriverName == QLatin1String( "OAPIF" ) || mGDALDriverName == QLatin1String( "WFS3" );
+  if ( !slowGeomTypeRetrieval )
+  {
+    QgsOgrFeatureDefn &fdef = layer->GetLayerDefn();
+    if ( fdef.GetGeomFieldCount() )
+    {
+      OGRGeomFieldDefnH geomH = fdef.GetGeomFieldDefn( 0 );
+      geometryColumnName = QString::fromUtf8( OGR_GFld_GetNameRef( geomH ) );
+    }
+    layerGeomType = fdef.GetGeomType();
+  }
 
-  QgsDebugMsg( QStringLiteral( "id = %1 name = %2 layerGeomType = %3" ).arg( i ).arg( layerName ).arg( layerGeomType ) );
+  QString longDescription;
+  if ( mGDALDriverName == QLatin1String( "OAPIF" ) || mGDALDriverName == QLatin1String( "WFS3" ) )
+  {
+    longDescription = layer->GetMetadataItem( "TITLE" );
+  }
 
-  if ( wkbFlatten( layerGeomType ) != wkbUnknown )
+  QgsDebugMsg( QStringLiteral( "id = %1 name = %2 layerGeomType = %3 longDescription = %4" ).arg( i ).arg( layerName ).arg( layerGeomType ). arg( longDescription ) );
+
+  if ( slowGeomTypeRetrieval || wkbFlatten( layerGeomType ) != wkbUnknown )
   {
     int layerFeatureCount = withFeatureCount ? layer->GetApproxFeatureCount() : -1;
 
@@ -817,7 +829,8 @@ void QgsOgrProvider::addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer
                         << layerName
                         << QString::number( layerFeatureCount )
                         << geom
-                        << geometryColumnName;
+                        << geometryColumnName
+                        << longDescription;
 
     mSubLayerList << parts.join( QgsDataProvider::SUBLAYER_SEPARATOR );
   }
@@ -888,7 +901,8 @@ void QgsOgrProvider::addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer
                           << layerName
                           << QString::number( fCount.value( countIt.key() ) )
                           << geom
-                          << geometryColumnName;
+                          << geometryColumnName
+                          << longDescription;
 
       QString sl = parts.join( QgsDataProvider::SUBLAYER_SEPARATOR );
       QgsDebugMsg( "sub layer: " + sl );
@@ -1309,7 +1323,20 @@ QgsRectangle QgsOgrProvider::extent() const
     // TODO: This can be expensive, do we really need it!
     if ( mOgrLayer == mOgrOrigLayer.get() && mSubsetString.isEmpty() )
     {
-      mOgrLayer->GetExtent( mExtent.get(), true );
+      if ( ( mGDALDriverName == QLatin1String( "OAPIF" ) || mGDALDriverName == QLatin1String( "WFS3" ) ) &&
+           !mOgrLayer->TestCapability( OLCFastGetExtent ) )
+      {
+        // When the extent is not in the metadata, retrieving it would be
+        // super slow
+        mExtent->MinX = -180;
+        mExtent->MinY = -90;
+        mExtent->MaxX = 180;
+        mExtent->MaxY = 90;
+      }
+      else
+      {
+        mOgrLayer->GetExtent( mExtent.get(), true );
+      }
     }
     else
     {
@@ -5585,7 +5612,7 @@ QString  QgsOgrLayer::driverName()
 QByteArray QgsOgrLayer::name()
 {
   QMutexLocker locker( &ds->mutex );
-  return OGR_FD_GetName( OGR_L_GetLayerDefn( hLayer ) );
+  return OGR_L_GetName( hLayer );
 }
 
 void QgsOgrLayer::ResetReading()
@@ -5712,6 +5739,10 @@ GIntBig QgsOgrLayer::GetApproxFeatureCount()
         return maxrowid - minrowid + 1;
       }
     }
+  }
+  if ( driverName == QLatin1String( "OAPIF" ) || driverName == QLatin1String( "OAPIF" ) )
+  {
+    return -1;
   }
 
   return OGR_L_GetFeatureCount( hLayer, TRUE );
@@ -5933,6 +5964,13 @@ QgsOgrLayerUniquePtr QgsOgrLayer::ExecuteSQL( const QByteArray &sql )
                                     QString::fromUtf8( sql ),
                                     ds,
                                     hSqlLayer );
+}
+
+QString QgsOgrLayer::GetMetadataItem( const QString &key, const QString &domain )
+{
+  QMutexLocker locker( &ds->mutex );
+  return GDALGetMetadataItem( hLayer, key.toUtf8().constData(),
+                              domain.toUtf8().constData() );
 }
 
 QMutex &QgsOgrFeatureDefn::mutex()

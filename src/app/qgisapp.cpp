@@ -4807,14 +4807,7 @@ QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QString
 
 static QStringList splitSubLayerDef( const QString &subLayerDef )
 {
-  QStringList elements = subLayerDef.split( QgsDataProvider::SUBLAYER_SEPARATOR );
-  // merge back parts of the name that may have been split
-  while ( elements.size() > 5 )
-  {
-    elements[1] += ":" + elements[2];
-    elements.removeAt( 2 );
-  }
-  return elements;
+  return subLayerDef.split( QgsDataProvider::SUBLAYER_SEPARATOR );
 }
 
 static void setupVectorLayer( const QString &vectorLayerPath,
@@ -5419,6 +5412,9 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
       def.layerName = elements[1];
       def.count = elements[2].toInt();
       def.type = elements[3];
+      // ignore geometry column name at elements[4]
+      if ( elements.count() >= 6 )
+        def.description = elements[5];
       if ( lastLayerId != def.layerId )
       {
         int count = ++mapLayerNameToCount[def.layerName];
