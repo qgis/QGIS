@@ -149,6 +149,8 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     {
       setMinimumDateTime( QDateTime::fromString( QStringLiteral( "0100-01-01" ), Qt::ISODate ) );
     }
+
+    friend class TestQgsDateTimeEdit;
 };
 
 #endif // QGSDATETIMEEDIT_H
