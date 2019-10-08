@@ -161,10 +161,8 @@ void QgsDateTimeEdit::focusInEvent( QFocusEvent *event )
   if ( mAllowNull && mIsNull && !mCurrentPressEvent )
   {
     QAbstractSpinBox::focusInEvent( event );
-    if ( mAllowNull && mIsNull )
-    {
-      displayCurrentDate();
-    }
+
+    displayCurrentDate();
   }
   else
   {
