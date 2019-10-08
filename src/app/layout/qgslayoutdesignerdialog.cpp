@@ -1001,6 +1001,7 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
   if ( !layout )
   {
     toggleActions( false );
+    mLayout = nullptr;
   }
   else
   {
