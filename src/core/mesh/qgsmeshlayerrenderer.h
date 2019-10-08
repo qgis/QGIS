@@ -88,6 +88,7 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     //! Ctor
     QgsMeshLayerRenderer( QgsMeshLayer *layer, QgsRenderContext &context );
     ~QgsMeshLayerRenderer() override = default;
+    void setPainter( QPainter *painter ) override;
     QgsFeedback *feedback() const override;
     bool render() override;
 

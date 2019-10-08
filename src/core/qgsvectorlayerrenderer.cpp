@@ -131,6 +131,11 @@ QgsFeedback *QgsVectorLayerRenderer::feedback() const
   return mInterruptionChecker.get();
 }
 
+void QgsVectorLayerRenderer::setPainter( QPainter *painter )
+{
+  mContext.setPainter( painter );
+}
+
 bool QgsVectorLayerRenderer::render()
 {
   if ( mGeometryType == QgsWkbTypes::NullGeometry || mGeometryType == QgsWkbTypes::UnknownGeometry )

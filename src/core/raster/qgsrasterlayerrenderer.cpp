@@ -238,6 +238,11 @@ QgsRasterLayerRenderer::~QgsRasterLayerRenderer()
   delete mPipe;
 }
 
+void QgsRasterLayerRenderer::setPainter( QPainter *painter )
+{
+  mPainter = painter;
+}
+
 bool QgsRasterLayerRenderer::render()
 {
   if ( !mRasterViewPort )

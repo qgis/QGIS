@@ -102,7 +102,7 @@ bool QgsMapRendererStagedRenderJob::renderCurrentPart( QPainter *painter )
   if ( mJobIt != mLayerJobs.end() )
   {
     LayerRenderJob &job = *mJobIt;
-    job.context.setPainter( painter );
+    job.renderer->setPainter( painter );
 
     if ( job.context.useAdvancedEffects() )
     {

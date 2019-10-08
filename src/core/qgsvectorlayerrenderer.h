@@ -77,7 +77,7 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRenderContext &context );
     ~QgsVectorLayerRenderer() override;
     QgsFeedback *feedback() const override;
-
+    void setPainter( QPainter *painter ) override;
     bool render() override;
 
   private:

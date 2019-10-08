@@ -64,6 +64,13 @@ Returns list of errors (problems) that happened during the rendering
 Gets access to the ID of the layer rendered by this class
 %End
 
+    virtual void setPainter( QPainter *painter );
+%Docstring
+Resets the painter to use for the job to a new ``painter``.
+
+.. versionadded:: 3.10
+%End
+
   protected:
 };
 
