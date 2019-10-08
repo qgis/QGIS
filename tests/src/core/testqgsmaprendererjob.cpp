@@ -41,6 +41,7 @@
 #include "qgspallabeling.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgsfontutils.h"
+#include "qgsrasterlayer.h"
 
 //qgs unit test utility class
 #include "qgsrenderchecker.h"
@@ -497,6 +498,9 @@ void TestQgsMapRendererJob::stagedRenderer()
   std::unique_ptr< QgsVectorLayer > polygonsLayer = qgis::make_unique< QgsVectorLayer >( TEST_DATA_DIR + QStringLiteral( "/polys.shp" ),
       QStringLiteral( "polys" ), QStringLiteral( "ogr" ) );
   QVERIFY( polygonsLayer->isValid() );
+  std::unique_ptr< QgsRasterLayer > rasterLayer = qgis::make_unique< QgsRasterLayer >( TEST_DATA_DIR + QStringLiteral( "/raster_layer.tiff" ),
+      QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
+  QVERIFY( rasterLayer->isValid() );
 
   QgsMapSettings mapSettings;
   mapSettings.setExtent( linesLayer->extent() );
@@ -514,7 +518,7 @@ void TestQgsMapRendererJob::stagedRenderer()
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Finished );
 
   // with layers
-  mapSettings.setLayers( QList<QgsMapLayer *>() << pointsLayer.get() << linesLayer.get() << polygonsLayer.get() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << pointsLayer.get() << linesLayer.get() << rasterLayer.get() << polygonsLayer.get() );
   job = qgis::make_unique< QgsMapRendererStagedRenderJob >( mapSettings );
   job->start();
   QVERIFY( !job->isFinished() );
@@ -530,10 +534,22 @@ void TestQgsMapRendererJob::stagedRenderer()
   QVERIFY( imageCheck( QStringLiteral( "staged_render1" ), im ) );
   QVERIFY( !job->isFinished() );
   QVERIFY( job->nextPart() );
-  QCOMPARE( job->currentLayerId(), linesLayer->id() );
+  QCOMPARE( job->currentLayerId(), rasterLayer->id() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
 
   // second layer
+  im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
+  im.fill( Qt::transparent );
+  painter.begin( &im );
+  QVERIFY( job->renderCurrentPart( &painter ) );
+  painter.end();
+  QVERIFY( imageCheck( QStringLiteral( "staged_render_raster" ), im ) );
+  QVERIFY( !job->isFinished() );
+  QVERIFY( job->nextPart() );
+  QCOMPARE( job->currentLayerId(), linesLayer->id() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
+
+  // third layer
   im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
   im.fill( Qt::transparent );
   painter.begin( &im );
@@ -545,7 +561,7 @@ void TestQgsMapRendererJob::stagedRenderer()
   QCOMPARE( job->currentLayerId(), pointsLayer->id() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
 
-  // third layer
+  // fourth layer
   im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
   im.fill( Qt::transparent );
   painter.begin( &im );
@@ -592,10 +608,22 @@ void TestQgsMapRendererJob::stagedRenderer()
   QVERIFY( imageCheck( QStringLiteral( "staged_render1" ), im ) );
   QVERIFY( job->nextPart() );
   QVERIFY( !job->isFinished() );
-  QCOMPARE( job->currentLayerId(), linesLayer->id() );
+  QCOMPARE( job->currentLayerId(), rasterLayer->id() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
 
   // second layer
+  im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
+  im.fill( Qt::transparent );
+  painter.begin( &im );
+  QVERIFY( job->renderCurrentPart( &painter ) );
+  painter.end();
+  QVERIFY( imageCheck( QStringLiteral( "staged_render_raster" ), im ) );
+  QVERIFY( job->nextPart() );
+  QVERIFY( !job->isFinished() );
+  QCOMPARE( job->currentLayerId(), linesLayer->id() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
+
+  // third layer
   im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
   im.fill( Qt::transparent );
   painter.begin( &im );
@@ -607,7 +635,7 @@ void TestQgsMapRendererJob::stagedRenderer()
   QCOMPARE( job->currentLayerId(), pointsLayer->id() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
 
-  // third layer
+  // fourth layer
   im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
   im.fill( Qt::transparent );
   painter.begin( &im );
