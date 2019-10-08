@@ -165,7 +165,6 @@ void QgsDateTimeEdit::focusInEvent( QFocusEvent *event )
     {
       displayCurrentDate();
     }
-    emit editingFinished();
   }
   else
   {

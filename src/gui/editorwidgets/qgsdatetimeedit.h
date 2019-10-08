@@ -120,7 +120,15 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     QString mOriginalStyleSheet = QString();
     QAction *mClearAction;
 
+    /**
+    * write the null value representation to the line edit without changing the value
+    * \param updateCalendar Flag if calendar is open and minimum date needs to be set
+    */
     void displayNull( bool updateCalendar = false );
+
+    /**
+    * write the current date into the line edit without changing the value
+    */
     void displayCurrentDate();
 
     //! reset the value to current date time
