@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 
 class QgsFeedback;
+class QPainter;
 
 /**
  * \ingroup core
@@ -65,6 +66,13 @@ class CORE_EXPORT QgsMapLayerRenderer
 
     //! Gets access to the ID of the layer rendered by this class
     QString layerId() const { return mLayerID; }
+
+    /**
+     * Resets the painter to use for the job to a new \a painter.
+     *
+     * \since QGIS 3.10
+     */
+    virtual void setPainter( QPainter *painter ) { Q_UNUSED( painter ) }
 
   protected:
     QStringList mErrors;

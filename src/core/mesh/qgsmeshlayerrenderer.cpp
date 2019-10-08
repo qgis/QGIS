@@ -57,6 +57,11 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer( QgsMeshLayer *layer, QgsRenderContex
   calculateOutputSize();
 }
 
+void QgsMeshLayerRenderer::setPainter( QPainter *painter )
+{
+  mContext.setPainter( painter );
+}
+
 QgsFeedback *QgsMeshLayerRenderer::feedback() const
 {
   return mFeedback.get();

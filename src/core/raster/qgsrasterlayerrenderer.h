@@ -71,8 +71,8 @@ class CORE_EXPORT QgsRasterLayerRenderer : public QgsMapLayerRenderer
     QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRenderContext &rendererContext );
     ~QgsRasterLayerRenderer() override;
 
+    void setPainter( QPainter *painter ) override;
     bool render() override;
-
     QgsFeedback *feedback() const override;
 
   private:
