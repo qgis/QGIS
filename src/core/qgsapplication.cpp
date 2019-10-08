@@ -128,6 +128,7 @@ QString ABISYM( QgsApplication::mCfgIntDir );
 #endif
 QString ABISYM( QgsApplication::mBuildOutputPath );
 QStringList ABISYM( QgsApplication::mGdalSkipList );
+QStringList QgsApplication::sDeferredSkippedGdalDrivers;
 int ABISYM( QgsApplication::mMaxThreads );
 QString ABISYM( QgsApplication::mAuthDbDirPath );
 
@@ -1555,10 +1556,41 @@ void QgsApplication::restoreGdalDriver( const QString &driver )
   applyGdalSkippedDrivers();
 }
 
+void QgsApplication::setSkippedGdalDrivers( const QStringList &skippedGdalDrivers,
+    const QStringList &deferredSkippedGdalDrivers )
+{
+  ABISYM( mGdalSkipList ) = skippedGdalDrivers;
+  sDeferredSkippedGdalDrivers = deferredSkippedGdalDrivers;
+
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "gdal/skipList" ), skippedGdalDrivers.join( QStringLiteral( " " ) ) );
+
+  applyGdalSkippedDrivers();
+}
+
+void QgsApplication::registerGdalDriversFromSettings()
+{
+  QgsSettings settings;
+  QString joinedList = settings.value( QStringLiteral( "gdal/skipList" ), QString() ).toString();
+  QStringList myList;
+  if ( !joinedList.isEmpty() )
+  {
+    myList = joinedList.split( ' ' );
+  }
+  ABISYM( mGdalSkipList ) = myList;
+  applyGdalSkippedDrivers();
+}
+
 void QgsApplication::applyGdalSkippedDrivers()
 {
   ABISYM( mGdalSkipList ).removeDuplicates();
-  QString myDriverList = ABISYM( mGdalSkipList ).join( QStringLiteral( " " ) );
+  QStringList realDisabledDriverList;
+  for ( const auto &driverName : ABISYM( mGdalSkipList ) )
+  {
+    if ( !sDeferredSkippedGdalDrivers.contains( driverName ) )
+      realDisabledDriverList << driverName;
+  }
+  QString myDriverList = realDisabledDriverList.join( ' ' );
   QgsDebugMsg( QStringLiteral( "Gdal Skipped driver list set to:" ) );
   QgsDebugMsg( myDriverList );
   CPLSetConfigOption( "GDAL_SKIP", myDriverList.toUtf8() );

@@ -587,6 +587,32 @@ Apply the skipped drivers list to gdal
 .. seealso:: :py:func:`skippedGdalDrivers`
 %End
 
+    static void registerGdalDriversFromSettings();
+%Docstring
+Register gdal drivers, excluding the ones mentioned in "gdal/skipList" setting.
+
+.. versionadded:: 3.10
+%End
+
+    static QStringList deferredSkippedGdalDrivers();
+%Docstring
+Returns the list of gdal drivers that have been disabled in the current session,
+and thus, for safety, should not be disabled right now, but at the
+next application restart.
+
+.. versionadded:: 3.10
+%End
+
+    static void setSkippedGdalDrivers( const QStringList &skippedGdalDrivers,
+                                       const QStringList &deferredSkippedGdalDrivers );
+%Docstring
+Sets the list of gdal drivers that should be disabled (``skippedGdalDrivers``),
+but excludes for now the ones defines in ``deferredSkippedGdalDrivers``.
+This writes the "gdal/skipList" setting.
+
+.. versionadded:: 3.10
+%End
+
     static int maxThreads();
 %Docstring
 Gets maximum concurrent thread count
