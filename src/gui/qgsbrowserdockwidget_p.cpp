@@ -185,7 +185,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
       QgsDebugMsg( QStringLiteral( "creating raster layer" ) );
       // should copy code from addLayer() to split uri ?
       QgsRasterLayer::LayerOptions options;
-      options.allowInvalidCrs = true;
+      options.skipCrsValidation = true;
       mLayer = qgis::make_unique< QgsRasterLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
       break;
     }
@@ -194,7 +194,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
     {
       QgsDebugMsg( QStringLiteral( "creating mesh layer" ) );
       QgsMeshLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-      options.allowInvalidCrs = true;
+      options.skipCrsValidation = true;
       mLayer = qgis::make_unique < QgsMeshLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
       break;
     }
@@ -203,7 +203,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
     {
       QgsDebugMsg( QStringLiteral( "creating vector layer" ) );
       QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-      options.allowInvalidCrs = true;
+      options.skipCrsValidation = true;
       mLayer = qgis::make_unique < QgsVectorLayer>( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
       break;
     }

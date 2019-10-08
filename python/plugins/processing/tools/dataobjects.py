@@ -119,7 +119,7 @@ def load(fileName, name=None, crs=None, style=None, isRaster=False):
 
     if isRaster:
         options = QgsRasterLayer.LayerOptions()
-        options.allowInvalidCrs = True
+        options.skipCrsValidation = True
         qgslayer = QgsRasterLayer(fileName, name, 'gdal', options)
         if qgslayer.isValid():
             if crs is not None and qgslayer.crs() is None:
@@ -134,7 +134,7 @@ def load(fileName, name=None, crs=None, style=None, isRaster=False):
                 fileName))
     else:
         options = QgsVectorLayer.LayerOptions()
-        options.allowInvalidCrs = True
+        options.skipCrsValidation = True
         qgslayer = QgsVectorLayer(fileName, name, 'ogr', options)
         if qgslayer.isValid():
             if crs is not None and qgslayer.crs() is None:

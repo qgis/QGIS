@@ -352,7 +352,7 @@ Constructor for LayerOptions.
 
       QgsCoordinateReferenceSystem fallbackCrs;
 
-      bool allowInvalidCrs;
+      bool skipCrsValidation;
 
     };
 

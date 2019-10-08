@@ -42,7 +42,7 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QgsMeshLayer::LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::MeshLayer, baseName, meshLayerPath )
 {
-  mShouldValidateCrs = !options.allowInvalidCrs;
+  mShouldValidateCrs = !options.skipCrsValidation;
 
   setProviderType( providerKey );
   // if we’re given a provider type, try to create and bind one to this layer

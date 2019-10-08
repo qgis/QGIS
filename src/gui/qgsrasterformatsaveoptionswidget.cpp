@@ -304,7 +304,7 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
   {
     tmpLayer = true;
     QgsRasterLayer::LayerOptions options;
-    options.allowInvalidCrs = true;
+    options.skipCrsValidation = true;
     rasterLayer = new QgsRasterLayer( mRasterFileName, QFileInfo( mRasterFileName ).baseName(), QStringLiteral( "gdal" ), options );
   }
 
