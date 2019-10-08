@@ -39,7 +39,12 @@ additional calls to QgsVectorLayer.
 #include "qgsmaplayerrenderer.h"
 %End
   public:
-    QgsMapLayerRenderer( const QString &layerID );
+
+    QgsMapLayerRenderer( const QString &layerID, QgsRenderContext *context = 0 );
+%Docstring
+Constructor for QgsMapLayerRenderer, with the associated ``layerID`` and render ``context``.
+%End
+
     virtual ~QgsMapLayerRenderer();
 
     virtual bool render() = 0;
@@ -64,14 +69,15 @@ Returns list of errors (problems) that happened during the rendering
 Gets access to the ID of the layer rendered by this class
 %End
 
-    virtual void setPainter( QPainter *painter );
+    QgsRenderContext *renderContext();
 %Docstring
-Resets the painter to use for the job to a new ``painter``.
+Returns the render context associated with the renderer.
 
 .. versionadded:: 3.10
 %End
 
   protected:
+
 };
 
 /************************************************************************
