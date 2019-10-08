@@ -124,7 +124,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
 
   private slots:
 
-    void featureReceivedAnalyzeOneFeature( QVector<QgsWFSFeatureGmlIdPair> );
+    void featureReceivedAnalyzeOneFeature( QVector<QgsFeatureUniqueIdPair> );
 
     void pushErrorSlot( const QString &errorMsg );
 

@@ -20,7 +20,8 @@
 #include "qgsfeatureiterator.h"
 #include "qgswfsrequest.h"
 #include "qgsgml.h"
-#include "qgsspatialindex.h"
+
+#include "qgsbackgroundcachedfeatureiterator.h"
 
 #include <memory>
 #include <QProgressDialog>
@@ -32,8 +33,6 @@ class QgsWFSProvider;
 class QgsWFSSharedData;
 class QgsVectorDataProvider;
 class QProgressDialog;
-
-typedef QPair<QgsFeature, QString> QgsWFSFeatureGmlIdPair;
 
 
 //! Utility class to issue a GetFeature resultType=hits request
@@ -80,6 +79,7 @@ class QgsWFSProgressDialog: public QProgressDialog
     QPushButton *mHide = nullptr;
 };
 
+
 /**
  * This class runs one (or several if paging is needed) GetFeature request,
     process the results as soon as they arrived and notify them to the
@@ -88,35 +88,18 @@ class QgsWFSProgressDialog: public QProgressDialog
     A progress dialog may pop-up in GUI mode (if the download takes a certain time)
     to allow canceling the download.
 */
-class QgsWFSFeatureDownloader: public QgsWfsRequest
+class QgsWFSFeatureDownloaderImpl: public QgsWfsRequest, public QgsFeatureDownloaderImpl
 {
     Q_OBJECT
   public:
-    explicit QgsWFSFeatureDownloader( QgsWFSSharedData *shared );
-    ~QgsWFSFeatureDownloader() override;
+    QgsWFSFeatureDownloaderImpl( QgsWFSSharedData *shared, QgsFeatureDownloader *downloader );
+    ~QgsWFSFeatureDownloaderImpl() override;
 
-    /**
-     * Start the download.
-     * \param serializeFeatures whether to notify the sharedData serializer.
-     * \param maxFeatures user-defined limit of features to download. Overrides
-     *                    the one defined in the URI. Typically by the QgsWFSProvider,
-     *                    when it cannot guess the geometry type.
-     */
-    void run( bool serializeFeatures, int maxFeatures );
+    void run( bool serializeFeatures, int maxFeatures ) override;
 
-  public slots:
-    //! To interrupt the download. Thread-safe
-    void stop();
+    void stop() override;
 
   signals:
-    //! Emitted when new features have been received
-    void featureReceived( QVector<QgsWFSFeatureGmlIdPair> );
-
-    //! Emitted when new features have been received
-    void featureReceived( int featureCount );
-
-    //! Emitted when the download is finished (successful or not)
-    void endOfDownload( bool success );
 
     //! Used internally by the stop() method
     void doStop();
@@ -142,140 +125,24 @@ class QgsWFSFeatureDownloader: public QgsWfsRequest
     //! Mutable data shared between provider, feature sources and downloader.
     QgsWFSSharedData *mShared = nullptr;
     //! Whether the download should stop
-    bool mStop;
+    bool mStop = false;
     //! Progress dialog
     QgsWFSProgressDialog *mProgressDialog = nullptr;
 
     /**
      * If the progress dialog should be shown immediately, or if it should be
         let to QProgressDialog logic to decide when to show it */
-    bool mProgressDialogShowImmediately;
-    int mPageSize;
-    bool mRemoveNSPrefix;
-    int mNumberMatched;
+    bool mProgressDialogShowImmediately = false;
+    int mPageSize = 0;
+    bool mRemoveNSPrefix = false;
+    int mNumberMatched = -1;
     bool mUseProgressDialog = false;
     QWidget *mMainWindow = nullptr;
     QTimer *mTimer = nullptr;
     QgsWFSFeatureHitsAsyncRequest mFeatureHitsAsyncRequest;
-    qint64 mTotalDownloadedFeatureCount;
+    qint64 mTotalDownloadedFeatureCount = 0;
     QMutex mMutexCreateProgressDialog;
 };
 
-//! Downloader thread
-class QgsWFSThreadedFeatureDownloader: public QThread
-{
-    Q_OBJECT
-  public:
-    explicit QgsWFSThreadedFeatureDownloader( QgsWFSSharedData *shared );
-    ~QgsWFSThreadedFeatureDownloader() override;
-
-    //! Returns downloader object
-    QgsWFSFeatureDownloader *downloader() { return mDownloader; }
-
-    //! Starts thread and wait for it to be started
-    void startAndWait();
-
-    //! Stops (synchronously) the download
-    void stop();
-
-  protected:
-    //! Inherited from QThread. Starts the download
-    void run() override;
-
-  private:
-    QgsWFSSharedData *mShared;  //!< Mutable data shared between provider and feature sources
-    QgsWFSFeatureDownloader *mDownloader = nullptr;
-    QWaitCondition mWaitCond;
-    QMutex mWaitMutex;
-};
-
-class QgsWFSFeatureSource;
-
-/**
- * Feature iterator. The iterator will internally both subscribe to a live
-    downloader to receive 'fresh' features, and to a iterator on the features
-    already cached. It will actually start by consuming cache features for
-    initial feedback, and then process the live downloaded features. */
-class QgsWFSFeatureIterator : public QObject,
-  public QgsAbstractFeatureIteratorFromSource<QgsWFSFeatureSource>
-{
-    Q_OBJECT
-  public:
-    explicit QgsWFSFeatureIterator( QgsWFSFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
-    ~QgsWFSFeatureIterator() override;
-
-    bool rewind() override;
-
-    bool close() override;
-
-    void setInterruptionChecker( QgsFeedback *interruptionChecker ) override;
-
-    //! Used by QgsWFSSharedData::registerToCache()
-    void connectSignals( QgsWFSFeatureDownloader *downloader );
-
-  private slots:
-    void featureReceived( int featureCount );
-    void featureReceivedSynchronous( const QVector<QgsWFSFeatureGmlIdPair> &list );
-    void endOfDownload( bool success );
-    void checkInterruption();
-    void timeout();
-
-  private:
-
-    //! Translate mRequest to a request compatible of the Spatialite cache
-    QgsFeatureRequest buildRequestCache( int gencounter );
-
-    bool fetchFeature( QgsFeature &f ) override;
-
-    //! Copies feature attributes / geometry from srcFeature to dstFeature
-    void copyFeature( const QgsFeature &srcFeature, QgsFeature &dstFeature, bool srcIsCache );
-
-    std::shared_ptr<QgsWFSSharedData> mShared;  //!< Mutable data shared between provider and feature sources
-
-    //! Subset of attributes (relatives to mShared->mFields) to fetch. Only valid if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
-    QgsAttributeList mSubSetAttributes;
-
-    bool mDownloadFinished;
-    QEventLoop *mLoop = nullptr;
-    QgsFeatureIterator mCacheIterator;
-    QgsFeedback *mInterruptionChecker = nullptr;
-    bool mTimeoutOccurred = false;
-
-    //! this mutex synchronizes the mWriterXXXX variables between featureReceivedSynchronous() and fetchFeature()
-    QMutex mMutex;
-    //! used to forger mWriterFilename
-    int mCounter;
-    //! maximum size in bytes of mWriterByteArray before flushing it to disk
-    int mWriteTransferThreshold;
-    QByteArray mWriterByteArray;
-    QString mWriterFilename;
-    QFile *mWriterFile = nullptr;
-    QDataStream *mWriterStream = nullptr;
-
-    QByteArray mReaderByteArray;
-    QString mReaderFilename;
-    QFile *mReaderFile = nullptr;
-    QDataStream *mReaderStream = nullptr;
-    bool mFetchGeometry;
-
-    QgsCoordinateTransform mTransform;
-    QgsRectangle mFilterRect;
-};
-
-//! Feature source
-class QgsWFSFeatureSource : public QgsAbstractFeatureSource
-{
-  public:
-    explicit QgsWFSFeatureSource( const QgsWFSProvider *p );
-
-    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
-
-  private:
-
-    std::shared_ptr<QgsWFSSharedData> mShared;  //!< Mutable data shared between provider and feature sources
-    QgsCoordinateReferenceSystem mCrs;
-
-    friend class QgsWFSFeatureIterator;
-};
 
 #endif // QGSWFSFEATUREITERATOR_H

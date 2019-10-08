@@ -15,6 +15,8 @@ SET(WFS_SRCS
   qgswfsshareddata.cpp
   qgswfstransactionrequest.cpp
   qgswfsutils.cpp
+  qgsbackgroundcachedfeatureiterator.cpp
+  qgsbackgroundcachedshareddata.cpp
 )
 
 SET (WFS_MOC_HDRS
@@ -28,6 +30,7 @@ SET (WFS_MOC_HDRS
   qgswfstransactionrequest.h
   qgswfsshareddata.h
   qgswfsutils.h
+  qgsbackgroundcachedfeatureiterator.h
 )
 
 IF (WITH_GUI)
