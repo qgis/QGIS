@@ -793,7 +793,15 @@ QgsExpressionContextUtils::GetLayerVisibility::GetLayerVisibility( const QList<Q
   : QgsScopedExpressionFunction( QStringLiteral( "is_layer_visible" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "id" ) ), QStringLiteral( "General" ) )
   , mLayers( _qgis_listRawToQPointer( layers ) )
   , mScale( scale )
-{}
+{
+  for ( const auto layer : mLayers )
+  {
+    if ( layer->hasScaleBasedVisibility() )
+    {
+      mScaleBasedVisibilityDetails[ layer ] = qMakePair( layer->minimumScale(), layer->maximumScale() );
+    }
+  }
+}
 
 QVariant QgsExpressionContextUtils::GetLayerVisibility::func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
@@ -807,10 +815,10 @@ QVariant QgsExpressionContextUtils::GetLayerVisibility::func( const QVariantList
   if ( layer && mLayers.contains( layer ) )
   {
     isVisible = true;
-    if ( layer->hasScaleBasedVisibility() && !qgsDoubleNear( mScale, 0.0 ) )
+    if ( mScaleBasedVisibilityDetails.contains( layer ) && !qgsDoubleNear( mScale, 0.0 ) )
     {
-      if ( ( !qgsDoubleNear( layer->minimumScale(), 0.0 ) && mScale > layer->minimumScale() ) ||
-           ( !qgsDoubleNear( layer->maximumScale(), 0.0 ) && mScale < layer->maximumScale() ) )
+      if ( ( !qgsDoubleNear( mScaleBasedVisibilityDetails[ layer ].first, 0.0 ) && mScale > mScaleBasedVisibilityDetails[ layer ].first ) ||
+           ( !qgsDoubleNear( mScaleBasedVisibilityDetails[ layer ].second, 0.0 ) && mScale < mScaleBasedVisibilityDetails[ layer ].second ) )
       {
         isVisible = false;
       }
