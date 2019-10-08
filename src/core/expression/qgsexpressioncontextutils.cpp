@@ -803,6 +803,10 @@ QgsExpressionContextUtils::GetLayerVisibility::GetLayerVisibility( const QList<Q
   }
 }
 
+QgsExpressionContextUtils::GetLayerVisibility::GetLayerVisibility()
+  : QgsScopedExpressionFunction( QStringLiteral( "is_layer_visible" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "id" ) ), QStringLiteral( "General" ) )
+{}
+
 QVariant QgsExpressionContextUtils::GetLayerVisibility::func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   if ( mLayers.isEmpty() )
@@ -830,5 +834,9 @@ QVariant QgsExpressionContextUtils::GetLayerVisibility::func( const QVariantList
 
 QgsScopedExpressionFunction *QgsExpressionContextUtils::GetLayerVisibility::clone() const
 {
-  return new GetLayerVisibility( _qgis_listQPointerToRaw( mLayers ), mScale );
+  GetLayerVisibility *func = new GetLayerVisibility();
+  func->mLayers = mLayers;
+  func->mScale = mScale;
+  func->mScaleBasedVisibilityDetails = mScaleBasedVisibilityDetails;
+  return func;
 }

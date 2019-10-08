@@ -323,8 +323,9 @@ class CORE_EXPORT QgsExpressionContextUtils
         QgsScopedExpressionFunction *clone() const override;
 
       private:
+        GetLayerVisibility();
 
-        const QList< QPointer< QgsMapLayer > > mLayers;
+        QList< QPointer< QgsMapLayer > > mLayers;
         QMap< QPointer< QgsMapLayer >, QPair< double, double > > mScaleBasedVisibilityDetails;
         double mScale;
 
