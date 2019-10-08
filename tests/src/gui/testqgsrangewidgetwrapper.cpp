@@ -355,6 +355,7 @@ void TestQgsRangeWidgetWrapper::test_negativeIntegers()
   widget3->setConfig( cfg );
   widget3->initWidget( editor3 );
   widget3->setFeature( feature );
+  QVERIFY( widget3->value().isNull() );
   QCOMPARE( widget3->value( ).toInt(), 0 );
 
   cfg.clear();
