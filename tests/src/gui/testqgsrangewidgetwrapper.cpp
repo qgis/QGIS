@@ -348,14 +348,14 @@ void TestQgsRangeWidgetWrapper::test_focus()
   QgsDoubleSpinBox *editor1 = qobject_cast<QgsDoubleSpinBox *>( widget1->createWidget( w ) );
   QVERIFY( editor1 );
   widget1->initWidget( editor1 );
-  widget3->setValue( QVariant( QVariant::Double ) );
+  widget1->setValue( QVariant( QVariant::Double ) );
 
   //QgsDoubleSpinBox
   widget2->setConfig( cfg );
   QgsDoubleSpinBox *editor2 = qobject_cast<QgsDoubleSpinBox *>( widget2->createWidget( w ) );
   QVERIFY( editor2 );
   widget2->initWidget( editor2 );
-  widget3->setValue( QVariant( QVariant::Double ) );
+  widget2->setValue( QVariant( QVariant::Double ) );
 
   //QgsSpinBox
   widget3->setConfig( cfg );
