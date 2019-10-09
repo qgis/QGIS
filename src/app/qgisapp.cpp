@@ -13429,8 +13429,20 @@ QgsRasterLayer *QgisApp::addRasterLayerPrivate(
     refreshBlocker = qgis::make_unique< QgsCanvasRefreshBlocker >();
   }
 
+  QString shortName = name;
+  QRegularExpression reRasterFile( "^/vsi(.+/)*([^ ]+)( .+)?$", QRegularExpression::CaseInsensitiveOption );
+  QRegularExpressionMatch matchRasterFile = reRasterFile.match( name );
+
+  if ( matchRasterFile.hasMatch() )
+  {
+    if ( matchRasterFile.captured( 2 ).length() > 5 )
+    {
+      shortName = matchRasterFile.captured( 2 );
+    }
+  }
+
   QgsSettings settings;
-  QString baseName =  settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() ? QgsMapLayer::formatLayerName( name ) : name;
+  QString baseName =  settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() ? QgsMapLayer::formatLayerName( shortName ) : shortName;
 
   QgsDebugMsg( "Creating new raster layer using " + uri
                + " with baseName of " + baseName );
