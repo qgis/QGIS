@@ -221,9 +221,9 @@ void QgsQuickPositionKit::onSimulatePositionLongLatRadChanged( QVector<double> s
     QgsDebugMsg( QStringLiteral( "Use simulated position around longlat: %1, %2, %3" ).arg( longitude ).arg( latitude ).arg( radius ) );
     useSimulatedLocation( longitude, latitude, radius );
   }
-  else
+  else if ( mIsSimulated )
   {
-    QgsDebugMsg( QStringLiteral( "Unable to set simulated position due to the input errors." ) );
+    QgsDebugMsg( QStringLiteral( "Switching from simulated to GPS location" ) );
     useGpsLocation();
   }
 }
