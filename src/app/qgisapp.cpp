@@ -13435,7 +13435,7 @@ QgsRasterLayer *QgisApp::addRasterLayerPrivate(
 
   if ( matchRasterFile.hasMatch() )
   {
-    if ( matchRasterFile.captured( 2 ).length() > 0 )
+    if ( !matchRasterFile.captured( 2 ).isEmpty() )
     {
       shortName = matchRasterFile.captured( 2 );
     }
