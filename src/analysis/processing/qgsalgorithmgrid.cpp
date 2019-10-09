@@ -113,7 +113,7 @@ QVariantMap QgsGridAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
     throw QgsProcessingException( QObject::tr( "Invalid overlay: horizontal: '%1', vertical: '%2'" ).arg( mHOverlay ).arg( mVOverlay ) );
 
   QgsFields fields = QgsFields();
-  fields.append( QgsField( QStringLiteral( "id " ), QVariant::LongLong ) );
+  fields.append( QgsField( QStringLiteral( "id" ), QVariant::LongLong ) );
   fields.append( QgsField( QStringLiteral( "left" ), QVariant::Double ) );
   fields.append( QgsField( QStringLiteral( "top" ), QVariant::Double ) );
   fields.append( QgsField( QStringLiteral( "right" ), QVariant::Double ) );
@@ -315,8 +315,8 @@ void QgsGridAlgorithm::createRectangleGrid( std::unique_ptr< QgsFeatureSink > &s
 {
   QgsFeature f = QgsFeature();
 
-  long long cols = static_cast<long long>( mGridExtent.width() / ( mHSpacing - mHOverlay ) );
-  long long rows = static_cast<long long>( mGridExtent.height() / ( mVSpacing - mVOverlay ) );
+  long long cols = static_cast<long long>( std::ceil( mGridExtent.width() / ( mHSpacing - mHOverlay ) ) );
+  long long rows = static_cast<long long>( std::ceil( mGridExtent.height() / ( mVSpacing - mVOverlay ) ) );
 
   long long id = 1;
   long long cnt = 0;
@@ -377,8 +377,8 @@ void QgsGridAlgorithm::createDiamondGrid( std::unique_ptr< QgsFeatureSink > &sin
   double halfHOverlay = mHOverlay / 2;
   double halfVOverlay = mVOverlay / 2;
 
-  long long cols =  static_cast<long long>( std::ceil( mGridExtent.width() ) / ( halfHSpacing - halfHOverlay ) );
-  long long rows = static_cast<long long>( std::ceil( mGridExtent.height() ) / ( mVSpacing - halfVOverlay ) );
+  long long cols =  static_cast<long long>( std::ceil( mGridExtent.width() / ( halfHSpacing - halfHOverlay ) ) );
+  long long rows = static_cast<long long>( std::ceil( mGridExtent.height() / ( mVSpacing - halfVOverlay ) ) );
 
   long long id = 1;
   long long cnt = 0;
@@ -466,8 +466,8 @@ void QgsGridAlgorithm::createHexagonGrid( std::unique_ptr<QgsFeatureSink> &sink,
 
   double halfVSpacing = mVSpacing / 2;
 
-  long long cols =  static_cast<long long>( std::ceil( mGridExtent.width() ) / ( mHOverlay ) );
-  long long rows = static_cast<long long>( std::ceil( mGridExtent.height() ) / ( mVSpacing - mVOverlay ) );
+  long long cols =  static_cast<long long>( std::ceil( mGridExtent.width() / ( mHOverlay ) ) );
+  long long rows = static_cast<long long>( std::ceil( mGridExtent.height() / ( mVSpacing - mVOverlay ) ) );
 
   long long id = 1;
   long long cnt = 0;
