@@ -138,6 +138,13 @@ Item {
     }
   ]
 
+  onVisibleChanged: {
+    if (visible) {
+      image.currentValue = value
+      image.source = image.getSource()
+    }
+  }
+
   Loader {
     id: photoCapturePanelLoader
   }
