@@ -396,7 +396,7 @@ tests:
         name: expected/buffer_ovals.gml
         type: vector
 
-  - algorithm: qgis:creategrid
+  - algorithm: native:creategrid
     name: Lines grid 0.1 degree spacing
     params:
       CRS: EPSG:4326
