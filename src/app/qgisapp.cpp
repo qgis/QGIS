@@ -13430,12 +13430,12 @@ QgsRasterLayer *QgisApp::addRasterLayerPrivate(
   }
 
   QString shortName = name;
-  QRegularExpression reRasterFile( "^/vsi(.+/)*([^ ]+)( .+)?$", QRegularExpression::CaseInsensitiveOption );
+  QRegularExpression reRasterFile( QStringLiteral( "^/vsi(.+/)*([^ ]+)( .+)?$" ), QRegularExpression::CaseInsensitiveOption );
   QRegularExpressionMatch matchRasterFile = reRasterFile.match( name );
 
   if ( matchRasterFile.hasMatch() )
   {
-    if ( matchRasterFile.captured( 2 ).length() > 5 )
+    if ( matchRasterFile.captured( 2 ).length() > 0 )
     {
       shortName = matchRasterFile.captured( 2 );
     }
