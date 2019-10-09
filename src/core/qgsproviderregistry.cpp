@@ -534,7 +534,7 @@ QWidget *QgsProviderRegistry::createSelectionWidget( const QString &providerKey,
   Q_UNUSED( parent );
   Q_UNUSED( fl );
   Q_UNUSED( widgetMode );
-  QgsDebugMsg( "deprecated call - use QgsGui::providerGuiRegistry()->createDataSourceWidget() instead" );
+  QgsDebugMsg( "deprecated call - use QgsGui::providerGuiRegistry()->sourceSelectProviders(providerKey)[0]->createDataSourceWidget() instead" );
   return nullptr;
 }
 

@@ -20,6 +20,7 @@ from qgis.PyQt.QtWidgets import QApplication, QWidget, QTextEdit, QLineEdit, QDi
 from qgis.PyQt.QtTest import QTest
 
 from qgis.core import QgsProviderRegistry, QgsSettings
+from qgis.gui import QgsGui
 from qgis.testing import start_app, unittest
 
 
@@ -88,7 +89,7 @@ class TestPyQgsWFSProviderGUI(unittest.TestCase):
         # if 'TRAVIS_OS_NAME' in os.environ and os.environ['TRAVIS_OS_NAME'] == 'osx':
         #    return
 
-        main_dialog = QgsProviderRegistry.instance().createSelectionWidget("WFS")
+        main_dialog = QgsGui.providerGuiRegistry().sourceSelectProviders("WFS")[0].createDataSourceWidget()
         main_dialog.setProperty("hideDialogs", True)
 
         self.assertIsNotNone(main_dialog)
