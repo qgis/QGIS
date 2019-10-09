@@ -97,8 +97,6 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     //! Create GML parser
     QgsGmlStreamingParser *createParser() const;
 
-    void releaseCacheDirectory() override;
-
   private:
 
     //! WFS filter

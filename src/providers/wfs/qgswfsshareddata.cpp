@@ -15,14 +15,14 @@
 
 #include "qgswfsshareddata.h"
 #include "qgswfsutils.h"
-
+#include "qgscachedirectorymanager.h"
 #include "qgsogcutils.h"
 #include "qgsexpression.h"
 #include "qgsmessagelog.h"
 #include "qgslogger.h"
 
 QgsWFSSharedData::QgsWFSSharedData( const QString &uri )
-  : QgsBackgroundCachedSharedData( tr( "WFS" ) )
+  : QgsBackgroundCachedSharedData( "wfs", tr( "WFS" ) )
   , mURI( uri )
   , mHideProgressDialog( mURI.hideDownloadProgressDialog() )
 {
@@ -33,16 +33,6 @@ QgsWFSSharedData::~QgsWFSSharedData()
   QgsDebugMsgLevel( QStringLiteral( "~QgsWFSSharedData()" ), 4 );
 
   cleanup();
-}
-
-QString QgsWFSSharedData::acquireCacheDirectory()
-{
-  return QgsWFSUtils::acquireCacheDirectory();
-}
-
-void QgsWFSSharedData::releaseCacheDirectory()
-{
-  QgsWFSUtils::releaseCacheDirectory();
 }
 
 std::unique_ptr<QgsFeatureDownloaderImpl> QgsWFSSharedData::newFeatureDownloaderImpl( QgsFeatureDownloader *downloader )

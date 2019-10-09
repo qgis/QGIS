@@ -1858,19 +1858,6 @@ QgsWFSProvider *QgsWfsProviderMetadata::createProvider( const QString &uri, cons
   return new QgsWFSProvider( uri, options );
 }
 
-void QgsWfsProviderMetadata::initProvider()
-{
-  // This function should normally be called just once, but better check
-  // so as to avoid doing twice the initial cleanup of the temporary cache
-  // (which should normally be empty, unless QGIS was killed)
-  static bool sFirstTime = true;
-  if ( sFirstTime )
-  {
-    QgsWFSUtils::init();
-    sFirstTime = false;
-  }
-}
-
 QList<QgsDataItemProvider *> QgsWfsProviderMetadata::dataItemProviders() const
 {
   QList<QgsDataItemProvider *> providers;
