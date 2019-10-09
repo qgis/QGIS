@@ -61,7 +61,7 @@ Drawer {
 
   background: Rectangle {
     color: photoPanel.bgColor
-    //opacity: photoPanel.bgOpacity
+    opacity: photoPanel.bgOpacity
   }
 
   onVisibleChanged: {
