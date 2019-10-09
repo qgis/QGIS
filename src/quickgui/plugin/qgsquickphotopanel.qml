@@ -112,6 +112,7 @@ Drawer {
     VideoOutput {
       id: videoOutput
       source: camera
+      visible: !photoPreview.visible
       focus : visible // to receive focus and capture key events when visible
       anchors.fill: parent
       autoOrientation: true
@@ -149,80 +150,81 @@ Drawer {
         }
 
       }
+    }
 
-      Image {
-        id: photoPreview
-        width: parent.width
-        height: parent.height
-        fillMode: Image.PreserveAspectFit
-        onVisibleChanged: if (!photoPreview.visible) photoPreview.source = ""
+    Image {
+      id: photoPreview
+      width: parent.width
+      height: parent.height
+      fillMode: Image.PreserveAspectFit
+      visible: false
+      onVisibleChanged: if (!photoPreview.visible) photoPreview.source = ""
 
-        // Cancel button
-        Rectangle {
-          id: cancelButton
-          visible: camera.imageCapture.capturedImagePath != ""
+      // Cancel button
+      Rectangle {
+        id: cancelButton
+        visible: camera.imageCapture.capturedImagePath != ""
 
-          property int borderWidth: 5 * QgsQuick.Utils.dp
-          width: buttonSize
-          height: buttonSize
-          color: "white"
-          border.color: photoPanel.borderColor
-          anchors.right: parent.right
-          anchors.top: confirmButton.bottom
-          border.width: borderWidth
-          radius: width*0.5
-          antialiasing: true
+        property int borderWidth: 5 * QgsQuick.Utils.dp
+        width: buttonSize
+        height: buttonSize
+        color: "white"
+        border.color: photoPanel.borderColor
+        anchors.right: parent.right
+        anchors.top: confirmButton.bottom
+        border.width: borderWidth
+        radius: width*0.5
+        antialiasing: true
 
-          MouseArea {
-            anchors.fill: parent
-            onClicked: photoPanel.cancelEvent()
-          }
+        MouseArea {
+          anchors.fill: parent
+          onClicked:photoPanel.cancelEvent()
+        }
 
-          Image {
-            fillMode: Image.PreserveAspectFit
-            anchors.centerIn: parent
-            sourceSize.height: imageButtonSize
-            sourceSize.width: imageButtonSize
-            height: imageButtonSize
-            source: photoPanel.cancelButtonIcon
+        Image {
+          fillMode: Image.PreserveAspectFit
+          anchors.centerIn: parent
+          sourceSize.height: imageButtonSize
+          sourceSize.width: imageButtonSize
+          height: imageButtonSize
+          source: photoPanel.cancelButtonIcon
+        }
+      }
+
+      // Confirm button
+      Rectangle {
+        id: confirmButton
+        visible: camera.imageCapture.capturedImagePath != ""
+
+        property int borderWidth: 5 * QgsQuick.Utils.dp
+        width: buttonSize
+        height: buttonSize
+        color: "white"
+        border.color: photoPanel.borderColor
+        anchors.right: parent.right
+        anchors.verticalCenter: parent.verticalCenter
+        border.width: borderWidth
+        radius: width*0.5
+        antialiasing: true
+
+        MouseArea {
+          anchors.fill: parent
+          onClicked: {
+            captureItem.saveImage = true
+            photoPanel.visible = false
+            photoPanel.lastPhotoName = QgsQuick.Utils.getRelativePath(camera.imageCapture.capturedImagePath, photoPanel.prefixToRelativePath)
+            confirmButtonClicked(photoPanel.prefixToRelativePath, photoPanel.lastPhotoName)
           }
         }
 
-        // Confirm button
-        Rectangle {
-          id: confirmButton
-          visible: camera.imageCapture.capturedImagePath != ""
-
-          property int borderWidth: 5 * QgsQuick.Utils.dp
-          width: buttonSize
-          height: buttonSize
-          color: "white"
-          border.color: photoPanel.borderColor
-          anchors.right: parent.right
-          anchors.verticalCenter: parent.verticalCenter
-          border.width: borderWidth
-          radius: width*0.5
-          antialiasing: true
-
-          MouseArea {
-            anchors.fill: parent
-            onClicked: {
-              captureItem.saveImage = true
-              photoPanel.visible = false
-              photoPanel.lastPhotoName = QgsQuick.Utils.getRelativePath(camera.imageCapture.capturedImagePath, photoPanel.prefixToRelativePath)
-              confirmButtonClicked(photoPanel.prefixToRelativePath, photoPanel.lastPhotoName)
-            }
-          }
-
-          Image {
-            fillMode: Image.PreserveAspectFit
-            anchors.centerIn: parent
-            sourceSize.height: imageButtonSize
-            sourceSize.width: imageButtonSize
-            height: imageButtonSize
-            width: imageButtonSize
-            source: photoPanel.confirmButtonIcon
-          }
+        Image {
+          fillMode: Image.PreserveAspectFit
+          anchors.centerIn: parent
+          sourceSize.height: imageButtonSize
+          sourceSize.width: imageButtonSize
+          height: imageButtonSize
+          width: imageButtonSize
+          source: photoPanel.confirmButtonIcon
         }
       }
     }
