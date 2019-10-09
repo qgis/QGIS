@@ -410,6 +410,16 @@ tests:
       OUTPUT:
         name: expected/create_grid_lines.gml
         type: vector
+        compare:
+          fields:
+            left:
+              precision: 7
+            right:
+              precision: 7
+            top:
+              precision: 7
+            bottom:
+              precision: 7
 
   - algorithm: qgis:convertgeometrytype
     name: polygon to centroid
