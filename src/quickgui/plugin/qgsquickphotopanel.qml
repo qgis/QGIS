@@ -38,11 +38,20 @@ Drawer {
   property var captureButtonIcon: QgsQuick.Utils.getThemeIcon("ic_camera_alt_border")
   property var confirmButtonIcon: QgsQuick.Utils.getThemeIcon("ic_check_black")
   property var cancelButtonIcon: QgsQuick.Utils.getThemeIcon("ic_clear_black")
+  property var backButtonSource: QgsQuick.Utils.getThemeIcon("ic_back")
   property real imageButtonSize: 45 * QgsQuick.Utils.dp
   property real buttonSize: imageButtonSize * 1.2
   property var buttonsPosition
 
   signal confirmButtonClicked(string path, string filename)
+
+  function cancelEvent() {
+    captureItem.saveImage = false
+    photoPreview.visible = false
+    if (camera.imageCapture.capturedImagePath != "") {
+      QgsQuick.Utils.removeFile(camera.imageCapture.capturedImagePath)
+    }
+  }
 
   id: photoPanel
   visible: false
@@ -52,7 +61,7 @@ Drawer {
 
   background: Rectangle {
     color: photoPanel.bgColor
-    opacity: photoPanel.bgOpacity
+    //opacity: photoPanel.bgOpacity
   }
 
   onVisibleChanged: {
@@ -63,6 +72,7 @@ Drawer {
       camera.stop()
       photoPreview.visible = false
     }
+    photoPreview.source = ""
   }
 
   // PhotoCapture item
@@ -165,13 +175,7 @@ Drawer {
 
           MouseArea {
             anchors.fill: parent
-            onClicked: {
-              captureItem.saveImage = false
-              photoPreview.visible = false
-              if (camera.imageCapture.capturedImagePath != "") {
-                QgsQuick.Utils.removeFile(camera.imageCapture.capturedImagePath)
-              }
-            }
+            onClicked: photoPanel.cancelEvent()
           }
 
           Image {
@@ -220,6 +224,37 @@ Drawer {
             source: photoPanel.confirmButtonIcon
           }
         }
+      }
+    }
+
+    Rectangle {
+      id: backButton
+
+      property int borderWidth: 5 * QgsQuick.Utils.dp
+      property real scaleRatio: 0.7
+      width: buttonSize * scaleRatio
+      height: buttonSize * scaleRatio
+      color: "white"
+      opacity: 0.5
+      border.color: photoPanel.borderColor
+      border.width: borderWidth
+      radius: width*0.5
+      antialiasing: true
+
+      MouseArea {
+        anchors.fill: parent
+        onClicked: {
+          cancelButton.visible ? photoPanel.cancelEvent() : photoPanel.close()
+        }
+      }
+
+      Image {
+        fillMode: Image.PreserveAspectFit
+        anchors.centerIn: parent
+        sourceSize.height: imageButtonSize * backButton.scaleRatio
+        sourceSize.width: imageButtonSize * backButton.scaleRatio
+        height: imageButtonSize * backButton.scaleRatio
+        source: photoPanel.backButtonSource
       }
     }
   }
