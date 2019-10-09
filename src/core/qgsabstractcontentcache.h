@@ -252,9 +252,12 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
      * The \a missingContent byte array is returned if the \a path could not be resolved or is broken. If
      * the \a path corresponds to a remote URL, then \a fetchingContent will be returned while the content
      * is in the process of being fetched.
-     * The \a synchrone boolean forces to wait for loading before returning result
+     * The \a blocking boolean forces to wait for loading before returning result. The content is loaded
+     * in the same thread to ensure provided the remote content. WARNING: the \a blocking parameter must NEVER
+     * be TRUE from GUI based applications (like the main QGIS application) or crashes will result. Only for
+     * use in external scripts or QGIS server.
      */
-    QByteArray getContent( const QString &path, const QByteArray &missingContent, const QByteArray &fetchingContent, bool synchrone = false ) const
+    QByteArray getContent( const QString &path, const QByteArray &missingContent, const QByteArray &fetchingContent, bool blocking = false ) const
     {
       // is it a path to local file?
       QFile file( path );
@@ -308,8 +311,8 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
       QMutexLocker locker( &mMutex );
 
       // already a request in progress for this url
-      // force requesting remote url if synchrone mode
-      if ( mPendingRemoteUrls.contains( path ) && !synchrone )
+      // force requesting remote url if blocking mode
+      if ( mPendingRemoteUrls.contains( path ) && !blocking )
         return fetchingContent;
 
       if ( mRemoteContentCache.contains( path ) )
@@ -369,7 +372,7 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
         QMetaObject::invokeMethod( const_cast< QgsAbstractContentCacheBase * >( qobject_cast< const QgsAbstractContentCacheBase * >( this ) ), "onRemoteContentFetched", Qt::QueuedConnection, Q_ARG( QString, path ), Q_ARG( bool, true ) );
       } );
 
-      if ( synchrone )
+      if ( blocking )
       {
         if ( task->run() )
         {

@@ -34,7 +34,7 @@ Constructor for QgsSvgCache.
 %End
 
     QImage svgAsImage( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                       double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio = 0, bool synchrone = false );
+                       double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio = 0, bool blocking = false );
 %Docstring
 Gets SVG as QImage.
 
@@ -46,11 +46,13 @@ Gets SVG as QImage.
 :param widthScaleFactor: width scale factor
 :param fitsInCache:
 :param fixedAspectRatio: fixed aspect ratio (optional)
-:param synchrone: (optional)
+:param blocking: forces to wait for loading before returning image (optional). WARNING: the
+                 blocking parameter must NEVER be ``True`` from GUI based applications (like the main QGIS
+                 application) or crashes will result. Only for use in external scripts or QGIS server.
 %End
 
     QPicture svgAsPicture( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                           double widthScaleFactor, bool forceVectorOutput = false, double fixedAspectRatio = 0, bool synchrone = false );
+                           double widthScaleFactor, bool forceVectorOutput = false, double fixedAspectRatio = 0, bool blocking = false );
 %Docstring
 Gets SVG  as QPicture&.
 
@@ -62,11 +64,13 @@ Gets SVG  as QPicture&.
 :param widthScaleFactor: width scale factor
 :param forceVectorOutput:
 :param fixedAspectRatio: fixed aspect ratio (optional)
-:param synchrone: (optional)
+:param blocking: forces to wait for loading before returning image (optional). WARNING: the
+                 blocking parameter must NEVER be ``True`` from GUI based applications (like the main QGIS
+                 application) or crashes will result. Only for use in external scripts or QGIS server.
 %End
 
     QSizeF svgViewboxSize( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                           double widthScaleFactor, double fixedAspectRatio = 0, bool synchrone = false );
+                           double widthScaleFactor, double fixedAspectRatio = 0, bool blocking = false );
 %Docstring
 Calculates the viewbox size of a (possibly cached) SVG file.
 
@@ -77,7 +81,9 @@ Calculates the viewbox size of a (possibly cached) SVG file.
 :param strokeWidth: width of stroke
 :param widthScaleFactor: width scale factor
 :param fixedAspectRatio: fixed aspect ratio (optional)
-:param synchrone: (optional)
+:param blocking: forces to wait for loading before returning image (optional). WARNING: the
+                 blocking parameter must NEVER be ``True`` from GUI based applications (like the main QGIS
+                 application) or crashes will result. Only for use in external scripts or QGIS server.
 
 :return: viewbox size set in SVG file
 
@@ -85,10 +91,12 @@ Calculates the viewbox size of a (possibly cached) SVG file.
 %End
 
     void containsParams( const QString &path, bool &hasFillParam, QColor &defaultFillColor, bool &hasStrokeParam, QColor &defaultStrokeColor, bool &hasStrokeWidthParam,
-                         double &defaultStrokeWidth, bool synchrone = false ) const;
+                         double &defaultStrokeWidth, bool blocking = false ) const;
 %Docstring
 Tests if an svg file contains parameters for fill, stroke color, stroke width. If yes, possible default values are returned. If there are several
-default values in the svg file, only the first one is considered*
+default values in the svg file, only the first one is considered. Blocking forces to wait for loading before returning image (optional). WARNING: the
+blocking parameter must NEVER be ``True`` from GUI based applications (like the main QGIS application) or crashes will result. Only for use in external
+scripts or QGIS server.*
 %End
 
     void containsParams( const QString &path, bool &hasFillParam, bool &hasDefaultFillParam, QColor &defaultFillColor,
@@ -96,7 +104,7 @@ default values in the svg file, only the first one is considered*
                          bool &hasStrokeParam, bool &hasDefaultStrokeColor, QColor &defaultStrokeColor,
                          bool &hasStrokeWidthParam, bool &hasDefaultStrokeWidth, double &defaultStrokeWidth,
                          bool &hasStrokeOpacityParam, bool &hasDefaultStrokeOpacity, double &defaultStrokeOpacity,
-                         bool synchrone = false ) const /PyName=containsParamsV3/;
+                         bool blocking = false ) const /PyName=containsParamsV3/;
 %Docstring
 Tests if an svg file contains parameters for fill, stroke color, stroke width. If yes, possible default values are returned. If there are several
 default values in the svg file, only the first one is considered.
@@ -117,7 +125,9 @@ default values in the svg file, only the first one is considered.
 :param hasStrokeOpacityParam: will be ``True`` if stroke opacity param present in SVG
 :param hasDefaultStrokeOpacity: will be ``True`` if stroke opacity param has a default value specified
 :param defaultStrokeOpacity: will be set to default stroke opacity specified in SVG, if present
-:param synchrone: (optional)
+:param blocking: forces to wait for loading before returning image (optional). WARNING: the
+                 blocking parameter must NEVER be ``True`` from GUI based applications (like the main QGIS
+                 application) or crashes will result. Only for use in external scripts or QGIS server.
 
 .. note::
 
@@ -126,15 +136,37 @@ default values in the svg file, only the first one is considered.
 .. versionadded:: 2.14
 %End
 
-    QByteArray getImageData( const QString &path, bool synchrone = false ) const;
+    QByteArray getImageData( const QString &path, bool blocking = false ) const;
 %Docstring
-Gets image data
+Gets the SVG content corresponding to the given ``path``.
+
+``path`` may be a local file, remote (HTTP) url, or a base 64 encoded string (with a "base64:" prefix).
+
+The class default missingContent byte array is returned if the ``path`` could not be resolved or is broken. If
+the ``path`` corresponds to a remote URL, then class default fetchingContent will be returned while the content
+is in the process of being fetched.
+The ``blocking`` boolean forces to wait for loading before returning result. The content is loaded
+in the same thread to ensure provided the remote content. WARNING: the ``blocking`` parameter must NEVER
+be ``True`` from GUI based applications (like the main QGIS application) or crashes will result. Only for
+use in external scripts or QGIS server.
 %End
 
+
     QByteArray svgContent( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                           double widthScaleFactor, double fixedAspectRatio = 0, bool synchrone = false );
+                           double widthScaleFactor, double fixedAspectRatio = 0, bool blocking = false );
 %Docstring
-Gets SVG content
+Gets the SVG content corresponding to the given ``path``.
+
+``path`` may be a local file, remote (HTTP) url, or a base 64 encoded string (with a "base64:" prefix).
+
+The parameters ``size``, ``strokeWidth`` for width of stroke, ``widthScaleFactor`` for width scale factor,
+``fill`` for color of fill, ``stroke`` for color of stroke and ``fixedAspectRatio`` for fixed aspect ratio (optional)
+are needed to get the entry from cache or creates a new entry if it does not exist already.
+
+The ``blocking`` boolean forces to wait for loading before returning image. The content is loaded
+in the same thread to ensure provided the image. WARNING: the ``blocking`` parameter must NEVER
+be ``True`` from GUI based applications (like the main QGIS application) or crashes will result. Only for
+use in external scripts or QGIS server.
 %End
 
   signals:
