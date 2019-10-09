@@ -142,10 +142,11 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
     QgsSpinBox *qgsWidget = qobject_cast<QgsSpinBox *>( mIntSpinBox );
     if ( qgsWidget )
       qgsWidget->setShowClearButton( allowNull );
-    int minval = min.toInt();
+    int minval =  min.isValid() ? min.toInt() : std::numeric_limits<int>::lowest();
+    int maxval = max.isValid() ? max.toInt() : std::numeric_limits<int>::max();
+    uint stepval = step.isValid() ? step.toUInt() : 1;
     if ( allowNull )
     {
-      uint stepval = step.isValid() ? step.toUInt() : 1;
       // make sure there is room for a new value (i.e. signed integer does not overflow)
       int minvalOverflow = uint( minval ) - stepval;
       if ( minvalOverflow < minval )
@@ -159,7 +160,7 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
       else
         mIntSpinBox->setSpecialValueText( QgsApplication::nullRepresentation() );
     }
-    setupIntEditor( minval, max, step, mIntSpinBox, this );
+    setupIntEditor( minval, maxval, stepval, mIntSpinBox, this );
     if ( config( QStringLiteral( "Suffix" ) ).isValid() )
       mIntSpinBox->setSuffix( config( QStringLiteral( "Suffix" ) ).toString() );
   }

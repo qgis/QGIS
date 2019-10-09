@@ -51,6 +51,7 @@ class TestQgsRangeWidgetWrapper : public QObject
     void test_setDoubleSmallerRange();
     void test_setDoubleLimits();
     void test_nulls();
+    void test_negativeIntegers(); // see GH issue #32149
     void test_focus();
 
   private:
@@ -330,6 +331,39 @@ void TestQgsRangeWidgetWrapper::test_nulls()
   QCOMPARE( widget0->value( ).toInt(), 150 );
   editor0->mLineEdit->setText( QString( QgsDoubleSpinBox::SPECIAL_TEXT_WHEN_EMPTY ).append( QStringLiteral( "160" ) ) );
   QCOMPARE( widget0->value( ).toInt(), 160 );
+
+}
+
+void TestQgsRangeWidgetWrapper::test_negativeIntegers()
+{
+  QgsApplication::setNullRepresentation( QString( "" ) );
+
+  QVariantMap cfg;
+  widget3->setConfig( cfg );
+
+  QgsSpinBox *editor3 = qobject_cast<QgsSpinBox *>( widget3->createWidget( nullptr ) );
+  QVERIFY( editor3 );
+  widget3->initWidget( editor3 );
+
+  QgsFeature feature { vl->getFeature( 3 ) };
+  feature.setAttribute( 3, -12345 );
+
+  widget3->setFeature( feature );
+  QCOMPARE( widget3->value( ).toInt(), -12345 );
+
+  cfg.insert( QStringLiteral( "Min" ), 10 );
+  widget3->setConfig( cfg );
+  widget3->initWidget( editor3 );
+  widget3->setFeature( feature );
+  QVERIFY( widget3->value().isNull() );
+  QCOMPARE( widget3->value( ).toInt(), 0 );
+
+  cfg.clear();
+  cfg.insert( QStringLiteral( "Min" ), -12346 );
+  widget3->setConfig( cfg );
+  widget3->initWidget( editor3 );
+  widget3->setFeature( feature );
+  QCOMPARE( widget3->value( ).toInt(), -12345 );
 
 }
 
