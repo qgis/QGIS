@@ -21,6 +21,7 @@
 #include "qgslinestring.h"
 #include "qgswkbtypes.h"
 #include "qgsvectorlayer.h"
+#include "qgspolygon.h"
 
 ///@cond PRIVATE
 
@@ -166,7 +167,7 @@ void QgsGridAlgorithm::createPointGrid( std::unique_ptr< QgsFeatureSink > &sink,
 {
   QgsFeature f = QgsFeature();
 
-  long long cols =  static_cast<long long>( std::ceil( mGridExtent.width() / ( mHSpacing - mHOverlay ) ) );
+  long long cols = static_cast<long long>( std::ceil( mGridExtent.width() / ( mHSpacing - mHOverlay ) ) );
   long long rows = static_cast<long long>( std::ceil( mGridExtent.height() / ( mVSpacing - mVOverlay ) ) );
 
   long long id = 1;
@@ -290,10 +291,7 @@ void QgsGridAlgorithm::createLineGrid( std::unique_ptr< QgsFeatureSink > &sink, 
 
     QgsPoint pt1 = QgsPoint( x, mGridExtent.yMaximum() );
     QgsPoint pt2 = QgsPoint( x, mGridExtent.yMinimum() );
-    QVector<QgsPoint> lineNodes = QVector<QgsPoint>() << pt1 << pt2;
-
-    QgsPolyline line = QgsPolyline( lineNodes );
-    f.setGeometry( QgsGeometry::fromPolyline( line ) );
+    f.setGeometry( QgsGeometry( new QgsLineString( pt1, pt2 ) ) );
     f.setAttributes( QgsAttributes() << id << x << mGridExtent.yMaximum() << x << mGridExtent.yMinimum() );
     sink->addFeature( f, QgsFeatureSink::FastInsert );
     x = x + hSpace[cnt % 2];
@@ -324,30 +322,27 @@ void QgsGridAlgorithm::createRectangleGrid( std::unique_ptr< QgsFeatureSink > &s
 
   int thisProgress = 0;
   int lastProgress = 0;
+  QVector< double > ringX( 5 );
+  QVector< double > ringY( 5 );
 
   for ( long long col = 0; col < cols; col++ )
   {
     if ( feedback && feedback->isCanceled() )
       break;
 
-    double x1 = mGridExtent.xMinimum() + ( col * mHSpacing - col * mHOverlay );
-    double x2 = x1 + mHSpacing;
+    const double x1 = mGridExtent.xMinimum() + ( col * mHSpacing - col * mHOverlay );
+    const double x2 = x1 + mHSpacing;
 
     for ( long long row = 0; row < rows; row++ )
     {
-      double y1 = mGridExtent.yMaximum() - ( row * mVSpacing - row * mVOverlay );
-      double y2 = y1 - mVSpacing;
+      const double y1 = mGridExtent.yMaximum() - ( row * mVSpacing - row * mVOverlay );
+      const double y2 = y1 - mVSpacing;
 
-      QgsPolylineXY polyline = QVector<QgsPointXY>();
-      polyline << QgsPointXY( x1, y1 );
-      polyline << QgsPointXY( x2, y1 );
-      polyline << QgsPointXY( x2, y2 );
-      polyline << QgsPointXY( x1, y2 );
-      polyline << QgsPointXY( x1, y1 );
-
-      QgsPolygonXY polygon = QVector<QgsPolylineXY>() << polyline;
-
-      f.setGeometry( QgsGeometry().fromPolygonXY( polygon ) );
+      ringX = { x1, x2, x2, x1, x1 };
+      ringY = { y1, y1, y2, y2, y1 };
+      std::unique_ptr< QgsPolygon > poly = qgis::make_unique< QgsPolygon >();
+      poly->setExteriorRing( new QgsLineString( ringX, ringY ) );
+      f.setGeometry( std::move( poly ) );
       f.setAttributes( QgsAttributes() << id << x1 << y1 << x2 << y2 );
       sink->addFeature( f, QgsFeatureSink::FastInsert );
 
@@ -386,6 +381,8 @@ void QgsGridAlgorithm::createDiamondGrid( std::unique_ptr< QgsFeatureSink > &sin
 
   int thisProgress = 0;
   int lastProgress = 0;
+  QVector< double > ringX( 5 );
+  QVector< double > ringY( 5 );
 
   for ( long long col = 0; col < cols; col++ )
   {
@@ -418,16 +415,11 @@ void QgsGridAlgorithm::createDiamondGrid( std::unique_ptr< QgsFeatureSink > &sin
         y3 = y - ( ( ( row * 2 ) + 3 ) * halfVSpacing );
       }
 
-      QgsPolylineXY polyline = QVector<QgsPointXY>();
-      polyline << QgsPointXY( x1, y2 );
-      polyline << QgsPointXY( x2, y1 );
-      polyline << QgsPointXY( x3, y2 );
-      polyline << QgsPointXY( x2, y3 );
-      polyline << QgsPointXY( x1, y2 );
-
-      QgsPolygonXY polygon = QVector<QgsPolylineXY>() << polyline;
-
-      f.setGeometry( QgsGeometry().fromPolygonXY( polygon ) );
+      ringX = { x1, x2, x3, x2, x1 };
+      ringY = { y2, y1, y2, y3, y2 };
+      std::unique_ptr< QgsPolygon > poly = qgis::make_unique< QgsPolygon >();
+      poly->setExteriorRing( new QgsLineString( ringX, ringY ) );
+      f.setGeometry( std::move( poly ) );
       f.setAttributes( QgsAttributes() << id << x1 << y1 << x3 << y3 );
       sink->addFeature( f, QgsFeatureSink::FastInsert );
 
@@ -476,6 +468,8 @@ void QgsGridAlgorithm::createHexagonGrid( std::unique_ptr<QgsFeatureSink> &sink,
   int thisProgress = 0;
   int lastProgress = 0;
 
+  QVector< double > ringX( 7 );
+  QVector< double > ringY( 7 );
   for ( long long col = 0; col < cols; col++ )
   {
     if ( feedback && feedback->isCanceled() )
@@ -509,18 +503,11 @@ void QgsGridAlgorithm::createHexagonGrid( std::unique_ptr<QgsFeatureSink> &sink,
         y3 = mGridExtent.yMaximum() + ( row * mVOverlay ) - ( ( ( row * 2 ) + 3 ) * halfVSpacing );
       }
 
-      QgsPolylineXY polyline = QVector<QgsPointXY>();
-      polyline << QgsPointXY( x1, y2 );
-      polyline << QgsPointXY( x2, y1 );
-      polyline << QgsPointXY( x3, y1 );
-      polyline << QgsPointXY( x4, y2 );
-      polyline << QgsPointXY( x3, y3 );
-      polyline << QgsPointXY( x2, y3 );
-      polyline << QgsPointXY( x1, y2 );
-
-      QgsPolygonXY polygon = QVector<QgsPolylineXY>() << polyline;
-
-      f.setGeometry( QgsGeometry().fromPolygonXY( polygon ) );
+      ringX = { x1, x2, x3, x4, x3, x2, x1 };
+      ringY = { y2, y1, y1, y2, y3, y3, y2 };
+      std::unique_ptr< QgsPolygon > poly = qgis::make_unique< QgsPolygon >();
+      poly->setExteriorRing( new QgsLineString( ringX, ringY ) );
+      f.setGeometry( std::move( poly ) );
       f.setAttributes( QgsAttributes() << id << x1 << y1 << x4 << y3 );
       sink->addFeature( f, QgsFeatureSink::FastInsert );
 
