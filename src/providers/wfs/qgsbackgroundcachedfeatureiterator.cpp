@@ -297,15 +297,13 @@ QgsBackgroundCachedFeatureIterator::~QgsBackgroundCachedFeatureIterator()
     delete mWriterStream;
     delete mWriterFile;
     if ( !mWriterFilename.isEmpty() )
+    {
       QFile::remove( mWriterFilename );
+      mShared->releaseCacheDirectory();
+    }
   }
-  if ( mReaderStream )
-  {
-    delete mReaderStream;
-    delete mReaderFile;
-    if ( !mReaderFilename.isEmpty() )
-      QFile::remove( mReaderFilename );
-  }
+
+  cleanupReaderStreamAndFile();
 }
 
 void QgsBackgroundCachedFeatureIterator::connectSignals( QgsFeatureDownloader *downloader )
@@ -363,6 +361,8 @@ void QgsBackgroundCachedFeatureIterator::featureReceivedSynchronous( const QVect
       QgsDebugMsg( QStringLiteral( "Cannot open %1 for writing" ).arg( mWriterFilename ) );
       delete mWriterFile;
       mWriterFile = nullptr;
+      mWriterFilename.clear();
+      mShared->releaseCacheDirectory();
       return;
     }
     mWriterFile->write( mWriterByteArray );
@@ -554,16 +554,7 @@ bool QgsBackgroundCachedFeatureIterator::fetchFeature( QgsFeature &f )
       }
 
       // When the stream is finished, cleanup
-      delete mReaderStream;
-      mReaderStream = nullptr;
-      delete mReaderFile;
-      mReaderFile = nullptr;
-      mReaderByteArray.clear();
-      if ( !mReaderFilename.isEmpty() )
-      {
-        QFile::remove( mReaderFilename );
-        mReaderFilename.clear();
-      }
+      cleanupReaderStreamAndFile();
 
       // And try again to check if there's a new output stream to read from
       continue;
@@ -593,11 +584,8 @@ bool QgsBackgroundCachedFeatureIterator::fetchFeature( QgsFeature &f )
   }
 }
 
-bool QgsBackgroundCachedFeatureIterator::rewind()
+void QgsBackgroundCachedFeatureIterator::cleanupReaderStreamAndFile()
 {
-  if ( mClosed )
-    return false;
-
   if ( mReaderStream )
   {
     delete mReaderStream;
@@ -609,8 +597,17 @@ bool QgsBackgroundCachedFeatureIterator::rewind()
     {
       QFile::remove( mReaderFilename );
       mReaderFilename.clear();
+      mShared->releaseCacheDirectory();
     }
   }
+}
+
+bool QgsBackgroundCachedFeatureIterator::rewind()
+{
+  if ( mClosed )
+    return false;
+
+  cleanupReaderStreamAndFile();
 
   QgsFeatureRequest requestCache;
   int genCounter = mShared->getUpdatedCounter();

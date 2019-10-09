@@ -148,8 +148,11 @@ class QgsBackgroundCachedSharedData
     //! Force an update of the feature count
     void setFeatureCount( int featureCount );
 
-    //! Returns the name of temporary directory.
+    //! Returns the name of temporary directory. To be paired with releaseCacheDirectory()
     QString acquireCacheDirectory();
+
+    //! To be called when a temporary file is removed from the directory
+    void releaseCacheDirectory();
 
     //////// Pure virtual methods
 
@@ -188,9 +191,6 @@ class QgsBackgroundCachedSharedData
 
     //! Should be called in the destructor of the implementation of this class !
     void cleanup();
-
-    //! To be called when a temporary file is removed from the directory
-    void releaseCacheDirectory();
 
   private:
 
