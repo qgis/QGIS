@@ -12,6 +12,7 @@ SET(QT_USE_QTDESIGNER ON)
 
 SET (QGIS_CUSTOMWIDGETS_SRCS
   qgiscustomwidgets.cpp
+  qgsauthconfigselectplugin.cpp
   qgscollapsiblegroupboxplugin.cpp
   qgscolorbuttonplugin.cpp
   qgscheckablecomboboxplugin.cpp
@@ -43,6 +44,7 @@ SET (QGIS_CUSTOMWIDGETS_SRCS
 
 SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
   qgiscustomwidgets.h
+  qgsauthconfigselectplugin.h
   qgscollapsiblegroupboxplugin.h
   qgscolorbuttonplugin.h
   qgscheckablecomboboxplugin.h
