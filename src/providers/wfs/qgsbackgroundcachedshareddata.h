@@ -19,6 +19,7 @@
 #include "qgsbackgroundcachedfeatureiterator.h"
 #include "qgsrectangle.h"
 #include "qgsspatialiteutils.h"
+#include "qgscachedirectorymanager.h"
 
 #include <QSet>
 
@@ -56,7 +57,7 @@ class QgsThreadedFeatureDownloader;
 class QgsBackgroundCachedSharedData
 {
   public:
-    QgsBackgroundCachedSharedData( const QString &componentTranslated );
+    QgsBackgroundCachedSharedData( const QString &providerName, const QString &componentTranslated );
     virtual ~QgsBackgroundCachedSharedData();
 
     //////////// Methods to be used by provider
@@ -147,10 +148,10 @@ class QgsBackgroundCachedSharedData
     //! Force an update of the feature count
     void setFeatureCount( int featureCount );
 
-    //////// Pure virtual methods
-
     //! Returns the name of temporary directory.
-    virtual QString acquireCacheDirectory() = 0;
+    QString acquireCacheDirectory();
+
+    //////// Pure virtual methods
 
     //! Instantiate a new feature downloader implementation.
     virtual std::unique_ptr<QgsFeatureDownloaderImpl> newFeatureDownloaderImpl( QgsFeatureDownloader * ) = 0;
@@ -189,9 +190,12 @@ class QgsBackgroundCachedSharedData
     void cleanup();
 
     //! To be called when a temporary file is removed from the directory
-    virtual void releaseCacheDirectory() = 0;
+    void releaseCacheDirectory();
 
   private:
+
+    //! Cache directory manager
+    QgsCacheDirectoryManager &mCacheDirectoryManager;
 
     //! Main mutex to protect most data members that can be modified concurrently
     mutable QMutex mMutex;

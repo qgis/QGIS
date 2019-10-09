@@ -34,7 +34,9 @@
 
 #include <sqlite3.h>
 
-QgsBackgroundCachedSharedData::QgsBackgroundCachedSharedData( const QString &componentTranslated ):
+QgsBackgroundCachedSharedData::QgsBackgroundCachedSharedData(
+  const QString &providerName, const QString &componentTranslated ):
+  mCacheDirectoryManager( QgsCacheDirectoryManager::singleton( ( providerName ) ) ),
   mComponentTranslated( componentTranslated )
 {
 }
@@ -63,6 +65,15 @@ void QgsBackgroundCachedSharedData::cleanup()
   }
 }
 
+QString QgsBackgroundCachedSharedData::acquireCacheDirectory()
+{
+  return mCacheDirectoryManager.acquireCacheDirectory();
+}
+
+void QgsBackgroundCachedSharedData::releaseCacheDirectory()
+{
+  mCacheDirectoryManager.releaseCacheDirectory();
+}
 
 // This is called by the destructor or provider's reloadData(). The effect is to invalid
 // all the caching state, so that a new request results in fresh download
