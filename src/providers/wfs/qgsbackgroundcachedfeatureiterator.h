@@ -231,6 +231,8 @@ class QgsBackgroundCachedFeatureIterator : public QObject,
 
     //! Copies feature attributes / geometry from srcFeature to dstFeature
     void copyFeature( const QgsFeature &srcFeature, QgsFeature &dstFeature, bool srcIsCache );
+
+    void cleanupReaderStreamAndFile();
 };
 
 
