@@ -654,6 +654,15 @@ tests:
         compare:
           geometry:
             precision: 7
+          fields:
+            left:
+              precision: 7
+            right:
+              precision: 7
+            top:
+              precision: 7
+            bottom:
+              precision: 7
 
   - algorithm: qgis:creategrid
     name: Create grid (rectangles)
@@ -670,6 +679,15 @@ tests:
         compare:
           geometry:
             precision: 7
+          fields:
+            left:
+              precision: 7
+            right:
+              precision: 7
+            top:
+              precision: 7
+            bottom:
+              precision: 7
 
   - algorithm: qgis:creategrid
     name: Create grid (diamond)
@@ -686,6 +704,15 @@ tests:
         compare:
           geometry:
             precision: 7
+          fields:
+            left:
+              precision: 7
+            right:
+              precision: 7
+            top:
+              precision: 7
+            bottom:
+              precision: 7
 
   - algorithm: qgis:creategrid
     name: Create grid (hexagon)
@@ -702,6 +729,15 @@ tests:
         compare:
           geometry:
             precision: 7
+          fields:
+            left:
+              precision: 7
+            right:
+              precision: 7
+            top:
+              precision: 7
+            bottom:
+              precision: 7
 
   - algorithm: qgis:creategrid
     name: Create grid (lines with overlay)
@@ -717,6 +753,16 @@ tests:
       OUTPUT:
         name: expected/grid_lines_overlay.gml
         type: vector
+        compare:
+          fields:
+            left:
+              precision: 7
+            right:
+              precision: 7
+            top:
+              precision: 7
+            bottom:
+              precision: 7
 
   - algorithm: qgis:creategrid
     name: Create grid (rectangle with overlay)
@@ -735,6 +781,15 @@ tests:
         compare:
           geometry:
             precision: 7
+          fields:
+            left:
+              precision: 7
+            right:
+              precision: 7
+            top:
+              precision: 7
+            bottom:
+              precision: 7
 
   - algorithm: qgis:creategrid
     name: Create grid (diamond with overlay)
@@ -753,6 +808,15 @@ tests:
         compare:
           geometry:
             precision: 7
+          fields:
+            left:
+              precision: 7
+            right:
+              precision: 7
+            top:
+              precision: 7
+            bottom:
+              precision: 7
 
   - algorithm: qgis:creategrid
     name: Create grid (hexagon with overlay)
@@ -771,6 +835,15 @@ tests:
         compare:
           geometry:
             precision: 7
+          fields:
+            left:
+              precision: 7
+            right:
+              precision: 7
+            top:
+              precision: 7
+            bottom:
+              precision: 7
 
   - algorithm: native:deleteholes
     name: Delete holes (no min)
