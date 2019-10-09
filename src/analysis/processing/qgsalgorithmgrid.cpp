@@ -166,8 +166,8 @@ void QgsGridAlgorithm::createPointGrid( std::unique_ptr< QgsFeatureSink > &sink,
 {
   QgsFeature f = QgsFeature();
 
-  long long cols =  static_cast<long long>( std::ceil( mGridExtent.width() ) / ( mHSpacing - mHOverlay ) );
-  long long rows = static_cast<long long>( std::ceil( mGridExtent.height() ) / ( mVSpacing - mVOverlay ) );
+  long long cols =  static_cast<long long>( std::ceil( mGridExtent.width() / ( mHSpacing - mHOverlay ) ) );
+  long long rows = static_cast<long long>( std::ceil( mGridExtent.height() / ( mVSpacing - mVOverlay ) ) );
 
   long long id = 1;
   long long cnt = 0;
