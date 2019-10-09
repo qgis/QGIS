@@ -154,7 +154,8 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
   QDomDocument capabilitiesDocument;
   if ( !capabilitiesDocument.setContent( buffer, true, &capabilitiesDocError ) )
   {
-    mErrorCode = QgsWfsRequest::XmlError;
+    mErrorCode = QgsWfsRequest::ApplicationLevelError;
+    mAppLevelError = ApplicationLevelError::XmlError;
     mErrorMessage = capabilitiesDocError;
     emit gotCapabilities();
     return;
@@ -184,7 +185,8 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
        !mCaps.version.startsWith( QLatin1String( "1.1" ) ) &&
        !mCaps.version.startsWith( QLatin1String( "2.0" ) ) )
   {
-    mErrorCode = WFSVersionNotSupported;
+    mErrorCode = QgsWfsRequest::ApplicationLevelError;
+    mAppLevelError = ApplicationLevelError::VersionNotSupported;
     mErrorMessage = tr( "WFS version %1 not supported" ).arg( mCaps.version );
     emit gotCapabilities();
     return;

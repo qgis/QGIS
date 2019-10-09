@@ -18,6 +18,7 @@ SET(WFS_SRCS
   qgsbackgroundcachedfeatureiterator.cpp
   qgsbackgroundcachedshareddata.cpp
   qgscachedirectorymanager.cpp
+  qgsbasenetworkrequest.cpp
 )
 
 SET (WFS_MOC_HDRS
@@ -27,6 +28,7 @@ SET (WFS_MOC_HDRS
   qgswfsprovider.h
   qgswfsfeatureiterator.h
   qgswfsrequest.h
+  qgsbasenetworkrequest.h
   qgswfsdescribefeaturetype.h
   qgswfstransactionrequest.h
   qgswfsshareddata.h
@@ -41,6 +43,7 @@ IF (WITH_GUI)
     qgswfsdataitemguiprovider.cpp
     qgswfssourceselect.cpp
     qgswfsnewconnection.cpp
+    qgswfsguiutils.cpp
   )
   SET(WFS_MOC_HDRS ${WFS_MOC_HDRS}
     qgswfsdataitemguiprovider.h

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgswfsnewconnection.h"
+#include "qgswfsguiutils.h"
 
 #include <QMessageBox>
 
@@ -70,30 +71,10 @@ void QgsWFSNewConnection::capabilitiesReplyFinished()
 
   QApplication::restoreOverrideCursor();
 
-  QgsWfsCapabilities::ErrorCode err = mCapabilities->errorCode();
-  if ( err != QgsWfsCapabilities::NoError )
+  auto err = mCapabilities->errorCode();
+  if ( err != QgsBaseNetworkRequest::NoError )
   {
-    QString title;
-    switch ( err )
-    {
-      case QgsWfsCapabilities::NetworkError:
-        title = tr( "Network Error" );
-        break;
-      case QgsWfsCapabilities::XmlError:
-        title = tr( "Capabilities document is not valid" );
-        break;
-      case QgsWfsCapabilities::ServerExceptionError:
-        title = tr( "Server Exception" );
-        break;
-      default:
-        title = tr( "Error" );
-        break;
-    }
-    // handle errors
-    QMessageBox *box = new QMessageBox( QMessageBox::Critical, title, mCapabilities->errorMessage(), QMessageBox::Ok, this );
-    box->setAttribute( Qt::WA_DeleteOnClose );
-    box->setModal( true );
-    box->open();
+    QgsWfsGuiUtils::displayErrorMessageOnFailedCapabilities( mCapabilities, this );
 
     delete mCapabilities;
     mCapabilities = nullptr;

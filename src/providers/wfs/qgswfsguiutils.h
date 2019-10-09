@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgswfsrequest.h
+    qgswfsguiutils.h
     ---------------------
     begin                : February 2016
     copyright            : (C) 2016 by Even Rouault
@@ -12,31 +12,20 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSWFSREQUEST_H
-#define QGSWFSREQUEST_H
 
-#include <QObject>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QUrl>
-#include <QAuthenticator>
+#ifndef QGSWFSGUIUTILS_H
+#define QGSWFSGUIUTILS_H
 
-#include "qgswfsdatasourceuri.h"
-#include "qgsbasenetworkrequest.h"
+#include "qgswfscapabilities.h"
 
-//! Abstract base class for a WFS request.
-class QgsWfsRequest : public QgsBaseNetworkRequest
+class QWidget;
+
+class QgsWfsGuiUtils
 {
-    Q_OBJECT
   public:
-    explicit QgsWfsRequest( const QgsWFSDataSourceURI &uri );
 
-    //! Returns the url for a WFS request
-    QUrl requestUrl( const QString &request ) const;
-
-  protected:
-    //! URI
-    QgsWFSDataSourceURI mUri;
+    //! Display a message box when a capability error occur.
+    static void displayErrorMessageOnFailedCapabilities( QgsWfsCapabilities *capabilities, QWidget *parent );
 };
 
-#endif // QGSWFSREQUEST_H
+#endif // QGSWFSGUIUTILS_H
