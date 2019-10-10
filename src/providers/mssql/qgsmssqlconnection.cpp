@@ -191,6 +191,33 @@ void QgsMssqlConnection::setInvalidGeometryHandlingDisabled( const QString &name
   settings.setValue( "/MSSQL/connections/" + name + "/disableInvalidGeometryHandling", disabled );
 }
 
+bool QgsMssqlConnection::dropView( const QString &uri, QString *errorMessage )
+{
+  QgsDataSourceUri dsUri( uri );
+
+  // connect to database
+  QSqlDatabase db = getDatabase( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
+  const QString schema = dsUri.schema();
+  const QString table = dsUri.table();
+
+  if ( !openDatabase( db ) )
+  {
+    if ( errorMessage )
+      *errorMessage = db.lastError().text();
+    return false;
+  }
+
+  QSqlQuery q = QSqlQuery( db );
+  if ( !q.exec( QString( "DROP VIEW [%1].[%2]" ).arg( schema, table ) ) )
+  {
+    if ( errorMessage )
+      *errorMessage = q.lastError().text();
+    return false;
+  }
+
+  return true;
+}
+
 bool QgsMssqlConnection::dropTable( const QString &uri, QString *errorMessage )
 {
   QgsDataSourceUri dsUri( uri );
