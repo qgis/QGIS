@@ -84,10 +84,11 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         self.assertFalse('geometries_view' in table_names)
 
         geometries_table = self._table_by_name(conn.tables('qgis_test'), 'geometries_table')
-        srids = [t.crs.postgisSrid() for t in geometries_table.geometryColumnTypes()]
-        self.assertEqual(srids, [0, 0, 0, 3857, 4326, 0])
-        types = [t.wkbType for t in geometries_table.geometryColumnTypes()]
-        self.assertEqual(types, [7, 2, 1, 1, 1, 3])
+        srids_and_types = [[t.crs.postgisSrid(), t.wkbType]
+                           for t in geometries_table.geometryColumnTypes()]
+        srids_and_types.sort()
+        self.assertEqual(srids_and_types,
+                         [[0, 1], [0, 2], [0, 3], [0, 7], [3857, 1], [4326, 1]])
 
     # error: ERROR: relation "qgis_test.raster1" does not exist
     @unittest.skipIf(gdal.VersionInfo() < '2040000', 'This test requires GDAL >= 2.4.0')
