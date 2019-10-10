@@ -127,6 +127,11 @@ class QgsMssqlConnection
     static bool dropTable( const QString &uri, QString *errorMessage );
 
     /**
+     * Drops the view referenced by \a uri.
+     */
+    static bool dropView( const QString &uri, QString *errorMessage );
+
+    /**
      * Truncates the table referenced by \a uri.
      */
     static bool truncateTable( const QString &uri, QString *errorMessage );
