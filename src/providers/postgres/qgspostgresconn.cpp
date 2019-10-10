@@ -28,6 +28,7 @@
 #include "qgswkbtypes.h"
 #include "qgssettings.h"
 #include "qgsjsonutils.h"
+#include "qgspostgresstringutils.h"
 
 #include <QApplication>
 #include <QThread>
@@ -399,15 +400,16 @@ void QgsPostgresConn::unref()
 }
 
 /* private */
+// TODO: deprecate this function
 void QgsPostgresConn::addColumnInfo( QgsPostgresLayerProperty &layerProperty, const QString &schemaName, const QString &viewName, bool fetchPkCandidates )
 {
   // TODO: optimize this query when pk candidates aren't needed
   //       could use array_agg() and count()
   //       array output would look like this: "{One,tWo}"
-  QString sql = QStringLiteral( "SELECT attname, CASE WHEN typname = ANY(ARRAY['geometry','geography','topogeometry','raster']) THEN 1 ELSE null END AS isSpatial FROM pg_attribute JOIN pg_type ON atttypid=pg_type.oid WHERE attrelid=regclass('%1.%2') AND attnum>0 ORDER BY attnum" )
+  QString sql = QStringLiteral( "SELECT attname, CASE WHEN typname in ('geometry','geography','topogeometry','raster') THEN 1 ELSE null END AS isSpatial FROM pg_attribute JOIN pg_type ON atttypid=pg_type.oid WHERE attrelid=regclass('%1.%2') AND NOT attisdropped AND attnum>0 ORDER BY attnum" )
                 .arg( quotedIdentifier( schemaName ),
                       quotedIdentifier( viewName ) );
-  //QgsDebugMsg( sql );
+  QgsDebugMsg( "getting column info: " + sql );
   QgsPostgresResult colRes( PQexec( sql ) );
 
   layerProperty.pkCols.clear();
@@ -442,7 +444,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
   int nColumns = 0;
   int foundInTables = 0;
   QgsPostgresResult result;
-  QgsPostgresLayerProperty layerProperty;
+  QString query;
 
   //QgsDebugMsg( QStringLiteral( "Entering." ) );
 
@@ -451,7 +453,6 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
   for ( int i = SctGeometry; i <= SctRaster; ++i )
   {
     QString sql, tableName, schemaName, columnName, typeName, sridName, gtableName, dimName;
-    QgsPostgresGeometryColumnType columnType = SctNone;
 
     if ( i == SctGeometry )
     {
@@ -462,7 +463,6 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       sridName   = QStringLiteral( "l.srid" );
       dimName    = QStringLiteral( "l.coord_dimension" );
       gtableName = QStringLiteral( "geometry_columns" );
-      columnType = SctGeometry;
     }
     else if ( i == SctGeography )
     {
@@ -473,7 +473,6 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       sridName   = QStringLiteral( "l.srid" );
       dimName    = QStringLiteral( "2" );
       gtableName = QStringLiteral( "geography_columns" );
-      columnType = SctGeography;
     }
     else if ( i == SctTopoGeometry )
     {
@@ -492,7 +491,6 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       sridName   = QStringLiteral( "(SELECT srid FROM topology.topology t WHERE l.topology_id=t.id)" );
       dimName    = QStringLiteral( "2" );
       gtableName = QStringLiteral( "topology.layer" );
-      columnType = SctTopoGeometry;
     }
     else if ( i == SctPcPatch )
     {
@@ -506,7 +504,6 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       sridName   = QStringLiteral( "l.srid" );
       dimName    = QStringLiteral( "2" );
       gtableName = QStringLiteral( "pointcloud_columns" );
-      columnType = SctPcPatch;
     }
     else if ( i == SctRaster )
     {
@@ -520,7 +517,6 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       sridName   = QStringLiteral( "l.srid" );
       dimName    = QStringLiteral( "2" );
       gtableName = QStringLiteral( "raster_columns" );
-      columnType = SctRaster;
     }
     else
     {
@@ -531,15 +527,24 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
 
     // The following query returns only tables that exist and the user has SELECT privilege on.
     // Can't use regclass here because table must exist, else error occurs.
-    sql = QString( "SELECT %1,%2,%3,%4,%5,%6,c.relkind,obj_description(c.oid)"
-                   " FROM %7 l,pg_class c,pg_namespace n"
+    sql = QString( "SELECT %1,%2,%3,%4,%5,%6,c.relkind,obj_description(c.oid),"
+                   "array_agg(a.attname), "
+                   "count(CASE WHEN t.typname IN ('geometry','geography','topogeometry','raster') THEN 1 ELSE NULL END) "
+                   ", %8 "
+                   " FROM %7 l,pg_class c,pg_namespace n,pg_attribute a,pg_type t"
                    " WHERE c.relname=%1"
                    " AND %2=n.nspname"
+                   " AND NOT a.attisdropped"
+                   " AND a.attrelid=c.oid"
+                   " AND a.atttypid=t.oid"
+                   " AND a.attnum>0"
                    " AND n.oid=c.relnamespace"
                    " AND has_schema_privilege(n.nspname,'usage')"
                    " AND has_table_privilege('\"'||n.nspname||'\".\"'||c.relname||'\"','select')" // user has select privilege
                  )
-          .arg( tableName, schemaName, columnName, typeName, sridName, dimName, gtableName );
+          .arg( tableName, schemaName, columnName, typeName, sridName, dimName, gtableName )
+          .arg( 1 )
+          ;
 
     if ( searchPublicOnly )
       sql += QLatin1String( " AND n.nspname='public'" );
@@ -547,78 +552,108 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     if ( !schema.isEmpty() )
       sql += QStringLiteral( " AND %1='%2'" ).arg( schemaName, schema );
 
-    sql += QStringLiteral( " ORDER BY n.nspname,c.relname,%1" ).arg( columnName );
+    sql += QString( " GROUP BY 1,2,3,4,5,6,7,c.oid,11" );
 
-    QgsDebugMsg( "getting table info: " + sql );
-    result = PQexec( sql, i == 0 );
-    if ( result.PQresultStatus() != PGRES_TUPLES_OK )
+    foundInTables |= 1 << i;
+
+    if ( ! query.isEmpty() ) query += " UNION ";
+    query += sql;
+  }
+
+  query += QStringLiteral( " ORDER BY 2,1,3" );
+
+
+  QgsDebugMsg( "getting table info from layer registries: " + query );
+  result = PQexec( query, true );
+  if ( result.PQresultStatus() != PGRES_TUPLES_OK )
+  {
+    PQexecNR( QStringLiteral( "COMMIT" ) );
+    return false;
+  }
+
+  for ( int idx = 0; idx < result.PQntuples(); idx++ )
+  {
+    QString tableName = result.PQgetvalue( idx, 0 );
+    QString schemaName = result.PQgetvalue( idx, 1 );
+    QString column = result.PQgetvalue( idx, 2 );
+    QString type = result.PQgetvalue( idx, 3 );
+    QString ssrid = result.PQgetvalue( idx, 4 );
+    int dim = result.PQgetvalue( idx, 5 ).toInt();
+    QString relkind = result.PQgetvalue( idx, 6 );
+    bool isView = relkind == QLatin1String( "v" ) || relkind == QLatin1String( "m" );
+    bool isMaterializedView = relkind == QLatin1String( "m" );
+    bool isForeignTable = relkind == QLatin1String( "f" );
+    bool isRaster = type == QLatin1String( "RASTER" );
+    QString comment = result.PQgetvalue( idx, 7 );
+    QString attributes = result.PQgetvalue( idx, 8 );
+    int nSpCols = result.PQgetvalue( idx, 9 ).toInt();
+    QgsPostgresGeometryColumnType columnType = SctNone;
+
+    int columnTypeInt = result.PQgetvalue( idx, 10 ).toInt();
+    if ( columnTypeInt == SctGeometry ) columnType = SctGeometry;
+    else if ( columnTypeInt == SctGeography ) columnType = SctGeography;
+    else if ( columnTypeInt == SctTopoGeometry ) columnType = SctTopoGeometry;
+    else if ( columnTypeInt == SctPcPatch ) columnType = SctPcPatch;
+    else if ( columnTypeInt == SctRaster ) columnType = SctPcPatch;
+    else
     {
-      PQexecNR( QStringLiteral( "COMMIT" ) );
+      QgsDebugMsg( QStringLiteral( "Unhandled columnType index %1" )
+                   .  arg( columnTypeInt ) );
+    }
+
+    int srid = ssrid.isEmpty() ? std::numeric_limits<int>::min() : ssrid.toInt();
+
+    if ( ! isRaster && majorVersion() >= 2 && srid == 0 )
+    {
+      // 0 doesn't constraint => detect
+      srid = std::numeric_limits<int>::min();
+    }
+
+#if 0
+    QgsDebugMsg( QStringLiteral( "%1 : %2.%3.%4: %5 %6 %7 %8" )
+                 .arg( gtableName )
+                 .arg( schemaName ).arg( tableName ).arg( column )
+                 .arg( type )
+                 .arg( srid )
+                 .arg( relkind )
+                 .arg( dim ) );
+#endif
+
+    QgsPostgresLayerProperty layerProperty;
+    layerProperty.schemaName = schemaName;
+    layerProperty.tableName = tableName;
+    layerProperty.geometryColName = column;
+    layerProperty.geometryColType = columnType;
+    if ( dim == 3 && !type.endsWith( 'M' ) )
+      type += QLatin1String( "Z" );
+    else if ( dim == 4 )
+      type += QLatin1String( "ZM" );
+    layerProperty.types = QList<QgsWkbTypes::Type>() << ( QgsPostgresConn::wkbTypeFromPostgis( type ) );
+    layerProperty.srids = QList<int>() << srid;
+    layerProperty.sql.clear();
+    layerProperty.relKind = relkind;
+    layerProperty.isView = isView;
+    layerProperty.isRaster = isRaster;
+    layerProperty.isMaterializedView = isMaterializedView;
+    layerProperty.tableComment = comment;
+    layerProperty.nSpCols = nSpCols;
+    if ( isView || isForeignTable )
+    {
+      // TODO: use std::transform
+      for ( const auto &a : QgsPostgresStringUtils::parseArray( attributes ) )
+      {
+        layerProperty.pkCols << a.toString();
+      }
+    }
+
+    if ( isView && layerProperty.pkCols.empty() )
+    {
+      //QgsDebugMsg( QStringLiteral( "no key columns found." ) );
       continue;
     }
 
-    for ( int idx = 0; idx < result.PQntuples(); idx++ )
-    {
-      QString tableName = result.PQgetvalue( idx, 0 );
-      QString schemaName = result.PQgetvalue( idx, 1 );
-      QString column = result.PQgetvalue( idx, 2 );
-      QString type = result.PQgetvalue( idx, 3 );
-      QString ssrid = result.PQgetvalue( idx, 4 );
-      int dim = result.PQgetvalue( idx, 5 ).toInt();
-      QString relkind = result.PQgetvalue( idx, 6 );
-      bool isView = relkind == QLatin1String( "v" ) || relkind == QLatin1String( "m" );
-      bool isMaterializedView = relkind == QLatin1String( "m" );
-      bool isForeignTable = relkind == QLatin1String( "f" );
-      bool isRaster = type == QLatin1String( "RASTER" );
-      QString comment = result.PQgetvalue( idx, 7 );
-
-      int srid = ssrid.isEmpty() ? std::numeric_limits<int>::min() : ssrid.toInt();
-
-      if ( ! isRaster && majorVersion() >= 2 && srid == 0 )
-      {
-        // 0 doesn't constraint => detect
-        srid = std::numeric_limits<int>::min();
-      }
-
-#if 0
-      QgsDebugMsg( QStringLiteral( "%1 : %2.%3.%4: %5 %6 %7 %8" )
-                   .arg( gtableName )
-                   .arg( schemaName ).arg( tableName ).arg( column )
-                   .arg( type )
-                   .arg( srid )
-                   .arg( relkind )
-                   .arg( dim ) );
-#endif
-
-      layerProperty.schemaName = schemaName;
-      layerProperty.tableName = tableName;
-      layerProperty.geometryColName = column;
-      layerProperty.geometryColType = columnType;
-      if ( dim == 3 && !type.endsWith( 'M' ) )
-        type += QLatin1String( "Z" );
-      else if ( dim == 4 )
-        type += QLatin1String( "ZM" );
-      layerProperty.types = QList<QgsWkbTypes::Type>() << ( QgsPostgresConn::wkbTypeFromPostgis( type ) );
-      layerProperty.srids = QList<int>() << srid;
-      layerProperty.sql.clear();
-      layerProperty.relKind = relkind;
-      layerProperty.isView = isView;
-      layerProperty.isRaster = isRaster;
-      layerProperty.isMaterializedView = isMaterializedView;
-      layerProperty.tableComment = comment;
-      addColumnInfo( layerProperty, schemaName, tableName, isView || isForeignTable );
-
-      if ( isView && layerProperty.pkCols.empty() )
-      {
-        //QgsDebugMsg( QStringLiteral( "no key columns found." ) );
-        continue;
-      }
-
-      mLayersSupported << layerProperty;
-      nColumns++;
-    }
-
-    foundInTables |= 1 << i;
+    mLayersSupported << layerProperty;
+    nColumns++;
   }
 
   //search for geometry columns in tables that are not in the geometry_columns metatable
@@ -672,7 +707,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       }
     }
 
-    QgsDebugMsg( "sql: " + sql );
+    QgsDebugMsg( "getting spatial table info from pg_catalog: " + sql );
 
     result = PQexec( sql );
 
@@ -703,6 +738,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
 
       //QgsDebugMsg( QStringLiteral( "%1.%2.%3: %4" ).arg( schemaName ).arg( tableName ).arg( column ).arg( relkind ) );
 
+      QgsPostgresLayerProperty layerProperty;
       layerProperty.types = QList<QgsWkbTypes::Type>() << QgsWkbTypes::Unknown;
       layerProperty.srids = QList<int>() << std::numeric_limits<int>::min();
       layerProperty.schemaName = schemaName;
@@ -738,14 +774,15 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
         Q_ASSERT( !"Unknown geometry type" );
       }
 
+      // TODO: use knowledge from already executed query to count
+      //       spatial fields and list attribute names...
       addColumnInfo( layerProperty, schemaName, tableName, isView || isForeignTable );
+
       if ( isView && layerProperty.pkCols.empty() )
       {
         //QgsDebugMsg( QStringLiteral( "no key columns found." ) );
         continue;
       }
-
-      layerProperty.sql.clear();
 
       mLayersSupported << layerProperty;
       nColumns++;
@@ -759,13 +796,18 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
                   ",pg_namespace.nspname"
                   ",pg_class.relkind"
                   ",obj_description(pg_class.oid)"
+                  ",array_agg(a.attname)"
                   " FROM "
                   " pg_class"
                   ",pg_namespace"
+                  ",pg_attribute a"
                   " WHERE pg_namespace.oid=pg_class.relnamespace"
                   " AND has_schema_privilege(pg_namespace.nspname,'usage')"
                   " AND has_table_privilege('\"' || pg_namespace.nspname || '\".\"' || pg_class.relname || '\"','select')"
-                  " AND pg_class.relkind IN ('v','r','m','p')";
+                  " AND pg_class.relkind IN ('v','r','m','p')"
+                  " AND pg_class.oid = a.attrelid"
+                  " AND NOT a.attisdropped"
+                  " AND a.attnum > 0";
 
     // user has select privilege
     if ( searchPublicOnly )
@@ -774,7 +816,9 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     if ( !schema.isEmpty() )
       sql += QStringLiteral( " AND pg_namespace.nspname='%2'" ).arg( schema );
 
-    //QgsDebugMsg( "sql: " + sql );
+    sql += QStringLiteral( " GROUP BY 1,2,3,4" );
+
+    QgsDebugMsg( "getting non-spatial table info: " + sql );
 
     result = PQexec( sql );
 
@@ -791,6 +835,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       QString table   = result.PQgetvalue( i, 0 ); // relname
       QString schema  = result.PQgetvalue( i, 1 ); // nspname
       QString relkind = result.PQgetvalue( i, 2 ); // relation kind
+      QString attributes = result.PQgetvalue( i, 3 ); // attributes array
       bool isView = relkind == QLatin1String( "v" ) || relkind == QLatin1String( "m" );
       bool isMaterializedView = relkind == QLatin1String( "m" );
       bool isForeignTable = relkind == QLatin1String( "f" );
@@ -798,12 +843,14 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
 
       //QgsDebugMsg( QStringLiteral( "%1.%2: %3" ).arg( schema ).arg( table ).arg( relkind ) );
 
+      QgsPostgresLayerProperty layerProperty;
       layerProperty.types = QList<QgsWkbTypes::Type>() << QgsWkbTypes::NoGeometry;
       layerProperty.srids = QList<int>() << std::numeric_limits<int>::min();
       layerProperty.schemaName = schema;
       layerProperty.tableName = table;
       layerProperty.geometryColName = QString();
       layerProperty.geometryColType = SctNone;
+      layerProperty.nSpCols = 0;
       layerProperty.relKind = relkind;
       layerProperty.isView = isView;
       layerProperty.isRaster = false;
@@ -825,8 +872,14 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       if ( alreadyFound )
         continue;
 
-      addColumnInfo( layerProperty, schema, table, isView || isForeignTable );
-      layerProperty.sql.clear();
+      if ( isView || isForeignTable )
+      {
+        // TODO: use std::transform
+        for ( const auto &a : QgsPostgresStringUtils::parseArray( attributes ) )
+        {
+          layerProperty.pkCols << a.toString();
+        }
+      }
 
       mLayersSupported << layerProperty;
       nColumns++;
@@ -1555,40 +1608,48 @@ void QgsPostgresConn::deduceEndian()
 
 void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerProperty, bool useEstimatedMetadata )
 {
+  QVector<QgsPostgresLayerProperty *> vect;
+  vect << &layerProperty;
+  retrieveLayerTypes( vect, useEstimatedMetadata );
+}
+
+void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &layerProperties, bool useEstimatedMetadata )
+{
   QString table;
+  QString query;
 
-  if ( !layerProperty.schemaName.isEmpty() )
+  int i = 0;
+  for ( auto *layerPropertyPtr : layerProperties )
   {
-    table = QStringLiteral( "%1.%2" )
-            .arg( quotedIdentifier( layerProperty.schemaName ),
-                  quotedIdentifier( layerProperty.tableName ) );
-  }
-  else
-  {
-    // Query
-    table = layerProperty.tableName;
-  }
+    QgsPostgresLayerProperty &layerProperty = *layerPropertyPtr;
 
-  if ( !layerProperty.geometryColName.isEmpty() )
-  {
+    if ( i++ ) query += " UNION ";
+
+    if ( !layerProperty.schemaName.isEmpty() )
+    {
+      table = QStringLiteral( "%1.%2" )
+              .arg( quotedIdentifier( layerProperty.schemaName ),
+                    quotedIdentifier( layerProperty.tableName ) );
+    }
+    else
+    {
+      // Query
+      table = layerProperty.tableName;
+    }
+
+    if ( layerProperty.geometryColName.isEmpty() ) continue;
+
     if ( layerProperty.isRaster )
     {
-      bool ok = false;
-      int srid;
-      const QString sql = QStringLiteral( "SELECT DISTINCT ST_SRID( %1 ) FROM %2" )
-                          .arg( quotedIdentifier( layerProperty.geometryColName ) )
-                          .arg( table );
+      QString sql = QStringLiteral( "SELECT %3, ARRAY[]::text[] as types, "
+                                    "array_agg(DISTINCT ST_SRID( %1 )) as srids"
+                                    " FROM %2" )
+                    .arg( quotedIdentifier( layerProperty.geometryColName ) )
+                    .arg( table )
+                    .arg( i - 1 );
 
-      QgsPostgresResult result { PQexec( sql ) };
-      if ( result.PQresultStatus() == PGRES_TUPLES_OK && result.PQntuples() == 1 )
-      {
-        srid = result.PQgetvalue( 0, 0 ).toInt( &ok );
-      }
-      if ( ok )
-      {
-        layerProperty.srids.clear();
-        layerProperty.srids.append( srid );
-      }
+      QgsDebugMsg( "Raster srids query: " + sql );
+      query += sql;
     }
     else  // vectors
     {
@@ -1606,106 +1667,230 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
         table += QStringLiteral( " WHERE %1" ).arg( layerProperty.sql );
       }
 
-      QString query = QStringLiteral( "SELECT DISTINCT " );
+      QString sql = QStringLiteral( "SELECT %1, " ).arg( i - 1 );
 
       bool castToGeometry = layerProperty.geometryColType == SctGeography ||
                             layerProperty.geometryColType == SctPcPatch;
 
-      QgsWkbTypes::Type type = layerProperty.types.value( 0, QgsWkbTypes::Unknown );
-
-      if ( type == QgsWkbTypes::Unknown )
-      {
-        query += QStringLiteral( "upper(geometrytype(%1%2))" )
-                 .arg( quotedIdentifier( layerProperty.geometryColName ),
-                       castToGeometry ?  "::geometry" : "" );
-      }
-      else
-      {
-        query += quotedValue( QgsPostgresConn::postgisWkbTypeName( type ) );
-      }
-
-      query += ',';
+      sql += QStringLiteral( "array_agg(" );
 
       int srid = layerProperty.srids.value( 0, std::numeric_limits<int>::min() );
       if ( srid  == std::numeric_limits<int>::min() )
       {
-        query += QStringLiteral( "%1(%2%3)" )
-                 .arg( majorVersion() < 2 ? "srid" : "st_srid",
-                       quotedIdentifier( layerProperty.geometryColName ),
-                       castToGeometry ?  "::geometry" : "" );
+        sql += QStringLiteral( "%1(%2%3)::text" )
+               .arg( majorVersion() < 2 ? "srid" : "st_srid",
+                     quotedIdentifier( layerProperty.geometryColName ),
+                     castToGeometry ?  "::geometry" : "" );
       }
       else
       {
-        query += QString::number( srid );
+        sql += QStringLiteral( "%1::text" )
+               .arg( QString::number( srid ) );
       }
 
-      query += " FROM " + table;
+      sql += " || ':' || ";
 
-      //QgsDebugMsg( "Retrieving geometry types,srids and dims: " + query );
-
-      QgsPostgresResult gresult( PQexec( query ) );
-
-      if ( gresult.PQresultStatus() == PGRES_TUPLES_OK )
+      QgsWkbTypes::Type type = layerProperty.types.value( 0, QgsWkbTypes::Unknown );
+      if ( type == QgsWkbTypes::Unknown )
       {
-        // Remove unknown entry
-        if ( gresult.PQntuples() > 0 )
+        sql += QStringLiteral( "UPPER(geometrytype(%1%2))" )
+               .arg( quotedIdentifier( layerProperty.geometryColName ),
+                     castToGeometry ?  "::geometry" : "" );
+      }
+      else
+      {
+        sql += QStringLiteral( "%1::text" )
+               .arg( quotedValue( QgsPostgresConn::postgisWkbTypeName( type ) ) );
+      }
+
+
+      sql += QStringLiteral( ") " );
+
+      sql += " FROM " + table;
+
+      QgsDebugMsg( "Geometry types,srids and dims query: " + sql );
+
+      query += sql;
+
+    }
+
+  }
+
+  QgsDebugMsg( "Layer types,srids and dims query: " + query );
+
+  QgsPostgresResult res( PQexec( query ) );
+  if ( res.PQresultStatus() != PGRES_TUPLES_OK )
+  {
+    // TODO: print some error here ?
+    return;
+  }
+
+  for ( int i = 0; i < res.PQntuples(); i++ )
+  {
+    int idx = res.PQgetvalue( i, 0 ).toInt();
+    auto srids_and_types = QgsPostgresStringUtils::parseArray( res.PQgetvalue( i, 1 ) );
+    QgsPostgresLayerProperty &layerProperty = *layerProperties[idx];
+
+    QgsDebugMsg( QStringLiteral(
+                   "Layer %1.%2.%3 has %4 srid/type combinations"
+                 )
+                 .arg( layerProperty.schemaName,
+                       layerProperty.tableName,
+                       layerProperty.geometryColName )
+                 .arg( srids_and_types.length() )
+               );
+
+    /* Gather found types */
+    QList< std::pair<QgsWkbTypes::Type, int> > foundCombinations;
+    for ( const auto &sridAndTypeVariant : srids_and_types )
+    {
+      QString sridAndTypeString = sridAndTypeVariant.toString();
+
+      QgsDebugMsg( QStringLiteral(
+                     "Analyzing layer's %1.%2.%3 sridAndType %4"
+                     " against %6 found combinations"
+                   )
+                   .arg( layerProperty.schemaName,
+                         layerProperty.tableName,
+                         layerProperty.geometryColName )
+                   .arg( sridAndTypeString )
+                   .arg( foundCombinations.length() )
+                 );
+
+      if ( sridAndTypeString == "NULL" ) continue;
+
+      QStringList sridAndType = sridAndTypeString.split( ':' );
+      int srid = sridAndType[0].toInt();
+      QString typeString = sridAndType[1];
+
+      auto type = QgsPostgresConn::wkbTypeFromPostgis( typeString );
+      auto flatType = QgsWkbTypes::flatType( type );
+      auto multiType = QgsWkbTypes::multiType( flatType );
+      auto curveType = QgsWkbTypes::curveType( flatType );
+      auto multiCurveType = QgsWkbTypes::multiType( curveType );
+
+      // if both multi and single types exists, go for the multi type,
+      // so that st_multi can be applied if necessary.
+
+      // if both flat and curve types exists, go for the curve type,
+      // so that st_multi can be applied if necessary.
+
+      int j;
+      for ( j = 0; j < foundCombinations.length(); j++ )
+      {
+        auto foundPair = foundCombinations.at( j );
+        if ( foundPair.second != srid ) continue; // srid must match
+        auto knownType = foundPair.first;
+        if ( type == knownType ) break; // found
+
+        auto knownMultiType = QgsWkbTypes::multiType( knownType );
+        auto knownCurveType = QgsWkbTypes::curveType( knownType );
+        auto knownMultiCurveType = QgsWkbTypes::multiType( knownCurveType );
+
+        if ( multiCurveType == knownMultiCurveType )
         {
-          layerProperty.srids.clear();
-          layerProperty.types.clear();
+          QgsDebugMsg( QStringLiteral(
+                         "Upgrading type[%1] of layer %2.%3.%4 "
+                         "to multiCurved type %5" )
+                       .arg( j )
+                       .arg( layerProperty.schemaName,
+                             layerProperty.tableName,
+                             layerProperty.geometryColName )
+                       .arg( multiCurveType )
+                     );
+          foundCombinations[j].first = multiCurveType;
+          break;
         }
-        for ( int i = 0; i < gresult.PQntuples(); i++ )
+        else if ( multiType == knownMultiType )
         {
-          QString type = gresult.PQgetvalue( i, 0 );
-          QString srid = gresult.PQgetvalue( i, 1 );
-
-          if ( type.isEmpty() )
-            continue;
-
-          // if both multi and single types exists, go for the multi type,
-          // so that st_multi can be applied if necessary.
-          QgsWkbTypes::Type wkbType0 = QgsWkbTypes::flatType( QgsPostgresConn::wkbTypeFromPostgis( type ) );
-          QgsWkbTypes::Type multiType0 = QgsWkbTypes::multiType( wkbType0 );
-          QgsWkbTypes::Type curveType0 = QgsWkbTypes::curveType( wkbType0 );
-          QgsWkbTypes::Type multiCurveType0 = QgsWkbTypes::multiType( curveType0 );
-
-          int j;
-          for ( j = 0; j < layerProperty.size(); j++ )
-          {
-            if ( layerProperty.srids.at( j ) != srid.toInt() )
-              continue;
-
-            QgsWkbTypes::Type wkbType1 = layerProperty.types.at( j );
-            QgsWkbTypes::Type multiType1 = QgsWkbTypes::multiType( wkbType1 );
-            QgsWkbTypes::Type curveType1 = QgsWkbTypes::curveType( wkbType1 );
-            QgsWkbTypes::Type multiCurveType1 = QgsWkbTypes::multiType( curveType1 );
-            if ( wkbType0 != wkbType1 )
-            {
-              if ( multiCurveType0 == multiCurveType1 )
-              {
-                layerProperty.types[j] = multiCurveType0;
-                break;
-              }
-              else if ( multiType0 == multiType1 )
-              {
-                layerProperty.types[j] = multiType0;
-                break;
-              }
-              else if ( curveType0 == curveType1 )
-              {
-                layerProperty.types[j] = curveType0;
-                break;
-              }
-            }
-          }
-
-          if ( j < layerProperty.size() )
-            break;
-
-          layerProperty.types << wkbType0;
-          layerProperty.srids << srid.toInt();
+          QgsDebugMsg( QStringLiteral(
+                         "Upgrading type[%1] of layer %2.%3.%4 "
+                         "to multi type %5" )
+                       .arg( j )
+                       .arg( layerProperty.schemaName,
+                             layerProperty.tableName,
+                             layerProperty.geometryColName )
+                       .arg( multiType )
+                     );
+          foundCombinations[j].first = multiType;
+          break;
+        }
+        else if ( curveType == knownCurveType )
+        {
+          QgsDebugMsg( QStringLiteral(
+                         "Upgrading type[%1] of layer %2.%3.%4 "
+                         "to curved type %5" )
+                       .arg( j )
+                       .arg( layerProperty.schemaName,
+                             layerProperty.tableName,
+                             layerProperty.geometryColName )
+                       .arg( multiType )
+                     );
+          foundCombinations[j].first = curveType;
+          break;
         }
       }
+
+      if ( j < foundCombinations.length() )
+      {
+        QgsDebugMsg( QStringLiteral(
+                       "Pre-existing compatible combination %1/%2 "
+                       "found for layer %3.%4.%5 "
+                     )
+                     .arg( j ) .arg( foundCombinations.length() )
+                     .arg( layerProperty.schemaName,
+                           layerProperty.tableName,
+                           layerProperty.geometryColName )
+                   );
+        continue; // already found
+      }
+
+      QgsDebugMsg( QStringLiteral(
+                     "Setting typeSridCombination[%1] of layer %2.%3.%4 "
+                     "to srid %5 and type %6" )
+                   .arg( j )
+                   .arg( layerProperty.schemaName,
+                         layerProperty.tableName,
+                         layerProperty.geometryColName )
+                   .arg( srid )
+                   .arg( type )
+                 );
+
+      foundCombinations << std::make_pair( type, srid );
     }
+
+    QgsDebugMsg( QStringLiteral(
+                   "Completed scan of %1 srid/type combinations "
+                   "for layer of layer %2.%3.%4 " )
+                 .arg( srids_and_types.length() )
+                 .arg( layerProperty.schemaName,
+                       layerProperty.tableName,
+                       layerProperty.geometryColName )
+               );
+
+    /* Rewrite srids and types to match found combinations
+     * of srids and types */
+    layerProperty.srids.clear();
+    layerProperty.types.clear();
+    for ( const auto &comb : foundCombinations )
+    {
+      layerProperty.types << comb.first;
+      layerProperty.srids << comb.second;
+    }
+    QgsDebugMsg( QStringLiteral(
+                   "Final layer %1.%2.%3 types: %4" )
+                 .arg( layerProperty.schemaName,
+                       layerProperty.tableName,
+                       layerProperty.geometryColName )
+                 .arg( layerProperty.types.length() )
+               );
+    QgsDebugMsg( QStringLiteral(
+                   "Final layer %1.%2.%3 srids: %4" )
+                 .arg( layerProperty.schemaName,
+                       layerProperty.tableName,
+                       layerProperty.geometryColName )
+                 .arg( layerProperty.srids.length() )
+               );
   }
 }
 
