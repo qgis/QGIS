@@ -324,6 +324,7 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
       const bool aspatial { ! flags || flags.testFlag( TableFlag::Aspatial ) };
       conn->supportedLayers( properties, false, schema == QStringLiteral( "public" ), aspatial, schema );
       bool dontResolveType = configuration().value( QStringLiteral( "dontResolveType" ), false ).toBool();
+      bool useEstimatedMetadata = configuration().value( QStringLiteral( "estimatedMetadata" ), false ).toBool();
 
       // Cannot be const:
       for ( auto &pr : properties )
@@ -359,7 +360,7 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
                                       ( pr.types.value( 0, QgsWkbTypes::Unknown ) == QgsWkbTypes::Unknown ||
                                         pr.srids.value( 0, std::numeric_limits<int>::min() ) == std::numeric_limits<int>::min() ) ) )
           {
-            conn->retrieveLayerTypes( pr, true /* useEstimatedMetadata */ );
+            conn->retrieveLayerTypes( pr, useEstimatedMetadata );
           }
           QgsPostgresProviderConnection::TableProperty property;
           property.setFlags( prFlags );
