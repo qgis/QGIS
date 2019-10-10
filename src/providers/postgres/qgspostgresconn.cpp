@@ -2112,7 +2112,7 @@ QgsDataSourceUri QgsPostgresConn::connUri( const QString &connName )
   }
   QString database = settings.value( key + "/database" ).toString();
 
-  bool useEstimatedMetadata = settings.value( key + "/estimatedMetadata", false ).toBool();
+  bool estimatedMetadata = useEstimatedMetadata( connName );
   QgsDataSourceUri::SslMode sslmode = settings.enumValue( key + "/sslmode", QgsDataSourceUri::SslPrefer );
 
   QString username;
@@ -2149,7 +2149,7 @@ QgsDataSourceUri QgsPostgresConn::connUri( const QString &connName )
   {
     uri.setConnection( host, port, database, username, password, sslmode, authcfg );
   }
-  uri.setUseEstimatedMetadata( useEstimatedMetadata );
+  uri.setUseEstimatedMetadata( estimatedMetadata );
 
   return uri;
 }
@@ -2173,6 +2173,14 @@ bool QgsPostgresConn::dontResolveType( const QString &connName )
 
   return settings.value( "/PostgreSQL/connections/" + connName + "/dontResolveType", false ).toBool();
 }
+
+bool QgsPostgresConn::useEstimatedMetadata( const QString &connName )
+{
+  QgsSettings settings;
+
+  return settings.value( "/PostgreSQL/connections/" + connName + "/estimatedMetadata", false ).toBool();
+}
+
 
 bool QgsPostgresConn::allowGeometrylessTables( const QString &connName )
 {
