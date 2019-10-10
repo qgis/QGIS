@@ -209,7 +209,8 @@ void QgsCompositionConverter::adjustPos( QgsPrintLayout *layout, QgsLayoutItem *
     }
   }
 
-  layout->addLayoutItem( layoutItem );
+  if ( !layoutItem->scene() )
+    layout->addLayoutItem( layoutItem );
   layoutItem->setZValue( layoutItem->zValue() + zOrderOffset );
 }
 
