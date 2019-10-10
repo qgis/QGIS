@@ -780,6 +780,7 @@
         <file>themes/default/mIconArrangeSymbolsRight.svg</file>
         <file>themes/default/mIconClearItem.svg</file>
         <file>themes/default/mIndicatorLayerError.svg</file>
+        <file>themes/default/mIndicatorNoCRS.svg</file>
         <file>themes/default/mActionShowUnplacedLabel.svg</file>
         <file>themes/default/mActionHandleStoreFilterExpressionChecked.svg</file>
         <file>themes/default/mActionHandleStoreFilterExpressionUnchecked.svg</file>
