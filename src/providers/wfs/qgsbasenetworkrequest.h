@@ -35,7 +35,7 @@ class QgsBaseNetworkRequest : public QObject
     ~QgsBaseNetworkRequest() override;
 
     //! \brief proceed to sending a GET request
-    bool sendGET( const QUrl &url, bool synchronous, bool forceRefresh = false, bool cache = true );
+    bool sendGET( const QUrl &url, const QString &acceptHeader, bool synchronous, bool forceRefresh = false, bool cache = true );
 
     //! \brief proceed to sending a synchronous POST request
     bool sendPOST( const QUrl &url, const QString &contentTypeHeader, const QByteArray &data );

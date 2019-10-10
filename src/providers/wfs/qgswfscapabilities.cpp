@@ -50,7 +50,7 @@ bool QgsWfsCapabilities::requestCapabilities( bool synchronous, bool forceRefres
   else
     url.addQueryItem( QStringLiteral( "VERSION" ), version );
 
-  if ( !sendGET( url, synchronous, forceRefresh ) )
+  if ( !sendGET( url, QString(), synchronous, forceRefresh ) )
   {
     emit gotCapabilities();
     return false;
