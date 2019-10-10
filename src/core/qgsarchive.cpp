@@ -77,6 +77,13 @@ bool QgsArchive::zip( const QString &filename )
   if ( QFile::exists( filename ) )
     QFile::remove( filename );
 
+#ifdef Q_OS_WIN
+  // Clear temporary flag (see GH #32118)
+  DWORD dwAttrs;
+  dwAttrs = GetFileAttributes( tmpFile.fileName().toLocal8Bit( ).data( ) );
+  SetFileAttributes( tmpFile.fileName().toLocal8Bit( ).data( ), dwAttrs & ~ FILE_ATTRIBUTE_TEMPORARY );
+#endif // Q_OS_WIN
+
   // save zip archive
   if ( ! tmpFile.rename( filename ) )
   {
@@ -84,15 +91,6 @@ bool QgsArchive::zip( const QString &filename )
     QgsMessageLog::logMessage( err, QStringLiteral( "QgsArchive" ) );
     return false;
   }
-#ifdef Q_OS_WIN
-  else
-  {
-    // Clear temporary flag (see GH #32118)
-    DWORD dwAttrs;
-    dwAttrs = GetFileAttributes( filename.toLocal8Bit( ).data( ) );
-    SetFileAttributes( filename.toLocal8Bit( ).data( ), dwAttrs & ~FILE_ATTRIBUTE_TEMPORARY );
-  }
-#endif // Q_OS_WIN
 
   return true;
 }
