@@ -1656,10 +1656,11 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
       // our estimatation ignores that a where clause might restrict the feature type or srid
       if ( useEstimatedMetadata )
       {
-        table = QStringLiteral( "(SELECT %1 FROM %2%3 LIMIT %4) AS t" )
+        table = QStringLiteral( "(SELECT %1 FROM %2%3 WHERE %4 IS NOT NULL LIMIT %5) AS t" )
                 .arg( quotedIdentifier( layerProperty.geometryColName ),
                       table,
                       layerProperty.sql.isEmpty() ? QString() : QStringLiteral( " WHERE %1" ).arg( layerProperty.sql ) )
+                .arg( layerProperty.geometryColName )
                 .arg( GEOM_TYPE_SELECT_LIMIT );
       }
       else if ( !layerProperty.sql.isEmpty() )
