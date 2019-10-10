@@ -270,7 +270,7 @@ int QgsWFSFeatureHitsRequest::getFeatureCount( const QString &WFSVersion,
   }
   getFeatureUrl.addQueryItem( QStringLiteral( "RESULTTYPE" ), QStringLiteral( "hits" ) );
 
-  if ( !sendGET( getFeatureUrl, true ) )
+  if ( !sendGET( getFeatureUrl, QString(), true ) )
     return -1;
 
   const QByteArray &buffer = response();
@@ -337,7 +337,7 @@ QgsRectangle QgsWFSSingleFeatureRequest::getExtent()
   else
     getFeatureUrl.addQueryItem( QStringLiteral( "MAXFEATURES" ), QString::number( 1 ) );
 
-  if ( !sendGET( getFeatureUrl, true ) )
+  if ( !sendGET( getFeatureUrl, QString(), true ) )
     return QgsRectangle();
 
   const QByteArray &buffer = response();

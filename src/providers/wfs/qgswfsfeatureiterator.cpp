@@ -48,6 +48,7 @@ QgsWFSFeatureHitsAsyncRequest::QgsWFSFeatureHitsAsyncRequest( QgsWFSDataSourceUR
 void QgsWFSFeatureHitsAsyncRequest::launch( const QUrl &url )
 {
   sendGET( url,
+           QString(), // content-type
            false, /* synchronous */
            true, /* forceRefresh */
            false /* cache */ );
@@ -525,6 +526,7 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures )
     }
 
     sendGET( url,
+             QString(), // content-type
              false, /* synchronous */
              true, /* forceRefresh */
              false /* cache */ );

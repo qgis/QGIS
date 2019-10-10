@@ -44,7 +44,7 @@ bool QgsWFSDescribeFeatureType::requestFeatureType( const QString &WFSVersion,
     url.addQueryItem( QStringLiteral( "NAMESPACE" ), namespaceValue );
   }
 
-  return sendGET( url, true, false );
+  return sendGET( url, QString(), true, false );
 }
 
 QString QgsWFSDescribeFeatureType::errorMessageWithReason( const QString &reason )

@@ -50,7 +50,7 @@ void QgsBaseNetworkRequest::requestTimedOut( QNetworkReply *reply )
     mTimedout = true;
 }
 
-bool QgsBaseNetworkRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefresh, bool cache )
+bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeader, bool synchronous, bool forceRefresh, bool cache )
 {
   abort(); // cancel previous
   mIsAborted = false;
@@ -73,24 +73,6 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, bool synchronous, bool for
     modifiedUrlString = QUrl::fromPercentEncoding( modifiedUrlString.toUtf8() );
     QgsDebugMsgLevel( QStringLiteral( "Get %1" ).arg( modifiedUrlString ), 4 );
     modifiedUrlString = modifiedUrlString.mid( QStringLiteral( "http://" ).size() );
-    QString args = modifiedUrlString.mid( modifiedUrlString.indexOf( '?' ) );
-    if ( modifiedUrlString.size() > 256 )
-    {
-      args = QCryptographicHash::hash( args.toUtf8(), QCryptographicHash::Md5 ).toHex();
-    }
-    else
-    {
-      args.replace( QLatin1String( "?" ), QLatin1String( "_" ) );
-      args.replace( QLatin1String( "&" ), QLatin1String( "_" ) );
-      args.replace( QLatin1String( "<" ), QLatin1String( "_" ) );
-      args.replace( QLatin1String( ">" ), QLatin1String( "_" ) );
-      args.replace( QLatin1String( "'" ), QLatin1String( "_" ) );
-      args.replace( QLatin1String( "\"" ), QLatin1String( "_" ) );
-      args.replace( QLatin1String( " " ), QLatin1String( "_" ) );
-      args.replace( QLatin1String( ":" ), QLatin1String( "_" ) );
-      args.replace( QLatin1String( "/" ), QLatin1String( "_" ) );
-      args.replace( QLatin1String( "\n" ), QLatin1String( "_" ) );
-    }
 #ifdef Q_OS_WIN
     // Passing "urls" like "http://c:/path" to QUrl 'eats' the : after c,
     // so we must restore it
@@ -99,7 +81,48 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, bool synchronous, bool for
       modifiedUrlString = modifiedUrlString[0] + ":/" + modifiedUrlString.mid( 2 );
     }
 #endif
-    modifiedUrlString = modifiedUrlString.mid( 0, modifiedUrlString.indexOf( '?' ) ) + args;
+
+    // For REST API using URL subpaths, normalize the subpaths
+    int afterEndpointStartPos = modifiedUrlString.indexOf( "fake_qgis_http_endpoint" ) + strlen( "fake_qgis_http_endpoint" );
+    QString afterEndpointStart = modifiedUrlString.mid( afterEndpointStartPos );
+    afterEndpointStart.replace( QLatin1String( "/" ), QLatin1String( "_" ) );
+    modifiedUrlString = modifiedUrlString.mid( 0, afterEndpointStartPos ) + afterEndpointStart;
+
+    if ( !acceptHeader.isEmpty() )
+    {
+      if ( modifiedUrlString.indexOf( '?' ) > 0 )
+      {
+        modifiedUrlString += QStringLiteral( "&Accept=" ) + acceptHeader;
+      }
+      else
+      {
+        modifiedUrlString += QStringLiteral( "?Accept=" ) + acceptHeader;
+      }
+    }
+    auto posQuotationMark = modifiedUrlString.indexOf( '?' );
+    if ( posQuotationMark > 0 )
+    {
+      QString args = modifiedUrlString.mid( posQuotationMark );
+      if ( modifiedUrlString.size() > 256 )
+      {
+        QgsDebugMsgLevel( QStringLiteral( "Args before MD5: %1" ).arg( args ), 4 );
+        args = QCryptographicHash::hash( args.toUtf8(), QCryptographicHash::Md5 ).toHex();
+      }
+      else
+      {
+        args.replace( QLatin1String( "?" ), QLatin1String( "_" ) );
+        args.replace( QLatin1String( "&" ), QLatin1String( "_" ) );
+        args.replace( QLatin1String( "<" ), QLatin1String( "_" ) );
+        args.replace( QLatin1String( ">" ), QLatin1String( "_" ) );
+        args.replace( QLatin1String( "'" ), QLatin1String( "_" ) );
+        args.replace( QLatin1String( "\"" ), QLatin1String( "_" ) );
+        args.replace( QLatin1String( " " ), QLatin1String( "_" ) );
+        args.replace( QLatin1String( ":" ), QLatin1String( "_" ) );
+        args.replace( QLatin1String( "/" ), QLatin1String( "_" ) );
+        args.replace( QLatin1String( "\n" ), QLatin1String( "_" ) );
+      }
+      modifiedUrlString = modifiedUrlString.mid( 0, modifiedUrlString.indexOf( '?' ) ) + args;
+    }
     QgsDebugMsgLevel( QStringLiteral( "Get %1 (after laundering)" ).arg( modifiedUrlString ), 4 );
     modifiedUrl = QUrl::fromLocalFile( modifiedUrlString );
   }
@@ -107,6 +130,11 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, bool synchronous, bool for
   QgsDebugMsgLevel( QStringLiteral( "Calling: %1" ).arg( modifiedUrl.toDisplayString( ) ), 4 );
 
   QNetworkRequest request( modifiedUrl );
+  if ( !acceptHeader.isEmpty() )
+  {
+    request.setRawHeader( "Accept", acceptHeader.toUtf8() );
+  }
+
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsBaseNetworkRequest" ) );
   if ( !mAuth.setAuthorization( request ) )
   {
@@ -241,7 +269,7 @@ bool QgsBaseNetworkRequest::sendPOST( const QUrl &url, const QString &contentTyp
     // Hack for testing purposes
     QUrl modifiedUrl( url );
     modifiedUrl.addQueryItem( QStringLiteral( "POSTDATA" ), QString::fromUtf8( data ) );
-    return sendGET( modifiedUrl, true, true, false );
+    return sendGET( modifiedUrl, QString(), true, true, false );
   }
 
   QNetworkRequest request( url );

@@ -1380,7 +1380,7 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
       QgsDebugMsgLevel( QStringLiteral( "DescribeFeatureType response redirects to: %1" ).arg( schemaLocation ), 4 );
 
       QgsWFSDescribeFeatureType describeFeatureType( mShared->mURI );
-      if ( !describeFeatureType.sendGET( schemaLocation, true, false ) )
+      if ( !describeFeatureType.sendGET( schemaLocation, QString(), true, false ) )
       {
         errorMsg = tr( "Cannot find schema indicated in DescribeFeatureType response." );
         QgsMessageLog::logMessage( tr( "DescribeFeatureType network request failed for url %1: %2" ).
