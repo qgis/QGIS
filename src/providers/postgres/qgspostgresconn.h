@@ -376,6 +376,7 @@ class QgsPostgresConn : public QObject
     static bool publicSchemaOnly( const QString &connName );
     static bool geometryColumnsOnly( const QString &connName );
     static bool dontResolveType( const QString &connName );
+    static bool useEstimatedMetadata( const QString &connName );
     static bool allowGeometrylessTables( const QString &connName );
     static bool allowProjectsInDatabase( const QString &connName );
     static void deleteConnection( const QString &connName );

@@ -400,6 +400,7 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
   }
 
   bool dontResolveType = QgsPostgresConn::dontResolveType( mConnectionName );
+  bool estimatedMetadata = QgsPostgresConn::useEstimatedMetadata( mConnectionName );
   const auto constLayerProperties = layerProperties;
   for ( QgsPostgresLayerProperty layerProperty : constLayerProperties )
   {
@@ -415,8 +416,7 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
         //QgsDebugMsg( QStringLiteral( "skipping column %1.%2 without type constraint" ).arg( layerProperty.schemaName ).arg( layerProperty.tableName ) );
         continue;
       }
-
-      conn->retrieveLayerTypes( layerProperty, true /* useEstimatedMetadata */ );
+      conn->retrieveLayerTypes( layerProperty, estimatedMetadata );
     }
 
     for ( int i = 0; i < layerProperty.size(); i++ )
