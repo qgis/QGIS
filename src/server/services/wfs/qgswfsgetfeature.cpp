@@ -35,6 +35,7 @@
 #include "qgsogcutils.h"
 #include "qgsjsonutils.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgswkbtypes.h"
 
 #include "qgswfsgetfeature.h"
 
@@ -58,6 +59,8 @@ namespace QgsWfs
       const QString &geometryName;
 
       const QgsCoordinateReferenceSystem &outputCrs;
+
+      bool forceGeomToMulti;
     };
 
     QString createFeatureGeoJSON( const QgsFeature &feature, const createFeatureParams &params, const QgsAttributeList &pkAttributes );
@@ -364,6 +367,8 @@ namespace QgsWfs
         outputCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( query.srsName );
       }
 
+      bool forceGeomToMulti = QgsWkbTypes::isMultiType( vlayer->wkbType() );
+
       if ( !featureRequest.filterRect().isEmpty() )
       {
         QgsCoordinateTransform transform( outputCrs, vlayer->crs(), project );
@@ -403,7 +408,8 @@ namespace QgsWfs
                                           typeName,
                                           withGeom,
                                           geometryName,
-                                          outputCrs
+                                          outputCrs,
+                                          forceGeomToMulti
                                         };
         while ( fit.nextFeature( feature ) && ( aRequest.maxFeatures == -1 || sentFeatures < aRequest.maxFeatures ) )
         {
@@ -1313,10 +1319,19 @@ namespace QgsWfs
         }
         else
         {
-          const QgsAbstractGeometry *abstractGeom = geom.constGet();
-          if ( abstractGeom )
+          if ( params.forceGeomToMulti && ! QgsWkbTypes::isMultiType( geom.wkbType() ) )
           {
-            gmlElem = abstractGeom->asGml2( doc, prec, "http://www.opengis.net/gml" );
+            QgsGeometry multiGeom = geom;
+            multiGeom.convertToMultiType();
+            gmlElem = QgsOgcUtils::geometryToGML( multiGeom, doc, prec );
+          }
+          else
+          {
+            const QgsAbstractGeometry *abstractGeom = geom.constGet();
+            if ( abstractGeom )
+            {
+              gmlElem = abstractGeom->asGml2( doc, prec, "http://www.opengis.net/gml" );
+            }
           }
         }
 
@@ -1415,10 +1430,19 @@ namespace QgsWfs
         }
         else
         {
-          const QgsAbstractGeometry *abstractGeom = geom.constGet();
-          if ( abstractGeom )
+          if ( params.forceGeomToMulti && ! QgsWkbTypes::isMultiType( geom.wkbType() ) )
           {
-            gmlElem = abstractGeom->asGml3( doc, prec, "http://www.opengis.net/gml" );
+            QgsGeometry multiGeom = geom;
+            multiGeom.convertToMultiType();
+            gmlElem = QgsOgcUtils::geometryToGML( multiGeom, doc, QStringLiteral( "GML3" ), prec );
+          }
+          else
+          {
+            const QgsAbstractGeometry *abstractGeom = geom.constGet();
+            if ( abstractGeom )
+            {
+              gmlElem = abstractGeom->asGml3( doc, prec, "http://www.opengis.net/gml" );
+            }
           }
         }
 
