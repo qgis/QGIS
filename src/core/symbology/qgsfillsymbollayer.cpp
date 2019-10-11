@@ -1935,11 +1935,11 @@ void QgsSVGFillSymbolLayer::applyPattern( QBrush &brush, const QString &svgFileP
     bool fitsInCache = true;
     double strokeWidth = context.renderContext().convertToPainterUnits( svgStrokeWidth, svgStrokeWidthUnit, svgStrokeWidthMapUnitScale );
     QImage patternImage = QgsApplication::svgCache()->svgAsImage( svgFilePath, size, svgFillColor, svgStrokeColor, strokeWidth,
-                          context.renderContext().scaleFactor(), fitsInCache );
+                          context.renderContext().scaleFactor(), fitsInCache, 0, ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ) );
     if ( !fitsInCache )
     {
       QPicture patternPict = QgsApplication::svgCache()->svgAsPicture( svgFilePath, size, svgFillColor, svgStrokeColor, strokeWidth,
-                             context.renderContext().scaleFactor() );
+                             context.renderContext().scaleFactor(), false, 0, ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ) );
       double hwRatio = 1.0;
       if ( patternPict.width() > 0 )
       {
@@ -3903,7 +3903,7 @@ void QgsRasterFillSymbolLayer::applyPattern( QBrush &brush, const QString &image
   }
 
   bool cached;
-  QImage img = QgsApplication::imageCache()->pathAsImage( imageFilePath, size, true, alpha, cached );
+  QImage img = QgsApplication::imageCache()->pathAsImage( imageFilePath, size, true, alpha, cached, ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ) );
   if ( img.isNull() )
     return;
 

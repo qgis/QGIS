@@ -237,6 +237,7 @@ namespace QgsWms
 
     // configure layers
     QgsMapSettings mapSettings;
+    mapSettings.setFlag( QgsMapSettings::RenderBlocking );
     QList<QgsMapLayer *> layers = mContext.layersToRender();
     configureLayers( layers, &mapSettings );
 
@@ -385,6 +386,7 @@ namespace QgsWms
 
     // configure layers
     QgsMapSettings mapSettings;
+    mapSettings.setFlag( QgsMapSettings::RenderBlocking );
     QList<QgsMapLayer *> layers = mContext.layersToRender();
     configureLayers( layers, &mapSettings );
 
@@ -749,6 +751,7 @@ namespace QgsWms
     QList<QgsMapLayer *> layers = mContext.layersToRender();
 
     QgsMapSettings mapSettings;
+    mapSettings.setFlag( QgsMapSettings::RenderBlocking );
     configureLayers( layers, &mapSettings );
 
     // create the output image and the painter
@@ -901,6 +904,7 @@ namespace QgsWms
 
     // configure map settings (background, DPI, ...)
     QgsMapSettings mapSettings;
+    mapSettings.setFlag( QgsMapSettings::RenderBlocking );
     configureMapSettings( outputImage.get(), mapSettings, mandatoryCrsParam );
 
     // compute scale denominator
@@ -2993,6 +2997,7 @@ namespace QgsWms
     const QList< QgsAnnotation * > annotations = annotationManager->annotations();
 
     QgsRenderContext renderContext = QgsRenderContext::fromQPainter( painter );
+    renderContext.setFlag( QgsRenderContext::RenderBlocking );
     for ( QgsAnnotation *annotation : annotations )
     {
       if ( !annotation || !annotation->isVisible() )
@@ -3127,6 +3132,7 @@ namespace QgsWms
     if ( !mWmsParameters.bbox().isEmpty() )
     {
       QgsMapSettings mapSettings;
+      mapSettings.setFlag( QgsMapSettings::RenderBlocking );
       std::unique_ptr<QImage> tmp( createImage( mContext.mapSize( false ) ) );
       configureMapSettings( tmp.get(), mapSettings );
       settings.setMapScale( mapSettings.scale() );

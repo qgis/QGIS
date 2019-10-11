@@ -1323,6 +1323,25 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_SLDRestored")
 
+        # Test SVG
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "REQUEST": "GetMap",
+            "VERSION": "1.1.1",
+            "SERVICE": "WMS",
+            "SLD": "http://localhost:" + str(port) + "/qgis_local_server/db_point_svg.sld",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "WIDTH": "500",
+            "HEIGHT": "500",
+            "LAYERS": "db_point",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_SLD_SVG")
+
         httpd.server_close()
 
     def test_wms_getmap_sld_body(self):
