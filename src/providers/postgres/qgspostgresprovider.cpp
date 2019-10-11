@@ -361,6 +361,11 @@ QgsTransaction *QgsPostgresProvider::transaction() const
   return mTransaction;
 }
 
+QString QgsPostgresProvider::providerKey()
+{
+  return POSTGRES_KEY;
+}
+
 void QgsPostgresProvider::setTransaction( QgsTransaction *transaction )
 {
   // static_cast since layers cannot be added to a transaction of a non-matching provider
@@ -5221,7 +5226,9 @@ QgsPostgresProviderMetadata::QgsPostgresProviderMetadata()
 {
 }
 
+#ifndef HAVE_STATIC_PROVIDERS
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return new QgsPostgresProviderMetadata();
 }
+#endif

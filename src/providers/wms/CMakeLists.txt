@@ -91,7 +91,7 @@ IF (FORCE_STATIC_PROVIDERS)
     INSTALL (TARGETS wmsprovider_gui_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
   ENDIF (WITH_GUI)
 ELSE (FORCE_STATIC_PROVIDERS)
-  # dynimally loaded module
+  # dynamically loaded module
   ADD_LIBRARY(wmsprovider MODULE ${WMS_SRCS} ${WMS_GUI_SRCS} ${WMS_MOC_SRCS} ${WMS_GUI_MOC_SRCS})
 
   TARGET_LINK_LIBRARIES(wmsprovider

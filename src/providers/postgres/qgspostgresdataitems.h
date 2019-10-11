@@ -40,16 +40,10 @@ class QgsPGRootItem : public QgsDataCollectionItem
 
     QVariant sortKey() const override { return 3; }
 
-#ifdef HAVE_GUI
-    QWidget *paramWidget() override;
-#endif
-
     static QMainWindow *sMainWindow;
 
   public slots:
-#ifdef HAVE_GUI
     void onConnectionsChanged();
-#endif
 };
 
 class QgsPGConnectionItem : public QgsDataCollectionItem

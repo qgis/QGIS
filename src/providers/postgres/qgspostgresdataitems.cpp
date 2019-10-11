@@ -27,11 +27,6 @@
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
 #include "providers/gdal/qgsgdaldataitems.h"
-
-#ifdef HAVE_GUI
-#include "qgspgsourceselect.h"
-#endif
-
 #include <QMessageBox>
 #include <climits>
 
@@ -548,19 +543,10 @@ QVector<QgsDataItem *> QgsPGRootItem::createChildren()
   return connections;
 }
 
-#ifdef HAVE_GUI
-QWidget *QgsPGRootItem::paramWidget()
-{
-  QgsPgSourceSelect *select = new QgsPgSourceSelect( nullptr, nullptr, QgsProviderRegistry::WidgetMode::Manager );
-  connect( select, &QgsPgSourceSelect::connectionsChanged, this, &QgsPGRootItem::onConnectionsChanged );
-  return select;
-}
-
 void QgsPGRootItem::onConnectionsChanged()
 {
   refresh();
 }
-#endif
 
 QMainWindow *QgsPGRootItem::sMainWindow = nullptr;
 
