@@ -132,8 +132,12 @@ void FeaturePart::extractCoords( const GEOSGeometry *geom )
 
   for ( int i = 0; i < nbPoints; ++i )
   {
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+    GEOSCoordSeq_getXY_r( geosctxt, coordSeq, i, &x[i], &y[i] );
+#else
     GEOSCoordSeq_getX_r( geosctxt, coordSeq, i, &x[i] );
     GEOSCoordSeq_getY_r( geosctxt, coordSeq, i, &y[i] );
+#endif
 
     xmax = x[i] > xmax ? x[i] : xmax;
     xmin = x[i] < xmin ? x[i] : xmin;
@@ -320,8 +324,12 @@ std::unique_ptr<LabelPosition> FeaturePart::createCandidatePointOnSurface( Point
     if ( pointGeom )
     {
       const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, pointGeom.get() );
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+      GEOSCoordSeq_getXY_r( geosctxt, coordSeq, 0, &px, &py );
+#else
       GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, &px );
       GEOSCoordSeq_getY_r( geosctxt, coordSeq, 0, &py );
+#endif
     }
   }
   catch ( GEOSException &e )
