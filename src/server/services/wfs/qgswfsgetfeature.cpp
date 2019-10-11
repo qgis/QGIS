@@ -1307,32 +1307,23 @@ namespace QgsWfs
 
         QDomElement geomElem = doc.createElement( QStringLiteral( "qgs:geometry" ) );
         QDomElement gmlElem;
+        QgsGeometry cloneGeom( geom );
         if ( params.geometryName == QLatin1String( "EXTENT" ) )
         {
-          QgsGeometry bbox = QgsGeometry::fromRect( geom.boundingBox() );
-          gmlElem = QgsOgcUtils::geometryToGML( bbox, doc, prec );
+          cloneGeom = QgsGeometry::fromRect( geom.boundingBox() );
         }
         else if ( params.geometryName == QLatin1String( "CENTROID" ) )
         {
-          QgsGeometry centroid = geom.centroid();
-          gmlElem = QgsOgcUtils::geometryToGML( centroid, doc, prec );
+          cloneGeom = geom.centroid();
         }
-        else
+        else if ( params.forceGeomToMulti && ! QgsWkbTypes::isMultiType( geom.wkbType() ) )
         {
-          if ( params.forceGeomToMulti && ! QgsWkbTypes::isMultiType( geom.wkbType() ) )
-          {
-            QgsGeometry multiGeom = geom;
-            multiGeom.convertToMultiType();
-            gmlElem = QgsOgcUtils::geometryToGML( multiGeom, doc, prec );
-          }
-          else
-          {
-            const QgsAbstractGeometry *abstractGeom = geom.constGet();
-            if ( abstractGeom )
-            {
-              gmlElem = abstractGeom->asGml2( doc, prec, "http://www.opengis.net/gml" );
-            }
-          }
+          cloneGeom.convertToMultiType();
+        }
+        const QgsAbstractGeometry *abstractGeom = cloneGeom.constGet();
+        if ( abstractGeom )
+        {
+          gmlElem = abstractGeom->asGml2( doc, prec, "http://www.opengis.net/gml" );
         }
 
         if ( !gmlElem.isNull() )
@@ -1418,32 +1409,23 @@ namespace QgsWfs
 
         QDomElement geomElem = doc.createElement( QStringLiteral( "qgs:geometry" ) );
         QDomElement gmlElem;
+        QgsGeometry cloneGeom( geom );
         if ( params.geometryName == QLatin1String( "EXTENT" ) )
         {
-          QgsGeometry bbox = QgsGeometry::fromRect( geom.boundingBox() );
-          gmlElem = QgsOgcUtils::geometryToGML( bbox, doc, QStringLiteral( "GML3" ), prec );
+          cloneGeom = QgsGeometry::fromRect( geom.boundingBox() );
         }
         else if ( params.geometryName == QLatin1String( "CENTROID" ) )
         {
-          QgsGeometry centroid = geom.centroid();
-          gmlElem = QgsOgcUtils::geometryToGML( centroid, doc, QStringLiteral( "GML3" ), prec );
+          cloneGeom = geom.centroid();
         }
-        else
+        else if ( params.forceGeomToMulti && ! QgsWkbTypes::isMultiType( geom.wkbType() ) )
         {
-          if ( params.forceGeomToMulti && ! QgsWkbTypes::isMultiType( geom.wkbType() ) )
-          {
-            QgsGeometry multiGeom = geom;
-            multiGeom.convertToMultiType();
-            gmlElem = QgsOgcUtils::geometryToGML( multiGeom, doc, QStringLiteral( "GML3" ), prec );
-          }
-          else
-          {
-            const QgsAbstractGeometry *abstractGeom = geom.constGet();
-            if ( abstractGeom )
-            {
-              gmlElem = abstractGeom->asGml3( doc, prec, "http://www.opengis.net/gml" );
-            }
-          }
+          cloneGeom.convertToMultiType();
+        }
+        const QgsAbstractGeometry *abstractGeom = cloneGeom.constGet();
+        if ( abstractGeom )
+        {
+          gmlElem = abstractGeom->asGml3( doc, prec, "http://www.opengis.net/gml" );
         }
 
         if ( !gmlElem.isNull() )
