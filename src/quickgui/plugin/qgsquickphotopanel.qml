@@ -229,18 +229,12 @@ Drawer {
       }
     }
 
-    Rectangle {
+    Item {
       id: backButton
 
-      property int borderWidth: 5 * QgsQuick.Utils.dp
-      property real scaleRatio: 0.7
-      width: buttonSize * scaleRatio
-      height: buttonSize * scaleRatio
-      color: "white"
-      opacity: 0.5
-      border.color: photoPanel.borderColor
-      border.width: borderWidth
-      radius: width*0.5
+      property int borderWidth: 50 * QgsQuick.Utils.dp
+      width: imageButtonSize * 0.7
+      height: width
       antialiasing: true
 
       MouseArea {
@@ -251,12 +245,21 @@ Drawer {
       }
 
       Image {
+        id: backBtnIcon
         fillMode: Image.PreserveAspectFit
         anchors.centerIn: parent
-        sourceSize.height: imageButtonSize * backButton.scaleRatio
-        sourceSize.width: imageButtonSize * backButton.scaleRatio
-        height: imageButtonSize * backButton.scaleRatio
+        sourceSize.height: backButton.width
+        sourceSize.width: backButton.width
+        height: backButton.width
         source: photoPanel.backButtonSource
+      }
+
+      ColorOverlay {
+        anchors.fill: backBtnIcon
+        anchors.centerIn: parent
+        source: backBtnIcon
+        color: "white"
+        smooth: true
       }
     }
   }
