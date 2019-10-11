@@ -726,6 +726,10 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
       else
         statement = QStringLiteral( "select min(case when ([%1].STIsValid() = 1) THEN [%1].STPointN(1).Long  else NULL end), min(case when ([%1].STIsValid() = 1) THEN [%1].STPointN(1).Lat else NULL end), max(case when ([%1].STIsValid() = 1) THEN [%1].STPointN(1).Long else NULL end), max(case when ([%1].STIsValid() = 1) THEN [%1].STPointN(1).Lat else NULL end)" ).arg( mGeometryColName );
     }
+
+    // we will first try to sample a small portion of the table/view, so the count of rows involved
+    // will be useful to evaluate if we have enough data to use the sample
+    statement += ", count(*)";
   }
   else
   {
@@ -748,6 +752,34 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
   if ( !mSqlWhereClause.isEmpty() )
   {
     statement += " where (" + mSqlWhereClause + ')';
+  }
+
+  if ( estimate )
+  {
+    // Try to use just 1% sample of the whole table/view to limit the amount of rows accessed.
+    // This heuristic may fail (e.g. when the table is small or when primary key values do not
+    // get sampled enough) so in case we do not have at least 10 features, we fall back to full
+    // traversal of the table/view
+
+    const int minSampleCount = 10;
+
+    // See https://docs.microsoft.com/en-us/previous-versions/software-testing/cc441928(v=msdn.10)
+    QString sampleFilter = QString( "(ABS(CAST((BINARY_CHECKSUM([%1])) as int)) % 100) = 42" ).arg( mFidColName );
+
+    QString statementSample;
+    if ( mSqlWhereClause.isEmpty() )
+      statementSample = statement + " WHERE " + sampleFilter;
+    else
+      statementSample = statement + " AND " + sampleFilter;
+    if ( query.exec( statementSample ) && query.next() &&
+         !query.value( 0 ).isNull() && query.value( 4 ).toInt() >= minSampleCount )
+    {
+      mExtent.setXMinimum( query.value( 0 ).toDouble() );
+      mExtent.setYMinimum( query.value( 1 ).toDouble() );
+      mExtent.setXMaximum( query.value( 2 ).toDouble() );
+      mExtent.setYMaximum( query.value( 3 ).toDouble() );
+      return;
+    }
   }
 
   if ( !query.exec( statement ) )
