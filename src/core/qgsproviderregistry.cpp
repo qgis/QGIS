@@ -145,6 +145,8 @@ void QgsProviderRegistry::init()
     fileRegexp.setPattern( filePattern );
   }
 
+  typedef std::vector<QgsProviderMetadata *> multiple_factory_function();
+
   const auto constEntryInfoList = mLibraryDirectory.entryInfoList();
   for ( const QFileInfo &fi : constEntryInfoList )
   {
@@ -164,29 +166,48 @@ void QgsProviderRegistry::init()
       continue;
     }
 
-    QFunctionPointer func = myLib.resolve( QStringLiteral( "providerMetadataFactory" ).toLatin1().data() );
-    factory_function *function = reinterpret_cast< factory_function * >( cast_to_fptr( func ) );
-    if ( !function )
+    QFunctionPointer multi_func = myLib.resolve( QStringLiteral( "multipleProviderMetadataFactory" ).toLatin1().data() );
+    multiple_factory_function *multi_function = reinterpret_cast< multiple_factory_function * >( cast_to_fptr( multi_func ) );
+    if ( multi_function )
     {
-      QgsDebugMsg( QStringLiteral( "Checking %1: ...invalid (no providerMetadataFactory method)" ).arg( myLib.fileName() ) );
-      continue;
+      for ( const auto meta : multi_function() )
+      {
+        if ( findMetadata_( mProviders, meta->key() ) )
+        {
+          QgsDebugMsg( QStringLiteral( "Checking %1: ...invalid (key %2 already registered)" ).arg( myLib.fileName() ).arg( meta->key() ) );
+          delete meta;
+          continue;
+        }
+        // add this provider to the provider map
+        mProviders[meta->key()] = meta;
+      }
     }
+    else
+    {
+      QFunctionPointer func = myLib.resolve( QStringLiteral( "providerMetadataFactory" ).toLatin1().data() );
+      factory_function *function = reinterpret_cast< factory_function * >( cast_to_fptr( func ) );
+      if ( !function )
+      {
+        QgsDebugMsg( QStringLiteral( "Checking %1: ...invalid (no providerMetadataFactory method)" ).arg( myLib.fileName() ) );
+        continue;
+      }
 
-    QgsProviderMetadata *meta = function();
-    if ( !meta )
-    {
-      QgsDebugMsg( QStringLiteral( "Checking %1: ...invalid (no metadata returned)" ).arg( myLib.fileName() ) );
-      continue;
-    }
+      QgsProviderMetadata *meta = function();
+      if ( !meta )
+      {
+        QgsDebugMsg( QStringLiteral( "Checking %1: ...invalid (no metadata returned)" ).arg( myLib.fileName() ) );
+        continue;
+      }
 
-    if ( findMetadata_( mProviders, meta->key() ) )
-    {
-      QgsDebugMsg( QStringLiteral( "Checking %1: ...invalid (key %2 already registered)" ).arg( myLib.fileName() ).arg( meta->key() ) );
-      delete meta;
-      continue;
+      if ( findMetadata_( mProviders, meta->key() ) )
+      {
+        QgsDebugMsg( QStringLiteral( "Checking %1: ...invalid (key %2 already registered)" ).arg( myLib.fileName() ).arg( meta->key() ) );
+        delete meta;
+        continue;
+      }
+      // add this provider to the provider map
+      mProviders[meta->key()] = meta;
     }
-    // add this provider to the provider map
-    mProviders[meta->key()] = meta;
   }
 #endif
   QgsDebugMsg( QStringLiteral( "Loaded %1 providers (%2) " ).arg( mProviders.size() ).arg( providerList().join( ';' ) ) );
