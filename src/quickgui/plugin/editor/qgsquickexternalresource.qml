@@ -139,13 +139,6 @@ Item {
     }
   ]
 
-  onVisibleChanged: {
-    if (visible) {
-      image.currentValue = value
-      image.source = image.getSource()
-    }
-  }
-
   Loader {
     id: photoCapturePanelLoader
   }
@@ -182,8 +175,6 @@ Item {
       onCurrentValueChanged: {
         image.source = image.getSource()
       }
-
-      Component.onCompleted: image.source = getSource()
 
       function getSource() {
         var absolutePath = getAbsolutePath(prefixToRelativePath, image.currentValue)

@@ -45,7 +45,7 @@ Drawer {
 
   signal confirmButtonClicked(string path, string filename)
 
-  function cancelEvent() {
+  function discardCapturedImage() {
     captureItem.saveImage = false
     photoPreview.visible = false
     if (camera.imageCapture.capturedImagePath != "") {
@@ -72,7 +72,6 @@ Drawer {
       camera.stop()
       photoPreview.visible = false
     }
-    photoPreview.source = ""
   }
 
   // PhotoCapture item
@@ -178,7 +177,7 @@ Drawer {
 
         MouseArea {
           anchors.fill: parent
-          onClicked:photoPanel.cancelEvent()
+          onClicked:photoPanel.discardCapturedImage()
         }
 
         Image {
@@ -240,7 +239,7 @@ Drawer {
       MouseArea {
         anchors.fill: parent
         onClicked: {
-          cancelButton.visible ? photoPanel.cancelEvent() : photoPanel.close()
+          cancelButton.visible ? photoPanel.discardCapturedImage() : photoPanel.close()
         }
       }
 
