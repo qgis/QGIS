@@ -233,7 +233,7 @@ Drawer {
       id: backButton
 
       property int borderWidth: 50 * QgsQuick.Utils.dp
-      width: imageButtonSize * 0.7
+      width: imageButtonSize * 1.5
       height: width
       antialiasing: true
 
@@ -248,9 +248,9 @@ Drawer {
         id: backBtnIcon
         fillMode: Image.PreserveAspectFit
         anchors.centerIn: parent
-        sourceSize.height: backButton.width
-        sourceSize.width: backButton.width
-        height: backButton.width
+        height: imageButtonSize / 2
+        sourceSize.height: height
+        sourceSize.width: height
         source: photoPanel.backButtonSource
       }
 
