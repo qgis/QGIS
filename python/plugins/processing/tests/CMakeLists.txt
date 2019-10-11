@@ -6,7 +6,7 @@ PLUGIN_INSTALL(processing tests/testdata ${TEST_DATA_FILES})
 
 IF(ENABLE_TESTS)
 
-  # enable postgresql tests
+  # enable SAGA tests
   SET (ENABLE_SAGA_TESTS FALSE CACHE BOOL "Enable Saga tests")
   IF ( ENABLE_SAGA_TESTS )
     ADD_DEFINITIONS(-DENABLE_SAGA_TESTS)
