@@ -115,6 +115,8 @@ Signal emitted whenever the value changes.
 
     virtual void focusOutEvent( QFocusEvent *event );
 
+    virtual void focusInEvent( QFocusEvent *event );
+
     virtual void wheelEvent( QWheelEvent *event );
 
     virtual void showEvent( QShowEvent *event );

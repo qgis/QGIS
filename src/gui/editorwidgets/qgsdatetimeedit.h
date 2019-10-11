@@ -104,6 +104,7 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
   protected:
     void mousePressEvent( QMouseEvent *event ) override;
     void focusOutEvent( QFocusEvent *event ) override;
+    void focusInEvent( QFocusEvent *event ) override;
     void wheelEvent( QWheelEvent *event ) override;
     void showEvent( QShowEvent *event ) override;
 
@@ -119,7 +120,16 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     QString mOriginalStyleSheet = QString();
     QAction *mClearAction;
 
+    /**
+    * write the null value representation to the line edit without changing the value
+    * \param updateCalendar Flag if calendar is open and minimum date needs to be set
+    */
     void displayNull( bool updateCalendar = false );
+
+    /**
+    * write the current date into the line edit without changing the value
+    */
+    void displayCurrentDate();
 
     //! reset the value to current date time
     void resetBeforeChange( int delta );
@@ -139,6 +149,8 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     {
       setMinimumDateTime( QDateTime::fromString( QStringLiteral( "0100-01-01" ), Qt::ISODate ) );
     }
+
+    friend class TestQgsDateTimeEdit;
 };
 
 #endif // QGSDATETIMEEDIT_H

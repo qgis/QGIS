@@ -60,7 +60,7 @@ void QgsDateTimeEdit::clear()
 {
   if ( mAllowNull )
   {
-    displayNull();
+    displayCurrentDate();
 
     // Check if it's really changed or crash, see GH #29937
     if ( ! dateTime().isNull() )
@@ -76,10 +76,6 @@ void QgsDateTimeEdit::clear()
     disconnect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
     emit dateTimeChanged( QDateTime() );
     connect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
-
-    // otherwise, NULL is not displayed in the line edit
-    // this might not be the right way to do it
-    clearFocus();
   }
 }
 
@@ -160,6 +156,20 @@ void QgsDateTimeEdit::focusOutEvent( QFocusEvent *event )
   }
 }
 
+void QgsDateTimeEdit::focusInEvent( QFocusEvent *event )
+{
+  if ( mAllowNull && mIsNull && !mCurrentPressEvent )
+  {
+    QAbstractSpinBox::focusInEvent( event );
+
+    displayCurrentDate();
+  }
+  else
+  {
+    QDateTimeEdit::focusInEvent( event );
+  }
+}
+
 void QgsDateTimeEdit::wheelEvent( QWheelEvent *event )
 {
   // dateTime might have been set to minimum in calendar mode
@@ -215,7 +225,15 @@ void QgsDateTimeEdit::displayNull( bool updateCalendar )
     // a date selected in calendar widget
     QDateTimeEdit::setDateTime( minimumDateTime() );
   }
+  lineEdit()->setCursorPosition( lineEdit()->text().length() );
   lineEdit()->setText( QgsApplication::nullRepresentation() );
+  connect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
+}
+
+void QgsDateTimeEdit::displayCurrentDate()
+{
+  disconnect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
+  QDateTimeEdit::setDateTime( QDateTime::currentDateTime() );
   connect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
 }
 
@@ -255,6 +273,7 @@ void QgsDateTimeEdit::setDateTime( const QDateTime &dateTime )
   if ( !dateTime.isValid() || dateTime.isNull() )
   {
     clear();
+    displayNull();
   }
   // Check if it's really changed or crash, see GH #29937
   else if ( dateTime != QgsDateTimeEdit::dateTime() )
