@@ -19,6 +19,7 @@
 #include "qgspostgresprovider.h"
 #include "qgspgnewconnection.h"
 #include "qgsnewnamedialog.h"
+#include "qgspgsourceselect.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
@@ -154,6 +155,21 @@ bool QgsPostgresDataItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemG
     return connItem->handleDrop( data, schemaItem->name() );
   }
   return false;
+}
+
+QWidget *QgsPostgresDataItemGuiProvider::createParamWidget( QgsDataItem *root, QgsDataItemGuiContext )
+{
+  QgsPGRootItem *pgRootItem = qobject_cast<QgsPGRootItem *>( root );
+  if ( pgRootItem != nullptr )
+  {
+    QgsPgSourceSelect *select = new QgsPgSourceSelect( nullptr, nullptr, QgsProviderRegistry::WidgetMode::Manager );
+    connect( select, &QgsPgSourceSelect::connectionsChanged, pgRootItem, &QgsPGRootItem::onConnectionsChanged );
+    return select;
+  }
+  else
+  {
+    return nullptr;
+  }
 }
 
 

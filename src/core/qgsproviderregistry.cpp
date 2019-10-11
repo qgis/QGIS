@@ -37,6 +37,7 @@
 #include "providers/meshmemory/qgsmeshmemorydataprovider.h"
 #ifdef HAVE_STATIC_PROVIDERS
 #include "qgswmsprovider.h"
+#include "qgspostgresprovider.h"
 #endif
 
 static QgsProviderRegistry *sInstance = nullptr;
@@ -109,6 +110,7 @@ void QgsProviderRegistry::init()
   mProviders[ QgsOgrProvider::providerKey() ] = new QgsOgrProviderMetadata();
 #ifdef HAVE_STATIC_PROVIDERS
   mProviders[ QgsWmsProvider::providerKey() ] = new QgsWmsProviderMetadata();
+  mProviders[ QgsPostgresProvider::providerKey() ] = new QgsPostgresProviderMetadata();
 #endif
 
   // add dynamic providers

@@ -92,13 +92,13 @@ ADD_QGIS_TEST(wmsprovidertest
               testqgswmsprovider.cpp)
 TARGET_LINK_LIBRARIES(qgis_wmsprovidertest wmsprovider_a qgis_core)
 
+ADD_QGIS_TEST(postgresprovidertest testqgspostgresprovider.cpp)
+TARGET_LINK_LIBRARIES(qgis_postgresprovidertest postgresprovider_a qgis_core)
+
+ADD_QGIS_TEST(postgresconntest testqgspostgresconn.cpp)
+TARGET_LINK_LIBRARIES(qgis_postgresconntest postgresprovider_a qgis_core)
+
 IF (NOT FORCE_STATIC_PROVIDERS)
-  ADD_QGIS_TEST(postgresprovidertest testqgspostgresprovider.cpp)
-  TARGET_LINK_LIBRARIES(qgis_postgresprovidertest postgresprovider_a)
-
-  ADD_QGIS_TEST(postgresconntest testqgspostgresconn.cpp)
-  TARGET_LINK_LIBRARIES(qgis_postgresconntest postgresprovider_a)
-
   ADD_QGIS_TEST(mdalprovidertest testqgsmdalprovider.cpp)
 ENDIF (NOT FORCE_STATIC_PROVIDERS)
 

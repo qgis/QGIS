@@ -206,6 +206,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QString name() const override;
     QString description() const override;
     QgsTransaction *transaction() const override;
+    static QString providerKey();
 
     /**
      * Convert the postgres string representation into the given QVariant type.
