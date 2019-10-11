@@ -1225,12 +1225,19 @@ std::unique_ptr<QgsLineString> QgsGeos::sequenceToLinestring( const GEOSGeometry
   double *m = mOut.data();
   for ( unsigned int i = 0; i < nPoints; ++i )
   {
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+    if ( hasZ )
+      GEOSCoordSeq_getXYZ_r( geosinit.ctxt, cs, i, x++, y++, z++ );
+    else
+      GEOSCoordSeq_getXY_r( geosinit.ctxt, cs, i, x++, y++ );
+#else
     GEOSCoordSeq_getX_r( geosinit.ctxt, cs, i, x++ );
     GEOSCoordSeq_getY_r( geosinit.ctxt, cs, i, y++ );
     if ( hasZ )
     {
       GEOSCoordSeq_getZ_r( geosinit.ctxt, cs, i, z++ );
     }
+#endif
     if ( hasM )
     {
       GEOSCoordSeq_getOrdinate_r( geosinit.ctxt, cs, i, 3, m++ );
@@ -1264,12 +1271,19 @@ QgsPoint QgsGeos::coordSeqPoint( const GEOSCoordSequence *cs, int i, bool hasZ, 
   double x, y;
   double z = 0;
   double m = 0;
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+  if ( hasZ )
+    GEOSCoordSeq_getXYZ_r( geosinit.ctxt, cs, i, &x, &y, &z );
+  else
+    GEOSCoordSeq_getXY_r( geosinit.ctxt, cs, i, &x, &y );
+#else
   GEOSCoordSeq_getX_r( geosinit.ctxt, cs, i, &x );
   GEOSCoordSeq_getY_r( geosinit.ctxt, cs, i, &y );
   if ( hasZ )
   {
     GEOSCoordSeq_getZ_r( geosinit.ctxt, cs, i, &z );
   }
+#endif
   if ( hasM )
   {
     GEOSCoordSeq_getOrdinate_r( geosinit.ctxt, cs, i, 3, &m );
@@ -1831,12 +1845,23 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
           zData = hasZ ? line->zData() : nullptr;
           mData = hasM ? line->mData() : nullptr;
         }
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+        if ( hasZ )
+        {
+          GEOSCoordSeq_setXYZ_r( geosinit.ctxt, coordSeq, i, std::round( *xData++ / precision ) * precision, std::round( *yData++ / precision ) * precision, std::round( *zData++ / precision ) * precision );
+        }
+        else
+        {
+          GEOSCoordSeq_setXY_r( geosinit.ctxt, coordSeq, i, std::round( *xData++ / precision ) * precision, std::round( *yData++ / precision ) * precision );
+        }
+#else
         GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, i, std::round( *xData++ / precision ) * precision );
         GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, i, std::round( *yData++ / precision ) * precision );
         if ( hasZ )
         {
           GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, i, 2, std::round( *zData++ / precision ) * precision );
         }
+#endif
         if ( hasM )
         {
           GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, i, 3, line->mAt( *mData++ ) );
@@ -1855,12 +1880,23 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
           zData = hasZ ? line->zData() : nullptr;
           mData = hasM ? line->mData() : nullptr;
         }
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+        if ( hasZ )
+        {
+          GEOSCoordSeq_setXYZ_r( geosinit.ctxt, coordSeq, i, *xData++, *yData++, *zData++ );
+        }
+        else
+        {
+          GEOSCoordSeq_setXY_r( geosinit.ctxt, coordSeq, i, *xData++, *yData++ );
+        }
+#else
         GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, i, *xData++ );
         GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, i, *yData++ );
         if ( hasZ )
         {
           GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, i, 2, *zData++ );
         }
+#endif
         if ( hasM )
         {
           GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, i, 3, *mData++ );
@@ -1888,9 +1924,20 @@ geos::unique_ptr QgsGeos::createGeosPointXY( double x, double y, bool hasZ, doub
   Q_UNUSED( m )
 
   geos::unique_ptr geosPoint;
-
   try
   {
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+    if ( coordDims == 2 )
+    {
+      // optimised constructor
+      if ( precision > 0. )
+        geosPoint.reset( GEOSGeom_createPointFromXY_r( geosinit.ctxt, std::round( x / precision ) * precision, std::round( y / precision ) * precision ) );
+      else
+        geosPoint.reset( GEOSGeom_createPointFromXY_r( geosinit.ctxt, x, y ) );
+      return geosPoint;
+    }
+#endif
+
     GEOSCoordSequence *coordSeq = GEOSCoordSeq_create_r( geosinit.ctxt, 1, coordDims );
     if ( !coordSeq )
     {
