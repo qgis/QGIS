@@ -378,12 +378,12 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
         {
           if ( mRemoteContentCache.contains( path ) )
           {
-            delete task;
+            task->deleteLater();
             // We got the file!
             return *mRemoteContentCache[ path ];
           }
         }
-        delete task;
+        task->deleteLater();
       }
       else
       {
