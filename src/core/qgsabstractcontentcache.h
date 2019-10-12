@@ -372,22 +372,18 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
         QMetaObject::invokeMethod( const_cast< QgsAbstractContentCacheBase * >( qobject_cast< const QgsAbstractContentCacheBase * >( this ) ), "onRemoteContentFetched", Qt::QueuedConnection, Q_ARG( QString, path ), Q_ARG( bool, true ) );
       } );
 
+      QgsApplication::taskManager()->addTask( task );
+
+      // if blocking, wait for finished
+      // arbitrary setting maximum wait to 5 seconds
       if ( blocking )
       {
-        if ( task->run() )
+        task->waitForFinished( 5000 );
+        if ( mRemoteContentCache.contains( path ) )
         {
-          if ( mRemoteContentCache.contains( path ) )
-          {
-            task->deleteLater();
-            // We got the file!
-            return *mRemoteContentCache[ path ];
-          }
+          // We got the file!
+          return *mRemoteContentCache[ path ];
         }
-        task->deleteLater();
-      }
-      else
-      {
-        QgsApplication::taskManager()->addTask( task );
       }
       return fetchingContent;
     }
