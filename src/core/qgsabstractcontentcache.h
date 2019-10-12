@@ -332,6 +332,7 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
       connect( task, &QgsNetworkContentFetcherTask::fetched, this, [this, task, path, missingContent]
       {
         QMutexLocker locker( &mMutex );
+        QgsMessageLog::logMessage( tr( "%2 fetched: %1" ).arg( path, mTypeString ), mTypeString );
 
         QNetworkReply *reply = task->reply();
         if ( !reply )
@@ -372,18 +373,39 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
         QMetaObject::invokeMethod( const_cast< QgsAbstractContentCacheBase * >( qobject_cast< const QgsAbstractContentCacheBase * >( this ) ), "onRemoteContentFetched", Qt::QueuedConnection, Q_ARG( QString, path ), Q_ARG( bool, true ) );
       } );
 
-      QgsApplication::taskManager()->addTask( task );
-
       // if blocking, wait for finished
       // arbitrary setting maximum wait to 5 seconds
       if ( blocking )
       {
-        task->waitForFinished( 5000 );
-        if ( mRemoteContentCache.contains( path ) )
+        // First step, waiting for task running
+        QEventLoop loop;
+        connect( task, &QgsNetworkContentFetcherTask::begun, &loop, &QEventLoop::quit );
+        QgsApplication::taskManager()->addTask( task );
+        if ( task->status() != QgsTask::Running )
         {
-          // We got the file!
-          return *mRemoteContentCache[ path ];
+          loop.exec();
         }
+
+        // Second step, wait 5 seconds for task finished
+        if ( task->waitForFinished( 5000 ) )
+        {
+          // The wait did not time out
+          // Third step, check status as complete
+          if ( task->status() == QgsTask::Complete )
+          {
+            // Fourth step, force the signal fetched to be sure reply has been checked
+            task->fetched();
+            if ( mRemoteContentCache.contains( path ) )
+            {
+              // We got the file!
+              return *mRemoteContentCache[ path ];
+            }
+          }
+        }
+      }
+      else
+      {
+        QgsApplication::taskManager()->addTask( task );
       }
       return fetchingContent;
     }
