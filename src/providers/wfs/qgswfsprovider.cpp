@@ -24,6 +24,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsogcutils.h"
+#include "qgsoapifprovider.h"
 #include "qgswfsdataitems.h"
 #include "qgswfsconstants.h"
 #include "qgswfsfeatureiterator.h"
@@ -1871,5 +1872,5 @@ QgsWfsProviderMetadata::QgsWfsProviderMetadata():
 
 QGISEXTERN std::vector<QgsProviderMetadata *> multipleProviderMetadataFactory()
 {
-  return std::vector<QgsProviderMetadata *> { new QgsWfsProviderMetadata() };
+  return std::vector<QgsProviderMetadata *> { new QgsWfsProviderMetadata(), new QgsOapifProviderMetadata() };
 }
