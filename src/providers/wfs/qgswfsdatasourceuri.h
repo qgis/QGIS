@@ -85,7 +85,7 @@ class QgsWFSDataSourceURI
     explicit QgsWFSDataSourceURI( const QString &uri );
 
     //! Returns the URI, avoiding expansion of authentication configuration, which is handled during network access
-    const QString uri( bool expandAuthConfig = false ) const;
+    const QString uri() const;
 
     //! Returns base URL (with SERVICE=WFS parameter if bIncludeServiceWFS=true)
     QUrl baseURL( bool bIncludeServiceWFS = true ) const;
