@@ -3,6 +3,7 @@
 # Files
 
 SET(WFS_SRCS
+  ${CMAKE_SOURCE_DIR}/external/nlohmann/json.hpp
   qgswfsprovider.cpp
   qgswfscapabilities.cpp
   qgswfsdataitems.cpp
@@ -19,6 +20,12 @@ SET(WFS_SRCS
   qgsbackgroundcachedshareddata.cpp
   qgscachedirectorymanager.cpp
   qgsbasenetworkrequest.cpp
+  qgsoapiflandingpagerequest.cpp
+  qgsoapifapirequest.cpp
+  qgsoapifcollection.cpp
+  qgsoapifitemsrequest.cpp
+  qgsoapifprovider.cpp
+  qgsoapifutils.cpp
 )
 
 SET (WFS_MOC_HDRS
@@ -35,6 +42,11 @@ SET (WFS_MOC_HDRS
   qgswfsutils.h
   qgsbackgroundcachedfeatureiterator.h
   qgscachedirectorymanager.h
+  qgsoapiflandingpagerequest.h
+  qgsoapifapirequest.h
+  qgsoapifcollection.h
+  qgsoapifitemsrequest.h
+  qgsoapifprovider.h
 )
 
 IF (WITH_GUI)
