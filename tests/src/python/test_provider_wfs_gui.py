@@ -117,6 +117,8 @@ class TestPyQgsWFSProviderGUI(unittest.TestCase):
         QTest.mouseClick(btnConnect, Qt.LeftButton)
         # Depends on asynchronous signal
         QApplication.processEvents()
+        # Second attempt for OAPIF request
+        QApplication.processEvents()
         error_box = find_window('WFSCapabilitiesErrorBox')
         self.assertIsNotNone(error_box)
         # Close error box

@@ -372,6 +372,10 @@ QString QgsWFSDataSourceURI::build( const QString &baseUri,
   uri.setSql( sql );
   if ( restrictToCurrentViewExtent )
     uri.mURI.setParam( QgsWFSConstants::URI_PARAM_RESTRICT_TO_REQUEST_BBOX, QStringLiteral( "1" ) );
+  if ( uri.version() == QStringLiteral( "OGC_API_FEATURES" ) )
+  {
+    uri.setVersion( QString() );
+  }
   return uri.uri();
 }
 
