@@ -40,6 +40,9 @@ class QgsBaseNetworkRequest : public QObject
     //! \brief proceed to sending a synchronous POST request
     bool sendPOST( const QUrl &url, const QString &contentTypeHeader, const QByteArray &data );
 
+    //! Set whether to log error messages.
+    void setLogErrors( bool enabled ) { mLogErrors = enabled; }
+
     enum ErrorCode { NoError,
                      NetworkError,
                      TimeoutError,
@@ -103,6 +106,9 @@ class QgsBaseNetworkRequest : public QObject
     //! Whether we already received bytes
     bool mGotNonEmptyResponse;
 
+    //! Whether to log error messages
+    bool mLogErrors = true;
+
   protected:
 
     /**
@@ -117,6 +123,7 @@ class QgsBaseNetworkRequest : public QObject
   private:
     QString errorMessageFailedAuth();
 
+    void logMessageIfEnabled();
 };
 
 
