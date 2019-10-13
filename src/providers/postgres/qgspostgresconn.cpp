@@ -594,7 +594,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     else if ( columnTypeInt == SctGeography ) columnType = SctGeography;
     else if ( columnTypeInt == SctTopoGeometry ) columnType = SctTopoGeometry;
     else if ( columnTypeInt == SctPcPatch ) columnType = SctPcPatch;
-    else if ( columnTypeInt == SctRaster ) columnType = SctPcPatch;
+    else if ( columnTypeInt == SctRaster ) columnType = SctRaster;
     else
     {
       QgsDebugMsg( QStringLiteral( "Unhandled columnType index %1" )
