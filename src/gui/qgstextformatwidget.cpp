@@ -1858,8 +1858,8 @@ void QgsTextFormatWidget::showBackgroundRadius( bool show )
 
   mShapeRadiusUnitWidget->setVisible( show );
 
-  mShapeRadiusDDBtn->setVisible( show && mWidgetMode == Labeling );
-  mShapeRadiusUnitsDDBtn->setVisible( show  && mWidgetMode == Labeling );
+  mShapeRadiusDDBtn->setVisible( show );
+  mShapeRadiusUnitsDDBtn->setVisible( show );
 }
 
 void QgsTextFormatWidget::showBackgroundPenStyle( bool show )
@@ -1867,7 +1867,7 @@ void QgsTextFormatWidget::showBackgroundPenStyle( bool show )
   mShapePenStyleLabel->setVisible( show );
   mShapePenStyleCmbBx->setVisible( show );
 
-  mShapePenStyleDDBtn->setVisible( show && mWidgetMode == Labeling );
+  mShapePenStyleDDBtn->setVisible( show );
 }
 
 void QgsTextFormatWidget::enableDataDefinedAlignment( bool enable )
