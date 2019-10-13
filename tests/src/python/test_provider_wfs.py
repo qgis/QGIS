@@ -121,7 +121,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
           <xsd:element maxOccurs="1" minOccurs="0" name="name" nillable="true" type="xsd:string"/>
           <xsd:element maxOccurs="1" minOccurs="0" name="name2" nillable="true" type="xsd:string"/>
           <xsd:element maxOccurs="1" minOccurs="0" name="num_char" nillable="true" type="xsd:string"/>
-          <xsd:element maxOccurs="1" minOccurs="0" name="geometryProperty" nillable="true" type="gml:PolygonPropertyType"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="geometryProperty" nillable="true" type="gml:PointPropertyType"/>
           <!-- check that an element with ref without name doesn't confuse the DescribeFeatureType analyzer -->
           <xsd:element maxOccurs="0" minOccurs="0" ref="my:somethingElseType"/>
         </xsd:sequence>
@@ -3802,9 +3802,6 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(str(got_f2[1]['type']), '0')
         self.assertEqual(str(got_f2[1]['elevation']), 'NULL')
         self.assertEqual(str(got_f2[1]['name']), 'sdf')
-
-    def testGeomAndAllAttributes(self):
-        pass # skip this feature source test -- provider is not affected
 
     def testFilteredFeatureRequests(self):
         """Test https://github.com/qgis/QGIS/issues/28895 """

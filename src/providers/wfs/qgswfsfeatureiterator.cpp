@@ -1010,7 +1010,10 @@ QgsFeatureRequest QgsWFSFeatureIterator::buildRequestCache( int genCounter )
   }
   else
   {
-    if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
+    if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression &&
+         // We cannot filter on geometry because the spatialite geometry is just
+         // a bounding box and not the actual geometry of the final feature
+         !mRequest.filterExpression()->needsGeometry() )
     {
       // Transfer and transform context
       requestCache.setFilterExpression( mRequest.filterExpression()->expression() );
