@@ -1641,8 +1641,8 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
 
     if ( layerProperty.isRaster )
     {
-      QString sql = QStringLiteral( "SELECT %3, ARRAY[]::text[] as types, "
-                                    "array_agg(DISTINCT ST_SRID( %1 )) as srids"
+      QString sql = QStringLiteral( "SELECT %3, "
+                                    "array_agg(DISTINCT 'RASTER:' || ST_SRID( %1 ))"
                                     " FROM %2" )
                     .arg( quotedIdentifier( layerProperty.geometryColName ) )
                     .arg( table )
