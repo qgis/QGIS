@@ -191,7 +191,7 @@ QVector<QgsDataItem *> QgsWfsRootItem::createChildren()
   {
     QgsWfsConnection connection( connName );
     QString path = "wfs:/" + connName;
-    QgsDataItem *conn = new QgsWfsConnectionItem( this, connName, path, connection.uri().uri() );
+    QgsDataItem *conn = new QgsWfsConnectionItem( this, connName, path, connection.uri().uri( false ) );
     connections.append( conn );
   }
   return connections;
@@ -260,7 +260,7 @@ QgsDataItem *QgsWfsDataItemProvider::createDataItem( const QString &path, QgsDat
 
       QgsDebugMsgLevel( QStringLiteral( "WFS full uri: '%1'." ).arg( QString( sourceUri.uri() ) ), 4 );
 
-      return new QgsWfsConnectionItem( parentItem, QStringLiteral( "WFS" ), path, sourceUri.uri( false ) );
+      return new QgsWfsConnectionItem( parentItem, QStringLiteral( "WFS" ), path, sourceUri.uri() );
     }
   }
 
@@ -287,9 +287,9 @@ QVector<QgsDataItem *> QgsWfsDataItemProvider::createDataItems( const QString &p
         for ( const QString &encodedUri : encodedUris )
         {
           QgsWFSDataSourceURI uri( encodedUri );
-          QgsDebugMsgLevel( QStringLiteral( "WFS full uri: '%1'." ).arg( uri.uri( false ) ), 4 );
+          QgsDebugMsgLevel( QStringLiteral( "WFS full uri: '%1'." ).arg( uri.uri() ), 4 );
 
-          QgsDataItem *item = new QgsWfsConnectionItem( parentItem, QStringLiteral( "WFS" ), path, uri.uri( false ) );
+          QgsDataItem *item = new QgsWfsConnectionItem( parentItem, QStringLiteral( "WFS" ), path, uri.uri() );
           if ( item )
           {
             items.append( item );
