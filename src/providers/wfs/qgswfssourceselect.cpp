@@ -29,6 +29,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgslogger.h"
 #include "qgsmanageconnectionsdialog.h"
+#include "qgsoapifprovider.h"
 #include "qgssqlstatement.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
@@ -121,7 +122,6 @@ QgsWFSSourceSelect::~QgsWFSSourceSelect()
 
   delete mItemDelegate;
   delete mProjectionSelector;
-  delete mCapabilities;
   delete mModel;
   delete mModelProxy;
   delete mBuildQueryButton;
@@ -169,10 +169,7 @@ void QgsWFSSourceSelect::populateConnectionList()
     cmbConnections->setCurrentIndex( index );
   }
 
-  QgsWfsConnection connection( cmbConnections->currentText() );
-  delete mCapabilities;
-  mCapabilities = new QgsWfsCapabilities( connection.uri().uri() );
-  connect( mCapabilities, &QgsWfsCapabilities::gotCapabilities, this, &QgsWFSSourceSelect::capabilitiesReplyFinished );
+  changeConnection();
 }
 
 QString QgsWFSSourceSelect::getPreferredCrs( const QSet<QString> &crsSet ) const
@@ -222,9 +219,16 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
   auto err = mCapabilities->errorCode();
   if ( err != QgsBaseNetworkRequest::NoError )
   {
-    QgsWfsGuiUtils::displayErrorMessageOnFailedCapabilities( mCapabilities, this );
-
-    emit enableButtons( false );
+    if ( mVersion == QgsWFSConstants::VERSION_AUTO )
+    {
+      startOapifLandingPageRequest();
+    }
+    else
+    {
+      QgsWfsGuiUtils::displayErrorMessageOnFailedCapabilities( mCapabilities.get(), this );
+      mCapabilities.reset();
+      emit enableButtons( false );
+    }
     return;
   }
 
@@ -248,7 +252,13 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
     mAvailableCRS.insert( featureType.name, featureType.crslist );
   }
 
-  if ( !mCaps.featureTypes.isEmpty() )
+  resizeTreeViewAfterModelFill();
+}
+
+
+void QgsWFSSourceSelect::resizeTreeViewAfterModelFill()
+{
+  if ( mModel->rowCount() > 0 )
   {
     treeView->resizeColumnToContents( MODEL_IDX_TITLE );
     treeView->resizeColumnToContents( MODEL_IDX_NAME );
@@ -274,6 +284,113 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
     emit enableButtons( false );
     mBuildQueryButton->setEnabled( false );
   }
+}
+
+void QgsWFSSourceSelect::startOapifLandingPageRequest()
+{
+  QgsWfsConnection connection( cmbConnections->currentText() );
+  mOAPIFLandingPage.reset( new QgsOapifLandingPageRequest( connection.uri() ) );
+  connect( mOAPIFLandingPage.get(), &QgsOapifLandingPageRequest::gotResponse, this, &QgsWFSSourceSelect::oapifLandingPageReplyFinished );
+  const bool synchronous = false;
+  const bool forceRefresh = true;
+  mOAPIFLandingPage->request( synchronous, forceRefresh );
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+  btnConnect->setEnabled( false );
+}
+
+void QgsWFSSourceSelect::oapifLandingPageReplyFinished()
+{
+  QApplication::restoreOverrideCursor();
+  btnConnect->setEnabled( true );
+
+  if ( !mOAPIFLandingPage )
+    return;
+
+  auto err = mOAPIFLandingPage->errorCode();
+  if ( err != QgsBaseNetworkRequest::NoError )
+  {
+    if ( mVersion == QgsWFSConstants::VERSION_AUTO && mCapabilities )
+    {
+      QgsWfsGuiUtils::displayErrorMessageOnFailedCapabilities( mCapabilities.get(), this );
+      mCapabilities.reset();
+    }
+    else
+    {
+      QMessageBox *box = new QMessageBox( QMessageBox::Critical, tr( "Error" ), mOAPIFLandingPage->errorMessage(), QMessageBox::Ok, this );
+      box->setAttribute( Qt::WA_DeleteOnClose );
+      box->setModal( true );
+      box->open();
+    }
+
+    mOAPIFLandingPage.reset();
+    emit enableButtons( false );
+    return;
+  }
+  mCapabilities.reset();
+
+  mAvailableCRS.clear();
+  QString url( mOAPIFLandingPage->collectionsUrl() );
+  mOAPIFLandingPage.reset();
+  startOapifCollectionsRequest( url );
+}
+
+void QgsWFSSourceSelect::startOapifCollectionsRequest( const QString &url )
+{
+  QgsWfsConnection connection( cmbConnections->currentText() );
+  mOAPIFCollections.reset( new QgsOapifCollectionsRequest( connection.uri(), url ) );
+  connect( mOAPIFCollections.get(), &QgsOapifCollectionsRequest::gotResponse, this, &QgsWFSSourceSelect::oapifCollectionsReplyFinished );
+  const bool synchronous = false;
+  const bool forceRefresh = true;
+  mOAPIFCollections->request( synchronous, forceRefresh );
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+  btnConnect->setEnabled( false );
+}
+
+void QgsWFSSourceSelect::oapifCollectionsReplyFinished()
+{
+  QApplication::restoreOverrideCursor();
+  btnConnect->setEnabled( true );
+  if ( !mOAPIFCollections )
+    return;
+
+  auto err = mOAPIFCollections->errorCode();
+  if ( err != QgsBaseNetworkRequest::NoError )
+  {
+    QMessageBox *box = new QMessageBox( QMessageBox::Critical, tr( "Error" ), mOAPIFCollections->errorMessage(), QMessageBox::Ok, this );
+    box->setAttribute( Qt::WA_DeleteOnClose );
+    box->setModal( true );
+    box->open();
+
+    mOAPIFCollections.reset();
+    emit enableButtons( false );
+    return;
+  }
+
+  for ( const auto &collection : mOAPIFCollections->collections() )
+  {
+    // insert the typenames, titles and abstracts into the tree view
+    QStandardItem *titleItem = new QStandardItem( collection.mTitle );
+    QStandardItem *nameItem = new QStandardItem( collection.mId );
+    QStandardItem *abstractItem = new QStandardItem( collection.mDescription );
+    abstractItem->setToolTip( "<font color=black>" + collection.mDescription  + "</font>" );
+    abstractItem->setTextAlignment( Qt::AlignLeft | Qt::AlignTop );
+    QStandardItem *filterItem = new QStandardItem();
+
+    typedef QList< QStandardItem * > StandardItemList;
+    mModel->appendRow( StandardItemList() << titleItem << nameItem << abstractItem << filterItem );
+  }
+
+  if ( !mOAPIFCollections->nextUrl().isEmpty() )
+  {
+    QString url( mOAPIFCollections->nextUrl() );
+    mOAPIFCollections.reset();
+    startOapifCollectionsRequest( url );
+    return;
+  }
+
+  mVersion = QStringLiteral( "OGC_API_FEATURES" );
+
+  resizeTreeViewAfterModelFill();
 }
 
 void QgsWFSSourceSelect::addEntryToServerList()
@@ -339,10 +456,24 @@ void QgsWFSSourceSelect::connectToServer()
   {
     mModel->removeRows( 0, mModel->rowCount() );
   }
-  if ( mCapabilities )
+
+  QgsWfsConnection connection( cmbConnections->currentText() );
+
+  mVersion = QgsWFSDataSourceURI( connection.uri().uri() ).version();
+  if ( mVersion == QLatin1String( "OGC_API_FEATURES" ) )
   {
+    startOapifLandingPageRequest();
+  }
+  else
+  {
+    mCapabilities.reset( new QgsWfsCapabilities( connection.uri().uri() ) );
+    connect( mCapabilities.get(), &QgsWfsCapabilities::gotCapabilities, this, &QgsWFSSourceSelect::capabilitiesReplyFinished );
     const bool synchronous = false;
     const bool forceRefresh = true;
+    if ( mVersion == QgsWFSConstants::VERSION_AUTO )
+    {
+      mCapabilities->setLogErrors( false ); // as this might be a OAPIF server
+    }
     mCapabilities->requestCapabilities( synchronous, forceRefresh );
     QApplication::setOverrideCursor( Qt::WaitCursor );
   }
@@ -386,7 +517,7 @@ void QgsWFSSourceSelect::addButtonClicked()
     mUri = QgsWFSDataSourceURI::build( connection.uri().uri( false ), typeName, pCrsString,
                                        sql, cbxFeatureCurrentViewExtent->isChecked() );
 
-    emit addVectorLayer( mUri, layerName );
+    emit addVectorLayer( mUri, layerName, isOapif() ? QgsOapifProvider::OAPIF_PROVIDER_KEY : QgsWFSProvider::WFS_PROVIDER_KEY );
   }
 
   if ( ! mHoldDialogOpen->isChecked() && widgetMode() == QgsProviderRegistry::WidgetMode::None )
@@ -689,12 +820,13 @@ void QgsWFSSourceSelect::cmbConnections_activated( int index )
 {
   Q_UNUSED( index )
   QgsWfsConnection::setSelectedConnection( cmbConnections->currentText() );
+  changeConnection();
+}
 
-  QgsWfsConnection connection( cmbConnections->currentText() );
-
-  delete mCapabilities;
-  mCapabilities = new QgsWfsCapabilities( connection.uri().uri() );
-  connect( mCapabilities, &QgsWfsCapabilities::gotCapabilities, this, &QgsWFSSourceSelect::capabilitiesReplyFinished );
+void QgsWFSSourceSelect::changeConnection()
+{
+  mCapabilities.reset();
+  mOAPIFLandingPage.reset();
 }
 
 void QgsWFSSourceSelect::btnSave_clicked()
@@ -720,6 +852,8 @@ void QgsWFSSourceSelect::btnLoad_clicked()
 
 void QgsWFSSourceSelect::treeWidgetItemDoubleClicked( const QModelIndex &index )
 {
+  if ( isOapif() )
+    return;
   QgsDebugMsg( QStringLiteral( "double-click called" ) );
   buildQuery( index );
 }
@@ -729,7 +863,7 @@ void QgsWFSSourceSelect::treeWidgetCurrentRowChanged( const QModelIndex &current
   Q_UNUSED( previous )
   QgsDebugMsg( QStringLiteral( "treeWidget_currentRowChanged called" ) );
   changeCRSFilter();
-  mBuildQueryButton->setEnabled( current.isValid() );
+  mBuildQueryButton->setEnabled( !isOapif() && current.isValid() );
   emit enableButtons( current.isValid() );
 }
 

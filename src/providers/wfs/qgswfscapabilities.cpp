@@ -145,6 +145,11 @@ class CPLXMLTreeUniquePointer
 
 void QgsWfsCapabilities::capabilitiesReplyFinished()
 {
+  if ( mErrorCode != QgsBaseNetworkRequest::NoError )
+  {
+    emit gotCapabilities();
+    return;
+  }
   const QByteArray &buffer = mResponse;
 
   QgsDebugMsgLevel( QStringLiteral( "parsing capabilities: " ) + buffer, 4 );

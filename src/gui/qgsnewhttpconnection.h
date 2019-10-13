@@ -103,6 +103,16 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
 
   protected:
 
+    //! Index of wfsVersionComboBox
+    enum WfsVersionIndex
+    {
+      WFS_VERSION_MAX = 0,
+      WFS_VERSION_1_0 = 1,
+      WFS_VERSION_1_1 = 2,
+      WFS_VERSION_2_0 = 3,
+      WFS_VERSION_API_FEATURES = 4,
+    };
+
     /**
      * Returns TRUE if dialog settings are valid, or FALSE if current
      * settings are not valid and the dialog should not be acceptable.
