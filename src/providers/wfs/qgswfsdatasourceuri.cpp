@@ -144,7 +144,7 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString &uri )
   }
 }
 
-const QString QgsWFSDataSourceURI::uri( bool expandAuthConfig ) const
+const QString QgsWFSDataSourceURI::uri() const
 {
   QgsDataSourceUri theURI( mURI );
   // Add authcfg param back into the uri (must be non-empty value)
@@ -164,8 +164,8 @@ const QString QgsWFSDataSourceURI::uri( bool expandAuthConfig ) const
       theURI.setPassword( mAuth.mPassword );
     }
   }
-  // NOTE: avoid expanding authcfg here; it is handled during network access
-  return theURI.uri( expandAuthConfig );
+  // NOTE: do not expand authcfg here; it is handled during network access
+  return theURI.uri( false );
 }
 
 
