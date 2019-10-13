@@ -404,7 +404,7 @@ void QgsWFSSourceSelect::addButtonClicked()
     }
     QgsDebugMsg( "Layer " + typeName + " SQL is " + sql );
 
-    mUri = QgsWFSDataSourceURI::build( connection.uri().uri(), typeName, pCrsString,
+    mUri = QgsWFSDataSourceURI::build( connection.uri().uri( false ), typeName, pCrsString,
                                        sql, cbxFeatureCurrentViewExtent->isChecked() );
 
     emit addVectorLayer( mUri, layerName );
