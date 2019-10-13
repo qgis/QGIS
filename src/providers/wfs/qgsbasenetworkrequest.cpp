@@ -140,7 +140,7 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
   {
     mErrorCode = QgsBaseNetworkRequest::NetworkError;
     mErrorMessage = errorMessageFailedAuth();
-    QgsMessageLog::logMessage( mErrorMessage, mTranslatedComponent );
+    logMessageIfEnabled();
     return false;
   }
 
@@ -168,7 +168,7 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
     {
       mErrorCode = QgsBaseNetworkRequest::NetworkError;
       mErrorMessage = errorMessageFailedAuth();
-      QgsMessageLog::logMessage( mErrorMessage, mTranslatedComponent );
+      logMessageIfEnabled();
       waitCondition.wakeAll();
       success = false;
     }
@@ -278,7 +278,7 @@ bool QgsBaseNetworkRequest::sendPOST( const QUrl &url, const QString &contentTyp
   {
     mErrorCode = QgsBaseNetworkRequest::NetworkError;
     mErrorMessage = errorMessageFailedAuth();
-    QgsMessageLog::logMessage( mErrorMessage, mTranslatedComponent );
+    logMessageIfEnabled();
     return false;
   }
   request.setHeader( QNetworkRequest::ContentTypeHeader, contentTypeHeader );
@@ -288,7 +288,7 @@ bool QgsBaseNetworkRequest::sendPOST( const QUrl &url, const QString &contentTyp
   {
     mErrorCode = QgsBaseNetworkRequest::NetworkError;
     mErrorMessage = errorMessageFailedAuth();
-    QgsMessageLog::logMessage( mErrorMessage, mTranslatedComponent );
+    logMessageIfEnabled();
     return false;
   }
   connect( mReply, &QNetworkReply::finished, this, &QgsBaseNetworkRequest::replyFinished );
@@ -351,7 +351,7 @@ void QgsBaseNetworkRequest::replyFinished()
         if ( toUrl == mReply->url() )
         {
           mErrorMessage = tr( "Redirect loop detected: %1" ).arg( toUrl.toString() );
-          QgsMessageLog::logMessage( mErrorMessage, mTranslatedComponent );
+          logMessageIfEnabled();
           mResponse.clear();
         }
         else
@@ -363,7 +363,7 @@ void QgsBaseNetworkRequest::replyFinished()
             mResponse.clear();
             mErrorMessage = errorMessageFailedAuth();
             mErrorCode = QgsBaseNetworkRequest::NetworkError;
-            QgsMessageLog::logMessage( mErrorMessage, mTranslatedComponent );
+            logMessageIfEnabled();
             emit downloadFinished();
             return;
           }
@@ -380,7 +380,7 @@ void QgsBaseNetworkRequest::replyFinished()
             mResponse.clear();
             mErrorMessage = errorMessageFailedAuth();
             mErrorCode = QgsBaseNetworkRequest::NetworkError;
-            QgsMessageLog::logMessage( mErrorMessage, mTranslatedComponent );
+            logMessageIfEnabled();
             emit downloadFinished();
             return;
           }
@@ -430,7 +430,7 @@ void QgsBaseNetworkRequest::replyFinished()
         {
           mErrorMessage = tr( "empty response: %1" ).arg( mReply->errorString() );
           mErrorCode = QgsBaseNetworkRequest::ServerExceptionError;
-          QgsMessageLog::logMessage( mErrorMessage, mTranslatedComponent );
+          logMessageIfEnabled();
         }
       }
     }
@@ -438,7 +438,7 @@ void QgsBaseNetworkRequest::replyFinished()
     {
       mErrorMessage = errorMessageWithReason( mReply->errorString() );
       mErrorCode = QgsBaseNetworkRequest::ServerExceptionError;
-      QgsMessageLog::logMessage( mErrorMessage, mTranslatedComponent );
+      logMessageIfEnabled();
       mResponse.clear();
     }
   }
@@ -457,4 +457,10 @@ void QgsBaseNetworkRequest::replyFinished()
 QString QgsBaseNetworkRequest::errorMessageFailedAuth()
 {
   return errorMessageWithReason( tr( "network request update failed for authentication config" ) );
+}
+
+void QgsBaseNetworkRequest::logMessageIfEnabled()
+{
+  if ( mLogErrors )
+    QgsMessageLog::logMessage( mErrorMessage, mTranslatedComponent );
 }
