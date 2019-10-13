@@ -1673,7 +1673,7 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
       bool castToGeometry = layerProperty.geometryColType == SctGeography ||
                             layerProperty.geometryColType == SctPcPatch;
 
-      sql += QStringLiteral( "array_agg(" );
+      sql += QStringLiteral( "array_agg(DISTINCT " );
 
       int srid = layerProperty.srids.value( 0, std::numeric_limits<int>::min() );
       if ( srid  == std::numeric_limits<int>::min() )
