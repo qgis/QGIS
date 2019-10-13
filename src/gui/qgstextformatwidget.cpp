@@ -1460,28 +1460,37 @@ void QgsTextFormatWidget::mShapeTypeCmbBx_currentIndexChanged( int )
   mShapeStrokeColorBtn->setAllowOpacity( !isSVG );
   mShapeStrokeColorBtn->setButtonBackground();
 
+  // Hide parameter widgets not used by marker symbol
+  mShapeFillColorLabel->setVisible( !isMarker );
+  mShapeFillColorLabel->setEnabled( !isMarker );
+  mShapeFillColorBtn->setVisible( !isMarker );
+  mShapeFillColorBtn->setEnabled( !isMarker );
+  mShapeFillColorDDBtn->setVisible( !isMarker );
+  mShapeFillColorDDBtn->setEnabled( !isMarker );
+  mShapeStrokeColorLabel->setVisible( !isMarker );
+  mShapeStrokeColorLabel->setEnabled( !isMarker );
+  mShapeStrokeColorBtn->setVisible( !isMarker );
+  mShapeStrokeColorBtn->setEnabled( !isMarker );
+  mShapeStrokeColorDDBtn->setVisible( !isMarker );
+  mShapeStrokeColorDDBtn->setEnabled( !isMarker );
+  mShapeStrokeWidthLabel->setVisible( !isMarker );
+  mShapeStrokeWidthLabel->setEnabled( !isMarker );
+  mShapeStrokeWidthSpnBx->setVisible( !isMarker );
+  mShapeStrokeWidthSpnBx->setEnabled( !isMarker );
+  mShapeStrokeWidthDDBtn->setVisible( !isMarker );
+  mShapeStrokeWidthDDBtn->setEnabled( !isMarker );
+
   // configure SVG parameter widgets
   mShapeSVGParamsBtn->setVisible( isSVG );
   if ( isSVG )
   {
     updateSvgWidgets( mShapeSVGPathLineEdit->text() );
   }
-  else
-  {
-    mShapeFillColorLabel->setEnabled( !isMarker );
-    mShapeFillColorBtn->setEnabled( !isMarker );
-    mShapeFillColorDDBtn->setEnabled( !isMarker );
-    mShapeStrokeColorLabel->setEnabled( !isMarker );
-    mShapeStrokeColorBtn->setEnabled( !isMarker );
-    mShapeStrokeColorDDBtn->setEnabled( !isMarker );
-    mShapeStrokeWidthLabel->setEnabled( !isMarker );
-    mShapeStrokeWidthSpnBx->setEnabled( !isMarker );
-    mShapeStrokeWidthDDBtn->setEnabled( !isMarker );
-  }
   // TODO: fix overriding SVG symbol's stroke width units in QgsSvgCache
   // currently broken, fall back to symbol units only
   mShapeStrokeWidthUnitWidget->setVisible( !isSVG && !isMarker );
   mShapeSVGUnitsLabel->setVisible( isSVG );
+  mShapeStrokeUnitsDDBtn->setVisible( !isSVG && !isMarker );
   mShapeStrokeUnitsDDBtn->setEnabled( !isSVG && !isMarker );
 
   updateAvailableShadowPositions();
