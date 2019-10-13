@@ -311,9 +311,44 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
       QMutexLocker locker( &mMutex );
 
       // already a request in progress for this url
-      // force requesting remote url if blocking mode
-      if ( mPendingRemoteUrls.contains( path ) && !blocking )
-        return fetchingContent;
+      if ( mPendingRemoteUrls.contains( path ) )
+      {
+        // it's a non blocking request so return fetching content
+        if ( !blocking )
+        {
+          return fetchingContent;
+        }
+
+        // it's a blocking request so try to find the task and wait for task finished
+        const auto constActiveTasks = QgsApplication::taskManager()->activeTasks();
+        for ( QgsTask *task : constActiveTasks )
+        {
+          // the network content fetcher task's description ends with the path
+          if ( !task->description().endsWith( path ) )
+          {
+            continue;
+          }
+
+          // cast task to network content fetcher task
+          QgsNetworkContentFetcherTask *ncfTask = qobject_cast<QgsNetworkContentFetcherTask *>( task );
+          if ( ncfTask )
+          {
+            // wait for task finished
+            if ( waitForTaskFinished( ncfTask ) )
+            {
+              if ( mRemoteContentCache.contains( path ) )
+              {
+                // We got the file!
+                return *mRemoteContentCache[ path ];
+              }
+            }
+          }
+          // task found, no needs to continue
+          break;
+        }
+        // if no content returns the content is probably in remote content cache
+        // or a new task will be created
+      }
 
       if ( mRemoteContentCache.contains( path ) )
       {
@@ -372,22 +407,19 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
         QMetaObject::invokeMethod( const_cast< QgsAbstractContentCacheBase * >( qobject_cast< const QgsAbstractContentCacheBase * >( this ) ), "onRemoteContentFetched", Qt::QueuedConnection, Q_ARG( QString, path ), Q_ARG( bool, true ) );
       } );
 
+      QgsApplication::taskManager()->addTask( task );
+
+      // if blocking, wait for finished
       if ( blocking )
       {
-        if ( task->run() )
+        if ( waitForTaskFinished( task ) )
         {
           if ( mRemoteContentCache.contains( path ) )
           {
-            task->deleteLater();
             // We got the file!
             return *mRemoteContentCache[ path ];
           }
         }
-        task->deleteLater();
-      }
-      else
-      {
-        QgsApplication::taskManager()->addTask( task );
       }
       return fetchingContent;
     }
@@ -412,6 +444,42 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
 
       if ( success )
         emit remoteContentFetched( url );
+    }
+
+    /**
+     * Blocks the current thread until the \a task finishes or an arbitrary setting maximum wait to 5 seconds
+     *
+     * \warning this method must NEVER be used from GUI based applications (like the main QGIS application)
+     * or crashes will result. Only for use in external scripts or QGIS server.
+     *
+     * The result will be FALSE if the wait timed out and TRUE in any other case.
+     *
+     * \since QGIS 3.10
+     */
+    bool waitForTaskFinished( QgsNetworkContentFetcherTask *task ) const
+    {
+      // First step, waiting for task running
+      if ( task->status() != QgsTask::Running )
+      {
+        QEventLoop loop;
+        connect( task, &QgsNetworkContentFetcherTask::begun, &loop, &QEventLoop::quit );
+        if ( task->status() != QgsTask::Running )
+          loop.exec();
+      }
+
+      // Second step, wait 5 seconds for task finished
+      if ( task->waitForFinished( 5000 ) )
+      {
+        // The wait did not time out
+        // Third step, check status as complete
+        if ( task->status() == QgsTask::Complete )
+        {
+          // Fourth step, force the signal fetched to be sure reply has been checked
+          task->fetched();
+          return true;
+        }
+      }
+      return false;
     }
 
     /**
