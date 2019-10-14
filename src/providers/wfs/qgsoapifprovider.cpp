@@ -125,6 +125,10 @@ bool QgsOapifProvider::init()
 
   mShared->mCapabilityExtent = collectionRequest.collection().mBbox;
 
+  mLayerMetadata = collectionRequest.collection().mLayerMetadata;
+  // Merge contact info from /api
+  mLayerMetadata.setContacts( apiRequest.metadata().contacts() );
+
   mShared->mItemsUrl = mShared->mCollectionUrl +  QStringLiteral( "/items" );
 
   QgsOapifItemsRequest itemsRequest( mShared->mURI.uri(), mShared->mItemsUrl + QStringLiteral( "?limit=10" ) );
@@ -206,7 +210,7 @@ bool QgsOapifProvider::isValid() const
 
 QgsVectorDataProvider::Capabilities QgsOapifProvider::capabilities() const
 {
-  return QgsVectorDataProvider::SelectAtId;
+  return QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::ReadLayerMetadata;
 }
 
 bool QgsOapifProvider::empty() const

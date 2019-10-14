@@ -10,6 +10,7 @@ __author__ = 'Even Rouault'
 __date__ = '2019-10-12'
 __copyright__ = 'Copyright 2019, Even Rouault'
 
+import copy
 import json
 import hashlib
 import os
@@ -33,6 +34,8 @@ from qgis.core import (
     QgsExpression,
     QgsExpressionContextUtils,
     QgsExpressionContext,
+    QgsCoordinateReferenceSystem,
+    QgsBox3d
 )
 from qgis.testing import (start_app,
                           unittest
@@ -284,6 +287,219 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         request = QgsFeatureRequest().setFilterRect(extent)
         values = [f['pk'] for f in vl.getFeatures(request)]
         self.assertEqual(values, [1, 2, 4])
+
+    def testLayerMetadata(self):
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_testLayerMetadata'
+        create_landing_page_api_collection(endpoint)
+
+        # first items
+        first_items = {
+            "type": "FeatureCollection",
+            "features": [
+                {"type": "Feature", "id": "feat.1", "properties": {"pk": 1, "cnt": 100}, "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]}}
+            ]
+        }
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=10&' + ACCEPT_ITEMS), 'wb') as f:
+            f.write(json.dumps(first_items).encode('UTF-8'))
+
+        # API
+        with open(sanitize(endpoint, '/api?' + ACCEPT_API), 'wb') as f:
+            f.write(json.dumps({
+                "components": {
+                    "parameters": {
+                        "limit": {
+                            "schema": {
+                                "maximum": 1000,
+                                "default": 100
+                            }
+                        }
+                    }
+                },
+                "info":
+                {
+                    "contact":
+                    {
+                        "name": "contact_name",
+                        "email": "contact_email",
+                        "url": "contact_url"
+                    }
+                }
+            }).encode('UTF-8'))
+
+        # collection
+        base_collection = {
+            "id": "mycollection",
+            "title": "my title",
+            "description": "my description",
+            "extent": {
+                "spatial": {
+                    "bbox": [
+                            [-71.123, 66.33, -65.32, 78.3],
+                        None, # invalid
+                            [1, 2, 3], # invalid
+                            ["invalid", 1, 2, 3], # invalid
+                            [2, 49, -100, 3, 50, 100]
+                    ]
+                },
+                "temporal":
+                    {
+                        "interval": [
+                            [None, None], # invalid
+                            ["invalid", "invalid"],
+                            "another_invalid",
+                            ["1980-01-01T12:34:56.789Z", "2020-01-01T00:00:00Z"],
+                            ["1980-01-01T12:34:56.789Z", None],
+                            [None, "2020-01-01T00:00:00Z"]
+                        ]
+                }
+            },
+            "links": [
+                {"href": "href_self", "rel": "self", "type": "application/json", "title": "my self link"},
+                    {"href": "href_parent", "rel": "parent", "title": "my parent link"},
+                    {"href": "http://download.example.org/buildings.gpkg",
+                     "rel": "enclosure",
+                     "type": "application/geopackage+sqlite3",
+                     "title": "Bulk download (GeoPackage)",
+                     "length": 123456789012345}
+            ],
+            # STAC specific
+            "keywords": ["keyword_a", "keyword_b"]
+
+        }
+
+        collection = copy.deepcopy(base_collection)
+        collection['links'].append(
+            {"href": "https://creativecommons.org/publicdomain/zero/1.0/",
+             "rel": "license", "type": "text/html",
+             "title": "CC0-1.0"})
+        collection['links'].append(
+            {"href": "https://creativecommons.org/publicdomain/zero/1.0/rdf",
+             "rel": "license", "type": "application/rdf+xml",
+             "title": "CC0-1.0"})
+        collection['links'].append(
+            {"href": "https://example.com",
+             "rel": "license", "type": "text/html",
+             "title": "Public domain"})
+        with open(sanitize(endpoint, '/collections/mycollection?' + ACCEPT_COLLECTION), 'wb') as f:
+            f.write(json.dumps(collection).encode('UTF-8'))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' restrictToRequestBBOX=1", 'test', 'OAPIF')
+        self.assertTrue(vl.isValid())
+
+        md = vl.metadata()
+        assert md.identifier() == 'href_self'
+        assert md.parentIdentifier() == 'href_parent'
+        assert md.type() == 'dataset'
+        assert md.title() == 'my title'
+        assert md.abstract() == 'my description'
+
+        contacts = md.contacts()
+        assert len(contacts) == 1
+        contact = contacts[0]
+        assert contact.name == 'contact_name'
+        assert contact.email == 'contact_email'
+        assert contact.organization == 'contact_url'
+
+        assert len(md.licenses()) == 2
+        assert md.licenses()[0] == 'CC0-1.0'
+        assert md.licenses()[1] == 'Public domain'
+
+        assert 'keywords' in md.keywords()
+        assert md.keywords()['keywords'] == ["keyword_a", "keyword_b"]
+
+        assert md.crs().isValid()
+        assert md.crs().isGeographic()
+        assert not md.crs().hasAxisInverted()
+
+        links = md.links()
+        assert len(links) == 6, len(links)
+        assert links[0].type == 'WWW:LINK'
+        assert links[0].url == 'href_self'
+        assert links[0].name == 'self'
+        assert links[0].mimeType == 'application/json'
+        assert links[0].description == 'my self link'
+        assert links[0].size == ''
+        assert links[2].size == '123456789012345'
+
+        extent = md.extent()
+        assert len(extent.spatialExtents()) == 2
+        spatialExtent = extent.spatialExtents()[0]
+        assert spatialExtent.extentCrs.isValid()
+        assert spatialExtent.extentCrs.isGeographic()
+        assert not spatialExtent.extentCrs.hasAxisInverted()
+        assert spatialExtent.bounds == QgsBox3d(-71.123, 66.33, 0, -65.32, 78.3, 0)
+        spatialExtent = extent.spatialExtents()[1]
+        assert spatialExtent.bounds == QgsBox3d(2, 49, -100, 3, 50, 100)
+
+        temporalExtents = extent.temporalExtents()
+        assert len(temporalExtents) == 3
+        assert temporalExtents[0].begin() == QDateTime.fromString("1980-01-01T12:34:56.789Z", Qt.ISODateWithMs), temporalExtents[0].begin()
+        assert temporalExtents[0].end() == QDateTime.fromString("2020-01-01T00:00:00Z", Qt.ISODateWithMs), temporalExtents[0].end()
+        assert temporalExtents[1].begin().isValid()
+        assert not temporalExtents[1].end().isValid()
+        assert not temporalExtents[2].begin().isValid()
+        assert temporalExtents[2].end().isValid()
+
+        # Variant using STAC license
+        collection = copy.deepcopy(base_collection)
+        collection['license'] = 'STAC license'
+        with open(sanitize(endpoint, '/collections/mycollection?' + ACCEPT_COLLECTION), 'wb') as f:
+            f.write(json.dumps(collection).encode('UTF-8'))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' restrictToRequestBBOX=1", 'test', 'OAPIF')
+        self.assertTrue(vl.isValid())
+
+        md = vl.metadata()
+        assert len(md.licenses()) == 1
+        assert md.licenses()[0] == 'STAC license'
+
+        # Variant using STAC license=various
+        collection = copy.deepcopy(base_collection)
+        collection['license'] = 'various'
+        collection['links'].append(
+            {"href": "https://creativecommons.org/publicdomain/zero/1.0/",
+             "rel": "license", "type": "text/html",
+             "title": "CC0-1.0"})
+        with open(sanitize(endpoint, '/collections/mycollection?' + ACCEPT_COLLECTION), 'wb') as f:
+            f.write(json.dumps(collection).encode('UTF-8'))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' restrictToRequestBBOX=1", 'test', 'OAPIF')
+        self.assertTrue(vl.isValid())
+
+        md = vl.metadata()
+        assert len(md.licenses()) == 1
+        assert md.licenses()[0] == 'CC0-1.0'
+
+        # Variant using STAC license=proprietary
+        collection = copy.deepcopy(base_collection)
+        collection['license'] = 'proprietary'
+        collection['links'].append(
+            {"href": "https://example.com",
+             "rel": "license", "type": "text/html",
+             "title": "my proprietary license"})
+        with open(sanitize(endpoint, '/collections/mycollection?' + ACCEPT_COLLECTION), 'wb') as f:
+            f.write(json.dumps(collection).encode('UTF-8'))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' restrictToRequestBBOX=1", 'test', 'OAPIF')
+        self.assertTrue(vl.isValid())
+
+        md = vl.metadata()
+        assert len(md.licenses()) == 1
+        assert md.licenses()[0] == 'my proprietary license'
+
+        # Variant using STAC license=proprietary (non conformant: missing a rel=license link)
+        collection = copy.deepcopy(base_collection)
+        collection['license'] = 'proprietary'
+        with open(sanitize(endpoint, '/collections/mycollection?' + ACCEPT_COLLECTION), 'wb') as f:
+            f.write(json.dumps(collection).encode('UTF-8'))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' restrictToRequestBBOX=1", 'test', 'OAPIF')
+        self.assertTrue(vl.isValid())
+
+        md = vl.metadata()
+        assert len(md.licenses()) == 1
+        assert md.licenses()[0] == 'proprietary'
 
 
 if __name__ == '__main__':

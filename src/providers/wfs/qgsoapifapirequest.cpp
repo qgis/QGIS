@@ -118,6 +118,36 @@ void QgsOapifApiRequest::processReply()
         }
       }
     }
+
+    if ( j.is_object() && j.contains( "info" ) )
+    {
+      const auto info = j["info"];
+      if ( info.is_object() && info.contains( "contact" ) )
+      {
+        const auto jContact = info["contact"];
+        if ( jContact.is_object() && jContact.contains( "name" ) )
+        {
+          const auto name = jContact["name"];
+          if ( name.is_string() )
+          {
+            QgsAbstractMetadataBase::Contact contact( QString::fromStdString( name.get<std::string>() ) );
+            const auto email = jContact["email"];
+            if ( email.is_string() )
+            {
+              contact.email = QString::fromStdString( email.get<std::string>() );
+            }
+
+            const auto url = jContact["url"];
+            if ( url.is_string() )
+            {
+              // A bit of abuse to fill organization with url
+              contact.organization = QString::fromStdString( url.get<std::string>() );
+            }
+            mMetadata.addContact( contact );
+          }
+        }
+      }
+    }
   }
   catch ( const json::parse_error &ex )
   {

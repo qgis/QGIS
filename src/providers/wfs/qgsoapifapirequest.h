@@ -20,6 +20,7 @@
 
 #include "qgsdatasourceuri.h"
 #include "qgsbasenetworkrequest.h"
+#include "qgslayermetadata.h"
 
 //! Manages the /api request
 class QgsOapifApiRequest : public QgsBaseNetworkRequest
@@ -48,6 +49,9 @@ class QgsOapifApiRequest : public QgsBaseNetworkRequest
     //! Return the default number of features that are requested at once (-1 if unknown)
     int defaultLimit() const { return mDefaultLimit; }
 
+    //! Return metadata (mostly contact info)
+    const QgsAbstractMetadataBase &metadata() const { return mMetadata; }
+
   signals:
     //! emitted when the capabilities have been fully parsed, or an error occurred */
     void gotResponse();
@@ -64,6 +68,8 @@ class QgsOapifApiRequest : public QgsBaseNetworkRequest
     int mMaxLimit = -1;
 
     int mDefaultLimit = -1;
+
+    QgsLayerMetadata mMetadata;
 
     ApplicationLevelError mAppLevelError = ApplicationLevelError::NoError;
 

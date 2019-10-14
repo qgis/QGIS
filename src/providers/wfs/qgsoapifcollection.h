@@ -21,6 +21,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgsbasenetworkrequest.h"
 #include "qgsrectangle.h"
+#include "qgslayermetadata.h"
 
 #include <nlohmann/json.hpp>
 using namespace nlohmann;
@@ -40,6 +41,9 @@ struct QgsOapifCollection
 
   //! Bounding box (in CRS84)
   QgsRectangle mBbox;
+
+  //! Layer metadata
+  QgsLayerMetadata mLayerMetadata;
 
   //! Fills a collection from its JSon serialization
   bool deserialize( const json &j );
