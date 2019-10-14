@@ -94,6 +94,7 @@ void QgsBackgroundCachedSharedData::invalidateCache()
   mCachedRegions = QgsSpatialIndex();
   mRegions.clear();
   mRect = QgsRectangle();
+  mComputedExtent = QgsRectangle();
   mRequestLimit = 0;
   mFeatureCount = 0;
   mFeatureCountExact = false;
@@ -1210,11 +1211,11 @@ QString QgsBackgroundCachedSharedData::getMD5( const QgsFeature &f )
   return hash.result().toHex();
 }
 
-void QgsBackgroundCachedSharedData::setFeatureCount( int featureCount )
+void QgsBackgroundCachedSharedData::setFeatureCount( int featureCount, bool featureCountExact )
 {
   QMutexLocker locker( &mMutex );
   mFeatureCountRequestIssued = true;
-  mFeatureCountExact = true;
+  mFeatureCountExact = featureCountExact;
   mFeatureCount = featureCount;
 }
 

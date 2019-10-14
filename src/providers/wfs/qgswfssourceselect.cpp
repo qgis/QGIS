@@ -33,6 +33,7 @@
 #include "qgssqlstatement.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgsquerybuilder.h"
 #include "qgswfsguiutils.h"
 
 #include <QDomDocument>
@@ -514,8 +515,11 @@ void QgsWFSSourceSelect::addButtonClicked()
     }
     QgsDebugMsg( "Layer " + typeName + " SQL is " + sql );
 
-    mUri = QgsWFSDataSourceURI::build( connection.uri().uri( false ), typeName, pCrsString,
-                                       sql, cbxFeatureCurrentViewExtent->isChecked() );
+    mUri = QgsWFSDataSourceURI::build( connection.uri().uri( false ), typeName,
+                                       pCrsString,
+                                       isOapif() ? QString() : sql,
+                                       isOapif() ? sql : QString(),
+                                       cbxFeatureCurrentViewExtent->isChecked() );
 
     emit addVectorLayer( mUri, layerName, isOapif() ? QgsOapifProvider::OAPIF_PROVIDER_KEY : QgsWFSProvider::WFS_PROVIDER_KEY );
   }
@@ -613,8 +617,45 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex &index )
 
   //get available fields for wfs layer
   QgsWfsConnection connection( cmbConnections->currentText() );
-  QgsWFSDataSourceURI uri( connection.uri().uri() );
+  QgsWFSDataSourceURI uri( connection.uri().uri( false ) );
   uri.setTypeName( typeName );
+
+  QModelIndex filterIndex = index.sibling( index.row(), MODEL_IDX_SQL );
+  QString sql( filterIndex.data().toString() );
+
+  if ( isOapif() )
+  {
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+    QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+    QgsVectorLayer vlayer( uri.uri(), typeName, QgsOapifProvider::OAPIF_PROVIDER_KEY, options );
+    QApplication::restoreOverrideCursor();
+
+    if ( !vlayer.isValid() )
+    {
+      return;
+    }
+
+    // create a query builder object
+    QgsQueryBuilder gb( &vlayer, this );
+    gb.setSql( sql );
+
+    if ( gb.exec() )
+    {
+      auto provider = dynamic_cast<QgsOapifProvider *>( vlayer.dataProvider() );
+      Q_ASSERT( provider );
+      if ( provider->filterTranslatedState() == QgsOapifProvider::FilterTranslationState::FULLY_CLIENT )
+      {
+        QMessageBox::information( nullptr, tr( "Filter" ), tr( "Whole filter will be evaluated on client side." ) );
+      }
+      else if ( provider->filterTranslatedState() == QgsOapifProvider::FilterTranslationState::PARTIAL )
+      {
+        QMessageBox::information( nullptr, tr( "Filter" ),
+                                  tr( "The following part of the filter will be evaluated on client side : %1" ).arg( provider->clientSideFilterExpression() ) );
+      }
+      mModelProxy->setData( filterIndex, QVariant( gb.sql() ) );
+    }
+    return;
+  }
 
   QgsDataProvider::ProviderOptions providerOptions;
   QgsWFSProvider p( uri.uri(), providerOptions, mCaps );
@@ -630,8 +671,6 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex &index )
     return;
   }
 
-  QModelIndex filterIndex = index.sibling( index.row(), MODEL_IDX_SQL );
-  QString sql( filterIndex.data().toString() );
   QString displayedTypeName( typeName );
   if ( !mCaps.setAmbiguousUnprefixedTypename.contains( QgsWFSUtils::removeNamespacePrefix( typeName ) ) )
     displayedTypeName = QgsWFSUtils::removeNamespacePrefix( typeName );
@@ -852,8 +891,6 @@ void QgsWFSSourceSelect::btnLoad_clicked()
 
 void QgsWFSSourceSelect::treeWidgetItemDoubleClicked( const QModelIndex &index )
 {
-  if ( isOapif() )
-    return;
   QgsDebugMsg( QStringLiteral( "double-click called" ) );
   buildQuery( index );
 }

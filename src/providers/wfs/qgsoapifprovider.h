@@ -26,6 +26,8 @@
 
 #include "qgsprovidermetadata.h"
 
+#include <set>
+
 class QgsOapifSharedData;
 
 class QgsOapifProvider : public QgsVectorDataProvider
@@ -52,11 +54,10 @@ class QgsOapifProvider : public QgsVectorDataProvider
 
     QgsCoordinateReferenceSystem crs() const override;
 
-    //QString subsetString() const override;
-    //bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
+    QString subsetString() const override { return mSubsetString; }
+    bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
 
-    //bool supportsSubsetString() const override { return true; }
-    bool supportsSubsetString() const override { return false; }
+    bool supportsSubsetString() const override { return true; }
 
     /* Inherited from QgsDataProvider */
 
@@ -70,6 +71,19 @@ class QgsOapifProvider : public QgsVectorDataProvider
     QgsLayerMetadata layerMetadata() const override { return mLayerMetadata; }
 
     bool empty() const override;
+
+    enum class FilterTranslationState
+    {
+      FULLY_CLIENT,
+      PARTIAL,
+      FULLY_SERVER
+    };
+
+    // For QgsWFSSourceSelect::buildQuery()
+    FilterTranslationState filterTranslatedState() const;
+
+    //! For QgsWFSSourceSelect::buildQuery()
+    const QString &clientSideFilterExpression() const;
 
   public slots:
 
@@ -85,8 +99,14 @@ class QgsOapifProvider : public QgsVectorDataProvider
     //! Flag if provider is valid
     bool mValid = true;
 
+    //! String used to define a subset of the layer
+    QString mSubsetString;
+
     //! Layer metadata
     QgsLayerMetadata mLayerMetadata;
+
+    //! Set to true by setSubsetString() if updateFeatureCount is true
+    mutable bool mUpdateFeatureCountAtNextFeatureCountRequest = false;
 
     //! Initial requests
     bool init();
@@ -106,6 +126,9 @@ class QgsOapifSharedData : public QObject, public QgsBackgroundCachedSharedData
   public:
     explicit QgsOapifSharedData( const QString &uri );
     ~QgsOapifSharedData() override;
+
+    //! Compute OAPIF filter from the filter in the URI
+    bool computeServerFilter( QString &errorMsg );
 
     bool hasGeometry() const override { return mWKBType != QgsWkbTypes::Unknown; }
 
@@ -143,7 +166,18 @@ class QgsOapifSharedData : public QObject, public QgsBackgroundCachedSharedData
     //! Url to /collections/{collectionId}/items
     QString mItemsUrl;
 
+    //! Server filter
+    QString mServerFilter;
+
+    //! Translation state of filter to server-side filter.
+    QgsOapifProvider::FilterTranslationState mFilterTranslationState = QgsOapifProvider::FilterTranslationState::FULLY_CLIENT;
+
   private:
+
+    // Translate part of an expression to a server-side filter
+    QString translateNodeToServer( const QgsExpressionNode *node,
+                                   QgsOapifProvider::FilterTranslationState &translationState,
+                                   QString &untranslatedPart );
 
     //! Log error to QgsMessageLog and raise it to the provider
     void pushError( const QString &errorMsg ) override;

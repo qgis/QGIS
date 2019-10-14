@@ -18,7 +18,7 @@ import re
 import shutil
 import tempfile
 
-from qgis.PyQt.QtCore import QCoreApplication, Qt, QObject, QDateTime
+from qgis.PyQt.QtCore import QCoreApplication, Qt, QObject, QDateTime, QVariant
 
 from qgis.core import (
     QgsWkbTypes,
@@ -505,6 +505,96 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         md = vl.metadata()
         assert len(md.licenses()) == 1
         assert md.licenses()[0] == 'proprietary'
+
+    def testDateTimeFiltering(self):
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_testDateTimeFiltering'
+        create_landing_page_api_collection(endpoint)
+
+        items = {
+            "type": "FeatureCollection",
+            "features": [
+                {"type": "Feature", "id": "feat.1", "properties": {"my_dt_field": "2019-10-15T00:34:00Z", "foo": "bar"}, "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]}}
+            ]
+        }
+
+        no_items = {
+            "type": "FeatureCollection",
+            "features": [
+            ]
+        }
+
+        filename = sanitize(endpoint, '/collections/mycollection/items?limit=10&' + ACCEPT_ITEMS)
+        with open(filename, 'wb') as f:
+            f.write(json.dumps(items).encode('UTF-8'))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' filter='\"my_dt_field\" >= \\'2019-05-15T00:00:00Z\\''", 'test', 'OAPIF')
+        self.assertTrue(vl.isValid())
+        os.unlink(filename)
+
+        filename = sanitize(endpoint, '/collections/mycollection/items?limit=1000&datetime=2019-05-15T00:00:00Z/9999-12-31T00:00:00Z&' + ACCEPT_ITEMS)
+        with open(filename, 'wb') as f:
+            f.write(json.dumps(items).encode('UTF-8'))
+        values = [f['id'] for f in vl.getFeatures()]
+        os.unlink(filename)
+        self.assertEqual(values, ['feat.1'])
+
+        assert vl.setSubsetString(""""my_dt_field" < '2019-01-01T00:34:00Z'""")
+
+        filename = sanitize(endpoint, '/collections/mycollection/items?limit=1000&datetime=0000-01-01T00:00:00Z/2019-01-01T00:34:00Z&' + ACCEPT_ITEMS)
+        with open(filename, 'wb') as f:
+            f.write(json.dumps(no_items).encode('UTF-8'))
+        values = [f['id'] for f in vl.getFeatures()]
+        os.unlink(filename)
+        self.assertEqual(values, [])
+
+        assert vl.setSubsetString(""""my_dt_field" = '2019-10-15T00:34:00Z'""")
+
+        filename = sanitize(endpoint, '/collections/mycollection/items?limit=1000&datetime=2019-10-15T00:34:00Z&' + ACCEPT_ITEMS)
+        with open(filename, 'wb') as f:
+            f.write(json.dumps(items).encode('UTF-8'))
+        values = [f['id'] for f in vl.getFeatures()]
+        os.unlink(filename)
+        self.assertEqual(values, ['feat.1'])
+
+        assert vl.setSubsetString("""("my_dt_field" >= '2019-01-01T00:34:00Z') AND ("my_dt_field" <= '2019-12-31T00:00:00Z')""")
+
+        filename = sanitize(endpoint, '/collections/mycollection/items?limit=1000&datetime=2019-01-01T00:34:00Z/2019-12-31T00:00:00Z&' + ACCEPT_ITEMS)
+        with open(filename, 'wb') as f:
+            f.write(json.dumps(items).encode('UTF-8'))
+        values = [f['id'] for f in vl.getFeatures()]
+        os.unlink(filename)
+        self.assertEqual(values, ['feat.1'])
+
+        # Partial on client side
+        assert vl.setSubsetString("""("my_dt_field" >= '2019-01-01T00:34:00Z') AND ("foo" = 'bar')""")
+
+        filename = sanitize(endpoint, '/collections/mycollection/items?limit=1000&datetime=2019-01-01T00:34:00Z/9999-12-31T00:00:00Z&' + ACCEPT_ITEMS)
+        with open(filename, 'wb') as f:
+            f.write(json.dumps(items).encode('UTF-8'))
+        values = [f['id'] for f in vl.getFeatures()]
+        os.unlink(filename)
+        self.assertEqual(values, ['feat.1'])
+
+        # Same but with non-matching client-side part
+        assert vl.setSubsetString("""("my_dt_field" >= '2019-01-01T00:34:00Z') AND ("foo" != 'bar')""")
+
+        filename = sanitize(endpoint, '/collections/mycollection/items?limit=1000&datetime=2019-01-01T00:34:00Z/9999-12-31T00:00:00Z&' + ACCEPT_ITEMS)
+        with open(filename, 'wb') as f:
+            f.write(json.dumps(items).encode('UTF-8'))
+        values = [f['id'] for f in vl.getFeatures()]
+        os.unlink(filename)
+        self.assertEqual(values, [])
+
+        # Switch order
+        assert vl.setSubsetString("""("foo" = 'bar') AND ("my_dt_field" >= '2019-01-01T00:34:00Z')""")
+
+        filename = sanitize(endpoint, '/collections/mycollection/items?limit=1000&datetime=2019-01-01T00:34:00Z/9999-12-31T00:00:00Z&' + ACCEPT_ITEMS)
+        with open(filename, 'wb') as f:
+            f.write(json.dumps(items).encode('UTF-8'))
+        values = [f['id'] for f in vl.getFeatures()]
+        os.unlink(filename)
+        self.assertEqual(values, ['feat.1'])
 
 
 if __name__ == '__main__':

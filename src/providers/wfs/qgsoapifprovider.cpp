@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsexpressionnodeimpl.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsoapifprovider.h"
@@ -41,13 +42,23 @@ QgsOapifProvider::QgsOapifProvider( const QString &uri, const ProviderOptions &o
     return;
   }
 
+  mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
+
+  mSubsetString = mShared->mURI.filter();
+
   if ( !init() )
   {
     mValid = false;
     return;
   }
 
-  mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
+  QString errorMsg;
+  if ( !mShared->computeServerFilter( errorMsg ) )
+  {
+    QgsMessageLog::logMessage( errorMsg, tr( "OAPIF" ) );
+    mValid = false;
+    return;
+  }
 
   qRegisterMetaType<QgsRectangle>( "QgsRectangle" );
 }
@@ -143,7 +154,11 @@ bool QgsOapifProvider::init()
 
   if ( itemsRequest.numberMatched() >= 0 )
   {
-    mShared->setFeatureCount( itemsRequest.numberMatched() );
+    mShared->mHasNumberMatched = true;
+    if ( mSubsetString.isEmpty() )
+    {
+      mShared->setFeatureCount( itemsRequest.numberMatched(), true );
+    }
   }
 
   if ( mShared->mCapabilityExtent.isNull() )
@@ -179,6 +194,28 @@ QgsWkbTypes::Type QgsOapifProvider::wkbType() const
 
 long QgsOapifProvider::featureCount() const
 {
+  if ( mUpdateFeatureCountAtNextFeatureCountRequest )
+  {
+    mUpdateFeatureCountAtNextFeatureCountRequest = false;
+
+    QgsFeature f;
+    QgsFeatureRequest request;
+    request.setNoAttributes();
+    auto iter = getFeatures( request );
+    int count = 0;
+    bool countExact = true;
+    while ( iter.nextFeature( f ) )
+    {
+      if ( count == 1000 ) // to avoid too long processing time
+      {
+        countExact = false;
+        break;
+      }
+      count ++;
+    }
+
+    mShared->setFeatureCount( count, countExact );
+  }
   return mShared->getFeatureCount();
 }
 
@@ -236,6 +273,58 @@ bool QgsOapifProvider::empty() const
 
 };
 
+bool QgsOapifProvider::setSubsetString( const QString &sql, bool updateFeatureCount )
+{
+  QgsDebugMsgLevel( QStringLiteral( "sql = '%1'" ).arg( sql ), 4 );
+
+  if ( sql == mSubsetString )
+    return true;
+
+  if ( !sql.isEmpty() )
+  {
+    QgsExpression filterExpression( sql );
+    if ( !filterExpression.isValid() )
+    {
+      QgsMessageLog::logMessage( filterExpression.parserErrorString(), tr( "OAPIF" ) );
+      return false;
+    }
+  }
+
+  // Invalid and cancel current download before altering fields, etc...
+  // (crashes might happen if not done at the beginning)
+  mShared->invalidateCache();
+
+  mSubsetString = sql;
+  clearMinMaxCache();
+
+  // update URI
+  mShared->mURI.setFilter( sql );
+  setDataSourceUri( mShared->mURI.uri() );
+  QString errorMsg;
+  if ( !mShared->computeServerFilter( errorMsg ) )
+    QgsMessageLog::logMessage( errorMsg, tr( "OAPIF" ) );
+
+  reloadData();
+  if ( updateFeatureCount )
+  {
+    mUpdateFeatureCountAtNextFeatureCountRequest = true;
+  }
+
+  emit dataChanged();
+
+  return true;
+}
+
+QgsOapifProvider::FilterTranslationState QgsOapifProvider::filterTranslatedState() const
+{
+  return mShared->mFilterTranslationState;
+}
+
+const QString &QgsOapifProvider::clientSideFilterExpression() const
+{
+  return mShared->mClientSideFilterExpression;
+}
+
 QString QgsOapifProvider::name() const
 {
   return OAPIF_PROVIDER_KEY;
@@ -276,6 +365,206 @@ std::unique_ptr<QgsFeatureDownloaderImpl> QgsOapifSharedData::newFeatureDownload
 
 void QgsOapifSharedData::invalidateCacheBaseUnderLock()
 {
+}
+
+static QDateTime getDateTimeValue( const QVariant &v )
+{
+  if ( v.type() == QVariant::String )
+    return QDateTime::fromString( v.toString(), Qt::ISODateWithMs );
+  else if ( v.type() == QVariant::DateTime )
+    return v.toDateTime();
+  return QDateTime();
+}
+
+static bool isDateTime( const QVariant &v )
+{
+  return getDateTimeValue( v ).isValid();
+}
+
+static QString getDateTimeValueAsString( const QVariant &v )
+{
+  if ( v.type() == QVariant::String )
+    return v.toString();
+  else if ( v.type() == QVariant::DateTime )
+    return v.toDateTime().toString( Qt::ISODateWithMs );
+  return QString();
+}
+
+static bool isDateTimeField( const QgsFields &fields, const QString &fieldName )
+{
+  int idx = fields.indexOf( fieldName );
+  if ( idx >= 0 )
+  {
+    const auto type = fields.at( idx ).type();
+    return type == QVariant::DateTime || type == QVariant::Date;
+  }
+  return false;
+}
+
+static void collectTopLevelAndNodes( const QgsExpressionNode *node,
+                                     std::vector<const QgsExpressionNode *> &topAndNodes )
+{
+  if ( node->nodeType() == QgsExpressionNode::ntBinaryOperator )
+  {
+    const auto binNode = static_cast<const QgsExpressionNodeBinaryOperator *>( node );
+    const auto op = binNode->op();
+    if ( op == QgsExpressionNodeBinaryOperator::boAnd )
+    {
+      collectTopLevelAndNodes( binNode->opLeft(), topAndNodes );
+      collectTopLevelAndNodes( binNode->opRight(), topAndNodes );
+      return;
+    }
+  }
+  topAndNodes.push_back( node );
+}
+
+QString QgsOapifSharedData::translateNodeToServer(
+  const QgsExpressionNode *rootNode,
+  QgsOapifProvider::FilterTranslationState &translationState,
+  QString &untranslatedPart )
+{
+  std::vector<const QgsExpressionNode *> topAndNodes;
+  collectTopLevelAndNodes( rootNode, topAndNodes );
+  QDateTime minDate;
+  QDateTime maxDate;
+  QString minDateStr;
+  QString maxDateStr;
+  bool hasTranslatedParts = false;
+  for ( size_t i = 0; i < topAndNodes.size(); /* do not increment here */ )
+  {
+    bool removeMe = false;
+    const auto node = topAndNodes[i];
+    if ( node->nodeType() == QgsExpressionNode::ntBinaryOperator )
+    {
+      const auto binNode = static_cast<const QgsExpressionNodeBinaryOperator *>( node );
+      const auto op = binNode->op();
+      if ( binNode->opLeft()->nodeType() == QgsExpressionNode::ntColumnRef &&
+           binNode->opRight()->nodeType() == QgsExpressionNode::ntLiteral )
+      {
+        const auto left = static_cast<const QgsExpressionNodeColumnRef *>( binNode->opLeft() );
+        const auto right = static_cast<const QgsExpressionNodeLiteral *>( binNode->opRight() );
+        if ( isDateTimeField( mFields, left->name() ) &&
+             isDateTime( right->value() ) )
+        {
+          if ( op == QgsExpressionNodeBinaryOperator::boGE ||
+               op == QgsExpressionNodeBinaryOperator::boGT ||
+               op == QgsExpressionNodeBinaryOperator::boEQ )
+          {
+            removeMe = true;
+            if ( !minDate.isValid() || getDateTimeValue( right->value() ) > minDate )
+            {
+              minDate = getDateTimeValue( right->value() );
+              minDateStr = getDateTimeValueAsString( right->value() );
+            }
+          }
+          if ( op == QgsExpressionNodeBinaryOperator::boLE ||
+               op == QgsExpressionNodeBinaryOperator::boLT ||
+               op == QgsExpressionNodeBinaryOperator::boEQ )
+          {
+            removeMe = true;
+            if ( !maxDate.isValid() || getDateTimeValue( right->value() ) < maxDate )
+            {
+              maxDate = getDateTimeValue( right->value() );
+              maxDateStr = getDateTimeValueAsString( right->value() );
+            }
+          }
+        }
+      }
+    }
+    if ( removeMe )
+    {
+      hasTranslatedParts = true;
+      topAndNodes.erase( topAndNodes.begin() + i );
+    }
+    else
+      ++i;
+  }
+
+  QString ret;
+  if ( minDate.isValid() && maxDate.isValid() )
+  {
+    if ( minDate == maxDate )
+    {
+      ret = QStringLiteral( "datetime=" ) + minDateStr;
+    }
+    else
+    {
+      ret = QStringLiteral( "datetime=" ) + minDateStr + QStringLiteral( "%2F" ) + maxDateStr;
+    }
+  }
+  else if ( minDate.isValid() )
+  {
+    // TODO: use ellipsis '..' instead of dummy upper bound once more servers are compliant
+    ret = QStringLiteral( "datetime=" ) + minDateStr + QStringLiteral( "%2F9999-12-31T00:00:00Z" );
+  }
+  else if ( maxDate.isValid() )
+  {
+    // TODO: use ellipsis '..' instead of dummy upper bound once more servers are compliant
+    ret = QStringLiteral( "datetime=0000-01-01T00:00:00Z%2F" ) + maxDateStr;
+  }
+
+  if ( !hasTranslatedParts )
+  {
+    untranslatedPart = rootNode->dump();
+    translationState = QgsOapifProvider::FilterTranslationState::FULLY_CLIENT;
+  }
+  else if ( topAndNodes.empty() )
+  {
+    untranslatedPart.clear();
+    translationState = QgsOapifProvider::FilterTranslationState::FULLY_SERVER;
+  }
+  else
+  {
+    translationState = QgsOapifProvider::FilterTranslationState::PARTIAL;
+
+    // Collect part(s) of the filter to be evaluated on client-side
+    if ( topAndNodes.size() == 1 )
+    {
+      untranslatedPart = topAndNodes[0]->dump();
+    }
+    else
+    {
+      for ( size_t i = 0; i < topAndNodes.size(); ++i )
+      {
+        if ( i == 0 )
+          untranslatedPart = QStringLiteral( "(" );
+        else
+          untranslatedPart += QStringLiteral( " AND (" );
+        untranslatedPart += topAndNodes[i]->dump();
+        untranslatedPart += QStringLiteral( ")" );
+      }
+    }
+  }
+
+  return ret;
+}
+
+bool QgsOapifSharedData::computeServerFilter( QString &errorMsg )
+{
+  errorMsg.clear();
+  mClientSideFilterExpression = mURI.filter();
+  mServerFilter.clear();
+  if ( mClientSideFilterExpression.isEmpty() )
+  {
+    mFilterTranslationState = QgsOapifProvider::FilterTranslationState::FULLY_SERVER;
+    return true;
+  }
+
+  const QgsExpression expr( mClientSideFilterExpression );
+  const auto rootNode = expr.rootNode();
+  if ( !rootNode )
+    return false;
+  mServerFilter = translateNodeToServer( rootNode, mFilterTranslationState, mClientSideFilterExpression );
+  if ( mFilterTranslationState == QgsOapifProvider::FilterTranslationState::PARTIAL )
+  {
+    QgsDebugMsg( QStringLiteral( "Part of the filter will be evaluated on client-side: %1" ).arg( mClientSideFilterExpression ) );
+  }
+  else if ( mFilterTranslationState == QgsOapifProvider::FilterTranslationState::FULLY_CLIENT )
+  {
+    QgsDebugMsg( "Whole filter will be evaluated on client-side" );
+  }
+
+  return true;
 }
 
 void QgsOapifSharedData::pushError( const QString &errorMsg )
@@ -342,9 +631,18 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures
     }
   }
   url = mShared->mItemsUrl;
+  bool hasQueryParam = false;
   if ( maxFeaturesThisRequest > 0 )
   {
     url += QStringLiteral( "?limit=%1" ).arg( maxFeaturesThisRequest );
+    hasQueryParam = true;
+  }
+
+  if ( !mShared->mServerFilter.isEmpty() )
+  {
+    url += ( hasQueryParam ? QStringLiteral( "&" ) : QStringLiteral( "?" ) );
+    url += mShared->mServerFilter;
+    hasQueryParam = true;
   }
 
   const auto &rect = mShared->currentRect();
@@ -362,14 +660,7 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures
     }
     else if ( minx > -180.0 || miny > -90.0 || maxx < 180.0 || maxy < 90.0 )
     {
-      if ( maxFeaturesThisRequest > 0 )
-      {
-        url += QStringLiteral( "&" );
-      }
-      else
-      {
-        url += QStringLiteral( "?" );
-      }
+      url += ( hasQueryParam ? QStringLiteral( "&" ) : QStringLiteral( "?" ) );
       url += QStringLiteral( "bbox=%1,%2,%3,%4" )
              .arg( qgsDoubleToString( minx ),
                    qgsDoubleToString( miny ),
