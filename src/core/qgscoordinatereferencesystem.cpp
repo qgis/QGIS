@@ -388,7 +388,7 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
 
   QString wmsCrs = crs;
 
-  QRegExp re_uri( "http://www\\.opengis\\.net/def/crs/([^/]+).+/(\\d+)", Qt::CaseInsensitive );
+  QRegExp re_uri( "http://www\\.opengis\\.net/def/crs/([^/]+).+/([^/]+)", Qt::CaseInsensitive );
   QRegExp re_urn( "urn:ogc:def:crs:([^:]+).+([^:]+)", Qt::CaseInsensitive );
   if ( re_uri.exactMatch( wmsCrs ) )
   {

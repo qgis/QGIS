@@ -255,6 +255,13 @@ void TestQgsCoordinateReferenceSystem::createFromOgcWmsCrs()
 
   myCrs.createFromOgcWmsCrs( QStringLiteral( "i am not a CRS" ) );
   QVERIFY( !myCrs.isValid() );
+
+  myCrs.createFromOgcWmsCrs( QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/CRS84" ) );
+  QVERIFY( myCrs.isValid() );
+  QVERIFY( !myCrs.hasAxisInverted() );
+#if PROJ_VERSION_MAJOR>=6
+  QCOMPARE( myCrs.authid(), QString( "OGC:CRS84" ) );
+#endif
 }
 
 void TestQgsCoordinateReferenceSystem::fromOgcWmsCrs()
