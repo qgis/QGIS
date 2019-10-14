@@ -56,6 +56,7 @@ enum MDAL_Status
   Err_IncompatibleDatasetGroup,
   Err_MissingDriver,
   Err_MissingDriverCapability,
+  Err_FailToWriteToDisk,
   // Warnings
   Warn_UnsupportedElement,
   Warn_InvalidElements,
@@ -105,6 +106,9 @@ MDAL_EXPORT bool MDAL_DR_meshLoadCapability( DriverH driver );
 //! Returns whether driver has capability to write/edit dataset (groups)
 MDAL_EXPORT bool MDAL_DR_writeDatasetsCapability( DriverH driver );
 
+//! Returns whether driver has capability to save mesh
+MDAL_EXPORT bool MDAL_DR_SaveMeshCapability( DriverH driver );
+
 /**
  * Returns name of MDAL driver
  * not thread-safe and valid only till next call
@@ -134,8 +138,12 @@ MDAL_EXPORT const char *MDAL_DR_filters( DriverH driver );
  * Caller must free memory with MDAL_CloseMesh() afterwards
  */
 MDAL_EXPORT MeshH MDAL_LoadMesh( const char *meshFile );
+
 //! Closes mesh, frees the memory
 MDAL_EXPORT void MDAL_CloseMesh( MeshH mesh );
+
+//! Saves mesh (only mesh structure) on a file with the specified driver. On error see MDAL_LastStatus for error type.
+MDAL_EXPORT void MDAL_SaveMesh( MeshH mesh, const char *meshFile, const char *driver );
 
 /**
  * Returns mesh projection
@@ -348,6 +356,11 @@ MDAL_EXPORT bool MDAL_G_isInEditMode( DatasetGroupH group );
  */
 MDAL_EXPORT void MDAL_G_closeEditMode( DatasetGroupH group );
 
+/**
+ * Returns reference time for dataset group
+ * If returned value begins with word JULIAN, following number represents date in Julian format
+ */
+MDAL_EXPORT const char *MDAL_G_referenceTime( DatasetGroupH group );
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /// DATASETS

@@ -4,6 +4,7 @@
 */
 
 #include "mdal_hdf5.hpp"
+#include <cstring>
 
 
 HdfFile::HdfFile( const std::string &path )
@@ -68,17 +69,21 @@ hid_t HdfAttribute::id() const { return d->id; }
 
 std::string HdfAttribute::readString() const
 {
-  char name[HDF_MAX_NAME];
-  hid_t datatype = H5Tcopy( H5T_C_S1 );
-  H5Tset_size( datatype, HDF_MAX_NAME );
+  hid_t datatype = H5Aget_type( id() );
+  char name[HDF_MAX_NAME + 1];
+  std::memset( name, '\0', HDF_MAX_NAME + 1 );
   herr_t status = H5Aread( d->id, datatype, name );
   if ( status < 0 )
   {
     //MDAL::debug("Failed to read data!");
+    H5Tclose( datatype );
     return std::string();
   }
+
   H5Tclose( datatype );
-  return std::string( name );
+  std::string res( name );
+  res = MDAL::trim( res );
+  return res;
 }
 
 HdfDataset::HdfDataset( hid_t file, const std::string &path )
@@ -188,7 +193,6 @@ std::string HdfDataset::readString() const
   H5Tclose( datatype );
   return std::string( name );
 }
-
 
 HdfDataspace::HdfDataspace( const std::vector<hsize_t> &dims )
   : d( std::make_shared< Handle >( H5Screate_simple(

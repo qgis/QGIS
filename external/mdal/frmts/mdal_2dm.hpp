@@ -14,6 +14,9 @@
 #include "mdal.h"
 #include "mdal_driver.hpp"
 
+
+#define MAX_VERTICES_PER_FACE_2DM 4
+
 namespace MDAL
 {
   class Mesh2dm: public MemoryMesh
@@ -80,8 +83,12 @@ namespace MDAL
       ~Driver2dm() override;
       Driver2dm *create() override;
 
+      int faceVerticesMaximumCount() const override
+      {return MAX_VERTICES_PER_FACE_2DM;}
+
       bool canRead( const std::string &uri ) override;
       std::unique_ptr< Mesh > load( const std::string &meshFile, MDAL_Status *status ) override;
+      void save( const std::string &uri, Mesh *mesh, MDAL_Status *status ) override;
 
     private:
       std::string mMeshFile;

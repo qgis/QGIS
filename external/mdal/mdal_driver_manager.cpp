@@ -9,6 +9,7 @@
 #include "frmts/mdal_ascii_dat.hpp"
 #include "frmts/mdal_binary_dat.hpp"
 #include "frmts/mdal_selafin.hpp"
+#include "frmts/mdal_esri_tin.hpp"
 #include "mdal_utils.hpp"
 
 #ifdef HAVE_HDF5
@@ -92,6 +93,15 @@ void MDAL::DriverManager::loadDatasets( Mesh *mesh, const std::string &datasetFi
     *status = MDAL_Status::Err_UnknownFormat;
 }
 
+void MDAL::DriverManager::save( MDAL::Mesh *mesh, const std::string &uri, const std::string &driverName, MDAL_Status *status ) const
+{
+  auto selectedDriver = driver( driverName );
+
+  std::unique_ptr<Driver> drv( selectedDriver->create() );
+
+  drv->save( uri, mesh, status );
+}
+
 size_t MDAL::DriverManager::driversCount() const
 {
   return mDrivers.size();
@@ -124,6 +134,7 @@ MDAL::DriverManager::DriverManager()
   // MESH DRIVERS
   mDrivers.push_back( std::make_shared<MDAL::Driver2dm>() );
   mDrivers.push_back( std::make_shared<MDAL::DriverSelafin>() );
+  mDrivers.push_back( std::make_shared<MDAL::DriverEsriTin>() );
 
 #ifdef HAVE_HDF5
   mDrivers.push_back( std::make_shared<MDAL::DriverFlo2D>() );
@@ -155,3 +166,4 @@ MDAL::DriverManager::DriverManager()
   mDrivers.push_back( std::make_shared<MDAL::DriverXdmf>() );
 #endif
 }
+
