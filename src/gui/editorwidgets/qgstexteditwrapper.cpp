@@ -19,8 +19,10 @@
 #include "qgsfieldvalidator.h"
 #include "qgsfilterlineedit.h"
 #include "qgsapplication.h"
+#include "qgsjsonutils.cpp"
 
 #include <QSettings>
+#include <nlohmann/json.hpp>
 
 QgsTextEditWrapper::QgsTextEditWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
@@ -64,7 +66,8 @@ QVariant QgsTextEditWrapper::value() const
   }
 
   QVariant res( v );
-  if ( field().convertCompatible( res ) )
+  // treat VariantMap fields including JSON differently
+  if ( field().type() != QVariant::Map && field().convertCompatible( res ) )
   {
     return res;
   }
@@ -73,6 +76,18 @@ QVariant QgsTextEditWrapper::value() const
     // for string fields convertCompatible may return false due to field length limit - in this case just truncate
     // input rather then discarding it entirely
     return QVariant( v.left( field().length() ) );
+  }
+  else if ( field().type() == QVariant::Map )
+  {
+    if ( json::accept( v.toUtf8() ) )
+    {
+      QVariant qjson = QgsJsonUtils::parseJson( v.toStdString() );
+      return qjson;
+    }
+    else
+    {
+      return res;
+    }
   }
   else
   {
@@ -221,6 +236,19 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
   {
     if ( !( field().type() == QVariant::Int || field().type() == QVariant::Double || field().type() == QVariant::LongLong || field().type() == QVariant::Date ) )
       v = QgsApplication::nullRepresentation();
+  }
+  // this has to be overridden for json which has only values (i.e. no objects or arrays), as qgsfield.cpp uses QJsonDocument which doesn't recognise
+  // this as valid JSON although it technically is
+  else if ( field().type() == QVariant::Map )
+  {
+    if ( field().displayString( val ).isEmpty() )
+    {
+      v = val.toString();
+    }
+    else
+    {
+      v = field().displayString( val );
+    }
   }
   else
   {

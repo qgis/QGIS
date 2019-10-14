@@ -4407,7 +4407,7 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
           QString jRepr;
           try
           {
-            const auto jObj { QgsJsonUtils::jsonFromVariant( val ) };
+            const auto jObj = QgsJsonUtils::jsonFromVariant( val );
             if ( ! jObj.is_array() )
             {
               throw json::parse_error::create( 0, 0, tr( "JSON value must be an array" ).toStdString() );

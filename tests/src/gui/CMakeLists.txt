@@ -25,6 +25,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/classification
   ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
   ${CMAKE_SOURCE_DIR}/src/test
   ${CMAKE_SOURCE_DIR}/src/native
@@ -153,3 +154,4 @@ ADD_QGIS_TEST(rasterlayersaveasdialog testqgsrasterlayersaveasdialog.cpp)
 ADD_QGIS_TEST(valuerelationwidgetwrapper testqgsvaluerelationwidgetwrapper.cpp)
 ADD_QGIS_TEST(relationreferencewidget testqgsrelationreferencewidget.cpp)
 ADD_QGIS_TEST(featurelistcombobox testqgsfeaturelistcombobox.cpp)
+ADD_QGIS_TEST(qgstexteditwrapper testqgstexteditwrapper.cpp)
