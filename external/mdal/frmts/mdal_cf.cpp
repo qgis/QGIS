@@ -71,8 +71,24 @@ MDAL::cfdataset_info_map MDAL::DriverCF::parseDatasetGroupInfo()
       }
       else
       {
+        /*UGRID convention says "The order of dimensions on a data variable is arbitrary",
+        *So time dimension is not necessary the first dimension, event if the convention recommands it.
+        *And prevent that any of the the two dimensions is not time dimension
+        */
+        if ( mDimensions.type( dimids[0] ) == CFDimensions::Time )
+        {
+          dimid = dimids[1];
+        }
+        else if ( mDimensions.type( dimids[1] ) == CFDimensions::Time )
+        {
+          dimid = dimids[0];
+        }
+        else
+        {
+          continue;
+        }
+
         nTimesteps = mDimensions.size( CFDimensions::Time );
-        dimid = dimids[1];
       }
 
       if ( !mDimensions.isDatasetType( mDimensions.type( dimid ) ) )
@@ -169,6 +185,34 @@ std::shared_ptr<MDAL::Dataset> MDAL::DriverCF::createFace2DDataset( std::shared_
   return dataset;
 }
 
+std::shared_ptr<MDAL::Dataset> MDAL::DriverCF::createVertex2DDataset( std::shared_ptr<MDAL::DatasetGroup> group,
+    size_t ts, const MDAL::CFDatasetGroupInfo &dsi,
+    const std::vector<double> &vals_x,
+    const std::vector<double> &vals_y,
+    double fill_val_x, double fill_val_y )
+{
+  assert( dsi.outputType == CFDimensions::Vertex2D );
+  size_t nVertices2D = mDimensions.size( CFDimensions::Vertex2D );
+
+  std::shared_ptr<MDAL::MemoryDataset> dataset = std::make_shared<MDAL::MemoryDataset>( group.get() );
+
+  for ( size_t i = 0; i < nVertices2D; ++i )
+  {
+    size_t idx = ts * nVertices2D + i;
+    populate_vals( dsi.is_vector,
+                   dataset->values(),
+                   i,
+                   vals_x,
+                   vals_y,
+                   idx,
+                   fill_val_x,
+                   fill_val_y );
+
+  }
+
+  return dataset;
+}
+
 void MDAL::DriverCF::addDatasetGroups( MDAL::Mesh *mesh, const std::vector<double> &times, const MDAL::cfdataset_info_map &dsinfo_map )
 {
   /* PHASE 2 - add dataset groups */
@@ -183,7 +227,16 @@ void MDAL::DriverCF::addDatasetGroups( MDAL::Mesh *mesh, const std::vector<doubl
           dsi.name
         );
     group->setIsScalar( !dsi.is_vector );
-    group->setIsOnVertices( false );
+
+    if ( dsi.outputType == CFDimensions::Vertex2D )
+      group->setIsOnVertices( true );
+    else if ( dsi.outputType == CFDimensions::Face2D )
+      group->setIsOnVertices( false );
+    else
+    {
+      // unsupported
+      continue;
+    }
 
     // read X data
     double fill_val_x = mNcFile.getFillValue( dsi.ncid_x );
@@ -209,6 +262,13 @@ void MDAL::DriverCF::addDatasetGroups( MDAL::Mesh *mesh, const std::vector<doubl
       if ( dsi.outputType == CFDimensions::Face2D )
       {
         dataset = createFace2DDataset( group, ts, dsi, vals_x, vals_y, fill_val_x, fill_val_y );
+      }
+      else     // Vertex2D
+      {
+        dataset = createVertex2DDataset( group, ts, dsi, vals_x, vals_y, fill_val_x, fill_val_y );
+      }
+      if ( dataset )
+      {
         dataset->setTime( time );
         dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
         group->datasets.push_back( dataset );
@@ -228,6 +288,13 @@ void MDAL::DriverCF::parseTime( std::vector<double> &times )
 {
 
   size_t nTimesteps = mDimensions.size( CFDimensions::Time );
+  if ( 0 == nTimesteps )
+  {
+    //if no time dimension is present creates only one time step to store the potential time-independent variable
+    nTimesteps = 1;
+    times = std::vector<double>( 1, 0 );
+    return;
+  }
   times = mNcFile.readDoubleArr( "time", nTimesteps );
   std::string units = mNcFile.getAttrStr( "time", "units" );
   double div_by = MDAL::parseTimeUnits( units );

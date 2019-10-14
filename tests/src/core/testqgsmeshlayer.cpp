@@ -227,7 +227,7 @@ void TestQgsMeshLayer::test_read_vertex_scalar_dataset()
       QgsMeshDatasetIndex ds( 1, i );
 
       const QgsMeshDatasetGroupMetadata meta = dp->datasetGroupMetadata( ds );
-      if ( meta.extraOptions().count() == 2 )
+      if ( dp->name() == QStringLiteral( "mesh_memory" ) )
       {
         QCOMPARE( meta.extraOptions()["description"], QString( "Vertex Scalar Dataset" ) );
         QCOMPARE( meta.extraOptions()["meta2"], QString( "best dataset" ) );
@@ -270,7 +270,7 @@ void TestQgsMeshLayer::test_read_vertex_vector_dataset()
       QgsMeshDatasetIndex ds( 2, i );
 
       const QgsMeshDatasetGroupMetadata meta = dp->datasetGroupMetadata( ds );
-      if ( meta.extraOptions().count() == 2 )
+      if ( dp->name() == QStringLiteral( "mesh_memory" ) )
         QCOMPARE( meta.extraOptions()["description"], QString( "Vertex Vector Dataset" ) );
       QCOMPARE( meta.name(), QString( "VertexVectorDataset" ) );
       QVERIFY( !meta.isScalar() );
@@ -310,7 +310,7 @@ void TestQgsMeshLayer::test_read_face_scalar_dataset()
       QgsMeshDatasetIndex ds( 3, i );
 
       const QgsMeshDatasetGroupMetadata meta = dp->datasetGroupMetadata( ds );
-      if ( meta.extraOptions().count() == 2 )
+      if ( dp->name() == QStringLiteral( "mesh_memory" ) )
         QCOMPARE( meta.extraOptions()["description"], QString( "Face Scalar Dataset" ) );
       QCOMPARE( meta.name(), QString( "FaceScalarDataset" ) );
       QVERIFY( meta.isScalar() );
@@ -348,7 +348,7 @@ void TestQgsMeshLayer::test_read_face_vector_dataset()
       QgsMeshDatasetIndex ds( 4, i );
 
       const QgsMeshDatasetGroupMetadata meta = dp->datasetGroupMetadata( ds );
-      if ( meta.extraOptions().count() == 2 )
+      if ( dp->name() == QStringLiteral( "mesh_memory" ) )
         QCOMPARE( meta.extraOptions()["description"], QString( "Face Vector Dataset" ) );
       QCOMPARE( meta.name(), QString( "FaceVectorDataset" ) );
       QVERIFY( !meta.isScalar() );

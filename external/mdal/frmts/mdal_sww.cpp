@@ -190,6 +190,11 @@ void MDAL::DriverSWW::readDatasetGroups(
 
   for ( const std::string &name : names )
   {
+    // currently we do not support variables like elevation_c, friction_c, stage_c, xmomentum_c, ymomentum_c
+    // which contain values per volume instead of per vertex
+    if ( MDAL::endsWith( name, "_c" ) )
+      continue;
+
     // skip already parsed variables
     if ( parsedVariableNames.find( name ) == parsedVariableNames.cend() )
     {

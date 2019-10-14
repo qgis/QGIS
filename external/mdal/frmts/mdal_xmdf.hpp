@@ -100,6 +100,8 @@ namespace MDAL
         const std::string &nameSuffix,
         size_t vertexCount,
         size_t faceCount );
+
+      void convertTimeDataToHours( std::vector<double> &times, const std::string &originalTimeDataUnit );
   };
 
 } // namespace MDAL

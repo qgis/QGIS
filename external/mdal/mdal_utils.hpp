@@ -14,6 +14,9 @@
 #include <vector>
 #include <stddef.h>
 #include <limits>
+#include <sstream>
+#include <fstream>
+#include <algorithm>
 
 #include "mdal_data_model.hpp"
 #include "mdal_memory_data_model.hpp"
@@ -66,6 +69,15 @@ namespace MDAL
   double toDouble( const std::string &str );
   bool toBool( const std::string &str );
 
+  //! Returns the string with a adapted format to coordinate
+  //! precision is the number of digits after the digital point if fabs(value)>180 (seems to not be a geographic coordinate)
+  //! precision+6 is the number of digits after the digital point if fabs(value)<=180 (could be a geographic coordinate)
+  std::string coordinateToString( double coordinate, int precision = 2 );
+
+  //! Returns a string with scientific format
+  //! precision is the number of signifiant digits
+  std::string doubleToString( double value, int precision = 6 );
+
   /**
    * Splits by deliminer and skips empty parts.
    * Faster than version with std::string
@@ -112,10 +124,25 @@ namespace MDAL
   // mesh & datasets
   //! Adds bed elevatiom dataset group to mesh
   void addBedElevationDatasetGroup( MDAL::Mesh *mesh, const Vertices &vertices );
-  //! Adds face scalar dataset group to mesh
+  //! Adds altitude dataset group to mesh
   void addFaceScalarDatasetGroup( MDAL::Mesh *mesh, const std::vector<double> &values, const std::string &name );
   //! Loop through all faces and activate those which has all 4 values on vertices valid
   void activateFaces( MDAL::MemoryMesh *mesh, std::shared_ptr<MemoryDataset> dataset );
+
+  //! function used to read all of type of value. Option to change the endianness is provided
+  template<typename T>
+  bool readValue( T &value, std::ifstream &in, bool changeEndianness = false )
+  {
+    char *const p = reinterpret_cast<char *>( &value );
+
+    if ( !in.read( p, sizeof( T ) ) )
+      return false;
+
+    if ( changeEndianness )
+      std::reverse( p, p + sizeof( T ) );
+
+    return true;
+  }
 
 } // namespace MDAL
 #endif //MDAL_UTILS_HPP

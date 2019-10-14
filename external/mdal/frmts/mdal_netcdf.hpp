@@ -26,6 +26,7 @@ class NetCDFFile
     bool hasArr( const std::string &name ) const;
     std::vector<std::string> readArrNames() const;
 
+    bool hasAttrInt( const std::string &name, const std::string &attr_name ) const;
     int getAttrInt( const std::string &name, const std::string &attr_name ) const;
     double getAttrDouble( int varid, const std::string &attr_name ) const;
     /**
@@ -39,6 +40,7 @@ class NetCDFFile
     double getFillValue( int varid ) const;
     int getVarId( const std::string &name );
     void getDimension( const std::string &name, size_t *val, int *ncid_val ) const;
+    void getDimensions( const std::string &variableName, std::vector<size_t> &dimensionsId, std::vector<int> &dimensionIds );
     bool hasDimension( const std::string &name ) const;
 
   private:
