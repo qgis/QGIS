@@ -181,6 +181,9 @@ QgsBackgroundCachedFeatureIterator::QgsBackgroundCachedFeatureIterator(
 QgsFeatureRequest QgsBackgroundCachedFeatureIterator::buildRequestCache( int genCounter )
 {
   QgsFeatureRequest requestCache;
+
+  const auto &fields = mShared->fields();
+
   auto cacheDataProvider = mShared->cacheDataProvider();
   if ( mRequest.filterType() == QgsFeatureRequest::FilterFid ||
        mRequest.filterType() == QgsFeatureRequest::FilterFids )
@@ -200,15 +203,31 @@ QgsFeatureRequest QgsBackgroundCachedFeatureIterator::buildRequestCache( int gen
          // a bounding box and not the actual geometry of the final feature
          !mRequest.filterExpression()->needsGeometry() )
     {
-      // Transfer and transform context
-      requestCache.setFilterExpression( mRequest.filterExpression()->expression() );
-      QgsExpressionContext ctx { *mRequest.expressionContext( ) };
-      QgsExpressionContextScope *scope { ctx.activeScopeForVariable( QgsExpressionContext::EXPR_FIELDS ) };
-      if ( scope )
+      // We cannot forward expressions using dateTime fields, because they
+      // are stored as milliseconds since UTC epoch in the Spatialite DB.
+      bool hasDateTimeFieldInExpr = false;
+      const auto setColumns = mRequest.filterExpression()->referencedColumns();
+      for ( const auto columnName : setColumns )
       {
-        scope->setVariable( QgsExpressionContext::EXPR_FIELDS, cacheDataProvider->fields() );
+        int idx = fields.indexOf( columnName );
+        if ( idx >= 0 && fields[idx].type() == QVariant::DateTime )
+        {
+          hasDateTimeFieldInExpr = true;
+          break;
+        }
       }
-      requestCache.setExpressionContext( ctx );
+      if ( !hasDateTimeFieldInExpr )
+      {
+        // Transfer and transform context
+        requestCache.setFilterExpression( mRequest.filterExpression()->expression() );
+        QgsExpressionContext ctx { *mRequest.expressionContext( ) };
+        QgsExpressionContextScope *scope { ctx.activeScopeForVariable( QgsExpressionContext::EXPR_FIELDS ) };
+        if ( scope )
+        {
+          scope->setVariable( QgsExpressionContext::EXPR_FIELDS, cacheDataProvider->fields() );
+        }
+        requestCache.setExpressionContext( ctx );
+      }
     }
     if ( genCounter >= 0 )
     {
@@ -224,7 +243,6 @@ QgsFeatureRequest QgsBackgroundCachedFeatureIterator::buildRequestCache( int gen
     mFetchGeometry = true;
   }
 
-  const auto &fields = mShared->fields();
   if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
   {
     QgsFields dataProviderFields = cacheDataProvider->fields();
