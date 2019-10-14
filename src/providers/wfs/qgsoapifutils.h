@@ -33,6 +33,8 @@ class QgsOAPIFJson
       QString href;
       QString rel;
       QString type;
+      QString title;
+      qint64 length = -1;
     };
 
     //! Parses the "link" property of jParet

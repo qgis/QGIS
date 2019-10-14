@@ -19,6 +19,7 @@
 #include "qgis.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgslayermetadata.h"
 #include "qgsvectordataprovider.h"
 #include "qgsbackgroundcachedshareddata.h"
 #include "qgswfsdatasourceuri.h"
@@ -66,6 +67,8 @@ class QgsOapifProvider : public QgsVectorDataProvider
 
     QgsVectorDataProvider::Capabilities capabilities() const override;
 
+    QgsLayerMetadata layerMetadata() const override { return mLayerMetadata; }
+
     bool empty() const override;
 
   public slots:
@@ -81,6 +84,9 @@ class QgsOapifProvider : public QgsVectorDataProvider
 
     //! Flag if provider is valid
     bool mValid = true;
+
+    //! Layer metadata
+    QgsLayerMetadata mLayerMetadata;
 
     //! Initial requests
     bool init();

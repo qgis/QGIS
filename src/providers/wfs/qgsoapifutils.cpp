@@ -46,6 +46,22 @@ std::vector<QgsOAPIFJson::Link> QgsOAPIFJson::parseLinks( const json &jParent )
                 link.type = QString::fromStdString( type.get<std::string>() );
               }
             }
+            if ( jLink.contains( "title" ) )
+            {
+              const auto title = jLink["title"];
+              if ( title.is_string() )
+              {
+                link.title = QString::fromStdString( title.get<std::string>() );
+              }
+            }
+            if ( jLink.contains( "length" ) )
+            {
+              const auto length = jLink["length"];
+              if ( length.is_number_integer() )
+              {
+                link.length = length.get<qint64>();
+              }
+            }
             links.push_back( link );
           }
         }
