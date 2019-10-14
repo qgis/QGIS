@@ -204,14 +204,20 @@ void QgsFeatureListView::setEditSelection( const QModelIndex &index, QItemSelect
 {
   bool ok = true;
   emit aboutToChangeEditSelection( ok );
-
-#ifdef QGISDEBUG
+  
   if ( index.isValid() && index.model() != mModel->masterModel() )
+  {
+#ifdef QGISDEBUG 
     qWarning() << "Index from wrong model passed in";
 #endif
-
-  if ( ok )
-    mCurrentEditSelectionModel->select( index, command );
+    if ( ok )
+      mCurrentEditSelectionModel->select( QModelIndex(), command );
+  }
+  else
+  {
+    if ( ok )
+      mCurrentEditSelectionModel->select( index, command );
+  }
 }
 
 void QgsFeatureListView::repaintRequested( const QModelIndexList &indexes )
