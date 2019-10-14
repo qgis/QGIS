@@ -364,12 +364,14 @@ QString QgsWFSDataSourceURI::build( const QString &baseUri,
                                     const QString &typeName,
                                     const QString &crsString,
                                     const QString &sql,
+                                    const QString &filter,
                                     bool restrictToCurrentViewExtent )
 {
   QgsWFSDataSourceURI uri( baseUri );
   uri.setTypeName( typeName );
   uri.setSRSName( crsString );
   uri.setSql( sql );
+  uri.setFilter( filter );
   if ( restrictToCurrentViewExtent )
     uri.mURI.setParam( QgsWFSConstants::URI_PARAM_RESTRICT_TO_REQUEST_BBOX, QStringLiteral( "1" ) );
   if ( uri.version() == QStringLiteral( "OGC_API_FEATURES" ) )

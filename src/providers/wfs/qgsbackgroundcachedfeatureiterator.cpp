@@ -121,11 +121,23 @@ void QgsThreadedFeatureDownloader::run()
 
 // -------------------------
 
+static QgsFeatureRequest addSubsetToFeatureRequest( const QgsFeatureRequest &requestIn,
+    const QgsBackgroundCachedSharedData *shared )
+{
+  if ( shared->clientSideFilterExpression().isEmpty() )
+  {
+    return requestIn;
+  }
+  QgsFeatureRequest requestOut( requestIn );
+  requestOut.combineFilterExpression( shared->clientSideFilterExpression() );
+  return requestOut;
+}
+
 QgsBackgroundCachedFeatureIterator::QgsBackgroundCachedFeatureIterator(
   QgsBackgroundCachedFeatureSource *source, bool ownSource,
   std::shared_ptr<QgsBackgroundCachedSharedData> shared,
   const QgsFeatureRequest &request )
-  : QgsAbstractFeatureIteratorFromSource<QgsBackgroundCachedFeatureSource>( source, ownSource, request )
+  : QgsAbstractFeatureIteratorFromSource<QgsBackgroundCachedFeatureSource>( source, ownSource, addSubsetToFeatureRequest( request, shared.get() ) )
   , mShared( shared )
 {
   if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mShared->sourceCrs() )

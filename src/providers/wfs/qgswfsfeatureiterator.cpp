@@ -425,7 +425,7 @@ void QgsWFSFeatureDownloaderImpl::gotHitsResponse()
     // If the request didn't include any BBOX, then we can update the layer
     // feature count
     if ( mShared->currentRect().isNull() )
-      mShared->setFeatureCount( mNumberMatched );
+      mShared->setFeatureCount( mNumberMatched, true );
   }
 }
 

@@ -125,6 +125,9 @@ class QgsBackgroundCachedSharedData
     //! Returns a unique identifier made from feature content
     static QString getMD5( const QgsFeature &f );
 
+    //! Filter expression to apply on client side
+    const QString &clientSideFilterExpression() const { return mClientSideFilterExpression; }
+
     //// Actions
 
     /**
@@ -146,7 +149,7 @@ class QgsBackgroundCachedSharedData
     void endOfDownload( bool success, int featureCount, bool truncatedResponse, bool interrupted, const QString &errorMsg );
 
     //! Force an update of the feature count
-    void setFeatureCount( int featureCount );
+    void setFeatureCount( int featureCount, bool featureCountExact );
 
     //! Returns the name of temporary directory. To be paired with releaseCacheDirectory()
     QString acquireCacheDirectory();
@@ -178,6 +181,9 @@ class QgsBackgroundCachedSharedData
     //! SELECT DISTINCT
     bool mDistinctSelect = false;
 
+    //! Filter expression to apply on client side
+    QString mClientSideFilterExpression;
+
     //! Server-side or user-side limit of downloaded features (including with paging). Valid if > 0
     int mMaxFeatures = 0;
 
@@ -186,6 +192,9 @@ class QgsBackgroundCachedSharedData
 
     //! Bounding box for the layer as returned by GetCapabilities
     QgsRectangle mCapabilityExtent;
+
+    //! Flag is a /items request returns a numberMatched property
+    bool mHasNumberMatched = false;
 
     //////////// Methods
 

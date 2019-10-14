@@ -121,6 +121,7 @@ class QgsWFSDataSourceURI
                           const QString &typeName,
                           const QString &crsString = QString(),
                           const QString &sql = QString(),
+                          const QString &filter = QString(),
                           bool restrictToCurrentViewExtent = false );
 
     //! Sets Get DCP endpoints
