@@ -97,7 +97,6 @@ class HdfGroup
     inline HdfDataset dataset( const std::string &dsName ) const;
     inline HdfAttribute attribute( const std::string &attr_name ) const;
     inline bool pathExists( const std::string &path ) const;
-
   protected:
     std::vector<std::string> objects( H5G_obj_t type ) const;
 
@@ -176,6 +175,8 @@ class HdfDataset
     std::vector<double> readArrayDouble( const std::vector<hsize_t> offsets, const std::vector<hsize_t> counts ) const;
     std::vector<int> readArrayInt( const std::vector<hsize_t> offsets, const std::vector<hsize_t> counts ) const;
 
+    inline bool hasAttribute( const std::string &attr_name ) const;
+    inline HdfAttribute attribute( const std::string &attr_name ) const;
 
     template <typename T> std::vector<T> readArray( hid_t mem_type_id ) const
     {
@@ -233,9 +234,17 @@ inline HdfGroup HdfGroup::group( const std::string &groupName ) const { return H
 
 inline HdfDataset HdfGroup::dataset( const std::string &dsName ) const { return HdfDataset( file_id(), childPath( dsName ) ); }
 
+inline bool HdfDataset::hasAttribute( const std::string &attr_name ) const
+{
+  htri_t res = H5Aexists( d->id, attr_name.c_str() );
+  return  res > 0 ;
+}
+
 inline HdfAttribute HdfFile::attribute( const std::string &attr_name ) const { return HdfAttribute( d->id, attr_name ); }
 
 inline HdfAttribute HdfGroup::attribute( const std::string &attr_name ) const { return HdfAttribute( d->id, attr_name ); }
+
+inline HdfAttribute HdfDataset::attribute( const std::string &attr_name ) const { return HdfAttribute( d->id, attr_name ); }
 
 inline bool HdfFile::pathExists( const std::string &path ) const { return H5Lexists( d->id, path.c_str(), H5P_DEFAULT ) > 0; }
 

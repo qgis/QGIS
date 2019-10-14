@@ -32,6 +32,8 @@ namespace MDAL
       std::unique_ptr< Mesh > load( const std::string &meshFile, MDAL_Status *status ) const;
       void loadDatasets( Mesh *mesh, const std::string &datasetFile, MDAL_Status *status ) const;
 
+      void save( Mesh *mesh, const std::string &uri, const std::string &driver, MDAL_Status *status ) const;
+
       size_t driversCount() const;
       std::shared_ptr<MDAL::Driver> driver( const std::string &driverName ) const;
       std::shared_ptr<MDAL::Driver> driver( size_t index ) const;
