@@ -3021,16 +3021,10 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         values = [f['intfield'] for f in vl.getFeatures()]
         self.assertEqual(values, [1])
 
-    def testExtent(self):
-        # can't run the base provider test suite here - wfs extent handling is different
+    def testExtentSubsetString(self):
+        # can't run the base provider test suite here - WFS/OAPIF extent handling is different
         # to other providers
-        reference = QgsGeometry.fromRect(
-            QgsRectangle(-71.123, 66.33, -65.32, 78.3))
-        provider_extent = self.source.extent()
-        self.assertAlmostEqual(provider_extent.xMinimum(), -71.123, 3)
-        self.assertAlmostEqual(provider_extent.xMaximum(), -65.32, 3)
-        self.assertAlmostEqual(provider_extent.yMinimum(), 66.33, 3)
-        self.assertAlmostEqual(provider_extent.yMaximum(), 78.3, 3)
+        pass
 
     def testWFS10DCP(self):
         """Test a server with different DCP endpoints"""

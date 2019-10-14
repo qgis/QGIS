@@ -150,6 +150,11 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         shutil.rmtree(cls.basetestpath, True)
         cls.vl = None  # so as to properly close the provider and remove any temporary file
 
+    def testExtentSubsetString(self):
+        # can't run the base provider test suite here - WFS/OAPIF extent handling is different
+        # to other providers
+        pass
+
     def testFeaturePaging(self):
 
         endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_testFeaturePaging'
