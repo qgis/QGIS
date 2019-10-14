@@ -109,6 +109,9 @@ namespace MDAL
       Statistics statistics() const;
       void setStatistics( const Statistics &statistics );
 
+      std::string referenceTime() const;
+      void setReferenceTime( const std::string &referenceTime );
+
       Mesh *mesh() const;
 
       bool isInEditMode() const;
@@ -124,6 +127,7 @@ namespace MDAL
       bool mIsOnVertices = true;
       std::string mUri; // file/uri from where it came
       Statistics mStatistics;
+      std::string mReferenceTime;
   };
 
   typedef std::vector<std::shared_ptr<DatasetGroup>> DatasetGroups;

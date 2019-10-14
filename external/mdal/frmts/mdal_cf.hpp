@@ -94,6 +94,14 @@ namespace MDAL
         const std::vector<double> &vals_y,
         double fill_val_x, double fill_val_y );
 
+      std::shared_ptr<MDAL::Dataset> createVertex2DDataset(
+        std::shared_ptr<MDAL::DatasetGroup> group,
+        size_t ts,
+        const MDAL::CFDatasetGroupInfo &dsi,
+        const std::vector<double> &vals_x,
+        const std::vector<double> &vals_y,
+        double fill_val_x, double fill_val_y );
+
       void addDatasetGroups( Mesh *mesh,
                              const std::vector<double> &times,
                              const cfdataset_info_map &dsinfo_map );

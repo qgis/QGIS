@@ -18,6 +18,7 @@ namespace MDAL
     ReadMesh      = 1 << 0, //! Can read mesh and all datasets stored in the mesh file
     ReadDatasets  = 1 << 1, //! Can read only datasets (groups) from existing mesh
     WriteDatasets = 1 << 2, //! Can write datasets (groups)
+    SaveMesh      = 1 << 3, //! Can save the mesh
   };
 
   class Driver
@@ -39,10 +40,16 @@ namespace MDAL
 
       virtual bool canRead( const std::string &uri ) = 0;
 
+      //! returns the maximum vertices per face
+      virtual int faceVerticesMaximumCount() const;
+
       // loads mesh
       virtual std::unique_ptr< Mesh > load( const std::string &uri, MDAL_Status *status );
       // loads datasets
       virtual void load( const std::string &uri, Mesh *mesh, MDAL_Status *status );
+
+      // save mesh
+      virtual void save( const std::string &uri, Mesh *mesh, MDAL_Status *status );
 
       // create new dataset group
       virtual void createDatasetGroup(

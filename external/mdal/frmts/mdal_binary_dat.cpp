@@ -33,8 +33,8 @@ static const int CT_NUMCELLS  = 180;
 static const int CT_NAME      = 190;
 static const int CT_TS        = 200;
 static const int CT_ENDDS     = 210;
-//static const int CT_RT_JULIAN = 240;
-//static const int CT_TIMEUNITS = 250;
+static const int CT_RT_JULIAN = 240;
+static const int CT_TIMEUNITS = 250;
 static const int CT_2D_MESHES = 3;
 static const int CT_FLOAT_SIZE = 4;
 static const int CF_FLAG_SIZE = 1;
@@ -142,6 +142,9 @@ void MDAL::DriverBinaryDat::load( const std::string &datFile, MDAL::Mesh *mesh, 
   int numdata;
   int numcells;
   char groupName[40];
+  double referenceTime;
+  int timeUnit = 0;
+  std::string timeUnitStr;
   char istat;
   float time;
 
@@ -245,6 +248,44 @@ void MDAL::DriverBinaryDat::load( const std::string &datFile, MDAL::Mesh *mesh, 
         groupMax->setName( group->name() + "/Maximums" );
         break;
 
+      case CT_RT_JULIAN:
+        // Reference time
+        if ( readIStat( in, sflg, &istat ) )
+          EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
+
+        if ( read( in, reinterpret_cast< char * >( &time ), 8 ) )
+          EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
+
+        referenceTime = static_cast<double>( time );
+        group->setReferenceTime( "JULIAN " + std::to_string( referenceTime ) );
+        break;
+
+      case CT_TIMEUNITS:
+        // Time unit
+        if ( read( in, reinterpret_cast< char * >( &timeUnit ), 4 ) )
+          EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
+
+        switch ( timeUnit )
+        {
+          case 0:
+            timeUnitStr = "hours";
+            break;
+          case 1:
+            timeUnitStr = "minutes";
+            break;
+          case 2:
+            timeUnitStr = "seconds";
+            break;
+          case 4:
+            timeUnitStr = "days";
+            break;
+          default:
+            timeUnitStr = "unknown";
+            break;
+        }
+        group->setMetadata( "TIMEUNITS", timeUnitStr );
+        break;
+
       case CT_TS:
         // Time step!
         if ( readIStat( in, sflg, &istat ) )
@@ -254,6 +295,8 @@ void MDAL::DriverBinaryDat::load( const std::string &datFile, MDAL::Mesh *mesh, 
           EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
 
         double t = static_cast<double>( time );
+        t = convertTimeDataToHours( t, timeUnit );
+
         if ( readVertexTimestep( mesh, group, groupMax, t, istat, sflg, in ) )
           EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
 
@@ -460,4 +503,24 @@ bool MDAL::DriverBinaryDat::persist( MDAL::DatasetGroup *group )
   if ( writeRawData( out, reinterpret_cast< const char * >( &CT_ENDDS ), 4 ) ) return true;
 
   return false;
+}
+
+double MDAL::DriverBinaryDat::convertTimeDataToHours( double time, int originalTimeDataUnit )
+{
+  switch ( originalTimeDataUnit )
+  {
+    case 1:
+      time /= 60.0;
+      break;
+    case 2:
+      time /= 3600.0;
+      break;
+    case 4:
+      time *= 24;
+      break;
+    case 0:
+    default:
+      break;
+  }
+  return time;
 }

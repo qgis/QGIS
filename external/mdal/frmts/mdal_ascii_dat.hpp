@@ -84,6 +84,8 @@ namespace MDAL
         bool isVector,
         std::ifstream &stream ) const;
 
+      double convertTimeDataToHours( double time, const std::string &originalTimeDataUnit ) const;
+
       std::string mDatFile;
   };
 

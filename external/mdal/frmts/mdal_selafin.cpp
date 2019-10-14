@@ -145,35 +145,18 @@ std::string MDAL::SerafinStreamReader::read_string_without_length( size_t len )
 double MDAL::SerafinStreamReader::read_double( )
 {
   double ret;
-  unsigned char buffer[8];
 
   if ( mStreamInFloatPrecision )
   {
     float ret_f;
-    if ( mIn.read( reinterpret_cast< char * >( &buffer ), 4 ) )
-      if ( !mIn )
-        throw MDAL_Status::Err_UnknownFormat;
-    if ( mIsNativeLittleEndian )
-    {
-      std::reverse( reinterpret_cast< char * >( &buffer ), reinterpret_cast< char * >( &buffer ) + 4 );
-    }
-    memcpy( reinterpret_cast< char * >( &ret_f ),
-            reinterpret_cast< char * >( &buffer ),
-            4 );
+    if ( !readValue( ret_f, mIn, mIsNativeLittleEndian ) )
+      throw MDAL_Status::Err_UnknownFormat;
     ret = static_cast<double>( ret_f );
   }
   else
   {
-    if ( mIn.read( reinterpret_cast< char * >( &buffer ), 8 ) )
-      if ( !mIn )
-        throw MDAL_Status::Err_UnknownFormat;
-    if ( mIsNativeLittleEndian )
-    {
-      std::reverse( reinterpret_cast< char * >( &buffer ), reinterpret_cast< char * >( &buffer ) + 8 );
-    }
-    memcpy( reinterpret_cast< char * >( &ret ),
-            reinterpret_cast< char * >( &buffer ),
-            8 );
+    if ( !readValue( ret, mIn, mIsNativeLittleEndian ) )
+      throw MDAL_Status::Err_UnknownFormat;
   }
   return ret;
 }
@@ -453,6 +436,20 @@ void MDAL::DriverSelafin::addData( const std::vector<std::string> &var_names, co
       var_name =  MDAL::replace( var_name, "along y", "" );
     }
 
+    if ( MDAL::contains( var_name, "vitesse u" ) || MDAL::contains( var_name, "suivant x" ) )
+    {
+      is_vector = true;
+      var_name = MDAL::replace( var_name, "vitesse u", "vitesse" );
+      var_name = MDAL::replace( var_name, "suivant x", "" );
+    }
+    else if ( MDAL::contains( var_name, "vitesse v" ) || MDAL::contains( var_name, "suivant y" ) )
+    {
+      is_vector = true;
+      is_x =  false;
+      var_name =  MDAL::replace( var_name, "vitesse v", "vitesse" );
+      var_name =  MDAL::replace( var_name, "suivant y", "" );
+    }
+
     std::shared_ptr<DatasetGroup> group = mMesh->group( var_name );
     if ( !group )
     {
@@ -601,6 +598,5 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverSelafin::load( const std::string &meshFi
     if ( status ) *status = ( error );
     mMesh.reset();
   }
-
   return std::unique_ptr<Mesh>( mMesh.release() );
 }
