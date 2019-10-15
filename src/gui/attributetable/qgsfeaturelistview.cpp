@@ -204,9 +204,9 @@ void QgsFeatureListView::setEditSelection( const QModelIndex &index, QItemSelect
 {
   bool ok = true;
   emit aboutToChangeEditSelection( ok );
-  
-  Q_ASSERT( index.model() == mModel->masterModel() || !index.isValid() )
-    
+
+  Q_ASSERT( index.model() == mModel->masterModel() || !index.isValid() );
+
   if ( ok )
     mCurrentEditSelectionModel->select( index, command );
 }
