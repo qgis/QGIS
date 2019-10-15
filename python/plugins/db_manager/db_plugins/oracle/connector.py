@@ -108,6 +108,8 @@ class OracleDBConnector(DBConnector):
                 self.cache_connection = sqlite3.connect(sqlite_cache_file)
             except sqlite3.Error:
                 self.cache_connection = False
+        else:
+            self.cache_connection = False
 
         # Find if there is cache for our connection:
         if self.cache_connection:
