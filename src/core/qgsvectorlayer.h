@@ -179,7 +179,8 @@ typedef QSet<int> QgsAttributeIds;
  * - filter=string: QGIS expression or OGC/FES filter
  * - restrictToRequestBBOX=1: to download only features in the view extent (or more generally
  *   in the bounding box of the feature iterator)
- * - maxNumFeatures=number
+ * - pageSize=number: number of features to retrieve in a single request (WFS 2)
+ * - maxNumFeatures=number: maximum number of features to retrieve (possibly across several multiple paging requests)
  * - IgnoreAxisOrientation=1: to ignore EPSG axis order for WFS 1.1 or 2.0
  * - InvertAxisOrientation=1: to invert axis order
  * - hideDownloadProgressDialog=1: to hide the download progress dialog
@@ -192,6 +193,23 @@ typedef QSet<int> QgsAttributeIds;
  * attribute operators, “BBOX, Disjoint, Intersects, Touches, Crosses, Contains, Overlaps, Within”
  * spatial binary operators and the QGIS local “geomFromWKT, geomFromGML”
  * geometry constructor functions.
+ *
+ * \subsection oapif OGC API - Features data provider (oapif)
+ *
+ * Used to access data provided by a OGC API - Features server.
+ *
+ * The URI should be constructed using the QgsDataSourceUri class with the following parameters:
+ * - url=string (mandatory): HTTP url to a OGC API - Features landing page.
+ * - typename=string (mandatory): Collection id
+ * - username=string
+ * - password=string
+ * - authcfg=string
+ * - filter=string: QGIS expression (only datetime filtering is forwarded to the server)
+ * - restrictToRequestBBOX=1: to download only features in the view extent (or more generally
+ *   in the bounding box of the feature iterator)
+ * - pageSize=number: number of features to retrieve in a single request
+ * - maxNumFeatures=number: maximum number of features to retrieve (possibly across several multiple paging requests)
+ * - hideDownloadProgressDialog=1: to hide the download progress dialog.
  *
  * Also note:
  *
