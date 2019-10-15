@@ -1187,27 +1187,22 @@ QVariant QgsOracleProvider::defaultValue( int fieldId ) const
   return mDefaultValues.value( fieldId, QVariant() );
 }
 
-QString QgsOracleProvider::paramValue( QString fieldValue, const QString &defaultValue ) const
+QVariant QgsOracleProvider::evaluateDefaultExpression( const QString &value, const QVariant::Type &fieldType ) const
 {
-  if ( fieldValue.isNull() )
+  if ( value.isEmpty() )
   {
-    return QString();
+    return QVariant( fieldType );
   }
-  else if ( fieldValue == defaultValue && !defaultValue.isNull() )
-  {
-    QgsOracleConn *conn = connectionRO();
-    QSqlQuery qry( *conn );
-    if ( !exec( qry, QString( "SELECT %1 FROM dual" ).arg( defaultValue ), QVariantList() ) || !qry.next() )
-    {
-      throw OracleException( tr( "Evaluation of default value failed" ), qry );
-    }
 
-    return qry.value( 0 ).toString();
-  }
-  else
+  QgsOracleConn *conn = connectionRO();
+  QSqlQuery qry( *conn );
+  if ( !exec( qry, QString( "SELECT %1 FROM dual" ).arg( value ), QVariantList() ) || !qry.next() )
   {
-    return fieldValue;
+    throw OracleException( tr( "Evaluation of default value failed" ), qry );
   }
+
+  // return the evaluated value
+  return convertValue( fieldType, qry.value( 0 ).toString() );
 }
 
 
@@ -1336,29 +1331,16 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
       {
         QVariant value = attributevec.value( fieldId[i], QVariant() );
 
-        QString v;
-        if ( value.isNull() )
+        QgsField fld = field( fieldId[i] );
+        if ( ( value.isNull() && mPrimaryKeyAttrs.contains( i ) && !defaultValues.at( i ).isEmpty() ) ||
+             ( value.toString() == defaultValues[i] ) )
         {
-          if ( mPrimaryKeyAttrs.contains( i ) && !defaultValues.at( i ).isEmpty() )
-          {
-            QgsField fld = field( fieldId[i] );
-            v = paramValue( defaultValues[i], defaultValues[i] );
-            features->setAttribute( fieldId[i], convertValue( fld.type(), v ) );
-          }
+          value = evaluateDefaultExpression( defaultValues[i], fld.type() );
         }
-        else
-        {
-          v = paramValue( value.toString(), defaultValues[i] );
+        features->setAttribute( fieldId[i], value );
 
-          if ( v != value.toString() )
-          {
-            QgsField fld = field( fieldId[i] );
-            features->setAttribute( fieldId[i], convertValue( fld.type(), v ) );
-          }
-        }
-
-        QgsDebugMsgLevel( QStringLiteral( "addBindValue: %1" ).arg( v ), 4 );
-        ins.addBindValue( v );
+        QgsDebugMsgLevel( QStringLiteral( "addBindValue: %1" ).arg( value.toString() ), 4 );
+        ins.addBindValue( value );
       }
 
       if ( !ins.exec() )
