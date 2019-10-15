@@ -175,7 +175,8 @@ use in external scripts or QGIS server.
 %Docstring
 Emit a signal to be caught by qgisapp and display a msg on status bar.
 
-.. deprecated:: Deprecated since QGIS 3.6 -- no longer emitted.
+.. deprecated::
+   Deprecated since QGIS 3.6 -- no longer emitted.
 %End
 
     void remoteSvgFetched( const QString &url );

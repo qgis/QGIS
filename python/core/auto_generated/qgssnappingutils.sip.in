@@ -182,14 +182,14 @@ Emitted when the snapping settings object changes.
 %Docstring
 This methods is now deprecated and never called
 
-.. deprecated:: since QGIS 3.10
+.. deprecated:: QGIS 3.10
 %End
 
  virtual void prepareIndexProgress( int index );
 %Docstring
 This methods is now deprecated and never called
 
-.. deprecated:: since QGIS 3.10
+.. deprecated:: QGIS 3.10
 %End
 
     void clearAllLocators();

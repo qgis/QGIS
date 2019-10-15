@@ -50,7 +50,8 @@ class QgsRelationReferenceWidget : QWidget
 %Docstring
 this sets the related feature using from the foreign key
 
-.. deprecated:: since QGIS 3.10 use setForeignKeys
+.. deprecated:: QGIS 3.10
+   use setForeignKeys
 %End
 
     void setForeignKeys( const QVariantList &values );
@@ -64,7 +65,7 @@ Sets the related feature using the foreign keys
 %Docstring
 returns the related feature foreign key
 
-.. deprecated:: since QGIS 3.10
+.. deprecated:: QGIS 3.10
 %End
 
 
@@ -198,7 +199,7 @@ unset the currently related feature
 %Docstring
 Emitted when the foreign key changed
 
-.. deprecated:: since QGIS 3.10
+.. deprecated:: QGIS 3.10
 %End
 
     void foreignKeysChanged( const QVariantList & );

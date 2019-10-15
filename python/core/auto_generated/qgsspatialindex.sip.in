@@ -88,7 +88,8 @@ Copy constructor
 %Docstring
 Adds a ``feature`` to the index.
 
-.. deprecated:: Use addFeature() instead
+.. deprecated::
+   Use addFeature() instead
 %End
 
     virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 );
@@ -117,7 +118,8 @@ Add a feature ``id`` to the index with a specified bounding box.
 
 :return: ``True`` if feature was successfully added to index.
 
-.. deprecated:: Use addFeature() instead
+.. deprecated::
+   Use addFeature() instead
 %End
 
     bool addFeature( QgsFeatureId id, const QgsRectangle &bounds );

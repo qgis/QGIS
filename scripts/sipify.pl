@@ -242,9 +242,12 @@ sub processDoxygenLine {
         $FOUND_SINCE = 1;
         return "\n.. versionadded:: $1\n";
     }
-    if ( $line =~ m/\\deprecated(.*)/i ) {
+    if ( $line =~ m/\\deprecated(?:\s+since\s+(?:QGIS\s+)(?<DEPR_VERSION>[0-9.]+)(,\s*)?)?(?<DEPR_MESSAGE>.*)?/i ) {
         $INDENT = '';
-        return "\n.. deprecated::$1\n";
+        my $depr_line = "\n.. deprecated::";
+        $depr_line .= " QGIS $+{DEPR_VERSION}" if (defined $+{DEPR_VERSION});
+        $depr_line .= "\n  $+{DEPR_MESSAGE}\n" if (defined $+{DEPR_MESSAGE});
+        return $depr_line;
     }
 
     # create links in see also

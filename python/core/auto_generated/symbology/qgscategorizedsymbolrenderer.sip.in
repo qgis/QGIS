@@ -465,14 +465,16 @@ hashtable for faster access to symbols
  QgsSymbol *skipRender() /Deprecated/;
 %Docstring
 
-.. deprecated:: No longer used, will be removed in QGIS 4.0
+.. deprecated::
+   No longer used, will be removed in QGIS 4.0
 %End
 
  QgsSymbol *symbolForValue( const QVariant &value ) const /Deprecated/;
 %Docstring
 Returns the matching symbol corresponding to an attribute ``value``.
 
-.. deprecated:: use variant which takes a second bool argument instead.
+.. deprecated::
+   use variant which takes a second bool argument instead.
 %End
 
 

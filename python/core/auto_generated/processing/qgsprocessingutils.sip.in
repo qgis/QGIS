@@ -191,7 +191,8 @@ using the specified ``context``.
 Combines the extent of several map ``layers``. If specified, the target ``crs``
 will be used to transform the layer's extent to the desired output reference system.
 
-.. deprecated:: Use version with QgsProcessingContext argument instead
+.. deprecated::
+   Use version with QgsProcessingContext argument instead
 %End
 
     static QVariant generateIteratingDestination( const QVariant &input, const QVariant &id, QgsProcessingContext &context );

@@ -62,7 +62,8 @@ Action to zoom to selected features of a vector layer
  QAction *actionMakeTopLevel( QObject *parent = 0 ) /Factory/;
 %Docstring
 
-.. deprecated:: since QGIS 3.2, use actionMoveOutOfGroup()
+.. deprecated:: QGIS 3.2
+  use actionMoveOutOfGroup()
 %End
 
     QAction *actionMoveOutOfGroup( QObject *parent = 0 ) /Factory/;
@@ -121,7 +122,8 @@ Slot to zoom to selected features of a vector layer
  void makeTopLevel();
 %Docstring
 
-.. deprecated:: since QGIS 3.2, use moveOutOfGroup()
+.. deprecated:: QGIS 3.2
+  use moveOutOfGroup()
 %End
 
     void moveOutOfGroup();

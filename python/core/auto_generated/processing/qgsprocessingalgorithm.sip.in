@@ -153,7 +153,8 @@ helpString() or helpUrl().
 
 .. seealso:: :py:func:`shortHelpString`
 
-.. deprecated:: Unused, will be removed in QGIS 4.0
+.. deprecated::
+   Unused, will be removed in QGIS 4.0
 %End
 
     virtual QString helpUrl() const;

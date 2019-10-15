@@ -243,7 +243,8 @@ Returns the font used for drawing text in the scalebar.
 
 .. seealso:: :py:func:`setFont`
 
-.. deprecated:: use textFormat() instead
+.. deprecated::
+   use textFormat() instead
 %End
 
  void setFont( const QFont &font ) /Deprecated/;
@@ -252,7 +253,8 @@ Sets the ``font`` used for drawing text in the scalebar.
 
 .. seealso:: :py:func:`font`
 
-.. deprecated:: use setTextFormat() instead
+.. deprecated::
+   use setTextFormat() instead
 %End
 
  QColor fontColor() const /Deprecated/;
@@ -263,7 +265,8 @@ Returns the color used for drawing text in the scalebar.
 
 .. seealso:: :py:func:`font`
 
-.. deprecated:: use textFormat() instead
+.. deprecated::
+   use textFormat() instead
 %End
 
  void setFontColor( const QColor &color ) /Deprecated/;
@@ -274,7 +277,8 @@ Sets the ``color`` used for drawing text in the scalebar.
 
 .. seealso:: :py:func:`setFont`
 
-.. deprecated:: use textFormat() instead
+.. deprecated::
+   use textFormat() instead
 %End
 
     QColor fillColor() const;

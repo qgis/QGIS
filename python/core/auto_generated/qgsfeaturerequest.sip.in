@@ -667,7 +667,8 @@ at this moment. A negative value (which is set by default) will wait forever.
 
    Only works if the provider supports this option.
 
-.. deprecated:: Use timeout() instead.
+.. deprecated::
+   Use timeout() instead.
 
 .. versionadded:: 3.0
 %End
@@ -681,7 +682,8 @@ at this moment. A negative value (which is set by default) will wait forever.
 
    Only works if the provider supports this option.
 
-.. deprecated:: Use setTimeout() instead.
+.. deprecated::
+   Use setTimeout() instead.
 
 .. versionadded:: 3.0
 %End

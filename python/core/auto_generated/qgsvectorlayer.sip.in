@@ -1017,7 +1017,8 @@ if the geometry type of the new data source matches the current geometry type of
 
 .. versionadded:: 2.10
 
-.. deprecated:: Use version with ProviderOptions argument instead
+.. deprecated::
+   Use version with ProviderOptions argument instead
 %End
 
     virtual void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false );
@@ -1259,7 +1260,8 @@ Adds a ring to polygon/multipolygon features
    to the underlying data provider until a commitChanges() call is made. Any uncommitted
    changes can be discarded by calling rollBack().
 
-.. deprecated:: in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+.. deprecated::
+   in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
 %End
 
 
@@ -1336,7 +1338,8 @@ Adds a new part polygon to a multipart feature
    to the underlying data provider until a commitChanges() call is made. Any uncommitted
    changes can be discarded by calling rollBack().
 
-.. deprecated:: in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+.. deprecated::
+   in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
 %End
 
  QgsGeometry::OperationResult addPart( const QVector<QgsPointXY> &ring ) /PyName=addPartV2,Deprecated/;
@@ -1364,7 +1367,8 @@ Adds a new part polygon to a multipart feature
    to the underlying data provider until a commitChanges() call is made. Any uncommitted
    changes can be discarded by calling rollBack().
 
-.. deprecated:: in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+.. deprecated::
+   in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
 %End
 
     QgsGeometry::OperationResult addPart( const QgsPointSequence &ring ) /PyName=addPartV2/;
@@ -1449,7 +1453,8 @@ Splits parts cut by the given line
    to the underlying data provider until a commitChanges() call is made. Any uncommitted
    changes can be discarded by calling rollBack().
 
-.. deprecated:: in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+.. deprecated::
+   in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
 %End
 
     QgsGeometry::OperationResult splitParts( const QgsPointSequence &splitLine, bool topologicalEditing = false );
@@ -1499,7 +1504,8 @@ Splits features cut by the given line
    to the underlying data provider until a commitChanges() call is made. Any uncommitted
    changes can be discarded by calling rollBack().
 
-.. deprecated:: in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+.. deprecated::
+   in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
 %End
 
     QgsGeometry::OperationResult splitFeatures( const QgsPointSequence &splitLine, bool topologicalEditing = false );
@@ -1564,7 +1570,8 @@ editing.
    to the underlying data provider until a commitChanges() call is made. Any uncommitted
    changes can be discarded by calling rollBack().
 
-.. deprecated:: in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+.. deprecated::
+   in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
 %End
 
     int addTopologicalPoints( const QgsPoint &p );
@@ -2021,7 +2028,8 @@ Destroy active command and reverts all changes in it
 %Docstring
 Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex editing.)
 
-.. deprecated:: Use the equivalent QgsSymbolLayerUtils.drawVertexMarker function instead
+.. deprecated::
+   Use the equivalent QgsSymbolLayerUtils.drawVertexMarker function instead
 %End
 
     void updateFields();
