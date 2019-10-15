@@ -50,7 +50,7 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         cls.conn = QSqlDatabase.addDatabase('QOCISPATIAL', "oracletest")
         cls.conn.setDatabaseName('10.0.0.2/orcl')
         if 'QGIS_ORACLETEST_DBNAME' in os.environ:
-            cls.conn.setDatabaseName('QGIS_ORACLETEST_DBNAME')
+            cls.conn.setDatabaseName(os.environ['QGIS_ORACLETEST_DBNAME'])
         cls.conn.setUserName('QGIS')
         cls.conn.setPassword('qgis')
         assert cls.conn.open()
