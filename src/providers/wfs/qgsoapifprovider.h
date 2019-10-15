@@ -216,10 +216,15 @@ class QgsOapifFeatureDownloaderImpl: public QObject, public QgsFeatureDownloader
 
     void run( bool serializeFeatures, int maxFeatures ) override;
 
+  private slots:
+    void createProgressDialog();
+
   private:
 
     //! Mutable data shared between provider, feature sources and downloader.
     QgsOapifSharedData *mShared = nullptr;
+
+    int mNumberMatched = -1;
 };
 
 

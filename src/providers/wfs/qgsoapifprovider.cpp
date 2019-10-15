@@ -585,10 +585,18 @@ QgsOapifFeatureDownloaderImpl::~QgsOapifFeatureDownloaderImpl()
 {
 }
 
+void QgsOapifFeatureDownloaderImpl::createProgressDialog()
+{
+  QgsFeatureDownloaderImpl::createProgressDialog( mNumberMatched );
+  CONNECT_PROGRESS_DIALOG( QgsOapifFeatureDownloaderImpl );
+}
+
 void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures )
 {
   QEventLoop loop;
   connect( this, &QgsOapifFeatureDownloaderImpl::doStop, &loop, &QEventLoop::quit );
+
+  const bool useProgressDialog = ( !mShared->mHideProgressDialog && maxFeatures != 1 );
 
   qint64 maxTotalFeatures = 0;
   if ( maxFeatures > 0 && mShared->mMaxFeatures > 0 )
@@ -691,8 +699,19 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures
     }
     url = itemsRequest.nextUrl();
 
+    // Consider if we should display a progress dialog
+    // We can only do that if we know how many features will be downloaded
+    if ( mNumberMatched < 0 && !mTimer && useProgressDialog && itemsRequest.numberMatched() > 0 )
+    {
+      mNumberMatched = itemsRequest.numberMatched();
+      CREATE_PROGRESS_DIALOG( QgsOapifFeatureDownloaderImpl );
+    }
+
     totalDownloadedFeatureCount += itemsRequest.features().size();
-    emit updateProgress( totalDownloadedFeatureCount );
+    if ( !mStop )
+    {
+      emit updateProgress( totalDownloadedFeatureCount );
+    }
 
     QVector<QgsFeatureUniqueIdPair> featureList;
     size_t i = 0;
@@ -756,16 +775,7 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures
     }
   }
 
-  if ( serializeFeatures )
-    mShared->endOfDownload( success, totalDownloadedFeatureCount, false /* truncatedResponse */, interrupted, errorMessage );
-
-  // We must emit the signal *AFTER* the previous call to mShared->endOfDownload()
-  // to avoid issues with iterators that would start just now, wouldn't detect
-  // that the downloader has finished, would register to itself, but would never
-  // receive the endOfDownload signal. This is not just a theoretical problem.
-  // If you switch both calls, it happens quite easily in Release mode with the
-  // test suite.
-  emitEndOfDownload( success );
+  endOfRun( serializeFeatures, success, totalDownloadedFeatureCount, false /* truncatedResponse */, interrupted, errorMessage );
 }
 
 // ---------------------------------
