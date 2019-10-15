@@ -71,8 +71,8 @@ Adds a ring to polygon/multipolygon features
 
 :return: OperationResult result code: success or reason of failure
 
-.. deprecated::
-   in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+.. deprecated:: QGIS 3.12
+   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
 %End
 
     QgsGeometry::OperationResult addRing( const QgsPointSequence &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = 0 );
@@ -113,8 +113,8 @@ Adds a new part polygon to a multipart feature
          - QgsGeometry.InvalidBaseGeometry
          - QgsGeometry.InvalidInput
 
-.. deprecated::
-   in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+.. deprecated:: QGIS 3.12
+   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
 %End
 
     QgsGeometry::OperationResult addPart( const QgsPointSequence &ring, QgsFeatureId featureId );
@@ -173,8 +173,8 @@ Splits parts cut by the given line
          - QgsGeometry.GeometryEngineError
          - QgsGeometry.SplitCannotSplitPoint
 
-.. deprecated::
-   in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+.. deprecated:: QGIS 3.12
+   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
 %End
 
     QgsGeometry::OperationResult splitParts( const QgsPointSequence &splitLine, bool topologicalEditing = false );
@@ -203,8 +203,8 @@ Splits features cut by the given line
 :return: 0 in case of success,
          4 if there is a selection but no feature split
 
-.. deprecated::
-   in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+.. deprecated:: QGIS 3.12
+   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
 %End
 
     QgsGeometry::OperationResult splitFeatures( const QgsPointSequence &splitLine, bool topologicalEditing = false );
