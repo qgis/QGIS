@@ -576,10 +576,17 @@ QString QgsDataSourceUri::uri( bool expandAuthConfig ) const
   columnName.replace( '\\', QLatin1String( "\\\\" ) );
   columnName.replace( ')', QLatin1String( "\\)" ) );
 
-  uri += QStringLiteral( " table=%1%2 sql=%3" )
-         .arg( quotedTablename(),
-               mGeometryColumn.isNull() ? QString() : QStringLiteral( " (%1)" ).arg( columnName ),
-               mSql );
+  if ( !mTable.isEmpty() )
+  {
+    uri += QStringLiteral( " table=%1%2" )
+           .arg( quotedTablename(),
+                 mGeometryColumn.isNull() ? QString() : QStringLiteral( " (%1)" ).arg( columnName ) );
+  }
+
+  if ( !mSql.isEmpty() )
+  {
+    uri += QStringLiteral( " sql=" ) + mSql;
+  }
 
   return uri;
 }

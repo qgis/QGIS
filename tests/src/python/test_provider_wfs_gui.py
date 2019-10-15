@@ -220,7 +220,7 @@ class TestPyQgsWFSProviderGUI(unittest.TestCase):
         self.addWfsLayer_layer_name = None
         main_dialog.addVectorLayer.connect(self.slotAddWfsLayer)
         QTest.mouseClick(buttonAdd, Qt.LeftButton)
-        self.assertEqual(self.addWfsLayer_uri, ' pagingEnabled=\'true\' restrictToRequestBBOX=\'1\' srsname=\'EPSG:4326\' typename=\'my:typename\' url=\'' + "http://" + expected_endpoint + '\' version=\'auto\' table="" sql=')
+        self.assertEqual(self.addWfsLayer_uri, ' pagingEnabled=\'true\' restrictToRequestBBOX=\'1\' srsname=\'EPSG:4326\' typename=\'my:typename\' url=\'' + "http://" + expected_endpoint + '\' version=\'auto\'')
         self.assertEqual(self.addWfsLayer_layer_name, 'my:typename')
 
         # Click on Build Query
@@ -293,7 +293,7 @@ class TestPyQgsWFSProviderGUI(unittest.TestCase):
         self.addWfsLayer_layer_name = None
         main_dialog.addVectorLayer.connect(self.slotAddWfsLayer)
         QTest.mouseClick(buttonAdd, Qt.LeftButton)
-        self.assertEqual(self.addWfsLayer_uri, ' pagingEnabled=\'true\' restrictToRequestBBOX=\'1\' srsname=\'EPSG:4326\' typename=\'my:typename\' url=\'' + "http://" + expected_endpoint + '\' version=\'auto\' table="" sql=SELECT * FROM typename WHERE 1 = 1')
+        self.assertEqual(self.addWfsLayer_uri, ' pagingEnabled=\'true\' restrictToRequestBBOX=\'1\' srsname=\'EPSG:4326\' typename=\'my:typename\' url=\'' + "http://" + expected_endpoint + '\' version=\'auto\' sql=SELECT * FROM typename WHERE 1 = 1')
         self.assertEqual(self.addWfsLayer_layer_name, 'my:typename')
 
         # main_dialog.setProperty("hideDialogs", None)
