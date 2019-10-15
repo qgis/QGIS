@@ -59,6 +59,8 @@ class QgsOapifProvider : public QgsVectorDataProvider
 
     bool supportsSubsetString() const override { return true; }
 
+    QString storageType() const override { return QStringLiteral( "OGC API - Features" ); }
+
     /* Inherited from QgsDataProvider */
 
     QgsRectangle extent() const override;

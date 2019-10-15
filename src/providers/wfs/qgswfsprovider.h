@@ -98,6 +98,8 @@ class QgsWFSProvider : public QgsVectorDataProvider
 
     QgsVectorDataProvider::Capabilities capabilities() const override;
 
+    QString storageType() const override { return QStringLiteral( "OGC WFS (Web Feature Service)" ); }
+
     /* new functions */
 
     QString geometryAttribute() const;
