@@ -856,6 +856,8 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
 
   QgsGeometry renderedBoundsGeom;
 
+  startFeatureRender( feature, context, layer );
+
   switch ( QgsWkbTypes::flatType( segmentizedGeometry.constGet()->wkbType() ) )
   {
     case QgsWkbTypes::Point:
@@ -1115,6 +1117,8 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
                    .arg( geom.wkbType(), 0, 16 ) );
   }
 
+  stopFeatureRender( feature, context, layer );
+
   if ( context.hasRenderedFeatureHandlers() )
   {
     QgsRenderedFeatureHandlerInterface::RenderedFeatureContext featureContext( context );
@@ -1170,6 +1174,54 @@ void QgsSymbol::renderVertexMarker( QPointF pt, QgsRenderContext &context, int c
 {
   int markerSize = context.convertToPainterUnits( currentVertexMarkerSize, QgsUnitTypes::RenderMillimeters );
   QgsSymbolLayerUtils::drawVertexMarker( pt.x(), pt.y(), *context.painter(), static_cast< QgsSymbolLayerUtils::VertexMarkerType >( currentVertexMarkerType ), markerSize );
+}
+
+void QgsSymbol::startFeatureRender( const QgsFeature &feature, QgsRenderContext &context, const int layer )
+{
+  if ( layer != -1 )
+  {
+    QgsSymbolLayer *symbolLayer = mLayers.value( layer );
+    if ( symbolLayer && symbolLayer->enabled() )
+    {
+      symbolLayer->startFeatureRender( feature, context );
+    }
+    return;
+  }
+  else
+  {
+    const QList< QgsSymbolLayer * > layers = mLayers;
+    for ( QgsSymbolLayer *symbolLayer : layers )
+    {
+      if ( !symbolLayer->enabled() )
+        continue;
+
+      symbolLayer->startFeatureRender( feature, context );
+    }
+  }
+}
+
+void QgsSymbol::stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context, int layer )
+{
+  if ( layer != -1 )
+  {
+    QgsSymbolLayer *symbolLayer = mLayers.value( layer );
+    if ( symbolLayer && symbolLayer->enabled() )
+    {
+      symbolLayer->stopFeatureRender( feature, context );
+    }
+    return;
+  }
+  else
+  {
+    const QList< QgsSymbolLayer * > layers = mLayers;
+    for ( QgsSymbolLayer *symbolLayer : layers )
+    {
+      if ( !symbolLayer->enabled() )
+        continue;
+
+      symbolLayer->stopFeatureRender( feature, context );
+    }
+  }
 }
 
 ////////////////////
