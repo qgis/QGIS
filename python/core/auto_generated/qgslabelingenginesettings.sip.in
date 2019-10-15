@@ -80,14 +80,16 @@ Sets number of candidate positions that will be generated for each label feature
 %Docstring
 Used to set which search method to use for removal collisions between labels
 
-.. deprecated:: since QGIS 3.10 - Chain is always used.
+.. deprecated:: QGIS 3.10
+   - Chain is always used.
 %End
 
  Search searchMethod() const /Deprecated/;
 %Docstring
 Which search method to use for removal collisions between labels
 
-.. deprecated:: since QGIS 3.10 - Chain is always used.
+.. deprecated:: QGIS 3.10
+   - Chain is always used.
 %End
 
     void readSettingsFromProject( QgsProject *project );

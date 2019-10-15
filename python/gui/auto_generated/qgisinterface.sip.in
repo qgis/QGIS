@@ -1111,7 +1111,8 @@ QGIS documentation, set useQgisDocDirectory to ``False``.
 :param useQgisDocDirectory: If ``True``, the URL will be formed by concatenating
                             url to the QGIS documentation directory path (prefix/share/doc)
 
-.. deprecated:: Use QDesktopServices instead
+.. deprecated::
+   Use QDesktopServices instead
 %End
 
     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false, bool showModal = true ) = 0;

@@ -187,7 +187,8 @@ Returns time stamp for given file name
 %Docstring
 Set the data provider.
 
-.. deprecated:: Use the version with ProviderOptions instead.
+.. deprecated::
+   Use the version with ProviderOptions instead.
 %End
 
     void setDataProvider( const QString &provider, const QgsDataProvider::ProviderOptions &options );

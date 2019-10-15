@@ -338,7 +338,8 @@ but can be manually overwritten by a call to setSourceDatumTransformId().
 
 .. seealso:: :py:func:`destinationDatumTransformId`
 
-.. deprecated:: Unused on builds based on Proj 6.0 or later
+.. deprecated::
+   Unused on builds based on Proj 6.0 or later
 %End
 
  void setSourceDatumTransformId( int datumId ) /Deprecated/;
@@ -355,7 +356,8 @@ Calling this method will overwrite any automatically calculated datum transform.
 
 .. seealso:: :py:func:`setDestinationDatumTransformId`
 
-.. deprecated:: Unused on builds based on Proj 6.0 or later
+.. deprecated::
+   Unused on builds based on Proj 6.0 or later
 %End
 
  int destinationDatumTransformId() const /Deprecated/;
@@ -372,7 +374,8 @@ but can be manually overwritten by a call to setDestinationDatumTransformId().
 
 .. seealso:: :py:func:`sourceDatumTransformId`
 
-.. deprecated:: Unused on builds based on Proj 6.0 or later
+.. deprecated::
+   Unused on builds based on Proj 6.0 or later
 %End
 
  void setDestinationDatumTransformId( int datumId ) /Deprecated/;
@@ -389,7 +392,8 @@ Calling this method will overwrite any automatically calculated datum transform.
 
 .. seealso:: :py:func:`setSourceDatumTransformId`
 
-.. deprecated:: Unused on builds based on Proj 6.0 or later
+.. deprecated::
+   Unused on builds based on Proj 6.0 or later
 %End
 
 

@@ -244,7 +244,8 @@ Emit this signal, whenever the value changed.
 
 :param value: The new value
 
-.. deprecated:: since QGIS 3.10 use valuesChanged signal instead
+.. deprecated:: QGIS 3.10
+   use valuesChanged signal instead
 %End
 
     void valuesChanged( const QVariant &value, const QVariantList &additionalFieldValues = QVariantList() );

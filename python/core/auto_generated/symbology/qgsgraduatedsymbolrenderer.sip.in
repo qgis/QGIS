@@ -146,12 +146,14 @@ This will take ownership of the method
  Mode mode() const /Deprecated/;
 %Docstring
 
-.. deprecated:: since QGIS 3.10 use classficationMethod instead
+.. deprecated:: QGIS 3.10
+   use classficationMethod instead
 %End
  void setMode( Mode mode ) /Deprecated/;
 %Docstring
 
-.. deprecated:: since QGIS 3.10 use classficationMethod instead
+.. deprecated:: QGIS 3.10
+   use classficationMethod instead
 %End
 
  bool useSymmetricMode() const /Deprecated/;
@@ -160,7 +162,8 @@ Returns if we want to classify symmetric around a given value
 
 .. versionadded:: 3.4
 
-.. deprecated:: since QGIS 3.10 use classficationMethod instead
+.. deprecated:: QGIS 3.10
+   use classficationMethod instead
 %End
 
   void setUseSymmetricMode( bool useSymmetricMode ) /Deprecated/;
@@ -169,7 +172,8 @@ Set if we want to classify symmetric around a given value
 
 .. versionadded:: 3.4
 
-.. deprecated:: since QGIS 3.10 use classficationMethod instead
+.. deprecated:: QGIS 3.10
+   use classficationMethod instead
 %End
 
  double symmetryPoint() const /Deprecated/;
@@ -178,7 +182,8 @@ Returns the pivot value for symmetric classification
 
 .. versionadded:: 3.4
 
-.. deprecated:: since QGIS 3.10 use classficationMethod instead
+.. deprecated:: QGIS 3.10
+   use classficationMethod instead
 %End
 
  void setSymmetryPoint( double symmetryPoint ) /Deprecated/;
@@ -187,7 +192,8 @@ Set the pivot point
 
 .. versionadded:: 3.4
 
-.. deprecated:: since QGIS 3.10 use classficationMethod instead
+.. deprecated:: QGIS 3.10
+   use classficationMethod instead
 %End
 
 
@@ -197,7 +203,8 @@ Returns if we want to have a central class astride the pivot value
 
 .. versionadded:: 3.4
 
-.. deprecated:: since QGIS 3.10 use classficationMethod instead
+.. deprecated:: QGIS 3.10
+   use classficationMethod instead
 %End
 
  void setAstride( bool astride ) /Deprecated/;
@@ -206,7 +213,8 @@ Set if we want a central class astride the pivot value
 
 .. versionadded:: 3.4
 
-.. deprecated:: since QGIS 3.10 use classficationMethod instead
+.. deprecated:: QGIS 3.10
+   use classficationMethod instead
 %End
 
  static void makeBreaksSymmetric( QList<double> &breaks /In,Out/, double symmetryPoint, bool astride ) /Deprecated/;
@@ -220,7 +228,8 @@ Does not put a break on the symmetryPoint. This is done before.
 
 .. versionadded:: 3.4
 
-.. deprecated:: since QGIS 3.10, use QgsClassificationMethod.makeBreaksSymmetric instead
+.. deprecated:: QGIS 3.10
+  use QgsClassificationMethod.makeBreaksSymmetric instead
 %End
 
  static QList<double> calcEqualIntervalBreaks( double minimum, double maximum, int classes, bool useSymmetricMode, double symmetryPoint, bool astride ) /Deprecated/;
@@ -234,7 +243,8 @@ Compute the equal interval classification
 :param symmetryPoint: The point around which we want a symmetry
 :param astride: A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
 
-.. deprecated:: since QGIS 3.10 use QgsClassificationEqualInterval class instead
+.. deprecated:: QGIS 3.10
+   use QgsClassificationEqualInterval class instead
 %End
 
  void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses, bool useSymmetricMode = false, double symmetryPoint = 0.0, bool astride = false ) /Deprecated/;
@@ -250,7 +260,7 @@ Recalculate classes for a layer
 
 .. versionadded:: 2.6
 
-.. deprecated:: since QGIS 3.10
+.. deprecated:: QGIS 3.10
 %End
 
     void updateClasses( const QgsVectorLayer *vl, int nclasses );
@@ -268,7 +278,8 @@ Returns the label format used to generate default classification labels
 
 .. versionadded:: 2.6
 
-.. deprecated:: since QGIS 3.10 use classificationMethod() and QgsClassificationMethod.setLabelFormat instead
+.. deprecated:: QGIS 3.10
+   use classificationMethod() and QgsClassificationMethod.setLabelFormat instead
 %End
 
  void setLabelFormat( const QgsRendererRangeLabelFormat &labelFormat, bool updateRanges = false ) /Deprecated/;
@@ -280,7 +291,8 @@ Set the label format used to generate default classification labels
 
 .. versionadded:: 2.6
 
-.. deprecated:: since QGIS 3.10 use classificationMethod() and QgsClassificationMethod.setLabelFormat instead
+.. deprecated:: QGIS 3.10
+   use classificationMethod() and QgsClassificationMethod.setLabelFormat instead
 %End
 
 
@@ -322,7 +334,7 @@ Creates a new graduated renderer.
 
 :return: new QgsGraduatedSymbolRenderer object
 
-.. deprecated:: since QGIS 3.10
+.. deprecated:: QGIS 3.10
 %End
 
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;

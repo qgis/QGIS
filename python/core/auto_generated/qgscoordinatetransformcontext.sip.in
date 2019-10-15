@@ -80,7 +80,8 @@ required for transformations for that source or destination.
 .. seealso:: :py:func:`addSourceDestinationDatumTransform`
 
 
-.. deprecated:: Has no effect on builds based on Proj 6.0 or later, use coordinateOperations() instead.
+.. deprecated::
+   Has no effect on builds based on Proj 6.0 or later, use coordinateOperations() instead.
 %End
 
     QMap< QPair< QString, QString>, QString > coordinateOperations() const;
@@ -120,7 +121,8 @@ Returns ``True`` if the new transform pair was added successfully.
 
 .. seealso:: :py:func:`removeSourceDestinationDatumTransform`
 
-.. deprecated:: Has no effect on builds based on Proj 6.0 or later, use addCoordinateOperation() instead.
+.. deprecated::
+   Has no effect on builds based on Proj 6.0 or later, use addCoordinateOperation() instead.
 %End
 
     bool addCoordinateOperation( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &coordinateOperationProjString );
@@ -154,7 +156,8 @@ Removes the source to destination datum transform pair for the specified ``sourc
 
 .. seealso:: :py:func:`addSourceDestinationDatumTransform`
 
-.. deprecated:: Use removeCoordinateOperation() instead
+.. deprecated::
+   Use removeCoordinateOperation() instead
 %End
 
     void removeCoordinateOperation( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs );
@@ -187,7 +190,8 @@ destination.
 
    source and destination are reversible.
 
-.. deprecated:: Has no effect on builds based on Proj 6.0 or later. Use calculateCoordinateOperation() instead.
+.. deprecated::
+   Has no effect on builds based on Proj 6.0 or later. Use calculateCoordinateOperation() instead.
 %End
 
     QString calculateCoordinateOperation( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const;
