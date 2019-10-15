@@ -157,6 +157,9 @@ class QgsBackgroundCachedSharedData
     //! To be called when a temporary file is removed from the directory
     void releaseCacheDirectory();
 
+    //! Set whether the progress dialog should be hidden
+    void setHideProgressDialog( bool b ) { mHideProgressDialog = b; }
+
     //////// Pure virtual methods
 
     //! Instantiate a new feature downloader implementation.
@@ -167,6 +170,9 @@ class QgsBackgroundCachedSharedData
 
     //! Return whether the layer has a geometry field
     virtual bool hasGeometry() const = 0;
+
+    //! Return layer name
+    virtual QString layerName() const = 0;
 
   protected:
 
@@ -195,6 +201,9 @@ class QgsBackgroundCachedSharedData
 
     //! Flag is a /items request returns a numberMatched property
     bool mHasNumberMatched = false;
+
+    //! Whether progress dialog should be hidden
+    bool mHideProgressDialog = false;
 
     //////////// Methods
 
@@ -312,9 +321,6 @@ class QgsBackgroundCachedSharedData
 
     //! Return whether the server limit downloading a limiter number of features
     virtual bool supportsLimitedFeatureCountDownloads() const = 0;
-
-    //! Return layer name
-    virtual QString layerName() const = 0;
 
     //! Return whether a server-side (non-spatial) filter is applied
     virtual bool hasServerSideFilter() const = 0;

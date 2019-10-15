@@ -157,9 +157,6 @@ class QgsOapifSharedData : public QObject, public QgsBackgroundCachedSharedData
     //! Page size. 0 = disabled
     int mPageSize = 0;
 
-    //! Whether progress dialog should be hidden
-    bool mHideProgressDialog = false;
-
     //! Url to /collections/{collectionId}
     QString mCollectionUrl;
 
@@ -203,29 +200,26 @@ class QgsOapifSharedData : public QObject, public QgsBackgroundCachedSharedData
 class QgsOapifFeatureDownloaderImpl: public QObject, public QgsFeatureDownloaderImpl
 {
     Q_OBJECT
+
+    DEFINE_FEATURE_DOWLOADER_IMPL_SLOTS
+
+  signals:
+    /* Used internally by the stop() method */
+    void doStop();
+
+    /* Emitted with the total accumulated number of features downloaded. */
+    void updateProgress( int totalFeatureCount );
+
   public:
     QgsOapifFeatureDownloaderImpl( QgsOapifSharedData *shared, QgsFeatureDownloader *downloader );
     ~QgsOapifFeatureDownloaderImpl() override;
 
     void run( bool serializeFeatures, int maxFeatures ) override;
 
-    void stop() override;
-
-  signals:
-
-    //! Used internally by the stop() method
-    void doStop();
-
-    //! Emitted with the total accumulated number of features downloaded.
-    void updateProgress( int totalFeatureCount );
-
   private:
 
     //! Mutable data shared between provider, feature sources and downloader.
     QgsOapifSharedData *mShared = nullptr;
-
-    //! Whether the download should stop
-    bool mStop = false;
 };
 
 

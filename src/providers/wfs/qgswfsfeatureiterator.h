@@ -24,16 +24,12 @@
 #include "qgsbackgroundcachedfeatureiterator.h"
 
 #include <memory>
-#include <QProgressDialog>
-#include <QPushButton>
 #include <QMutex>
 #include <QWaitCondition>
 
 class QgsWFSProvider;
 class QgsWFSSharedData;
 class QgsVectorDataProvider;
-class QProgressDialog;
-
 
 //! Utility class to issue a GetFeature resultType=hits request
 class QgsWFSFeatureHitsAsyncRequest: public QgsWfsRequest
@@ -60,26 +56,6 @@ class QgsWFSFeatureHitsAsyncRequest: public QgsWfsRequest
     int mNumberMatched;
 };
 
-
-//! Utility class for QgsWFSFeatureDownloader
-class QgsWFSProgressDialog: public QProgressDialog
-{
-    Q_OBJECT
-  public:
-    //! Constructor
-    QgsWFSProgressDialog( const QString &labelText, const QString &cancelButtonText, int minimum, int maximum, QWidget *parent );
-
-    void resizeEvent( QResizeEvent *ev ) override;
-
-  signals:
-    void hideRequest();
-
-  private:
-    QPushButton *mCancel = nullptr;
-    QPushButton *mHide = nullptr;
-};
-
-
 /**
  * This class runs one (or several if paging is needed) GetFeature request,
     process the results as soon as they arrived and notify them to the
@@ -91,31 +67,30 @@ class QgsWFSProgressDialog: public QProgressDialog
 class QgsWFSFeatureDownloaderImpl: public QgsWfsRequest, public QgsFeatureDownloaderImpl
 {
     Q_OBJECT
+
+    DEFINE_FEATURE_DOWLOADER_IMPL_SLOTS
+
+  signals:
+    /* Used internally by the stop() method */
+    void doStop();
+
+    /* Emitted with the total accumulated number of features downloaded. */
+    void updateProgress( int totalFeatureCount );
+
   public:
     QgsWFSFeatureDownloaderImpl( QgsWFSSharedData *shared, QgsFeatureDownloader *downloader );
     ~QgsWFSFeatureDownloaderImpl() override;
 
     void run( bool serializeFeatures, int maxFeatures ) override;
 
-    void stop() override;
-
-  signals:
-
-    //! Used internally by the stop() method
-    void doStop();
-
-    //! Emitted with the total accumulated number of features downloaded.
-    void updateProgress( int totalFeatureCount );
-
   protected:
     QString errorMessageWithReason( const QString &reason ) override;
 
   private slots:
-    void createProgressDialog();
     void startHitsRequest();
     void gotHitsResponse();
-    void setStopFlag();
-    void hideProgressDialog();
+
+    void createProgressDialog();
 
   private:
     QUrl buildURL( qint64 startIndex, int maxFeatures, bool forHits );
@@ -124,24 +99,12 @@ class QgsWFSFeatureDownloaderImpl: public QgsWfsRequest, public QgsFeatureDownlo
 
     //! Mutable data shared between provider, feature sources and downloader.
     QgsWFSSharedData *mShared = nullptr;
-    //! Whether the download should stop
-    bool mStop = false;
-    //! Progress dialog
-    QgsWFSProgressDialog *mProgressDialog = nullptr;
 
-    /**
-     * If the progress dialog should be shown immediately, or if it should be
-        let to QProgressDialog logic to decide when to show it */
-    bool mProgressDialogShowImmediately = false;
     int mPageSize = 0;
     bool mRemoveNSPrefix = false;
     int mNumberMatched = -1;
-    bool mUseProgressDialog = false;
-    QWidget *mMainWindow = nullptr;
-    QTimer *mTimer = nullptr;
     QgsWFSFeatureHitsAsyncRequest mFeatureHitsAsyncRequest;
     qint64 mTotalDownloadedFeatureCount = 0;
-    QMutex mMutexCreateProgressDialog;
 };
 
 

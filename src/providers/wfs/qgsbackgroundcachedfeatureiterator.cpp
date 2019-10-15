@@ -16,6 +16,7 @@
 #include "qgsbackgroundcachedfeatureiterator.h"
 #include "qgsbackgroundcachedshareddata.h"
 
+#include "qgsapplication.h"
 #include "qgsfeedback.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
@@ -24,6 +25,8 @@
 #include <QDir>
 #include <QFile>
 #include <QMutex>
+#include <QPushButton>
+#include <QStyle>
 #include <QTimer>
 
 #include <sqlite3.h>
@@ -33,13 +36,52 @@ const QString QgsBackgroundCachedFeatureIteratorConstants::FIELD_UNIQUE_ID( QStr
 const QString QgsBackgroundCachedFeatureIteratorConstants::FIELD_HEXWKB_GEOM( QStringLiteral( "__qgis_hexwkb_geom" ) );
 const QString QgsBackgroundCachedFeatureIteratorConstants::FIELD_MD5( QStringLiteral( "__qgis_md5" ) );
 
+// -------------------------
+
+
+QgsFeatureDownloaderProgressDialog::QgsFeatureDownloaderProgressDialog( const QString &labelText,
+    const QString &cancelButtonText,
+    int minimum, int maximum, QWidget *parent )
+  : QProgressDialog( labelText, cancelButtonText, minimum, maximum, parent )
+{
+  mCancel = new QPushButton( cancelButtonText, this );
+  setCancelButton( mCancel );
+  mHide = new QPushButton( tr( "Hide" ), this );
+  connect( mHide, &QAbstractButton::clicked, this, &QgsFeatureDownloaderProgressDialog::hideRequest );
+}
+
+void QgsFeatureDownloaderProgressDialog::resizeEvent( QResizeEvent *ev )
+{
+  QProgressDialog::resizeEvent( ev );
+  // Note: this relies heavily on the details of the layout done in QProgressDialogPrivate::layout()
+  // Might be a bit fragile depending on QT versions.
+  QRect rect = geometry();
+  QRect cancelRect = mCancel->geometry();
+  QRect hideRect = mHide->geometry();
+  int mtb = style()->pixelMetric( QStyle::PM_DefaultTopLevelMargin );
+  int mlr = std::min( width() / 10, mtb );
+  if ( rect.width() - cancelRect.x() - cancelRect.width() > mlr )
+  {
+    // Force right alighnment of cancel button
+    cancelRect.setX( rect.width() - cancelRect.width() - mlr );
+    mCancel->setGeometry( cancelRect );
+  }
+  mHide->setGeometry( rect.width() - cancelRect.x() - cancelRect.width(),
+                      cancelRect.y(), hideRect.width(), cancelRect.height() );
+}
 
 // -------------------------
 
-QgsFeatureDownloaderImpl::QgsFeatureDownloaderImpl( QgsFeatureDownloader *downloader ): mDownloader( downloader )
+QgsFeatureDownloaderImpl::QgsFeatureDownloaderImpl( QgsBackgroundCachedSharedData *shared, QgsFeatureDownloader *downloader ): mSharedBase( shared ), mDownloader( downloader )
 {
   // Needed because used by a signal
   qRegisterMetaType< QVector<QgsFeatureUniqueIdPair> >( "QVector<QgsFeatureUniqueIdPair>" );
+}
+
+QgsFeatureDownloaderImpl::~QgsFeatureDownloaderImpl()
+{
+  if ( mProgressDialog )
+    mProgressDialog->deleteLater();
 }
 
 void QgsFeatureDownloaderImpl::emitFeatureReceived( QVector<QgsFeatureUniqueIdPair> features )
@@ -55,6 +97,98 @@ void QgsFeatureDownloaderImpl::emitFeatureReceived( int featureCount )
 void QgsFeatureDownloaderImpl::emitEndOfDownload( bool success )
 {
   emit mDownloader->endOfDownload( success );
+}
+
+void QgsFeatureDownloaderImpl::stop()
+{
+  QgsDebugMsgLevel( QStringLiteral( "QgsFeatureDownloaderImpl::stop()" ), 4 );
+  mStop = true;
+  emitDoStop();
+}
+
+void QgsFeatureDownloaderImpl::setStopFlag()
+{
+  QgsDebugMsgLevel( QStringLiteral( "QgsFeatureDownloaderImpl::setStopFlag()" ), 4 );
+  mStop = true;
+}
+
+void QgsFeatureDownloaderImpl::hideProgressDialog()
+{
+  mSharedBase->setHideProgressDialog( true );
+  mProgressDialog->deleteLater();
+  mProgressDialog = nullptr;
+}
+
+// Called from GUI thread
+void QgsFeatureDownloaderImpl::createProgressDialog( int numberMatched )
+{
+  Q_ASSERT( qApp->thread() == QThread::currentThread() );
+
+  // Make sure that the creation is done in an atomic way, so that the
+  // starting thread (running QgsFeatureDownloaderImpl::run()) can be sure that
+  // this function has either run completely, or not at all (mStop == true),
+  // when it wants to destroy mProgressDialog
+  QMutexLocker locker( &mMutexCreateProgressDialog );
+
+  if ( mStop )
+    return;
+  Q_ASSERT( !mProgressDialog );
+
+  if ( !mMainWindow )
+  {
+    const QWidgetList widgets = QgsApplication::topLevelWidgets();
+    for ( QWidget *widget : widgets )
+    {
+      if ( widget->objectName() == QLatin1String( "QgisApp" ) )
+      {
+        mMainWindow = widget;
+        break;
+      }
+    }
+  }
+
+  if ( !mMainWindow )
+    return;
+
+  mProgressDialog = new QgsFeatureDownloaderProgressDialog( QObject::tr( "Loading features for layer %1" ).arg( mSharedBase->layerName() ),
+      QObject::tr( "Abort" ), 0, numberMatched, mMainWindow );
+  mProgressDialog->setWindowTitle( QObject::tr( "QGIS" ) );
+  mProgressDialog->setValue( 0 );
+  if ( mProgressDialogShowImmediately )
+    mProgressDialog->show();
+}
+
+void QgsFeatureDownloaderImpl::endOfRun( bool serializeFeatures,
+    bool success, int totalDownloadedFeatureCount,
+    bool truncatedResponse, bool interrupted,
+    const QString &errorMessage )
+{
+  {
+    QMutexLocker locker( &mMutexCreateProgressDialog );
+    mStop = true;
+  }
+
+  if ( serializeFeatures )
+    mSharedBase->endOfDownload( success, totalDownloadedFeatureCount, truncatedResponse, interrupted, errorMessage );
+
+  // We must emit the signal *AFTER* the previous call to mShared->endOfDownload()
+  // to avoid issues with iterators that would start just now, wouldn't detect
+  // that the downloader has finished, would register to itself, but would never
+  // receive the endOfDownload signal. This is not just a theoretical problem.
+  // If you switch both calls, it happens quite easily in Release mode with the
+  // test suite.
+  emitEndOfDownload( success );
+
+  if ( mProgressDialog )
+  {
+    mProgressDialog->deleteLater();
+    mProgressDialog = nullptr;
+  }
+  if ( mTimer )
+  {
+    mTimer->deleteLater();
+    mTimer = nullptr;
+  }
 }
 
 // -------------------------
@@ -317,7 +451,7 @@ QgsFeatureRequest QgsBackgroundCachedFeatureIterator::buildRequestCache( int gen
 
 QgsBackgroundCachedFeatureIterator::~QgsBackgroundCachedFeatureIterator()
 {
-  QgsDebugMsgLevel( QStringLiteral( "qgsWFSFeatureIterator::~QgsBackgroundCachedFeatureIterator()" ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "QgsBackgroundCachedFeatureIterator::~QgsBackgroundCachedFeatureIterator()" ), 4 );
 
   close();
 

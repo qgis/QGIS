@@ -34,9 +34,7 @@
 
 #include <algorithm>
 #include <QDir>
-#include <QProgressDialog>
 #include <QTimer>
-#include <QStyle>
 
 QgsWFSFeatureHitsAsyncRequest::QgsWFSFeatureHitsAsyncRequest( QgsWFSDataSourceURI &uri )
   : QgsWfsRequest( uri )
@@ -81,43 +79,9 @@ QString QgsWFSFeatureHitsAsyncRequest::errorMessageWithReason( const QString &re
 
 // -------------------------
 
-
-QgsWFSProgressDialog::QgsWFSProgressDialog( const QString &labelText,
-    const QString &cancelButtonText,
-    int minimum, int maximum, QWidget *parent )
-  : QProgressDialog( labelText, cancelButtonText, minimum, maximum, parent )
-{
-  mCancel = new QPushButton( cancelButtonText, this );
-  setCancelButton( mCancel );
-  mHide = new QPushButton( tr( "Hide" ), this );
-  connect( mHide, &QAbstractButton::clicked, this, &QgsWFSProgressDialog::hideRequest );
-}
-
-void QgsWFSProgressDialog::resizeEvent( QResizeEvent *ev )
-{
-  QProgressDialog::resizeEvent( ev );
-  // Note: this relies heavily on the details of the layout done in QProgressDialogPrivate::layout()
-  // Might be a bit fragile depending on QT versions.
-  QRect rect = geometry();
-  QRect cancelRect = mCancel->geometry();
-  QRect hideRect = mHide->geometry();
-  int mtb = style()->pixelMetric( QStyle::PM_DefaultTopLevelMargin );
-  int mlr = std::min( width() / 10, mtb );
-  if ( rect.width() - cancelRect.x() - cancelRect.width() > mlr )
-  {
-    // Force right alighnment of cancel button
-    cancelRect.setX( rect.width() - cancelRect.width() - mlr );
-    mCancel->setGeometry( cancelRect );
-  }
-  mHide->setGeometry( rect.width() - cancelRect.x() - cancelRect.width(),
-                      cancelRect.y(), hideRect.width(), cancelRect.height() );
-}
-
-// -------------------------
-
 QgsWFSFeatureDownloaderImpl::QgsWFSFeatureDownloaderImpl( QgsWFSSharedData *shared, QgsFeatureDownloader *downloader ):
   QgsWfsRequest( shared->mURI ),
-  QgsFeatureDownloaderImpl( downloader ),
+  QgsFeatureDownloaderImpl( shared, downloader ),
   mShared( shared ),
   mPageSize( shared->mPageSize ),
   mFeatureHitsAsyncRequest( shared->mURI )
@@ -128,79 +92,8 @@ QgsWFSFeatureDownloaderImpl::~QgsWFSFeatureDownloaderImpl()
 {
   stop();
 
-  if ( mProgressDialog )
-    mProgressDialog->deleteLater();
   if ( mTimer )
     mTimer->deleteLater();
-}
-
-void QgsWFSFeatureDownloaderImpl::stop()
-{
-  QgsDebugMsgLevel( QStringLiteral( "QgsWFSFeatureDownloaderImpl::stop()" ), 4 );
-  mStop = true;
-  emit doStop();
-}
-
-void QgsWFSFeatureDownloaderImpl::setStopFlag()
-{
-  QgsDebugMsgLevel( QStringLiteral( "QgsWFSFeatureDownloaderImpl::setStopFlag()" ), 4 );
-  mStop = true;
-}
-
-void QgsWFSFeatureDownloaderImpl::hideProgressDialog()
-{
-  mShared->mHideProgressDialog = true;
-  mProgressDialog->deleteLater();
-  mProgressDialog = nullptr;
-}
-
-// Called from GUI thread
-void QgsWFSFeatureDownloaderImpl::createProgressDialog()
-{
-  Q_ASSERT( qApp->thread() == QThread::currentThread() );
-
-  // Make sure that the creation is done in an atomic way, so that the
-  // starting thread (running QgsWFSFeatureDownloaderImpl::run()) can be sure that
-  // this function has either run completely, or not at all (mStop == true),
-  // when it wants to destroy mProgressDialog
-  QMutexLocker locker( &mMutexCreateProgressDialog );
-
-  if ( mStop )
-    return;
-  Q_ASSERT( !mProgressDialog );
-
-  if ( !mMainWindow )
-  {
-    const QWidgetList widgets = qApp->topLevelWidgets();
-    for ( QWidget *widget : widgets )
-    {
-      if ( widget->objectName() == QLatin1String( "QgisApp" ) )
-      {
-        mMainWindow = widget;
-        break;
-      }
-    }
-  }
-
-  if ( !mMainWindow )
-    return;
-
-  mProgressDialog = new QgsWFSProgressDialog( tr( "Loading features for layer %1" ).arg( mShared->mURI.typeName() ),
-      tr( "Abort" ), 0, mNumberMatched, mMainWindow );
-  mProgressDialog->setWindowTitle( tr( "QGIS" ) );
-  mProgressDialog->setValue( 0 );
-  if ( mProgressDialogShowImmediately )
-    mProgressDialog->show();
-
-  connect( mProgressDialog, &QProgressDialog::canceled, this, &QgsWFSFeatureDownloaderImpl::setStopFlag, Qt::DirectConnection );
-  connect( mProgressDialog, &QProgressDialog::canceled, this, &QgsWFSFeatureDownloaderImpl::stop );
-  connect( mProgressDialog, &QgsWFSProgressDialog::hideRequest, this, &QgsWFSFeatureDownloaderImpl::hideProgressDialog );
-
-  // Make sure the progress dialog has not been deleted by another thread
-  if ( mProgressDialog )
-  {
-    connect( this, &QgsWFSFeatureDownloaderImpl::updateProgress, mProgressDialog, &QProgressDialog::setValue );
-  }
 }
 
 QString QgsWFSFeatureDownloaderImpl::sanitizeFilter( QString filter )
@@ -442,6 +335,12 @@ void QgsWFSFeatureDownloaderImpl::startHitsRequest()
   }
 }
 
+void QgsWFSFeatureDownloaderImpl::createProgressDialog()
+{
+  QgsFeatureDownloaderImpl::createProgressDialog( mNumberMatched );
+  CONNECT_PROGRESS_DIALOG( QgsWFSFeatureDownloaderImpl );
+}
+
 void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures )
 {
   bool success = true;
@@ -453,12 +352,8 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures )
 
   QTimer timerForHits;
 
-  if ( !mShared->mHideProgressDialog && maxFeatures != 1 && mShared->supportsFastFeatureCount() )
-  {
-    mUseProgressDialog = true;
-  }
-
-  if ( mUseProgressDialog )
+  const bool useProgressDialog = ( !mShared->mHideProgressDialog && maxFeatures != 1 && mShared->supportsFastFeatureCount() );
+  if ( useProgressDialog )
   {
     // In case the header of the GetFeature response doesn't contain the total
     // number of features, or we don't get it within 4 seconds, we will issue
@@ -617,7 +512,7 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures )
 
       // Consider if we should display a progress dialog
       // We can only do that if we know how many features will be downloaded
-      if ( !mTimer && maxFeatures != 1 && mUseProgressDialog )
+      if ( !mTimer && maxFeatures != 1 && useProgressDialog )
       {
         if ( mNumberMatched < 0 )
         {
@@ -647,18 +542,7 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures )
           if ( mShared->supportsFastFeatureCount() )
             disconnect( &timerForHits, &QTimer::timeout, this, &QgsWFSFeatureDownloaderImpl::startHitsRequest );
 
-          // This is a bit tricky. We want the createProgressDialog()
-          // method to be run into the GUI thread
-          mTimer = new QTimer();
-          mTimer->setSingleShot( true );
-
-          // Direct connection, since we want createProgressDialog()
-          // to be invoked from the same thread as timer, and not in the
-          // thread of this
-          connect( mTimer, &QTimer::timeout, this, &QgsWFSFeatureDownloaderImpl::createProgressDialog, Qt::DirectConnection );
-
-          mTimer->moveToThread( qApp->thread() );
-          QMetaObject::invokeMethod( mTimer, "start", Qt::QueuedConnection );
+          CREATE_PROGRESS_DIALOG( QgsWFSFeatureDownloaderImpl );
         }
       }
 
@@ -850,32 +734,7 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures )
     }
   }
 
-  {
-    QMutexLocker locker( &mMutexCreateProgressDialog );
-    mStop = true;
-  }
-
-  if ( serializeFeatures )
-    mShared->endOfDownload( success, mTotalDownloadedFeatureCount, truncatedResponse, interrupted, mErrorMessage );
-
-  // We must emit the signal *AFTER* the previous call to mShared->endOfDownload()
-  // to avoid issues with iterators that would start just now, wouldn't detect
-  // that the downloader has finished, would register to itself, but would never
-  // receive the endOfDownload signal. This is not just a theoretical problem.
-  // If you switch both calls, it happens quite easily in Release mode with the
-  // test suite.
-  emitEndOfDownload( success );
-
-  if ( mProgressDialog )
-  {
-    mProgressDialog->deleteLater();
-    mProgressDialog = nullptr;
-  }
-  if ( mTimer )
-  {
-    mTimer->deleteLater();
-    mTimer = nullptr;
-  }
+  endOfRun( serializeFeatures, success, mTotalDownloadedFeatureCount, truncatedResponse, interrupted, mErrorMessage );
 
   // explicitly abort here so that mReply is destroyed within the right thread
   // otherwise will deadlock because deleteLayer() will not have a valid thread to post

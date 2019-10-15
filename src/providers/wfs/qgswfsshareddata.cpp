@@ -24,8 +24,8 @@
 QgsWFSSharedData::QgsWFSSharedData( const QString &uri )
   : QgsBackgroundCachedSharedData( "wfs", tr( "WFS" ) )
   , mURI( uri )
-  , mHideProgressDialog( mURI.hideDownloadProgressDialog() )
 {
+  mHideProgressDialog = mURI.hideDownloadProgressDialog();
 }
 
 QgsWFSSharedData::~QgsWFSSharedData()
