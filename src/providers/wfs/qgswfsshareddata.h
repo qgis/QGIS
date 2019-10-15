@@ -80,9 +80,6 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     //! Server capabilities
     QgsWfsCapabilities::Capabilities mCaps;
 
-    //! Whether progress dialog should be hidden
-    bool mHideProgressDialog = false;
-
     //! If we have already issued a warning about missing feature ids
     bool mHasWarnedAboutMissingFeatureId = false;
 

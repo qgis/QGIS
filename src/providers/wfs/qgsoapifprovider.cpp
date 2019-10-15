@@ -340,8 +340,8 @@ QString QgsOapifProvider::description() const
 QgsOapifSharedData::QgsOapifSharedData( const QString &uri )
   : QgsBackgroundCachedSharedData( "oapif", tr( "OAPIF" ) )
   , mURI( uri )
-  , mHideProgressDialog( mURI.hideDownloadProgressDialog() )
 {
+  mHideProgressDialog = mURI.hideDownloadProgressDialog();
 }
 
 QgsOapifSharedData::~QgsOapifSharedData()
@@ -576,21 +576,13 @@ void QgsOapifSharedData::pushError( const QString &errorMsg )
 // ---------------------------------
 
 QgsOapifFeatureDownloaderImpl::QgsOapifFeatureDownloaderImpl( QgsOapifSharedData *shared, QgsFeatureDownloader *downloader ):
-  QgsFeatureDownloaderImpl( downloader ),
+  QgsFeatureDownloaderImpl( shared, downloader ),
   mShared( shared )
 {
 }
 
 QgsOapifFeatureDownloaderImpl::~QgsOapifFeatureDownloaderImpl()
 {
-  stop();
-}
-
-void QgsOapifFeatureDownloaderImpl::stop()
-{
-  QgsDebugMsgLevel( QStringLiteral( "QgsOapifFeatureDownloaderImpl::stop()" ), 4 );
-  mStop = true;
-  emit doStop();
 }
 
 void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures )
