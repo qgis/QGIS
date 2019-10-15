@@ -7760,6 +7760,7 @@ void TestQgsProcessing::modelExecution()
                               "from qgis.core import QgsProcessingParameterCrs\n"
                               "from qgis.core import QgsProcessingParameterFeatureSink\n"
                               "from qgis.core import QgsCoordinateReferenceSystem\n"
+                              "from qgis.core import QgsExpression\n"
                               "import processing\n"
                               "\n"
                               "\n"
