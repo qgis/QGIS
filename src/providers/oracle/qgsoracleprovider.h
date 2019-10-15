@@ -174,7 +174,11 @@ class QgsOracleProvider : public QgsVectorDataProvider
   private:
     QString whereClause( QgsFeatureId featureId, QVariantList &args ) const;
     QString pkParamWhereClause() const;
-    QString paramValue( QString fieldvalue, const QString &defaultValue ) const;
+
+    /**
+     * Evaluates the given expression string server-side and convert the result to the given type
+     */
+    QVariant evaluateDefaultExpression( const QString &value, const QVariant::Type &fieldType ) const;
     void appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry ) const;
     void appendPkParams( QgsFeatureId fid, QSqlQuery &qry ) const;
 
