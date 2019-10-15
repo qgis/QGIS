@@ -628,6 +628,32 @@ class CORE_EXPORT QgsSymbol
     //! Initialized in startRender, destroyed in stopRender
     std::unique_ptr< QgsSymbolRenderContext > mSymbolRenderContext;
 
+    /**
+     * Called before symbol layers will be rendered for a particular \a feature.
+     *
+     * This is always followed by a call to stopFeatureRender() after the feature
+     * has been completely rendered (i.e. all parts have been rendered).
+     *
+     * Internally, this notifies all symbol layers which will be used via a call to
+     * QgsSymbolLayer::startFeatureRender().
+     *
+     * \since QGIS 3.12
+     */
+    void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context, int layer = -1 );
+
+    /**
+     * Called after symbol layers have been rendered for a particular \a feature.
+     *
+     * This is always preceeded by a call to startFeatureRender() just before the feature
+     * will be rendered.
+     *
+     * Internally, this notifies all symbol layers which were used via a call to
+     * QgsSymbolLayer::stopFeatureRender().
+     *
+     * \since QGIS 3.12
+     */
+    void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context, int layer = -1 );
+
     Q_DISABLE_COPY( QgsSymbol )
 
 };
