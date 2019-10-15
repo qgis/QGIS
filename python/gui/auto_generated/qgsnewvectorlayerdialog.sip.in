@@ -26,8 +26,8 @@ If the ``initialPath`` argument is specified, then the dialog will default to th
 
 :return: fileName on success, empty string use aborted, QString() if creation failed
 
-.. deprecated::
-   in QGIS 3.4.5 - use execAndCreateLayer() instead.
+.. deprecated:: QGIS 3.4.5
+   - use execAndCreateLayer() instead.
 %End
 
     static QString execAndCreateLayer( QString &errorMessage /Out/, QWidget *parent = 0, const QString &initialPath = QString(), QString *encoding /Out/ = 0, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );

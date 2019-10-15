@@ -89,8 +89,8 @@ Accordingly, only implementations must be lightweight and return ASAP.
 (For instance by copying the relevant parts of ``data`` and then handling
 the data after a short timeout).
 
-.. deprecated::
-   in QGIS 3.10 - use handleMimeDataV2() instead.
+.. deprecated:: QGIS 3.10
+   - use handleMimeDataV2() instead.
 %End
 
     virtual bool handleMimeDataV2( const QMimeData *data );
