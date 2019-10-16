@@ -14206,7 +14206,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer )
       // Cannot use exec here due to raster transparency map tool:
       // in order to pass focus to the canvas, the dialog needs to
       // be hidden and shown in non-modal mode.
-      rasterLayerPropertiesDialog->setModal( true );
+      rasterLayerPropertiesDialog->setModal( false );
       rasterLayerPropertiesDialog->show();
       // Delete (later, for safety) since dialog cannot be reused without
       // updating code
