@@ -37,14 +37,14 @@ QString QgsLayerMetadataFormatter::accessSectionHtml() const
   {
     if ( notFirstRow )
     {
-      myMetadata += QLatin1String( "<br />" );
+      myMetadata += QStringLiteral( "<br />" );
     }
     myMetadata += QStringLiteral( "<strong>" ) + constraint.type + QStringLiteral( ": </strong>" ) + constraint.constraint;
     notFirstRow = true;
   }
-  myMetadata += QLatin1String( "</td></tr>\n" );
-  mMetadata.rights().join( QStringLiteral( "<br />" ) ) + QStringLiteral( "</td></tr>\n" );
-  myMetadata += QLatin1String( "</table>\n" );
+  mMetadata.rights().join( QStringLiteral( "<br />" ) );
+  myMetadata += QStringLiteral( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "</table>\n" );
   return myMetadata;
 }
 
