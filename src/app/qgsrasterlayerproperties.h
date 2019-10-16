@@ -37,6 +37,7 @@ class QgsMetadataWidget;
 class QgsRasterRenderer;
 class QgsRasterRendererWidget;
 class QgsRasterHistogramWidget;
+class QgsWebView;
 
 /**
  * Property sheet for a raster map layer
@@ -187,6 +188,11 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     QgsMetadataWidget *mMetadataWidget = nullptr;
 
     bool rasterIsMultiBandColor();
+
+    /**
+     * Updates the information tab by reloading metadata
+     */
+    void updateInformationContent();
 
     void setupTransparencyTable( int nBands );
 
