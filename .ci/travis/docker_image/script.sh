@@ -18,7 +18,7 @@
 set -e
 
 # test if ccache dir exists (coming from Travis cache)
-[[ -d ${{CCACHE_DIR}}]] && echo "cache directory (${CCACHE_DIR}) exists" || mkdir -p "${CCACHE_DIR}"
+[[ -d ${CCACHE_DIR} ]] && echo "cache directory (${CCACHE_DIR}) exists" || mkdir -p "${CCACHE_DIR}"
 
 # copy ccache dir within QGIS source so it can be accessed from docker
 cp -r ${CCACHE_DIR} ${TRAVIS_BUILD_DIR}/.ccache_image_build
