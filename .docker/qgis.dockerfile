@@ -3,7 +3,7 @@
 # using ARG in FROM requires min v17.05.0-ce
 ARG DOCKER_TAG=latest
 
-FROM  qgis/qgis3-build-deps:${DOCKER_TAG}
+FROM  qgis/qgis3-build-deps:${DOCKER_TAG} AS BUILDER
 MAINTAINER Denis Rouzaud <denis@opengis.ch>
 
 LABEL Description="Docker container with QGIS" Vendor="QGIS.org" Version="1.1"
@@ -15,17 +15,18 @@ ARG CC=/usr/lib/ccache/clang
 ARG CXX=/usr/lib/ccache/clang++
 ENV LANG=C.UTF-8
 
-COPY . /usr/src/QGIS
+COPY . /QGIS
 
 # If this directory is changed, also adapt script.sh which copies the directory
-RUN mkdir -p /usr/src/QGIS/.ccache_image_build
-ENV CCACHE_DIR=/usr/src/QGIS/.ccache_image_build
+# if ccache directory is not provided with the source
+RUN mkdir -p /QGIS/.ccache_image_build
+ENV CCACHE_DIR=/QGIS/.ccache_image_build
 RUN ccache -M 1G
 RUN ccache -s
 
 RUN echo "ccache_dir: "$(du -h --max-depth=0 ${CCACHE_DIR})
 
-WORKDIR /usr/src/QGIS/build
+WORKDIR /QGIS/build
 
 RUN cmake \
   -GNinja \
@@ -50,12 +51,14 @@ RUN cmake \
   -DCMAKE_PREFIX_PATH="/usr/src/QGIS/external/qt3dextra-headers/cmake" \
  .. \
  && echo "Timeout: ${BUILD_TIMEOUT}s" \
- && timeout ${BUILD_TIMEOUT}s ninja install \
- && rm -rf /usr/src/QGIS \
- && rv=$? \
- && echo "$rv" > /usr/src/build_exit_value
+ && SUCCESS=OK \
+ && timeout ${BUILD_TIMEOUT}s ninja install || SUCCESS=TIMEOUT \
+ && echo "$SUCCESS" > /QGIS/build_exit_value
 
 ################################################################################
+ARG DELETE_CACHE=FALSE
+RUN if [[ ${DELETE_CACHE} == TRUE ]]; then rm /QGIS; fi
+
 # Python testing environment setup
 
 # Add QGIS test runner

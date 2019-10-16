@@ -121,6 +121,7 @@ matrix:
       name: disco docker build 💃
       if: repo = qgis/QGIS AND (tag IS PRESENT OR type = cron)
       services: docker
+      sudo: required # required to restart Docker Daemon with experimental features
       env:
         - TRAVIS_CONFIG=docker_image
         - CCACHE_DIR=${HOME}/.ccache_docker_build_disco
