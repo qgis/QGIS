@@ -75,7 +75,6 @@
 #include <QMouseEvent>
 #include <QVector>
 #include <QUrl>
-#include <QWebFrame>
 
 QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags fl )
   : QgsOptionsDialogBase( QStringLiteral( "RasterLayerProperties" ), parent, fl )
