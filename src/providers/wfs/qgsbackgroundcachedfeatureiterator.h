@@ -148,7 +148,7 @@ class QgsFeatureDownloaderImpl
     QMutex mMutexCreateProgressDialog;
 };
 
-// Sorry for ugliness. Due to QgsFeatureDownloaderImpl that cannot derived from QObject
+// Sorry for ugliness. Due to QgsFeatureDownloaderImpl that cannot derive from QObject
 #define CONNECT_PROGRESS_DIALOG(actual_downloader_impl_class) do { \
     connect( mProgressDialog, &QProgressDialog::canceled, this, &actual_downloader_impl_class::setStopFlag, Qt::DirectConnection ); \
     connect( mProgressDialog, &QProgressDialog::canceled, this, &actual_downloader_impl_class::stop ); \
@@ -161,7 +161,7 @@ class QgsFeatureDownloaderImpl
     } \
   } while(0)
 
-// Sorry for ugliness. Due to QgsFeatureDownloaderImpl that cannot derived from QObject
+// Sorry for ugliness. Due to QgsFeatureDownloaderImpl that cannot derive from QObject
 #define DEFINE_FEATURE_DOWLOADER_IMPL_SLOTS \
   protected: \
   void emitDoStop() override { emit doStop(); } \

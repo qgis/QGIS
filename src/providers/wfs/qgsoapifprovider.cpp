@@ -273,16 +273,16 @@ bool QgsOapifProvider::empty() const
 
 };
 
-bool QgsOapifProvider::setSubsetString( const QString &sql, bool updateFeatureCount )
+bool QgsOapifProvider::setSubsetString( const QString &filter, bool updateFeatureCount )
 {
-  QgsDebugMsgLevel( QStringLiteral( "sql = '%1'" ).arg( sql ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "filter = '%1'" ).arg( filter ), 4 );
 
-  if ( sql == mSubsetString )
+  if ( filter == mSubsetString )
     return true;
 
-  if ( !sql.isEmpty() )
+  if ( !filter.isEmpty() )
   {
-    QgsExpression filterExpression( sql );
+    QgsExpression filterExpression( filter );
     if ( !filterExpression.isValid() )
     {
       QgsMessageLog::logMessage( filterExpression.parserErrorString(), tr( "OAPIF" ) );
@@ -294,11 +294,11 @@ bool QgsOapifProvider::setSubsetString( const QString &sql, bool updateFeatureCo
   // (crashes might happen if not done at the beginning)
   mShared->invalidateCache();
 
-  mSubsetString = sql;
+  mSubsetString = filter;
   clearMinMaxCache();
 
   // update URI
-  mShared->mURI.setFilter( sql );
+  mShared->mURI.setFilter( filter );
   setDataSourceUri( mShared->mURI.uri() );
   QString errorMsg;
   if ( !mShared->computeServerFilter( errorMsg ) )
