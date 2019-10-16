@@ -28,10 +28,10 @@ Content-Type: application/json
     },
     {
       "href": "http://server.qgis.org/wfs3/api",
-      "rel": "service_desc",
+      "rel": "service-desc",
       "title": "API definition",
       "type": "application/openapi+json;version=3.0"
     }
   ],
-  "timeStamp": "2019-09-10T18:18:17Z"
+  "timeStamp": "2019-10-16T11:45:22Z"
 }

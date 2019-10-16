@@ -27,6 +27,6 @@ Content-Type: application/geo+json
     "id": 1,
     "utf8nameè": "one èé"
   },
-  "timeStamp": "2019-09-10T18:18:16Z",
+  "timeStamp": "2019-10-16T11:45:22Z",
   "type": "Feature"
 }
