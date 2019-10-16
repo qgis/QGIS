@@ -123,7 +123,8 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
   {
     auto downloader = qgis::make_unique<QgsFeatureDownloader>();
     downloader->setImpl( qgis::make_unique<QgsWFSFeatureDownloaderImpl>( mShared.get(), downloader.get() ) );
-    connect( downloader.get(), static_cast<void ( QgsFeatureDownloader::* )( QVector<QgsFeatureUniqueIdPair> )>( &QgsFeatureDownloader::featureReceived ),
+    connect( downloader.get(),
+             qgis::overload < QVector<QgsFeatureUniqueIdPair> >::of( &QgsFeatureDownloader::featureReceived ),
              this, &QgsWFSProvider::featureReceivedAnalyzeOneFeature );
     downloader->run( false, /* serialize features */
                      1 /* maxfeatures */ );

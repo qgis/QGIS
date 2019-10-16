@@ -53,7 +53,7 @@ bool QgsOapifCollection::deserialize( const json &j )
   const auto links = QgsOAPIFJson::parseLinks( j );
   const auto selfUrl = QgsOAPIFJson::findLink( links,
                        QStringLiteral( "self" ),
-                       QStringList() <<  QStringLiteral( "application/json" ) );
+  { QStringLiteral( "application/json" ) } );
   if ( !selfUrl.isEmpty() )
   {
     mLayerMetadata.setIdentifier( selfUrl );
@@ -65,7 +65,7 @@ bool QgsOapifCollection::deserialize( const json &j )
 
   const auto parentUrl = QgsOAPIFJson::findLink( links,
                          QStringLiteral( "parent" ),
-                         QStringList() <<  QStringLiteral( "application/json" ) );
+  { QStringLiteral( "application/json" ) } );
   if ( !parentUrl.isEmpty() )
   {
     mLayerMetadata.setParentIdentifier( parentUrl );
@@ -235,7 +235,7 @@ bool QgsOapifCollection::deserialize( const json &j )
     mLayerMetadata.setExtent( metadataExtent );
   }
 
-  // From STAC specification
+  // From STAC specification ( https://stacspec.org/ )
   bool isProprietaryLicense = false;
   if ( j.contains( "license" ) )
   {
@@ -249,7 +249,7 @@ bool QgsOapifCollection::deserialize( const json &j )
       }
       else if ( license != QLatin1String( "various" ) )
       {
-        mLayerMetadata.setLicenses( QStringList() << license );
+        mLayerMetadata.setLicenses( { license } );
       }
     }
   }
@@ -271,7 +271,7 @@ bool QgsOapifCollection::deserialize( const json &j )
     }
     if ( licenses.isEmpty() && isProprietaryLicense )
     {
-      licenses << "proprietary";
+      licenses << QStringLiteral( "proprietary" );
     }
     mLayerMetadata.setLicenses( licenses );
   }
@@ -405,13 +405,13 @@ void QgsOapifCollectionsRequest::processReply()
     // Paging informal extension used by api.planet.com/
     mNextUrl = QgsOAPIFJson::findLink( links,
                                        QStringLiteral( "next" ),
-                                       QStringList() <<  QStringLiteral( "application/json" ) );
+    {  QStringLiteral( "application/json" ) } );
   }
   catch ( const json::parse_error &ex )
   {
     mErrorCode = QgsBaseNetworkRequest::ApplicationLevelError;
     mAppLevelError = ApplicationLevelError::JsonError;
-    mErrorMessage = errorMessageWithReason( tr( "Cannot decode JSon document: %1" ).arg( QString::fromStdString( ex.what() ) ) );
+    mErrorMessage = errorMessageWithReason( tr( "Cannot decode JSON document: %1" ).arg( QString::fromStdString( ex.what() ) ) );
     emit gotResponse();
     return;
   }
@@ -488,7 +488,7 @@ void QgsOapifCollectionRequest::processReply()
   {
     mErrorCode = QgsBaseNetworkRequest::ApplicationLevelError;
     mAppLevelError = ApplicationLevelError::JsonError;
-    mErrorMessage = errorMessageWithReason( tr( "Cannot decode JSon document: %1" ).arg( QString::fromStdString( ex.what() ) ) );
+    mErrorMessage = errorMessageWithReason( tr( "Cannot decode JSON document: %1" ).arg( QString::fromStdString( ex.what() ) ) );
     emit gotResponse();
     return;
   }

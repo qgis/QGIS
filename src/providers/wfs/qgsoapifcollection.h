@@ -45,7 +45,7 @@ struct QgsOapifCollection
   //! Layer metadata
   QgsLayerMetadata mLayerMetadata;
 
-  //! Fills a collection from its JSon serialization
+  //! Fills a collection from its JSON serialization
   bool deserialize( const json &j );
 };
 

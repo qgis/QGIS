@@ -151,7 +151,7 @@ void QgsOapifItemsRequest::processReply()
     const auto links = QgsOAPIFJson::parseLinks( j );
     mNextUrl = QgsOAPIFJson::findLink( links,
                                        QStringLiteral( "next" ),
-                                       QStringList() <<  QStringLiteral( "application/geo+json" ) );
+    {  QStringLiteral( "application/geo+json" ) } );
 
     if ( j.is_object() && j.contains( "numberMatched" ) )
     {
@@ -166,7 +166,7 @@ void QgsOapifItemsRequest::processReply()
   {
     mErrorCode = QgsBaseNetworkRequest::ApplicationLevelError;
     mAppLevelError = ApplicationLevelError::JsonError;
-    mErrorMessage = errorMessageWithReason( tr( "Cannot decode JSon document: %1" ).arg( QString::fromStdString( ex.what() ) ) );
+    mErrorMessage = errorMessageWithReason( tr( "Cannot decode JSON document: %1" ).arg( QString::fromStdString( ex.what() ) ) );
     emit gotResponse();
     return;
   }

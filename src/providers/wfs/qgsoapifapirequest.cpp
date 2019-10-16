@@ -153,7 +153,7 @@ void QgsOapifApiRequest::processReply()
   {
     mErrorCode = QgsBaseNetworkRequest::ApplicationLevelError;
     mAppLevelError = ApplicationLevelError::JsonError;
-    mErrorMessage = errorMessageWithReason( tr( "Cannot decode JSon document: %1" ).arg( QString::fromStdString( ex.what() ) ) );
+    mErrorMessage = errorMessageWithReason( tr( "Cannot decode JSON document: %1" ).arg( QString::fromStdString( ex.what() ) ) );
     emit gotResponse();
     return;
   }
