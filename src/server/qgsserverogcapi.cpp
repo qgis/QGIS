@@ -116,7 +116,9 @@ const QHash<QgsServerOgcApi::ContentType, QList<QgsServerOgcApi::ContentType> > 
 std::string QgsServerOgcApi::relToString( const Rel &rel )
 {
   static QMetaEnum metaEnum = QMetaEnum::fromType<QgsServerOgcApi::Rel>();
-  return metaEnum.valueToKey( rel );
+  std::string val { metaEnum.valueToKey( rel ) };
+  std::replace( val.begin(), val.end(), '_', '-' );
+  return val;
 }
 
 QString QgsServerOgcApi::contentTypeToString( const ContentType &ct )
