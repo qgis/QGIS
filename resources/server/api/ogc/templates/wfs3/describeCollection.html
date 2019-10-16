@@ -18,13 +18,13 @@
         <h3>Extent</h3>
         <dl>
             <dd>West</dd>
-            <dt>{{ extent.spatial.0.0 }}</dt>
+            <dt>{{ extent.spatial.bbox.0.0 }}</dt>
             <dd>South</dd>
-            <dt>{{ extent.spatial.0.1 }}</dt>
+            <dt>{{ extent.spatial.bbox.0.1 }}</dt>
             <dd>East</dd>
-            <dt>{{ extent.spatial.0.2 }}</dt>
+            <dt>{{ extent.spatial.bbox.0.2 }}</dt>
             <dd>North</dd>
-            <dt>{{ extent.spatial.0.3 }}</dt>
+            <dt>{{ extent.spatial.bbox.0.3 }}</dt>
         </dl>
 
     </div>
@@ -38,10 +38,10 @@
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map)
-            var west = {{ extent.spatial.0.0 }};
-            var south = {{ extent.spatial.0.1 }};
-            var east = {{ extent.spatial.0.2 }};
-            var north = {{ extent.spatial.0.3 }};
+            var west = {{ extent.spatial.bbox.0.0 }};
+            var south = {{ extent.spatial.bbox.0.1 }};
+            var east = {{ extent.spatial.bbox.0.2 }};
+            var north = {{ extent.spatial.bbox.0.3 }};
             var p1 = new L.LatLng(south, west);
             var p2 = new L.LatLng(north, west);
             var p3 = new L.LatLng(north, east);

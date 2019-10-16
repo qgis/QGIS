@@ -491,7 +491,7 @@ void QgsWfs3CollectionsHandler::handleRequest( const QgsServerApiContext &contex
           "extent",  {
             {
               "spatial", {
-                { "bbox", json::array( { QgsServerApiUtils::layerExtent( layer )  } ) },
+                { "bbox", QgsServerApiUtils::layerExtent( layer ) },
                 { "crs", "http://www.opengis.net/def/crs/OGC/1.3/CRS84" },
               }
             }
@@ -656,7 +656,7 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
       "extent",  {
         {
           "spatial", {
-            { "bbox", json::array( { QgsServerApiUtils::layerExtent( mapLayer )  } ) },
+            { "bbox", QgsServerApiUtils::layerExtent( mapLayer ) },
             { "crs", "http://www.opengis.net/def/crs/OGC/1.3/CRS84" },
           }
         }
