@@ -2,13 +2,14 @@
 # see https://docs.docker.com/docker-cloud/builds/advanced/
 # using ARG in FROM requires min v17.05.0-ce
 ARG DOCKER_TAG=latest
-# build timeout in seconds, so no timeout by default
-ARG BUILD_TIMEOUT=360000
 
 FROM  qgis/qgis3-build-deps:${DOCKER_TAG}
 MAINTAINER Denis Rouzaud <denis@opengis.ch>
 
 LABEL Description="Docker container with QGIS" Vendor="QGIS.org" Version="1.1"
+
+# build timeout in seconds, so no timeout by default
+ARG BUILD_TIMEOUT=360000
 
 ARG CC=/usr/lib/ccache/clang
 ARG CXX=/usr/lib/ccache/clang++
