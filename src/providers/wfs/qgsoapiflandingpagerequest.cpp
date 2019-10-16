@@ -102,6 +102,14 @@ void QgsOapifLandingPageRequest::processReply()
                                         apiTypes );
     }
 #endif
+#ifndef REMOVE_SUPPORT_QGIS_SERVER_3_10_0_WRONG_SERVICE_DESC
+    if ( mApiUrl.isEmpty() )
+    {
+      mApiUrl = QgsOAPIFJson::findLink( links,
+                                        QStringLiteral( "service_desc" ),
+                                        apiTypes );
+    }
+#endif
 
     QStringList collectionsTypes;
     collectionsTypes << QStringLiteral( "application/json" );
