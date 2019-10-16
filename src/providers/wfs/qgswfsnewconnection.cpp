@@ -206,7 +206,7 @@ void QgsWFSNewConnection::oapifApiReplyFinished()
   if ( mOAPIFApi->defaultLimit() > 0 && mOAPIFApi->maxLimit() > 0 )
     wfsPageSizeLineEdit()->setText( QString::number( std::min( std::max( 1000, mOAPIFApi->defaultLimit() ), mOAPIFApi->maxLimit() ) ) );
   else if ( mOAPIFApi->defaultLimit() > 0 )
-    wfsPageSizeLineEdit()->setText( QString::number( mOAPIFApi->defaultLimit() ) );
+    wfsPageSizeLineEdit()->setText( QString::number( std::max( 1000, mOAPIFApi->defaultLimit() ) ) );
   else if ( mOAPIFApi->maxLimit() > 0 )
     wfsPageSizeLineEdit()->setText( QString::number( mOAPIFApi->maxLimit() ) );
 
