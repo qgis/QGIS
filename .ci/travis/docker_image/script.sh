@@ -40,35 +40,45 @@ docker build --build-arg DOCKER_TAG="${DOCKER_TAG}" \
              --cache-from "qgis/qgis:${DOCKER_TAG}" \
              -t "qgis/qgis:${DOCKER_TAG}" \
              -f qgis.dockerfile ..
-echo "${bold}Pushing image to docker hub...${endbold}"
-docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-docker push "qgis/qgis:${DOCKER_TAG}"
-echo "Copy build cache from Docker container to Travis cache directory"
-rm -rf "${CCACHE_DIR:?}/"*
+
 docker run --name qgis_container qgis/qgis:${DOCKER_TAG} /bin/true
 CONTAINER_ID=$(docker ps -aqf "name=qgis_container")
-docker cp ${CONTAINER_ID}:/usr/src/.ccache_image_build ${CCACHE_DIR}
+
+echo "Copy build cache from Docker container to Travis cache directory"
+rm -rf "${CCACHE_DIR:?}/"*
+docker cp ${CONTAINER_ID}:/usr/src/QGIS/.ccache_image_build ${CCACHE_DIR}
 popd
-echo "Trigger build of PyQGIS Documentation"
-if [[ ${TRIGGER_PYQGIS_DOC} =~ ^TRUE$ ]]; then
-  body='{
-    "request": {
-      "branch":"master",
-      "message": "Trigger PyQGIS doc build after release of new Docker image as __DOCKER_TAG__",
-      "config": {
-        "merge_mode": "deep_merge",
-        "matrix": {
-          "include": {
-            "env": ["QGIS_VERSION_BRANCH=__QGIS_VERSION_BRANCH__"]
+
+docker cp ${CONTAINER_ID}:/usr/src/build_exit_value ${HOME}/build_exit_value
+if [[ $(cat ${HOME}/build_exit_value) -eq 124 ]]; then
+  echo "Build timeout, not pushing image or triggering PyQGIS docs"
+  exit 1
+else
+  echo "${bold}Pushing image to docker hub...${endbold}"
+  docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+  docker push "qgis/qgis:${DOCKER_TAG}"
+
+  echo "Trigger build of PyQGIS Documentation"
+  if [[ ${TRIGGER_PYQGIS_DOC} =~ ^TRUE$ ]]; then
+    body='{
+      "request": {
+        "branch":"master",
+        "message": "Trigger PyQGIS doc build after release of new Docker image as __DOCKER_TAG__",
+        "config": {
+          "merge_mode": "deep_merge",
+          "matrix": {
+            "include": {
+              "env": ["QGIS_VERSION_BRANCH=__QGIS_VERSION_BRANCH__"]
+            }
           }
         }
       }
-    }
-  }'
-  body=$(sed "s/__QGIS_VERSION_BRANCH__/${TRAVIS_BRANCH}/; s/__DOCKER_TAG__/${DOCKER_TAG}/" <<< $body)
-  curl -s -X POST -H "Content-Type: application/json" -H "Accept: application/json" \
-    -H "Travis-API-Version: 3" -H "Authorization: token $TRAVIS_TOKEN" -d "$body" \
-    https://api.travis-ci.org/repo/qgis%2Fpyqgis/requests
-else
-  echo "skipped from configuration"
+    }'
+    body=$(sed "s/__QGIS_VERSION_BRANCH__/${TRAVIS_BRANCH}/; s/__DOCKER_TAG__/${DOCKER_TAG}/" <<< $body)
+    curl -s -X POST -H "Content-Type: application/json" -H "Accept: application/json" \
+      -H "Travis-API-Version: 3" -H "Authorization: token $TRAVIS_TOKEN" -d "$body" \
+      https://api.travis-ci.org/repo/qgis%2Fpyqgis/requests
+  else
+    echo "skipped from configuration"
+  fi
 fi
