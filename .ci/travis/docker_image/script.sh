@@ -29,7 +29,6 @@ echo "Cache directory size: "$(du -h --max-depth=0 ${TRAVIS_BUILD_DIR}/.ccache_i
 CURRENT_TIME=$(date +%s)
 TIMEOUT=$((( TRAVIS_AVAILABLE_TIME - TRAVIS_UPLOAD_TIME ) * 60 - CURRENT_TIME + TRAVIS_TIMESTAMP))
 #TIMEOUT=$(( TIMEOUT < 300 ? 300 : TIMEOUT ))
-TIMEOUT=10
 echo "Timeout: ${TIMEOUT}s"
 
 # building docker images
