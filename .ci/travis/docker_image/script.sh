@@ -22,11 +22,13 @@ mkdir -p "${CCACHE_DIR}"
 # copy ccache dir within QGIS source so it can be accessed from docker
 cp -r ${CCACHE_DIR} ${TRAVIS_BUILD_DIR}/.ccache_image_build
 
+echo "Cache directory size: "$( du -h -d=0 ${TRAVIS_BUILD_DIR}/.ccache_image_build)
+
 # calculate timeouts
 CURRENT_TIME=$(date +%s)
 TIMEOUT=$((( TRAVIS_AVAILABLE_TIME - TRAVIS_UPLOAD_TIME ) * 60 - CURRENT_TIME + TRAVIS_TIMESTAMP))
 TIMEOUT=$(( TIMEOUT < 300 ? 300 : TIMEOUT ))
-
+echo "Timeout: ${TIMEOUT}s"
 
 # building docker images
 DIR=$(git rev-parse --show-toplevel)/.docker

@@ -18,7 +18,7 @@ env:
     - TRAVIS_TIMESTAMP=$(date +%s)
     - TRAVIS_AVAILABLE_TIME=150 # in minutes
     - TRAVIS_UPLOAD_TIME=5 # time considered to start the machine and the container (minutes)
-    # Docker hub username and passowrd
+    # Docker hub username and password
     - secure: "b7eMDIolaAnq1voGKC1ez7Kcf+/A0WZDJEHBvNwk2KubBfrGOE83GMDrFNF4NqjIprqIAvVKj+TrX1ckCvs24re3IqUJo71TaF1IgxzDDPwSsmNh5UMmvZkeiJys9bWjqDO9wYR5ietNmIE18qyMc8ToJk8oKm6AXuAG2n6znmM="
     - secure: "PHCp7F3nApp38Mz6b4/OLxgfBiikRGzPQDHg3R5LX+SQOll24c/DMtwpPwizNuFEiCFcRmJ9uc1t0HWEerIZe5uqm7AtE/nMXBsvDZ+hj4Tz/fEBF98a1k4WLYheN1exFidVkJgdAeiwMOOUQXw5KuIX62bxBdzsdcd0QGwxiXo="
     # Travis Token to create PyQGIS Documentation Travis build after Docker push
@@ -60,7 +60,7 @@ matrix:
       addons:
         apt:
           sources:
-           # - sourceline: 'ppa:jonathonf/backports'  # silversearcher-ag backport
+          # - sourceline: 'ppa:jonathonf/backports'  # silversearcher-ag backport
           packages:
             - doxygen
             - graphviz
