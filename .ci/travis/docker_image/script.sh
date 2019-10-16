@@ -17,12 +17,13 @@
 
 set -e
 
-mkdir -p "${CCACHE_DIR}"
+# test if ccache dir exists (coming from Travis cache)
+[[ -d ${{CCACHE_DIR}}]] && echo "cache directory (${CCACHE_DIR}) exists" || mkdir -p "${CCACHE_DIR}"
 
 # copy ccache dir within QGIS source so it can be accessed from docker
 cp -r ${CCACHE_DIR} ${TRAVIS_BUILD_DIR}/.ccache_image_build
 
-echo "Cache directory size: "$( du -h -d=0 ${TRAVIS_BUILD_DIR}/.ccache_image_build)
+echo "Cache directory size: "$(du -h --max-depth=0 ${TRAVIS_BUILD_DIR}/.ccache_image_build)
 
 # calculate timeouts
 CURRENT_TIME=$(date +%s)
@@ -31,8 +32,7 @@ TIMEOUT=$(( TIMEOUT < 300 ? 300 : TIMEOUT ))
 echo "Timeout: ${TIMEOUT}s"
 
 # building docker images
-DIR=$(git rev-parse --show-toplevel)/.docker
-pushd "${DIR}"
+pushd "${TRAVIS_BUILD_DIR}/.docker"
 echo "${bold}Building QGIS Docker image '${DOCKER_TAG}'...${endbold}"
 docker build --build-arg DOCKER_TAG="${DOCKER_TAG}" \
              --build-arg BUILD_TIMEOUT="${TIMEOUT}" \

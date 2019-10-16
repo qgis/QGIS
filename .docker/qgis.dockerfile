@@ -18,10 +18,12 @@ ENV LANG=C.UTF-8
 COPY . /usr/src/QGIS
 
 # If this directory is changed, also adapt script.sh which copies the directory
-RUN mkdir -p /usr/src/.ccache_image_build
-ENV CCACHE_DIR=/usr/src/.ccache_image_build
+RUN mkdir -p /usr/src/QGIS/.ccache_image_build
+ENV CCACHE_DIR=/usr/src/QGIS/.ccache_image_build
 RUN ccache -M 1G
 RUN ccache -s
+
+RUN echo "ccache_dir: "$(du -h --max-depth=0 ${CCACHE_DIR})
 
 WORKDIR /usr/src/QGIS/build
 
@@ -49,7 +51,9 @@ RUN cmake \
  .. \
  && echo "Timeout: ${BUILD_TIMEOUT}s" \
  && timeout ${BUILD_TIMEOUT}s ninja install \
- && rm -rf /usr/src/QGIS
+ && rm -rf /usr/src/QGIS \
+ && rv=$? \
+ && echo "$rv" > /usr/src/build_exit_value
 
 ################################################################################
 # Python testing environment setup
