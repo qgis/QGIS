@@ -42,14 +42,13 @@ docker build --build-arg DOCKER_TAG="${DOCKER_TAG}" \
              -f qgis.dockerfile ..
 
 docker run --name qgis_container qgis/qgis:${DOCKER_TAG} /bin/true
-CONTAINER_ID=$(docker ps -aqf "name=qgis_container")
 
 echo "Copy build cache from Docker container to Travis cache directory"
 rm -rf "${CCACHE_DIR:?}/"*
-docker cp ${CONTAINER_ID}:/usr/src/QGIS/.ccache_image_build ${CCACHE_DIR}
+docker cp qgis_container:/usr/src/QGIS/.ccache_image_build ${CCACHE_DIR}
 popd
 
-docker cp ${CONTAINER_ID}:/usr/src/build_exit_value ${HOME}/build_exit_value
+docker cp qgis_container:/usr/src/build_exit_value ${HOME}/build_exit_value
 if [[ $(cat ${HOME}/build_exit_value) -eq 124 ]]; then
   echo "Build timeout, not pushing image or triggering PyQGIS docs"
   exit 1
