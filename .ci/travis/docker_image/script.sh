@@ -21,14 +21,22 @@ mkdir -p "${CCACHE_DIR}"
 
 # copy ccache dir within QGIS source so it can be accessed from docker
 cp -r ${CCACHE_DIR} ${TRAVIS_BUILD_DIR}/.ccache_image_build
+
+# calculate timeouts
+CURRENT_TIME=$(date +%s)
+TIMEOUT=$((( TRAVIS_AVAILABLE_TIME - TRAVIS_UPLOAD_TIME ) * 60 - CURRENT_TIME + TRAVIS_TIMESTAMP))
+TIMEOUT=$(( TIMEOUT < 300 ? 300 : TIMEOUT ))
+
+
 # building docker images
 DIR=$(git rev-parse --show-toplevel)/.docker
 pushd "${DIR}"
 echo "${bold}Building QGIS Docker image '${DOCKER_TAG}'...${endbold}"
 docker build --build-arg DOCKER_TAG="${DOCKER_TAG}" \
+             --build-arg BUILD_TIMEOUT="${TIMEOUT}" \
+             --build-arg CC --build-arg CXX \
              --cache-from "qgis/qgis:${DOCKER_TAG}" \
              -t "qgis/qgis:${DOCKER_TAG}" \
-             --build-arg CC --build-arg CXX \
              -f qgis.dockerfile ..
 echo "${bold}Pushing image to docker hub...${endbold}"
 docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
@@ -36,8 +44,8 @@ docker push "qgis/qgis:${DOCKER_TAG}"
 echo "Copy build cache from Docker container to Travis cache directory"
 rm -rf "${CCACHE_DIR:?}/"*
 docker run --name qgis_container qgis/qgis:${DOCKER_TAG} /bin/true
-docker cp qgis_container:/usr/src/.ccache_image_build ${CCACHE_DIR}
-docker rm qgis_container
+CONTAINER_ID=$(docker ps -aqf "name=qgis_container")
+docker cp ${CONTAINER_ID}:/usr/src/.ccache_image_build ${CCACHE_DIR}
 popd
 echo "Trigger build of PyQGIS Documentation"
 if [[ ${TRIGGER_PYQGIS_DOC} =~ ^TRUE$ ]]; then
