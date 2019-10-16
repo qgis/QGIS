@@ -119,7 +119,7 @@ bool QgsOapifProvider::init()
       mShared->mPageSize = std::min( std::max( 1000, apiRequest.defaultLimit() ), apiRequest.maxLimit() );
     }
     else if ( apiRequest.defaultLimit() > 0 )
-      mShared->mPageSize = apiRequest.defaultLimit();
+      mShared->mPageSize = std::max( 1000, apiRequest.defaultLimit() );
     else if ( apiRequest.maxLimit() > 0 )
       mShared->mPageSize = apiRequest.maxLimit();
     else
