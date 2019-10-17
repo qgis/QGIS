@@ -899,6 +899,7 @@ ENDIF(MSVC)
 # the OS X framework target
 
 SET(QGIS_CORE_HDRS
+  ${CMAKE_SOURCE_DIR}/external/nlohmann/json_fwd.hpp
   ${CMAKE_BINARY_DIR}/qgsconfig.h
   ../plugins/qgisplugin.h
 
@@ -1352,6 +1353,7 @@ INCLUDE_DIRECTORIES(
   mesh
   validity
   ${CMAKE_SOURCE_DIR}/external
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
   ${CMAKE_SOURCE_DIR}/external/kdbush/include
   ${CMAKE_SOURCE_DIR}/external/nmea
   ${CMAKE_SOURCE_DIR}/external/poly2tri
@@ -1425,8 +1427,8 @@ ENDIF(HAVE_OPENCL)
 
 IF(NOT APPLE)
   INSTALL(FILES ${QGIS_CORE_HDRS} ${QGIS_CORE_MOC_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
-  INSTALL(FILES ${CMAKE_SOURCE_DIR}/external/nlohmann/json_fwd.hpp DESTINATION ${QGIS_INCLUDE_DIR}/nlohmann)
 ELSE(NOT APPLE)
+
   SET_TARGET_PROPERTIES(qgis_core PROPERTIES
     CLEAN_DIRECT_OUTPUT 1
     FRAMEWORK 1

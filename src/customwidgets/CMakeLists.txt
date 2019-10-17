@@ -105,6 +105,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/customwidgets
   ${CMAKE_SOURCE_DIR}/external
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
 )
 INCLUDE_DIRECTORIES(SYSTEM
