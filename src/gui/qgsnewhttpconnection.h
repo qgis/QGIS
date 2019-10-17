@@ -110,7 +110,7 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
       WFS_VERSION_1_0 = 1,
       WFS_VERSION_1_1 = 2,
       WFS_VERSION_2_0 = 3,
-      WFS_VERSION_API_FEATURES = 4,
+      WFS_VERSION_API_FEATURES_1_0 = 4,
     };
 
     /**

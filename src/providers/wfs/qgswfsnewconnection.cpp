@@ -152,7 +152,7 @@ void QgsWFSNewConnection::oapifLandingPageReplyFinished()
     return;
   }
 
-  wfsVersionComboBox()->setCurrentIndex( WFS_VERSION_API_FEATURES );
+  wfsVersionComboBox()->setCurrentIndex( WFS_VERSION_API_FEATURES_1_0 );
   wfsPagingEnabledCheckBox()->setChecked( true );
 
   mCapabilities.reset();
