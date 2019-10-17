@@ -21,7 +21,6 @@ class QgsVectorLayer;
 class QgsFeatureRenderer;
 class QgsRenderContext;
 class QgsRectangle;
-class QgsVectorLayerFeatureSource;
 
 #include "qgis_core.h"
 #include "qgspointxy.h"
@@ -66,16 +65,11 @@ class CORE_EXPORT QgsPointLocator : public QObject
      * to set the correct \a transformContext if a \a destinationCrs is specified. This is usually taken
      * from the current QgsProject::transformContext().
      *
-     * if \a asynchronous is FALSE, point locator init() method will block until point locator index
-     * is completely built. if TRUE, index building will be done in another thread and init() method returns
-     * immediately. initFinished() signal will be emitted once the initialization is over.
-     *
      * If \a extent is not NULLPTR, the locator will index only a subset of the layer which falls within that extent.
      */
     explicit QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
                               const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext(),
-                              const QgsRectangle *extent = nullptr,
-                              bool asynchronous = false );
+                              const QgsRectangle *extent = nullptr );
 
     ~QgsPointLocator() override;
 
@@ -126,14 +120,9 @@ class CORE_EXPORT QgsPointLocator : public QObject
     /**
      * Prepare the index for queries. Does nothing if the index already exists.
      * If the number of features is greater than the value of maxFeaturesToIndex, creation of index is stopped
-     * to make sure we do not run out of memory. If maxFeaturesToIndex is -1, no limits are used.
-     *
-     * This method is either blocking or non blocking according to \a asynchronous parameter passed
-     * in the constructor.
-     * Returns false if the creation of index is blocking and has been prematurely stopped due to the limit of features, otherwise true
-     *
-     * \see QgsPointLocator()
-     */
+     * to make sure we do not run out of memory. If maxFeaturesToIndex is -1, no limits are used. Returns
+     * FALSE if the creation of index has been prematurely stopped due to the limit of features, otherwise TRUE
+    */
     bool init( int maxFeaturesToIndex = -1 );
 
     //! Indicate whether the data have been already indexed
@@ -293,41 +282,17 @@ class CORE_EXPORT QgsPointLocator : public QObject
      */
     int cachedGeometryCount() const { return mGeoms.count(); }
 
-    /**
-     * Returns TRUE if the point locator is currently indexing the data.
-     * This method is useful if constructor parameter \a asynchronous is TRUE
-     *
-     * \see QgsPointLocator()
-     */
-    bool isIndexing() const { return mIsIndexing; }
-
-  signals:
-
-    /**
-     * Emitted whenever index has been built and initialization is finished
-     * \param ok FALSE if the creation of index has been prematurely stopped due to the limit of
-     * features, otherwise TRUE
-     */
-    void initFinished( bool ok );
-
   protected:
     bool rebuildIndex( int maxFeaturesToIndex = -1 );
-
   protected slots:
     void destroyIndex();
   private slots:
-    void onInitTaskTerminated();
-    void onRebuildIndexFinished( bool ok );
     void onFeatureAdded( QgsFeatureId fid );
     void onFeatureDeleted( QgsFeatureId fid );
     void onGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom );
     void onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
 
   private:
-
-    //! prepare index if need and returns TRUE if the index is ready to be used
-    bool prepare();
-
     //! Storage manager
     std::unique_ptr< SpatialIndex::IStorageManager > mStorage;
 
@@ -344,21 +309,12 @@ class CORE_EXPORT QgsPointLocator : public QObject
     std::unique_ptr< QgsRectangle > mExtent;
 
     std::unique_ptr<QgsRenderContext> mContext;
-    std::unique_ptr<QgsFeatureRenderer> mRenderer;
-    std::unique_ptr<QgsVectorLayerFeatureSource> mSource;
-    int mMaxFeaturesToIndex = -1;
-    bool mAsynchronous = false;
-    bool mIsIndexing = false;
-    QgsFeatureIds mAddedFeatures;
-    QgsFeatureIds mDeletedFeatures;
 
     friend class QgsPointLocator_VisitorNearestVertex;
     friend class QgsPointLocator_VisitorNearestEdge;
     friend class QgsPointLocator_VisitorArea;
     friend class QgsPointLocator_VisitorEdgesInRect;
     friend class QgsPointLocator_VisitorVerticesInRect;
-    friend class QgsPointLocatorInitTask;
-    friend class TestQgsPointLocator;
 };
 
 

@@ -21,12 +21,10 @@
 #include "qgslogger.h"
 #include "qgsrenderer.h"
 
-QgsSnappingUtils::QgsSnappingUtils( QObject *parent, bool enableSnappingForInvisibleFeature,
-                                    bool asynchronous )
+QgsSnappingUtils::QgsSnappingUtils( QObject *parent, bool enableSnappingForInvisibleFeature )
   : QObject( parent )
   , mSnappingConfig( QgsProject::instance() )
   , mEnableSnappingForInvisibleFeature( enableSnappingForInvisibleFeature )
-  , mAsynchronous( asynchronous )
 {
 }
 
@@ -43,8 +41,7 @@ QgsPointLocator *QgsSnappingUtils::locatorForLayer( QgsVectorLayer *vl )
 
   if ( !mLocators.contains( vl ) )
   {
-    QgsPointLocator *vlpl = new QgsPointLocator( vl, destinationCrs(), mMapSettings.transformContext(), nullptr, mAsynchronous );
-    connect( vlpl, &QgsPointLocator::initFinished, this, &QgsSnappingUtils::onInitFinished );
+    QgsPointLocator *vlpl = new QgsPointLocator( vl, destinationCrs(), mMapSettings.transformContext() );
     mLocators.insert( vl, vlpl );
   }
   return mLocators.value( vl );
@@ -77,9 +74,7 @@ QgsPointLocator *QgsSnappingUtils::temporaryLocatorForLayer( QgsVectorLayer *vl,
 
   QgsRectangle rect( pointMap.x() - tolerance, pointMap.y() - tolerance,
                      pointMap.x() + tolerance, pointMap.y() + tolerance );
-  QgsPointLocator *vlpl = new QgsPointLocator( vl, destinationCrs(), mMapSettings.transformContext(), &rect, mAsynchronous );
-  connect( vlpl, &QgsPointLocator::initFinished, this, &QgsSnappingUtils::onInitFinished );
-
+  QgsPointLocator *vlpl = new QgsPointLocator( vl, destinationCrs(), mMapSettings.transformContext(), &rect );
   mTemporaryLocators.insert( vl, vlpl );
   return mTemporaryLocators.value( vl );
 }
@@ -90,9 +85,6 @@ bool QgsSnappingUtils::isIndexPrepared( QgsVectorLayer *vl, const QgsRectangle &
     return false;
 
   QgsPointLocator *loc = locatorForLayer( vl );
-
-  if ( loc->isIndexing() )
-    return true;
 
   if ( mStrategy == IndexAlwaysFull && loc->hasIndex() )
     return true;
@@ -346,20 +338,12 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
   return QgsPointLocator::Match();
 }
 
-void QgsSnappingUtils::onInitFinished( bool ok )
-{
-  QgsPointLocator *loc = static_cast<QgsPointLocator *>( sender() );
-
-  // point locator init didn't work out - too many features!
-  // let's make the allowed area smaller for the next time
-  if ( !ok )
-  {
-    mHybridMaxAreaPerLayer[loc->layer()->id()] /= 4;
-  }
-}
-
 void QgsSnappingUtils::prepareIndex( const QList<LayerAndAreaOfInterest> &layers )
 {
+  if ( mIsIndexing )
+    return;
+  mIsIndexing = true;
+
   // check if we need to build any index
   QList<LayerAndAreaOfInterest> layersToIndex;
   const auto constLayers = layers;
@@ -378,6 +362,8 @@ void QgsSnappingUtils::prepareIndex( const QList<LayerAndAreaOfInterest> &layers
     // build indexes
     QTime t;
     t.start();
+    int i = 0;
+    prepareIndexStarting( layersToIndex.count() );
     const auto constLayersToIndex = layersToIndex;
     for ( const LayerAndAreaOfInterest &entry : constLayersToIndex )
     {
@@ -436,14 +422,24 @@ void QgsSnappingUtils::prepareIndex( const QList<LayerAndAreaOfInterest> &layers
           loc->setExtent( &rect );
 
           // see if it's possible build index for this area
-          loc->init( mHybridPerLayerFeatureLimit );
+          if ( !loc->init( mHybridPerLayerFeatureLimit ) )
+          {
+            // hmm that didn't work out - too many features!
+            // let's make the allowed area smaller for the next time
+            mHybridMaxAreaPerLayer[vl->id()] /= 4;
+          }
         }
 
       }
       else  // full index strategy
         loc->init();
+
+      QgsDebugMsg( QStringLiteral( "Index init: %1 ms (%2)" ).arg( tt.elapsed() ).arg( vl->id() ) );
+      prepareIndexProgress( ++i );
     }
+    QgsDebugMsg( QStringLiteral( "Prepare index total: %1 ms" ).arg( t.elapsed() ) );
   }
+  mIsIndexing = false;
 }
 
 QgsSnappingConfig QgsSnappingUtils::config() const

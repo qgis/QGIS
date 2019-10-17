@@ -162,6 +162,7 @@ void TestQgsMapToolReshape::initTestCase()
   cfg.setType( QgsSnappingConfig::VertexAndSegment );
   cfg.setEnabled( true );
   mCanvas->snappingUtils()->setConfig( cfg );
+
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLineZ << mLayerPointZ << mLayerPolygonZ );
   mCanvas->setCurrentLayer( mLayerLineZ );
 

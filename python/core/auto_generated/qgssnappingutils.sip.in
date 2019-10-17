@@ -35,14 +35,9 @@ which keeps the configuration in sync with map canvas (e.g. current view, active
 %End
   public:
 
-    QgsSnappingUtils( QObject *parent /TransferThis/ = 0, bool enableSnappingForInvisibleFeature = true,
-                      bool asynchronous = false );
+    QgsSnappingUtils( QObject *parent /TransferThis/ = 0, bool enableSnappingForInvisibleFeature = true );
 %Docstring
 Constructor for QgsSnappingUtils
-
-:param parent: parent object
-:param enableSnappingForInvisibleFeature: ``True`` if we want to snap feature even if there are not visible
-:param asynchronous: indicated if point locator creation has to be made asynchronously (see :py:class:`QgsPointLocator`())
 %End
     ~QgsSnappingUtils();
 
@@ -177,19 +172,13 @@ Emitted when the snapping settings object changes.
 %End
 
   protected:
-
- virtual void prepareIndexStarting( int count );
+    virtual void prepareIndexStarting( int count );
 %Docstring
-This methods is now deprecated and never called
-
-.. deprecated:: QGIS 3.10
+Called when starting to index - can be overridden and e.g. progress dialog can be provided
 %End
-
- virtual void prepareIndexProgress( int index );
+    virtual void prepareIndexProgress( int index );
 %Docstring
-This methods is now deprecated and never called
-
-.. deprecated:: QGIS 3.10
+Called when finished indexing a layer. When index == count the indexing is complete
 %End
 
     void clearAllLocators();
