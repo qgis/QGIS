@@ -59,8 +59,6 @@ QgsOapifProvider::QgsOapifProvider( const QString &uri, const ProviderOptions &o
     mValid = false;
     return;
   }
-
-  qRegisterMetaType<QgsRectangle>( "QgsRectangle" );
 }
 
 QgsOapifProvider::~QgsOapifProvider()

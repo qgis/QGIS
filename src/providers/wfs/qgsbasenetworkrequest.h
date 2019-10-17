@@ -89,22 +89,22 @@ class QgsBaseNetworkRequest : public QObject
     QString mErrorMessage;
 
     //! Error code
-    ErrorCode mErrorCode;
+    ErrorCode mErrorCode = QgsBaseNetworkRequest::NoError;
 
     //! Raw response
     QByteArray mResponse;
 
     //! Whether the request is aborted.
-    bool mIsAborted;
+    bool mIsAborted = false;
 
     //! Whether to force refresh (i.e. issue a network request and not use cache)
-    bool mForceRefresh;
+    bool mForceRefresh = false;
 
     //! Whether the request has timed-out
-    bool mTimedout;
+    bool mTimedout = false;
 
     //! Whether we already received bytes
-    bool mGotNonEmptyResponse;
+    bool mGotNonEmptyResponse = false;
 
     //! Whether to log error messages
     bool mLogErrors = true;

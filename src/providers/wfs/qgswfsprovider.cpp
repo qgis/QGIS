@@ -129,8 +129,6 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
     downloader->run( false, /* serialize features */
                      1 /* maxfeatures */ );
   }
-
-  qRegisterMetaType<QgsRectangle>( "QgsRectangle" );
 }
 
 QgsWFSProvider::~QgsWFSProvider()

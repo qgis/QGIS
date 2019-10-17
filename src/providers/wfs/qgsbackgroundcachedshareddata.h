@@ -108,7 +108,7 @@ class QgsBackgroundCachedSharedData
     const QgsCoordinateReferenceSystem &sourceCrs() const { return mSourceCrs; }
 
     //! Return the provider for the Spatialite cache.
-    QgsVectorDataProvider *cacheDataProvider() { return mCacheDataProvider; }
+    QgsVectorDataProvider *cacheDataProvider() { return mCacheDataProvider.get(); }
 
     //! Return provider fields.
     const QgsFields &fields() const { return mFields; }
@@ -254,7 +254,7 @@ class QgsBackgroundCachedSharedData
     QgsRectangle mRect;
 
     //! The background feature downloader
-    QgsThreadedFeatureDownloader *mDownloader = nullptr;
+    std::unique_ptr<QgsThreadedFeatureDownloader> mDownloader;
 
     //! Filename of the on-disk cache
     QString mCacheDbname;
@@ -263,7 +263,7 @@ class QgsBackgroundCachedSharedData
     QString mCacheTablename;
 
     //! The data provider of the on-disk cache
-    QgsVectorDataProvider *mCacheDataProvider = nullptr;
+    std::unique_ptr<QgsVectorDataProvider> mCacheDataProvider;
 
     //! Name of the gmlid, spatialite_id, qgis_id cache. This cache persists even after a layer reload so as to ensure feature id stability.
     QString mCacheIdDbname;
