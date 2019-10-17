@@ -52,14 +52,8 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
   public:
 
-    /**
-     * Constructor for QgsSnappingUtils
-     * \param parent parent object
-     * \param enableSnappingForInvisibleFeature TRUE if we want to snap feature even if there are not visible
-     * \param asynchronous indicated if point locator creation has to be made asynchronously (see QgsPointLocator())
-     */
-    QgsSnappingUtils( QObject *parent SIP_TRANSFERTHIS = nullptr, bool enableSnappingForInvisibleFeature = true,
-                      bool asynchronous = false );
+    //! Constructor for QgsSnappingUtils
+    QgsSnappingUtils( QObject *parent SIP_TRANSFERTHIS = nullptr, bool enableSnappingForInvisibleFeature = true );
     ~QgsSnappingUtils() override;
 
     // main actions
@@ -196,26 +190,13 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     void configChanged( const QgsSnappingConfig &snappingConfig );
 
   protected:
-
-    /**
-     * This methods is now deprecated and never called
-     * \deprecated since QGIS 3.10
-     */
-    Q_DECL_DEPRECATED virtual void prepareIndexStarting( int count ) { Q_UNUSED( count ); }
-
-    /**
-     * This methods is now deprecated and never called
-     * \deprecated since QGIS 3.10
-     */
-    Q_DECL_DEPRECATED virtual void prepareIndexProgress( int index ) { Q_UNUSED( index ); }
+    //! Called when starting to index - can be overridden and e.g. progress dialog can be provided
+    virtual void prepareIndexStarting( int count ) { Q_UNUSED( count ) }
+    //! Called when finished indexing a layer. When index == count the indexing is complete
+    virtual void prepareIndexProgress( int index ) { Q_UNUSED( index ) }
 
     //! Deletes all existing locators (e.g. when destination CRS has changed and we need to reindex)
     void clearAllLocators();
-
-  private slots:
-
-    //! called whenever a point locator has finished
-    void onInitFinished( bool ok );
 
   private:
     void onIndividualLayerSettingsChanged( const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> &layerSettings );
@@ -268,11 +249,12 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     //! if using hybrid strategy, how many features of one layer may be indexed (to limit amount of consumed memory)
     int mHybridPerLayerFeatureLimit = 50000;
 
+    //! internal flag that an indexing process is going on. Prevents starting two processes in parallel.
+    bool mIsIndexing = false;
+
     //! Disable or not the snapping on all features. By default is always TRUE except for non visible features on map canvas.
     bool mEnableSnappingForInvisibleFeature = true;
 
-    //! true if we have to build point locator asynchronously
-    bool mAsynchronous = false;
 };
 
 

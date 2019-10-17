@@ -31,8 +31,7 @@ Works with one layer.
 
     explicit QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
                               const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext(),
-                              const QgsRectangle *extent = 0,
-                              bool asynchronous = false );
+                              const QgsRectangle *extent = 0 );
 %Docstring
 Construct point locator for a ``layer``.
 
@@ -40,10 +39,6 @@ If a valid QgsCoordinateReferenceSystem is passed for ``destinationCrs`` then th
 do the searches on data reprojected to the given CRS. For accurate reprojection it is important
 to set the correct ``transformContext`` if a ``destinationCrs`` is specified. This is usually taken
 from the current :py:func:`QgsProject.transformContext()`
-
-if ``asynchronous`` is ``False``, point locator init() method will block until point locator index
-is completely built. if ``True``, index building will be done in another thread and init() method returns
-immediately. initFinished() signal will be emitted once the initialization is over.
 
 If ``extent`` is not ``None``, the locator will index only a subset of the layer which falls within that extent.
 %End
@@ -101,13 +96,8 @@ Configure render context  - if not ``None``, it will use to index only visible f
 %Docstring
 Prepare the index for queries. Does nothing if the index already exists.
 If the number of features is greater than the value of maxFeaturesToIndex, creation of index is stopped
-to make sure we do not run out of memory. If maxFeaturesToIndex is -1, no limits are used.
-
-This method is either blocking or non blocking according to ``asynchronous`` parameter passed
-in the constructor.
-Returns false if the creation of index is blocking and has been prematurely stopped due to the limit of features, otherwise true
-
-.. seealso:: :py:class:`QgsPointLocator`
+to make sure we do not run out of memory. If maxFeaturesToIndex is -1, no limits are used. Returns
+``False`` if the creation of index has been prematurely stopped due to the limit of features, otherwise ``True``
 %End
 
     bool hasIndex() const;
@@ -238,27 +228,8 @@ Returns how many geometries are cached in the index
 .. versionadded:: 2.14
 %End
 
-    bool isIndexing() const;
-%Docstring
-Returns ``True`` if the point locator is currently indexing the data.
-This method is useful if constructor parameter ``asynchronous`` is ``True``
-
-.. seealso:: :py:class:`QgsPointLocator`
-%End
-
-  signals:
-
-    void initFinished( bool ok );
-%Docstring
-Emitted whenever index has been built and initialization is finished
-
-:param ok: ``False`` if the creation of index has been prematurely stopped due to the limit of
-           features, otherwise ``True``
-%End
-
   protected:
     bool rebuildIndex( int maxFeaturesToIndex = -1 );
-
   protected slots:
     void destroyIndex();
 };
