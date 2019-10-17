@@ -67,7 +67,7 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
 
   // Show the maptip on the canvas
   QString tipText, lastTipText, tipHtml, bodyStyle, containerStyle,
-          backgroundColor, strokeColor;
+          backgroundColor, strokeColor, textColor;
 
   delete mWidget;
   mWidget = new QWidget( pMapCanvas );
@@ -108,6 +108,7 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
 
   backgroundColor = mWidget->palette().base().color().name();
   strokeColor = mWidget->palette().shadow().color().name();
+  textColor = mWidget->palette().text().color().name();
   mWidget->setStyleSheet( QString(
                             ".QWidget{"
                             "border: 1px solid %1;"
@@ -131,7 +132,8 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
   bodyStyle = QString(
                 "background-color: %1;"
                 "margin: 0;"
-                "font: %2pt \"%3\";" ).arg( backgroundColor ).arg( mFontSize ).arg( mFontFamily );
+                "font: %2pt \"%3\";"
+                "color: %4;" ).arg( backgroundColor ).arg( mFontSize ).arg( mFontFamily ).arg( textColor );
 
   containerStyle = QString(
                      "display: inline-block;"
