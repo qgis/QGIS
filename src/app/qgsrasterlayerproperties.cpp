@@ -2060,20 +2060,7 @@ bool QgsRasterLayerProperties::rasterIsMultiBandColor()
 
 void QgsRasterLayerProperties::updateInformationContent()
 {
-  // We are using QgsWebView and the renderer is completely different from QTextBrowser
-  // add some extra style here
-  QString myStyle = QgsApplication::reportStyleSheet();
-  myStyle.append( QStringLiteral( "body { margin: auto; width: 97% } "
-                                  "table.tabular-view, table.list-view { border-collapse: collapse; table-layout:fixed; width: 100% !important; } "
-                                  "h1 { line-height: inherit; } "
-                                  "td, th { word-wrap: break-word; vertical-align: top; } "
-                                  ".list-view th:first-child, .list-view td:first-child { width: 15%; } "
-                                  ".list-view.highlight { padding-left: inherit; } "
-                                  ".tabular-view th:first-child, .tabular-view td:first-child { width: 20%; } "
-                                  ".tabular-view th.strong { background-color: #eee; }"
-                                  ".tabular-view th, .tabular-view td { "
-                                  "  border: solid 1px #eee;"
-                                  "} \n " ) );
+  const QString myStyle = QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType::WebBrowser );
   // Inject the stylesheet
   const QString html { mRasterLayer->htmlMetadata().replace( QStringLiteral( "<head>" ), QStringLiteral( R"raw(<head><style type="text/css">%1</style>)raw" ) ).arg( myStyle ) };
   mMetadataViewer->setHtml( html );
