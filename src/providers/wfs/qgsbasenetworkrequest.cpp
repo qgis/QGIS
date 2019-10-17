@@ -30,11 +30,6 @@
 QgsBaseNetworkRequest::QgsBaseNetworkRequest( const QgsAuthorizationSettings &auth, const QString &translatedComponent )
   : mAuth( auth )
   , mTranslatedComponent( translatedComponent )
-  , mErrorCode( QgsBaseNetworkRequest::NoError )
-  , mIsAborted( false )
-  , mForceRefresh( false )
-  , mTimedout( false )
-  , mGotNonEmptyResponse( false )
 {
   connect( QgsNetworkAccessManager::instance(), qgis::overload< QNetworkReply *>::of( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsBaseNetworkRequest::requestTimedOut );
 }
@@ -110,16 +105,16 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
       }
       else
       {
-        args.replace( QLatin1String( "?" ), QLatin1String( "_" ) );
-        args.replace( QLatin1String( "&" ), QLatin1String( "_" ) );
-        args.replace( QLatin1String( "<" ), QLatin1String( "_" ) );
-        args.replace( QLatin1String( ">" ), QLatin1String( "_" ) );
-        args.replace( QLatin1String( "'" ), QLatin1String( "_" ) );
-        args.replace( QLatin1String( "\"" ), QLatin1String( "_" ) );
-        args.replace( QLatin1String( " " ), QLatin1String( "_" ) );
-        args.replace( QLatin1String( ":" ), QLatin1String( "_" ) );
-        args.replace( QLatin1String( "/" ), QLatin1String( "_" ) );
-        args.replace( QLatin1String( "\n" ), QLatin1String( "_" ) );
+        args.replace( '?', '_' );
+        args.replace( '&', '_' );
+        args.replace( '<', '_' );
+        args.replace( '>', '_' );
+        args.replace( '\'', '_' );
+        args.replace( '\"', '_' );
+        args.replace( ' ', '_' );
+        args.replace( ':', '_' );
+        args.replace( '/', '_' );
+        args.replace( '\n', '_' );
       }
       modifiedUrlString = modifiedUrlString.mid( 0, modifiedUrlString.indexOf( '?' ) ) + args;
     }

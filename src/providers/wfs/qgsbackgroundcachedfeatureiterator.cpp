@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsbacckgroundcachedfeatureiterator.h
+    qgsbackgroundcachedfeatureiterator.h
     ---------------------
     begin                : October 2019
     copyright            : (C) 2016-2019 by Even Rouault
@@ -458,8 +458,8 @@ QgsBackgroundCachedFeatureIterator::~QgsBackgroundCachedFeatureIterator()
   QMutexLocker locker( &mMutex );
   if ( mWriterStream )
   {
-    delete mWriterStream;
-    delete mWriterFile;
+    mWriterStream.reset();
+    mWriterFile.reset();
     if ( !mWriterFilename.isEmpty() )
     {
       QFile::remove( mWriterFilename );
@@ -505,7 +505,7 @@ void QgsBackgroundCachedFeatureIterator::featureReceivedSynchronous( const QVect
   QMutexLocker locker( &mMutex );
   if ( !mWriterStream )
   {
-    mWriterStream = new QDataStream( &mWriterByteArray, QIODevice::WriteOnly );
+    mWriterStream.reset( new QDataStream( &mWriterByteArray, QIODevice::WriteOnly ) );
   }
   const auto constList = list;
   for ( const QgsFeatureUniqueIdPair &pair : constList )
@@ -519,19 +519,18 @@ void QgsBackgroundCachedFeatureIterator::featureReceivedSynchronous( const QVect
     ++ mCounter;
     mWriterFilename = QDir( mShared->acquireCacheDirectory() ).filePath( QStringLiteral( "iterator_%1_%2.bin" ).arg( thisStr ).arg( mCounter ) );
     QgsDebugMsgLevel( QStringLiteral( "Transferring feature iterator cache to %1" ).arg( mWriterFilename ), 4 );
-    mWriterFile = new QFile( mWriterFilename );
+    mWriterFile.reset( new QFile( mWriterFilename ) );
     if ( !mWriterFile->open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
       QgsDebugMsg( QStringLiteral( "Cannot open %1 for writing" ).arg( mWriterFilename ) );
-      delete mWriterFile;
-      mWriterFile = nullptr;
+      mWriterFile.reset();
       mWriterFilename.clear();
       mShared->releaseCacheDirectory();
       return;
     }
     mWriterFile->write( mWriterByteArray );
     mWriterByteArray.clear();
-    mWriterStream->setDevice( mWriterFile );
+    mWriterStream->setDevice( mWriterFile.get() );
   }
 }
 
@@ -593,17 +592,14 @@ bool QgsBackgroundCachedFeatureIterator::fetchFeature( QgsFeature &f )
       {
         QByteArray wkbGeom( QByteArray::fromHex( v.toString().toLatin1() ) );
         QgsGeometry g;
-        unsigned char *wkbClone = new unsigned char[wkbGeom.size()];
-        memcpy( wkbClone, wkbGeom.data(), wkbGeom.size() );
         try
         {
-          g.fromWkb( wkbClone, wkbGeom.size() );
+          g.fromWkb( wkbGeom );
           cachedFeature.setGeometry( g );
         }
         catch ( const QgsWkbException & )
         {
           QgsDebugMsg( QStringLiteral( "Invalid WKB for cached feature %1" ).arg( cachedFeature.id() ) );
-          delete[] wkbClone;
           cachedFeature.clearGeometry();
         }
       }
@@ -648,10 +644,8 @@ bool QgsBackgroundCachedFeatureIterator::fetchFeature( QgsFeature &f )
         if ( mWriterStream )
         {
           // Transfer writer variables to the reader
-          delete mWriterStream;
-          delete mWriterFile;
-          mWriterStream = nullptr;
-          mWriterFile = nullptr;
+          mWriterStream.reset();
+          mWriterFile.reset();
           mReaderByteArray = mWriterByteArray;
           mWriterByteArray.clear();
           mReaderFilename = mWriterFilename;
@@ -661,20 +655,19 @@ bool QgsBackgroundCachedFeatureIterator::fetchFeature( QgsFeature &f )
       // Instantiates the reader stream from memory buffer if not empty
       if ( !mReaderByteArray.isEmpty() )
       {
-        mReaderStream = new QDataStream( &mReaderByteArray, QIODevice::ReadOnly );
+        mReaderStream.reset( new QDataStream( &mReaderByteArray, QIODevice::ReadOnly ) );
       }
       // Otherwise from the on-disk file
       else if ( !mReaderFilename.isEmpty() )
       {
-        mReaderFile = new QFile( mReaderFilename );
+        mReaderFile.reset( new QFile( mReaderFilename ) );
         if ( !mReaderFile->open( QIODevice::ReadOnly ) )
         {
           QgsDebugMsg( QStringLiteral( "Cannot open %1" ).arg( mReaderFilename ) );
-          delete mReaderFile;
-          mReaderFile = nullptr;
+          mReaderFile.reset();
           return false;
         }
-        mReaderStream = new QDataStream( mReaderFile );
+        mReaderStream.reset( new QDataStream( mReaderFile.get() ) );
       }
     }
 
@@ -752,10 +745,8 @@ void QgsBackgroundCachedFeatureIterator::cleanupReaderStreamAndFile()
 {
   if ( mReaderStream )
   {
-    delete mReaderStream;
-    mReaderStream = nullptr;
-    delete mReaderFile;
-    mReaderFile = nullptr;
+    mReaderStream.reset();
+    mReaderFile.reset();
     mReaderByteArray.clear();
     if ( !mReaderFilename.isEmpty() )
     {
@@ -804,9 +795,7 @@ void QgsBackgroundCachedFeatureIterator::copyFeature( const QgsFeature &srcFeatu
   QgsGeometry geometry = srcFeature.geometry();
   if ( mShared->hasGeometry() && !geometry.isNull() )
   {
-    QgsGeometry g;
-    g.fromWkb( geometry.asWkb() );
-    dstFeature.setGeometry( g );
+    dstFeature.setGeometry( geometry );
   }
   else
   {

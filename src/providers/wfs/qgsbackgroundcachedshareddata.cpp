@@ -86,9 +86,8 @@ void QgsBackgroundCachedSharedData::invalidateCache()
 
 // to prevent deadlock when waiting the end of the downloader thread that will try to take the mutex in serializeFeatures()
   mMutex.unlock();
-  delete mDownloader;
+  mDownloader.reset();
   mMutex.lock();
-  mDownloader = nullptr;
   mDownloadFinished = false;
   mGenCounter = 0;
   mCachedRegions = QgsSpatialIndex();
@@ -106,8 +105,7 @@ void QgsBackgroundCachedSharedData::invalidateCache()
     // be able to delete the file.
     mCacheDataProvider->invalidateConnections( mCacheDbname );
   }
-  delete mCacheDataProvider;
-  mCacheDataProvider = nullptr;
+  mCacheDataProvider.reset();
 
   if ( !mCacheDbname.isEmpty() )
   {
@@ -407,12 +405,11 @@ bool QgsBackgroundCachedSharedData::createCache()
   dsURI.setParam( QStringLiteral( "pragma" ), pragmas );
 
   QgsDataProvider::ProviderOptions providerOptions;
-  mCacheDataProvider = ( QgsVectorDataProvider * )( QgsProviderRegistry::instance()->createProvider(
-                         QStringLiteral( "spatialite" ), dsURI.uri(), providerOptions ) );
+  mCacheDataProvider.reset( dynamic_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider(
+                              QStringLiteral( "spatialite" ), dsURI.uri(), providerOptions ) ) );
   if ( mCacheDataProvider && !mCacheDataProvider->isValid() )
   {
-    delete mCacheDataProvider;
-    mCacheDataProvider = nullptr;
+    mCacheDataProvider.reset();
   }
   if ( !mCacheDataProvider )
   {
@@ -530,11 +527,11 @@ int QgsBackgroundCachedSharedData::registerToCache( QgsBackgroundCachedFeatureIt
     mRequestLimit = ( limit > 0 && supportsLimitedFeatureCountDownloads() ) ? limit : 0;
     // to prevent deadlock when waiting the end of the downloader thread that will try to take the mutex in serializeFeatures()
     mMutex.unlock();
-    delete mDownloader;
+    mDownloader.reset();
     mMutex.lock();
     mDownloadFinished = false;
     mComputedExtent = QgsRectangle();
-    mDownloader = new QgsThreadedFeatureDownloader( this );
+    mDownloader.reset( new QgsThreadedFeatureDownloader( this ) );
     mDownloader->startAndWait();
   }
   if ( mDownloadFinished )
@@ -914,19 +911,19 @@ QSet<QString> QgsBackgroundCachedSharedData::getExistingCachedUniqueIds( const Q
   for ( int i = 0; i < featureList.size(); i ++ )
   {
     if ( !first )
-      expr += QLatin1String( "," );
+      expr += ',';
     else
     {
-      expr = QgsBackgroundCachedFeatureIteratorConstants::FIELD_UNIQUE_ID + " IN (";
+      expr = QgsBackgroundCachedFeatureIteratorConstants::FIELD_UNIQUE_ID + QStringLiteral( " IN (" );
       first = false;
     }
-    expr += QLatin1String( "'" );
+    expr += '\'';
     expr += featureList[i].second;
-    expr += QLatin1String( "'" );
+    expr += '\'';
 
     if ( ( i > 0 && ( i % 1000 ) == 0 ) || i + 1 == featureList.size() )
     {
-      expr += QLatin1String( ")" );
+      expr += ')';
 
       QgsFeatureRequest request;
       request.setFilterExpression( expr );

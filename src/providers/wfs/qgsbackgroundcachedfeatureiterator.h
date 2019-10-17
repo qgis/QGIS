@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsbacckgroundcachedfeatureiterator.h
+    qgsbackgroundcachedfeatureiterator.h
     ---------------------
     begin                : October 2019
     copyright            : (C) 2016-2019 by Even Rouault
@@ -310,13 +310,13 @@ class QgsBackgroundCachedFeatureIterator : public QObject,
     int mWriteTransferThreshold = 1024 * 1024;
     QByteArray mWriterByteArray;
     QString mWriterFilename;
-    QFile *mWriterFile = nullptr;
-    QDataStream *mWriterStream = nullptr;
+    std::unique_ptr<QFile> mWriterFile;
+    std::unique_ptr<QDataStream> mWriterStream ;
 
     QByteArray mReaderByteArray;
     QString mReaderFilename;
-    QFile *mReaderFile = nullptr;
-    QDataStream *mReaderStream = nullptr;
+    std::unique_ptr<QFile> mReaderFile;
+    std::unique_ptr<QDataStream> mReaderStream;
     bool mFetchGeometry = false;
 
     QgsCoordinateTransform mTransform;
