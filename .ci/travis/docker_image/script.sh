@@ -58,6 +58,7 @@ else
   echo "${bold}Finalize image…${endbold}"
   # enable experimental features in Docker to squash
   echo '{ "experimental": true}' | sudo tee /etc/docker/daemon.json
+  sudo service docker restart
   docker build ${DOCKER_BUILD_ARGS} \
              --cache-from "qgis/qgis:BUILDER" \
              --squash \
