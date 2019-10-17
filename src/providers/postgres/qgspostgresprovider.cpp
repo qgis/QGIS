@@ -3534,7 +3534,7 @@ bool QgsPostgresProvider::getGeometryDetails()
     }
   }
 
-  QString detectedType;
+  QString detectedType = mRequestedGeomType == QgsWkbTypes::Unknown ? QString() : QgsPostgresConn::postgisWkbTypeName( mRequestedGeomType );
   QString detectedSrid = mRequestedSrid;
   if ( !schemaName.isEmpty() )
   {
@@ -3550,14 +3550,17 @@ bool QgsPostgresProvider::getGeometryDetails()
 
     if ( result.PQntuples() == 1 )
     {
-      detectedType = result.PQgetvalue( 0, 0 );
+      QString dt = result.PQgetvalue( 0, 0 );
+      if ( dt != "GEOMETRY" ) detectedType = dt;
+
       QString dim = result.PQgetvalue( 0, 2 );
       if ( dim == QLatin1String( "3" ) && !detectedType.endsWith( 'M' ) )
         detectedType += QLatin1String( "Z" );
       else if ( dim == QLatin1String( "4" ) )
         detectedType += QLatin1String( "ZM" );
 
-      detectedSrid = result.PQgetvalue( 0, 1 );
+      QString ds = result.PQgetvalue( 0, 1 );
+      if ( ds != "0" ) detectedSrid = ds;
       mSpatialColType = SctGeometry;
     }
     else
@@ -3579,8 +3582,10 @@ bool QgsPostgresProvider::getGeometryDetails()
 
       if ( result.PQntuples() == 1 )
       {
-        detectedType = result.PQgetvalue( 0, 0 );
-        detectedSrid = result.PQgetvalue( 0, 1 );
+        QString dt = result.PQgetvalue( 0, 0 );
+        if ( dt != "GEOMETRY" ) detectedType = dt;
+        QString ds = result.PQgetvalue( 0, 1 );
+        if ( ds != "0" ) detectedSrid = ds;
         mSpatialColType = SctGeography;
       }
       else
