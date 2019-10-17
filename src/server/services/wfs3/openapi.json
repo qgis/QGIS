@@ -442,7 +442,7 @@
         "required" : [ "links", "name" ],
         "type" : "object",
         "properties" : {
-          "name" : {
+          "id" : {
             "type" : "string",
             "description" : "identifier of the collection used, for example, in URIs",
             "example" : "buildings"
@@ -487,44 +487,79 @@
           }
         }
       },
-      "extent" : {
-        "type" : "object",
-        "properties" : {
-          "crs" : {
-            "type" : "string",
-            "description" : "Coordinate reference system of the coordinates in the spatial extent (property `spatial`). In the Core, only WGS84 longitude/latitude is supported. Extensions may support additional coordinate reference systems.",
-            "default" : "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
-            "enum" : [ "http://www.opengis.net/def/crs/OGC/1.3/CRS84" ]
-          },
-          "spatial" : {
-            "maxItems" : 6,
-            "minItems" : 4,
-            "type" : "array",
-            "description" : "West, north, east, south edges of the spatial extent. The minimum and maximum values apply to the coordinate reference system WGS84 longitude/latitude that is supported in the Core. If, for example, a projected coordinate reference system is used, the minimum and maximum values need to be adjusted.",
-            "example" : [ -180, -90, 180, 90 ],
-            "items" : {
-              "type" : "number"
-            }
-          },
-          "trs" : {
-            "type" : "string",
-            "description" : "Temporal reference system of the coordinates in the temporal extent (property `temporal`). In the Core, only the Gregorian calendar is supported. Extensions may support additional temporal reference systems.",
-            "default" : "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian",
-            "enum" : [ "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian" ]
-          },
-          "temporal" : {
-            "maxItems" : 2,
-            "minItems" : 2,
-            "type" : "array",
-            "description" : "Begin and end times of the temporal extent.",
-            "example" : [ "2011-11-11T12:22:11Z", "2012-11-24T12:32:43Z" ],
-            "items" : {
-              "type" : "string",
-              "format" : "dateTime"
-            }
+      "extent":{
+          "type":"object",
+          "description":"The extent of the features in the collection. In the Core only spatial and temporal\nextents are specified. Extensions may add additional members to represent other\nextents, for example, thermal or pressure ranges.",
+          "properties":{
+             "spatial":{
+                "type":"object",
+                "properties":{
+                   "bbox":{
+                      "description":"One or more bounding boxes that describe the spatial extent of the dataset.\nIn the Core only a single bounding box is supported. Extensions may support\nadditional areas. If multiple areas are provided, the union of the bounding\nboxes describes the spatial extent.",
+                      "type":"array",
+                      "minItems":1,
+                      "items":{
+                         "description":"West, south, east, north edges of the bounding box. The coordinates\nare in the coordinate reference system specified in `crs`. By default\nthis is WGS 84 longitude/latitude.",
+                         "type":"array",
+                         "minItems":4,
+                         "maxItems":6,
+                         "items":{
+                            "type":"number"
+                         },
+                         "example":[
+                            -180,
+                            -90,
+                            180,
+                            90
+                         ]
+                      }
+                   },
+                   "crs":{
+                      "description":"Coordinate reference system of the coordinates in the spatial extent\n(property `bbox`). The default reference system is WGS 84 longitude/latitude.\nIn the Core this is the only supported coordinate reference system.\nExtensions may support additional coordinate reference systems and add\nadditional enum values.",
+                      "type":"string",
+                      "enum":[
+                         "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+                      ],
+                      "default":"http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+                   }
+                }
+             },
+             "temporal":{
+                "description":"The temporal extent of the features in the collection.",
+                "type":"object",
+                "properties":{
+                   "interval":{
+                      "description":"One or more time intervals that describe the temporal extent of the dataset.\nThe value `null` is supported and indicates an open time intervall.\nIn the Core only a single time interval is supported. Extensions may support\nmultiple intervals. If multiple intervals are provided, the union of the\nintervals describes the temporal extent.",
+                      "type":"array",
+                      "minItems":1,
+                      "items":{
+                         "description":"Begin and end times of the time interval. The timestamps\nare in the coordinate reference system specified in `trs`. By default\nthis is the Gregorian calendar.",
+                         "type":"array",
+                         "minItems":2,
+                         "maxItems":2,
+                         "items":{
+                            "type":"string",
+                            "format":"date-time",
+                            "nullable":true
+                         },
+                         "example":[
+                            "2011-11-11T12:22:11Z",
+                            null
+                         ]
+                      }
+                   },
+                   "trs":{
+                      "description":"Coordinate reference system of the coordinates in the temporal extent\n(property `interval`). The default reference system is the Gregorian calendar.\nIn the Core this is the only supported temporal reference system.\nExtensions may support additional temporal reference systems and add\nadditional enum values.",
+                      "type":"string",
+                      "enum":[
+                         "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian"
+                      ],
+                      "default":"http://www.opengis.net/def/uom/ISO-8601/0/Gregorian"
+                   }
+                }
+             }
           }
-        }
-      },
+       },
       "featureCollectionGeoJSON" : {
         "required" : [ "features", "type" ],
         "type" : "object",

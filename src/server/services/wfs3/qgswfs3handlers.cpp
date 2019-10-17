@@ -478,7 +478,7 @@ void QgsWfs3CollectionsHandler::handleRequest( const QgsServerApiContext &contex
       data["collections"].push_back(
       {
         // identifier of the collection used, for example, in URIs
-        { "name", shortName.toStdString() },
+        { "id", shortName.toStdString() },
         // human readable title of the collection
         { "title", title },
         // a description of the features in the collection
@@ -489,8 +489,12 @@ void QgsWfs3CollectionsHandler::handleRequest( const QgsServerApiContext &contex
         // TODO: "relations" ?
         {
           "extent",  {
-            { "crs", "http://www.opengis.net/def/crs/OGC/1.3/CRS84" },
-            { "spatial", QgsServerApiUtils::layerExtent( layer ) }
+            {
+              "spatial", {
+                { "bbox", QgsServerApiUtils::layerExtent( layer ) },
+                { "crs", "http://www.opengis.net/def/crs/OGC/1.3/CRS84" },
+              }
+            }
           }
         },
         {
@@ -641,7 +645,7 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
   }
   json data
   {
-    { "name", mapLayer->name().toStdString() },
+    { "id", mapLayer->name().toStdString() },
     { "title", title },
     // TODO: check if we need to expose other advertised CRS here
     {
@@ -650,8 +654,12 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
     // TODO: "relations" ?
     {
       "extent",  {
-        { "crs", "http://www.opengis.net/def/crs/OGC/1.3/CRS84" },
-        { "spatial", QgsServerApiUtils::layerExtent( mapLayer ) }
+        {
+          "spatial", {
+            { "bbox", QgsServerApiUtils::layerExtent( mapLayer ) },
+            { "crs", "http://www.opengis.net/def/crs/OGC/1.3/CRS84" },
+          }
+        }
       }
     },
     {
