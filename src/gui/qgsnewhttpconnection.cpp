@@ -170,8 +170,8 @@ void QgsNewHttpConnection::wfsVersionCurrentIndexChanged( int index )
   cbxWfsFeaturePaging->setEnabled( index == WFS_VERSION_MAX || index >= WFS_VERSION_2_0 );
   lblPageSize->setEnabled( cbxWfsFeaturePaging->isChecked() && ( index == WFS_VERSION_MAX || index >= WFS_VERSION_1_1 ) );
   txtPageSize->setEnabled( cbxWfsFeaturePaging->isChecked() && ( index == WFS_VERSION_MAX || index >= WFS_VERSION_1_1 ) );
-  cbxWfsIgnoreAxisOrientation->setEnabled( index != WFS_VERSION_1_0 && index != WFS_VERSION_API_FEATURES );
-  cbxWfsInvertAxisOrientation->setEnabled( index != WFS_VERSION_API_FEATURES );
+  cbxWfsIgnoreAxisOrientation->setEnabled( index != WFS_VERSION_1_0 && index != WFS_VERSION_API_FEATURES_1_0 );
+  cbxWfsInvertAxisOrientation->setEnabled( index != WFS_VERSION_API_FEATURES_1_0 );
 }
 
 void QgsNewHttpConnection::wfsFeaturePagingStateChanged( int state )
@@ -322,7 +322,7 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
   else if ( version == QLatin1String( "2.0.0" ) )
     versionIdx = WFS_VERSION_2_0;
   else if ( version == QLatin1String( "OGC_API_FEATURES" ) )
-    versionIdx = WFS_VERSION_API_FEATURES;
+    versionIdx = WFS_VERSION_API_FEATURES_1_0;
   cmbVersion->setCurrentIndex( versionIdx );
 
   // Enable/disable these items per WFS versions
@@ -446,7 +446,7 @@ void QgsNewHttpConnection::accept()
       case WFS_VERSION_2_0:
         version = QStringLiteral( "2.0.0" );
         break;
-      case WFS_VERSION_API_FEATURES:
+      case WFS_VERSION_API_FEATURES_1_0:
         version = QStringLiteral( "OGC_API_FEATURES" );
         break;
     }
