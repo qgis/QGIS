@@ -126,6 +126,20 @@ class CORE_EXPORT QgsApplication : public QApplication
 
   public:
 
+    /**
+     * The StyleSheetType enum represents the stylesheet type that
+     * a widget supports.
+     *
+     * Is is used by widgets that display HTML content to retrieve
+     * the standard QGIS stylesheet, maintained according to QGIS
+     * visual guidelines.
+     */
+    enum StyleSheetType
+    {
+      Qt, //! StyleSheet for Qt GUI widgets (based on QLabel or QTextBrowser), supports basic CSS and Qt extensions
+      WebBrowser, //! StyleSheet for embedded browsers (QtWebKit), supports full standard CSS
+    };
+
     static const char *QGIS_ORGANIZATION_NAME;
     static const char *QGIS_ORGANIZATION_DOMAIN;
     static const char *QGIS_APPLICATION_NAME;
@@ -463,17 +477,20 @@ class CORE_EXPORT QgsApplication : public QApplication
     static endian_t endian();
 
     /**
-     * Returns a standard css style sheet for reports.
+     * Returns a css style sheet for reports, the \a styleSheetType argument
+     * determines what type of stylesheet is supported by the widget.
      *
      * Typically you will use this method by doing:
      * QString myStyle = QgsApplication::reportStyleSheet();
      * textBrowserReport->document()->setDefaultStyleSheet(myStyle);
+     * if you are using a QgsWebView you will need to manually inject
+     * the CSS into a <head><script> tag instead.
      *
-     * \returns QString containing the CSS 2.1 compliant stylesheet.
-     * \note you can use the special Qt extensions too, for example
-     * the gradient fills for backgrounds.
+     * \returns the stylesheet CSS rules.
+     * \note if styleSheetType equals StyleSheetType::Qt you can use the special Qt extensions too,
+     * for example the gradient fills for backgrounds.
      */
-    static QString reportStyleSheet();
+    static QString reportStyleSheet( const StyleSheetType &styleSheetType = StyleSheetType::Qt );
 
     /**
      * Convenience function to get a summary of the paths used in this

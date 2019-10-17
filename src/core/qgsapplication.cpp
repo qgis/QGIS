@@ -1309,7 +1309,7 @@ QString QgsApplication::showSettings()
   return myState;
 }
 
-QString QgsApplication::reportStyleSheet()
+QString QgsApplication::reportStyleSheet( const StyleSheetType &styleSheetType )
 {
   //
   // Make the style sheet desktop preferences aware by using qappliation
@@ -1376,9 +1376,13 @@ QString QgsApplication::reportStyleSheet()
                             "  padding: 0px 3px; "
                             "  font-size: small;"
                             "}"
-                            ".section {"
+                            "th .strong {"
                             "  font-weight: bold;"
-                            "  padding-top:25px;"
+                            "}"
+                            "hr {"
+                            "  border: 0;"
+                            "  height: 0;"
+                            "  border-top: 1px solid black;"
                             "}"
                             ".list-view .highlight {"
                             "  text-align: right;"
@@ -1388,24 +1392,68 @@ QString QgsApplication::reportStyleSheet()
                             "  padding-left: 20px;"
                             "  font-weight: bold;"
                             "}"
-                            "th .strong {"
-                            "  font-weight: bold;"
-                            "}"
-                            ".tabular-view{ "
-                            "  border-collapse: collapse;"
-                            "  width: 95%;"
-                            "}"
-                            ".tabular-view th, .tabular-view td { "
-                            "  border:10px solid black;"
-                            "}"
-                            ".tabular-view .odd-row{"
+                            ".tabular-view .odd-row {"
                             "  background-color: #f9f9f9;"
                             "}"
-                            "hr {"
-                            "  border: 0;"
-                            "  height: 0;"
-                            "  border-top: 1px solid black;"
+                            ".section {"
+                            "  font-weight: bold;"
+                            "  padding-top:25px;"
                             "}" );
+
+  // We have some subtle differences between Qt based style and QWebKit style
+  if ( styleSheetType == StyleSheetType::Qt )
+  {
+    myStyle += QStringLiteral(
+                 ".tabular-view{ "
+                 "  border-collapse: collapse;"
+                 "  width: 95%;"
+                 "}"
+                 ".tabular-view th, .tabular-view td { "
+                 "  border:10px solid black;"
+                 "}" );
+  }
+  else
+  {
+    myStyle += QStringLiteral(
+                 "body { "
+                 "   margin: auto;"
+                 "   width: 97%;"
+                 "}"
+                 "table.tabular-view, table.list-view { "
+                 "   border-collapse: collapse;"
+                 "   table-layout:fixed;"
+                 "   width: 100% !important;"
+                 "}"
+                 // Override
+                 "h1 { "
+                 "   line-height: inherit;"
+                 "}"
+                 "td, th {"
+                 "   word-wrap: break-word; "
+                 "   vertical-align: top;"
+                 "}"
+                 // Set first column width
+                 ".list-view th:first-child, .list-view td:first-child {"
+                 "   width: 15%;"
+                 "}"
+                 ".list-view.highlight { "
+                 "   padding-left: inherit; "
+                 "}"
+                 // Set first column width for inner tables
+                 ".tabular-view th:first-child, .tabular-view td:first-child { "
+                 "   width: 20%; "
+                 "}"
+                 // Makes titles bg stand up
+                 ".tabular-view th.strong { "
+                 "   background-color: #eee; "
+                 "}"
+                 // Give some visual appearance to those ugly nested tables
+                 ".tabular-view th, .tabular-view td { "
+                 "   border: solid 1px #eee;"
+                 "}"
+               );
+  }
+
   return myStyle;
 }
 
