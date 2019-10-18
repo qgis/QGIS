@@ -484,13 +484,13 @@ class CORE_EXPORT QgsApplication : public QApplication
      * QString myStyle = QgsApplication::reportStyleSheet();
      * textBrowserReport->document()->setDefaultStyleSheet(myStyle);
      * if you are using a QgsWebView you will need to manually inject
-     * the CSS into a <head><script> tag instead.
+     * the CSS into a head -> script tag instead.
      *
      * \returns the stylesheet CSS rules.
      * \note if styleSheetType equals StyleSheetType::Qt you can use the special Qt extensions too,
      * for example the gradient fills for backgrounds.
      */
-    static QString reportStyleSheet( StyleSheetType styleSheetType = StyleSheetType::Qt );
+    static QString reportStyleSheet( QgsApplication::StyleSheetType styleSheetType = QgsApplication::StyleSheetType::Qt );
 
     /**
      * Convenience function to get a summary of the paths used in this
