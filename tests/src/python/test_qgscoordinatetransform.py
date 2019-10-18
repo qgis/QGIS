@@ -49,6 +49,13 @@ class TestQgsCoordinateTransform(unittest.TestCase):
         self.assertAlmostEqual(myExpectedValues[2], myProjectedExtent.xMaximum(), msg=myMessage)
         self.assertAlmostEqual(myExpectedValues[3], myProjectedExtent.yMaximum(), msg=myMessage)
 
+    def testTransformBoundingBoxSizeOverflowProtection(self):
+        """Test transform bounding box size overflow protection (github issue #32302)"""
+        extent = QgsRectangle(-176.0454709164556562, 89.9999999999998153, 180.0000000000000000, 90.0000000000000000)
+        transform = d = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:4236'), QgsCoordinateReferenceSystem('EPSG:3031'), QgsProject.instance())
+        # this test checks that the line below doesn't assert and crash
+        transformedExtent = transform.transformBoundingBox(extent)
+
     def testTransformQgsRectangle_Regression17600(self):
         """Test that rectangle transform is in the bindings"""
         myExtent = QgsRectangle(-1797107, 4392148, 6025926, 6616304)
