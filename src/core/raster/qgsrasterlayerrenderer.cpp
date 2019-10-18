@@ -238,6 +238,12 @@ bool QgsRasterLayerRenderer::render()
   if ( !mRasterViewPort )
     return true; // outside of layer extent - nothing to do
 
+  if ( mRasterViewPort->mWidth <= 0 || mRasterViewPort->mHeight <= 0 )
+  {
+    QgsDebugMsg( QStringLiteral( "Negative raster viewport width and/or height values, rendering stopped" ) );
+    return true; // likely a reprojection issue leading to negative values, bail out instead of freezing
+  }
+
   //R->draw( mPainter, mRasterViewPort, &mMapToPixel );
 
   QTime time;
