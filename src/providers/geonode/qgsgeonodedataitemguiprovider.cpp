@@ -17,6 +17,8 @@
 #include "qgsgeonodedataitems.h"
 #include "qgsgeonodenewconnection.h"
 
+#include <QMessageBox>
+
 void QgsGeoNodeDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
 {
   if ( QgsGeoNodeRootItem *rootItem = qobject_cast< QgsGeoNodeRootItem * >( item ) )
@@ -25,7 +27,7 @@ void QgsGeoNodeDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
     menu->addAction( actionNew );
   }
-  else if ( QgsGeoNodeRootItem *connItem = qobject_cast< QgsGeoNodeRootItem * >( item ) )
+  else if ( QgsGeoNodeConnectionItem *connItem = qobject_cast< QgsGeoNodeConnectionItem * >( item ) )
   {
     QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
     connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
@@ -61,6 +63,10 @@ void QgsGeoNodeDataItemGuiProvider::editConnection( QgsDataItem *item )
 
 void QgsGeoNodeDataItemGuiProvider::deleteConnection( QgsDataItem *item )
 {
+  if ( QMessageBox::question( nullptr, tr( "Delete Connection" ), tr( "Are you sure you want to delete the connection “%1”?" ).arg( item->name() ),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    return;
+
   QgsGeoNodeConnectionUtils::deleteConnection( item->name() );
   item->parent()->refresh();
 }
