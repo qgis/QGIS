@@ -1309,13 +1309,13 @@ QString QgsApplication::showSettings()
   return myState;
 }
 
-QString QgsApplication::reportStyleSheet( const StyleSheetType &styleSheetType )
+QString QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType styleSheetType )
 {
   //
-  // Make the style sheet desktop preferences aware by using qappliation
+  // Make the style sheet desktop preferences aware by using qapplication
   // palette as a basis for colors where appropriate
   //
-//  QColor myColor1 = palette().highlight().color();
+  //  QColor myColor1 = palette().highlight().color();
   QColor myColor1( Qt::lightGray );
   QColor myColor2 = myColor1;
   myColor2 = myColor2.lighter( 110 ); //10% lighter
@@ -1401,57 +1401,59 @@ QString QgsApplication::reportStyleSheet( const StyleSheetType &styleSheetType )
                             "}" );
 
   // We have some subtle differences between Qt based style and QWebKit style
-  if ( styleSheetType == StyleSheetType::Qt )
+  switch ( styleSheetType )
   {
-    myStyle += QStringLiteral(
-                 ".tabular-view{ "
-                 "  border-collapse: collapse;"
-                 "  width: 95%;"
-                 "}"
-                 ".tabular-view th, .tabular-view td { "
-                 "  border:10px solid black;"
-                 "}" );
-  }
-  else
-  {
-    myStyle += QStringLiteral(
-                 "body { "
-                 "   margin: auto;"
-                 "   width: 97%;"
-                 "}"
-                 "table.tabular-view, table.list-view { "
-                 "   border-collapse: collapse;"
-                 "   table-layout:fixed;"
-                 "   width: 100% !important;"
-                 "}"
-                 // Override
-                 "h1 { "
-                 "   line-height: inherit;"
-                 "}"
-                 "td, th {"
-                 "   word-wrap: break-word; "
-                 "   vertical-align: top;"
-                 "}"
-                 // Set first column width
-                 ".list-view th:first-child, .list-view td:first-child {"
-                 "   width: 15%;"
-                 "}"
-                 ".list-view.highlight { "
-                 "   padding-left: inherit; "
-                 "}"
-                 // Set first column width for inner tables
-                 ".tabular-view th:first-child, .tabular-view td:first-child { "
-                 "   width: 20%; "
-                 "}"
-                 // Makes titles bg stand up
-                 ".tabular-view th.strong { "
-                 "   background-color: #eee; "
-                 "}"
-                 // Give some visual appearance to those ugly nested tables
-                 ".tabular-view th, .tabular-view td { "
-                 "   border: solid 1px #eee;"
-                 "}"
-               );
+    case StyleSheetType::Qt:
+      myStyle += QStringLiteral(
+                   ".tabular-view{ "
+                   "  border-collapse: collapse;"
+                   "  width: 95%;"
+                   "}"
+                   ".tabular-view th, .tabular-view td { "
+                   "  border:10px solid black;"
+                   "}" );
+      break;
+
+    case StyleSheetType::WebBrowser:
+      myStyle += QStringLiteral(
+                   "body { "
+                   "   margin: auto;"
+                   "   width: 97%;"
+                   "}"
+                   "table.tabular-view, table.list-view { "
+                   "   border-collapse: collapse;"
+                   "   table-layout:fixed;"
+                   "   width: 100% !important;"
+                   "}"
+                   // Override
+                   "h1 { "
+                   "   line-height: inherit;"
+                   "}"
+                   "td, th {"
+                   "   word-wrap: break-word; "
+                   "   vertical-align: top;"
+                   "}"
+                   // Set first column width
+                   ".list-view th:first-child, .list-view td:first-child {"
+                   "   width: 15%;"
+                   "}"
+                   ".list-view.highlight { "
+                   "   padding-left: inherit; "
+                   "}"
+                   // Set first column width for inner tables
+                   ".tabular-view th:first-child, .tabular-view td:first-child { "
+                   "   width: 20%; "
+                   "}"
+                   // Makes titles bg stand up
+                   ".tabular-view th.strong { "
+                   "   background-color: #eee; "
+                   "}"
+                   // Give some visual appearance to those ugly nested tables
+                   ".tabular-view th, .tabular-view td { "
+                   "   border: solid 1px #eee;"
+                   "}"
+                 );
+      break;
   }
 
   return myStyle;
