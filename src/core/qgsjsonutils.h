@@ -23,7 +23,7 @@
 #include "qgsfields.h"
 
 #ifndef SIP_RUN
-#include <nlohmann/json_fwd.hpp>
+#include <json_fwd.hpp>
 using namespace nlohmann;
 #endif
 

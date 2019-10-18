@@ -72,6 +72,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/external
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
 )
 
 TARGET_LINK_LIBRARIES(globeplugin

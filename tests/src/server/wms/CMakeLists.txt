@@ -3,7 +3,8 @@
 # the UI file won't be wrapped!
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/external
-  ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
+
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/expression
@@ -14,13 +15,15 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/annotations
   ${CMAKE_SOURCE_DIR}/src/core/layout
-  ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/test
   ${CMAKE_SOURCE_DIR}/src/server
-  ${CMAKE_BINARY_DIR}/src/server
   ${CMAKE_SOURCE_DIR}/src/server/services
   ${CMAKE_SOURCE_DIR}/src/server/services/wms
-  ${CMAKE_SOURCE_DIR}/external
+
+  ${CMAKE_BINARY_DIR}/src/server
+  ${CMAKE_BINARY_DIR}/src/core
+
+  ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 #note for tests we should not include the moc of our
