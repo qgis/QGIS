@@ -760,7 +760,7 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
 
       snapUtils->setConfig( config );
       SelectedMatchFilter filter( tol, mLockedFeature.get() );
-      m = snapUtils->snapToMapRelaxed( mapPoint, &filter );
+      m = snapUtils->snapToMap( mapPoint, &filter, true );
 
       // we give priority to snap matches that are from selected features
       if ( filter.hasSelectedMatch() )
@@ -787,7 +787,7 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
 
     snapUtils->setConfig( config );
     SelectedMatchFilter filter( tol, mLockedFeature.get() );
-    m = snapUtils->snapToMapRelaxed( mapPoint, &filter );
+    m = snapUtils->snapToMap( mapPoint, &filter, true );
 
     // we give priority to snap matches that are from selected features
     if ( filter.hasSelectedMatch() )
@@ -802,7 +802,7 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
   if ( mLastSnap )
   {
     OneFeatureFilter filterLast( mLastSnap->layer(), mLastSnap->featureId() );
-    QgsPointLocator::Match lastMatch = snapUtils->snapToMapRelaxed( mapPoint, &filterLast );
+    QgsPointLocator::Match lastMatch = snapUtils->snapToMap( mapPoint, &filterLast, true );
     // but skip the the previously used feature if it would only snap to segment, while now we have snap to vertex
     // so that if there is a point on a line, it gets priority (as is usual with combined vertex+segment snapping)
     bool matchHasVertexLastHasEdge = m.hasVertex() && lastMatch.hasEdge();

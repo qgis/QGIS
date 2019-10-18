@@ -253,10 +253,10 @@ void TestQgsVertexTool::initTestCase()
   QgsMapCanvasSnappingUtils *snappingUtils = new QgsMapCanvasSnappingUtils( mCanvas, this );
   mCanvas->setSnappingUtils( snappingUtils );
 
-  initPointLocator( snappingUtils, mLayerLine );
-  initPointLocator( snappingUtils, mLayerPolygon );
-  initPointLocator( snappingUtils, mLayerPoint );
-  initPointLocator( snappingUtils, mLayerLineZ );
+  snappingUtils->locatorForLayer( mLayerLine )->init();
+  snappingUtils->locatorForLayer( mLayerPolygon )->init();
+  snappingUtils->locatorForLayer( mLayerPoint )->init();
+  snappingUtils->locatorForLayer( mLayerLineZ )->init();
 
   // create vertex tool
   mVertexTool = new QgsVertexTool( mCanvas, mAdvancedDigitizingDockWidget );
@@ -875,7 +875,7 @@ void TestQgsVertexTool::testActiveLayerPriority()
 
   // make one layer active and check its vertex is used
 
-  initPointLocator( mCanvas->snappingUtils(), layerLine2 );
+  mCanvas->snappingUtils()->locatorForLayer( layerLine2 )->init();
 
   mCanvas->setCurrentLayer( mLayerLine );
 

@@ -86,7 +86,7 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
   {
     case StepLimit:
 
-      match = mCanvas->snappingUtils()->snapToMapRelaxed( mMapPoint, &filter );
+      match = mCanvas->snappingUtils()->snapToMap( mMapPoint, &filter, true );
       if ( match.isValid() )
       {
         mIs3DLayer = QgsWkbTypes::hasZ( match.layer()->wkbType() );
@@ -128,7 +128,7 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
       }
 
       filter.setLayer( mVlayer );
-      match = mCanvas->snappingUtils()->snapToMapRelaxed( mMapPoint, &filter );
+      match = mCanvas->snappingUtils()->snapToMap( mMapPoint, &filter, true );
 
       if ( match.isValid() )
       {
@@ -234,7 +234,7 @@ void QgsMapToolTrimExtendFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
     switch ( mStep )
     {
       case StepLimit:
-        match = mCanvas->snappingUtils()->snapToMapRelaxed( mMapPoint, &filter );
+        match = mCanvas->snappingUtils()->snapToMap( mMapPoint, &filter, true );
         if ( mRubberBandLimit && mRubberBandLimit->isVisible() )
         {
           if ( getPoints( match, pLimit1, pLimit2 ) )
@@ -248,7 +248,7 @@ void QgsMapToolTrimExtendFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
         if ( mIsModified )
         {
           filter.setLayer( mVlayer );
-          match = mCanvas->snappingUtils()->snapToMapRelaxed( mMapPoint, &filter );
+          match = mCanvas->snappingUtils()->snapToMap( mMapPoint, &filter, true );
 
           if ( match.layer() )
           {

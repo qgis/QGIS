@@ -165,10 +165,10 @@ void TestQgsMapToolReshape::initTestCase()
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLineZ << mLayerPointZ << mLayerPolygonZ );
   mCanvas->setCurrentLayer( mLayerLineZ );
 
-  initPointLocator( mCanvas->snappingUtils(), mLayerLineZ );
-  initPointLocator( mCanvas->snappingUtils(), mLayerPointZ );
-  initPointLocator( mCanvas->snappingUtils(), mLayerPolygonZ );
-  initPointLocator( mCanvas->snappingUtils(), mLayerTopo );
+  mCanvas->snappingUtils()->locatorForLayer( mLayerLineZ )->init();
+  mCanvas->snappingUtils()->locatorForLayer( mLayerPointZ )->init();
+  mCanvas->snappingUtils()->locatorForLayer( mLayerPolygonZ )->init();
+  mCanvas->snappingUtils()->locatorForLayer( mLayerTopo )->init();
 
   // create the tool
   mCaptureTool = new QgsMapToolReshape( mCanvas );

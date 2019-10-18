@@ -68,27 +68,21 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
      */
     QgsPointLocator *locatorForLayer( QgsVectorLayer *vl );
 
-    //! Snap to map according to the current configuration. Optional filter allows discarding unwanted matches.
-    QgsPointLocator::Match snapToMap( QPoint point, QgsPointLocator::MatchFilter *filter = nullptr );
-    QgsPointLocator::Match snapToMap( const QgsPointXY &pointMap, QgsPointLocator::MatchFilter *filter = nullptr );
-
     /**
      * Snap to map according to the current configuration.
-     * Unlike the snapToMap() method, this method is non blocking and return matches from point locators which
-     * are not currently indexing
      * \param point point in canvas coordinates
      * \param filter allows discarding unwanted matches.
+     * This method is either blocking or non blocking according to \a relaxed parameter passed
      */
-    QgsPointLocator::Match snapToMapRelaxed( QPoint point, QgsPointLocator::MatchFilter *filter = nullptr );
+    QgsPointLocator::Match snapToMap( QPoint point, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false );
 
     /**
      * Snap to map according to the current configuration.
-     * Unlike the snapToMap() method, this method is non blocking and return matches from point locators which
-     * are not currently indexing
-     * \param pointMap point in map coordinates
+     * \param point point in canvas coordinates
      * \param filter allows discarding unwanted matches.
+     * This method is either blocking or non blocking according to \a relaxed parameter passed
      */
-    QgsPointLocator::Match snapToMapRelaxed( const QgsPointXY &pointMap, QgsPointLocator::MatchFilter *filter = nullptr );
+    QgsPointLocator::Match snapToMap( const QgsPointXY &pointMap, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false );
 
     //! Snap to current layer
     QgsPointLocator::Match snapToCurrentLayer( QPoint point, QgsPointLocator::Types type, QgsPointLocator::MatchFilter *filter = nullptr );
@@ -243,14 +237,6 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     bool isIndexPrepared( QgsPointLocator *loc, const QgsRectangle &areaOfInterest );
     //! initialize index for layers where it makes sense (according to the indexing strategy)
     void prepareIndex( const QList<LayerAndAreaOfInterest> &layers, bool relaxed );
-
-    /**
-     * Internal snap to map according to given point and the current configuration.
-     * \param pointMap point in map coordinates
-     * \param filter allows discarding unwanted matches.
-     * This method is either blocking or non blocking according to \a relaxed parameter passed
-     */
-    QgsPointLocator::Match _snapToMap( const QgsPointXY &pointMap, QgsPointLocator::MatchFilter *filter, bool relaxed );
 
   private:
     // environment

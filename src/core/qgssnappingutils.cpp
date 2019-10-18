@@ -227,24 +227,9 @@ static QgsPointLocator::Types _snappingTypeToPointLocatorType( QgsSnappingConfig
   }
 }
 
-QgsPointLocator::Match QgsSnappingUtils::snapToMap( QPoint point, QgsPointLocator::MatchFilter *filter )
+QgsPointLocator::Match QgsSnappingUtils::snapToMap( QPoint point, QgsPointLocator::MatchFilter *filter, bool relaxed )
 {
-  return snapToMap( mMapSettings.mapToPixel().toMapCoordinates( point ), filter );
-}
-
-QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, QgsPointLocator::MatchFilter *filter )
-{
-  return _snapToMap( pointMap, filter, false );
-}
-
-QgsPointLocator::Match QgsSnappingUtils::snapToMapRelaxed( QPoint point, QgsPointLocator::MatchFilter *filter )
-{
-  return snapToMapRelaxed( mMapSettings.mapToPixel().toMapCoordinates( point ), filter );
-}
-
-QgsPointLocator::Match QgsSnappingUtils::snapToMapRelaxed( const QgsPointXY &pointMap, QgsPointLocator::MatchFilter *filter )
-{
-  return _snapToMap( pointMap, filter, true );
+  return snapToMap( mMapSettings.mapToPixel().toMapCoordinates( point ), filter, relaxed );
 }
 
 inline QgsRectangle _areaOfInterest( const QgsPointXY &point, double tolerance )
@@ -253,7 +238,7 @@ inline QgsRectangle _areaOfInterest( const QgsPointXY &point, double tolerance )
                        point.x() + tolerance, point.y() + tolerance );
 }
 
-QgsPointLocator::Match QgsSnappingUtils::_snapToMap( const QgsPointXY &pointMap, QgsPointLocator::MatchFilter *filter, bool relaxed )
+QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, QgsPointLocator::MatchFilter *filter, bool relaxed )
 {
   if ( !mMapSettings.hasValidSettings() || !mSnappingConfig.enabled() )
   {

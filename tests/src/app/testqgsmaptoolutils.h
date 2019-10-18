@@ -23,13 +23,6 @@
 #include "qgsmapmouseevent.h"
 #include "qgssnappingutils.h"
 
-// initialize point locator
-void initPointLocator( QgsSnappingUtils *snappingUtils, QgsVectorLayer *layer )
-{
-  QgsPointLocator *loc = snappingUtils->locatorForLayer( layer );
-  loc->init();
-}
-
 /**
  * \ingroup UnitTests
  */
