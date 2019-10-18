@@ -645,6 +645,10 @@ bool QgsPointLocator::init( int maxFeaturesToIndex, bool relaxed )
 void QgsPointLocator::waitForFinished() const
 {
   mInitTask->waitForFinished();
+
+  // force process of signal emitted from task thread
+  // so rebuildIndexFinished and taskTerminated are called
+  QCoreApplication::processEvents();
 }
 
 bool QgsPointLocator::hasIndex() const
