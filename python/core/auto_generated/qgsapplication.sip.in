@@ -509,7 +509,7 @@ Gets application icon
 Returns whether this machine uses big or little endian
 %End
 
-    static QString reportStyleSheet( const StyleSheetType &styleSheetType = StyleSheetType::Qt );
+    static QString reportStyleSheet( QgsApplication::StyleSheetType styleSheetType = QgsApplication::StyleSheetType::Qt );
 %Docstring
 Returns a css style sheet for reports, the ``styleSheetType`` argument
 determines what type of stylesheet is supported by the widget.
@@ -518,7 +518,7 @@ Typically you will use this method by doing:
 QString myStyle = QgsApplication.reportStyleSheet();
 textBrowserReport->document()->setDefaultStyleSheet(myStyle);
 if you are using a QgsWebView you will need to manually inject
-the CSS into a <head><script> tag instead.
+the CSS into a head -> script tag instead.
 
 :return: the stylesheet CSS rules.
 
