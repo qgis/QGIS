@@ -490,7 +490,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \note if styleSheetType equals StyleSheetType::Qt you can use the special Qt extensions too,
      * for example the gradient fills for backgrounds.
      */
-    static QString reportStyleSheet( const StyleSheetType &styleSheetType = StyleSheetType::Qt );
+    static QString reportStyleSheet( StyleSheetType styleSheetType = StyleSheetType::Qt );
 
     /**
      * Convenience function to get a summary of the paths used in this
