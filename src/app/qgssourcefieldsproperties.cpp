@@ -279,7 +279,7 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
   // ok, in theory, we could support any field type that
   // can contain something convertible to a date/datetime, but
   // let's keep it simple for now
-  if ( field.isDateOrTime() )
+  if ( field.isDateOrTime() || field.type() == QVariant::String )
   {
     oapifAttrItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
     oapifAttrItem->setCheckState( mLayer->includeAttributesOapifTemporalFilters().contains( field.name() ) ? Qt::Checked : Qt::Unchecked );

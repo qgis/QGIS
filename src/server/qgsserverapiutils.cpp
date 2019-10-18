@@ -83,6 +83,10 @@ template<typename T, class T2> T QgsServerApiUtils::parseTemporalInterval( const
     }
   };
   const QStringList parts { interval.split( '/' ) };
+  if ( parts.length() != 2 )
+  {
+    throw QgsServerApiBadRequestException( QStringLiteral( "%1 is not a valid datetime interval." ).arg( interval ), QStringLiteral( "Server" ), Qgis::Critical );
+  }
   return { parseDate( parts[0] ), parseDate( parts[1] ) };
 
 }
@@ -103,6 +107,25 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
   QgsExpression expression;
   QStringList conditions;
 
+  QSet<QString> temporalFields { layer->includeAttributesOapifTemporalFilters() };
+  // Automatically pick any date/datetime fields if empty
+  if ( temporalFields.isEmpty() )
+  {
+    const auto constFields { layer->fields() };
+    for ( const auto &f : constFields )
+    {
+      if ( f.isDateOrTime() )
+      {
+        temporalFields.insert( f.name() );
+      }
+    }
+  }
+
+  if ( temporalFields.isEmpty() )
+  {
+    return expression;
+  }
+
   // Is it an interval?
   if ( interval.contains( '/' ) )
   {
@@ -110,7 +133,7 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
     try
     {
       TemporalDateInterval dateInterval { QgsServerApiUtils::parseTemporalDateInterval( interval ) };
-      for ( const auto &fieldName : layer->includeAttributesOapifTemporalFilters() )
+      for ( const auto &fieldName : temporalFields )
       {
         int fieldIdx { layer->fields().lookupField( fieldName ) };
         if ( fieldIdx < 0 )
@@ -155,7 +178,7 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
     catch ( QgsServerApiBadRequestException & )    // try datetime
     {
       TemporalDateTimeInterval dateTimeInterval { QgsServerApiUtils::parseTemporalDateTimeInterval( interval ) };
-      for ( const auto &fieldName : layer->includeAttributesOapifTemporalFilters() )
+      for ( const auto &fieldName : qgis::as_const( temporalFields ) )
       {
         int fieldIdx { layer->fields().lookupField( fieldName ) };
         if ( fieldIdx < 0 )
@@ -199,7 +222,7 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
   }
   else // plain value
   {
-    for ( const auto &fieldName : layer->includeAttributesOapifTemporalFilters() )
+    for ( const auto &fieldName : qgis::as_const( temporalFields ) )
     {
       int fieldIdx { layer->fields().lookupField( fieldName ) };
       if ( fieldIdx < 0 )

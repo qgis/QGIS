@@ -59,12 +59,20 @@ class SERVER_EXPORT QgsServerApiUtils
      */
     static QgsRectangle parseBbox( const QString &bbox );
 
+    /**
+     * A temporal date interval, if only one of "begin" or "end" are valid, the interval is open.
+     * If both "begin" and "end"a re invalid the  interval is invalid.
+     */
     struct TemporalDateInterval
     {
       QDate begin;
       QDate end;
     };
 
+    /**
+     * A temporal datetime interval, if only one of "begin" or "end" are valid, the interval is open.
+     * If both "begin" and "end"a re invalid the  interval is invalid.
+     */
     struct TemporalDateTimeInterval
     {
       QDateTime begin;
@@ -72,14 +80,21 @@ class SERVER_EXPORT QgsServerApiUtils
     };
 
     /**
-     * Parse a date time \a interval and returns a TemporalInterval
+     * Parse a date \a interval and returns a TemporalDateInterval
      *
      * \throws QgsServerApiBadRequestException if interval cannot be parsed
      */
     static TemporalDateInterval parseTemporalDateInterval( const QString &interval ) SIP_THROW( QgsServerApiBadRequestException );
+
+    /**
+     * Parse a datetime \a interval and returns a TemporalDateTimeInterval
+     *
+     * \throws QgsServerApiBadRequestException if interval cannot be parsed
+     */
     static TemporalDateTimeInterval parseTemporalDateTimeInterval( const QString &interval ) SIP_THROW( QgsServerApiBadRequestException );
 
 ///@cond PRIVATE
+    // T is TemporalDateInterval|TemporalDateTimeInterval, T2 is QDate|QdateTime
     template<typename T, class T2> static T parseTemporalInterval( const QString &interval ) SIP_SKIP;
 /// @endcond
 
@@ -99,9 +114,6 @@ class SERVER_EXPORT QgsServerApiUtils
 
     /**
      * layerExtent returns json array with [xMin,yMin,xMax,yMax] CRS84 extent for the given \a layer
-     * FIXME: the OpenAPI swagger docs say that it is inverted axis order: West, north, east, south edges of the spatial extent.
-     *        but current example implementations and GDAL assume it's not.
-     * TODO: maybe consider advertised extent instead?
      */
     static json layerExtent( const QgsVectorLayer *layer ) SIP_SKIP;
 

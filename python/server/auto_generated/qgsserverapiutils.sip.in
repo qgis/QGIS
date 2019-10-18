@@ -49,11 +49,17 @@ Parses a comma separated ``bbox`` into a (possibly empty) :py:class:`QgsRectangl
 
     static TemporalDateInterval parseTemporalDateInterval( const QString &interval ) throw( QgsServerApiBadRequestException );
 %Docstring
-Parse a date time ``interval`` and returns a TemporalInterval
+Parse a date ``interval`` and returns a TemporalDateInterval
 
 :raises QgsServerApiBadRequestException: if interval cannot be parsed
 %End
+
     static TemporalDateTimeInterval parseTemporalDateTimeInterval( const QString &interval ) throw( QgsServerApiBadRequestException );
+%Docstring
+Parse a datetime ``interval`` and returns a TemporalDateTimeInterval
+
+:raises QgsServerApiBadRequestException: if interval cannot be parsed
+%End
 
 
 

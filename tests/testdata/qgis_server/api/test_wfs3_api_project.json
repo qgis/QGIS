@@ -53,6 +53,17 @@ Content-Type: application/openapi+json;version=3.0
         },
         "style": "form"
       },
+      "datetime": {
+        "description": "Either a date-time or an interval, open or closed. Date and time expressions\nadhere to RFC 3339. Open intervals are expressed using double-dots.\n\nExamples:\n   * A date-time: \"2018-02-12T23:20:50Z\"\n   * A closed interval: \"2018-02-12T00:00:00Z/2018-03-18T12:31:12Z\"\n    * Open intervals: \"2018-02-12T00:00:00Z/..\" or \"../2018-03-18T12:31:12Z\"\nOnly features that have a temporal property that intersects the value of\n`datetime` are selected.\nIf a feature has multiple temporal properties, it is the decision of the\nserver whether only a single temporal property is used to determine\nthe extent or all relevant temporal properties.",
+        "explode": false,
+        "in": "query",
+        "name": "datetime",
+        "required": false,
+        "schema": {
+          "type": "string"
+        },
+        "style": "form"
+      },
       "featureId": {
         "description": "Local identifier of a specific feature",
         "in": "path",
@@ -118,17 +129,6 @@ Content-Type: application/openapi+json;version=3.0
             "hits",
             "results"
           ],
-          "type": "string"
-        },
-        "style": "form"
-      },
-      "time": {
-        "description": "Either a date-time or a period string that adheres to RFC 3339. Examples:\n\n* A date-time: \"2018-02-12T23:20:50Z\"\n* A period: \"2018-02-12T00:00:00Z/2018-03-18T12:31:12Z\" or \"2018-02-12T00:00:00Z/P1M6DT12H31M12S\"\n\nOnly features that have a temporal property that intersects the value of\n`time` are selected.\n\nIf a feature has multiple temporal properties, it is the decision of the\nserver whether only a single temporal property is used to determine\nthe extent or all relevant temporal properties.",
-        "explode": false,
-        "in": "query",
-        "name": "time",
-        "required": false,
-        "schema": {
           "type": "string"
         },
         "style": "form"

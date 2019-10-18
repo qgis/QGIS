@@ -30,6 +30,7 @@
 #include "qgsserverinterface.h"
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgslogger.h"
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsfilterrestorer.h"
@@ -759,12 +760,38 @@ QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::parameters(
 
   // datetime
   QgsServerQueryStringParameter datetime { QStringLiteral( "datetime" ), false,
-      QgsServerQueryStringParameter::Type::Integer,
-      QStringLiteral( "Date time filter" ),
+      QgsServerQueryStringParameter::Type::String,
+      QStringLiteral( "Datetime filter" ),
                                          };
-  datetime.setCustomValidator( [ = ]( const QgsServerApiContext &, QVariant & value ) -> bool
+  datetime.setCustomValidator( [ ]( const QgsServerApiContext &, QVariant & value ) -> bool
   {
-    // TODO
+    const QString stringValue { value.toString() };
+    if ( stringValue.contains( '/' ) )
+    {
+      try
+      {
+        QgsServerApiUtils::parseTemporalDateInterval( stringValue );
+      }
+      catch ( QgsServerException & )
+      {
+        try
+        {
+          QgsServerApiUtils::parseTemporalDateTimeInterval( stringValue );
+        }
+        catch ( QgsServerException & )
+        {
+          return false;
+        }
+      }
+    }
+    else
+    {
+      if ( ! QDate::fromString( stringValue, Qt::DateFormat::ISODate ).isValid( ) &&
+           ! QDateTime::fromString( stringValue, Qt::DateFormat::ISODate ).isValid( ) )
+      {
+        return false;
+      }
+    }
     return true;
   } );
   params.push_back( datetime );
@@ -870,7 +897,7 @@ json QgsWfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context 
         { "$ref", "#/components/parameters/resultType" },
         { "$ref", "#/components/parameters/bbox" },
         { "$ref", "#/components/parameters/bbox-crs" },
-        { "$ref", "#/components/parameters/time" },
+        { "$ref", "#/components/parameters/datetime" },
       }
     };
 
@@ -1044,7 +1071,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
     QString filterExpression;
     QStringList expressions;
 
-    /*/  datetime
+    //  datetime
     const QString datetime { context.request()->queryParameter( QStringLiteral( "datetime" ) ) };
     if ( ! datetime.isEmpty() )
     {
@@ -1057,7 +1084,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       {
         expressions.push_back( timeExpression.expression() );
       }
-    }*/
+    }
 
     // Inputs are valid, process request
     QgsFeatureRequest featureRequest = filteredRequest( mapLayer, context );
@@ -1092,8 +1119,13 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
     }
 
     // Join all expression filters
-    filterExpression = expressions.join( QStringLiteral( " AND " ) );
-    featureRequest.setFilterExpression( filterExpression );
+    if ( ! expressions.isEmpty() )
+    {
+      filterExpression = expressions.join( QStringLiteral( " AND " ) );
+      featureRequest.setFilterExpression( filterExpression );
+      QgsDebugMsgLevel( QStringLiteral( "Filter expression: %1" ).arg( featureRequest.filterExpression()->expression() ), 4 );
+    }
+
 
     // WFS3 core specs only serves 4326
     featureRequest.setDestinationCrs( crs, context.project()->transformContext() );
