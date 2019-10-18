@@ -26,6 +26,7 @@
 #include "qgsproject.h"
 #include "qgsserverprojectutils.h"
 #include "qgsserverapicontext.h"
+#include "qgsserverexception.h"
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsaccesscontrol.h"
@@ -57,6 +58,44 @@ class SERVER_EXPORT QgsServerApiUtils
      * \note Z values (i.e. a 6 elements bbox) are silently discarded
      */
     static QgsRectangle parseBbox( const QString &bbox );
+
+    struct TemporalDateInterval
+    {
+      QDate begin;
+      QDate end;
+    };
+
+    struct TemporalDateTimeInterval
+    {
+      QDateTime begin;
+      QDateTime end;
+    };
+
+    /**
+     * Parse a date time \a interval and returns a TemporalInterval
+     *
+     * \throws QgsServerApiBadRequestException if interval cannot be parsed
+     */
+    static TemporalDateInterval parseTemporalDateInterval( const QString &interval ) SIP_THROW( QgsServerApiBadRequestException );
+    static TemporalDateTimeInterval parseTemporalDateTimeInterval( const QString &interval ) SIP_THROW( QgsServerApiBadRequestException );
+
+///@cond PRIVATE
+    template<typename T, class T2> static T parseTemporalInterval( const QString &interval ) SIP_SKIP;
+/// @endcond
+
+
+    /**
+     * Parse the \a interval and constructs a (possibily invalid) temporal filter expression for the given \a layer
+     *
+     * Syntax:
+     *
+     *   interval-closed     = date-time "/" date-time
+     *   interval-open-start = [".."] "/" date-time
+     *   interval-open-end   = date-time "/" [".."]
+     *   interval            = interval-closed / interval-open-start / interval-open-end
+     *   datetime            = date-time / interval
+     */
+    static QgsExpression temporalFilterExpression( const QgsVectorLayer *layer, const QString &interval );
 
     /**
      * layerExtent returns json array with [xMin,yMin,xMax,yMax] CRS84 extent for the given \a layer

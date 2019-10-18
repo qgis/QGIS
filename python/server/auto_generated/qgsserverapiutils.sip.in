@@ -35,6 +35,41 @@ Parses a comma separated ``bbox`` into a (possibly empty) :py:class:`QgsRectangl
    Z values (i.e. a 6 elements bbox) are silently discarded
 %End
 
+    struct TemporalDateInterval
+    {
+      QDate begin;
+      QDate end;
+    };
+
+    struct TemporalDateTimeInterval
+    {
+      QDateTime begin;
+      QDateTime end;
+    };
+
+    static TemporalDateInterval parseTemporalDateInterval( const QString &interval ) throw( QgsServerApiBadRequestException );
+%Docstring
+Parse a date time ``interval`` and returns a TemporalInterval
+
+:raises QgsServerApiBadRequestException: if interval cannot be parsed
+%End
+    static TemporalDateTimeInterval parseTemporalDateTimeInterval( const QString &interval ) throw( QgsServerApiBadRequestException );
+
+
+
+    static QgsExpression temporalFilterExpression( const QgsVectorLayer *layer, const QString &interval );
+%Docstring
+Parse the ``interval`` and constructs a (possibily invalid) temporal filter expression for the given ``layer``
+
+Syntax:
+
+interval-closed     = date-time "/" date-time
+interval-open-start = [".."] "/" date-time
+interval-open-end   = date-time "/" [".."]
+interval            = interval-closed / interval-open-start / interval-open-end
+datetime            = date-time / interval
+%End
+
 
     static QgsCoordinateReferenceSystem parseCrs( const QString &bboxCrs );
 %Docstring

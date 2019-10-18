@@ -79,6 +79,7 @@ class APP_EXPORT QgsSourceFieldsProperties : public QWidget, private Ui_QgsSourc
       AttrCommentCol,
       AttrWMSCol,
       AttrWFSCol,
+      AttrOapifDateTimeCol, //! OAPIF (WFS3) datetime filter column
       AttrColCount,
     };
 

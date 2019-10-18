@@ -756,6 +756,20 @@ QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::parameters(
   } );
   params.push_back( limit );
 
+
+  // datetime
+  QgsServerQueryStringParameter datetime { QStringLiteral( "datetime" ), false,
+      QgsServerQueryStringParameter::Type::Integer,
+      QStringLiteral( "Date time filter" ),
+                                         };
+  datetime.setCustomValidator( [ = ]( const QgsServerApiContext &, QVariant & value ) -> bool
+  {
+    // TODO
+    return true;
+  } );
+  params.push_back( datetime );
+
+
   // Offset
   QgsServerQueryStringParameter offset { QStringLiteral( "offset" ), false,
                                          QgsServerQueryStringParameter::Type::Integer,
@@ -856,7 +870,7 @@ json QgsWfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context 
         { "$ref", "#/components/parameters/resultType" },
         { "$ref", "#/components/parameters/bbox" },
         { "$ref", "#/components/parameters/bbox-crs" },
-        // TODO: {{ "$ref", "#/components/parameters/time" }},
+        { "$ref", "#/components/parameters/time" },
       }
     };
 
@@ -1025,15 +1039,25 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
     // so we do our own paging with "offset")
     const qlonglong offset { params.value( QStringLiteral( "offset" ) ).toLongLong( &ok ) };
 
-    // TODO: make the max limit configurable
     const qlonglong limit {  params.value( QStringLiteral( "limit" ) ).toLongLong( &ok ) };
 
-    // TODO: implement time
-    const QString time { context.request()->queryParameter( QStringLiteral( "time" ) ) };
-    if ( ! time.isEmpty() )
+    QString filterExpression;
+    QStringList expressions;
+
+    /*/  datetime
+    const QString datetime { context.request()->queryParameter( QStringLiteral( "datetime" ) ) };
+    if ( ! datetime.isEmpty() )
     {
-      throw QgsServerApiNotImplementedException( QStringLiteral( "Time filter is not implemented" ) ) ;
-    }
+      const QgsExpression timeExpression { QgsServerApiUtils::temporalFilterExpression( mapLayer, datetime ) };
+      if ( ! timeExpression.isValid() )
+      {
+        throw QgsServerApiBadRequestException( QStringLiteral( "Invalid datetime filter expression: %1 " ).arg( datetime ) );
+      }
+      else
+      {
+        expressions.push_back( timeExpression.expression() );
+      }
+    }*/
 
     // Inputs are valid, process request
     QgsFeatureRequest featureRequest = filteredRequest( mapLayer, context );
@@ -1044,10 +1068,9 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       featureRequest.setFilterRect( ct.transform( filterRect ) );
     }
 
-    QString filterExpression;
     if ( ! attrFilters.isEmpty() )
     {
-      QStringList expressions;
+
       if ( featureRequest.filterExpression() && ! featureRequest.filterExpression()->expression().isEmpty() )
       {
         expressions.push_back( featureRequest.filterExpression()->expression() );
@@ -1066,9 +1089,11 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
           expressions.push_back( QStringLiteral( "\"%1\" = '%2'" ).arg( it.key() ).arg( it.value() ) );
         }
       }
-      filterExpression = expressions.join( QStringLiteral( " AND " ) );
-      featureRequest.setFilterExpression( filterExpression );
     }
+
+    // Join all expression filters
+    filterExpression = expressions.join( QStringLiteral( " AND " ) );
+    featureRequest.setFilterExpression( filterExpression );
 
     // WFS3 core specs only serves 4326
     featureRequest.setDestinationCrs( crs, context.project()->transformContext() );

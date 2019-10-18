@@ -1776,6 +1776,18 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void setExcludeAttributesWfs( const QSet<QString> &att ) { mExcludeAttributesWFS = att; }
 
     /**
+     * Returns the attributes that are used for temporal filtering with QGIS server OAPIF (WFS3).
+     * \since: QGIS 3.12
+     */
+    QSet<QString> includeAttributesOapifTemporalFilters() const { return mIncludeAttributesOapifTemporalFilters; }
+
+    /**
+     * Sets the attributes that are used for temporal filtering with QGIS server OAPIF (WFS3).
+     * \since: QGIS 3.12
+     */
+    void setIncludeAttributesOapifTemporalFilters( const QSet<QString> &att ) { mIncludeAttributesOapifTemporalFilters = att; }
+
+    /**
      * Deletes an attribute field (but does not commit it).
      *
      * \note Calls to deleteAttribute() are only valid for layers in which edits have been enabled
@@ -2727,6 +2739,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! Attributes which are not published in WFS
     QSet<QString> mExcludeAttributesWFS;
+
+    //! Attributes which are used for OAPIF temporal filtering
+    QSet<QString> mIncludeAttributesOapifTemporalFilters;
 
     //! Geometry type as defined in enum WkbType (qgis.h)
     QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;

@@ -24,6 +24,7 @@
 #include "qgsserverprojectutils.h"
 #include "qgsmessagelog.h"
 
+
 #include "nlohmann/json.hpp"
 
 #include <QUrl>
@@ -59,6 +60,199 @@ QgsRectangle QgsServerApiUtils::parseBbox( const QString &bbox )
     }
   }
   return QgsRectangle();
+}
+
+
+template<typename T, class T2> T QgsServerApiUtils::parseTemporalInterval( const QString &interval )
+{
+  auto parseDate = [ ]( const QString & date ) -> T2
+  {
+    T2 result;
+    if ( date == QStringLiteral( ".." ) || date.isEmpty() )
+    {
+      return result;
+    }
+    else
+    {
+      T2 result { T2::fromString( date, Qt::DateFormat::ISODate ) };
+      if ( !result.isValid() )
+      {
+        throw QgsServerApiBadRequestException( QStringLiteral( "%1 is not a valid date/datetime." ).arg( date ) );
+      }
+      return result;
+    }
+  };
+  const QStringList parts { interval.split( '/' ) };
+  return { parseDate( parts[0] ), parseDate( parts[1] ) };
+
+}
+
+QgsServerApiUtils::TemporalDateInterval QgsServerApiUtils::parseTemporalDateInterval( const QString &interval )
+{
+  return QgsServerApiUtils::parseTemporalInterval<QgsServerApiUtils::TemporalDateInterval, QDate>( interval );
+}
+
+QgsServerApiUtils::TemporalDateTimeInterval QgsServerApiUtils::parseTemporalDateTimeInterval( const QString &interval )
+{
+  return QgsServerApiUtils::parseTemporalInterval<QgsServerApiUtils::TemporalDateTimeInterval, QDateTime>( interval );
+}
+
+
+QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer *layer, const QString &interval )
+{
+  QgsExpression expression;
+  QStringList conditions;
+
+  // Is it an interval?
+  if ( interval.contains( '/' ) )
+  {
+    // Try date first
+    try
+    {
+      TemporalDateInterval dateInterval { QgsServerApiUtils::parseTemporalDateInterval( interval ) };
+      for ( const auto &fieldName : layer->includeAttributesOapifTemporalFilters() )
+      {
+        int fieldIdx { layer->fields().lookupField( fieldName ) };
+        if ( fieldIdx < 0 )
+        {
+          continue;
+        }
+        const QgsField field { layer->fields().at( fieldIdx ) };
+        QString fieldValue;
+        if ( field.type() == QVariant::Date )
+        {
+          fieldValue = QStringLiteral( R"raw("%1")raw" ).arg( fieldName );
+        }
+        else
+        {
+          fieldValue = QStringLiteral( R"raw(to_date( "%1" ))raw" ).arg( fieldName );
+        }
+
+        if ( ! dateInterval.begin.isValid( ) && ! dateInterval.end.isValid( ) )
+        {
+          // Nothing to do here: log?
+        }
+        else
+        {
+          if ( dateInterval.begin.isValid( ) )
+          {
+            conditions.push_back( QStringLiteral( R"raw(%1 >= to_date('%2'))raw" )
+                                  .arg( fieldValue )
+                                  .arg( dateInterval.begin.toString( Qt::DateFormat::ISODate ) ) );
+
+          }
+          if ( dateInterval.end.isValid( ) )
+          {
+            conditions.push_back( QStringLiteral( R"raw(%1 <= to_date('%2'))raw" )
+                                  .arg( fieldValue )
+                                  .arg( dateInterval.end.toString( Qt::DateFormat::ISODate ) ) );
+
+          }
+        }
+
+      }
+    }
+    catch ( QgsServerApiBadRequestException & )    // try datetime
+    {
+      TemporalDateTimeInterval dateTimeInterval { QgsServerApiUtils::parseTemporalDateTimeInterval( interval ) };
+      for ( const auto &fieldName : layer->includeAttributesOapifTemporalFilters() )
+      {
+        int fieldIdx { layer->fields().lookupField( fieldName ) };
+        if ( fieldIdx < 0 )
+        {
+          continue;
+        }
+        const QgsField field { layer->fields().at( fieldIdx ) };
+        QString fieldValue;
+        if ( field.type() == QVariant::Date )
+        {
+          fieldValue = QStringLiteral( R"raw("%1")raw" ).arg( fieldName );
+        }
+        else
+        {
+          fieldValue = QStringLiteral( R"raw(to_datetime( "%1" ))raw" ).arg( fieldName );
+        }
+
+        if ( ! dateTimeInterval.begin.isValid( ) && ! dateTimeInterval.end.isValid( ) )
+        {
+          // Nothing to do here: log?
+        }
+        else
+        {
+          if ( dateTimeInterval.begin.isValid( ) )
+          {
+            conditions.push_back( QStringLiteral( R"raw(%1 >= to_datetime('%2'))raw" )
+                                  .arg( fieldValue )
+                                  .arg( dateTimeInterval.begin.toString( Qt::DateFormat::ISODate ) ) );
+
+          }
+          if ( dateTimeInterval.end.isValid( ) )
+          {
+            conditions.push_back( QStringLiteral( R"raw(%1 <= to_datetime('%2'))raw" )
+                                  .arg( fieldValue )
+                                  .arg( dateTimeInterval.end.toString( Qt::DateFormat::ISODate ) ) );
+
+          }
+        }
+      }
+    }
+  }
+  else // plain value
+  {
+    for ( const auto &fieldName : layer->includeAttributesOapifTemporalFilters() )
+    {
+      int fieldIdx { layer->fields().lookupField( fieldName ) };
+      if ( fieldIdx < 0 )
+      {
+        continue;
+      }
+
+      const QgsField field { layer->fields().at( fieldIdx ) };
+
+      if ( field.type() == QVariant::Date )
+      {
+        conditions.push_back( QStringLiteral( R"raw("%1" = to_date('%2'))raw" )
+                              .arg( fieldName )
+                              .arg( interval ) );
+      }
+      else if ( field.type() == QVariant::DateTime )
+      {
+        conditions.push_back( QStringLiteral( R"raw("%1" = to_datetime('%2'))raw" )
+                              .arg( fieldName )
+                              .arg( interval ) );
+      }
+      else
+      {
+        // Guess the type from input
+        QDateTime dateTime { QDateTime::fromString( interval, Qt::DateFormat::ISODate )};
+        if ( dateTime.isValid() )
+        {
+          conditions.push_back( QStringLiteral( R"raw(to_datetime("%1") = to_datetime('%2'))raw" )
+                                .arg( fieldName )
+                                .arg( interval ) );
+        }
+        else
+        {
+          QDate date { QDate::fromString( interval, Qt::DateFormat::ISODate )};
+          if ( date.isValid() )
+          {
+            conditions.push_back( QStringLiteral( R"raw(to_date("%1") = to_date('%2'))raw" )
+                                  .arg( fieldName )
+                                  .arg( interval ) );
+          }
+          else
+          {
+            // Nothing done here, log?
+          }
+        }
+      }
+    }
+  }
+  if ( ! conditions.isEmpty() )
+  {
+    expression.setExpression( conditions.join( QStringLiteral( " AND " ) ) );
+  }
+  return expression;
 }
 
 json QgsServerApiUtils::layerExtent( const QgsVectorLayer *layer )

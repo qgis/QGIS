@@ -92,7 +92,7 @@ class QgsServerAPIUtilsTest(QgsServerTestBase):
     def test_append_path(self):
 
         path = QgsServerApiUtils.appendMapParameter('/wfs3', QtCore.QUrl('https://www.qgis.org/wfs3?MAP=/some/path'))
-        self.assertEquals(path, '/wfs3?MAP=/some/path')
+        self.assertEqual(path, '/wfs3?MAP=/some/path')
 
 
 class API(QgsServerApi):
@@ -141,6 +141,15 @@ class QgsServerAPITestBase(QgsServerTestBase):
         result = bytes(response.body()).decode('utf8') if reference_file.endswith('html') else self.dump(response)
         path = unitTestDataPath('qgis_server') + '/api/' + reference_file
         if self.regeregenerate_api_reference:
+            # Try to change timestamp
+            try:
+                content = result.split('\n')
+                j = ''.join(content[content.index('') + 1:])
+                j = json.loads(j)
+                j['timeStamp'] = '2019-07-05T12:27:07Z'
+                result = '\n'.join(content[:2]) + '\n' + json.dumps(j, ensure_ascii=False, indent=2)
+            except:
+                pass
             f = open(path.encode('utf8'), 'w+', encoding='utf8')
             f.write(result)
             f.close()
@@ -462,6 +471,55 @@ class QgsServerAPITest(QgsServerAPITestBase):
         response = self.compareApi(request, project, 'test_wfs3_collections_items_layer1_with_short_name_eq_tw_star.json')
         self.assertEqual(response.statusCode(), 200)
 
+    def test_wfs3_time_filters(self):
+        """Test datetime filters"""
+
+        project = QgsProject()
+        project.read(unitTestDataPath('qgis_server') + '/test_project_api_timefilters.qgs')
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/points/items?name=lus*')
+        response = self.compareApi(request, project, 'test_wfs3_collections_items_points_eq_lus.json')
+        self.assertEqual(response.statusCode(), 200)
+
+        # Prepare 3 projects with all three options: "created", "updated", both.
+        tmpDir = QtCore.QTemporaryDir()
+        layer = list(project.mapLayers().values())[0]
+        layer.setIncludeAttributesOapifTemporalFilters(['created'])
+        created_path = os.path.join(tmpDir.path(), 'test_project_api_timefilters_created.qgs')
+        project.write(created_path)
+        layer.setIncludeAttributesOapifTemporalFilters(['updated'])
+        updated_path = os.path.join(tmpDir.path(), 'test_project_api_timefilters_updated.qgs')
+        project.write(updated_path)
+        layer.setIncludeAttributesOapifTemporalFilters(['updated', 'created'])
+        both_path = os.path.join(tmpDir.path(), 'test_project_api_timefilters_both.qgs')
+        project.write(both_path)
+
+        # Test data:
+        #wkt_geom	                                        fid	name	    created	    updated
+        #Point (7.30355493642693343 44.82162158126364915)	2	bricherasio	2019-05-05	2020-05-05T05:05:05.000
+        #Point (7.2500747591236081 44.81342128741047048)	1	luserna	    2019-01-01	2020-01-01T10:10:10.000
+
+        # What to test:
+        #interval-closed     = date-time "/" date-time
+        #interval-open-start = [".."] "/" date-time
+        #interval-open-end   = date-time "/" [".."]
+        #interval            = interval-closed / interval-open-start / interval-open-end
+        #datetime            = date-time / interval
+
+        def _date_tester(project_path, expected, unexpected):
+            # Test "created" date field exact
+            request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/points/items?datetime=2019-05-05')
+            response = QgsBufferServerResponse()
+            project.read(project_path)
+            self.server.handleRequest(request, response, project)
+            body = bytes(response.body()).decode('utf8')
+            for exp in expected:
+                self.assertTrue(exp in body)
+            for unexp in unexpected:
+                self.assertFalse(unexp in body)
+
+        # Test "created" date field exact
+        _date_tester(created_path, ['bricherasio'], ['luserna'])
+
     def test_wfs3_excluded_attributes(self):
         """Test excluded attributes"""
         project = QgsProject()
@@ -706,10 +764,10 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
         self.assertEqual(str(ex.exception), 'Template not found: handlerThree.html')
 
         # Define a template path
-        dir = QtCore.QTemporaryDir()
-        with open(dir.path() + '/handlerThree.html', 'w+') as f:
+        tmpDir = QtCore.QTemporaryDir()
+        with open(tmpDir.path() + '/handlerThree.html', 'w+') as f:
             f.write("Hello world")
-        h3.templatePathOverride = dir.path() + '/handlerThree.html'
+        h3.templatePathOverride = tmpDir.path() + '/handlerThree.html'
         ctx.response().clear()
         api.executeRequest(ctx)
         self.assertEqual(bytes(ctx.response().data()), b"Hello world")

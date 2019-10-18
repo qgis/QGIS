@@ -1906,6 +1906,18 @@ A set of attributes that are not advertised in WFS requests with QGIS server.
 A set of attributes that are not advertised in WFS requests with QGIS server.
 %End
 
+    QSet<QString> includeAttributesOapifTemporalFilters() const;
+%Docstring
+Returns the attributes that are used for temporal filtering with QGIS server OAPIF (WFS3).
+\since: QGIS 3.12
+%End
+
+    void setIncludeAttributesOapifTemporalFilters( const QSet<QString> &att );
+%Docstring
+Sets the attributes that are used for temporal filtering with QGIS server OAPIF (WFS3).
+\since: QGIS 3.12
+%End
+
     virtual bool deleteAttribute( int attr );
 %Docstring
 Deletes an attribute field (but does not commit it).

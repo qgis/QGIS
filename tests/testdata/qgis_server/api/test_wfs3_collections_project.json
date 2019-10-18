@@ -10,19 +10,16 @@ Content-Type: application/json
       ],
       "description": "A test vector layer with unicode òà",
       "extent": {
-        "spatial": {
-          "bbox": [
-            [
-              8.203459307036344,
-              44.90139483904469,
-              8.203546993993488,
-              44.901482526001836
-            ]
-          ],
-          "crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
-        }
+        "crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+        "spatial": [
+          [
+            8.203459307036344,
+            44.90139483904469,
+            8.203546993993488,
+            44.901482526001836
+          ]
+        ]
       },
-      "id": "testlayer èé",
       "links": [
         {
           "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.json",
@@ -37,6 +34,7 @@ Content-Type: application/json
           "type": "text/html"
         }
       ],
+      "name": "testlayer èé",
       "title": "A test vector layer èé"
     },
     {
@@ -47,19 +45,16 @@ Content-Type: application/json
       ],
       "description": "A Layer1 with an abstract",
       "extent": {
-        "spatial": {
-          "bbox": [
-            [
-              8.203459307036344,
-              44.90139483904469,
-              8.203546993993488,
-              44.901482526001836
-            ]
-          ],
-          "crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
-        }
+        "crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+        "spatial": [
+          [
+            8.203459307036344,
+            44.90139483904469,
+            8.203546993993488,
+            44.901482526001836
+          ]
+        ]
       },
-      "id": "layer1_with_short_name",
       "links": [
         {
           "href": "http://server.qgis.org/wfs3/collections/layer1_with_short_name/items.json",
@@ -74,6 +69,7 @@ Content-Type: application/json
           "type": "text/html"
         }
       ],
+      "name": "layer1_with_short_name",
       "title": "A Layer1 with a short name"
     },
     {
@@ -84,19 +80,16 @@ Content-Type: application/json
       ],
       "description": "A test vector layer with unicode òà",
       "extent": {
-        "spatial": {
-          "bbox": [
-            [
-              8.203459307036344,
-              44.90139483904469,
-              8.203546993993488,
-              44.901482526001836
-            ]
-          ],
-          "crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
-        }
+        "crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+        "spatial": [
+          [
+            8.203459307036344,
+            44.90139483904469,
+            8.203546993993488,
+            44.901482526001836
+          ]
+        ]
       },
-      "id": "exclude_attribute",
       "links": [
         {
           "href": "http://server.qgis.org/wfs3/collections/exclude_attribute/items.json",
@@ -111,6 +104,7 @@ Content-Type: application/json
           "type": "text/html"
         }
       ],
+      "name": "exclude_attribute",
       "title": "A test vector layer exclude attrs"
     },
     {
@@ -121,19 +115,16 @@ Content-Type: application/json
       ],
       "description": "A test vector layer with aliases",
       "extent": {
-        "spatial": {
-          "bbox": [
-            [
-              8.203459307036344,
-              44.90139483904469,
-              8.203546993993488,
-              44.901482526001836
-            ]
-          ],
-          "crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
-        }
+        "crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+        "spatial": [
+          [
+            8.203459307036344,
+            44.90139483904469,
+            8.203546993993488,
+            44.901482526001836
+          ]
+        ]
       },
-      "id": "fields_alias",
       "links": [
         {
           "href": "http://server.qgis.org/wfs3/collections/fields_alias/items.json",
@@ -148,6 +139,7 @@ Content-Type: application/json
           "type": "text/html"
         }
       ],
+      "name": "fields_alias",
       "title": "A test vector layer with aliases"
     }
   ],
@@ -170,5 +162,5 @@ Content-Type: application/json
       "type": "text/html"
     }
   ],
-  "timeStamp": "2019-10-16T13:53:56Z"
+  "timeStamp": "2019-07-05T12:27:07Z"
 }
