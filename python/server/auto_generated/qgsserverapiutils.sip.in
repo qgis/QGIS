@@ -42,29 +42,16 @@ Returns a list of temporal dimensions information for the given ``layer`` (eithe
 .. versionadded:: 3.12
 %End
 
-
-    struct TemporalDateInterval
-    {
-      QDate begin;
-      QDate end;
-    };
-
-    struct TemporalDateTimeInterval
-    {
-      QDateTime begin;
-      QDateTime end;
-    };
-
-    static TemporalDateInterval parseTemporalDateInterval( const QString &interval ) throw( QgsServerApiBadRequestException );
+    static QgsDateRange parseTemporalDateInterval( const QString &interval ) throw( QgsServerApiBadRequestException );
 %Docstring
-Parse a date ``interval`` and returns a TemporalDateInterval
+Parse a date ``interval`` and returns a :py:class:`QgsDateRange`
 
 :raises QgsServerApiBadRequestException: if interval cannot be parsed
 %End
 
-    static TemporalDateTimeInterval parseTemporalDateTimeInterval( const QString &interval ) throw( QgsServerApiBadRequestException );
+    static QgsDateTimeRange parseTemporalDateTimeInterval( const QString &interval ) throw( QgsServerApiBadRequestException );
 %Docstring
-Parse a datetime ``interval`` and returns a TemporalDateTimeInterval
+Parse a datetime ``interval`` and returns a :py:class:`QgsDateTimeRange`
 
 :raises QgsServerApiBadRequestException: if interval cannot be parsed
 %End

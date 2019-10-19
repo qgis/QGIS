@@ -121,14 +121,14 @@ template<typename T, class T2> T QgsServerApiUtils::parseTemporalInterval( const
 
 }
 
-QgsServerApiUtils::TemporalDateInterval QgsServerApiUtils::parseTemporalDateInterval( const QString &interval )
+QgsDateRange QgsServerApiUtils::parseTemporalDateInterval( const QString &interval )
 {
-  return QgsServerApiUtils::parseTemporalInterval<QgsServerApiUtils::TemporalDateInterval, QDate>( interval );
+  return QgsServerApiUtils::parseTemporalInterval<QgsDateRange, QDate>( interval );
 }
 
-QgsServerApiUtils::TemporalDateTimeInterval QgsServerApiUtils::parseTemporalDateTimeInterval( const QString &interval )
+QgsDateTimeRange QgsServerApiUtils::parseTemporalDateTimeInterval( const QString &interval )
 {
-  return QgsServerApiUtils::parseTemporalInterval<QgsServerApiUtils::TemporalDateTimeInterval, QDateTime>( interval );
+  return QgsServerApiUtils::parseTemporalInterval<QgsDateTimeRange, QDateTime>( interval );
 }
 
 QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer *layer, const QString &interval )
@@ -257,7 +257,7 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
   {
     if ( ! inputQueryIsDateTime )
     {
-      TemporalDateInterval dateInterval { QgsServerApiUtils::parseTemporalDateInterval( interval ) };
+      QgsDateRange dateInterval { QgsServerApiUtils::parseTemporalDateInterval( interval ) };
 
       for ( const auto &dimension : qgis::as_const( dimensions ) )
       {
@@ -272,7 +272,7 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
         }
         // This may be empty:
         const auto fieldRefEnd { refFieldValue( dimension.endFieldName, queryType, fieldType ) };
-        if ( ! dateInterval.begin.isValid( ) && ! dateInterval.end.isValid( ) )
+        if ( ! dateInterval.begin().isValid( ) && ! dateInterval.end().isValid( ) )
         {
           // Nothing to do here: log?
         }
@@ -280,15 +280,15 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
         {
           conditions.push_back( makeFilter( fieldRefBegin,
                                             fieldRefEnd,
-                                            dateInterval.begin.toString( Qt::DateFormat::ISODate ),
-                                            dateInterval.end.toString( Qt::DateFormat::ISODate ) ) );
+                                            dateInterval.begin().toString( Qt::DateFormat::ISODate ),
+                                            dateInterval.end().toString( Qt::DateFormat::ISODate ) ) );
 
         }
       }
     }
     else // try datetime
     {
-      TemporalDateTimeInterval dateTimeInterval { QgsServerApiUtils::parseTemporalDateTimeInterval( interval ) };
+      QgsDateTimeRange dateTimeInterval { QgsServerApiUtils::parseTemporalDateTimeInterval( interval ) };
       for ( const auto &dimension : qgis::as_const( dimensions ) )
       {
 
@@ -303,7 +303,7 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
 
         // This may be empty:
         const auto fieldRefEnd { refFieldValue( dimension.endFieldName, queryType, fieldType ) };
-        if ( ! dateTimeInterval.begin.isValid( ) && ! dateTimeInterval.end.isValid( ) )
+        if ( ! dateTimeInterval.begin().isValid( ) && ! dateTimeInterval.end().isValid( ) )
         {
           // Nothing to do here: log?
         }
@@ -315,13 +315,13 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
           // Drop the time
           if ( fieldType == QVariant::Type::Date )
           {
-            beginQuery = dateTimeInterval.begin.date().toString( Qt::DateFormat::ISODate );
-            endQuery = dateTimeInterval.end.date().toString( Qt::DateFormat::ISODate );
+            beginQuery = dateTimeInterval.begin().date().toString( Qt::DateFormat::ISODate );
+            endQuery = dateTimeInterval.end().date().toString( Qt::DateFormat::ISODate );
           }
           else
           {
-            beginQuery = dateTimeInterval.begin.toString( Qt::DateFormat::ISODate );
-            endQuery = dateTimeInterval.end.toString( Qt::DateFormat::ISODate );
+            beginQuery = dateTimeInterval.begin().toString( Qt::DateFormat::ISODate );
+            endQuery = dateTimeInterval.end().toString( Qt::DateFormat::ISODate );
           }
           conditions.push_back( makeFilter( fieldRefBegin,
                                             fieldRefEnd,

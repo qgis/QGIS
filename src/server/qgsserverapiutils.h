@@ -28,6 +28,7 @@
 #include "qgsserverapicontext.h"
 #include "qgsserverexception.h"
 #include "qgsvectorlayerserverproperties.h"
+#include "qgsrange.h"
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsaccesscontrol.h"
@@ -66,40 +67,19 @@ class SERVER_EXPORT QgsServerApiUtils
      */
     static QList< QgsVectorLayerServerProperties::WmsDimensionInfo > temporalDimensions( const QgsVectorLayer *layer );
 
-
     /**
-     * A temporal date interval, if only one of "begin" or "end" are valid, the interval is open.
-     * If both "begin" and "end" are invalid the  interval is invalid.
-     */
-    struct TemporalDateInterval
-    {
-      QDate begin;
-      QDate end;
-    };
-
-    /**
-     * A temporal datetime interval, if only one of "begin" or "end" are valid, the interval is open.
-     * If both "begin" and "end" are invalid the  interval is invalid.
-     */
-    struct TemporalDateTimeInterval
-    {
-      QDateTime begin;
-      QDateTime end;
-    };
-
-    /**
-     * Parse a date \a interval and returns a TemporalDateInterval
+     * Parse a date \a interval and returns a QgsDateRange
      *
      * \throws QgsServerApiBadRequestException if interval cannot be parsed
      */
-    static TemporalDateInterval parseTemporalDateInterval( const QString &interval ) SIP_THROW( QgsServerApiBadRequestException );
+    static QgsDateRange parseTemporalDateInterval( const QString &interval ) SIP_THROW( QgsServerApiBadRequestException );
 
     /**
-     * Parse a datetime \a interval and returns a TemporalDateTimeInterval
+     * Parse a datetime \a interval and returns a QgsDateTimeRange
      *
      * \throws QgsServerApiBadRequestException if interval cannot be parsed
      */
-    static TemporalDateTimeInterval parseTemporalDateTimeInterval( const QString &interval ) SIP_THROW( QgsServerApiBadRequestException );
+    static QgsDateTimeRange parseTemporalDateTimeInterval( const QString &interval ) SIP_THROW( QgsServerApiBadRequestException );
 
 ///@cond PRIVATE
     // T is TemporalDateInterval|TemporalDateTimeInterval, T2 is QDate|QdateTime

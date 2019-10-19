@@ -19,16 +19,16 @@
   </projectCrs>
   <layer-tree-group>
     <customproperties/>
-    <layer-tree-layer providerKey="ogr" name="points" source="./test_project_api_timefilters.gpkg|layername=points" expanded="0" id="points_47ad3bc8_35bd_4392_8994_2dc5ff04be60" checked="Qt::Checked">
+    <layer-tree-layer name="points" source="./test_project_api_timefilters.gpkg|layername=points" checked="Qt::Checked" id="points_47ad3bc8_35bd_4392_8994_2dc5ff04be60" expanded="0" providerKey="ogr">
       <customproperties/>
     </layer-tree-layer>
     <custom-order enabled="0">
       <item>points_47ad3bc8_35bd_4392_8994_2dc5ff04be60</item>
     </custom-order>
   </layer-tree-group>
-  <snapping-settings mode="1" unit="2" intersection-snapping="0" tolerance="0" enabled="0" type="2">
+  <snapping-settings type="2" intersection-snapping="0" unit="2" tolerance="0" enabled="0" mode="1">
     <individual-layer-settings>
-      <layer-setting units="1" id="points_47ad3bc8_35bd_4392_8994_2dc5ff04be60" tolerance="12" enabled="0" type="1"/>
+      <layer-setting type="1" tolerance="12" enabled="0" id="points_47ad3bc8_35bd_4392_8994_2dc5ff04be60" units="1"/>
     </individual-layer-settings>
   </snapping-settings>
   <relations/>
@@ -58,17 +58,17 @@
   </mapcanvas>
   <projectModels/>
   <legend updateDrawingOrder="true">
-    <legendlayer showFeatureCount="0" name="points" drawingOrder="-1" open="false" checked="Qt::Checked">
+    <legendlayer name="points" showFeatureCount="0" checked="Qt::Checked" open="false" drawingOrder="-1">
       <filegroup hidden="false" open="false">
-        <legendlayerfile visible="1" layerid="points_47ad3bc8_35bd_4392_8994_2dc5ff04be60" isInOverview="0"/>
+        <legendlayerfile isInOverview="0" layerid="points_47ad3bc8_35bd_4392_8994_2dc5ff04be60" visible="1"/>
       </filegroup>
     </legendlayer>
   </legend>
   <mapViewDocks/>
   <projectlayers>
-    <maplayer geometry="Point" styleCategories="AllStyleCategories" hasScaleBasedVisibilityFlag="0" readOnly="0" maxScale="0" simplifyDrawingHints="0" refreshOnNotifyMessage="" wkbType="Point" simplifyDrawingTol="1.2" simplifyMaxScale="1" refreshOnNotifyEnabled="0" simplifyLocal="1" minScale="1e+08" autoRefreshEnabled="0" labelsEnabled="0" simplifyAlgorithm="0" type="vector" autoRefreshTime="0">
+    <maplayer minScale="1e+08" simplifyLocal="1" autoRefreshEnabled="0" maxScale="0" autoRefreshTime="0" wkbType="Point" labelsEnabled="0" simplifyDrawingTol="1.2" geometry="Point" readOnly="0" styleCategories="AllStyleCategories" simplifyAlgorithm="0" type="vector" refreshOnNotifyEnabled="0" simplifyDrawingHints="0" hasScaleBasedVisibilityFlag="0" refreshOnNotifyMessage="" simplifyMaxScale="1">
       <extent>
-        <xmin>7.15874910354614258</xmin>
+        <xmin>7.15825748443603516</xmin>
         <ymin>44.79768753051757813</ymin>
         <xmax>7.30355501174926758</xmax>
         <ymax>44.82162857055664063</ymax>
@@ -119,11 +119,11 @@
             <description></description>
             <projectionacronym></projectionacronym>
             <ellipsoidacronym></ellipsoidacronym>
-            <geographicflag>false</geographicflag>
+            <geographicflag>true</geographicflag>
           </spatialrefsys>
         </crs>
         <extent>
-          <spatial minx="0" miny="0" maxy="0" minz="0" crs="" maxx="0" dimensions="2" maxz="0"/>
+          <spatial crs="" minx="0" minz="0" dimensions="2" miny="0" maxy="0" maxz="0" maxx="0"/>
           <temporal>
             <period>
               <start></start>
@@ -143,18 +143,18 @@
       </map-layer-style-manager>
       <auxiliaryLayer/>
       <wmsDimensions>
-        <dimension unitSymbol="" name="time" endFieldName="" referenceValue="" fieldName="updated" units="ISO8601" defaultDisplayType="0"/>
-        <dimension unitSymbol="" name="date" endFieldName="" referenceValue="" fieldName="created" units="ISO8601" defaultDisplayType="0"/>
+        <dimension name="time" unitSymbol="" defaultDisplayType="0" referenceValue="" fieldName="updated" endFieldName="" units="ISO8601"/>
+        <dimension name="date" unitSymbol="" defaultDisplayType="0" referenceValue="" fieldName="created" endFieldName="" units="ISO8601"/>
       </wmsDimensions>
       <flags>
         <Identifiable>1</Identifiable>
         <Removable>1</Removable>
         <Searchable>1</Searchable>
       </flags>
-      <renderer-v2 enableorderby="0" forceraster="0" type="singleSymbol" symbollevels="0">
+      <renderer-v2 type="singleSymbol" forceraster="0" enableorderby="0" symbollevels="0">
         <symbols>
-          <symbol alpha="1" clip_to_extent="1" name="0" force_rhr="0" type="marker">
-            <layer locked="0" pass="0" class="SimpleMarker" enabled="1">
+          <symbol type="marker" clip_to_extent="1" name="0" alpha="1" force_rhr="0">
+            <layer pass="0" enabled="1" locked="0" class="SimpleMarker">
               <prop v="0" k="angle"/>
               <prop v="232,113,141,255" k="color"/>
               <prop v="1" k="horizontal_anchor_point"/>
@@ -175,9 +175,9 @@
               <prop v="1" k="vertical_anchor_point"/>
               <data_defined_properties>
                 <Option type="Map">
-                  <Option name="name" value="" type="QString"/>
+                  <Option type="QString" name="name" value=""/>
                   <Option name="properties"/>
-                  <Option name="type" value="collection" type="QString"/>
+                  <Option type="QString" name="type" value="collection"/>
                 </Option>
               </data_defined_properties>
             </layer>
@@ -187,9 +187,7 @@
         <sizescale/>
       </renderer-v2>
       <customproperties>
-        <property key="dualview/previewExpressions">
-          <value>name</value>
-        </property>
+        <property key="dualview/previewExpressions" value="name"/>
         <property key="embeddedWidgets/count" value="0"/>
         <property key="variableNames"/>
         <property key="variableValues"/>
@@ -197,22 +195,22 @@
       <blendMode>0</blendMode>
       <featureBlendMode>0</featureBlendMode>
       <layerOpacity>1</layerOpacity>
-      <SingleCategoryDiagramRenderer attributeLegend="1" diagramType="Histogram">
-        <DiagramCategory height="15" barWidth="5" rotationOffset="270" labelPlacementMethod="XHeight" maxScaleDenominator="1e+08" minimumSize="0" scaleBasedVisibility="0" backgroundColor="#ffffff" sizeType="MM" backgroundAlpha="255" diagramOrientation="Up" scaleDependency="Area" lineSizeScale="3x:0,0,0,0,0,0" sizeScale="3x:0,0,0,0,0,0" penColor="#000000" lineSizeType="MM" penWidth="0" enabled="0" width="15" minScaleDenominator="0" penAlpha="255" opacity="1">
-          <fontProperties style="Regular" description="Noto Sans,10,-1,5,50,0,0,0,0,0,Regular"/>
-          <attribute field="" color="#000000" label=""/>
+      <SingleCategoryDiagramRenderer diagramType="Histogram" attributeLegend="1">
+        <DiagramCategory penWidth="0" minScaleDenominator="0" enabled="0" sizeType="MM" minimumSize="0" maxScaleDenominator="1e+08" penAlpha="255" diagramOrientation="Up" barWidth="5" scaleBasedVisibility="0" sizeScale="3x:0,0,0,0,0,0" backgroundAlpha="255" labelPlacementMethod="XHeight" opacity="1" rotationOffset="270" height="15" penColor="#000000" lineSizeType="MM" scaleDependency="Area" lineSizeScale="3x:0,0,0,0,0,0" backgroundColor="#ffffff" width="15">
+          <fontProperties description="Noto Sans,10,-1,5,50,0,0,0,0,0,Regular" style="Regular"/>
+          <attribute label="" field="" color="#000000"/>
         </DiagramCategory>
       </SingleCategoryDiagramRenderer>
-      <DiagramLayerSettings linePlacementFlags="18" zIndex="0" priority="0" showAll="1" obstacle="0" dist="0" placement="0">
+      <DiagramLayerSettings zIndex="0" obstacle="0" dist="0" showAll="1" priority="0" placement="0" linePlacementFlags="18">
         <properties>
           <Option type="Map">
-            <Option name="name" value="" type="QString"/>
+            <Option type="QString" name="name" value=""/>
             <Option name="properties"/>
-            <Option name="type" value="collection" type="QString"/>
+            <Option type="QString" name="type" value="collection"/>
           </Option>
         </properties>
       </DiagramLayerSettings>
-      <geometryOptions geometryPrecision="0" removeDuplicateNodes="0">
+      <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
         <activeChecks/>
         <checkConfiguration/>
       </geometryOptions>
@@ -259,14 +257,14 @@
             </config>
           </editWidget>
         </field>
-        <field name="created_string">
+        <field name="updated_string">
           <editWidget type="TextEdit">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
-        <field name="updated_string">
+        <field name="created_string">
           <editWidget type="TextEdit">
             <config>
               <Option/>
@@ -275,63 +273,63 @@
         </field>
       </fieldConfiguration>
       <aliases>
-        <alias field="fid" index="0" name=""/>
-        <alias field="name" index="1" name=""/>
-        <alias field="created" index="2" name=""/>
-        <alias field="updated" index="3" name=""/>
-        <alias field="begin" index="4" name=""/>
-        <alias field="end" index="5" name=""/>
-        <alias field="created_string" index="6" name=""/>
-        <alias field="updated_string" index="7" name=""/>
+        <alias index="0" name="" field="fid"/>
+        <alias index="1" name="" field="name"/>
+        <alias index="2" name="" field="created"/>
+        <alias index="3" name="" field="updated"/>
+        <alias index="4" name="" field="begin"/>
+        <alias index="5" name="" field="end"/>
+        <alias index="6" name="" field="updated_string"/>
+        <alias index="7" name="" field="created_string"/>
       </aliases>
       <excludeAttributesWMS/>
       <excludeAttributesWFS/>
       <includeAttributesOapifTemporalFilters/>
       <defaults>
-        <default field="fid" expression="" applyOnUpdate="0"/>
-        <default field="name" expression="" applyOnUpdate="0"/>
-        <default field="created" expression="" applyOnUpdate="0"/>
-        <default field="updated" expression="" applyOnUpdate="0"/>
-        <default field="begin" expression="" applyOnUpdate="0"/>
-        <default field="end" expression="" applyOnUpdate="0"/>
-        <default field="created_string" expression="" applyOnUpdate="0"/>
-        <default field="updated_string" expression="" applyOnUpdate="0"/>
+        <default applyOnUpdate="0" expression="" field="fid"/>
+        <default applyOnUpdate="0" expression="" field="name"/>
+        <default applyOnUpdate="0" expression="" field="created"/>
+        <default applyOnUpdate="0" expression="" field="updated"/>
+        <default applyOnUpdate="0" expression="" field="begin"/>
+        <default applyOnUpdate="0" expression="" field="end"/>
+        <default applyOnUpdate="0" expression="" field="updated_string"/>
+        <default applyOnUpdate="0" expression="" field="created_string"/>
       </defaults>
       <constraints>
-        <constraint field="fid" unique_strength="1" exp_strength="0" constraints="3" notnull_strength="1"/>
-        <constraint field="name" unique_strength="0" exp_strength="0" constraints="0" notnull_strength="0"/>
-        <constraint field="created" unique_strength="0" exp_strength="0" constraints="0" notnull_strength="0"/>
-        <constraint field="updated" unique_strength="0" exp_strength="0" constraints="0" notnull_strength="0"/>
-        <constraint field="begin" unique_strength="0" exp_strength="0" constraints="0" notnull_strength="0"/>
-        <constraint field="end" unique_strength="0" exp_strength="0" constraints="0" notnull_strength="0"/>
-        <constraint field="created_string" unique_strength="0" exp_strength="0" constraints="0" notnull_strength="0"/>
-        <constraint field="updated_string" unique_strength="0" exp_strength="0" constraints="0" notnull_strength="0"/>
+        <constraint constraints="3" notnull_strength="1" exp_strength="0" field="fid" unique_strength="1"/>
+        <constraint constraints="0" notnull_strength="0" exp_strength="0" field="name" unique_strength="0"/>
+        <constraint constraints="0" notnull_strength="0" exp_strength="0" field="created" unique_strength="0"/>
+        <constraint constraints="0" notnull_strength="0" exp_strength="0" field="updated" unique_strength="0"/>
+        <constraint constraints="0" notnull_strength="0" exp_strength="0" field="begin" unique_strength="0"/>
+        <constraint constraints="0" notnull_strength="0" exp_strength="0" field="end" unique_strength="0"/>
+        <constraint constraints="0" notnull_strength="0" exp_strength="0" field="updated_string" unique_strength="0"/>
+        <constraint constraints="0" notnull_strength="0" exp_strength="0" field="created_string" unique_strength="0"/>
       </constraints>
       <constraintExpressions>
-        <constraint field="fid" exp="" desc=""/>
-        <constraint field="name" exp="" desc=""/>
-        <constraint field="created" exp="" desc=""/>
-        <constraint field="updated" exp="" desc=""/>
-        <constraint field="begin" exp="" desc=""/>
-        <constraint field="end" exp="" desc=""/>
-        <constraint field="created_string" exp="" desc=""/>
-        <constraint field="updated_string" exp="" desc=""/>
+        <constraint desc="" field="fid" exp=""/>
+        <constraint desc="" field="name" exp=""/>
+        <constraint desc="" field="created" exp=""/>
+        <constraint desc="" field="updated" exp=""/>
+        <constraint desc="" field="begin" exp=""/>
+        <constraint desc="" field="end" exp=""/>
+        <constraint desc="" field="updated_string" exp=""/>
+        <constraint desc="" field="created_string" exp=""/>
       </constraintExpressions>
       <expressionfields/>
       <attributeactions>
         <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
       </attributeactions>
-      <attributetableconfig sortExpression="" actionWidgetStyle="dropDown" sortOrder="0">
+      <attributetableconfig actionWidgetStyle="dropDown" sortOrder="0" sortExpression="">
         <columns>
-          <column name="fid" hidden="0" type="field" width="-1"/>
-          <column name="name" hidden="0" type="field" width="-1"/>
-          <column hidden="1" type="actions" width="-1"/>
-          <column name="created" hidden="0" type="field" width="-1"/>
-          <column name="updated" hidden="0" type="field" width="497"/>
-          <column name="begin" hidden="0" type="field" width="-1"/>
-          <column name="end" hidden="0" type="field" width="-1"/>
-          <column name="created_string" hidden="0" type="field" width="-1"/>
-          <column name="updated_string" hidden="0" type="field" width="-1"/>
+          <column type="field" name="fid" hidden="0" width="-1"/>
+          <column type="field" name="name" hidden="0" width="-1"/>
+          <column type="actions" hidden="1" width="-1"/>
+          <column type="field" name="created" hidden="0" width="357"/>
+          <column type="field" name="updated" hidden="0" width="497"/>
+          <column type="field" name="begin" hidden="0" width="-1"/>
+          <column type="field" name="end" hidden="0" width="-1"/>
+          <column type="field" name="updated_string" hidden="0" width="-1"/>
+          <column type="field" name="created_string" hidden="0" width="-1"/>
         </columns>
       </attributetableconfig>
       <conditionalstyles>
@@ -363,24 +361,24 @@ def my_form_open(dialog, layer, feature):
       <featformsuppress>0</featformsuppress>
       <editorlayout>generatedlayout</editorlayout>
       <editable>
-        <field editable="1" name="begin"/>
-        <field editable="1" name="created"/>
-        <field editable="1" name="created_string"/>
-        <field editable="1" name="end"/>
-        <field editable="1" name="fid"/>
-        <field editable="1" name="name"/>
-        <field editable="1" name="updated"/>
-        <field editable="1" name="updated_string"/>
+        <field name="begin" editable="1"/>
+        <field name="created" editable="1"/>
+        <field name="created_string" editable="1"/>
+        <field name="end" editable="1"/>
+        <field name="fid" editable="1"/>
+        <field name="name" editable="1"/>
+        <field name="updated" editable="1"/>
+        <field name="updated_string" editable="1"/>
       </editable>
       <labelOnTop>
-        <field name="begin" labelOnTop="0"/>
-        <field name="created" labelOnTop="0"/>
-        <field name="created_string" labelOnTop="0"/>
-        <field name="end" labelOnTop="0"/>
-        <field name="fid" labelOnTop="0"/>
-        <field name="name" labelOnTop="0"/>
-        <field name="updated" labelOnTop="0"/>
-        <field name="updated_string" labelOnTop="0"/>
+        <field labelOnTop="0" name="begin"/>
+        <field labelOnTop="0" name="created"/>
+        <field labelOnTop="0" name="created_string"/>
+        <field labelOnTop="0" name="end"/>
+        <field labelOnTop="0" name="fid"/>
+        <field labelOnTop="0" name="name"/>
+        <field labelOnTop="0" name="updated"/>
+        <field labelOnTop="0" name="updated_string"/>
       </labelOnTop>
       <widgets/>
       <previewExpression>name</previewExpression>
@@ -571,12 +569,12 @@ def my_form_open(dialog, layer, feature):
   </projectMetadata>
   <Annotations/>
   <Layouts>
-    <Layout name="mytemplate" units="mm" worldFileMap="" printResolution="300">
-      <Snapper snapToGuides="1" snapToItems="1" snapToGrid="0" tolerance="5"/>
-      <Grid offsetX="0" resUnits="mm" offsetY="0" resolution="10" offsetUnits="mm"/>
+    <Layout printResolution="300" name="mytemplate" worldFileMap="" units="mm">
+      <Snapper snapToGrid="0" snapToItems="1" tolerance="5" snapToGuides="1"/>
+      <Grid resUnits="mm" resolution="10" offsetY="0" offsetUnits="mm" offsetX="0"/>
       <PageCollection>
-        <symbol alpha="1" clip_to_extent="1" name="" force_rhr="0" type="fill">
-          <layer locked="0" pass="0" class="SimpleFill" enabled="1">
+        <symbol type="fill" clip_to_extent="1" name="" alpha="1" force_rhr="0">
+          <layer pass="0" enabled="1" locked="0" class="SimpleFill">
             <prop v="3x:0,0,0,0,0,0" k="border_width_map_unit_scale"/>
             <prop v="255,255,255,255" k="color"/>
             <prop v="miter" k="joinstyle"/>
@@ -590,28 +588,28 @@ def my_form_open(dialog, layer, feature):
             <prop v="solid" k="style"/>
             <data_defined_properties>
               <Option type="Map">
-                <Option name="name" value="" type="QString"/>
+                <Option type="QString" name="name" value=""/>
                 <Option name="properties"/>
-                <Option name="type" value="collection" type="QString"/>
+                <Option type="QString" name="type" value="collection"/>
               </Option>
             </data_defined_properties>
           </layer>
         </symbol>
-        <LayoutItem referencePoint="0" zValue="0" templateUuid="{45febe5f-bfdd-455a-aef5-c096b4677622}" background="true" visibility="1" groupUuid="" positionLock="false" positionOnPage="0,0,mm" blendMode="0" id="" size="297,210,mm" position="0,0,mm" itemRotation="0" excludeFromExports="0" frame="false" frameJoinStyle="miter" type="65638" outlineWidthM="0.3,mm" uuid="{45febe5f-bfdd-455a-aef5-c096b4677622}" opacity="1">
-          <FrameColor red="0" alpha="255" blue="0" green="0"/>
-          <BackgroundColor red="255" alpha="255" blue="255" green="255"/>
+        <LayoutItem templateUuid="{45febe5f-bfdd-455a-aef5-c096b4677622}" frame="false" zValue="0" size="297,210,mm" uuid="{45febe5f-bfdd-455a-aef5-c096b4677622}" itemRotation="0" positionOnPage="0,0,mm" referencePoint="0" frameJoinStyle="miter" blendMode="0" opacity="1" background="true" position="0,0,mm" groupUuid="" excludeFromExports="0" outlineWidthM="0.3,mm" type="65638" id="" positionLock="false" visibility="1">
+          <FrameColor blue="0" alpha="255" red="0" green="0"/>
+          <BackgroundColor blue="255" alpha="255" red="255" green="255"/>
           <LayoutObject>
             <dataDefinedProperties>
               <Option type="Map">
-                <Option name="name" value="" type="QString"/>
+                <Option type="QString" name="name" value=""/>
                 <Option name="properties"/>
-                <Option name="type" value="collection" type="QString"/>
+                <Option type="QString" name="type" value="collection"/>
               </Option>
             </dataDefinedProperties>
             <customproperties/>
           </LayoutObject>
-          <symbol alpha="1" clip_to_extent="1" name="" force_rhr="0" type="fill">
-            <layer locked="0" pass="0" class="SimpleFill" enabled="1">
+          <symbol type="fill" clip_to_extent="1" name="" alpha="1" force_rhr="0">
+            <layer pass="0" enabled="1" locked="0" class="SimpleFill">
               <prop v="3x:0,0,0,0,0,0" k="border_width_map_unit_scale"/>
               <prop v="255,255,255,255" k="color"/>
               <prop v="miter" k="joinstyle"/>
@@ -625,9 +623,9 @@ def my_form_open(dialog, layer, feature):
               <prop v="solid" k="style"/>
               <data_defined_properties>
                 <Option type="Map">
-                  <Option name="name" value="" type="QString"/>
+                  <Option type="QString" name="name" value=""/>
                   <Option name="properties"/>
-                  <Option name="type" value="collection" type="QString"/>
+                  <Option type="QString" name="type" value="collection"/>
                 </Option>
               </data_defined_properties>
             </layer>
@@ -635,25 +633,25 @@ def my_form_open(dialog, layer, feature):
         </LayoutItem>
         <GuideCollection visible="1"/>
       </PageCollection>
-      <LayoutItem referencePoint="0" labelMargin="0,mm" zValue="2" templateUuid="{5ed7a90f-8af2-4535-a15e-e18a7f6c5d1f}" background="true" visibility="1" keepLayerSet="false" groupUuid="" positionLock="false" positionOnPage="126,143,mm" blendMode="0" id="" size="61,26,mm" drawCanvasItems="true" position="126,143,mm" followPresetName="" mapRotation="0" itemRotation="0" excludeFromExports="0" frame="false" frameJoinStyle="miter" followPreset="false" type="65639" outlineWidthM="0.3,mm" uuid="{5ed7a90f-8af2-4535-a15e-e18a7f6c5d1f}" mapFlags="1" opacity="1">
-        <FrameColor red="0" alpha="255" blue="0" green="0"/>
-        <BackgroundColor red="255" alpha="255" blue="255" green="255"/>
+      <LayoutItem templateUuid="{5ed7a90f-8af2-4535-a15e-e18a7f6c5d1f}" frame="false" zValue="2" drawCanvasItems="true" size="61,26,mm" uuid="{5ed7a90f-8af2-4535-a15e-e18a7f6c5d1f}" followPreset="false" itemRotation="0" positionOnPage="126,143,mm" keepLayerSet="false" referencePoint="0" frameJoinStyle="miter" blendMode="0" opacity="1" background="true" position="126,143,mm" groupUuid="" followPresetName="" mapFlags="1" excludeFromExports="0" outlineWidthM="0.3,mm" labelMargin="0,mm" type="65639" id="" mapRotation="0" positionLock="false" visibility="1">
+        <FrameColor blue="0" alpha="255" red="0" green="0"/>
+        <BackgroundColor blue="255" alpha="255" red="255" green="255"/>
         <LayoutObject>
           <dataDefinedProperties>
             <Option type="Map">
-              <Option name="name" value="" type="QString"/>
+              <Option type="QString" name="name" value=""/>
               <Option name="properties"/>
-              <Option name="type" value="collection" type="QString"/>
+              <Option type="QString" name="type" value="collection"/>
             </Option>
           </dataDefinedProperties>
           <customproperties/>
         </LayoutObject>
-        <Extent ymax="44.90260402302108389" xmax="8.20679772684772146" xmin="8.20128754650006186" ymin="44.90025542156142535"/>
+        <Extent xmax="8.20679772684772146" ymax="44.90260402302108389" ymin="44.90025542156142535" xmin="8.20128754650006186"/>
         <LayerSet/>
-        <ComposerMapGrid crossLength="3" topAnnotationPosition="1" topAnnotationDisplay="0" gridFrameSideFlags="15" leftAnnotationDisplay="0" gridStyle="0" frameFillColor2="0,0,0,255" annotationPrecision="3" leftAnnotationPosition="1" annotationFontColor="0,0,0,255" maximumIntervalWidth="100" frameAnnotationDistance="1" topAnnotationDirection="0" bottomAnnotationPosition="1" topFrameDivisions="0" bottomAnnotationDisplay="0" rightAnnotationDirection="0" offsetY="0" offsetX="0" gridFrameMargin="0" bottomFrameDivisions="0" gridFrameWidth="2" unit="0" leftAnnotationDirection="0" annotationExpression="" annotationFormat="0" bottomAnnotationDirection="0" gridFramePenColor="0,0,0,255" gridFrameStyle="0" intervalX="0" name="Grille 1" rightAnnotationDisplay="0" uuid="{ca78854d-b53f-4d8b-97bd-6bbf0df72ad0}" show="0" intervalY="0" gridFramePenThickness="0.5" rightAnnotationPosition="1" blendMode="0" showAnnotation="0" rightFrameDivisions="0" minimumIntervalWidth="50" leftFrameDivisions="0" frameFillColor1="255,255,255,255" position="3">
+        <ComposerMapGrid rightAnnotationDisplay="0" leftAnnotationPosition="1" offsetY="0" leftAnnotationDirection="0" gridFrameWidth="2" bottomAnnotationPosition="1" intervalY="0" leftAnnotationDisplay="0" topAnnotationDisplay="0" bottomAnnotationDisplay="0" uuid="{ca78854d-b53f-4d8b-97bd-6bbf0df72ad0}" position="3" annotationFormat="0" crossLength="3" gridStyle="0" minimumIntervalWidth="50" name="Grille 1" bottomFrameDivisions="0" gridFrameMargin="0" show="0" offsetX="0" maximumIntervalWidth="100" showAnnotation="0" topFrameDivisions="0" gridFrameStyle="0" frameFillColor1="255,255,255,255" unit="0" intervalX="0" topAnnotationPosition="1" annotationFontColor="0,0,0,255" frameAnnotationDistance="1" rightFrameDivisions="0" rightAnnotationPosition="1" frameFillColor2="0,0,0,255" topAnnotationDirection="0" gridFrameSideFlags="15" bottomAnnotationDirection="0" rightAnnotationDirection="0" annotationPrecision="3" leftFrameDivisions="0" gridFramePenThickness="0.5" gridFramePenColor="0,0,0,255" annotationExpression="" blendMode="0">
           <lineStyle>
-            <symbol alpha="1" clip_to_extent="1" name="" force_rhr="0" type="line">
-              <layer locked="0" pass="0" class="SimpleLine" enabled="1">
+            <symbol type="line" clip_to_extent="1" name="" alpha="1" force_rhr="0">
+              <layer pass="0" enabled="1" locked="0" class="SimpleLine">
                 <prop v="square" k="capstyle"/>
                 <prop v="5;2" k="customdash"/>
                 <prop v="3x:0,0,0,0,0,0" k="customdash_map_unit_scale"/>
@@ -672,17 +670,17 @@ def my_form_open(dialog, layer, feature):
                 <prop v="3x:0,0,0,0,0,0" k="width_map_unit_scale"/>
                 <data_defined_properties>
                   <Option type="Map">
-                    <Option name="name" value="" type="QString"/>
+                    <Option type="QString" name="name" value=""/>
                     <Option name="properties"/>
-                    <Option name="type" value="collection" type="QString"/>
+                    <Option type="QString" name="type" value="collection"/>
                   </Option>
                 </data_defined_properties>
               </layer>
             </symbol>
           </lineStyle>
           <markerStyle>
-            <symbol alpha="1" clip_to_extent="1" name="" force_rhr="0" type="marker">
-              <layer locked="0" pass="0" class="SimpleMarker" enabled="1">
+            <symbol type="marker" clip_to_extent="1" name="" alpha="1" force_rhr="0">
+              <layer pass="0" enabled="1" locked="0" class="SimpleMarker">
                 <prop v="0" k="angle"/>
                 <prop v="0,0,0,255" k="color"/>
                 <prop v="1" k="horizontal_anchor_point"/>
@@ -703,48 +701,48 @@ def my_form_open(dialog, layer, feature):
                 <prop v="1" k="vertical_anchor_point"/>
                 <data_defined_properties>
                   <Option type="Map">
-                    <Option name="name" value="" type="QString"/>
+                    <Option type="QString" name="name" value=""/>
                     <Option name="properties"/>
-                    <Option name="type" value="collection" type="QString"/>
+                    <Option type="QString" name="type" value="collection"/>
                   </Option>
                 </data_defined_properties>
               </layer>
             </symbol>
           </markerStyle>
-          <annotationFontProperties style="" description="Cantarell,11,-1,5,50,0,0,0,0,0"/>
+          <annotationFontProperties description="Cantarell,11,-1,5,50,0,0,0,0,0" style=""/>
           <LayoutObject>
             <dataDefinedProperties>
               <Option type="Map">
-                <Option name="name" value="" type="QString"/>
+                <Option type="QString" name="name" value=""/>
                 <Option name="properties"/>
-                <Option name="type" value="collection" type="QString"/>
+                <Option type="QString" name="type" value="collection"/>
               </Option>
             </dataDefinedProperties>
             <customproperties/>
           </LayoutObject>
         </ComposerMapGrid>
-        <AtlasMap margin="0.10000000000000001" atlasDriven="0" scalingMode="2"/>
+        <AtlasMap scalingMode="2" atlasDriven="0" margin="0.10000000000000001"/>
         <labelBlockingItems/>
       </LayoutItem>
-      <LayoutItem referencePoint="0" labelMargin="0,mm" zValue="1" templateUuid="{8fec18d6-8ba0-47d6-914e-3daffe8a8633}" background="true" visibility="1" keepLayerSet="false" groupUuid="" positionLock="false" positionOnPage="98.7716,20.1872,mm" blendMode="0" id="" size="87,103,mm" drawCanvasItems="true" position="98.7716,20.1872,mm" followPresetName="" mapRotation="0" itemRotation="0" excludeFromExports="0" frame="false" frameJoinStyle="miter" followPreset="false" type="65639" outlineWidthM="0.3,mm" uuid="{8fec18d6-8ba0-47d6-914e-3daffe8a8633}" mapFlags="1" opacity="1">
-        <FrameColor red="0" alpha="255" blue="0" green="0"/>
-        <BackgroundColor red="255" alpha="255" blue="255" green="255"/>
+      <LayoutItem templateUuid="{8fec18d6-8ba0-47d6-914e-3daffe8a8633}" frame="false" zValue="1" drawCanvasItems="true" size="87,103,mm" uuid="{8fec18d6-8ba0-47d6-914e-3daffe8a8633}" followPreset="false" itemRotation="0" positionOnPage="98.7716,20.1872,mm" keepLayerSet="false" referencePoint="0" frameJoinStyle="miter" blendMode="0" opacity="1" background="true" position="98.7716,20.1872,mm" groupUuid="" followPresetName="" mapFlags="1" excludeFromExports="0" outlineWidthM="0.3,mm" labelMargin="0,mm" type="65639" id="" mapRotation="0" positionLock="false" visibility="1">
+        <FrameColor blue="0" alpha="255" red="0" green="0"/>
+        <BackgroundColor blue="255" alpha="255" red="255" green="255"/>
         <LayoutObject>
           <dataDefinedProperties>
             <Option type="Map">
-              <Option name="name" value="" type="QString"/>
+              <Option type="QString" name="name" value=""/>
               <Option name="properties"/>
-              <Option name="type" value="collection" type="QString"/>
+              <Option type="QString" name="type" value="collection"/>
             </Option>
           </dataDefinedProperties>
           <customproperties/>
         </LayoutObject>
-        <Extent ymax="44.9038230497138855" xmax="8.20606418507941449" xmin="8.20202108826836884" ymin="44.89903639486862374"/>
+        <Extent xmax="8.20606418507941449" ymax="44.9038230497138855" ymin="44.89903639486862374" xmin="8.20202108826836884"/>
         <LayerSet/>
-        <ComposerMapGrid crossLength="3" topAnnotationPosition="1" topAnnotationDisplay="0" gridFrameSideFlags="15" leftAnnotationDisplay="0" gridStyle="0" frameFillColor2="0,0,0,255" annotationPrecision="3" leftAnnotationPosition="1" annotationFontColor="0,0,0,255" maximumIntervalWidth="100" frameAnnotationDistance="1" topAnnotationDirection="0" bottomAnnotationPosition="1" topFrameDivisions="0" bottomAnnotationDisplay="0" rightAnnotationDirection="0" offsetY="0" offsetX="0" gridFrameMargin="0" bottomFrameDivisions="0" gridFrameWidth="2" unit="0" leftAnnotationDirection="0" annotationExpression="" annotationFormat="0" bottomAnnotationDirection="0" gridFramePenColor="0,0,0,255" gridFrameStyle="0" intervalX="0" name="Grille 1" rightAnnotationDisplay="0" uuid="{94630841-1b07-4bc2-9cf7-1dce50a01a3e}" show="0" intervalY="0" gridFramePenThickness="0.5" rightAnnotationPosition="1" blendMode="0" showAnnotation="0" rightFrameDivisions="0" minimumIntervalWidth="50" leftFrameDivisions="0" frameFillColor1="255,255,255,255" position="3">
+        <ComposerMapGrid rightAnnotationDisplay="0" leftAnnotationPosition="1" offsetY="0" leftAnnotationDirection="0" gridFrameWidth="2" bottomAnnotationPosition="1" intervalY="0" leftAnnotationDisplay="0" topAnnotationDisplay="0" bottomAnnotationDisplay="0" uuid="{94630841-1b07-4bc2-9cf7-1dce50a01a3e}" position="3" annotationFormat="0" crossLength="3" gridStyle="0" minimumIntervalWidth="50" name="Grille 1" bottomFrameDivisions="0" gridFrameMargin="0" show="0" offsetX="0" maximumIntervalWidth="100" showAnnotation="0" topFrameDivisions="0" gridFrameStyle="0" frameFillColor1="255,255,255,255" unit="0" intervalX="0" topAnnotationPosition="1" annotationFontColor="0,0,0,255" frameAnnotationDistance="1" rightFrameDivisions="0" rightAnnotationPosition="1" frameFillColor2="0,0,0,255" topAnnotationDirection="0" gridFrameSideFlags="15" bottomAnnotationDirection="0" rightAnnotationDirection="0" annotationPrecision="3" leftFrameDivisions="0" gridFramePenThickness="0.5" gridFramePenColor="0,0,0,255" annotationExpression="" blendMode="0">
           <lineStyle>
-            <symbol alpha="1" clip_to_extent="1" name="" force_rhr="0" type="line">
-              <layer locked="0" pass="0" class="SimpleLine" enabled="1">
+            <symbol type="line" clip_to_extent="1" name="" alpha="1" force_rhr="0">
+              <layer pass="0" enabled="1" locked="0" class="SimpleLine">
                 <prop v="square" k="capstyle"/>
                 <prop v="5;2" k="customdash"/>
                 <prop v="3x:0,0,0,0,0,0" k="customdash_map_unit_scale"/>
@@ -763,17 +761,17 @@ def my_form_open(dialog, layer, feature):
                 <prop v="3x:0,0,0,0,0,0" k="width_map_unit_scale"/>
                 <data_defined_properties>
                   <Option type="Map">
-                    <Option name="name" value="" type="QString"/>
+                    <Option type="QString" name="name" value=""/>
                     <Option name="properties"/>
-                    <Option name="type" value="collection" type="QString"/>
+                    <Option type="QString" name="type" value="collection"/>
                   </Option>
                 </data_defined_properties>
               </layer>
             </symbol>
           </lineStyle>
           <markerStyle>
-            <symbol alpha="1" clip_to_extent="1" name="" force_rhr="0" type="marker">
-              <layer locked="0" pass="0" class="SimpleMarker" enabled="1">
+            <symbol type="marker" clip_to_extent="1" name="" alpha="1" force_rhr="0">
+              <layer pass="0" enabled="1" locked="0" class="SimpleMarker">
                 <prop v="0" k="angle"/>
                 <prop v="0,0,0,255" k="color"/>
                 <prop v="1" k="horizontal_anchor_point"/>
@@ -794,31 +792,31 @@ def my_form_open(dialog, layer, feature):
                 <prop v="1" k="vertical_anchor_point"/>
                 <data_defined_properties>
                   <Option type="Map">
-                    <Option name="name" value="" type="QString"/>
+                    <Option type="QString" name="name" value=""/>
                     <Option name="properties"/>
-                    <Option name="type" value="collection" type="QString"/>
+                    <Option type="QString" name="type" value="collection"/>
                   </Option>
                 </data_defined_properties>
               </layer>
             </symbol>
           </markerStyle>
-          <annotationFontProperties style="" description="Cantarell,11,-1,5,50,0,0,0,0,0"/>
+          <annotationFontProperties description="Cantarell,11,-1,5,50,0,0,0,0,0" style=""/>
           <LayoutObject>
             <dataDefinedProperties>
               <Option type="Map">
-                <Option name="name" value="" type="QString"/>
+                <Option type="QString" name="name" value=""/>
                 <Option name="properties"/>
-                <Option name="type" value="collection" type="QString"/>
+                <Option type="QString" name="type" value="collection"/>
               </Option>
             </dataDefinedProperties>
             <customproperties/>
           </LayoutObject>
         </ComposerMapGrid>
-        <AtlasMap margin="0.10000000000000001" atlasDriven="0" scalingMode="2"/>
+        <AtlasMap scalingMode="2" atlasDriven="0" margin="0.10000000000000001"/>
         <labelBlockingItems/>
       </LayoutItem>
       <customproperties/>
-      <Atlas sortFeatures="0" filenamePattern="'output_'||@atlas_featurenumber" filterFeatures="0" pageNameExpression="" coverageLayer="" enabled="0" hideCoverage="0"/>
+      <Atlas filenamePattern="'output_'||@atlas_featurenumber" filterFeatures="0" coverageLayer="" enabled="0" hideCoverage="0" pageNameExpression="" sortFeatures="0"/>
     </Layout>
   </Layouts>
   <Bookmarks/>
