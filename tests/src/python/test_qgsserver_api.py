@@ -32,7 +32,7 @@ from qgis.server import (
     QgsServerApiUtils,
     QgsServiceRegistry
 )
-from qgis.core import QgsProject, QgsRectangle
+from qgis.core import QgsProject, QgsRectangle, QgsVectorLayerServerProperties
 from qgis.PyQt import QtCore
 
 from qgis.testing import unittest
@@ -479,32 +479,89 @@ class QgsServerAPITest(QgsServerAPITestBase):
         response = self.compareApi(request, project, 'test_wfs3_collections_items_exclude_attribute_0.json')
         self.assertEqual(response.statusCode(), 200)
 
-    def test_wfs3_time_filters(self):
+    def test_wfs3_time_filters_ranges(self):
         """Test datetime filters"""
 
         project = QgsProject()
-        project.read(unitTestDataPath('qgis_server') + '/test_project_api_timefilters.qgs')
+        base_path = unitTestDataPath('qgis_server') + '/test_project_api_timefilters.qgs'
+        project.read(base_path)
 
-        # Prepare 3 projects with all three options: "created", "updated", both.
+        # Prepare projects with all options
         tmpDir = QtCore.QTemporaryDir()
+
         layer = list(project.mapLayers().values())[0]
-        layer.setIncludeAttributesOapifTemporalFilters(['created'])
+        layer.serverProperties().removeWmsDimension('date')
+        layer.serverProperties().removeWmsDimension('time')
+        self.assertEqual(len(layer.serverProperties().wmsDimensions()), 0)
+        self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 0)
+        none_path = os.path.join(tmpDir.path(), 'test_project_api_timefilters_none.qgs')
+        project.write(none_path)
+
+        layer = list(project.mapLayers().values())[0]
+        layer.serverProperties().removeWmsDimension('date')
+        layer.serverProperties().removeWmsDimension('time')
+        self.assertTrue(layer.serverProperties().addWmsDimension(QgsVectorLayerServerProperties.WmsDimensionInfo('date', 'created')))
         created_path = os.path.join(tmpDir.path(), 'test_project_api_timefilters_created.qgs')
         project.write(created_path)
-        layer.setIncludeAttributesOapifTemporalFilters(['updated'])
+        project.read(created_path)
+        self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 1)
+
+        layer = list(project.mapLayers().values())[0]
+        layer.serverProperties().removeWmsDimension('date')
+        layer.serverProperties().removeWmsDimension('time')
+        self.assertTrue(layer.serverProperties().addWmsDimension(QgsVectorLayerServerProperties.WmsDimensionInfo('date', 'created_string')))
+        created_string_path = os.path.join(tmpDir.path(), 'test_project_api_timefilters_created_string.qgs')
+        project.write(created_string_path)
+        project.read(created_string_path)
+        self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 1)
+
+        layer = list(project.mapLayers().values())[0]
+        layer.serverProperties().removeWmsDimension('date')
+        layer.serverProperties().removeWmsDimension('time')
+        self.assertTrue(layer.serverProperties().addWmsDimension(QgsVectorLayerServerProperties.WmsDimensionInfo('time', 'updated_string')))
+        updated_string_path = os.path.join(tmpDir.path(), 'test_project_api_timefilters_updated_string.qgs')
+        project.write(updated_string_path)
+        project.read(updated_string_path)
+        self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 1)
+
+        layer = list(project.mapLayers().values())[0]
+        layer.serverProperties().removeWmsDimension('date')
+        layer.serverProperties().removeWmsDimension('time')
+        self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 0)
+        self.assertTrue(layer.serverProperties().addWmsDimension(QgsVectorLayerServerProperties.WmsDimensionInfo('time', 'updated')))
         updated_path = os.path.join(tmpDir.path(), 'test_project_api_timefilters_updated.qgs')
         project.write(updated_path)
-        layer.setIncludeAttributesOapifTemporalFilters(['updated', 'created'])
+        project.read(updated_path)
+        self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 1)
+
+        layer = list(project.mapLayers().values())[0]
+        layer.serverProperties().removeWmsDimension('date')
+        layer.serverProperties().removeWmsDimension('time')
+        self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 0)
+        self.assertTrue(layer.serverProperties().addWmsDimension(QgsVectorLayerServerProperties.WmsDimensionInfo('time', 'updated')))
+        self.assertTrue(layer.serverProperties().addWmsDimension(QgsVectorLayerServerProperties.WmsDimensionInfo('date', 'created')))
         both_path = os.path.join(tmpDir.path(), 'test_project_api_timefilters_both.qgs')
         project.write(both_path)
+        project.read(both_path)
+        self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 2)
+
+        layer = list(project.mapLayers().values())[0]
+        layer.serverProperties().removeWmsDimension('date')
+        layer.serverProperties().removeWmsDimension('time')
+        self.assertTrue(layer.serverProperties().addWmsDimension(QgsVectorLayerServerProperties.WmsDimensionInfo('date', 'begin', 'end')))
+        date_range_path = os.path.join(tmpDir.path(), 'test_project_api_timefilters_date_range.qgs')
+        project.write(date_range_path)
+        project.read(date_range_path)
+        self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 1)
 
         '''
-        Test data:
-        wkt_geom	                                        fid	name	    created	    updated
-        Point (7.2500747591236081 44.81342128741047048)	    1	luserna	    2019-01-01	2020-01-01T10:10:10.000
-        Point (7.30355493642693343 44.82162158126364915)	2	bricherasio	2019-05-05	2020-05-05T05:05:05.000
+        Test data
+        wkt_geom	                                        fid	name	    created	    updated	                begin	    end
         Point (7.28848021144956881 44.79768920192042714)	3	bibiana
-        Point (7.22555186948937145 44.82015087638781381)	4	torre	    2019-10-10	2019-10-10T10:10:10.000
+        Point (7.30355493642693343 44.82162158126364915)	2	bricherasio	2017-01-01	2019-01-01T01:01:01.000	2017-01-01	2019-01-01
+        Point (7.22555186948937145 44.82015087638781381)	4	torre	    2018-01-01	2021-01-01T01:01:01.000	2018-01-01	2021-01-01
+        Point (7.2500747591236081 44.81342128741047048)	    1	luserna	    2019-01-01	2022-01-01T01:01:01.000	2020-01-01	2022-01-01
+        Point (7.2500747591236081 44.81342128741047048)	    5	villar	    2010-01-01	2010-01-01T01:01:01.000	2010-01-01	2010-01-01
         '''
 
         # What to test:
@@ -521,94 +578,202 @@ class QgsServerAPITest(QgsServerAPITestBase):
             project.read(project_path)
             self.server.handleRequest(request, response, project)
             body = bytes(response.body()).decode('utf8')
+            #print(body)
             for exp in expected:
                 self.assertTrue(exp in body)
             for unexp in unexpected:
                 self.assertFalse(unexp in body)
 
-        # Test single values
+        def _interval(project_path, interval):
+            project.read(project_path)
+            layer = list(project.mapLayers().values())[0]
+            return QgsServerApiUtils.temporalFilterExpression(layer, interval).expression()
+
+        # Bad request
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/points/items?datetime=bad timing!')
+        response = QgsBufferServerResponse()
+        project.read(created_path)
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 400)
+
+        # Created (date type)
+        self.assertEqual(_interval(created_path, '2017-01-01'), '"created" = to_date( \'2017-01-01\' )')
+        self.assertEqual(_interval(created_path, '../2017-01-01'), '"created" <= to_date( \'2017-01-01\' )')
+        self.assertEqual(_interval(created_path, '/2017-01-01'), '"created" <= to_date( \'2017-01-01\' )')
+        self.assertEqual(_interval(created_path, '2017-01-01/'), '"created" >= to_date( \'2017-01-01\' )')
+        self.assertEqual(_interval(created_path, '2017-01-01/..'), '"created" >= to_date( \'2017-01-01\' )')
+        self.assertEqual(_interval(created_path, '2017-01-01/2018-01-01'), 'to_date( \'2017-01-01\' ) <= "created" AND "created" <= to_date( \'2018-01-01\' )')
+
+        self.assertEqual(_interval(created_path, '2017-01-01T01:01:01'), '"created" = to_date( \'2017-01-01\' )')
+        self.assertEqual(_interval(created_path, '../2017-01-01T01:01:01'), '"created" <= to_date( \'2017-01-01\' )')
+        self.assertEqual(_interval(created_path, '/2017-01-01T01:01:01'), '"created" <= to_date( \'2017-01-01\' )')
+        self.assertEqual(_interval(created_path, '2017-01-01T01:01:01/'), '"created" >= to_date( \'2017-01-01\' )')
+        self.assertEqual(_interval(created_path, '2017-01-01T01:01:01/..'), '"created" >= to_date( \'2017-01-01\' )')
+        self.assertEqual(_interval(created_path, '2017-01-01T01:01:01/2018-01-01T01:01:01'), 'to_date( \'2017-01-01\' ) <= "created" AND "created" <= to_date( \'2018-01-01\' )')
+
+        # Updated (datetime type)
+        self.assertEqual(_interval(updated_path, '2017-01-01'), 'to_date( "updated" ) = to_date( \'2017-01-01\' )')
+        self.assertEqual(_interval(updated_path, '/2017-01-01'), 'to_date( "updated" ) <= to_date( \'2017-01-01\' )')
+        self.assertEqual(_interval(updated_path, '../2017-01-01'), 'to_date( "updated" ) <= to_date( \'2017-01-01\' )')
+        self.assertEqual(_interval(updated_path, '2017-01-01/'), 'to_date( "updated" ) >= to_date( \'2017-01-01\' )')
+        self.assertEqual(_interval(updated_path, '2017-01-01/..'), 'to_date( "updated" ) >= to_date( \'2017-01-01\' )')
+        self.assertEqual(_interval(updated_path, '2017-01-01/2018-01-01'), 'to_date( \'2017-01-01\' ) <= to_date( "updated" ) AND to_date( "updated" ) <= to_date( \'2018-01-01\' )')
+
+        self.assertEqual(_interval(updated_path, '2017-01-01T01:01:01'), '"updated" = to_datetime( \'2017-01-01T01:01:01.000\' )')
+        self.assertEqual(_interval(updated_path, '../2017-01-01T01:01:01'), '"updated" <= to_datetime( \'2017-01-01T01:01:01\' )')
+        self.assertEqual(_interval(updated_path, '/2017-01-01T01:01:01'), '"updated" <= to_datetime( \'2017-01-01T01:01:01\' )')
+        self.assertEqual(_interval(updated_path, '2017-01-01T01:01:01/'), '"updated" >= to_datetime( \'2017-01-01T01:01:01\' )')
+        self.assertEqual(_interval(updated_path, '2017-01-01T01:01:01/..'), '"updated" >= to_datetime( \'2017-01-01T01:01:01\' )')
+        self.assertEqual(_interval(updated_path, '2017-01-01T01:01:01/2018-01-01T01:01:01'), 'to_datetime( \'2017-01-01T01:01:01\' ) <= "updated" AND "updated" <= to_datetime( \'2018-01-01T01:01:01\' )')
+
+        # Created string (date type)
+        self.assertEqual(_interval(created_string_path, '2017-01-01'), 'to_date( "created_string" ) = to_date( \'2017-01-01\' )')
+        self.assertEqual(_interval(created_string_path, '../2017-01-01'), 'to_date( "created_string" ) <= to_date( \'2017-01-01\' )')
+        self.assertEqual(_interval(created_string_path, '/2017-01-01'), 'to_date( "created_string" ) <= to_date( \'2017-01-01\' )')
+        self.assertEqual(_interval(created_string_path, '2017-01-01/'), 'to_date( "created_string" ) >= to_date( \'2017-01-01\' )')
+        self.assertEqual(_interval(created_string_path, '2017-01-01/..'), 'to_date( "created_string" ) >= to_date( \'2017-01-01\' )')
+        self.assertEqual(_interval(created_string_path, '2017-01-01/2018-01-01'), 'to_date( \'2017-01-01\' ) <= to_date( "created_string" ) AND to_date( "created_string" ) <= to_date( \'2018-01-01\' )')
+
+        self.assertEqual(_interval(created_string_path, '2017-01-01T01:01:01'), 'to_date( "created_string" ) = to_date( \'2017-01-01\' )')
+        self.assertEqual(_interval(created_string_path, '../2017-01-01T01:01:01'), 'to_date( "created_string" ) <= to_date( \'2017-01-01\' )')
+        self.assertEqual(_interval(created_string_path, '/2017-01-01T01:01:01'), 'to_date( "created_string" ) <= to_date( \'2017-01-01\' )')
+        self.assertEqual(_interval(created_string_path, '2017-01-01T01:01:01/'), 'to_date( "created_string" ) >= to_date( \'2017-01-01\' )')
+        self.assertEqual(_interval(created_string_path, '2017-01-01T01:01:01/..'), 'to_date( "created_string" ) >= to_date( \'2017-01-01\' )')
+        self.assertEqual(_interval(created_string_path, '2017-01-01T01:01:01/2018-01-01T01:01:01'), 'to_date( \'2017-01-01\' ) <= to_date( "created_string" ) AND to_date( "created_string" ) <= to_date( \'2018-01-01\' )')
+
+        # Updated string (datetime type)
+        self.assertEqual(_interval(updated_string_path, '2017-01-01'), 'to_date( "updated_string" ) = to_date( \'2017-01-01\' )')
+        self.assertEqual(_interval(updated_string_path, '/2017-01-01'), 'to_date( "updated_string" ) <= to_date( \'2017-01-01\' )')
+        self.assertEqual(_interval(updated_string_path, '../2017-01-01'), 'to_date( "updated_string" ) <= to_date( \'2017-01-01\' )')
+        self.assertEqual(_interval(updated_string_path, '2017-01-01/'), 'to_date( "updated_string" ) >= to_date( \'2017-01-01\' )')
+        self.assertEqual(_interval(updated_string_path, '2017-01-01/..'), 'to_date( "updated_string" ) >= to_date( \'2017-01-01\' )')
+        self.assertEqual(_interval(updated_string_path, '2017-01-01/2018-01-01'), 'to_date( \'2017-01-01\' ) <= to_date( "updated_string" ) AND to_date( "updated_string" ) <= to_date( \'2018-01-01\' )')
+
+        self.assertEqual(_interval(updated_string_path, '2017-01-01T01:01:01'), 'to_datetime( "updated_string" ) = to_datetime( \'2017-01-01T01:01:01.000\' )')
+        self.assertEqual(_interval(updated_string_path, '../2017-01-01T01:01:01'), 'to_datetime( "updated_string" ) <= to_datetime( \'2017-01-01T01:01:01\' )')
+        self.assertEqual(_interval(updated_string_path, '/2017-01-01T01:01:01'), 'to_datetime( "updated_string" ) <= to_datetime( \'2017-01-01T01:01:01\' )')
+        self.assertEqual(_interval(updated_string_path, '2017-01-01T01:01:01/'), 'to_datetime( "updated_string" ) >= to_datetime( \'2017-01-01T01:01:01\' )')
+        self.assertEqual(_interval(updated_string_path, '2017-01-01T01:01:01/..'), 'to_datetime( "updated_string" ) >= to_datetime( \'2017-01-01T01:01:01\' )')
+        self.assertEqual(_interval(updated_string_path, '2017-01-01T01:01:01/2018-01-01T01:01:01'), 'to_datetime( \'2017-01-01T01:01:01\' ) <= to_datetime( "updated_string" ) AND to_datetime( "updated_string" ) <= to_datetime( \'2018-01-01T01:01:01\' )')
+
+        # Ranges
+        self.assertEqual(_interval(date_range_path, '2010-01-01'), '"begin" <= to_date( \'2010-01-01\' ) AND to_date( \'2010-01-01\' ) <= "end"')
+        self.assertEqual(_interval(date_range_path, '../2010-01-01'), '"begin" <= to_date( \'2010-01-01\' )')
+        self.assertEqual(_interval(date_range_path, '2010-01-01/..'), '"end" >= to_date( \'2010-01-01\' )')
 
         ##################################################################################
         # Test "created" date field
         # Test exact
-        _date_tester(created_path, '2019-05-05', ['bricherasio'], ['luserna', 'torre'])
+        _date_tester(created_path, '2017-01-01', ['bricherasio'], ['luserna', 'torre'])
         # Test datetime field exact (test that we can use a time on a date type field)
-        _date_tester(created_path, '2019-05-05T01:01:01', ['bricherasio'], ['luserna', 'torre'])
+        _date_tester(created_path, '2017-01-01T01:01:01', ['bricherasio'], ['luserna', 'torre'])
         # Test exact no match
-        _date_tester(created_path, '2019-05-06', [], ['luserna', 'bricherasio', 'torre'])
+        _date_tester(created_path, '2000-05-06', [], ['luserna', 'bricherasio', 'torre'])
 
         ##################################################################################
         # Test "updated" datetime field
         # Test exact
-        _date_tester(updated_path, '2020-05-05T05:05:05', ['bricherasio'], ['luserna', 'torre'])
-        # Test date field exact (test that we can NOT use a date on a datetime type field)
-        _date_tester(updated_path, '2020-05-05', [], ['luserna', 'bricherasio', 'torre'])
+        _date_tester(updated_path, '2019-01-01T01:01:01', ['bricherasio'], ['luserna', 'torre'])
+        # Test date field exact (test that we can also use a date on a datetime type field)
+        _date_tester(updated_path, '2019-01-01', ['bricherasio'], ['luserna', 'torre'])
         # Test exact no match
-        _date_tester(updated_path, '2020-05-06T05:05:05', [], ['luserna', 'bricherasio', 'torre'])
+        _date_tester(updated_path, '2017-01-01T05:05:05', [], ['luserna', 'bricherasio', 'torre'])
 
         ##################################################################################
         # Test both
         # Test exact
-        _date_tester(both_path, '2019-10-10T10:10:10', ['torre'], ['bricherasio', 'luserna'])
-        # Test date field exact (test that we can NOT use a date on a datetime type field)
-        _date_tester(both_path, '2020-05-05', [], ['luserna', 'bricherasio', 'torre'])
+        _date_tester(both_path, '2010-01-01T01:01:01', ['villar'], ['torre', 'bricherasio', 'luserna'])
+        # Test date field exact (test that we can use a date on a datetime type field)
+        _date_tester(both_path, '2010-01-01', ['villar'], ['luserna', 'bricherasio', 'torre'])
         # Test exact no match
-        _date_tester(both_path, '2020-05-06T05:05:05', [], ['luserna', 'bricherasio', 'torre'])
+        _date_tester(both_path, '2020-05-06T05:05:05', [], ['luserna', 'bricherasio', 'torre', 'villar'])
 
         # Test intervals
 
         ##################################################################################
         # Test "created" date field
-        _date_tester(created_path, '2019-05-04/2019-05-06', ['bricherasio'], ['luserna', 'torre'])
-        _date_tester(created_path, '2019-05-04/..', ['bricherasio', 'torre'], ['luserna'])
-        _date_tester(created_path, '2019-05-04/', ['bricherasio', 'torre'], ['luserna'])
-        _date_tester(created_path, '2100-05-04/', [], ['luserna', 'bricherasio', 'torre'])
-        _date_tester(created_path, '2100-05-04/..', [], ['luserna', 'bricherasio', 'torre'])
-        _date_tester(created_path, '/2019-05-06', ['bricherasio', 'luserna'], ['torre'])
-        _date_tester(created_path, '/2019-01-02', ['luserna'], ['torre', 'bricherasio'])
-        _date_tester(created_path, '../2019-05-06', ['bricherasio', 'luserna'], ['torre'])
-        _date_tester(created_path, '../2019-01-02', ['luserna'], ['torre', 'bricherasio'])
+        _date_tester(created_path, '2016-05-04/2018-05-06', ['bricherasio', 'torre'], ['luserna', 'villar'])
+        _date_tester(created_path, '2016-05-04/..', ['bricherasio', 'torre', 'luserna'], ['villar'])
+        _date_tester(created_path, '2016-05-04/', ['bricherasio', 'torre', 'luserna'], ['villar'])
+        _date_tester(created_path, '2100-05-04/', [], ['luserna', 'bricherasio', 'torre', 'villar'])
+        _date_tester(created_path, '2100-05-04/..', [], ['luserna', 'bricherasio', 'torre', 'villar'])
+        _date_tester(created_path, '/2018-05-06', ['bricherasio', 'torre', 'villar'], ['luserna'])
+        _date_tester(created_path, '../2018-05-06', ['bricherasio', 'torre', 'villar'], ['luserna'])
 
         # Test datetimes on "created" date field
-        _date_tester(created_path, '2019-05-04T01:01:01/2019-05-06T01:01:01', ['bricherasio'], ['luserna', 'torre'])
-        _date_tester(created_path, '2019-05-04T01:01:01/..', ['bricherasio', 'torre'], ['luserna'])
-        _date_tester(created_path, '2019-05-04T01:01:01/', ['bricherasio', 'torre'], ['luserna'])
-        _date_tester(created_path, '2100-05-04T01:01:01/', [], ['luserna', 'bricherasio', 'torre'])
-        _date_tester(created_path, '2100-05-04T01:01:01/..', [], ['luserna', 'bricherasio', 'torre'])
-        _date_tester(created_path, '/2019-05-06T01:01:01', ['bricherasio', 'luserna'], ['torre'])
-        _date_tester(created_path, '/2019-01-02T01:01:01', ['luserna'], ['torre', 'bricherasio'])
-        _date_tester(created_path, '../2019-05-06T01:01:01', ['bricherasio', 'luserna'], ['torre'])
-        _date_tester(created_path, '../2019-01-02T01:01:01', ['luserna'], ['torre', 'bricherasio'])
+        _date_tester(created_path, '2016-05-04T01:01:01/2018-05-06T01:01:01', ['bricherasio', 'torre'], ['luserna', 'villar'])
+        _date_tester(created_path, '2016-05-04T01:01:01/..', ['bricherasio', 'torre', 'luserna'], ['villar'])
+        _date_tester(created_path, '2016-05-04T01:01:01/', ['bricherasio', 'torre', 'luserna'], ['villar'])
+        _date_tester(created_path, '2100-05-04T01:01:01/', [], ['luserna', 'bricherasio', 'torre', 'villar'])
+        _date_tester(created_path, '2100-05-04T01:01:01/..', [], ['luserna', 'bricherasio', 'torre', 'villar'])
+        _date_tester(created_path, '/2018-05-06T01:01:01', ['bricherasio', 'torre', 'villar'], ['luserna'])
+        _date_tester(created_path, '../2018-05-06T01:01:01', ['bricherasio', 'torre', 'villar'], ['luserna'])
 
         ##################################################################################
         # Test "updated" date field
-        _date_tester(updated_path, '2020-05-04/2020-05-06', ['bricherasio'], ['luserna', 'torre'])
-        _date_tester(updated_path, '2020-05-04/..', ['bricherasio'], ['luserna', 'torre'])
-        _date_tester(updated_path, '2020-05-04/', ['bricherasio'], ['luserna', 'torre'])
-        _date_tester(updated_path, '2100-05-04/', [], ['luserna', 'bricherasio', 'torre'])
-        _date_tester(updated_path, '2100-05-04/..', [], ['luserna', 'bricherasio', 'torre'])
-        _date_tester(updated_path, '/2020-02-02', ['torre', 'luserna'], ['bricherasio'])
-        _date_tester(updated_path, '/2020-01-01', ['luserna', 'torre'], ['bricherasio'])
-        _date_tester(updated_path, '../2020-02-02', ['torre', 'luserna'], ['bricherasio'])
-        _date_tester(updated_path, '../2020-01-01', ['luserna', 'torre'], ['bricherasio'])
+        _date_tester(updated_path, '2020-05-04/2022-12-31', ['torre', 'luserna'], ['bricherasio', 'villar'])
+        _date_tester(updated_path, '2020-05-04/..', ['torre', 'luserna'], ['bricherasio', 'villar'])
+        _date_tester(updated_path, '2020-05-04/', ['torre', 'luserna'], ['bricherasio', 'villar'])
+        _date_tester(updated_path, '2019-01-01/', ['torre', 'luserna', 'bricherasio'], ['villar'])
+        _date_tester(updated_path, '2019-01-01/..', ['torre', 'luserna', 'bricherasio'], ['villar'])
+        _date_tester(updated_path, '/2020-02-02', ['villar', 'bricherasio'], ['torre', 'luserna'])
+        _date_tester(updated_path, '../2020-02-02', ['villar', 'bricherasio'], ['torre', 'luserna'])
 
         # Test datetimes on "updated" datetime field
-        _date_tester(updated_path, '2020-05-04/2020-05-06', ['bricherasio'], ['luserna', 'torre'])
-        _date_tester(updated_path, '2020-05-04/..', ['bricherasio'], ['luserna', 'torre'])
-        _date_tester(updated_path, '2020-05-04/', ['bricherasio'], ['luserna', 'torre'])
-        _date_tester(updated_path, '2100-05-04/', [], ['luserna', 'bricherasio', 'torre'])
-        _date_tester(updated_path, '2100-05-04/..', [], ['luserna', 'bricherasio', 'torre'])
-        _date_tester(updated_path, '/2020-02-02', ['torre', 'luserna'], ['bricherasio'])
-        _date_tester(updated_path, '/2020-01-01', ['luserna', 'torre'], ['bricherasio'])
-        _date_tester(updated_path, '../2020-02-02', ['torre', 'luserna'], ['bricherasio'])
-        _date_tester(updated_path, '../2020-01-01', ['luserna', 'torre'], ['bricherasio'])
+        _date_tester(updated_path, '2020-05-04T01:01:01/2022-12-31T01:01:01', ['torre', 'luserna'], ['bricherasio', 'villar'])
+        _date_tester(updated_path, '2020-05-04T01:01:01/..', ['torre', 'luserna'], ['bricherasio', 'villar'])
+        _date_tester(updated_path, '2020-05-04T01:01:01/', ['torre', 'luserna'], ['bricherasio', 'villar'])
+        _date_tester(updated_path, '2019-01-01T01:01:01/', ['torre', 'luserna', 'bricherasio'], ['villar'])
+        _date_tester(updated_path, '2019-01-01T01:01:01/..', ['torre', 'luserna', 'bricherasio'], ['villar'])
+        _date_tester(updated_path, '/2020-02-02T01:01:01', ['villar', 'bricherasio'], ['torre', 'luserna'])
+        _date_tester(updated_path, '../2020-02-02T01:01:01', ['villar', 'bricherasio'], ['torre', 'luserna'])
 
         ##################################################################################
         # Test both
-        _date_tester(both_path, '2019-10-09/2019-10-11', ['torre'], ['luserna', 'bricherasio'])
-        _date_tester(both_path, '2019-05-04/2020-05-06', ['torre', 'bricherasio'], ['luserna'])
-        _date_tester(both_path, '../2020-01-01', ['luserna', 'torre'], ['bricherasio'])
-        _date_tester(both_path, '/2020-01-01', ['luserna', 'torre'], ['bricherasio'])
+        _date_tester(both_path, '2010-01-01', ['villar'], ['luserna', 'bricherasio'])
+        _date_tester(both_path, '2010-01-01/2010-01-01', ['villar'], ['luserna', 'bricherasio'])
+        _date_tester(both_path, '2017-01-01/2021-01-01', ['torre', 'bricherasio'], ['luserna', 'villar'])
+        _date_tester(both_path, '../2021-01-01', ['torre', 'bricherasio', 'villar'], ['luserna'])
+        _date_tester(both_path, '2019-01-01/..', ['luserna'], ['torre', 'bricherasio', 'villar'])
+
+        ##################################################################################
+        # Test none path (should take the first date/datetime field, that is "created")
+
+        _date_tester(none_path, '2016-05-04/2018-05-06', ['bricherasio', 'torre'], ['luserna', 'villar'])
+        _date_tester(none_path, '2016-05-04/..', ['bricherasio', 'torre', 'luserna'], ['villar'])
+        _date_tester(none_path, '2016-05-04/', ['bricherasio', 'torre', 'luserna'], ['villar'])
+        _date_tester(none_path, '2100-05-04/', [], ['luserna', 'bricherasio', 'torre', 'villar'])
+        _date_tester(none_path, '2100-05-04/..', [], ['luserna', 'bricherasio', 'torre', 'villar'])
+        _date_tester(none_path, '/2018-05-06', ['bricherasio', 'torre', 'villar'], ['luserna'])
+        _date_tester(none_path, '../2018-05-06', ['bricherasio', 'torre', 'villar'], ['luserna'])
+
+        # Test datetimes on "created" date field
+        _date_tester(none_path, '2016-05-04T01:01:01/2018-05-06T01:01:01', ['bricherasio', 'torre'], ['luserna', 'villar'])
+        _date_tester(none_path, '2016-05-04T01:01:01/..', ['bricherasio', 'torre', 'luserna'], ['villar'])
+        _date_tester(none_path, '2016-05-04T01:01:01/', ['bricherasio', 'torre', 'luserna'], ['villar'])
+        _date_tester(none_path, '2100-05-04T01:01:01/', [], ['luserna', 'bricherasio', 'torre', 'villar'])
+        _date_tester(none_path, '2100-05-04T01:01:01/..', [], ['luserna', 'bricherasio', 'torre', 'villar'])
+        _date_tester(none_path, '/2018-05-06T01:01:01', ['bricherasio', 'torre', 'villar'], ['luserna'])
+        _date_tester(none_path, '../2018-05-06T01:01:01', ['bricherasio', 'torre', 'villar'], ['luserna'])
+
+        #####################################################################################################
+        # Test ranges
+        _date_tester(date_range_path, '2000-05-05T01:01:01', [], ['bricherasio', 'villar', 'luserna', 'torre'])
+        _date_tester(date_range_path, '2020-05-05T01:01:01', ['luserna', 'torre'], ['bricherasio', 'villar'])
+        _date_tester(date_range_path, '../2000-05-05T01:01:01', [], ['luserna', 'torre', 'bricherasio', 'villar'])
+        _date_tester(date_range_path, '../2017-05-05T01:01:01', ['bricherasio', 'villar'], ['luserna', 'torre'])
+        _date_tester(date_range_path, '../2050-05-05T01:01:01', ['bricherasio', 'villar', 'luserna', 'torre'], [])
+        _date_tester(date_range_path, '2020-05-05T01:01:01/', ['luserna', 'torre'], ['bricherasio', 'villar'])
+
+        _date_tester(date_range_path, '2000-05-05', [], ['bricherasio', 'villar', 'luserna', 'torre'])
+        _date_tester(date_range_path, '2020-05-05', ['luserna', 'torre'], ['bricherasio', 'villar'])
+        _date_tester(date_range_path, '../2000-05-05', [], ['luserna', 'torre', 'bricherasio', 'villar'])
+        _date_tester(date_range_path, '../2017-05-05', ['bricherasio', 'villar'], ['luserna', 'torre'])
+        _date_tester(date_range_path, '../2050-05-05', ['bricherasio', 'villar', 'luserna', 'torre'], [])
+        _date_tester(date_range_path, '2020-05-05/', ['luserna', 'torre'], ['bricherasio', 'villar'])
+
+        # Test bad requests
+        _date_tester(created_path, 'bad timing!', ['bricherasio', 'villar', 'luserna', 'torre'], [])
 
 
 class Handler1(QgsServerOgcApiHandler):

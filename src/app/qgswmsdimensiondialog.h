@@ -24,6 +24,17 @@
 
 class QgsVectorLayer;
 
+/**
+ * The QgsWmsDimensionDialog class provides an inteface for WMS/OAPIF (WFS3) dimensions configuration
+ * Available pre-defined dimensions are
+ *
+ * - DATE (supported by OAPIF only)
+ * - TIME(supported by WMS and OAPIF)
+ * - ELEVATION (supported by WMS only)
+ *
+ * Dimensions can also be configured as ranges by defining an "end" field that contains the
+ * upper value of the range.
+ */
 class APP_EXPORT QgsWmsDimensionDialog: public QDialog, private Ui::QgsWmsDimensionDialogBase
 {
     Q_OBJECT

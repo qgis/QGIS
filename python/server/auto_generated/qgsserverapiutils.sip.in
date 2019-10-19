@@ -35,6 +35,14 @@ Parses a comma separated ``bbox`` into a (possibly empty) :py:class:`QgsRectangl
    Z values (i.e. a 6 elements bbox) are silently discarded
 %End
 
+    static QList< QgsVectorLayerServerProperties::WmsDimensionInfo > temporalDimensions( const QgsVectorLayer *layer );
+%Docstring
+Returns a list of temporal dimensions information for the given ``layer`` (either configured in wmsDimensions or the first date/datetime field)
+
+.. versionadded:: 3.12
+%End
+
+
     struct TemporalDateInterval
     {
       QDate begin;
@@ -67,7 +75,7 @@ Parse a datetime ``interval`` and returns a TemporalDateTimeInterval
 %Docstring
 Parse the ``interval`` and constructs a (possibily invalid) temporal filter expression for the given ``layer``
 
-Syntax:
+Interval syntax:
 
 interval-closed     = date-time "/" date-time
 interval-open-start = [".."] "/" date-time

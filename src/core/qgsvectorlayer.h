@@ -692,7 +692,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Returns QGIS Server Properties of the vector layer
      * \since QGIS 3.10
      */
-    QgsVectorLayerServerProperties *serverProperties() { return mServerProperties.get(); }
+    QgsVectorLayerServerProperties *serverProperties() const { return mServerProperties.get(); }
 
     /**
      * Returns the number of features that are selected in this layer.
@@ -1774,18 +1774,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * A set of attributes that are not advertised in WFS requests with QGIS server.
      */
     void setExcludeAttributesWfs( const QSet<QString> &att ) { mExcludeAttributesWFS = att; }
-
-    /**
-     * Returns the attributes that are used for temporal filtering with QGIS server OAPIF (WFS3).
-     * \since: QGIS 3.12
-     */
-    QSet<QString> includeAttributesOapifTemporalFilters() const { return mIncludeAttributesOapifTemporalFilters; }
-
-    /**
-     * Sets the attributes that are used for temporal filtering with QGIS server OAPIF (WFS3).
-     * \since: QGIS 3.12
-     */
-    void setIncludeAttributesOapifTemporalFilters( const QSet<QString> &att ) { mIncludeAttributesOapifTemporalFilters = att; }
 
     /**
      * Deletes an attribute field (but does not commit it).

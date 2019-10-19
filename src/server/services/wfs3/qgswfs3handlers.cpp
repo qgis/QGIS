@@ -758,45 +758,6 @@ QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::parameters(
   params.push_back( limit );
 
 
-  // datetime
-  QgsServerQueryStringParameter datetime { QStringLiteral( "datetime" ), false,
-      QgsServerQueryStringParameter::Type::String,
-      QStringLiteral( "Datetime filter" ),
-                                         };
-  datetime.setCustomValidator( [ ]( const QgsServerApiContext &, QVariant & value ) -> bool
-  {
-    const QString stringValue { value.toString() };
-    if ( stringValue.contains( '/' ) )
-    {
-      try
-      {
-        QgsServerApiUtils::parseTemporalDateInterval( stringValue );
-      }
-      catch ( QgsServerException & )
-      {
-        try
-        {
-          QgsServerApiUtils::parseTemporalDateTimeInterval( stringValue );
-        }
-        catch ( QgsServerException & )
-        {
-          return false;
-        }
-      }
-    }
-    else
-    {
-      if ( ! QDate::fromString( stringValue, Qt::DateFormat::ISODate ).isValid( ) &&
-           ! QDateTime::fromString( stringValue, Qt::DateFormat::ISODate ).isValid( ) )
-      {
-        return false;
-      }
-    }
-    return true;
-  } );
-  params.push_back( datetime );
-
-
   // Offset
   QgsServerQueryStringParameter offset { QStringLiteral( "offset" ), false,
                                          QgsServerQueryStringParameter::Type::Integer,
@@ -825,6 +786,47 @@ QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::parameters(
       {
         params.push_back( p );
       }
+    }
+
+    // Check if is there any suitable datetime fields
+    if ( ! QgsServerApiUtils::temporalDimensions( mapLayer ).isEmpty() )
+    {
+      QgsServerQueryStringParameter datetime { QStringLiteral( "datetime" ), false,
+          QgsServerQueryStringParameter::Type::String,
+          QStringLiteral( "Datetime filter" ),
+                                             };
+      datetime.setCustomValidator( [ ]( const QgsServerApiContext &, QVariant & value ) -> bool
+      {
+        const QString stringValue { value.toString() };
+        if ( stringValue.contains( '/' ) )
+        {
+          try
+          {
+            QgsServerApiUtils::parseTemporalDateInterval( stringValue );
+          }
+          catch ( QgsServerException & )
+          {
+            try
+            {
+              QgsServerApiUtils::parseTemporalDateTimeInterval( stringValue );
+            }
+            catch ( QgsServerException & )
+            {
+              return false;
+            }
+          }
+        }
+        else
+        {
+          if ( ! QDate::fromString( stringValue, Qt::DateFormat::ISODate ).isValid( ) &&
+               ! QDateTime::fromString( stringValue, Qt::DateFormat::ISODate ).isValid( ) )
+          {
+            return false;
+          }
+        }
+        return true;
+      } );
+      params.push_back( datetime );
     }
   }
 
@@ -891,14 +893,14 @@ json QgsWfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context 
     const QString layerId { mapLayer->id() };
     const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath() + QStringLiteral( "/collections/%1/items" ).arg( shortName ), context.request()->url() ).toStdString() };
 
-    json parameters = {{
-        { "$ref", "#/components/parameters/limit" },
-        { "$ref", "#/components/parameters/offset" },
-        { "$ref", "#/components/parameters/resultType" },
-        { "$ref", "#/components/parameters/bbox" },
-        { "$ref", "#/components/parameters/bbox-crs" },
-        { "$ref", "#/components/parameters/datetime" },
-      }
+    json parameters =
+    {
+      {{ "$ref", "#/components/parameters/limit" }},
+      {{ "$ref", "#/components/parameters/offset" }},
+      {{ "$ref", "#/components/parameters/resultType" }},
+      {{ "$ref", "#/components/parameters/bbox" }},
+      {{ "$ref", "#/components/parameters/bbox-crs" }},
+      {{ "$ref", "#/components/parameters/datetime" }}
     };
 
     const QList<QgsServerQueryStringParameter> constFieldParameters { fieldParameters( mapLayer, context ) };

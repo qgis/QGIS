@@ -43,7 +43,7 @@ QgsWmsDimensionDialog::QgsWmsDimensionDialog( QgsVectorLayer *layer, QStringList
   connect( mFieldComboBox, &QgsFieldComboBox::fieldChanged, this, &QgsWmsDimensionDialog::fieldChanged );
   connect( mEndFieldComboBox, &QgsFieldComboBox::fieldChanged, this, &QgsWmsDimensionDialog::fieldChanged );
   connect( mNameComboBox, &QComboBox::editTextChanged, this, &QgsWmsDimensionDialog::nameChanged );
-  connect( mDefaultDisplayComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsWmsDimensionDialog::defaultDisplayChanged );
+  connect( mDefaultDisplayComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsWmsDimensionDialog::defaultDisplayChanged );
 
   // Set available names
   const QMetaEnum pnMetaEnum( QMetaEnum::fromType<QgsVectorLayerServerProperties::PredefinedWmsDimensionName>() );
@@ -149,6 +149,16 @@ void QgsWmsDimensionDialog::nameChanged( const QString &name )
     {
       mFieldComboBox->setFilters( QgsFieldProxyModel::String | QgsFieldProxyModel::DateTime );
       mEndFieldComboBox->setFilters( QgsFieldProxyModel::String | QgsFieldProxyModel::DateTime );
+      mUnitsLineEdit->setText( QStringLiteral( "ISO8601" ) );
+      mUnitsLabel->setEnabled( false );
+      mUnitsLineEdit->setEnabled( false );
+      mUnitSymbolLabel->setEnabled( false );
+      mUnitSymbolLineEdit->setEnabled( false );
+    }
+    if ( data == QgsVectorLayerServerProperties::DATE )
+    {
+      mFieldComboBox->setFilters( QgsFieldProxyModel::String | QgsFieldProxyModel::Date );
+      mEndFieldComboBox->setFilters( QgsFieldProxyModel::String | QgsFieldProxyModel::Date );
       mUnitsLineEdit->setText( QStringLiteral( "ISO8601" ) );
       mUnitsLabel->setEnabled( false );
       mUnitsLineEdit->setEnabled( false );

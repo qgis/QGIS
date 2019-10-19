@@ -27,6 +27,7 @@
 #include "qgsserverprojectutils.h"
 #include "qgsserverapicontext.h"
 #include "qgsserverexception.h"
+#include "qgsvectorlayerserverproperties.h"
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsaccesscontrol.h"
@@ -60,8 +61,15 @@ class SERVER_EXPORT QgsServerApiUtils
     static QgsRectangle parseBbox( const QString &bbox );
 
     /**
+     * Returns a list of temporal dimensions information for the given \a layer (either configured in wmsDimensions or the first date/datetime field)
+     * \since QGIS 3.12
+     */
+    static QList< QgsVectorLayerServerProperties::WmsDimensionInfo > temporalDimensions( const QgsVectorLayer *layer );
+
+
+    /**
      * A temporal date interval, if only one of "begin" or "end" are valid, the interval is open.
-     * If both "begin" and "end"a re invalid the  interval is invalid.
+     * If both "begin" and "end" are invalid the  interval is invalid.
      */
     struct TemporalDateInterval
     {
@@ -71,7 +79,7 @@ class SERVER_EXPORT QgsServerApiUtils
 
     /**
      * A temporal datetime interval, if only one of "begin" or "end" are valid, the interval is open.
-     * If both "begin" and "end"a re invalid the  interval is invalid.
+     * If both "begin" and "end" are invalid the  interval is invalid.
      */
     struct TemporalDateTimeInterval
     {
@@ -102,7 +110,7 @@ class SERVER_EXPORT QgsServerApiUtils
     /**
      * Parse the \a interval and constructs a (possibily invalid) temporal filter expression for the given \a layer
      *
-     * Syntax:
+     * Interval syntax:
      *
      *   interval-closed     = date-time "/" date-time
      *   interval-open-start = [".."] "/" date-time

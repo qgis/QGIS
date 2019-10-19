@@ -67,10 +67,6 @@ QgsSourceFieldsProperties::QgsSourceFieldsProperties( QgsVectorLayer *layer, QWi
   wfsWi->setToolTip( tr( "Defines if this field is available in QGIS Server WFS (and OAPIF) service" ) );
   mFieldsList->setHorizontalHeaderItem( AttrWFSCol, wfsWi );
   mFieldsList->setHorizontalHeaderItem( AttrAliasCol, new QTableWidgetItem( tr( "Alias" ) ) );
-  const auto oapifWi = new QTableWidgetItem( QStringLiteral( "Temporal OAPIF" ) );
-  oapifWi->setToolTip( tr( "Defines if this field will be used for temporal filtering in QGIS Server OAPIF service" ) );
-  mFieldsList->setHorizontalHeaderItem( AttrOapifDateTimeCol, oapifWi );
-  mFieldsList->setHorizontalHeaderItem( AttrAliasCol, new QTableWidgetItem( tr( "Alias" ) ) );
 
   mFieldsList->setSortingEnabled( true );
   mFieldsList->sortByColumn( 0, Qt::AscendingOrder );
@@ -274,22 +270,6 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
   wfsAttrItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
   mFieldsList->setItem( row, AttrWFSCol, wfsAttrItem );
 
-  // OAPIF temporal
-  QTableWidgetItem *oapifAttrItem = new QTableWidgetItem();
-  // ok, in theory, we could support any field type that
-  // can contain something convertible to a date/datetime, but
-  // let's keep it simple for now
-  if ( field.isDateOrTime() || field.type() == QVariant::String )
-  {
-    oapifAttrItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
-    oapifAttrItem->setCheckState( mLayer->includeAttributesOapifTemporalFilters().contains( field.name() ) ? Qt::Checked : Qt::Unchecked );
-  }
-  else
-  {
-    oapifAttrItem->setFlags( oapifAttrItem->flags() & ~Qt::ItemIsSelectable & ~Qt::ItemIsEnabled & ~Qt::ItemIsUserCheckable );
-  }
-  mFieldsList->setItem( row, AttrOapifDateTimeCol, oapifAttrItem );
-
 }
 
 bool QgsSourceFieldsProperties::addAttribute( const QgsField &field )
@@ -323,16 +303,10 @@ void QgsSourceFieldsProperties::apply()
     {
       excludeAttributesWFS.insert( mFieldsList->item( i, AttrNameCol )->text() );
     }
-    if ( mFieldsList->item( i, AttrOapifDateTimeCol )->checkState() == Qt::Checked )
-    {
-      includeTemporalFilters.insert( mFieldsList->item( i, AttrNameCol )->text() );
-    }
   }
 
   mLayer->setExcludeAttributesWms( excludeAttributesWMS );
   mLayer->setExcludeAttributesWfs( excludeAttributesWFS );
-  // Note: this is a whitelist unlike the previous two!
-  mLayer->setIncludeAttributesOapifTemporalFilters( includeTemporalFilters );
 }
 
 //SLOTS
