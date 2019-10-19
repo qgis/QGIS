@@ -34,3 +34,22 @@ a { color: green; }
 .top-buffer {
     margin-top:20px;
 }
+
+table.table {
+    table-layout: fixed;
+}
+
+dl.row dt:first-child {
+    width: 20%;
+}
+
+table.table-params td:first-child, table.table-params th:first-child,
+table.table-params td:last-child, table.table-params th:last-child
+{
+    width: 15%;
+}
+
+table.table-params td.small
+{
+    font-size: 90%;
+}
