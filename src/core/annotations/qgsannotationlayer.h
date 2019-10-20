@@ -24,18 +24,6 @@
 
 class QgsAnnotationItem;
 
-class CORE_EXPORT QgsAnnotationItem
-{
-  public:
-
-    QgsAnnotationItem *clone() { return nullptr; }
-
-    QgsCoordinateReferenceSystem crs() const { return QgsCoordinateReferenceSystem(); }
-
-    void render( QgsRenderContext &context, QgsFeedback *feedback ) {}
-
-};
-
 class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
 {
     Q_OBJECT

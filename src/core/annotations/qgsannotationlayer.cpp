@@ -16,6 +16,7 @@
 
 #include "qgsannotationlayer.h"
 #include "qgsannotationlayerrenderer.h"
+#include "qgsannotationitem.h"
 #include <QUuid>
 
 QgsAnnotationLayer::QgsAnnotationLayer( const QString &name, const LayerOptions &options )

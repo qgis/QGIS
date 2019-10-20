@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/annotations/qgsannotationlayer.h                            *
+ * src/core/annotations/qgsannotationitem.h                             *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -10,7 +10,7 @@
 
 
 
-class QgsAnnotationLayer : QgsMapLayer
+class QgsAnnotationItem
 {
 %Docstring
 *************************************************************************
@@ -24,58 +24,24 @@ the Free Software Foundation; either version 2 of the License, or     *
 %End
 
 %TypeHeaderCode
-#include "qgsannotationlayer.h"
+#include "qgsannotationitem.h"
 %End
   public:
 
+    QgsAnnotationItem *clone();
 
-    struct LayerOptions
-    {
+    QgsCoordinateReferenceSystem crs() const;
 
-      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext );
-%Docstring
-Constructor for LayerOptions.
-%End
+    void render( QgsRenderContext &context, QgsFeedback *feedback );
 
-      QgsCoordinateTransformContext transformContext;
-
-    };
-
-
-    QgsAnnotationLayer( const QString &name, const QgsAnnotationLayer::LayerOptions &options );
-
-    void addItem( QgsAnnotationItem *item );
-
-
-    const QMap<QString, QgsAnnotationItem *> &items() const;
-
-    void setOpacity( double opacity );
-    double opacity() const;
-
-
-    virtual QgsAnnotationLayer *clone() const /Factory/;
-
-
-    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
-
-
-    virtual QgsRectangle extent() const;
-
-
-    virtual void setTransformContext( const QgsCoordinateTransformContext &ctx );
-
-
-    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const;
-    virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
-
-  protected:
+    int zIndex() const;
 
 };
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/annotations/qgsannotationlayer.h                            *
+ * src/core/annotations/qgsannotationitem.h                             *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
