@@ -245,7 +245,7 @@ Returns ``True`` if this range overlaps another range.
 
     bool extend( const QgsTemporalRange<T> &other );
 %Docstring
-Extends the range in place by adding an ``other`` range.
+Extends the range in place by extending this range out to include an ``other`` range.
 If ``other`` is empty the range is not changed.
 If the range is empty and ``other`` is not, the range is changed and set to ``other``.
 
