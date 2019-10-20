@@ -494,6 +494,12 @@ void QgsWfs3CollectionsHandler::handleRequest( const QgsServerApiContext &contex
               "spatial", {
                 { "bbox", QgsServerApiUtils::layerExtent( layer ) },
                 { "crs", "http://www.opengis.net/def/crs/OGC/1.3/CRS84" },
+              },
+            },
+            {
+              "temporal", {
+                { "interval", QgsServerApiUtils::temporalExtent( layer ) },
+                { "trs", "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian" },
               }
             }
           }
@@ -524,6 +530,7 @@ void QgsWfs3CollectionsHandler::handleRequest( const QgsServerApiContext &contex
       } );
     }
   }
+
   json navigation = json::array();
   const QUrl url { context.request()->url() };
   navigation.push_back( {{ "title",  "Landing page" }, { "href", parentLink( url, 1 ).toStdString() }} ) ;
@@ -659,6 +666,12 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
           "spatial", {
             { "bbox", QgsServerApiUtils::layerExtent( mapLayer ) },
             { "crs", "http://www.opengis.net/def/crs/OGC/1.3/CRS84" },
+          }
+        },
+        {
+          "temporal", {
+            { "interval", QgsServerApiUtils::temporalExtent( mapLayer ) },
+            { "trs", "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian" },
           }
         }
       }

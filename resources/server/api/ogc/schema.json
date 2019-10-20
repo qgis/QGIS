@@ -188,6 +188,40 @@
             "items" : {
               "type" : "number"
             }
+          },
+          "temporal" : {
+            "description" : "The temporal extent of the features in the collection.",
+            "type" : "object",
+            "properties" : {
+               "interval" : {
+                 "description" : "One or more time intervals that describe the temporal extent of the dataset.\nThe value `null` is supported and indicates an open time interval.\nIn the Core only a single time interval is supported. Extensions may support multiple intervals. If multiple intervals are provided, the union of the intervals describes the temporal extent.",
+                 "type": "array",
+                 "minItems": 1,
+                 "items" : {
+                   "description" : "Begin and end times of the time interval. The timestamps\nare in the coordinate reference system specified in `trs`. By default\nthis is the Gregorian calendar.",
+                   "type": "array",
+                   "minItems": 2,
+                   "maxItems": 2,
+                   "items": {
+                     "type" : "string",
+                     "format" : "date-time",
+                     "nullable" : true,
+                     "example" : [
+                         "2011-11-11T12:22:11Z",
+                         null
+                       ],
+                     "trs" : {
+                       "description": "Coordinate reference system of the coordinates in the temporal extent\n(property `interval`). The default reference system is the Gregorian calendar.\nIn the Core this is the only supported temporal reference system.\nExtensions may support additional temporal reference systems and add\nadditional enum values.",
+                       "type": "string",
+                       "enum" : [
+                         "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian"
+                         ],
+                       "default" : "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian"
+                     }
+                   }
+                 }
+               }
+            }
           }
         }
       },

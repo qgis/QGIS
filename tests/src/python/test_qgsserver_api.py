@@ -94,6 +94,39 @@ class QgsServerAPIUtilsTest(QgsServerTestBase):
         path = QgsServerApiUtils.appendMapParameter('/wfs3', QtCore.QUrl('https://www.qgis.org/wfs3?MAP=/some/path'))
         self.assertEqual(path, '/wfs3?MAP=/some/path')
 
+    def test_temporal_extent(self):
+
+        project = QgsProject()
+        base_path = unitTestDataPath('qgis_server') + '/test_project_api_timefilters.qgs'
+        project.read(base_path)
+
+        layer = list(project.mapLayers().values())[0]
+
+        layer.serverProperties().removeWmsDimension('date')
+        layer.serverProperties().removeWmsDimension('time')
+        self.assertTrue(layer.serverProperties().addWmsDimension(QgsVectorLayerServerProperties.WmsDimensionInfo('time', 'updated_string')))
+        self.assertEqual(QgsServerApiUtils.temporalExtent(layer), [['2010-01-01T01:01:01', '2020-01-01T01:01:01']])
+
+        layer.serverProperties().removeWmsDimension('date')
+        layer.serverProperties().removeWmsDimension('time')
+        self.assertTrue(layer.serverProperties().addWmsDimension(QgsVectorLayerServerProperties.WmsDimensionInfo('date', 'created')))
+        self.assertEqual(QgsServerApiUtils.temporalExtent(layer), [['2010-01-01T00:00:00', '2019-01-01T00:00:00']])
+
+        layer.serverProperties().removeWmsDimension('date')
+        layer.serverProperties().removeWmsDimension('time')
+        self.assertTrue(layer.serverProperties().addWmsDimension(QgsVectorLayerServerProperties.WmsDimensionInfo('date', 'created_string')))
+        self.assertEqual(QgsServerApiUtils.temporalExtent(layer), [['2010-01-01T00:00:00', '2019-01-01T00:00:00']])
+
+        layer.serverProperties().removeWmsDimension('date')
+        layer.serverProperties().removeWmsDimension('time')
+        self.assertTrue(layer.serverProperties().addWmsDimension(QgsVectorLayerServerProperties.WmsDimensionInfo('time', 'updated')))
+        self.assertEqual(QgsServerApiUtils.temporalExtent(layer), [['2010-01-01T01:01:01Z', '2022-01-01T01:01:01Z']])
+
+        layer.serverProperties().removeWmsDimension('date')
+        layer.serverProperties().removeWmsDimension('time')
+        self.assertTrue(layer.serverProperties().addWmsDimension(QgsVectorLayerServerProperties.WmsDimensionInfo('date', 'begin', 'end')))
+        self.assertEqual(QgsServerApiUtils.temporalExtent(layer), [['2010-01-01T00:00:00', '2022-01-01T00:00:00']])
+
 
 class API(QgsServerApi):
 
@@ -358,6 +391,13 @@ class QgsServerAPITest(QgsServerAPITestBase):
         project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
         request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer%20èé')
         self.compareApi(request, project, 'test_wfs3_collection_testlayer_èé.json')
+
+    def test_wfs3_collection_temporal_extent_json(self):
+        """Test collection with timefilter"""
+        project = QgsProject()
+        project.read(unitTestDataPath('qgis_server') + '/test_project_api_timefilters.qgs')
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/points')
+        self.compareApi(request, project, 'test_wfs3_collection_points_timefilters.json')
 
     def test_wfs3_collection_html(self):
         """Test WFS3 API collection"""

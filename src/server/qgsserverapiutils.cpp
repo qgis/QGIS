@@ -415,6 +415,72 @@ json QgsServerApiUtils::layerExtent( const QgsVectorLayer *layer )
   return {{ extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum() }};
 }
 
+json QgsServerApiUtils::temporalExtent( const QgsVectorLayer *layer )
+{
+  // Helper to get min/max from a dimension
+  auto range = [ & ]( const QgsVectorLayerServerProperties::WmsDimensionInfo & dimInfo ) -> QgsDateTimeRange
+  {
+    QgsDateTimeRange result;
+    // min
+    int fieldIdx { layer->fields().lookupField( dimInfo.fieldName )};
+    if ( fieldIdx < 0 )
+    {
+      return result;
+    }
+    QDateTime min { layer->minimumValue( fieldIdx ).toDateTime() };
+    QDateTime max { layer->maximumValue( fieldIdx ).toDateTime() };
+    if ( ! dimInfo.endFieldName.isEmpty() )
+    {
+      fieldIdx = layer->fields().lookupField( dimInfo.endFieldName );
+      if ( fieldIdx >= 0 )
+      {
+        QDateTime minEnd { layer->minimumValue( fieldIdx ).toDateTime() };
+        QDateTime maxEnd { layer->maximumValue( fieldIdx ).toDateTime() };
+        if ( minEnd.isValid() )
+        {
+          min = std::min<QDateTime>( min, layer->minimumValue( fieldIdx ).toDateTime() );
+        }
+        if ( maxEnd.isValid() )
+        {
+          max = std::max<QDateTime>( max, layer->maximumValue( fieldIdx ).toDateTime() );
+        }
+      }
+    }
+    return { min, max };
+  };
+
+  const QList<QgsVectorLayerServerProperties::WmsDimensionInfo> dimensions { QgsServerApiUtils::temporalDimensions( layer ) };
+  if ( dimensions.isEmpty() )
+  {
+    return nullptr;
+  }
+  else
+  {
+    QgsDateTimeRange extent;
+    for ( const auto &dimension : dimensions )
+    {
+      // Get min/max for dimension
+      extent.extend( range( dimension ) );
+    }
+    json ret = json::array();
+    const QString beginVal { extent.begin().toString( Qt::DateFormat::ISODate ) };
+    const QString endVal { extent.end().toString( Qt::DateFormat::ISODate ) };
+    ret.push_back(
+    {
+      beginVal.isEmpty() ? nullptr : beginVal.toStdString(),
+      endVal.isEmpty() ? nullptr : endVal.toStdString()
+    } );
+    return ret;
+  }
+}
+
+QVariantList QgsServerApiUtils::temporalExtentList( const QgsVectorLayer *layer ) SIP_PYNAME( temporalExtent )
+{
+  QVariantList list;
+  list.push_back( QgsJsonUtils::parseArray( QString::fromStdString( temporalExtent( layer )[0].dump() ) ) );
+  return list;
+}
+
 QgsCoordinateReferenceSystem QgsServerApiUtils::parseCrs( const QString &bboxCrs )
 {
   QgsCoordinateReferenceSystem crs;

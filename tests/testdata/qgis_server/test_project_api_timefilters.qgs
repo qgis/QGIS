@@ -68,10 +68,10 @@
   <projectlayers>
     <maplayer minScale="1e+08" simplifyLocal="1" autoRefreshEnabled="0" maxScale="0" autoRefreshTime="0" wkbType="Point" labelsEnabled="0" simplifyDrawingTol="1.2" geometry="Point" readOnly="0" styleCategories="AllStyleCategories" simplifyAlgorithm="0" type="vector" refreshOnNotifyEnabled="0" simplifyDrawingHints="0" hasScaleBasedVisibilityFlag="0" refreshOnNotifyMessage="" simplifyMaxScale="1">
       <extent>
-        <xmin>7.15825748443603516</xmin>
-        <ymin>44.79768753051757813</ymin>
-        <xmax>7.30355501174926758</xmax>
-        <ymax>44.82162857055664063</ymax>
+        <xmin>7.15826000000000029</xmin>
+        <ymin>44.79769999999999897</ymin>
+        <xmax>7.30356000000000005</xmax>
+        <ymax>44.82159999999999656</ymax>
       </extent>
       <id>points_47ad3bc8_35bd_4392_8994_2dc5ff04be60</id>
       <datasource>./test_project_api_timefilters.gpkg|layername=points</datasource>
@@ -119,7 +119,7 @@
             <description></description>
             <projectionacronym></projectionacronym>
             <ellipsoidacronym></ellipsoidacronym>
-            <geographicflag>true</geographicflag>
+            <geographicflag>false</geographicflag>
           </spatialrefsys>
         </crs>
         <extent>
@@ -187,7 +187,9 @@
         <sizescale/>
       </renderer-v2>
       <customproperties>
-        <property key="dualview/previewExpressions" value="name"/>
+        <property key="dualview/previewExpressions">
+          <value>name</value>
+        </property>
         <property key="embeddedWidgets/count" value="0"/>
         <property key="variableNames"/>
         <property key="variableValues"/>
@@ -328,7 +330,7 @@
           <column type="field" name="updated" hidden="0" width="497"/>
           <column type="field" name="begin" hidden="0" width="-1"/>
           <column type="field" name="end" hidden="0" width="-1"/>
-          <column type="field" name="updated_string" hidden="0" width="-1"/>
+          <column type="field" name="updated_string" hidden="0" width="371"/>
           <column type="field" name="created_string" hidden="0" width="-1"/>
         </columns>
       </attributetableconfig>

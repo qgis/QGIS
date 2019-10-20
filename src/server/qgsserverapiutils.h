@@ -29,6 +29,7 @@
 #include "qgsserverexception.h"
 #include "qgsvectorlayerserverproperties.h"
 #include "qgsrange.h"
+#include "qgsjsonutils.h"
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsaccesscontrol.h"
@@ -104,6 +105,43 @@ class SERVER_EXPORT QgsServerApiUtils
      * layerExtent returns json array with [xMin,yMin,xMax,yMax] CRS84 extent for the given \a layer
      */
     static json layerExtent( const QgsVectorLayer *layer ) SIP_SKIP;
+
+    /**
+     * temporalExtent returns a json array with an array of [min, max] temporal extent for the given \a layer.
+     * In case multiple temporal dimensions are available in the layer, a union of all dimensions is returned.
+     *
+     * From specifications: http://schemas.opengis.net/ogcapi/features/part1/1.0/openapi/schemas/extent.yaml
+     *
+     * One or more time intervals that describe the temporal extent of the dataset.
+     * The value `null` is supported and indicates an open time interval.
+     *
+     * In the Core only a single time interval is supported. Extensions may support
+     * multiple intervals. If multiple intervals are provided, the union of the
+     * intervals describes the temporal extent.
+     *
+     * \return An array of intervals
+     * \note not available in Python bindings
+     * \since QGIS 3.12
+     */
+    static json temporalExtent( const QgsVectorLayer *layer ) SIP_SKIP;
+
+    /**
+     * temporalExtent returns a json array with an array of [min, max] temporal extent for the given \a layer.
+     * In case multiple temporal dimensions are available in the layer, a union of all dimensions is returned.
+     *
+     * From specifications: http://schemas.opengis.net/ogcapi/features/part1/1.0/openapi/schemas/extent.yaml
+     *
+     * One or more time intervals that describe the temporal extent of the dataset.
+     * The value `null` is supported and indicates an open time interval.
+     *
+     * In the Core only a single time interval is supported. Extensions may support
+     * multiple intervals. If multiple intervals are provided, the union of the
+     * intervals describes the temporal extent.
+     *
+     * \return An array of intervals
+     * \since QGIS 3.12
+     */
+    static QVariantList temporalExtentList( const QgsVectorLayer *layer ) SIP_PYNAME( temporalExtent );
 
     /**
      * Parses the CRS URI \a bboxCrs (example: "http://www.opengis.net/def/crs/OGC/1.3/CRS84") into a QGIS CRS object
