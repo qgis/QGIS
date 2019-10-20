@@ -1,0 +1,114 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/annotations/qgsannotationlayer.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsAnnotationItem
+{
+%Docstring
+*************************************************************************
+
+This program is free software; you can redistribute it and/or modify  *
+it under the terms of the GNU General Public License as published by  *
+the Free Software Foundation; either version 2 of the License, or     *
+(at your option) any later version.                                   *
+
+**************************************************************************
+%End
+
+%TypeHeaderCode
+#include "qgsannotationlayer.h"
+%End
+  public:
+
+    QgsAnnotationItem *clone();
+
+    QgsCoordinateReferenceSystem crs() const;
+
+    void render( QgsRenderContext &context, QgsFeedback *feedback );
+
+};
+
+class QgsAnnotationLayer : QgsMapLayer
+{
+
+%TypeHeaderCode
+#include "qgsannotationlayer.h"
+%End
+  public:
+
+
+    struct LayerOptions
+    {
+
+      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext );
+%Docstring
+Constructor for LayerOptions.
+%End
+
+      QgsCoordinateTransformContext transformContext;
+
+    };
+
+
+    QgsAnnotationLayer( const QString &name, const QgsAnnotationLayer::LayerOptions &options );
+
+    void addItem( QgsAnnotationItem *item );
+
+
+    const QMap<QString, QgsAnnotationItem *> &items() const;
+
+    void setOpacity( double opacity );
+    double opacity() const;
+
+
+    virtual QgsAnnotationLayer *clone() const /Factory/;
+
+
+    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
+
+
+    virtual QgsRectangle extent() const;
+
+
+    virtual void setTransformContext( const QgsCoordinateTransformContext &ctx );
+
+
+    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const;
+    virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
+
+  protected:
+
+};
+
+class QgsAnnotationLayerRenderer : QgsMapLayerRenderer
+{
+
+%TypeHeaderCode
+#include "qgsannotationlayer.h"
+%End
+  public:
+
+    QgsAnnotationLayerRenderer( QgsAnnotationLayer *layer, QgsRenderContext &context );
+    ~QgsAnnotationLayerRenderer();
+    virtual QgsFeedback *feedback() const;
+
+    virtual bool render();
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/annotations/qgsannotationlayer.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
