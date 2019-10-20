@@ -100,19 +100,4 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     double mOpacity = 100;
 };
 
-class CORE_EXPORT QgsAnnotationLayerRenderer : public QgsMapLayerRenderer
-{
-  public:
-
-    QgsAnnotationLayerRenderer( QgsAnnotationLayer *layer, QgsRenderContext &context );
-    ~QgsAnnotationLayerRenderer() override;
-    QgsFeedback *feedback() const override;
-    bool render() override;
-
-  private:
-    QVector< QgsAnnotationItem *> mItems;
-    std::unique_ptr< QgsFeedback > mFeedback;
-
-};
-
 #endif // QGSANNOTATIONLAYER_H

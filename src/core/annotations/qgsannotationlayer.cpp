@@ -15,7 +15,7 @@
  ***************************************************************************/
 
 #include "qgsannotationlayer.h"
-#include "qgsfeedback.h"
+#include "qgsannotationlayerrenderer.h"
 #include <QUuid>
 
 QgsAnnotationLayer::QgsAnnotationLayer( const QString &name, const LayerOptions &options )
@@ -130,44 +130,3 @@ QRectF QgsAnnotationLayer::margin() const
 }
 #endif
 
-QgsAnnotationLayerRenderer::QgsAnnotationLayerRenderer( QgsAnnotationLayer *layer, QgsRenderContext &context )
-  : QgsMapLayerRenderer( layer->id(), &context )
-  , mFeedback( qgis::make_unique< QgsFeedback >() )
-{
-  // clone items from layer
-  const QMap< QString, QgsAnnotationItem * > items = layer->items();
-  mItems.reserve( items.size() );
-  for ( auto it = items.constBegin(); it != items.constEnd(); ++it )
-  {
-    if ( it.value() )
-      mItems << ( *it )->clone();
-  }
-
-  //  std::sort( mItems.begin(), mItems.end(), []( QgsAnnotationItem * a, QgsAnnotationItem * b ) { return a->zIndex() < b->zIndex(); } );
-}
-
-QgsAnnotationLayerRenderer::~QgsAnnotationLayerRenderer()
-{
-  qDeleteAll( mItems );
-}
-
-QgsFeedback *QgsAnnotationLayerRenderer::feedback() const
-{
-  return mFeedback.get();
-}
-
-bool QgsAnnotationLayerRenderer::render()
-{
-  QgsRenderContext &context = *renderContext();
-
-  for ( QgsAnnotationItem *item : qgis::as_const( mItems ) )
-  {
-    if ( mFeedback->isCanceled() )
-      break;
-
-
-    renderContext()->setCoordinateTransform( QgsCoordinateTransform( item->crs(), context.coordinateTransform().destinationCrs(), context.transformContext() ) );
-    item->render( context, mFeedback.get() );
-  }
-  return true;
-}
