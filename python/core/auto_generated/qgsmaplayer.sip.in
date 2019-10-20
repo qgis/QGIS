@@ -20,7 +20,8 @@ enum class QgsMapLayerType
   RasterLayer,
   PluginLayer,
   MeshLayer,
-  VectorTileLayer
+  VectorTileLayer,
+  AnnotationLayer,
 };
 
 class QgsMapLayer : QObject

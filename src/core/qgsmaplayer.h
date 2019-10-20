@@ -71,6 +71,7 @@ enum class QgsMapLayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayer, LayerT
   PluginLayer,
   MeshLayer,      //!< Added in 3.2
   VectorTileLayer //!< Added in 3.14
+  AnnotationLayer, //!< Contains freeform, georeferenced annotations. Added in QGIS 3.16
 };
 
 /**
