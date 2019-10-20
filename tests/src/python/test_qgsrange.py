@@ -396,6 +396,9 @@ class TestQgsDateRange(unittest.TestCase):
         range = QgsDateRange(QDate(), QDate(2010, 5, 2))
         self.assertTrue(range.extend(QgsDateRange(QDate(2010, 3, 6), QDate(2010, 6, 2), False, False)))
         self.assertEqual(range, QgsDateRange(QDate(), QDate(2010, 6, 2), True, False))
+        range = QgsDateRange(QDate(2010, 4, 6), QDate())
+        self.assertTrue(range.extend(QgsDateRange(QDate(), QDate(2010, 5, 2), True, False)))
+        self.assertEqual(range, QgsDateRange(QDate(), QDate(), True, True))
 
 
 if __name__ == "__main__":
