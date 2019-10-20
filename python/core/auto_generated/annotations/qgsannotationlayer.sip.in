@@ -88,23 +88,6 @@ Constructor for LayerOptions.
 
 };
 
-class QgsAnnotationLayerRenderer : QgsMapLayerRenderer
-{
-
-%TypeHeaderCode
-#include "qgsannotationlayer.h"
-%End
-  public:
-
-    QgsAnnotationLayerRenderer( QgsAnnotationLayer *layer, QgsRenderContext &context );
-    ~QgsAnnotationLayerRenderer();
-    virtual QgsFeedback *feedback() const;
-
-    virtual bool render();
-
-
-};
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
