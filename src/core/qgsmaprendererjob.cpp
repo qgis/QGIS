@@ -43,6 +43,7 @@
 #include "qgsvectorlayerutils.h"
 #include "qgssymbollayerutils.h"
 #include "qgsmaplayertemporalproperties.h"
+#include "qgsannotationlayer.h"
 
 ///@cond PRIVATE
 
@@ -367,6 +368,10 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
     if ( vl )
     {
       job.opacity = vl->opacity();
+    }
+    else if ( QgsAnnotationLayer *al = qobject_cast<QgsAnnotationLayer *>( ml ) )
+    {
+      job.opacity = al->opacity();
     }
 
     // if we can use the cache, let's do it and avoid rendering!
@@ -928,6 +933,19 @@ bool QgsMapRendererJob::needTemporaryImage( QgsMapLayer *ml )
     case QgsMapLayerType::VectorTileLayer:
     case QgsMapLayerType::PluginLayer:
       break;
+
+    case QgsMapLayerType::AnnotationLayer:
+    {
+      QgsAnnotationLayer *al = qobject_cast<QgsAnnotationLayer *>( ml );
+      if ( mSettings.testFlag( QgsMapSettings::UseAdvancedEffects ) &&
+           ( !qgsDoubleNear( al->opacity(), 1.0 ) ) )
+      {
+        //layer properties require rasterization
+        return true;
+      }
+      break;
+    }
+
   }
 
   return false;
