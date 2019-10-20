@@ -83,7 +83,7 @@ class rasterize_over(GdalAlgorithm):
         return 'rasterize_over'
 
     def displayName(self):
-        return self.tr('Rasterize (write attribute value over existing raster)')
+        return self.tr('Rasterize (overwrite with attribute)')
 
     def group(self):
         return self.tr('Vector conversion')
