@@ -67,6 +67,7 @@ from .tpi import tpi
 from .tri import tri
 from .warp import warp
 from .pansharp import pansharp
+from .rasterize_over_fixed_value import rasterize_over_fixed_value
 
 from .extractprojection import ExtractProjection
 from .rasterize_over import rasterize_over
@@ -175,6 +176,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             # rasterize(),
             ExtractProjection(),
             rasterize_over(),
+            rasterize_over_fixed_value(),
             # ----- OGR tools -----
             Buffer(),
             ClipVectorByExtent(),
