@@ -384,6 +384,19 @@ class TestQgsDateRange(unittest.TestCase):
         range = QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, False)
         self.assertFalse(range.extend(QgsDateRange(QDate(2010, 4, 6), QDate(2010, 5, 2), False, False)))
 
+        # Test infinity
+        range = QgsDateRange(QDate(), QDate())
+        self.assertFalse(range.extend(QgsDateRange(QDate(2010, 4, 6), QDate(2010, 5, 2), False, False)))
+        range = QgsDateRange(QDate(), QDate(2010, 5, 2))
+        self.assertFalse(range.extend(QgsDateRange(QDate(2010, 4, 6), QDate(2010, 5, 2), False, False)))
+        self.assertEqual(range, QgsDateRange(QDate(), QDate(2010, 5, 2), True, True))
+        range = QgsDateRange(QDate(2010, 4, 6), QDate())
+        self.assertTrue(range.extend(QgsDateRange(QDate(2010, 3, 6), QDate(2010, 5, 2), False, False)))
+        self.assertEqual(range, QgsDateRange(QDate(2010, 3, 6), QDate(), False, True))
+        range = QgsDateRange(QDate(), QDate(2010, 5, 2))
+        self.assertTrue(range.extend(QgsDateRange(QDate(2010, 3, 6), QDate(2010, 6, 2), False, False)))
+        self.assertEqual(range, QgsDateRange(QDate(), QDate(2010, 6, 2), True, False))
+
 
 if __name__ == "__main__":
     unittest.main()

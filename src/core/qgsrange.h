@@ -395,7 +395,7 @@ class QgsTemporalRange
     }
 
     /**
-     * Extends the range in place by adding an \a other range.
+     * Extends the range in place by extending this range out to include an \a other range.
      * If \a other is empty the range is not changed.
      * If the range is empty and \a other is not, the range is changed and set to \a other.
      * \see isEmpty()
@@ -404,11 +404,11 @@ class QgsTemporalRange
      */
     bool extend( const QgsTemporalRange<T> &other )
     {
-      if ( other.isEmpty() || other.isInfinite() )
+      if ( other.isEmpty() )
       {
         return false;
       }
-      else if ( isEmpty() || isInfinite() )
+      else if ( isEmpty() )
       {
         mLower = other.begin();
         mUpper = other.end();
@@ -421,7 +421,7 @@ class QgsTemporalRange
       bool changed { false };
 
       // Lower
-      if ( other.begin() < mLower )
+      if ( begin().isValid() && other.begin() < mLower )
       {
         mLower = other.begin();
         mIncludeLower = other.includeBeginning();
@@ -434,7 +434,7 @@ class QgsTemporalRange
       }
 
       // Upper
-      if ( other.end() > mUpper )
+      if ( end().isValid() && other.end() > mUpper )
       {
         mUpper = other.end();
         mIncludeUpper = other.includeEnd();
