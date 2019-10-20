@@ -824,6 +824,8 @@ QgsLayerItem::LayerType QgsLayerItem::typeFromMapLayer( QgsMapLayer *layer )
       return Mesh;
     case QgsMapLayerType::VectorTileLayer:
       return VectorTile;
+    case QgsMapLayerType::AnnotationLayer:
+      return Vector; // will never happen!
   }
   return Vector; // no warnings
 }
@@ -924,6 +926,9 @@ QgsMimeDataUtils::Uri QgsLayerItem::mimeUri() const
       break;
     case QgsMapLayerType::PluginLayer:
       u.layerType = QStringLiteral( "plugin" );
+      break;
+    case QgsMapLayerType::AnnotationLayer:
+      u.layerType = QStringLiteral( "annotation" );
       break;
   }
 

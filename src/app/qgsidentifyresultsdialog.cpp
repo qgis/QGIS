@@ -506,6 +506,7 @@ void QgsIdentifyResultsDialog::addFeature( const QgsMapToolIdentify::IdentifyRes
       break;
 
     case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::AnnotationLayer:
       break;
   }
 }

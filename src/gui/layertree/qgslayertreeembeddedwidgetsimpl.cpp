@@ -74,6 +74,7 @@ QgsLayerTreeOpacityWidget::QgsLayerTreeOpacityWidget( QgsMapLayer *layer )
     case QgsMapLayerType::PluginLayer:
     case QgsMapLayerType::MeshLayer:
     case QgsMapLayerType::VectorTileLayer:
+    case QgsMapLayerType::AnnotationLayer:
       break;
 
   }
@@ -114,6 +115,7 @@ void QgsLayerTreeOpacityWidget::updateOpacityFromSlider()
     case QgsMapLayerType::PluginLayer:
     case QgsMapLayerType::MeshLayer:
     case QgsMapLayerType::VectorTileLayer:
+    case QgsMapLayerType::AnnotationLayer:
       break;
   }
 
@@ -156,6 +158,7 @@ bool QgsLayerTreeOpacityWidget::Provider::supportsLayer( QgsMapLayer *layer )
     case QgsMapLayerType::MeshLayer:
     case QgsMapLayerType::VectorTileLayer:
     case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::AnnotationLayer:
       return false;
   }
   return false;
