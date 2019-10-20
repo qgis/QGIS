@@ -125,6 +125,7 @@ SET(QGIS_CORE_SRCS
   auth/qgsauthmethodregistry.cpp
 
   annotations/qgsannotation.cpp
+  annotations/qgsannotationitem.cpp
   annotations/qgsannotationlayer.cpp
   annotations/qgsannotationlayerrenderer.cpp
   annotations/qgsannotationmanager.cpp
@@ -1047,6 +1048,7 @@ SET(QGIS_CORE_HDRS
   3d/qgsabstract3drenderer.h
 
   annotations/qgsannotation.h
+  annotations/qgsannotationitem.h
   annotations/qgsannotationlayer.h
   annotations/qgsannotationlayerrenderer.h
   annotations/qgsannotationmanager.h

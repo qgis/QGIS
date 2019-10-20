@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsannotationlayerrenderer.h
+    qgsannotationitem.h
     ----------------
     copyright            : (C) 2019 by Sandro Mani
     email                : smani at sourcepole dot ch
@@ -14,31 +14,28 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSANNOTATIONLAYERRENDERER_H
-#define QGSANNOTATIONLAYERRENDERER_H
-
-#define SIP_NO_FILE
+#ifndef QGSANNOTATIONITEM_H
+#define QGSANNOTATIONITEM_H
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsmaplayerrenderer.h"
-#include "qgsannotationitem.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsrendercontext.h"
 
-class QgsAnnotationLayer;
+class QgsFeedback;
 
-class CORE_EXPORT QgsAnnotationLayerRenderer : public QgsMapLayerRenderer
+class CORE_EXPORT QgsAnnotationItem
 {
   public:
 
-    QgsAnnotationLayerRenderer( QgsAnnotationLayer *layer, QgsRenderContext &context );
-    ~QgsAnnotationLayerRenderer() override;
-    QgsFeedback *feedback() const override;
-    bool render() override;
+    QgsAnnotationItem *clone() { return nullptr; }
 
-  private:
-    QVector< QgsAnnotationItem *> mItems;
-    std::unique_ptr< QgsFeedback > mFeedback;
+    QgsCoordinateReferenceSystem crs() const { return QgsCoordinateReferenceSystem(); }
+
+    void render( QgsRenderContext &context, QgsFeedback *feedback ) {}
+
+    int zIndex() const { return 0; }
 
 };
 
-#endif // QGSANNOTATIONLAYERRENDERER_H
+#endif // QGSANNOTATIONITEM_H
