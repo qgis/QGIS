@@ -39,13 +39,13 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class rasterize_over(GdalAlgorithm):
+class rasterize_over_fixed_value(GdalAlgorithm):
 
     INPUT = 'INPUT'
-    FIELD = 'FIELD'
     INPUT_RASTER = 'INPUT_RASTER'
     ADD = 'ADD'
     EXTRA = 'EXTRA'
+    BURN = 'BURN'
 
     def __init__(self):
         super().__init__()
@@ -59,12 +59,11 @@ class rasterize_over(GdalAlgorithm):
 
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT_RASTER, self.tr('Input raster layer')))
 
-        self.addParameter(QgsProcessingParameterField(self.FIELD,
-                                                      self.tr('Field to use for burn in value'),
-                                                      None,
-                                                      self.INPUT,
-                                                      QgsProcessingParameterField.Numeric,
-                                                      optional=False))
+        self.addParameter(QgsProcessingParameterNumber(self.BURN,
+                                                       self.tr('A fixed value to burn'),
+                                                       type=QgsProcessingParameterNumber.Double,
+                                                       defaultValue=0.0,
+                                                       optional=False))
 
         add_param = QgsProcessingParameterBoolean(self.ADD,
                                                      self.tr('Add burn in values to existing raster values'),
@@ -80,10 +79,10 @@ class rasterize_over(GdalAlgorithm):
         self.addParameter(extra_param)
 
     def name(self):
-        return 'rasterize_over'
+        return 'rasterize_over_fixed_value'
 
     def displayName(self):
-        return self.tr('Rasterize (write attribute value over existing raster)')
+        return self.tr('Rasterize (write fixed value over existing raster)')
 
     def group(self):
         return self.tr('Vector conversion')
@@ -106,8 +105,8 @@ class rasterize_over(GdalAlgorithm):
 
         fieldName = self.parameterAsString(parameters, self.FIELD, context)
 
-        arguments.append('-a')
-        arguments.append(fieldName)
+        arguments.append('-burn')
+        arguments.append(self.parameterAsDouble(parameters, self.BURN, context))
 
         if self.parameterAsBool(parameters, self.ADD, context):
             arguments.append('-add')
