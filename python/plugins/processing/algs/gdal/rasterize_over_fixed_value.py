@@ -82,7 +82,7 @@ class rasterize_over_fixed_value(GdalAlgorithm):
         return 'rasterize_over_fixed_value'
 
     def displayName(self):
-        return self.tr('Rasterize (write fixed value over existing raster)')
+        return self.tr('Rasterize (overwrite with fixed value)')
 
     def group(self):
         return self.tr('Vector conversion')
