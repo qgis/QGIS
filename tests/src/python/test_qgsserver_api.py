@@ -595,6 +595,13 @@ class QgsServerAPITest(QgsServerAPITestBase):
         project.read(created_path)
         self.server.handleRequest(request, response, project)
         self.assertEqual(response.statusCode(), 400)
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/points/items?datetime=2020-01-01/2010-01-01')
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 400)
+        # empty
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/points/items?datetime=2020-01-01/2010-01-01')
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 400)
 
         # Created (date type)
         self.assertEqual(_interval(created_path, '2017-01-01'), '"created" = to_date( \'2017-01-01\' )')
@@ -773,7 +780,11 @@ class QgsServerAPITest(QgsServerAPITestBase):
         _date_tester(date_range_path, '2020-05-05/', ['luserna', 'torre'], ['bricherasio', 'villar'])
 
         # Test bad requests
-        _date_tester(created_path, 'bad timing!', ['bricherasio', 'villar', 'luserna', 'torre'], [])
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/points/items?datetime=bad timing!')
+        response = QgsBufferServerResponse()
+        project.read(created_path)
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 400)
 
 
 class Handler1(QgsServerOgcApiHandler):

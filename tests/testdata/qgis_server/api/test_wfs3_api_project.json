@@ -657,6 +657,21 @@ Content-Type: application/openapi+json;version=3.0
             "$ref": "#/components/parameters/limit"
           },
           {
+            "$ref": "#/components/parameters/offset"
+          },
+          {
+            "$ref": "#/components/parameters/resultType"
+          },
+          {
+            "$ref": "#/components/parameters/bbox"
+          },
+          {
+            "$ref": "#/components/parameters/bbox-crs"
+          },
+          {
+            "$ref": "#/components/parameters/datetime"
+          },
+          {
             "description": "Filter the collection by 'id'",
             "explode": false,
             "in": "query",
@@ -813,6 +828,21 @@ Content-Type: application/openapi+json;version=3.0
         "parameters": [
           {
             "$ref": "#/components/parameters/limit"
+          },
+          {
+            "$ref": "#/components/parameters/offset"
+          },
+          {
+            "$ref": "#/components/parameters/resultType"
+          },
+          {
+            "$ref": "#/components/parameters/bbox"
+          },
+          {
+            "$ref": "#/components/parameters/bbox-crs"
+          },
+          {
+            "$ref": "#/components/parameters/datetime"
           },
           {
             "description": "Filter the collection by 'alias_id'",
@@ -984,6 +1014,21 @@ Content-Type: application/openapi+json;version=3.0
             "$ref": "#/components/parameters/limit"
           },
           {
+            "$ref": "#/components/parameters/offset"
+          },
+          {
+            "$ref": "#/components/parameters/resultType"
+          },
+          {
+            "$ref": "#/components/parameters/bbox"
+          },
+          {
+            "$ref": "#/components/parameters/bbox-crs"
+          },
+          {
+            "$ref": "#/components/parameters/datetime"
+          },
+          {
             "description": "Filter the collection by 'id'",
             "explode": false,
             "in": "query",
@@ -1151,6 +1196,21 @@ Content-Type: application/openapi+json;version=3.0
         "parameters": [
           {
             "$ref": "#/components/parameters/limit"
+          },
+          {
+            "$ref": "#/components/parameters/offset"
+          },
+          {
+            "$ref": "#/components/parameters/resultType"
+          },
+          {
+            "$ref": "#/components/parameters/bbox"
+          },
+          {
+            "$ref": "#/components/parameters/bbox-crs"
+          },
+          {
+            "$ref": "#/components/parameters/datetime"
           },
           {
             "description": "Filter the collection by 'id'",

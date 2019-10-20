@@ -117,8 +117,13 @@ template<typename T, class T2> T QgsServerApiUtils::parseTemporalInterval( const
   {
     throw QgsServerApiBadRequestException( QStringLiteral( "%1 is not a valid datetime interval." ).arg( interval ), QStringLiteral( "Server" ), Qgis::Critical );
   }
-  return { parseDate( parts[0] ), parseDate( parts[1] ) };
-
+  T result { parseDate( parts[0] ), parseDate( parts[1] ) };
+  // Check validity
+  if ( result.isEmpty() )
+  {
+    throw QgsServerApiBadRequestException( QStringLiteral( "%1 is not a valid datetime interval (empty)." ).arg( interval ), QStringLiteral( "Server" ), Qgis::Critical );
+  }
+  return result;
 }
 
 QgsDateRange QgsServerApiUtils::parseTemporalDateInterval( const QString &interval )
