@@ -21,6 +21,9 @@
 #include "qgis_sip.h"
 #include "qgis_core.h"
 
+#include <QDate>
+#include <QDateTime>
+
 /**
  * \class QgsRange
  * \ingroup core
@@ -163,7 +166,6 @@ class QgsRange
 
       return false;
     }
-
 
   private:
 
@@ -392,12 +394,66 @@ class QgsTemporalRange
       return false;
     }
 
+    /**
+     * Extends the range in place by adding an \a other range.
+     * If \a other is empty the range is not changed.
+     * If the range is empty and \a other is not, the range is changed and set to \a other.
+     * \see isEmpty()
+     * \since QGIS 3.12
+     * \return TRUE if the range was extended
+     */
+    bool extend( const QgsTemporalRange<T> &other )
+    {
+      if ( other.isEmpty() || other.isInfinite() )
+      {
+        return false;
+      }
+      else if ( isEmpty() || isInfinite() )
+      {
+        mLower = other.begin();
+        mUpper = other.end();
+        mIncludeLower = other.includeBeginning();
+        mIncludeUpper = other.includeEnd();
+        return true;
+      }
+
+      // Both not empty, do some math
+      bool changed { false };
+
+      // Lower
+      if ( other.begin() < mLower )
+      {
+        mLower = other.begin();
+        mIncludeLower = other.includeBeginning();
+        changed = true;
+      }
+      else if ( other.begin() == mLower && other.includeBeginning() && ! mIncludeLower )
+      {
+        mIncludeLower = true;
+        changed = true;
+      }
+
+      // Upper
+      if ( other.end() > mUpper )
+      {
+        mUpper = other.end();
+        mIncludeUpper = other.includeEnd();
+        changed = true;
+      }
+      else if ( other.end() == mUpper && other.includeEnd() && ! mIncludeUpper )
+      {
+        mIncludeUpper = true;
+        changed = true;
+      }
+      return changed;
+    }
+
     bool operator==( const QgsTemporalRange<T> &other ) const
     {
       return mLower == other.mLower &&
              mUpper == other.mUpper &&
-             mIncludeLower == other.mIncludeLower &&
-             mIncludeUpper == other.mIncludeUpper;
+             mIncludeLower == other.includeBeginning() &&
+             mIncludeUpper == other.includeEnd();
     }
 
   private:
