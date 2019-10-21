@@ -62,6 +62,7 @@
 #include "qgsprojecttimesettings.h"
 #include "qgsvectortilelayer.h"
 #include "qgsruntimeprofiler.h"
+#include "qgsannotationlayer.h"
 
 #include <algorithm>
 #include <QApplication>
@@ -1140,7 +1141,11 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
     QString typeName = layerElem.attribute( QStringLiteral( "name" ) );
     mapLayer.reset( QgsApplication::pluginLayerRegistry()->createLayer( typeName ) );
   }
-
+  else if ( type == QLatin1String( "annotation" ) )
+  {
+    QgsAnnotationLayer::LayerOptions options( mTransformContext );
+    mapLayer = qgis::make_unique<QgsAnnotationLayer>( QString(), options );
+  }
   if ( !mapLayer )
   {
     QgsDebugMsg( QStringLiteral( "Unable to create layer" ) );

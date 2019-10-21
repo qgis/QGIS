@@ -63,12 +63,16 @@ Constructor for LayerOptions.
     virtual QgsRectangle extent() const;
 
 
+
     virtual void setTransformContext( const QgsCoordinateTransformContext &context );
 
+    virtual bool readXml( const QDomNode &layerNode, QgsReadWriteContext &context );
 
-    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const;
+    virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &, StyleCategories categories = AllStyleCategories ) const;
+
     virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
-
 
     virtual QgsDataProvider *dataProvider();
 

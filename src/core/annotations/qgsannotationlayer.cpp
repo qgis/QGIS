@@ -17,6 +17,7 @@
 #include "qgsannotationlayer.h"
 #include "qgsannotationlayerrenderer.h"
 #include "qgsannotationitem.h"
+#include "qgslogger.h"
 #include <QUuid>
 
 QgsAnnotationLayer::QgsAnnotationLayer( const QString &name, const LayerOptions &options )
@@ -91,6 +92,95 @@ QgsRectangle QgsAnnotationLayer::extent() const
 void QgsAnnotationLayer::setTransformContext( const QgsCoordinateTransformContext &context )
 {
   mDataProvider->setTransformContext( context );
+}
+
+bool QgsAnnotationLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext &context )
+{
+  if ( mReadFlags & QgsMapLayer::FlagDontResolveLayers )
+  {
+    return false;
+  }
+
+  qDeleteAll( mItems );
+  mItems.clear();
+
+  QDomNodeList itemsElements = layerNode.toElement().elementsByTagName( QStringLiteral( "items" ) );
+  if ( itemsElements.size() == 0 )
+    return false;
+
+  QDomNodeList items = itemsElements.at( 0 ).childNodes();
+  for ( int i = 0; i < items.size(); ++i )
+  {
+    QDomElement itemElement = items.at( i ).toElement();
+    const QString id = itemElement.attribute( QStringLiteral( "id" ) );
+    const QString type = itemElement.attribute( QStringLiteral( "type" ) );
+    if ( type == "marker" )
+    {
+      std::unique_ptr< QgsMarkerItem > marker( QgsMarkerItem::create( itemElement, context ) );
+      mItems.insert( id, marker.release() );
+    }
+  }
+
+  QString errorMsg;
+  readSymbology( layerNode, errorMsg, context );
+
+  return mValid;
+}
+
+bool QgsAnnotationLayer::writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const
+{
+  // first get the layer element so that we can append the type attribute
+  QDomElement mapLayerNode = layer_node.toElement();
+
+  if ( mapLayerNode.isNull() || ( QLatin1String( "maplayer" ) != mapLayerNode.nodeName() ) )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "can't find <maplayer>" ), 2 );
+    return false;
+  }
+
+  mapLayerNode.setAttribute( QStringLiteral( "type" ), QStringLiteral( "annotation" ) );
+
+  QDomElement itemsElement = doc.createElement( "items" );
+  for ( auto it = mItems.constBegin(); it != mItems.constEnd(); ++it )
+  {
+    QDomElement itemElement = doc.createElement( "item" );
+    itemElement.setAttribute( QStringLiteral( "type" ), ( *it )->type() );
+    itemElement.setAttribute( QStringLiteral( "id" ), it.key() );
+    ( *it )->writeXml( itemElement, doc, context );
+    itemsElement.appendChild( itemElement );
+  }
+  mapLayerNode.appendChild( itemsElement );
+
+  // renderer specific settings
+  QString errorMsg;
+  return writeSymbology( layer_node, doc, errorMsg, context );
+}
+
+bool QgsAnnotationLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &, const QgsReadWriteContext &, QgsMapLayer::StyleCategories categories ) const
+{
+  // add the layer opacity
+  if ( categories.testFlag( Rendering ) )
+  {
+    QDomElement layerOpacityElem  = doc.createElement( QStringLiteral( "layerOpacity" ) );
+    QDomText layerOpacityText = doc.createTextNode( QString::number( opacity() ) );
+    layerOpacityElem.appendChild( layerOpacityText );
+    node.appendChild( layerOpacityElem );
+  }
+  return true;
+}
+
+bool QgsAnnotationLayer::readSymbology( const QDomNode &node, QString &, QgsReadWriteContext &, QgsMapLayer::StyleCategories categories )
+{
+  if ( categories.testFlag( Rendering ) )
+  {
+    QDomNode layerOpacityNode = node.namedItem( QStringLiteral( "layerOpacity" ) );
+    if ( !layerOpacityNode.isNull() )
+    {
+      QDomElement e = layerOpacityNode.toElement();
+      setOpacity( e.text().toDouble() );
+    }
+  }
+  return true;
 }
 
 QgsDataProvider *QgsAnnotationLayer::dataProvider()

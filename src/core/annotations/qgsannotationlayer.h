@@ -77,12 +77,12 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     virtual QString pickItem( const QgsRectangle &pickRect, const QgsMapSettings &mapSettings ) const;
     QString pickItem( const QgsPointXY &mapPos, const QgsMapSettings &mapSettings ) const;
 #endif
+
     void setTransformContext( const QgsCoordinateTransformContext &context ) override;
-
-    bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const override { return true; }
-    bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) override { return true; }
-
-
+    bool readXml( const QDomNode &layerNode, QgsReadWriteContext &context ) override;
+    bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
+    bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &, StyleCategories categories = AllStyleCategories ) const override;
+    bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) override;
     QgsDataProvider *dataProvider() override;
     const QgsDataProvider *dataProvider() const override SIP_SKIP;
 
