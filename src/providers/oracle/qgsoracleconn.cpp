@@ -201,6 +201,7 @@ void QgsOracleConn::reconnect()
 
 void QgsOracleConn::unref()
 {
+  QMutexLocker locker( &mLock );
   if ( --mRef > 0 )
     return;
 
@@ -218,7 +219,9 @@ void QgsOracleConn::unref()
     }
   }
 
-  deleteLater();
+  // to avoid destroying locked mutex
+  locker.unlock();
+  delete this;
 }
 
 bool QgsOracleConn::exec( QSqlQuery &qry, const QString &sql, const QVariantList &params )
