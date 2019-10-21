@@ -55,7 +55,7 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
 
     QgsAnnotationLayer( const QString &name, const QgsAnnotationLayer::LayerOptions &options );
 
-    void addItem( QgsAnnotationItem *item );
+    void addItem( QgsAnnotationItem *item SIP_TRANSFER );
 
     //KadasMapItem *takeItem( const QString &itemId );
 
