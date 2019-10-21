@@ -209,6 +209,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
 
         case QgsMapLayerType::VectorLayer:
         case QgsMapLayerType::PluginLayer:
+        case QgsMapLayerType::AnnotationLayer:
           break;
       }
 

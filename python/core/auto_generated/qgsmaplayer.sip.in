@@ -58,6 +58,9 @@ This is the base class for all map layer types (vector, raster).
         case QgsMapLayerType::VectorTileLayer:
           sipType = sipType_QgsVectorTileLayer;
           break;
+        case QgsMapLayerType::AnnotationLayer:
+          sipType = sipType_QgsAnnotationLayer;
+          break;
         default:
           sipType = nullptr;
           break;
