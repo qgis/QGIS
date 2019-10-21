@@ -24,12 +24,23 @@
 
 class QgsAnnotationItem;
 
+
+/**
+ * \ingroup core
+ *
+ * Represents a map layer containing a set of georeferenced annotations, e.g. markers, lines, polygons or
+ * text items.
+ *
+ * Annotation layers store a set of QgsAnnotationItem items, which are rendered according to the item's
+ * z-order.
+ *
+ * \since QGIS 3.12
+ */
 class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
 {
     Q_OBJECT
 
   public:
-
 
     /**
      * Setting options for loading annotation layers.
@@ -53,24 +64,49 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     };
 
 
+    /**
+     * Constructor for a new QgsAnnotationLayer with the specified layer \a name.
+     *
+     * The \a options argument specifies load-time layer options.
+     */
     QgsAnnotationLayer( const QString &name, const QgsAnnotationLayer::LayerOptions &options );
     ~QgsAnnotationLayer() override;
 
+    /**
+     * Adds an \a item to the layer.
+     *
+     * Ownership of \a item is transferred to the layer.
+     */
     void addItem( QgsAnnotationItem *item SIP_TRANSFER );
 
     //KadasMapItem *takeItem( const QString &itemId );
 
+    /**
+     * Returns a map of items contained in the layer.
+     *
+     * This map contains references to items owned by the layer, and ownership of these remains
+     * with the layer.
+     */
     const QMap<QString, QgsAnnotationItem *> &items() const { return mItems; }
 
+    /**
+     * Sets the \a opacity for the annotation layer, where \a opacity is a value between 0 (totally transparent)
+     * and 1.0 (fully opaque).
+     * \see opacity()
+     */
     void setOpacity( double opacity ) { mOpacity = opacity; }
+
+    /**
+     * Returns the opacity for the annotation layer, where opacity is a value between 0 (totally transparent)
+     * and 1.0 (fully opaque).
+     * \see setOpacity()
+     */
     double opacity() const { return mOpacity; }
 
 //    QRectF margin() const;
 
     QgsAnnotationLayer *clone() const override SIP_FACTORY;
-
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
-
     QgsRectangle extent() const override;
 
 #if 0
@@ -88,7 +124,6 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
 
   private:
     std::unique_ptr< QgsDataProvider > mDataProvider;
-
     QMap<QString, QgsAnnotationItem *> mItems;
     double mOpacity = 100;
 };
