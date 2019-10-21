@@ -21,9 +21,18 @@
 
 QgsAnnotationLayer::QgsAnnotationLayer( const QString &name, const LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::AnnotationLayer, name )
-  , mTransformContext( options.transformContext )
 {
+  QgsDataProvider::ProviderOptions providerOptions;
+  providerOptions.transformContext = options.transformContext;
+  mDataProvider = qgis::make_unique< QgsAnnotationLayerDataProvider >( providerOptions );
+
   mValid = true;
+}
+
+QgsAnnotationLayer::~QgsAnnotationLayer()
+{
+  emit willBeDeleted();
+  mDataProvider.reset();
 }
 
 void QgsAnnotationLayer::addItem( QgsAnnotationItem *item )
@@ -40,7 +49,7 @@ QgsAnnotationItem *QgsAnnotationItem::takeItem( const QString &itemId )
 
 QgsAnnotationLayer *QgsAnnotationLayer::clone() const
 {
-  QgsAnnotationLayer::LayerOptions options( mTransformContext );
+  QgsAnnotationLayer::LayerOptions options( mDataProvider->transformContext() );
   std::unique_ptr< QgsAnnotationLayer > layer = qgis::make_unique< QgsAnnotationLayer >( name(), options );
   QgsMapLayer::clone( layer.get() );
 
@@ -79,9 +88,19 @@ QgsRectangle QgsAnnotationLayer::extent() const
   return rect;
 }
 
-void QgsAnnotationLayer::setTransformContext( const QgsCoordinateTransformContext &ctx )
+void QgsAnnotationLayer::setTransformContext( const QgsCoordinateTransformContext &context )
 {
-  mTransformContext = ctx;
+  mDataProvider->setTransformContext( context );
+}
+
+QgsDataProvider *QgsAnnotationLayer::dataProvider()
+{
+  return mDataProvider.get();
+}
+
+const QgsDataProvider *QgsAnnotationLayer::dataProvider() const
+{
+  return mDataProvider.get();
 }
 
 #if 0
@@ -131,3 +150,39 @@ QRectF QgsAnnotationLayer::margin() const
 }
 #endif
 
+
+
+
+//
+// QgsAnnotationLayerDataProvider
+//
+///@cond PRIVATE
+QgsAnnotationLayerDataProvider::QgsAnnotationLayerDataProvider( const QgsDataProvider::ProviderOptions &options )
+  : QgsDataProvider( QString(), options )
+{}
+
+QgsCoordinateReferenceSystem QgsAnnotationLayerDataProvider::crs() const
+{
+  return QgsCoordinateReferenceSystem();
+}
+
+QString QgsAnnotationLayerDataProvider::name() const
+{
+  return QStringLiteral( "annotation" );
+}
+
+QString QgsAnnotationLayerDataProvider::description() const
+{
+  return QString();
+}
+
+QgsRectangle QgsAnnotationLayerDataProvider::extent() const
+{
+  return mExtent;
+}
+
+bool QgsAnnotationLayerDataProvider::isValid() const
+{
+  return true;
+}
+///@endcond

@@ -43,6 +43,7 @@ Constructor for LayerOptions.
 
 
     QgsAnnotationLayer( const QString &name, const QgsAnnotationLayer::LayerOptions &options );
+    ~QgsAnnotationLayer();
 
     void addItem( QgsAnnotationItem *item /Transfer/ );
 
@@ -62,15 +63,18 @@ Constructor for LayerOptions.
     virtual QgsRectangle extent() const;
 
 
-    virtual void setTransformContext( const QgsCoordinateTransformContext &ctx );
+    virtual void setTransformContext( const QgsCoordinateTransformContext &context );
 
 
     virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const;
     virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
 
-  protected:
+
+    virtual QgsDataProvider *dataProvider();
+
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *
