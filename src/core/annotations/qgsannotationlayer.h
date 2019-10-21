@@ -54,6 +54,7 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
 
 
     QgsAnnotationLayer( const QString &name, const QgsAnnotationLayer::LayerOptions &options );
+    ~QgsAnnotationLayer() override;
 
     void addItem( QgsAnnotationItem *item SIP_TRANSFER );
 
@@ -76,16 +77,46 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     virtual QString pickItem( const QgsRectangle &pickRect, const QgsMapSettings &mapSettings ) const;
     QString pickItem( const QgsPointXY &mapPos, const QgsMapSettings &mapSettings ) const;
 #endif
-    void setTransformContext( const QgsCoordinateTransformContext &ctx ) override;
+    void setTransformContext( const QgsCoordinateTransformContext &context ) override;
 
     bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const override { return true; }
     bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) override { return true; }
 
-  protected:
+
+    QgsDataProvider *dataProvider() override;
+    const QgsDataProvider *dataProvider() const override SIP_SKIP;
+
+  private:
+    std::unique_ptr< QgsDataProvider > mDataProvider;
 
     QMap<QString, QgsAnnotationItem *> mItems;
-    QgsCoordinateTransformContext mTransformContext;
     double mOpacity = 100;
 };
+
+#ifndef SIP_RUN
+///@cond PRIVATE
+
+/**
+ * A minimal data provider for annotation layers
+ */
+class QgsAnnotationLayerDataProvider : public QgsDataProvider
+{
+    Q_OBJECT
+
+  public:
+    QgsAnnotationLayerDataProvider( const QgsDataProvider::ProviderOptions &providerOptions );
+    void setExtent( const QgsRectangle &extent ) { mExtent = extent; }
+    QgsCoordinateReferenceSystem crs() const override;
+    QString name() const override;
+    QString description() const override;
+    QgsRectangle extent() const override;
+    bool isValid() const override;
+
+  private:
+
+    QgsRectangle mExtent;
+};
+///@endcond
+#endif
 
 #endif // QGSANNOTATIONLAYER_H
