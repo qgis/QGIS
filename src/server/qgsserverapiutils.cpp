@@ -456,21 +456,51 @@ json QgsServerApiUtils::temporalExtent( const QgsVectorLayer *layer )
   }
   else
   {
-    QgsDateTimeRange extent;
-    for ( const auto &dimension : dimensions )
+    try
     {
-      // Get min/max for dimension
-      extent.extend( range( dimension ) );
+      QgsDateTimeRange extent;
+      bool isFirst = true;
+      for ( const auto &dimension : dimensions )
+      {
+        // Get min/max for dimension
+        if ( isFirst )
+        {
+          extent = range( dimension );
+          isFirst = false;
+        }
+        else
+        {
+          extent.extend( range( dimension ) );
+        }
+      }
+      json ret = json::array();
+      const QString beginVal { extent.begin().toString( Qt::DateFormat::ISODate ) };
+      const QString endVal { extent.end().toString( Qt::DateFormat::ISODate ) };
+      // We cannot mix nullptr and std::string :(
+      if ( beginVal.isEmpty() && endVal.isEmpty() )
+      {
+        ret.push_back( { nullptr, nullptr } );
+      }
+      else if ( beginVal.isEmpty() )
+      {
+        ret.push_back( { nullptr, endVal.toStdString() } );
+      }
+      else if ( endVal.isEmpty() )
+      {
+        ret.push_back( { beginVal.toStdString(), nullptr } );
+      }
+      else
+      {
+        ret.push_back( { beginVal.toStdString(), endVal.toStdString() } );
+      }
+      return ret;
     }
-    json ret = json::array();
-    const QString beginVal { extent.begin().toString( Qt::DateFormat::ISODate ) };
-    const QString endVal { extent.end().toString( Qt::DateFormat::ISODate ) };
-    ret.push_back(
+    catch ( std::exception &ex )
     {
-      beginVal.isEmpty() ? nullptr : beginVal.toStdString(),
-      endVal.isEmpty() ? nullptr : endVal.toStdString()
-    } );
-    return ret;
+      const QString errorMessage { QStringLiteral( "Error creating temporal extent: %1" ).arg( ex.what() ) };
+      QgsMessageLog::logMessage( errorMessage, QStringLiteral( "Server" ), Qgis::Critical );
+      throw  QgsServerApiInternalServerError( errorMessage );
+    }
   }
 }
 
