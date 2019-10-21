@@ -26,10 +26,20 @@
 
 class QgsAnnotationLayer;
 
+/**
+ * \ingroup core
+ * Implementation of threaded rendering for annotation layers.
+ *
+ * \note not available in Python bindings
+ * \since QGIS 3.12
+ */
 class CORE_EXPORT QgsAnnotationLayerRenderer : public QgsMapLayerRenderer
 {
   public:
 
+    /**
+     * Constructor for a QgsAnnotationLayerRenderer, for the specified \a layer.
+     */
     QgsAnnotationLayerRenderer( QgsAnnotationLayer *layer, QgsRenderContext &context );
     ~QgsAnnotationLayerRenderer() override;
     QgsFeedback *feedback() const override;

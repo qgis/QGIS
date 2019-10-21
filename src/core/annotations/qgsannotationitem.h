@@ -25,6 +25,12 @@
 class QgsFeedback;
 class QgsMarkerSymbol;
 
+/**
+ * \ingroup core
+ * Abstract base class for annotation items which are drawn with QgsAnnotationLayers.
+ *
+ * \since QGIS 3.12
+ */
 class CORE_EXPORT QgsAnnotationItem
 {
   public:
@@ -32,18 +38,37 @@ class CORE_EXPORT QgsAnnotationItem
     QgsAnnotationItem( const QgsCoordinateReferenceSystem &crs );
 
 #ifndef SIP_RUN
+    //! QgsAnnotationItem cannot be copied
     QgsAnnotationItem( const QgsAnnotationItem &other ) = delete;
+    //! QgsAnnotationItem cannot be copied
     QgsAnnotationItem &operator=( const QgsAnnotationItem &other ) = delete;
 #endif
 
     virtual ~QgsAnnotationItem() = default;
 
+    /**
+     * Returns a clone of the item. Ownership is transferred to the caller.
+     */
     virtual QgsAnnotationItem *clone() = 0 SIP_FACTORY;
+
+    /**
+     * Returns a unique (untranslated) string identifying the type of item.
+     */
     virtual QString type() const = 0;
 
     QgsCoordinateReferenceSystem crs() const { return QgsCoordinateReferenceSystem(); }
 
+    /**
+     * Renders the item to the specified render \a context.
+     *
+     * The \a feedback argument can be used to detect render cancelations during expensive
+     * render operations.
+     */
     virtual void render( QgsRenderContext &context, QgsFeedback *feedback ) = 0;
+
+    /**
+     * Writes the item's state the an XML \a element.
+     */
     virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const = 0;
 
     int zIndex() const { return 0; }

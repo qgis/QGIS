@@ -10,24 +10,24 @@
 
 
 
+
 class QgsAnnotationLayer : QgsMapLayer
 {
 %Docstring
-*************************************************************************
 
-This program is free software; you can redistribute it and/or modify  *
-it under the terms of the GNU General Public License as published by  *
-the Free Software Foundation; either version 2 of the License, or     *
-(at your option) any later version.                                   *
+Represents a map layer containing a set of georeferenced annotations, e.g. markers, lines, polygons or
+text items.
 
-**************************************************************************
+Annotation layers store a set of QgsAnnotationItem items, which are rendered according to the item's
+z-order.
+
+.. versionadded:: 3.12
 %End
 
 %TypeHeaderCode
 #include "qgsannotationlayer.h"
 %End
   public:
-
 
     struct LayerOptions
     {
@@ -43,22 +43,49 @@ Constructor for LayerOptions.
 
 
     QgsAnnotationLayer( const QString &name, const QgsAnnotationLayer::LayerOptions &options );
+%Docstring
+Constructor for a new QgsAnnotationLayer with the specified layer ``name``.
+
+The ``options`` argument specifies load-time layer options.
+%End
     ~QgsAnnotationLayer();
 
     void addItem( QgsAnnotationItem *item /Transfer/ );
+%Docstring
+Adds an ``item`` to the layer.
+
+Ownership of ``item`` is transferred to the layer.
+%End
 
 
     const QMap<QString, QgsAnnotationItem *> &items() const;
+%Docstring
+Returns a map of items contained in the layer.
+
+This map contains references to items owned by the layer, and ownership of these remains
+with the layer.
+%End
 
     void setOpacity( double opacity );
+%Docstring
+Sets the ``opacity`` for the annotation layer, where ``opacity`` is a value between 0 (totally transparent)
+and 1.0 (fully opaque).
+
+.. seealso:: :py:func:`opacity`
+%End
+
     double opacity() const;
+%Docstring
+Returns the opacity for the annotation layer, where opacity is a value between 0 (totally transparent)
+and 1.0 (fully opaque).
+
+.. seealso:: :py:func:`setOpacity`
+%End
 
 
     virtual QgsAnnotationLayer *clone() const /Factory/;
 
-
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
-
 
     virtual QgsRectangle extent() const;
 

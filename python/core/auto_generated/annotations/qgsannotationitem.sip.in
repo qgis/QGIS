@@ -13,14 +13,9 @@
 class QgsAnnotationItem
 {
 %Docstring
-*************************************************************************
+Abstract base class for annotation items which are drawn with QgsAnnotationLayers.
 
-This program is free software; you can redistribute it and/or modify  *
-it under the terms of the GNU General Public License as published by  *
-the Free Software Foundation; either version 2 of the License, or     *
-(at your option) any later version.                                   *
-
-**************************************************************************
+.. versionadded:: 3.12
 %End
 
 %TypeHeaderCode
@@ -28,14 +23,69 @@ the Free Software Foundation; either version 2 of the License, or     *
 %End
   public:
 
-    QgsAnnotationItem *clone();
+    QgsAnnotationItem( const QgsCoordinateReferenceSystem &crs );
+
+
+    virtual ~QgsAnnotationItem();
+
+    virtual QgsAnnotationItem *clone() = 0 /Factory/;
+%Docstring
+Returns a clone of the item. Ownership is transferred to the caller.
+%End
+
+    virtual QString type() const = 0;
+%Docstring
+Returns a unique (untranslated) string identifying the type of item.
+%End
 
     QgsCoordinateReferenceSystem crs() const;
 
-    void render( QgsRenderContext &context, QgsFeedback *feedback );
+    virtual void render( QgsRenderContext &context, QgsFeedback *feedback ) = 0;
+%Docstring
+Renders the item to the specified render ``context``.
+
+The ``feedback`` argument can be used to detect render cancelations during expensive
+render operations.
+%End
+
+    virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const = 0;
+%Docstring
+Writes the item's state the an XML ``element``.
+%End
 
     int zIndex() const;
 
+  private:
+    QgsAnnotationItem( const QgsAnnotationItem &other );
+};
+
+class QgsMarkerItem : QgsAnnotationItem
+{
+
+%TypeHeaderCode
+#include "qgsannotationitem.h"
+%End
+  public:
+
+    QgsMarkerItem( QgsPointXY point, const QgsCoordinateReferenceSystem &crs );
+    ~QgsMarkerItem();
+
+    virtual QString type() const;
+
+    virtual void render( QgsRenderContext &context, QgsFeedback *feedback );
+
+    virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    static QgsMarkerItem *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+
+    virtual QgsMarkerItem *clone() /Factory/;
+
+
+    const QgsMarkerSymbol *symbol() const;
+    void setSymbol( QgsMarkerSymbol *symbol /Transfer/ );
+
+  private:
+    QgsMarkerItem( const QgsMarkerItem &other );
 };
 
 /************************************************************************
