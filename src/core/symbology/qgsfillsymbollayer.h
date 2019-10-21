@@ -1790,15 +1790,30 @@ class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
      */
     void setClipPoints( bool clipped );
 
+    void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
+    void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
+
   private:
 #ifdef SIP_RUN
     QgsRandomMarkerFillSymbolLayer( const QgsRandomMarkerFillSymbolLayer &other );
 #endif
 
+    struct Part
+    {
+      QPolygonF exterior;
+      QList<QPolygonF> rings;
+    };
+
+    QVector< Part > mCurrentParts;
+
+    void render( QgsRenderContext &context, const QVector< Part > &parts, const QgsFeature &feature, bool selected );
+
     std::unique_ptr< QgsMarkerSymbol > mMarker;
     int mPointCount = 1;
     unsigned long mSeed = 0;
     bool mClipPoints = false;
+
+    bool mRenderingFeature = false;
 };
 
 

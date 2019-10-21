@@ -3967,55 +3967,81 @@ void QgsRandomMarkerFillSymbolLayer::stopRender( QgsSymbolRenderContext &context
 
 void QgsRandomMarkerFillSymbolLayer::renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context )
 {
-  QgsGeometry geom = QgsGeometry::fromQPolygonF( points );
-  if ( !geom.isNull() && rings )
-  {
-    QgsPolygon *poly = qgsgeometry_cast< QgsPolygon * >( geom.get() );
-    const QList< QPolygonF > constRings = *rings;
-    for ( const QPolygonF &ring : constRings )
-    {
-      poly->addInteriorRing( QgsLineString::fromQPolygonF( ring ) );
-    }
-  }
+  Part part;
+  part.exterior = points;
+  if ( rings )
+    part.rings = *rings;
 
-  if ( !geom.isGeosValid() )
+  if ( mRenderingFeature )
   {
-    geom = geom.buffer( 0, 0 );
+    mCurrentParts << part;
   }
+  else
+  {
+    render( context.renderContext(), QVector< Part>() << part, context.feature() ? *context.feature() : QgsFeature(), context.selected() );
+  }
+}
 
+void QgsRandomMarkerFillSymbolLayer::render( QgsRenderContext &context, const QVector<QgsRandomMarkerFillSymbolLayer::Part> &parts, const QgsFeature &feature, bool selected )
+{
   bool clipPoints = mClipPoints;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyClipPoints ) )
   {
-    context.setOriginalValueVariable( clipPoints );
-    clipPoints = mDataDefinedProperties.valueAsBool( QgsSymbolLayer::PropertyClipPoints, context.renderContext().expressionContext(), clipPoints );
+    context.expressionContext().setOriginalValueVariable( clipPoints );
+    clipPoints = mDataDefinedProperties.valueAsBool( QgsSymbolLayer::PropertyClipPoints, context.expressionContext(), clipPoints );
   }
-  if ( clipPoints )
+
+  QVector< QgsGeometry > geometryParts;
+  geometryParts.reserve( parts.size() );
+  QPainterPath path;
+
+  for ( const Part &part : parts )
   {
-    QPainterPath path;
-    path.addPolygon( points );
-    if ( rings )
+    QgsGeometry geom = QgsGeometry::fromQPolygonF( part.exterior );
+    if ( !geom.isNull() && !part.rings.empty() )
     {
-      const QList< QPolygonF > constRings = *rings;
-      for ( const QPolygonF &ring : constRings )
+      QgsPolygon *poly = qgsgeometry_cast< QgsPolygon * >( geom.get() );
+      for ( const QPolygonF &ring : part.rings )
+      {
+        poly->addInteriorRing( QgsLineString::fromQPolygonF( ring ) );
+      }
+    }
+    if ( !geom.isGeosValid() )
+    {
+      geom = geom.buffer( 0, 0 );
+    }
+    geometryParts << geom;
+
+    if ( clipPoints )
+    {
+      path.addPolygon( part.exterior );
+      for ( const QPolygonF &ring : part.rings )
       {
         path.addPolygon( ring );
       }
     }
-    context.renderContext().painter()->save();
-    context.renderContext().painter()->setClipPath( path );
+  }
+
+  QgsGeometry geom = QgsGeometry::unaryUnion( geometryParts );
+
+
+  if ( clipPoints )
+  {
+    context.painter()->save();
+    context.painter()->setClipPath( path );
   }
 
   int count = mPointCount;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyPointCount ) )
   {
-    context.setOriginalValueVariable( count );
-    count = mDataDefinedProperties.valueAsInt( QgsSymbolLayer::PropertyPointCount, context.renderContext().expressionContext(), count );
+    context.expressionContext().setOriginalValueVariable( count );
+    count = mDataDefinedProperties.valueAsInt( QgsSymbolLayer::PropertyPointCount, context.expressionContext(), count );
   }
   unsigned long seed = mSeed;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyRandomSeed ) )
   {
-    context.setOriginalValueVariable( static_cast< unsigned long long >( seed ) );
-    seed = mDataDefinedProperties.valueAsInt( QgsSymbolLayer::PropertyRandomSeed, context.renderContext().expressionContext(), seed );
+    context.expressionContext().setOriginalValueVariable( static_cast< unsigned long long >( seed ) );
+    seed = mDataDefinedProperties.valueAsInt( QgsSymbolLayer::PropertyRandomSeed, context.expressionContext(), seed );
   }
 
   QVector< QgsPointXY > randomPoints = geom.randomPointsInPolygon( count, seed );
@@ -4027,12 +4053,12 @@ void QgsRandomMarkerFillSymbolLayer::renderPolygon( const QPolygonF &points, QLi
 #endif
   for ( const QgsPointXY &p : qgis::as_const( randomPoints ) )
   {
-    mMarker->renderPoint( QPointF( p.x(), p.y() ), context.feature(), context.renderContext(), -1, context.selected() );
+    mMarker->renderPoint( QPointF( p.x(), p.y() ), feature.isValid() ? &feature : nullptr, context, -1, selected );
   }
 
   if ( clipPoints )
   {
-    context.renderContext().painter()->restore();
+    context.painter()->restore();
   }
 }
 
@@ -4123,6 +4149,19 @@ void QgsRandomMarkerFillSymbolLayer::setClipPoints( bool clipPoints )
 {
   mClipPoints = clipPoints;
 }
+
+void QgsRandomMarkerFillSymbolLayer::startFeatureRender( const QgsFeature &, QgsRenderContext & )
+{
+  mRenderingFeature = true;
+  mCurrentParts.clear();
+}
+
+void QgsRandomMarkerFillSymbolLayer::stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context )
+{
+  mRenderingFeature = false;
+  render( context, mCurrentParts, feature, false );
+}
+
 
 void QgsRandomMarkerFillSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
