@@ -251,9 +251,9 @@ If the range is empty and ``other`` is not, the range is changed and set to ``ot
 
 .. seealso:: :py:func:`isEmpty`
 
-.. versionadded:: 3.12
-
 :return: ``True`` if the range was extended
+
+.. versionadded:: 3.12
 %End
 
     bool operator==( const QgsTemporalRange<T> &other ) const;
