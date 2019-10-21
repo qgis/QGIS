@@ -76,7 +76,8 @@ class QgsMarkerItem : QgsAnnotationItem
 
     virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
-    static QgsMarkerItem *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+    static QgsMarkerItem *create() /Factory/;
+    static QgsMarkerItem *createFromElement( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 
     virtual QgsMarkerItem *clone() /Factory/;
 

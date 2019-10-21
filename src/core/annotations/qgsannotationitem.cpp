@@ -72,7 +72,12 @@ bool QgsMarkerItem::writeXml( QDomElement &element, QDomDocument &document, cons
   return true;
 }
 
-QgsMarkerItem *QgsMarkerItem::create( QDomElement &element, const QgsReadWriteContext &context )
+QgsMarkerItem *QgsMarkerItem::create()
+{
+  return new QgsMarkerItem( QgsPointXY(), QgsCoordinateReferenceSystem() );
+}
+
+QgsMarkerItem *QgsMarkerItem::createFromElement( const QDomElement &element, const QgsReadWriteContext &context )
 {
   const double x = element.attribute( QStringLiteral( "x" ) ).toDouble();
   const double y = element.attribute( QStringLiteral( "y" ) ).toDouble();

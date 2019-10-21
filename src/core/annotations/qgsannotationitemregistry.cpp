@@ -15,6 +15,8 @@
  ***************************************************************************/
 
 #include "qgsannotationitemregistry.h"
+#include "qgsannotationitem.h"
+#include <QDomElement>
 
 QgsAnnotationItemRegistry::QgsAnnotationItemRegistry( QObject *parent )
   : QObject( parent )
@@ -30,6 +32,9 @@ bool QgsAnnotationItemRegistry::populate()
 {
   if ( !mMetadata.isEmpty() )
     return false;
+
+  mMetadata.insert( QStringLiteral( "marker" ), new QgsAnnotationItemMetadata( QStringLiteral( "marker" ), QObject::tr( "Marker" ), QObject::tr( "Markers" ),
+                    QgsMarkerItem::create, QgsMarkerItem::createFromElement ) );
 
   return true;
 }
@@ -55,6 +60,15 @@ QgsAnnotationItem *QgsAnnotationItemRegistry::createItem( const QString &type ) 
     return nullptr;
 
   return mMetadata[type]->createItem();
+}
+
+QgsAnnotationItem *QgsAnnotationItemRegistry::createItem( const QDomElement &element, const QgsReadWriteContext &context ) const
+{
+  const QString type = element.attribute( QStringLiteral( "type" ) );
+  if ( !mMetadata.contains( type ) )
+    return nullptr;
+
+  return mMetadata[type]->createItem( element, context );
 }
 
 QMap<QString, QString> QgsAnnotationItemRegistry::itemTypes() const

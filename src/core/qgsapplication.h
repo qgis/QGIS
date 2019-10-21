@@ -26,6 +26,7 @@
 
 class Qgs3DRendererRegistry;
 class QgsActionScopeRegistry;
+class QgsAnnotationItemRegistry;
 class QgsRuntimeProfiler;
 class QgsTaskManager;
 class QgsFieldFormatterRegistry;
@@ -683,6 +684,12 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsLayoutItemRegistry *layoutItemRegistry() SIP_KEEPREFERENCE;
 
     /**
+     * Returns the application's annotation item registry, used for annotation item types.
+     * \since QGIS 3.12
+     */
+    static QgsAnnotationItemRegistry *annotationItemRegistry() SIP_KEEPREFERENCE;
+
+    /**
      * Returns the application's GPS connection registry, used for managing GPS connections.
      * \since QGIS 3.0
      */
@@ -963,6 +970,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsCalloutRegistry *mCalloutRegistry = nullptr;
       QgsTaskManager *mTaskManager = nullptr;
       QgsLayoutItemRegistry *mLayoutItemRegistry = nullptr;
+      QgsAnnotationItemRegistry *mAnnotationItemRegistry = nullptr;
       QgsUserProfileManager *mUserConfigManager = nullptr;
       QgsBookmarkManager *mBookmarkManager = nullptr;
       QgsStyleModel *mStyleModel = nullptr;

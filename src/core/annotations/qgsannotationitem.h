@@ -93,7 +93,8 @@ class CORE_EXPORT QgsMarkerItem : public QgsAnnotationItem
     QString type() const override;
     void render( QgsRenderContext &context, QgsFeedback *feedback ) override;
     bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
-    static QgsMarkerItem *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static QgsMarkerItem *create() SIP_FACTORY;
+    static QgsMarkerItem *createFromElement( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
     QgsMarkerItem *clone() override SIP_FACTORY;
 

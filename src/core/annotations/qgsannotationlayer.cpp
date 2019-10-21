@@ -17,6 +17,8 @@
 #include "qgsannotationlayer.h"
 #include "qgsannotationlayerrenderer.h"
 #include "qgsannotationitem.h"
+#include "qgsannotationitemregistry.h"
+#include "qgsapplication.h"
 #include "qgslogger.h"
 #include <QUuid>
 
@@ -113,11 +115,10 @@ bool QgsAnnotationLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
   {
     QDomElement itemElement = items.at( i ).toElement();
     const QString id = itemElement.attribute( QStringLiteral( "id" ) );
-    const QString type = itemElement.attribute( QStringLiteral( "type" ) );
-    if ( type == "marker" )
+    std::unique_ptr< QgsAnnotationItem > item( QgsApplication::annotationItemRegistry()->createItem( itemElement, context ) );
+    if ( item )
     {
-      std::unique_ptr< QgsMarkerItem > marker( QgsMarkerItem::create( itemElement, context ) );
-      mItems.insert( id, marker.release() );
+      mItems.insert( id, item.release() );
     }
   }
 
