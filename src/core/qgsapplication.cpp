@@ -19,6 +19,7 @@
 #include "qgsdataitemproviderregistry.h"
 #include "qgsexception.h"
 #include "qgsgeometry.h"
+#include "qgsannotationitemregistry.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
@@ -2172,6 +2173,11 @@ QgsLayoutItemRegistry *QgsApplication::layoutItemRegistry()
   return members()->mLayoutItemRegistry;
 }
 
+QgsAnnotationItemRegistry *QgsApplication::annotationItemRegistry()
+{
+  return members()->mAnnotationItemRegistry;
+}
+
 QgsGpsConnectionRegistry *QgsApplication::gpsConnectionRegistry()
 {
   return members()->mGpsConnectionRegistry;
@@ -2363,6 +2369,12 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
     profiler->end();
   }
   {
+    profiler->start( tr( "Setup annotation item registry" ) );
+    mAnnotationItemRegistry = new QgsAnnotationItemRegistry();
+    mAnnotationItemRegistry->populate();
+    profiler->end();
+  }
+  {
     profiler->start( tr( "Setup 3D symbol registry" ) );
     m3DSymbolRegistry = new Qgs3DSymbolRegistry();
     profiler->end();
@@ -2422,6 +2434,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mProcessingRegistry;
   delete mProjectStorageRegistry;
   delete mPageSizeRegistry;
+  delete mAnnotationItemRegistry;
   delete mLayoutItemRegistry;
   delete mRasterRendererRegistry;
   delete mRendererRegistry;
