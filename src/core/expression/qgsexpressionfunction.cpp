@@ -5086,6 +5086,8 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
         return QCoreApplication::translate( "expressions", "Vector Tile" );
       case QgsMapLayerType::PluginLayer:
         return QCoreApplication::translate( "expressions", "Plugin" );
+      case QgsMapLayerType::AnnotationLayer:
+        return QCoreApplication::translate( "expressions", "Annotation" );
     }
   }
   else

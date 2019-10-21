@@ -113,6 +113,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
         case QgsMapLayerType::VectorTileLayer:
           sipType = sipType_QgsVectorTileLayer;
           break;
+        case QgsMapLayerType::AnnotationLayer:
+          sipType = sipType_QgsAnnotationLayer;
+          break;
         default:
           sipType = nullptr;
           break;
