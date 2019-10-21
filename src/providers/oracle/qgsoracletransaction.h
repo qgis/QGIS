@@ -33,6 +33,8 @@ class QgsOracleTransaction : public QgsTransaction
   public:
     explicit QgsOracleTransaction( const QString &connString );
 
+    ~QgsOracleTransaction() override;
+
     bool executeSql( const QString &sql, QString &error, bool isDirty = false, const QString &name = QString() ) override;
 
     QgsOracleConn *connection() const { return mConn; }
