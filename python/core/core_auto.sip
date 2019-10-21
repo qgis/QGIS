@@ -256,6 +256,7 @@
 %Include auto_generated/./3d/qgsabstract3drenderer.sip
 %Include auto_generated/annotations/qgsannotation.sip
 %Include auto_generated/annotations/qgsannotationitem.sip
+%Include auto_generated/annotations/qgsannotationitemregistry.sip
 %Include auto_generated/annotations/qgsannotationlayer.sip
 %Include auto_generated/annotations/qgsannotationmanager.sip
 %Include auto_generated/annotations/qgshtmlannotation.sip
