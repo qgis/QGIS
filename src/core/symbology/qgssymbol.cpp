@@ -1961,7 +1961,7 @@ void QgsLineSymbol::renderPolyline( const QPolygonF &points, const QgsFeature *f
   for ( QgsSymbolLayer *symbolLayer : constMLayers )
   {
     if ( context.renderingStopped() )
-      break;;
+      break;
 
     if ( !symbolLayer->enabled() )
       continue;
