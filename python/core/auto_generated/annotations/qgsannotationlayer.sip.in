@@ -44,7 +44,7 @@ Constructor for LayerOptions.
 
     QgsAnnotationLayer( const QString &name, const QgsAnnotationLayer::LayerOptions &options );
 
-    void addItem( QgsAnnotationItem *item );
+    void addItem( QgsAnnotationItem *item /Transfer/ );
 
 
     const QMap<QString, QgsAnnotationItem *> &items() const;
