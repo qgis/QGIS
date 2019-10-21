@@ -160,12 +160,12 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         pass
 
     def testDeleteFeaturesUpdateExtent(self):
-        # overriden from the base class
+        # overridden from the base class
         # FIXME disabled, waiting for https://github.com/qgis/QGIS/issues/32261 to be fixed
         pass
 
     def testAddFeaturesUpdateExtent(self):
-        # overriden from the base class
+        # overridden from the base class
         # FIXME disabled, waiting for https://github.com/qgis/QGIS/issues/32261 to be fixed
         pass
 
