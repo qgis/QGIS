@@ -23,18 +23,66 @@
 #include "qgsrendercontext.h"
 
 class QgsFeedback;
+class QgsMarkerSymbol;
 
 class CORE_EXPORT QgsAnnotationItem
 {
   public:
 
-    QgsAnnotationItem *clone() { return nullptr; }
+    QgsAnnotationItem( const QgsCoordinateReferenceSystem &crs );
+
+#ifndef SIP_RUN
+    QgsAnnotationItem( const QgsAnnotationItem &other ) = delete;
+    QgsAnnotationItem &operator=( const QgsAnnotationItem &other ) = delete;
+#endif
+
+    virtual ~QgsAnnotationItem() = default;
+
+    virtual QgsAnnotationItem *clone() = 0 SIP_FACTORY;
+    virtual QString type() const = 0;
 
     QgsCoordinateReferenceSystem crs() const { return QgsCoordinateReferenceSystem(); }
 
-    void render( QgsRenderContext &context, QgsFeedback *feedback ) {}
+    virtual void render( QgsRenderContext &context, QgsFeedback *feedback ) = 0;
+    virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const = 0;
 
     int zIndex() const { return 0; }
+
+  private:
+
+    QgsCoordinateReferenceSystem mCrs;
+
+#ifdef SIP_RUN
+    QgsAnnotationItem( const QgsAnnotationItem &other );
+#endif
+
+};
+
+class CORE_EXPORT QgsMarkerItem : public QgsAnnotationItem
+{
+  public:
+
+    QgsMarkerItem( QgsPointXY point, const QgsCoordinateReferenceSystem &crs );
+    ~QgsMarkerItem() override;
+
+    QString type() const override;
+    void render( QgsRenderContext &context, QgsFeedback *feedback ) override;
+    bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+    static QgsMarkerItem *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+
+    QgsMarkerItem *clone() override SIP_FACTORY;
+
+    const QgsMarkerSymbol *symbol() const;
+    void setSymbol( QgsMarkerSymbol *symbol SIP_TRANSFER );
+
+  private:
+
+    QgsPointXY mPoint;
+    std::unique_ptr< QgsMarkerSymbol > mSymbol;
+
+#ifdef SIP_RUN
+    QgsMarkerItem( const QgsMarkerItem &other );
+#endif
 
 };
 
