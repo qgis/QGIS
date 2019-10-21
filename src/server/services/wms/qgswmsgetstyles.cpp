@@ -28,6 +28,7 @@
 #include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgsvectorlayerlabeling.h"
 
 
 namespace QgsWms
@@ -180,11 +181,37 @@ namespace QgsWms
           if ( vlayer->isSpatial() )
           {
             QString currentStyle = vlayer->styleManager()->currentStyle();
+
+            QgsStringMap props;
+            if ( vlayer->hasScaleBasedVisibility() )
+            {
+              props[ QStringLiteral( "scaleMinDenom" ) ] = QString::number( vlayer->maximumScale() );
+              props[ QStringLiteral( "scaleMaxDenom" ) ] = QString::number( vlayer->minimumScale() );
+            }
+
             for ( const QString &styleName : vlayer->styleManager()->styles() )
             {
               vlayer->styleManager()->setCurrentStyle( styleName );
-              QDomElement styleElem = vlayer->renderer()->writeSld( myDocument, styleName );
-              namedLayerNode.appendChild( styleElem );
+
+              QDomElement userStyleElem = myDocument.createElement( QStringLiteral( "UserStyle" ) );
+
+              QDomElement styleNameElem = myDocument.createElement( QStringLiteral( "se:Name" ) );
+              styleNameElem.appendChild( myDocument.createTextNode( styleName ) );
+
+              userStyleElem.appendChild( styleNameElem );
+
+              QDomElement featureTypeStyleElem = myDocument.createElement( QStringLiteral( "se:FeatureTypeStyle" ) );
+              userStyleElem.appendChild( featureTypeStyleElem );
+
+              vlayer->renderer()->toSld( myDocument, featureTypeStyleElem, props );
+              if ( vlayer->labelsEnabled() )
+              {
+                vlayer->labeling()->toSld( featureTypeStyleElem, props );
+              }
+
+              /*QDomElement styleElem = vlayer->renderer()->writeSld( myDocument, styleName );
+              namedLayerNode.appendChild( styleElem );*/
+              namedLayerNode.appendChild( userStyleElem );
             }
             vlayer->styleManager()->setCurrentStyle( currentStyle );
           }
