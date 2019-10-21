@@ -161,7 +161,7 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
   };
 
   // helper to cast the field value
-  auto refFieldValue = [ & ]( const QString & fieldName, QVariant::Type queryType, QVariant::Type fieldType ) -> QString
+  auto refFieldCast = [ & ]( const QString & fieldName, QVariant::Type queryType, QVariant::Type fieldType ) -> QString
   {
 
     const auto fieldRealType { fieldTypeFromName( fieldName, layer ) };
@@ -210,34 +210,51 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
     }
   };
 
-  // helper to build the filter, fieldType is the underlying field type, queryType is the input query type
-  auto makeFilter = [ &quoteValue ]( const QString & fieldBegin, const QString & fieldEnd, const QString & queryBegin, const QString & queryEnd ) -> QString
+  // helper to build the interval filter, fieldType is the underlying field type, queryType is the input query type
+  auto makeFilter = [ &quoteValue ]( const QString & fieldBegin, const QString & fieldEnd,
+                                     const QString & fieldBeginCasted, const QString & fieldEndCasted,
+                                     const QString & queryBegin, const QString & queryEnd ) -> QString
   {
     QString result;
 
-    // It's an interval query, go for overlap
+    // It's a closed interval query, go for overlap
     if ( ! queryBegin.isEmpty() && ! queryEnd.isEmpty() )
     {
-      result = QStringLiteral( "%1 <= %2 AND %2 <= %3" ).arg( quoteValue( queryBegin ), fieldBegin, quoteValue( queryEnd ) );
-      if ( ! fieldEnd.isEmpty() )
+      // Overlap of two intervals
+      if ( ! fieldEndCasted.isEmpty() )
       {
-        result = QStringLiteral( "( ( %1 ) OR ( %2 <= %3 AND %3 <= %4 ) )" ).arg( result, quoteValue( queryBegin ), fieldEnd, quoteValue( queryEnd ) );
+        result = QStringLiteral( "( %1 IS NULL OR %2 <= %6 ) AND ( %4 IS NULL OR %5 >= %3 )" )
+        .arg( fieldBegin,
+              fieldBeginCasted,
+              quoteValue( queryBegin ),
+              fieldEnd,
+              fieldEndCasted,
+              quoteValue( queryEnd ) );
       }
+      else // Overlap of single value
+      {
+        result = QStringLiteral( "( %1 IS NULL OR ( %2 <= %3 AND %3 <= %4 ) )" )
+                 .arg( fieldBegin,
+                       quoteValue( queryBegin ),
+                       fieldBeginCasted,
+                       quoteValue( queryEnd ) );
+      }
+
     }
     else if ( ! queryBegin.isEmpty() ) // >=
     {
-      if ( ! fieldEnd.isEmpty() )
+      if ( ! fieldEndCasted.isEmpty() )
       {
-        result = QStringLiteral( "%1 >= %2" ).arg( fieldEnd, quoteValue( queryBegin ) );
+        result = QStringLiteral( "( %1 IS NULL OR %2 >= %3 )" ).arg( fieldEnd, fieldEndCasted, quoteValue( queryBegin ) );
       }
       else
       {
-        result = QStringLiteral( "%1 >= %2" ).arg( fieldBegin, quoteValue( queryBegin ) );
+        result = QStringLiteral( "( %1 IS NULL OR %2 >= %3 )" ).arg( fieldBegin, fieldBeginCasted, quoteValue( queryBegin ) );
       }
     }
     else // <=
     {
-      result = QStringLiteral( "%1 <= %2" ).arg( fieldBegin, quoteValue( queryEnd ) );
+      result = QStringLiteral( "( %1 IS NULL OR %2 <= %3 )" ).arg( fieldBegin, fieldBeginCasted, quoteValue( queryEnd ) );
     }
     return result;
   };
@@ -270,21 +287,27 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
         // Determine the field type from the dimension name "time"/"date"
         const QVariant::Type fieldType { dimension.name.toLower() == QStringLiteral( "time" ) ? QVariant::Type::DateTime :  QVariant::Type::Date };
 
-        const auto fieldRefBegin { refFieldValue( dimension.fieldName, queryType, fieldType ) };
-        if ( fieldRefBegin.isEmpty() )
+        const auto fieldBeginCasted { refFieldCast( dimension.fieldName, queryType, fieldType ) };
+        if ( fieldBeginCasted.isEmpty() )
         {
           continue;
         }
+
+        const auto fieldBegin = QgsExpression::quotedColumnRef( dimension.fieldName );
+        const auto fieldEnd = QgsExpression::quotedColumnRef( dimension.endFieldName );
+
         // This may be empty:
-        const auto fieldRefEnd { refFieldValue( dimension.endFieldName, queryType, fieldType ) };
+        const auto fieldEndCasted { refFieldCast( dimension.endFieldName, queryType, fieldType ) };
         if ( ! dateInterval.begin().isValid( ) && ! dateInterval.end().isValid( ) )
         {
           // Nothing to do here: log?
         }
         else
         {
-          conditions.push_back( makeFilter( fieldRefBegin,
-                                            fieldRefEnd,
+          conditions.push_back( makeFilter( fieldBegin,
+                                            fieldEnd,
+                                            fieldBeginCasted,
+                                            fieldEndCasted,
                                             dateInterval.begin().toString( Qt::DateFormat::ISODate ),
                                             dateInterval.end().toString( Qt::DateFormat::ISODate ) ) );
 
@@ -300,14 +323,16 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
         // Determine the field type from the dimension name "time"/"date"
         const QVariant::Type fieldType { dimension.name.toLower() == QStringLiteral( "time" ) ? QVariant::Type::DateTime :  QVariant::Type::Date };
 
-        const auto fieldRefBegin { refFieldValue( dimension.fieldName, queryType, fieldType ) };
-        if ( fieldRefBegin.isEmpty() )
+        const auto fieldfBeginCasted { refFieldCast( dimension.fieldName, queryType, fieldType ) };
+        if ( fieldfBeginCasted.isEmpty() )
         {
           continue;
         }
+        const auto fieldBegin = QgsExpression::quotedColumnRef( dimension.fieldName );
+        const auto fieldEnd = QgsExpression::quotedColumnRef( dimension.endFieldName );
 
         // This may be empty:
-        const auto fieldRefEnd { refFieldValue( dimension.endFieldName, queryType, fieldType ) };
+        const auto fieldEndCasted { refFieldCast( dimension.endFieldName, queryType, fieldType ) };
         if ( ! dateTimeInterval.begin().isValid( ) && ! dateTimeInterval.end().isValid( ) )
         {
           // Nothing to do here: log?
@@ -328,8 +353,10 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
             beginQuery = dateTimeInterval.begin().toString( Qt::DateFormat::ISODate );
             endQuery = dateTimeInterval.end().toString( Qt::DateFormat::ISODate );
           }
-          conditions.push_back( makeFilter( fieldRefBegin,
-                                            fieldRefEnd,
+          conditions.push_back( makeFilter( fieldBegin,
+                                            fieldEnd,
+                                            fieldfBeginCasted,
+                                            fieldEndCasted,
                                             beginQuery,
                                             endQuery ) );
         }
@@ -345,14 +372,16 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
       const bool fieldIsDateTime { dimension.name.toLower() == QStringLiteral( "time" ) };
       const QVariant::Type fieldType { fieldIsDateTime ? QVariant::Type::DateTime :  QVariant::Type::Date };
 
-      const auto fieldRefBegin { refFieldValue( dimension.fieldName, queryType, fieldType ) };
+      const auto fieldRefBegin { refFieldCast( dimension.fieldName, queryType, fieldType ) };
       if ( fieldRefBegin.isEmpty() )
       {
         continue;
       }
+      const auto fieldBegin = QgsExpression::quotedColumnRef( dimension.fieldName );
 
       // This may be empty:
-      const auto fieldRefEnd { refFieldValue( dimension.endFieldName, queryType, fieldType ) };
+      const auto fieldRefEnd { refFieldCast( dimension.endFieldName, queryType, fieldType ) };
+      const auto fieldEnd = QgsExpression::quotedColumnRef( dimension.endFieldName );
 
       // Cast the query value according to the field type
       QString beginQuery;
@@ -381,15 +410,19 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
 
       if ( ! fieldRefEnd.isEmpty() )
       {
-        condition = QStringLiteral( "%1 <= %2 AND %2 <= %3" ).arg( fieldRefBegin,
-                    castedValue,
-                    fieldRefEnd );
+        condition = QStringLiteral( "( %1 IS NULL OR %2 <= %3 ) AND ( %5 IS NULL OR %3 <= %4 )" ).arg(
+                      fieldBegin,
+                      fieldRefBegin,
+                      castedValue,
+                      fieldRefEnd,
+                      fieldEnd );
       }
       else
       {
-        condition = QStringLiteral( "%1 = %2" )
-                    .arg( fieldRefBegin )
-                    .arg( castedValue );
+        condition = QStringLiteral( "( %1 IS NULL OR %2 = %3 )" )
+                    .arg( fieldBegin,
+                          fieldRefBegin,
+                          castedValue );
 
       }
       conditions.push_back( condition );
