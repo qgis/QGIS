@@ -421,7 +421,8 @@ class QgsTemporalRange
       bool changed { false };
 
       // Lower
-      if ( begin().isValid() && other.begin() < mLower )
+      if ( ! other.begin().isValid()
+           || ( begin().isValid() && other.begin() < mLower ) )
       {
         mLower = other.begin();
         mIncludeLower = other.includeBeginning();
@@ -434,7 +435,8 @@ class QgsTemporalRange
       }
 
       // Upper
-      if ( end().isValid() && other.end() > mUpper )
+      if ( ! other.end().isValid()
+           || ( end().isValid() && other.end() > mUpper ) )
       {
         mUpper = other.end();
         mIncludeUpper = other.includeEnd();
