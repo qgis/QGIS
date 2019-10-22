@@ -218,7 +218,8 @@ class QgsDwgImporter : public DRW_Interface
     QHash<QString, double> mLayerLinewidth;
     QHash<QString, QString> mLayerLinetype;
     QHash<QString, QString> mLinetype;
-    QHash<QString, int> mBlocks;
+    QHash<QString, int> mBlockNames;
+    QHash<QString, QgsPointXY> mBlockBases;
 
     QLabel *mLabel = nullptr;
     int mEntities = 0;

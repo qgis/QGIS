@@ -627,7 +627,7 @@ bool DRW_Point::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
   basePoint.y = buf->getBitDouble();
   basePoint.z = buf->getBitDouble();
   thickness = buf->getThickness( version > DRW::AC1014 );//BD
-  extPoint = buf->getExtrusion( version > DRW::AC1014 );
+  extPoint = buf->getExtrusion( version > DRW::AC1014, haveExtrusion );
   double x_axis = buf->getBitDouble();//BD
 
   QgsDebugMsg( QString( "point:%1 thickness:%2, extrusion:%3, x_axis:%4" )
@@ -698,13 +698,14 @@ bool DRW_Line::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
   }
 
   thickness = buf->getThickness( version > DRW::AC1014 );//BD
-  extPoint = buf->getExtrusion( version > DRW::AC1014 );
-  QgsDebugMsg( QString( "startpoint:%1 endpoint:%2 thickness:%3 extrusion:%4" )
-               .arg( QString( "%1,%2,%3" ).arg( basePoint.x ).arg( basePoint.y ).arg( basePoint.z ) )
-               .arg( QString( "%1,%2,%3" ).arg( secPoint.x ).arg( secPoint.y ).arg( secPoint.z ) )
-               .arg( thickness )
-               .arg( QString( "%1,%2,%3" ).arg( extPoint.x ).arg( extPoint.y ).arg( extPoint.z ) )
-             );
+  extPoint = buf->getExtrusion( version > DRW::AC1014, haveExtrusion );
+
+  QgsDebugMsgLevel( QStringLiteral( "startpoint:%1 endpoint:%2 thickness:%3 extrusion:%4" )
+                    .arg( QStringLiteral( "%1,%2,%3" ).arg( basePoint.x ).arg( basePoint.y ).arg( basePoint.z ),
+                          QStringLiteral( "%1,%2,%3" ).arg( secPoint.x ).arg( secPoint.y ).arg( secPoint.z ) )
+                    .arg( thickness )
+                    .arg( QStringLiteral( "%1,%2,%3" ).arg( extPoint.x ).arg( extPoint.y ).arg( extPoint.z ) ), 4
+                  );
 
   ret = DRW_Entity::parseDwgEntHandle( version, buf );
   if ( !ret )
@@ -781,7 +782,7 @@ bool DRW_Circle::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
   basePoint.z = buf->getBitDouble();
   mRadius = buf->getBitDouble();
   thickness = buf->getThickness( version > DRW::AC1014 );
-  extPoint = buf->getExtrusion( version > DRW::AC1014 );
+  extPoint = buf->getExtrusion( version > DRW::AC1014, haveExtrusion );
 
   QgsDebugMsg( QString( "center:%1 radius:%2 thickness:%3 extrusion:%4" )
                .arg( QString( "%1,%2,%3" ).arg( basePoint.x ).arg( basePoint.y ).arg( basePoint.z ) )
@@ -850,7 +851,7 @@ bool DRW_Arc::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
   basePoint.z = buf->getBitDouble();
   mRadius = buf->getBitDouble();
   thickness = buf->getThickness( version > DRW::AC1014 );
-  extPoint = buf->getExtrusion( version > DRW::AC1014 );
+  extPoint = buf->getExtrusion( version > DRW::AC1014, haveExtrusion );
   staangle = buf->getBitDouble();
   endangle = buf->getBitDouble();
 
@@ -1062,7 +1063,7 @@ bool DRW_Trace::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
   fourthPoint.x = buf->getRawDouble();
   fourthPoint.y = buf->getRawDouble();
   fourthPoint.z = basePoint.z;
-  extPoint = buf->getExtrusion( version > DRW::AC1014 );
+  extPoint = buf->getExtrusion( version > DRW::AC1014, haveExtrusion );
 
   QgsDebugMsg( QString( "base:%1 sec:%2 third:%3 fourth:%4 extrusion:%5 thickness:%6" )
                .arg( QString( "%1,%2,%3" ).arg( basePoint.x ).arg( basePoint.y ).arg( basePoint.z ) )
@@ -1305,7 +1306,7 @@ bool DRW_Insert::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
   }
 
   angle = buf->getBitDouble();
-  extPoint = buf->getExtrusion( false ); //3BD R14 style
+  extPoint = buf->getExtrusion( false, haveExtrusion ); //3BD R14 style
 
   QgsDebugMsg( QString( "scale:%1, angle:%2 extrusion:%3" )
                .arg( QString( "%1,%2,%3" ).arg( xscale ).arg( yscale ).arg( zscale ) )
@@ -1478,7 +1479,7 @@ bool DRW_LWPolyline::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs 
   if ( flags & 2 )
     thickness = buf->getBitDouble();
   if ( flags & 1 )
-    extPoint = buf->getExtrusion( false );
+    extPoint = buf->getExtrusion( false, haveExtrusion );
 
   vertexnum = buf->getBitLong();
   RESERVE( vertlist, vertexnum );
@@ -1683,7 +1684,7 @@ bool DRW_Text::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
     secPoint.y = buf->getRawDouble();
   }
   secPoint.z = basePoint.z;
-  extPoint = buf->getExtrusion( version > DRW::AC1014 );
+  extPoint = buf->getExtrusion( version > DRW::AC1014, haveExtrusion );
   thickness = buf->getThickness( version > DRW::AC1014 ); /* Thickness BD 39 */
 
   QgsDebugMsg( QString( "alignment:%1 extrusion:%2" )
@@ -1932,7 +1933,7 @@ bool DRW_Polyline::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
     defendwidth = buf->getBitDouble();
     thickness = buf->getThickness( version > DRW::AC1014 );
     basePoint = DRW_Coord( 0, 0, buf->getBitDouble() );
-    extPoint = buf->getExtrusion( version > DRW::AC1014 );
+    extPoint = buf->getExtrusion( version > DRW::AC1014, haveExtrusion );
   }
   else if ( oType == 0x10 ) //pline 3D
   {
@@ -2984,7 +2985,7 @@ bool DRW_Dimension::parseDwg( DRW::Version version, dwgBuffer *buf, dwgBuffer *s
     QgsDebugMsg( QString( "dimVersion:%1" ).arg( dimVersion ) );
     Q_UNUSED( dimVersion );
   }
-  extPoint = buf->getExtrusion( version > DRW::AC1014 );
+  extPoint = buf->getExtrusion( version > DRW::AC1014, haveExtrusion );
 
   QgsDebugMsg( QString( "extrusion:%1,%2,%3" ).arg( extPoint.x ).arg( extPoint.y ).arg( extPoint.z ) );
 
@@ -3559,8 +3560,8 @@ bool DRW_Leader::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
   QgsDebugMsg( QString( " endptproj: %1,%2,%3" ).arg( Endptproj.x ).arg( Endptproj.y ).arg( Endptproj.z ) );
   Q_UNUSED( Endptproj );
 
-  extrusionPoint = buf->getExtrusion( version > DRW::AC1014 );
-  QgsDebugMsg( QString( " extrusion: %1,%2,%3" ).arg( extrusionPoint.x ).arg( extrusionPoint.y ).arg( extrusionPoint.z ) );
+  extrusionPoint = buf->getExtrusion( version > DRW::AC1014, haveExtrusion );
+  QgsDebugMsgLevel( QStringLiteral( " extrusion: %1,%2,%3" ).arg( extrusionPoint.x ).arg( extrusionPoint.y ).arg( extrusionPoint.z ), 4 );
 
   if ( version > DRW::AC1014 ) //2000+
   {
