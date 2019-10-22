@@ -204,8 +204,10 @@ ProjectorData::ProjectorData( const QgsRectangle &extent, int width, int height,
   mDestRowsPerMatrixRow = static_cast< double >( mDestRows ) / ( mCPRows - 1 );
   mDestColsPerMatrixCol = static_cast< double >( mDestCols ) / ( mCPCols - 1 );
 
+#if 0
   QgsDebugMsgLevel( QStringLiteral( "CPMatrix:" ), 5 );
   QgsDebugMsgLevel( cpToString(), 5 );
+#endif
 
   // init helper points
   pHelperTop = new QgsPointXY[mDestCols];
@@ -457,7 +459,7 @@ bool ProjectorData::srcRowCol( int destRow, int destCol, int *srcRow, int *srcCo
 
 bool ProjectorData::preciseSrcRowCol( int destRow, int destCol, int *srcRow, int *srcCol )
 {
-#ifdef QGISDEBUG
+#if 0 // too slow, even if we only run it on debug builds!
   QgsDebugMsgLevel( QStringLiteral( "theDestRow = %1" ).arg( destRow ), 5 );
   QgsDebugMsgLevel( QStringLiteral( "theDestRow = %1 mDestExtent.yMaximum() = %2 mDestYRes = %3" ).arg( destRow ).arg( mDestExtent.yMaximum() ).arg( mDestYRes ), 5 );
 #endif
@@ -467,7 +469,7 @@ bool ProjectorData::preciseSrcRowCol( int destRow, int destCol, int *srcRow, int
   double y = mDestExtent.yMaximum() - ( destRow + 0.5 ) * mDestYRes;
   double z = 0;
 
-#ifdef QGISDEBUG
+#if 0
   QgsDebugMsgLevel( QStringLiteral( "x = %1 y = %2" ).arg( x ).arg( y ), 5 );
 #endif
 
@@ -483,7 +485,7 @@ bool ProjectorData::preciseSrcRowCol( int destRow, int destCol, int *srcRow, int
     }
   }
 
-#ifdef QGISDEBUG
+#if 0
   QgsDebugMsgLevel( QStringLiteral( "x = %1 y = %2" ).arg( x ).arg( y ), 5 );
 #endif
 
@@ -494,7 +496,7 @@ bool ProjectorData::preciseSrcRowCol( int destRow, int destCol, int *srcRow, int
   // Get source row col
   *srcRow = static_cast< int >( std::floor( ( mSrcExtent.yMaximum() - y ) / mSrcYRes ) );
   *srcCol = static_cast< int >( std::floor( ( x - mSrcExtent.xMinimum() ) / mSrcXRes ) );
-#ifdef QGISDEBUG
+#if 0
   QgsDebugMsgLevel( QStringLiteral( "mSrcExtent.yMinimum() = %1 mSrcExtent.yMaximum() = %2 mSrcYRes = %3" ).arg( mSrcExtent.yMinimum() ).arg( mSrcExtent.yMaximum() ).arg( mSrcYRes ), 5 );
   QgsDebugMsgLevel( QStringLiteral( "theSrcRow = %1 srcCol = %2" ).arg( *srcRow ).arg( *srcCol ), 5 );
 #endif
