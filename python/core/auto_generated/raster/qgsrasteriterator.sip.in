@@ -24,7 +24,7 @@ Iterator for sequentially processing raster cells.
 Constructor for QgsRasterIterator, iterating over the specified ``input`` raster source.
 %End
 
-    void startRasterRead( int bandNumber, int nCols, int nRows, const QgsRectangle &extent, QgsRasterBlockFeedback *feedback = 0 );
+    void startRasterRead( int bandNumber, qgssize nCols, qgssize nRows, const QgsRectangle &extent, QgsRasterBlockFeedback *feedback = 0 );
 %Docstring
 Start reading of raster band. Raster data can then be retrieved by calling readNextRasterPart until it returns ``False``.
 
