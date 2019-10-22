@@ -19,9 +19,9 @@ struct QgsRasterViewPort
 
   QgsPointXY mBottomRightPoint;
 
-  int mWidth;
+  qgssize mWidth;
 
-  int mHeight;
+  qgssize mHeight;
 
   QgsRectangle mDrawnExtent;
 
