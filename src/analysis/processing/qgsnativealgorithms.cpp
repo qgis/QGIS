@@ -29,6 +29,7 @@
 #include "qgsalgorithmclip.h"
 #include "qgsalgorithmconvexhull.h"
 #include "qgsalgorithmdbscanclustering.h"
+#include "qgsalgorithmdensifygeometriesbycount.h"
 #include "qgsalgorithmdensifygeometriesbyinterval.h"
 #include "qgsalgorithmdifference.h"
 #include "qgsalgorithmdissolve.h"
@@ -274,6 +275,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsZonalHistogramAlgorithm() );
   addAlgorithm( new QgsPolygonsToLinesAlgorithm() );
   addAlgorithm( new QgsDensifyGeometriesByIntervalAlgorithm() );
+  addAlgorithm( new QgsDensifyGeometriesByCountAlgorithm() );
 }
 
 
