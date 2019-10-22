@@ -343,20 +343,19 @@ QString QgsPGLayerItem::createUri()
     return QString();
   }
 
-  QgsDataSourceUri uri( QgsPostgresConn::connUri( connItem->name() ).connectionInfo( false ) );
+  const QString &connName = connItem->name();
+
+  QgsDataSourceUri uri( QgsPostgresConn::connUri( connName ).connectionInfo( false ) );
 
   const QgsSettings &settings = QgsSettings();
-  QString basekey = QStringLiteral( "/PostgreSQL/connections/%1" ).arg( connItem->name() );
+  QString basekey = QStringLiteral( "/PostgreSQL/connections/%1" ).arg( connName );
 
   QStringList defPk( settings.value(
                        QStringLiteral( "%1/keys/%2/%3" ).arg( basekey, mLayerProperty.schemaName, mLayerProperty.tableName ),
                        QVariant( !mLayerProperty.pkCols.isEmpty() ? QStringList( mLayerProperty.pkCols.at( 0 ) ) : QStringList() )
                      ).toStringList() );
 
-  bool useEstimatedMetadata( settings.value(
-                               QStringLiteral( "%1/estimatedMetadata" ).arg( basekey ),
-                               false
-                             ).toBool() );
+  const bool useEstimatedMetadata = QgsPostgresConn::useEstimatedMetadata( connName );
   uri.setUseEstimatedMetadata( useEstimatedMetadata );
 
   QStringList cols;
