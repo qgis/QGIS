@@ -29,7 +29,7 @@ class QgsVectorLayer;
  * Available pre-defined dimensions are
  *
  * - DATE (supported by OAPIF only)
- * - TIME(supported by WMS and OAPIF)
+ * - TIME (supported by WMS and OAPIF)
  * - ELEVATION (supported by WMS only)
  *
  * Dimensions can also be configured as ranges by defining an "end" field that contains the

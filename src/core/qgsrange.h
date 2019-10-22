@@ -399,7 +399,7 @@ class QgsTemporalRange
      * If \a other is empty the range is not changed.
      * If the range is empty and \a other is not, the range is changed and set to \a other.
      * \see isEmpty()
-     * \return TRUE if the range was extended
+     * \returns TRUE if the range was extended
      * \since QGIS 3.12
      */
     bool extend( const QgsTemporalRange<T> &other )

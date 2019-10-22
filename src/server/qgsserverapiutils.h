@@ -69,16 +69,18 @@ class SERVER_EXPORT QgsServerApiUtils
     static QList< QgsVectorLayerServerProperties::WmsDimensionInfo > temporalDimensions( const QgsVectorLayer *layer );
 
     /**
-     * Parse a date \a interval and returns a QgsDateRange
+     * Parses a date \a interval and returns a QgsDateRange
      *
      * \throws QgsServerApiBadRequestException if interval cannot be parsed
+     * \since QGIS 3.12
      */
     static QgsDateRange parseTemporalDateInterval( const QString &interval ) SIP_THROW( QgsServerApiBadRequestException );
 
     /**
-     * Parse a datetime \a interval and returns a QgsDateTimeRange
+     * Parses a datetime \a interval and returns a QgsDateTimeRange
      *
      * \throws QgsServerApiBadRequestException if interval cannot be parsed
+     * \since QGIS 3.12
      */
     static QgsDateTimeRange parseTemporalDateTimeInterval( const QString &interval ) SIP_THROW( QgsServerApiBadRequestException );
 
@@ -89,7 +91,7 @@ class SERVER_EXPORT QgsServerApiUtils
 
 
     /**
-     * Parse the \a interval and constructs a (possibily invalid) temporal filter expression for the given \a layer
+     * Parses the \a interval and constructs a (possibily invalid) temporal filter expression for the given \a layer
      *
      * Interval syntax:
      *
@@ -98,6 +100,7 @@ class SERVER_EXPORT QgsServerApiUtils
      *   interval-open-end   = date-time "/" [".."]
      *   interval            = interval-closed / interval-open-start / interval-open-end
      *   datetime            = date-time / interval
+     * \since QGIS 3.12
      */
     static QgsExpression temporalFilterExpression( const QgsVectorLayer *layer, const QString &interval );
 
@@ -119,7 +122,7 @@ class SERVER_EXPORT QgsServerApiUtils
      * multiple intervals. If multiple intervals are provided, the union of the
      * intervals describes the temporal extent.
      *
-     * \return An array of intervals
+     * \returns An array of intervals
      * \note not available in Python bindings
      * \since QGIS 3.12
      */
@@ -138,7 +141,7 @@ class SERVER_EXPORT QgsServerApiUtils
      * multiple intervals. If multiple intervals are provided, the union of the
      * intervals describes the temporal extent.
      *
-     * \return An array of intervals
+     * \returns An array of intervals
      * \since QGIS 3.12
      */
     static QVariantList temporalExtentList( const QgsVectorLayer *layer ) SIP_PYNAME( temporalExtent );
