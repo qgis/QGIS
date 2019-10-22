@@ -379,6 +379,9 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         ft1 = vl.getFeatures('pk=1')
         self.assertFalse(ft1.nextFeature(f))
 
+        # rollback
+        vl.rollBack()
+
     def testTransactionTuple(self):
         # create a vector layer based on postgres
         vl = QgsVectorLayer(
