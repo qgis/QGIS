@@ -21,9 +21,13 @@
 #include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrendercontext.h"
+#include "qgslinestring.h"
+#include "qgspolygon.h"
 
 class QgsFeedback;
 class QgsMarkerSymbol;
+class QgsLineSymbol;
+class QgsFillSymbol;
 
 /**
  * \ingroup core
@@ -112,4 +116,63 @@ class CORE_EXPORT QgsMarkerItem : public QgsAnnotationItem
 
 };
 
+
+class CORE_EXPORT QgsLineStringItem : public QgsAnnotationItem
+{
+  public:
+
+    QgsLineStringItem( const QgsLineString &linestring, const QgsCoordinateReferenceSystem &crs );
+    ~QgsLineStringItem() override;
+
+    QString type() const override;
+    void render( QgsRenderContext &context, QgsFeedback *feedback ) override;
+    bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+    static QgsLineStringItem *create() SIP_FACTORY;
+    static QgsLineStringItem *createFromElement( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+
+    QgsLineStringItem *clone() override SIP_FACTORY;
+
+    const QgsLineSymbol *symbol() const;
+    void setSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
+
+  private:
+
+    QgsLineString mLineString;
+    std::unique_ptr< QgsLineSymbol > mSymbol;
+
+#ifdef SIP_RUN
+    QgsLineStringItem( const QgsLineStringItem &other );
+#endif
+
+};
+
+
+class CORE_EXPORT QgsPolygonItem : public QgsAnnotationItem
+{
+  public:
+
+    QgsPolygonItem( const QgsPolygon &polygon, const QgsCoordinateReferenceSystem &crs );
+    ~QgsPolygonItem() override;
+
+    QString type() const override;
+    void render( QgsRenderContext &context, QgsFeedback *feedback ) override;
+    bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+    static QgsPolygonItem *create() SIP_FACTORY;
+    static QgsPolygonItem *createFromElement( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+
+    QgsPolygonItem *clone() override SIP_FACTORY;
+
+    const QgsFillSymbol *symbol() const;
+    void setSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
+
+  private:
+
+    QgsPolygon mPolygon;
+    std::unique_ptr< QgsFillSymbol > mSymbol;
+
+#ifdef SIP_RUN
+    QgsPolygonItem( const QgsPolygonItem &other );
+#endif
+
+};
 #endif // QGSANNOTATIONITEM_H

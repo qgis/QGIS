@@ -35,7 +35,10 @@ bool QgsAnnotationItemRegistry::populate()
 
   mMetadata.insert( QStringLiteral( "marker" ), new QgsAnnotationItemMetadata( QStringLiteral( "marker" ), QObject::tr( "Marker" ), QObject::tr( "Markers" ),
                     QgsMarkerItem::create, QgsMarkerItem::createFromElement ) );
-
+  mMetadata.insert( QStringLiteral( "linestring" ), new QgsAnnotationItemMetadata( QStringLiteral( "linestring" ), QObject::tr( "Polyline" ), QObject::tr( "Polylines" ),
+                    QgsLineStringItem::create, QgsLineStringItem::createFromElement ) );
+  mMetadata.insert( QStringLiteral( "polygon" ), new QgsAnnotationItemMetadata( QStringLiteral( "polygon" ), QObject::tr( "Polygon" ), QObject::tr( "Polygons" ),
+                    QgsPolygonItem::create, QgsPolygonItem::createFromElement ) );
   return true;
 }
 
