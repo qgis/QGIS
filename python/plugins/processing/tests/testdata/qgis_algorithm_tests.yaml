@@ -342,7 +342,7 @@ tests:
         type: vector
 
   - name: Densify geometries
-    algorithm: qgis:densifygeometries
+    algorithm: native:densifygeometries
     params:
       INPUT:
         name: multipolys.gml
