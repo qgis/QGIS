@@ -280,8 +280,8 @@ QList<QgsGeoNodeRequest::ServiceLayerDetail> QgsGeoNodeRequest::parseLayers( con
 
     if ( layerMap.value( QStringLiteral( "typename" ) ).toString().isEmpty() )
     {
-      const QStringList splitURL = layerMap.value( QStringLiteral( "detail_url" ) ).toString().split( '/' );
-      layerStruct.typeName = splitURL.at( splitURL.length() - 1 );
+      const QStringList splitUrl = layerMap.value( QStringLiteral( "detail_url" ) ).toString().split( '/' );
+      layerStruct.typeName = !splitUrl.isEmpty() ? splitUrl.last() : QString();
     }
     layerStruct.uuid = layerMap.value( QStringLiteral( "uuid" ) ).toString();
     layerStruct.id = layerMap.value( QStringLiteral( "id" ) ).toString();
@@ -289,9 +289,7 @@ QList<QgsGeoNodeRequest::ServiceLayerDetail> QgsGeoNodeRequest::parseLayers( con
     layerStruct.typeName = layerMap.value( QStringLiteral( "typename" ) ).toString();
     layerStruct.title = layerMap.value( QStringLiteral( "title" ) ).toString();
 
-    layerStruct = parseOWSUrl( layerStruct, layerLinks );
-
-    if ( layerStruct.wmsURL.isEmpty() && layerStruct.wfsURL.isEmpty() && layerStruct.xyzURL.isEmpty() )
+    if ( ! layerMap.contains( QStringLiteral( "links" ) ) )
     {
       if ( wmsURLFormat.isEmpty() && wfsURLFormat.isEmpty() && xyzURLFormat.isEmpty() )
       {
@@ -303,35 +301,39 @@ QList<QgsGeoNodeRequest::ServiceLayerDetail> QgsGeoNodeRequest::parseLayers( con
           const QVariantMap resourceUriMap = resourceUriObject.toVariantMap();
           QVariantList resourceUriLinks = resourceUriMap.value( QStringLiteral( "links" ) ).toList();
           QgsGeoNodeRequest::ServiceLayerDetail tempLayerStruct;
-          tempLayerStruct = parseOWSUrl( tempLayerStruct, resourceUriLinks );
+          tempLayerStruct = parseOwsUrl( tempLayerStruct, resourceUriLinks );
+
+          if ( tempLayerStruct.wmsURL.isEmpty() && tempLayerStruct.wfsURL.isEmpty() && tempLayerStruct.xyzURL.isEmpty() )
+            continue;
 
           // Avoid iterating all the layers to get the service url. Instead, generate a string format once we found one service url
           // for every service (wms, wfs, xyz). And then use the string format for the other layers since they are identical.
-          if ( tempLayerStruct.server == "qgis-server" )
+          if ( tempLayerStruct.server == QgsGeoNodeRequest::QGIS_SERVER )
           {
-            wmsURLFormat = !tempLayerStruct.wmsURL.isEmpty() ? tempLayerStruct.wmsURL.replace( layerStruct.name, "%1" ) : "";
-            wfsURLFormat = !tempLayerStruct.wfsURL.isEmpty() ? tempLayerStruct.wfsURL.replace( layerStruct.name, "%1" ) : "";
-            xyzURLFormat = !tempLayerStruct.xyzURL.isEmpty() ? tempLayerStruct.xyzURL.replace( layerStruct.name, "%1" ) : "";
+            wmsURLFormat = ! tempLayerStruct.wmsURL.isEmpty() ? tempLayerStruct.wmsURL.replace( layerStruct.name, QStringLiteral( "%1" ) ) : QString();
+            wfsURLFormat = ! tempLayerStruct.wfsURL.isEmpty() ? tempLayerStruct.wfsURL.replace( layerStruct.name, QStringLiteral( "%1" ) ) : QString();
+            xyzURLFormat = ! tempLayerStruct.xyzURL.isEmpty() ? tempLayerStruct.xyzURL.replace( layerStruct.name, QStringLiteral( "%1" ) ) : QString();
           }
-          else if ( tempLayerStruct.server == "geoserver" )
+          else if ( tempLayerStruct.server == QgsGeoNodeRequest::GEOSERVER )
           {
-            wmsURLFormat = !tempLayerStruct.wmsURL.isEmpty() ? tempLayerStruct.wmsURL : "";
-            wfsURLFormat = !tempLayerStruct.wfsURL.isEmpty() ? tempLayerStruct.wfsURL : "";
-            xyzURLFormat = !tempLayerStruct.xyzURL.isEmpty() ? tempLayerStruct.xyzURL.replace( layerStruct.name, "%1" ) : "";
+            wmsURLFormat = ! tempLayerStruct.wmsURL.isEmpty() ? tempLayerStruct.wmsURL : QString();
+            wfsURLFormat = ! tempLayerStruct.wfsURL.isEmpty() ? tempLayerStruct.wfsURL : QString();
+            xyzURLFormat = ! tempLayerStruct.xyzURL.isEmpty() ? tempLayerStruct.xyzURL.replace( layerStruct.name, QStringLiteral( "%1" ) ) : "";
           }
         }
         else
-        {
-          layers.append( layerStruct );
           continue;
-        }
       }
-
-      // Replace string argument with the layer id.
-      layerStruct.wmsURL = wmsURLFormat.contains( "%1" ) ? wmsURLFormat.arg( layerStruct.name ) : wmsURLFormat;
-      layerStruct.wfsURL = wfsURLFormat.contains( "%1" ) ? wfsURLFormat.arg( layerStruct.name ) : wfsURLFormat;
-      layerStruct.xyzURL = xyzURLFormat.contains( "%1" ) ? xyzURLFormat.arg( layerStruct.name ) : xyzURLFormat;
+      else
+      {
+        // Replace string argument with the layer id.
+        layerStruct.wmsURL = wmsURLFormat.contains( "%1" ) ? wmsURLFormat.arg( layerStruct.name ) : wmsURLFormat;
+        layerStruct.wfsURL = wfsURLFormat.contains( "%1" ) ? wfsURLFormat.arg( layerStruct.name ) : wfsURLFormat;
+        layerStruct.xyzURL = xyzURLFormat.contains( "%1" ) ? xyzURLFormat.arg( layerStruct.name ) : xyzURLFormat;
+      }
     }
+    else
+      layerStruct = parseOwsUrl( layerStruct, layerLinks );
 
     layers.append( layerStruct );
   }
@@ -339,7 +341,7 @@ QList<QgsGeoNodeRequest::ServiceLayerDetail> QgsGeoNodeRequest::parseLayers( con
   return layers;
 }
 
-QgsGeoNodeRequest::ServiceLayerDetail QgsGeoNodeRequest::parseOWSUrl( QgsGeoNodeRequest::ServiceLayerDetail &layerStruct, const QVariantList &layerLinks )
+QgsGeoNodeRequest::ServiceLayerDetail QgsGeoNodeRequest::parseOwsUrl( QgsGeoNodeRequest::ServiceLayerDetail &layerStruct, const QVariantList &layerLinks )
 {
   QString urlFound;
   for ( const QVariant &link : layerLinks )
@@ -364,8 +366,8 @@ QgsGeoNodeRequest::ServiceLayerDetail QgsGeoNodeRequest::parseOWSUrl( QgsGeoNode
       }
     }
 
-    if ( layerStruct.server.isEmpty() )
-      layerStruct.server = urlFound.contains( QStringLiteral( "qgis-server" ) ) ? QStringLiteral( "qgis-server" ) : QStringLiteral( "geoserver" );
+    if ( layerStruct.server == QgsGeoNodeRequest::UNKNOWN )
+      layerStruct.server = urlFound.contains( QStringLiteral( "qgis-server" ) ) ? QgsGeoNodeRequest::QGIS_SERVER : QgsGeoNodeRequest::GEOSERVER;
   }
 
   return layerStruct;
