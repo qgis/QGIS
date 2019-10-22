@@ -25,7 +25,7 @@
 class QgsVectorLayer;
 
 /**
- * The QgsWmsDimensionDialog class provides an inteface for WMS/OAPIF (WFS3) dimensions configuration
+ * The QgsWmsDimensionDialog class provides an interface for WMS/OAPIF (WFS3) dimensions configuration
  * Available pre-defined dimensions are
  *
  * - DATE (supported by OAPIF only)
