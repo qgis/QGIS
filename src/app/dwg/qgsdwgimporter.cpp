@@ -610,7 +610,7 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
   {
     //loads dxf
     std::unique_ptr<dxfRW> dxf( new dxfRW( drawing.toLocal8Bit() ) );
-    if ( !dxf->read( this, false ) )
+    if ( !dxf->read( this, true ) )
     {
       result = DRW::BAD_UNKNOWN;
     }
@@ -619,7 +619,7 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
   {
     //loads dwg
     std::unique_ptr<dwgR> dwg( new dwgR( drawing.toLocal8Bit() ) );
-    if ( !dwg->read( this, false ) )
+    if ( !dwg->read( this, true ) )
     {
       result = dwg->getError();
     }
@@ -2328,8 +2328,13 @@ void QgsDwgImporter::addText( const DRW_Text &data )
   addEntity( dfn, f, data );
 
   SETDOUBLE( height );
-  SETSTRING( text );
+
+  QString text( decode( data.text ) );
+  cleanText( text );
+  setString( dfn, f, QStringLiteral( "text" ), text );
+
   SETDOUBLE( angle );
+  setDouble( dfn, f, "angle", data.angle * 180.0 / M_PI );
   SETDOUBLE( widthscale );
   SETDOUBLE( oblique );
   SETSTRING( style );
@@ -2617,7 +2622,8 @@ bool QgsDwgImporter::expandInserts( QString &error )
 
   OGR_L_ResetReading( blocks );
 
-  mBlocks.clear();
+  mBlockNames.clear();
+  mBlockBases.clear();
 
   gdal::ogr_feature_unique_ptr f;
   for ( ;; )
@@ -2628,7 +2634,17 @@ bool QgsDwgImporter::expandInserts( QString &error )
 
     QString name = QString::fromUtf8( OGR_F_GetFieldAsString( f.get(), nameIdx ) );
     int handle = OGR_F_GetFieldAsInteger( f.get(), handleIdx );
-    mBlocks.insert( name, handle );
+    OGRGeometryH ogrG = OGR_F_GetGeometryRef( f.get() );
+
+    QgsGeometry g( QgsOgrUtils::ogrGeometryToQgsGeometry( ogrG ) );
+    if ( g.isNull() )
+    {
+      QgsDebugMsg( QStringLiteral( "%1: could not copy geometry" ).arg( OGR_F_GetFID( f.get() ) ) );
+      continue;
+    }
+
+    mBlockNames.insert( name, handle );
+    mBlockBases.insert( name, g.asPoint() );
   }
 
   return expandInserts( error, -1, QTransform() );
@@ -2725,20 +2741,24 @@ bool QgsDwgImporter::expandInserts( QString &error, int block, QTransform base )
     }
     double blockLinewidth = OGR_F_GetFieldAsDouble( insert.get(), linewidthIdx );
 
-    int handle = mBlocks.value( name, -1 );
+    int handle = mBlockNames.value( name, -1 );
     if ( handle < 0 )
     {
       QgsDebugMsg( QStringLiteral( "Block '%1' not found" ).arg( name ) );
       continue;
     }
 
-    QgsDebugMsgLevel( QStringLiteral( "Resolving %1/%2: p=%3,%4 scale=%5,%6 angle=%7" )
+    QgsPointXY b = mBlockBases.value( name );
+
+    QgsDebugMsgLevel( QStringLiteral( "Resolving %1/%2: p=%3,%4 b=%5,%6 scale=%7,%8 angle=%9" )
                       .arg( name ).arg( handle, 0, 16 )
                       .arg( p.x() ).arg( p.y() )
+                      .arg( b.x() ).arg( b.y() )
                       .arg( xscale ).arg( yscale ).arg( angle ), 5 );
 
+
     QTransform t;
-    t.translate( p.x(), p.y() ).scale( xscale, yscale ).rotateRadians( angle );
+    t.translate( p.x(), p.y() ).scale( xscale, yscale ).rotateRadians( angle ).translate( -b.x(), -b.y() );
     t *= base;
 
     OGRLayerH src = nullptr;
