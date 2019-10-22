@@ -64,6 +64,7 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri, bool transaction )
   : mRef( 1 )
   , mCurrentUser( QString() )
   , mHasSpatial( -1 )
+  , mLock( QMutex::Recursive )
   , mTransaction( transaction )
 {
   QgsDebugMsg( QStringLiteral( "New Oracle connection for " ) + uri.connectionInfo( false ) );
@@ -436,6 +437,7 @@ bool QgsOracleConn::exec( const QString &query, bool logError, QString *errorMes
 
 bool QgsOracleConn::begin( QSqlDatabase &db )
 {
+  QMutexLocker locker( &mLock );
   if ( mTransaction )
   {
     return exec( QStringLiteral( "SAVEPOINT sp%1" ).arg( ++mSavePointId ) );
@@ -448,6 +450,7 @@ bool QgsOracleConn::begin( QSqlDatabase &db )
 
 bool QgsOracleConn::commit( QSqlDatabase &db )
 {
+  QMutexLocker locker( &mLock );
   if ( mTransaction )
   {
     return exec( QStringLiteral( "SAVEPOINT sp%1" ).arg( ++mSavePointId ) );
@@ -460,6 +463,7 @@ bool QgsOracleConn::commit( QSqlDatabase &db )
 
 bool QgsOracleConn::rollback( QSqlDatabase &db )
 {
+  QMutexLocker locker( &mLock );
   if ( mTransaction )
   {
     return exec( QStringLiteral( "ROLLBACK TO SAVEPOINT sp%1" ).arg( mSavePointId ) );
@@ -507,6 +511,7 @@ QString QgsOracleConn::fieldExpression( const QgsField &fld )
 
 void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, bool useEstimatedMetadata, bool onlyExistingTypes )
 {
+  QMutexLocker locker( &mLock );
   QgsDebugMsgLevel( QStringLiteral( "entering: " ) + layerProperty.toString(), 3 );
 
   if ( layerProperty.isView )
@@ -944,6 +949,7 @@ QString QgsOracleConn::databaseName( const QString &database, const QString &hos
 
 bool QgsOracleConn::hasSpatial()
 {
+  QMutexLocker locker( &mLock );
   if ( mHasSpatial == -1 )
   {
     QSqlQuery qry( mDatabase );
@@ -955,6 +961,7 @@ bool QgsOracleConn::hasSpatial()
 
 QString QgsOracleConn::currentUser()
 {
+  QMutexLocker locker( &mLock );
   if ( mCurrentUser.isNull() )
   {
     QSqlQuery qry( mDatabase );
