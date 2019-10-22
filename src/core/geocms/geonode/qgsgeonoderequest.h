@@ -68,6 +68,16 @@ class CORE_EXPORT QgsGeoNodeRequest : public QObject
   public:
 
     /**
+     * GeoNode backend server type.
+     */
+    typedef enum
+    {
+      UNKNOWN,
+      QGIS_SERVER,
+      GEOSERVER
+    } BackendServer;
+
+    /**
      * Service layer details for an individual layer from a GeoNode connection.
      */
     struct ServiceLayerDetail
@@ -89,7 +99,7 @@ class CORE_EXPORT QgsGeoNodeRequest : public QObject
       //! XYZ tileserver URL for layer
       QString xyzURL;
       //! Backend server (geoserver or qgis-server)
-      QString server;
+      BackendServer server{};
     };
 
     /**
@@ -220,7 +230,7 @@ class CORE_EXPORT QgsGeoNodeRequest : public QObject
     /**
      * Returns the updated ServiceLayerDetail struct with WMS/WFS/XYZ url.
      */
-    QgsGeoNodeRequest::ServiceLayerDetail parseOWSUrl( QgsGeoNodeRequest::ServiceLayerDetail &layerStruct, const QVariantList &layerLinks );
+    QgsGeoNodeRequest::ServiceLayerDetail parseOwsUrl( QgsGeoNodeRequest::ServiceLayerDetail &layerStruct, const QVariantList &layerLinks );
 
   public slots:
 
