@@ -102,7 +102,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     if ( ! layerProperty.tableComment.isEmpty() )
     {
       // word wrap
-      commentItem->setToolTip( QStringLiteral( "<span>%1</span>" ).arg( layerProperty.tableComment ) );
+      commentItem->setToolTip( QStringLiteral( "<span>%1</span>" ).arg( layerProperty.tableComment ).replace( '\n', QStringLiteral( "<br/>") ) );
       commentItem->setTextAlignment( Qt::AlignTop );
     }
     QStandardItem *geomItem  = new QStandardItem( layerProperty.geometryColName );
