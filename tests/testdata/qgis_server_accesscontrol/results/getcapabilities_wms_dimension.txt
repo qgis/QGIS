@@ -2,7 +2,7 @@ Content-Length: 9089
 Content-Type: text/xml; charset=utf-8
 
 <?xml version="1.0" encoding="utf-8"?>
-<WMS_Capabilities xmlns:qgs="http://www.qgis.org/wms" version="1.3.0" xmlns="http://www.opengis.net/wms" xmlns:sld="http://www.opengis.net/sld" xsi:schemaLocation="http://www.opengis.net/wms http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/sld_capabilities.xsd https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/project_with_dimensions.qgs&amp;SERVICE=WMS&amp;REQUEST=GetSchemaExtension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<WMS_Capabilities xmlns:qgs="http://www.qgis.org/wms" version="1.3.0" xmlns="http://www.opengis.net/wms" xmlns:sld="http://www.opengis.net/sld" xsi:schemaLocation="http://www.opengis.net/wms http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/sld_capabilities.xsd http://www.qgis.org/wms https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/project_with_dimensions.qgs&amp;SERVICE=WMS&amp;REQUEST=GetSchemaExtension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
  <Service>
   <Name>WMS</Name>
   <Title>QGIS Server WMS Dimension test</Title>
