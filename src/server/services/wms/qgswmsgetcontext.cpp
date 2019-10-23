@@ -79,6 +79,7 @@ namespace QgsWms
     }
 #else
     doc = getContext( serverIface, project, version, request );
+    contextDocument = &doc;
 #endif
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
     response.write( contextDocument->toByteArray() );
