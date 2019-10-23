@@ -82,6 +82,10 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
     def test_getcapabilities(self):
         self.wms_request_compare('GetCapabilities')
 
+    def test_getcapabilities_case_insensitive(self):
+        self.wms_request_compare('getcapabilities')
+        self.wms_request_compare('GETCAPABILITIES')
+
     def test_getprojectsettings(self):
         self.wms_request_compare('GetProjectSettings')
 
