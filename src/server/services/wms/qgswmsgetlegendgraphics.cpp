@@ -39,12 +39,9 @@ namespace QgsWms
     QgsWmsParameters wmsParameters( QUrlQuery( request.url() ) );
 
     // Get cached image
-    QgsAccessControl *accessControl = nullptr;
-    QgsServerCacheManager *cacheManager = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    accessControl = serverIface->accessControls();
-    cacheManager = serverIface->cacheManager();
-#endif
+    QgsAccessControl *accessControl = serverIface->accessControls();
+    QgsServerCacheManager *cacheManager = serverIface->cacheManager();
     if ( cacheManager )
     {
       ImageOutputFormat outputFormat = parseImageFormat( format );
@@ -78,6 +75,7 @@ namespace QgsWms
         return;
       }
     }
+#endif
 
     QgsRenderer renderer( serverIface, project, wmsParameters );
 
@@ -86,12 +84,14 @@ namespace QgsWms
     if ( result )
     {
       writeImage( response, *result,  format, renderer.getImageQuality() );
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
       if ( cacheManager )
       {
         QByteArray content = response.data();
         if ( !content.isEmpty() )
           cacheManager->setCachedImage( &content, project, request, accessControl );
       }
+#endif
     }
     else
     {

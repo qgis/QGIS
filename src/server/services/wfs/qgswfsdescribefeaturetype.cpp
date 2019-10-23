@@ -42,17 +42,14 @@ namespace QgsWfs
   void writeDescribeFeatureType( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                                  const QgsServerRequest &request, QgsServerResponse &response )
   {
-    QgsAccessControl *accessControl = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    accessControl = serverIface->accessControls();
+    QgsAccessControl *accessControl = serverIface->accessControls();
 #endif
     QDomDocument doc;
     const QDomDocument *describeDocument = nullptr;
 
-    QgsServerCacheManager *cacheManager = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    cacheManager = serverIface->cacheManager();
-#endif
+    QgsServerCacheManager *cacheManager = serverIface->cacheManager();
     if ( cacheManager && cacheManager->getCachedDocument( &doc, project, request, accessControl ) )
     {
       describeDocument = &doc;
@@ -67,7 +64,10 @@ namespace QgsWfs
       }
       describeDocument = &doc;
     }
-
+#else
+    doc = createDescribeFeatureTypeDocument( serverIface, project, version, request );
+    describeDocument = &doc;
+#endif
     response.setHeader( "Content-Type", "text/xml; charset=utf-8" );
     response.write( describeDocument->toByteArray() );
   }
@@ -89,7 +89,11 @@ namespace QgsWfs
       throw QgsBadRequestException( QStringLiteral( "Invalid WFS Parameter" ),
                                     QStringLiteral( "OUTPUTFORMAT %1 is not supported" ).arg( wfsParameters.outputFormatAsString() ) );
 
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = serverIface->accessControls();
+#else
+    ( void )serverIface;
+#endif
 
     //xsd:schema
     QDomElement schemaElement = doc.createElement( QStringLiteral( "schema" )/*xsd:schema*/ );
