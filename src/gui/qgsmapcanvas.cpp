@@ -1785,9 +1785,9 @@ void QgsMapCanvas::unsetMapTool( QgsMapTool *tool )
   if ( mMapTool && mMapTool == tool )
   {
     disconnect( mMapTool, &QObject::destroyed, this, &QgsMapCanvas::mapToolDestroyed );
-    mMapTool->deactivate();
     QgsMapTool *oldTool = mMapTool;
     mMapTool = nullptr;
+    oldTool->deactivate();
     emit mapToolSet( nullptr, oldTool );
     setCursor( Qt::ArrowCursor );
   }
