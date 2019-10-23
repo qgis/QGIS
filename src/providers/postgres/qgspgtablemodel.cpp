@@ -99,6 +99,15 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
 
     QStandardItem *tableItem = new QStandardItem( layerProperty.tableName );
     QStandardItem *commentItem = new QStandardItem( layerProperty.tableComment );
+    if ( ! layerProperty.tableComment.isEmpty() )
+    {
+      // word wrap
+      QString commentText { layerProperty.tableComment };
+      commentText.replace( QRegularExpression( QStringLiteral( "^\n*" ) ), QString() );
+      commentItem->setText( commentText );
+      commentItem->setToolTip( QStringLiteral( "<span>%1</span>" ).arg( commentText.replace( '\n', QStringLiteral( "<br/>" ) ) ) );
+      commentItem->setTextAlignment( Qt::AlignTop );
+    }
     QStandardItem *geomItem  = new QStandardItem( layerProperty.geometryColName );
     QStandardItem *sridItem  = new QStandardItem( wkbType != QgsWkbTypes::NoGeometry ? QString::number( srid ) : QString() );
     sridItem->setEditable( wkbType != QgsWkbTypes::NoGeometry && srid == std::numeric_limits<int>::min() );
@@ -190,7 +199,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
       else
         item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
 
-      if ( tip.isEmpty() && item != checkPkUnicityItem && item != selItem )
+      if ( item->toolTip().isEmpty() && tip.isEmpty() && item != checkPkUnicityItem && item != selItem )
       {
         item->setToolTip( QString() );
       }
