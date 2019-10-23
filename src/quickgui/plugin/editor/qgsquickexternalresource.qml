@@ -61,6 +61,7 @@ Item {
   property var galleryIcon: customStyle.icons.gallery
   property var brokenImageIcon: customStyle.icons.brokenImage
   property var notAvailableImageIcon: customStyle.icons.notAvailable
+  property var backIcon: customStyle.icons.back
   property real iconSize:  customStyle.fields.height
   property real textMargin: QgsQuick.Utils.dp * 10
   /**
@@ -175,8 +176,6 @@ Item {
         image.source = image.getSource()
       }
 
-      Component.onCompleted: image.source = getSource()
-
       function getSource() {
         var absolutePath = getAbsolutePath(prefixToRelativePath, image.currentValue)
         if (image.status === Image.Error) {
@@ -268,6 +267,7 @@ Item {
               photoCapturePanelLoader.item.width = window.width
               photoCapturePanelLoader.item.edge = Qt.RightEdge
               photoCapturePanelLoader.item.imageButtonSize = fieldItem.iconSize
+              photoCapturePanelLoader.item.backButtonSource = fieldItem.backIcon
             }
             photoCapturePanelLoader.item.visible = true
             photoCapturePanelLoader.item.targetDir = targetDir

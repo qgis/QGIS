@@ -79,6 +79,7 @@ QtObject {
     property var brokenImage: QgsQuick.Utils.getThemeIcon("ic_broken_image_black")
     property var notAvailable: QgsQuick.Utils.getThemeIcon("ic_photo_notavailable_white")
     property var today: QgsQuick.Utils.getThemeIcon("ic_today")
+    property var back: QgsQuick.Utils.getThemeIcon("ic_back")
   }
 
 }
