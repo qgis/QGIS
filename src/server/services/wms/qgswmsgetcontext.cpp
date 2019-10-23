@@ -66,7 +66,6 @@ namespace QgsWms
     QgsServerCacheManager *cacheManager = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     cacheManager = serverIface->cacheManager();
-#endif
     if ( cacheManager && cacheManager->getCachedDocument( &doc, project, request, accessControl ) )
     {
       contextDocument = &doc;
@@ -81,7 +80,10 @@ namespace QgsWms
       }
       contextDocument = &doc;
     }
-
+#else
+    doc = getContext( serverIface, project, version, request );
+    contextDocument = &doc;
+#endif
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
     response.write( contextDocument->toByteArray() );
   }
