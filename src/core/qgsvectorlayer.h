@@ -2728,9 +2728,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Attributes which are not published in WFS
     QSet<QString> mExcludeAttributesWFS;
 
-    //! Attributes which are used for OAPIF temporal filtering
-    QSet<QString> mIncludeAttributesOapifTemporalFilters;
-
     //! Geometry type as defined in enum WkbType (qgis.h)
     QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
 

@@ -2192,17 +2192,6 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
       }
     }
 
-    mIncludeAttributesOapifTemporalFilters.clear();
-    QDomNode includeOapifTemporalFiltersNode = layerNode.namedItem( QStringLiteral( "includeAttributesOapifTemporalFilters" ) );
-    if ( !excludeWFSNode.isNull() )
-    {
-      QDomNodeList attributeNodeList = includeOapifTemporalFiltersNode.toElement().elementsByTagName( QStringLiteral( "attribute" ) );
-      for ( int i = 0; i < attributeNodeList.size(); ++i )
-      {
-        mIncludeAttributesOapifTemporalFilters.insert( attributeNodeList.at( i ).toElement().text() );
-      }
-    }
-
     // Load editor widget configuration
     QDomElement widgetsElem = layerNode.namedItem( QStringLiteral( "fieldConfiguration" ) ).toElement();
     QDomNodeList fieldConfigurationElementList = widgetsElem.elementsByTagName( QStringLiteral( "field" ) );
@@ -2515,18 +2504,6 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
       excludeWFSElem.appendChild( attrElem );
     }
     node.appendChild( excludeWFSElem );
-
-    //include attributes OAPIF
-    QDomElement includeOapifElem = doc.createElement( QStringLiteral( "includeAttributesOapifTemporalFilters" ) );
-    QSet<QString>::const_iterator attOapifTemporalIt = mIncludeAttributesOapifTemporalFilters.constBegin();
-    for ( ; attOapifTemporalIt != mIncludeAttributesOapifTemporalFilters.constEnd(); ++attOapifTemporalIt )
-    {
-      QDomElement attrElem = doc.createElement( QStringLiteral( "attribute" ) );
-      QDomText attrText = doc.createTextNode( *attOapifTemporalIt );
-      attrElem.appendChild( attrText );
-      includeOapifElem.appendChild( attrElem );
-    }
-    node.appendChild( includeOapifElem );
 
     //default expressions
     QDomElement defaultsElem = doc.createElement( QStringLiteral( "defaults" ) );

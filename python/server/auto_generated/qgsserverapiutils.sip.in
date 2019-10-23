@@ -44,23 +44,27 @@ Returns a list of temporal dimensions information for the given ``layer`` (eithe
 
     static QgsDateRange parseTemporalDateInterval( const QString &interval ) throw( QgsServerApiBadRequestException );
 %Docstring
-Parse a date ``interval`` and returns a :py:class:`QgsDateRange`
+Parses a date ``interval`` and returns a :py:class:`QgsDateRange`
 
 :raises QgsServerApiBadRequestException: if interval cannot be parsed
+
+.. versionadded:: 3.12
 %End
 
     static QgsDateTimeRange parseTemporalDateTimeInterval( const QString &interval ) throw( QgsServerApiBadRequestException );
 %Docstring
-Parse a datetime ``interval`` and returns a :py:class:`QgsDateTimeRange`
+Parses a datetime ``interval`` and returns a :py:class:`QgsDateTimeRange`
 
 :raises QgsServerApiBadRequestException: if interval cannot be parsed
+
+.. versionadded:: 3.12
 %End
 
 
 
     static QgsExpression temporalFilterExpression( const QgsVectorLayer *layer, const QString &interval );
 %Docstring
-Parse the ``interval`` and constructs a (possibily invalid) temporal filter expression for the given ``layer``
+Parses the ``interval`` and constructs a (possibily invalid) temporal filter expression for the given ``layer``
 
 Interval syntax:
 
@@ -69,6 +73,8 @@ interval-open-start = [".."] "/" date-time
 interval-open-end   = date-time "/" [".."]
 interval            = interval-closed / interval-open-start / interval-open-end
 datetime            = date-time / interval
+
+.. versionadded:: 3.12
 %End
 
 
