@@ -291,7 +291,7 @@ bool QgsSourceFieldsProperties::addAttribute( const QgsField &field )
 
 void QgsSourceFieldsProperties::apply()
 {
-  QSet<QString> excludeAttributesWMS, excludeAttributesWFS, includeTemporalFilters;
+  QSet<QString> excludeAttributesWMS, excludeAttributesWFS;
 
   for ( int i = 0; i < mFieldsList->rowCount(); i++ )
   {
