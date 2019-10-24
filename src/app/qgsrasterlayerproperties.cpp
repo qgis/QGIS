@@ -614,6 +614,14 @@ void QgsRasterLayerProperties::setRendererWidget( const QString &rendererName )
     }
   }
 
+  const int widgetIndex = mRenderTypeComboBox->findData( rendererName );
+  if ( widgetIndex != -1 )
+  {
+    mDisableRenderTypeComboBoxCurrentIndexChanged = true;
+    mRenderTypeComboBox->setCurrentIndex( widgetIndex );
+    mDisableRenderTypeComboBoxCurrentIndexChanged = false;
+  }
+
   if ( mRendererWidget != oldWidget )
     delete oldWidget;
 
