@@ -1296,6 +1296,24 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   }
   emit transformContextChanged();
 
+  //add variables defined in project file - do this early in the reading cycle, as other components
+  //(e.g. layouts) may depend on these variables
+  QStringList variableNames = readListEntry( QStringLiteral( "Variables" ), QStringLiteral( "/variableNames" ) );
+  QStringList variableValues = readListEntry( QStringLiteral( "Variables" ), QStringLiteral( "/variableValues" ) );
+
+  mCustomVariables.clear();
+  if ( variableNames.length() == variableValues.length() )
+  {
+    for ( int i = 0; i < variableNames.length(); ++i )
+    {
+      mCustomVariables.insert( variableNames.at( i ), variableValues.at( i ) );
+    }
+  }
+  else
+  {
+    QgsMessageLog::logMessage( tr( "Project Variables Invalid" ), tr( "The project contains invalid variable settings." ) );
+  }
+
   QDomNodeList nl = doc->elementsByTagName( QStringLiteral( "projectMetadata" ) );
   if ( !nl.isEmpty() )
   {
@@ -1450,22 +1468,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   }
 
   mSnappingConfig.readProject( *doc );
-  //add variables defined in project file
-  QStringList variableNames = readListEntry( QStringLiteral( "Variables" ), QStringLiteral( "/variableNames" ) );
-  QStringList variableValues = readListEntry( QStringLiteral( "Variables" ), QStringLiteral( "/variableValues" ) );
 
-  mCustomVariables.clear();
-  if ( variableNames.length() == variableValues.length() )
-  {
-    for ( int i = 0; i < variableNames.length(); ++i )
-    {
-      mCustomVariables.insert( variableNames.at( i ), variableValues.at( i ) );
-    }
-  }
-  else
-  {
-    QgsMessageLog::logMessage( tr( "Project Variables Invalid" ), tr( "The project contains invalid variable settings." ) );
-  }
   emit customVariablesChanged();
   emit crsChanged();
   emit ellipsoidChanged( ellipsoid() );
