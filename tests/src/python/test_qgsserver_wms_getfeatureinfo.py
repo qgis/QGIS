@@ -482,6 +482,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320&' +
                                  'with_geometry=true',
                                  'wms_getfeatureinfo_geometry_json',
+                                 'test_project_epsg3857.qgs',
                                  normalizeJson=True)
 
         # test with alias
