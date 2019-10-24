@@ -1798,6 +1798,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   QString labelText;
 
   // Check to see if we are a expression string.
+  QVariant labelValue;
   if ( isExpression )
   {
     QgsExpression *exp = getLabelExpression();
@@ -1813,12 +1814,26 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
       QgsDebugMsgLevel( QStringLiteral( "Expression parser eval error:%1" ).arg( exp->evalErrorString() ), 4 );
       return;
     }
-    labelText = result.isNull() ? QString() : result.toString();
+
+    labelValue = result;
   }
   else
   {
-    const QVariant &v = feature.attribute( fieldIndex );
-    labelText = v.isNull() ? QString() : v.toString();
+    labelValue = feature.attribute( fieldIndex );
+  }
+
+  switch ( labelValue.type() )
+  {
+    case QVariant::Int:
+    case QVariant::UInt:
+    case QVariant::LongLong:
+    case QVariant::ULongLong:
+    case QVariant::Double:
+      labelText = qgsDoubleToString( labelValue.toDouble() );
+      break;
+
+    default:
+      labelText = labelValue.isNull() ? QString() : labelValue.toString();
   }
 
   // apply text replacements

@@ -50,6 +50,7 @@ class TestQgsLabelingEngine : public QObject
     void testEncodeDecodeLinePlacement();
     void testSubstitutions();
     void testCapitalization();
+    void testNumericLabels();
     void testParticipatingLayers();
     void testRegisterFeatureUnprojectible();
     void testRotateHidePartial();
@@ -627,6 +628,51 @@ void TestQgsLabelingEngine::testCapitalization()
   provider4->prepare( context, attributes );
   provider4->registerFeature( f, context );
   QCOMPARE( provider4->mLabels.at( 0 )->labelText(), QString( "A TeSt LABEL" ) );
+}
+
+void TestQgsLabelingEngine::testNumericLabels()
+{
+  // test that large numeric labels aren't automatically converted to scientific notation
+  QgsFeature f( vl->fields(), 1 );
+  f.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 1, 2 ) ) );
+
+  // make a fake render context
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl );
+  mapSettings.setOutputDpi( 96 );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  QSet<QString> attributes;
+  QgsDefaultLabelingEngine engine;
+  engine.setMapSettings( mapSettings );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "100000000000000000" );
+  settings.isExpression = true;
+  QgsVectorLayerLabelProvider *provider = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test" ), true, &settings );
+  engine.addProvider( provider );
+  provider->prepare( context, attributes );
+  provider->registerFeature( f, context );
+  QCOMPARE( provider->mLabels.at( 0 )->labelText(), QString( "100000000000000000" ) );
+
+  settings.fieldName = QStringLiteral( "1000000000000.5" );
+  QgsVectorLayerLabelProvider *provider2 = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test" ), true, &settings );
+  engine.addProvider( provider2 );
+  provider2->prepare( context, attributes );
+  provider2->registerFeature( f, context );
+  QCOMPARE( provider2->mLabels.at( 0 )->labelText(), QString( "1000000000000.5" ) );
+
+  settings.fieldName = QStringLiteral( "1000000000000.5" );
+  settings.formatNumbers = true;
+  settings.decimals = 3;
+  QgsVectorLayerLabelProvider *provider3 = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test" ), true, &settings );
+  engine.addProvider( provider3 );
+  provider3->prepare( context, attributes );
+  provider3->registerFeature( f, context );
+  QCOMPARE( provider3->mLabels.at( 0 )->labelText(), QString( "1000000000000.500" ) );
+
 }
 
 void TestQgsLabelingEngine::testParticipatingLayers()
