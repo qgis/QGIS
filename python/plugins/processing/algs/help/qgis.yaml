@@ -128,13 +128,6 @@ qgis:deleteholes: >
 
   An optional minimum area parameter allows removing only holes which are smaller than a specified area threshold. Leaving this parameter as 0.0 results in all holes being removed.
 
-qgis:densifygeometries: >
-  This algorithm takes a polygon or line layer and generates a new one in which the geometries have a larger number of vertices than the original one.
-
-  If the geometries have z or m values present then these will be linearly interpolated at the added nodes.
-
-  The number of new vertices to add to each feature geometry is specified as an input parameter.
-
 qgis:densifygeometriesgivenaninterval: >
   This algorithm takes a polygon or line layer and generates a new one in which the geometries have a larger number of vertices than the original one. The geometries are densified by adding regularly placed extra nodes inside each segment so that the maximum distance between any two nodes does not exceed the specified distance.
 
