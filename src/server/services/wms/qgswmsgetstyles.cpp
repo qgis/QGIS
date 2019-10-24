@@ -209,8 +209,6 @@ namespace QgsWms
                 vlayer->labeling()->toSld( featureTypeStyleElem, props );
               }
 
-              /*QDomElement styleElem = vlayer->renderer()->writeSld( myDocument, styleName );
-              namedLayerNode.appendChild( styleElem );*/
               namedLayerNode.appendChild( userStyleElem );
             }
             vlayer->styleManager()->setCurrentStyle( currentStyle );

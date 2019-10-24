@@ -49,7 +49,8 @@ class TestQgsServerWMSTestBase(QgsServerTestBase):
     regenerate_reference = False
 
     def wms_request(self, request, extra=None, project='test_project.qgs', version='1.3.0'):
-        project = self.testdata_path + project
+        if not os.path.exists(project):
+            project = self.testdata_path + project
         assert os.path.exists(project), "Project file not found: " + project
         query_string = 'https://www.qgis.org/?MAP=%s&SERVICE=WMS&VERSION=%s&REQUEST=%s' % (urllib.parse.quote(project), version, request)
         if extra is not None:
@@ -108,6 +109,12 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         self.wms_request_compare('GetStyles',
                                  '&layers=testlayer%20%C3%A8%C3%A9&',
                                  'getstyles')
+
+        # Test GetStyles with labeling
+        self.wms_request_compare('GetStyles',
+                                 '&layers=pointlabel',
+                                 'getstyles_pointlabel',
+                                 project=self.projectPath)
 
     def test_wms_getschemaextension(self):
         self.wms_request_compare('GetSchemaExtension',
