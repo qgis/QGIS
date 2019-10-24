@@ -129,7 +129,7 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     }
 
     QgsLineString ext( pointList );
-    std::unique_ptr< QgsPolygon > polygon;
+    std::unique_ptr< QgsPolygon > polygon = qgis::make_unique< QgsPolygon >( );
     polygon->setExteriorRing( ext.clone() );
     g = QgsGeometry( std::move( polygon ) );
   }
