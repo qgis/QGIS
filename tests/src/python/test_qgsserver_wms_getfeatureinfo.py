@@ -473,7 +473,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'wms_getfeatureinfo_multiple_json',
                                  normalizeJson=True)
 
-        # simple test with geometry
+        # simple test with geometry with underlying layer in 3857
         self.wms_request_compare('GetFeatureInfo',
                                  '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
                                  'info_format=application%2Fjson&transparent=true&' +
@@ -483,6 +483,18 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'with_geometry=true',
                                  'wms_getfeatureinfo_geometry_json',
                                  'test_project_epsg3857.qgs',
+                                 normalizeJson=True)
+
+        # simple test with geometry with underlying layer in 4326
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
+                                 'info_format=application%2Fjson&transparent=true&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
+                                 '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320&' +
+                                 'with_geometry=true',
+                                 'wms_getfeatureinfo_geometry_json',
+                                 'test_project.qgs',
                                  normalizeJson=True)
 
         # test with alias
