@@ -43,6 +43,11 @@ QgsJsonExporter::QgsJsonExporter( QgsVectorLayer *vectorLayer, int precision )
   mTransform.setDestinationCrs( QgsCoordinateReferenceSystem( 4326, QgsCoordinateReferenceSystem::EpsgCrsId ) );
 }
 
+void QgsJsonExporter::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
+{
+  mTransform.setDestinationCrs( crs );
+}
+
 void QgsJsonExporter::setVectorLayer( QgsVectorLayer *vectorLayer )
 {
   mLayer = vectorLayer;

@@ -54,6 +54,8 @@ class CORE_EXPORT QgsJsonExporter
      */
     QgsJsonExporter( QgsVectorLayer *vectorLayer = nullptr, int precision = 6 );
 
+    void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );;
+
     /**
      * Sets the maximum number of decimal places to use in geometry coordinates.
      * The RFC 7946 GeoJSON specification recommends limiting coordinate precision to 6
