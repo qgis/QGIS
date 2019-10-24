@@ -496,7 +496,6 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
             options.insert( QStringLiteral( "update" ), true );
             options.insert( QStringLiteral( "overwrite" ), true );
             options.insert( QStringLiteral( "layerName" ), dropUri.name );
-            options.insert( QStringLiteral( "forceSinglePartGeometryType" ), true );
             QgsVectorLayerExporterTask *exportTask = new QgsVectorLayerExporterTask( vectorSrcLayer, uri, QStringLiteral( "ogr" ), vectorSrcLayer->crs(), options, owner );
             mainTask->addSubTask( exportTask, importTasks );
             importTasks << exportTask;

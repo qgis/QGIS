@@ -267,6 +267,7 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
   }
 
   QgsFields fields = layer->fields();
+
   QgsWkbTypes::Type wkbType = layer->wkbType();
 
   // Special handling for Shapefiles
@@ -286,9 +287,6 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
       // convert wkbtype to multipart (see #5547)
       switch ( wkbType )
       {
-        case QgsWkbTypes::Point:
-          wkbType = QgsWkbTypes::MultiPoint;
-          break;
         case QgsWkbTypes::LineString:
           wkbType = QgsWkbTypes::MultiLineString;
           break;
