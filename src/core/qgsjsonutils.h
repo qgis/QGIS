@@ -54,8 +54,6 @@ class CORE_EXPORT QgsJsonExporter
      */
     QgsJsonExporter( QgsVectorLayer *vectorLayer = nullptr, int precision = 6 );
 
-    void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
-
     /**
      * Sets the maximum number of decimal places to use in geometry coordinates.
      * The RFC 7946 GeoJSON specification recommends limiting coordinate precision to 6
@@ -147,6 +145,13 @@ class CORE_EXPORT QgsJsonExporter
      * \see sourceCrs()
      */
     void setSourceCrs( const QgsCoordinateReferenceSystem &crs );
+
+    /**
+     * Sets the destination CRS for writing feature geometries.
+     * \param crs destination CRS for output feature geometries
+     * \since QGIS 3.10
+     */
+    void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
 
     /**
      * Returns the source CRS for feature geometries. The source CRS must be set if geometries are to be
