@@ -383,29 +383,29 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
       const auto fieldRefEnd { refFieldCast( dimension.endFieldName, queryType, fieldType ) };
       const auto fieldEnd = QgsExpression::quotedColumnRef( dimension.endFieldName );
 
-      // Cast the query value according to the field type
-      QString beginQuery;
-      // Drop the time
-      if ( fieldType == QVariant::Type::Date )
-      {
-        beginQuery = interval;
-      }
-      else
-      {
-        beginQuery = interval;
-      }
-
       QString condition;
       QString castedValue;
 
       // field has possibly been downcasted
       if ( ! inputQueryIsDateTime || ! fieldIsDateTime )
       {
-        castedValue = QStringLiteral( "to_date( %1 )" ).arg( QgsExpression::quotedValue( QDate::fromString( interval, Qt::DateFormat::ISODate ) ) );
+        QString castedInterval { interval };
+        // Check if we need to downcast interval from datetime
+        if ( inputQueryIsDateTime )
+        {
+          castedInterval = QDate::fromString( castedInterval, Qt::DateFormat::ISODate ).toString( Qt::DateFormat::ISODate );
+        }
+        castedValue = QStringLiteral( "to_date( %1 )" ).arg( QgsExpression::quotedValue( castedInterval ) );
       }
       else
       {
-        castedValue = QStringLiteral( "to_datetime( %1 )" ).arg( QgsExpression::quotedValue( QDateTime::fromString( interval, Qt::DateFormat::ISODate ) ) );
+        QString castedInterval { interval };
+        // Check if we need to upcast interval to datetime
+        if ( ! inputQueryIsDateTime )
+        {
+          castedInterval = QDateTime::fromString( castedInterval, Qt::DateFormat::ISODate ).toString( Qt::DateFormat::ISODate );
+        }
+        castedValue = QStringLiteral( "to_datetime( %1 )" ).arg( QgsExpression::quotedValue( castedInterval ) );
       }
 
       if ( ! fieldRefEnd.isEmpty() )

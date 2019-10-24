@@ -203,6 +203,13 @@ class QgsServerAPITestBase(QgsServerTestBase):
                 j['timeStamp'] = '2019-07-05T12:27:07Z'
             except:
                 pass
+            # Fix coordinate precision differences in Travis
+            try:
+                bbox = j['extent']['spatial']['bbox'][0]
+                bbox = [round(c, 4) for c in bbox]
+                j['extent']['spatial']['bbox'][0] = bbox
+            except:
+                pass
             json_content = json.dumps(j)
             headers_content = '\n'.join(reference_content[:reference_content.index('') + 1])
             return headers_content + '\n' + json_content
@@ -672,12 +679,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.assertEqualBrackets(_interval(updated_path, '2017-01-01/..'), '( "updated" IS NULL OR to_date( "updated" ) >= to_date( \'2017-01-01\' ) )')
         self.assertEqualBrackets(_interval(updated_path, '2017-01-01/2018-01-01'), '( "updated" IS NULL OR ( to_date( \'2017-01-01\' ) <= to_date( "updated" ) AND to_date( "updated" ) <= to_date( \'2018-01-01\' ) ) )')
 
-        # For some obscure reason local testing adds milliseconds while it does not happen on Travis, we accept boths here
-        try:
-            self.assertEqualBrackets(_interval(updated_path, '2017-01-01T01:01:01'), '( "updated" IS NULL OR "updated" = to_datetime( \'2017-01-01T01:01:01\' ) )')
-        except:
-            self.assertEqualBrackets(_interval(updated_path, '2017-01-01T01:01:01'), '( "updated" IS NULL OR "updated" = to_datetime( \'2017-01-01T01:01:01.000\' ) )')
-
+        self.assertEqualBrackets(_interval(updated_path, '2017-01-01T01:01:01'), '( "updated" IS NULL OR "updated" = to_datetime( \'2017-01-01T01:01:01\' ) )')
         self.assertEqualBrackets(_interval(updated_path, '../2017-01-01T01:01:01'), '( "updated" IS NULL OR "updated" <= to_datetime( \'2017-01-01T01:01:01\' ) )')
         self.assertEqualBrackets(_interval(updated_path, '/2017-01-01T01:01:01'), '( "updated" IS NULL OR "updated" <= to_datetime( \'2017-01-01T01:01:01\' ) )')
         self.assertEqualBrackets(_interval(updated_path, '2017-01-01T01:01:01/'), '( "updated" IS NULL OR "updated" >= to_datetime( \'2017-01-01T01:01:01\' ) )')
@@ -707,7 +709,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.assertEqualBrackets(_interval(updated_string_path, '2017-01-01/..'), '( "updated_string" IS NULL OR to_date( "updated_string" ) >= to_date( \'2017-01-01\' ) )')
         self.assertEqualBrackets(_interval(updated_string_path, '2017-01-01/2018-01-01'), '( "updated_string" IS NULL OR ( to_date( \'2017-01-01\' ) <= to_date( "updated_string" ) AND to_date( "updated_string" ) <= to_date( \'2018-01-01\' ) ) )')
 
-        self.assertEqualBrackets(_interval(updated_string_path, '2017-01-01T01:01:01'), '( "updated_string" IS NULL OR to_datetime( "updated_string" ) = to_datetime( \'2017-01-01T01:01:01.000\' ) )')
+        self.assertEqualBrackets(_interval(updated_string_path, '2017-01-01T01:01:01'), '( "updated_string" IS NULL OR to_datetime( "updated_string" ) = to_datetime( \'2017-01-01T01:01:01\' ) )')
         self.assertEqualBrackets(_interval(updated_string_path, '../2017-01-01T01:01:01'), '( "updated_string" IS NULL OR to_datetime( "updated_string" ) <= to_datetime( \'2017-01-01T01:01:01\' ) )')
         self.assertEqualBrackets(_interval(updated_string_path, '/2017-01-01T01:01:01'), '( "updated_string" IS NULL OR to_datetime( "updated_string" ) <= to_datetime( \'2017-01-01T01:01:01\' ) )')
         self.assertEqualBrackets(_interval(updated_string_path, '2017-01-01T01:01:01/'), '( "updated_string" IS NULL OR to_datetime( "updated_string" ) >= to_datetime( \'2017-01-01T01:01:01\' ) )')
