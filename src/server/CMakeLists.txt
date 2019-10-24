@@ -211,3 +211,6 @@ INSTALL(FILES
   wms_metadata.xml
   DESTINATION ${QGIS_CGIBIN_DIR}
 )
+ADD_CUSTOM_TARGET(qgis_server_full
+  DEPENDS qgis_mapserv.fcgi wms wfs wcs wfs3 wmts qgis_server
+)
