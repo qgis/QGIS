@@ -58,16 +58,16 @@ Snap to map according to the current configuration.
 
 :param point: point in canvas coordinates
 :param filter: allows discarding unwanted matches.
-               This method is either blocking or non blocking according to ``relaxed`` parameter passed
+:param relaxed: ``True`` if this method is non blocking and the matching result can be invalid while indexing
 %End
 
     QgsPointLocator::Match snapToMap( const QgsPointXY &pointMap, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
 %Docstring
 Snap to map according to the current configuration.
 
-:param point: point in canvas coordinates
+:param pointMap: point in map coordinates
 :param filter: allows discarding unwanted matches.
-               This method is either blocking or non blocking according to ``relaxed`` parameter passed
+:param relaxed: ``True`` if this method is non blocking and the matching result can be invalid while indexing
 %End
 
     QgsPointLocator::Match snapToCurrentLayer( QPoint point, QgsPointLocator::Types type, QgsPointLocator::MatchFilter *filter = 0 );

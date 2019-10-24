@@ -72,15 +72,15 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
      * Snap to map according to the current configuration.
      * \param point point in canvas coordinates
      * \param filter allows discarding unwanted matches.
-     * This method is either blocking or non blocking according to \a relaxed parameter passed
+     * \param relaxed TRUE if this method is non blocking and the matching result can be invalid while indexing
      */
     QgsPointLocator::Match snapToMap( QPoint point, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false );
 
     /**
      * Snap to map according to the current configuration.
-     * \param point point in canvas coordinates
+     * \param pointMap point in map coordinates
      * \param filter allows discarding unwanted matches.
-     * This method is either blocking or non blocking according to \a relaxed parameter passed
+     * \param relaxed TRUE if this method is non blocking and the matching result can be invalid while indexing
      */
     QgsPointLocator::Match snapToMap( const QgsPointXY &pointMap, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false );
 
