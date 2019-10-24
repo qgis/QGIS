@@ -1867,7 +1867,12 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   labelText = QgsStringUtils::capitalize( labelText, capitalization );
 
   // format number if label text is coercible to a number
-  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::NumFormat ) && mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::NumFormat, context.expressionContext(), formatNumbers ) )
+  bool evalFormatNumbers = formatNumbers;
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::NumFormat ) )
+  {
+    evalFormatNumbers = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::NumFormat, context.expressionContext(), evalFormatNumbers );
+  }
+  if ( evalFormatNumbers )
   {
     // data defined decimal places?
     int decimalPlaces = mDataDefinedProperties.valueAsInt( QgsPalLayerSettings::NumDecimals, context.expressionContext(), decimals );

@@ -50,6 +50,7 @@ class TestQgsLabelingEngine : public QObject
     void testEncodeDecodeLinePlacement();
     void testSubstitutions();
     void testCapitalization();
+    void testNumberFormat();
     void testParticipatingLayers();
     void testRegisterFeatureUnprojectible();
     void testRotateHidePartial();
@@ -627,6 +628,82 @@ void TestQgsLabelingEngine::testCapitalization()
   provider4->prepare( context, attributes );
   provider4->registerFeature( f, context );
   QCOMPARE( provider4->mLabels.at( 0 )->labelText(), QString( "A TeSt LABEL" ) );
+}
+
+void TestQgsLabelingEngine::testNumberFormat()
+{
+  QgsFeature f( vl->fields(), 1 );
+  f.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 1, 2 ) ) );
+
+  // make a fake render context
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl );
+  mapSettings.setOutputDpi( 96 );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  QSet<QString> attributes;
+  QgsDefaultLabelingEngine engine;
+  engine.setMapSettings( mapSettings );
+
+  // no change
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "110.112" );
+  settings.isExpression = true;
+
+  QgsVectorLayerLabelProvider *provider = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test" ), true, &settings );
+  engine.addProvider( provider );
+  provider->prepare( context, attributes );
+  provider->registerFeature( f, context );
+  QCOMPARE( provider->mLabels.at( 0 )->labelText(), QStringLiteral( "110.112" ) );
+
+  settings.fieldName = QStringLiteral( "-110.112" );
+  QgsVectorLayerLabelProvider *provider2 = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test" ), true, &settings );
+  engine.addProvider( provider2 );
+  provider2->prepare( context, attributes );
+  provider2->registerFeature( f, context );
+  QCOMPARE( provider2->mLabels.at( 0 )->labelText(), QStringLiteral( "-110.112" ) );
+
+  settings.fieldName = QStringLiteral( "110.112" );
+  settings.formatNumbers = true;
+  settings.decimals = 6;
+  QgsVectorLayerLabelProvider *provider3 = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test" ), true, &settings );
+  engine.addProvider( provider3 );
+  provider3->prepare( context, attributes );
+  provider3->registerFeature( f, context );
+  QCOMPARE( provider3->mLabels.at( 0 )->labelText(), QStringLiteral( "110.112000" ) );
+
+  settings.fieldName = QStringLiteral( "-110.112" );
+  QgsVectorLayerLabelProvider *provider4 = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test" ), true, &settings );
+  engine.addProvider( provider4 );
+  provider4->prepare( context, attributes );
+  provider4->registerFeature( f, context );
+  QCOMPARE( provider4->mLabels.at( 0 )->labelText(), QStringLiteral( "-110.112000" ) );
+
+  settings.fieldName = QStringLiteral( "110.112" );
+  settings.formatNumbers = true;
+  settings.plusSign = true;
+  QgsVectorLayerLabelProvider *provider5 = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test" ), true, &settings );
+  engine.addProvider( provider5 );
+  provider5->prepare( context, attributes );
+  provider5->registerFeature( f, context );
+  QCOMPARE( provider5->mLabels.at( 0 )->labelText(), QStringLiteral( "+110.112000" ) );
+
+  settings.fieldName = QStringLiteral( "-110.112" );
+  QgsVectorLayerLabelProvider *provider6 = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test" ), true, &settings );
+  engine.addProvider( provider6 );
+  provider6->prepare( context, attributes );
+  provider6->registerFeature( f, context );
+  QCOMPARE( provider6->mLabels.at( 0 )->labelText(), QStringLiteral( "-110.112000" ) );
+
+  settings.formatNumbers = false;
+  settings.fieldName = QStringLiteral( "110.112" );
+  QgsVectorLayerLabelProvider *provider7 = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test" ), true, &settings );
+  engine.addProvider( provider7 );
+  provider7->prepare( context, attributes );
+  provider7->registerFeature( f, context );
+  QCOMPARE( provider7->mLabels.at( 0 )->labelText(), QStringLiteral( "110.112" ) );
 }
 
 void TestQgsLabelingEngine::testParticipatingLayers()
