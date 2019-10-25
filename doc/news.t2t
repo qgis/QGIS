@@ -38,6 +38,86 @@ Change history for the QGIS Project
 Last Updated: %%date(%A %B %d, %Y)
 Last Change : %%mtime(%A %B %d, %Y)
 
+= What's new in Version 3.10 'A Coruña'? =
+
+This release has following new features:
+
+- Map Tools: Show 3D length for LineStringZ features in identify derived attributes
+- Symbology: Customizable default resampling settings for newly-added raster layers
+- Symbology: Add "extract symbols" action to QGS/QGZ project file context menu in browser
+- Symbology: Improved copy/paste of symbols
+- Symbology: "Center of segment" placement mode for marker and hash line symbol layers
+- Symbology: Allow array values as a valid result for data defined offset
+- Labelling: Allow creation and editing of text formats and label settings through style manager dialog
+- Labelling: New text "background" setting for marker symbol backgrounds
+- Labelling: Callouts support
+- Labelling: Add multiline alignment property to the change label tool
+- Labelling: Allow display of unplaced labels
+- Labelling: Add "overrun distance" setting for line labels
+- Labelling: Allow data defined control over "label every part of multipart features" setting
+- Labelling:  Expose "label all parts" option via label properties tool
+- Labelling: Support vertical text orientation
+- Labelling: Expose font kerning setting
+- Rendering: Allow rendering raster layers outside the reported extent
+- Rendering:  Add option to georeference PDFs and TIFs to save map canvas as image/PDF
+- Rendering: new map canvas image decoration
+- Rendering:  logarithmic scale method for graduated renderer
+- 3D Features: Measurement tool in 3D map view
+- 3D Features: Billboard Rendering for Points
+- 3D Features: 3D On-Screen Navigation
+- Print Layouts: Right-to-left arrangement for legends
+- Print Layouts: Control margin under legend group and subgroup headings
+- Print Layouts: Allow data defined settings in text formats
+- Print Layouts: @scale_value variable
+- Print Layouts: Add above/below segments placement option for scalebar labels
+- Print Layouts: Horizontal placement option for scale bar labels
+- Print Layouts: Add option to simplify PDF or SVG exports
+- Print Layouts: Improved SVG layered exports
+- Print Layouts: Add an indicator in the status bar while a map redraw is occurring in the background
+- Print Layouts: GeoPDF Export
+- Print Layouts: Data defined control over grid properties
+- Print Layouts: "fit segment size" mode for map grid interval
+- Print Layouts: layout map item extent to an existing bookmark
+- Expressions: New expression functions
+- Digitising: GPS timestamp support
+- Data Management: Composite Foreign Keys
+- Data Management: Add circular data dependencies
+- Analysis Tools: Stored filter expressions
+- Analysis Tools: New operator for Raster Calculator
+- Processing: new algorithm point to layer
+- Processing: allow defining model parameters as advanced
+- Processing: All GDAL based algorithms now support free-form "additional parameters"
+- Processing: Add metatile size parameter to XYZ tiles algorithm
+- Processing: New parameter type for colors
+- Processing: New algorithm "Create style database from project"
+- Processing: Allow file filter and default value to be set for file/folder inputs in models
+- Processing: New algorithm "Combine style databases"
+- Processing: Generate XYZ tiles using multiple threads
+- Processing: New algorithms for exporting and importing to/from map layers
+- Processing: New algorithm "Split features by character"
+- Processing: New algorithm Climb Along Line
+- Processing: Port Create Grid algorithm to C++
+- General: Show news items on welcome page
+- General: Add a separate unit choice for milliradians (SI definition) vs mil (NATO definition)
+- General: Enable widget filtering in Interface Customization dialog
+- General: Improved auto-fix broken layers
+- General: Bookmark Revamp
+- General: "Reselect Features" action in Edit -> Select menu
+- General: Parallelize snap index build
+- Data Providers: Handle read-write support for .shz and .shp.zip
+- Data Providers: oracle provider: add support for auth manager
+- Data Providers: Improved PostGIS raster support
+- Data Providers: Oracle - Database transaction support
+- Data Providers: Add support for z/m dimensions to delimited text layers
+- Data Providers: Static data providers
+- QGIS Server: Using SVG in QGIS Server
+- QGIS Server: WMS dimension
+- QGIS Server: Server OAPIF (aka WFS3) support
+- Programmability: New class QgsBookmarkManager
+- Programmability: New API for provider database connections
+-
+
+
 = What's new in Version 3.8 'Zanzibar'? =
 
 This release has following new features:
