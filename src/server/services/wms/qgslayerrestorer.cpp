@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayerrestorer.h"
+#include "qgsmessagelog.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
@@ -40,7 +41,10 @@ QgsLayerRestorer::QgsLayerRestorer( const QList<QgsMapLayer *> &layers )
     QDomDocument styleDoc( QStringLiteral( "style" ) );
     QDomElement styleXml = styleDoc.createElement( QStringLiteral( "style" ) );
     styleDoc.appendChild( styleXml );
-    layer->writeStyle( styleXml, styleDoc, errMsg, QgsReadWriteContext() );
+    if ( !layer->writeStyle( styleXml, styleDoc, errMsg, QgsReadWriteContext() ) )
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "QGIS Style has not been added to layer restorer for layer %1: %2" ).arg( layer->name(), errMsg ) );
+    }
     ( void )settings.mQgisStyle.setContent( styleDoc.toString() );
 
     switch ( layer->type() )
@@ -91,7 +95,10 @@ QgsLayerRestorer::~QgsLayerRestorer()
       QString errMsg;
       QDomElement root = settings.mQgisStyle.documentElement();
       QgsReadWriteContext context = QgsReadWriteContext();
-      layer->readStyle( root, errMsg, context );
+      if ( !layer->readStyle( root, errMsg, context ) )
+      {
+        QgsMessageLog::logMessage( QStringLiteral( "QGIS Style has not been read from layer restorer for layer %1: %2" ).arg( layer->name(), errMsg ) );
+      }
     }
     layer->removeCustomProperty( "readSLD" );
 
