@@ -473,7 +473,14 @@ bool ProjectorData::preciseSrcRowCol( int destRow, int destCol, int *srcRow, int
 
   if ( mInverseCt.isValid() )
   {
-    mInverseCt.transformInPlace( x, y, z );
+    try
+    {
+      mInverseCt.transformInPlace( x, y, z );
+    }
+    catch ( QgsCsException & )
+    {
+      return false;
+    }
   }
 
 #ifdef QGISDEBUG
@@ -911,14 +918,21 @@ bool QgsRasterProjector::extentSize( const QgsCoordinateTransform &ct,
     {
       double y = srcExtent.yMinimum() + j * srcYStep;
       QgsRectangle srcRectangle( x - srcXRes / 2, y - srcYRes / 2, x + srcXRes / 2, y + srcYRes / 2 );
-      QgsRectangle destRectangle = ct.transformBoundingBox( srcRectangle );
-      if ( destRectangle.width() > 0 )
+      try
       {
-        destXRes = std::min( destXRes, destRectangle.width() );
+        QgsRectangle destRectangle = ct.transformBoundingBox( srcRectangle );
+        if ( destRectangle.width() > 0 )
+        {
+          destXRes = std::min( destXRes, destRectangle.width() );
+        }
+        if ( destRectangle.height() > 0 )
+        {
+          destYRes = std::min( destYRes, destRectangle.height() );
+        }
       }
-      if ( destRectangle.height() > 0 )
+      catch ( QgsCsException & )
       {
-        destYRes = std::min( destYRes, destRectangle.height() );
+
       }
     }
   }
