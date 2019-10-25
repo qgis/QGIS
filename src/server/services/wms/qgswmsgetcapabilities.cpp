@@ -212,6 +212,7 @@ namespace QgsWms
       schemaLocation += QLatin1String( " http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd" );
       schemaLocation += QLatin1String( " http://www.opengis.net/sld" );
       schemaLocation += QLatin1String( " http://schemas.opengis.net/sld/1.1.0/sld_capabilities.xsd" );
+
       if ( QgsServerProjectUtils::wmsInspireActivate( *project ) )
       {
         wmsCapabilitiesElement.setAttribute( QStringLiteral( "xmlns:inspire_common" ), QStringLiteral( "http://inspire.ec.europa.eu/schemas/common/1.0" ) );
@@ -220,7 +221,9 @@ namespace QgsWms
         schemaLocation += QLatin1String( " http://inspire.ec.europa.eu/schemas/inspire_vs/1.0/inspire_vs.xsd" );
       }
 
+      schemaLocation += QLatin1String( " http://www.qgis.org/wms" );
       schemaLocation += " " + hrefString + "SERVICE=WMS&REQUEST=GetSchemaExtension";
+
       wmsCapabilitiesElement.setAttribute( QStringLiteral( "xsi:schemaLocation" ), schemaLocation );
     }
     wmsCapabilitiesElement.setAttribute( QStringLiteral( "version" ), version );
