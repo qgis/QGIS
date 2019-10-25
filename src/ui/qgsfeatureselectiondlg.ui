@@ -15,6 +15,30 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
+    <widget class="QToolBar" name="mToolbar">
+     <property name="iconSize">
+      <size>
+       <width>18</width>
+       <height>18</height>
+      </size>
+     </property>
+     <property name="floatable">
+      <bool>false</bool>
+     </property>
+     <addaction name="mActionExpressionSelect"/>
+     <addaction name="mActionSelectAll"/>
+     <addaction name="mActionInvertSelection"/>
+     <addaction name="mActionRemoveSelection"/>
+     <addaction name="mActionSearchForm"/>
+     <addaction name="mActionSelectedToTop"/>
+     <addaction name="mActionZoomMapToSelectedRows"/>
+     <addaction name="mActionPanMapToSelectedRows"/>
+    </widget>
+   </item>
+   <item>
+    <widget class="QgsMessageBar" name="mMessageBar" native="true"/>
+   </item>
+   <item>
     <widget class="QScrollArea" name="scrollArea">
      <property name="widgetResizable">
       <bool>true</bool>
@@ -25,7 +49,7 @@
         <x>0</x>
         <y>0</y>
         <width>448</width>
-        <height>444</height>
+        <height>389</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -40,16 +64,149 @@
     </widget>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="mButtonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QgsFeatureFilterWidget" name="mFeatureFilterWidget" native="true"/>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="mButtonBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
+  <action name="mActionSearchForm">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFilter2.svg</normaloff>:/images/themes/default/mActionFilter2.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Select/filter features using form</string>
+   </property>
+   <property name="toolTip">
+    <string>Select/filter features using form (Ctrl+F)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
+   </property>
+  </action>
+  <action name="mActionExpressionSelect">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mIconExpressionSelect.svg</normaloff>:/images/themes/default/mIconExpressionSelect.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Select features using an expression</string>
+   </property>
+   <property name="toolTip">
+    <string>Select features using an expression</string>
+   </property>
+  </action>
+  <action name="mActionSelectAll">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSelectAll.svg</normaloff>:/images/themes/default/mActionSelectAll.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Select all</string>
+   </property>
+   <property name="toolTip">
+    <string>Select all (Ctrl+A)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="mActionInvertSelection">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionInvertSelection.svg</normaloff>:/images/themes/default/mActionInvertSelection.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Invert selection</string>
+   </property>
+   <property name="toolTip">
+    <string>Invert selection (Ctrl+R)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="mActionRemoveSelection">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDeselectAll.svg</normaloff>:/images/themes/default/mActionDeselectAll.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Deselect all</string>
+   </property>
+   <property name="toolTip">
+    <string>Deselect all (Ctrl+Shift+A)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+A</string>
+   </property>
+  </action>
+  <action name="mActionSelectedToTop">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSelectedToTop.svg</normaloff>:/images/themes/default/mActionSelectedToTop.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Move selection to top</string>
+   </property>
+   <property name="toolTip">
+    <string>Move selection to top</string>
+   </property>
+  </action>
+  <action name="mActionPanMapToSelectedRows">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionPanToSelected.svg</normaloff>:/images/themes/default/mActionPanToSelected.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Pan map to the selected rows</string>
+   </property>
+   <property name="toolTip">
+    <string>Pan map to the selected rows (Ctrl+P)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="mActionZoomMapToSelectedRows">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomToSelected.svg</normaloff>:/images/themes/default/mActionZoomToSelected.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom map to the selected rows</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom map to the selected rows (Ctrl+J)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+J</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -58,8 +215,22 @@
    <header>qgsdualview.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsFeatureFilterWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfeaturefilterwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMessageBar</class>
+   <extends>QWidget</extends>
+   <header>qgsmessagebar.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>mButtonBox</sender>

@@ -29,7 +29,7 @@ class QgsFeatureSelectionDlg : QDialog
 %End
   public:
 
-    explicit QgsFeatureSelectionDlg( QgsVectorLayer *vl, QgsAttributeEditorContext &context, QWidget *parent /TransferThis/ = 0 );
+    explicit QgsFeatureSelectionDlg( QgsVectorLayer *vl, const QgsAttributeEditorContext &context, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsFeatureSelectionDlg
 %End
@@ -47,6 +47,11 @@ Set the selected features
 
 :param ids: The feature ids to select
 %End
+
+  protected:
+
+    virtual void keyPressEvent( QKeyEvent *evt );
+
 
   protected:
 

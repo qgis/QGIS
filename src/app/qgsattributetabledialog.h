@@ -169,42 +169,6 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void mActionAddFeature_triggered();
 
     void mActionExpressionSelect_triggered();
-    void filterColumnChanged( QObject *filterAction );
-    void filterExpressionBuilder();
-    void filterShowAll();
-    void filterSelected();
-    void filterVisible();
-    void filterEdited();
-    void filterQueryChanged( const QString &query );
-    void filterQueryAccepted();
-
-    /**
-    * Handles the expression (save or delete) when the bookmark button for stored
-    * filter expressions is triggered.
-    */
-    void handleStoreFilterExpression();
-
-    /**
-    * Opens dialog and give the possibility to save the expression with a name.
-    */
-    void saveAsStoredFilterExpression();
-
-    /**
-    * Opens dialog and give the possibility to edit the name and the expression
-    * of the stored expression.
-    */
-    void editStoredFilterExpression();
-
-    /**
-     * Updates the bookmark button and it's actions regarding the stored filter
-     * expressions according to the values
-     */
-    void updateCurrentStoredFilterExpression( );
-
-    /**
-     * Starts timer with timeout 300 ms.
-     */
-    void onFilterQueryTextChanged( const QString &value );
 
     void openConditionalStyles();
 
@@ -214,9 +178,6 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void updateTitle();
 
     void updateButtonStatus( const QString &fieldName, bool isValid );
-
-    /* replace the search widget with a new one */
-    void replaceSearchWidget( QWidget *oldw, QWidget *neww );
 
     void layerActionTriggered();
   signals:
@@ -239,14 +200,6 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 
   private slots:
 
-    //! Initialize column box
-    void columnBoxInit();
-
-    //! Initialize storedexpression box e.g after adding/deleting/edditing stored expression
-    void storedFilterExpressionBoxInit();
-    //! Functionalities of store expression button changes regarding the status of it
-    void storeExpressionButtonInit();
-
     void runFieldCalculation( QgsVectorLayer *layer, const QString &fieldName, const QString &expression, const QgsFeatureIds &filteredIds = QgsFeatureIds() );
     void updateFieldFromExpression();
     void updateFieldFromExpressionSelected();
@@ -262,16 +215,9 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     QgsDockWidget *mDock = nullptr;
     QDialog *mDialog = nullptr;
 
-    QMenu *mFilterColumnsMenu = nullptr;
-    QSignalMapper *mFilterActionMapper = nullptr;
-    QMenu *mStoredFilterExpressionMenu = nullptr;
-
     QPointer< QgsVectorLayer > mLayer = nullptr;
-    QgsSearchWidgetWrapper *mCurrentSearchWidgetWrapper = nullptr;
     QStringList mVisibleFields;
     QgsAttributeEditorContext mEditorContext;
-
-    QTimer mFilterQueryTimer;
 
     void updateMultiEditButtonState();
     void deleteFeature( QgsFeatureId fid );
