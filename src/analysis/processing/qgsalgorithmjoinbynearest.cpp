@@ -89,7 +89,9 @@ QString QgsJoinByNearestAlgorithm::shortHelpString() const
                       "input one, with additional attributes in its attribute table.\n\n"
                       "The additional attributes and their values are taken from a second vector layer, where features are joined "
                       "by finding the closest features from each layer. By default only the single nearest feature is joined,"
-                      "but optionally the join can use the n-nearest neighboring features instead.\n\n"
+                      "but optionally the join can use the n-nearest neighboring features instead. If multiple features are found "
+                      "with identical distances these will all be returned (even if the total number of features exceeds the specified "
+                      "maximum feature count).\n\n"
                       "If a maximum distance is specified, then only features which are closer than this distance "
                       "will be matched.\n\n"
                       "The output features will contain the selected attributes from the nearest feature, "
@@ -255,6 +257,11 @@ QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &para
     {
       // note - if using same source as target, we have to get one extra neighbor, since the first match will be the input feature
       const QList< QgsFeatureId > nearest = index.nearestNeighbor( f.geometry(), neighbors + ( sameSourceAndTarget ? 1 : 0 ), std::isnan( maxDistance ) ? 0 : maxDistance );
+
+      if ( nearest.count() > neighbors + ( sameSourceAndTarget ? 1 : 0 ) )
+      {
+        feedback->pushInfo( QObject::tr( "Multiple matching features found at same distance from search feature, found %1 features instead of %2" ).arg( nearest.count() - ( sameSourceAndTarget ? 1 : 0 ) ).arg( neighbors ) );
+      }
       QgsFeature out;
       out.setGeometry( f.geometry() );
       int j = 0;
