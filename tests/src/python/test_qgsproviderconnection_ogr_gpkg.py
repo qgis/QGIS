@@ -54,6 +54,14 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
         """Run after all tests"""
         os.unlink(cls.gpkg_path)
 
+    def test_gpkg_connections_from_uri(self):
+        """Create a connection from a layer uri and retrieve it"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('ogr')
+        vl = QgsVectorLayer('{}|cdb_lines'.format(self.gpkg_path), 'test', 'ogr')
+        conn = md.createConnection(vl.dataProvider().uri().uri(), {})
+        self.assertEqual(conn.uri(), self.gpkg_path)
+
     def test_gpkg_connections(self):
         """Create some connections and retrieve them"""
 

@@ -38,6 +38,11 @@ QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString 
 QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString &uri, const QVariantMap &configuration ):
   QgsAbstractDatabaseProviderConnection( uri, configuration )
 {
+  // Cleanup the URI in case it contains other information other than the file path
+  if ( uri.contains( '|' ) )
+  {
+    setUri( uri.left( uri.indexOf( '|' ) ).trimmed() );
+  }
   setDefaultCapabilities();
 }
 

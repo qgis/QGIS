@@ -45,7 +45,15 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         # Create test layers
         vl = QgsVectorLayer(cls.postgres_conn + ' sslmode=disable key=\'"key1","key2"\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=', 'test', 'postgres')
         assert vl.isValid()
-        cls.uri = cls.postgres_conn + ' port=5432 sslmode=disable '
+        cls.uri = cls.postgres_conn + ' sslmode=disable'
+
+    def test_postgis_connections_from_uri(self):
+        """Create a connection from a layer uri and retrieve it"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        vl = QgsVectorLayer(self.postgres_conn + ' sslmode=disable key=\'"key1","key2"\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=', 'test', 'postgres')
+        conn = md.createConnection(vl.dataProvider().uri().uri(), {})
+        self.assertEqual(conn.uri(), self.uri)
 
     def test_postgis_connections(self):
         """Create some connections and retrieve them"""

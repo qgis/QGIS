@@ -36,12 +36,10 @@ QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &nam
 }
 
 QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &uri, const QVariantMap &configuration ):
-  QgsAbstractDatabaseProviderConnection( uri, configuration )
+  QgsAbstractDatabaseProviderConnection( QgsDataSourceUri( uri ).connectionInfo( false ), configuration )
 {
   setDefaultCapabilities();
 }
-
-
 
 void QgsPostgresProviderConnection::setDefaultCapabilities()
 {
