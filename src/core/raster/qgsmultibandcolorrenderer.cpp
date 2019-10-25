@@ -189,7 +189,7 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
     bandBlocks[*bandIt] = mInput->block( *bandIt, extent, width, height, feedback );
     if ( !bandBlocks[*bandIt] )
     {
-      // We should free the alloced mem from block().
+      // We should free the allocated mem from block().
       QgsDebugMsg( QStringLiteral( "No input band" ) );
       --bandIt;
       for ( ; bandIt != bands.constBegin(); --bandIt )
@@ -427,7 +427,7 @@ void QgsMultiBandColorRenderer::toSld( QDomDocument &doc, QDomElement &element, 
 #if 0
   // TODO: the following jumped code is necessary to avoid to export channelSelection in
   // case it's set as default value. The drawback is that it's necessary to calc band
-  // statistics that can be really slow depending on dataProvider and rastr localtion.
+  // statistics that can be really slow depending on dataProvider and rastr location.
   // this is the reason this part of code is commented and the channelSelection is
   // always exported.
   //

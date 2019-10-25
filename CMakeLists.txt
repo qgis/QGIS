@@ -43,7 +43,7 @@ IF (USE_OPENCL)
     FIND_PACKAGE(OpenCL)
     IF(${OpenCL_FOUND})
         SET(HAVE_OPENCL TRUE)
-        # Fixup for standard FindOpenCL module not assinging proper framework headers directory
+        # Fixup for standard FindOpenCL module not assigning proper framework headers directory
         IF (APPLE AND "${OpenCL_INCLUDE_DIR}" MATCHES "OpenCL\\.framework/?$")
             SET(OpenCL_INCLUDE_DIR "${OpenCL_INCLUDE_DIR}/Headers" CACHE PATH "" FORCE)
             SET(OpenCL_INCLUDE_DIRS ${OpenCL_INCLUDE_DIR})

@@ -514,7 +514,7 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
   {
     pszDataTypes = GDALGetMetadataItem( mOgrOrigLayer->driver(), GDAL_DMD_CREATIONFIELDDATATYPES, nullptr );
   }
-  // For drivers that advertize their data type, use that instead of the
+  // For drivers that advertise their data type, use that instead of the
   // above hardcoded defaults.
   if ( pszDataTypes )
   {
@@ -2557,7 +2557,7 @@ bool QgsOgrProvider::doInitialActionsForEdition()
   // If mUpdateModeStackDepth > 0, it means that an updateMode is already active and that we have write access
   if ( mUpdateModeStackDepth == 0 )
   {
-    QgsDebugMsg( QStringLiteral( "Enter update mode implictly" ) );
+    QgsDebugMsg( QStringLiteral( "Enter update mode implicitly" ) );
     if ( !_enterUpdateMode( true ) )
       return false;
   }
@@ -3941,7 +3941,7 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
     // For GeoPackage, we force opening of the file in WAL (Write Ahead Log)
     // mode so as to avoid readers blocking writer(s), and vice-versa.
     // https://www.sqlite.org/wal.html
-    // But only do that on a local file since WAL is advertized not to work
+    // But only do that on a local file since WAL is advertised not to work
     // on network shares
     CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", "WAL" );
     bIsLocalGpkg = true;

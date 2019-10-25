@@ -110,7 +110,7 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     void setGridAnnotationDirection( GridAnnotationDirection d ) {mGridAnnotationDirection = d;}
     GridAnnotationDirection gridAnnotationDirection() const {return mGridAnnotationDirection;}
 
-    //! Sets length of the cros segments (if grid style is cross)
+    //! Sets length of the cross segments (if grid style is cross)
     /* void setCrossLength( double l ) {mCrossLength = l;} */
     /* double crossLength() {return mCrossLength;} */
 

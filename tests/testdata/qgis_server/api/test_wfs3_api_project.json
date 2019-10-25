@@ -170,7 +170,7 @@ Content-Type: application/openapi+json;version=3.0
               {
                 "href": "http://example.com/concepts/buildings.html",
                 "rel": "describedBy",
-                "title": "Feature catalogue for buildings",
+                "title": "Feature catalog for buildings",
                 "type": "text/html"
               }
             ],

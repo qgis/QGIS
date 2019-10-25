@@ -4,7 +4,7 @@
   "description": "Collects a set of geometries into a multi-part geometry object.",
   "variants": [
   { "variant": "List of arguments variant",
-      "variant_description": "Geometry parts are specified as seperate arguments to the function.",
+      "variant_description": "Geometry parts are specified as separate arguments to the function.",
       "variableLenArguments": true,
       "arguments": [ {"arg":"geometry1", "syntaxOnly": true},
                  {"arg":"geometry2", "syntaxOnly": true},

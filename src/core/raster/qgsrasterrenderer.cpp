@@ -73,7 +73,7 @@ bool QgsRasterRenderer::setInput( QgsRasterInterface *input )
   for ( int i = 1; i <= input->bandCount(); i++ )
   {
     const Qgis::DataType bandType = input->dataType( i );
-    // we always allow unknown data types to connect - overwise invalid layers cannot setup
+    // we always allow unknown data types to connect - otherwise invalid layers cannot setup
     // their original rendering pipe and this information is lost
     if ( bandType != Qgis::UnknownDataType && !QgsRasterBlock::typeIsNumeric( bandType ) )
     {

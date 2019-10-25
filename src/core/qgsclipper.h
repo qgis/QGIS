@@ -50,7 +50,7 @@ class CORE_EXPORT QgsClipper
     // values are +/-32767, but we allow a little bit of space for
     // rounding errors.
 
-    // You may wonder why the clipping is done to these coordindates
+    // You may wonder why the clipping is done to these coordinates
     // rather than the boundaries of the qgis canvas. Reasons include:
     // - making the boundaries static const allows the compiler to
     //   optimise the code that uses these values more than if they changed
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsClipper
 
   private:
 
-    // Used when testing for equivalance to 0.0
+    // Used when testing for equivalence to 0.0
     static const double SMALL_NUM;
 
     // Trims the given feature to the given boundary. Returns the

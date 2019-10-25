@@ -1183,7 +1183,7 @@ void TestQgsLabelingEngine::testCurvedLabelCorrectLinePlacement()
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
-  // Geometry which roughly curves around from "1 oclock" anticlockwise to 6 oclock.
+  // Geometry which roughly curves around from "1 o'clock" anticlockwise to 6 o'clock.
   QgsGeometry g( QgsGeometry::fromWkt( QStringLiteral( "LineString (0.30541596873255172 0.3835845896147404, -0.08989391401451696 0.21831379117811278, -0.33668341708542704 -0.01619207146845336, -0.156895589056393 -0.20714684533780003, 0.02735901730876611 -0.21496370742601911)" ) ) );
   f.setGeometry( g );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );

@@ -135,7 +135,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         #   +-+
         #   | |
         # +-+ +
-        # checking returned length_mapunits/projected_points of diffferent world points with results from SpatiaLite ST_Project
+        # checking returned length_mapunits/projected_points of different world points with results from SpatiaLite ST_Project
         da_3068 = QgsDistanceArea()
         da_3068.setSourceCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:3068'), QgsProject.instance().transformContext())
         if (da_3068.sourceCrs().isGeographic()):

@@ -374,7 +374,7 @@ QString QgsProjectionSelectionTreeWidget::getSelectedExpression( const QString &
 
   //
   // set up the database
-  // XXX We could probabaly hold the database open for the life of this object,
+  // XXX We could probably hold the database open for the life of this object,
   // assuming that it will never be used anywhere else. Given the low overhead,
   // opening it each time seems to be a reasonable approach at this time.
   sqlite3 *database = nullptr;

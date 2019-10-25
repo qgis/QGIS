@@ -65,7 +65,7 @@ it is necessary to either use QQmlEngine::addImportPath() to add that directory 
 
 \section qgsquick_demo_app Demo application
 
-A demo application with some basic componets and functionality is available on https://github.com/lutraconsulting/qgis-quick-demo-app
+A demo application with some basic components and functionality is available on https://github.com/lutraconsulting/qgis-quick-demo-app
 
 The demo application repository contains also instructions on how to build the application, QGIS Quick and other dependencies on Android.
 

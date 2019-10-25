@@ -23,7 +23,7 @@
 
 #include <QEventLoop>
 #include <QNetworkCacheMetaData>
-#include <QCryptographicHash> // just for testin file:// fake_qgis_http_endpoint hack
+#include <QCryptographicHash> // just for testing file:// fake_qgis_http_endpoint hack
 #include <QFuture>
 #include <QtConcurrent>
 

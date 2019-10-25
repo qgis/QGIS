@@ -277,7 +277,7 @@ QgsWcsProvider::QgsWcsProvider( const QString &uri, const ProviderOptions &optio
     }
     // It may happen that nodata value given by GDAL is wrong and it has to be
     // disabled by user, in that case we need another value to be used for nodata
-    // (for reprojection for example) -> always internaly represent as wider type
+    // (for reprojection for example) -> always internally represent as wider type
     // with mInternalNoDataValue in reserve.
     // No retyping, no internal values for now
 #if 0
@@ -668,7 +668,7 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const &viewExtent, int 
   //according to the WCS spec for 1.1, some CRS have inverted axis
   // box:
   //  1.0.0: minx,miny,maxx,maxy
-  //  1.1.0, 1.1.2: OGC 07-067r5 (WCS 1.1.2) referes to OGC 06-121r3 which says
+  //  1.1.0, 1.1.2: OGC 07-067r5 (WCS 1.1.2) refers to OGC 06-121r3 which says
   //  "The number of axes included, and the order of these axes, shall be as specified
   //  by the referenced CRS." That means inverted for geographic.
   bool changeXY = false;

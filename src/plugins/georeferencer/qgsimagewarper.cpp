@@ -182,7 +182,7 @@ int QgsImageWarper::warpFile( const QString &input,
     if ( destResY > 0.0 )
       destResY = -destResY;
 
-    // Assert that the north-up convention is fullfiled by GDALSuggestedWarpOutput (should always be the case)
+    // Assert that the north-up convention is fulfilled by GDALSuggestedWarpOutput (should always be the case)
     // Asserts are bad as they just crash out, changed to just return false. TS
     if ( adfGeoTransform[0] <= 0.0  || adfGeoTransform[5] >= 0.0 )
     {

@@ -597,7 +597,7 @@ QImage QgsSymbol::bigSymbolPreviewImage( QgsExpressionContext *expressionContext
 
   QPainter p( &preview );
   p.setRenderHint( QPainter::Antialiasing );
-  p.translate( 0.5, 0.5 ); // shift by half a pixel to avoid blurring due antialising
+  p.translate( 0.5, 0.5 ); // shift by half a pixel to avoid blurring due antialiasing
 
   if ( mType == QgsSymbol::Marker )
   {

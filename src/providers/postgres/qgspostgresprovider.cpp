@@ -1865,7 +1865,7 @@ bool QgsPostgresProvider::parseDomainCheckConstraint( QStringList &enumValues, c
 
       //we assume that the constraint is of the following form:
       //(VALUE = ANY (ARRAY['a'::text, 'b'::text, 'c'::text, 'd'::text]))
-      //normally, PostgreSQL creates that if the contstraint has been specified as 'VALUE in ('a', 'b', 'c', 'd')
+      //normally, PostgreSQL creates that if the constraint has been specified as 'VALUE in ('a', 'b', 'c', 'd')
 
       int anyPos = checkDefinition.indexOf( QRegExp( "VALUE\\s*=\\s*ANY\\s*\\(\\s*ARRAY\\s*\\[" ) );
       int arrayPosition = checkDefinition.lastIndexOf( QLatin1String( "ARRAY[" ) );

@@ -35,7 +35,7 @@ from the map layer registry.
     {
       InsertionPoint( QgsLayerTreeGroup *group, int position );
 %Docstring
-Construcs an insertion point as layer tree group with its corresponding position.
+Constructs an insertion point as layer tree group with its corresponding position.
 %End
       QgsLayerTreeGroup *group;
       int position;

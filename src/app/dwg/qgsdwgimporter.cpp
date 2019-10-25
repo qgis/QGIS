@@ -209,7 +209,7 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
       return false;
     }
 
-    // Check whether database is uptodate
+    // Check whether database is up-to-date
     OGRLayerH layer = OGR_DS_GetLayerByName( mDs.get(), "drawing" );
     if ( !layer )
     {
@@ -245,7 +245,7 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
     QString path = QString::fromUtf8( OGR_F_GetFieldAsString( f, pathIdx ) );
     if ( path == fi.canonicalPath() && fi.lastModified() <= lastModified )
     {
-      LOG( tr( "Drawing already uptodate in database." ) );
+      LOG( tr( "Drawing already up-to-date in database." ) );
       OGR_F_Destroy( f );
       return true;
     }

@@ -91,7 +91,7 @@
         "operationId" : "describeCollections",
         "responses" : {
           "200" : {
-            "description" : "Metdata about the feature collections shared by this API.",
+            "description" : "Metadata about the feature collections shared by this API.",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -468,7 +468,7 @@
               "href" : "http://example.org/concepts/building.html",
               "rel" : "describedBy",
               "type" : "text/html",
-              "title" : "Feature catalogue for buildings"
+              "title" : "Feature catalog for buildings"
             } ],
             "items" : {
               "$ref" : "#/components/schemas/link"
@@ -529,7 +529,7 @@
                 "type":"object",
                 "properties":{
                    "interval":{
-                      "description":"One or more time intervals that describe the temporal extent of the dataset.\nThe value `null` is supported and indicates an open time intervall.\nIn the Core only a single time interval is supported. Extensions may support\nmultiple intervals. If multiple intervals are provided, the union of the\nintervals describes the temporal extent.",
+                      "description":"One or more time intervals that describe the temporal extent of the dataset.\nThe value `null` is supported and indicates an open time interval.\nIn the Core only a single time interval is supported. Extensions may support\nmultiple intervals. If multiple intervals are provided, the union of the\nintervals describes the temporal extent.",
                       "type":"array",
                       "minItems":1,
                       "items":{

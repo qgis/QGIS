@@ -30,7 +30,7 @@ class QgsQuickMapSettings;
  * Creates map highlights for a geometry provided by a AttributeModel.
  *
  * The highlights are compatible with the QtQuick scene graph and
- * can be direcly shown on map canvas
+ * can be directly shown on map canvas
  *
  * \note QML Type: FeatureHighlight
  *

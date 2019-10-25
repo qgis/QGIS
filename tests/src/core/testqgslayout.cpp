@@ -914,7 +914,7 @@ void TestQgsLayout::clone()
   QgsLayoutItemShape *label3 = new QgsLayoutItemShape( &l );
   l.addLayoutItem( label3 );
 
-  // clone and check a few poperties
+  // clone and check a few properties
   std::unique_ptr< QgsLayout > cloned( l.clone() );
   QVERIFY( cloned.get() );
   QCOMPARE( cloned->pageCollection()->pageCount(), 3 );

@@ -176,7 +176,7 @@ class PyQgsStringUtils(unittest.TestCase):
                          '    Testing Abc')
 
     def testSubstituteVerticalCharacters(self):
-        """ test subsitute vertical characters """
+        """ test substitute vertical characters """
         self.assertEqual(QgsStringUtils.substituteVerticalCharacters('123{[(45654)]}321'), '123︷﹇︵45654︶﹈︸321')
 
 

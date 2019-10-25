@@ -39,7 +39,7 @@ from qgis.core import (
 
 
 # Tet features, fields: [id, name, geometry]
-# "id" is used as a pk to retriev features by attribute
+# "id" is used as a pk to retrieve features by attribute
 TEST_FEATURES = [
     (1, 'name 1', QgsPointXY(9, 45)),
     (2, 'name 2', QgsPointXY(9.5, 45.5)),

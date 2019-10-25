@@ -296,7 +296,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   cbxAbsolutePath->setCurrentIndex( QgsProject::instance()->readBoolEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), true ) ? 0 : 1 );
 
   // populate combo box with ellipsoids
-  // selection of the ellipsoid from settings is defferred to a later point, because it would
+  // selection of the ellipsoid from settings is deferred to a later point, because it would
   // be overridden in the meanwhile by the projection selector
   populateEllipsoidList();
   if ( !QgsProject::instance()->crs().isValid() )

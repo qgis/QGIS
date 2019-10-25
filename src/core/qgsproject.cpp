@@ -94,7 +94,7 @@ QStringList makeKeyTokens_( const QString &scope, const QString &key )
   // be sure to include the canonical root node
   keyTokens.push_front( QStringLiteral( "properties" ) );
 
-  //check validy of keys since an unvalid xml name will will be dropped upon saving the xml file. If not valid, we print a message to the console.
+  //check validy of keys since an invalid xml name will will be dropped upon saving the xml file. If not valid, we print a message to the console.
   for ( int i = 0; i < keyTokens.size(); ++i )
   {
     QString keyToken = keyTokens.at( i );

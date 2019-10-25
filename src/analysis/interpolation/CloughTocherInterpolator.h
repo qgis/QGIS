@@ -35,7 +35,7 @@ class ANALYSIS_EXPORT CloughTocherInterpolator : public TriangleInterpolator
   protected:
     //! Association with a triangulation object
     NormVecDecorator *mTIN = nullptr;
-    //! Tolerance of the barycentric coordinates at the borders of the triangles (to prevent errors because of very small negativ baricentric coordinates)
+    //! Tolerance of the barycentric coordinates at the borders of the triangles (to prevent errors because of very small negative baricentric coordinates)
     double mEdgeTolerance = 0.00001;
     //! First point of the triangle in x-,y-,z-coordinates
     QgsPoint point1 = QgsPoint( 0, 0, 0 );

@@ -203,7 +203,7 @@ preview result and for populating the list of available functions and variables.
 %Docstring
 Registers a node item for the expression builder.
 
-:param group: The group the item will be show in the tree view.  If the group doesn't exsit it will be created.
+:param group: The group the item will be show in the tree view.  If the group doesn't exist it will be created.
 :param label: The label that is show to the user for the item in the tree.
 :param expressionText: The text that is inserted into the expression area when the user double clicks on the item.
 :param helpText: The help text that the user will see when item is selected.

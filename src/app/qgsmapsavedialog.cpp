@@ -325,7 +325,7 @@ void QgsMapSaveDialog::applyMapSettings( QgsMapSettings &mapSettings )
   switch ( mDialogType )
   {
     case Pdf:
-      mapSettings.setFlag( QgsMapSettings::Antialiasing, true ); // hardcode antialising when saving as PDF
+      mapSettings.setFlag( QgsMapSettings::Antialiasing, true ); // hardcode antialiasing when saving as PDF
       break;
 
     case Image:

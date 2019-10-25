@@ -515,7 +515,7 @@ void TestQgsGeometry::partIterator()
   static_cast< QgsPoint * >( part )->setX( 100 );
   QCOMPARE( geom2.asWkt(), QStringLiteral( "Point (100 2)" ) );
   QVERIFY( !it.hasNext() );
-  // geom2 should hve adetached, geom should be unaffected by change
+  // geom2 should have adetached, geom should be unaffected by change
   QCOMPARE( geom.asWkt(), QStringLiteral( "Point (1 2)" ) );
 
   // See test_qgsgeometry.py for geometry-type specific checks!

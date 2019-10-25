@@ -864,7 +864,7 @@ int main( int argc, char *argv[] )
                 "You are seeing this message most likely because you "
                 "have no DISPLAY environment variable set.\n"
               ).toUtf8().constData();
-    exit( 1 ); //exit for now until a version of qgis is capabable of running non interactive
+    exit( 1 ); //exit for now until a version of qgis is capable of running non interactive
   }
 
   // GUI customization is enabled according to settings (loaded when instance is created)

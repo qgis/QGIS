@@ -168,7 +168,7 @@ the shape is resized thanks to the rubber band.
 
     double computeDistance( QPointF pt1, QPointF pt2 ) const;
 %Docstring
-Compute an euclidian distance between 2 nodes.
+Compute an euclidean distance between 2 nodes.
 %End
 
     void updateSceneRect();

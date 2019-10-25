@@ -57,7 +57,7 @@ QString QgsWFSSharedData::srsName() const
   {
     if ( mWFSVersion.startsWith( QLatin1String( "1.0" ) ) ||
          !mSourceCrs.authid().startsWith( QLatin1String( "EPSG:" ) ) ||
-         // For servers like Geomedia that advertize EPSG:XXXX in capabilities even in WFS 1.1 or 2.0
+         // For servers like Geomedia that advertise EPSG:XXXX in capabilities even in WFS 1.1 or 2.0
          mCaps.useEPSGColumnFormat )
     {
       srsName = mSourceCrs.authid();

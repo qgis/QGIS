@@ -88,7 +88,7 @@ bool QgsGmlSchema::parseXSD( const QByteArray &xml )
 
   QList<QDomElement> elementElements = domElements( docElem, QStringLiteral( "element" ) );
 
-  //QgsDebugMsg( QStringLiteral( "%1 elemets read" ).arg( elementElements.size() ) );
+  //QgsDebugMsg( QStringLiteral( "%1 elements read" ).arg( elementElements.size() ) );
 
   const auto constElementElements = elementElements;
   for ( const QDomElement &elementElement : constElementElements )

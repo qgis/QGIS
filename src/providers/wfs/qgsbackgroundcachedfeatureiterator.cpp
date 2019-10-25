@@ -62,7 +62,7 @@ void QgsFeatureDownloaderProgressDialog::resizeEvent( QResizeEvent *ev )
   int mlr = std::min( width() / 10, mtb );
   if ( rect.width() - cancelRect.x() - cancelRect.width() > mlr )
   {
-    // Force right alighnment of cancel button
+    // Force right alignment of cancel button
     cancelRect.setX( rect.width() - cancelRect.width() - mlr );
     mCancel->setGeometry( cancelRect );
   }

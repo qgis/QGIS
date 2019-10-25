@@ -54,7 +54,7 @@ QList<double> QgsClassificationEqualInterval::calculateBreaks( double minimum, d
       value += step;
       breaks << value;
     }
-    // floating point arithmetics is not precise:
+    // floating point arithmetic is not precise:
     // set the last break to be exactly maximum so we do not miss it
     breaks[nclasses - 1] = maximum;
   }

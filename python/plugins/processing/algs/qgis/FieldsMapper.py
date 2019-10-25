@@ -120,12 +120,12 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
     def outputFields(self, inputFields):
         return self.fields
 
-    def processAlgorithm(self, parameters, context, feeback):
+    def processAlgorithm(self, parameters, context, feedback):
         for expression in self.expressions:
             if expression is not None:
                 expression.prepare(self.expr_context)
         self._row_number = 0
-        return super().processAlgorithm(parameters, context, feeback)
+        return super().processAlgorithm(parameters, context, feedback)
 
     def processFeature(self, feature, context, feedback):
         attributes = []

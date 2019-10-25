@@ -203,7 +203,7 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
         return QVariant();
       else if ( mOp != boDiv && QgsExpressionUtils::isIntSafe( vL ) && QgsExpressionUtils::isIntSafe( vR ) )
       {
-        // both are integers - let's use integer arithmetics
+        // both are integers - let's use integer arithmetic
         qlonglong iL = QgsExpressionUtils::getIntValue( vL, parent );
         ENSURE_NO_EVAL_ERROR;
         qlonglong iR = QgsExpressionUtils::getIntValue( vR, parent );
