@@ -445,7 +445,7 @@ void TestQgsExpressionContext::evaluate()
   QCOMPARE( testExpWContextFunction.evaluate( &context ).toInt(), 7 );
   QCOMPARE( val1, 7 );
 
-  //test with another context to ensure that expressions are evaulated against correct context
+  //test with another context to ensure that expressions are evaluated against correct context
   QgsExpressionContext context2;
   context2 << new QgsExpressionContextScope();
   QgsExpressionContextScope *s2 = context2.scope( 0 );

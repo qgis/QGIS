@@ -291,7 +291,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "pow" ) << "2 ^ 8" << true;
       QTest::newRow( "$id" ) << "$id + 1" << true;
 
-      QTest::newRow( "arithmetics" ) << "1+2*3" << true;
+      QTest::newRow( "arithmetic" ) << "1+2*3" << true;
       QTest::newRow( "logic" ) << "be or not be" << true;
 
       QTest::newRow( "conditions +1" ) << "case when n then p end" << true;
@@ -570,7 +570,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "unary minus text" ) << "-'hello'" << true << QVariant();
       QTest::newRow( "unary minus null" ) << "-null" << true << QVariant();
 
-      // arithmetics
+      // arithmetic
       QTest::newRow( "plus int" ) << "1+3" << false << QVariant( 4 );
       QTest::newRow( "plus double" ) << "1+1.3" << false << QVariant( 2.3 );
       QTest::newRow( "plus with null" ) << "null+3" << false << QVariant();

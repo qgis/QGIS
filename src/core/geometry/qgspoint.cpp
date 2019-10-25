@@ -252,7 +252,7 @@ QDomElement QgsPoint::asGml2( QDomDocument &doc, int precision, const QString &n
 
   // coordinate separator
   QString cs = QStringLiteral( "," );
-  // tupel separator
+  // tuple separator
   QString ts = QStringLiteral( " " );
 
   elemCoordinates.setAttribute( QStringLiteral( "cs" ), cs );

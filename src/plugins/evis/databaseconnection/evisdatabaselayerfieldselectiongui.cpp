@@ -56,7 +56,7 @@ void eVisDatabaseLayerFieldSelectionGui::setFieldList( QStringList *fieldList )
     cboxXCoordinate->addItem( fieldList->at( x ) );
     cboxYCoordinate->addItem( fieldList->at( x ) );
 
-    //Take a guess in an attempt to auto select the currect field
+    //Take a guess in an attempt to auto select the correct field
     if ( fieldList->at( x ).contains( QRegExp( "( ^x|^lon|^east )", Qt::CaseInsensitive ) ) )
     {
       xCoordinateIndex = x;

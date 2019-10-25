@@ -61,7 +61,7 @@ QgsGrassFeatureIterator::QgsGrassFeatureIterator( QgsGrassFeatureSource *source,
   : QgsAbstractFeatureIteratorFromSource<QgsGrassFeatureSource>( source, ownSource, request )
 {
 
-  // WARNING: the iterater cannot use mutex lock for its whole life, because QgsVectorLayerFeatureIterator is opening
+  // WARNING: the iterator cannot use mutex lock for its whole life, because QgsVectorLayerFeatureIterator is opening
   // multiple iterators if features are edited -> lock only critical sections
 
   // Create selection
@@ -262,7 +262,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature &feature )
 
     if ( mSource->mEditing )
     {
-      // Undo needs the oldes version of geometry, but we also need topo_symbol, so we must read
+      // Undo needs the oldest version of geometry, but we also need topo_symbol, so we must read
       // topo_symbol from map if the newLine exists  read
       if ( mSource->mLayer->map()->oldGeometries().contains( lid ) )
       {

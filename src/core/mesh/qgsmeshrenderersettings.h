@@ -267,15 +267,15 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
     void readXml( const QDomElement &elem );
 
   private:
-    double mLineWidth = DEFAULT_LINE_WIDTH; //in milimeters
+    double mLineWidth = DEFAULT_LINE_WIDTH; //in millimeters
     QColor mColor = Qt::black;
     double mFilterMin = -1; //disabled
     double mFilterMax = -1; //disabled
     QgsMeshRendererVectorSettings::ArrowScalingMethod mShaftLengthMethod = QgsMeshRendererVectorSettings::ArrowScalingMethod::MinMax;
-    double mMinShaftLength = 0.8; //in milimeters
-    double mMaxShaftLength = 10; //in milimeters
+    double mMinShaftLength = 0.8; //in millimeters
+    double mMaxShaftLength = 10; //in millimeters
     double mScaleFactor = 10;
-    double mFixedShaftLength = 20; //in milimeters
+    double mFixedShaftLength = 20; //in millimeters
     double mArrowHeadWidthRatio = 0.15;
     double mArrowHeadLengthRatio = 0.40;
     bool mOnUserDefinedGrid = false;

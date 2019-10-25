@@ -5858,7 +5858,7 @@ void TestQgsProcessing::parameterFileOut()
   QCOMPARE( fromCode->flags(), def->flags() );
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
 
-  // outputs definitio test
+  // outputs definition test
   def.reset( new QgsProcessingParameterFileDestination( "html", QString(), QString( "HTML files" ), QString(), false ) );
   std::unique_ptr< QgsProcessingOutputDefinition > outputDef( def->toOutputDefinition() );
   QVERIFY( dynamic_cast< QgsProcessingOutputHtml *>( outputDef.get() ) );
@@ -8699,7 +8699,7 @@ void TestQgsProcessing::parameterType()
   QgsProcessingRegistry reg;
 
   QVERIFY( reg.parameterType( QStringLiteral( "string" ) ) );
-  QVERIFY( !reg.parameterType( QStringLiteral( "borken" ) ) );
+  QVERIFY( !reg.parameterType( QStringLiteral( "borken" ) ) );  //#spellok
 
   auto paramType = new DummyParameterType();
 

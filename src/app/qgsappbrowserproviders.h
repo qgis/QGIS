@@ -290,7 +290,7 @@ class APP_EXPORT QgsBookmarksItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 
-    //! Icon for boomark manager container
+    //! Icon for bookmark manager container
     static QIcon iconBookmarks();
 
     QVariant sortKey() const override;

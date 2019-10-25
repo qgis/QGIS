@@ -144,7 +144,7 @@
               "href" : "http://example.com/concepts/buildings.html",
               "rel" : "describedBy",
               "type" : "text/html",
-              "title" : "Feature catalogue for buildings"
+              "title" : "Feature catalog for buildings"
             } ],
             "items" : {
               "$ref" : "#/components/schemas/link"

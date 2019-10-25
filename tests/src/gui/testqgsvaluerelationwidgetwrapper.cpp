@@ -432,16 +432,16 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInPostgres()
 
   // build a value relation widget wrapper for json field
   QgsValueRelationWidgetWrapper w_favoriteauthors( vl_json, vl_json->fields().indexOf( QStringLiteral( "jvalue" ) ), nullptr, nullptr );
-  QVariantMap cfg_favoriteautors;
-  cfg_favoriteautors.insert( QStringLiteral( "Layer" ), vl_authors->id() );
-  cfg_favoriteautors.insert( QStringLiteral( "Key" ),  QStringLiteral( "pk" ) );
-  cfg_favoriteautors.insert( QStringLiteral( "Value" ), QStringLiteral( "name" ) );
-  cfg_favoriteautors.insert( QStringLiteral( "AllowMulti" ), true );
-  cfg_favoriteautors.insert( QStringLiteral( "NofColumns" ), 1 );
-  cfg_favoriteautors.insert( QStringLiteral( "AllowNull" ), false );
-  cfg_favoriteautors.insert( QStringLiteral( "OrderByValue" ), false );
-  cfg_favoriteautors.insert( QStringLiteral( "UseCompleter" ), false );
-  w_favoriteauthors.setConfig( cfg_favoriteautors );
+  QVariantMap cfg_favoriteauthors;
+  cfg_favoriteauthors.insert( QStringLiteral( "Layer" ), vl_authors->id() );
+  cfg_favoriteauthors.insert( QStringLiteral( "Key" ),  QStringLiteral( "pk" ) );
+  cfg_favoriteauthors.insert( QStringLiteral( "Value" ), QStringLiteral( "name" ) );
+  cfg_favoriteauthors.insert( QStringLiteral( "AllowMulti" ), true );
+  cfg_favoriteauthors.insert( QStringLiteral( "NofColumns" ), 1 );
+  cfg_favoriteauthors.insert( QStringLiteral( "AllowNull" ), false );
+  cfg_favoriteauthors.insert( QStringLiteral( "OrderByValue" ), false );
+  cfg_favoriteauthors.insert( QStringLiteral( "UseCompleter" ), false );
+  w_favoriteauthors.setConfig( cfg_favoriteauthors );
   w_favoriteauthors.widget();
   w_favoriteauthors.setEnabled( true );
 
@@ -477,16 +477,16 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInPostgres()
 
   // build a value relation widget wrapper for jsonb field
   QgsValueRelationWidgetWrapper w_favoriteauthors_b( vl_json, vl_json->fields().indexOf( QStringLiteral( "jbvalue" ) ), nullptr, nullptr );
-  QVariantMap cfg_favoriteautors_b;
-  cfg_favoriteautors_b.insert( QStringLiteral( "Layer" ), vl_authors->id() );
-  cfg_favoriteautors_b.insert( QStringLiteral( "Key" ),  QStringLiteral( "pk" ) );
-  cfg_favoriteautors_b.insert( QStringLiteral( "Value" ), QStringLiteral( "name" ) );
-  cfg_favoriteautors_b.insert( QStringLiteral( "AllowMulti" ), true );
-  cfg_favoriteautors_b.insert( QStringLiteral( "NofColumns" ), 1 );
-  cfg_favoriteautors_b.insert( QStringLiteral( "AllowNull" ), false );
-  cfg_favoriteautors_b.insert( QStringLiteral( "OrderByValue" ), false );
-  cfg_favoriteautors_b.insert( QStringLiteral( "UseCompleter" ), false );
-  w_favoriteauthors_b.setConfig( cfg_favoriteautors_b );
+  QVariantMap cfg_favoriteauthors_b;
+  cfg_favoriteauthors_b.insert( QStringLiteral( "Layer" ), vl_authors->id() );
+  cfg_favoriteauthors_b.insert( QStringLiteral( "Key" ),  QStringLiteral( "pk" ) );
+  cfg_favoriteauthors_b.insert( QStringLiteral( "Value" ), QStringLiteral( "name" ) );
+  cfg_favoriteauthors_b.insert( QStringLiteral( "AllowMulti" ), true );
+  cfg_favoriteauthors_b.insert( QStringLiteral( "NofColumns" ), 1 );
+  cfg_favoriteauthors_b.insert( QStringLiteral( "AllowNull" ), false );
+  cfg_favoriteauthors_b.insert( QStringLiteral( "OrderByValue" ), false );
+  cfg_favoriteauthors_b.insert( QStringLiteral( "UseCompleter" ), false );
+  w_favoriteauthors_b.setConfig( cfg_favoriteauthors_b );
   w_favoriteauthors_b.widget();
   w_favoriteauthors_b.setEnabled( true );
 
@@ -545,16 +545,16 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInGPKG()
 
   // build a value relation widget wrapper for authors
   QgsValueRelationWidgetWrapper w_favoriteauthors( vl_json, vl_json->fields().indexOf( QStringLiteral( "json_content" ) ), nullptr, nullptr );
-  QVariantMap cfg_favoriteautors;
-  cfg_favoriteautors.insert( QStringLiteral( "Layer" ), vl_authors->id() );
-  cfg_favoriteautors.insert( QStringLiteral( "Key" ),  QStringLiteral( "fid" ) );
-  cfg_favoriteautors.insert( QStringLiteral( "Value" ), QStringLiteral( "NAME" ) );
-  cfg_favoriteautors.insert( QStringLiteral( "AllowMulti" ), true );
-  cfg_favoriteautors.insert( QStringLiteral( "NofColumns" ), 1 );
-  cfg_favoriteautors.insert( QStringLiteral( "AllowNull" ), false );
-  cfg_favoriteautors.insert( QStringLiteral( "OrderByValue" ), false );
-  cfg_favoriteautors.insert( QStringLiteral( "UseCompleter" ), false );
-  w_favoriteauthors.setConfig( cfg_favoriteautors );
+  QVariantMap cfg_favoriteauthors;
+  cfg_favoriteauthors.insert( QStringLiteral( "Layer" ), vl_authors->id() );
+  cfg_favoriteauthors.insert( QStringLiteral( "Key" ),  QStringLiteral( "fid" ) );
+  cfg_favoriteauthors.insert( QStringLiteral( "Value" ), QStringLiteral( "NAME" ) );
+  cfg_favoriteauthors.insert( QStringLiteral( "AllowMulti" ), true );
+  cfg_favoriteauthors.insert( QStringLiteral( "NofColumns" ), 1 );
+  cfg_favoriteauthors.insert( QStringLiteral( "AllowNull" ), false );
+  cfg_favoriteauthors.insert( QStringLiteral( "OrderByValue" ), false );
+  cfg_favoriteauthors.insert( QStringLiteral( "UseCompleter" ), false );
+  w_favoriteauthors.setConfig( cfg_favoriteauthors );
   w_favoriteauthors.widget();
   w_favoriteauthors.setEnabled( true );
 
@@ -673,16 +673,16 @@ void TestQgsValueRelationWidgetWrapper::testWithTextInGPKG()
 
   // build a value relation widget wrapper for authors
   QgsValueRelationWidgetWrapper w_favoriteauthors( vl_text, vl_text->fields().indexOf( QStringLiteral( "PRFEDEA" ) ), nullptr, nullptr );
-  QVariantMap cfg_favoriteautors;
-  cfg_favoriteautors.insert( QStringLiteral( "Layer" ), vl_authors->id() );
-  cfg_favoriteautors.insert( QStringLiteral( "Key" ),  QStringLiteral( "fid" ) );
-  cfg_favoriteautors.insert( QStringLiteral( "Value" ), QStringLiteral( "NAME" ) );
-  cfg_favoriteautors.insert( QStringLiteral( "AllowMulti" ), true );
-  cfg_favoriteautors.insert( QStringLiteral( "NofColumns" ), 1 );
-  cfg_favoriteautors.insert( QStringLiteral( "AllowNull" ), false );
-  cfg_favoriteautors.insert( QStringLiteral( "OrderByValue" ), false );
-  cfg_favoriteautors.insert( QStringLiteral( "UseCompleter" ), false );
-  w_favoriteauthors.setConfig( cfg_favoriteautors );
+  QVariantMap cfg_favoriteauthors;
+  cfg_favoriteauthors.insert( QStringLiteral( "Layer" ), vl_authors->id() );
+  cfg_favoriteauthors.insert( QStringLiteral( "Key" ),  QStringLiteral( "fid" ) );
+  cfg_favoriteauthors.insert( QStringLiteral( "Value" ), QStringLiteral( "NAME" ) );
+  cfg_favoriteauthors.insert( QStringLiteral( "AllowMulti" ), true );
+  cfg_favoriteauthors.insert( QStringLiteral( "NofColumns" ), 1 );
+  cfg_favoriteauthors.insert( QStringLiteral( "AllowNull" ), false );
+  cfg_favoriteauthors.insert( QStringLiteral( "OrderByValue" ), false );
+  cfg_favoriteauthors.insert( QStringLiteral( "UseCompleter" ), false );
+  w_favoriteauthors.setConfig( cfg_favoriteauthors );
   w_favoriteauthors.widget();
   w_favoriteauthors.setEnabled( true );
 
@@ -804,7 +804,7 @@ void TestQgsValueRelationWidgetWrapper::testWithTextInGPKG()
 
   // build a value relation widget wrapper for authors
   QgsValueRelationWidgetWrapper w_favoriteauthors_reread( vl_text_reread, vl_text->fields().indexOf( QStringLiteral( "PRFEDEA" ) ), nullptr, nullptr );
-  w_favoriteauthors_reread.setConfig( cfg_favoriteautors );
+  w_favoriteauthors_reread.setConfig( cfg_favoriteauthors );
   w_favoriteauthors_reread.widget();
   w_favoriteauthors_reread.setEnabled( true );
 
@@ -845,16 +845,16 @@ void TestQgsValueRelationWidgetWrapper::testWithTextInGPKGTextFk()
 
   // build a value relation widget wrapper for authors
   QgsValueRelationWidgetWrapper w_favoriteauthors( vl_text, vl_text->fields().indexOf( QStringLiteral( "PRFEDEA" ) ), nullptr, nullptr );
-  QVariantMap cfg_favoriteautors;
-  cfg_favoriteautors.insert( QStringLiteral( "Layer" ), vl_authors->id() );
-  cfg_favoriteautors.insert( QStringLiteral( "Key" ),  QStringLiteral( "NAME" ) );
-  cfg_favoriteautors.insert( QStringLiteral( "Value" ), QStringLiteral( "NAME" ) );
-  cfg_favoriteautors.insert( QStringLiteral( "AllowMulti" ), true );
-  cfg_favoriteautors.insert( QStringLiteral( "NofColumns" ), 1 );
-  cfg_favoriteautors.insert( QStringLiteral( "AllowNull" ), false );
-  cfg_favoriteautors.insert( QStringLiteral( "OrderByValue" ), false );
-  cfg_favoriteautors.insert( QStringLiteral( "UseCompleter" ), false );
-  w_favoriteauthors.setConfig( cfg_favoriteautors );
+  QVariantMap cfg_favoriteauthors;
+  cfg_favoriteauthors.insert( QStringLiteral( "Layer" ), vl_authors->id() );
+  cfg_favoriteauthors.insert( QStringLiteral( "Key" ),  QStringLiteral( "NAME" ) );
+  cfg_favoriteauthors.insert( QStringLiteral( "Value" ), QStringLiteral( "NAME" ) );
+  cfg_favoriteauthors.insert( QStringLiteral( "AllowMulti" ), true );
+  cfg_favoriteauthors.insert( QStringLiteral( "NofColumns" ), 1 );
+  cfg_favoriteauthors.insert( QStringLiteral( "AllowNull" ), false );
+  cfg_favoriteauthors.insert( QStringLiteral( "OrderByValue" ), false );
+  cfg_favoriteauthors.insert( QStringLiteral( "UseCompleter" ), false );
+  w_favoriteauthors.setConfig( cfg_favoriteauthors );
   w_favoriteauthors.widget();
   w_favoriteauthors.setEnabled( true );
 
@@ -975,7 +975,7 @@ void TestQgsValueRelationWidgetWrapper::testWithTextInGPKGTextFk()
 
   // build a value relation widget wrapper for authors
   QgsValueRelationWidgetWrapper w_favoriteauthors_reread( vl_text_reread, vl_text_reread->fields().indexOf( QStringLiteral( "PRFEDEA" ) ), nullptr, nullptr );
-  w_favoriteauthors_reread.setConfig( cfg_favoriteautors );
+  w_favoriteauthors_reread.setConfig( cfg_favoriteauthors );
   w_favoriteauthors_reread.widget();
   w_favoriteauthors_reread.setEnabled( true );
 
@@ -1032,7 +1032,7 @@ void TestQgsValueRelationWidgetWrapper::testWithTextInGPKGTextFk()
 
   // build a value relation widget wrapper for authors
   QgsValueRelationWidgetWrapper w_favoriteauthors_reread2( vl_text_reread2, vl_text_reread2->fields().indexOf( QStringLiteral( "PRFEDEA" ) ), nullptr, nullptr );
-  w_favoriteauthors_reread2.setConfig( cfg_favoriteautors );
+  w_favoriteauthors_reread2.setConfig( cfg_favoriteauthors );
   w_favoriteauthors_reread2.widget();
   w_favoriteauthors_reread2.setEnabled( true );
 
@@ -1065,7 +1065,7 @@ void TestQgsValueRelationWidgetWrapper::testWithTextInGPKGWeirdTextFk()
   QgsVectorLayer *vl_text = new QgsVectorLayer( myMapFileInfoFoo.filePath() + "|layername=foo", "test", QStringLiteral( "ogr" ) );
   QVERIFY( vl_text->isValid() );
 
-  // create ogr spatialite layer for autors with weird signs (vl_authors)
+  // create ogr spatialite layer for authors with weird signs (vl_authors)
   myTempFileName = myTempDirName + QStringLiteral( "/valuerelation_widget_wrapper_test.spatialite.sqlite" );
   QFile::copy( myFileName + QStringLiteral( "/valuerelation_widget_wrapper_test.spatialite.sqlite" ),
                myTempFileName );
@@ -1082,16 +1082,16 @@ void TestQgsValueRelationWidgetWrapper::testWithTextInGPKGWeirdTextFk()
 
   // build a value relation widget wrapper for authors
   QgsValueRelationWidgetWrapper w_favoriteauthors( vl_text, vl_text->fields().indexOf( QStringLiteral( "PRFEDEA" ) ), nullptr, nullptr );
-  QVariantMap cfg_favoriteautors;
-  cfg_favoriteautors.insert( QStringLiteral( "Layer" ), vl_authors->id() );
-  cfg_favoriteautors.insert( QStringLiteral( "Key" ),  QStringLiteral( "pk_text" ) );
-  cfg_favoriteautors.insert( QStringLiteral( "Value" ), QStringLiteral( "name" ) );
-  cfg_favoriteautors.insert( QStringLiteral( "AllowMulti" ), true );
-  cfg_favoriteautors.insert( QStringLiteral( "NofColumns" ), 1 );
-  cfg_favoriteautors.insert( QStringLiteral( "AllowNull" ), false );
-  cfg_favoriteautors.insert( QStringLiteral( "OrderByValue" ), false );
-  cfg_favoriteautors.insert( QStringLiteral( "UseCompleter" ), false );
-  w_favoriteauthors.setConfig( cfg_favoriteautors );
+  QVariantMap cfg_favoriteauthors;
+  cfg_favoriteauthors.insert( QStringLiteral( "Layer" ), vl_authors->id() );
+  cfg_favoriteauthors.insert( QStringLiteral( "Key" ),  QStringLiteral( "pk_text" ) );
+  cfg_favoriteauthors.insert( QStringLiteral( "Value" ), QStringLiteral( "name" ) );
+  cfg_favoriteauthors.insert( QStringLiteral( "AllowMulti" ), true );
+  cfg_favoriteauthors.insert( QStringLiteral( "NofColumns" ), 1 );
+  cfg_favoriteauthors.insert( QStringLiteral( "AllowNull" ), false );
+  cfg_favoriteauthors.insert( QStringLiteral( "OrderByValue" ), false );
+  cfg_favoriteauthors.insert( QStringLiteral( "UseCompleter" ), false );
+  w_favoriteauthors.setConfig( cfg_favoriteauthors );
   w_favoriteauthors.widget();
   w_favoriteauthors.setEnabled( true );
 
@@ -1211,7 +1211,7 @@ void TestQgsValueRelationWidgetWrapper::testWithTextInGPKGWeirdTextFk()
 
   // build a value relation widget wrapper for authors
   QgsValueRelationWidgetWrapper w_favoriteauthors_reread( vl_text_reread, vl_text_reread->fields().indexOf( QStringLiteral( "PRFEDEA" ) ), nullptr, nullptr );
-  w_favoriteauthors_reread.setConfig( cfg_favoriteautors );
+  w_favoriteauthors_reread.setConfig( cfg_favoriteauthors );
   w_favoriteauthors_reread.widget();
   w_favoriteauthors_reread.setEnabled( true );
 
@@ -1265,16 +1265,16 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialite()
   // build a value relation widget wrapper for authors
   // fk_field is a json array type
   QgsValueRelationWidgetWrapper w_favoriteauthors( vl_json, fk_field_idx, nullptr, nullptr );
-  QVariantMap cfg_favoriteautors;
-  cfg_favoriteautors.insert( QStringLiteral( "Layer" ), vl_authors->id() );
-  cfg_favoriteautors.insert( QStringLiteral( "Key" ),  QStringLiteral( "pk" ) );
-  cfg_favoriteautors.insert( QStringLiteral( "Value" ), QStringLiteral( "name" ) );
-  cfg_favoriteautors.insert( QStringLiteral( "AllowMulti" ), true );
-  cfg_favoriteautors.insert( QStringLiteral( "NofColumns" ), 1 );
-  cfg_favoriteautors.insert( QStringLiteral( "AllowNull" ), false );
-  cfg_favoriteautors.insert( QStringLiteral( "OrderByValue" ), false );
-  cfg_favoriteautors.insert( QStringLiteral( "UseCompleter" ), false );
-  w_favoriteauthors.setConfig( cfg_favoriteautors );
+  QVariantMap cfg_favoriteauthors;
+  cfg_favoriteauthors.insert( QStringLiteral( "Layer" ), vl_authors->id() );
+  cfg_favoriteauthors.insert( QStringLiteral( "Key" ),  QStringLiteral( "pk" ) );
+  cfg_favoriteauthors.insert( QStringLiteral( "Value" ), QStringLiteral( "name" ) );
+  cfg_favoriteauthors.insert( QStringLiteral( "AllowMulti" ), true );
+  cfg_favoriteauthors.insert( QStringLiteral( "NofColumns" ), 1 );
+  cfg_favoriteauthors.insert( QStringLiteral( "AllowNull" ), false );
+  cfg_favoriteauthors.insert( QStringLiteral( "OrderByValue" ), false );
+  cfg_favoriteauthors.insert( QStringLiteral( "UseCompleter" ), false );
+  w_favoriteauthors.setConfig( cfg_favoriteauthors );
   w_favoriteauthors.widget();
   w_favoriteauthors.setEnabled( true );
 
@@ -1408,16 +1408,16 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialiteTextFk()
   // build a value relation widget wrapper for authors
   // fk_field is a json array type
   QgsValueRelationWidgetWrapper w_favoriteauthors( vl_json, fk_field_idx, nullptr, nullptr );
-  QVariantMap cfg_favoriteautors;
-  cfg_favoriteautors.insert( QStringLiteral( "Layer" ), vl_authors->id() );
-  cfg_favoriteautors.insert( QStringLiteral( "Key" ),  QStringLiteral( "pk_text" ) );
-  cfg_favoriteautors.insert( QStringLiteral( "Value" ), QStringLiteral( "name" ) );
-  cfg_favoriteautors.insert( QStringLiteral( "AllowMulti" ), true );
-  cfg_favoriteautors.insert( QStringLiteral( "NofColumns" ), 1 );
-  cfg_favoriteautors.insert( QStringLiteral( "AllowNull" ), false );
-  cfg_favoriteautors.insert( QStringLiteral( "OrderByValue" ), false );
-  cfg_favoriteautors.insert( QStringLiteral( "UseCompleter" ), false );
-  w_favoriteauthors.setConfig( cfg_favoriteautors );
+  QVariantMap cfg_favoriteauthors;
+  cfg_favoriteauthors.insert( QStringLiteral( "Layer" ), vl_authors->id() );
+  cfg_favoriteauthors.insert( QStringLiteral( "Key" ),  QStringLiteral( "pk_text" ) );
+  cfg_favoriteauthors.insert( QStringLiteral( "Value" ), QStringLiteral( "name" ) );
+  cfg_favoriteauthors.insert( QStringLiteral( "AllowMulti" ), true );
+  cfg_favoriteauthors.insert( QStringLiteral( "NofColumns" ), 1 );
+  cfg_favoriteauthors.insert( QStringLiteral( "AllowNull" ), false );
+  cfg_favoriteauthors.insert( QStringLiteral( "OrderByValue" ), false );
+  cfg_favoriteauthors.insert( QStringLiteral( "UseCompleter" ), false );
+  w_favoriteauthors.setConfig( cfg_favoriteauthors );
   w_favoriteauthors.widget();
   w_favoriteauthors.setEnabled( true );
 

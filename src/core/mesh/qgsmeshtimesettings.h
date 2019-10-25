@@ -35,7 +35,7 @@
 class CORE_EXPORT QgsMeshTimeSettings
 {
   public:
-    //! Default constructor for relative time formate and 0 offset
+    //! Default constructor for relative time format and 0 offset
     QgsMeshTimeSettings();
     //! Constructs relative time format settings with defined offset in hours
     QgsMeshTimeSettings( double relativeTimeOffsetHours, const QString &relativeTimeFormat );

@@ -195,8 +195,8 @@ void TestQgsTranslateProject::translateProject()
   const QgsFields points_fields = points_layer->fields();
   //Class (Alias: Level) -> Klasse
   QCOMPARE( points_fields.field( QStringLiteral( "Class" ) ).alias(), QStringLiteral( "Klasse" ) );
-  //Heading -> Titel
-  QCOMPARE( points_fields.field( QStringLiteral( "Heading" ) ).alias(), QStringLiteral( "Titel" ) );
+  //Heading -> Titel  //#spellok
+  QCOMPARE( points_fields.field( QStringLiteral( "Heading" ) ).alias(), QStringLiteral( "Titel" ) );  //#spellok
   //Importance -> Wichtigkeit
   QCOMPARE( points_fields.field( QStringLiteral( "Importance" ) ).alias(), QStringLiteral( "Wichtigkeit" ) );
   //Pilots -> Piloten

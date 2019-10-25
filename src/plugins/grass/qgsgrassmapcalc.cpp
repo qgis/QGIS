@@ -266,7 +266,7 @@ void QgsGrassMapcalc::mousePressEvent( QMouseEvent *e )
       break;
 
     case Select:
-      // Cleare previous
+      // Cleared previous
       if ( mObject )
       {
         mObject->setSelected( false );

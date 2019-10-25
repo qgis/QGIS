@@ -479,7 +479,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! used to determine if anti-aliasing is enabled or not
     void enableAntiAliasing( bool flag );
 
-    //! TRUE if antialising is enabled
+    //! TRUE if antialiasing is enabled
     bool antiAliasingEnabled() const { return mSettings.testFlag( QgsMapSettings::Antialiasing ); }
 
     //! sets map tile rendering flag

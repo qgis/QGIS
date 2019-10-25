@@ -513,7 +513,7 @@ used to determine if anti-aliasing is enabled or not
 
     bool antiAliasingEnabled() const;
 %Docstring
-``True`` if antialising is enabled
+``True`` if antialiasing is enabled
 %End
 
     void enableMapTileRendering( bool flag );

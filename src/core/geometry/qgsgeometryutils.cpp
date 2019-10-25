@@ -1143,7 +1143,7 @@ QDomElement QgsGeometryUtils::pointsToGML2( const QgsPointSequence &points, QDom
 
   // coordinate separator
   QString cs = QStringLiteral( "," );
-  // tupel separator
+  // tuple separator
   QString ts = QStringLiteral( " " );
 
   elemCoordinates.setAttribute( QStringLiteral( "cs" ), cs );

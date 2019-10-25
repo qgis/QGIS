@@ -131,7 +131,7 @@ void QgsEditorWidgetWrapper::updateValues( const QVariant &value, const QVariant
   // this method should be made pure virtual in QGIS 4
   Q_UNUSED( additionalValues );
   Q_NOWARN_DEPRECATED_PUSH
-  // avoid infinte recursive loop
+  // avoid infinite recursive loop
   if ( !isRunningDeprecatedSetValue )
     setValue( value );
   Q_NOWARN_DEPRECATED_POP

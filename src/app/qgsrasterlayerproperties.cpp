@@ -1826,7 +1826,7 @@ void QgsRasterLayerProperties::loadDefaultStyle_clicked()
 void QgsRasterLayerProperties::saveDefaultStyle_clicked()
 {
 
-  apply(); // make sure the style to save is uptodate
+  apply(); // make sure the style to save is up-to-date
 
   // a flag passed by reference
   bool defaultSavedFlag = false;
@@ -1898,7 +1898,7 @@ void QgsRasterLayerProperties::saveStyleAs_clicked()
     // ensure the user never omits the extension from the file name
     outputFileName = QgsFileUtils::ensureFileNameHasExtension( outputFileName, QStringList() << QStringLiteral( "qml" ) );
 
-  apply(); // make sure the style to save is uptodate
+  apply(); // make sure the style to save is up-to-date
 
   // then export style
   bool defaultLoadedFlag = false;

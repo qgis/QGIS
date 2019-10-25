@@ -960,7 +960,7 @@ void QgsAuthManager::updateConfigAuthMethods()
 
   if ( query.isActive() )
   {
-    QgsDebugMsg( QStringLiteral( "Synching existing auth config and their auth methods" ) );
+    QgsDebugMsg( QStringLiteral( "Syncing existing auth config and their auth methods" ) );
     mConfigAuthMethods.clear();
     QStringList cfgmethods;
     while ( query.next() )

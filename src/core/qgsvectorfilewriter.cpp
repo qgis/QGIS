@@ -3266,7 +3266,7 @@ QList< QgsVectorFileWriter::DriverDetails > QgsVectorFileWriter::ogrDriverList( 
           // OGR SQLite driver is compiled with SpatiaLite support.
           // We have HAVE_SPATIALITE in QGIS, but that may differ from OGR
           // http://lists.osgeo.org/pipermail/gdal-dev/2012-November/034580.html
-          // -> test if creation failes
+          // -> test if creation fails
           QString option = QStringLiteral( "SPATIALITE=YES" );
           char *options[2] = { CPLStrdup( option.toLocal8Bit().constData() ), nullptr };
           OGRSFDriverH poDriver;

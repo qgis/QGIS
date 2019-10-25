@@ -54,7 +54,7 @@ Returns the title used for the expression dialog
 
     void setFilters( QgsFieldProxyModel::Filters filters );
 %Docstring
-setFilters allows fitering according to the type of field
+setFilters allows filtering according to the type of field
 %End
 
     void setAllowEmptyFieldName( bool allowEmpty );

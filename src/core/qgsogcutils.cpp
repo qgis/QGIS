@@ -856,24 +856,24 @@ bool QgsOgcUtils::readGMLCoordinates( QgsPolylineXY &coords, const QDomElement &
   }
 
   QStringList tupels = elem.text().split( tupelSeparator, QString::SkipEmptyParts );
-  QStringList tupel_coords;
+  QStringList tuple_coords;
   double x, y;
   bool conversionSuccess;
 
   QStringList::const_iterator it;
   for ( it = tupels.constBegin(); it != tupels.constEnd(); ++it )
   {
-    tupel_coords = ( *it ).split( coordSeparator, QString::SkipEmptyParts );
-    if ( tupel_coords.size() < 2 )
+    tuple_coords = ( *it ).split( coordSeparator, QString::SkipEmptyParts );
+    if ( tuple_coords.size() < 2 )
     {
       continue;
     }
-    x = tupel_coords.at( 0 ).toDouble( &conversionSuccess );
+    x = tuple_coords.at( 0 ).toDouble( &conversionSuccess );
     if ( !conversionSuccess )
     {
       return true;
     }
-    y = tupel_coords.at( 1 ).toDouble( &conversionSuccess );
+    y = tuple_coords.at( 1 ).toDouble( &conversionSuccess );
     if ( !conversionSuccess )
     {
       return true;
@@ -1141,7 +1141,7 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry, QDomDocumen
 
   // coordinate separator
   QString cs = QStringLiteral( "," );
-  // tupel separator
+  // tuple separator
   QString ts = QStringLiteral( " " );
   // coord element tagname
   QDomElement baseCoordElem;
@@ -1668,7 +1668,7 @@ static const QMap<QString, int> BINARY_OPERATORS_TAG_NAMES_MAP
   {  QStringLiteral( "PropertyIsLessThan" ), QgsExpressionNodeBinaryOperator::boLT },
   {  QStringLiteral( "PropertyIsGreaterThan" ), QgsExpressionNodeBinaryOperator::boGT },
   {  QStringLiteral( "PropertyIsLike" ), QgsExpressionNodeBinaryOperator::boLike },
-  // arithmetics
+  // arithmetic
   {  QStringLiteral( "Add" ), QgsExpressionNodeBinaryOperator::boPlus },
   {  QStringLiteral( "Sub" ), QgsExpressionNodeBinaryOperator::boMinus },
   {  QStringLiteral( "Mul" ), QgsExpressionNodeBinaryOperator::boMul },

@@ -1730,7 +1730,7 @@ bool QgsWFSProvider::getCapabilities()
     {
       QgsSettings settings;
       mShared->mPageSize = settings.value( QStringLiteral( "wfs/max_feature_count_if_not_provided" ), "1000" ).toInt();
-      QgsDebugMsg( QStringLiteral( "Server declares paging but does not advertize max feature count and user did not specify it. Using %1" ).arg( mShared->mPageSize ) );
+      QgsDebugMsg( QStringLiteral( "Server declares paging but does not advertise max feature count and user did not specify it. Using %1" ).arg( mShared->mPageSize ) );
     }
   }
   else

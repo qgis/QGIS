@@ -67,7 +67,7 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsLayerTreeModelLegendNode::draw( cons
   double textHeight = settings.fontHeightCharacterMM( symbolLabelFont, QChar( '0' ) );
   // itemHeight here is not really item height, it is only for symbol
   // vertical alignment purpose, i.e. OK take single line height
-  // if there are more lines, thos run under the symbol
+  // if there are more lines, those run under the symbol
   double itemHeight = std::max( static_cast< double >( settings.symbolSize().height() ), textHeight );
 
   ItemMetrics im;
@@ -568,7 +568,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
       const int maxBleed = static_cast< int >( std::ceil( QgsSymbolLayerUtils::estimateMaxSymbolBleed( s, *context ) ) );
 
       //semi transparent layer, so need to draw symbol to an image (to flatten it first)
-      //create image which is same size as legend rect, in case symbol bleeds outside its alloted space
+      //create image which is same size as legend rect, in case symbol bleeds outside its allotted space
       const QSize symbolSize( static_cast< int >( std::round( width * dotsPerMM ) ), static_cast<int >( std::round( height * dotsPerMM ) ) );
       const QSize tempImageSize( symbolSize.width() + maxBleed * 2, symbolSize.height() + maxBleed * 2 );
       QImage tempImage = QImage( tempImageSize, QImage::Format_ARGB32 );

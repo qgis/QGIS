@@ -28,7 +28,7 @@ The QgsServerApiUtils class contains helper functions to handle common API opera
 
     static QgsRectangle parseBbox( const QString &bbox );
 %Docstring
-Parses a comma separated ``bbox`` into a (possibily empty) :py:class:`QgsRectangle`.
+Parses a comma separated ``bbox`` into a (possibly empty) :py:class:`QgsRectangle`.
 
 .. note::
 

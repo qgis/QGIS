@@ -359,7 +359,7 @@ class CORE_EXPORT QgsLabelFeature
     //! Sets text of the label
     void setLabelText( const QString &text ) { mLabelText = text; }
 
-    //! Gets additional infor required for curved label placement. Returns NULLPTR if not set
+    //! Gets additional info required for curved label placement. Returns NULLPTR if not set
     pal::LabelInfo *curvedLabelInfo() const { return mInfo; }
     //! takes ownership of the instance
     void setCurvedLabelInfo( pal::LabelInfo *info ) { mInfo = info; }

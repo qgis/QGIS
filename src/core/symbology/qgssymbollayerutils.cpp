@@ -874,7 +874,7 @@ QPixmap QgsSymbolLayerUtils::colorRampPreviewPixmap( QgsColorRamp *ramp, QSize s
   //draw stippled background, for transparent images
   drawStippledBackground( &painter, QRect( padding, padding, size.width() - padding * 2, size.height() - padding  * 2 ) );
 
-  // antialising makes the colors duller, and no point in antialiasing a color ramp
+  // antialiasing makes the colors duller, and no point in antialiasing a color ramp
   // painter.setRenderHint( QPainter::Antialiasing );
   for ( int i = 0; i < size.width(); i++ )
   {
@@ -1250,7 +1250,7 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement &element,
       switch ( geomType )
       {
         case QgsWkbTypes::PolygonGeometry:
-          // polygon layer and point symbolizer: draw poligon centroid
+          // polygon layer and point symbolizer: draw polygon centroid
           l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "CentroidFill" ), element );
           if ( l )
             layers.append( l );

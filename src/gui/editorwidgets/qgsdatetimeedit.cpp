@@ -88,7 +88,7 @@ void QgsDateTimeEdit::setEmpty()
 void QgsDateTimeEdit::mousePressEvent( QMouseEvent *event )
 {
   // catch mouse press on the button (when the current value is null)
-  // in non-calendar mode: modifiy the date  so it leads to showing current date (don't bother about time)
+  // in non-calendar mode: modify the date  so it leads to showing current date (don't bother about time)
   // in calendar mode: be sure NULL is displayed when needed and show page of current date in calendar widget
 
   bool updateCalendar = false;

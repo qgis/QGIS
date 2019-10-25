@@ -1672,7 +1672,7 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> &rasterPyr
 {
   QMutexLocker locker( mpMutex );
 
-  //TODO: Consider making rasterPyramidList modifyable by this method to indicate if the pyramid exists after build attempt
+  //TODO: Consider making rasterPyramidList modifiable by this method to indicate if the pyramid exists after build attempt
   //without requiring the user to rebuild the pyramid list to get the updated information
 
   //
@@ -2812,7 +2812,7 @@ void QgsGdalProvider::initBaseDataset()
     }
     // It may happen that nodata value given by GDAL is wrong and it has to be
     // disabled by user, in that case we need another value to be used for nodata
-    // (for reprojection for example) -> always internaly represent as wider type
+    // (for reprojection for example) -> always internally represent as wider type
     // with mInternalNoDataValue in reserve.
     // Not used
 #if 0

@@ -665,7 +665,7 @@ int QgsGrassGisLib::G_read_fp_range( const char *name, const char *mapset, struc
   // TODO (no solution): Problem: GRASS has precise min/max values available,
   // in QGIS we can calculate, but it would be slow, so we are using estimated
   // values, which may result in wrong output
-  // Hopefully the range is not crutial for most modules, but it is problem certanly
+  // Hopefully the range is not crucial for most modules, but it is problem certanly
   // for r.rescale .. more?
 
   // TODO: estimate only for  large rasters
@@ -1644,6 +1644,6 @@ int GRASS_LIB_EXPORT G_open_update( const char *element, const char *name )
   // to be set to 1
   Q_UNUSED( element )
   Q_UNUSED( name )
-  qFatal( "G_open_update not imlemented" );
+  qFatal( "G_open_update not implemented" );
   return -1; // Cannot open
 }

@@ -1,7 +1,7 @@
 /***************************************************************************
     qgswfsfeatureiterator.h
     ---------------------
-    begin                : Januar 2013
+    begin                : January 2013
     copyright            : (C) 2013 by Marco Hugentobler
                            (C) 2016 by Even Rouault
     email                : marco dot hugentobler at sourcepole dot ch

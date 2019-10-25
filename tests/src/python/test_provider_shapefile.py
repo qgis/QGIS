@@ -320,7 +320,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.dataProvider().leaveUpdateMode())
         self.assertEqual(vl.dataProvider().property("_debug_open_mode"), "read-only")
 
-        # Test that update mode will be implictly enabled if doing an action
+        # Test that update mode will be implicitly enabled if doing an action
         # that requires update mode
         (ret, _) = vl.dataProvider().addFeatures([QgsFeature()])
         self.assertTrue(ret)

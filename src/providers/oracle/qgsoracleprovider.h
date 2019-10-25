@@ -300,7 +300,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     };
 
     // A function that determines if the given schema.table.column
-    // contains unqiue entries
+    // contains unique entries
     bool uniqueData( QString query, QString colName );
 
     void disconnectDb();

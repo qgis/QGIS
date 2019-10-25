@@ -305,7 +305,7 @@ class OracleDBConnector(DBConnector):
         if self.hasCache():
             return self.getSchemasCache()
 
-        # Use cache if avalaible:
+        # Use cache if available:
         metatable = (u"all_objects WHERE object_type IN "
                      u"('TABLE','VIEW','SYNONYM')")
         if self.geometryColumnsOnly:
