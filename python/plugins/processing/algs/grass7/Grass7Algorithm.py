@@ -700,29 +700,31 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             elif isinstance(out, QgsProcessingParameterFolderDestination):
                 self.exportRasterLayersIntoDirectory(outName, parameters, context)
 
-    def loadRasterLayerFromParameter(self, name, parameters, context, external=True, band=1):
+    def loadRasterLayerFromParameter(self, name, parameters, context, external=None, band=1):
         """
         Creates a dedicated command to load a raster into
         the temporary GRASS DB.
         :param name: name of the parameter.
         :param parameters: algorithm parameters dict.
         :param context: algorithm context.
-        :param external: True if using r.external.
+        :param external: use r.external if True, r.in.gdal otherwise.
         :param band: imports only specified band. None for all bands.
         """
         layer = self.parameterAsRasterLayer(parameters, name, context)
         self.loadRasterLayer(name, layer, external, band)
 
-    def loadRasterLayer(self, name, layer, external=True, band=1, destName=None):
+    def loadRasterLayer(self, name, layer, external=None, band=1, destName=None):
         """
         Creates a dedicated command to load a raster into
         the temporary GRASS DB.
         :param name: name of the parameter.
         :param layer: QgsMapLayer for the raster layer.
-        :param external: True if using r.external.
+        :param external: use r.external if True, r.in.gdal if False.
         :param band: imports only specified band. None for all bands.
         :param destName: force the destination name of the raster.
         """
+        if external is None:
+            external = ProcessingConfig.getSetting(Grass7Utils.GRASS_USE_REXTERNAL)
         self.inputLayers.append(layer)
         self.setSessionProjectionFromLayer(layer)
         if not destName:
