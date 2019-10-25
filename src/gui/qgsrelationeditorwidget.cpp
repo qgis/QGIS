@@ -64,7 +64,7 @@ class QgsFilteredSelectionManager : public QgsVectorLayerSelectionManager
       return mSelectedFeatureIds.count();
     }
 
-  public slots:
+  private slots:
 
     void onSelectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect ) override
     {
