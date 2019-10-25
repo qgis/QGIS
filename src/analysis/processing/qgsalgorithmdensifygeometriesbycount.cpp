@@ -81,7 +81,7 @@ void QgsDensifyGeometriesByCountAlgorithm::initParameters( const QVariantMap &co
       QgsProcessingParameterNumber::Integer,
       1, false, 1, 10000000 );
   verticesCnt->setIsDynamic( true );
-  verticesCnt->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "VerticesCount" ), QObject::tr( "Vertices count" ), QgsPropertyDefinition::IntegerPositiveGreaterZero ) );
+  verticesCnt->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "VerticesCount" ), QObject::tr( "Vertices count" ), QgsPropertyDefinition::IntegerPositive ) );
   verticesCnt->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( verticesCnt.release() );
 }
@@ -107,14 +107,18 @@ QgsFeatureList QgsDensifyGeometriesByCountAlgorithm::processFeature( const QgsFe
 {
   Q_UNUSED( context )
   Q_UNUSED( feedback )
+
   QgsFeature densifiedFeature = feature;
 
-  int verticesCnt = mVerticesCnt;
-  if ( mDynamicVerticesCnt )
-    verticesCnt = mVerticesCntProperty.valueAsInt( context.expressionContext(), verticesCnt );
-
   if ( feature.hasGeometry() )
-    densifiedFeature.setGeometry( feature.geometry().densifyByCount( verticesCnt ) );
+  {
+    int verticesCnt = mVerticesCnt;
+    if ( mDynamicVerticesCnt )
+      verticesCnt = mVerticesCntProperty.valueAsInt( context.expressionContext(), verticesCnt );
+
+    if ( verticesCnt > 0 )
+      densifiedFeature.setGeometry( feature.geometry().densifyByCount( verticesCnt ) );
+  }
 
   return QgsFeatureList() << densifiedFeature;
 }
