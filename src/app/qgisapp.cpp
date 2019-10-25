@@ -660,6 +660,15 @@ void QgisApp::onActiveLayerChanged( QgsMapLayer *layer )
   emit activeLayerChanged( layer );
 }
 
+void QgisApp::vectorLayerStyleLoaded()
+{
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( sender() );
+  if ( vl )
+  {
+    checkVectorLayerDependencies( vl );
+  }
+}
+
 /*
  * This function contains forced validation of CRS used in QGIS.
  * There are 4 options depending on the settings:
@@ -1941,6 +1950,44 @@ QgsMessageBar *QgisApp::visibleMessageBar()
   }
 }
 
+QList<QgsVectorLayerRef> QgisApp::findBrokenWidgetDependencies( QgsVectorLayer *vl )
+{
+  QList<QgsVectorLayerRef> brokenDependencies;
+  // Check for missing layer widget dependencies
+  for ( int i = 0; i < vl->fields().count(); i++ )
+  {
+    std::unique_ptr<QgsEditorWidgetWrapper> ww;
+    ww.reset( QgsGui::editorWidgetRegistry()->create( vl, i, nullptr, nullptr ) );
+    for ( QgsVectorLayerRef &dependency : ww->layerDependencies() )
+    {
+      const QgsVectorLayer *depVl { dependency.resolveWeakly( QgsProject::instance() ) };
+      if ( ! depVl || ! depVl->isValid() )
+      {
+        brokenDependencies.append( dependency );
+      }
+    }
+  }
+  return brokenDependencies;
+}
+
+void QgisApp::checkVectorLayerDependencies( QgsVectorLayer *vl )
+{
+  for ( QgsVectorLayerRef &dependency : findBrokenWidgetDependencies( vl ) )
+  {
+    const QgsVectorLayer *depVl { dependency.resolveWeakly( QgsProject::instance() ) };
+    if ( ! depVl || ! depVl->isValid() )
+    {
+      // TODO: try to aggressively resolve the broken dependencies
+      const QString msg { tr( "Form for layer '%1' requires layer '%2' to be loaded but '%2' could not be found, please load it manually if possible." )
+                          .arg( vl->name() )
+                          .arg( dependency.name ) };
+      messageBar()->pushWarning( tr( "Missing layer form dependency" ), msg );
+      QgsMessageLog::logMessage( msg );
+    }
+  }
+
+}
+
 void QgisApp::dataSourceManager( const QString &pageName )
 {
   if ( ! mDataSourceManagerDialog )
@@ -2808,7 +2855,6 @@ void QgisApp::createToolBars()
     case 3:
       defSelectionAction = mActionInvertSelection;
       break;
-      break;
   }
   bt->setDefaultAction( defSelectionAction );
   QAction *selectionAction = mAttributesToolBar->insertWidget( mActionDeselectAll, bt );
@@ -2967,7 +3013,7 @@ void QgisApp::createToolBars()
     case 1:
       defMapServiceAction = mActionAddAmsLayer;
       break;
-  };
+  }
   bt->setDefaultAction( defMapServiceAction );
   QAction *mapServiceAction = mLayerToolBar->insertWidget( mActionAddWmsLayer, bt );
   mLayerToolBar->removeAction( mActionAddWmsLayer );
@@ -2988,7 +3034,7 @@ void QgisApp::createToolBars()
     case 1:
       defFeatureServiceAction = mActionAddAfsLayer;
       break;
-  };
+  }
   bt->setDefaultAction( defFeatureServiceAction );
   QAction *featureServiceAction = mLayerToolBar->insertWidget( mActionAddWfsLayer, bt );
   mLayerToolBar->removeAction( mActionAddWfsLayer );
@@ -3048,7 +3094,7 @@ void QgisApp::createToolBars()
     case 1:
       defActionCircularString = mActionCircularStringRadius;
       break;
-  };
+  }
   tbAddCircularString->setDefaultAction( defActionCircularString );
   QAction *addCircularAction = mShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddCircularString );
   addCircularAction->setObjectName( QStringLiteral( "ActionAddCircularString" ) );
@@ -3080,7 +3126,7 @@ void QgisApp::createToolBars()
     case 4:
       defActionCircle = mActionCircleCenterPoint;
       break;
-  };
+  }
   tbAddCircle->setDefaultAction( defActionCircle );
   QAction *addCircleAction = mShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddCircle );
   addCircleAction->setObjectName( QStringLiteral( "ActionAddCircle" ) );
@@ -3108,7 +3154,7 @@ void QgisApp::createToolBars()
     case 3:
       defActionEllipse = mActionEllipseFoci;
       break;
-  };
+  }
   tbAddEllipse->setDefaultAction( defActionEllipse );
   QAction *addEllipseAction = mShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddEllipse );
   addEllipseAction->setObjectName( QStringLiteral( "ActionAddEllipse" ) );
@@ -3136,7 +3182,7 @@ void QgisApp::createToolBars()
     case 3:
       defActionRectangle = mActionRectangle3PointsProjected;
       break;
-  };
+  }
   tbAddRectangle->setDefaultAction( defActionRectangle );
   QAction *addRectangleAction = mShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddRectangle );
   addRectangleAction->setObjectName( QStringLiteral( "ActionAddRectangle" ) );
@@ -3160,7 +3206,7 @@ void QgisApp::createToolBars()
     case 2:
       defActionRegularPolygon = mActionRegularPolygonCenterCorner;
       break;
-  };
+  }
   tbAddRegularPolygon->setDefaultAction( defActionRegularPolygon );
   QAction *addRegularPolygonAction = mShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddRegularPolygon );
   addRegularPolygonAction->setObjectName( QStringLiteral( "ActionAddRegularPolygon" ) );
@@ -3183,7 +3229,7 @@ void QgisApp::createToolBars()
     case 1:
       defAction = mActionMoveFeatureCopy;
       break;
-  };
+  }
   moveFeatureButton->setDefaultAction( defAction );
   QAction *moveToolAction = mAdvancedDigitizeToolBar->insertWidget( mActionRotateFeature, moveFeatureButton );
   moveToolAction->setObjectName( QStringLiteral( "ActionMoveFeatureTool" ) );
@@ -3203,7 +3249,7 @@ void QgisApp::createToolBars()
     case QgsVertexTool::ActiveLayer:
       defActionVertexTool = mActionVertexToolActiveLayer;
       break;
-  };
+  }
   vertexToolButton->setDefaultAction( defActionVertexTool );
   connect( vertexToolButton, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
 
@@ -5040,6 +5086,12 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layerQStringList, const
   QgsProject::instance()->addMapLayers( layersToAdd );
   for ( QgsMapLayer *l : qgis::as_const( layersToAdd ) )
   {
+    // Connect style changed signal to run dependencies checks
+    QgsVectorLayer *vl { qobject_cast< QgsVectorLayer * >( l ) };
+    if ( vl )
+    {
+      connect( vl, &QgsVectorLayer::styleLoaded, this, &QgisApp::vectorLayerStyleLoaded );
+    }
     bool ok;
     l->loadDefaultStyle( ok );
     l->loadDefaultMetadata( ok );
@@ -6315,6 +6367,15 @@ bool QgisApp::addProject( const QString &projectFile )
       }
     }
 #endif
+
+    // Check for missing layer widget dependencies
+    for ( QgsVectorLayer *vl : QgsProject::instance()->layers<QgsVectorLayer *>( ) )
+    {
+      checkVectorLayerDependencies( vl );
+      // Connect style changed signal to make sure the check is run again
+      // if a new style is loaded
+      connect( vl, &QgsVectorLayer::styleLoaded, this, &QgisApp::vectorLayerStyleLoaded );
+    }
 
     emit projectRead(); // let plug-ins know that we've read in a new
     // project so that they can check any project
@@ -11387,6 +11448,8 @@ QgsVectorLayer *QgisApp::addVectorLayerPrivate( const QString &vectorLayerPath, 
 
       askUserForDatumTransform( layer->crs(), QgsProject::instance()->crs(), layer );
 
+      // Connect style changed signal to run dependencies checks
+      connect( layer, &QgsVectorLayer::styleLoaded, this, &QgisApp::vectorLayerStyleLoaded );
       bool ok;
       layer->loadDefaultStyle( ok );
       layer->loadDefaultMetadata( ok );

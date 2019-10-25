@@ -187,6 +187,7 @@ of attribute values failing enforced field constraints.
 .. versionadded:: 3.0
 %End
 
+
     QString constraintFailureReason() const;
 %Docstring
 Returns the reason why a constraint check has failed (or an empty string

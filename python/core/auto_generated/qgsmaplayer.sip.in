@@ -1538,6 +1538,11 @@ Emitted whenever the layer's data source has been changed.
 .. versionadded:: 3.5
 %End
 
+    void styleLoaded();
+%Docstring
+Emitted when a style has been loaded
+%End
+
 
   protected:
 

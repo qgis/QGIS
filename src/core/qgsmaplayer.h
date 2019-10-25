@@ -1370,6 +1370,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void dataSourceChanged();
 
+    /**
+     * Emitted when a style has been loaded
+     */
+    void styleLoaded();
+
 
   private slots:
 

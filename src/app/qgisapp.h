@@ -161,6 +161,7 @@ class QgsNetworkRequestParameters;
 #include "ogr/qgsvectorlayersaveasdialog.h"
 #include "ui_qgisapp.h"
 #include "qgis_app.h"
+#include "qgsvectorlayerref.h"
 
 #include <QGestureEvent>
 #include <QTapAndHoldGesture>
@@ -1700,6 +1701,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void onActiveLayerChanged( QgsMapLayer *layer );
 
+    /**
+     * Triggered when a vector layer style has changed, check for widget config layer dependencies
+     */
+    void vectorLayerStyleLoaded();
+
   signals:
 
     /**
@@ -2008,7 +2014,19 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Returns the message bar of the datasource manager dialog if it is visible, the canvas's message bar otherwise.
     QgsMessageBar *visibleMessageBar();
 
+    /**
+     * Searchs for layer widget dependencies
+     * \return a list of weak references to broken widget layer dependencies
+     */
+    QList< QgsVectorLayerRef > findBrokenWidgetDependencies( QgsVectorLayer *vectorLayer );
+
+    /**
+     * Scans the \a vectorLayer for broken dependencies and warns the user
+     */
+    void checkVectorLayerDependencies( QgsVectorLayer *vectorLayer );
+
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
+
 
     // actions for menus and toolbars -----------------
 
