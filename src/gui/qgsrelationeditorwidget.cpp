@@ -36,6 +36,8 @@
 #include <QLabel>
 #include <QMessageBox>
 
+/// @cond PRIVATE
+
 class QgsFilteredSelectionManager : public QgsVectorLayerSelectionManager
 {
   public:
@@ -93,6 +95,8 @@ class QgsFilteredSelectionManager : public QgsVectorLayerSelectionManager
     QgsFeatureRequest mRequest;
     QgsFeatureIds mSelectedFeatureIds;
 };
+
+/// @endcond
 
 QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget *parent )
   : QgsCollapsibleGroupBox( parent )
