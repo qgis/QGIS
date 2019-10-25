@@ -36,6 +36,64 @@
 #include <QLabel>
 #include <QMessageBox>
 
+class QgsFilteredSelectionManager : public QgsVectorLayerSelectionManager
+{
+  public:
+    QgsFilteredSelectionManager( QgsVectorLayer *layer, const QgsFeatureRequest &request, QObject *parent = nullptr )
+      : QgsVectorLayerSelectionManager( layer, parent )
+      , mRequest( request )
+    {
+      QgsFeature feature;
+      QgsFeatureIterator it = layer->getSelectedFeatures( mRequest );
+      while ( it.nextFeature( feature ) )
+      {
+        mSelectedFeatureIds << feature.id();
+      }
+
+      connect( layer, &QgsVectorLayer::selectionChanged, this, &QgsFilteredSelectionManager::onSelectionChanged );
+    }
+
+    const QgsFeatureIds &selectedFeatureIds() const override
+    {
+      return mSelectedFeatureIds;
+    }
+
+
+    int selectedFeatureCount() override
+    {
+      return mSelectedFeatureIds.count();
+    }
+
+  public slots:
+
+    void onSelectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect ) override
+    {
+      QgsFeatureIds lselected = selected;
+      if ( clearAndSelect )
+      {
+        mSelectedFeatureIds.clear();
+      }
+      else
+      {
+        for ( auto fid : deselected )
+          mSelectedFeatureIds.remove( fid );
+      }
+
+      for ( auto fid : selected )
+        if ( mRequest.acceptFeature( layer()->getFeature( fid ) ) )
+          mSelectedFeatureIds << fid;
+        else
+          lselected.remove( fid );
+
+      emit selectionChanged( lselected, deselected, clearAndSelect );
+    }
+
+  private:
+
+    QgsFeatureRequest mRequest;
+    QgsFeatureIds mSelectedFeatureIds;
+};
+
 QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget *parent )
   : QgsCollapsibleGroupBox( parent )
 {
@@ -203,7 +261,7 @@ void QgsRelationEditorWidget::setRelationFeature( const QgsRelation &relation, c
 void QgsRelationEditorWidget::initDualView( QgsVectorLayer *layer, const QgsFeatureRequest &request )
 {
   mDualView->init( layer, nullptr, request, mEditorContext );
-  mFeatureSelectionMgr = new QgsVectorLayerSelectionManager( layer, mDualView );
+  mFeatureSelectionMgr = new QgsFilteredSelectionManager( layer, request, mDualView );
   mDualView->setFeatureSelectionManager( mFeatureSelectionMgr );
   connect( mFeatureSelectionMgr, &QgsIFeatureSelectionManager::selectionChanged, this, &QgsRelationEditorWidget::updateButtons );
 }
