@@ -256,6 +256,14 @@ Returns connection capabilities
 %End
 
 
+    virtual QString tableUri( const QString &schema, const QString &name ) const throw( QgsProviderConnectionException );
+%Docstring
+Returns the URI string for the given ``table`` and ``schema``.
+Raises a QgsProviderConnectionException if any errors are encountered.
+
+:raises :: py:class:`QgsProviderConnectionException`
+%End
+
     virtual void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const throw( QgsProviderConnectionException );
 %Docstring
 Creates an empty table with ``name`` in the given ``schema`` (schema is ignored  if not supported by the backend).

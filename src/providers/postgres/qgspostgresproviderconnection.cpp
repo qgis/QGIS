@@ -110,6 +110,18 @@ void QgsPostgresProviderConnection::createVectorTable( const QString &schema,
   }
 }
 
+QString QgsPostgresProviderConnection::tableUri( const QString &schema, const QString &name ) const
+{
+  if ( ! tableExists( schema, name ) )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Table '%1' does not exists in schema '%2'" ).arg( name, schema ) );
+  }
+  QgsDataSourceUri dsUri( uri() );
+  dsUri.setTable( name );
+  dsUri.setSchema( schema );
+  return dsUri.uri( false );
+}
+
 void QgsPostgresProviderConnection::dropVectorTable( const QString &schema, const QString &name ) const
 {
   checkCapability( Capability::DropVectorTable );

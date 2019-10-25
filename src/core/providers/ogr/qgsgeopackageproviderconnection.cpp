@@ -65,6 +65,14 @@ void QgsGeoPackageProviderConnection::remove( const QString &name ) const
   settings.remove( name );
 }
 
+QString QgsGeoPackageProviderConnection::tableUri( const QString &schema, const QString &name ) const
+{
+  if ( ! tableExists( schema, name ) )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Table '%1' does not exists" ).arg( name ) );
+  }
+  return uri() + QStringLiteral( "|layername=%1" ).arg( name );
+}
 
 void QgsGeoPackageProviderConnection::createVectorTable( const QString &schema,
     const QString &name,

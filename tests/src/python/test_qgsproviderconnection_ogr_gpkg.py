@@ -45,7 +45,7 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
         gpkg_original_path = '{}/qgis_server/test_project_wms_grouped_layers.gpkg'.format(TEST_DATA_DIR)
         cls.gpkg_path = '{}/qgis_server/test_project_wms_grouped_layers_test.gpkg'.format(TEST_DATA_DIR)
         shutil.copy(gpkg_original_path, cls.gpkg_path)
-        vl = QgsVectorLayer('{}|cdb_lines'.format(cls.gpkg_path), 'test', 'ogr')
+        vl = QgsVectorLayer('{}|layername=cdb_lines'.format(cls.gpkg_path), 'test', 'ogr')
         assert vl.isValid()
         cls.uri = cls.gpkg_path
 
@@ -58,9 +58,18 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
         """Create a connection from a layer uri and retrieve it"""
 
         md = QgsProviderRegistry.instance().providerMetadata('ogr')
-        vl = QgsVectorLayer('{}|cdb_lines'.format(self.gpkg_path), 'test', 'ogr')
+        vl = QgsVectorLayer('{}|layername=cdb_lines'.format(self.gpkg_path), 'test', 'ogr')
         conn = md.createConnection(vl.dataProvider().uri().uri(), {})
         self.assertEqual(conn.uri(), self.gpkg_path)
+
+    def test_gpkg_table_uri(self):
+        """Create a connection from a layer uri and create a table URI"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('ogr')
+        conn = md.createConnection(self.uri, {})
+        self.assertEqual(conn.tableUri('', 'cdb_lines'), '{}|layername=cdb_lines'.format(self.gpkg_path))
+        vl = QgsVectorLayer(conn.tableUri('', 'cdb_lines'), 'lines', 'ogr')
+        self.assertTrue(vl.isValid())
 
     def test_gpkg_connections(self):
         """Create some connections and retrieve them"""

@@ -55,6 +55,14 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         conn = md.createConnection(vl.dataProvider().uri().uri(), {})
         self.assertEqual(conn.uri(), self.uri)
 
+    def test_postgis_table_uri(self):
+        """Create a connection from a layer uri and create a table URI"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        conn = md.createConnection(self.uri, {})
+        vl = QgsVectorLayer(conn.tableUri('qgis_test', 'geometries_table'), 'my', 'postgres')
+        self.assertTrue(vl.isValid())
+
     def test_postgis_connections(self):
         """Create some connections and retrieve them"""
 

@@ -34,6 +34,13 @@ QgsAbstractDatabaseProviderConnection::Capabilities QgsAbstractDatabaseProviderC
   return mCapabilities;
 }
 
+QString QgsAbstractDatabaseProviderConnection::tableUri( const QString &schema, const QString &name ) const
+{
+  Q_UNUSED( schema )
+  Q_UNUSED( name )
+  throw QgsProviderConnectionException( QObject::tr( "Operation 'tableUri' is not supported" ) );
+}
+
 ///@cond PRIVATE
 void QgsAbstractDatabaseProviderConnection::checkCapability( QgsAbstractDatabaseProviderConnection::Capability capability ) const
 {
