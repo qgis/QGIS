@@ -47,12 +47,12 @@ QString QgsDensifyGeometriesByCountAlgorithm::groupId() const
 
 QString QgsDensifyGeometriesByCountAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm takes a polygon or line layer"
-                      "and generates a new one in which the geometries"
+  return QObject::tr( "This algorithm takes a polygon or line layer "
+                      "and generates a new one in which the geometries "
                       "have a larger number of vertices than the "
-                      "original one. If the geometries have z or m values"
-                      "present then these will be linearly interpolated"
-                      "at the added nodes. The number of new vertices to"
+                      "original one.\n\n If the geometries have z or m values "
+                      "present then these will be linearly interpolated "
+                      "at the added nodes.\n\n The number of new vertices to "
                       "add to each feature geometry is specified "
                       "as an input parameter." );
 }
