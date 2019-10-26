@@ -22,7 +22,7 @@ my ($version,$releasename) = @ARGV;
 
 my ($news,$tempfile) = tempfile();
 
-open my $in, "doc/news.t2t";
+open my $in, "doc/NEWS.t2t";
 while(<$in>) {
 	print $news $_;
 	last if /^Last Change/;
@@ -59,10 +59,10 @@ while(<$in>) {
 close $news;
 close $in;
 
-copy($tempfile, "doc/news.t2t");
+copy($tempfile, "doc/NEWS.t2t");
 
-system "txt2tags --encoding=utf-8 -odoc/news.html -t html doc/news.t2t";
-system "txt2tags --encoding=utf-8 -oNEWS -t txt doc/news.t2t";
+system "txt2tags --encoding=utf-8 -odoc/NEWS.html -t html doc/NEWS.t2t";
+system "txt2tags --encoding=utf-8 -oNEWS -t txt doc/NEWS.t2t";
 
 =head1 NAME
 

@@ -24,13 +24,13 @@ Change history for the QGIS Project
 %rather apply it selectively to paragraphs where needed.
 
 % To generate the text version of this document:
-% txt2tags -t txt -o ../NEWS news.t2t
+% txt2tags -t txt -o ../NEWS NEWS.t2t
 % To generate the mediawiki version of this document:
-% txt2tags -t wiki --no-enum-title -o NEWS.wiki news.t2t
+% txt2tags -t wiki --no-enum-title -o NEWS.wiki NEWS.t2t
 % To generate the html version of this document:
-% txt2tags -t html -o news.html news.t2t
+% txt2tags -t html -o NEWS.html NEWS.t2t
 % To generate the LaTeX version of this document:
-% txt2tags -t tex -o NEWS.tex NEWS.t2t; pdflatex news.tex
+% txt2tags -t tex -o NEWS.tex NEWS.t2t; pdflatex NEWS.tex
 
 % End of comments
 % -------------------
