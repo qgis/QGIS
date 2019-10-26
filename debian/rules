@@ -125,12 +125,12 @@ endif
 
 ifneq (,$(WITH_ORACLE))
 ifeq ($(DEB_BUILD_ARCH),amd64)
-	ORACLE_INCLUDEDIR=/usr/include/oracle/12.1/client64/
-	ORACLE_LIBDIR=/usr/lib/oracle/12.1/client64/lib/
+	ORACLE_INCLUDEDIR=/usr/include/oracle/18.5/client64/
+	ORACLE_LIBDIR=/usr/lib/oracle/18.5/client64/lib/
 endif
 ifeq ($(DEB_BUILD_ARCH),i386)
-	ORACLE_INCLUDEDIR=/usr/include/oracle/12.1/client/
-	ORACLE_LIBDIR=/usr/lib/oracle/12.1/client/lib/
+	ORACLE_INCLUDEDIR=/usr/include/oracle/18.5/client/
+	ORACLE_LIBDIR=/usr/lib/oracle/18.5/client/lib/
 endif
 	CMAKE_OPTS += \
 		-DWITH_ORACLE=TRUE \
