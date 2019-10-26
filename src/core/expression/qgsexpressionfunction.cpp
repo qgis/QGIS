@@ -5065,6 +5065,10 @@ static QVariant fcnGenericHash( const QVariantList &values, const QgsExpressionC
     hash = fcnHash( str, QCryptographicHash::Keccak_512 );
   }
 #endif
+  else
+  {
+    parent->setEvalErrorString( QObject::tr( "Hash method %1 is not available on this system." ).arg( str ) );
+  }
   return hash;
 }
 
