@@ -55,6 +55,16 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         conn = md.createConnection(vl.dataProvider().uri().uri(), {})
         self.assertEqual(conn.uri(), self.uri)
 
+        # Test table(), throws if not found
+        table_info = conn.table('qgis_test', 'someData')
+        table_info = conn.table('qgis_test', 'Raster1')
+
+        # Test raster
+        self.assertEqual(conn.tableUri('qgis_test', 'Raster1'),
+                         'PG: dbname=\'qgis_test\' sslmode=disable mode=2 schema=\'qgis_test\' table=\'Raster1\' column=\'Rast\'')
+        rl = QgsRasterLayer(conn.tableUri('qgis_test', 'Raster1'), 'r1', 'gdal')
+        self.assertTrue(rl.isValid())
+
     def test_postgis_table_uri(self):
         """Create a connection from a layer uri and create a table URI"""
 

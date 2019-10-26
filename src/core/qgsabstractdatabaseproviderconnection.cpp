@@ -138,6 +138,23 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsAbstractDatabaseP
   return QList<QgsAbstractDatabaseProviderConnection::TableProperty>();
 }
 
+
+QgsAbstractDatabaseProviderConnection::TableProperty QgsAbstractDatabaseProviderConnection::table( const QString &schema, const QString &name ) const
+{
+  checkCapability( Capability::Tables );
+  const QList<QgsAbstractDatabaseProviderConnection::TableProperty> constTables { tables( schema ) };
+  for ( const auto &t : constTables )
+  {
+    if ( t.tableName() == name )
+    {
+      return t;
+    }
+  }
+  throw QgsProviderConnectionException( QObject::tr( "Table '%1' was not found in schema '%2'" )
+                                        .arg( name )
+                                        .arg( schema ) );
+}
+
 QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsAbstractDatabaseProviderConnection::tablesInt( const QString &schema, const int flags ) const
 {
   return tables( schema, static_cast<QgsAbstractDatabaseProviderConnection::TableFlags>( flags ) );

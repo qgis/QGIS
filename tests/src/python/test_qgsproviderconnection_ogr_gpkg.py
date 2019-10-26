@@ -21,6 +21,7 @@ from qgis.core import (
     QgsAbstractDatabaseProviderConnection,
     QgsProviderConnectionException,
     QgsVectorLayer,
+    QgsRasterLayer,
     QgsProviderRegistry,
     QgsFields,
     QgsCoordinateReferenceSystem,
@@ -70,6 +71,14 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
         self.assertEqual(conn.tableUri('', 'cdb_lines'), '{}|layername=cdb_lines'.format(self.gpkg_path))
         vl = QgsVectorLayer(conn.tableUri('', 'cdb_lines'), 'lines', 'ogr')
         self.assertTrue(vl.isValid())
+
+        # Test table(), throws if not found
+        table_info = conn.table('', 'osm')
+        table_info = conn.table('', 'cdb_lines')
+
+        self.assertEqual(conn.tableUri('', 'osm'), "GPKG:%s:osm" % self.uri)
+        rl = QgsRasterLayer(conn.tableUri('', 'osm'), 'r', 'gdal')
+        self.assertTrue(rl.isValid())
 
     def test_gpkg_connections(self):
         """Create some connections and retrieve them"""

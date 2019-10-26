@@ -379,6 +379,18 @@ Raises a QgsProviderConnectionException if any errors are encountered.
 %End
 
 
+    virtual QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table ) const;
+%Docstring
+Returns information on a ``table`` in the given ``schema``.
+Raises a QgsProviderConnectionException if any errors are encountered or if the table does not exist.
+
+:raises :: py:class:`QgsProviderConnectionException`
+
+.. note::
+
+   Not available in Python bindings
+%End
+
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tablesInt( const QString &schema = QString(), const int flags = 0 ) const throw( QgsProviderConnectionException ) /PyName=tables/;
 %Docstring
 Returns information on the tables in the given schema.

@@ -19,6 +19,7 @@
 
 
 class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnection
+
 {
   public:
 

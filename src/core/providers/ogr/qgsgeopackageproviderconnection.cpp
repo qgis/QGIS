@@ -67,11 +67,15 @@ void QgsGeoPackageProviderConnection::remove( const QString &name ) const
 
 QString QgsGeoPackageProviderConnection::tableUri( const QString &schema, const QString &name ) const
 {
-  if ( ! tableExists( schema, name ) )
+  const auto tableInfo { table( schema, name ) };
+  if ( tableInfo.flags().testFlag( QgsAbstractDatabaseProviderConnection::TableFlag::Raster ) )
   {
-    throw QgsProviderConnectionException( QObject::tr( "Table '%1' does not exists" ).arg( name ) );
+    return QStringLiteral( "GPKG:%1:%2" ).arg( uri() ).arg( name );
   }
-  return uri() + QStringLiteral( "|layername=%1" ).arg( name );
+  else
+  {
+    return uri() + QStringLiteral( "|layername=%1" ).arg( name );
+  }
 }
 
 void QgsGeoPackageProviderConnection::createVectorTable( const QString &schema,

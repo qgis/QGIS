@@ -112,14 +112,29 @@ void QgsPostgresProviderConnection::createVectorTable( const QString &schema,
 
 QString QgsPostgresProviderConnection::tableUri( const QString &schema, const QString &name ) const
 {
-  if ( ! tableExists( schema, name ) )
-  {
-    throw QgsProviderConnectionException( QObject::tr( "Table '%1' does not exists in schema '%2'" ).arg( name, schema ) );
-  }
+  const auto tableInfo { table( schema, name ) };
   QgsDataSourceUri dsUri( uri() );
   dsUri.setTable( name );
   dsUri.setSchema( schema );
-  return dsUri.uri( false );
+  if ( tableInfo.flags().testFlag( QgsAbstractDatabaseProviderConnection::TableFlag::Raster ) )
+  {
+    static const QRegularExpression removePartsRe { R"raw(\s*sql=\s*|\s*table=("[^"]+"\.?)*\s*)raw" };
+    if ( tableInfo.geometryColumn().isEmpty() )
+    {
+      throw QgsProviderConnectionException( QObject::tr( "Raster table '%1' in schema '%2' has no geometry column." )
+                                            .arg( name )
+                                            .arg( schema ) );
+    }
+    return QStringLiteral( "PG: %1 mode=2 schema='%2' table='%4' column='%3'" )
+           .arg( dsUri.uri( false ).replace( removePartsRe, QString() ) )
+           .arg( schema )
+           .arg( tableInfo.geometryColumn() )
+           .arg( name );
+  }
+  else
+  {
+    return dsUri.uri( false );
+  }
 }
 
 void QgsPostgresProviderConnection::dropVectorTable( const QString &schema, const QString &name ) const
