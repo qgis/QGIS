@@ -5047,6 +5047,7 @@ static QVariant fcnGenericHash( const QVariantList &values, const QgsExpressionC
   {
     hash = fcnHash( str, QCryptographicHash::Sha3_512 );
   }
+#if QT_VERSION >= QT_VERSION_CHECK( 5, 9, 2 )
   else if ( method == QLatin1String( "keccak_224" ) )
   {
     hash = fcnHash( str, QCryptographicHash::Keccak_224 );
@@ -5063,6 +5064,7 @@ static QVariant fcnGenericHash( const QVariantList &values, const QgsExpressionC
   {
     hash = fcnHash( str, QCryptographicHash::Keccak_512 );
   }
+#endif
   return hash;
 }
 
