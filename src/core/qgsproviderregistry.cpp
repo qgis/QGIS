@@ -145,7 +145,7 @@ void QgsProviderRegistry::init()
     fileRegexp.setPattern( filePattern );
   }
 
-  typedef std::vector<QgsProviderMetadata *> multiple_factory_function();
+  typedef std::vector<QgsProviderMetadata *> *multiple_factory_function();
 
   const auto constEntryInfoList = mLibraryDirectory.entryInfoList();
   for ( const QFileInfo &fi : constEntryInfoList )
@@ -170,7 +170,8 @@ void QgsProviderRegistry::init()
     multiple_factory_function *multi_function = reinterpret_cast< multiple_factory_function * >( cast_to_fptr( multi_func ) );
     if ( multi_function )
     {
-      for ( const auto meta : multi_function() )
+      std::vector<QgsProviderMetadata *> *metadatas = multi_function();
+      for ( const auto meta : *metadatas )
       {
         if ( findMetadata_( mProviders, meta->key() ) )
         {
@@ -181,6 +182,7 @@ void QgsProviderRegistry::init()
         // add this provider to the provider map
         mProviders[meta->key()] = meta;
       }
+      delete metadatas;
     }
     else
     {

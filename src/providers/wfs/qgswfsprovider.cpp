@@ -1869,7 +1869,7 @@ QList<QgsDataItemProvider *> QgsWfsProviderMetadata::dataItemProviders() const
 QgsWfsProviderMetadata::QgsWfsProviderMetadata():
   QgsProviderMetadata( QgsWFSProvider::WFS_PROVIDER_KEY, QgsWFSProvider::WFS_PROVIDER_DESCRIPTION ) {}
 
-QGISEXTERN std::vector<QgsProviderMetadata *> multipleProviderMetadataFactory()
+QGISEXTERN void *multipleProviderMetadataFactory()
 {
-  return std::vector<QgsProviderMetadata *> { new QgsWfsProviderMetadata(), new QgsOapifProviderMetadata() };
+  return new std::vector<QgsProviderMetadata *> { new QgsWfsProviderMetadata(), new QgsOapifProviderMetadata() };
 }
