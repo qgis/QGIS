@@ -1466,7 +1466,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \since QGIS 3.10
      */
-    QVector< QgsPointXY > randomPointsInPolygon( int count, const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed = 0, QgsFeedback *feedback = nullptr );
+    QVector< QgsPointXY > randomPointsInPolygon( int count, const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed = 0, QgsFeedback *feedback = nullptr ) const;
 
     /**
      * Returns a list of \a count random points generated inside a (multi)polygon geometry.
@@ -1481,7 +1481,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \since QGIS 3.10
      */
-    QVector< QgsPointXY > randomPointsInPolygon( int count, unsigned long seed = 0, QgsFeedback *feedback = nullptr );
+    QVector< QgsPointXY > randomPointsInPolygon( int count, unsigned long seed = 0, QgsFeedback *feedback = nullptr ) const;
     ///@cond PRIVATE
 #else
 
@@ -1497,7 +1497,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \since QGIS 3.10
      */
-    SIP_PYOBJECT randomPointsInPolygon( int count, unsigned long seed = 0 ) SIP_TYPEHINT( QgsPolylineXY );
+    SIP_PYOBJECT randomPointsInPolygon( int count, unsigned long seed = 0 ) const SIP_TYPEHINT( QgsPolylineXY );
     % MethodCode
     const QgsWkbTypes::GeometryType type = sipCpp->type();
     if ( sipCpp->isNull() )

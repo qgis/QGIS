@@ -1466,7 +1466,7 @@ Returns an extruded version of this geometry.
 %End
 
 
-    SIP_PYOBJECT randomPointsInPolygon( int count, unsigned long seed = 0 ) /TypeHint="QgsPolylineXY"/;
+    SIP_PYOBJECT randomPointsInPolygon( int count, unsigned long seed = 0 ) const /TypeHint="QgsPolylineXY"/;
 %Docstring
 Returns a list of ``count`` random points generated inside a (multi)polygon geometry.
 
