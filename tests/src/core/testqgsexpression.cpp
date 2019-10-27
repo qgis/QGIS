@@ -1476,7 +1476,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "md5('QGIS')" ) << QStringLiteral( "md5('QGIS')" ) << false << QVariant( "57470aaa9e22adaefac7f5f342f1c6da" );
       QTest::newRow( "sha256(NULL)" ) << QStringLiteral( "sha256(NULL)" ) << false << QVariant( );
       QTest::newRow( "sha256('QGIS')" ) << QStringLiteral( "sha256('QGIS')" ) << false << QVariant( "eb045cba7a797aaa06ac58830846e40c8e8c780bc0676d3393605fae50c05309" );
-      QTest::newRow( "hash('QGIS', 'qsdf')" ) << QStringLiteral( "hash('QGIS', 'qsdf')" ) << false << QVariant();
+      QTest::newRow( "hash('QGIS', 'qsdf')" ) << QStringLiteral( "hash('QGIS', 'qsdf')" ) << true << QVariant();
       QTest::newRow( "hash('QGIS', 'md4')" ) << QStringLiteral( "hash('QGIS', 'md4')" ) << false << QVariant( "c0fc71c241cdebb6e888cbac0e2b68eb" );
       QTest::newRow( "hash('QGIS', 'md5')" ) << QStringLiteral( "hash('QGIS', 'md5')" ) << false << QVariant( "57470aaa9e22adaefac7f5f342f1c6da" );
       QTest::newRow( "hash('QGIS', 'sha1')" ) << QStringLiteral( "hash('QGIS', 'sha1')" ) << false << QVariant( "f87cfb2b74cdd5867db913237024e7001e62b114" );
@@ -1488,11 +1488,12 @@ class TestQgsExpression: public QObject
       QTest::newRow( "hash('QGIS', 'sha3_256')" ) << QStringLiteral( "hash('QGIS', 'sha3_256')" ) << false << QVariant( "540f7354b6b8a6e735f2845250f15f4f3ba4f666c55574d9e9354575de0e980f" );
       QTest::newRow( "hash('QGIS', 'sha3_384')" ) << QStringLiteral( "hash('QGIS', 'sha3_384')" ) << false << QVariant( "96052da1e77679e9a65f60d7ead961b287977823144786386eb43647b0901fd8516fa6f1b9d243fb3f28775e6dde6107" );
       QTest::newRow( "hash('QGIS', 'sha3_512')" ) << QStringLiteral( "hash('QGIS', 'sha3_512')" ) << false << QVariant( "900d079dc69761da113980253aa8ac0414a8bd6d09879a916228f8743707c4758051c98445d6b8945ec854ff90655005e02aceb0a2ffc6a0ebf818745d665349" );
+#if QT_VERSION >= QT_VERSION_CHECK( 5, 9, 2 )
       QTest::newRow( "hash('QGIS', 'keccak_224')" ) << QStringLiteral( "hash('QGIS', 'keccak_224')" ) << false << QVariant( "5b0ce6acef8b0a121d4ac4f3eaa8503c799ad4e26a3392d1fb201478" );
       QTest::newRow( "hash('QGIS', 'keccak_256')" ) << QStringLiteral( "hash('QGIS', 'keccak_256')" ) << false << QVariant( "991c520aa6815392de24087f61b2ae0fd56abbfeee4a8ca019c1011d327c577e" );
       QTest::newRow( "hash('QGIS', 'keccak_384')" ) << QStringLiteral( "hash('QGIS', 'keccak_384')" ) << false << QVariant( "c57a3aed9d856fa04e5eeee9b62b6e027cca81ba574116d3cc1f0d48a1ef9e5886ff463ea8d0fac772ee473bf92f810d" );
       QTest::newRow( "hash('QGIS', 'keccak_512')" ) << QStringLiteral( "hash('QGIS', 'keccak_512')" ) << false << QVariant( "6f0f751776b505e317de222508fa5d3ed7099d8f07c74fed54ccee6e7cdc6b89b4a085e309f2ee5210c942bbeb142bdfe48f84f912e0f3f41bdbf47110c2d344" );
-
+#endif
     }
 
 
