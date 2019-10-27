@@ -106,7 +106,7 @@ class TestQgsEditFormConfig(unittest.TestCase):
             app.processEvents()
         self.assertEqual(content.status(), QgsFetchedContent.Finished)
 
-    # Failing on Travis, seg faut in event loop, no idea why
+    # Failing on Travis, seg fault in event loop, no idea why
     """
     @unittest.expectedFailure
     def testFormPy(self):

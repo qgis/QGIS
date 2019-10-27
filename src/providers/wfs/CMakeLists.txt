@@ -39,7 +39,6 @@ SET (WFS_MOC_HDRS
   qgswfsdescribefeaturetype.h
   qgswfstransactionrequest.h
   qgswfsshareddata.h
-  qgswfsutils.h
   qgsbackgroundcachedfeatureiterator.h
   qgscachedirectorymanager.h
   qgsoapiflandingpagerequest.h
