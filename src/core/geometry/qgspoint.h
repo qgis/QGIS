@@ -32,7 +32,7 @@
 /**
  * \ingroup core
  * \brief Point geometry type, with support for z-dimension and m-values.
- * \since QGIS 3.0, (previously QgsPointv2 since QGIS 2.10)
+ * \since QGIS 3.0, (previously QgsPointV2 since QGIS 2.10)
  */
 class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 {
@@ -73,62 +73,64 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 #ifndef SIP_RUN
     QgsPoint( double x = std::numeric_limits<double>::quiet_NaN(), double y = std::numeric_limits<double>::quiet_NaN(), double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN(), QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown );
 #else
-    QgsPoint( SIP_PYOBJECT x = Py_None, SIP_PYOBJECT y = Py_None, SIP_PYOBJECT z = Py_None, SIP_PYOBJECT m = Py_None, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown )];
+    QgsPoint( SIP_PYOBJECT x = Py_None, SIP_PYOBJECT y = Py_None, SIP_PYOBJECT z = Py_None, SIP_PYOBJECT m = Py_None, SIP_PYOBJECT wkbType = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown )];
     % MethodCode
-    double x;
-    double y;
-    double z;
-    double m;
+    if ( sipCanConvertToType( a0, sipType_QgsPointXY, SIP_NOT_NONE ) && a1 == Py_None && a2 == Py_None && a3 == Py_None && a4 == Py_None )
+    {
+      int state;
+      int sipIsErr = 0;
 
-    if ( a0 == Py_None )
-    {
-      x = std::numeric_limits<double>::quiet_NaN();
+      QgsPointXY *p = reinterpret_cast<QgsPointXY *>( sipConvertToType( a0, sipType_QgsPointXY, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+      if ( sipIsErr )
+      {
+        sipReleaseType( p, sipType_QgsPointXY, state );
+      }
+      else
+      {
+        sipCpp = new sipQgsPoint( QgsPoint( *p ) );
+      }
     }
-    else
+    else if ( sipCanConvertToType( a0, sipType_QPointF, SIP_NOT_NONE ) && a1 == Py_None && a2 == Py_None && a3 == Py_None && a4 == Py_None )
     {
-      x = PyFloat_AsDouble( a0 );
-    }
+      int state;
+      int sipIsErr = 0;
 
-    if ( a1 == Py_None )
-    {
-      y = std::numeric_limits<double>::quiet_NaN();
+      QPointF *p = reinterpret_cast<QPointF *>( sipConvertToType( a0, sipType_QPointF, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+      if ( sipIsErr )
+      {
+        sipReleaseType( p, sipType_QPointF, state );
+      }
+      else
+      {
+        sipCpp = new sipQgsPoint( QgsPoint( *p ) );
+      }
     }
-    else
+    else if (
+      ( a0 == Py_None || PyFloat_AsDouble( a0 ) != -1.0 || !PyErr_Occurred() ) &&
+      ( a1 == Py_None || PyFloat_AsDouble( a1 ) != -1.0 || !PyErr_Occurred() ) &&
+      ( a2 == Py_None || PyFloat_AsDouble( a2 ) != -1.0 || !PyErr_Occurred() ) &&
+      ( a3 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) &&
+      ( a4 == Py_None || sipCanConvertToEnum( a4, sipType_QgsWkbTypes_Type ) ) )
     {
-      y = PyFloat_AsDouble( a1 );
+      double x = a0 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a0 );
+      double y = a1 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a1 );
+      double z = a2 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a2 );
+      double m = a3 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a3 );
+      QgsWkbTypes::Type wkbType = a4 == Py_None ? QgsWkbTypes::Unknown : static_cast<QgsWkbTypes::Type>( sipConvertToEnum( a4, sipType_QgsWkbTypes_Type ) );
+      sipCpp = new sipQgsPoint( QgsPoint( x, y, z, m, wkbType ) );
     }
-
-    if ( a2 == Py_None )
-    {
-      z = std::numeric_limits<double>::quiet_NaN();
-    }
-    else
-    {
-      z = PyFloat_AsDouble( a2 );
-    }
-
-    if ( a3 == Py_None )
-    {
-      m = std::numeric_limits<double>::quiet_NaN();
-    }
-    else
-    {
-      m = PyFloat_AsDouble( a3 );
-    }
-
-    sipCpp = new sipQgsPoint( x, y, z, m, a4 );
     % End
 #endif
 
     /**
      * Construct a QgsPoint from a QgsPointXY object
      */
-    explicit QgsPoint( const QgsPointXY &p );
+    explicit QgsPoint( const QgsPointXY &p ) SIP_SKIP;
 
     /**
      * Construct a QgsPoint from a QPointF
      */
-    explicit QgsPoint( QPointF p );
+    explicit QgsPoint( QPointF p ) SIP_SKIP;
 
     /**
      * Create a new point with the given wkbtype and values.
