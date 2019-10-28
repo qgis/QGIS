@@ -49,12 +49,9 @@ class QgsFilteredSelectionManager : public QgsVectorLayerSelectionManager
       : QgsVectorLayerSelectionManager( layer, parent )
       , mRequest( request )
     {
-      QgsFeature feature;
-      QgsFeatureIterator it = layer->getSelectedFeatures( mRequest );
-      while ( it.nextFeature( feature ) )
-      {
-        mSelectedFeatureIds << feature.id();
-      }
+      for ( auto fid : layer->selectedFeatureIds() )
+        if ( mRequest.acceptFeature( layer->getFeature( fid ) ) )
+          mSelectedFeatureIds << fid;
 
       connect( layer, &QgsVectorLayer::selectionChanged, this, &QgsFilteredSelectionManager::onSelectionChanged );
     }
