@@ -517,9 +517,6 @@ void QgsRelationEditorWidget::linkFeature()
       for ( const QgsFeature &f : constNewFeatures )
         ids << f.id();
       mRelation.referencingLayer()->selectByIds( ids );
-
-
-      updateUi();
     }
     else
     {
@@ -543,6 +540,8 @@ void QgsRelationEditorWidget::linkFeature()
         }
       }
     }
+
+    updateUi();
   }
 }
 
