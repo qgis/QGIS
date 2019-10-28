@@ -300,7 +300,7 @@ class CORE_EXPORT QgsSymbolLayer
     /**
      * Called after the layer has been rendered for a particular \a feature.
      *
-     * This is always preceeded by a call to startFeatureRender() just before the feature
+     * This is always preceded by a call to startFeatureRender() just before the feature
      * will be rendered.
      *
      * The default implementation does nothing.
