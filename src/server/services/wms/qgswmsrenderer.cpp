@@ -952,7 +952,7 @@ namespace QgsWms
     else if ( infoFormat == QgsWmsParameters::Format::HTML )
       ba = convertFeatureInfoToHtml( result );
     else if ( infoFormat == QgsWmsParameters::Format::JSON )
-      ba = convertFeatureInfoToJson( layers, result, mapSettings.destinationCrs() );
+      ba = convertFeatureInfoToJson( layers, result );
     else
       ba = result.toByteArray();
 
@@ -2156,7 +2156,7 @@ namespace QgsWms
     return featureInfoString.toUtf8();
   }
 
-  QByteArray QgsRenderer::convertFeatureInfoToJson( const QList<QgsMapLayer *> &layers, const QDomDocument &doc, const QgsCoordinateReferenceSystem &crs ) const
+  QByteArray QgsRenderer::convertFeatureInfoToJson( const QList<QgsMapLayer *> &layers, const QDomDocument &doc ) const
   {
     json json
     {

@@ -253,7 +253,7 @@ namespace QgsWms
       QByteArray convertFeatureInfoToText( const QDomDocument &doc ) const;
 
       //! Converts a feature info xml document to json
-      QByteArray convertFeatureInfoToJson( const QList<QgsMapLayer *> &layers, const QDomDocument &doc, const QgsCoordinateReferenceSystem &crs ) const;
+      QByteArray convertFeatureInfoToJson( const QList<QgsMapLayer *> &layers, const QDomDocument &doc ) const;
 
       QDomElement createFeatureGML(
         const QgsFeature *feat,
