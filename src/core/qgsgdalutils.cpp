@@ -36,13 +36,18 @@ bool QgsGdalUtils::supportsRasterCreate( GDALDriverH driver )
 
 gdal::dataset_unique_ptr QgsGdalUtils::createSingleBandMemoryDataset( GDALDataType dataType, QgsRectangle extent, int width, int height, const QgsCoordinateReferenceSystem &crs )
 {
+  return createMultiBandMemoryDataset( dataType, 1, extent, width, height, crs );
+}
+
+gdal::dataset_unique_ptr QgsGdalUtils::createMultiBandMemoryDataset( GDALDataType dataType, int bands, QgsRectangle extent, int width, int height, const QgsCoordinateReferenceSystem &crs )
+{
   GDALDriverH hDriverMem = GDALGetDriverByName( "MEM" );
   if ( !hDriverMem )
   {
     return gdal::dataset_unique_ptr();
   }
 
-  gdal::dataset_unique_ptr hSrcDS( GDALCreate( hDriverMem, "", width, height, 1, dataType, nullptr ) );
+  gdal::dataset_unique_ptr hSrcDS( GDALCreate( hDriverMem, "", width, height, bands, dataType, nullptr ) );
 
   double cellSizeX = extent.width() / width;
   double cellSizeY = extent.height() / height;
