@@ -16,11 +16,13 @@
  ***************************************************************************/
 
 #include "qgslayerrestorer.h"
+#include "qgsmessagelog.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgsreadwritecontext.h"
 
 QgsLayerRestorer::QgsLayerRestorer( const QList<QgsMapLayer *> &layers )
 {
@@ -36,9 +38,14 @@ QgsLayerRestorer::QgsLayerRestorer( const QList<QgsMapLayer *> &layers )
     layer->setCustomProperty( "readSLD", false );
 
     QString errMsg;
-    QDomDocument sldDoc;
-    layer->exportSldStyle( sldDoc, errMsg );
-    ( void )settings.mSldStyle.setContent( sldDoc.toString(), true ); // for namespace processing
+    QDomDocument styleDoc( QStringLiteral( "style" ) );
+    QDomElement styleXml = styleDoc.createElement( QStringLiteral( "style" ) );
+    styleDoc.appendChild( styleXml );
+    if ( !layer->writeStyle( styleXml, styleDoc, errMsg, QgsReadWriteContext() ) )
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "QGIS Style has not been added to layer restorer for layer %1: %2" ).arg( layer->name(), errMsg ) );
+    }
+    ( void )settings.mQgisStyle.setContent( styleDoc.toString() );
 
     switch ( layer->type() )
     {
@@ -82,13 +89,16 @@ QgsLayerRestorer::~QgsLayerRestorer()
     layer->styleManager()->setCurrentStyle( settings.mNamedStyle );
     layer->setName( mLayerSettings[layer].name );
 
-    // if a SLD file has been loaded for rendering, we restore the previous one
-    QString errMsg;
-    QDomElement root = settings.mSldStyle.firstChildElement( "StyledLayerDescriptor" );
-    QDomElement el = root.firstChildElement( "NamedLayer" );
+    // if a SLD file has been loaded for rendering, we restore the previous style
     if ( layer->customProperty( "readSLD", false ).toBool() )
     {
-      layer->readSld( el, errMsg );
+      QString errMsg;
+      QDomElement root = settings.mQgisStyle.documentElement();
+      QgsReadWriteContext context = QgsReadWriteContext();
+      if ( !layer->readStyle( root, errMsg, context ) )
+      {
+        QgsMessageLog::logMessage( QStringLiteral( "QGIS Style has not been read from layer restorer for layer %1: %2" ).arg( layer->name(), errMsg ) );
+      }
     }
     layer->removeCustomProperty( "readSLD" );
 

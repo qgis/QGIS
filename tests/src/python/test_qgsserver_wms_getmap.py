@@ -1397,6 +1397,43 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_SLDRestored")
 
+    def test_wms_getmap_sld_restore_labeling(self):
+        """QGIS Server has to restore all the style. This test is not done
+        to evaluate the SLD application but the style restoration and
+        specifically the labeling."""
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "pointlabel",
+            "STYLES": "",
+            "SLD_BODY": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><StyledLayerDescriptor xmlns=\"http://www.opengis.net/sld\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:ogc=\"http://www.opengis.net/ogc\" xsi:schemaLocation=\"http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd\" version=\"1.1.0\" xmlns:se=\"http://www.opengis.net/se\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"> <NamedLayer> <se:Name>pointlabel</se:Name> <UserStyle> <se:Name>pointlabel_style</se:Name> <se:FeatureTypeStyle> <se:Rule> <se:Name>Single symbol</se:Name> <se:PointSymbolizer uom=\"http://www.opengeospatial.org/se/units/metre\"> <se:Graphic> <se:Mark> <se:WellKnownName>square</se:WellKnownName> <se:Fill> <se:SvgParameter name=\"fill\">5e86a1</se:SvgParameter> </se:Fill> <se:Stroke> <se:SvgParameter name=\"stroke\">000000</se:SvgParameter> </se:Stroke> </se:Mark> <se:Size>0.007</se:Size> </se:Graphic> </se:PointSymbolizer> </se:Rule> </se:FeatureTypeStyle> </UserStyle> </NamedLayer> </StyledLayerDescriptor>",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+        r, h = self._result(self._execute_request(qs))
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "pointlabel",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Labeling_Complex")
+
     def test_wms_getmap_group(self):
         """A WMS shall render the requested layers by drawing the leftmost in the list
         bottommost, the next one over that, and so on."""
