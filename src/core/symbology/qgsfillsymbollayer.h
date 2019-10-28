@@ -49,6 +49,11 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
 
     // static stuff
 
+    /**
+     * Creates a new QgsSimpleFillSymbolLayer using the specified \a properties map containing symbol properties (see properties()).
+     *
+     * Caller takes ownership of the returned symbol layer.
+     */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
     static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
@@ -209,6 +214,11 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
 
     // static stuff
 
+    /**
+     * Creates a new QgsGradientFillSymbolLayer using the specified \a properties map containing symbol properties (see properties()).
+     *
+     * Caller takes ownership of the returned symbol layer.
+     */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
     // implemented from base classes
@@ -366,6 +376,11 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
     // static stuff
 
+    /**
+     * Creates a new QgsShapeburstFillSymbolLayer using the specified \a properties map containing symbol properties (see properties()).
+     *
+     * Caller takes ownership of the returned symbol layer.
+     */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
     // implemented from base classes
@@ -1452,6 +1467,11 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsPointPatternFillSymbolLayer();
     ~QgsPointPatternFillSymbolLayer() override;
 
+    /**
+     * Creates a new QgsPointPatternFillSymbolLayer using the specified \a properties map containing symbol properties (see properties()).
+     *
+     * Caller takes ownership of the returned symbol layer.
+     */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
     static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
@@ -1718,10 +1738,15 @@ class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
      * Constructor for QgsRandomMarkerFillSymbolLayer, with the specified \a pointCount.
      *
      * Optionally a specific random number \a seed can be used when generating points. A \a seed of 0 indicates that
-     * a truely random sequence should be used.
+     * a truly random sequence should be used.
      */
     QgsRandomMarkerFillSymbolLayer( int pointCount = 1, unsigned long seed = 0 );
 
+    /**
+     * Creates a new QgsRandomMarkerFillSymbolLayer using the specified \a properties map containing symbol properties (see properties()).
+     *
+     * Caller takes ownership of the returned symbol layer.
+     */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
     QString layerType() const override;
@@ -1762,7 +1787,7 @@ class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
 
     /**
      * Returns the random number seed to use when generating points, or 0 if
-     * a truely random sequence should be used.
+     * a truly random sequence should be used.
      *
      * \see setSeed()
      */
@@ -1770,7 +1795,7 @@ class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
 
     /**
      * Sets the random number \a seed to use when generating points, or 0 if
-     * a truely random sequence should be used.
+     * a truly random sequence should be used.
      *
      * \see seed()
      */
@@ -1828,6 +1853,11 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
 
     // static stuff
 
+    /**
+     * Creates a new QgsCentroidFillSymbolLayer using the specified \a properties map containing symbol properties (see properties()).
+     *
+     * Caller takes ownership of the returned symbol layer.
+     */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
     static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 

@@ -658,6 +658,12 @@ Creates a new QgsPointPatternFillSymbolLayerWidget.
 
 class QgsRandomMarkerFillSymbolLayerWidget: QgsSymbolLayerWidget
 {
+%Docstring
+
+Widget for controlling the properties of a :py:class:`QgsRandomMarkerFillSymbolLayer`.
+
+.. versionadded:: 3.12
+%End
 
 %TypeHeaderCode
 #include "qgssymbollayerwidget.h"

@@ -898,6 +898,10 @@ class QgsRandomMarkerFillSymbolLayer;
 /**
  * \ingroup gui
  * \class QgsRandomMarkerFillSymbolLayerWidget
+ *
+ * Widget for controlling the properties of a QgsRandomMarkerFillSymbolLayer.
+ *
+ * \since QGIS 3.12
  */
 class GUI_EXPORT QgsRandomMarkerFillSymbolLayerWidget: public QgsSymbolLayerWidget, private Ui::WidgetRandomMarkerFill
 {

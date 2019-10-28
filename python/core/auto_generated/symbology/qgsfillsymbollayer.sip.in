@@ -28,6 +28,11 @@ class QgsSimpleFillSymbolLayer : QgsFillSymbolLayer
 
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+%Docstring
+Creates a new QgsSimpleFillSymbolLayer using the specified ``properties`` map containing symbol properties (see properties()).
+
+Caller takes ownership of the returned symbol layer.
+%End
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
 
 
@@ -193,6 +198,11 @@ class QgsGradientFillSymbolLayer : QgsFillSymbolLayer
 
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+%Docstring
+Creates a new QgsGradientFillSymbolLayer using the specified ``properties`` map containing symbol properties (see properties()).
+
+Caller takes ownership of the returned symbol layer.
+%End
 
 
     virtual QString layerType() const;
@@ -348,6 +358,11 @@ class QgsShapeburstFillSymbolLayer : QgsFillSymbolLayer
 
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+%Docstring
+Creates a new QgsShapeburstFillSymbolLayer using the specified ``properties`` map containing symbol properties (see properties()).
+
+Caller takes ownership of the returned symbol layer.
+%End
 
 
     virtual QString layerType() const;
@@ -1588,6 +1603,11 @@ class QgsPointPatternFillSymbolLayer: QgsImageFillSymbolLayer
     ~QgsPointPatternFillSymbolLayer();
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+%Docstring
+Creates a new QgsPointPatternFillSymbolLayer using the specified ``properties`` map containing symbol properties (see properties()).
+
+Caller takes ownership of the returned symbol layer.
+%End
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
 
     virtual QString layerType() const;
@@ -1910,10 +1930,15 @@ A fill symbol layer which places markers at random locations within polygons.
 Constructor for QgsRandomMarkerFillSymbolLayer, with the specified ``pointCount``.
 
 Optionally a specific random number ``seed`` can be used when generating points. A ``seed`` of 0 indicates that
-a truely random sequence should be used.
+a truly random sequence should be used.
 %End
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+%Docstring
+Creates a new QgsRandomMarkerFillSymbolLayer using the specified ``properties`` map containing symbol properties (see properties()).
+
+Caller takes ownership of the returned symbol layer.
+%End
 
     virtual QString layerType() const;
 
@@ -1970,7 +1995,7 @@ Sets the ``count`` of random points to render in the fill.
     unsigned long seed() const;
 %Docstring
 Returns the random number seed to use when generating points, or 0 if
-a truely random sequence should be used.
+a truly random sequence should be used.
 
 .. seealso:: :py:func:`setSeed`
 %End
@@ -1978,7 +2003,7 @@ a truely random sequence should be used.
     void setSeed( unsigned long seed );
 %Docstring
 Sets the random number ``seed`` to use when generating points, or 0 if
-a truely random sequence should be used.
+a truly random sequence should be used.
 
 .. seealso:: :py:func:`seed`
 %End
@@ -1997,6 +2022,11 @@ Sets whether point markers should be ``clipped`` to the polygon boundary.
 .. seealso:: :py:func:`clipPoints`
 %End
 
+    virtual void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+
+    virtual void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+
+
   private:
     QgsRandomMarkerFillSymbolLayer( const QgsRandomMarkerFillSymbolLayer &other );
 };
@@ -2013,6 +2043,11 @@ class QgsCentroidFillSymbolLayer : QgsFillSymbolLayer
 
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+%Docstring
+Creates a new QgsCentroidFillSymbolLayer using the specified ``properties`` map containing symbol properties (see properties()).
+
+Caller takes ownership of the returned symbol layer.
+%End
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
 
 
