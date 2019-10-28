@@ -3988,10 +3988,13 @@ void QgsRandomMarkerFillSymbolLayer::renderPolygon( const QPolygonF &points, QLi
 
   if ( mRenderingFeature )
   {
+    // in the middle of rendering a possibly multi-part feature, so we collect all the parts and defer the actual rendering
+    // until after we've received the final part
     mCurrentParts << part;
   }
   else
   {
+    // not rendering a feature, so we can just render the polygon immediately
     render( context.renderContext(), QVector< Part>() << part, context.feature() ? *context.feature() : QgsFeature(), context.selected() );
   }
 }
@@ -4036,8 +4039,7 @@ void QgsRandomMarkerFillSymbolLayer::render( QgsRenderContext &context, const QV
     }
   }
 
-  QgsGeometry geom = QgsGeometry::unaryUnion( geometryParts );
-
+  const QgsGeometry geom = geometryParts.count() != 1 ? QgsGeometry::unaryUnion( geometryParts ) : geometryParts.at( 0 );
 
   if ( clipPoints )
   {
@@ -4060,6 +4062,8 @@ void QgsRandomMarkerFillSymbolLayer::render( QgsRenderContext &context, const QV
 
   QVector< QgsPointXY > randomPoints = geom.randomPointsInPolygon( count, seed );
 #if 0
+  // in some cases rendering from top to bottom is nice (e.g. randomised tree markers), but in other cases it's not wanted..
+  // TODO consider exposing this as an option
   std::sort( randomPoints.begin(), randomPoints.end(), []( const QgsPointXY & a, const QgsPointXY & b )->bool
   {
     return a.y() < b.y();

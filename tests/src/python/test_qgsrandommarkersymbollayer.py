@@ -38,19 +38,8 @@ from qgis.core import (QgsGeometry,
                        QgsReadWriteContext,
                        QgsSymbolLayerUtils,
                        QgsSimpleMarkerSymbolLayer,
-                       QgsLineSymbolLayer,
-                       QgsTemplatedLineSymbolLayerBase,
-                       QgsMarkerLineSymbolLayer,
+                       QgsSimpleFillSymbolLayer,
                        QgsMarkerSymbol,
-                       QgsGeometryGeneratorSymbolLayer,
-                       QgsSymbol,
-                       QgsFontMarkerSymbolLayer,
-                       QgsFontUtils,
-                       QgsLineSymbol,
-                       QgsSymbolLayer,
-                       QgsProperty,
-                       QgsRectangle,
-                       QgsUnitTypes,
                        QgsRandomMarkerFillSymbolLayer
                        )
 
@@ -141,6 +130,30 @@ class TestQgsRandomMarkerSymbolLayer(unittest.TestCase):
         # a newly created random fill should default to a random seed, not 0
         random_fill = QgsRandomMarkerFillSymbolLayer.create({})
         self.assertNotEqual(random_fill.seed(), 0)
+
+    def testMultipart(self):
+        """
+        Test rendering a multi-part random marker fill symbol
+        """
+        s = QgsFillSymbol()
+        s.deleteSymbolLayer(0)
+
+        simple_fill = QgsSimpleFillSymbolLayer(color=QColor(255,255,255))
+        s.appendSymbolLayer(simple_fill.clone())
+
+        random_fill = QgsRandomMarkerFillSymbolLayer(12, seed=481523)
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        random_fill.setSubSymbol(marker_symbol)
+
+        s.appendSymbolLayer(random_fill.clone())
+
+        g = QgsGeometry.fromWkt('MultiPolygon(((0 0, 5 0, 5 10, 0 10, 0 0),(1 1, 1 9, 4 9, 4 1, 1 1)), ((6 0, 10 0, 10 5, 6 5, 6 0)), ((8 6, 10 6, 10 10, 8 10, 8 6)))')
+        rendered_image = self.renderGeometry(s, g)
+        self.assertTrue(self.imageCheck('randommarkerfill_multipoly', 'randommarkerfill_multipoly', rendered_image))
 
     def renderGeometry(self, symbol, geom, buffer=20):
         f = QgsFeature()
