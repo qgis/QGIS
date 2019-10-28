@@ -35,6 +35,7 @@ QgsFeatureSelectionDlg::QgsFeatureSelectionDlg( QgsVectorLayer *vl, QgsAttribute
 
   // TODO: Proper QgsDistanceArea, proper mapcanvas
   mDualView->init( mVectorLayer, nullptr, QgsFeatureRequest(), context );
+  mDualView->setView( QgsDualView::AttributeEditor );
 }
 
 const QgsFeatureIds &QgsFeatureSelectionDlg::selectedFeatures()
