@@ -36,7 +36,7 @@
 //
 
 // Version string
-const QString Qgis::QGIS_VERSION( QStringLiteral( VERSION ) );
+const QString Qgis::QGIS_VERSION( QString::fromUtf8( VERSION ) );
 
 // development version
 const char *Qgis::QGIS_DEV_VERSION = QGSVERSION;
@@ -46,7 +46,7 @@ const char *Qgis::QGIS_DEV_VERSION = QGSVERSION;
 const int Qgis::QGIS_VERSION_INT = VERSION_INT;
 
 // Release name
-const QString Qgis::QGIS_RELEASE_NAME( QStringLiteral( RELEASE_NAME ) );
+const QString Qgis::QGIS_RELEASE_NAME( QString::fromUtf8( RELEASE_NAME ) );
 
 const QString GEOPROJ4 = QStringLiteral( "+proj=longlat +datum=WGS84 +no_defs" );
 
