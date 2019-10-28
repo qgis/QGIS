@@ -14,12 +14,14 @@
  ***************************************************************************/
 
 #include "qgsgdalutils.h"
+#include "qgslogger.h"
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include "gdal.h"
 #include "cpl_string.h"
 
 #include <QString>
+#include <QImage>
 
 bool QgsGdalUtils::supportsRasterCreate( GDALDriverH driver )
 {
@@ -182,6 +184,51 @@ void QgsGdalUtils::resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH h
   oOperation.ChunkAndWarpImage( 0, 0, GDALGetRasterXSize( hDstDS ), GDALGetRasterYSize( hDstDS ) );
 
   GDALDestroyGenImgProjTransformer( psWarpOptions->pTransformerArg );
+}
+
+gdal::dataset_unique_ptr QgsGdalUtils::resampleImage( const QImage &image, const QgsRectangle &extent, QSize outputSize, GDALResampleAlg resampleAlg )
+{
+  gdal::dataset_unique_ptr srcDS = QgsGdalUtils::imageToMemoryDataset( image, extent, QgsCoordinateReferenceSystem() );
+  if ( !srcDS )
+    return nullptr;
+
+  gdal::dataset_unique_ptr destDS = QgsGdalUtils::createMultiBandMemoryDataset( GDT_Float32, 4, extent, outputSize.width(), outputSize.height(), QgsCoordinateReferenceSystem() );
+  if ( !destDS )
+    return nullptr;
+
+  gdal::warp_options_unique_ptr psWarpOptions( GDALCreateWarpOptions() );
+  psWarpOptions->hSrcDS = srcDS.get();
+  psWarpOptions->hDstDS = destDS.get();
+
+  psWarpOptions->nBandCount = 4;
+  psWarpOptions->panSrcBands = ( int * ) CPLMalloc( sizeof( int ) * 4 );
+  psWarpOptions->panDstBands = ( int * ) CPLMalloc( sizeof( int ) * 4 );
+  psWarpOptions->panSrcBands[0] = 1;
+  psWarpOptions->panSrcBands[1] = 2;
+  psWarpOptions->panSrcBands[2] = 3;
+  psWarpOptions->panSrcBands[3] = 4;
+  psWarpOptions->panDstBands[0] = 1;
+  psWarpOptions->panDstBands[1] = 2;
+  psWarpOptions->panDstBands[2] = 3;
+  psWarpOptions->panDstBands[3] = 4;
+
+  psWarpOptions->eResampleAlg = resampleAlg;
+
+  // Establish reprojection transformer.
+  psWarpOptions->pTransformerArg =
+    GDALCreateGenImgProjTransformer( srcDS.get(), GDALGetProjectionRef( srcDS.get() ),
+                                     destDS.get(), GDALGetProjectionRef( destDS.get() ),
+                                     FALSE, 0.0, 1 );
+  psWarpOptions->pfnTransformer = GDALGenImgProjTransform;
+
+  // Initialize and execute the warp operation.
+  GDALWarpOperation oOperation;
+  oOperation.Initialize( psWarpOptions.get() );
+
+  oOperation.ChunkAndWarpImage( 0, 0, GDALGetRasterXSize( destDS.get() ), GDALGetRasterYSize( destDS.get() ) );
+
+  GDALDestroyGenImgProjTransformer( psWarpOptions->pTransformerArg );
+  return destDS;
 }
 
 QString QgsGdalUtils::helpCreationOptionsFormat( QString format )
