@@ -1738,7 +1738,7 @@ class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
      * Constructor for QgsRandomMarkerFillSymbolLayer, with the specified \a pointCount.
      *
      * Optionally a specific random number \a seed can be used when generating points. A \a seed of 0 indicates that
-     * a truly random sequence should be used.
+     * a truly random sequence will be used on every rendering, causing points to appear in different locations with every map refresh.
      */
     QgsRandomMarkerFillSymbolLayer( int pointCount = 10, unsigned long seed = 0 );
 
@@ -1787,15 +1787,15 @@ class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
 
     /**
      * Returns the random number seed to use when generating points, or 0 if
-     * a truly random sequence should be used.
-     *
+     * a truly random sequence will be used (causing points to appear in different locations with every map refresh).
      * \see setSeed()
      */
     unsigned long seed() const;
 
     /**
      * Sets the random number \a seed to use when generating points, or 0 if
-     * a truly random sequence should be used.
+     * a truly random sequence will be used on every rendering (causing points to appear
+     * in different locations with every map refresh).
      *
      * \see seed()
      */

@@ -1930,7 +1930,7 @@ A fill symbol layer which places markers at random locations within polygons.
 Constructor for QgsRandomMarkerFillSymbolLayer, with the specified ``pointCount``.
 
 Optionally a specific random number ``seed`` can be used when generating points. A ``seed`` of 0 indicates that
-a truly random sequence should be used.
+a truly random sequence will be used on every rendering, causing points to appear in different locations with every map refresh.
 %End
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
@@ -1995,7 +1995,7 @@ Sets the ``count`` of random points to render in the fill.
     unsigned long seed() const;
 %Docstring
 Returns the random number seed to use when generating points, or 0 if
-a truly random sequence should be used.
+a truly random sequence will be used (causing points to appear in different locations with every map refresh).
 
 .. seealso:: :py:func:`setSeed`
 %End
@@ -2003,7 +2003,8 @@ a truly random sequence should be used.
     void setSeed( unsigned long seed );
 %Docstring
 Sets the random number ``seed`` to use when generating points, or 0 if
-a truly random sequence should be used.
+a truly random sequence will be used on every rendering (causing points to appear
+in different locations with every map refresh).
 
 .. seealso:: :py:func:`seed`
 %End

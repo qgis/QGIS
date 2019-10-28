@@ -4091,14 +4091,14 @@ QgsStringMap QgsRandomMarkerFillSymbolLayer::properties() const
 
 QgsRandomMarkerFillSymbolLayer *QgsRandomMarkerFillSymbolLayer::clone() const
 {
-  std::unique_ptr< QgsRandomMarkerFillSymbolLayer > x = qgis::make_unique< QgsRandomMarkerFillSymbolLayer >( mPointCount, mSeed );
-  x->mAngle = mAngle;
-  x->mColor = mColor;
-  x->mClipPoints = mClipPoints;
-  x->setSubSymbol( mMarker->clone() );
-  copyDataDefinedProperties( x.get() );
-  copyPaintEffect( x.get() );
-  return x.release();
+  std::unique_ptr< QgsRandomMarkerFillSymbolLayer > res = qgis::make_unique< QgsRandomMarkerFillSymbolLayer >( mPointCount, mSeed );
+  res->mAngle = mAngle;
+  res->mColor = mColor;
+  res->mClipPoints = mClipPoints;
+  res->setSubSymbol( mMarker->clone() );
+  copyDataDefinedProperties( res.get() );
+  copyPaintEffect( res.get() );
+  return res.release();
 }
 
 QgsSymbol *QgsRandomMarkerFillSymbolLayer::subSymbol()
