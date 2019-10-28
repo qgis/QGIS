@@ -284,25 +284,23 @@ class CORE_EXPORT QgsJsonUtils
   public:
 
     /**
-     * Attempts to parse a GeoJSON string to a collection of features.
-     * \param string GeoJSON string to parse
-     * \param fields fields collection to use for parsed features
-     * \param encoding text encoding
-     * \returns list of parsed features, or an empty list if no features could be parsed
+     * Attempts to parse a GeoJSON \a string to a collection of features.
+     * It is possible to specify \a fields to parse specific fields, if not provided, no fields will be included.
+     * An \a encoding can be specified which defaults to UTF-8 if it is `nullptr`.
+     * \returns a list of parsed features, or an empty list if no features could be parsed
      * \see stringToFields()
      * \note this function is a wrapper around QgsOgrUtils::stringToFeatureList()
      */
-    static QgsFeatureList stringToFeatureList( const QString &string, const QgsFields &fields, QTextCodec *encoding );
+    static QgsFeatureList stringToFeatureList( const QString &string, const QgsFields &fields = QgsFields(), QTextCodec *encoding = nullptr );
 
     /**
-     * Attempts to retrieve the fields from a GeoJSON string representing a collection of features.
-     * \param string GeoJSON string to parse
-     * \param encoding text encoding
+     * Attempts to retrieve the fields from a GeoJSON  \a string representing a collection of features.
+     * An \a encoding can be specified which defaults to UTF-8 if it is `nullptr`.
      * \returns retrieved fields collection, or an empty list if no fields could be determined from the string
      * \see stringToFeatureList()
      * \note this function is a wrapper around QgsOgrUtils::stringToFields()
      */
-    static QgsFields stringToFields( const QString &string, QTextCodec *encoding );
+    static QgsFields stringToFields( const QString &string, QTextCodec *encoding = nullptr );
 
     /**
      * Encodes a value to a JSON string representation, adding appropriate quotations and escaping
