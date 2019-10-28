@@ -82,6 +82,12 @@ class CORE_EXPORT QgsGdalUtils
         QSize outputSize, GDALResampleAlg resampleAlg );
 
     /**
+     * Resamples a QImage \a image using GDAL resampler.
+     * \since QGIS 3.12
+     */
+    static QImage resampleImage( const QImage &image, QSize outputSize, GDALResampleAlg resampleAlg );
+
+    /**
      * Gets creation options metadata for a given format
      * \since QGIS 3.10
      */
