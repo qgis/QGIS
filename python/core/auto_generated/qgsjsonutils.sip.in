@@ -154,21 +154,20 @@ correctly automatically reprojected to WGS 84, to match GeoJSON specifications.
 .. seealso:: :py:func:`sourceCrs`
 %End
 
-    void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
-%Docstring
-Sets the destination CRS for writing feature geometries.
-
-:param crs: destination CRS for output feature geometries
-
-.. versionadded:: 3.10
-%End
-
     QgsCoordinateReferenceSystem sourceCrs() const;
 %Docstring
 Returns the source CRS for feature geometries. The source CRS must be set if geometries are to be
 correctly automatically reprojected to WGS 84, to match GeoJSON specifications.
 
 .. seealso:: :py:func:`setSourceCrs`
+%End
+
+    void setTransformGeometries( bool activate );
+%Docstring
+Sets whether geometries should be transformed in EPSG 4326 (default
+behavior) or just keep as it is.
+
+.. versionadded:: 3.12
 %End
 
     void setAttributes( const QgsAttributeList &attributes );
