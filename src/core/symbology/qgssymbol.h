@@ -644,7 +644,7 @@ class CORE_EXPORT QgsSymbol
     /**
      * Called after symbol layers have been rendered for a particular \a feature.
      *
-     * This is always preceeded by a call to startFeatureRender() just before the feature
+     * This is always preceded by a call to startFeatureRender() just before the feature
      * will be rendered.
      *
      * Internally, this notifies all symbol layers which were used via a call to
