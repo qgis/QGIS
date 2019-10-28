@@ -36,12 +36,10 @@ QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &nam
 }
 
 QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &uri, const QVariantMap &configuration ):
-  QgsAbstractDatabaseProviderConnection( uri, configuration )
+  QgsAbstractDatabaseProviderConnection( QgsDataSourceUri( uri ).connectionInfo( false ), configuration )
 {
   setDefaultCapabilities();
 }
-
-
 
 void QgsPostgresProviderConnection::setDefaultCapabilities()
 {
@@ -109,6 +107,33 @@ void QgsPostgresProviderConnection::createVectorTable( const QString &schema,
   if ( errCode != QgsVectorLayerExporter::ExportError::NoError )
   {
     throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
+  }
+}
+
+QString QgsPostgresProviderConnection::tableUri( const QString &schema, const QString &name ) const
+{
+  const auto tableInfo { table( schema, name ) };
+  QgsDataSourceUri dsUri( uri() );
+  dsUri.setTable( name );
+  dsUri.setSchema( schema );
+  if ( tableInfo.flags().testFlag( QgsAbstractDatabaseProviderConnection::TableFlag::Raster ) )
+  {
+    static const QRegularExpression removePartsRe { R"raw(\s*sql=\s*|\s*table=("[^"]+"\.?)*\s*)raw" };
+    if ( tableInfo.geometryColumn().isEmpty() )
+    {
+      throw QgsProviderConnectionException( QObject::tr( "Raster table '%1' in schema '%2' has no geometry column." )
+                                            .arg( name )
+                                            .arg( schema ) );
+    }
+    return QStringLiteral( "PG: %1 mode=2 schema='%2' table='%4' column='%3'" )
+           .arg( dsUri.uri( false ).replace( removePartsRe, QString() ) )
+           .arg( schema )
+           .arg( tableInfo.geometryColumn() )
+           .arg( name );
+  }
+  else
+  {
+    return dsUri.uri( false );
   }
 }
 

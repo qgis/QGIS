@@ -21,6 +21,7 @@ from qgis.core import (
     QgsAbstractDatabaseProviderConnection,
     QgsProviderConnectionException,
     QgsVectorLayer,
+    QgsRasterLayer,
     QgsProviderRegistry,
     QgsFields,
     QgsCoordinateReferenceSystem,
@@ -45,7 +46,7 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
         gpkg_original_path = '{}/qgis_server/test_project_wms_grouped_layers.gpkg'.format(TEST_DATA_DIR)
         cls.gpkg_path = '{}/qgis_server/test_project_wms_grouped_layers_test.gpkg'.format(TEST_DATA_DIR)
         shutil.copy(gpkg_original_path, cls.gpkg_path)
-        vl = QgsVectorLayer('{}|cdb_lines'.format(cls.gpkg_path), 'test', 'ogr')
+        vl = QgsVectorLayer('{}|layername=cdb_lines'.format(cls.gpkg_path), 'test', 'ogr')
         assert vl.isValid()
         cls.uri = cls.gpkg_path
 
@@ -53,6 +54,31 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
     def tearDownClass(cls):
         """Run after all tests"""
         os.unlink(cls.gpkg_path)
+
+    def test_gpkg_connections_from_uri(self):
+        """Create a connection from a layer uri and retrieve it"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('ogr')
+        vl = QgsVectorLayer('{}|layername=cdb_lines'.format(self.gpkg_path), 'test', 'ogr')
+        conn = md.createConnection(vl.dataProvider().uri().uri(), {})
+        self.assertEqual(conn.uri(), self.gpkg_path)
+
+    def test_gpkg_table_uri(self):
+        """Create a connection from a layer uri and create a table URI"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('ogr')
+        conn = md.createConnection(self.uri, {})
+        self.assertEqual(conn.tableUri('', 'cdb_lines'), '{}|layername=cdb_lines'.format(self.gpkg_path))
+        vl = QgsVectorLayer(conn.tableUri('', 'cdb_lines'), 'lines', 'ogr')
+        self.assertTrue(vl.isValid())
+
+        # Test table(), throws if not found
+        table_info = conn.table('', 'osm')
+        table_info = conn.table('', 'cdb_lines')
+
+        self.assertEqual(conn.tableUri('', 'osm'), "GPKG:%s:osm" % self.uri)
+        rl = QgsRasterLayer(conn.tableUri('', 'osm'), 'r', 'gdal')
+        self.assertTrue(rl.isValid())
 
     def test_gpkg_connections(self):
         """Create some connections and retrieve them"""

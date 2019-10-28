@@ -38,6 +38,11 @@ QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString 
 QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString &uri, const QVariantMap &configuration ):
   QgsAbstractDatabaseProviderConnection( uri, configuration )
 {
+  // Cleanup the URI in case it contains other information other than the file path
+  if ( uri.contains( '|' ) )
+  {
+    setUri( uri.left( uri.indexOf( '|' ) ).trimmed() );
+  }
   setDefaultCapabilities();
 }
 
@@ -60,6 +65,18 @@ void QgsGeoPackageProviderConnection::remove( const QString &name ) const
   settings.remove( name );
 }
 
+QString QgsGeoPackageProviderConnection::tableUri( const QString &schema, const QString &name ) const
+{
+  const auto tableInfo { table( schema, name ) };
+  if ( tableInfo.flags().testFlag( QgsAbstractDatabaseProviderConnection::TableFlag::Raster ) )
+  {
+    return QStringLiteral( "GPKG:%1:%2" ).arg( uri() ).arg( name );
+  }
+  else
+  {
+    return uri() + QStringLiteral( "|layername=%1" ).arg( name );
+  }
+}
 
 void QgsGeoPackageProviderConnection::createVectorTable( const QString &schema,
     const QString &name,

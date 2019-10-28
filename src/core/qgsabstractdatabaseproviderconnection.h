@@ -318,6 +318,14 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     // Operations interface
 
     /**
+     * Returns the URI string for the given \a table and \a schema.
+     * Raises a QgsProviderConnectionException if any errors are encountered.
+     * \throws QgsProviderConnectionException
+     * \since QGIS 3.12
+     */
+    virtual QString tableUri( const QString &schema, const QString &name ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
      * Creates an empty table with \a name in the given \a schema (schema is ignored  if not supported by the backend).
      * Raises a QgsProviderConnectionException if any errors are encountered.
      * \throws QgsProviderConnectionException
@@ -402,7 +410,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual void vacuum( const QString &schema, const QString &name ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Returns information on the tables in the given schema .
+     * Returns information on the tables in the given schema.
      * Raises a QgsProviderConnectionException if any errors are encountered.
      * \param schema name of the schema (ignored if not supported by the backend)
      * \param flags filter tables by flags, this option completely overrides search options stored in the connection
@@ -410,6 +418,15 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \note Not available in Python bindings
      */
     virtual QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(), const QgsAbstractDatabaseProviderConnection::TableFlags &flags = nullptr ) const SIP_SKIP;
+
+    /**
+     * Returns information on a \a table in the given \a schema.
+     * Raises a QgsProviderConnectionException if any errors are encountered or if the table does not exist.
+     * \throws QgsProviderConnectionException
+     * \note Not available in Python bindings
+     * \since QGIS 3.12
+     */
+    virtual QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table ) const;
 
     /**
      * Returns information on the tables in the given schema.
