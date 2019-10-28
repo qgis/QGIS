@@ -106,6 +106,8 @@ class CORE_EXPORT QgsSymbolLayer
           sipType = sipType_QgsGradientFillSymbolLayer;
         else if ( sipCpp->layerType() == "ShapeburstFill" )
           sipType = sipType_QgsShapeburstFillSymbolLayer;
+        else if ( sipCpp->layerType() == "RandomMarkerFill" )
+          sipType = sipType_QgsRandomMarkerFillSymbolLayer;
         else
           sipType = sipType_QgsFillSymbolLayer;
         break;
