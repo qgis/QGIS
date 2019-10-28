@@ -3931,7 +3931,7 @@ QgsSymbolLayer *QgsRandomMarkerFillSymbolLayer::create( const QgsStringMap &prop
 
   unsigned long seed = 0;
   if ( properties.contains( QStringLiteral( "seed" ) ) )
-    seed = properties.value( QStringLiteral( "seed" ), QStringLiteral( "0" ) ).toULong();
+    seed = properties.value( QStringLiteral( "seed" ) ).toULong();
   else
   {
     // if we a creating a new random marker fill from scratch, we default to a random seed
