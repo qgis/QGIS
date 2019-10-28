@@ -231,6 +231,87 @@ gdal::dataset_unique_ptr QgsGdalUtils::resampleImage( const QImage &image, const
   return destDS;
 }
 
+QImage QgsGdalUtils::resampleImage( const QImage &image, QSize outputSize, GDALResampleAlg resampleAlg )
+{
+  gdal::dataset_unique_ptr srcDS = resampleImage( image, QgsRectangle( 0, 0, image.width(), image.height() ), outputSize, resampleAlg );
+  if ( !srcDS )
+    return QImage();
+
+  QImage res( outputSize, image.format() );
+  QRgb *rgb = reinterpret_cast<QRgb *>( res.bits() );
+
+  GDALRasterBandH rBand = GDALGetRasterBand( srcDS.get(), 1 );
+  GDALRasterBandH gBand = GDALGetRasterBand( srcDS.get(), 2 );
+  GDALRasterBandH bBand = GDALGetRasterBand( srcDS.get(), 3 );
+  GDALRasterBandH aBand = GDALGetRasterBand( srcDS.get(), 4 );
+
+  const qgssize count = static_cast< qgssize >( outputSize.width() ) * outputSize.height();
+
+  float *rData = ( float * ) CPLMalloc( count * sizeof( float ) );
+  CPLErr err = GDALRasterIO( rBand, GF_Read, 0, 0, outputSize.width(), outputSize.height(),
+                             rData, outputSize.width(), outputSize.height(), GDT_Float32, 0, 0 );
+  if ( err != CE_None )
+  {
+    QgsDebugMsg( QStringLiteral( "failed to read red band" ) );
+    CPLFree( rData );
+    return QImage();
+  }
+  float *gData = ( float * ) CPLMalloc( count * sizeof( float ) );
+  err = GDALRasterIO( gBand, GF_Read, 0, 0, outputSize.width(), outputSize.height(),
+                      gData, outputSize.width(), outputSize.height(), GDT_Float32, 0, 0 );
+  if ( err != CE_None )
+  {
+    QgsDebugMsg( QStringLiteral( "failed to read green band" ) );
+    CPLFree( rData );
+    CPLFree( gData );
+    return QImage();
+  }
+  float *bData = ( float * ) CPLMalloc( count * sizeof( float ) );
+  err = GDALRasterIO( bBand, GF_Read, 0, 0, outputSize.width(), outputSize.height(),
+                      bData, outputSize.width(), outputSize.height(), GDT_Float32, 0, 0 );
+  if ( err != CE_None )
+  {
+    QgsDebugMsg( QStringLiteral( "failed to read blue band" ) );
+    CPLFree( rData );
+    CPLFree( gData );
+    CPLFree( bData );
+    return QImage();
+  }
+  float *aData = ( float * ) CPLMalloc( count * sizeof( float ) );
+  err = GDALRasterIO( aBand, GF_Read, 0, 0, outputSize.width(), outputSize.height(),
+                      aData, outputSize.width(), outputSize.height(), GDT_Float32, 0, 0 );
+  if ( err != CE_None )
+  {
+    QgsDebugMsg( QStringLiteral( "failed to read alpha band" ) );
+    CPLFree( rData );
+    CPLFree( gData );
+    CPLFree( bData );
+    CPLFree( aData );
+    return QImage();
+  }
+
+  float *rIn = rData;
+  float *gIn = gData;
+  float *bIn = bData;
+  float *aIn = aData;
+  for ( qgssize i = 0; i < count; ++i )
+  {
+    int red = std::max( 0, std::min( 255, static_cast< int >( std::round( *rIn++ ) ) ) );
+    int green = std::max( 0, std::min( 255, static_cast< int >( std::round( *gIn++ ) ) ) );
+    int blue = std::max( 0, std::min( 255, static_cast< int >( std::round( *bIn++ ) ) ) );
+    int alpha = std::max( 0, std::min( 255, static_cast< int >( std::round( *aIn++ ) ) ) );
+
+    *rgb++ = qRgba( red, green, blue, alpha );
+  }
+
+  CPLFree( rData );
+  CPLFree( gData );
+  CPLFree( bData );
+  CPLFree( aData );
+
+  return res;
+}
+
 QString QgsGdalUtils::helpCreationOptionsFormat( QString format )
 {
   QString message;

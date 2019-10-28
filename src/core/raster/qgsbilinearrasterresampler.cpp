@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsbilinearrasterresampler.h"
+#include "qgsgdalutils.h"
 #include <QImage>
 #include <cmath>
 
@@ -27,7 +28,7 @@ QgsBilinearRasterResampler *QgsBilinearRasterResampler::clone() const
 Q_NOWARN_DEPRECATED_PUSH
 void QgsBilinearRasterResampler::resample( const QImage &srcImage, QImage &dstImage )
 {
-  dstImage = srcImage.scaled( dstImage.width(), dstImage.height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
+  dstImage = QgsGdalUtils::resampleImage( srcImage, dstImage.size(), GRA_Bilinear );
 }
 Q_NOWARN_DEPRECATED_POP
 
