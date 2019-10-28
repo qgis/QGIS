@@ -402,7 +402,7 @@ bool QgsMapRendererTask::run()
 
         if ( !skipWorldFile )
         {
-          QString worldFileName = info.absolutePath() + '/' + info.baseName() + '.'
+          QString worldFileName = info.absolutePath() + '/' + info.completeBaseName() + '.'
                                   + outputSuffix.at( 0 ) + outputSuffix.at( info.suffix().size() - 1 ) + 'w';
           QFile worldFile( worldFileName );
 
