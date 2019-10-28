@@ -1925,7 +1925,13 @@ A fill symbol layer which places markers at random locations within polygons.
 %End
   public:
 
-    QgsRandomMarkerFillSymbolLayer( int pointCount = 10, unsigned long seed = 0 );
+    enum CountMethod
+    {
+      AbsoluteCount,
+      DensityBasedCount,
+    };
+
+    QgsRandomMarkerFillSymbolLayer( int pointCount = 10, CountMethod method = AbsoluteCount, double densityArea = 250.0, unsigned long seed = 0 );
 %Docstring
 Constructor for QgsRandomMarkerFillSymbolLayer, with the specified ``pointCount``.
 
@@ -2021,6 +2027,78 @@ Returns ``True`` if point markers should be clipped to the polygon boundary.
 Sets whether point markers should be ``clipped`` to the polygon boundary.
 
 .. seealso:: :py:func:`clipPoints`
+%End
+
+    CountMethod countMethod() const;
+%Docstring
+Returns the count method used to randomly fill the polygon.
+
+.. seealso:: :py:func:`setCountMethod`
+%End
+
+    void setCountMethod( CountMethod method );
+%Docstring
+Sets the count ``method`` used to randomly fill the polygon.
+
+.. seealso:: :py:func:`countMethod`
+%End
+
+    double densityArea() const;
+%Docstring
+Returns the density area used to count the number of points to randomly fill the polygon.
+
+Only used when the count method is set to QgsRandomMarkerFillSymbolLayer.DensityBasedCount.
+
+Units are specified by setDensityAreaUnit().
+
+.. seealso:: :py:func:`setDensityArea`
+%End
+
+    void setDensityArea( double area );
+%Docstring
+Sets the density ``area`` used to count the number of points to randomly fill the polygon.
+
+.. seealso:: :py:func:`densityArea`
+%End
+
+    void setDensityAreaUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the units for the density area.
+
+:param unit: width units
+
+.. seealso:: :py:func:`densityAreaUnit`
+%End
+
+    QgsUnitTypes::RenderUnit densityAreaUnit() const;
+%Docstring
+Returns the units for the density area.
+
+.. seealso:: :py:func:`setDensityAreaUnit`
+%End
+
+    void setDensityAreaUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map scale for the density area.
+
+:param scale: density area map unit scale
+
+.. seealso:: :py:func:`densityAreaUnitScale`
+
+.. seealso:: :py:func:`setDensityArea`
+
+.. seealso:: :py:func:`setDensityAreaUnit`
+%End
+
+    const QgsMapUnitScale &densityAreaUnitScale() const;
+%Docstring
+Returns the map scale for the density area.
+
+.. seealso:: :py:func:`setDensityAreaUnitScale`
+
+.. seealso:: :py:func:`densityArea`
+
+.. seealso:: :py:func:`densityAreaUnit`
 %End
 
     virtual void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context );

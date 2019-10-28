@@ -930,7 +930,10 @@ class GUI_EXPORT QgsRandomMarkerFillSymbolLayerWidget: public QgsSymbolLayerWidg
 
   private slots:
 
+    void countMethodChanged( int );
     void countChanged( int d );
+    void densityAreaChanged( double d );
+    void densityAreaUnitChanged();
     void seedChanged( int d );
 };
 
