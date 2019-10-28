@@ -1734,13 +1734,20 @@ class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
 {
   public:
 
+    //! Methods to define the number of points randomly filling the polygon
+    enum CountMethod
+    {
+      AbsoluteCount, //!< The point count is used as an absolute count of markers
+      DensityBasedCount, //!< The point count is part of a marker density count
+    };
+
     /**
      * Constructor for QgsRandomMarkerFillSymbolLayer, with the specified \a pointCount.
      *
      * Optionally a specific random number \a seed can be used when generating points. A \a seed of 0 indicates that
      * a truly random sequence will be used on every rendering, causing points to appear in different locations with every map refresh.
      */
-    QgsRandomMarkerFillSymbolLayer( int pointCount = 10, unsigned long seed = 0 );
+    QgsRandomMarkerFillSymbolLayer( int pointCount = 10, CountMethod method = AbsoluteCount, double densityArea = 250.0, unsigned long seed = 0 );
 
     /**
      * Creates a new QgsRandomMarkerFillSymbolLayer using the specified \a properties map containing symbol properties (see properties()).
@@ -1815,6 +1822,68 @@ class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
      */
     void setClipPoints( bool clipped );
 
+    /**
+     * Returns the count method used to randomly fill the polygon.
+     *
+     * \see setCountMethod()
+     */
+    CountMethod countMethod() const;
+
+    /**
+     * Sets the count \a method used to randomly fill the polygon.
+     *
+     * \see countMethod()
+     */
+    void setCountMethod( CountMethod method );
+
+    /**
+     * Returns the density area used to count the number of points to randomly fill the polygon.
+     *
+     * Only used when the count method is set to QgsRandomMarkerFillSymbolLayer::DensityBasedCount.
+     *
+     * Units are specified by setDensityAreaUnit().
+     *
+     * \see setDensityArea()
+     */
+    double densityArea() const;
+
+    /**
+     * Sets the density \a area used to count the number of points to randomly fill the polygon.
+     *
+     * \see densityArea()
+     */
+    void setDensityArea( double area );
+
+    /**
+     * Sets the units for the density area.
+     * \param unit width units
+     * \see densityAreaUnit()
+    */
+    void setDensityAreaUnit( QgsUnitTypes::RenderUnit unit ) { mDensityAreaUnit = unit; }
+
+    /**
+     * Returns the units for the density area.
+     * \see setDensityAreaUnit()
+    */
+    QgsUnitTypes::RenderUnit densityAreaUnit() const { return mDensityAreaUnit; }
+
+    /**
+     * Sets the map scale for the density area.
+     * \param scale density area map unit scale
+     * \see densityAreaUnitScale()
+     * \see setDensityArea()
+     * \see setDensityAreaUnit()
+     */
+    void setDensityAreaUnitScale( const QgsMapUnitScale &scale ) { mDensityAreaUnitScale = scale; }
+
+    /**
+     * Returns the map scale for the density area.
+     * \see setDensityAreaUnitScale()
+     * \see densityArea()
+     * \see densityAreaUnit()
+     */
+    const QgsMapUnitScale &densityAreaUnitScale() const { return mDensityAreaUnitScale; }
+
     void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
     void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
 
@@ -1834,7 +1903,11 @@ class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
     void render( QgsRenderContext &context, const QVector< Part > &parts, const QgsFeature &feature, bool selected );
 
     std::unique_ptr< QgsMarkerSymbol > mMarker;
+    CountMethod mCountMethod = AbsoluteCount;
     int mPointCount = 10;
+    double mDensityArea = 250.0;
+    QgsUnitTypes::RenderUnit mDensityAreaUnit = QgsUnitTypes::RenderMillimeters;
+    QgsMapUnitScale mDensityAreaUnitScale;
     unsigned long mSeed = 0;
     bool mClipPoints = false;
 

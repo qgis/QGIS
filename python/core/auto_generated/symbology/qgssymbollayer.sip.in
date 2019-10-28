@@ -140,6 +140,7 @@ class QgsSymbolLayer
       PropertyPointCount,
       PropertyRandomSeed,
       PropertyClipPoints,
+      PropertyDensityArea,
     };
 
     static const QgsPropertiesDefinition &propertyDefinitions();

@@ -3918,8 +3918,10 @@ void QgsRasterFillSymbolLayer::applyPattern( QBrush &brush, const QString &image
 // QgsRandomMarkerFillSymbolLayer
 //
 
-QgsRandomMarkerFillSymbolLayer::QgsRandomMarkerFillSymbolLayer( int pointCount, unsigned long seed )
-  : mPointCount( pointCount )
+QgsRandomMarkerFillSymbolLayer::QgsRandomMarkerFillSymbolLayer( int pointCount, CountMethod method, double densityArea, unsigned long seed )
+  : mCountMethod( method )
+  , mPointCount( pointCount )
+  , mDensityArea( densityArea )
   , mSeed( seed )
 {
   setSubSymbol( new QgsMarkerSymbol() );
@@ -3927,7 +3929,9 @@ QgsRandomMarkerFillSymbolLayer::QgsRandomMarkerFillSymbolLayer( int pointCount, 
 
 QgsSymbolLayer *QgsRandomMarkerFillSymbolLayer::create( const QgsStringMap &properties )
 {
+  const CountMethod countMethod  = static_cast< CountMethod >( properties.value( QStringLiteral( "count_method" ), QStringLiteral( "0" ) ).toInt() );
   const int pointCount = properties.value( QStringLiteral( "point_count" ), QStringLiteral( "10" ) ).toInt();
+  const double densityArea = properties.value( QStringLiteral( "density_area" ), QStringLiteral( "250.0" ) ).toDouble();
 
   unsigned long seed = 0;
   if ( properties.contains( QStringLiteral( "seed" ) ) )
@@ -3942,7 +3946,12 @@ QgsSymbolLayer *QgsRandomMarkerFillSymbolLayer::create( const QgsStringMap &prop
     seed = uniformDist( mt );
   }
 
-  std::unique_ptr< QgsRandomMarkerFillSymbolLayer > sl = qgis::make_unique< QgsRandomMarkerFillSymbolLayer >( pointCount, seed );
+  std::unique_ptr< QgsRandomMarkerFillSymbolLayer > sl = qgis::make_unique< QgsRandomMarkerFillSymbolLayer >( pointCount, countMethod, densityArea, seed );
+
+  if ( properties.contains( QStringLiteral( "density_area_unit" ) ) )
+    sl->setDensityAreaUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "density_area_unit" )] ) );
+  if ( properties.contains( QStringLiteral( "density_area_unit_scale" ) ) )
+    sl->setDensityAreaUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "density_area_unit_scale" )] ) );
 
   if ( properties.contains( QStringLiteral( "clip_points" ) ) )
   {
@@ -4047,12 +4056,33 @@ void QgsRandomMarkerFillSymbolLayer::render( QgsRenderContext &context, const QV
     context.painter()->setClipPath( path );
   }
 
+
   int count = mPointCount;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyPointCount ) )
   {
     context.expressionContext().setOriginalValueVariable( count );
     count = mDataDefinedProperties.valueAsInt( QgsSymbolLayer::PropertyPointCount, context.expressionContext(), count );
   }
+
+  switch ( mCountMethod )
+  {
+    case DensityBasedCount:
+    {
+      double densityArea = mDensityArea;
+      if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyDensityArea ) )
+      {
+        context.expressionContext().setOriginalValueVariable( densityArea );
+        densityArea = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyPointCount, context.expressionContext(), densityArea );
+      }
+      densityArea = context.convertToPainterUnits( std::sqrt( densityArea ), mDensityAreaUnit, mDensityAreaUnitScale );
+      densityArea = std::pow( densityArea, 2 );
+      count = std::max( 0.0, std::ceil( count * ( geom.area() / densityArea ) ) );
+      break;
+    }
+    case AbsoluteCount:
+      break;
+  }
+
   unsigned long seed = mSeed;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyRandomSeed ) )
   {
@@ -4083,7 +4113,11 @@ void QgsRandomMarkerFillSymbolLayer::render( QgsRenderContext &context, const QV
 QgsStringMap QgsRandomMarkerFillSymbolLayer::properties() const
 {
   QgsStringMap map;
+  map.insert( QStringLiteral( "count_method" ), QString::number( static_cast< int >( mCountMethod ) ) );
   map.insert( QStringLiteral( "point_count" ), QString::number( mPointCount ) );
+  map.insert( QStringLiteral( "density_area" ), QString::number( mDensityArea ) );
+  map.insert( QStringLiteral( "density_area_unit" ), QgsUnitTypes::encodeUnit( mDensityAreaUnit ) );
+  map.insert( QStringLiteral( "density_area_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mDensityAreaUnitScale ) );
   map.insert( QStringLiteral( "seed" ), QString::number( mSeed ) );
   map.insert( QStringLiteral( "clip_points" ), QString::number( mClipPoints ) );
   return map;
@@ -4091,9 +4125,11 @@ QgsStringMap QgsRandomMarkerFillSymbolLayer::properties() const
 
 QgsRandomMarkerFillSymbolLayer *QgsRandomMarkerFillSymbolLayer::clone() const
 {
-  std::unique_ptr< QgsRandomMarkerFillSymbolLayer > res = qgis::make_unique< QgsRandomMarkerFillSymbolLayer >( mPointCount, mSeed );
+  std::unique_ptr< QgsRandomMarkerFillSymbolLayer > res = qgis::make_unique< QgsRandomMarkerFillSymbolLayer >( mPointCount, mCountMethod, mDensityArea, mSeed );
   res->mAngle = mAngle;
   res->mColor = mColor;
+  res->setDensityAreaUnit( mDensityAreaUnit );
+  res->setDensityAreaUnitScale( mDensityAreaUnitScale );
   res->mClipPoints = mClipPoints;
   res->setSubSymbol( mMarker->clone() );
   copyDataDefinedProperties( res.get() );
@@ -4166,6 +4202,26 @@ bool QgsRandomMarkerFillSymbolLayer::clipPoints() const
 void QgsRandomMarkerFillSymbolLayer::setClipPoints( bool clipPoints )
 {
   mClipPoints = clipPoints;
+}
+
+QgsRandomMarkerFillSymbolLayer::CountMethod QgsRandomMarkerFillSymbolLayer::countMethod() const
+{
+  return mCountMethod;
+}
+
+void QgsRandomMarkerFillSymbolLayer::setCountMethod( CountMethod method )
+{
+  mCountMethod = method;
+}
+
+double QgsRandomMarkerFillSymbolLayer::densityArea() const
+{
+  return mDensityArea;
+}
+
+void QgsRandomMarkerFillSymbolLayer::setDensityArea( double area )
+{
+  mDensityArea = area;
 }
 
 void QgsRandomMarkerFillSymbolLayer::startFeatureRender( const QgsFeature &, QgsRenderContext & )
