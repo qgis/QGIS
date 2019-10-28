@@ -2238,10 +2238,10 @@ namespace QgsWms
 
         // export
         QgsJsonExporter exporter( vl );
-        exporter.setDestinationCrs( crs );
         exporter.setAttributeDisplayName( true );
         exporter.setAttributes( attributes );
         exporter.setIncludeGeometry( withGeometry );
+        exporter.setTransformGeometries( false );
 
         for ( const auto &feature : qgis::as_const( features ) )
         {
