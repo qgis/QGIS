@@ -41,6 +41,7 @@ class TestQgsGdalUtils: public QObject
     void testResampleSingleBandRaster();
     void testImageToDataset();
     void testResampleImage();
+    void testResampleImageToImage();
 
   private:
 
@@ -304,6 +305,42 @@ void TestQgsGdalUtils::testResampleImage()
   QGSCOMPARENEAR( identify( dstDS.get(), 1, 0, 1 ), 238.678848267, 0.0001 );
   QGSCOMPARENEAR( identify( dstDS.get(), 1, 0, 2 ), 62.8939933777, 0.00001 );
   QGSCOMPARENEAR( identify( dstDS.get(), 1, 0, 3 ), 87.553146, 0.00001 );
+}
+
+void TestQgsGdalUtils::testResampleImageToImage()
+{
+  QString inputFilename = QString( TEST_DATA_DIR ) + "/rgb256x256.png";
+  QImage src = QImage( inputFilename );
+  src = src.convertToFormat( QImage::Format_ARGB32 );
+  QVERIFY( !src.isNull() );
+
+  QImage res = QgsGdalUtils::resampleImage( QImage(), QSize( 50, 50 ), GRA_NearestNeighbour );
+  QVERIFY( res.isNull() );
+
+  res = QgsGdalUtils::resampleImage( src, QSize( 50, 50 ), GRA_NearestNeighbour );
+  QVERIFY( !res.isNull() );
+  QCOMPARE( res.width(), 50 );
+  QCOMPARE( res.height(), 50 );
+
+  QCOMPARE( qRed( res.pixel( 10, 10 ) ), 255 );
+  QCOMPARE( qGreen( res.pixel( 10, 10 ) ), 255 );
+  QCOMPARE( qBlue( res.pixel( 10, 10 ) ), 0 );
+  QCOMPARE( qAlpha( res.pixel( 10, 10 ) ), 255 );
+
+  QCOMPARE( qRed( res.pixel( 40, 10 ) ), 255 );
+  QCOMPARE( qGreen( res.pixel( 40, 10 ) ), 0 );
+  QCOMPARE( qBlue( res.pixel( 40, 10 ) ), 0 );
+  QCOMPARE( qAlpha( res.pixel( 40, 10 ) ), 255 );
+
+  QCOMPARE( qRed( res.pixel( 10, 40 ) ), 0 );
+  QCOMPARE( qGreen( res.pixel( 10, 40 ) ), 255 );
+  QCOMPARE( qBlue( res.pixel( 10, 40 ) ), 0 );
+  QCOMPARE( qAlpha( res.pixel( 10, 40 ) ), 255 );
+
+  QCOMPARE( qRed( res.pixel( 40, 40 ) ), 0 );
+  QCOMPARE( qGreen( res.pixel( 40, 40 ) ), 0 );
+  QCOMPARE( qBlue( res.pixel( 40, 40 ) ), 255 );
+  QCOMPARE( qAlpha( res.pixel( 40, 40 ) ), 255 );
 }
 
 double TestQgsGdalUtils::identify( GDALDatasetH dataset, int band, int px, int py )
