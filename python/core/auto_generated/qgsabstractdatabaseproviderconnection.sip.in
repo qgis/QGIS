@@ -262,6 +262,8 @@ Returns the URI string for the given ``table`` and ``schema``.
 Raises a QgsProviderConnectionException if any errors are encountered.
 
 :raises :: py:class:`QgsProviderConnectionException`
+
+.. versionadded:: 3.12
 %End
 
     virtual void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const throw( QgsProviderConnectionException );
@@ -389,6 +391,8 @@ Raises a QgsProviderConnectionException if any errors are encountered or if the 
 .. note::
 
    Not available in Python bindings
+
+.. versionadded:: 3.12
 %End
 
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tablesInt( const QString &schema = QString(), const int flags = 0 ) const throw( QgsProviderConnectionException ) /PyName=tables/;

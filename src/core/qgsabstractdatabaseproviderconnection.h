@@ -321,6 +321,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * Returns the URI string for the given \a table and \a schema.
      * Raises a QgsProviderConnectionException if any errors are encountered.
      * \throws QgsProviderConnectionException
+     * \since QGIS 3.12
      */
     virtual QString tableUri( const QString &schema, const QString &name ) const SIP_THROW( QgsProviderConnectionException );
 
@@ -423,6 +424,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * Raises a QgsProviderConnectionException if any errors are encountered or if the table does not exist.
      * \throws QgsProviderConnectionException
      * \note Not available in Python bindings
+     * \since QGIS 3.12
      */
     virtual QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table ) const;
 
