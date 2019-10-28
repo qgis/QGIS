@@ -28,6 +28,7 @@ QgsClassificationMethodRegistry is not usually directly created, but rather acce
 %End
   public:
     QgsClassificationMethodRegistry();
+    ~QgsClassificationMethodRegistry();
 
     bool addMethod( QgsClassificationMethod *method /Transfer/ );
 %Docstring
