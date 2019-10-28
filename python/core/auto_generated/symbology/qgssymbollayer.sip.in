@@ -274,7 +274,7 @@ The default implementation does nothing.
 %Docstring
 Called after the layer has been rendered for a particular ``feature``.
 
-This is always preceeded by a call to startFeatureRender() just before the feature
+This is always preceded by a call to startFeatureRender() just before the feature
 will be rendered.
 
 The default implementation does nothing.
