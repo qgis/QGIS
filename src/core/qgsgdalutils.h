@@ -75,6 +75,13 @@ class CORE_EXPORT QgsGdalUtils
     static void resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH hDstDS, GDALResampleAlg resampleAlg );
 
     /**
+     * Resamples a QImage \a image to a GDAL memory dataset with different resolution.
+     * \since QGIS 3.12
+     */
+    static gdal::dataset_unique_ptr resampleImage( const QImage &image, const QgsRectangle &extent,
+        QSize outputSize, GDALResampleAlg resampleAlg );
+
+    /**
      * Gets creation options metadata for a given format
      * \since QGIS 3.10
      */
