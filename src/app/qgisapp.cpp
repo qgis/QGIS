@@ -84,6 +84,7 @@
 #include "qgsgeometryvalidationservice.h"
 #include "qgssourceselectproviderregistry.h"
 #include "qgssourceselectprovider.h"
+#include "qgsprovidermetadata.h"
 
 #include "qgsanalysis.h"
 #include "qgsgeometrycheckregistry.h"
@@ -1972,20 +1973,72 @@ QList<QgsVectorLayerRef> QgisApp::findBrokenWidgetDependencies( QgsVectorLayer *
 
 void QgisApp::checkVectorLayerDependencies( QgsVectorLayer *vl )
 {
+  Q_ASSERT( vl->isValid() );
   for ( QgsVectorLayerRef &dependency : findBrokenWidgetDependencies( vl ) )
   {
     const QgsVectorLayer *depVl { dependency.resolveWeakly( QgsProject::instance() ) };
     if ( ! depVl || ! depVl->isValid() )
     {
-      // TODO: try to aggressively resolve the broken dependencies
-      const QString msg { tr( "Form for layer '%1' requires layer '%2' to be loaded but '%2' could not be found, please load it manually if possible." )
-                          .arg( vl->name() )
-                          .arg( dependency.name ) };
-      messageBar()->pushWarning( tr( "Missing layer form dependency" ), msg );
-      QgsMessageLog::logMessage( msg );
+      // try to aggressively resolve the broken dependencies
+      bool loaded = false;
+      const QString providerName { vl->dataProvider()->name() };
+      QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerName ) };
+      if ( md )
+      {
+        std::unique_ptr< QgsAbstractDatabaseProviderConnection > conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( vl->dataProvider()->uri().uri(), {} ) ) };
+        if ( conn )
+        {
+          QString tableSchema;
+          QString tableName;
+          const QVariantMap sourceParts { md->decodeUri( dependency.source ) };
+          // HACK HACK HACK!
+          // This part should really be abstracted out to the connection classes or to the provider directly
+          // GPKG
+          if ( providerName == QStringLiteral( "ogr" ) )
+          {
+            tableName = sourceParts.value( QStringLiteral( "layerName" ) ).toString();
+          }
+          else // PG
+          {
+            tableName = sourceParts.value( QStringLiteral( "table" ) ).toString();
+            tableSchema = sourceParts.value( QStringLiteral( "schema" ) ).toString();
+          }
+          try
+          {
+            const QString layerUri { conn->tableUri( tableSchema, tableName )};
+            // Load it!
+            std::unique_ptr< QgsVectorLayer > newVl = qgis::make_unique< QgsVectorLayer >( layerUri, dependency.name, providerName );
+            if ( newVl->isValid() )
+            {
+              connect( newVl.get(), &QgsVectorLayer::styleLoaded, this, &QgisApp::vectorLayerStyleLoaded );
+              QgsProject::instance()->addMapLayer( newVl.release() );
+              loaded = true;
+            }
+          }
+          catch ( QgsProviderConnectionException &ex )
+          {
+            QgsDebugMsg( QStringLiteral( "Error resolving dependency layer %1 - required by %2: %3" )
+                         .arg( dependency.name )
+                         .arg( vl->name() )
+                         .arg( ex.what() ) );
+          }
+        }
+      }
+      if ( ! loaded )
+      {
+        const QString msg { tr( "Form for layer '%1' requires layer '%2' to be loaded but '%2' could not be found, please load it manually if possible." )
+                            .arg( vl->name() )
+                            .arg( dependency.name ) };
+        messageBar()->pushWarning( tr( "Missing layer form dependency" ), msg );
+      }
+      else
+      {
+        messageBar()->pushSuccess( tr( "Missing layer form dependency" ), tr( "Layer form dependency '%2' required by '%1' was automatically loaded." )
+                                   .arg( vl->name() )
+                                   .arg( dependency.name ) );
+      }
     }
   }
-
 }
 
 void QgisApp::dataSourceManager( const QString &pageName )
@@ -6371,7 +6424,10 @@ bool QgisApp::addProject( const QString &projectFile )
     // Check for missing layer widget dependencies
     for ( QgsVectorLayer *vl : QgsProject::instance()->layers<QgsVectorLayer *>( ) )
     {
-      checkVectorLayerDependencies( vl );
+      if ( vl->isValid() )
+      {
+        checkVectorLayerDependencies( vl );
+      }
       // Connect style changed signal to make sure the check is run again
       // if a new style is loaded
       connect( vl, &QgsVectorLayer::styleLoaded, this, &QgisApp::vectorLayerStyleLoaded );
