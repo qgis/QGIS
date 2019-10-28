@@ -39,8 +39,11 @@ class TestQgsGdalUtils: public QObject
     void testCreateMultiBandMemoryDataset();
     void testCreateSingleBandTiffDataset();
     void testResampleSingleBandRaster();
+    void testImageToDataset();
 
   private:
+
+    double identify( GDALDatasetH dataset, int band, int px, int py );
 };
 
 void TestQgsGdalUtils::initTestCase()
@@ -91,6 +94,8 @@ void TestQgsGdalUtils::supportsRasterCreate()
   "AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433," \
   "AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]]"
 #endif
+#define EPSG_3857_WKT \
+  "PROJCS[\"WGS 84 / Pseudo-Mercator\",GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]],PROJECTION[\"Mercator_1SP\"],PARAMETER[\"central_meridian\",0],PARAMETER[\"scale_factor\",1],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH],EXTENSION[\"PROJ4\",\"+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs\"],AUTHORITY[\"EPSG\",\"3857\"]]"
 
 void TestQgsGdalUtils::testCreateSingleBandMemoryDataset()
 {
@@ -189,6 +194,73 @@ void TestQgsGdalUtils::testResampleSingleBandRaster()
 
   layer.reset();
   QFile::remove( outputFilename );
+}
+
+void TestQgsGdalUtils::testImageToDataset()
+{
+  QString inputFilename = QString( TEST_DATA_DIR ) + "/rgb256x256.png";
+  QImage src = QImage( inputFilename );
+  src = src.convertToFormat( QImage::Format_ARGB32 );
+  QVERIFY( !src.isNull() );
+
+  gdal::dataset_unique_ptr dstDS = QgsGdalUtils::imageToMemoryDataset( QImage(), QgsRectangle( 0, 0, 256, 256 ), QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+  QVERIFY( !dstDS );
+
+  dstDS = QgsGdalUtils::imageToMemoryDataset( src, QgsRectangle( 0, 0, 256, 256 ), QgsCoordinateReferenceSystem( "EPSG:3857" ) );
+  QVERIFY( dstDS );
+
+  QCOMPARE( GDALGetRasterCount( dstDS.get() ), 4 );
+  QCOMPARE( GDALGetRasterXSize( dstDS.get() ), 256 );
+  QCOMPARE( GDALGetRasterYSize( dstDS.get() ), 256 );
+
+  QCOMPARE( GDALGetProjectionRef( dstDS.get() ), EPSG_3857_WKT );
+  double geoTransform[6];
+  double geoTransformExpected[] = { 0, 1, 0, 256, 0, -1 };
+  QCOMPARE( GDALGetGeoTransform( dstDS.get(), geoTransform ), CE_None );
+  QGSCOMPARENEAR( geoTransform[0], geoTransformExpected[0], 0.0001 );
+  QGSCOMPARENEAR( geoTransform[1], geoTransformExpected[1], 0.0001 );
+  QGSCOMPARENEAR( geoTransform[2], geoTransformExpected[2], 0.0001 );
+  QGSCOMPARENEAR( geoTransform[3], geoTransformExpected[3], 0.0001 );
+  QGSCOMPARENEAR( geoTransform[4], geoTransformExpected[4], 0.0001 );
+  QGSCOMPARENEAR( geoTransform[5], geoTransformExpected[5], 0.0001 );
+
+  QCOMPARE( GDALGetRasterDataType( GDALGetRasterBand( dstDS.get(), 1 ) ), GDT_Float32 );
+  QCOMPARE( GDALGetRasterDataType( GDALGetRasterBand( dstDS.get(), 2 ) ), GDT_Float32 );
+  QCOMPARE( GDALGetRasterDataType( GDALGetRasterBand( dstDS.get(), 3 ) ), GDT_Float32 );
+  QCOMPARE( GDALGetRasterDataType( GDALGetRasterBand( dstDS.get(), 4 ) ), GDT_Float32 );
+
+  QCOMPARE( identify( dstDS.get(), 1, 50, 50 ), 255.0 );
+  QCOMPARE( identify( dstDS.get(), 1, 200, 50 ), 255.0 );
+  QCOMPARE( identify( dstDS.get(), 1, 50, 200 ), 0.0 );
+  QCOMPARE( identify( dstDS.get(), 1, 200, 200 ), 0.0 );
+
+  QCOMPARE( identify( dstDS.get(), 2, 50, 50 ), 255.0 );
+  QCOMPARE( identify( dstDS.get(), 2, 200, 50 ), 0.0 );
+  QCOMPARE( identify( dstDS.get(), 2, 50, 200 ), 255.0 );
+  QCOMPARE( identify( dstDS.get(), 2, 200, 200 ), 0.0 );
+
+  QCOMPARE( identify( dstDS.get(), 3, 50, 50 ), 0.0 );
+  QCOMPARE( identify( dstDS.get(), 3, 200, 50 ), 0.0 );
+  QCOMPARE( identify( dstDS.get(), 3, 50, 200 ), 0.0 );
+  QCOMPARE( identify( dstDS.get(), 3, 200, 200 ), 255.0 );
+
+  QCOMPARE( identify( dstDS.get(), 4, 50, 50 ), 255.0 );
+  QCOMPARE( identify( dstDS.get(), 4, 200, 50 ), 255.0 );
+  QCOMPARE( identify( dstDS.get(), 4, 50, 200 ), 255.0 );
+  QCOMPARE( identify( dstDS.get(), 4, 200, 200 ), 255.0 );
+}
+
+double TestQgsGdalUtils::identify( GDALDatasetH dataset, int band, int px, int py )
+{
+  GDALRasterBandH hBand = GDALGetRasterBand( dataset, band );
+
+  float *pafScanline = ( float * ) CPLMalloc( sizeof( float ) );
+  CPLErr err = GDALRasterIO( hBand, GF_Read, px, py, 1, 1,
+                             pafScanline, 1, 1, GDT_Float32, 0, 0 );
+  double value = err == CE_None ? pafScanline[0] : std::numeric_limits<double>::quiet_NaN();
+  CPLFree( pafScanline );
+
+  return value;
 }
 
 QGSTEST_MAIN( TestQgsGdalUtils )

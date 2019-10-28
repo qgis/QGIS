@@ -60,6 +60,12 @@ class CORE_EXPORT QgsGdalUtils
      */
     static gdal::dataset_unique_ptr createSingleBandTiffDataset( QString filename, GDALDataType dataType, QgsRectangle extent, int width, int height, const QgsCoordinateReferenceSystem &crs );
 
+    /**
+     * Converts an \a image to a GDAL memory dataset.
+     *
+     * \since QGIS 3.12
+     */
+    static gdal::dataset_unique_ptr imageToMemoryDataset( const QImage &image, QgsRectangle extent, const QgsCoordinateReferenceSystem &crs );
 
     /**
      * Resamples a single band raster to the destination dataset with different resolution (and possibly with different CRS).
