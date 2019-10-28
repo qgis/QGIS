@@ -49,6 +49,12 @@ class CORE_EXPORT QgsGdalUtils
     static gdal::dataset_unique_ptr createSingleBandMemoryDataset( GDALDataType dataType, QgsRectangle extent, int width, int height, const QgsCoordinateReferenceSystem &crs );
 
     /**
+     * Creates a new multi band memory dataset with given parameters
+     * \since QGIS 3.12
+     */
+    static gdal::dataset_unique_ptr createMultiBandMemoryDataset( GDALDataType dataType, int bands, QgsRectangle extent, int width, int height, const QgsCoordinateReferenceSystem &crs );
+
+    /**
      * Creates a new single band TIFF dataset with given parameters
      * \since QGIS 3.8
      */

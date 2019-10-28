@@ -36,6 +36,7 @@ class TestQgsGdalUtils: public QObject
     void cleanup();// will be called after every testfunction.
     void supportsRasterCreate();
     void testCreateSingleBandMemoryDataset();
+    void testCreateMultiBandMemoryDataset();
     void testCreateSingleBandTiffDataset();
     void testResampleSingleBandRaster();
 
@@ -107,6 +108,27 @@ void TestQgsGdalUtils::testCreateSingleBandMemoryDataset()
   QVERIFY( memcmp( geoTransform, geoTransformExpected, sizeof( double ) * 6 ) == 0 );
 
   QCOMPARE( GDALGetRasterDataType( GDALGetRasterBand( ds1.get(), 1 ) ), GDT_Float32 );
+}
+
+void TestQgsGdalUtils::testCreateMultiBandMemoryDataset()
+{
+  gdal::dataset_unique_ptr ds1 = QgsGdalUtils::createMultiBandMemoryDataset( GDT_Float32, 4, QgsRectangle( 1, 1, 21, 11 ), 40, 20, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+  QVERIFY( ds1 );
+
+  QCOMPARE( GDALGetRasterCount( ds1.get() ), 4 );
+  QCOMPARE( GDALGetRasterXSize( ds1.get() ), 40 );
+  QCOMPARE( GDALGetRasterYSize( ds1.get() ), 20 );
+
+  QCOMPARE( GDALGetProjectionRef( ds1.get() ), EPSG_4326_WKT );
+  double geoTransform[6];
+  double geoTransformExpected[] = { 1, 0.5, 0, 11, 0, -0.5 };
+  QCOMPARE( GDALGetGeoTransform( ds1.get(), geoTransform ), CE_None );
+  QVERIFY( memcmp( geoTransform, geoTransformExpected, sizeof( double ) * 6 ) == 0 );
+
+  QCOMPARE( GDALGetRasterDataType( GDALGetRasterBand( ds1.get(), 1 ) ), GDT_Float32 );
+  QCOMPARE( GDALGetRasterDataType( GDALGetRasterBand( ds1.get(), 2 ) ), GDT_Float32 );
+  QCOMPARE( GDALGetRasterDataType( GDALGetRasterBand( ds1.get(), 3 ) ), GDT_Float32 );
+  QCOMPARE( GDALGetRasterDataType( GDALGetRasterBand( ds1.get(), 4 ) ), GDT_Float32 );
 }
 
 void TestQgsGdalUtils::testCreateSingleBandTiffDataset()
