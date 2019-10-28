@@ -103,17 +103,17 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
         conn.createVectorTable('', 'myNewTable', QgsFields(), typ, crs, True, {})
 
         # Check filters and special cases
-        table_names = self._table_names(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Raster))
+        table_names = self._table_names(conn.tables('', QgsAbstractDatabaseProviderConnection.Raster))
         self.assertTrue('osm' in table_names)
         self.assertFalse('myNewTable' in table_names)
         self.assertFalse('myNewAspatialTable' in table_names)
 
-        table_names = self._table_names(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.View))
+        table_names = self._table_names(conn.tables('', QgsAbstractDatabaseProviderConnection.View))
         self.assertFalse('osm' in table_names)
         self.assertFalse('myNewTable' in table_names)
         self.assertFalse('myNewAspatialTable' in table_names)
 
-        table_names = self._table_names(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Aspatial))
+        table_names = self._table_names(conn.tables('', QgsAbstractDatabaseProviderConnection.Aspatial))
         self.assertFalse('osm' in table_names)
         self.assertFalse('myNewTable' in table_names)
         self.assertTrue('myNewAspatialTable' in table_names)
