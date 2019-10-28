@@ -23,6 +23,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 import os
 
+from osgeo import gdal
+
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsApplication,
                        QgsProcessingProvider)
@@ -68,6 +70,7 @@ from .tri import tri
 from .warp import warp
 from .pansharp import pansharp
 from .rasterize_over_fixed_value import rasterize_over_fixed_value
+from .viewshed import viewshed
 
 from .extractprojection import ExtractProjection
 from .rasterize_over import rasterize_over
@@ -192,6 +195,10 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             PointsAlongLines(),
             # Ogr2OgrTableToPostGisList(),
         ]
+
+        if int(gdal.VersionInfo()) > 3010000:
+            self.algs.append(viewshed())
+
         for a in self.algs:
             self.addAlgorithm(a)
 

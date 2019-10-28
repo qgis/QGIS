@@ -69,6 +69,8 @@ from processing.algs.gdal.nearblack import nearblack
 from processing.algs.gdal.slope import slope
 from processing.algs.gdal.rasterize_over import rasterize_over
 from processing.algs.gdal.rasterize_over_fixed_value import rasterize_over_fixed_value
+from processing.algs.gdal.viewshed import viewshed
+
 
 testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
 
@@ -2342,6 +2344,62 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                  spectral + ' ' +
                  outsource + ' ' +
                  '-r cubic -of GTiff -bitdepth 12 -threads ALL_CPUS'
+                 ])
+
+    def testGdalViewshed(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        dem = os.path.join(testDataPath, 'dem.tif')
+
+        with tempfile.TemporaryDirectory() as outdir:
+            outsource = outdir + '/out.tif'
+            alg = viewshed()
+            alg.initAlgorithm()
+
+            # defaults
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': dem,
+                                        'BAND': 1,
+                                        'OBSERVER': '18.67274,45.80599',
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_viewshed',
+                 '-b 1 -ox 18.67274 -oy 45.80599 -oz 1.0 -tz 1.0 -md 100.0 -f GTiff ' +
+                 dem + ' ' + outsource
+                 ])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': dem,
+                                        'BAND': 2,
+                                        'OBSERVER': '18.67274,45.80599',
+                                        'OBSERVER_HEIGHT': 1.8,
+                                        'TARGET_HEIGHT': 20,
+                                        'MAX_DISTANCE': 1000,
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_viewshed',
+                 '-b 2 -ox 18.67274 -oy 45.80599 -oz 1.8 -tz 20.0 -md 1000.0 -f GTiff ' +
+                 dem + ' ' + outsource
+                 ])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': dem,
+                                        'BAND': 1,
+                                        'OBSERVER': '18.67274,45.80599',
+                                        'EXTRA': '-a_nodata=-9999 -cc 0.2',
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_viewshed',
+                 '-b 1 -ox 18.67274 -oy 45.80599 -oz 1.0 -tz 1.0 -md 100.0 -f GTiff ' +
+                 '-a_nodata=-9999 -cc 0.2 ' + dem + ' ' + outsource
+                 ])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': dem,
+                                        'BAND': 1,
+                                        'OBSERVER': '18.67274,45.80599',
+                                        'OPTIONS': 'COMPRESS=DEFLATE|PREDICTOR=2|ZLEVEL=9',
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_viewshed',
+                 '-b 1 -ox 18.67274 -oy 45.80599 -oz 1.0 -tz 1.0 -md 100.0 -f GTiff ' +
+                 '-co COMPRESS=DEFLATE -co PREDICTOR=2 -co ZLEVEL=9 ' + dem + ' ' + outsource
                  ])
 
     def testBuildVrt(self):
