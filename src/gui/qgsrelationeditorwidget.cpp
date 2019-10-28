@@ -38,6 +38,10 @@
 
 /// @cond PRIVATE
 
+/**
+ * This class is used to filter the current vector layer selection to features matching the given request.
+ * Relation editor widget use it in order to get selected feature for the current relation.
+ */
 class QgsFilteredSelectionManager : public QgsVectorLayerSelectionManager
 {
   public:
