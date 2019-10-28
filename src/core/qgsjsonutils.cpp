@@ -43,11 +43,6 @@ QgsJsonExporter::QgsJsonExporter( QgsVectorLayer *vectorLayer, int precision )
   mTransform.setDestinationCrs( QgsCoordinateReferenceSystem( 4326, QgsCoordinateReferenceSystem::EpsgCrsId ) );
 }
 
-void QgsJsonExporter::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
-{
-  mTransform.setDestinationCrs( crs );
-}
-
 void QgsJsonExporter::setVectorLayer( QgsVectorLayer *vectorLayer )
 {
   mLayer = vectorLayer;
@@ -112,7 +107,7 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
       try
       {
         QgsGeometry transformed = geom;
-        if ( transformed.transform( mTransform ) == 0 )
+        if ( mTransformGeometries && transformed.transform( mTransform ) == 0 )
           geom = transformed;
       }
       catch ( QgsCsException &cse )

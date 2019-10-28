@@ -147,18 +147,18 @@ class CORE_EXPORT QgsJsonExporter
     void setSourceCrs( const QgsCoordinateReferenceSystem &crs );
 
     /**
-     * Sets the destination CRS for writing feature geometries.
-     * \param crs destination CRS for output feature geometries
-     * \since QGIS 3.10
-     */
-    void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
-
-    /**
      * Returns the source CRS for feature geometries. The source CRS must be set if geometries are to be
      * correctly automatically reprojected to WGS 84, to match GeoJSON specifications.
      * \see setSourceCrs()
      */
     QgsCoordinateReferenceSystem sourceCrs() const;
+
+    /**
+     * Sets whether geometries should be transformed in EPSG 4326 (default
+     * behavior) or just keep as it is.
+     * \since QGIS 3.12
+     */
+    void setTransformGeometries( bool activate ) { mTransformGeometries = activate; }
 
     /**
      * Sets the list of attributes to include in the JSON exports.
@@ -277,6 +277,8 @@ class CORE_EXPORT QgsJsonExporter
     QgsCoordinateTransform mTransform;
 
     bool mAttributeDisplayName = false;
+
+    bool mTransformGeometries = true;
 };
 
 /**
