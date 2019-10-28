@@ -127,6 +127,21 @@ class TestQgsRandomMarkerSymbolLayer(unittest.TestCase):
         rendered_image = self.renderGeometry(s3, g)
         self.assertFalse(self.imageCheck('randommarkerfill_seed', 'randommarkerfill_seed', rendered_image))
 
+    def testCreate(self):
+        random_fill = QgsRandomMarkerFillSymbolLayer(10, seed=5)
+        self.assertEqual(random_fill.seed(), 5)
+        fill2 = QgsRandomMarkerFillSymbolLayer.create(random_fill.properties())
+        self.assertEqual(fill2.seed(), 5)
+
+        random_fill = QgsRandomMarkerFillSymbolLayer(10)
+        self.assertEqual(random_fill.seed(), 0)
+        fill2 = QgsRandomMarkerFillSymbolLayer.create(random_fill.properties())
+        self.assertEqual(fill2.seed(), 0)
+
+        # a newly created random fill should default to a random seed, not 0
+        random_fill = QgsRandomMarkerFillSymbolLayer.create({})
+        self.assertNotEqual(random_fill.seed(), 0)
+
     def renderGeometry(self, symbol, geom, buffer=20):
         f = QgsFeature()
         f.setGeometry(geom)
