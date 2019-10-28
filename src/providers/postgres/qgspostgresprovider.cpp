@@ -1132,7 +1132,7 @@ void QgsPostgresProvider::setEditorWidgets()
   }
 
   QStringList quotedFnames;
-  foreach ( const QString &name, mAttributeFields.names() )
+  for ( const QString &name : mAttributeFields.names() )
   {
     quotedFnames << quotedValue( name );
   }
