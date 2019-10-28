@@ -3927,7 +3927,7 @@ QgsRandomMarkerFillSymbolLayer::QgsRandomMarkerFillSymbolLayer( int pointCount, 
 
 QgsSymbolLayer *QgsRandomMarkerFillSymbolLayer::create( const QgsStringMap &properties )
 {
-  const int pointCount = properties.value( QStringLiteral( "point_count" ), QStringLiteral( "1" ) ).toInt();
+  const int pointCount = properties.value( QStringLiteral( "point_count" ), QStringLiteral( "10" ) ).toInt();
 
   unsigned long seed = 0;
   if ( properties.contains( QStringLiteral( "seed" ) ) )

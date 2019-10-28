@@ -1740,7 +1740,7 @@ class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
      * Optionally a specific random number \a seed can be used when generating points. A \a seed of 0 indicates that
      * a truly random sequence should be used.
      */
-    QgsRandomMarkerFillSymbolLayer( int pointCount = 1, unsigned long seed = 0 );
+    QgsRandomMarkerFillSymbolLayer( int pointCount = 10, unsigned long seed = 0 );
 
     /**
      * Creates a new QgsRandomMarkerFillSymbolLayer using the specified \a properties map containing symbol properties (see properties()).
@@ -1834,7 +1834,7 @@ class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
     void render( QgsRenderContext &context, const QVector< Part > &parts, const QgsFeature &feature, bool selected );
 
     std::unique_ptr< QgsMarkerSymbol > mMarker;
-    int mPointCount = 1;
+    int mPointCount = 10;
     unsigned long mSeed = 0;
     bool mClipPoints = false;
 
