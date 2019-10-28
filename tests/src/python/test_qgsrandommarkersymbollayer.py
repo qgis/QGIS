@@ -96,23 +96,27 @@ class TestQgsRandomMarkerSymbolLayer(unittest.TestCase):
         s3.deleteSymbolLayer(0)
         s3.appendSymbolLayer(random_fill.clone())
 
-        g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
+        g = QgsGeometry.fromWkt(
+            'Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
         rendered_image = self.renderGeometry(s3, g)
         self.assertTrue(self.imageCheck('randommarkerfill', 'randommarkerfill', rendered_image))
 
         s3.symbolLayer(0).setPointCount(3)
-        g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
+        g = QgsGeometry.fromWkt(
+            'Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
         rendered_image = self.renderGeometry(s3, g)
         self.assertTrue(self.imageCheck('randommarkerfill_3', 'randommarkerfill_3', rendered_image))
 
         s3.symbolLayer(0).setSeed(12783)
-        g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
+        g = QgsGeometry.fromWkt(
+            'Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
         rendered_image = self.renderGeometry(s3, g)
         self.assertTrue(self.imageCheck('randommarkerfill_seed', 'randommarkerfill_seed', rendered_image))
 
         # random seed
         s3.symbolLayer(0).setSeed(0)
-        g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
+        g = QgsGeometry.fromWkt(
+            'Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
         rendered_image = self.renderGeometry(s3, g)
         self.assertFalse(self.imageCheck('randommarkerfill_seed', 'randommarkerfill_seed', rendered_image))
 
@@ -138,7 +142,7 @@ class TestQgsRandomMarkerSymbolLayer(unittest.TestCase):
         s = QgsFillSymbol()
         s.deleteSymbolLayer(0)
 
-        simple_fill = QgsSimpleFillSymbolLayer(color=QColor(255,255,255))
+        simple_fill = QgsSimpleFillSymbolLayer(color=QColor(255, 255, 255))
         s.appendSymbolLayer(simple_fill.clone())
 
         random_fill = QgsRandomMarkerFillSymbolLayer(12, seed=481523)
@@ -151,7 +155,8 @@ class TestQgsRandomMarkerSymbolLayer(unittest.TestCase):
 
         s.appendSymbolLayer(random_fill.clone())
 
-        g = QgsGeometry.fromWkt('MultiPolygon(((0 0, 5 0, 5 10, 0 10, 0 0),(1 1, 1 9, 4 9, 4 1, 1 1)), ((6 0, 10 0, 10 5, 6 5, 6 0)), ((8 6, 10 6, 10 10, 8 10, 8 6)))')
+        g = QgsGeometry.fromWkt(
+            'MultiPolygon(((0 0, 5 0, 5 10, 0 10, 0 0),(1 1, 1 9, 4 9, 4 1, 1 1)), ((6 0, 10 0, 10 5, 6 5, 6 0)), ((8 6, 10 6, 10 10, 8 10, 8 6)))')
         rendered_image = self.renderGeometry(s, g)
         self.assertTrue(self.imageCheck('randommarkerfill_multipoly', 'randommarkerfill_multipoly', rendered_image))
 
