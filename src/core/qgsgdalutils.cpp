@@ -95,6 +95,65 @@ gdal::dataset_unique_ptr QgsGdalUtils::createSingleBandTiffDataset( QString file
   return hDstDS;
 }
 
+gdal::dataset_unique_ptr QgsGdalUtils::imageToMemoryDataset( const QImage &image, QgsRectangle extent, const QgsCoordinateReferenceSystem &crs )
+{
+  if ( image.isNull() )
+    return nullptr;
+  QByteArray red, green, blue, alpha;
+
+  const QRgb *rgb = reinterpret_cast<const QRgb *>( image.constBits() );
+
+  // potentially an overflow here -- that's on Qt!
+  const qgssize count = static_cast< qgssize >( image.width() ) * image.height();
+  red.resize( sizeof( float ) * count );
+  green.resize( sizeof( float ) * count );
+  blue.resize( sizeof( float ) * count );
+  alpha.resize( sizeof( float ) * count );
+
+  float *rData = reinterpret_cast<float *>( red.data() );
+  float *gData = reinterpret_cast<float *>( green.data() );
+  float *bData = reinterpret_cast<float *>( blue.data() );
+  float *aData = reinterpret_cast<float *>( alpha.data() );
+
+  gdal::dataset_unique_ptr hSrcDS( QgsGdalUtils::createMultiBandMemoryDataset( GDT_Float32, 4, extent, image.width(), image.height(), crs ) );
+  for ( qgssize i = 0; i < count; ++i )
+  {
+    const QRgb c = *rgb++;
+    *rData++ = qRed( c );
+    *gData++ = qGreen( c );
+    *bData++ = qBlue( c );
+    *aData++ = qAlpha( c );
+  }
+
+
+  CPLErr err = GDALRasterIO( GDALGetRasterBand( hSrcDS.get(), 1 ), GF_Write, 0, 0, image.width(), image.height(), red.data(), image.width(), image.height(), GDT_Float32, 0, 0 );
+  if ( err != CE_None )
+  {
+    QgsDebugMsg( QStringLiteral( "failed to write red data to GDAL dataset" ) );
+    return nullptr;
+  }
+  err = GDALRasterIO( GDALGetRasterBand( hSrcDS.get(), 2 ), GF_Write, 0, 0, image.width(), image.height(), green.data(), image.width(), image.height(), GDT_Float32, 0, 0 );
+  if ( err != CE_None )
+  {
+    QgsDebugMsg( QStringLiteral( "failed to write green data to GDAL dataset" ) );
+    return nullptr;
+  }
+  err = GDALRasterIO( GDALGetRasterBand( hSrcDS.get(), 3 ), GF_Write, 0, 0, image.width(), image.height(), blue.data(), image.width(), image.height(), GDT_Float32, 0, 0 );
+  if ( err != CE_None )
+  {
+    QgsDebugMsg( QStringLiteral( "failed to write blue data to GDAL dataset" ) );
+    return nullptr;
+  }
+  err = GDALRasterIO( GDALGetRasterBand( hSrcDS.get(), 4 ), GF_Write, 0, 0, image.width(), image.height(), alpha.data(), image.width(), image.height(), GDT_Float32, 0, 0 );
+  if ( err != CE_None )
+  {
+    QgsDebugMsg( QStringLiteral( "failed to write alpha data to GDAL dataset" ) );
+    return nullptr;
+  }
+
+  return hSrcDS;
+}
+
 void QgsGdalUtils::resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH hDstDS, GDALResampleAlg resampleAlg )
 {
   gdal::warp_options_unique_ptr psWarpOptions( GDALCreateWarpOptions() );
