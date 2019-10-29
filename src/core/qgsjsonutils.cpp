@@ -248,11 +248,17 @@ json QgsJsonExporter::exportFeaturesToJsonObject( const QgsFeatureList &features
 
 QgsFeatureList QgsJsonUtils::stringToFeatureList( const QString &string, const QgsFields &fields, QTextCodec *encoding )
 {
+  if ( !encoding )
+    encoding = QTextCodec::codecForName( "UTF-8" );
+
   return QgsOgrUtils::stringToFeatureList( string, fields, encoding );
 }
 
 QgsFields QgsJsonUtils::stringToFields( const QString &string, QTextCodec *encoding )
 {
+  if ( !encoding )
+    encoding = QTextCodec::codecForName( "UTF-8" );
+
   return QgsOgrUtils::stringToFields( string, encoding );
 }
 

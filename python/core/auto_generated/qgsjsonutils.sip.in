@@ -267,15 +267,13 @@ Helper utilities for working with JSON and GeoJSON conversions.
 %End
   public:
 
-    static QgsFeatureList stringToFeatureList( const QString &string, const QgsFields &fields, QTextCodec *encoding );
+    static QgsFeatureList stringToFeatureList( const QString &string, const QgsFields &fields = QgsFields(), QTextCodec *encoding = 0 );
 %Docstring
-Attempts to parse a GeoJSON string to a collection of features.
+Attempts to parse a GeoJSON ``string`` to a collection of features.
+It is possible to specify ``fields`` to parse specific fields, if not provided, no fields will be included.
+An ``encoding`` can be specified which defaults to UTF-8 if it is `None`.
 
-:param string: GeoJSON string to parse
-:param fields: fields collection to use for parsed features
-:param encoding: text encoding
-
-:return: list of parsed features, or an empty list if no features could be parsed
+:return: a list of parsed features, or an empty list if no features could be parsed
 
 .. seealso:: :py:func:`stringToFields`
 
@@ -284,12 +282,10 @@ Attempts to parse a GeoJSON string to a collection of features.
    this function is a wrapper around :py:func:`QgsOgrUtils.stringToFeatureList()`
 %End
 
-    static QgsFields stringToFields( const QString &string, QTextCodec *encoding );
+    static QgsFields stringToFields( const QString &string, QTextCodec *encoding = 0 );
 %Docstring
-Attempts to retrieve the fields from a GeoJSON string representing a collection of features.
-
-:param string: GeoJSON string to parse
-:param encoding: text encoding
+Attempts to retrieve the fields from a GeoJSON  ``string`` representing a collection of features.
+An ``encoding`` can be specified which defaults to UTF-8 if it is `None`.
 
 :return: retrieved fields collection, or an empty list if no fields could be determined from the string
 
