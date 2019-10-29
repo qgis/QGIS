@@ -22,8 +22,8 @@
 #include "qgsproviderregistry.h"
 
 
-QgsSpatiaLiteProviderConnection::QgsSpatiaLiteProviderConnection( const QString &name ):
-  QgsAbstractDatabaseProviderConnection( name )
+QgsSpatiaLiteProviderConnection::QgsSpatiaLiteProviderConnection( const QString &name )
+  : QgsAbstractDatabaseProviderConnection( name )
 {
   setDefaultCapabilities();
   // TODO: QGIS 4: move into QgsSettings::Section::Providers group
@@ -39,7 +39,7 @@ QgsSpatiaLiteProviderConnection::QgsSpatiaLiteProviderConnection( const QString 
 QgsSpatiaLiteProviderConnection::QgsSpatiaLiteProviderConnection( const QString &uri, const QVariantMap &configuration ):
   QgsAbstractDatabaseProviderConnection( uri, configuration )
 {
-  static const QRegularExpression removePartsRe { R"raw(\s*sql=\s*|\s*table=""\s*|\([^\)]+\))raw" };
+  const QRegularExpression removePartsRe { R"raw(\s*sql=\s*|\s*table=""\s*|\([^\)]+\))raw" };
   // Cleanup the URI in case it contains other information other than the file path
   setUri( QString( uri ).replace( removePartsRe, QString() ) );
   setDefaultCapabilities();
