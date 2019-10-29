@@ -135,8 +135,10 @@ void QgsFeatureListView::mousePressEvent( QMouseEvent *event )
 
     if ( QgsFeatureListViewDelegate::EditElement == mItemDelegate->positionToElement( event->pos() ) )
     {
+
       mEditSelectionDrag = true;
-      setEditSelection( mModel->mapToMaster( index ), QItemSelectionModel::ClearAndSelect );
+      if ( index.isValid() )
+        setEditSelection( mModel->mapToMaster( index ), QItemSelectionModel::ClearAndSelect );
     }
     else
     {
@@ -233,7 +235,8 @@ void QgsFeatureListView::mouseMoveEvent( QMouseEvent *event )
 
   if ( mEditSelectionDrag )
   {
-    setEditSelection( mModel->mapToMaster( index ), QItemSelectionModel::ClearAndSelect );
+    if ( index.isValid() )
+      setEditSelection( mModel->mapToMaster( index ), QItemSelectionModel::ClearAndSelect );
   }
   else
   {
