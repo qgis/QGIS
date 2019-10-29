@@ -432,19 +432,26 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
 
       // initAlgorithm, parameter definitions
       lines << indent + QStringLiteral( "def initAlgorithm(self, config=None):" );
-      lines.reserve( lines.size() + params.size() );
-      for ( const QgsProcessingParameterDefinition *def : params )
+      if ( params.empty() )
       {
-        std::unique_ptr< QgsProcessingParameterDefinition > defClone( def->clone() );
-
-        if ( defClone->isDestination() )
+        lines << indent + indent + QStringLiteral( "pass" );
+      }
+      else
+      {
+        lines.reserve( lines.size() + params.size() );
+        for ( const QgsProcessingParameterDefinition *def : params )
         {
-          const QString &friendlyName = !defClone->description().isEmpty() ? uniqueSafeName( defClone->description(), true, friendlyOutputNames ) : defClone->name();
-          friendlyOutputNames.insert( defClone->name(), friendlyName );
-          defClone->setName( friendlyName );
-        }
+          std::unique_ptr< QgsProcessingParameterDefinition > defClone( def->clone() );
 
-        lines << indent + indent + QStringLiteral( "self.addParameter(%1)" ).arg( defClone->asPythonString() );
+          if ( defClone->isDestination() )
+          {
+            const QString &friendlyName = !defClone->description().isEmpty() ? uniqueSafeName( defClone->description(), true, friendlyOutputNames ) : defClone->name();
+            friendlyOutputNames.insert( defClone->name(), friendlyName );
+            defClone->setName( friendlyName );
+          }
+
+          lines << indent + indent + QStringLiteral( "self.addParameter(%1)" ).arg( defClone->asPythonString() );
+        }
       }
 
       lines << QString();
