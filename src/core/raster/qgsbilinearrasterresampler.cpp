@@ -28,7 +28,7 @@ QgsBilinearRasterResampler *QgsBilinearRasterResampler::clone() const
 Q_NOWARN_DEPRECATED_PUSH
 void QgsBilinearRasterResampler::resample( const QImage &srcImage, QImage &dstImage )
 {
-  dstImage = QgsGdalUtils::resampleImage( srcImage, dstImage.size(), GRA_Bilinear );
+  dstImage = QgsGdalUtils::resampleImage( srcImage, dstImage.size(), GRIORA_Bilinear );
 }
 Q_NOWARN_DEPRECATED_POP
 

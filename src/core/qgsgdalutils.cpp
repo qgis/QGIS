@@ -97,61 +97,46 @@ gdal::dataset_unique_ptr QgsGdalUtils::createSingleBandTiffDataset( QString file
   return hDstDS;
 }
 
-gdal::dataset_unique_ptr QgsGdalUtils::imageToMemoryDataset( const QImage &image, QgsRectangle extent, const QgsCoordinateReferenceSystem &crs )
+gdal::dataset_unique_ptr QgsGdalUtils::imageToMemoryDataset( const QImage &image )
 {
   if ( image.isNull() )
     return nullptr;
-  QByteArray red, green, blue, alpha;
 
   const QRgb *rgb = reinterpret_cast<const QRgb *>( image.constBits() );
-
-  // potentially an overflow here -- that's on Qt!
-  const qgssize count = static_cast< qgssize >( image.width() ) * image.height();
-  red.resize( sizeof( float ) * count );
-  green.resize( sizeof( float ) * count );
-  blue.resize( sizeof( float ) * count );
-  alpha.resize( sizeof( float ) * count );
-
-  float *rData = reinterpret_cast<float *>( red.data() );
-  float *gData = reinterpret_cast<float *>( green.data() );
-  float *bData = reinterpret_cast<float *>( blue.data() );
-  float *aData = reinterpret_cast<float *>( alpha.data() );
-
-  gdal::dataset_unique_ptr hSrcDS( QgsGdalUtils::createMultiBandMemoryDataset( GDT_Float32, 4, extent, image.width(), image.height(), crs ) );
-  for ( qgssize i = 0; i < count; ++i )
+  GDALDriverH hDriverMem = GDALGetDriverByName( "MEM" );
+  if ( !hDriverMem )
   {
-    const QRgb c = *rgb++;
-    *rData++ = qRed( c );
-    *gData++ = qGreen( c );
-    *bData++ = qBlue( c );
-    *aData++ = qAlpha( c );
-  }
-
-
-  CPLErr err = GDALRasterIO( GDALGetRasterBand( hSrcDS.get(), 1 ), GF_Write, 0, 0, image.width(), image.height(), red.data(), image.width(), image.height(), GDT_Float32, 0, 0 );
-  if ( err != CE_None )
-  {
-    QgsDebugMsg( QStringLiteral( "failed to write red data to GDAL dataset" ) );
     return nullptr;
   }
-  err = GDALRasterIO( GDALGetRasterBand( hSrcDS.get(), 2 ), GF_Write, 0, 0, image.width(), image.height(), green.data(), image.width(), image.height(), GDT_Float32, 0, 0 );
-  if ( err != CE_None )
-  {
-    QgsDebugMsg( QStringLiteral( "failed to write green data to GDAL dataset" ) );
-    return nullptr;
-  }
-  err = GDALRasterIO( GDALGetRasterBand( hSrcDS.get(), 3 ), GF_Write, 0, 0, image.width(), image.height(), blue.data(), image.width(), image.height(), GDT_Float32, 0, 0 );
-  if ( err != CE_None )
-  {
-    QgsDebugMsg( QStringLiteral( "failed to write blue data to GDAL dataset" ) );
-    return nullptr;
-  }
-  err = GDALRasterIO( GDALGetRasterBand( hSrcDS.get(), 4 ), GF_Write, 0, 0, image.width(), image.height(), alpha.data(), image.width(), image.height(), GDT_Float32, 0, 0 );
-  if ( err != CE_None )
-  {
-    QgsDebugMsg( QStringLiteral( "failed to write alpha data to GDAL dataset" ) );
-    return nullptr;
-  }
+  gdal::dataset_unique_ptr hSrcDS( GDALCreate( hDriverMem, "",  image.width(), image.height(), 0, GDT_Byte, nullptr ) );
+
+  char **papszOptions = QgsGdalUtils::papszFromStringList( QStringList()
+                        << QStringLiteral( "PIXELOFFSET=%1" ).arg( sizeof( QRgb ) )
+                        << QStringLiteral( "LINEOFFSET=%1" ).arg( image.bytesPerLine() )
+                        << QStringLiteral( "DATAPOINTER=%1" ).arg( reinterpret_cast< qulonglong >( rgb ) + 2 ) );
+  GDALAddBand( hSrcDS.get(), GDT_Byte, papszOptions );
+  CSLDestroy( papszOptions );
+
+  papszOptions = QgsGdalUtils::papszFromStringList( QStringList()
+                 << QStringLiteral( "PIXELOFFSET=%1" ).arg( sizeof( QRgb ) )
+                 << QStringLiteral( "LINEOFFSET=%1" ).arg( image.bytesPerLine() )
+                 << QStringLiteral( "DATAPOINTER=%1" ).arg( reinterpret_cast< qulonglong >( rgb ) + 1 ) );
+  GDALAddBand( hSrcDS.get(), GDT_Byte, papszOptions );
+  CSLDestroy( papszOptions );
+
+  papszOptions = QgsGdalUtils::papszFromStringList( QStringList()
+                 << QStringLiteral( "PIXELOFFSET=%1" ).arg( sizeof( QRgb ) )
+                 << QStringLiteral( "LINEOFFSET=%1" ).arg( image.bytesPerLine() )
+                 << QStringLiteral( "DATAPOINTER=%1" ).arg( reinterpret_cast< qulonglong >( rgb ) ) );
+  GDALAddBand( hSrcDS.get(), GDT_Byte, papszOptions );
+  CSLDestroy( papszOptions );
+
+  papszOptions = QgsGdalUtils::papszFromStringList( QStringList()
+                 << QStringLiteral( "PIXELOFFSET=%1" ).arg( sizeof( QRgb ) )
+                 << QStringLiteral( "LINEOFFSET=%1" ).arg( image.bytesPerLine() )
+                 << QStringLiteral( "DATAPOINTER=%1" ).arg( reinterpret_cast< qulonglong >( rgb ) + 3 ) );
+  GDALAddBand( hSrcDS.get(), GDT_Byte, papszOptions );
+  CSLDestroy( papszOptions );
 
   return hSrcDS;
 }
@@ -186,133 +171,58 @@ void QgsGdalUtils::resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH h
   GDALDestroyGenImgProjTransformer( psWarpOptions->pTransformerArg );
 }
 
-gdal::dataset_unique_ptr QgsGdalUtils::resampleImage( const QImage &image, const QgsRectangle &extent, QSize outputSize, GDALResampleAlg resampleAlg )
+QImage QgsGdalUtils::resampleImage( const QImage &image, QSize outputSize, GDALRIOResampleAlg resampleAlg )
 {
-  gdal::dataset_unique_ptr srcDS = QgsGdalUtils::imageToMemoryDataset( image, extent, QgsCoordinateReferenceSystem() );
-  if ( !srcDS )
-    return nullptr;
-
-  gdal::dataset_unique_ptr destDS = QgsGdalUtils::createMultiBandMemoryDataset( GDT_Float32, 4, extent, outputSize.width(), outputSize.height(), QgsCoordinateReferenceSystem() );
-  if ( !destDS )
-    return nullptr;
-
-  gdal::warp_options_unique_ptr psWarpOptions( GDALCreateWarpOptions() );
-  psWarpOptions->hSrcDS = srcDS.get();
-  psWarpOptions->hDstDS = destDS.get();
-
-  psWarpOptions->nBandCount = 4;
-  psWarpOptions->panSrcBands = ( int * ) CPLMalloc( sizeof( int ) * 4 );
-  psWarpOptions->panDstBands = ( int * ) CPLMalloc( sizeof( int ) * 4 );
-  psWarpOptions->panSrcBands[0] = 1;
-  psWarpOptions->panSrcBands[1] = 2;
-  psWarpOptions->panSrcBands[2] = 3;
-  psWarpOptions->panSrcBands[3] = 4;
-  psWarpOptions->panDstBands[0] = 1;
-  psWarpOptions->panDstBands[1] = 2;
-  psWarpOptions->panDstBands[2] = 3;
-  psWarpOptions->panDstBands[3] = 4;
-
-  psWarpOptions->eResampleAlg = resampleAlg;
-
-  // Establish reprojection transformer.
-  psWarpOptions->pTransformerArg =
-    GDALCreateGenImgProjTransformer( srcDS.get(), GDALGetProjectionRef( srcDS.get() ),
-                                     destDS.get(), GDALGetProjectionRef( destDS.get() ),
-                                     FALSE, 0.0, 1 );
-  psWarpOptions->pfnTransformer = GDALGenImgProjTransform;
-
-  // Initialize and execute the warp operation.
-  GDALWarpOperation oOperation;
-  oOperation.Initialize( psWarpOptions.get() );
-
-  oOperation.ChunkAndWarpImage( 0, 0, GDALGetRasterXSize( destDS.get() ), GDALGetRasterYSize( destDS.get() ) );
-
-  GDALDestroyGenImgProjTransformer( psWarpOptions->pTransformerArg );
-  return destDS;
-}
-
-QImage QgsGdalUtils::resampleImage( const QImage &image, QSize outputSize, GDALResampleAlg resampleAlg )
-{
-  gdal::dataset_unique_ptr srcDS = resampleImage( image, QgsRectangle( 0, 0, image.width(), image.height() ), outputSize, resampleAlg );
+  gdal::dataset_unique_ptr srcDS = QgsGdalUtils::imageToMemoryDataset( image );
   if ( !srcDS )
     return QImage();
 
-  QImage res( outputSize, image.format() );
-  QRgb *rgb = reinterpret_cast<QRgb *>( res.bits() );
+  GDALRasterIOExtraArg extra;
+  INIT_RASTERIO_EXTRA_ARG( extra );
+  extra.eResampleAlg = resampleAlg;
 
-  GDALRasterBandH rBand = GDALGetRasterBand( srcDS.get(), 1 );
-  GDALRasterBandH gBand = GDALGetRasterBand( srcDS.get(), 2 );
-  GDALRasterBandH bBand = GDALGetRasterBand( srcDS.get(), 3 );
-  GDALRasterBandH aBand = GDALGetRasterBand( srcDS.get(), 4 );
+  QImage res( outputSize, QImage::Format_ARGB32 ); // premultiplied??
+  if ( res.isNull() )
+    return QImage();
 
-  const qgssize count = static_cast< qgssize >( outputSize.width() ) * outputSize.height();
+  GByte *rgb = reinterpret_cast<GByte *>( res.bits() );
 
-  float *rData = ( float * ) CPLMalloc( count * sizeof( float ) );
-  CPLErr err = GDALRasterIO( rBand, GF_Read, 0, 0, outputSize.width(), outputSize.height(),
-                             rData, outputSize.width(), outputSize.height(), GDT_Float32, 0, 0 );
+  CPLErr err = GDALRasterIOEx( GDALGetRasterBand( srcDS.get(), 1 ), GF_Read, 0, 0, image.width(), image.height(), rgb + 2, outputSize.width(),
+                               outputSize.height(), GDT_Byte, sizeof( QRgb ), res.bytesPerLine(), &extra );
   if ( err != CE_None )
   {
     QgsDebugMsg( QStringLiteral( "failed to read red band" ) );
-    CPLFree( rData );
     return QImage();
   }
-  float *gData = ( float * ) CPLMalloc( count * sizeof( float ) );
-  err = GDALRasterIO( gBand, GF_Read, 0, 0, outputSize.width(), outputSize.height(),
-                      gData, outputSize.width(), outputSize.height(), GDT_Float32, 0, 0 );
+
+  err = GDALRasterIOEx( GDALGetRasterBand( srcDS.get(), 2 ), GF_Read, 0, 0, image.width(), image.height(), rgb + 1, outputSize.width(),
+                        outputSize.height(), GDT_Byte, sizeof( QRgb ), res.bytesPerLine(), &extra );
   if ( err != CE_None )
   {
     QgsDebugMsg( QStringLiteral( "failed to read green band" ) );
-    CPLFree( rData );
-    CPLFree( gData );
     return QImage();
   }
-  float *bData = ( float * ) CPLMalloc( count * sizeof( float ) );
-  err = GDALRasterIO( bBand, GF_Read, 0, 0, outputSize.width(), outputSize.height(),
-                      bData, outputSize.width(), outputSize.height(), GDT_Float32, 0, 0 );
+
+  err = GDALRasterIOEx( GDALGetRasterBand( srcDS.get(), 3 ), GF_Read, 0, 0, image.width(), image.height(), rgb, outputSize.width(),
+                        outputSize.height(), GDT_Byte, sizeof( QRgb ), res.bytesPerLine(), &extra );
   if ( err != CE_None )
   {
     QgsDebugMsg( QStringLiteral( "failed to read blue band" ) );
-    CPLFree( rData );
-    CPLFree( gData );
-    CPLFree( bData );
     return QImage();
   }
-  float *aData = ( float * ) CPLMalloc( count * sizeof( float ) );
-  err = GDALRasterIO( aBand, GF_Read, 0, 0, outputSize.width(), outputSize.height(),
-                      aData, outputSize.width(), outputSize.height(), GDT_Float32, 0, 0 );
+
+  err = GDALRasterIOEx( GDALGetRasterBand( srcDS.get(), 4 ), GF_Read, 0, 0, image.width(), image.height(), rgb + 3, outputSize.width(),
+                        outputSize.height(), GDT_Byte, sizeof( QRgb ), res.bytesPerLine(), &extra );
   if ( err != CE_None )
   {
     QgsDebugMsg( QStringLiteral( "failed to read alpha band" ) );
-    CPLFree( rData );
-    CPLFree( gData );
-    CPLFree( bData );
-    CPLFree( aData );
     return QImage();
   }
-
-  float *rIn = rData;
-  float *gIn = gData;
-  float *bIn = bData;
-  float *aIn = aData;
-  for ( qgssize i = 0; i < count; ++i )
-  {
-    int red = std::max( 0, std::min( 255, static_cast< int >( std::round( *rIn++ ) ) ) );
-    int green = std::max( 0, std::min( 255, static_cast< int >( std::round( *gIn++ ) ) ) );
-    int blue = std::max( 0, std::min( 255, static_cast< int >( std::round( *bIn++ ) ) ) );
-    int alpha = std::max( 0, std::min( 255, static_cast< int >( std::round( *aIn++ ) ) ) );
-
-    *rgb++ = qRgba( red, green, blue, alpha );
-  }
-
-  CPLFree( rData );
-  CPLFree( gData );
-  CPLFree( bData );
-  CPLFree( aData );
 
   return res;
 }
 
-QString QgsGdalUtils::helpCreationOptionsFormat( QString format )
+QString QgsGdalUtils::helpCreationOptionsFormat( const QString &format )
 {
   QString message;
   GDALDriverH myGdalDriver = GDALGetDriverByName( format.toLocal8Bit().constData() );
