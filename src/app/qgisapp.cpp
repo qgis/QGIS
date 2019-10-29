@@ -1977,6 +1977,21 @@ void QgisApp::checkVectorLayerDependencies( QgsVectorLayer *vl )
   for ( QgsVectorLayerRef &dependency : findBrokenWidgetDependencies( vl ) )
   {
     const QgsVectorLayer *depVl { dependency.resolveWeakly( QgsProject::instance() ) };
+    // The default resolution logic does not recognize a positive match if the datasource is
+    // not exactly the same, for this reason we try a loose match here where the layer name
+    // equality is sufficient for a positive match within the same provider.
+    if ( ! depVl )
+    {
+      const auto constVLayers { QgsProject::instance()->layers< QgsVectorLayer * >( ) };
+      for ( const QgsVectorLayer *vl : constVLayers )
+      {
+        if ( vl->name() == dependency.name && vl->providerType() == dependency.provider )
+        {
+          depVl = vl;
+          break;
+        }
+      }
+    }
     if ( ! depVl || ! depVl->isValid() )
     {
       // try to aggressively resolve the broken dependencies
@@ -1994,7 +2009,7 @@ void QgisApp::checkVectorLayerDependencies( QgsVectorLayer *vl )
           const QVariantMap sourceParts { providerMetadata->decodeUri( dependency.source ) };
 
           // This part should really be abstracted out to the connection classes or to the providers directly.
-          // Different providers decode the uri differently, fo example we don't get the table name out of OGR
+          // Different providers decode the uri differently, for example we don't get the table name out of OGR
           // but the layerName/layerId instead, so let's try different approachs
 
           // This works for GPKG
