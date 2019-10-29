@@ -3073,7 +3073,7 @@ namespace QgsWms
     {
       const QgsWmsParametersLayer param = mContext.parameters( *layer );
 
-      if ( param.mNickname.isEmpty() )
+      if ( ! mContext.layersToRender().contains( layer ) )
       {
         continue;
       }
