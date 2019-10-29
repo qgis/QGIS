@@ -23,8 +23,8 @@
 // List of GPKG quoted system and dummy tables names to be excluded from the tables listing
 static const QStringList excludedTableNames { { QStringLiteral( "\"ogr_empty_table\"" ) } };
 
-QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString &name ):
-  QgsAbstractDatabaseProviderConnection( name )
+QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString &name )
+  : QgsAbstractDatabaseProviderConnection( name )
 {
   setDefaultCapabilities();
   QgsSettings settings;

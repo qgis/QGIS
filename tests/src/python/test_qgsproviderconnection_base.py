@@ -176,8 +176,11 @@ class TestPyQgsProviderConnectionBase():
                 self.assertEqual(res, [])
                 sql = "SELECT string, long, double, integer, date, datetime FROM %s" % table
                 res = conn.executeSql(sql)
-                # GPKG has no type for time
-                self.assertEqual(res, [['QGIS Rocks - \U0001f604', 666, 1.234, 1234, QtCore.QDate(2019, 7, 8), QtCore.QDateTime(2019, 7, 8, 12, 0, 12)]])
+                # GPKG has no type for time and spatialite has no support for dates and time ...
+                if self.providerKey == 'spatialite':
+                    self.assertEqual(res, [['QGIS Rocks - \U0001f604', 666, 1.234, 1234, '2019-07-08', '2019-07-08T12:00:12']])
+                else:
+                    self.assertEqual(res, [['QGIS Rocks - \U0001f604', 666, 1.234, 1234, QtCore.QDate(2019, 7, 8), QtCore.QDateTime(2019, 7, 8, 12, 0, 12)]])
                 sql = "SELECT time FROM %s" % table
                 res = conn.executeSql(sql)
                 self.assertIn(res, ([[QtCore.QTime(12, 0, 13)]], [['12:00:13.00']]))
@@ -193,14 +196,15 @@ class TestPyQgsProviderConnectionBase():
             self.assertTrue('myNewTable' in table_names)
             self.assertFalse('myNewAspatialTable' in table_names)
 
-            # Query for rasters (in qgis_test schema or no schema for GPKG)
-            table_properties = conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Raster)
-            # At leasy one raster should be there
-            self.assertTrue(len(table_properties) >= 1)
-            table_property = table_properties[0]
-            self.assertTrue(table_property.flags() & QgsAbstractDatabaseProviderConnection.Raster)
-            self.assertFalse(table_property.flags() & QgsAbstractDatabaseProviderConnection.Vector)
-            self.assertFalse(table_property.flags() & QgsAbstractDatabaseProviderConnection.Aspatial)
+            # Query for rasters (in qgis_test schema or no schema for GPKG, spatialite has no support)
+            if self.providerKey != 'spatialite':
+                table_properties = conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Raster)
+                # At least one raster should be there (except for spatialite)
+                self.assertTrue(len(table_properties) >= 1)
+                table_property = table_properties[0]
+                self.assertTrue(table_property.flags() & QgsAbstractDatabaseProviderConnection.Raster)
+                self.assertFalse(table_property.flags() & QgsAbstractDatabaseProviderConnection.Vector)
+                self.assertFalse(table_property.flags() & QgsAbstractDatabaseProviderConnection.Aspatial)
 
             # Rename
             conn.renameVectorTable(schema, 'myNewTable', 'myVeryNewTable')

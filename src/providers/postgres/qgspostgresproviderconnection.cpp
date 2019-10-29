@@ -26,11 +26,11 @@ extern "C"
 #include <libpq-fe.h>
 }
 
-QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &name ):
-  QgsAbstractDatabaseProviderConnection( name )
+QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &name )
+  : QgsAbstractDatabaseProviderConnection( name )
 {
   // Remove the sql and table empty parts
-  static const QRegularExpression removePartsRe { R"raw(\s*sql=\s*|\s*table=""\s*)raw" };
+  const QRegularExpression removePartsRe { R"raw(\s*sql=\s*|\s*table=""\s*)raw" };
   setUri( QgsPostgresConn::connUri( name ).uri().replace( removePartsRe, QString() ) );
   setDefaultCapabilities();
 }
@@ -118,7 +118,7 @@ QString QgsPostgresProviderConnection::tableUri( const QString &schema, const QS
   dsUri.setSchema( schema );
   if ( tableInfo.flags().testFlag( QgsAbstractDatabaseProviderConnection::TableFlag::Raster ) )
   {
-    static const QRegularExpression removePartsRe { R"raw(\s*sql=\s*|\s*table=("[^"]+"\.?)*\s*)raw" };
+    const QRegularExpression removePartsRe { R"raw(\s*sql=\s*|\s*table=("[^"]+"\.?)*\s*)raw" };
     if ( tableInfo.geometryColumn().isEmpty() )
     {
       throw QgsProviderConnectionException( QObject::tr( "Raster table '%1' in schema '%2' has no geometry column." )

@@ -30,6 +30,8 @@ email                : a.furieri@lqt.it
 #include "qgsspatialitefeatureiterator.h"
 #include "qgsfeedback.h"
 #include "qgsspatialitedataitems.h"
+#include "qgsspatialiteconnection.h"
+#include "qgsspatialiteproviderconnection.h"
 
 #include "qgsjsonutils.h"
 #include "qgsvectorlayer.h"
@@ -6053,6 +6055,34 @@ QList< QgsDataItemProvider * > QgsSpatiaLiteProviderMetadata::dataItemProviders(
   providers << new QgsSpatiaLiteDataItemProvider;
   return providers;
 }
+
+
+
+QMap<QString, QgsAbstractProviderConnection *> QgsSpatiaLiteProviderMetadata::connections( bool cached )
+{
+  return connectionsProtected< QgsSpatiaLiteProviderConnection, QgsSpatiaLiteConnection>( cached );
+}
+
+QgsAbstractProviderConnection *QgsSpatiaLiteProviderMetadata::createConnection( const QString &connName )
+{
+  return new QgsSpatiaLiteProviderConnection( connName );
+}
+
+QgsAbstractProviderConnection *QgsSpatiaLiteProviderMetadata::createConnection( const QString &uri, const QVariantMap &configuration )
+{
+  return new QgsSpatiaLiteProviderConnection( uri, configuration );
+}
+
+void QgsSpatiaLiteProviderMetadata::deleteConnection( const QString &name )
+{
+  deleteConnectionProtected<QgsSpatiaLiteProviderConnection>( name );
+}
+
+void QgsSpatiaLiteProviderMetadata::saveConnection( const QgsAbstractProviderConnection *conn, const QString &name )
+{
+  saveConnectionProtected( conn, name );
+}
+
 
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
