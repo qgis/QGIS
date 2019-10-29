@@ -91,6 +91,9 @@ void QgsLayoutAtlasWidget::mUseAtlasCheckBox_stateChanged( int state )
 
 void QgsLayoutAtlasWidget::changeCoverageLayer( QgsMapLayer *layer )
 {
+  if ( !mLayout )
+    return;
+
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
 
   mLayout->undoStack()->beginCommand( mAtlas, tr( "Change Atlas Layer" ) );
@@ -109,6 +112,9 @@ void QgsLayoutAtlasWidget::changeCoverageLayer( QgsMapLayer *layer )
 
 void QgsLayoutAtlasWidget::mAtlasFilenamePatternEdit_editingFinished()
 {
+  if ( !mLayout )
+    return;
+
   QString error;
   mBlockUpdates = true;
   mLayout->undoStack()->beginCommand( mAtlas, tr( "Change Atlas Filename" ) );
@@ -126,7 +132,7 @@ void QgsLayoutAtlasWidget::mAtlasFilenamePatternEdit_editingFinished()
 
 void QgsLayoutAtlasWidget::mAtlasFilenameExpressionButton_clicked()
 {
-  if ( !mAtlas || !mAtlas->coverageLayer() )
+  if ( !mLayout || !mAtlas || !mAtlas->coverageLayer() )
   {
     return;
   }
@@ -160,6 +166,9 @@ void QgsLayoutAtlasWidget::mAtlasFilenameExpressionButton_clicked()
 
 void QgsLayoutAtlasWidget::mAtlasHideCoverageCheckBox_stateChanged( int state )
 {
+  if ( !mLayout )
+    return;
+
   mBlockUpdates = true;
   mLayout->undoStack()->beginCommand( mAtlas, tr( "Toggle Atlas Layer" ) );
   mAtlas->setHideCoverage( state == Qt::Checked );
@@ -169,6 +178,9 @@ void QgsLayoutAtlasWidget::mAtlasHideCoverageCheckBox_stateChanged( int state )
 
 void QgsLayoutAtlasWidget::mAtlasSingleFileCheckBox_stateChanged( int state )
 {
+  if ( !mLayout )
+    return;
+
   if ( state == Qt::Checked )
   {
     mAtlasFilenamePatternEdit->setEnabled( false );
@@ -185,6 +197,9 @@ void QgsLayoutAtlasWidget::mAtlasSingleFileCheckBox_stateChanged( int state )
 
 void QgsLayoutAtlasWidget::mAtlasSortFeatureCheckBox_stateChanged( int state )
 {
+  if ( !mLayout )
+    return;
+
   if ( state == Qt::Checked )
   {
     mAtlasSortFeatureDirectionButton->setEnabled( true );
@@ -205,6 +220,9 @@ void QgsLayoutAtlasWidget::mAtlasSortFeatureCheckBox_stateChanged( int state )
 
 void QgsLayoutAtlasWidget::changesSortFeatureExpression( const QString &expression, bool )
 {
+  if ( !mLayout )
+    return;
+
   mBlockUpdates = true;
   mLayout->undoStack()->beginCommand( mAtlas, tr( "Change Atlas Sort" ) );
   mAtlas->setSortExpression( expression );
@@ -228,6 +246,9 @@ void QgsLayoutAtlasWidget::updateAtlasFeatures()
 
 void QgsLayoutAtlasWidget::mAtlasFeatureFilterCheckBox_stateChanged( int state )
 {
+  if ( !mLayout )
+    return;
+
   if ( state == Qt::Checked )
   {
     mAtlasFeatureFilterEdit->setEnabled( true );
@@ -248,6 +269,9 @@ void QgsLayoutAtlasWidget::mAtlasFeatureFilterCheckBox_stateChanged( int state )
 
 void QgsLayoutAtlasWidget::pageNameExpressionChanged( const QString &, bool valid )
 {
+  if ( !mLayout )
+    return;
+
   QString expression = mPageNameWidget->asExpression();
   if ( !valid && !expression.isEmpty() )
   {
@@ -263,6 +287,9 @@ void QgsLayoutAtlasWidget::pageNameExpressionChanged( const QString &, bool vali
 
 void QgsLayoutAtlasWidget::mAtlasFeatureFilterEdit_editingFinished()
 {
+  if ( !mLayout )
+    return;
+
   QString error;
   mLayout->undoStack()->beginCommand( mAtlas, tr( "Change Atlas Filter" ) );
 
@@ -281,6 +308,9 @@ void QgsLayoutAtlasWidget::mAtlasFeatureFilterEdit_editingFinished()
 
 void QgsLayoutAtlasWidget::mAtlasFeatureFilterButton_clicked()
 {
+  if ( !mLayout )
+    return;
+
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mAtlasCoverageLayerComboBox->currentLayer() );
 
   if ( !vl )
@@ -319,6 +349,9 @@ void QgsLayoutAtlasWidget::mAtlasFeatureFilterButton_clicked()
 
 void QgsLayoutAtlasWidget::mAtlasSortFeatureDirectionButton_clicked()
 {
+  if ( !mLayout )
+    return;
+
   Qt::ArrowType at = mAtlasSortFeatureDirectionButton->arrowType();
   at = ( at == Qt::UpArrow ) ? Qt::DownArrow : Qt::UpArrow;
   mAtlasSortFeatureDirectionButton->setArrowType( at );
@@ -333,6 +366,9 @@ void QgsLayoutAtlasWidget::mAtlasSortFeatureDirectionButton_clicked()
 
 void QgsLayoutAtlasWidget::changeFileFormat()
 {
+  if ( !mLayout )
+    return;
+
   mLayout->setCustomProperty( QStringLiteral( "atlasRasterFormat" ), mAtlasFileFormat->currentText() );
 }
 
