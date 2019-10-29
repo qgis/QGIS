@@ -27,12 +27,18 @@ QgsCubicRasterResampler *QgsCubicRasterResampler::clone() const
 
 QImage QgsCubicRasterResampler::resampleV2( const QImage &source, const QSize &size )
 {
-  return QgsGdalUtils::resampleImage( source, size, GRA_Cubic );
+  return QgsGdalUtils::resampleImage( source, size, GRIORA_Cubic );
 }
 
 Q_NOWARN_DEPRECATED_PUSH
 void QgsCubicRasterResampler::resample( const QImage &srcImage, QImage &dstImage )
 {
-  dstImage = QgsGdalUtils::resampleImage( srcImage, dstImage.size(), GRA_Cubic );
+  dstImage = QgsGdalUtils::resampleImage( srcImage, dstImage.size(), GRIORA_Cubic );
 }
 Q_NOWARN_DEPRECATED_POP
+
+QString QgsCubicRasterResampler::type() const
+{
+  return QStringLiteral( "cubic" );
+}
+
