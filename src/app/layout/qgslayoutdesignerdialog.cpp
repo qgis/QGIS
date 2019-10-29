@@ -990,7 +990,6 @@ void QgsLayoutDesignerDialog::setMasterLayout( QgsMasterLayoutInterface *layout 
     connect( obj, &QObject::destroyed, this, [ = ]
   {
     this->close();
-    QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
   } );
 
   setTitle( mMasterLayout->name() );
