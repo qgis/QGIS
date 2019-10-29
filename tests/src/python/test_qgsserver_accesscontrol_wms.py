@@ -461,7 +461,6 @@ class TestQgsServerAccessControlWMS(TestQgsServerAccessControl):
 
 # # Subset String # #
 
-
     def test_wms_getmap_subsetstring(self):
         query_string = "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
@@ -924,9 +923,9 @@ class TestQgsServerAccessControlWMS(TestQgsServerAccessControl):
         def _gfi(restrict, layers):
             qs = ("?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&"
                   + "BBOX=612616,5810132,619259,5813237"
-                + "&CRS=EPSG:25832&WIDTH=2759&HEIGHT=1290&&STYLES="
-                + "&FORMAT=application/json&QUERY_LAYERS=%s"
-                  + "&INFO_FORMAT=application/json&I=508&J=560&FEATURE_COUNT=10" ) % layers
+                  + "&CRS=EPSG:25832&WIDTH=2759&HEIGHT=1290&&STYLES="
+                  + "&FORMAT=application/json&QUERY_LAYERS=%s"
+                  + "&INFO_FORMAT=application/json&I=508&J=560&FEATURE_COUNT=10") % layers
             if restrict:
                 qs = qs + "&LAYER_PERM=yes"
             request = QgsBufferServerRequest(qs)
