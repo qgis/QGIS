@@ -2012,7 +2012,7 @@ void QgisApp::checkVectorLayerDependencies( QgsVectorLayer *vl )
 
           // This part should really be abstracted out to the connection classes or to the providers directly.
           // Different providers decode the uri differently, for example we don't get the table name out of OGR
-          // but the layerName/layerId instead, so let's try different approachs
+          // but the layerName/layerId instead, so let's try different approaches
 
           // This works for GPKG
           tableName = sourceParts.value( QStringLiteral( "layerName" ) ).toString();

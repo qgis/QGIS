@@ -2017,7 +2017,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsMessageBar *visibleMessageBar();
 
     /**
-     * Searchs for layer widget dependencies
+     * Searches for layer widget dependencies
      * \return a list of weak references to broken widget layer dependencies
      */
     QList< QgsVectorLayerRef > findBrokenWidgetDependencies( QgsVectorLayer *vectorLayer );
