@@ -57,8 +57,8 @@ qint64 QgsTask::elapsedTime() const
 
 void QgsTask::start()
 {
-  mNotStartedMutex.unlock();
   mNotFinishedMutex.lock();
+  mNotStartedMutex.unlock();
   mStartCount++;
   Q_ASSERT( mStartCount == 1 );
 
