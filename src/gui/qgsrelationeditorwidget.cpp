@@ -30,10 +30,74 @@
 #include "qgslogger.h"
 #include "qgsvectorlayerutils.h"
 #include "qgsmapcanvas.h"
+#include "qgsvectorlayerselectionmanager.h"
 
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMessageBox>
+
+/// @cond PRIVATE
+
+/**
+ * This class is used to filter the current vector layer selection to features matching the given request.
+ * Relation editor widget use it in order to get selected feature for the current relation.
+ */
+class QgsFilteredSelectionManager : public QgsVectorLayerSelectionManager
+{
+  public:
+    QgsFilteredSelectionManager( QgsVectorLayer *layer, const QgsFeatureRequest &request, QObject *parent = nullptr )
+      : QgsVectorLayerSelectionManager( layer, parent )
+      , mRequest( request )
+    {
+      for ( auto fid : layer->selectedFeatureIds() )
+        if ( mRequest.acceptFeature( layer->getFeature( fid ) ) )
+          mSelectedFeatureIds << fid;
+
+      connect( layer, &QgsVectorLayer::selectionChanged, this, &QgsFilteredSelectionManager::onSelectionChanged );
+    }
+
+    const QgsFeatureIds &selectedFeatureIds() const override
+    {
+      return mSelectedFeatureIds;
+    }
+
+
+    int selectedFeatureCount() override
+    {
+      return mSelectedFeatureIds.count();
+    }
+
+  private slots:
+
+    void onSelectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect ) override
+    {
+      QgsFeatureIds lselected = selected;
+      if ( clearAndSelect )
+      {
+        mSelectedFeatureIds.clear();
+      }
+      else
+      {
+        for ( auto fid : deselected )
+          mSelectedFeatureIds.remove( fid );
+      }
+
+      for ( auto fid : selected )
+        if ( mRequest.acceptFeature( layer()->getFeature( fid ) ) )
+          mSelectedFeatureIds << fid;
+        else
+          lselected.remove( fid );
+
+      emit selectionChanged( lselected, deselected, clearAndSelect );
+    }
+
+  private:
+
+    QgsFeatureRequest mRequest;
+    QgsFeatureIds mSelectedFeatureIds;
+};
+
+/// @endcond
 
 QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget *parent )
   : QgsCollapsibleGroupBox( parent )
@@ -135,8 +199,6 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget *parent )
 
   mDualView = new QgsDualView( this );
   mDualView->setView( mViewMode );
-  mFeatureSelectionMgr = new QgsGenericFeatureSelectionManager( mDualView );
-  mDualView->setFeatureSelectionManager( mFeatureSelectionMgr );
 
   mRelationLayout->addWidget( mDualView );
 
@@ -151,7 +213,6 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget *parent )
   connect( mLinkFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::linkFeature );
   connect( mUnlinkFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::unlinkSelectedFeatures );
   connect( mZoomToFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::zoomToSelectedFeatures );
-  connect( mFeatureSelectionMgr, &QgsIFeatureSelectionManager::selectionChanged, this, &QgsRelationEditorWidget::updateButtons );
 
   connect( mDualView, &QgsDualView::showContextMenuExternally, this, &QgsRelationEditorWidget::showContextMenu );
 
@@ -198,8 +259,17 @@ void QgsRelationEditorWidget::setRelationFeature( const QgsRelation &relation, c
   if ( mVisible )
   {
     QgsFeatureRequest myRequest = mRelation.getRelatedFeaturesRequest( mFeature );
-    mDualView->init( mRelation.referencingLayer(), nullptr, myRequest, mEditorContext );
+    initDualView( mRelation.referencingLayer(), myRequest );
   }
+}
+
+void QgsRelationEditorWidget::initDualView( QgsVectorLayer *layer, const QgsFeatureRequest &request )
+{
+  mDualView->init( layer, nullptr, request, mEditorContext );
+  mFeatureSelectionMgr = new QgsFilteredSelectionManager( layer, request, mDualView );
+  mDualView->setFeatureSelectionManager( mFeatureSelectionMgr );
+  connect( mFeatureSelectionMgr, &QgsIFeatureSelectionManager::selectionChanged, this, &QgsRelationEditorWidget::updateButtons );
+  updateButtons();
 }
 
 void QgsRelationEditorWidget::setRelations( const QgsRelation &relation, const QgsRelation &nmrelation )
@@ -295,7 +365,7 @@ void QgsRelationEditorWidget::updateButtons()
 {
   bool editable = false;
   bool linkable = false;
-  bool selectionNotEmpty = mFeatureSelectionMgr->selectedFeatureCount();
+  bool selectionNotEmpty = mFeatureSelectionMgr ? mFeatureSelectionMgr->selectedFeatureCount() : false;
 
   if ( mRelation.isValid() )
   {
@@ -447,9 +517,6 @@ void QgsRelationEditorWidget::linkFeature()
       for ( const QgsFeature &f : constNewFeatures )
         ids << f.id();
       mRelation.referencingLayer()->selectByIds( ids );
-
-
-      updateUi();
     }
     else
     {
@@ -473,6 +540,8 @@ void QgsRelationEditorWidget::linkFeature()
         }
       }
     }
+
+    updateUi();
   }
 }
 
@@ -730,11 +799,11 @@ void QgsRelationEditorWidget::updateUi()
 
       nmRequest.setFilterExpression( filters.join( QStringLiteral( " OR " ) ) );
 
-      mDualView->init( mNmRelation.referencedLayer(), nullptr, nmRequest, mEditorContext );
+      initDualView( mNmRelation.referencedLayer(), nmRequest );
     }
     else
     {
-      mDualView->init( mRelation.referencingLayer(), nullptr, myRequest, mEditorContext );
+      initDualView( mRelation.referencingLayer(), myRequest );
     }
   }
 }

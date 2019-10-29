@@ -255,6 +255,37 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         self.assertEqual([2, 3], relation.referencingFields())
         self.assertEqual([0, 1], relation.referencedFields())
 
+    def test_selection(self):
+
+        fbook = QgsFeature(self.vl_books.fields())
+        fbook.setAttributes([self.vl_books.dataProvider().defaultValueClause(0), 'The Hitchhiker\'s Guide to the Galaxy', 'Sputnik Editions', 1961])
+        self.vl_books.addFeature(fbook)
+
+        flink = QgsFeature(self.vl_link_books_authors.fields())
+        flink.setAttributes([fbook.id(), 5])
+        self.vl_link_books_authors.addFeature(flink)
+
+        self.createWrapper(self.vl_authors, '"name"=\'Douglas Adams\'')
+
+        self.zoomToButton = self.widget.findChild(QToolButton, "mDeleteFeatureButton")
+        self.assertTrue(self.zoomToButton)
+        self.assertTrue(not self.zoomToButton.isEnabled())
+
+        selectionMgr = self.widget.featureSelectionManager()
+        self.assertTrue(selectionMgr)
+
+        self.vl_books.select(fbook.id())
+        self.assertEqual([fbook.id()], selectionMgr.selectedFeatureIds())
+        self.assertTrue(self.zoomToButton.isEnabled())
+
+        selectionMgr.deselect([fbook.id()])
+        self.assertEqual([], selectionMgr.selectedFeatureIds())
+        self.assertTrue(not self.zoomToButton.isEnabled())
+
+        self.vl_books.select([1, fbook.id()])
+        self.assertEqual([fbook.id()], selectionMgr.selectedFeatureIds())
+        self.assertTrue(self.zoomToButton.isEnabled())
+
     def startTransaction(self):
         """
         Start a new transaction and set all layers into transaction mode.

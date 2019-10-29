@@ -15,7 +15,7 @@
 
 #include "qgsfeatureselectiondlg.h"
 
-#include "qgsgenericfeatureselectionmanager.h"
+#include "qgsvectorlayerselectionmanager.h"
 #include "qgsdistancearea.h"
 #include "qgsfeaturerequest.h"
 #include "qgsattributeeditorcontext.h"
@@ -29,7 +29,7 @@ QgsFeatureSelectionDlg::QgsFeatureSelectionDlg( QgsVectorLayer *vl, QgsAttribute
 {
   setupUi( this );
 
-  mFeatureSelection = new QgsGenericFeatureSelectionManager( mDualView );
+  mFeatureSelection = new QgsVectorLayerSelectionManager( vl, mDualView );
 
   mDualView->setFeatureSelectionManager( mFeatureSelection );
 
@@ -72,5 +72,3 @@ void QgsFeatureSelectionDlg::showEvent( QShowEvent *event )
 
   QDialog::showEvent( event );
 }
-
-
