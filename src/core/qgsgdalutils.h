@@ -61,13 +61,6 @@ class CORE_EXPORT QgsGdalUtils
     static gdal::dataset_unique_ptr createSingleBandTiffDataset( QString filename, GDALDataType dataType, QgsRectangle extent, int width, int height, const QgsCoordinateReferenceSystem &crs );
 
     /**
-     * Converts an \a image to a GDAL memory dataset.
-     *
-     * \since QGIS 3.12
-     */
-    static gdal::dataset_unique_ptr imageToMemoryDataset( const QImage &image, QgsRectangle extent, const QgsCoordinateReferenceSystem &crs );
-
-    /**
      * Resamples a single band raster to the destination dataset with different resolution (and possibly with different CRS).
      * Ideally the source dataset should cover the whole area or the destination dataset.
      * \since QGIS 3.8
@@ -75,23 +68,16 @@ class CORE_EXPORT QgsGdalUtils
     static void resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH hDstDS, GDALResampleAlg resampleAlg );
 
     /**
-     * Resamples a QImage \a image to a GDAL memory dataset with different resolution.
-     * \since QGIS 3.12
-     */
-    static gdal::dataset_unique_ptr resampleImage( const QImage &image, const QgsRectangle &extent,
-        QSize outputSize, GDALResampleAlg resampleAlg );
-
-    /**
      * Resamples a QImage \a image using GDAL resampler.
      * \since QGIS 3.12
      */
-    static QImage resampleImage( const QImage &image, QSize outputSize, GDALResampleAlg resampleAlg );
+    static QImage resampleImage( const QImage &image, QSize outputSize, GDALRIOResampleAlg resampleAlg );
 
     /**
      * Gets creation options metadata for a given format
      * \since QGIS 3.10
      */
-    static QString helpCreationOptionsFormat( QString format );
+    static QString helpCreationOptionsFormat( const QString &format );
 
     /**
      * Validates creation options for a given format, regardless of layer.
@@ -104,6 +90,17 @@ class CORE_EXPORT QgsGdalUtils
      * \since QGIS 3.10
      */
     static char **papszFromStringList( const QStringList &list );
+
+  private:
+
+    /**
+     * Converts an \a image to a GDAL memory dataset.
+     *
+     * \since QGIS 3.12
+     */
+    static gdal::dataset_unique_ptr imageToMemoryDataset( const QImage &image );
+
+    friend class TestQgsGdalUtils;
 };
 
 #endif // QGSGDALUTILS_H
