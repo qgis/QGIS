@@ -148,6 +148,18 @@ void QgsValueMapConfigDlg::removeSelectedButtonPushed()
 
 void QgsValueMapConfigDlg::updateMap( const QMap<QString, QVariant> &map, bool insertNull )
 {
+  QList<QPair<QString, QVariant>> orderedMap;
+  auto end = map.constEnd();
+  for ( auto it = map.constBegin(); it != end; ++it )
+  {
+    orderedMap.append( qMakePair( it.key(), it.value() ) );
+  }
+
+  updateMap( orderedMap, insertNull );
+}
+
+void QgsValueMapConfigDlg::updateMap( const QList<QPair<QString, QVariant> > &map, bool insertNull )
+{
   tableWidget->clearContents();
   for ( int i = tableWidget->rowCount() - 1; i > 0; i-- )
   {
@@ -161,12 +173,12 @@ void QgsValueMapConfigDlg::updateMap( const QMap<QString, QVariant> &map, bool i
     ++row;
   }
 
-  for ( QMap<QString, QVariant>::const_iterator mit = map.begin(); mit != map.end(); ++mit, ++row )
+  for ( const auto &pair : map )
   {
-    if ( mit.value().isNull() )
-      setRow( row, mit.key(), QString() );
+    if ( pair.second.isNull() )
+      setRow( row, pair.first, QString() );
     else
-      setRow( row, mit.key(), mit.value().toString() );
+      setRow( row, pair.first, pair.second.toString() );
   }
 }
 
@@ -305,7 +317,8 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
   re0.setMinimal( true );
   QRegExp re1( "^([^,]*),(.*)$" );
   re1.setMinimal( true );
-  QMap<QString, QVariant> map;
+
+  QList<QPair<QString, QVariant>> map;
 
   s.readLine();
 
@@ -313,7 +326,9 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
   {
     QString l = s.readLine().trimmed();
 
-    QString key, val;
+    QString key;
+    QString val;
+
     if ( re0.indexIn( l ) >= 0 && re0.captureCount() == 2 )
     {
       key = re0.cap( 1 ).trimmed();
@@ -342,7 +357,7 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
     if ( key == QgsApplication::nullRepresentation() )
       key = QgsValueMapFieldFormatter::NULL_VALUE;
 
-    map[ key ] = val;
+    map.append( qMakePair( key, val ) );
   }
 
   updateMap( map, false );

@@ -41,6 +41,7 @@ class GUI_EXPORT QgsValueMapConfigDlg : public QgsEditorConfigWidget, private Ui
     void setConfig( const QVariantMap &config ) override;
 
     void updateMap( const QMap<QString, QVariant> &map, bool insertNull );
+    void updateMap( const QList<QPair<QString, QVariant>> &map, bool insertNull );
 
     /**
      * Populates a \a comboBox with the appropriate entries based on a value map \a configuration.
