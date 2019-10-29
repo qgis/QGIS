@@ -32,6 +32,7 @@ from qgis.core import (QgsRasterFileWriter,
                        QgsProcessingParameterBand,
                        QgsProcessingParameterPoint,
                        QgsProcessingParameterNumber,
+                       QgsProcessingParameterDistance,
                        QgsProcessingParameterString,
                        QgsProcessingParameterRasterDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
@@ -76,11 +77,11 @@ class viewshed(GdalAlgorithm):
                                                        type=QgsProcessingParameterNumber.Double,
                                                        minValue=0.0,
                                                        defaultValue=1.0))
-        self.addParameter(QgsProcessingParameterNumber(self.MAX_DISTANCE,
-                                                       self.tr('Maximum distance from observer to compute visibility'),
-                                                       type=QgsProcessingParameterNumber.Double,
-                                                       minValue=0.0,
-                                                       defaultValue=100.0))
+        self.addParameter(QgsProcessingParameterDistance(self.MAX_DISTANCE,
+                                                         self.tr('Maximum distance from observer to compute visibility'),
+                                                         parentParameterName=self.INPUT,
+                                                         minValue=0.0,
+                                                         defaultValue=100.0))
 
         options_param = QgsProcessingParameterString(self.OPTIONS,
                                                      self.tr('Additional creation options'),
