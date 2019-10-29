@@ -1982,45 +1982,71 @@ void QgisApp::checkVectorLayerDependencies( QgsVectorLayer *vl )
       // try to aggressively resolve the broken dependencies
       bool loaded = false;
       const QString providerName { vl->dataProvider()->name() };
-      QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerName ) };
-      if ( md )
+      QgsProviderMetadata *providerMetadata { QgsProviderRegistry::instance()->providerMetadata( providerName ) };
+      if ( providerMetadata )
       {
-        std::unique_ptr< QgsAbstractDatabaseProviderConnection > conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( vl->dataProvider()->uri().uri(), {} ) ) };
+        // Retrieve the DB connection (if any)
+        std::unique_ptr< QgsAbstractDatabaseProviderConnection > conn { static_cast<QgsAbstractDatabaseProviderConnection *>( providerMetadata->createConnection( vl->dataProvider()->uri().uri(), {} ) ) };
         if ( conn )
         {
           QString tableSchema;
           QString tableName;
-          const QVariantMap sourceParts { md->decodeUri( dependency.source ) };
-          // HACK HACK HACK!
-          // This part should really be abstracted out to the connection classes or to the provider directly
-          // GPKG
-          if ( providerName == QStringLiteral( "ogr" ) )
-          {
-            tableName = sourceParts.value( QStringLiteral( "layerName" ) ).toString();
-          }
-          else // PG
+          const QVariantMap sourceParts { providerMetadata->decodeUri( dependency.source ) };
+
+          // This part should really be abstracted out to the connection classes or to the providers directly.
+          // Different providers decode the uri differently, fo example we don't get the table name out of OGR
+          // but the layerName/layerId instead, so let's try different approachs
+
+          // This works for GPKG
+          tableName = sourceParts.value( QStringLiteral( "layerName" ) ).toString();
+
+          // This works for PG and spatialite
+          if ( tableName.isEmpty() )
           {
             tableName = sourceParts.value( QStringLiteral( "table" ) ).toString();
             tableSchema = sourceParts.value( QStringLiteral( "schema" ) ).toString();
           }
-          try
+
+          // Helper to find layers in connections
+          auto layerFinder = [ &conn, &dependency, &providerName, this ]( const QString & tableSchema, const QString & tableName ) -> bool
           {
-            const QString layerUri { conn->tableUri( tableSchema, tableName )};
-            // Load it!
-            std::unique_ptr< QgsVectorLayer > newVl = qgis::make_unique< QgsVectorLayer >( layerUri, dependency.name, providerName );
-            if ( newVl->isValid() )
+            // First try the current schema (or no schema if it's not supported from the provider)
+            try
             {
-              connect( newVl.get(), &QgsVectorLayer::styleLoaded, this, &QgisApp::vectorLayerStyleLoaded );
-              QgsProject::instance()->addMapLayer( newVl.release() );
-              loaded = true;
+              const QString layerUri { conn->tableUri( tableSchema, tableName )};
+              // Load it!
+              std::unique_ptr< QgsVectorLayer > newVl = qgis::make_unique< QgsVectorLayer >( layerUri, dependency.name, providerName );
+              if ( newVl->isValid() )
+              {
+                connect( newVl.get(), &QgsVectorLayer::styleLoaded, this, &QgisApp::vectorLayerStyleLoaded );
+                QgsProject::instance()->addMapLayer( newVl.release() );
+                return true;
+              }
             }
-          }
-          catch ( QgsProviderConnectionException &ex )
+            catch ( QgsProviderConnectionException & )
+            {
+              // Do nothing!
+            }
+            return false;
+          };
+
+          loaded = layerFinder( tableSchema, tableName );
+
+          // Try different schemas
+          if ( ! loaded && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) && ! tableSchema.isEmpty() )
           {
-            QgsDebugMsg( QStringLiteral( "Error resolving dependency layer %1 - required by %2: %3" )
-                         .arg( dependency.name )
-                         .arg( vl->name() )
-                         .arg( ex.what() ) );
+            const QStringList schemas { conn->schemas() };
+            for ( const QString &schemaName : schemas )
+            {
+              if ( schemaName != tableSchema )
+              {
+                loaded = layerFinder( schemaName, tableName );
+              }
+              if ( loaded )
+              {
+                break;
+              }
+            }
           }
         }
       }
