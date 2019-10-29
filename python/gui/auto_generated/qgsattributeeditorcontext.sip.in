@@ -258,6 +258,20 @@ Returns given ``attributeFormMode`` as string
 .. versionadded:: 3.4
 %End
 
+    void setMainInfoBar( QgsMessageBar *messageBar );
+%Docstring
+Set current ``messageBar`` as the main information bar
+
+.. versionadded:: 3.12
+%End
+
+    QgsMessageBar *mainInfoBar();
+%Docstring
+Returns the main information bar
+
+.. versionadded:: 3.12
+%End
+
 };
 
 /************************************************************************

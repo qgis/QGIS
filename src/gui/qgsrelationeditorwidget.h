@@ -20,7 +20,9 @@
 #include <QToolButton>
 #include <QButtonGroup>
 #include <QGridLayout>
+#include "qobjectuniqueptr.h"
 
+#include "qobjectuniqueptr.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgscollapsiblegroupbox.h"
 #include "qgsdualview.h"
@@ -31,6 +33,8 @@
 class QgsFeature;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
+class QgsMapTool;
+class QgsMapToolDigitizeFeature;
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -176,7 +180,8 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     void setViewMode( int mode ) {setViewMode( static_cast<QgsDualView::ViewMode>( mode ) );}
     void updateButtons();
 
-    void addFeature();
+    void addFeature( const QgsGeometry &geometry = QgsGeometry() );
+    void addFeatureGeometry();
     void duplicateFeature();
     void linkFeature();
     void deleteFeature( QgsFeatureId featureid = QgsFeatureId() );
@@ -188,12 +193,18 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     void toggleEditing( bool state );
     void onCollapsedStateChanged( bool collapsed );
     void showContextMenu( QgsActionMenu *menu, QgsFeatureId fid );
+    void mapToolDeactivated();
+    void onKeyPressed( QKeyEvent *e );
+    void onDigitizingCompleted( const QgsFeature &feature );
 
   private:
     void updateUi();
     void initDualView( QgsVectorLayer *layer, const QgsFeatureRequest &request );
+    void setMapTool( QgsMapTool *mapTool );
+    void unsetMapTool();
 
     QgsDualView *mDualView = nullptr;
+    QgsMessageBarItem *mMessageBarItem = nullptr;
     QgsDualView::ViewMode mViewMode = QgsDualView::AttributeEditor;
     QgsVectorLayerSelectionManager *mFeatureSelectionMgr = nullptr;
     QgsAttributeEditorContext mEditorContext;
@@ -211,7 +222,9 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     QToolButton *mZoomToFeatureButton = nullptr;
     QToolButton *mFormViewButton = nullptr;
     QToolButton *mTableViewButton = nullptr;
+    QToolButton *mAddFeatureGeometryButton = nullptr;
     QGridLayout *mRelationLayout = nullptr;
+    QObjectUniquePtr<QgsMapToolDigitizeFeature> mMapToolDigitize;
     QButtonGroup *mViewModeButtonGroup = nullptr;
 
     bool mShowLabel = true;
