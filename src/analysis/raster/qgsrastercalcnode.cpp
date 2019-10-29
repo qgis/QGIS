@@ -265,7 +265,7 @@ QString QgsRasterCalcNode::toString( bool cStyle ) const
           break;
         case opLT:
           if ( cStyle )
-            result = QStringLiteral( "( float ) ( %1 < %2" ).arg( left ).arg( right );
+            result = QStringLiteral( "( float ) ( %1 < %2 )" ).arg( left ).arg( right );
           else
             result = QStringLiteral( "%1 < %2" ).arg( left ).arg( right );
           break;
@@ -344,13 +344,16 @@ QString QgsRasterCalcNode::toString( bool cStyle ) const
       }
       break;
     case tRasterRef:
-      result = QStringLiteral( "\"%1\"" ).arg( mRasterName );
+      if ( cStyle )
+        result = QStringLiteral( "( float ) \"%1\"" ).arg( mRasterName );
+      else
+        result = QStringLiteral( "\"%1\"" ).arg( mRasterName );
       break;
     case tNumber:
       result = QString::number( mNumber );
       if ( cStyle )
       {
-        result = QStringLiteral( "( float ) ( %1 )" ).arg( result );
+        result = QStringLiteral( "( float ) %1" ).arg( result );
       }
       break;
     case tMatrix:

@@ -427,171 +427,181 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
     inputRefs.push_back( entry );
   }
 
-  // Prepare context and queue
-  cl::Context ctx( QgsOpenClUtils::context() );
-  cl::CommandQueue queue( QgsOpenClUtils::commandQueue() );
-
-  // Create the C expression
-  std::vector<cl::Buffer> inputBuffers;
-  inputBuffers.reserve( inputRefs.size() );
-  QStringList inputArgs;
-  for ( const auto &ref : inputRefs )
+  // May throw an openCL exception
+  try
   {
-    cExpression.replace( QStringLiteral( "\"%1\"" ).arg( ref.name ), QStringLiteral( "%1[i]" ).arg( ref.varName ) );
-    inputArgs.append( QStringLiteral( "__global %1 *%2" )
-                      .arg( ref.typeName )
-                      .arg( ref.varName ) );
-    inputBuffers.push_back( cl::Buffer( ctx, CL_MEM_READ_ONLY, ref.bufferSize, nullptr, nullptr ) );
-  }
+    // Prepare context and queue
+    cl::Context ctx( QgsOpenClUtils::context() );
+    cl::CommandQueue queue( QgsOpenClUtils::commandQueue() );
 
-  //qDebug() << cExpression;
-
-  // Create the program
-  QString programTemplate( R"CL(
-  // Inputs:
-  ##INPUT_DESC##
-  // Expression: ##EXPRESSION_ORIGINAL##
-  __kernel void rasterCalculator( ##INPUT##
-                            __global float *resultLine
-                          )
-  {
-    // Get the index of the current element
-    const int i = get_global_id(0);
-    // Expression
-    resultLine[i] = ##EXPRESSION##;
-  }
-  )CL" );
-
-  QStringList inputDesc;
-  for ( const auto &ref : inputRefs )
-  {
-    inputDesc.append( QStringLiteral( "  // %1 = %2" ).arg( ref.varName ).arg( ref.name ) );
-  }
-  programTemplate = programTemplate.replace( QStringLiteral( "##INPUT_DESC##" ), inputDesc.join( '\n' ) );
-  programTemplate = programTemplate.replace( QStringLiteral( "##INPUT##" ), !inputArgs.isEmpty() ? ( inputArgs.join( ',' ).append( ',' ) ) : QChar( ' ' ) );
-  programTemplate = programTemplate.replace( QStringLiteral( "##EXPRESSION##" ), cExpression );
-  programTemplate = programTemplate.replace( QStringLiteral( "##EXPRESSION_ORIGINAL##" ), calcNode->toString( ) );
-
-  // qDebug() << programTemplate;
-
-  // Create a program from the kernel source
-  cl::Program program( QgsOpenClUtils::buildProgram( programTemplate, QgsOpenClUtils::ExceptionBehavior::Throw ) );
-
-  // Create the buffers, output is float32 (4 bytes)
-  // We assume size of float = 4 because that's the size used by OpenCL and IEEE 754
-  Q_ASSERT( sizeof( float ) == 4 );
-  std::size_t resultBufferSize( 4 * static_cast<size_t>( mNumOutputColumns ) );
-  cl::Buffer resultLineBuffer( ctx, CL_MEM_WRITE_ONLY,
-                               resultBufferSize, nullptr, nullptr );
-
-  auto kernel = cl::Kernel( program, "rasterCalculator" );
-
-  for ( unsigned int i = 0; i < inputBuffers.size() ; i++ )
-  {
-    kernel.setArg( i, inputBuffers.at( i ) );
-  }
-  kernel.setArg( static_cast<unsigned int>( inputBuffers.size() ), resultLineBuffer );
-
-  QgsOpenClUtils::CPLAllocator<float> resultLine( static_cast<size_t>( mNumOutputColumns ) );
-
-  //open output dataset for writing
-  GDALDriverH outputDriver = openOutputDriver();
-  if ( !outputDriver )
-  {
-    mLastError = QObject::tr( "Could not obtain driver for %1" ).arg( mOutputFormat );
-    return CreateOutputError;
-  }
-
-  gdal::dataset_unique_ptr outputDataset( openOutputFile( outputDriver ) );
-  if ( !outputDataset )
-  {
-    mLastError = QObject::tr( "Could not create output %1" ).arg( mOutputFile );
-    return CreateOutputError;
-  }
-
-  GDALSetProjection( outputDataset.get(), mOutputCrs.toWkt().toLocal8Bit().data() );
-
-  GDALRasterBandH outputRasterBand = GDALGetRasterBand( outputDataset.get(), 1 );
-  if ( !outputRasterBand )
-    return BandError;
-
-  // Input block (buffer)
-  std::unique_ptr<QgsRasterBlock> block;
-
-  // Run kernel on all scanlines
-  auto rowHeight = mOutputRectangle.height() / mNumOutputRows;
-  for ( int line = 0; line < mNumOutputRows; line++ )
-  {
-    if ( feedback && feedback->isCanceled() )
-    {
-      break;
-    }
-
-    if ( feedback )
-    {
-      feedback->setProgress( 100.0 * static_cast< double >( line ) / mNumOutputRows );
-    }
-
-    // Read lines from rasters into the buffers
+    // Create the C expression
+    std::vector<cl::Buffer> inputBuffers;
+    inputBuffers.reserve( inputRefs.size() );
+    QStringList inputArgs;
     for ( const auto &ref : inputRefs )
     {
-      // Read one row
-      QgsRectangle rect( mOutputRectangle );
-      rect.setYMaximum( rect.yMaximum() - rowHeight * line );
-      rect.setYMinimum( rect.yMaximum() - rowHeight );
-
-      // TODO: check if this is too slow
-      // if crs transform needed
-      if ( ref.layer->crs() != mOutputCrs )
-      {
-        QgsRasterProjector proj;
-        proj.setCrs( ref.layer->crs(), mOutputCrs, ref.layer->transformContext() );
-        proj.setInput( ref.layer->dataProvider() );
-        proj.setPrecision( QgsRasterProjector::Exact );
-        block.reset( proj.block( ref.band, rect, mNumOutputColumns, 1 ) );
-      }
-      else
-      {
-        block.reset( ref.layer->dataProvider()->block( ref.band, rect, mNumOutputColumns, 1 ) );
-      }
-
-      //for ( int i = 0; i < mNumOutputColumns; i++ )
-      //  qDebug() << "Input: " << line << i << ref.varName << " = " << block->value( 0, i );
-      //qDebug() << "Writing buffer " << ref.index;
-
-      Q_ASSERT( ref.bufferSize == static_cast<size_t>( block->data().size( ) ) );
-      queue.enqueueWriteBuffer( inputBuffers[ref.index], CL_TRUE, 0,
-                                ref.bufferSize, block->bits() );
-
+      cExpression.replace( QStringLiteral( "\"%1\"" ).arg( ref.name ), QStringLiteral( "%1[i]" ).arg( ref.varName ) );
+      inputArgs.append( QStringLiteral( "__global %1 *%2" )
+                        .arg( ref.typeName )
+                        .arg( ref.varName ) );
+      inputBuffers.push_back( cl::Buffer( ctx, CL_MEM_READ_ONLY, ref.bufferSize, nullptr, nullptr ) );
     }
-    // Run the kernel
-    queue.enqueueNDRangeKernel(
-      kernel,
-      0,
-      cl::NDRange( mNumOutputColumns )
-    );
 
-    // Write the result
-    queue.enqueueReadBuffer( resultLineBuffer, CL_TRUE, 0,
-                             resultBufferSize, resultLine.get() );
+    //qDebug() << cExpression;
 
-    //for ( int i = 0; i < mNumOutputColumns; i++ )
-    //  qDebug() << "Output: " << line << i << " = " << resultLine[i];
-
-    if ( GDALRasterIO( outputRasterBand, GF_Write, 0, line, mNumOutputColumns, 1, resultLine.get(), mNumOutputColumns, 1, GDT_Float32, 0, 0 ) != CE_None )
+    // Create the program
+    QString programTemplate( R"CL(
+    // Inputs:
+    ##INPUT_DESC##
+    // Expression: ##EXPRESSION_ORIGINAL##
+    __kernel void rasterCalculator( ##INPUT##
+                              __global float *resultLine
+                            )
     {
+      // Get the index of the current element
+      const int i = get_global_id(0);
+      // Expression
+      resultLine[i] = ##EXPRESSION##;
+    }
+    )CL" );
+
+    QStringList inputDesc;
+    for ( const auto &ref : inputRefs )
+    {
+      inputDesc.append( QStringLiteral( "  // %1 = %2" ).arg( ref.varName ).arg( ref.name ) );
+    }
+    programTemplate = programTemplate.replace( QStringLiteral( "##INPUT_DESC##" ), inputDesc.join( '\n' ) );
+    programTemplate = programTemplate.replace( QStringLiteral( "##INPUT##" ), !inputArgs.isEmpty() ? ( inputArgs.join( ',' ).append( ',' ) ) : QChar( ' ' ) );
+    programTemplate = programTemplate.replace( QStringLiteral( "##EXPRESSION##" ), cExpression );
+    programTemplate = programTemplate.replace( QStringLiteral( "##EXPRESSION_ORIGINAL##" ), calcNode->toString( ) );
+
+    // qDebug() << programTemplate;
+
+    // Create a program from the kernel source
+    cl::Program program( QgsOpenClUtils::buildProgram( programTemplate, QgsOpenClUtils::ExceptionBehavior::Throw ) );
+
+    // Create the buffers, output is float32 (4 bytes)
+    // We assume size of float = 4 because that's the size used by OpenCL and IEEE 754
+    Q_ASSERT( sizeof( float ) == 4 );
+    std::size_t resultBufferSize( 4 * static_cast<size_t>( mNumOutputColumns ) );
+    cl::Buffer resultLineBuffer( ctx, CL_MEM_WRITE_ONLY,
+                                 resultBufferSize, nullptr, nullptr );
+
+    auto kernel = cl::Kernel( program, "rasterCalculator" );
+
+    for ( unsigned int i = 0; i < inputBuffers.size() ; i++ )
+    {
+      kernel.setArg( i, inputBuffers.at( i ) );
+    }
+    kernel.setArg( static_cast<unsigned int>( inputBuffers.size() ), resultLineBuffer );
+
+    QgsOpenClUtils::CPLAllocator<float> resultLine( static_cast<size_t>( mNumOutputColumns ) );
+
+    //open output dataset for writing
+    GDALDriverH outputDriver = openOutputDriver();
+    if ( !outputDriver )
+    {
+      mLastError = QObject::tr( "Could not obtain driver for %1" ).arg( mOutputFormat );
       return CreateOutputError;
     }
-  }
 
-  if ( feedback && feedback->isCanceled() )
+    gdal::dataset_unique_ptr outputDataset( openOutputFile( outputDriver ) );
+    if ( !outputDataset )
+    {
+      mLastError = QObject::tr( "Could not create output %1" ).arg( mOutputFile );
+      return CreateOutputError;
+    }
+
+    GDALSetProjection( outputDataset.get(), mOutputCrs.toWkt().toLocal8Bit().data() );
+
+    GDALRasterBandH outputRasterBand = GDALGetRasterBand( outputDataset.get(), 1 );
+    if ( !outputRasterBand )
+      return BandError;
+
+    // Input block (buffer)
+    std::unique_ptr<QgsRasterBlock> block;
+
+    // Run kernel on all scanlines
+    auto rowHeight = mOutputRectangle.height() / mNumOutputRows;
+    for ( int line = 0; line < mNumOutputRows; line++ )
+    {
+      if ( feedback && feedback->isCanceled() )
+      {
+        break;
+      }
+
+      if ( feedback )
+      {
+        feedback->setProgress( 100.0 * static_cast< double >( line ) / mNumOutputRows );
+      }
+
+      // Read lines from rasters into the buffers
+      for ( const auto &ref : inputRefs )
+      {
+        // Read one row
+        QgsRectangle rect( mOutputRectangle );
+        rect.setYMaximum( rect.yMaximum() - rowHeight * line );
+        rect.setYMinimum( rect.yMaximum() - rowHeight );
+
+        // TODO: check if this is too slow
+        // if crs transform needed
+        if ( ref.layer->crs() != mOutputCrs )
+        {
+          QgsRasterProjector proj;
+          proj.setCrs( ref.layer->crs(), mOutputCrs, ref.layer->transformContext() );
+          proj.setInput( ref.layer->dataProvider() );
+          proj.setPrecision( QgsRasterProjector::Exact );
+          block.reset( proj.block( ref.band, rect, mNumOutputColumns, 1 ) );
+        }
+        else
+        {
+          block.reset( ref.layer->dataProvider()->block( ref.band, rect, mNumOutputColumns, 1 ) );
+        }
+
+        //for ( int i = 0; i < mNumOutputColumns; i++ )
+        //  qDebug() << "Input: " << line << i << ref.varName << " = " << block->value( 0, i );
+        //qDebug() << "Writing buffer " << ref.index;
+
+        Q_ASSERT( ref.bufferSize == static_cast<size_t>( block->data().size( ) ) );
+        queue.enqueueWriteBuffer( inputBuffers[ref.index], CL_TRUE, 0,
+                                  ref.bufferSize, block->bits() );
+
+      }
+      // Run the kernel
+      queue.enqueueNDRangeKernel(
+        kernel,
+        0,
+        cl::NDRange( mNumOutputColumns )
+      );
+
+      // Write the result
+      queue.enqueueReadBuffer( resultLineBuffer, CL_TRUE, 0,
+                               resultBufferSize, resultLine.get() );
+
+      //for ( int i = 0; i < mNumOutputColumns; i++ )
+      //  qDebug() << "Output: " << line << i << " = " << resultLine[i];
+
+      if ( GDALRasterIO( outputRasterBand, GF_Write, 0, line, mNumOutputColumns, 1, resultLine.get(), mNumOutputColumns, 1, GDT_Float32, 0, 0 ) != CE_None )
+      {
+        return CreateOutputError;
+      }
+    }
+
+    if ( feedback && feedback->isCanceled() )
+    {
+      //delete the dataset without closing (because it is faster)
+      gdal::fast_delete_and_close( outputDataset, outputDriver, mOutputFile );
+      return Canceled;
+    }
+
+    inputBuffers.clear();
+
+  }
+  catch ( cl::Error &e )
   {
-    //delete the dataset without closing (because it is faster)
-    gdal::fast_delete_and_close( outputDataset, outputDriver, mOutputFile );
-    return Canceled;
+    mLastError = e.what();
+    return CreateOutputError;
   }
-
-  inputBuffers.clear();
 
   return Success;
 }
