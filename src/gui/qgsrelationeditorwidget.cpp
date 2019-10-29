@@ -265,7 +265,7 @@ void QgsRelationEditorWidget::setRelationFeature( const QgsRelation &relation, c
 
 void QgsRelationEditorWidget::initDualView( QgsVectorLayer *layer, const QgsFeatureRequest &request )
 {
-  mDualView->init( layer, nullptr, request, mEditorContext );
+  mDualView->init( layer, mEditorContext.mapCanvas(), request, mEditorContext );
   mFeatureSelectionMgr = new QgsFilteredSelectionManager( layer, request, mDualView );
   mDualView->setFeatureSelectionManager( mFeatureSelectionMgr );
   connect( mFeatureSelectionMgr, &QgsIFeatureSelectionManager::selectionChanged, this, &QgsRelationEditorWidget::updateButtons );
