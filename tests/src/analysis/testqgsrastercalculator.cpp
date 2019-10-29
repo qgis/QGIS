@@ -724,25 +724,28 @@ void TestQgsRasterCalculator::toString()
     return calcNode->toString( cStyle );
   };
   QCOMPARE( _test( QStringLiteral( "\"raster@1\"  + 2" ), false ), QString( "( \"raster@1\" + 2 )" ) );
-  QCOMPARE( _test( QStringLiteral( "\"raster@1\"  +  2" ), true ), QString( "( \"raster@1\" + ( float ) ( 2 ) )" ) );
+  QCOMPARE( _test( QStringLiteral( "\"raster@1\"  +  2" ), true ), QString( "( ( float ) \"raster@1\" + ( float ) 2 )" ) );
   QCOMPARE( _test( QStringLiteral( "\"raster@1\" ^ 3  +  2" ), false ), QString( "( \"raster@1\"^3 + 2 )" ) );
-  QCOMPARE( _test( QStringLiteral( "\"raster@1\" ^ 3  +  2" ), true ), QString( "( pow( \"raster@1\", ( float ) ( 3 ) ) + ( float ) ( 2 ) )" ) );
+  QCOMPARE( _test( QStringLiteral( "\"raster@1\" ^ 3  +  2" ), true ), QString( "( pow( ( float ) \"raster@1\", ( float ) 3 ) + ( float ) 2 )" ) );
   QCOMPARE( _test( QStringLiteral( "atan(\"raster@1\") * cos( 3  +  2 )" ), false ), QString( "atan( \"raster@1\" ) * cos( ( 3 + 2 ) )" ) );
-  QCOMPARE( _test( QStringLiteral( "atan(\"raster@1\") * cos( 3  +  2 )" ), true ), QString( "atan( \"raster@1\" ) * cos( ( ( float ) ( 3 ) + ( float ) ( 2 ) ) )" ) );
+  QCOMPARE( _test( QStringLiteral( "atan(\"raster@1\") * cos( 3  +  2 )" ), true ), QString( "atan( ( float ) \"raster@1\" ) * cos( ( ( float ) 3 + ( float ) 2 ) )" ) );
   QCOMPARE( _test( QStringLiteral( "0.5 * ( 1.4 * (\"raster@1\" + 2) )" ), false ), QString( "0.5 * 1.4 * ( \"raster@1\" + 2 )" ) );
-  QCOMPARE( _test( QStringLiteral( "0.5 * ( 1.4 * (\"raster@1\" + 2) )" ), true ), QString( "( float ) ( 0.5 ) * ( float ) ( 1.4 ) * ( \"raster@1\" + ( float ) ( 2 ) )" ) );
+  QCOMPARE( _test( QStringLiteral( "0.5 * ( 1.4 * (\"raster@1\" + 2) )" ), true ), QString( "( float ) 0.5 * ( float ) 1.4 * ( ( float ) \"raster@1\" + ( float ) 2 )" ) );
   QCOMPARE( _test( QStringLiteral( "0.5 * ( 1 > 0 )" ), false ), QString( "0.5 * 1 > 0" ) );
-  QCOMPARE( _test( QStringLiteral( "0.5 * ( 1 > 0 )" ), true ), QString( "( float ) ( 0.5 ) * ( float ) ( ( float ) ( 1 ) > ( float ) ( 0 ) )" ) );
+  QCOMPARE( _test( QStringLiteral( "0.5 * ( 1 > 0 )" ), true ), QString( "( float ) 0.5 * ( float ) ( ( float ) 1 > ( float ) 0 )" ) );
   // Test negative numbers
   QCOMPARE( _test( QStringLiteral( "0.5 * ( -1 > 0 )" ), false ), QString( "0.5 * -1 > 0" ) );
-  QCOMPARE( _test( QStringLiteral( "0.5 * ( -1 > 0 )" ), true ), QString( "( float ) ( 0.5 ) * ( float ) ( -( float ) ( 1 ) > ( float ) ( 0 ) )" ) );
+  QCOMPARE( _test( QStringLiteral( "0.5 * ( -1 > 0 )" ), true ), QString( "( float ) 0.5 * ( float ) ( -( float ) 1 > ( float ) 0 )" ) );
   // Test new functions
   QCOMPARE( _test( QStringLiteral( "0.5 * abs( -1 )" ), false ), QString( "0.5 * abs( -1 )" ) );
-  QCOMPARE( _test( QStringLiteral( "0.5 * abs( -1 )" ), true ), QString( "( float ) ( 0.5 ) * fabs( -( float ) ( 1 ) )" ) );
+  QCOMPARE( _test( QStringLiteral( "0.5 * abs( -1 )" ), true ), QString( "( float ) 0.5 * fabs( -( float ) 1 )" ) );
   QCOMPARE( _test( QStringLiteral( "0.5 * min( -1, 1 )" ), false ), QString( "0.5 * min( -1, 1 )" ) );
-  QCOMPARE( _test( QStringLiteral( "0.5 * min( -1, 1 )" ), true ), QString( "( float ) ( 0.5 ) * min( ( float ) ( -( float ) ( 1 ) ), ( float ) ( ( float ) ( 1 ) ) )" ) );
+  QCOMPARE( _test( QStringLiteral( "0.5 * min( -1, 1 )" ), true ), QString( "( float ) 0.5 * min( ( float ) ( -( float ) 1 ), ( float ) ( ( float ) 1 ) )" ) );
   QCOMPARE( _test( QStringLiteral( "0.5 * max( -1, 1 )" ), false ), QString( "0.5 * max( -1, 1 )" ) );
-  QCOMPARE( _test( QStringLiteral( "0.5 * max( -1, 1 )" ), true ), QString( "( float ) ( 0.5 ) * max( ( float ) ( -( float ) ( 1 ) ), ( float ) ( ( float ) ( 1 ) ) )" ) );
+  QCOMPARE( _test( QStringLiteral( "0.5 * max( -1, 1 )" ), true ), QString( "( float ) 0.5 * max( ( float ) ( -( float ) 1 ), ( float ) ( ( float ) 1 ) )" ) );
+  // Test regression #32477
+  QCOMPARE( _test( QStringLiteral( R"raw(("r@1"<100.09)*0.1)raw" ), true ),
+            QString( R"raw(( float ) ( ( float ) "r@1" < ( float ) 100.09 ) * ( float ) 0.1)raw" ) );
 }
 
 void TestQgsRasterCalculator::calcFormulasWithReprojectedLayers()
