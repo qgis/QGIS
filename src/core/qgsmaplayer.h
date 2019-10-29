@@ -1372,8 +1372,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Emitted when a style has been loaded
+     * \param categories style categories
+     * \since QGIS 3.12
      */
-    void styleLoaded();
+    void styleLoaded( const QgsMapLayer::StyleCategories &categories );
 
 
   private slots:

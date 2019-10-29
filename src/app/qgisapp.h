@@ -1702,9 +1702,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void onActiveLayerChanged( QgsMapLayer *layer );
 
     /**
-     * Triggered when a vector layer style has changed, check for widget config layer dependencies
+     * Triggered when a vector layer style has changed, checks for widget config layer dependencies
+     * \param categories style categories
+     * \since QGIS 3.12
      */
-    void vectorLayerStyleLoaded();
+    void vectorLayerStyleLoaded( const QgsMapLayer::StyleCategories &categories );
 
   signals:
 

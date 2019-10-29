@@ -661,12 +661,15 @@ void QgisApp::onActiveLayerChanged( QgsMapLayer *layer )
   emit activeLayerChanged( layer );
 }
 
-void QgisApp::vectorLayerStyleLoaded()
+void QgisApp::vectorLayerStyleLoaded( const QgsMapLayer::StyleCategories &categories )
 {
-  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( sender() );
-  if ( vl )
+  if ( categories.testFlag( QgsMapLayer::StyleCategory::Forms ) )
   {
-    checkVectorLayerDependencies( vl );
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( sender() );
+    if ( vl )
+    {
+      checkVectorLayerDependencies( vl );
+    }
   }
 }
 
@@ -1959,9 +1962,10 @@ QList<QgsVectorLayerRef> QgisApp::findBrokenWidgetDependencies( QgsVectorLayer *
   {
     std::unique_ptr<QgsEditorWidgetWrapper> ww;
     ww.reset( QgsGui::editorWidgetRegistry()->create( vl, i, nullptr, nullptr ) );
-    for ( QgsVectorLayerRef &dependency : ww->layerDependencies() )
+    const auto constDependencies { ww->layerDependencies() };
+    for ( const QgsVectorLayerRef &dependency : constDependencies )
     {
-      const QgsVectorLayer *depVl { dependency.resolveWeakly( QgsProject::instance() ) };
+      const QgsVectorLayer *depVl { QgsVectorLayerRef( dependency ).resolveWeakly( QgsProject::instance() ) };
       if ( ! depVl || ! depVl->isValid() )
       {
         brokenDependencies.append( dependency );
@@ -1974,22 +1978,20 @@ QList<QgsVectorLayerRef> QgisApp::findBrokenWidgetDependencies( QgsVectorLayer *
 void QgisApp::checkVectorLayerDependencies( QgsVectorLayer *vl )
 {
   Q_ASSERT( vl->isValid() );
-  for ( QgsVectorLayerRef &dependency : findBrokenWidgetDependencies( vl ) )
+  const auto constDependencies { findBrokenWidgetDependencies( vl ) };
+  for ( const QgsVectorLayerRef &dependency : constDependencies )
   {
-    const QgsVectorLayer *depVl { dependency.resolveWeakly( QgsProject::instance() ) };
+    const QgsVectorLayer *depVl = nullptr;
     // The default resolution logic does not recognize a positive match if the datasource is
     // not exactly the same, for this reason we try a loose match here where the layer name
     // equality is sufficient for a positive match within the same provider.
-    if ( ! depVl )
+    const auto constVLayers { QgsProject::instance()->layers< QgsVectorLayer * >( ) };
+    for ( const QgsVectorLayer *vl : constVLayers )
     {
-      const auto constVLayers { QgsProject::instance()->layers< QgsVectorLayer * >( ) };
-      for ( const QgsVectorLayer *vl : constVLayers )
+      if ( vl->name() == dependency.name && vl->providerType() == dependency.provider )
       {
-        if ( vl->name() == dependency.name && vl->providerType() == dependency.provider )
-        {
-          depVl = vl;
-          break;
-        }
+        depVl = vl;
+        break;
       }
     }
     if ( ! depVl || ! depVl->isValid() )
@@ -2067,7 +2069,7 @@ void QgisApp::checkVectorLayerDependencies( QgsVectorLayer *vl )
       }
       if ( ! loaded )
       {
-        const QString msg { tr( "Form for layer '%1' requires layer '%2' to be loaded but '%2' could not be found, please load it manually if possible." )
+        const QString msg { tr( "layer '%1' requires layer '%2' to be loaded but '%2' could not be found, please load it manually if possible." )
                             .arg( vl->name() )
                             .arg( dependency.name ) };
         messageBar()->pushWarning( tr( "Missing layer form dependency" ), msg );

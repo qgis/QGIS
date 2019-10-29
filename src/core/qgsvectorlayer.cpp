@@ -4692,7 +4692,7 @@ QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &resultFlag,
     }
   }
   returnMessage = QgsMapLayer::loadNamedStyle( theURI, resultFlag, categories );
-  emit styleLoaded();
+  emit styleLoaded( categories );
   return returnMessage;
 }
 
