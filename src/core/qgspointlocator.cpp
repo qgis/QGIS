@@ -548,6 +548,10 @@ QgsPointLocator::QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateRefe
 
 QgsPointLocator::~QgsPointLocator()
 {
+  // don't delete a locator if there is an indexing task running on it
+  if ( mIsIndexing )
+    waitForIndexingFinished();
+
   destroyIndex();
 }
 
