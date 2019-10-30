@@ -64,7 +64,7 @@ Parses a datetime ``interval`` and returns a :py:class:`QgsDateTimeRange`
 
     static QgsExpression temporalFilterExpression( const QgsVectorLayer *layer, const QString &interval );
 %Docstring
-Parses the ``interval`` and constructs a (possibily invalid) temporal filter expression for the given ``layer``
+Parses the ``interval`` and constructs a (possibly invalid) temporal filter expression for the given ``layer``
 
 Interval syntax:
 

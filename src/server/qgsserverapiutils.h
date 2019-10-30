@@ -91,7 +91,7 @@ class SERVER_EXPORT QgsServerApiUtils
 
 
     /**
-     * Parses the \a interval and constructs a (possibily invalid) temporal filter expression for the given \a layer
+     * Parses the \a interval and constructs a (possibly invalid) temporal filter expression for the given \a layer
      *
      * Interval syntax:
      *
