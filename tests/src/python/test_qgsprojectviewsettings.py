@@ -12,11 +12,15 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import (QgsProjectViewSettings,
+from qgis.core import (QgsProject,
+                       QgsProjectViewSettings,
                        QgsReadWriteContext,
                        QgsReferencedRectangle,
                        QgsRectangle,
                        QgsCoordinateReferenceSystem)
+from qgis.gui import QgsMapCanvas
+
+from qgis.PyQt.QtCore import QTemporaryDir
 
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument, QDomElement
@@ -80,6 +84,43 @@ class TestQgsProjectViewSettings(unittest.TestCase):
         p.setDefaultViewExtent(QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem("EPSG:3857")))
         p.reset()
         self.assertTrue(p.defaultViewExtent().isNull())
+
+    def testDefaultViewExtentWithCanvas(self):
+        p = QgsProject()
+        p.setCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+
+        canvas = QgsMapCanvas()
+        canvas.setDestinationCrs(QgsCoordinateReferenceSystem(4326))
+        canvas.setFrameStyle(0)
+        canvas.resize(600, 400)
+        self.assertEqual(canvas.width(), 600)
+        self.assertEqual(canvas.height(), 400)
+        canvas.setExtent(QgsRectangle(10, 30, 20, 35))
+        canvas.show()
+
+        tmpDir = QTemporaryDir()
+        tmpFile = "{}/project.qgz".format(tmpDir.path())
+        self.assertTrue(p.write(tmpFile))
+
+        QgsProject.instance().read(tmpFile)
+
+        # no default view, extent should not change
+        self.assertAlmostEqual(canvas.extent().xMinimum(), 10, 3)
+        self.assertAlmostEqual(canvas.extent().yMinimum(), 29.16666, 3)
+        self.assertAlmostEqual(canvas.extent().xMaximum(), 20, 3)
+        self.assertAlmostEqual(canvas.extent().yMaximum(), 35.833333333, 3)
+        self.assertEqual(canvas.mapSettings().destinationCrs().authid(), 'EPSG:4326')
+
+        p.viewSettings().setDefaultViewExtent(QgsReferencedRectangle(QgsRectangle(1000, 2000, 1500, 2500), QgsCoordinateReferenceSystem('EPSG:3857')))
+
+        self.assertTrue(p.write(tmpFile))
+        QgsProject.instance().read(tmpFile)
+
+        self.assertAlmostEqual(canvas.extent().xMinimum(), 0.0078602, 3)
+        self.assertAlmostEqual(canvas.extent().yMinimum(), 0.017966, 3)
+        self.assertAlmostEqual(canvas.extent().xMaximum(), 0.01459762, 3)
+        self.assertAlmostEqual(canvas.extent().yMaximum(), 0.02245788, 3)
+        self.assertEqual(canvas.mapSettings().destinationCrs().authid(), 'EPSG:4326')
 
     def testReadWrite(self):
         p = QgsProjectViewSettings()
