@@ -24,7 +24,19 @@ QgsBilinearRasterResampler *QgsBilinearRasterResampler::clone() const
   return new QgsBilinearRasterResampler();
 }
 
+Q_NOWARN_DEPRECATED_PUSH
 void QgsBilinearRasterResampler::resample( const QImage &srcImage, QImage &dstImage )
 {
   dstImage = srcImage.scaled( dstImage.width(), dstImage.height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
+}
+Q_NOWARN_DEPRECATED_POP
+
+QImage QgsBilinearRasterResampler::resampleV2( const QImage &source, const QSize &size )
+{
+  return source.scaled( size.width(), size.height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
+}
+
+QString QgsBilinearRasterResampler::type() const
+{
+  return QStringLiteral( "bilinear" );
 }
