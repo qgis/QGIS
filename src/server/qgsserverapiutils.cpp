@@ -92,7 +92,7 @@ QList< QgsVectorLayerServerProperties::WmsDimensionInfo > QgsServerApiUtils::tem
   return dimensions;
 }
 
-
+///@cond PRIVATE
 template<typename T, class T2> T QgsServerApiUtils::parseTemporalInterval( const QString &interval )
 {
   auto parseDate = [ ]( const QString & date ) -> T2
@@ -125,6 +125,7 @@ template<typename T, class T2> T QgsServerApiUtils::parseTemporalInterval( const
   }
   return result;
 }
+/// @endcond
 
 QgsDateRange QgsServerApiUtils::parseTemporalDateInterval( const QString &interval )
 {
