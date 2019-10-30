@@ -469,7 +469,7 @@ class TestQgsPointLocator : public QObject
       QgsPointLocator *loc = new QgsPointLocator( mVL, QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext(), nullptr );
       QgsPointXY pt( 2, 2 );
 
-      // delete locator while we are indexing (could happend when closing project for instance)
+      // delete locator while we are indexing (could happen when closing project for instance)
       loc->nearestVertex( pt, 999, nullptr, true );
       delete loc;
     }
