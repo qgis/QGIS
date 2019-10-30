@@ -520,6 +520,8 @@ void QgsRelationEditorWidget::addFeature( const QgsGeometry &geometry )
 void QgsRelationEditorWidget::onDigitizingCompleted( const QgsFeature &feature )
 {
   addFeature( feature.geometry() );
+
+  unsetMapTool();
 }
 
 void QgsRelationEditorWidget::linkFeature()
@@ -934,14 +936,11 @@ void QgsRelationEditorWidget::unsetMapTool()
 {
   QgsMapCanvas *mapCanvas = mEditorContext.mapCanvas();
 
-  if ( mapCanvas->mapTool() != mMapToolDigitize )
-    return;
-
   // this will call mapToolDeactivated
   mapCanvas->unsetMapTool( mMapToolDigitize );
 
   disconnect( mapCanvas, &QgsMapCanvas::keyPressed, this, &QgsRelationEditorWidget::onKeyPressed );
-  disconnect( mMapToolDigitize, &QgsMapToolDigitizeFeature::digitizingCompleted, this, &QgsRelationEditorWidget::addFeatureGeometry );
+  disconnect( mMapToolDigitize, &QgsMapToolDigitizeFeature::digitizingCompleted, this, &QgsRelationEditorWidget::onDigitizingCompleted );
 }
 
 void QgsRelationEditorWidget::onKeyPressed( QKeyEvent *e )
