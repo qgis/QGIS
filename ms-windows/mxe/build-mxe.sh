@@ -81,7 +81,7 @@ if [[ "$COMMAND" != *"package"* ]]; then
         -DWITH_SERVER=OFF \
         -DWITH_BINDINGS=FALSE \
         -DQT_LRELEASE_EXECUTABLE=${MXE}/usr/${TARGET}/qt5/bin/lrelease \
-	-DMXE=ON \
+        -DMXE=ON \
         $ARGS
 
     make -j16 install
