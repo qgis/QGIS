@@ -13,7 +13,10 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 import qgis  # NOQA
 
 from qgis.core import (QgsProjectViewSettings,
-                       QgsReadWriteContext)
+                       QgsReadWriteContext,
+                       QgsReferencedRectangle,
+                       QgsRectangle,
+                       QgsCoordinateReferenceSystem)
 
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument, QDomElement
@@ -55,6 +58,29 @@ class TestQgsProjectViewSettings(unittest.TestCase):
         p.setUseProjectScales(False)
         self.assertEqual(len(spy), 4)
 
+        p.setUseProjectScales(True)
+        p.setMapScales([5000, 6000, 3000, 4000])
+        self.assertEqual(len(spy), 6)
+
+        p.reset()
+        self.assertEqual(len(spy), 7)
+        self.assertFalse(p.mapScales())
+        self.assertFalse(p.useProjectScales())
+
+    def testDefaultViewExtent(self):
+        p = QgsProjectViewSettings()
+        self.assertTrue(p.defaultViewExtent().isNull())
+
+        p.setDefaultViewExtent(QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem("EPSG:3857")))
+        self.assertEqual(p.defaultViewExtent(), QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem("EPSG:3857")))
+
+        p.setDefaultViewExtent(QgsReferencedRectangle())
+        self.assertTrue(p.defaultViewExtent().isNull())
+
+        p.setDefaultViewExtent(QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem("EPSG:3857")))
+        p.reset()
+        self.assertTrue(p.defaultViewExtent().isNull())
+
     def testReadWrite(self):
         p = QgsProjectViewSettings()
         self.assertFalse(p.mapScales())
@@ -68,9 +94,11 @@ class TestQgsProjectViewSettings(unittest.TestCase):
         self.assertFalse(p2.mapScales())
         self.assertFalse(p2.useProjectScales())
         self.assertEqual(len(spy), 0)
+        self.assertTrue(p2.defaultViewExtent().isNull())
 
         p.setUseProjectScales(True)
         p.setMapScales([56, 78, 99])
+        p.setDefaultViewExtent(QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem("EPSG:3857")))
         elem = p.writeXml(doc, QgsReadWriteContext())
 
         p2 = QgsProjectViewSettings()
@@ -79,6 +107,7 @@ class TestQgsProjectViewSettings(unittest.TestCase):
         self.assertEqual(p2.mapScales(), [99.0, 78.0, 56.0])
         self.assertTrue(p2.useProjectScales())
         self.assertEqual(len(spy), 1)
+        self.assertEqual(p2.defaultViewExtent(), QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem("EPSG:3857")))
 
 
 if __name__ == '__main__':
