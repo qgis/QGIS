@@ -586,25 +586,27 @@ void QgsPointLocator::setRenderContext( const QgsRenderContext *context )
 
 }
 
-void QgsPointLocator::onInitTaskTerminated()
+void QgsPointLocator::onInitTaskFinished()
 {
+  // Check that we don't call this method twice, when calling waitForFinished
+  // for instance (because of taskCompleted signal)
+  if ( !mIsIndexing )
+    return;
+
   mIsIndexing = false;
   mRenderer.reset();
   mSource.reset();
-}
-
-void QgsPointLocator::onRebuildIndexFinished( bool ok )
-{
-  onInitTaskTerminated();
 
   // treat added and deleted feature while indexing
   for ( QgsFeatureId fid : mAddedFeatures )
     onFeatureAdded( fid );
+  mAddedFeatures.clear();
 
   for ( QgsFeatureId fid : mDeletedFeatures )
     onFeatureDeleted( fid );
+  mDeletedFeatures.clear();
 
-  emit initFinished( ok );
+  emit initFinished( mInitTask->isBuildOK() );
 }
 
 bool QgsPointLocator::init( int maxFeaturesToIndex, bool relaxed )
@@ -628,8 +630,8 @@ bool QgsPointLocator::init( int maxFeaturesToIndex, bool relaxed )
   if ( relaxed )
   {
     mInitTask = new QgsPointLocatorInitTask( this );
-    connect( mInitTask, &QgsPointLocatorInitTask::rebuildIndexFinished, this, &QgsPointLocator::onRebuildIndexFinished );
-    connect( mInitTask, &QgsPointLocatorInitTask::taskTerminated, this, &QgsPointLocator::onInitTaskTerminated );
+    connect( mInitTask, &QgsPointLocatorInitTask::taskTerminated, this, &QgsPointLocator::onInitTaskFinished );
+    connect( mInitTask, &QgsPointLocatorInitTask::taskCompleted, this, &QgsPointLocator::onInitTaskFinished );
     QgsApplication::taskManager()->addTask( mInitTask );
     return true;
   }
@@ -642,13 +644,11 @@ bool QgsPointLocator::init( int maxFeaturesToIndex, bool relaxed )
   }
 }
 
-void QgsPointLocator::waitForFinished() const
+void QgsPointLocator::waitForIndexingFinished()
 {
   mInitTask->waitForFinished();
 
-  // force process of signal emitted from task thread
-  // so rebuildIndexFinished and taskTerminated are called
-  QCoreApplication::processEvents();
+  onInitTaskFinished();
 }
 
 bool QgsPointLocator::hasIndex() const
@@ -663,7 +663,7 @@ bool QgsPointLocator::prepare( bool relaxed )
     if ( relaxed )
       return false;
     else
-      waitForFinished();
+      waitForIndexingFinished();
   }
 
   if ( !mRTree )

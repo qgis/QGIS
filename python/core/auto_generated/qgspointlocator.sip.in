@@ -257,7 +257,7 @@ This method is useful if constructor parameter ``relaxed`` is ``True``
 .. seealso:: :py:class:`QgsPointLocator`
 %End
 
-    void waitForFinished() const;
+    void waitForIndexingFinished();
 %Docstring
 If the point locator has been initialized relaxedly and is currently indexing,
 this methods waits for the indexing to be finished

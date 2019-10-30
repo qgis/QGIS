@@ -41,6 +41,11 @@ class QgsPointLocatorInitTask : public QgsTask
 
     QgsPointLocatorInitTask( QgsPointLocator *loc );
 
+    /**
+     * Returns TRUE when the task has finished and the index build was ok
+     */
+    bool isBuildOK() const;
+
     bool run();
 
   signals:
@@ -50,6 +55,7 @@ class QgsPointLocatorInitTask : public QgsTask
   private:
 
     QgsPointLocator *mLoc = nullptr;
+    bool mBuildOK = false;
 };
 
 /// @endcond

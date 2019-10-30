@@ -437,7 +437,7 @@ class TestQgsPointLocator : public QObject
       mVL->rollBack();
     }
 
-    void testWaitForFinished()
+    void testWaitForIndexingFinished()
     {
       QgsPointLocator loc( mVL, QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext(), nullptr );
       QgsPointXY pt( 2, 2 );

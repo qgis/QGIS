@@ -338,7 +338,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
      * If the point locator has been initialized relaxedly and is currently indexing,
      * this methods waits for the indexing to be finished
      */
-    void waitForFinished() const;
+    void waitForIndexingFinished();
 
   signals:
 
@@ -355,8 +355,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
   protected slots:
     void destroyIndex();
   private slots:
-    void onInitTaskTerminated();
-    void onRebuildIndexFinished( bool ok );
+    void onInitTaskFinished();
     void onFeatureAdded( QgsFeatureId fid );
     void onFeatureDeleted( QgsFeatureId fid );
     void onGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom );

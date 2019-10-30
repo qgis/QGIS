@@ -396,7 +396,7 @@ void QgsSnappingUtils::prepareIndex( const QList<LayerAndAreaOfInterest> &layers
 
       if ( loc->isIndexing() && !relaxed )
       {
-        loc->waitForFinished();
+        loc->waitForIndexingFinished();
       }
 
 

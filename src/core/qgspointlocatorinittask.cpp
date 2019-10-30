@@ -24,10 +24,14 @@ QgsPointLocatorInitTask::QgsPointLocatorInitTask( QgsPointLocator *loc )
   , mLoc( loc )
 {}
 
+bool QgsPointLocatorInitTask::isBuildOK() const
+{
+  return mBuildOK;
+}
+
 bool QgsPointLocatorInitTask::run()
 {
-  const bool ok = mLoc->rebuildIndex();
-  emit rebuildIndexFinished( ok );
+  mBuildOK = mLoc->rebuildIndex();
   return true;
 }
 
