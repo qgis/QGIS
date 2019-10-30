@@ -46,44 +46,47 @@
                        data-parent="#accordion">
                        <div class="card-body">
                          <dl class="row">
-                             <dt class="col-sm-3">OperationId</dt>
-                             <dd class="col-sm-9">{{ method_data.operationId }}</dt>
-                             <dt class="col-sm-3">Tags</dt>
-                             <dd class="col-sm-9">{{ method_data.tags }}</dt>
-                             <dt class="col-sm-3">Description</dt>
-                             <dd class="col-sm-9">{{ method_data.description }}</dd>
+                             <dt class="col-sm-2">OperationId</dt>
+                             <dd class="col-sm-10">{{ method_data.operationId }}</dt>
+                             <dt class="col-sm-2">Tags</dt>
+                             <dd class="col-sm-10">{{ method_data.tags }}</dt>
+                             <dt class="col-sm-2">Description</dt>
+                             <dd class="col-sm-10">{{ method_data.description }}</dd>
                              {% if existsIn(method_data, "parameters") %}
-                             <dt class="col-sm-3">Parameters</dt>
-                             <dd class="col-sm-9">
-                                 <table class="table table-sm">
+                             <dt class="col-sm-2">Parameters</dt>
+                             <dd class="col-sm-10">
+                                 <table class="table table-sm table-params">
                                    <thead>
                                        <tr>
                                           <th scope="col">Name</th>
-                                           <th scope="col">Description</th>
-                                           <th scope="col">Type</th>
-                                         </tr>
+                                          <th scope="col">Description</th>
+                                          <th scope="col">Type</th>
+                                        </tr>
                                      </thead>
                                      <tbody>
                                      {% for param in method_data.parameters %}
                                      {% if existsIn(param, "name") %}
                                      <tr>
                                        <td>{{ param.name }}</td>
-                                       <td>{{ param.description }}</td>
+                                       <td class="small">{{ param.description }}</td>
                                        <td>{{ param.schema.type }}</td>
                                     </tr>
                                     {% else %}
+                                    {% for comp_param in component_parameter( param ) %}
                                     <tr>
-                                       <td colspan=3 class="jref">
-                                       {{ param }}
-                                       </td>
+                                      <td>{{ comp_param.name }}</td>
+                                      <td class="small">{{ comp_param.description }}</td>
+                                      <td>{{ comp_param.schema.type }}</td>
+                                    </tr>
+                                    {% endfor %}
                                     {% endif %}
                                     {% endfor %}
                                     </tbody>
                                 </table>
                              </dt>
                              {% endif %}
-                              <dt class="col-sm-3">Responses</dt>
-                              <dd class="col-sm-9 jref">{{ method_data.responses}}</dd>
+                              <dt class="col-sm-2">Responses</dt>
+                              <dd class="col-sm-10 jref">{{ method_data.responses}}</dd>
                            </dl>
                        </div>
                    </div>

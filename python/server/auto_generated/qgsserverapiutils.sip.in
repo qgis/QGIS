@@ -35,6 +35,68 @@ Parses a comma separated ``bbox`` into a (possibly empty) :py:class:`QgsRectangl
    Z values (i.e. a 6 elements bbox) are silently discarded
 %End
 
+    static QList< QgsVectorLayerServerProperties::WmsDimensionInfo > temporalDimensions( const QgsVectorLayer *layer );
+%Docstring
+Returns a list of temporal dimensions information for the given ``layer`` (either configured in wmsDimensions or the first date/datetime field)
+
+.. versionadded:: 3.12
+%End
+
+    static QgsDateRange parseTemporalDateInterval( const QString &interval ) throw( QgsServerApiBadRequestException );
+%Docstring
+Parses a date ``interval`` and returns a :py:class:`QgsDateRange`
+
+:raises QgsServerApiBadRequestException: if interval cannot be parsed
+
+.. versionadded:: 3.12
+%End
+
+    static QgsDateTimeRange parseTemporalDateTimeInterval( const QString &interval ) throw( QgsServerApiBadRequestException );
+%Docstring
+Parses a datetime ``interval`` and returns a :py:class:`QgsDateTimeRange`
+
+:raises QgsServerApiBadRequestException: if interval cannot be parsed
+
+.. versionadded:: 3.12
+%End
+
+
+
+    static QgsExpression temporalFilterExpression( const QgsVectorLayer *layer, const QString &interval );
+%Docstring
+Parses the ``interval`` and constructs a (possibly invalid) temporal filter expression for the given ``layer``
+
+Interval syntax:
+
+interval-closed     = date-time "/" date-time
+interval-open-start = [".."] "/" date-time
+interval-open-end   = date-time "/" [".."]
+interval            = interval-closed / interval-open-start / interval-open-end
+datetime            = date-time / interval
+
+.. versionadded:: 3.12
+%End
+
+
+
+    static QVariantList temporalExtentList( const QgsVectorLayer *layer ) /PyName=temporalExtent/;
+%Docstring
+temporalExtent returns a json array with an array of [min, max] temporal extent for the given ``layer``.
+In case multiple temporal dimensions are available in the layer, a union of all dimensions is returned.
+
+From specifications: http://schemas.opengis.net/ogcapi/features/part1/1.0/openapi/schemas/extent.yaml
+
+One or more time intervals that describe the temporal extent of the dataset.
+The value `null` is supported and indicates an open time interval.
+
+In the Core only a single time interval is supported. Extensions may support
+multiple intervals. If multiple intervals are provided, the union of the
+intervals describes the temporal extent.
+
+:return: An array of intervals
+
+.. versionadded:: 3.12
+%End
 
     static QgsCoordinateReferenceSystem parseCrs( const QString &bboxCrs );
 %Docstring

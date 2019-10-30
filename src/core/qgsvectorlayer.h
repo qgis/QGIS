@@ -692,7 +692,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Returns QGIS Server Properties of the vector layer
      * \since QGIS 3.10
      */
-    QgsVectorLayerServerProperties *serverProperties() { return mServerProperties.get(); }
+    QgsVectorLayerServerProperties *serverProperties() const { return mServerProperties.get(); }
 
     /**
      * Returns the number of features that are selected in this layer.

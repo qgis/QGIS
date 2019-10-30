@@ -26,6 +26,10 @@
 #include "qgsproject.h"
 #include "qgsserverprojectutils.h"
 #include "qgsserverapicontext.h"
+#include "qgsserverexception.h"
+#include "qgsvectorlayerserverproperties.h"
+#include "qgsrange.h"
+#include "qgsjsonutils.h"
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsaccesscontrol.h"
@@ -59,12 +63,88 @@ class SERVER_EXPORT QgsServerApiUtils
     static QgsRectangle parseBbox( const QString &bbox );
 
     /**
+     * Returns a list of temporal dimensions information for the given \a layer (either configured in wmsDimensions or the first date/datetime field)
+     * \since QGIS 3.12
+     */
+    static QList< QgsVectorLayerServerProperties::WmsDimensionInfo > temporalDimensions( const QgsVectorLayer *layer );
+
+    /**
+     * Parses a date \a interval and returns a QgsDateRange
+     *
+     * \throws QgsServerApiBadRequestException if interval cannot be parsed
+     * \since QGIS 3.12
+     */
+    static QgsDateRange parseTemporalDateInterval( const QString &interval ) SIP_THROW( QgsServerApiBadRequestException );
+
+    /**
+     * Parses a datetime \a interval and returns a QgsDateTimeRange
+     *
+     * \throws QgsServerApiBadRequestException if interval cannot be parsed
+     * \since QGIS 3.12
+     */
+    static QgsDateTimeRange parseTemporalDateTimeInterval( const QString &interval ) SIP_THROW( QgsServerApiBadRequestException );
+
+///@cond PRIVATE
+    // T is TemporalDateInterval|TemporalDateTimeInterval, T2 is QDate|QdateTime
+    template<typename T, class T2> static T parseTemporalInterval( const QString &interval ) SIP_SKIP;
+/// @endcond
+
+
+    /**
+     * Parses the \a interval and constructs a (possibly invalid) temporal filter expression for the given \a layer
+     *
+     * Interval syntax:
+     *
+     *   interval-closed     = date-time "/" date-time
+     *   interval-open-start = [".."] "/" date-time
+     *   interval-open-end   = date-time "/" [".."]
+     *   interval            = interval-closed / interval-open-start / interval-open-end
+     *   datetime            = date-time / interval
+     * \since QGIS 3.12
+     */
+    static QgsExpression temporalFilterExpression( const QgsVectorLayer *layer, const QString &interval );
+
+    /**
      * layerExtent returns json array with [xMin,yMin,xMax,yMax] CRS84 extent for the given \a layer
-     * FIXME: the OpenAPI swagger docs say that it is inverted axis order: West, north, east, south edges of the spatial extent.
-     *        but current example implementations and GDAL assume it's not.
-     * TODO: maybe consider advertised extent instead?
      */
     static json layerExtent( const QgsVectorLayer *layer ) SIP_SKIP;
+
+    /**
+     * temporalExtent returns a json array with an array of [min, max] temporal extent for the given \a layer.
+     * In case multiple temporal dimensions are available in the layer, a union of all dimensions is returned.
+     *
+     * From specifications: http://schemas.opengis.net/ogcapi/features/part1/1.0/openapi/schemas/extent.yaml
+     *
+     * One or more time intervals that describe the temporal extent of the dataset.
+     * The value `null` is supported and indicates an open time interval.
+     *
+     * In the Core only a single time interval is supported. Extensions may support
+     * multiple intervals. If multiple intervals are provided, the union of the
+     * intervals describes the temporal extent.
+     *
+     * \returns An array of intervals
+     * \note not available in Python bindings
+     * \since QGIS 3.12
+     */
+    static json temporalExtent( const QgsVectorLayer *layer ) SIP_SKIP;
+
+    /**
+     * temporalExtent returns a json array with an array of [min, max] temporal extent for the given \a layer.
+     * In case multiple temporal dimensions are available in the layer, a union of all dimensions is returned.
+     *
+     * From specifications: http://schemas.opengis.net/ogcapi/features/part1/1.0/openapi/schemas/extent.yaml
+     *
+     * One or more time intervals that describe the temporal extent of the dataset.
+     * The value `null` is supported and indicates an open time interval.
+     *
+     * In the Core only a single time interval is supported. Extensions may support
+     * multiple intervals. If multiple intervals are provided, the union of the
+     * intervals describes the temporal extent.
+     *
+     * \returns An array of intervals
+     * \since QGIS 3.12
+     */
+    static QVariantList temporalExtentList( const QgsVectorLayer *layer ) SIP_PYNAME( temporalExtent );
 
     /**
      * Parses the CRS URI \a bboxCrs (example: "http://www.opengis.net/def/crs/OGC/1.3/CRS84") into a QGIS CRS object

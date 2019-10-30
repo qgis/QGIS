@@ -360,6 +360,30 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
     } );
 
 
+    // Returns a list of parameter component data from components -> parameters by ref name
+    // parameter( <ref object> )
+    env.add_callback( "component_parameter", 1, [ = ]( Arguments & args )
+    {
+      json ret = json::array();
+      json ref = args.at( 0 )->get<json>( );
+      if ( ! ref.is_object() )
+      {
+        return ret;
+      }
+      try
+      {
+        QString name = QString::fromStdString( ref["$ref"] );
+        name = name.split( '/' ).last();
+        ret.push_back( data["components"]["parameters"][name.toStdString()] );
+      }
+      catch ( std::exception & )
+      {
+        // Do nothing
+      }
+      return ret;
+    } );
+
+
     // Static: returns the full URL to the specified static <path>
     env.add_callback( "static", 1, [ = ]( Arguments & args )
     {

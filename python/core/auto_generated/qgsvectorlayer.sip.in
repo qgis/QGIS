@@ -567,7 +567,7 @@ which is used by the layer, so any changes are immediately applied.
 %End
 
 
-    QgsVectorLayerServerProperties *serverProperties();
+    QgsVectorLayerServerProperties *serverProperties() const;
 %Docstring
 Returns QGIS Server Properties of the vector layer
 

@@ -10,46 +10,51 @@ Content-Type: application/json
     "spatial": {
       "bbox": [
         [
-          8.203459307036344,
-          44.90139483904469,
-          8.203546993993488,
-          44.901482526001836
+          7.15826,
+          44.7977,
+          7.30356,
+          44.8216
         ]
       ],
       "crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
     },
     "temporal": {
-      "interval": null,
+      "interval": [
+        [
+          "2010-01-01T00:00:00",
+          "2022-01-01T01:01:01Z"
+        ]
+      ],
       "trs": "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian"
     }
   },
-  "id": "testlayer èé",
+  "id": "points",
   "links": [
     {
-      "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9.json",
+      "href": "http://server.qgis.org/wfs3/collections/points.json",
       "rel": "self",
       "title": "Feature collection as JSON",
       "type": "application/json"
     },
     {
-      "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9.html",
+      "href": "http://server.qgis.org/wfs3/collections/points.html",
       "rel": "alternate",
       "title": "Feature collection as HTML",
       "type": "text/html"
     },
     {
-      "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.json",
+      "href": "http://server.qgis.org/wfs3/collections/points/items.json",
       "rel": "items",
-      "title": "A test vector layer èé",
+      "title": "points",
       "type": "application/json"
     },
     {
-      "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.html",
+      "href": "http://server.qgis.org/wfs3/collections/points/items.html",
       "rel": "items",
-      "title": "A test vector layer èé",
+      "title": "points",
       "type": "text/html"
     }
   ],
-  "timeStamp": "2019-07-05T12:27:07Z",
-  "title": "A test vector layer èé"
+  "timeStamp": "2019-10-20T16:29:01Z",
+  "title": "points"
 }

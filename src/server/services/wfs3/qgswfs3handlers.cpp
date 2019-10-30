@@ -30,6 +30,7 @@
 #include "qgsserverinterface.h"
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgslogger.h"
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsfilterrestorer.h"
@@ -493,6 +494,12 @@ void QgsWfs3CollectionsHandler::handleRequest( const QgsServerApiContext &contex
               "spatial", {
                 { "bbox", QgsServerApiUtils::layerExtent( layer ) },
                 { "crs", "http://www.opengis.net/def/crs/OGC/1.3/CRS84" },
+              },
+            },
+            {
+              "temporal", {
+                { "interval", QgsServerApiUtils::temporalExtent( layer ) },
+                { "trs", "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian" },
               }
             }
           }
@@ -523,6 +530,7 @@ void QgsWfs3CollectionsHandler::handleRequest( const QgsServerApiContext &contex
       } );
     }
   }
+
   json navigation = json::array();
   const QUrl url { context.request()->url() };
   navigation.push_back( {{ "title",  "Landing page" }, { "href", parentLink( url, 1 ).toStdString() }} ) ;
@@ -659,6 +667,12 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
             { "bbox", QgsServerApiUtils::layerExtent( mapLayer ) },
             { "crs", "http://www.opengis.net/def/crs/OGC/1.3/CRS84" },
           }
+        },
+        {
+          "temporal", {
+            { "interval", QgsServerApiUtils::temporalExtent( mapLayer ) },
+            { "trs", "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian" },
+          }
         }
       }
     },
@@ -756,6 +770,7 @@ QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::parameters(
   } );
   params.push_back( limit );
 
+
   // Offset
   QgsServerQueryStringParameter offset { QStringLiteral( "offset" ), false,
                                          QgsServerQueryStringParameter::Type::Integer,
@@ -784,6 +799,47 @@ QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::parameters(
       {
         params.push_back( p );
       }
+    }
+
+    // Check if is there any suitable datetime fields
+    if ( ! QgsServerApiUtils::temporalDimensions( mapLayer ).isEmpty() )
+    {
+      QgsServerQueryStringParameter datetime { QStringLiteral( "datetime" ), false,
+          QgsServerQueryStringParameter::Type::String,
+          QStringLiteral( "Datetime filter" ),
+                                             };
+      datetime.setCustomValidator( [ ]( const QgsServerApiContext &, QVariant & value ) -> bool
+      {
+        const QString stringValue { value.toString() };
+        if ( stringValue.contains( '/' ) )
+        {
+          try
+          {
+            QgsServerApiUtils::parseTemporalDateInterval( stringValue );
+          }
+          catch ( QgsServerException & )
+          {
+            try
+            {
+              QgsServerApiUtils::parseTemporalDateTimeInterval( stringValue );
+            }
+            catch ( QgsServerException & )
+            {
+              return false;
+            }
+          }
+        }
+        else
+        {
+          if ( ! QDate::fromString( stringValue, Qt::DateFormat::ISODate ).isValid( ) &&
+               ! QDateTime::fromString( stringValue, Qt::DateFormat::ISODate ).isValid( ) )
+          {
+            return false;
+          }
+        }
+        return true;
+      } );
+      params.push_back( datetime );
     }
   }
 
@@ -850,14 +906,14 @@ json QgsWfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context 
     const QString layerId { mapLayer->id() };
     const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath() + QStringLiteral( "/collections/%1/items" ).arg( shortName ), context.request()->url() ).toStdString() };
 
-    json parameters = {{
-        { "$ref", "#/components/parameters/limit" },
-        { "$ref", "#/components/parameters/offset" },
-        { "$ref", "#/components/parameters/resultType" },
-        { "$ref", "#/components/parameters/bbox" },
-        { "$ref", "#/components/parameters/bbox-crs" },
-        // TODO: {{ "$ref", "#/components/parameters/time" }},
-      }
+    json parameters =
+    {
+      {{ "$ref", "#/components/parameters/limit" }},
+      {{ "$ref", "#/components/parameters/offset" }},
+      {{ "$ref", "#/components/parameters/resultType" }},
+      {{ "$ref", "#/components/parameters/bbox" }},
+      {{ "$ref", "#/components/parameters/bbox-crs" }},
+      {{ "$ref", "#/components/parameters/datetime" }}
     };
 
     const QList<QgsServerQueryStringParameter> constFieldParameters { fieldParameters( mapLayer, context ) };
@@ -1025,14 +1081,24 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
     // so we do our own paging with "offset")
     const qlonglong offset { params.value( QStringLiteral( "offset" ) ).toLongLong( &ok ) };
 
-    // TODO: make the max limit configurable
     const qlonglong limit {  params.value( QStringLiteral( "limit" ) ).toLongLong( &ok ) };
 
-    // TODO: implement time
-    const QString time { context.request()->queryParameter( QStringLiteral( "time" ) ) };
-    if ( ! time.isEmpty() )
+    QString filterExpression;
+    QStringList expressions;
+
+    //  datetime
+    const QString datetime { context.request()->queryParameter( QStringLiteral( "datetime" ) ) };
+    if ( ! datetime.isEmpty() )
     {
-      throw QgsServerApiNotImplementedException( QStringLiteral( "Time filter is not implemented" ) ) ;
+      const QgsExpression timeExpression { QgsServerApiUtils::temporalFilterExpression( mapLayer, datetime ) };
+      if ( ! timeExpression.isValid() )
+      {
+        throw QgsServerApiBadRequestException( QStringLiteral( "Invalid datetime filter expression: %1 " ).arg( datetime ) );
+      }
+      else
+      {
+        expressions.push_back( timeExpression.expression() );
+      }
     }
 
     // Inputs are valid, process request
@@ -1044,10 +1110,9 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       featureRequest.setFilterRect( ct.transform( filterRect ) );
     }
 
-    QString filterExpression;
     if ( ! attrFilters.isEmpty() )
     {
-      QStringList expressions;
+
       if ( featureRequest.filterExpression() && ! featureRequest.filterExpression()->expression().isEmpty() )
       {
         expressions.push_back( featureRequest.filterExpression()->expression() );
@@ -1066,9 +1131,16 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
           expressions.push_back( QStringLiteral( "\"%1\" = '%2'" ).arg( it.key() ).arg( it.value() ) );
         }
       }
+    }
+
+    // Join all expression filters
+    if ( ! expressions.isEmpty() )
+    {
       filterExpression = expressions.join( QStringLiteral( " AND " ) );
       featureRequest.setFilterExpression( filterExpression );
+      QgsDebugMsgLevel( QStringLiteral( "Filter expression: %1" ).arg( featureRequest.filterExpression()->expression() ), 4 );
     }
+
 
     // WFS3 core specs only serves 4326
     featureRequest.setDestinationCrs( crs, context.project()->transformContext() );
