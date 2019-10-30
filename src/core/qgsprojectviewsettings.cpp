@@ -25,12 +25,23 @@ QgsProjectViewSettings::QgsProjectViewSettings( QObject *parent )
 
 void QgsProjectViewSettings::reset()
 {
+  mDefaultViewExtent = QgsReferencedRectangle();
   if ( mUseProjectScales || !mMapScales.empty() )
   {
     mUseProjectScales = false;
     mMapScales.clear();
     emit mapScalesChanged();
   }
+}
+
+QgsReferencedRectangle QgsProjectViewSettings::defaultViewExtent() const
+{
+  return mDefaultViewExtent;
+}
+
+void QgsProjectViewSettings::setDefaultViewExtent( const QgsReferencedRectangle &extent )
+{
+  mDefaultViewExtent = extent;
 }
 
 void QgsProjectViewSettings::setMapScales( const QVector<double> &scales )
@@ -89,6 +100,22 @@ bool QgsProjectViewSettings::readXml( const QDomElement &element, const QgsReadW
     emit mapScalesChanged();
   }
 
+  QDomElement defaultViewElement = element.firstChildElement( QStringLiteral( "DefaultViewExtent" ) );
+  if ( !defaultViewElement.isNull() )
+  {
+    double xMin = defaultViewElement.attribute( QStringLiteral( "xmin" ) ).toDouble();
+    double yMin = defaultViewElement.attribute( QStringLiteral( "ymin" ) ).toDouble();
+    double xMax = defaultViewElement.attribute( QStringLiteral( "xmax" ) ).toDouble();
+    double yMax = defaultViewElement.attribute( QStringLiteral( "ymax" ) ).toDouble();
+    QgsCoordinateReferenceSystem crs;
+    crs.readXml( defaultViewElement );
+    mDefaultViewExtent = QgsReferencedRectangle( QgsRectangle( xMin, yMin, xMax, yMax ), crs );
+  }
+  else
+  {
+    mDefaultViewExtent = QgsReferencedRectangle();
+  }
+
   return true;
 }
 
@@ -105,5 +132,17 @@ QDomElement QgsProjectViewSettings::writeXml( QDomDocument &doc, const QgsReadWr
     scales.appendChild( scaleElement );
   }
   element.appendChild( scales );
+
+  if ( !mDefaultViewExtent.isNull() )
+  {
+    QDomElement defaultViewElement = doc.createElement( QStringLiteral( "DefaultViewExtent" ) );
+    defaultViewElement.setAttribute( QStringLiteral( "xmin" ), qgsDoubleToString( mDefaultViewExtent.xMinimum() ) );
+    defaultViewElement.setAttribute( QStringLiteral( "ymin" ), qgsDoubleToString( mDefaultViewExtent.yMinimum() ) );
+    defaultViewElement.setAttribute( QStringLiteral( "xmax" ), qgsDoubleToString( mDefaultViewExtent.xMaximum() ) );
+    defaultViewElement.setAttribute( QStringLiteral( "ymax" ), qgsDoubleToString( mDefaultViewExtent.yMaximum() ) );
+    mDefaultViewExtent.crs().writeXml( defaultViewElement, doc );
+    element.appendChild( defaultViewElement );
+  }
+
   return element;
 }
