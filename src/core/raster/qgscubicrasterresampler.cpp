@@ -24,6 +24,19 @@ QgsCubicRasterResampler *QgsCubicRasterResampler::clone() const
   return new QgsCubicRasterResampler();
 }
 
+QImage QgsCubicRasterResampler::resampleV2( const QImage &source, const QSize &size )
+{
+  QImage dest = QImage( size.width(), size.height(), QImage::Format_ARGB32 );
+
+  // note, when removing deprecated members, just make the existing overridden resample method private!
+  Q_NOWARN_DEPRECATED_PUSH
+  resample( source, dest );
+  Q_NOWARN_DEPRECATED_POP
+
+  return dest;
+}
+
+Q_NOWARN_DEPRECATED_PUSH
 void QgsCubicRasterResampler::resample( const QImage &srcImage, QImage &dstImage )
 {
   int nCols = srcImage.width();
@@ -273,6 +286,12 @@ void QgsCubicRasterResampler::resample( const QImage &srcImage, QImage &dstImage
   delete[] yDerivativeMatrixGreen;
   delete[] yDerivativeMatrixBlue;
   delete[] yDerivativeMatrixAlpha;
+}
+Q_NOWARN_DEPRECATED_POP
+
+QString QgsCubicRasterResampler::type() const
+{
+  return QStringLiteral( "cubic" );
 }
 
 void QgsCubicRasterResampler::xDerivativeMatrix( int nCols, int nRows, double *matrix, const int *colorMatrix )

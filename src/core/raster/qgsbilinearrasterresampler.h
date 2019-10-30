@@ -20,6 +20,8 @@
 
 #include "qgsrasterresampler.h"
 #include "qgis_sip.h"
+#include "qgis.h"
+
 #include <QColor>
 
 #include "qgis_core.h"
@@ -28,7 +30,7 @@
  * \ingroup core
     Bilinear Raster Resampler
 */
-class CORE_EXPORT QgsBilinearRasterResampler: public QgsRasterResampler
+class CORE_EXPORT QgsBilinearRasterResampler: public QgsRasterResamplerV2
 {
   public:
 
@@ -36,9 +38,10 @@ class CORE_EXPORT QgsBilinearRasterResampler: public QgsRasterResampler
      * Constructor for QgsBilinearRasterResampler.
      */
     QgsBilinearRasterResampler() = default;
-
     void resample( const QImage &srcImage, QImage &dstImage ) override;
-    QString type() const override { return QStringLiteral( "bilinear" ); }
+
+    QImage resampleV2( const QImage &source, const QSize &size ) override;
+    QString type() const override;
     QgsBilinearRasterResampler *clone() const override SIP_FACTORY;
 };
 
