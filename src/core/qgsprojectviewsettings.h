@@ -16,6 +16,7 @@
 #define QGSPROJECTVIEWSETTINGS_H
 
 #include "qgis_core.h"
+#include "qgsreferencedgeometry.h"
 #include <QObject>
 #include <QVector>
 
@@ -45,6 +46,34 @@ class CORE_EXPORT QgsProjectViewSettings : public QObject
      * Resets the settings to a default state.
      */
     void reset();
+
+    /**
+     * Returns the default view extent, which should be used as the initial map extent
+     * when this project is opened.
+     *
+     * \warning When a project is opened in the QGIS desktop application and saved, individual
+     * map canvases will store their own previous view extent as custom project properties. Reloading
+     * this saved version of the project will trigger the canvases to restore their individual last view
+     * extents. Accordingly, in the QGIS desktop application, this setting only forms a default, initial
+     * view used when the project is opened for the very first time.
+     *
+     * \see setDefaultViewExtent()
+     */
+    QgsReferencedRectangle defaultViewExtent() const;
+
+    /**
+     * Sets the default view \a extent, which should be used as the initial map extent
+     * when this project is opened.
+     *
+     * \warning When a project is opened in the QGIS desktop application and saved, individual
+     * map canvases will store their own previous view extent as custom project properties. Reloading
+     * this saved version of the project will trigger the canvases to restore their individual last view
+     * extents. Accordingly, in the QGIS desktop application, this setting only forms a default, initial
+     * view used when the project is opened for the very first time.
+     *
+     * \see defaultViewExtent()
+     */
+    void setDefaultViewExtent( const QgsReferencedRectangle &extent );
 
     /**
      * Sets the list of custom project map \a scales.
@@ -110,6 +139,7 @@ class CORE_EXPORT QgsProjectViewSettings : public QObject
 
     QVector<double> mMapScales;
     bool mUseProjectScales = false;
+    QgsReferencedRectangle mDefaultViewExtent;
 };
 
 #endif // QGSPROJECTVIEWSETTINGS_H

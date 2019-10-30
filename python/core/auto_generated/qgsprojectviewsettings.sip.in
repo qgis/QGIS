@@ -32,6 +32,38 @@ Constructor for QgsProjectViewSettings with the specified ``parent`` object.
 Resets the settings to a default state.
 %End
 
+    QgsReferencedRectangle defaultViewExtent() const;
+%Docstring
+Returns the default view extent, which should be used as the initial map extent
+when this project is opened.
+
+.. warning::
+
+   When a project is opened in the QGIS desktop application and saved, individual
+   map canvases will store their own previous view extent as custom project properties. Reloading
+   this saved version of the project will trigger the canvases to restore their individual last view
+   extents. Accordingly, in the QGIS desktop application, this setting only forms a default, initial
+   view used when the project is opened for the very first time.
+
+.. seealso:: :py:func:`setDefaultViewExtent`
+%End
+
+    void setDefaultViewExtent( const QgsReferencedRectangle &extent );
+%Docstring
+Sets the default view ``extent``, which should be used as the initial map extent
+when this project is opened.
+
+.. warning::
+
+   When a project is opened in the QGIS desktop application and saved, individual
+   map canvases will store their own previous view extent as custom project properties. Reloading
+   this saved version of the project will trigger the canvases to restore their individual last view
+   extents. Accordingly, in the QGIS desktop application, this setting only forms a default, initial
+   view used when the project is opened for the very first time.
+
+.. seealso:: :py:func:`defaultViewExtent`
+%End
+
     void setMapScales( const QVector<double> &scales );
 %Docstring
 Sets the list of custom project map ``scales``.
