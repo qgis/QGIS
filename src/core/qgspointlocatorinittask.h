@@ -48,10 +48,6 @@ class QgsPointLocatorInitTask : public QgsTask
 
     bool run();
 
-  signals:
-
-    void rebuildIndexFinished( bool ok );
-
   private:
 
     QgsPointLocator *mLoc = nullptr;
