@@ -96,6 +96,19 @@ class CORE_EXPORT QgsDxfExport
     Q_DECLARE_FLAGS( Flags, Flag )
 
     /**
+     * The result of an export as dxf operaion
+     *
+     * \since QGIS 3.12
+     */
+    enum ExportResult
+    {
+      Success = 0, //!< Successful export
+      InvalidDeviceError, //!< Invalid device error
+      DeviceNotWritableError, //!< Device not writable error
+      EmptyExtentError //!< Empty extent, no extent given and no extent could be derived from layers
+    };
+
+    /**
      * Constructor for QgsDxfExport.
      */
     QgsDxfExport() = default;
@@ -133,9 +146,9 @@ class CORE_EXPORT QgsDxfExport
      * Export to a dxf file in the given encoding
      * \param d device
      * \param codec encoding
-     * \returns 0 on success, 1 on invalid device, 2 when devices is not writable
+     * \returns an ExportResult
      */
-    int writeToFile( QIODevice *d, const QString &codec );  //maybe add progress dialog? other parameters (e.g. scale, dpi)?
+    ExportResult writeToFile( QIODevice *d, const QString &codec );  //maybe add progress dialog? other parameters (e.g. scale, dpi)?
 
     /**
      * Set reference \a scale for output.
