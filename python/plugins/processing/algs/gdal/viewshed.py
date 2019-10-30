@@ -68,12 +68,12 @@ class viewshed(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterPoint(self.OBSERVER,
                                                       self.tr('Observer location')))
         self.addParameter(QgsProcessingParameterNumber(self.OBSERVER_HEIGHT,
-                                                       self.tr('Observer height'),
+                                                       self.tr('Observer height, DEM units'),
                                                        type=QgsProcessingParameterNumber.Double,
                                                        minValue=0.0,
                                                        defaultValue=1.0))
         self.addParameter(QgsProcessingParameterNumber(self.TARGET_HEIGHT,
-                                                       self.tr('Target height'),
+                                                       self.tr('Target height, DEM units'),
                                                        type=QgsProcessingParameterNumber.Double,
                                                        minValue=0.0,
                                                        defaultValue=1.0))
