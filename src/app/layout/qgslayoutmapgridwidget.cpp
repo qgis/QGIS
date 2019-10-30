@@ -27,6 +27,7 @@
 #include "qgsmapsettings.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsvectorlayer.h"
+#include "qgsprojectviewsettings.h"
 
 QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, QgsLayoutItemMap *map )
   : QgsLayoutItemBaseWidget( nullptr, mapGrid )
@@ -478,8 +479,8 @@ void QgsLayoutMapGridWidget::initAnnotationDirectionBox( QComboBox *c, QgsLayout
 bool QgsLayoutMapGridWidget::hasPredefinedScales() const
 {
   // first look at project's scales
-  const QVector< double > scales = QgsProject::instance()->mapScales();
-  bool hasProjectScales( QgsProject::instance()->useProjectScales() );
+  const QVector< double > scales = QgsProject::instance()->viewSettings()->mapScales();
+  bool hasProjectScales( QgsProject::instance()->viewSettings()->useProjectScales() );
   if ( !hasProjectScales || scales.isEmpty() )
   {
     // default to global map tool scales

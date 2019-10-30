@@ -65,6 +65,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsprojectstorage.h"
 #include "qgsprojectstorageregistry.h"
+#include "qgsprojectviewsettings.h"
 
 //qt includes
 #include <QInputDialog>
@@ -357,7 +358,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   pbnCanvasColor->setDefaultColor( defaultCanvasColor );
 
   //get project scales
-  const QVector< double > projectScales = QgsProject::instance()->mapScales();
+  const QVector< double > projectScales = QgsProject::instance()->viewSettings()->mapScales();
   if ( !projectScales.isEmpty() )
   {
     for ( double scale : projectScales )
@@ -367,7 +368,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   }
   connect( lstScales, &QListWidget::itemChanged, this, &QgsProjectProperties::scaleItemChanged );
 
-  grpProjectScales->setChecked( QgsProject::instance()->useProjectScales() );
+  grpProjectScales->setChecked( QgsProject::instance()->viewSettings()->useProjectScales() );
 
   mLayerCapabilitiesModel = new QgsLayerCapabilitiesModel( QgsProject::instance(), this );
   mLayerCapabilitiesModel->setLayerTreeModel( new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot(), mLayerCapabilitiesModel ) );
@@ -1092,13 +1093,13 @@ void QgsProjectProperties::apply()
 
   if ( !projectScales.isEmpty() )
   {
-    QgsProject::instance()->setMapScales( projectScales );
-    QgsProject::instance()->setUseProjectScales( grpProjectScales->isChecked() );
+    QgsProject::instance()->viewSettings()->setMapScales( projectScales );
+    QgsProject::instance()->viewSettings()->setUseProjectScales( grpProjectScales->isChecked() );
   }
   else
   {
-    QgsProject::instance()->setMapScales( QVector< double >() );
-    QgsProject::instance()->setUseProjectScales( false );
+    QgsProject::instance()->viewSettings()->setMapScales( QVector< double >() );
+    QgsProject::instance()->viewSettings()->setUseProjectScales( false );
   }
 
   const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
