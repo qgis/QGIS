@@ -296,9 +296,10 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         self.progressThreadLock = threading.Lock()
         if self.maxThreads > 1:
             feedback.pushConsoleInfo(self.tr('Using {max_threads} CPU Threads:').format(max_threads=self.maxThreads))
-            feedback.pushConsoleInfo(self.tr('Pushing all tiles at once: {meta_count} tiles.').format(meta_count=len(allMetatiles)))
-            with ThreadPoolExecutor(max_workers=self.maxThreads) as threadPool:
-                threadPool.map(self.renderSingleMetatile, allMetatiles)
+            for zoom in range(self.min_zoom, self.max_zoom + 1):
+                feedback.pushConsoleInfo(self.tr('Generating tiles for zoom level: {zoom}').format(zoom=zoom))
+                with ThreadPoolExecutor(max_workers=self.maxThreads) as threadPool:
+                    threadPool.map(self.renderSingleMetatile, metatiles_by_zoom[zoom])
         else:
             feedback.pushConsoleInfo(self.tr('Using 1 CPU Thread:'))
             for zoom in range(self.min_zoom, self.max_zoom + 1):
