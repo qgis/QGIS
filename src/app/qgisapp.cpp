@@ -345,6 +345,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsappwindowmanager.h"
 #include "qgsvaliditycheckregistry.h"
 #include "qgsappcoordinateoperationhandlers.h"
+#include "qgsprojectviewsettings.h"
 
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
@@ -3637,7 +3638,7 @@ void QgisApp::setupConnections()
   // project crs connections
   connect( QgsProject::instance(), &QgsProject::crsChanged, this, &QgisApp::projectCrsChanged );
 
-  connect( QgsProject::instance(), &QgsProject::mapScalesChanged, this, [ = ] { mScaleWidget->updateScales(); } );
+  connect( QgsProject::instance()->viewSettings(), &QgsProjectViewSettings::mapScalesChanged, this, [ = ] { mScaleWidget->updateScales(); } );
 
   connect( QgsProject::instance(), &QgsProject::missingDatumTransforms, this, [ = ]( const QStringList & transforms )
   {
@@ -6285,7 +6286,7 @@ bool QgisApp::addProject( const QString &projectFile )
     applyProjectSettingsToCanvas( mMapCanvas );
 
     //load project scales
-    bool projectScales = QgsProject::instance()->useProjectScales();
+    bool projectScales = QgsProject::instance()->viewSettings()->useProjectScales();
     if ( projectScales )
     {
       mScaleWidget->updateScales();

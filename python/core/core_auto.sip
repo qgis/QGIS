@@ -390,6 +390,7 @@
 %Include auto_generated/qgspluginlayer.sip
 %Include auto_generated/qgspointxy.sip
 %Include auto_generated/qgsproject.sip
+%Include auto_generated/qgsprojectviewsettings.sip
 %Include auto_generated/qgsproxyprogresstask.sip
 %Include auto_generated/qgsrelationmanager.sip
 %Include auto_generated/qgsrelation.sip

@@ -72,6 +72,7 @@
 #include "qgsvaliditycheckresultswidget.h"
 #include "qgsabstractvaliditycheck.h"
 #include "qgsvaliditycheckcontext.h"
+#include "qgsprojectviewsettings.h"
 #include "ui_defaults.h"
 
 #include <QShortcut>
@@ -4386,8 +4387,8 @@ QVector<double> QgsLayoutDesignerDialog::predefinedScales() const
 {
   QgsProject *project = mMasterLayout->layoutProject();
   // first look at project's scales
-  QVector< double > projectScales = project->mapScales();
-  bool hasProjectScales( project->useProjectScales() );
+  QVector< double > projectScales = project->viewSettings()->mapScales();
+  bool hasProjectScales( project->viewSettings()->useProjectScales() );
   if ( !hasProjectScales || projectScales.isEmpty() )
   {
     // default to global map tool scales
