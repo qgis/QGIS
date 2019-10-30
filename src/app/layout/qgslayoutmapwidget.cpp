@@ -34,6 +34,7 @@
 #include "qgsguiutils.h"
 #include "qgsbookmarkmodel.h"
 #include "qgsreferencedgeometry.h"
+#include "qgsprojectviewsettings.h"
 
 #include <QMenu>
 #include <QMessageBox>
@@ -1045,8 +1046,8 @@ void QgsLayoutMapWidget::atlasLayerChanged( QgsVectorLayer *layer )
 bool QgsLayoutMapWidget::hasPredefinedScales() const
 {
   // first look at project's scales
-  const QVector< double > scales( QgsProject::instance()->mapScales() );
-  bool hasProjectScales( QgsProject::instance()->useProjectScales() );
+  const QVector< double > scales( QgsProject::instance()->viewSettings()->mapScales() );
+  bool hasProjectScales( QgsProject::instance()->viewSettings()->useProjectScales() );
   if ( !hasProjectScales || scales.isEmpty() )
   {
     // default to global map tool scales

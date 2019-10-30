@@ -72,6 +72,7 @@ class QgsLabelingEngineSettings;
 class QgsAuxiliaryStorage;
 class QgsMapLayer;
 class QgsBookmarkManager;
+class QgsProjectViewSettings;
 
 /**
  * \ingroup core
@@ -561,6 +562,23 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.10
      */
     QgsBookmarkManager *bookmarkManager();
+
+    /**
+     * Returns the project's view settings, which contains settings and properties
+     * relating to how a QgsProject should be viewed and behave inside a map canvas
+     * (e.g. map scales and default view extent)
+     * \note not available in Python bindings
+     * \since QGIS 3.10.1
+     */
+    const QgsProjectViewSettings *viewSettings() const SIP_SKIP;
+
+    /**
+     * Returns the project's view settings, which contains settings and properties
+     * relating to how a QgsProject should be viewed and behave inside a map canvas
+     * (e.g. map scales and default view extent)
+     * \since QGIS 3.10.1
+     */
+    QgsProjectViewSettings *viewSettings();
 
     /**
      * Returns pointer to the root (invisible) node of the project's layer tree
@@ -1158,9 +1176,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see mapScales()
      * \see mapScalesChanged()
      *
-     * \since QGIS 3.10
+     * \deprecated Use viewSettings() instead
      */
-    void setMapScales( const QVector<double> &scales );
+    Q_DECL_DEPRECATED void setMapScales( const QVector<double> &scales ) SIP_DEPRECATED;
 
     /**
      * Returns the list of custom project map scales.
@@ -1171,9 +1189,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see setMapScales()
      * \see mapScalesChanged()
      *
-     * \since QGIS 3.10
+     * \deprecated Use viewSettings() instead
      */
-    QVector<double> mapScales() const;
+    Q_DECL_DEPRECATED QVector<double> mapScales() const SIP_DEPRECATED;
 
     /**
      * Sets whether project mapScales() are \a enabled.
@@ -1181,9 +1199,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see useProjectScales()
      * \see setMapScales()
      *
-     * \since QGIS 3.10
+     * \deprecated Use viewSettings() instead
      */
-    void setUseProjectScales( bool enabled );
+    Q_DECL_DEPRECATED void setUseProjectScales( bool enabled ) SIP_DEPRECATED;
 
     /**
      * Returns TRUE if project mapScales() are enabled.
@@ -1191,9 +1209,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see setUseProjectScales()
      * \see mapScales()
      *
-     * \since QGIS 3.10
+     * \deprecated Use viewSettings() instead
      */
-    bool useProjectScales() const;
+    Q_DECL_DEPRECATED bool useProjectScales() const SIP_DEPRECATED;
 
     /**
      * Triggers the collection strings of .qgs to be included in ts file and calls writeTsFile()
@@ -1571,9 +1589,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see mapScales()
      * \see setMapScales()
      *
-     * \since QGIS 3.10
+     * \deprecated Use viewSettings() instead
      */
-    void mapScalesChanged();
+    Q_DECL_DEPRECATED void mapScalesChanged() SIP_DEPRECATED;
 
   public slots:
 
@@ -1723,6 +1741,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     std::unique_ptr<QgsLayoutManager> mLayoutManager;
 
     QgsBookmarkManager *mBookmarkManager = nullptr;
+
+    QgsProjectViewSettings *mViewSettings = nullptr;
 
     QgsLayerTree *mRootGroup = nullptr;
 
