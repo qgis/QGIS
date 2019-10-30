@@ -96,7 +96,7 @@ class CORE_EXPORT QgsDxfExport
     Q_DECLARE_FLAGS( Flags, Flag )
 
     /**
-     * The result of an export as dxf operaion
+     * The result of an export as dxf operation
      *
      * \since QGIS 3.12
      */
