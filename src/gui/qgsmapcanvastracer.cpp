@@ -26,16 +26,12 @@
 
 #include <QAction>
 
-
-QHash<QgsMapCanvas *, QgsMapCanvasTracer *> QgsMapCanvasTracer::sTracers;
-
-
 QgsMapCanvasTracer::QgsMapCanvasTracer( QgsMapCanvas *canvas, QgsMessageBar *messageBar )
   : mCanvas( canvas )
   , mMessageBar( messageBar )
 
 {
-  sTracers.insert( canvas, this );
+  canvas->setProperty( "mapCanvasTracer", QVariant::fromValue( this ) );
 
   // when things change we just invalidate the graph - and set up new parameters again only when necessary
   connect( canvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapCanvasTracer::invalidateGraph );
@@ -44,6 +40,7 @@ QgsMapCanvasTracer::QgsMapCanvasTracer( QgsMapCanvas *canvas, QgsMessageBar *mes
   connect( canvas, &QgsMapCanvas::extentsChanged, this, &QgsMapCanvasTracer::invalidateGraph );
   connect( canvas, &QgsMapCanvas::currentLayerChanged, this, &QgsMapCanvasTracer::onCurrentLayerChanged );
   connect( canvas->snappingUtils(), &QgsSnappingUtils::configChanged, this, &QgsMapCanvasTracer::invalidateGraph );
+  connect( canvas, &QObject::destroyed, this, [this]() { mCanvas = nullptr; } );
 
   // arbitrarily chosen limit that should allow for fairly fast initialization
   // of the underlying graph structure
@@ -52,12 +49,13 @@ QgsMapCanvasTracer::QgsMapCanvasTracer( QgsMapCanvas *canvas, QgsMessageBar *mes
 
 QgsMapCanvasTracer::~QgsMapCanvasTracer()
 {
-  sTracers.remove( mCanvas );
+  if ( mCanvas )
+    mCanvas->setProperty( "mapCanvasTracer", QVariant() );
 }
 
 QgsMapCanvasTracer *QgsMapCanvasTracer::tracerForCanvas( QgsMapCanvas *canvas )
 {
-  return sTracers.value( canvas, nullptr );
+  return canvas->property( "mapCanvasTracer" ).value<QgsMapCanvasTracer *>();
 }
 
 void QgsMapCanvasTracer::reportError( QgsTracer::PathError err, bool addingVertex )
