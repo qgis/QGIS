@@ -7755,7 +7755,13 @@ void TestQgsProcessing::modelExecution()
   model2.childAlgorithm( "cx1" ).setDescription( "first step in my model" );
   QStringList actualParts = model2.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, 2 );
   QgsDebugMsg( actualParts.join( '\n' ) );
-  QStringList expectedParts = QStringLiteral( "from qgis.core import QgsProcessing\n"
+  QStringList expectedParts = QStringLiteral( "\"\"\"\n"
+                              "Model exported as python.\n"
+                              "Name : 2my model\n"
+                              "Group : \n"
+                              "With QGIS : %1\n"
+                              "\"\"\"\n\n"
+                              "from qgis.core import QgsProcessing\n"
                               "from qgis.core import QgsProcessingAlgorithm\n"
                               "from qgis.core import QgsProcessingMultiStepFeedback\n"
                               "from qgis.core import QgsProcessingParameterFeatureSource\n"
@@ -7833,7 +7839,7 @@ void TestQgsProcessing::modelExecution()
                               "    return ''\n"
                               "\n"
                               "  def createInstance(self):\n"
-                              "    return MyModel()\n" ).split( '\n' );
+                              "    return MyModel()\n" ).arg( Qgis::QGIS_VERSION_INT ).split( '\n' );
   QCOMPARE( actualParts, expectedParts );
 }
 

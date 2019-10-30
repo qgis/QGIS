@@ -19,6 +19,7 @@
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingfeedback.h"
 #include "qgsprocessingutils.h"
+#include "qgis.h"
 #include "qgsxmlutils.h"
 #include "qgsexception.h"
 #include "qgsvectorlayer.h"
@@ -362,6 +363,15 @@ void QgsProcessingModelAlgorithm::setSourceFilePath( const QString &sourceFile )
 
 QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::PythonOutputType outputType, const int indentSize ) const
 {
+  QStringList fileDocString;
+  fileDocString << QStringLiteral( "\"\"\"" );
+  fileDocString << QStringLiteral( "Model exported as python." );
+  fileDocString << QStringLiteral( "Name : %1" ).arg( displayName() );
+  fileDocString << QStringLiteral( "Group : %1" ).arg( group() );
+  fileDocString << QStringLiteral( "With QGIS : %1" ).arg( Qgis::QGIS_VERSION_INT );
+  fileDocString << QStringLiteral( "\"\"\"" );
+  fileDocString << QString();
+
   QStringList lines;
   QString indent = QString( ' ' ).repeated( indentSize );
   QString currentIndent;
@@ -680,7 +690,7 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
         }
       }
 
-      lines = importLines + lines;
+      lines = fileDocString + importLines + lines;
       break;
   }
 
