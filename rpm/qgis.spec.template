@@ -103,7 +103,7 @@ BuildRequires:  python3-qscintilla-devel
 BuildRequires:  python3-qscintilla-qt5
 BuildRequires:  python3-qscintilla-qt5-devel
 BuildRequires:  python3-qt5-devel
-BuildRequires:  sip-devel
+BuildRequires:  python3-sip-devel
 
 # Qca stuff
 BuildRequires:  qca-qt5-devel
@@ -200,7 +200,7 @@ Requires:       python3-PyYAML
 Requires:       python3-qscintilla
 Requires:       python3-qscintilla-qt5
 Requires:       python3-qt5
-%{?_sip_api:Requires: sip-api(%{_sip_api_major}) >= %{_sip_api}}
+%{?_sip_api:Requires: python3-pyqt5-sip-api(%{_sip_api_major}) >= %{_sip_api}}
 
 %description -n python3-qgis
 Python integration and plug-ins for QGIS.
