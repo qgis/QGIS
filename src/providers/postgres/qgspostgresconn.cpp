@@ -144,6 +144,9 @@ Oid QgsPostgresResult::PQoidValue()
 
 QMap<QString, QgsPostgresConn *> QgsPostgresConn::sConnectionsRO;
 QMap<QString, QgsPostgresConn *> QgsPostgresConn::sConnectionsRW;
+QSet<QString> QgsPostgresConn::sBrokenConnectionsCache;
+QMutex QgsPostgresConn::sBrokenConnectionsCacheMutex;
+
 const int QgsPostgresConn::GEOM_TYPE_SELECT_LIMIT = 100;
 
 QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool readonly, bool shared, bool transaction )
@@ -218,7 +221,20 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
   , mTransaction( transaction )
   , mLock( QMutex::Recursive )
 {
-  QgsDebugMsg( QStringLiteral( "New PostgreSQL connection for " ) + conninfo );
+
+  {
+    QMutexLocker locker( &sBrokenConnectionsCacheMutex );
+    if ( sBrokenConnectionsCache.contains( conninfo ) )
+    {
+      QgsDebugMsg( QStringLiteral( "Skipping broken PostgreSQL connection: " ) + conninfo );
+      mRef = 0;
+      return;
+    }
+    else
+    {
+      QgsDebugMsg( QStringLiteral( "New PostgreSQL connection for " ) + conninfo );
+    }
+  }
 
   // expand connectionInfo
   QgsDataSourceUri uri( conninfo );
@@ -286,7 +302,20 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
       ++i;
       bool ok = QgsCredentials::instance()->get( conninfo, username, password, PQerrorMessage() );
       if ( !ok )
+      {
+        {
+          QMutexLocker locker( &sBrokenConnectionsCacheMutex );
+          // Insert the connInfo in the cache of broken/ignored connections
+          QgsPostgresConn::sBrokenConnectionsCache.insert( conninfo );
+        }
+        QTimer::singleShot( 5000, [ = ]()
+        {
+          QgsDebugMsgLevel( QStringLiteral( "Removing broken connection from cache: %1" ).arg( conninfo ), 4 );
+          QMutexLocker locker( &sBrokenConnectionsCacheMutex );
+          QgsPostgresConn::sBrokenConnectionsCache.remove( conninfo );
+        } );
         break;
+      }
 
       PQfinish();
 
@@ -359,7 +388,6 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
   {
     PQexecNR( QStringLiteral( "SET application_name='QGIS'" ) );
   }
-
 
   PQsetNoticeProcessor( mConn, noticeProcessor, nullptr );
 }
