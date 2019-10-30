@@ -60,6 +60,7 @@ QgsDecorationImageDialog::QgsDecorationImageDialog( QgsDecorationImage &deco, QW
   } );
   cboPlacement->setCurrentIndex( cboPlacement->findData( mDeco.placement() ) );
 
+  spinHorizontal->setClearValue( 0 );
   spinHorizontal->setValue( mDeco.mMarginHorizontal );
   spinVertical->setValue( mDeco.mMarginVertical );
   wgtUnitSelection->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPercentage << QgsUnitTypes::RenderPixels );
