@@ -325,6 +325,7 @@ SET(QGIS_CORE_SRCS
   qgsprojectstorage.cpp
   qgsprojectstorageregistry.cpp
   qgsprojectversion.cpp
+  qgsprojectviewsettings.cpp
   qgsprojutils.cpp
   qgsproperty.cpp
   qgspropertycollection.cpp
@@ -713,6 +714,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgspointxy.h
   qgspointlocator.h
   qgsproject.h
+  qgsprojectviewsettings.h
   qgsproxyprogresstask.h
   qgsrelationmanager.h
   qgsrelation.h

@@ -57,6 +57,7 @@
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgsprojectviewsettings.h"
 
 #include <algorithm>
 #include <QApplication>
@@ -361,6 +362,7 @@ QgsProject::QgsProject( QObject *parent )
   , mAnnotationManager( new QgsAnnotationManager( this ) )
   , mLayoutManager( new QgsLayoutManager( this ) )
   , mBookmarkManager( QgsBookmarkManager::createProjectBasedManager( this ) )
+  , mViewSettings( new QgsProjectViewSettings( this ) )
   , mRootGroup( new QgsLayerTree )
   , mLabelingEngineSettings( new QgsLabelingEngineSettings )
   , mArchive( new QgsProjectArchive() )
@@ -415,6 +417,10 @@ QgsProject::QgsProject( QObject *parent )
     }
   }
          );
+
+  Q_NOWARN_DEPRECATED_PUSH
+  connect( mViewSettings, &QgsProjectViewSettings::mapScalesChanged, this, &QgsProject::mapScalesChanged );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 
@@ -741,6 +747,7 @@ void QgsProject::clear()
   mAnnotationManager->clear();
   mLayoutManager->clear();
   mBookmarkManager->clear();
+  mViewSettings->reset();
   mSnappingConfig.reset();
   emit snappingConfigChanged( mSnappingConfig );
   emit topologicalEditingChanged();
@@ -1469,6 +1476,28 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
 
   mSnappingConfig.readProject( *doc );
 
+  // restore older project scales settings
+  mViewSettings->setUseProjectScales( readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) ) );
+  const QStringList scales = readListEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ) );
+  QVector<double> res;
+  for ( const QString &scale : scales )
+  {
+    const QStringList parts = scale.split( ':' );
+    if ( parts.size() != 2 )
+      continue;
+
+    bool ok = false;
+    const double denominator = QLocale().toDouble( parts[1], &ok );
+    if ( ok )
+    {
+      res << denominator;
+    }
+  }
+  mViewSettings->setMapScales( res );
+  QDomElement viewSettingsElement = doc->documentElement().firstChildElement( QStringLiteral( "ProjectViewSettings" ) );
+  if ( !viewSettingsElement.isNull() )
+    mViewSettings->readXml( viewSettingsElement, context );
+
   emit customVariablesChanged();
   emit crsChanged();
   emit ellipsoidChanged( ellipsoid() );
@@ -2065,6 +2094,9 @@ bool QgsProject::writeProjectFile( const QString &filename )
 
   QDomElement bookmarkElem = mBookmarkManager->writeXml( *doc );
   qgisNode.appendChild( bookmarkElem );
+
+  QDomElement viewSettingsElem = mViewSettings->writeXml( *doc, context );
+  qgisNode.appendChild( viewSettingsElem );
 
   // now wrap it up and ship it to the project file
   doc->normalize();             // XXX I'm not entirely sure what this does
@@ -2745,6 +2777,16 @@ QgsBookmarkManager *QgsProject::bookmarkManager()
   return mBookmarkManager;
 }
 
+const QgsProjectViewSettings *QgsProject::viewSettings() const
+{
+  return mViewSettings;
+}
+
+QgsProjectViewSettings *QgsProject::viewSettings()
+{
+  return mViewSettings;
+}
+
 QgsLayerTree *QgsProject::layerTreeRoot() const
 {
   return mRootGroup;
@@ -3255,54 +3297,22 @@ QColor QgsProject::selectionColor() const
 
 void QgsProject::setMapScales( const QVector<double> &scales )
 {
-  // sort scales in descending order
-  QVector< double > sorted = scales;
-  std::sort( sorted.begin(), sorted.end(), std::greater<double>() );
-
-  if ( sorted == mapScales() )
-    return;
-
-  QStringList store;
-  store.reserve( sorted.size() );
-  for ( double scale : qgis::as_const( sorted ) )
-    store << QStringLiteral( "1:%1" ).arg( scale );
-
-  writeEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ), store );
-  emit mapScalesChanged();
+  mViewSettings->setMapScales( scales );
 }
 
 QVector<double> QgsProject::mapScales() const
 {
-  const QStringList scales = readListEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ) );
-  QVector<double> res;
-  for ( const QString &scale : scales )
-  {
-    const QStringList parts = scale.split( ':' );
-    if ( parts.size() != 2 )
-      continue;
-
-    bool ok = false;
-    const double denominator = QLocale().toDouble( parts[1], &ok );
-    if ( ok )
-    {
-      res << denominator;
-    }
-  }
-  return res;
+  return mViewSettings->mapScales();
 }
 
 void QgsProject::setUseProjectScales( bool enabled )
 {
-  if ( enabled == useProjectScales() )
-    return;
-
-  writeEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ), enabled );
-  emit mapScalesChanged();
+  mViewSettings->setUseProjectScales( enabled );
 }
 
 bool QgsProject::useProjectScales() const
 {
-  return readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) );
+  return mViewSettings->useProjectScales();
 }
 
 void QgsProject::generateTsFile( const QString &locale )

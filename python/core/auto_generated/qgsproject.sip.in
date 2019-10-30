@@ -565,6 +565,16 @@ the project.
 .. versionadded:: 3.10
 %End
 
+
+    QgsProjectViewSettings *viewSettings();
+%Docstring
+Returns the project's view settings, which contains settings and properties
+relating to how a QgsProject should be viewed and behave inside a map canvas
+(e.g. map scales and default view extent)
+
+.. versionadded:: 3.10.1
+%End
+
     QgsLayerTree *layerTreeRoot() const;
 %Docstring
 Returns pointer to the root (invisible) node of the project's layer tree
@@ -1116,7 +1126,7 @@ Returns the color used to highlight selected features
 .. versionadded:: 3.10
 %End
 
-    void setMapScales( const QVector<double> &scales );
+ void setMapScales( const QVector<double> &scales ) /Deprecated/;
 %Docstring
 Sets the list of custom project map ``scales``.
 
@@ -1127,10 +1137,11 @@ The ``scales`` list consists of a list of scale denominator values, e.g.
 
 .. seealso:: :py:func:`mapScalesChanged`
 
-.. versionadded:: 3.10
+.. deprecated::
+   Use viewSettings() instead
 %End
 
-    QVector<double> mapScales() const;
+ QVector<double> mapScales() const /Deprecated/;
 %Docstring
 Returns the list of custom project map scales.
 
@@ -1141,10 +1152,11 @@ The scales list consists of a list of scale denominator values, e.g.
 
 .. seealso:: :py:func:`mapScalesChanged`
 
-.. versionadded:: 3.10
+.. deprecated::
+   Use viewSettings() instead
 %End
 
-    void setUseProjectScales( bool enabled );
+ void setUseProjectScales( bool enabled ) /Deprecated/;
 %Docstring
 Sets whether project mapScales() are ``enabled``.
 
@@ -1152,10 +1164,11 @@ Sets whether project mapScales() are ``enabled``.
 
 .. seealso:: :py:func:`setMapScales`
 
-.. versionadded:: 3.10
+.. deprecated::
+   Use viewSettings() instead
 %End
 
-    bool useProjectScales() const;
+ bool useProjectScales() const /Deprecated/;
 %Docstring
 Returns ``True`` if project mapScales() are enabled.
 
@@ -1163,7 +1176,8 @@ Returns ``True`` if project mapScales() are enabled.
 
 .. seealso:: :py:func:`mapScales`
 
-.. versionadded:: 3.10
+.. deprecated::
+   Use viewSettings() instead
 %End
 
     void generateTsFile( const QString &locale );
@@ -1564,7 +1578,7 @@ Emitted when the project dirty status changes.
 %End
 
 
-    void mapScalesChanged();
+ void mapScalesChanged() /Deprecated/;
 %Docstring
 Emitted when the list of custom project map scales changes.
 
@@ -1572,7 +1586,8 @@ Emitted when the list of custom project map scales changes.
 
 .. seealso:: :py:func:`setMapScales`
 
-.. versionadded:: 3.10
+.. deprecated::
+   Use viewSettings() instead
 %End
 
   public slots:

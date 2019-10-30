@@ -24,7 +24,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgslayertree.h"
 #include "qgssettings.h"
-
+#include "qgsprojectviewsettings.h"
 
 namespace QgsWmts
 {
@@ -201,8 +201,8 @@ namespace QgsWmts
     QgsSettings settings;
     QStringList scaleList = settings.value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString().split( ',' );
     //load project scales
-    bool useProjectScales = project->useProjectScales();
-    const QVector< double >projectScales = project->mapScales();
+    bool useProjectScales = project->viewSettings()->useProjectScales();
+    const QVector< double >projectScales = project->viewSettings()->mapScales();
     if ( useProjectScales && projectScales.empty() )
     {
       scale = *std::min_element( projectScales.begin(), projectScales.end() );

@@ -1,0 +1,115 @@
+/***************************************************************************
+    qgsprojectviewsettings.h
+    ---------------------------
+    begin                : October 2019
+    copyright            : (C) 2019 by Nyall Dawson
+    email                : nyall dot dawson at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+#ifndef QGSPROJECTVIEWSETTINGS_H
+#define QGSPROJECTVIEWSETTINGS_H
+
+#include "qgis_core.h"
+#include <QObject>
+#include <QVector>
+
+class QDomElement;
+class QgsReadWriteContext;
+class QDomDocument;
+
+/**
+ * Contains settings and properties relating to how a QgsProject should be displayed inside
+ * map canvas, e.g. map scales and default view extent for the project.
+ *
+ * \ingroup core
+ * \since QGIS 3.10.1
+ */
+class CORE_EXPORT QgsProjectViewSettings : public QObject
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsProjectViewSettings with the specified \a parent object.
+     */
+    QgsProjectViewSettings( QObject *parent = nullptr );
+
+    /**
+     * Resets the settings to a default state.
+     */
+    void reset();
+
+    /**
+     * Sets the list of custom project map \a scales.
+     *
+     * The \a scales list consists of a list of scale denominator values, e.g.
+     * 1000 for a 1:1000 scale.
+     *
+     * \see mapScales()
+     * \see mapScalesChanged()
+     */
+    void setMapScales( const QVector<double> &scales );
+
+    /**
+     * Returns the list of custom project map scales.
+     *
+     * The scales list consists of a list of scale denominator values, e.g.
+     * 1000 for a 1:1000 scale.
+     *
+     * \see setMapScales()
+     * \see mapScalesChanged()
+     */
+    QVector<double> mapScales() const;
+
+    /**
+     * Sets whether project mapScales() are \a enabled.
+     *
+     * \see useProjectScales()
+     * \see setMapScales()
+     */
+    void setUseProjectScales( bool enabled );
+
+    /**
+     * Returns TRUE if project mapScales() are enabled.
+     *
+     * \see setUseProjectScales()
+     * \see mapScales()
+     */
+    bool useProjectScales() const;
+
+    /**
+     * Reads the settings's state from a DOM element.
+     * \see writeXml()
+     */
+    bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
+    /**
+     * Returns a DOM element representing the settings.
+     * \see readXml()
+     */
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+  signals:
+
+    /**
+     * Emitted when the list of custom project map scales changes.
+     *
+     * \see mapScales()
+     * \see setMapScales()
+     */
+    void mapScalesChanged();
+
+  private:
+
+    QVector<double> mMapScales;
+    bool mUseProjectScales = false;
+};
+
+#endif // QGSPROJECTVIEWSETTINGS_H
