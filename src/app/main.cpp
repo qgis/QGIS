@@ -1510,9 +1510,24 @@ int main( int argc, char *argv[] )
       dxfFile.setFileName( dxfOutputFile );
     }
 
-    int res = dxfExport.writeToFile( &dxfFile, dxfEncoding );
-    if ( res )
-      std::cerr << "dxf output failed with error code " << res << std::endl;
+    QgsDxfExport::ExportResult res = dxfExport.writeToFile( &dxfFile, dxfEncoding );
+    switch ( res )
+    {
+      case QgsDxfExport::ExportResult::Success:
+        break;
+
+      case QgsDxfExport::ExportResult::DeviceNotWritableError:
+        std::cerr << "dxf output failed, the device is not wriable" << std::endl;
+        break;
+
+      case QgsDxfExport::ExportResult::InvalidDeviceError:
+        std::cerr << "dxf output failed, the device is invalid" << std::endl;
+        break;
+
+      case QgsDxfExport::ExportResult::EmptyExtentError:
+        std::cerr << "dxf output failed, the extent could not be determined" << std::endl;
+        break;
+    }
 
     delete qgis;
 
