@@ -184,18 +184,41 @@ QgsRasterBlock *QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const 
 
   //resample image
   QImage img = inputBlock->image();
-
-  QImage dstImg = QImage( width, height, QImage::Format_ARGB32_Premultiplied );
+  QImage dstImg;
 
   if ( mZoomedInResampler && ( oversamplingX < 1.0 || qgsDoubleNear( oversampling, 1.0 ) ) )
   {
     QgsDebugMsgLevel( QStringLiteral( "zoomed in resampling" ), 4 );
-    mZoomedInResampler->resample( img, dstImg );
+
+    if ( QgsRasterResamplerV2 *resamplerV2 = dynamic_cast< QgsRasterResamplerV2 * >( mZoomedInResampler.get( ) ) )
+    {
+      dstImg = resamplerV2->resampleV2( img, QSize( width, height ) );
+    }
+    else
+    {
+      // old inefficient interface
+      Q_NOWARN_DEPRECATED_PUSH
+      QImage dstImg = QImage( width, height, QImage::Format_ARGB32_Premultiplied );
+      mZoomedInResampler->resample( img, dstImg );
+      Q_NOWARN_DEPRECATED_POP
+    }
   }
   else if ( mZoomedOutResampler && oversamplingX > 1.0 )
   {
     QgsDebugMsgLevel( QStringLiteral( "zoomed out resampling" ), 4 );
-    mZoomedOutResampler->resample( img, dstImg );
+
+    if ( QgsRasterResamplerV2 *resamplerV2 = dynamic_cast< QgsRasterResamplerV2 * >( mZoomedOutResampler.get( ) ) )
+    {
+      dstImg = resamplerV2->resampleV2( img, QSize( width, height ) );
+    }
+    else
+    {
+      // old inefficient interface
+      Q_NOWARN_DEPRECATED_PUSH
+      QImage dstImg = QImage( width, height, QImage::Format_ARGB32_Premultiplied );
+      mZoomedOutResampler->resample( img, dstImg );
+      Q_NOWARN_DEPRECATED_POP
+    }
   }
   else
   {

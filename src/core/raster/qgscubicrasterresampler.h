@@ -20,6 +20,7 @@
 
 #include "qgsrasterresampler.h"
 #include "qgis_sip.h"
+#include "qgis.h"
 #include <QColor>
 
 #include "qgis_core.h"
@@ -28,7 +29,7 @@
  * \ingroup core
     Cubic Raster Resampler
 */
-class CORE_EXPORT QgsCubicRasterResampler: public QgsRasterResampler
+class CORE_EXPORT QgsCubicRasterResampler: public QgsRasterResamplerV2
 {
   public:
 
@@ -37,8 +38,12 @@ class CORE_EXPORT QgsCubicRasterResampler: public QgsRasterResampler
      */
     QgsCubicRasterResampler() = default;
     QgsCubicRasterResampler *clone() const override SIP_FACTORY;
+
+    QImage resampleV2( const QImage &source, const QSize &size ) override;
+
     void resample( const QImage &srcImage, QImage &dstImage ) override;
-    QString type() const override { return QStringLiteral( "cubic" ); }
+
+    QString type() const override;
 
   private:
     static void xDerivativeMatrix( int nCols, int nRows, double *matrix, const int *colorMatrix );
