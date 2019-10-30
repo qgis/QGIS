@@ -1531,7 +1531,7 @@ int main( int argc, char *argv[] )
 
     delete qgis;
 
-    return res;
+    return static_cast<int>( res );
   }
 
   // make sure we don't have a dirty blank project after launch

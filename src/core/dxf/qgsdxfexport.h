@@ -100,7 +100,7 @@ class CORE_EXPORT QgsDxfExport
      *
      * \since QGIS 3.12
      */
-    enum ExportResult
+    enum class ExportResult
     {
       Success = 0, //!< Successful export
       InvalidDeviceError, //!< Invalid device error
