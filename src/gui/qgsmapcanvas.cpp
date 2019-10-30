@@ -74,6 +74,7 @@ email                : sherman at mrcc.com
 #include "qgsmimedatautils.h"
 #include "qgscustomdrophandler.h"
 #include "qgsreferencedgeometry.h"
+#include "qgsprojectviewsettings.h"
 
 /**
  * \ingroup gui
@@ -2137,6 +2138,8 @@ void QgsMapCanvas::setSnappingUtils( QgsSnappingUtils *utils )
 
 void QgsMapCanvas::readProject( const QDomDocument &doc )
 {
+  QgsProject *project = qobject_cast< QgsProject * >( sender() );
+
   QDomNodeList nodes = doc.elementsByTagName( QStringLiteral( "mapcanvas" ) );
   if ( nodes.count() )
   {
@@ -2191,6 +2194,11 @@ void QgsMapCanvas::readProject( const QDomDocument &doc )
   else
   {
     QgsDebugMsg( QStringLiteral( "Couldn't read mapcanvas information from project" ) );
+    if ( !project->viewSettings()->defaultViewExtent().isNull() )
+    {
+      setReferencedExtent( project->viewSettings()->defaultViewExtent() );
+      clearExtentHistory(); // clear the extent history on project load
+    }
   }
 }
 
