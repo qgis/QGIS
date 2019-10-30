@@ -666,7 +666,7 @@ void QgisApp::vectorLayerStyleLoaded( const QgsMapLayer::StyleCategories &catego
   if ( categories.testFlag( QgsMapLayer::StyleCategory::Forms ) )
   {
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( sender() );
-    if ( vl )
+    if ( vl && vl->isValid( ) )
     {
       checkVectorLayerDependencies( vl );
     }
@@ -1962,13 +1962,18 @@ QList<QgsVectorLayerRef> QgisApp::findBrokenWidgetDependencies( QgsVectorLayer *
   {
     std::unique_ptr<QgsEditorWidgetWrapper> ww;
     ww.reset( QgsGui::editorWidgetRegistry()->create( vl, i, nullptr, nullptr ) );
-    const auto constDependencies { ww->layerDependencies() };
-    for ( const QgsVectorLayerRef &dependency : constDependencies )
+    // ww should never be null in real life, but it is in QgisApp tests because
+    // QgsEditorWidgetRegistry widget factories is empty
+    if ( ww )
     {
-      const QgsVectorLayer *depVl { QgsVectorLayerRef( dependency ).resolveWeakly( QgsProject::instance() ) };
-      if ( ! depVl || ! depVl->isValid() )
+      const auto constDependencies { ww->layerDependencies() };
+      for ( const QgsVectorLayerRef &dependency : constDependencies )
       {
-        brokenDependencies.append( dependency );
+        const QgsVectorLayer *depVl { QgsVectorLayerRef( dependency ).resolveWeakly( QgsProject::instance() ) };
+        if ( ! depVl || ! depVl->isValid() )
+        {
+          brokenDependencies.append( dependency );
+        }
       }
     }
   }
@@ -1977,108 +1982,110 @@ QList<QgsVectorLayerRef> QgisApp::findBrokenWidgetDependencies( QgsVectorLayer *
 
 void QgisApp::checkVectorLayerDependencies( QgsVectorLayer *vl )
 {
-  Q_ASSERT( vl->isValid() );
-  const auto constDependencies { findBrokenWidgetDependencies( vl ) };
-  for ( const QgsVectorLayerRef &dependency : constDependencies )
+  if ( vl && vl->isValid() )
   {
-    const QgsVectorLayer *depVl = nullptr;
-    // The default resolution logic does not recognize a positive match if the datasource is
-    // not exactly the same, for this reason we try a loose match here where the layer name
-    // equality is sufficient for a positive match within the same provider.
-    const auto constVLayers { QgsProject::instance()->layers< QgsVectorLayer * >( ) };
-    for ( const QgsVectorLayer *vl : constVLayers )
+    const auto constDependencies { findBrokenWidgetDependencies( vl ) };
+    for ( const QgsVectorLayerRef &dependency : constDependencies )
     {
-      if ( vl->name() == dependency.name && vl->providerType() == dependency.provider )
+      const QgsVectorLayer *depVl = nullptr;
+      // The default resolution logic does not recognize a positive match if the datasource is
+      // not exactly the same, for this reason we try a loose match here where the layer name
+      // equality is sufficient for a positive match within the same provider.
+      const auto constVLayers { QgsProject::instance()->layers< QgsVectorLayer * >( ) };
+      for ( const QgsVectorLayer *vl : constVLayers )
       {
-        depVl = vl;
-        break;
-      }
-    }
-    if ( ! depVl || ! depVl->isValid() )
-    {
-      // try to aggressively resolve the broken dependencies
-      bool loaded = false;
-      const QString providerName { vl->dataProvider()->name() };
-      QgsProviderMetadata *providerMetadata { QgsProviderRegistry::instance()->providerMetadata( providerName ) };
-      if ( providerMetadata )
-      {
-        // Retrieve the DB connection (if any)
-        std::unique_ptr< QgsAbstractDatabaseProviderConnection > conn { static_cast<QgsAbstractDatabaseProviderConnection *>( providerMetadata->createConnection( vl->dataProvider()->uri().uri(), {} ) ) };
-        if ( conn )
+        if ( vl->name() == dependency.name && vl->providerType() == dependency.provider )
         {
-          QString tableSchema;
-          QString tableName;
-          const QVariantMap sourceParts { providerMetadata->decodeUri( dependency.source ) };
-
-          // This part should really be abstracted out to the connection classes or to the providers directly.
-          // Different providers decode the uri differently, for example we don't get the table name out of OGR
-          // but the layerName/layerId instead, so let's try different approaches
-
-          // This works for GPKG
-          tableName = sourceParts.value( QStringLiteral( "layerName" ) ).toString();
-
-          // This works for PG and spatialite
-          if ( tableName.isEmpty() )
+          depVl = vl;
+          break;
+        }
+      }
+      if ( ! depVl || ! depVl->isValid() )
+      {
+        // try to aggressively resolve the broken dependencies
+        bool loaded = false;
+        const QString providerName { vl->dataProvider()->name() };
+        QgsProviderMetadata *providerMetadata { QgsProviderRegistry::instance()->providerMetadata( providerName ) };
+        if ( providerMetadata )
+        {
+          // Retrieve the DB connection (if any)
+          std::unique_ptr< QgsAbstractDatabaseProviderConnection > conn { static_cast<QgsAbstractDatabaseProviderConnection *>( providerMetadata->createConnection( vl->dataProvider()->uri().uri(), {} ) ) };
+          if ( conn )
           {
-            tableName = sourceParts.value( QStringLiteral( "table" ) ).toString();
-            tableSchema = sourceParts.value( QStringLiteral( "schema" ) ).toString();
-          }
+            QString tableSchema;
+            QString tableName;
+            const QVariantMap sourceParts { providerMetadata->decodeUri( dependency.source ) };
 
-          // Helper to find layers in connections
-          auto layerFinder = [ &conn, &dependency, &providerName, this ]( const QString & tableSchema, const QString & tableName ) -> bool
-          {
-            // First try the current schema (or no schema if it's not supported from the provider)
-            try
+            // This part should really be abstracted out to the connection classes or to the providers directly.
+            // Different providers decode the uri differently, for example we don't get the table name out of OGR
+            // but the layerName/layerId instead, so let's try different approaches
+
+            // This works for GPKG
+            tableName = sourceParts.value( QStringLiteral( "layerName" ) ).toString();
+
+            // This works for PG and spatialite
+            if ( tableName.isEmpty() )
             {
-              const QString layerUri { conn->tableUri( tableSchema, tableName )};
-              // Load it!
-              std::unique_ptr< QgsVectorLayer > newVl = qgis::make_unique< QgsVectorLayer >( layerUri, dependency.name, providerName );
-              if ( newVl->isValid() )
-              {
-                connect( newVl.get(), &QgsVectorLayer::styleLoaded, this, &QgisApp::vectorLayerStyleLoaded );
-                QgsProject::instance()->addMapLayer( newVl.release() );
-                return true;
-              }
+              tableName = sourceParts.value( QStringLiteral( "table" ) ).toString();
+              tableSchema = sourceParts.value( QStringLiteral( "schema" ) ).toString();
             }
-            catch ( QgsProviderConnectionException & )
-            {
-              // Do nothing!
-            }
-            return false;
-          };
 
-          loaded = layerFinder( tableSchema, tableName );
-
-          // Try different schemas
-          if ( ! loaded && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) && ! tableSchema.isEmpty() )
-          {
-            const QStringList schemas { conn->schemas() };
-            for ( const QString &schemaName : schemas )
+            // Helper to find layers in connections
+            auto layerFinder = [ &conn, &dependency, &providerName, this ]( const QString & tableSchema, const QString & tableName ) -> bool
             {
-              if ( schemaName != tableSchema )
+              // First try the current schema (or no schema if it's not supported from the provider)
+              try
               {
-                loaded = layerFinder( schemaName, tableName );
+                const QString layerUri { conn->tableUri( tableSchema, tableName )};
+                // Load it!
+                std::unique_ptr< QgsVectorLayer > newVl = qgis::make_unique< QgsVectorLayer >( layerUri, dependency.name, providerName );
+                if ( newVl->isValid() )
+                {
+                  connect( newVl.get(), &QgsVectorLayer::styleLoaded, this, &QgisApp::vectorLayerStyleLoaded );
+                  QgsProject::instance()->addMapLayer( newVl.release() );
+                  return true;
+                }
               }
-              if ( loaded )
+              catch ( QgsProviderConnectionException & )
               {
-                break;
+                // Do nothing!
+              }
+              return false;
+            };
+
+            loaded = layerFinder( tableSchema, tableName );
+
+            // Try different schemas
+            if ( ! loaded && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) && ! tableSchema.isEmpty() )
+            {
+              const QStringList schemas { conn->schemas() };
+              for ( const QString &schemaName : schemas )
+              {
+                if ( schemaName != tableSchema )
+                {
+                  loaded = layerFinder( schemaName, tableName );
+                }
+                if ( loaded )
+                {
+                  break;
+                }
               }
             }
           }
         }
-      }
-      if ( ! loaded )
-      {
-        const QString msg { tr( "layer '%1' requires layer '%2' to be loaded but '%2' could not be found, please load it manually if possible." )
-                            .arg( vl->name() )
-                            .arg( dependency.name ) };
-        messageBar()->pushWarning( tr( "Missing layer form dependency" ), msg );
-      }
-      else
-      {
-        messageBar()->pushSuccess( tr( "Missing layer form dependency" ), tr( "Layer form dependency '%2' required by '%1' was automatically loaded." )
-                                   .arg( vl->name() )
-                                   .arg( dependency.name ) );
+        if ( ! loaded )
+        {
+          const QString msg { tr( "layer '%1' requires layer '%2' to be loaded but '%2' could not be found, please load it manually if possible." )
+                              .arg( vl->name() )
+                              .arg( dependency.name ) };
+          messageBar()->pushWarning( tr( "Missing layer form dependency" ), msg );
+        }
+        else
+        {
+          messageBar()->pushSuccess( tr( "Missing layer form dependency" ), tr( "Layer form dependency '%2' required by '%1' was automatically loaded." )
+                                     .arg( vl->name() )
+                                     .arg( dependency.name ) );
+        }
       }
     }
   }
