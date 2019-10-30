@@ -68,7 +68,7 @@ QgsPointLocator *QgsSnappingUtils::locatorForLayerUsingStrategy( QgsVectorLayer 
 
   QgsPointLocator *loc = locatorForLayer( vl );
 
-  if ( isIndexPrepared( loc, aoi ) )
+  if ( loc->isIndexing() || isIndexPrepared( loc, aoi ) )
     return loc;
   else
     return temporaryLocatorForLayer( vl, pointMap, tolerance );
@@ -91,9 +91,6 @@ QgsPointLocator *QgsSnappingUtils::temporaryLocatorForLayer( QgsVectorLayer *vl,
 
 bool QgsSnappingUtils::isIndexPrepared( QgsPointLocator *loc, const QgsRectangle &areaOfInterest )
 {
-  if ( loc->isIndexing() )
-    return true;
-
   if ( mStrategy == IndexAlwaysFull && loc->hasIndex() )
     return true;
 
@@ -374,7 +371,7 @@ void QgsSnappingUtils::prepareIndex( const QList<LayerAndAreaOfInterest> &layers
 
     QgsPointLocator *loc = locatorForLayer( vl );
 
-    if ( !isIndexPrepared( loc, entry.second ) )
+    if ( !loc->isIndexing() && !isIndexPrepared( loc, entry.second ) )
       layersToIndex << entry;
   }
   if ( !layersToIndex.isEmpty() )
