@@ -156,6 +156,8 @@ void TestQgsDxfExport::testPoints()
   QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
 
+  QVERIFY( !fileContainsText( file, QStringLiteral( "nan.0" ) ) );
+
   // reload and compare
   std::unique_ptr< QgsVectorLayer > result = qgis::make_unique< QgsVectorLayer >( file, "dxf" );
   QVERIFY( result->isValid() );
