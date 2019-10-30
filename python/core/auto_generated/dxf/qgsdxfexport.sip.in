@@ -52,7 +52,7 @@ The attribute value is used for layer names.
     typedef QFlags<QgsDxfExport::Flag> Flags;
 
 
-    enum ExportResult
+    enum class ExportResult
     {
       Success,
       InvalidDeviceError,
