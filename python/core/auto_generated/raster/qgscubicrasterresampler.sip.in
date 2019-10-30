@@ -10,7 +10,7 @@
 
 
 
-class QgsCubicRasterResampler: QgsRasterResampler
+class QgsCubicRasterResampler: QgsRasterResamplerV2
 {
 %Docstring
 Cubic Raster Resampler
@@ -27,9 +27,15 @@ Constructor for QgsCubicRasterResampler.
 %End
     virtual QgsCubicRasterResampler *clone() const /Factory/;
 
+
+    virtual QImage resampleV2( const QImage &source, const QSize &size );
+
+
     virtual void resample( const QImage &srcImage, QImage &dstImage );
 
+
     virtual QString type() const;
+
 
 };
 
