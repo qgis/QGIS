@@ -646,10 +646,9 @@ void QgsDxfExport::writeTables()
   writeDefaultLinetypes();
 
   // Add custom linestyles
-  QList< QPair< QgsSymbolLayer *, QgsSymbol *> >::const_iterator slIt = slList.constBegin();
-  for ( ; slIt != slList.constEnd(); ++slIt )
+  for ( const auto &symbolLayer : qgis::as_const( slList ) )
   {
-    writeSymbolLayerLinetype( slIt->first );
+    writeSymbolLayerLinetype( symbolLayer.first );
   }
 
   writeGroup( 0, QStringLiteral( "ENDTAB" ) );
@@ -673,14 +672,13 @@ void QgsDxfExport::writeTables()
   }
 
   int i = 0;
-  slIt = slList.constBegin();
-  for ( ; slIt != slList.constEnd(); ++slIt )
+  for ( const auto &symbolLayer : qgis::as_const( slList ) )
   {
-    QgsMarkerSymbolLayer *ml = dynamic_cast< QgsMarkerSymbolLayer *>( slIt->first );
+    QgsMarkerSymbolLayer *ml = dynamic_cast< QgsMarkerSymbolLayer *>( symbolLayer.first );
     if ( !ml )
       continue;
 
-    if ( hasDataDefinedProperties( ml, slIt->second ) )
+    if ( hasDataDefinedProperties( ml, symbolLayer.second ) )
       continue;
 
     QString name = QStringLiteral( "symbolLayer%1" ).arg( i++ );
@@ -898,19 +896,18 @@ void QgsDxfExport::writeBlocks()
     slList = symbolLayers( ct );
   }
 
-  QList< QPair< QgsSymbolLayer *, QgsSymbol * > >::const_iterator slIt = slList.constBegin();
-  for ( ; slIt != slList.constEnd(); ++slIt )
+  for ( const auto &symbolLayer : qgis::as_const( slList ) )
   {
-    QgsMarkerSymbolLayer *ml = dynamic_cast< QgsMarkerSymbolLayer *>( slIt->first );
+    QgsMarkerSymbolLayer *ml = dynamic_cast< QgsMarkerSymbolLayer *>( symbolLayer.first );
     if ( !ml )
       continue;
 
     // if point symbol layer and no data defined properties: write block
-    QgsSymbolRenderContext ctx( ct, QgsUnitTypes::RenderMapUnits, slIt->second->opacity(), false, slIt->second->renderHints(), nullptr );
+    QgsSymbolRenderContext ctx( ct, QgsUnitTypes::RenderMapUnits, symbolLayer.second->opacity(), false, symbolLayer.second->renderHints(), nullptr );
     ml->startRender( ctx );
 
     // markers with data defined properties are inserted inline
-    if ( hasDataDefinedProperties( ml, slIt->second ) )
+    if ( hasDataDefinedProperties( ml, symbolLayer.second ) )
     {
       continue;
       // ml->stopRender( ctx );
@@ -4376,10 +4373,9 @@ void QgsDxfExport::writeSymbolLayerLinetype( const QgsSymbolLayer *symbolLayer )
 int QgsDxfExport::nLineTypes( const QList< QPair< QgsSymbolLayer *, QgsSymbol * > > &symbolLayers )
 {
   int nLineTypes = 0;
-  QList< QPair< QgsSymbolLayer *, QgsSymbol *> >::const_iterator slIt = symbolLayers.constBegin();
-  for ( ; slIt != symbolLayers.constEnd(); ++slIt )
+  for ( const auto &symbolLayer : symbolLayers )
   {
-    const QgsSimpleLineSymbolLayer *simpleLine = dynamic_cast< const QgsSimpleLineSymbolLayer * >( slIt->first );
+    const QgsSimpleLineSymbolLayer *simpleLine = dynamic_cast< const QgsSimpleLineSymbolLayer * >( symbolLayer.first );
     if ( simpleLine )
     {
       if ( simpleLine->useCustomDashPattern() )
