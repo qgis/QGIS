@@ -96,6 +96,8 @@ class CORE_EXPORT QgsGdalUtils
     /**
      * Converts an \a image to a GDAL memory dataset.
      *
+     * \warning The \a image must exist unchanged for the lifetime of the returned gdal dataset!
+     *
      * \since QGIS 3.12
      */
     static gdal::dataset_unique_ptr imageToMemoryDataset( const QImage &image );
