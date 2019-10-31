@@ -454,7 +454,6 @@ Unregisters a function from the expression engine. The function will no longer b
 .. seealso:: :py:func:`registerFunction`
 %End
 
-
     static void cleanRegisteredFunctions();
 %Docstring
 Deletes all registered functions whose ownership have been transferred to the expression engine.

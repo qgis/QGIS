@@ -25,68 +25,10 @@
 #include "qgsproject.h"
 #include "qgsexpressioncontextutils.h"
 
+#include <QGlobalStatic>
+
 // from parser
 extern QgsExpressionNode *parseExpression( const QString &str, QString &parserErrorMsg, QList<QgsExpression::ParserError> &parserErrors );
-
-///////////////////////////////////////////////
-// QVariant checks and conversions
-
-///////////////////////////////////////////////
-// evaluation error macros
-
-///////////////////////////////////////////////
-// functions
-
-//////
-
-bool QgsExpression::registerFunction( QgsExpressionFunction *function, bool transferOwnership )
-{
-  int fnIdx = functionIndex( function->name() );
-  if ( fnIdx != -1 )
-  {
-    return false;
-  }
-  QgsExpression::sFunctions.append( function );
-  if ( transferOwnership )
-    QgsExpression::sOwnedFunctions.append( function );
-  return true;
-}
-
-bool QgsExpression::unregisterFunction( const QString &name )
-{
-  // You can never override the built in functions.
-  if ( QgsExpression::BuiltinFunctions().contains( name ) )
-  {
-    return false;
-  }
-  int fnIdx = functionIndex( name );
-  if ( fnIdx != -1 )
-  {
-    QgsExpression::sFunctions.removeAt( fnIdx );
-    return true;
-  }
-  return false;
-}
-
-void QgsExpression::cleanRegisteredFunctions()
-{
-  qDeleteAll( QgsExpression::sOwnedFunctions );
-  QgsExpression::sOwnedFunctions.clear();
-}
-
-QStringList QgsExpression::sBuiltinFunctions;
-
-const QStringList &QgsExpression::BuiltinFunctions()
-{
-  if ( sBuiltinFunctions.isEmpty() )
-  {
-    Functions();  // this method builds the gmBuiltinFunctions as well
-  }
-  return sBuiltinFunctions;
-}
-
-QList<QgsExpressionFunction *> QgsExpression::sFunctions;
-QList<QgsExpressionFunction *> QgsExpression::sOwnedFunctions;
 
 bool QgsExpression::checkExpression( const QString &text, const QgsExpressionContext *context, QString &errorMessage )
 {

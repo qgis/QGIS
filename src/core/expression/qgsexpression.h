@@ -484,12 +484,8 @@ class CORE_EXPORT QgsExpression
       soWithin,
     };
 
-    //! \note not available in Python bindings
-    static QList<QgsExpressionFunction *> sFunctions SIP_SKIP;
     static const QList<QgsExpressionFunction *> &Functions();
 
-    //! \note not available in Python bindings
-    static QStringList sBuiltinFunctions SIP_SKIP;
     static const QStringList &BuiltinFunctions();
 
     /**
@@ -507,12 +503,6 @@ class CORE_EXPORT QgsExpression
      * \see registerFunction
      */
     static bool unregisterFunction( const QString &name );
-
-    /**
-     * List of functions owned by the expression engine
-     * \note not available in Python bindings
-     */
-    static QList<QgsExpressionFunction *> sOwnedFunctions SIP_SKIP;
 
     /**
      * Deletes all registered functions whose ownership have been transferred to the expression engine.
