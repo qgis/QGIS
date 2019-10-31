@@ -100,6 +100,9 @@ class CORE_EXPORT QgsProjectViewSettings : public QObject
     /**
      * Sets whether project mapScales() are \a enabled.
      *
+     * When project map scales are enabled these scales will replace the default QGIS map scales list
+     * while working with this project.
+     *
      * \see useProjectScales()
      * \see setMapScales()
      */
@@ -107,6 +110,9 @@ class CORE_EXPORT QgsProjectViewSettings : public QObject
 
     /**
      * Returns TRUE if project mapScales() are enabled.
+     *
+     * When project map scales are enabled these scales will replace the default QGIS map scales list
+     * while working with this project.
      *
      * \see setUseProjectScales()
      * \see mapScales()
