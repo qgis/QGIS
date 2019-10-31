@@ -411,17 +411,13 @@ void QgsExpressionBuilderWidget::loadFieldNames( const QgsFields &fields )
 
   txtExpressionString->setFields( fields );
 
-  QStringList fieldNames;
-  fieldNames.reserve( fields.count() );
   for ( int i = 0; i < fields.count(); ++i )
   {
-    QgsField field = fields.at( i );
-    QString fieldName = field.name();
-    fieldNames << fieldName;
+    const QgsField field = fields.at( i );
     QIcon icon = fields.iconForField( i );
-    registerItem( QStringLiteral( "Fields and Values" ), fieldName, " \"" + fieldName + "\" ", QString(), QgsExpressionItem::Field, false, i, icon );
+    registerItem( QStringLiteral( "Fields and Values" ), field.displayNameWithAlias(),
+                  " \"" + field.name() + "\" ", QString(), QgsExpressionItem::Field, false, i, icon );
   }
-  //  highlighter->addFields( fieldNames );
 }
 
 void QgsExpressionBuilderWidget::loadFieldsAndValues( const QMap<QString, QStringList> &fieldValues )
