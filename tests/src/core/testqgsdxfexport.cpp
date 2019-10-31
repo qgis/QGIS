@@ -153,7 +153,7 @@ void TestQgsDxfExport::testPoints()
 
   QString file = getTempFileName( "point_dxf" );
   QFile dxfFile( file );
-  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), 0 );
+  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
 
   QVERIFY( !fileContainsText( file, QStringLiteral( "nan.0" ) ) );
@@ -183,7 +183,7 @@ void TestQgsDxfExport::testLines()
 
   QString file = getTempFileName( "line_dxf" );
   QFile dxfFile( file );
-  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), 0 );
+  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
 
   // reload and compare
@@ -211,7 +211,7 @@ void TestQgsDxfExport::testPolygons()
 
   QString file = getTempFileName( "polygon_dxf" );
   QFile dxfFile( file );
-  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), 0 );
+  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
 
   // reload and compare
@@ -244,7 +244,7 @@ void TestQgsDxfExport::testMultiSurface()
 
   QString file = getTempFileName( "multisurface_dxf" );
   QFile dxfFile( file );
-  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), 0 );
+  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
 
   // reload and compare
@@ -297,7 +297,7 @@ void TestQgsDxfExport::testMTextEscapeSpaces()
 
   QString file = getTempFileName( "mtext_escape_spaces" );
   QFile dxfFile( file );
-  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), 0 );
+  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
   QVERIFY( fileContainsText( file, "\\fQGIS Vera Sans|i0|b1;\\H3.81136;A\\~text\\~with\\~spaces" ) );
 }
@@ -333,7 +333,7 @@ void TestQgsDxfExport::testText()
 
   QString file = getTempFileName( "text_dxf" );
   QFile dxfFile( file );
-  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), 0 );
+  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
 
 
@@ -399,7 +399,7 @@ bool TestQgsDxfExport::testMtext( QgsVectorLayer *vlayer, const QString &tempFil
 
   QString file = getTempFileName( tempFileName );
   QFile dxfFile( file );
-  if ( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ) != 0 )
+  if ( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ) != QgsDxfExport::ExportResult::Success )
   {
     return false;
   }
@@ -453,7 +453,7 @@ void TestQgsDxfExport::testGeometryGeneratorExport()
 
   QString file = getTempFileName( "geometry_generator_dxf" );
   QFile dxfFile( file );
-  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), 0 );
+  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
 
   QVERIFY( fileContainsText( file, "HATCH" ) );
@@ -486,7 +486,7 @@ void TestQgsDxfExport::testCurveExport()
 
   QString file = getTempFileName( wktType );
   QFile dxfFile( file );
-  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), 0 );
+  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
 
   QVERIFY( fileContainsText( file, dxfText ) );

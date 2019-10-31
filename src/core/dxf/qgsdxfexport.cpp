@@ -501,16 +501,16 @@ void QgsDxfExport::writeString( const QString &s )
   mTextStream << s << '\n';
 }
 
-int QgsDxfExport::writeToFile( QIODevice *d, const QString &encoding )
+QgsDxfExport::ExportResult QgsDxfExport::writeToFile( QIODevice *d, const QString &encoding )
 {
   if ( !d )
   {
-    return 1;
+    return ExportResult::InvalidDeviceError;
   }
 
   if ( !d->isOpen() && !d->open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
-    return 2;
+    return ExportResult::DeviceNotWritableError;
   }
 
   mTextStream.setDevice( d );
@@ -545,6 +545,9 @@ int QgsDxfExport::writeToFile( QIODevice *d, const QString &encoding )
     }
   }
 
+  if ( mExtent.isEmpty() )
+    return ExportResult::EmptyExtentError;
+
   QgsUnitTypes::DistanceUnit mapUnits = mCrs.mapUnits();
   mMapSettings.setExtent( mExtent );
 
@@ -559,7 +562,7 @@ int QgsDxfExport::writeToFile( QIODevice *d, const QString &encoding )
   writeEntities();
   writeEndFile();
 
-  return 0;
+  return ExportResult::Success;
 }
 
 QgsUnitTypes::DistanceUnit QgsDxfExport::mapUnits() const

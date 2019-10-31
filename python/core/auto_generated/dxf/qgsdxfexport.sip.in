@@ -52,6 +52,14 @@ The attribute value is used for layer names.
     typedef QFlags<QgsDxfExport::Flag> Flags;
 
 
+    enum class ExportResult
+    {
+      Success,
+      InvalidDeviceError,
+      DeviceNotWritableError,
+      EmptyExtentError
+    };
+
     QgsDxfExport();
 %Docstring
 Constructor for QgsDxfExport.
@@ -91,7 +99,7 @@ Add layers to export
 .. seealso:: :py:func:`setLayerTitleAsName`
 %End
 
-    int writeToFile( QIODevice *d, const QString &codec );  //maybe add progress dialog? other parameters (e.g. scale, dpi)?
+    ExportResult writeToFile( QIODevice *d, const QString &codec );  //maybe add progress dialog? other parameters (e.g. scale, dpi)?
 
     void setSymbologyScale( double scale );
 %Docstring

@@ -6535,13 +6535,23 @@ void QgisApp::dxfExport()
       fileName += QLatin1String( ".dxf" );
     QFile dxfFile( fileName );
     QApplication::setOverrideCursor( Qt::BusyCursor );
-    if ( dxfExport.writeToFile( &dxfFile, d.encoding() ) == 0 )
+    switch ( dxfExport.writeToFile( &dxfFile, d.encoding() ) )
     {
-      visibleMessageBar()->pushMessage( tr( "DXF export completed" ), Qgis::Info, 4 );
-    }
-    else
-    {
-      visibleMessageBar()->pushMessage( tr( "DXF export failed" ), Qgis::Critical, 4 );
+      case QgsDxfExport::ExportResult::Success:
+        visibleMessageBar()->pushMessage( tr( "DXF export completed" ), Qgis::Info, 4 );
+        break;
+
+      case QgsDxfExport::ExportResult::DeviceNotWritableError:
+        visibleMessageBar()->pushMessage( tr( "DXF export failed, device is not writable" ), Qgis::Critical, 4 );
+        break;
+
+      case QgsDxfExport::ExportResult::InvalidDeviceError:
+        visibleMessageBar()->pushMessage( tr( "DXF export failed, the device is invalid" ), Qgis::Critical, 4 );
+        break;
+
+      case QgsDxfExport::ExportResult::EmptyExtentError:
+        visibleMessageBar()->pushMessage( tr( "DXF export failed, the extent could not be determined" ), Qgis::Critical, 4 );
+        break;
     }
     QApplication::restoreOverrideCursor();
   }
