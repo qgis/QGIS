@@ -79,7 +79,7 @@ static QByteArray createPlaneIndexData( QgsTriangularMeshTile mesh )
 
     const QgsMeshFace &face = mesh.triangle( i );
     for ( int i = 0; i < 3; ++i )
-      *indexPtr++ = quint32( face.at( 2 - i ) ); //because of the negative y value, the clockwise is changed
+      *indexPtr++ = quint32( face.at( i ) );
   }
 
   qDebug() << "return index bytes";

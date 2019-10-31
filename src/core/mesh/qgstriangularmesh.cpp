@@ -92,6 +92,27 @@ void QgsTriangularMesh::triangulate( const QgsMeshFace &face, int nativeIndex )
   mTrianglesToNativeFaces.push_back( nativeIndex );
 }
 
+void QgsTriangularMesh::setCCW( QgsMeshFace &face )
+{
+  if ( face.size() != 3 )
+    return;
+
+  const QgsMeshVertex &v0 = mTriangularMesh.vertex( face[0] );
+  const QgsMeshVertex &v1 = mTriangularMesh.vertex( face[1] );
+  const QgsMeshVertex &v2 = mTriangularMesh.vertex( face[2] );
+
+  double ux = v1.x() - v0.x();
+  double uy = v1.y() - v0.y();
+  double vx = v2.x() - v0.x();
+  double vy = v2.y() - v0.y();
+
+  double crossProduct = ux * vy - uy * vx;
+  if ( crossProduct < 0 ) //CW -->change the orientation
+  {
+    std::swap( face[1], face[2] );
+  }
+}
+
 QgsTriangularMesh::~QgsTriangularMesh() = default;
 QgsTriangularMesh::QgsTriangularMesh() = default;
 
@@ -170,6 +191,12 @@ void QgsTriangularMesh::update( QgsMesh *nativeMesh, QgsRenderContext *context )
 
   // CALCULATE SPATIAL INDEX
   mSpatialIndex = QgsMeshSpatialIndex( mTriangularMesh );
+
+  // SET ALL TRIANGLE CCW
+  for ( int i = 0; i < mTriangularMesh.faceCount(); ++i )
+  {
+    setCCW( mTriangularMesh.faces[i] );
+  }
 }
 
 const QVector<QgsMeshVertex> &QgsTriangularMesh::vertices() const
