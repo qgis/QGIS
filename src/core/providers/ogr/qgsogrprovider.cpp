@@ -89,16 +89,20 @@ static OGRwkbGeometryType ogrWkbGeometryTypeFromName( const QString &typeName );
 
 static bool IsLocalFile( const QString &path );
 
-QMutex QgsOgrProviderUtils::sGlobalMutex( QMutex::Recursive );
+Q_GLOBAL_STATIC_WITH_ARGS( QMutex, sGlobalMutex, ( QMutex::Recursive ) )
+
+//! Map a dataset name to the number of opened GDAL dataset objects on it (if opened with GDALOpenWrapper, only for GPKG)
+typedef QMap< QString, int > OpenedDsCountMap;
+Q_GLOBAL_STATIC( OpenedDsCountMap, sMapCountOpenedDS )
 
 QMap< QgsOgrProviderUtils::DatasetIdentification,
       QList<QgsOgrProviderUtils::DatasetWithLayers *> > QgsOgrProviderUtils::sMapSharedDS;
 
-QMap< QString, int > QgsOgrProviderUtils::sMapCountOpenedDS;
+typedef QHash< GDALDatasetH, bool> DsHandleToUpdateModeHash;
+Q_GLOBAL_STATIC( DsHandleToUpdateModeHash, sMapDSHandleToUpdateMode )
 
-QHash< GDALDatasetH, bool> QgsOgrProviderUtils::sMapDSHandleToUpdateMode;
-
-QMap< QString, QDateTime > QgsOgrProviderUtils::sMapDSNameToLastModifiedDate;
+typedef QMap< QString, QDateTime > DsNameToLastModifiedDateMap;
+Q_GLOBAL_STATIC( DsNameToLastModifiedDateMap, sMapDSNameToLastModifiedDate )
 
 bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
 {
@@ -3972,9 +3976,9 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
   GDALDriverH hDrv = GDALGetDatasetDriver( hDS );
   if ( bIsLocalGpkg && strcmp( GDALGetDriverShortName( hDrv ), "GPKG" ) == 0 )
   {
-    QMutexLocker locker( &sGlobalMutex );
-    sMapCountOpenedDS[ filePath ]++;
-    sMapDSHandleToUpdateMode[ hDS ] = bUpdate;
+    QMutexLocker locker( sGlobalMutex() );
+    ( *sMapCountOpenedDS() )[ filePath ]++;
+    ( *sMapDSHandleToUpdateMode() )[ hDS ] = bUpdate;
   }
   if ( phDriver )
     *phDriver = hDrv;
@@ -4034,15 +4038,15 @@ void QgsOgrProviderUtils::GDALCloseWrapper( GDALDatasetH hDS )
     bool openedAsUpdate = false;
     bool tryReturnToWall = false;
     {
-      QMutexLocker locker( &sGlobalMutex );
-      sMapCountOpenedDS[ datasetName ] --;
-      if ( sMapCountOpenedDS[ datasetName ] == 0 )
+      QMutexLocker locker( sGlobalMutex() );
+      ( *sMapCountOpenedDS() )[ datasetName ] --;
+      if ( ( *sMapCountOpenedDS() )[ datasetName ] == 0 )
       {
-        sMapCountOpenedDS.remove( datasetName );
-        openedAsUpdate = sMapDSHandleToUpdateMode[hDS];
+        sMapCountOpenedDS()->remove( datasetName );
+        openedAsUpdate = ( *sMapDSHandleToUpdateMode() )[hDS];
         tryReturnToWall = true;
       }
-      sMapDSHandleToUpdateMode.remove( hDS );
+      sMapDSHandleToUpdateMode()->remove( hDS );
     }
     if ( tryReturnToWall )
     {
@@ -4708,7 +4712,7 @@ static GDALDatasetH OpenHelper( const QString &dsName,
 
 void QgsOgrProviderUtils::invalidateCachedDatasets( const QString &dsName )
 {
-  QMutexLocker locker( &sGlobalMutex );
+  QMutexLocker locker( sGlobalMutex() );
   while ( true )
   {
     bool erased = false;
@@ -4729,7 +4733,7 @@ void QgsOgrProviderUtils::invalidateCachedDatasets( const QString &dsName )
 
 QgsOgrDatasetSharedPtr QgsOgrProviderUtils::getAlreadyOpenedDataset( const QString &dsName )
 {
-  QMutexLocker locker( &sGlobalMutex );
+  QMutexLocker locker( sGlobalMutex() );
   for ( auto iter = sMapSharedDS.begin(); iter != sMapSharedDS.end(); ++iter )
   {
     auto ident = iter.key();
@@ -4753,7 +4757,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
     int layerIndex,
     QString &errCause )
 {
-  QMutexLocker locker( &sGlobalMutex );
+  QMutexLocker locker( sGlobalMutex() );
   for ( auto iter = sMapSharedDS.begin(); iter != sMapSharedDS.end(); ++iter )
   {
     if ( iter.key().dsName == dsName )
@@ -4799,7 +4803,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
     QString &errCause,
     bool checkModificationDateAgainstCache )
 {
-  QMutexLocker locker( &sGlobalMutex );
+  QMutexLocker locker( sGlobalMutex() );
 
   // The idea is that we want to minimize the number of GDALDatasetH
   // handles openeded. But we have constraints. We do not want that 2
@@ -4887,7 +4891,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
     const QString &layerName,
     QString &errCause )
 {
-  QMutexLocker locker( &sGlobalMutex );
+  QMutexLocker locker( sGlobalMutex() );
 
   for ( auto iter = sMapSharedDS.begin(); iter != sMapSharedDS.end(); ++iter )
   {
@@ -4947,10 +4951,10 @@ static QDateTime getLastModified( const QString &dsName )
 // decrement the cache modified date, so that the file appears newer to it
 void QgsOgrProviderUtils::invalidateCachedLastModifiedDate( const QString &dsName )
 {
-  QMutexLocker locker( &sGlobalMutex );
+  QMutexLocker locker( sGlobalMutex() );
 
-  auto iter = sMapDSNameToLastModifiedDate.find( dsName );
-  if ( iter != sMapDSNameToLastModifiedDate.end() )
+  auto iter = sMapDSNameToLastModifiedDate()->find( dsName );
+  if ( iter != sMapDSNameToLastModifiedDate()->end() )
   {
     QgsDebugMsg( QStringLiteral( "invalidating last modified date for %1" ).arg( dsName ) );
     iter.value() = iter.value().addSecs( -10 );
@@ -5259,8 +5263,8 @@ QString QgsOgrProviderUtils::expandAuthConfig( const QString &dsName )
 // Must be called under the globalMutex
 bool QgsOgrProviderUtils::canUseOpenedDatasets( const QString &dsName )
 {
-  auto iter = sMapDSNameToLastModifiedDate.find( dsName );
-  if ( iter == sMapDSNameToLastModifiedDate.end() )
+  auto iter = sMapDSNameToLastModifiedDate()->find( dsName );
+  if ( iter == sMapDSNameToLastModifiedDate()->end() )
     return true;
   return getLastModified( dsName ) <= iter.value();
 }
@@ -5280,7 +5284,7 @@ QgsOgrProviderUtils::DatasetWithLayers *QgsOgrProviderUtils::createDatasetWithLa
     errCause = QObject::tr( "Cannot open %1." ).arg( dsName );
     return nullptr;
   }
-  sMapDSNameToLastModifiedDate[dsName] = getLastModified( dsName );
+  ( *sMapDSNameToLastModifiedDate() )[dsName] = getLastModified( dsName );
 
   OGRLayerH hLayer = GDALDatasetGetLayerByName(
                        hDS, layerName.toUtf8().constData() );
@@ -5312,7 +5316,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
     QString &errCause,
     bool checkModificationDateAgainstCache )
 {
-  QMutexLocker locker( &sGlobalMutex );
+  QMutexLocker locker( sGlobalMutex() );
 
   // The idea is that we want to minimize the number of GDALDatasetH
   // handles openeded. But we have constraints. We do not want that 2
@@ -5454,7 +5458,7 @@ void QgsOgrProviderUtils::release( QgsOgrLayer *&layer )
   if ( !layer )
     return;
 
-  QMutexLocker locker( &sGlobalMutex );
+  QMutexLocker locker( sGlobalMutex() );
 
   if ( !layer->isSqlLayer )
   {
@@ -5478,7 +5482,7 @@ void QgsOgrProviderUtils::releaseDataset( QgsOgrDataset *&ds )
   if ( !ds )
     return;
 
-  QMutexLocker locker( &sGlobalMutex );
+  QMutexLocker locker( sGlobalMutex() );
   releaseInternal( ds->mIdent, ds->mDs, true );
   delete ds;
   ds = nullptr;

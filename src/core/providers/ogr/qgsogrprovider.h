@@ -378,20 +378,8 @@ class CORE_EXPORT QgsOgrProviderUtils
         DatasetWithLayers(): mutex( QMutex::Recursive ) {}
     };
 
-    //! Global mutex for QgsOgrProviderUtils
-    static QMutex sGlobalMutex;
-
     //! Map dataset identification to a list of corresponding DatasetWithLayers*
     static QMap< DatasetIdentification, QList<DatasetWithLayers *> > sMapSharedDS;
-
-    //! Map a dataset name to the number of opened GDAL dataset objects on it (if opened with GDALOpenWrapper, only for GPKG)
-    static QMap< QString, int > sMapCountOpenedDS;
-
-    //! Map a dataset handle to its update open mode (if opened with GDALOpenWrapper, only for GPKG)
-    static QHash< GDALDatasetH, bool> sMapDSHandleToUpdateMode;
-
-    //! Map a dataset name to its last modified data
-    static QMap< QString, QDateTime > sMapDSNameToLastModifiedDate;
 
     static bool canUseOpenedDatasets( const QString &dsName );
 
