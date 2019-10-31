@@ -623,80 +623,6 @@ class CORE_EXPORT QgsExpression
   private:
     void initGeomCalculator( const QgsExpressionContext *context );
 
-    struct HelpArg SIP_SKIP
-    {
-      HelpArg( const QString &arg, const QString &desc, bool descOnly = false, bool syntaxOnly = false,
-               bool optional = false, const QString &defaultVal = QString() )
-        : mArg( arg )
-        , mDescription( desc )
-        , mDescOnly( descOnly )
-        , mSyntaxOnly( syntaxOnly )
-        , mOptional( optional )
-        , mDefaultVal( defaultVal )
-      {}
-
-      QString mArg;
-      QString mDescription;
-      bool mDescOnly;
-      bool mSyntaxOnly;
-      bool mOptional;
-      QString mDefaultVal;
-    };
-
-    struct HelpExample SIP_SKIP
-    {
-      HelpExample( const QString &expression, const QString &returns, const QString &note = QString() )
-        : mExpression( expression )
-        , mReturns( returns )
-        , mNote( note )
-      {}
-
-      QString mExpression;
-      QString mReturns;
-      QString mNote;
-    };
-
-    struct HelpVariant SIP_SKIP
-    {
-      HelpVariant( const QString &name, const QString &description,
-                   const QList<QgsExpression::HelpArg> &arguments = QList<QgsExpression::HelpArg>(),
-                   bool variableLenArguments = false,
-                   const QList<QgsExpression::HelpExample> &examples = QList<QgsExpression::HelpExample>(),
-                   const QString &notes = QString() )
-        : mName( name )
-        , mDescription( description )
-        , mArguments( arguments )
-        , mVariableLenArguments( variableLenArguments )
-        , mExamples( examples )
-        , mNotes( notes )
-      {}
-
-      QString mName;
-      QString mDescription;
-      QList<QgsExpression::HelpArg> mArguments;
-      bool mVariableLenArguments;
-      QList<QgsExpression::HelpExample> mExamples;
-      QString mNotes;
-    };
-
-    struct Help SIP_SKIP
-    {
-      //! Constructor for expression help
-      Help() = default;
-
-      Help( const QString &name, const QString &type, const QString &description, const QList<QgsExpression::HelpVariant> &variants )
-        : mName( name )
-        , mType( type )
-        , mDescription( description )
-        , mVariants( variants )
-      {}
-
-      QString mName;
-      QString mType;
-      QString mDescription;
-      QList<QgsExpression::HelpVariant> mVariants;
-    };
-
     /**
      * Helper for implicit sharing. When called will create
      * a new deep copy of this expression.
@@ -706,10 +632,6 @@ class CORE_EXPORT QgsExpression
     void detach() SIP_SKIP;
 
     QgsExpressionPrivate *d = nullptr;
-
-    static QHash<QString, Help> sFunctionHelpTexts;
-    static QHash<QString, QString> sVariableHelpTexts;
-    static QHash<QString, QString> sGroups;
 
     //! \note not available in Python bindings
     static void initFunctionHelp() SIP_SKIP;
