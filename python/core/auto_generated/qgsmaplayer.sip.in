@@ -1538,7 +1538,7 @@ Emitted whenever the layer's data source has been changed.
 .. versionadded:: 3.5
 %End
 
-    void styleLoaded( const QgsMapLayer::StyleCategories &categories );
+    void styleLoaded( QgsMapLayer::StyleCategories categories );
 %Docstring
 Emitted when a style has been loaded
 
