@@ -60,9 +60,9 @@ QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WindowFlags fl )
   // Setup ignore button
   mIgnoreButton->setToolTip( tr( "All requests for this connection will be automatically rejected" ) );
   QMenu *menu = new QMenu( mIgnoreButton );
-  QAction *ignoreTemporarily = new QAction( tr( "Ignore for 10 seconds" ), menu );
+  QAction *ignoreTemporarily = new QAction( tr( "Ignore for 10 Seconds" ), menu );
   ignoreTemporarily->setToolTip( tr( "All requests for this connection will be automatically rejected for 10 seconds" ) );
-  QAction *ignoreForSession = new QAction( tr( "Ignore for session" ), menu );
+  QAction *ignoreForSession = new QAction( tr( "Ignore for Session" ), menu );
   ignoreForSession->setToolTip( tr( "All requests for this connection will be automatically rejected for the duration of the current session" ) );
   menu->addAction( ignoreTemporarily );
   menu->addAction( ignoreForSession );
