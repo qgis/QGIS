@@ -98,7 +98,7 @@ class CORE_EXPORT QgsDxfExport
     /**
      * The result of an export as dxf operation
      *
-     * \since QGIS 3.12
+     * \since QGIS 3.10.1
      */
     enum class ExportResult
     {
