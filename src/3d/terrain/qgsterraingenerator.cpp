@@ -64,6 +64,8 @@ QString QgsTerrainGenerator::typeToString( QgsTerrainGenerator::Type type )
       return QStringLiteral( "flat" );
     case QgsTerrainGenerator::Dem:
       return QStringLiteral( "dem" );
+    case QgsTerrainGenerator::Tin:
+      return QStringLiteral( "Tin" );
     case QgsTerrainGenerator::Online:
       return QStringLiteral( "online" );
   }
