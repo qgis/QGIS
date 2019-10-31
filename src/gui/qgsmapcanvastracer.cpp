@@ -26,12 +26,17 @@
 
 #include <QAction>
 
+#include <QGlobalStatic>
+
+typedef QHash<QgsMapCanvas *, QgsMapCanvasTracer *> TracerCanvasHash;
+Q_GLOBAL_STATIC( TracerCanvasHash, sTracers );
+
 QgsMapCanvasTracer::QgsMapCanvasTracer( QgsMapCanvas *canvas, QgsMessageBar *messageBar )
   : mCanvas( canvas )
   , mMessageBar( messageBar )
 
 {
-  canvas->setProperty( "mapCanvasTracer", QVariant::fromValue( this ) );
+  sTracers()->insert( canvas, this );
 
   // when things change we just invalidate the graph - and set up new parameters again only when necessary
   connect( canvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapCanvasTracer::invalidateGraph );
@@ -49,13 +54,12 @@ QgsMapCanvasTracer::QgsMapCanvasTracer( QgsMapCanvas *canvas, QgsMessageBar *mes
 
 QgsMapCanvasTracer::~QgsMapCanvasTracer()
 {
-  if ( mCanvas )
-    mCanvas->setProperty( "mapCanvasTracer", QVariant() );
+  sTracers->remove( mCanvas );
 }
 
 QgsMapCanvasTracer *QgsMapCanvasTracer::tracerForCanvas( QgsMapCanvas *canvas )
 {
-  return canvas->property( "mapCanvasTracer" ).value<QgsMapCanvasTracer *>();
+  return sTracers->value( canvas, nullptr );
 }
 
 void QgsMapCanvasTracer::reportError( QgsTracer::PathError err, bool addingVertex )
