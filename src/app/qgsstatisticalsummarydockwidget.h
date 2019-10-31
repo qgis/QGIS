@@ -114,9 +114,6 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private
     QgsVectorLayer *mLayer = nullptr;
 
     QMap< int, QAction * > mStatsActions;
-    static QList< QgsStatisticalSummary::Statistic > sDisplayStats;
-    static QList< QgsStringStatisticalSummary::Statistic > sDisplayStringStats;
-    static QList< QgsDateTimeStatisticalSummary::Statistic > sDisplayDateTimeStats;
 
     void updateNumericStatistics();
     void updateStringStatistics();
