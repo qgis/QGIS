@@ -1042,12 +1042,14 @@ if the geometry type of the new data source matches the current geometry type of
     virtual QString loadDefaultStyle( bool &resultFlag /Out/ ) ${SIP_FINAL};
 
 
-    QgsVectorLayerFeatureCounter *countSymbolFeatures();
+    QgsVectorLayerFeatureCounter *countSymbolFeatures( bool storeSymbolFids = false );
 %Docstring
 Count features for symbols.
 The method will return the feature counter task. You will need to
 connect to the symbolFeatureCountMapChanged() signal to be
 notified when the freshly updated feature counts are ready.
+
+:param storeSymbolFids: If ``True`` will gather the feature ids (fids) per symbol, otherwise only the count. Default ``False``.
 
 .. note::
 
