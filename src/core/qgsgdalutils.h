@@ -46,19 +46,19 @@ class CORE_EXPORT QgsGdalUtils
      * Creates a new single band memory dataset with given parameters
      * \since QGIS 3.8
      */
-    static gdal::dataset_unique_ptr createSingleBandMemoryDataset( GDALDataType dataType, QgsRectangle extent, int width, int height, const QgsCoordinateReferenceSystem &crs );
+    static gdal::dataset_unique_ptr createSingleBandMemoryDataset( GDALDataType dataType, const QgsRectangle &extent, int width, int height, const QgsCoordinateReferenceSystem &crs );
 
     /**
      * Creates a new multi band memory dataset with given parameters
      * \since QGIS 3.12
      */
-    static gdal::dataset_unique_ptr createMultiBandMemoryDataset( GDALDataType dataType, int bands, QgsRectangle extent, int width, int height, const QgsCoordinateReferenceSystem &crs );
+    static gdal::dataset_unique_ptr createMultiBandMemoryDataset( GDALDataType dataType, int bands, const QgsRectangle &extent, int width, int height, const QgsCoordinateReferenceSystem &crs );
 
     /**
      * Creates a new single band TIFF dataset with given parameters
      * \since QGIS 3.8
      */
-    static gdal::dataset_unique_ptr createSingleBandTiffDataset( QString filename, GDALDataType dataType, QgsRectangle extent, int width, int height, const QgsCoordinateReferenceSystem &crs );
+    static gdal::dataset_unique_ptr createSingleBandTiffDataset( const QString &filename, GDALDataType dataType, const QgsRectangle &extent, int width, int height, const QgsCoordinateReferenceSystem &crs );
 
     /**
      * Resamples a single band raster to the destination dataset with different resolution (and possibly with different CRS).
@@ -83,7 +83,7 @@ class CORE_EXPORT QgsGdalUtils
      * Validates creation options for a given format, regardless of layer.
      * \since QGIS 3.10
      */
-    static QString validateCreationOptionsFormat( const QStringList &createOptions, QString format );
+    static QString validateCreationOptionsFormat( const QStringList &createOptions, const QString &format );
 
     /**
      * Helper function
