@@ -788,6 +788,10 @@ class TestQgsExpression: public QObject
       QTest::newRow( "Y coordinate to degree minute second" ) << "to_dms(6.3545681,'y',2)" << false << QVariant( "6°21′16.45″" );
 
       // geometry functions
+      QTest::newRow( "geom_to_wkb" ) << "geom_to_wkt(geom_from_wkb(geom_to_wkb(make_point(4,5))))" << false << QVariant( "Point (4 5)" );
+      QTest::newRow( "geom_to_wkb not geom" ) << "geom_to_wkt(geom_from_wkb(geom_to_wkb('a')))" << true << QVariant();
+      QTest::newRow( "geom_from_wkb not geom" ) << "geom_to_wkt(geom_from_wkb(make_point(4,5)))" << true << QVariant();
+      QTest::newRow( "geom_from_wkb null" ) << "geom_to_wkt(geom_from_wkb(NULL))" << false << QVariant();
       QTest::newRow( "num_points" ) << "num_points(geom_from_wkt('GEOMETRYCOLLECTION(LINESTRING(0 0, 1 0),POINT(6 5))'))" << false << QVariant( 3 );
       QTest::newRow( "num_interior_rings not geom" ) << "num_interior_rings('g')" << true << QVariant();
       QTest::newRow( "num_interior_rings null" ) << "num_interior_rings(NULL)" << false << QVariant();

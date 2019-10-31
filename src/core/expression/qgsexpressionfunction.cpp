@@ -2807,6 +2807,7 @@ static QVariant fcnGeometry( const QVariantList &, const QgsExpressionContext *c
   else
     return QVariant( QVariant::UserType );
 }
+
 static QVariant fcnGeomFromWKT( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QString wkt = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
@@ -2814,6 +2815,18 @@ static QVariant fcnGeomFromWKT( const QVariantList &values, const QgsExpressionC
   QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
+
+static QVariant fcnGeomFromWKB( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QByteArray wkb = QgsExpressionUtils::getBinaryValue( values.at( 0 ), parent );
+  if ( wkb.isNull() )
+    return QVariant();
+
+  QgsGeometry geom;
+  geom.fromWkb( wkb );
+  return !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
+}
+
 static QVariant fcnGeomFromGML( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QString gml = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
@@ -3443,6 +3456,7 @@ static QVariant fcnCombine( const QVariantList &values, const QgsExpressionConte
   QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
+
 static QVariant fcnGeomToWKT( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   if ( values.length() < 1 || values.length() > 2 )
@@ -3454,6 +3468,12 @@ static QVariant fcnGeomToWKT( const QVariantList &values, const QgsExpressionCon
     prec = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
   QString wkt = fGeom.asWkt( prec );
   return QVariant( wkt );
+}
+
+static QVariant fcnGeomToWKB( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  return fGeom.isNull() ? QVariant() : QVariant( fGeom.asWkb() );
 }
 
 static QVariant fcnAzimuth( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -5479,6 +5499,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "y_min" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geom" ) ), fcnYMin, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "ymin" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "y_max" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geom" ) ), fcnYMax, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "ymax" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "geom_from_wkt" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "text" ) ), fcnGeomFromWKT, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "geomFromWKT" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "geom_from_wkb" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "binary" ) ), fcnGeomFromWKB, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false )
         << new QgsStaticExpressionFunction( QStringLiteral( "geom_from_gml" ),  QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "gml" ) ), fcnGeomFromGML, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "geomFromGML" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "flip_coordinates" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geom" ) ), fcnFlipCoordinates, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "relate" ), -1, fcnRelate, QStringLiteral( "GeometryGroup" ) )
@@ -5598,6 +5619,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "geometry2" ) ),
                                             fcnCombine, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "geom_to_wkt" ), -1, fcnGeomToWKT, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "geomToWKT" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "geom_to_wkb" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnGeomToWKB, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false )
         << new QgsStaticExpressionFunction( QStringLiteral( "geometry" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "feature" ) ), fcnGetGeometry, QStringLiteral( "GeometryGroup" ), QString(), true )
         << new QgsStaticExpressionFunction( QStringLiteral( "transform" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geom" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "source_auth_id" ) )
