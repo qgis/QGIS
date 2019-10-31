@@ -17,11 +17,12 @@
 #include "qgsvectorlayer.h"
 #include "qgsfeatureid.h"
 
-QgsVectorLayerFeatureCounter::QgsVectorLayerFeatureCounter( QgsVectorLayer *layer, const QgsExpressionContext &context )
+QgsVectorLayerFeatureCounter::QgsVectorLayerFeatureCounter( QgsVectorLayer *layer, const QgsExpressionContext &context, bool storeSymbolFids )
   : QgsTask( tr( "Counting features in %1" ).arg( layer->name() ), QgsTask::CanCancel )
   , mSource( new QgsVectorLayerFeatureSource( layer ) )
   , mRenderer( layer->renderer()->clone() )
   , mExpressionContext( context )
+  , mWithFids( storeSymbolFids )
   , mFeatureCount( layer->featureCount() )
 {
   if ( !mExpressionContext.scopeCount() )
@@ -40,7 +41,8 @@ bool QgsVectorLayerFeatureCounter::run()
   for ( ; symbolIt != symbolList.constEnd(); ++symbolIt )
   {
     mSymbolFeatureCountMap.insert( symbolIt->label(), 0 );
-    mSymbolFeatureIdMap.insert( symbolIt->label(), QgsFeatureIds() );
+    if ( mWithFids )
+      mSymbolFeatureIdMap.insert( symbolIt->label(), QgsFeatureIds() );
   }
 
   // If there are no features to be counted, we can spare us the trouble
@@ -74,7 +76,8 @@ bool QgsVectorLayerFeatureCounter::run()
       for ( const QString &key : featureKeyList )
       {
         mSymbolFeatureCountMap[key] += 1;
-        mSymbolFeatureIdMap[key].insert( f.id() );
+        if ( mWithFids )
+          mSymbolFeatureIdMap[key].insert( f.id() );
       }
       ++featuresCounted;
 

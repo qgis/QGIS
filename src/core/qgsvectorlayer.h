@@ -1082,13 +1082,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * connect to the symbolFeatureCountMapChanged() signal to be
      * notified when the freshly updated feature counts are ready.
      *
+     * \param storeSymbolFids If TRUE will gather the feature ids (fids) per symbol, otherwise only the count. Default FALSE.
      * \note If the count features for symbols has been already done a
      *       NULLPTR is returned. If you need to wait for the results,
      *       you can call waitForFinished() on the feature counter.
      *
      * \since This is asynchronous since QGIS 3.0
      */
-    QgsVectorLayerFeatureCounter *countSymbolFeatures();
+    QgsVectorLayerFeatureCounter *countSymbolFeatures( bool storeSymbolFids = false );
 
     /**
      * Sets the string (typically sql) used to define a subset of the layer
