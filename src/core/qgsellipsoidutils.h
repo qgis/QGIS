@@ -102,15 +102,6 @@ class CORE_EXPORT QgsEllipsoidUtils
      */
     static void invalidateCache( bool disableCache = false );
 #endif
-
-  private:
-
-    // ellipsoid cache
-    static QReadWriteLock sEllipsoidCacheLock;
-    static QHash< QString, EllipsoidParameters > sEllipsoidCache;
-    static QReadWriteLock sDefinitionCacheLock;
-    static QList< QgsEllipsoidUtils::EllipsoidDefinition > sDefinitionCache;
-
 };
 
 #endif // QGSELLIPSOIDUTILS_H
