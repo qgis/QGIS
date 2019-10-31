@@ -52,9 +52,9 @@ QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WindowFlags fl )
            Qt::BlockingQueuedConnection );
   mOkButton = buttonBox->button( QDialogButtonBox::Ok );
   QPushButton *ignoreButton { buttonBox->button( QDialogButtonBox::StandardButton::Ignore ) };
-  ignoreButton->setToolTip( tr( "All requests for this connection will be automatically rejected for the next 5 seconds." ) );
+  ignoreButton->setToolTip( tr( "All requests for this connection will be automatically rejected for the next 60 seconds." ) );
 
-  // Keep a cache of ignored connections, and ignore them for 5 seconds.
+  // Keep a cache of ignored connections, and ignore them for 60 seconds.
   connect( ignoreButton, &QPushButton::clicked, [ = ]( bool )
   {
     const QString realm { labelRealm->text() };
@@ -63,7 +63,7 @@ QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WindowFlags fl )
       // Insert the realm in the cache of ignored connections
       sIgnoredConnectionsCache.insert( realm );
     }
-    QTimer::singleShot( 5000, [ = ]()
+    QTimer::singleShot( 60000, [ = ]()
     {
       QgsDebugMsgLevel( QStringLiteral( "Removing ignored connection from cache: %1" ).arg( realm ), 4 );
       QMutexLocker locker( &sIgnoredConnectionsCacheMutex );
