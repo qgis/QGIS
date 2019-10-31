@@ -41,7 +41,7 @@ class CORE_EXPORT QgsCubicRasterResampler: public QgsRasterResamplerV2
 
     QImage resampleV2( const QImage &source, const QSize &size ) override;
 
-    void resample( const QImage &srcImage, QImage &dstImage ) override;
+    Q_DECL_DEPRECATED void resample( const QImage &srcImage, QImage &dstImage ) override SIP_DEPRECATED;
 
     QString type() const override;
 
