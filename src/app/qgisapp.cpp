@@ -661,7 +661,7 @@ void QgisApp::onActiveLayerChanged( QgsMapLayer *layer )
   emit activeLayerChanged( layer );
 }
 
-void QgisApp::vectorLayerStyleLoaded( const QgsMapLayer::StyleCategories &categories )
+void QgisApp::vectorLayerStyleLoaded( QgsMapLayer::StyleCategories categories )
 {
   if ( categories.testFlag( QgsMapLayer::StyleCategory::Forms ) )
   {
