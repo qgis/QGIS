@@ -23,13 +23,13 @@
 #include "qgssettings.h"
 #include "qgslogger.h"
 
-QString QgsSettings::sGlobalSettingsPath = QString();
+Q_GLOBAL_STATIC( QString, sGlobalSettingsPath )
 
 bool QgsSettings::setGlobalSettingsPath( const QString &path )
 {
   if ( QFileInfo::exists( path ) )
   {
-    sGlobalSettingsPath = path;
+    *sGlobalSettingsPath() = path;
     return true;
   }
   return false;
@@ -37,9 +37,9 @@ bool QgsSettings::setGlobalSettingsPath( const QString &path )
 
 void QgsSettings::init()
 {
-  if ( ! sGlobalSettingsPath.isEmpty() )
+  if ( ! sGlobalSettingsPath()->isEmpty() )
   {
-    mGlobalSettings = new QSettings( sGlobalSettingsPath, QSettings::IniFormat );
+    mGlobalSettings = new QSettings( *sGlobalSettingsPath(), QSettings::IniFormat );
     mGlobalSettings->setIniCodec( "UTF-8" );
   }
 }
@@ -164,6 +164,11 @@ QStringList QgsSettings::globalChildGroups() const
     keys = mGlobalSettings->childGroups();
   }
   return keys;
+}
+
+QString QgsSettings::globalSettingsPath()
+{
+  return *sGlobalSettingsPath();
 }
 
 QVariant QgsSettings::value( const QString &key, const QVariant &defaultValue, const QgsSettings::Section section ) const
