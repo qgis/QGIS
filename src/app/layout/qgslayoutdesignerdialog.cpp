@@ -98,9 +98,11 @@
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
 #endif
-
+#include <QGlobalStatic>
 //add some nice zoom levels for zoom comboboxes
-QList<double> QgsLayoutDesignerDialog::sStatusZoomLevelsList { 0.125, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0};
+typedef QList<double> DoubleList;
+Q_GLOBAL_STATIC_WITH_ARGS( DoubleList, sStatusZoomLevelsList, ( { 0.125, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0} ) )
+
 #define FIT_LAYOUT -101
 #define FIT_LAYOUT_WIDTH -102
 
@@ -717,8 +719,8 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   QValidator *zoomValidator = new QRegularExpressionValidator( zoomRx, mStatusZoomCombo );
   mStatusZoomCombo->lineEdit()->setValidator( zoomValidator );
 
-  const auto constSStatusZoomLevelsList = sStatusZoomLevelsList;
-  for ( double level : constSStatusZoomLevelsList )
+  const auto statusZoomLevelsList = *sStatusZoomLevelsList();
+  for ( double level : statusZoomLevelsList )
   {
     mStatusZoomCombo->insertItem( 0, tr( "%1%" ).arg( level * 100.0, 0, 'f', 1 ), level );
   }
