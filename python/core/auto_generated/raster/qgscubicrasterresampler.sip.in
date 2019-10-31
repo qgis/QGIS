@@ -31,7 +31,7 @@ Constructor for QgsCubicRasterResampler.
     virtual QImage resampleV2( const QImage &source, const QSize &size );
 
 
-    virtual void resample( const QImage &srcImage, QImage &dstImage );
+ virtual void resample( const QImage &srcImage, QImage &dstImage ) /Deprecated/;
 
 
     virtual QString type() const;
