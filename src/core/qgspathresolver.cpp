@@ -21,7 +21,8 @@
 #include <QUrl>
 #include <QUuid>
 
-std::vector< std::pair< QString, std::function< QString( const QString & ) > > > QgsPathResolver::sCustomResolvers;
+typedef std::vector< std::pair< QString, std::function< QString( const QString & ) > > > CustomResolvers;
+Q_GLOBAL_STATIC( CustomResolvers, sCustomResolvers )
 
 QgsPathResolver::QgsPathResolver( const QString &baseFileName )
   : mBaseFileName( baseFileName )
@@ -33,7 +34,8 @@ QString QgsPathResolver::readPath( const QString &f ) const
 {
   QString filename = f;
 
-  for ( const auto &resolver :  sCustomResolvers )
+  const CustomResolvers customResolvers = *sCustomResolvers();
+  for ( const auto &resolver : customResolvers )
     filename = resolver.second( filename );
 
   if ( filename.isEmpty() )
@@ -157,18 +159,18 @@ QString QgsPathResolver::readPath( const QString &f ) const
 QString QgsPathResolver::setPathPreprocessor( const std::function<QString( const QString & )> &processor )
 {
   QString id = QUuid::createUuid().toString();
-  sCustomResolvers.emplace_back( std::make_pair( id, processor ) );
+  sCustomResolvers()->emplace_back( std::make_pair( id, processor ) );
   return id;
 }
 
 bool QgsPathResolver::removePathPreprocessor( const QString &id )
 {
-  const size_t prevCount = sCustomResolvers.size();
-  sCustomResolvers.erase( std::remove_if( sCustomResolvers.begin(), sCustomResolvers.end(), [id]( std::pair< QString, std::function< QString( const QString & ) > > &a )
+  const size_t prevCount = sCustomResolvers()->size();
+  sCustomResolvers()->erase( std::remove_if( sCustomResolvers()->begin(), sCustomResolvers()->end(), [id]( std::pair< QString, std::function< QString( const QString & ) > > &a )
   {
     return a.first == id;
-  } ), sCustomResolvers.end() );
-  return prevCount != sCustomResolvers.size();
+  } ), sCustomResolvers()->end() );
+  return prevCount != sCustomResolvers()->size();
 }
 
 QString QgsPathResolver::writePath( const QString &src ) const

@@ -174,8 +174,6 @@ class CORE_EXPORT QgsPathResolver
   private:
     //! path to a file that is the base for relative path resolution
     QString mBaseFileName;
-
-    static std::vector< std::pair< QString, std::function< QString( const QString & ) > > > sCustomResolvers;
 };
 
 #endif // QGSPATHRESOLVER_H
