@@ -1706,7 +1706,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \param categories style categories
      * \since QGIS 3.12
      */
-    void vectorLayerStyleLoaded( const QgsMapLayer::StyleCategories &categories );
+    void vectorLayerStyleLoaded( const QgsMapLayer::StyleCategories categories );
 
   signals:
 
