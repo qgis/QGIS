@@ -2031,7 +2031,7 @@ void QgisApp::checkVectorLayerDependencies( QgsVectorLayer *vl )
             }
 
             // Helper to find layers in connections
-            auto layerFinder = [ &conn, &dependency, &providerName, this ]( const QString & tableSchema, const QString & tableName ) -> bool
+            auto layerFinder = [ &conn, &dependency, &providerName ]( const QString & tableSchema, const QString & tableName ) -> bool
             {
               // First try the current schema (or no schema if it's not supported from the provider)
               try
