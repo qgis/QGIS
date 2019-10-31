@@ -143,9 +143,6 @@ class APP_EXPORT QgsCustomization : public QObject
     // Loads and sets default customization
     void loadDefault();
 
-    // Internal Qt widget which has to be skipped in paths
-    static QStringList sInternalWidgets;
-
     QString statusPath() const { return mStatusPath; }
 
   public slots:

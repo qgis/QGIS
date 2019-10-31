@@ -39,6 +39,8 @@
 #include <QMetaObject>
 #include <QSettings>
 
+Q_GLOBAL_STATIC_WITH_ARGS( QStringList, sInternalWidgets, ( { QLatin1String( "qt_tabwidget_stackedwidget" ), QLatin1String( "qt_tabwidget_tabbar" ) } ) )
+
 #ifdef Q_OS_MACX
 QgsCustomizationDialog::QgsCustomizationDialog( QWidget *parent, QSettings *settings )
   : QMainWindow( parent, Qt::WindowSystemMenuHint )  // Modeless dialog with close button only
@@ -501,7 +503,7 @@ QString QgsCustomizationDialog::widgetPath( QWidget *widget, const QString &path
 
   QString pathCopy = path;
 
-  if ( !QgsCustomization::sInternalWidgets.contains( name ) )
+  if ( !sInternalWidgets()->contains( name ) )
   {
     if ( !pathCopy.isEmpty() )
     {
@@ -685,8 +687,6 @@ void QgsCustomization::createTreeItemStatus()
 
   mMainWindowItems << topItem;
 }
-
-QStringList QgsCustomization::sInternalWidgets = QStringList() <<  QStringLiteral( "qt_tabwidget_stackedwidget" ) << QStringLiteral( "qt_tabwidget_tabbar" );
 
 QgsCustomization *QgsCustomization::sInstance = nullptr;
 QgsCustomization *QgsCustomization::instance()
@@ -906,7 +906,7 @@ void QgsCustomization::customizeWidget( const QString &path, QWidget *widget, QS
   // qt_tabwidget_stackedwidget, such widgets do not appear in the tree generated
   // from ui files and do not have sense from user point of view -> skip
 
-  if ( !QgsCustomization::sInternalWidgets.contains( name ) )
+  if ( !sInternalWidgets()->contains( name ) )
   {
     myPath = path + '/' + name;
   }
