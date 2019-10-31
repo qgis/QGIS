@@ -2041,7 +2041,6 @@ void QgisApp::checkVectorLayerDependencies( QgsVectorLayer *vl )
                 std::unique_ptr< QgsVectorLayer > newVl = qgis::make_unique< QgsVectorLayer >( layerUri, dependency.name, providerName );
                 if ( newVl->isValid() )
                 {
-                  connect( newVl.get(), &QgsVectorLayer::styleLoaded, this, &QgisApp::vectorLayerStyleLoaded );
                   QgsProject::instance()->addMapLayer( newVl.release() );
                   return true;
                 }
@@ -5189,12 +5188,6 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layerQStringList, const
   QgsProject::instance()->addMapLayers( layersToAdd );
   for ( QgsMapLayer *l : qgis::as_const( layersToAdd ) )
   {
-    // Connect style changed signal to run dependencies checks
-    QgsVectorLayer *vl { qobject_cast< QgsVectorLayer * >( l ) };
-    if ( vl )
-    {
-      connect( vl, &QgsVectorLayer::styleLoaded, this, &QgisApp::vectorLayerStyleLoaded );
-    }
     bool ok;
     l->loadDefaultStyle( ok );
     l->loadDefaultMetadata( ok );
@@ -6472,15 +6465,13 @@ bool QgisApp::addProject( const QString &projectFile )
 #endif
 
     // Check for missing layer widget dependencies
-    for ( QgsVectorLayer *vl : QgsProject::instance()->layers<QgsVectorLayer *>( ) )
+    const auto constVLayers { QgsProject::instance()->layers<QgsVectorLayer *>( ) };
+    for ( QgsVectorLayer *vl : constVLayers )
     {
       if ( vl->isValid() )
       {
         checkVectorLayerDependencies( vl );
       }
-      // Connect style changed signal to make sure the check is run again
-      // if a new style is loaded
-      connect( vl, &QgsVectorLayer::styleLoaded, this, &QgisApp::vectorLayerStyleLoaded );
     }
 
     emit projectRead(); // let plug-ins know that we've read in a new
@@ -11554,8 +11545,6 @@ QgsVectorLayer *QgisApp::addVectorLayerPrivate( const QString &vectorLayerPath, 
 
       askUserForDatumTransform( layer->crs(), QgsProject::instance()->crs(), layer );
 
-      // Connect style changed signal to run dependencies checks
-      connect( layer, &QgsVectorLayer::styleLoaded, this, &QgisApp::vectorLayerStyleLoaded );
       bool ok;
       layer->loadDefaultStyle( ok );
       layer->loadDefaultMetadata( ok );
@@ -12728,6 +12717,7 @@ void QgisApp::layersWereAdded( const QList<QgsMapLayer *> &layers )
       connect( vlayer, &QgsVectorLayer::editingStopped, this, &QgisApp::layerEditStateChanged );
       connect( vlayer, &QgsVectorLayer::readOnlyChanged, this, &QgisApp::layerEditStateChanged );
       connect( vlayer, &QgsVectorLayer::raiseError, this, &QgisApp::onLayerError );
+      connect( vlayer, &QgsVectorLayer::styleLoaded, this, &QgisApp::vectorLayerStyleLoaded );
 
       provider = vProvider;
     }
