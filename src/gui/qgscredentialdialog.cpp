@@ -23,11 +23,17 @@
 #include "qgsapplication.h"
 
 #include <QPushButton>
+#include <QMenu>
+#include <QToolButton>
 #include <QThread>
 #include <QTimer>
+#include <QGlobalStatic>
 
-QSet<QString> QgsCredentialDialog::sIgnoredConnectionsCache;
 QMutex QgsCredentialDialog::sIgnoredConnectionsCacheMutex;
+typedef QSet<QString> IgnoredConnectionsSet;
+
+//! Temporary cache for ignored connections, to avoid GUI freezing by multiple credentials requests to the same connection
+Q_GLOBAL_STATIC( IgnoredConnectionsSet, sIgnoredConnectionsCache );
 
 
 static QString invalidStyle_( const QString &selector = QStringLiteral( "QLineEdit" ) )
@@ -50,25 +56,55 @@ QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WindowFlags fl )
   connect( this, &QgsCredentialDialog::credentialsRequestedMasterPassword,
            this, &QgsCredentialDialog::requestCredentialsMasterPassword,
            Qt::BlockingQueuedConnection );
-  mOkButton = buttonBox->button( QDialogButtonBox::Ok );
-  QPushButton *ignoreButton { buttonBox->button( QDialogButtonBox::StandardButton::Ignore ) };
-  ignoreButton->setToolTip( tr( "All requests for this connection will be automatically rejected for the next 60 seconds." ) );
 
-  // Keep a cache of ignored connections, and ignore them for 60 seconds.
-  connect( ignoreButton, &QPushButton::clicked, [ = ]( bool )
+  // Setup ignore button
+  mIgnoreButton->setToolTip( tr( "All requests for this connection will be automatically rejected" ) );
+  QMenu *menu = new QMenu( mIgnoreButton );
+  QAction *ignoreTemporarily = new QAction( tr( "Ignore for 10 seconds" ), menu );
+  ignoreTemporarily->setToolTip( tr( "All requests for this connection will be automatically rejected for 10 seconds" ) );
+  QAction *ignoreForSession = new QAction( tr( "Ignore for session" ), menu );
+  ignoreForSession->setToolTip( tr( "All requests for this connection will be automatically rejected for the duration of the current session" ) );
+  menu->addAction( ignoreTemporarily );
+  menu->addAction( ignoreForSession );
+  connect( ignoreTemporarily, &QAction::triggered, [ = ]
+  {
+    mIgnoreMode = IgnoreTemporarily;
+    //mIgnoreButton->setText( ignoreTemporarily->text() );
+    mIgnoreButton->setToolTip( ignoreTemporarily->toolTip() );
+  } );
+  connect( ignoreForSession, &QAction::triggered, [ = ]
+  {
+    mIgnoreMode = IgnoreForSession;
+    //mIgnoreButton->setText( ignoreForSession->text() );
+    mIgnoreButton->setToolTip( ignoreForSession->toolTip() );
+  } );
+  mIgnoreButton->setText( mIgnoreMode == IgnoreTemporarily ? ignoreTemporarily->text() : ignoreForSession->text() );
+  mIgnoreButton->setToolTip( mIgnoreMode == IgnoreTemporarily ? ignoreTemporarily->toolTip() : ignoreForSession->toolTip() );
+  mIgnoreButton->setMenu( menu );
+  mIgnoreButton->setMaximumHeight( mOkButton->sizeHint().height() );
+
+  // Connect ok and cancel buttons
+  connect( mOkButton, &QPushButton::clicked, this, &QgsCredentialDialog::accept );
+  connect( mCancelButton, &QPushButton::clicked, this, &QgsCredentialDialog::reject );
+
+  // Keep a cache of ignored connections, and ignore them for 10 seconds.
+  connect( mIgnoreButton, &QPushButton::clicked, [ = ]( bool )
   {
     const QString realm { labelRealm->text() };
     {
       QMutexLocker locker( &sIgnoredConnectionsCacheMutex );
       // Insert the realm in the cache of ignored connections
-      sIgnoredConnectionsCache.insert( realm );
+      sIgnoredConnectionsCache->insert( realm );
     }
-    QTimer::singleShot( 60000, [ = ]()
+    if ( mIgnoreMode == IgnoreTemporarily )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Removing ignored connection from cache: %1" ).arg( realm ), 4 );
-      QMutexLocker locker( &sIgnoredConnectionsCacheMutex );
-      sIgnoredConnectionsCache.remove( realm );
-    } );
+      QTimer::singleShot( 10000, [ = ]()
+      {
+        QgsDebugMsgLevel( QStringLiteral( "Removing ignored connection from cache: %1" ).arg( realm ), 4 );
+        QMutexLocker locker( &sIgnoredConnectionsCacheMutex );
+        sIgnoredConnectionsCache->remove( realm );
+      } );
+    }
     accept( );
   } );
 
@@ -100,7 +136,7 @@ void QgsCredentialDialog::requestCredentials( const QString &realm, QString *use
   QgsDebugMsgLevel( QStringLiteral( "Entering." ), 4 );
   {
     QMutexLocker locker( &sIgnoredConnectionsCacheMutex );
-    if ( sIgnoredConnectionsCache.contains( realm ) )
+    if ( sIgnoredConnectionsCache->contains( realm ) )
     {
       QgsDebugMsg( QStringLiteral( "Skipping ignored connection: " ) + realm );
       *ok = false;
@@ -108,7 +144,7 @@ void QgsCredentialDialog::requestCredentials( const QString &realm, QString *use
     }
   }
   stackedWidget->setCurrentIndex( 0 );
-  buttonBox->button( QDialogButtonBox::StandardButton::Ignore )->show();
+  mIgnoreButton->show();
   chkbxPasswordHelperEnable->setChecked( QgsApplication::authManager()->passwordHelperEnabled() );
   labelRealm->setText( realm );
   leUsername->setText( *username );
@@ -161,7 +197,7 @@ void QgsCredentialDialog::requestCredentialsMasterPassword( QString *password, b
   QgsDebugMsgLevel( QStringLiteral( "Entering." ), 4 );
   stackedWidget->setCurrentIndex( 1 );
 
-  buttonBox->button( QDialogButtonBox::StandardButton::Ignore )->hide();
+  mIgnoreButton->hide();
   leMasterPass->setFocus();
 
   QString titletxt( stored ? tr( "Enter CURRENT master authentication password" ) : tr( "Set NEW master authentication password" ) );
