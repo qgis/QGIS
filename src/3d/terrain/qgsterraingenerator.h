@@ -48,6 +48,7 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsChunkLoaderFactory
     {
       Flat,           //!< The whole terrain is flat area
       Dem,            //!< Terrain is built from raster layer with digital elevation model
+      Tin,            //!< Terrain is built from a mesh with elevation defined on vertices
       Online,         //!< Terrain is built from downloaded tiles with digital elevation model
     };
 

@@ -39,9 +39,13 @@ class Qgs3DMapConfigWidget : public QWidget, private Ui::Map3DConfigWidget
   private slots:
     void onTerrainTypeChanged();
     void onTerrainLayerChanged();
-    void updateMaxZoomLevel();
+    void onTinLayerChanged();
+    void updateMaxZoomLevel() ;
 
   private:
+
+    void fillTinDataset();
+
     Qgs3DMapSettings *mMap = nullptr;
     QgsMapCanvas *mMainCanvas = nullptr;
 };

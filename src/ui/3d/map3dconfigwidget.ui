@@ -69,16 +69,64 @@
            </widget>
           </item>
           <item row="4" column="0">
+           <widget class="QLabel" name="labelTerrainScale">
+            <property name="text">
+             <string>Vertical scale</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="labelTinLayer">
+            <property name="text">
+             <string>TIN</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1" colspan="2">
+           <widget class="QgsDoubleSpinBox" name="spinTerrainScale">
+            <property name="value">
+             <double>1.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
            <widget class="QLabel" name="labelTerrainSkirtHeight">
             <property name="text">
              <string>Skirt height</string>
             </property>
            </widget>
           </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="labelTerrainResolution">
+            <property name="text">
+             <string>Tile resolution</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1" colspan="2">
+           <widget class="QgsSpinBox" name="spinTerrainResolution">
+            <property name="suffix">
+             <string> px</string>
+            </property>
+            <property name="maximum">
+             <number>4096</number>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="1" colspan="2">
+           <widget class="QComboBox" name="cboTerrainMapTheme">
+            <property name="editable">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" colspan="2">
+           <widget class="QComboBox" name="cboTerrainType"/>
+          </item>
           <item row="1" column="1" colspan="2">
            <widget class="QgsMapLayerComboBox" name="cboTerrainLayer"/>
           </item>
-          <item row="4" column="1" colspan="2">
+          <item row="6" column="1" colspan="2">
            <widget class="QgsDoubleSpinBox" name="spinTerrainSkirtHeight">
             <property name="suffix">
              <string> map units</string>
@@ -94,51 +142,6 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="labelTerrainResolution">
-            <property name="text">
-             <string>Tile resolution</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1" colspan="2">
-           <widget class="QgsSpinBox" name="spinTerrainResolution">
-            <property name="suffix">
-             <string> px</string>
-            </property>
-            <property name="maximum">
-             <number>4096</number>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="labelTerrainMapTheme">
-            <property name="text">
-             <string>Map theme</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="labelTerrainScale">
-            <property name="text">
-             <string>Vertical scale</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1" colspan="2">
-           <widget class="QgsDoubleSpinBox" name="spinTerrainScale">
-            <property name="value">
-             <double>1.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="1" colspan="2">
-           <widget class="QComboBox" name="cboTerrainMapTheme">
-            <property name="editable">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="0">
            <widget class="QLabel" name="labelTerrainType">
             <property name="text">
@@ -146,8 +149,25 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1" colspan="2">
-           <widget class="QComboBox" name="cboTerrainType"/>
+          <item row="7" column="0">
+           <widget class="QLabel" name="labelTerrainMapTheme">
+            <property name="text">
+             <string>Map theme</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="labelTINLayerElevation">
+            <property name="text">
+             <string>Elevation</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1" colspan="2">
+           <widget class="QgsMapLayerComboBox" name="cboTinLayer"/>
+          </item>
+          <item row="3" column="1" colspan="2">
+           <widget class="QComboBox" name="cboTinElevation"/>
           </item>
          </layout>
         </widget>

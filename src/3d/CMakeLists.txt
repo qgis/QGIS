@@ -59,6 +59,8 @@ SET(QGIS_3D_SRCS
   terrain/qgsterraintileloader_p.cpp
   #terrain/quantizedmeshgeometry.cpp
   #terrain/quantizedmeshterraingenerator.cpp
+  terrain/qgstindemterraingenerator.cpp
+  terrain/qgstindemterraintilegeometry_p.cpp
 )
 
 SET(QGIS_3D_MOC_HDRS
@@ -151,6 +153,8 @@ SET(QGIS_3D_HDRS
   terrain/qgsterraintileentity_p.h
   #terrain/quantizedmeshgeometry.h
   #terrain/quantizedmeshterraingenerator.h
+  terrain/qgstindemterraintilegeometry_p.h
+  terrain/qgstindemterraingenerator.h
 )
 
 INCLUDE_DIRECTORIES(
