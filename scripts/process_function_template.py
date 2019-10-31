@@ -13,12 +13,11 @@ sys.path.append(
 cpp = open(sys.argv[1], "w", encoding="utf-8")
 cpp.write(
     "#include \"qgsexpression.h\"\n"
-    "\n"
-    "QHash<QString, QgsExpression::Help> QgsExpression::sFunctionHelpTexts;\n"
+    "#include \"qgsexpression_p.h\"\n"
     "\n"
     "void QgsExpression::initFunctionHelp()\n"
     "{\n"
-    "  if( !sFunctionHelpTexts.isEmpty() )\n"
+    "  if( !sFunctionHelpTexts()->isEmpty() )\n"
     "    return;"
 )
 
@@ -77,7 +76,7 @@ for f in sorted(glob.glob('resources/function_help/json/*')):
             if len(list(v['arguments'])) < 1 or len(list(v['arguments'])) > 2:
                 raise BaseException("%s: 1 or 2 arguments expected for operator")
 
-    cpp.write("\n\n  sFunctionHelpTexts.insert( {0},\n    Help( {0}, tr( \"{1}\" ), tr( \"{2}\" ),\n      QList<HelpVariant>()".format(
+    cpp.write("\n\n  sFunctionHelpTexts()->insert( {0},\n    Help( {0}, tr( \"{1}\" ), tr( \"{2}\" ),\n      QList<HelpVariant>()".format(
         name, json_params['type'], json_params['description'])
     )
 
@@ -121,7 +120,7 @@ for f in sorted(glob.glob('resources/function_help/text/*')):
     n = os.path.basename(f)
 
     with open(f) as content:
-        cpp.write("\n\n  sFunctionHelpTexts.insert( \"{0}\",\n    Help( tr( \"{0}\" ), tr( \"group\" ), tr( \"{1}\" ), QList<HelpVariant>() ) );\n".format(
+        cpp.write("\n\n  sFunctionHelpTexts()->insert( \"{0}\",\n    Help( tr( \"{0}\" ), tr( \"group\" ), tr( \"{1}\" ), QList<HelpVariant>() ) );\n".format(
             n, content.read().replace("\\", "&#92;").replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n')))
 
 cpp.write("\n}\n")
