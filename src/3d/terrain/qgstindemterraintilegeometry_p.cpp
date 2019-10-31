@@ -1,3 +1,18 @@
+/***************************************************************************
+  qgistindemterraintilegeometry_p.cpp
+  --------------------------------------
+  Date                 : october 2019
+  Copyright            : (C) 2019 by Vincent Cloarec
+  Email                : vcloarec at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #include "qgstindemterraintilegeometry_p.h"
 
 #include <Qt3DRender/qattribute.h>
@@ -17,7 +32,7 @@ static QByteArray createPlaneVertexData( QgsTriangularMeshTile mesh, float vertS
   const quint32 stride = elementSize * sizeof( float );
   QByteArray bufferBytes;
   bufferBytes.resize( stride * nVerts );
-  QgsRectangle extent = mesh.tileExtent();
+  QgsRectangle extent = mesh.realTileExtent();
   float w = float( extent.width() );
   float h = float( extent.height() );
   float x0 = float( extent.xMinimum() );
@@ -305,11 +320,11 @@ void QgsTriangularMeshTile::init()
         localIndex++;
 
         //adjust real extent
-        if ( mRealExtent.xMinimum() < vert.x() )
+        if ( mRealExtent.xMinimum() > vert.x() )
           mRealExtent.setXMinimum( vert.x() );
-        if ( mRealExtent.yMinimum() < vert.y() )
+        if ( mRealExtent.yMinimum() > vert.y() )
           mRealExtent.setYMinimum( vert.y() );
-        if ( mRealExtent.xMaximum() > vert.x() )
+        if ( mRealExtent.xMaximum() < vert.x() )
           mRealExtent.setXMaximum( vert.x() );
         if ( mRealExtent.yMaximum() < vert.y() )
           mRealExtent.setYMaximum( vert.y() );

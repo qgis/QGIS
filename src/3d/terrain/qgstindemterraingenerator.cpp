@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgistindemterraingenerator.h
+  qgistindemterraingenerator.cpp
   --------------------------------------
   Date                 : october 2019
   Copyright            : (C) 2019 by Vincent Cloarec
@@ -38,9 +38,6 @@ void QgsTinDemTerrainGenerator::setLayer( QgsMeshLayer *layer )
 
 QgsChunkLoader *QgsTinDemTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
 {
-  qDebug() << "QgsTinDemTerrainTileLoader create chunkloader";
-  qDebug() << "Tile " << node->tileX() << " " << node->tileY() << " " << node->tileZ();
-  qDebug() << "bbox " << node->bbox().center() << " " << node->bbox().xExtent() << " " << node->bbox().yExtent();
   return new QgsTinDemTerrainTileLoader( mTerrain, node, mLayer );
 }
 
@@ -70,9 +67,21 @@ void QgsTinDemTerrainGenerator::updateTilingScheme()
     mTerrainTilingScheme = QgsTilingScheme();
 }
 
+QgsTinDemTerrainTileLoader::QgsTinDemTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node, QgsMeshLayer *layer ):
+  QgsTerrainTileLoader( terrain, node ), mLayer( layer ),
+  mMeshTile( layer->triangularMesh(),
+             terrain->map3D().terrainGenerator()->tilingScheme().
+             tileToExtent( node->tileX(),
+                           node->tileY(),
+                           node->tileZ() ) )
+{
+  qDebug() << mMeshTile.realTileExtent().toRectF();
+  setExtentMapCrs( terrain->terrainToMapTransform().transformBoundingBox( mMeshTile.realTileExtent() ) );
+  loadTexture();
+}
+
 Qt3DCore::QEntity *QgsTinDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *parent )
 {
-  qDebug() << "QgsTinDemTerrainTileLoader create entity";
   QgsTerrainTileEntity *entity = new QgsTerrainTileEntity( parent );
 
   const Qgs3DMapSettings &map = terrain()->map3D();
@@ -83,9 +92,8 @@ Qt3DCore::QEntity *QgsTinDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *
   QList<int> faces = triangularMesh->faceIndexesForRectangle( extent );
   Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
 
-  QgsTriangularMeshTile meshTile( triangularMesh, extent );
+  mesh->setGeometry( new QgsTinDemTerrainTileGeometry_p( mMeshTile, float( map.terrainVerticalScale() ), entity ) );
 
-  mesh->setGeometry( new QgsTinDemTerrainTileGeometry_p( meshTile, float( map.terrainVerticalScale() ), entity ) );
   createTextureComponent( entity, map.isTerrainShadingEnabled(), map.terrainShadingMaterial() );
 
   double x0 =  map.origin().x();
@@ -96,10 +104,10 @@ Qt3DCore::QEntity *QgsTinDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *
   transform->setTranslation( QVector3D( float( -x0 ), 0, float( -y0 ) ) );
 
   mNode->setExactBbox( QgsAABB( float( extent.xMinimum() - x0 ),
-                                meshTile.zMinimum()*float( map.terrainVerticalScale() ),
+                                mMeshTile.zMinimum()*float( map.terrainVerticalScale() ),
                                 float( -extent.yMinimum() - y0 ),
                                 float( extent.xMaximum() - x0 ),
-                                meshTile.zMaximum()*float( map.terrainVerticalScale() ),
+                                mMeshTile.zMaximum()*float( map.terrainVerticalScale() ),
                                 float( -extent.yMaximum() - y0 ) ) );
 
   entity->addComponent( mesh );

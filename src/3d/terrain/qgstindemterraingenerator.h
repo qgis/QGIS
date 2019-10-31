@@ -29,17 +29,13 @@
 class QgsTinDemTerrainTileLoader: public QgsTerrainTileLoader
 {
   public:
-    QgsTinDemTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node, QgsMeshLayer *layer ):
-      QgsTerrainTileLoader( terrain, node ), mLayer( layer )
-    {
-      loadTexture();
-    }
-    // QgsChunkLoader interface
-  public:
+    QgsTinDemTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node, QgsMeshLayer *layer );
+
     Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
   private:
     QgsMeshLayer *mLayer;
+    QgsTriangularMeshTile mMeshTile;
 };
 
 
@@ -62,8 +58,8 @@ class _3D_EXPORT QgsTinDemTerrainGenerator: public QgsTerrainGenerator
     Type type() const override;
     QgsRectangle extent() const override;
 
-    void writeXml( QDomElement &elem ) const override {}
-    void readXml( const QDomElement &elem ) override {}
+    void writeXml( QDomElement &elem ) const override {( void )elem;}
+    void readXml( const QDomElement &elem ) override {( void )elem;}
 
   private:
     void updateTilingScheme();

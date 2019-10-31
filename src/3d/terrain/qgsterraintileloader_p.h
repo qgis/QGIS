@@ -30,6 +30,7 @@
 #include "qgschunkloader_p.h"
 
 #include <QImage>
+#include <QDebug>
 #include "qgsrectangle.h"
 
 class QgsPhongMaterialSettings;
@@ -58,6 +59,12 @@ class QgsTerrainTileLoader : public QgsChunkLoader
     void createTextureComponent( QgsTerrainTileEntity *entity, bool isShadingEnabled, const QgsPhongMaterialSettings &shadingMaterial );
     //! Gives access to the terain entity
     QgsTerrainEntity *terrain() { return mTerrain; }
+
+    void setExtentMapCrs( const QgsRectangle &extent )
+    {
+      qDebug() << extent.toRectF();
+      mExtentMapCrs = extent;
+    }
 
   private slots:
     void onImageReady( int jobId, const QImage &image );

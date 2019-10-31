@@ -44,6 +44,7 @@ class QgsTriangularMeshTile
     bool operator==( const QgsTriangularMeshTile &other ) const;
 
     QgsRectangle tileExtent() const {return mExtent;}
+    QgsRectangle realTileExtent() const {return mRealExtent;}
 
   private:
     void init();
