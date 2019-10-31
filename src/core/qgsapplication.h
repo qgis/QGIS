@@ -315,7 +315,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QStringList layoutTemplatePaths();
 
     //! Returns the system environment variables passed to application.
-    static QMap<QString, QString> systemEnvVars() { return ABISYM( mSystemEnvVars ); }
+    static QMap<QString, QString> systemEnvVars();
 
     //! Returns the path to the application prefix directory.
     static QString prefixPath();
@@ -517,9 +517,9 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString cfgIntDir() { return ABISYM( mCfgIntDir ); } SIP_SKIP
 #endif
     //! Returns path to the source directory. Valid only when running from build directory
-    static QString buildSourcePath() { return ABISYM( mBuildSourcePath ); }
+    static QString buildSourcePath();
     //! Returns path to the build output directory. Valid only when running from build directory
-    static QString buildOutputPath() { return ABISYM( mBuildOutputPath ); }
+    static QString buildOutputPath();
 
     /**
      * Sets the GDAL_SKIP environment variable to include the specified driver
@@ -539,7 +539,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Returns the list of gdal drivers that should be skipped (based on
      * GDAL_SKIP environment variable)
      */
-    static QStringList skippedGdalDrivers() { return ABISYM( mGdalSkipList ); }
+    static QStringList skippedGdalDrivers();
 
     /**
      * Apply the skipped drivers list to gdal
@@ -561,7 +561,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * next application restart.
      * \since QGIS 3.10
      */
-    static QStringList deferredSkippedGdalDrivers() { return sDeferredSkippedGdalDrivers; }
+    static QStringList deferredSkippedGdalDrivers();
 
     /**
      * Sets the list of gdal drivers that should be disabled (\a skippedGdalDrivers),
@@ -575,7 +575,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Gets maximum concurrent thread count
      * \since QGIS 2.4 */
-    static int maxThreads() { return ABISYM( mMaxThreads ); }
+    static int maxThreads();
 
     /**
      * Set maximum concurrent thread count
@@ -821,7 +821,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      *
      * \since QGIS 3.4
      */
-    static void setTranslation( const QString &translation ) { sTranslation = translation; }
+    static void setTranslation( const QString &translation );
 
     /**
      * Emits the signal to collect all the strings of .qgs to be included in ts file
@@ -865,58 +865,15 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     static void copyPath( const QString &src, const QString &dst );
     static QObject *ABISYM( mFileOpenEventReceiver );
-    static QStringList ABISYM( mFileOpenEventList );
-
-    static QString ABISYM( mProfilePath );
-    static QString ABISYM( mUIThemeName );
-    static QString ABISYM( mPrefixPath );
-    static QString ABISYM( mPluginPath );
-    static QString ABISYM( mPkgDataPath );
-    static QString ABISYM( mLibraryPath );
-    static QString ABISYM( mLibexecPath );
-    static QString ABISYM( mQmlImportPath );
-    static QString ABISYM( mThemeName );
-    static QStringList ABISYM( mDefaultSvgPaths );
-    static QMap<QString, QString> ABISYM( mSystemEnvVars );
-
-    static QString ABISYM( mConfigPath );
 
     static bool ABISYM( mInitialized );
 
     //! True when running from build directory, i.e. without 'make install'
     static bool ABISYM( mRunningFromBuildDir );
-    //! Path to the source directory. valid only when running from build directory.
-    static QString ABISYM( mBuildSourcePath );
-#if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
-    //! Configuration internal dir
-    static QString ABISYM( mCfgIntDir );
-#endif
-    //! Path to the output directory of the build. valid only when running from build directory
-    static QString ABISYM( mBuildOutputPath );
-
-    /**
-     * List of gdal drivers to be skipped. Uses GDAL_SKIP to exclude them.
-     * \see skipGdalDriver, restoreGdalDriver */
-    static QStringList ABISYM( mGdalSkipList );
-
-    /**
-     * List of gdal drivers that have been disabled in the current session,
-     * and thus, for safety, should not be disabled right now, but at the
-     * next application restart */
-    static QStringList sDeferredSkippedGdalDrivers;
 
     /**
      * \since QGIS 2.4 */
-    static int ABISYM( mMaxThreads );
-
-    /**
-     * \since QGIS 2.12 */
-    static QString ABISYM( mAuthDbDirPath );
-
-    static QString sUserName;
-    static QString sUserFullName;
-    static QString sPlatformName;
-    static QString sTranslation;
+    static int ABISYM( sMaxThreads );
 
     QMap<QString, QIcon> mIconCache;
     QMap<Cursor, QCursor> mCursorCache;
