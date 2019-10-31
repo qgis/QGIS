@@ -1116,13 +1116,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
     bool mRenderStarted = false;
 
-    static const QVector< PredefinedPointPosition > DEFAULT_PLACEMENT_ORDER;
-
     static void initPropertyDefinitions();
-
-    //! Property definitions
-    static QgsPropertiesDefinition sPropertyDefinitions;
-
 };
 
 /**
