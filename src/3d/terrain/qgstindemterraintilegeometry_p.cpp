@@ -32,14 +32,13 @@ static QByteArray createPlaneVertexData( QgsTriangularMeshTile mesh, float vertS
   const quint32 stride = elementSize * sizeof( float );
   QByteArray bufferBytes;
   bufferBytes.resize( stride * nVerts );
-  QgsRectangle extent = mesh.realTileExtent();
-  float w = float( extent.width() );
-  float h = float( extent.height() );
-  float x0 = float( extent.xMinimum() );
-  float y0 = float( extent.yMaximum() );
+  QgsRectangle realExtent = mesh.realTileExtent();
+  double w = realExtent.width();
+  double h = realExtent.height() ;
+  double x0 = realExtent.xMinimum();
+  double y0 = realExtent.yMaximum();
 
   float *fptr = reinterpret_cast<float *>( bufferBytes.data() );
-
 
   for ( int i = 0; i < nVerts; i++ )
   {
@@ -48,7 +47,6 @@ static QByteArray createPlaneVertexData( QgsTriangularMeshTile mesh, float vertS
     *fptr++ = float( vert.z() ) * vertScale ;
     *fptr++ = float( -vert.y() );
 
-    ///TODO : need to calculate texture coordinates
     *fptr++ = float( ( vert.x() - x0 ) / w );
     *fptr++ = float( ( y0 - vert.y() ) / h );
 
@@ -224,6 +222,8 @@ QgsTriangularMeshTile::QgsTriangularMeshTile( QgsTriangularMesh *triangularMesh,
   mTriangularMesh( triangularMesh ), mExtent( extent )
 {
   init();
+  qDebug() << "Tile extent : " << mExtent.toRectF();
+  qDebug() << "real Tile extent : " << mRealExtent.toRectF();
 }
 
 int QgsTriangularMeshTile::faceCount() const
@@ -259,8 +259,8 @@ QgsMeshVertex QgsTriangularMeshTile::vertex( int localIndex ) const
 bool QgsTriangularMeshTile::operator==( const QgsTriangularMeshTile &other ) const
 {
   return ( other.mTriangularMesh == mTriangularMesh &&
-           mExtent == mExtent &&
-           mRealExtent == mRealExtent
+           other.mExtent == mExtent &&
+           other.mRealExtent == mRealExtent
          );
 }
 
@@ -305,7 +305,6 @@ void QgsTriangularMeshTile::init()
       QVector3D v2( float( otherVert2.x() - vert.x() ), float( otherVert2.y() - vert.y() ), float( otherVert2.z() - vert.z() ) );
       QVector3D crossProduct = QVector3D::crossProduct( v2, v1 );
 
-
       if ( mLocalIndexFromGlobalIndex.contains( globalIndex ) )
       {
         LocalVertex &localVert = mVertices[mLocalIndexFromGlobalIndex.value( globalIndex )];
@@ -333,10 +332,9 @@ void QgsTriangularMeshTile::init()
           mZmax = float( vert.z() );
         if ( mZmin > float( vert.z() ) )
           mZmin = float( vert.z() );
-
       }
-
-
     }
   }
+
+  mRealExtent.combineExtentWith( mExtent );
 }

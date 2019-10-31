@@ -75,7 +75,6 @@ QgsTinDemTerrainTileLoader::QgsTinDemTerrainTileLoader( QgsTerrainEntity *terrai
                            node->tileY(),
                            node->tileZ() ) )
 {
-  qDebug() << mMeshTile.realTileExtent().toRectF();
   setExtentMapCrs( terrain->terrainToMapTransform().transformBoundingBox( mMeshTile.realTileExtent() ) );
   loadTexture();
 }
@@ -111,11 +110,8 @@ Qt3DCore::QEntity *QgsTinDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *
                                 float( -extent.yMaximum() - y0 ) ) );
 
   entity->addComponent( mesh );
-
   entity->setEnabled( false );
   entity->setParent( parent );
-
-
 
   return entity;
 }

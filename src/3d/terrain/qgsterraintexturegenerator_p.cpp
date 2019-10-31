@@ -36,6 +36,16 @@ int QgsTerrainTextureGenerator::render( const QgsRectangle &extent, const QStrin
   QgsMapSettings mapSettings( baseMapSettings() );
   mapSettings.setExtent( extent );
 
+  QSize outputSize = mapSettings.outputSize();
+  double w = extent.width();
+  double h = extent.height();
+  if ( w < h )
+    outputSize = QSize( outputSize.width(), int( outputSize.height() * h / w ) );
+  else if ( h < w )
+    outputSize = QSize( int( outputSize.width() * w / h ), outputSize.height() );
+
+  mapSettings.setOutputSize( outputSize );
+
   QgsMapRendererSequentialJob *job = new QgsMapRendererSequentialJob( mapSettings );
   connect( job, &QgsMapRendererJob::finished, this, &QgsTerrainTextureGenerator::onRenderingFinished );
   job->start();
