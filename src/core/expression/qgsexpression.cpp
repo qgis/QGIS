@@ -29,8 +29,14 @@
 // from parser
 extern QgsExpressionNode *parseExpression( const QString &str, QString &parserErrorMsg, QList<QgsExpression::ParserError> &parserErrors );
 
+Q_GLOBAL_STATIC( HelpTextHash, sFunctionHelpTexts )
 Q_GLOBAL_STATIC( QgsStringMap, sVariableHelpTexts )
 Q_GLOBAL_STATIC( QgsStringMap, sGroups )
+
+HelpTextHash &functionHelpTexts()
+{
+  return *sFunctionHelpTexts();
+}
 
 bool QgsExpression::checkExpression( const QString &text, const QgsExpressionContext *context, QString &errorMessage )
 {
