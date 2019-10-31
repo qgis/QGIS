@@ -119,6 +119,9 @@ void TestQgsMapToolAddFeaturePoint::initTestCase()
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerPointZ << mLayerPointZSnap );
   mCanvas->setCurrentLayer( mLayerPointZ );
 
+  mCanvas->snappingUtils()->locatorForLayer( mLayerPointZ )->init();
+  mCanvas->snappingUtils()->locatorForLayer( mLayerPointZSnap )->init();
+
   // create the tool
   mCaptureTool = new QgsMapToolAddFeature( mCanvas, /*mAdvancedDigitizingDockWidget, */ QgsMapToolCapture::CapturePoint );
   mCanvas->setMapTool( mCaptureTool );

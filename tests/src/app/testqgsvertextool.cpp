@@ -26,6 +26,7 @@
 #include "qgslinestring.h"
 #include "qgssnappingconfig.h"
 #include "qgssettings.h"
+#include "testqgsmaptoolutils.h"
 
 bool operator==( const QgsGeometry &g1, const QgsGeometry &g2 )
 {
@@ -138,6 +139,7 @@ class TestQgsVertexTool : public QObject
 
   private:
     QgsMapCanvas *mCanvas = nullptr;
+    QgisApp *mQgisApp = nullptr;
     QgsAdvancedDigitizingDockWidget *mAdvancedDigitizingDockWidget = nullptr;
     QgsVertexTool *mVertexTool = nullptr;
     QgsVectorLayer *mLayerLine = nullptr;
@@ -161,6 +163,7 @@ void TestQgsVertexTool::initTestCase()
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();
+  mQgisApp = new QgisApp();
 
   // Set up the QSettings environment
   QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
@@ -247,9 +250,13 @@ void TestQgsVertexTool::initTestCase()
 
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerPolygon << mLayerPoint << mLayerLineZ );
 
-  // TODO: set up snapping
+  QgsMapCanvasSnappingUtils *snappingUtils = new QgsMapCanvasSnappingUtils( mCanvas, this );
+  mCanvas->setSnappingUtils( snappingUtils );
 
-  mCanvas->setSnappingUtils( new QgsMapCanvasSnappingUtils( mCanvas, this ) );
+  snappingUtils->locatorForLayer( mLayerLine )->init();
+  snappingUtils->locatorForLayer( mLayerPolygon )->init();
+  snappingUtils->locatorForLayer( mLayerPoint )->init();
+  snappingUtils->locatorForLayer( mLayerLineZ )->init();
 
   // create vertex tool
   mVertexTool = new QgsVertexTool( mCanvas, mAdvancedDigitizingDockWidget );
@@ -867,6 +874,8 @@ void TestQgsVertexTool::testActiveLayerPriority()
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerPolygon << mLayerPoint << layerLine2 );
 
   // make one layer active and check its vertex is used
+
+  mCanvas->snappingUtils()->locatorForLayer( layerLine2 )->init();
 
   mCanvas->setCurrentLayer( mLayerLine );
 

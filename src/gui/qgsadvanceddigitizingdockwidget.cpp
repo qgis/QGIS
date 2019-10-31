@@ -670,7 +670,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
   // set the point coordinates in the map event
   e->setMapPoint( point );
 
-  mSnapMatch = context.snappingUtils->snapToMap( point );
+  mSnapMatch = context.snappingUtils->snapToMap( point, nullptr, true );
 
   if ( mSnapMatch.isValid() )
   {
@@ -782,7 +782,7 @@ QList<QgsPointXY> QgsAdvancedDigitizingDockWidget::snapSegmentToAllLayers( const
   localConfig.setType( QgsSnappingConfig::Segment );
   snappingUtils->setConfig( localConfig );
 
-  match = snappingUtils->snapToMap( originalMapPoint );
+  match = snappingUtils->snapToMap( originalMapPoint, nullptr, true );
 
   snappingUtils->setConfig( canvasConfig );
 

@@ -92,12 +92,19 @@ Configure render context  - if not ``None``, it will use to index only visible f
     typedef QFlags<QgsPointLocator::Type> Types;
 
 
-    bool init( int maxFeaturesToIndex = -1 );
+    bool init( int maxFeaturesToIndex = -1, bool relaxed = false );
 %Docstring
 Prepare the index for queries. Does nothing if the index already exists.
 If the number of features is greater than the value of maxFeaturesToIndex, creation of index is stopped
-to make sure we do not run out of memory. If maxFeaturesToIndex is -1, no limits are used. Returns
-``False`` if the creation of index has been prematurely stopped due to the limit of features, otherwise ``True``
+to make sure we do not run out of memory. If maxFeaturesToIndex is -1, no limits are used.
+
+This method is either blocking or non blocking according to ``relaxed`` parameter passed
+in the constructor. if ``True``, index building will be done in another thread and init() method returns
+immediately. initFinished() signal will be emitted once the initialization is over.
+
+Returns false if the creation of index is blocking and has been prematurely stopped due to the limit of features, otherwise true
+
+.. seealso:: :py:class:`QgsPointLocator`
 %End
 
     bool hasIndex() const;
@@ -176,58 +183,64 @@ interpolation of the Z value.
     };
 
 
-    Match nearestVertex( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
+    Match nearestVertex( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
 %Docstring
 Find nearest vertex to the specified point - up to distance specified by tolerance
 Optional filter may discard unwanted matches.
+This method is either blocking or non blocking according to ``relaxed`` parameter passed
 %End
 
-    Match nearestEdge( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
+    Match nearestEdge( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
 %Docstring
 Find nearest edge to the specified point - up to distance specified by tolerance
 Optional filter may discard unwanted matches.
+This method is either blocking or non blocking according to ``relaxed`` parameter passed
 %End
 
-    Match nearestArea( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
+    Match nearestArea( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
 %Docstring
 Find nearest area to the specified point - up to distance specified by tolerance
 Optional filter may discard unwanted matches.
 This will first perform a pointInPolygon and return first result.
 If no match is found and tolerance is not 0, it will return nearestEdge.
+This method is either blocking or non blocking according to ``relaxed`` parameter passed
 
 .. versionadded:: 3.0
 %End
 
-    MatchList edgesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter = 0 );
+    MatchList edgesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
 %Docstring
 Find edges within a specified recangle
 Optional filter may discard unwanted matches.
-%End
-    MatchList edgesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
-%Docstring
-Override of edgesInRect that construct rectangle from a center point and tolerance
+This method is either blocking or non blocking according to ``relaxed`` parameter passed
 %End
 
-    MatchList verticesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter = 0 );
+    MatchList edgesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
+%Docstring
+Override of edgesInRect that construct rectangle from a center point and tolerance
+This method is either blocking or non blocking according to ``relaxed`` parameter passed
+%End
+
+    MatchList verticesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
 %Docstring
 Find vertices within a specified recangle
+This method is either blocking or non blocking according to ``relaxed`` parameter passed
 Optional filter may discard unwanted matches.
 
 .. versionadded:: 3.6
 %End
 
-    MatchList verticesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
+    MatchList verticesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
 %Docstring
 Override of verticesInRect that construct rectangle from a center point and tolerance
+This method is either blocking or non blocking according to ``relaxed`` parameter passed
 
 .. versionadded:: 3.6
 %End
 
 
-    MatchList pointInPolygon( const QgsPointXY &point );
-%Docstring
-find out if the point is in any polygons
-%End
+
+    MatchList pointInPolygon( const QgsPointXY &point, bool relaxed = false );
 
     int cachedGeometryCount() const;
 %Docstring
@@ -236,8 +249,33 @@ Returns how many geometries are cached in the index
 .. versionadded:: 2.14
 %End
 
+    bool isIndexing() const;
+%Docstring
+Returns ``True`` if the point locator is currently indexing the data.
+This method is useful if constructor parameter ``relaxed`` is ``True``
+
+.. seealso:: :py:class:`QgsPointLocator`
+%End
+
+    void waitForIndexingFinished();
+%Docstring
+If the point locator has been initialized relaxedly and is currently indexing,
+this methods waits for the indexing to be finished
+%End
+
+  signals:
+
+    void initFinished( bool ok );
+%Docstring
+Emitted whenever index has been built and initialization is finished
+
+:param ok: ``False`` if the creation of index has been prematurely stopped due to the limit of
+           features, otherwise ``True``
+%End
+
   protected:
     bool rebuildIndex( int maxFeaturesToIndex = -1 );
+
   protected slots:
     void destroyIndex();
 };

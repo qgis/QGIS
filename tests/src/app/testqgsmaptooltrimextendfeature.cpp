@@ -29,6 +29,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmapcanvassnappingutils.h"
+#include "qgisapp.h"
 
 #include "qgsmaptooltrimextendfeature.h"
 
@@ -172,6 +173,12 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       snappingConfig.setUnits( QgsTolerance::Pixels );
       snappingConfig.setMode( QgsSnappingConfig::AllLayers );
       mSnappingUtils->setConfig( snappingConfig );
+
+      mSnappingUtils->locatorForLayer( vlPolygon.get() )->init();
+      mSnappingUtils->locatorForLayer( vlMultiLine.get() )->init();
+      mSnappingUtils->locatorForLayer( vlLineZ.get() )->init();
+      mSnappingUtils->locatorForLayer( vlTopoEdit.get() )->init();
+      mSnappingUtils->locatorForLayer( vlTopoLimit.get() )->init();
 
       mCanvas->setSnappingUtils( mSnappingUtils );
     }

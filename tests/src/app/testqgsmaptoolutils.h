@@ -21,7 +21,7 @@
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
-
+#include "qgssnappingutils.h"
 
 /**
  * \ingroup UnitTests

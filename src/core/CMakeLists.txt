@@ -317,6 +317,7 @@ SET(QGIS_CORE_SRCS
   qgspluginlayerregistry.cpp
   qgspointxy.cpp
   qgspointlocator.cpp
+  qgspointlocatorinittask.cpp
   qgsproject.cpp
   qgsprojectbadlayerhandler.cpp
   qgsprojectfiletransform.cpp
@@ -713,6 +714,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgspluginlayer.h
   qgspointxy.h
   qgspointlocator.h
+  qgspointlocatorinittask.h
   qgsproject.h
   qgsprojectviewsettings.h
   qgsproxyprogresstask.h

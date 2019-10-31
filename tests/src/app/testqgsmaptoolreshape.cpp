@@ -162,9 +162,13 @@ void TestQgsMapToolReshape::initTestCase()
   cfg.setType( QgsSnappingConfig::VertexAndSegment );
   cfg.setEnabled( true );
   mCanvas->snappingUtils()->setConfig( cfg );
-
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLineZ << mLayerPointZ << mLayerPolygonZ );
   mCanvas->setCurrentLayer( mLayerLineZ );
+
+  mCanvas->snappingUtils()->locatorForLayer( mLayerLineZ )->init();
+  mCanvas->snappingUtils()->locatorForLayer( mLayerPointZ )->init();
+  mCanvas->snappingUtils()->locatorForLayer( mLayerPolygonZ )->init();
+  mCanvas->snappingUtils()->locatorForLayer( mLayerTopo )->init();
 
   // create the tool
   mCaptureTool = new QgsMapToolReshape( mCanvas );
