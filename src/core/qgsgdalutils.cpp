@@ -36,12 +36,12 @@ bool QgsGdalUtils::supportsRasterCreate( GDALDriverH driver )
           CSLFetchBoolean( driverMetadata, GDAL_DCAP_RASTER, false );
 }
 
-gdal::dataset_unique_ptr QgsGdalUtils::createSingleBandMemoryDataset( GDALDataType dataType, QgsRectangle extent, int width, int height, const QgsCoordinateReferenceSystem &crs )
+gdal::dataset_unique_ptr QgsGdalUtils::createSingleBandMemoryDataset( GDALDataType dataType, const QgsRectangle &extent, int width, int height, const QgsCoordinateReferenceSystem &crs )
 {
   return createMultiBandMemoryDataset( dataType, 1, extent, width, height, crs );
 }
 
-gdal::dataset_unique_ptr QgsGdalUtils::createMultiBandMemoryDataset( GDALDataType dataType, int bands, QgsRectangle extent, int width, int height, const QgsCoordinateReferenceSystem &crs )
+gdal::dataset_unique_ptr QgsGdalUtils::createMultiBandMemoryDataset( GDALDataType dataType, int bands, const QgsRectangle &extent, int width, int height, const QgsCoordinateReferenceSystem &crs )
 {
   GDALDriverH hDriverMem = GDALGetDriverByName( "MEM" );
   if ( !hDriverMem )
@@ -66,7 +66,7 @@ gdal::dataset_unique_ptr QgsGdalUtils::createMultiBandMemoryDataset( GDALDataTyp
   return hSrcDS;
 }
 
-gdal::dataset_unique_ptr QgsGdalUtils::createSingleBandTiffDataset( QString filename, GDALDataType dataType, QgsRectangle extent, int width, int height, const QgsCoordinateReferenceSystem &crs )
+gdal::dataset_unique_ptr QgsGdalUtils::createSingleBandTiffDataset( const QString &filename, GDALDataType dataType, const QgsRectangle &extent, int width, int height, const QgsCoordinateReferenceSystem &crs )
 {
   double cellSizeX = extent.width() / width;
   double cellSizeY = extent.height() / height;
@@ -148,8 +148,8 @@ void QgsGdalUtils::resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH h
   psWarpOptions->hDstDS = hDstDS;
 
   psWarpOptions->nBandCount = 1;
-  psWarpOptions->panSrcBands = ( int * ) CPLMalloc( sizeof( int ) * 1 );
-  psWarpOptions->panDstBands = ( int * ) CPLMalloc( sizeof( int ) * 1 );
+  psWarpOptions->panSrcBands = reinterpret_cast< int * >( CPLMalloc( sizeof( int ) * 1 ) );
+  psWarpOptions->panDstBands = reinterpret_cast< int * >( CPLMalloc( sizeof( int ) * 1 ) );
   psWarpOptions->panSrcBands[0] = 1;
   psWarpOptions->panDstBands[0] = 1;
 
@@ -181,7 +181,7 @@ QImage QgsGdalUtils::resampleImage( const QImage &image, QSize outputSize, GDALR
   INIT_RASTERIO_EXTRA_ARG( extra );
   extra.eResampleAlg = resampleAlg;
 
-  QImage res( outputSize, QImage::Format_ARGB32 ); // premultiplied??
+  QImage res( outputSize, image.format() );
   if ( res.isNull() )
     return QImage();
 
@@ -262,7 +262,7 @@ char **QgsGdalUtils::papszFromStringList( const QStringList &list )
   return papszRetList;
 }
 
-QString QgsGdalUtils::validateCreationOptionsFormat( const QStringList &createOptions, QString format )
+QString QgsGdalUtils::validateCreationOptionsFormat( const QStringList &createOptions, const QString &format )
 {
   GDALDriverH myGdalDriver = GDALGetDriverByName( format.toLocal8Bit().constData() );
   if ( ! myGdalDriver )
