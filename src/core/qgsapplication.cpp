@@ -123,7 +123,6 @@ Q_GLOBAL_STATIC( QString, sLibraryPath )
 Q_GLOBAL_STATIC( QString, sLibexecPath )
 Q_GLOBAL_STATIC( QString, sQmlImportPath )
 Q_GLOBAL_STATIC( QString, sThemeName )
-Q_GLOBAL_STATIC( QString, sUIThemeName )
 Q_GLOBAL_STATIC( QString, sProfilePath )
 
 Q_GLOBAL_STATIC( QStringList, sDefaultSvgPaths )
