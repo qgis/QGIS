@@ -64,6 +64,10 @@ class GUI_EXPORT QgsCredentialDialog : public QDialog, public QgsCredentials, pr
 
   private:
     QPushButton *mOkButton = nullptr;
+    //! Temporary cache for ignored connections, to avoid GUI freezing by multiple credentials requests to the same connection
+    static QSet<QString> sIgnoredConnectionsCache;
+    static QMutex sIgnoredConnectionsCacheMutex;
+
 };
 
 #endif
