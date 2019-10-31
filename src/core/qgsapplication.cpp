@@ -244,7 +244,7 @@ void QgsApplication::init( QString profileFolder )
     *sLibexecPath() = *sBuildOutputPath() + '/' + QGIS_LIBEXEC_SUBDIR + '/';
 #endif
 #if defined( HAVE_QUICK )
-    *sQmlImportPath(); = *sBuildOutputPath() + '/' + QGIS_QML_SUBDIR + '/';
+    *sQmlImportPath() = *sBuildOutputPath() + '/' + QGIS_QML_SUBDIR + '/';
 #endif
   }
   else
