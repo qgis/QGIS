@@ -24,9 +24,13 @@ QgsVectorLayer.countSymbolFeatures() and connect to the signal
 %End
   public:
 
-    QgsVectorLayerFeatureCounter( QgsVectorLayer *layer, const QgsExpressionContext &context = QgsExpressionContext() );
+    QgsVectorLayerFeatureCounter( QgsVectorLayer *layer, const QgsExpressionContext &context = QgsExpressionContext(), bool storeSymbolFids = false );
 %Docstring
 Create a new feature counter for ``layer``.
+
+:param layer: Target QgsVectorLayer to perform counting on.
+:param context: Specific QgsExpressionContext to use during the rendering step.
+:param storeSymbolFids: If ``True`` will store the feature ids (fids), otherwise will only count the number of features per symbol. Default ``False``.
 %End
 
 
