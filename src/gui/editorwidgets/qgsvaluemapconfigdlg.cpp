@@ -202,12 +202,13 @@ void QgsValueMapConfigDlg::populateComboBox( QComboBox *comboBox, const QVariant
 bool QgsValueMapConfigDlg::eventFilter( QObject *watched, QEvent *event )
 {
   Q_UNUSED( watched )
-  if ( event->type() == QEvent::KeyRelease )
+  if ( event->type() == QEvent::KeyPress )
   {
     QKeyEvent *keyEvent = static_cast<QKeyEvent *>( event );
     if ( keyEvent->matches( QKeySequence::Copy ) )
     {
       copySelectionToClipboard();
+      event->accept();
       return true;
     }
   }
