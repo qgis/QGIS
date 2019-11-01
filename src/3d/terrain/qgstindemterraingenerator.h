@@ -25,35 +25,41 @@
 #include "qgsterraintileloader_p.h"
 #include "qgstindemterraintilegeometry_p.h"
 
-
+/**
+ * \ingroup 3d
+ * Chunk loader for TIN DEM terrain tiles.
+ * \since QGIS 3.12
+ */
 class QgsTinDemTerrainTileLoader: public QgsTerrainTileLoader
 {
   public:
+    //! Constructs loader for the given chunk node
     QgsTinDemTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node, QgsMeshLayer *layer );
 
     Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
   private:
-    QgsMeshLayer *mLayer;
+    QgsMeshLayer *mLayer = nullptr;
     QgsTriangularMeshTile mMeshTile;
 };
 
-
+/**
+ * \ingroup 3d
+ * Implementation of terrain generator that uses a mesh layer with Z value to build terrain.
+ * \since QGIS 3.12
+ */
 class _3D_EXPORT QgsTinDemTerrainGenerator: public QgsTerrainGenerator
 {
   public:
-    QgsTinDemTerrainGenerator() {}
-    ~ QgsTinDemTerrainGenerator() override {}
+    //! constructor
+    QgsTinDemTerrainGenerator() = default;
 
+    //! Returns the mesh layer associated with
     QgsMeshLayer *layer() const {return mLayer;}
+    //! Sets the mesh layer associated with
     void setLayer( QgsMeshLayer *layer );
 
-    // QgsChunkLoaderFactory interface
-  public:
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
-
-    // QgsTerrainGenerator interface
-  public:
     QgsTerrainGenerator *clone() const override;
     Type type() const override;
     QgsRectangle extent() const override;

@@ -62,7 +62,6 @@ class QgsTerrainTileLoader : public QgsChunkLoader
 
     void setExtentMapCrs( const QgsRectangle &extent )
     {
-      qDebug() << extent.toRectF();
       mExtentMapCrs = extent;
     }
 

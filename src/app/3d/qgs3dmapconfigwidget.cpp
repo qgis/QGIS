@@ -126,6 +126,7 @@ void Qgs3DMapConfigWidget::apply()
 
   QgsTerrainGenerator::Type terrainType = static_cast<QgsTerrainGenerator::Type>( cboTerrainType->currentData().toInt() );
 
+
   if ( terrainType == QgsTerrainGenerator::Dem )  // DEM from raster layer
   {
     QgsRasterLayer *demLayer = qobject_cast<QgsRasterLayer *>( cboTerrainLayer->currentLayer() );
@@ -303,6 +304,4 @@ void Qgs3DMapConfigWidget::fillTinDataset()
   {
     cboTinElevation->addItem( provider->datasetGroupMetadata( i ).name() );
   }
-
-
 }

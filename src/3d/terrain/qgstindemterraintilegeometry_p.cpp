@@ -20,6 +20,8 @@
 
 #include <Qt3DRender/qbufferdatagenerator.h>
 
+///@cond PRIVATE
+
 using namespace Qt3DRender;
 
 static QByteArray createPlaneVertexData( QgsTriangularMeshTile mesh, float vertScale )
@@ -60,7 +62,6 @@ static QByteArray createPlaneVertexData( QgsTriangularMeshTile mesh, float vertS
     *fptr++ = normal.y();
   }
 
-  qDebug() << "return buffer bytes";
   return bufferBytes;
 }
 
@@ -82,7 +83,6 @@ static QByteArray createPlaneIndexData( QgsTriangularMeshTile mesh )
       *indexPtr++ = quint32( face.at( i ) );
   }
 
-  qDebug() << "return index bytes";
   return indexBytes;
 }
 
@@ -93,12 +93,12 @@ class TinPlaneVertexBufferFunctor : public QBufferDataGenerator
 {
   public:
     explicit TinPlaneVertexBufferFunctor( QgsTriangularMeshTile mesh,  float vertScale )
-      : mMesh( mesh ), mVertScale( vertScale )
+      : mMesh( mesh ),
+        mVertScale( vertScale )
     {}
 
     QByteArray operator()() final
     {
-      qDebug() << "create plane vertex data";
       return createPlaneVertexData( mMesh, mVertScale );
     }
 
@@ -131,7 +131,6 @@ class TinPlaneIndexBufferFunctor : public QBufferDataGenerator
 
     QByteArray operator()() final
     {
-      qDebug() << "create plane index data";
       return createPlaneIndexData( mMesh );
     }
 
@@ -219,11 +218,10 @@ void QgsTinDemTerrainTileGeometry_p::init()
 
 
 QgsTriangularMeshTile::QgsTriangularMeshTile( QgsTriangularMesh *triangularMesh, const QgsRectangle &extent ):
-  mTriangularMesh( triangularMesh ), mExtent( extent )
+  mTriangularMesh( triangularMesh ),
+  mExtent( extent )
 {
   init();
-  qDebug() << "Tile extent : " << mExtent.toRectF();
-  qDebug() << "real Tile extent : " << mRealExtent.toRectF();
 }
 
 int QgsTriangularMeshTile::faceCount() const
@@ -289,7 +287,7 @@ void QgsTriangularMeshTile::init()
 
   int localIndex = 0;
   mRealExtent.setMinimal();
-  for ( auto f : mFaces )
+  for ( int f : qgis::as_const( mFaces ) )
   {
 
     const QgsMeshFace &face( mTriangularMesh->triangles().at( f ) );
@@ -338,3 +336,5 @@ void QgsTriangularMeshTile::init()
 
   mRealExtent.combineExtentWith( mExtent );
 }
+
+/// @endcond

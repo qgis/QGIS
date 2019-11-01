@@ -29,7 +29,11 @@ namespace Qt3DRender
   class QBuffer;
 }
 
-
+/**
+ * \ingroup 3d
+ * Stores a tile of a triangular mesh (vertex, faces and normal vector) for terrain 3D visualisation
+ * \since QGIS 3.12
+ */
 class QgsTriangularMeshTile
 {
     struct LocalVertex
@@ -39,58 +43,71 @@ class QgsTriangularMeshTile
     };
 
   public:
+    //! Constructs a tile of triangles
     QgsTriangularMeshTile( QgsTriangularMesh *triangularMesh, const QgsRectangle &extent );
+
+    //! Returns the number of faces in the mesh tile
     int faceCount() const;
 
+    //! Returns the number of vertices in the mesh tile
     int verticesCount() const;
 
-    //! return the triangle with local index vertex;
+    //! Returns the triangle with local index vertex;
     QgsMeshFace triangle( int localTriangleIndex ) const;
 
-    //! return the vertex with local index
+    //! Returns the vertex with local index
     QgsMeshVertex vertex( int localIndex ) const;
 
-    //! return teh normal vector at vertex with local index
+    //! Returns the normal vector on vertex with local index
     QVector3D vertexNormalVector( int localIndex ) const;
 
+    //! Returns the minimum z value
     float zMinimum() const;
+
+    //! Returns the maximum z value
     float zMaximum() const;
 
+    //! Relational equal operator
     bool operator==( const QgsTriangularMeshTile &other ) const;
 
+    //! Returns the extent which serves to define the tile (the tile extent)
     QgsRectangle tileExtent() const {return mExtent;}
+
+    //! Returns the reeal extent of the tile with triangles that exceed the extent tile
     QgsRectangle realTileExtent() const {return mRealExtent;}
 
   private:
     void init();
 
-    QgsTriangularMesh *mTriangularMesh;
+    QgsTriangularMesh *mTriangularMesh = nullptr;
     QgsRectangle mExtent;
     QgsRectangle mRealExtent;
 
     QVector<int> mFaces;
 
-    //! used to store the global index of the vertrices, the sum of the normales of associated triangles (weighted with area)
-    //! and the sum of the area of asociated triangles.
+    //! used to store the global index of  vertices, and normal vectors
     QVector<LocalVertex> mVertices;
 
-    //! used to retrive the local index from the glogal index
+    //! used to retrieve the local index from the glogal index
     QHash<int, int> mLocalIndexFromGlobalIndex;
 
-    float mZmax;
-    float mZmin;
+    float mZmax = 0;
+    float mZmin = 0;
 };
 
 
+/**
+ * \ingroup 3d
+ * Stores attributes and vertex/index buffers for one terrain tile based on TIN DEM.
+ * \since QGIS 3.12
+ */
 class QgsTinDemTerrainTileGeometry_p: public  Qt3DRender::QGeometry
 {
   public:
+
+    //! Constructs a terrain tile geometry from triangular mesh. Resolution is the number of vertices on one side of the tile,
     explicit QgsTinDemTerrainTileGeometry_p( QgsTriangularMeshTile meshTile,
         float verticaleScale, QNode *parent );
-    ~QgsTinDemTerrainTileGeometry_p()
-    {
-    }
-
 
   private:
     void init();

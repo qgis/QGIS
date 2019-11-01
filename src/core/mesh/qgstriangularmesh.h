@@ -110,7 +110,7 @@ class CORE_EXPORT QgsTriangularMesh
      */
     void triangulate( const QgsMeshFace &face, int nativeIndex );
 
-    // check and, if needed set theindex of the face counter clock-wise
+    // check and, if needed set the indexes of the face counter clock-wise
     void setCCW( QgsMeshFace &face );
 
     // vertices: map CRS; 0-N ... native vertices, N+1 - len ... extra vertices

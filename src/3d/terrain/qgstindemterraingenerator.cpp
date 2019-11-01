@@ -68,7 +68,8 @@ void QgsTinDemTerrainGenerator::updateTilingScheme()
 }
 
 QgsTinDemTerrainTileLoader::QgsTinDemTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node, QgsMeshLayer *layer ):
-  QgsTerrainTileLoader( terrain, node ), mLayer( layer ),
+  QgsTerrainTileLoader( terrain, node ),
+  mLayer( layer ),
   mMeshTile( layer->triangularMesh(),
              terrain->map3D().terrainGenerator()->tilingScheme().
              tileToExtent( node->tileX(),
