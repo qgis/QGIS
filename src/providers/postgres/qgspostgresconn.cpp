@@ -835,11 +835,11 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       QString table   = result.PQgetvalue( i, 0 ); // relname
       QString schema  = result.PQgetvalue( i, 1 ); // nspname
       QString relkind = result.PQgetvalue( i, 2 ); // relation kind
-      QString attributes = result.PQgetvalue( i, 3 ); // attributes array
+      QString comment = result.PQgetvalue( i, 3 ); // table comment
+      QString attributes = result.PQgetvalue( i, 4 ); // attributes array
       bool isView = relkind == QLatin1String( "v" ) || relkind == QLatin1String( "m" );
       bool isMaterializedView = relkind == QLatin1String( "m" );
       bool isForeignTable = relkind == QLatin1String( "f" );
-      QString comment = result.PQgetvalue( i, 3 ); // table comment
 
       //QgsDebugMsg( QStringLiteral( "%1.%2: %3" ).arg( schema ).arg( table ).arg( relkind ) );
 
