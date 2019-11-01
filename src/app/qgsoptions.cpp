@@ -646,7 +646,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   }
   mSegmentationToleranceSpinBox->setValue( tolerance );
 
-  QStringList myScalesList = PROJECT_SCALES.split( ',' );
+  QStringList myScalesList = projectScales().split( ',' );
   myScalesList.append( QStringLiteral( "1:1" ) );
   mSimplifyMaximumScaleComboBox->updateScales( myScalesList );
   mSimplifyMaximumScaleComboBox->setScale( mSettings->value( QStringLiteral( "/qgis/simplifyMaxScale" ), 1 ).toFloat() );
@@ -792,7 +792,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   setZoomFactorValue();
 
   // predefined scales for scale combobox
-  QString scalePaths = mSettings->value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString();
+  QString scalePaths = mSettings->value( QStringLiteral( "Map/scales" ), projectScales() ).toString();
   if ( !scalePaths.isEmpty() )
   {
     const QStringList scalesList = scalePaths.split( ',' );
@@ -2384,7 +2384,7 @@ void QgsOptions::restoreDefaultScaleValues()
 {
   mListGlobalScales->clear();
 
-  QStringList myScalesList = PROJECT_SCALES.split( ',' );
+  QStringList myScalesList = projectScales().split( ',' );
   const auto constMyScalesList = myScalesList;
   for ( const QString &scale : constMyScalesList )
   {

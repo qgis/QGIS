@@ -489,7 +489,7 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
   }
 
 #if PROJ_VERSION_MAJOR < 6
-  projPJ wgs84Proj = pj_init_plus_ctx( pContext, GEOPROJ4.toLocal8Bit().data() ); //defined in qgis.h
+  projPJ wgs84Proj = pj_init_plus_ctx( pContext, geoProj4().toLocal8Bit().data() ); //defined in qgis.h
 
   if ( !wgs84Proj )
   {

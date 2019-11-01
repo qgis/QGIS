@@ -31,7 +31,6 @@
 // and skips specialText handling if it's empty
 static constexpr QChar const &SPECIAL_TEXT_WHEN_EMPTY = QChar( 0x2063 );
 
-
 QgsDoubleSpinBox::QgsDoubleSpinBox( QWidget *parent )
   : QDoubleSpinBox( parent )
 {

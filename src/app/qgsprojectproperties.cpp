@@ -75,7 +75,7 @@
 #include <QDesktopServices>
 #include <QAbstractListModel>
 
-const char *QgsProjectProperties::geoNone()_DESC = QT_TRANSLATE_NOOP( "QgsOptions", "None / Planimetric" );
+const char *QgsProjectProperties::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOptions", "None / Planimetric" );
 
 //stdc++ includes
 
@@ -2360,7 +2360,7 @@ void QgsProjectProperties::populateEllipsoidList()
   EllipsoidDefs myItem;
 
   myItem.acronym = geoNone();
-  myItem.description = tr( geoNone()_DESC );
+  myItem.description = tr( GEO_NONE_DESC );
   myItem.semiMajor = 0.0;
   myItem.semiMinor = 0.0;
   mEllipsoidList.append( myItem );

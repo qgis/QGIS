@@ -8,7 +8,7 @@ from qgis.core import geoNone
 from qgis import core
 
 Qgis.QGIS_VERSION = Qgis.version()
-Qgis.QGIS_VERSIONi_INT = Qgis.versionInt()
+Qgis.QGIS_VERSION_INT = Qgis.versionInt()
 Qgis.QGIS_VERSION_RELEASE_NAME = Qgis.releaseName()
 
 core.GEOWKT = geoWkt()

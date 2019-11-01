@@ -254,7 +254,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     //! Add a scale item to the list of scales
     void addScaleToScaleList( QListWidgetItem *newItem );
 
-    static const char *geoNone()_DESC;
+    static const char *GEO_NONE_DESC;
 
     void updateGuiForMapUnits();
 

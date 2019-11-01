@@ -4384,25 +4384,25 @@ QVector<double> QgsLayoutDesignerDialog::predefinedScales() const
 {
   QgsProject *project = mMasterLayout->layoutProject();
   // first look at project's scales
-  QVector< double > projectScales = project->viewSettings()->mapScales();
-  bool hasProjectScales( project->viewSettings()->useProjectScales() );
-  if ( !hasProjectScales || projectScales.isEmpty() )
+  QVector< double > projectMapScales = project->mapScales();
+  bool hasProjectScales( project->useProjectScales() );
+  if ( !hasProjectScales || projectMapScales.isEmpty() )
   {
     // default to global map tool scales
     QgsSettings settings;
-    QString scalesStr( settings.value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString() );
-    QStringList scales = scalesStr.split( ',' );
+    QString scalesStr( settings.value( QStringLiteral( "Map/scales" ), projectScales() ).toString() );
+    const QStringList scales = scalesStr.split( ',' );
 
-    for ( auto scaleIt = scales.constBegin(); scaleIt != scales.constEnd(); ++scaleIt )
+    for ( const QString &scale : scales )
     {
-      QStringList parts( scaleIt->split( ':' ) );
+      QStringList parts( scale.split( ':' ) );
       if ( parts.size() == 2 )
       {
-        projectScales.push_back( parts[1].toDouble() );
+        projectMapScales.push_back( parts[1].toDouble() );
       }
     }
   }
-  return projectScales;
+  return projectMapScales;
 }
 
 QgsLayoutAtlas *QgsLayoutDesignerDialog::atlas()
