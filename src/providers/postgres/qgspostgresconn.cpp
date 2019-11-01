@@ -144,6 +144,7 @@ Oid QgsPostgresResult::PQoidValue()
 
 QMap<QString, QgsPostgresConn *> QgsPostgresConn::sConnectionsRO;
 QMap<QString, QgsPostgresConn *> QgsPostgresConn::sConnectionsRW;
+
 const int QgsPostgresConn::GEOM_TYPE_SELECT_LIMIT = 100;
 
 QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool readonly, bool shared, bool transaction )
@@ -218,6 +219,7 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
   , mTransaction( transaction )
   , mLock( QMutex::Recursive )
 {
+
   QgsDebugMsg( QStringLiteral( "New PostgreSQL connection for " ) + conninfo );
 
   // expand connectionInfo
@@ -286,7 +288,9 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
       ++i;
       bool ok = QgsCredentials::instance()->get( conninfo, username, password, PQerrorMessage() );
       if ( !ok )
+      {
         break;
+      }
 
       PQfinish();
 
@@ -359,7 +363,6 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
   {
     PQexecNR( QStringLiteral( "SET application_name='QGIS'" ) );
   }
-
 
   PQsetNoticeProcessor( mConn, noticeProcessor, nullptr );
 }
