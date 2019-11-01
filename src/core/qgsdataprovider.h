@@ -539,6 +539,12 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) SIP_SKIP;
 
+    /**
+     * String sequence used for separating components of sublayers strings.
+     * \note Replaces the static const SUBLAYER_SEPARATOR
+     * \see subLayers()
+     * \since QGIS 3.12
+     */
     static QString sublayerSeparator();
 
   signals:

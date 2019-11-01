@@ -391,6 +391,17 @@ Returns ``True`` if metadata was successfully written to the data provider.
 
 
     static QString sublayerSeparator();
+%Docstring
+String sequence used for separating components of sublayers strings.
+
+.. note::
+
+   Replaces the static const SUBLAYER_SEPARATOR
+
+.. seealso:: :py:func:`subLayers`
+
+.. versionadded:: 3.12
+%End
 
   signals:
 
