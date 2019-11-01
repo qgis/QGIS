@@ -114,3 +114,5 @@ rm -rf ${RELEASE_DIR}
 popd
 
 echo "Release in $ZIP_NAME ready."
+
+# vim: et ts=4 :

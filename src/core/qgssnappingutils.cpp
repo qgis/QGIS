@@ -458,7 +458,9 @@ void QgsSnappingUtils::prepareIndex( const QList<LayerAndAreaOfInterest> &layers
     }
 
     if ( !relaxed )
+    {
       QgsDebugMsg( QStringLiteral( "Prepare index total: %1 ms" ).arg( t.elapsed() ) );
+    }
   }
 }
 
