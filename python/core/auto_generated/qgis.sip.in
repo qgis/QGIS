@@ -32,10 +32,20 @@ The Qgis class provides global constants for use throughout the application.
     static const QMetaObject staticMetaObject;
 
   public:
-    static const QString QGIS_VERSION;
-    static const int QGIS_VERSION_INT;
-    static const QString QGIS_RELEASE_NAME;
+    static QString version();
+%Docstring
+Version string
+%End
+    static int versionInt();
+%Docstring
+Version number used for comparing versions using the "Check QGIS Version" function
+%End
+    static QString releaseName();
+%Docstring
+Release name
+%End
     static const char *QGIS_DEV_VERSION;
+    static QString devVersion();
 
 
     enum MessageLevel
@@ -230,18 +240,31 @@ QString qgsVsiPrefix( const QString &path );
 
 
 
-const QString GEOWKT;
-const QString PROJECT_SCALES;
+QString geoWkt();
+%Docstring
+Wkt string that represents a geographic coord sys
+\since QGIS GEOWkt
+%End
+QString projectScales();
 
-const QString GEOPROJ4;
+QString geoProj4();
+%Docstring
+PROJ4 string that represents a geographic coord sys
+%End
 const long GEOSRID;
 const long GEOCRS_ID;
 const long GEO_EPSG_CRS_ID;
-const QString GEO_EPSG_CRS_AUTHID;
+QString geoEpsgCrsAuthId();
+%Docstring
+Geographic coord sys from EPSG authority
+%End
 
 const int USER_CRS_START_ID;
 
-const QString GEO_NONE;
+QString geoNone();
+%Docstring
+Constant that holds the string representation for "No ellips/No CRS"
+%End
 
 
 const double DEFAULT_POINT_SIZE;

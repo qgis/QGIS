@@ -1037,7 +1037,7 @@ bool QgsMapLayer::importNamedStyle( QDomDocument &myDocument, QString &myErrorMe
 
   // get style file version string, if any
   QgsProjectVersion fileVersion( myRoot.attribute( QStringLiteral( "version" ) ) );
-  QgsProjectVersion thisVersion( Qgis::QGIS_VERSION );
+  QgsProjectVersion thisVersion( Qgis::version() );
 
   if ( thisVersion > fileVersion )
   {
@@ -1075,7 +1075,7 @@ void QgsMapLayer::exportNamedMetadata( QDomDocument &doc, QString &errorMsg ) co
   QDomDocument myDocument( documentType );
 
   QDomElement myRootNode = myDocument.createElement( QStringLiteral( "qgis" ) );
-  myRootNode.setAttribute( QStringLiteral( "version" ), Qgis::QGIS_VERSION );
+  myRootNode.setAttribute( QStringLiteral( "version" ), Qgis::version() );
   myDocument.appendChild( myRootNode );
 
   if ( !mMetadata.writeMetadataXml( myRootNode, myDocument ) )
@@ -1094,7 +1094,7 @@ void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg, const 
   QDomDocument myDocument( documentType );
 
   QDomElement myRootNode = myDocument.createElement( QStringLiteral( "qgis" ) );
-  myRootNode.setAttribute( QStringLiteral( "version" ), Qgis::QGIS_VERSION );
+  myRootNode.setAttribute( QStringLiteral( "version" ), Qgis::version() );
   myDocument.appendChild( myRootNode );
 
   if ( !writeSymbology( myRootNode, myDocument, errorMsg, context, categories ) )  // TODO: support relative paths in QML?

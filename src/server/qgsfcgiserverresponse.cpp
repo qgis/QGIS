@@ -166,5 +166,5 @@ void QgsFcgiServerResponse::truncate()
 
 void QgsFcgiServerResponse::setDefaultHeaders()
 {
-  setHeader( QStringLiteral( "Server" ), QStringLiteral( " Qgis FCGI server - QGis version %1" ).arg( Qgis::QGIS_VERSION ) );
+  setHeader( QStringLiteral( "Server" ), QStringLiteral( " Qgis FCGI server - QGis version %1" ).arg( Qgis::version() ) );
 }

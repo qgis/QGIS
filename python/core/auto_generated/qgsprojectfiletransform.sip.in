@@ -40,6 +40,10 @@ Prints the contents via :py:class:`QgsDebugMsg`()
 
     static void convertRasterProperties( QDomDocument &doc, QDomNode &parentNode, QDomElement &rasterPropertiesElem, QgsRasterLayer *rlayer );
 
+    QDomDocument &dom();
+
+    QgsProjectVersion currentVersion() const;
+
 };
 
 

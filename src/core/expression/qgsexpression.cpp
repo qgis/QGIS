@@ -275,7 +275,7 @@ void QgsExpression::initGeomCalculator( const QgsExpressionContext *context )
     if ( crs.isValid() )
     {
       d->mCalc = std::shared_ptr<QgsDistanceArea>( new QgsDistanceArea() );
-      d->mCalc->setEllipsoid( ellipsoid.isEmpty() ? GEO_NONE : ellipsoid );
+      d->mCalc->setEllipsoid( ellipsoid.isEmpty() ? geoNone() : ellipsoid );
       d->mCalc->setSourceCrs( crs, tContext );
     }
   }

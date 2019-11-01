@@ -195,9 +195,9 @@ QString QgsWFSSourceSelect::getPreferredCrs( const QSet<QString> &crsSet ) const
   }
 
   //second: WGS84
-  if ( crsSet.contains( GEO_EPSG_CRS_AUTHID ) )
+  if ( crsSet.contains( geoEpsgCrsAuthId() ) )
   {
-    return GEO_EPSG_CRS_AUTHID;
+    return geoEpsgCrsAuthId();
   }
 
   //third: first entry in set

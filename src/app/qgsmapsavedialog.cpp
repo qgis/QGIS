@@ -512,8 +512,8 @@ void QgsMapSaveDialog::onAccepted()
         {
           // These details will be used on non-GeoPDF exports is the export metadata checkbox is checked
           geoPdfExportDetails.author = QgsProject::instance()->metadata().author();
-          geoPdfExportDetails.producer = QStringLiteral( "QGIS %1" ).arg( Qgis::QGIS_VERSION );
-          geoPdfExportDetails.creator = QStringLiteral( "QGIS %1" ).arg( Qgis::QGIS_VERSION );
+          geoPdfExportDetails.producer = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
+          geoPdfExportDetails.creator = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
           geoPdfExportDetails.creationDateTime = QDateTime::currentDateTime();
           geoPdfExportDetails.subject = QgsProject::instance()->metadata().abstract();
           geoPdfExportDetails.title = QgsProject::instance()->metadata().title();

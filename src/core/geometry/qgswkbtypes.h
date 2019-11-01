@@ -1112,32 +1112,6 @@ class CORE_EXPORT QgsWkbTypes
         return Unknown;
     }
 
-  private:
-
-    struct wkbEntry
-    {
-      wkbEntry( const QString &name, bool isMultiType, Type multiType, Type singleType, Type flatType, GeometryType geometryType,
-                bool hasZ, bool hasM )
-        : mName( name )
-        , mIsMultiType( isMultiType )
-        , mMultiType( multiType )
-        , mSingleType( singleType )
-        , mFlatType( flatType )
-        , mGeometryType( geometryType )
-        , mHasZ( hasZ )
-        , mHasM( hasM )
-      {}
-      QString mName;
-      bool mIsMultiType;
-      Type mMultiType;
-      Type mSingleType;
-      Type mFlatType;
-      GeometryType mGeometryType;
-      bool mHasZ;
-      bool mHasM;
-    };
-
-    static const QMap<Type, wkbEntry> ENTRIES;
 };
 
 #endif // QGSWKBTYPES_H

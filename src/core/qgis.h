@@ -49,13 +49,14 @@ class CORE_EXPORT Qgis
     // Version constants
     //
     //! Version string
-    static const QString QGIS_VERSION;
+    static QString version();
     //! Version number used for comparing versions using the "Check QGIS Version" function
-    static const int QGIS_VERSION_INT;
+    static int versionInt();
     //! Release name
-    static const QString QGIS_RELEASE_NAME;
+    static QString releaseName();
     //! The development version
     static const char *QGIS_DEV_VERSION;
+    static QString devVersion();
 
     // Enumerations
     //
@@ -564,11 +565,11 @@ void CORE_EXPORT qgsFree( void *ptr ) SIP_SKIP;
  * Wkt string that represents a geographic coord sys
  * \since QGIS GEOWkt
  */
-extern CORE_EXPORT const QString GEOWKT;
-extern CORE_EXPORT const QString PROJECT_SCALES;
+QString CORE_EXPORT geoWkt();
+QString CORE_EXPORT projectScales();
 
 //! PROJ4 string that represents a geographic coord sys
-extern CORE_EXPORT const QString GEOPROJ4;
+QString CORE_EXPORT geoProj4();
 //! Magic number for a geographic coord sys in POSTGIS SRID
 const long GEOSRID = 4326;
 //! Magic number for a geographic coord sys in QGIS srs.db tbl_srs.srs_id
@@ -576,7 +577,7 @@ const long GEOCRS_ID = 3452;
 //! Magic number for a geographic coord sys in EpsgCrsId ID format
 const long GEO_EPSG_CRS_ID = 4326;
 //! Geographic coord sys from EPSG authority
-extern CORE_EXPORT const QString GEO_EPSG_CRS_AUTHID;
+QString CORE_EXPORT geoEpsgCrsAuthId();
 
 /**
  * Magick number that determines whether a projection crsid is a system (srs.db)
@@ -584,7 +585,7 @@ extern CORE_EXPORT const QString GEO_EPSG_CRS_AUTHID;
 const int USER_CRS_START_ID = 100000;
 
 //! Constant that holds the string representation for "No ellips/No CRS"
-extern CORE_EXPORT const QString GEO_NONE;
+QString CORE_EXPORT geoNone();
 
 //
 // Constants for point symbols

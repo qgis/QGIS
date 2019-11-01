@@ -591,7 +591,7 @@ namespace QgsWfs
       //create WGS84BoundingBox
       QgsRectangle layerExtent = layer->extent();
       //transform the layers native CRS into WGS84
-      QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
+      QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() );
       QgsRectangle wgs84BoundingRect;
       if ( !layerExtent.isNull() )
       {

@@ -66,38 +66,14 @@ class CORE_EXPORT QgsProjectFileTransform
 
     static void convertRasterProperties( QDomDocument &doc, QDomNode &parentNode, QDomElement &rasterPropertiesElem, QgsRasterLayer *rlayer );
 
+    QDomDocument &dom();
+
+    QgsProjectVersion currentVersion() const;
+
   private:
-
-    typedef struct
-    {
-      QgsProjectVersion from;
-      QgsProjectVersion to;
-      void ( QgsProjectFileTransform::* transformFunc )();
-    } TransformItem;
-
-    static TransformItem sTransformers[];
 
     QDomDocument mDom;
     QgsProjectVersion mCurrentVersion;
-
-    // Transformer functions below. Declare functions here,
-    // define them in qgsprojectfiletransform.cpp and add them
-    // to the transformArray with proper version number
-    void transformNull() {} // Do absolutely nothing
-    void transform081to090();
-    void transform091to0100();
-    void transform0100to0110();
-    void transform0110to1000();
-    void transform1100to1200();
-    void transform1400to1500();
-    void transform1800to1900();
-    void transform2200to2300();
-    void transform3000();
-
-    //helper functions
-    static int rasterBandNumber( const QDomElement &rasterPropertiesElem, const QString &bandName, QgsRasterLayer *rlayer );
-    static void transformContrastEnhancement( QDomDocument &doc, const QDomElement &rasterproperties, QDomElement &rendererElem );
-    static void transformRasterTransparency( QDomDocument &doc, const QDomElement &orig, QDomElement &rendererElem );
 };
 
 

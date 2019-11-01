@@ -75,7 +75,7 @@
 #include <QDesktopServices>
 #include <QAbstractListModel>
 
-const char *QgsProjectProperties::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOptions", "None / Planimetric" );
+const char *QgsProjectProperties::geoNone()_DESC = QT_TRANSLATE_NOOP( "QgsOptions", "None / Planimetric" );
 
 //stdc++ includes
 
@@ -2253,7 +2253,7 @@ void QgsProjectProperties::addWmtsGrid( const QString &crsStr )
   {
     // calculate top, left and scale based on CRS bounds
     QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsStr );
-    QgsCoordinateTransform crsTransform( QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID ), crs, QgsProject::instance() );
+    QgsCoordinateTransform crsTransform( QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() ), crs, QgsProject::instance() );
     try
     {
       // firstly transform CRS bounds expressed in WGS84 to CRS
@@ -2359,8 +2359,8 @@ void QgsProjectProperties::populateEllipsoidList()
   //
   EllipsoidDefs myItem;
 
-  myItem.acronym = GEO_NONE;
-  myItem.description = tr( GEO_NONE_DESC );
+  myItem.acronym = geoNone();
+  myItem.description = tr( geoNone()_DESC );
   myItem.semiMajor = 0.0;
   myItem.semiMinor = 0.0;
   mEllipsoidList.append( myItem );
@@ -2432,7 +2432,7 @@ void QgsProjectProperties::updateEllipsoidUI( int newIndex )
     leSemiMajor->setToolTip( tr( "Select %1 from pull-down menu to adjust radii" ).arg( tr( "Custom" ) ) );
     leSemiMinor->setToolTip( tr( "Select %1 from pull-down menu to adjust radii" ).arg( tr( "Custom" ) ) );
   }
-  if ( mEllipsoidList[ mEllipsoidIndex ].acronym != GEO_NONE )
+  if ( mEllipsoidList[ mEllipsoidIndex ].acronym != geoNone() )
   {
     leSemiMajor->setText( QLocale().toString( myMajor, 'f', 3 ) );
     leSemiMinor->setText( QLocale().toString( myMinor, 'f', 3 ) );

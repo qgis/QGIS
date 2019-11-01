@@ -521,7 +521,7 @@ static void setTitleBarText_( QWidget &qgisApp )
 
   caption += QgisApp::tr( "QGIS" );
 
-  if ( Qgis::QGIS_VERSION.endsWith( QLatin1String( "Master" ) ) )
+  if ( Qgis::version().endsWith( QLatin1String( "Master" ) ) )
   {
     caption += QStringLiteral( " %1" ).arg( Qgis::QGIS_DEV_VERSION );
   }
@@ -557,7 +557,7 @@ static void customSrsValidation_( QgsCoordinateReferenceSystem &srs )
       return;
 
     case QgsOptions::UnknownLayerCrsBehavior::UseDefaultCrs:
-      srs.createFromOgcWmsCrs( QgsSettings().value( QStringLiteral( "Projections/layerDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString() );
+      srs.createFromOgcWmsCrs( QgsSettings().value( QStringLiteral( "Projections/layerDefaultCrs" ), geoEpsgCrsAuthId() ).toString() );
       break;
 
     case QgsOptions::UnknownLayerCrsBehavior::PromptUserForCrs:
@@ -681,7 +681,7 @@ void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
 
     case QgsOptions::UnknownLayerCrsBehavior::UseDefaultCrs:
     {
-      srs.createFromOgcWmsCrs( QgsSettings().value( QStringLiteral( "Projections/layerDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString() );
+      srs.createFromOgcWmsCrs( QgsSettings().value( QStringLiteral( "Projections/layerDefaultCrs" ), geoEpsgCrsAuthId() ).toString() );
       sAuthId = srs.authid();
       visibleMessageBar()->pushMessage( tr( "CRS was undefined" ), tr( "defaulting to CRS %1 - %2" ).arg( sAuthId, srs.description() ), Qgis::Warning, messageTimeout() );
       break;
@@ -1175,7 +1175,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   connect( QgsGui::mapLayerActionRegistry(), &QgsMapLayerActionRegistry::changed, this, &QgisApp::refreshActionFeatureAction );
 
   // set application's caption
-  QString caption = tr( "QGIS - %1 ('%2')" ).arg( Qgis::QGIS_VERSION, Qgis::QGIS_RELEASE_NAME );
+  QString caption = tr( "QGIS - %1 ('%2')" ).arg( Qgis::version(), Qgis::releaseName() );
   setWindowTitle( caption );
 
   // QgsMessageLog::logMessage( tr( "QGIS starting…" ), QString(), Qgis::Info );
@@ -1428,7 +1428,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   QgsGui::instance()->nativePlatformInterface()->initializeMainWindow( windowHandle(),
       QgsApplication::applicationName(),
       QgsApplication::organizationName(),
-      Qgis::QGIS_VERSION );
+      Qgis::version() );
   connect( QgsGui::instance()->nativePlatformInterface(), &QgsNative::usbStorageNotification, mBrowserModel, &QgsBrowserModel::refreshDrives );
 
   // setup application progress reports from task manager
@@ -4698,12 +4698,12 @@ void QgisApp::about()
     sAbt = new QgsAbout( this );
     QString versionString = QStringLiteral( "<html><body><div align='center'><table width='100%'>" );
 
-    versionString += QStringLiteral( "<tr><td>%1</td><td>%2</td><td>" ).arg( tr( "QGIS version" ), Qgis::QGIS_VERSION );
+    versionString += QStringLiteral( "<tr><td>%1</td><td>%2</td><td>" ).arg( tr( "QGIS version" ), Qgis::version() );
 
     if ( QString( Qgis::QGIS_DEV_VERSION ) == QLatin1String( "exported" ) )
     {
       versionString += QStringLiteral( "%1</td><td><a href=\"https://github.com/qgis/QGIS/tree/release-%1_%2\">Release %1.%2</a></td>" )
-                       .arg( tr( "QGIS code branch" ) ).arg( Qgis::QGIS_VERSION_INT / 10000 ).arg( Qgis::QGIS_VERSION_INT / 100 % 100 );
+                       .arg( tr( "QGIS code branch" ) ).arg( Qgis::versionInt() / 10000 ).arg( Qgis::versionInt() / 100 % 100 );
     }
     else
     {
@@ -5743,12 +5743,12 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   mScaleWidget->updateScales();
 
   // set project CRS
-  const QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem( settings.value( QStringLiteral( "/projections/defaultProjectCrs" ), GEO_EPSG_CRS_AUTHID, QgsSettings::App ).toString() );
+  const QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem( settings.value( QStringLiteral( "/projections/defaultProjectCrs" ), geoEpsgCrsAuthId(), QgsSettings::App ).toString() );
   // write the projections _proj string_ to project settings
   const bool planimetric = settings.value( QStringLiteral( "measure/planimetric" ), true, QgsSettings::Core ).toBool();
   prj->setCrs( srs, !planimetric ); // If the default ellipsoid is not planimetric, set it from the default crs
   if ( planimetric )
-    prj->setEllipsoid( GEO_NONE );
+    prj->setEllipsoid( geoNone() );
 
   /* New Empty Project Created
       (before attempting to load custom project templates/filepaths) */
@@ -10047,7 +10047,7 @@ void QgisApp::duplicateVectorStyle( QgsVectorLayer *srcLayer, QgsVectorLayer *de
         QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
     QDomDocument doc( documentType );
     QDomElement rootNode = doc.createElement( QStringLiteral( "qgis" ) );
-    rootNode.setAttribute( QStringLiteral( "version" ), Qgis::QGIS_VERSION );
+    rootNode.setAttribute( QStringLiteral( "version" ), Qgis::version() );
     doc.appendChild( rootNode );
     QString errorMsg;
     QgsReadWriteContext writeContext = QgsReadWriteContext();
@@ -10766,7 +10766,7 @@ void QgisApp::loadPythonSupport()
 #ifdef __MINGW32__
   pythonlibName.prepend( "lib" );
 #endif
-  QString version = QStringLiteral( "%1.%2.%3" ).arg( Qgis::QGIS_VERSION_INT / 10000 ).arg( Qgis::QGIS_VERSION_INT / 100 % 100 ).arg( Qgis::QGIS_VERSION_INT % 100 );
+  QString version = QStringLiteral( "%1.%2.%3" ).arg( Qgis::versionInt() / 10000 ).arg( Qgis::versionInt() / 100 % 100 ).arg( Qgis::versionInt() % 100 );
   QgsDebugMsg( QStringLiteral( "load library %1 (%2)" ).arg( pythonlibName, version ) );
   QLibrary pythonlib( pythonlibName, version );
   // It's necessary to set these two load hints, otherwise Python library won't work correctly
@@ -13899,7 +13899,7 @@ void QgisApp::oldProjectVersionWarning( const QString &oldVersion )
   {
     QString smalltext = tr( "This project file was saved by QGIS version %1."
                             " When saving this project file, QGIS will update it to version %2, "
-                            "possibly rendering it useless for older versions of QGIS." ).arg( oldVersion, Qgis::QGIS_VERSION );
+                            "possibly rendering it useless for older versions of QGIS." ).arg( oldVersion, Qgis::version() );
 
     QString title = tr( "Project file is older" );
 
