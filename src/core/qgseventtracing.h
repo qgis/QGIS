@@ -18,6 +18,8 @@
 
 #include "qgis_core.h"
 
+#define SIP_NO_FILE
+
 #include <QMutex>
 #include <QElapsedTimer>
 #include <QString>
