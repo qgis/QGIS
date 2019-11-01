@@ -58,8 +58,8 @@
  * 2. repeatedly call addEvent()
  * 3. call stopTracing() and writeTrace() to export the data to JSON
  *
- * \since QGIS 3.12
  * \note not available in Python bindings
+ * \since QGIS 3.12
  */
 class CORE_EXPORT QgsEventTracing
 {
