@@ -191,7 +191,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
 
       QgsMapLayer *layer = nodeLayer->layer();
-      if ( !layer )
+      if ( !layer || !mShowLayerIcons )
         return QVariant();
 
       // icons possibly overriding default icon

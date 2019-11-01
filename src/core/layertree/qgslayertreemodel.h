@@ -286,6 +286,13 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      */
     static int scaleIconSize( int standardSize );
 
+    /**
+     * Whether to show layer icons in the layer tree
+     *
+     * \since QGIS 3.12
+     */
+    void setLayerIconsVisible( bool visible ) { mShowLayerIcons = visible; }
+
   protected slots:
     void nodeWillAddChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
     void nodeAddedChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
@@ -441,6 +448,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     int mLegendMapViewDpi;
     double mLegendMapViewScale;
     QTimer mDeferLegendInvalidationTimer;
+    bool mShowLayerIcons = true;
 
   private:
 
