@@ -227,6 +227,7 @@ SET(QGIS_CORE_SRCS
   qgseditformconfig.cpp
   qgsellipsoidutils.cpp
   qgserror.cpp
+  qgseventtracing.cpp
   qgsexpressioncontext.cpp
   qgsexpressionfieldbuffer.cpp
   qgsfeature.cpp
@@ -705,6 +706,7 @@ SET(QGIS_CORE_HDRS
   qgseditorwidgetsetup.h
   qgsellipsoidutils.h
   qgserror.h
+  qgseventtracing.h
   qgsexception.h
   qgsexpressioncontext.h
   qgsexpressioncontextgenerator.h
