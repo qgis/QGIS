@@ -1971,7 +1971,7 @@ static QVariant fcnEpoch( const QVariantList &values, const QgsExpressionContext
 
 static QVariant fcnFromEpoch( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  long millisecs_since_epoch = QgsExpressionUtils::getIntValue( values.at( 0 ), parent );
+  long long millisecs_since_epoch = QgsExpressionUtils::getIntValue( values.at( 0 ), parent );
   // no sense to check for strange values, as Qt behaviour is undefined anyway (see docs)
   return QVariant( QDateTime::fromMSecsSinceEpoch( millisecs_since_epoch ) );
 }
