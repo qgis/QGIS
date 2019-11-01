@@ -721,6 +721,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
       << QgsProcessingParameterDistance::typeName()
       << QgsProcessingParameterScale::typeName()
       << QgsProcessingParameterBoolean::typeName()
+      << QgsProcessingParameterEnum::typeName()
       << QgsProcessingParameterExpression::typeName()
       << QgsProcessingParameterField::typeName()
       << QgsProcessingParameterString::typeName()
