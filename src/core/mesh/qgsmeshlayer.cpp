@@ -33,7 +33,7 @@
 #include "qgsreadwritecontext.h"
 #include "qgsstyle.h"
 #include "qgstriangularmesh.h"
-
+#include "qgsmesh3daveraging.h"
 
 
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
@@ -54,7 +54,8 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
 
   setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
   setDefaultRendererSettings();
-} // QgsMeshLayer ctor
+  setAveragingMethod( QgsMesh3dAveragingMethod::create( mRendererSettings.averagingSettings() ) );
+}
 
 
 void QgsMeshLayer::setDefaultRendererSettings()
@@ -154,6 +155,22 @@ void QgsMeshLayer::setRendererSettings( const QgsMeshRendererSettings &settings 
   triggerRepaint();
 }
 
+QgsMesh3dAveragingMethod *QgsMeshLayer::averagingMethod() const
+{
+  return mAveragingMethod.get();
+}
+
+void QgsMeshLayer::setAveragingMethod( QgsMesh3dAveragingMethod *method )
+{
+  bool needsRepaint = QgsMesh3dAveragingMethod::equals( method, mAveragingMethod.get() );
+  if ( needsRepaint )
+  {
+    mAveragingMethod.reset( method );
+    emit rendererChanged();
+    triggerRepaint();
+  }
+}
+
 QgsMeshTimeSettings QgsMeshLayer::timeSettings() const
 {
   return mTimeSettings;
@@ -180,31 +197,45 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index
     if ( faceIndex >= 0 )
     {
       int nativeFaceIndex = mTriangularMesh->trianglesToNativeFaces().at( faceIndex );
-      if ( dataProvider()->isFaceActive( index, nativeFaceIndex ) )
+      const QgsMeshDatasetGroupMetadata::DataType dataType = dataProvider()->datasetGroupMetadata( index ).dataType();
+      switch ( dataType )
       {
+        case QgsMeshDatasetGroupMetadata::DataOnFaces:
+          if ( dataProvider()->isFaceActive( index, nativeFaceIndex ) )
+          {
+            value = dataProvider()->datasetValue( index, nativeFaceIndex );
+          }
+          break;
+        case QgsMeshDatasetGroupMetadata::DataOnVertices:
+          if ( dataProvider()->isFaceActive( index, nativeFaceIndex ) )
+          {
+            const QgsMeshFace &face = mTriangularMesh->triangles()[faceIndex];
+            const int v1 = face[0], v2 = face[1], v3 = face[2];
+            const QgsPoint p1 = mTriangularMesh->vertices()[v1], p2 = mTriangularMesh->vertices()[v2], p3 = mTriangularMesh->vertices()[v3];
+            const QgsMeshDatasetValue val1 = dataProvider()->datasetValue( index, v1 );
+            const QgsMeshDatasetValue val2 = dataProvider()->datasetValue( index, v2 );
+            const QgsMeshDatasetValue val3 = dataProvider()->datasetValue( index, v3 );
+            const double x = QgsMeshLayerUtils::interpolateFromVerticesData( p1, p2, p3, val1.x(), val2.x(), val3.x(), point );
+            double y = std::numeric_limits<double>::quiet_NaN();
+            bool isVector = dataProvider()->datasetGroupMetadata( index ).isVector();
+            if ( isVector )
+              y = QgsMeshLayerUtils::interpolateFromVerticesData( p1, p2, p3, val1.y(), val2.y(), val3.y(), point );
 
-        if ( dataProvider()->datasetGroupMetadata( index ).dataType() == QgsMeshDatasetGroupMetadata::DataOnFaces )
-        {
-          int nativeFaceIndex = mTriangularMesh->trianglesToNativeFaces().at( faceIndex );
-          value = dataProvider()->datasetValue( index, nativeFaceIndex );
-        }
-        else
-        {
-          const QgsMeshFace &face = mTriangularMesh->triangles()[faceIndex];
-          const int v1 = face[0], v2 = face[1], v3 = face[2];
-          const QgsPoint p1 = mTriangularMesh->vertices()[v1], p2 = mTriangularMesh->vertices()[v2], p3 = mTriangularMesh->vertices()[v3];
-          const QgsMeshDatasetValue val1 = dataProvider()->datasetValue( index, v1 );
-          const QgsMeshDatasetValue val2 = dataProvider()->datasetValue( index, v2 );
-          const QgsMeshDatasetValue val3 = dataProvider()->datasetValue( index, v3 );
-          const double x = QgsMeshLayerUtils::interpolateFromVerticesData( p1, p2, p3, val1.x(), val2.x(), val3.x(), point );
-          double y = std::numeric_limits<double>::quiet_NaN();
-          bool isVector = dataProvider()->datasetGroupMetadata( index ).isVector();
-          if ( isVector )
-            y = QgsMeshLayerUtils::interpolateFromVerticesData( p1, p2, p3, val1.y(), val2.y(), val3.y(), point );
-
-          value = QgsMeshDatasetValue( x, y );
-        }
-
+            value = QgsMeshDatasetValue( x, y );
+          }
+          break;
+        case QgsMeshDatasetGroupMetadata::DataOnVolumes:
+          QgsMesh3dAveragingMethod *avgMethod = averagingMethod();
+          if ( avgMethod )
+          {
+            const QgsMesh3dDataBlock block3d = dataProvider()->dataset3dValues( index, nativeFaceIndex, 1 );
+            const QgsMeshDataBlock block2d = avgMethod->calculate( block3d );
+            if ( block2d.active( 0 ) )
+            {
+              value = block2d.value( 0 );
+            }
+          }
+          break;
       }
     }
   }

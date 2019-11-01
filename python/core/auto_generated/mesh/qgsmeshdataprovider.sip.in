@@ -217,6 +217,79 @@ For scalar and vector 2d the behavior is undefined
 
 };
 
+class QgsMesh3dDataBlock
+{
+%Docstring
+
+QgsMesh3dDataBlock is a block of 3d stacked mesh data related N
+faces defined on base mesh frame.
+
+data are implicitly shared, so the class can be quickly copied
+std.numeric_limits<double>.quiet_NaN() represents NODATA value
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsmeshdataprovider.h"
+%End
+  public:
+    enum DataType
+    {
+      ActiveFlagInteger,
+      ScalarDouble,
+      VectorDouble,
+      VerticalLevelsCount,
+      VerticalLevels,
+      FaceToVolumeIndex
+    };
+
+    QgsMesh3dDataBlock();
+%Docstring
+Constructs an invalid block
+%End
+
+    ~QgsMesh3dDataBlock();
+
+    QgsMesh3dDataBlock( int count, int maximumVerticalLevels, bool isVector );
+%Docstring
+Constructs a new block for count faces
+%End
+
+    void setIsValid();
+%Docstring
+Sets block as valid
+%End
+
+    bool isValid() const;
+%Docstring
+Whether the block is valid
+%End
+
+    bool isVector() const;
+%Docstring
+Whether we store vector values
+%End
+
+    int count() const;
+%Docstring
+Number of items stored in the block
+%End
+
+    int firstVolumeIndex() const;
+%Docstring
+Index of the first volume stored in the buffer
+%End
+
+    int lastVolumeIndex() const;
+%Docstring
+Index of the last volume stored in the buffer
+%End
+
+
+
+};
+
 class QgsMeshDatasetGroupMetadata
 {
 %Docstring
@@ -239,7 +312,8 @@ such as whether the data is vector or scalar, name
     enum DataType
     {
       DataOnFaces,
-      DataOnVertices
+      DataOnVertices,
+      DataOnVolumes
     };
 
     QgsMeshDatasetGroupMetadata();
@@ -249,7 +323,7 @@ Constructs an empty metadata object
 
     QgsMeshDatasetGroupMetadata( const QString &name,
                                  bool isScalar,
-                                 bool isOnVertices,
+                                 DataType dataType,
                                  double minimum,
                                  double maximum,
                                  const QMap<QString, QString> &extraOptions );
@@ -258,7 +332,7 @@ Constructs a valid metadata object
 
 :param name: name of the dataset group
 :param isScalar: dataset contains scalar data, specifically the y-value of QgsMeshDatasetValue is NaN
-:param isOnVertices: dataset values are defined on mesh's vertices. If ``False``, values are defined on faces.
+:param dataType: where the data are defined on (vertices, faces or volumes)
 :param minimum: minimum value (magnitude for vectors) present among all group's dataset values
 :param maximum: maximum value (magnitude for vectors) present among all group's dataset values
 :param extraOptions: dataset's extra options stored by the provider. Usually contains the name, time value, time units, data file vendor, ...
@@ -286,7 +360,9 @@ Returns whether dataset group has scalar data
 
     DataType dataType() const;
 %Docstring
-Returns whether dataset group data is defined on vertices or faces
+Returns whether dataset group data is defined on vertices or faces or volumes
+
+.. versionadded:: 3.12
 %End
 
     double minimum() const;
@@ -327,7 +403,8 @@ Constructs an empty metadata object
     QgsMeshDatasetMetadata( double time,
                             bool isValid,
                             double minimum,
-                            double maximum
+                            double maximum,
+                            int maximumVerticalLevelsCount
                           );
 %Docstring
 Constructs a valid metadata object
@@ -336,6 +413,7 @@ Constructs a valid metadata object
 :param isValid: dataset is loadad and valid for fetching the data
 :param minimum: minimum value (magnitude for vectors) present among dataset values
 :param maximum: maximum value (magnitude for vectors) present among dataset values
+:param maximumVerticalLevelsCount: maximum number of vertical levels for 3d stacked meshes, 0 for 2d meshes
 %End
 
     double time() const;
@@ -356,6 +434,13 @@ Returns minimum scalar value/vector magnitude present for the dataset
     double maximum() const;
 %Docstring
 Returns maximum scalar value/vector magnitude present for the dataset
+%End
+
+    int maximumVerticalLevelsCount() const;
+%Docstring
+Returns maximum number of vertical levels for 3d stacked meshes
+
+.. versionadded:: 3.12
 %End
 
 };
@@ -478,19 +563,40 @@ Returns dataset metadata
     virtual QgsMeshDatasetValue datasetValue( QgsMeshDatasetIndex index, int valueIndex ) const = 0;
 %Docstring
 Returns vector/scalar value associated with the index from the dataset
-To read multiple continuous values, use :py:func:`QgsMeshDatasetSourceInterface.datasetValues()`
+To read multiple continuous values, use datasetValues()
 
 See QgsMeshDatasetMetadata.isVector() or :py:func:`QgsMeshDataBlock.type()`
 to check if the returned value is vector or scalar
+
+Returns invalid value for DataOnVolumes
+
+.. seealso:: :py:func:`datasetValues`
 %End
 
     virtual QgsMeshDataBlock datasetValues( QgsMeshDatasetIndex index, int valueIndex, int count ) const = 0;
 %Docstring
 Returns N vector/scalar values from the index from the dataset
 
-See QgsMeshDatasetMetadata.isVector() to check if the returned value is vector or scalar
+See QgsMeshDatasetMetadata.isVector() or :py:func:`QgsMeshDataBlock.type()`
+to check if the returned value is vector or scalar
+
+Returns invalid block for DataOnVolumes. Use QgsMeshLayerUtils.datasetValues() if you
+need block for any type of data typ
 
 .. versionadded:: 3.6
+%End
+
+    virtual QgsMesh3dDataBlock dataset3dValues( QgsMeshDatasetIndex index, int faceIndex, int count ) const = 0;
+%Docstring
+Returns N vector/scalar values from the face index from the dataset for 3d stacked meshes
+
+See QgsMeshDatasetMetadata.isVector() to check if the returned value is vector or scalar
+
+returns invalid block for DataOnFaces and DataOnVertices.
+
+.. seealso:: :py:func:`datasetValues`
+
+.. versionadded:: 3.12
 %End
 
     virtual bool isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const = 0;

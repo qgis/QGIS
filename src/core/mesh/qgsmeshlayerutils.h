@@ -34,10 +34,13 @@
 class QgsMeshTimeSettings;
 class QgsTriangularMesh;
 class QgsMeshDataBlock;
+class QgsMesh3dAveragingMethod;
+class QgsMeshDatasetValue;
+class QgsMeshDataProvider;
 
 /**
  * \ingroup core
- * Misc utility functions used for mesh layer support
+ * Misc utility functions used for mesh layer/data provider support
  *
  * \note not available in Python bindings
  * \since QGIS 3.4
@@ -45,6 +48,32 @@ class QgsMeshDataBlock;
 class CORE_EXPORT QgsMeshLayerUtils
 {
   public:
+
+    /**
+     * \brief Creates 3D averaging method from its renderer settings.
+     *
+     * \since QGIS 3.12
+     */
+    static QgsMesh3dAveragingMethod *createAveragingMethod( const QgsMeshRenderer3dAveragingSettings &settings );
+
+    /**
+     * \brief Returns N vector/scalar values from the index from the dataset
+     *
+     * caller is responsible to set correct value index value:
+     * for DataOnFaces -> native face index
+     * for DataOnVertices -> native vertex index
+     * for DataOnVolumes -> native face index
+     *
+     * See QgsMeshDatasetGroupMetadata::isVector() to check if the returned value is vector or scalar
+     *
+     * \since QGIS 3.12
+     */
+    static QgsMeshDataBlock datasetValues(
+      const QgsMeshDataProvider *dataProvider,
+      QgsMeshDatasetIndex index,
+      int valueIndex,
+      int count,
+      const QgsMesh3dAveragingMethod *averagingMethod );
 
     /**
      * Calculates magnitude values from the given QgsMeshDataBlock.

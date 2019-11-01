@@ -129,13 +129,13 @@ bool QgsMeshDatasetValue::operator==( const QgsMeshDatasetValue &other ) const
 
 QgsMeshDatasetGroupMetadata::QgsMeshDatasetGroupMetadata( const QString &name,
     bool isScalar,
-    bool isOnVertices,
+    DataType dataType,
     double minimum,
     double maximum,
     const QMap<QString, QString> &extraOptions )
   : mName( name )
   , mIsScalar( isScalar )
-  , mIsOnVertices( isOnVertices )
+  , mDataType( dataType )
   , mMinimumValue( minimum )
   , mMaximumValue( maximum )
   , mExtraOptions( extraOptions )
@@ -164,7 +164,7 @@ QString QgsMeshDatasetGroupMetadata::name() const
 
 QgsMeshDatasetGroupMetadata::DataType QgsMeshDatasetGroupMetadata::dataType() const
 {
-  return ( mIsOnVertices ) ? DataType::DataOnVertices : DataType::DataOnFaces;
+  return mDataType;
 }
 
 double QgsMeshDatasetGroupMetadata::minimum() const
@@ -187,14 +187,17 @@ QgsMeshDatasetGroupMetadata QgsMeshDatasetSourceInterface::datasetGroupMetadata(
   return datasetGroupMetadata( index.group() );
 }
 
-QgsMeshDatasetMetadata::QgsMeshDatasetMetadata( double time,
-    bool isValid,
-    double minimum,
-    double maximum )
+QgsMeshDatasetMetadata::QgsMeshDatasetMetadata(
+  double time,
+  bool isValid,
+  double minimum,
+  double maximum,
+  int maximumVerticalLevelsCount )
   : mTime( time )
   , mIsValid( isValid )
   , mMinimumValue( minimum )
   , mMaximumValue( maximum )
+  , mMaximumVerticalLevelsCount( maximumVerticalLevelsCount )
 {
 }
 
@@ -216,6 +219,11 @@ double QgsMeshDatasetMetadata::minimum() const
 double QgsMeshDatasetMetadata::maximum() const
 {
   return mMaximumValue;
+}
+
+int QgsMeshDatasetMetadata::maximumVerticalLevelsCount() const
+{
+  return mMaximumVerticalLevelsCount;
 }
 
 QgsMeshDataBlock::QgsMeshDataBlock()
@@ -335,4 +343,100 @@ int QgsMesh::vertexCount() const
 int QgsMesh::faceCount() const
 {
   return faces.size();
+}
+
+QgsMesh3dDataBlock::QgsMesh3dDataBlock() = default;
+
+QgsMesh3dDataBlock::~QgsMesh3dDataBlock() {};
+
+QgsMesh3dDataBlock::QgsMesh3dDataBlock( int count, int maximumVerticalLevels, bool isVector )
+  : mIsVector( isVector )
+  , mMaximumVerticalLevels( maximumVerticalLevels )
+{
+  if ( mMaximumVerticalLevels > 0 )
+  {
+    mVerticalLevelsCount.resize( count );
+    mVerticalLevels.resize( count * mMaximumVerticalLevels );
+    mFaceToVolumeIndex.resize( count );
+    mIntegerBuffer.resize( count * mMaximumVerticalLevels );
+
+    int doubleBufSize = count * mMaximumVerticalLevels;
+    if ( isVector )
+      doubleBufSize *= 2;
+    mDoubleBuffer.resize( doubleBufSize );
+  }
+}
+
+bool QgsMesh3dDataBlock::isValid() const
+{
+  return mIsValid;
+}
+
+bool QgsMesh3dDataBlock::isVector() const
+{
+  return mIsVector;
+}
+
+int QgsMesh3dDataBlock::count() const
+{
+  return mVerticalLevelsCount.size();
+}
+
+int QgsMesh3dDataBlock::firstVolumeIndex() const
+{
+  if ( mFaceToVolumeIndex.empty() )
+    return -1;
+  return mFaceToVolumeIndex[0];
+}
+
+int QgsMesh3dDataBlock::lastVolumeIndex() const
+{
+  if ( mFaceToVolumeIndex.empty() || mVerticalLevelsCount.empty() )
+    return -1;
+  const int lastVolumeStartIndex = mFaceToVolumeIndex[mFaceToVolumeIndex.size() - 1];
+  const int volumesCountInLastRow = mVerticalLevelsCount[mVerticalLevelsCount.size() - 1];
+  return lastVolumeStartIndex + volumesCountInLastRow;
+}
+
+void *QgsMesh3dDataBlock::buffer( QgsMesh3dDataBlock::DataType type )
+{
+  switch ( type )
+  {
+    case ScalarDouble:
+      return mDoubleBuffer.data();
+    case VectorDouble:
+      return mDoubleBuffer.data();
+    case ActiveFlagInteger:
+      return mIntegerBuffer.data();
+    case VerticalLevels:
+      return mVerticalLevels.data();
+    case VerticalLevelsCount:
+      return mVerticalLevelsCount.data();
+    case FaceToVolumeIndex:
+      return mFaceToVolumeIndex.data();
+  }
+}
+
+const void *QgsMesh3dDataBlock::constBuffer( QgsMesh3dDataBlock::DataType type ) const
+{
+  switch ( type )
+  {
+    case ScalarDouble:
+      return mDoubleBuffer.constData();
+    case VectorDouble:
+      return mDoubleBuffer.constData();
+    case ActiveFlagInteger:
+      return mIntegerBuffer.constData();
+    case VerticalLevels:
+      return mVerticalLevels.constData();
+    case VerticalLevelsCount:
+      return mVerticalLevelsCount.constData();
+    case FaceToVolumeIndex:
+      return mFaceToVolumeIndex.constData();
+  }
+}
+
+void QgsMesh3dDataBlock::setIsValid()
+{
+  mIsValid = true;
 }

@@ -23,6 +23,7 @@
 #include "qgsmeshmemorydataprovider.h"
 #include "qgstriangularmesh.h"
 #include "qgsmapsettings.h"
+#include "qgsmeshlayerutils.h"
 
 const double D_TRUE = 1.0;
 const double D_FALSE = 0.0;
@@ -45,7 +46,7 @@ std::shared_ptr<QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::create( const QStri
       grp->minimum = meta.minimum();
       grp->name = meta.name();
 
-      int count = ( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnFaces ) ? dp->faceCount() : dp->vertexCount();
+      int count = ( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices ) ? dp->vertexCount() : dp->faceCount();
       for ( int dataset_i = 0; dataset_i < dp->datasetCount( group_i ); ++dataset_i )
       {
         const QgsMeshDatasetIndex index( group_i, dataset_i );
@@ -56,7 +57,7 @@ std::shared_ptr<QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::create( const QStri
         ds->time = dsMeta.time();
         ds->valid = dsMeta.isValid();
 
-        const QgsMeshDataBlock block = dp->datasetValues( index, 0, count );
+        const QgsMeshDataBlock block = QgsMeshLayerUtils::datasetValues( dp, index, 0, count, mMeshLayer->averagingMethod() );
         Q_ASSERT( block.count() == count );
         for ( int value_i = 0; value_i < count; ++value_i )
           ds->values[value_i] = block.value( value_i );

@@ -357,14 +357,16 @@ void QgsMeshContours::populateCache( const QgsMeshDatasetIndex &index, QgsMeshRe
 {
   if ( mCachedIndex != index )
   {
-    bool scalarDataOnVertices = mMeshLayer->dataProvider()->datasetGroupMetadata( index ).dataType() != QgsMeshDatasetGroupMetadata::DataOnFaces;
+    bool scalarDataOnVertices = mMeshLayer->dataProvider()->datasetGroupMetadata( index ).dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
     int count =  scalarDataOnVertices ? mNativeMesh->vertices.count() : mNativeMesh->faces.count();
 
     // populate scalar values
-    QgsMeshDataBlock vals = mMeshLayer->dataProvider()->datasetValues(
+    QgsMeshDataBlock vals = QgsMeshLayerUtils::datasetValues(
+                              mMeshLayer->dataProvider(),
                               index,
                               0,
-                              count );
+                              count,
+                              mMeshLayer->averagingMethod() );
 
     // vals could be scalar or vectors, for contour rendering we want always magnitude
     mDatasetValues = QgsMeshLayerUtils::calculateMagnitudes( vals );

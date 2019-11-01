@@ -190,11 +190,13 @@ QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
 
   const QgsMeshDatasetGroupMetadata metadata = layer.dataProvider()->datasetGroupMetadata( datasetIndex );
   bool scalarDataOnVertices = metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
-
-  QgsMeshDataBlock vals = layer.dataProvider()->datasetValues(
+  const int count = scalarDataOnVertices ? nativeMesh->vertices.count() : nativeMesh->faces.count();
+  QgsMeshDataBlock vals = QgsMeshLayerUtils::datasetValues(
+                            layer.dataProvider(),
                             datasetIndex,
                             0,
-                            scalarDataOnVertices ? nativeMesh->vertices.count() : nativeMesh->faces.count() );
+                            count,
+                            layer.averagingMethod() );
 
   QVector<double> datasetValues = QgsMeshLayerUtils::calculateMagnitudes( vals );
   QgsMeshDataBlock activeFaceFlagValues = layer.dataProvider()->areFacesActive(

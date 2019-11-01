@@ -15,15 +15,51 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmeshlayerutils.h"
-#include "qgsmeshtimesettings.h"
-#include "qgstriangularmesh.h"
-
 #include <limits>
 #include <QTime>
 #include <QDateTime>
 
+#include "qgsmeshlayerutils.h"
+#include "qgsmeshtimesettings.h"
+#include "qgstriangularmesh.h"
+#include "qgsmeshdataprovider.h"
+#include "qgsmesh3daveraging.h"
+
+
 ///@cond PRIVATE
+
+QgsMesh3dAveragingMethod *QgsMeshLayerUtils::createAveragingMethod( const QgsMeshRenderer3dAveragingSettings &settings )
+{
+  return QgsMesh3dAveragingMethod::create( settings );
+}
+
+QgsMeshDataBlock QgsMeshLayerUtils::datasetValues(
+  const QgsMeshDataProvider *dataProvider,
+  QgsMeshDatasetIndex index,
+  int valueIndex,
+  int count,
+  const QgsMesh3dAveragingMethod *averagingMethod )
+{
+  QgsMeshDataBlock block;
+  if ( !dataProvider )
+    return block;
+
+  // try to get directly 2D dataset block
+  block = dataProvider->datasetValues( index, valueIndex, count );
+  if ( block.isValid() )
+    return block;
+
+  // try to get 2D block
+  if ( !averagingMethod )
+    return block;
+
+  QgsMesh3dDataBlock block3d = dataProvider->dataset3dValues( index, valueIndex, count );
+  if ( !block3d.isValid() )
+    return block;
+
+  block = averagingMethod->calculate( block3d );
+  return block;
+}
 
 QVector<double> QgsMeshLayerUtils::calculateMagnitudes( const QgsMeshDataBlock &block )
 {

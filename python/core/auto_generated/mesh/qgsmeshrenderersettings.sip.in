@@ -548,6 +548,97 @@ Reads configuration from the given DOM element
 
 };
 
+class QgsMeshRendererAveragingSingleVerticalLayerSettings
+{
+%Docstring
+
+Represents mesh renderer settings for averaging method :py:class:`QgsMeshSingleLevelAverageMethod`
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsmeshrenderersettings.h"
+%End
+  public:
+
+    int verticalLayer() const;
+%Docstring
+Returns index of vertical layer to show (indexed from 0, from top layer)
+%End
+    void setVerticalLayer( int verticalLayer );
+%Docstring
+Sets index of vertical layer to show (indexed from 0, from top layer)
+%End
+
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Writes configuration to a new DOM element
+%End
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads configuration from the given DOM element
+%End
+};
+
+class QgsMeshRenderer3dAveragingSettings
+{
+%Docstring
+
+Represents mesh renderer settings for averaging method
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsmeshrenderersettings.h"
+%End
+  public:
+
+    enum Method
+    {
+      SingleVerticalLayer,
+    };
+
+    Method averagingMethod() const;
+%Docstring
+Returns averaging method
+%End
+
+    void setAveragingMethod( const Method &averagingMethod );
+%Docstring
+Sets averaging method
+%End
+
+    QgsMeshRendererAveragingSingleVerticalLayerSettings singleVerticalLayerSettings() const;
+%Docstring
+Returns settings for :py:class:`QgsMeshSingleLevelAverageMethod`
+%End
+
+    void setSingleVerticalLayerSettings( const QgsMeshRendererAveragingSingleVerticalLayerSettings &singleVerticalLayerSettings );
+%Docstring
+Sets settings for :py:class:`QgsMeshSingleLevelAverageMethod`
+%End
+
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Writes configuration to a new DOM element
+%End
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads configuration from the given DOM element
+%End
+
+};
+
 class QgsMeshRendererSettings
 {
 %Docstring
@@ -597,6 +688,15 @@ Sets new renderer settings
 Returns renderer settings
 %End
     void setVectorSettings( int groupIndex, const QgsMeshRendererVectorSettings &settings );
+%Docstring
+Sets new renderer settings
+%End
+
+    QgsMeshRenderer3dAveragingSettings averagingSettings( ) const;
+%Docstring
+Returns renderer settings
+%End
+    void setAveragingSettings( const QgsMeshRenderer3dAveragingSettings &settings );
 %Docstring
 Sets new renderer settings
 %End

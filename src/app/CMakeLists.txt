@@ -252,6 +252,7 @@ SET(QGIS_APP_SRCS
 
   mesh/qgsmeshlayerproperties.cpp
   mesh/qgsrenderermeshpropertieswidget.cpp
+  mesh/qgsmeshrenderer3daveragingwidget.cpp
   mesh/qgsmeshrenderermeshsettingswidget.cpp
   mesh/qgsmeshrendererscalarsettingswidget.cpp
   mesh/qgsmeshrenderervectorsettingswidget.cpp

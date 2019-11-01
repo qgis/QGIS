@@ -157,6 +157,8 @@ Returns renderer settings
 Sets new renderer settings
 %End
 
+
+
     QgsMeshTimeSettings timeSettings() const;
 %Docstring
 Returns time format settings

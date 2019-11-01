@@ -364,9 +364,22 @@ QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datase
          .arg( time );
 
   const QgsMeshDatasetGroupMetadata gmeta = mMeshLayer->dataProvider()->datasetGroupMetadata( datasetIndex );
+  QString definedOn;
+  switch ( gmeta.dataType() )
+  {
+    case QgsMeshDatasetGroupMetadata::DataOnVertices:
+      definedOn = tr( "vertices" );
+      break;
+    case QgsMeshDatasetGroupMetadata::DataOnFaces:
+      definedOn = tr( "faces" );
+      break;
+    case QgsMeshDatasetGroupMetadata::DataOnVolumes:
+      definedOn = tr( "volumes" );
+      break;
+  }
   msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
          .arg( tr( "Data Type" ) )
-         .arg( gmeta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices ? tr( "Defined on vertices" ) : tr( "Defined on faces" ) );
+         .arg( definedOn );
 
   msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
          .arg( tr( "Is vector" ) )
