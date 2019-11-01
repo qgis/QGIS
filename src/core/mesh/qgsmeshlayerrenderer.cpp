@@ -103,10 +103,13 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
     mScalarDataOnVertices = metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
 
     // populate scalar values
-    QgsMeshDataBlock vals = layer->dataProvider()->datasetValues(
+    const int count = mScalarDataOnVertices ? mNativeMesh.vertices.count() : mNativeMesh.faces.count();
+    QgsMeshDataBlock vals = QgsMeshLayerUtils::datasetValues(
+                              layer->dataProvider(),
                               datasetIndex,
                               0,
-                              mScalarDataOnVertices ? mNativeMesh.vertices.count() : mNativeMesh.faces.count() );
+                              count,
+                              layer->averagingMethod() );
 
     // vals could be scalar or vectors, for contour rendering we want always magnitude
     mScalarDatasetValues = QgsMeshLayerUtils::calculateMagnitudes( vals );
@@ -189,10 +192,12 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
       else
         count = mNativeMesh.faces.count();
 
-      mVectorDatasetValues = layer->dataProvider()->datasetValues(
+      mVectorDatasetValues = QgsMeshLayerUtils::datasetValues(
+                               layer->dataProvider(),
                                datasetIndex,
                                0,
-                               count );
+                               count,
+                               layer->averagingMethod() );
 
       mVectorDatasetValuesMag = QgsMeshLayerUtils::calculateMagnitudes( mVectorDatasetValues );
 

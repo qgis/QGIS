@@ -383,7 +383,7 @@ QgsMeshDatasetGroupMetadata QgsMeshMemoryDatasetGroup::groupMetadata() const
   return QgsMeshDatasetGroupMetadata(
            name,
            isScalar,
-           type == QgsMeshDatasetGroupMetadata::DataOnVertices,
+           type,
            minimum,
            maximum,
            metadata
@@ -421,7 +421,8 @@ QgsMeshDatasetMetadata QgsMeshMemoryDataProvider::datasetMetadata( QgsMeshDatase
       grp.datasets[index.dataset()]->time,
       grp.datasets[index.dataset()]->valid,
       grp.datasets[index.dataset()]->minimum,
-      grp.datasets[index.dataset()]->maximum
+      grp.datasets[index.dataset()]->maximum,
+      0
     );
     return metadata;
   }
@@ -464,6 +465,12 @@ QgsMeshDataBlock QgsMeshMemoryDataProvider::datasetValues( QgsMeshDatasetIndex i
   {
     return QgsMeshDataBlock();
   }
+}
+
+QgsMesh3dDataBlock QgsMeshMemoryDataProvider::dataset3dValues( QgsMeshDatasetIndex, int, int ) const
+{
+  // 3d stacked meshes are not supported by memory provider
+  return QgsMesh3dDataBlock();
 }
 
 QgsMeshDataBlock QgsMeshMemoryDataset::datasetValues( bool isScalar, int valueIndex, int count ) const

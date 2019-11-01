@@ -195,10 +195,24 @@ bool QgsMdalProvider::persistDatasetGroup( const QString &path,
   if ( !driver )
     return true;
 
+  MDAL_DataLocation location = MDAL_DataLocation::DataInvalidLocation;
+  switch ( meta.dataType() )
+  {
+    case QgsMeshDatasetGroupMetadata::DataOnFaces:
+      location = MDAL_DataLocation::DataOnFaces2D;
+      break;
+    case QgsMeshDatasetGroupMetadata::DataOnVertices:
+      location = MDAL_DataLocation::DataOnVertices2D;
+      break;
+    case QgsMeshDatasetGroupMetadata::DataOnVolumes:
+      location = MDAL_DataLocation::DataOnVolumes3D;
+      break;
+  }
+
   DatasetGroupH g = MDAL_M_addDatasetGroup(
                       mMeshH,
                       meta.name().toStdString().c_str(),
-                      meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices,
+                      location,
                       meta.isScalar(),
                       driver,
                       path.toStdString().c_str()
@@ -428,7 +442,23 @@ QgsMeshDatasetGroupMetadata QgsMdalProvider::datasetGroupMetadata( int groupInde
 
 
   bool isScalar = MDAL_G_hasScalarData( group );
-  bool isOnVertices = MDAL_G_isOnVertices( group );
+  MDAL_DataLocation location = MDAL_G_dataLocation( group );
+  QgsMeshDatasetGroupMetadata::DataType type;
+  switch ( location )
+  {
+    case MDAL_DataLocation::DataOnFaces2D:
+      type = QgsMeshDatasetGroupMetadata::DataOnFaces;
+      break;
+    case MDAL_DataLocation::DataOnVertices2D:
+      type = QgsMeshDatasetGroupMetadata::DataOnVertices;
+      break;
+    case MDAL_DataLocation::DataOnVolumes3D:
+      type = QgsMeshDatasetGroupMetadata::DataOnVolumes;
+      break;
+    case MDAL_DataLocation::DataInvalidLocation:
+      return QgsMeshDatasetGroupMetadata();
+  }
+
   QString name = MDAL_G_name( group );
   double min, max;
   MDAL_G_minimumMaximum( group, &min, &max );
@@ -445,7 +475,7 @@ QgsMeshDatasetGroupMetadata QgsMdalProvider::datasetGroupMetadata( int groupInde
   QgsMeshDatasetGroupMetadata meta(
     name,
     isScalar,
-    isOnVertices,
+    type,
     min,
     max,
     metadata
@@ -468,12 +498,14 @@ QgsMeshDatasetMetadata QgsMdalProvider::datasetMetadata( QgsMeshDatasetIndex ind
   double time = MDAL_D_time( dataset );
   double min, max;
   MDAL_D_minimumMaximum( dataset, &min, &max );
+  const int maxLevels = MDAL_D_maximumVerticalLevelCount( dataset );
 
   QgsMeshDatasetMetadata meta(
     time,
     isValid,
     min,
-    max
+    max,
+    maxLevels
   );
 
   return meta;
@@ -510,6 +542,75 @@ QgsMeshDataBlock QgsMdalProvider::datasetValues( QgsMeshDatasetIndex index, int 
   return ret;
 }
 
+QgsMesh3dDataBlock QgsMdalProvider::dataset3dValues( QgsMeshDatasetIndex index, int faceIndex, int count ) const
+{
+  DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, index.group() );
+  if ( !group )
+    return QgsMesh3dDataBlock();
+
+  DatasetH dataset = MDAL_G_dataset( group, index.dataset() );
+  if ( !dataset )
+    return QgsMesh3dDataBlock();
+
+  if ( count < 1 )
+    return QgsMesh3dDataBlock();
+
+  bool isScalar = MDAL_G_hasScalarData( group );
+  int maxLevels = MDAL_D_maximumVerticalLevelCount( dataset );
+
+  QgsMesh3dDataBlock ret( count, maxLevels, !isScalar );
+  int valRead = MDAL_D_data( dataset,
+                             faceIndex,
+                             count,
+                             MDAL_DataType::FACE_INDEX_TO_VOLUME_INDEX_INTEGER,
+                             ret.buffer( QgsMesh3dDataBlock::FaceToVolumeIndex ) );
+  if ( valRead != count )
+    return QgsMesh3dDataBlock();
+
+  valRead = MDAL_D_data( dataset,
+                         faceIndex,
+                         count,
+                         MDAL_DataType::VERTICAL_LEVEL_COUNT_INTEGER,
+                         ret.buffer( QgsMesh3dDataBlock::VerticalLevelsCount ) );
+  if ( valRead != count )
+    return QgsMesh3dDataBlock();
+
+  const int firstVolumeIndex = ret.firstVolumeIndex();
+  const int lastVolumeIndex = ret.lastVolumeIndex();
+  const int nVolumes = lastVolumeIndex - firstVolumeIndex;
+  if ( firstVolumeIndex < 0 || lastVolumeIndex < 0 || nVolumes < 1 )
+    return QgsMesh3dDataBlock();
+
+  const int nVerticalLevelFaces = nVolumes + count; // all volumes top face + bottom face
+  const int startIndexVerticalFaces = firstVolumeIndex + faceIndex;
+  valRead = MDAL_D_data( dataset,
+                         startIndexVerticalFaces,
+                         nVerticalLevelFaces,
+                         MDAL_DataType::VERTICAL_LEVEL_DOUBLE,
+                         ret.buffer( QgsMesh3dDataBlock::VerticalLevels ) );
+  if ( valRead != nVerticalLevelFaces )
+    return QgsMesh3dDataBlock();
+
+  valRead = MDAL_D_data( dataset,
+                         firstVolumeIndex,
+                         nVolumes,
+                         MDAL_DataType::ACTIVE_VOLUMES_INTEGER,
+                         ret.buffer( QgsMesh3dDataBlock::ActiveFlagInteger ) );
+  if ( valRead != nVolumes )
+    return QgsMesh3dDataBlock();
+
+  valRead = MDAL_D_data( dataset,
+                         firstVolumeIndex,
+                         nVolumes,
+                         isScalar ? MDAL_DataType::SCALAR_VOLUMES_DOUBLE : MDAL_DataType::VECTOR_2D_VOLUMES_DOUBLE,
+                         ret.buffer( isScalar ? QgsMesh3dDataBlock::ScalarDouble : QgsMesh3dDataBlock::VectorDouble ) );
+  if ( valRead != nVolumes )
+    return QgsMesh3dDataBlock();
+
+  ret.setIsValid();
+  return ret;
+}
+
 bool QgsMdalProvider::isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const
 {
   QgsMeshDataBlock vals = areFacesActive( index, faceIndex, 1 );
@@ -528,10 +629,20 @@ QgsMeshDataBlock QgsMdalProvider::areFacesActive( QgsMeshDatasetIndex index, int
 
   QgsMeshDataBlock ret( QgsMeshDataBlock::ActiveFlagInteger, count );
 
-  int valRead = MDAL_D_data( dataset, faceIndex, count, MDAL_DataType::ACTIVE_INTEGER, ret.buffer() );
-  if ( valRead != count )
-    return ret;
-
+  //TODO refactor
+  int maxLevels = MDAL_D_maximumVerticalLevelCount( dataset );
+  if ( maxLevels > 0 )
+  {
+    int *buf = static_cast<int *>( ret.buffer() );
+    for ( int i = 0; i < count; ++i )
+      buf[i] = 1;
+  }
+  else
+  {
+    int valRead = MDAL_D_data( dataset, faceIndex, count, MDAL_DataType::ACTIVE_INTEGER, ret.buffer() );
+    if ( valRead != count )
+      return ret;
+  }
   return ret;
 }
 

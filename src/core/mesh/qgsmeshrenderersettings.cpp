@@ -536,3 +536,65 @@ void QgsMeshRendererVectorSettings::readXml( const QDomElement &elem )
   if ( ! elemStreamLine.isNull() )
     mStreamLinesSettings.readXml( elemStreamLine );
 }
+
+QgsMeshRendererAveragingSingleVerticalLayerSettings QgsMeshRenderer3dAveragingSettings::singleVerticalLayerSettings() const
+{
+  return mSingleVerticalLayerSettings;
+}
+
+void QgsMeshRenderer3dAveragingSettings::setSingleVerticalLayerSettings( const QgsMeshRendererAveragingSingleVerticalLayerSettings &singleVerticalLayerSettings )
+{
+  mSingleVerticalLayerSettings = singleVerticalLayerSettings;
+}
+
+QDomElement QgsMeshRenderer3dAveragingSettings::writeXml( QDomDocument &doc ) const
+{
+  QDomElement elem = doc.createElement( QStringLiteral( "averaging-settings" ) );
+  elem.setAttribute( QStringLiteral( "method" ), mAveragingMethod );
+
+  elem.appendChild( mSingleVerticalLayerSettings.writeXml( doc ) );
+
+  return elem;
+}
+
+void QgsMeshRenderer3dAveragingSettings::readXml( const QDomElement &elem )
+{
+  mAveragingMethod = static_cast<QgsMeshRenderer3dAveragingSettings::Method>(
+                       elem.attribute( QStringLiteral( "method" ) ).toInt() );
+
+  QDomElement elemSingleLayer = elem.firstChildElement( QStringLiteral( "single-vertical-layer-settings" ) );
+  if ( ! elemSingleLayer.isNull() )
+    mSingleVerticalLayerSettings.readXml( elemSingleLayer );
+}
+
+QgsMeshRenderer3dAveragingSettings::Method QgsMeshRenderer3dAveragingSettings::averagingMethod() const
+{
+  return mAveragingMethod;
+}
+
+void QgsMeshRenderer3dAveragingSettings::setAveragingMethod( const Method &averagingMethod )
+{
+  mAveragingMethod = averagingMethod;
+}
+
+int QgsMeshRendererAveragingSingleVerticalLayerSettings::verticalLayer() const
+{
+  return mVerticalLayer;
+}
+
+void QgsMeshRendererAveragingSingleVerticalLayerSettings::setVerticalLayer( int verticalLayer )
+{
+  mVerticalLayer = verticalLayer;
+}
+
+QDomElement QgsMeshRendererAveragingSingleVerticalLayerSettings::writeXml( QDomDocument &doc ) const
+{
+  QDomElement elem = doc.createElement( QStringLiteral( "single-vertical-layer-settings" ) );
+  elem.setAttribute( QStringLiteral( "layer-index" ), mVerticalLayer );
+  return elem;
+}
+
+void QgsMeshRendererAveragingSingleVerticalLayerSettings::readXml( const QDomElement &elem )
+{
+  mVerticalLayer = elem.attribute( QStringLiteral( "layer-index" ) ).toInt();
+}

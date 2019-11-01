@@ -528,6 +528,7 @@ SET(QGIS_CORE_SRCS
   raster/qgssinglebandpseudocolorrenderer.cpp
   raster/qgshillshaderenderer.cpp
 
+  mesh/qgsmesh3daveraging.cpp
   mesh/qgsmeshdataprovider.cpp
   mesh/qgsmeshlayer.cpp
   mesh/qgsmeshlayerinterpolator.cpp
@@ -1092,6 +1093,7 @@ SET(QGIS_CORE_HDRS
   locator/qgslocatormodel.h
   locator/qgslocatormodelbridge.h
 
+  mesh/qgsmesh3daveraging.h
   mesh/qgsmeshdataprovider.h
   mesh/qgsmeshlayer.h
   mesh/qgsmeshlayerinterpolator.h
