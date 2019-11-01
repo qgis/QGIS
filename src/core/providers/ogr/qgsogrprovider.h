@@ -131,6 +131,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     bool createSpatialIndex() override;
     bool createAttributeIndex( int field ) override;
     QgsVectorDataProvider::Capabilities capabilities() const override;
+    QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
     void setEncoding( const QString &e ) override;
     bool enterUpdateMode() override { return _enterUpdateMode(); }
     bool leaveUpdateMode() override;
@@ -230,6 +231,8 @@ class QgsOgrProvider : public QgsVectorDataProvider
     bool mFirstFieldIsFid = false;
     mutable std::unique_ptr< OGREnvelope > mExtent;
     bool mForceRecomputeExtent = false;
+
+    QList<int> mPrimaryKeyAttrs;
 
     /**
      * This member variable receives the same value as extent_

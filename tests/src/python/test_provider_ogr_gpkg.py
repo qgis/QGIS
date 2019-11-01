@@ -737,6 +737,24 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         features = [f for f in vl1.getFeatures(request)]
         self.assertEqual(len(features), 1)
 
+    def testPkAttributeIndexes(self):
+      ''' Test the primary key index '''
+      # lyr = ds.CreateLayer('layer', geom_type=ogr.wkbPoint, options=['COLUMN_TYPES=foo=int8,bar=string','GEOMETRY_NAME=the_geom','FID=customfid'])
+      # lyr = ds.CreateLayer('layer', geom_type=ogr.wkbPoint, options=['GEOMETRY_NAME=the_geom','FID=customfid'])
+      # lyr = ds.CreateLayer('layer', geom_type=ogr.wkbPoint, options=['GEOMETRY_NAME=the_geom'])
+      tmpfile = os.path.join(self.basetestpath, 'testPkAttributeIndexes.gpkg')
+      ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+      ds.CreateLayer('test', geom_type=ogr.wkbPoint, options=['COLUMN_TYPES=foo=int8,bar=string','GEOMETRY_NAME=the_geom','FID=customfid'])
+      ds = None
+      vl = QgsVectorLayer('{}|layerid=0'.format(tmpfile), 'test', 'ogr')
+      pks = vl.primaryKeyAttributes()
+      fields = vl.fields()
+      pkfield = fields.at(pks[0])
+      self.assertEqual(len(pks), 1)
+      self.assertEqual(pks[0], 0)
+      self.assertEqual(pkfield.name(), 'customfid')
+      self.assertTrue(pkfield.constraints().constraints() & QgsFieldConstraints.ConstraintUnique)
+
     def testSublayerWithComplexLayerName(self):
         ''' Test reading a gpkg with a sublayer name containing : '''
         tmpfile = os.path.join(self.basetestpath, 'testGeopackageComplexLayerName.gpkg')
