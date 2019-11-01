@@ -836,7 +836,7 @@ void QgsOgrProvider::addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer
                         << geometryColumnName
                         << longDescription;
 
-    mSubLayerList << parts.join( QgsDataProvider::SUBLAYER_SEPARATOR );
+    mSubLayerList << parts.join( sublayerSeparator() );
   }
   else
   {
@@ -908,7 +908,7 @@ void QgsOgrProvider::addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer
                           << geometryColumnName
                           << longDescription;
 
-      QString sl = parts.join( QgsDataProvider::SUBLAYER_SEPARATOR );
+      QString sl = parts.join( sublayerSeparator() );
       QgsDebugMsg( "sub layer: " + sl );
       mSubLayerList << sl;
     }

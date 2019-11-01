@@ -170,8 +170,6 @@ it knows about in some way before it hands them off to the provider.
 .. seealso:: SUBLAYER_SEPARATOR
 %End
 
-    static QString SUBLAYER_SEPARATOR;
-
     virtual QStringList subLayerStyles() const;
 %Docstring
 Sub-layer styles for each sub-layer handled by this provider,
@@ -391,6 +389,8 @@ Returns ``True`` if metadata was successfully written to the data provider.
 %End
 
 
+
+    static QString sublayerSeparator();
 
   signals:
 

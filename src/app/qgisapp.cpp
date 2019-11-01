@@ -4833,7 +4833,7 @@ QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QString
 
 static QStringList splitSubLayerDef( const QString &subLayerDef )
 {
-  return subLayerDef.split( QgsDataProvider::SUBLAYER_SEPARATOR );
+  return subLayerDef.split( QgsDataProvider::sublayerSeparator() );
 }
 
 static void setupVectorLayer( const QString &vectorLayerPath,
@@ -5267,7 +5267,7 @@ QList< QgsMapLayer * > QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
     else
     {
       // remove driver name and file name
-      name.remove( name.split( QgsDataProvider::SUBLAYER_SEPARATOR )[0] );
+      name.remove( name.split( QgsDataProvider::sublayerSeparator() )[0] );
       name.remove( path );
     }
     // remove any : or " left over
