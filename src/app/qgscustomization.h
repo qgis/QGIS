@@ -167,8 +167,6 @@ class APP_EXPORT QgsCustomization : public QObject
     QList<QTreeWidgetItem *> mMainWindowItems;
     friend class QgsCustomizationDialog; // in order to access mMainWindowItems
 
-  private slots:
-
   private:
     static QgsCustomization *sInstance;
 

@@ -39,7 +39,15 @@
 #include <QMetaObject>
 #include <QSettings>
 
-Q_GLOBAL_STATIC_WITH_ARGS( QStringList, sInternalWidgets, ( { QLatin1String( "qt_tabwidget_stackedwidget" ), QLatin1String( "qt_tabwidget_tabbar" ) } ) )
+bool isInternalWidget( const QString &name )
+{
+  static const QStringList internalWidgets = QStringList() << QStringLiteral( "qt_tabwidget_stackedwidget" ) << QStringLiteral( "qt_tabwidget_tabbar" );
+
+  if ( internalWidgets.contains( name ) )
+    return true;
+
+  return false;
+}
 
 #ifdef Q_OS_MACX
 QgsCustomizationDialog::QgsCustomizationDialog( QWidget *parent, QSettings *settings )
@@ -503,7 +511,7 @@ QString QgsCustomizationDialog::widgetPath( QWidget *widget, const QString &path
 
   QString pathCopy = path;
 
-  if ( !sInternalWidgets()->contains( name ) )
+  if ( !isInternalWidget( name ) )
   {
     if ( !pathCopy.isEmpty() )
     {
@@ -906,7 +914,7 @@ void QgsCustomization::customizeWidget( const QString &path, QWidget *widget, QS
   // qt_tabwidget_stackedwidget, such widgets do not appear in the tree generated
   // from ui files and do not have sense from user point of view -> skip
 
-  if ( !sInternalWidgets()->contains( name ) )
+  if ( !isInternalWidget( name ) )
   {
     myPath = path + '/' + name;
   }
