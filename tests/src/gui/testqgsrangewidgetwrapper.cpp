@@ -33,6 +33,8 @@
 
 #include <memory>
 
+static constexpr QChar const &SPECIAL_TEXT_WHEN_EMPTY = QChar( 0x2063 );
+
 /**
  * @ingroup UnitTests
  * This is a unit test for the range widget
@@ -306,10 +308,10 @@ void TestQgsRangeWidgetWrapper::test_nulls()
   // Null
   QCOMPARE( editor1->value( ), editor1->minimum() );
   QCOMPARE( widget1->value( ), QVariant( QVariant::Double ) );
-  QCOMPARE( editor1->mLineEdit->text(), QgsDoubleSpinBox::SPECIAL_TEXT_WHEN_EMPTY );
-  editor1->mLineEdit->setText( QString( "151%1" ).arg( QgsDoubleSpinBox::SPECIAL_TEXT_WHEN_EMPTY ) );
+  QCOMPARE( editor1->mLineEdit->text(), SPECIAL_TEXT_WHEN_EMPTY );
+  editor1->mLineEdit->setText( QString( "151%1" ).arg( SPECIAL_TEXT_WHEN_EMPTY ) );
   QCOMPARE( widget1->value( ).toInt(), 151 );
-  editor1->mLineEdit->setText( QString( QgsDoubleSpinBox::SPECIAL_TEXT_WHEN_EMPTY ).append( QStringLiteral( "161" ) ) );
+  editor1->mLineEdit->setText( QString( SPECIAL_TEXT_WHEN_EMPTY ).append( QStringLiteral( "161" ) ) );
   QCOMPARE( widget1->value( ).toInt(), 161 );
 
 
@@ -325,11 +327,11 @@ void TestQgsRangeWidgetWrapper::test_nulls()
   // Null
   QCOMPARE( editor0->value( ), editor0->minimum() );
   QCOMPARE( widget0->value( ), QVariant( QVariant::Int ) );
-  QCOMPARE( editor0->mLineEdit->text(), QgsDoubleSpinBox::SPECIAL_TEXT_WHEN_EMPTY );
+  QCOMPARE( editor0->mLineEdit->text(), SPECIAL_TEXT_WHEN_EMPTY );
 
-  editor0->mLineEdit->setText( QString( "150%1" ).arg( QgsDoubleSpinBox::SPECIAL_TEXT_WHEN_EMPTY ) );
+  editor0->mLineEdit->setText( QString( "150%1" ).arg( SPECIAL_TEXT_WHEN_EMPTY ) );
   QCOMPARE( widget0->value( ).toInt(), 150 );
-  editor0->mLineEdit->setText( QString( QgsDoubleSpinBox::SPECIAL_TEXT_WHEN_EMPTY ).append( QStringLiteral( "160" ) ) );
+  editor0->mLineEdit->setText( QString( SPECIAL_TEXT_WHEN_EMPTY ).append( QStringLiteral( "160" ) ) );
   QCOMPARE( widget0->value( ).toInt(), 160 );
 
 }
