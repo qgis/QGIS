@@ -15,7 +15,6 @@
 
 #include "qgsexpression.h"
 #include "qgsexpressionfunction.h"
-#include "qgsexpressionprivate.h"
 #include "qgsexpressionnodeimpl.h"
 #include "qgsfeaturerequest.h"
 #include "qgscolorramp.h"

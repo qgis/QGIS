@@ -32,20 +32,36 @@ The Qgis class provides global constants for use throughout the application.
     static const QMetaObject staticMetaObject;
 
   public:
+
     static QString version();
 %Docstring
-Version string
+Version string.
+
+.. versionadded:: 3.12
 %End
+
     static int versionInt();
 %Docstring
 Version number used for comparing versions using the "Check QGIS Version" function
+
+.. versionadded:: 3.12
 %End
+
     static QString releaseName();
 %Docstring
 Release name
+
+.. versionadded:: 3.12
 %End
+
     static const char *QGIS_DEV_VERSION;
+
     static QString devVersion();
+%Docstring
+The development version
+
+.. versionadded:: 3.12
+%End
 
 
     enum MessageLevel
@@ -103,6 +119,13 @@ Release name
     static const double DEFAULT_SNAP_TOLERANCE;
 
     static const QgsTolerance::UnitType DEFAULT_SNAP_UNITS;
+
+    static QString defaultProjectScales();
+%Docstring
+A string with default project scales.
+
+.. versionadded:: 3.12
+%End
 };
 
 
@@ -240,28 +263,27 @@ QString qgsVsiPrefix( const QString &path );
 
 
 
-QString geoWkt();
+const QLatin1String geoWkt();
 %Docstring
 Wkt string that represents a geographic coord sys
 \since QGIS GEOWkt
 %End
-QString projectScales();
 
-QString geoProj4();
+const QLatin1String geoProj4();
 %Docstring
 PROJ4 string that represents a geographic coord sys
 %End
 const long GEOSRID;
 const long GEOCRS_ID;
 const long GEO_EPSG_CRS_ID;
-QString geoEpsgCrsAuthId();
+const QLatin1String geoEpsgCrsAuthId();
 %Docstring
 Geographic coord sys from EPSG authority
 %End
 
 const int USER_CRS_START_ID;
 
-QString geoNone();
+const QLatin1String geoNone();
 %Docstring
 Constant that holds the string representation for "No ellips/No CRS"
 %End

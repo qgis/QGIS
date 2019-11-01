@@ -267,24 +267,24 @@ bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs )
   return ( lhs.isNull() == rhs.isNull() && lhs == rhs ) || ( lhs.isNull() && rhs.isNull() && lhs.isValid() && rhs.isValid() );
 }
 
-QString geoNone()
+constexpr QLatin1String geoNone()
 {
-  return QStringLiteral( "NONE" );
+  return QLatin1String( "NONE" );
 }
 
-QString geoEpsgCrsAuthId()
+constexpr QLatin1String geoEpsgCrsAuthId()
 {
-  return QStringLiteral( "EPSG:4326" );
+  return QLatin1String( "EPSG:4326" );
 }
 
-QString geoProj4()
+constexpr QLatin1String geoProj4()
 {
-  return QStringLiteral( "+proj=longlat +datum=WGS84 +no_defs" );
+  return QLatin1String( "+proj=longlat +datum=WGS84 +no_defs" );
 }
 
-QString geoWkt()
+constexpr QLatin1String geoWkt()
 {
-  return QStringLiteral(
+  return QLatin1String(
            "GEOGCS[\"WGS 84\", "
            "  DATUM[\"WGS_1984\", "
            "    SPHEROID[\"WGS 84\",6378137,298.257223563, "
@@ -299,7 +299,7 @@ QString geoWkt()
          );
 }
 
-QString projectScales()
+QString Qgis::defaultProjectScales()
 {
   return QStringLiteral( "1:1000000,1:500000,1:250000,1:100000,1:50000,1:25000,"
                          "1:10000,1:5000,1:2500,1:1000,1:500" );

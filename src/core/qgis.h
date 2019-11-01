@@ -46,16 +46,36 @@ class CORE_EXPORT Qgis
 {
     Q_GADGET
   public:
-    // Version constants
-    //
-    //! Version string
+
+    /**
+     * Version string.
+     *
+     * \since QGIS 3.12
+     */
     static QString version();
-    //! Version number used for comparing versions using the "Check QGIS Version" function
+
+    /**
+     * Version number used for comparing versions using the "Check QGIS Version" function
+     *
+     * \since QGIS 3.12
+     */
     static int versionInt();
-    //! Release name
+
+    /**
+     * Release name
+     *
+     * \since QGIS 3.12
+     */
     static QString releaseName();
+
     //! The development version
     static const char *QGIS_DEV_VERSION;
+
+    /**
+     * The development version
+     *
+     * \since QGIS 3.12
+     */
     static QString devVersion();
 
     // Enumerations
@@ -112,7 +132,8 @@ class CORE_EXPORT Qgis
 
     /**
      * Identify search radius in mm
-     *  \since QGIS 2.3 */
+     * \since QGIS 2.3
+     */
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     //! Default threshold between map coordinates and device coordinates for map2pixel simplification
@@ -120,51 +141,64 @@ class CORE_EXPORT Qgis
 
     /**
      * Default highlight color.  The transparency is expected to only be applied to polygon
-     *  fill. Lines and outlines are rendered opaque.
-     *  \since QGIS 2.3 */
+     * fill. Lines and outlines are rendered opaque.
+     *
+     *  \since QGIS 2.3
+     */
     static const QColor DEFAULT_HIGHLIGHT_COLOR;
 
     /**
      * Default highlight buffer in mm.
-     *  \since QGIS 2.3 */
+     *  \since QGIS 2.3
+     */
     static const double DEFAULT_HIGHLIGHT_BUFFER_MM;
 
     /**
      * Default highlight line/stroke minimum width in mm.
-     *  \since QGIS 2.3 */
+     * \since QGIS 2.3
+     */
     static const double DEFAULT_HIGHLIGHT_MIN_WIDTH_MM;
 
     /**
      * Fudge factor used to compare two scales. The code is often going from scale to scale
      *  denominator. So it looses precision and, when a limit is inclusive, can lead to errors.
      *  To avoid that, use this factor instead of using <= or >=.
-     * \since QGIS 2.15*/
+     * \since QGIS 2.15
+     */
     static const double SCALE_PRECISION;
 
     /**
      * Default Z coordinate value for 2.5d geometry
      *  This value have to be assigned to the Z coordinate for the new 2.5d geometry vertex.
-     *  \since QGIS 3.0 */
+     *  \since QGIS 3.0
+     */
     static const double DEFAULT_Z_COORDINATE;
 
     /**
      * UI scaling factor. This should be applied to all widget sizes obtained from font metrics,
      * to account for differences in the default font sizes across different platforms.
      *  \since QGIS 3.0
-    */
+     */
     static const double UI_SCALE_FACTOR;
 
     /**
      * Default snapping distance tolerance.
      *  \since QGIS 3.0
-    */
+     */
     static const double DEFAULT_SNAP_TOLERANCE;
 
     /**
      * Default snapping distance units.
      *  \since QGIS 3.0
-    */
+     */
     static const QgsTolerance::UnitType DEFAULT_SNAP_UNITS;
+
+    /**
+     * A string with default project scales.
+     *
+     * \since QGIS 3.12
+     */
+    static QString defaultProjectScales();
 };
 
 // hack to workaround warnings when casting void pointers
@@ -565,11 +599,10 @@ void CORE_EXPORT qgsFree( void *ptr ) SIP_SKIP;
  * Wkt string that represents a geographic coord sys
  * \since QGIS GEOWkt
  */
-QString CORE_EXPORT geoWkt();
-QString CORE_EXPORT projectScales();
+constexpr QLatin1String CORE_EXPORT geoWkt();
 
 //! PROJ4 string that represents a geographic coord sys
-QString CORE_EXPORT geoProj4();
+constexpr QLatin1String CORE_EXPORT geoProj4();
 //! Magic number for a geographic coord sys in POSTGIS SRID
 const long GEOSRID = 4326;
 //! Magic number for a geographic coord sys in QGIS srs.db tbl_srs.srs_id
@@ -577,7 +610,7 @@ const long GEOCRS_ID = 3452;
 //! Magic number for a geographic coord sys in EpsgCrsId ID format
 const long GEO_EPSG_CRS_ID = 4326;
 //! Geographic coord sys from EPSG authority
-QString CORE_EXPORT geoEpsgCrsAuthId();
+constexpr QLatin1String CORE_EXPORT geoEpsgCrsAuthId();
 
 /**
  * Magick number that determines whether a projection crsid is a system (srs.db)
@@ -585,7 +618,7 @@ QString CORE_EXPORT geoEpsgCrsAuthId();
 const int USER_CRS_START_ID = 100000;
 
 //! Constant that holds the string representation for "No ellips/No CRS"
-QString CORE_EXPORT geoNone();
+constexpr QLatin1String CORE_EXPORT geoNone();
 
 //
 // Constants for point symbols

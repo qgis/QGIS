@@ -17,7 +17,7 @@
 #include "qgsexpression.h"
 #include "qgsexpressionnodeimpl.h"
 #include "qgsexpressionfunction.h"
-#include "qgsexpressionprivate.h"
+#include "qgsexpression_p.h"
 #include "qgsgeometry.h"
 #include "qgswkbptr.h"
 #include "qgscoordinatereferencesystem.h"

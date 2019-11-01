@@ -13,7 +13,7 @@ sys.path.append(
 cpp = open(sys.argv[1], "w", encoding="utf-8")
 cpp.write(
     "#include \"qgsexpression.h\"\n"
-    "#include \"qgsexpressionprivate.h\"\n"
+    "#include \"qgsexpression_p.h\"\n"
     "\n"
     "void QgsExpression::initFunctionHelp()\n"
     "{\n"
