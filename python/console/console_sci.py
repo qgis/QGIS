@@ -428,6 +428,10 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             sys.stdout.fire_keyboard_interrupt = True
             return
 
+        #prevent accidental change in text size
+        if e.modifiers() & (Qt.ControlModifier) and e.key() in (Qt.Key_Plus, Qt.Key_Minus):
+            return
+
         line, index = self.getCursorPosition()
         cmd = self.text(line)
 
