@@ -66,8 +66,18 @@ class CORE_EXPORT QgsProjectFileTransform
 
     static void convertRasterProperties( QDomDocument &doc, QDomNode &parentNode, QDomElement &rasterPropertiesElem, QgsRasterLayer *rlayer );
 
+    /**
+     * The current dom document
+     *
+     * \since QGIS 3.12
+     */
     QDomDocument &dom();
 
+    /**
+     * The current project version
+     *
+     * \since QGIS 3.12
+     */
     QgsProjectVersion currentVersion() const;
 
   private:

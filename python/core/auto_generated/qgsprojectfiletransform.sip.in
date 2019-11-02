@@ -41,8 +41,18 @@ Prints the contents via :py:class:`QgsDebugMsg`()
     static void convertRasterProperties( QDomDocument &doc, QDomNode &parentNode, QDomElement &rasterPropertiesElem, QgsRasterLayer *rlayer );
 
     QDomDocument &dom();
+%Docstring
+The current dom document
+
+.. versionadded:: 3.12
+%End
 
     QgsProjectVersion currentVersion() const;
+%Docstring
+The current project version
+
+.. versionadded:: 3.12
+%End
 
 };
 
