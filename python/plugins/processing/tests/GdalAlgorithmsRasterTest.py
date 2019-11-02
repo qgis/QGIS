@@ -601,7 +601,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'OPTIONS': 'COMPRESS=JPEG|JPEG_QUALITY=75',
                                         'OUTPUT': output}, context, feedback),
                 ['gdal_calc.py',
-                 '--calc "{}" --format JPEG --type Float32 -A {} --A_band 1 -co COMPRESS=JPEG -co JPEG_QUALITY=75 --outfile {}'.format(formula, source, output)])
+                 '--calc "{}" --format JPEG --type Float32 -A {} --A_band 1 --co COMPRESS=JPEG --co JPEG_QUALITY=75 --outfile {}'.format(formula, source, output)])
 
             # additional parameters
             formula = 'A*2'
