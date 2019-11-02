@@ -68,6 +68,7 @@ from processing.algs.gdal.merge import merge
 from processing.algs.gdal.nearblack import nearblack
 from processing.algs.gdal.slope import slope
 from processing.algs.gdal.rasterize_over import rasterize_over
+from processing.algs.gdal.rasterize_over_fixed_value import rasterize_over_fixed_value
 
 testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
 
@@ -1537,6 +1538,41 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'INPUT_RASTER': raster}, context, feedback),
                 ['gdal_rasterize',
                  '-l polys2 -a id -i ' +
+                 vector + ' ' + raster])
+
+    def testRasterizeOverFixed(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        raster = os.path.join(testDataPath, 'dem.tif')
+        vector = os.path.join(testDataPath, 'polys.gml')
+        alg = rasterize_over_fixed_value()
+        alg.initAlgorithm()
+
+        with tempfile.TemporaryDirectory() as outdir:
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': vector,
+                                        'BURN': 100,
+                                        'INPUT_RASTER': raster}, context, feedback),
+                ['gdal_rasterize',
+                 '-l polys2 -burn 100.0 ' +
+                 vector + ' ' + raster])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': vector,
+                                        'BURN': 100,
+                                        'ADD': True,
+                                        'INPUT_RASTER': raster}, context, feedback),
+                ['gdal_rasterize',
+                 '-l polys2 -burn 100.0 -add ' +
+                 vector + ' ' + raster])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': vector,
+                                        'BURN': 100,
+                                        'EXTRA': '-i',
+                                        'INPUT_RASTER': raster}, context, feedback),
+                ['gdal_rasterize',
+                 '-l polys2 -burn 100.0 -i ' +
                  vector + ' ' + raster])
 
     def testRetile(self):
