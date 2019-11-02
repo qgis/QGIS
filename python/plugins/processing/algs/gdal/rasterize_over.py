@@ -32,7 +32,8 @@ from qgis.core import (QgsRasterFileWriter,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterString,
-                       QgsProcessingParameterBoolean)
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingOutputRasterLayer)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
@@ -46,19 +47,16 @@ class rasterize_over(GdalAlgorithm):
     INPUT_RASTER = 'INPUT_RASTER'
     ADD = 'ADD'
     EXTRA = 'EXTRA'
+    OUTPUT = 'OUTPUT'
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.units = [self.tr("Pixels"),
-                      self.tr("Georeferenced units")]
-
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input vector layer')))
-
-        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT_RASTER, self.tr('Input raster layer')))
-
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT_RASTER,
+                                                            self.tr('Input raster layer')))
         self.addParameter(QgsProcessingParameterField(self.FIELD,
                                                       self.tr('Field to use for burn in value'),
                                                       None,
@@ -66,18 +64,20 @@ class rasterize_over(GdalAlgorithm):
                                                       QgsProcessingParameterField.Numeric,
                                                       optional=False))
 
-        add_param = QgsProcessingParameterBoolean(self.ADD,
-                                                     self.tr('Add burn in values to existing raster values'),
-                                                     defaultValue=False)
-        add_param.setFlags(add_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
-        self.addParameter(add_param)
-
-        extra_param = QgsProcessingParameterString(self.EXTRA,
+        params = []
+        params.append(QgsProcessingParameterBoolean(self.ADD,
+                                                    self.tr('Add burn in values to existing raster values'),
+                                                    defaultValue=False))
+        params.append(QgsProcessingParameterString(self.EXTRA,
                                                    self.tr('Additional command-line parameters'),
                                                    defaultValue=None,
-                                                   optional=True)
-        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
-        self.addParameter(extra_param)
+                                                   optional=True))
+        for p in params:
+            p.setFlags(p.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            self.addParameter(p)
+
+        self.addOutput(QgsProcessingOutputRasterLayer(self.OUTPUT,
+                                                      self.tr('Rasterized')))
 
     def name(self):
         return 'rasterize_over'
@@ -100,12 +100,11 @@ class rasterize_over(GdalAlgorithm):
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT_RASTER, context)
+        fieldName = self.parameterAsString(parameters, self.FIELD, context)
+        self.setOutputValue(self.OUTPUT, inLayer.source())
 
         arguments = ['-l']
         arguments.append(layerName)
-
-        fieldName = self.parameterAsString(parameters, self.FIELD, context)
-
         arguments.append('-a')
         arguments.append(fieldName)
 
