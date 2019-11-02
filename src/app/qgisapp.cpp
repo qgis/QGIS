@@ -523,7 +523,7 @@ static void setTitleBarText_( QWidget &qgisApp )
 
   if ( Qgis::version().endsWith( QLatin1String( "Master" ) ) )
   {
-    caption += QStringLiteral( " %1" ).arg( Qgis::QGIS_DEV_VERSION );
+    caption += QStringLiteral( " %1" ).arg( Qgis::devVersion() );
   }
 
   if ( QgisApp::instance()->userProfileManager()->allProfiles().count() > 1 )
@@ -4700,14 +4700,14 @@ void QgisApp::about()
 
     versionString += QStringLiteral( "<tr><td>%1</td><td>%2</td><td>" ).arg( tr( "QGIS version" ), Qgis::version() );
 
-    if ( QString( Qgis::QGIS_DEV_VERSION ) == QLatin1String( "exported" ) )
+    if ( QString( Qgis::devVersion() ) == QLatin1String( "exported" ) )
     {
       versionString += QStringLiteral( "%1</td><td><a href=\"https://github.com/qgis/QGIS/tree/release-%1_%2\">Release %1.%2</a></td>" )
                        .arg( tr( "QGIS code branch" ) ).arg( Qgis::versionInt() / 10000 ).arg( Qgis::versionInt() / 100 % 100 );
     }
     else
     {
-      versionString += QStringLiteral( "%1</td><td><a href=\"https://github.com/qgis/QGIS/commit/%2\">%2</a></td>" ).arg( tr( "QGIS code revision" ) ).arg( Qgis::QGIS_DEV_VERSION );
+      versionString += QStringLiteral( "%1</td><td><a href=\"https://github.com/qgis/QGIS/commit/%2\">%2</a></td>" ).arg( tr( "QGIS code revision" ) ).arg( Qgis::devVersion() );
     }
 
     versionString += QLatin1String( "</tr><tr>" );
