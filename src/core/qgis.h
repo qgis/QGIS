@@ -595,30 +595,77 @@ void CORE_EXPORT *qgsCalloc( size_t nmemb, size_t size ) SIP_SKIP;
  */
 void CORE_EXPORT qgsFree( void *ptr ) SIP_SKIP;
 
+#ifndef SIP_RUN
+
 /**
  * Wkt string that represents a geographic coord sys
  * \since QGIS GEOWkt
  */
-constexpr QLatin1String CORE_EXPORT geoWkt();
+constexpr QLatin1String CORE_EXPORT geoWkt()
+{
+  return QLatin1String(
+           "GEOGCS[\"WGS 84\", "
+           "  DATUM[\"WGS_1984\", "
+           "    SPHEROID[\"WGS 84\",6378137,298.257223563, "
+           "      AUTHORITY[\"EPSG\",\"7030\"]], "
+           "    TOWGS84[0,0,0,0,0,0,0], "
+           "    AUTHORITY[\"EPSG\",\"6326\"]], "
+           "  PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]], "
+           "  UNIT[\"DMSH\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9108\"]], "
+           "  AXIS[\"Lat\",NORTH], "
+           "  AXIS[\"Long\",EAST], "
+           "  AUTHORITY[\"EPSG\",\"4326\"]]"
+         );
+}
 
 //! PROJ4 string that represents a geographic coord sys
-constexpr QLatin1String CORE_EXPORT geoProj4();
+constexpr QLatin1String CORE_EXPORT geoProj4()
+{
+  return QLatin1String( "+proj=longlat +datum=WGS84 +no_defs" );
+}
+
+//! Geographic coord sys from EPSG authority
+constexpr QLatin1String CORE_EXPORT geoEpsgCrsAuthId()
+{
+  return QLatin1String( "EPSG:4326" );
+}
+
+//! Constant that holds the string representation for "No ellips/No CRS"
+constexpr QLatin1String CORE_EXPORT geoNone()
+{
+  return QLatin1String( "NONE" );
+}
+#else
+
+/**
+ * Wkt string that represents a geographic coord sys
+ * \since QGIS GEOWkt
+ */
+QString CORE_EXPORT geoWkt()
+
+//! PROJ4 string that represents a geographic coord sys
+QString CORE_EXPORT geoProj4()
+
+//! Geographic coord sys from EPSG authority
+QString CORE_EXPORT geoEpsgCrsAuthId()
+
+//! Constant that holds the string representation for "No ellips/No CRS"
+QString CORE_EXPORT geoNone()
+#endif
+
 //! Magic number for a geographic coord sys in POSTGIS SRID
 const long GEOSRID = 4326;
+
 //! Magic number for a geographic coord sys in QGIS srs.db tbl_srs.srs_id
 const long GEOCRS_ID = 3452;
+
 //! Magic number for a geographic coord sys in EpsgCrsId ID format
 const long GEO_EPSG_CRS_ID = 4326;
-//! Geographic coord sys from EPSG authority
-constexpr QLatin1String CORE_EXPORT geoEpsgCrsAuthId();
 
 /**
  * Magick number that determines whether a projection crsid is a system (srs.db)
  *  or user (~/.qgis.qgis.db) defined projection. */
 const int USER_CRS_START_ID = 100000;
-
-//! Constant that holds the string representation for "No ellips/No CRS"
-constexpr QLatin1String CORE_EXPORT geoNone();
 
 //
 // Constants for point symbols

@@ -267,38 +267,6 @@ bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs )
   return ( lhs.isNull() == rhs.isNull() && lhs == rhs ) || ( lhs.isNull() && rhs.isNull() && lhs.isValid() && rhs.isValid() );
 }
 
-constexpr QLatin1String geoNone()
-{
-  return QLatin1String( "NONE" );
-}
-
-constexpr QLatin1String geoEpsgCrsAuthId()
-{
-  return QLatin1String( "EPSG:4326" );
-}
-
-constexpr QLatin1String geoProj4()
-{
-  return QLatin1String( "+proj=longlat +datum=WGS84 +no_defs" );
-}
-
-constexpr QLatin1String geoWkt()
-{
-  return QLatin1String(
-           "GEOGCS[\"WGS 84\", "
-           "  DATUM[\"WGS_1984\", "
-           "    SPHEROID[\"WGS 84\",6378137,298.257223563, "
-           "      AUTHORITY[\"EPSG\",\"7030\"]], "
-           "    TOWGS84[0,0,0,0,0,0,0], "
-           "    AUTHORITY[\"EPSG\",\"6326\"]], "
-           "  PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]], "
-           "  UNIT[\"DMSH\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9108\"]], "
-           "  AXIS[\"Lat\",NORTH], "
-           "  AXIS[\"Long\",EAST], "
-           "  AUTHORITY[\"EPSG\",\"4326\"]]"
-         );
-}
-
 QString Qgis::defaultProjectScales()
 {
   return QStringLiteral( "1:1000000,1:500000,1:250000,1:100000,1:50000,1:25000,"

@@ -263,37 +263,49 @@ QString qgsVsiPrefix( const QString &path );
 
 
 
-const QLatin1String geoWkt();
+
+QString geoWkt();
 %Docstring
 Wkt string that represents a geographic coord sys
 \since QGIS GEOWkt
 %End
+//! PROJ4 string that represents a geographic coord sys
+QString geoProj4();
+//! Geographic coord sys from EPSG authority
+QString geoEpsgCrsAuthId();
+//! Constant that holds the string representation for "No ellips/No CRS"
+QString geoNone();
 
-const QLatin1String geoProj4();
-%Docstring
-PROJ4 string that represents a geographic coord sys
-%End
+//! Magic number for a geographic coord sys in POSTGIS SRID
 const long GEOSRID;
+
+//! Magic number for a geographic coord sys in QGIS srs.db tbl_srs.srs_id
 const long GEOCRS_ID;
+
+//! Magic number for a geographic coord sys in EpsgCrsId ID format
 const long GEO_EPSG_CRS_ID;
-const QLatin1String geoEpsgCrsAuthId();
-%Docstring
-Geographic coord sys from EPSG authority
-%End
 
 const int USER_CRS_START_ID;
 
-const QLatin1String geoNone();
-%Docstring
-Constant that holds the string representation for "No ellips/No CRS"
-%End
+//
+// Constants for point symbols
+//
 
-
+//! Magic number that determines the default point size for point symbols
 const double DEFAULT_POINT_SIZE;
 const double DEFAULT_LINE_WIDTH;
 
+//! Default snapping tolerance for segments
 const double DEFAULT_SEGMENT_EPSILON;
 
+///@cond PRIVATE
+#ifndef SIP_RUN
+
+//! Delay between the scheduling of 2 preview jobs
+const int PREVIEW_JOB_DELAY_MS;
+
+//! Maximum rendering time for a layer of a preview job
+const int MAXIMUM_LAYER_PREVIEW_TIME_MS;
 
 
 

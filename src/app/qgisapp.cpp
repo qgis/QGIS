@@ -11000,7 +11000,7 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage, in
   std::unique_ptr< QgsOptions > optionsDialog( createOptionsDialog( parent ) );
 
   QgsSettings mySettings;
-  QString oldScales = mySettings.value( QStringLiteral( "Map/scales" ), projectScales() ).toString();
+  QString oldScales = mySettings.value( QStringLiteral( "Map/scales" ), Qgis::defaultProjectScales() ).toString();
 
   if ( !currentPage.isEmpty() )
   {
@@ -11041,7 +11041,7 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage, in
 
     mRasterFileFilter = QgsProviderRegistry::instance()->fileRasterFilters();
 
-    if ( oldScales != mySettings.value( QStringLiteral( "Map/scales" ), projectScales() ).toString() )
+    if ( oldScales != mySettings.value( QStringLiteral( "Map/scales" ), Qgis::defaultProjectScales() ).toString() )
     {
       mScaleWidget->updateScales();
     }

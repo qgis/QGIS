@@ -629,7 +629,7 @@ void QgsVectorLayerProperties::syncToLayer()
   mSimplifyAlgorithmComboBox->addItem( tr( "Visvalingam" ), QgsVectorSimplifyMethod::Visvalingam );
   mSimplifyAlgorithmComboBox->setCurrentIndex( mSimplifyAlgorithmComboBox->findData( simplifyMethod.simplifyAlgorithm() ) );
 
-  QStringList myScalesList = projectScales().split( ',' );
+  QStringList myScalesList = Qgis::defaultProjectScales().split( ',' );
   myScalesList.append( QStringLiteral( "1:1" ) );
   mSimplifyMaximumScaleComboBox->updateScales( myScalesList );
   mSimplifyMaximumScaleComboBox->setScale( simplifyMethod.maximumScale() );

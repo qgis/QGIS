@@ -4390,7 +4390,7 @@ QVector<double> QgsLayoutDesignerDialog::predefinedScales() const
   {
     // default to global map tool scales
     QgsSettings settings;
-    QString scalesStr( settings.value( QStringLiteral( "Map/scales" ), projectScales() ).toString() );
+    QString scalesStr( settings.value( QStringLiteral( "Map/scales" ), Qgis::defaultProjectScales() ).toString() );
     const QStringList scales = scalesStr.split( ',' );
 
     for ( const QString &scale : scales )
