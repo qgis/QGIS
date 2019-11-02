@@ -412,12 +412,11 @@ void QgsDxfExport::addLayers( const QList<DxfLayer> &layers )
 
   mLayerNameAttribute.clear();
 
-  QList< DxfLayer >::const_iterator layerIt = layers.constBegin();
-  for ( ; layerIt != layers.constEnd(); ++layerIt )
+  for ( const DxfLayer &dxfLayer : layers )
   {
-    layerList << layerIt->layer();
-    if ( layerIt->layerOutputAttributeIndex() >= 0 )
-      mLayerNameAttribute.insert( layerIt->layer()->id(), layerIt->layerOutputAttributeIndex() );
+    layerList << dxfLayer.layer();
+    if ( dxfLayer.layerOutputAttributeIndex() >= 0 )
+      mLayerNameAttribute.insert( dxfLayer.layer()->id(), dxfLayer.layerOutputAttributeIndex() );
   }
 
   mMapSettings.setLayers( layerList );
@@ -1088,31 +1087,27 @@ void QgsDxfExport::writeEntities()
       }
       else
       {
-        QgsSymbolList symbolList = renderer->symbolsForFeature( fet, ctx );
+        const QgsSymbolList symbolList = renderer->symbolsForFeature( fet, ctx );
         bool hasSymbology = symbolList.size() > 0;
 
         if ( hasSymbology && mSymbologyExport == QgsDxfExport::SymbolLayerSymbology ) // symbol layer symbology, but layer does not use symbol levels
         {
-          QgsSymbolList::iterator symbolIt = symbolList.begin();
-          for ( ; symbolIt != symbolList.end(); ++symbolIt )
+          for ( QgsSymbol *symbol : symbolList )
           {
-            int nSymbolLayers = ( *symbolIt )->symbolLayerCount();
-            for ( int i = 0; i < nSymbolLayers; ++i )
+            const QgsSymbolLayerList symbolLayers = symbol->symbolLayers();
+            for ( QgsSymbolLayer *symbolLayer : symbolLayers )
             {
-              QgsSymbolLayer *sl = ( *symbolIt )->symbolLayer( i );
-              if ( !sl )
-              {
+              if ( !symbolLayer )
                 continue;
-              }
 
-              bool isGeometryGenerator = ( sl->layerType() == QLatin1String( "GeometryGenerator" ) );
+              bool isGeometryGenerator = ( symbolLayer->layerType() == QLatin1String( "GeometryGenerator" ) );
               if ( isGeometryGenerator )
               {
-                addGeometryGeneratorSymbolLayer( sctx, ct, lName, sl, true );
+                addGeometryGeneratorSymbolLayer( sctx, ct, lName, symbolLayer, true );
               }
               else
               {
-                addFeature( sctx, ct, lName, sl, *symbolIt );
+                addFeature( sctx, ct, lName, symbolLayer, symbol );
               }
             }
           }
@@ -1208,16 +1203,15 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer *layer )
 
   // find out order
   QgsSymbolLevelOrder levels;
-  QgsSymbolList symbols = renderer->symbols( ctx );
-  for ( int i = 0; i < symbols.count(); i++ )
+  const QgsSymbolList symbols = renderer->symbols( ctx );
+  for ( QgsSymbol *symbol : symbols )
   {
-    QgsSymbol *sym = symbols[i];
-    for ( int j = 0; j < sym->symbolLayerCount(); j++ )
+    for ( int j = 0; j < symbol->symbolLayerCount(); j++ )
     {
-      int level = sym->symbolLayer( j )->renderingPass();
+      int level = symbol->symbolLayer( j )->renderingPass();
       if ( level < 0 || level >= 1000 ) // ignore invalid levels
         continue;
-      QgsSymbolLevelItem item( sym, j );
+      QgsSymbolLevelItem item( symbol, j );
       while ( level >= levels.count() ) // append new empty levels
         levels.append( QgsSymbolLevel() );
       levels[level].append( item );
@@ -1227,25 +1221,21 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer *layer )
   QgsCoordinateTransform ct = mMapSettings.layerTransform( layer );
 
   // export symbol layers and symbology
-  for ( int l = 0; l < levels.count(); l++ )
+  for ( const QgsSymbolLevel &level : qgis::as_const( levels ) )
   {
-    QgsSymbolLevel &level = levels[l];
-    for ( int i = 0; i < level.count(); i++ )
+    for ( const QgsSymbolLevelItem &item : level )
     {
-      QgsSymbolLevelItem &item = level[i];
       QHash< QgsSymbol *, QList<QgsFeature> >::iterator levelIt = features.find( item.symbol() );
       if ( levelIt == features.end() )
       {
-        QgsDebugMsg( QStringLiteral( "No feature found for symbol on %1 %2.%3" ).arg( layer->id() ).arg( l ).arg( i ) );
         continue;
       }
 
       int llayer = item.layer();
-      QList<QgsFeature> &featureList = levelIt.value();
-      QList<QgsFeature>::iterator featureIt = featureList.begin();
-      for ( ; featureIt != featureList.end(); ++featureIt )
+      const QList<QgsFeature> &featureList = levelIt.value();
+      for ( const QgsFeature &feature : featureList )
       {
-        sctx.setFeature( &*featureIt );
+        sctx.setFeature( &feature );
         addFeature( sctx, ct, layer->name(), levelIt.key()->symbolLayer( llayer ), levelIt.key() );
       }
     }
