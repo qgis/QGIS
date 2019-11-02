@@ -67,6 +67,10 @@ Content-Type: application/geo+json
   ],
   "numberMatched": 3,
   "numberReturned": 3,
+<<<<<<< HEAD
   "timeStamp": "2019-10-16T13:53:55Z",
+=======
+  "timeStamp": "2019-11-02T15:56:20Z",
+>>>>>>> 7d2000bc30... Fix server OAPIF crs tranformation on items
   "type": "FeatureCollection"
 }
