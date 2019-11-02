@@ -60,6 +60,26 @@ The attribute value is used for layer names.
       EmptyExtentError
     };
 
+    enum class VAlign
+    {
+      VBaseLine,
+      VBottom,
+      VMiddle,
+      VTop,
+      Undefined
+    };
+
+    enum class HAlign
+    {
+      HLeft,
+      HCenter,
+      HRight,
+      HAligned,
+      HMiddle,
+      HFit,
+      Undefined
+    };
+
     QgsDxfExport();
 %Docstring
 Constructor for QgsDxfExport.
@@ -385,7 +405,7 @@ Write circle (as polyline)
 .. versionadded:: 2.15
 %End
 
-    void writeText( const QString &layer, const QString &text, const QgsPoint &pt, double size, double angle, const QColor &color ) /PyName=writeTextV2/;
+    void writeText( const QString &layer, const QString &text, const QgsPoint &pt, double size, double angle, const QColor &color, HAlign hali = HAlign::Undefined, VAlign vali = VAlign::Undefined ) /PyName=writeTextV2/;
 %Docstring
 Write text (TEXT)
 
