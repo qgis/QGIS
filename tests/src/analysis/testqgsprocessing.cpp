@@ -7839,7 +7839,7 @@ void TestQgsProcessing::modelExecution()
                               "    return ''\n"
                               "\n"
                               "  def createInstance(self):\n"
-                              "    return MyModel()\n" ).arg( Qgis::QGIS_VERSION_INT ).split( '\n' );
+                              "    return MyModel()\n" ).arg( Qgis::versionInt() ).split( '\n' );
   QCOMPARE( actualParts, expectedParts );
 }
 
