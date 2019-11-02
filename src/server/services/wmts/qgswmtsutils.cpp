@@ -199,7 +199,7 @@ namespace QgsWmts
 
     // default scales
     QgsSettings settings;
-    QStringList scaleList = settings.value( QStringLiteral( "Map/scales" ), projectScales() ).toString().split( ',' );
+    QStringList scaleList = settings.value( QStringLiteral( "Map/scales" ), defaultProjectScales() ).toString().split( ',' );
     //load project scales
     bool useProjectScales = project->viewSettings()->useProjectScales();
     const QVector< double >projectScales = project->viewSettings()->mapScales();
