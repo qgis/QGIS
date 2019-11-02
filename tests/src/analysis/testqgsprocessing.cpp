@@ -7561,7 +7561,9 @@ void TestQgsProcessing::modelExecution()
   QgsProcessingModelAlgorithm model2;
   model2.addModelParameter( new QgsProcessingParameterFeatureSource( "SOURCE_LAYER" ), QgsProcessingModelParameter( "SOURCE_LAYER" ) );
   model2.addModelParameter( new QgsProcessingParameterNumber( "DIST", QString(), QgsProcessingParameterNumber::Double ), QgsProcessingModelParameter( "DIST" ) );
-  model2.addModelParameter( new QgsProcessingParameterCrs( "CRS", QString(), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28355" ) ) ), QgsProcessingModelParameter( "CRS" ) );
+  QgsProcessingParameterCrs *p = new QgsProcessingParameterCrs( "CRS", QString(), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28355" ) ) );
+  p->setFlags( p->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  model2.addModelParameter( p, QgsProcessingModelParameter( "CRS" ) );
   QgsProcessingModelChildAlgorithm alg2c1;
   QgsExpressionContext expContext;
   QgsExpressionContextScope *scope = new QgsExpressionContextScope();
@@ -7762,6 +7764,7 @@ void TestQgsProcessing::modelExecution()
                               "from qgis.core import QgsProcessingParameterNumber\n"
                               "from qgis.core import QgsProcessingParameterCrs\n"
                               "from qgis.core import QgsProcessingParameterFeatureSink\n"
+                              "from qgis.core import QgsProcessingParameterDefinition\n"
                               "from qgis.core import QgsCoordinateReferenceSystem\n"
                               "from qgis.core import QgsExpression\n"
                               "import processing\n"
@@ -7772,7 +7775,9 @@ void TestQgsProcessing::modelExecution()
                               "  def initAlgorithm(self, config=None):\n"
                               "    self.addParameter(QgsProcessingParameterFeatureSource('SOURCE_LAYER', '', defaultValue=None))\n"
                               "    self.addParameter(QgsProcessingParameterNumber('DIST', '', type=QgsProcessingParameterNumber.Double, defaultValue=None))\n"
-                              "    self.addParameter(QgsProcessingParameterCrs('CRS', '', defaultValue=QgsCoordinateReferenceSystem('EPSG:28355')))\n"
+                              "    param = QgsProcessingParameterCrs('CRS', '', defaultValue=QgsCoordinateReferenceSystem('EPSG:28355'))\n"
+                              "    param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)\n"
+                              "    self.addParameter(param)\n"
                               "    self.addParameter(QgsProcessingParameterFeatureSink('MyModelOutput', 'my model output', type=QgsProcessing.TypeVectorPolygon, createByDefault=True, defaultValue=None))\n"
                               "    self.addParameter(QgsProcessingParameterFeatureSink('cx3:MY_OUT', '', type=QgsProcessing.TypeVectorAnyGeometry, createByDefault=True, defaultValue=None))\n"
                               "\n"
