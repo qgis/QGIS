@@ -56,35 +56,43 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   cboTerrainType->addItem( tr( "DEM (Tin Mesh layer)" ), QgsTerrainGenerator::Tin );
   cboTerrainType->addItem( tr( "Online" ), QgsTerrainGenerator::Online );
 
-  fillTinDataset();
-
   QgsTerrainGenerator *terrainGen = mMap->terrainGenerator();
-  if ( terrainGen && terrainGen->type() == QgsTerrainGenerator::Dem )
+  if ( terrainGen )
   {
-    cboTerrainType->setCurrentIndex( cboTerrainType->findData( QgsTerrainGenerator::Dem ) );
-    QgsDemTerrainGenerator *demTerrainGen = static_cast<QgsDemTerrainGenerator *>( terrainGen );
-    spinTerrainResolution->setValue( demTerrainGen->resolution() );
-    spinTerrainSkirtHeight->setValue( demTerrainGen->skirtHeight() );
-    cboTerrainLayer->setLayer( demTerrainGen->layer() );
-  }
-  else if ( terrainGen && terrainGen->type() == QgsTerrainGenerator::Online )
-  {
-    cboTerrainType->setCurrentIndex( cboTerrainType->findData( QgsTerrainGenerator::Online ) );
-    QgsOnlineTerrainGenerator *onlineTerrainGen = static_cast<QgsOnlineTerrainGenerator *>( terrainGen );
-    spinTerrainResolution->setValue( onlineTerrainGen->resolution() );
-    spinTerrainSkirtHeight->setValue( onlineTerrainGen->skirtHeight() );
-  }
-  else if ( terrainGen && terrainGen->type() == QgsTerrainGenerator::Tin )
-  {
-    cboTerrainType->setCurrentIndex( cboTerrainType->findData( QgsTerrainGenerator::Tin ) );
-    //QgsTinDemTerrainGenerator *tinTerrainGen = static_cast<QgsTinDemTerrainGenerator *>( terrainGen );
-  }
-  else
-  {
-    cboTerrainType->setCurrentIndex( cboTerrainType->findData( QgsTerrainGenerator::Flat ) );
-    cboTerrainLayer->setLayer( nullptr );
-    spinTerrainResolution->setValue( 16 );
-    spinTerrainSkirtHeight->setValue( 10 );
+    switch ( terrainGen->type() )
+    {
+      case QgsTerrainGenerator::Flat:
+      {
+        cboTerrainType->setCurrentIndex( cboTerrainType->findData( QgsTerrainGenerator::Flat ) );
+        cboTerrainLayer->setLayer( nullptr );
+        spinTerrainResolution->setValue( 16 );
+        spinTerrainSkirtHeight->setValue( 10 );
+      }
+      break;
+      case QgsTerrainGenerator::Dem:
+      {
+        cboTerrainType->setCurrentIndex( cboTerrainType->findData( QgsTerrainGenerator::Dem ) );
+        QgsDemTerrainGenerator *demTerrainGen = static_cast<QgsDemTerrainGenerator *>( terrainGen );
+        spinTerrainResolution->setValue( demTerrainGen->resolution() );
+        spinTerrainSkirtHeight->setValue( demTerrainGen->skirtHeight() );
+        cboTerrainLayer->setLayer( demTerrainGen->layer() );
+      }
+      break;
+      case QgsTerrainGenerator::Tin:
+      {
+        cboTerrainType->setCurrentIndex( cboTerrainType->findData( QgsTerrainGenerator::Tin ) );
+      }
+      break;
+      case QgsTerrainGenerator::Online:
+      {
+        cboTerrainType->setCurrentIndex( cboTerrainType->findData( QgsTerrainGenerator::Online ) );
+        QgsOnlineTerrainGenerator *onlineTerrainGen = static_cast<QgsOnlineTerrainGenerator *>( terrainGen );
+        spinTerrainResolution->setValue( onlineTerrainGen->resolution() );
+        spinTerrainSkirtHeight->setValue( onlineTerrainGen->skirtHeight() );
+      }
+      break;
+
+    }
   }
 
   spinCameraFieldOfView->setValue( mMap->fieldOfView() );
@@ -127,83 +135,88 @@ void Qgs3DMapConfigWidget::apply()
   QgsTerrainGenerator::Type terrainType = static_cast<QgsTerrainGenerator::Type>( cboTerrainType->currentData().toInt() );
 
 
-  if ( terrainType == QgsTerrainGenerator::Dem )  // DEM from raster layer
+  switch ( terrainType )
   {
-    QgsRasterLayer *demLayer = qobject_cast<QgsRasterLayer *>( cboTerrainLayer->currentLayer() );
-
-    bool tGenNeedsUpdate = true;
-    if ( mMap->terrainGenerator()->type() == QgsTerrainGenerator::Dem )
+    case QgsTerrainGenerator::Flat:
     {
-      // if we already have a DEM terrain generator, check whether there was actually any change
-      QgsDemTerrainGenerator *oldDemTerrainGen = static_cast<QgsDemTerrainGenerator *>( mMap->terrainGenerator() );
-      if ( oldDemTerrainGen->layer() == demLayer &&
-           oldDemTerrainGen->resolution() == spinTerrainResolution->value() &&
-           oldDemTerrainGen->skirtHeight() == spinTerrainSkirtHeight->value() )
-        tGenNeedsUpdate = false;
-    }
-
-    if ( tGenNeedsUpdate )
-    {
-      QgsDemTerrainGenerator *demTerrainGen = new QgsDemTerrainGenerator;
-      demTerrainGen->setCrs( mMap->crs(), QgsProject::instance()->transformContext() );
-      demTerrainGen->setLayer( demLayer );
-      demTerrainGen->setResolution( spinTerrainResolution->value() );
-      demTerrainGen->setSkirtHeight( spinTerrainSkirtHeight->value() );
-      mMap->setTerrainGenerator( demTerrainGen );
+      QgsFlatTerrainGenerator *flatTerrainGen = new QgsFlatTerrainGenerator;
+      flatTerrainGen->setCrs( mMap->crs() );
+      flatTerrainGen->setExtent( mMainCanvas->fullExtent() );
+      mMap->setTerrainGenerator( flatTerrainGen );
       needsUpdateOrigin = true;
     }
-  }
-  else if ( terrainType == QgsTerrainGenerator::Tin )
-  {
-    QgsMeshLayer *tinDemLayer = qobject_cast<QgsMeshLayer *>( cboTinLayer->currentLayer() );
+    break;
+    case QgsTerrainGenerator::Dem:
+    {
+      QgsRasterLayer *demLayer = qobject_cast<QgsRasterLayer *>( cboTerrainLayer->currentLayer() );
 
-    bool tGenNeedsUpdate = true;
-    if ( mMap->terrainGenerator()->type() == QgsTerrainGenerator::Tin )
-    {
-      QgsTinDemTerrainGenerator *oldTinTerrainGen = static_cast<QgsTinDemTerrainGenerator *>( mMap->terrainGenerator() );
-      if ( oldTinTerrainGen->layer() == tinDemLayer )
-        tGenNeedsUpdate = false;
-    }
+      bool tGenNeedsUpdate = true;
+      if ( mMap->terrainGenerator()->type() == QgsTerrainGenerator::Dem )
+      {
+        // if we already have a DEM terrain generator, check whether there was actually any change
+        QgsDemTerrainGenerator *oldDemTerrainGen = static_cast<QgsDemTerrainGenerator *>( mMap->terrainGenerator() );
+        if ( oldDemTerrainGen->layer() == demLayer &&
+             oldDemTerrainGen->resolution() == spinTerrainResolution->value() &&
+             oldDemTerrainGen->skirtHeight() == spinTerrainSkirtHeight->value() )
+          tGenNeedsUpdate = false;
+      }
 
-    if ( tGenNeedsUpdate )
-    {
-      QgsTinDemTerrainGenerator *tinDemTerrainGen = new QgsTinDemTerrainGenerator;
-//      tinDemTerrainGen->setCrs( mMap->crs(), QgsProject::instance()->transformContext() );
-//      tinDemTerrainGen->setExtent( mMainCanvas->fullExtent() );
-      mMap->setTerrainGenerator( tinDemTerrainGen );
-      tinDemTerrainGen->setLayer( tinDemLayer );
-      needsUpdateOrigin = true;
+      if ( tGenNeedsUpdate )
+      {
+        QgsDemTerrainGenerator *demTerrainGen = new QgsDemTerrainGenerator;
+        demTerrainGen->setCrs( mMap->crs(), QgsProject::instance()->transformContext() );
+        demTerrainGen->setLayer( demLayer );
+        demTerrainGen->setResolution( spinTerrainResolution->value() );
+        demTerrainGen->setSkirtHeight( spinTerrainSkirtHeight->value() );
+        mMap->setTerrainGenerator( demTerrainGen );
+        needsUpdateOrigin = true;
+      }
     }
-  }
-  else if ( terrainType == QgsTerrainGenerator::Online )
-  {
-    bool tGenNeedsUpdate = true;
-    if ( mMap->terrainGenerator()->type() == QgsTerrainGenerator::Online )
+    break;
+    case QgsTerrainGenerator::Tin:
     {
-      QgsOnlineTerrainGenerator *oldOnlineTerrainGen = static_cast<QgsOnlineTerrainGenerator *>( mMap->terrainGenerator() );
-      if ( oldOnlineTerrainGen->resolution() == spinTerrainResolution->value() &&
-           oldOnlineTerrainGen->skirtHeight() == spinTerrainSkirtHeight->value() )
-        tGenNeedsUpdate = false;
-    }
+      QgsMeshLayer *tinDemLayer = qobject_cast<QgsMeshLayer *>( cboTinLayer->currentLayer() );
 
-    if ( tGenNeedsUpdate )
-    {
-      QgsOnlineTerrainGenerator *onlineTerrainGen = new QgsOnlineTerrainGenerator;
-      onlineTerrainGen->setCrs( mMap->crs(), QgsProject::instance()->transformContext() );
-      onlineTerrainGen->setExtent( mMainCanvas->fullExtent() );
-      onlineTerrainGen->setResolution( spinTerrainResolution->value() );
-      onlineTerrainGen->setSkirtHeight( spinTerrainSkirtHeight->value() );
-      mMap->setTerrainGenerator( onlineTerrainGen );
-      needsUpdateOrigin = true;
+      bool tGenNeedsUpdate = true;
+      if ( mMap->terrainGenerator()->type() == QgsTerrainGenerator::Tin )
+      {
+        QgsTinDemTerrainGenerator *oldTinTerrainGen = static_cast<QgsTinDemTerrainGenerator *>( mMap->terrainGenerator() );
+        if ( oldTinTerrainGen->layer() == tinDemLayer )
+          tGenNeedsUpdate = false;
+      }
+
+      if ( tGenNeedsUpdate )
+      {
+        QgsTinDemTerrainGenerator *tinDemTerrainGen = new QgsTinDemTerrainGenerator;
+        mMap->setTerrainGenerator( tinDemTerrainGen );
+        tinDemTerrainGen->setLayer( tinDemLayer );
+        needsUpdateOrigin = true;
+      }
     }
-  }
-  else if ( terrainType == QgsTerrainGenerator::Flat )
-  {
-    QgsFlatTerrainGenerator *flatTerrainGen = new QgsFlatTerrainGenerator;
-    flatTerrainGen->setCrs( mMap->crs() );
-    flatTerrainGen->setExtent( mMainCanvas->fullExtent() );
-    mMap->setTerrainGenerator( flatTerrainGen );
-    needsUpdateOrigin = true;
+    break;
+    case QgsTerrainGenerator::Online:
+    {
+      bool tGenNeedsUpdate = true;
+      if ( mMap->terrainGenerator()->type() == QgsTerrainGenerator::Online )
+      {
+        QgsOnlineTerrainGenerator *oldOnlineTerrainGen = static_cast<QgsOnlineTerrainGenerator *>( mMap->terrainGenerator() );
+        if ( oldOnlineTerrainGen->resolution() == spinTerrainResolution->value() &&
+             oldOnlineTerrainGen->skirtHeight() == spinTerrainSkirtHeight->value() )
+          tGenNeedsUpdate = false;
+      }
+
+      if ( tGenNeedsUpdate )
+      {
+        QgsOnlineTerrainGenerator *onlineTerrainGen = new QgsOnlineTerrainGenerator;
+        onlineTerrainGen->setCrs( mMap->crs(), QgsProject::instance()->transformContext() );
+        onlineTerrainGen->setExtent( mMainCanvas->fullExtent() );
+        onlineTerrainGen->setResolution( spinTerrainResolution->value() );
+        onlineTerrainGen->setSkirtHeight( spinTerrainSkirtHeight->value() );
+        mMap->setTerrainGenerator( onlineTerrainGen );
+        needsUpdateOrigin = true;
+      }
+    }
+    break;
   }
 
   if ( needsUpdateOrigin )
@@ -252,9 +265,6 @@ void Qgs3DMapConfigWidget::onTerrainTypeChanged()
 
   cboTinLayer->setVisible( isTin );
   labelTinLayer->setVisible( isTin );
-  cboTinElevation->setVisible( isTin );
-  labelTINLayerElevation->setVisible( isTin );
-
 
   updateMaxZoomLevel();
 }
@@ -273,12 +283,12 @@ void Qgs3DMapConfigWidget::updateMaxZoomLevel()
 {
   QgsRectangle te;
   QgsTerrainGenerator::Type terrainType = static_cast<QgsTerrainGenerator::Type>( cboTerrainType->currentData().toInt() );
-  if ( terrainType == QgsTerrainGenerator::Dem )
+  if ( terrainType == QgsTerrainGenerator::Dem || terrainType == QgsTerrainGenerator::Tin )
   {
-    if ( QgsRasterLayer *demLayer = qobject_cast<QgsRasterLayer *>( cboTerrainLayer->currentLayer() ) )
+    if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( cboTerrainLayer->currentLayer() ) )
     {
-      te = demLayer->extent();
-      QgsCoordinateTransform terrainToMapTransform( demLayer->crs(), mMap->crs(), QgsProject::instance()->transformContext() );
+      te = layer->extent();
+      QgsCoordinateTransform terrainToMapTransform( layer->crs(), mMap->crs(), QgsProject::instance()->transformContext() );
       te = terrainToMapTransform.transformBoundingBox( te );
     }
   }
@@ -292,16 +302,3 @@ void Qgs3DMapConfigWidget::updateMaxZoomLevel()
   labelZoomLevels->setText( QStringLiteral( "0 - %1" ).arg( zoomLevel ) );
 }
 
-void Qgs3DMapConfigWidget::fillTinDataset()
-{
-  if ( ! cboTinLayer->currentLayer() )
-    return;
-  QgsMeshLayer *meshLayer = static_cast<QgsMeshLayer *>( cboTinLayer->currentLayer() );
-
-  cboTinElevation->clear();
-  QgsMeshDataProvider *provider = meshLayer->dataProvider();
-  for ( int i = 0; i < provider->datasetGroupCount(); ++i )
-  {
-    cboTinElevation->addItem( provider->datasetGroupMetadata( i ).name() );
-  }
-}

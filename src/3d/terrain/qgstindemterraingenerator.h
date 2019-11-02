@@ -20,7 +20,7 @@
 #include <limits>
 
 #include "qgsmeshlayer.h"
-
+#include "qgsmaplayerref.h"
 #include "qgsterraingenerator.h"
 #include "qgsterraintileloader_p.h"
 #include "qgstindemterraintilegeometry_p.h"
@@ -55,23 +55,31 @@ class _3D_EXPORT QgsTinDemTerrainGenerator: public QgsTerrainGenerator
     QgsTinDemTerrainGenerator() = default;
 
     //! Returns the mesh layer associated with
-    QgsMeshLayer *layer() const {return mLayer;}
+    QgsMeshLayer *layer() const;
     //! Sets the mesh layer associated with
     void setLayer( QgsMeshLayer *layer );
+
+    //! Sets CRS of the terrain
+    void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
 
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
     QgsTerrainGenerator *clone() const override;
     Type type() const override;
     QgsRectangle extent() const override;
 
-    void writeXml( QDomElement &elem ) const override {( void )elem;}
-    void readXml( const QDomElement &elem ) override {( void )elem;}
+    void writeXml( QDomElement &elem ) const override;
+    void readXml( const QDomElement &elem ) override;
+    void resolveReferences( const QgsProject &project ) override;
 
   private:
     void updateTilingScheme();
 
+    QgsCoordinateReferenceSystem mCrs;
 
-    QgsMeshLayer *mLayer = nullptr;
+    QgsCoordinateTransformContext mTransformContext;
+
+    //! source layer
+    QgsMapLayerRef mLayer;
 };
 
 

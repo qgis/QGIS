@@ -30,7 +30,6 @@
 #include "qgschunkloader_p.h"
 
 #include <QImage>
-#include <QDebug>
 #include "qgsrectangle.h"
 
 class QgsPhongMaterialSettings;

@@ -30,15 +30,27 @@
 #include "qgstriangularmesh.h"
 #include "qgsterraintileentity_p.h"
 
+QgsMeshLayer *QgsTinDemTerrainGenerator::layer() const
+{
+  return qobject_cast<QgsMeshLayer *>( mLayer.layer.data() );
+}
+
 void QgsTinDemTerrainGenerator::setLayer( QgsMeshLayer *layer )
 {
-  mLayer = layer;
+  mLayer = QgsMapLayerRef( layer );
+  updateTilingScheme();
+}
+
+void QgsTinDemTerrainGenerator::setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context )
+{
+  mCrs = crs;
+  mTransformContext = context;
   updateTilingScheme();
 }
 
 QgsChunkLoader *QgsTinDemTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
 {
-  return new QgsTinDemTerrainTileLoader( mTerrain, node, mLayer );
+  return new QgsTinDemTerrainTileLoader( mTerrain, node, layer() );
 }
 
 QgsTerrainGenerator *QgsTinDemTerrainGenerator::clone() const
@@ -59,10 +71,33 @@ QgsRectangle QgsTinDemTerrainGenerator::extent() const
     return QgsRectangle();
 }
 
+void QgsTinDemTerrainGenerator::writeXml( QDomElement &elem ) const
+{
+  elem.setAttribute( QStringLiteral( "layer" ), mLayer.layerId );
+}
+
+void QgsTinDemTerrainGenerator::readXml( const QDomElement &elem )
+{
+  mLayer = QgsMapLayerRef( elem.attribute( QStringLiteral( "layer" ) ) );
+}
+
+void QgsTinDemTerrainGenerator::resolveReferences( const QgsProject &project )
+{
+  mLayer = QgsMapLayerRef( project.mapLayer( mLayer.layerId ) );
+  layer()->reload();
+  updateTilingScheme();
+}
+
 void QgsTinDemTerrainGenerator::updateTilingScheme()
 {
-  if ( mLayer )
+  QgsMeshLayer *dem = layer();
+  if ( dem )
+  {
+    QgsRectangle te = dem->extent();
+    QgsCoordinateTransform terrainToMapTransform( dem->crs(), mCrs, mTransformContext );
+    te = terrainToMapTransform.transformBoundingBox( te );
     mTerrainTilingScheme = QgsTilingScheme( mLayer->extent(), mLayer->crs() );
+  }
   else
     mTerrainTilingScheme = QgsTilingScheme();
 }

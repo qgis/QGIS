@@ -43,9 +43,6 @@ class Qgs3DMapConfigWidget : public QWidget, private Ui::Map3DConfigWidget
     void updateMaxZoomLevel() ;
 
   private:
-
-    void fillTinDataset();
-
     Qgs3DMapSettings *mMap = nullptr;
     QgsMapCanvas *mMainCanvas = nullptr;
 };

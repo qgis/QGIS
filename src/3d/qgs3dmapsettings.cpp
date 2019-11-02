@@ -19,6 +19,7 @@
 #include "qgsflatterraingenerator.h"
 #include "qgsdemterraingenerator.h"
 #include "qgsonlineterraingenerator.h"
+#include "qgstindemterraingenerator.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "qgsmeshlayer3drenderer.h"
 
@@ -140,6 +141,11 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
     QgsDemTerrainGenerator *demTerrainGenerator = new QgsDemTerrainGenerator;
     demTerrainGenerator->setCrs( mCrs, mTransformContext );
     mTerrainGenerator.reset( demTerrainGenerator );
+  }
+  else if ( terrainGenType == QLatin1String( "tin" ) )
+  {
+    QgsTinDemTerrainGenerator *tinTerrainGenerator = new QgsTinDemTerrainGenerator;
+    mTerrainGenerator.reset( tinTerrainGenerator );
   }
   else if ( terrainGenType == QLatin1String( "online" ) )
   {
