@@ -1150,6 +1150,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
     exporter.setAttributes( featureRequest.subsetOfAttributes() );
     exporter.setAttributeDisplayName( true );
     exporter.setSourceCrs( mapLayer->crs() );
+    exporter.setTransformGeometries( false );
     QgsFeatureList featureList;
     QgsFeatureIterator features { mapLayer->getFeatures( featureRequest ) };
     QgsFeature feat;

@@ -434,6 +434,22 @@ class QgsServerAPITest(QgsServerAPITestBase):
         request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer%20èé/items?crs={}'.format(encoded_crs))
         self.compareApi(request, project, 'test_wfs3_collections_items_testlayer_èé_crs_3857.json')
 
+    def test_wfs3_collection_items_as_areas_crs_4326(self):
+        """Test WFS3 API items with CRS"""
+        project = QgsProject()
+        project.read(unitTestDataPath('qgis_server') + '/test_project_wms_grouped_nested_layers.qgs')
+        encoded_crs = parse.quote('http://www.opengis.net/def/crs/EPSG/9.6.2/4326', safe='')
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/as-areas-short-name/items?crs={}'.format(encoded_crs))
+        self.compareApi(request, project, 'test_wfs3_collections_items_as-areas-short-name_4326.json')
+
+    def test_wfs3_collection_items_as_areas_crs_3857(self):
+        """Test WFS3 API items with CRS"""
+        project = QgsProject()
+        project.read(unitTestDataPath('qgis_server') + '/test_project_wms_grouped_nested_layers.qgs')
+        encoded_crs = parse.quote('http://www.opengis.net/def/crs/EPSG/9.6.2/3857', safe='')
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/as-areas-short-name/items?crs={}'.format(encoded_crs))
+        self.compareApi(request, project, 'test_wfs3_collections_items_as-areas-short-name_3857.json')
+
     def test_invalid_args(self):
         """Test wrong args"""
         project = QgsProject()
