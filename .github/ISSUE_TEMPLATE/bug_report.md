@@ -26,9 +26,9 @@ If the issue concerns a **third party plugin**, then it **cannot** be fixed by t
 <!-- Steps, sample datasets and qgis project file to reproduce the behavior. Screencasts or screenshots welcome
 
 1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error -->
+1. Click on '....'
+1. Scroll down to '....'
+1. See error -->
 
 **QGIS and OS versions**
 
