@@ -67,6 +67,7 @@ from processing.algs.gdal.pansharp import pansharp
 from processing.algs.gdal.merge import merge
 from processing.algs.gdal.nearblack import nearblack
 from processing.algs.gdal.slope import slope
+from processing.algs.gdal.rasterize_over import rasterize_over
 
 testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
 
@@ -1502,6 +1503,41 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                  '-l polys2 -a id -ts 0.0 0.0 -a_nodata 0.0 -ot Float32 -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
+
+    def testRasterizeOver(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        raster = os.path.join(testDataPath, 'dem.tif')
+        vector = os.path.join(testDataPath, 'polys.gml')
+        alg = rasterize_over()
+        alg.initAlgorithm()
+
+        with tempfile.TemporaryDirectory() as outdir:
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': vector,
+                                        'FIELD': 'id',
+                                        'INPUT_RASTER': raster}, context, feedback),
+                ['gdal_rasterize',
+                 '-l polys2 -a id ' +
+                 vector + ' ' + raster])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': vector,
+                                        'FIELD': 'id',
+                                        'ADD': True,
+                                        'INPUT_RASTER': raster}, context, feedback),
+                ['gdal_rasterize',
+                 '-l polys2 -a id -add ' +
+                 vector + ' ' + raster])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': vector,
+                                        'FIELD': 'id',
+                                        'EXTRA': '-i',
+                                        'INPUT_RASTER': raster}, context, feedback),
+                ['gdal_rasterize',
+                 '-l polys2 -a id -i ' +
+                 vector + ' ' + raster])
 
     def testRetile(self):
         context = QgsProcessingContext()
