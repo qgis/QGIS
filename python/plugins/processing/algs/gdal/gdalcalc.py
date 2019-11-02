@@ -256,10 +256,8 @@ class gdalcalc(GdalAlgorithm):
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
             parts = options.split('|')
-            options = []
             for p in parts:
-                option = '--co ' + p
-                arguments.append(option)
+                arguments.append('--co ' + p)
 
         if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
             extra = self.parameterAsString(parameters, self.EXTRA, context)
