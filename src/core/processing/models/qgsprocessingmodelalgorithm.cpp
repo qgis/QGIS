@@ -417,12 +417,20 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
       importLines << QStringLiteral( "from qgis.core import QgsProcessing" );
       importLines << QStringLiteral( "from qgis.core import QgsProcessingAlgorithm" );
       importLines << QStringLiteral( "from qgis.core import QgsProcessingMultiStepFeedback" );
+
+      bool hasAdvancedParams = false;
       for ( const QgsProcessingParameterDefinition *def : params )
       {
+        if ( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced )
+          hasAdvancedParams = true;
+
         const QString importString = QgsApplication::processingRegistry()->parameterType( def->type() )->pythonImportString();
         if ( !importString.isEmpty() && !importLines.contains( importString ) )
           importLines << importString;
       }
+
+      if ( hasAdvancedParams )
+        importLines << QStringLiteral( "from qgis.core import QgsProcessingParameterDefinition" );
 
       lines << QStringLiteral( "import processing" );
       lines << QString() << QString();
@@ -450,7 +458,16 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
             defClone->setName( friendlyName );
           }
 
-          lines << indent + indent + QStringLiteral( "self.addParameter(%1)" ).arg( defClone->asPythonString() );
+          if ( defClone->flags() & QgsProcessingParameterDefinition::FlagAdvanced )
+          {
+            lines << indent + indent + QStringLiteral( "param = %1" ).arg( defClone->asPythonString() );
+            lines << indent + indent + QStringLiteral( "param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)" );
+            lines << indent + indent + QStringLiteral( "self.addParameter(param)" );
+          }
+          else
+          {
+            lines << indent + indent + QStringLiteral( "self.addParameter(%1)" ).arg( defClone->asPythonString() );
+          }
         }
       }
 
