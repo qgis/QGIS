@@ -4384,8 +4384,8 @@ QVector<double> QgsLayoutDesignerDialog::predefinedScales() const
 {
   QgsProject *project = mMasterLayout->layoutProject();
   // first look at project's scales
-  QVector< double > projectMapScales = project->mapScales();
-  bool hasProjectScales( project->useProjectScales() );
+  QVector< double > projectMapScales = project->viewSettings()->mapScales();
+  bool hasProjectScales( project->viewSettings()->useProjectScales() );
   if ( !hasProjectScales || projectMapScales.isEmpty() )
   {
     // default to global map tool scales
