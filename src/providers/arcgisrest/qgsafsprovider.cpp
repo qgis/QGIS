@@ -375,6 +375,13 @@ QVariantMap QgsAfsProviderMetadata::decodeUri( const QString &uri )
   return components;
 }
 
+QString QgsAfsProviderMetadata::encodeUri( const QVariantMap &parts )
+{
+  QgsDataSourceUri dsUri;
+  dsUri.setParam( QStringLiteral( "url" ), parts.value( QStringLiteral( "url" ) ).toString() );
+  return dsUri.uri();
+}
+
 QgsAfsProvider *QgsAfsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {
   return new QgsAfsProvider( uri, options );

@@ -94,6 +94,11 @@ QVariantMap QgsProviderMetadata::decodeUri( const QString & )
   return QVariantMap();
 }
 
+QString QgsProviderMetadata::encodeUri( const QVariantMap & )
+{
+  return QString();
+}
+
 QgsVectorLayerExporter::ExportError QgsProviderMetadata::createEmptyLayer(
   const QString &, const QgsFields &,
   QgsWkbTypes::Type, const QgsCoordinateReferenceSystem &,

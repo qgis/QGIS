@@ -1261,6 +1261,12 @@ QVariantMap QgsAmsProviderMetadata::decodeUri( const QString &uri )
   return components;
 }
 
+QString QgsAmsProviderMetadata::encodeUri( const QVariantMap &parts )
+{
+  QgsDataSourceUri dsUri;
+  dsUri.setParam( QStringLiteral( "url" ), parts.value( QStringLiteral( "url" ) ).toString() );
+  return dsUri.uri();
+}
 
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {

@@ -3378,6 +3378,14 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri )
   return uriComponents;
 }
 
+QString QgsOgrProviderMetadata::encodeUri( const QVariantMap &parts )
+{
+  QString path = parts.value( QStringLiteral( "path" ) ).toString();
+  QString layerName = parts.value( QStringLiteral( "layerName" ) ).toString();
+  QString layerId = parts.value( QStringLiteral( "layerId" ) ).toString();
+  return path + ( !layerName.isEmpty() ? QStringLiteral( "|layername=%1" ).arg( layerName ) : !layerId.isEmpty() ? QStringLiteral( "|layerid=%1" ).arg( layerId ) : QString() );
+}
+
 QString QgsOgrProviderUtils::fileVectorFilters()
 {
   return createFilters( QStringLiteral( "file" ) );

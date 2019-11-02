@@ -219,6 +219,23 @@ Breaks a provider data source URI into its component paths (e.g. file path, laye
 .. versionadded:: 3.10
 %End
 
+    virtual QString encodeUri( const QVariantMap &parts );
+%Docstring
+Reassembles a provider data source URI from its component paths (e.g. file path, layer name).
+
+:param parts: parts as returned by decodeUri
+
+:return: datasource uri string
+
+.. note::
+
+   this function may not be supported by all providers, an empty string will be returned in such case
+
+.. seealso:: :py:func:`decodeUri`
+
+.. versionadded:: 3.12
+%End
+
     virtual QList< QgsDataItemProvider * > dataItemProviders() const /Factory/;
 %Docstring
 Returns data item providers. Caller is responsible for ownership of the item providers

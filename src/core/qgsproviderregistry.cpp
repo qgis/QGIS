@@ -405,6 +405,15 @@ QVariantMap QgsProviderRegistry::decodeUri( const QString &providerKey, const QS
     return QVariantMap();
 }
 
+QString QgsProviderRegistry::encodeUri( const QString &providerKey, const QVariantMap &parts )
+{
+  QgsProviderMetadata *meta = findMetadata_( mProviders, providerKey );
+  if ( meta )
+    return meta->encodeUri( parts );
+  else
+    return QString();
+}
+
 QgsVectorLayerExporter::ExportError QgsProviderRegistry::createEmptyLayer( const QString &providerKey,
     const QString &uri,
     const QgsFields &fields,

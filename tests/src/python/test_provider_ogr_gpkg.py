@@ -115,6 +115,31 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(components["path"], filename)
         self.assertEqual(components["layerId"], 0)
 
+    def testEncodeUri(self):
+
+        filename = '/home/to/path/my_file.gpkg'
+        registry = QgsProviderRegistry.instance()
+
+        parts = {"path": filename}
+        uri = registry.encodeUri('ogr', parts)
+        self.assertEqual(uri, filename)
+
+        # layerName only
+        parts["layerName"] = "test"
+        uri = registry.encodeUri('ogr', parts)
+        self.assertEqual(uri, '{}|layername=test'.format(filename))
+        del parts["layerName"]
+
+        # layerId only
+        parts["layerId"] = "0"
+        uri = registry.encodeUri('ogr', parts)
+        self.assertEqual(uri, '{}|layerid=0'.format(filename))
+
+        # Both layerName and layerId: layerName takes precedence
+        parts["layerName"] = "test"
+        uri = registry.encodeUri('ogr', parts)
+        self.assertEqual(uri, '{}|layername=test'.format(filename))
+
     def testSingleToMultiPolygonPromotion(self):
 
         tmpfile = os.path.join(self.basetestpath, 'testSingleToMultiPolygonPromotion.gpkg')

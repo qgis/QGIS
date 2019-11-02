@@ -223,6 +223,7 @@ class QgsAmsProviderMetadata: public QgsProviderMetadata
     QList<QgsDataItemProvider *> dataItemProviders() const override;
     QgsAmsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
     QVariantMap decodeUri( const QString &uri ) override;
+    QString encodeUri( const QVariantMap &parts ) override;
 };
 
 #endif // QGSMAPSERVERPROVIDER_H
