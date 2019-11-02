@@ -635,22 +635,16 @@ constexpr QLatin1String CORE_EXPORT geoNone()
 {
   return QLatin1String( "NONE" );
 }
-#else
+///@cond PRIVATE
 
-/**
- * Wkt string that represents a geographic coord sys
- * \since QGIS GEOWkt
- */
-QString CORE_EXPORT geoWkt()
+//! Delay between the scheduling of 2 preview jobs
+const int PREVIEW_JOB_DELAY_MS = 250;
 
-//! PROJ4 string that represents a geographic coord sys
-QString CORE_EXPORT geoProj4()
+//! Maximum rendering time for a layer of a preview job
+const int MAXIMUM_LAYER_PREVIEW_TIME_MS = 250;
 
-//! Geographic coord sys from EPSG authority
-QString CORE_EXPORT geoEpsgCrsAuthId()
+///@endcond
 
-//! Constant that holds the string representation for "No ellips/No CRS"
-QString CORE_EXPORT geoNone()
 #endif
 
 //! Magic number for a geographic coord sys in POSTGIS SRID
@@ -677,18 +671,6 @@ const double DEFAULT_LINE_WIDTH = 0.26;
 
 //! Default snapping tolerance for segments
 const double DEFAULT_SEGMENT_EPSILON = 1e-8;
-
-///@cond PRIVATE
-#ifndef SIP_RUN
-
-//! Delay between the scheduling of 2 preview jobs
-const int PREVIEW_JOB_DELAY_MS = 250;
-
-//! Maximum rendering time for a layer of a preview job
-const int MAXIMUM_LAYER_PREVIEW_TIME_MS = 250;
-#endif
-
-///@endcond
 
 typedef QMap<QString, QString> QgsStringMap SIP_SKIP;
 
@@ -801,4 +783,21 @@ typedef unsigned long long qgssize;
 #define FINAL final
 #endif
 
+#ifdef SIP_RUN
 
+/**
+ * Wkt string that represents a geographic coord sys
+ * \since QGIS GEOWkt
+ */
+QString CORE_EXPORT geoWkt()
+
+//! PROJ4 string that represents a geographic coord sys
+QString CORE_EXPORT geoProj4()
+
+//! Geographic coord sys from EPSG authority
+QString CORE_EXPORT geoEpsgCrsAuthId()
+
+//! Constant that holds the string representation for "No ellips/No CRS"
+QString CORE_EXPORT geoNone()
+
+#endif
