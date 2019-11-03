@@ -33,7 +33,8 @@ QLatin1String QgsOpenClUtils::SETTINGS_GLOBAL_ENABLED_KEY = QLatin1Literal( "Ope
 QLatin1String QgsOpenClUtils::SETTINGS_DEFAULT_DEVICE_KEY = QLatin1Literal( "OpenClDefaultDevice" );
 QLatin1String QgsOpenClUtils::LOGMESSAGE_TAG = QLatin1Literal( "OpenCL" );
 bool QgsOpenClUtils::sAvailable = false;
-QString QgsOpenClUtils::sSourcePath = QString();
+
+Q_GLOBAL_STATIC( QString, sSourcePath )
 
 
 const std::vector<cl::Device> QgsOpenClUtils::devices()
@@ -194,12 +195,12 @@ void QgsOpenClUtils::init()
 
 QString QgsOpenClUtils::sourcePath()
 {
-  return sSourcePath;
+  return *sSourcePath();
 }
 
 void QgsOpenClUtils::setSourcePath( const QString &value )
 {
-  sSourcePath = value;
+  *sSourcePath() = value;
 }
 
 QString QgsOpenClUtils::activeDeviceInfo( const QgsOpenClUtils::Info infoType )

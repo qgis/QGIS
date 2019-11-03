@@ -170,8 +170,6 @@ it knows about in some way before it hands them off to the provider.
 .. seealso:: SUBLAYER_SEPARATOR
 %End
 
-    static QString SUBLAYER_SEPARATOR;
-
     virtual QStringList subLayerStyles() const;
 %Docstring
 Sub-layer styles for each sub-layer handled by this provider,
@@ -391,6 +389,19 @@ Returns ``True`` if metadata was successfully written to the data provider.
 %End
 
 
+
+    static QString sublayerSeparator();
+%Docstring
+String sequence used for separating components of sublayers strings.
+
+.. note::
+
+   Replaces the static const SUBLAYER_SEPARATOR
+
+.. seealso:: :py:func:`subLayers`
+
+.. versionadded:: 3.12
+%End
 
   signals:
 

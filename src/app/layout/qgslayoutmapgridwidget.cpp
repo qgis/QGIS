@@ -485,7 +485,7 @@ bool QgsLayoutMapGridWidget::hasPredefinedScales() const
   {
     // default to global map tool scales
     QgsSettings settings;
-    QString scalesStr( settings.value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString() );
+    QString scalesStr( settings.value( QStringLiteral( "Map/scales" ), Qgis::defaultProjectScales() ).toString() );
     QStringList myScalesList = scalesStr.split( ',' );
     return !myScalesList.isEmpty() && !myScalesList[0].isEmpty();
   }

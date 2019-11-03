@@ -20,9 +20,6 @@
 #include "qgsmessagelog.h"
 #include "qgsproviderregistry.h"
 
-// List of GPKG quoted system and dummy tables names to be excluded from the tables listing
-static const QStringList excludedTableNames { { QStringLiteral( "\"ogr_empty_table\"" ) } };
-
 QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
 {
@@ -184,6 +181,9 @@ void QgsGeoPackageProviderConnection::vacuum( const QString &schema, const QStri
 
 QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConnection::tables( const QString &schema, const TableFlags &flags ) const
 {
+// List of GPKG quoted system and dummy tables names to be excluded from the tables listing
+  static const QStringList excludedTableNames { { QStringLiteral( "\"ogr_empty_table\"" ) } };
+
   checkCapability( Capability::Tables );
   if ( ! schema.isEmpty() )
   {

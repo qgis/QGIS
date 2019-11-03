@@ -343,7 +343,7 @@ bool QgsMapRendererTask::run()
             GDALSetMetadataItem( outputDS.get(), "CREATION_DATE", creationDateString.toLocal8Bit().constData(), nullptr );
 
             GDALSetMetadataItem( outputDS.get(), "AUTHOR", mGeoPdfExportDetails.author.toLocal8Bit().constData(), nullptr );
-            const QString creator = QStringLiteral( "QGIS %1" ).arg( Qgis::QGIS_VERSION );
+            const QString creator = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
             GDALSetMetadataItem( outputDS.get(), "CREATOR", creator.toLocal8Bit().constData(), nullptr );
             GDALSetMetadataItem( outputDS.get(), "PRODUCER", creator.toLocal8Bit().constData(), nullptr );
             GDALSetMetadataItem( outputDS.get(), "SUBJECT", mGeoPdfExportDetails.subject.toLocal8Bit().constData(), nullptr );

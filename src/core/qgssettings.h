@@ -172,7 +172,7 @@ class CORE_EXPORT QgsSettings : public QObject
     //! Returns a list of all key top-level groups (same as childGroups) but only for groups defined in global settings.
     QStringList globalChildGroups() const;
     //! Returns the path to the Global Settings QSettings storage file
-    static QString globalSettingsPath() { return sGlobalSettingsPath; }
+    static QString globalSettingsPath();
     //! Sets the Global Settings QSettings storage file
     static bool setGlobalSettingsPath( const QString &path );
     //! Adds prefix to the current group and starts reading from an array. Returns the size of the array.
@@ -410,8 +410,6 @@ class CORE_EXPORT QgsSettings : public QObject
     void clear();
 
   private:
-
-    static QString sGlobalSettingsPath;
     void init();
     QString sanitizeKey( const QString &key ) const;
     QSettings *mUserSettings = nullptr;

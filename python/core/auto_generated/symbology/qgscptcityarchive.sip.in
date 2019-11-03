@@ -46,9 +46,6 @@ class QgsCptCityArchive
     QVector< QgsCptCityDataItem * > rootItems() const;
     QVector< QgsCptCityDataItem * > selectionItems() const;
 
-  protected:
-
-
   private:
     QgsCptCityArchive( const QgsCptCityArchive &rh );
 };

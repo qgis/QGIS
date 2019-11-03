@@ -336,7 +336,7 @@ namespace QgsWmts
                               QList< layerDef > wmtsLayers, QList< tileMatrixSetDef > tmsList,
                               const QgsProject *project )
     {
-      QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
+      QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() );
       // Define InfoFormat helper
       std::function < void ( QDomElement &, const QString & ) > appendInfoFormat = [&doc]( QDomElement & elem, const QString & format )
       {

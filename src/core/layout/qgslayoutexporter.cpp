@@ -592,8 +592,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
     {
       // copy layout metadata to GeoPDF export settings
       details.author = mLayout->project()->metadata().author();
-      details.producer = QStringLiteral( "QGIS %1" ).arg( Qgis::QGIS_VERSION );
-      details.creator = QStringLiteral( "QGIS %1" ).arg( Qgis::QGIS_VERSION );
+      details.producer = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
+      details.creator = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
       details.creationDateTime = mLayout->project()->metadata().creationDateTime();
       details.subject = mLayout->project()->metadata().abstract();
       details.title = mLayout->project()->metadata().title();
@@ -1390,7 +1390,7 @@ void QgsLayoutExporter::appendMetadataToSvg( QDomDocument &svg ) const
   };
 
   addAgentNode( QStringLiteral( "dc:creator" ), metadata.author() );
-  addAgentNode( QStringLiteral( "dc:publisher" ), QStringLiteral( "QGIS %1" ).arg( Qgis::QGIS_VERSION ) );
+  addAgentNode( QStringLiteral( "dc:publisher" ), QStringLiteral( "QGIS %1" ).arg( Qgis::version() ) );
 
   // keywords
   {
@@ -1575,7 +1575,7 @@ bool QgsLayoutExporter::georeferenceOutputPrivate( const QString &file, QgsLayou
       GDALSetMetadataItem( outputDS.get(), "CREATION_DATE", creationDateString.toLocal8Bit().constData(), nullptr );
 
       GDALSetMetadataItem( outputDS.get(), "AUTHOR", mLayout->project()->metadata().author().toLocal8Bit().constData(), nullptr );
-      const QString creator = QStringLiteral( "QGIS %1" ).arg( Qgis::QGIS_VERSION );
+      const QString creator = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
       GDALSetMetadataItem( outputDS.get(), "CREATOR", creator.toLocal8Bit().constData(), nullptr );
       GDALSetMetadataItem( outputDS.get(), "PRODUCER", creator.toLocal8Bit().constData(), nullptr );
       GDALSetMetadataItem( outputDS.get(), "SUBJECT", mLayout->project()->metadata().abstract().toLocal8Bit().constData(), nullptr );
@@ -1960,7 +1960,7 @@ bool QgsLayoutExporter::saveImage( const QImage &image, const QString &imageFile
   if ( projectForMetadata )
   {
     w.setText( QStringLiteral( "Author" ), projectForMetadata->metadata().author() );
-    const QString creator = QStringLiteral( "QGIS %1" ).arg( Qgis::QGIS_VERSION );
+    const QString creator = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
     w.setText( QStringLiteral( "Creator" ), creator );
     w.setText( QStringLiteral( "Producer" ), creator );
     w.setText( QStringLiteral( "Subject" ), projectForMetadata->metadata().abstract() );

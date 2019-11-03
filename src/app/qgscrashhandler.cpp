@@ -62,16 +62,16 @@ LONG WINAPI QgsCrashHandler::handle( LPEXCEPTION_POINTERS exception )
   arguments << QgsProject::instance()->fileName();
 
   QStringList reportData;
-  reportData.append( QStringLiteral( "QGIS Version: %1" ).arg( Qgis::QGIS_VERSION ) );
+  reportData.append( QStringLiteral( "QGIS Version: %1" ).arg( Qgis::version() ) );
 
-  if ( QString( Qgis::QGIS_DEV_VERSION ) == QLatin1String( "exported" ) )
+  if ( QString( Qgis::devVersion() ) == QLatin1String( "exported" ) )
   {
     reportData.append( QStringLiteral( "QGIS code branch: Release %1.%2" )
-                       .arg( Qgis::QGIS_VERSION_INT / 10000 ).arg( Qgis::QGIS_VERSION_INT / 100 % 100 ) );
+                       .arg( Qgis::versionInt() / 10000 ).arg( Qgis::versionInt() / 100 % 100 ) );
   }
   else
   {
-    reportData.append( QStringLiteral( "QGIS code revision: %1" ).arg( Qgis::QGIS_DEV_VERSION ) );
+    reportData.append( QStringLiteral( "QGIS code revision: %1" ).arg( Qgis::devVersion() ) );
   }
 
   reportData.append( QStringLiteral( "Compiled against Qt: %1" ).arg( QT_VERSION_STR ) );

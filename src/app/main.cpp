@@ -1020,9 +1020,9 @@ int main( int argc, char *argv[] )
 
     QgsSettings migSettings;
     int firstRunVersion = migSettings.value( QStringLiteral( "migration/firstRunVersionFlag" ), 0 ).toInt();
-    bool showWelcome = ( firstRunVersion == 0  || Qgis::QGIS_VERSION_INT > firstRunVersion );
+    bool showWelcome = ( firstRunVersion == 0  || Qgis::versionInt() > firstRunVersion );
 
-    std::unique_ptr< QgsVersionMigration > migration( QgsVersionMigration::canMigrate( 20000, Qgis::QGIS_VERSION_INT ) );
+    std::unique_ptr< QgsVersionMigration > migration( QgsVersionMigration::canMigrate( 20000, Qgis::versionInt() ) );
     if ( migration && ( settingsMigrationForce || migration->requiresMigration() ) )
     {
       bool runMigration = true;
@@ -1035,7 +1035,7 @@ int main( int argc, char *argv[] )
         }
         dlg.exec();
         runMigration = dlg.migrateSettings();
-        migSettings.setValue( QStringLiteral( "migration/firstRunVersionFlag" ), Qgis::QGIS_VERSION_INT );
+        migSettings.setValue( QStringLiteral( "migration/firstRunVersionFlag" ), Qgis::versionInt() );
       }
 
       if ( runMigration )

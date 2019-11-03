@@ -35,41 +35,8 @@
 // Version constants
 //
 
-// Version string
-const QString Qgis::QGIS_VERSION( QString::fromUtf8( VERSION ) );
-
 // development version
 const char *Qgis::QGIS_DEV_VERSION = QGSVERSION;
-
-// Version number used for comparing versions using the
-// "Check QGIS Version" function
-const int Qgis::QGIS_VERSION_INT = VERSION_INT;
-
-// Release name
-const QString Qgis::QGIS_RELEASE_NAME( QString::fromUtf8( RELEASE_NAME ) );
-
-const QString GEOPROJ4 = QStringLiteral( "+proj=longlat +datum=WGS84 +no_defs" );
-
-const QString GEOWKT =
-  "GEOGCS[\"WGS 84\", "
-  "  DATUM[\"WGS_1984\", "
-  "    SPHEROID[\"WGS 84\",6378137,298.257223563, "
-  "      AUTHORITY[\"EPSG\",\"7030\"]], "
-  "    TOWGS84[0,0,0,0,0,0,0], "
-  "    AUTHORITY[\"EPSG\",\"6326\"]], "
-  "  PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]], "
-  "  UNIT[\"DMSH\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9108\"]], "
-  "  AXIS[\"Lat\",NORTH], "
-  "  AXIS[\"Long\",EAST], "
-  "  AUTHORITY[\"EPSG\",\"4326\"]]";
-
-const QString PROJECT_SCALES =
-  "1:1000000,1:500000,1:250000,1:100000,1:50000,1:25000,"
-  "1:10000,1:5000,1:2500,1:1000,1:500";
-
-const QString GEO_EPSG_CRS_AUTHID = QStringLiteral( "EPSG:4326" );
-
-const QString GEO_NONE = QStringLiteral( "NONE" );
 
 const double Qgis::DEFAULT_SEARCH_RADIUS_MM = 2.;
 
@@ -298,4 +265,32 @@ uint qHash( const QVariant &variant )
 bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs )
 {
   return ( lhs.isNull() == rhs.isNull() && lhs == rhs ) || ( lhs.isNull() && rhs.isNull() && lhs.isValid() && rhs.isValid() );
+}
+
+QString Qgis::defaultProjectScales()
+{
+  return QStringLiteral( "1:1000000,1:500000,1:250000,1:100000,1:50000,1:25000,"
+                         "1:10000,1:5000,1:2500,1:1000,1:500" );
+}
+
+QString Qgis::version()
+{
+  return QString::fromUtf8( VERSION );
+}
+
+int Qgis::versionInt()
+{
+  // Version number used for comparing versions using the
+  // "Check QGIS Version" function
+  return VERSION_INT;
+}
+
+QString Qgis::releaseName()
+{
+  return QString::fromUtf8( RELEASE_NAME );
+}
+
+QString Qgis::devVersion()
+{
+  return QString::fromUtf8( QGIS_DEV_VERSION );
 }

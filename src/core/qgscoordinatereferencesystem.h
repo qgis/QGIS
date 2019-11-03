@@ -849,29 +849,20 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     // cache
 
-    static QReadWriteLock sSrIdCacheLock;
-    static QHash< long, QgsCoordinateReferenceSystem > sSrIdCache;
     static bool sDisableSrIdCache;
-
-    static QReadWriteLock sOgcLock;
-    static QHash< QString, QgsCoordinateReferenceSystem > sOgcCache;
     static bool sDisableOgcCache;
-
-    static QReadWriteLock sProj4CacheLock;
-    static QHash< QString, QgsCoordinateReferenceSystem > sProj4Cache;
     static bool sDisableProj4Cache;
-
-    static QReadWriteLock sCRSWktLock;
-    static QHash< QString, QgsCoordinateReferenceSystem > sWktCache;
     static bool sDisableWktCache;
-
-    static QReadWriteLock sCRSSrsIdLock;
-    static QHash< long, QgsCoordinateReferenceSystem > sSrsIdCache;
     static bool sDisableSrsIdCache;
-
-    static QReadWriteLock sCrsStringLock;
-    static QHash< QString, QgsCoordinateReferenceSystem > sStringCache;
     static bool sDisableStringCache;
+
+    // for tests
+    static const QHash< QString, QgsCoordinateReferenceSystem > &stringCache();
+    static const QHash< QString, QgsCoordinateReferenceSystem > &proj4Cache();
+    static const QHash< QString, QgsCoordinateReferenceSystem > &ogcCache();
+    static const QHash< QString, QgsCoordinateReferenceSystem > &wktCache();
+    static const QHash< long, QgsCoordinateReferenceSystem > &srsIdCache();
+    static const QHash< long, QgsCoordinateReferenceSystem > &srIdCache();
 
     friend class TestQgsCoordinateReferenceSystem;
 };

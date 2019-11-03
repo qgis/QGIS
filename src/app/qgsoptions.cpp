@@ -470,11 +470,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
       break;
   }
 
-  QString myLayerDefaultCrs = mSettings->value( QStringLiteral( "/Projections/layerDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString();
+  QString myLayerDefaultCrs = mSettings->value( QStringLiteral( "/Projections/layerDefaultCrs" ), geoEpsgCrsAuthId() ).toString();
   mLayerDefaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( myLayerDefaultCrs );
   leLayerGlobalCrs->setCrs( mLayerDefaultCrs );
 
-  const QString defaultProjectCrs = mSettings->value( QStringLiteral( "/projections/defaultProjectCrs" ), GEO_EPSG_CRS_AUTHID, QgsSettings::App ).toString();
+  const QString defaultProjectCrs = mSettings->value( QStringLiteral( "/projections/defaultProjectCrs" ), geoEpsgCrsAuthId(), QgsSettings::App ).toString();
   leProjectGlobalCrs->setOptionVisible( QgsProjectionSelectionWidget::DefaultCrs, false );
   leProjectGlobalCrs->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, true );
   leProjectGlobalCrs->setNotSetText( tr( "No projection (or unknown/non-Earth projection)" ) );
@@ -646,7 +646,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   }
   mSegmentationToleranceSpinBox->setValue( tolerance );
 
-  QStringList myScalesList = PROJECT_SCALES.split( ',' );
+  QStringList myScalesList = Qgis::defaultProjectScales().split( ',' );
   myScalesList.append( QStringLiteral( "1:1" ) );
   mSimplifyMaximumScaleComboBox->updateScales( myScalesList );
   mSimplifyMaximumScaleComboBox->setScale( mSettings->value( QStringLiteral( "/qgis/simplifyMaxScale" ), 1 ).toFloat() );
@@ -792,7 +792,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   setZoomFactorValue();
 
   // predefined scales for scale combobox
-  QString scalePaths = mSettings->value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString();
+  QString scalePaths = mSettings->value( QStringLiteral( "Map/scales" ), Qgis::defaultProjectScales() ).toString();
   if ( !scalePaths.isEmpty() )
   {
     const QStringList scalesList = scalePaths.split( ',' );
@@ -2384,7 +2384,7 @@ void QgsOptions::restoreDefaultScaleValues()
 {
   mListGlobalScales->clear();
 
-  QStringList myScalesList = PROJECT_SCALES.split( ',' );
+  QStringList myScalesList = Qgis::defaultProjectScales().split( ',' );
   const auto constMyScalesList = myScalesList;
   for ( const QString &scale : constMyScalesList )
   {

@@ -98,7 +98,7 @@ QgsMapSettings QgsGlobeTileImage::createSettings( int dpi, const QList<QgsMapLay
 {
   QgsMapSettings settings;
   settings.setBackgroundColor( QColor( Qt::transparent ) );
-  settings.setDestinationCrs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID ) );
+  settings.setDestinationCrs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() ) );
   settings.setExtent( mTileExtent );
   settings.setLayers( layers );
   settings.setFlag( QgsMapSettings::DrawEditingInfo, false );

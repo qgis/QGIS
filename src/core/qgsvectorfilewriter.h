@@ -904,7 +904,6 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     std::unique_ptr< QgsFeatureRenderer > createSymbologyRenderer( QgsFeatureRenderer *sourceRenderer ) const;
     //! Adds attributes needed for classification
     static void addRendererAttributes( QgsFeatureRenderer *renderer, QgsRenderContext &context, const QgsFields &fields, QgsAttributeList &attList );
-    static QMap<QString, MetaData> sDriverMetadata;
 
     //! Concatenates a list of options using their default values
     static QStringList concatenateOptions( const QMap<QString, Option *> &options );

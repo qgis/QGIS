@@ -368,7 +368,7 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
   fileDocString << QStringLiteral( "Model exported as python." );
   fileDocString << QStringLiteral( "Name : %1" ).arg( displayName() );
   fileDocString << QStringLiteral( "Group : %1" ).arg( group() );
-  fileDocString << QStringLiteral( "With QGIS : %1" ).arg( Qgis::QGIS_VERSION_INT );
+  fileDocString << QStringLiteral( "With QGIS : %1" ).arg( Qgis::versionInt() );
   fileDocString << QStringLiteral( "\"\"\"" );
   fileDocString << QString();
 

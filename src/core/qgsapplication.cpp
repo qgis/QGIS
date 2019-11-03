@@ -104,61 +104,60 @@
 
 #define CONN_POOL_MAX_CONCURRENT_CONNS      4
 
-QObject *ABISYM( QgsApplication::mFileOpenEventReceiver );
-QStringList ABISYM( QgsApplication::mFileOpenEventList );
-QString ABISYM( QgsApplication::mPrefixPath );
-QString ABISYM( QgsApplication::mPluginPath );
-QString ABISYM( QgsApplication::mPkgDataPath );
-QString ABISYM( QgsApplication::mLibraryPath );
-QString ABISYM( QgsApplication::mLibexecPath );
-QString ABISYM( QgsApplication::mQmlImportPath );
-QString ABISYM( QgsApplication::mThemeName );
-QString ABISYM( QgsApplication::mUIThemeName );
-QString ABISYM( QgsApplication::mProfilePath );
-
-QStringList ABISYM( QgsApplication::mDefaultSvgPaths );
-QMap<QString, QString> ABISYM( QgsApplication::mSystemEnvVars );
-QString ABISYM( QgsApplication::mConfigPath );
-
+QObject *ABISYM( QgsApplication::mFileOpenEventReceiver ) = nullptr;
 bool ABISYM( QgsApplication::mInitialized ) = false;
 bool ABISYM( QgsApplication::mRunningFromBuildDir ) = false;
-QString ABISYM( QgsApplication::mBuildSourcePath );
-#if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
-QString ABISYM( QgsApplication::mCfgIntDir );
-#endif
-QString ABISYM( QgsApplication::mBuildOutputPath );
-QStringList ABISYM( QgsApplication::mGdalSkipList );
-QStringList QgsApplication::sDeferredSkippedGdalDrivers;
-int ABISYM( QgsApplication::mMaxThreads );
-QString ABISYM( QgsApplication::mAuthDbDirPath );
-
-QString QgsApplication::sUserName;
-QString QgsApplication::sUserFullName;
-QString QgsApplication::sPlatformName = QStringLiteral( "desktop" );
-QString QgsApplication::sTranslation;
-
 const char *QgsApplication::QGIS_ORGANIZATION_NAME = "QGIS";
 const char *QgsApplication::QGIS_ORGANIZATION_DOMAIN = "qgis.org";
 const char *QgsApplication::QGIS_APPLICATION_NAME = "QGIS3";
-
 QgsApplication::ApplicationMembers *QgsApplication::sApplicationMembers = nullptr;
 QgsAuthManager *QgsApplication::sAuthManager = nullptr;
+int ABISYM( QgsApplication::sMaxThreads ) = -1;
+
+
+Q_GLOBAL_STATIC( QStringList, sFileOpenEventList )
+Q_GLOBAL_STATIC( QString, sPrefixPath )
+Q_GLOBAL_STATIC( QString, sPluginPath )
+Q_GLOBAL_STATIC( QString, sPkgDataPath )
+Q_GLOBAL_STATIC( QString, sLibraryPath )
+Q_GLOBAL_STATIC( QString, sLibexecPath )
+Q_GLOBAL_STATIC( QString, sQmlImportPath )
+Q_GLOBAL_STATIC( QString, sThemeName )
+Q_GLOBAL_STATIC( QString, sProfilePath )
+
+Q_GLOBAL_STATIC( QStringList, sDefaultSvgPaths )
+Q_GLOBAL_STATIC( QgsStringMap, sSystemEnvVars )
+Q_GLOBAL_STATIC( QString, sConfigPath )
+
+Q_GLOBAL_STATIC( QString, sBuildSourcePath )
+#if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
+Q_GLOBAL_STATIC( QString, sCfgIntDir )
+#endif
+Q_GLOBAL_STATIC( QString, sBuildOutputPath )
+Q_GLOBAL_STATIC( QStringList, sGdalSkipList )
+Q_GLOBAL_STATIC( QStringList, sDeferredSkippedGdalDrivers )
+Q_GLOBAL_STATIC( QString, sAuthDbDirPath )
+
+Q_GLOBAL_STATIC( QString, sUserName )
+Q_GLOBAL_STATIC( QString, sUserFullName )
+Q_GLOBAL_STATIC_WITH_ARGS( QString, sPlatformName, ( "desktop" ) )
+Q_GLOBAL_STATIC( QString, sTranslation )
 
 QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const QString &profileFolder, const QString &platformName )
   : QApplication( argc, argv, GUIenabled )
 {
-  sPlatformName = platformName;
+  *sPlatformName() = platformName;
 
-  if ( sTranslation != QLatin1String( "C" ) )
+  if ( *sTranslation() != QLatin1String( "C" ) )
   {
     mQgisTranslator = new QTranslator();
-    if ( mQgisTranslator->load( QStringLiteral( "qgis_" ) + sTranslation, i18nPath() ) )
+    if ( mQgisTranslator->load( QStringLiteral( "qgis_" ) + *sTranslation(), i18nPath() ) )
     {
       installTranslator( mQgisTranslator );
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "loading of qgis translation failed %1/qgis_%2" ).arg( i18nPath(), sTranslation ) );
+      QgsDebugMsg( QStringLiteral( "loading of qgis translation failed %1/qgis_%2" ).arg( i18nPath(), *sTranslation() ) );
     }
 
     /* Translation file for Qt.
@@ -167,19 +166,19 @@ QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const Q
      * These items must be translated identically in both qt_ and qgis_ files.
      */
     mQtTranslator = new QTranslator();
-    if ( mQtTranslator->load( QStringLiteral( "qt_" ) + sTranslation, QLibraryInfo::location( QLibraryInfo::TranslationsPath ) ) )
+    if ( mQtTranslator->load( QStringLiteral( "qt_" ) + *sTranslation(), QLibraryInfo::location( QLibraryInfo::TranslationsPath ) ) )
     {
       installTranslator( mQtTranslator );
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "loading of qt translation failed %1/qt_%2" ).arg( QLibraryInfo::location( QLibraryInfo::TranslationsPath ), sTranslation ) );
+      QgsDebugMsg( QStringLiteral( "loading of qt translation failed %1/qt_%2" ).arg( QLibraryInfo::location( QLibraryInfo::TranslationsPath ), *sTranslation() ) );
     }
   }
 
   mApplicationMembers = new ApplicationMembers();
 
-  ABISYM( mProfilePath ) = profileFolder;
+  *sProfilePath() = profileFolder;
 }
 
 void QgsApplication::init( QString profileFolder )
@@ -203,7 +202,7 @@ void QgsApplication::init( QString profileFolder )
     delete profile;
   }
 
-  ABISYM( mProfilePath ) = profileFolder;
+  *sProfilePath() = profileFolder;
 
   qRegisterMetaType<QgsGeometry::Error>( "QgsGeometry::Error" );
   qRegisterMetaType<QgsProcessingFeatureSourceDefinition>( "QgsProcessingFeatureSourceDefinition" );
@@ -231,21 +230,21 @@ void QgsApplication::init( QString profileFolder )
   if ( ABISYM( mRunningFromBuildDir ) )
   {
     // we run from source directory - not installed to destination (specified prefix)
-    ABISYM( mPrefixPath ) = QString(); // set invalid path
+    *sPrefixPath() = QString(); // set invalid path
 #if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
-    setPluginPath( ABISYM( mBuildOutputPath ) + '/' + QString( QGIS_PLUGIN_SUBDIR ) + '/' + ABISYM( mCfgIntDir ) );
+    setPluginPath( *sBuildOutputPath() + '/' + QString( QGIS_PLUGIN_SUBDIR ) + '/' + ABISYM( mCfgIntDir ) );
 #else
-    setPluginPath( ABISYM( mBuildOutputPath ) + '/' + QStringLiteral( QGIS_PLUGIN_SUBDIR ) );
+    setPluginPath( *sBuildOutputPath() + '/' + QStringLiteral( QGIS_PLUGIN_SUBDIR ) );
 #endif
-    setPkgDataPath( ABISYM( mBuildOutputPath ) + QStringLiteral( "/data" ) ); // in buildDir/data - used for: doc, resources, svg
-    ABISYM( mLibraryPath ) = ABISYM( mBuildOutputPath ) + '/' + QGIS_LIB_SUBDIR + '/';
+    setPkgDataPath( *sBuildOutputPath() + QStringLiteral( "/data" ) ); // in buildDir/data - used for: doc, resources, svg
+    *sLibraryPath() = *sBuildOutputPath() + '/' + QGIS_LIB_SUBDIR + '/';
 #if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
-    ABISYM( mLibexecPath ) = ABISYM( mBuildOutputPath ) + '/' + QGIS_LIBEXEC_SUBDIR + '/' + ABISYM( mCfgIntDir ) + '/';
+    *sLibexecPath() = *sBuildOutputPath() + '/' + QGIS_LIBEXEC_SUBDIR + '/' + ABISYM( mCfgIntDir ) + '/';
 #else
-    ABISYM( mLibexecPath ) = ABISYM( mBuildOutputPath ) + '/' + QGIS_LIBEXEC_SUBDIR + '/';
+    *sLibexecPath() = *sBuildOutputPath() + '/' + QGIS_LIBEXEC_SUBDIR + '/';
 #endif
 #if defined( HAVE_QUICK )
-    ABISYM( mQmlImportPath ) = ABISYM( mBuildOutputPath ) + '/' + QGIS_QML_SUBDIR + '/';
+    *sQmlImportPath() = *sBuildOutputPath() + '/' + QGIS_QML_SUBDIR + '/';
 #endif
   }
   else
@@ -253,7 +252,7 @@ void QgsApplication::init( QString profileFolder )
     char *prefixPath = getenv( "QGIS_PREFIX_PATH" );
     if ( !prefixPath )
     {
-      if ( ABISYM( mPrefixPath ).isNull() )
+      if ( sPrefixPath()->isNull() )
       {
 #if defined(Q_OS_MACX) || defined(Q_OS_WIN)
         setPrefixPath( applicationDirPath(), true );
@@ -282,10 +281,10 @@ void QgsApplication::init( QString profileFolder )
     }
   }
 
-  ABISYM( mConfigPath ) = profileFolder + '/'; // make sure trailing slash is included
-  ABISYM( mDefaultSvgPaths ) << qgisSettingsDirPath() + QStringLiteral( "svg/" );
+  *sConfigPath() = profileFolder + '/'; // make sure trailing slash is included
+  *sDefaultSvgPaths() << qgisSettingsDirPath() + QStringLiteral( "svg/" );
 
-  ABISYM( mAuthDbDirPath ) = qgisSettingsDirPath();
+  *sAuthDbDirPath() = qgisSettingsDirPath();
   if ( getenv( "QGIS_AUTH_DB_DIR_PATH" ) )
   {
     setAuthDatabaseDirPath( getenv( "QGIS_AUTH_DB_DIR_PATH" ) );
@@ -308,7 +307,7 @@ void QgsApplication::init( QString profileFolder )
       systemEnvVarMap.insert( varStrName, varStrValue );
     }
   }
-  ABISYM( mSystemEnvVars ) = systemEnvVarMap;
+  *sSystemEnvVars() = systemEnvVarMap;
 
 #if PROJ_VERSION_MAJOR>=6
   // append local user-writable folder as a proj search path
@@ -334,7 +333,7 @@ void QgsApplication::init( QString profileFolder )
   // set max. thread count to -1
   // this should be read from QgsSettings but we don't know where they are at this point
   // so we read actual value in main.cpp
-  ABISYM( mMaxThreads ) = -1;
+  ABISYM( sMaxThreads ) = -1;
 
   colorSchemeRegistry()->addDefaultSchemes();
   colorSchemeRegistry()->initStyleScheme();
@@ -389,7 +388,7 @@ bool QgsApplication::event( QEvent *event )
       // Store filename because receiver has not registered yet.
       // If QGIS has been launched by double clicking a file icon, FileOpen will be
       // the first event; the main window is not yet ready to handle the event.
-      ABISYM( mFileOpenEventList ).append( static_cast<QFileOpenEvent *>( event )->file() );
+      sFileOpenEventList()->append( static_cast<QFileOpenEvent *>( event )->file() );
       done = true;
     }
   }
@@ -449,58 +448,58 @@ void QgsApplication::setFileOpenEventReceiver( QObject *receiver )
   // Set receiver for FileOpen events
   ABISYM( mFileOpenEventReceiver ) = receiver;
   // Propagate any events collected before the receiver has registered.
-  if ( ABISYM( mFileOpenEventList ).count() > 0 )
+  if ( sFileOpenEventList()->count() > 0 )
   {
-    QStringListIterator i( ABISYM( mFileOpenEventList ) );
-    while ( i.hasNext() )
+    const QStringList fileOpenEventList = *sFileOpenEventList();
+    for ( const QString &file : fileOpenEventList )
     {
-      QFileOpenEvent foe( i.next() );
+      QFileOpenEvent foe( file );
       QgsApplication::sendEvent( ABISYM( mFileOpenEventReceiver ), &foe );
     }
-    ABISYM( mFileOpenEventList ).clear();
+    sFileOpenEventList()->clear();
   }
 }
 
 void QgsApplication::setPrefixPath( const QString &prefixPath, bool useDefaultPaths )
 {
-  ABISYM( mPrefixPath ) = prefixPath;
+  *sPrefixPath() = prefixPath;
 #if defined(Q_OS_WIN)
-  if ( ABISYM( mPrefixPath ).endsWith( "/bin" ) )
+  if ( *sPrefixPath().endsWith( "/bin" ) )
   {
-    ABISYM( mPrefixPath ).chop( 4 );
+    *sPrefixPath().chop( 4 );
   }
 #endif
   if ( useDefaultPaths && !ABISYM( mRunningFromBuildDir ) )
   {
-    setPluginPath( ABISYM( mPrefixPath ) + '/' + QStringLiteral( QGIS_PLUGIN_SUBDIR ) );
-    setPkgDataPath( ABISYM( mPrefixPath ) + '/' + QStringLiteral( QGIS_DATA_SUBDIR ) );
+    setPluginPath( *sPrefixPath() + '/' + QStringLiteral( QGIS_PLUGIN_SUBDIR ) );
+    setPkgDataPath( *sPrefixPath() + '/' + QStringLiteral( QGIS_DATA_SUBDIR ) );
   }
-  ABISYM( mLibraryPath ) = ABISYM( mPrefixPath ) + '/' + QGIS_LIB_SUBDIR + '/';
-  ABISYM( mLibexecPath ) = ABISYM( mPrefixPath ) + '/' + QGIS_LIBEXEC_SUBDIR + '/';
+  *sLibraryPath() = *sPrefixPath() + '/' + QGIS_LIB_SUBDIR + '/';
+  *sLibexecPath() = *sPrefixPath() + '/' + QGIS_LIBEXEC_SUBDIR + '/';
 #if defined( HAVE_QUICK )
-  ABISYM( mQmlImportPath ) = ABISYM( mPrefixPath ) + '/' + QGIS_QML_SUBDIR + '/';
+  *sQmlImportPath() = *sPrefixPath() + '/' + QGIS_QML_SUBDIR + '/';
 #endif
 }
 
 void QgsApplication::setPluginPath( const QString &pluginPath )
 {
-  ABISYM( mPluginPath ) = pluginPath;
+  *sPluginPath() = pluginPath;
 }
 
 void QgsApplication::setPkgDataPath( const QString &pkgDataPath )
 {
-  ABISYM( mPkgDataPath ) = pkgDataPath;
+  *sPkgDataPath() = pkgDataPath;
 
   QString mySvgPath = pkgDataPath + QStringLiteral( "/svg/" );
 
   // avoid duplicate entries
-  if ( !ABISYM( mDefaultSvgPaths ).contains( mySvgPath ) )
-    ABISYM( mDefaultSvgPaths ) << mySvgPath;
+  if ( !sDefaultSvgPaths()->contains( mySvgPath ) )
+    *sDefaultSvgPaths() << mySvgPath;
 }
 
 void QgsApplication::setDefaultSvgPaths( const QStringList &pathList )
 {
-  ABISYM( mDefaultSvgPaths ) = pathList;
+  *sDefaultSvgPaths() = pathList;
 }
 
 void QgsApplication::setAuthDatabaseDirPath( const QString &authDbDirPath )
@@ -508,7 +507,7 @@ void QgsApplication::setAuthDatabaseDirPath( const QString &authDbDirPath )
   QFileInfo fi( authDbDirPath );
   if ( fi.exists() && fi.isDir() && fi.isWritable() )
   {
-    ABISYM( mAuthDbDirPath ) = fi.canonicalFilePath() + QDir::separator();
+    *sAuthDbDirPath() = fi.canonicalFilePath() + QDir::separator();
   }
 }
 
@@ -528,19 +527,19 @@ QString QgsApplication::prefixPath()
   }
 #endif
 
-  return ABISYM( mPrefixPath );
+  return *sPrefixPath();
 }
 QString QgsApplication::pluginPath()
 {
-  return ABISYM( mPluginPath );
+  return *sPluginPath();
 }
 
 QString QgsApplication::pkgDataPath()
 {
-  if ( ABISYM( mPkgDataPath ).isNull() )
+  if ( sPkgDataPath()->isNull() )
     return resolvePkgPath();
   else
-    return ABISYM( mPkgDataPath );
+    return *sPkgDataPath();
 }
 
 QString QgsApplication::defaultThemePath()
@@ -565,6 +564,11 @@ QString QgsApplication::activeThemePath()
 QString QgsApplication::appIconPath()
 {
   return iconsPath() + QStringLiteral( "qgis-icon-60x60.png" );
+}
+
+int QgsApplication::maxThreads()
+{
+  return ABISYM( sMaxThreads );
 }
 
 QString QgsApplication::iconPath( const QString &iconFile )
@@ -691,7 +695,7 @@ QPixmap QgsApplication::getThemePixmap( const QString &name )
 
 void QgsApplication::setThemeName( const QString &themeName )
 {
-  ABISYM( mThemeName ) = themeName;
+  *sThemeName() = themeName;
 }
 
 QString QgsApplication::resolvePkgPath()
@@ -726,11 +730,11 @@ QString QgsApplication::resolvePkgPath()
     if ( f.exists() && f.open( QIODevice::ReadOnly ) )
     {
       ABISYM( mRunningFromBuildDir ) = true;
-      ABISYM( mBuildSourcePath ) = f.readLine().trimmed();
-      ABISYM( mBuildOutputPath ) = f.readLine().trimmed();
+      *sBuildSourcePath() = f.readLine().trimmed();
+      *sBuildOutputPath() = f.readLine().trimmed();
       QgsDebugMsgLevel( QStringLiteral( "Running from build directory!" ), 4 );
-      QgsDebugMsgLevel( QStringLiteral( "- source directory: %1" ).arg( ABISYM( mBuildSourcePath ).toUtf8().constData() ), 4 );
-      QgsDebugMsgLevel( QStringLiteral( "- output directory of the build: %1" ).arg( ABISYM( mBuildOutputPath ).toUtf8().constData() ), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "- source directory: %1" ).arg( sBuildSourcePath()->toUtf8().constData() ), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "- output directory of the build: %1" ).arg( sBuildOutputPath()->toUtf8().constData() ), 4 );
 #if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
       ABISYM( mCfgIntDir ) = appPath.split( '/', QString::SkipEmptyParts ).last();
       qDebug( "- cfg: %s", ABISYM( mCfgIntDir ).toUtf8().constData() );
@@ -770,14 +774,14 @@ QString QgsApplication::resolvePkgPath()
   }
 
   if ( ABISYM( mRunningFromBuildDir ) )
-    return ABISYM( mBuildOutputPath ) + QStringLiteral( "/data" );
+    return *sBuildOutputPath() + QStringLiteral( "/data" );
   else
     return prefixPath + '/' + QStringLiteral( QGIS_DATA_SUBDIR );
 }
 
 QString QgsApplication::themeName()
 {
-  return ABISYM( mThemeName );
+  return *sThemeName();
 }
 
 void QgsApplication::setUITheme( const QString &themeName )
@@ -931,7 +935,7 @@ QString QgsApplication::licenceFilePath()
 QString QgsApplication::i18nPath()
 {
   if ( ABISYM( mRunningFromBuildDir ) )
-    return ABISYM( mBuildOutputPath ) + QStringLiteral( "/i18n/" );
+    return *sBuildOutputPath() + QStringLiteral( "/i18n/" );
   else
     return pkgDataPath() + QStringLiteral( "/i18n/" );
 }
@@ -948,7 +952,7 @@ QString QgsApplication::qgisMasterDatabaseFilePath()
 
 QString QgsApplication::qgisSettingsDirPath()
 {
-  return ABISYM( mConfigPath );
+  return *sConfigPath();
 }
 
 QString QgsApplication::qgisUserDatabaseFilePath()
@@ -958,7 +962,7 @@ QString QgsApplication::qgisUserDatabaseFilePath()
 
 QString QgsApplication::qgisAuthDatabaseFilePath()
 {
-  return ABISYM( mAuthDbDirPath ) + QStringLiteral( "qgis-auth.db" );
+  return *sAuthDbDirPath() + QStringLiteral( "qgis-auth.db" );
 }
 
 QString QgsApplication::splashPath()
@@ -1016,7 +1020,7 @@ QStringList QgsApplication::svgPaths()
     if ( !paths.contains( path ) )
       paths.append( path );
   }
-  for ( const QString &path : qgis::as_const( ABISYM( mDefaultSvgPaths ) ) )
+  for ( const QString &path : qgis::as_const( *sDefaultSvgPaths() ) )
   {
     if ( !paths.contains( path ) )
       paths.append( path );
@@ -1035,6 +1039,11 @@ QStringList QgsApplication::layoutTemplatePaths()
   return pathList;
 }
 
+QMap<QString, QString> QgsApplication::systemEnvVars()
+{
+  return *sSystemEnvVars();
+}
+
 QString QgsApplication::userStylePath()
 {
   return qgisSettingsDirPath() + QStringLiteral( "symbology-style.db" );
@@ -1047,8 +1056,8 @@ QRegExp QgsApplication::shortNameRegExp()
 
 QString QgsApplication::userLoginName()
 {
-  if ( !sUserName.isEmpty() )
-    return sUserName;
+  if ( !sUserName()->isEmpty() )
+    return *sUserName();
 
 #ifdef _MSC_VER
   TCHAR name [ UNLEN + 1 ];
@@ -1056,7 +1065,7 @@ QString QgsApplication::userLoginName()
 
   if ( GetUserName( ( TCHAR * )name, &size ) )
   {
-    sUserName = QString::fromLocal8Bit( name );
+    *sUserName() = QString::fromLocal8Bit( name );
   }
 
 #elif QT_CONFIG(process)
@@ -1064,26 +1073,26 @@ QString QgsApplication::userLoginName()
 
   process.start( QStringLiteral( "whoami" ) );
   process.waitForFinished();
-  sUserName = process.readAllStandardOutput().trimmed();
+  *sUserName() = process.readAllStandardOutput().trimmed();
 #endif
 
-  if ( !sUserName.isEmpty() )
-    return sUserName;
+  if ( !sUserName()->isEmpty() )
+    return *sUserName();
 
   //backup plan - use environment variables
-  sUserName = qgetenv( "USER" );
-  if ( !sUserName.isEmpty() )
-    return sUserName;
+  *sUserName() = qgetenv( "USER" );
+  if ( !sUserName()->isEmpty() )
+    return *sUserName();
 
   //last resort
-  sUserName = qgetenv( "USERNAME" );
-  return sUserName;
+  *sUserName() = qgetenv( "USERNAME" );
+  return *sUserName();
 }
 
 QString QgsApplication::userFullName()
 {
-  if ( !sUserFullName.isEmpty() )
-    return sUserFullName;
+  if ( !sUserFullName()->isEmpty() )
+    return *sUserFullName();
 
 #ifdef _MSC_VER
   TCHAR name [ UNLEN + 1 ];
@@ -1096,7 +1105,7 @@ QString QgsApplication::userFullName()
   }
 
   //fall back to login name
-  if ( sUserFullName.isEmpty() )
+  if ( sUserFullName()->isEmpty() )
     sUserFullName = userLoginName();
 #elif defined(Q_OS_ANDROID) || defined(__MINGW32__)
   sUserFullName = "Not available";
@@ -1106,12 +1115,12 @@ QString QgsApplication::userFullName()
   if ( p )
   {
     QString gecosName = QString( p->pw_gecos );
-    sUserFullName = gecosName.left( gecosName.indexOf( ',', 0 ) );
+    *sUserFullName() = gecosName.left( gecosName.indexOf( ',', 0 ) );
   }
 
 #endif
 
-  return sUserFullName;
+  return *sUserFullName();
 }
 
 QString QgsApplication::osName()
@@ -1139,7 +1148,7 @@ QString QgsApplication::osName()
 
 QString QgsApplication::platform()
 {
-  return sPlatformName;
+  return *sPlatformName();
 }
 
 QString QgsApplication::locale()
@@ -1185,17 +1194,17 @@ QString QgsApplication::serverResourcesPath()
 
 QString QgsApplication::libraryPath()
 {
-  return ABISYM( mLibraryPath );
+  return *sLibraryPath();
 }
 
 QString QgsApplication::libexecPath()
 {
-  return ABISYM( mLibexecPath );
+  return *sLibexecPath();
 }
 
 QString QgsApplication::qmlImportPath()
 {
-  return ABISYM( mQmlImportPath );
+  return *sQmlImportPath();
 }
 
 QgsApplication::endian_t QgsApplication::endian()
@@ -1207,7 +1216,7 @@ void QgsApplication::initQgis()
 {
   if ( !ABISYM( mInitialized ) && QgsApplication::instance() )
   {
-    init( ABISYM( mProfilePath ) );
+    init( *sProfilePath() );
   }
 
   // set the provider plugin path (this creates provider registry)
@@ -1585,35 +1594,50 @@ QString QgsApplication::relativePathToAbsolutePath( const QString &rpath, const 
   return targetElems.join( QStringLiteral( "/" ) );
 }
 
+QString QgsApplication::buildSourcePath()
+{
+  return *sBuildSourcePath();
+}
+
+QString QgsApplication::buildOutputPath()
+{
+  return *sBuildOutputPath();
+}
+
 void QgsApplication::skipGdalDriver( const QString &driver )
 {
-  if ( ABISYM( mGdalSkipList ).contains( driver ) || driver.isEmpty() )
+  if ( sGdalSkipList()->contains( driver ) || driver.isEmpty() )
   {
     return;
   }
-  ABISYM( mGdalSkipList ) << driver;
+  *sGdalSkipList() << driver;
   applyGdalSkippedDrivers();
 }
 
 void QgsApplication::restoreGdalDriver( const QString &driver )
 {
-  if ( !ABISYM( mGdalSkipList ).contains( driver ) )
+  if ( !sGdalSkipList()->contains( driver ) )
   {
     return;
   }
-  int myPos = ABISYM( mGdalSkipList ).indexOf( driver );
+  int myPos = sGdalSkipList()->indexOf( driver );
   if ( myPos >= 0 )
   {
-    ABISYM( mGdalSkipList ).removeAt( myPos );
+    sGdalSkipList()->removeAt( myPos );
   }
   applyGdalSkippedDrivers();
+}
+
+QStringList QgsApplication::skippedGdalDrivers()
+{
+  return *sGdalSkipList();
 }
 
 void QgsApplication::setSkippedGdalDrivers( const QStringList &skippedGdalDrivers,
     const QStringList &deferredSkippedGdalDrivers )
 {
-  ABISYM( mGdalSkipList ) = skippedGdalDrivers;
-  sDeferredSkippedGdalDrivers = deferredSkippedGdalDrivers;
+  *sGdalSkipList() = skippedGdalDrivers;
+  *sDeferredSkippedGdalDrivers() = deferredSkippedGdalDrivers;
 
   QgsSettings settings;
   settings.setValue( QStringLiteral( "gdal/skipList" ), skippedGdalDrivers.join( QStringLiteral( " " ) ) );
@@ -1630,17 +1654,22 @@ void QgsApplication::registerGdalDriversFromSettings()
   {
     myList = joinedList.split( ' ' );
   }
-  ABISYM( mGdalSkipList ) = myList;
+  *sGdalSkipList() = myList;
   applyGdalSkippedDrivers();
+}
+
+QStringList QgsApplication::deferredSkippedGdalDrivers()
+{
+  return *sDeferredSkippedGdalDrivers();
 }
 
 void QgsApplication::applyGdalSkippedDrivers()
 {
-  ABISYM( mGdalSkipList ).removeDuplicates();
+  sGdalSkipList()->removeDuplicates();
   QStringList realDisabledDriverList;
-  for ( const auto &driverName : ABISYM( mGdalSkipList ) )
+  for ( const auto &driverName : *sGdalSkipList() )
   {
-    if ( !sDeferredSkippedGdalDrivers.contains( driverName ) )
+    if ( !sDeferredSkippedGdalDrivers()->contains( driverName ) )
       realDisabledDriverList << driverName;
   }
   QString myDriverList = realDisabledDriverList.join( ' ' );
@@ -1730,6 +1759,11 @@ void QgsApplication::setCustomVariable( const QString &name, const QVariant &val
 int QgsApplication::maxConcurrentConnectionsPerPool() const
 {
   return CONN_POOL_MAX_CONCURRENT_CONNS;
+}
+
+void QgsApplication::setTranslation( const QString &translation )
+{
+  *sTranslation() = translation;
 }
 
 void QgsApplication::collectTranslatableObjects( QgsTranslationContext *translationContext )
@@ -1916,7 +1950,7 @@ void QgsApplication::setMaxThreads( int maxThreads )
     maxThreads = -1;
 
   // save value
-  ABISYM( mMaxThreads ) = maxThreads;
+  ABISYM( sMaxThreads ) = maxThreads;
 
   // if -1 use #cores
   if ( maxThreads == -1 )

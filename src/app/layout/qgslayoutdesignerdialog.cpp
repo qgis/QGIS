@@ -98,9 +98,7 @@
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
 #endif
-
-//add some nice zoom levels for zoom comboboxes
-QList<double> QgsLayoutDesignerDialog::sStatusZoomLevelsList { 0.125, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0};
+#include <QGlobalStatic>
 #define FIT_LAYOUT -101
 #define FIT_LAYOUT_WIDTH -102
 
@@ -717,8 +715,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   QValidator *zoomValidator = new QRegularExpressionValidator( zoomRx, mStatusZoomCombo );
   mStatusZoomCombo->lineEdit()->setValidator( zoomValidator );
 
-  const auto constSStatusZoomLevelsList = sStatusZoomLevelsList;
-  for ( double level : constSStatusZoomLevelsList )
+  for ( double level : { 0.125, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0 } )
   {
     mStatusZoomCombo->insertItem( 0, tr( "%1%" ).arg( level * 100.0, 0, 'f', 1 ), level );
   }
@@ -4387,25 +4384,25 @@ QVector<double> QgsLayoutDesignerDialog::predefinedScales() const
 {
   QgsProject *project = mMasterLayout->layoutProject();
   // first look at project's scales
-  QVector< double > projectScales = project->viewSettings()->mapScales();
+  QVector< double > projectMapScales = project->viewSettings()->mapScales();
   bool hasProjectScales( project->viewSettings()->useProjectScales() );
-  if ( !hasProjectScales || projectScales.isEmpty() )
+  if ( !hasProjectScales || projectMapScales.isEmpty() )
   {
     // default to global map tool scales
     QgsSettings settings;
-    QString scalesStr( settings.value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString() );
-    QStringList scales = scalesStr.split( ',' );
+    QString scalesStr( settings.value( QStringLiteral( "Map/scales" ), Qgis::defaultProjectScales() ).toString() );
+    const QStringList scales = scalesStr.split( ',' );
 
-    for ( auto scaleIt = scales.constBegin(); scaleIt != scales.constEnd(); ++scaleIt )
+    for ( const QString &scale : scales )
     {
-      QStringList parts( scaleIt->split( ':' ) );
+      QStringList parts( scale.split( ':' ) );
       if ( parts.size() == 2 )
       {
-        projectScales.push_back( parts[1].toDouble() );
+        projectMapScales.push_back( parts[1].toDouble() );
       }
     }
   }
-  return projectScales;
+  return projectMapScales;
 }
 
 QgsLayoutAtlas *QgsLayoutDesignerDialog::atlas()

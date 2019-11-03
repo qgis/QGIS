@@ -823,7 +823,7 @@ void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &ba
 
     QDomDocument doc = QDomDocument( documentType );
     QDomElement styleElem = doc.createElement( QStringLiteral( "qgis" ) );
-    styleElem.setAttribute( QStringLiteral( "version" ), Qgis::QGIS_VERSION );
+    styleElem.setAttribute( QStringLiteral( "version" ), Qgis::version() );
     QgsReadWriteContext writeContext;
     if ( ! writeSymbology( styleElem, doc, errorMsg, writeContext ) )
     {

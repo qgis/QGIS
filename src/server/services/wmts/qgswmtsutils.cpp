@@ -32,7 +32,7 @@ namespace QgsWmts
   {
     QMap< QString, tileMatrixInfo> populateFixedTileMatrixInfoMap();
 
-    QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
+    QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() );
 
     // Constant
     int tileSize = 256;
@@ -199,7 +199,7 @@ namespace QgsWmts
 
     // default scales
     QgsSettings settings;
-    QStringList scaleList = settings.value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString().split( ',' );
+    QStringList scaleList = settings.value( QStringLiteral( "Map/scales" ), Qgis::defaultProjectScales() ).toString().split( ',' );
     //load project scales
     bool useProjectScales = project->viewSettings()->useProjectScales();
     const QVector< double >projectScales = project->viewSettings()->mapScales();
@@ -290,7 +290,7 @@ namespace QgsWmts
           tmi.unit = crs.mapUnits();
           tmi.hasAxisInverted = crs.hasAxisInverted();
 
-          QgsCoordinateTransform crsTransform( QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID ), crs, project );
+          QgsCoordinateTransform crsTransform( QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() ), crs, project );
           try
           {
             // firstly transform CRS bounds expressed in WGS84 to CRS

@@ -1431,7 +1431,7 @@ namespace QgsWms
         layerExtent.grow( 0.000001 );
       }
 
-      QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
+      QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() );
 
       QString version = doc.documentElement().attribute( QStringLiteral( "version" ) );
 

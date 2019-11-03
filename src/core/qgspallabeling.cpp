@@ -79,7 +79,8 @@ using namespace pal;
   based on my preferences, and to follow Krygier and Wood's placements more closer. (I'm not going to disagree
   with Denis Wood on anything cartography related...!)
 */
-const QVector< QgsPalLayerSettings::PredefinedPointPosition > QgsPalLayerSettings::DEFAULT_PLACEMENT_ORDER
+typedef QVector< QgsPalLayerSettings::PredefinedPointPosition > PredefinedPointPositionVector;
+Q_GLOBAL_STATIC_WITH_ARGS( PredefinedPointPositionVector, DEFAULT_PLACEMENT_ORDER, (
 {
   QgsPalLayerSettings::TopRight,
   QgsPalLayerSettings::TopLeft,
@@ -89,23 +90,23 @@ const QVector< QgsPalLayerSettings::PredefinedPointPosition > QgsPalLayerSetting
   QgsPalLayerSettings::MiddleLeft,
   QgsPalLayerSettings::TopSlightlyRight,
   QgsPalLayerSettings::BottomSlightlyRight
-};
+} ) )
 //debugging only - don't use these placements by default
 /* << QgsPalLayerSettings::TopSlightlyLeft
 << QgsPalLayerSettings::BottomSlightlyLeft;
 << QgsPalLayerSettings::TopMiddle
 << QgsPalLayerSettings::BottomMiddle;*/
 
-QgsPropertiesDefinition QgsPalLayerSettings::sPropertyDefinitions;
+Q_GLOBAL_STATIC( QgsPropertiesDefinition, sPropertyDefinitions )
 
 void QgsPalLayerSettings::initPropertyDefinitions()
 {
-  if ( !sPropertyDefinitions.isEmpty() )
+  if ( !sPropertyDefinitions()->isEmpty() )
     return;
 
   const QString origin = QStringLiteral( "labeling" );
 
-  sPropertyDefinitions = QgsPropertiesDefinition
+  *sPropertyDefinitions() = QgsPropertiesDefinition
   {
     { QgsPalLayerSettings::Size, QgsPropertyDefinition( "Size", QObject::tr( "Font size" ), QgsPropertyDefinition::DoublePositive, origin ) },
     { QgsPalLayerSettings::Bold, QgsPropertyDefinition( "Bold", QObject::tr( "Bold style" ), QgsPropertyDefinition::Boolean, origin ) },
@@ -273,7 +274,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   placementFlags = AboveLine | MapOrientation;
   centroidWhole = false;
   centroidInside = false;
-  predefinedPositionOrder = DEFAULT_PLACEMENT_ORDER;
+  predefinedPositionOrder = *DEFAULT_PLACEMENT_ORDER();
   fitInPolygonOnly = false;
   quadOffset = QuadrantOver;
   xOffset = 0;
@@ -592,7 +593,7 @@ QgsPalLayerSettings::~QgsPalLayerSettings()
 const QgsPropertiesDefinition &QgsPalLayerSettings::propertyDefinitions()
 {
   initPropertyDefinitions();
-  return sPropertyDefinitions;
+  return *sPropertyDefinitions();
 }
 
 QgsExpression *QgsPalLayerSettings::getLabelExpression()
@@ -623,7 +624,7 @@ QString updateDataDefinedString( const QString &value )
 
 void QgsPalLayerSettings::readOldDataDefinedProperty( QgsVectorLayer *layer, QgsPalLayerSettings::Property p )
 {
-  QString newPropertyName = "labeling/dataDefined/" + sPropertyDefinitions.value( p ).name();
+  QString newPropertyName = "labeling/dataDefined/" + sPropertyDefinitions()->value( p ).name();
   QVariant newPropertyField = layer->customProperty( newPropertyName, QVariant() );
 
   if ( !newPropertyField.isValid() )
@@ -661,8 +662,8 @@ void QgsPalLayerSettings::readOldDataDefinedPropertyMap( QgsVectorLayer *layer, 
     return;
   }
 
-  QgsPropertiesDefinition::const_iterator i = sPropertyDefinitions.constBegin();
-  for ( ; i != sPropertyDefinitions.constEnd(); ++i )
+  QgsPropertiesDefinition::const_iterator i = sPropertyDefinitions()->constBegin();
+  for ( ; i != sPropertyDefinitions()->constEnd(); ++i )
   {
     if ( layer )
     {
@@ -745,7 +746,7 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   centroidInside = layer->customProperty( QStringLiteral( "labeling/centroidInside" ), QVariant( false ) ).toBool();
   predefinedPositionOrder = QgsLabelingUtils::decodePredefinedPositionOrder( layer->customProperty( QStringLiteral( "labeling/predefinedPositionOrder" ) ).toString() );
   if ( predefinedPositionOrder.isEmpty() )
-    predefinedPositionOrder = DEFAULT_PLACEMENT_ORDER;
+    predefinedPositionOrder = *DEFAULT_PLACEMENT_ORDER();
   fitInPolygonOnly = layer->customProperty( QStringLiteral( "labeling/fitInPolygonOnly" ), QVariant( false ) ).toBool();
   dist = layer->customProperty( QStringLiteral( "labeling/dist" ) ).toDouble();
   distUnits = layer->customProperty( QStringLiteral( "labeling/distInMapUnits" ) ).toBool() ? QgsUnitTypes::RenderMapUnits : QgsUnitTypes::RenderMillimeters;
@@ -874,7 +875,7 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
     QDomDocument doc( QStringLiteral( "dd" ) );
     doc.setContent( layer->customProperty( QStringLiteral( "labeling/ddProperties" ) ).toString() );
     QDomElement elem = doc.firstChildElement( QStringLiteral( "properties" ) );
-    mDataDefinedProperties.readXml( elem, sPropertyDefinitions );
+    mDataDefinedProperties.readXml( elem, *sPropertyDefinitions() );
   }
   else
   {
@@ -957,7 +958,7 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   centroidInside = placementElem.attribute( QStringLiteral( "centroidInside" ), QStringLiteral( "0" ) ).toInt();
   predefinedPositionOrder = QgsLabelingUtils::decodePredefinedPositionOrder( placementElem.attribute( QStringLiteral( "predefinedPositionOrder" ) ) );
   if ( predefinedPositionOrder.isEmpty() )
-    predefinedPositionOrder = DEFAULT_PLACEMENT_ORDER;
+    predefinedPositionOrder = *DEFAULT_PLACEMENT_ORDER();
   fitInPolygonOnly = placementElem.attribute( QStringLiteral( "fitInPolygonOnly" ), QStringLiteral( "0" ) ).toInt();
   dist = placementElem.attribute( QStringLiteral( "dist" ) ).toDouble();
   if ( !placementElem.hasAttribute( QStringLiteral( "distUnits" ) ) )
@@ -1097,7 +1098,7 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   QDomElement ddElem = elem.firstChildElement( QStringLiteral( "dd_properties" ) );
   if ( !ddElem.isNull() )
   {
-    mDataDefinedProperties.readXml( ddElem, sPropertyDefinitions );
+    mDataDefinedProperties.readXml( ddElem, *sPropertyDefinitions() );
   }
   else
   {
@@ -1242,7 +1243,7 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   renderingElem.setAttribute( QStringLiteral( "zIndex" ), zIndex );
 
   QDomElement ddElem = doc.createElement( QStringLiteral( "dd_properties" ) );
-  mDataDefinedProperties.writeXml( ddElem, sPropertyDefinitions );
+  mDataDefinedProperties.writeXml( ddElem, *sPropertyDefinitions() );
 
   QDomElement elem = doc.createElement( QStringLiteral( "settings" ) );
   elem.appendChild( textStyleElem );
@@ -2551,7 +2552,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
 
   QVector< QgsPalLayerSettings::PredefinedPointPosition > positionOrder = predefinedPositionOrder;
   if ( positionOrder.isEmpty() )
-    positionOrder = QgsPalLayerSettings::DEFAULT_PLACEMENT_ORDER;
+    positionOrder = *DEFAULT_PLACEMENT_ORDER();
 
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::PredefinedPositionOrder ) )
   {

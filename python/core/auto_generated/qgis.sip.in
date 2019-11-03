@@ -32,10 +32,36 @@ The Qgis class provides global constants for use throughout the application.
     static const QMetaObject staticMetaObject;
 
   public:
-    static const QString QGIS_VERSION;
-    static const int QGIS_VERSION_INT;
-    static const QString QGIS_RELEASE_NAME;
+
+    static QString version();
+%Docstring
+Version string.
+
+.. versionadded:: 3.12
+%End
+
+    static int versionInt();
+%Docstring
+Version number used for comparing versions using the "Check QGIS Version" function
+
+.. versionadded:: 3.12
+%End
+
+    static QString releaseName();
+%Docstring
+Release name
+
+.. versionadded:: 3.12
+%End
+
     static const char *QGIS_DEV_VERSION;
+
+    static QString devVersion();
+%Docstring
+The development version
+
+.. versionadded:: 3.12
+%End
 
 
     enum MessageLevel
@@ -93,6 +119,13 @@ The Qgis class provides global constants for use throughout the application.
     static const double DEFAULT_SNAP_TOLERANCE;
 
     static const QgsTolerance::UnitType DEFAULT_SNAP_UNITS;
+
+    static QString defaultProjectScales();
+%Docstring
+A string with default project scales.
+
+.. versionadded:: 3.12
+%End
 };
 
 
@@ -230,26 +263,20 @@ QString qgsVsiPrefix( const QString &path );
 
 
 
-const QString GEOWKT;
-const QString PROJECT_SCALES;
 
-const QString GEOPROJ4;
 const long GEOSRID;
+
 const long GEOCRS_ID;
+
 const long GEO_EPSG_CRS_ID;
-const QString GEO_EPSG_CRS_AUTHID;
 
 const int USER_CRS_START_ID;
-
-const QString GEO_NONE;
 
 
 const double DEFAULT_POINT_SIZE;
 const double DEFAULT_LINE_WIDTH;
 
 const double DEFAULT_SEGMENT_EPSILON;
-
-
 
 
 typedef unsigned long long qgssize;
@@ -261,6 +288,17 @@ typedef unsigned long long qgssize;
 
 
 
+QString geoWkt();
+%Docstring
+Wkt string that represents a geographic coord sys
+\since QGIS GEOWkt
+%End
+//! PROJ4 string that represents a geographic coord sys
+QString geoProj4();
+//! Geographic coord sys from EPSG authority
+QString geoEpsgCrsAuthId();
+//! Constant that holds the string representation for "No ellips/No CRS"
+QString geoNone();
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

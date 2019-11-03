@@ -136,7 +136,7 @@ void TestQgsVectorFileWriter::initTestCase()
   mEncoding = QStringLiteral( "UTF-8" );
   QgsField myField1( QStringLiteral( "Field1" ), QVariant::String, QStringLiteral( "String" ), 10, 0, QStringLiteral( "Field 1 comment" ) );
   mFields.append( myField1 );
-  mCRS = QgsCoordinateReferenceSystem( GEOWKT );
+  mCRS = QgsCoordinateReferenceSystem( geoWkt() );
   mPoint1 = QgsPointXY( 10.0, 10.0 );
   mPoint2 = QgsPointXY( 15.0, 10.0 );
   mPoint3 = QgsPointXY( 15.0, 12.0 );
@@ -434,7 +434,7 @@ void TestQgsVectorFileWriter::regression1141()
   QgsFields fields;
   fields.append( myField );
   QgsCoordinateReferenceSystem crs;
-  crs = QgsCoordinateReferenceSystem( GEOWKT );
+  crs = QgsCoordinateReferenceSystem( geoWkt() );
   QString tmpDir = QDir::tempPath() + '/';
   QString fileName = tmpDir +  "ąęćń.shp";
 

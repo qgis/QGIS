@@ -681,9 +681,9 @@ void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEll
 QString QgsProject::ellipsoid() const
 {
   if ( !crs().isValid() )
-    return GEO_NONE;
+    return geoNone();
 
-  return readEntry( QStringLiteral( "Measure" ), QStringLiteral( "/Ellipsoid" ), GEO_NONE );
+  return readEntry( QStringLiteral( "Measure" ), QStringLiteral( "/Ellipsoid" ), geoNone() );
 }
 
 void QgsProject::setEllipsoid( const QString &ellipsoid )
@@ -1193,13 +1193,13 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
 
   // get project version string, if any
   QgsProjectVersion fileVersion = getVersion( *doc );
-  QgsProjectVersion thisVersion( Qgis::QGIS_VERSION );
+  QgsProjectVersion thisVersion( Qgis::version() );
 
   if ( thisVersion > fileVersion )
   {
     QgsLogger::warning( "Loading a file that was saved with an older "
                         "version of qgis (saved in " + fileVersion.text() +
-                        ", loaded in " + Qgis::QGIS_VERSION +
+                        ", loaded in " + Qgis::version() +
                         "). Problems may occur." );
 
     QgsProjectFileTransform projectFile( *doc, fileVersion );
@@ -1937,7 +1937,7 @@ bool QgsProject::writeProjectFile( const QString &filename )
 
   QDomElement qgisNode = doc->createElement( QStringLiteral( "qgis" ) );
   qgisNode.setAttribute( QStringLiteral( "projectname" ), title() );
-  qgisNode.setAttribute( QStringLiteral( "version" ), QStringLiteral( "%1" ).arg( Qgis::QGIS_VERSION ) );
+  qgisNode.setAttribute( QStringLiteral( "version" ), QStringLiteral( "%1" ).arg( Qgis::version() ) );
 
   doc->appendChild( qgisNode );
 
@@ -3136,7 +3136,7 @@ QgsCoordinateReferenceSystem QgsProject::defaultCrsForNewLayers() const
   else
   {
     // global crs
-    QString layerDefaultCrs = settings.value( QStringLiteral( "/Projections/layerDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString();
+    QString layerDefaultCrs = settings.value( QStringLiteral( "/Projections/layerDefaultCrs" ), geoEpsgCrsAuthId() ).toString();
     defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( layerDefaultCrs );
   }
 

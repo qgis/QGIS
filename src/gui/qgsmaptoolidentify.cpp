@@ -560,7 +560,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
     double dist = calc.measureLength( feature.geometry() );
     dist = calc.convertLengthMeasurement( dist, displayDistanceUnits() );
     QString str;
-    if ( ellipsoid != GEO_NONE )
+    if ( ellipsoid != geoNone() )
     {
       str = formatDistance( dist );
       derivedAttributes.insert( tr( "Length (Ellipsoidal — %1)" ).arg( ellipsoid ), str );
@@ -608,7 +608,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
     double area = calc.measureArea( feature.geometry() );
     area = calc.convertAreaMeasurement( area, displayAreaUnits() );
     QString str;
-    if ( ellipsoid != GEO_NONE )
+    if ( ellipsoid != geoNone() )
     {
       str = formatArea( area );
       derivedAttributes.insert( tr( "Area (Ellipsoidal — %1)" ).arg( ellipsoid ), str );
@@ -617,7 +617,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
                       * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::distanceToAreaUnit( layer->crs().mapUnits() ), cartesianAreaUnits ), cartesianAreaUnits );
     derivedAttributes.insert( tr( "Area (Cartesian)" ), str );
 
-    if ( ellipsoid != GEO_NONE )
+    if ( ellipsoid != geoNone() )
     {
       double perimeter = calc.measurePerimeter( feature.geometry() );
       perimeter = calc.convertLengthMeasurement( perimeter, displayDistanceUnits() );

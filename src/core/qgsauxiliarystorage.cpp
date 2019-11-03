@@ -27,11 +27,11 @@
 #include <sqlite3.h>
 #include <QFile>
 
-const QString AS_JOINFIELD = "ASPK";
-const QString AS_EXTENSION = "qgd";
-const QString AS_JOINPREFIX = "auxiliary_storage_";
-
-const QVector<QgsPalLayerSettings::Property> palHiddenProperties
+static constexpr QLatin1String AS_JOINFIELD() { return QLatin1String( "ASPK" ); }
+static constexpr QLatin1String AS_EXTENSION() { return QLatin1String( "qgd" ); }
+static constexpr QLatin1String AS_JOINPREFIX() { return QLatin1String( "auxiliary_storage_" ); }
+typedef QVector<QgsPalLayerSettings::Property> PalPropertyList;
+Q_GLOBAL_STATIC_WITH_ARGS( PalPropertyList, palHiddenProperties, (
 {
   QgsPalLayerSettings::PositionX,
   QgsPalLayerSettings::PositionY,
@@ -57,7 +57,7 @@ const QVector<QgsPalLayerSettings::Property> palHiddenProperties
   QgsPalLayerSettings::AlwaysShow,
   QgsPalLayerSettings::CalloutDraw,
   QgsPalLayerSettings::LabelAllParts
-};
+} ) )
 
 //
 // QgsAuxiliaryLayer
@@ -71,9 +71,9 @@ QgsAuxiliaryLayer::QgsAuxiliaryLayer( const QString &pkField, const QString &fil
   , mLayer( vlayer )
 {
   // init join info
-  mJoinInfo.setPrefix( AS_JOINPREFIX );
+  mJoinInfo.setPrefix( AS_JOINPREFIX() );
   mJoinInfo.setJoinLayer( this );
-  mJoinInfo.setJoinFieldName( AS_JOINFIELD );
+  mJoinInfo.setJoinFieldName( AS_JOINFIELD() );
   mJoinInfo.setTargetFieldName( pkField );
   mJoinInfo.setEditable( true );
   mJoinInfo.setUpsertOnEdit( true );
@@ -107,7 +107,7 @@ QgsVectorLayer *QgsAuxiliaryLayer::toSpatialLayer() const
   layer->startEditing();
   while ( it.nextFeature( joinFeature ) )
   {
-    QString filter = QgsExpression::createFieldEqualityExpression( pkField, joinFeature.attribute( AS_JOINFIELD ) );
+    QString filter = QgsExpression::createFieldEqualityExpression( pkField, joinFeature.attribute( AS_JOINFIELD() ) );
 
     QgsFeatureRequest request;
     request.setFilterExpression( filter );
@@ -289,7 +289,8 @@ bool QgsAuxiliaryLayer::isHiddenProperty( int index ) const
 
   if ( def.origin().compare( QLatin1String( "labeling" ) ) == 0 )
   {
-    for ( const QgsPalLayerSettings::Property &p : palHiddenProperties )
+    const PalPropertyList &palProps = *palHiddenProperties();
+    for ( const QgsPalLayerSettings::Property &p : palProps )
     {
       const QString propName = QgsPalLayerSettings::propertyDefinitions()[ p ].name();
       if ( propName.compare( def.name() ) == 0 )
@@ -372,7 +373,7 @@ QString QgsAuxiliaryLayer::nameFromProperty( const QgsPropertyDefinition &def, b
     fieldName = QStringLiteral( "%1_%2" ).arg( fieldName, def.comment() );
 
   if ( joined )
-    fieldName = QStringLiteral( "%1%2" ).arg( AS_JOINPREFIX, fieldName );
+    fieldName = QStringLiteral( "%1%2" ).arg( AS_JOINPREFIX(), fieldName );
 
   return fieldName;
 }
@@ -674,7 +675,7 @@ bool QgsAuxiliaryStorage::saveAs( const QgsProject &project )
 
 QString QgsAuxiliaryStorage::extension()
 {
-  return AS_EXTENSION;
+  return AS_EXTENSION();
 }
 
 bool QgsAuxiliaryStorage::exists( const QgsProject &project )
@@ -715,7 +716,7 @@ void QgsAuxiliaryStorage::debugMsg( const QString &sql, sqlite3 *handler )
 
 bool QgsAuxiliaryStorage::createTable( const QString &type, const QString &table, sqlite3 *handler )
 {
-  const QString sql = QStringLiteral( "CREATE TABLE IF NOT EXISTS '%1' ( '%2' %3  )" ).arg( table, AS_JOINFIELD, type );
+  const QString sql = QStringLiteral( "CREATE TABLE IF NOT EXISTS '%1' ( '%2' %3  )" ).arg( table, AS_JOINFIELD(), type );
 
   if ( !exec( sql, handler ) )
     return false;

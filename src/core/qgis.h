@@ -46,16 +46,37 @@ class CORE_EXPORT Qgis
 {
     Q_GADGET
   public:
-    // Version constants
-    //
-    //! Version string
-    static const QString QGIS_VERSION;
-    //! Version number used for comparing versions using the "Check QGIS Version" function
-    static const int QGIS_VERSION_INT;
-    //! Release name
-    static const QString QGIS_RELEASE_NAME;
+
+    /**
+     * Version string.
+     *
+     * \since QGIS 3.12
+     */
+    static QString version();
+
+    /**
+     * Version number used for comparing versions using the "Check QGIS Version" function
+     *
+     * \since QGIS 3.12
+     */
+    static int versionInt();
+
+    /**
+     * Release name
+     *
+     * \since QGIS 3.12
+     */
+    static QString releaseName();
+
     //! The development version
     static const char *QGIS_DEV_VERSION;
+
+    /**
+     * The development version
+     *
+     * \since QGIS 3.12
+     */
+    static QString devVersion();
 
     // Enumerations
     //
@@ -111,7 +132,8 @@ class CORE_EXPORT Qgis
 
     /**
      * Identify search radius in mm
-     *  \since QGIS 2.3 */
+     * \since QGIS 2.3
+     */
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     //! Default threshold between map coordinates and device coordinates for map2pixel simplification
@@ -119,51 +141,64 @@ class CORE_EXPORT Qgis
 
     /**
      * Default highlight color.  The transparency is expected to only be applied to polygon
-     *  fill. Lines and outlines are rendered opaque.
-     *  \since QGIS 2.3 */
+     * fill. Lines and outlines are rendered opaque.
+     *
+     *  \since QGIS 2.3
+     */
     static const QColor DEFAULT_HIGHLIGHT_COLOR;
 
     /**
      * Default highlight buffer in mm.
-     *  \since QGIS 2.3 */
+     *  \since QGIS 2.3
+     */
     static const double DEFAULT_HIGHLIGHT_BUFFER_MM;
 
     /**
      * Default highlight line/stroke minimum width in mm.
-     *  \since QGIS 2.3 */
+     * \since QGIS 2.3
+     */
     static const double DEFAULT_HIGHLIGHT_MIN_WIDTH_MM;
 
     /**
      * Fudge factor used to compare two scales. The code is often going from scale to scale
      *  denominator. So it looses precision and, when a limit is inclusive, can lead to errors.
      *  To avoid that, use this factor instead of using <= or >=.
-     * \since QGIS 2.15*/
+     * \since QGIS 2.15
+     */
     static const double SCALE_PRECISION;
 
     /**
      * Default Z coordinate value for 2.5d geometry
      *  This value have to be assigned to the Z coordinate for the new 2.5d geometry vertex.
-     *  \since QGIS 3.0 */
+     *  \since QGIS 3.0
+     */
     static const double DEFAULT_Z_COORDINATE;
 
     /**
      * UI scaling factor. This should be applied to all widget sizes obtained from font metrics,
      * to account for differences in the default font sizes across different platforms.
      *  \since QGIS 3.0
-    */
+     */
     static const double UI_SCALE_FACTOR;
 
     /**
      * Default snapping distance tolerance.
      *  \since QGIS 3.0
-    */
+     */
     static const double DEFAULT_SNAP_TOLERANCE;
 
     /**
      * Default snapping distance units.
      *  \since QGIS 3.0
-    */
+     */
     static const QgsTolerance::UnitType DEFAULT_SNAP_UNITS;
+
+    /**
+     * A string with default project scales.
+     *
+     * \since QGIS 3.12
+     */
+    static QString defaultProjectScales();
 };
 
 // hack to workaround warnings when casting void pointers
@@ -560,31 +595,71 @@ void CORE_EXPORT *qgsCalloc( size_t nmemb, size_t size ) SIP_SKIP;
  */
 void CORE_EXPORT qgsFree( void *ptr ) SIP_SKIP;
 
+#ifndef SIP_RUN
+
 /**
  * Wkt string that represents a geographic coord sys
  * \since QGIS GEOWkt
  */
-extern CORE_EXPORT const QString GEOWKT;
-extern CORE_EXPORT const QString PROJECT_SCALES;
+constexpr QLatin1String CORE_EXPORT geoWkt()
+{
+  return QLatin1String(
+           "GEOGCS[\"WGS 84\", "
+           "  DATUM[\"WGS_1984\", "
+           "    SPHEROID[\"WGS 84\",6378137,298.257223563, "
+           "      AUTHORITY[\"EPSG\",\"7030\"]], "
+           "    TOWGS84[0,0,0,0,0,0,0], "
+           "    AUTHORITY[\"EPSG\",\"6326\"]], "
+           "  PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]], "
+           "  UNIT[\"DMSH\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9108\"]], "
+           "  AXIS[\"Lat\",NORTH], "
+           "  AXIS[\"Long\",EAST], "
+           "  AUTHORITY[\"EPSG\",\"4326\"]]"
+         );
+}
 
 //! PROJ4 string that represents a geographic coord sys
-extern CORE_EXPORT const QString GEOPROJ4;
+constexpr QLatin1String CORE_EXPORT geoProj4()
+{
+  return QLatin1String( "+proj=longlat +datum=WGS84 +no_defs" );
+}
+
+//! Geographic coord sys from EPSG authority
+constexpr QLatin1String CORE_EXPORT geoEpsgCrsAuthId()
+{
+  return QLatin1String( "EPSG:4326" );
+}
+
+//! Constant that holds the string representation for "No ellips/No CRS"
+constexpr QLatin1String CORE_EXPORT geoNone()
+{
+  return QLatin1String( "NONE" );
+}
+///@cond PRIVATE
+
+//! Delay between the scheduling of 2 preview jobs
+const int PREVIEW_JOB_DELAY_MS = 250;
+
+//! Maximum rendering time for a layer of a preview job
+const int MAXIMUM_LAYER_PREVIEW_TIME_MS = 250;
+
+///@endcond
+
+#endif
+
 //! Magic number for a geographic coord sys in POSTGIS SRID
 const long GEOSRID = 4326;
+
 //! Magic number for a geographic coord sys in QGIS srs.db tbl_srs.srs_id
 const long GEOCRS_ID = 3452;
+
 //! Magic number for a geographic coord sys in EpsgCrsId ID format
 const long GEO_EPSG_CRS_ID = 4326;
-//! Geographic coord sys from EPSG authority
-extern CORE_EXPORT const QString GEO_EPSG_CRS_AUTHID;
 
 /**
  * Magick number that determines whether a projection crsid is a system (srs.db)
  *  or user (~/.qgis.qgis.db) defined projection. */
 const int USER_CRS_START_ID = 100000;
-
-//! Constant that holds the string representation for "No ellips/No CRS"
-extern CORE_EXPORT const QString GEO_NONE;
 
 //
 // Constants for point symbols
@@ -596,18 +671,6 @@ const double DEFAULT_LINE_WIDTH = 0.26;
 
 //! Default snapping tolerance for segments
 const double DEFAULT_SEGMENT_EPSILON = 1e-8;
-
-///@cond PRIVATE
-#ifndef SIP_RUN
-
-//! Delay between the scheduling of 2 preview jobs
-const int PREVIEW_JOB_DELAY_MS = 250;
-
-//! Maximum rendering time for a layer of a preview job
-const int MAXIMUM_LAYER_PREVIEW_TIME_MS = 250;
-#endif
-
-///@endcond
 
 typedef QMap<QString, QString> QgsStringMap SIP_SKIP;
 
@@ -720,4 +783,21 @@ typedef unsigned long long qgssize;
 #define FINAL final
 #endif
 
+#ifdef SIP_RUN
 
+/**
+ * Wkt string that represents a geographic coord sys
+ * \since QGIS GEOWkt
+ */
+QString CORE_EXPORT geoWkt()
+
+//! PROJ4 string that represents a geographic coord sys
+QString CORE_EXPORT geoProj4()
+
+//! Geographic coord sys from EPSG authority
+QString CORE_EXPORT geoEpsgCrsAuthId()
+
+//! Constant that holds the string representation for "No ellips/No CRS"
+QString CORE_EXPORT geoNone()
+
+#endif
