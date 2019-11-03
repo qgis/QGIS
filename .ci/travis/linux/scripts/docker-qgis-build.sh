@@ -31,7 +31,7 @@ echo "travis_fold:start:cmake"
 echo "${bold}Running cmake...${endbold}"
 
 export CC=/usr/lib/ccache/clang
-export CXX=/usr/lib/ccache/clang++
+export CXX=/usr/lib/ccache/clazy
 
 cmake \
  -GNinja \
