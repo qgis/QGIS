@@ -1655,30 +1655,31 @@ QgsExpression *QgsOgcUtils::expressionFromOgcFilter( const QDomElement &element,
   return expr;
 }
 
-static const QMap<QString, int> BINARY_OPERATORS_TAG_NAMES_MAP
+typedef QMap<QString, int> IntMap;
+Q_GLOBAL_STATIC_WITH_ARGS( IntMap, BINARY_OPERATORS_TAG_NAMES_MAP, (
 {
   // logical
-  {  QStringLiteral( "Or" ), QgsExpressionNodeBinaryOperator::boOr },
-  {  QStringLiteral( "And" ), QgsExpressionNodeBinaryOperator::boAnd },
+  {  QLatin1String( "Or" ), QgsExpressionNodeBinaryOperator::boOr },
+  {  QLatin1String( "And" ), QgsExpressionNodeBinaryOperator::boAnd },
   // comparison
-  {  QStringLiteral( "PropertyIsEqualTo" ), QgsExpressionNodeBinaryOperator::boEQ },
-  {  QStringLiteral( "PropertyIsNotEqualTo" ), QgsExpressionNodeBinaryOperator::boNE },
-  {  QStringLiteral( "PropertyIsLessThanOrEqualTo" ), QgsExpressionNodeBinaryOperator::boLE },
-  {  QStringLiteral( "PropertyIsGreaterThanOrEqualTo" ), QgsExpressionNodeBinaryOperator::boGE },
-  {  QStringLiteral( "PropertyIsLessThan" ), QgsExpressionNodeBinaryOperator::boLT },
-  {  QStringLiteral( "PropertyIsGreaterThan" ), QgsExpressionNodeBinaryOperator::boGT },
-  {  QStringLiteral( "PropertyIsLike" ), QgsExpressionNodeBinaryOperator::boLike },
+  {  QLatin1String( "PropertyIsEqualTo" ), QgsExpressionNodeBinaryOperator::boEQ },
+  {  QLatin1String( "PropertyIsNotEqualTo" ), QgsExpressionNodeBinaryOperator::boNE },
+  {  QLatin1String( "PropertyIsLessThanOrEqualTo" ), QgsExpressionNodeBinaryOperator::boLE },
+  {  QLatin1String( "PropertyIsGreaterThanOrEqualTo" ), QgsExpressionNodeBinaryOperator::boGE },
+  {  QLatin1String( "PropertyIsLessThan" ), QgsExpressionNodeBinaryOperator::boLT },
+  {  QLatin1String( "PropertyIsGreaterThan" ), QgsExpressionNodeBinaryOperator::boGT },
+  {  QLatin1String( "PropertyIsLike" ), QgsExpressionNodeBinaryOperator::boLike },
   // arithmetic
-  {  QStringLiteral( "Add" ), QgsExpressionNodeBinaryOperator::boPlus },
-  {  QStringLiteral( "Sub" ), QgsExpressionNodeBinaryOperator::boMinus },
-  {  QStringLiteral( "Mul" ), QgsExpressionNodeBinaryOperator::boMul },
-  {  QStringLiteral( "Div" ), QgsExpressionNodeBinaryOperator::boDiv },
-};
+  {  QLatin1String( "Add" ), QgsExpressionNodeBinaryOperator::boPlus },
+  {  QLatin1String( "Sub" ), QgsExpressionNodeBinaryOperator::boMinus },
+  {  QLatin1String( "Mul" ), QgsExpressionNodeBinaryOperator::boMul },
+  {  QLatin1String( "Div" ), QgsExpressionNodeBinaryOperator::boDiv },
+} ) )
 
 static int binaryOperatorFromTagName( const QString &tagName )
 {
 
-  return BINARY_OPERATORS_TAG_NAMES_MAP.value( tagName, -1 );
+  return BINARY_OPERATORS_TAG_NAMES_MAP()->value( tagName, -1 );
 }
 
 static QString binaryOperatorToTagName( QgsExpressionNodeBinaryOperator::BinaryOperator op )
@@ -1687,7 +1688,7 @@ static QString binaryOperatorToTagName( QgsExpressionNodeBinaryOperator::BinaryO
   {
     return QStringLiteral( "PropertyIsLike" );
   }
-  return BINARY_OPERATORS_TAG_NAMES_MAP.key( op, QString() );
+  return BINARY_OPERATORS_TAG_NAMES_MAP()->key( op, QString() );
 }
 
 static bool isBinaryOperator( const QString &tagName )
@@ -2136,25 +2137,25 @@ QDomElement QgsOgcUtilsExprToFilter::expressionInOperatorToOgcFilter( const QgsE
   return orElem;
 }
 
-static const QMap<QString, QString> BINARY_SPATIAL_OPS_MAP
+Q_GLOBAL_STATIC_WITH_ARGS( QgsStringMap, BINARY_SPATIAL_OPS_MAP, (
 {
-  { QStringLiteral( "disjoint" ), QStringLiteral( "Disjoint" ) },
-  { QStringLiteral( "intersects" ), QStringLiteral( "Intersects" )},
-  { QStringLiteral( "touches" ), QStringLiteral( "Touches" ) },
-  { QStringLiteral( "crosses" ), QStringLiteral( "Crosses" ) },
-  { QStringLiteral( "contains" ), QStringLiteral( "Contains" ) },
-  { QStringLiteral( "overlaps" ), QStringLiteral( "Overlaps" ) },
-  { QStringLiteral( "within" ), QStringLiteral( "Within" ) }
-};
+  { QLatin1String( "disjoint" ),   QLatin1String( "Disjoint" ) },
+  { QLatin1String( "intersects" ), QLatin1String( "Intersects" )},
+  { QLatin1String( "touches" ),    QLatin1String( "Touches" ) },
+  { QLatin1String( "crosses" ),    QLatin1String( "Crosses" ) },
+  { QLatin1String( "contains" ),   QLatin1String( "Contains" ) },
+  { QLatin1String( "overlaps" ),   QLatin1String( "Overlaps" ) },
+  { QLatin1String( "within" ),     QLatin1String( "Within" ) }
+} ) )
 
 static bool isBinarySpatialOperator( const QString &fnName )
 {
-  return BINARY_SPATIAL_OPS_MAP.contains( fnName );
+  return BINARY_SPATIAL_OPS_MAP()->contains( fnName );
 }
 
 static QString tagNameForSpatialOperator( const QString &fnName )
 {
-  return BINARY_SPATIAL_OPS_MAP.value( fnName );
+  return BINARY_SPATIAL_OPS_MAP()->value( fnName );
 }
 
 static bool isGeometryColumn( const QgsExpressionNode *node )

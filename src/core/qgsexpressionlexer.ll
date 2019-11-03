@@ -114,7 +114,7 @@ static QString stripColumnRef(QString text)
 }
 
 // C locale for correct parsing of numbers even if the system locale is different
-static QLocale cLocale("C");
+Q_GLOBAL_STATIC_WITH_ARGS(QLocale, cLocale, ("C") )
 
 %}
 
@@ -202,14 +202,14 @@ string      "'"{str_char}*"'"
 
 ","                 { return COMMA; }
 
-{num_float}  { yylval->numberFloat = cLocale.toDouble( QString::fromLatin1(yytext) ); return NUMBER_FLOAT; }
+{num_float}  { yylval->numberFloat = cLocale()->toDouble( QString::fromLatin1(yytext) ); return NUMBER_FLOAT; }
 {num_int}  {
 	bool ok;
-	yylval->numberInt = cLocale.toInt( QString::fromLatin1(yytext), &ok );
+	yylval->numberInt = cLocale()->toInt( QString::fromLatin1(yytext), &ok );
 	if( ok )
 		return NUMBER_INT;
 
-	yylval->numberFloat = cLocale.toDouble( QString::fromLatin1(yytext), &ok );
+	yylval->numberFloat = cLocale()->toDouble( QString::fromLatin1(yytext), &ok );
 	if( ok )
 		return NUMBER_FLOAT;
 

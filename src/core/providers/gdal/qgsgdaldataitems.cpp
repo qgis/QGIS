@@ -121,11 +121,6 @@ QString QgsGdalLayerItem::layerName() const
 
 // ---------------------------------------------------------------------------
 
-static QString sFilterString;
-static QStringList sExtensions = QStringList();
-static QStringList sWildcards = QStringList();
-static QMutex sBuildingFilters;
-
 QString QgsGdalDataItemProvider::name()
 {
   return QStringLiteral( "GDAL" );
@@ -138,6 +133,11 @@ int QgsGdalDataItemProvider::capabilities() const
 
 QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )
 {
+  static QString sFilterString;
+  static QStringList sExtensions = QStringList();
+  static QStringList sWildcards = QStringList();
+  static QMutex sBuildingFilters;
+
   QString path( pathIn );
   if ( path.isEmpty() )
     return nullptr;
