@@ -51,18 +51,23 @@ SET(QGIS_SERVER_SRCS
 )
 
 SET (QGIS_SERVER_HDRS
-  qgsservicemodule.h
+  qgscapabilitiescache.h
+  qgsconfigcache.h
   qgsmapserviceexception.h
   qgsserverapi.h
+  qgsserverapicontext.h
+  qgsserverlogger.h
   qgsserverogcapi.h
   qgsserverogcapihandler.h
-  qgsserverapicontext.h
+  qgsserverparameters.h
   qgsserverquerystringparameter.h
+  qgsserversettings.h
+  qgsservicemodule.h
 )
+
 
 #############################################################
 # qgis_server library
-
 
 IF (WITH_SERVER_PLUGINS)
   SET(QGIS_SERVER_SRCS ${QGIS_SERVER_SRCS}

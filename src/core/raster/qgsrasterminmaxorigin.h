@@ -47,7 +47,11 @@ class CORE_EXPORT QgsRasterMinMaxOrigin
     //! \brief This enumerator describes the limits used to compute min/max values
     enum Limits
     {
+#ifdef SIP_RUN
       None SIP_PYNAME( None_ ), //!< User defined.
+#else
+      None, //!< User defined.
+#endif
       MinMax, //!< Real min-max values
       StdDev, //!< Range is [ mean - stdDevFactor() * stddev, mean + stdDevFactor() * stddev ]
       CumulativeCut //!< Range is [ min + cumulativeCutLower() * (max - min), min + cumulativeCutUpper() * (max - min) ]

@@ -32,7 +32,11 @@ itself the min/max values.
 
     enum Limits
     {
+#ifdef SIP_RUN
       None /PyName=None_/,
+#else
+      None,
+#endif
       MinMax,
       StdDev,
       CumulativeCut
