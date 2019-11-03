@@ -34,6 +34,19 @@ struct _LayerRef
 {
 
   /**
+   * Flag for match type in weak resolution
+   * \since QGIS 3.12
+   */
+  enum MatchType
+  {
+    Name = 1 << 2, //! Match layer name
+    Provider = 1 << 3, //! Match layer provider name
+    Source = 1 << 4, //! Match layer source
+    All = Provider | Source //!< Match all
+  };
+
+
+  /**
    * Constructor for a layer reference from an existing map layer.
    * The layerId, source, name and provider members will automatically
    * be populated from this layer.
@@ -146,6 +159,30 @@ struct _LayerRef
     return nullptr;
   }
 
+  bool layerMatchesWeakly( QgsMapLayer *layer, MatchType matchType = MatchType::All )
+  {
+    // First match the name
+    if ( matchType & MatchType::Name && ( layer->name().isEmpty() || layer->name() != name ) )
+    {
+      return false;
+    }
+    else
+    {
+      // We have found a match by name, now check the other
+      // criteria
+      if ( matchType & MatchType::Provider && layer->providerType() != provider )
+      {
+        return false;
+      }
+      if ( matchType & MatchType::Source && layer->publicSource() != source )
+      {
+        return false;
+      }
+      // All tests passed
+      return true;
+    }
+  }
+
   /**
    * Resolves the map layer by attempting to find a matching layer
    * in a \a project using a weak match.
@@ -157,27 +194,46 @@ struct _LayerRef
    * the weak references to layer public source, layer name and data
    * provider contained in this layer reference.
    *
+   * The \a matchType enum can used to refine the matching criteria
+   * when using the weak reference and include layer name,
+   * provider name and layer source in the equality test,
+   * by default they are all checked.
+   *
    * If a matching layer is found, this reference will be updated to match
    * the found layer and the layer will be returned. If no matching layer is
    * found, NULLPTR is returned.
    * \see resolve()
    * \see layerMatchesSource()
+   * \see layerMatchesWeakly()
    * \see resolveByIdOrNameOnly()
    */
-  TYPE *resolveWeakly( const QgsProject *project )
+  TYPE *resolveWeakly( const QgsProject *project, MatchType matchType = MatchType::All )
   {
     // first try matching by layer ID
     if ( resolve( project ) )
       return layer;
 
-    if ( project && !name.isEmpty() )
+    if ( project )
     {
-      const QList<QgsMapLayer *> layers = project->mapLayersByName( name );
-      for ( QgsMapLayer *l : layers )
+      QList<QgsMapLayer *> layers;
+      // If matching by name ...
+      if ( matchType & MatchType::Name )
+      {
+        if ( name.isEmpty() )
+        {
+          return nullptr;
+        }
+        layers = project->mapLayersByName( name );
+      }
+      else // ... we need all layers
+      {
+        layers = project->mapLayers().values();
+      }
+      for ( QgsMapLayer *l : qgis::as_const( layers ) )
       {
         if ( TYPE *tl = qobject_cast< TYPE *>( l ) )
         {
-          if ( layerMatchesSource( tl ) )
+          if ( layerMatchesWeakly( tl, matchType ) )
           {
             setLayer( tl );
             return tl;

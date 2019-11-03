@@ -1969,7 +1969,9 @@ QList<QgsVectorLayerRef> QgisApp::findBrokenWidgetDependencies( QgsVectorLayer *
       const auto constDependencies { ww->layerDependencies() };
       for ( const QgsVectorLayerRef &dependency : constDependencies )
       {
-        const QgsVectorLayer *depVl { QgsVectorLayerRef( dependency ).resolveWeakly( QgsProject::instance() ) };
+        const QgsVectorLayer *depVl { QgsVectorLayerRef( dependency ).resolveWeakly(
+                                        QgsProject::instance(),
+                                        QgsVectorLayerRef::MatchType::Name ) };
         if ( ! depVl || ! depVl->isValid() )
         {
           brokenDependencies.append( dependency );
@@ -1987,20 +1989,7 @@ void QgisApp::checkVectorLayerDependencies( QgsVectorLayer *vl )
     const auto constDependencies { findBrokenWidgetDependencies( vl ) };
     for ( const QgsVectorLayerRef &dependency : constDependencies )
     {
-      const QgsVectorLayer *depVl = nullptr;
-      // The default resolution logic does not recognize a positive match if the datasource is
-      // not exactly the same, for this reason we try a loose match here where the layer name
-      // equality is sufficient for a positive match within the same provider.
-      const auto constVLayers { QgsProject::instance()->layers< QgsVectorLayer * >( ) };
-      for ( const QgsVectorLayer *vl : constVLayers )
-      {
-        if ( vl->name() == dependency.name && vl->providerType() == dependency.provider )
-        {
-          depVl = vl;
-          break;
-        }
-      }
-      if ( ! depVl || ! depVl->isValid() )
+      if ( ! vl || ! vl->isValid() )
       {
         // try to aggressively resolve the broken dependencies
         bool loaded = false;
