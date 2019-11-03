@@ -288,8 +288,7 @@ void TestQgsRangeWidgetWrapper::test_setDoubleLimits()
 
 void TestQgsRangeWidgetWrapper::test_nulls()
 {
-
-  QgsApplication::setNullRepresentation( QString() );
+  QgsApplication::setNullRepresentation( QString( "" ) );
 
   QVariantMap cfg;
   cfg.insert( QStringLiteral( "Min" ), 100.00 );
