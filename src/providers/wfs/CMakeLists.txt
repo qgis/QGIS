@@ -28,26 +28,6 @@ SET(WFS_SRCS
   qgsoapifutils.cpp
 )
 
-SET (WFS_MOC_HDRS
-  qgswfscapabilities.h
-  qgswfsconnection.h
-  qgswfsdataitems.h
-  qgswfsprovider.h
-  qgswfsfeatureiterator.h
-  qgswfsrequest.h
-  qgsbasenetworkrequest.h
-  qgswfsdescribefeaturetype.h
-  qgswfstransactionrequest.h
-  qgswfsshareddata.h
-  qgsbackgroundcachedfeatureiterator.h
-  qgscachedirectorymanager.h
-  qgsoapiflandingpagerequest.h
-  qgsoapifapirequest.h
-  qgsoapifcollection.h
-  qgsoapifitemsrequest.h
-  qgsoapifprovider.h
-)
-
 IF (WITH_GUI)
   SET(WFS_SRCS ${WFS_SRCS}
     qgswfsprovidergui.cpp
@@ -56,17 +36,10 @@ IF (WITH_GUI)
     qgswfsnewconnection.cpp
     qgswfsguiutils.cpp
   )
-  SET(WFS_MOC_HDRS ${WFS_MOC_HDRS}
-    qgswfsdataitemguiprovider.h
-    qgswfssourceselect.h
-    qgswfsnewconnection.h
-  )
 ENDIF ()
 
 ########################################################
 # Build
-
-QT5_WRAP_CPP(WFS_MOC_SRCS ${WFS_MOC_HDRS})
 
 INCLUDE_DIRECTORIES (
   ${CMAKE_SOURCE_DIR}/src/core
@@ -100,7 +73,7 @@ IF (WITH_GUI)
   )
 ENDIF ()
 
-ADD_LIBRARY (wfsprovider MODULE ${WFS_SRCS} ${WFS_MOC_SRCS})
+ADD_LIBRARY (wfsprovider MODULE ${WFS_SRCS})
 
 TARGET_LINK_LIBRARIES (wfsprovider
   ${EXPAT_LIBRARY}

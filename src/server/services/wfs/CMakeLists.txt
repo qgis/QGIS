@@ -2,7 +2,7 @@
 ########################################################
 # Files
 
-SET (wfs_SRCS
+SET (WFS_SRCS
   qgswfs.cpp
   qgswfsutils.cpp
   qgswfsgetcapabilities.cpp
@@ -14,16 +14,14 @@ SET (wfs_SRCS
   qgswfsparameters.cpp
 )
 
-SET (wfs_MOC_HDRS
+SET (WFS_HDRS
   qgswfsparameters.h
 )
 
 ########################################################
 # Build
 
-QT5_WRAP_CPP(wfs_MOC_SRCS ${wfs_MOC_HDRS})
-
-ADD_LIBRARY (wfs MODULE ${wfs_SRCS} ${wfs_MOC_SRCS} ${wfs_MOC_HDRS})
+ADD_LIBRARY (wfs MODULE ${WFS_SRCS} ${WFS_HDRS})
 
 
 INCLUDE_DIRECTORIES(SYSTEM

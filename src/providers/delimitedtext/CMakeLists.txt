@@ -8,18 +8,10 @@ SET (DTEXT_SRCS
   qgsdelimitedtextfile.cpp
 )
 
-SET (DTEXT_MOC_HDRS
-  qgsdelimitedtextfile.h
-  qgsdelimitedtextprovider.h
-)
-
 IF (WITH_GUI)
   SET(DTEXT_SRCS ${DTEXT_SRCS}
     qgsdelimitedtextprovidergui.cpp
     qgsdelimitedtextsourceselect.cpp
-  )
-  SET(DTEXT_MOC_HDRS ${DTEXT_MOC_HDRS}
-    qgsdelimitedtextsourceselect.h
   )
 ENDIF ()
 
@@ -43,9 +35,7 @@ INCLUDE_DIRECTORIES(
 INCLUDE_DIRECTORIES (SYSTEM
 )
 
-QT5_WRAP_CPP(DTEXT_MOC_SRCS ${DTEXT_MOC_HDRS})
-
-ADD_LIBRARY(delimitedtextprovider MODULE ${DTEXT_SRCS} ${DTEXT_MOC_SRCS})
+ADD_LIBRARY(delimitedtextprovider MODULE ${DTEXT_SRCS})
 
 TARGET_LINK_LIBRARIES(delimitedtextprovider
   qgis_core

@@ -4,10 +4,6 @@ SET (GEONODE_SRCS
   qgsgeonodedataitems.cpp
 )
 
-SET(GEONODE_MOC_HDRS
-    qgsgeonodedataitems.h
-)
-
 IF (WITH_GUI)
   SET(GEONODE_SRCS ${GEONODE_SRCS}
     qgsgeonodeprovidergui.cpp
@@ -15,17 +11,10 @@ IF (WITH_GUI)
     qgsgeonodenewconnection.cpp
     qgsgeonodesourceselect.cpp
   )
-  SET(GEONODE_MOC_HDRS ${GEONODE_MOC_HDRS}
-    qgsgeonodedataitemguiprovider.h
-    qgsgeonodesourceselect.h
-    qgsgeonodenewconnection.h
-  )
 ENDIF ()
 
 ########################################################
 # Build
-
-QT5_WRAP_CPP(GEONODE_MOC_SRCS ${GEONODE_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core
@@ -48,7 +37,7 @@ INCLUDE_DIRECTORIES(
 INCLUDE_DIRECTORIES(SYSTEM
 )
 
-ADD_LIBRARY(geonodeprovider MODULE ${GEONODE_SRCS} ${GEONODE_MOC_SRCS})
+ADD_LIBRARY(geonodeprovider MODULE ${GEONODE_SRCS})
 
 TARGET_LINK_LIBRARIES(geonodeprovider
   qgis_core

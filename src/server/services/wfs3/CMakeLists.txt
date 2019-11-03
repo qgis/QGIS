@@ -1,23 +1,17 @@
 ########################################################
 # Files
 
-SET (wfs3_SRCS
+SET (WFS3_SRCS
   ${CMAKE_SOURCE_DIR}/external/nlohmann/json.hpp
   ${CMAKE_SOURCE_DIR}/external/inja/inja.hpp
   qgswfs3.cpp
   qgswfs3handlers.cpp
 )
 
-SET (wfs3_MOC_HDRS      
-)
-
 ########################################################
 # Build
 
-QT5_WRAP_CPP(wfs3_MOC_SRCS ${wfs3_MOC_HDRS})
-
-ADD_LIBRARY (wfs3 MODULE ${wfs3_SRCS} ${wfs3_MOC_SRCS} ${wfs3_MOC_HDRS})
-
+ADD_LIBRARY (wfs3 MODULE ${WFS3_SRCS})
 
 INCLUDE_DIRECTORIES(SYSTEM
   ${GDAL_INCLUDE_DIR}

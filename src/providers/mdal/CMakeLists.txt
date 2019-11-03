@@ -2,18 +2,11 @@ SET(MDAL_SRCS
   qgsmdalprovider.cpp
   qgsmdaldataitems.cpp
 )
-SET(MDAL_MOC_HDRS
-  qgsmdalprovider.h
-  qgsmdaldataitems.h
-)
 
 IF (WITH_GUI)
   SET(MDAL_SRCS ${MDAL_SRCS}
     qgsmdalprovidergui.cpp
     qgsmdalsourceselect.cpp
-  )
-  SET(MDAL_MOC_HDRS ${MDAL_MOC_HDRS}
-    qgsmdalsourceselect.h
   )
 ENDIF ()
 
@@ -163,8 +156,7 @@ INCLUDE_DIRECTORIES (
   ${CMAKE_BINARY_DIR}/src/ui
 )
 
-QT5_WRAP_CPP(MDAL_MOC_SRCS ${MDAL_MOC_HDRS})
-ADD_LIBRARY (mdalprovider MODULE ${MDAL_SRCS} ${MDAL_MOC_HDRS} ${MDAL_MOC_SRCS} ${MDAL_LIB_SRCS} ${MDAL_LIB_HDRS})
+ADD_LIBRARY (mdalprovider MODULE ${MDAL_SRCS} ${MDAL_LIB_SRCS} ${MDAL_LIB_HDRS})
 
 TARGET_LINK_LIBRARIES (mdalprovider
   qgis_core

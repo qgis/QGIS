@@ -2,7 +2,7 @@
 ########################################################
 # Files
 
-SET (wms_SRCS
+SET (WMS_SRCS
   qgswms.cpp
   qgswmsutils.cpp
   qgsdxfwriter.cpp
@@ -23,7 +23,7 @@ SET (wms_SRCS
   qgswmsrendercontext.cpp
 )
 
-SET (wms_MOC_HDRS
+SET (WMS_HDRS
   qgswmsparameters.h
   qgswmsserviceexception.h
 )
@@ -31,9 +31,7 @@ SET (wms_MOC_HDRS
 ########################################################
 # Build
 
-QT5_WRAP_CPP(wms_MOC_SRCS ${wms_MOC_HDRS})
-
-ADD_LIBRARY (wms MODULE ${wms_SRCS} ${wms_MOC_SRCS} ${wms_MOC_HDRS})
+ADD_LIBRARY (wms MODULE ${WMS_SRCS} ${WMS_HDRS})
 
 
 INCLUDE_DIRECTORIES(SYSTEM

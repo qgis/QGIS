@@ -611,13 +611,8 @@ IF(ENABLE_MODELTEST)
     ../../tests/qt_modeltest/modeltest.cpp
     ../../tests/qt_modeltest/dynamictreemodel.cpp
   )
-  SET(MODELTEST_MOC_HDRS
-    ../../tests/qt_modeltest/modeltest.h
-    ../../tests/qt_modeltest/dynamictreemodel.h
-  )
-  QT5_WRAP_CPP(MODELTEST_MOC_SRCS ${MODELTEST_MOC_HDRS})
   SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
-    ${MODELTEST_SRCS} ${MODELTEST_MOC_SRCS}
+    ${MODELTEST_SRCS}
   )
 ENDIF(ENABLE_MODELTEST)
 
@@ -647,254 +642,6 @@ ELSE(NOT MSVC)
     pal/pointset.cpp
     PROPERTIES COMPILE_FLAGS -wd4702)
 ENDIF(NOT MSVC)
-
-SET(QGIS_CORE_MOC_HDRS
-  qgis.h
-  qgsabstractcontentcache.h
-  qgsabstractdatabaseproviderconnection.h
-  qgsapplication.h
-  qgsactionmanager.h
-  qgsactionscoperegistry.h
-  qgsanimatedicon.h
-  qgsauxiliarystorage.h
-  qgsblockingnetworkrequest.h
-  qgsbookmarkmanager.h
-  qgsbookmarkmodel.h
-  qgsbrowsermodel.h
-  qgsbrowserproxymodel.h
-  qgsconditionalstyle.h
-  qgscoordinatereferencesystem.h
-  qgscoordinateutils.h
-  qgscredentials.h
-  qgsdataitem.h
-  qgsdataprovider.h
-  qgsdatasourceuri.h
-  qgsdbfilterproxymodel.h
-  qgsdefaultvalue.h
-  qgsfeature.h
-  qgsfeedback.h
-  qgsfield.h
-  qgsfieldconstraints.h
-  qgsfieldformatterregistry.h
-  qgsfieldmodel.h
-  qgsfieldproxymodel.h
-  qgsfiledownloader.h
-  qgsfeaturefiltermodel.h
-  qgsfeaturefiltermodel_p.h
-  qgsgeometryoptions.h
-  qgsgeometryvalidator.h
-  qgsgml.h
-  qgsgmlschema.h
-  qgsimagecache.h
-  qgsmaplayer.h
-  qgsmaplayerlegend.h
-  qgsmaplayermodel.h
-  qgsmaplayerproxymodel.h
-  qgsmaplayerstore.h
-  qgsmaplayerstylemanager.h
-  qgsmaprenderercache.h
-  qgsmaprenderercustompainterjob.h
-  qgsmaprendererjob.h
-  qgsmaprendererparalleljob.h
-  qgsmaprenderersequentialjob.h
-  qgsmaprendererstagedrenderjob.h
-  qgsmaprenderertask.h
-  qgsmessagelog.h
-  qgsmessageoutput.h
-  qgsnetworkaccessmanager.h
-  qgsnetworkdiskcache.h
-  qgsnetworkcontentfetcher.h
-  qgsnetworkcontentfetcherregistry.h
-  qgsnetworkcontentfetchertask.h
-  qgsnetworkreplyparser.h
-  qgsnewsfeedmodel.h
-  qgsnewsfeedparser.h
-  qgsofflineediting.h
-  qgsowsconnection.h
-  qgspluginlayer.h
-  qgspointxy.h
-  qgspointlocator.h
-  qgspointlocatorinittask.h
-  qgsproject.h
-  qgsprojectviewsettings.h
-  qgsproxyprogresstask.h
-  qgsrelationmanager.h
-  qgsrelation.h
-  qgsrunprocess.h
-  qgssnappingconfig.h
-  qgssnappingutils.h
-  qgsstoredexpressionmanager.h
-  qgstaskmanager.h
-  qgstolerance.h
-  qgstracer.h
-  qgstrackedvectorlayertools.h
-  qgstransaction.h
-  qgstransactiongroup.h
-  qgsunittypes.h
-  qgsvectordataprovider.h
-  qgsvectorfilewritertask.h
-  qgsvectorlayercache.h
-  qgsvectorlayereditbuffer.h
-  qgsvectorlayereditpassthrough.h
-  qgsvectorlayer.h
-  qgsvirtuallayertask.h
-  qgsvectorlayerexporter.h
-  qgsvectorlayerfeaturecounter.h
-  qgsvectorlayerjoinbuffer.h
-  qgsvectorlayerrenderer.h
-  qgsvectorlayertools.h
-  qgsvectorsimplifymethod.h
-  qgsvectorlayerserverproperties.h
-  qgsmapthemecollection.h
-  qgswebpage.h
-  qgswebview.h
-  qgssettings.h
-
-  annotations/qgsannotation.h
-  annotations/qgsannotationmanager.h
-  annotations/qgshtmlannotation.h
-  annotations/qgssvgannotation.h
-  annotations/qgstextannotation.h
-
-  auth/qgsauthmanager.h
-  auth/qgsauthmethod.h
-
-  locator/qgslocator.h
-  locator/qgslocatorfilter.h
-  locator/qgslocatormodel.h
-  locator/qgslocatormodelbridge.h
-
-  processing/qgsprocessingalgrunnertask.h
-  processing/qgsprocessingfeedback.h
-  processing/qgsprocessingprovider.h
-  processing/qgsprocessingregistry.h
-
-  providers/gdal/qgsgdalprovider.h
-  providers/gdal/qgsgdaldataitems.h
-
-  providers/memory/qgsmemoryprovider.h
-
-  providers/meshmemory/qgsmeshmemorydataprovider.h
-
-  providers/ogr/qgsogrprovider.h
-  providers/ogr/qgsogrdataitems.h
-  providers/ogr/qgsogrconnpool.h
-  providers/ogr/qgsgeopackagedataitems.h
-  providers/ogr/qgsgeopackagerasterwritertask.h
-  providers/ogr/qgsogrdbconnection.h
-  providers/ogr/qgsogrtransaction.h
-
-  raster/qgsrasterfilewritertask.h
-  raster/qgsrasterlayer.h
-  raster/qgsrasterdataprovider.h
-  raster/qgsrasterinterface.h
-  raster/qgsrasterlayerrenderer.h
-  raster/qgsrasterprojector.h
-
-  mesh/qgsmeshdataprovider.h
-  mesh/qgsmeshlayer.h
-
-  geometry/qgsabstractgeometry.h
-  geometry/qgsgeometry.h
-  geometry/qgspoint.h
-  geometry/qgswkbtypes.h
-
-  geocms/geonode/qgsgeonoderequest.h
-
-  gps/qgsgpsconnection.h
-  gps/qgsgpsdetector.h
-  gps/qgsnmeaconnection.h
-  gps/qgsgpsdconnection.h
-
-  layout/qgslayout.h
-  layout/qgslayoutatlas.h
-  layout/qgslayouteffect.h
-  layout/qgslayoutguidecollection.h
-  layout/qgslayoutframe.h
-  layout/qgslayoutitem.h
-  layout/qgslayoutitemattributetable.h
-  layout/qgslayoutitemgroup.h
-  layout/qgslayoutitemgroupundocommand.h
-  layout/qgslayoutitemhtml.h
-  layout/qgslayoutitemlabel.h
-  layout/qgslayoutitemlegend.h
-  layout/qgslayoutitemmap.h
-  layout/qgslayoutitemmapgrid.h
-  layout/qgslayoutitemmapitem.h
-  layout/qgslayoutitemmapoverview.h
-  layout/qgslayoutitemnodeitem.h
-  layout/qgslayoutitempage.h
-  layout/qgslayoutitempicture.h
-  layout/qgslayoutitempolygon.h
-  layout/qgslayoutitempolyline.h
-  layout/qgslayoutitemregistry.h
-  layout/qgslayoutitemscalebar.h
-  layout/qgslayoutitemshape.h
-  layout/qgslayoutitemtexttable.h
-  layout/qgslayoutmanager.h
-  layout/qgslayoutmodel.h
-  layout/qgslayoutmultiframe.h
-  layout/qgslayoutpagecollection.h
-  layout/qgslayoutobject.h
-  layout/qgslayoutrendercontext.h
-  layout/qgslayoutreportcontext.h
-  layout/qgslayouttable.h
-  layout/qgslayouttablecolumn.h
-  layout/qgslayoutundostack.h
-  layout/qgsprintlayout.h
-  layout/qgsreport.h
-
-  symbology/qgscptcityarchive.h
-  symbology/qgssvgcache.h
-  symbology/qgsstyle.h
-  symbology/qgsstylemodel.h
-
-  layertree/qgslayertree.h
-  layertree/qgslayertreegroup.h
-  layertree/qgslayertreelayer.h
-  layertree/qgslayertreemodel.h
-  layertree/qgslayertreemodellegendnode.h
-  layertree/qgslayertreenode.h
-  layertree/qgslayertreeregistrybridge.h
-
-  qgsuserprofilemanager.h
-)
-
-IF (NOT WITH_QTWEBKIT)
-  SET(QGIS_CORE_MOC_HDRS ${QGIS_CORE_MOC_HDRS}
-    qgswebframe.h
-  )
-ENDIF(NOT WITH_QTWEBKIT)
-
-# TODO - update for Qt5
-#SET(QGIS_CORE_MOC_HDRS ${QGIS_CORE_MOC_HDRS}
-#    qgshttptransaction.h
-#)
-
-IF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
-  SET(QGIS_CORE_MOC_HDRS ${QGIS_CORE_MOC_HDRS}
-    gps/qgsqtlocationconnection.h
-  )
-ENDIF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
-
-
-IF (HAVE_OPENCL)
-    SET(QGIS_CORE_MOC_HDRS ${QGIS_CORE_MOC_HDRS}
-        qgsopenclutils.h
-    )
-ENDIF (HAVE_OPENCL)
-
-QT5_WRAP_CPP(QGIS_CORE_MOC_SRCS ${QGIS_CORE_MOC_HDRS})
-
-
-IF(MSVC)
-  SET_SOURCE_FILES_PROPERTIES(${QGIS_CORE_MOC_SRCS} PROPERTIES COMPILE_FLAGS "/wd4512 /wd4996" )
-ELSE(MSVC)
-  SET_SOURCE_FILES_PROPERTIES(${QGIS_CORE_MOC_SRCS} PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations" )
-  IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND (CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo))
-    SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp PROPERTIES COMPILE_FLAGS "-O1")
-  ENDIF ()
-ENDIF(MSVC)
 
 # install headers
 # install qgsconfig.h and plugin.h here so they can get into
@@ -963,8 +710,8 @@ SET(QGIS_CORE_HDRS
   qgsfeaturesink.h
   qgsfeaturesource.h
   qgsfeaturestore.h
+  qgsfeedback.h
   qgsfieldformatter.h
-  qgsfield_p.h
   qgsfields.h
   qgsfileutils.h
   qgsfontutils.h
@@ -1021,7 +768,6 @@ SET(QGIS_CORE_HDRS
   qgsprojectversion.h
   qgsprojutils.h
   qgsproperty.h
-  qgsproperty_p.h
   qgspropertycollection.h
   qgspropertytransformer.h
   qgsprovidermetadata.h
@@ -1041,7 +787,6 @@ SET(QGIS_CORE_HDRS
   qgssnappingutils.h
   qgsspatialindex.h
   qgsspatialindexkdbush.h
-  qgsspatialindexkdbush_p.h
   qgsspatialindexkdbushdata.h
   qgsspatialiteutils.h
   qgssqlstatement.h
@@ -1053,12 +798,15 @@ SET(QGIS_CORE_HDRS
   qgsstringutils.h
   qgstextlabelfeature.h
   qgstextrenderer.h
-  qgstextrenderer_p.h
   qgsthreadingutils.h
   qgstilecache.h
   qgstracer.h
   qgstranslationcontext.h
   qobjectuniqueptr.h
+  qgswebpage.h
+  qgswebview.h
+  qgssettings.h
+
 
   qgsvectordataprovider.h
   qgsvectorlayercache.h
@@ -1073,6 +821,7 @@ SET(QGIS_CORE_HDRS
   qgsvectorlayerundocommand.h
   qgsvectorlayerundopassthroughcommand.h
   qgsvectorlayerutils.h
+  qgsvectorlayerrenderer.h
   qgsvirtuallayerdefinition.h
   qgsvirtuallayerdefinitionutils.h
   qgsmapthemecollection.h
@@ -1407,7 +1156,7 @@ ADD_DEFINITIONS(-DTEST_DATA_DIR="${TEST_DATA_DIR}")
 
 #############################################################
 # qgis_core library
-ADD_LIBRARY(qgis_core ${LIBRARY_TYPE} ${QGIS_CORE_SRCS} ${QGIS_CORE_MOC_SRCS} ${QGIS_CORE_HDRS} ${QGIS_CORE_MOC_HDRS})
+ADD_LIBRARY(qgis_core ${LIBRARY_TYPE} ${QGIS_CORE_SRCS} ${QGIS_CORE_HDRS})
 
 GENERATE_EXPORT_HEADER(
   qgis_core
@@ -1426,9 +1175,10 @@ IF(HAVE_OPENCL)
   TARGET_LINK_LIBRARIES(qgis_core ${OpenCL_LIBRARY})
 ENDIF(HAVE_OPENCL)
 
+SET_TARGET_PROPERTIES(qgis_core PROPERTIES AUTOMOC TRUE)
 
 IF(NOT APPLE)
-  INSTALL(FILES ${QGIS_CORE_HDRS} ${QGIS_CORE_MOC_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
+  INSTALL(FILES ${QGIS_CORE_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
 ELSE(NOT APPLE)
 
   SET_TARGET_PROPERTIES(qgis_core PROPERTIES
@@ -1439,7 +1189,7 @@ ELSE(NOT APPLE)
     MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${COMPLETE_VERSION}
     MACOSX_FRAMEWORK_IDENTIFIER org.qgis.qgis3_core
     BUILD_WITH_INSTALL_RPATH TRUE
-    PUBLIC_HEADER "${QGIS_CORE_HDRS};${QGIS_CORE_MOC_HDRS}"
+    PUBLIC_HEADER "${QGIS_CORE_HDRS}"
     LINK_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}"
   )
   # generated export header does not get copied with PUBLIC_HEADER files

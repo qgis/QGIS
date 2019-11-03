@@ -61,39 +61,6 @@ SET(QGIS_3D_SRCS
   #terrain/quantizedmeshterraingenerator.cpp
 )
 
-SET(QGIS_3D_MOC_HDRS
-
-  qgs3dmapscene.h
-  qgs3dmapsettings.h
-  qgsabstract3dengine.h
-  qgscameracontroller.h
-  qgslayoutitem3dmap.h
-  qgsoffscreen3dengine.h
-  qgstessellatedpolygongeometry.h
-  qgswindow3dengine.h
-
-  chunks/qgschunkboundsentity_p.h
-  chunks/qgschunkedentity_p.h
-  chunks/qgschunkloader_p.h
-  chunks/qgschunkqueuejob_p.h
-
-  processing/qgs3dalgorithms.h
-
-  symbols/qgsbillboardgeometry.h
-  symbols/qgspoint3dbillboardmaterial.h
-  symbols/qgslinematerial_p.h
-
-  terrain/qgsdemterraintileloader_p.h
-  terrain/qgsflatterraingenerator.h
-  terrain/qgsterrainentity_p.h
-  terrain/qgsterraintexturegenerator_p.h
-  terrain/qgsterraintextureimage_p.h
-  terrain/qgsterraintileentity_p.h
-  terrain/qgsterraintileloader_p.h
-)
-
-QT5_WRAP_CPP(QGIS_3D_MOC_SRCS ${QGIS_3D_MOC_HDRS})
-
 QT5_ADD_RESOURCES(QGIS_3D_RCC_SRCS shaders.qrc)
 
 # install headers
@@ -183,7 +150,7 @@ INCLUDE_DIRECTORIES(SYSTEM
 #############################################################
 # qgis_3d library
 
-ADD_LIBRARY(qgis_3d SHARED ${QGIS_3D_SRCS} ${QGIS_3D_MOC_SRCS} ${QGIS_3D_HDRS} ${QGIS_3D_RCC_SRCS})
+ADD_LIBRARY(qgis_3d SHARED ${QGIS_3D_SRCS} ${QGIS_3D_HDRS} ${QGIS_3D_RCC_SRCS})
 
 TARGET_LINK_LIBRARIES(qgis_3d Qt5::3DCore Qt5::3DRender Qt5::3DInput Qt5::3DLogic Qt5::3DExtras)
 

@@ -8,10 +8,6 @@ SET (GPX_SRCS
   gpsdata.cpp
 )
 
-SET (GPX_MOC_HDRS
-	qgsgpxprovider.h
-)
-
 ########################################################
 # Build
 
@@ -30,9 +26,7 @@ INCLUDE_DIRECTORIES (SYSTEM
   ${EXPAT_INCLUDE_DIR}
 )
 
-QT5_WRAP_CPP(GPX_MOC_SRCS ${GPX_MOC_HDRS})
-
-ADD_LIBRARY(gpxprovider MODULE ${GPX_SRCS} ${GPX_MOC_SRCS})
+ADD_LIBRARY(gpxprovider MODULE ${GPX_SRCS})
 
 TARGET_LINK_LIBRARIES(gpxprovider
   ${EXPAT_LIBRARY}

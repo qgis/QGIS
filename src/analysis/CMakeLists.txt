@@ -202,23 +202,6 @@ SET(QGIS_ANALYSIS_SRCS
   vector/geometry_checker/qgsvectorlayerfeaturepool.cpp
 )
 
-SET(QGIS_ANALYSIS_MOC_HDRS
-  processing/qgsnativealgorithms.h
-
-  vector/qgsgeometrysnapper.h
-
-  network/qgsgraphdirector.h
-  network/qgsvectorlayerdirector.h
-
-  processing/qgsalgorithmfiledownloader.h
-
-  vector/geometry_checker/qgsgeometrychecker.h
-  vector/geometry_checker/qgsgeometrycheck.h
-  vector/geometry_checker/qgsvectorlayerfeaturepool.h
-  vector/geometry_checker/qgsgeometrygapcheck.h
-  vector/geometry_checker/qgsgeometrymissingvertexcheck.h
-)
-
 FIND_PACKAGE(EXIV2 REQUIRED)
 
 INCLUDE_DIRECTORIES(SYSTEM ${SPATIALITE_INCLUDE_DIR})
@@ -258,8 +241,6 @@ IF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     PROPERTIES COMPILE_FLAGS "-Wno-overloaded-virtual"
   )
 ENDIF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-
-QT5_WRAP_CPP(QGIS_ANALYSIS_MOC_SRCS ${QGIS_ANALYSIS_MOC_HDRS})
 
 # install headers
 
@@ -316,6 +297,7 @@ SET(QGIS_ANALYSIS_HDRS
   network/qgsgraph.h
   network/qgsgraphbuilderinterface.h
   network/qgsgraphbuilder.h
+  network/qgsgraphdirector.h
   network/qgsnetworkstrategy.h
   network/qgsnetworkspeedstrategy.h
   network/qgsnetworkdistancestrategy.h
@@ -391,7 +373,7 @@ ENDIF(HAVE_OPENCL)
 #############################################################
 # qgis_analysis library
 
-ADD_LIBRARY(qgis_analysis SHARED ${QGIS_ANALYSIS_SRCS} ${QGIS_ANALYSIS_MOC_SRCS} ${QGIS_ANALYSIS_HDRS})
+ADD_LIBRARY(qgis_analysis SHARED ${QGIS_ANALYSIS_SRCS} ${QGIS_ANALYSIS_HDRS})
 
 GENERATE_EXPORT_HEADER(
    qgis_analysis
