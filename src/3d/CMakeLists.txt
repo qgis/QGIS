@@ -96,6 +96,28 @@ SET(QGIS_3D_HDRS
   terrain/qgsterraingenerator.h
 )
 
+SET(QGIS_3D_PRIVATE_HDRS
+  chunks/qgschunkboundsentity_p.h
+  chunks/qgschunkedentity_p.h
+  chunks/qgschunklist_p.h
+  chunks/qgschunkloader_p.h
+  chunks/qgschunknode_p.h
+  chunks/qgschunkqueuejob_p.h
+  symbols/qgsline3dsymbol_p.h
+  symbols/qgslinematerial_p.h
+  symbols/qgslinevertexdata_p.h
+  symbols/qgsmesh3dsymbol_p.h
+  symbols/qgspoint3dsymbol_p.h
+  symbols/qgspolygon3dsymbol_p.h
+  terrain/qgsdemterraintilegeometry_p.h
+  terrain/qgsdemterraintileloader_p.h
+  terrain/qgsterrainentity_p.h
+  terrain/qgsterraintexturegenerator_p.h
+  terrain/qgsterraintextureimage_p.h
+  terrain/qgsterraintileentity_p.h
+  terrain/qgsterraintileloader_p.h
+)
+
 QT5_ADD_RESOURCES(QGIS_3D_RCC_SRCS shaders.qrc)
 
 # install headers
@@ -130,7 +152,7 @@ INCLUDE_DIRECTORIES(SYSTEM
 #############################################################
 # qgis_3d library
 
-ADD_LIBRARY(qgis_3d SHARED ${QGIS_3D_SRCS} ${QGIS_3D_HDRS} ${QGIS_3D_RCC_SRCS})
+ADD_LIBRARY(qgis_3d SHARED ${QGIS_3D_SRCS} ${QGIS_3D_HDRS} ${QGIS_3D_RCC_SRCS} ${QGIS_3D_PRIVATE_HDRS})
 
 TARGET_LINK_LIBRARIES(qgis_3d Qt5::3DCore Qt5::3DRender Qt5::3DInput Qt5::3DLogic Qt5::3DExtras)
 
