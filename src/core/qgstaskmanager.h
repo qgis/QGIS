@@ -310,7 +310,6 @@ class CORE_EXPORT QgsTask : public QObject
      * it's used as a trigger for waitForFinished.
      */
     QMutex mNotFinishedMutex;
-    QMutex mNotStartedMutex;
 
     //! Progress of this (parent) task alone
     double mProgress = 0.0;
