@@ -90,9 +90,9 @@ field alias if set, otherwise the field name.
 
     QString displayNameWithAlias() const;
 %Docstring
-Returns a friendly name string to use when displaying this field (adding the field alias in parenthesis if it is defined).
+Returns the name to use when displaying this field and adds the alias in parenthesis if it is defined.
 
-This should be used when working close to the data structure (i.e. building expressions and queries),
+This will be used when working close to the data structure (i.e. building expressions and queries),
 when the real field name must be shown but the alias is also useful to understand what the field
 represents.
 
