@@ -44,6 +44,7 @@ for my $f (<python/plugins/processing/algs/otb/description/*.xml>) {
 
 for my $f (<python/plugins/processing/algs/grass*/description/*.txt>) {
 	open I, $f;
+	binmode(I, ":utf8");
 	my $name = scalar(<I>);
 	my $desc = scalar(<I>);
 	my $group = scalar(<I>);
@@ -58,6 +59,7 @@ for my $f (<python/plugins/processing/algs/grass*/description/*.txt>) {
 
 for my $f (<python/plugins/processing/algs/taudem/description/*/*.txt>) {
 	open I, $f;
+	binmode(I, ":utf8");
 	my $desc = scalar(<I>);
 	my $name = scalar(<I>);
 	my $group = scalar(<I>);
@@ -91,6 +93,7 @@ for my $f (<python/plugins/processing/algs/help/*.yaml>) {
 
 for my $f ( ("python/plugins/processing/gui/algnames.txt") ) {
 	open I, $f;
+	binmode(I, ":utf8");
 	while(<I>) {
 		chop;
 		s/^.*,//;
