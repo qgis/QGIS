@@ -1223,6 +1223,21 @@ SET(QGIS_CORE_HDRS
   validity/qgsvaliditycheckregistry.h
 )
 
+SET(QGIS_CORE_PRIVATE_HDRS
+  qgscoordinatereferencesystem_p.h
+  qgscoordinatetransformcontext_p.h
+  qgscoordinatetransform_p.h
+  qgseditformconfig_p.h
+  qgsfeaturefiltermodel_p.h
+  qgsfeature_p.h
+  qgsfield_p.h
+  qgsfields_p.h
+  qgsproperty_p.h
+  qgsrelation_p.h
+  qgsspatialindexkdbush_p.h
+  qgstextrenderer_p.h
+)
+
 IF (NOT WITH_QTWEBKIT)
   SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
     qgswebframe.h
@@ -1345,7 +1360,7 @@ ADD_DEFINITIONS(-DTEST_DATA_DIR="${TEST_DATA_DIR}")
 
 #############################################################
 # qgis_core library
-ADD_LIBRARY(qgis_core ${LIBRARY_TYPE} ${QGIS_CORE_SRCS} ${QGIS_CORE_HDRS})
+ADD_LIBRARY(qgis_core ${LIBRARY_TYPE} ${QGIS_CORE_SRCS} ${QGIS_CORE_HDRS} ${QGIS_CORE_PRIVATE_HDRS})
 
 GENERATE_EXPORT_HEADER(
   qgis_core

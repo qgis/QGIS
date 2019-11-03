@@ -854,6 +854,12 @@ SET(QGIS_GUI_HDRS
   symbology/qgssymbolwidgetcontext.h
   symbology/qgsvectorfieldsymbollayerwidget.h
 )
+
+SET(QGIS_GUI_PRIVATE_HDRS
+  qgsbrowserdockwidget_p.h
+  qgswidgetstatehelper_p.h
+)
+
 FIND_PACKAGE(Qt5Qml REQUIRED)
 FIND_PACKAGE(Qt5QuickWidgets REQUIRED)
 
@@ -999,7 +1005,7 @@ ENDIF(MSVC)
 # qgis_gui library
 
 ADD_LIBRARY(qgis_gui SHARED
-     ${QGIS_GUI_SRCS} ${QGIS_GUI_HDRS}
+  ${QGIS_GUI_SRCS} ${QGIS_GUI_HDRS} ${QGIS_GUI_PRIVATE_HDRS}
 )
 
 GENERATE_EXPORT_HEADER(
