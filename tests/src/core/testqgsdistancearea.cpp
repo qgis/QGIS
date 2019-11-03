@@ -72,7 +72,7 @@ void TestQgsDistanceArea::basic()
   QgsDistanceArea daA;
   double resultA, resultB, resultC;
 
-  daA.setEllipsoid( GEO_NONE );
+  daA.setEllipsoid( geoNone() );
   resultA = daA.measureLine( p1, p2 );
   QCOMPARE( resultA, 5.0 );
 
@@ -107,9 +107,9 @@ void TestQgsDistanceArea::basic()
 void TestQgsDistanceArea::noEllipsoid()
 {
   QgsDistanceArea da;
-  da.setEllipsoid( GEO_NONE );
+  da.setEllipsoid( geoNone() );
   QVERIFY( !da.willUseEllipsoid() );
-  QCOMPARE( da.ellipsoid(), GEO_NONE );
+  QCOMPARE( da.ellipsoid(), geoNone() );
 }
 
 void TestQgsDistanceArea::cache()
@@ -167,13 +167,13 @@ void TestQgsDistanceArea::cache()
   QgsDistanceArea da5;
   QVERIFY( !da5.setEllipsoid( QStringLiteral( "MyFirstEllipsoid" ) ) );
   QVERIFY( !da5.willUseEllipsoid() );
-  QCOMPARE( da5.ellipsoid(), GEO_NONE );
+  QCOMPARE( da5.ellipsoid(), geoNone() );
 
   // invalid again, should be cached
   QgsDistanceArea da6;
   QVERIFY( !da6.setEllipsoid( QStringLiteral( "MyFirstEllipsoid" ) ) );
   QVERIFY( !da6.willUseEllipsoid() );
-  QCOMPARE( da6.ellipsoid(), GEO_NONE );
+  QCOMPARE( da6.ellipsoid(), geoNone() );
 }
 
 void TestQgsDistanceArea::test_distances()

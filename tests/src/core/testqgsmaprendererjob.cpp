@@ -112,7 +112,7 @@ void TestQgsMapRendererJob::initTestCase()
   mEncoding = QStringLiteral( "UTF-8" );
   QgsField myField1( QStringLiteral( "Value" ), QVariant::Int, QStringLiteral( "int" ), 10, 0, QStringLiteral( "Value on lon" ) );
   mFields.append( myField1 );
-  mCRS = QgsCoordinateReferenceSystem( GEOWKT );
+  mCRS = QgsCoordinateReferenceSystem( geoWkt() );
   //
   // Create the test dataset if it doesn't exist
   //
