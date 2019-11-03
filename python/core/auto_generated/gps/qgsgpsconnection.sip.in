@@ -11,6 +11,10 @@
 
 
 
+%ModuleHeaderCode
+#include "qgsgpsconnection.h"
+%End
+
 struct QgsSatelliteInfo
 {
   int id;

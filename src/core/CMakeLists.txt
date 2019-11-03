@@ -1252,9 +1252,6 @@ ENDIF(NOT MSVC)
 # install qgsconfig.h and plugin.h here so they can get into
 # the OS X framework target
 
-SET(QGIS_CORE_HDRS
-)
-
 IF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
   SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
     gps/qgsqtlocationconnection.h
