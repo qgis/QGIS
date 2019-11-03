@@ -3175,6 +3175,36 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString &dbPath )
 }
 #endif
 
+const QHash<QString, QgsCoordinateReferenceSystem> &QgsCoordinateReferenceSystem::stringCache()
+{
+  return *sStringCache();
+}
+
+const QHash<QString, QgsCoordinateReferenceSystem> &QgsCoordinateReferenceSystem::proj4Cache()
+{
+  return *sProj4Cache();
+}
+
+const QHash<QString, QgsCoordinateReferenceSystem> &QgsCoordinateReferenceSystem::ogcCache()
+{
+  return *sOgcCache();
+}
+
+const QHash<QString, QgsCoordinateReferenceSystem> &QgsCoordinateReferenceSystem::wktCache()
+{
+  return *sWktCache();
+}
+
+const QHash<long, QgsCoordinateReferenceSystem> &QgsCoordinateReferenceSystem::srIdCache()
+{
+  return *sSrIdCache();
+}
+
+const QHash<long, QgsCoordinateReferenceSystem> &QgsCoordinateReferenceSystem::srsIdCache()
+{
+  return *sSrsIdCache();
+}
+
 QString QgsCoordinateReferenceSystem::geographicCrsAuthId() const
 {
   if ( isGeographic() )

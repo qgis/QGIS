@@ -856,6 +856,14 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     static bool sDisableSrsIdCache;
     static bool sDisableStringCache;
 
+    // for tests
+    static const QHash< QString, QgsCoordinateReferenceSystem > &stringCache();
+    static const QHash< QString, QgsCoordinateReferenceSystem > &proj4Cache();
+    static const QHash< QString, QgsCoordinateReferenceSystem > &ogcCache();
+    static const QHash< QString, QgsCoordinateReferenceSystem > &wktCache();
+    static const QHash< long, QgsCoordinateReferenceSystem > &srsIdCache();
+    static const QHash< long, QgsCoordinateReferenceSystem > &srIdCache();
+
     friend class TestQgsCoordinateReferenceSystem;
 };
 
