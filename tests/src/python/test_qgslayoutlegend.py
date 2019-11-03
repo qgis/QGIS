@@ -396,6 +396,10 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
         counterTask = point_layer.countSymbolFeatures()
         counterTask.waitForFinished()
+        TM = QgsApplication.taskManager()
+        actask = TM.activeTasks()
+        print(TM.tasks(), actask)
+        count = actask[0]
         legend.model().refreshLayerLegend(legendlayer)
         legendnodes = legend.model().layerLegendNodes(legendlayer)
         legendnodes[0].setUserLabel('[% @symbol_id %]')
@@ -404,6 +408,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         label1 = legendnodes[0].evaluateLabel()
         label2 = legendnodes[1].evaluateLabel()
         label3 = legendnodes[2].evaluateLabel()
+        count.waitForFinished()
         self.assertEqual(label1, '0')
         #self.assertEqual(label2, '5')
         #self.assertEqual(label3, '12')
@@ -458,7 +463,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         group = legend.model().rootGroup().addGroup("Group [% 1 + 5 %] [% @layout_name %]")
         layer_tree_layer = group.addLayer(point_layer)
         counterTask = point_layer.countSymbolFeatures()
-        counterTask.waitForFinished()
+        counterTask.waitForFinished() # does this even work?
         layer_tree_layer.setCustomProperty("legend/title-label", 'bbbb [% 1+2 %] xx [% @layout_name %] [% @layer_name %]')
         QgsMapLayerLegendUtils.setLegendNodeUserLabel(layer_tree_layer, 0, 'xxxx')
         legend.model().refreshLayerLegend(layer_tree_layer)
@@ -470,6 +475,11 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         legend.setLinkedMap(map)
         legend.updateLegend()
         print(layer_tree_layer.labelExpression())
+        TM = QgsApplication.taskManager()
+        actask = TM.activeTasks()
+        print(TM.tasks(), actask)
+        count = actask[0]
+        count.waitForFinished()
         map.setExtent(QgsRectangle(-102.51, 41.16, -102.36, 41.30))
         checker = QgsLayoutChecker(
             'composer_legend_symbol_expression', layout)
