@@ -145,7 +145,8 @@ cmake -G "%CMAKEGEN%" ^
 	-D WITH_GLOBE=FALSE ^
 	-D WITH_ORACLE=TRUE ^
 	-D WITH_CUSTOM_WIDGETS=TRUE ^
-	-D CMAKE_CXX_FLAGS_RELEASE="/MD /Zi /MP /O2 /Ob2 /D NDEBUG" ^
+	-D CMAKE_CXX_FLAGS_RELEASE="/MD /Zi /MP /O2 /Ob2 /D NDEBUG /D ACCEPT_USE_OF_DEPRECATED_PROJ_API_H" ^
+	-D CMAKE_C_FLAGS_RELEASE="/MD /Zi /MP /O2 /Ob2 /D NDEBUG /D ACCEPT_USE_OF_DEPRECATED_PROJ_API_H" ^
 	-D CMAKE_SHARED_LINKER_FLAGS_RELEASE="/INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF" ^
 	-D CMAKE_MODULE_LINKER_FLAGS_RELEASE="/INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF" ^
 	-D CMAKE_PDB_OUTPUT_DIRECTORY_RELEASE=%BUILDDIR%\apps\%PACKAGENAME%\pdb ^
@@ -404,7 +405,6 @@ if not exist %ARCH%\release\qgis\%PACKAGENAME% mkdir %ARCH%\release\qgis\%PACKAG
 	"apps/%PACKAGENAME%/resources/themes/" ^
 	"apps/%PACKAGENAME%/resources/data/" ^
 	"apps/%PACKAGENAME%/resources/metadata-ISO/" ^
-	"apps/%PACKAGENAME%/resources/opencl_programs/" ^
 	"apps/%PACKAGENAME%/resources/palettes/" ^
 	"apps/%PACKAGENAME%/resources/2to3migration.txt" ^
 	"apps/%PACKAGENAME%/resources/qgis_global_settings.ini" ^
