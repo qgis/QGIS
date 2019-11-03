@@ -37,10 +37,10 @@
 #endif
 
 
-static const QString GML_NAMESPACE = QStringLiteral( "http://www.opengis.net/gml" );
-static const QString GML32_NAMESPACE = QStringLiteral( "http://www.opengis.net/gml/3.2" );
-static const QString OGC_NAMESPACE = QStringLiteral( "http://www.opengis.net/ogc" );
-static const QString FES_NAMESPACE = QStringLiteral( "http://www.opengis.net/fes/2.0" );
+static constexpr QLatin1String GML_NAMESPACE() { return QLatin1String( "http://www.opengis.net/gml" ); }
+static constexpr QLatin1String GML32_NAMESPACE() { return QLatin1String( "http://www.opengis.net/gml/3.2" ); }
+static constexpr QLatin1String OGC_NAMESPACE() { return QLatin1String( "http://www.opengis.net/ogc" ); }
+static constexpr QLatin1String FES_NAMESPACE() { return QLatin1String( "http://www.opengis.net/fes/2.0" ); }
 
 QgsOgcUtilsExprToFilter::QgsOgcUtilsExprToFilter( QDomDocument &doc,
     QgsOgcUtils::GMLVersion gmlVersion,
@@ -136,7 +136,7 @@ QgsGeometry QgsOgcUtils::geometryFromGML( const QDomNode &geometryNode )
 QgsGeometry QgsOgcUtils::geometryFromGML( const QString &xmlString )
 {
   // wrap the string into a root tag to have "gml" namespace (and also as a default namespace)
-  QString xml = QStringLiteral( "<tmp xmlns=\"%1\" xmlns:gml=\"%1\">%2</tmp>" ).arg( GML_NAMESPACE, xmlString );
+  QString xml = QStringLiteral( "<tmp xmlns=\"%1\" xmlns:gml=\"%1\">%2</tmp>" ).arg( GML_NAMESPACE(), xmlString );
   QDomDocument doc;
   if ( !doc.setContent( xml, true ) )
     return QgsGeometry();
@@ -149,7 +149,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLPoint( const QDomElement &geometryElemen
 {
   QgsPolylineXY pointCoordinate;
 
-  QDomNodeList coordList = geometryElement.elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "coordinates" ) );
+  QDomNodeList coordList = geometryElement.elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "coordinates" ) );
   if ( !coordList.isEmpty() )
   {
     QDomElement coordElement = coordList.at( 0 ).toElement();
@@ -160,7 +160,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLPoint( const QDomElement &geometryElemen
   }
   else
   {
-    QDomNodeList posList = geometryElement.elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "pos" ) );
+    QDomNodeList posList = geometryElement.elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "pos" ) );
     if ( posList.size() < 1 )
     {
       return QgsGeometry();
@@ -204,7 +204,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLLineString( const QDomElement &geometryE
 {
   QgsPolylineXY lineCoordinates;
 
-  QDomNodeList coordList = geometryElement.elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "coordinates" ) );
+  QDomNodeList coordList = geometryElement.elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "coordinates" ) );
   if ( !coordList.isEmpty() )
   {
     QDomElement coordElement = coordList.at( 0 ).toElement();
@@ -215,7 +215,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLLineString( const QDomElement &geometryE
   }
   else
   {
-    QDomNodeList posList = geometryElement.elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "posList" ) );
+    QDomNodeList posList = geometryElement.elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "posList" ) );
     if ( posList.size() < 1 )
     {
       return QgsGeometry();
@@ -268,7 +268,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLPolygon( const QDomElement &geometryElem
 
   //read coordinates for outer boundary
   QgsPolylineXY exteriorPointList;
-  QDomNodeList outerBoundaryList = geometryElement.elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "outerBoundaryIs" ) );
+  QDomNodeList outerBoundaryList = geometryElement.elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "outerBoundaryIs" ) );
   if ( !outerBoundaryList.isEmpty() ) //outer ring is necessary
   {
     QDomElement coordinatesElement = outerBoundaryList.at( 0 ).firstChild().firstChild().toElement();
@@ -283,7 +283,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLPolygon( const QDomElement &geometryElem
     ringCoordinates.push_back( exteriorPointList );
 
     //read coordinates for inner boundary
-    QDomNodeList innerBoundaryList = geometryElement.elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "innerBoundaryIs" ) );
+    QDomNodeList innerBoundaryList = geometryElement.elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "innerBoundaryIs" ) );
     for ( int i = 0; i < innerBoundaryList.size(); ++i )
     {
       QgsPolylineXY interiorPointList;
@@ -302,7 +302,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLPolygon( const QDomElement &geometryElem
   else
   {
     //read coordinates for exterior
-    QDomNodeList exteriorList = geometryElement.elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "exterior" ) );
+    QDomNodeList exteriorList = geometryElement.elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "exterior" ) );
     if ( exteriorList.size() < 1 ) //outer ring is necessary
     {
       return QgsGeometry();
@@ -319,7 +319,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLPolygon( const QDomElement &geometryElem
     ringCoordinates.push_back( exteriorPointList );
 
     //read coordinates for inner boundary
-    QDomNodeList interiorList = geometryElement.elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "interior" ) );
+    QDomNodeList interiorList = geometryElement.elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "interior" ) );
     for ( int i = 0; i < interiorList.size(); ++i )
     {
       QgsPolylineXY interiorPointList;
@@ -392,7 +392,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiPoint( const QDomElement &geometryE
 {
   QgsPolylineXY pointList;
   QgsPolylineXY currentPoint;
-  QDomNodeList pointMemberList = geometryElement.elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "pointMember" ) );
+  QDomNodeList pointMemberList = geometryElement.elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "pointMember" ) );
   if ( pointMemberList.size() < 1 )
   {
     return QgsGeometry();
@@ -404,13 +404,13 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiPoint( const QDomElement &geometryE
   for ( int i = 0; i < pointMemberList.size(); ++i )
   {
     //<Point> element
-    pointNodeList = pointMemberList.at( i ).toElement().elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "Point" ) );
+    pointNodeList = pointMemberList.at( i ).toElement().elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "Point" ) );
     if ( pointNodeList.size() < 1 )
     {
       continue;
     }
     //<coordinates> element
-    coordinatesList = pointNodeList.at( 0 ).toElement().elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "coordinates" ) );
+    coordinatesList = pointNodeList.at( 0 ).toElement().elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "coordinates" ) );
     if ( !coordinatesList.isEmpty() )
     {
       currentPoint.clear();
@@ -428,7 +428,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiPoint( const QDomElement &geometryE
     else
     {
       //<pos> element
-      posList = pointNodeList.at( 0 ).toElement().elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "pos" ) );
+      posList = pointNodeList.at( 0 ).toElement().elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "pos" ) );
       if ( posList.size() < 1 )
       {
         continue;
@@ -502,18 +502,18 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiLineString( const QDomElement &geom
   QDomNodeList currentCoordList;
   QDomNodeList currentPosList;
 
-  QDomNodeList lineStringMemberList = geometryElement.elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "lineStringMember" ) );
+  QDomNodeList lineStringMemberList = geometryElement.elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "lineStringMember" ) );
   if ( !lineStringMemberList.isEmpty() ) //geoserver
   {
     for ( int i = 0; i < lineStringMemberList.size(); ++i )
     {
-      QDomNodeList lineStringNodeList = lineStringMemberList.at( i ).toElement().elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "LineString" ) );
+      QDomNodeList lineStringNodeList = lineStringMemberList.at( i ).toElement().elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "LineString" ) );
       if ( lineStringNodeList.size() < 1 )
       {
         return QgsGeometry();
       }
       currentLineStringElement = lineStringNodeList.at( 0 ).toElement();
-      currentCoordList = currentLineStringElement.elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "coordinates" ) );
+      currentCoordList = currentLineStringElement.elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "coordinates" ) );
       if ( !currentCoordList.isEmpty() )
       {
         QgsPolylineXY currentPointList;
@@ -525,7 +525,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiLineString( const QDomElement &geom
       }
       else
       {
-        currentPosList = currentLineStringElement.elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "posList" ) );
+        currentPosList = currentLineStringElement.elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "posList" ) );
         if ( currentPosList.size() < 1 )
         {
           return QgsGeometry();
@@ -541,13 +541,13 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiLineString( const QDomElement &geom
   }
   else
   {
-    QDomNodeList lineStringList = geometryElement.elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "LineString" ) );
+    QDomNodeList lineStringList = geometryElement.elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "LineString" ) );
     if ( !lineStringList.isEmpty() ) //mapserver
     {
       for ( int i = 0; i < lineStringList.size(); ++i )
       {
         currentLineStringElement = lineStringList.at( i ).toElement();
-        currentCoordList = currentLineStringElement.elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "coordinates" ) );
+        currentCoordList = currentLineStringElement.elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "coordinates" ) );
         if ( !currentCoordList.isEmpty() )
         {
           QgsPolylineXY currentPointList;
@@ -560,7 +560,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiLineString( const QDomElement &geom
         }
         else
         {
-          currentPosList = currentLineStringElement.elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "posList" ) );
+          currentPosList = currentLineStringElement.elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "posList" ) );
           if ( currentPosList.size() < 1 )
           {
             return QgsGeometry();
@@ -656,13 +656,13 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiPolygon( const QDomElement &geometr
   QDomNodeList currentCoordinateList;
   QDomNodeList currentPosList;
 
-  QDomNodeList polygonMemberList = geometryElement.elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "polygonMember" ) );
+  QDomNodeList polygonMemberList = geometryElement.elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "polygonMember" ) );
   QgsPolygonXY currentPolygonList;
   for ( int i = 0; i < polygonMemberList.size(); ++i )
   {
     currentPolygonList.resize( 0 ); // preserve capacity - don't use clear
     currentPolygonMemberElement = polygonMemberList.at( i ).toElement();
-    polygonList = currentPolygonMemberElement.elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "Polygon" ) );
+    polygonList = currentPolygonMemberElement.elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "Polygon" ) );
     if ( polygonList.size() < 1 )
     {
       continue;
@@ -670,19 +670,19 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiPolygon( const QDomElement &geometr
     currentPolygonElement = polygonList.at( 0 ).toElement();
 
     //find exterior ring
-    outerBoundaryList = currentPolygonElement.elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "outerBoundaryIs" ) );
+    outerBoundaryList = currentPolygonElement.elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "outerBoundaryIs" ) );
     if ( !outerBoundaryList.isEmpty() )
     {
       currentOuterBoundaryElement = outerBoundaryList.at( 0 ).toElement();
       QgsPolylineXY ringCoordinates;
 
-      linearRingNodeList = currentOuterBoundaryElement.elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "LinearRing" ) );
+      linearRingNodeList = currentOuterBoundaryElement.elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "LinearRing" ) );
       if ( linearRingNodeList.size() < 1 )
       {
         continue;
       }
       currentLinearRingElement = linearRingNodeList.at( 0 ).toElement();
-      currentCoordinateList = currentLinearRingElement.elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "coordinates" ) );
+      currentCoordinateList = currentLinearRingElement.elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "coordinates" ) );
       if ( currentCoordinateList.size() < 1 )
       {
         continue;
@@ -694,18 +694,18 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiPolygon( const QDomElement &geometr
       currentPolygonList.push_back( ringCoordinates );
 
       //find interior rings
-      QDomNodeList innerBoundaryList = currentPolygonElement.elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "innerBoundaryIs" ) );
+      QDomNodeList innerBoundaryList = currentPolygonElement.elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "innerBoundaryIs" ) );
       for ( int j = 0; j < innerBoundaryList.size(); ++j )
       {
         QgsPolylineXY ringCoordinates;
         currentInnerBoundaryElement = innerBoundaryList.at( j ).toElement();
-        linearRingNodeList = currentInnerBoundaryElement.elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "LinearRing" ) );
+        linearRingNodeList = currentInnerBoundaryElement.elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "LinearRing" ) );
         if ( linearRingNodeList.size() < 1 )
         {
           continue;
         }
         currentLinearRingElement = linearRingNodeList.at( 0 ).toElement();
-        currentCoordinateList = currentLinearRingElement.elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "coordinates" ) );
+        currentCoordinateList = currentLinearRingElement.elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "coordinates" ) );
         if ( currentCoordinateList.size() < 1 )
         {
           continue;
@@ -720,7 +720,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiPolygon( const QDomElement &geometr
     else
     {
       //find exterior ring
-      exteriorList = currentPolygonElement.elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "exterior" ) );
+      exteriorList = currentPolygonElement.elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "exterior" ) );
       if ( exteriorList.size() < 1 )
       {
         continue;
@@ -729,13 +729,13 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiPolygon( const QDomElement &geometr
       currentExteriorElement = exteriorList.at( 0 ).toElement();
       QgsPolylineXY ringPositions;
 
-      linearRingNodeList = currentExteriorElement.elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "LinearRing" ) );
+      linearRingNodeList = currentExteriorElement.elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "LinearRing" ) );
       if ( linearRingNodeList.size() < 1 )
       {
         continue;
       }
       currentLinearRingElement = linearRingNodeList.at( 0 ).toElement();
-      currentPosList = currentLinearRingElement.elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "posList" ) );
+      currentPosList = currentLinearRingElement.elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "posList" ) );
       if ( currentPosList.size() < 1 )
       {
         continue;
@@ -747,18 +747,18 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiPolygon( const QDomElement &geometr
       currentPolygonList.push_back( ringPositions );
 
       //find interior rings
-      QDomNodeList interiorList = currentPolygonElement.elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "interior" ) );
+      QDomNodeList interiorList = currentPolygonElement.elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "interior" ) );
       for ( int j = 0; j < interiorList.size(); ++j )
       {
         QgsPolylineXY ringPositions;
         currentInteriorElement = interiorList.at( j ).toElement();
-        linearRingNodeList = currentInteriorElement.elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "LinearRing" ) );
+        linearRingNodeList = currentInteriorElement.elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "LinearRing" ) );
         if ( linearRingNodeList.size() < 1 )
         {
           continue;
         }
         currentLinearRingElement = linearRingNodeList.at( 0 ).toElement();
-        currentPosList = currentLinearRingElement.elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "posList" ) );
+        currentPosList = currentLinearRingElement.elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "posList" ) );
         if ( currentPosList.size() < 1 )
         {
           continue;
@@ -972,11 +972,11 @@ QgsRectangle QgsOgcUtils::rectangleFromGMLEnvelope( const QDomNode &envelopeNode
   if ( envelopeElem.tagName() != QLatin1String( "Envelope" ) )
     return rect;
 
-  QDomNodeList lowerCornerList = envelopeElem.elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "lowerCorner" ) );
+  QDomNodeList lowerCornerList = envelopeElem.elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "lowerCorner" ) );
   if ( lowerCornerList.size() < 1 )
     return rect;
 
-  QDomNodeList upperCornerList = envelopeElem.elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "upperCorner" ) );
+  QDomNodeList upperCornerList = envelopeElem.elementsByTagNameNS( GML_NAMESPACE(), QStringLiteral( "upperCorner" ) );
   if ( upperCornerList.size() < 1 )
     return rect;
 
@@ -1822,15 +1822,15 @@ QDomElement QgsOgcUtils::expressionToOgcFilter( const QgsExpression &expression,
 
   QDomElement filterElem =
     ( filterVersion == FILTER_FES_2_0 ) ?
-    doc.createElementNS( FES_NAMESPACE, QStringLiteral( "fes:Filter" ) ) :
-    doc.createElementNS( OGC_NAMESPACE, QStringLiteral( "ogc:Filter" ) );
+    doc.createElementNS( FES_NAMESPACE(), QStringLiteral( "fes:Filter" ) ) :
+    doc.createElementNS( OGC_NAMESPACE(), QStringLiteral( "ogc:Filter" ) );
   if ( utils.GMLNamespaceUsed() )
   {
     QDomAttr attr = doc.createAttribute( QStringLiteral( "xmlns:gml" ) );
     if ( gmlVersion == GML_3_2_1 )
-      attr.setValue( GML32_NAMESPACE );
+      attr.setValue( GML32_NAMESPACE() );
     else
-      attr.setValue( GML_NAMESPACE );
+      attr.setValue( GML_NAMESPACE() );
     filterElem.setAttributeNode( attr );
   }
   filterElem.appendChild( exprRootElem );
@@ -1908,15 +1908,15 @@ QDomElement QgsOgcUtils::SQLStatementToOgcFilter( const QgsSQLStatement &stateme
 
   QDomElement filterElem =
     ( filterVersion == FILTER_FES_2_0 ) ?
-    doc.createElementNS( FES_NAMESPACE, QStringLiteral( "fes:Filter" ) ) :
-    doc.createElementNS( OGC_NAMESPACE, QStringLiteral( "ogc:Filter" ) );
+    doc.createElementNS( FES_NAMESPACE(), QStringLiteral( "fes:Filter" ) ) :
+    doc.createElementNS( OGC_NAMESPACE(), QStringLiteral( "ogc:Filter" ) );
   if ( utils.GMLNamespaceUsed() )
   {
     QDomAttr attr = doc.createAttribute( QStringLiteral( "xmlns:gml" ) );
     if ( gmlVersion == GML_3_2_1 )
-      attr.setValue( GML32_NAMESPACE );
+      attr.setValue( GML32_NAMESPACE() );
     else
-      attr.setValue( GML_NAMESPACE );
+      attr.setValue( GML_NAMESPACE() );
     filterElem.setAttributeNode( attr );
   }
   filterElem.appendChild( exprRootElem );
