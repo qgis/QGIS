@@ -241,7 +241,7 @@ class CORE_EXPORT QgsUnitTypes
     /**
      * Returns the type for a distance unit.
      */
-    Q_INVOKABLE static DistanceUnitType unitType( QgsUnitTypes::DistanceUnit unit );
+    Q_INVOKABLE static QgsUnitTypes::DistanceUnitType unitType( QgsUnitTypes::DistanceUnit unit );
 
     /**
      * Encodes a distance unit to a string.
@@ -298,7 +298,7 @@ class CORE_EXPORT QgsUnitTypes
     /**
      * Returns the type for an areal unit.
     */
-    Q_INVOKABLE static DistanceUnitType unitType( QgsUnitTypes::AreaUnit unit );
+    Q_INVOKABLE static QgsUnitTypes::DistanceUnitType unitType( QgsUnitTypes::AreaUnit unit );
 
     /**
      * Encodes an areal unit to a string.
@@ -315,7 +315,7 @@ class CORE_EXPORT QgsUnitTypes
      * \returns decoded units
      * \see encodeUnit()
     */
-    Q_INVOKABLE static AreaUnit decodeAreaUnit( const QString &string, bool *ok SIP_OUT = nullptr );
+    Q_INVOKABLE static QgsUnitTypes::AreaUnit decodeAreaUnit( const QString &string, bool *ok SIP_OUT = nullptr );
 
     /**
      * Returns a translated string representing an areal unit.
@@ -340,7 +340,7 @@ class CORE_EXPORT QgsUnitTypes
      * \returns the area unit
      * \see toString()
      */
-    Q_INVOKABLE static AreaUnit stringToAreaUnit( const QString &string, bool *ok SIP_OUT = nullptr );
+    Q_INVOKABLE static QgsUnitTypes::AreaUnit stringToAreaUnit( const QString &string, bool *ok SIP_OUT = nullptr );
 
     /**
      * Returns the conversion factor between the specified areal units.
@@ -371,7 +371,7 @@ class CORE_EXPORT QgsUnitTypes
      * Returns the type for an volume unit.
      * \since QGIS 3.10
     */
-    Q_INVOKABLE static DistanceUnitType unitType( QgsUnitTypes::VolumeUnit unit );
+    Q_INVOKABLE static QgsUnitTypes::DistanceUnitType unitType( QgsUnitTypes::VolumeUnit unit );
 
     /**
      * Encodes a volume \a unit to a string.
@@ -389,7 +389,7 @@ class CORE_EXPORT QgsUnitTypes
      * \see encodeUnit()
      * \since QGIS 3.10
     */
-    Q_INVOKABLE static VolumeUnit decodeVolumeUnit( const QString &string, bool *ok SIP_OUT = nullptr );
+    Q_INVOKABLE static QgsUnitTypes::VolumeUnit decodeVolumeUnit( const QString &string, bool *ok SIP_OUT = nullptr );
 
     /**
      * Returns a translated string representing a volume \a unit.
@@ -414,7 +414,7 @@ class CORE_EXPORT QgsUnitTypes
      * \see toString()
      * \since QGIS 3.10
      */
-    Q_INVOKABLE static VolumeUnit stringToVolumeUnit( const QString &string, bool *ok SIP_OUT = nullptr );
+    Q_INVOKABLE static QgsUnitTypes::VolumeUnit stringToVolumeUnit( const QString &string, bool *ok SIP_OUT = nullptr );
 
     /**
      * Returns the conversion factor between the specified volume units.

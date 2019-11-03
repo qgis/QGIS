@@ -182,7 +182,7 @@ Decodes a unit type from a ``string``.
 
 
 
-    static DistanceUnitType unitType( QgsUnitTypes::DistanceUnit unit );
+    static QgsUnitTypes::DistanceUnitType unitType( QgsUnitTypes::DistanceUnit unit );
 %Docstring
 Returns the type for a distance unit.
 %End
@@ -253,7 +253,7 @@ Returns the conversion factor between the specified distance units.
 %End
 
 
-    static DistanceUnitType unitType( QgsUnitTypes::AreaUnit unit );
+    static QgsUnitTypes::DistanceUnitType unitType( QgsUnitTypes::AreaUnit unit );
 %Docstring
 Returns the type for an areal unit.
 %End
@@ -269,7 +269,7 @@ Encodes an areal unit to a string.
 .. seealso:: :py:func:`decodeAreaUnit`
 %End
 
-    static AreaUnit decodeAreaUnit( const QString &string, bool *ok /Out/ = 0 );
+    static QgsUnitTypes::AreaUnit decodeAreaUnit( const QString &string, bool *ok /Out/ = 0 );
 %Docstring
 Decodes an areal unit from a string.
 
@@ -301,7 +301,7 @@ Returns a translated abbreviation representing an areal unit.
 .. versionadded:: 3.0
 %End
 
-    static AreaUnit stringToAreaUnit( const QString &string, bool *ok /Out/ = 0 );
+    static QgsUnitTypes::AreaUnit stringToAreaUnit( const QString &string, bool *ok /Out/ = 0 );
 %Docstring
 Converts a translated string to an areal unit.
 
@@ -344,7 +344,7 @@ Converts an area unit to its corresponding distance unit, e.g., square meters to
 %End
 
 
-    static DistanceUnitType unitType( QgsUnitTypes::VolumeUnit unit );
+    static QgsUnitTypes::DistanceUnitType unitType( QgsUnitTypes::VolumeUnit unit );
 %Docstring
 Returns the type for an volume unit.
 
@@ -362,7 +362,7 @@ Encodes a volume ``unit`` to a string.
 .. versionadded:: 3.10
 %End
 
-    static VolumeUnit decodeVolumeUnit( const QString &string, bool *ok /Out/ = 0 );
+    static QgsUnitTypes::VolumeUnit decodeVolumeUnit( const QString &string, bool *ok /Out/ = 0 );
 %Docstring
 Decodes a volume unit from a ``string``.
 
@@ -394,7 +394,7 @@ Returns a translated abbreviation representing a volume ``unit``.
 .. versionadded:: 3.10
 %End
 
-    static VolumeUnit stringToVolumeUnit( const QString &string, bool *ok /Out/ = 0 );
+    static QgsUnitTypes::VolumeUnit stringToVolumeUnit( const QString &string, bool *ok /Out/ = 0 );
 %Docstring
 Converts a translated`` ``string to a volume unit.
 
