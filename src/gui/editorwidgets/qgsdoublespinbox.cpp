@@ -29,7 +29,7 @@
 // This is required because private implementation of
 // QAbstractSpinBoxPrivate checks for specialText emptiness
 // and skips specialText handling if it's empty
-static constexpr QChar const &SPECIAL_TEXT_WHEN_EMPTY = QChar( 0x2063 );
+static constexpr QChar SPECIAL_TEXT_WHEN_EMPTY = QChar( 0x2063 );
 
 QgsDoubleSpinBox::QgsDoubleSpinBox( QWidget *parent )
   : QDoubleSpinBox( parent )

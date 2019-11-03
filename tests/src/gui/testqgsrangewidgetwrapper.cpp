@@ -33,7 +33,7 @@
 
 #include <memory>
 
-static constexpr QChar const &SPECIAL_TEXT_WHEN_EMPTY = QChar( 0x2063 );
+#define SPECIAL_TEXT_WHEN_EMPTY QString( QChar( 0x2063 ) )
 
 /**
  * @ingroup UnitTests
@@ -289,7 +289,7 @@ void TestQgsRangeWidgetWrapper::test_setDoubleLimits()
 void TestQgsRangeWidgetWrapper::test_nulls()
 {
 
-  QgsApplication::setNullRepresentation( QString( "" ) );
+  QgsApplication::setNullRepresentation( QString() );
 
   QVariantMap cfg;
   cfg.insert( QStringLiteral( "Min" ), 100.00 );
