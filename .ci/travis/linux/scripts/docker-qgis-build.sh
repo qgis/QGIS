@@ -32,6 +32,7 @@ echo "${bold}Running cmake...${endbold}"
 
 export CC=/usr/lib/ccache/clang
 export CXX=/usr/lib/ccache/clazy
+export CLAZY_CHECKS="connect-3arg-lambda"
 
 cmake \
  -GNinja \
