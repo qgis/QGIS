@@ -1077,8 +1077,8 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
     QgsJsonExporter exporter { mapLayer };
     exporter.setAttributes( featureRequest.subsetOfAttributes() );
     exporter.setAttributeDisplayName( true );
-    exporter.setSourceCrs( mapLayer->crs() );
-    exporter.setTransformGeometries( false );
+    // Trick! See: https://github.com/qgis/QGIS/commit/7d2000bc30b2160692baf43c22d7ef4b47e52cff
+    exporter.setSourceCrs( QgsCoordinateReferenceSystem( 4326, QgsCoordinateReferenceSystem::EpsgCrsId ) );
     QgsFeatureList featureList;
     QgsFeatureIterator features { mapLayer->getFeatures( featureRequest ) };
     QgsFeature feat;
