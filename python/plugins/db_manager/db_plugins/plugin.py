@@ -36,10 +36,11 @@ from qgis.PyQt.QtWidgets import (
     QMenu,
     QInputDialog,
     QMessageBox,
-    QDialog
+    QDialog,
+    QWidget
 )
 
-from qgis.PyQt.QtGui import QKeySequence, QIcon
+from qgis.PyQt.QtGui import QKeySequence
 
 from qgis.core import (
     Qgis,
@@ -158,7 +159,7 @@ class DBPlugin(QObject):
         try:
             md = QgsProviderRegistry.instance().providerMetadata(self.providerName())
             md.deleteConnection(self.connectionName())
-        except (AttributeError, QgsProviderConnectionException) as ex:
+        except (AttributeError, QgsProviderConnectionException):
             settings = QgsSettings()
             settings.beginGroup(u"/%s/%s" % (self.connectionSettingsKey(), self.connectionName()))
             settings.remove("")
@@ -205,7 +206,7 @@ class DBPlugin(QObject):
             md = QgsProviderRegistry.instance().providerMetadata(self.providerName())
             for name in md.dbConnections().keys():
                 conn_list.append(createDbPlugin(self.typeName(), name))
-        except (AttributeError, QgsProviderConnectionException) as ex:
+        except (AttributeError, QgsProviderConnectionException):
             settings = QgsSettings()
             settings.beginGroup(self.connectionSettingsKey())
             for name in settings.childGroups():
@@ -1185,7 +1186,7 @@ class VectorTable(Table):
         """Called whenever a context menu is shown for this table. Can be used to add additional actions to the menu."""
 
         if self.geomType == 'GEOMETRY':
-            menu.addAction(self.tr("Add Layer (Advanced)…"), self.showAdvancedVectorDialog)
+            menu.addAction(QApplication.translate("DBManagerPlugin", "Add Layer (Advanced)…"), self.showAdvancedVectorDialog)
 
 
 class RasterTable(Table):
