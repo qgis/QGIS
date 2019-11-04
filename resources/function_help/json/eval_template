@@ -1,0 +1,13 @@
+{
+	"name": "eval_template",
+	"type": "function",
+	"description": "Evaluates an template which is passed in a string. Useful to expand dynamic parameters passed as context variables or fields.",
+	"arguments": [{
+		"arg": "template",
+		"description": "an template string"
+	}],
+	"examples": [{
+		"expression": "eval_template(QGIS [% 'rocks' || '!' %])",
+		"returns": "'QGIS rocks!'"
+	}]
+}

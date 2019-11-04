@@ -269,6 +269,12 @@ static QVariant fcnGetVariable( const QVariantList &values, const QgsExpressionC
   return context->variable( name );
 }
 
+static QVariant fcnEvalTemplate( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QString templateString = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  return QgsExpression::replaceExpressionText( templateString, context );
+}
+
 static QVariant fcnEval( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   if ( !context )
@@ -1409,6 +1415,68 @@ static QVariant fcnFeature( const QVariantList &, const QgsExpressionContext *co
     return QVariant();
 
   return context->feature();
+}
+
+static QVariant fcnCoreFeatureMaptipDisplay( const QVariantList &values, QgsExpression *parent, const bool isMaptip )
+{
+  QgsVectorLayer *layer = QgsExpressionUtils::getVectorLayer( values.at( 0 ), parent );
+  if ( ! layer || ! layer->isValid() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Parameter `layer` is not valid." ) );
+    return QVariant();
+  }
+
+  QgsFeature feature = QgsExpressionUtils::getFeature( values.at( 1 ), parent );
+  if ( ! feature.isValid() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Parameter `feature` is not valid." ) );
+    return QVariant();
+  }
+
+  bool evaluate = false;
+  if ( values.length() == 3 )
+  {
+    evaluate = values.value( 2 ).toBool();
+  }
+
+  if ( ! evaluate )
+  {
+    if ( isMaptip )
+    {
+      return layer->mapTipTemplate();
+    }
+    else
+    {
+      return layer->displayExpression();
+    }
+  }
+
+  QgsExpressionContext subContext;
+
+  if ( isMaptip )
+  {
+    subContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+    subContext.setFeature( feature );
+    return QgsExpression::replaceExpressionText( layer->mapTipTemplate(), &subContext );
+  }
+  else
+  {
+    subContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+    subContext.setFeature( feature );
+    QgsExpression exp( layer->displayExpression() );
+    exp.prepare( &subContext );
+    return exp.evaluate( &subContext ).toString();
+  }
+}
+
+static QVariant fcnFeatureDisplayExpression( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  return fcnCoreFeatureMaptipDisplay( values, parent, false );
+}
+
+static QVariant fcnFeatureMaptip( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  return fcnCoreFeatureMaptipDisplay( values, parent, true );
 }
 
 static QVariant fcnAttribute( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -5725,6 +5793,12 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "get_feature_by_id" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "feature_id" ) ),
                                             fcnGetFeatureById, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>(), false )
+        << new QgsStaticExpressionFunction( QStringLiteral( "display" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ), true ) << QgsExpressionFunction::Parameter( QStringLiteral( "feature" ), true )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "evaluate" ), true, true ),
+                                            fcnFeatureDisplayExpression, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>(), false )
+        << new QgsStaticExpressionFunction( QStringLiteral( "maptip" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ), true ) << QgsExpressionFunction::Parameter( QStringLiteral( "feature" ), true )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "evaluate" ), true, true ),
+                                            fcnFeatureMaptip, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>(), false )
         << new QgsStaticExpressionFunction( QStringLiteral( "attributes" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "feature" ), true ),
                                             fcnAttributes, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES );
 
@@ -5840,6 +5914,9 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 
     functions
         << varFunction;
+
+    functions << new QgsStaticExpressionFunction( QStringLiteral( "eval_template" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "template" ) ), fcnEvalTemplate, QStringLiteral( "General" ), QString(), true );
+
     QgsStaticExpressionFunction *evalFunc = new QgsStaticExpressionFunction( QStringLiteral( "eval" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ) ), fcnEval, QStringLiteral( "General" ), QString(), true, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES );
     evalFunc->setIsStaticFunction(
       []( const QgsExpressionNodeFunction * node, QgsExpression * parent, const QgsExpressionContext * context )

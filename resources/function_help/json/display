@@ -1,0 +1,29 @@
+{
+	"name": "display",
+	"type": "function",
+	"description": "Returns the display expression for a given feature in a layer. The expression is evaluated by default.",
+	"arguments": [{
+			"arg": "layer",
+			"description": "a vector layer"
+		},
+		{
+			"arg": "feature",
+			"description": "a feature"
+		},
+		{
+			"arg": "evaluate",
+			"description": "if the expression must be evaluated. If False, you should call 'eval'",
+			"optional": true,
+			"default": "true"
+		}
+	],
+	"examples": [{
+			"expression": "display('a_layer_id', $currentFeature)",
+			"returns": "the display expression of the current feature"
+		},
+		{
+			"expression": "display('a_layer_id', $currentFeature, 'False')",
+			"returns": "the display expression of the current feature not evaluated."
+		}
+	]
+}

@@ -94,6 +94,8 @@ class TestQgsExpression: public QObject
       mPointsLayer->setAttributionUrl( QStringLiteral( "attribution url" ) );
       mPointsLayer->setMinimumScale( 500 );
       mPointsLayer->setMaximumScale( 1000 );
+      mPointsLayer->setMapTipTemplate( QStringLiteral( "I'm a maptip with class = [% \"Class\" %]" ) );
+      mPointsLayer->setDisplayExpression( QStringLiteral( "'I\\'m a display expression with class = ' || Class" ) );
 
       mPointsLayerMetadata = new QgsVectorLayer( pointFileInfo.filePath(),
           pointFileInfo.completeBaseName() + "_metadata", QStringLiteral( "ogr" ) );
@@ -1358,6 +1360,21 @@ class TestQgsExpression: public QObject
       QTest::newRow( "brackets first" ) << "(1+2)*(3+4)" << false << QVariant( 21 );
       QTest::newRow( "right associativity" ) << "(2^3)^2" << false << QVariant( 64. );
       QTest::newRow( "left associativity" ) << "1-(2-1)" << false << QVariant( 0 );
+
+      // eval_template tests
+      QTest::newRow( "eval_template" ) << QStringLiteral( "eval_template(\'this is a [% \\'template\\' || \\'!\\' %]\')" ) << false << QVariant( "this is a template!" );
+      QTest::newRow( "eval_template string" ) << QStringLiteral( "eval_template('string')" ) << false << QVariant( "string" );
+      QTest::newRow( "eval_template expression" ) << QStringLiteral( "eval_template('a' || ' string')" ) << false << QVariant( "a string" );
+
+      // maptip and display expression tests
+      QTest::newRow( "display" ) << QStringLiteral( "display('points', get_feature_by_id('points', '1'))" ) << false << QVariant( "I'm a display expression with class = Biplane" );
+      QTest::newRow( "display not evaluated" ) << QStringLiteral( "display('points', get_feature_by_id('points', '1'), False)" ) << false << QVariant( "'I\\'m a display expression with class = ' || Class" );
+      QTest::newRow( "display wrong layer" ) << QStringLiteral( "display('no_layer', get_feature_by_id('points', '1'), False)" ) << true << QVariant();
+      QTest::newRow( "display wrong feature" ) << QStringLiteral( "display('points', 'feature')" ) << true << QVariant();
+      QTest::newRow( "maptip" ) << QStringLiteral( "maptip('points', get_feature_by_id('points', '1'))" ) << false << QVariant( "I'm a maptip with class = Biplane" );
+      QTest::newRow( "maptip not evaluated" ) << QStringLiteral( "maptip('points', get_feature_by_id('points', '1'), False)" ) << false << QVariant( "I'm a maptip with class = [% \"Class\" %]" );
+      QTest::newRow( "maptip wrong layer" ) << QStringLiteral( "maptip('no_layer', get_feature_by_id('points', '1'))" ) << true << QVariant();
+      QTest::newRow( "maptip wrong feature" ) << QStringLiteral( "maptip('points', 'feature')" ) << true << QVariant();
 
       // layer_property tests
       QTest::newRow( "layer_property no layer" ) << "layer_property('','title')" << false << QVariant();
