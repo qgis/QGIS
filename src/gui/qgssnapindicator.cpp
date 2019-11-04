@@ -27,7 +27,11 @@
 QgsSnapIndicator::QgsSnapIndicator( QgsMapCanvas *canvas )
   : mCanvas( canvas )
 {
-  mCanvasDestroyedConnection = QObject::connect( canvas, &QgsMapCanvas::destroyed, this, [ = ]()
+  // We need to make sure that the internal pointers are invalidated if the canvas is deleted before this
+  // indicator.
+  // The canvas is specified again as the "receiver", just to silence clazy (official clazy recommendation
+  // for false positives).
+  mCanvasDestroyedConnection = QObject::connect( canvas, &QgsMapCanvas::destroyed, canvas, [ = ]()
   {
     mCanvas = nullptr;
     mSnappingMarker = nullptr;
