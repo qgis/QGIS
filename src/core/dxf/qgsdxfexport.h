@@ -43,7 +43,7 @@ class QgsCompoundCurve;
 #define DXF_HANDMAX 9999999
 #define DXF_HANDPLOTSTYLE 0xf
 
-namespace pal SIP_SKIP
+namespace pal // SIP_SKIP
 {
   class LabelPosition;
 }

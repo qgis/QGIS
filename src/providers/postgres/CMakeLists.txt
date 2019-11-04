@@ -16,17 +16,6 @@ SET(PG_SRCS
   qgspostgresproviderconnection.cpp
 )
 
-SET(PG_MOC_HDRS
-  qgscolumntypethread.h
-  qgspgtablemodel.h
-  qgspostgresconn.h
-  qgspostgresconnpool.h
-  qgspostgresdataitems.h
-  qgspostgresprovider.h
-  qgspostgrestransaction.h
-  qgspostgreslistener.h
-)
-
 IF (WITH_GUI)
   SET(PG_GUI_SRCS
     qgspostgresprovidergui.cpp
@@ -34,12 +23,6 @@ IF (WITH_GUI)
     qgspgsourceselect.cpp
     qgspgnewconnection.cpp
     qgspostgresprojectstoragedialog.cpp
-  )
-  SET(PG_GUI_MOC_HDRS
-    qgspostgresdataitemguiprovider.h
-    qgspgnewconnection.h
-    qgspgsourceselect.h
-    qgspostgresprojectstoragedialog.h
   )
 ENDIF ()
 
@@ -50,9 +33,6 @@ SET(PG_HDRS
 
 ########################################################
 # Build
-
-QT5_WRAP_CPP(PG_MOC_SRCS ${PG_MOC_HDRS})
-QT5_WRAP_CPP (PG_GUI_MOC_SRCS ${PG_GUI_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core
@@ -83,7 +63,7 @@ IF (WITH_GUI)
 ENDIF ()
 
 # static library
-ADD_LIBRARY (postgresprovider_a STATIC ${PG_SRCS} ${PG_HDRS} ${PG_MOC_SRCS})
+ADD_LIBRARY (postgresprovider_a STATIC ${PG_SRCS} ${PG_HDRS})
 TARGET_LINK_LIBRARIES (postgresprovider_a
   ${POSTGRES_LIBRARY}
   ${Qt5Xml_LIBRARIES}
@@ -95,7 +75,7 @@ TARGET_LINK_LIBRARIES (postgresprovider_a
 )
 
 IF (WITH_GUI)
-  ADD_LIBRARY(postgresprovider_gui_a STATIC ${PG_GUI_SRCS} ${PG_GUI_MOC_SRCS})
+  ADD_LIBRARY(postgresprovider_gui_a STATIC ${PG_GUI_SRCS})
   TARGET_LINK_LIBRARIES(postgresprovider_gui_a
     ${POSTGRES_LIBRARY}
     ${Qt5Xml_LIBRARIES}
@@ -118,7 +98,7 @@ IF (FORCE_STATIC_PROVIDERS)
   ENDIF (WITH_GUI)
 ELSE (FORCE_STATIC_PROVIDERS)
   # dynamically loaded module
-  ADD_LIBRARY(postgresprovider MODULE ${PG_SRCS} ${PG_GUI_SRCS} ${PG_MOC_SRCS} ${PG_GUI_MOC_SRCS} ${PG_HDRS})
+  ADD_LIBRARY(postgresprovider MODULE ${PG_SRCS} ${PG_GUI_SRCS} ${PG_HDRS})
 
   TARGET_LINK_LIBRARIES(postgresprovider
     ${POSTGRES_LIBRARY}

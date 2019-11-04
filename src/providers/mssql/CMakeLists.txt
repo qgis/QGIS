@@ -9,24 +9,12 @@ SET(MSSQL_SRCS
   qgsmssqlgeomcolumntypethread.cpp
 )
 
-SET(MSSQL_MOC_HDRS
-  qgsmssqlprovider.h
-  qgsmssqltablemodel.h
-  qgsmssqldataitems.h
-  qgsmssqlgeomcolumntypethread.h
-)
-
 IF (WITH_GUI)
   SET(MSSQL_SRCS ${MSSQL_SRCS}
     qgsmssqlprovidergui.cpp
     qgsmssqldataitemguiprovider.cpp
     qgsmssqlsourceselect.cpp
     qgsmssqlnewconnection.cpp
-  )
-  SET(MSSQL_MOC_HDRS ${MSSQL_MOC_HDRS}
-    qgsmssqldataitemguiprovider.h
-    qgsmssqlsourceselect.h
-    qgsmssqlnewconnection.h
   )
 ENDIF ()
 
@@ -36,8 +24,6 @@ SET(MSSQL_HDRS
 
 ########################################################
 # Build
-
-QT5_WRAP_CPP(MSSQL_MOC_SRCS ${MSSQL_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core
@@ -64,7 +50,7 @@ IF (WITH_GUI)
 ENDIF ()
 
 
-ADD_LIBRARY(mssqlprovider MODULE ${MSSQL_SRCS} ${MSSQL_MOC_SRCS} ${MSSQL_HDRS})
+ADD_LIBRARY(mssqlprovider MODULE ${MSSQL_SRCS} ${MSSQL_HDRS})
 
 TARGET_LINK_LIBRARIES(mssqlprovider
   qgis_core

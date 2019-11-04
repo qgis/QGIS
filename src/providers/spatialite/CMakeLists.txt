@@ -15,31 +15,17 @@ SET(SPATIALITE_SRCS
   qgsspatialiteproviderconnection.cpp
 )
 
-SET(SPATIALITE_MOC_HDRS
-  qgsspatialiteprovider.h
-  qgsspatialiteconnpool.h
-  qgsspatialitedataitems.h
-  qgsspatialitetablemodel.h
-  qgsspatialiteconnection.h
-)
-
 IF (WITH_GUI)
   SET(SPATIALITE_SRCS ${SPATIALITE_SRCS}
     qgsspatialiteprovidergui.cpp
     qgsspatialitedataitemguiprovider.cpp
     qgsspatialitesourceselect.cpp
   )
-  SET(SPATIALITE_MOC_HDRS ${SPATIALITE_MOC_HDRS}
-    qgsspatialitedataitemguiprovider.h
-    qgsspatialitesourceselect.h
-  )
 ENDIF ()
 
 
 ########################################################
 # Build
-
-QT5_WRAP_CPP(SPATIALITE_MOC_SRCS ${SPATIALITE_MOC_HDRS})
 
 IF (WITH_GUI)
   INCLUDE_DIRECTORIES(SYSTEM
@@ -69,7 +55,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${SPATIALITE_INCLUDE_DIR}
 )
 
-ADD_LIBRARY (spatialiteprovider MODULE ${SPATIALITE_SRCS} ${SPATIALITE_MOC_SRCS})
+ADD_LIBRARY (spatialiteprovider MODULE ${SPATIALITE_SRCS})
 
 TARGET_LINK_LIBRARIES(spatialiteprovider
   qgis_core

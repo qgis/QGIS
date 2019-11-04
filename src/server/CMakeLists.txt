@@ -51,32 +51,23 @@ SET(QGIS_SERVER_SRCS
 )
 
 SET (QGIS_SERVER_HDRS
-  qgsservicemodule.h
-  qgsmapserviceexception.h
-  qgsserverapi.h
-  qgsserverogcapi.h
-  qgsserverogcapihandler.h
-  qgsserverapicontext.h
-  qgsserverquerystringparameter.h
-)
-
-
-SET (QGIS_SERVER_MOC_HDRS
   qgscapabilitiescache.h
   qgsconfigcache.h
+  qgsmapserviceexception.h
+  qgsserverapi.h
+  qgsserverapicontext.h
   qgsserverlogger.h
   qgsserverogcapi.h
-  qgsserversettings.h
+  qgsserverogcapihandler.h
   qgsserverparameters.h
   qgsserverquerystringparameter.h
+  qgsserversettings.h
+  qgsservicemodule.h
 )
 
 
 #############################################################
 # qgis_server library
-
-
-SET(QGIS_SERVER_MOC_HDRS ${QGIS_SERVER_MOC_HDRS})
 
 IF (WITH_SERVER_PLUGINS)
   SET(QGIS_SERVER_SRCS ${QGIS_SERVER_SRCS}
@@ -88,14 +79,6 @@ IF (WITH_SERVER_PLUGINS)
     qgsservercachemanager.cpp
   )
 ENDIF (WITH_SERVER_PLUGINS)
-
-QT5_WRAP_CPP(QGIS_SERVER_MOC_SRCS ${QGIS_SERVER_MOC_HDRS})
-
-IF(MSVC)
-  SET_SOURCE_FILES_PROPERTIES(${QGIS_SERVER_MOC_SRCS} PROPERTIES COMPILE_FLAGS "/wd4512 /wd4996" )
-ELSE(MSVC)
-  SET_SOURCE_FILES_PROPERTIES(${QGIS_SERVER_MOC_SRCS} PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations" )
-ENDIF(MSVC)
 
 INCLUDE_DIRECTORIES(SYSTEM
   ${GDAL_INCLUDE_DIR}
@@ -135,7 +118,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/server
 )
 
-ADD_LIBRARY(qgis_server SHARED ${QGIS_SERVER_SRCS} ${QGIS_SERVER_MOC_SRCS} ${QGIS_SERVER_HDRS} ${QGIS_SERVER_MOC_HDRS})
+ADD_LIBRARY(qgis_server SHARED ${QGIS_SERVER_SRCS} ${QGIS_SERVER_HDRS})
 
 GENERATE_EXPORT_HEADER(
   qgis_server

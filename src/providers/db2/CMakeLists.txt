@@ -10,7 +10,7 @@ SET(DB2_SRCS
   qgsdb2tablemodel.cpp
   qgsdb2featureiterator.cpp
 )
-SET(DB2_MOC_HDRS
+SET(DB2_HDRS
   qgsdb2provider.h
   qgsdb2dataitems.h
   qgsdb2tablemodel.h
@@ -23,7 +23,7 @@ IF (WITH_GUI)
     qgsdb2newconnection.cpp
     qgsdb2sourceselect.cpp
   )
-  SET(DB2_MOC_HDRS ${DB2_MOC_HDRS}
+  SET(DB2_HDRS ${DB2_HDRS}
     qgsdb2dataitemguiprovider.h
     qgsdb2newconnection.h
     qgsdb2sourceselect.h
@@ -32,8 +32,6 @@ ENDIF ()
 
 ########################################################
 # Build
-
-QT5_WRAP_CPP(DB2_MOC_SRCS ${DB2_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core
@@ -62,7 +60,7 @@ IF (WITH_GUI)
   )
 ENDIF ()
 
-ADD_LIBRARY (db2provider MODULE ${DB2_SRCS} ${DB2_HDRS} ${DB2_MOC_SRCS})
+ADD_LIBRARY (db2provider MODULE ${DB2_SRCS} ${DB2_HDRS})
 
 TARGET_LINK_LIBRARIES (db2provider
   qgis_core

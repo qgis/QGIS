@@ -611,13 +611,8 @@ IF(ENABLE_MODELTEST)
     ../../tests/qt_modeltest/modeltest.cpp
     ../../tests/qt_modeltest/dynamictreemodel.cpp
   )
-  SET(MODELTEST_MOC_HDRS
-    ../../tests/qt_modeltest/modeltest.h
-    ../../tests/qt_modeltest/dynamictreemodel.h
-  )
-  QT5_WRAP_CPP(MODELTEST_MOC_SRCS ${MODELTEST_MOC_HDRS})
   SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
-    ${MODELTEST_SRCS} ${MODELTEST_MOC_SRCS}
+    ${MODELTEST_SRCS}
   )
 ENDIF(ENABLE_MODELTEST)
 
@@ -648,49 +643,127 @@ ELSE(NOT MSVC)
     PROPERTIES COMPILE_FLAGS -wd4702)
 ENDIF(NOT MSVC)
 
-SET(QGIS_CORE_MOC_HDRS
+SET(QGIS_CORE_HDRS
+  ${CMAKE_SOURCE_DIR}/external/nlohmann/json_fwd.hpp
+  ${CMAKE_BINARY_DIR}/qgsconfig.h
+  ../plugins/qgisplugin.h
+
   qgis.h
+  qgis_sip.h
   qgsabstractcontentcache.h
   qgsabstractdatabaseproviderconnection.h
-  qgsapplication.h
+  qgsabstractgeopdfexporter.h
+  qgsabstractproviderconnection.h
+  qgsaction.h
   qgsactionmanager.h
+  qgsactionscope.h
   qgsactionscoperegistry.h
+  qgsaggregatecalculator.h
   qgsanimatedicon.h
+  qgsapplication.h
+  qgsarchive.h
+  qgsattributeeditorelement.h
+  qgsattributes.h
+  qgsattributetableconfig.h
   qgsauxiliarystorage.h
+  qgsbearingutils.h
   qgsblockingnetworkrequest.h
   qgsbookmarkmanager.h
   qgsbookmarkmodel.h
   qgsbrowsermodel.h
   qgsbrowserproxymodel.h
+  qgscachedfeatureiterator.h
+  qgscacheindex.h
+  qgscacheindexfeatureid.h
+  qgscadutils.h
+  qgsclipper.h
+  qgscolorramp.h
+  qgscolorscheme.h
+  qgscolorschemeregistry.h
   qgsconditionalstyle.h
+  qgsconnectionpool.h
+  qgscoordinateformatter.h
   qgscoordinatereferencesystem.h
+  qgscoordinatetransform.h
+  qgscoordinatetransformcontext.h
   qgscoordinateutils.h
   qgscredentials.h
+  qgsdartmeasurement.h
+  qgsdatadefinedsizelegend.h
   qgsdataitem.h
+  qgsdataitemprovider.h
+  qgsdataitemproviderregistry.h
   qgsdataprovider.h
   qgsdatasourceuri.h
+  qgsdatetimestatisticalsummary.h
+  qgsdatumtransform.h
   qgsdbfilterproxymodel.h
   qgsdefaultvalue.h
+  qgsdiagramrenderer.h
+  qgsdistancearea.h
+  qgseditformconfig.h
+  qgseditorwidgetsetup.h
+  qgsellipsoidutils.h
+  qgserror.h
+  qgsexception.h
+  qgsexpressioncontext.h
+  qgsexpressioncontextgenerator.h
+  qgsexpressioncontextscopegenerator.h
+  qgsexpressionfieldbuffer.h
   qgsfeature.h
+  qgsfeaturefiltermodel.h
+  qgsfeaturefilterprovider.h
+  qgsfeatureid.h
+  qgsfeatureiterator.h
+  qgsfeaturerequest.h
+  qgsfeaturesink.h
+  qgsfeaturesource.h
+  qgsfeaturestore.h
   qgsfeedback.h
   qgsfield.h
   qgsfieldconstraints.h
+  qgsfieldformatter.h
   qgsfieldformatterregistry.h
   qgsfieldmodel.h
   qgsfieldproxymodel.h
+  qgsfields.h
   qgsfiledownloader.h
-  qgsfeaturefiltermodel.h
-  qgsfeaturefiltermodel_p.h
+  qgsfileutils.h
+  qgsfontutils.h
+  qgsgdalutils.h
   qgsgeometryoptions.h
+  qgsgeometrysimplifier.h
   qgsgeometryvalidator.h
   qgsgml.h
   qgsgmlschema.h
+  qgshistogram.h
+  qgshstoreutils.h
+  qgshtmlutils.h
   qgsimagecache.h
+  qgsindexedfeature.h
+  qgsinterval.h
+  qgsjsonutils.h
+  qgslabelfeature.h
+  qgslabelingengine.h
+  qgslabelingenginesettings.h
+  qgslabelsearchtree.h
+  qgslayerdefinition.h
+  qgslegendrenderer.h
+  qgslegendsettings.h
+  qgslegendstyle.h
+  qgslocalec.h
+  qgslogger.h
+  qgsmapdecoration.h
+  qgsmaphittest.h
   qgsmaplayer.h
+  qgsmaplayerdependency.h
   qgsmaplayerlegend.h
   qgsmaplayermodel.h
   qgsmaplayerproxymodel.h
+  qgsmaplayerref.h
+  qgsmaplayerrenderer.h
   qgsmaplayerstore.h
+  qgsmaplayerstyle.h
   qgsmaplayerstylemanager.h
   qgsmaprenderercache.h
   qgsmaprenderercustompainterjob.h
@@ -699,118 +772,263 @@ SET(QGIS_CORE_MOC_HDRS
   qgsmaprenderersequentialjob.h
   qgsmaprendererstagedrenderjob.h
   qgsmaprenderertask.h
+  qgsmapsettings.h
+  qgsmapsettingsutils.h
+  qgsmapthemecollection.h
+  qgsmaptopixel.h
+  qgsmaptopixelgeometrysimplifier.h
+  qgsmapunitscale.h
+  qgsmargins.h
   qgsmessagelog.h
   qgsmessageoutput.h
+  qgsmimedatautils.h
+  qgsmultirenderchecker.h
   qgsnetworkaccessmanager.h
-  qgsnetworkdiskcache.h
   qgsnetworkcontentfetcher.h
   qgsnetworkcontentfetcherregistry.h
   qgsnetworkcontentfetchertask.h
+  qgsnetworkdiskcache.h
+  qgsnetworkreply.h
   qgsnetworkreplyparser.h
   qgsnewsfeedmodel.h
   qgsnewsfeedparser.h
+  qgsobjectcustomproperties.h
   qgsofflineediting.h
+  qgsogcutils.h
+  qgsogrutils.h
+  qgsoptional.h
+  qgsoptionalexpression.h
   qgsowsconnection.h
+  qgspaintenginehack.h
+  qgspainting.h
+  qgspallabeling.h
+  qgspathresolver.h
   qgspluginlayer.h
-  qgspointxy.h
+  qgspluginlayerregistry.h
   qgspointlocator.h
   qgspointlocatorinittask.h
+  qgspointxy.h
+  qgspostgresstringutils.h
   qgsproject.h
+  qgsprojectbadlayerhandler.h
+  qgsprojectfiletransform.h
+  qgsprojectproperty.h
+  qgsprojectstorage.h
+  qgsprojectstorageregistry.h
+  qgsprojecttranslator.h
+  qgsprojectversion.h
   qgsprojectviewsettings.h
+  qgsprojutils.h
+  qgsproperty.h
+  qgspropertycollection.h
+  qgspropertytransformer.h
+  qgsprovidermetadata.h
+  qgsproviderregistry.h
   qgsproxyprogresstask.h
-  qgsrelationmanager.h
+  qgspythonrunner.h
+  qgsrange.h
+  qgsreadwritecontext.h
+  qgsreadwritelocker.h
   qgsrelation.h
+  qgsrelationmanager.h
+  qgsrenderchecker.h
+  qgsrendercontext.h
+  qgsrenderedfeaturehandlerinterface.h
+  qgsrulebasedlabeling.h
   qgsrunprocess.h
+  qgsruntimeprofiler.h
+  qgsscalecalculator.h
+  qgsscaleutils.h
+  qgssettings.h
+  qgssimplifymethod.h
   qgssnappingconfig.h
   qgssnappingutils.h
+  qgsspatialindex.h
+  qgsspatialindexkdbush.h
+  qgsspatialindexkdbushdata.h
+  qgsspatialiteutils.h
+  qgssqlexpressioncompiler.h
+  qgssqliteutils.h
+  qgssqlstatement.h
+  qgsstatisticalsummary.h
   qgsstoredexpressionmanager.h
+  qgsstringstatisticalsummary.h
+  qgsstringutils.h
   qgstaskmanager.h
+  qgstessellator.h
+  qgstestutils.h
+  qgstextlabelfeature.h
+  qgstextrenderer.h
+  qgsthreadingutils.h
+  qgstilecache.h
   qgstolerance.h
   qgstracer.h
   qgstrackedvectorlayertools.h
   qgstransaction.h
   qgstransactiongroup.h
+  qgstranslationcontext.h
   qgsunittypes.h
+  qgsuserprofilemanager.h
+  qgsvector.h
+  qgsvector3d.h
   qgsvectordataprovider.h
+  qgsvectorfilewriter.h
   qgsvectorfilewritertask.h
+  qgsvectorlayer.h
   qgsvectorlayercache.h
+  qgsvectorlayerdiagramprovider.h
   qgsvectorlayereditbuffer.h
   qgsvectorlayereditpassthrough.h
-  qgsvectorlayer.h
-  qgsvirtuallayertask.h
+  qgsvectorlayereditutils.h
   qgsvectorlayerexporter.h
   qgsvectorlayerfeaturecounter.h
+  qgsvectorlayerfeatureiterator.h
   qgsvectorlayerjoinbuffer.h
+  qgsvectorlayerjoininfo.h
+  qgsvectorlayerlabeling.h
+  qgsvectorlayerlabelprovider.h
   qgsvectorlayerrenderer.h
-  qgsvectorlayertools.h
-  qgsvectorsimplifymethod.h
   qgsvectorlayerserverproperties.h
-  qgsmapthemecollection.h
+  qgsvectorlayertools.h
+  qgsvectorlayerundocommand.h
+  qgsvectorlayerundopassthroughcommand.h
+  qgsvectorlayerutils.h
+  qgsvectorsimplifymethod.h
+  qgsvirtuallayerdefinition.h
+  qgsvirtuallayerdefinitionutils.h
+  qgsvirtuallayertask.h
   qgswebpage.h
   qgswebview.h
-  qgssettings.h
+  qgsxmlutils.h
+  qgsziputils.h
+  qobjectuniqueptr.h
+
+  3d/qgs3drendererregistry.h
+  3d/qgsabstract3drenderer.h
 
   annotations/qgsannotation.h
   annotations/qgsannotationmanager.h
+  annotations/qgsannotationregistry.h
   annotations/qgshtmlannotation.h
   annotations/qgssvgannotation.h
   annotations/qgstextannotation.h
 
+  auth/qgsauthcertutils.h
+  auth/qgsauthconfig.h
+  auth/qgsauthcrypto.h
   auth/qgsauthmanager.h
   auth/qgsauthmethod.h
+  auth/qgsauthmethodmetadata.h
+  auth/qgsauthmethodregistry.h
 
-  locator/qgslocator.h
-  locator/qgslocatorfilter.h
-  locator/qgslocatormodel.h
-  locator/qgslocatormodelbridge.h
+  callouts/qgscallout.h
+  callouts/qgscalloutsregistry.h
 
-  processing/qgsprocessingalgrunnertask.h
-  processing/qgsprocessingfeedback.h
-  processing/qgsprocessingprovider.h
-  processing/qgsprocessingregistry.h
+  classification/qgsclassificationcustom.h
+  classification/qgsclassificationequalinterval.h
+  classification/qgsclassificationjenks.h
+  classification/qgsclassificationlogarithmic.h
+  classification/qgsclassificationmethod.h
+  classification/qgsclassificationmethodregistry.h
+  classification/qgsclassificationprettybreaks.h
+  classification/qgsclassificationquantile.h
+  classification/qgsclassificationstandarddeviation.h
 
-  providers/gdal/qgsgdalprovider.h
-  providers/gdal/qgsgdaldataitems.h
+  diagram/qgsdiagram.h
+  diagram/qgshistogramdiagram.h
+  diagram/qgspiediagram.h
+  diagram/qgstextdiagram.h
 
-  providers/memory/qgsmemoryprovider.h
+  dxf/qgsdxfexport.h
 
-  providers/meshmemory/qgsmeshmemorydataprovider.h
+  effects/qgsblureffect.h
+  effects/qgscoloreffect.h
+  effects/qgseffectstack.h
+  effects/qgsgloweffect.h
+  effects/qgsimageoperation.h
+  effects/qgspainteffect.h
+  effects/qgspainteffectregistry.h
+  effects/qgsshadoweffect.h
+  effects/qgstransformeffect.h
 
-  providers/ogr/qgsogrprovider.h
-  providers/ogr/qgsogrdataitems.h
-  providers/ogr/qgsogrconnpool.h
-  providers/ogr/qgsgeopackagedataitems.h
-  providers/ogr/qgsgeopackagerasterwritertask.h
-  providers/ogr/qgsogrdbconnection.h
-  providers/ogr/qgsogrtransaction.h
+  expression/qgsexpression.h
+  expression/qgsexpressioncontextutils.h
+  expression/qgsexpressionfunction.h
+  expression/qgsexpressionnode.h
+  expression/qgsexpressionnodeimpl.h
 
-  raster/qgsrasterfilewritertask.h
-  raster/qgsrasterlayer.h
-  raster/qgsrasterdataprovider.h
-  raster/qgsrasterinterface.h
-  raster/qgsrasterlayerrenderer.h
-  raster/qgsrasterprojector.h
+  fieldformatter/qgscheckboxfieldformatter.h
+  fieldformatter/qgsdatetimefieldformatter.h
+  fieldformatter/qgsfallbackfieldformatter.h
+  fieldformatter/qgskeyvaluefieldformatter.h
+  fieldformatter/qgslistfieldformatter.h
+  fieldformatter/qgsrangefieldformatter.h
+  fieldformatter/qgsrelationreferencefieldformatter.h
+  fieldformatter/qgsvaluemapfieldformatter.h
+  fieldformatter/qgsvaluerelationfieldformatter.h
 
-  mesh/qgsmeshdataprovider.h
-  mesh/qgsmeshlayer.h
-
-  geometry/qgsabstractgeometry.h
-  geometry/qgsgeometry.h
-  geometry/qgspoint.h
-  geometry/qgswkbtypes.h
-
+  geocms/geonode/qgsgeonodeconnection.h
   geocms/geonode/qgsgeonoderequest.h
 
+  geometry/qgsabstractgeometry.h
+  geometry/qgsbox3d.h
+  geometry/qgscircle.h
+  geometry/qgscircularstring.h
+  geometry/qgscompoundcurve.h
+  geometry/qgscurve.h
+  geometry/qgscurvepolygon.h
+  geometry/qgsellipse.h
+  geometry/qgsgeometry.h
+  geometry/qgsgeometrycollection.h
+  geometry/qgsgeometryeditutils.h
+  geometry/qgsgeometryengine.h
+  geometry/qgsgeometryfactory.h
+  geometry/qgsgeometryutils.h
+  geometry/qgsgeos.h
+  geometry/qgsinternalgeometryengine.h
+  geometry/qgslinesegment.h
+  geometry/qgslinestring.h
+  geometry/qgsmulticurve.h
+  geometry/qgsmultilinestring.h
+  geometry/qgsmultipoint.h
+  geometry/qgsmultipolygon.h
+  geometry/qgsmultisurface.h
+  geometry/qgspoint.h
+  geometry/qgspolygon.h
+  geometry/qgsquadrilateral.h
+  geometry/qgsrectangle.h
+  geometry/qgsreferencedgeometry.h
+  geometry/qgsregularpolygon.h
+  geometry/qgssurface.h
+  geometry/qgstriangle.h
+  geometry/qgswkbptr.h
+  geometry/qgswkbtypes.h
+
   gps/qgsgpsconnection.h
+  gps/qgsgpsdconnection.h
   gps/qgsgpsdetector.h
   gps/qgsnmeaconnection.h
-  gps/qgsgpsdconnection.h
 
+  layertree/qgslayertree.h
+  layertree/qgslayertreegroup.h
+  layertree/qgslayertreelayer.h
+  layertree/qgslayertreemodel.h
+  layertree/qgslayertreemodellegendnode.h
+  layertree/qgslayertreenode.h
+  layertree/qgslayertreeregistrybridge.h
+  layertree/qgslayertreeutils.h
+  layout/qgsabstractlayoutiterator.h
+  layout/qgsabstractreportsection.h
+  layout/qgscompositionconverter.h
   layout/qgslayout.h
+  layout/qgslayoutaligner.h
   layout/qgslayoutatlas.h
   layout/qgslayouteffect.h
-  layout/qgslayoutguidecollection.h
+  layout/qgslayoutexporter.h
   layout/qgslayoutframe.h
+  layout/qgslayoutgeopdfexporter.h
+  layout/qgslayoutgridsettings.h
+  layout/qgslayoutguidecollection.h
   layout/qgslayoutitem.h
   layout/qgslayoutitemattributetable.h
   layout/qgslayoutitemgroup.h
@@ -831,348 +1049,90 @@ SET(QGIS_CORE_MOC_HDRS
   layout/qgslayoutitemscalebar.h
   layout/qgslayoutitemshape.h
   layout/qgslayoutitemtexttable.h
-  layout/qgslayoutmanager.h
-  layout/qgslayoutmodel.h
-  layout/qgslayoutmultiframe.h
-  layout/qgslayoutpagecollection.h
-  layout/qgslayoutobject.h
-  layout/qgslayoutrendercontext.h
-  layout/qgslayoutreportcontext.h
-  layout/qgslayouttable.h
-  layout/qgslayouttablecolumn.h
-  layout/qgslayoutundostack.h
-  layout/qgsprintlayout.h
-  layout/qgsreport.h
-
-  symbology/qgscptcityarchive.h
-  symbology/qgssvgcache.h
-  symbology/qgsstyle.h
-  symbology/qgsstylemodel.h
-
-  layertree/qgslayertree.h
-  layertree/qgslayertreegroup.h
-  layertree/qgslayertreelayer.h
-  layertree/qgslayertreemodel.h
-  layertree/qgslayertreemodellegendnode.h
-  layertree/qgslayertreenode.h
-  layertree/qgslayertreeregistrybridge.h
-
-  qgsuserprofilemanager.h
-)
-
-IF (NOT WITH_QTWEBKIT)
-  SET(QGIS_CORE_MOC_HDRS ${QGIS_CORE_MOC_HDRS}
-    qgswebframe.h
-  )
-ENDIF(NOT WITH_QTWEBKIT)
-
-# TODO - update for Qt5
-#SET(QGIS_CORE_MOC_HDRS ${QGIS_CORE_MOC_HDRS}
-#    qgshttptransaction.h
-#)
-
-IF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
-  SET(QGIS_CORE_MOC_HDRS ${QGIS_CORE_MOC_HDRS}
-    gps/qgsqtlocationconnection.h
-  )
-ENDIF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
-
-
-IF (HAVE_OPENCL)
-    SET(QGIS_CORE_MOC_HDRS ${QGIS_CORE_MOC_HDRS}
-        qgsopenclutils.h
-    )
-ENDIF (HAVE_OPENCL)
-
-QT5_WRAP_CPP(QGIS_CORE_MOC_SRCS ${QGIS_CORE_MOC_HDRS})
-
-
-IF(MSVC)
-  SET_SOURCE_FILES_PROPERTIES(${QGIS_CORE_MOC_SRCS} PROPERTIES COMPILE_FLAGS "/wd4512 /wd4996" )
-ELSE(MSVC)
-  SET_SOURCE_FILES_PROPERTIES(${QGIS_CORE_MOC_SRCS} PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations" )
-  IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND (CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo))
-    SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp PROPERTIES COMPILE_FLAGS "-O1")
-  ENDIF ()
-ENDIF(MSVC)
-
-# install headers
-# install qgsconfig.h and plugin.h here so they can get into
-# the OS X framework target
-
-SET(QGIS_CORE_HDRS
-  ${CMAKE_SOURCE_DIR}/external/nlohmann/json_fwd.hpp
-  ${CMAKE_BINARY_DIR}/qgsconfig.h
-  ../plugins/qgisplugin.h
-
-  expression/qgsexpression.h
-  expression/qgsexpressioncontextutils.h
-  expression/qgsexpressionnode.h
-  expression/qgsexpressionnodeimpl.h
-  expression/qgsexpressionfunction.h
-
-  qgstessellator.h
-
-  qgis_sip.h
-  qgsabstractgeopdfexporter.h
-  qgsabstractproviderconnection.h
-  qgsabstractdatabaseproviderconnection.h
-  qgsaction.h
-  qgsactionscope.h
-  qgsactionmanager.h
-  qgsaggregatecalculator.h
-  qgspostgresstringutils.h
-  qgsattributes.h
-  qgsattributetableconfig.h
-  qgsattributeeditorelement.h
-  qgsbearingutils.h
-  qgscachedfeatureiterator.h
-  qgscacheindex.h
-  qgscacheindexfeatureid.h
-  qgscadutils.h
-  qgsclipper.h
-  qgscolorramp.h
-  qgscolorscheme.h
-  qgscolorschemeregistry.h
-  qgsconnectionpool.h
-  qgscoordinateformatter.h
-  qgscoordinatetransform.h
-  qgscoordinatetransformcontext.h
-  qgsdartmeasurement.h
-  qgsdatadefinedsizelegend.h
-  qgsdataitemprovider.h
-  qgsdataitemproviderregistry.h
-  qgsdatetimestatisticalsummary.h
-  qgsdatumtransform.h
-  qgsdbfilterproxymodel.h
-  qgsdiagramrenderer.h
-  qgsdistancearea.h
-  qgseditformconfig.h
-  qgseditorwidgetsetup.h
-  qgsellipsoidutils.h
-  qgserror.h
-  qgsexception.h
-  qgsexpressioncontext.h
-  qgsexpressioncontextgenerator.h
-  qgsexpressioncontextscopegenerator.h
-  qgsexpressionfieldbuffer.h
-  qgsfeaturefilterprovider.h
-  qgsfeatureid.h
-  qgsfeatureiterator.h
-  qgsfeaturerequest.h
-  qgsfeaturesink.h
-  qgsfeaturesource.h
-  qgsfeaturestore.h
-  qgsfieldformatter.h
-  qgsfield_p.h
-  qgsfields.h
-  qgsfileutils.h
-  qgsfontutils.h
-  qgsgeometrysimplifier.h
-  qgsgdalutils.h
-  qgshistogram.h
-  qgshstoreutils.h
-  qgshtmlutils.h
-  qgsindexedfeature.h
-  qgsinterval.h
-  qgsjsonutils.h
-  qgslayerdefinition.h
-  qgslabelfeature.h
-  qgslabelingengine.h
-  qgslabelingenginesettings.h
-  qgslabelsearchtree.h
-  qgslegendrenderer.h
-  qgslegendsettings.h
-  qgslegendstyle.h
-  qgslogger.h
-  qgsmapdecoration.h
-  qgsmaplayerref.h
-  qgsmaphittest.h
-  qgsmaplayerdependency.h
-  qgsmaplayerrenderer.h
-  qgsmaplayerstyle.h
-  qgsmapsettings.h
-  qgsmapsettingsutils.h
-  qgsmaptopixel.h
-  qgsmaptopixelgeometrysimplifier.h
-  qgsmapunitscale.h
-  qgsmargins.h
-  qgsmimedatautils.h
-  qgsmultirenderchecker.h
-  qgsnetworkreply.h
-  qgsobjectcustomproperties.h
-  qgsogcutils.h
-  qgsogrutils.h
-  qgsoptional.h
-  qgsoptionalexpression.h
-  qgsowsconnection.h
-  qgspaintenginehack.h
-  qgspainting.h
-  qgspallabeling.h
-  qgspathresolver.h
-  qgspluginlayerregistry.h
-  qgspointlocator.h
-  qgsprojectbadlayerhandler.h
-  qgsprojectfiletransform.h
-  qgsprojectproperty.h
-  qgsprojectstorage.h
-  qgsprojectstorageregistry.h
-  qgsprojecttranslator.h
-  qgsprojectversion.h
-  qgsprojutils.h
-  qgsproperty.h
-  qgsproperty_p.h
-  qgspropertycollection.h
-  qgspropertytransformer.h
-  qgsprovidermetadata.h
-  qgsproviderregistry.h
-  qgspythonrunner.h
-  qgsrange.h
-  qgsreadwritecontext.h
-  qgsreadwritelocker.h
-  qgsrenderchecker.h
-  qgsrendercontext.h
-  qgsrenderedfeaturehandlerinterface.h
-  qgsrulebasedlabeling.h
-  qgsruntimeprofiler.h
-  qgsscalecalculator.h
-  qgsscaleutils.h
-  qgssimplifymethod.h
-  qgssnappingutils.h
-  qgsspatialindex.h
-  qgsspatialindexkdbush.h
-  qgsspatialindexkdbush_p.h
-  qgsspatialindexkdbushdata.h
-  qgsspatialiteutils.h
-  qgssqlstatement.h
-  qgssqliteutils.h
-  qgssqlexpressioncompiler.h
-  qgssqlstatement.h
-  qgsstatisticalsummary.h
-  qgsstringstatisticalsummary.h
-  qgsstringutils.h
-  qgstextlabelfeature.h
-  qgstextrenderer.h
-  qgstextrenderer_p.h
-  qgsthreadingutils.h
-  qgstilecache.h
-  qgstracer.h
-  qgstranslationcontext.h
-  qobjectuniqueptr.h
-
-  qgsvectordataprovider.h
-  qgsvectorlayercache.h
-  qgsvectorfilewriter.h
-  qgsvectorlayerdiagramprovider.h
-  qgsvectorlayereditutils.h
-  qgsvectorlayerfeatureiterator.h
-  qgsvectorlayerexporter.h
-  qgsvectorlayerjoininfo.h
-  qgsvectorlayerlabelprovider.h
-  qgsvectorlayerlabeling.h
-  qgsvectorlayerundocommand.h
-  qgsvectorlayerundopassthroughcommand.h
-  qgsvectorlayerutils.h
-  qgsvirtuallayerdefinition.h
-  qgsvirtuallayerdefinitionutils.h
-  qgsmapthemecollection.h
-  qgsxmlutils.h
-  qgsarchive.h
-  qgstestutils.h
-  qgsziputils.h
-  qgsvector.h
-  qgsvector3d.h
-  qgslocalec.h
-
-  annotations/qgsannotationregistry.h
-
-  auth/qgsauthcertutils.h
-  auth/qgsauthconfig.h
-  auth/qgsauthcrypto.h
-  auth/qgsauthmanager.h
-  auth/qgsauthmethod.h
-  auth/qgsauthmethodmetadata.h
-  auth/qgsauthmethodregistry.h
-
-  callouts/qgscallout.h
-  callouts/qgscalloutsregistry.h
-
-  classification/qgsclassificationmethodregistry.h
-  classification/qgsclassificationmethod.h
-  classification/qgsclassificationcustom.h
-  classification/qgsclassificationequalinterval.h
-  classification/qgsclassificationprettybreaks.h
-  classification/qgsclassificationquantile.h
-  classification/qgsclassificationjenks.h
-  classification/qgsclassificationstandarddeviation.h
-  classification/qgsclassificationlogarithmic.h
-
-  diagram/qgsdiagram.h
-  diagram/qgspiediagram.h
-  diagram/qgstextdiagram.h
-  diagram/qgshistogramdiagram.h
-
-  dxf/qgsdxfexport.h
-
-  effects/qgsimageoperation.h
-  effects/qgspainteffect.h
-  effects/qgseffectstack.h
-  effects/qgsblureffect.h
-  effects/qgsshadoweffect.h
-  effects/qgsgloweffect.h
-  effects/qgspainteffectregistry.h
-  effects/qgstransformeffect.h
-  effects/qgscoloreffect.h
-
-  layout/qgsabstractlayoutiterator.h
-  layout/qgsabstractreportsection.h
-  layout/qgsmasterlayoutinterface.h
-  layout/qgslayoutaligner.h
-  layout/qgslayoutexporter.h
-  layout/qgslayoutgeopdfexporter.h
-  layout/qgslayoutgridsettings.h
   layout/qgslayoutitemundocommand.h
+  layout/qgslayoutmanager.h
   layout/qgslayoutmeasurement.h
   layout/qgslayoutmeasurementconverter.h
+  layout/qgslayoutmodel.h
+  layout/qgslayoutmultiframe.h
   layout/qgslayoutmultiframeundocommand.h
-  layout/qgspagesizeregistry.h
+  layout/qgslayoutobject.h
+  layout/qgslayoutpagecollection.h
   layout/qgslayoutpoint.h
+  layout/qgslayoutrendercontext.h
+  layout/qgslayoutreportcontext.h
   layout/qgslayoutserializableobject.h
   layout/qgslayoutsize.h
   layout/qgslayoutsnapper.h
+  layout/qgslayouttable.h
+  layout/qgslayouttablecolumn.h
   layout/qgslayoutundocommand.h
+  layout/qgslayoutundostack.h
   layout/qgslayoututils.h
+  layout/qgsmasterlayoutinterface.h
+  layout/qgspagesizeregistry.h
+  layout/qgsprintlayout.h
+  layout/qgsreport.h
   layout/qgsreportsectionfieldgroup.h
   layout/qgsreportsectionlayout.h
-  layout/qgscompositionconverter.h
+
+  locator/qgslocator.h
+  locator/qgslocatorcontext.h
+  locator/qgslocatorfilter.h
+  locator/qgslocatormodel.h
+  locator/qgslocatormodelbridge.h
+
+  mesh/qgsmeshdataprovider.h
+  mesh/qgsmeshlayer.h
+  mesh/qgsmeshlayerinterpolator.h
+  mesh/qgsmeshlayerrenderer.h
+  mesh/qgsmeshlayerutils.h
+  mesh/qgsmeshrenderersettings.h
+  mesh/qgsmeshspatialindex.h
+  mesh/qgsmeshtimesettings.h
+  mesh/qgsmeshvectorrenderer.h
+  mesh/qgstriangularmesh.h
 
   metadata/qgsabstractmetadatabase.h
   metadata/qgslayermetadata.h
-  metadata/qgslayermetadatavalidator.h
   metadata/qgslayermetadataformatter.h
+  metadata/qgslayermetadatavalidator.h
   metadata/qgsprojectmetadata.h
 
-  processing/qgsprocessing.h
-  processing/qgsprocessingalgorithm.h
-  processing/qgsprocessingcontext.h
-  processing/qgsprocessingoutputs.h
-  processing/qgsprocessingparameters.h
-  processing/qgsprocessingparametertype.h
-  processing/qgsprocessingparametertypeimpl.h
-  processing/qgsprocessingutils.h
   processing/models/qgsprocessingmodelalgorithm.h
   processing/models/qgsprocessingmodelchildalgorithm.h
   processing/models/qgsprocessingmodelchildparametersource.h
   processing/models/qgsprocessingmodelcomponent.h
   processing/models/qgsprocessingmodeloutput.h
   processing/models/qgsprocessingmodelparameter.h
+  processing/qgsprocessing.h
+  processing/qgsprocessingalgorithm.h
+  processing/qgsprocessingalgrunnertask.h
+  processing/qgsprocessingcontext.h
+  processing/qgsprocessingfeedback.h
+  processing/qgsprocessingoutputs.h
+  processing/qgsprocessingparameters.h
+  processing/qgsprocessingparametertype.h
+  processing/qgsprocessingparametertypeimpl.h
+  processing/qgsprocessingprovider.h
+  processing/qgsprocessingregistry.h
+  processing/qgsprocessingutils.h
 
+  providers/gdal/qgsgdaldataitems.h
+  providers/gdal/qgsgdalprovider.h
   providers/memory/qgsmemoryfeatureiterator.h
+  providers/memory/qgsmemoryprovider.h
   providers/memory/qgsmemoryproviderutils.h
-
+  providers/meshmemory/qgsmeshmemorydataprovider.h
+  providers/ogr/qgsgeopackagedataitems.h
   providers/ogr/qgsgeopackageprojectstorage.h
   providers/ogr/qgsgeopackageproviderconnection.h
+  providers/ogr/qgsgeopackagerasterwritertask.h
+  providers/ogr/qgsogrconnpool.h
+  providers/ogr/qgsogrdataitems.h
+  providers/ogr/qgsogrdbconnection.h
   providers/ogr/qgsogrprovider.h
+  providers/ogr/qgsogrtransaction.h
 
   raster/qgsbilinearrasterresampler.h
   raster/qgsbrightnesscontrastfilter.h
@@ -1181,6 +1141,7 @@ SET(QGIS_CORE_HDRS
   raster/qgscontrastenhancement.h
   raster/qgscontrastenhancementfunction.h
   raster/qgscubicrasterresampler.h
+  raster/qgshillshaderenderer.h
   raster/qgshuesaturationfilter.h
   raster/qgslinearminmaxenhancement.h
   raster/qgslinearminmaxenhancementwithclip.h
@@ -1190,14 +1151,20 @@ SET(QGIS_CORE_HDRS
   raster/qgsrasterbandstats.h
   raster/qgsrasterblock.h
   raster/qgsrasterchecker.h
+  raster/qgsrasterdataprovider.h
   raster/qgsrasterdrawer.h
   raster/qgsrasterfilewriter.h
+  raster/qgsrasterfilewritertask.h
   raster/qgsrasterhistogram.h
   raster/qgsrasteridentifyresult.h
+  raster/qgsrasterinterface.h
   raster/qgsrasteriterator.h
+  raster/qgsrasterlayer.h
+  raster/qgsrasterlayerrenderer.h
   raster/qgsrasterminmaxorigin.h
   raster/qgsrasternuller.h
   raster/qgsrasterpipe.h
+  raster/qgsrasterprojector.h
   raster/qgsrasterpyramid.h
   raster/qgsrasterrange.h
   raster/qgsrasterrenderer.h
@@ -1210,21 +1177,11 @@ SET(QGIS_CORE_HDRS
   raster/qgssinglebandcolordatarenderer.h
   raster/qgssinglebandgrayrenderer.h
   raster/qgssinglebandpseudocolorrenderer.h
-  raster/qgshillshaderenderer.h
-
-  mesh/qgsmeshlayerinterpolator.h
-  mesh/qgsmeshlayerrenderer.h
-  mesh/qgsmeshlayerutils.h
-  mesh/qgsmeshrenderersettings.h
-  mesh/qgsmeshspatialindex.h
-  mesh/qgsmeshvectorrenderer.h
-  mesh/qgstriangularmesh.h
-  mesh/qgsmeshtimesettings.h
 
   scalebar/qgsdoubleboxscalebarrenderer.h
   scalebar/qgsnumericscalebarrenderer.h
-  scalebar/qgsscalebarsettings.h
   scalebar/qgsscalebarrenderer.h
+  scalebar/qgsscalebarsettings.h
   scalebar/qgssingleboxscalebarrenderer.h
   scalebar/qgsticksscalebarrenderer.h
 
@@ -1232,12 +1189,17 @@ SET(QGIS_CORE_HDRS
   symbology/qgsarrowsymbollayer.h
   symbology/qgscategorizedsymbolrenderer.h
   symbology/qgscolorbrewerpalette.h
+  symbology/qgscptcityarchive.h
   symbology/qgsellipsesymbollayer.h
   symbology/qgsfillsymbollayer.h
+  symbology/qgsgeometrygeneratorsymbollayer.h
   symbology/qgsgraduatedsymbolrenderer.h
+  symbology/qgsheatmaprenderer.h
+  symbology/qgsinvertedpolygonrenderer.h
   symbology/qgslegendsymbolitem.h
   symbology/qgslinesymbollayer.h
   symbology/qgsmarkersymbollayer.h
+  symbology/qgsnullsymbolrenderer.h
   symbology/qgspointclusterrenderer.h
   symbology/qgspointdisplacementrenderer.h
   symbology/qgspointdistancerenderer.h
@@ -1246,73 +1208,64 @@ SET(QGIS_CORE_HDRS
   symbology/qgsrendererregistry.h
   symbology/qgsrulebasedrenderer.h
   symbology/qgssinglesymbolrenderer.h
-  symbology/qgsheatmaprenderer.h
-  symbology/qgsinvertedpolygonrenderer.h
-  symbology/qgsnullsymbolrenderer.h
+  symbology/qgsstyle.h
   symbology/qgsstyleentityvisitor.h
+  symbology/qgsstylemodel.h
+  symbology/qgssvgcache.h
+  symbology/qgssymbol.h
   symbology/qgssymbollayer.h
   symbology/qgssymbollayerregistry.h
   symbology/qgssymbollayerutils.h
-  symbology/qgssymbol.h
   symbology/qgsvectorfieldsymbollayer.h
-  symbology/qgsgeometrygeneratorsymbollayer.h
-
-  layertree/qgslayertreeutils.h
-
-  locator/qgslocatorcontext.h
-
-  geometry/qgsbox3d.h
-  geometry/qgscircularstring.h
-  geometry/qgscircle.h
-  geometry/qgscompoundcurve.h
-  geometry/qgscurvepolygon.h
-  geometry/qgscurve.h
-  geometry/qgsellipse.h
-  geometry/qgsgeometrycollection.h
-  geometry/qgsgeometryeditutils.h
-  geometry/qgsgeometryengine.h
-  geometry/qgsgeometryfactory.h
-  geometry/qgsgeometryutils.h
-  geometry/qgsgeos.h
-  geometry/qgsinternalgeometryengine.h
-  geometry/qgslinesegment.h
-  geometry/qgslinestring.h
-  geometry/qgsmulticurve.h
-  geometry/qgsmultilinestring.h
-  geometry/qgsmultipoint.h
-  geometry/qgsmultipolygon.h
-  geometry/qgsmultisurface.h
-  geometry/qgspolygon.h
-  geometry/qgsquadrilateral.h
-  geometry/qgsrectangle.h
-  geometry/qgsreferencedgeometry.h
-  geometry/qgsregularpolygon.h
-  geometry/qgstriangle.h
-  geometry/qgssurface.h
-  geometry/qgswkbptr.h
-
-  3d/qgs3drendererregistry.h
-  3d/qgsabstract3drenderer.h
-
-  fieldformatter/qgscheckboxfieldformatter.h
-  fieldformatter/qgsrangefieldformatter.h
-  fieldformatter/qgsdatetimefieldformatter.h
-  fieldformatter/qgsfallbackfieldformatter.h
-  fieldformatter/qgskeyvaluefieldformatter.h
-  fieldformatter/qgslistfieldformatter.h
-  fieldformatter/qgsrelationreferencefieldformatter.h
-  fieldformatter/qgsvaluemapfieldformatter.h
-  fieldformatter/qgsvaluerelationfieldformatter.h
-
-  geocms/geonode/qgsgeonodeconnection.h
-
-  metadata/qgslayermetadata.h
-  metadata/qgslayermetadatavalidator.h
 
   validity/qgsabstractvaliditycheck.h
   validity/qgsvaliditycheckcontext.h
   validity/qgsvaliditycheckregistry.h
 )
+
+SET(QGIS_CORE_PRIVATE_HDRS
+  qgscoordinatereferencesystem_p.h
+  qgscoordinatetransformcontext_p.h
+  qgscoordinatetransform_p.h
+  qgseditformconfig_p.h
+  qgsfeaturefiltermodel_p.h
+  qgsfeature_p.h
+  qgsfield_p.h
+  qgsfields_p.h
+  qgsproperty_p.h
+  qgsrelation_p.h
+  qgsspatialindexkdbush_p.h
+  qgstextrenderer_p.h
+)
+
+IF (NOT WITH_QTWEBKIT)
+  SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
+    qgswebframe.h
+  )
+ENDIF(NOT WITH_QTWEBKIT)
+
+IF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
+  SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
+    gps/qgsqtlocationconnection.h
+  )
+ENDIF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
+
+
+IF (HAVE_OPENCL)
+    SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
+        qgsopenclutils.h
+    )
+ENDIF (HAVE_OPENCL)
+
+IF(NOT MSVC)
+  IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND (CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo))
+    SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp PROPERTIES COMPILE_FLAGS "-O1")
+  ENDIF ()
+ENDIF(NOT MSVC)
+
+# install headers
+# install qgsconfig.h and plugin.h here so they can get into
+# the OS X framework target
 
 IF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
   SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
@@ -1407,7 +1360,7 @@ ADD_DEFINITIONS(-DTEST_DATA_DIR="${TEST_DATA_DIR}")
 
 #############################################################
 # qgis_core library
-ADD_LIBRARY(qgis_core ${LIBRARY_TYPE} ${QGIS_CORE_SRCS} ${QGIS_CORE_MOC_SRCS} ${QGIS_CORE_HDRS} ${QGIS_CORE_MOC_HDRS})
+ADD_LIBRARY(qgis_core ${LIBRARY_TYPE} ${QGIS_CORE_SRCS} ${QGIS_CORE_HDRS} ${QGIS_CORE_PRIVATE_HDRS})
 
 GENERATE_EXPORT_HEADER(
   qgis_core
@@ -1428,7 +1381,7 @@ ENDIF(HAVE_OPENCL)
 
 
 IF(NOT APPLE)
-  INSTALL(FILES ${QGIS_CORE_HDRS} ${QGIS_CORE_MOC_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
+  INSTALL(FILES ${QGIS_CORE_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
 ELSE(NOT APPLE)
 
   SET_TARGET_PROPERTIES(qgis_core PROPERTIES
@@ -1439,7 +1392,7 @@ ELSE(NOT APPLE)
     MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${COMPLETE_VERSION}
     MACOSX_FRAMEWORK_IDENTIFIER org.qgis.qgis3_core
     BUILD_WITH_INSTALL_RPATH TRUE
-    PUBLIC_HEADER "${QGIS_CORE_HDRS};${QGIS_CORE_MOC_HDRS}"
+    PUBLIC_HEADER "${QGIS_CORE_HDRS}"
     LINK_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}"
   )
   # generated export header does not get copied with PUBLIC_HEADER files

@@ -61,30 +61,56 @@ SET(QGIS_3D_SRCS
   #terrain/quantizedmeshterraingenerator.cpp
 )
 
-SET(QGIS_3D_MOC_HDRS
-
+SET(QGIS_3D_HDRS
+  processing/qgs3dalgorithms.h
+  qgs3danimationsettings.h
   qgs3dmapscene.h
   qgs3dmapsettings.h
+  qgs3dtypes.h
+  qgs3dutils.h
+  qgsaabb.h
   qgsabstract3dengine.h
   qgscameracontroller.h
+  qgscamerapose.h
   qgslayoutitem3dmap.h
+  qgsmeshlayer3drenderer.h
   qgsoffscreen3dengine.h
+  qgsphongmaterialsettings.h
+  qgspointlightsettings.h
+  qgsrulebased3drenderer.h
   qgstessellatedpolygongeometry.h
+  qgstilingscheme.h
+  qgsvectorlayer3drenderer.h
   qgswindow3dengine.h
+  symbols/qgsabstract3dsymbol.h
+  symbols/qgsbillboardgeometry.h
+  symbols/qgsline3dsymbol.h
+  symbols/qgsmesh3dsymbol.h
+  symbols/qgspoint3dbillboardmaterial.h
+  symbols/qgspoint3dsymbol.h
+  symbols/qgspolygon3dsymbol.h
+  terrain/qgsdemterraingenerator.h
+  terrain/qgsflatterraingenerator.h
+  terrain/qgsonlineterraingenerator.h
+  terrain/qgsterraindownloader.h
+  terrain/qgsterraingenerator.h
+)
 
+SET(QGIS_3D_PRIVATE_HDRS
   chunks/qgschunkboundsentity_p.h
   chunks/qgschunkedentity_p.h
+  chunks/qgschunklist_p.h
   chunks/qgschunkloader_p.h
+  chunks/qgschunknode_p.h
   chunks/qgschunkqueuejob_p.h
-
-  processing/qgs3dalgorithms.h
-
-  symbols/qgsbillboardgeometry.h
-  symbols/qgspoint3dbillboardmaterial.h
+  symbols/qgsline3dsymbol_p.h
   symbols/qgslinematerial_p.h
-
+  symbols/qgslinevertexdata_p.h
+  symbols/qgsmesh3dsymbol_p.h
+  symbols/qgspoint3dsymbol_p.h
+  symbols/qgspolygon3dsymbol_p.h
+  terrain/qgsdemterraintilegeometry_p.h
   terrain/qgsdemterraintileloader_p.h
-  terrain/qgsflatterraingenerator.h
   terrain/qgsterrainentity_p.h
   terrain/qgsterraintexturegenerator_p.h
   terrain/qgsterraintextureimage_p.h
@@ -92,66 +118,9 @@ SET(QGIS_3D_MOC_HDRS
   terrain/qgsterraintileloader_p.h
 )
 
-QT5_WRAP_CPP(QGIS_3D_MOC_SRCS ${QGIS_3D_MOC_HDRS})
-
 QT5_ADD_RESOURCES(QGIS_3D_RCC_SRCS shaders.qrc)
 
 # install headers
-
-SET(QGIS_3D_HDRS
-  qgsaabb.h
-  qgsabstract3dengine.h
-  qgs3danimationsettings.h
-  qgs3dmapscene.h
-  qgs3dmapsettings.h
-  qgs3dtypes.h
-  qgs3dutils.h
-  qgscameracontroller.h
-  qgscamerapose.h
-  qgsfeature3dhandler_p.h
-  qgslayoutitem3dmap.h
-  qgsoffscreen3dengine.h
-  qgsphongmaterialsettings.h
-  qgspointlightsettings.h
-  qgsraycastingutils_p.h
-  qgsrulebased3drenderer.h
-  qgstessellatedpolygongeometry.h
-  qgstilingscheme.h
-  qgsvectorlayer3drenderer.h
-  qgsmeshlayer3drenderer.h
-  qgswindow3dengine.h
-
-  chunks/qgschunkedentity_p.h
-  chunks/qgschunklist_p.h
-  chunks/qgschunkloader_p.h
-  chunks/qgschunknode_p.h
-  chunks/qgschunkqueuejob_p.h
-
-  symbols/qgsabstract3dsymbol.h
-  symbols/qgsline3dsymbol.h
-  symbols/qgsline3dsymbol_p.h
-  symbols/qgslinematerial_p.h
-  symbols/qgslinevertexdata_p.h
-  symbols/qgsmesh3dsymbol.h
-  symbols/qgsmesh3dsymbol_p.h
-  symbols/qgspoint3dsymbol.h
-  symbols/qgspoint3dsymbol_p.h
-  symbols/qgspolygon3dsymbol.h
-  symbols/qgspolygon3dsymbol_p.h
-
-  terrain/qgsdemterraingenerator.h
-  terrain/qgsdemterraintilegeometry_p.h
-  terrain/qgsdemterraintileloader_p.h
-  terrain/qgsonlineterraingenerator.h
-  terrain/qgsterraindownloader.h
-  terrain/qgsterrainentity_p.h
-  terrain/qgsterraingenerator.h
-  terrain/qgsterraintexturegenerator_p.h
-  terrain/qgsterraintextureimage_p.h
-  terrain/qgsterraintileentity_p.h
-  #terrain/quantizedmeshgeometry.h
-  #terrain/quantizedmeshterraingenerator.h
-)
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
@@ -183,7 +152,7 @@ INCLUDE_DIRECTORIES(SYSTEM
 #############################################################
 # qgis_3d library
 
-ADD_LIBRARY(qgis_3d SHARED ${QGIS_3D_SRCS} ${QGIS_3D_MOC_SRCS} ${QGIS_3D_HDRS} ${QGIS_3D_RCC_SRCS})
+ADD_LIBRARY(qgis_3d SHARED ${QGIS_3D_SRCS} ${QGIS_3D_HDRS} ${QGIS_3D_RCC_SRCS} ${QGIS_3D_PRIVATE_HDRS})
 
 TARGET_LINK_LIBRARIES(qgis_3d Qt5::3DCore Qt5::3DRender Qt5::3DInput Qt5::3DLogic Qt5::3DExtras)
 

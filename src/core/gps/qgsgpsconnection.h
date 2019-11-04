@@ -27,6 +27,12 @@
 
 class QIODevice;
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include "qgsgpsconnection.h"
+% End
+#endif
+
 struct CORE_EXPORT QgsSatelliteInfo
 {
   int id;

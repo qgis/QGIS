@@ -5,11 +5,6 @@ SET (WMS_SRCS
   qgswmsdataitems.cpp
   qgsxyzconnection.cpp
 )
-SET (WMS_MOC_HDRS
-  qgswmscapabilities.h
-  qgswmsprovider.h
-  qgswmsdataitems.h
-)
 
 IF (WITH_GUI)
   SET(WMS_GUI_SRCS
@@ -20,17 +15,7 @@ IF (WITH_GUI)
     qgswmtsdimensions.cpp
     qgsxyzconnectiondialog.cpp
   )
-  SET(WMS_GUI_MOC_HDRS
-    qgswmssourceselect.h
-    qgswmsdataitemguiproviders.h
-    qgstilescalewidget.h
-    qgswmtsdimensions.h
-    qgsxyzconnectiondialog.h
-  )
 ENDIF ()
-
-QT5_WRAP_CPP (WMS_MOC_SRCS ${WMS_MOC_HDRS})
-QT5_WRAP_CPP (WMS_GUI_MOC_SRCS ${WMS_GUI_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core
@@ -57,7 +42,7 @@ INCLUDE_DIRECTORIES(SYSTEM
 )
 
 # static library
-ADD_LIBRARY(wmsprovider_a STATIC ${WMS_SRCS} ${WMS_MOC_SRCS})
+ADD_LIBRARY(wmsprovider_a STATIC ${WMS_SRCS})
 TARGET_LINK_LIBRARIES(wmsprovider_a
   ${Qt5Xml_LIBRARIES}
   ${Qt5Core_LIBRARIES}
@@ -69,7 +54,7 @@ TARGET_LINK_LIBRARIES(wmsprovider_a
 TARGET_COMPILE_DEFINITIONS(wmsprovider_a PRIVATE "-DQT_NO_FOREACH")
 
 IF (WITH_GUI)
-  ADD_LIBRARY(wmsprovider_gui_a STATIC ${WMS_GUI_SRCS} ${WMS_GUI_MOC_SRCS})
+  ADD_LIBRARY(wmsprovider_gui_a STATIC ${WMS_GUI_SRCS})
   TARGET_LINK_LIBRARIES(wmsprovider_gui_a
     ${Qt5Xml_LIBRARIES}
     ${Qt5Core_LIBRARIES}
@@ -92,7 +77,7 @@ IF (FORCE_STATIC_PROVIDERS)
   ENDIF (WITH_GUI)
 ELSE (FORCE_STATIC_PROVIDERS)
   # dynamically loaded module
-  ADD_LIBRARY(wmsprovider MODULE ${WMS_SRCS} ${WMS_GUI_SRCS} ${WMS_MOC_SRCS} ${WMS_GUI_MOC_SRCS})
+  ADD_LIBRARY(wmsprovider MODULE ${WMS_SRCS} ${WMS_GUI_SRCS})
 
   TARGET_LINK_LIBRARIES(wmsprovider
     qgis_core

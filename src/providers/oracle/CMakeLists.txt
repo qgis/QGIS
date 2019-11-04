@@ -17,23 +17,9 @@ SET(ORACLE_SRCS
   qgsoracletransaction.cpp
 )
 
-SET(ORACLE_MOC_HDRS
-  qgsoracleprovider.h
-  qgsoracleconn.h
-  qgsoracledataitems.h
-  qgsoraclenewconnection.h
-  qgsoracletablemodel.h
-  qgsoraclecolumntypethread.h
-  qgsoracleconnpool.h
-  qgsoracletransaction.h
-)
-
 IF (WITH_GUI)
   SET(ORACLE_SRCS ${ORACLE_SRCS}
     qgsoraclesourceselect.cpp
-  )
-  SET(ORACLE_MOC_HDRS ${ORACLE_MOC_HDRS}
-    qgsoraclesourceselect.h
   )
 ENDIF ()
 
@@ -44,8 +30,6 @@ SET(ORACLE_HDRS
 
 ########################################################
 # Build
-
-QT5_WRAP_CPP(ORACLE_MOC_SRCS ${ORACLE_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core
@@ -73,7 +57,7 @@ IF (WITH_GUI)
   )
 ENDIF ()
 
-ADD_LIBRARY (oracleprovider MODULE ${ORACLE_SRCS} ${ORACLE_HDRS} ${ORACLE_MOC_SRCS})
+ADD_LIBRARY (oracleprovider MODULE ${ORACLE_SRCS} ${ORACLE_HDRS})
 
 TARGET_LINK_LIBRARIES (oracleprovider
   qgis_core
