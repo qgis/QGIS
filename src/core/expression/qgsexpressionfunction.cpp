@@ -272,6 +272,12 @@ static QVariant fcnGetVariable( const QVariantList &values, const QgsExpressionC
   return context->variable( name );
 }
 
+static QVariant fcnEvalTemplate( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QString templateString = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  return QgsExpression::replaceExpressionText( templateString, context );
+}
+
 static QVariant fcnEval( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   if ( !context )
@@ -1511,6 +1517,96 @@ static QVariant fcnAttributes( const QVariantList &values, const QgsExpressionCo
     result.insert( fields.at( i ).name(), feature.attribute( i ) );
   }
   return result;
+}
+
+static QVariant fcnCoreFeatureMaptipDisplay( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const bool isMaptip )
+{
+  QgsVectorLayer *layer = nullptr;
+  QgsFeature feature;
+  bool evaluate = true;
+
+  if ( values.isEmpty() )
+  {
+    feature = context->feature();
+    layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), parent );
+  }
+  else if ( values.size() == 1 )
+  {
+    layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), parent );
+    feature = QgsExpressionUtils::getFeature( values.at( 0 ), parent );
+  }
+  else if ( values.size() == 2 )
+  {
+    layer = QgsExpressionUtils::getVectorLayer( values.at( 0 ), parent );
+    feature = QgsExpressionUtils::getFeature( values.at( 1 ), parent );
+  }
+  else if ( values.size() == 3 )
+  {
+    layer = QgsExpressionUtils::getVectorLayer( values.at( 0 ), parent );
+    feature = QgsExpressionUtils::getFeature( values.at( 1 ), parent );
+    evaluate = values.value( 2 ).toBool();
+  }
+  else
+  {
+    if ( isMaptip )
+    {
+      parent->setEvalErrorString( QObject::tr( "Function `maptip` requires no more than three parameters. %1 given." ).arg( values.length() ) );
+    }
+    else
+    {
+      parent->setEvalErrorString( QObject::tr( "Function `display` requires no more than three parameters. %1 given." ).arg( values.length() ) );
+    }
+    return QVariant();
+  }
+
+  if ( !layer )
+  {
+    parent->setEvalErrorString( QObject::tr( "The layer is not valid." ) );
+    return QVariant( );
+  }
+
+  if ( !feature.isValid() )
+  {
+    parent->setEvalErrorString( QObject::tr( "The feature is not valid." ) );
+    return QVariant( );
+  }
+
+  if ( ! evaluate )
+  {
+    if ( isMaptip )
+    {
+      return layer->mapTipTemplate();
+    }
+    else
+    {
+      return layer->displayExpression();
+    }
+  }
+
+  QgsExpressionContext subContext( *context );
+  subContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+  subContext.setFeature( feature );
+
+  if ( isMaptip )
+  {
+    return QgsExpression::replaceExpressionText( layer->mapTipTemplate(), &subContext );
+  }
+  else
+  {
+    QgsExpression exp( layer->displayExpression() );
+    exp.prepare( &subContext );
+    return exp.evaluate( &subContext ).toString();
+  }
+}
+
+static QVariant fcnFeatureDisplayExpression( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  return fcnCoreFeatureMaptipDisplay( values, context, parent, false );
+}
+
+static QVariant fcnFeatureMaptip( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  return fcnCoreFeatureMaptipDisplay( values, context, parent, true );
 }
 
 static QVariant fcnIsSelected( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -5903,6 +5999,30 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "attributes" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "feature" ), true ),
                                             fcnAttributes, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES );
 
+    QgsStaticExpressionFunction *maptipFunc = new QgsStaticExpressionFunction(
+      QStringLiteral( "maptip" ),
+      -1,
+      fcnFeatureMaptip,
+      QStringLiteral( "Record and Attributes" ),
+      QString(),
+      false,
+      QSet<QString>()
+    );
+    maptipFunc->setIsStatic( false );
+    functions << maptipFunc;
+
+    QgsStaticExpressionFunction *displayFunc = new QgsStaticExpressionFunction(
+      QStringLiteral( "display_expression" ),
+      -1,
+      fcnFeatureDisplayExpression,
+      QStringLiteral( "Record and Attributes" ),
+      QString(),
+      false,
+      QSet<QString>()
+    );
+    displayFunc->setIsStatic( false );
+    functions << displayFunc;
+
     QgsStaticExpressionFunction *isSelectedFunc = new QgsStaticExpressionFunction(
       QStringLiteral( "is_selected" ),
       -1,
@@ -6015,6 +6135,9 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 
     functions
         << varFunction;
+
+    functions << new QgsStaticExpressionFunction( QStringLiteral( "eval_template" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "template" ) ), fcnEvalTemplate, QStringLiteral( "General" ), QString(), true );
+
     QgsStaticExpressionFunction *evalFunc = new QgsStaticExpressionFunction( QStringLiteral( "eval" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ) ), fcnEval, QStringLiteral( "General" ), QString(), true, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES );
     evalFunc->setIsStaticFunction(
       []( const QgsExpressionNodeFunction * node, QgsExpression * parent, const QgsExpressionContext * context )
