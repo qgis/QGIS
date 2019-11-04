@@ -2070,7 +2070,7 @@ void QgisApp::checkVectorLayerDependencies( QgsVectorLayer *vl )
         }
         else
         {
-          messageBar()->pushSuccess( tr( "Missing layer form dependency" ), tr( "Layer form dependency '%2' required by '%1' was automatically loaded." )
+          messageBar()->pushSuccess( tr( "Missing layer form dependency" ), tr( "Layer dependency '%2' required by '%1' was automatically loaded." )
                                      .arg( vl->name() )
                                      .arg( dependency.name ) );
         }
