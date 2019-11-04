@@ -66,13 +66,13 @@ QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WindowFlags fl )
   ignoreForSession->setToolTip( tr( "All requests for this connection will be automatically rejected for the duration of the current session" ) );
   menu->addAction( ignoreTemporarily );
   menu->addAction( ignoreForSession );
-  connect( ignoreTemporarily, &QAction::triggered, [ = ]
+  connect( ignoreTemporarily, &QAction::triggered, this, [ = ]
   {
     mIgnoreMode = IgnoreTemporarily;
     //mIgnoreButton->setText( ignoreTemporarily->text() );
     mIgnoreButton->setToolTip( ignoreTemporarily->toolTip() );
   } );
-  connect( ignoreForSession, &QAction::triggered, [ = ]
+  connect( ignoreForSession, &QAction::triggered, this, [ = ]
   {
     mIgnoreMode = IgnoreForSession;
     //mIgnoreButton->setText( ignoreForSession->text() );
@@ -88,7 +88,7 @@ QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WindowFlags fl )
   connect( mCancelButton, &QPushButton::clicked, this, &QgsCredentialDialog::reject );
 
   // Keep a cache of ignored connections, and ignore them for 10 seconds.
-  connect( mIgnoreButton, &QPushButton::clicked, [ = ]( bool )
+  connect( mIgnoreButton, &QPushButton::clicked, this, [ = ]( bool )
   {
     const QString realm { labelRealm->text() };
     {
@@ -98,7 +98,7 @@ QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WindowFlags fl )
     }
     if ( mIgnoreMode == IgnoreTemporarily )
     {
-      QTimer::singleShot( 10000, [ = ]()
+      QTimer::singleShot( 10000, nullptr, [ = ]()
       {
         QgsDebugMsgLevel( QStringLiteral( "Removing ignored connection from cache: %1" ).arg( realm ), 4 );
         QMutexLocker locker( &sIgnoredConnectionsCacheMutex );
