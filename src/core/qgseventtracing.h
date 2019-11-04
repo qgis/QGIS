@@ -108,24 +108,6 @@ class CORE_EXPORT QgsEventTracing
         QString mCat, mName;
     };
 
-  private:
-    struct TraceItem
-    {
-      EventType type;
-      int threadId;
-      int timestamp;
-      QString category;
-      QString name;
-    };
-
-    //! Whether we are tracing right now
-    static bool sIsTracing;
-    //! High-precision timer to measure the elapsed time
-    static QElapsedTimer sTracingTimer;
-    //! Buffer of captured events in the current tracing session
-    static QVector<TraceItem> sTraceEvents;
-    //! Mutex to protect the buffer from being written to from multiple threads
-    static QMutex sTraceEventsMutex;
 };
 
 /// @endcond
