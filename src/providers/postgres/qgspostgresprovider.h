@@ -573,7 +573,7 @@ class QgsPostgresProviderMetadata: public QgsProviderMetadata
     void saveConnection( const QgsAbstractProviderConnection *createConnection, const QString &name ) override;
     void initProvider() override;
     void cleanupProvider() override;
-
+    QVariantMap decodeUri( const QString &uri ) override;
 };
 
 // clazy:excludeall=qstring-allocations

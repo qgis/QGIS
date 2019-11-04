@@ -267,6 +267,11 @@ bool QgsEditorWidgetWrapper::isBlockingCommit() const
   return mIsBlockingCommit;
 }
 
+QList<QgsVectorLayerRef> QgsEditorWidgetWrapper::layerDependencies() const
+{
+  return QList<QgsVectorLayerRef>();
+}
+
 QString QgsEditorWidgetWrapper::constraintFailureReason() const
 {
   return mConstraintFailureReason;

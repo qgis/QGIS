@@ -80,7 +80,7 @@ QgsEditorWidgetSetup QgsEditorWidgetRegistry::findBest( const QgsVectorLayer *vl
 
   if ( index > -1 )
   {
-    QgsEditorWidgetSetup setup = vl->fields().at( index ).editorWidgetSetup();
+    QgsEditorWidgetSetup setup = fields.at( index ).editorWidgetSetup();
     if ( !setup.isNull() )
       return setup;
   }

@@ -5260,3 +5260,29 @@ QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
   return new QgsPostgresProviderMetadata();
 }
 #endif
+
+
+QVariantMap QgsPostgresProviderMetadata::decodeUri( const QString &uri )
+{
+  const QgsDataSourceUri dsUri { uri };
+  return
+  {
+    { QStringLiteral( "dbname" ), dsUri.database() },
+    { QStringLiteral( "host" ), dsUri.host() },
+    { QStringLiteral( "port" ), dsUri.port() },
+    { QStringLiteral( "service" ), dsUri.service() },
+    { QStringLiteral( "username" ), dsUri.username() },
+    { QStringLiteral( "password" ), dsUri.password() },
+    { QStringLiteral( "authcfg" ), dsUri.authConfigId() },
+    { QStringLiteral( "type" ), dsUri.wkbType() },
+    { QStringLiteral( "selectatid" ), dsUri.selectAtIdDisabled() },
+    { QStringLiteral( "table" ), dsUri.table() },
+    { QStringLiteral( "schema" ), dsUri.schema() },
+    { QStringLiteral( "key" ), dsUri.keyColumn() },
+    { QStringLiteral( "srid" ), dsUri.srid() },
+    { QStringLiteral( "estimatedmetadata" ), dsUri.useEstimatedMetadata() },
+    { QStringLiteral( "sslmode" ), dsUri.sslMode() },
+    { QStringLiteral( "sql" ), dsUri.sql() },
+    { QStringLiteral( "geometrycolumn" ), dsUri.geometryColumn() },
+  };
+}

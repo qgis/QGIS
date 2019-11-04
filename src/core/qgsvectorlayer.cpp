@@ -4676,6 +4676,7 @@ QgsAuxiliaryLayer *QgsVectorLayer::auxiliaryLayer()
 QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &resultFlag, bool loadFromLocalDB, QgsMapLayer::StyleCategories categories )
 {
   QgsDataSourceUri dsUri( theURI );
+  QString returnMessage;
   if ( !loadFromLocalDB && mDataProvider && mDataProvider->isSaveAndLoadStyleToDatabaseSupported() )
   {
     QString qml, errorMsg;
@@ -4685,10 +4686,12 @@ QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &resultFlag,
       QDomDocument myDocument( QStringLiteral( "qgis" ) );
       myDocument.setContent( qml );
       resultFlag = importNamedStyle( myDocument, errorMsg );
-      return QObject::tr( "Loaded from Provider" );
+      returnMessage = QObject::tr( "Loaded from Provider" );
     }
   }
-  return QgsMapLayer::loadNamedStyle( theURI, resultFlag, categories );
+  returnMessage = QgsMapLayer::loadNamedStyle( theURI, resultFlag, categories );
+  emit styleLoaded( categories );
+  return returnMessage;
 }
 
 QSet<QgsMapLayerDependency> QgsVectorLayer::dependencies() const

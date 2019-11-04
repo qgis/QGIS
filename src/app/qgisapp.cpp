@@ -84,6 +84,7 @@
 #include "qgsgeometryvalidationservice.h"
 #include "qgssourceselectproviderregistry.h"
 #include "qgssourceselectprovider.h"
+#include "qgsprovidermetadata.h"
 
 #include "qgsanalysis.h"
 #include "qgsgeometrycheckregistry.h"
@@ -659,6 +660,18 @@ void QgisApp::onActiveLayerChanged( QgsMapLayer *layer )
   }
 
   emit activeLayerChanged( layer );
+}
+
+void QgisApp::vectorLayerStyleLoaded( QgsMapLayer::StyleCategories categories )
+{
+  if ( categories.testFlag( QgsMapLayer::StyleCategory::Forms ) )
+  {
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( sender() );
+    if ( vl && vl->isValid( ) )
+    {
+      checkVectorLayerDependencies( vl );
+    }
+  }
 }
 
 /*
@@ -1942,6 +1955,131 @@ QgsMessageBar *QgisApp::visibleMessageBar()
   }
 }
 
+QList<QgsVectorLayerRef> QgisApp::findBrokenWidgetDependencies( QgsVectorLayer *vl )
+{
+  QList<QgsVectorLayerRef> brokenDependencies;
+  // Check for missing layer widget dependencies
+  for ( int i = 0; i < vl->fields().count(); i++ )
+  {
+    std::unique_ptr<QgsEditorWidgetWrapper> ww;
+    ww.reset( QgsGui::editorWidgetRegistry()->create( vl, i, nullptr, nullptr ) );
+    // ww should never be null in real life, but it is in QgisApp tests because
+    // QgsEditorWidgetRegistry widget factories is empty
+    if ( ww )
+    {
+      const auto constDependencies { ww->layerDependencies() };
+      for ( const QgsVectorLayerRef &dependency : constDependencies )
+      {
+        const QgsVectorLayer *depVl { QgsVectorLayerRef( dependency ).resolveWeakly(
+                                        QgsProject::instance(),
+                                        QgsVectorLayerRef::MatchType::Name ) };
+        if ( ! depVl || ! depVl->isValid() )
+        {
+          brokenDependencies.append( dependency );
+        }
+      }
+    }
+  }
+  return brokenDependencies;
+}
+
+void QgisApp::checkVectorLayerDependencies( QgsVectorLayer *vl )
+{
+  if ( vl && vl->isValid() )
+  {
+    const auto constDependencies { findBrokenWidgetDependencies( vl ) };
+    for ( const QgsVectorLayerRef &dependency : constDependencies )
+    {
+      if ( ! vl || ! vl->isValid() )
+      {
+        // try to aggressively resolve the broken dependencies
+        bool loaded = false;
+        const QString providerName { vl->dataProvider()->name() };
+        QgsProviderMetadata *providerMetadata { QgsProviderRegistry::instance()->providerMetadata( providerName ) };
+        if ( providerMetadata )
+        {
+          // Retrieve the DB connection (if any)
+          std::unique_ptr< QgsAbstractDatabaseProviderConnection > conn { static_cast<QgsAbstractDatabaseProviderConnection *>( providerMetadata->createConnection( vl->dataProvider()->uri().uri(), {} ) ) };
+          if ( conn )
+          {
+            QString tableSchema;
+            QString tableName;
+            const QVariantMap sourceParts { providerMetadata->decodeUri( dependency.source ) };
+
+            // This part should really be abstracted out to the connection classes or to the providers directly.
+            // Different providers decode the uri differently, for example we don't get the table name out of OGR
+            // but the layerName/layerId instead, so let's try different approaches
+
+            // This works for GPKG
+            tableName = sourceParts.value( QStringLiteral( "layerName" ) ).toString();
+
+            // This works for PG and spatialite
+            if ( tableName.isEmpty() )
+            {
+              tableName = sourceParts.value( QStringLiteral( "table" ) ).toString();
+              tableSchema = sourceParts.value( QStringLiteral( "schema" ) ).toString();
+            }
+
+            // Helper to find layers in connections
+            auto layerFinder = [ &conn, &dependency, &providerName ]( const QString & tableSchema, const QString & tableName ) -> bool
+            {
+              // First try the current schema (or no schema if it's not supported from the provider)
+              try
+              {
+                const QString layerUri { conn->tableUri( tableSchema, tableName )};
+                // Load it!
+                std::unique_ptr< QgsVectorLayer > newVl = qgis::make_unique< QgsVectorLayer >( layerUri, dependency.name, providerName );
+                if ( newVl->isValid() )
+                {
+                  QgsProject::instance()->addMapLayer( newVl.release() );
+                  return true;
+                }
+              }
+              catch ( QgsProviderConnectionException & )
+              {
+                // Do nothing!
+              }
+              return false;
+            };
+
+            loaded = layerFinder( tableSchema, tableName );
+
+            // Try different schemas
+            if ( ! loaded && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) && ! tableSchema.isEmpty() )
+            {
+              const QStringList schemas { conn->schemas() };
+              for ( const QString &schemaName : schemas )
+              {
+                if ( schemaName != tableSchema )
+                {
+                  loaded = layerFinder( schemaName, tableName );
+                }
+                if ( loaded )
+                {
+                  break;
+                }
+              }
+            }
+          }
+        }
+        if ( ! loaded )
+        {
+          const QString msg { tr( "layer '%1' requires layer '%2' to be loaded but '%2' could not be found, please load it manually if possible." )
+                              .arg( vl->name() )
+                              .arg( dependency.name ) };
+          messageBar()->pushWarning( tr( "Missing layer form dependency" ), msg );
+        }
+        else
+        {
+          messageBar()->pushSuccess( tr( "Missing layer form dependency" ), tr( "Layer dependency '%2' required by '%1' was automatically loaded." )
+                                     .arg( vl->name() )
+                                     .arg( dependency.name ) );
+        }
+      }
+    }
+  }
+}
+
 void QgisApp::dataSourceManager( const QString &pageName )
 {
   if ( ! mDataSourceManagerDialog )
@@ -2809,7 +2947,6 @@ void QgisApp::createToolBars()
     case 3:
       defSelectionAction = mActionInvertSelection;
       break;
-      break;
   }
   bt->setDefaultAction( defSelectionAction );
   QAction *selectionAction = mAttributesToolBar->insertWidget( mActionDeselectAll, bt );
@@ -2968,7 +3105,7 @@ void QgisApp::createToolBars()
     case 1:
       defMapServiceAction = mActionAddAmsLayer;
       break;
-  };
+  }
   bt->setDefaultAction( defMapServiceAction );
   QAction *mapServiceAction = mLayerToolBar->insertWidget( mActionAddWmsLayer, bt );
   mLayerToolBar->removeAction( mActionAddWmsLayer );
@@ -2989,7 +3126,7 @@ void QgisApp::createToolBars()
     case 1:
       defFeatureServiceAction = mActionAddAfsLayer;
       break;
-  };
+  }
   bt->setDefaultAction( defFeatureServiceAction );
   QAction *featureServiceAction = mLayerToolBar->insertWidget( mActionAddWfsLayer, bt );
   mLayerToolBar->removeAction( mActionAddWfsLayer );
@@ -3049,7 +3186,7 @@ void QgisApp::createToolBars()
     case 1:
       defActionCircularString = mActionCircularStringRadius;
       break;
-  };
+  }
   tbAddCircularString->setDefaultAction( defActionCircularString );
   QAction *addCircularAction = mShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddCircularString );
   addCircularAction->setObjectName( QStringLiteral( "ActionAddCircularString" ) );
@@ -3081,7 +3218,7 @@ void QgisApp::createToolBars()
     case 4:
       defActionCircle = mActionCircleCenterPoint;
       break;
-  };
+  }
   tbAddCircle->setDefaultAction( defActionCircle );
   QAction *addCircleAction = mShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddCircle );
   addCircleAction->setObjectName( QStringLiteral( "ActionAddCircle" ) );
@@ -3109,7 +3246,7 @@ void QgisApp::createToolBars()
     case 3:
       defActionEllipse = mActionEllipseFoci;
       break;
-  };
+  }
   tbAddEllipse->setDefaultAction( defActionEllipse );
   QAction *addEllipseAction = mShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddEllipse );
   addEllipseAction->setObjectName( QStringLiteral( "ActionAddEllipse" ) );
@@ -3137,7 +3274,7 @@ void QgisApp::createToolBars()
     case 3:
       defActionRectangle = mActionRectangle3PointsProjected;
       break;
-  };
+  }
   tbAddRectangle->setDefaultAction( defActionRectangle );
   QAction *addRectangleAction = mShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddRectangle );
   addRectangleAction->setObjectName( QStringLiteral( "ActionAddRectangle" ) );
@@ -3161,7 +3298,7 @@ void QgisApp::createToolBars()
     case 2:
       defActionRegularPolygon = mActionRegularPolygonCenterCorner;
       break;
-  };
+  }
   tbAddRegularPolygon->setDefaultAction( defActionRegularPolygon );
   QAction *addRegularPolygonAction = mShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddRegularPolygon );
   addRegularPolygonAction->setObjectName( QStringLiteral( "ActionAddRegularPolygon" ) );
@@ -3184,7 +3321,7 @@ void QgisApp::createToolBars()
     case 1:
       defAction = mActionMoveFeatureCopy;
       break;
-  };
+  }
   moveFeatureButton->setDefaultAction( defAction );
   QAction *moveToolAction = mAdvancedDigitizeToolBar->insertWidget( mActionRotateFeature, moveFeatureButton );
   moveToolAction->setObjectName( QStringLiteral( "ActionMoveFeatureTool" ) );
@@ -3204,7 +3341,7 @@ void QgisApp::createToolBars()
     case QgsVertexTool::ActiveLayer:
       defActionVertexTool = mActionVertexToolActiveLayer;
       break;
-  };
+  }
   vertexToolButton->setDefaultAction( defActionVertexTool );
   connect( vertexToolButton, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
 
@@ -6316,6 +6453,16 @@ bool QgisApp::addProject( const QString &projectFile )
       }
     }
 #endif
+
+    // Check for missing layer widget dependencies
+    const auto constVLayers { QgsProject::instance()->layers<QgsVectorLayer *>( ) };
+    for ( QgsVectorLayer *vl : constVLayers )
+    {
+      if ( vl->isValid() )
+      {
+        checkVectorLayerDependencies( vl );
+      }
+    }
 
     emit projectRead(); // let plug-ins know that we've read in a new
     // project so that they can check any project
@@ -12570,6 +12717,7 @@ void QgisApp::layersWereAdded( const QList<QgsMapLayer *> &layers )
       connect( vlayer, &QgsVectorLayer::editingStopped, this, &QgisApp::layerEditStateChanged );
       connect( vlayer, &QgsVectorLayer::readOnlyChanged, this, &QgisApp::layerEditStateChanged );
       connect( vlayer, &QgsVectorLayer::raiseError, this, &QgisApp::onLayerError );
+      connect( vlayer, &QgsVectorLayer::styleLoaded, this, &QgisApp::vectorLayerStyleLoaded );
 
       provider = vProvider;
     }
