@@ -207,17 +207,24 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString &title )
 
 void QgsOptionsDialogBase::resizeAlltabs( int index )
 {
-  // Adjust size (GH issue #31449)
+  // Adjust size (GH issue #31449 and #32615)
   // make the stacked widget size to the current page only
   for ( int i = 0; i < mOptStackedWidget->count(); ++i )
   {
-    // determine the vertical size policy
+    // Set the size policy
     QSizePolicy::Policy policy = QSizePolicy::Ignored;
     if ( i == index )
+    {
       policy = QSizePolicy::MinimumExpanding;
+    }
 
     // update the size policy
     mOptStackedWidget->widget( i )->setSizePolicy( policy, policy );
+
+    if ( i == index )
+    {
+      mOptStackedWidget->layout()->update();
+    }
   }
   mOptStackedWidget->adjustSize();
 }
