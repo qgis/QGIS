@@ -58,6 +58,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmfiltervertices.cpp
   processing/qgsalgorithmfixgeometries.cpp
   processing/qgsalgorithmforcerhr.cpp
+  processing/qgsalgorithmfuzzifyraster.cpp
   processing/qgsalgorithmgrid.cpp
   processing/qgsalgorithmimportphotos.cpp
   processing/qgsalgorithminterpolatepoint.cpp

@@ -53,6 +53,7 @@
 #include "qgsalgorithmfiltervertices.h"
 #include "qgsalgorithmfixgeometries.h"
 #include "qgsalgorithmforcerhr.h"
+#include "qgsalgorithmfuzzifyraster.h"
 #include "qgsalgorithmgrid.h"
 #include "qgsalgorithmjoinbyattribute.h"
 #include "qgsalgorithmjoinbynearest.h"
@@ -203,6 +204,12 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsFilterVerticesByZ() );
   addAlgorithm( new QgsFixGeometriesAlgorithm() );
   addAlgorithm( new QgsForceRHRAlgorithm() );
+  addAlgorithm( new QgsFuzzifyRasterLinearMembershipAlgorithm() );
+  addAlgorithm( new QgsFuzzifyRasterPowerMembershipAlgorithm() );
+  addAlgorithm( new QgsFuzzifyRasterLargeMembershipAlgorithm() );
+  addAlgorithm( new QgsFuzzifyRasterSmallMembershipAlgorithm() );
+  addAlgorithm( new QgsFuzzifyRasterGaussianMembershipAlgorithm() );
+  addAlgorithm( new QgsFuzzifyRasterNearMembershipAlgorithm() );
   addAlgorithm( new QgsGridAlgorithm() );
   addAlgorithm( new QgsImportPhotosAlgorithm() );
   addAlgorithm( new QgsInterpolatePointAlgorithm() );
