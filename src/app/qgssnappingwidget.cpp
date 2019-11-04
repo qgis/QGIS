@@ -175,7 +175,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   connect( mUnitsComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
            this, &QgsSnappingWidget::changeUnit );
 
-  connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, [ = ]
+  connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, [ = ]
   {
     // Update map units from canvas
     const QString mapCanvasDistanceUnits { QgsUnitTypes::toString( mCanvas->mapSettings().mapUnits() ) };

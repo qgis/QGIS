@@ -104,7 +104,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
       {
         mInfoDetails = tr( "The following layer(s) use advanced effects:\n\n%1\n\nRasterizing map is recommended for proper rendering." ).arg(
                          QChar( 0x2022 ) + QStringLiteral( " " ) + layers.join( QStringLiteral( "\n" ) + QChar( 0x2022 ) + QStringLiteral( " " ) ) );
-        connect( mInfo, &QLabel::linkActivated, [this]( const QString & )
+        connect( mInfo, &QLabel::linkActivated, this, [this]( const QString & )
         {
           QgsMessageViewer *viewer = new QgsMessageViewer( this );
           viewer->setWindowTitle( tr( "Advanced effects warning" ) );
