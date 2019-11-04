@@ -116,6 +116,19 @@ class CORE_EXPORT QgsField
      */
     QString displayName() const;
 
+    /**
+     * Returns the name to use when displaying this field and adds the alias in parenthesis if it is defined.
+     *
+     * This will be used when working close to the data structure (i.e. building expressions and queries),
+     * when the real field name must be shown but the alias is also useful to understand what the field
+     * represents.
+     *
+     * \see name()
+     * \see alias()
+     * \since QGIS 3.12
+     */
+    QString displayNameWithAlias() const;
+
     //! Gets variant type of the field as it will be retrieved from data source
     QVariant::Type type() const;
 

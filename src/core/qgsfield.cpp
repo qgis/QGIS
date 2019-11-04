@@ -92,6 +92,15 @@ QString QgsField::displayName() const
     return d->name;
 }
 
+QString QgsField::displayNameWithAlias() const
+{
+  if ( alias().isEmpty() )
+  {
+    return name();
+  }
+  return QStringLiteral( "%1 (%2)" ).arg( name() ).arg( alias() );
+}
+
 QVariant::Type QgsField::type() const
 {
   return d->type;
