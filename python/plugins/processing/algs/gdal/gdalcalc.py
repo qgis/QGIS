@@ -251,7 +251,9 @@ class gdalcalc(GdalAlgorithm):
 
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
-            arguments.extend(GdalUtils.parseCreationOptions(options))
+            parts = options.split('|')
+            for p in parts:
+                arguments.append('--co ' + p)
 
         arguments.append('--outfile')
         arguments.append(out)

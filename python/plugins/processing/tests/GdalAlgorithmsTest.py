@@ -1027,6 +1027,28 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                     'OUTPUT': output}, context, feedback),
                 ['gdal_calc' if isWindows() else 'gdal_calc.py', '--calc "{}" --format JPEG --type Float32 -A {} --A_band 1 --outfile {}'.format(formula, source, output)])
 
+            formula = 'A*2'
+            self.assertEqual(
+                alg.getConsoleCommands({
+                    'INPUT_A': source,
+                    'BAND_A': 1,
+                    'FORMULA': formula,
+                    'BAND_D': -1,
+                    'NO_DATA': None,
+                    'BAND_F': -1,
+                    'BAND_B': -1,
+                    'RTYPE': 5,
+                    'INPUT_F': None,
+                    'BAND_E': -1,
+                    'INPUT_D': None,
+                    'INPUT_B': None,
+                    'BAND_C': -1,
+                    'INPUT_E': None,
+                    'INPUT_C': None,
+                    'OPTIONS': 'COMPRESS=JPEG|JPEG_QUALITY=75',
+                    'OUTPUT': output}, context, feedback),
+                ['gdal_calc' if isWindows() else 'gdal_calc.py', '--calc "{}" --format JPEG --type Float32 -A {} --A_band 1 --co COMPRESS=JPEG --co JPEG_QUALITY=75 --outfile {}'.format(formula, source, output)])
+
     def testBuildVrt(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
