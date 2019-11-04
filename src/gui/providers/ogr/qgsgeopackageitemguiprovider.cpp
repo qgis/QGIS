@@ -94,7 +94,7 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
     // Add table to existing DB
     QAction *actionAddTable = new QAction( tr( "Create a New Layer or Table…" ), collectionItem->parent() );
     QPointer<QgsGeoPackageCollectionItem>collectionItemPtr { collectionItem };
-    connect( actionAddTable, &QAction::triggered, [ collectionItemPtr ]
+    connect( actionAddTable, &QAction::triggered, actionAddTable, [ collectionItemPtr ]
     {
       if ( collectionItemPtr )
       {
