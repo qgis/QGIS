@@ -38,8 +38,26 @@ Multi point geometry collection.
 
     virtual int nCoordinates() const;
 
-    virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
+    bool addGeometry( QgsAbstractGeometry *g /GetWrapper/ ) /TypeHint="bool"/;
+%MethodCode
+    if ( !sipIsOwnedByPython( ( sipSimpleWrapper * )a0Wrapper ) )
+    {
+      PyErr_SetString( sipException_OwnershipException, "Geometry is already owned by another c++ object. Use .clone() to add a deep copy of the geometry to this multipoint." );
+      sipIsErr = 1;
+    }
+    else
+    {
+      bool res = sipCpp->addGeometry( a0 );
+      if ( res )
+      {
+        PyObject *owner = sipConvertFromType( sipCpp, sipType_QgsAbstractGeometry, NULL );
+        sipTransferTo( a0Wrapper,  owner );
+        Py_DECREF( owner );
+      }
+      return PyBool_FromLong( res );
+    }
 
+%End
     virtual bool insertGeometry( QgsAbstractGeometry *g /Transfer/, int index );
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;

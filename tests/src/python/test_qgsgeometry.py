@@ -36,7 +36,8 @@ from qgis.core import (
     QgsWkbTypes,
     QgsRenderChecker,
     QgsCoordinateReferenceSystem,
-    QgsProject
+    QgsProject,
+    OwnershipException
 )
 from qgis.PyQt.QtCore import QDir, QPointF
 from qgis.PyQt.QtGui import QImage, QPainter, QPen, QColor, QBrush, QPainterPath, QPolygonF
@@ -543,6 +544,20 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(g.asWkt(1), 'Polygon ((0 0, 1 0, 1 1, 0 0))')
         with self.assertRaises(IndexError):
             g.removeInteriorRing(0)
+
+    def testOwnership(self):
+        """
+        Test ownership related exceptions
+        """
+        mp = QgsGeometry.fromWkt('MultiPoint(1 1,2 2)')
+
+        mp2 = QgsGeometry.fromWkt('MultiPoint(3 3)')
+        with self.assertRaises(OwnershipException):
+            mp2.get().addGeometry(mp.constGet().geometryN(0))
+        self.assertEqual(mp2.asWkt(), 'MultiPoint ((3 3))')
+
+        self.assertTrue(mp2.get().addGeometry(QgsPoint(3, 4)))
+        self.assertEqual(mp2.asWkt(), 'MultiPoint ((3 3),(3 4))')
 
     def testPointXY(self):
         """

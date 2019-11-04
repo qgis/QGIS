@@ -46,3 +46,15 @@
   SIP_UNBLOCK_THREADS
 %End
 };
+
+%Exception OwnershipException(SIP_Exception) /PyName=OwnershipException/
+{
+%TypeHeaderCode
+#include <qgsexception.h>
+%End
+%RaiseCode
+  SIP_BLOCK_THREADS
+  PyErr_SetString(sipException_OwnershipException, sipExceptionRef.what().toUtf8().constData() );
+  SIP_UNBLOCK_THREADS
+%End
+};
