@@ -20,10 +20,23 @@
 
 /// @cond PRIVATE
 
-bool QgsEventTracing::sIsTracing = false;
-QElapsedTimer QgsEventTracing::sTracingTimer;
-QVector<QgsEventTracing::TraceItem> QgsEventTracing::sTraceEvents;
-QMutex QgsEventTracing::sTraceEventsMutex;
+struct TraceItem
+{
+  QgsEventTracing::EventType type;
+  int threadId;
+  int timestamp;
+  QString category;
+  QString name;
+};
+
+//! Whether we are tracing right now
+static bool sIsTracing = false;
+//! High-precision timer to measure the elapsed time
+Q_GLOBAL_STATIC( QElapsedTimer, sTracingTimer )
+//! Buffer of captured events in the current tracing session
+Q_GLOBAL_STATIC( QVector<TraceItem>, sTraceEvents )
+//! Mutex to protect the buffer from being written to from multiple threads
+Q_GLOBAL_STATIC( QMutex, sTraceEventsMutex )
 
 
 bool QgsEventTracing::startTracing()
@@ -32,11 +45,11 @@ bool QgsEventTracing::startTracing()
     return false;
 
   sIsTracing = true;
-  sTraceEventsMutex.lock();
-  sTracingTimer.start();
-  sTraceEvents.clear();
-  sTraceEvents.reserve( 1000 );
-  sTraceEventsMutex.unlock();
+  sTraceEventsMutex()->lock();
+  sTracingTimer()->start();
+  sTraceEvents()->clear();
+  sTraceEvents()->reserve( 1000 );
+  sTraceEventsMutex()->unlock();
   return true;
 }
 
@@ -46,7 +59,7 @@ bool QgsEventTracing::stopTracing()
     return false;
 
   sIsTracing = false;
-  sTracingTimer.invalidate();
+  sTracingTimer()->invalidate();
   return false;
 }
 
@@ -62,7 +75,7 @@ bool QgsEventTracing::writeTrace( const QString &fileName )
   f.write( "{\n\"traceEvents\": [\n" );
 
   bool first = true;
-  for ( const auto &item : sTraceEvents )
+  for ( const auto &item : *sTraceEvents() )
   {
     if ( !first )
       f.write( ",\n" );
@@ -84,15 +97,15 @@ void QgsEventTracing::addEvent( QgsEventTracing::EventType type, const QString &
   if ( !sIsTracing )
     return;
 
-  sTraceEventsMutex.lock();
+  sTraceEventsMutex()->lock();
   TraceItem item;
   item.type = type;
-  item.timestamp = sTracingTimer.nsecsElapsed() / 1000;
+  item.timestamp = sTracingTimer()->nsecsElapsed() / 1000;
   item.threadId = reinterpret_cast<qint64>( QThread::currentThreadId() );
   item.category = category;
   item.name = name;
-  sTraceEvents.append( item );
-  sTraceEventsMutex.unlock();
+  sTraceEvents()->append( item );
+  sTraceEventsMutex()->unlock();
 }
 
 ///@endcond
