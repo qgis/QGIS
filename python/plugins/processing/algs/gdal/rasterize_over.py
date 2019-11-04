@@ -26,6 +26,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsRasterFileWriter,
+                       QgsProcessingException,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
@@ -100,6 +101,9 @@ class rasterize_over(GdalAlgorithm):
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT_RASTER, context)
+        if inLayer is None:
+            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT_RASTER))
+
         fieldName = self.parameterAsString(parameters, self.FIELD, context)
         self.setOutputValue(self.OUTPUT, inLayer.source())
 
