@@ -24,6 +24,11 @@ class QgsVectorLayer;
 class QgsMapLayerStyleCategoriesModel;
 
 
+/**
+ * The QgsVectorLayerSaveStyleDialog class provides the UI to save the current style
+ * or multiple styles into different storage containers (QML, SLD and DB).
+ * The user can select what categories must be saved.
+ */
 class QgsVectorLayerSaveStyleDialog : public QDialog, private Ui::QgsVectorLayerSaveStyleDialog
 {
     Q_OBJECT
@@ -47,6 +52,11 @@ class QgsVectorLayerSaveStyleDialog : public QDialog, private Ui::QgsVectorLayer
 
     QgsVectorLayerProperties::StyleType currentStyleType() const;
 
+    bool saveOnlyCurrentStyle() const;
+    void setSaveOnlyCurrentStyle( bool saveCurrentStyle );
+
+    const QListWidget *stylesWidget( );
+
   public slots:
     void accept() override;
 
@@ -56,9 +66,11 @@ class QgsVectorLayerSaveStyleDialog : public QDialog, private Ui::QgsVectorLayer
     void readUiFileContent( const QString &filePath );
 
   private:
+    void setupMultipleStyles();
     QgsVectorLayer *mLayer = nullptr;
     QgsMapLayerStyleCategoriesModel *mModel;
     QString mUiFileContent;
+    bool mSaveOnlyCurrentStyle = true;
 };
 
 #endif // QGSVECTORLAYERSAVESTYLE_H

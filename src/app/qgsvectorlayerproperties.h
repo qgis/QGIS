@@ -149,6 +149,9 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     //! Save the style
     void saveStyleAs();
 
+    //! Save multiple styles
+    void saveMultipleStylesAs();
+
     //! Load the style
     void loadStyle();
 
@@ -198,6 +201,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     QAction *mActionLoadStyle = nullptr;
     QAction *mActionSaveStyle = nullptr;
+    QAction *mActionSaveMultipleStyles = nullptr;
 
     //! Renderer dialog which is shown
     QgsRendererPropertiesDialog *mRendererDialog = nullptr;

@@ -20,7 +20,7 @@
    <string>Layer Properties</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../../images/images.qrc">
+   <iconset>
     <normaloff>:/images/icons/qgis-icon-16x16.png</normaloff>:/images/icons/qgis-icon-16x16.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_26">
@@ -107,7 +107,7 @@
            <string>General information</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/metadata.svg</normaloff>:/images/themes/default/propertyicons/metadata.svg</iconset>
           </property>
          </item>
@@ -119,7 +119,7 @@
            <string>Source</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/system.svg</normaloff>:/images/themes/default/propertyicons/system.svg</iconset>
           </property>
          </item>
@@ -131,7 +131,7 @@
            <string>Control feature symbology</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/symbology.svg</normaloff>:/images/themes/default/propertyicons/symbology.svg</iconset>
           </property>
          </item>
@@ -143,7 +143,7 @@
            <string>Control feature labeling</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/labels.svg</normaloff>:/images/themes/default/propertyicons/labels.svg</iconset>
           </property>
          </item>
@@ -155,7 +155,7 @@
            <string>Diagrams</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/diagram.svg</normaloff>:/images/themes/default/propertyicons/diagram.svg</iconset>
           </property>
          </item>
@@ -167,7 +167,7 @@
            <string>3D View</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/3d.svg</normaloff>:/images/themes/default/3d.svg</iconset>
           </property>
          </item>
@@ -179,7 +179,7 @@
            <string>Manage fields</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/mSourceFields.svg</normaloff>:/images/themes/default/mSourceFields.svg</iconset>
           </property>
          </item>
@@ -191,7 +191,7 @@
            <string>Manage custom forms and field editor configuration</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/mActionFormView.svg</normaloff>:/images/themes/default/mActionFormView.svg</iconset>
           </property>
          </item>
@@ -203,7 +203,7 @@
            <string>Manage joins to other layers</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/join.svg</normaloff>:/images/themes/default/propertyicons/join.svg</iconset>
           </property>
          </item>
@@ -215,7 +215,7 @@
            <string>Manage additional per-project fields associated with the layer</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/mIconAuxiliaryStorage.svg</normaloff>:/images/themes/default/mIconAuxiliaryStorage.svg</iconset>
           </property>
          </item>
@@ -227,7 +227,7 @@
            <string>Manage automated actions</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/action.svg</normaloff>:/images/themes/default/propertyicons/action.svg</iconset>
           </property>
          </item>
@@ -239,7 +239,7 @@
            <string>Display</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/display.svg</normaloff>:/images/themes/default/propertyicons/display.svg</iconset>
           </property>
          </item>
@@ -251,7 +251,7 @@
            <string>Rendering</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/rendering.svg</normaloff>:/images/themes/default/propertyicons/rendering.svg</iconset>
           </property>
          </item>
@@ -263,7 +263,7 @@
            <string>Variables</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
           </property>
          </item>
@@ -275,7 +275,7 @@
            <string>Layer metadata</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/editmetadata.svg</normaloff>:/images/themes/default/propertyicons/editmetadata.svg</iconset>
           </property>
          </item>
@@ -287,7 +287,7 @@
            <string>Set dependent layers for automatic update</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/dependencies.svg</normaloff>:/images/themes/default/dependencies.svg</iconset>
           </property>
          </item>
@@ -299,7 +299,7 @@
            <string>Manage the layer's legend</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/legend.svg</normaloff>:/images/themes/default/legend.svg</iconset>
           </property>
          </item>
@@ -311,7 +311,7 @@
            <string>Edit QGIS Server settings</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/overlay.svg</normaloff>:/images/themes/default/propertyicons/overlay.svg</iconset>
           </property>
          </item>
@@ -323,7 +323,7 @@
            <string>Control geometry and topology constraints for digitizing operations.</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/digitizing.svg</normaloff>:/images/themes/default/propertyicons/digitizing.svg</iconset>
           </property>
          </item>
@@ -366,7 +366,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>17</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -443,7 +443,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>653</width>
-                <height>807</height>
+                <height>806</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -569,7 +569,7 @@ border-radius: 2px;</string>
                  <property name="checkable">
                   <bool>false</bool>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">vectorgeneral</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -584,7 +584,7 @@ border-radius: 2px;</string>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QgsProjectionSelectionWidget" name="mCrsSelector">
+                   <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
                     <property name="focusPolicy">
                      <enum>Qt::StrongFocus</enum>
                     </property>
@@ -731,7 +731,7 @@ border-radius: 2px;</string>
                 <x>0</x>
                 <y>0</y>
                 <width>653</width>
-                <height>807</height>
+                <height>806</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -917,7 +917,7 @@ border-radius: 2px;</string>
                 <x>0</x>
                 <y>0</y>
                 <width>653</width>
-                <height>807</height>
+                <height>806</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -967,7 +967,7 @@ border-radius: 2px;</string>
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="../../images/images.qrc">
+                    <iconset>
                      <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
                    </property>
                   </widget>
@@ -981,7 +981,7 @@ border-radius: 2px;</string>
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="../../images/images.qrc">
+                    <iconset>
                      <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                    </property>
                   </widget>
@@ -995,7 +995,7 @@ border-radius: 2px;</string>
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="../../images/images.qrc">
+                    <iconset>
                      <normaloff>:/images/themes/default/mActionToggleEditing.svg</normaloff>:/images/themes/default/mActionToggleEditing.svg</iconset>
                    </property>
                   </widget>
@@ -1061,7 +1061,7 @@ border-radius: 2px;</string>
                 <property name="checkable">
                  <bool>false</bool>
                 </property>
-                <property name="syncGroup">
+                <property name="syncGroup" stdset="0">
                  <string notr="true">vectormeta</string>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_11">
@@ -1203,7 +1203,7 @@ border-radius: 2px;</string>
                       <string/>
                      </property>
                      <property name="icon">
-                      <iconset resource="../../images/images.qrc">
+                      <iconset>
                        <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
                      </property>
                     </widget>
@@ -1217,7 +1217,7 @@ border-radius: 2px;</string>
                       <string/>
                      </property>
                      <property name="icon">
-                      <iconset resource="../../images/images.qrc">
+                      <iconset>
                        <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                      </property>
                     </widget>
@@ -1311,8 +1311,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>653</width>
+                <height>806</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -1395,7 +1395,7 @@ border-radius: 2px;</string>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_50">
                  <item row="0" column="0">
-                  <widget class="QgsFieldExpressionWidget" name="mDisplayExpressionWidget">
+                  <widget class="QgsFieldExpressionWidget" name="mDisplayExpressionWidget" native="true">
                    <property name="focusPolicy">
                     <enum>Qt::StrongFocus</enum>
                    </property>
@@ -1459,7 +1459,7 @@ border-radius: 2px;</string>
                   </widget>
                  </item>
                  <item row="1" column="0" colspan="2">
-                  <widget class="QgsFieldExpressionWidget" name="mMapTipExpressionFieldWidget">
+                  <widget class="QgsFieldExpressionWidget" name="mMapTipExpressionFieldWidget" native="true">
                    <property name="focusPolicy">
                     <enum>Qt::StrongFocus</enum>
                    </property>
@@ -1513,8 +1513,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>695</width>
-                <height>424</height>
+                <width>653</width>
+                <height>806</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -1540,7 +1540,7 @@ border-radius: 2px;</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_6">
                   <item row="0" column="0">
-                   <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget">
+                   <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget" native="true">
                     <property name="focusPolicy">
                      <enum>Qt::StrongFocus</enum>
                     </property>
@@ -1971,7 +1971,7 @@ border-radius: 2px;</string>
                 <x>0</x>
                 <y>0</y>
                 <width>653</width>
-                <height>807</height>
+                <height>806</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1992,7 +1992,7 @@ border-radius: 2px;</string>
                  <property name="title">
                   <string>Description</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">vectormeta</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_5">
@@ -2134,7 +2134,7 @@ border-radius: 2px;</string>
                  <property name="title">
                   <string>Attribution</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">vectormeta</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_7">
@@ -2180,7 +2180,7 @@ border-radius: 2px;</string>
                  <property name="title">
                   <string>MetadataUrl</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">vectormeta</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_9">
@@ -2361,7 +2361,7 @@ border-radius: 2px;</string>
                        <string/>
                       </property>
                       <property name="icon">
-                       <iconset resource="../../images/images.qrc">
+                       <iconset>
                         <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
                       </property>
                      </widget>
@@ -2372,7 +2372,7 @@ border-radius: 2px;</string>
                        <string/>
                       </property>
                       <property name="icon">
-                       <iconset resource="../../images/images.qrc">
+                       <iconset>
                         <normaloff>:/images/themes/default/symbologyEdit.svg</normaloff>:/images/themes/default/symbologyEdit.svg</iconset>
                       </property>
                      </widget>
@@ -2383,7 +2383,7 @@ border-radius: 2px;</string>
                        <string/>
                       </property>
                       <property name="icon">
-                       <iconset resource="../../images/images.qrc">
+                       <iconset>
                         <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                       </property>
                      </widget>
@@ -2450,7 +2450,7 @@ border-radius: 2px;</string>
                 <x>0</x>
                 <y>0</y>
                 <width>651</width>
-                <height>805</height>
+                <height>804</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -2717,9 +2717,7 @@ border-radius: 2px;</string>
   <tabstop>mLayerLegendUrlFormatComboBox</tabstop>
   <tabstop>mRemoveDuplicateNodesCheckbox</tabstop>
  </tabstops>
- <resources>
-  <include location="../../images/images.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>mOptionsListWidget</sender>
