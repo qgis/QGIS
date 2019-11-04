@@ -2331,7 +2331,7 @@ void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context,
 
   if ( mFlags & FlagNoMText )
   {
-    writeText( dxfLayer, txt, QgsPoint( label->getX(), label->getY() ), label->getHeight(), label->getAlpha() * 180.0 / M_PI, tmpLyr.format().color() );
+    writeText( dxfLayer, txt, label, tmpLyr, context.expressionContext() );
   }
   else
   {

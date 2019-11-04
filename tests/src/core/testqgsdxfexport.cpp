@@ -344,7 +344,7 @@ void TestQgsDxfExport::testText()
   QString debugInfo;
   QVERIFY2( fileContainsText( file, "TEXT\n"
                               "  5\n"
-                              "dd\n"
+                              "**no check**\n"
                               "100\n"
                               "AcDbEntity\n"
                               "100\n"

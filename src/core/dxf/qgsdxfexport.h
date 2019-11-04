@@ -439,7 +439,7 @@ class CORE_EXPORT QgsDxfExport
      * \note available in Python bindings as writeTextV2
      * \since QGIS 2.15
      */
-    void writeText( const QString &layer, const QString &text, const QgsPoint &pt, double size, double angle, const QColor &color, HAlign hali = HAlign::Undefined, VAlign vali = VAlign::Undefined ) SIP_PYNAME( writeTextV2 );
+    void writeText( const QString &layer, const QString &text, const QgsPoint &pt, double size, double angle, const QColor &color, QgsDxfExport::HAlign hali = QgsDxfExport::HAlign::Undefined, QgsDxfExport::VAlign vali = QgsDxfExport::VAlign::Undefined ) SIP_PYNAME( writeTextV2 );
 
     /**
      * Write mtext (MTEXT)
