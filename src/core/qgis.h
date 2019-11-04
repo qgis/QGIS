@@ -601,7 +601,11 @@ void CORE_EXPORT qgsFree( void *ptr ) SIP_SKIP;
  * Wkt string that represents a geographic coord sys
  * \since QGIS GEOWkt
  */
+#ifdef _MSC_VER
+QString CORE_EXPORT geoWkt()
+#else
 constexpr QLatin1String CORE_EXPORT geoWkt()
+#endif
 {
   return QLatin1String(
            "GEOGCS[\"WGS 84\", "
@@ -619,19 +623,31 @@ constexpr QLatin1String CORE_EXPORT geoWkt()
 }
 
 //! PROJ4 string that represents a geographic coord sys
+#ifdef _MSC_VER
+QString CORE_EXPORT geoProj4()
+#else
 constexpr QLatin1String CORE_EXPORT geoProj4()
+#endif
 {
   return QLatin1String( "+proj=longlat +datum=WGS84 +no_defs" );
 }
 
 //! Geographic coord sys from EPSG authority
+#ifdef _MSC_VER
+QString CORE_EXPORT geoEpsgCrsAuthId()
+#else
 constexpr QLatin1String CORE_EXPORT geoEpsgCrsAuthId()
+#endif
 {
   return QLatin1String( "EPSG:4326" );
 }
 
 //! Constant that holds the string representation for "No ellips/No CRS"
+#ifdef _MSC_VER
+QString CORE_EXPORT geoNone()
+#else
 constexpr QLatin1String CORE_EXPORT geoNone()
+#endif
 {
   return QLatin1String( "NONE" );
 }

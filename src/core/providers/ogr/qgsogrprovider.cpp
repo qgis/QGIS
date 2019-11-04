@@ -82,8 +82,8 @@ email                : sherman at mrcc.com
 #define OGR_F_IsFieldSetAndNotNull OGR_F_IsFieldSet
 #endif
 
-static constexpr QLatin1String TEXT_PROVIDER_KEY() { return QLatin1String( "ogr" ); }
-static constexpr QLatin1String TEXT_PROVIDER_DESCRIPTION() { return QLatin1String( "OGR data provider" ); }
+#define TEXT_PROVIDER_KEY QStringLiteral( "ogr" )
+#define TEXT_PROVIDER_DESCRIPTION QStringLiteral( "OGR data provider" )
 
 static OGRwkbGeometryType ogrWkbGeometryTypeFromName( const QString &typeName );
 
@@ -2785,17 +2785,17 @@ void QgsOgrProvider::computeCapabilities()
 
 QString QgsOgrProvider::name() const
 {
-  return TEXT_PROVIDER_KEY();
+  return TEXT_PROVIDER_KEY;
 }
 
 QString QgsOgrProvider::providerKey()
 {
-  return TEXT_PROVIDER_KEY();
+  return TEXT_PROVIDER_KEY;
 }
 
 QString  QgsOgrProvider::description() const
 {
-  return TEXT_PROVIDER_DESCRIPTION();
+  return TEXT_PROVIDER_DESCRIPTION;
 } //  QgsOgrProvider::description()
 
 
@@ -6694,7 +6694,7 @@ void QgsOgrProviderMetadata::cleanupProvider()
 
 
 QgsOgrProviderMetadata::QgsOgrProviderMetadata()
-  : QgsProviderMetadata( TEXT_PROVIDER_KEY(), TEXT_PROVIDER_DESCRIPTION() )
+  : QgsProviderMetadata( TEXT_PROVIDER_KEY, TEXT_PROVIDER_DESCRIPTION )
 {
 
 }
