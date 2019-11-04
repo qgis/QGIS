@@ -27,7 +27,7 @@
 QgsSnapIndicator::QgsSnapIndicator( QgsMapCanvas *canvas )
   : mCanvas( canvas )
 {
-  mCanvasDestroyedConnection = QObject::connect( canvas, &QgsMapCanvas::destroyed, [ = ]()
+  mCanvasDestroyedConnection = QObject::connect( canvas, &QgsMapCanvas::destroyed, this, [ = ]()
   {
     mCanvas = nullptr;
     mSnappingMarker = nullptr;
