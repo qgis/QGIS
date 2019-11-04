@@ -75,12 +75,13 @@ int QgsMdalProvider::faceCount() const
     return 0;
 }
 
-void QgsMdalProvider::populateMesh( QgsMesh *mesh ) const
+void QgsMdalProvider:: populateMesh( QgsMesh *mesh ) const
 {
   if ( mesh )
   {
     mesh->faces = faces();
     mesh->vertices = vertices();
+    qDebug() << "******** size of qgis mesh : " << sizeof( ( mesh->faces ) );
   }
 }
 

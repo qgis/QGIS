@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgstindemterraintilegeometry_p.h"
-
+#include "qgstindemterraintileloader_p.h"
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
 
@@ -53,7 +53,7 @@ static QByteArray createPlaneVertexData( QgsTriangularMeshTile mesh, float vertS
     *fptr++ = float( ( y0 - vert.y() ) / h );
 
 
-    QVector3D normal = mesh.vertexNormalVector( i );
+    QVector3D normal = mesh.vertexUnitNormalVector( i );
     normal = QVector3D( normal.x(), -normal.y(), normal.z() * vertScale );
     normal.normalized();
 
@@ -215,126 +215,5 @@ void QgsTinDemTerrainTileGeometry_p::init()
   addAttribute( mIndexAttribute );
 }
 
-
-
-QgsTriangularMeshTile::QgsTriangularMeshTile( QgsTriangularMesh *triangularMesh, const QgsRectangle &extent ):
-  mTriangularMesh( triangularMesh ),
-  mExtent( extent )
-{
-  init();
-}
-
-int QgsTriangularMeshTile::faceCount() const
-{
-  return mFaces.count();
-}
-
-int QgsTriangularMeshTile::verticesCount() const
-{
-  return mVertices.count();
-}
-
-QgsMeshFace QgsTriangularMeshTile::triangle( int localTriangleIndex ) const
-{
-  QgsMeshFace triangle;
-  for ( int i = 0; i < 3; ++i )
-  {
-    int globalIndex = mTriangularMesh->triangles().at( mFaces.at( localTriangleIndex ) ).at( i );
-    int localIndex = mLocalIndexFromGlobalIndex[globalIndex];
-    triangle.append( localIndex );
-  }
-
-  return triangle;
-
-}
-
-QgsMeshVertex QgsTriangularMeshTile::vertex( int localIndex ) const
-{
-  int globalIndex = mVertices.at( localIndex ).globalIndex;
-  return mTriangularMesh->vertices().at( globalIndex );
-}
-
-bool QgsTriangularMeshTile::operator==( const QgsTriangularMeshTile &other ) const
-{
-  return ( other.mTriangularMesh == mTriangularMesh &&
-           other.mExtent == mExtent &&
-           other.mRealExtent == mRealExtent
-         );
-}
-
-QVector3D QgsTriangularMeshTile::vertexNormalVector( int i ) const
-{
-  return mVertices.at( i ).normalVector.normalized();
-}
-
-float QgsTriangularMeshTile::zMinimum() const
-{
-  return mZmin;
-}
-
-float QgsTriangularMeshTile::zMaximum() const
-{
-  return mZmax;
-}
-
-void QgsTriangularMeshTile::init()
-{
-  mZmax = std::numeric_limits<float>::min();
-  mZmin = std::numeric_limits<float>::max();
-  mFaces = QVector<int>::fromList( mTriangularMesh->faceIndexesForRectangle( mExtent ) );
-  mVertices.clear();
-  mLocalIndexFromGlobalIndex.clear();
-
-  int localIndex = 0;
-  mRealExtent.setMinimal();
-  for ( int f : qgis::as_const( mFaces ) )
-  {
-
-    const QgsMeshFace &face( mTriangularMesh->triangles().at( f ) );
-    for ( int i = 0; i < 3; i++ )
-    {
-      int globalIndex( face.at( i ) );
-
-      const QgsMeshVertex &vert( mTriangularMesh->vertices().at( globalIndex ) );
-      const QgsMeshVertex &otherVert1( mTriangularMesh->vertices().at( face.at( ( i + 1 ) % 3 ) ) );
-      const QgsMeshVertex &otherVert2( mTriangularMesh->vertices().at( face.at( ( i + 2 ) % 3 ) ) );
-
-      QVector3D v1( float( otherVert1.x() - vert.x() ), float( otherVert1.y() - vert.y() ), float( otherVert1.z() - vert.z() ) );
-      QVector3D v2( float( otherVert2.x() - vert.x() ), float( otherVert2.y() - vert.y() ), float( otherVert2.z() - vert.z() ) );
-      QVector3D crossProduct = QVector3D::crossProduct( v2, v1 );
-
-      if ( mLocalIndexFromGlobalIndex.contains( globalIndex ) )
-      {
-        LocalVertex &localVert = mVertices[mLocalIndexFromGlobalIndex.value( globalIndex )];
-        localVert.normalVector += crossProduct;
-      }
-      else
-      {
-        //create a new local vertex
-        mLocalIndexFromGlobalIndex[globalIndex] = localIndex;
-        LocalVertex  localVert( {globalIndex, crossProduct} );
-        mVertices.append( localVert );
-        localIndex++;
-
-        //adjust real extent
-        if ( mRealExtent.xMinimum() > vert.x() )
-          mRealExtent.setXMinimum( vert.x() );
-        if ( mRealExtent.yMinimum() > vert.y() )
-          mRealExtent.setYMinimum( vert.y() );
-        if ( mRealExtent.xMaximum() < vert.x() )
-          mRealExtent.setXMaximum( vert.x() );
-        if ( mRealExtent.yMaximum() < vert.y() )
-          mRealExtent.setYMaximum( vert.y() );
-
-        if ( mZmax < float( vert.z() ) )
-          mZmax = float( vert.z() );
-        if ( mZmin > float( vert.z() ) )
-          mZmin = float( vert.z() );
-      }
-    }
-  }
-
-  mRealExtent.combineExtentWith( mExtent );
-}
 
 /// @endcond

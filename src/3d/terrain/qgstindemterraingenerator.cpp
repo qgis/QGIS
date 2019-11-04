@@ -16,7 +16,7 @@
 #include <QEntity>
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DExtras/qspheregeometry.h>
-
+#include <QApplication>
 
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DExtras/QTextureMaterial>
@@ -25,6 +25,7 @@
 
 #include "qgschunknode_p.h"
 #include "qgstindemterraingenerator.h"
+#include "qgstindemterraintileloader_p.h"
 #include "qgsterrainentity_p.h"
 #include "qgs3dmapsettings.h"
 #include "qgstriangularmesh.h"
@@ -38,19 +39,27 @@ QgsMeshLayer *QgsTinDemTerrainGenerator::layer() const
 void QgsTinDemTerrainGenerator::setLayer( QgsMeshLayer *layer )
 {
   mLayer = QgsMapLayerRef( layer );
-  updateTilingScheme();
+  updateGenerator();
 }
 
 void QgsTinDemTerrainGenerator::setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context )
 {
   mCrs = crs;
   mTransformContext = context;
-  updateTilingScheme();
+  updateGenerator();
+}
+
+void QgsTinDemTerrainGenerator::setLayerAndCrs( QgsMeshLayer *layer, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context )
+{
+  mLayer = QgsMapLayerRef( layer );
+  mCrs = crs;
+  mTransformContext = context;
+  updateGenerator();
 }
 
 QgsChunkLoader *QgsTinDemTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
 {
-  return new QgsTinDemTerrainTileLoader( mTerrain, node, layer() );
+  return new QgsTinDemTerrainTileLoader( mTerrain, node, mTriangularMesh );
 }
 
 QgsTerrainGenerator *QgsTinDemTerrainGenerator::clone() const
@@ -85,10 +94,10 @@ void QgsTinDemTerrainGenerator::resolveReferences( const QgsProject &project )
 {
   mLayer = QgsMapLayerRef( project.mapLayer( mLayer.layerId ) );
   layer()->reload();
-  updateTilingScheme();
+  updateGenerator();
 }
 
-void QgsTinDemTerrainGenerator::updateTilingScheme()
+void QgsTinDemTerrainGenerator::updateGenerator()
 {
   QgsMeshLayer *dem = layer();
   if ( dem )
@@ -96,58 +105,18 @@ void QgsTinDemTerrainGenerator::updateTilingScheme()
     QgsRectangle te = dem->extent();
     QgsCoordinateTransform terrainToMapTransform( dem->crs(), mCrs, mTransformContext );
     te = terrainToMapTransform.transformBoundingBox( te );
-    mTerrainTilingScheme = QgsTilingScheme( mLayer->extent(), mLayer->crs() );
+    mTerrainTilingScheme = QgsTilingScheme( te, mCrs );
+
+    QgsRenderContext renderContext;
+    renderContext.setTransformContext( mTransformContext );
+    renderContext.setCoordinateTransform( terrainToMapTransform );
+    mTriangularMesh.update( dem->nativeMesh(), &renderContext );
   }
   else
+  {
     mTerrainTilingScheme = QgsTilingScheme();
+    mTriangularMesh = QgsTriangularMesh();
+  }
 }
 
-QgsTinDemTerrainTileLoader::QgsTinDemTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node, QgsMeshLayer *layer ):
-  QgsTerrainTileLoader( terrain, node ),
-  mLayer( layer ),
-  mMeshTile( layer->triangularMesh(),
-             terrain->map3D().terrainGenerator()->tilingScheme().
-             tileToExtent( node->tileX(),
-                           node->tileY(),
-                           node->tileZ() ) )
-{
-  setExtentMapCrs( terrain->terrainToMapTransform().transformBoundingBox( mMeshTile.realTileExtent() ) );
-  loadTexture();
-}
 
-Qt3DCore::QEntity *QgsTinDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *parent )
-{
-  QgsTerrainTileEntity *entity = new QgsTerrainTileEntity( parent );
-
-  const Qgs3DMapSettings &map = terrain()->map3D();
-  QgsRectangle extent = map.terrainGenerator()->tilingScheme().tileToExtent( mNode->tileX(), mNode->tileY(), mNode->tileZ() ); //node->extent;
-
-
-  auto triangularMesh = mLayer->triangularMesh();
-  QList<int> faces = triangularMesh->faceIndexesForRectangle( extent );
-  Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
-
-  mesh->setGeometry( new QgsTinDemTerrainTileGeometry_p( mMeshTile, float( map.terrainVerticalScale() ), entity ) );
-
-  createTextureComponent( entity, map.isTerrainShadingEnabled(), map.terrainShadingMaterial() );
-
-  double x0 =  map.origin().x();
-  double y0 =  -map.origin().y();
-
-  Qt3DCore::QTransform *transform = new Qt3DCore::QTransform();
-  entity->addComponent( transform );
-  transform->setTranslation( QVector3D( float( -x0 ), 0, float( -y0 ) ) );
-
-  mNode->setExactBbox( QgsAABB( float( extent.xMinimum() - x0 ),
-                                mMeshTile.zMinimum()*float( map.terrainVerticalScale() ),
-                                float( -extent.yMinimum() - y0 ),
-                                float( extent.xMaximum() - x0 ),
-                                mMeshTile.zMaximum()*float( map.terrainVerticalScale() ),
-                                float( -extent.yMaximum() - y0 ) ) );
-
-  entity->addComponent( mesh );
-  entity->setEnabled( false );
-  entity->setParent( parent );
-
-  return entity;
-}

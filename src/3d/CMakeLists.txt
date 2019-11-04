@@ -61,6 +61,7 @@ SET(QGIS_3D_SRCS
   #terrain/quantizedmeshterraingenerator.cpp
   terrain/qgstindemterraingenerator.cpp
   terrain/qgstindemterraintilegeometry_p.cpp
+  terrain/qgstindemterraintileloader_p.cpp
 )
 
 SET(QGIS_3D_MOC_HDRS
@@ -92,6 +93,7 @@ SET(QGIS_3D_MOC_HDRS
   terrain/qgsterraintextureimage_p.h
   terrain/qgsterraintileentity_p.h
   terrain/qgsterraintileloader_p.h
+  terrain/qgstindemterraintileloader_p.h
 )
 
 QT5_WRAP_CPP(QGIS_3D_MOC_SRCS ${QGIS_3D_MOC_HDRS})

@@ -189,7 +189,7 @@ void Qgs3DMapConfigWidget::apply()
       {
         QgsTinDemTerrainGenerator *tinDemTerrainGen = new QgsTinDemTerrainGenerator;
         mMap->setTerrainGenerator( tinDemTerrainGen );
-        tinDemTerrainGen->setLayer( tinDemLayer );
+        tinDemTerrainGen->setLayerAndCrs( tinDemLayer, mMap->crs(), QgsProject::instance()->transformContext() );
         needsUpdateOrigin = true;
       }
     }

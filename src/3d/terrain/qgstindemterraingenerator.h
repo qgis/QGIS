@@ -19,29 +19,11 @@
 #include <tuple>
 #include <limits>
 
-#include "qgsmeshlayer.h"
+
 #include "qgsmaplayerref.h"
+#include "qgsmeshlayer.h"
 #include "qgsterraingenerator.h"
-#include "qgsterraintileloader_p.h"
-#include "qgstindemterraintilegeometry_p.h"
-
-/**
- * \ingroup 3d
- * Chunk loader for TIN DEM terrain tiles.
- * \since QGIS 3.12
- */
-class QgsTinDemTerrainTileLoader: public QgsTerrainTileLoader
-{
-  public:
-    //! Constructs loader for the given chunk node
-    QgsTinDemTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node, QgsMeshLayer *layer );
-
-    Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
-
-  private:
-    QgsMeshLayer *mLayer = nullptr;
-    QgsTriangularMeshTile mMeshTile;
-};
+#include "qgstriangularmesh.h"
 
 /**
  * \ingroup 3d
@@ -56,11 +38,14 @@ class _3D_EXPORT QgsTinDemTerrainGenerator: public QgsTerrainGenerator
 
     //! Returns the mesh layer associated with
     QgsMeshLayer *layer() const;
-    //! Sets the mesh layer associated with
+    //! Sets the mesh layer associated with and update the terrain generator
     void setLayer( QgsMeshLayer *layer );
 
-    //! Sets CRS of the terrain
+    //! Sets CRS of the terrain and update the terrain generator
     void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
+
+    //! Sets the mesh layer associated with and  CRS of the terrain and update the terrain generator
+    void setLayerAndCrs( QgsMeshLayer *layer, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
 
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
     QgsTerrainGenerator *clone() const override;
@@ -72,7 +57,7 @@ class _3D_EXPORT QgsTinDemTerrainGenerator: public QgsTerrainGenerator
     void resolveReferences( const QgsProject &project ) override;
 
   private:
-    void updateTilingScheme();
+    void updateGenerator();
 
     QgsCoordinateReferenceSystem mCrs;
 
@@ -80,6 +65,8 @@ class _3D_EXPORT QgsTinDemTerrainGenerator: public QgsTerrainGenerator
 
     //! source layer
     QgsMapLayerRef mLayer;
+
+    QgsTriangularMesh mTriangularMesh;
 };
 
 
