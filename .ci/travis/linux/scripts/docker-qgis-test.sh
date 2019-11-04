@@ -17,7 +17,7 @@ export PGPASSWORD=docker
 export PGDATABASE=qgis_test
 
 # wait for the DB to be available
-echo "Wait a moment while loading the database."
+echo "Wait a moment while loading PostGreSQL database."
 while ! PGPASSWORD='docker' psql -h postgres -U docker -p 5432 -l &> /dev/null
 do
   printf "🐘"
@@ -27,6 +27,26 @@ echo " done 🥩"
 
 pushd /root/QGIS > /dev/null
 /root/QGIS/tests/testdata/provider/testdata_pg.sh
+popd > /dev/null # /root/QGIS
+
+##############################
+# Restore Oracle test data
+##############################
+
+export ORACLE_HOST="oracle"
+export QGIS_ORACLETEST_DBNAME="${ORACLE_HOST}/XEPDB1"
+export QGIS_ORACLETEST_DB="host=${QGIS_ORACLETEST_DBNAME} port=1521 user='QGIS' password='qgis'"
+
+echo "Wait a moment while loading Oracle database."
+while ! echo exit | sqlplus -L SYSTEM/adminpass@$QGIS_ORACLETEST_DBNAME &> /dev/null
+do
+  printf "."
+  sleep 1
+done
+echo " done"
+
+pushd /root/QGIS > /dev/null
+/root/QGIS/tests/testdata/provider/testdata_oracle.sh $ORACLE_HOST
 popd > /dev/null # /root/QGIS
 
 # this is proving very flaky:
@@ -81,6 +101,3 @@ if [ $rv -eq 124 ] ; then
     printf '\n\n${bold}Build and test timeout. Please restart the build for meaningful results.${endbold}\n'
     exit #$rv
 fi
-
-
-

@@ -40,7 +40,7 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        cls.dbconn = "host=localhost port=1521 user='QGIS' password='qgis'"
+        cls.dbconn = "host=localhost/XEPDB1 port=1521 user='QGIS' password='qgis'"
         if 'QGIS_ORACLETEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_ORACLETEST_DB']
         # Create test layers
@@ -54,7 +54,7 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         cls.poly_provider = cls.poly_vl.dataProvider()
 
         cls.conn = QSqlDatabase.addDatabase('QOCISPATIAL', "oracletest")
-        cls.conn.setDatabaseName('10.0.0.2/orcl')
+        cls.conn.setDatabaseName('localhost/XEPDB1')
         if 'QGIS_ORACLETEST_DBNAME' in os.environ:
             cls.conn.setDatabaseName(os.environ['QGIS_ORACLETEST_DBNAME'])
         cls.conn.setUserName('QGIS')
