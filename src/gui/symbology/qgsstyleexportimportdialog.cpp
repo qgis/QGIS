@@ -398,7 +398,7 @@ void QgsStyleExportImportDialog::downloadStyleXml( const QUrl &url )
     QgsNetworkContentFetcherTask *fetcher = new QgsNetworkContentFetcherTask( url );
     fetcher->setDescription( tr( "Downloading style" ) );
     connect( progressDlg, &QProgressDialog::canceled, fetcher, &QgsNetworkContentFetcherTask::cancel );
-    connect( fetcher, &QgsNetworkContentFetcherTask::progressChanged, [progressDlg]( double progress ) { progressDlg->setValue( progress ); } );
+    connect( fetcher, &QgsNetworkContentFetcherTask::progressChanged, progressDlg, &QProgressDialog::setValue );
     connect( fetcher, &QgsNetworkContentFetcherTask::fetched, this, [this, fetcher, progressDlg]
     {
       QNetworkReply *reply = fetcher->reply();
