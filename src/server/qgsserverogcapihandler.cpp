@@ -359,6 +359,13 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
       return QgsServerOgcApi::contentTypeToStdString( ct );
     } );
 
+    // Replace newlines with <br>
+    env.add_callback( "nl2br", 1, [ = ]( Arguments & args )
+    {
+      QString text { QString::fromStdString( args.at( 0 )->get<std::string>( ) ) };
+      return text.replace( '\n', QLatin1String( "<br>" ) ).toStdString();
+    } );
+
 
     // Returns a list of parameter component data from components -> parameters by ref name
     // parameter( <ref object> )
