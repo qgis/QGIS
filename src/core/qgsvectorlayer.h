@@ -1841,7 +1841,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see commitErrors()
      * \see rollBack()
      */
-    bool commitChanges();
+    Q_INVOKABLE bool commitChanges();
 
     /**
      * Returns a list containing any error messages generated when attempting
@@ -1870,7 +1870,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QList<QgsRelation> referencingRelations( int idx ) const;
 
     //! Buffer with uncommitted editing operations. Only valid after editing has been turned on.
-    QgsVectorLayerEditBuffer *editBuffer() { return mEditBuffer; }
+    Q_INVOKABLE QgsVectorLayerEditBuffer *editBuffer() { return mEditBuffer; }
 
     /**
      * Buffer with uncommitted editing operations. Only valid after editing has been turned on.
@@ -2363,7 +2363,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see commitChanges()
      * \see rollBack()
      */
-    bool startEditing();
+    Q_INVOKABLE bool startEditing();
 
     /**
      * Sets the coordinate transform context to \a transformContext
