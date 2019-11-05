@@ -288,7 +288,7 @@ bool QgsFuzzifyRasterPowerMembershipAlgorithm::prepareAlgorithmFuzzificationPara
   Q_UNUSED( feedback )
   mFuzzifyHighBound = parameterAsDouble( parameters, QStringLiteral("FUZZYHIGHBOUND"), context);
   mFuzzifyLowBound = parameterAsDouble( parameters, QStringLiteral("FUZZYLOWBOUND"), context);
-  mFuzzifyExponent = parameterAsDouble( parameters, QStringLiteral("FUZZIFYEXPONENT"), context);
+  mFuzzifyExponent = parameterAsDouble( parameters, QStringLiteral("FUZZYEXPONENT"), context);
   return true;
 }
 
@@ -551,7 +551,7 @@ bool QgsFuzzifyRasterNearMembershipAlgorithm::prepareAlgorithmFuzzificationParam
 
 double QgsFuzzifyRasterNearMembershipAlgorithm::fuzzify( double &value )
 {
-  return 1/ ( 1 + mFuzzifySpread * std::pow( value - mFuzzifySpread, 2 ) );
+  return 1 / ( 1 + mFuzzifySpread * std::pow( value - mFuzzifyMidpoint, 2 ) );
 }
 
 
