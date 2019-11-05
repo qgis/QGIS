@@ -1336,7 +1336,7 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
     QVariant exprVal = props.value( QgsPalLayerSettings::Hali, expressionContext );
     if ( exprVal.isValid() )
     {
-      QString haliString = exprVal.toString();
+      const QString haliString = exprVal.toString();
       if ( haliString.compare( QLatin1String( "Center" ), Qt::CaseInsensitive ) == 0 )
       {
         hali = HAlign::HCenter;
@@ -1357,23 +1357,20 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
     QVariant exprVal = props.value( QgsPalLayerSettings::Vali, expressionContext );
     if ( exprVal.isValid() )
     {
-      QString valiString = exprVal.toString();
+      const QString valiString = exprVal.toString();
       if ( valiString.compare( QLatin1String( "Bottom" ), Qt::CaseInsensitive ) != 0 )
       {
-        if ( valiString.compare( QLatin1String( "Top" ), Qt::CaseInsensitive ) == 0 )
+        if ( valiString.compare( QLatin1String( "Base" ), Qt::CaseInsensitive ) == 0 )
+        {
+          vali = VAlign::VBaseLine;
+        }
+        else if ( valiString.compare( QLatin1String( "Half" ), Qt::CaseInsensitive ) == 0 )
+        {
+          vali = VAlign::VMiddle;
+        }
+        else  //'Cap' or 'Top'
         {
           vali = VAlign::VTop;
-        }
-        else
-        {
-          if ( valiString.compare( QLatin1String( "Base" ), Qt::CaseInsensitive ) == 0 )
-          {
-            vali = VAlign::VBaseLine;
-          }
-          else //'Cap' or 'Half'
-          {
-            vali = VAlign::VMiddle;
-          }
         }
       }
     }

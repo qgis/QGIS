@@ -429,7 +429,7 @@ void TestQgsDxfExport::testTextAlign()
 
   static int testNumber = 0;
   ++testNumber;
-  QString file = getTempFileName( QStringLiteral( "text_dxf%1" ).arg( testNumber ) );
+  QString file = getTempFileName( QStringLiteral( "text_dxf_%1_%2" ).arg( hali, vali ) );
   QFile dxfFile( file );
   QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
@@ -500,11 +500,23 @@ void TestQgsDxfExport::testTextAlign_data()
       << QStringLiteral( "Left" )
       << QStringLiteral( "Top" );
 
+  QTest::newRow( "Align right cap" )
+      << QgsDxfExport::HAlign::HRight
+      << QgsDxfExport::VAlign::VTop
+      << QStringLiteral( "Right" )
+      << QStringLiteral( "Cap" );
+
   QTest::newRow( "Align left base" )
       << QgsDxfExport::HAlign::HLeft
       << QgsDxfExport::VAlign::VBaseLine
       << QStringLiteral( "Left" )
       << QStringLiteral( "Base" );
+
+  QTest::newRow( "Align center half" )
+      << QgsDxfExport::HAlign::HCenter
+      << QgsDxfExport::VAlign::VMiddle
+      << QStringLiteral( "Center" )
+      << QStringLiteral( "Half" );
 }
 
 bool TestQgsDxfExport::testMtext( QgsVectorLayer *vlayer, const QString &tempFileName ) const
