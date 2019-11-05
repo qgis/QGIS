@@ -423,13 +423,13 @@ bool QgsOracleConn::exec( const QString &query, bool logError, QString *errorMes
     if ( logError )
     {
       QgsMessageLog::logMessage( tr( "Connection error: %1 returned %2" )
-                                 .arg( query ).arg( error ),
+                                 .arg( query, error ),
                                  tr( "Oracle" ) );
     }
     else
     {
       QgsDebugMsg( QStringLiteral( "Connection error: %1 returned %2" )
-                   .arg( query ).arg( error ) );
+                   .arg( query, error ) );
     }
     if ( errorMessage )
       *errorMessage = error;
