@@ -1108,7 +1108,7 @@ QString QgsApplication::userFullName()
   if ( sUserFullName()->isEmpty() )
     sUserFullName = userLoginName();
 #elif defined(Q_OS_ANDROID) || defined(__MINGW32__)
-  *sUserFullName() = "Not available";
+  *sUserFullName() = QStringLiteral( "Not available" );
 #else
   struct passwd *p = getpwuid( getuid() );
 
