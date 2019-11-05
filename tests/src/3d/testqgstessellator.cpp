@@ -357,8 +357,8 @@ void TestQgsTessellator::testBoundsScaling()
   polygon.fromWkt( "POLYGON((1 1, 1.00000001 1, 1.00000001 1.00000001, 1 1.0000000001, 1 1))" );
 
   QList<TriangleCoords> tc;
-  tc << TriangleCoords( QVector3D( 0, 1e-10, 0 ), QVector3D( 1e-08, 0, 0 ), QVector3D( 1e-08, 1e-08, 0 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 0, 1 ) );
-  tc << TriangleCoords( QVector3D( 0, 1e-10, 0 ), QVector3D( 0, 0, 0 ), QVector3D( 1e-08, 0, 0 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 0, 1 ) );
+  tc << TriangleCoords( QVector3D( 0, 1e-10f, 0 ), QVector3D( 1e-08f, 0, 0 ), QVector3D( 1e-08f, 1e-08f, 0 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 0, 1 ) );
+  tc << TriangleCoords( QVector3D( 0, 1e-10f, 0 ), QVector3D( 0, 0, 0 ), QVector3D( 1e-08f, 0, 0 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 0, 1 ) );
 
   // without using bounds -- numerically unstable, expect no result
   QgsTessellator t( 0, 0, true );

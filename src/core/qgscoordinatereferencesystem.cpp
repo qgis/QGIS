@@ -1755,7 +1755,7 @@ QString QgsCoordinateReferenceSystem::toWkt( WktVariant variant, bool multiline,
 #if PROJ_VERSION_MAJOR>=6
     if ( d->mPj )
     {
-      PJ_WKT_TYPE type;
+      PJ_WKT_TYPE type = PJ_WKT1_GDAL;
       switch ( variant )
       {
         case WKT1_GDAL:

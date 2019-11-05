@@ -1718,95 +1718,95 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
   QString metadata =
     // Layer Properties section
     // Use a nested table
-    QStringLiteral( "<tr><td>" ) %
-    QStringLiteral( "<table width=\"100%\" class=\"tabular-view\">" ) %
+    QStringLiteral( "<tr><td>"
+                    "<table width=\"100%\" class=\"tabular-view\">"
 
-    // Table header
-    QStringLiteral( "<tr><th class=\"strong\">" ) %
+                    // Table header
+                    "<tr><th class=\"strong\">" ) %
     tr( "Property" ) %
-    QStringLiteral( "</th>" ) %
-    QStringLiteral( "<th class=\"strong\">" ) %
+    QStringLiteral( "</th>"
+                    "<th class=\"strong\">" ) %
     tr( "Value" ) %
-    QStringLiteral( "</th></tr>" ) %
+    QStringLiteral( "</th></tr>"
 
-    // Name
-    QStringLiteral( "<tr><td>" ) %
+                    // Name
+                    "<tr><td>" ) %
     tr( "Name" ) %
-    QStringLiteral( "</td>" ) %
-    QStringLiteral( "<td>" ) %
+    QStringLiteral( "</td>"
+                    "<td>" ) %
     layer.name %
-    QStringLiteral( "</td></tr>" ) %
+    QStringLiteral( "</td></tr>"
 
-    // Layer Visibility (as managed by this provider)
-    QStringLiteral( "<tr><td>" ) %
+                    // Layer Visibility (as managed by this provider)
+                    "<tr><td>" ) %
     tr( "Visibility" ) %
-    QStringLiteral( "</td>" ) %
-    QStringLiteral( "<td>" ) %
+    QStringLiteral( "</td>"
+                    "<td>" ) %
     ( mActiveSubLayerVisibility.find( layer.name ).value() ? tr( "Visible" ) : tr( "Hidden" ) ) %
-    QStringLiteral( "</td></tr>" ) %
+    QStringLiteral( "</td></tr>"
 
-    // Layer Title
-    QStringLiteral( "<tr><td>" ) %
+                    // Layer Title
+                    "<tr><td>" ) %
     tr( "Title" ) %
-    QStringLiteral( "</td>" ) %
-    QStringLiteral( "<td>" ) %
+    QStringLiteral( "</td>"
+                    "<td>" ) %
     layer.title;
-  QStringLiteral( "</td></tr>" ) %
+  QStringLiteral( "</td></tr>"
 
-  // Layer Abstract
-  QStringLiteral( "<tr><td>" ) %
+                  // Layer Abstract
+                  "<tr><td>" ) %
   tr( "Abstract" ) %
-  QStringLiteral( "</td>" ) %
-  QStringLiteral( "<td>" ) %
+  QStringLiteral( "</td>"
+                  "<td>" ) %
   layer.abstract;
-  QStringLiteral( "</td></tr>" ) %
+  QStringLiteral( "</td></tr>"
 
-  // Layer Queryability
-  QStringLiteral( "<tr><td>" ) %
+                  // Layer Queryability
+                  "<tr><td>" ) %
   tr( "Can Identify" ) %
-  QStringLiteral( "</td>" ) %
-  QStringLiteral( "<td>" ) %
+  QStringLiteral( "</td>"
+                  "<td>" ) %
   ( layer.queryable ? tr( "Yes" ) : tr( "No" ) ) %
-  QStringLiteral( "</td></tr>" ) %
+  QStringLiteral( "</td></tr>"
 
-  // Layer Opacity
-  QStringLiteral( "<tr><td>" ) %
+                  // Layer Opacity
+                  "<tr><td>" ) %
   tr( "Can be Transparent" ) %
-  QStringLiteral( "</td>" ) %
-  QStringLiteral( "<td>" ) %
+  QStringLiteral( "</td>"
+                  "<td>" ) %
   ( layer.opaque ? tr( "No" ) : tr( "Yes" ) ) %
-  QStringLiteral( "</td></tr>" ) %
+  QStringLiteral( "</td></tr>"
 
-  // Layer Subsetability
-  QStringLiteral( "<tr><td>" ) %
+                  // Layer Subsetability
+                  "<tr><td>" ) %
   tr( "Can Zoom In" ) %
-  QStringLiteral( "</td>" ) %
-  QStringLiteral( "<td>" ) %
+  QStringLiteral( "</td>"
+                  "<td>" ) %
   ( layer.noSubsets ? tr( "No" ) : tr( "Yes" ) ) %
-  QStringLiteral( "</td></tr>" ) %
+  QStringLiteral( "</td></tr>"
 
-  // Layer Server Cascade Count
-  QStringLiteral( "<tr><td>" ) %
+                  // Layer Server Cascade Count
+                  "<tr><td>" ) %
   tr( "Cascade Count" ) %
-  QStringLiteral( "</td>" ) %
-  QStringLiteral( "<td>" ) %
+  QStringLiteral( "</td>"
+                  "<td>" ) %
   QString::number( layer.cascaded );
-  QStringLiteral( "</td></tr>" ) %
+  QStringLiteral( "</td></tr>"
 
-  // Layer Fixed Width
-  QStringLiteral( "<tr><td>" ) %
+                  // Layer Fixed Width
+                  "<tr><td>" ) %
   tr( "Fixed Width" ) %
-  QStringLiteral( "</td>" ) %
-  QStringLiteral( "<td>" ) %
+  QStringLiteral( "</td>"
+                  "<td>" ) %
   QString::number( layer.fixedWidth );
-  QStringLiteral( "</td></tr>" ) %
+  QStringLiteral( "</td></tr>"
 
-  // Layer Fixed Height
-  QStringLiteral( "<tr><td>" ) %
+                  // Layer Fixed Height
+                  "<tr><td>" ) %
   tr( "Fixed Height" ) %
-  QStringLiteral( "</td>" ) %
-  QStringLiteral( "<td>" ) %
-  QString::number( layer.fixedHeight );
+  QStringLiteral( "</td>"
+                  "<td>" ) %
+  QString::number( layer.fixedHeight ) %
   QStringLiteral( "</td></tr>" );
 
   // Layer Coordinate Reference Systems
@@ -1814,20 +1814,20 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
   {
     metadata += QStringLiteral( "<tr><td>" ) %
                 tr( "Available in CRS" ) %
-                QStringLiteral( "</td>" ) %
-                QStringLiteral( "<td>" ) %
-                layer.crs[j];
-    QStringLiteral( "</td></tr>" );
+                QStringLiteral( "</td>"
+                                "<td>" ) %
+                layer.crs[j] %
+                QStringLiteral( "</td></tr>" );
   }
 
   if ( layer.crs.size() > 10 )
   {
     metadata += QStringLiteral( "<tr><td>" ) %
                 tr( "Available in CRS" ) %
-                QStringLiteral( "</td>" ) %
-                QStringLiteral( "<td>" ) %
-                tr( "(and %n more)", "crs", layer.crs.size() - 10 );
-    QStringLiteral( "</td></tr>" );
+                QStringLiteral( "</td>"
+                                "<td>" ) %
+                tr( "(and %n more)", "crs", layer.crs.size() - 10 ) %
+                QStringLiteral( "</td></tr>" );
   }
 
   // Layer Styles
@@ -1837,33 +1837,33 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
 
     metadata += QStringLiteral( "<tr><td>" ) %
                 tr( "Available in style" ) %
-                QStringLiteral( "</td>" ) %
-                QStringLiteral( "<td>" ) %
+                QStringLiteral( "</td>"
+                                "<td>" ) %
 
                 // Nested table.
-                QStringLiteral( "<table width=\"100%\" class=\"tabular-view\">" ) %
+                QStringLiteral( "<table width=\"100%\" class=\"tabular-view\">"
 
-                // Layer Style Name
-                QStringLiteral( "<tr><th class=\"strong\">" ) %
+                                // Layer Style Name
+                                "<tr><th class=\"strong\">" ) %
                 tr( "Name" ) %
-                QStringLiteral( "</th>" ) %
-                QStringLiteral( "<td>" ) %
+                QStringLiteral( "</th>"
+                                "<td>" ) %
                 style.name %
-                QStringLiteral( "</td></tr>" ) %
+                QStringLiteral( "</td></tr>"
 
-                // Layer Style Title
-                QStringLiteral( "<tr><th class=\"strong\">" ) %
+                                // Layer Style Title
+                                "<tr><th class=\"strong\">" ) %
                 tr( "Title" ) %
-                QStringLiteral( "</th>" ) %
-                QStringLiteral( "<td>" ) %
+                QStringLiteral( "</th>"
+                                "<td>" ) %
                 style.title %
-                QStringLiteral( "</td></tr>" ) %
+                QStringLiteral( "</td></tr>"
 
-                // Layer Style Abstract
-                QStringLiteral( "<tr><th class=\"strong\">" ) %
+                                // Layer Style Abstract
+                                "<tr><th class=\"strong\">" ) %
                 tr( "Abstract" ) %
-                QStringLiteral( "</th>" ) %
-                QStringLiteral( "<td>" ) %
+                QStringLiteral( "</th>"
+                                "<td>" ) %
                 style.abstract %
                 QStringLiteral( "</td></tr>" );
 
@@ -1872,26 +1872,25 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
     {
       metadata += QStringLiteral( "<tr><th class=\"strong\">" ) %
                   tr( "LegendURLs" ) %
-                  QStringLiteral( "</th>" ) %
-                  QStringLiteral( "<td><table class=\"tabular-view\">" ) %
-                  QStringLiteral( "<tr><th>Format</th><th>URL</th></tr>" );
+                  QStringLiteral( "</th>"
+                                  "<td><table class=\"tabular-view\">"
+                                  "<tr><th>Format</th><th>URL</th></tr>" );
       for ( int k = 0; k < style.legendUrl.size(); k++ )
       {
         const QgsWmsLegendUrlProperty &l = style.legendUrl[k];
-        metadata += QStringLiteral( "<tr><td>" ) % l.format %   QStringLiteral( "</td><td>" ) % l.onlineResource.xlinkHref % QStringLiteral( "</td></tr>" );
+        metadata += QStringLiteral( "<tr><td>" ) % l.format % QStringLiteral( "</td><td>" ) % l.onlineResource.xlinkHref % QStringLiteral( "</td></tr>" );
       }
       metadata += QStringLiteral( "</table></td></tr>" );
     }
 
     // Close the nested table
-    metadata += QStringLiteral( "</table>" ) %
-                QStringLiteral( "</td></tr>" );
+    metadata += QStringLiteral( "</table>"
+                                "</td></tr>" );
   }
 
   // Close the nested table
-  metadata += QStringLiteral( "</table>" ) %
-              QStringLiteral( "</td></tr>" );
-
+  metadata += QStringLiteral( "</table>"
+                              "</td></tr>" );
   return metadata;
 }
 
@@ -1913,161 +1912,160 @@ QString QgsWmsProvider::htmlMetadata()
   {
     metadata += QStringLiteral( "&nbsp;<a href=\"\" onclick=\"document.getElementById('tilesetproperties').scrollIntoView(); return false;\">" ) %
                 tr( "Tile Layer Properties" ) %
-                QStringLiteral( "</a> " ) %
-                QStringLiteral( "&nbsp;<a href=\"\" onclick=\"document.getElementById('cachestats'); return false;\">" ) %
+                QStringLiteral( "</a> "
+                                "&nbsp;<a href=\"\" onclick=\"document.getElementById('cachestats'); return false;\">" ) %
                 tr( "Cache Stats" ) %
                 QStringLiteral( "</a> " );
   }
 
-  metadata += QStringLiteral( "<br /><table class=\"tabular-view\">" ) %  // Nested table 1
-              // Server Properties section
-              QStringLiteral( "<tr><th class=\"strong\" id=\"serverproperties\">" ) %
+  metadata += QStringLiteral( "<br /><table class=\"tabular-view\">" // Nested table 1
+                              // Server Properties section
+                              "<tr><th class=\"strong\" id=\"serverproperties\">" ) %
               tr( "Server Properties" ) %
-              QStringLiteral( "</th></tr>" ) %
+              QStringLiteral( "</th></tr>"
 
-              // Use a nested table
-              QStringLiteral( "<tr><td>" ) %
-              QStringLiteral( "<table width=\"100%\" class=\"tabular-view\">" ) %  // Nested table 2
+                              // Use a nested table
+                              "<tr><td>"
+                              "<table width=\"100%\" class=\"tabular-view\">" ); // Nested table 2
 
-              // Table header
-              QStringLiteral( "<tr><th class=\"strong\">" ) %
+  // Table header
+  metadata += QStringLiteral( "<tr><th class=\"strong\">" ) %
               tr( "Property" ) %
-              QStringLiteral( "</th>" ) %
-              QStringLiteral( "<th class=\"strong\">" ) %
+              QStringLiteral( "</th>"
+                              "<th class=\"strong\">" ) %
               tr( "Value" ) %
-              QStringLiteral( "</th></tr>" ) %
+              QStringLiteral( "</th></tr>" );
 
-              // WMS Version
-              QStringLiteral( "<tr><td>" ) %
+  // WMS Version
+  metadata += QStringLiteral( "<tr><td>" ) %
               tr( "WMS Version" ) %
-              QStringLiteral( "</td>" ) %
-              QStringLiteral( "<td>" ) %
+              QStringLiteral( "</td>"
+                              "<td>" ) %
               mCaps.mCapabilities.version %
-              QStringLiteral( "</td></tr>" ) %
+              QStringLiteral( "</td></tr>" );
 
-              // Service Title
-              QStringLiteral( "<tr><td>" ) %
+  // Service Title
+  metadata += QStringLiteral( "<tr><td>" ) %
               tr( "Title" ) %
-              QStringLiteral( "</td>" ) %
-              QStringLiteral( "<td>" ) %
+              QStringLiteral( "</td>"
+                              "<td>" ) %
               mCaps.mCapabilities.service.title %
-              QStringLiteral( "</td></tr>" ) %
+              QStringLiteral( "</td></tr>" );
 
-              // Service Abstract
-              QStringLiteral( "<tr><td>" ) %
+  // Service Abstract
+  metadata += QStringLiteral( "<tr><td>" ) %
               tr( "Abstract" ) %
-              QStringLiteral( "</td>" ) %
-              QStringLiteral( "<td>" ) %
+              QStringLiteral( "</td>"
+                              "<td>" ) %
               mCaps.mCapabilities.service.abstract %
-              QStringLiteral( "</td></tr>" ) %
+              QStringLiteral( "</td></tr>" );
 
-              // Service Keywords
-              QStringLiteral( "<tr><td>" ) %
+  // Service Keywords
+  metadata += QStringLiteral( "<tr><td>" ) %
               tr( "Keywords" ) %
-              QStringLiteral( "</td>" ) %
-              QStringLiteral( "<td>" ) %
+              QStringLiteral( "</td>"
+                              "<td>" ) %
               mCaps.mCapabilities.service.keywordList.join( QStringLiteral( "<br />" ) ) %
-              QStringLiteral( "</td></tr>" ) %
+              QStringLiteral( "</td></tr>" );
 
-              // Service Online Resource
-              QStringLiteral( "<tr><td>" ) %
+  // Service Online Resource
+  metadata += QStringLiteral( "<tr><td>" ) %
               tr( "Online Resource" ) %
-              QStringLiteral( "</td>" ) %
-              QStringLiteral( "<td>" ) %
+              QStringLiteral( "</td>"
+                              "<td>" ) %
               '-' %
-              QStringLiteral( "</td></tr>" ) %
+              QStringLiteral( "</td></tr>" );
 
-              // Service Contact Information
-              QStringLiteral( "<tr><td>" ) %
+  // Service Contact Information
+  metadata += QStringLiteral( "<tr><td>" ) %
               tr( "Contact Person" ) %
-              QStringLiteral( "</td>" ) %
-              QStringLiteral( "<td>" ) %
+              QStringLiteral( "</td>"
+                              "<td>" ) %
               mCaps.mCapabilities.service.contactInformation.contactPersonPrimary.contactPerson %
               QStringLiteral( "<br />" ) %
               mCaps.mCapabilities.service.contactInformation.contactPosition %
               QStringLiteral( "<br />" ) %
               mCaps.mCapabilities.service.contactInformation.contactPersonPrimary.contactOrganization %
-              QStringLiteral( "</td></tr>" ) %
-
-              // Service Fees
-              QStringLiteral( "<tr><td>" ) %
-              tr( "Fees" ) %
-              QStringLiteral( "</td>" ) %
-              QStringLiteral( "<td>" ) %
-              mCaps.mCapabilities.service.fees %
-              QStringLiteral( "</td></tr>" ) %
-
-              // Service Access Constraints
-              QStringLiteral( "<tr><td>" ) %
-              tr( "Access Constraints" ) %
-              QStringLiteral( "</td>" ) %
-              QStringLiteral( "<td>" ) %
-              mCaps.mCapabilities.service.accessConstraints %
-              QStringLiteral( "</td></tr>" ) %
-
-              // Base URL
-              QStringLiteral( "<tr><td>" ) %
-              tr( "GetCapabilitiesUrl" ) %
-              QStringLiteral( "</td>" ) %
-              QStringLiteral( "<td>" ) %
-              mSettings.mBaseUrl %
-              QStringLiteral( "</td></tr>" ) %
-
-              QStringLiteral( "<tr><td>" ) %
-              tr( "GetMapUrl" ) %
-              QStringLiteral( "</td>" ) %
-              QStringLiteral( "<td>" ) %
-              getMapUrl() % ( mSettings.mIgnoreGetMapUrl ? tr( "&nbsp;<font color=\"red\">(advertised but ignored)</font>" ) : QString() ) %
-              QStringLiteral( "</td></tr>" ) %
-
-              QStringLiteral( "<tr><td>" ) %
-              tr( "GetFeatureInfoUrl" ) %
-              QStringLiteral( "</td>" ) %
-              QStringLiteral( "<td>" ) %
-              getFeatureInfoUrl() % ( mSettings.mIgnoreGetFeatureInfoUrl ? tr( "&nbsp;<font color=\"red\">(advertised but ignored)</font>" ) : QString() ) %
-              QStringLiteral( "</td></tr>" ) %
-
-              QStringLiteral( "<tr><td>" ) %
-              tr( "GetLegendGraphic" ) %
-              QStringLiteral( "</td>" ) %
-              QStringLiteral( "<td>" ) %
-              getLegendGraphicUrl() + ( mSettings.mIgnoreGetMapUrl ? tr( "&nbsp;<font color=\"red\">(advertised but ignored)</font>" ) : QString() ) %
               QStringLiteral( "</td></tr>" );
 
+  // Service Fees
+  metadata += QStringLiteral( "<tr><td>" ) %
+              tr( "Fees" ) %
+              QStringLiteral( "</td>"
+                              "<td>" ) %
+              mCaps.mCapabilities.service.fees %
+              QStringLiteral( "</td></tr>" );
+
+  // Service Access Constraints
+  metadata += QStringLiteral( "<tr><td>" ) %
+              tr( "Access Constraints" ) %
+              QStringLiteral( "</td>"
+                              "<td>" ) %
+              mCaps.mCapabilities.service.accessConstraints %
+              QStringLiteral( "</td></tr>" );
+
+  // Base URL
+  metadata += QStringLiteral( "<tr><td>" ) %
+              tr( "GetCapabilitiesUrl" ) %
+              QStringLiteral( "</td>"
+                              "<td>" ) %
+              mSettings.mBaseUrl %
+              QStringLiteral( "</td></tr>" );
+
+  metadata += QStringLiteral( "<tr><td>" ) %
+              tr( "GetMapUrl" ) %
+              QStringLiteral( "</td>"
+                              "<td>" ) %
+              getMapUrl() % ( mSettings.mIgnoreGetMapUrl ? tr( "&nbsp;<font color=\"red\">(advertised but ignored)</font>" ) : QString() ) %
+              QStringLiteral( "</td></tr>" );
+
+  metadata += QStringLiteral( "<tr><td>" ) %
+              tr( "GetFeatureInfoUrl" ) %
+              QStringLiteral( "</td>"
+                              "<td>" ) %
+              getFeatureInfoUrl() % ( mSettings.mIgnoreGetFeatureInfoUrl ? tr( "&nbsp;<font color=\"red\">(advertised but ignored)</font>" ) : QString() ) %
+              QStringLiteral( "</td></tr>" );
+
+  metadata += QStringLiteral( "<tr><td>" ) %
+              tr( "GetLegendGraphic" ) %
+              QStringLiteral( "</td>"
+                              "<td>" ) %
+              getLegendGraphicUrl() % ( mSettings.mIgnoreGetMapUrl ? tr( "&nbsp;<font color=\"red\">(advertised but ignored)</font>" ) : QString() ) %
+              QStringLiteral( "</td></tr>" );
 
   if ( mSettings.mTiled )
   {
     metadata += QStringLiteral( "<tr><td>" ) %
                 tr( "Tile Layer Count" ) %
-                QStringLiteral( "</td>" ) %
-                QStringLiteral( "<td>" ) %
+                QStringLiteral( "</td>"
+                                "<td>" ) %
                 QString::number( mCaps.mTileLayersSupported.size() ) %
-                QStringLiteral( "</td></tr>" ) %
-                QStringLiteral( "<tr><td>" ) %
+                QStringLiteral( "</td></tr>"
+                                "<tr><td>" ) %
                 tr( "GetTileUrl" ) %
-                QStringLiteral( "</td>" ) %
-                QStringLiteral( "<td>" ) %
-                getTileUrl();
-    QStringLiteral( "</td></tr>" );
+                QStringLiteral( "</td>"
+                                "<td>" ) %
+                getTileUrl() %
+                QStringLiteral( "</td></tr>" );
 
     if ( mTileLayer )
     {
       metadata += QStringLiteral( "<tr><td>" ) %
                   tr( "Tile templates" ) %
-                  QStringLiteral( "</td>" ) %
-                  QStringLiteral( "<td>" );
+                  QStringLiteral( "</td>"
+                                  "<td>" );
       for ( QHash<QString, QString>::const_iterator it = mTileLayer->getTileURLs.constBegin();
             it != mTileLayer->getTileURLs.constEnd();
             ++it )
       {
         metadata += QStringLiteral( "%1:%2<br>" ).arg( it.key(), it.value() );
       }
-      metadata += QStringLiteral( "</td></tr>" ) %
+      metadata += QStringLiteral( "</td></tr>"
 
-                  QStringLiteral( "<tr><td>" ) %
+                                  "<tr><td>" ) %
                   tr( "FeatureInfo templates" ) %
-                  QStringLiteral( "</td>" ) %
-                  QStringLiteral( "<td>" );
+                  QStringLiteral( "</td>"
+                                  "<td>" );
       for ( QHash<QString, QString>::const_iterator it = mTileLayer->getFeatureInfoURLs.constBegin();
             it != mTileLayer->getFeatureInfoURLs.constEnd();
             ++it )
@@ -2080,41 +2078,41 @@ QString QgsWmsProvider::htmlMetadata()
     // GetFeatureInfo Request Formats
     metadata += QStringLiteral( "<tr><td>" ) %
                 tr( "Identify Formats" ) %
-                QStringLiteral( "</td>" ) %
-                QStringLiteral( "<td>" ) %
-                mTileLayer->infoFormats.join( QStringLiteral( "<br />" ) );
-    QStringLiteral( "</td></tr>" );
+                QStringLiteral( "</td>"
+                                "<td>" ) %
+                mTileLayer->infoFormats.join( QStringLiteral( "<br />" ) ) %
+                QStringLiteral( "</td></tr>" );
   }
   else
   {
     // GetMap Request Formats
     metadata += QStringLiteral( "<tr><td>" ) %
                 tr( "Image Formats" ) %
-                QStringLiteral( "</td>" ) %
-                QStringLiteral( "<td>" ) %
+                QStringLiteral( "</td>"
+                                "<td>" ) %
                 mCaps.mCapabilities.capability.request.getMap.format.join( QStringLiteral( "<br />" ) ) %
-                QStringLiteral( "</td></tr>" ) %
+                QStringLiteral( "</td></tr>"
 
-                // GetFeatureInfo Request Formats
-                QStringLiteral( "<tr><td>" ) %
+                                // GetFeatureInfo Request Formats
+                                "<tr><td>" ) %
                 tr( "Identify Formats" ) %
-                QStringLiteral( "</td>" ) %
-                QStringLiteral( "<td>" ) %
-                mCaps.mCapabilities.capability.request.getFeatureInfo.format.join( QStringLiteral( "<br />" ) );
-    QStringLiteral( "</td></tr>" ) %
+                QStringLiteral( "</td>"
+                                "<td>" ) %
+                mCaps.mCapabilities.capability.request.getFeatureInfo.format.join( QStringLiteral( "<br />" ) ) %
+                QStringLiteral( "</td></tr>"
 
-    // Layer Count (as managed by this provider)
-    QStringLiteral( "<tr><td>" ) %
-    tr( "Layer Count" ) %
-    QStringLiteral( "</td>" ) %
-    QStringLiteral( "<td>" ) %
-    QString::number( mCaps.mLayersSupported.size() );
-    QStringLiteral( "</td></tr>" );
+                                // Layer Count (as managed by this provider)
+                                "<tr><td>" ) %
+                tr( "Layer Count" ) %
+                QStringLiteral( "</td>"
+                                "<td>" ) %
+                QString::number( mCaps.mLayersSupported.size() ) %
+                QStringLiteral( "</td></tr>" );
   }
 
   // Close the nested table 2
-  metadata += QStringLiteral( "</table>" ) %
-              QStringLiteral( "</td></tr>" );
+  metadata += QStringLiteral( "</table>"
+                              "</td></tr>" );
 
   // Layer properties
   if ( !mSettings.mTiled )
@@ -2154,12 +2152,12 @@ QString QgsWmsProvider::htmlMetadata()
     // Tileset properties
     metadata += QStringLiteral( "<tr><th class=\"strong\" id=\"tilesetproperties\">" ) %
                 tr( "Tileset Properties" ) %
-                QStringLiteral( "</th></tr>" ) %
+                QStringLiteral( "</th></tr>"
 
-                // Iterate through tilesets
-                QStringLiteral( "<tr><td>" ) %
+                                // Iterate through tilesets
+                                "<tr><td>"
 
-                QStringLiteral( "<table width=\"100%\" class=\"tabular-view\">" );  // Nested table 3
+                                "<table width=\"100%\" class=\"tabular-view\">" );  // Nested table 3
 
     for ( const QgsWmtsTileLayer &l : qgis::as_const( mCaps.mTileLayersSupported ) )
     {
@@ -2167,9 +2165,9 @@ QString QgsWmsProvider::htmlMetadata()
                   tr( "Identifier" ) %
                   QStringLiteral( "</th><th class=\"strong\">" ) %
                   tr( "Tile mode" ) %
-                  QStringLiteral( "</th></tr>" ) %
+                  QStringLiteral( "</th></tr>"
 
-                  QStringLiteral( "<tr><td>" ) %
+                                  "<tr><td>" ) %
                   l.identifier %
                   QStringLiteral( "</td><td class=\"strong\">" );
 
@@ -2190,43 +2188,43 @@ QString QgsWmsProvider::htmlMetadata()
         metadata += tr( "Invalid tile mode" );
       }
 
-      metadata += QStringLiteral( "</td></tr>" ) %
+      metadata += QStringLiteral( "</td></tr>"
 
-                  // Table header
-                  QStringLiteral( "<tr><th class=\"strong\">" ) %
+                                  // Table header
+                                  "<tr><th class=\"strong\">" ) %
                   tr( "Property" ) %
-                  QStringLiteral( "</th>" ) %
-                  QStringLiteral( "<th class=\"strong\">" ) %
+                  QStringLiteral( "</th>"
+                                  "<th class=\"strong\">" ) %
                   tr( "Value" ) %
-                  QStringLiteral( "</th></tr>" ) %
+                  QStringLiteral( "</th></tr>"
 
-                  QStringLiteral( "<tr><td class=\"strong\">" ) %
+                                  "<tr><td class=\"strong\">" ) %
                   tr( "Title" ) %
-                  QStringLiteral( "</td>" ) %
-                  QStringLiteral( "<td>" ) %
+                  QStringLiteral( "</td>"
+                                  "<td>" ) %
                   l.title %
-                  QStringLiteral( "</td></tr>" ) %
+                  QStringLiteral( "</td></tr>"
 
-                  QStringLiteral( "<tr><td class=\"strong\">" ) %
+                                  "<tr><td class=\"strong\">" ) %
                   tr( "Abstract" ) %
-                  QStringLiteral( "</td>" ) %
-                  QStringLiteral( "<td>" ) %
+                  QStringLiteral( "</td>"
+                                  "<td>" ) %
                   l.abstract %
-                  QStringLiteral( "</td></tr>" ) %
+                  QStringLiteral( "</td></tr>"
 
-                  QStringLiteral( "<tr><td class=\"strong\">" ) %
+                                  "<tr><td class=\"strong\">" ) %
                   tr( "Selected" ) %
-                  QStringLiteral( "</td>" ) %
-                  QStringLiteral( "<td class=\"strong\">" ) %
-                  l.identifier == mSettings.mActiveSubLayers.join( QStringLiteral( "," ) ) ? tr( "Yes" ) : tr( "No" ) %
+                  QStringLiteral( "</td>"
+                                  "<td class=\"strong\">" ) %
+                  ( l.identifier == mSettings.mActiveSubLayers.join( QStringLiteral( "," ) ) ? tr( "Yes" ) : tr( "No" ) ) %
                   QStringLiteral( "</td></tr>" );
 
       if ( !l.styles.isEmpty() )
       {
         metadata += QStringLiteral( "<tr><td class=\"strong\">" ) %
                     tr( "Available Styles" ) %
-                    QStringLiteral( "</td>" ) %
-                    QStringLiteral( "<td class=\"strong\">" );
+                    QStringLiteral( "</td>"
+                                    "<td class=\"strong\">" );
         QStringList styles;
         for ( const QgsWmtsStyle &style : qgis::as_const( l.styles ) )
         {
@@ -2238,13 +2236,13 @@ QString QgsWmsProvider::htmlMetadata()
 
       metadata += QStringLiteral( "<tr><td class=\"strong\">" ) %
                   tr( "CRS" ) %
-                  QStringLiteral( "</td>" ) %
-                  QStringLiteral( "<td>" ) %
-                  QStringLiteral( "<table class=\"tabular-view\"><tr>" ) %  // Nested table 4
-                  QStringLiteral( "<td class=\"strong\">" ) %
+                  QStringLiteral( "</td>"
+                                  "<td>"
+                                  "<table class=\"tabular-view\"><tr>" // Nested table 4
+                                  "<td class=\"strong\">" ) %
                   tr( "CRS" ) %
-                  QStringLiteral( "</td>" ) %
-                  QStringLiteral( "<td class=\"strong\">" ) %
+                  QStringLiteral( "</td>"
+                                  "<td class=\"strong\">" ) %
                   tr( "Bounding Box" ) %
                   QStringLiteral( "</td>" );
       for ( int i = 0; i < l.boundingBoxes.size(); i++ )
@@ -2255,8 +2253,8 @@ QString QgsWmsProvider::htmlMetadata()
                     l.boundingBoxes[i].box.toString() %
                     QStringLiteral( "</td></tr>" );
       }
-      metadata += QStringLiteral( "</table></td></tr>" ) %  // End nested table 4
-                  QStringLiteral( "<tr><td class=\"strong\">" ) %
+      metadata += QStringLiteral( "</table></td></tr>"  // End nested table 4
+                                  "<tr><td class=\"strong\">" ) %
                   tr( "Available Tilesets" ) %
                   QStringLiteral( "</td><td class=\"strong\">" );
 
@@ -2273,9 +2271,9 @@ QString QgsWmsProvider::htmlMetadata()
     if ( mTileMatrixSet )
     {
       // Iterate through tilesets
-      metadata += QStringLiteral( "<tr><td><table width=\"100%\" class=\"tabular-view\">" ) %  // Nested table 3
+      metadata += QStringLiteral( "<tr><td><table width=\"100%\" class=\"tabular-view\">"  // Nested table 3
 
-                  QStringLiteral( "<tr><th colspan=14 class=\"strong\">%1 %2</th></tr>"
+                                  "<tr><th colspan=14 class=\"strong\">%1 %2</th></tr>"
                                   "<tr>"
                                   "<th rowspan=2 class=\"strong\">%3</th>"
                                   "<th colspan=2 class=\"strong\">%4</th>"
@@ -2392,40 +2390,40 @@ QString QgsWmsProvider::htmlMetadata()
 
     metadata += QStringLiteral( "<tr><th class=\"strong\" id=\"cachestats\">" ) %
                 tr( "Cache stats" ) %
-                QStringLiteral( "</th></tr>" ) %
+                QStringLiteral( "</th></tr>"
 
-                QStringLiteral( "<tr><td><table width=\"100%\" class=\"tabular-view\">" ) %  // Nested table 3
+                                "<tr><td><table width=\"100%\" class=\"tabular-view\">"  // Nested table 3
 
-                QStringLiteral( "<tr><th class=\"strong\">" ) %
+                                "<tr><th class=\"strong\">" ) %
                 tr( "Property" ) %
-                QStringLiteral( "</th>" ) %
-                QStringLiteral( "<th class=\"strong\">" ) %
+                QStringLiteral( "</th>"
+                                "<th class=\"strong\">" ) %
                 tr( "Value" ) %
-                QStringLiteral( "</th></tr>" ) %
+                QStringLiteral( "</th></tr>"
 
-                QStringLiteral( "<tr><td>" ) %
+                                "<tr><td>" ) %
                 tr( "Hits" ) %
                 QStringLiteral( "</td><td>" ) %
                 QString::number( stat.cacheHits ) %
-                QStringLiteral( "</td></tr>" ) %
+                QStringLiteral( "</td></tr>"
 
-                QStringLiteral( "<tr><td>" ) %
+                                "<tr><td>" ) %
                 tr( "Misses" ) %
                 QStringLiteral( "</td><td>" ) %
                 QString::number( stat.cacheMisses ) %
-                QStringLiteral( "</td></tr>" ) %
+                QStringLiteral( "</td></tr>"
 
-                QStringLiteral( "<tr><td>" ) %
+                                "<tr><td>" ) %
                 tr( "Errors" ) %
                 QStringLiteral( "</td><td>" ) %
                 QString::number( stat.errors ) %
-                QStringLiteral( "</td></tr>" ) %
+                QStringLiteral( "</td></tr>"
 
-                QStringLiteral( "</table></td></tr>" );  // End nested table 3
+                                "</table></td></tr>" );  // End nested table 3
   }
 
-  metadata += QStringLiteral( "</table>" ) %  // End nested table 2
-              QStringLiteral( "</table></div></td></tr>\n" );  // End nested table 1
+  metadata += QStringLiteral( "</table>" // End nested table 2
+                              "</table></div></td></tr>\n" );  // End nested table 1
 
   return metadata;
 }

@@ -597,15 +597,17 @@ void CORE_EXPORT qgsFree( void *ptr ) SIP_SKIP;
 
 #ifndef SIP_RUN
 
-/**
- * Wkt string that represents a geographic coord sys
- * \since QGIS GEOWkt
- */
 #ifdef _MSC_VER
-QString CORE_EXPORT geoWkt()
+#define CONSTLATIN1STRING inline const QLatin1String
 #else
-constexpr QLatin1String CORE_EXPORT geoWkt()
+#define CONSTLATIN1STRING constexpr QLatin1String
 #endif
+
+/**
+* Wkt string that represents a geographic coord sys
+* \since QGIS GEOWkt
+*/
+CONSTLATIN1STRING geoWkt()
 {
   return QLatin1String(
            "GEOGCS[\"WGS 84\", "
@@ -623,34 +625,23 @@ constexpr QLatin1String CORE_EXPORT geoWkt()
 }
 
 //! PROJ4 string that represents a geographic coord sys
-#ifdef _MSC_VER
-QString CORE_EXPORT geoProj4()
-#else
-constexpr QLatin1String CORE_EXPORT geoProj4()
-#endif
+CONSTLATIN1STRING geoProj4()
 {
   return QLatin1String( "+proj=longlat +datum=WGS84 +no_defs" );
 }
 
 //! Geographic coord sys from EPSG authority
-#ifdef _MSC_VER
-QString CORE_EXPORT geoEpsgCrsAuthId()
-#else
-constexpr QLatin1String CORE_EXPORT geoEpsgCrsAuthId()
-#endif
+CONSTLATIN1STRING geoEpsgCrsAuthId()
 {
   return QLatin1String( "EPSG:4326" );
 }
 
 //! Constant that holds the string representation for "No ellips/No CRS"
-#ifdef _MSC_VER
-QString CORE_EXPORT geoNone()
-#else
-constexpr QLatin1String CORE_EXPORT geoNone()
-#endif
+CONSTLATIN1STRING geoNone()
 {
   return QLatin1String( "NONE" );
 }
+
 ///@cond PRIVATE
 
 //! Delay between the scheduling of 2 preview jobs
@@ -805,15 +796,15 @@ typedef unsigned long long qgssize;
  * Wkt string that represents a geographic coord sys
  * \since QGIS GEOWkt
  */
-QString CORE_EXPORT geoWkt()
+QString CORE_EXPORT geoWkt();
 
 //! PROJ4 string that represents a geographic coord sys
-QString CORE_EXPORT geoProj4()
+QString CORE_EXPORT geoProj4();
 
 //! Geographic coord sys from EPSG authority
-QString CORE_EXPORT geoEpsgCrsAuthId()
+QString CORE_EXPORT geoEpsgCrsAuthId();
 
 //! Constant that holds the string representation for "No ellips/No CRS"
-QString CORE_EXPORT geoNone()
+QString CORE_EXPORT geoNone();
 
 #endif

@@ -114,7 +114,6 @@ QgsApplication::ApplicationMembers *QgsApplication::sApplicationMembers = nullpt
 QgsAuthManager *QgsApplication::sAuthManager = nullptr;
 int ABISYM( QgsApplication::sMaxThreads ) = -1;
 
-
 Q_GLOBAL_STATIC( QStringList, sFileOpenEventList )
 Q_GLOBAL_STATIC( QString, sPrefixPath )
 Q_GLOBAL_STATIC( QString, sPluginPath )
@@ -232,14 +231,14 @@ void QgsApplication::init( QString profileFolder )
     // we run from source directory - not installed to destination (specified prefix)
     *sPrefixPath() = QString(); // set invalid path
 #if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
-    setPluginPath( *sBuildOutputPath() + '/' + QString( QGIS_PLUGIN_SUBDIR ) + '/' + ABISYM( mCfgIntDir ) );
+    setPluginPath( *sBuildOutputPath() + '/' + QString( QGIS_PLUGIN_SUBDIR ) + '/' + *sCfgIntDir() );
 #else
     setPluginPath( *sBuildOutputPath() + '/' + QStringLiteral( QGIS_PLUGIN_SUBDIR ) );
 #endif
     setPkgDataPath( *sBuildOutputPath() + QStringLiteral( "/data" ) ); // in buildDir/data - used for: doc, resources, svg
     *sLibraryPath() = *sBuildOutputPath() + '/' + QGIS_LIB_SUBDIR + '/';
 #if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
-    *sLibexecPath() = *sBuildOutputPath() + '/' + QGIS_LIBEXEC_SUBDIR + '/' + ABISYM( mCfgIntDir ) + '/';
+    *sLibexecPath() = *sBuildOutputPath() + '/' + QGIS_LIBEXEC_SUBDIR + '/' + *sCfgIntDir() + '/';
 #else
     *sLibexecPath() = *sBuildOutputPath() + '/' + QGIS_LIBEXEC_SUBDIR + '/';
 #endif
@@ -464,9 +463,9 @@ void QgsApplication::setPrefixPath( const QString &prefixPath, bool useDefaultPa
 {
   *sPrefixPath() = prefixPath;
 #if defined(Q_OS_WIN)
-  if ( *sPrefixPath().endsWith( "/bin" ) )
+  if ( sPrefixPath()->endsWith( "/bin" ) )
   {
-    *sPrefixPath().chop( 4 );
+    sPrefixPath()->chop( 4 );
   }
 #endif
   if ( useDefaultPaths && !ABISYM( mRunningFromBuildDir ) )
@@ -736,8 +735,8 @@ QString QgsApplication::resolvePkgPath()
       QgsDebugMsgLevel( QStringLiteral( "- source directory: %1" ).arg( sBuildSourcePath()->toUtf8().constData() ), 4 );
       QgsDebugMsgLevel( QStringLiteral( "- output directory of the build: %1" ).arg( sBuildOutputPath()->toUtf8().constData() ), 4 );
 #if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
-      ABISYM( mCfgIntDir ) = appPath.split( '/', QString::SkipEmptyParts ).last();
-      qDebug( "- cfg: %s", ABISYM( mCfgIntDir ).toUtf8().constData() );
+      *sCfgIntDir() = appPath.split( '/', QString::SkipEmptyParts ).last();
+      qDebug( "- cfg: %s", sCfgIntDir()->toUtf8().constData() );
 #endif
     }
   }
@@ -1101,12 +1100,12 @@ QString QgsApplication::userFullName()
   //note - this only works for accounts connected to domain
   if ( GetUserNameEx( NameDisplay, ( TCHAR * )name, &size ) )
   {
-    sUserFullName = QString::fromLocal8Bit( name );
+    *sUserFullName() = QString::fromLocal8Bit( name );
   }
 
   //fall back to login name
   if ( sUserFullName()->isEmpty() )
-    sUserFullName = userLoginName();
+    *sUserFullName() = userLoginName();
 #elif defined(Q_OS_ANDROID) || defined(__MINGW32__)
   *sUserFullName() = QStringLiteral( "Not available" );
 #else
@@ -1603,6 +1602,13 @@ QString QgsApplication::buildOutputPath()
 {
   return *sBuildOutputPath();
 }
+
+#if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
+QString QgsApplication::cfgIntDir()
+{
+  return *sCfgIntDir();
+}
+#endif
 
 void QgsApplication::skipGdalDriver( const QString &driver )
 {
