@@ -350,7 +350,6 @@ QgsRuleBasedLabeling::Rule::RegisterResult QgsRuleBasedLabeling::Rule::registerF
   if ( !isFilterOK( feature, context )
        || !isScaleOK( context.rendererScale() ) )
   {
-    delete symbol;
     return Filtered;
   }
 
