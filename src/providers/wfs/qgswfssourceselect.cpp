@@ -900,7 +900,7 @@ void QgsWFSSourceSelect::treeWidgetCurrentRowChanged( const QModelIndex &current
   Q_UNUSED( previous )
   QgsDebugMsg( QStringLiteral( "treeWidget_currentRowChanged called" ) );
   changeCRSFilter();
-  mBuildQueryButton->setEnabled( !isOapif() && current.isValid() );
+  mBuildQueryButton->setEnabled( current.isValid() );
   emit enableButtons( current.isValid() );
 }
 
