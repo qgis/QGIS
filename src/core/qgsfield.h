@@ -20,7 +20,6 @@
 #include <QVariant>
 #include <QVector>
 #include <QSharedDataPointer>
-#include "qgsfield_p.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
@@ -35,6 +34,8 @@ typedef QList<int> QgsAttributeList SIP_SKIP;
 #include "qgseditorwidgetsetup.h"
 #include "qgsfieldconstraints.h"
 #include "qgsdefaultvalue.h"
+
+class QgsFieldPrivate;
 
 /**
  * \class QgsField
