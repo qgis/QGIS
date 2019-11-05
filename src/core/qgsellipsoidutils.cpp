@@ -349,7 +349,7 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
 #else
   params.valid = false;
 
-  QgsReadWriteLocker l( *sEllipsoidCacheLock() QgsReadWriteLocker::Write );
+  QgsReadWriteLocker l( *sEllipsoidCacheLock(), QgsReadWriteLocker::Write );
   if ( !sDisableCache )
   {
     sEllipsoidCache()->insert( ellipsoid, params );
@@ -371,7 +371,7 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
   QList<QgsEllipsoidUtils::EllipsoidDefinition> defs;
 
 #if PROJ_VERSION_MAJOR>=6
-  QgsReadWriteLocker locker( *sEllipsoidCacheLock() QgsReadWriteLocker::Write );
+  QgsReadWriteLocker locker( *sEllipsoidCacheLock(), QgsReadWriteLocker::Write );
 
   PJ_CONTEXT *context = QgsProjContext::get();
   if ( PROJ_STRING_LIST authorities = proj_get_authorities_from_database( context ) )
