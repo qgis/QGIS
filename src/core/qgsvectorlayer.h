@@ -712,7 +712,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see selectByExpression()
      * \see selectByIds()
      */
-    void selectByRect( QgsRectangle &rect, SelectBehavior behavior = SetSelection );
+    Q_INVOKABLE void selectByRect( QgsRectangle &rect, SelectBehavior behavior = SetSelection );
 
     /**
      * Selects matching features using an expression.
@@ -723,7 +723,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see selectByIds()
      * \since QGIS 2.16
      */
-    void selectByExpression( const QString &expression, SelectBehavior behavior = SetSelection );
+    Q_INVOKABLE void selectByExpression( const QString &expression, SelectBehavior behavior = SetSelection );
 
     /**
      * Selects matching features using a list of feature IDs. Will emit the
@@ -735,7 +735,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see selectByExpression()
      * \since QGIS 2.16
      */
-    void selectByIds( const QgsFeatureIds &ids, SelectBehavior behavior = SetSelection );
+    Q_INVOKABLE void selectByIds( const QgsFeatureIds &ids, SelectBehavior behavior = SetSelection );
 
     /**
      * Modifies the current selection on this layer
@@ -748,13 +748,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see   deselect(const QgsFeatureId)
      * \see selectByExpression()
      */
-    void modifySelection( const QgsFeatureIds &selectIds, const QgsFeatureIds &deselectIds );
+    Q_INVOKABLE void modifySelection( const QgsFeatureIds &selectIds, const QgsFeatureIds &deselectIds );
 
     //! Selects not selected features and deselects selected ones
-    void invertSelection();
+    Q_INVOKABLE void invertSelection();
 
     //! Select all the features
-    void selectAll();
+    Q_INVOKABLE void selectAll();
 
     /**
      * Inverts selection of features found within the search rectangle (in layer's coordinates)
@@ -763,7 +763,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \see   invertSelection()
      */
-    void invertSelectionInRectangle( QgsRectangle &rect );
+    Q_INVOKABLE void invertSelectionInRectangle( QgsRectangle &rect );
 
     /**
      * Returns a copy of the user-selected features.
@@ -777,7 +777,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see    selectedFeatureIds()
      * \see    getSelectedFeatures() which is more memory friendly when handling large selections
      */
-    QgsFeatureList selectedFeatures() const;
+    Q_INVOKABLE QgsFeatureList selectedFeatures() const;
 
     /**
      * Returns an iterator of the selected features.
@@ -803,10 +803,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see selectedFeatureCount()
      * \see selectByIds()
      */
-    const QgsFeatureIds &selectedFeatureIds() const;
+    Q_INVOKABLE const QgsFeatureIds &selectedFeatureIds() const;
 
     //! Returns the bounding box of the selected features. If there is no selection, QgsRectangle(0,0,0,0) is returned
-    QgsRectangle boundingBoxOfSelected() const;
+    Q_INVOKABLE QgsRectangle boundingBoxOfSelected() const;
 
     /**
      * Returns whether the layer contains labels which are enabled and should be drawn.
