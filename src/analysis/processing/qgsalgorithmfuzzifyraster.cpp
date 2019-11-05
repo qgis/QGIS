@@ -38,7 +38,7 @@ QString QgsFuzzifyRasterAlgorithmBase::groupId() const
 void QgsFuzzifyRasterAlgorithmBase::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input Raster" ) ) );
-  addParameter( new QgsProcessingParameterBand( QStringLiteral( "BAND" ), QObject::tr( "Band Number"), 1, QStringLiteral("INPUT") ) );
+  addParameter( new QgsProcessingParameterBand( QStringLiteral( "BAND" ), QObject::tr( "Band Number" ), 1, QStringLiteral( "INPUT" ) ) );
 
   //add specific fuzzification parameters from subclass alg
   addAlgorithmParams();
@@ -54,12 +54,12 @@ void QgsFuzzifyRasterAlgorithmBase::initAlgorithm( const QVariantMap & )
 
 bool QgsFuzzifyRasterAlgorithmBase::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  mInputRaster = parameterAsRasterLayer( parameters, QStringLiteral("INPUT"), context);
+  mInputRaster = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT" ), context );
 
-  if( !mInputRaster )
+  if ( !mInputRaster )
     throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  mBand = parameterAsInt( parameters, QStringLiteral("BAND"), context);
+  mBand = parameterAsInt( parameters, QStringLiteral( "BAND" ), context );
   if ( mBand < 1 || mBand > mInputRaster->bandCount() )
     throw QgsProcessingException( QObject::tr( "Invalid band number for BAND (%1): Valid values for input raster are 1 to %2" ).arg( mBand ).arg( mInputRaster->bandCount() ) );
 
@@ -72,7 +72,7 @@ bool QgsFuzzifyRasterAlgorithmBase::prepareAlgorithm( const QVariantMap &paramet
   mNbCellsYProvider = mInterface->ySize();
 
   //prepare fuzzifcation parameters from subclass alg
-  prepareAlgorithmFuzzificationParameters( parameters, context, feedback);
+  prepareAlgorithmFuzzificationParameters( parameters, context, feedback );
 
   return true;
 }
@@ -114,7 +114,7 @@ QVariantMap QgsFuzzifyRasterAlgorithmBase::processAlgorithm( const QVariantMap &
   std::unique_ptr< QgsRasterBlock > rasterBlock;
   while ( iter.readNextRasterPart( mBand, iterCols, iterRows, rasterBlock, iterLeft, iterTop ) )
   {
-    if( feedback )
+    if ( feedback )
       feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
     std::unique_ptr< QgsRasterBlock > fuzzifiedBlock = qgis::make_unique< QgsRasterBlock >( mDestinationRasterProvider->dataType( 1 ), iterCols, iterRows );
 
@@ -124,21 +124,21 @@ QVariantMap QgsFuzzifyRasterAlgorithmBase::processAlgorithm( const QVariantMap &
         break;
       for ( int column = 0; column < iterCols; column++ )
       {
-        if( feedback && feedback->isCanceled())
+        if ( feedback && feedback->isCanceled() )
           break;
         double value = rasterBlock->valueAndNoData( row, column, isNoData );
         if ( isNoData )
         {
-          fuzzifiedBlock->setValue( row, column, mNoDataValue);
+          fuzzifiedBlock->setValue( row, column, mNoDataValue );
         }
         else
         {
           double fuzzifiedValue = fuzzify( value );
-          fuzzifiedBlock->setValue( row, column, fuzzifiedValue);
+          fuzzifiedBlock->setValue( row, column, fuzzifiedValue );
         }
       }
     }
-    mDestinationRasterProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop);
+    mDestinationRasterProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop );
   }
   mDestinationRasterProvider->setEditable( false );
 
@@ -196,41 +196,41 @@ QgsFuzzifyRasterLinearMembershipAlgorithm *QgsFuzzifyRasterLinearMembershipAlgor
 
 void QgsFuzzifyRasterLinearMembershipAlgorithm::addAlgorithmParams( )
 {
-  addParameter( new QgsProcessingParameterNumber(QStringLiteral("FUZZYHIGHBOUND"), QStringLiteral("High fuzzy membership bound"), QgsProcessingParameterNumber::Double, 1 ) );
-  addParameter( new QgsProcessingParameterNumber(QStringLiteral("FUZZYLOWBOUND"), QStringLiteral("Low fuzzy membership bound"), QgsProcessingParameterNumber::Double, 0 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FUZZYHIGHBOUND" ), QStringLiteral( "High fuzzy membership bound" ), QgsProcessingParameterNumber::Double, 1 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FUZZYLOWBOUND" ), QStringLiteral( "Low fuzzy membership bound" ), QgsProcessingParameterNumber::Double, 0 ) );
 }
 
 bool QgsFuzzifyRasterLinearMembershipAlgorithm::prepareAlgorithmFuzzificationParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback )
-  mFuzzifyHighBound = parameterAsDouble( parameters, QStringLiteral("FUZZYHIGHBOUND"), context);
-  mFuzzifyLowBound = parameterAsDouble( parameters, QStringLiteral("FUZZYLOWBOUND"), context);
+  mFuzzifyHighBound = parameterAsDouble( parameters, QStringLiteral( "FUZZYHIGHBOUND" ), context );
+  mFuzzifyLowBound = parameterAsDouble( parameters, QStringLiteral( "FUZZYLOWBOUND" ), context );
   return true;
 }
 
 double QgsFuzzifyRasterLinearMembershipAlgorithm::fuzzify( double &value )
 {
-  if(mFuzzifyLowBound < mFuzzifyHighBound)
+  if ( mFuzzifyLowBound < mFuzzifyHighBound )
   {
-    if( value <= mFuzzifyLowBound)
+    if ( value <= mFuzzifyLowBound )
       return 0;
-    else if (value >= mFuzzifyHighBound)
+    else if ( value >= mFuzzifyHighBound )
       return 1;
     else
-      return (  ( value - mFuzzifyLowBound ) / (mFuzzifyHighBound - mFuzzifyLowBound) );
+      return ( ( value - mFuzzifyLowBound ) / ( mFuzzifyHighBound - mFuzzifyLowBound ) );
   }
-  else if(mFuzzifyLowBound > mFuzzifyHighBound)
+  else if ( mFuzzifyLowBound > mFuzzifyHighBound )
   {
-    if( value >= mFuzzifyLowBound)
+    if ( value >= mFuzzifyLowBound )
       return 0;
-    else if (value <= mFuzzifyHighBound)
+    else if ( value <= mFuzzifyHighBound )
       return 1;
     else
-      return (  ( value - mFuzzifyLowBound ) / (mFuzzifyHighBound - mFuzzifyLowBound) );
+      return ( ( value - mFuzzifyLowBound ) / ( mFuzzifyHighBound - mFuzzifyLowBound ) );
   }
   else
   {
-    throw QgsProcessingException(QObject::tr( "Please choose varying values for the high and low membership parameters" ));
+    throw QgsProcessingException( QObject::tr( "Please choose varying values for the high and low membership parameters" ) );
   }
 }
 
@@ -278,43 +278,43 @@ QgsFuzzifyRasterPowerMembershipAlgorithm *QgsFuzzifyRasterPowerMembershipAlgorit
 
 void QgsFuzzifyRasterPowerMembershipAlgorithm::addAlgorithmParams( )
 {
-  addParameter( new QgsProcessingParameterNumber(QStringLiteral("FUZZYHIGHBOUND"), QStringLiteral("High fuzzy membership bound"), QgsProcessingParameterNumber::Double, 1 ) );
-  addParameter( new QgsProcessingParameterNumber(QStringLiteral("FUZZYLOWBOUND"), QStringLiteral("Low fuzzy membership bound"), QgsProcessingParameterNumber::Double, 0 ) );
-  addParameter( new QgsProcessingParameterNumber(QStringLiteral("FUZZYEXPONENT"), QStringLiteral("Membership function exponent"), QgsProcessingParameterNumber::Double, 2, false, 0));
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FUZZYHIGHBOUND" ), QStringLiteral( "High fuzzy membership bound" ), QgsProcessingParameterNumber::Double, 1 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FUZZYLOWBOUND" ), QStringLiteral( "Low fuzzy membership bound" ), QgsProcessingParameterNumber::Double, 0 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FUZZYEXPONENT" ), QStringLiteral( "Membership function exponent" ), QgsProcessingParameterNumber::Double, 2, false, 0 ) );
 }
 
 bool QgsFuzzifyRasterPowerMembershipAlgorithm::prepareAlgorithmFuzzificationParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback )
-  mFuzzifyHighBound = parameterAsDouble( parameters, QStringLiteral("FUZZYHIGHBOUND"), context);
-  mFuzzifyLowBound = parameterAsDouble( parameters, QStringLiteral("FUZZYLOWBOUND"), context);
-  mFuzzifyExponent = parameterAsDouble( parameters, QStringLiteral("FUZZYEXPONENT"), context);
+  mFuzzifyHighBound = parameterAsDouble( parameters, QStringLiteral( "FUZZYHIGHBOUND" ), context );
+  mFuzzifyLowBound = parameterAsDouble( parameters, QStringLiteral( "FUZZYLOWBOUND" ), context );
+  mFuzzifyExponent = parameterAsDouble( parameters, QStringLiteral( "FUZZYEXPONENT" ), context );
   return true;
 }
 
 double QgsFuzzifyRasterPowerMembershipAlgorithm::fuzzify( double &value )
 {
-  if(mFuzzifyLowBound < mFuzzifyHighBound)
+  if ( mFuzzifyLowBound < mFuzzifyHighBound )
   {
-    if( value <= mFuzzifyLowBound)
+    if ( value <= mFuzzifyLowBound )
       return 0;
-    else if (value >= mFuzzifyHighBound)
+    else if ( value >= mFuzzifyHighBound )
       return 1;
     else
-      return std::pow(  ( value - mFuzzifyLowBound ) / (mFuzzifyHighBound - mFuzzifyLowBound), mFuzzifyExponent );
+      return std::pow( ( value - mFuzzifyLowBound ) / ( mFuzzifyHighBound - mFuzzifyLowBound ), mFuzzifyExponent );
   }
-  else if(mFuzzifyLowBound > mFuzzifyHighBound)
+  else if ( mFuzzifyLowBound > mFuzzifyHighBound )
   {
-    if( value >= mFuzzifyLowBound)
+    if ( value >= mFuzzifyLowBound )
       return 0;
-    else if (value <= mFuzzifyHighBound)
+    else if ( value <= mFuzzifyHighBound )
       return 1;
     else
-      return std::pow(  ( value - mFuzzifyLowBound ) / (mFuzzifyHighBound - mFuzzifyLowBound), mFuzzifyExponent );
+      return std::pow( ( value - mFuzzifyLowBound ) / ( mFuzzifyHighBound - mFuzzifyLowBound ), mFuzzifyExponent );
   }
   else
   {
-    throw QgsProcessingException(QObject::tr( "Please choose varying values for the high and low membership parameters" ));
+    throw QgsProcessingException( QObject::tr( "Please choose varying values for the high and low membership parameters" ) );
   }
 }
 
@@ -359,21 +359,21 @@ QgsFuzzifyRasterLargeMembershipAlgorithm *QgsFuzzifyRasterLargeMembershipAlgorit
 
 void QgsFuzzifyRasterLargeMembershipAlgorithm::addAlgorithmParams( )
 {
-  addParameter( new QgsProcessingParameterNumber(QStringLiteral("FUZZYMIDPOINT"), QStringLiteral("Function midpoint"), QgsProcessingParameterNumber::Double, 50 ) );
-  addParameter( new QgsProcessingParameterNumber(QStringLiteral("FUZZYSPREAD"), QStringLiteral("Function spread"), QgsProcessingParameterNumber::Double, 5 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FUZZYMIDPOINT" ), QStringLiteral( "Function midpoint" ), QgsProcessingParameterNumber::Double, 50 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FUZZYSPREAD" ), QStringLiteral( "Function spread" ), QgsProcessingParameterNumber::Double, 5 ) );
 }
 
 bool QgsFuzzifyRasterLargeMembershipAlgorithm::prepareAlgorithmFuzzificationParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback )
-  mFuzzifyMidpoint = parameterAsDouble( parameters, QStringLiteral("FUZZYMIDPOINT"), context);
-  mFuzzifySpread = parameterAsDouble( parameters, QStringLiteral("FUZZYSPREAD"), context);
+  mFuzzifyMidpoint = parameterAsDouble( parameters, QStringLiteral( "FUZZYMIDPOINT" ), context );
+  mFuzzifySpread = parameterAsDouble( parameters, QStringLiteral( "FUZZYSPREAD" ), context );
   return true;
 }
 
 double QgsFuzzifyRasterLargeMembershipAlgorithm::fuzzify( double &value )
 {
-  return 1 / (1 + std::pow(value / mFuzzifyMidpoint, -mFuzzifySpread));
+  return 1 / ( 1 + std::pow( value / mFuzzifyMidpoint, -mFuzzifySpread ) );
 }
 
 
@@ -418,21 +418,21 @@ QgsFuzzifyRasterSmallMembershipAlgorithm *QgsFuzzifyRasterSmallMembershipAlgorit
 
 void QgsFuzzifyRasterSmallMembershipAlgorithm::addAlgorithmParams( )
 {
-  addParameter( new QgsProcessingParameterNumber(QStringLiteral("FUZZYMIDPOINT"), QStringLiteral("Function midpoint"), QgsProcessingParameterNumber::Double, 50 ) );
-  addParameter( new QgsProcessingParameterNumber(QStringLiteral("FUZZYSPREAD"), QStringLiteral("Function spread"), QgsProcessingParameterNumber::Double, 5 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FUZZYMIDPOINT" ), QStringLiteral( "Function midpoint" ), QgsProcessingParameterNumber::Double, 50 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FUZZYSPREAD" ), QStringLiteral( "Function spread" ), QgsProcessingParameterNumber::Double, 5 ) );
 }
 
 bool QgsFuzzifyRasterSmallMembershipAlgorithm::prepareAlgorithmFuzzificationParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback )
-  mFuzzifyMidpoint = parameterAsDouble( parameters, QStringLiteral("FUZZYMIDPOINT"), context);
-  mFuzzifySpread = parameterAsDouble( parameters, QStringLiteral("FUZZYSPREAD"), context);
+  mFuzzifyMidpoint = parameterAsDouble( parameters, QStringLiteral( "FUZZYMIDPOINT" ), context );
+  mFuzzifySpread = parameterAsDouble( parameters, QStringLiteral( "FUZZYSPREAD" ), context );
   return true;
 }
 
 double QgsFuzzifyRasterSmallMembershipAlgorithm::fuzzify( double &value )
 {
-  return 1 / (1 + std::pow(value / mFuzzifyMidpoint, mFuzzifySpread));
+  return 1 / ( 1 + std::pow( value / mFuzzifyMidpoint, mFuzzifySpread ) );
 }
 
 
@@ -477,21 +477,21 @@ QgsFuzzifyRasterGaussianMembershipAlgorithm *QgsFuzzifyRasterGaussianMembershipA
 
 void QgsFuzzifyRasterGaussianMembershipAlgorithm::addAlgorithmParams( )
 {
-  addParameter( new QgsProcessingParameterNumber(QStringLiteral("FUZZYMIDPOINT"), QStringLiteral("Function midpoint"), QgsProcessingParameterNumber::Double, 10 ) );
-  addParameter( new QgsProcessingParameterNumber(QStringLiteral("FUZZYSPREAD"), QStringLiteral("Function spread"), QgsProcessingParameterNumber::Double, 0.01 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FUZZYMIDPOINT" ), QStringLiteral( "Function midpoint" ), QgsProcessingParameterNumber::Double, 10 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FUZZYSPREAD" ), QStringLiteral( "Function spread" ), QgsProcessingParameterNumber::Double, 0.01 ) );
 }
 
 bool QgsFuzzifyRasterGaussianMembershipAlgorithm::prepareAlgorithmFuzzificationParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback )
-  mFuzzifyMidpoint = parameterAsDouble( parameters, QStringLiteral("FUZZYMIDPOINT"), context);
-  mFuzzifySpread = parameterAsDouble( parameters, QStringLiteral("FUZZYSPREAD"), context);
+  mFuzzifyMidpoint = parameterAsDouble( parameters, QStringLiteral( "FUZZYMIDPOINT" ), context );
+  mFuzzifySpread = parameterAsDouble( parameters, QStringLiteral( "FUZZYSPREAD" ), context );
   return true;
 }
 
 double QgsFuzzifyRasterGaussianMembershipAlgorithm::fuzzify( double &value )
 {
-  return std::exp( -mFuzzifySpread * std::pow(value-mFuzzifyMidpoint,2) );
+  return std::exp( -mFuzzifySpread * std::pow( value - mFuzzifyMidpoint, 2 ) );
 }
 
 
@@ -537,15 +537,15 @@ QgsFuzzifyRasterNearMembershipAlgorithm *QgsFuzzifyRasterNearMembershipAlgorithm
 
 void QgsFuzzifyRasterNearMembershipAlgorithm::addAlgorithmParams( )
 {
-  addParameter( new QgsProcessingParameterNumber(QStringLiteral("FUZZYMIDPOINT"), QStringLiteral("Function midpoint"), QgsProcessingParameterNumber::Double, 50 ) );
-  addParameter( new QgsProcessingParameterNumber(QStringLiteral("FUZZYSPREAD"), QStringLiteral("Function spread"), QgsProcessingParameterNumber::Double, 0.01 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FUZZYMIDPOINT" ), QStringLiteral( "Function midpoint" ), QgsProcessingParameterNumber::Double, 50 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FUZZYSPREAD" ), QStringLiteral( "Function spread" ), QgsProcessingParameterNumber::Double, 0.01 ) );
 }
 
 bool QgsFuzzifyRasterNearMembershipAlgorithm::prepareAlgorithmFuzzificationParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback )
-  mFuzzifyMidpoint = parameterAsDouble( parameters, QStringLiteral("FUZZYMIDPOINT"), context);
-  mFuzzifySpread = parameterAsDouble( parameters, QStringLiteral("FUZZYSPREAD"), context);
+  mFuzzifyMidpoint = parameterAsDouble( parameters, QStringLiteral( "FUZZYMIDPOINT" ), context );
+  mFuzzifySpread = parameterAsDouble( parameters, QStringLiteral( "FUZZYSPREAD" ), context );
   return true;
 }
 
