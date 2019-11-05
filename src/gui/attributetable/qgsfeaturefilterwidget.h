@@ -16,20 +16,13 @@
 #ifndef QGSFEATUREFILTERWIDGET_H
 #define QGSFEATUREFILTERWIDGET_H
 
+#define SIP_NO_FILE
+
 #include "ui_qgsfeaturefilterwidget.h"
 
 #include "qgsattributeform.h"
 
-/* #include "qgis_sip.h" */
 #include "qgis_gui.h"
-
-/* #ifdef SIP_RUN */
-/* // This is required for the ConvertToSubClassCode to work properly */
-/* // so RTTI for casting is available in the whole module. */
-/* % ModuleCode */
-/* #include "qgsfeatureselectiondlg.h" */
-/* % End */
-/* #endif */
 
 class QgsVectorLayer;
 class QgsAttributeEditorContext;
@@ -43,16 +36,6 @@ class QgsMessageBar;
  */
 class GUI_EXPORT QgsFeatureFilterWidget : public QWidget, private Ui::QgsFeatureFilterWidget
 {
-
-    /* #ifdef SIP_RUN */
-    /*     SIP_CONVERT_TO_SUBCLASS_CODE */
-    /*     if ( qobject_cast<QgsFeatureFilterWidget *>( sipCpp ) ) */
-    /*       sipType = sipType_QgsFeatureFilterWidget; */
-    /*     else */
-    /*       sipType = 0; */
-    /*     SIP_END */
-    /* #endif */
-
     Q_OBJECT
 
   public:
