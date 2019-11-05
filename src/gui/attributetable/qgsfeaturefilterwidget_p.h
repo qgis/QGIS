@@ -13,10 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSFEATUREFILTERWIDGET_H
-#define QGSFEATUREFILTERWIDGET_H
+#ifndef QGSFEATUREFILTERWIDGET_P_H
+#define QGSFEATUREFILTERWIDGET_P_H
 
 #define SIP_NO_FILE
+
+/// @cond PRIVATE
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the QGIS API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
 
 #include "ui_qgsfeaturefilterwidget.h"
 
@@ -122,4 +133,6 @@ class GUI_EXPORT QgsFeatureFilterWidget : public QWidget, private Ui::QgsFeature
     int mMessageBarTimeout = 0;
 };
 
-#endif // QGSFEATUREFILTERWIDGET_H
+#endif // QGSFEATUREFILTERWIDGET_P_H
+
+/// @endcond

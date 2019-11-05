@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsfeaturefilterwidget.h"
+#include "qgsfeaturefilterwidget_p.h"
 
 #include "qgsapplication.h"
 #include "qgssearchwidgetwrapper.h"

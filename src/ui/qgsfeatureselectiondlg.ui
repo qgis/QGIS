@@ -218,7 +218,7 @@
   <customwidget>
    <class>QgsFeatureFilterWidget</class>
    <extends>QWidget</extends>
-   <header>qgsfeaturefilterwidget.h</header>
+   <header>qgsfeaturefilterwidget_p.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

@@ -632,7 +632,7 @@ SET(QGIS_GUI_HDRS
   attributetable/qgsattributetablemodel.h
   attributetable/qgsattributetableview.h
   attributetable/qgsdualview.h
-  attributetable/qgsfeaturefilterwidget.h
+  attributetable/qgsfeaturefilterwidget_p.h
   attributetable/qgsfeaturelistmodel.h
   attributetable/qgsfeaturelistview.h
   attributetable/qgsfeaturelistviewdelegate.h
