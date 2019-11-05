@@ -17,15 +17,6 @@ SET (geometrychecker_HDRS
     qgsgeometrycheckfactory.h
 )
 
-SET (geometrychecker_MOC_HDRS
-    qgsgeometrycheckerplugin.h
-    qgsgeometrycheckerdialog.h
-    qgsgeometrycheckersetuptab.h
-    qgsgeometrycheckerresulttab.h
-    qgsgeometrycheckfixdialog.h
-    qgsgeometrycheckerfixsummarydialog.h
-)
-
 SET (geometrychecker_UIS
     qgsgeometrycheckersetuptab.ui
     qgsgeometrycheckerresulttab.ui
@@ -41,11 +32,9 @@ SET (geometrychecker_RCCS
 
 QT5_WRAP_UI (geometrychecker_UIS_H  ${geometrychecker_UIS})
 
-QT5_WRAP_CPP (geometrychecker_MOC_SRCS  ${geometrychecker_MOC_HDRS})
-
 QT5_ADD_RESOURCES(geometrychecker_RCC_SRCS ${geometrychecker_RCCS})
 
-ADD_LIBRARY (geometrycheckerplugin   MODULE ${geometrychecker_HDRS} ${geometrychecker_MOC_HDRS} ${geometrychecker_SRCS} ${geometrychecker_MOC_SRCS} ${geometrychecker_RCC_SRCS} ${geometrychecker_UIS_H})
+ADD_LIBRARY (geometrycheckerplugin   MODULE ${geometrychecker_HDRS} ${geometrychecker_SRCS}  ${geometrychecker_RCC_SRCS} ${geometrychecker_UIS_H})
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core
