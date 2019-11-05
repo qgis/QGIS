@@ -73,6 +73,22 @@ tests:
       #  name: expected/triangulation.gml
       #  type: vector
 
+  - algorithm: qgis:tininterpolation
+    name: TIN interpolation with breaklines
+    params:
+      EXTENT: -0.4450000000000012,8.445,-5.2,3.2 [EPSG:4326]
+      INTERPOLATION_DATA:
+        name: pointsz.gml::~::1::~::-1::~::0::|::breaklines.gml::~::0::~::1::~::2
+        type: interpolation
+      METHOD: 0
+      PIXEL_SIZE: 0.1
+    results:
+      OUTPUT:
+        hash:
+        - 34ebe51b4ff75e2eb80746571ac4b72709d200f5d36a1d367d7b0b32
+        - d2529829631d5b816dba56305736ed7e6961bc63f224f351be719c78
+        type: rasterhash
+
   - algorithm: qgis:idwinterpolation
     name: IDW interpolation using attribute (old parameters)
     params:
@@ -150,6 +166,22 @@ tests:
       #TRIANULATION_FILE:
       #  name: expected/triangulation.gml
       #  type: vector
+
+  - algorithm: qgis:idwinterpolation
+    name: IDW interpolation with breakline
+    params:
+      DISTANCE_COEFFICIENT: 2.0
+      EXTENT: -0.4450000000000012,8.445,-5.2,3.2 [EPSG:4326]
+      INTERPOLATION_DATA:
+        name: pointsz.gml::~::1::~::-1::~::0::|::breaklines.gml::~::0::~::1::~::2
+        type: interpolation
+      PIXEL_SIZE: 0.1
+    results:
+      OUTPUT:
+        hash:
+        - 56ecc53f6c66a21dd0379170a833c87337932160767cdf9cc47695a8
+        - f096ffa048892c87eae61ddd4253501f1236ad785a9b084a2badf051
+        type: rasterhash
 
   - algorithm: native:removenullgeometries
     name: Remove null geometries
