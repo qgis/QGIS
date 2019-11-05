@@ -13,12 +13,6 @@ SET (offline_editing_plugin_UIS
   offline_editing_progress_dialog_base.ui
 )
 
-SET (offline_editing_plugin_MOC_HDRS
-  offline_editing_plugin.h
-  offline_editing_plugin_gui.h
-  offline_editing_progress_dialog.h
-)
-
 SET (offline_editing_plugin_RCCS  offline_editing_plugin.qrc)
 
 ########################################################
@@ -26,13 +20,10 @@ SET (offline_editing_plugin_RCCS  offline_editing_plugin.qrc)
 
 QT5_WRAP_UI(offline_editing_plugin_UIS_H ${offline_editing_plugin_UIS})
 
-QT5_WRAP_CPP(offline_editing_plugin_MOC_SRCS ${offline_editing_plugin_MOC_HDRS})
-
 QT5_ADD_RESOURCES(offline_editing_plugin_RCC_SRCS ${offline_editing_plugin_RCCS})
 
 ADD_LIBRARY (offlineeditingplugin MODULE
   ${offline_editing_plugin_SRCS}
-  ${offline_editing_plugin_MOC_SRCS}
   ${offline_editing_plugin_RCC_SRCS}
   ${offline_editing_plugin_UIS_H}
 )
