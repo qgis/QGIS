@@ -1195,7 +1195,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
     const QUrl url { context.request()->url() };
 
     // Url without offset and limit
-    QString cleanedUrl { url.toString().replace( QRegularExpression( R"raw(&?(offset|limit)(=\d+)*)raw" ), QString() ) };
+    QString cleanedUrl { url.toString().replace( QRegularExpression( R"raw(&(offset|limit)(=\d+)*)raw" ), QString() ) };
 
     if ( ! url.hasQuery() )
     {
