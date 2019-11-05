@@ -172,13 +172,7 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget *editor )
   }
   else if ( mLineEdit )
   {
-    connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & value )
-    {
-      Q_NOWARN_DEPRECATED_PUSH
-      emit valueChanged( value );
-      Q_NOWARN_DEPRECATED_POP
-      emit valuesChanged( value );
-    }, Qt::UniqueConnection );
+    connect( mLineEdit, &QLineEdit::textChanged, this, &QgsValueRelationWidgetWrapper::emitValueChangedInternal, Qt::UniqueConnection );
   }
 }
 
@@ -282,7 +276,7 @@ void QgsValueRelationWidgetWrapper::widgetValueChanged( const QString &attribute
       {
         QString attributeName( formFeature().fields().names().at( fieldIdx() ) );
         setFormFeatureAttribute( attributeName, value( ) );
-        emitValueChanged( );
+        emitValueChanged();
       }
     }
   }
@@ -456,4 +450,12 @@ void QgsValueRelationWidgetWrapper::setEnabled( bool enabled )
   }
   else
     QgsEditorWidgetWrapper::setEnabled( enabled );
+}
+
+void QgsValueRelationWidgetWrapper::emitValueChangedInternal( const QString &value )
+{
+  Q_NOWARN_DEPRECATED_PUSH
+  emit valueChanged( value );
+  Q_NOWARN_DEPRECATED_POP
+  emit valuesChanged( value );
 }

@@ -103,6 +103,9 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
     void setFeature( const QgsFeature &feature ) override;
 
 
+  private slots:
+    void emitValueChangedInternal( const QString &value );
+
   private:
     void updateValues( const QVariant &value, const QVariantList & = QVariantList() ) override;
 

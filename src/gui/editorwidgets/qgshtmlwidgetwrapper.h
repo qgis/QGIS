@@ -59,6 +59,9 @@ class GUI_EXPORT QgsHtmlWidgetWrapper : public QgsWidgetWrapper
   private slots:
     //! sets the html context with the current values
     void setHtmlContext( );
+#ifdef WITH_QTWEBKIT
+    void fixHeight();
+#endif
 
   private:
     QString mHtmlCode;
