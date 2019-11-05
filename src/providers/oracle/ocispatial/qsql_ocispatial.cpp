@@ -48,7 +48,7 @@
 #if __cplusplus >= 201500
 #define FALLTHROUGH [[fallthrough]];
 #elif defined(__clang__)
-#define FALLTHROUGH //[[clang::fallthrough]]
+#define FALLTHROUGH [[clang::fallthrough]];
 #elif defined(__GNUC__) && __GNUC__ >= 7
 #define FALLTHROUGH [[gnu::fallthrough]];
 #else
@@ -719,9 +719,8 @@ int QOCISpatialResultPrivate::bindValue( OCIStmt *sql, OCIBind **hbnd, OCIError 
           setCharset( *hbnd, OCI_HTYPE_BIND );
         break;
       }
-
-      FALLTHROUGH
     }
+    FALLTHROUGH
 
     default:
     {
@@ -2743,7 +2742,7 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
           line[ partNum ].second.append( line.at( partNum + 1 ).second.first() );
         }
 
-        for ( const CurvePart &part : line )
+        for ( const CurvePart &part : qAsConst( line ) )
         {
           const PointSequence &pts = part.second;
           if ( part.first == WKBCompoundCurve )
@@ -2758,7 +2757,7 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
         }
       }
 
-      for ( const CurvePart &part : line )
+      for ( const CurvePart &part : qAsConst( line ) )
       {
         const PointSequence &pts = part.second;
         if ( part.first == WKBCompoundCurve )
@@ -2818,7 +2817,7 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
     if ( lines.size() > 1 )
       *ptr.iPtr++ = lines.size();
 
-    for ( const auto &line : lines )
+    for ( const auto &line : qAsConst( lines ) )
     {
       if ( lines.size() > 1 )
       {
@@ -2874,7 +2873,6 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
     SurfaceRings currentPart;
     WKBType currentPartWkbType = WKBUnknown;
 
-    QVector<int> nPolygonRings;
     bool isCurved = false;
     bool isCompoundCurve = false;
 
@@ -3026,7 +3024,7 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
           }
         }
 
-        for ( const CurvePart &curvePart : ring )
+        for ( const CurvePart &curvePart : qAsConst( ring ) )
         {
           if ( isCurved )
             wkbSize += 1 + sizeof( int );
@@ -3057,7 +3055,7 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
       *ptr.iPtr++ = nPolygons;
     }
 
-    for ( const QPair< WKBType, SurfaceRings > &rings : parts )
+    for ( const QPair< WKBType, SurfaceRings > &rings : qAsConst( parts ) )
     {
       if ( nPolygons > 1 )
       {
@@ -3322,7 +3320,9 @@ void QOCISpatialCols::getValues( QVector<QVariant> &v, int index )
             break;
           }
         }
-      // else fall through
+
+        FALLTHROUGH
+
       case QVariant::String:
         qDebug() << "String";
         v[index + i] = QString( reinterpret_cast<const QChar *>( fld.data ) );
@@ -3460,7 +3460,8 @@ bool QOCISpatialResult::gotoNext( QSqlCachedResult::ValueCache &values, int inde
         r = OCI_SUCCESS; /* ignore it */
         break;
       }
-    // fall through
+      FALLTHROUGH
+
     default:
       qOraWarning( "QOCISpatialResult::gotoNext: ", d->err );
       setLastError( qMakeError( QCoreApplication::translate( "QOCISpatialResult",
