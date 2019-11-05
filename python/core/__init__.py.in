@@ -70,7 +70,7 @@ QgsDataProvider.SUBLAYER_SEPARATOR = QgsDataProvider.sublayerSeparator()
 # Monkey patch Qgis vars
 Qgis.QGIS_VERSION = Qgis.version()
 Qgis.QGIS_VERSION_INT = Qgis.versionInt()
-Qgis.QGIS_VERSION_RELEASE_NAME = Qgis.releaseName()
+Qgis.QGIS_RELEASE_NAME = Qgis.releaseName()
 
 GEOWKT = geoWkt()
 PROJECT_SCALES = Qgis.defaultProjectScales()
