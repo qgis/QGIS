@@ -361,7 +361,7 @@ void TestQgsRelationReferenceWidget::testIdentifyOnMap()
   // Populate model (I tried to listen to signals but the module reload() runs twice
   // (the first load triggers a second one which does the population of the combo)
   // and I haven't fin a way to properly wait for it.
-  QTimer::singleShot( 300, [&] { loop.quit(); } );
+  QTimer::singleShot( 300, this, [&] { loop.quit(); } );
   loop.exec();
   QgsFeature feature;
   mLayer2->getFeatures( QStringLiteral( "pk = %1" ).arg( 11 ) ).nextFeature( feature );

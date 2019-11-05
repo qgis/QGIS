@@ -473,17 +473,17 @@ void QgsTextFormatWidget::initWidget()
   connect( mQuadrantBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsTextFormatWidget::updatePreview );
 
   connect( mBufferDrawDDBtn, &QgsPropertyOverrideButton::activated, this, &QgsTextFormatWidget::updateBufferFrameStatus );
-  connect( mBufferDrawChkBx, &QCheckBox::stateChanged, [ = ]( int )
+  connect( mBufferDrawChkBx, &QCheckBox::stateChanged, this, [ = ]( int )
   {
     updateBufferFrameStatus();
   } );
   connect( mShapeDrawDDBtn, &QgsPropertyOverrideButton::activated, this, &QgsTextFormatWidget::updateShapeFrameStatus );
-  connect( mShapeDrawChkBx, &QCheckBox::stateChanged, [ = ]( int )
+  connect( mShapeDrawChkBx, &QCheckBox::stateChanged, this, [ = ]( int )
   {
     updateShapeFrameStatus();
   } );
   connect( mShadowDrawDDBtn, &QgsPropertyOverrideButton::activated, this, &QgsTextFormatWidget::updateShadowFrameStatus );
-  connect( mShadowDrawChkBx, &QCheckBox::stateChanged, [ = ]( int )
+  connect( mShadowDrawChkBx, &QCheckBox::stateChanged, this, [ = ]( int )
   {
     updateShadowFrameStatus();
   } );

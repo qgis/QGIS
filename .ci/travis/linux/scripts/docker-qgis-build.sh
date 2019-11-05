@@ -31,7 +31,7 @@ echo "travis_fold:start:cmake"
 echo "${bold}Running cmake...${endbold}"
 
 export CC=/usr/lib/ccache/clang
-export CXX=/usr/lib/ccache/clang++
+export CXX=/usr/lib/ccache/clazy
 
 cmake \
  -GNinja \
@@ -56,6 +56,7 @@ cmake \
  -DPYTHON_TEST_WRAPPER="timeout -sSIGSEGV 55s"\
  -DCXX_EXTRA_FLAGS="${CLANG_WARNINGS}" \
  -DWERROR=TRUE \
+ -DADD_CLAZY_CHECKS=ON \
  -DQT5_3DEXTRA_LIBRARY="/usr/lib/x86_64-linux-gnu/libQt53DExtras.so" \
  -DQT5_3DEXTRA_INCLUDE_DIR="/root/QGIS/external/qt3dextra-headers" \
  -DCMAKE_PREFIX_PATH="/root/QGIS/external/qt3dextra-headers/cmake" \

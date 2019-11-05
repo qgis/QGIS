@@ -12,7 +12,7 @@ LABEL Description="Docker container with QGIS" Vendor="QGIS.org" Version="1.1"
 ARG BUILD_TIMEOUT=360000
 
 ARG CC=/usr/lib/ccache/clang
-ARG CXX=/usr/lib/ccache/clang++
+ARG CXX=/usr/lib/ccache/clazy
 ENV LANG=C.UTF-8
 
 COPY . /QGIS
