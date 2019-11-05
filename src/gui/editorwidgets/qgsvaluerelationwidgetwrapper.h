@@ -105,7 +105,7 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
     QList<QgsVectorLayerRef> layerDependencies() const override;
 
   private slots:
-    void emitValueChanged( const QString &value );
+    void emitValueChangedInternal( const QString &value );
 
   private:
     void updateValues( const QVariant &value, const QVariantList & = QVariantList() ) override;
