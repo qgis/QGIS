@@ -47,9 +47,10 @@ class QgsWfs3AbstractItemsHandler: public QgsServerOgcApiHandler
      * Creates a filtered QgsFeatureRequest containing only fields published for WMS and plugin filters applied.
      * \param layer the vector layer
      * \param context the server api context
+     * \param subsetAttributes optional list of field names requested by the client, if empty all published attributes will be added to the request
      * \return QgsFeatureRequest with filters applied
      */
-    QgsFeatureRequest filteredRequest( const QgsVectorLayer *layer, const QgsServerApiContext &context ) const;
+    QgsFeatureRequest filteredRequest( const QgsVectorLayer *layer, const QgsServerApiContext &context, const QStringList &subsetAttributes = QStringList() ) const;
 
     /**
      * Returns a filtered list of fields containing only fields published for WMS and plugin filters applied.
