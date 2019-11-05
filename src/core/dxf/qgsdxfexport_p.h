@@ -15,6 +15,45 @@
  *                                                                         *
  ***************************************************************************/
 
+
+#include "qgsvectorlayer.h"
+#include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsvectorlayerfeatureiterator.h"
+#include "qgsrenderer.h"
+#include "qgsvectorlayerlabeling.h"
+
+struct DxfLayerJob
+{
+  DxfLayerJob() = default;
+
+  DxfLayerJob( QgsVectorLayer *vl, const QString &layerStyleOverride, const QgsRenderContext &renderContext )
+    : styleOverride( vl )
+    , expressionContext( renderContext.expressionContext() )
+    , featureSource( vl )
+    , layer( vl )
+  {
+    fields = vl->fields();
+    renderer.reset( vl->renderer()->clone() );
+    expressionContext.appendScope( vl->createExpressionContextScope() );
+
+    if ( !layerStyleOverride.isNull() )
+    {
+      styleOverride.setOverrideStyle( layerStyleOverride );
+    }
+
+    labeling.reset( vl->labelsEnabled() ? vl->labeling()->clone() : nullptr );
+  };
+
+  QgsFields fields;
+  QgsMapLayerStyleOverride styleOverride;
+  QgsExpressionContext expressionContext;
+  QgsVectorLayerFeatureSource featureSource;
+  std::unique_ptr< QgsFeatureRenderer > renderer;
+  std::unique_ptr<QgsAbstractVectorLayerLabeling> labeling;
+  QgsVectorLayer *layer = nullptr; // TODO: -> remove this to make this usable from background threads
+};
+
 // dxf color palette
 static int sDxfColors[][3] =
 {

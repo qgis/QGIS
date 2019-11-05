@@ -61,6 +61,10 @@
 
 #include <QIODevice>
 
+QgsDxfExport::~QgsDxfExport()
+{
+  qDeleteAll( mJobs );
+}
 
 void QgsDxfExport::setMapSettings( const QgsMapSettings &settings )
 {
@@ -227,10 +231,12 @@ QgsDxfExport::ExportResult QgsDxfExport::writeToFile( QIODevice *d, const QStrin
   mMapSettings.setOutputDpi( dpi );
 
   writeHeader( dxfEncoding( encoding ) );
+  prepareRenderers();
   writeTables();
   writeBlocks();
   writeEntities();
   writeEndFile();
+  stopRenderers();
 
   return ExportResult::Success;
 }
@@ -539,7 +545,7 @@ void QgsDxfExport::writeBlocks()
   startSection();
   writeGroup( 2, QStringLiteral( "BLOCKS" ) );
 
-  const QStringList blockStrings = QStringList() << QStringLiteral( "*Model_Space" ) << QStringLiteral( "*Paper_Space" ) << QStringLiteral( "*Paper_Space0" );
+  static const QStringList blockStrings = QStringList() << QStringLiteral( "*Model_Space" ) << QStringLiteral( "*Paper_Space" ) << QStringLiteral( "*Paper_Space0" );
   for ( const QString &block : blockStrings )
   {
     writeGroup( 0, QStringLiteral( "BLOCK" ) );
@@ -577,13 +583,11 @@ void QgsDxfExport::writeBlocks()
 
     // if point symbol layer and no data defined properties: write block
     QgsSymbolRenderContext ctx( ct, QgsUnitTypes::RenderMapUnits, symbolLayer.second->opacity(), false, symbolLayer.second->renderHints(), nullptr );
-    ml->startRender( ctx );
 
     // markers with data defined properties are inserted inline
     if ( hasDataDefinedProperties( ml, symbolLayer.second ) )
     {
       continue;
-      // ml->stopRender( ctx );
     }
 
     QString block( QStringLiteral( "symbolLayer%1" ).arg( mBlockCounter++ ) );
@@ -616,7 +620,6 @@ void QgsDxfExport::writeBlocks()
     writeGroup( 100, QStringLiteral( "AcDbBlockEnd" ) );
 
     mPointSymbolBlocks.insert( ml, block );
-    ml->stopRender( ctx );
   }
   endSection();
 }
@@ -651,58 +654,24 @@ void QgsDxfExport::writeEntities()
   engine.setMapSettings( mMapSettings );
 
   // iterate through the maplayers
-  const QList< QgsMapLayer *> layers = mMapSettings.layers();
-  for ( QgsMapLayer *ml : layers )
+  for ( DxfLayerJob *job : qgis::as_const( mJobs ) )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
-    if ( !vl || !layerIsScaleBasedVisible( vl ) )
-    {
-      continue;
-    }
-
-    QgsMapLayerStyleOverride styleOverride( vl );
-    if ( mMapSettings.layerStyleOverrides().contains( vl->id() ) )
-    {
-      QgsDebugMsg( QStringLiteral( "%1: apply override style" ).arg( vl->id() ) );
-      styleOverride.setOverrideStyle( mMapSettings.layerStyleOverrides().value( vl->id() ) );
-    }
-    else
-    {
-      QgsDebugMsg( QStringLiteral( "%1: no override style" ).arg( vl->id() ) );
-    }
-
-    if ( !vl->renderer() )
-    {
-      continue;
-    }
-
-    auto scopePopper = [&ctx]( QgsExpressionContextScope * scope )
-    {
-      Q_UNUSED( scope )
-      delete ctx.expressionContext().popScope();
-    };
-    std::unique_ptr<QgsExpressionContextScope, decltype( scopePopper ) > layerScope( QgsExpressionContextUtils::layerScope( ml ), scopePopper );
-    ctx.expressionContext().appendScope( layerScope.get() );
     QgsSymbolRenderContext sctx( ctx, QgsUnitTypes::RenderMillimeters, 1.0, false, nullptr, nullptr );
 
-    std::unique_ptr< QgsFeatureRenderer > renderer( vl->renderer()->clone() );
-    renderer->startRender( ctx, vl->fields() );
-
-    QSet<QString> attributes = renderer->usedAttributes( ctx );
-    int attrIdx = mLayerNameAttribute.value( vl->id(), -1 );
-    if ( vl->fields().exists( attrIdx ) )
+    QSet<QString> attributes = job->renderer->usedAttributes( ctx );
+    int attrIdx = mLayerNameAttribute.value( job->featureSource.id(), -1 );
+    if ( job->fields.exists( attrIdx ) )
     {
-      QString layerAttr = vl->fields().at( attrIdx ).name();
+      QString layerAttr = job->fields.at( attrIdx ).name();
       attributes << layerAttr;
     }
 
-    const QgsAbstractVectorLayerLabeling *labeling = vl->labelsEnabled() ? vl->labeling() : nullptr;
     QgsDxfLabelProvider *lp = nullptr;
     QgsDxfRuleBasedLabelProvider *rblp = nullptr;
-    if ( const QgsRuleBasedLabeling *rbl = dynamic_cast<const QgsRuleBasedLabeling *>( labeling ) )
+    if ( const QgsRuleBasedLabeling *rbl = dynamic_cast<const QgsRuleBasedLabeling *>( job->labeling.get() ) )
     {
-      rblp = new QgsDxfRuleBasedLabelProvider( *rbl, vl, this );
-      rblp->reinit( vl );
+      rblp = new QgsDxfRuleBasedLabelProvider( *rbl, job->layer, this );
+      rblp->reinit( job->layer );
       engine.addProvider( rblp );
 
       if ( !rblp->prepare( ctx, attributes ) )
@@ -711,10 +680,10 @@ void QgsDxfExport::writeEntities()
         rblp = nullptr;
       }
     }
-    else if ( labeling )
+    else if ( job->labeling )
     {
-      QgsPalLayerSettings settings = labeling->settings();
-      lp = new QgsDxfLabelProvider( vl, QString(), this, &settings );
+      QgsPalLayerSettings settings = job->labeling->settings();
+      lp = new QgsDxfLabelProvider( job->layer, QString(), this, &settings );
       engine.addProvider( lp );
 
       if ( !lp->prepare( ctx, attributes ) )
@@ -725,31 +694,30 @@ void QgsDxfExport::writeEntities()
     }
 
     if ( mSymbologyExport == QgsDxfExport::SymbolLayerSymbology &&
-         ( renderer->capabilities() & QgsFeatureRenderer::SymbolLevels ) &&
-         renderer->usingSymbolLevels() )
+         ( job->renderer->capabilities() & QgsFeatureRenderer::SymbolLevels ) &&
+         job->renderer->usingSymbolLevels() )
     {
-      writeEntitiesSymbolLevels( vl );
-      renderer->stopRender( ctx );
+      writeEntitiesSymbolLevels( job->layer );
 
       continue;
     }
 
-    QgsFeatureRequest freq = QgsFeatureRequest().setSubsetOfAttributes( attributes, vl->fields() ).setExpressionContext( ctx.expressionContext() );
-    freq.setFilterRect( mMapSettings.mapToLayerCoordinates( vl, mExtent ) );
+    QgsFeatureRequest freq = QgsFeatureRequest().setSubsetOfAttributes( attributes, job->fields ).setExpressionContext( ctx.expressionContext() );
+    freq.setFilterRect( mMapSettings.mapToLayerCoordinates( job->layer, mExtent ) );
 
-    QgsFeatureIterator featureIt = vl->getFeatures( freq );
+    QgsFeatureIterator featureIt = job->featureSource.getFeatures( freq );
 
-    QgsCoordinateTransform ct = mMapSettings.layerTransform( vl );
+    QgsCoordinateTransform ct = mMapSettings.layerTransform( job->layer );
 
     QgsFeature fet;
     while ( featureIt.nextFeature( fet ) )
     {
       ctx.expressionContext().setFeature( fet );
-      QString lName( dxfLayerName( attrIdx < 0 ? layerName( vl ) : fet.attribute( attrIdx ).toString() ) );
+      QString lName( dxfLayerName( attrIdx < 0 ? layerName( job->layer ) : fet.attribute( attrIdx ).toString() ) );
 
       sctx.setFeature( &fet );
 
-      if ( !renderer->willRenderFeature( fet, ctx ) )
+      if ( !job->renderer->willRenderFeature( fet, ctx ) )
         continue;
 
       if ( mSymbologyExport == NoSymbology )
@@ -758,7 +726,7 @@ void QgsDxfExport::writeEntities()
       }
       else
       {
-        const QgsSymbolList symbolList = renderer->symbolsForFeature( fet, ctx );
+        const QgsSymbolList symbolList = job->renderer->symbolsForFeature( fet, ctx );
         bool hasSymbology = symbolList.size() > 0;
 
         if ( hasSymbology && mSymbologyExport == QgsDxfExport::SymbolLayerSymbology ) // symbol layer symbology, but layer does not use symbol levels
@@ -812,13 +780,56 @@ void QgsDxfExport::writeEntities()
         }
       }
     }
-
-    renderer->stopRender( ctx );
   }
 
   engine.run( ctx );
 
   endSection();
+}
+
+void QgsDxfExport::prepareRenderers()
+{
+  // Q_ASSERT( mJobs.empty() );
+
+  QgsRenderContext context = renderContext();
+
+  QList< QPair< QgsSymbolLayer *, QgsSymbol * > > symbolLayers;
+
+  const QList< QgsMapLayer * > layers = mMapSettings.layers();
+  for ( QgsMapLayer *ml : layers )
+  {
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
+    if ( !vl )
+    {
+      continue;
+    }
+
+    if ( !vl->renderer() )
+      continue;
+
+    if ( !layerIsScaleBasedVisible( vl ) )
+      continue;
+
+    DxfLayerJob *job = new DxfLayerJob( vl, mMapSettings.layerStyleOverrides().value( vl->id() ), context );
+    mJobs.append( job );
+#if 0
+    // get all symbols
+    QgsSymbolList symbols = r->symbols( context );
+    QgsSymbolList::iterator symbolIt = symbols.begin();
+    for ( ; symbolIt != symbols.end(); ++symbolIt )
+    {
+      int maxSymbolLayers = ( *symbolIt )->symbolLayerCount();
+      if ( mSymbologyExport != SymbolLayerSymbology )
+      {
+        maxSymbolLayers = 1;
+      }
+      for ( int i = 0; i < maxSymbolLayers; ++i )
+      {
+        symbolLayers.append( qMakePair( ( *symbolIt )->symbolLayer( i ), *symbolIt ) );
+      }
+    }
+#endif
+  }
 }
 
 void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer *layer )
@@ -912,6 +923,11 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer *layer )
     }
   }
   renderer->stopRender( ctx );
+}
+
+void QgsDxfExport::stopRenderers()
+{
+  qDeleteAll( mJobs );
 }
 
 void QgsDxfExport::writeEndFile()
@@ -1840,35 +1856,20 @@ QList< QPair< QgsSymbolLayer *, QgsSymbol * > > QgsDxfExport::symbolLayers( QgsR
 {
   QList< QPair< QgsSymbolLayer *, QgsSymbol * > > symbolLayers;
 
-  const QList< QgsMapLayer * > layers = mMapSettings.layers();
-  for ( QgsMapLayer *ml : layers )
+  for ( DxfLayerJob *job : mJobs )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
-    if ( !vl )
-    {
-      continue;
-    }
+    const QgsSymbolList symbols = job->renderer->symbols( context );
 
-    // get renderer
-    QgsFeatureRenderer *r = vl->renderer();
-    if ( !r )
+    for ( QgsSymbol *symbol : symbols )
     {
-      continue;
-    }
-
-    // get all symbols
-    QgsSymbolList symbols = r->symbols( context );
-    QgsSymbolList::iterator symbolIt = symbols.begin();
-    for ( ; symbolIt != symbols.end(); ++symbolIt )
-    {
-      int maxSymbolLayers = ( *symbolIt )->symbolLayerCount();
+      int maxSymbolLayers = symbol->symbolLayerCount();
       if ( mSymbologyExport != SymbolLayerSymbology )
       {
         maxSymbolLayers = 1;
       }
       for ( int i = 0; i < maxSymbolLayers; ++i )
       {
-        symbolLayers.append( qMakePair( ( *symbolIt )->symbolLayer( i ), *symbolIt ) );
+        symbolLayers.append( qMakePair( symbol->symbolLayer( i ), symbol ) );
       }
     }
   }
@@ -1879,8 +1880,7 @@ QList< QPair< QgsSymbolLayer *, QgsSymbol * > > QgsDxfExport::symbolLayers( QgsR
 void QgsDxfExport::writeDefaultLinetypes()
 {
   // continuous (Qt solid line)
-  const QStringList blockStrings = QStringList() << QStringLiteral( "ByLayer" ) << QStringLiteral( "ByBlock" ) << QStringLiteral( "CONTINUOUS" );
-  for ( const QString &ltype : blockStrings )
+  for ( const QString &ltype : { QStringLiteral( "ByLayer" ), QStringLiteral( "ByBlock" ), QStringLiteral( "CONTINUOUS" ) } )
   {
     writeGroup( 0, QStringLiteral( "LTYPE" ) );
     writeHandle();

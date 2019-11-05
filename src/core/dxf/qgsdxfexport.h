@@ -38,6 +38,7 @@ class QgsCurve;
 class QgsCurvePolygon;
 class QgsCircularString;
 class QgsCompoundCurve;
+struct DxfLayerJob;
 
 #define DXF_HANDSEED 100
 #define DXF_HANDMAX 9999999
@@ -136,6 +137,8 @@ class CORE_EXPORT QgsDxfExport
      * Constructor for QgsDxfExport.
      */
     QgsDxfExport() = default;
+
+    ~QgsDxfExport();
 
     /**
      * Set map settings and assign layer name attributes
@@ -515,10 +518,12 @@ class CORE_EXPORT QgsDxfExport
 
     //AC1009
     void writeHeader( const QString &codepage );
+    void prepareRenderers();
     void writeTables();
     void writeBlocks();
     void writeEntities();
     void writeEntitiesSymbolLevels( QgsVectorLayer *layer );
+    void stopRenderers();
     void writeEndFile();
 
     void startSection();
@@ -584,6 +589,8 @@ class CORE_EXPORT QgsDxfExport
     void appendLineString( const QgsLineString &ls, QVector<QgsPoint> &points, QVector<double> &bulges );
     void appendCircularString( const QgsCircularString &cs, QVector<QgsPoint> &points, QVector<double> &bulges );
     void appendCompoundCurve( const QgsCompoundCurve &cc, QVector<QgsPoint> &points, QVector<double> &bulges );
+
+    QList<DxfLayerJob *> mJobs;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDxfExport::Flags )
