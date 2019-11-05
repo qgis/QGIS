@@ -540,7 +540,7 @@ void QgsLayoutItemMapGrid::calculateCrsTransformLines() const
         //go through all intersections and draw grid markers/crosses
         int i = 0;
         QgsPointXY vertex = intersects.vertexAt( i );
-        while ( vertex != QgsPointXY( 0, 0 ) )
+        while ( !vertex.isEmpty() )
         {
           mTransformedIntersections << vertex;
           i = i + 1;
