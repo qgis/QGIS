@@ -152,6 +152,7 @@ class CORE_EXPORT QgsGeometry
       /* Split features */
       SplitCannotSplitPoint, //!< Cannot split points
     };
+    Q_ENUM(OperationResult)
 
     //! Constructor
     QgsGeometry();
