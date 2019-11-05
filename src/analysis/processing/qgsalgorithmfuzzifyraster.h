@@ -50,20 +50,16 @@ class QgsFuzzifyRasterAlgorithmBase : public QgsProcessingAlgorithm
      * Prepares the fuzzfication algorithm subclass for execution.
      */
     virtual bool prepareAlgorithmFuzzificationParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0;
-    //wird in jeder subclass nochmals implementiert, damit die fuzzification parameter mitgenommen werden können. (wird in prepareAlgorithm mit aufgerufen)
 
     /**
      * Processes a raster using fuzzify() method which is implemented in subclasses providing different fuzzy membership types.
      */
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) final;
-    //fuzzify() wird in der processAlgorithm Methode aufgerufen. processAlgorithm wird nur von der baseclass ausgeführt
 
     /**
      * Pure virtual method fuzzify() performs subclass specific fuzzification.
      */
     virtual double fuzzify( double &value ) = 0;
-    //fuzzify() wird in jeder subclass anders implementiert und greift auf unterschiedliche Membervariablen zu.
-    //jede subclass führt jene members neu ein, die zur Fuzzification benötigt werden (und auch durch
 
     QgsRasterLayer *mInputRaster;
     int mBand;
