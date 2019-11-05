@@ -11597,6 +11597,13 @@ void QgisApp::embedLayers()
 
     QString projectFile = d.selectedProjectFile();
 
+    QgsProjectArchive archive;
+    if ( projectFile.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) )
+    {
+      archive.unzip( projectFile );
+      projectFile = archive.projectFile();
+    }
+
     //groups
     QStringList groups = d.selectedGroups();
     QStringList::const_iterator groupIt = groups.constBegin();
