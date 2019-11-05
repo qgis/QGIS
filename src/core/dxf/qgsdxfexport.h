@@ -136,8 +136,6 @@ class CORE_EXPORT QgsDxfExport
      * Constructor for QgsDxfExport.
      */
     QgsDxfExport() = default;
-    QgsDxfExport( const QgsDxfExport &dxfExport ) SIP_SKIP;
-    QgsDxfExport &operator=( const QgsDxfExport &dxfExport );
 
     /**
      * Set map settings and assign layer name attributes
@@ -493,6 +491,11 @@ class CORE_EXPORT QgsDxfExport
     void registerDxfLayer( const QString &layerId, QgsFeatureId fid, const QString &layer );
 
   private:
+
+#ifdef SIP_RUN
+    QgsDxfExport( const QgsDxfExport &other );
+    QgsDxfExport &operator=( const QgsDxfExport & );
+#endif
     //! Extent for export, only intersecting features are exported. If the extent is an empty rectangle, all features are exported
     QgsRectangle mExtent;
     //! Scale for symbology export (used if symbols units are mm)

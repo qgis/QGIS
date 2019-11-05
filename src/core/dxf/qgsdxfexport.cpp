@@ -61,27 +61,6 @@
 
 #include <QIODevice>
 
-QgsDxfExport::QgsDxfExport( const QgsDxfExport &dxfExport )
-{
-  *this = dxfExport;
-}
-
-QgsDxfExport &QgsDxfExport::operator=( const QgsDxfExport &dxfExport )
-{
-  mMapSettings = dxfExport.mMapSettings;
-  mLayerNameAttribute = dxfExport.mLayerNameAttribute;
-  mSymbologyScale = dxfExport.mSymbologyScale;
-  mSymbologyExport = dxfExport.mSymbologyExport;
-  mMapUnits = dxfExport.mMapUnits;
-  mLayerTitleAsName = dxfExport.mLayerTitleAsName;
-  mSymbolLayerCounter = 0; // internal counter
-  mNextHandleId = 0;
-  mBlockCounter = 0;
-  mCrs = QgsCoordinateReferenceSystem();
-  mFactor = dxfExport.mFactor;
-  mForce2d = dxfExport.mForce2d;
-  return *this;
-}
 
 void QgsDxfExport::setMapSettings( const QgsMapSettings &settings )
 {

@@ -85,6 +85,8 @@ The attribute value is used for layer names.
 Constructor for QgsDxfExport.
 %End
 
+    ~QgsDxfExport();
+
     void setMapSettings( const QgsMapSettings &settings );
 %Docstring
 Set map settings and assign layer name attributes
@@ -471,6 +473,9 @@ Register name of layer for feature
 :param layer: dxf layer of feature
 %End
 
+  private:
+    QgsDxfExport( const QgsDxfExport &other );
+    QgsDxfExport &operator=( const QgsDxfExport & );
 };
 
 QFlags<QgsDxfExport::Flag> operator|(QgsDxfExport::Flag f1, QFlags<QgsDxfExport::Flag> f2);
