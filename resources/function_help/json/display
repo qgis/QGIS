@@ -18,11 +18,11 @@
 		}
 	],
 	"examples": [{
-			"expression": "display('a_layer_id', $currentFeature)",
+			"expression": "display('a_layer_id', $currentfeature)",
 			"returns": "the display expression of the current feature"
 		},
 		{
-			"expression": "display('a_layer_id', $currentFeature, 'False')",
+			"expression": "display('a_layer_id', $currentfeature, 'False')",
 			"returns": "the display expression of the current feature not evaluated."
 		}
 	]
