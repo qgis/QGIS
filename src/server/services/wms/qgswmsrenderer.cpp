@@ -2219,6 +2219,7 @@ namespace QgsWms
         exporter.setAttributeDisplayName( true );
         exporter.setAttributes( attributes );
         exporter.setIncludeGeometry( withGeometry );
+        exporter.setTransformGeometries( false );
 
         for ( const auto &feature : qgis::as_const( features ) )
         {
