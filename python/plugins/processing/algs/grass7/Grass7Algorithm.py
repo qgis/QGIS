@@ -303,7 +303,8 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             # Add an optional output type
             param = QgsProcessingParameterEnum(self.GRASS_OUTPUT_TYPE_PARAMETER,
                                                self.tr('v.out.ogr output type'),
-                                               self.OUTPUT_TYPES,defaultValue='auto')
+                                               self.OUTPUT_TYPES,
+                                               defaultValue=0)
             param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.params.append(param)
 
