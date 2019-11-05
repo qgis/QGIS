@@ -139,7 +139,7 @@ QList<QgsLabelFeature *> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCo
   while ( fit.nextFeature( fet ) )
   {
     QgsGeometry obstacleGeometry;
-    std::unique_ptr< QgsSymbol > symbol;
+    const QgsSymbol *symbol = nullptr;
     if ( mRenderer )
     {
       QgsSymbolList symbols = mRenderer->originalSymbolsForFeature( fet, ctx );
@@ -150,12 +150,12 @@ QList<QgsLabelFeature *> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCo
       }
       if ( !symbols.isEmpty() )
       {
-        symbol.reset( symbols.at( 0 )->clone() );
-        symbolScope = QgsExpressionContextUtils::updateSymbolScope( symbol.get(), symbolScope );
+        symbol = symbols.at( 0 );
+        symbolScope = QgsExpressionContextUtils::updateSymbolScope( symbol, symbolScope );
       }
     }
     ctx.expressionContext().setFeature( fet );
-    registerFeature( fet, ctx, obstacleGeometry, symbol.release() );
+    registerFeature( fet, ctx, obstacleGeometry, symbol );
   }
 
   if ( ctx.expressionContext().lastScope() == symbolScope )
