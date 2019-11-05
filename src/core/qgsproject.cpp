@@ -2475,13 +2475,21 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
   static QDateTime sPrevProjectFileTimestamp;
   static QDomDocument sProjectDocument;
 
+  QString qgsProjectFile = projectFilePath;
+  QgsProjectArchive archive;
+  if ( projectFilePath.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) )
+  {
+    archive.unzip( projectFilePath );
+    qgsProjectFile = archive.projectFile();
+  }
+
   QDateTime projectFileTimestamp = QFileInfo( projectFilePath ).lastModified();
 
   if ( projectFilePath != sPrevProjectFilePath || projectFileTimestamp != sPrevProjectFileTimestamp )
   {
     sPrevProjectFilePath.clear();
 
-    QFile projectFile( projectFilePath );
+    QFile projectFile( qgsProjectFile );
     if ( !projectFile.open( QIODevice::ReadOnly ) )
     {
       return false;
