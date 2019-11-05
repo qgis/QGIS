@@ -264,6 +264,120 @@ tests:
           fields:
             fid: skip
 
+  - algorithm: native:fuzzifyrasterlinearmembership
+    name: Test (native:fuzzifyrasterlinearmembership)
+    params:
+      BAND: 1
+      FUZZYHIGHBOUND: 100.0
+      FUZZYLOWBOUND: 200.0
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: ed9591139fed080e0b5b789052b881c8fddb25c106ff14e89cbb06c5
+        type: rasterhash
+
+  - algorithm: native:fuzzifyrasterlinearmembership
+    name: Test (native:fuzzifyrasterlinearmembership)
+    params:
+      BAND: 1
+      FUZZYHIGHBOUND: 200.0
+      FUZZYLOWBOUND: 100.0
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: 980df1d095601a885a7518038cdb327d83366db6f33a3fe307eab149
+        type: rasterhash
+
+  - algorithm: native:fuzzifyrasterpowermembership
+    name: Test (native:fuzzifyrasterpowermembership)
+    params:
+      BAND: 1
+      FUZZYEXPONENT: 2.0
+      FUZZYHIGHBOUND: 100.0
+      FUZZYLOWBOUND: 200.0
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: d18f956cb94d09a449a62299408e442973f4391415a9005d4d6850dc
+        type: rasterhash
+
+  - algorithm: native:fuzzifyrasterpowermembership
+    name: Test (native:fuzzifyrasterpowermembership)
+    params:
+      BAND: 1
+      FUZZYEXPONENT: 2.0
+      FUZZYHIGHBOUND: 200.0
+      FUZZYLOWBOUND: 100.0
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: 782bcc1851b9e73b8c962d4850e356c3dab11999ee41dce9dd2aea5f
+        type: rasterhash
+
+  - algorithm: native:fuzzifyrasterlargemembership
+    name: Test (native:fuzzifyrasterlargemembership)
+    params:
+      BAND: 1
+      FUZZYMIDPOINT: 100.0
+      FUZZYSPREAD: 5.0
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: d4479a5077235cffe4586f40a7c867139a50347f8312fd443c130ccb
+        type: rasterhash
+
+  - algorithm: native:fuzzifyrastersmallmembership
+    name: Test (native:fuzzifyrastersmallmembership)
+    params:
+      BAND: 1
+      FUZZYMIDPOINT: 100.0
+      FUZZYSPREAD: 5.0
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: 31569e93dbdd82c85cbf72c4ceb521015bd143e2106968a413a4ec6c
+        type: rasterhash
+
+  - algorithm: native:fuzzifyrastergaussianmembership
+    name: Test (native:fuzzifyrastergaussianmembership)
+    params:
+      BAND: 1
+      FUZZYMIDPOINT: 100.0
+      FUZZYSPREAD: 0.01
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: e51532915836f3e77695fb8d650a2d1e0984a5be8e8bbf4df677d160
+        type: rasterhash
+
+  - algorithm: native:fuzzifyrasternearmembership
+    name: Test (native:fuzzifyrasternearmembership)
+    params:
+      BAND: 1
+      FUZZYMIDPOINT: 100.0
+      FUZZYSPREAD: 0.01
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: 71aecb383a686d78ea0e677901a8a93f822b9897d7a9e23ba4ebf24d
+        type: rasterhash
+
   - algorithm: qgis:geometrybyexpression
     name: Geometry by expression (point)
     params:
