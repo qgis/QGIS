@@ -403,6 +403,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
       FetchFeatureFailed = 3, //!< Unable to fetch requested feature
       InvalidLayer = 4, //!< Edit failed due to invalid layer
     };
+    Q_ENUM( EditResult )
 
     //! Selection behavior
     enum SelectBehavior
@@ -412,6 +413,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
       IntersectSelection, //!< Modify current selection to include only select features which match
       RemoveFromSelection, //!< Remove from current selection
     };
+    Q_ENUM( SelectBehavior )
 
     /**
      * Setting options for loading vector layers.
