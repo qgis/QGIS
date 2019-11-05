@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsproperty.h"
+#include "qgsproperty_p.h"
 
 #include "qgslogger.h"
 #include "qgsexpression.h"
