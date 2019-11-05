@@ -132,6 +132,7 @@ class IdwInterpolation(QgisAlgorithm):
             # need to keep a reference until interpolation is complete
             layer = QgsProcessingUtils.variantToSource(v[0], context)
             data.source = layer
+            data.transformContext = context.transformContext()
             layers.append(layer)
 
             data.valueSource = int(v[1])

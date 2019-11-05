@@ -105,6 +105,8 @@ void QgsTinInterpolator::initialize()
     }
   }
 
+  const QgsCoordinateReferenceSystem crs = !mLayerData.empty() ? mLayerData.at( 0 ).source->sourceCrs() : QgsCoordinateReferenceSystem();
+
   QgsFeature f;
   for ( const LayerData &layer : qgis::as_const( mLayerData ) )
   {
@@ -122,7 +124,7 @@ void QgsTinInterpolator::initialize()
           break;
       }
 
-      QgsFeatureIterator fit = layer.source->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( attList ) );
+      QgsFeatureIterator fit = layer.source->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( attList ).setDestinationCrs( crs, layer.transformContext ) );
 
       while ( fit.nextFeature( f ) )
       {
