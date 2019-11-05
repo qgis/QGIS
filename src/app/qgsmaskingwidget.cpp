@@ -34,12 +34,12 @@ QgsMaskingWidget::QgsMaskingWidget( QWidget *parent ) :
 {
   setupUi( this );
 
-  connect( mMaskTargetsWidget, &QgsSymbolLayerSelectionWidget::changed, [&]()
+  connect( mMaskTargetsWidget, &QgsSymbolLayerSelectionWidget::changed, this, [&]()
   {
     mMaskSourcesWidget->setEnabled( ! mMaskTargetsWidget->selection().isEmpty() );
     emit widgetChanged();
   } );
-  connect( mMaskSourcesWidget, &QgsMaskSourceSelectionWidget::changed, [&]()
+  connect( mMaskSourcesWidget, &QgsMaskSourceSelectionWidget::changed, this, [&]()
   {
     emit widgetChanged();
   } );
