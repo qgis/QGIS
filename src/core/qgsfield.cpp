@@ -57,6 +57,8 @@ QgsField::QgsField( const QgsField &other ) //NOLINT
 
 }
 
+QgsField::~QgsField() = default;
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests in testqgsfield.cpp.

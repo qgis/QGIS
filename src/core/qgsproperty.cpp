@@ -201,6 +201,8 @@ QgsProperty::QgsProperty()
   d = new QgsPropertyPrivate();
 }
 
+QgsProperty::~QgsProperty() = default;
+
 QgsProperty QgsProperty::fromExpression( const QString &expression, bool isActive )
 {
   QgsProperty p;

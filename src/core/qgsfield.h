@@ -96,7 +96,7 @@ class CORE_EXPORT QgsField
      */
     QgsField &operator =( const QgsField &other ) SIP_SKIP;
 
-    virtual ~QgsField() = default;
+    virtual ~QgsField();
 
     bool operator==( const QgsField &other ) const;
     bool operator!=( const QgsField &other ) const;
