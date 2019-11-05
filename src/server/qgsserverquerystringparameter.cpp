@@ -126,7 +126,7 @@ json QgsServerQueryStringParameter::data() const
   return
   {
     { "name", nameString },
-    { "description", "Filter the collection by '" + nameString + "'" },
+    { "description", description().toStdString() },
     { "required", mRequired },
     { "in", "query"},
     { "style", "form"},
