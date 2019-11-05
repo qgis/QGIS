@@ -141,7 +141,7 @@ class TinInterpolation(QgisAlgorithm):
         layerData = []
         layers = []
         crs = QgsCoordinateReferenceSystem()
-        for row in interpolationData.split('::|::'):
+        for i, row in enumerate(interpolationData.split('::|::')):
             v = row.split('::~::')
             data = QgsInterpolator.LayerData()
 
@@ -155,6 +155,9 @@ class TinInterpolation(QgisAlgorithm):
 
             data.valueSource = int(v[1])
             data.interpolationAttribute = int(v[2])
+            if data.valueSource == QgsInterpolator.ValueAttribute and data.interpolationAttribute == -1:
+                raise QgsProcessingException(self.tr('Layer {} is set to use a value attribute, but no attribute was set'.format(i + 1)))
+
             if v[3] == '0':
                 data.sourceType = QgsInterpolator.SourcePoints
             elif v[3] == '1':
