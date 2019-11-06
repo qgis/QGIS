@@ -89,8 +89,7 @@ QgsTerrainEntity::QgsTerrainEntity( int maxLevel, const Qgs3DMapSettings &map, Q
 QgsTerrainEntity::~QgsTerrainEntity()
 {
   // cancel / wait for jobs
-  if ( mActiveJob )
-    cancelActiveJob();
+  cancelActiveJobs();
 
   delete mTextureGenerator;
   delete mTerrainToMapTransform;
@@ -193,7 +192,7 @@ TerrainMapUpdateJob::TerrainMapUpdateJob( QgsTerrainTextureGenerator *textureGen
 {
   QgsTerrainTileEntity *entity = qobject_cast<QgsTerrainTileEntity *>( node->entity() );
   connect( textureGenerator, &QgsTerrainTextureGenerator::tileReady, this, &TerrainMapUpdateJob::onTileReady );
-  mJobId = textureGenerator->render( entity->textureImage()->imageExtent(), entity->textureImage()->imageDebugText() );
+  mJobId = textureGenerator->render( entity->textureImage()->imageExtent(), node->tileId(), entity->textureImage()->imageDebugText() );
 }
 
 void TerrainMapUpdateJob::cancel()
