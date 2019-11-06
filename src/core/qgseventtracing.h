@@ -49,6 +49,20 @@
  * called trace2html that turns the JSON file into a standalone HTML page
  * that can be viewed anywhere.
  *
+ * Currently we recognize these kinds of events:
+ * 1. Duration events - they provide a way to mark a duration of work within a thread.
+ *    Their duration is specified by begin and end timestamps. They can be nested
+ *    and the viewer will stack them. If you need durations that do not nest properly
+ *    (i.e. they only partially overlap), you should use Async events instead.
+ * 2. Instant events - they correspond to something that happens but has no duration
+ *    associated with it.
+ * 3. Async events - they are used to specify asynchronous operations. They also require
+ *    additional "id" parameter to group them into the same event tree.
+ *
+ * Duration events are for example to record run of a single function. Async events
+ * are useful for cases where e.g. main thread starts some work in background and there
+ * may be possible several such operations running in the background at the same time.
+ *
  * Trace viewer project is hosted here (created by Chrome developers):
  * https://github.com/catapult-project/catapult/tree/master/tracing
  *
@@ -69,9 +83,11 @@ class CORE_EXPORT QgsEventTracing
     //! Type of the event that is being stored
     enum EventType
     {
-      Begin,    //!< Marks start of a duration event - should be paired with "End" event type
-      End,      //!< Marks end of a durection event - should be paired with "Begin" event type
-      Instant,  //!< Marks an instant event (which does not have any duration)
+      Begin,       //!< Marks start of a duration event - should be paired with "End" event type
+      End,         //!< Marks end of a durection event - should be paired with "Begin" event type
+      Instant,     //!< Marks an instant event (which does not have any duration)
+      AsyncBegin,  //!< Marks start of an async event - should be paired with "AsyncEnd" event type
+      AsyncEnd,    //!< Marks end of an async event - should be paired with "AsyncBegin" event type
     };
 
     /**
@@ -96,9 +112,10 @@ class CORE_EXPORT QgsEventTracing
 
     /**
      * Adds an event to the trace. Does nothing if tracing is not started.
+     * The "id" parameter is only needed for Async events to group them into a single event tree.
      * \note This method is thread-safe: it can be run from any thread.
      */
-    static void addEvent( EventType type, const QString &category, const QString &name );
+    static void addEvent( EventType type, const QString &category, const QString &name, const QString &id = QString() );
 
     /**
      * ScopedEvent can be used to trace a single function duration - the constructor adds a "begin" event
