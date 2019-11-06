@@ -632,7 +632,6 @@ SET(QGIS_GUI_HDRS
   attributetable/qgsattributetablemodel.h
   attributetable/qgsattributetableview.h
   attributetable/qgsdualview.h
-  attributetable/qgsfeaturefilterwidget_p.h
   attributetable/qgsfeaturelistmodel.h
   attributetable/qgsfeaturelistview.h
   attributetable/qgsfeaturelistviewdelegate.h
@@ -869,6 +868,7 @@ SET(QGIS_GUI_HDRS
 SET(QGIS_GUI_PRIVATE_HDRS
   qgsbrowserdockwidget_p.cpp
   qgswidgetstatehelper_p.h
+  attributetable/qgsfeaturefilterwidget_p.h
 )
 
 FIND_PACKAGE(Qt5Qml REQUIRED)

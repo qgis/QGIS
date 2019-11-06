@@ -13,6 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
+/// @cond PRIVATE
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the QGIS API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
+
 #include "qgsfeaturefilterwidget_p.h"
 
 #include "qgsapplication.h"
@@ -520,3 +531,5 @@ void QgsFeatureFilterWidget::onFilterQueryTextChanged( const QString &value )
   Q_UNUSED( value );
   mFilterQueryTimer.start( 300 );
 }
+
+/// @endcond
