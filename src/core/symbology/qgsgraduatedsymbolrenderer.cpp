@@ -84,6 +84,20 @@ const QgsRendererRange *QgsGraduatedSymbolRenderer::rangeForValue( double value 
         return nullptr;
     }
   }
+
+  // second chance -- use a bit of double tolerance to avoid floating point equality fuzziness
+  // if a value falls just outside of a range, but within acceptable double precision tolerance
+  // then we accept it anyway
+  for ( const QgsRendererRange &range : mRanges )
+  {
+    if ( qgsDoubleNear( range.lowerValue(), value ) || qgsDoubleNear( range.upperValue(), value ) )
+    {
+      if ( range.renderState() || mCounting )
+        return &range;
+      else
+        return nullptr;
+    }
+  }
   // the value is out of the range: return NULL instead of symbol
   return nullptr;
 }
