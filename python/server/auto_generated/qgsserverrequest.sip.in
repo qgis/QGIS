@@ -27,7 +27,8 @@ class QgsServerRequest
       PutMethod,
       GetMethod,
       PostMethod,
-      DeleteMethod
+      DeleteMethod,
+      PatchMethod
     };
 
 
