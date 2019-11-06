@@ -23,6 +23,7 @@
 #include "qgsserverapiutils.h"
 #include "qgsfeaturerequest.h"
 #include "qgsjsonutils.h"
+#include "qgsogrutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsmessagelog.h"
 #include "qgsbufferserverrequest.h"
@@ -441,10 +442,12 @@ QgsWfs3CollectionsHandler::QgsWfs3CollectionsHandler()
 void QgsWfs3CollectionsHandler::handleRequest( const QgsServerApiContext &context ) const
 {
   json crss = json::array();
+
   for ( const QString &crs : QgsServerApiUtils::publishedCrsList( context.project() ) )
   {
     crss.push_back( crs.toStdString() );
   }
+
   json data
   {
     {
@@ -455,9 +458,9 @@ void QgsWfs3CollectionsHandler::handleRequest( const QgsServerApiContext &contex
       "crs", crss
     }
   };
+
   if ( context.project() )
   {
-
     const QgsProject *project = context.project();
     const QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );
     for ( const QString &wfsLayerId : wfsLayerIds )
@@ -1303,9 +1306,56 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
     };
     write( data, context, htmlMetadata );
   }
+  else if ( context.request()->method() == QgsServerRequest::Method::PostMethod )
+  {
+    try
+    {
+      // Parse
+      json postData = json::parse( context.request()->data() );
+      // Process data
+      const QgsFeatureList features = QgsOgrUtils::stringToFeatureList( context.request()->data(), mapLayer->fields(), QTextCodec::codecForName( "UTF-8" ) );
+      if ( features.isEmpty() )
+      {
+        throw QgsServerApiBadRequestException( QStringLiteral( "Posted body contains no feature" ) );
+      }
+      QgsFeature feat = features.first();
+      if ( ! feat.isValid() )
+      {
+        throw QgsServerApiInternalServerError( QStringLiteral( "Feature is not valid" ) );
+      }
+      // Make sure the first field (id) is null for shapefiles
+      if ( mapLayer->providerType() == QLatin1String( "ogr" ) && mapLayer->storageType() == QLatin1String( "ESRI Shapefile" ) )
+      {
+        feat.setAttribute( 0, QVariant() );
+      }
+      feat.setId( FID_NULL );
+      // TODO: handle CRS
+      QgsFeatureList featuresToAdd;
+      featuresToAdd.append( feat );
+      if ( ! mapLayer->dataProvider()->addFeatures( featuresToAdd ) )
+      {
+        throw QgsServerApiInternalServerError( QStringLiteral( "Error adding feature to collection" ) );
+      }
+      feat = featuresToAdd.first();
+      // Send response
+      context.response()->setStatusCode( 201 );
+      context.response()->setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "application/geo+json" ) );
+      QString url { context.request()->url().toString() };
+      if ( ! url.endsWith( '/' ) )
+      {
+        url.append( '/' );
+      }
+      context.response()->setHeader( QStringLiteral( "Location" ), url + QString::number( feat.id() ) );
+      context.response()->write( "\"string\"" );
+    }
+    catch ( json::exception &ex )
+    {
+      throw QgsServerApiBadRequestException( QStringLiteral( "JSON parse error: %1" ).arg( ex.what( ) ) );
+    }
+  }
   else
   {
-    throw QgsServerApiNotImplementedException( QStringLiteral( "Only GET method is implemented." ) );
+    throw QgsServerApiNotImplementedException( QStringLiteral( "%1 method is not implemented." ).arg( context.request()->method() ) );
   }
 
 }
@@ -1338,11 +1388,11 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
   checkLayerIsAccessible( mapLayer, context );
 
   const std::string title { mapLayer->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->title().toStdString() };
+  const QString featureId { match.captured( QStringLiteral( "featureId" ) ) };
 
+  // GET
   if ( context.request()->method() == QgsServerRequest::Method::GetMethod )
   {
-    const QString featureId { match.captured( QStringLiteral( "featureId" ) ) };
-
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = context.serverInterface()->accessControls();
     //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
@@ -1387,7 +1437,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
   }
   else
   {
-    throw QgsServerApiNotImplementedException( QStringLiteral( "Only GET method is implemented." ) );
+    throw QgsServerApiNotImplementedException( QStringLiteral( "%1 method is not implemented." ).arg( context.request()->method() ) );
   }
 }
 
