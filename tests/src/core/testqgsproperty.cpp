@@ -22,6 +22,7 @@
 #include "qgsapplication.h"
 #include "qgscolorramp.h"
 #include "qgssymbollayerutils.h"
+#include "qgspropertytransformer.h"
 #include <QObject>
 
 enum PropertyKeys

@@ -42,6 +42,7 @@
 #include "qgsgeometry.h"
 #include "qgsdiagramrenderer.h"
 #include "diagram/qgspiediagram.h"
+#include "qgspropertytransformer.h"
 
 static QString _fileNameForTest( const QString &testName )
 {

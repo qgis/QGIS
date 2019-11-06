@@ -723,7 +723,6 @@ SET(QGIS_CORE_HDRS
   qgsfeaturestore.h
   qgsfeedback.h
   qgsfield.h
-  qgsfield_p.h
   qgsfieldconstraints.h
   qgsfieldformatter.h
   qgsfieldformatterregistry.h
@@ -1234,6 +1233,7 @@ SET(QGIS_CORE_PRIVATE_HDRS
   qgseditformconfig_p.h
   qgsfeaturefiltermodel_p.h
   qgsfeature_p.h
+  qgsfield_p.h
   qgsfields_p.h
   qgsrelation_p.h
   qgsspatialindexkdbush_p.h

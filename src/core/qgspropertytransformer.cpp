@@ -64,6 +64,8 @@ QgsPropertyTransformer &QgsPropertyTransformer::operator=( const QgsPropertyTran
   return *this;
 }
 
+QgsPropertyTransformer::~QgsPropertyTransformer() = default;
+
 bool QgsPropertyTransformer::loadVariant( const QVariant &transformer )
 {
   QVariantMap transformerMap = transformer.toMap();

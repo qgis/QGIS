@@ -42,6 +42,7 @@
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgsauxiliarystorage.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgspropertytransformer.h"
 
 #include <QList>
 #include <QMessageBox>

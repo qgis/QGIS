@@ -44,7 +44,9 @@ class CORE_EXPORT QgsDataDefinedSizeLegend
     /**
      * Constructor for QgsDataDefinedSizeLegend.
      */
-    QgsDataDefinedSizeLegend() = default;
+    QgsDataDefinedSizeLegend();
+
+    ~QgsDataDefinedSizeLegend();
 
     //! Copy constructor
     QgsDataDefinedSizeLegend( const QgsDataDefinedSizeLegend &other );
