@@ -154,6 +154,13 @@ class CORE_EXPORT QgsJsonExporter
     QgsCoordinateReferenceSystem sourceCrs() const;
 
     /**
+     * Sets whether geometries should be transformed in EPSG 4326 (default
+     * behavior) or just keep as it is.
+     * \since QGIS 3.10
+     */
+    void setTransformGeometries( bool activate ) { mTransformGeometries = activate; }
+
+    /**
      * Sets the list of attributes to include in the JSON exports.
      * \param attributes list of attribute indexes, or an empty list to include all
      * attributes
@@ -270,6 +277,8 @@ class CORE_EXPORT QgsJsonExporter
     QgsCoordinateTransform mTransform;
 
     bool mAttributeDisplayName = false;
+
+    bool mTransformGeometries = true;
 };
 
 /**

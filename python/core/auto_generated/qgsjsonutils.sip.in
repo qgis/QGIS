@@ -162,6 +162,14 @@ correctly automatically reprojected to WGS 84, to match GeoJSON specifications.
 .. seealso:: :py:func:`setSourceCrs`
 %End
 
+    void setTransformGeometries( bool activate );
+%Docstring
+Sets whether geometries should be transformed in EPSG 4326 (default
+behavior) or just keep as it is.
+
+.. versionadded:: 3.10
+%End
+
     void setAttributes( const QgsAttributeList &attributes );
 %Docstring
 Sets the list of attributes to include in the JSON exports.
