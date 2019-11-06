@@ -107,6 +107,8 @@ class CORE_EXPORT QgsBookmarkManagerModel: public QAbstractTableModel
  */
 class CORE_EXPORT QgsBookmarkManagerProxyModel : public QSortFilterProxyModel
 {
+    Q_OBJECT
+
   public:
 
     /**
