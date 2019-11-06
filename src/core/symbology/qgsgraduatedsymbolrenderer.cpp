@@ -17,6 +17,7 @@
 #include <QDomElement>
 
 #include <ctime>
+#include <cmath>
 
 #include "qgsgraduatedsymbolrenderer.h"
 
@@ -70,14 +71,15 @@ QgsGraduatedSymbolRenderer::~QgsGraduatedSymbolRenderer()
   mRanges.clear(); // should delete all the symbols
 }
 
-QgsSymbol *QgsGraduatedSymbolRenderer::symbolForValue( double value ) const
+
+const QgsRendererRange *QgsGraduatedSymbolRenderer::rangeForValue( double value ) const
 {
   for ( const QgsRendererRange &range : mRanges )
   {
     if ( range.lowerValue() <= value && range.upperValue() >= value )
     {
       if ( range.renderState() || mCounting )
-        return range.symbol();
+        return &range;
       else
         return nullptr;
     }
@@ -86,21 +88,25 @@ QgsSymbol *QgsGraduatedSymbolRenderer::symbolForValue( double value ) const
   return nullptr;
 }
 
+QgsSymbol *QgsGraduatedSymbolRenderer::symbolForValue( double value ) const
+{
+  if ( const QgsRendererRange *range = rangeForValue( value ) )
+    return range->symbol();
+  return nullptr;
+}
+
 QString QgsGraduatedSymbolRenderer::legendKeyForValue( double value ) const
 {
-  int i = 0;
-  for ( const QgsRendererRange &range : mRanges )
+  if ( const QgsRendererRange *matchingRange = rangeForValue( value ) )
   {
-    if ( range.lowerValue() <= value && range.upperValue() >= value )
+    int i = 0;
+    for ( const QgsRendererRange &range : mRanges )
     {
-      if ( range.renderState() || mCounting )
+      if ( matchingRange == &range )
         return QString::number( i );
-      else
-        return QString();
+      i++;
     }
-    i++;
   }
-  // the value is out of the range: return NULL
   return QString();
 }
 
@@ -1053,7 +1059,6 @@ void QgsGraduatedSymbolRenderer::updateRangeLabels()
     mRanges[i].setLabel( mClassificationMethod->labelForRange( mRanges[i], pos ) );
   }
 }
-
 
 void QgsGraduatedSymbolRenderer::calculateLabelPrecision( bool updateRanges )
 {
