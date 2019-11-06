@@ -3714,7 +3714,7 @@ QSet<QVariant> QgsOgrProvider::uniqueValues( int index, int limit ) const
   if ( !mValid || index < 0 || index >= mAttributeFields.count() )
     return uniqueValues;
 
-  QgsField fld = mAttributeFields.at( index );
+  const QgsField fld = mAttributeFields.at( index );
   if ( fld.name().isNull() )
   {
     return uniqueValues; //not a provider field
@@ -3751,9 +3751,13 @@ QSet<QVariant> QgsOgrProvider::uniqueValues( int index, int limit ) const
   }
 
   gdal::ogr_feature_unique_ptr f;
+  bool ok = false;
   while ( f.reset( l->GetNextFeature() ), f )
   {
-    uniqueValues << ( OGR_F_IsFieldSetAndNotNull( f.get(), 0 ) ? convertValue( fld.type(), textEncoding()->toUnicode( OGR_F_GetFieldAsString( f.get(), 0 ) ) ) : QVariant( fld.type() ) );
+    const QVariant res = QgsOgrUtils::getOgrFeatureAttribute( f.get(), fld, 0, textEncoding(), &ok );
+    if ( ok )
+      uniqueValues << res;
+
     if ( limit >= 0 && uniqueValues.size() >= limit )
       break;
   }
@@ -3813,7 +3817,7 @@ QVariant QgsOgrProvider::minimumValue( int index ) const
   {
     return QVariant();
   }
-  QgsField fld = mAttributeFields.at( index );
+  const QgsField fld = mAttributeFields.at( index );
 
   // Don't quote column name (see https://trac.osgeo.org/gdal/ticket/5799#comment:9)
   QByteArray sql = "SELECT MIN(" + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) );
@@ -3837,8 +3841,11 @@ QVariant QgsOgrProvider::minimumValue( int index ) const
     return QVariant();
   }
 
-  QVariant value = OGR_F_IsFieldSetAndNotNull( f.get(), 0 ) ? convertValue( fld.type(), textEncoding()->toUnicode( OGR_F_GetFieldAsString( f.get(), 0 ) ) ) : QVariant( fld.type() );
-  return value;
+  bool ok = false;
+  const QVariant res = QgsOgrUtils::getOgrFeatureAttribute( f.get(), fld, 0, textEncoding(), &ok );
+  if ( !ok )
+    return QVariant();
+  return res;
 }
 
 QVariant QgsOgrProvider::maximumValue( int index ) const
@@ -3847,7 +3854,7 @@ QVariant QgsOgrProvider::maximumValue( int index ) const
   {
     return QVariant();
   }
-  QgsField fld = mAttributeFields.at( index );
+  const QgsField fld = mAttributeFields.at( index );
 
   // Don't quote column name (see https://trac.osgeo.org/gdal/ticket/5799#comment:9)
   QByteArray sql = "SELECT MAX(" + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) );
@@ -3871,8 +3878,11 @@ QVariant QgsOgrProvider::maximumValue( int index ) const
     return QVariant();
   }
 
-  QVariant value = OGR_F_IsFieldSetAndNotNull( f.get(), 0 ) ? convertValue( fld.type(), textEncoding()->toUnicode( OGR_F_GetFieldAsString( f.get(), 0 ) ) ) : QVariant( fld.type() );
-  return value;
+  bool ok = false;
+  const QVariant res = QgsOgrUtils::getOgrFeatureAttribute( f.get(), fld, 0, textEncoding(), &ok );
+  if ( !ok )
+    return QVariant();
+  return res;
 }
 
 QByteArray QgsOgrProvider::quotedIdentifier( const QByteArray &field ) const
