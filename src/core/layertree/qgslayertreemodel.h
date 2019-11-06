@@ -423,7 +423,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     QMap<QString, QString> mLayerStyleOverrides;
 
     //! Per layer data about layer's legend nodes
-    QMap<QgsLayerTreeLayer *, LayerLegendData> mLegend;
+    QHash<QgsLayerTreeLayer *, LayerLegendData> mLegend;
 
     QFont mFontLayer;
     QFont mFontGroup;
