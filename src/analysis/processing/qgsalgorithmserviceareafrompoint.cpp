@@ -146,20 +146,13 @@ QVariantMap QgsServiceAreaFromPointAlgorithm::processAlgorithm( const QVariantMa
     } // edges
   } // costs
 
-  // convert to list so he have same order of points between algorithm runs
+  // convert to list and sort to maintain same order of points between algorithm runs
   QList< int > verticesList = vertices.toList();
   std::sort( verticesList.begin(), verticesList.end() );
   for ( int v : verticesList )
   {
     points.push_back( graph->vertex( v ).point() );
   }
-  // this produces correct results, but order of point is not the same, so tests failed
-  //QSet< int >::const_iterator it = vertices.constBegin();
-  //while ( it != vertices.constEnd() )
-  //{
-  //  points.push_back( graph->vertex( *it ).point() );
-  //  it++;
-  //}
 
   feedback->pushInfo( QObject::tr( "Writing results…" ) );
 

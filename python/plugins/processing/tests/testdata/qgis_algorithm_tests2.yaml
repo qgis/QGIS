@@ -1626,11 +1626,12 @@ tests:
             start: skip
             end: skip
 
-  - algorithm: qgis:serviceareafrompoint
-    name: Service area (from point, shortest)
+  - algorithm: native:serviceareafrompoint
+    name: Service area from point (shortest, nodes)
     params:
       DEFAULT_DIRECTION: 2
-      DEFAULT_SPEED: 5.0
+      DEFAULT_SPEED: 50.0
+      INCLUDE_BOUNDS: false
       INPUT:
         name: roads.gml
         type: vector
@@ -1643,7 +1644,7 @@ tests:
       VALUE_FORWARD: ''
     results:
       OUTPUT:
-        name: expected/service_area.gml
+        name: expected/service_area_from_point_nodes.gml
         type: vector
         compare:
           ignore_crs_check: true
@@ -1655,16 +1656,16 @@ tests:
             start: skip
             end: skip
 
-  - algorithm: qgis:serviceareafrompoint
-    name: Service area (from point, shortest, no bounds)
+  - algorithm: native:serviceareafrompoint
+    name: Service area from point (shortest, nodes, bounds)
     params:
       DEFAULT_DIRECTION: 2
-      DEFAULT_SPEED: 5.0
-      INCLUDE_BOUNDS: false
+      DEFAULT_SPEED: 50.0
+      INCLUDE_BOUNDS: true
       INPUT:
         name: roads.gml
         type: vector
-      START_POINT: 1002465.0089601517,6221875.432489508
+      START_POINT: 1002465.0089601517,6221875.432489508 [EPSG:32733]
       STRATEGY: 0
       TOLERANCE: 0.0
       TRAVEL_COST: 700.0
@@ -1673,23 +1674,14 @@ tests:
       VALUE_FORWARD: ''
     results:
       OUTPUT:
-        name: expected/service_area_no_bounds.gml
+        name: expected/service_area_from_point_nodes_bounds.gml
         type: vector
-        compare:
-          ignore_crs_check: true
-          geometry:
-            precision: 2
-          fields:
-            cost:
-              precision: 2
-            start: skip
-            end: skip
 
-  - algorithm: qgis:serviceareafrompoint
-    name: Service area from point, output lines
+  - algorithm: native:serviceareafrompoint
+    name: Service area from point (shortest, lines)
     params:
       DEFAULT_DIRECTION: 2
-      DEFAULT_SPEED: 5.0
+      DEFAULT_SPEED: 50.0
       INCLUDE_BOUNDS: false
       INPUT:
         name: roads.gml
@@ -1703,7 +1695,7 @@ tests:
       VALUE_FORWARD: ''
     results:
       OUTPUT_LINES:
-        name: expected/service_area_lines.gml
+        name: expected/service_area_from_point_lines.gml
         type: vector
         compare:
           ignore_crs_check: true
@@ -1715,45 +1707,11 @@ tests:
             start: skip
             end: skip
 
-  - algorithm: qgis:serviceareafromlayer
-    name: Service area from layer
+  - algorithm: native:serviceareafromlayer
+    name: Service area from layer (shortest, nodes)
     params:
       DEFAULT_DIRECTION: 2
-      DEFAULT_SPEED: 5.0
-      INPUT:
-        name: roads.gml
-        type: vector
-      START_POINTS:
-        name: custom/route_points.gml
-        type: vector
-      STRATEGY: 0
-      TOLERANCE: 0.0
-      TRAVEL_COST: 700.0
-      VALUE_BACKWARD: ''
-      VALUE_BOTH: ''
-      VALUE_FORWARD: ''
-    results:
-      OUTPUT:
-        name: expected/service_area_from_layer.shp
-        type: vector
-        compare:
-          ignore_crs_check: true
-          geometry:
-            precision: 2
-          fields:
-            cost:
-              precision: 2
-            start: skip
-            end: skip
-        pk:
-          - d
-          - type
-
-  - algorithm: qgis:serviceareafromlayer
-    name: Service area from layer no bounds
-    params:
-      DEFAULT_DIRECTION: 2
-      DEFAULT_SPEED: 5.0
+      DEFAULT_SPEED: 50.0
       INCLUDE_BOUNDS: false
       INPUT:
         name: roads.gml
@@ -1769,7 +1727,7 @@ tests:
       VALUE_FORWARD: ''
     results:
       OUTPUT:
-        name: expected/service_area_from_layer_no_bounds.shp
+        name: expected/service_area_from_layer_nodes.gml
         type: vector
         compare:
           ignore_crs_check: true
@@ -1784,11 +1742,34 @@ tests:
           - d
           - type
 
-  - algorithm: qgis:serviceareafromlayer
-    name: Service area from layer (lines)
+  - algorithm: native:serviceareafromlayer
+    name: Service area from layer (shortest, nodes, boundary)
     params:
       DEFAULT_DIRECTION: 2
-      DEFAULT_SPEED: 5.0
+      DEFAULT_SPEED: 50.0
+      INCLUDE_BOUNDS: true
+      INPUT:
+        name: roads.gml|layername=roads
+        type: vector
+      START_POINTS:
+        name: custom/route_points.gml|layername=route_points
+        type: vector
+      STRATEGY: 0
+      TOLERANCE: 0.0
+      TRAVEL_COST: 700.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT:
+        name: expected/service_area_from_layer_nodes_bounds.gml
+        type: vector
+
+  - algorithm: native:serviceareafromlayer
+    name: Service area from layer (shortest, lines)
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 50.0
       INCLUDE_BOUNDS: false
       INPUT:
         name: roads.gml
@@ -1798,13 +1779,13 @@ tests:
         type: vector
       STRATEGY: 0
       TOLERANCE: 0.0
-      TRAVEL_COST: 500.0
+      TRAVEL_COST: 700.0
       VALUE_BACKWARD: ''
       VALUE_BOTH: ''
       VALUE_FORWARD: ''
     results:
       OUTPUT_LINES:
-        name: expected/service_area_from_layer_lines.shp
+        name: expected/service_area_from_layer_lines.gml
         type: vector
         compare:
           ignore_crs_check: true

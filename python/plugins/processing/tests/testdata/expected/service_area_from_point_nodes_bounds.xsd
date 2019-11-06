@@ -10,8 +10,8 @@
     </xs:extension>
   </xs:complexContent>
 </xs:complexType>
-<xs:element name="service_area" type="ogr:service_area_Type" substitutionGroup="gml:_Feature"/>
-<xs:complexType name="service_area_Type">
+<xs:element name="service_area_from_point_nodes_bounds" type="ogr:service_area_from_point_nodes_bounds_Type" substitutionGroup="gml:_Feature"/>
+<xs:complexType name="service_area_from_point_nodes_bounds_Type">
   <xs:complexContent>
     <xs:extension base="gml:AbstractFeatureType">
       <xs:sequence>
@@ -19,14 +19,12 @@
         <xs:element name="type" nillable="true" minOccurs="0" maxOccurs="1">
           <xs:simpleType>
             <xs:restriction base="xs:string">
-              <xs:maxLength value="254"/>
             </xs:restriction>
           </xs:simpleType>
         </xs:element>
         <xs:element name="start" nillable="true" minOccurs="0" maxOccurs="1">
           <xs:simpleType>
             <xs:restriction base="xs:string">
-              <xs:maxLength value="254"/>
             </xs:restriction>
           </xs:simpleType>
         </xs:element>
