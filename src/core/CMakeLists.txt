@@ -823,6 +823,7 @@ SET(QGIS_CORE_HDRS
   qgsprojectviewsettings.h
   qgsprojutils.h
   qgsproperty.h
+  qgsproperty_p.h
   qgspropertycollection.h
   qgspropertytransformer.h
   qgsprovidermetadata.h
@@ -1234,7 +1235,6 @@ SET(QGIS_CORE_PRIVATE_HDRS
   qgsfeaturefiltermodel_p.h
   qgsfeature_p.h
   qgsfields_p.h
-  qgsproperty_p.h
   qgsrelation_p.h
   qgsspatialindexkdbush_p.h
   qgstextrenderer_p.h

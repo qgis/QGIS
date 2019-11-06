@@ -853,10 +853,11 @@ SET(QGIS_GUI_HDRS
   symbology/qgssymbolslistwidget.h
   symbology/qgssymbolwidgetcontext.h
   symbology/qgsvectorfieldsymbollayerwidget.h
+
+  qgsbrowserdockwidget_p.h
 )
 
 SET(QGIS_GUI_PRIVATE_HDRS
-  qgsbrowserdockwidget_p.h
   qgswidgetstatehelper_p.h
 )
 
