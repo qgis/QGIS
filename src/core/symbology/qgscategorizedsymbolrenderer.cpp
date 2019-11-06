@@ -186,7 +186,6 @@ void QgsCategorizedSymbolRenderer::rebuildHash()
   for ( const QgsRendererCategory &cat : qgis::as_const( mCategories ) )
   {
     const QVariant val = cat.value();
-    QString valAsString;
     if ( val.type() == QVariant::List )
     {
       const QVariantList list = val.toList();
