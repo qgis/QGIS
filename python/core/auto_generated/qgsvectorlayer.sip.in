@@ -581,7 +581,7 @@ Returns the number of features that are selected in this layer.
 .. seealso:: :py:func:`selectedFeatureIds`
 %End
 
-    void selectByRect( QgsRectangle &rect, SelectBehavior behavior = SetSelection );
+    void selectByRect( QgsRectangle &rect, QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection );
 %Docstring
 Selects features found within the search rectangle (in layer's coordinates)
 
@@ -596,7 +596,7 @@ Selects features found within the search rectangle (in layer's coordinates)
 .. seealso:: :py:func:`selectByIds`
 %End
 
-    void selectByExpression( const QString &expression, SelectBehavior behavior = SetSelection );
+    void selectByExpression( const QString &expression, QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection );
 %Docstring
 Selects matching features using an expression.
 
@@ -611,7 +611,7 @@ Selects matching features using an expression.
 .. versionadded:: 2.16
 %End
 
-    void selectByIds( const QgsFeatureIds &ids, SelectBehavior behavior = SetSelection );
+    void selectByIds( const QgsFeatureIds &ids, QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection );
 %Docstring
 Selects matching features using a list of feature IDs. Will emit the
 selectionChanged() signal with the clearAndSelect flag set.

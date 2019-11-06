@@ -712,7 +712,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see selectByExpression()
      * \see selectByIds()
      */
-    Q_INVOKABLE void selectByRect( QgsRectangle &rect, SelectBehavior behavior = SetSelection );
+    Q_INVOKABLE void selectByRect( QgsRectangle &rect, QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection );
 
     /**
      * Selects matching features using an expression.
@@ -723,7 +723,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see selectByIds()
      * \since QGIS 2.16
      */
-    Q_INVOKABLE void selectByExpression( const QString &expression, SelectBehavior behavior = SetSelection );
+    Q_INVOKABLE void selectByExpression( const QString &expression, QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection );
 
     /**
      * Selects matching features using a list of feature IDs. Will emit the
@@ -735,7 +735,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see selectByExpression()
      * \since QGIS 2.16
      */
-    Q_INVOKABLE void selectByIds( const QgsFeatureIds &ids, SelectBehavior behavior = SetSelection );
+    Q_INVOKABLE void selectByIds( const QgsFeatureIds &ids, QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection );
 
     /**
      * Modifies the current selection on this layer
