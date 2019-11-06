@@ -51,7 +51,8 @@ class SERVER_EXPORT QgsServerRequest
       PutMethod,
       GetMethod,
       PostMethod,
-      DeleteMethod
+      DeleteMethod,
+      PatchMethod
     };
 
 
