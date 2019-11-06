@@ -63,6 +63,11 @@ bool QgsEventTracing::stopTracing()
   return false;
 }
 
+bool QgsEventTracing::isTracingEnabled()
+{
+  return sIsTracing;
+}
+
 bool QgsEventTracing::writeTrace( const QString &fileName )
 {
   if ( sIsTracing )
@@ -81,9 +86,10 @@ bool QgsEventTracing::writeTrace( const QString &fileName )
       f.write( ",\n" );
     else
       first = false;
-    char t = item.type == Begin ? 'B' : ( item.type == End ? 'E' : 'I' );
-    QString msg = QString( "  {\"cat\": \"%1\", \"pid\": 1, \"tid\": %2, \"ts\": %3, \"ph\": \"%4\", \"name\": \"%5\" }" )
-                  .arg( item.category ).arg( item.threadId ).arg( item.timestamp ).arg( t ).arg( item.name );
+    char t = item.type == Begin ? 'B' : ( item.type == End ? 'E' : 'i' );
+    QString msg = QStringLiteral( "  {\"cat\": \"%1\", \"pid\": 1, \"tid\": %2, \"ts\": %3, \"ph\": \"%4\", \"name\": \"%5\"%6 }" )
+                  .arg( item.category ).arg( item.threadId ).arg( item.timestamp ).arg( t ).arg( item.name )
+                  .arg( item.type == Instant ? QStringLiteral( ", \"s\": \"g\"" ) : QString() );
     f.write( msg.toUtf8() );
   }
 

@@ -24,6 +24,8 @@
 #include "qgschunkloader_p.h"
 #include "qgschunknode_p.h"
 
+#include "qgseventtracing.h"
+
 ///@cond PRIVATE
 
 static float screenSpaceError( float epsilon, float distance, float screenSize, float fov )
@@ -330,6 +332,10 @@ void QgsChunkedEntity::onActiveJobFinished()
     Q_ASSERT( node->state() == QgsChunkNode::Loading );
     Q_ASSERT( node->loader() == loader );
 
+    QgsEventTracing::addEvent( QgsEventTracing::End, QStringLiteral( "3D" ),
+                               QStringLiteral( "Load %1/%2/%3" ).arg( node->tileZ() ).arg( node->tileX() ).arg( node->tileY() ) );
+
+    QgsEventTracing::ScopedEvent e( "3D", QString( "create" ) );
     // mark as loaded + create entity
     Qt3DCore::QEntity *entity = node->loader()->createEntity( this );
 
@@ -352,6 +358,8 @@ void QgsChunkedEntity::onActiveJobFinished()
   else
   {
     Q_ASSERT( node->state() == QgsChunkNode::Updating );
+    QgsEventTracing::addEvent( QgsEventTracing::End, QStringLiteral( "3D" ),
+                               QStringLiteral( "Update %1/%2/%3" ).arg( node->tileZ() ).arg( node->tileX() ).arg( node->tileY() ) );
     node->setUpdated();
   }
 
@@ -379,6 +387,9 @@ void QgsChunkedEntity::startJob()
 
   if ( node->state() == QgsChunkNode::QueuedForLoad )
   {
+    QgsEventTracing::addEvent( QgsEventTracing::Begin, QStringLiteral( "3D" ),
+                               QStringLiteral( "Load %1/%2/%3" ).arg( node->tileZ() ).arg( node->tileX() ).arg( node->tileY() ) );
+
     QgsChunkLoader *loader = mChunkLoaderFactory->createChunkLoader( node );
     connect( loader, &QgsChunkQueueJob::finished, this, &QgsChunkedEntity::onActiveJobFinished );
     node->setLoading( loader );
@@ -386,6 +397,9 @@ void QgsChunkedEntity::startJob()
   }
   else if ( node->state() == QgsChunkNode::QueuedForUpdate )
   {
+    QgsEventTracing::addEvent( QgsEventTracing::Begin, QStringLiteral( "3D" ),
+                               QStringLiteral( "Update %1/%2/%3" ).arg( node->tileZ() ).arg( node->tileX() ).arg( node->tileY() ) );
+
     node->setUpdating();
     connect( node->updater(), &QgsChunkQueueJob::finished, this, &QgsChunkedEntity::onActiveJobFinished );
     mActiveJob = node->updater();
@@ -404,11 +418,17 @@ void QgsChunkedEntity::cancelActiveJob()
   {
     // return node back to skeleton
     node->cancelLoading();
+
+    QgsEventTracing::addEvent( QgsEventTracing::End, QStringLiteral( "3D" ),
+                               QStringLiteral( "Load %1/%2/%3" ).arg( node->tileZ() ).arg( node->tileX() ).arg( node->tileY() ) );
   }
   else
   {
     // return node back to loaded state
     node->cancelUpdating();
+
+    QgsEventTracing::addEvent( QgsEventTracing::End, QStringLiteral( "3D" ),
+                               QStringLiteral( "Update %1/%2/%3" ).arg( node->tileZ() ).arg( node->tileX() ).arg( node->tileY() ) );
   }
 
   mActiveJob->cancel();

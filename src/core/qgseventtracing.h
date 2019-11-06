@@ -85,6 +85,11 @@ class CORE_EXPORT QgsEventTracing
     static bool stopTracing();
 
     /**
+     * Returns true if tracing is currently in progress.
+     */
+    static bool isTracingEnabled();
+
+    /**
      * Write captured trace to a JSON file. It is only possible to write trace when tracing has been stopped already.
      */
     static bool writeTrace( const QString &fileName );
