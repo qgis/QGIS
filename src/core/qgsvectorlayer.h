@@ -2087,6 +2087,25 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Calculates an aggregated value from the layer's features.
      * Currently any filtering expression provided will override filters in the FeatureRequest.
+     * \param calculation aggregate to calculate
+     * \param fieldOrExpression source field or expression to use as basis for aggregated values.
+     * \param parameters parameters controlling aggregate calculation
+     * \param context expression context for expressions and filters
+     * \param ok if specified, will be set to TRUE if aggregate calculation was successful
+     * \param symbolId Id of the symbol to use, otherwise uses all features
+     * \returns calculated aggregate value
+     * \since QGIS 3.12
+     */
+    QVariant aggregate( QgsAggregateCalculator::Aggregate calculation,
+                        const QString &fieldOrExpression,
+                        const QgsAggregateCalculator::AggregateParameters &parameters,
+                        QgsExpressionContext *context,
+                        bool *ok,
+                        QString &symbolId ) const;
+
+    /**
+     * Calculates an aggregated value from the layer's features.
+     * Currently any filtering expression provided will override filters in the FeatureRequest.
      * \param aggregate aggregate to calculate
      * \param fieldOrExpression source field or expression to use as basis for aggregated values.
      * \param parameters parameters controlling aggregate calculation
@@ -2379,6 +2398,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
+    //! cache the results of the feature counter
+    void onSymbolsCounted() SIP_SKIP;
+
   signals:
 
     /**
@@ -2642,7 +2664,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void onJoinedFieldsChanged();
     void onFeatureDeleted( QgsFeatureId fid );
     void onRelationsLoaded();
-    void onSymbolsCounted();
     void onDirtyTransaction( const QString &sql, const QString &name );
     void emitDataChanged();
 

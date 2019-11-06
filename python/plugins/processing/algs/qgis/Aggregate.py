@@ -156,7 +156,7 @@ class Aggregate(QgisAlgorithm):
             if aggregate == 'first_value':
                 expression = field_def['input']
             elif aggregate == 'concatenate' or aggregate == 'concatenate_unique':
-                expression = ('{}({}, {}, {}, \'{}\')'
+                expression = ('{}({}, {}, {}, concatenator:= \'{}\')'
                               .format(field_def['aggregate'],
                                       field_def['input'],
                                       group_by,

@@ -8,6 +8,7 @@
 	{"arg":"expression", "description":"sub expression or field name to aggregate"},
 	{"arg":"filter", "optional":true, "description":"optional filter expression to limit the features used for calculating the aggregate. Fields and geometry are from the features on the joined layer. The source feature can be accessed with the variable @parent."},
 	{"arg":"concatenator", "optional":true, "description":"optional string to use to join values for 'concatenate' aggregate"},
+	{"arg":"symbol_id", "optional":true, "description":"string containing the symbol id of the desired feature subset; if available, use @symbol_id instead"},
 	{"arg":"order_by", "optional":true, "description":"optional filter expression to order the features used for calculating the aggregate. Fields and geometry are from the features on the joined layer."}
   ],
   "examples": [

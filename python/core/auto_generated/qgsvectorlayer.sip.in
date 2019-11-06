@@ -2277,6 +2277,28 @@ been changed inside the edit buffer then the previous saved value may be returne
 .. seealso:: :py:func:`uniqueValues`
 %End
 
+    QVariant aggregate( QgsAggregateCalculator::Aggregate calculation,
+                        const QString &fieldOrExpression,
+                        const QgsAggregateCalculator::AggregateParameters &parameters,
+                        QgsExpressionContext *context,
+                        bool *ok,
+                        QString &symbolId ) const;
+%Docstring
+Calculates an aggregated value from the layer's features.
+Currently any filtering expression provided will override filters in the FeatureRequest.
+
+:param calculation: aggregate to calculate
+:param fieldOrExpression: source field or expression to use as basis for aggregated values.
+:param parameters: parameters controlling aggregate calculation
+:param context: expression context for expressions and filters
+:param ok: if specified, will be set to ``True`` if aggregate calculation was successful
+:param symbolId: Id of the symbol to use, otherwise uses all features
+
+:return: calculated aggregate value
+
+.. versionadded:: 3.12
+%End
+
     QVariant aggregate( QgsAggregateCalculator::Aggregate aggregate,
                         const QString &fieldOrExpression,
                         const QgsAggregateCalculator::AggregateParameters &parameters = QgsAggregateCalculator::AggregateParameters(),
@@ -2562,6 +2584,7 @@ Sets the coordinate transform context to ``transformContext``
 
 
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
 
 
   signals:
