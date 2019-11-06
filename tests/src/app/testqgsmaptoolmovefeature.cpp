@@ -132,8 +132,6 @@ void TestQgsMapToolMoveFeature::testMoveFeature()
 {
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
 
-  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
-
   utils.mouseClick( 1, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseClick( 2, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
@@ -151,8 +149,6 @@ void TestQgsMapToolMoveFeature::testTopologicalMoveFeature()
   QgsProject::instance()->setTopologicalEditing( true );
 
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
-
-  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 
   utils.mouseClick( 1, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseClick( 2, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );

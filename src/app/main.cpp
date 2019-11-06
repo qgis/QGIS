@@ -588,7 +588,6 @@ int main( int argc, char *argv[] )
 
   // The user can specify a path which will override the default path of custom
   // user settings (~/.qgis) and it will be used for QgsSettings INI file
-  QString configpath;
   QString authdbdirectory;
 
   QString pythonfile;
@@ -604,7 +603,7 @@ int main( int argc, char *argv[] )
 #if defined(ANDROID)
   QgsDebugMsg( QStringLiteral( "Android: All params stripped" ) );// Param %1" ).arg( argv[0] ) );
   //put all QGIS settings in the same place
-  configpath = QgsApplication::qgisSettingsDirPath();
+  QString configpath = QgsApplication::qgisSettingsDirPath();
   QgsDebugMsg( QStringLiteral( "Android: configpath set to %1" ).arg( configpath ) );
 #endif
 

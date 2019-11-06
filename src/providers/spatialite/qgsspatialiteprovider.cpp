@@ -4391,7 +4391,6 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
           first = false;
 
         QVariant::Type type = fld.type();
-        const auto typeName { fld.typeName() };
 
         if ( val.isNull() || !val.isValid() )
         {

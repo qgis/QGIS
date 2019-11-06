@@ -2005,7 +2005,7 @@ void QgsTextFormat::readFromLayer( QgsVectorLayer *layer )
   d->blendMode = QgsPainting::getCompositionMode(
                    static_cast< QgsPainting::BlendMode >( layer->customProperty( QStringLiteral( "labeling/blendMode" ), QVariant( QgsPainting::BlendNormal ) ).toUInt() ) );
   d->multilineHeight = layer->customProperty( QStringLiteral( "labeling/multilineHeight" ), QVariant( 1.0 ) ).toDouble();
-  d->previewBackgroundColor = _readColor( layer, QStringLiteral( "labeling/previewBkgrdColor" ), "#ffffff", false );
+  d->previewBackgroundColor = _readColor( layer, QStringLiteral( "labeling/previewBkgrdColor" ), QColor( 255, 255, 255 ), false );
 
   mBufferSettings.readFromLayer( layer );
   mShadowSettings.readFromLayer( layer );

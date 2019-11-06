@@ -193,8 +193,6 @@ void TestQgsMapToolReshape::testReshapeZ()
   // test with default Z value = 333
   QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 333 );
 
-  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
-
   // snap on a linestringz layer
   utils.mouseClick( 1, 2, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseClick( 2, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
@@ -236,8 +234,6 @@ void TestQgsMapToolReshape::testTopologicalEditing()
 
   // test with default Z value = 333
   QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 333 );
-
-  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 
   utils.mouseClick( 4, 4, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseClick( 7, 2, Qt::LeftButton, Qt::KeyboardModifiers(), true );

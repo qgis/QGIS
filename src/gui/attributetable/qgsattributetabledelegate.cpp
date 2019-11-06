@@ -107,7 +107,6 @@ void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemMode
   QgsFeatureId fid = model->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong();
   QVariant oldValue = model->data( index, Qt::EditRole );
 
-  QVariant newValue;
   QgsEditorWidgetWrapper *eww = QgsEditorWidgetWrapper::fromWidget( editor );
   if ( !eww )
     return;

@@ -357,7 +357,6 @@ void QgsMeshContours::populateCache( const QgsMeshDatasetIndex &index, QgsMeshRe
 {
   if ( mCachedIndex != index )
   {
-    QVector<QgsMeshVertex> vertices = mTriangularMesh->vertices();
     bool scalarDataOnVertices = mMeshLayer->dataProvider()->datasetGroupMetadata( index ).dataType() != QgsMeshDatasetGroupMetadata::DataOnFaces;
     int count =  scalarDataOnVertices ? mNativeMesh->vertices.count() : mNativeMesh->faces.count();
 

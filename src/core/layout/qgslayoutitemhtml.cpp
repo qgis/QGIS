@@ -177,8 +177,8 @@ void QgsLayoutItemHtml::loadHtml( const bool useCache, const QgsExpressionContex
   bool loaded = false;
 
   QEventLoop loop;
-  connect( mWebPage.get(), &QWebPage::loadFinished, &loop, [&loaded, &loop ] { loaded = true; loop.quit(); } );
-  connect( mFetcher, &QgsNetworkContentFetcher::finished, &loop, [&loaded, &loop ] { loaded = true; loop.quit(); } );
+  connect( mWebPage.get(), &QWebPage::loadFinished, &loop, [&loaded, &loop ] { loaded = true; loop.quit(); } ); // clazy:exclude=lambda-in-connect
+  connect( mFetcher, &QgsNetworkContentFetcher::finished, &loop, [&loaded, &loop ] { loaded = true; loop.quit(); } ); // clazy:exclude=lambda-in-connect
 
   //reset page size. otherwise viewport size increases but never decreases again
   mWebPage->setViewportSize( QSize( maxFrameWidth() * mHtmlUnitsToLayoutUnits, 0 ) );
@@ -283,7 +283,7 @@ QString QgsLayoutItemHtml::fetchHtml( const QUrl &url )
   //pause until HTML fetch
   bool loaded = false;
   QEventLoop loop;
-  connect( mFetcher, &QgsNetworkContentFetcher::finished, &loop, [&loaded, &loop ] { loaded = true; loop.quit(); } );
+  connect( mFetcher, &QgsNetworkContentFetcher::finished, &loop, [&loaded, &loop ] { loaded = true; loop.quit(); } ); // clazy:exclude=lambda-in-connect
   mFetcher->fetchContent( url );
 
   if ( !loaded )

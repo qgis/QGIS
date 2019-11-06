@@ -498,7 +498,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
       cb->setChecked( activeChecks.contains( factory->id() ) );
       mGeometryCheckFactoriesGroupBoxes.insert( cb, factory->id() );
       topologyCheckLayout->addWidget( cb );
-      QString id = factory->id();
       if ( factory->id() == QStringLiteral( "QgsGeometryGapCheck" ) )
       {
         const QVariantMap gapCheckConfig = mLayer->geometryOptions()->checkConfiguration( QStringLiteral( "QgsGeometryGapCheck" ) );

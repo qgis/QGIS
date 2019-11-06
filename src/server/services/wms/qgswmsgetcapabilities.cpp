@@ -170,8 +170,6 @@ namespace QgsWms
     QDomDocument doc;
     QDomElement wmsCapabilitiesElement;
 
-    QgsServerRequest::Parameters parameters = request.parameters();
-
     // Get service URL
     QUrl href = serviceUrl( request, project );
 

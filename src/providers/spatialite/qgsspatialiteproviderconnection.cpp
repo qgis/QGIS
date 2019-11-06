@@ -206,7 +206,6 @@ QList<QgsSpatiaLiteProviderConnection::TableProperty> QgsSpatiaLiteProviderConne
   }
   QList<QgsSpatiaLiteProviderConnection::TableProperty> tableInfo;
   QString errCause;
-  QList<QVariantList> results;
   try
   {
     QgsSpatiaLiteConnection connection( pathFromUri() );

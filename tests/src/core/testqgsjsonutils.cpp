@@ -129,7 +129,7 @@ void TestQgsJsonUtils::testParseJson()
   }
 
   // Test empty string: null
-  QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( QgsJsonUtils::parseJson( QStringLiteral( "" ) ) ).dump() ), QString( "null" ) );
+  QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( QgsJsonUtils::parseJson( QString() ) ).dump() ), QString( "null" ) );
   // invalid json -> null
   QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( QgsJsonUtils::parseJson( QStringLiteral( "invalid json" ) ) ).dump() ), QString( "null" ) );
   // String lists
@@ -221,10 +221,10 @@ void TestQgsJsonUtils::testExportFeatureJson()
   QgsJsonExporter exporter { &vl };
 
   const auto expectedJson { QStringLiteral( "{\"bbox\":[1.12,1.12,5.45,5.33],\"geometry\":{\"coordinates\":"
-                            "[[[1.12,1.34],[5.45,1.12],[5.34,5.33],[1.56,5.2],[1.12,1.34]],"
-                            "[[2.0,2.0],[3.0,2.0],[3.0,3.0],[2.0,3.0],[2.0,2.0]]],\"type\":\"Polygon\"}"
-                            ",\"id\":0,\"properties\":{\"flddbl\":2.0,\"fldint\":1,\"fldtxt\":\"a value\"}"
-                            ",\"type\":\"Feature\"}" ) };
+        "[[[1.12,1.34],[5.45,1.12],[5.34,5.33],[1.56,5.2],[1.12,1.34]],"
+        "[[2.0,2.0],[3.0,2.0],[3.0,3.0],[2.0,3.0],[2.0,2.0]]],\"type\":\"Polygon\"}"
+        ",\"id\":0,\"properties\":{\"flddbl\":2.0,\"fldint\":1,\"fldtxt\":\"a value\"}"
+        ",\"type\":\"Feature\"}" ) };
 
   const auto j( exporter.exportFeatureToJsonObject( feature ) );
   QCOMPARE( QString::fromStdString( j.dump() ),  expectedJson );
@@ -234,10 +234,10 @@ void TestQgsJsonUtils::testExportFeatureJson()
   QgsJsonExporter exporterPrecision { &vl, 1 };
 
   const auto expectedJsonPrecision { QStringLiteral( "{\"bbox\":[1.1,1.1,5.5,5.3],\"geometry\":{\"coordinates\":"
-                                     "[[[1.1,1.3],[5.5,1.1],[5.3,5.3],[1.6,5.2],[1.1,1.3]],"
-                                     "[[2.0,2.0],[3.0,2.0],[3.0,3.0],[2.0,3.0],[2.0,2.0]]],\"type\":\"Polygon\"}"
-                                     ",\"id\":0,\"properties\":{\"flddbl\":2.0,\"fldint\":1,\"fldtxt\":\"a value\"}"
-                                     ",\"type\":\"Feature\"}" ) };
+        "[[[1.1,1.3],[5.5,1.1],[5.3,5.3],[1.6,5.2],[1.1,1.3]],"
+        "[[2.0,2.0],[3.0,2.0],[3.0,3.0],[2.0,3.0],[2.0,2.0]]],\"type\":\"Polygon\"}"
+        ",\"id\":0,\"properties\":{\"flddbl\":2.0,\"fldint\":1,\"fldtxt\":\"a value\"}"
+        ",\"type\":\"Feature\"}" ) };
 
   const auto jPrecision( exporterPrecision.exportFeatureToJsonObject( feature ) );
   QCOMPARE( QString::fromStdString( jPrecision.dump() ),  expectedJsonPrecision );

@@ -416,7 +416,7 @@ void TestQgsRangeWidgetWrapper::test_focus()
   QVERIFY( editor1->mLineEdit->hasFocus() );
   QVERIFY( !editor2->mLineEdit->hasFocus() );
   QVERIFY( !editor3->mLineEdit->hasFocus() );
-  QCOMPARE( editor1->mLineEdit->text(), QStringLiteral( "" ) );
+  QCOMPARE( editor1->mLineEdit->text(), QString() );
   QCOMPARE( editor2->mLineEdit->text(), QStringLiteral( "nope" ) );
   QCOMPARE( editor3->mLineEdit->text(), QStringLiteral( "nope" ) );
 
@@ -428,7 +428,7 @@ void TestQgsRangeWidgetWrapper::test_focus()
   QVERIFY( editor2->mLineEdit->hasFocus() );
   QVERIFY( !editor3->mLineEdit->hasFocus() );
   QCOMPARE( editor1->mLineEdit->text(), QStringLiteral( "nope" ) );
-  QCOMPARE( editor2->mLineEdit->text(), QStringLiteral( "" ) );
+  QCOMPARE( editor2->mLineEdit->text(), QString() );
   QCOMPARE( editor3->mLineEdit->text(), QStringLiteral( "nope" ) );
 
   editor3->mLineEdit->setFocus();
@@ -462,7 +462,7 @@ void TestQgsRangeWidgetWrapper::test_focus()
   QVERIFY( editor2->mLineEdit->hasFocus() );
   QVERIFY( !editor3->mLineEdit->hasFocus() );
   QCOMPARE( editor1->mLineEdit->text(), QStringLiteral( "151.000000000" ) );
-  QCOMPARE( editor2->mLineEdit->text(), QStringLiteral( "" ) );
+  QCOMPARE( editor2->mLineEdit->text(), QString() );
   QCOMPARE( editor3->mLineEdit->text(), QStringLiteral( "nope" ) );
 
 }

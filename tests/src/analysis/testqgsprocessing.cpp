@@ -323,7 +323,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
 };
 
 //dummy provider for testing
-class DummyProvider : public QgsProcessingProvider
+class DummyProvider : public QgsProcessingProvider // clazy:exclude=missing-qobject-macro
 {
   public:
 
@@ -379,7 +379,7 @@ class DummyProvider : public QgsProcessingProvider
     friend class TestQgsProcessing;
 };
 
-class DummyProviderNoLoad : public DummyProvider
+class DummyProviderNoLoad : public DummyProvider // clazy:exclude=missing-qobject-macro
 {
   public:
 
@@ -420,7 +420,7 @@ class DummyAlgorithm2 : public QgsProcessingAlgorithm
 };
 
 
-class DummyProvider3 : public QgsProcessingProvider
+class DummyProvider3 : public QgsProcessingProvider // clazy:exclude=missing-qobject-macro
 {
   public:
 
@@ -450,7 +450,7 @@ class DummyProvider3 : public QgsProcessingProvider
 
 };
 
-class DummyProvider4 : public QgsProcessingProvider
+class DummyProvider4 : public QgsProcessingProvider // clazy:exclude=missing-qobject-macro
 {
   public:
 

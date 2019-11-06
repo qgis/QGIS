@@ -44,6 +44,7 @@ class QgsRenderContext;
  */
 class QgsMeshLayerRendererFeedback : public QgsRasterBlockFeedback
 {
+    Q_OBJECT
 };
 
 

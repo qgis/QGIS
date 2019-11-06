@@ -642,8 +642,6 @@ void QgsSymbolButton::showColorDialog()
     return;
   }
 
-  QColor newColor;
-
   QgsColorDialog dialog( this, nullptr, mSymbol->color() );
   dialog.setTitle( tr( "Symbol Color" ) );
   dialog.setAllowOpacity( true );

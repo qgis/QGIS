@@ -52,7 +52,7 @@ QgsWmsDimensionDialog::QgsWmsDimensionDialog( QgsVectorLayer *layer, QStringList
     QString name( pnMetaEnum.key( i ) );
     if ( !alreadyDefinedDimensions.contains( name.toLower() ) )
     {
-      mNameComboBox->addItem( QStringLiteral( "%1%2" ).arg( name.left( 1 ), name.mid( 1 ).toLower() ), QVariant( pnMetaEnum.value( i ) ) );
+      mNameComboBox->addItem( QStringLiteral( "%1%2" ).arg( !name.isEmpty() ? name.at( 0 ) : QString(), name.mid( 1 ).toLower() ), QVariant( pnMetaEnum.value( i ) ) );
     }
   }
 

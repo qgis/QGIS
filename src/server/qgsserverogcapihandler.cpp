@@ -40,7 +40,6 @@ using namespace inja;
 QVariantMap QgsServerOgcApiHandler::values( const QgsServerApiContext &context ) const
 {
   QVariantMap result ;
-  QVariantList positional;
   const auto constParameters { parameters( context ) };
   for ( const auto &p : constParameters )
   {

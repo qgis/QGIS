@@ -381,7 +381,7 @@ void TestQgsRelationReferenceWidget::testIdentifyOnMap()
 
 // Monkey patch gui vector layer tool in order to simple add a new feature in
 // referenced layer
-class DummyVectorLayerTools : public QgsVectorLayerTools
+class DummyVectorLayerTools : public QgsVectorLayerTools // clazy:exclude=missing-qobject-macro
 {
     bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &, const QgsGeometry &, QgsFeature *feat = nullptr ) const override
     {

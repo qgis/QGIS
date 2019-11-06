@@ -157,7 +157,6 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
       return QVariant::Type::Invalid;
     }
     const QgsField field { layer->fields().at( fieldIdx ) };
-    QString fieldRefValue;
     return field.type();
   };
 
@@ -171,7 +170,6 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
       return QString();
     }
 
-    QString fieldRefValue;
     // Downcast only datetime -> date
     // always cast strings
     if ( fieldRealType == QVariant::Type::String )
