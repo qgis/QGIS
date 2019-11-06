@@ -532,6 +532,39 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.assertEqual(response.statusCode(), 200)
         self.compareApi(request, project, 'test_wfs3_collections_items_layer1_with_short_name_eq_two.json')
 
+    def test_wfs3_collection_items_properties(self):
+        """Test WFS3 API items"""
+        project = QgsProject()
+        project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
+
+        # Invalid request
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer%20èé/items?properties')
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(bytes(response.body()).decode('utf8'), '[{"code":"Bad request error","description":"Argument \'properties\' is not valid. Comma separated list of feature property names to be added to the result. Valid values: \'id\', \'name\', \'utf8nameè\'"}]')
+
+        # Valid request
+        response = QgsBufferServerResponse()
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer%20èé/items?properties=name')
+        self.server.handleRequest(request, response, project)
+        j = json.loads(bytes(response.body()).decode('utf8'))
+        self.assertTrue('name' in j['features'][0]['properties'])
+        self.assertFalse('id' in j['features'][0]['properties'])
+
+        response = QgsBufferServerResponse()
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer%20èé/items?properties=name,id')
+        self.server.handleRequest(request, response, project)
+        j = json.loads(bytes(response.body()).decode('utf8'))
+        self.assertTrue('name' in j['features'][0]['properties'])
+        self.assertTrue('id' in j['features'][0]['properties'])
+
+        response = QgsBufferServerResponse()
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer%20èé/items?properties=id')
+        self.server.handleRequest(request, response, project)
+        j = json.loads(bytes(response.body()).decode('utf8'))
+        self.assertFalse('name' in j['features'][0]['properties'])
+        self.assertTrue('id' in j['features'][0]['properties'])
+
     def test_wfs3_field_filters_star(self):
         """Test field filters"""
         project = QgsProject()

@@ -181,6 +181,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      *   static( "/style/black.css" ) will return something like "/wfs3/static/style/black.css".
      * - links_filter( links, key, value ): Returns filtered links from a link list
      * - content_type_name( content_type ): Returns a short name from a content type for example "text/html" will return "HTML"
+     * - nl2br( text ): Returns the input text with all newlines replaced by "<br>" tags
      *
      * \note not available in Python bindings
      */

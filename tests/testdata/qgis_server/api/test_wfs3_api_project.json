@@ -703,10 +703,13 @@ Content-Type: application/openapi+json;version=3.0
             "$ref": "#/components/parameters/bbox-crs"
           },
           {
+            "$ref": "#/components/parameters/crs"
+          },
+          {
             "$ref": "#/components/parameters/datetime"
           },
           {
-            "description": "Filter the collection by 'id'",
+            "description": "Retrieve features filtered by: id (Integer)",
             "explode": false,
             "in": "query",
             "name": "id",
@@ -717,10 +720,21 @@ Content-Type: application/openapi+json;version=3.0
             "style": "form"
           },
           {
-            "description": "Filter the collection by 'utf8nameè'",
+            "description": "Retrieve features filtered by: utf8nameè (String)",
             "explode": false,
             "in": "query",
             "name": "utf8nameè",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Comma separated list of feature property names to be added to the result. Valid values: 'id', 'utf8nameè'",
+            "explode": false,
+            "in": "query",
+            "name": "properties",
             "required": false,
             "schema": {
               "type": "string"
@@ -876,10 +890,13 @@ Content-Type: application/openapi+json;version=3.0
             "$ref": "#/components/parameters/bbox-crs"
           },
           {
+            "$ref": "#/components/parameters/crs"
+          },
+          {
             "$ref": "#/components/parameters/datetime"
           },
           {
-            "description": "Filter the collection by 'alias_id'",
+            "description": "Retrieve features filtered by: alias_id (Integer)",
             "explode": false,
             "in": "query",
             "name": "alias_id",
@@ -890,7 +907,7 @@ Content-Type: application/openapi+json;version=3.0
             "style": "form"
           },
           {
-            "description": "Filter the collection by 'alias_name'",
+            "description": "Retrieve features filtered by: alias_name (String)",
             "explode": false,
             "in": "query",
             "name": "alias_name",
@@ -901,10 +918,21 @@ Content-Type: application/openapi+json;version=3.0
             "style": "form"
           },
           {
-            "description": "Filter the collection by 'utf8nameè'",
+            "description": "Retrieve features filtered by: utf8nameè (String)",
             "explode": false,
             "in": "query",
             "name": "utf8nameè",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Comma separated list of feature property names to be added to the result. Valid values: 'id', 'name', 'utf8nameè'",
+            "explode": false,
+            "in": "query",
+            "name": "properties",
             "required": false,
             "schema": {
               "type": "string"
@@ -1060,10 +1088,13 @@ Content-Type: application/openapi+json;version=3.0
             "$ref": "#/components/parameters/bbox-crs"
           },
           {
+            "$ref": "#/components/parameters/crs"
+          },
+          {
             "$ref": "#/components/parameters/datetime"
           },
           {
-            "description": "Filter the collection by 'id'",
+            "description": "Retrieve features filtered by: id (Integer)",
             "explode": false,
             "in": "query",
             "name": "id",
@@ -1074,7 +1105,7 @@ Content-Type: application/openapi+json;version=3.0
             "style": "form"
           },
           {
-            "description": "Filter the collection by 'name'",
+            "description": "Retrieve features filtered by: name (String)",
             "explode": false,
             "in": "query",
             "name": "name",
@@ -1085,10 +1116,21 @@ Content-Type: application/openapi+json;version=3.0
             "style": "form"
           },
           {
-            "description": "Filter the collection by 'utf8nameè'",
+            "description": "Retrieve features filtered by: utf8nameè (String)",
             "explode": false,
             "in": "query",
             "name": "utf8nameè",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Comma separated list of feature property names to be added to the result. Valid values: 'id', 'name', 'utf8nameè'",
+            "explode": false,
+            "in": "query",
+            "name": "properties",
             "required": false,
             "schema": {
               "type": "string"
@@ -1244,10 +1286,13 @@ Content-Type: application/openapi+json;version=3.0
             "$ref": "#/components/parameters/bbox-crs"
           },
           {
+            "$ref": "#/components/parameters/crs"
+          },
+          {
             "$ref": "#/components/parameters/datetime"
           },
           {
-            "description": "Filter the collection by 'id'",
+            "description": "Retrieve features filtered by: id (Integer)",
             "explode": false,
             "in": "query",
             "name": "id",
@@ -1258,7 +1303,7 @@ Content-Type: application/openapi+json;version=3.0
             "style": "form"
           },
           {
-            "description": "Filter the collection by 'name'",
+            "description": "Retrieve features filtered by: name (String)",
             "explode": false,
             "in": "query",
             "name": "name",
@@ -1269,10 +1314,21 @@ Content-Type: application/openapi+json;version=3.0
             "style": "form"
           },
           {
-            "description": "Filter the collection by 'utf8nameè'",
+            "description": "Retrieve features filtered by: utf8nameè (String)",
             "explode": false,
             "in": "query",
             "name": "utf8nameè",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Comma separated list of feature property names to be added to the result. Valid values: 'id', 'name', 'utf8nameè'",
+            "explode": false,
+            "in": "query",
+            "name": "properties",
             "required": false,
             "schema": {
               "type": "string"
@@ -1422,6 +1478,5 @@ Content-Type: application/openapi+json;version=3.0
       "description": "Access to data (features).",
       "name": "Features"
     }
-  ],
-  "timeStamp": "2019-07-05T12:27:07Z"
+  ]
 }

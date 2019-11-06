@@ -68,14 +68,14 @@
                                      {% if existsIn(param, "name") %}
                                      <tr>
                                        <td>{{ param.name }}</td>
-                                       <td class="small">{{ param.description }}</td>
+                                       <td class="small">{{ nl2br( param.description ) }}</td>
                                        <td>{{ param.schema.type }}</td>
                                     </tr>
                                     {% else %}
                                     {% for comp_param in component_parameter( param ) %}
                                     <tr>
                                       <td>{{ comp_param.name }}</td>
-                                      <td class="small">{{ comp_param.description }}</td>
+                                      <td class="small">{{ nl2br( comp_param.description ) }}</td>
                                       <td>{{ comp_param.schema.type }}</td>
                                     </tr>
                                     {% endfor %}
