@@ -2563,8 +2563,16 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
 
 QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, QgsProject::ReadFlags flags )
 {
+  QString qgsProjectFile = projectFilePath;
+  QgsProjectArchive archive;
+  if ( projectFilePath.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) )
+  {
+    archive.unzip( projectFilePath );
+    qgsProjectFile = archive.projectFile();
+  }
+
   // open project file, get layer ids in group, add the layers
-  QFile projectFile( projectFilePath );
+  QFile projectFile( qgsProjectFile );
   if ( !projectFile.open( QIODevice::ReadOnly ) )
   {
     return nullptr;
