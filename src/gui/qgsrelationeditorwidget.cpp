@@ -198,7 +198,7 @@ void QgsRelationEditorWidget::setRelationFeature( const QgsRelation &relation, c
   if ( mVisible )
   {
     QgsFeatureRequest myRequest = mRelation.getRelatedFeaturesRequest( mFeature );
-    mDualView->init( mRelation.referencingLayer(), nullptr, myRequest, mEditorContext );
+    mDualView->init( mRelation.referencingLayer(), mEditorContext.mapCanvas(), myRequest, mEditorContext );
   }
 }
 
@@ -730,11 +730,11 @@ void QgsRelationEditorWidget::updateUi()
 
       nmRequest.setFilterExpression( filters.join( QStringLiteral( " OR " ) ) );
 
-      mDualView->init( mNmRelation.referencedLayer(), nullptr, nmRequest, mEditorContext );
+      mDualView->init( mNmRelation.referencedLayer(), mEditorContext.mapCanvas(), nmRequest, mEditorContext );
     }
     else
     {
-      mDualView->init( mRelation.referencingLayer(), nullptr, myRequest, mEditorContext );
+      mDualView->init( mRelation.referencingLayer(), mEditorContext.mapCanvas(), myRequest, mEditorContext );
     }
   }
 }
