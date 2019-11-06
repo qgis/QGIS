@@ -86,7 +86,7 @@ class TestParamType : public QgsProcessingParameterDefinition
 
 };
 
-class TestWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper
+class TestWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper // clazy:exclude=missing-qobject-macro
 {
   public:
 
@@ -447,7 +447,7 @@ class TestProcessingContextGenerator : public QgsProcessingContextGenerator
 };
 
 
-class TestLayerWrapper : public QgsAbstractProcessingParameterWidgetWrapper
+class TestLayerWrapper : public QgsAbstractProcessingParameterWidgetWrapper // clazy:exclude=missing-qobject-macro
 {
   public:
     TestLayerWrapper( const QgsProcessingParameterDefinition *parameter = nullptr )

@@ -42,8 +42,6 @@ namespace QgsWms
     Q_UNUSED( version )
     Q_UNUSED( serverIface )
 
-    QgsServerRequest::Parameters parameters = request.parameters();
-
     QDomDocument xsdDoc;
 
     QDir resourcesDir = QFileInfo( QgsApplication::serverResourcesPath() ).absoluteDir();

@@ -123,7 +123,6 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
 
 
   QgsPointSequence pts;
-  QVector<QgsPoint> points;
   captureCurve()->points( pts );
   QgsLineString reshapeLineString( pts );
 

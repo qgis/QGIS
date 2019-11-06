@@ -44,6 +44,8 @@
  */
 class QgsFilteredSelectionManager : public QgsVectorLayerSelectionManager
 {
+    Q_OBJECT
+
   public:
     QgsFilteredSelectionManager( QgsVectorLayer *layer, const QgsFeatureRequest &request, QObject *parent = nullptr )
       : QgsVectorLayerSelectionManager( layer, parent )

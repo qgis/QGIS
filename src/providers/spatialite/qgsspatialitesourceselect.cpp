@@ -283,7 +283,6 @@ bool QgsSpatiaLiteSourceSelect::newConnection( QWidget *parent )
 
   QFileInfo myFI( myFile );
   QString myPath = myFI.path();
-  QString myName = myFI.fileName();
   QString savedName = myFI.fileName();
   QString baseKey = QStringLiteral( "/SpatiaLite/connections/" );
 

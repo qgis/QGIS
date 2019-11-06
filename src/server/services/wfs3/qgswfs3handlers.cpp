@@ -1094,7 +1094,6 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
   checkLayerIsAccessible( mapLayer, context );
 
   const std::string title { mapLayer->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->title().toStdString() };
-  const QString shortName { mapLayer->shortName().isEmpty() ? mapLayer->name() : mapLayer->shortName() };
 
   // Get parameters
   QVariantMap params { values( context )};

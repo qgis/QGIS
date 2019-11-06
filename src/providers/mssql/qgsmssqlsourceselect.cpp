@@ -514,8 +514,6 @@ void QgsMssqlSourceSelect::btnConnect_clicked()
     return;
   }
 
-  QString connectionName = db.connectionName();
-
   // Test for geometry columns table first.  Don't use it if not found.
   QSqlQuery q = QSqlQuery( db );
   q.setForwardOnly( true );

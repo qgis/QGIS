@@ -35,7 +35,7 @@ namespace QTest
   }
 }
 
-class QgsMapToolTest : public QgsMapTool
+class QgsMapToolTest : public QgsMapTool // clazy:exclude=missing-qobject-macro
 {
   public:
     QgsMapToolTest( QgsMapCanvas *canvas ) : QgsMapTool( canvas ) {}

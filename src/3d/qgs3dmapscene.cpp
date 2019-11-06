@@ -495,7 +495,7 @@ void Qgs3DMapScene::updateCameraLens()
 void Qgs3DMapScene::onRenderersChanged()
 {
   // remove entities (if any)
-  qDeleteAll( mRenderersEntities.values() );
+  qDeleteAll( mRenderersEntities );
   mRenderersEntities.clear();
 
   // re-add entities from new set of renderers

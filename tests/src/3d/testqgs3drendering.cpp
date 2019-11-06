@@ -513,7 +513,7 @@ void TestQgs3DRendering::testAnimationExport()
                    nullptr );
 
   QVERIFY( success );
-  QVERIFY( QFileInfo( QDir( dir ).filePath( QStringLiteral( "test3danimation001.png" ) ) ).exists() );
+  QVERIFY( QFileInfo::exists( ( QDir( dir ).filePath( QStringLiteral( "test3danimation001.png" ) ) ) ) );
 }
 
 void TestQgs3DRendering::testBillboardRendering()

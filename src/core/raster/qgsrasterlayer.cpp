@@ -1789,7 +1789,6 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
       }
 
       // Collect format
-      QDomNode formatNode = rpNode.namedItem( QStringLiteral( "wmsFormat" ) );
       uri.setParam( QStringLiteral( "format" ), rpNode.namedItem( QStringLiteral( "wmsFormat" ) ).toElement().text() );
 
       // WMS CRS URL param should not be mixed with that assigned to the layer.

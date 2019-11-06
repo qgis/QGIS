@@ -215,7 +215,6 @@ bool QgsGeoPackageItemGuiProvider::rename( QgsDataItem *item, const QString &new
     }
     else
     {
-      QString filePath = parts.value( QStringLiteral( "path" ) ).toString();
       const QList<QgsMapLayer *> layersList( layerItem->layersInProject() );
       if ( ! layersList.isEmpty( ) )
       {

@@ -264,7 +264,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     };
 
     QMenu *mActionPopup = nullptr;
-    QMap<QTreeWidgetItem *, QgsHighlight * > mHighlights;
+    QHash<QTreeWidgetItem *, QgsHighlight * > mHighlights;
     QgsMapCanvas *mCanvas = nullptr;
     QList<QgsFeature> mFeatures;
     QMap< QString, QMap< QString, QVariant > > mWidgetCaches;

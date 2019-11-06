@@ -256,7 +256,6 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   map2->setFollowVisibilityPresetName( QStringLiteral( "test preset3" ) );
 
   QgsLayoutGeoPdfExporter geoPdfExporter2( &l );
-  const QString outputFile2 = geoPdfExporter2.generateTemporaryFilepath( QStringLiteral( "test_src2.pdf" ) );
   settings = QgsLayoutExporter::PdfExportSettings();
   settings.writeGeoPdf = true;
   settings.exportMetadata = false;
