@@ -375,6 +375,7 @@ class TestQgsServerWMSGetLegendGraphic(QgsServerTestBase):
             "REQUEST": "GetLegendGraphic",
             "LAYER": "Country,Hello",
             "LAYERTITLE": "FALSE",
+            "RULELABEL": "FALSE",
             "FORMAT": "image/png",
             "HEIGHT": "500",
             "WIDTH": "500",
