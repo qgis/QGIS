@@ -451,7 +451,6 @@ QVariant QgsJsonUtils::parseJson( const std::string &jsonString )
 {
   std::function<QVariant( json )> _parser { [ & ]( json jObj ) -> QVariant {
       QVariant result;
-      QString errorMessage;
       if ( jObj.is_array() )
       {
         QVariantList results;
