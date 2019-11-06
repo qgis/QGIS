@@ -115,6 +115,22 @@ This method takes into account the ACL restrictions provided by QGIS Server Acce
 %End
 
 
+    static const QVector<QgsMapLayer *> editableWfsLayers( const QgsProject *project, QgsServerRequest::Method &method );
+%Docstring
+Returns the list of layers accessible to the service in edit mode for a given ``project``.
+
+:param method: represents the operation to be performed (POST, PUT, PATCH, DELETE)
+
+This method takes into account the ACL restrictions provided by QGIS Server Access Control plugins.
+
+.. note::
+
+   project must not be NULL
+
+.. versionadded:: 3.12
+%End
+
+
     static QString sanitizedFieldValue( const QString &value );
 %Docstring
 Sanitizes the input ``value`` by removing URL encoding and checking for malicious content.

@@ -204,6 +204,60 @@ class SERVER_EXPORT QgsServerApiUtils
 #endif
 
     /**
+     * Returns the list of layers accessible to the service in edit mode for a given \a project.
+     * \param method represents the operation to be performed (POST, PUT, PATCH, DELETE)
+     *
+     * This method takes into account the ACL restrictions provided by QGIS Server Access Control plugins.
+     *
+     * \note project must not be NULL
+     * \since QGIS 3.12
+     */
+    static const QVector<QgsMapLayer *> editableWfsLayers( const QgsProject *project, QgsServerRequest::Method &method );
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns the list of layers of type T accessible to the WFS service for a given \a project.
+     *
+     * Example:
+     *
+     *     QVector<QgsVectorLayer*> vectorLayers = publishedLayers<QgsVectorLayer>();
+     *
+     * \note not available in Python bindings
+     */
+    template <typename T>
+    static const QVector<const T *> editableWfsLayers( const QgsServerApiContext &context, QgsServerRequest::Method &method )
+    {
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      QgsAccessControl *accessControl = context.serverInterface()->accessControls();
+#endif
+      const QgsProject *project = context.project();
+      QVector<const T *> result;
+      if ( project )
+      {
+        const QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );
+        const auto constLayers { project->layers<T *>() };
+        for ( const auto &layer : constLayers )
+        {
+          if ( ! wfsLayerIds.contains( layer->id() ) )
+          {
+            continue;
+          }
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+          if ( accessControl && !accessControl->layerInsertPermission( layer ) )
+          {
+            continue;
+          }
+#endif
+          result.push_back( layer );
+        }
+      }
+      return result;
+    }
+
+#endif
+
+    /**
      * Sanitizes the input \a value by removing URL encoding and checking for malicious content.
      * In case of failure returns an empty string.
      */

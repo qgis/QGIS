@@ -518,6 +518,54 @@ class QgsServerAPITest(QgsServerAPITestBase):
         body = bytes(response.body()).decode('utf8')
         self.assertEqual(body, '[{"code":"API not found error","description":"Static file does_not_exists.css was not found"}]')
 
+    def test_wfs3_collection_items_post(self):
+        """Test WFS3 API items POST"""
+        project = QgsProject()
+        project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
+
+        # Invalid request
+        data = b'not json!'
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/testlayer%20èé/items',
+            QgsBufferServerRequest.PostMethod,
+            {'Content-Type': 'application/geo+json'},
+            data
+        )
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 400)
+        self.assertTrue('[{"code":"Bad request error","description":"JSON parse error' in bytes(response.body()).decode('utf8'))
+
+        # Valid request
+        data = """{
+        "geometry": {
+            "coordinates": [
+            8.111,
+            44.55
+            ],
+            "type": "Point"
+        },
+        "properties": {
+            "id": 123,
+            "name": "one + 123",
+            "utf8nameè": "one èé + 123"
+        },
+        "type": "Feature"
+        }""".encode('utf8')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/testlayer%20èé/items',
+            QgsBufferServerRequest.PostMethod,
+            {'Content-Type': 'application/geo+json'},
+            data
+        )
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 201)
+        self.assertEqual(response.body(), '"string"')
+        # Get last fid
+        fid = max(project.mapLayersByName('testlayer èé')[0].allFeatureIds())
+        self.assertEqual(response.headers()['Location'], 'http://server.qgis.org/wfs3/collections/testlayer èé/items/%s' % fid)
+
     def test_wfs3_field_filters(self):
         """Test field filters"""
         project = QgsProject()

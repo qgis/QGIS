@@ -106,6 +106,10 @@ QgsFcgiServerRequest::QgsFcgiServerRequest()
     {
       method = HeadMethod;
     }
+    else if ( strcmp( me, "PATCH" ) == 0 )
+    {
+      method = PatchMethod;
+    }
   }
 
   if ( method == PostMethod || method == PutMethod )
