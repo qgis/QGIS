@@ -1450,7 +1450,6 @@ static QVariant fcnAttribute( const QVariantList &values, const QgsExpressionCon
 static QVariant fcnAttributes( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsFeature feature;
-  QString attr;
   if ( values.size() == 0 || values.at( 0 ).isNull() )
   {
     feature = context->feature();
