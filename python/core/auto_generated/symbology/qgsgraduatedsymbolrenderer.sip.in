@@ -499,6 +499,14 @@ Updates the labels of the ranges
 .. versionadded:: 3.10
 %End
 
+    const QgsRendererRange *rangeForValue( double value ) const;
+%Docstring
+Returns the renderer range matching the provided ``value``, or ``None`` if no
+range matches the value.
+
+.. versionadded:: 3.10.1
+%End
+
   protected:
 
 
