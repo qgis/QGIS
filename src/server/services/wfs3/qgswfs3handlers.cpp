@@ -1355,7 +1355,8 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
   }
   else
   {
-    throw QgsServerApiNotImplementedException( QStringLiteral( "%1 method is not implemented." ).arg( context.request()->method() ) );
+    throw QgsServerApiNotImplementedException( QStringLiteral( "%1 method is not implemented." )
+        .arg( QgsServerRequest::methodToString( context.request()->method() ) ) );
   }
 
 }
@@ -1437,7 +1438,8 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
   }
   else
   {
-    throw QgsServerApiNotImplementedException( QStringLiteral( "%1 method is not implemented." ).arg( context.request()->method() ) );
+    throw QgsServerApiNotImplementedException( QStringLiteral( "%1 method is not implemented." )
+        .arg( QgsServerRequest::methodToString( context.request()->method() ) ) );
   }
 }
 
