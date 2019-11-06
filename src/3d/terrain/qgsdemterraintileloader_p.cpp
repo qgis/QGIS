@@ -19,6 +19,7 @@
 #include "qgschunknode_p.h"
 #include "qgsdemterraingenerator.h"
 #include "qgsdemterraintilegeometry_p.h"
+#include "qgseventtracing.h"
 #include "qgsonlineterraingenerator.h"
 #include "qgsterrainentity_p.h"
 #include "qgsterraintexturegenerator_p.h"
@@ -215,6 +216,8 @@ int QgsDemHeightMapGenerator::render( int x, int y, int z )
 {
   Q_ASSERT( mJobs.isEmpty() );  // should be always just one active job...
 
+  QgsEventTracing::addEvent( QgsEventTracing::Begin, QStringLiteral( "3D" ), QStringLiteral( "DEM" ) );
+
   // extend the rect by half-pixel on each side? to get the values in "corners"
   QgsRectangle extent = mTilingScheme.tileToExtent( x, y, z );
   float mapUnitsPerPixel = extent.width() / mResolution;
@@ -299,6 +302,8 @@ void QgsDemHeightMapGenerator::onFutureFinished()
 
   mJobs.remove( fw );
   fw->deleteLater();
+
+  QgsEventTracing::addEvent( QgsEventTracing::End, QStringLiteral( "3D" ), QStringLiteral( "DEM" ) );
 
   QByteArray data = jobData.future.result();
   emit heightMapReady( jobData.jobId, data );

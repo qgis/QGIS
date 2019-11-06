@@ -1708,6 +1708,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     void vectorLayerStyleLoaded( const QgsMapLayer::StyleCategories categories );
 
+    //! Enable or disable event tracing (for debugging)
+    void toggleEventTracing();
+
   signals:
 
     /**

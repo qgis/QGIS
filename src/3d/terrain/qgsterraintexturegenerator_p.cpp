@@ -23,6 +23,8 @@
 
 #include "qgs3dmapsettings.h"
 
+#include "qgseventtracing.h"
+
 ///@cond PRIVATE
 
 QgsTerrainTextureGenerator::QgsTerrainTextureGenerator( const Qgs3DMapSettings &map )
@@ -35,6 +37,8 @@ int QgsTerrainTextureGenerator::render( const QgsRectangle &extent, const QStrin
 {
   QgsMapSettings mapSettings( baseMapSettings() );
   mapSettings.setExtent( extent );
+
+  QgsEventTracing::addEvent( QgsEventTracing::Begin, QStringLiteral( "3D" ), QStringLiteral( "Texture" ) );
 
   QgsMapRendererSequentialJob *job = new QgsMapRendererSequentialJob( mapSettings );
   connect( job, &QgsMapRendererJob::finished, this, &QgsTerrainTextureGenerator::onRenderingFinished );
@@ -120,6 +124,8 @@ void QgsTerrainTextureGenerator::onRenderingFinished()
   mJobs.remove( mapJob );
 
   //qDebug() << "finished job " << jobData.jobId << "  ... in queue: " << jobs.count();
+
+  QgsEventTracing::addEvent( QgsEventTracing::End, QStringLiteral( "3D" ), QStringLiteral( "Texture" ) );
 
   // pass QImage further
   emit tileReady( jobData.jobId, img );

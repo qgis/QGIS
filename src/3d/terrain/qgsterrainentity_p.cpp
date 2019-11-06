@@ -19,6 +19,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgschunknode_p.h"
 #include "qgsdemterraintilegeometry_p.h"
+#include "qgseventtracing.h"
 #include "qgsraycastingutils_p.h"
 #include "qgsterraingenerator.h"
 #include "qgsterraintexturegenerator_p.h"
@@ -138,6 +139,8 @@ void QgsTerrainEntity::onShowBoundingBoxesChanged()
 
 void QgsTerrainEntity::invalidateMapImages()
 {
+  QgsEventTracing::addEvent( QgsEventTracing::Instant, QStringLiteral( "3D" ), QStringLiteral( "Invalidate textures" ) );
+
   // handle active nodes
 
   updateNodes( mActiveNodes, mUpdateJobFactory.get() );

@@ -41,6 +41,7 @@
 #include "qgscameracontroller.h"
 #include "qgschunkedentity_p.h"
 #include "qgschunknode_p.h"
+#include "qgseventtracing.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayer3drenderer.h"
 #include "qgsrulebased3drenderer.h"
@@ -249,6 +250,8 @@ void Qgs3DMapScene::onCameraChanged()
 
 void Qgs3DMapScene::updateScene()
 {
+  QgsEventTracing::addEvent( QgsEventTracing::Instant, QStringLiteral( "3D" ), QStringLiteral( "Update Scene" ) );
+
   for ( QgsChunkedEntity *entity : qgis::as_const( mChunkEntities ) )
   {
     if ( entity->isEnabled() )

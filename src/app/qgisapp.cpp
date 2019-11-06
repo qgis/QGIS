@@ -196,6 +196,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsencodingfiledialog.h"
 #include "qgserror.h"
 #include "qgserrordialog.h"
+#include "qgseventtracing.h"
 #include "qgsexception.h"
 #include "qgsexpressionselectiondialog.h"
 #include "qgsfeature.h"
@@ -671,6 +672,21 @@ void QgisApp::vectorLayerStyleLoaded( QgsMapLayer::StyleCategories categories )
     {
       checkVectorLayerDependencies( vl );
     }
+  }
+}
+
+void QgisApp::toggleEventTracing()
+{
+  if ( !QgsEventTracing::isTracingEnabled() )
+  {
+    QgsEventTracing::startTracing();
+  }
+  else
+  {
+    QgsEventTracing::stopTracing();
+    QString fileName = QFileDialog::getSaveFileName( this, tr( "Save Event Trace..." ), QString(), tr( "Event Traces (*.json)" ) );
+    if ( !fileName.isEmpty() )
+      QgsEventTracing::writeTrace( fileName );
   }
 }
 
@@ -1429,6 +1445,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   {
     attributeTable( QgsAttributeTableFilterModel::ShowVisible );
   } );
+
+  QShortcut *shortcutTracing = new QShortcut( QKeySequence( tr( "Ctrl+Shift+." ) ), this );
+  connect( shortcutTracing, &QShortcut::activated, this, &QgisApp::toggleEventTracing );
 
   if ( ! QTouchDevice::devices().isEmpty() )
   {
