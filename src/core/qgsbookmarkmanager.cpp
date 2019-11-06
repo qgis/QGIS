@@ -511,18 +511,17 @@ void QgsBookmarkManager::initialize( const QString &filePath )
       return;
     }
 
-    sqlite3_statement_unique_ptr preparedStatement = database.prepare( QStringLiteral( "SELECT name,project_name,xmin,ymin,xmax,ymax,projection_srid FROM tbl_bookmarks" ), result );
+    sqlite3_statement_unique_ptr preparedStatement = database.prepare( QStringLiteral( "SELECT name,xmin,ymin,xmax,ymax,projection_srid FROM tbl_bookmarks" ), result );
     if ( result == SQLITE_OK )
     {
       while ( preparedStatement.step() == SQLITE_ROW )
       {
         const QString name = preparedStatement.columnAsText( 0 );
-        const QString group = preparedStatement.columnAsText( 1 );
-        const double xMin = preparedStatement.columnAsDouble( 2 );
-        const double yMin = preparedStatement.columnAsDouble( 3 );
-        const double xMax = preparedStatement.columnAsDouble( 4 );
-        const double yMax = preparedStatement.columnAsDouble( 5 );
-        const long long srid = preparedStatement.columnAsInt64( 6 );
+        const double xMin = preparedStatement.columnAsDouble( 1 );
+        const double yMin = preparedStatement.columnAsDouble( 2 );
+        const double xMax = preparedStatement.columnAsDouble( 3 );
+        const double yMax = preparedStatement.columnAsDouble( 4 );
+        const long long srid = preparedStatement.columnAsInt64( 5 );
 
         QgsBookmark b;
         b.setName( name );
