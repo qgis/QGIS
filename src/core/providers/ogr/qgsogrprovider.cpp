@@ -3823,7 +3823,14 @@ QVariant QgsOgrProvider::minimumValue( int index ) const
   {
     return QVariant();
   }
-  const QgsField fld = mAttributeFields.at( index );
+  const QgsField originalField = mAttributeFields.at( index );
+  QgsField fld = originalField;
+
+  // can't use native date/datetime types -- OGR converts these to string in the MAX return value
+  if ( fld.type() == QVariant::DateTime || fld.type() == QVariant::Date )
+  {
+    fld.setType( QVariant::String );
+  }
 
   // Don't quote column name (see https://trac.osgeo.org/gdal/ticket/5799#comment:9)
   QByteArray sql = "SELECT MIN(" + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) );
@@ -3848,9 +3855,13 @@ QVariant QgsOgrProvider::minimumValue( int index ) const
   }
 
   bool ok = false;
-  const QVariant res = QgsOgrUtils::getOgrFeatureAttribute( f.get(), fld, 0, textEncoding(), &ok );
+  QVariant res = QgsOgrUtils::getOgrFeatureAttribute( f.get(), fld, 0, textEncoding(), &ok );
   if ( !ok )
     return QVariant();
+
+  if ( res.type() != originalField.type() )
+    res = convertValue( originalField.type(), res.toString() );
+
   return res;
 }
 
@@ -3860,7 +3871,14 @@ QVariant QgsOgrProvider::maximumValue( int index ) const
   {
     return QVariant();
   }
-  const QgsField fld = mAttributeFields.at( index );
+  const QgsField originalField = mAttributeFields.at( index );
+  QgsField fld = originalField;
+
+  // can't use native date/datetime types -- OGR converts these to string in the MAX return value
+  if ( fld.type() == QVariant::DateTime || fld.type() == QVariant::Date )
+  {
+    fld.setType( QVariant::String );
+  }
 
   // Don't quote column name (see https://trac.osgeo.org/gdal/ticket/5799#comment:9)
   QByteArray sql = "SELECT MAX(" + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) );
@@ -3885,9 +3903,13 @@ QVariant QgsOgrProvider::maximumValue( int index ) const
   }
 
   bool ok = false;
-  const QVariant res = QgsOgrUtils::getOgrFeatureAttribute( f.get(), fld, 0, textEncoding(), &ok );
+  QVariant res = QgsOgrUtils::getOgrFeatureAttribute( f.get(), fld, 0, textEncoding(), &ok );
   if ( !ok )
     return QVariant();
+
+  if ( res.type() != originalField.type() )
+    res = convertValue( originalField.type(), res.toString() );
+
   return res;
 }
 
