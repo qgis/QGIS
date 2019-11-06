@@ -179,6 +179,8 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
   } );
 
   ellipsoid = sProj6EllipsoidAcronymMap.value( ellipsoid, ellipsoid ); // silently upgrade older QGIS acronyms to proj acronyms
+#else
+  ( void )sProj6EllipsoidAcronymMap;
 #endif
 
   // check cache
