@@ -309,6 +309,10 @@ void TestQgsGraduatedSymbolRenderer::testMatchingRangeForValue()
   QCOMPARE( renderer.legendKeyForValue( 3.25 ), QStringLiteral( "1" ) );
   QCOMPARE( renderer.legendKeyForValue( 3.7 ), QStringLiteral( "3" ) );
   QVERIFY( renderer.legendKeyForValue( 3.5 ).isEmpty() );
+
+  // test values which fall just outside ranges, e.g. due to double precision (refs https://github.com/qgis/QGIS/issues/27420)
+  QCOMPARE( renderer.rangeForValue( 1.1 - std::numeric_limits<double>::epsilon() * 2 )->label(), QStringLiteral( "r1" ) );
+  QCOMPARE( renderer.rangeForValue( 3.7 + std::numeric_limits<double>::epsilon() * 2 )->label(), QStringLiteral( "r4" ) );
 }
 
 QGSTEST_MAIN( TestQgsGraduatedSymbolRenderer )
