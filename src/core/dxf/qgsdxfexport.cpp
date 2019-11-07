@@ -1321,6 +1321,64 @@ void QgsDxfExport::writeLine( const QgsPoint &pt1, const QgsPoint &pt2, const QS
   writePolyline( QgsPointSequence() << pt1 << pt2, layer, lineStyleName, color, width );
 }
 
+void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::LabelPosition *label, const QgsPalLayerSettings &layerSettings, const QgsExpressionContext &expressionContext )
+{
+  double lblX = label->getX();
+  double lblY = label->getY();
+
+  HAlign hali = HAlign::Undefined;
+  VAlign vali = VAlign::Undefined;
+
+  const QgsPropertyCollection &props = layerSettings.dataDefinedProperties();
+  if ( props.isActive( QgsPalLayerSettings::Hali ) )
+  {
+    hali = HAlign::HLeft;
+    QVariant exprVal = props.value( QgsPalLayerSettings::Hali, expressionContext );
+    if ( exprVal.isValid() )
+    {
+      const QString haliString = exprVal.toString();
+      if ( haliString.compare( QLatin1String( "Center" ), Qt::CaseInsensitive ) == 0 )
+      {
+        hali = HAlign::HCenter;
+      }
+      else if ( haliString.compare( QLatin1String( "Right" ), Qt::CaseInsensitive ) == 0 )
+      {
+        hali = HAlign::HRight;
+      }
+    }
+  }
+
+  std::unique_ptr<QFontMetricsF> labelFontMetrics( new QFontMetricsF( layerSettings.format().font() ) );
+
+  //vertical alignment
+  if ( props.isActive( QgsPalLayerSettings::Vali ) )
+  {
+    vali = VAlign::VBottom;
+    QVariant exprVal = props.value( QgsPalLayerSettings::Vali, expressionContext );
+    if ( exprVal.isValid() )
+    {
+      const QString valiString = exprVal.toString();
+      if ( valiString.compare( QLatin1String( "Bottom" ), Qt::CaseInsensitive ) != 0 )
+      {
+        if ( valiString.compare( QLatin1String( "Base" ), Qt::CaseInsensitive ) == 0 )
+        {
+          vali = VAlign::VBaseLine;
+        }
+        else if ( valiString.compare( QLatin1String( "Half" ), Qt::CaseInsensitive ) == 0 )
+        {
+          vali = VAlign::VMiddle;
+        }
+        else  //'Cap' or 'Top'
+        {
+          vali = VAlign::VTop;
+        }
+      }
+    }
+  }
+
+  writeText( layer, text, QgsPoint( lblX, lblY ), label->getHeight(), label->getAlpha() * 180.0 / M_PI, layerSettings.format().color(), hali, vali );
+}
+
 void QgsDxfExport::writePoint( const QString &layer, const QColor &color, const QgsPoint &pt )
 {
   writeGroup( 0, QStringLiteral( "POINT" ) );
@@ -1391,20 +1449,30 @@ void QgsDxfExport::writeCircle( const QString &layer, const QColor &color, const
   writeGroup( 42, 1.0 );
 }
 
-void QgsDxfExport::writeText( const QString &layer, const QString &text, const QgsPoint &pt, double size, double angle, const QColor &color )
+void QgsDxfExport::writeText( const QString &layer, const QString &text, const QgsPoint &pt, double size, double angle, const QColor &color, HAlign hali, VAlign vali )
 {
   writeGroup( 0, QStringLiteral( "TEXT" ) );
   writeHandle();
   writeGroup( 100, QStringLiteral( "AcDbEntity" ) );
+  // writeGroup( 6, "Continuous" ); // Line style
+  // writeGroup( 370, 18 ); // Line weight
   writeGroup( 100, QStringLiteral( "AcDbText" ) );
   writeGroup( 8, layer );
   writeGroup( color );
   writeGroup( 0, pt );
+  if ( hali != HAlign::Undefined || vali != VAlign::Undefined )
+    writeGroup( 1, pt ); // Second alignment point
   writeGroup( 40, size );
   writeGroup( 1, text );
   writeGroup( 50, angle );
+  if ( hali != HAlign::Undefined )
+    writeGroup( 72, static_cast<int>( hali ) );
   writeGroup( 7, QStringLiteral( "STANDARD" ) ); // so far only support for standard font
   writeGroup( 100, QStringLiteral( "AcDbText" ) );
+  if ( vali != VAlign::Undefined )
+  {
+    writeGroup( 73, static_cast<int>( vali ) );
+  }
 }
 
 void QgsDxfExport::writeMText( const QString &layer, const QString &text, const QgsPoint &pt, double width, double angle, const QColor &color )
@@ -2260,7 +2328,7 @@ void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context,
 
   if ( mFlags & FlagNoMText )
   {
-    writeText( dxfLayer, txt, QgsPoint( label->getX(), label->getY() ), label->getHeight(), label->getAlpha() * 180.0 / M_PI, tmpLyr.format().color() );
+    writeText( dxfLayer, txt, label, tmpLyr, context.expressionContext() );
   }
   else
   {

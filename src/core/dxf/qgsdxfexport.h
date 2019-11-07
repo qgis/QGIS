@@ -109,6 +109,30 @@ class CORE_EXPORT QgsDxfExport
     };
 
     /**
+     * Vertical alignments.
+     */
+    enum class VAlign : int
+    {
+      VBaseLine = 0,    //!< Top (0)
+      VBottom = 1,      //!< Bottom (1)
+      VMiddle = 2,      //!< Middle (2)
+      VTop = 3,         //!< Top (3)
+      Undefined = 9999  //!< Undefined
+    };
+
+    //! Horizontal alignments.
+    enum class HAlign : int
+    {
+      HLeft = 0,       //!< Left (0)
+      HCenter = 1,     //!< Centered (1)
+      HRight = 2,      //!< Right (2)
+      HAligned = 3,    //!< Aligned = (3) (if VAlign==0)
+      HMiddle = 4,     //!< Middle = (4) (if VAlign==0)
+      HFit = 5,        //!< Fit into point = (5) (if VAlign==0)
+      Undefined = 9999 //!< Undefined
+    };
+
+    /**
      * Constructor for QgsDxfExport.
      */
     QgsDxfExport() = default;
@@ -415,7 +439,7 @@ class CORE_EXPORT QgsDxfExport
      * \note available in Python bindings as writeTextV2
      * \since QGIS 2.15
      */
-    void writeText( const QString &layer, const QString &text, const QgsPoint &pt, double size, double angle, const QColor &color ) SIP_PYNAME( writeTextV2 );
+    void writeText( const QString &layer, const QString &text, const QgsPoint &pt, double size, double angle, const QColor &color, QgsDxfExport::HAlign hali = QgsDxfExport::HAlign::Undefined, QgsDxfExport::VAlign vali = QgsDxfExport::VAlign::Undefined ) SIP_PYNAME( writeTextV2 );
 
     /**
      * Write mtext (MTEXT)
@@ -501,6 +525,11 @@ class CORE_EXPORT QgsDxfExport
     void writeDefaultLinetypes();
     void writeSymbolLayerLinetype( const QgsSymbolLayer *symbolLayer );
     void writeLinetype( const QString &styleName, const QVector<qreal> &pattern, QgsUnitTypes::RenderUnit u );
+
+    /**
+     * Helper method to calculate text properties from (PAL) label
+     */
+    void writeText( const QString &layer, const QString &text, pal::LabelPosition *label, const QgsPalLayerSettings &layerSettings, const QgsExpressionContext &expressionContext );
 
     /**
      * Writes geometry generator symbol layer
