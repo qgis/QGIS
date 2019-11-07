@@ -3332,24 +3332,27 @@ long QgsPostgresProvider::featureCount() const
   // use estimated metadata even when there is a where clause,
   // although we get an incorrect feature count for the subset
   // - but make huge dataset usable.
-  long num = 0;
+  long num = -1;
   if ( !mIsQuery && mUseEstimatedMetadata )
   {
-    // parse explain output to estimate feature count
-    // we don't use pg_class reltuples because it returns 0 for view
-    sql = QStringLiteral( "EXPLAIN (FORMAT JSON) SELECT count(*) FROM %1%2" ).arg( mQuery, filterWhereClause() );
-    QgsPostgresResult result( connectionRO()->PQexec( sql ) );
+    if ( connectionRO()->pgVersion() >= 90000 )
+    {
+      // parse explain output to estimate feature count
+      // we don't use pg_class reltuples because it returns 0 for view
+      sql = QStringLiteral( "EXPLAIN (FORMAT JSON) SELECT count(*) FROM %1%2" ).arg( mQuery, filterWhereClause() );
+      QgsPostgresResult result( connectionRO()->PQexec( sql ) );
 
-    const QString json = result.PQgetvalue( 0, 0 );
-    const QVariantList explain = QgsJsonUtils::parseJson( json ).toList();
-    const QVariantMap countPlan = explain.count() ? explain[0].toMap().value( "Plan" ).toMap() : QVariantMap();
-    const QVariantList queryPlan = countPlan.value( "Plans" ).toList();
-    const QVariant nbRows = queryPlan.count() ? queryPlan[0].toMap().value( "Plan Rows" ) : QVariant();
+      const QString json = result.PQgetvalue( 0, 0 );
+      const QVariantList explain = QgsJsonUtils::parseJson( json ).toList();
+      const QVariantMap countPlan = explain.count() ? explain[0].toMap().value( "Plan" ).toMap() : QVariantMap();
+      const QVariantList queryPlan = countPlan.value( "Plans" ).toList();
+      const QVariant nbRows = queryPlan.count() ? queryPlan[0].toMap().value( "Plan Rows" ) : QVariant();
 
-    if ( nbRows.isValid() )
-      num = nbRows.toInt();
-    else
-      QgsLogger::warning( QStringLiteral( "Cannot parse JSON explain result to estimate feature count (%1) : %2" ).arg( sql, json ) );
+      if ( nbRows.isValid() )
+        num = nbRows.toInt();
+      else
+        QgsLogger::warning( QStringLiteral( "Cannot parse JSON explain result to estimate feature count (%1) : %2" ).arg( sql, json ) );
+    }
   }
   else
   {
