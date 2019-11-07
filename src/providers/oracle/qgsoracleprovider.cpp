@@ -858,7 +858,6 @@ bool QgsOracleProvider::determinePrimaryKey()
   QSqlQuery qry( *conn );
   if ( !mIsQuery )
   {
-
     if ( !exec( qry, QString( "SELECT column_name"
                               " FROM all_ind_columns a"
                               " JOIN all_constraints b ON a.index_name=constraint_name AND a.index_owner=b.owner"
@@ -908,6 +907,7 @@ bool QgsOracleProvider::determinePrimaryKey()
     else if ( qry.next() )
     {
       // is table
+      QgsMessageLog::logMessage( tr( "No primary key found, using ROWID." ), tr( "Oracle" ) );
       mPrimaryKeyType = PktRowId;
     }
     else
