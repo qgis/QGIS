@@ -300,7 +300,10 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
       QFileInfo fi{ url.path() };
       auto suffix { fi.suffix() };
       auto fName { fi.filePath()};
-      fName.chop( suffix.length() + 1 );
+      if ( suffix.length() != 0 )
+      {
+        fName.chop( suffix.length() + 1 );
+      }
       fName += '/' + QString::number( args.at( 0 )->get<QgsFeatureId>( ) );
       if ( !suffix.isEmpty() )
       {
