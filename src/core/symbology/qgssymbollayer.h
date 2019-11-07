@@ -30,6 +30,7 @@
 #include "qgssymbol.h"
 #include "qgsfields.h"
 #include "qgspropertycollection.h"
+#include "qgspainteffect.h"
 
 class QPainter;
 class QSize;
@@ -38,7 +39,6 @@ class QPolygonF;
 class QgsDxfExport;
 class QgsExpression;
 class QgsRenderContext;
-class QgsPaintEffect;
 
 #ifndef SIP_RUN
 typedef QMap<QString, QString> QgsStringMap;
