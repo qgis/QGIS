@@ -238,18 +238,10 @@ QgsFeatureRenderer *QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTyp
     QDomElement ruleElem = featTypeStyleElem.firstChildElement( QStringLiteral( "Rule" ) );
     while ( !ruleElem.isNull() )
     {
-      ruleCount++;
-
-      // append a clone of all Rules to the merged FeatureTypeStyle element
-      mergedFeatTypeStyle.appendChild( ruleElem.cloneNode().toElement() );
-      // more rules present, use the RuleRenderer
-
-      if ( ruleCount > 1 )
-      {
-        QgsDebugMsg( QStringLiteral( "more Rule elements found: need a RuleRenderer" ) );
-        needRuleRenderer = true;
-      }
-
+      // test rule children element to check if we need to create RuleRenderer
+      // and if the rule has a symbolizer
+      bool hasRendererSymbolizer = false;
+      bool hasRuleRenderer = false;
       QDomElement ruleChildElem = ruleElem.firstChildElement();
       while ( !ruleChildElem.isNull() )
       {
@@ -258,12 +250,38 @@ QgsFeatureRenderer *QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTyp
              ruleChildElem.localName() == QLatin1String( "MinScaleDenominator" ) ||
              ruleChildElem.localName() == QLatin1String( "MaxScaleDenominator" ) )
         {
-          QgsDebugMsg( QStringLiteral( "Filter or Min/MaxScaleDenominator element found: need a RuleRenderer" ) );
-          needRuleRenderer = true;
-          break;
+          hasRuleRenderer = true;
+        }
+        // rule has a renderer symbolizer, not a text symbolizer
+        else if ( ruleChildElem.localName().endsWith( QLatin1String( "Symbolizer" ) ) &&
+                  ruleChildElem.localName() != QLatin1String( "TextSymbolizer" ) )
+        {
+          QgsDebugMsgLevel( QStringLiteral( "Symbolizer element found and not a TextSymbolizer" ), 2 );
+          hasRendererSymbolizer = true;
         }
 
         ruleChildElem = ruleChildElem.nextSiblingElement();
+      }
+
+      if ( hasRendererSymbolizer )
+      {
+        ruleCount++;
+
+        // append a clone of all Rules to the merged FeatureTypeStyle element
+        mergedFeatTypeStyle.appendChild( ruleElem.cloneNode().toElement() );
+
+        if ( hasRuleRenderer )
+        {
+          QgsDebugMsgLevel( QStringLiteral( "Filter or Min/MaxScaleDenominator element found: need a RuleRenderer" ), 2 );
+          needRuleRenderer = true;
+        }
+      }
+
+      // more rules present, use the RuleRenderer
+      if ( ruleCount > 1 )
+      {
+        QgsDebugMsgLevel( QStringLiteral( "more Rule elements found: need a RuleRenderer" ), 2 );
+        needRuleRenderer = true;
       }
 
       ruleElem = ruleElem.nextSiblingElement( QStringLiteral( "Rule" ) );
