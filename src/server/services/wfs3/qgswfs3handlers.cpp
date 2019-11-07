@@ -1099,391 +1099,396 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
   // Get parameters
   QVariantMap params { values( context )};
 
-  if ( context.request()->method() == QgsServerRequest::Method::GetMethod )
+  switch ( context.request()->method() )
   {
-
-    // Validate inputs
-    bool ok { false };
-
-    // BBOX
-    const QString bbox { params[ QStringLiteral( "bbox" )].toString()  };
-    const QgsRectangle filterRect { QgsServerApiUtils::parseBbox( bbox ) };
-    if ( ! bbox.isEmpty() && filterRect.isNull() )
+    case QgsServerRequest::Method::GetMethod:
     {
-      throw QgsServerApiBadRequestException( QStringLiteral( "bbox is not valid" ) );
-    }
+      // Validate inputs
+      bool ok { false };
 
-    // BBOX CRS
-    const QgsCoordinateReferenceSystem bboxCrs { QgsServerApiUtils::parseCrs( params[ QStringLiteral( "bbox-crs" ) ].toString() ) };
-    if ( ! bboxCrs.isValid() )
-    {
-      throw QgsServerApiBadRequestException( QStringLiteral( "BBOX CRS is not valid" ) );
-    }
-
-    // CRS
-    const QgsCoordinateReferenceSystem crs { QgsServerApiUtils::parseCrs( params[ QStringLiteral( "crs" ) ].toString() ) };
-    if ( ! crs.isValid() )
-    {
-      throw QgsServerApiBadRequestException( QStringLiteral( "CRS is not valid" ) );
-    }
-
-    // resultType
-    const QString resultType { params[ QStringLiteral( "resultType" ) ].toString() };
-    static const QStringList availableResultTypes { QStringLiteral( "results" ), QStringLiteral( "hits" )};
-    if ( ! availableResultTypes.contains( resultType ) )
-    {
-      throw QgsServerApiBadRequestException( QStringLiteral( "resultType is not valid [results, hits]" ) );
-    }
-
-    // Attribute filters
-    QgsStringMap attrFilters;
-    const QgsFields constPublishedFields { publishedFields( mapLayer, context ) };
-    for ( const QgsField &f : constPublishedFields )
-    {
-      const QString fName { f.alias().isEmpty() ? f.name() : f.alias() };
-      const QString val = params.value( fName ).toString() ;
-      if ( ! val.isEmpty() )
+      // BBOX
+      const QString bbox { params[ QStringLiteral( "bbox" )].toString()  };
+      const QgsRectangle filterRect { QgsServerApiUtils::parseBbox( bbox ) };
+      if ( ! bbox.isEmpty() && filterRect.isNull() )
       {
-        QString sanitized { QgsServerApiUtils::sanitizedFieldValue( val ) };
-        if ( sanitized.isEmpty() )
+        throw QgsServerApiBadRequestException( QStringLiteral( "bbox is not valid" ) );
+      }
+
+      // BBOX CRS
+      const QgsCoordinateReferenceSystem bboxCrs { QgsServerApiUtils::parseCrs( params[ QStringLiteral( "bbox-crs" ) ].toString() ) };
+      if ( ! bboxCrs.isValid() )
+      {
+        throw QgsServerApiBadRequestException( QStringLiteral( "BBOX CRS is not valid" ) );
+      }
+
+      // CRS
+      const QgsCoordinateReferenceSystem crs { QgsServerApiUtils::parseCrs( params[ QStringLiteral( "crs" ) ].toString() ) };
+      if ( ! crs.isValid() )
+      {
+        throw QgsServerApiBadRequestException( QStringLiteral( "CRS is not valid" ) );
+      }
+
+      // resultType
+      const QString resultType { params[ QStringLiteral( "resultType" ) ].toString() };
+      static const QStringList availableResultTypes { QStringLiteral( "results" ), QStringLiteral( "hits" )};
+      if ( ! availableResultTypes.contains( resultType ) )
+      {
+        throw QgsServerApiBadRequestException( QStringLiteral( "resultType is not valid [results, hits]" ) );
+      }
+
+      // Attribute filters
+      QgsStringMap attrFilters;
+      const QgsFields constPublishedFields { publishedFields( mapLayer, context ) };
+      for ( const QgsField &f : constPublishedFields )
+      {
+        const QString fName { f.alias().isEmpty() ? f.name() : f.alias() };
+        const QString val = params.value( fName ).toString() ;
+        if ( ! val.isEmpty() )
         {
-          throw QgsServerApiBadRequestException( QStringLiteral( "Invalid filter field value [%1=%2]" ).arg( f.name() ).arg( val ) );
+          QString sanitized { QgsServerApiUtils::sanitizedFieldValue( val ) };
+          if ( sanitized.isEmpty() )
+          {
+            throw QgsServerApiBadRequestException( QStringLiteral( "Invalid filter field value [%1=%2]" ).arg( f.name() ).arg( val ) );
+          }
+          attrFilters[fName] = sanitized;
         }
-        attrFilters[fName] = sanitized;
       }
-    }
 
-    // limit & offset
-    // Apparently the standard set limits 0-10000 (and does not implement paging,
-    // so we do our own paging with "offset")
-    const qlonglong offset { params.value( QStringLiteral( "offset" ) ).toLongLong( &ok ) };
+      // limit & offset
+      // Apparently the standard set limits 0-10000 (and does not implement paging,
+      // so we do our own paging with "offset")
+      const qlonglong offset { params.value( QStringLiteral( "offset" ) ).toLongLong( &ok ) };
 
-    const qlonglong limit {  params.value( QStringLiteral( "limit" ) ).toLongLong( &ok ) };
+      const qlonglong limit {  params.value( QStringLiteral( "limit" ) ).toLongLong( &ok ) };
 
-    QString filterExpression;
-    QStringList expressions;
+      QString filterExpression;
+      QStringList expressions;
 
-    //  datetime
-    const QString datetime { params.value( QStringLiteral( "datetime" ) ).toString() };
-    if ( ! datetime.isEmpty() )
-    {
-      const QgsExpression timeExpression { QgsServerApiUtils::temporalFilterExpression( mapLayer, datetime ) };
-      if ( ! timeExpression.isValid() )
+      //  datetime
+      const QString datetime { params.value( QStringLiteral( "datetime" ) ).toString() };
+      if ( ! datetime.isEmpty() )
       {
-        throw QgsServerApiBadRequestException( QStringLiteral( "Invalid datetime filter expression: %1 " ).arg( datetime ) );
-      }
-      else
-      {
-        expressions.push_back( timeExpression.expression() );
-      }
-    }
-
-    // Properties (subset attributes)
-    const QStringList requestedProperties { params.value( QStringLiteral( "properties" ) ).toStringList( ) };
-
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // End of input control: inputs are valid, process the request
-
-    QgsFeatureRequest featureRequest = filteredRequest( mapLayer, context, requestedProperties );
-
-    if ( ! filterRect.isNull() )
-    {
-      QgsCoordinateTransform ct( bboxCrs, mapLayer->crs(), context.project()->transformContext() );
-      ct.transform( filterRect );
-      featureRequest.setFilterRect( ct.transform( filterRect ) );
-    }
-
-    if ( ! attrFilters.isEmpty() )
-    {
-
-      if ( featureRequest.filterExpression() && ! featureRequest.filterExpression()->expression().isEmpty() )
-      {
-        expressions.push_back( featureRequest.filterExpression()->expression() );
-      }
-      for ( auto it = attrFilters.constBegin(); it != attrFilters.constEnd(); it++ )
-      {
-        // Handle star
-        static const QRegularExpression re2( R"raw([^\\]\*)raw" );
-        if ( re2.match( it.value() ).hasMatch() )
+        const QgsExpression timeExpression { QgsServerApiUtils::temporalFilterExpression( mapLayer, datetime ) };
+        if ( ! timeExpression.isValid() )
         {
-          QString val { it.value() };
-          expressions.push_back( QStringLiteral( "\"%1\" LIKE '%2'" ).arg( it.key() ).arg( val.replace( '%', QStringLiteral( "%%" ) ).replace( '*', '%' ) ) );
+          throw QgsServerApiBadRequestException( QStringLiteral( "Invalid datetime filter expression: %1 " ).arg( datetime ) );
         }
         else
         {
-          expressions.push_back( QStringLiteral( "\"%1\" = '%2'" ).arg( it.key() ).arg( it.value() ) );
+          expressions.push_back( timeExpression.expression() );
         }
       }
-    }
 
-    // Join all expression filters
-    if ( ! expressions.isEmpty() )
-    {
-      filterExpression = expressions.join( QStringLiteral( " AND " ) );
-      featureRequest.setFilterExpression( filterExpression );
-      QgsDebugMsgLevel( QStringLiteral( "Filter expression: %1" ).arg( featureRequest.filterExpression()->expression() ), 4 );
-    }
+      // Properties (subset attributes)
+      const QStringList requestedProperties { params.value( QStringLiteral( "properties" ) ).toStringList( ) };
 
-    // WFS3 core specs only serves 4326
-    featureRequest.setDestinationCrs( crs, context.project()->transformContext() );
-    // Add offset to limit because paging is not supported by QgsFeatureRequest
-    featureRequest.setLimit( limit + offset );
-    QgsJsonExporter exporter { mapLayer };
-    exporter.setAttributes( featureRequest.subsetOfAttributes() );
-    exporter.setAttributeDisplayName( true );
-    exporter.setSourceCrs( mapLayer->crs() );
-    exporter.setTransformGeometries( false );
-    QgsFeatureList featureList;
-    QgsFeatureIterator features { mapLayer->getFeatures( featureRequest ) };
-    QgsFeature feat;
-    long i { 0 };
-    while ( features.nextFeature( feat ) )
-    {
-      // Ignore records before offset
-      if ( i >= offset )
-        featureList << feat;
-      i++;
-    }
 
-    // Count features
-    long matchedFeaturesCount = 0;
-    if ( attrFilters.isEmpty() && filterRect.isNull() )
-    {
-      matchedFeaturesCount = mapLayer->featureCount();
-    }
-    else
-    {
-      if ( filterExpression.isEmpty() )
+      // ////////////////////////////////////////////////////////////////////////////////////////////////////
+      // End of input control: inputs are valid, process the request
+
+      QgsFeatureRequest featureRequest = filteredRequest( mapLayer, context, requestedProperties );
+
+      if ( ! filterRect.isNull() )
       {
-        featureRequest.setNoAttributes();
+        QgsCoordinateTransform ct( bboxCrs, mapLayer->crs(), context.project()->transformContext() );
+        ct.transform( filterRect );
+        featureRequest.setFilterRect( ct.transform( filterRect ) );
       }
 
-      featureRequest.setFlags( QgsFeatureRequest::Flag::NoGeometry );
-      featureRequest.setLimit( -1 );
-      features = mapLayer->getFeatures( featureRequest );
-
-      while ( features.nextFeature( feat ) )
+      if ( ! attrFilters.isEmpty() )
       {
-        matchedFeaturesCount++;
-      }
-    }
 
-    json data = exporter.exportFeaturesToJsonObject( featureList );
-
-    // Add some metadata
-    data["numberMatched"] = matchedFeaturesCount;
-    data["numberReturned"] = featureList.count();
-    data["links"] = links( context );
-
-    // Current url
-    const QUrl url { context.request()->url() };
-
-    // Url without offset and limit
-    QUrl cleanedUrl { url };
-    cleanedUrl.removeQueryItem( QStringLiteral( "limit" ) );
-    cleanedUrl.removeQueryItem( QStringLiteral( "offset" ) );
-
-    QString cleanedUrlAsString { cleanedUrl.toString() };
-
-    if ( ! cleanedUrl.hasQuery() )
-    {
-      cleanedUrlAsString += '?';
-    }
-
-    // Get the self link
-    json selfLink;
-    for ( const auto &l : data["links"] )
-    {
-      if ( l["rel"] == "self" )
-      {
-        selfLink = l;
-        break;
-      }
-    }
-    // This should never happen!
-    Q_ASSERT( !selfLink.is_null() );
-
-    // Add prev - next links
-    if ( offset != 0 )
-    {
-      json prevLink = selfLink;
-      prevLink["href"] = QStringLiteral( "%1&offset=%2&limit=%3" ).arg( cleanedUrlAsString ).arg( std::max<long>( 0, limit - offset ) ).arg( limit ).toStdString();
-      prevLink["rel"] = "prev";
-      prevLink["name"] = "Previous page";
-      data["links"].push_back( prevLink );
-    }
-
-    if ( limit + offset < matchedFeaturesCount )
-    {
-      json nextLink = selfLink;
-      nextLink["href"] = QStringLiteral( "%1&offset=%2&limit=%3" ).arg( cleanedUrlAsString ).arg( std::min<long>( matchedFeaturesCount, limit + offset ) ).arg( limit ).toStdString();
-      nextLink["rel"] = "next";
-      nextLink["name"] = "Next page";
-      data["links"].push_back( nextLink );
-    }
-
-    json navigation = json::array();
-    navigation.push_back( {{ "title",  "Landing page" }, { "href", parentLink( url, 3 ).toStdString() }} ) ;
-    navigation.push_back( {{ "title",  "Collections" }, { "href", parentLink( url, 2 ).toStdString() }} ) ;
-    navigation.push_back( {{ "title",   title }, { "href", parentLink( url, 1 ).toStdString()  }} ) ;
-
-    json htmlMetadata
-    {
-      { "pageTitle", "Features in layer " + title },
-      { "layerTitle", title },
-      {
-        "geojsonUrl", href( context, "/",
-                            QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::GEOJSON ) )
-      },
-      { "navigation", navigation }
-    };
-
-    write( data, context, htmlMetadata );
-
-  }
-  else if ( context.request()->method() == QgsServerRequest::Method::PostMethod )
-  {
-    // First: check permissions
-    const QStringList wfstInsertLayerIds = QgsServerProjectUtils::wfstInsertLayerIds( *context.project() );
-    if ( ! wfstInsertLayerIds.contains( mapLayer->id() ) || ! mapLayer->dataProvider()->capabilities().testFlag( QgsVectorDataProvider::Capability::AddFeatures ) )
-    {
-      throw QgsServerApiPermissionDeniedException( QStringLiteral( "Layer %1 is not editable" ).arg( mapLayer->name() ) );
-    }
-
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-
-    // get access controls
-    QgsAccessControl *accessControl = context.serverInterface()->accessControls();
-    if ( accessControl && !accessControl->layerInsertPermission( mapLayer ) )
-    {
-      throw QgsServerApiPermissionDeniedException( QStringLiteral( "No ACL permissions to insert features on layer '%1'" ).arg( mapLayer->name() ) );
-    }
-
-    //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
-    //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually
-    std::unique_ptr< QgsOWSServerFilterRestorer > filterRestorer( new QgsOWSServerFilterRestorer() );
-    if ( accessControl )
-    {
-      QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( accessControl, mapLayer, filterRestorer->originalFilters() );
-    }
-
-#endif
-    try
-    {
-      // Parse
-      json postData = json::parse( context.request()->data() );
-
-      // Process data: extract geometry (because we need to process attributes in a much more complex way)
-      const QgsFeatureList features = QgsOgrUtils::stringToFeatureList( context.request()->data(), mapLayer->fields(), QTextCodec::codecForName( "UTF-8" ) );
-      if ( features.isEmpty() )
-      {
-        throw QgsServerApiBadRequestException( QStringLiteral( "Posted body contains no feature" ) );
-      }
-
-      QgsFeature feat = features.first();
-      if ( ! feat.isValid() )
-      {
-        throw QgsServerApiInternalServerError( QStringLiteral( "Feature is not valid" ) );
-      }
-
-      // Transform geometry
-      if ( mapLayer->crs() != QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) )
-      {
-        QgsGeometry geom { feat.geometry() };
-        try
+        if ( featureRequest.filterExpression() && ! featureRequest.filterExpression()->expression().isEmpty() )
         {
-          geom.transform( QgsCoordinateTransform( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), mapLayer->crs(), context.project()->transformContext() ) );
+          expressions.push_back( featureRequest.filterExpression()->expression() );
         }
-        catch ( QgsCsException & )
+        for ( auto it = attrFilters.constBegin(); it != attrFilters.constEnd(); it++ )
         {
-          throw QgsServerApiInternalServerError( QStringLiteral( "Geometry could not be transformed to destination CRS" ) );
-        }
-        feat.setGeometry( geom );
-      }
-
-      // Process attributes
-      try
-      {
-        const auto authorizedFields { publishedFields( mapLayer, context ) };
-        QStringList authorizedFieldNames;
-        for ( const auto &f : authorizedFields )
-        {
-          authorizedFieldNames.push_back( f.name() );
-        }
-        const QVariantMap properties { QgsJsonUtils::parseJson( postData["properties"].dump( ) ).toMap( ) };
-        const QgsFields fields = mapLayer->fields();
-        for ( const auto &field : fields )
-        {
-          if ( ! properties.value( field.name() ).isNull() )
+          // Handle star
+          static const QRegularExpression re2( R"raw([^\\]\*)raw" );
+          if ( re2.match( it.value() ).hasMatch() )
           {
-            if ( ! authorizedFieldNames.contains( field.name() ) )
-            {
-              throw QgsServerApiBadRequestException( QStringLiteral( "Feature field %1 is not allowed" ).arg( field.name() ) );
-            }
-            else
-            {
-              QVariant value { properties.value( field.name() ) };
-              // Convert blobs
-              if ( ! properties.value( field.name() ).isNull() && static_cast<QMetaType::Type>( field.type() ) == QMetaType::QByteArray )
-              {
-                value = QByteArray::fromBase64( value.toByteArray() );
-              }
-              feat.setAttribute( field.name(), value );
-            }
+            QString val { it.value() };
+            expressions.push_back( QStringLiteral( "\"%1\" LIKE '%2'" ).arg( it.key() ).arg( val.replace( '%', QStringLiteral( "%%" ) ).replace( '*', '%' ) ) );
           }
           else
           {
-            feat.setAttribute( field.name(), QVariant() );
+            expressions.push_back( QStringLiteral( "\"%1\" = '%2'" ).arg( it.key() ).arg( it.value() ) );
           }
         }
       }
-      catch ( json::exception & )
+
+      // Join all expression filters
+      if ( ! expressions.isEmpty() )
       {
-        throw QgsServerApiBadRequestException( QStringLiteral( "Feature properties are not valid" ) );
+        filterExpression = expressions.join( QStringLiteral( " AND " ) );
+        featureRequest.setFilterExpression( filterExpression );
+        QgsDebugMsgLevel( QStringLiteral( "Filter expression: %1" ).arg( featureRequest.filterExpression()->expression() ), 4 );
       }
 
-      // Make sure the first field (id) is null for shapefiles
-      if ( mapLayer->providerType() == QLatin1String( "ogr" ) && mapLayer->storageType() == QLatin1String( "ESRI Shapefile" ) )
+      // WFS3 core specs only serves 4326
+      featureRequest.setDestinationCrs( crs, context.project()->transformContext() );
+      // Add offset to limit because paging is not supported by QgsFeatureRequest
+      featureRequest.setLimit( limit + offset );
+      QgsJsonExporter exporter { mapLayer };
+      exporter.setAttributes( featureRequest.subsetOfAttributes() );
+      exporter.setAttributeDisplayName( true );
+      exporter.setSourceCrs( mapLayer->crs() );
+      exporter.setTransformGeometries( false );
+      QgsFeatureList featureList;
+      QgsFeatureIterator features { mapLayer->getFeatures( featureRequest ) };
+      QgsFeature feat;
+      long i { 0 };
+      while ( features.nextFeature( feat ) )
       {
-        feat.setAttribute( 0, QVariant() );
-      }
-      feat.setId( FID_NULL );
-
-      // TODO: handle CRS
-      QgsFeatureList featuresToAdd;
-      featuresToAdd.append( feat );
-      if ( ! mapLayer->dataProvider()->addFeatures( featuresToAdd ) )
-      {
-        throw QgsServerApiInternalServerError( QStringLiteral( "Error adding feature to collection" ) );
-      }
-
-      feat = featuresToAdd.first();
-
-      // Send response
-      context.response()->setStatusCode( 201 );
-      context.response()->setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "application/geo+json" ) );
-
-      QString url { context.request()->url().toString( QUrl::EncodeSpaces ) };
-      if ( ! url.endsWith( '/' ) )
-      {
-        url.append( '/' );
+        // Ignore records before offset
+        if ( i >= offset )
+          featureList << feat;
+        i++;
       }
 
-      context.response()->setHeader( QStringLiteral( "Location" ), url + QString::number( feat.id() ) );
-      context.response()->write( "\"string\"" );
+      // Count features
+      long matchedFeaturesCount = 0;
+      if ( attrFilters.isEmpty() && filterRect.isNull() )
+      {
+        matchedFeaturesCount = mapLayer->featureCount();
+      }
+      else
+      {
+        if ( filterExpression.isEmpty() )
+        {
+          featureRequest.setNoAttributes();
+        }
 
+        featureRequest.setFlags( QgsFeatureRequest::Flag::NoGeometry );
+        featureRequest.setLimit( -1 );
+        features = mapLayer->getFeatures( featureRequest );
+
+        while ( features.nextFeature( feat ) )
+        {
+          matchedFeaturesCount++;
+        }
+      }
+
+      json data = exporter.exportFeaturesToJsonObject( featureList );
+
+      // Add some metadata
+      data["numberMatched"] = matchedFeaturesCount;
+      data["numberReturned"] = featureList.count();
+      data["links"] = links( context );
+
+      // Current url
+      const QUrl url { context.request()->url() };
+
+      // Url without offset and limit
+      QUrl cleanedUrl { url };
+      cleanedUrl.removeQueryItem( QStringLiteral( "limit" ) );
+      cleanedUrl.removeQueryItem( QStringLiteral( "offset" ) );
+
+      QString cleanedUrlAsString { cleanedUrl.toString() };
+
+      if ( ! cleanedUrl.hasQuery() )
+      {
+        cleanedUrlAsString += '?';
+      }
+
+      // Get the self link
+      json selfLink;
+      for ( const auto &l : data["links"] )
+      {
+        if ( l["rel"] == "self" )
+        {
+          selfLink = l;
+          break;
+        }
+      }
+      // This should never happen!
+      Q_ASSERT( !selfLink.is_null() );
+
+      // Add prev - next links
+      if ( offset != 0 )
+      {
+        json prevLink = selfLink;
+        prevLink["href"] = QStringLiteral( "%1&offset=%2&limit=%3" ).arg( cleanedUrlAsString ).arg( std::max<long>( 0, limit - offset ) ).arg( limit ).toStdString();
+        prevLink["rel"] = "prev";
+        prevLink["name"] = "Previous page";
+        data["links"].push_back( prevLink );
+      }
+
+      if ( limit + offset < matchedFeaturesCount )
+      {
+        json nextLink = selfLink;
+        nextLink["href"] = QStringLiteral( "%1&offset=%2&limit=%3" ).arg( cleanedUrlAsString ).arg( std::min<long>( matchedFeaturesCount, limit + offset ) ).arg( limit ).toStdString();
+        nextLink["rel"] = "next";
+        nextLink["name"] = "Next page";
+        data["links"].push_back( nextLink );
+      }
+
+      json navigation = json::array();
+      navigation.push_back( {{ "title",  "Landing page" }, { "href", parentLink( url, 3 ).toStdString() }} ) ;
+      navigation.push_back( {{ "title",  "Collections" }, { "href", parentLink( url, 2 ).toStdString() }} ) ;
+      navigation.push_back( {{ "title",   title }, { "href", parentLink( url, 1 ).toStdString()  }} ) ;
+
+      json htmlMetadata
+      {
+        { "pageTitle", "Features in layer " + title },
+        { "layerTitle", title },
+        {
+          "geojsonUrl", href( context, "/",
+                              QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::GEOJSON ) )
+        },
+        { "navigation", navigation }
+      };
+
+      write( data, context, htmlMetadata );
+      break;
     }
-    catch ( json::exception &ex )
+
+    case QgsServerRequest::Method::PostMethod:
     {
-      throw QgsServerApiBadRequestException( QStringLiteral( "JSON parse error: %1" ).arg( ex.what( ) ) );
+      // First: check permissions
+      const QStringList wfstInsertLayerIds = QgsServerProjectUtils::wfstInsertLayerIds( *context.project() );
+      if ( ! wfstInsertLayerIds.contains( mapLayer->id() ) || ! mapLayer->dataProvider()->capabilities().testFlag( QgsVectorDataProvider::Capability::AddFeatures ) )
+      {
+        throw QgsServerApiPermissionDeniedException( QStringLiteral( "Layer %1 is not editable" ).arg( mapLayer->name() ) );
+      }
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+
+      // get access controls
+      QgsAccessControl *accessControl = context.serverInterface()->accessControls();
+      if ( accessControl && !accessControl->layerInsertPermission( mapLayer ) )
+      {
+        throw QgsServerApiPermissionDeniedException( QStringLiteral( "No ACL permissions to insert features on layer '%1'" ).arg( mapLayer->name() ) );
+      }
+
+      //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
+      //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually
+      std::unique_ptr< QgsOWSServerFilterRestorer > filterRestorer( new QgsOWSServerFilterRestorer() );
+      if ( accessControl )
+      {
+        QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( accessControl, mapLayer, filterRestorer->originalFilters() );
+      }
+
+#endif
+      try
+      {
+        // Parse
+        json postData = json::parse( context.request()->data() );
+
+        // Process data: extract geometry (because we need to process attributes in a much more complex way)
+        const QgsFeatureList features = QgsOgrUtils::stringToFeatureList( context.request()->data(), mapLayer->fields(), QTextCodec::codecForName( "UTF-8" ) );
+        if ( features.isEmpty() )
+        {
+          throw QgsServerApiBadRequestException( QStringLiteral( "Posted body contains no feature" ) );
+        }
+
+        QgsFeature feat = features.first();
+        if ( ! feat.isValid() )
+        {
+          throw QgsServerApiInternalServerError( QStringLiteral( "Feature is not valid" ) );
+        }
+
+        // Transform geometry
+        if ( mapLayer->crs() != QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) )
+        {
+          QgsGeometry geom { feat.geometry() };
+          try
+          {
+            geom.transform( QgsCoordinateTransform( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), mapLayer->crs(), context.project()->transformContext() ) );
+          }
+          catch ( QgsCsException & )
+          {
+            throw QgsServerApiInternalServerError( QStringLiteral( "Geometry could not be transformed to destination CRS" ) );
+          }
+          feat.setGeometry( geom );
+        }
+
+        // Process attributes
+        try
+        {
+          const auto authorizedFields { publishedFields( mapLayer, context ) };
+          QStringList authorizedFieldNames;
+          for ( const auto &f : authorizedFields )
+          {
+            authorizedFieldNames.push_back( f.name() );
+          }
+          const QVariantMap properties { QgsJsonUtils::parseJson( postData["properties"].dump( ) ).toMap( ) };
+          const QgsFields fields = mapLayer->fields();
+          for ( const auto &field : fields )
+          {
+            if ( ! properties.value( field.name() ).isNull() )
+            {
+              if ( ! authorizedFieldNames.contains( field.name() ) )
+              {
+                throw QgsServerApiBadRequestException( QStringLiteral( "Feature field %1 is not allowed" ).arg( field.name() ) );
+              }
+              else
+              {
+                QVariant value { properties.value( field.name() ) };
+                // Convert blobs
+                if ( ! properties.value( field.name() ).isNull() && static_cast<QMetaType::Type>( field.type() ) == QMetaType::QByteArray )
+                {
+                  value = QByteArray::fromBase64( value.toByteArray() );
+                }
+                feat.setAttribute( field.name(), value );
+              }
+            }
+            else
+            {
+              feat.setAttribute( field.name(), QVariant() );
+            }
+          }
+        }
+        catch ( json::exception & )
+        {
+          throw QgsServerApiBadRequestException( QStringLiteral( "Feature properties are not valid" ) );
+        }
+
+        // Make sure the first field (id) is null for shapefiles
+        if ( mapLayer->providerType() == QLatin1String( "ogr" ) && mapLayer->storageType() == QLatin1String( "ESRI Shapefile" ) )
+        {
+          feat.setAttribute( 0, QVariant() );
+        }
+        feat.setId( FID_NULL );
+
+        // TODO: handle CRS
+        QgsFeatureList featuresToAdd;
+        featuresToAdd.append( feat );
+        if ( ! mapLayer->dataProvider()->addFeatures( featuresToAdd ) )
+        {
+          throw QgsServerApiInternalServerError( QStringLiteral( "Error adding feature to collection" ) );
+        }
+
+        feat = featuresToAdd.first();
+
+        // Send response
+        context.response()->setStatusCode( 201 );
+        context.response()->setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "application/geo+json" ) );
+
+        QString url { context.request()->url().toString( QUrl::EncodeSpaces ) };
+        if ( ! url.endsWith( '/' ) )
+        {
+          url.append( '/' );
+        }
+
+        context.response()->setHeader( QStringLiteral( "Location" ), url + QString::number( feat.id() ) );
+        context.response()->write( "\"string\"" );
+
+      }
+      catch ( json::exception &ex )
+      {
+        throw QgsServerApiBadRequestException( QStringLiteral( "JSON parse error: %1" ).arg( ex.what( ) ) );
+      }
+      break;
     }
-  }
-  else
-  {
-    throw QgsServerApiNotImplementedException( QStringLiteral( "%1 method is not implemented." )
-        .arg( QgsServerRequest::methodToString( context.request()->method() ) ) );
-  }
+
+    default:
+    {
+      throw QgsServerApiNotImplementedException( QStringLiteral( "%1 method is not implemented." )
+          .arg( QgsServerRequest::methodToString( context.request()->method() ) ) );
+    }
+  } // end switch
 }
 
 QgsWfs3CollectionsFeatureHandler::QgsWfs3CollectionsFeatureHandler()
