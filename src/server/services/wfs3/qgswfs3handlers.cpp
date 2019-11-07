@@ -1101,6 +1101,8 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
 
   switch ( context.request()->method() )
   {
+    // //////////////////////////////////////////////////////////////
+    // Retrieve features
     case QgsServerRequest::Method::GetMethod:
     {
       // Validate inputs
@@ -1343,14 +1345,15 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       write( data, context, htmlMetadata );
       break;
     }
-
+    // //////////////////////////////////////////////////////////////
+    // Create a new feature
     case QgsServerRequest::Method::PostMethod:
     {
       // First: check permissions
       const QStringList wfstInsertLayerIds = QgsServerProjectUtils::wfstInsertLayerIds( *context.project() );
       if ( ! wfstInsertLayerIds.contains( mapLayer->id() ) || ! mapLayer->dataProvider()->capabilities().testFlag( QgsVectorDataProvider::Capability::AddFeatures ) )
       {
-        throw QgsServerApiPermissionDeniedException( QStringLiteral( "Layer %1 is not editable" ).arg( mapLayer->name() ) );
+        throw QgsServerApiPermissionDeniedException( QStringLiteral( "Features cannot be added to layer '%1'" ).arg( mapLayer->name() ) );
       }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -1452,7 +1455,6 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
         }
         feat.setId( FID_NULL );
 
-        // TODO: handle CRS
         QgsFeatureList featuresToAdd;
         featuresToAdd.append( feat );
         if ( ! mapLayer->dataProvider()->addFeatures( featuresToAdd ) )
@@ -1482,7 +1484,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       }
       break;
     }
-
+    // Error
     default:
     {
       throw QgsServerApiNotImplementedException( QStringLiteral( "%1 method is not implemented." )
@@ -1519,10 +1521,19 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
   checkLayerIsAccessible( mapLayer, context );
 
   const std::string title { mapLayer->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->title().toStdString() };
-  const QString featureId { match.captured( QStringLiteral( "featureId" ) ) };
 
-  // GET
-  if ( context.request()->method() == QgsServerRequest::Method::GetMethod )
+  // Retrieve feature from storage
+  const QString featureId { match.captured( QStringLiteral( "featureId" ) ) };
+  QgsFeatureRequest featureRequest = filteredRequest( mapLayer, context );
+  featureRequest.setFilterFid( featureId.toLongLong() );
+  QgsFeature feature;
+  QgsFeatureIterator it { mapLayer->getFeatures( featureRequest ) };
+  if ( ! it.nextFeature( feature ) && feature.isValid() )
+  {
+    QgsServerApiInternalServerError( QStringLiteral( "Invalid feature [%1]" ).arg( featureId ) );
+  }
+
+  auto doGet = [ & ]( )
   {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = context.serverInterface()->accessControls();
@@ -1534,15 +1545,6 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
       QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( accessControl, mapLayer, filterRestorer->originalFilters() );
     }
 #endif
-
-    QgsFeatureRequest featureRequest = filteredRequest( mapLayer, context );
-    featureRequest.setFilterFid( featureId.toLongLong() );
-    QgsFeature feature;
-    QgsFeatureIterator it { mapLayer->getFeatures( featureRequest ) };
-    if ( ! it.nextFeature( feature ) && feature.isValid() )
-    {
-      QgsServerApiInternalServerError( QStringLiteral( "Invalid feature [%1]" ).arg( featureId ) );
-    }
 
     QgsJsonExporter exporter { mapLayer };
     exporter.setAttributes( featureRequest.subsetOfAttributes() );
@@ -1565,12 +1567,156 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
       { "navigation", navigation }
     };
     write( data, context, htmlMetadata );
-  }
-  else
+  };
+
+  switch ( context.request()->method() )
   {
-    throw QgsServerApiNotImplementedException( QStringLiteral( "%1 method is not implemented." )
-        .arg( QgsServerRequest::methodToString( context.request()->method() ) ) );
-  }
+    // //////////////////////////////////////////////////////////////
+    //  Retrieve a single feature
+    case  QgsServerRequest::Method::GetMethod:
+    {
+      doGet();
+      break;
+    }
+    // //////////////////////////////////////////////////////////////
+    // Replace feature, use PATCH for partial updates
+    // TODO: factor with POST, that uses mostly the same code
+    case  QgsServerRequest::Method::PutMethod:
+    {
+      // First: check permissions
+      const QStringList wfstUpdateLayerIds = QgsServerProjectUtils::wfstUpdateLayerIds( *context.project() );
+      if ( ! wfstUpdateLayerIds.contains( mapLayer->id() ) ||
+           ! mapLayer->dataProvider()->capabilities().testFlag( QgsVectorDataProvider::Capability::ChangeGeometries ) ||
+           ! mapLayer->dataProvider()->capabilities().testFlag( QgsVectorDataProvider::Capability::ChangeAttributeValues ) )
+      {
+        throw QgsServerApiPermissionDeniedException( QStringLiteral( "Features in layer '%1' cannot be changed" ).arg( mapLayer->name() ) );
+      }
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+
+      // get access controls
+      QgsAccessControl *accessControl = context.serverInterface()->accessControls();
+      if ( accessControl && !accessControl->layerUpdatePermission( mapLayer ) )
+      {
+        throw QgsServerApiPermissionDeniedException( QStringLiteral( "No ACL permissions to change features on layer '%1'" ).arg( mapLayer->name() ) );
+      }
+
+      //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
+      //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually
+      std::unique_ptr< QgsOWSServerFilterRestorer > filterRestorer( new QgsOWSServerFilterRestorer() );
+      if ( accessControl )
+      {
+        QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( accessControl, mapLayer, filterRestorer->originalFilters() );
+      }
+
+#endif
+      try
+      {
+        // Parse
+        json postData = json::parse( context.request()->data() );
+        // Process data: extract geometry (because we need to process attributes in a much more complex way)
+        const QgsFeatureList features = QgsOgrUtils::stringToFeatureList( context.request()->data(), mapLayer->fields(), QTextCodec::codecForName( "UTF-8" ) );
+        if ( features.isEmpty() )
+        {
+          throw QgsServerApiBadRequestException( QStringLiteral( "Posted body contains no feature" ) );
+        }
+
+        QgsFeature feat = features.first();
+        if ( ! feat.isValid() )
+        {
+          throw QgsServerApiInternalServerError( QStringLiteral( "Feature is not valid" ) );
+        }
+
+        QgsChangedAttributesMap changedAttributes;
+        QgsAttributeMap changedMap;
+        QgsGeometryMap changedGeometries;
+
+        // Transform geometry
+        if ( mapLayer->crs() != QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) )
+        {
+          QgsGeometry geom { feat.geometry() };
+          try
+          {
+            geom.transform( QgsCoordinateTransform( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), mapLayer->crs(), context.project()->transformContext() ) );
+          }
+          catch ( QgsCsException & )
+          {
+            throw QgsServerApiInternalServerError( QStringLiteral( "Geometry could not be transformed to destination CRS" ) );
+          }
+          changedGeometries.insert( feature.id(), geom );
+        }
+
+        // Process attributes
+        try
+        {
+          const auto authorizedFields { publishedFields( mapLayer, context ) };
+          QStringList authorizedFieldNames;
+          for ( const auto &f : authorizedFields )
+          {
+            authorizedFieldNames.push_back( f.name() );
+          }
+          const QVariantMap properties { QgsJsonUtils::parseJson( postData["properties"].dump( ) ).toMap( ) };
+          const QgsFields fields = mapLayer->fields();
+          int fieldIndex = 0;
+          for ( const auto &field : fields )
+          {
+            if ( ! properties.value( field.name() ).isNull() )
+            {
+              if ( ! authorizedFieldNames.contains( field.name() ) )
+              {
+                throw QgsServerApiBadRequestException( QStringLiteral( "Feature field %1 is not allowed" ).arg( field.name() ) );
+              }
+              else
+              {
+                QVariant value { properties.value( field.name() ) };
+                // Convert blobs
+                if ( ! properties.value( field.name() ).isNull() && static_cast<QMetaType::Type>( field.type() ) == QMetaType::QByteArray )
+                {
+                  value = QByteArray::fromBase64( value.toByteArray() );
+                }
+                changedMap.insert( fieldIndex, value );
+              }
+            }
+            else
+            {
+              changedMap.insert( fieldIndex, QVariant( ) );
+            }
+            fieldIndex++;
+          }
+          if ( ! changedMap.isEmpty() )
+          {
+            changedAttributes.insert( feature.id(), changedMap );
+          }
+        }
+        catch ( json::exception & )
+        {
+          throw QgsServerApiBadRequestException( QStringLiteral( "Feature properties are not valid" ) );
+        }
+
+        // TODO: raise if nothing to change?
+
+        if ( ! mapLayer->dataProvider()->changeFeatures( changedAttributes, changedGeometries ) )
+        {
+          throw QgsServerApiInternalServerError( QStringLiteral( "Error adding feature to collection" ) );
+        }
+
+        // Now we need to send the updated feature to the client
+        feature = mapLayer->getFeature( feature.id() );
+        doGet();
+
+      }
+      catch ( json::exception &ex )
+      {
+        throw QgsServerApiBadRequestException( QStringLiteral( "JSON parse error: %1" ).arg( ex.what( ) ) );
+      }
+      break;
+    }
+    default:
+    {
+      throw QgsServerApiNotImplementedException( QStringLiteral( "%1 method is not implemented." )
+          .arg( QgsServerRequest::methodToString( context.request()->method() ) ) );
+    }
+  } // end switch
 }
 
 json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &context ) const

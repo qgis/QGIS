@@ -23,11 +23,12 @@
 
 class QgsFeatureRequest;
 class QgsServerOgcApi;
+class QgsFeature;
 
 /**
  * The QgsWfs3AbstractItemsHandler class provides some
  * functionality which is common to the handlers that
- * return items.
+ * return or process items.
  */
 class QgsWfs3AbstractItemsHandler: public QgsServerOgcApiHandler
 {
@@ -54,9 +55,9 @@ class QgsWfs3AbstractItemsHandler: public QgsServerOgcApiHandler
 
     /**
      * Returns a filtered list of fields containing only fields published for WFS and plugin filters applied.
-     * @param layer the vector layer
-     * @param context the server api context
-     * @return QgsFields list with filters applied
+     * \param layer the vector layer
+     * \param context the server api context
+     * \return QgsFields list with filters applied
      */
     QgsFields publishedFields( const QgsVectorLayer *layer, const QgsServerApiContext &context ) const;
 
