@@ -118,6 +118,7 @@
 %Include auto_generated/qgsmaptopixelgeometrysimplifier.sip
 %Include auto_generated/qgsmapunitscale.sip
 %Include auto_generated/qgsmargins.sip
+%Include auto_generated/qgsmaskidprovider.sip
 %Include auto_generated/qgsmessagelog.sip
 %Include auto_generated/qgsmessageoutput.sip
 %Include auto_generated/qgsmimedatautils.sip
@@ -493,5 +494,4 @@
 %Include auto_generated/gps/qgsqtlocationconnection.sip
 %Include auto_generated/gps/qgsgpsconnectionregistry.sip
 %Include auto_generated/symbology/qgsmasksymbollayer.sip
-%Include auto_generated/qgsmaskidprovider.sip
 %Include auto_generated/qgsuserprofile.sip
