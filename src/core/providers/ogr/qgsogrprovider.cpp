@@ -1048,6 +1048,7 @@ void QgsOgrProvider::loadFields()
   //the attribute fields need to be read again when the encoding changes
   mAttributeFields.clear();
   mDefaultValues.clear();
+  mPrimaryKeyAttrs.clear();
   if ( !mOgrLayer )
     return;
 
@@ -1088,6 +1089,7 @@ void QgsOgrProvider::loadFields()
     );
     mDefaultValues.insert( 0, tr( "Autogenerate" ) );
     createdFields++;
+    mPrimaryKeyAttrs << 0;
   }
 
   for ( int i = 0; i < fdef.GetFieldCount(); ++i )
