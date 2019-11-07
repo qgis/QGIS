@@ -33,7 +33,7 @@
 #include "qgsdistancearea.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgspathresolver.h"
-#include "symbology/qgssymbollayerreference.h"
+#include "qgssymbollayerreference.h"
 
 class QPainter;
 class QgsAbstractGeometry;
