@@ -21,7 +21,7 @@
 #include "qgis_core.h"
 #include "qgsmapunitscale.h"
 #include "qgsunittypes.h"
-#include "symbology/qgssymbollayerreference.h"
+#include "qgssymbollayerreference.h"
 
 #include <QSharedData>
 #include <QPainter>

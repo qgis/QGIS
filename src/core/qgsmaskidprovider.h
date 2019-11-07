@@ -18,7 +18,7 @@
 
 #include <QList>
 #include <QSet>
-#include "symbology/qgssymbollayerreference.h"
+#include "qgssymbollayerreference.h"
 
 /**
  * \ingroup core
