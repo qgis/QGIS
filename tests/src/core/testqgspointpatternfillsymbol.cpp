@@ -56,6 +56,7 @@ class TestQgsPointPatternFillSymbol : public QObject
     void pointPatternFillSymbol();
     void offsettedPointPatternFillSymbol();
     void dataDefinedSubSymbol();
+    void zeroSpacedPointPatternFillSymbol();
 
   private:
     bool mTestHasError =  false ;
@@ -183,6 +184,25 @@ void TestQgsPointPatternFillSymbol::dataDefinedSubSymbol()
   pointSymbol->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(\"Name\" ='Lake','#ff0000','#ff00ff')" ) ) );
   mPointPatternFill->setSubSymbol( pointSymbol );
   QVERIFY( imageCheck( "datadefined_subsymbol" ) );
+}
+
+void TestQgsPointPatternFillSymbol::zeroSpacedPointPatternFillSymbol()
+{
+  mReport += QLatin1String( "<h2>Zero distance point pattern fill symbol renderer test</h2>\n" );
+
+  QgsStringMap properties;
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
+  properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
+  properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+
+  mPointPatternFill->setSubSymbol( pointSymbol );
+  mPointPatternFill->setDistanceX( 0 );
+  mPointPatternFill->setDistanceY( 15 );
+  mPointPatternFill->setOffsetX( 4 );
+  mPointPatternFill->setOffsetY( 4 );
+  QVERIFY( imageCheck( "pointfill_zero_space" ) );
 }
 
 //
