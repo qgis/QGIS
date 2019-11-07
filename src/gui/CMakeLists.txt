@@ -247,7 +247,6 @@ SET(QGIS_GUI_SRCS
   qgsbrowsertreeview.cpp
   qgsbrowserguimodel.cpp
   qgsbrowserdockwidget.cpp
-  qgsbrowserdockwidget_p.cpp
   qgsbusyindicatordialog.cpp
   qgscharacterselectordialog.cpp
   qgscheckablecombobox.cpp
@@ -860,6 +859,7 @@ SET(QGIS_GUI_HDRS
 )
 
 SET(QGIS_GUI_PRIVATE_HDRS
+  qgsbrowserdockwidget_p.cpp
   qgswidgetstatehelper_p.h
 )
 
