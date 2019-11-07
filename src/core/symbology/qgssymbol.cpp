@@ -520,8 +520,7 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
     context->setExpressionContext( expContext );
   }
 
-  const auto constMLayers = mLayers;
-  for ( QgsSymbolLayer *layer : constMLayers )
+  for ( QgsSymbolLayer *layer : qgis::as_const( mLayers ) )
   {
     if ( !layer->enabled() )
       continue;
