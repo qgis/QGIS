@@ -785,6 +785,7 @@ SET(QGIS_CORE_HDRS
   qgsmaptopixelgeometrysimplifier.h
   qgsmapunitscale.h
   qgsmargins.h
+  qgsmaskidprovider.h
   qgsmessagelog.h
   qgsmessageoutput.h
   qgsmimedatautils.h
