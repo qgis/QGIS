@@ -563,24 +563,17 @@ QgsCoordinateReferenceSystem QgsServerApiUtils::parseCrs( const QString &bboxCrs
   }
 }
 
-const QVector<QgsMapLayer *> QgsServerApiUtils::publishedWfsLayers( const QgsProject *project )
+const QVector<QgsVectorLayer *> QgsServerApiUtils::publishedWfsLayers( const QgsServerApiContext &context )
 {
-  const QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );
-  const QStringList wfstUpdateLayersId = QgsServerProjectUtils::wfstUpdateLayerIds( *project );
-  const QStringList wfstInsertLayersId = QgsServerProjectUtils::wfstInsertLayerIds( *project );
-  const QStringList wfstDeleteLayersId = QgsServerProjectUtils::wfstDeleteLayerIds( *project );
-  QVector<QgsMapLayer *> result;
-  const auto constLayers { project->mapLayers() };
-  for ( auto it = project->mapLayers().constBegin(); it !=  project->mapLayers().constEnd(); it++ )
-  {
-    if ( wfstUpdateLayersId.contains( it.value()->id() ) ||
-         wfstInsertLayersId.contains( it.value()->id() ) ||
-         wfstDeleteLayersId.contains( it.value()->id() ) )
-    {
-      result.push_back( it.value() );
-    }
+  return publishedWfsLayers< QgsVectorLayer * >( context );
+}
 
-  }
+const QVector<QgsMapLayer *> QgsServerApiUtils::editableWfsLayers( const QgsServerApiContext &context )
+{
+  QVector<QgsMapLayer *> result;
+  const QStringList wfstUpdateLayerIds = QgsServerProjectUtils::wfstUpdateLayerIds( *context.project() );
+  const QStringList wfstInsertLayerIds = QgsServerProjectUtils::wfstInsertLayerIds( *context.project() );
+  const QStringList wfstDeleteLayerIds = QgsServerProjectUtils::wfstDeleteLayerIds( *context.project() );
   return result;
 }
 

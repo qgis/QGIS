@@ -16,6 +16,7 @@ __revision__ = '$Format:%H$'
 import os
 import json
 import re
+import shutil
 
 # Deterministic XML
 os.environ['QT_HASH_SEED'] = '1'
@@ -32,7 +33,7 @@ from qgis.server import (
     QgsServerApiUtils,
     QgsServiceRegistry
 )
-from qgis.core import QgsProject, QgsRectangle, QgsVectorLayerServerProperties
+from qgis.core import QgsProject, QgsRectangle, QgsVectorLayerServerProperties, QgsFeatureRequest
 from qgis.PyQt import QtCore
 
 from qgis.testing import unittest
@@ -520,17 +521,28 @@ class QgsServerAPITest(QgsServerAPITestBase):
 
     def test_wfs3_collection_items_post(self):
         """Test WFS3 API items POST"""
+
+        tmpDir = QtCore.QTemporaryDir()
+        shutil.copy(unitTestDataPath('qgis_server') + '/test_project_api_editing.qgs', tmpDir.path() + '/test_project_api_editing.qgs')
+        shutil.copy(unitTestDataPath('qgis_server') + '/test_project_api_editing.gpkg', tmpDir.path() + '/test_project_api_editing.gpkg')
+
         project = QgsProject()
-        project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
+        project.read(tmpDir.path() + '/test_project_api_editing.qgs')
+
+        # Project layers with different permissions
+        insert_layer = r'test%20layer%20èé%203857%20published%20insert'
+        update_layer = r'test%20layer%20èé%203857%20published%20update'
+        delete_layer = r'test%20layer%20èé%203857%20published%20delete'
+        unpublished_layer = r'test%20layer%203857%20èé%20unpublished'
+        hidden_text_1_layer = r'test%20layer%203857%20èé%20unpublished'
 
         # Invalid request
         data = b'not json!'
-        request = QgsBufferServerRequest(
-            'http://server.qgis.org/wfs3/collections/testlayer%20èé/items',
-            QgsBufferServerRequest.PostMethod,
-            {'Content-Type': 'application/geo+json'},
-            data
-        )
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items' % insert_layer,
+                                         QgsBufferServerRequest.PostMethod,
+                                         {'Content-Type': 'application/geo+json'},
+                                         data
+                                         )
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, project)
         self.assertEqual(response.statusCode(), 400)
@@ -539,32 +551,46 @@ class QgsServerAPITest(QgsServerAPITestBase):
         # Valid request
         data = """{
         "geometry": {
-            "coordinates": [
-            8.111,
-            44.55
-            ],
-            "type": "Point"
+            "coordinates": [[
+            7.247,
+            44.814
+            ]],
+            "type": "MultiPoint"
         },
         "properties": {
-            "id": 123,
-            "name": "one + 123",
-            "utf8nameè": "one èé + 123"
+            "text_1": "Text 1",
+            "text_2": "Text 2",
+            "int_1": 123,
+            "float_1": 12345.678,
+            "datetime_1": "2019-11-07T12:34:56",
+            "date_1": "2019-11-07",
+            "blob_1": "dGVzdA==",
+            "bool_1": true
         },
         "type": "Feature"
         }""".encode('utf8')
-        request = QgsBufferServerRequest(
-            'http://server.qgis.org/wfs3/collections/testlayer%20èé/items',
-            QgsBufferServerRequest.PostMethod,
-            {'Content-Type': 'application/geo+json'},
-            data
-        )
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items' % insert_layer,
+                                         QgsBufferServerRequest.PostMethod,
+                                         {'Content-Type': 'application/geo+json'},
+                                         data
+                                         )
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, project)
         self.assertEqual(response.statusCode(), 201)
         self.assertEqual(response.body(), '"string"')
-        # Get last fid
-        fid = max(project.mapLayersByName('testlayer èé')[0].allFeatureIds())
-        self.assertEqual(response.headers()['Location'], 'http://server.qgis.org/wfs3/collections/testlayer èé/items/%s' % fid)
+        # Get last feature
+        req = QgsFeatureRequest()
+        order_by_clause = QgsFeatureRequest.OrderByClause('$id', False)
+        req.setOrderBy(QgsFeatureRequest.OrderBy([order_by_clause]))
+        feature = next(project.mapLayersByName('test layer èé 3857 published insert')[0].getFeatures(req))
+        self.assertEqual(response.headers()['Location'], 'http://server.qgis.org/wfs3/collections/%s/items/%s' % (insert_layer, feature.id()))
+        self.assertEqual(feature.attribute('text_1'), 'Text 1')
+        self.assertEqual(feature.attribute('text_2'), 'Text 2')
+        self.assertEqual(feature.attribute('int_1'), 123)
+        self.assertEqual(feature.attribute('float_1'), 12345.678)
+        self.assertEqual(feature.attribute('bool_1'), True)
+        self.assertEqual(bytes(feature.attribute('blob_1')), b"test")
+        self.assertEqual(re.sub(r'\.\d+', '', feature.geometry().asWkt().upper()), 'MULTIPOINT ((806732 5592286))')
 
     def test_wfs3_field_filters(self):
         """Test field filters"""

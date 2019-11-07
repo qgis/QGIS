@@ -103,23 +103,17 @@ intervals describes the temporal extent.
 Parses the CRS URI ``bboxCrs`` (example: "http://www.opengis.net/def/crs/OGC/1.3/CRS84") into a QGIS CRS object
 %End
 
-    static const QVector<QgsMapLayer *> publishedWfsLayers( const QgsProject *project );
+    static const QVector<QgsVectorLayer *> publishedWfsLayers( const QgsServerApiContext &context );
 %Docstring
-Returns the list of layers accessible to the service for a given ``project``.
+Returns the list of layers accessible to the service for a given ``context``.
 
 This method takes into account the ACL restrictions provided by QGIS Server Access Control plugins.
-
-.. note::
-
-   project must not be NULL
 %End
 
 
-    static const QVector<QgsMapLayer *> editableWfsLayers( const QgsProject *project, QgsServerRequest::Method &method );
+    static const QVector<QgsMapLayer *> editableWfsLayers( const QgsServerApiContext &context );
 %Docstring
-Returns the list of layers accessible to the service in edit mode for a given ``project``.
-
-:param method: represents the operation to be performed (POST, PUT, PATCH, DELETE)
+Returns the list of layers accessible to the service in edit mode for a given ``context``.
 
 This method takes into account the ACL restrictions provided by QGIS Server Access Control plugins.
 
