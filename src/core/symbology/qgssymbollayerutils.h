@@ -719,6 +719,11 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static QString getSvgParametricPath( const QString &basePath, const QColor &fillColor, const QColor &strokeColor, double strokeWidth );
 
+    /**
+     * Converts a set of symbol layer id to a set of pointers to actual symbol layers carried by the feature renderer.
+     * \since QGIS 3.12
+     */
+    static QSet<const QgsSymbolLayer *> toSymbolLayerPointers( QgsFeatureRenderer *renderer, const QSet<QgsSymbolLayerId> &symbolLayerIds );
 };
 
 class QPolygonF;

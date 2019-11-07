@@ -364,6 +364,11 @@ QgsSymbolLayer *QgsSymbol::symbolLayer( int layer )
   return mLayers.value( layer );
 }
 
+const QgsSymbolLayer *QgsSymbol::symbolLayer( int layer ) const
+{
+  return mLayers.value( layer );
+}
+
 bool QgsSymbol::insertSymbolLayer( int index, QgsSymbolLayer *layer )
 {
   if ( index < 0 || index > mLayers.count() ) // can be added also after the last index
@@ -430,6 +435,8 @@ void QgsSymbol::startRender( QgsRenderContext &context, const QgsFields &fields 
 
   mSymbolRenderContext.reset( new QgsSymbolRenderContext( context, QgsUnitTypes::RenderUnknownUnit, mOpacity, false, mRenderHints, nullptr, fields ) );
 
+  // Why do we need a copy here ? Is it to make sure the symbol layer rendering does not mess with the symbol render context ?
+  // Or is there another profound reason ?
   QgsSymbolRenderContext symbolContext( context, QgsUnitTypes::RenderUnknownUnit, mOpacity, false, mRenderHints, nullptr, fields );
 
   std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::updateSymbolScope( this, new QgsExpressionContextScope() ) );
@@ -438,7 +445,7 @@ void QgsSymbol::startRender( QgsRenderContext &context, const QgsFields &fields 
   const auto constMLayers = mLayers;
   for ( QgsSymbolLayer *layer : constMLayers )
   {
-    if ( !layer->enabled() )
+    if ( !layer->enabled() || !context.isSymbolLayerEnabled( layer ) )
       continue;
 
     layer->prepareExpressions( symbolContext );
@@ -457,7 +464,7 @@ void QgsSymbol::stopRender( QgsRenderContext &context )
     const auto constMLayers = mLayers;
     for ( QgsSymbolLayer *layer : constMLayers )
     {
-      if ( !layer->enabled() )
+      if ( !layer->enabled()  || !context.isSymbolLayerEnabled( layer ) )
         continue;
 
       layer->stopRender( *mSymbolRenderContext );
@@ -523,7 +530,7 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
   const auto constMLayers = mLayers;
   for ( QgsSymbolLayer *layer : constMLayers )
   {
-    if ( !layer->enabled() )
+    if ( !layer->enabled()  || ( customContext && !customContext->isSymbolLayerEnabled( layer ) ) )
       continue;
 
     if ( mType == Fill && layer->type() == Line )
@@ -610,6 +617,7 @@ QImage QgsSymbol::bigSymbolPreviewImage( QgsExpressionContext *expressionContext
   if ( expressionContext )
     context.setExpressionContext( *expressionContext );
 
+  context.setIsGuiPreview( true );
   startRender( context );
 
   if ( mType == QgsSymbol::Line )
@@ -1705,7 +1713,7 @@ void QgsMarkerSymbol::renderPoint( QPointF point, const QgsFeature *f, QgsRender
   if ( layerIdx != -1 )
   {
     QgsSymbolLayer *symbolLayer = mLayers.value( layerIdx );
-    if ( symbolLayer && symbolLayer->enabled() )
+    if ( symbolLayer && symbolLayer->enabled() && context.isSymbolLayerEnabled( symbolLayer ) )
     {
       if ( symbolLayer->type() == QgsSymbol::Marker )
       {
@@ -1724,7 +1732,7 @@ void QgsMarkerSymbol::renderPoint( QPointF point, const QgsFeature *f, QgsRender
     if ( context.renderingStopped() )
       break;
 
-    if ( !symbolLayer->enabled() )
+    if ( !symbolLayer->enabled() || !context.isSymbolLayerEnabled( symbolLayer ) )
       continue;
 
     if ( symbolLayer->type() == QgsSymbol::Marker )
@@ -1944,7 +1952,7 @@ void QgsLineSymbol::renderPolyline( const QPolygonF &points, const QgsFeature *f
   if ( layerIdx != -1 )
   {
     QgsSymbolLayer *symbolLayer = mLayers.value( layerIdx );
-    if ( symbolLayer && symbolLayer->enabled() )
+    if ( symbolLayer && symbolLayer->enabled() && context.isSymbolLayerEnabled( symbolLayer ) )
     {
       if ( symbolLayer->type() == QgsSymbol::Line )
       {
@@ -1963,7 +1971,7 @@ void QgsLineSymbol::renderPolyline( const QPolygonF &points, const QgsFeature *f
     if ( context.renderingStopped() )
       break;
 
-    if ( !symbolLayer->enabled() )
+    if ( !symbolLayer->enabled() || !context.isSymbolLayerEnabled( symbolLayer ) )
       continue;
 
     if ( symbolLayer->type() == QgsSymbol::Line )
@@ -2032,7 +2040,7 @@ void QgsFillSymbol::renderPolygon( const QPolygonF &points, QList<QPolygonF> *ri
   if ( layerIdx != -1 )
   {
     QgsSymbolLayer *symbolLayer = mLayers.value( layerIdx );
-    if ( symbolLayer && symbolLayer->enabled() )
+    if ( symbolLayer && symbolLayer->enabled() && context.isSymbolLayerEnabled( symbolLayer ) )
     {
       if ( symbolLayer->type() == Fill || symbolLayer->type() == Line )
         renderPolygonUsingLayer( symbolLayer, points, rings, symbolContext );
@@ -2048,7 +2056,7 @@ void QgsFillSymbol::renderPolygon( const QPolygonF &points, QList<QPolygonF> *ri
     if ( context.renderingStopped() )
       break;
 
-    if ( !symbolLayer->enabled() )
+    if ( !symbolLayer->enabled() || !context.isSymbolLayerEnabled( symbolLayer ) )
       continue;
 
     if ( symbolLayer->type() == Fill || symbolLayer->type() == Line )

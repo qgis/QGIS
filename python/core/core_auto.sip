@@ -483,6 +483,7 @@
 %Include auto_generated/symbology/qgssvgcache.sip
 %Include auto_generated/symbology/qgssymbol.sip
 %Include auto_generated/symbology/qgssymbollayer.sip
+%Include auto_generated/symbology/qgssymbollayerreference.sip
 %Include auto_generated/symbology/qgssymbollayerregistry.sip
 %Include auto_generated/symbology/qgssymbollayerutils.sip
 %Include auto_generated/symbology/qgsvectorfieldsymbollayer.sip
@@ -491,4 +492,6 @@
 %Include auto_generated/validity/qgsvaliditycheckregistry.sip
 %Include auto_generated/gps/qgsqtlocationconnection.sip
 %Include auto_generated/gps/qgsgpsconnectionregistry.sip
+%Include auto_generated/symbology/qgsmasksymbollayer.sip
+%Include auto_generated/qgsmaskidprovider.sip
 %Include auto_generated/qgsuserprofile.sip

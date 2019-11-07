@@ -24,6 +24,7 @@
 #include "qgsfields.h"
 #include "qgsrendercontext.h"
 #include "qgsproperty.h"
+#include "qgssymbollayerreference.h"
 
 class QColor;
 class QImage;
@@ -139,6 +140,14 @@ class CORE_EXPORT QgsSymbol
      * \since QGIS 2.7
      */
     QgsSymbolLayer *symbolLayer( int layer );
+
+    /**
+     * Returns the symbol layer at the specified index, const variant
+     * \see symbolLayers
+     * \see symbolLayerCount
+     * \since QGIS 3.12
+     */
+    const QgsSymbolLayer *symbolLayer( int layer ) const;
 #else
 
     /**

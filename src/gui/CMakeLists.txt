@@ -26,6 +26,7 @@ SET(QGIS_GUI_SRCS
   symbology/qgsheatmaprendererwidget.cpp
   symbology/qgsinvertedpolygonrendererwidget.cpp
   symbology/qgslayerpropertieswidget.cpp
+  symbology/qgsmasksymbollayerwidget.cpp
   symbology/qgsnullsymbolrendererwidget.cpp
   symbology/qgspenstylecombobox.cpp
   symbology/qgspointclusterrendererwidget.cpp
@@ -834,6 +835,7 @@ SET(QGIS_GUI_HDRS
   symbology/qgsinvertedpolygonrendererwidget.h
   symbology/qgslayerpropertieswidget.h
   symbology/qgsnullsymbolrendererwidget.h
+  symbology/qgsmasksymbollayerwidget.h
   symbology/qgspenstylecombobox.h
   symbology/qgspointclusterrendererwidget.h
   symbology/qgspointdisplacementrendererwidget.h

@@ -149,6 +149,15 @@
          </item>
          <item>
           <property name="text">
+           <string>Masks</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/propertyicons/labelmask.svg</normaloff>:/images/themes/default/propertyicons/labelmask.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Diagrams</string>
           </property>
           <property name="toolTip">
@@ -788,6 +797,38 @@ border-radius: 2px;</string>
            </property>
            <item>
             <widget class="QFrame" name="labelingFrame">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Plain</enum>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="mOptsPage_Masks">
+          <layout class="QVBoxLayout" name="verticalLayout_122">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QFrame" name="mMaskingFrame">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                <horstretch>0</horstretch>
@@ -2596,6 +2637,24 @@ border-radius: 2px;</string>
    <class>QgsFieldExpressionWidget</class>
    <extends>QWidget</extends>
    <header>qgsfieldexpressionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMaskSourceSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsmasksourceselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSymbolLayerSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgssymbollayerselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

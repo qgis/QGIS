@@ -74,6 +74,8 @@ class CORE_EXPORT QgsSymbolLayer
           sipType = sipType_QgsRasterMarkerSymbolLayer;
         else if ( sipCpp->layerType() == "VectorField" )
           sipType = sipType_QgsVectorFieldSymbolLayer;
+        else if ( sipCpp->layerType() == "MaskMarker" )
+          sipType = sipType_QgsMaskMarkerSymbolLayer;
         else
           sipType = sipType_QgsMarkerSymbolLayer;
         break;
@@ -495,6 +497,13 @@ class CORE_EXPORT QgsSymbolLayer
      * \since QGIS 3.4.5
      */
     virtual bool hasDataDefinedProperties() const;
+
+    /**
+     * Returns masks defined by this symbol layer.
+     * This is a list of symbol layers of other layers that should be occluded.
+     * \since QGIS 3.12
+     */
+    virtual QgsSymbolLayerReferenceList masks() const;
 
   protected:
 

@@ -25,6 +25,7 @@
 #include "qgsunittypes.h"
 #include "qgsapplication.h"
 #include "qgspainteffect.h"
+#include "qgssymbollayerreference.h"
 #include <QSharedData>
 #include <QPainter>
 
@@ -194,6 +195,41 @@ class QgsTextShadowSettingsPrivate : public QSharedData
     QColor color;
     double opacity = 0.7;
     QPainter::CompositionMode blendMode = QPainter::CompositionMode_Multiply;
+};
+
+
+class QgsTextMaskSettingsPrivate : public QSharedData
+{
+  public:
+
+    QgsTextMaskSettingsPrivate()
+    {
+
+    }
+
+    QgsTextMaskSettingsPrivate( const QgsTextMaskSettingsPrivate &other )
+      : QSharedData( other )
+      , enabled( other.enabled )
+      , type( other.type )
+      , size( other.size )
+      , sizeUnit( other.sizeUnit )
+      , sizeMapUnitScale( other.sizeMapUnitScale )
+      , joinStyle( other.joinStyle )
+      , opacity( other.opacity )
+      , paintEffect( other.paintEffect ? other.paintEffect->clone() : nullptr )
+      , maskedSymbolLayers( other.maskedSymbolLayers )
+    {
+    }
+
+    bool enabled = false;
+    QgsTextMaskSettings::MaskType type = QgsTextMaskSettings::MaskBuffer;
+    double size = 1.5;
+    QgsUnitTypes::RenderUnit sizeUnit = QgsUnitTypes::RenderMillimeters;
+    QgsMapUnitScale sizeMapUnitScale;
+    Qt::PenJoinStyle joinStyle = Qt::RoundJoin;
+    double opacity = 1.0;
+    std::unique_ptr< QgsPaintEffect > paintEffect;
+    QgsSymbolLayerReferenceList maskedSymbolLayers;
 };
 
 

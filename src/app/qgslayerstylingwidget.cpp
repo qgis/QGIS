@@ -22,6 +22,7 @@
 
 #include "qgsapplication.h"
 #include "qgslabelingwidget.h"
+#include "qgsmaskingwidget.h"
 #include "qgslayerstylingwidget.h"
 #include "qgsrastertransparencywidget.h"
 #include "qgsrendererpropertiesdialog.h"
@@ -175,6 +176,10 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
       labelItem->setData( Qt::UserRole, VectorLabeling );
       labelItem->setToolTip( tr( "Labels" ) );
       mOptionsListWidget->addItem( labelItem );
+      QListWidgetItem *maskItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/labelmask.svg" ) ), QString() );
+      maskItem->setData( Qt::UserRole, VectorLabeling );
+      maskItem->setToolTip( tr( "Masks" ) );
+      mOptionsListWidget->addItem( maskItem );
 
 #ifdef HAVE_3D
       QListWidgetItem *symbol3DItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "3d.svg" ) ), QString() );
@@ -279,6 +284,12 @@ void QgsLayerStylingWidget::apply()
     styleWasChanged = true;
     undoName = QStringLiteral( "Label Change" );
   }
+  if ( QgsMaskingWidget *widget = qobject_cast<QgsMaskingWidget *>( current ) )
+  {
+    widget->apply();
+    styleWasChanged = true;
+    undoName = QStringLiteral( "Mask Change" );
+  }
   if ( QgsPanelWidgetWrapper *wrapper = qobject_cast<QgsPanelWidgetWrapper *>( current ) )
   {
     if ( QgsRendererPropertiesDialog *widget = qobject_cast<QgsRendererPropertiesDialog *>( wrapper->widget() ) )
@@ -359,6 +370,10 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
     if ( QgsLabelingWidget *widget = qobject_cast<QgsLabelingWidget *>( current ) )
     {
       mLabelingWidget = widget;
+    }
+    else if ( QgsMaskingWidget *widget = qobject_cast<QgsMaskingWidget *>( current ) )
+    {
+      mMaskingWidget = widget;
     }
     else if ( QgsUndoWidget *widget = qobject_cast<QgsUndoWidget *>( current ) )
     {
@@ -441,8 +456,19 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             mWidgetStack->setMainPanel( mLabelingWidget );
             break;
           }
+          case 2: // Masks
+          {
+            if ( !mMaskingWidget )
+            {
+              mMaskingWidget = new QgsMaskingWidget( mWidgetStack );
+              connect( mMaskingWidget, &QgsMaskingWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+            }
+            mMaskingWidget->setLayer( vlayer );
+            mWidgetStack->setMainPanel( mMaskingWidget );
+            break;
+          }
 #ifdef HAVE_3D
-          case 2:  // 3D View
+          case 3:  // 3D View
           {
             if ( !mVector3DWidget )
             {

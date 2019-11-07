@@ -71,6 +71,7 @@
 #include "qgsanalysis.h"
 #include "qgssymbolwidgetcontext.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsmaskingwidget.h"
 
 #include "layertree/qgslayertreelayer.h"
 #include "qgslayertree.h"
@@ -184,11 +185,21 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     connect( labelingDialog, &QgsLabelingWidget::auxiliaryFieldCreated, this, [ = ] { updateAuxiliaryStoragePage(); } );
     layout->addWidget( labelingDialog );
     labelingFrame->setLayout( layout );
+
+    // Create the masking dialog tab
+    layout = new QVBoxLayout( mMaskingFrame );
+    layout->setMargin( 0 );
+    mMaskingWidget = new QgsMaskingWidget( mMaskingFrame );
+    mMaskingWidget->setLayer( mLayer );
+    mMaskingWidget->layout()->setContentsMargins( -1, 0, -1, 0 );
+    layout->addWidget( mMaskingWidget );
+    mMaskingFrame->setLayout( layout );
   }
   else
   {
     labelingDialog = nullptr;
     mOptsPage_Labels->setEnabled( false ); // disable labeling item
+    mOptsPage_Masks->setEnabled( false ); // disable masking item
     mGeometryGroupBox->setEnabled( false );
     mGeometryGroupBox->setVisible( false );
   }
@@ -506,6 +517,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mOptsPage_Source->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#source-properties" ) );
   mOptsPage_Style->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#symbology-properties" ) );
   mOptsPage_Labels->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#labels-properties" ) );
+  mOptsPage_Masks->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#masks-properties" ) );
   mOptsPage_Diagrams->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#diagrams-properties" ) );
   mOptsPage_SourceFields->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#source-fields-properties" ) );
   mOptsPage_AttributesForm->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#attributes-form-properties" ) );
