@@ -1411,12 +1411,13 @@ void QgsVertexTool::showVertexEditor()  //#spellok
 
 void QgsVertexTool::cleanupVertexEditor()
 {
-  mLockedFeature.reset();
-  // do not delete immediately because vertex editor
-  // can be still used in the qt event loop
-  mVertexEditor->deleteLater();
-
-  updateLockedFeatureVertices();
+  if ( mVertexEditor )
+  {
+    cleanupLockedFeature();
+    // do not delete immediately because vertex editor
+    // can be still used in the qt event loop
+    mVertexEditor->deleteLater();
+  }
 }
 
 void QgsVertexTool::cleanupLockedFeature()
