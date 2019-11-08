@@ -74,6 +74,7 @@ RUN  apt-get update \
     python3-nose2 \
     python3-pip \
     python3-psycopg2 \
+    python3-pyproj \
     python3-pyqt5 \
     python3-pyqt5.qsci \
     python3-pyqt5.qtsql \
