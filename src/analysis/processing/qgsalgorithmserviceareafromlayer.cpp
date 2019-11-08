@@ -39,7 +39,7 @@ QStringList QgsServiceAreaFromLayerAlgorithm::tags() const
 
 QString QgsServiceAreaFromLayerAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm computes service areas from the set of start points defined by point layer using travel time or distance." );
+  return QObject::tr( "This algorithm creates a new vector with all the edges or parts of edges of a network line layer that can be reached within a distance or a time, starting from features of a point layer. The distance and the time (both referred to as \"travel cost\") must be specified respectively in the network layer units or in seconds." );
 }
 
 QgsServiceAreaFromLayerAlgorithm *QgsServiceAreaFromLayerAlgorithm::createInstance() const
