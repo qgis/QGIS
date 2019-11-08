@@ -25,6 +25,11 @@ QgsBilinearRasterResampler *QgsBilinearRasterResampler::clone() const
   return new QgsBilinearRasterResampler();
 }
 
+int QgsBilinearRasterResampler::tileBufferPixels() const
+{
+  return 1;
+}
+
 Q_NOWARN_DEPRECATED_PUSH
 void QgsBilinearRasterResampler::resample( const QImage &srcImage, QImage &dstImage )
 {
