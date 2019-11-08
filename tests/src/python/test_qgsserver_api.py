@@ -534,7 +534,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         update_layer = r'test%20layer%20èé%203857%20published%20update'
         delete_layer = r'test%20layer%20èé%203857%20published%20delete'
         unpublished_layer = r'test%20layer%203857%20èé%20unpublished'
-        hidden_text_1_layer = r'test%20layer%203857%20èé%20unpublished'
+        hidden_text_2_layer = r'test%20layer%20èé%203857%20published%20hidden%20text_2'
 
         # Invalid request
         data = b'not json!'
@@ -607,7 +607,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         update_layer = r'test%20layer%20èé%203857%20published%20update'
         delete_layer = r'test%20layer%20èé%203857%20published%20delete'
         unpublished_layer = r'test%20layer%203857%20èé%20unpublished'
-        hidden_text_1_layer = r'test%20layer%203857%20èé%20unpublished'
+        hidden_text_2_layer = r'test%20layer%20èé%203857%20published%20hidden%20text_2'
 
         # Invalid request
         data = b'not json!'
@@ -679,6 +679,109 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.assertEqual(feature.attribute('bool_1'), True)
         self.assertEqual(bytes(feature.attribute('blob_1')), b"test")
         self.assertEqual(re.sub(r'\.\d+', '', feature.geometry().asWkt().upper()), 'MULTIPOINT ((806732 5592286))')
+
+        # Test with partial and unordered properties
+        data = """{
+        "geometry": {
+            "coordinates": [[
+            8.247,
+            45.814
+            ]],
+            "type": "MultiPoint"
+        },
+        "properties": {
+            "bool_1": false,
+            "int_1": 1234,
+            "text_2": "Text 2-bis",
+            "text_1": "Text 1-bis"
+        },
+        "type": "Feature"
+        }""".encode('utf8')
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % update_layer,
+                                         QgsBufferServerRequest.PutMethod,
+                                         {'Content-Type': 'application/geo+json'},
+                                         data
+                                         )
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 200)
+        j = json.loads(bytes(response.body()).decode('utf8'))
+        self.assertEqual(j['properties']['text_1'], 'Text 1-bis')
+        self.assertEqual(j['properties']['text_2'], 'Text 2-bis')
+        self.assertEqual(j['properties']['int_1'], 1234)
+        self.assertEqual(j['properties']['float_1'], 12345.678)
+        self.assertEqual(j['properties']['bool_1'], False)
+        self.assertEqual(j['properties']['blob_1'], "dGVzdA==")
+        self.assertEqual(j['geometry']['coordinates'], [[8.247, 45.814]])
+
+        feature = project.mapLayersByName('test layer èé 3857 published update')[0].getFeature(1)
+        self.assertEqual(feature.attribute('text_1'), 'Text 1-bis')
+        self.assertEqual(feature.attribute('text_2'), 'Text 2-bis')
+        self.assertEqual(feature.attribute('int_1'), 1234)
+        self.assertEqual(feature.attribute('float_1'), 12345.678)
+        self.assertEqual(feature.attribute('bool_1'), False)
+        self.assertEqual(bytes(feature.attribute('blob_1')), b"test")
+        self.assertEqual(re.sub(r'\.\d+', '', feature.geometry().asWkt().upper()), 'MULTIPOINT ((918051 5750592))')
+
+        # Try to update a forbidden (unpublished) field
+        data = """{
+        "geometry": {
+            "coordinates": [[
+            8.247,
+            45.814
+            ]],
+            "type": "MultiPoint"
+        },
+        "properties": {
+            "text_2": "Text 2-tris"
+        },
+        "type": "Feature"
+        }""".encode('utf8')
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % hidden_text_2_layer,
+                                         QgsBufferServerRequest.PutMethod,
+                                         {'Content-Type': 'application/geo+json'},
+                                         data
+                                         )
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 403)
+
+    def test_wfs3_collection_items_delete(self):
+        """Test WFS3 API items DELETE"""
+
+        tmpDir = QtCore.QTemporaryDir()
+        shutil.copy(unitTestDataPath('qgis_server') + '/test_project_api_editing.qgs', tmpDir.path() + '/test_project_api_editing.qgs')
+        shutil.copy(unitTestDataPath('qgis_server') + '/test_project_api_editing.gpkg', tmpDir.path() + '/test_project_api_editing.gpkg')
+
+        project = QgsProject()
+        project.read(tmpDir.path() + '/test_project_api_editing.qgs')
+
+        # Project layers with different permissions
+        insert_layer = r'test%20layer%20èé%203857%20published%20insert'
+        update_layer = r'test%20layer%20èé%203857%20published%20update'
+        delete_layer = r'test%20layer%20èé%203857%20published%20delete'
+        unpublished_layer = r'test%20layer%203857%20èé%20unpublished'
+        hidden_text_2_layer = r'test%20layer%20èé%203857%20published%20hidden%20text_2'
+
+        # Valid request on unauthorized layer
+        data = b''
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % update_layer,
+                                         QgsBufferServerRequest.DeleteMethod)
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 403)
+
+        # Valid request on authorized layer
+        data = b''
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % delete_layer,
+                                         QgsBufferServerRequest.DeleteMethod)
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 200)
+
+        # Check that it was really deleted
+        layer = project.mapLayersByName('test layer èé 3857 published delete')[0]
+        self.assertFalse(1 in layer.allFeatureIds())
 
     def test_wfs3_field_filters(self):
         """Test field filters"""

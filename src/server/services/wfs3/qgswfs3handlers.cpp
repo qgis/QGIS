@@ -702,7 +702,7 @@ json QgsWfs3DescribeCollectionHandler::schema( const QgsServerApiContext &contex
   json data;
   Q_ASSERT( context.project() );
 
-  const auto layers { QgsServerApiUtils::publishedWfsLayers<QgsVectorLayer *>( context ) };
+  const QVector<QgsVectorLayer *> layers { QgsServerApiUtils::publishedWfsLayers<QgsVectorLayer *>( context ) };
   // Construct the context with collection id
   for ( const auto &mapLayer : layers )
   {
@@ -969,7 +969,7 @@ json QgsWfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context 
     QgsServerApiContext layerContext( context );
     QgsBufferServerRequest layerRequest( path );
     layerContext.setRequest( &layerRequest );
-    const auto requestParameters { parameters( layerContext ) };
+    const QList<QgsServerQueryStringParameter> requestParameters { parameters( layerContext ) };
     for ( const auto &p : requestParameters )
     {
       if ( ! componentNames.contains( p.name() ) )
@@ -1383,7 +1383,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
         const QgsFeatureList features = QgsOgrUtils::stringToFeatureList( context.request()->data(), mapLayer->fields(), QTextCodec::codecForName( "UTF-8" ) );
         if ( features.isEmpty() )
         {
-          throw QgsServerApiBadRequestException( QStringLiteral( "Posted body contains no feature" ) );
+          throw QgsServerApiBadRequestException( QStringLiteral( "Posted data does not contain any feature" ) );
         }
 
         QgsFeature feat = features.first();
@@ -1410,7 +1410,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
         // Process attributes
         try
         {
-          const auto authorizedFields { publishedFields( mapLayer, context ) };
+          const QgsFields authorizedFields { publishedFields( mapLayer, context ) };
           QStringList authorizedFieldNames;
           for ( const auto &f : authorizedFields )
           {
@@ -1579,8 +1579,11 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
       break;
     }
     // //////////////////////////////////////////////////////////////
-    // Replace feature, use PATCH for partial updates
-    // TODO: factor with POST, that uses mostly the same code
+    // Replace feature, PATCH should be used for partial updates but we allow partial updates here too
+    // because according to the specs PATCH does not allow changes to the geometry.
+    // TODO: factor with items handler POST, that uses mostly the same code
+    // QUESTION: do we want make things easier for clients and also allow POST here?
+    case  QgsServerRequest::Method::PostMethod:
     case  QgsServerRequest::Method::PutMethod:
     {
       // First: check permissions
@@ -1618,7 +1621,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
         const QgsFeatureList features = QgsOgrUtils::stringToFeatureList( context.request()->data(), mapLayer->fields(), QTextCodec::codecForName( "UTF-8" ) );
         if ( features.isEmpty() )
         {
-          throw QgsServerApiBadRequestException( QStringLiteral( "Posted body contains no feature" ) );
+          throw QgsServerApiBadRequestException( QStringLiteral( "Posted data does not contain any feature" ) );
         }
 
         QgsFeature feat = features.first();
@@ -1649,7 +1652,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
         // Process attributes
         try
         {
-          const auto authorizedFields { publishedFields( mapLayer, context ) };
+          const QgsFields authorizedFields { publishedFields( mapLayer, context ) };
           QStringList authorizedFieldNames;
           for ( const auto &f : authorizedFields )
           {
@@ -1664,7 +1667,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
             {
               if ( ! authorizedFieldNames.contains( field.name() ) )
               {
-                throw QgsServerApiBadRequestException( QStringLiteral( "Feature field %1 is not allowed" ).arg( field.name() ) );
+                throw QgsServerApiPermissionDeniedException( QStringLiteral( "Feature field '%1' change is not allowed" ).arg( field.name() ) );
               }
               else
               {
@@ -1679,7 +1682,8 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
             }
             else
             {
-              changedMap.insert( fieldIndex, QVariant( ) );
+              // We don't want to set NULL here, in case of partial updates (not sure yet about what the specs will say about this case)
+              // changedMap.insert( fieldIndex, QVariant( ) );
             }
             fieldIndex++;
           }
@@ -1711,6 +1715,49 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
       }
       break;
     }
+    // //////////////////////////////////////////////////////////////
+    // Delete feature
+    case  QgsServerRequest::Method::DeleteMethod:
+    {
+      // First: check permissions
+      const QStringList wfstUpdateLayerIds = QgsServerProjectUtils::wfstDeleteLayerIds( *context.project() );
+      if ( ! wfstUpdateLayerIds.contains( mapLayer->id() ) ||
+           ! mapLayer->dataProvider()->capabilities().testFlag( QgsVectorDataProvider::Capability::DeleteFeatures ) )
+      {
+        throw QgsServerApiPermissionDeniedException( QStringLiteral( "Features in layer '%1' cannot be deleted" ).arg( mapLayer->name() ) );
+      }
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+
+      // get access controls
+      QgsAccessControl *accessControl = context.serverInterface()->accessControls();
+      if ( accessControl && !accessControl->layerDeletePermission( mapLayer ) )
+      {
+        throw QgsServerApiPermissionDeniedException( QStringLiteral( "No ACL permissions to delete features on layer '%1'" ).arg( mapLayer->name() ) );
+      }
+
+      //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
+      //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually
+      std::unique_ptr< QgsOWSServerFilterRestorer > filterRestorer( new QgsOWSServerFilterRestorer() );
+      if ( accessControl )
+      {
+        QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( accessControl, mapLayer, filterRestorer->originalFilters() );
+      }
+
+#endif
+      if ( ! mapLayer->dataProvider()->deleteFeatures( { feature.id() } ) )
+      {
+        throw QgsServerApiInternalServerError( QStringLiteral( "Error deleting feature '%1' from layer '%2'" )
+                                               .arg( featureId )
+                                               .arg( mapLayer->name() ) );
+      }
+
+      // All good, empty response
+      json data = nullptr;
+      write( data, context );
+
+      break;
+    }
     default:
     {
       throw QgsServerApiNotImplementedException( QStringLiteral( "%1 method is not implemented." )
@@ -1724,7 +1771,7 @@ json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &contex
   json data;
   Q_ASSERT( context.project() );
 
-  const auto layers { QgsServerApiUtils::publishedWfsLayers<QgsVectorLayer *>( context ) };
+  const QVector<QgsVectorLayer *> layers { QgsServerApiUtils::publishedWfsLayers<QgsVectorLayer *>( context ) };
   // Construct the context with collection id
   for ( const auto &mapLayer : layers )
   {
