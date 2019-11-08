@@ -152,7 +152,7 @@ class ProcessingConfig:
             ProcessingConfig.tr('General'),
             ProcessingConfig.DEFAULT_OUTPUT_VECTOR_LAYER_EXT,
             ProcessingConfig.tr('Default output vector layer extension'),
-            'gpkg',
+            QgsVectorFileWriter.supportedFormatExtensions()[0],
             valuetype=Setting.SELECTION,
             options=extensions))
 
