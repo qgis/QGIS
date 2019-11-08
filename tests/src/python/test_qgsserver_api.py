@@ -783,6 +783,111 @@ class QgsServerAPITest(QgsServerAPITestBase):
         layer = project.mapLayersByName('test layer èé 3857 published delete')[0]
         self.assertFalse(1 in layer.allFeatureIds())
 
+    def test_wfs3_collection_items_patch(self):
+        """Test WFS3 API items PATCH"""
+
+        tmpDir = QtCore.QTemporaryDir()
+        shutil.copy(unitTestDataPath('qgis_server') + '/test_project_api_editing.qgs', tmpDir.path() + '/test_project_api_editing.qgs')
+        shutil.copy(unitTestDataPath('qgis_server') + '/test_project_api_editing.gpkg', tmpDir.path() + '/test_project_api_editing.gpkg')
+
+        project = QgsProject()
+        project.read(tmpDir.path() + '/test_project_api_editing.qgs')
+
+        # Project layers with different permissions
+        insert_layer = r'test%20layer%20èé%203857%20published%20insert'
+        update_layer = r'test%20layer%20èé%203857%20published%20update'
+        delete_layer = r'test%20layer%20èé%203857%20published%20delete'
+        unpublished_layer = r'test%20layer%203857%20èé%20unpublished'
+        hidden_text_2_layer = r'test%20layer%20èé%203857%20published%20hidden%20text_2'
+
+        # Invalid request
+        data = b'not json!'
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % update_layer,
+                                         QgsBufferServerRequest.PutMethod,
+                                         {'Content-Type': 'application/json'},
+                                         data
+                                         )
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 400)
+        self.assertTrue('[{"code":"Bad request error","description":"JSON parse error' in bytes(response.body()).decode('utf8'))
+
+        # Invalid request: contains "add"
+        data = b"""
+        {
+            "add": {
+                "a_new_field": 1.234
+            },
+            "modify": {
+                "text_2": "A new text 2"
+            }
+        }
+        """
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % update_layer,
+                                         QgsBufferServerRequest.PatchMethod,
+                                         {'Content-Type': 'application/json'},
+                                         data
+                                         )
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 400)
+        self.assertEqual(bytes(response.body()).decode('utf8'), r'[{"code":"Not implemented error","description":"\"add\" instruction in PATCH method is not implemented"}]')
+
+        # Valid request: change feature with ID 1
+        data = """{
+            "modify": {
+                "text_2": "A new text 2",
+                "blob_1": "dGVzdA=="
+            }
+        }""".encode('utf8')
+
+        # Unauthorized layer
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % insert_layer,
+                                         QgsBufferServerRequest.PatchMethod,
+                                         {'Content-Type': 'application/json'},
+                                         data
+                                         )
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 403)
+
+        # Authorized layer
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % update_layer,
+                                         QgsBufferServerRequest.PatchMethod,
+                                         {'Content-Type': 'application/json'},
+                                         data
+                                         )
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 200, msg=response.body())
+        j = json.loads(bytes(response.body()).decode('utf8'))
+        self.assertEqual(j['properties']['text_1'], 'Torre Pellice 1')
+        self.assertEqual(j['properties']['text_2'], 'A new text 2')
+        self.assertEqual(j['properties']['int_1'], 7)
+        self.assertEqual(j['properties']['float_1'], 1234.567)
+        self.assertEqual(j['properties']['bool_1'], True)
+        self.assertEqual(j['properties']['blob_1'], "dGVzdA==")
+        self.assertEqual(j['geometry']['coordinates'], [[7.227328, 44.820762]])
+
+        feature = project.mapLayersByName('test layer èé 3857 published update')[0].getFeature(1)
+        self.assertEqual(feature.attribute('text_1'), 'Torre Pellice 1')
+        self.assertEqual(feature.attribute('text_2'), 'A new text 2')
+        self.assertEqual(feature.attribute('int_1'), 7)
+        self.assertEqual(feature.attribute('float_1'), 1234.567)
+        self.assertEqual(feature.attribute('bool_1'), True)
+        self.assertEqual(bytes(feature.attribute('blob_1')), b"test")
+        self.assertEqual(re.sub(r'\.\d+', '', feature.geometry().asWkt().upper()), 'MULTIPOINT ((804542 5593348))')
+
+        # Try to update a forbidden (unpublished) field
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % hidden_text_2_layer,
+                                         QgsBufferServerRequest.PatchMethod,
+                                         {'Content-Type': 'application/json'},
+                                         data
+                                         )
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 403)
+
     def test_wfs3_field_filters(self):
         """Test field filters"""
         project = QgsProject()

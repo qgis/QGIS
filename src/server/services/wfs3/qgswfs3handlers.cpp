@@ -1573,7 +1573,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
   {
     // //////////////////////////////////////////////////////////////
     //  Retrieve a single feature
-    case  QgsServerRequest::Method::GetMethod:
+    case QgsServerRequest::Method::GetMethod:
     {
       doGet();
       break;
@@ -1583,8 +1583,8 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
     // because according to the specs PATCH does not allow changes to the geometry.
     // TODO: factor with items handler POST, that uses mostly the same code
     // QUESTION: do we want make things easier for clients and also allow POST here?
-    case  QgsServerRequest::Method::PostMethod:
-    case  QgsServerRequest::Method::PutMethod:
+    case QgsServerRequest::Method::PostMethod:
+    case QgsServerRequest::Method::PutMethod:
     {
       // First: check permissions
       const QStringList wfstUpdateLayerIds = QgsServerProjectUtils::wfstUpdateLayerIds( *context.project() );
@@ -1701,7 +1701,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
 
         if ( ! mapLayer->dataProvider()->changeFeatures( changedAttributes, changedGeometries ) )
         {
-          throw QgsServerApiInternalServerError( QStringLiteral( "Error adding feature to collection" ) );
+          throw QgsServerApiInternalServerError( QStringLiteral( "Error changing feature" ) );
         }
 
         // Now we need to send the updated feature to the client
@@ -1716,8 +1716,128 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
       break;
     }
     // //////////////////////////////////////////////////////////////
+    // Patch feature
+    case QgsServerRequest::Method::PatchMethod:
+    {
+      // First: check permissions
+      const QStringList wfstUpdateLayerIds = QgsServerProjectUtils::wfstUpdateLayerIds( *context.project() );
+      if ( ! wfstUpdateLayerIds.contains( mapLayer->id() ) ||
+           ! mapLayer->dataProvider()->capabilities().testFlag( QgsVectorDataProvider::Capability::ChangeAttributeValues ) )
+      {
+        throw QgsServerApiPermissionDeniedException( QStringLiteral( "Feature attributes in layer '%1' cannot be changed" ).arg( mapLayer->name() ) );
+      }
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+
+      // get access controls
+      QgsAccessControl *accessControl = context.serverInterface()->accessControls();
+      if ( accessControl && !accessControl->layerUpdatePermission( mapLayer ) )
+      {
+        throw QgsServerApiPermissionDeniedException( QStringLiteral( "No ACL permissions to change features on layer '%1'" ).arg( mapLayer->name() ) );
+      }
+
+      //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
+      //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually
+      std::unique_ptr< QgsOWSServerFilterRestorer > filterRestorer( new QgsOWSServerFilterRestorer() );
+      if ( accessControl )
+      {
+        QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( accessControl, mapLayer, filterRestorer->originalFilters() );
+      }
+
+#endif
+
+      QgsChangedAttributesMap changedAttributes;
+      QgsAttributeMap changedMap;
+      const QgsGeometryMap changedGeometries;  // This will be empty
+
+      try
+      {
+        // Parse
+        json postData = json::parse( context.request()->data() );
+
+        // If the request contains "add" we raise
+        if ( postData.contains( "add" ) )
+        {
+          throw QgsServerApiNotImplementedException( QStringLiteral( "\"add\" instruction in PATCH method is not implemented" ),
+              QString::fromStdString( QgsServerOgcApi::mimeType( contentTypeFromRequest( context.request() ) ) ),
+              400 );
+        }
+
+        // If the request does NOT contain "modify" we raise
+        if ( ! postData.contains( "modify" ) )
+        {
+          throw QgsServerApiBadRequestException( QStringLiteral( "Missing \"modify\" instruction in PATCH method" ) );
+        }
+
+        // Process attributes
+        try
+        {
+          const QgsFields authorizedFields { publishedFields( mapLayer, context ) };
+          QStringList authorizedFieldNames;
+          for ( const auto &f : authorizedFields )
+          {
+            authorizedFieldNames.push_back( f.name() );
+          }
+          const QVariantMap properties { QgsJsonUtils::parseJson( postData["modify"].dump( ) ).toMap( ) };
+          const QgsFields fields = mapLayer->fields();
+          int fieldIndex = 0;
+          for ( const auto &field : fields )
+          {
+            if ( ! properties.value( field.name() ).isNull() )
+            {
+              if ( ! authorizedFieldNames.contains( field.name() ) )
+              {
+                throw QgsServerApiPermissionDeniedException( QStringLiteral( "Feature field '%1' change is not allowed" ).arg( field.name() ) );
+              }
+              else
+              {
+                QVariant value { properties.value( field.name() ) };
+                // Convert blobs
+                if ( ! properties.value( field.name() ).isNull() && static_cast<QMetaType::Type>( field.type() ) == QMetaType::QByteArray )
+                {
+                  value = QByteArray::fromBase64( value.toByteArray() );
+                }
+                changedMap.insert( fieldIndex, value );
+              }
+            }
+            else
+            {
+              // Do nothing
+            }
+            fieldIndex++;
+          }
+          if ( ! changedMap.isEmpty() )
+          {
+            changedAttributes.insert( feature.id(), changedMap );
+          }
+        }
+        catch ( json::exception & )
+        {
+          throw QgsServerApiBadRequestException( QStringLiteral( "Feature properties are not valid" ) );
+        }
+
+      }
+      catch ( json::exception & )
+      {
+        throw QgsServerApiBadRequestException( QStringLiteral( "Feature properties are not valid" ) );
+      }
+
+      // TODO: raise if nothing to change?
+
+      if ( ! mapLayer->dataProvider()->changeFeatures( changedAttributes, changedGeometries ) )
+      {
+        throw QgsServerApiInternalServerError( QStringLiteral( "Error patching feature" ) );
+      }
+
+      // Now we need to send the updated feature to the client
+      feature = mapLayer->getFeature( feature.id() );
+      doGet();
+
+      break;
+    }
+    // //////////////////////////////////////////////////////////////
     // Delete feature
-    case  QgsServerRequest::Method::DeleteMethod:
+    case QgsServerRequest::Method::DeleteMethod:
     {
       // First: check permissions
       const QStringList wfstUpdateLayerIds = QgsServerProjectUtils::wfstDeleteLayerIds( *context.project() );
