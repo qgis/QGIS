@@ -16,13 +16,14 @@
 #ifndef QGSPOINTMARKERITEM_H
 #define QGSPOINTMARKERITEM_H
 
-#include "qgsmapcanvasitem.h"
-#include "qgsfeature.h"
-#include "effects/qgspainteffect.h"
 #include <QFontMetricsF>
 #include <QPixmap>
-#include "qgis_app.h"
 #include <memory>
+
+#include "qgis_app.h"
+#include "qgsmapcanvasitem.h"
+#include "qgsfeature.h"
+#include "qgspainteffect.h"
 
 class QgsMarkerSymbol;
 
