@@ -11932,7 +11932,8 @@ bool QgisApp::checkMemoryLayers()
   if ( !QgsSettings().value( QStringLiteral( "askToSaveMemoryLayers" ), true, QgsSettings::App ).toBool() )
     return true;
 
-  // check to see if there are any memory layers present (with features)
+  // check to see if there are any temporary layers present (with features)
+  bool hasTemporaryLayers = false;
   bool hasMemoryLayers = false;
   const QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
   for ( auto it = layers.begin(); it != layers.end(); ++it )
@@ -11946,10 +11947,23 @@ bool QgisApp::checkMemoryLayers()
         break;
       }
     }
+    else if ( it.value() && it.value()->isTemporary() )
+      hasTemporaryLayers = true;
   }
 
-  if ( hasMemoryLayers )
+  if ( hasTemporaryLayers )
   {
+    if ( QMessageBox::warning( this,
+                               tr( "Close Project" ),
+                               tr( "This project includes one or more temporary layers. These layers are not permanently saved and their contents will be lost. Are you sure you want to proceed?" ),
+                               QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel ) == QMessageBox::Yes )
+      return true;
+    else
+      return false;
+  }
+  else if ( hasMemoryLayers )
+  {
+    // use the more specific warning for memory layers
     if ( QMessageBox::warning( this,
                                tr( "Close Project" ),
                                tr( "This project includes one or more temporary scratch layers. These layers are not saved to disk and their contents will be permanently lost. Are you sure you want to proceed?" ),
