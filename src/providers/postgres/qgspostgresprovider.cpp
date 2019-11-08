@@ -1864,18 +1864,39 @@ bool QgsPostgresProvider::parseDomainCheckConstraint( QStringList &enumValues, c
   QgsPostgresResult domainResult( connectionRO()->PQexec( domainSql ) );
   if ( domainResult.PQresultStatus() == PGRES_TUPLES_OK && domainResult.PQntuples() > 0 && !domainResult.PQgetvalue( 0, 0 ).isNull() )
   {
-    //a domain type
-    QString domainCheckDefinitionSql = QStringLiteral( ""
-                                       "SELECT consrc FROM pg_constraint "
-                                       "  WHERE contypid =("
-                                       "    SELECT oid FROM pg_type "
-                                       "      WHERE typname = %1 "
-                                       "      AND typnamespace =("
-                                       "        SELECT oid FROM pg_namespace WHERE nspname = %2"
-                                       "      )"
-                                       "    )" )
-                                       .arg( quotedValue( domainResult.PQgetvalue( 0, 0 ) ) )
-                                       .arg( quotedValue( domainResult.PQgetvalue( 0, 1 ) ) );
+    QString domainCheckDefinitionSql;
+    if ( connectionRO()->pgVersion() < 120000 )
+    {
+      domainCheckDefinitionSql = QStringLiteral( ""
+                                 "SELECT consrc FROM pg_constraint "
+                                 "  WHERE contypid =("
+                                 "    SELECT oid FROM pg_type "
+                                 "      WHERE typname = %1 "
+                                 "      AND typnamespace =("
+                                 "        SELECT oid FROM pg_namespace WHERE nspname = %2"
+                                 "      )"
+                                 "    )" )
+                                 .arg( quotedValue( domainResult.PQgetvalue( 0, 0 ) ) )
+                                 .arg( quotedValue( domainResult.PQgetvalue( 0, 1 ) ) );
+
+    }
+    else
+    {
+      domainCheckDefinitionSql = QStringLiteral( ""
+                                 "SELECT pg_catalog.pg_get_constraintdef( ( "
+                                 "  SELECT oid FROM pg_constraint WHERE contypid = ( "
+                                 "    SELECT oid FROM pg_type "
+                                 "      WHERE typname = %1 "
+                                 "      AND typnamespace =("
+                                 "        SELECT oid FROM pg_namespace WHERE nspname = %2"
+                                 "      )"
+                                 "    )"
+                                 "  ), true );" )
+                                 .arg( quotedValue( domainResult.PQgetvalue( 0, 0 ) ) )
+                                 .arg( quotedValue( domainResult.PQgetvalue( 0, 1 ) ) );
+
+    }
+
     QgsPostgresResult domainCheckRes( connectionRO()->PQexec( domainCheckDefinitionSql ) );
     if ( domainCheckRes.PQresultStatus() == PGRES_TUPLES_OK && domainCheckRes.PQntuples() > 0 )
     {
