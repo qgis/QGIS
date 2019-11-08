@@ -9,11 +9,6 @@
 
 
 
-%ModuleHeaderCode
-// For ConvertToSubClassCode.
-#include <qgsvertexmarker.h>
-%End
-
 class QgsVertexMarker : QgsMapCanvasItem
 {
 %Docstring
@@ -22,12 +17,6 @@ A class for marking vertices of features using e.g. circles or 'x'.
 
 %TypeHeaderCode
 #include "qgsvertexmarker.h"
-%End
-%ConvertToSubClassCode
-    if ( dynamic_cast<QgsVertexMarker *>( sipCpp ) )
-      sipType = sipType_QgsVertexMarker;
-    else
-      sipType = nullptr;
 %End
   public:
 
