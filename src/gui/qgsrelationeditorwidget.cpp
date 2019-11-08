@@ -30,74 +30,55 @@
 #include "qgslogger.h"
 #include "qgsvectorlayerutils.h"
 #include "qgsmapcanvas.h"
-#include "qgsvectorlayerselectionmanager.h"
 
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMessageBox>
 
 /// @cond PRIVATE
-
-/**
- * This class is used to filter the current vector layer selection to features matching the given request.
- * Relation editor widget use it in order to get selected feature for the current relation.
- */
-class QgsFilteredSelectionManager : public QgsVectorLayerSelectionManager
+///
+QgsFilteredSelectionManager::QgsFilteredSelectionManager( QgsVectorLayer *layer, const QgsFeatureRequest &request, QObject *parent )
+  : QgsVectorLayerSelectionManager( layer, parent )
+  , mRequest( request )
 {
-    Q_OBJECT
+  for ( auto fid : layer->selectedFeatureIds() )
+    if ( mRequest.acceptFeature( layer->getFeature( fid ) ) )
+      mSelectedFeatureIds << fid;
 
-  public:
-    QgsFilteredSelectionManager( QgsVectorLayer *layer, const QgsFeatureRequest &request, QObject *parent = nullptr )
-      : QgsVectorLayerSelectionManager( layer, parent )
-      , mRequest( request )
-    {
-      for ( auto fid : layer->selectedFeatureIds() )
-        if ( mRequest.acceptFeature( layer->getFeature( fid ) ) )
-          mSelectedFeatureIds << fid;
+  connect( layer, &QgsVectorLayer::selectionChanged, this, &QgsFilteredSelectionManager::onSelectionChanged );
+}
 
-      connect( layer, &QgsVectorLayer::selectionChanged, this, &QgsFilteredSelectionManager::onSelectionChanged );
-    }
+const QgsFeatureIds &QgsFilteredSelectionManager::selectedFeatureIds() const
+{
+  return mSelectedFeatureIds;
+}
 
-    const QgsFeatureIds &selectedFeatureIds() const override
-    {
-      return mSelectedFeatureIds;
-    }
+int QgsFilteredSelectionManager::selectedFeatureCount()
+{
+  return mSelectedFeatureIds.count();
+}
 
+void QgsFilteredSelectionManager::onSelectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect )
+{
+  QgsFeatureIds lselected = selected;
+  if ( clearAndSelect )
+  {
+    mSelectedFeatureIds.clear();
+  }
+  else
+  {
+    for ( auto fid : deselected )
+      mSelectedFeatureIds.remove( fid );
+  }
 
-    int selectedFeatureCount() override
-    {
-      return mSelectedFeatureIds.count();
-    }
+  for ( auto fid : selected )
+    if ( mRequest.acceptFeature( layer()->getFeature( fid ) ) )
+      mSelectedFeatureIds << fid;
+    else
+      lselected.remove( fid );
 
-  private slots:
-
-    void onSelectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect ) override
-    {
-      QgsFeatureIds lselected = selected;
-      if ( clearAndSelect )
-      {
-        mSelectedFeatureIds.clear();
-      }
-      else
-      {
-        for ( auto fid : deselected )
-          mSelectedFeatureIds.remove( fid );
-      }
-
-      for ( auto fid : selected )
-        if ( mRequest.acceptFeature( layer()->getFeature( fid ) ) )
-          mSelectedFeatureIds << fid;
-        else
-          lselected.remove( fid );
-
-      emit selectionChanged( lselected, deselected, clearAndSelect );
-    }
-
-  private:
-
-    QgsFeatureRequest mRequest;
-    QgsFeatureIds mSelectedFeatureIds;
-};
+  emit selectionChanged( lselected, deselected, clearAndSelect );
+}
 
 /// @endcond
 

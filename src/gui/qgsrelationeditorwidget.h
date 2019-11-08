@@ -25,10 +25,10 @@
 #include "qgscollapsiblegroupbox.h"
 #include "qgsdualview.h"
 #include "qgsrelation.h"
+#include "qgsvectorlayerselectionmanager.h"
 #include "qgis_gui.h"
 
 class QgsFeature;
-class QgsVectorLayerSelectionManager;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
 
@@ -40,6 +40,37 @@ class QgsVectorLayerTools;
 #include <qgsrelationeditorwidget.h>
 % End
 #endif
+
+
+/// @cond PRIVATE
+#ifndef SIP_RUN
+
+/**
+ * This class is used to filter the current vector layer selection to features matching the given request.
+ * Relation editor widget use it in order to get selected feature for the current relation.
+ */
+class QgsFilteredSelectionManager : public QgsVectorLayerSelectionManager
+{
+    Q_OBJECT
+
+  public:
+    QgsFilteredSelectionManager( QgsVectorLayer *layer, const QgsFeatureRequest &request, QObject *parent = nullptr );
+
+    const QgsFeatureIds &selectedFeatureIds() const override;
+    int selectedFeatureCount() override;
+
+  private slots:
+
+    void onSelectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect ) override;
+
+  private:
+
+    QgsFeatureRequest mRequest;
+    QgsFeatureIds mSelectedFeatureIds;
+};
+#endif
+/// @endcond
+
 
 /**
  * \ingroup gui
