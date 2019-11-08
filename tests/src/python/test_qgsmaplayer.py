@@ -13,9 +13,12 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 import os
 import qgis  # NOQA
 import tempfile
+import glob
+import shutil
 
 from qgis.core import (QgsReadWriteContext,
                        QgsVectorLayer,
+                       QgsRasterLayer,
                        QgsProject)
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtXml import QDomDocument
@@ -137,6 +140,50 @@ class TestQgsMapLayer(unittest.TestCase):
         layer = QgsVectorLayer(uri, "layer", "delimitedtext")
         uri = layer.styleURI()
         self.assertEqual(uri, os.path.join(TEST_DATA_DIR, 'delimitedtext', 'test.qml'))
+
+    def testIsTemporary(self):
+        # test if a layer is correctly marked as temporary
+        dir = QTemporaryDir()
+        dir_path = dir.path()
+        for file in glob.glob(os.path.join(TEST_DATA_DIR, 'france_parts.*')):
+            shutil.copy(os.path.join(TEST_DATA_DIR, file), dir_path)
+
+        not_temp_source = os.path.join(TEST_DATA_DIR, 'france_parts.*')
+        temp_source = os.path.join(dir_path, 'france_parts.shp')
+
+        vl = QgsVectorLayer('invalid', 'test')
+        self.assertFalse(vl.isValid())
+        self.assertFalse(vl.isTemporary())
+
+        vl = QgsVectorLayer(os.path.join(TEST_DATA_DIR, 'france_parts.shp'), 'test')
+        self.assertTrue(vl.isValid())
+        self.assertFalse(vl.isTemporary())
+
+        vl = QgsVectorLayer(temp_source, 'test')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.isTemporary())
+
+        # memory layers are temp
+        layer = QgsVectorLayer("Point?field=fldtxt:string",
+                               "layer", "memory")
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.isTemporary())
+
+        rl = QgsRasterLayer('invalid', 'test')
+        self.assertFalse(rl.isValid())
+        self.assertFalse(rl.isTemporary())
+
+        not_temp_source = os.path.join(TEST_DATA_DIR, 'float1-16.tif')
+        shutil.copy(not_temp_source, dir_path)
+        temp_source = os.path.join(dir_path, 'float1-16.tif')
+
+        rl = QgsRasterLayer(not_temp_source, 'test')
+        self.assertTrue(rl.isValid())
+        self.assertFalse(rl.isTemporary())
+
+        rl = QgsRasterLayer(temp_source, 'test')
+        self.assertTrue(rl.isValid())
+        self.assertTrue(rl.isTemporary())
 
 
 if __name__ == '__main__':
