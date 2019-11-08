@@ -55,7 +55,8 @@ as instances of QgsServerOgcApiHandler.
       GEOJSON,
       OPENAPI3,
       JSON,
-      HTML
+      HTML,
+      XML
     };
 
     QgsServerOgcApi( QgsServerInterface *serverIface,

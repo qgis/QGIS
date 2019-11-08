@@ -637,16 +637,22 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
     { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::items ) },
     { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::HTML ) },
     { "title", title }
-  }
-  /* TODO: not sure what these "concepts" are about, neither if they are mandatory
-  ,{
-    { "href", href( api, *context.request() , QStringLiteral( "/concepts" ), QStringLiteral( "html") )  },
-    { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::item ) },
-    { "type", "text/html" },
-    { "title", "Describe " + title }
-  }
-  */
-  );
+  } );
+
+  linksList.push_back(
+  {
+    {
+      "href", parentLink( context.request()->url(), 3 ).toStdString() +
+      "?request=DescribeFeatureType&typenames=" +
+      QUrlQuery( shortName ).toString( QUrl::EncodeSpaces ).toStdString() +
+      "&service=WFS&version=2.0"
+    },
+    { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::describedBy ) },
+    { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::XML ) },
+    { "title", "Schema for " + title }
+  } );
+
+
   json crss = json::array();
   for ( const auto &crs : QgsServerApiUtils::publishedCrsList( context.project() ) )
   {
