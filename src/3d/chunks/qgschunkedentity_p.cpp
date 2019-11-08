@@ -331,6 +331,7 @@ void QgsChunkedEntity::onActiveJobFinished()
     Q_ASSERT( node->loader() == loader );
 
     QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, QStringLiteral( "3D" ), QStringLiteral( "Load " ) + node->tileId().text(), node->tileId().text() );
+    QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, QStringLiteral( "3D" ), QStringLiteral( "Load" ), node->tileId().text() );
 
     QgsEventTracing::ScopedEvent e( "3D", QString( "create" ) );
     // mark as loaded + create entity
@@ -391,6 +392,7 @@ QgsChunkQueueJob *QgsChunkedEntity::startJob( QgsChunkNode *node )
 {
   if ( node->state() == QgsChunkNode::QueuedForLoad )
   {
+    QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, QStringLiteral( "3D" ), QStringLiteral( "Load" ), node->tileId().text() );
     QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, QStringLiteral( "3D" ), QStringLiteral( "Load " ) + node->tileId().text(), node->tileId().text() );
 
     QgsChunkLoader *loader = mChunkLoaderFactory->createChunkLoader( node );
@@ -425,6 +427,7 @@ void QgsChunkedEntity::cancelActiveJob( QgsChunkQueueJob *job )
     node->cancelLoading();
 
     QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, QStringLiteral( "3D" ), QStringLiteral( "Load " ) + node->tileId().text(), node->tileId().text() );
+    QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, QStringLiteral( "3D" ), QStringLiteral( "Load" ), node->tileId().text() );
   }
   else
   {
