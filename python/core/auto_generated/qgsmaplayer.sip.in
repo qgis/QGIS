@@ -513,6 +513,16 @@ Returns ``True`` if the layer is considered a spatial layer, ie it has some form
 .. versionadded:: 2.16
 %End
 
+    virtual bool isTemporary() const;
+%Docstring
+Returns ``True`` if the layer is considered a temporary layer.
+
+These include memory-only layers such as those created by the "memory" data provider, or layers
+stored inside a local temporary folder (such as the "/tmp" folder on Linux).
+
+.. versionadded:: 3.10.1
+%End
+
     enum ReadFlag
     {
       FlagDontResolveLayers,
