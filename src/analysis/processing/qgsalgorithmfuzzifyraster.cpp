@@ -177,15 +177,15 @@ QStringList QgsFuzzifyRasterLinearMembershipAlgorithm::tags() const
 QString QgsFuzzifyRasterLinearMembershipAlgorithm::shortHelpString() const
 {
   return QObject::tr( "The Fuzzify raster (linear membership) algorithm transforms an input raster "
-                      "to a fuzzified raster and therby assigns values between 0 and 1 following a "
-                      "linear fuzzy membership function. The value of 0 imlplies no membership with the "
+                      "to a fuzzified raster and thereby assigns values between 0 and 1 following a "
+                      "linear fuzzy membership function. The value of 0 implies no membership with the "
                       "defined fuzzy set, a value of 1 depicts full membership. In between, the degree "
                       "of membership of raster values follows a linear membership function.\n\n"
                       "The linear function is constructed using two user-defined input raster values "
                       "which set the point of full membership (high bound, results to 1) and no membership "
-                      "(low bound, results to 0) respectively. The fuzzy set in between those values is defined as "
+                      "(low bound, results to 0) respectively. The fuzzy set in between those values is defined as a "
                       "linear function.\n\n"
-                      "Both, increasing and decreasing fuzzy sets can be modeled by "
+                      "Both increasing and decreasing fuzzy sets can be modeled by "
                       "swapping the high and low bound parameters." );
 }
 
@@ -196,8 +196,8 @@ QgsFuzzifyRasterLinearMembershipAlgorithm *QgsFuzzifyRasterLinearMembershipAlgor
 
 void QgsFuzzifyRasterLinearMembershipAlgorithm::addAlgorithmParams( )
 {
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FUZZYHIGHBOUND" ), QStringLiteral( "High fuzzy membership bound" ), QgsProcessingParameterNumber::Double, 1 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FUZZYLOWBOUND" ), QStringLiteral( "Low fuzzy membership bound" ), QgsProcessingParameterNumber::Double, 0 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FUZZYHIGHBOUND" ), QStringLiteral( "High fuzzy membership bound" ), QgsProcessingParameterNumber::Double, 1 ) );
 }
 
 bool QgsFuzzifyRasterLinearMembershipAlgorithm::prepareAlgorithmFuzzificationParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -258,8 +258,8 @@ QStringList QgsFuzzifyRasterPowerMembershipAlgorithm::tags() const
 QString QgsFuzzifyRasterPowerMembershipAlgorithm::shortHelpString() const
 {
   return QObject::tr( "The Fuzzify raster (power membership) algorithm transforms an input raster "
-                      "to a fuzzified raster and therby assigns values between 0 and 1 following a "
-                      "power function. The value of 0 imlplies no membership with the "
+                      "to a fuzzified raster and thereby assigns values between 0 and 1 following a "
+                      "power function. The value of 0 implies no membership with the "
                       "defined fuzzy set, a value of 1 depicts full membership. In between, the degree "
                       "of membership of raster values follows a power function.\n\n"
                       "The power function is constructed using three user-defined input raster values "
@@ -267,7 +267,7 @@ QString QgsFuzzifyRasterPowerMembershipAlgorithm::shortHelpString() const
                       "(low bound, results to 0) and function exponent (only positive) respectively. "
                       "The fuzzy set in between those the upper and lower bounds values is then defined as "
                       "a power function.\n\n"
-                      "Both, increasing and decreasing fuzzy sets can be modeled by "
+                      "Both increasing and decreasing fuzzy sets can be modeled by "
                       "swapping the high and low bound parameters." );
 }
 
@@ -278,8 +278,8 @@ QgsFuzzifyRasterPowerMembershipAlgorithm *QgsFuzzifyRasterPowerMembershipAlgorit
 
 void QgsFuzzifyRasterPowerMembershipAlgorithm::addAlgorithmParams( )
 {
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FUZZYHIGHBOUND" ), QStringLiteral( "High fuzzy membership bound" ), QgsProcessingParameterNumber::Double, 1 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FUZZYLOWBOUND" ), QStringLiteral( "Low fuzzy membership bound" ), QgsProcessingParameterNumber::Double, 0 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FUZZYHIGHBOUND" ), QStringLiteral( "High fuzzy membership bound" ), QgsProcessingParameterNumber::Double, 1 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FUZZYEXPONENT" ), QStringLiteral( "Membership function exponent" ), QgsProcessingParameterNumber::Double, 2, false, 0 ) );
 }
 
@@ -341,8 +341,8 @@ QStringList QgsFuzzifyRasterLargeMembershipAlgorithm::tags() const
 QString QgsFuzzifyRasterLargeMembershipAlgorithm::shortHelpString() const
 {
   return QObject::tr( "The Fuzzify raster (large membership) algorithm transforms an input raster "
-                      "to a fuzzified raster and therby assigns values between 0 and 1 following the "
-                      "'large' fuzzy membership function. The value of 0 imlplies no membership with the "
+                      "to a fuzzified raster and thereby assigns values between 0 and 1 following the "
+                      "'large' fuzzy membership function. The value of 0 implies no membership with the "
                       "defined fuzzy set, a value of 1 depicts full membership. In between, the degree "
                       "of membership of raster values follows the 'large' membership function.\n\n"
                       "The 'large' function is constructed using two user-defined input raster values "
@@ -400,8 +400,8 @@ QStringList QgsFuzzifyRasterSmallMembershipAlgorithm::tags() const
 QString QgsFuzzifyRasterSmallMembershipAlgorithm::shortHelpString() const
 {
   return QObject::tr( "The Fuzzify raster (small membership) algorithm transforms an input raster "
-                      "to a fuzzified raster and therby assigns values between 0 and 1 following the "
-                      "'small' fuzzy membership function. The value of 0 imlplies no membership with the "
+                      "to a fuzzified raster and thereby assigns values between 0 and 1 following the "
+                      "'small' fuzzy membership function. The value of 0 implies no membership with the "
                       "defined fuzzy set, a value of 1 depicts full membership. In between, the degree "
                       "of membership of raster values follows the 'small' membership function.\n\n"
                       "The 'small' function is constructed using two user-defined input raster values "
@@ -459,8 +459,8 @@ QStringList QgsFuzzifyRasterGaussianMembershipAlgorithm::tags() const
 QString QgsFuzzifyRasterGaussianMembershipAlgorithm::shortHelpString() const
 {
   return QObject::tr( "The Fuzzify raster (gaussian membership) algorithm transforms an input raster "
-                      "to a fuzzified raster and therby assigns values between 0 and 1 following a "
-                      "gaussian fuzzy membership function. The value of 0 imlplies no membership with the "
+                      "to a fuzzified raster and thereby assigns values between 0 and 1 following a "
+                      "gaussian fuzzy membership function. The value of 0 implies no membership with the "
                       "defined fuzzy set, a value of 1 depicts full membership. In between, the degree "
                       "of membership of raster values follows a gaussian membership function.\n\n"
                       "The gaussian function is constructed using two user-defined input values "
@@ -518,8 +518,8 @@ QStringList QgsFuzzifyRasterNearMembershipAlgorithm::tags() const
 QString QgsFuzzifyRasterNearMembershipAlgorithm::shortHelpString() const
 {
   return QObject::tr( "The Fuzzify raster (near membership) algorithm transforms an input raster "
-                      "to a fuzzified raster and therby assigns values between 0 and 1 following the "
-                      "'near' fuzzy membership function. The value of 0 imlplies no membership with the "
+                      "to a fuzzified raster and thereby assigns values between 0 and 1 following the "
+                      "'near' fuzzy membership function. The value of 0 implies no membership with the "
                       "defined fuzzy set, a value of 1 depicts full membership. In between, the degree "
                       "of membership of raster values follows the 'near' membership function.\n\n"
                       "The 'near' function is constructed using two user-defined input values "
