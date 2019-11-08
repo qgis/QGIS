@@ -1035,7 +1035,7 @@ json QgsWfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context 
                   { "description", "Forbidden: the operation requested was not authorized" }
                 },
                 "500", {
-                  { "description", "Posted data could not be parsed correctly or another error occourred" }
+                  { "description", "Posted data could not be parsed correctly or another error occurred" }
                 }
               },
               { "default", defaultResponse() }
@@ -1965,7 +1965,7 @@ json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &contex
                   { "description", "Forbidden: the operation requested was not authorized" }
                 },
                 "500", {
-                  { "description", "Posted data could not be parsed correctly or another error occourred" }
+                  { "description", "Posted data could not be parsed correctly or another error occurred" }
                 }
               },
               { "default", defaultResponse() }
@@ -1989,7 +1989,7 @@ json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &contex
                   { "description", "Forbidden: the operation requested was not authorized" }
                 },
                 "500", {
-                  { "description", "Posted data could not be parsed correctly or another error occourred" }
+                  { "description", "Posted data could not be parsed correctly or another error occurred" }
                 }
               },
               { "default", defaultResponse() }
@@ -2013,7 +2013,7 @@ json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &contex
                   { "description", "Forbidden: the operation requested was not authorized" }
                 },
                 "500", {
-                  { "description", "Posted data could not be parsed correctly or another error occourred" }
+                  { "description", "Posted data could not be parsed correctly or another error occurred" }
                 }
               },
               { "default", defaultResponse() }

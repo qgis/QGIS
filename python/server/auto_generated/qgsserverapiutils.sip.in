@@ -111,19 +111,6 @@ This method takes into account the ACL restrictions provided by QGIS Server Acce
 %End
 
 
-    static const QVector<QgsMapLayer *> editableWfsLayers( const QgsServerApiContext &context );
-%Docstring
-Returns the list of layers accessible to the service in edit mode for a given ``context``.
-
-This method takes into account the ACL restrictions provided by QGIS Server Access Control plugins.
-
-.. note::
-
-   project must not be NULL
-
-.. versionadded:: 3.12
-%End
-
 
     static QString sanitizedFieldValue( const QString &value );
 %Docstring

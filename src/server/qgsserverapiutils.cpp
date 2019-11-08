@@ -568,15 +568,6 @@ const QVector<QgsVectorLayer *> QgsServerApiUtils::publishedWfsLayers( const Qgs
   return publishedWfsLayers< QgsVectorLayer * >( context );
 }
 
-const QVector<QgsMapLayer *> QgsServerApiUtils::editableWfsLayers( const QgsServerApiContext &context )
-{
-  QVector<QgsMapLayer *> result;
-  const QStringList wfstUpdateLayerIds = QgsServerProjectUtils::wfstUpdateLayerIds( *context.project() );
-  const QStringList wfstInsertLayerIds = QgsServerProjectUtils::wfstInsertLayerIds( *context.project() );
-  const QStringList wfstDeleteLayerIds = QgsServerProjectUtils::wfstDeleteLayerIds( *context.project() );
-  return result;
-}
-
 QString QgsServerApiUtils::sanitizedFieldValue( const QString &value )
 {
   QString result { QUrl( value ).toString() };
