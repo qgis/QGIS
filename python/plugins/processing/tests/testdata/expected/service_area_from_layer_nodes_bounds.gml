@@ -20,19 +20,19 @@
     </ogr:service_area_from_layer_nodes_bounds>
   </gml:featureMember>
   <gml:featureMember>
-    <ogr:service_area_from_layer_nodes_bounds fid="route_points.0">
+    <ogr:service_area_from_layer_nodes_bounds fid="upper">
       <ogr:geometryProperty><gml:MultiPoint srsName="EPSG:32733"><gml:pointMember><gml:Point><gml:coordinates>1000758.97326541,6220783.83597151</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1001398.88208812,6219947.57470368</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1001730.88604383,6221182.3451556</gml:coordinates></gml:Point></gml:pointMember></gml:MultiPoint></ogr:geometryProperty>
-      <ogr:d>1</ogr:d>
-      <ogr:type>upper</ogr:type>
-      <ogr:start>1001269.16642, 6220412.35961</ogr:start>
+      <ogr:d>0</ogr:d>
+      <ogr:type xsi:nil="true"/>
+      <ogr:start xsi:nil="true"/>
     </ogr:service_area_from_layer_nodes_bounds>
   </gml:featureMember>
   <gml:featureMember>
-    <ogr:service_area_from_layer_nodes_bounds fid="route_points.0">
+    <ogr:service_area_from_layer_nodes_bounds fid="lower">
       <ogr:geometryProperty><gml:MultiPoint srsName="EPSG:32733"><gml:pointMember><gml:Point><gml:coordinates>1000800.19292937,6220729.07557135</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1001343.39016642,6220022.54512089</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1001535.25328051,6220851.26299517</gml:coordinates></gml:Point></gml:pointMember></gml:MultiPoint></ogr:geometryProperty>
-      <ogr:d>1</ogr:d>
-      <ogr:type>lower</ogr:type>
-      <ogr:start>1001269.16642, 6220412.35961</ogr:start>
+      <ogr:d>0</ogr:d>
+      <ogr:type xsi:nil="true"/>
+      <ogr:start xsi:nil="true"/>
     </ogr:service_area_from_layer_nodes_bounds>
   </gml:featureMember>
   <gml:featureMember>
@@ -44,17 +44,17 @@
     </ogr:service_area_from_layer_nodes_bounds>
   </gml:featureMember>
   <gml:featureMember>
-    <ogr:service_area_from_layer_nodes_bounds fid="route_points.1">
+    <ogr:service_area_from_layer_nodes_bounds fid="route_points.0">
       <ogr:geometryProperty><gml:MultiPoint srsName="EPSG:32733"><gml:pointMember><gml:Point><gml:coordinates>1001535.25328051,6220851.26299517</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1002288.4678461,6221744.85964495</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1002622.66996036,6221162.46807726</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1001928.96666296,6221701.18298049</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1001636.8470959,6221432.84194866</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1001830.07379777,6221096.98362917</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1001993.49068512,6221197.19198907</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1002131.61040283,6221796.62965213</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1002532.83636772,6221785.38136521</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1002526.28363451,6221554.70249994</gml:coordinates></gml:Point></gml:pointMember></gml:MultiPoint></ogr:geometryProperty>
-      <ogr:d>2</ogr:d>
+      <ogr:d>1</ogr:d>
       <ogr:type>upper</ogr:type>
       <ogr:start>1002173.3505, 6221272.56237</ogr:start>
     </ogr:service_area_from_layer_nodes_bounds>
   </gml:featureMember>
   <gml:featureMember>
-    <ogr:service_area_from_layer_nodes_bounds fid="route_points.1">
+    <ogr:service_area_from_layer_nodes_bounds fid="route_points.0">
       <ogr:geometryProperty><gml:MultiPoint srsName="EPSG:32733"><gml:pointMember><gml:Point><gml:coordinates>1001730.88604383,6221182.3451556</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1002215.13556068,6221689.25446887</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1002310.58466849,6221563.42200322</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1001757.033926,6221599.13099375</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1001806.08518826,6221307.13224234</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1001730.88604383,6221182.3451556</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1001821.61736105,6221332.90322892</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1002215.13556068,6221689.25446887</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1002421.46534272,6221674.17571725</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1002421.46534272,6221674.17571725</gml:coordinates></gml:Point></gml:pointMember></gml:MultiPoint></ogr:geometryProperty>
-      <ogr:d>2</ogr:d>
+      <ogr:d>1</ogr:d>
       <ogr:type>lower</ogr:type>
       <ogr:start>1002173.3505, 6221272.56237</ogr:start>
     </ogr:service_area_from_layer_nodes_bounds>
@@ -68,17 +68,17 @@
     </ogr:service_area_from_layer_nodes_bounds>
   </gml:featureMember>
   <gml:featureMember>
-    <ogr:service_area_from_layer_nodes_bounds fid="route_points.2">
+    <ogr:service_area_from_layer_nodes_bounds fid="route_points.1">
       <ogr:geometryProperty><gml:MultiPoint srsName="EPSG:32733"><gml:pointMember><gml:Point><gml:coordinates>1002945.17950103,6222241.31856099</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1003261.7338751,6222520.86764589</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1002700.03928837,6222780.21031632</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1002657.05576802,6222472.25802353</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1002624.53430232,6222242.61769963</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1003285.47179071,6222319.99149044</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1002779.14071154,6222255.13883114</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1003301.11150351,6222971.91730526</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1003095.48438837,6222495.19645599</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1003242.05006887,6222579.23550191</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1003384.4241573,6222699.03878806</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1003350.40451899,6222832.21938272</gml:coordinates></gml:Point></gml:pointMember></gml:MultiPoint></ogr:geometryProperty>
-      <ogr:d>3</ogr:d>
+      <ogr:d>2</ogr:d>
       <ogr:type>upper</ogr:type>
       <ogr:start>1002948.69578, 6222870.05855</ogr:start>
     </ogr:service_area_from_layer_nodes_bounds>
   </gml:featureMember>
   <gml:featureMember>
-    <ogr:service_area_from_layer_nodes_bounds fid="route_points.2">
+    <ogr:service_area_from_layer_nodes_bounds fid="route_points.1">
       <ogr:geometryProperty><gml:MultiPoint srsName="EPSG:32733"><gml:pointMember><gml:Point><gml:coordinates>1002991.11072264,6222281.72914386</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1003198.63616199,6222463.1404267</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1002755.78126323,6222555.17746296</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1002755.78126323,6222555.17746296</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1002724.17727046,6222326.95840711</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1003172.94058079,6222436.28679202</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1002724.17727046,6222326.95840711</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1003061.43114207,6222909.55139377</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1003153.88971381,6222419.41498029</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1003222.45322328,6222610.90014809</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1003307.4740849,6222730.08836253</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>1003307.4740849,6222730.08836253</gml:coordinates></gml:Point></gml:pointMember></gml:MultiPoint></ogr:geometryProperty>
-      <ogr:d>3</ogr:d>
+      <ogr:d>2</ogr:d>
       <ogr:type>lower</ogr:type>
       <ogr:start>1002948.69578, 6222870.05855</ogr:start>
     </ogr:service_area_from_layer_nodes_bounds>

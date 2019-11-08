@@ -123,7 +123,8 @@ QVariantMap QgsServiceAreaFromPointAlgorithm::processAlgorithm( const QVariantMa
     edgeStart = graph->vertex( i ).point();
 
     // find all edges coming from this vertex
-    for ( int edgeId : graph->vertex( i ).outgoingEdges() )
+    const QList< int > outgoingEdges = graph->vertex( i ).outgoingEdges() ;
+    for ( int edgeId : outgoingEdges )
     {
       edge = graph->edge( edgeId );
       endVertexCost = startVertexCost + edge.cost( 0 ).toDouble();
@@ -148,6 +149,7 @@ QVariantMap QgsServiceAreaFromPointAlgorithm::processAlgorithm( const QVariantMa
 
   // convert to list and sort to maintain same order of points between algorithm runs
   QList< int > verticesList = vertices.toList();
+  points.reserve( verticesList.size() );
   std::sort( verticesList.begin(), verticesList.end() );
   for ( int v : verticesList )
   {

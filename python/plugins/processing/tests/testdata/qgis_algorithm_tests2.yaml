@@ -1749,10 +1749,10 @@ tests:
       DEFAULT_SPEED: 50.0
       INCLUDE_BOUNDS: true
       INPUT:
-        name: roads.gml|layername=roads
+        name: roads.gml
         type: vector
       START_POINTS:
-        name: custom/route_points.gml|layername=route_points
+        name: custom/route_points.gml
         type: vector
       STRATEGY: 0
       TOLERANCE: 0.0
@@ -1974,6 +1974,5 @@ tests:
       OUTPUT:
         name: expected/points_along_lines_m.shp
         type: vector
-
 
 # See ../README.md for a description of the file format
