@@ -352,7 +352,7 @@ namespace QgsWfs
 #endif
 
       // Force pkAttributes in subset of attributes for primary fid building
-      QgsAttributeList pkAttributes = provider->pkAttributeIndexes();
+      const QgsAttributeList pkAttributes = provider->pkAttributeIndexes();
       if ( !pkAttributes.isEmpty() )
       {
         QgsAttributeList subsetOfAttrs = featureRequest.subsetOfAttributes();
