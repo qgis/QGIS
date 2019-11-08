@@ -74,6 +74,15 @@ class CORE_EXPORT QgsRasterResampler
      * Ownership is transferred to the caller.
      */
     virtual QgsRasterResampler *clone() const = 0 SIP_FACTORY;
+
+    /**
+     * Returns the optional tile buffer size in pixels. This represents
+     * the size to buffer individual resampled tile requests prior to resampling,
+     * in order to avoid rendering artifacts at the edges of raster tile boundaries.
+     *
+     * \since QGIS 3.10.1
+     */
+    virtual int tileBufferPixels() const { return 0; }
 };
 
 
