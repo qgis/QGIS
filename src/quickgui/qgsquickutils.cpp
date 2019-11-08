@@ -375,6 +375,11 @@ QString QgsQuickUtils::evaluateExpression( const QgsQuickFeatureLayerPair &pair,
   return expr.evaluate( &context ).toString();
 }
 
+void QgsQuickUtils::selectFeaturesInLayer( QgsVectorLayer *layer, const QSet<qint64> &featureIds, QgsVectorLayer::SelectBehavior behavior )
+{
+  layer->selectByIds( featureIds, behavior );
+}
+
 qreal QgsQuickUtils::screenDensity() const
 {
   return mScreenDensity;
