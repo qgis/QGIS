@@ -781,7 +781,7 @@ Content-Type: application/openapi+json;version=3.0
       },
       "post": {
         "description": "Adds a new feature to the collection {collectionId}",
-        "operationId": "getFeaturesPOST",
+        "operationId": "getFeatures_testlayer_èé_2_a5f61891_b949_43e3_ad30_84013fc922de_POST",
         "responses": [
           [
             "201",
@@ -869,7 +869,7 @@ Content-Type: application/openapi+json;version=3.0
       },
       "get": {
         "description": "Retrieve a feature with ID {featureId} from the collection with ID {collectionId}; use content negotiation or specify a file extension to request HTML (.html or GeoJSON (.json).",
-        "operationId": "getFeature_testlayer_èé_2_a5f61891_b949_43e3_ad30_84013fc922de",
+        "operationId": "getFeature_testlayer_èé_2_a5f61891_b949_43e3_ad30_84013fc922de_GET",
         "parameters": [
           {
             "$ref": "#/components/parameters/featureId"
@@ -910,6 +910,48 @@ Content-Type: application/openapi+json;version=3.0
         "summary": "Retrieve a single feature from the 'A test vector layer exclude attrs' feature collection",
         "tags": [
           "Features"
+        ]
+      },
+      "patch": {
+        "description": "Changes attributes of feature with ID {featureId} in the collection {collectionId}",
+        "operationId": "getFeaturePUT",
+        "responses": [
+          [
+            "200",
+            {
+              "description": "The feature was successfully updated"
+            },
+            "403",
+            {
+              "description": "Forbidden: the operation requested was not authorized"
+            },
+            "500",
+            {
+              "description": "Posted data could not be parsed correctly or another error occourred"
+            }
+          ],
+          [
+            "default",
+            {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/exception"
+                  }
+                },
+                "text/html": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "description": "An error occurred."
+            }
+          ]
+        ],
+        "summary": "Changes attributes of feature with ID {featureId} in the collection {collectionId}",
+        "tags": [
+          "edit"
         ]
       },
       "put": {
@@ -1108,7 +1150,7 @@ Content-Type: application/openapi+json;version=3.0
       },
       "post": {
         "description": "Adds a new feature to the collection {collectionId}",
-        "operationId": "getFeaturesPOST",
+        "operationId": "getFeatures_testlayer_èé_cf86cf11_222f_4b62_929c_12cfc82b9774_POST",
         "responses": [
           [
             "201",
@@ -1196,7 +1238,7 @@ Content-Type: application/openapi+json;version=3.0
       },
       "get": {
         "description": "Retrieve a feature with ID {featureId} from the collection with ID {collectionId}; use content negotiation or specify a file extension to request HTML (.html or GeoJSON (.json).",
-        "operationId": "getFeature_testlayer_èé_cf86cf11_222f_4b62_929c_12cfc82b9774",
+        "operationId": "getFeature_testlayer_èé_cf86cf11_222f_4b62_929c_12cfc82b9774_GET",
         "parameters": [
           {
             "$ref": "#/components/parameters/featureId"
@@ -1237,6 +1279,48 @@ Content-Type: application/openapi+json;version=3.0
         "summary": "Retrieve a single feature from the 'A test vector layer with aliases' feature collection",
         "tags": [
           "Features"
+        ]
+      },
+      "patch": {
+        "description": "Changes attributes of feature with ID {featureId} in the collection {collectionId}",
+        "operationId": "getFeaturePUT",
+        "responses": [
+          [
+            "200",
+            {
+              "description": "The feature was successfully updated"
+            },
+            "403",
+            {
+              "description": "Forbidden: the operation requested was not authorized"
+            },
+            "500",
+            {
+              "description": "Posted data could not be parsed correctly or another error occourred"
+            }
+          ],
+          [
+            "default",
+            {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/exception"
+                  }
+                },
+                "text/html": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "description": "An error occurred."
+            }
+          ]
+        ],
+        "summary": "Changes attributes of feature with ID {featureId} in the collection {collectionId}",
+        "tags": [
+          "edit"
         ]
       },
       "put": {
@@ -1435,7 +1519,7 @@ Content-Type: application/openapi+json;version=3.0
       },
       "post": {
         "description": "Adds a new feature to the collection {collectionId}",
-        "operationId": "getFeaturesPOST",
+        "operationId": "getFeatures_testlayer_c0988fd7_97ca_451d_adbc_37ad6d10583a_POST",
         "responses": [
           [
             "201",
@@ -1523,7 +1607,7 @@ Content-Type: application/openapi+json;version=3.0
       },
       "get": {
         "description": "Retrieve a feature with ID {featureId} from the collection with ID {collectionId}; use content negotiation or specify a file extension to request HTML (.html or GeoJSON (.json).",
-        "operationId": "getFeature_testlayer_c0988fd7_97ca_451d_adbc_37ad6d10583a",
+        "operationId": "getFeature_testlayer_c0988fd7_97ca_451d_adbc_37ad6d10583a_GET",
         "parameters": [
           {
             "$ref": "#/components/parameters/featureId"
@@ -1564,6 +1648,48 @@ Content-Type: application/openapi+json;version=3.0
         "summary": "Retrieve a single feature from the 'A Layer1 with a short name' feature collection",
         "tags": [
           "Features"
+        ]
+      },
+      "patch": {
+        "description": "Changes attributes of feature with ID {featureId} in the collection {collectionId}",
+        "operationId": "getFeaturePUT",
+        "responses": [
+          [
+            "200",
+            {
+              "description": "The feature was successfully updated"
+            },
+            "403",
+            {
+              "description": "Forbidden: the operation requested was not authorized"
+            },
+            "500",
+            {
+              "description": "Posted data could not be parsed correctly or another error occourred"
+            }
+          ],
+          [
+            "default",
+            {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/exception"
+                  }
+                },
+                "text/html": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "description": "An error occurred."
+            }
+          ]
+        ],
+        "summary": "Changes attributes of feature with ID {featureId} in the collection {collectionId}",
+        "tags": [
+          "edit"
         ]
       },
       "put": {
@@ -1762,7 +1888,7 @@ Content-Type: application/openapi+json;version=3.0
       },
       "post": {
         "description": "Adds a new feature to the collection {collectionId}",
-        "operationId": "getFeaturesPOST",
+        "operationId": "getFeatures_testlayer20150528120452665_POST",
         "responses": [
           [
             "201",
@@ -1850,7 +1976,7 @@ Content-Type: application/openapi+json;version=3.0
       },
       "get": {
         "description": "Retrieve a feature with ID {featureId} from the collection with ID {collectionId}; use content negotiation or specify a file extension to request HTML (.html or GeoJSON (.json).",
-        "operationId": "getFeature_testlayer20150528120452665",
+        "operationId": "getFeature_testlayer20150528120452665_GET",
         "parameters": [
           {
             "$ref": "#/components/parameters/featureId"
@@ -1891,6 +2017,48 @@ Content-Type: application/openapi+json;version=3.0
         "summary": "Retrieve a single feature from the 'A test vector layer èé' feature collection",
         "tags": [
           "Features"
+        ]
+      },
+      "patch": {
+        "description": "Changes attributes of feature with ID {featureId} in the collection {collectionId}",
+        "operationId": "getFeaturePUT",
+        "responses": [
+          [
+            "200",
+            {
+              "description": "The feature was successfully updated"
+            },
+            "403",
+            {
+              "description": "Forbidden: the operation requested was not authorized"
+            },
+            "500",
+            {
+              "description": "Posted data could not be parsed correctly or another error occourred"
+            }
+          ],
+          [
+            "default",
+            {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/exception"
+                  }
+                },
+                "text/html": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "description": "An error occurred."
+            }
+          ]
+        ],
+        "summary": "Changes attributes of feature with ID {featureId} in the collection {collectionId}",
+        "tags": [
+          "edit"
         ]
       },
       "put": {

@@ -1024,7 +1024,7 @@ json QgsWfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context 
           { "summary", "Adds a new feature to the collection {collectionId}" },
           { "tags", { "edit", "insert" } },
           { "description", "Adds a new feature to the collection {collectionId}" },
-          { "operationId", operationId() + "POST" },
+          { "operationId", operationId() + '_' + layerId.toStdString() + '_' + "POST" },
           {
             "responses", {
               {
@@ -1908,7 +1908,7 @@ json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &contex
           { "tags", jsonTags() },
           { "summary", "Retrieve a single feature from the '" + title + "' feature collection"},
           { "description", description() },
-          { "operationId", operationId() + '_' + layerId.toStdString() },
+          { "operationId", operationId() + '_' + layerId.toStdString() + '_' + "GET" },
           {
             "parameters", {{ // array of objects
                 { "$ref", "#/components/parameters/featureId" }
@@ -1954,6 +1954,30 @@ json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &contex
           { "summary", "Replaces the feature with ID {featureId} in the collection {collectionId}" },
           { "tags", { "edit", "replace" } },
           { "description", "Replaces the feature with ID {featureId} in the collection {collectionId}" },
+          { "operationId", operationId() + "PUT" },
+          {
+            "responses", {
+              {
+                "200", {
+                  { "description", "The feature was successfully updated" }
+                },
+                "403", {
+                  { "description", "Forbidden: the operation requested was not authorized" }
+                },
+                "500", {
+                  { "description", "Posted data could not be parsed correctly or another error occourred" }
+                }
+              },
+              { "default", defaultResponse() }
+            }
+          }
+        }
+      },
+      {
+        "patch", {
+          { "summary", "Changes attributes of feature with ID {featureId} in the collection {collectionId}" },
+          { "tags", { "edit" } },
+          { "description", "Changes attributes of feature with ID {featureId} in the collection {collectionId}" },
           { "operationId", operationId() + "PUT" },
           {
             "responses", {
