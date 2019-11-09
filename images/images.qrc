@@ -403,6 +403,7 @@
         <file>themes/default/mActionSplitFeatures.svg</file>
         <file>themes/default/mActionSplitParts.svg</file>
         <file>themes/default/mActionStart.svg</file>
+        <file>themes/default/mActionStop.svg</file>
         <file>themes/default/mActionStyleManager.svg</file>
         <file>themes/default/mActionSum.svg</file>
         <file>themes/default/mActionTextAnnotation.svg</file>
@@ -426,6 +427,7 @@
         <file>themes/default/mActionZoomToLayer.svg</file>
         <file>themes/default/mActionZoomToSelected.svg</file>
         <file>themes/default/mActionFilterTableFields.svg</file>
+	<file>themes/default/mActionFirst.svg</file>
         <file>themes/default/mIconAtlas.svg</file>
         <file>themes/default/mIconAutoPlacementSettings.svg</file>
         <file>themes/default/mIconCertificate.svg</file>
@@ -624,6 +626,7 @@
         <file>themes/default/user.svg</file>
         <file>themes/default/mIconAuxiliaryStorage.svg</file>
         <file>themes/default/relation.svg</file>
+	<file>themes/default/mActionLast.svg</file>
         <file>themes/default/mActionLink.svg</file>
         <file>themes/default/mActionUnlink.svg</file>
         <file>themes/default/mActionZoomToArea.svg</file>
@@ -631,6 +634,8 @@
         <file>themes/default/mActionHighlightFeature.svg</file>
         <file>themes/default/mActionScaleHighlightFeature.svg</file>
         <file>themes/default/mActionPanHighlightFeature.svg</file>
+	<file>themes/default/mActionPrevious.svg</file>
+	<file>themes/default/mActionPlay.svg</file>
         <file>themes/default/cadtools/construction.svg</file>
         <file>themes/default/cadtools/delta.svg</file>
         <file>themes/default/cadtools/floater.svg</file>
@@ -693,6 +698,7 @@
         <file>themes/default/search.svg</file>
         <file>themes/default/mActionNew3DMap.svg</file>
         <file>themes/default/mActionNewMap.svg</file>
+	<file>themes/default/mActionNext.svg</file>
         <file>themes/default/mActionMapSettings.svg</file>
         <file>themes/default/mActionLockExtent.svg</file>
         <file>themes/default/mGeoPackage.svg</file>

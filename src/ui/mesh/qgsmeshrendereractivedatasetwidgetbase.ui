@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>296</width>
+    <width>343</width>
     <height>337</height>
    </rect>
   </property>
@@ -85,7 +85,7 @@
         <string>Time Format Options</string>
        </property>
        <property name="text">
-        <string notr="true"/>
+        <string notr="true">...</string>
        </property>
        <property name="icon">
         <iconset>
@@ -119,7 +119,7 @@
      <item row="2" column="4">
       <widget class="QToolButton" name="mDatasetPlaybackButton">
        <property name="text">
-        <string/>
+        <string>P</string>
        </property>
        <property name="autoRaise">
         <bool>true</bool>
