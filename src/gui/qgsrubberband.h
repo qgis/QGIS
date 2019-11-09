@@ -31,6 +31,13 @@
 class QgsVectorLayer;
 class QPaintEvent;
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+// For ConvertToSubClassCode.
+#include <qgsrubberband.h>
+% End
+#endif
+
 /**
  * \ingroup gui
  * A class for drawing transient features (e.g. digitizing lines) on the map.
@@ -42,6 +49,14 @@ class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
 {
     Q_OBJECT
 
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsRubberBand *>( sipCpp ) )
+      sipType = sipType_QgsRubberBand;
+    else
+      sipType = nullptr;
+    SIP_END
+#endif
   public:
 
     Q_PROPERTY( QColor fillColor READ fillColor WRITE setFillColor )
