@@ -10,23 +10,28 @@
     </xs:extension>
   </xs:complexContent>
 </xs:complexType>
-<xs:element name="service_area_no_bounds" type="ogr:service_area_no_bounds_Type" substitutionGroup="gml:_Feature"/>
-<xs:complexType name="service_area_no_bounds_Type">
+<xs:element name="service_area_from_layer_lines" type="ogr:service_area_from_layer_lines_Type" substitutionGroup="gml:_Feature"/>
+<xs:complexType name="service_area_from_layer_lines_Type">
   <xs:complexContent>
     <xs:extension base="gml:AbstractFeatureType">
       <xs:sequence>
-        <xs:element name="geometryProperty" type="gml:MultiPointPropertyType" nillable="true" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="geometryProperty" type="gml:MultiLineStringPropertyType" nillable="true" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="d" nillable="true" minOccurs="0" maxOccurs="1">
+          <xs:simpleType>
+            <xs:restriction base="xs:integer">
+              <xs:totalDigits value="10"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
         <xs:element name="type" nillable="true" minOccurs="0" maxOccurs="1">
           <xs:simpleType>
             <xs:restriction base="xs:string">
-              <xs:maxLength value="254"/>
             </xs:restriction>
           </xs:simpleType>
         </xs:element>
         <xs:element name="start" nillable="true" minOccurs="0" maxOccurs="1">
           <xs:simpleType>
             <xs:restriction base="xs:string">
-              <xs:maxLength value="254"/>
             </xs:restriction>
           </xs:simpleType>
         </xs:element>
