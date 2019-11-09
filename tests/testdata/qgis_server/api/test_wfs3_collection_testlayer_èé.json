@@ -48,8 +48,14 @@ Content-Type: application/json
       "rel": "items",
       "title": "A test vector layer èé",
       "type": "text/html"
+    },
+    {
+      "href": "http://server.qgis.org/?request=DescribeFeatureType&typenames=testlayer%20èé&service=WFS&version=2.0",
+      "rel": "describedBy",
+      "title": "Schema for A test vector layer èé",
+      "type": "application/xml"
     }
   ],
-  "timeStamp": "2019-11-02T15:56:20Z",
+  "timeStamp": "2019-07-05T12:27:07Z",
   "title": "A test vector layer èé"
 }

@@ -122,6 +122,9 @@ void QgsServerOgcApiHandler::write( json &data, const QgsServerApiContext &conte
     case QgsServerOgcApi::ContentType::OPENAPI3:
       jsonDump( data, context, QgsServerOgcApi::contentTypeMimes().value( contentType ).first() );
       break;
+    case QgsServerOgcApi::ContentType::XML:
+      // Not handled yet
+      break;
   }
 }
 
@@ -511,6 +514,11 @@ QString QgsServerOgcApiHandler::parentLink( const QUrl &url, int levels )
     {
       qi.push_back( i );
     }
+  }
+  // Make sure the parent link ends with a slash
+  if ( ! path.endsWith( '/' ) )
+  {
+    path.append( '/' );
   }
   result.setQueryItems( qi );
   result.setPath( path );

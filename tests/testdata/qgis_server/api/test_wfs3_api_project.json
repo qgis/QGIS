@@ -1466,7 +1466,7 @@ Content-Type: application/openapi+json;version=3.0
   },
   "servers": [
     {
-      "url": "http://server.qgis.org/wfs3"
+      "url": "http://server.qgis.org/wfs3/"
     }
   ],
   "tags": [
@@ -1478,5 +1478,6 @@ Content-Type: application/openapi+json;version=3.0
       "description": "Access to data (features).",
       "name": "Features"
     }
-  ]
+  ],
+  "timeStamp": "2019-07-05T12:27:07Z"
 }

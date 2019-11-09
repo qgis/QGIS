@@ -53,8 +53,14 @@ Content-Type: application/json
       "rel": "items",
       "title": "points",
       "type": "text/html"
+    },
+    {
+      "href": "http://server.qgis.org/?request=DescribeFeatureType&typenames=points&service=WFS&version=2.0",
+      "rel": "describedBy",
+      "title": "Schema for points",
+      "type": "application/xml"
     }
   ],
-  "timeStamp": "2019-10-20T16:29:01Z",
+  "timeStamp": "2019-07-05T12:27:07Z",
   "title": "points"
 }
