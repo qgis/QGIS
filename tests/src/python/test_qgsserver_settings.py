@@ -206,6 +206,21 @@ class TestQgsServerSettings(unittest.TestCase):
         # clear environment
         os.environ.pop(env)
 
+    def test_getserversettings_enabling(self):
+        env = "QGIS_REVEAL_SERVER_SETTINGS"
+        os.environ[env] = "true"
+        self.settings.load()
+        self.assertTrue(self.settings.revealServerSettings())
+        os.environ.pop(env)
+
+    def test_getserversettings_disabling(self):
+        env = "QGIS_REVEAL_SERVER_SETTINGS"
+        os.environ[env] = "false"
+        self.settings.load()
+        self.assertFalse(self.settings.revealServerSettings())
+        os.environ.pop(env)
+        self.assertFalse(self.settings.revealServerSettings())
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -89,39 +89,6 @@ class TestQgsServerWMSTestBase(QgsServerTestBase):
         msg = "request %s failed.\nQuery: %s\nExpected file: %s\nResponse:\n%s" % (query_string, request, reference_path, response.decode('utf-8'))
         self.assertXMLEqual(response, expected, msg=msg)
 
-    def wms_getprojectsettings_request_compare(self, request, extra=None, reference_file=None, project='test_project.qgs', version='1.3.0', ignoreExtent=False):
-        response_header, response_body, query_string = self.wms_request(request, extra, project, version)
-        allfamilies = re.findall(RE_COUNT_FONT_FAMILIES, response_body)
-        self.assertTrue(len(allfamilies) > 1)
-
-        response = response_header + re.sub(RE_STRIP_FONTS, b'', response_body, flags=re.MULTILINE | re.DOTALL)
-        reference_path = os.path.join(self.testdata_path, (request.lower() if not reference_file else reference_file) + '.txt')
-        self.store_reference(reference_path, response)
-        f = open(reference_path, 'rb')
-        expected = f.read()
-
-        def _n(r):
-            lines = r.split(b'\n')
-            b = lines[2:]
-            h = lines[:2]
-            try:
-                return b'\n'.join(h) + json.dumps(json.loads(b'\n'.join(b))).encode('utf8')
-            except:
-                return r
-
-        response = _n(response)
-        expected = _n(expected)
-
-        f.close()
-        response = re.sub(RE_STRIP_UNCHECKABLE, b'*****', response)
-        expected = re.sub(RE_STRIP_UNCHECKABLE, b'*****', expected)
-        if ignoreExtent:
-            response = re.sub(RE_STRIP_EXTENTS, b'*****', response)
-            expected = re.sub(RE_STRIP_EXTENTS, b'*****', expected)
-
-        msg = "request %s failed.\nQuery: %s\nExpected file: %s\nResponse:\n%s" % (query_string, request, reference_path, response.decode('utf-8'))
-        self.assertXMLEqual(response, expected, msg=msg)
-
 
 class TestQgsServerWMS(TestQgsServerWMSTestBase):
 
@@ -134,8 +101,13 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         self.wms_request_compare('getcapabilities')
         self.wms_request_compare('GETCAPABILITIES')
 
-    def test_getprojectsettings(self):
-        self.wms_getprojectsettings_request_compare('GetProjectSettings')
+    def test_getserversettings_disabled_by_default(self):
+        self.settings.logSummary()
+        self.assertFalse(self.settings.revealServerSettings())
+        response_header, response_body, query_string = self.wms_request('GetServerSettings', None, 'test_project.qgs', '1.3.0')
+        # self.assertEqual(response_header, b'Content-Length: 212\nContent-Type: text/xml; charset=utf-8\n\n')
+        self.assertRegex(response_header, b'^Content-Length: \d+\nContent-Type: text/xml; charset=utf-8\n\n')
+        self.assertRegex(response_body, b'^<ServiceExceptionReport.*')
 
     def test_getcontext(self):
         self.wms_request_compare('GetContext')

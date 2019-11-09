@@ -39,7 +39,6 @@
 #include "qgsrasterdataprovider.h"
 
 #include "qgsvectorlayerserverproperties.h"
-#include <QFontDatabase>
 
 namespace QgsWms
 {
@@ -48,8 +47,6 @@ namespace QgsWms
   {
 
     void appendLayerProjectSettings( QDomDocument &doc, QDomElement &layerElem, QgsMapLayer *currentLayer );
-
-    void appendAvailableFonts( QDomDocument &doc, QDomElement &parentElem );
 
     void appendDrawingOrder( QDomDocument &doc, QDomElement &parentElem, QgsServerInterface *serverIface,
                              const QgsProject *project );
@@ -251,7 +248,6 @@ namespace QgsWms
     if ( projectSettings )
     {
       appendDrawingOrder( doc, capabilityElement, serverIface, project );
-      appendAvailableFonts( doc, capabilityElement );
     }
 
     return doc;
@@ -1757,33 +1753,6 @@ namespace QgsWms
       }
       appendLayerBoundingBoxes( doc, groupElem, combinedBBox, groupCRS, combinedCRSSet.toList(), outputCrsList, project );
 
-    }
-
-    void appendAvailableFonts( QDomDocument &doc, QDomElement &parentElem )
-    {
-      QDomElement fontsElem = doc.createElement( QStringLiteral( "Fonts" ) );
-      QFontDatabase database;
-      const QStringList fontFamilies = database.families();
-      for ( const QString &family : fontFamilies )
-      {
-        QDomElement familyElem = doc.createElement( QStringLiteral( "Family" ) );
-        familyElem.setAttribute( QStringLiteral( "name" ), family );
-        const QStringList fontStyles = database.styles( family );
-        for ( const QString &style : fontStyles )
-        {
-          QDomElement fontElem = doc.createElement( QStringLiteral( "Font" ) );
-          fontElem.setAttribute( QStringLiteral( "style" ), style );
-          QString sizes;
-          const QList<int> smoothSizes = database.smoothSizes( family, style );
-          for ( int points : smoothSizes )
-            sizes += QString::number( points ) + ' ';
-          QDomText styleText = doc.createTextNode( sizes.trimmed() );
-          fontElem.appendChild( styleText );
-          familyElem.appendChild( fontElem );
-        }
-        fontsElem.appendChild( familyElem );
-      }
-      parentElem.appendChild( fontsElem );
     }
 
     void appendDrawingOrder( QDomDocument &doc, QDomElement &parentElem, QgsServerInterface *serverIface,

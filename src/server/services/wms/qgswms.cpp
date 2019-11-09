@@ -32,6 +32,7 @@
 #include "qgswmsdescribelayer.h"
 #include "qgswmsgetlegendgraphics.h"
 #include "qgswmsparameters.h"
+#include "qgswmsgetserversettings.h"
 
 #define QSTR_COMPARE( str, lit )\
   (str.compare( QLatin1String( lit ), Qt::CaseInsensitive ) == 0)
@@ -149,6 +150,10 @@ namespace QgsWms
         else if ( QSTR_COMPARE( req, "GetPrint" ) )
         {
           writeGetPrint( mServerIface, project, version, request, response );
+        }
+        else if ( QSTR_COMPARE( req, "GetServerSettings" ) && mServerIface->serverSettings()->revealServerSettings() )
+        {
+          writeServerSettings( mServerIface, response );
         }
         else
         {

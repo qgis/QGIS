@@ -66,7 +66,8 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
       QGIS_SERVER_WMS_MAX_HEIGHT, //! Maximum height for a WMS request. The most conservative between this and the project one is used (since QGIS 3.8)
       QGIS_SERVER_WMS_MAX_WIDTH, //! Maximum width for a WMS request. The most conservative between this and the project one is used (since QGIS 3.8)
       QGIS_SERVER_API_RESOURCES_DIRECTORY, //! Base directory where HTML templates and static assets (e.g. images, js and css files) are searched for (since QGIS 3.10).
-      QGIS_SERVER_API_WFS3_MAX_LIMIT //! Maximum value for "limit" in a features request, defaults to 10000 (since QGIS 3.10).
+      QGIS_SERVER_API_WFS3_MAX_LIMIT, //! Maximum value for "limit" in a features request, defaults to 10000 (since QGIS 3.10).
+      QGIS_REVEAL_SERVER_SETTINGS //! Enables QGIS Server legacy request GetServerSettings
     };
     Q_ENUM( EnvVar )
 };
@@ -114,6 +115,11 @@ class SERVER_EXPORT QgsServerSettings
     void logSummary() const;
 
     /**
+     * Log a summary of settings currently loaded in JSON format
+     */
+    QJsonObject logSummaryJson() const;
+
+    /**
      * Returns the ini file loaded by QSetting.
      * \returns the path of the ini file or an empty string if none is loaded.
      */
@@ -124,6 +130,12 @@ class SERVER_EXPORT QgsServerSettings
      * \returns TRUE if parallel rendering is activated, FALSE otherwise.
      */
     bool parallelRendering() const;
+
+    /**
+     * Returns reveal server settings setting.
+     * \returns TRUE if reveal server settings is enabled, FALSE otherwise.
+     */
+    bool revealServerSettings() const;
 
     /**
      * Returns the maximum number of threads to use.

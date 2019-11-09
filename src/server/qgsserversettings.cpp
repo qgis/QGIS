@@ -21,6 +21,8 @@
 
 #include <QSettings>
 #include <QDir>
+#include <QJsonArray>
+#include <QJsonObject>
 
 QgsServerSettings::QgsServerSettings()
 {
@@ -52,6 +54,17 @@ void QgsServerSettings::initSettings()
                              QVariant()
                            };
   mSettings[ sParRend.envVar ] = sParRend;
+
+  // enable GetServerSettings request
+  const Setting sRevealServerSettings = { QgsServerSettingsEnv::QGIS_REVEAL_SERVER_SETTINGS,
+                                          QgsServerSettingsEnv::ENVIRONMENT_VARIABLE,
+                                          QStringLiteral( "Enable/disable the GetServerSettings QGIS Server request" ),
+                                          QStringLiteral( "/qgis/reveal_server_settings" ),
+                                          QVariant::Bool,
+                                          QVariant( false ), // default
+                                          QVariant()
+                                        };
+  mSettings[ sRevealServerSettings.envVar ] = sRevealServerSettings;
 
   // max threads
   const Setting sMaxThreads = { QgsServerSettingsEnv::QGIS_SERVER_MAX_THREADS,
@@ -338,6 +351,37 @@ void QgsServerSettings::logSummary() const
   }
 }
 
+QJsonObject QgsServerSettings::logSummaryJson() const
+{
+  const QMetaEnum metaEnumSrc( QMetaEnum::fromType<QgsServerSettingsEnv::Source>() );
+  const QMetaEnum metaEnumEnv( QMetaEnum::fromType<QgsServerSettingsEnv::EnvVar>() );
+  QJsonObject serverSettings;
+  QJsonArray settings;
+
+  serverSettings["summary"] = {};
+  for ( Setting s : mSettings )
+  {
+    const QString src = metaEnumSrc.valueToKey( s.src );
+    const QString var = metaEnumEnv.valueToKey( s.envVar );
+
+    QJsonObject entry;
+    entry["setting"] = var;
+    entry["key"] = s.iniKey;
+    entry["description"] = s.descr;
+    entry["source"] = src;
+    entry["value"] = value( s.envVar ).toString();
+    settings.append( entry );
+  }
+  serverSettings["summary"] = settings;
+
+  if ( ! iniFile().isEmpty() )
+  {
+    const QString msg = "Ini file used to initialize settings: " + iniFile();
+    serverSettings["ini"] = iniFile();
+  }
+  return serverSettings;
+}
+
 // getter
 QString QgsServerSettings::iniFile() const
 {
@@ -347,6 +391,11 @@ QString QgsServerSettings::iniFile() const
 bool QgsServerSettings::parallelRendering() const
 {
   return value( QgsServerSettingsEnv::QGIS_SERVER_PARALLEL_RENDERING ).toBool();
+}
+
+bool QgsServerSettings::revealServerSettings() const
+{
+  return value( QgsServerSettingsEnv::QGIS_REVEAL_SERVER_SETTINGS ).toBool();
 }
 
 int QgsServerSettings::maxThreads() const
