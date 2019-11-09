@@ -45,8 +45,13 @@ class QPaintEvent;
  * The QgsRubberBand class provides a transparent overlay widget
  * for tracking the mouse while drawing polylines or polygons.
  */
+#ifndef SIP_RUN
 class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
 {
+#else
+class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
+{
+#endif
     Q_OBJECT
 
 #ifdef SIP_RUN
