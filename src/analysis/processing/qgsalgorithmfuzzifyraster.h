@@ -59,7 +59,7 @@ class QgsFuzzifyRasterAlgorithmBase : public QgsProcessingAlgorithm
     /**
      * Pure virtual method fuzzify() performs subclass specific fuzzification.
      */
-    virtual double fuzzify( double &value ) = 0;
+    virtual void fuzzify( QgsProcessingFeedback *feedback ) = 0;
 
     QgsRasterLayer *mInputRaster;
     int mBand;
@@ -95,7 +95,7 @@ class QgsFuzzifyRasterLinearMembershipAlgorithm : public QgsFuzzifyRasterAlgorit
   protected:
     void addAlgorithmParams() override;
     bool prepareAlgorithmFuzzificationParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    double fuzzify( double &value ) override;
+    void fuzzify( QgsProcessingFeedback *feedback ) override;
 
   private:
     double mFuzzifyLowBound;
@@ -120,7 +120,7 @@ class QgsFuzzifyRasterPowerMembershipAlgorithm : public QgsFuzzifyRasterAlgorith
   protected:
     void addAlgorithmParams() override;
     bool prepareAlgorithmFuzzificationParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    double fuzzify( double &value ) override;
+    void fuzzify( QgsProcessingFeedback *feedback ) override;
 
   private:
     double mFuzzifyLowBound;
@@ -146,7 +146,7 @@ class QgsFuzzifyRasterLargeMembershipAlgorithm : public QgsFuzzifyRasterAlgorith
   protected:
     void addAlgorithmParams() override;
     bool prepareAlgorithmFuzzificationParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    double fuzzify( double &value ) override;
+    void fuzzify( QgsProcessingFeedback *feedback ) override;
 
   private:
     double mFuzzifyMidpoint;
@@ -171,7 +171,7 @@ class QgsFuzzifyRasterSmallMembershipAlgorithm : public QgsFuzzifyRasterAlgorith
   protected:
     void addAlgorithmParams() override;
     bool prepareAlgorithmFuzzificationParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    double fuzzify( double &value ) override;
+    void fuzzify( QgsProcessingFeedback *feedback ) override;
 
   private:
     double mFuzzifyMidpoint;
@@ -196,7 +196,7 @@ class QgsFuzzifyRasterGaussianMembershipAlgorithm : public QgsFuzzifyRasterAlgor
   protected:
     void addAlgorithmParams() override;
     bool prepareAlgorithmFuzzificationParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    double fuzzify( double &value ) override;
+    void fuzzify( QgsProcessingFeedback *feedback ) override;
 
   private:
     double mFuzzifyMidpoint;
@@ -221,7 +221,7 @@ class QgsFuzzifyRasterNearMembershipAlgorithm : public QgsFuzzifyRasterAlgorithm
   protected:
     void addAlgorithmParams() override;
     bool prepareAlgorithmFuzzificationParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    double fuzzify( double &value ) override;
+    void fuzzify( QgsProcessingFeedback *feedback ) override;
 
   private:
     double mFuzzifyMidpoint;
