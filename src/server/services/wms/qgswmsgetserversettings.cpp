@@ -135,6 +135,7 @@ namespace QgsWms
     QJsonObject serverSettings;
     serverSettings["about"] = about();
     serverSettings["settings"] = serverIface->serverSettings()->logSummaryJson();
+    serverSettings["fonts"] = availableFonts();
 
     QJsonObject serverPlugins;
     QJsonArray availablePlugins = {};
@@ -144,8 +145,6 @@ namespace QgsWms
     serverPlugins["enabled"] = availablePlugins;
     serverSettings["plugins"] = serverPlugins;
 
-    serverSettings["settings"] = serverIface->serverSettings()->logSummaryJson();
-    serverSettings["fonts"] = availableFonts();
     QJsonDocument document( serverSettings );
 
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "application/json" ) );
