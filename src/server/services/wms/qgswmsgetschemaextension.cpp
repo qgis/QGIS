@@ -37,7 +37,7 @@ namespace QgsWms
   }
 
   QDomDocument getSchemaExtension( QgsServerInterface *serverIface, const QString &version,
-                                   const QgsServerRequest &request )
+                                   const QgsServerRequest & )
   {
     Q_UNUSED( version )
     Q_UNUSED( serverIface )
