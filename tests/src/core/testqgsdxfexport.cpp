@@ -328,6 +328,9 @@ void TestQgsDxfExport::testMtext()
                               "  7\n"
                               "STANDARD\n"
                               "  0", &debugInfo ), debugInfo.toUtf8().constData() );
+
+
+  QgsProject::instance()->removeMapLayer( layer );
 }
 
 void TestQgsDxfExport::testMtext_data()
@@ -344,8 +347,6 @@ void TestQgsDxfExport::testMtext_data()
       << pointLayer
       << QStringLiteral( "mtext_dxf" );
 
-  QgsProject::instance()->removeMapLayer( pointLayer );
-
   QgsVectorLayer *pointLayerNoSymbols = new QgsVectorLayer( filename, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
   QVERIFY( pointLayerNoSymbols->isValid() );
   pointLayerNoSymbols->setRenderer( new QgsNullSymbolRenderer() );
@@ -355,9 +356,7 @@ void TestQgsDxfExport::testMtext_data()
 
   QTest::newRow( "MText No Symbology" )
       << pointLayerNoSymbols
-      << QStringLiteral( "text_no_symbology_dxf" );
-
-  QgsProject::instance()->removeMapLayer( pointLayerNoSymbols );
+      << QStringLiteral( "mtext_no_symbology_dxf" );
 }
 
 void TestQgsDxfExport::testMTextEscapeSpaces()
