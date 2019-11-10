@@ -54,7 +54,7 @@ struct DxfLayerJob
 
     labeling.reset( vl->labelsEnabled() ? vl->labeling()->clone() : nullptr );
 
-    QSet<QString> attributes = renderer->usedAttributes( renderContext );
+    attributes = renderer->usedAttributes( renderContext );
     if ( !splitLayerAttribute.isNull() )
     {
       attributes << splitLayerAttribute;
@@ -106,6 +106,7 @@ struct DxfLayerJob
   QgsDxfRuleBasedLabelProvider *ruleBasedLabelProvider = nullptr;
   QString splitLayerAttribute;
   QString layerTitle;
+  QSet<QString> attributes;
 };
 
 // dxf color palette

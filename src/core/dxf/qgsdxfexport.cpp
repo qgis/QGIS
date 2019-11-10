@@ -646,18 +646,12 @@ void QgsDxfExport::writeEntities()
       continue;
     }
 
-    QSet<QString> attributes = job->renderer->usedAttributes( mRenderContext );
-    if ( !job->splitLayerAttribute.isNull() )
-    {
-      attributes << job->splitLayerAttribute;
-    }
-
     QgsCoordinateTransform ct( mMapSettings.destinationCrs(), job->crs, mMapSettings.transformContext() );
 
-    QgsFeatureRequest freq = QgsFeatureRequest().setSubsetOfAttributes( attributes, job->fields ).setExpressionContext( mRenderContext.expressionContext() );
-    freq.setFilterRect( ct.transform( mExtent ) );
+    QgsFeatureRequest request = QgsFeatureRequest().setSubsetOfAttributes( job->attributes, job->fields ).setExpressionContext( job->expressionContext );
+    request.setFilterRect( ct.transform( mExtent ) );
 
-    QgsFeatureIterator featureIt = job->featureSource.getFeatures( freq );
+    QgsFeatureIterator featureIt = job->featureSource.getFeatures( request );
 
     QgsFeature fet;
     while ( featureIt.nextFeature( fet ) )
@@ -738,14 +732,25 @@ void QgsDxfExport::writeEntities()
   QPainter painter( &image );
   mRenderContext.setPainter( &painter );
 
-  renderContext().labelingEngine()->run( mRenderContext );
+  mRenderContext.labelingEngine()->run( mRenderContext );
 
   endSection();
 }
 
 void QgsDxfExport::prepareRenderers()
 {
-  Q_ASSERT( mJobs.empty() );
+  Q_ASSERT( mJobs.empty() ); // If this fails, stopRenderers() was not called after the last job
+
+  mRenderContext = QgsRenderContext();
+  mRenderContext.setRendererScale( mSymbologyScale );
+  mRenderContext.setExtent( mExtent );
+
+  mRenderContext.setScaleFactor( 96.0 / 25.4 );
+  mRenderContext.setMapToPixel( QgsMapToPixel( 1.0 / mFactor, mExtent.center().x(), mExtent.center().y(), mExtent.width() * mFactor,
+                                mExtent.height() * mFactor, 0 ) );
+
+  mRenderContext.expressionContext().appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
+  mRenderContext.expressionContext().appendScope( QgsExpressionContextUtils::globalScope() );
 
   const QList< QgsMapLayer * > layers = mMapSettings.layers();
   for ( QgsMapLayer *ml : layers )

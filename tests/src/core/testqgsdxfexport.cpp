@@ -270,6 +270,8 @@ void TestQgsDxfExport::testMtext()
 
   QVERIFY( layer );
 
+  QgsProject::instance()->addMapLayer( layer );
+
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
   QgsTextFormat format;
@@ -339,20 +341,18 @@ void TestQgsDxfExport::testMtext_data()
   QTest::addColumn<QString>( "layerName" );
 
   QString filename = QStringLiteral( TEST_DATA_DIR ) + "/points.shp";
+#if 0
   QgsVectorLayer *pointLayer = new QgsVectorLayer( filename, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
   QVERIFY( pointLayer->isValid() );
-  QgsProject::instance()->addMapLayer( pointLayer );
 
   QTest::newRow( "MText" )
       << pointLayer
       << QStringLiteral( "mtext_dxf" );
-
+#endif
   QgsVectorLayer *pointLayerNoSymbols = new QgsVectorLayer( filename, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
   QVERIFY( pointLayerNoSymbols->isValid() );
   pointLayerNoSymbols->setRenderer( new QgsNullSymbolRenderer() );
   pointLayerNoSymbols->addExpressionField( QStringLiteral( "'A text with spaces'" ), QgsField( QStringLiteral( "Spacestest" ), QVariant::String ) );
-  QgsProject::instance()->addMapLayer( pointLayerNoSymbols );
-
 
   QTest::newRow( "MText No Symbology" )
       << pointLayerNoSymbols
@@ -391,7 +391,8 @@ void TestQgsDxfExport::testMTextEscapeSpaces()
   QFile dxfFile( file );
   QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
-  QVERIFY( fileContainsText( file, "\\fQGIS Vera Sans|i0|b1;\\H3.81136;A\\~text\\~with\\~spaces" ) );
+  QString debugInfo;
+  QVERIFY2( fileContainsText( file, "\\fQGIS Vera Sans|i0|b1;\\H3.81136;A\\~text\\~with\\~spaces", &debugInfo ), debugInfo.toUtf8().constData() );
 }
 
 void TestQgsDxfExport::testText()
