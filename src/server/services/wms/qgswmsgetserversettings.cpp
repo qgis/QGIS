@@ -25,7 +25,7 @@
 #include "pg_config.h"
 #include "spatialite.h"
 #include "qwt/qwt_global.h"
-#include "proj.h"
+#include <proj.h>
 #include "qgis.h"
 #include <QThread>
 #include <QFontDatabase>
