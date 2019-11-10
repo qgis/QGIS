@@ -25,7 +25,11 @@
 #include "pg_config.h"
 #include "spatialite.h"
 #include "qwt/qwt_global.h"
+#if PROJ_VERSION_MAJOR>=6
 #include <proj.h>
+#else
+#include <proj_api.h>
+#endif
 #include "qgis.h"
 #include <QThread>
 #include <QFontDatabase>
