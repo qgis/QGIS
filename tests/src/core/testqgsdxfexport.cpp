@@ -50,7 +50,7 @@ class TestQgsDxfExport : public QObject
     void testPolygons();
     void testMultiSurface();
     void testMtext();
-    void testMTextNoSymbology(); //tests if label export works if layer has vector renderer type 'no symbols'
+    void testMtext_data();
     void testMTextEscapeSpaces();
     void testText();
     void testTextAlign();
@@ -73,7 +73,6 @@ class TestQgsDxfExport : public QObject
     QString getTempFileName( const QString &file ) const;
 
     bool fileContainsText( const QString &path, const QString &text, QString *debugInfo = nullptr ) const;
-    bool testMtext( QgsVectorLayer *vlayer, const QString &tempFileName ) const;
 };
 
 void TestQgsDxfExport::initTestCase()
@@ -266,12 +265,81 @@ void TestQgsDxfExport::testMultiSurface()
 
 void TestQgsDxfExport::testMtext()
 {
-  QVERIFY( testMtext( mPointLayer, QStringLiteral( "mtext_dxf" ) ) );
+  QFETCH( QgsVectorLayer *, layer );
+  QFETCH( QString, layerName );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "Class" );
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 200, 0, 200 ) );
+  settings.setFormat( format );
+  layer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  layer->setLabelsEnabled( true );
+
+  QgsDxfExport d;
+  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( layer ) );
+
+  QgsMapSettings mapSettings;
+  QSize size( 640, 480 );
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( layer->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << layer );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setDestinationCrs( layer->crs() );
+
+  d.setMapSettings( mapSettings );
+  d.setSymbologyScale( 1000 );
+  d.setSymbologyExport( QgsDxfExport::FeatureSymbology );
+
+  QString file = getTempFileName( layerName );
+  QFile dxfFile( file );
+  QVERIFY( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ) != QgsDxfExport::ExportResult::Success );
+  dxfFile.close();
+
+  QString debugInfo;
+  QVERIFY2( fileContainsText( file, "MTEXT\n"
+                              "  5\n"
+                              "**no check**\n"
+                              "100\n"
+                              "AcDbEntity\n"
+                              "100\n"
+                              "AcDbMText\n"
+                              "  8\n"
+                              "points\n"
+                              "420\n"
+                              "**no check**\n"
+                              " 10\n"
+                              "**no check**\n"
+                              " 20\n"
+                              "**no check**\n"
+                              "  1\n"
+                              "\\fQGIS Vera Sans|i0|b1;\\H3.81136;Biplane\n"
+                              " 50\n"
+                              "0.0\n"
+                              " 41\n"
+                              "**no check**\n"
+                              " 71\n"
+                              "     7\n"
+                              "  7\n"
+                              "STANDARD\n"
+                              "  0", &debugInfo ), debugInfo.toUtf8().constData() );
 }
 
-void TestQgsDxfExport::testMTextNoSymbology()
+void TestQgsDxfExport::testMtext_data()
 {
-  QVERIFY( testMtext( mPointLayerNoSymbols, QStringLiteral( "text_no_symbology_dxf" ) ) );
+  QTest::addColumn<QgsVectorLayer *>( "layer" );
+  QTest::addColumn<QString>( "layerName" );
+
+  QTest::newRow( "MText" )
+      << mPointLayer
+      << QStringLiteral( "mtext_dxf" );
+
+  QTest::newRow( "MText No Symbology" )
+      << mPointLayerNoSymbols
+      << QStringLiteral( "text_no_symbology_dxf" );
 }
 
 void TestQgsDxfExport::testMTextEscapeSpaces()
@@ -519,76 +587,6 @@ void TestQgsDxfExport::testTextAlign_data()
       << QgsDxfExport::VAlign::VMiddle
       << QStringLiteral( "Center" )
       << QStringLiteral( "Half" );
-}
-
-bool TestQgsDxfExport::testMtext( QgsVectorLayer *vlayer, const QString &tempFileName ) const
-{
-  if ( !vlayer )
-  {
-    return false;
-  }
-
-  QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
-  QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
-  format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
-  format.setColor( QColor( 200, 0, 200 ) );
-  settings.setFormat( format );
-  vlayer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
-  vlayer->setLabelsEnabled( true );
-
-  QgsDxfExport d;
-  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( vlayer ) );
-
-  QgsMapSettings mapSettings;
-  QSize size( 640, 480 );
-  mapSettings.setOutputSize( size );
-  mapSettings.setExtent( vlayer->extent() );
-  mapSettings.setLayers( QList<QgsMapLayer *>() << vlayer );
-  mapSettings.setOutputDpi( 96 );
-  mapSettings.setDestinationCrs( vlayer->crs() );
-
-  d.setMapSettings( mapSettings );
-  d.setSymbologyScale( 1000 );
-  d.setSymbologyExport( QgsDxfExport::FeatureSymbology );
-
-  QString file = getTempFileName( tempFileName );
-  QFile dxfFile( file );
-  if ( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ) != QgsDxfExport::ExportResult::Success )
-  {
-    return false;
-  }
-  dxfFile.close();
-
-
-  return ( fileContainsText( file, "MTEXT\n"
-                             "  5\n"
-                             "**no check**\n"
-                             "100\n"
-                             "AcDbEntity\n"
-                             "100\n"
-                             "AcDbMText\n"
-                             "  8\n"
-                             "points\n"
-                             "420\n"
-                             "**no check**\n"
-                             " 10\n"
-                             "**no check**\n"
-                             " 20\n"
-                             "**no check**\n"
-                             "  1\n"
-                             "\\fQGIS Vera Sans|i0|b1;\\H3.81136;Biplane\n"
-                             " 50\n"
-                             "0.0\n"
-                             " 41\n"
-                             "**no check**\n"
-                             " 71\n"
-                             "     7\n"
-                             "  7\n"
-                             "STANDARD\n"
-                             "  0" ) );
 }
 
 void TestQgsDxfExport::testGeometryGeneratorExport()
