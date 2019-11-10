@@ -77,6 +77,8 @@ class CORE_EXPORT QgsDxfExport
          */
         int layerOutputAttributeIndex() const {return mLayerOutputAttributeIndex;}
 
+        QString splitLayerAttribute() const;
+
       private:
         QgsVectorLayer *mLayer = nullptr;
         int mLayerOutputAttributeIndex = -1;
@@ -522,7 +524,7 @@ class CORE_EXPORT QgsDxfExport
     void writeTables();
     void writeBlocks();
     void writeEntities();
-    void writeEntitiesSymbolLevels( QgsVectorLayer *layer );
+    void writeEntitiesSymbolLevels( DxfLayerJob *job );
     void stopRenderers();
     void writeEndFile();
 
@@ -590,7 +592,10 @@ class CORE_EXPORT QgsDxfExport
     void appendCircularString( const QgsCircularString &cs, QVector<QgsPoint> &points, QVector<double> &bulges );
     void appendCompoundCurve( const QgsCompoundCurve &cc, QVector<QgsPoint> &points, QVector<double> &bulges );
 
+    QgsRenderContext mRenderContext;
+    // Internal cache for information required during rendering
     QList<DxfLayerJob *> mJobs;
+    std::unique_ptr<QgsLabelingEngine> mLabelingEngine;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDxfExport::Flags )

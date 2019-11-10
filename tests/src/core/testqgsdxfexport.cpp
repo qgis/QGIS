@@ -436,7 +436,7 @@ void TestQgsDxfExport::testTextAlign()
   QString debugInfo;
   QVERIFY2( fileContainsText( file, QStringLiteral( "TEXT\n"
                               "  5\n"
-                              "89\n"
+                              "**no check**\n"
                               "100\n"
                               "AcDbEntity\n"
                               "100\n"

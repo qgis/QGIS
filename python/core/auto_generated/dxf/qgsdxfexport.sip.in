@@ -36,6 +36,8 @@ Returns the attribute index used to split into multiple layers.
 The attribute value is used for layer names.
 %End
 
+        QString splitLayerAttribute() const;
+
     };
 
     enum SymbologyExport

@@ -44,6 +44,7 @@ QgsDxfRuleBasedLabelProvider::QgsDxfRuleBasedLabelProvider( const QgsRuleBasedLa
   : QgsRuleBasedLabelProvider( rules, layer, false )
   , mDxfExport( dxf )
 {
+  mRules->rootRule()->createSubProviders( layer, mSubProviders, this );
 }
 
 void QgsDxfRuleBasedLabelProvider::reinit( QgsVectorLayer *layer )
