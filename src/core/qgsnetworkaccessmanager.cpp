@@ -222,7 +222,7 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   if ( !userAgent.isEmpty() )
     userAgent += ' ';
   userAgent += QStringLiteral( "QGIS/%1" ).arg( Qgis::version() );
-  pReq->setRawHeader( "User-Agent", userAgent.toUtf8() );
+  pReq->setRawHeader( "User-Agent", QUrlQuery( userAgent ).toString( QUrl::ComponentFormattingOption::EncodeUnicode ).toUtf8() );
 
 #ifndef QT_NO_SSL
   bool ishttps = pReq->url().scheme().compare( QLatin1String( "https" ), Qt::CaseInsensitive ) == 0;
