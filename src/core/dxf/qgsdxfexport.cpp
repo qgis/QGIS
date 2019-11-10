@@ -1886,10 +1886,9 @@ int QgsDxfExport::nLineTypes( const QList< QPair< QgsSymbolLayer *, QgsSymbol * 
 void QgsDxfExport::writeLinetype( const QString &styleName, const QVector<qreal> &pattern, QgsUnitTypes::RenderUnit u )
 {
   double length = 0;
-  QVector<qreal>::const_iterator dashIt = pattern.constBegin();
-  for ( ; dashIt != pattern.constEnd(); ++dashIt )
+  for ( qreal size : pattern )
   {
-    length += ( *dashIt * mapUnitScaleFactor( mSymbologyScale, u, mMapUnits, mMapSettings.mapToPixel().mapUnitsPerPixel() ) );
+    length += ( size * mapUnitScaleFactor( mSymbologyScale, u, mMapUnits, mMapSettings.mapToPixel().mapUnitsPerPixel() ) );
   }
 
   writeGroup( 0, QStringLiteral( "LTYPE" ) );
@@ -1904,12 +1903,11 @@ void QgsDxfExport::writeLinetype( const QString &styleName, const QVector<qreal>
   writeGroup( 73, pattern.size() );
   writeGroup( 40, length );
 
-  dashIt = pattern.constBegin();
   bool isGap = false;
-  for ( ; dashIt != pattern.constEnd(); ++dashIt )
+  for ( qreal size : pattern )
   {
     // map units or mm?
-    double segmentLength = ( isGap ? -*dashIt : *dashIt );
+    double segmentLength = ( isGap ? -size : size );
     segmentLength *= mapUnitScaleFactor( mSymbologyScale, u, mMapUnits, mMapSettings.mapToPixel().mapUnitsPerPixel() );
     writeGroup( 49, segmentLength );
     writeGroup( 74, 0 );
