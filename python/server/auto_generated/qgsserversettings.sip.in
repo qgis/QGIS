@@ -47,6 +47,11 @@ Load setting for a specific environment variable name.
 Log a summary of settings currently loaded.
 %End
 
+    QJsonObject logSummaryJson() const;
+%Docstring
+Log a summary of settings currently loaded in JSON format
+%End
+
     QString iniFile() const;
 %Docstring
 Returns the ini file loaded by QSetting.
@@ -59,6 +64,13 @@ Returns the ini file loaded by QSetting.
 Returns parallel rendering setting.
 
 :return: ``True`` if parallel rendering is activated, ``False`` otherwise.
+%End
+
+    bool revealServerSettings() const;
+%Docstring
+Returns reveal server settings setting.
+
+:return: ``True`` if reveal server settings is enabled, ``False`` otherwise.
 %End
 
     int maxThreads() const;
