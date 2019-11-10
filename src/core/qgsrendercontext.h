@@ -489,7 +489,7 @@ class CORE_EXPORT QgsRenderContext
      * Assign new labeling engine
      * \note not available in Python bindings
      */
-    void setLabelingEngine( QgsLabelingEngine *engine2 ) { mLabelingEngine = engine2; } SIP_SKIP
+    void setLabelingEngine( QgsLabelingEngine *engine ) { mLabelingEngine = engine; } SIP_SKIP
 
     /**
      * Sets the \a color to use when rendering selected features.
