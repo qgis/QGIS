@@ -106,7 +106,7 @@ QVariantMap QgsServiceAreaFromPointAlgorithm::processAlgorithm( const QVariantMa
   for ( int i = 0; i < costs.size(); i++ )
   {
     inboundEdgeIndex = tree.at( i );
-    if ( inboundEdgeIndex == -1 and i != idxStart )
+    if ( inboundEdgeIndex == -1 && i != idxStart )
     {
       // unreachable vertex
       continue;
@@ -188,7 +188,7 @@ QVariantMap QgsServiceAreaFromPointAlgorithm::processAlgorithm( const QVariantMa
       int vertexId;
       for ( int i = 0; i < costs.size(); i++ )
       {
-        if ( costs.at( i ) > travelCost and tree.at( i ) != -1 )
+        if ( costs.at( i ) > travelCost && tree.at( i ) != -1 )
         {
           vertexId = graph->edge( tree.at( i ) ).fromVertex();
           if ( costs.at( vertexId ) <= travelCost )
