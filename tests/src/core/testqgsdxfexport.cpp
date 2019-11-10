@@ -28,6 +28,7 @@
 #include "qgslabelingengine.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgsvectorlayerlabeling.h"
+#include "qgslinesymbollayer.h"
 #include <QTemporaryFile>
 
 Q_DECLARE_METATYPE( QgsDxfExport::HAlign )
@@ -57,6 +58,7 @@ class TestQgsDxfExport : public QObject
     void testGeometryGeneratorExport();
     void testCurveExport();
     void testCurveExport_data();
+    void testDashedLine();
 
   private:
     QgsVectorLayer *mPointLayer = nullptr;
@@ -745,6 +747,118 @@ void TestQgsDxfExport::testCurveExport_data()
                          "  0\n"
                          "ENDSEC" );
 
+}
+
+void TestQgsDxfExport::testDashedLine()
+{
+  std::unique_ptr<QgsSimpleLineSymbolLayer> symbolLayer = qgis::make_unique<QgsSimpleLineSymbolLayer>( QColor( 0, 0, 0 ) );
+  symbolLayer->setWidth( 0.5 );
+  symbolLayer->setCustomDashVector( { 2, 5 } );
+  symbolLayer->setUseCustomDashPattern( true );
+
+  QgsLineSymbol *symbol = new QgsLineSymbol();
+  symbol->changeSymbolLayer( 0, symbolLayer.release() );
+
+  std::unique_ptr< QgsVectorLayer > vl = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon" ), QString(), QStringLiteral( "memory" ) );
+  QgsGeometry g = QgsGeometry::fromWkt( "Polygon ((0 0, 0 1, 1 1, 0 0))" );
+  QgsFeature f;
+  f.setGeometry( g );
+  vl->dataProvider()->addFeatures( QgsFeatureList() << f );
+  QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer( symbol );
+  vl->setRenderer( renderer );
+
+  QgsDxfExport d;
+  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( vl.get() ) );
+  d.setSymbologyExport( QgsDxfExport::SymbologyExport::SymbolLayerSymbology );
+
+  QgsMapSettings mapSettings;
+  QSize size( 640, 480 );
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl.get() );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setDestinationCrs( vl->crs() );
+
+  d.setMapSettings( mapSettings );
+  d.setSymbologyScale( 1000 );
+
+  QString file = getTempFileName( "dashed_line_dxf" );
+  QFile dxfFile( file );
+  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
+  dxfFile.close();
+
+  QString debugInfo;
+
+  // Make sure the style definition for the dashed line is there
+  QVERIFY2( fileContainsText( file,
+                              "LTYPE\n"
+                              "  5\n"
+                              "6c\n"
+                              "100\n"
+                              "AcDbSymbolTableRecord\n"
+                              "100\n"
+                              "AcDbLinetypeTableRecord\n"
+                              "  2\n"
+                              "symbolLayer0\n"
+                              " 70\n"
+                              "    64\n"
+                              "  3\n"
+                              "\n"
+                              " 72\n"
+                              "    65\n"
+                              " 73\n"
+                              "     2\n"
+                              " 40\n"
+                              "7.0\n"
+                              " 49\n"
+                              "2.0\n"
+                              " 74\n"
+                              "     0\n"
+                              " 49\n"
+                              "-5.0\n"
+                              " 74\n"
+                              "     0", &debugInfo ), debugInfo.toUtf8().constData() );
+
+  // Make sure that the polyline references the style symbolLayer0
+  QVERIFY2( fileContainsText( file,
+                              "LWPOLYLINE\n"
+                              "  5\n"
+                              "83\n"
+                              "  8\n"
+                              "0\n"
+                              "100\n"
+                              "AcDbEntity\n"
+                              "100\n"
+                              "AcDbPolyline\n"
+                              "  6\n"
+                              "symbolLayer0\n"
+                              "420\n"
+                              "     0\n"
+                              " 90\n"
+                              "     4\n"
+                              " 70\n"
+                              "     1\n"
+                              " 43\n"
+                              "0.5\n"
+                              " 10\n"
+                              "0.0\n"
+                              " 20\n"
+                              "0.0\n"
+                              " 10\n"
+                              "0.0\n"
+                              " 20\n"
+                              "1.0\n"
+                              " 10\n"
+                              "1.0\n"
+                              " 20\n"
+                              "1.0\n"
+                              " 10\n"
+                              "0.0\n"
+                              " 20\n"
+                              "0.0\n"
+                              "  0\n"
+                              "ENDSEC"
+                              , &debugInfo ), debugInfo.toUtf8().constData() );
 }
 
 bool TestQgsDxfExport::fileContainsText( const QString &path, const QString &text, QString *debugInfo ) const
