@@ -2,7 +2,7 @@
 
 #set -e
 
-srcdir=`dirname $0`/../../
+srcdir=$(dirname $0)/../../
 
 DIR=$(git -C ${srcdir} rev-parse --show-toplevel)
 
