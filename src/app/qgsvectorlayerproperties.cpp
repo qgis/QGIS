@@ -381,12 +381,12 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mLayersDependenciesTreeGroup->setItemVisibilityChecked( false );
 
   QSet<QString> dependencySources;
-  const auto constDependencies = mLayer->dependencies();
+  const QSet<QgsMapLayerDependency> constDependencies = mLayer->dependencies();
   for ( const QgsMapLayerDependency &dep : constDependencies )
   {
     dependencySources << dep.layerId();
   }
-  const auto constFindLayers = mLayersDependenciesTreeGroup->findLayers();
+  const QList<QgsLayerTreeLayer *> constFindLayers = mLayersDependenciesTreeGroup->findLayers();
   for ( QgsLayerTreeLayer *layer : constFindLayers )
   {
     layer->setItemVisibilityChecked( dependencySources.contains( layer->layerId() ) );
@@ -1274,7 +1274,7 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
 
     // Store the original style, that we can restore at the end
     const QString originalStyle { mLayer->styleManager()->currentStyle() };
-    const auto stylesWidget { dlg.stylesWidget() };
+    const QListWidget *stylesWidget { dlg.stylesWidget() };
 
     // Collect selected (checked) styles for export/save
     QStringList stylesSelected;

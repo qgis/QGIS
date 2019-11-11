@@ -181,13 +181,20 @@ void QgsVectorLayerSaveStyleDialog::setupMultipleStyles()
   // Show/hide part of the UI according to multiple style support
   if ( ! mSaveOnlyCurrentStyle )
   {
-    const auto mgr { mLayer->styleManager() };
-    const auto constStyles = mgr->styles();
+    const QgsMapLayerStyleManager *styleManager { mLayer->styleManager() };
+    const QStringList constStyles = styleManager->styles();
     for ( const QString &name : constStyles )
     {
-      // TODO: highlight the current style: bool active = name == mgr->currentStyle();
       QListWidgetItem *item = new QListWidgetItem( name, mStylesWidget );
       item->setCheckState( Qt::CheckState::Checked );
+      // Highlight the current style
+      if ( name == styleManager->currentStyle() )
+      {
+        item->setToolTip( tr( "Current style" ) );
+        QFont font { item->font() };
+        font.setItalic( true );
+        item->setFont( font );
+      }
       mStylesWidget->addItem( item );
     }
     mDbStyleNameEdit->setToolTip( tr( "Leave blank to use style names or set the base name (an incremental number will be automatically appended)" ) );
