@@ -74,9 +74,16 @@ class CORE_EXPORT QgsDxfExport
         /**
          * Returns the attribute index used to split into multiple layers.
          * The attribute value is used for layer names.
+         * \see splitLayerAttribute
          */
         int layerOutputAttributeIndex() const {return mLayerOutputAttributeIndex;}
 
+        /**
+         * If the split layer attribute is set, the vector layer
+         * will be split into several dxf layers, one per each
+         * unique value.
+         * \since QGIS 3.12
+         */
         QString splitLayerAttribute() const;
 
       private:
@@ -593,7 +600,7 @@ class CORE_EXPORT QgsDxfExport
     void appendCompoundCurve( const QgsCompoundCurve &cc, QVector<QgsPoint> &points, QVector<double> &bulges );
 
     QgsRenderContext mRenderContext;
-    // Internal cache for information required during rendering
+    // Internal cache for layer related information required during rendering
     QList<DxfLayerJob *> mJobs;
     std::unique_ptr<QgsLabelingEngine> mLabelingEngine;
 };

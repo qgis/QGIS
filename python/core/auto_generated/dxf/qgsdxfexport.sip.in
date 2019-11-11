@@ -34,9 +34,18 @@ Returns the layer
 %Docstring
 Returns the attribute index used to split into multiple layers.
 The attribute value is used for layer names.
+
+.. seealso:: :py:func:`splitLayerAttribute`
 %End
 
         QString splitLayerAttribute() const;
+%Docstring
+If the split layer attribute is set, the vector layer
+will be split into several dxf layers, one per each
+unique value.
+
+.. versionadded:: 3.12
+%End
 
     };
 
