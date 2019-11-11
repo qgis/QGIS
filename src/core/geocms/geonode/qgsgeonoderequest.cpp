@@ -308,17 +308,24 @@ QList<QgsGeoNodeRequest::ServiceLayerDetail> QgsGeoNodeRequest::parseLayers( con
 
           // Avoid iterating all the layers to get the service url. Instead, generate a string format once we found one service url
           // for every service (wms, wfs, xyz). And then use the string format for the other layers since they are identical.
-          if ( tempLayerStruct.server == QgsGeoNodeRequest::QGIS_SERVER )
+          switch ( tempLayerStruct.server )
           {
-            wmsURLFormat = ! tempLayerStruct.wmsURL.isEmpty() ? tempLayerStruct.wmsURL.replace( layerStruct.name, QStringLiteral( "%1" ) ) : QString();
-            wfsURLFormat = ! tempLayerStruct.wfsURL.isEmpty() ? tempLayerStruct.wfsURL.replace( layerStruct.name, QStringLiteral( "%1" ) ) : QString();
-            xyzURLFormat = ! tempLayerStruct.xyzURL.isEmpty() ? tempLayerStruct.xyzURL.replace( layerStruct.name, QStringLiteral( "%1" ) ) : QString();
-          }
-          else if ( tempLayerStruct.server == QgsGeoNodeRequest::GEOSERVER )
-          {
-            wmsURLFormat = ! tempLayerStruct.wmsURL.isEmpty() ? tempLayerStruct.wmsURL : QString();
-            wfsURLFormat = ! tempLayerStruct.wfsURL.isEmpty() ? tempLayerStruct.wfsURL : QString();
-            xyzURLFormat = ! tempLayerStruct.xyzURL.isEmpty() ? tempLayerStruct.xyzURL.replace( layerStruct.name, QStringLiteral( "%1" ) ) : "";
+            case QgsGeoNodeRequest::BackendServer::QgisServer:
+            {
+              wmsURLFormat = ! tempLayerStruct.wmsURL.isEmpty() ? tempLayerStruct.wmsURL.replace( layerStruct.name, QStringLiteral( "%1" ) ) : QString();
+              wfsURLFormat = ! tempLayerStruct.wfsURL.isEmpty() ? tempLayerStruct.wfsURL.replace( layerStruct.name, QStringLiteral( "%1" ) ) : QString();
+              xyzURLFormat = ! tempLayerStruct.xyzURL.isEmpty() ? tempLayerStruct.xyzURL.replace( layerStruct.name, QStringLiteral( "%1" ) ) : QString();
+              break;
+            }
+            case QgsGeoNodeRequest::BackendServer::Geoserver:
+            {
+              wmsURLFormat = ! tempLayerStruct.wmsURL.isEmpty() ? tempLayerStruct.wmsURL : QString();
+              wfsURLFormat = ! tempLayerStruct.wfsURL.isEmpty() ? tempLayerStruct.wfsURL : QString();
+              xyzURLFormat = ! tempLayerStruct.xyzURL.isEmpty() ? tempLayerStruct.xyzURL.replace( layerStruct.name, QStringLiteral( "%1" ) ) : QString();
+              break;
+            }
+            case QgsGeoNodeRequest::BackendServer::Unknown:
+              break;
           }
         }
         else
@@ -366,8 +373,18 @@ QgsGeoNodeRequest::ServiceLayerDetail QgsGeoNodeRequest::parseOwsUrl( QgsGeoNode
       }
     }
 
-    if ( layerStruct.server == QgsGeoNodeRequest::UNKNOWN )
-      layerStruct.server = urlFound.contains( QStringLiteral( "qgis-server" ) ) ? QgsGeoNodeRequest::QGIS_SERVER : QgsGeoNodeRequest::GEOSERVER;
+    switch ( layerStruct.server )
+    {
+      case QgsGeoNodeRequest::BackendServer::Geoserver:
+      case QgsGeoNodeRequest::BackendServer::QgisServer:
+        break;
+
+      case QgsGeoNodeRequest::BackendServer::Unknown:
+      {
+        layerStruct.server = urlFound.contains( QStringLiteral( "qgis-server" ) ) ? QgsGeoNodeRequest::BackendServer::QgisServer : QgsGeoNodeRequest::BackendServer::Geoserver;
+        break;
+      }
+    }
   }
 
   return layerStruct;

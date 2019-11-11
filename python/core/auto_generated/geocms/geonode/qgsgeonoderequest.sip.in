@@ -40,15 +40,24 @@ server instance, for instance requesting all available layers or layer styles.
 %End
   public:
 
+    enum class BackendServer
+    {
+      Unknown,
+      QgisServer,
+      Geoserver
+    };
+
     struct ServiceLayerDetail
     {
       QUuid uuid;
+      QString id;
       QString name;
       QString typeName;
       QString title;
       QString wmsURL;
       QString wfsURL;
       QString xyzURL;
+      BackendServer server;
     };
 
     QgsGeoNodeRequest( const QString &baseUrl, bool forceRefresh, QObject *parent = 0 );
@@ -180,6 +189,11 @@ Returns the network protocol (e.g. 'http') used for connecting with the server.
 Sets the network ``protocol`` (e.g. 'http') used for connecting with the server.
 
 .. seealso:: :py:func:`protocol`
+%End
+
+    QgsGeoNodeRequest::ServiceLayerDetail parseOwsUrl( QgsGeoNodeRequest::ServiceLayerDetail &layerStruct, const QVariantList &layerLinks );
+%Docstring
+Returns the updated ServiceLayerDetail struct with WMS/WFS/XYZ url.
 %End
 
   public slots:

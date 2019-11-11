@@ -70,12 +70,12 @@ class CORE_EXPORT QgsGeoNodeRequest : public QObject
     /**
      * GeoNode backend server type.
      */
-    typedef enum
+    enum class BackendServer
     {
-      UNKNOWN,
-      QGIS_SERVER,
-      GEOSERVER
-    } BackendServer;
+      Unknown, //!< Unknown backend
+      QgisServer, //!< QGIS server used as backend
+      Geoserver //!< Geoserver used as backend
+    };
 
     /**
      * Service layer details for an individual layer from a GeoNode connection.
