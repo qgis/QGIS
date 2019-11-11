@@ -85,6 +85,9 @@ QgsVectorLayerSaveStyleDialog::QgsVectorLayerSaveStyleDialog( QgsVectorLayer *la
   mStyleCategoriesListView->setModel( mModel );
 
   mStyleCategoriesListView->adjustSize();
+
+  setupMultipleStyles();
+
 }
 
 void QgsVectorLayerSaveStyleDialog::accept()
@@ -96,8 +99,25 @@ void QgsVectorLayerSaveStyleDialog::accept()
 void QgsVectorLayerSaveStyleDialog::updateSaveButtonState()
 {
   QgsVectorLayerProperties::StyleType type = currentStyleType();
-  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( ( type == QgsVectorLayerProperties::DB && !mDbStyleNameEdit->text().isEmpty() ) ||
-      ( type != QgsVectorLayerProperties::DB && !mFileWidget->filePath().isEmpty() ) );
+  bool enabled { false };
+  switch ( type )
+  {
+    case QgsVectorLayerProperties::DB:
+      if ( saveOnlyCurrentStyle( ) )
+      {
+        enabled = ! mDbStyleNameEdit->text().isEmpty();
+      }
+      else
+      {
+        enabled = true;
+      }
+      break;
+    case QgsVectorLayerProperties::QML:
+    case QgsVectorLayerProperties::SLD:
+      enabled = ! mFileWidget->filePath().isEmpty();
+      break;
+  }
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
 }
 
 QgsVectorLayerSaveStyleDialog::SaveToDbSettings QgsVectorLayerSaveStyleDialog::saveToDbSettings() const
@@ -155,6 +175,62 @@ void QgsVectorLayerSaveStyleDialog::readUiFileContent( const QString &filePath )
     mUiFileContent = content;
   }
 }
+
+void QgsVectorLayerSaveStyleDialog::setupMultipleStyles()
+{
+  // Show/hide part of the UI according to multiple style support
+  if ( ! mSaveOnlyCurrentStyle )
+  {
+    const QgsMapLayerStyleManager *styleManager { mLayer->styleManager() };
+    const QStringList constStyles = styleManager->styles();
+    for ( const QString &name : constStyles )
+    {
+      QListWidgetItem *item = new QListWidgetItem( name, mStylesWidget );
+      item->setCheckState( Qt::CheckState::Checked );
+      // Highlight the current style
+      if ( name == styleManager->currentStyle() )
+      {
+        item->setToolTip( tr( "Current style" ) );
+        QFont font { item->font() };
+        font.setItalic( true );
+        item->setFont( font );
+      }
+      mStylesWidget->addItem( item );
+    }
+    mDbStyleNameEdit->setToolTip( tr( "Leave blank to use style names or set the base name (an incremental number will be automatically appended)" ) );
+  }
+  else
+  {
+    mDbStyleNameEdit->setToolTip( QString() );
+  }
+
+  mStylesWidget->setVisible( ! mSaveOnlyCurrentStyle );
+  mStylesWidgetLabel->setVisible( ! mSaveOnlyCurrentStyle );
+
+  mDbStyleDescriptionEdit->setVisible( mSaveOnlyCurrentStyle );
+  descriptionLabel->setVisible( mSaveOnlyCurrentStyle );
+  mDbStyleUseAsDefault->setVisible( mSaveOnlyCurrentStyle );
+}
+
+bool QgsVectorLayerSaveStyleDialog::saveOnlyCurrentStyle() const
+{
+  return mSaveOnlyCurrentStyle;
+}
+
+void QgsVectorLayerSaveStyleDialog::setSaveOnlyCurrentStyle( bool saveOnlyCurrentStyle )
+{
+  if ( mSaveOnlyCurrentStyle != saveOnlyCurrentStyle )
+  {
+    mSaveOnlyCurrentStyle = saveOnlyCurrentStyle;
+    setupMultipleStyles();
+  }
+}
+
+const QListWidget *QgsVectorLayerSaveStyleDialog::stylesWidget()
+{
+  return mStylesWidget;
+}
+
 
 void QgsVectorLayerSaveStyleDialog::showHelp()
 {
