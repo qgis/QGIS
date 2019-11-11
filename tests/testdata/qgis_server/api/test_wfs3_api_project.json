@@ -794,7 +794,7 @@ Content-Type: application/openapi+json;version=3.0
             },
             "500",
             {
-              "description": "Posted data could not be parsed correctly or another error occourred"
+              "description": "Posted data could not be parsed correctly or another error occurred"
             }
           ],
           [
@@ -839,7 +839,7 @@ Content-Type: application/openapi+json;version=3.0
             },
             "500",
             {
-              "description": "Posted data could not be parsed correctly or another error occourred"
+              "description": "Posted data could not be parsed correctly or another error occurred"
             }
           ],
           [
@@ -927,7 +927,7 @@ Content-Type: application/openapi+json;version=3.0
             },
             "500",
             {
-              "description": "Posted data could not be parsed correctly or another error occourred"
+              "description": "Posted data could not be parsed correctly or another error occurred"
             }
           ],
           [
@@ -969,7 +969,7 @@ Content-Type: application/openapi+json;version=3.0
             },
             "500",
             {
-              "description": "Posted data could not be parsed correctly or another error occourred"
+              "description": "Posted data could not be parsed correctly or another error occurred"
             }
           ],
           [
@@ -1163,7 +1163,7 @@ Content-Type: application/openapi+json;version=3.0
             },
             "500",
             {
-              "description": "Posted data could not be parsed correctly or another error occourred"
+              "description": "Posted data could not be parsed correctly or another error occurred"
             }
           ],
           [
@@ -1208,7 +1208,7 @@ Content-Type: application/openapi+json;version=3.0
             },
             "500",
             {
-              "description": "Posted data could not be parsed correctly or another error occourred"
+              "description": "Posted data could not be parsed correctly or another error occurred"
             }
           ],
           [
@@ -1296,7 +1296,7 @@ Content-Type: application/openapi+json;version=3.0
             },
             "500",
             {
-              "description": "Posted data could not be parsed correctly or another error occourred"
+              "description": "Posted data could not be parsed correctly or another error occurred"
             }
           ],
           [
@@ -1338,7 +1338,7 @@ Content-Type: application/openapi+json;version=3.0
             },
             "500",
             {
-              "description": "Posted data could not be parsed correctly or another error occourred"
+              "description": "Posted data could not be parsed correctly or another error occurred"
             }
           ],
           [
@@ -1532,7 +1532,7 @@ Content-Type: application/openapi+json;version=3.0
             },
             "500",
             {
-              "description": "Posted data could not be parsed correctly or another error occourred"
+              "description": "Posted data could not be parsed correctly or another error occurred"
             }
           ],
           [
@@ -1577,7 +1577,7 @@ Content-Type: application/openapi+json;version=3.0
             },
             "500",
             {
-              "description": "Posted data could not be parsed correctly or another error occourred"
+              "description": "Posted data could not be parsed correctly or another error occurred"
             }
           ],
           [
@@ -1665,7 +1665,7 @@ Content-Type: application/openapi+json;version=3.0
             },
             "500",
             {
-              "description": "Posted data could not be parsed correctly or another error occourred"
+              "description": "Posted data could not be parsed correctly or another error occurred"
             }
           ],
           [
@@ -1707,7 +1707,7 @@ Content-Type: application/openapi+json;version=3.0
             },
             "500",
             {
-              "description": "Posted data could not be parsed correctly or another error occourred"
+              "description": "Posted data could not be parsed correctly or another error occurred"
             }
           ],
           [
@@ -1901,7 +1901,7 @@ Content-Type: application/openapi+json;version=3.0
             },
             "500",
             {
-              "description": "Posted data could not be parsed correctly or another error occourred"
+              "description": "Posted data could not be parsed correctly or another error occurred"
             }
           ],
           [
@@ -1946,7 +1946,7 @@ Content-Type: application/openapi+json;version=3.0
             },
             "500",
             {
-              "description": "Posted data could not be parsed correctly or another error occourred"
+              "description": "Posted data could not be parsed correctly or another error occurred"
             }
           ],
           [
@@ -2034,7 +2034,7 @@ Content-Type: application/openapi+json;version=3.0
             },
             "500",
             {
-              "description": "Posted data could not be parsed correctly or another error occourred"
+              "description": "Posted data could not be parsed correctly or another error occurred"
             }
           ],
           [
@@ -2076,7 +2076,7 @@ Content-Type: application/openapi+json;version=3.0
             },
             "500",
             {
-              "description": "Posted data could not be parsed correctly or another error occourred"
+              "description": "Posted data could not be parsed correctly or another error occurred"
             }
           ],
           [
