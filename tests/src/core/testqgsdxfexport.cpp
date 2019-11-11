@@ -768,15 +768,16 @@ void TestQgsDxfExport::testCurveExport_data()
 void TestQgsDxfExport::testDashedLine()
 {
   std::unique_ptr<QgsSimpleLineSymbolLayer> symbolLayer = qgis::make_unique<QgsSimpleLineSymbolLayer>( QColor( 0, 0, 0 ) );
-  symbolLayer->setWidth( 0.5 );
-  symbolLayer->setCustomDashVector( { 2, 5 } );
+  symbolLayer->setWidth( 0.11 );
+  symbolLayer->setCustomDashVector( { 0.5, 0.35 } );
+  symbolLayer->setCustomDashPatternUnit( QgsUnitTypes::RenderUnit::RenderMapUnits );
   symbolLayer->setUseCustomDashPattern( true );
 
   QgsLineSymbol *symbol = new QgsLineSymbol();
   symbol->changeSymbolLayer( 0, symbolLayer.release() );
 
-  std::unique_ptr< QgsVectorLayer > vl = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon" ), QString(), QStringLiteral( "memory" ) );
-  QgsGeometry g = QgsGeometry::fromWkt( "Polygon ((0 0, 0 1, 1 1, 0 0))" );
+  std::unique_ptr< QgsVectorLayer > vl = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "CompoundCurve?crs=epsg:2056" ), QString(), QStringLiteral( "memory" ) );
+  QgsGeometry g = QgsGeometry::fromWkt( "CompoundCurve ((2689563.84200000017881393 1283531.23699999996460974, 2689563.42499999981373549 1283537.55499999993480742, 2689563.19900000002235174 1283540.52399999997578561, 2689562.99800000013783574 1283543.42999999993480742, 2689562.66900000022724271 1283548.56000000005587935, 2689562.43399999989196658 1283555.287999999942258))" );
   QgsFeature f;
   f.setGeometry( g );
   vl->dataProvider()->addFeatures( QgsFeatureList() << f );
@@ -825,13 +826,13 @@ void TestQgsDxfExport::testDashedLine()
                               " 73\n"
                               "     2\n"
                               " 40\n"
-                              "7.0\n"
+                              "REGEX ^0\\.8[0-9]*\n"
                               " 49\n"
-                              "2.0\n"
+                              "0.5\n"
                               " 74\n"
                               "     0\n"
                               " 49\n"
-                              "-5.0\n"
+                              "REGEX ^-0\\.3[0-9]*\n"
                               " 74\n"
                               "     0", &debugInfo ), debugInfo.toUtf8().constData() );
 
@@ -851,27 +852,35 @@ void TestQgsDxfExport::testDashedLine()
                               "420\n"
                               "     0\n"
                               " 90\n"
-                              "     4\n"
+                              "     6\n"
                               " 70\n"
-                              "     1\n"
+                              "     0\n"
                               " 43\n"
-                              "0.5\n"
+                              "0.11\n"
                               " 10\n"
-                              "0.0\n"
+                              "REGEX ^2689563.84[0-9]*\n"
                               " 20\n"
-                              "0.0\n"
+                              "REGEX ^1283531.23[0-9]*\n"
                               " 10\n"
-                              "0.0\n"
+                              "REGEX ^2689563.42[0-9]*\n"
                               " 20\n"
-                              "1.0\n"
+                              "REGEX ^1283537.55[0-9]*\n"
                               " 10\n"
-                              "1.0\n"
+                              "REGEX ^2689563.19[0-9]*\n"
                               " 20\n"
-                              "1.0\n"
+                              "REGEX ^1283540.52[0-9]*\n"
                               " 10\n"
-                              "0.0\n"
+                              "REGEX ^2689562.99[0-9]*\n"
                               " 20\n"
-                              "0.0\n"
+                              "REGEX ^1283543.42[0-9]*\n"
+                              " 10\n"
+                              "REGEX ^2689562.66[0-9]*\n"
+                              " 20\n"
+                              "REGEX ^1283548.56[0-9]*\n"
+                              " 10\n"
+                              "REGEX ^2689562.43[0-9]*\n"
+                              " 20\n"
+                              "REGEX ^1283555.28[0-9]*\n"
                               "  0\n"
                               "ENDSEC"
                               , &debugInfo ), debugInfo.toUtf8().constData() );
