@@ -30,8 +30,6 @@
  */
 struct DxfLayerJob
 {
-  DxfLayerJob() = default;
-
   DxfLayerJob( QgsVectorLayer *vl, const QString &layerStyleOverride, QgsRenderContext &renderContext, QgsDxfExport *dxfExport, const QString &splitLayerAttribute )
     : styleOverride( vl )
     , expressionContext( renderContext.expressionContext() )

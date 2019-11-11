@@ -138,7 +138,7 @@ class CORE_EXPORT QgsDxfExport
     /**
      * Constructor for QgsDxfExport.
      */
-    QgsDxfExport() = default;
+    QgsDxfExport();
 
     ~QgsDxfExport();
 

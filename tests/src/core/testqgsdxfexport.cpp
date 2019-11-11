@@ -341,14 +341,14 @@ void TestQgsDxfExport::testMtext_data()
   QTest::addColumn<QString>( "layerName" );
 
   QString filename = QStringLiteral( TEST_DATA_DIR ) + "/points.shp";
-#if 0
+
   QgsVectorLayer *pointLayer = new QgsVectorLayer( filename, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
   QVERIFY( pointLayer->isValid() );
 
   QTest::newRow( "MText" )
       << pointLayer
       << QStringLiteral( "mtext_dxf" );
-#endif
+
   QgsVectorLayer *pointLayerNoSymbols = new QgsVectorLayer( filename, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
   QVERIFY( pointLayerNoSymbols->isValid() );
   pointLayerNoSymbols->setRenderer( new QgsNullSymbolRenderer() );

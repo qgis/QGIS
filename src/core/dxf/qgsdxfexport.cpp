@@ -61,6 +61,8 @@
 
 #include <QIODevice>
 
+QgsDxfExport::QgsDxfExport() = default;
+
 QgsDxfExport::~QgsDxfExport()
 {
   qDeleteAll( mJobs );
