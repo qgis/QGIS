@@ -754,6 +754,10 @@ void QgsDxfExport::prepareRenderers()
   mRenderContext.expressionContext().appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
   mRenderContext.expressionContext().appendScope( QgsExpressionContextUtils::globalScope() );
 
+  mLabelingEngine = qgis::make_unique<QgsDefaultLabelingEngine>();
+  mLabelingEngine->setMapSettings( mMapSettings );
+  mRenderContext.setLabelingEngine( mLabelingEngine.get() );
+
   const QList< QgsMapLayer * > layers = mMapSettings.layers();
   for ( QgsMapLayer *ml : layers )
   {
@@ -772,9 +776,6 @@ void QgsDxfExport::prepareRenderers()
     const QgsFields fields = vl->fields();
     if ( splitLayerAttributeIndex >= 0 && splitLayerAttributeIndex < fields.size() )
       splitLayerAttribute = fields.at( splitLayerAttributeIndex ).name();
-    mLabelingEngine = qgis::make_unique<QgsDefaultLabelingEngine>();
-    mLabelingEngine->setMapSettings( mMapSettings );
-    mRenderContext.setLabelingEngine( mLabelingEngine.get() );
     DxfLayerJob *job = new DxfLayerJob( vl, mMapSettings.layerStyleOverrides().value( vl->id() ), mRenderContext, this, splitLayerAttribute );
     mJobs.append( job );
   }
