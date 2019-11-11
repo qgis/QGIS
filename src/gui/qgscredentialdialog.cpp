@@ -69,13 +69,13 @@ QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WindowFlags fl )
   connect( ignoreTemporarily, &QAction::triggered, this, [ = ]
   {
     mIgnoreMode = IgnoreTemporarily;
-    //mIgnoreButton->setText( ignoreTemporarily->text() );
+    mIgnoreButton->setText( ignoreTemporarily->text() );
     mIgnoreButton->setToolTip( ignoreTemporarily->toolTip() );
   } );
   connect( ignoreForSession, &QAction::triggered, this, [ = ]
   {
     mIgnoreMode = IgnoreForSession;
-    //mIgnoreButton->setText( ignoreForSession->text() );
+    mIgnoreButton->setText( ignoreForSession->text() );
     mIgnoreButton->setToolTip( ignoreForSession->toolTip() );
   } );
   mIgnoreButton->setText( mIgnoreMode == IgnoreTemporarily ? ignoreTemporarily->text() : ignoreForSession->text() );
