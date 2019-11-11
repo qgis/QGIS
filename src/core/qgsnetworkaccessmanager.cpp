@@ -221,8 +221,8 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   QString userAgent = s.value( QStringLiteral( "/qgis/networkAndProxy/userAgent" ), "Mozilla/5.0" ).toString();
   if ( !userAgent.isEmpty() )
     userAgent += ' ';
-  userAgent += QStringLiteral( "QGIS/%1" ).arg( Qgis::version() );
-  pReq->setRawHeader( "User-Agent", QUrlQuery( userAgent ).toString( QUrl::ComponentFormattingOption::EncodeUnicode ).toUtf8() );
+  userAgent += QStringLiteral( "QGIS/%1" ).arg( Qgis::versionInt() );
+  pReq->setRawHeader( "User-Agent", userAgent.toLatin1() );
 
 #ifndef QT_NO_SSL
   bool ishttps = pReq->url().scheme().compare( QLatin1String( "https" ), Qt::CaseInsensitive ) == 0;
