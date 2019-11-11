@@ -2,7 +2,9 @@
 
 # This runs sipify on the demo header and checks output
 
-DIR=$(git rev-parse --show-toplevel)
+srcdir=`dirname $0`/../../
+
+DIR=$(git -C ${srcdir} rev-parse --show-toplevel)
 
 pushd ${DIR} > /dev/null || exit
 outdiff=$(./scripts/sipify.pl tests/code_layout/sipifyheader.h | diff tests/code_layout/sipifyheader.expected.sip -)
