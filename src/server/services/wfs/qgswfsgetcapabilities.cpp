@@ -594,6 +594,7 @@ namespace QgsWfs
       QgsRectangle layerExtent = layer->extent();
       //transform the layers native CRS into WGS84
       QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
+      int wgs84precision = 6;
       QgsRectangle wgs84BoundingRect;
       if ( !layerExtent.isNull() )
       {
@@ -612,11 +613,11 @@ namespace QgsWfs
       QDomElement bBoxElement = doc.createElement( QStringLiteral( "ows:WGS84BoundingBox" ) );
       bBoxElement.setAttribute( QStringLiteral( "dimensions" ), QStringLiteral( "2" ) );
       QDomElement lCornerElement = doc.createElement( QStringLiteral( "ows:LowerCorner" ) );
-      QDomText lCornerText = doc.createTextNode( QString::number( wgs84BoundingRect.xMinimum() ) + " " + QString::number( wgs84BoundingRect.yMinimum() ) );
+      QDomText lCornerText = doc.createTextNode( qgsDoubleToString( wgs84BoundingRect.xMinimum(), wgs84precision ) + " " + qgsDoubleToString( wgs84BoundingRect.yMinimum(), wgs84precision ) );
       lCornerElement.appendChild( lCornerText );
       bBoxElement.appendChild( lCornerElement );
       QDomElement uCornerElement = doc.createElement( QStringLiteral( "ows:UpperCorner" ) );
-      QDomText uCornerText = doc.createTextNode( QString::number( wgs84BoundingRect.xMaximum() ) + " " + QString::number( wgs84BoundingRect.yMaximum() ) );
+      QDomText uCornerText = doc.createTextNode( qgsDoubleToString( wgs84BoundingRect.xMaximum(), wgs84precision ) + " " + qgsDoubleToString( wgs84BoundingRect.yMaximum(), wgs84precision ) );
       uCornerElement.appendChild( uCornerText );
       bBoxElement.appendChild( uCornerElement );
       layerElem.appendChild( bBoxElement );

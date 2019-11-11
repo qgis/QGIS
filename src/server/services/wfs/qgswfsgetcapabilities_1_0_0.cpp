@@ -356,13 +356,20 @@ namespace QgsWfs
         srsElem.appendChild( srsText );
         layerElem.appendChild( srsElem );
 
+        // Define precision
+        int precision = 3;
+        if ( layer->crs().isGeographic() )
+        {
+          precision = 6;
+        }
+
         //create LatLongBoundingBox
         QgsRectangle layerExtent = layer->extent();
         QDomElement bBoxElement = doc.createElement( QStringLiteral( "LatLongBoundingBox" ) );
-        bBoxElement.setAttribute( QStringLiteral( "minx" ), QString::number( layerExtent.xMinimum() ) );
-        bBoxElement.setAttribute( QStringLiteral( "miny" ), QString::number( layerExtent.yMinimum() ) );
-        bBoxElement.setAttribute( QStringLiteral( "maxx" ), QString::number( layerExtent.xMaximum() ) );
-        bBoxElement.setAttribute( QStringLiteral( "maxy" ), QString::number( layerExtent.yMaximum() ) );
+        bBoxElement.setAttribute( QStringLiteral( "minx" ), qgsDoubleToString( layerExtent.xMinimum(), precision ) );
+        bBoxElement.setAttribute( QStringLiteral( "miny" ), qgsDoubleToString( layerExtent.yMinimum(), precision ) );
+        bBoxElement.setAttribute( QStringLiteral( "maxx" ), qgsDoubleToString( layerExtent.xMaximum(), precision ) );
+        bBoxElement.setAttribute( QStringLiteral( "maxy" ), qgsDoubleToString( layerExtent.yMaximum(), precision ) );
         layerElem.appendChild( bBoxElement );
 
         // layer metadata URL
