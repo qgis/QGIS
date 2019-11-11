@@ -2,7 +2,7 @@
 
 # This runs sipify on the demo header and checks output
 
-srcdir=`dirname $0`/../../
+srcdir=$(dirname $0)/../../
 
 DIR=$(git -C ${srcdir} rev-parse --show-toplevel)
 

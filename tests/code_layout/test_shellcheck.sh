@@ -3,7 +3,7 @@
 # This runs shellcheck on all sh files
 
 
-srcdir=`dirname $0`/../../
+srcdir=$(dirname $0)/../../
 
 DIR=$(git -C ${srcdir} rev-parse --show-toplevel)
 
