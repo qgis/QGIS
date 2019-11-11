@@ -1466,7 +1466,7 @@ Content-Type: application/openapi+json;version=3.0
   },
   "servers": [
     {
-      "url": "http://server.qgis.org/wfs3/"
+      "url": "http://server.qgis.org/wfs3"
     }
   ],
   "tags": [
