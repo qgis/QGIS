@@ -812,7 +812,7 @@
       "type": "Feature",
       "properties": {
         "Name": "Clemens Raffler",
-        "Committer": "Yes",
+        "Committer": "No",
         "First Commit Message": "[feature][processing] Initial Port of Create Grid algorithm to C++",
         "First Commit Date": "30-09-2019",
         "GIT Nickname": "root676"
