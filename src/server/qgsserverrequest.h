@@ -86,7 +86,7 @@ class SERVER_EXPORT QgsServerRequest
     virtual ~QgsServerRequest() = default;
 
     /**
-     * methodToString returns a string representation of an HTTP request \a method
+     * Returns a string representation of an HTTP request \a method.
      * \since QGIS 3.12
      */
     static QString methodToString( const Method &method );
