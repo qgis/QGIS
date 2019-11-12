@@ -29,7 +29,9 @@
 QgsTask::QgsTask( const QString &name, Flags flags )
   : mFlags( flags )
   , mDescription( name )
+  , mNotStartedMutex( 1 )
 {
+  mNotStartedMutex.acquire();
 }
 
 QgsTask::~QgsTask()
@@ -42,6 +44,7 @@ QgsTask::~QgsTask()
     delete subTask.task;
   }
   mNotFinishedMutex.unlock();
+  mNotStartedMutex.release();
 }
 
 void QgsTask::setDescription( const QString &description )
@@ -57,6 +60,7 @@ qint64 QgsTask::elapsedTime() const
 void QgsTask::start()
 {
   mNotFinishedMutex.lock();
+  mNotStartedMutex.release();
   mStartCount++;
   Q_ASSERT( mStartCount == 1 );
 
@@ -153,6 +157,9 @@ QList<QgsMapLayer *> QgsTask::dependentLayers() const
 
 bool QgsTask::waitForFinished( int timeout )
 {
+  // We wait the task to be started
+  mNotStartedMutex.acquire();
+
   bool rv = true;
   if ( mOverallStatus == Complete || mOverallStatus == Terminated )
   {
