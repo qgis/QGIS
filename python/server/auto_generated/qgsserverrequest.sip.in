@@ -62,7 +62,7 @@ Constructor
 
     static QString methodToString( const Method &method );
 %Docstring
-methodToString returns a string representation of an HTTP request ``method``
+Returns a string representation of an HTTP request ``method``.
 
 .. versionadded:: 3.12
 %End
