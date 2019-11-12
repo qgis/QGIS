@@ -1304,8 +1304,6 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
           break;
         }
       }
-      // This should never happen!
-      Q_ASSERT( !selfLink.is_null() );
 
       // Add prev - next links
       if ( offset != 0 )
@@ -1822,7 +1820,10 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
         throw QgsServerApiBadRequestException( QStringLiteral( "Feature properties are not valid" ) );
       }
 
-      // TODO: raise if nothing to change?
+      if ( changedAttributes.isEmpty() && changedGeometries.isEmpty() )
+      {
+        QgsMessageLog::logMessage( QStringLiteral( "Changeset is empty: no features have been modified" ), QStringLiteral( "Server" ), Qgis::Info );
+      }
 
       if ( ! mapLayer->dataProvider()->changeFeatures( changedAttributes, changedGeometries ) )
       {

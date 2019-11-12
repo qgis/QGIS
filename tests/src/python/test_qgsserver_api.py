@@ -98,8 +98,15 @@ class QgsServerAPIUtilsTest(QgsServerTestBase):
     def test_temporal_extent(self):
 
         project = QgsProject()
-        base_path = unitTestDataPath('qgis_server') + '/test_project_api_timefilters.qgs'
-        project.read(base_path)
+
+        tempDir = QtCore.QTemporaryDir()
+        source_project_path = unitTestDataPath('qgis_server') + '/test_project_api_timefilters.qgs'
+        source_data_path = unitTestDataPath('qgis_server') + '/test_project_api_timefilters.gpkg'
+        dest_project_path = os.path.join(tempDir.path(), 'test_project_api_timefilters.qgs')
+        dest_data_path = os.path.join(tempDir.path(), 'test_project_api_timefilters.gpkg')
+        shutil.copy(source_data_path, dest_data_path)
+        shutil.copy(source_project_path, dest_project_path)
+        project.read(dest_project_path)
 
         layer = list(project.mapLayers().values())[0]
 
@@ -409,7 +416,14 @@ class QgsServerAPITest(QgsServerAPITestBase):
     def test_wfs3_collection_temporal_extent_json(self):
         """Test collection with timefilter"""
         project = QgsProject()
-        project.read(unitTestDataPath('qgis_server') + '/test_project_api_timefilters.qgs')
+        tempDir = QtCore.QTemporaryDir()
+        source_project_path = unitTestDataPath('qgis_server') + '/test_project_api_timefilters.qgs'
+        source_data_path = unitTestDataPath('qgis_server') + '/test_project_api_timefilters.gpkg'
+        dest_project_path = os.path.join(tempDir.path(), 'test_project_api_timefilters.qgs')
+        dest_data_path = os.path.join(tempDir.path(), 'test_project_api_timefilters.gpkg')
+        shutil.copy(source_data_path, dest_data_path)
+        shutil.copy(source_project_path, dest_project_path)
+        project.read(dest_project_path)
         request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/points')
         self.compareApi(request, project, 'test_wfs3_collection_points_timefilters.json')
 
@@ -955,25 +969,31 @@ class QgsServerAPITest(QgsServerAPITestBase):
         """Test datetime filters"""
 
         project = QgsProject()
-        base_path = unitTestDataPath('qgis_server') + '/test_project_api_timefilters.qgs'
-        project.read(base_path)
+
+        tempDir = QtCore.QTemporaryDir()
+        source_project_path = unitTestDataPath('qgis_server') + '/test_project_api_timefilters.qgs'
+        source_data_path = unitTestDataPath('qgis_server') + '/test_project_api_timefilters.gpkg'
+        dest_project_path = os.path.join(tempDir.path(), 'test_project_api_timefilters.qgs')
+        dest_data_path = os.path.join(tempDir.path(), 'test_project_api_timefilters.gpkg')
+        shutil.copy(source_data_path, dest_data_path)
+        shutil.copy(source_project_path, dest_project_path)
+        project.read(dest_project_path)
 
         # Prepare projects with all options
-        tmpDir = QtCore.QTemporaryDir()
 
         layer = list(project.mapLayers().values())[0]
         layer.serverProperties().removeWmsDimension('date')
         layer.serverProperties().removeWmsDimension('time')
         self.assertEqual(len(layer.serverProperties().wmsDimensions()), 0)
         self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 0)
-        none_path = os.path.join(tmpDir.path(), 'test_project_api_timefilters_none.qgs')
+        none_path = os.path.join(tempDir.path(), 'test_project_api_timefilters_none.qgs')
         project.write(none_path)
 
         layer = list(project.mapLayers().values())[0]
         layer.serverProperties().removeWmsDimension('date')
         layer.serverProperties().removeWmsDimension('time')
         self.assertTrue(layer.serverProperties().addWmsDimension(QgsVectorLayerServerProperties.WmsDimensionInfo('date', 'created')))
-        created_path = os.path.join(tmpDir.path(), 'test_project_api_timefilters_created.qgs')
+        created_path = os.path.join(tempDir.path(), 'test_project_api_timefilters_created.qgs')
         project.write(created_path)
         project.read(created_path)
         self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 1)
@@ -982,7 +1002,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         layer.serverProperties().removeWmsDimension('date')
         layer.serverProperties().removeWmsDimension('time')
         self.assertTrue(layer.serverProperties().addWmsDimension(QgsVectorLayerServerProperties.WmsDimensionInfo('date', 'created_string')))
-        created_string_path = os.path.join(tmpDir.path(), 'test_project_api_timefilters_created_string.qgs')
+        created_string_path = os.path.join(tempDir.path(), 'test_project_api_timefilters_created_string.qgs')
         project.write(created_string_path)
         project.read(created_string_path)
         self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 1)
@@ -991,7 +1011,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         layer.serverProperties().removeWmsDimension('date')
         layer.serverProperties().removeWmsDimension('time')
         self.assertTrue(layer.serverProperties().addWmsDimension(QgsVectorLayerServerProperties.WmsDimensionInfo('time', 'updated_string')))
-        updated_string_path = os.path.join(tmpDir.path(), 'test_project_api_timefilters_updated_string.qgs')
+        updated_string_path = os.path.join(tempDir.path(), 'test_project_api_timefilters_updated_string.qgs')
         project.write(updated_string_path)
         project.read(updated_string_path)
         self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 1)
@@ -1001,7 +1021,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         layer.serverProperties().removeWmsDimension('time')
         self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 0)
         self.assertTrue(layer.serverProperties().addWmsDimension(QgsVectorLayerServerProperties.WmsDimensionInfo('time', 'updated')))
-        updated_path = os.path.join(tmpDir.path(), 'test_project_api_timefilters_updated.qgs')
+        updated_path = os.path.join(tempDir.path(), 'test_project_api_timefilters_updated.qgs')
         project.write(updated_path)
         project.read(updated_path)
         self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 1)
@@ -1012,7 +1032,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 0)
         self.assertTrue(layer.serverProperties().addWmsDimension(QgsVectorLayerServerProperties.WmsDimensionInfo('time', 'updated')))
         self.assertTrue(layer.serverProperties().addWmsDimension(QgsVectorLayerServerProperties.WmsDimensionInfo('date', 'created')))
-        both_path = os.path.join(tmpDir.path(), 'test_project_api_timefilters_both.qgs')
+        both_path = os.path.join(tempDir.path(), 'test_project_api_timefilters_both.qgs')
         project.write(both_path)
         project.read(both_path)
         self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 2)
@@ -1021,7 +1041,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         layer.serverProperties().removeWmsDimension('date')
         layer.serverProperties().removeWmsDimension('time')
         self.assertTrue(layer.serverProperties().addWmsDimension(QgsVectorLayerServerProperties.WmsDimensionInfo('date', 'begin', 'end')))
-        date_range_path = os.path.join(tmpDir.path(), 'test_project_api_timefilters_date_range.qgs')
+        date_range_path = os.path.join(tempDir.path(), 'test_project_api_timefilters_date_range.qgs')
         project.write(date_range_path)
         project.read(date_range_path)
         self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 1)
