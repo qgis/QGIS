@@ -7,10 +7,12 @@ DB=${DB:-qgis_test}
 SCRIPTS="
   tests/testdata/provider/testdata_pg.sql
   tests/testdata/provider/testdata_pg_reltests.sql
+  tests/testdata/provider/testdata_pg_role.sql
   tests/testdata/provider/testdata_pg_vectorjoin.sql
   tests/testdata/provider/testdata_pg_hstore.sql
   tests/testdata/provider/testdata_pg_array.sql
   tests/testdata/provider/testdata_pg_raster.sql
+  tests/testdata/provider/testdata_pg_topology.sql
   tests/testdata/provider/testdata_pg_domain.sql
   tests/testdata/provider/testdata_pg_json.sql
 "
