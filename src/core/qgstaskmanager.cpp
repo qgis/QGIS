@@ -96,6 +96,7 @@ void QgsTask::cancel()
   {
     // immediately terminate unstarted jobs
     terminated();
+    mNotStartedMutex.release();
   }
 
   if ( mStatus == Terminated )
