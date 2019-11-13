@@ -1074,7 +1074,23 @@ QString QgsPostgresConn::postgisVersion()
   mTopologyAvailable = false;
   if ( mPostgisVersionMajor > 1 )
   {
-    QgsPostgresResult result( PQexec( QStringLiteral( "SELECT EXISTS ( SELECT c.oid FROM pg_class AS c JOIN pg_namespace AS n ON c.relnamespace=n.oid WHERE n.nspname='topology' AND c.relname='topology' )" ) ) );
+    // NOTE: CASE syntax is used to avoid an exception when
+    //       topology.topology does not exist
+    // See
+    // https://www.postgresql.org/docs/current/sql-expressions.html#SYNTAX-EXPRESS-EVAL
+    QgsPostgresResult result(
+      PQexec(
+        QStringLiteral(
+          "SELECT has_schema_privilege(n.oid, 'usage')"
+          "   AND has_table_privilege(t.oid, 'select')"
+          "   AND has_table_privilege(l.oid, 'select')"
+          "  FROM pg_namespace n, pg_class t, pg_class l"
+          " WHERE n.nspname = 'topology'"
+          "   AND t.relnamespace = n.oid"
+          "   AND l.relnamespace = n.oid"
+          "   AND t.relname = 'topology'"
+          "   AND l.relname = 'layer'"
+        ) ) );
     if ( result.PQntuples() >= 1 && result.PQgetvalue( 0, 0 ) == QLatin1String( "t" ) )
     {
       mTopologyAvailable = true;
