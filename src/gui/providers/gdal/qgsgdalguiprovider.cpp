@@ -87,7 +87,7 @@ void QgsGdalItemGuiProvider::onDeleteLayer()
       QgsProviderMetadata *postgresMetadata { QgsProviderRegistry::instance()->providerMetadata( QLatin1String( "postgres" ) ) };
       if ( postgresMetadata )
       {
-        QgsAbstractDatabaseProviderConnection *connection = static_cast<QgsAbstractDatabaseProviderConnection *>( postgresMetadata->createConnection( uri, {} ) );
+        std::unique_ptr<QgsAbstractDatabaseProviderConnection> connection { static_cast<QgsAbstractDatabaseProviderConnection *>( postgresMetadata->createConnection( uri, {} ) ) };
         const QgsDataSourceUri dsUri { QgsDataSourceUri( uri ) };
         if ( connection )
         {
