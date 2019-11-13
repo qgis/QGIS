@@ -88,8 +88,8 @@ class CreateConstantRaster(QgisAlgorithm):
         outputFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         outputFormat = QgsRasterFileWriter.driverForExtension(os.path.splitext(outputFile)[1])
 
-        rows = max([math.ceil(extent.height() / pixelSize), 1.0])
-        cols = max([math.ceil(extent.width() / pixelSize), 1.0])
+        rows = int(max([math.ceil(extent.height() / pixelSize), 1.0]))
+        cols = int(max([math.ceil(extent.width() / pixelSize), 1.0]))
 
         writer = QgsRasterFileWriter(outputFile)
         writer.setOutputProviderKey('gdal')
