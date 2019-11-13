@@ -34,7 +34,6 @@ struct DxfLayerJob
     : styleOverride( vl )
     , expressionContext( renderContext.expressionContext() )
     , featureSource( vl )
-    , layer( vl )
     , dxfExport( dxfExport )
     , crs( vl->crs() )
     , layerName( vl->name() )
@@ -96,7 +95,6 @@ struct DxfLayerJob
   QgsVectorLayerFeatureSource featureSource;
   std::unique_ptr< QgsFeatureRenderer > renderer;
   std::unique_ptr<QgsAbstractVectorLayerLabeling> labeling;
-  QgsVectorLayer *layer = nullptr; // TODO: -> remove this to make this usable from background threads
   QgsDxfExport *dxfExport = nullptr;
   QgsCoordinateReferenceSystem crs;
   QString layerName;
