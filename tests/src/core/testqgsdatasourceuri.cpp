@@ -141,7 +141,7 @@ void TestQgsDataSourceUri::checkparser_data()
       ;
 
   QTest::newRow( "Options" )
-      << "sql= table=\"\" options=-c\ role=guest "
+      << "sql= table=\"\" options=-c\\ role=guest "
       << "" // table
       << "" // geometrycolumn
       << "" // key
