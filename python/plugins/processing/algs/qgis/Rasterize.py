@@ -175,7 +175,8 @@ class RasterizeAlgorithm(QgisAlgorithm):
         extent = self.parameterAsExtent(
             parameters,
             self.EXTENT,
-            context)
+            context,
+            context.project().crs())
 
         tile_size = self.parameterAsInt(
             parameters,
