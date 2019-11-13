@@ -33,7 +33,7 @@ from qgis.core import (
     QgsProcessingParameterNumber,
     QgsProcessingParameterBoolean,
     QgsProcessingParameterMapLayer,
-    QgsProcessinAgParameterRasterDestination,
+    QgsProcessingParameterRasterDestination,
     QgsRasterFileWriter
 )
 
