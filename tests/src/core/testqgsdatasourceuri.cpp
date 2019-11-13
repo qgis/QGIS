@@ -49,6 +49,7 @@ void TestQgsDataSourceUri::checkparser_data()
   QTest::addColumn<QgsDataSourceUri::SslMode>( "sslmode" );
   QTest::addColumn<QString>( "sql" );
   QTest::addColumn<QString>( "myparam" );
+  QTest::addColumn<QString>( "options" );
 
 
   QTest::newRow( "oci" )
@@ -70,6 +71,7 @@ void TestQgsDataSourceUri::checkparser_data()
       << QgsDataSourceUri::SslPrefer // sslmode
       << "" // sql
       << "myvalue" // myparam
+      << "" // options
       ;
 
   QTest::newRow( "pgrast" )
@@ -91,6 +93,7 @@ void TestQgsDataSourceUri::checkparser_data()
       << QgsDataSourceUri::SslPrefer // sslmode
       << "" // sql
       << "" // myparam
+      << "" // options
       ;
 
   QTest::newRow( "pgmlsz" )
@@ -112,6 +115,7 @@ void TestQgsDataSourceUri::checkparser_data()
       << QgsDataSourceUri::SslPrefer // sslmode
       << "" // sql
       << "" // myparam
+      << "" // options
       ;
 
   QTest::newRow( "DB2" )
@@ -133,6 +137,29 @@ void TestQgsDataSourceUri::checkparser_data()
       << QgsDataSourceUri::SslPrefer // sslmode
       << "" // sql
       << "myvalue" // myparam
+      << "" // options
+      ;
+
+  QTest::newRow( "Options" )
+      << "sql= table=\"\" options=-c\ role=guest "
+      << "" // table
+      << "" // geometrycolumn
+      << "" // key
+      << false // estimatedmetadata
+      << "" // srid
+      << QgsWkbTypes::Unknown // type
+      << false // selectatid
+      << "" // service
+      << "" // user
+      << "" // password
+      << "" // dbname
+      << "" // host
+      << "" // port
+      << "" // driver
+      << QgsDataSourceUri::SslPrefer // sslmode
+      << "" // sql
+      << "" // myparam
+      << "-c role=guest" // options
       ;
 }
 
@@ -175,6 +202,7 @@ void TestQgsDataSourceUri::checkparser()
   QCOMPARE( ds.sslMode(), sslmode );
   QCOMPARE( ds.sql(), sql );
   QCOMPARE( ds.param( "myparam" ), myparam );
+  QCOMPARE( ds.options(), options );
 }
 
 QGSTEST_MAIN( TestQgsDataSourceUri )
