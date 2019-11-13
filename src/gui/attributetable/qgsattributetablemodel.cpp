@@ -438,8 +438,6 @@ void QgsAttributeTableModel::loadLayer()
   // wrong number of attributes)
   loadAttributes();
 
-  beginResetModel();
-
   if ( rowCount() != 0 )
   {
     removeRows( 0, rowCount() );
@@ -468,14 +466,12 @@ void QgsAttributeTableModel::loadLayer()
 
         t.restart();
       }
-      featureAdded( mFeat.id(), true );
+      featureAdded( mFeat.id() );
     }
 
     emit finished();
     connect( mLayerCache, &QgsVectorLayerCache::invalidated, this, &QgsAttributeTableModel::loadLayer, Qt::UniqueConnection );
   }
-
-  endResetModel();
 }
 
 
