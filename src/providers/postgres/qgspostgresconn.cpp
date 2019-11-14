@@ -208,8 +208,6 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
   , mPostgresqlVersion( 0 )
   , mPostgisVersionMajor( 0 )
   , mPostgisVersionMinor( 0 )
-  , mGistAvailable( false )
-  , mProjAvailable( false )
   , mPointcloudAvailable( false )
   , mRasterAvailable( false )
   , mUseWkbHex( false )
@@ -403,7 +401,7 @@ void QgsPostgresConn::unref()
 }
 
 /* private */
-QStringList QgsPostgresConn::supportedSpatialTypes()
+QStringList QgsPostgresConn::supportedSpatialTypes() const
 {
   QStringList supportedSpatialTypes;
 
@@ -960,7 +958,7 @@ bool QgsPostgresConn::getSchemas( QList<QgsPostgresSchemaProperty> &schemas )
 /**
  * Check to see if GEOS is available
  */
-bool QgsPostgresConn::hasGEOS()
+bool QgsPostgresConn::hasGEOS() const
 {
   // make sure info is up to date for the current connection
   postgisVersion();
@@ -970,7 +968,7 @@ bool QgsPostgresConn::hasGEOS()
 /**
  * Check to see if topology is available
  */
-bool QgsPostgresConn::hasTopology()
+bool QgsPostgresConn::hasTopology() const
 {
   // make sure info is up to date for the current connection
   postgisVersion();
@@ -980,7 +978,7 @@ bool QgsPostgresConn::hasTopology()
 /**
  * Check to see if pointcloud is available
  */
-bool QgsPostgresConn::hasPointcloud()
+bool QgsPostgresConn::hasPointcloud() const
 {
   // make sure info is up to date for the current connection
   postgisVersion();
@@ -990,14 +988,14 @@ bool QgsPostgresConn::hasPointcloud()
 /**
  * Check to see if raster is available
  */
-bool QgsPostgresConn::hasRaster()
+bool QgsPostgresConn::hasRaster() const
 {
   // make sure info is up to date for the current connection
   postgisVersion();
   return mRasterAvailable;
 }
 /* Functions for determining available features in postGIS */
-QString QgsPostgresConn::postgisVersion()
+QString QgsPostgresConn::postgisVersion() const
 {
   QMutexLocker locker( &mLock );
   if ( mGotPostgisVersion )
@@ -1035,36 +1033,21 @@ QString QgsPostgresConn::postgisVersion()
   // apparently PostGIS 1.5.2 doesn't report capabilities in postgis_version() anymore
   if ( mPostgisVersionMajor > 1 || ( mPostgisVersionMajor == 1 && mPostgisVersionMinor >= 5 ) )
   {
-    result = PQexec( QStringLiteral( "SELECT postgis_geos_version(),postgis_proj_version()" ) );
+    result = PQexec( QStringLiteral( "SELECT postgis_geos_version()" ) );
     mGeosAvailable = result.PQntuples() == 1 && !result.PQgetisnull( 0, 0 );
-    mProjAvailable = result.PQntuples() == 1 && !result.PQgetisnull( 0, 1 );
     QgsDebugMsg( QStringLiteral( "geos:%1 proj:%2" )
-                 .arg( mGeosAvailable ? result.PQgetvalue( 0, 0 ) : "none",
-                       mProjAvailable ? result.PQgetvalue( 0, 1 ) : "none" ) );
-    mGistAvailable = true;
+                 .arg( mGeosAvailable ? result.PQgetvalue( 0, 0 ) : "none" ) );
   }
   else
   {
     // assume no capabilities
     mGeosAvailable = false;
-    mGistAvailable = false;
-    mProjAvailable = false;
 
     // parse out the capabilities and store them
     QStringList geos = postgisParts.filter( QStringLiteral( "GEOS" ) );
     if ( geos.size() == 1 )
     {
       mGeosAvailable = ( geos[0].indexOf( QLatin1String( "=1" ) ) > -1 );
-    }
-    QStringList gist = postgisParts.filter( QStringLiteral( "STATS" ) );
-    if ( gist.size() == 1 )
-    {
-      mGistAvailable = ( gist[0].indexOf( QLatin1String( "=1" ) ) > -1 );
-    }
-    QStringList proj = postgisParts.filter( QStringLiteral( "PROJ" ) );
-    if ( proj.size() == 1 )
-    {
-      mProjAvailable = ( proj[0].indexOf( QLatin1String( "=1" ) ) > -1 );
     }
   }
 
