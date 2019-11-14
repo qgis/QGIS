@@ -543,7 +543,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
                    " AND a.attnum>0"
                    " AND n.oid=c.relnamespace"
                    " AND has_schema_privilege(n.nspname,'usage')"
-                   " AND has_table_privilege('\"'||n.nspname||'\".\"'||c.relname||'\"','select')" // user has select privilege
+                   " AND has_table_privilege(c.oid,'select')" // user has select privilege
                  )
           .arg( tableName, schemaName, columnName, typeName, sridName, dimName, gtableName )
           .arg( 1 )
@@ -662,7 +662,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
   //search for geometry columns in tables that are not in the geometry_columns metatable
   if ( !searchGeometryColumnsOnly )
   {
-    // Now have a look for geometry columns that aren't in the geometry_columns table.
+    // Now have a look for spatial columns that aren't in the geometry_columns table.
     QString sql = "SELECT"
                   " c.relname"
                   ",n.nspname"
@@ -677,7 +677,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
                   " LEFT JOIN pg_type b ON b.oid=t.typbasetype"
                   " WHERE c.relkind IN ('v','r','m','p')"
                   " AND has_schema_privilege( n.nspname, 'usage' )"
-                  " AND has_table_privilege( QUOTE_IDENT(n.nspname) || '.' || QUOTE_IDENT(c.relname), 'select' )"
+                  " AND has_table_privilege( c.oid, 'select' )"
                   " AND (t.typname IN ('geometry','geography','topogeometry') OR b.typname IN ('geometry','geography','topogeometry','pcpatch','raster'))";
 
     // user has select privilege
@@ -806,7 +806,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
                   ",pg_attribute a"
                   " WHERE pg_namespace.oid=pg_class.relnamespace"
                   " AND has_schema_privilege(pg_namespace.nspname,'usage')"
-                  " AND has_table_privilege('\"' || pg_namespace.nspname || '\".\"' || pg_class.relname || '\"','select')"
+                  " AND has_table_privilege(pg_class.oid,'select')"
                   " AND pg_class.relkind IN ('v','r','m','p')"
                   " AND pg_class.oid = a.attrelid"
                   " AND NOT a.attisdropped"
