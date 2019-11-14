@@ -26,7 +26,8 @@ from qgis.core import (
     QgsMemoryProviderUtils,
     QgsCoordinateReferenceSystem,
     QgsRectangle,
-    QgsTestUtils
+    QgsTestUtils,
+    QgsFeatureSource
 )
 
 from qgis.testing import (
@@ -642,6 +643,14 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(dp.addFeature(f))
 
         self.assertEqual([f.attributes() for f in dp.getFeatures()], [[1, True, NULL], [2, False, NULL], [3, NULL, NULL], [2, NULL, True]])
+
+    def testSpatialIndex(self):
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=f1:integer&field=f2:bool',
+            'test', 'memory')
+        self.assertEqual(vl.hasSpatialIndex(), QgsFeatureSource.SpatialIndexNotPresent)
+        vl.dataProvider().createSpatialIndex()
+        self.assertEqual(vl.hasSpatialIndex(), QgsFeatureSource.SpatialIndexPresent)
 
 
 class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):

@@ -2558,6 +2558,9 @@ Sets the coordinate transform context to ``transformContext``
 .. versionadded:: 3.8
 %End
 
+    virtual SpatialIndexPresence hasSpatialIndex() const;
+
+
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
 

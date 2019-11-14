@@ -630,6 +630,11 @@ bool QgsMemoryProvider::createSpatialIndex()
   return true;
 }
 
+QgsFeatureSource::SpatialIndexPresence QgsMemoryProvider::hasSpatialIndex() const
+{
+  return mSpatialIndex ? SpatialIndexPresent : SpatialIndexNotPresent;
+}
+
 QgsVectorDataProvider::Capabilities QgsMemoryProvider::capabilities() const
 {
   return AddFeatures | DeleteFeatures | ChangeGeometries |
