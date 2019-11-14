@@ -432,6 +432,8 @@ class QgsPostgresConn : public QObject
 
     bool mReadOnly;
 
+    QStringList supportedSpatialTypes();
+
     static QMap<QString, QgsPostgresConn *> sConnectionsRW;
     static QMap<QString, QgsPostgresConn *> sConnectionsRO;
 
