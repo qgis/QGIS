@@ -31,6 +31,7 @@
 #include "qgspostgresstringutils.h"
 
 #include <QApplication>
+#include <QStringList>
 #include <QThread>
 
 #include <climits>
@@ -403,13 +404,28 @@ void QgsPostgresConn::unref()
 }
 
 /* private */
+QStringList QgsPostgresConn::supportedSpatialTypes()
+{
+  QStringList supportedSpatialTypes;
+
+  supportedSpatialTypes << quotedValue( "geometry" )
+                        << quotedValue( "geography" )
+                        << quotedValue( "pcpatch" );
+  if ( hasRaster() ) supportedSpatialTypes << quotedValue( "raster" );
+  if ( hasTopology() ) supportedSpatialTypes << quotedValue( "topogeometry" );
+
+  return supportedSpatialTypes;
+}
+
+/* private */
 // TODO: deprecate this function
 void QgsPostgresConn::addColumnInfo( QgsPostgresLayerProperty &layerProperty, const QString &schemaName, const QString &viewName, bool fetchPkCandidates )
 {
   // TODO: optimize this query when pk candidates aren't needed
   //       could use array_agg() and count()
   //       array output would look like this: "{One,tWo}"
-  QString sql = QStringLiteral( "SELECT attname, CASE WHEN typname in ('geometry','geography','topogeometry','raster') THEN 1 ELSE null END AS isSpatial FROM pg_attribute JOIN pg_type ON atttypid=pg_type.oid WHERE attrelid=regclass('%1.%2') AND NOT attisdropped AND attnum>0 ORDER BY attnum" )
+  QString sql = QStringLiteral( "SELECT attname, CASE WHEN typname in (%1) THEN 1 ELSE null END AS isSpatial FROM pg_attribute JOIN pg_type ON atttypid=pg_type.oid WHERE attrelid=regclass('%2.%3') AND NOT attisdropped AND attnum>0 ORDER BY attnum" )
+                .arg( supportedSpatialTypes().join( ',' ) )
                 .arg( quotedIdentifier( schemaName ),
                       quotedIdentifier( viewName ) );
   QgsDebugMsg( "getting column info: " + sql );
@@ -532,7 +548,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     // Can't use regclass here because table must exist, else error occurs.
     sql = QString( "SELECT %1,%2,%3,%4,%5,%6,c.relkind,obj_description(c.oid),"
                    "array_agg(a.attname), "
-                   "count(CASE WHEN t.typname IN ('geometry','geography','topogeometry','raster') THEN 1 ELSE NULL END) "
+                   "count(CASE WHEN t.typname IN (%9) THEN 1 ELSE NULL END) "
                    ", %8 "
                    " FROM %7 l,pg_class c,pg_namespace n,pg_attribute a,pg_type t"
                    " WHERE c.relname=%1"
@@ -547,6 +563,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
                  )
           .arg( tableName, schemaName, columnName, typeName, sridName, dimName, gtableName )
           .arg( 1 )
+          .arg( supportedSpatialTypes().join( ',' ) )
           ;
 
     if ( searchPublicOnly )
@@ -663,22 +680,23 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
   if ( !searchGeometryColumnsOnly )
   {
     // Now have a look for spatial columns that aren't in the geometry_columns table.
-    QString sql = "SELECT"
-                  " c.relname"
-                  ",n.nspname"
-                  ",a.attname"
-                  ",c.relkind"
-                  ",CASE WHEN t.typname IN ('geometry','geography','topogeometry') THEN t.typname ELSE b.typname END AS coltype"
-                  ",obj_description(c.oid)"
-                  " FROM pg_attribute a"
-                  " JOIN pg_class c ON c.oid=a.attrelid"
-                  " JOIN pg_namespace n ON n.oid=c.relnamespace"
-                  " JOIN pg_type t ON t.oid=a.atttypid"
-                  " LEFT JOIN pg_type b ON b.oid=t.typbasetype"
-                  " WHERE c.relkind IN ('v','r','m','p')"
-                  " AND has_schema_privilege( n.nspname, 'usage' )"
-                  " AND has_table_privilege( c.oid, 'select' )"
-                  " AND (t.typname IN ('geometry','geography','topogeometry') OR b.typname IN ('geometry','geography','topogeometry','pcpatch','raster'))";
+    QString sql = QStringLiteral( "SELECT"
+                                  " c.relname"
+                                  ",n.nspname"
+                                  ",a.attname"
+                                  ",c.relkind"
+                                  ",CASE WHEN t.typname IN (%1) THEN t.typname ELSE b.typname END AS coltype"
+                                  ",obj_description(c.oid)"
+                                  " FROM pg_attribute a"
+                                  " JOIN pg_class c ON c.oid=a.attrelid"
+                                  " JOIN pg_namespace n ON n.oid=c.relnamespace"
+                                  " JOIN pg_type t ON t.oid=a.atttypid"
+                                  " LEFT JOIN pg_type b ON b.oid=t.typbasetype"
+                                  " WHERE c.relkind IN ('v','r','m','p')"
+                                  " AND has_schema_privilege( n.nspname, 'usage' )"
+                                  " AND has_table_privilege( c.oid, 'select' )"
+                                  " AND (t.typname IN (%1) OR b.typname IN (%1))" )
+                  .arg( supportedSpatialTypes().join( ',' ) );
 
     // user has select privilege
     if ( searchPublicOnly )
