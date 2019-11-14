@@ -61,7 +61,7 @@ class CORE_EXPORT QgsDxfExport
      * Layers and optional attribute index to split
      * into multiple layers using attribute value as layer name.
      */
-    struct DxfLayer
+    struct CORE_EXPORT DxfLayer
     {
         DxfLayer( QgsVectorLayer *vl, int layerOutputAttributeIndex = -1 )
           : mLayer( vl )
