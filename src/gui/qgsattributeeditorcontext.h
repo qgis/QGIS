@@ -80,7 +80,7 @@ class GUI_EXPORT QgsAttributeEditorContext
       : mParentContext( &parentContext )
       , mVectorLayerTools( parentContext.mVectorLayerTools )
       , mMapCanvas( parentContext.mMapCanvas )
-      , mMainInfoBar( parentContext.mMainInfoBar )
+      , mMainMessageBar( parentContext.mMainMessageBar )
       , mCadDockWidget( parentContext.mCadDockWidget )
       , mDistanceArea( parentContext.mDistanceArea )
       , mFormFeature( parentContext.mFormFeature )
@@ -93,7 +93,7 @@ class GUI_EXPORT QgsAttributeEditorContext
       : mParentContext( &parentContext )
       , mVectorLayerTools( parentContext.mVectorLayerTools )
       , mMapCanvas( parentContext.mMapCanvas )
-      , mMainInfoBar( parentContext.mMainInfoBar )
+      , mMainMessageBar( parentContext.mMainMessageBar )
       , mCadDockWidget( parentContext.mCadDockWidget )
       , mDistanceArea( parentContext.mDistanceArea )
       , mRelation( relation )
@@ -265,23 +265,23 @@ class GUI_EXPORT QgsAttributeEditorContext
     }
 
     /**
-     * Set current \a messageBar as the main information bar
+     * Set current \a messageBar as the main message bar
      * \since QGIS 3.12
      */
-    void setMainInfoBar( QgsMessageBar *messageBar ) { mMainInfoBar = messageBar; }
+    void setMainMessageBar( QgsMessageBar *messageBar ) { mMainMessageBar = messageBar; }
 
     /**
-     * Returns the main information bar
+     * Returns the main message bar
      * \since QGIS 3.12
      */
-    QgsMessageBar *mainInfoBar() { return mMainInfoBar; }
+    QgsMessageBar *mainMessageBar() { return mMainMessageBar; }
 
   private:
     const QgsAttributeEditorContext *mParentContext = nullptr;
     QgsVectorLayer *mLayer = nullptr;
     QgsVectorLayerTools *mVectorLayerTools = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
-    QgsMessageBar *mMainInfoBar = nullptr;
+    QgsMessageBar *mMainMessageBar = nullptr;
     QgsAdvancedDigitizingDockWidget *mCadDockWidget = nullptr;
     QgsDistanceArea mDistanceArea;
     QgsRelation mRelation;

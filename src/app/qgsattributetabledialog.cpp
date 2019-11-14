@@ -158,7 +158,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
 
   mEditorContext.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
   mEditorContext.setMapCanvas( QgisApp::instance()->mapCanvas() );
-  mEditorContext.setMainInfoBar( QgisApp::instance()->messageBar() );
+  mEditorContext.setMainMessageBar( QgisApp::instance()->messageBar() );
   mEditorContext.setCadDockWidget( QgisApp::instance()->cadDockWidget() );
 
   QgsFeatureRequest r;
