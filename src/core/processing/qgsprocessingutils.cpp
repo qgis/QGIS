@@ -1039,6 +1039,11 @@ QgsFeatureIds QgsProcessingFeatureSource::allFeatureIds() const
   return mSource->allFeatureIds();
 }
 
+QgsFeatureSource::SpatialIndexPresence QgsProcessingFeatureSource::hasSpatialIndex() const
+{
+  return mSource->hasSpatialIndex();
+}
+
 QgsExpressionContextScope *QgsProcessingFeatureSource::createExpressionContextScope() const
 {
   QgsExpressionContextScope *expressionContextScope = nullptr;

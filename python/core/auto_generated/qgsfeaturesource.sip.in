@@ -159,6 +159,24 @@ for its ownership.
 
 .. versionadded:: 3.0
 %End
+
+    enum SpatialIndexPresence
+    {
+      SpatialIndexUnknown,
+      SpatialIndexNotPresent,
+      SpatialIndexPresent,
+    };
+
+    virtual SpatialIndexPresence hasSpatialIndex() const;
+%Docstring
+Returns an enum value representing the presence of a valid spatial index on the source,
+if it can be determined.
+
+If QgsFeatureSource.SpatialIndexUnknown is returned then the presence of an index cannot
+be determined.
+
+.. versionadded:: 3.10.1
+%End
 };
 
 

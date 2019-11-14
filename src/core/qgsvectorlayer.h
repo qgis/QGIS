@@ -2374,6 +2374,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
 
+    SpatialIndexPresence hasSpatialIndex() const override;
+
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
   signals:
