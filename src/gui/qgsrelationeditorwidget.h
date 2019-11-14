@@ -204,7 +204,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     void unsetMapTool();
 
     QgsDualView *mDualView = nullptr;
-    QgsMessageBarItem *mMessageBarItem = nullptr;
+    QPointer<QgsMessageBarItem> mMessageBarItem;
     QgsDualView::ViewMode mViewMode = QgsDualView::AttributeEditor;
     QgsVectorLayerSelectionManager *mFeatureSelectionMgr = nullptr;
     QgsAttributeEditorContext mEditorContext;
