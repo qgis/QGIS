@@ -172,11 +172,11 @@ QgsRasterBlock *QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const 
   {
     if ( mZoomedInResampler && ( oversamplingX < 1.0 || qgsDoubleNear( oversampling, 1.0 ) ) )
     {
-      tileBufferPixels = mZoomedInResampler->tileBufferPixels();
+      tileBufferPixels = static_cast< int >( std::ceil( mZoomedInResampler->tileBufferPixels() * oversampling ) );
     }
     else if ( mZoomedOutResampler && oversamplingX > 1.0 )
     {
-      tileBufferPixels = mZoomedOutResampler->tileBufferPixels();
+      tileBufferPixels = static_cast< int >( std::ceil( mZoomedOutResampler->tileBufferPixels() * oversampling ) );
     }
   }
   const double sourceTileBufferSize = providerXRes * tileBufferPixels;
@@ -252,7 +252,7 @@ QgsRasterBlock *QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const 
 
   // extract desired part of dstImage
   QImage cropped = tileBufferPixels > 0 ? dstImg.copy( ( resampleWidth - width ) / 2, ( resampleHeight - height ) / 2, width, height )
-                   : dstImg; // otherwise implicity copy, nice and cheap
+                   : dstImg; // otherwise implicit copy, nice and cheap
   outputBlock->setImage( &cropped );
 
   return outputBlock.release(); // No resampling
