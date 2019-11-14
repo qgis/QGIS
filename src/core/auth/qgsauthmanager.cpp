@@ -124,7 +124,7 @@ QSqlDatabase QgsAuthManager::authDatabaseConnection() const
     authdb = QSqlDatabase::addDatabase( QStringLiteral( "QSQLITE" ), connectionName );
     authdb.setDatabaseName( authenticationDatabasePath() );
     // for background threads, remove database when current thread finishes
-    if ( QThread::currentThread() != QgsApplication::instance()->thread() )
+    if ( QThread::currentThread() != qApp->thread() )
     {
       QgsDebugMsgLevel( QStringLiteral( "Scheduled auth db remove on thread close" ), 2 );
 
