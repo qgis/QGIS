@@ -57,9 +57,8 @@ To test the postgres provider you will need to have a database available to
 which the postgres provider can connect. The server will need to have PostGIS
 support enabled.
 
-By default the test uses one of the following connection string:
+By default the tests use the following connection string:
 
-    dbname=qgis_test
     service=qgis_test
 
 If these do not match your setup you can set the environment variable

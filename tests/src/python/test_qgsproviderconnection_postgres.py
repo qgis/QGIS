@@ -39,7 +39,7 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
     def setUpClass(cls):
         """Run before all tests"""
         TestPyQgsProviderConnectionBase.setUpClass()
-        cls.postgres_conn = 'dbname=\'qgis_test\''
+        cls.postgres_conn = "service='qgis_test'"
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.postgres_conn = os.environ['QGIS_PGTEST_DB']
         # Create test layers
