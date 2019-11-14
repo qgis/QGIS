@@ -88,7 +88,7 @@ class TestExportToPostGis(unittest.TestCase):
         # Check that data have been imported correctly
         exported = QgsVectorLayer(unitTestDataPath() + '/points.shp', 'exported')
         self.assertTrue(exported.isValid())
-        imported = QgsVectorLayer("service='qgis_test' dbname=\'qgis_test\' table=\"CamelCaseSchema\".\"%s\" (geom)" % table_name, 'imported', 'postgres')
+        imported = QgsVectorLayer("service='qgis_test' table=\"CamelCaseSchema\".\"%s\" (geom)" % table_name, 'imported', 'postgres')
         self.assertTrue(imported.isValid())
         imported_fields = [f.name() for f in imported.fields()]
         for f in exported.fields():

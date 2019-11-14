@@ -120,7 +120,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
     def testWriteWithBoolField(self):
 
         # init connection string
-        dbconn = 'dbname=\'qgis_test\''
+        dbconn = 'service=qgis_test'
         if 'QGIS_PGTEST_DB' in os.environ:
             dbconn = os.environ['QGIS_PGTEST_DB']
 
