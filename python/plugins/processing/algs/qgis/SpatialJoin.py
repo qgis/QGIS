@@ -38,7 +38,8 @@ from qgis.core import (QgsFields,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterString,
-                       QgsProcessingOutputNumber)
+                       QgsProcessingOutputNumber,
+                       QgsFeatureSource)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
@@ -205,6 +206,9 @@ class SpatialJoin(QgisAlgorithm):
         request = QgsFeatureRequest().setSubsetOfAttributes(join_field_indexes).setDestinationCrs(source.sourceCrs(), context.transformContext())
         features = join_source.getFeatures(request)
         total = 100.0 / join_source.featureCount() if join_source.featureCount() else 0
+
+        if source.hasSpatialIndex() == QgsFeatureSource.SpatialIndexNotPresent:
+            feedback.reportError(self.tr('No spatial index exists for input layer, performance will be severely degraded'))
 
         joined_count = 0
         unjoined_count = 0
