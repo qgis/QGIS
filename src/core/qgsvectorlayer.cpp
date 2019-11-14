@@ -4677,20 +4677,26 @@ QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &resultFlag,
 {
   QgsDataSourceUri dsUri( theURI );
   QString returnMessage;
+  QString qml, errorMsg;
   if ( !loadFromLocalDB && mDataProvider && mDataProvider->isSaveAndLoadStyleToDatabaseSupported() )
   {
-    QString qml, errorMsg;
     qml = QgsProviderRegistry::instance()->loadStyle( mProviderKey, mDataSource, errorMsg );
-    if ( !qml.isEmpty() )
-    {
-      QDomDocument myDocument( QStringLiteral( "qgis" ) );
-      myDocument.setContent( qml );
-      resultFlag = importNamedStyle( myDocument, errorMsg );
-      returnMessage = QObject::tr( "Loaded from Provider" );
-    }
   }
-  returnMessage = QgsMapLayer::loadNamedStyle( theURI, resultFlag, categories );
-  emit styleLoaded( categories );
+  if ( !qml.isEmpty() )
+  {
+    QDomDocument myDocument( QStringLiteral( "qgis" ) );
+    myDocument.setContent( qml );
+    resultFlag = importNamedStyle( myDocument, errorMsg );
+    returnMessage = QObject::tr( "Loaded from Provider" );
+  }
+  else
+  {
+    returnMessage = QgsMapLayer::loadNamedStyle( theURI, resultFlag, categories );
+  }
+
+  if ( resultFlag )
+    emit styleLoaded( categories );
+
   return returnMessage;
 }
 
