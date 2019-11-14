@@ -46,7 +46,8 @@ from qgis.core import (QgsProcessingException,
                        QgsCoordinateReferenceSystem,
                        QgsMapRendererCustomPainterJob,
                        QgsLabelingEngineSettings,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsExpressionContextUtils)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 import threading
 from concurrent.futures import ThreadPoolExecutor
@@ -198,6 +199,11 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         extent = QgsRectangle(*metatile.extent())
         threadSpecificSettings.setExtent(self.wgs_to_dest.transformBoundingBox(extent))
         threadSpecificSettings.setOutputSize(size)
+        
+        #Append MapSettings scope in order to update map variables (e.g @map_scale) with new extent data
+        exp_context = threadSpecificSettings.expressionContext()
+        exp_context.appendScope(QgsExpressionContextUtils.mapSettingsScope(threadSpecificSettings))
+        threadSpecificSettings.setExpressionContext(exp_context)
 
         image = QImage(size, QImage.Format_ARGB32_Premultiplied)
         image.fill(self.color)
@@ -264,6 +270,9 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
             labeling_engine_settings = self.settingsDictionary[thread].labelingEngineSettings()
             labeling_engine_settings.setFlag(QgsLabelingEngineSettings.UsePartialCandidates, False)
             self.settingsDictionary[thread].setLabelingEngineSettings(labeling_engine_settings)
+            
+            # Transfer context scopes to MapSettings
+            self.settingsDictionary[thread].setExpressionContext(context.expressionContext())
 
         self.wgs_extent = self.src_to_wgs.transformBoundingBox(extent)
         self.wgs_extent = [self.wgs_extent.xMinimum(), self.wgs_extent.yMinimum(), self.wgs_extent.xMaximum(),
