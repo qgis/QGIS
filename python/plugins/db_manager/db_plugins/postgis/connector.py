@@ -746,7 +746,7 @@ class PostGisDBConnector(DBConnector):
         sql = u"TRUNCATE %s" % self.quoteId(table)
         self._execute_and_commit(sql)
 
-    def renamesTable(self, table, new_table):
+    def renameTable(self, table, new_table):
         """Renames a table in database """
         schema, tablename = self.getSchemaTableName(table)
         if new_table == tablename:
