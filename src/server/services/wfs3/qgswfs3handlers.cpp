@@ -297,14 +297,14 @@ void QgsWfs3LandingPageHandler::handleRequest( const QgsServerApiContext &contex
     { "href", href( context, "/conformance" )},
     { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::conformance ) },
     { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::JSON ) },
-    { "title", "WFS 3.0 conformance classes" },
+    { "title", "Conformance classes" },
   } );
   data["links"].push_back(
   {
     { "href", href( context, "/api" )},
     { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::service_desc ) },
     { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::OPENAPI3 ) },
-    { "title", "API definition" },
+    { "title", "API description" },
   } );
   write( data, context, {{ "pageTitle", linkTitle() }, { "navigation", json::array() }} );
 }

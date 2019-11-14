@@ -592,7 +592,7 @@ Content-Type: application/openapi+json;version=3.0
             "description": "An error occurred."
           }
         },
-        "summary": "The API definition",
+        "summary": "The API description",
         "tags": [
           "Capabilities"
         ]

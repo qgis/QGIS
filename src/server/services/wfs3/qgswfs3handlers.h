@@ -76,9 +76,9 @@ class QgsWfs3APIHandler: public QgsWfs3AbstractItemsHandler
     void handleRequest( const QgsServerApiContext &context ) const override;
     QRegularExpression path() const override { return QRegularExpression( R"re(/api)re" ); }
     std::string operationId() const override { return "getApiDescription"; }
-    std::string summary() const override { return "The API definition"; }
+    std::string summary() const override { return "The API description"; }
     std::string description() const override { return "The formal documentation of this API according to the OpenAPI specification, version 3.0. I.e., this document."; }
-    std::string linkTitle() const override { return "API definition"; }
+    std::string linkTitle() const override { return "API description"; }
     QStringList tags() const override { return { QStringLiteral( "Capabilities" ) }; }
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::service_desc; }
     json schema( const QgsServerApiContext &context ) const override;
