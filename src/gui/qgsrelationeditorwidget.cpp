@@ -447,12 +447,7 @@ void QgsRelationEditorWidget::addFeatureGeometry()
 
   if ( mEditorContext.mainInfoBar() )
   {
-    QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
-
-    QgsExpression exp( layer->displayExpression() );
-    context.setFeature( mFeature );
-    exp.prepare( &context );
-    QString displayString = exp.evaluate( &context ).toString();
+    QString displayString = QgsVectorLayerUtils::getFeatureDisplayString( layer, mFeature );
 
     QString title = tr( "Create child feature for parent %1 \"%2\"" ).arg( mRelation.referencedLayer()->name(), displayString );
     QString msg = tr( "Digitize the geometry for the new feature on layer %1. Press &lt;ESC&gt; to cancel." )
