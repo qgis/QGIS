@@ -353,10 +353,9 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
     {
       QgsMessageLog::logMessage( tr( "Your PostGIS installation has no GEOS support. Feature selection and identification will not work properly. Please install PostGIS with GEOS support (http://geos.refractions.net)" ), tr( "PostGIS" ) );
     }
-
-    if ( hasTopology() )
+    else
     {
-      QgsDebugMsg( QStringLiteral( "Topology support available!" ) );
+      QgsDebugMsg( QStringLiteral( "GEOS support available!" ) );
     }
   }
 
@@ -1095,6 +1094,15 @@ QString QgsPostgresConn::postgisVersion()
     {
       mTopologyAvailable = true;
     }
+  }
+
+  if ( mTopologyAvailable )
+  {
+    QgsDebugMsg( QStringLiteral( "Topology support available!" ) );
+  }
+  else
+  {
+    QgsDebugMsg( QStringLiteral( "Topology support not available :(" ) );
   }
 
   mGotPostgisVersion = true;
