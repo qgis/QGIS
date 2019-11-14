@@ -408,8 +408,11 @@ QStringList QgsPostgresConn::supportedSpatialTypes() const
   supportedSpatialTypes << quotedValue( "geometry" )
                         << quotedValue( "geography" )
                         << quotedValue( "pcpatch" );
-  if ( hasRaster() ) supportedSpatialTypes << quotedValue( "raster" );
-  if ( hasTopology() ) supportedSpatialTypes << quotedValue( "topogeometry" );
+  if ( hasRaster() )
+    supportedSpatialTypes << quotedValue( "raster" );
+
+  if ( hasTopology() )
+    supportedSpatialTypes << quotedValue( "topogeometry" );
 
   return supportedSpatialTypes;
 }
@@ -1081,7 +1084,7 @@ QString QgsPostgresConn::postgisVersion() const
 
   if ( mTopologyAvailable )
   {
-    QgsDebugMsg( QStringLiteral( "Topology support available!" ) );
+    QgsDebugMsg( QStringLiteral( "Topology support available :)" ) );
   }
   else
   {
