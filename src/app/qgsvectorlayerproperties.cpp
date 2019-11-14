@@ -236,12 +236,18 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   syncToLayer();
 
-  if ( mLayer->dataProvider() )//enable spatial index button group if supported by provider
+  if ( mLayer->dataProvider() )
   {
+    //enable spatial index button group if supported by provider, or if one already exists
     QgsVectorDataProvider::Capabilities capabilities = mLayer->dataProvider()->capabilities();
     if ( !( capabilities & QgsVectorDataProvider::CreateSpatialIndex ) )
     {
       pbnIndex->setEnabled( false );
+    }
+    if ( mLayer->dataProvider()->hasSpatialIndex() == QgsFeatureSource::SpatialIndexPresent )
+    {
+      pbnIndex->setEnabled( false );
+      pbnIndex->setText( tr( "Spatial Index Exists" ) );
     }
 
     if ( capabilities & QgsVectorDataProvider::SelectEncoding )
@@ -966,12 +972,13 @@ void QgsVectorLayerProperties::pbnIndex_clicked()
     setCursor( Qt::ArrowCursor );
     if ( errval )
     {
+      pbnIndex->setEnabled( false );
+      pbnIndex->setText( tr( "Spatial Index Exists" ) );
       QMessageBox::information( this, tr( "Spatial Index" ), tr( "Creation of spatial index successful" ) );
     }
     else
     {
-      // TODO: Remind the user to use OGR >= 1.2.6 and Shapefile
-      QMessageBox::information( this, tr( "Spatial Index" ), tr( "Creation of spatial index failed" ) );
+      QMessageBox::warning( this, tr( "Spatial Index" ), tr( "Creation of spatial index failed" ) );
     }
   }
 }
