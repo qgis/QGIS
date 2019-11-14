@@ -282,6 +282,11 @@ bool QgsDelimitedTextProvider::createSpatialIndex()
   return true;
 }
 
+QgsFeatureSource::SpatialIndexPresence QgsDelimitedTextProvider::hasSpatialIndex() const
+{
+  return mSpatialIndex ? QgsFeatureSource::SpatialIndexPresent : QgsFeatureSource::SpatialIndexNotPresent;
+}
+
 // Really want to merge scanFile and rescan into single code.  Currently the reason
 // this is not done is that scanFile is done initially to create field names and, rescan
 // file includes building subset expression and assumes field names/types are already

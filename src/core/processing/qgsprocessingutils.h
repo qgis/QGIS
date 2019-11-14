@@ -466,6 +466,7 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
     QVariant maximumValue( int fieldIndex ) const override;
     QgsRectangle sourceExtent() const override;
     QgsFeatureIds allFeatureIds() const override;
+    SpatialIndexPresence hasSpatialIndex() const override;
 
     /**
      * Returns an expression context scope suitable for this source.
