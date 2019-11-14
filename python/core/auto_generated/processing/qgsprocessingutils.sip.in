@@ -412,6 +412,8 @@ iterator, eg by restricting the returned attributes or geometry.
 
     virtual QgsFeatureIds allFeatureIds() const;
 
+    virtual SpatialIndexPresence hasSpatialIndex() const;
+
 
     QgsExpressionContextScope *createExpressionContextScope() const /Factory/;
 %Docstring

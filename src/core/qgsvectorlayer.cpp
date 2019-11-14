@@ -1437,6 +1437,11 @@ void QgsVectorLayer::setTransformContext( const QgsCoordinateTransformContext &t
     mDataProvider->setTransformContext( transformContext );
 }
 
+QgsFeatureSource::SpatialIndexPresence QgsVectorLayer::hasSpatialIndex() const
+{
+  return mDataProvider ? mDataProvider->hasSpatialIndex() : QgsFeatureSource::SpatialIndexUnknown;
+}
+
 bool QgsVectorLayer::accept( QgsStyleEntityVisitorInterface *visitor ) const
 {
   if ( mRenderer )
