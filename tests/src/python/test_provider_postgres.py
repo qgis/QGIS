@@ -1295,13 +1295,8 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
     def testStyleDatabaseWithService(self):
         """Test saving style in DB using a service file.
 
-        To run this test, you first need to create a service with:
-        [qgis_test]
-        host=localhost
-        port=5432
-        dbname=qgis_test
-        user=USERNAME
-        password=PASSWORD
+        To run this test, you first need to setup the test
+        database with tests/testdata/provider/testdata_pg.sh
         """
         myconn = 'service=\'qgis_test\''
         if 'QGIS_PGTEST_DB' in os.environ:
