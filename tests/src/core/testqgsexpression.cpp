@@ -971,6 +971,11 @@ class TestQgsExpression: public QObject
       QTest::newRow( "pole_of_inaccessibility not poly" ) << "geom_to_wkt(pole_of_inaccessibility( geomFromWKT('POINT (1.5 0.5)'), 0.1 ))" << false << QVariant();
       QTest::newRow( "pole_of_inaccessibility not geom" ) << "pole_of_inaccessibility('g',0.1)" << true << QVariant();
       QTest::newRow( "pole_of_inaccessibility null" ) << "pole_of_inaccessibility(NULL,0.1)" << false << QVariant();
+      QTest::newRow( "is_valid not geom" ) << "is_valid('g')" << true << QVariant();
+      QTest::newRow( "is_valid null" ) << "is_valid(NULL)" << false << QVariant();
+      QTest::newRow( "is_valid point" ) << "is_valid(geom_from_wkt('POINT(1 2)'))" << false << QVariant( true );
+      QTest::newRow( "is_valid valid" ) << "is_valid(geom_from_wkt('LINESTRING(0 0, 1 1, 2 2, 0 0)'))" << false << QVariant( true );
+      QTest::newRow( "is_valid not valid" ) << "is_valid(geom_from_wkt('LINESTRING(0 0)'))" << false << QVariant( false );
       QTest::newRow( "is_closed not geom" ) << "is_closed('g')" << true << QVariant();
       QTest::newRow( "is_closed null" ) << "is_closed(NULL)" << false << QVariant();
       QTest::newRow( "is_closed point" ) << "is_closed(geom_from_wkt('POINT(1 2)'))" << false << QVariant();
