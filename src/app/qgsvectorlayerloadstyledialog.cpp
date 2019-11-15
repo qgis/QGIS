@@ -31,7 +31,7 @@ QgsVectorLayerLoadStyleDialog::QgsVectorLayerLoadStyleDialog( QgsVectorLayer *la
   , mLayer( layer )
 {
   setupUi( this );
-  setWindowTitle( QStringLiteral( "Database styles manager" ) );
+  setWindowTitle( tr( "Database Styles Manager" ) );
 
   mDeleteButton = mButtonBox->button( QDialogButtonBox::StandardButton::Close );
   mDeleteButton->setText( tr( "Delete style" ) );
