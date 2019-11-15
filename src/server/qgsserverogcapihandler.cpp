@@ -303,7 +303,7 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
       QFileInfo fi{ url.path() };
       auto suffix { fi.suffix() };
       auto fName { fi.filePath()};
-      if ( suffix.length() != 0 )
+      if ( !suffix.isEmpty() )
       {
         fName.chop( suffix.length() + 1 );
       }

@@ -37,6 +37,8 @@
 
 class SERVER_EXPORT QgsServerRequest
 {
+    Q_GADGET
+
   public:
 
     typedef QMap<QString, QString> Parameters;
@@ -51,8 +53,10 @@ class SERVER_EXPORT QgsServerRequest
       PutMethod,
       GetMethod,
       PostMethod,
-      DeleteMethod
+      DeleteMethod,
+      PatchMethod
     };
+    Q_ENUM( Method )
 
 
     /**
@@ -80,6 +84,13 @@ class SERVER_EXPORT QgsServerRequest
 
     //! destructor
     virtual ~QgsServerRequest() = default;
+
+    /**
+     * Returns a string representation of an HTTP request \a method.
+     * \since QGIS 3.12
+     */
+    static QString methodToString( const Method &method );
+
 
     /**
      * \returns  the request url as seen by QGIS server

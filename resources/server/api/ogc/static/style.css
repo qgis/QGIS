@@ -53,3 +53,23 @@ table.table-params td.small
 {
     font-size: 90%;
 }
+
+.btn-post, .btn-post:hover {
+  background-color: green;
+  border-color: green;
+}
+
+.btn-put, btn-put:hover {
+  background-color: orange;
+  border-color: orange;
+}
+
+.btn-patch, .btn-patch:hover {
+  background-color: magenta;
+  border-color: magenta;
+}
+
+.btn-delete, .btn-delete:hover {
+  background-color: red;
+  border-color: red;
+}

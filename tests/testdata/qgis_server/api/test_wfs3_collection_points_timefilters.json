@@ -45,13 +45,13 @@ Content-Type: application/json
     {
       "href": "http://server.qgis.org/wfs3/collections/points/items.json",
       "rel": "items",
-      "title": "points",
-      "type": "application/json"
+      "title": "points items as GEOJSON",
+      "type": "application/geo+json"
     },
     {
       "href": "http://server.qgis.org/wfs3/collections/points/items.html",
       "rel": "items",
-      "title": "points",
+      "title": "points items as HTML",
       "type": "text/html"
     },
     {

@@ -436,6 +436,9 @@ json QgsJsonUtils::jsonFromVariant( const QVariant &val )
       case QMetaType::Bool:
         j = val.toBool();
         break;
+      case QMetaType::QByteArray:
+        j = val.toByteArray().toBase64().toStdString();
+        break;
       default:
         j = val.toString().toStdString();
         break;

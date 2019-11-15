@@ -16,6 +16,7 @@
 
 #include <QDir>
 #include <QDebug>
+#include <QtGlobal>
 
 #include "qgsserverogcapi.h"
 #include "qgsserverogcapihandler.h"
@@ -68,7 +69,17 @@ void QgsServerOgcApi::registerHandler( QgsServerOgcApiHandler *handler )
 
 QUrl QgsServerOgcApi::sanitizeUrl( const QUrl &url )
 {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+  // Since QT 13 NormalizePathSegments does not collapse double slashes
+  QUrl u { url.adjusted( QUrl::StripTrailingSlash | QUrl::NormalizePathSegments ) };
+  while ( u.path().contains( QLatin1String( "//" ) ) )
+  {
+    u.setPath( u.path().replace( QLatin1String( "//" ), QChar( '/' ) ) );
+  }
+  return u;
+#else
   return url.adjusted( QUrl::StripTrailingSlash | QUrl::NormalizePathSegments );
+#endif
 }
 
 void QgsServerOgcApi::executeRequest( const QgsServerApiContext &context ) const

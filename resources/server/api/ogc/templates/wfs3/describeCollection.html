@@ -27,6 +27,15 @@
             <dt>{{ extent.spatial.bbox.0.3 }}</dt>
         </dl>
 
+        <h3>Links</h3>
+            <ul>
+            {% for link in links %}
+                {% if link.rel != "self" %}
+                <li><a rel="{{ link.rel }}" href="{{ link.href }}">{{ link.title }}</a></li>
+                {% endif %}
+            {% endfor %}
+            </ul>
+
     </div>
 
     <div class="col-md-6">

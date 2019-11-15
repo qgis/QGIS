@@ -31,6 +31,7 @@
 #include "qgspostgresstringutils.h"
 
 #include <QApplication>
+#include <QStringList>
 #include <QThread>
 
 #include <climits>
@@ -207,8 +208,6 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
   , mPostgresqlVersion( 0 )
   , mPostgisVersionMajor( 0 )
   , mPostgisVersionMinor( 0 )
-  , mGistAvailable( false )
-  , mProjAvailable( false )
   , mPointcloudAvailable( false )
   , mRasterAvailable( false )
   , mUseWkbHex( false )
@@ -352,10 +351,9 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
     {
       QgsMessageLog::logMessage( tr( "Your PostGIS installation has no GEOS support. Feature selection and identification will not work properly. Please install PostGIS with GEOS support (http://geos.refractions.net)" ), tr( "PostGIS" ) );
     }
-
-    if ( hasTopology() )
+    else
     {
-      QgsDebugMsg( QStringLiteral( "Topology support available!" ) );
+      QgsDebugMsg( QStringLiteral( "GEOS support available!" ) );
     }
   }
 
@@ -403,13 +401,31 @@ void QgsPostgresConn::unref()
 }
 
 /* private */
+QStringList QgsPostgresConn::supportedSpatialTypes() const
+{
+  QStringList supportedSpatialTypes;
+
+  supportedSpatialTypes << quotedValue( "geometry" )
+                        << quotedValue( "geography" )
+                        << quotedValue( "pcpatch" );
+  if ( hasRaster() )
+    supportedSpatialTypes << quotedValue( "raster" );
+
+  if ( hasTopology() )
+    supportedSpatialTypes << quotedValue( "topogeometry" );
+
+  return supportedSpatialTypes;
+}
+
+/* private */
 // TODO: deprecate this function
 void QgsPostgresConn::addColumnInfo( QgsPostgresLayerProperty &layerProperty, const QString &schemaName, const QString &viewName, bool fetchPkCandidates )
 {
   // TODO: optimize this query when pk candidates aren't needed
   //       could use array_agg() and count()
   //       array output would look like this: "{One,tWo}"
-  QString sql = QStringLiteral( "SELECT attname, CASE WHEN typname in ('geometry','geography','topogeometry','raster') THEN 1 ELSE null END AS isSpatial FROM pg_attribute JOIN pg_type ON atttypid=pg_type.oid WHERE attrelid=regclass('%1.%2') AND NOT attisdropped AND attnum>0 ORDER BY attnum" )
+  QString sql = QStringLiteral( "SELECT attname, CASE WHEN typname in (%1) THEN 1 ELSE null END AS isSpatial FROM pg_attribute JOIN pg_type ON atttypid=pg_type.oid WHERE attrelid=regclass('%2.%3') AND NOT attisdropped AND attnum>0 ORDER BY attnum" )
+                .arg( supportedSpatialTypes().join( ',' ) )
                 .arg( quotedIdentifier( schemaName ),
                       quotedIdentifier( viewName ) );
   QgsDebugMsg( "getting column info: " + sql );
@@ -532,7 +548,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     // Can't use regclass here because table must exist, else error occurs.
     sql = QString( "SELECT %1,%2,%3,%4,%5,%6,c.relkind,obj_description(c.oid),"
                    "array_agg(a.attname), "
-                   "count(CASE WHEN t.typname IN ('geometry','geography','topogeometry','raster') THEN 1 ELSE NULL END) "
+                   "count(CASE WHEN t.typname IN (%9) THEN 1 ELSE NULL END) "
                    ", %8 "
                    " FROM %7 l,pg_class c,pg_namespace n,pg_attribute a,pg_type t"
                    " WHERE c.relname=%1"
@@ -543,10 +559,11 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
                    " AND a.attnum>0"
                    " AND n.oid=c.relnamespace"
                    " AND has_schema_privilege(n.nspname,'usage')"
-                   " AND has_table_privilege('\"'||n.nspname||'\".\"'||c.relname||'\"','select')" // user has select privilege
+                   " AND has_table_privilege(c.oid,'select')" // user has select privilege
                  )
           .arg( tableName, schemaName, columnName, typeName, sridName, dimName, gtableName )
           .arg( 1 )
+          .arg( supportedSpatialTypes().join( ',' ) )
           ;
 
     if ( searchPublicOnly )
@@ -662,23 +679,24 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
   //search for geometry columns in tables that are not in the geometry_columns metatable
   if ( !searchGeometryColumnsOnly )
   {
-    // Now have a look for geometry columns that aren't in the geometry_columns table.
-    QString sql = "SELECT"
-                  " c.relname"
-                  ",n.nspname"
-                  ",a.attname"
-                  ",c.relkind"
-                  ",CASE WHEN t.typname IN ('geometry','geography','topogeometry') THEN t.typname ELSE b.typname END AS coltype"
-                  ",obj_description(c.oid)"
-                  " FROM pg_attribute a"
-                  " JOIN pg_class c ON c.oid=a.attrelid"
-                  " JOIN pg_namespace n ON n.oid=c.relnamespace"
-                  " JOIN pg_type t ON t.oid=a.atttypid"
-                  " LEFT JOIN pg_type b ON b.oid=t.typbasetype"
-                  " WHERE c.relkind IN ('v','r','m','p')"
-                  " AND has_schema_privilege( n.nspname, 'usage' )"
-                  " AND has_table_privilege( QUOTE_IDENT(n.nspname) || '.' || QUOTE_IDENT(c.relname), 'select' )"
-                  " AND (t.typname IN ('geometry','geography','topogeometry') OR b.typname IN ('geometry','geography','topogeometry','pcpatch','raster'))";
+    // Now have a look for spatial columns that aren't in the geometry_columns table.
+    QString sql = QStringLiteral( "SELECT"
+                                  " c.relname"
+                                  ",n.nspname"
+                                  ",a.attname"
+                                  ",c.relkind"
+                                  ",CASE WHEN t.typname IN (%1) THEN t.typname ELSE b.typname END AS coltype"
+                                  ",obj_description(c.oid)"
+                                  " FROM pg_attribute a"
+                                  " JOIN pg_class c ON c.oid=a.attrelid"
+                                  " JOIN pg_namespace n ON n.oid=c.relnamespace"
+                                  " JOIN pg_type t ON t.oid=a.atttypid"
+                                  " LEFT JOIN pg_type b ON b.oid=t.typbasetype"
+                                  " WHERE c.relkind IN ('v','r','m','p')"
+                                  " AND has_schema_privilege( n.nspname, 'usage' )"
+                                  " AND has_table_privilege( c.oid, 'select' )"
+                                  " AND (t.typname IN (%1) OR b.typname IN (%1))" )
+                  .arg( supportedSpatialTypes().join( ',' ) );
 
     // user has select privilege
     if ( searchPublicOnly )
@@ -806,7 +824,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
                   ",pg_attribute a"
                   " WHERE pg_namespace.oid=pg_class.relnamespace"
                   " AND has_schema_privilege(pg_namespace.nspname,'usage')"
-                  " AND has_table_privilege('\"' || pg_namespace.nspname || '\".\"' || pg_class.relname || '\"','select')"
+                  " AND has_table_privilege(pg_class.oid,'select')"
                   " AND pg_class.relkind IN ('v','r','m','p')"
                   " AND pg_class.oid = a.attrelid"
                   " AND NOT a.attisdropped"
@@ -943,7 +961,7 @@ bool QgsPostgresConn::getSchemas( QList<QgsPostgresSchemaProperty> &schemas )
 /**
  * Check to see if GEOS is available
  */
-bool QgsPostgresConn::hasGEOS()
+bool QgsPostgresConn::hasGEOS() const
 {
   // make sure info is up to date for the current connection
   postgisVersion();
@@ -953,7 +971,7 @@ bool QgsPostgresConn::hasGEOS()
 /**
  * Check to see if topology is available
  */
-bool QgsPostgresConn::hasTopology()
+bool QgsPostgresConn::hasTopology() const
 {
   // make sure info is up to date for the current connection
   postgisVersion();
@@ -963,7 +981,7 @@ bool QgsPostgresConn::hasTopology()
 /**
  * Check to see if pointcloud is available
  */
-bool QgsPostgresConn::hasPointcloud()
+bool QgsPostgresConn::hasPointcloud() const
 {
   // make sure info is up to date for the current connection
   postgisVersion();
@@ -973,14 +991,14 @@ bool QgsPostgresConn::hasPointcloud()
 /**
  * Check to see if raster is available
  */
-bool QgsPostgresConn::hasRaster()
+bool QgsPostgresConn::hasRaster() const
 {
   // make sure info is up to date for the current connection
   postgisVersion();
   return mRasterAvailable;
 }
 /* Functions for determining available features in postGIS */
-QString QgsPostgresConn::postgisVersion()
+QString QgsPostgresConn::postgisVersion() const
 {
   QMutexLocker locker( &mLock );
   if ( mGotPostgisVersion )
@@ -1018,36 +1036,21 @@ QString QgsPostgresConn::postgisVersion()
   // apparently PostGIS 1.5.2 doesn't report capabilities in postgis_version() anymore
   if ( mPostgisVersionMajor > 1 || ( mPostgisVersionMajor == 1 && mPostgisVersionMinor >= 5 ) )
   {
-    result = PQexec( QStringLiteral( "SELECT postgis_geos_version(),postgis_proj_version()" ) );
+    result = PQexec( QStringLiteral( "SELECT postgis_geos_version()" ) );
     mGeosAvailable = result.PQntuples() == 1 && !result.PQgetisnull( 0, 0 );
-    mProjAvailable = result.PQntuples() == 1 && !result.PQgetisnull( 0, 1 );
     QgsDebugMsg( QStringLiteral( "geos:%1 proj:%2" )
-                 .arg( mGeosAvailable ? result.PQgetvalue( 0, 0 ) : "none",
-                       mProjAvailable ? result.PQgetvalue( 0, 1 ) : "none" ) );
-    mGistAvailable = true;
+                 .arg( mGeosAvailable ? result.PQgetvalue( 0, 0 ) : "none" ) );
   }
   else
   {
     // assume no capabilities
     mGeosAvailable = false;
-    mGistAvailable = false;
-    mProjAvailable = false;
 
     // parse out the capabilities and store them
     QStringList geos = postgisParts.filter( QStringLiteral( "GEOS" ) );
     if ( geos.size() == 1 )
     {
       mGeosAvailable = ( geos[0].indexOf( QLatin1String( "=1" ) ) > -1 );
-    }
-    QStringList gist = postgisParts.filter( QStringLiteral( "STATS" ) );
-    if ( gist.size() == 1 )
-    {
-      mGistAvailable = ( gist[0].indexOf( QLatin1String( "=1" ) ) > -1 );
-    }
-    QStringList proj = postgisParts.filter( QStringLiteral( "PROJ" ) );
-    if ( proj.size() == 1 )
-    {
-      mProjAvailable = ( proj[0].indexOf( QLatin1String( "=1" ) ) > -1 );
     }
   }
 
@@ -1056,11 +1059,36 @@ QString QgsPostgresConn::postgisVersion()
   mTopologyAvailable = false;
   if ( mPostgisVersionMajor > 1 )
   {
-    QgsPostgresResult result( PQexec( QStringLiteral( "SELECT EXISTS ( SELECT c.oid FROM pg_class AS c JOIN pg_namespace AS n ON c.relnamespace=n.oid WHERE n.nspname='topology' AND c.relname='topology' )" ) ) );
+    // NOTE: CASE syntax is used to avoid an exception when
+    //       topology.topology does not exist
+    // See
+    // https://www.postgresql.org/docs/current/sql-expressions.html#SYNTAX-EXPRESS-EVAL
+    QgsPostgresResult result(
+      PQexec(
+        QStringLiteral(
+          "SELECT has_schema_privilege(n.oid, 'usage')"
+          "   AND has_table_privilege(t.oid, 'select')"
+          "   AND has_table_privilege(l.oid, 'select')"
+          "  FROM pg_namespace n, pg_class t, pg_class l"
+          " WHERE n.nspname = 'topology'"
+          "   AND t.relnamespace = n.oid"
+          "   AND l.relnamespace = n.oid"
+          "   AND t.relname = 'topology'"
+          "   AND l.relname = 'layer'"
+        ) ) );
     if ( result.PQntuples() >= 1 && result.PQgetvalue( 0, 0 ) == QLatin1String( "t" ) )
     {
       mTopologyAvailable = true;
     }
+  }
+
+  if ( mTopologyAvailable )
+  {
+    QgsDebugMsg( QStringLiteral( "Topology support available :)" ) );
+  }
+  else
+  {
+    QgsDebugMsg( QStringLiteral( "Topology support not available :(" ) );
   }
 
   mGotPostgisVersion = true;
