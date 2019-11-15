@@ -74,8 +74,6 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QTKEYCHAIN_INCLUDE_DIR}
 )
 
-ADD_DEFINITIONS(-DCORE_EXPORT=)
-
 ############################################################
 # qgis_quick_plugin module (QML) library
 
@@ -96,7 +94,7 @@ ADD_LIBRARY(qgis_quick_plugin ${LIBRARY_TYPE}
 )
 TARGET_LINK_LIBRARIES(qgis_quick_plugin qgis_quick)
 SET_TARGET_PROPERTIES(qgis_quick_plugin PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${QGIS_QUICK_PLUGIN_RUNTIME_DIR})
-TARGET_COMPILE_DEFINITIONS(qgis_quick_plugin PRIVATE "-DQUICK_EXPORT=" "-DQT_NO_FOREACH")
+TARGET_COMPILE_DEFINITIONS(qgis_quick_plugin PRIVATE "-DQT_NO_FOREACH")
 
 # Copy qml files to output directory, we need qml files in the same directory as the plugin shared library
 FOREACH(qmlfile ${QGIS_QUICK_PLUGIN_RESOURCES})
