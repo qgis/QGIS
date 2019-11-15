@@ -592,7 +592,7 @@ Content-Type: application/openapi+json;version=3.0
             "description": "An error occurred."
           }
         },
-        "summary": "The API definition",
+        "summary": "The API description",
         "tags": [
           "Capabilities"
         ]
@@ -778,12 +778,98 @@ Content-Type: application/openapi+json;version=3.0
         "tags": [
           "Features"
         ]
+      },
+      "post": {
+        "description": "Adds a new feature to the collection {collectionId}",
+        "operationId": "getFeatures_testlayer_èé_2_a5f61891_b949_43e3_ad30_84013fc922de_POST",
+        "responses": [
+          [
+            "201",
+            {
+              "description": "A new feature was successfully added to the collection"
+            },
+            "403",
+            {
+              "description": "Forbidden: the operation requested was not authorized"
+            },
+            "500",
+            {
+              "description": "Posted data could not be parsed correctly or another error occurred"
+            }
+          ],
+          [
+            "default",
+            {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/exception"
+                  }
+                },
+                "text/html": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "description": "An error occurred."
+            }
+          ]
+        ],
+        "summary": "Adds a new feature to the collection {collectionId}",
+        "tags": [
+          "edit",
+          "insert"
+        ]
       }
     },
     "/wfs3/collections/exclude_attribute/items/{featureId}": {
+      "delete": {
+        "description": "Deletes the feature with ID {featureId} in the collection {collectionId}",
+        "operationId": "getFeatureDELETE",
+        "responses": [
+          [
+            "201",
+            {
+              "description": "The feature was successfully deleted from the collection"
+            },
+            "403",
+            {
+              "description": "Forbidden: the operation requested was not authorized"
+            },
+            "500",
+            {
+              "description": "Posted data could not be parsed correctly or another error occurred"
+            }
+          ],
+          [
+            "default",
+            {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/exception"
+                  }
+                },
+                "text/html": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "description": "An error occurred."
+            }
+          ]
+        ],
+        "summary": "Deletes the feature with ID {featureId} in the collection {collectionId}",
+        "tags": [
+          "edit",
+          "delete"
+        ]
+      },
       "get": {
-        "description": "Retrieve a feature; use content negotiation or specify a file extension to request HTML (.html or GeoJSON (.json)",
-        "operationId": "getFeature_testlayer_èé_2_a5f61891_b949_43e3_ad30_84013fc922de",
+        "description": "Retrieve a feature with ID {featureId} from the collection with ID {collectionId}; use content negotiation or specify a file extension to request HTML (.html or GeoJSON (.json).",
+        "operationId": "getFeature_testlayer_èé_2_a5f61891_b949_43e3_ad30_84013fc922de_GET",
         "parameters": [
           {
             "$ref": "#/components/parameters/featureId"
@@ -824,6 +910,91 @@ Content-Type: application/openapi+json;version=3.0
         "summary": "Retrieve a single feature from the 'A test vector layer exclude attrs' feature collection",
         "tags": [
           "Features"
+        ]
+      },
+      "patch": {
+        "description": "Changes attributes of feature with ID {featureId} in the collection {collectionId}",
+        "operationId": "getFeaturePUT",
+        "responses": [
+          [
+            "200",
+            {
+              "description": "The feature was successfully updated"
+            },
+            "403",
+            {
+              "description": "Forbidden: the operation requested was not authorized"
+            },
+            "500",
+            {
+              "description": "Posted data could not be parsed correctly or another error occurred"
+            }
+          ],
+          [
+            "default",
+            {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/exception"
+                  }
+                },
+                "text/html": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "description": "An error occurred."
+            }
+          ]
+        ],
+        "summary": "Changes attributes of feature with ID {featureId} in the collection {collectionId}",
+        "tags": [
+          "edit"
+        ]
+      },
+      "put": {
+        "description": "Replaces the feature with ID {featureId} in the collection {collectionId}",
+        "operationId": "getFeaturePUT",
+        "responses": [
+          [
+            "200",
+            {
+              "description": "The feature was successfully updated"
+            },
+            "403",
+            {
+              "description": "Forbidden: the operation requested was not authorized"
+            },
+            "500",
+            {
+              "description": "Posted data could not be parsed correctly or another error occurred"
+            }
+          ],
+          [
+            "default",
+            {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/exception"
+                  }
+                },
+                "text/html": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "description": "An error occurred."
+            }
+          ]
+        ],
+        "summary": "Replaces the feature with ID {featureId} in the collection {collectionId}",
+        "tags": [
+          "edit",
+          "replace"
         ]
       }
     },
@@ -976,12 +1147,98 @@ Content-Type: application/openapi+json;version=3.0
         "tags": [
           "Features"
         ]
+      },
+      "post": {
+        "description": "Adds a new feature to the collection {collectionId}",
+        "operationId": "getFeatures_testlayer_èé_cf86cf11_222f_4b62_929c_12cfc82b9774_POST",
+        "responses": [
+          [
+            "201",
+            {
+              "description": "A new feature was successfully added to the collection"
+            },
+            "403",
+            {
+              "description": "Forbidden: the operation requested was not authorized"
+            },
+            "500",
+            {
+              "description": "Posted data could not be parsed correctly or another error occurred"
+            }
+          ],
+          [
+            "default",
+            {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/exception"
+                  }
+                },
+                "text/html": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "description": "An error occurred."
+            }
+          ]
+        ],
+        "summary": "Adds a new feature to the collection {collectionId}",
+        "tags": [
+          "edit",
+          "insert"
+        ]
       }
     },
     "/wfs3/collections/fields_alias/items/{featureId}": {
+      "delete": {
+        "description": "Deletes the feature with ID {featureId} in the collection {collectionId}",
+        "operationId": "getFeatureDELETE",
+        "responses": [
+          [
+            "201",
+            {
+              "description": "The feature was successfully deleted from the collection"
+            },
+            "403",
+            {
+              "description": "Forbidden: the operation requested was not authorized"
+            },
+            "500",
+            {
+              "description": "Posted data could not be parsed correctly or another error occurred"
+            }
+          ],
+          [
+            "default",
+            {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/exception"
+                  }
+                },
+                "text/html": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "description": "An error occurred."
+            }
+          ]
+        ],
+        "summary": "Deletes the feature with ID {featureId} in the collection {collectionId}",
+        "tags": [
+          "edit",
+          "delete"
+        ]
+      },
       "get": {
-        "description": "Retrieve a feature; use content negotiation or specify a file extension to request HTML (.html or GeoJSON (.json)",
-        "operationId": "getFeature_testlayer_èé_cf86cf11_222f_4b62_929c_12cfc82b9774",
+        "description": "Retrieve a feature with ID {featureId} from the collection with ID {collectionId}; use content negotiation or specify a file extension to request HTML (.html or GeoJSON (.json).",
+        "operationId": "getFeature_testlayer_èé_cf86cf11_222f_4b62_929c_12cfc82b9774_GET",
         "parameters": [
           {
             "$ref": "#/components/parameters/featureId"
@@ -1022,6 +1279,91 @@ Content-Type: application/openapi+json;version=3.0
         "summary": "Retrieve a single feature from the 'A test vector layer with aliases' feature collection",
         "tags": [
           "Features"
+        ]
+      },
+      "patch": {
+        "description": "Changes attributes of feature with ID {featureId} in the collection {collectionId}",
+        "operationId": "getFeaturePUT",
+        "responses": [
+          [
+            "200",
+            {
+              "description": "The feature was successfully updated"
+            },
+            "403",
+            {
+              "description": "Forbidden: the operation requested was not authorized"
+            },
+            "500",
+            {
+              "description": "Posted data could not be parsed correctly or another error occurred"
+            }
+          ],
+          [
+            "default",
+            {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/exception"
+                  }
+                },
+                "text/html": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "description": "An error occurred."
+            }
+          ]
+        ],
+        "summary": "Changes attributes of feature with ID {featureId} in the collection {collectionId}",
+        "tags": [
+          "edit"
+        ]
+      },
+      "put": {
+        "description": "Replaces the feature with ID {featureId} in the collection {collectionId}",
+        "operationId": "getFeaturePUT",
+        "responses": [
+          [
+            "200",
+            {
+              "description": "The feature was successfully updated"
+            },
+            "403",
+            {
+              "description": "Forbidden: the operation requested was not authorized"
+            },
+            "500",
+            {
+              "description": "Posted data could not be parsed correctly or another error occurred"
+            }
+          ],
+          [
+            "default",
+            {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/exception"
+                  }
+                },
+                "text/html": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "description": "An error occurred."
+            }
+          ]
+        ],
+        "summary": "Replaces the feature with ID {featureId} in the collection {collectionId}",
+        "tags": [
+          "edit",
+          "replace"
         ]
       }
     },
@@ -1174,12 +1516,98 @@ Content-Type: application/openapi+json;version=3.0
         "tags": [
           "Features"
         ]
+      },
+      "post": {
+        "description": "Adds a new feature to the collection {collectionId}",
+        "operationId": "getFeatures_testlayer_c0988fd7_97ca_451d_adbc_37ad6d10583a_POST",
+        "responses": [
+          [
+            "201",
+            {
+              "description": "A new feature was successfully added to the collection"
+            },
+            "403",
+            {
+              "description": "Forbidden: the operation requested was not authorized"
+            },
+            "500",
+            {
+              "description": "Posted data could not be parsed correctly or another error occurred"
+            }
+          ],
+          [
+            "default",
+            {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/exception"
+                  }
+                },
+                "text/html": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "description": "An error occurred."
+            }
+          ]
+        ],
+        "summary": "Adds a new feature to the collection {collectionId}",
+        "tags": [
+          "edit",
+          "insert"
+        ]
       }
     },
     "/wfs3/collections/layer1_with_short_name/items/{featureId}": {
+      "delete": {
+        "description": "Deletes the feature with ID {featureId} in the collection {collectionId}",
+        "operationId": "getFeatureDELETE",
+        "responses": [
+          [
+            "201",
+            {
+              "description": "The feature was successfully deleted from the collection"
+            },
+            "403",
+            {
+              "description": "Forbidden: the operation requested was not authorized"
+            },
+            "500",
+            {
+              "description": "Posted data could not be parsed correctly or another error occurred"
+            }
+          ],
+          [
+            "default",
+            {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/exception"
+                  }
+                },
+                "text/html": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "description": "An error occurred."
+            }
+          ]
+        ],
+        "summary": "Deletes the feature with ID {featureId} in the collection {collectionId}",
+        "tags": [
+          "edit",
+          "delete"
+        ]
+      },
       "get": {
-        "description": "Retrieve a feature; use content negotiation or specify a file extension to request HTML (.html or GeoJSON (.json)",
-        "operationId": "getFeature_testlayer_c0988fd7_97ca_451d_adbc_37ad6d10583a",
+        "description": "Retrieve a feature with ID {featureId} from the collection with ID {collectionId}; use content negotiation or specify a file extension to request HTML (.html or GeoJSON (.json).",
+        "operationId": "getFeature_testlayer_c0988fd7_97ca_451d_adbc_37ad6d10583a_GET",
         "parameters": [
           {
             "$ref": "#/components/parameters/featureId"
@@ -1220,6 +1648,91 @@ Content-Type: application/openapi+json;version=3.0
         "summary": "Retrieve a single feature from the 'A Layer1 with a short name' feature collection",
         "tags": [
           "Features"
+        ]
+      },
+      "patch": {
+        "description": "Changes attributes of feature with ID {featureId} in the collection {collectionId}",
+        "operationId": "getFeaturePUT",
+        "responses": [
+          [
+            "200",
+            {
+              "description": "The feature was successfully updated"
+            },
+            "403",
+            {
+              "description": "Forbidden: the operation requested was not authorized"
+            },
+            "500",
+            {
+              "description": "Posted data could not be parsed correctly or another error occurred"
+            }
+          ],
+          [
+            "default",
+            {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/exception"
+                  }
+                },
+                "text/html": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "description": "An error occurred."
+            }
+          ]
+        ],
+        "summary": "Changes attributes of feature with ID {featureId} in the collection {collectionId}",
+        "tags": [
+          "edit"
+        ]
+      },
+      "put": {
+        "description": "Replaces the feature with ID {featureId} in the collection {collectionId}",
+        "operationId": "getFeaturePUT",
+        "responses": [
+          [
+            "200",
+            {
+              "description": "The feature was successfully updated"
+            },
+            "403",
+            {
+              "description": "Forbidden: the operation requested was not authorized"
+            },
+            "500",
+            {
+              "description": "Posted data could not be parsed correctly or another error occurred"
+            }
+          ],
+          [
+            "default",
+            {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/exception"
+                  }
+                },
+                "text/html": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "description": "An error occurred."
+            }
+          ]
+        ],
+        "summary": "Replaces the feature with ID {featureId} in the collection {collectionId}",
+        "tags": [
+          "edit",
+          "replace"
         ]
       }
     },
@@ -1372,12 +1885,98 @@ Content-Type: application/openapi+json;version=3.0
         "tags": [
           "Features"
         ]
+      },
+      "post": {
+        "description": "Adds a new feature to the collection {collectionId}",
+        "operationId": "getFeatures_testlayer20150528120452665_POST",
+        "responses": [
+          [
+            "201",
+            {
+              "description": "A new feature was successfully added to the collection"
+            },
+            "403",
+            {
+              "description": "Forbidden: the operation requested was not authorized"
+            },
+            "500",
+            {
+              "description": "Posted data could not be parsed correctly or another error occurred"
+            }
+          ],
+          [
+            "default",
+            {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/exception"
+                  }
+                },
+                "text/html": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "description": "An error occurred."
+            }
+          ]
+        ],
+        "summary": "Adds a new feature to the collection {collectionId}",
+        "tags": [
+          "edit",
+          "insert"
+        ]
       }
     },
     "/wfs3/collections/testlayer èé/items/{featureId}": {
+      "delete": {
+        "description": "Deletes the feature with ID {featureId} in the collection {collectionId}",
+        "operationId": "getFeatureDELETE",
+        "responses": [
+          [
+            "201",
+            {
+              "description": "The feature was successfully deleted from the collection"
+            },
+            "403",
+            {
+              "description": "Forbidden: the operation requested was not authorized"
+            },
+            "500",
+            {
+              "description": "Posted data could not be parsed correctly or another error occurred"
+            }
+          ],
+          [
+            "default",
+            {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/exception"
+                  }
+                },
+                "text/html": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "description": "An error occurred."
+            }
+          ]
+        ],
+        "summary": "Deletes the feature with ID {featureId} in the collection {collectionId}",
+        "tags": [
+          "edit",
+          "delete"
+        ]
+      },
       "get": {
-        "description": "Retrieve a feature; use content negotiation or specify a file extension to request HTML (.html or GeoJSON (.json)",
-        "operationId": "getFeature_testlayer20150528120452665",
+        "description": "Retrieve a feature with ID {featureId} from the collection with ID {collectionId}; use content negotiation or specify a file extension to request HTML (.html or GeoJSON (.json).",
+        "operationId": "getFeature_testlayer20150528120452665_GET",
         "parameters": [
           {
             "$ref": "#/components/parameters/featureId"
@@ -1419,11 +2018,96 @@ Content-Type: application/openapi+json;version=3.0
         "tags": [
           "Features"
         ]
+      },
+      "patch": {
+        "description": "Changes attributes of feature with ID {featureId} in the collection {collectionId}",
+        "operationId": "getFeaturePUT",
+        "responses": [
+          [
+            "200",
+            {
+              "description": "The feature was successfully updated"
+            },
+            "403",
+            {
+              "description": "Forbidden: the operation requested was not authorized"
+            },
+            "500",
+            {
+              "description": "Posted data could not be parsed correctly or another error occurred"
+            }
+          ],
+          [
+            "default",
+            {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/exception"
+                  }
+                },
+                "text/html": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "description": "An error occurred."
+            }
+          ]
+        ],
+        "summary": "Changes attributes of feature with ID {featureId} in the collection {collectionId}",
+        "tags": [
+          "edit"
+        ]
+      },
+      "put": {
+        "description": "Replaces the feature with ID {featureId} in the collection {collectionId}",
+        "operationId": "getFeaturePUT",
+        "responses": [
+          [
+            "200",
+            {
+              "description": "The feature was successfully updated"
+            },
+            "403",
+            {
+              "description": "Forbidden: the operation requested was not authorized"
+            },
+            "500",
+            {
+              "description": "Posted data could not be parsed correctly or another error occurred"
+            }
+          ],
+          [
+            "default",
+            {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/exception"
+                  }
+                },
+                "text/html": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "description": "An error occurred."
+            }
+          ]
+        ],
+        "summary": "Replaces the feature with ID {featureId} in the collection {collectionId}",
+        "tags": [
+          "edit",
+          "replace"
+        ]
       }
     },
     "/wfs3/conformance": {
       "get": {
-        "description": "List all requirements classes specified in a standard (e.g., WFS 3.0 Part 1: Core) that the server conforms to",
+        "description": "List all requirements classes specified in a standard (e.g., WFS 3.0 Part 1: Core) that the server conforms to.",
         "operationId": "getRequirementClasses",
         "responses": {
           "200": {
@@ -1439,7 +2123,7 @@ Content-Type: application/openapi+json;version=3.0
                 }
               }
             },
-            "description": "List all requirements classes specified in a standard (e.g., WFS 3.0 Part 1: Core) that the server conforms to"
+            "description": "List all requirements classes specified in a standard (e.g., WFS 3.0 Part 1: Core) that the server conforms to."
           },
           "default": {
             "content": {
@@ -1457,7 +2141,7 @@ Content-Type: application/openapi+json;version=3.0
             "description": "An error occurred."
           }
         },
-        "summary": "Information about standards that this API conforms to",
+        "summary": "Information about standards that this API conforms to.",
         "tags": [
           "Capabilities"
         ]

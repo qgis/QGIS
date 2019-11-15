@@ -15,8 +15,22 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
             integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
             crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="/wfs3/static/jsonFormatter.min.css" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/wfs3/static/jsonFormatter.min.css" crossorigin="anonymous">
     <script src="/wfs3/static/jsonFormatter.min.js" crossorigin="anonymous"></script>
+
+    <!-- template for the WFS3 API links list, to be included in HEAD -->
+
+    <link rel="alternate" href="http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9.json" title="Feature collection as JSON" type="application/json">
+
+    <link rel="self" href="http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9.html" title="Feature collection as HTML" type="text/html">
+
+    <link rel="items" href="http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.json" title="A test vector layer èé items as GEOJSON" type="application/geo+json">
+
+    <link rel="items" href="http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.html" title="A test vector layer èé items as HTML" type="text/html">
+
+    <link rel="describedBy" href="http://server.qgis.org/?request=DescribeFeatureType&typenames=testlayer%20èé&service=WFS&version=2.0" title="Schema for A test vector layer èé" type="application/xml">
+
+
 
     <title>A test vector layer èé</title>
   </head>
@@ -85,6 +99,29 @@
             <dd>North</dd>
             <dt>44.901482526001836</dt>
         </dl>
+
+        <h3>Links</h3>
+            <ul>
+            
+                
+                <li><a rel="alternate" href="http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9.json">Feature collection as JSON</a></li>
+                
+            
+                
+            
+                
+                <li><a rel="items" href="http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.json">A test vector layer èé items as GEOJSON</a></li>
+                
+            
+                
+                <li><a rel="items" href="http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.html">A test vector layer èé items as HTML</a></li>
+                
+            
+                
+                <li><a rel="describedBy" href="http://server.qgis.org/?request=DescribeFeatureType&typenames=testlayer%20èé&service=WFS&version=2.0">Schema for A test vector layer èé</a></li>
+                
+            
+            </ul>
 
     </div>
 

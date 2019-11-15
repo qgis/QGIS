@@ -40,13 +40,13 @@ Content-Type: application/json
     {
       "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.json",
       "rel": "items",
-      "title": "A test vector layer èé",
-      "type": "application/json"
+      "title": "A test vector layer èé items as GEOJSON",
+      "type": "application/geo+json"
     },
     {
       "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.html",
       "rel": "items",
-      "title": "A test vector layer èé",
+      "title": "A test vector layer èé items as HTML",
       "type": "text/html"
     },
     {

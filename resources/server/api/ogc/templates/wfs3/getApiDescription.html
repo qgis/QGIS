@@ -27,7 +27,7 @@
                    {% for method, method_data in path_info %}
                    <div class="card-header" id="heading_{{ method_data.operationId }}">
                        <h5 class="mb-0">
-                           <span class="path-button btn btn-primary" data-toggle="collapse"
+                           <span class="path-button btn btn-primary btn-{{ method }}" data-toggle="collapse"
                            data-target="#collapse_{{ method_data.operationId }}"
                            aria-expanded="true"
                            aria-controls="collapse_{{ method_data.operationId }}">{{ method }}</span>

@@ -34,6 +34,12 @@ QgsServerRequest::QgsServerRequest( const QUrl &url, Method method, const Header
   mParams.load( QUrlQuery( url ) );
 }
 
+QString QgsServerRequest::methodToString( const QgsServerRequest::Method &method )
+{
+  static QMetaEnum metaEnum = QMetaEnum::fromType<QgsServerRequest::Method>();
+  return QString( metaEnum.valueToKey( method ) ).remove( QStringLiteral( "Method" ) ).toUpper( );
+}
+
 QString QgsServerRequest::header( const QString &name ) const
 {
   return mHeaders.value( name );

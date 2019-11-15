@@ -15,8 +15,22 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
             integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
             crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="/wfs3/static/jsonFormatter.min.css" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/wfs3/static/jsonFormatter.min.css" crossorigin="anonymous">
     <script src="/wfs3/static/jsonFormatter.min.js" crossorigin="anonymous"></script>
+
+    <!-- template for the WFS3 API links list, to be included in HEAD -->
+
+    <link rel="alternate" href="http://server.qgis.org/wfs3.json" title="Landing page as JSON" type="application/json">
+
+    <link rel="self" href="http://server.qgis.org/wfs3.html" title="Landing page as HTML" type="text/html">
+
+    <link rel="data" href="http://server.qgis.org/wfs3/collections" title="Feature collections" type="application/json">
+
+    <link rel="conformance" href="http://server.qgis.org/wfs3/conformance" title="Conformance classes" type="application/json">
+
+    <link rel="service-desc" href="http://server.qgis.org/wfs3/api" title="API description" type="application/openapi+json;version=3.0">
+
+
 
     <title>Landing page</title>
   </head>
@@ -63,13 +77,13 @@
     
         
         
-        <li><a rel="conformance" href="http://server.qgis.org/wfs3/conformance">WFS 3.0 conformance classes</a></li>
+        <li><a rel="conformance" href="http://server.qgis.org/wfs3/conformance">Conformance classes</a></li>
         
         
     
         
         
-        <li><a rel="service-desc" href="http://server.qgis.org/wfs3/api">API definition</a></li>
+        <li><a rel="service-desc" href="http://server.qgis.org/wfs3/api">API description</a></li>
         
         
     

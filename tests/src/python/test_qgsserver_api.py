@@ -16,6 +16,7 @@ __revision__ = '$Format:%H$'
 import os
 import json
 import re
+import shutil
 
 # Deterministic XML
 os.environ['QT_HASH_SEED'] = '1'
@@ -32,7 +33,7 @@ from qgis.server import (
     QgsServerApiUtils,
     QgsServiceRegistry
 )
-from qgis.core import QgsProject, QgsRectangle, QgsVectorLayerServerProperties
+from qgis.core import QgsProject, QgsRectangle, QgsVectorLayerServerProperties, QgsFeatureRequest
 from qgis.PyQt import QtCore
 
 from qgis.testing import unittest
@@ -97,8 +98,15 @@ class QgsServerAPIUtilsTest(QgsServerTestBase):
     def test_temporal_extent(self):
 
         project = QgsProject()
-        base_path = unitTestDataPath('qgis_server') + '/test_project_api_timefilters.qgs'
-        project.read(base_path)
+
+        tempDir = QtCore.QTemporaryDir()
+        source_project_path = unitTestDataPath('qgis_server') + '/test_project_api_timefilters.qgs'
+        source_data_path = unitTestDataPath('qgis_server') + '/test_project_api_timefilters.gpkg'
+        dest_project_path = os.path.join(tempDir.path(), 'test_project_api_timefilters.qgs')
+        dest_data_path = os.path.join(tempDir.path(), 'test_project_api_timefilters.gpkg')
+        shutil.copy(source_data_path, dest_data_path)
+        shutil.copy(source_project_path, dest_project_path)
+        project.read(dest_project_path)
 
         layer = list(project.mapLayers().values())[0]
 
@@ -408,7 +416,14 @@ class QgsServerAPITest(QgsServerAPITestBase):
     def test_wfs3_collection_temporal_extent_json(self):
         """Test collection with timefilter"""
         project = QgsProject()
-        project.read(unitTestDataPath('qgis_server') + '/test_project_api_timefilters.qgs')
+        tempDir = QtCore.QTemporaryDir()
+        source_project_path = unitTestDataPath('qgis_server') + '/test_project_api_timefilters.qgs'
+        source_data_path = unitTestDataPath('qgis_server') + '/test_project_api_timefilters.gpkg'
+        dest_project_path = os.path.join(tempDir.path(), 'test_project_api_timefilters.qgs')
+        dest_data_path = os.path.join(tempDir.path(), 'test_project_api_timefilters.gpkg')
+        shutil.copy(source_data_path, dest_data_path)
+        shutil.copy(source_project_path, dest_project_path)
+        project.read(dest_project_path)
         request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/points')
         self.compareApi(request, project, 'test_wfs3_collection_points_timefilters.json')
 
@@ -518,6 +533,375 @@ class QgsServerAPITest(QgsServerAPITestBase):
         body = bytes(response.body()).decode('utf8')
         self.assertEqual(body, '[{"code":"API not found error","description":"Static file does_not_exists.css was not found"}]')
 
+    def test_wfs3_collection_items_post(self):
+        """Test WFS3 API items POST"""
+
+        tmpDir = QtCore.QTemporaryDir()
+        shutil.copy(unitTestDataPath('qgis_server') + '/test_project_api_editing.qgs', tmpDir.path() + '/test_project_api_editing.qgs')
+        shutil.copy(unitTestDataPath('qgis_server') + '/test_project_api_editing.gpkg', tmpDir.path() + '/test_project_api_editing.gpkg')
+
+        project = QgsProject()
+        project.read(tmpDir.path() + '/test_project_api_editing.qgs')
+
+        # Project layers with different permissions
+        insert_layer = r'test%20layer%20èé%203857%20published%20insert'
+        update_layer = r'test%20layer%20èé%203857%20published%20update'
+        delete_layer = r'test%20layer%20èé%203857%20published%20delete'
+        unpublished_layer = r'test%20layer%203857%20èé%20unpublished'
+        hidden_text_2_layer = r'test%20layer%20èé%203857%20published%20hidden%20text_2'
+
+        # Invalid request
+        data = b'not json!'
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items' % insert_layer,
+                                         QgsBufferServerRequest.PostMethod,
+                                         {'Content-Type': 'application/geo+json'},
+                                         data
+                                         )
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 400)
+        self.assertTrue('[{"code":"Bad request error","description":"JSON parse error' in bytes(response.body()).decode('utf8'))
+
+        # Valid request
+        data = """{
+        "geometry": {
+            "coordinates": [[
+            7.247,
+            44.814
+            ]],
+            "type": "MultiPoint"
+        },
+        "properties": {
+            "text_1": "Text 1",
+            "text_2": "Text 2",
+            "int_1": 123,
+            "float_1": 12345.678,
+            "datetime_1": "2019-11-07T12:34:56",
+            "date_1": "2019-11-07",
+            "blob_1": "dGVzdA==",
+            "bool_1": true
+        },
+        "type": "Feature"
+        }""".encode('utf8')
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items' % insert_layer,
+                                         QgsBufferServerRequest.PostMethod,
+                                         {'Content-Type': 'application/geo+json'},
+                                         data
+                                         )
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 201)
+        self.assertEqual(response.body(), '"string"')
+        # Get last feature
+        req = QgsFeatureRequest()
+        order_by_clause = QgsFeatureRequest.OrderByClause('$id', False)
+        req.setOrderBy(QgsFeatureRequest.OrderBy([order_by_clause]))
+        feature = next(project.mapLayersByName('test layer èé 3857 published insert')[0].getFeatures(req))
+        self.assertEqual(response.headers()['Location'], 'http://server.qgis.org/wfs3/collections/%s/items/%s' % (insert_layer, feature.id()))
+        self.assertEqual(feature.attribute('text_1'), 'Text 1')
+        self.assertEqual(feature.attribute('text_2'), 'Text 2')
+        self.assertEqual(feature.attribute('int_1'), 123)
+        self.assertEqual(feature.attribute('float_1'), 12345.678)
+        self.assertEqual(feature.attribute('bool_1'), True)
+        self.assertEqual(bytes(feature.attribute('blob_1')), b"test")
+        self.assertEqual(re.sub(r'\.\d+', '', feature.geometry().asWkt().upper()), 'MULTIPOINT ((806732 5592286))')
+
+    def test_wfs3_collection_items_put(self):
+        """Test WFS3 API items PUT"""
+
+        tmpDir = QtCore.QTemporaryDir()
+        shutil.copy(unitTestDataPath('qgis_server') + '/test_project_api_editing.qgs', tmpDir.path() + '/test_project_api_editing.qgs')
+        shutil.copy(unitTestDataPath('qgis_server') + '/test_project_api_editing.gpkg', tmpDir.path() + '/test_project_api_editing.gpkg')
+
+        project = QgsProject()
+        project.read(tmpDir.path() + '/test_project_api_editing.qgs')
+
+        # Project layers with different permissions
+        insert_layer = r'test%20layer%20èé%203857%20published%20insert'
+        update_layer = r'test%20layer%20èé%203857%20published%20update'
+        delete_layer = r'test%20layer%20èé%203857%20published%20delete'
+        unpublished_layer = r'test%20layer%203857%20èé%20unpublished'
+        hidden_text_2_layer = r'test%20layer%20èé%203857%20published%20hidden%20text_2'
+
+        # Invalid request
+        data = b'not json!'
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % update_layer,
+                                         QgsBufferServerRequest.PutMethod,
+                                         {'Content-Type': 'application/geo+json'},
+                                         data
+                                         )
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 400)
+        self.assertTrue('[{"code":"Bad request error","description":"JSON parse error' in bytes(response.body()).decode('utf8'))
+
+        # Valid request: change feature with ID 1
+        data = """{
+        "geometry": {
+            "coordinates": [[
+            7.247,
+            44.814
+            ]],
+            "type": "MultiPoint"
+        },
+        "properties": {
+            "text_1": "Text 1",
+            "text_2": "Text 2",
+            "int_1": 123,
+            "float_1": 12345.678,
+            "datetime_1": "2019-11-07T12:34:56",
+            "date_1": "2019-11-07",
+            "blob_1": "dGVzdA==",
+            "bool_1": true
+        },
+        "type": "Feature"
+        }""".encode('utf8')
+
+        # Unauthorized layer
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % insert_layer,
+                                         QgsBufferServerRequest.PutMethod,
+                                         {'Content-Type': 'application/geo+json'},
+                                         data
+                                         )
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 403)
+
+        # Authorized layer
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % update_layer,
+                                         QgsBufferServerRequest.PutMethod,
+                                         {'Content-Type': 'application/geo+json'},
+                                         data
+                                         )
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 200)
+        j = json.loads(bytes(response.body()).decode('utf8'))
+        self.assertEqual(j['properties']['text_1'], 'Text 1')
+        self.assertEqual(j['properties']['text_2'], 'Text 2')
+        self.assertEqual(j['properties']['int_1'], 123)
+        self.assertEqual(j['properties']['float_1'], 12345.678)
+        self.assertEqual(j['properties']['bool_1'], True)
+        self.assertEqual(j['properties']['blob_1'], "dGVzdA==")
+        self.assertEqual(j['geometry']['coordinates'], [[7.247, 44.814]])
+
+        feature = project.mapLayersByName('test layer èé 3857 published update')[0].getFeature(1)
+        self.assertEqual(feature.attribute('text_1'), 'Text 1')
+        self.assertEqual(feature.attribute('text_2'), 'Text 2')
+        self.assertEqual(feature.attribute('int_1'), 123)
+        self.assertEqual(feature.attribute('float_1'), 12345.678)
+        self.assertEqual(feature.attribute('bool_1'), True)
+        self.assertEqual(bytes(feature.attribute('blob_1')), b"test")
+        self.assertEqual(re.sub(r'\.\d+', '', feature.geometry().asWkt().upper()), 'MULTIPOINT ((806732 5592286))')
+
+        # Test with partial and unordered properties
+        data = """{
+        "geometry": {
+            "coordinates": [[
+            8.247,
+            45.814
+            ]],
+            "type": "MultiPoint"
+        },
+        "properties": {
+            "bool_1": false,
+            "int_1": 1234,
+            "text_2": "Text 2-bis",
+            "text_1": "Text 1-bis"
+        },
+        "type": "Feature"
+        }""".encode('utf8')
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % update_layer,
+                                         QgsBufferServerRequest.PutMethod,
+                                         {'Content-Type': 'application/geo+json'},
+                                         data
+                                         )
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 200)
+        j = json.loads(bytes(response.body()).decode('utf8'))
+        self.assertEqual(j['properties']['text_1'], 'Text 1-bis')
+        self.assertEqual(j['properties']['text_2'], 'Text 2-bis')
+        self.assertEqual(j['properties']['int_1'], 1234)
+        self.assertEqual(j['properties']['float_1'], 12345.678)
+        self.assertEqual(j['properties']['bool_1'], False)
+        self.assertEqual(j['properties']['blob_1'], "dGVzdA==")
+        self.assertEqual(j['geometry']['coordinates'], [[8.247, 45.814]])
+
+        feature = project.mapLayersByName('test layer èé 3857 published update')[0].getFeature(1)
+        self.assertEqual(feature.attribute('text_1'), 'Text 1-bis')
+        self.assertEqual(feature.attribute('text_2'), 'Text 2-bis')
+        self.assertEqual(feature.attribute('int_1'), 1234)
+        self.assertEqual(feature.attribute('float_1'), 12345.678)
+        self.assertEqual(feature.attribute('bool_1'), False)
+        self.assertEqual(bytes(feature.attribute('blob_1')), b"test")
+        self.assertEqual(re.sub(r'\.\d+', '', feature.geometry().asWkt().upper()), 'MULTIPOINT ((918051 5750592))')
+
+        # Try to update a forbidden (unpublished) field
+        data = """{
+        "geometry": {
+            "coordinates": [[
+            8.247,
+            45.814
+            ]],
+            "type": "MultiPoint"
+        },
+        "properties": {
+            "text_2": "Text 2-tris"
+        },
+        "type": "Feature"
+        }""".encode('utf8')
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % hidden_text_2_layer,
+                                         QgsBufferServerRequest.PutMethod,
+                                         {'Content-Type': 'application/geo+json'},
+                                         data
+                                         )
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 403)
+
+    def test_wfs3_collection_items_delete(self):
+        """Test WFS3 API items DELETE"""
+
+        tmpDir = QtCore.QTemporaryDir()
+        shutil.copy(unitTestDataPath('qgis_server') + '/test_project_api_editing.qgs', tmpDir.path() + '/test_project_api_editing.qgs')
+        shutil.copy(unitTestDataPath('qgis_server') + '/test_project_api_editing.gpkg', tmpDir.path() + '/test_project_api_editing.gpkg')
+
+        project = QgsProject()
+        project.read(tmpDir.path() + '/test_project_api_editing.qgs')
+
+        # Project layers with different permissions
+        insert_layer = r'test%20layer%20èé%203857%20published%20insert'
+        update_layer = r'test%20layer%20èé%203857%20published%20update'
+        delete_layer = r'test%20layer%20èé%203857%20published%20delete'
+        unpublished_layer = r'test%20layer%203857%20èé%20unpublished'
+        hidden_text_2_layer = r'test%20layer%20èé%203857%20published%20hidden%20text_2'
+
+        # Valid request on unauthorized layer
+        data = b''
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % update_layer,
+                                         QgsBufferServerRequest.DeleteMethod)
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 403)
+
+        # Valid request on authorized layer
+        data = b''
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % delete_layer,
+                                         QgsBufferServerRequest.DeleteMethod)
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 200)
+
+        # Check that it was really deleted
+        layer = project.mapLayersByName('test layer èé 3857 published delete')[0]
+        self.assertFalse(1 in layer.allFeatureIds())
+
+    def test_wfs3_collection_items_patch(self):
+        """Test WFS3 API items PATCH"""
+
+        tmpDir = QtCore.QTemporaryDir()
+        shutil.copy(unitTestDataPath('qgis_server') + '/test_project_api_editing.qgs', tmpDir.path() + '/test_project_api_editing.qgs')
+        shutil.copy(unitTestDataPath('qgis_server') + '/test_project_api_editing.gpkg', tmpDir.path() + '/test_project_api_editing.gpkg')
+
+        project = QgsProject()
+        project.read(tmpDir.path() + '/test_project_api_editing.qgs')
+
+        # Project layers with different permissions
+        insert_layer = r'test%20layer%20èé%203857%20published%20insert'
+        update_layer = r'test%20layer%20èé%203857%20published%20update'
+        delete_layer = r'test%20layer%20èé%203857%20published%20delete'
+        unpublished_layer = r'test%20layer%203857%20èé%20unpublished'
+        hidden_text_2_layer = r'test%20layer%20èé%203857%20published%20hidden%20text_2'
+
+        # Invalid request
+        data = b'not json!'
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % update_layer,
+                                         QgsBufferServerRequest.PutMethod,
+                                         {'Content-Type': 'application/json'},
+                                         data
+                                         )
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 400)
+        self.assertTrue('[{"code":"Bad request error","description":"JSON parse error' in bytes(response.body()).decode('utf8'))
+
+        # Invalid request: contains "add"
+        data = b"""
+        {
+            "add": {
+                "a_new_field": 1.234
+            },
+            "modify": {
+                "text_2": "A new text 2"
+            }
+        }
+        """
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % update_layer,
+                                         QgsBufferServerRequest.PatchMethod,
+                                         {'Content-Type': 'application/json'},
+                                         data
+                                         )
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 400)
+        self.assertEqual(bytes(response.body()).decode('utf8'), r'[{"code":"Not implemented error","description":"\"add\" instruction in PATCH method is not implemented"}]')
+
+        # Valid request: change feature with ID 1
+        data = """{
+            "modify": {
+                "text_2": "A new text 2",
+                "blob_1": "dGVzdA=="
+            }
+        }""".encode('utf8')
+
+        # Unauthorized layer
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % insert_layer,
+                                         QgsBufferServerRequest.PatchMethod,
+                                         {'Content-Type': 'application/json'},
+                                         data
+                                         )
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 403)
+
+        # Authorized layer
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % update_layer,
+                                         QgsBufferServerRequest.PatchMethod,
+                                         {'Content-Type': 'application/json'},
+                                         data
+                                         )
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 200, msg=response.body())
+        j = json.loads(bytes(response.body()).decode('utf8'))
+        self.assertEqual(j['properties']['text_1'], 'Torre Pellice 1')
+        self.assertEqual(j['properties']['text_2'], 'A new text 2')
+        self.assertEqual(j['properties']['int_1'], 7)
+        self.assertEqual(j['properties']['float_1'], 1234.567)
+        self.assertEqual(j['properties']['bool_1'], True)
+        self.assertEqual(j['properties']['blob_1'], "dGVzdA==")
+        self.assertEqual(j['geometry']['coordinates'], [[7.227328, 44.820762]])
+
+        feature = project.mapLayersByName('test layer èé 3857 published update')[0].getFeature(1)
+        self.assertEqual(feature.attribute('text_1'), 'Torre Pellice 1')
+        self.assertEqual(feature.attribute('text_2'), 'A new text 2')
+        self.assertEqual(feature.attribute('int_1'), 7)
+        self.assertEqual(feature.attribute('float_1'), 1234.567)
+        self.assertEqual(feature.attribute('bool_1'), True)
+        self.assertEqual(bytes(feature.attribute('blob_1')), b"test")
+        self.assertEqual(re.sub(r'\.\d+', '', feature.geometry().asWkt().upper()), 'MULTIPOINT ((804542 5593348))')
+
+        # Try to update a forbidden (unpublished) field
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % hidden_text_2_layer,
+                                         QgsBufferServerRequest.PatchMethod,
+                                         {'Content-Type': 'application/json'},
+                                         data
+                                         )
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 403)
+
     def test_wfs3_field_filters(self):
         """Test field filters"""
         project = QgsProject()
@@ -585,25 +969,31 @@ class QgsServerAPITest(QgsServerAPITestBase):
         """Test datetime filters"""
 
         project = QgsProject()
-        base_path = unitTestDataPath('qgis_server') + '/test_project_api_timefilters.qgs'
-        project.read(base_path)
+
+        tempDir = QtCore.QTemporaryDir()
+        source_project_path = unitTestDataPath('qgis_server') + '/test_project_api_timefilters.qgs'
+        source_data_path = unitTestDataPath('qgis_server') + '/test_project_api_timefilters.gpkg'
+        dest_project_path = os.path.join(tempDir.path(), 'test_project_api_timefilters.qgs')
+        dest_data_path = os.path.join(tempDir.path(), 'test_project_api_timefilters.gpkg')
+        shutil.copy(source_data_path, dest_data_path)
+        shutil.copy(source_project_path, dest_project_path)
+        project.read(dest_project_path)
 
         # Prepare projects with all options
-        tmpDir = QtCore.QTemporaryDir()
 
         layer = list(project.mapLayers().values())[0]
         layer.serverProperties().removeWmsDimension('date')
         layer.serverProperties().removeWmsDimension('time')
         self.assertEqual(len(layer.serverProperties().wmsDimensions()), 0)
         self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 0)
-        none_path = os.path.join(tmpDir.path(), 'test_project_api_timefilters_none.qgs')
+        none_path = os.path.join(tempDir.path(), 'test_project_api_timefilters_none.qgs')
         project.write(none_path)
 
         layer = list(project.mapLayers().values())[0]
         layer.serverProperties().removeWmsDimension('date')
         layer.serverProperties().removeWmsDimension('time')
         self.assertTrue(layer.serverProperties().addWmsDimension(QgsVectorLayerServerProperties.WmsDimensionInfo('date', 'created')))
-        created_path = os.path.join(tmpDir.path(), 'test_project_api_timefilters_created.qgs')
+        created_path = os.path.join(tempDir.path(), 'test_project_api_timefilters_created.qgs')
         project.write(created_path)
         project.read(created_path)
         self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 1)
@@ -612,7 +1002,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         layer.serverProperties().removeWmsDimension('date')
         layer.serverProperties().removeWmsDimension('time')
         self.assertTrue(layer.serverProperties().addWmsDimension(QgsVectorLayerServerProperties.WmsDimensionInfo('date', 'created_string')))
-        created_string_path = os.path.join(tmpDir.path(), 'test_project_api_timefilters_created_string.qgs')
+        created_string_path = os.path.join(tempDir.path(), 'test_project_api_timefilters_created_string.qgs')
         project.write(created_string_path)
         project.read(created_string_path)
         self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 1)
@@ -621,7 +1011,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         layer.serverProperties().removeWmsDimension('date')
         layer.serverProperties().removeWmsDimension('time')
         self.assertTrue(layer.serverProperties().addWmsDimension(QgsVectorLayerServerProperties.WmsDimensionInfo('time', 'updated_string')))
-        updated_string_path = os.path.join(tmpDir.path(), 'test_project_api_timefilters_updated_string.qgs')
+        updated_string_path = os.path.join(tempDir.path(), 'test_project_api_timefilters_updated_string.qgs')
         project.write(updated_string_path)
         project.read(updated_string_path)
         self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 1)
@@ -631,7 +1021,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         layer.serverProperties().removeWmsDimension('time')
         self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 0)
         self.assertTrue(layer.serverProperties().addWmsDimension(QgsVectorLayerServerProperties.WmsDimensionInfo('time', 'updated')))
-        updated_path = os.path.join(tmpDir.path(), 'test_project_api_timefilters_updated.qgs')
+        updated_path = os.path.join(tempDir.path(), 'test_project_api_timefilters_updated.qgs')
         project.write(updated_path)
         project.read(updated_path)
         self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 1)
@@ -642,7 +1032,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 0)
         self.assertTrue(layer.serverProperties().addWmsDimension(QgsVectorLayerServerProperties.WmsDimensionInfo('time', 'updated')))
         self.assertTrue(layer.serverProperties().addWmsDimension(QgsVectorLayerServerProperties.WmsDimensionInfo('date', 'created')))
-        both_path = os.path.join(tmpDir.path(), 'test_project_api_timefilters_both.qgs')
+        both_path = os.path.join(tempDir.path(), 'test_project_api_timefilters_both.qgs')
         project.write(both_path)
         project.read(both_path)
         self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 2)
@@ -651,7 +1041,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         layer.serverProperties().removeWmsDimension('date')
         layer.serverProperties().removeWmsDimension('time')
         self.assertTrue(layer.serverProperties().addWmsDimension(QgsVectorLayerServerProperties.WmsDimensionInfo('date', 'begin', 'end')))
-        date_range_path = os.path.join(tmpDir.path(), 'test_project_api_timefilters_date_range.qgs')
+        date_range_path = os.path.join(tempDir.path(), 'test_project_api_timefilters_date_range.qgs')
         project.write(date_range_path)
         project.read(date_range_path)
         self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 1)
