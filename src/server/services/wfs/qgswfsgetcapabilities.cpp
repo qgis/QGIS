@@ -613,11 +613,11 @@ namespace QgsWfs
       QDomElement bBoxElement = doc.createElement( QStringLiteral( "ows:WGS84BoundingBox" ) );
       bBoxElement.setAttribute( QStringLiteral( "dimensions" ), QStringLiteral( "2" ) );
       QDomElement lCornerElement = doc.createElement( QStringLiteral( "ows:LowerCorner" ) );
-      QDomText lCornerText = doc.createTextNode( qgsDoubleToString( wgs84BoundingRect.xMinimum(), wgs84precision ) + " " + qgsDoubleToString( wgs84BoundingRect.yMinimum(), wgs84precision ) );
+      QDomText lCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( wgs84BoundingRect.xMinimum(), wgs84precision ), wgs84precision ) + " " + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( wgs84BoundingRect.yMinimum(), wgs84precision ), wgs84precision ) );
       lCornerElement.appendChild( lCornerText );
       bBoxElement.appendChild( lCornerElement );
       QDomElement uCornerElement = doc.createElement( QStringLiteral( "ows:UpperCorner" ) );
-      QDomText uCornerText = doc.createTextNode( qgsDoubleToString( wgs84BoundingRect.xMaximum(), wgs84precision ) + " " + qgsDoubleToString( wgs84BoundingRect.yMaximum(), wgs84precision ) );
+      QDomText uCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( wgs84BoundingRect.xMaximum(), wgs84precision ), wgs84precision ) + " " + qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( wgs84BoundingRect.yMaximum(), wgs84precision ), wgs84precision ) );
       uCornerElement.appendChild( uCornerText );
       bBoxElement.appendChild( uCornerElement );
       layerElem.appendChild( bBoxElement );
