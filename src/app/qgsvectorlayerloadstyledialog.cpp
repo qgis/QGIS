@@ -33,7 +33,7 @@ QgsVectorLayerLoadStyleDialog::QgsVectorLayerLoadStyleDialog( QgsVectorLayer *la
 {
   setupUi( this );
   QgsGui::instance()->enableAutoGeometryRestore( this );
-  setWindowTitle( QStringLiteral( "Database styles manager" ) );
+  setWindowTitle( tr( "Database Styles Manager" ) );
 
   mDeleteButton = mButtonBox->button( QDialogButtonBox::StandardButton::Close );
   mDeleteButton->setText( tr( "Delete Style" ) );
