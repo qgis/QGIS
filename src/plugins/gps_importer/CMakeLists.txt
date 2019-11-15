@@ -14,12 +14,6 @@ SET (GPS_UIS
      qgsgpsdevicedialogbase.ui
 )
 
-SET (GPS_MOC_HDRS
-     qgsgpsplugin.h
-     qgsgpsplugingui.h
-     qgsgpsdevicedialog.h
-)
-
 SET (GPS_RCCS  qgsgps_plugin.qrc)
 
 
@@ -28,11 +22,9 @@ SET (GPS_RCCS  qgsgps_plugin.qrc)
 
 QT5_WRAP_UI (GPS_UIS_H  ${GPS_UIS})
 
-QT5_WRAP_CPP (GPS_MOC_SRCS  ${GPS_MOC_HDRS})
-
 QT5_ADD_RESOURCES(GPS_RCC_SRCS ${GPS_RCCS})
 
-ADD_LIBRARY (gpsimporterplugin MODULE ${GPS_SRCS} ${GPS_MOC_SRCS} ${GPS_RCC_SRCS} ${GPS_UIS_H})
+ADD_LIBRARY (gpsimporterplugin MODULE ${GPS_SRCS} ${GPS_RCC_SRCS} ${GPS_UIS_H})
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core
@@ -41,6 +33,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/gps
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/plugins
   ${CMAKE_SOURCE_DIR}/external

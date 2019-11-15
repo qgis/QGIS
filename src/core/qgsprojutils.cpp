@@ -181,7 +181,9 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToSingleCrs( const PJ *crs )
       return QgsProjUtils::proj_pj_unique_ptr( proj_clone( context, crs ) );
   }
 
+#ifndef _MSC_VER  // unreachable
   return nullptr;
+#endif
 }
 
 bool QgsProjUtils::coordinateOperationIsAvailable( const QString &projDef )

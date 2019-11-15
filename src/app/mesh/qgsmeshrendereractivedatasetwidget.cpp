@@ -19,6 +19,7 @@
 #include <QIcon>
 
 #include "qgis.h"
+#include "qgsapplication.h"
 #include "qgsmeshlayer.h"
 #include "qgsmessagelog.h"
 #include "qgsmeshrenderersettings.h"
@@ -48,11 +49,16 @@ QgsMeshRendererActiveDatasetWidget::QgsMeshRendererActiveDatasetWidget( QWidget 
   connect( mDatasetPlaybackTimer, &QTimer::timeout,
            this,  qgis::overload<>::of( &QgsMeshRendererActiveDatasetWidget::datasetPlaybackTick ) );
 
-  mDatasetPlaybackButton->setIcon( QIcon::fromTheme( "media-playback-start" ) );
-  mFirstDatasetButton->setIcon( QIcon::fromTheme( "go-first" ) );
-  mPreviousDatasetButton->setIcon( QIcon::fromTheme( "go-previous" ) );
-  mNextDatasetButton->setIcon( QIcon::fromTheme( "go-next" ) );
-  mLastDatasetButton->setIcon( QIcon::fromTheme( "go-last" ) );
+  mDatasetPlaybackButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionPlay.svg" ) ) );
+  mFirstDatasetButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionFirst.svg" ) ) );
+  mPreviousDatasetButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionPrevious.svg" ) ) );
+  mNextDatasetButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionNext.svg" ) ) );
+  mLastDatasetButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionLast.svg" ) ) );
+}
+
+QgsMeshRendererActiveDatasetWidget::~QgsMeshRendererActiveDatasetWidget()
+{
+  mDatasetPlaybackTimer->stop();
 }
 
 void QgsMeshRendererActiveDatasetWidget::setLayer( QgsMeshLayer *layer )
@@ -257,7 +263,7 @@ void QgsMeshRendererActiveDatasetWidget::onDatasetPlaybackClicked()
     mNextDatasetButton->setEnabled( true );
     mLastDatasetButton->setEnabled( true );
     mDatasetPlaybackTimer->stop();
-    mDatasetPlaybackButton->setIcon( QIcon::fromTheme( "media-playback-start" ) );
+    mDatasetPlaybackButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionPlay.svg" ) ) );
   }
   else
   {
@@ -277,7 +283,7 @@ void QgsMeshRendererActiveDatasetWidget::onDatasetPlaybackClicked()
     }
     datasetPlaybackTick();
     mDatasetPlaybackTimer->start( intervalMs );
-    mDatasetPlaybackButton->setIcon( QIcon::fromTheme( "media-playback-stop" ) );
+    mDatasetPlaybackButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionStop.svg" ) ) );
   }
 }
 

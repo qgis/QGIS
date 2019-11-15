@@ -329,6 +329,7 @@
 %Include auto_generated/symbology/qgsinvertedpolygonrendererwidget.sip
 %Include auto_generated/symbology/qgslayerpropertieswidget.sip
 %Include auto_generated/symbology/qgsnullsymbolrendererwidget.sip
+%Include auto_generated/symbology/qgsmasksymbollayerwidget.sip
 %Include auto_generated/symbology/qgspenstylecombobox.sip
 %Include auto_generated/symbology/qgspointclusterrendererwidget.sip
 %Include auto_generated/symbology/qgspointdisplacementrendererwidget.sip

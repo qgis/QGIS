@@ -26,6 +26,7 @@ SET(QGIS_GUI_SRCS
   symbology/qgsheatmaprendererwidget.cpp
   symbology/qgsinvertedpolygonrendererwidget.cpp
   symbology/qgslayerpropertieswidget.cpp
+  symbology/qgsmasksymbollayerwidget.cpp
   symbology/qgsnullsymbolrendererwidget.cpp
   symbology/qgspenstylecombobox.cpp
   symbology/qgspointclusterrendererwidget.cpp
@@ -246,7 +247,6 @@ SET(QGIS_GUI_SRCS
   qgsbrowsertreeview.cpp
   qgsbrowserguimodel.cpp
   qgsbrowserdockwidget.cpp
-  qgsbrowserdockwidget_p.cpp
   qgsbusyindicatordialog.cpp
   qgscharacterselectordialog.cpp
   qgscheckablecombobox.cpp
@@ -834,6 +834,7 @@ SET(QGIS_GUI_HDRS
   symbology/qgsinvertedpolygonrendererwidget.h
   symbology/qgslayerpropertieswidget.h
   symbology/qgsnullsymbolrendererwidget.h
+  symbology/qgsmasksymbollayerwidget.h
   symbology/qgspenstylecombobox.h
   symbology/qgspointclusterrendererwidget.h
   symbology/qgspointdisplacementrendererwidget.h
@@ -853,10 +854,12 @@ SET(QGIS_GUI_HDRS
   symbology/qgssymbolslistwidget.h
   symbology/qgssymbolwidgetcontext.h
   symbology/qgsvectorfieldsymbollayerwidget.h
+
+  qgsbrowserdockwidget_p.h
 )
 
 SET(QGIS_GUI_PRIVATE_HDRS
-  qgsbrowserdockwidget_p.h
+  qgsbrowserdockwidget_p.cpp
   qgswidgetstatehelper_p.h
 )
 

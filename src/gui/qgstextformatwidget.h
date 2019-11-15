@@ -230,6 +230,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
 
     QgsCharacterSelectorDialog *mCharDlg = nullptr;
     std::unique_ptr< QgsPaintEffect > mBufferEffect;
+    std::unique_ptr< QgsPaintEffect > mMaskEffect;
     std::unique_ptr< QgsPaintEffect > mBackgroundEffect;
     QColor mPreviewBackgroundColor;
 
@@ -275,6 +276,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     void mFontMinPixelSpinBox_valueChanged( int px );
     void mFontMaxPixelSpinBox_valueChanged( int px );
     void mBufferUnitWidget_changed();
+    void mMaskBufferUnitWidget_changed();
     void mCoordXDDBtn_activated( bool active );
     void mCoordYDDBtn_activated( bool active );
     void mShapeTypeCmbBx_currentIndexChanged( int index );

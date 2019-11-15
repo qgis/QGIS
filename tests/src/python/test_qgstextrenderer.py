@@ -14,6 +14,7 @@ import qgis  # NOQA
 import os
 
 from qgis.core import (QgsTextBufferSettings,
+                       QgsTextMaskSettings,
                        QgsTextBackgroundSettings,
                        QgsTextShadowSettings,
                        QgsTextFormat,
@@ -30,7 +31,9 @@ from qgis.core import (QgsTextBufferSettings,
                        QgsMarkerSymbol,
                        QgsPalLayerSettings,
                        QgsProperty,
-                       QgsFontUtils)
+                       QgsFontUtils,
+                       QgsSymbolLayerId,
+                       QgsSymbolLayerReference)
 from qgis.PyQt.QtGui import (QColor, QPainter, QFont, QImage, QBrush, QPen, QFontMetricsF)
 from qgis.PyQt.QtCore import (Qt, QSizeF, QPointF, QRectF, QDir, QSize)
 from qgis.PyQt.QtXml import QDomDocument
@@ -114,6 +117,57 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.checkBufferSettings(s2)
         s3 = QgsTextBufferSettings(s)
         self.checkBufferSettings(s3)
+
+    def createMaskSettings(self):
+        s = QgsTextMaskSettings()
+        s.setEnabled(True)
+        s.setType(QgsTextMaskSettings.MaskBuffer)
+        s.setSize(5)
+        s.setSizeUnit(QgsUnitTypes.RenderPoints)
+        s.setSizeMapUnitScale(QgsMapUnitScale(1, 2))
+        s.setOpacity(0.5)
+        s.setJoinStyle(Qt.RoundJoin)
+        s.setMaskedSymbolLayers([QgsSymbolLayerReference("layerid1", QgsSymbolLayerId("symbol", 1)),
+                                 QgsSymbolLayerReference("layerid2", QgsSymbolLayerId("symbol2", 2))])
+        return s
+
+    def checkMaskSettings(self, s):
+        """ test QgsTextMaskSettings """
+        self.assertTrue(s.enabled())
+        self.assertEqual(s.type(), QgsTextMaskSettings.MaskBuffer)
+        self.assertEqual(s.size(), 5)
+        self.assertEqual(s.sizeUnit(), QgsUnitTypes.RenderPoints)
+        self.assertEqual(s.sizeMapUnitScale(), QgsMapUnitScale(1, 2))
+        self.assertEqual(s.opacity(), 0.5)
+        self.assertEqual(s.joinStyle(), Qt.RoundJoin)
+        self.assertEqual(s.maskedSymbolLayers(), [QgsSymbolLayerReference("layerid1", QgsSymbolLayerId("symbol", 1)),
+                                                  QgsSymbolLayerReference("layerid2", QgsSymbolLayerId("symbol2", 2))])
+
+    def testMaskGettersSetters(self):
+        s = self.createMaskSettings()
+        self.checkMaskSettings(s)
+
+        # some other checks
+        s.setEnabled(False)
+        self.assertFalse(s.enabled())
+
+    def testMaskReadWriteXml(self):
+        """test saving and restoring state of a mask to xml"""
+        doc = QDomDocument("testdoc")
+        s = self.createMaskSettings()
+        elem = s.writeXml(doc)
+        parent = doc.createElement("settings")
+        parent.appendChild(elem)
+        t = QgsTextMaskSettings()
+        t.readXml(parent)
+        self.checkMaskSettings(t)
+
+    def testMaskCopy(self):
+        s = self.createMaskSettings()
+        s2 = s
+        self.checkMaskSettings(s2)
+        s3 = QgsTextMaskSettings(s)
+        self.checkMaskSettings(s3)
 
     def createBackgroundSettings(self):
         s = QgsTextBackgroundSettings()
@@ -279,6 +333,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         s = QgsTextFormat()
         s.buffer().setEnabled(True)
         s.buffer().setSize(25)
+        s.mask().setEnabled(True)
+        s.mask().setSize(32)
         s.background().setEnabled(True)
         s.background().setSvgFile('test.svg')
         s.shadow().setEnabled(True)
@@ -302,6 +358,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         """ test QgsTextFormat """
         self.assertTrue(s.buffer().enabled())
         self.assertEqual(s.buffer().size(), 25)
+        self.assertTrue(s.mask().enabled())
+        self.assertEqual(s.mask().size(), 32)
         self.assertTrue(s.background().enabled())
         self.assertEqual(s.background().svgFile(), 'test.svg')
         self.assertTrue(s.shadow().enabled())
@@ -421,6 +479,37 @@ class PyQgsTextRenderer(unittest.TestCase):
         f.dataDefinedProperties().setProperty(QgsPalLayerSettings.BufferColor, QgsProperty.fromExpression("'#ff0088'"))
         f.updateDataDefinedProperties(context)
         self.assertEqual(f.buffer().color().name(), '#ff0088')
+
+    def testDataDefinedMaskSettings(self):
+        f = QgsTextFormat()
+        context = QgsRenderContext()
+
+        # mask enabled
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.MaskEnabled, QgsProperty.fromExpression('1'))
+        f.updateDataDefinedProperties(context)
+        self.assertTrue(f.mask().enabled())
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.MaskEnabled, QgsProperty.fromExpression('0'))
+        context = QgsRenderContext()
+        f.updateDataDefinedProperties(context)
+        self.assertFalse(f.mask().enabled())
+
+        # mask buffer size
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.MaskBufferSize, QgsProperty.fromExpression('7.8'))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.mask().size(), 7.8)
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.MaskBufferUnit, QgsProperty.fromExpression("'pixel'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.mask().sizeUnit(), QgsUnitTypes.RenderPixels)
+
+        # mask opacity
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.MaskOpacity, QgsProperty.fromExpression('37'))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.mask().opacity(), 0.37)
+
+        # join style
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.MaskJoinStyle, QgsProperty.fromExpression("'miter'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.mask().joinStyle(), Qt.MiterJoin)
 
     def testDataDefinedBackgroundSettings(self):
         f = QgsTextFormat()

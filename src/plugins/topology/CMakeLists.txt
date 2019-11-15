@@ -16,14 +16,6 @@ SET (topol_UIS
   checkDock.ui
 )
 
-SET (topol_MOC_HDRS
-  topol.h
-  rulesDialog.h
-  checkDock.h
-  topolTest.h
-  dockModel.h
-)
-
 SET (topol_RCCS  topol.qrc)
 
 ########################################################
@@ -31,11 +23,9 @@ SET (topol_RCCS  topol.qrc)
 
 QT5_WRAP_UI (topol_UIS_H  ${topol_UIS})
 
-QT5_WRAP_CPP (topol_MOC_SRCS  ${topol_MOC_HDRS})
-
 QT5_ADD_RESOURCES(topol_RCC_SRCS ${topol_RCCS})
 
-ADD_LIBRARY (topolplugin MODULE ${topol_SRCS} ${topol_MOC_SRCS} ${topol_RCC_SRCS} ${topol_UIS_H})
+ADD_LIBRARY (topolplugin MODULE ${topol_SRCS} ${topol_RCC_SRCS} ${topol_UIS_H})
 
 INCLUDE_DIRECTORIES(SYSTEM
   ${GEOS_INCLUDE_DIR}
@@ -48,6 +38,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/plugins
   ${CMAKE_SOURCE_DIR}/external

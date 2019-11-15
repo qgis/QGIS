@@ -434,7 +434,10 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
     bool isFile = false;
     if ( layerItem )
     {
-      isFile = layerItem->providerKey() == QStringLiteral( "ogr" ) || layerItem->providerKey() == QStringLiteral( "gdal" );
+      // Also check for postgres layers (rasters are handled by GDAL)
+      isFile = ( layerItem->providerKey() == QStringLiteral( "ogr" ) ||
+                 layerItem->providerKey() == QStringLiteral( "gdal" ) ) &&
+               ! layerItem->uri().startsWith( QStringLiteral( "PG:" ) );
     }
     else
     {

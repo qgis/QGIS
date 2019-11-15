@@ -221,6 +221,13 @@ class QgsPalLayerSettings
       BufferJoinStyle,
       BufferBlendMode,
 
+      // mask buffer
+      MaskEnabled,
+      MaskBufferSize,
+      MaskBufferUnit,
+      MaskOpacity,
+      MaskJoinStyle,
+
       // background
       ShapeDraw,
       ShapeKind,

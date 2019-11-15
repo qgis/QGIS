@@ -269,111 +269,125 @@ QList<QgsGeoNodeRequest::ServiceLayerDetail> QgsGeoNodeRequest::parseLayers( con
   const QJsonObject jsonObject = jsonDocument.object();
   const QVariantMap jsonVariantMap = jsonObject.toVariantMap();
   const QVariantList layerList = jsonVariantMap.value( QStringLiteral( "objects" ) ).toList();
-  qint16 majorVersion;
-  qint16 minorVersion;
-  if ( jsonVariantMap.contains( QStringLiteral( "geonode_version" ) ) )
+
+  QString wmsURLFormat, wfsURLFormat, xyzURLFormat;
+
+  for ( const QVariant &layer : qgis::as_const( layerList ) )
   {
-    QRegularExpression re( "((\\d+)(\\.\\d+))" );
-    QRegularExpressionMatch match = re.match( jsonVariantMap.value( QStringLiteral( "geonode_version" ) ).toString() );
-    if ( match.hasMatch() )
+    QgsGeoNodeRequest::ServiceLayerDetail layerStruct;
+    const QVariantMap layerMap = layer.toMap();
+    QVariantList layerLinks = layerMap.value( QStringLiteral( "links" ) ).toList();
+
+    if ( layerMap.value( QStringLiteral( "typename" ) ).toString().isEmpty() )
     {
-      const QStringList geonodeVersionSplit = match.captured( 0 ).split( '.' );
-      majorVersion = geonodeVersionSplit.at( 0 ).toInt();
-      minorVersion = geonodeVersionSplit.at( 1 ).toInt();
+      const QStringList splitUrl = layerMap.value( QStringLiteral( "detail_url" ) ).toString().split( '/' );
+      layerStruct.typeName = !splitUrl.isEmpty() ? splitUrl.last() : QString();
     }
-    else
+    layerStruct.uuid = layerMap.value( QStringLiteral( "uuid" ) ).toString();
+    layerStruct.id = layerMap.value( QStringLiteral( "id" ) ).toString();
+    layerStruct.name = layerMap.value( QStringLiteral( "name" ) ).toString();
+    layerStruct.typeName = layerMap.value( QStringLiteral( "typename" ) ).toString();
+    layerStruct.title = layerMap.value( QStringLiteral( "title" ) ).toString();
+
+    if ( ! layerMap.contains( QStringLiteral( "links" ) ) )
     {
-      return layers;
-    }
-  }
-  else
-  {
-    majorVersion = 2;
-    minorVersion = 6;
-  }
-
-  if ( majorVersion == 2 && minorVersion == 6 )
-  {
-    for ( const QVariant &layer : qgis::as_const( layerList ) )
-    {
-      QgsGeoNodeRequest::ServiceLayerDetail layerStruct;
-      const QVariantMap layerMap = layer.toMap();
-      // Find WMS and WFS. XYZ is not available
-      // Trick to get layer's typename from distribution_url or detail_url
-      QString layerTypeName = layerMap.value( QStringLiteral( "detail_url" ) ).toString().split( '/' ).last();
-      if ( layerTypeName.isEmpty() )
+      if ( wmsURLFormat.isEmpty() && wfsURLFormat.isEmpty() && xyzURLFormat.isEmpty() )
       {
-        layerTypeName = layerMap.value( QStringLiteral( "distribution_url" ) ).toString().split( '/' ).last();
-      }
-      // On this step, layerTypeName is in WORKSPACE%3ALAYERNAME or WORKSPACE:LAYERNAME format
-      if ( layerTypeName.contains( QStringLiteral( "%3A" ) ) )
-      {
-        layerTypeName.replace( QStringLiteral( "%3A" ), QStringLiteral( ":" ) );
-      }
-      // On this step, layerTypeName is in WORKSPACE:LAYERNAME format
-      const QStringList splitURL = layerTypeName.split( ':' );
-      QString layerWorkspace = splitURL.at( 0 );
-      QString layerName = splitURL.at( 1 );
-
-      layerStruct.name = layerName;
-      layerStruct.typeName = layerTypeName;
-      layerStruct.uuid = layerMap.value( QStringLiteral( "uuid" ) ).toString();
-      layerStruct.title = layerMap.value( QStringLiteral( "title" ) ).toString();
-
-      // WMS url : BASE_URI/geoserver/WORKSPACE/wms
-      layerStruct.wmsURL = mBaseUrl + QStringLiteral( "/geoserver/" ) + layerWorkspace + QStringLiteral( "/wms" );
-      // WFS url : BASE_URI/geoserver/WORKSPACE/wfs
-      layerStruct.wfsURL = mBaseUrl + QStringLiteral( "/geoserver/" ) + layerWorkspace + QStringLiteral( "/wfs" );
-      // XYZ url : set to empty string
-      layerStruct.xyzURL.clear();
-
-      layers.append( layerStruct );
-    }
-  }
-  // Geonode version 2.7 or newer
-  else if ( ( majorVersion == 2 && minorVersion >= 7 ) || ( majorVersion >= 3 ) )
-  {
-    for ( const QVariant &layer : qgis::as_const( layerList ) )
-    {
-      QgsGeoNodeRequest::ServiceLayerDetail layerStruct;
-      const QVariantMap layerMap = layer.toMap();
-      // Find WMS, WFS, and XYZ link
-      const QVariantList layerLinks = layerMap.value( QStringLiteral( "links" ) ).toList();
-      for ( const QVariant &link : layerLinks )
-      {
-        const QVariantMap linkMap = link.toMap();
-        if ( linkMap.contains( QStringLiteral( "link_type" ) ) )
+        bool success = requestBlocking( QStringLiteral( "/api/layers/" ) + layerStruct.id );
+        if ( success )
         {
-          if ( linkMap.value( QStringLiteral( "link_type" ) ) == QStringLiteral( "OGC:WMS" ) )
+          const QJsonDocument resourceUriDocument = QJsonDocument::fromJson( this->lastResponse() );
+          const QJsonObject resourceUriObject = resourceUriDocument.object();
+          const QVariantMap resourceUriMap = resourceUriObject.toVariantMap();
+          QVariantList resourceUriLinks = resourceUriMap.value( QStringLiteral( "links" ) ).toList();
+          QgsGeoNodeRequest::ServiceLayerDetail tempLayerStruct;
+          tempLayerStruct = parseOwsUrl( tempLayerStruct, resourceUriLinks );
+
+          if ( tempLayerStruct.wmsURL.isEmpty() && tempLayerStruct.wfsURL.isEmpty() && tempLayerStruct.xyzURL.isEmpty() )
+            continue;
+
+          // Avoid iterating all the layers to get the service url. Instead, generate a string format once we found one service url
+          // for every service (wms, wfs, xyz). And then use the string format for the other layers since they are identical.
+          switch ( tempLayerStruct.server )
           {
-            layerStruct.wmsURL = linkMap.value( QStringLiteral( "url" ) ).toString();
-          }
-          else if ( linkMap.value( QStringLiteral( "link_type" ) ) == QStringLiteral( "OGC:WFS" ) )
-          {
-            layerStruct.wfsURL = linkMap.value( QStringLiteral( "url" ) ).toString();
-          }
-          else if ( linkMap.value( QStringLiteral( "link_type" ) ) == QStringLiteral( "image" ) )
-          {
-            if ( linkMap.contains( QStringLiteral( "name" ) ) && linkMap.value( QStringLiteral( "name" ) ) == QStringLiteral( "Tiles" ) )
+            case QgsGeoNodeRequest::BackendServer::QgisServer:
             {
-              layerStruct.xyzURL = linkMap.value( QStringLiteral( "url" ) ).toString();
+              wmsURLFormat = ! tempLayerStruct.wmsURL.isEmpty() ? tempLayerStruct.wmsURL.replace( layerStruct.name, QStringLiteral( "%1" ) ) : QString();
+              wfsURLFormat = ! tempLayerStruct.wfsURL.isEmpty() ? tempLayerStruct.wfsURL.replace( layerStruct.name, QStringLiteral( "%1" ) ) : QString();
+              xyzURLFormat = ! tempLayerStruct.xyzURL.isEmpty() ? tempLayerStruct.xyzURL.replace( layerStruct.name, QStringLiteral( "%1" ) ) : QString();
+              break;
             }
+            case QgsGeoNodeRequest::BackendServer::Geoserver:
+            {
+              wmsURLFormat = ! tempLayerStruct.wmsURL.isEmpty() ? tempLayerStruct.wmsURL : QString();
+              wfsURLFormat = ! tempLayerStruct.wfsURL.isEmpty() ? tempLayerStruct.wfsURL : QString();
+              xyzURLFormat = ! tempLayerStruct.xyzURL.isEmpty() ? tempLayerStruct.xyzURL.replace( layerStruct.name, QStringLiteral( "%1" ) ) : QString();
+              break;
+            }
+            case QgsGeoNodeRequest::BackendServer::Unknown:
+              break;
           }
         }
+        else
+          continue;
       }
-      if ( layerMap.value( QStringLiteral( "typename" ) ).toString().isEmpty() )
+      else
       {
-        const QStringList splitURL = layerMap.value( QStringLiteral( "detail_url" ) ).toString().split( '/' );
-        layerStruct.typeName = splitURL.at( splitURL.length() - 1 );
+        // Replace string argument with the layer id.
+        layerStruct.wmsURL = wmsURLFormat.contains( "%1" ) ? wmsURLFormat.arg( layerStruct.name ) : wmsURLFormat;
+        layerStruct.wfsURL = wfsURLFormat.contains( "%1" ) ? wfsURLFormat.arg( layerStruct.name ) : wfsURLFormat;
+        layerStruct.xyzURL = xyzURLFormat.contains( "%1" ) ? xyzURLFormat.arg( layerStruct.name ) : xyzURLFormat;
       }
-      layerStruct.uuid = layerMap.value( QStringLiteral( "uuid" ) ).toString();
-      layerStruct.name = layerMap.value( QStringLiteral( "name" ) ).toString();
-      layerStruct.typeName = layerMap.value( QStringLiteral( "typename" ) ).toString();
-      layerStruct.title = layerMap.value( QStringLiteral( "title" ) ).toString();
-      layers.append( layerStruct );
+    }
+    else
+      layerStruct = parseOwsUrl( layerStruct, layerLinks );
+
+    layers.append( layerStruct );
+  }
+
+  return layers;
+}
+
+QgsGeoNodeRequest::ServiceLayerDetail QgsGeoNodeRequest::parseOwsUrl( QgsGeoNodeRequest::ServiceLayerDetail &layerStruct, const QVariantList &layerLinks )
+{
+  QString urlFound;
+  for ( const QVariant &link : layerLinks )
+  {
+    const QVariantMap linkMap = link.toMap();
+    if ( linkMap.contains( QStringLiteral( "link_type" ) ) )
+    {
+      if ( linkMap.value( QStringLiteral( "link_type" ) ) == QStringLiteral( "OGC:WMS" ) )
+      {
+        urlFound = layerStruct.wmsURL = linkMap.value( QStringLiteral( "url" ) ).toString();
+      }
+      else if ( linkMap.value( QStringLiteral( "link_type" ) ) == QStringLiteral( "OGC:WFS" ) )
+      {
+        urlFound = layerStruct.wfsURL = linkMap.value( QStringLiteral( "url" ) ).toString();
+      }
+      else if ( linkMap.value( QStringLiteral( "link_type" ) ) == QStringLiteral( "image" ) )
+      {
+        if ( linkMap.contains( QStringLiteral( "name" ) ) && linkMap.value( QStringLiteral( "name" ) ) == QStringLiteral( "Tiles" ) )
+        {
+          urlFound = layerStruct.xyzURL = linkMap.value( QStringLiteral( "url" ) ).toString();
+        }
+      }
+    }
+
+    switch ( layerStruct.server )
+    {
+      case QgsGeoNodeRequest::BackendServer::Geoserver:
+      case QgsGeoNodeRequest::BackendServer::QgisServer:
+        break;
+
+      case QgsGeoNodeRequest::BackendServer::Unknown:
+      {
+        layerStruct.server = urlFound.contains( QStringLiteral( "qgis-server" ) ) ? QgsGeoNodeRequest::BackendServer::QgisServer : QgsGeoNodeRequest::BackendServer::Geoserver;
+        break;
+      }
     }
   }
-  return layers;
+
+  return layerStruct;
 }
 
 QgsGeoNodeStyle QgsGeoNodeRequest::retrieveStyle( const QString &styleUrl )
@@ -529,6 +543,8 @@ bool QgsGeoNodeRequest::requestBlocking( const QString &endPoint )
 QNetworkReply *QgsGeoNodeRequest::requestUrl( const QString &url )
 {
   QNetworkRequest request( url );
+  request.setAttribute( QNetworkRequest::FollowRedirectsAttribute, true );
+
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsGeoNodeRequest" ) );
   // Add authentication check here
 

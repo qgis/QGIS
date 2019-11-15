@@ -207,7 +207,7 @@ void QgsWfs3AbstractItemsHandler::checkLayerIsAccessible( const QgsVectorLayer *
   }
 }
 
-QgsFeatureRequest QgsWfs3AbstractItemsHandler::filteredRequest( const QgsVectorLayer *vLayer, const QgsServerApiContext &context ) const
+QgsFeatureRequest QgsWfs3AbstractItemsHandler::filteredRequest( const QgsVectorLayer *vLayer, const QgsServerApiContext &context, const QStringList &subsetAttributes ) const
 {
   QgsFeatureRequest featureRequest;
   QgsExpressionContext expressionContext;
@@ -230,7 +230,8 @@ QgsFeatureRequest QgsWfs3AbstractItemsHandler::filteredRequest( const QgsVectorL
   const QgsFields constFields { publishedFields( vLayer, context ) };
   for ( const QgsField &f : constFields )
   {
-    publishedAttrs.insert( f.name() );
+    if ( subsetAttributes.isEmpty() || subsetAttributes.contains( f.name( ) ) )
+      publishedAttrs.insert( f.name() );
   }
   featureRequest.setSubsetOfAttributes( publishedAttrs, vLayer->fields() );
   return featureRequest;
@@ -369,11 +370,11 @@ void QgsWfs3ConformanceHandler::handleRequest( const QgsServerApiContext &contex
   {
     { "links", links( context ) },
     {
-      "conformsTo", { "http://www.opengis.net/spec/wfs-1/3.0/req/core",
-        "http://www.opengis.net/spec/wfs-1/3.0/req/oas30",
-        "http://www.opengis.net/spec/wfs-1/3.0/req/html",
-        "http://www.opengis.net/spec/wfs-1/3.0/req/gmlsf2",
-        "http://www.opengis.net/spec/wfs-1/3.0/req/geojson"
+      "conformsTo", {
+        "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core",
+        "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/oas30",
+        "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/html",
+        "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson"
       }
     }
   };
@@ -636,16 +637,22 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
     { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::items ) },
     { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::HTML ) },
     { "title", title }
-  }
-  /* TODO: not sure what these "concepts" are about, neither if they are mandatory
-  ,{
-    { "href", href( api, *context.request() , QStringLiteral( "/concepts" ), QStringLiteral( "html") )  },
-    { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::item ) },
-    { "type", "text/html" },
-    { "title", "Describe " + title }
-  }
-  */
-  );
+  } );
+
+  linksList.push_back(
+  {
+    {
+      "href", parentLink( context.request()->url(), 3 ).toStdString() +
+      "?request=DescribeFeatureType&typenames=" +
+      QUrlQuery( shortName ).toString( QUrl::EncodeSpaces ).toStdString() +
+      "&service=WFS&version=2.0"
+    },
+    { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::describedBy ) },
+    { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::XML ) },
+    { "title", "Schema for " + title }
+  } );
+
+
   json crss = json::array();
   for ( const auto &crs : QgsServerApiUtils::publishedCrsList( context.project() ) )
   {
@@ -799,6 +806,38 @@ QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::parameters(
       {
         params.push_back( p );
       }
+
+      const QgsFields published { publishedFields( mapLayer, context ) };
+      QStringList publishedFieldNames;
+      for ( const auto &f : published )
+      {
+        publishedFieldNames.push_back( f.name() );
+      }
+
+      // Properties (CSV list of properties to return)
+      QgsServerQueryStringParameter properties { QStringLiteral( "properties" ), false,
+          QgsServerQueryStringParameter::Type::List,
+          QStringLiteral( "Comma separated list of feature property names to be added to the result. Valid values: %1" )
+          .arg( publishedFieldNames.join( QStringLiteral( "', '" ) )
+                .append( '\'' )
+                .prepend( '\'' ) ) };
+
+      auto propertiesValidator = [ = ]( const QgsServerApiContext &, QVariant & value ) -> bool
+      {
+        const QStringList properties { value.toStringList() };
+        for ( const auto &p : properties )
+        {
+          if ( ! publishedFieldNames.contains( p ) )
+          {
+            return false;
+          }
+        }
+        return true;
+      };
+
+      properties.setCustomValidator( propertiesValidator );
+      params.push_back( properties );
+
     }
 
     // Check if is there any suitable datetime fields
@@ -904,26 +943,37 @@ json QgsWfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context 
     const std::string title { mapLayer->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->title().toStdString() };
     // Use layer id for operationId
     const QString layerId { mapLayer->id() };
-    const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath() + QStringLiteral( "/collections/%1/items" ).arg( shortName ), context.request()->url() ).toStdString() };
+    const QString path { QgsServerApiUtils::appendMapParameter( context.apiRootPath() + QStringLiteral( "/collections/%1/items" ).arg( shortName ), context.request()->url() ) };
 
-    json parameters =
+    static const QStringList componentNames
     {
-      {{ "$ref", "#/components/parameters/limit" }},
-      {{ "$ref", "#/components/parameters/offset" }},
-      {{ "$ref", "#/components/parameters/resultType" }},
-      {{ "$ref", "#/components/parameters/bbox" }},
-      {{ "$ref", "#/components/parameters/bbox-crs" }},
-      {{ "$ref", "#/components/parameters/datetime" }}
+      QStringLiteral( "limit" ),
+      QStringLiteral( "offset" ),
+      QStringLiteral( "resultType" ),
+      QStringLiteral( "bbox" ),
+      QStringLiteral( "bbox-crs" ),
+      QStringLiteral( "crs" ),
+      QStringLiteral( "datetime" )
     };
 
-    const QList<QgsServerQueryStringParameter> constFieldParameters { fieldParameters( mapLayer, context ) };
-    for ( const auto &p : constFieldParameters )
+    json componentParameters = json::array();
+    for ( const QString &name : componentNames )
     {
-      const std::string name { p.name().toStdString() };
-      parameters.push_back( p.data() );
+      componentParameters.push_back( {{ "$ref", "#/components/parameters/" + name.toStdString() }} );
     }
 
-    data[ path ] =
+    // Add layer specific filters
+    QgsServerApiContext layerContext( context );
+    QgsBufferServerRequest layerRequest( path );
+    layerContext.setRequest( &layerRequest );
+    const auto requestParameters { parameters( layerContext ) };
+    for ( const auto &p : requestParameters )
+    {
+      if ( ! componentNames.contains( p.name() ) )
+        componentParameters.push_back( p.data() );
+    }
+
+    data[ path.toStdString() ] =
     {
       {
         "get", {
@@ -931,7 +981,7 @@ json QgsWfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context 
           { "summary", "Retrieve features of '" + title + "' feature collection" },
           { "description", description() },
           { "operationId", operationId() + '_' + layerId.toStdString() },
-          { "parameters", parameters },
+          { "parameters", componentParameters },
           {
             "responses", {
               {
@@ -1060,8 +1110,8 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
 
     // Attribute filters
     QgsStringMap attrFilters;
-    const QgsFields constFields { publishedFields( mapLayer, context ) };
-    for ( const QgsField &f : constFields )
+    const QgsFields constPublishedFields { publishedFields( mapLayer, context ) };
+    for ( const QgsField &f : constPublishedFields )
     {
       const QString fName { f.alias().isEmpty() ? f.name() : f.alias() };
       const QString val = params.value( fName ).toString() ;
@@ -1087,7 +1137,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
     QStringList expressions;
 
     //  datetime
-    const QString datetime { context.request()->queryParameter( QStringLiteral( "datetime" ) ) };
+    const QString datetime { params.value( QStringLiteral( "datetime" ) ).toString() };
     if ( ! datetime.isEmpty() )
     {
       const QgsExpression timeExpression { QgsServerApiUtils::temporalFilterExpression( mapLayer, datetime ) };
@@ -1101,8 +1151,15 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       }
     }
 
-    // Inputs are valid, process request
-    QgsFeatureRequest featureRequest = filteredRequest( mapLayer, context );
+    // Properties (subset attributes)
+    const QStringList requestedProperties { params.value( QStringLiteral( "properties" ) ).toStringList( ) };
+
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // End of input control: inputs are valid, process the request
+
+    QgsFeatureRequest featureRequest = filteredRequest( mapLayer, context, requestedProperties );
+
     if ( ! filterRect.isNull() )
     {
       QgsCoordinateTransform ct( bboxCrs, mapLayer->crs(), context.project()->transformContext() );
@@ -1140,7 +1197,6 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       featureRequest.setFilterExpression( filterExpression );
       QgsDebugMsgLevel( QStringLiteral( "Filter expression: %1" ).arg( featureRequest.filterExpression()->expression() ), 4 );
     }
-
 
     // WFS3 core specs only serves 4326
     featureRequest.setDestinationCrs( crs, context.project()->transformContext() );
@@ -1195,11 +1251,15 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
     const QUrl url { context.request()->url() };
 
     // Url without offset and limit
-    QString cleanedUrl { url.toString().replace( QRegularExpression( R"raw(&?(offset|limit)(=\d+)*)raw" ), QString() ) };
+    QUrl cleanedUrl { url };
+    cleanedUrl.removeQueryItem( QStringLiteral( "limit" ) );
+    cleanedUrl.removeQueryItem( QStringLiteral( "offset" ) );
 
-    if ( ! url.hasQuery() )
+    QString cleanedUrlAsString { cleanedUrl.toString() };
+
+    if ( ! cleanedUrl.hasQuery() )
     {
-      cleanedUrl += '?';
+      cleanedUrlAsString += '?';
     }
 
     // Get the self link
@@ -1219,7 +1279,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
     if ( offset != 0 )
     {
       json prevLink = selfLink;
-      prevLink["href"] = QStringLiteral( "%1&offset=%2&limit=%3" ).arg( cleanedUrl ).arg( std::max<long>( 0, limit - offset ) ).arg( limit ).toStdString();
+      prevLink["href"] = QStringLiteral( "%1&offset=%2&limit=%3" ).arg( cleanedUrlAsString ).arg( std::max<long>( 0, limit - offset ) ).arg( limit ).toStdString();
       prevLink["rel"] = "prev";
       prevLink["name"] = "Previous page";
       data["links"].push_back( prevLink );
@@ -1227,7 +1287,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
     if ( limit + offset < matchedFeaturesCount )
     {
       json nextLink = selfLink;
-      nextLink["href"] = QStringLiteral( "%1&offset=%2&limit=%3" ).arg( cleanedUrl ).arg( std::min<long>( matchedFeaturesCount, limit + offset ) ).arg( limit ).toStdString();
+      nextLink["href"] = QStringLiteral( "%1&offset=%2&limit=%3" ).arg( cleanedUrlAsString ).arg( std::min<long>( matchedFeaturesCount, limit + offset ) ).arg( limit ).toStdString();
       nextLink["rel"] = "next";
       nextLink["name"] = "Next page";
       data["links"].push_back( nextLink );

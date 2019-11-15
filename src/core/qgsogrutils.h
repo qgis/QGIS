@@ -192,6 +192,20 @@ class CORE_EXPORT QgsOgrUtils
     static QVariant getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsFields &fields, int attIndex, QTextCodec *encoding, bool *ok = nullptr );
 
     /**
+     * Retrieves an attribute value from an OGR feature, using a provided \a field definition.
+     * \param ogrFet OGR feature handle
+     * \param field definition of corresponding field
+     * \param attIndex index of attribute to retrieve from \a ogrFet
+     * \param encoding text encoding
+     * \param ok optional storage for success of retrieval
+     * \returns attribute converted to a QVariant object
+     * \see readOgrFeatureAttributes()
+     *
+     * \since QGIS 3.10.1
+     */
+    static QVariant getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField &field, int attIndex, QTextCodec *encoding, bool *ok = nullptr );
+
+    /**
      * Reads all attributes from an OGR feature into a QgsFeature.
      * \param ogrFet OGR feature handle
      * \param fields fields collection corresponding to feature

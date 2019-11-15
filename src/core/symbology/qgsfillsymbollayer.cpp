@@ -3183,7 +3183,11 @@ void QgsPointPatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext 
 
   QImage patternImage( width, height, QImage::Format_ARGB32 );
   patternImage.fill( 0 );
-
+  if ( patternImage.isNull() )
+  {
+    brush.setTextureImage( QImage() );
+    return;
+  }
   if ( mMarkerSymbol )
   {
     QPainter p( &patternImage );

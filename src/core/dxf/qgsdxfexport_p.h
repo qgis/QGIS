@@ -15,6 +15,96 @@
  *                                                                         *
  ***************************************************************************/
 
+
+#include "qgsvectorlayer.h"
+#include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsvectorlayerfeatureiterator.h"
+#include "qgsrenderer.h"
+#include "qgsvectorlayerlabeling.h"
+#include "qgsdxfpallabeling.h"
+
+/**
+ * Holds information about each layer in a DXF job.
+ * This can be used for multithreading.
+ */
+struct DxfLayerJob
+{
+  DxfLayerJob( QgsVectorLayer *vl, const QString &layerStyleOverride, QgsRenderContext &renderContext, QgsDxfExport *dxfExport, const QString &splitLayerAttribute )
+    : styleOverride( vl )
+    , expressionContext( renderContext.expressionContext() )
+    , featureSource( vl )
+    , dxfExport( dxfExport )
+    , crs( vl->crs() )
+    , layerName( vl->name() )
+    , splitLayerAttribute( splitLayerAttribute )
+    , layerTitle( vl->title().isEmpty() ? vl->name() : vl->title() )
+  {
+    fields = vl->fields();
+    renderer.reset( vl->renderer()->clone() );
+    expressionContext.appendScope( vl->createExpressionContextScope() );
+
+    if ( !layerStyleOverride.isNull() )
+    {
+      styleOverride.setOverrideStyle( layerStyleOverride );
+    }
+
+    labeling.reset( vl->labelsEnabled() ? vl->labeling()->clone() : nullptr );
+
+    attributes = renderer->usedAttributes( renderContext );
+    if ( !splitLayerAttribute.isNull() )
+    {
+      attributes << splitLayerAttribute;
+    }
+
+    if ( labeling )
+    {
+      QgsLabelingEngine *labelingEngine = renderContext.labelingEngine();
+      if ( const QgsRuleBasedLabeling *rbl = dynamic_cast<const QgsRuleBasedLabeling *>( labeling.get() ) )
+      {
+        ruleBasedLabelProvider = new QgsDxfRuleBasedLabelProvider( *rbl, vl, dxfExport );
+        labelingEngine->addProvider( ruleBasedLabelProvider );
+
+        if ( !ruleBasedLabelProvider->prepare( renderContext, attributes ) )
+        {
+          labelingEngine->removeProvider( ruleBasedLabelProvider );
+          ruleBasedLabelProvider = nullptr;
+        }
+      }
+      else
+      {
+        QgsPalLayerSettings settings = labeling->settings();
+        labelProvider = new QgsDxfLabelProvider( vl, QString(), dxfExport, &settings );
+        labelingEngine->addProvider( labelProvider );
+
+        if ( !labelProvider->prepare( renderContext, attributes ) )
+        {
+          labelingEngine->removeProvider( labelProvider );
+          labelProvider = nullptr;
+        }
+      }
+    }
+
+    // This will need to be started in a separate thread, if threaded somewhere else to
+    renderer->startRender( renderContext, fields );
+  };
+
+  QgsFields fields;
+  QgsMapLayerStyleOverride styleOverride;
+  QgsExpressionContext expressionContext;
+  QgsVectorLayerFeatureSource featureSource;
+  std::unique_ptr< QgsFeatureRenderer > renderer;
+  std::unique_ptr<QgsAbstractVectorLayerLabeling> labeling;
+  QgsDxfExport *dxfExport = nullptr;
+  QgsCoordinateReferenceSystem crs;
+  QString layerName;
+  QgsDxfLabelProvider *labelProvider = nullptr;
+  QgsDxfRuleBasedLabelProvider *ruleBasedLabelProvider = nullptr;
+  QString splitLayerAttribute;
+  QString layerTitle;
+  QSet<QString> attributes;
+};
+
 // dxf color palette
 static int sDxfColors[][3] =
 {

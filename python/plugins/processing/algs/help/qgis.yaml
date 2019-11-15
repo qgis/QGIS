@@ -487,16 +487,6 @@ qgis:selectbyexpression: >
 
   For more information about expressions see the <a href ="{qgisdocs}/user_manual/working_with_vector/expression.html">user manual</a>
 
-qgis:serviceareafromlayer: >
-  This algorithm creates a new vector with all the edges or parts of edges of a network line layer that can be reached within a distance or a time, starting from features of a point layer.
-
-  The distance and the time (both referred to as "travel cost") must be specified respectively in the network layer units or in seconds.
-
-qgis:serviceareafrompoint: >
-  This algorithm creates a new vector with all the edges or parts of edges of a network line layer that can be reached within a distance or a time, starting from a point feature.
-
-  The distance and the time (both referred to as "travel cost") must be specified respectively in the network layer units or in seconds.
-
 qgis:setmvalue: >
   This algorithm sets the M value for geometries in a layer.
 

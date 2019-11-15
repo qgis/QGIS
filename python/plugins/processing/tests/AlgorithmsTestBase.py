@@ -178,7 +178,7 @@ class AlgorithmsTest(object):
             elif param['type'] == 'interpolation':
                 prefix = processingTestDataPath()
                 tmp = ''
-                for r in param['name'].split(';'):
+                for r in param['name'].split('::|::'):
                     v = r.split('::~::')
                     tmp += '{}::~::{}::~::{}::~::{};'.format(os.path.join(prefix, v[0]),
                                                              v[1], v[2], v[3])

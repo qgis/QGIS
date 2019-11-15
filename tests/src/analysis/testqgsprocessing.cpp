@@ -1938,6 +1938,27 @@ void TestQgsProcessing::parameters()
   QCOMPARE( context2.layersToLoadOnCompletion().keys().at( 0 ), destId );
   QCOMPARE( context2.layersToLoadOnCompletion().values().at( 0 ).name, QStringLiteral( "my_dest" ) );
   QCOMPARE( context2.layersToLoadOnCompletion().values().at( 0 ).outputName, QStringLiteral( "fs" ) );
+
+  // setting layer name to match...
+  context2.layersToLoadOnCompletion().values().at( 0 ).setOutputLayerName( nullptr );
+  std::unique_ptr< QgsVectorLayer > vl = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Point" ), QString(), QStringLiteral( "memory" ) );
+  QVERIFY( vl->isValid() );
+  context2.layersToLoadOnCompletion().values().at( 0 ).setOutputLayerName( vl.get() );
+  // temporary layer, must use output name as layer name
+  QCOMPARE( vl->name(), QStringLiteral( "my_dest" ) );
+  // otherwise expect to use path
+  std::unique_ptr< QgsRasterLayer > rl = qgis::make_unique< QgsRasterLayer >( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif", QString() );
+  context2.layersToLoadOnCompletion().values().at( 0 ).setOutputLayerName( rl.get() );
+  QCOMPARE( rl->name(), QStringLiteral( "landsat" ) );
+  // unless setting prohibits it...
+  QgsSettings().setValue( QStringLiteral( "Processing/Configuration/PREFER_FILENAME_AS_LAYER_NAME" ), false );
+  context2.layersToLoadOnCompletion().values().at( 0 ).setOutputLayerName( rl.get() );
+  QCOMPARE( rl->name(), QStringLiteral( "my_dest" ) );
+  // if layer has a layername, we should use that instead of the base file name...
+  QgsSettings().setValue( QStringLiteral( "Processing/Configuration/PREFER_FILENAME_AS_LAYER_NAME" ), true );
+  vl = qgis::make_unique< QgsVectorLayer >( QStringLiteral( TEST_DATA_DIR ) + "/points_gpkg.gpkg|layername=points_small", QString() );
+  context2.layersToLoadOnCompletion().values().at( 0 ).setOutputLayerName( vl.get() );
+  QCOMPARE( vl->name(), QStringLiteral( "points_small" ) );
 }
 
 void TestQgsProcessing::algorithmParameters()

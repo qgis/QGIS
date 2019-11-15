@@ -24,6 +24,7 @@
 #include "qgssymbol.h"
 #include "qgsfields.h"
 #include "qgsfeaturerequest.h"
+#include "qgssymbollayerreference.h"
 
 #include <QList>
 #include <QString>

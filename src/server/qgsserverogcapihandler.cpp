@@ -122,6 +122,9 @@ void QgsServerOgcApiHandler::write( json &data, const QgsServerApiContext &conte
     case QgsServerOgcApi::ContentType::OPENAPI3:
       jsonDump( data, context, QgsServerOgcApi::contentTypeMimes().value( contentType ).first() );
       break;
+    case QgsServerOgcApi::ContentType::XML:
+      // Not handled yet
+      break;
   }
 }
 
@@ -300,7 +303,10 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
       QFileInfo fi{ url.path() };
       auto suffix { fi.suffix() };
       auto fName { fi.filePath()};
-      fName.chop( suffix.length() + 1 );
+      if ( suffix.length() != 0 )
+      {
+        fName.chop( suffix.length() + 1 );
+      }
       fName += '/' + QString::number( args.at( 0 )->get<QgsFeatureId>( ) );
       if ( !suffix.isEmpty() )
       {
@@ -357,6 +363,13 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
     {
       const QgsServerOgcApi::ContentType ct { QgsServerOgcApi::contenTypeFromExtension( args.at( 0 )->get<std::string>( ) ) };
       return QgsServerOgcApi::contentTypeToStdString( ct );
+    } );
+
+    // Replace newlines with <br>
+    env.add_callback( "nl2br", 1, [ = ]( Arguments & args )
+    {
+      QString text { QString::fromStdString( args.at( 0 )->get<std::string>( ) ) };
+      return text.replace( '\n', QLatin1String( "<br>" ) ).toStdString();
     } );
 
 
@@ -501,6 +514,11 @@ QString QgsServerOgcApiHandler::parentLink( const QUrl &url, int levels )
     {
       qi.push_back( i );
     }
+  }
+  // Make sure the parent link ends with a slash
+  if ( ! path.endsWith( '/' ) )
+  {
+    path.append( '/' );
   }
   result.setQueryItems( qi );
   result.setPath( path );

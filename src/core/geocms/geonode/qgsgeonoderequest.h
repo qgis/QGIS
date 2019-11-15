@@ -68,12 +68,24 @@ class CORE_EXPORT QgsGeoNodeRequest : public QObject
   public:
 
     /**
+     * GeoNode backend server type.
+     */
+    enum class BackendServer
+    {
+      Unknown, //!< Unknown backend
+      QgisServer, //!< QGIS server used as backend
+      Geoserver //!< Geoserver used as backend
+    };
+
+    /**
      * Service layer details for an individual layer from a GeoNode connection.
      */
     struct ServiceLayerDetail
     {
       //! Unique identifier (generate on the client side, not at the GeoNode server)
       QUuid uuid;
+      //! Layer id
+      QString id;
       //! Layer name
       QString name;
       //! Layer type name
@@ -86,6 +98,8 @@ class CORE_EXPORT QgsGeoNodeRequest : public QObject
       QString wfsURL;
       //! XYZ tileserver URL for layer
       QString xyzURL;
+      //! Backend server (geoserver or qgis-server)
+      BackendServer server{};
     };
 
     /**
@@ -212,6 +226,11 @@ class CORE_EXPORT QgsGeoNodeRequest : public QObject
      * \see protocol()
      */
     void setProtocol( const QString &protocol );
+
+    /**
+     * Returns the updated ServiceLayerDetail struct with WMS/WFS/XYZ url.
+     */
+    QgsGeoNodeRequest::ServiceLayerDetail parseOwsUrl( QgsGeoNodeRequest::ServiceLayerDetail &layerStruct, const QVariantList &layerLinks );
 
   public slots:
 

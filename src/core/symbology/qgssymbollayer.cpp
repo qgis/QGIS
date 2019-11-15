@@ -767,4 +767,8 @@ void QgsMarkerSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const
   writeSldMarker( doc, symbolizerElem, props );
 }
 
+QgsSymbolLayerReferenceList QgsSymbolLayer::masks() const
+{
+  return {};
+}
 

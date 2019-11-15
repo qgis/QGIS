@@ -262,6 +262,7 @@ ADD_PYTHON_TEST(PyQgsAuthManagerOgr test_authmanager_ogr.py)
 ADD_PYTHON_TEST(PyQgsFieldValidator test_qgsfieldvalidator.py)
 ADD_PYTHON_TEST(PyQgsPluginDependencies test_plugindependencies.py)
 ADD_PYTHON_TEST(PyQgsDBManagerSQLWindow test_db_manager_sql_window.py)
+ADD_PYTHON_TEST(PyQgsSelectiveMasking test_selective_masking.py)
 
 IF (NOT WIN32)
   ADD_PYTHON_TEST(PyQgsLogger test_qgslogger.py)

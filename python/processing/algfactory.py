@@ -185,7 +185,7 @@ class AlgWrapper(QgsProcessingAlgorithm):
                 raise ProcessingAlgFactoryException("Can't find parent named {}".format(parentname))
 
         kwargs['description'] = kwargs.pop("label", "")
-        kwargs['defaultValue'] = kwargs.pop("default", "")
+        kwargs['defaultValue'] = kwargs.pop("default", None)
         advanced = kwargs.pop("advanced", False)
         try:
             if output:

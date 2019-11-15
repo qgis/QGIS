@@ -73,7 +73,8 @@ void QgsCapabilitiesCache::insertCapabilitiesDocument( const QString &configFile
   if ( statfs( configFilePath.toUtf8().constData(), &sStatFS ) == 0 &&
        ( sStatFS.f_type == 0x6969 /* NFS */ ||
          sStatFS.f_type == 0x517b /* SMB */ ||
-         sStatFS.f_type == 0xff534d42 /* CIFS */ ) )
+         sStatFS.f_type == 0xff534d42 /* CIFS */ ||
+         sStatFS.f_type == 0xfe534d42 /* CIFS */ ) )
   {
     QFileInfo fi( configFilePath );
     mCachedCapabilitiesTimestamps[ configFilePath ] = fi.lastModified();

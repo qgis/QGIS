@@ -293,12 +293,16 @@ QString geoWkt();
 Wkt string that represents a geographic coord sys
 \since QGIS GEOWkt
 %End
+
 //! PROJ4 string that represents a geographic coord sys
 QString geoProj4();
+
 //! Geographic coord sys from EPSG authority
 QString geoEpsgCrsAuthId();
+
 //! Constant that holds the string representation for "No ellips/No CRS"
 QString geoNone();
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

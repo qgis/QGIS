@@ -38,6 +38,7 @@ class QgsCurve;
 class QgsCurvePolygon;
 class QgsCircularString;
 class QgsCompoundCurve;
+struct DxfLayerJob;
 
 #define DXF_HANDSEED 100
 #define DXF_HANDMAX 9999999
@@ -60,7 +61,7 @@ class CORE_EXPORT QgsDxfExport
      * Layers and optional attribute index to split
      * into multiple layers using attribute value as layer name.
      */
-    struct DxfLayer
+    struct CORE_EXPORT DxfLayer
     {
         DxfLayer( QgsVectorLayer *vl, int layerOutputAttributeIndex = -1 )
           : mLayer( vl )
@@ -73,8 +74,17 @@ class CORE_EXPORT QgsDxfExport
         /**
          * Returns the attribute index used to split into multiple layers.
          * The attribute value is used for layer names.
+         * \see splitLayerAttribute
          */
         int layerOutputAttributeIndex() const {return mLayerOutputAttributeIndex;}
+
+        /**
+         * If the split layer attribute is set, the vector layer
+         * will be split into several dxf layers, one per each
+         * unique value.
+         * \since QGIS 3.12
+         */
+        QString splitLayerAttribute() const;
 
       private:
         QgsVectorLayer *mLayer = nullptr;
@@ -109,11 +119,35 @@ class CORE_EXPORT QgsDxfExport
     };
 
     /**
+     * Vertical alignments.
+     */
+    enum class VAlign : int
+    {
+      VBaseLine = 0,    //!< Top (0)
+      VBottom = 1,      //!< Bottom (1)
+      VMiddle = 2,      //!< Middle (2)
+      VTop = 3,         //!< Top (3)
+      Undefined = 9999  //!< Undefined
+    };
+
+    //! Horizontal alignments.
+    enum class HAlign : int
+    {
+      HLeft = 0,       //!< Left (0)
+      HCenter = 1,     //!< Centered (1)
+      HRight = 2,      //!< Right (2)
+      HAligned = 3,    //!< Aligned = (3) (if VAlign==0)
+      HMiddle = 4,     //!< Middle = (4) (if VAlign==0)
+      HFit = 5,        //!< Fit into point = (5) (if VAlign==0)
+      Undefined = 9999 //!< Undefined
+    };
+
+    /**
      * Constructor for QgsDxfExport.
      */
-    QgsDxfExport() = default;
-    QgsDxfExport( const QgsDxfExport &dxfExport ) SIP_SKIP;
-    QgsDxfExport &operator=( const QgsDxfExport &dxfExport );
+    QgsDxfExport();
+
+    ~QgsDxfExport();
 
     /**
      * Set map settings and assign layer name attributes
@@ -415,7 +449,7 @@ class CORE_EXPORT QgsDxfExport
      * \note available in Python bindings as writeTextV2
      * \since QGIS 2.15
      */
-    void writeText( const QString &layer, const QString &text, const QgsPoint &pt, double size, double angle, const QColor &color ) SIP_PYNAME( writeTextV2 );
+    void writeText( const QString &layer, const QString &text, const QgsPoint &pt, double size, double angle, const QColor &color, QgsDxfExport::HAlign hali = QgsDxfExport::HAlign::Undefined, QgsDxfExport::VAlign vali = QgsDxfExport::VAlign::Undefined ) SIP_PYNAME( writeTextV2 );
 
     /**
      * Write mtext (MTEXT)
@@ -469,6 +503,11 @@ class CORE_EXPORT QgsDxfExport
     void registerDxfLayer( const QString &layerId, QgsFeatureId fid, const QString &layer );
 
   private:
+
+#ifdef SIP_RUN
+    QgsDxfExport( const QgsDxfExport &other );
+    QgsDxfExport &operator=( const QgsDxfExport & );
+#endif
     //! Extent for export, only intersecting features are exported. If the extent is an empty rectangle, all features are exported
     QgsRectangle mExtent;
     //! Scale for symbology export (used if symbols units are mm)
@@ -488,10 +527,12 @@ class CORE_EXPORT QgsDxfExport
 
     //AC1009
     void writeHeader( const QString &codepage );
+    void prepareRenderers();
     void writeTables();
     void writeBlocks();
     void writeEntities();
-    void writeEntitiesSymbolLevels( QgsVectorLayer *layer );
+    void writeEntitiesSymbolLevels( DxfLayerJob *job );
+    void stopRenderers();
     void writeEndFile();
 
     void startSection();
@@ -501,6 +542,11 @@ class CORE_EXPORT QgsDxfExport
     void writeDefaultLinetypes();
     void writeSymbolLayerLinetype( const QgsSymbolLayer *symbolLayer );
     void writeLinetype( const QString &styleName, const QVector<qreal> &pattern, QgsUnitTypes::RenderUnit u );
+
+    /**
+     * Helper method to calculate text properties from (PAL) label
+     */
+    void writeText( const QString &layer, const QString &text, pal::LabelPosition *label, const QgsPalLayerSettings &layerSettings, const QgsExpressionContext &expressionContext );
 
     /**
      * Writes geometry generator symbol layer
@@ -552,6 +598,11 @@ class CORE_EXPORT QgsDxfExport
     void appendLineString( const QgsLineString &ls, QVector<QgsPoint> &points, QVector<double> &bulges );
     void appendCircularString( const QgsCircularString &cs, QVector<QgsPoint> &points, QVector<double> &bulges );
     void appendCompoundCurve( const QgsCompoundCurve &cc, QVector<QgsPoint> &points, QVector<double> &bulges );
+
+    QgsRenderContext mRenderContext;
+    // Internal cache for layer related information required during rendering
+    QList<DxfLayerJob *> mJobs;
+    std::unique_ptr<QgsLabelingEngine> mLabelingEngine;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDxfExport::Flags )

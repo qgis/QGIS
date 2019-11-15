@@ -25,6 +25,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/auth
   ${CMAKE_SOURCE_DIR}/external
@@ -67,6 +68,7 @@ IF (WITH_GUI)
   )
   TARGET_COMPILE_DEFINITIONS(wmsprovider_gui_a PRIVATE "-DQT_NO_FOREACH")
   ADD_DEPENDENCIES(wmsprovider_gui_a ui)
+  ADD_DEPENDENCIES(wmsprovider_a ui)
 ENDIF (WITH_GUI)
 
 IF (FORCE_STATIC_PROVIDERS)

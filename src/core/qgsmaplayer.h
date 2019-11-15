@@ -523,6 +523,16 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual bool isSpatial() const;
 
     /**
+     * Returns TRUE if the layer is considered a temporary layer.
+     *
+     * These include memory-only layers such as those created by the "memory" data provider, or layers
+     * stored inside a local temporary folder (such as the "/tmp" folder on Linux).
+     *
+     * \since QGIS 3.10.1
+     */
+    virtual bool isTemporary() const;
+
+    /**
      * Flags which control project read behavior.
      * \since QGIS 3.10
      */

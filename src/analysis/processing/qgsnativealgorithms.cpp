@@ -53,6 +53,7 @@
 #include "qgsalgorithmfiltervertices.h"
 #include "qgsalgorithmfixgeometries.h"
 #include "qgsalgorithmforcerhr.h"
+#include "qgsalgorithmfuzzifyraster.h"
 #include "qgsalgorithmgrid.h"
 #include "qgsalgorithmjoinbyattribute.h"
 #include "qgsalgorithmjoinbynearest.h"
@@ -94,6 +95,8 @@
 #include "qgsalgorithmrotate.h"
 #include "qgsalgorithmsaveselectedfeatures.h"
 #include "qgsalgorithmsegmentize.h"
+#include "qgsalgorithmserviceareafromlayer.h"
+#include "qgsalgorithmserviceareafrompoint.h"
 #include "qgsalgorithmshortestpathlayertopoint.h"
 #include "qgsalgorithmshortestpathpointtolayer.h"
 #include "qgsalgorithmshortestpathpointtopoint.h"
@@ -201,6 +204,12 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsFilterVerticesByZ() );
   addAlgorithm( new QgsFixGeometriesAlgorithm() );
   addAlgorithm( new QgsForceRHRAlgorithm() );
+  addAlgorithm( new QgsFuzzifyRasterLinearMembershipAlgorithm() );
+  addAlgorithm( new QgsFuzzifyRasterPowerMembershipAlgorithm() );
+  addAlgorithm( new QgsFuzzifyRasterLargeMembershipAlgorithm() );
+  addAlgorithm( new QgsFuzzifyRasterSmallMembershipAlgorithm() );
+  addAlgorithm( new QgsFuzzifyRasterGaussianMembershipAlgorithm() );
+  addAlgorithm( new QgsFuzzifyRasterNearMembershipAlgorithm() );
   addAlgorithm( new QgsGridAlgorithm() );
   addAlgorithm( new QgsImportPhotosAlgorithm() );
   addAlgorithm( new QgsInterpolatePointAlgorithm() );
@@ -250,6 +259,8 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsSegmentizeByMaximumAngleAlgorithm() );
   addAlgorithm( new QgsSegmentizeByMaximumDistanceAlgorithm() );
   addAlgorithm( new QgsSelectByLocationAlgorithm() );
+  addAlgorithm( new QgsServiceAreaFromLayerAlgorithm() );
+  addAlgorithm( new QgsServiceAreaFromPointAlgorithm() );
   addAlgorithm( new QgsShortestPathLayerToPointAlgorithm() );
   addAlgorithm( new QgsShortestPathPointToLayerAlgorithm() );
   addAlgorithm( new QgsShortestPathPointToPointAlgorithm() );

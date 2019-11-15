@@ -141,6 +141,17 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend )
   mCountToolButton->setIcon( QIcon( QgsApplication::iconPath( "mActionSum.svg" ) ) );
   mLayerExpressionButton->setIcon( QIcon( QgsApplication::iconPath( "mActionAddExpression.svg" ) ) );
 
+  mMoveDownToolButton->setIconSize( QgisApp::instance()->iconSize( true ) );
+  mMoveUpToolButton->setIconSize( QgisApp::instance()->iconSize( true ) );
+  mAddGroupToolButton->setIconSize( QgisApp::instance()->iconSize( true ) );
+  mAddToolButton->setIconSize( QgisApp::instance()->iconSize( true ) );
+  mRemoveToolButton->setIconSize( QgisApp::instance()->iconSize( true ) );
+  mEditPushButton->setIconSize( QgisApp::instance()->iconSize( true ) );
+  mCountToolButton->setIconSize( QgisApp::instance()->iconSize( true ) );
+  mFilterByMapToolButton->setIconSize( QgisApp::instance()->iconSize( true ) );
+  mExpressionFilterButton->setIconSize( QgisApp::instance()->iconSize( true ) );
+  mLayerExpressionButton->setIconSize( QgisApp::instance()->iconSize( true ) );
+
   mFontColorButton->setColorDialogTitle( tr( "Select Font Color" ) );
   mFontColorButton->setContext( QStringLiteral( "composer" ) );
 

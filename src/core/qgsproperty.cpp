@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsproperty.h"
+#include "qgsproperty_p.h"
 
 #include "qgslogger.h"
 #include "qgsexpression.h"
@@ -200,6 +201,8 @@ QgsProperty::QgsProperty()
 {
   d = new QgsPropertyPrivate();
 }
+
+QgsProperty::~QgsProperty() = default;
 
 QgsProperty QgsProperty::fromExpression( const QString &expression, bool isActive )
 {

@@ -39,7 +39,7 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
     def setUpClass(cls):
         """Run before all tests"""
         TestPyQgsProviderConnectionBase.setUpClass()
-        cls.postgres_conn = 'dbname=\'qgis_test\''
+        cls.postgres_conn = "service='qgis_test'"
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.postgres_conn = os.environ['QGIS_PGTEST_DB']
         # Create test layers
@@ -110,6 +110,14 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         self.assertTrue('geometryless_table' in table_names)
         self.assertFalse('geometries_table' in table_names)
         self.assertFalse('geometries_view' in table_names)
+
+        tables = conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Aspatial | QgsAbstractDatabaseProviderConnection.View)
+        table_names = self._table_names(tables)
+        b32523_view = self._table_by_name(tables, 'b32523')
+        self.assertTrue(b32523_view)
+        pks = b32523_view.primaryKeyColumns()
+        self.assertTrue('pk' in pks)
+        self.assertTrue('random' in pks)
 
         geometries_table = self._table_by_name(conn.tables('qgis_test'), 'geometries_table')
         srids_and_types = [[t.crs.postgisSrid(), t.wkbType]

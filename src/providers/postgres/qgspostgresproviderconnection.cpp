@@ -48,6 +48,7 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
   mCapabilities =
   {
     Capability::DropVectorTable,
+    Capability::DropRasterTable,
     Capability::CreateVectorTable,
     Capability::RenameSchema,
     Capability::DropSchema,

@@ -48,6 +48,7 @@ class QgsPanelWidget;
 class QgsVectorLayer3DRendererWidget;
 class QgsMapLayerComboBox;
 class QgsDoubleSpinBox;
+class QgsMaskingWidget;
 
 class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVectorLayerPropertiesBase, private QgsExpressionContextGenerator
 {
@@ -149,6 +150,9 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     //! Save the style
     void saveStyleAs();
 
+    //! Save multiple styles
+    void saveMultipleStylesAs();
+
     //! Load the style
     void loadStyle();
 
@@ -198,11 +202,14 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     QAction *mActionLoadStyle = nullptr;
     QAction *mActionSaveStyle = nullptr;
+    QAction *mActionSaveMultipleStyles = nullptr;
 
     //! Renderer dialog which is shown
     QgsRendererPropertiesDialog *mRendererDialog = nullptr;
     //! Labeling dialog. If apply is pressed, options are applied to vector's QgsLabel
     QgsLabelingWidget *labelingDialog = nullptr;
+    //! Masking widget
+    QgsMaskingWidget *mMaskingWidget = nullptr;
     //! Actions dialog. If apply is pressed, the actions are stored for later use
     QgsAttributeActionDialog *mActionDialog = nullptr;
     //! Diagram dialog. If apply is pressed, options are applied to vector's diagrams

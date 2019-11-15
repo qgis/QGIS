@@ -31,7 +31,7 @@
 #include <limits>
 
 const char NS_SEPARATOR = '?';
-const QString GML_NAMESPACE = QStringLiteral( "http://www.opengis.net/gml" );
+#define GML_NAMESPACE QStringLiteral( "http://www.opengis.net/gml" )
 
 
 QgsGmlFeatureClass::QgsGmlFeatureClass( const QString &name, const QString &path )

@@ -29,6 +29,10 @@ SET (GEOREF_SRCS
      qgsrasterchangecoords.cpp
 )
 
+SET (GEOREF_HDRS
+     qgsvalidateddoublespinbox.h
+)
+
 SET (GEOREF_UIS
      qgsgeorefconfigdialogbase.ui
      qgsgeorefdescriptiondialogbase.ui
@@ -39,25 +43,6 @@ SET (GEOREF_UIS
      ../../ui/qgsrasterlayerpropertiesbase.ui
 )
 
-SET (GEOREF_MOC_HDRS
-     qgsgeorefconfigdialog.h
-     qgsgeorefdatapoint.h
-     qgsgeorefdelegates.h
-     qgsgeorefdescriptiondialog.h
-     qgsgeorefplugin.h
-     qgsgeorefplugingui.h
-     qgsgeoreftooladdpoint.h
-     qgsgeoreftooldeletepoint.h
-     qgsgeoreftoolmovepoint.h
-     qgsgeorefvalidators.h
-     qgsmapcoordsdialog.h
-     qgsresidualplotitem.h
-     qgstransformsettingsdialog.h
-     qgsvalidateddoublespinbox.h
-     
-     qgsgcplistmodel.h
-     qgsgcplistwidget.h
-)
 SET (GEOREF_RCCS  georeferencer.qrc)
 
 
@@ -66,11 +51,9 @@ SET (GEOREF_RCCS  georeferencer.qrc)
 
 QT5_WRAP_UI (GEOREF_UIS_H  ${GEOREF_UIS})
 
-QT5_WRAP_CPP (GEOREF_MOC_SRCS  ${GEOREF_MOC_HDRS})
-
 QT5_ADD_RESOURCES(GEOREF_RCC_SRCS ${GEOREF_RCCS})
 
-ADD_LIBRARY (georefplugin MODULE ${GEOREF_SRCS} ${GEOREF_MOC_SRCS} ${GEOREF_RCC_SRCS} ${GEOREF_UIS_H})
+ADD_LIBRARY (georefplugin MODULE ${GEOREF_SRCS} ${GEOREF_HDRS} ${GEOREF_RCC_SRCS} ${GEOREF_UIS_H})
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
@@ -82,6 +65,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/layout
   ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
   ${CMAKE_SOURCE_DIR}/src/gui/layertree

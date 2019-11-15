@@ -23,7 +23,6 @@
 #include "qgsdataitem.h"
 #include "qgsbrowsertreeview.h"
 #include "qgsdockwidget.h"
-#include "qgsbrowserdockwidget_p.h"
 #include "qgis_gui.h"
 #include <QSortFilterProxyModel>
 

@@ -323,6 +323,7 @@ namespace QgsWfs
         featureRequest.setFlags( featureRequest.flags() | QgsFeatureRequest::NoGeometry );
       else
         featureRequest.setFlags( featureRequest.flags() | ( withGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
+
       // subset of attributes
       featureRequest.setSubsetOfAttributes( attrIndexes );
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -338,8 +339,28 @@ namespace QgsWfs
         featureRequest.setSubsetOfAttributes(
           accessControl->layerAttributes( vlayer, attributes ),
           vlayer->fields() );
+        attrIndexes = featureRequest.subsetOfAttributes();
       }
 #endif
+
+      // Force pkAttributes in subset of attributes for primary fid building
+      const QgsAttributeList pkAttributes = provider->pkAttributeIndexes();
+      if ( !pkAttributes.isEmpty() )
+      {
+        QgsAttributeList subsetOfAttrs = featureRequest.subsetOfAttributes();
+        for ( int idx : pkAttributes )
+        {
+          if ( !subsetOfAttrs.contains( idx ) )
+          {
+            subsetOfAttrs.prepend( idx );
+          }
+        }
+        if ( subsetOfAttrs.size() != featureRequest.subsetOfAttributes().size() )
+        {
+          featureRequest.setSubsetOfAttributes( subsetOfAttrs );
+        }
+      }
+
       if ( onlyOneLayer )
       {
         requestPrecision = QgsServerProjectUtils::wfsLayerPrecision( *project, vlayer->id() );

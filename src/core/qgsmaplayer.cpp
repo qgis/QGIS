@@ -1727,6 +1727,31 @@ bool QgsMapLayer::isSpatial() const
   return true;
 }
 
+bool QgsMapLayer::isTemporary() const
+{
+  // invalid layers are temporary? -- who knows?!
+  if ( !isValid() )
+    return false;
+
+  if ( mProviderKey == QLatin1String( "memory" ) )
+    return true;
+
+  const QVariantMap sourceParts = QgsProviderRegistry::instance()->decodeUri( mProviderKey, mDataSource );
+  const QString path = sourceParts.value( QStringLiteral( "path" ) ).toString();
+  if ( path.isEmpty() )
+    return false;
+
+  // check if layer path is inside one of the standard temporary file locations for this platform
+  const QStringList tempPaths = QStandardPaths::standardLocations( QStandardPaths::TempLocation );
+  for ( const QString &tempPath : tempPaths )
+  {
+    if ( path.startsWith( tempPath ) )
+      return true;
+  }
+
+  return false;
+}
+
 void QgsMapLayer::setValid( bool valid )
 {
   mValid = valid;

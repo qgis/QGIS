@@ -756,6 +756,14 @@ IF (WITH_CORE)
 
   SET(CMAKE_CXX_VISIBILITY_PRESET hidden)
   INCLUDE(GenerateExportHeader)
+
+  SET (ADD_CLAZY_CHECKS ${DEFAULT_MANUAL_SUBDIR} CACHE STRING "Add default set of clazy checks which should not raise any warnings")
+  MARK_AS_ADVANCED (ADD_CLAZY_CHECKS)
+  IF (ADD_CLAZY_CHECKS)
+  SET(CMAKE_CXX_BASE_FLAGS "${CMAKE_CXX_FLAGS}")
+  SET(CLAZY_BASE_CHECKS "connect-3arg-lambda,lambda-unique-connection")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_BASE_FLAGS} -Xclang -plugin-arg-clazy -Xclang ${CLAZY_BASE_CHECKS}")
+  ENDIF (ADD_CLAZY_CHECKS)
 ENDIF (WITH_CORE)
 
 #############################################################

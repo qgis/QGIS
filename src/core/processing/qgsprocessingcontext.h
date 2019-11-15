@@ -172,10 +172,17 @@ class CORE_EXPORT QgsProcessingContext
         //! Default constructor
         LayerDetails() = default;
 
-        //! Friendly name for layer, to use when loading layer into project.
+        /**
+         * Friendly name for layer, possibly for use when loading layer into project.
+         *
+         * \warning Instead of directly using this value, prefer to call setOutputLayerName() to
+         * generate a layer name which respects the user's local Processing settings.
+         */
         QString name;
 
-        //! Associated output name from algorithm which generated the layer.
+        /**
+         * Associated output name from algorithm which generated the layer.
+         */
         QString outputName;
 
         /**
@@ -201,6 +208,13 @@ class CORE_EXPORT QgsProcessingContext
          * \since QGIS 3.2
          */
         void setPostProcessor( QgsProcessingLayerPostProcessorInterface *processor SIP_TRANSFER );
+
+        /**
+         * Sets a \a layer name to match this output, respecting any local user settings which affect this name.
+         *
+         * \since QGIS 3.10.1
+         */
+        void setOutputLayerName( QgsMapLayer *layer ) const;
 
         //! Destination project
         QgsProject *project = nullptr;

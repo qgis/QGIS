@@ -40,6 +40,7 @@ QgsRenderContext::QgsRenderContext()
 QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   : mFlags( rh.mFlags )
   , mPainter( rh.mPainter )
+  , mMaskPainter( rh.mMaskPainter )
   , mCoordTransform( rh.mCoordTransform )
   , mDistanceArea( rh.mDistanceArea )
   , mExtent( rh.mExtent )
@@ -71,6 +72,7 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
 {
   mFlags = rh.mFlags;
   mPainter = rh.mPainter;
+  mMaskPainter = rh.mMaskPainter;
   mCoordTransform = rh.mCoordTransform;
   mExtent = rh.mExtent;
   mOriginalMapExtent = rh.mOriginalMapExtent;

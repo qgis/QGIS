@@ -33,6 +33,7 @@ QMap<QgsServerOgcApi::ContentType, QStringList> QgsServerOgcApi::sContentTypeMim
   };
   map[QgsServerOgcApi::ContentType::HTML] = QStringList { QStringLiteral( "text/html" ) };
   map[QgsServerOgcApi::ContentType::OPENAPI3] = QStringList { QStringLiteral( "application/openapi+json;version=3.0" ) };
+  map[QgsServerOgcApi::ContentType::XML] = QStringList { QStringLiteral( "application/xml" ) };
   return map;
 }();
 

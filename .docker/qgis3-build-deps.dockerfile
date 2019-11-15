@@ -146,6 +146,15 @@ RUN echo "alias python=python3" >> ~/.bash_aliases
 RUN curl -k https://www.orfeo-toolbox.org/packages/OTB-7.0.0-Linux64.run -o /tmp/OTB-Linux64.run && sh /tmp/OTB-Linux64.run --target /opt/otb
 ENV OTB_INSTALL_DIR=/opt/otb
 
+# Clazy
+RUN curl -k https://downloads.kdab.com/clazy/1.6/Clazy-x86_64-1.6.AppImage -o /tmp/Clazy.AppImage \
+  && chmod +x /tmp/Clazy.AppImage \
+  && mkdir /opt/clazy \
+  && cd /opt/clazy \
+  && /tmp/Clazy.AppImage --appimage-extract \
+  && ln -s /opt/clazy/squashfs-root/AppRun /usr/bin/clazy \
+  && ln -s ../../bin/ccache /usr/lib/ccache/clazy
+
 ENV QT_SELECT=5
 ENV LANG=C.UTF-8
 ENV PATH="/usr/local/bin:${PATH}"

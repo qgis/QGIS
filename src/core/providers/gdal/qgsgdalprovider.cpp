@@ -65,11 +65,11 @@
 #define ERRMSG(message) QGS_ERROR_MESSAGE(message,"GDAL provider")
 #define ERR(message) QgsError(message,"GDAL provider")
 
-static QString PROVIDER_KEY = QStringLiteral( "gdal" );
-static QString PROVIDER_DESCRIPTION = QStringLiteral( "GDAL data provider" );
+#define PROVIDER_KEY QStringLiteral( "gdal" )
+#define PROVIDER_DESCRIPTION QStringLiteral( "GDAL data provider" )
 
 // To avoid potential races when destroying related instances ("main" and clones)
-static QMutex gGdaProviderMutex( QMutex::Recursive );
+Q_GLOBAL_STATIC_WITH_ARGS( QMutex, sGdalProviderMutex, ( QMutex::Recursive ) )
 
 QHash< QgsGdalProvider *, QVector<QgsGdalProvider::DatasetPair> > QgsGdalProvider::mgDatasetCache;
 
@@ -335,7 +335,7 @@ bool QgsGdalProvider::getCachedGdalHandles( QgsGdalProvider *provider,
     GDALDatasetH &gdalBaseDataset,
     GDALDatasetH &gdalDataset )
 {
-  QMutexLocker locker( &gGdaProviderMutex );
+  QMutexLocker locker( sGdalProviderMutex() );
 
   auto iter = mgDatasetCache.find( provider );
   if ( iter == mgDatasetCache.end() )
@@ -358,7 +358,7 @@ bool QgsGdalProvider::cacheGdalHandlesForLaterReuse( QgsGdalProvider *provider,
     GDALDatasetH gdalBaseDataset,
     GDALDatasetH gdalDataset )
 {
-  QMutexLocker locker( &gGdaProviderMutex );
+  QMutexLocker locker( sGdalProviderMutex() );
 
   // If the cache size goes above the soft limit, try to do evict a cached
   // dataset for the provider that has the most cached entries
@@ -429,7 +429,7 @@ bool QgsGdalProvider::cacheGdalHandlesForLaterReuse( QgsGdalProvider *provider,
 
 void QgsGdalProvider::closeCachedGdalHandlesFor( QgsGdalProvider *provider )
 {
-  QMutexLocker locker( &gGdaProviderMutex );
+  QMutexLocker locker( sGdalProviderMutex() );
   auto iter = mgDatasetCache.find( provider );
   if ( iter != mgDatasetCache.end() )
   {
@@ -453,7 +453,7 @@ void QgsGdalProvider::closeCachedGdalHandlesFor( QgsGdalProvider *provider )
 
 QgsGdalProvider::~QgsGdalProvider()
 {
-  QMutexLocker locker( &gGdaProviderMutex );
+  QMutexLocker locker( sGdalProviderMutex() );
 
   int lightRefCounter = -- ( *mpLightRefCounter );
   int refCounter = -- ( *mpRefCounter );

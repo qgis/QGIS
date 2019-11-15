@@ -6,16 +6,10 @@ SET (BENCH_SRCS
      qgsbench.cpp
 )
 
-SET (BENCH_MOC_HDRS
-     qgsbench.h
-)
-
 ########################################################
 # Build
 
-QT5_WRAP_CPP (BENCH_MOC_SRCS  ${BENCH_MOC_HDRS})
-
-ADD_EXECUTABLE (qgis_bench MACOSX_BUNDLE WIN32 ${BENCH_SRCS} ${BENCH_MOC_SRCS} )
+ADD_EXECUTABLE (qgis_bench MACOSX_BUNDLE WIN32 ${BENCH_SRCS} )
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/external
@@ -26,6 +20,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
 
   ${CMAKE_BINARY_DIR}
   ${CMAKE_BINARY_DIR}/src/core

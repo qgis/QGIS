@@ -36,8 +36,9 @@ from qgis.core import (QgsFeature,
                        QgsProject,
                        QgsWkbTypes,
                        QgsDataProvider,
-                       QgsVectorDataProvider)
-from qgis.PyQt.QtCore import QCoreApplication, QVariant
+                       QgsVectorDataProvider,
+                       NULL)
+from qgis.PyQt.QtCore import QCoreApplication, QVariant, QDate, QTime, QDateTime, Qt
 from qgis.testing import start_app, unittest
 from qgis.utils import spatialite_connect
 from utilities import unitTestDataPath
@@ -737,6 +738,21 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         features = [f for f in vl1.getFeatures(request)]
         self.assertEqual(len(features), 1)
 
+    def testPkAttributeIndexes(self):
+        ''' Test the primary key index '''
+        tmpfile = os.path.join(self.basetestpath, 'testPkAttributeIndexes.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        ds.CreateLayer('test', geom_type=ogr.wkbPoint, options=['COLUMN_TYPES=foo=int8,bar=string', 'GEOMETRY_NAME=the_geom', 'FID=customfid'])
+        ds = None
+        vl = QgsVectorLayer('{}|layerid=0'.format(tmpfile), 'test', 'ogr')
+        pks = vl.primaryKeyAttributes()
+        fields = vl.fields()
+        pkfield = fields.at(pks[0])
+        self.assertEqual(len(pks), 1)
+        self.assertEqual(pks[0], 0)
+        self.assertEqual(pkfield.name(), 'customfid')
+        self.assertTrue(pkfield.constraints().constraints() & QgsFieldConstraints.ConstraintUnique)
+
     def testSublayerWithComplexLayerName(self):
         ''' Test reading a gpkg with a sublayer name containing : '''
         tmpfile = os.path.join(self.basetestpath, 'testGeopackageComplexLayerName.gpkg')
@@ -1427,6 +1443,25 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(f.geometry().asWkt().upper(), 'POINT (0 0)')
         f = next(features)
         self.assertEqual(f.geometry().asWkt().upper(), 'POINT (1 1)')
+
+    def testMinMaxDateField(self):
+        """
+        Test that provider min/max calls work with date fields
+        :return:
+        """
+        tmpfile = os.path.join(self.basetestpath, 'test_min_max_date_field.gpkg')
+        shutil.copy(TEST_DATA_DIR + '/' + 'qgis_server/test_project_api_timefilters.gpkg', tmpfile)
+
+        vl = QgsVectorLayer(tmpfile, 'subset_test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.fields().at(2).type(), QVariant.Date)
+        self.assertEqual(vl.fields().at(3).type(), QVariant.DateTime)
+        self.assertEqual(vl.dataProvider().minimumValue(2), QDate(2010, 1, 1))
+        self.assertEqual(vl.dataProvider().maximumValue(2), QDate(2019, 1, 1))
+        self.assertEqual(vl.dataProvider().minimumValue(3), QDateTime(2010, 1, 1, 1, 1, 1, 0, Qt.TimeSpec(1)))
+        self.assertEqual(vl.dataProvider().maximumValue(3), QDateTime(2022, 1, 1, 1, 1, 1, 0, Qt.TimeSpec(1)))
+        self.assertEqual(vl.dataProvider().uniqueValues(2), {QDate(2017, 1, 1), NULL, QDate(2018, 1, 1), QDate(2019, 1, 1), QDate(2010, 1, 1)})
+        self.assertEqual(vl.dataProvider().uniqueValues(3), {QDateTime(2022, 1, 1, 1, 1, 1), NULL, QDateTime(2019, 1, 1, 1, 1, 1), QDateTime(2021, 1, 1, 1, 1, 1), QDateTime(2010, 1, 1, 1, 1, 1)})
 
 
 if __name__ == '__main__':

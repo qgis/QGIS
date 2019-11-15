@@ -50,6 +50,8 @@ SET(QGIS_CORE_SRCS
   symbology/qgslegendsymbolitem.cpp
   symbology/qgslinesymbollayer.cpp
   symbology/qgsmarkersymbollayer.cpp
+  symbology/qgsmasksymbollayer.cpp
+  symbology/qgspainterswapper.cpp
   symbology/qgsnullsymbolrenderer.cpp
   symbology/qgspointclusterrenderer.cpp
   symbology/qgspointdisplacementrenderer.cpp
@@ -63,6 +65,7 @@ SET(QGIS_CORE_SRCS
   symbology/qgsstylemodel.cpp
   symbology/qgssvgcache.cpp
   symbology/qgssymbollayer.cpp
+  symbology/qgssymbollayerreference.cpp
   symbology/qgssymbollayerregistry.cpp
   symbology/qgssymbollayerutils.cpp
   symbology/qgssymbol.cpp
@@ -227,6 +230,7 @@ SET(QGIS_CORE_SRCS
   qgseditformconfig.cpp
   qgsellipsoidutils.cpp
   qgserror.cpp
+  qgseventtracing.cpp
   qgsexpressioncontext.cpp
   qgsexpressionfieldbuffer.cpp
   qgsfeature.cpp
@@ -290,6 +294,7 @@ SET(QGIS_CORE_SRCS
   qgsmaptopixelgeometrysimplifier.cpp
   qgsmapunitscale.cpp
   qgsmargins.cpp
+  qgsmaskidprovider.cpp
   qgsmessagelog.cpp
   qgsmessageoutput.cpp
   qgsmimedatautils.cpp
@@ -705,6 +710,7 @@ SET(QGIS_CORE_HDRS
   qgseditorwidgetsetup.h
   qgsellipsoidutils.h
   qgserror.h
+  qgseventtracing.h
   qgsexception.h
   qgsexpressioncontext.h
   qgsexpressioncontextgenerator.h
@@ -779,6 +785,7 @@ SET(QGIS_CORE_HDRS
   qgsmaptopixelgeometrysimplifier.h
   qgsmapunitscale.h
   qgsmargins.h
+  qgsmaskidprovider.h
   qgsmessagelog.h
   qgsmessageoutput.h
   qgsmimedatautils.h
@@ -1214,6 +1221,7 @@ SET(QGIS_CORE_HDRS
   symbology/qgssvgcache.h
   symbology/qgssymbol.h
   symbology/qgssymbollayer.h
+  symbology/qgssymbollayerreference.h
   symbology/qgssymbollayerregistry.h
   symbology/qgssymbollayerutils.h
   symbology/qgsvectorfieldsymbollayer.h
@@ -1434,6 +1442,10 @@ ENDIF (APPLE AND NOT IOS)
 IF (QT_MOBILITY_LOCATION_FOUND)
   TARGET_LINK_LIBRARIES(qgis_core ${QT_MOBILITY_LOCATION_LIBRARY})
 ENDIF (QT_MOBILITY_LOCATION_FOUND)
+
+IF (ADD_CLAZY_CHECKS)
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_BASE_FLAGS} -Xclang -plugin-arg-clazy -Xclang ${CLAZY_BASE_CHECKS},non-pod-global-static")
+ENDIF (ADD_CLAZY_CHECKS)
 
 TARGET_LINK_LIBRARIES(qgis_core
   ${Qt5Xml_LIBRARIES}

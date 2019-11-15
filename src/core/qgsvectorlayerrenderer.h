@@ -77,6 +77,14 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRenderContext &context );
     ~QgsVectorLayerRenderer() override;
     QgsFeedback *feedback() const override;
+
+    /**
+     * Returns the feature renderer.
+     * This may be used for tweaking it before the actual rendering of the layer.
+     * \since QGIS 3.12
+     */
+    QgsFeatureRenderer *featureRenderer() SIP_SKIP { return mRenderer; }
+
     bool render() override;
 
   private:

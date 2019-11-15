@@ -1048,6 +1048,7 @@ void QgsOgrProvider::loadFields()
   //the attribute fields need to be read again when the encoding changes
   mAttributeFields.clear();
   mDefaultValues.clear();
+  mPrimaryKeyAttrs.clear();
   if ( !mOgrLayer )
     return;
 
@@ -1088,6 +1089,7 @@ void QgsOgrProvider::loadFields()
     );
     mDefaultValues.insert( 0, tr( "Autogenerate" ) );
     createdFields++;
+    mPrimaryKeyAttrs << 0;
   }
 
   for ( int i = 0; i < fdef.GetFieldCount(); ++i )
@@ -3718,7 +3720,7 @@ QSet<QVariant> QgsOgrProvider::uniqueValues( int index, int limit ) const
   if ( !mValid || index < 0 || index >= mAttributeFields.count() )
     return uniqueValues;
 
-  QgsField fld = mAttributeFields.at( index );
+  const QgsField fld = mAttributeFields.at( index );
   if ( fld.name().isNull() )
   {
     return uniqueValues; //not a provider field
@@ -3755,9 +3757,13 @@ QSet<QVariant> QgsOgrProvider::uniqueValues( int index, int limit ) const
   }
 
   gdal::ogr_feature_unique_ptr f;
+  bool ok = false;
   while ( f.reset( l->GetNextFeature() ), f )
   {
-    uniqueValues << ( OGR_F_IsFieldSetAndNotNull( f.get(), 0 ) ? convertValue( fld.type(), textEncoding()->toUnicode( OGR_F_GetFieldAsString( f.get(), 0 ) ) ) : QVariant( fld.type() ) );
+    const QVariant res = QgsOgrUtils::getOgrFeatureAttribute( f.get(), fld, 0, textEncoding(), &ok );
+    if ( ok )
+      uniqueValues << res;
+
     if ( limit >= 0 && uniqueValues.size() >= limit )
       break;
   }
@@ -3817,7 +3823,14 @@ QVariant QgsOgrProvider::minimumValue( int index ) const
   {
     return QVariant();
   }
-  QgsField fld = mAttributeFields.at( index );
+  const QgsField originalField = mAttributeFields.at( index );
+  QgsField fld = originalField;
+
+  // can't use native date/datetime types -- OGR converts these to string in the MAX return value
+  if ( fld.type() == QVariant::DateTime || fld.type() == QVariant::Date )
+  {
+    fld.setType( QVariant::String );
+  }
 
   // Don't quote column name (see https://trac.osgeo.org/gdal/ticket/5799#comment:9)
   QByteArray sql = "SELECT MIN(" + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) );
@@ -3841,8 +3854,15 @@ QVariant QgsOgrProvider::minimumValue( int index ) const
     return QVariant();
   }
 
-  QVariant value = OGR_F_IsFieldSetAndNotNull( f.get(), 0 ) ? convertValue( fld.type(), textEncoding()->toUnicode( OGR_F_GetFieldAsString( f.get(), 0 ) ) ) : QVariant( fld.type() );
-  return value;
+  bool ok = false;
+  QVariant res = QgsOgrUtils::getOgrFeatureAttribute( f.get(), fld, 0, textEncoding(), &ok );
+  if ( !ok )
+    return QVariant();
+
+  if ( res.type() != originalField.type() )
+    res = convertValue( originalField.type(), res.toString() );
+
+  return res;
 }
 
 QVariant QgsOgrProvider::maximumValue( int index ) const
@@ -3851,7 +3871,14 @@ QVariant QgsOgrProvider::maximumValue( int index ) const
   {
     return QVariant();
   }
-  QgsField fld = mAttributeFields.at( index );
+  const QgsField originalField = mAttributeFields.at( index );
+  QgsField fld = originalField;
+
+  // can't use native date/datetime types -- OGR converts these to string in the MAX return value
+  if ( fld.type() == QVariant::DateTime || fld.type() == QVariant::Date )
+  {
+    fld.setType( QVariant::String );
+  }
 
   // Don't quote column name (see https://trac.osgeo.org/gdal/ticket/5799#comment:9)
   QByteArray sql = "SELECT MAX(" + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) );
@@ -3875,8 +3902,15 @@ QVariant QgsOgrProvider::maximumValue( int index ) const
     return QVariant();
   }
 
-  QVariant value = OGR_F_IsFieldSetAndNotNull( f.get(), 0 ) ? convertValue( fld.type(), textEncoding()->toUnicode( OGR_F_GetFieldAsString( f.get(), 0 ) ) ) : QVariant( fld.type() );
-  return value;
+  bool ok = false;
+  QVariant res = QgsOgrUtils::getOgrFeatureAttribute( f.get(), fld, 0, textEncoding(), &ok );
+  if ( !ok )
+    return QVariant();
+
+  if ( res.type() != originalField.type() )
+    res = convertValue( originalField.type(), res.toString() );
+
+  return res;
 }
 
 QByteArray QgsOgrProvider::quotedIdentifier( const QByteArray &field ) const
@@ -4008,7 +4042,8 @@ static bool IsLocalFile( const QString &path )
     // Codes from http://man7.org/linux/man-pages/man2/statfs.2.html
     if ( sStatFS.f_type == 0x6969 /* NFS */ ||
          sStatFS.f_type == 0x517b /* SMB */ ||
-         sStatFS.f_type == 0xff534d42 /* CIFS */ )
+         sStatFS.f_type == 0xff534d42 /* CIFS */ ||
+         sStatFS.f_type == 0xfe534d42 /* CIFS */ )
     {
       return false;
     }

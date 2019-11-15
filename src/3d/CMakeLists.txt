@@ -94,15 +94,16 @@ SET(QGIS_3D_HDRS
   terrain/qgsonlineterraingenerator.h
   terrain/qgsterraindownloader.h
   terrain/qgsterraingenerator.h
+  terrain/qgsterraintileloader_p.h
+  chunks/qgschunkloader_p.h
+  chunks/qgschunkqueuejob_p.h
 )
 
 SET(QGIS_3D_PRIVATE_HDRS
   chunks/qgschunkboundsentity_p.h
   chunks/qgschunkedentity_p.h
   chunks/qgschunklist_p.h
-  chunks/qgschunkloader_p.h
   chunks/qgschunknode_p.h
-  chunks/qgschunkqueuejob_p.h
   symbols/qgsline3dsymbol_p.h
   symbols/qgslinematerial_p.h
   symbols/qgslinevertexdata_p.h
@@ -115,7 +116,6 @@ SET(QGIS_3D_PRIVATE_HDRS
   terrain/qgsterraintexturegenerator_p.h
   terrain/qgsterraintextureimage_p.h
   terrain/qgsterraintileentity_p.h
-  terrain/qgsterraintileloader_p.h
 )
 
 QT5_ADD_RESOURCES(QGIS_3D_RCC_SRCS shaders.qrc)
@@ -132,6 +132,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/mesh
   ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/layout

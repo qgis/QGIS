@@ -27,10 +27,13 @@
 #include "qgsmultipolygon.h"
 #include "qgslogger.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsmaskidprovider.h"
 
 #include "feature.h"
 #include "labelposition.h"
 #include "callouts/qgscallout.h"
+
+#include "pal/layer.h"
 
 #include <QPicture>
 
@@ -139,7 +142,7 @@ QList<QgsLabelFeature *> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCo
   while ( fit.nextFeature( fet ) )
   {
     QgsGeometry obstacleGeometry;
-    std::unique_ptr< QgsSymbol > symbol;
+    const QgsSymbol *symbol = nullptr;
     if ( mRenderer )
     {
       QgsSymbolList symbols = mRenderer->originalSymbolsForFeature( fet, ctx );
@@ -150,12 +153,12 @@ QList<QgsLabelFeature *> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCo
       }
       if ( !symbols.isEmpty() )
       {
-        symbol.reset( symbols.at( 0 )->clone() );
-        symbolScope = QgsExpressionContextUtils::updateSymbolScope( symbol.get(), symbolScope );
+        symbol = symbols.at( 0 );
+        symbolScope = QgsExpressionContextUtils::updateSymbolScope( symbol, symbolScope );
       }
     }
     ctx.expressionContext().setFeature( fet );
-    registerFeature( fet, ctx, obstacleGeometry, symbol.release() );
+    registerFeature( fet, ctx, obstacleGeometry, symbol );
   }
 
   if ( ctx.expressionContext().lastScope() == symbolScope )
@@ -372,6 +375,9 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::Lab
   // update tmpLyr with any data defined text buffer values
   QgsPalLabeling::dataDefinedTextBuffer( tmpLyr, ddValues );
 
+  // update tmpLyr with any data defined text mask values
+  QgsPalLabeling::dataDefinedTextMask( tmpLyr, ddValues );
+
   // update tmpLyr with any data defined text formatting values
   QgsPalLabeling::dataDefinedTextFormatting( tmpLyr, ddValues );
 
@@ -535,6 +541,13 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
     QgsTextLabelFeature *lf = static_cast<QgsTextLabelFeature *>( label->getFeaturePart()->feature() );
     QString txt = lf->text( label->getPartId() );
     QFontMetricsF *labelfm = lf->labelFontMetrics();
+
+    if ( context.maskIdProvider() )
+    {
+      int maskId = context.maskIdProvider()->maskId( label->getFeaturePart()->layer()->provider()->layerId(),
+                   label->getFeaturePart()->layer()->provider()->providerId() );
+      context.setCurrentMaskId( maskId );
+    }
 
     //add the direction symbol if needed
     if ( !txt.isEmpty() && tmpLyr.placement == QgsPalLayerSettings::Line &&

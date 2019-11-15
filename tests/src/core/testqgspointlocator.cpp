@@ -437,6 +437,43 @@ class TestQgsPointLocator : public QObject
       mVL->rollBack();
     }
 
+    void testWaitForIndexingFinished()
+    {
+      QgsPointLocator loc( mVL, QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext(), nullptr );
+      QgsPointXY pt( 2, 2 );
+
+      // locator is not ready yet
+      QgsPointLocator::Match m = loc.nearestVertex( pt, 999, nullptr, true );
+      QVERIFY( !m.isValid() );
+      QVERIFY( loc.mIsIndexing );
+
+      // non relaxed call, this will block until the first indexing is finished
+      // so the match point has to be valid
+      m = loc.nearestVertex( pt, 999, nullptr );
+      QVERIFY( m.isValid() );
+      QVERIFY( !loc.mIsIndexing );
+
+      // now locator is ready
+      m = loc.nearestVertex( pt, 999 );
+      QVERIFY( m.isValid() );
+      QVERIFY( m.hasVertex() );
+      QCOMPARE( m.layer(), mVL );
+      QCOMPARE( m.featureId(), ( QgsFeatureId )1 );
+      QCOMPARE( m.point(), QgsPointXY( 1, 1 ) );
+      QCOMPARE( m.distance(), std::sqrt( 2.0 ) );
+      QCOMPARE( m.vertexIndex(), 2 );
+    }
+
+    void testDeleteLocator()
+    {
+      QgsPointLocator *loc = new QgsPointLocator( mVL, QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext(), nullptr );
+      QgsPointXY pt( 2, 2 );
+
+      // delete locator while we are indexing (could happen when closing project for instance)
+      loc->nearestVertex( pt, 999, nullptr, true );
+      delete loc;
+    }
+
 };
 
 QGSTEST_MAIN( TestQgsPointLocator )

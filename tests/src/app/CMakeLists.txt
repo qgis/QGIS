@@ -15,6 +15,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/pal
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/validity
   ${CMAKE_SOURCE_DIR}/src/ui
   ${CMAKE_SOURCE_DIR}/src/gui
@@ -114,6 +115,7 @@ ADD_QGIS_TEST(maptoolidentifyaction testqgsmaptoolidentifyaction.cpp)
 ADD_QGIS_TEST(maptoollabel testqgsmaptoollabel.cpp)
 ADD_QGIS_TEST(maptoolselect testqgsmaptoolselect.cpp)
 ADD_QGIS_TEST(maptoolreshape testqgsmaptoolreshape.cpp)
+ADD_QGIS_TEST(maptoolrotatefeature testqgsmaptoolrotatefeature.cpp)
 ADD_QGIS_TEST(maptoolcircularstringtest testqgsmaptoolcircularstring.cpp)
 ADD_QGIS_TEST(maptoolcircletest testqgsmaptoolcircle.cpp)
 ADD_QGIS_TEST(maptoolmovefeaturetest testqgsmaptoolmovefeature.cpp)

@@ -29,7 +29,11 @@
 // This is required because private implementation of
 // QAbstractSpinBoxPrivate checks for specialText emptiness
 // and skips specialText handling if it's empty
+#ifdef _MSC_VER
+static QChar SPECIAL_TEXT_WHEN_EMPTY = QChar( 0x2063 );
+#else
 static constexpr QChar SPECIAL_TEXT_WHEN_EMPTY = QChar( 0x2063 );
+#endif
 
 QgsSpinBox::QgsSpinBox( QWidget *parent )
   : QSpinBox( parent )

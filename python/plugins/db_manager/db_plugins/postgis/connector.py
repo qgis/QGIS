@@ -489,6 +489,9 @@ class PostGisDBConnector(DBConnector):
         schema, tablename = self.getSchemaTableName(table)
         schema_where = u" AND nspname=%s " % self.quoteString(schema) if schema is not None else ""
 
+        version_number = int(self.getInfo()[0].split(' ')[1].split('.')[0])
+        ad_col_name = 'adsrc' if version_number < 12 else 'adbin'
+
         sql = u"""SELECT a.attnum AS ordinal_position,
                                 a.attname AS column_name,
                                 t.typname AS data_type,
@@ -496,7 +499,7 @@ class PostGisDBConnector(DBConnector):
                                 a.atttypmod AS modifier,
                                 a.attnotnull AS notnull,
                                 a.atthasdef AS hasdefault,
-                                adef.adsrc AS default_value,
+                                adef.%s AS default_value,
                                 pg_catalog.format_type(a.atttypid,a.atttypmod) AS formatted_type
                         FROM pg_class c
                         JOIN pg_attribute a ON a.attrelid = c.oid
@@ -505,7 +508,7 @@ class PostGisDBConnector(DBConnector):
                         LEFT JOIN pg_attrdef adef ON adef.adrelid = a.attrelid AND adef.adnum = a.attnum
                         WHERE
                           a.attnum > 0 AND c.relname=%s %s
-                        ORDER BY a.attnum""" % (self.quoteString(tablename), schema_where)
+                        ORDER BY a.attnum""" % (ad_col_name, self.quoteString(tablename), schema_where)
 
         c = self._execute(None, sql)
         res = self._fetchall(c)
@@ -534,12 +537,15 @@ class PostGisDBConnector(DBConnector):
         schema, tablename = self.getSchemaTableName(table)
         schema_where = u" AND nspname=%s " % self.quoteString(schema) if schema is not None else ""
 
-        sql = u"""SELECT c.conname, c.contype, c.condeferrable, c.condeferred, array_to_string(c.conkey, ' '), c.consrc,
+        version_number = int(self.getInfo()[0].split(' ')[1].split('.')[0])
+        con_col_name = 'consrc' if version_number < 12 else 'conbin'
+
+        sql = u"""SELECT c.conname, c.contype, c.condeferrable, c.condeferred, array_to_string(c.conkey, ' '), c.%s,
                          t2.relname, c.confupdtype, c.confdeltype, c.confmatchtype, array_to_string(c.confkey, ' ') FROM pg_constraint c
                   LEFT JOIN pg_class t ON c.conrelid = t.oid
                         LEFT JOIN pg_class t2 ON c.confrelid = t2.oid
                         JOIN pg_namespace nsp ON t.relnamespace = nsp.oid
-                        WHERE t.relname = %s %s """ % (self.quoteString(tablename), schema_where)
+                        WHERE t.relname = %s %s """ % (con_col_name, self.quoteString(tablename), schema_where)
 
         c = self._execute(None, sql)
         res = self._fetchall(c)
@@ -740,7 +746,7 @@ class PostGisDBConnector(DBConnector):
         sql = u"TRUNCATE %s" % self.quoteId(table)
         self._execute_and_commit(sql)
 
-    def renamesTable(self, table, new_table):
+    def renameTable(self, table, new_table):
         """Renames a table in database """
         schema, tablename = self.getSchemaTableName(table)
         if new_table == tablename:
