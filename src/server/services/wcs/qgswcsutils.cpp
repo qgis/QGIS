@@ -90,11 +90,11 @@ namespace QgsWcs
     QDomElement lonLatElem = doc.createElement( QStringLiteral( "lonLatEnvelope" ) );
     lonLatElem.setAttribute( QStringLiteral( "srsName" ), QStringLiteral( "urn:ogc:def:crs:OGC:1.3:CRS84" ) );
     QDomElement lowerPosElem = doc.createElement( QStringLiteral( "gml:pos" ) );
-    QDomText lowerPosText = doc.createTextNode( qgsDoubleToString( BBox.xMinimum(), wgs84precision ) + " " + qgsDoubleToString( BBox.yMinimum(), wgs84precision ) );
+    QDomText lowerPosText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( BBox.xMinimum(), wgs84precision ), wgs84precision ) + " " + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( BBox.yMinimum(), wgs84precision ), wgs84precision ) );
     lowerPosElem.appendChild( lowerPosText );
     lonLatElem.appendChild( lowerPosElem );
     QDomElement upperPosElem = doc.createElement( QStringLiteral( "gml:pos" ) );
-    QDomText upperPosText = doc.createTextNode( qgsDoubleToString( BBox.xMaximum(), wgs84precision ) + " " +  qgsDoubleToString( BBox.yMaximum(), wgs84precision ) );
+    QDomText upperPosText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( BBox.xMaximum(), wgs84precision ), wgs84precision ) + " " +  qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( BBox.yMaximum(), wgs84precision ), wgs84precision ) );
     upperPosElem.appendChild( upperPosText );
     lonLatElem.appendChild( upperPosElem );
     layerElem.appendChild( lonLatElem );
@@ -122,11 +122,11 @@ namespace QgsWcs
     QDomElement envelopeElem = doc.createElement( QStringLiteral( "gml:Envelope" ) );
     envelopeElem.setAttribute( QStringLiteral( "srsName" ), layerCrs.authid() );
     QDomElement lowerCornerElem = doc.createElement( QStringLiteral( "gml:pos" ) );
-    QDomText lowerCornerText = doc.createTextNode( qgsDoubleToString( layerBBox.xMinimum(), precision ) + " " +  qgsDoubleToString( layerBBox.yMinimum(), precision ) );
+    QDomText lowerCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( layerBBox.xMinimum(), precision ), wgs84precision ) + " " + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( layerBBox.yMinimum(), wgs84precision ), precision ) );
     lowerCornerElem.appendChild( lowerCornerText );
     envelopeElem.appendChild( lowerCornerElem );
     QDomElement upperCornerElem = doc.createElement( QStringLiteral( "gml:pos" ) );
-    QDomText upperCornerText = doc.createTextNode( qgsDoubleToString( layerBBox.xMaximum(), precision ) + " " +  qgsDoubleToString( layerBBox.yMaximum(), precision ) );
+    QDomText upperCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( layerBBox.xMaximum(), precision ), wgs84precision ) + " " + qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( layerBBox.yMaximum(), wgs84precision ), precision ) );
     upperCornerElem.appendChild( upperCornerText );
     envelopeElem.appendChild( upperCornerElem );
     spatialDomainElem.appendChild( envelopeElem );
@@ -159,7 +159,7 @@ namespace QgsWcs
 
     QDomElement originElem = doc.createElement( QStringLiteral( "gml:origin" ) );
     QDomElement originPosElem = doc.createElement( QStringLiteral( "gml:pos" ) );
-    QDomText originPosText = doc.createTextNode( qgsDoubleToString( layerBBox.xMinimum(), precision ) + " " +  qgsDoubleToString( layerBBox.yMaximum(), precision ) );
+    QDomText originPosText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( layerBBox.xMinimum(), precision ), precision ) + " " + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( layerBBox.yMinimum(), precision ), precision ) );
     originPosElem.appendChild( originPosText );
     spatialDomainElem.appendChild( originElem );
 
