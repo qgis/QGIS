@@ -19,6 +19,8 @@
 namespace QgsServerProjectUtils
 {
 
+
+
   bool owsServiceCapabilities( const QgsProject &project );
 %Docstring
 Returns if owsService capabilities are enabled.
