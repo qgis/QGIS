@@ -1,0 +1,8 @@
+{
+  "name": "is_valid",
+  "type": "function",
+  "description": "Returns true if a geometry is valid. Uses GEOS.",
+  "arguments": [ {"arg":"geom","description":"a geometry"}],
+  "examples": [ { "expression":"is_valid(geom_from_wkt('LINESTRING(0 0, 1 1, 2 2, 0 0)'))", "returns":"true"},
+                { "expression":"is_valid(geom_from_wkt('LINESTRING(0 0)'))", "returns":"false"}]
+}
