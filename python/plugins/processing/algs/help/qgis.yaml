@@ -225,9 +225,9 @@ qgis:importintospatialite: >
   This algorithm imports a vector layer into a SpatiaLite database, creating a new table.
 
 qgis:importintopostgis: >
-  This algorithm imports a vector layer into a PostGIS database, creating a new table.
+  This algorithm imports a vector layer into a PostgreSQL database, creating a new table.
 
-  Prior to this a connection between QGIS and the PostGIS database has to be created (for example with the DB Manager).
+  Prior to this a connection between QGIS and the PostgreSQL database has to be created (for example with the DB Manager).
 
 qgis:intersection: >
   This algorithm extracts the overlapping portions of features in the Input and Intersect layers. Features in the Intersection layer are assigned the attributes of the overlapping features from both the Input and Intersect layers.
