@@ -30,7 +30,7 @@
 #else
 #include <proj_api.h>
 #endif
-#include <qgis.h>
+#include "qgis.h"
 #include <QThread>
 #include <QFontDatabase>
 #ifdef Q_OS_LINUX
