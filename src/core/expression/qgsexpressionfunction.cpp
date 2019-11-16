@@ -2017,7 +2017,7 @@ static QVariant fcnGeomIsValid( const QVariantList &values, const QgsExpressionC
 
   bool isValid = geom.isGeosValid();
 
-  return QVariant(isValid);
+  return QVariant( isValid );
 }
 
 static QVariant fcnGeomX( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
