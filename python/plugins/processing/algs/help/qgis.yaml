@@ -227,9 +227,9 @@ qgis:importintospatialite: >
   This algorithm imports a vector layer into a SpatiaLite database, creating a new table.
 
 qgis:importintopostgis: >
-  This algorithm imports a vector layer into a PostGIS database, creating a new table.
+  This algorithm imports a vector layer into a PostgreSQL database, creating a new table.
 
-  Prior to this a connection between QGIS and the PostGIS database has to be created (for example with the DB Manager).
+  Prior to this a connection between QGIS and the PostgreSQL database has to be created (for example with the DB Manager).
 
 qgis:joinattributesbylocation: >
   This algorithm takes an input vector layer and creates a new vector layer that is an extended version of the input one, with additional attributes in its attribute table.
