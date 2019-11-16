@@ -19,18 +19,18 @@
 #include "qgswmsrenderer.h"
 #include "qgswmsserviceexception.h"
 #include "qgsserverplugins.h"
-#include "ogr_core.h"
-#include "sqlite3.h"
-#include "geos_c.h"
-#include "pg_config.h"
-#include "spatialite.h"
-#include "qwt/qwt_global.h"
+#include <ogr_core.h>
+#include <sqlite3.h>
+#include <geos_c.h>
+#include <pg_config.h>
+#include <spatialite.h>
+#include <qwt/qwt_global.h>
 #if PROJ_VERSION_MAJOR>=6
 #include <proj.h>
 #else
 #include <proj_api.h>
 #endif
-#include "qgis.h"
+#include <qgis.h>
 #include <QThread>
 #include <QFontDatabase>
 #ifdef Q_OS_LINUX
