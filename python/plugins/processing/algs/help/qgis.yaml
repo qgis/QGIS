@@ -371,7 +371,7 @@ qgis:spatialiteexecutesql: >
   This algorithm performs a SQL database query on a SpatiaLite database.
 
 qgis:postgisexecutesql: >
-  This algorithm performs a SQL database query on a PostGIS database connected to QGIS.
+  This algorithm performs a SQL database query on a PostgreSQL database connected to QGIS.
 
 qgis:randomextract: >
   This algorithm takes a vector layer and generates a new one that contains only a subset of the features in the input layer.
