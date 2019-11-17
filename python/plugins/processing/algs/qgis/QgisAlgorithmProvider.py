@@ -28,10 +28,6 @@ from qgis.core import (QgsApplication,
 
 from PyQt5.QtCore import QCoreApplication
 
-from processing.script import ScriptUtils
-
-from .QgisAlgorithm import QgisAlgorithm
-
 from .AddTableField import AddTableField
 from .Aggregate import Aggregate
 from .Aspect import Aspect
@@ -132,10 +128,6 @@ from .VectorLayerScatterplot3D import VectorLayerScatterplot3D
 from .VectorSplit import VectorSplit
 from .VoronoiPolygons import VoronoiPolygons
 from .ZonalStatistics import ZonalStatistics
-
-
-pluginPath = os.path.normpath(os.path.join(
-    os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
 
 class QgisAlgorithmProvider(QgsProcessingProvider):
@@ -249,13 +241,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 VoronoiPolygons(),
                 ZonalStatistics()
                 ]
-
-        # to store algs added by 3rd party plugins as scripts
-        #folder = os.path.join(os.path.dirname(__file__), 'scripts')
-        #scripts = ScriptUtils.loadFromFolder(folder)
-        #for script in scripts:
-        #    script.allowEdit = False
-        #algs.extend(scripts)
 
         return algs
 
