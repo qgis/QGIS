@@ -1025,11 +1025,24 @@ static QVariant fcnToString( const QVariantList &values, const QgsExpressionCont
 static QVariant fcnToDateTime( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QString format = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
-  if ( format.isEmpty() )
+  QString language = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
+  if ( format.isEmpty() && !language.isEmpty() )
+  {
+    parent->setEvalErrorString( QObject::tr( "A format is required to convert to DateTime when the language is specified" ) );
+    return QVariant( QDateTime() );
+  }
+
+  if ( format.isEmpty() && language.isEmpty() )
     return QVariant( QgsExpressionUtils::getDateTimeValue( values.at( 0 ), parent ) );
 
   QString datetimestring = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
-  QDateTime datetime = QDateTime::fromString( datetimestring, format );
+  QLocale locale = QLocale();
+  if ( !language.isEmpty() )
+  {
+    locale = QLocale( language );
+  }
+
+  QDateTime datetime = locale.toDateTime( datetimestring, format );
   if ( !datetime.isValid() )
   {
     parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to DateTime" ).arg( datetimestring ) );
@@ -1744,11 +1757,24 @@ static QVariant fcnNow( const QVariantList &, const QgsExpressionContext *, QgsE
 static QVariant fcnToDate( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QString format = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
-  if ( format.isEmpty() )
+  QString language = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
+  if ( format.isEmpty() && !language.isEmpty() )
+  {
+    parent->setEvalErrorString( QObject::tr( "A format is required to convert to Date when the language is specified" ) );
+    return QVariant( QDate() );
+  }
+
+  if ( format.isEmpty() && language.isEmpty() )
     return QVariant( QgsExpressionUtils::getDateValue( values.at( 0 ), parent ) );
 
   QString datestring = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
-  QDate date = QDate::fromString( datestring, format );
+  QLocale locale = QLocale();
+  if ( !language.isEmpty() )
+  {
+    locale = QLocale( language );
+  }
+
+  QDate date = locale.toDate( datestring, format );
   if ( !date.isValid() )
   {
     parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to Date" ).arg( datestring ) );
@@ -1760,11 +1786,24 @@ static QVariant fcnToDate( const QVariantList &values, const QgsExpressionContex
 static QVariant fcnToTime( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QString format = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
-  if ( format.isEmpty() )
+  QString language = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
+  if ( format.isEmpty() && !language.isEmpty() )
+  {
+    parent->setEvalErrorString( QObject::tr( "A format is required to convert to Time when the language is specified" ) );
+    return QVariant( QTime() );
+  }
+
+  if ( format.isEmpty() && language.isEmpty() )
     return QVariant( QgsExpressionUtils::getTimeValue( values.at( 0 ), parent ) );
 
   QString timestring = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
-  QTime time = QTime::fromString( timestring, format );
+  QLocale locale = QLocale();
+  if ( !language.isEmpty() )
+  {
+    locale = QLocale( language );
+  }
+
+  QTime time = locale.toTime( timestring, format );
   if ( !time.isValid() )
   {
     parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to Time" ).arg( timestring ) );
@@ -3874,9 +3913,16 @@ static QVariant fcnFormatNumber( const QVariantList &values, const QgsExpression
 
 static QVariant fcnFormatDate( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QDateTime dt = QgsExpressionUtils::getDateTimeValue( values.at( 0 ), parent );
+  QDateTime datetime = QgsExpressionUtils::getDateTimeValue( values.at( 0 ), parent );
   QString format = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
-  return dt.toString( format );
+  QString language = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
+
+  QLocale locale = QLocale();
+  if ( !language.isEmpty() )
+  {
+    locale = QLocale( language );
+  }
+  return locale.toString( datetime, format );
 }
 
 static QVariant fcnColorGrayscaleAverage( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * )
@@ -5173,9 +5219,9 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "to_int" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnToInt, QStringLiteral( "Conversions" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "toint" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "to_real" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnToReal, QStringLiteral( "Conversions" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "toreal" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "to_string" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnToString, QStringList() << QStringLiteral( "Conversions" ) << QStringLiteral( "String" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "tostring" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "to_datetime" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "format" ), true, QVariant() ), fcnToDateTime, QStringList() << QStringLiteral( "Conversions" ) << QStringLiteral( "Date and Time" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "todatetime" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "to_date" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "format" ), true, QVariant() ), fcnToDate, QStringList() << QStringLiteral( "Conversions" ) << QStringLiteral( "Date and Time" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "todate" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "to_time" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "format" ), true, QVariant() ), fcnToTime, QStringList() << QStringLiteral( "Conversions" ) << QStringLiteral( "Date and Time" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "totime" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "to_datetime" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "format" ), true, QVariant() ) << QgsExpressionFunction::Parameter( QStringLiteral( "language" ), true, QVariant() ), fcnToDateTime, QStringList() << QStringLiteral( "Conversions" ) << QStringLiteral( "Date and Time" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "todatetime" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "to_date" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "format" ), true, QVariant() ) << QgsExpressionFunction::Parameter( QStringLiteral( "language" ), true, QVariant() ), fcnToDate, QStringList() << QStringLiteral( "Conversions" ) << QStringLiteral( "Date and Time" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "todate" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "to_time" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "format" ), true, QVariant() ) << QgsExpressionFunction::Parameter( QStringLiteral( "language" ), true, QVariant() ), fcnToTime, QStringList() << QStringLiteral( "Conversions" ) << QStringLiteral( "Date and Time" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "totime" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "to_interval" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnToInterval, QStringList() << QStringLiteral( "Conversions" ) << QStringLiteral( "Date and Time" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "tointerval" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "to_dm" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "axis" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "precision" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "formatting" ), true ), fcnToDegreeMinute, QStringLiteral( "Conversions" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "todm" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "to_dms" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "axis" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "precision" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "formatting" ), true ), fcnToDegreeMinuteSecond, QStringLiteral( "Conversions" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "todms" ) )
@@ -5324,7 +5370,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "lpad" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "width" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "fill" ) ), fcnLPad, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "format" ), -1, fcnFormatString, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "format_number" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "number" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "places" ) ), fcnFormatNumber, QStringLiteral( "String" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "format_date" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "datetime" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "format" ) ), fcnFormatDate, QStringList() << QStringLiteral( "String" ) << QStringLiteral( "Date and Time" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "format_date" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "datetime" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "format" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "language" ), true, QVariant() ), fcnFormatDate, QStringList() << QStringLiteral( "String" ) << QStringLiteral( "Date and Time" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "color_grayscale_average" ),  QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "color" ) ), fcnColorGrayscaleAverage, QStringLiteral( "Color" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "color_mix_rgb" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "color1" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "color2" ) )

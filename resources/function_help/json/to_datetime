@@ -4,10 +4,12 @@
   "description": "Converts a string into a datetime object. An optional format string can be provided to parse the string; see <a href='https://doc.qt.io/qt-5/qdatetime.html#fromString-1'>QDateTime::fromString</a> for additional documentation on the format.",
   "arguments": [
    {"arg":"string","description":"string representing a datetime value"},
-   {"arg":"format","optional":true,"description":"format used to convert the string into a date"}
+   {"arg":"format","optional":true,"description":"format used to convert the string into a datetime"},
+   {"arg":"language","optional":true,"description":"language (lowercase, two- or three-letter, ISO 639 language code) used to convert the string into a datetime"}
   ],
   "examples": [
    { "expression":"to_datetime('2012-05-04 12:50:00')", "returns":"2012-05-04T12:50:00"},
-   { "expression":"to_datetime('June 29, 2019 @ 12:34','MMMM d, yyyy @ HH:mm')", "returns":"2019-06-29T12:34"}
+   { "expression":"to_datetime('June 29, 2019 @ 12:34','MMMM d, yyyy @ HH:mm')", "returns":"2019-06-29T12:34"},
+   { "expression":"to_datetime('29 juin, 2019 @ 12:34','d MMMM, yyyy @ HH:mm','fr')", "returns":"2019-06-29T12:34"}
   ]
 }
