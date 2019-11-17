@@ -22,17 +22,6 @@ __date__ = 'December 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
 import os
-import warnings
-
-try:
-    # importing plotly throws Python warnings from within the library - filter these out
-    with warnings.catch_warnings():
-        warnings.filterwarnings("ignore", category=ResourceWarning)
-        warnings.filterwarnings("ignore", category=ImportWarning)
-        import plotly  # NOQA
-        hasPlotly = True
-except:
-    hasPlotly = False
 
 from qgis.core import (QgsApplication,
                        QgsProcessingProvider)
@@ -46,7 +35,9 @@ from .QgisAlgorithm import QgisAlgorithm
 from .AddTableField import AddTableField
 from .Aggregate import Aggregate
 from .Aspect import Aspect
+from .BarPlot import BarPlot
 from .BasicStatistics import BasicStatisticsForField
+from .BoxPlot import BoxPlot
 from .CheckValidity import CheckValidity
 from .Climb import Climb
 from .ConcaveHull import ConcaveHull
@@ -79,6 +70,7 @@ from .ImportIntoSpatialite import ImportIntoSpatialite
 from .KeepNBiggestParts import KeepNBiggestParts
 from .KNearestConcaveHull import KNearestConcaveHull
 from .LinesToPolygons import LinesToPolygons
+from .MeanAndStdDevPlot import MeanAndStdDevPlot
 from .MinimumBoundingGeometry import MinimumBoundingGeometry
 from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
 from .Orthogonalize import Orthogonalize
@@ -89,6 +81,7 @@ from .PointsFromPolygons import PointsFromPolygons
 from .PointsInPolygon import PointsInPolygon
 from .PointsLayerFromTable import PointsLayerFromTable
 from .PointsToPaths import PointsToPaths
+from .PolarPlot import PolarPlot
 from .PoleOfInaccessibility import PoleOfInaccessibility
 from .Polygonize import Polygonize
 from .PostGISExecuteSQL import PostGISExecuteSQL
@@ -103,6 +96,7 @@ from .RandomSelection import RandomSelection
 from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
 from .Rasterize import RasterizeAlgorithm
 from .RasterCalculator import RasterCalculator
+from .RasterLayerHistogram import RasterLayerHistogram
 from .RasterLayerStatistics import RasterLayerStatistics
 from .RasterSampling import RasterSampling
 from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
@@ -132,6 +126,9 @@ from .TopoColors import TopoColor
 from .TruncateTable import TruncateTable
 from .UniqueValues import UniqueValues
 from .VariableDistanceBuffer import VariableDistanceBuffer
+from .VectorLayerHistogram import VectorLayerHistogram
+from .VectorLayerScatterplot import VectorLayerScatterplot
+from .VectorLayerScatterplot3D import VectorLayerScatterplot3D
 from .VectorSplit import VectorSplit
 from .VoronoiPolygons import VoronoiPolygons
 from .ZonalStatistics import ZonalStatistics
@@ -153,7 +150,9 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
         algs = [AddTableField(),
                 Aggregate(),
                 Aspect(),
+                BarPlot(),
                 BasicStatisticsForField(),
+                BoxPlot(),
                 CheckValidity(),
                 Climb(),
                 ConcaveHull(),
@@ -186,6 +185,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 KeepNBiggestParts(),
                 KNearestConcaveHull(),
                 LinesToPolygons(),
+                MeanAndStdDevPlot(),
                 MinimumBoundingGeometry(),
                 NearestNeighbourAnalysis(),
                 Orthogonalize(),
@@ -196,6 +196,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 PointsInPolygon(),
                 PointsLayerFromTable(),
                 PointsToPaths(),
+                PolarPlot(),
                 PoleOfInaccessibility(),
                 Polygonize(),
                 PostGISExecuteSQL(),
@@ -210,6 +211,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 RandomSelectionWithinSubsets(),
                 RasterCalculator(),
                 RasterizeAlgorithm(),
+                RasterLayerHistogram(),
                 RasterLayerStatistics(),
                 RasterSampling(),
                 RectanglesOvalsDiamondsFixed(),
@@ -240,29 +242,13 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 TruncateTable(),
                 UniqueValues(),
                 VariableDistanceBuffer(),
+                VectorLayerHistogram(),
+                VectorLayerScatterplot(),
+                VectorLayerScatterplot3D(),
                 VectorSplit(),
                 VoronoiPolygons(),
                 ZonalStatistics()
                 ]
-
-        if hasPlotly:
-            from .BarPlot import BarPlot
-            from .BoxPlot import BoxPlot
-            from .MeanAndStdDevPlot import MeanAndStdDevPlot
-            from .PolarPlot import PolarPlot
-            from .RasterLayerHistogram import RasterLayerHistogram
-            from .VectorLayerHistogram import VectorLayerHistogram
-            from .VectorLayerScatterplot import VectorLayerScatterplot
-            from .VectorLayerScatterplot3D import VectorLayerScatterplot3D
-
-            algs.extend([BarPlot(),
-                         BoxPlot(),
-                         MeanAndStdDevPlot(),
-                         PolarPlot(),
-                         RasterLayerHistogram(),
-                         VectorLayerHistogram(),
-                         VectorLayerScatterplot(),
-                         VectorLayerScatterplot3D()])
 
         # to store algs added by 3rd party plugins as scripts
         #folder = os.path.join(os.path.dirname(__file__), 'scripts')
