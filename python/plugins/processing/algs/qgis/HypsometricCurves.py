@@ -22,7 +22,6 @@ __date__ = 'November 2014'
 __copyright__ = '(C) 2014, Alexander Bruy'
 
 import os
-import numpy
 import csv
 
 from osgeo import gdal, ogr, osr
@@ -79,6 +78,11 @@ class HypsometricCurves(QgisAlgorithm):
         return self.tr('Hypsometric curves')
 
     def processAlgorithm(self, parameters, context, feedback):
+        try:
+            import numpy
+        except ImportError:
+            raise QgsProcessingException(self.tr('This algorithm requires the Python “numpy” library. Please install this library and try again.'))
+
         raster_layer = self.parameterAsRasterLayer(parameters, self.INPUT_DEM, context)
         target_crs = raster_layer.crs()
         rasterPath = raster_layer.source()

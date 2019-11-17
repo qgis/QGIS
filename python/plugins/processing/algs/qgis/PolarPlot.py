@@ -74,7 +74,10 @@ class PolarPlot(QgisAlgorithm):
         except ImportError:
             raise QgsProcessingException(self.tr('This algorithm requires the Python “plotly” library. Please install this library and try again.'))
 
-        import numpy as np
+        try:
+            import numpy as np
+        except ImportError:
+            raise QgsProcessingException(self.tr('This algorithm requires the Python “numpy” library. Please install this library and try again.'))
 
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:
