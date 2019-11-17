@@ -75,6 +75,7 @@ class PointsInPolygon(QgisAlgorithm):
                                                               self.tr('Points'), [QgsProcessing.TypeVectorPoint]))
         self.addParameter(QgsProcessingParameterField(self.WEIGHT,
                                                       self.tr('Weight field'), parentLayerParameterName=self.POINTS,
+                                                      type=QgsProcessingParameterField.Numeric,
                                                       optional=True))
         self.addParameter(QgsProcessingParameterField(self.CLASSFIELD,
                                                       self.tr('Class field'), parentLayerParameterName=self.POINTS,
