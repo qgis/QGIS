@@ -1174,6 +1174,41 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         fids = set([f['fid'] for f in lyr.getFeatures()])
         self.assertEqual(len(fids), 4)
 
+    def testExportWithoutFids(self):
+        """ Test export with a feature without fid, regression GH #32927
+
+        This test case is related to testRegenerateFid
+        """
+
+        fields = QgsFields()
+        fields.append(QgsField('one', QVariant.Int))
+        fields.append(QgsField('two', QVariant.Int))
+        tmpfile = os.path.join(self.basetestpath, 'testExportWithoutFids.gpkg')
+        options = {}
+        options['update'] = True
+        options['driverName'] = 'GPKG'
+        options['layerName'] = 'output'
+        exporter = QgsVectorLayerExporter(tmpfile, "ogr", fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem(4326), False, options, QgsFeatureSink.RegeneratePrimaryKey)
+        self.assertFalse(exporter.errorCode(),
+                         'unexpected export error {}: {}'.format(exporter.errorCode(), exporter.errorMessage()))
+
+        feat = QgsFeature(fields)
+
+        feat['one'] = 100
+        feat['two'] = 200
+        feat.setGeometry(QgsGeometry.fromWkt('point(4 45)'))
+        exporter.addFeature(feat)
+
+        del exporter
+        # make sure layers exist
+        lyr = QgsVectorLayer('{}|layername=output'.format(tmpfile), "lyr1", "ogr")
+        self.assertTrue(lyr.isValid())
+        self.assertEqual(lyr.crs().authid(), 'EPSG:4326')
+        self.assertEqual(lyr.wkbType(), QgsWkbTypes.Point)
+        feat_out = next(lyr.getFeatures())
+        self.assertEqual(feat_out.attribute('two'), 200)
+        self.assertEqual(feat_out.attribute('one'), 100)
+
     def testTransaction(self):
 
         tmpfile = os.path.join(self.basetestpath, 'testTransaction.gpkg')
