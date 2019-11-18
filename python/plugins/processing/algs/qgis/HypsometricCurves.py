@@ -40,6 +40,8 @@ from qgis.core import (QgsRectangle,
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import raster
 
+from qgis.PyQt.QtCore import QCoreApplication
+
 
 class HypsometricCurves(QgisAlgorithm):
 
@@ -81,7 +83,7 @@ class HypsometricCurves(QgisAlgorithm):
         try:
             import numpy
         except ImportError:
-            raise QgsProcessingException(self.tr('This algorithm requires the Python “numpy” library. Please install this library and try again.'))
+            raise QgsProcessingException(QCoreApplication.translate('HypsometricCurves', 'This algorithm requires the Python “numpy” library. Please install this library and try again.'))
 
         raster_layer = self.parameterAsRasterLayer(parameters, self.INPUT_DEM, context)
         target_crs = raster_layer.crs()
