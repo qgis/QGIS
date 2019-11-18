@@ -39,7 +39,7 @@ QGeoPositionInfoSource  *QgsQuickPositionKit::gpsSource()
   // this should give us "true" position source
   // on Linux it comes from Geoclue library
   std::unique_ptr<QGeoPositionInfoSource> source( QGeoPositionInfoSource::createDefaultSource( nullptr ) );
-  if ( source->error() != QGeoPositionInfoSource::NoError )
+  if ( ( !source ) || ( source->error() != QGeoPositionInfoSource::NoError ) )
   {
     QgsMessageLog::logMessage( QStringLiteral( "%1 (%2)" )
                                .arg( tr( "Unable to create default GPS Position Source" ) )
