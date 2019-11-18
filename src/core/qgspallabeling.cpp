@@ -1795,9 +1795,9 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   // this is done here for later use in making label backgrounds part of collision management (when implemented)
   labelFont.setCapitalization( QFont::MixedCase ); // reset this - we don't use QFont's handling as it breaks with curved labels
 
+  parseTextStyle( labelFont, fontunits, context );
   if ( mDataDefinedProperties.hasActiveProperties() )
   {
-    parseTextStyle( labelFont, fontunits, context );
     parseTextFormatting( context );
     parseTextBuffer( context );
     parseTextMask( context );
@@ -2933,22 +2933,22 @@ void QgsPalLayerSettings::parseTextStyle( QFont &labelFont,
   }
 
   // data defined word spacing?
+  double wordspace = labelFont.wordSpacing();
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::FontWordSpacing ) )
   {
-    double wordspace = labelFont.wordSpacing();
     context.expressionContext().setOriginalValueVariable( wordspace );
     wordspace = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::FontWordSpacing, context.expressionContext(), wordspace );
-    labelFont.setWordSpacing( context.convertToPainterUnits( wordspace, fontunits, mFormat.sizeMapUnitScale() ) );
   }
+  labelFont.setWordSpacing( context.convertToPainterUnits( wordspace, fontunits, mFormat.sizeMapUnitScale() ) );
 
   // data defined letter spacing?
+  double letterspace = labelFont.letterSpacing();
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::FontLetterSpacing ) )
   {
-    double letterspace = labelFont.letterSpacing();
     context.expressionContext().setOriginalValueVariable( letterspace );
     letterspace = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::FontLetterSpacing, context.expressionContext(), letterspace );
-    labelFont.setLetterSpacing( QFont::AbsoluteSpacing, context.convertToPainterUnits( letterspace, fontunits, mFormat.sizeMapUnitScale() ) );
   }
+  labelFont.setLetterSpacing( QFont::AbsoluteSpacing, context.convertToPainterUnits( letterspace, fontunits, mFormat.sizeMapUnitScale() ) );
 
   // data defined strikeout font style?
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Strikeout ) )
