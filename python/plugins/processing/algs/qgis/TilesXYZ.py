@@ -199,7 +199,7 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         extent = QgsRectangle(*metatile.extent())
         threadSpecificSettings.setExtent(self.wgs_to_dest.transformBoundingBox(extent))
         threadSpecificSettings.setOutputSize(size)
-        
+
         #Append MapSettings scope in order to update map variables (e.g @map_scale) with new extent data
         exp_context = threadSpecificSettings.expressionContext()
         exp_context.appendScope(QgsExpressionContextUtils.mapSettingsScope(threadSpecificSettings))
@@ -270,7 +270,7 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
             labeling_engine_settings = self.settingsDictionary[thread].labelingEngineSettings()
             labeling_engine_settings.setFlag(QgsLabelingEngineSettings.UsePartialCandidates, False)
             self.settingsDictionary[thread].setLabelingEngineSettings(labeling_engine_settings)
-            
+
             # Transfer context scopes to MapSettings
             self.settingsDictionary[thread].setExpressionContext(context.expressionContext())
 
