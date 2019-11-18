@@ -118,7 +118,7 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
   if ( sinkFlags.testFlag( QgsFeatureSink::SinkFlag::RegeneratePrimaryKey ) && path.endsWith( QLatin1String( ".gpkg" ), Qt::CaseInsensitive ) )
   {
     QString fidName = options.value( QStringLiteral( "FID" ), QStringLiteral( "FID" ) ).toString();
-    int fidIdx = vectorProvider->fields().lookupField( fidName );
+    int fidIdx = fields.lookupField( fidName );
     if ( fidIdx != -1 )
     {
       mOldToNewAttrIdx.remove( fidIdx );
