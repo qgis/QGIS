@@ -25,11 +25,12 @@ import warnings
 from qgis.core import (QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFileDestination,
-                       QgsProcessingUtils,
                        QgsProcessingException)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 from processing.tools import vector
+
+from qgis.PyQt.QtCore import QCoreApplication
 
 
 class VectorLayerScatterplot3D(QgisAlgorithm):
@@ -82,7 +83,7 @@ class VectorLayerScatterplot3D(QgisAlgorithm):
                 import plotly as plt
                 import plotly.graph_objs as go
         except ImportError:
-            raise QgsProcessingException(self.tr('This algorithm requires the Python “plotly” library. Please install this library and try again.'))
+            raise QgsProcessingException(QCoreApplication.translate('VectorLayerScatterplot3D', 'This algorithm requires the Python “plotly” library. Please install this library and try again.'))
 
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:

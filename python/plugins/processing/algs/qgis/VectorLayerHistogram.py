@@ -31,6 +31,8 @@ from qgis.core import (QgsProcessingException,
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
 
+from qgis.PyQt.QtCore import QCoreApplication
+
 
 class VectorLayerHistogram(QgisAlgorithm):
 
@@ -74,7 +76,7 @@ class VectorLayerHistogram(QgisAlgorithm):
                 import plotly as plt
                 import plotly.graph_objs as go
         except ImportError:
-            raise QgsProcessingException(self.tr('This algorithm requires the Python “plotly” library. Please install this library and try again.'))
+            raise QgsProcessingException(QCoreApplication.translate('VectorLayerHistogram', 'This algorithm requires the Python “plotly” library. Please install this library and try again.'))
 
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:
