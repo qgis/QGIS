@@ -31,6 +31,8 @@ from qgis.core import (QgsProcessingParameterRasterLayer,
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import raster
 
+from qgis.PyQt.QtCore import QCoreApplication
+
 
 class RasterLayerHistogram(QgisAlgorithm):
 
@@ -75,7 +77,7 @@ class RasterLayerHistogram(QgisAlgorithm):
                 import plotly as plt
                 import plotly.graph_objs as go
         except ImportError:
-            raise QgsProcessingException(self.tr('This algorithm requires the Python “plotly” library. Please install this library and try again.'))
+            raise QgsProcessingException(QCoreApplication.translate('RasterLayerHistogram', 'This algorithm requires the Python “plotly” library. Please install this library and try again.'))
 
         layer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         band = self.parameterAsInt(parameters, self.BAND, context)
