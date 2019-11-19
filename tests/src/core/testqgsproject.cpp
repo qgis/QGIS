@@ -473,16 +473,16 @@ void TestQgsProject::testEmbeddedLayerGroupFromQgz()
   QList<QDomNode> brokenNodes;
 
   QgsProject p0;
-  p0.read(path);
-  QgsMapLayer* points = p0.mapLayersByName("points")[0];
-  QgsMapLayer* polys = p0.mapLayersByName("polys")[0];
+  p0.read( path );
+  QgsMapLayer *points = p0.mapLayersByName( "points" )[0];
+  QgsMapLayer *polys = p0.mapLayersByName( "polys" )[0];
 
   QgsProject p1;
-  p1.createEmbeddedLayer(points->id(), p0.fileName(), brokenNodes);
-  p1.createEmbeddedGroup("group1", p0.fileName(), QStringList());
+  p1.createEmbeddedLayer( points->id(), p0.fileName(), brokenNodes );
+  p1.createEmbeddedGroup( "group1", p0.fileName(), QStringList() );
 
-  QCOMPARE(p1.layerIsEmbedded(points->id()), path);
-  QCOMPARE(p1.layerIsEmbedded(polys->id()), path);
+  QCOMPARE( p1.layerIsEmbedded( points->id() ), path );
+  QCOMPARE( p1.layerIsEmbedded( polys->id() ), path );
 }
 
 void TestQgsProject::testSetGetCrs()
