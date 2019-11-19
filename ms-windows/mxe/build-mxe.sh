@@ -47,6 +47,16 @@ RELEASE_DIR=$(pwd)/qgis-mxe-release
 # TARGET=${TARGET}
 TARGET=i686-w64-mingw32.shared.posix
 
+# Set base path for all tools
+export PATH=${PATH}:/mxe/usr/bin
+
+# Fix CCACHE directory
+export CCACHE_DIR=$(pwd)/.ccache
+
+if [ ! -e ${CCACHE_DIR} ]; then
+  mkdir -p ${CCACHE_DIR}
+fi
+
 if [[ "$COMMAND" != *"package"* ]]; then
   [ -d ${BUILD_DIR} ]  && rm -rf ${BUILD_DIR}
   [ -d ${RELEASE_DIR} ] && rm -rf ${RELEASE_DIR}
@@ -55,13 +65,6 @@ if [[ "$COMMAND" != *"package"* ]]; then
   [ -d ${RELEASE_DIR} ] || mkdir ${RELEASE_DIR}
 fi
 
-# Patch for 5.11
-echo '#include "qwebframe.h"' > ${MXE}/usr/${TARGET}/qt5/include/QtWebKitWidgets/QWebFrame
-echo '#include "qwebview.h"' > ${MXE}/usr/${TARGET}/qt5/include/QtWebKitWidgets/QWebView
-echo '#include "qwebpage.h"' > ${MXE}/usr/${TARGET}/qt5/include/QtWebKitWidgets/QWebPage
-echo '#include "qwebelement.h"' > ${MXE}/usr/${TARGET}/qt5/include/QtWebKitWidgets/QWebElement
-cp ${MXE}/usr/${TARGET}/include/windows.h ${MXE}/usr/${TARGET}/include/Windows.h
-cp ${MXE}/usr/${TARGET}/include/shlobj.h ${MXE}/usr/${TARGET}/include/ShlObj.h
 pushd .
 
 cd ${BUILD_DIR}
