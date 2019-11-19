@@ -46,6 +46,7 @@ class TestQgsProject : public QObject
     void testLocalUrlFiles();
     void testReadFlags();
     void testSetGetCrs();
+    void testEmbeddedLayerGroupFromQgz();
 };
 
 void TestQgsProject::init()
@@ -464,6 +465,24 @@ void TestQgsProject::testReadFlags()
   QgsProject p3;
   QVERIFY( p3.read( project3Path, QgsProject::FlagDontLoadLayouts ) );
   QCOMPARE( p3.layoutManager()->layouts().count(), 0 );
+}
+
+void TestQgsProject::testEmbeddedLayerGroupFromQgz()
+{
+  QString path = QString( TEST_DATA_DIR ) + QStringLiteral( "/embedded_groups/project1.qgz" );
+  QList<QDomNode> brokenNodes;
+
+  QgsProject p0;
+  p0.read(path);
+  QgsMapLayer* points = p0.mapLayersByName("points")[0];
+  QgsMapLayer* polys = p0.mapLayersByName("polys")[0];
+
+  QgsProject p1;
+  p1.createEmbeddedLayer(points->id(), p0.fileName(), brokenNodes);
+  p1.createEmbeddedGroup("group1", p0.fileName(), QStringList());
+
+  QCOMPARE(p1.layerIsEmbedded(points->id()), path);
+  QCOMPARE(p1.layerIsEmbedded(polys->id()), path);
 }
 
 void TestQgsProject::testSetGetCrs()
