@@ -411,6 +411,7 @@ Architecture: all
 Section: python
 Depends:
  gdal-bin,
+#disco eoan buster# python-gdal,
  python3-gdal,
  python3-matplotlib,
  libqgis-customwidgets (>= ${source:Version}),
