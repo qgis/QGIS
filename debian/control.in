@@ -437,6 +437,7 @@ Architecture: all
 Section: python
 Depends:
  gdal-bin,
+#    stretch buster xenial bionic disco eoan# python-gdal,
  python3-gdal,
  python3-matplotlib,
  libqgis-customwidgets (>= ${source:Version}),
