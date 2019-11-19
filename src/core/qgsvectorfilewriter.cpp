@@ -3187,10 +3187,6 @@ QList< QgsVectorFileWriter::FilterFormatDetails > QgsVectorFileWriter::supported
         return true; // Make https://twitter.com/shapefiIe a sad little fellow
       else if ( b.driverName == QLatin1String( "GPKG" ) )
         return false;
-      else if ( a.driverName == QLatin1String( "FlatGeobuf" ) )
-        return true;
-      else if ( b.driverName == QLatin1String( "FlatGeobuf" ) )
-        return false;
       else if ( a.driverName == QLatin1String( "ESRI Shapefile" ) )
         return true;
       else if ( b.driverName == QLatin1String( "ESRI Shapefile" ) )
@@ -3232,10 +3228,6 @@ QStringList QgsVectorFileWriter::supportedFormatExtensions( const VectorFormatOp
       if ( a == QLatin1String( "gpkg" ) )
         return true; // Make https://twitter.com/shapefiIe a sad little fellow
       else if ( b == QLatin1String( "gpkg" ) )
-        return false;
-      else if ( a == QLatin1String( "fgb" ) )
-        return true;
-      else if ( b == QLatin1String( "fgb" ) )
         return false;
       else if ( a == QLatin1String( "shp" ) )
         return true;
@@ -3331,10 +3323,6 @@ QList< QgsVectorFileWriter::DriverDetails > QgsVectorFileWriter::ogrDriverList( 
       if ( a.driverName == QLatin1String( "GPKG" ) )
         return true; // Make https://twitter.com/shapefiIe a sad little fellow
       else if ( b.driverName == QLatin1String( "GPKG" ) )
-        return false;
-      else if ( a.driverName == QLatin1String( "FlatGeobuf" ) )
-        return true;
-      else if ( b.driverName == QLatin1String( "FlatGeobuf" ) )
         return false;
       else if ( a.driverName == QLatin1String( "ESRI Shapefile" ) )
         return true;
