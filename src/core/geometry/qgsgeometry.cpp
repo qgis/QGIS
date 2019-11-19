@@ -1133,6 +1133,12 @@ bool QgsGeometry::intersects( const QgsRectangle &r ) const
   if ( !boundingBoxIntersects( r ) )
     return false;
 
+  // optimise trivial case for point intersections -- the bounding box test has already given us the answer
+  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::Point )
+  {
+    return true;
+  }
+
   QgsGeometry g = fromRect( r );
   return intersects( g );
 }
@@ -1154,6 +1160,13 @@ bool QgsGeometry::boundingBoxIntersects( const QgsRectangle &rectangle ) const
   if ( !d->geometry )
   {
     return false;
+  }
+
+  // optimise trivial case for point intersections
+  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::Point )
+  {
+    const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( d->geometry.get() );
+    return rectangle.contains( QgsPointXY( point->x(), point->y() ) );
   }
 
   return d->geometry->boundingBox().intersects( rectangle );
