@@ -401,6 +401,52 @@ class TestQgsSymbolLayerReadSld(unittest.TestCase):
         self.assertEqual(first_size, second_size)
         self.assertEqual(first_unit, second_unit)
 
+    def test_Literal_within_CSSParameter_and_Text(self):
+        layer = createLayerWithOneLine()
+        mFilePath = os.path.join(TEST_DATA_DIR, 'symbol_layer/external_sld/simple_line_with_text.sld')
+        layer.loadSldStyle(mFilePath)
+        props = layer.renderer().symbol().symbolLayers()[0].properties()
+
+        def testLineColor():
+            # stroke SvgParameter within ogc:Literal
+            # expected color is #003EBA, RGB 0,62,186
+            self.assertEqual(layer.renderer().symbol().symbolLayers()[0].color().name(), '#003eba')
+
+        def testLineWidth():
+            # stroke-width SvgParameter within ogc:Literal
+            self.assertEqual(props['line_width'], '2')
+
+        def testLineOpacity():
+            # stroke-opacity SvgParameter NOT within ogc:Literal
+            # stroke-opacity=0.1
+            self.assertEqual(props['line_color'], '0,62,186,24')
+
+        testLineColor()
+        testLineWidth()
+        testLineOpacity()
+
+        from qgis.core import QgsPalLayerSettings
+
+        self.assertTrue(layer.labelsEnabled())
+        self.assertEqual(layer.labeling().type(), 'simple')
+
+        settings = layer.labeling().settings()
+        self.assertEqual(settings.fieldName, 'name')
+
+        format = settings.format()
+        self.assertEqual(format.color().name(), '#ff0000')
+
+        font = format.font()
+        self.assertEqual(font.family(), 'QGIS Vera Sans')
+        self.assertTrue(font.bold())
+        self.assertFalse(font.italic())
+
+        self.assertEqual(format.size(), 18)
+
+        self.assertEqual(settings.placement, QgsPalLayerSettings.OverPoint)
+        self.assertEqual(settings.xOffset, 1)
+        self.assertEqual(settings.yOffset, 0)
+
 
 if __name__ == '__main__':
     unittest.main()
