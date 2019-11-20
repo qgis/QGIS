@@ -962,6 +962,7 @@ class QgsVectorFileWriterMetadataContainer
                              )
                            );
 
+#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,1,0)
       // FlatGeobuf
       datasetOptions.clear();
       layerOptions.clear();
@@ -976,6 +977,7 @@ class QgsVectorFileWriterMetadataContainer
                                layerOptions
                              )
                            );
+#endif
 
       // ESRI Shapefile
       datasetOptions.clear();
