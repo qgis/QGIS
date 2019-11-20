@@ -25,6 +25,7 @@
 
 typedef std::vector< std::pair< QString, std::function< QString( const QString & ) > > > CustomResolvers;
 Q_GLOBAL_STATIC( CustomResolvers, sCustomResolvers )
+Q_GLOBAL_STATIC( CustomResolvers, sCustomWriters )
 
 QgsPathResolver::QgsPathResolver( const QString &baseFileName )
   : mBaseFileName( baseFileName )
@@ -189,8 +190,26 @@ bool QgsPathResolver::removePathPreprocessor( const QString &id )
   return prevCount != sCustomResolvers()->size();
 }
 
-QString QgsPathResolver::writePath( const QString &src ) const
+QString QgsPathResolver::setPathWriter( const std::function<QString( const QString & )> &writer )
 {
+  QString id = QUuid::createUuid().toString();
+  sCustomWriters()->emplace_back( std::make_pair( id, writer ) );
+  return id;
+}
+
+bool QgsPathResolver::removePathWriter( const QString &id )
+{
+  const size_t prevCount = sCustomWriters->size();
+  sCustomWriters()->erase( std::remove_if( sCustomWriters->begin(), sCustomWriters->end(), [id]( std::pair< QString, std::function< QString( const QString & ) > > &a )
+  {
+    return a.first == id;
+  } ), sCustomWriters->end() );
+  return prevCount != sCustomWriters->size();
+}
+
+QString QgsPathResolver::writePath( const QString &s ) const
+{
+  QString src = s;
   if ( src.isEmpty() )
   {
     return src;
@@ -199,6 +218,10 @@ QString QgsPathResolver::writePath( const QString &src ) const
   QString localizedPath = QgsApplication::localizedDataPathRegistry()->localizedPath( src );
   if ( !localizedPath.isEmpty() )
     return QStringLiteral( "localized:" ) + localizedPath;
+
+  const CustomResolvers customWriters = *sCustomWriters();
+  for ( const auto &writer :  customWriters )
+    src = writer.second( src );
 
   if ( src.startsWith( QgsApplication::pkgDataPath() + QStringLiteral( "/resources" ) ) )
   {
