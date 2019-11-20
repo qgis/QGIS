@@ -657,14 +657,19 @@ void QgsDualView::hideEvent( QHideEvent *event )
   saveRecentDisplayExpressions();
 }
 
-void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atIndex )
+void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QgsFeatureId featureId )
 {
   if ( !menu )
   {
     return;
   }
 
-  QModelIndex sourceIndex = mFilterModel->mapToSource( atIndex );
+  QModelIndex sourceIndex = mFilterModel->fidToIndex( featureId );
+
+  if ( ! sourceIndex.isValid() )
+  {
+    return;
+  }
 
   QAction *copyContentAction = new QAction( tr( "Copy Cell Content" ), this );
   copyContentAction->setData( QVariant::fromValue<QModelIndex>( sourceIndex ) );
@@ -722,9 +727,9 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
 }
 
 
-void QgsDualView::widgetWillShowContextMenu( QgsActionMenu *menu, const QModelIndex &atIndex )
+void QgsDualView::widgetWillShowContextMenu( QgsActionMenu *menu, const QgsFeatureId featureId )
 {
-  emit showContextMenuExternally( menu, mFilterModel->rowToId( atIndex ) );
+  emit showContextMenuExternally( menu, featureId );
 }
 
 
