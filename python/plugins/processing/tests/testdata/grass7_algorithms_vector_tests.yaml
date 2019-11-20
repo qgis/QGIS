@@ -220,6 +220,9 @@ tests:
       output:
         name: expected/grass7/v_net_centrality.shp
         type: vector
+        compare:
+          geometry:
+            precision: 3
 
   - algorithm: grass7:v.net.distance
     name: v.net.distance
