@@ -24,6 +24,8 @@ set -e
 #        The artifact will be saved as a zip package in the directory
 #        from which this script is launched.
 
+# shellcheck disable=SC2155
+
 COMMAND=$1
 
 # Location of current script
