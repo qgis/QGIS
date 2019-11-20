@@ -94,11 +94,9 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::prepare()
     return FileCreationError;
   }
 
-  int dataTypeSize = QgsRasterBlock::typeSize( Qgis::Float32 );
-  std::vector<float> line( cols );
-  std::fill( line.begin(), line.end(), NO_DATA );
   QgsRasterBlock block( Qgis::Float32, cols, 1 );
-  block.setData( QByteArray::fromRawData( ( char * )&line[0], dataTypeSize * cols ) );
+  block.setNoDataValue( NO_DATA );
+  block.setIsNoData();
   for ( int i = 0; i < rows ; i++ )
   {
     mProvider->writeBlock( &block, 1, 0, i );
@@ -173,7 +171,7 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const
     QgsRectangle extent( ( *pointIt ).x() - radius, ( *pointIt ).y() - radius, ( *pointIt ).x() + radius, ( *pointIt ).y() + radius );
 
     // get the data
-    QgsRasterBlock *block = mProvider->block( 1, extent, blockSize, blockSize );
+    std::unique_ptr< QgsRasterBlock > block( mProvider->block( 1, extent, blockSize, blockSize ) );
     QByteArray blockData = block->data();
     float *dataBuffer = ( float * ) blockData.data();
 
@@ -203,12 +201,10 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const
     }
 
     block->setData( blockData );
-    if ( !mProvider->writeBlock( block, 1, xPosition, yPositionIO ) )
+    if ( !mProvider->writeBlock( block.get(), 1, xPosition, yPositionIO ) )
     {
       result = RasterIoError;
     }
-
-    delete block;
   }
 
   return result;
