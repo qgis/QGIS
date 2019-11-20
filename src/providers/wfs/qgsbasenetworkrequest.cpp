@@ -174,6 +174,7 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
       // * or the owner thread of mReply is currently not doing anything because it's blocked in future.waitForFinished() (if it is the main thread)
       connect( mReply, &QNetworkReply::finished, this, &QgsBaseNetworkRequest::replyFinished, Qt::DirectConnection );
       connect( mReply, &QNetworkReply::downloadProgress, this, &QgsBaseNetworkRequest::replyProgress, Qt::DirectConnection );
+      connect( mReply, &QNetworkReply::readyRead, this, &QgsBaseNetworkRequest::replyReadyRead, Qt::DirectConnection );
 
       if ( synchronous )
       {
@@ -288,6 +289,7 @@ bool QgsBaseNetworkRequest::sendPOST( const QUrl &url, const QString &contentTyp
   }
   connect( mReply, &QNetworkReply::finished, this, &QgsBaseNetworkRequest::replyFinished );
   connect( mReply, &QNetworkReply::downloadProgress, this, &QgsBaseNetworkRequest::replyProgress );
+  connect( mReply, &QNetworkReply::readyRead, this, &QgsBaseNetworkRequest::replyReadyRead );
 
   QEventLoop loop;
   connect( this, &QgsBaseNetworkRequest::downloadFinished, &loop, &QEventLoop::quit );
@@ -306,12 +308,14 @@ void QgsBaseNetworkRequest::abort()
   }
 }
 
+void QgsBaseNetworkRequest::replyReadyRead( )
+{
+  mGotNonEmptyResponse = true;
+}
+
 void QgsBaseNetworkRequest::replyProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
   QgsDebugMsgLevel( QStringLiteral( "%1 of %2 bytes downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QStringLiteral( "unknown number of" ) : QString::number( bytesTotal ) ), 4 );
-
-  if ( bytesReceived != 0 )
-    mGotNonEmptyResponse = true;
 
   if ( !mIsAborted && mReply )
   {
@@ -381,6 +385,7 @@ void QgsBaseNetworkRequest::replyFinished()
           }
           connect( mReply, &QNetworkReply::finished, this, &QgsBaseNetworkRequest::replyFinished, Qt::DirectConnection );
           connect( mReply, &QNetworkReply::downloadProgress, this, &QgsBaseNetworkRequest::replyProgress, Qt::DirectConnection );
+          connect( mReply, &QNetworkReply::readyRead, this, &QgsBaseNetworkRequest::replyReadyRead, Qt::DirectConnection );
           return;
         }
       }
@@ -390,6 +395,7 @@ void QgsBaseNetworkRequest::replyFinished()
 
         if ( nam->cache() )
         {
+          QgsDebugMsgLevel( QStringLiteral( "request url:%1" ).arg( mReply->request().url().toString() ), 4 );
           QNetworkCacheMetaData cmd = nam->cache()->metaData( mReply->request().url() );
 
           QNetworkCacheMetaData::RawHeaderList hl;
