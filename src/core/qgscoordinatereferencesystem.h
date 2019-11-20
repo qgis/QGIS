@@ -772,7 +772,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /**
      * Set the EpsgCrsId identifier for this CRS
-     * \param epsg the ESPG identifier for this CRS (defaults to 0)
+     * \param epsg the EPSG identifier for this CRS (defaults to 0)
      */
     void setEpsg( long epsg );
 
