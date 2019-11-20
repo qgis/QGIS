@@ -46,6 +46,7 @@ class TestQgis : public QObject
     void testQgsAsConst();
     void testQgsRound();
     void testQgsVariantEqual();
+    void testQMapQVariantList();
 
   private:
     QString mReport;
@@ -394,6 +395,24 @@ void TestQgis::testQgsVariantEqual()
 
 }
 
+void TestQgis::testQMapQVariantList()
+{
+  QMap<QVariantList, long> ids;
+  ids.insert( QVariantList() << "B" << "c", 5 );
+  ids.insert( QVariantList() << "b" << "C", 7 );
+
+  QVariantList v = QVariantList() << "b" << "C";
+  QMap<QVariantList, long>::const_iterator it = ids.constFind( v );
+
+  QVERIFY( it != ids.constEnd() );
+  QCOMPARE( it.value(), 7L );
+
+  v = QVariantList() << "B" << "c";
+  it = ids.constFind( v );
+
+  QVERIFY( it != ids.constEnd() );
+  QCOMPARE( it.value(), 5L );
+}
 
 QGSTEST_MAIN( TestQgis )
 #include "testqgis.moc"
