@@ -311,3 +311,11 @@ bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs )
 {
   return lhs.isNull() == rhs.isNull() && lhs == rhs;
 }
+
+template<>
+bool qMapLessThanKey<QVariantList>( const QVariantList &key1, const QVariantList &key2 )
+{
+  // qt's built in qMapLessThanKey for QVariantList is broken and does a case-insensitive operation.
+  // this breaks QMap< QVariantList, ... >, where key matching incorrectly becomes case-insensitive..!!?!
+  return qgsVariantGreaterThan( key1, key2 ) && key1 != key2;
+}
