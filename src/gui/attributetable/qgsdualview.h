@@ -312,9 +312,9 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     void previewColumnChanged( QAction *previewAction, const QString &expression );
 
-    void viewWillShowContextMenu( QMenu *menu, const QModelIndex &atIndex );
+    void viewWillShowContextMenu( QMenu *menu, const QgsFeatureId featureId );
 
-    void widgetWillShowContextMenu( QgsActionMenu *menu, const QModelIndex &atIndex );
+    void widgetWillShowContextMenu( QgsActionMenu *menu, const QgsFeatureId featureId );
 
     void showViewHeaderMenu( QPoint point );
 

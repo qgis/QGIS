@@ -126,13 +126,12 @@ Saves geometry to the settings on close
 
   signals:
 
-    void willShowContextMenu( QMenu *menu, const QModelIndex &atIndex );
+    void willShowContextMenu( QMenu *menu, const QgsFeatureId featureId );
 %Docstring
 Emitted in order to provide a hook to add additional* menu entries to the context menu.
 
 :param menu: If additional QMenuItems are added, they will show up in the context menu.
-:param atIndex: The QModelIndex, to which the context menu belongs. Relative to the source model.
-                In most cases, this will be a :py:class:`QgsAttributeTableFilterModel`
+:param featureId: The ID of the current feature
 %End
 
     void columnResized( int column, int width );
