@@ -53,6 +53,7 @@ class TestQgsDxfExport : public QObject
     void testMtext_data();
     void testMTextEscapeSpaces();
     void testText();
+    void testTextAngle();
     void testTextAlign();
     void testTextAlign_data();
     void testGeometryGeneratorExport();
@@ -451,6 +452,85 @@ void TestQgsDxfExport::testText()
                               "Biplane\n"
                               " 50\n"
                               "0.0\n"
+                              "  7\n"
+                              "STANDARD\n"
+                              "100\n"
+                              "AcDbText", &debugInfo ), debugInfo.toUtf8().constData() );
+}
+
+void TestQgsDxfExport::testTextAngle()
+{
+  std::unique_ptr< QgsVectorLayer > vl = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Point?crs=epsg:2056&field=ori:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QgsGeometry g = QgsGeometry::fromWkt( "Point(2684679.392 1292182.527)" );
+  QgsGeometry g2 = QgsGeometry::fromWkt( "Point(2684692.322 1292192.534)" );
+  QgsFeature f( vl->fields() );
+  f.setGeometry( g );
+  f.setAttribute( 0, 30 );
+
+  vl->dataProvider()->addFeatures( QgsFeatureList() << f );
+
+  f.setGeometry( g2 );
+  f.setAttribute( 0, 40 );
+
+  vl->dataProvider()->addFeatures( QgsFeatureList() << f );
+
+  QgsPalLayerSettings settings;
+  auto ddp = settings.dataDefinedProperties();
+  QgsProperty prop;
+  prop.setExpressionString( QStringLiteral( "ori" ) );
+  ddp.setProperty( QgsPalLayerSettings::Property::LabelRotation, prop );
+  settings.setDataDefinedProperties( ddp );
+  settings.fieldName = QStringLiteral( "ori" );
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  settings.setFormat( format );
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  vl->setLabelsEnabled( true );
+
+  QgsDxfExport d;
+  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( vl.get() ) );
+
+  QgsMapSettings mapSettings;
+  QSize size( 640, 480 );
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( QgsRectangle( 2684579, 1292082, 2684779, 1292282 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl.get() );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setDestinationCrs( vl->crs() );
+
+  d.setMapSettings( mapSettings );
+  d.setSymbologyScale( 1000 );
+  d.setSymbologyExport( QgsDxfExport::FeatureSymbology );
+  d.setFlags( QgsDxfExport::FlagNoMText );
+
+  QString file = getTempFileName( "text_dxf_angle" );
+  QFile dxfFile( file );
+  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
+  dxfFile.close();
+
+  QString debugInfo;
+  QVERIFY2( fileContainsText( file, "TEXT\n"
+                              "  5\n"
+                              "**no check**\n"
+                              "100\n"
+                              "AcDbEntity\n"
+                              "100\n"
+                              "AcDbText\n"
+                              "  8\n"
+                              "vl\n"
+                              "420\n"
+                              "**no check**\n"
+                              " 10\n"
+                              "**no check**\n"
+                              " 20\n"
+                              "**no check**\n"
+                              " 40\n"
+                              "**no check**\n"
+                              "  1\n"
+                              "40\n"
+                              " 50\n"
+                              "320.0\n"
                               "  7\n"
                               "STANDARD\n"
                               "100\n"
