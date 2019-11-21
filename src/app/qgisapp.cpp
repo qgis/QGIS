@@ -677,8 +677,20 @@ void QgisApp::vectorLayerStyleLoaded( QgsMapLayer::StyleCategories categories )
 
 void QgisApp::toggleEventTracing()
 {
+  QgsSettings settings;
+  if ( !settings.value( QStringLiteral( "qgis/enableEventTracing" ), false ).toBool() )
+  {
+    // make sure the setting is available in Options > Advanced
+    if ( !settings.contains( QStringLiteral( "qgis/enableEventTracing" ) ) )
+      settings.setValue( QStringLiteral( "qgis/enableEventTracing" ), false );
+
+    messageBar()->pushWarning( tr( "Event Tracing" ), tr( "Tracing is not enabled. Look for \"enableEventTracing\" in Options > Advanced." ) );
+    return;
+  }
+
   if ( !QgsEventTracing::isTracingEnabled() )
   {
+    messageBar()->pushSuccess( tr( "Event Tracing" ), tr( "Tracing started." ) );
     QgsEventTracing::startTracing();
   }
   else
