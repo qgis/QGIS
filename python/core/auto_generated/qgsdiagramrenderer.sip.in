@@ -407,6 +407,88 @@ Constructor for QgsDiagramSettings
 
     double minimumSize;
 
+    double spacing() const;
+%Docstring
+Returns the spacing between diagram contents.
+
+Spacing units can be retrieved by calling spacingUnit().
+
+.. seealso:: :py:func:`setSpacing`
+
+.. seealso:: :py:func:`spacingUnit`
+
+.. seealso:: :py:func:`spacingMapUnitScale`
+
+.. versionadded:: 3.12
+%End
+
+    void setSpacing( double spacing );
+%Docstring
+Sets the ``spacing`` between diagram contents.
+
+Spacing units are set via setSpacingUnit().
+
+.. seealso:: :py:func:`spacing`
+
+.. seealso:: :py:func:`setSpacingUnit`
+
+.. seealso:: :py:func:`setSpacingMapUnitScale`
+
+.. versionadded:: 3.12
+%End
+
+    void setSpacingUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the content spacing.
+
+.. seealso:: :py:func:`spacingUnit`
+
+.. seealso:: :py:func:`setSpacing`
+
+.. seealso:: :py:func:`setSpacingMapUnitScale`
+
+.. versionadded:: 3.12
+%End
+
+    QgsUnitTypes::RenderUnit spacingUnit() const;
+%Docstring
+Returns the units for the content spacing.
+
+.. seealso:: :py:func:`setSpacingUnit`
+
+.. seealso:: :py:func:`spacing`
+
+.. seealso:: :py:func:`spacingMapUnitScale`
+
+.. versionadded:: 3.12
+%End
+
+    void setSpacingMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the content spacing.
+
+.. seealso:: :py:func:`spacingMapUnitScale`
+
+.. seealso:: :py:func:`setSpacing`
+
+.. seealso:: :py:func:`setSpacingUnit`
+
+.. versionadded:: 3.12
+%End
+
+    const QgsMapUnitScale &spacingMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the content spacing.
+
+.. seealso:: :py:func:`setSpacingMapUnitScale`
+
+.. seealso:: :py:func:`spacing`
+
+.. seealso:: :py:func:`spacingUnit`
+
+.. versionadded:: 3.12
+%End
+
     void readXml( const QDomElement &elem );
 %Docstring
 Reads diagram settings from XML

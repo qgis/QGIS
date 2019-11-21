@@ -467,6 +467,71 @@ class CORE_EXPORT QgsDiagramSettings
     //! Scale diagrams smaller than mMinimumSize to mMinimumSize
     double minimumSize = 0.0;
 
+    /**
+     * Returns the spacing between diagram contents.
+     *
+     * Spacing units can be retrieved by calling spacingUnit().
+     *
+     * \see setSpacing()
+     * \see spacingUnit()
+     * \see spacingMapUnitScale()
+     *
+     * \since QGIS 3.12
+     */
+    double spacing() const { return mSpacing; }
+
+    /**
+     * Sets the \a spacing between diagram contents.
+     *
+     * Spacing units are set via setSpacingUnit().
+     *
+     * \see spacing()
+     * \see setSpacingUnit()
+     * \see setSpacingMapUnitScale()
+     *
+     * \since QGIS 3.12
+     */
+    void setSpacing( double spacing ) { mSpacing = spacing; }
+
+    /**
+     * Sets the \a unit for the content spacing.
+     * \see spacingUnit()
+     * \see setSpacing()
+     * \see setSpacingMapUnitScale()
+     *
+     * \since QGIS 3.12
+    */
+    void setSpacingUnit( QgsUnitTypes::RenderUnit unit ) { mSpacingUnit = unit; }
+
+    /**
+     * Returns the units for the content spacing.
+     * \see setSpacingUnit()
+     * \see spacing()
+     * \see spacingMapUnitScale()
+     * \since QGIS 3.12
+    */
+    QgsUnitTypes::RenderUnit spacingUnit() const { return mSpacingUnit; }
+
+    /**
+     * Sets the map unit \a scale for the content spacing.
+     * \see spacingMapUnitScale()
+     * \see setSpacing()
+     * \see setSpacingUnit()
+     *
+     * \since QGIS 3.12
+    */
+    void setSpacingMapUnitScale( const QgsMapUnitScale &scale ) { mSpacingMapUnitScale = scale; }
+
+    /**
+     * Returns the map unit scale for the content spacing.
+     * \see setSpacingMapUnitScale()
+     * \see spacing()
+     * \see spacingUnit()
+     *
+     * \since QGIS 3.12
+    */
+    const QgsMapUnitScale &spacingMapUnitScale() const { return mSpacingMapUnitScale; }
+
     //! Reads diagram settings from XML
     void readXml( const QDomElement &elem );
     //! Writes diagram settings to XML
@@ -478,6 +543,12 @@ class CORE_EXPORT QgsDiagramSettings
      * \since QGIS 2.10
      */
     QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const SIP_FACTORY;
+
+  private:
+
+    double mSpacing = 0;
+    QgsUnitTypes::RenderUnit mSpacingUnit;
+    QgsMapUnitScale mSpacingMapUnitScale;
 
 };
 
