@@ -22,8 +22,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSRASTERIZEALGORITM_H
-#define QGSRASTERIZEALGORITM_H
+#ifndef QGSRASTERIZEALGORITHM_H
+#define QGSRASTERIZEALGORITHM_H
 
 #define SIP_NO_FILE
 
@@ -59,4 +59,4 @@ class QgsRasterizeAlgorithm : public QgsProcessingAlgorithm
 
 ///@endcond PRIVATE
 
-#endif // QGSRASTERIZEALGORITM_H
+#endif // QGSRASTERIZEALGORITHM_H
