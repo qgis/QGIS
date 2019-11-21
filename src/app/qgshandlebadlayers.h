@@ -64,17 +64,36 @@ class APP_EXPORT QgsHandleBadLayers
     void apply();
     void accept() override;
 
+    /**
+     *  Will search for selected (if any) or all files.
+     * Found files will be highlighted in green of approval, otherwise in red.
+     * \since QGIS 3.12
+     */
+    void autoFind();
+
   private:
     QPushButton *mBrowseButton = nullptr;
     QPushButton *mApplyButton = nullptr;
+    QPushButton *mAutoFindButton = nullptr;
     const QList<QDomNode> &mLayers;
     QList<int> mRows;
     QString mVectorFileFilter;
     QString mRasterFileFilter;
-    QHash <QString, QList<QString> > mFileBase;
+    // Registry of the original paths associated with a file as a backup
+    QHash <QString, QString > mOriginalFileBase;
+    // Keeps a registry of valid alternatives for a basepath
+    QHash <QString, QStringList > mAlternativeBasepaths;
 
     QString filename( int row );
     void setFilename( int row, const QString &filename );
+
+    /**
+     * Checks if \a newPath for the provided \a layerId is valid.
+     * Otherwise all other know viable alternative for the original basepath will be tested.
+     * \since QGIS 3.12
+     */
+    QString checkBasepath( const QString &layerId, const QString &newPath, const QString &fileName );
+
 };
 
 #endif
