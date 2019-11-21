@@ -86,6 +86,22 @@ class CORE_EXPORT QgsMeshLayerUtils
     );
 
     /**
+    * Interpolates vector based on known vector on the vertices of a triangle
+    * \param p1 first vertex of the triangle
+    * \param p2 second vertex of the triangle
+    * \param p3 third vertex of the triangle
+    * \param vect1 value on p1 of the triangle
+    * \param vect2 value on p2 of the triangle
+    * \param vect3 value on p3 of the triangle
+    * \param pt point where to calculate value
+    * \returns vector on the point pt or NaN in case the point is outside the triangle
+    */
+    static QgsVector interpolateVectorFromVerticesData(
+      const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3,
+      QgsVector vect1, QgsVector vect2, QgsVector vect3, const QgsPointXY &pt
+    );
+
+    /**
     * Interpolate value based on known value on the face of a triangle
     * \param p1 first vertex of the triangle
     * \param p2 second vertex of the triangle
@@ -97,6 +113,19 @@ class CORE_EXPORT QgsMeshLayerUtils
     static double interpolateFromFacesData(
       const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3,
       double val, const QgsPointXY &pt );
+
+    /**
+    * Interpolate value based on known value on the face of a triangle
+    * \param p1 first vertex of the triangle
+    * \param p2 second vertex of the triangle
+    * \param p3 third vertex of the triangle
+    * \param vect face vector
+    * \param pt point where to calculate value
+    * \returns vector on the point pt or NaN in case the point is outside the triangle
+    */
+    static QgsVector interpolateVectorFromFacesData(
+      const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3,
+      QgsVector vect, const QgsPointXY &pt );
 
     /**
     * Interpolate values on vertices from values on faces

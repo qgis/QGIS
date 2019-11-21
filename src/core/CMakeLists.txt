@@ -537,6 +537,7 @@ SET(QGIS_CORE_SRCS
   mesh/qgsmeshvectorrenderer.cpp
   mesh/qgstriangularmesh.cpp
   mesh/qgsmeshtimesettings.cpp
+  mesh/qgsmeshtracerenderer.cpp
 
   geometry/qgsabstractgeometry.cpp
   geometry/qgsbox3d.cpp
@@ -1099,6 +1100,7 @@ SET(QGIS_CORE_HDRS
   mesh/qgsmeshtimesettings.h
   mesh/qgsmeshvectorrenderer.h
   mesh/qgstriangularmesh.h
+  mesh/qgsmeshtracerenderer.h
 
   metadata/qgsabstractmetadatabase.h
   metadata/qgslayermetadata.h
