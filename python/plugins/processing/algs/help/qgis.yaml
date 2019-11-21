@@ -437,17 +437,6 @@ qgis:rastersampling: >
 
   If the raster layer has more than one band, all the band values are sampled.
 
-qgis:rasterize: >
-  This algorithm rasterizes map canvas content.
-
-  A map theme can be selected to render a predetermined set of layers with a defined style for each layer.
-
-  Alternatively, a single layer can be selected if no map theme is set.
-
-  If neither map theme nor layer is set, the current map content will be rendered.
-
-  The minimum extent entered will internally be extended to be a multiple of the tile size.
-
 qgis:refactorfields: >
   This algorithm allows editing the structure of the attributes table of a vector layer. Fields can be modified in their type and name, using a fields mapping.
 
