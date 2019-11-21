@@ -366,6 +366,12 @@ QgsDiagramLayerSettings stores settings which control how ALL diagrams within a 
       Right
     };
 
+    enum Direction
+    {
+      Clockwise,
+      Counterclockwise,
+    };
+
     QgsDiagramSettings();
 %Docstring
 Constructor for QgsDiagramSettings
@@ -485,6 +491,24 @@ Returns the map unit scale for the content spacing.
 .. seealso:: :py:func:`spacing`
 
 .. seealso:: :py:func:`spacingUnit`
+
+.. versionadded:: 3.12
+%End
+
+    Direction direction() const;
+%Docstring
+Returns the chart's angular direction.
+
+.. seealso:: :py:func:`setDirection`
+
+.. versionadded:: 3.12
+%End
+
+    void setDirection( Direction direction );
+%Docstring
+Sets the chart's angular ``direction``.
+
+.. seealso:: :py:func:`direction`
 
 .. versionadded:: 3.12
 %End
