@@ -192,6 +192,9 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   mAngleOffsetComboBox->addItem( tr( "Bottom" ), 90 );
   mAngleOffsetComboBox->addItem( tr( "Left" ), 180 );
 
+  mAngleDirectionComboBox->addItem( tr( "Clockwise" ), QgsDiagramSettings::Clockwise );
+  mAngleDirectionComboBox->addItem( tr( "Counter-clockwise" ), QgsDiagramSettings::Counterclockwise );
+
   QgsSettings settings;
 
   // reset horiz stretch of left side of options splitter (set to 1 for previewing in Qt Designer)
@@ -320,6 +323,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
       }
 
       mAngleOffsetComboBox->setCurrentIndex( mAngleOffsetComboBox->findData( settingList.at( 0 ).rotationOffset ) );
+      mAngleDirectionComboBox->setCurrentIndex( mAngleDirectionComboBox->findData( settingList.at( 0 ).direction() ) );
 
       mOrientationLeftButton->setProperty( "direction", QgsDiagramSettings::Left );
       mOrientationRightButton->setProperty( "direction", QgsDiagramSettings::Right );
@@ -582,12 +586,16 @@ void QgsDiagramProperties::mDiagramTypeComboBox_currentIndexChanged( int index )
     if ( DIAGRAM_NAME_PIE == mDiagramType )
     {
       mAngleOffsetComboBox->show();
+      mAngleDirectionComboBox->show();
+      mAngleDirectionLabel->show();
       mAngleOffsetLabel->show();
       mStartAngleDDBtn->show();
     }
     else
     {
       mAngleOffsetComboBox->hide();
+      mAngleDirectionComboBox->hide();
+      mAngleDirectionLabel->hide();
       mAngleOffsetLabel->hide();
       mStartAngleDDBtn->hide();
     }
@@ -801,6 +809,7 @@ void QgsDiagramProperties::apply()
 
   // Diagram angle offset (pie)
   ds.rotationOffset = mAngleOffsetComboBox->currentData().toInt();
+  ds.setDirection( static_cast< QgsDiagramSettings::Direction>( mAngleDirectionComboBox->currentData().toInt() ) );
 
   // Diagram orientation (histogram)
   ds.diagramOrientation = static_cast<QgsDiagramSettings::DiagramOrientation>( mOrientationButtonGroup->checkedButton()->property( "direction" ).toInt() );

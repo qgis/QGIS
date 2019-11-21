@@ -394,6 +394,16 @@ class CORE_EXPORT QgsDiagramSettings
       Right
     };
 
+    /**
+     * Angular directions.
+     * \since QGIS 3.12
+     */
+    enum Direction
+    {
+      Clockwise, //!< Clockwise orientation
+      Counterclockwise, //!< Counter-clockwise orientation
+    };
+
     //! Constructor for QgsDiagramSettings
     QgsDiagramSettings() = default;
 
@@ -532,6 +542,22 @@ class CORE_EXPORT QgsDiagramSettings
     */
     const QgsMapUnitScale &spacingMapUnitScale() const { return mSpacingMapUnitScale; }
 
+    /**
+     * Returns the chart's angular direction.
+     *
+     * \see setDirection()
+     * \since QGIS 3.12
+     */
+    Direction direction() const;
+
+    /**
+     * Sets the chart's angular \a direction.
+     *
+     * \see direction()
+     * \since QGIS 3.12
+     */
+    void setDirection( Direction direction );
+
     //! Reads diagram settings from XML
     void readXml( const QDomElement &elem );
     //! Writes diagram settings to XML
@@ -549,6 +575,7 @@ class CORE_EXPORT QgsDiagramSettings
     double mSpacing = 0;
     QgsUnitTypes::RenderUnit mSpacingUnit;
     QgsMapUnitScale mSpacingMapUnitScale;
+    Direction mDirection = Counterclockwise;
 
 };
 
