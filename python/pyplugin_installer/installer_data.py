@@ -397,11 +397,7 @@ class Repositories(QObject):
                     fileName = pluginNodes.item(i).firstChildElement("file_name").text().strip()
                     if not fileName:
                         fileName = QFileInfo(pluginNodes.item(i).firstChildElement("download_url").text().strip().split("?")[0]).fileName()
-                    match = re.match('(.*?)[.-]', fileName)
-                    if match:
-                        name = match.groups()[0]
-                    else:
-                        name = fileName
+                    name = fileName.partition(".")[0]
                     experimental = False
                     if pluginNodes.item(i).firstChildElement("experimental").text().strip().upper() in ["TRUE", "YES"]:
                         experimental = True
