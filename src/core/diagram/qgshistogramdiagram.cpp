@@ -130,7 +130,6 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes &attributes, const 
 
     case QgsDiagramSettings::Right:
     case QgsDiagramSettings::Left:
-    default: // just in case...
       mScaleFactor = maxValue / s.size.width();
       size.scale( s.size.width(), s.barWidth * s.categoryColors.size() + spacing * std::max( 0, s.categoryAttributes.size() - 1 ), Qt::IgnoreAspectRatio );
       break;
@@ -155,6 +154,7 @@ void QgsHistogramDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCon
   if ( !feature.fields().isEmpty() )
     expressionContext.setFields( feature.fields() );
 
+  values.reserve( s.categoryAttributes.size() );
   for ( const QString &cat : qgis::as_const( s.categoryAttributes ) )
   {
     QgsExpression *expression = getExpression( cat, expressionContext );
@@ -189,19 +189,19 @@ void QgsHistogramDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCon
     switch ( s.diagramOrientation )
     {
       case QgsDiagramSettings::Up:
-        p->drawRect( baseX + currentOffset, baseY, scaledWidth, length * -1 );
+        p->drawRect( QRectF( baseX + currentOffset, baseY, scaledWidth, length * -1 ) );
         break;
 
       case QgsDiagramSettings::Down:
-        p->drawRect( baseX + currentOffset, baseY - scaledMaxVal, scaledWidth, length );
+        p->drawRect( QRectF( baseX + currentOffset, baseY - scaledMaxVal, scaledWidth, length ) );
         break;
 
       case QgsDiagramSettings::Right:
-        p->drawRect( baseX, baseY - scaledWidth * values.size() + currentOffset, length, scaledWidth * -1 );
+        p->drawRect( QRectF( baseX, baseY - scaledWidth * values.size() + currentOffset, length, scaledWidth * -1 ) );
         break;
 
       case QgsDiagramSettings::Left:
-        p->drawRect( baseX + scaledMaxVal, baseY - scaledWidth * values.size() + currentOffset, 0 - length, scaledWidth * -1 );
+        p->drawRect( QRectF( baseX + scaledMaxVal, baseY - scaledWidth * values.size() + currentOffset, 0 - length, scaledWidth * -1 ) );
         break;
     }
 
