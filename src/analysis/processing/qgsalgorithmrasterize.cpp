@@ -30,6 +30,8 @@
 #include "gdal.h"
 #include "qgsgdalutils.h"
 
+#include <QtConcurrent>
+
 ///@cond PRIVATE
 
 QString QgsRasterizeAlgorithm::name() const
@@ -228,11 +230,6 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
     mapSettings.setLayers( context.project()->mapLayers().values() );
   }
 
-  QImage image { tileSize, tileSize, QImage::Format::Format_ARGB32 };
-  mapSettings.setOutputDpi( image.logicalDpiX() );
-  mapSettings.setOutputSize( image.size() );
-  QPainter painter { &image };
-
   // Start rendering
   const double extentRatio { mapUnitsPerPixel * tileSize };
   const int numTiles { xTileCount * yTileCount };
@@ -247,8 +244,67 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
     }
   };
 
-  std::unique_ptr<uint8_t, CPLDelete> buffer( static_cast< uint8_t * >( CPLMalloc( sizeof( uint8_t ) * static_cast<size_t>( tileSize * tileSize * nBands ) ) ) );
+  QAtomicInt rendered = 0;
+  QMutex rasterWriteLocker;
+
+  const auto renderJob = [ & ]( const int x, const int y, QgsMapSettings mapSettings )
+  {
+    QImage image { tileSize, tileSize, QImage::Format::Format_ARGB32 };
+    mapSettings.setOutputDpi( image.logicalDpiX() );
+    mapSettings.setOutputSize( image.size() );
+    QPainter painter { &image };
+    std::unique_ptr<uint8_t, CPLDelete> buffer( static_cast< uint8_t * >( CPLMalloc( sizeof( uint8_t ) * static_cast<size_t>( tileSize * tileSize * nBands ) ) ) );
+    if ( feedback->isCanceled() )
+    {
+      return;
+    }
+    image.fill( transparent ? bgColor.rgba() : bgColor.rgb() );
+    mapSettings.setExtent( QgsRectangle(
+                             extent.xMinimum() + x * extentRatio,
+                             extent.yMaximum() - ( y + 1 ) * extentRatio,
+                             extent.xMinimum() + ( x + 1 ) * extentRatio,
+                             extent.yMaximum() - y * extentRatio
+                           ) );
+    QgsMapRendererCustomPainterJob job( mapSettings, &painter );
+    job.start();
+    job.waitForFinished();
+
+    gdal::dataset_unique_ptr hIntermediateDataset( QgsGdalUtils::imageToMemoryDataset( image ) );
+    if ( !hIntermediateDataset )
+    {
+      throw QgsProcessingException( QStringLiteral( "Error reading tiles from the temporary image" ) );
+    }
+
+    const int xOffset { x * tileSize };
+    const int yOffset { y * tileSize };
+
+    CPLErr err = GDALDatasetRasterIO( hIntermediateDataset.get(),
+                                      GF_Read, 0, 0, tileSize, tileSize,
+                                      buffer.get(),
+                                      tileSize, tileSize, GDT_Byte, nBands, nullptr, 0, 0, 0 );
+    if ( err != CE_None )
+    {
+      throw QgsProcessingException( QStringLiteral( "Error reading intermediate raster" ) );
+    }
+
+    {
+      QMutexLocker locker( &rasterWriteLocker );
+      err = GDALDatasetRasterIO( hOutputDataset.get(),
+                                 GF_Write, xOffset, yOffset, tileSize, tileSize,
+                                 buffer.get(),
+                                 tileSize, tileSize, GDT_Byte, nBands, nullptr, 0, 0, 0 );
+      rendered++;
+      feedback->setProgress( static_cast<double>( rendered ) / numTiles * 100.0 );
+    }
+    if ( err != CE_None )
+    {
+      throw QgsProcessingException( QStringLiteral( "Error writing output raster" ) );
+    }
+  };
+
   feedback->setProgress( 0 );
+
+  std::vector<QFuture<void>> futures;
 
   for ( int x = 0; x < xTileCount; ++x )
   {
@@ -258,46 +314,13 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
       {
         return {};
       }
-      image.fill( transparent ? bgColor.rgba() : bgColor.rgb() );
-      mapSettings.setExtent( QgsRectangle(
-                               extent.xMinimum() + x * extentRatio,
-                               extent.yMaximum() - ( y + 1 ) * extentRatio,
-                               extent.xMinimum() + ( x + 1 ) * extentRatio,
-                               extent.yMaximum() - y * extentRatio
-                             ) );
-      QgsMapRendererCustomPainterJob job( mapSettings, &painter );
-      job.start();
-      job.waitForFinished();
-
-      gdal::dataset_unique_ptr hIntermediateDataset( QgsGdalUtils::imageToMemoryDataset( image ) );
-      if ( !hIntermediateDataset )
-      {
-        throw QgsProcessingException( QStringLiteral( "Error reading tiles from the temporary image" ) );
-      }
-
-      const int xOffset { x * tileSize };
-      const int yOffset { y * tileSize };
-
-      CPLErr err = GDALDatasetRasterIO( hIntermediateDataset.get(),
-                                        GF_Read, 0, 0, tileSize, tileSize,
-                                        buffer.get(),
-                                        tileSize, tileSize, GDT_Byte, nBands, nullptr, 0, 0, 0 );
-      if ( err != CE_None )
-      {
-        throw QgsProcessingException( QStringLiteral( "Error reading intermediate raster" ) );
-      }
-
-      err = GDALDatasetRasterIO( hOutputDataset.get(),
-                                 GF_Write, xOffset, yOffset, tileSize, tileSize,
-                                 buffer.get(),
-                                 tileSize, tileSize, GDT_Byte, nBands, nullptr, 0, 0, 0 );
-      if ( err != CE_None )
-      {
-        throw QgsProcessingException( QStringLiteral( "Error writing output raster" ) );
-      }
-
-      feedback->setProgress( static_cast<double>( x * yTileCount + y ) / numTiles * 100.0 );
+      futures.push_back( QtConcurrent::run( renderJob, x, y, mapSettings ) );
     }
+  }
+
+  for ( auto &f : futures )
+  {
+    f.waitForFinished();
   }
 
   return { { QStringLiteral( "OUTPUT" ), outputLayerFileName } };
