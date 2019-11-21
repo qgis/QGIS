@@ -34,6 +34,7 @@
 #include "qgsvectorlayerexporter.h"
 #include "qgsabstractproviderconnection.h"
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsabstractwebserviceproviderconnection.h"
 #include "qgsfields.h"
 #include "qgsexception.h"
 
@@ -285,6 +286,17 @@ class CORE_EXPORT QgsProviderMetadata
     QMap<QString, QgsAbstractDatabaseProviderConnection *> dbConnections( bool cached = true ) SIP_THROW( QgsProviderConnectionException );
 
     /**
+     * Returns a dictionary of web services provider connections,
+     * the dictionary key is the connection identifier.
+     * Ownership is not transferred.
+     * Raises a QgsProviderConnectionException if any errors are encountered.
+     * \param cached if FALSE connections will be re-read from the settings
+     * \throws QgsProviderConnectionException
+     * \since QGIS 3.12
+     */
+    QMap<QString, QgsAbstractWebServiceProviderConnection *> webServiceConnections( bool cached = true ) SIP_THROW( QgsProviderConnectionException );
+
+    /**
      * Searches and returns a (possibly NULL) connection from the stored provider connections.
      * Ownership is not transferred.
      * Raises a QgsProviderConnectionException if any errors are encountered.
@@ -359,6 +371,26 @@ class CORE_EXPORT QgsProviderMetadata
         qDeleteAll( mProviderConnections );
         mProviderConnections.clear();
         const auto connNames { T_conn::connectionList() };
+        for ( const auto &cname : connNames )
+        {
+          mProviderConnections.insert( cname, new T_provider_conn( cname ) );
+        }
+      }
+      return mProviderConnections;
+    }
+
+    // Common functionality for connections management, to be moved into the class
+    // when all the providers are ready
+    // T_provider_conn: subclass of QgsAbstractProviderConnection,
+    // T_conn: provider connection class (such as QgsOgrDbConnection or QgsPostgresConn)
+    // TODO QGIS4: remove all old provider conn classes and move functionality into QgsAbstractProviderConnection subclasses
+    template <class T_provider_conn, class T_conn> QMap<QString, QgsAbstractProviderConnection *> connectionsProtectedService( const QString &serviceName, bool cached = true )
+    {
+      if ( ! cached || mProviderConnections.isEmpty() )
+      {
+        qDeleteAll( mProviderConnections );
+        mProviderConnections.clear();
+        const auto connNames { T_conn::connectionList( serviceName ) };
         for ( const auto &cname : connNames )
         {
           mProviderConnections.insert( cname, new T_provider_conn( cname ) );

@@ -164,8 +164,13 @@ QgsTransaction *QgsProviderMetadata::createTransaction( const QString & )
 
 QMap<QString, QgsAbstractProviderConnection *> QgsProviderMetadata::connections( bool cached )
 {
-  Q_UNUSED( cached );
+  Q_UNUSED( cached )
   throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "connections" ) ) );
+}
+
+QMap<QString, QgsAbstractWebServiceProviderConnection *> QgsProviderMetadata::webServiceConnections( bool cached )
+{
+  return connections<QgsAbstractWebServiceProviderConnection>( cached ) ;
 }
 
 QMap<QString, QgsAbstractDatabaseProviderConnection *> QgsProviderMetadata::dbConnections( bool cached )
@@ -189,7 +194,7 @@ QgsAbstractProviderConnection *QgsProviderMetadata::findConnection( const QStrin
 
 QgsAbstractProviderConnection *QgsProviderMetadata::createConnection( const QString &name )
 {
-  Q_UNUSED( name );
+  Q_UNUSED( name )
   throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "connection" ) ) );
 }
 

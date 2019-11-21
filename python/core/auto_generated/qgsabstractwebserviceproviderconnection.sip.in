@@ -1,0 +1,216 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsabstractwebserviceproviderconnection.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsAbstractWebServiceProviderConnection : QgsAbstractProviderConnection
+{
+%Docstring
+The QgsAbstractWebServiceProviderConnection class provides common functionality
+for web service based connections (OGC, ESRI etc.).
+
+The class methods will throw exceptions in case the requested operation
+is not supported or cannot be performed without errors.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsabstractwebserviceproviderconnection.h"
+%End
+  public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+
+    enum LayerFlag
+    {
+      Aspatial,
+      Vector,
+      Raster,
+    };
+
+    typedef QFlags<QgsAbstractWebServiceProviderConnection::LayerFlag> LayerFlags;
+
+
+    struct LayerProperty
+    {
+
+        SIP_PYOBJECT __repr__();
+%MethodCode
+        QString str = QStringLiteral( "<QgsAbstractWebServiceProviderConnection.LayerProperty: '%1'>" ).arg( sipCpp->layerName() );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+      public:
+
+        QString layerName() const;
+%Docstring
+Returns the layer name
+%End
+
+        void setLayerName( const QString &name );
+%Docstring
+Sets the layer name to ``name``
+%End
+
+        LayerFlags flags() const;
+%Docstring
+Returns the layer flags
+%End
+
+        void setFlags( const LayerFlags &flags );
+%Docstring
+Sets the layer ``flags``
+%End
+
+        QString comment() const;
+%Docstring
+Returns the layer comment
+%End
+
+        void setComment( const QString &comment );
+%Docstring
+Sets the layer ``comment``
+%End
+
+        QVariantMap info() const;
+%Docstring
+Returns additional information about the layer
+
+Provider classes may use this property
+to store custom bits of information.
+%End
+
+        void setInfo( const QVariantMap &info );
+%Docstring
+Sets additional information about the layer to ``info``
+
+Provider classes may use this property
+to store custom bits of information.
+%End
+
+        void setFlag( const LayerFlag &flag );
+%Docstring
+Sets a ``flag``
+%End
+
+        QgsCoordinateReferenceSystem crs() const;
+%Docstring
+Returns layer CRS
+%End
+
+        void setCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Sets layer CRS to ``crs``
+%End
+
+        QgsWkbTypes::Type wkbType() const;
+%Docstring
+Returns layer WKB type
+%End
+
+        void setWkbType( const QgsWkbTypes::Type &wkbType );
+%Docstring
+Sets layer WKB type to ``wkbType``
+%End
+
+    };
+
+    enum Capability
+    {
+      Layers,
+      LayerExists,
+      Spatial,
+    };
+
+    typedef QFlags<QgsAbstractWebServiceProviderConnection::Capability> Capabilities;
+
+
+
+    QgsAbstractWebServiceProviderConnection( const QString &name );
+%Docstring
+Creates a new connection with ``name`` by reading its configuration from the settings.
+If a connection with this name cannot be found, an empty connection will be returned.
+%End
+
+    QgsAbstractWebServiceProviderConnection( const QString &uri, const QVariantMap &configuration );
+%Docstring
+Creates a new connection from the given ``uri`` and ``configuration``.
+The connection is not automatically stored in the settings.
+
+.. seealso:: :py:func:`store`
+%End
+
+
+    Capabilities capabilities() const;
+%Docstring
+Returns connection capabilities
+%End
+
+
+    virtual QString layerUri( const QString &layerName ) const throw( QgsProviderConnectionException );
+%Docstring
+Returns the URI string for the given ``layerName``
+Raises a QgsProviderConnectionException if any errors are encountered.
+
+:raises :: py:class:`QgsProviderConnectionException`
+%End
+
+
+    virtual QgsAbstractWebServiceProviderConnection::LayerProperty layer( const QString &layerName ) const;
+%Docstring
+Returns information on a layer with name ``layerName``
+Raises a QgsProviderConnectionException if any errors are encountered or if the layer does not exist.
+
+:raises :: py:class:`QgsProviderConnectionException`
+%End
+
+    QList<QgsAbstractWebServiceProviderConnection::LayerProperty> layersInt( const int flags = 0 ) const throw( QgsProviderConnectionException ) /PyName=layers/;
+%Docstring
+Returns information on the layers
+Raises a QgsProviderConnectionException if any errors are encountered.
+
+:param flags: filter tables by flags, this option completely overrides search options stored in the connection
+
+:raises :: py:class:`QgsProviderConnectionException`
+%End
+
+    virtual bool layerExists( const QString &layerName ) const throw( QgsProviderConnectionException );
+%Docstring
+Checks whether a layer ``layerName`` exists
+Raises a QgsProviderConnectionException if any errors are encountered.
+
+:raises :: py:class:`QgsProviderConnectionException`
+%End
+
+    virtual void store( const QString &name ) const;
+
+    virtual void remove( const QString &name ) const;
+
+
+  protected:
+
+
+    void checkCapability( Capability capability ) const;
+%Docstring
+Checks if ``capability`` is supported and throws and exception if it's not
+
+:raises :: py:class:`QgsProviderConnectionException`
+%End
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsabstractwebserviceproviderconnection.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

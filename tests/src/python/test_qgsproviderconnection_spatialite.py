@@ -15,7 +15,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import shutil
-from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
+from test_qgsproviderconnection_base import TestPyQgsProviderDatabaseConnectionBase
 from qgis.core import (
     QgsWkbTypes,
     QgsAbstractDatabaseProviderConnection,
@@ -32,7 +32,7 @@ from utilities import unitTestDataPath
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestPyQgsProviderConnectionSpatialite(unittest.TestCase, TestPyQgsProviderConnectionBase):
+class TestPyQgsProviderConnectionSpatialite(unittest.TestCase, TestPyQgsProviderDatabaseConnectionBase):
 
     # Provider test cases must define the string URI for the test
     uri = ''
@@ -42,7 +42,7 @@ class TestPyQgsProviderConnectionSpatialite(unittest.TestCase, TestPyQgsProvider
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        TestPyQgsProviderConnectionBase.setUpClass()
+        TestPyQgsProviderDatabaseConnectionBase.setUpClass()
         spatialite_original_path = '{}/qgis_server/test_project_wms_grouped_layers.sqlite'.format(TEST_DATA_DIR)
         cls.spatialite_path = '{}/qgis_server/test_project_wms_grouped_layers_test.sqlite'.format(TEST_DATA_DIR)
         shutil.copy(spatialite_original_path, cls.spatialite_path)

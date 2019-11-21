@@ -18,7 +18,7 @@
 
 QgsAbstractProviderConnection::QgsAbstractProviderConnection( const QString &name )
 {
-  Q_UNUSED( name );
+  Q_UNUSED( name )
   // Note: concrete classes must implement the logic to read the configuration from the settings
   //       and create mUri
 }

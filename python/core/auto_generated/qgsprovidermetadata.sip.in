@@ -247,6 +247,20 @@ Raises a QgsProviderConnectionException if any errors are encountered.
 .. versionadded:: 3.10
 %End
 
+    QMap<QString, QgsAbstractWebServiceProviderConnection *> webServiceConnections( bool cached = true ) throw( QgsProviderConnectionException );
+%Docstring
+Returns a dictionary of web services provider connections,
+the dictionary key is the connection identifier.
+Ownership is not transferred.
+Raises a QgsProviderConnectionException if any errors are encountered.
+
+:param cached: if ``False`` connections will be re-read from the settings
+
+:raises :: py:class:`QgsProviderConnectionException`
+
+.. versionadded:: 3.12
+%End
+
     QgsAbstractProviderConnection *findConnection( const QString &name, bool cached = true ) throw( QgsProviderConnectionException );
 %Docstring
 Searches and returns a (possibly NULL) connection from the stored provider connections.

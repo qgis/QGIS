@@ -23,6 +23,8 @@
 #include "qgslogger.h"
 #include "qgsdataitemprovider.h"
 #include "qgsapplication.h"
+#include "qgsowsconnection.h"
+#include "qgsafsproviderconnection.h"
 
 const QString QgsAfsProvider::AFS_PROVIDER_KEY = QStringLiteral( "arcgisfeatureserver" );
 const QString QgsAfsProvider::AFS_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS Feature Server data provider" );
@@ -378,6 +380,31 @@ QVariantMap QgsAfsProviderMetadata::decodeUri( const QString &uri )
 QgsAfsProvider *QgsAfsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {
   return new QgsAfsProvider( uri, options );
+}
+
+QMap<QString, QgsAbstractProviderConnection *> QgsAfsProviderMetadata::connections( bool cached )
+{
+  return connectionsProtectedService<QgsAfsProviderConnection, QgsOwsConnection>( QStringLiteral( "arcgisfeatureserver" ), cached );
+}
+
+QgsAbstractProviderConnection *QgsAfsProviderMetadata::createConnection( const QString &name )
+{
+  return new QgsAfsProviderConnection( name );
+}
+
+QgsAbstractProviderConnection *QgsAfsProviderMetadata::createConnection( const QString &uri, const QVariantMap &configuration )
+{
+  return new QgsAfsProviderConnection( uri, configuration );
+}
+
+void QgsAfsProviderMetadata::deleteConnection( const QString &name )
+{
+  deleteConnectionProtected<QgsAfsProviderConnection>( name );
+}
+
+void QgsAfsProviderMetadata::saveConnection( const QgsAbstractProviderConnection *createConnection, const QString &name )
+{
+  saveConnectionProtected( createConnection, name );
 }
 
 

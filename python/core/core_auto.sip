@@ -1,8 +1,9 @@
 // Include auto-generated SIP files
 %Include auto_generated/qgis.sip
 %Include auto_generated/qgsabstractcontentcache.sip
-%Include auto_generated/qgsabstractdatabaseproviderconnection.sip
 %Include auto_generated/qgsabstractproviderconnection.sip
+%Include auto_generated/qgsabstractdatabaseproviderconnection.sip
+%Include auto_generated/qgsabstractwebserviceproviderconnection.sip
 %Include auto_generated/qgsaction.sip
 %Include auto_generated/qgsactionmanager.sip
 %Include auto_generated/qgsactionscope.sip

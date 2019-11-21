@@ -258,7 +258,7 @@ Returns connection capabilities
 
     virtual QString tableUri( const QString &schema, const QString &name ) const throw( QgsProviderConnectionException );
 %Docstring
-Returns the URI string for the given ``table`` and ``schema``.
+Returns the URI string for the given table ``name`` and ``schema``.
 Raises a QgsProviderConnectionException if any errors are encountered.
 
 :raises :: py:class:`QgsProviderConnectionException`
