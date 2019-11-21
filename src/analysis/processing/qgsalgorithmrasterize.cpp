@@ -253,7 +253,6 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
     mapSettings.setOutputDpi( image.logicalDpiX() );
     mapSettings.setOutputSize( image.size() );
     QPainter painter { &image };
-    std::unique_ptr<uint8_t, CPLDelete> buffer( static_cast< uint8_t * >( CPLMalloc( sizeof( uint8_t ) * static_cast<size_t>( tileSize * tileSize * nBands ) ) ) );
     if ( feedback->isCanceled() )
     {
       return;
@@ -278,6 +277,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
     const int xOffset { x * tileSize };
     const int yOffset { y * tileSize };
 
+    std::unique_ptr<uint8_t, CPLDelete> buffer( static_cast< uint8_t * >( CPLMalloc( sizeof( uint8_t ) * static_cast<size_t>( tileSize * tileSize * nBands ) ) ) );
     CPLErr err = GDALDatasetRasterIO( hIntermediateDataset.get(),
                                       GF_Read, 0, 0, tileSize, tileSize,
                                       buffer.get(),
