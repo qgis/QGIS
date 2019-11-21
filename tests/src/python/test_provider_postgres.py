@@ -1410,6 +1410,16 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         for f in vl0.getFeatures():
             self.assertNotEqual(f.attribute(0), NULL)
 
+    def testFeatureCountEstimatedOnView(self):
+        """
+        Test feature count on view when estimated data is enabled
+        """
+        self.execSQLCommand('DROP VIEW IF EXISTS qgis_test.somedataview')
+        self.execSQLCommand('CREATE VIEW qgis_test.somedataview AS SELECT * FROM qgis_test."someData"')
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' estimatedmetadata=true srid=4326 type=POINT table="qgis_test"."somedataview" (geom) sql=', 'test', 'postgres')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(self.source.featureCount() > 0)
+
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
 
