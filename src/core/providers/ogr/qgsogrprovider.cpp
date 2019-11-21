@@ -4467,7 +4467,7 @@ void QgsOgrProvider::open( OpenMode mode )
     // assume trusted data to get more speed
     if ( mGDALDriverName == QLatin1String( "FlatGeobuf" ) )
     {
-      options << "VERIFY_BUFFERS=NO"
+      options << "VERIFY_BUFFERS=NO";
     }
 #endif
 
