@@ -1,8 +1,8 @@
-Content-Length: 9089
+Content-Length: 9182
 Content-Type: text/xml; charset=utf-8
 
 <?xml version="1.0" encoding="utf-8"?>
-<WMS_Capabilities xmlns:qgs="http://www.qgis.org/wms" version="1.3.0" xmlns="http://www.opengis.net/wms" xmlns:sld="http://www.opengis.net/sld" xsi:schemaLocation="http://www.opengis.net/wms http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/sld_capabilities.xsd http://www.qgis.org/wms https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/project_with_dimensions.qgs&amp;SERVICE=WMS&amp;REQUEST=GetSchemaExtension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<WMS_Capabilities xmlns:qgs="http://www.qgis.org/wms" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wms http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/sld_capabilities.xsd http://www.qgis.org/wms https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/project_with_dimensions.qgs&amp;SERVICE=WMS&amp;REQUEST=GetSchemaExtension" xmlns:sld="http://www.opengis.net/sld" version="1.3.0" xmlns="http://www.opengis.net/wms">
  <Service>
   <Name>WMS</Name>
   <Title>QGIS Server WMS Dimension test</Title>
@@ -10,7 +10,7 @@ Content-Type: text/xml; charset=utf-8
   <KeywordList>
    <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
   </KeywordList>
-  <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/project_with_dimensions.qgs" xlink:type="simple"/>
+  <OnlineResource xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/project_with_dimensions.qgs" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple"/>
   <ContactInformation>
    <ContactPersonPrimary>
     <ContactPerson>Rene Luc DHONT</ContactPerson>
@@ -29,7 +29,7 @@ Content-Type: text/xml; charset=utf-8
     <DCPType>
      <HTTP>
       <Get>
-       <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/project_with_dimensions.qgs&amp;" xlink:type="simple"/>
+       <OnlineResource xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/project_with_dimensions.qgs&amp;" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple"/>
       </Get>
      </HTTP>
     </DCPType>
@@ -44,7 +44,7 @@ Content-Type: text/xml; charset=utf-8
     <DCPType>
      <HTTP>
       <Get>
-       <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/project_with_dimensions.qgs&amp;" xlink:type="simple"/>
+       <OnlineResource xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/project_with_dimensions.qgs&amp;" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple"/>
       </Get>
      </HTTP>
     </DCPType>
@@ -60,7 +60,7 @@ Content-Type: text/xml; charset=utf-8
     <DCPType>
      <HTTP>
       <Get>
-       <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/project_with_dimensions.qgs&amp;" xlink:type="simple"/>
+       <OnlineResource xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/project_with_dimensions.qgs&amp;" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple"/>
       </Get>
      </HTTP>
     </DCPType>
@@ -72,7 +72,7 @@ Content-Type: text/xml; charset=utf-8
     <DCPType>
      <HTTP>
       <Get>
-       <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/project_with_dimensions.qgs&amp;" xlink:type="simple"/>
+       <OnlineResource xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/project_with_dimensions.qgs&amp;" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple"/>
       </Get>
      </HTTP>
     </DCPType>
@@ -82,7 +82,7 @@ Content-Type: text/xml; charset=utf-8
     <DCPType>
      <HTTP>
       <Get>
-       <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/project_with_dimensions.qgs&amp;" xlink:type="simple"/>
+       <OnlineResource xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/project_with_dimensions.qgs&amp;" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple"/>
       </Get>
      </HTTP>
     </DCPType>
@@ -92,7 +92,7 @@ Content-Type: text/xml; charset=utf-8
     <DCPType>
      <HTTP>
       <Get>
-       <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/project_with_dimensions.qgs&amp;" xlink:type="simple"/>
+       <OnlineResource xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/project_with_dimensions.qgs&amp;" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple"/>
       </Get>
      </HTTP>
     </DCPType>
@@ -101,7 +101,7 @@ Content-Type: text/xml; charset=utf-8
   <Exception>
    <Format>XML</Format>
   </Exception>
-  <sld:UserDefinedSymbolization RemoteWCS="0" InlineFeature="0" SupportSLD="1" RemoteWFS="0" UserLayer="0" UserStyle="1"/>
+  <sld:UserDefinedSymbolization UserStyle="1" RemoteWFS="0" RemoteWCS="0" InlineFeature="0" UserLayer="0" SupportSLD="1"/>
   <Layer queryable="1">
    <Title>QGIS Server WMS Dimensions</Title>
    <Abstract>QGIS Server WMS Dimensions</Abstract>
@@ -109,13 +109,13 @@ Content-Type: text/xml; charset=utf-8
    <CRS>EPSG:3857</CRS>
    <CRS>EPSG:4326</CRS>
    <EX_GeographicBoundingBox>
-    <westBoundLongitude>-174.767</westBoundLongitude>
-    <eastBoundLongitude>177.931</eastBoundLongitude>
-    <southBoundLatitude>-69.9578</southBoundLatitude>
-    <northBoundLatitude>84.3079</northBoundLatitude>
+    <westBoundLongitude>-174.766579</westBoundLongitude>
+    <eastBoundLongitude>177.930822</eastBoundLongitude>
+    <southBoundLatitude>-69.957839</southBoundLatitude>
+    <northBoundLatitude>84.307877</northBoundLatitude>
    </EX_GeographicBoundingBox>
-   <BoundingBox miny="-174.767" maxx="84.3079" CRS="EPSG:4326" minx="-69.9578" maxy="177.931"/>
-   <BoundingBox miny="-1.1055e+7" maxx="2.09619e+7" CRS="EPSG:3857" minx="-2.06097e+7" maxy="1.91438e+7"/>
+   <BoundingBox miny="-174.766579" maxy="177.930822" minx="-69.957839" maxx="84.307877" CRS="EPSG:4326"/>
+   <BoundingBox miny="-11055007" maxy="19143773" minx="-20609694" maxx="20961936" CRS="EPSG:3857"/>
    <Name>QGIS Server WMS Dimensions</Name>
    <KeywordList>
     <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
@@ -127,22 +127,22 @@ Content-Type: text/xml; charset=utf-8
     <CRS>EPSG:3857</CRS>
     <CRS>EPSG:4326</CRS>
     <EX_GeographicBoundingBox>
-     <westBoundLongitude>-28.7614</westBoundLongitude>
-     <eastBoundLongitude>3.33612e-12</eastBoundLongitude>
-     <southBoundLatitude>30</southBoundLatitude>
+     <westBoundLongitude>-28.761387</westBoundLongitude>
+     <eastBoundLongitude>0.000001</eastBoundLongitude>
+     <southBoundLatitude>29.999996</southBoundLatitude>
      <northBoundLatitude>60</northBoundLatitude>
     </EX_GeographicBoundingBox>
-    <BoundingBox miny="-28.7614" maxx="60" CRS="EPSG:4326" minx="30" maxy="3.33612e-12"/>
-    <BoundingBox miny="3.50355e+06" maxx="3.73885e-7" CRS="EPSG:3857" minx="-3.2017e+06" maxy="8.39974e+06"/>
+    <BoundingBox miny="-28.761387" maxy="0.000001" minx="29.999996" maxx="60" CRS="EPSG:4326"/>
+    <BoundingBox miny="3503549.353" maxy="8399737.89" minx="-3201702.942" maxx="0.001" CRS="EPSG:3857"/>
     <Style>
      <Name>default</Name>
      <Title>default</Title>
      <LegendURL>
       <Format>image/png</Format>
-      <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/project_with_dimensions.qgs&amp;SERVICE=WMS&amp;VERSION=1.3.0&amp;REQUEST=GetLegendGraphic&amp;LAYER=Contours&amp;FORMAT=image/png&amp;STYLE=default&amp;SLD_VERSION=1.1.0" xlink:type="simple"/>
+      <OnlineResource xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/project_with_dimensions.qgs&amp;SERVICE=WMS&amp;VERSION=1.3.0&amp;REQUEST=GetLegendGraphic&amp;LAYER=Contours&amp;FORMAT=image/png&amp;STYLE=default&amp;SLD_VERSION=1.1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple"/>
      </LegendURL>
     </Style>
-    <Dimension multipleValue="49" nearestValue="48" name="elevation" unitSymbol="m" units="meters">0, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000</Dimension>
+    <Dimension name="elevation" units="meters" unitSymbol="m" nearestValue="48" multipleValue="49">0, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000</Dimension>
    </Layer>
    <Layer queryable="1">
     <Name>Slopes</Name>
@@ -151,22 +151,22 @@ Content-Type: text/xml; charset=utf-8
     <CRS>EPSG:3857</CRS>
     <CRS>EPSG:4326</CRS>
     <EX_GeographicBoundingBox>
-     <westBoundLongitude>-9.40375</westBoundLongitude>
-     <eastBoundLongitude>3.33612e-12</eastBoundLongitude>
-     <southBoundLatitude>36.0667</southBoundLatitude>
-     <northBoundLatitude>43.7563</northBoundLatitude>
+     <westBoundLongitude>-9.403751</westBoundLongitude>
+     <eastBoundLongitude>0.000001</eastBoundLongitude>
+     <southBoundLatitude>36.066665</southBoundLatitude>
+     <northBoundLatitude>43.756257</northBoundLatitude>
     </EX_GeographicBoundingBox>
-    <BoundingBox miny="-9.40375" maxx="43.7563" CRS="EPSG:4326" minx="36.0667" maxy="3.33612e-12"/>
-    <BoundingBox miny="4.3098e+06" maxx="3.71052e-7" CRS="EPSG:3857" minx="-1.04682e+06" maxy="5.4278e+06"/>
+    <BoundingBox miny="-9.403751" maxy="0.000001" minx="36.066665" maxx="43.756257" CRS="EPSG:4326"/>
+    <BoundingBox miny="4309798.344" maxy="5427799.41" minx="-1046820.709" maxx="0.001" CRS="EPSG:3857"/>
     <Style>
      <Name>default</Name>
      <Title>default</Title>
      <LegendURL>
       <Format>image/png</Format>
-      <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/project_with_dimensions.qgs&amp;SERVICE=WMS&amp;VERSION=1.3.0&amp;REQUEST=GetLegendGraphic&amp;LAYER=Slopes&amp;FORMAT=image/png&amp;STYLE=default&amp;SLD_VERSION=1.1.0" xlink:type="simple"/>
+      <OnlineResource xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/project_with_dimensions.qgs&amp;SERVICE=WMS&amp;VERSION=1.3.0&amp;REQUEST=GetLegendGraphic&amp;LAYER=Slopes&amp;FORMAT=image/png&amp;STYLE=default&amp;SLD_VERSION=1.1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple"/>
      </LegendURL>
     </Style>
-    <Dimension multipleValue="49" nearestValue="48" name="range_elevation" unitSymbol="m" units="meters">0, 500, 1000, 1500, 2000, 2500, 3000</Dimension>
+    <Dimension name="range_elevation" units="meters" unitSymbol="m" nearestValue="48" multipleValue="49">0, 500, 1000, 1500, 2000, 2500, 3000</Dimension>
    </Layer>
    <Layer queryable="1">
     <Name>dem</Name>
@@ -176,18 +176,18 @@ Content-Type: text/xml; charset=utf-8
     <CRS>EPSG:4326</CRS>
     <EX_GeographicBoundingBox>
      <westBoundLongitude>-30</westBoundLongitude>
-     <eastBoundLongitude>3.33245e-12</eastBoundLongitude>
-     <southBoundLatitude>30</southBoundLatitude>
+     <eastBoundLongitude>0.000001</eastBoundLongitude>
+     <southBoundLatitude>29.999999</southBoundLatitude>
      <northBoundLatitude>60</northBoundLatitude>
     </EX_GeographicBoundingBox>
-    <BoundingBox miny="-30" maxx="60" CRS="EPSG:4326" minx="30" maxy="3.33245e-12"/>
-    <BoundingBox miny="3.50355e+06" maxx="3.73885e-7" CRS="EPSG:3857" minx="-3.33958e+06" maxy="8.39974e+06"/>
+    <BoundingBox miny="-30" maxy="0.000001" minx="29.999999" maxx="60" CRS="EPSG:4326"/>
+    <BoundingBox miny="3503549.843" maxy="8399737.89" minx="-3339584.724" maxx="0.001" CRS="EPSG:3857"/>
     <Style>
      <Name>default</Name>
      <Title>default</Title>
      <LegendURL>
       <Format>image/png</Format>
-      <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/project_with_dimensions.qgs&amp;SERVICE=WMS&amp;VERSION=1.3.0&amp;REQUEST=GetLegendGraphic&amp;LAYER=dem&amp;FORMAT=image/png&amp;STYLE=default&amp;SLD_VERSION=1.1.0" xlink:type="simple"/>
+      <OnlineResource xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/project_with_dimensions.qgs&amp;SERVICE=WMS&amp;VERSION=1.3.0&amp;REQUEST=GetLegendGraphic&amp;LAYER=dem&amp;FORMAT=image/png&amp;STYLE=default&amp;SLD_VERSION=1.1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple"/>
      </LegendURL>
     </Style>
    </Layer>
