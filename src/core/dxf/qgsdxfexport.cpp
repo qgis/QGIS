@@ -650,7 +650,7 @@ void QgsDxfExport::writeEntities()
 
     QgsCoordinateTransform ct( mMapSettings.destinationCrs(), job->crs, mMapSettings.transformContext() );
 
-    QgsFeatureRequest request = QgsFeatureRequest().setSubsetOfAttributes( job->attributes, job->fields ).setExpressionContext( job->expressionContext );
+    QgsFeatureRequest request = QgsFeatureRequest().setSubsetOfAttributes( job->attributes, job->fields ).setExpressionContext( job->renderContext.expressionContext() );
     request.setFilterRect( ct.transform( mExtent ) );
 
     QgsFeatureIterator featureIt = job->featureSource.getFeatures( request );
@@ -786,7 +786,7 @@ void QgsDxfExport::writeEntitiesSymbolLevels( DxfLayerJob *job )
   QHash< QgsSymbol *, QList<QgsFeature> > features;
 
   QgsRenderContext ctx = renderContext();
-  const QList<QgsExpressionContextScope *> scopes = job->expressionContext.scopes();
+  const QList<QgsExpressionContextScope *> scopes = job->renderContext.expressionContext().scopes();
   for ( QgsExpressionContextScope *scope : scopes )
     ctx.expressionContext().appendScope( new QgsExpressionContextScope( *scope ) );
   QgsSymbolRenderContext sctx( ctx, QgsUnitTypes::RenderMillimeters, 1.0, false, nullptr, nullptr );

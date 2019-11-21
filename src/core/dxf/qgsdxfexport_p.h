@@ -31,8 +31,8 @@
 struct DxfLayerJob
 {
   DxfLayerJob( QgsVectorLayer *vl, const QString &layerStyleOverride, QgsRenderContext &renderContext, QgsDxfExport *dxfExport, const QString &splitLayerAttribute )
-    : styleOverride( vl )
-    , expressionContext( renderContext.expressionContext() )
+    : renderContext( renderContext )
+    , styleOverride( vl )
     , featureSource( vl )
     , dxfExport( dxfExport )
     , crs( vl->crs() )
@@ -42,7 +42,7 @@ struct DxfLayerJob
   {
     fields = vl->fields();
     renderer.reset( vl->renderer()->clone() );
-    expressionContext.appendScope( vl->createExpressionContextScope() );
+    renderContext.expressionContext().appendScope( QgsExpressionContextUtils::layerScope( vl ) );
 
     if ( !layerStyleOverride.isNull() )
     {
@@ -89,9 +89,9 @@ struct DxfLayerJob
     renderer->startRender( renderContext, fields );
   };
 
+  QgsRenderContext renderContext;
   QgsFields fields;
   QgsMapLayerStyleOverride styleOverride;
-  QgsExpressionContext expressionContext;
   QgsVectorLayerFeatureSource featureSource;
   std::unique_ptr< QgsFeatureRenderer > renderer;
   std::unique_ptr<QgsAbstractVectorLayerLabeling> labeling;
