@@ -622,6 +622,9 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     void mapThemeChanged( const QString &theme );
 
+    //! Applies current visibility presets to the renamed map theme
+    void currentMapThemeRenamed( const QString &theme, const QString &newTheme );
+
     //! Create cache image
     void recreateCachedImageInBackground();
 
