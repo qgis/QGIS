@@ -90,7 +90,6 @@ from .RandomPointsLayer import RandomPointsLayer
 from .RandomPointsPolygons import RandomPointsPolygons
 from .RandomSelection import RandomSelection
 from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
-from .Rasterize import RasterizeAlgorithm
 from .RasterCalculator import RasterCalculator
 from .RasterLayerHistogram import RasterLayerHistogram
 from .RasterLayerStatistics import RasterLayerStatistics
@@ -202,7 +201,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 RandomSelection(),
                 RandomSelectionWithinSubsets(),
                 RasterCalculator(),
-                RasterizeAlgorithm(),
                 RasterLayerHistogram(),
                 RasterLayerStatistics(),
                 RasterSampling(),

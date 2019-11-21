@@ -92,7 +92,7 @@ class CORE_EXPORT QgsGdalUtils
     static char **papszFromStringList( const QStringList &list );
 
     /**
-     * Converts an \a image to a GDAL memory dataset.
+     * Converts an \a image to a GDAL memory dataset by borrowing image data.
      *
      * \warning The \a image must exist unchanged for the lifetime of the returned gdal dataset!
      *

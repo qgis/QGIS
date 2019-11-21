@@ -2,6 +2,14 @@
   qgsalgorithmrasterize.cpp - QgsRasterizeAlgorithm
 
  ---------------------
+ Original implementation in Python:
+
+ begin                : 2016-10-05
+ copyright            : (C) 2016 by OPENGIS.ch
+ email                : matthias@opengis.ch
+
+ C++ port:
+
  begin                : 20.11.2019
  copyright            : (C) 2019 by Alessandro Pasotti
  email                : elpaso at itopen dot it
@@ -13,21 +21,20 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "qgsalgorithmrasterize.h"
 #include "qgsprocessingparameters.h"
 #include "qgsmapthemecollection.h"
 #include "qgsrasterfilewriter.h"
 #include "qgsmaprenderercustompainterjob.h"
 #include "gdal.h"
-#include "cpl_string.h"
-#include "qgsogrutils.h"
 #include "qgsgdalutils.h"
 
 ///@cond PRIVATE
 
 QString QgsRasterizeAlgorithm::name() const
 {
-  return QStringLiteral( "rasterizefast" );
+  return QStringLiteral( "rasterize" );
 }
 
 QString QgsRasterizeAlgorithm::displayName() const
@@ -55,6 +62,13 @@ void QgsRasterizeAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterExtent(
                   QStringLiteral( "EXTENT" ),
                   QObject::tr( "Minimum extent to render" ) ) );
+  addParameter( new QgsProcessingParameterNumber(
+                  QStringLiteral( "EXTENT_BUFFER" ),
+                  QObject::tr( "Buffer around tiles in map units" ),
+                  QgsProcessingParameterNumber::Type::Double,
+                  0,
+                  true,
+                  0 ) );
   addParameter( new QgsProcessingParameterNumber(
                   QStringLiteral( "TILE_SIZE" ),
                   QObject::tr( "Tile size" ),
@@ -126,22 +140,18 @@ QgsRasterizeAlgorithm *QgsRasterizeAlgorithm::createInstance() const
   return new QgsRasterizeAlgorithm();
 }
 
-bool QgsRasterizeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
-{
-  return true;
-}
 
 QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
 
-  const auto mapTheme { parameterAsString( parameters, QStringLiteral( "MAP_THEME" ), context ) };
-  const auto mapLayers { parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context ) };
-  const auto extent { parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, context.project()->crs() ) };
-  const auto tileSize { parameterAsInt( parameters, QStringLiteral( "TILE_SIZE" ), context ) };
-  const auto transparent { parameterAsBool( parameters, QStringLiteral( "MAKE_BACKGROUND_TRANSPARENT" ), context ) };
-  const auto mapUnitsPerPixel { parameterAsDouble( parameters, QStringLiteral( "MAP_UNITS_PER_PIXEL" ), context ) };
-  const auto outputLayer { parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context )};
-
+  const QString mapTheme { parameterAsString( parameters, QStringLiteral( "MAP_THEME" ), context ) };
+  const QList<QgsMapLayer *> mapLayers { parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context ) };
+  const QgsRectangle extent { parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, context.project()->crs() ) };
+  const int tileSize { parameterAsInt( parameters, QStringLiteral( "TILE_SIZE" ), context ) };
+  const bool transparent { parameterAsBool( parameters, QStringLiteral( "MAKE_BACKGROUND_TRANSPARENT" ), context ) };
+  const double mapUnitsPerPixel { parameterAsDouble( parameters, QStringLiteral( "MAP_UNITS_PER_PIXEL" ), context ) };
+  const double extentBuffer { parameterAsDouble( parameters, QStringLiteral( "EXTENT_BUFFER" ), context ) };
+  const QString outputLayerFileName { parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context )};
 
   int xTileCount { static_cast<int>( ceil( extent.width() / mapUnitsPerPixel / tileSize ) )};
   int yTileCount { static_cast<int>( ceil( extent.height() / mapUnitsPerPixel / tileSize ) )};
@@ -149,33 +159,25 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
   int height { yTileCount * tileSize };
   int nBands { transparent ? 4 : 3 };
 
-  const QString driverName { QgsRasterFileWriter::driverForExtension( QFileInfo( outputLayer ).suffix() ) };
+  const QString driverName { QgsRasterFileWriter::driverForExtension( QFileInfo( outputLayerFileName ).suffix() ) };
   if ( driverName.isEmpty() )
   {
     throw QgsProcessingException( QObject::tr( "Invalid output raster format" ) );
   }
 
-  GDALDriverH hDriver = GDALGetDriverByName( driverName.toLocal8Bit().constData() );
-  if ( !hDriver )
+  GDALDriverH hOutputFileDriver = GDALGetDriverByName( driverName.toLocal8Bit().constData() );
+  if ( !hOutputFileDriver )
   {
     throw QgsProcessingException( QObject::tr( "Error creating GDAL driver" ) );
   }
 
-
-  GDALDriverH hDstDriver = GDALGetDriverByName( "png" );
-  if ( !hDstDriver )
-  {
-    throw QgsProcessingException( QObject::tr( "Error creating GDAL driver for intermediate images" ) );
-  }
-
-
-  gdal::dataset_unique_ptr hOutputDS( GDALCreate( hDriver, outputLayer.toLocal8Bit().constData(), width, height, nBands, GDALDataType::GDT_Byte, nullptr ) );
-  if ( !hOutputDS )
+  gdal::dataset_unique_ptr hOutputDataset( GDALCreate( hOutputFileDriver, outputLayerFileName.toLocal8Bit().constData(), width, height, nBands, GDALDataType::GDT_Byte, nullptr ) );
+  if ( !hOutputDataset )
   {
     throw QgsProcessingException( QObject::tr( "Error creating GDAL output layer" ) );
   }
 
-  GDALSetProjection( hOutputDS.get(), context.project()->crs().toWkt().toLatin1().constData() );
+  GDALSetProjection( hOutputDataset.get(), context.project()->crs().toWkt().toLatin1().constData() );
   double geoTransform[6];
   geoTransform[0] = extent.xMinimum();
   geoTransform[1] = mapUnitsPerPixel;
@@ -183,7 +185,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
   geoTransform[3] = extent.yMaximum();
   geoTransform[4] = 0;
   geoTransform[5] = - mapUnitsPerPixel;
-  GDALSetGeoTransform( hOutputDS.get(), geoTransform );
+  GDALSetGeoTransform( hOutputDataset.get(), geoTransform );
 
   int red = context.project()->readNumEntry( QStringLiteral( "Gui" ), "/CanvasColorRedPart", 255 );
   int green = context.project()->readNumEntry( QStringLiteral( "Gui" ), "/CanvasColorGreenPart", 255 );
@@ -199,42 +201,44 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
     bgColor = QColor( red, green, blue );
   }
 
-  QgsMapSettings settings;
-  settings.setOutputImageFormat( QImage::Format_ARGB32 );
-  settings.setDestinationCrs( context.project()->crs() );
-  settings.setFlag( QgsMapSettings::Antialiasing, true );
-  settings.setFlag( QgsMapSettings::RenderMapTile, true );
-  settings.setFlag( QgsMapSettings::UseAdvancedEffects, true );
-  settings.setTransformContext( context.transformContext() );
-  settings.setBackgroundColor( bgColor );
+  QgsMapSettings mapSettings;
+  mapSettings.setOutputImageFormat( QImage::Format_ARGB32 );
+  mapSettings.setDestinationCrs( context.project()->crs() );
+  mapSettings.setFlag( QgsMapSettings::Antialiasing, true );
+  mapSettings.setFlag( QgsMapSettings::RenderMapTile, true );
+  mapSettings.setFlag( QgsMapSettings::UseAdvancedEffects, true );
+  mapSettings.setTransformContext( context.transformContext() );
+  mapSettings.setExtentBuffer( extentBuffer );
+  mapSettings.setBackgroundColor( bgColor );
 
   // Now get layers
   if ( ! mapTheme.isEmpty() && context.project()->mapThemeCollection()->hasMapTheme( mapTheme ) )
   {
-    settings.setLayers( context.project()->mapThemeCollection()->mapThemeVisibleLayers( mapTheme ) );
-    settings.setLayerStyleOverrides( context.project()->mapThemeCollection( )->mapThemeStyleOverrides( mapTheme ) );
+    mapSettings.setLayers( context.project()->mapThemeCollection()->mapThemeVisibleLayers( mapTheme ) );
+    mapSettings.setLayerStyleOverrides( context.project()->mapThemeCollection( )->mapThemeStyleOverrides( mapTheme ) );
   }
   else if ( ! mapLayers.isEmpty() )
   {
-    settings.setLayers( mapLayers );
+    mapSettings.setLayers( mapLayers );
   }
 
   // Still no layers? Get them all from the project
-  if ( settings.layers().isEmpty() )
+  if ( mapSettings.layers().isEmpty() )
   {
-    settings.setLayers( context.project()->mapLayers().values() );
+    mapSettings.setLayers( context.project()->mapLayers().values() );
   }
 
   QImage image { tileSize, tileSize, QImage::Format::Format_ARGB32 };
-  settings.setOutputDpi( image.logicalDpiX() );
-  settings.setOutputSize( image.size() );
+  mapSettings.setOutputDpi( image.logicalDpiX() );
+  mapSettings.setOutputSize( image.size() );
   QPainter painter { &image };
 
   // Start rendering
   const double extentRatio { mapUnitsPerPixel * tileSize };
   const int numTiles { xTileCount * yTileCount };
-  const QString fileExtension { QFileInfo( outputLayer ).suffix() };
+  const QString fileExtension { QFileInfo( outputLayerFileName ).suffix() };
 
+  // Custom deleter for CPL allocation
   struct CPLDelete
   {
     void operator()( uint8_t *ptr ) const
@@ -255,31 +259,18 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
         return {};
       }
       image.fill( transparent ? bgColor.rgba() : bgColor.rgb() );
-      settings.setExtent( QgsRectangle(
-                            extent.xMinimum() + x * extentRatio,
-                            extent.yMaximum() - ( y + 1 ) * extentRatio,
-                            extent.xMinimum() + ( x + 1 ) * extentRatio,
-                            extent.yMaximum() - y * extentRatio
-                          ) );
-      QgsMapRendererCustomPainterJob job( settings, &painter );
-      job.renderSynchronously();
+      mapSettings.setExtent( QgsRectangle(
+                               extent.xMinimum() + x * extentRatio,
+                               extent.yMaximum() - ( y + 1 ) * extentRatio,
+                               extent.xMinimum() + ( x + 1 ) * extentRatio,
+                               extent.yMaximum() - y * extentRatio
+                             ) );
+      QgsMapRendererCustomPainterJob job( mapSettings, &painter );
+      job.start();
+      job.waitForFinished();
 
-#if 0
-      QTemporaryFile tmpImage( QStringLiteral( "qgis_rasterize_XXXXXX.png" ) );
-      if ( ! tmpImage.open( ) )
-      {
-        throw QgsProcessingException( QStringLiteral( "Could not create the temporary image" ) );
-      }
-      tmpImage.close();
-      if ( ! image.save( tmpImage.fileName() ) )
-      {
-        throw QgsProcessingException( QStringLiteral( "Could not save the temporary image" ) );
-      }
-      gdal::dataset_unique_ptr hIntermediateDS( GDALOpen( tmpImage.fileName().toLocal8Bit().constData(), GA_ReadOnly ) );
-#endif
-
-      gdal::dataset_unique_ptr hIntermediateDS( QgsGdalUtils::imageToMemoryDataset( image ) );
-      if ( !hIntermediateDS )
+      gdal::dataset_unique_ptr hIntermediateDataset( QgsGdalUtils::imageToMemoryDataset( image ) );
+      if ( !hIntermediateDataset )
       {
         throw QgsProcessingException( QStringLiteral( "Error reading tiles from the temporary image" ) );
       }
@@ -287,7 +278,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
       const int xOffset { x * tileSize };
       const int yOffset { y * tileSize };
 
-      CPLErr err = GDALDatasetRasterIO( hIntermediateDS.get(),
+      CPLErr err = GDALDatasetRasterIO( hIntermediateDataset.get(),
                                         GF_Read, 0, 0, tileSize, tileSize,
                                         buffer.get(),
                                         tileSize, tileSize, GDT_Byte, nBands, nullptr, 0, 0, 0 );
@@ -296,7 +287,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
         throw QgsProcessingException( QStringLiteral( "Error reading intermediate raster" ) );
       }
 
-      err = GDALDatasetRasterIO( hOutputDS.get(),
+      err = GDALDatasetRasterIO( hOutputDataset.get(),
                                  GF_Write, xOffset, yOffset, tileSize, tileSize,
                                  buffer.get(),
                                  tileSize, tileSize, GDT_Byte, nBands, nullptr, 0, 0, 0 );
@@ -309,8 +300,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
     }
   }
 
-  return { { QStringLiteral( "OUTPUT" ), outputLayer } };
+  return { { QStringLiteral( "OUTPUT" ), outputLayerFileName } };
 }
-
 
 ///@endcond

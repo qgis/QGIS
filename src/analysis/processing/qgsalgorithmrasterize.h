@@ -2,6 +2,15 @@
   qgsalgorithmrasterize.h - QgsRasterizeAlgorithm
 
  ---------------------
+
+ Original implementation in Python:
+
+ begin                : 2016-10-05
+ copyright            : (C) 2016 by OPENGIS.ch
+ email                : matthias@opengis.ch
+
+ C++ port:
+
  begin                : 20.11.2019
  copyright            : (C) 2019 by Alessandro Pasotti
  email                : elpaso at itopen dot it
@@ -42,7 +51,6 @@ class QgsRasterizeAlgorithm : public QgsProcessingAlgorithm
 
   protected:
 
-    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
