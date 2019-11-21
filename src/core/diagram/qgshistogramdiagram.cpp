@@ -61,18 +61,20 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsFeature &feature, const QgsRen
     maxValue = s.minimumSize;
   }
 
+  const double spacing = c.convertToPainterUnits( s.spacing(), s.spacingUnit(), s.spacingMapUnitScale() );
+
   switch ( s.diagramOrientation )
   {
     case QgsDiagramSettings::Up:
     case QgsDiagramSettings::Down:
       mScaleFactor = ( ( is.upperSize.width() - is.lowerSize.height() ) / ( is.upperValue - is.lowerValue ) );
-      size.scale( s.barWidth * s.categoryAttributes.size(), maxValue * mScaleFactor, Qt::IgnoreAspectRatio );
+      size.scale( s.barWidth * s.categoryAttributes.size() + spacing * std::max( 0, s.categoryAttributes.size() - 1 ), maxValue * mScaleFactor, Qt::IgnoreAspectRatio );
       break;
 
     case QgsDiagramSettings::Right:
     case QgsDiagramSettings::Left:
       mScaleFactor = ( ( is.upperSize.width() - is.lowerSize.width() ) / ( is.upperValue - is.lowerValue ) );
-      size.scale( maxValue * mScaleFactor, s.barWidth * s.categoryAttributes.size(), Qt::IgnoreAspectRatio );
+      size.scale( maxValue * mScaleFactor, s.barWidth * s.categoryAttributes.size() + spacing * std::max( 0, s.categoryAttributes.size() - 1 ), Qt::IgnoreAspectRatio );
       break;
   }
 
@@ -116,19 +118,21 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes &attributes, const 
     maxValue = std::max( attributes.at( i ).toDouble(), maxValue );
   }
 
+  const double spacing = c.convertToPainterUnits( s.spacing(), s.spacingUnit(), s.spacingMapUnitScale() );
+
   switch ( s.diagramOrientation )
   {
     case QgsDiagramSettings::Up:
     case QgsDiagramSettings::Down:
       mScaleFactor = maxValue / s.size.height();
-      size.scale( s.barWidth * s.categoryColors.size(), s.size.height(), Qt::IgnoreAspectRatio );
+      size.scale( s.barWidth * s.categoryColors.size() + spacing * std::max( 0, s.categoryAttributes.size() - 1 ), s.size.height(), Qt::IgnoreAspectRatio );
       break;
 
     case QgsDiagramSettings::Right:
     case QgsDiagramSettings::Left:
     default: // just in case...
       mScaleFactor = maxValue / s.size.width();
-      size.scale( s.size.width(), s.barWidth * s.categoryColors.size(), Qt::IgnoreAspectRatio );
+      size.scale( s.size.width(), s.barWidth * s.categoryColors.size() + spacing * std::max( 0, s.categoryAttributes.size() - 1 ), Qt::IgnoreAspectRatio );
       break;
   }
 
@@ -163,6 +167,8 @@ void QgsHistogramDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCon
 
   double currentOffset = 0;
   double scaledWidth = sizePainterUnits( s.barWidth, s, c );
+
+  const double spacing = c.convertToPainterUnits( s.spacing(), s.spacingUnit(), s.spacingMapUnitScale() );
 
   double baseX = position.x();
   double baseY = position.y();
@@ -199,6 +205,6 @@ void QgsHistogramDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCon
         break;
     }
 
-    currentOffset += scaledWidth;
+    currentOffset += scaledWidth + spacing;
   }
 }

@@ -84,6 +84,10 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   // get rid of annoying outer focus rect on Mac
   mDiagramOptionsListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
 
+  mBarSpacingSpinBox->setClearValue( 0 );
+  mBarSpacingUnitComboBox->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+
   mDiagramFontButton->setMode( QgsFontButton::ModeQFont );
 
   mDiagramTypeComboBox->blockSignals( true );
@@ -341,6 +345,9 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
       }
 
       mBarWidthSpinBox->setValue( settingList.at( 0 ).barWidth );
+      mBarSpacingSpinBox->setValue( settingList.at( 0 ).spacing() );
+      mBarSpacingUnitComboBox->setUnit( settingList.at( 0 ).spacingUnit() );
+      mBarSpacingUnitComboBox->setMapUnitScale( settingList.at( 0 ).spacingMapUnitScale() );
 
       mIncreaseSmallDiagramsCheck->setChecked( settingList.at( 0 ).minimumSize != 0 );
       mIncreaseMinimumSizeSpinBox->setEnabled( mIncreaseSmallDiagramsCheck->isChecked() );
@@ -534,6 +541,9 @@ void QgsDiagramProperties::mDiagramTypeComboBox_currentIndexChanged( int index )
     {
       mBarWidthLabel->show();
       mBarWidthSpinBox->show();
+      mBarSpacingLabel->show();
+      mBarSpacingSpinBox->show();
+      mBarSpacingUnitComboBox->show();
       mBarOptionsFrame->show();
       mAttributeBasedScalingRadio->setChecked( true );
       mFixedSizeRadio->setEnabled( false );
@@ -546,6 +556,9 @@ void QgsDiagramProperties::mDiagramTypeComboBox_currentIndexChanged( int index )
     {
       mBarWidthLabel->hide();
       mBarWidthSpinBox->hide();
+      mBarSpacingLabel->hide();
+      mBarSpacingSpinBox->hide();
+      mBarSpacingUnitComboBox->hide();
       mBarOptionsFrame->hide();
       mLinearlyScalingLabel->setText( tr( "Scale linearly between 0 and the following attribute value / diagram size:" ) );
       mSizeLabel->setText( tr( "Size" ) );
@@ -793,6 +806,10 @@ void QgsDiagramProperties::apply()
   ds.diagramOrientation = static_cast<QgsDiagramSettings::DiagramOrientation>( mOrientationButtonGroup->checkedButton()->property( "direction" ).toInt() );
 
   ds.barWidth = mBarWidthSpinBox->value();
+
+  ds.setSpacing( mBarSpacingSpinBox->value() );
+  ds.setSpacingUnit( mBarSpacingUnitComboBox->unit() );
+  ds.setSpacingMapUnitScale( mBarSpacingUnitComboBox->getMapUnitScale() );
 
   QgsDiagramRenderer *renderer = nullptr;
   if ( mFixedSizeRadio->isChecked() )
