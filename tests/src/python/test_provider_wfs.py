@@ -15,6 +15,9 @@ import os
 import re
 import shutil
 import tempfile
+import http.server
+import threading
+import socketserver
 
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ['QT_HASH_SEED'] = '1'
@@ -416,6 +419,11 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         QgsSettings().clear()
         shutil.rmtree(cls.basetestpath, True)
         cls.vl = None  # so as to properly close the provider and remove any temporary file
+
+    def tearDown(self):
+        """Run after each test"""
+        # clear possible settings modification made during test
+        QgsSettings().clear()
 
     def testWkbType(self):
         """N/A for WFS provider"""
@@ -821,11 +829,11 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
 
         self.assertEqual(vl.dataProvider().capabilities(),
-                         QgsVectorDataProvider.AddFeatures
-                         | QgsVectorDataProvider.ChangeAttributeValues
-                         | QgsVectorDataProvider.ChangeGeometries
-                         | QgsVectorDataProvider.DeleteFeatures
-                         | QgsVectorDataProvider.SelectAtId)
+                         QgsVectorDataProvider.AddFeatures |
+                         QgsVectorDataProvider.ChangeAttributeValues |
+                         QgsVectorDataProvider.ChangeGeometries |
+                         QgsVectorDataProvider.DeleteFeatures |
+                         QgsVectorDataProvider.SelectAtId)
 
         (ret, _) = vl.dataProvider().addFeatures([QgsFeature()])
         self.assertFalse(ret)
@@ -4144,6 +4152,104 @@ java.io.IOExceptionCannot do natural order without a primary key, please add it 
 
         values = [f['INTFIELD'] for f in vl.getFeatures()]
         self.assertEqual(values, [1, 2])
+
+    def testCacheRead(self):
+
+        # setup a clean cache directory
+        cache_dir = tempfile.mkdtemp()
+        QgsSettings().setValue("cache/directory", cache_dir)
+
+        # don't retry, http server never fails
+        QgsSettings().setValue('qgis/defaultTileMaxRetry', '0')
+
+        responses = []
+
+        class SequentialHandler(http.server.SimpleHTTPRequestHandler):
+
+            def do_GET(self):
+                c, response = responses.pop(0)
+                self.send_response(c)
+                self.send_header("Content-type", "application/xml")
+                self.send_header("Content-length", len(response))
+                self.send_header('Last-Modified', 'Wed, 05 Jun 2019 15:33:27 GMT')
+                self.end_headers()
+                self.wfile.write(response.encode('UTF-8'))
+
+        httpd = socketserver.TCPServer(('localhost', 0), SequentialHandler)
+        port = httpd.server_address[1]
+
+        responses.append((200,
+                          """
+<WFS_Capabilities version="1.0.0" xmlns="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc">
+  <FeatureTypeList>
+    <FeatureType>
+      <Name>my:typename</Name>
+      <Title>Title</Title>
+      <Abstract>Abstract</Abstract>
+      <SRS>EPSG:4326</SRS>
+    </FeatureType>
+  </FeatureTypeList>
+</WFS_Capabilities>"""))
+
+        responses.append((200,
+                          """
+<xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
+  <xsd:import namespace="http://www.opengis.net/gml"/>
+  <xsd:complexType name="typenameType">
+    <xsd:complexContent>
+      <xsd:extension base="gml:AbstractFeatureType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="0" name="INTFIELD" nillable="true" type="xsd:int"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="typename" substitutionGroup="gml:_Feature" type="my:typenameType"/>
+</xsd:schema>
+"""))
+
+        responses.append((200,
+                          """
+<wfs:FeatureCollection
+                       xmlns:wfs="http://www.opengis.net/wfs"
+                       xmlns:gml="http://www.opengis.net/gml"
+                       xmlns:my="http://my">
+  <gml:featureMember>
+    <my:typename fid="typename.0">
+      <my:INTFIELD>1</my:INTFIELD>
+    </my:typename>
+  </gml:featureMember>
+  <gml:featureMember>
+    <my:typename fid="typename.1">
+      <my:INTFIELD>2</my:INTFIELD>
+    </my:typename>
+  </gml:featureMember>
+</wfs:FeatureCollection>"""))
+
+        httpd_thread = threading.Thread(target=httpd.serve_forever)
+        httpd_thread.setDaemon(True)
+        httpd_thread.start()
+
+        vl = QgsVectorLayer("url='http://localhost:{}' typename='my:typename' version='1.0.0'".format(port), 'test', 'WFS')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.NoGeometry)
+        self.assertEqual(len(vl.fields()), 1)
+
+        res = [f['INTFIELD'] for f in vl.getFeatures()]
+        self.assertEqual(sorted(res), [1, 2])
+
+        # next response is empty, cache must be used
+        responses.append((304, ""))
+
+        # Reload
+        vl.reload()
+
+        res = [f['INTFIELD'] for f in vl.getFeatures()]
+        # self.assertEqual(len(server.errors()), 0, server.errors())
+        self.assertEqual(sorted(res), [1, 2])
+
+        errors = vl.dataProvider().errors()
+        self.assertEqual(len(errors), 0, errors)
 
 
 if __name__ == '__main__':

@@ -156,6 +156,7 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
       // * or the owner thread of mReply is currently not doing anything because it's blocked in future.waitForFinished() (if it is the main thread)
       connect( mReply, &QNetworkReply::finished, this, &QgsWfsRequest::replyFinished, Qt::DirectConnection );
       connect( mReply, &QNetworkReply::downloadProgress, this, &QgsWfsRequest::replyProgress, Qt::DirectConnection );
+      connect( mReply, &QNetworkReply::readyRead, this, &QgsWfsRequest::replyReadyRead, Qt::DirectConnection );
 
       if ( synchronous )
       {
@@ -270,6 +271,7 @@ bool QgsWfsRequest::sendPOST( const QUrl &url, const QString &contentTypeHeader,
   }
   connect( mReply, &QNetworkReply::finished, this, &QgsWfsRequest::replyFinished );
   connect( mReply, &QNetworkReply::downloadProgress, this, &QgsWfsRequest::replyProgress );
+  connect( mReply, &QNetworkReply::readyRead, this, &QgsWfsRequest::replyReadyRead );
 
   QEventLoop loop;
   connect( this, &QgsWfsRequest::downloadFinished, &loop, &QEventLoop::quit );
@@ -286,6 +288,11 @@ void QgsWfsRequest::abort()
     mReply->deleteLater();
     mReply = nullptr;
   }
+}
+
+void QgsWfsRequest::replyReadyRead( )
+{
+  mGotNonEmptyResponse = true;
 }
 
 void QgsWfsRequest::replyProgress( qint64 bytesReceived, qint64 bytesTotal )
@@ -363,6 +370,8 @@ void QgsWfsRequest::replyFinished()
           }
           connect( mReply, &QNetworkReply::finished, this, &QgsWfsRequest::replyFinished, Qt::DirectConnection );
           connect( mReply, &QNetworkReply::downloadProgress, this, &QgsWfsRequest::replyProgress, Qt::DirectConnection );
+          connect( mReply, &QNetworkReply::readyRead, this, &QgsWfsRequest::replyReadyRead, Qt::DirectConnection );
+
           return;
         }
       }
