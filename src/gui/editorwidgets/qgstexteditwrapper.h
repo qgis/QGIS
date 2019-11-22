@@ -21,6 +21,7 @@
 #include <QLineEdit>
 #include <QPlainTextEdit>
 #include <QTextBrowser>
+#include "qgsattributeform.h"
 #include "qgis_gui.h"
 
 SIP_NO_FILE
@@ -74,11 +75,14 @@ class GUI_EXPORT QgsTextEditWrapper : public QgsEditorWidgetWrapper
   public slots:
     void setValue( const QVariant &value ) override;
     void setEnabled( bool enabled ) override;
+    void setFeature( const QgsFeature &feature );
 
   private slots:
     void textChanged( const QString &text );
 
   private:
+    bool mutable mInvalidJSON;
+    QgsAttributeForm *mForm;
     QTextBrowser *mTextBrowser = nullptr;
     QTextEdit *mTextEdit = nullptr;
     QPlainTextEdit *mPlainTextEdit = nullptr;

@@ -20,6 +20,8 @@
 #include "qgsfilterlineedit.h"
 #include "qgsapplication.h"
 #include "qgsjsonutils.cpp"
+#include "qgsmessagebar.h"
+#include "qgslogger.h"
 
 #include <QSettings>
 #include <nlohmann/json.hpp>
@@ -82,11 +84,14 @@ QVariant QgsTextEditWrapper::value() const
     if ( json::accept( v.toUtf8() ) )
     {
       QVariant qjson = QgsJsonUtils::parseJson( v.toStdString() );
+      mInvalidJSON = false;
       return qjson;
     }
     else
+      // return null value if json is invalid
     {
-      return res;
+      mInvalidJSON = true;
+      return QVariant();
     }
   }
   else
@@ -97,6 +102,7 @@ QVariant QgsTextEditWrapper::value() const
 
 QWidget *QgsTextEditWrapper::createWidget( QWidget *parent )
 {
+  mForm = qobject_cast<QgsAttributeForm *>( parent );
   if ( config( QStringLiteral( "IsMultiline" ) ).toBool() )
   {
     if ( config( QStringLiteral( "UseHtml" ) ).toBool() )
@@ -116,6 +122,7 @@ QWidget *QgsTextEditWrapper::createWidget( QWidget *parent )
 
 void QgsTextEditWrapper::initWidget( QWidget *editor )
 {
+  mInvalidJSON = false;
   mTextBrowser = qobject_cast<QTextBrowser *>( editor );
   mTextEdit = qobject_cast<QTextEdit *>( editor );
   mPlainTextEdit = qobject_cast<QPlainTextEdit *>( editor );
@@ -184,6 +191,18 @@ void QgsTextEditWrapper::showIndeterminateState()
     mPlainTextEdit->blockSignals( false );
   if ( mLineEdit )
     mLineEdit->blockSignals( false );
+}
+
+void QgsTextEditWrapper::setFeature( const QgsFeature &feature )
+{
+  // Do nothing if the value has not changed
+  if ( mInvalidJSON )
+    mForm->displayWarning( tr( "Your JSON is invalid and will be reverted back to what was in the datastore before editing" ) );
+  {
+    mInvalidJSON = false;
+  }
+  setFormFeature( feature );
+  setValue( feature.attribute( mFieldIdx ) );
 }
 
 void QgsTextEditWrapper::setValue( const QVariant &val )

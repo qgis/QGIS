@@ -44,6 +44,8 @@ class QgsAttributeForm : QWidget
 
     const QgsFeature &feature();
 
+    void displayWarning( QString message );
+
 
     void hideButtonBox();
 %Docstring

@@ -109,18 +109,15 @@ void TestQgsTextEditWrapper::testWithJsonInPostgres()
 
   //test empty
   widget->setText( QString( "" ) );
-  QVERIFY( w_json.value().isValid() );
+  QVERIFY( !w_json.value().isValid() );
   // w_json value is QMapVariant
   QCOMPARE( QString::fromUtf8( QJsonDocument::fromVariant( w_json.value() ).toJson( QJsonDocument::Compact ).data() ), QStringLiteral( "" ) );
-  QVERIFY( w_json.value().userType() == QMetaType::QString );
 
   // test invalid JSON
   widget->setText( QString( "{\"body\";\"text\"}" ) );
-  QVERIFY( w_json.value().isValid() );
+  QVERIFY( !w_json.value().isValid() );
   //invalid JSON will be parsed as text - it is up to the Postgres provider to reject it
   QCOMPARE( QString::fromUtf8( QJsonDocument::fromVariant( w_json.value() ).toJson( QJsonDocument::Compact ).data() ), QStringLiteral( "" ) );
-  QCOMPARE( w_json.value().toString(), QStringLiteral( "{\"body\";\"text\"}" ) );
-  QVERIFY( w_json.value().userType() == QMetaType::QString );
 
   // test with bare integer (without container) which is valid JSON
   widget->setText( QString( "2" ) );
@@ -131,10 +128,8 @@ void TestQgsTextEditWrapper::testWithJsonInPostgres()
 
   // test with bare string (not valid JSON)
   widget->setText( QString( "abc" ) );
-  QVERIFY( w_json.value().isValid() ) ;
+  QVERIFY( !w_json.value().isValid() ) ;
   QCOMPARE( QString::fromUtf8( QJsonDocument::fromVariant( w_json.value() ).toJson( QJsonDocument::Compact ).data() ), QStringLiteral( "" ) );
-  QCOMPARE( w_json.value().toString(), QStringLiteral( "abc" ) );
-  QVERIFY( w_json.value().userType() == QMetaType::QString );
 }
 
 void TestQgsTextEditWrapper::testWithJsonBInPostgres()
@@ -178,18 +173,14 @@ void TestQgsTextEditWrapper::testWithJsonBInPostgres()
 
   //test empty
   widget->setText( QString( "" ) );
-  QVERIFY( w_json.value().isValid() );
+  QVERIFY( !w_json.value().isValid() );
   // w_json value is QMapVariant
   QCOMPARE( QString::fromUtf8( QJsonDocument::fromVariant( w_json.value() ).toJson( QJsonDocument::Compact ).data() ), QStringLiteral( "" ) );
-  QVERIFY( w_json.value().userType() == QMetaType::QString );
 
   // test invalid JSON
   widget->setText( QString( "{\"body\";\"text\"}" ) );
-  QVERIFY( w_json.value().isValid() );
-  //invalid JSON will be parsed as text - it is up to the Postgres provider to reject it
+  QVERIFY( !w_json.value().isValid() );
   QCOMPARE( QString::fromUtf8( QJsonDocument::fromVariant( w_json.value() ).toJson( QJsonDocument::Compact ).data() ), QStringLiteral( "" ) );
-  QCOMPARE( w_json.value().toString(), QStringLiteral( "{\"body\";\"text\"}" ) );
-  QVERIFY( w_json.value().userType() == QMetaType::QString );
 
   // test with bare integer (without container) which is valid JSON
   widget->setText( QString( "2" ) );
@@ -200,10 +191,8 @@ void TestQgsTextEditWrapper::testWithJsonBInPostgres()
 
   // test with bare string (not valid JSON)
   widget->setText( QString( "abc" ) );
-  QVERIFY( w_json.value().isValid() );
+  QVERIFY( !w_json.value().isValid() );
   QCOMPARE( QString::fromUtf8( QJsonDocument::fromVariant( w_json.value() ).toJson( QJsonDocument::Compact ).data() ), QStringLiteral( "" ) );
-  QCOMPARE( w_json.value().toString(), QStringLiteral( "abc" ) );
-  QVERIFY( w_json.value().userType() == QMetaType::QString );
 }
 
 QGSTEST_MAIN( TestQgsTextEditWrapper )

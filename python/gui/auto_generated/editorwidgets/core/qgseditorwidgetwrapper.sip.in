@@ -308,6 +308,8 @@ attribute ``attributeName`` to ``attributeValue``
 .. versionadded:: 3.2
 %End
 
+  protected:
+
 
 };
 

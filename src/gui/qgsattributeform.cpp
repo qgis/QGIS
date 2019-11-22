@@ -497,6 +497,14 @@ void QgsAttributeForm::pushSelectedFeaturesMessage()
   }
 }
 
+void QgsAttributeForm::displayWarning( QString message )
+{
+  mMessageBar->pushMessage( QString(),
+                            message,
+                            Qgis::Warning,
+                            messageTimeout() );
+}
+
 void QgsAttributeForm::runSearchSelect( QgsVectorLayer::SelectBehavior behavior )
 {
   QString filter = createFilterExpression();

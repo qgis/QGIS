@@ -307,13 +307,14 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      */
     bool setFormFeatureAttribute( const QString &attributeName, const QVariant &attributeValue );
 
-
-  private:
+  protected:
 
     /**
      * mFieldIdx the widget feature field id
      */
     int mFieldIdx = -1;
+
+  private:
 
     /**
      * The feature currently being edited, in its current state

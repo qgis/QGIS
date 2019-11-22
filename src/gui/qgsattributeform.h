@@ -75,6 +75,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     const QgsFeature &feature() { return mFeature; }
 
+    void displayWarning( QString message );
+
     // TODO QGIS 4.0 - make private
 
     /**
