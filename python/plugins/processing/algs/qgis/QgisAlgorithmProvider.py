@@ -30,7 +30,6 @@ from PyQt5.QtCore import QCoreApplication
 
 from .AddTableField import AddTableField
 from .Aggregate import Aggregate
-from .Aspect import Aspect
 from .BarPlot import BarPlot
 from .BasicStatistics import BasicStatisticsForField
 from .BoxPlot import BoxPlot
@@ -56,7 +55,6 @@ from .FindProjection import FindProjection
 from .GeometryConvert import GeometryConvert
 from .GeometryByExpression import GeometryByExpression
 from .Heatmap import Heatmap
-from .Hillshade import Hillshade
 from .HubDistanceLines import HubDistanceLines
 from .HubDistancePoints import HubDistancePoints
 from .HypsometricCurves import HypsometricCurves
@@ -98,7 +96,6 @@ from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
 from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
 from .RegularPoints import RegularPoints
 from .Relief import Relief
-from .Ruggedness import Ruggedness
 from .SelectByAttribute import SelectByAttribute
 from .SelectByExpression import SelectByExpression
 from .SetMValue import SetMValue
@@ -106,7 +103,6 @@ from .SetRasterStyle import SetRasterStyle
 from .SetVectorStyle import SetVectorStyle
 from .SetZValue import SetZValue
 from .SingleSidedBuffer import SingleSidedBuffer
-from .Slope import Slope
 from .SnapGeometries import SnapGeometriesToLayer
 from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
 from .SpatialIndex import SpatialIndex
@@ -140,7 +136,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
     def getAlgs(self):
         algs = [AddTableField(),
                 Aggregate(),
-                Aspect(),
                 BarPlot(),
                 BasicStatisticsForField(),
                 BoxPlot(),
@@ -166,7 +161,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 GeometryByExpression(),
                 GeometryConvert(),
                 Heatmap(),
-                Hillshade(),
                 HubDistanceLines(),
                 HubDistancePoints(),
                 HypsometricCurves(),
@@ -208,7 +202,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 RectanglesOvalsDiamondsVariable(),
                 RegularPoints(),
                 Relief(),
-                Ruggedness(),
                 SelectByAttribute(),
                 SelectByExpression(),
                 SetMValue(),
@@ -216,7 +209,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 SetVectorStyle(),
                 SetZValue(),
                 SingleSidedBuffer(),
-                Slope(),
                 SnapGeometriesToLayer(),
                 SpatialiteExecuteSQL(),
                 SpatialIndex(),

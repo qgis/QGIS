@@ -24,6 +24,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmaddincrementalfield.cpp
   processing/qgsalgorithmaddxyfields.cpp
   processing/qgsalgorithmarraytranslatedfeatures.cpp
+  processing/qgsalgorithmaspect.cpp
   processing/qgsalgorithmassignprojection.cpp
   processing/qgsalgorithmboundary.cpp
   processing/qgsalgorithmboundingbox.cpp
@@ -60,6 +61,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmforcerhr.cpp
   processing/qgsalgorithmfuzzifyraster.cpp
   processing/qgsalgorithmgrid.cpp
+  processing/qgsalgorithmhillshade.cpp
   processing/qgsalgorithmimportphotos.cpp
   processing/qgsalgorithminterpolatepoint.cpp
   processing/qgsalgorithmintersection.cpp
@@ -100,6 +102,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrenamelayer.cpp
   processing/qgsalgorithmreverselinedirection.cpp
   processing/qgsalgorithmrotate.cpp
+  processing/qgsalgorithmruggedness.cpp
   processing/qgsalgorithmsaveselectedfeatures.cpp
   processing/qgsalgorithmsegmentize.cpp
   processing/qgsalgorithmserviceareafromlayer.cpp
@@ -108,6 +111,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmshortestpathpointtolayer.cpp
   processing/qgsalgorithmshortestpathpointtopoint.cpp
   processing/qgsalgorithmsimplify.cpp
+  processing/qgsalgorithmslope.cpp
   processing/qgsalgorithmsmooth.cpp
   processing/qgsalgorithmsnaptogrid.cpp
   processing/qgsalgorithmsplitfeaturesbyattributecharacter.cpp

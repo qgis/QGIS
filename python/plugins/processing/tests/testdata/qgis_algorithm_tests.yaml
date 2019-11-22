@@ -1613,7 +1613,7 @@ tests:
         name: expected/points_in_polys.gml
         type: vector
 
-  - algorithm: qgis:aspect
+  - algorithm: native:aspect
     name: Aspect from QGIS analysis library
     params:
       INPUT:
@@ -1627,7 +1627,7 @@ tests:
         - f6a8e64647ae93a94f2a4945add8986526a7a07bc85849f3690d15b2
         type: rasterhash
 
-  - algorithm: qgis:slope
+  - algorithm: native:slope
     name: Slope from QGIS analysis library
     params:
       INPUT:
@@ -1641,7 +1641,7 @@ tests:
         - 177475642c57428b395bc0a1e7e86fc1cfd4d86ffc19f31ff8bc964d
         type: rasterhash
 
-  - algorithm: qgis:ruggednessindex
+  - algorithm: native:ruggednessindex
     name: Ruggedness index from QGIS analysis library
     params:
       INPUT:
@@ -1653,7 +1653,7 @@ tests:
         hash: ff630246e8dc19c7217d81261c6b64f965c17fa04d3e41d7979c1f1e
         type: rasterhash
 
-  - algorithm: qgis:hillshade
+  - algorithm: native:hillshade
     name: Hillshade from QGIS analysis library
     params:
       AZIMUTH: 300.0
