@@ -1293,6 +1293,9 @@ class TestQgsExpression: public QObject
       QTest::newRow( "time - time" ) << "to_time('08:30:00') - to_time('05:15:00')" << false << QVariant( QgsInterval( 3 * 60 * 60 + 15 * 60 ) );
       QTest::newRow( "epoch" ) << "epoch(to_datetime('2017-01-01T00:00:01+00:00'))" << false << QVariant( 1483228801000LL );
       QTest::newRow( "epoch invalid date" ) << "epoch('invalid')" << true << QVariant();
+      // datetime_from_epoch will always return a local datetime, so here we create some circular magic to create a local datetime during test (so test can be ran in every timezone...)
+      QTest::newRow( "datetime_from_epoch" ) << "datetime_from_epoch(epoch(to_datetime('2017-01-01T00:00:01')))" << false << QVariant( QDateTime( QDate( 2017, 1, 1 ), QTime( 0, 0, 1 ), Qt::LocalTime ) );
+      QTest::newRow( "datetime_from_epoch_null" ) << "datetime_from_epoch(NULL)" << false <<  QVariant( QVariant::Invalid );
       QTest::newRow( "date from format" ) << "to_date('June 29, 2019','MMMM d, yyyy')" << false << QVariant( QDate( 2019, 6, 29 ) );
       QTest::newRow( "date from format and language" ) << "to_date('29 juin, 2019','d MMMM, yyyy','fr')" << false << QVariant( QDate( 2019, 6, 29 ) );
       QTest::newRow( "date from format, wrong string" ) << "to_date('wrong.string.here','yyyy.MM.dd')" << true << QVariant();
