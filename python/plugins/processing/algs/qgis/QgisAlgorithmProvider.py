@@ -36,7 +36,6 @@ from .BoxPlot import BoxPlot
 from .CheckValidity import CheckValidity
 from .Climb import Climb
 from .ConcaveHull import ConcaveHull
-from .CreateAttributeIndex import CreateAttributeIndex
 from .Datasources2Vrt import Datasources2Vrt
 from .DefineProjection import DefineProjection
 from .Delaunay import Delaunay
@@ -141,7 +140,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 CheckValidity(),
                 Climb(),
                 ConcaveHull(),
-                CreateAttributeIndex(),
                 Datasources2Vrt(),
                 DefineProjection(),
                 Delaunay(),
