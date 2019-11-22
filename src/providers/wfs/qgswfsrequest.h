@@ -74,6 +74,7 @@ class QgsWfsRequest : public QObject
   protected slots:
     void replyProgress( qint64, qint64 );
     void replyFinished();
+    void replyReadyRead();
     void requestTimedOut( QNetworkReply *reply );
 
   protected:
