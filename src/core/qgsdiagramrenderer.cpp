@@ -19,6 +19,7 @@
 #include "diagram/qgstextdiagram.h"
 #include "diagram/qgspiediagram.h"
 #include "diagram/qgshistogramdiagram.h"
+#include "diagram/qgsstackedbardiagram.h"
 #include "qgsrendercontext.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgsfontutils.h"
@@ -300,7 +301,7 @@ void QgsDiagramSettings::readXml( const QDomElement &elem, const QgsReadWriteCon
       categoryColors.append( newColor );
       categoryAttributes.append( attrElem.attribute( QStringLiteral( "field" ) ) );
       categoryLabels.append( attrElem.attribute( QStringLiteral( "label" ) ) );
-      if ( categoryLabels.back().isEmpty() )
+      if ( categoryLabels.constLast().isEmpty() )
       {
         categoryLabels.back() = categoryAttributes.back();
       }
@@ -555,6 +556,10 @@ void QgsDiagramRenderer::_readXml( const QDomElement &elem, const QgsReadWriteCo
   else if ( diagramType == QLatin1String( "Histogram" ) )
   {
     mDiagram.reset( new QgsHistogramDiagram() );
+  }
+  else if ( diagramType == QLatin1String( "Stacked" ) )
+  {
+    mDiagram.reset( new QgsStackedBarDiagram() );
   }
   else
   {
