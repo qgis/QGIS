@@ -18,6 +18,7 @@
 #include "diagram/qgshistogramdiagram.h"
 #include "diagram/qgspiediagram.h"
 #include "diagram/qgstextdiagram.h"
+#include "diagram/qgsstackedbardiagram.h"
 
 #include "qgsproject.h"
 #include "qgsapplication.h"
@@ -92,13 +93,15 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
 
   mDiagramTypeComboBox->blockSignals( true );
   QPixmap pix = QgsApplication::getThemePixmap( QStringLiteral( "diagramNone" ) );
-  mDiagramTypeComboBox->addItem( pix, tr( "No diagrams" ), "None" );
+  mDiagramTypeComboBox->addItem( pix, tr( "No Diagrams" ), "None" );
   pix = QgsApplication::getThemePixmap( QStringLiteral( "pie-chart" ) );
-  mDiagramTypeComboBox->addItem( pix, tr( "Pie chart" ), DIAGRAM_NAME_PIE );
+  mDiagramTypeComboBox->addItem( pix, tr( "Pie Chart" ), DIAGRAM_NAME_PIE );
   pix = QgsApplication::getThemePixmap( QStringLiteral( "text" ) );
-  mDiagramTypeComboBox->addItem( pix, tr( "Text diagram" ), DIAGRAM_NAME_TEXT );
+  mDiagramTypeComboBox->addItem( pix, tr( "Text Diagram" ), DIAGRAM_NAME_TEXT );
   pix = QgsApplication::getThemePixmap( QStringLiteral( "histogram" ) );
   mDiagramTypeComboBox->addItem( pix, tr( "Histogram" ), DIAGRAM_NAME_HISTOGRAM );
+  pix = QgsApplication::getThemePixmap( QStringLiteral( "stacked-bar" ) );
+  mDiagramTypeComboBox->addItem( pix, tr( "Stacked Bars" ), DIAGRAM_NAME_STACKED );
   mDiagramTypeComboBox->blockSignals( false );
 
   mAxisLineStyleButton->setSymbolType( QgsSymbol::Line );
@@ -549,7 +552,7 @@ void QgsDiagramProperties::mDiagramTypeComboBox_currentIndexChanged( int index )
       mDiagramFontButton->hide();
     }
 
-    if ( DIAGRAM_NAME_HISTOGRAM == mDiagramType )
+    if ( DIAGRAM_NAME_HISTOGRAM == mDiagramType || DIAGRAM_NAME_STACKED == mDiagramType )
     {
       mBarWidthLabel->show();
       mBarWidthSpinBox->show();
@@ -558,9 +561,10 @@ void QgsDiagramProperties::mDiagramTypeComboBox_currentIndexChanged( int index )
       mBarSpacingUnitComboBox->show();
       mBarOptionsFrame->show();
       mShowAxisGroupBox->show();
-      mAttributeBasedScalingRadio->setChecked( true );
-      mFixedSizeRadio->setEnabled( false );
-      mDiagramSizeSpinBox->setEnabled( false );
+      if ( DIAGRAM_NAME_HISTOGRAM == mDiagramType )
+        mAttributeBasedScalingRadio->setChecked( true );
+      mFixedSizeRadio->setEnabled( DIAGRAM_NAME_STACKED == mDiagramType );
+      mDiagramSizeSpinBox->setEnabled( DIAGRAM_NAME_STACKED == mDiagramType );
       mLinearlyScalingLabel->setText( tr( "Bar length: Scale linearly, so that the following value matches the specified bar length:" ) );
       mSizeLabel->setText( tr( "Bar length" ) );
       mFrameIncreaseSize->setVisible( false );
@@ -748,7 +752,7 @@ void QgsDiagramProperties::apply()
   int index = mDiagramTypeComboBox->currentIndex();
   bool diagramsEnabled = ( index != 0 );
 
-  QgsDiagram *diagram = nullptr;
+  std::unique_ptr< QgsDiagram > diagram;
 
   if ( diagramsEnabled && 0 == mDiagramAttributesTreeWidget->topLevelItemCount() )
   {
@@ -760,15 +764,19 @@ void QgsDiagramProperties::apply()
 
   if ( mDiagramType == DIAGRAM_NAME_TEXT )
   {
-    diagram = new QgsTextDiagram();
+    diagram = qgis::make_unique< QgsTextDiagram >();
   }
   else if ( mDiagramType == DIAGRAM_NAME_PIE )
   {
-    diagram = new QgsPieDiagram();
+    diagram = qgis::make_unique< QgsPieDiagram >();
+  }
+  else if ( mDiagramType == DIAGRAM_NAME_STACKED )
+  {
+    diagram = qgis::make_unique< QgsStackedBarDiagram >();
   }
   else // if ( diagramType == DIAGRAM_NAME_HISTOGRAM )
   {
-    diagram = new QgsHistogramDiagram();
+    diagram = qgis::make_unique< QgsHistogramDiagram >();
   }
 
   QgsDiagramSettings ds;
@@ -799,7 +807,7 @@ void QgsDiagramProperties::apply()
   ds.lineSizeUnit = mDiagramLineUnitComboBox->unit();
   ds.lineSizeScale = mDiagramLineUnitComboBox->getMapUnitScale();
   ds.labelPlacementMethod = static_cast<QgsDiagramSettings::LabelPlacementMethod>( mLabelPlacementComboBox->currentData().toInt() );
-  ds.scaleByArea = mScaleDependencyComboBox->currentData().toBool();
+  ds.scaleByArea = ( mDiagramType == DIAGRAM_NAME_STACKED ) ? false : mScaleDependencyComboBox->currentData().toBool();
 
   if ( mIncreaseSmallDiagramsCheck->isChecked() )
   {
@@ -865,7 +873,7 @@ void QgsDiagramProperties::apply()
 
     renderer = dr;
   }
-  renderer->setDiagram( diagram );
+  renderer->setDiagram( diagram.release() );
   renderer->setAttributeLegend( mCheckBoxAttributeLegend->isChecked() );
   mLayer->setDiagramRenderer( renderer );
 

@@ -621,7 +621,7 @@ class CORE_EXPORT QgsDiagramSettings
   private:
 
     double mSpacing = 0;
-    QgsUnitTypes::RenderUnit mSpacingUnit;
+    QgsUnitTypes::RenderUnit mSpacingUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mSpacingMapUnitScale;
     Direction mDirection = Counterclockwise;
 

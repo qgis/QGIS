@@ -252,6 +252,7 @@
 %Include auto_generated/diagram/qgsdiagram.sip
 %Include auto_generated/diagram/qgshistogramdiagram.sip
 %Include auto_generated/diagram/qgspiediagram.sip
+%Include auto_generated/diagram/qgsstackedbardiagram.sip
 %Include auto_generated/diagram/qgstextdiagram.sip
 %Include auto_generated/dxf/qgsdxfexport.sip
 %Include auto_generated/effects/qgsblureffect.sip

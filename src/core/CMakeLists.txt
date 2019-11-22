@@ -76,6 +76,7 @@ SET(QGIS_CORE_SRCS
   diagram/qgsdiagram.cpp
   diagram/qgshistogramdiagram.cpp
   diagram/qgspiediagram.cpp
+  diagram/qgsstackedbardiagram.cpp
   diagram/qgstextdiagram.cpp
 
   effects/qgsblureffect.cpp
@@ -944,6 +945,7 @@ SET(QGIS_CORE_HDRS
   diagram/qgsdiagram.h
   diagram/qgshistogramdiagram.h
   diagram/qgspiediagram.h
+  diagram/qgsstackedbardiagram.h
   diagram/qgstextdiagram.h
 
   dxf/qgsdxfexport.h
