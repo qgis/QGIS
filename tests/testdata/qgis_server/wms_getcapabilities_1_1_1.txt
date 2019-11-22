@@ -1,4 +1,4 @@
-*****
+Content-Length: 12432
 Content-Type: text/xml; charset=utf-8
 
 <?xml version="1.0" encoding="utf-8"?>
@@ -11,7 +11,7 @@ Content-Type: text/xml; charset=utf-8
   <KeywordList>
    <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
   </KeywordList>
-  <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+  <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project.qgs" xmlns:xlink="http://www.w3.org/1999/xlink"/>
   <ContactInformation>
    <ContactPersonPrimary>
     <ContactPerson>Alessandro Pasotti</ContactPerson>
@@ -29,7 +29,7 @@ Content-Type: text/xml; charset=utf-8
     <DCPType>
      <HTTP>
       <Get>
-       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project.qgs&amp;" xmlns:xlink="http://www.w3.org/1999/xlink"/>
       </Get>
      </HTTP>
     </DCPType>
@@ -44,7 +44,7 @@ Content-Type: text/xml; charset=utf-8
     <DCPType>
      <HTTP>
       <Get>
-       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project.qgs&amp;" xmlns:xlink="http://www.w3.org/1999/xlink"/>
       </Get>
      </HTTP>
     </DCPType>
@@ -60,7 +60,7 @@ Content-Type: text/xml; charset=utf-8
     <DCPType>
      <HTTP>
       <Get>
-       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project.qgs&amp;" xmlns:xlink="http://www.w3.org/1999/xlink"/>
       </Get>
      </HTTP>
     </DCPType>
@@ -71,7 +71,7 @@ Content-Type: text/xml; charset=utf-8
     <DCPType>
      <HTTP>
       <Get>
-       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project.qgs&amp;" xmlns:xlink="http://www.w3.org/1999/xlink"/>
       </Get>
      </HTTP>
     </DCPType>
@@ -81,7 +81,7 @@ Content-Type: text/xml; charset=utf-8
     <DCPType>
      <HTTP>
       <Get>
-       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project.qgs&amp;" xmlns:xlink="http://www.w3.org/1999/xlink"/>
       </Get>
      </HTTP>
     </DCPType>
@@ -91,7 +91,7 @@ Content-Type: text/xml; charset=utf-8
     <DCPType>
      <HTTP>
       <Get>
-       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project.qgs&amp;" xmlns:xlink="http://www.w3.org/1999/xlink"/>
       </Get>
      </HTTP>
     </DCPType>
@@ -100,15 +100,15 @@ Content-Type: text/xml; charset=utf-8
   <Exception>
    <Format>application/vnd.ogc.se_xml</Format>
   </Exception>
-  <Layer>
+  <Layer queryable="1">
    <Title>QGIS Test Project</Title>
    <Abstract>QGIS Test Project</Abstract>
    <SRS>CRS:84</SRS>
    <SRS>EPSG:4326</SRS>
    <SRS>EPSG:3857</SRS>
-   <LatLonBoundingBox maxy="44.9016" maxx="8.20416" miny="44.9012" minx="8.20315"/>
-   <BoundingBox maxy="5.60604e+06" SRS="EPSG:3857" maxx="913283" miny="5.60599e+06" minx="913171"/>
-   <BoundingBox maxy="44.9016" SRS="EPSG:4326" maxx="8.20416" miny="44.9012" minx="8.20315"/>
+   <LatLonBoundingBox maxy="44.901599" maxx="8.204165" miny="44.901236" minx="8.203154"/>
+   <BoundingBox maxy="5606043.446" SRS="EPSG:3857" maxx="913283.462" miny="5605986.581" minx="913170.942"/>
+   <BoundingBox maxy="44.901599" SRS="EPSG:4326" maxx="8.204165" miny="44.901236" minx="8.203154"/>
    <Name>QGIS Test Project</Name>
    <KeywordList>
     <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
@@ -120,15 +120,15 @@ Content-Type: text/xml; charset=utf-8
     <SRS>CRS:84</SRS>
     <SRS>EPSG:4326</SRS>
     <SRS>EPSG:3857</SRS>
-    <LatLonBoundingBox maxy="44.9015" maxx="8.20355" miny="44.9014" minx="8.20346"/>
-    <BoundingBox maxy="5.60603e+06" SRS="EPSG:3857" maxx="913215" miny="5.60601e+06" minx="913205"/>
-    <BoundingBox maxy="44.9015" SRS="EPSG:4326" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+    <LatLonBoundingBox maxy="44.901483" maxx="8.203547" miny="44.901394" minx="8.203459"/>
+    <BoundingBox maxy="5606025.238" SRS="EPSG:3857" maxx="913214.675" miny="5606011.456" minx="913204.912"/>
+    <BoundingBox maxy="44.901483" SRS="EPSG:4326" maxx="8.203547" miny="44.901394" minx="8.203459"/>
     <Style>
      <Name>default</Name>
      <Title>default</Title>
      <LegendURL>
       <Format>image/png</Format>
-      <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project.qgs&amp;SERVICE=WMS&amp;VERSION=1.1.1&amp;REQUEST=GetLegendGraphic&amp;LAYER=layer_with_short_name&amp;FORMAT=image/png&amp;STYLE=default" xmlns:xlink="http://www.w3.org/1999/xlink"/>
      </LegendURL>
     </Style>
    </Layer>
@@ -138,15 +138,15 @@ Content-Type: text/xml; charset=utf-8
     <SRS>CRS:84</SRS>
     <SRS>EPSG:4326</SRS>
     <SRS>EPSG:3857</SRS>
-    <LatLonBoundingBox maxy="30.2573" maxx="18.0457" miny="30.1519" minx="17.9243"/>
-    <BoundingBox maxy="3.53666e+06" SRS="EPSG:3857" maxx="2.00883e+06" miny="3.52308e+06" minx="1.99532e+06"/>
-    <BoundingBox maxy="30.2573" SRS="EPSG:4326" maxx="18.0457" miny="30.1519" minx="17.9243"/>
+    <LatLonBoundingBox maxy="30.257289" maxx="18.045658" miny="30.151856" minx="17.924273"/>
+    <BoundingBox maxy="3536664.948" SRS="EPSG:3857" maxx="2008833.414" miny="3523084.517" minx="1995320.991"/>
+    <BoundingBox maxy="30.257289" SRS="EPSG:4326" maxx="18.045658" miny="30.151856" minx="17.924273"/>
     <Style>
      <Name>default</Name>
      <Title>default</Title>
      <LegendURL>
       <Format>image/png</Format>
-      <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project.qgs&amp;SERVICE=WMS&amp;VERSION=1.1.1&amp;REQUEST=GetLegendGraphic&amp;LAYER=landsat&amp;FORMAT=image/png&amp;STYLE=default" xmlns:xlink="http://www.w3.org/1999/xlink"/>
      </LegendURL>
     </Style>
    </Layer>
@@ -157,15 +157,15 @@ Content-Type: text/xml; charset=utf-8
     <SRS>CRS:84</SRS>
     <SRS>EPSG:4326</SRS>
     <SRS>EPSG:3857</SRS>
-    <LatLonBoundingBox maxy="44.9015" maxx="8.20355" miny="44.9014" minx="8.20346"/>
-    <BoundingBox maxy="5.60603e+06" SRS="EPSG:3857" maxx="913215" miny="5.60601e+06" minx="913205"/>
-    <BoundingBox maxy="44.9015" SRS="EPSG:4326" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+    <LatLonBoundingBox maxy="44.901483" maxx="8.203547" miny="44.901394" minx="8.203459"/>
+    <BoundingBox maxy="5606025.238" SRS="EPSG:3857" maxx="913214.675" miny="5606011.456" minx="913204.912"/>
+    <BoundingBox maxy="44.901483" SRS="EPSG:4326" maxx="8.203547" miny="44.901394" minx="8.203459"/>
     <Style>
      <Name>default</Name>
      <Title>default</Title>
      <LegendURL>
       <Format>image/png</Format>
-      <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project.qgs&amp;SERVICE=WMS&amp;VERSION=1.1.1&amp;REQUEST=GetLegendGraphic&amp;LAYER=testlayer èé&amp;FORMAT=image/png&amp;STYLE=default" xmlns:xlink="http://www.w3.org/1999/xlink"/>
      </LegendURL>
     </Style>
    </Layer>
@@ -176,15 +176,15 @@ Content-Type: text/xml; charset=utf-8
     <SRS>CRS:84</SRS>
     <SRS>EPSG:4326</SRS>
     <SRS>EPSG:3857</SRS>
-    <LatLonBoundingBox maxy="44.9015" maxx="8.20355" miny="44.9014" minx="8.20346"/>
-    <BoundingBox maxy="5.60603e+06" SRS="EPSG:3857" maxx="913215" miny="5.60601e+06" minx="913205"/>
-    <BoundingBox maxy="44.9015" SRS="EPSG:4326" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+    <LatLonBoundingBox maxy="44.901483" maxx="8.203547" miny="44.901394" minx="8.203459"/>
+    <BoundingBox maxy="5606025.238" SRS="EPSG:3857" maxx="913214.675" miny="5606011.456" minx="913204.912"/>
+    <BoundingBox maxy="44.901483" SRS="EPSG:4326" maxx="8.203547" miny="44.901394" minx="8.203459"/>
     <Style>
      <Name>default</Name>
      <Title>default</Title>
      <LegendURL>
       <Format>image/png</Format>
-      <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project.qgs&amp;SERVICE=WMS&amp;VERSION=1.1.1&amp;REQUEST=GetLegendGraphic&amp;LAYER=fields_alias&amp;FORMAT=image/png&amp;STYLE=default" xmlns:xlink="http://www.w3.org/1999/xlink"/>
      </LegendURL>
     </Style>
    </Layer>
@@ -195,71 +195,71 @@ Content-Type: text/xml; charset=utf-8
     <SRS>CRS:84</SRS>
     <SRS>EPSG:4326</SRS>
     <SRS>EPSG:3857</SRS>
-    <LatLonBoundingBox maxy="44.9015" maxx="8.20355" miny="44.9014" minx="8.20346"/>
-    <BoundingBox maxy="5.60603e+06" SRS="EPSG:3857" maxx="913215" miny="5.60601e+06" minx="913205"/>
-    <BoundingBox maxy="44.9015" SRS="EPSG:4326" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+    <LatLonBoundingBox maxy="44.901483" maxx="8.203547" miny="44.901394" minx="8.203459"/>
+    <BoundingBox maxy="5606025.238" SRS="EPSG:3857" maxx="913214.675" miny="5606011.456" minx="913204.912"/>
+    <BoundingBox maxy="44.901483" SRS="EPSG:4326" maxx="8.203547" miny="44.901394" minx="8.203459"/>
     <Style>
      <Name>default</Name>
      <Title>default</Title>
      <LegendURL>
       <Format>image/png</Format>
-      <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project.qgs&amp;SERVICE=WMS&amp;VERSION=1.1.1&amp;REQUEST=GetLegendGraphic&amp;LAYER=exclude_attribute&amp;FORMAT=image/png&amp;STYLE=default" xmlns:xlink="http://www.w3.org/1999/xlink"/>
      </LegendURL>
     </Style>
    </Layer>
-   <Layer>
+   <Layer queryable="1">
     <Name>group_name</Name>
     <Title>Group title</Title>
     <Abstract>Group abstract</Abstract>
     <SRS>CRS:84</SRS>
     <SRS>EPSG:4326</SRS>
     <SRS>EPSG:3857</SRS>
-    <LatLonBoundingBox maxy="44.9015" maxx="8.20355" miny="44.9014" minx="8.20346"/>
-    <BoundingBox maxy="5.60603e+06" SRS="EPSG:3857" maxx="913215" miny="5.60601e+06" minx="913205"/>
-    <BoundingBox maxy="44.9015" SRS="EPSG:4326" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+    <LatLonBoundingBox maxy="44.901483" maxx="8.203548" miny="44.901394" minx="8.203459"/>
+    <BoundingBox maxy="5606025.239" SRS="EPSG:3857" maxx="913214.676" miny="5606011.456" minx="913204.911"/>
+    <BoundingBox maxy="44.901483" SRS="EPSG:4326" maxx="8.203548" miny="44.901394" minx="8.203459"/>
     <Layer queryable="1">
      <Name>testlayer2</Name>
      <Title>testlayer2</Title>
      <SRS>CRS:84</SRS>
      <SRS>EPSG:4326</SRS>
      <SRS>EPSG:3857</SRS>
-     <LatLonBoundingBox maxy="44.9015" maxx="8.20355" miny="44.9014" minx="8.20346"/>
-     <BoundingBox maxy="5.60603e+06" SRS="EPSG:3857" maxx="913215" miny="5.60601e+06" minx="913205"/>
-     <BoundingBox maxy="44.9015" SRS="EPSG:4326" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+     <LatLonBoundingBox maxy="44.901483" maxx="8.203547" miny="44.901394" minx="8.203459"/>
+     <BoundingBox maxy="5606025.238" SRS="EPSG:3857" maxx="913214.675" miny="5606011.456" minx="913204.912"/>
+     <BoundingBox maxy="44.901483" SRS="EPSG:4326" maxx="8.203547" miny="44.901394" minx="8.203459"/>
      <Style>
       <Name>default</Name>
       <Title>default</Title>
       <LegendURL>
        <Format>image/png</Format>
-       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project.qgs&amp;SERVICE=WMS&amp;VERSION=1.1.1&amp;REQUEST=GetLegendGraphic&amp;LAYER=testlayer2&amp;FORMAT=image/png&amp;STYLE=default" xmlns:xlink="http://www.w3.org/1999/xlink"/>
       </LegendURL>
      </Style>
     </Layer>
    </Layer>
-   <Layer>
+   <Layer queryable="0">
     <Name>groupwithoutshortname</Name>
     <Title>groupwithoutshortname</Title>
     <SRS>CRS:84</SRS>
     <SRS>EPSG:4326</SRS>
     <SRS>EPSG:3857</SRS>
-    <LatLonBoundingBox maxy="44.9015" maxx="8.20355" miny="44.9014" minx="8.20346"/>
-    <BoundingBox maxy="5.60603e+06" SRS="EPSG:3857" maxx="913215" miny="5.60601e+06" minx="913205"/>
-    <BoundingBox maxy="44.9015" SRS="EPSG:4326" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+    <LatLonBoundingBox maxy="44.901483" maxx="8.203548" miny="44.901394" minx="8.203459"/>
+    <BoundingBox maxy="5606025.239" SRS="EPSG:3857" maxx="913214.676" miny="5606011.456" minx="913204.911"/>
+    <BoundingBox maxy="44.901483" SRS="EPSG:4326" maxx="8.203548" miny="44.901394" minx="8.203459"/>
     <Layer queryable="0">
      <Name>testlayer3</Name>
      <Title>testlayer3</Title>
      <SRS>CRS:84</SRS>
      <SRS>EPSG:4326</SRS>
      <SRS>EPSG:3857</SRS>
-     <LatLonBoundingBox maxy="44.9015" maxx="8.20355" miny="44.9014" minx="8.20346"/>
-     <BoundingBox maxy="5.60603e+06" SRS="EPSG:3857" maxx="913215" miny="5.60601e+06" minx="913205"/>
-     <BoundingBox maxy="44.9015" SRS="EPSG:4326" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+     <LatLonBoundingBox maxy="44.901483" maxx="8.203547" miny="44.901394" minx="8.203459"/>
+     <BoundingBox maxy="5606025.238" SRS="EPSG:3857" maxx="913214.675" miny="5606011.456" minx="913204.912"/>
+     <BoundingBox maxy="44.901483" SRS="EPSG:4326" maxx="8.203547" miny="44.901394" minx="8.203459"/>
      <Style>
       <Name>default</Name>
       <Title>default</Title>
       <LegendURL>
        <Format>image/png</Format>
-       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project.qgs&amp;SERVICE=WMS&amp;VERSION=1.1.1&amp;REQUEST=GetLegendGraphic&amp;LAYER=testlayer3&amp;FORMAT=image/png&amp;STYLE=default" xmlns:xlink="http://www.w3.org/1999/xlink"/>
       </LegendURL>
      </Style>
     </Layer>
