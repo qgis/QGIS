@@ -1004,8 +1004,9 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer *layer )
   if ( layer->geometryType() == QgsWkbTypes::PointGeometry && rect.isEmpty() )
   {
     int scaleFactor = 5;
-    QgsPointXY center = mSettings.mapToLayerCoordinates( layer, rect.center() );
-    QgsRectangle extentRect = mSettings.mapToLayerCoordinates( layer, extent() ).scaled( 1.0 / scaleFactor, &center );
+    QgsPointXY centerMapCoordinates = rect.center();
+    QgsPointXY centerLayerCoordinates = mSettings.mapToLayerCoordinates( layer, centerMapCoordinates );
+    QgsRectangle extentRect = mSettings.mapToLayerCoordinates( layer, extent() ).scaled( 1.0 / scaleFactor, &centerLayerCoordinates );
     QgsFeatureRequest req = QgsFeatureRequest().setFilterRect( extentRect ).setLimit( 1000 ).setNoAttributes();
     QgsFeatureIterator fit = layer->getFeatures( req );
     QgsFeature f;
@@ -1015,7 +1016,7 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer *layer )
     while ( fit.nextFeature( f ) )
     {
       QgsPointXY point = f.geometry().asPoint();
-      double sqrDist = point.sqrDist( center );
+      double sqrDist = point.sqrDist( centerLayerCoordinates );
       if ( sqrDist > closestSquaredDistance || sqrDist < 4 * std::numeric_limits<double>::epsilon() )
         continue;
       pointFound = true;
@@ -1026,7 +1027,7 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer *layer )
     {
       // combine selected point with closest point and scale this rect
       rect.combineExtentWith( mSettings.layerToMapCoordinates( layer, closestPoint ) );
-      rect.scale( scaleFactor, &center );
+      rect.scale( scaleFactor, &centerMapCoordinates );
     }
   }
 
