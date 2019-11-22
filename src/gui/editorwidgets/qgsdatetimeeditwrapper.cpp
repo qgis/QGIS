@@ -212,12 +212,19 @@ void QgsDateTimeEditWrapper::updateValues( const QVariant &value, const QVariant
     return;
 
   QDateTime dateTime;
+
   switch ( field().type() )
   {
     case QVariant::DateTime:
-    case QVariant::Date:
-    case QVariant::Time:
       dateTime = value.toDateTime();
+      break;
+    case QVariant::Date:
+      dateTime.setDate( value.toDate() );
+      dateTime.setTime( QTime::currentTime() );
+      break;
+    case QVariant::Time:
+      dateTime.setDate( QDate::currentDate() );
+      dateTime.setTime( value.toTime() );
       break;
     default:
       const bool fieldIsoFormat = config( QStringLiteral( "field_iso_format" ), false ).toBool();
