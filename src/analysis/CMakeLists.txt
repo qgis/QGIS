@@ -33,6 +33,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmcategorizeusingstyle.cpp
   processing/qgsalgorithmcentroid.cpp
   processing/qgsalgorithmclip.cpp
+  processing/qgsalgorithmconstantraster.cpp
   processing/qgsalgorithmconvexhull.cpp
   processing/qgsalgorithmdbscanclustering.cpp
   processing/qgsalgorithmdensifygeometriesbycount.cpp

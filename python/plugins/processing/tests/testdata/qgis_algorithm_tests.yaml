@@ -1706,7 +1706,7 @@ tests:
         - 094a2d0dea250690084e0812bf1e8f8666043d17d6a71de278810bb9
         type: rasterhash
 
-  - algorithm: qgis:createconstantrasterlayer
+  - algorithm: native:createconstantrasterlayer
     name: Create constant raster
     params:
       EXTENT: 270736.0673250682,270899.8544675339,4458899.000550019,4459029.574521748

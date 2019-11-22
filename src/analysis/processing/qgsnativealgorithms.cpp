@@ -28,6 +28,7 @@
 #include "qgsalgorithmcategorizeusingstyle.h"
 #include "qgsalgorithmcentroid.h"
 #include "qgsalgorithmclip.h"
+#include "qgsalgorithmconstantraster.h"
 #include "qgsalgorithmconvexhull.h"
 #include "qgsalgorithmdbscanclustering.h"
 #include "qgsalgorithmdensifygeometriesbycount.h"
@@ -184,6 +185,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsClipAlgorithm() );
   addAlgorithm( new QgsCollectAlgorithm() );
   addAlgorithm( new QgsCombineStylesAlgorithm() );
+  addAlgorithm( new QgsConstantRasterAlgorithm() );
   addAlgorithm( new QgsConvexHullAlgorithm() );
   addAlgorithm( new QgsDbscanClusteringAlgorithm() );
   addAlgorithm( new QgsDifferenceAlgorithm() );
