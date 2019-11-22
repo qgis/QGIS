@@ -18,6 +18,18 @@
 #include "qgsserverprojectutils.h"
 #include "qgsproject.h"
 
+double  QgsServerProjectUtils::ceilWithPrecision( double number, int places )
+{
+  double scaleFactor = std::pow( 10.0, places );
+  return ( std::ceil( number * scaleFactor ) / scaleFactor );
+}
+
+double  QgsServerProjectUtils::floorWithPrecision( double number, int places )
+{
+  double scaleFactor = std::pow( 10.0, places );
+  return ( std::floor( number * scaleFactor ) / scaleFactor );
+}
+
 bool QgsServerProjectUtils::owsServiceCapabilities( const QgsProject &project )
 {
   return project.readBoolEntry( QStringLiteral( "WMSServiceCapabilities" ), QStringLiteral( "/" ), false );

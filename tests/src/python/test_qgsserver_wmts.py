@@ -44,6 +44,9 @@ class TestQgsServerWMTS(QgsServerTestBase):
 
     """QGIS Server WMTS Tests"""
 
+    # Set to True to re-generate reference files for this class
+    regenerate_reference = False
+
     def wmts_request_compare(self, request, version='', extra_query_string='', reference_base_name=None):
         #project = self.testdata_path + "test_project_wfs.qgs"
         project = self.projectGroupsPath

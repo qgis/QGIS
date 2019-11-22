@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer.
 
+From build dir, run: ctest -R PyQgsServerAccessControlWMS -V
+
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -22,6 +24,7 @@ from test_qgsserver_accesscontrol import TestQgsServerAccessControl
 
 
 class TestQgsServerAccessControlWMS(TestQgsServerAccessControl):
+    """QGIS Server Access Control WMS Tests"""
 
     def test_wms_getcapabilities(self):
         query_string = "&".join(["%s=%s" % i for i in list({

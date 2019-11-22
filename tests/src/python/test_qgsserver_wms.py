@@ -312,7 +312,7 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         f.close()
 
         # clean header in doc
-        doc = doc.replace('Content-Length: 6575\n', '')
+        doc = doc.replace('Content-Length: 15066\n', '')
         doc = doc.replace('Content-Type: text/xml; charset=utf-8\n\n', '')
         doc = doc.replace('<?xml version="1.0" encoding="utf-8"?>\n', '')
 
