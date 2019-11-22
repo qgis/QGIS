@@ -220,7 +220,7 @@ void QgsDateTimeEditWrapper::updateValues( const QVariant &value, const QVariant
       break;
     case QVariant::Date:
       dateTime.setDate( value.toDate() );
-      dateTime.setTime( QTime::currentTime() );
+      dateTime.setTime( QTime( 0, 0, 0 ) );
       break;
     case QVariant::Time:
       dateTime.setDate( QDate::currentDate() );
