@@ -26,6 +26,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmarraytranslatedfeatures.cpp
   processing/qgsalgorithmaspect.cpp
   processing/qgsalgorithmassignprojection.cpp
+  processing/qgsalgorithmattributeindex.cpp
   processing/qgsalgorithmboundary.cpp
   processing/qgsalgorithmboundingbox.cpp
   processing/qgsalgorithmbuffer.cpp

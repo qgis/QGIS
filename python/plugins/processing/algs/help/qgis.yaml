@@ -90,9 +90,6 @@ qgis:countpointsinpolygon: >
 
   Both the weight field and unique class field cannot be specified. If they are, the weight field will take precedence and the unique class field will be ignored.
 
-qgis:createattributeindex: >
-  Creates an index to speed up queries made against a field in a table. Support for index creation is dependent on the layer's data provider and the field type.
-
 qgis:creategrid: >
   This algorithm creates a vector layer with a grid covering a given extent. Elements in the grid can be points, lines or polygons.The size and/or placement of each element in the grid is defined using a horizontal and vertical spacing. The CRS of the output layer must be defined. The grid extent and the spacing values must be expressed in the coordinates and units of this CRS. The top-left point (minX, maxY) is used as the reference point. That means that, at that point, an element is guaranteed to be placed. Unless the width and height of the selected extent is a multiple of the selected spacing, that is not true for the other points that define that extent.
 
