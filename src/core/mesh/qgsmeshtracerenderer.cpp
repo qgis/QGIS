@@ -344,7 +344,7 @@ void QgsMeshStreamField::addTrace( QPoint startPixel )
   double x1 = 0;
   double y1 = 0;
 
-  std::list<QPair<QPoint, double>> shunkTrace;
+  std::list<QPair<QPoint, double>> chunkTrace;
 
   QPoint currentPixel = startPixel;
   QgsVector vector;
@@ -396,11 +396,11 @@ void QgsMeshStreamField::addTrace( QPoint startPixel )
     if ( incX != 0 || incY != 0 )
     {
       //the particule leave the current pixel --> store pixels, calculate where the particule is and change the current pixel
-      shunkTrace.emplace_back( currentPixel, mag );
-      if ( shunkTrace.size() == 3 )
+      chunkTrace.emplace_back( currentPixel, mag );
+      if ( chunkTrace.size() == 3 )
       {
-        simplifyShunkTrace( shunkTrace );
-        drawShunkTrace( shunkTrace );
+        simplifyChunkTrace( chunkTrace );
+        drawChunkTrace( chunkTrace );
       }
 
       dt = 1;
@@ -485,18 +485,18 @@ void QgsMeshStreamField::addTrace( QPoint startPixel )
     //test if the new current pixel is already defined, if yes no need to continue
     if ( isTraceExists( currentPixel ) )
     {
-      shunkTrace.emplace_back( currentPixel, mag );
-      if ( shunkTrace.size() == 3 )
-        simplifyShunkTrace( shunkTrace );
-      drawShunkTrace( shunkTrace );
+      chunkTrace.emplace_back( currentPixel, mag );
+      if ( chunkTrace.size() == 3 )
+        simplifyChunkTrace( chunkTrace );
+      drawChunkTrace( chunkTrace );
       break;
     }
 
     if ( isTraceOutside( currentPixel ) )
     {
-      if ( shunkTrace.size() == 3 )
-        simplifyShunkTrace( shunkTrace );
-      drawShunkTrace( shunkTrace );
+      if ( chunkTrace.size() == 3 )
+        simplifyChunkTrace( chunkTrace );
+      drawChunkTrace( chunkTrace );
       break;
     }
   }
@@ -544,12 +544,12 @@ void QgsMeshStreamField::storeInField( const QPoint &pixel )
   }
 }
 
-void QgsMeshStreamField::drawShunkTrace( std::list<QPair<QPoint, double> > &shunkTrace )
+void QgsMeshStreamField::drawChunkTrace( std::list<QPair<QPoint, double> > &chunkTrace )
 {
-  auto p1 = shunkTrace.begin();
+  auto p1 = chunkTrace.begin();
   auto p2 = p1;
   p2++;
-  while ( p2 != shunkTrace.end() )
+  while ( p2 != chunkTrace.end() )
   {
     storeInField( ( *p2 ).first );
     if ( filterMag( ( *p1 ).second ) && filterMag( ( *p2 ).second ) )
@@ -558,26 +558,26 @@ void QgsMeshStreamField::drawShunkTrace( std::list<QPair<QPoint, double> > &shun
     auto p = p1;
     p1++;
     p2++;
-    shunkTrace.erase( p );
+    chunkTrace.erase( p );
 
   }
 }
 
-void QgsMeshStreamField::simplifyShunkTrace( std::list<QPair<QPoint, double> > &shunkTrace )
+void QgsMeshStreamField::simplifyChunkTrace( std::list<QPair<QPoint, double> > &chunkTrace )
 {
-  Q_ASSERT( shunkTrace.size() == 3 );
+  Q_ASSERT( chunkTrace.size() == 3 );
 
-  QPoint p1 = shunkTrace.front().first;
-  auto ip2 = shunkTrace.begin();
+  QPoint p1 = chunkTrace.front().first;
+  auto ip2 = chunkTrace.begin();
   ip2++;
   QPoint p2 = ( *( ip2 ) ).first;
-  QPoint p3 = shunkTrace.back().first;
+  QPoint p3 = chunkTrace.back().first;
 
   QPoint v1 = p1 - p2;
   QPoint v2 = p2 - p3;
 
   if ( v1.x()*v2.x() + v1.y()*v2.y() == 0 )
-    shunkTrace.erase( ip2 );
+    chunkTrace.erase( ip2 );
 }
 
 bool QgsMeshStreamField::isTraceExists( const QPoint &pixel ) const

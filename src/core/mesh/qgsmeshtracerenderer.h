@@ -222,9 +222,9 @@ class QgsMeshStreamField
     QPointF fieldToDevice( const QPoint &pixel ) const;
     void initField();
     void storeInField( const QPoint &pixel );
-    void drawShunkTrace( std::list<QPair<QPoint, double>> &shunkTrace );
+    void drawChunkTrace( std::list<QPair<QPoint, double>> &chunkTrace );
 
-    void simplifyShunkTrace( std::list<QPair<QPoint, double>> &shunkTrace );
+    void simplifyChunkTrace( std::list<QPair<QPoint, double>> &chunkTrace );
 
     bool isTraceExists( const QPoint &pixel ) const;
 
