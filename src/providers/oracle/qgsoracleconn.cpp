@@ -647,8 +647,10 @@ QString QgsOracleConn::databaseTypeFilter( const QString &alias, QString geomCol
       return QStringLiteral( "mod(%1.sdo_gtype,100) IN (1,5)" ).arg( geomCol );
     case QgsWkbTypes::LineString:
     case QgsWkbTypes::LineString25D:
+    case QgsWkbTypes::LineStringZ:
     case QgsWkbTypes::MultiLineString:
     case QgsWkbTypes::MultiLineString25D:
+    case QgsWkbTypes::MultiLineStringZ:
       return QStringLiteral( "mod(%1.sdo_gtype,100) IN (2,6)" ).arg( geomCol );
     case QgsWkbTypes::Polygon:
     case QgsWkbTypes::Polygon25D:
