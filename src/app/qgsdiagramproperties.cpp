@@ -116,6 +116,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   mDiagramPenColorButton->setNoColorString( tr( "Transparent Stroke" ) );
 
   mMaxValueSpinBox->setShowClearButton( false );
+  mSizeSpinBox->setClearValue( 5 );
 
   mDiagramAttributesTreeWidget->setItemDelegateForColumn( ColumnAttributeExpression, new EditBlockerDelegate( this ) );
   mDiagramAttributesTreeWidget->setItemDelegateForColumn( ColumnColor, new EditBlockerDelegate( this ) );
