@@ -61,7 +61,12 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsFeature &feature, const QgsRen
     maxValue = s.minimumSize;
   }
 
-  const double spacing = c.convertToPainterUnits( s.spacing(), s.spacingUnit(), s.spacingMapUnitScale() );
+  // eh - this method returns size in unknown units ...! We'll have to fake it and use a rough estimation of
+  // a conversion factor to painter units...
+  // TODO QGIS 4.0 -- these methods should all use painter units, dependant on the render context scaling...
+  double painterUnitConversionScale = c.convertToPainterUnits( 1, s.sizeType );
+
+  const double spacing = c.convertToPainterUnits( s.spacing(), s.spacingUnit(), s.spacingMapUnitScale() ) / painterUnitConversionScale;
 
   switch ( s.diagramOrientation )
   {
@@ -118,7 +123,12 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes &attributes, const 
     maxValue = std::max( attributes.at( i ).toDouble(), maxValue );
   }
 
-  const double spacing = c.convertToPainterUnits( s.spacing(), s.spacingUnit(), s.spacingMapUnitScale() );
+  // eh - this method returns size in unknown units ...! We'll have to fake it and use a rough estimation of
+  // a conversion factor to painter units...
+  // TODO QGIS 4.0 -- these methods should all use painter units, dependant on the render context scaling...
+  double painterUnitConversionScale = c.convertToPainterUnits( 1, s.sizeType );
+
+  const double spacing = c.convertToPainterUnits( s.spacing(), s.spacingUnit(), s.spacingMapUnitScale() ) / painterUnitConversionScale;
 
   switch ( s.diagramOrientation )
   {
