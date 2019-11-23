@@ -44,9 +44,9 @@ class QgsAttributeForm : QWidget
 
     const QgsFeature &feature();
 
-    void displayWarning( const QString& message );
+    void displayWarning( const QString &message );
 %Docstring
-Displays a warning message in the form message bar 
+Displays a warning message in the form message bar
 
 :param message: message string
 
