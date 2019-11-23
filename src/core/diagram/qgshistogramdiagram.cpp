@@ -207,11 +207,11 @@ void QgsHistogramDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCon
         break;
 
       case QgsDiagramSettings::Right:
-        p->drawRect( QRectF( baseX, baseY - scaledWidth * values.size() + currentOffset, length, scaledWidth * -1 ) );
+        p->drawRect( QRectF( baseX, baseY - scaledWidth * values.size() + currentOffset, length, scaledWidth ) );
         break;
 
       case QgsDiagramSettings::Left:
-        p->drawRect( QRectF( baseX + scaledMaxVal, baseY - scaledWidth * values.size() + currentOffset, 0 - length, scaledWidth * -1 ) );
+        p->drawRect( QRectF( baseX + scaledMaxVal, baseY - scaledWidth * values.size() + currentOffset, 0 - length, scaledWidth ) );
         break;
     }
 
