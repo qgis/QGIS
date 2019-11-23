@@ -42,6 +42,8 @@ class TestQgsCoordinateTransform: public QObject
     void transform();
     void transformLKS();
     void transformContextNormalize();
+    void transformErrorMultiplePoints();
+    void transformErrorOnePoint();
 };
 
 
@@ -491,6 +493,43 @@ void TestQgsCoordinateTransform::transformContextNormalize()
   QGSCOMPARENEAR( p.y(), 54016.813093, 0.01 );
 
 #endif
+}
+
+
+void TestQgsCoordinateTransform::transformErrorMultiplePoints()
+{
+  // Check that we don't throw an exception when transforming multiple
+  // points and at least one fails.
+  QgsCoordinateTransformContext context;
+  QgsCoordinateTransform ct( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsCoordinateReferenceSystem::fromEpsgId( 3857 ), context );
+  QVERIFY( ct.isValid() );
+  double x[] = { 0, -1000 };
+  double y[] = { 0, 0 };
+  double z[] = { 0, 0 };
+  ct.transformCoords( 2, x, y, z );
+  QGSCOMPARENEAR( x[0], 0, 0.01 );
+  QGSCOMPARENEAR( y[0], 0, 0.01 );
+  QVERIFY( !std::isfinite( x[1] ) );
+  QVERIFY( !std::isfinite( y[1] ) );
+}
+
+
+void TestQgsCoordinateTransform::transformErrorOnePoint()
+{
+  QgsCoordinateTransformContext context;
+  QgsCoordinateTransform ct( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsCoordinateReferenceSystem::fromEpsgId( 3857 ), context );
+  QVERIFY( ct.isValid() );
+  double x[] = {  -1000 };
+  double y[] = {  0 };
+  double z[] = {  0 };
+  try
+  {
+    ct.transformCoords( 1, x, y, z );
+    QVERIFY( false );
+  }
+  catch ( QgsCsException & )
+  {
+  }
 }
 
 QGSTEST_MAIN( TestQgsCoordinateTransform )
