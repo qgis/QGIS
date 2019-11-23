@@ -78,7 +78,6 @@ from .PostGISExecuteAndLoadSQL import PostGISExecuteAndLoadSQL
 from .RandomExtract import RandomExtract
 from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 from .RandomPointsAlongLines import RandomPointsAlongLines
-from .RandomPointsExtent import RandomPointsExtent
 from .RandomPointsLayer import RandomPointsLayer
 from .RandomPointsPolygons import RandomPointsPolygons
 from .RandomSelection import RandomSelection
@@ -175,7 +174,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 RandomExtract(),
                 RandomExtractWithinSubsets(),
                 RandomPointsAlongLines(),
-                RandomPointsExtent(),
                 RandomPointsLayer(),
                 RandomPointsPolygons(),
                 RandomSelection(),
