@@ -83,6 +83,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmoffsetlines.cpp
   processing/qgsalgorithmorderbyexpression.cpp
   processing/qgsalgorithmorientedminimumboundingbox.cpp
+  processing/qgsalgorithmorthogonalize.cpp
   processing/qgsalgorithmpackage.cpp
   processing/qgsalgorithmarrayoffsetlines.cpp
   processing/qgsalgorithmpolygonstolines.cpp

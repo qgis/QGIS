@@ -289,13 +289,6 @@ qgis:minimalenclosingcircle: >
 
   As an alternative, the output layer can contain not just a single circle, but one for each input feature, representing the minimum enclosing circle that covers each of them.
 
-qgis:orthogonalize: >
-  This algorithm takes a line or polygon layer and attempts to orthogonalize all the geometries in the layer. This process shifts the nodes in the geometries to try to make every angle in the geometry either a right angle or a straight line.
-
-  The angle tolerance parameter is used to specify the maximum deviation from a right angle or straight line a node can have for it to be adjusted. Smaller tolerances mean that only nodes which are already closer to right angles will be adjusted, and larger tolerances mean that nodes which deviate further from right angles will also be adjusted.
-
-  The algorithm is iterative. Setting a larger number for the maximum iterations will result in a more orthogonal geometry at the cost of extra processing time.
-
 qgis:pointsalonglines: >
   Creates points at regular intervals along line or polygon geometries. Created points will have new attributes added for the distance along the geometry and the angle of the line at the point.
 

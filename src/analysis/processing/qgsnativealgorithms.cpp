@@ -78,6 +78,7 @@
 #include "qgsalgorithmoffsetlines.h"
 #include "qgsalgorithmorderbyexpression.h"
 #include "qgsalgorithmorientedminimumboundingbox.h"
+#include "qgsalgorithmorthogonalize.h"
 #include "qgsalgorithmpackage.h"
 #include "qgsalgorithmarrayoffsetlines.h"
 #include "qgsalgorithmpointonsurface.h"
@@ -244,6 +245,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsOffsetLinesAlgorithm() );
   addAlgorithm( new QgsOrderByExpressionAlgorithm() );
   addAlgorithm( new QgsOrientedMinimumBoundingBoxAlgorithm() );
+  addAlgorithm( new QgsOrthogonalizeAlgorithm() );
   addAlgorithm( new QgsPackageAlgorithm() );
   addAlgorithm( new QgsCreateArrayOffsetLinesAlgorithm() );
   addAlgorithm( new QgsPointOnSurfaceAlgorithm() );
