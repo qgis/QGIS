@@ -90,6 +90,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmpointonsurface.cpp
   processing/qgsalgorithmpointtolayer.cpp
   processing/qgsalgorithmpointsalonggeometry.cpp
+  processing/qgsalgorithmpointslayerfromtable.cpp
   processing/qgsalgorithmprojectpointcartesian.cpp
   processing/qgsalgorithmpromotetomultipart.cpp
   processing/qgsalgorithmrasterlayeruniquevalues.cpp
