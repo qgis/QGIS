@@ -103,7 +103,6 @@ from .SetZValue import SetZValue
 from .SingleSidedBuffer import SingleSidedBuffer
 from .SnapGeometries import SnapGeometriesToLayer
 from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
-from .SpatialIndex import SpatialIndex
 from .SpatialJoin import SpatialJoin
 from .SpatialJoinSummary import SpatialJoinSummary
 from .StatisticsByCategories import StatisticsByCategories
@@ -207,7 +206,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 SingleSidedBuffer(),
                 SnapGeometriesToLayer(),
                 SpatialiteExecuteSQL(),
-                SpatialIndex(),
                 SpatialJoin(),
                 SpatialJoinSummary(),
                 StatisticsByCategories(),
