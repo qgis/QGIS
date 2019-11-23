@@ -377,6 +377,12 @@ QgsDiagramLayerSettings stores settings which control how ALL diagrams within a 
 Constructor for QgsDiagramSettings
 %End
 
+    QgsDiagramSettings( const QgsDiagramSettings &other );
+%Docstring
+Copy constructor
+%End
+
+
     bool enabled;
     QFont font;
     QList< QColor > categoryColors;
@@ -531,6 +537,52 @@ Returns list of legend nodes for the diagram
    caller is responsible for deletion of :py:class:`QgsLayerTreeModelLegendNodes`
 
 .. versionadded:: 2.10
+%End
+
+    QgsLineSymbol *axisLineSymbol() const;
+%Docstring
+Returns the line symbol to use for rendering axis in diagrams.
+
+.. seealso:: :py:func:`setAxisLineSymbol`
+
+.. seealso:: :py:func:`showAxis`
+
+.. versionadded:: 3.12
+%End
+
+    void setAxisLineSymbol( QgsLineSymbol *symbol /Transfer/ );
+%Docstring
+Sets the line ``symbol`` to use for rendering axis in diagrams.
+
+Ownership of ``symbol`` is transferred to the settings.
+
+.. seealso:: :py:func:`axisLineSymbol`
+
+.. seealso:: :py:func:`setShowAxis`
+
+.. versionadded:: 3.12
+%End
+
+    bool showAxis() const;
+%Docstring
+Returns ``True`` if the diagram axis should be shown.
+
+.. seealso:: :py:func:`setShowAxis`
+
+.. seealso:: :py:func:`axisLineSymbol`
+
+.. versionadded:: 3.12
+%End
+
+    void setShowAxis( bool showAxis );
+%Docstring
+Sets whether the diagram axis should be shown.
+
+.. seealso:: :py:func:`showAxis`
+
+.. seealso:: :py:func:`setAxisLineSymbol`
+
+.. versionadded:: 3.12
 %End
 
 };

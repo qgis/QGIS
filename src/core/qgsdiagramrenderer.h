@@ -406,7 +406,12 @@ class CORE_EXPORT QgsDiagramSettings
     };
 
     //! Constructor for QgsDiagramSettings
-    QgsDiagramSettings() = default;
+    QgsDiagramSettings();
+
+    //! Copy constructor
+    QgsDiagramSettings( const QgsDiagramSettings &other );
+
+    QgsDiagramSettings &operator=( const QgsDiagramSettings &other );
 
     bool enabled = true;
     QFont font;
@@ -571,12 +576,57 @@ class CORE_EXPORT QgsDiagramSettings
      */
     QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const SIP_FACTORY;
 
+    /**
+     * Returns the line symbol to use for rendering axis in diagrams.
+     *
+     * \see setAxisLineSymbol()
+     * \see showAxis()
+     *
+     * \since QGIS 3.12
+     */
+    QgsLineSymbol *axisLineSymbol() const;
+
+    /**
+     * Sets the line \a symbol to use for rendering axis in diagrams.
+     *
+     * Ownership of \a symbol is transferred to the settings.
+     *
+     * \see axisLineSymbol()
+     * \see setShowAxis()
+     *
+     * \since QGIS 3.12
+     */
+    void setAxisLineSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns TRUE if the diagram axis should be shown.
+     *
+     * \see setShowAxis()
+     * \see axisLineSymbol()
+     *
+     * \since QGIS 3.12
+     */
+    bool showAxis() const;
+
+    /**
+     * Sets whether the diagram axis should be shown.
+     *
+     * \see showAxis()
+     * \see setAxisLineSymbol()
+     *
+     * \since QGIS 3.12
+     */
+    void setShowAxis( bool showAxis );
+
   private:
 
     double mSpacing = 0;
     QgsUnitTypes::RenderUnit mSpacingUnit;
     QgsMapUnitScale mSpacingMapUnitScale;
     Direction mDirection = Counterclockwise;
+
+    bool mShowAxis = false;
+    std::unique_ptr< QgsLineSymbol > mAxisLineSymbol;
 
 };
 
