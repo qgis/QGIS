@@ -6625,12 +6625,13 @@ void QgisApp::openProject( QAction *action )
 {
   // possibly save any pending work before opening a different project
   Q_ASSERT( action );
+  const QString project = action->data().toString().replace( "&&", "&" );
 
   if ( checkTasksDependOnProject() )
     return;
 
   if ( checkUnsavedLayerEdits() && checkMemoryLayers() && saveDirty() )
-    addProject( action->data().toString().replace( "&&", "&" ) );
+    addProject( project );
 }
 
 void QgisApp::runScript( const QString &filePath )
