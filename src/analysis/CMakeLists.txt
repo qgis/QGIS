@@ -94,6 +94,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmpointslayerfromtable.cpp
   processing/qgsalgorithmprojectpointcartesian.cpp
   processing/qgsalgorithmpromotetomultipart.cpp
+  processing/qgsalgorithmrandompointsextent.cpp
   processing/qgsalgorithmrasterlayeruniquevalues.cpp
   processing/qgsalgorithmrasterlogicalop.cpp
   processing/qgsalgorithmrasterize.cpp

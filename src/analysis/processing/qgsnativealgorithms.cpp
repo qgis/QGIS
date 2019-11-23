@@ -88,6 +88,7 @@
 #include "qgsalgorithmpointslayerfromtable.h"
 #include "qgsalgorithmprojectpointcartesian.h"
 #include "qgsalgorithmpromotetomultipart.h"
+#include "qgsalgorithmrandompointsextent.h"
 #include "qgsalgorithmrasterlayeruniquevalues.h"
 #include "qgsalgorithmrasterlogicalop.h"
 #include "qgsalgorithmrasterize.h"
@@ -260,6 +261,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsPointsLayerFromTableAlgorithm() );
   addAlgorithm( new QgsProjectPointCartesianAlgorithm() );
   addAlgorithm( new QgsPromoteToMultipartAlgorithm() );
+  addAlgorithm( new QgsRandomPointsExtentAlgorithm() );
   addAlgorithm( new QgsRasterLayerUniqueValuesReportAlgorithm() );
   addAlgorithm( new QgsRasterLayerZonalStatsAlgorithm() );
   addAlgorithm( new QgsRasterLogicalAndAlgorithm() );
