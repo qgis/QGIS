@@ -103,7 +103,7 @@ Returns the friendly display name for the item.
 .. seealso:: :py:func:`setName`
 %End
 
-    void setEnabled( bool enabled );
+    virtual void setEnabled( bool enabled );
 %Docstring
 Controls whether the item will be drawn. Set ``enabled`` to ``True`` to enable drawing of the item.
 
@@ -187,6 +187,9 @@ should be canceled.
 .. versionadded:: 3.10
 %End
 
+    virtual QgsExpressionContext createExpressionContext() const;
+
+
   protected:
 
 
@@ -267,6 +270,13 @@ which are set to stack above the map item will be drawn.
 %Docstring
 Returns whether any items within the stack contain advanced effects,
 such as blending modes.
+%End
+
+    bool hasEnabledItems() const;
+%Docstring
+Returns ``True`` if the stack has any currently enabled items.
+
+.. versionadded:: 3.10
 %End
 
     QgsLayoutItemMapItem *item( int index ) const;

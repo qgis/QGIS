@@ -29,6 +29,7 @@ class QgsLayoutPolylineWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLa
     Q_OBJECT
   public:
     explicit QgsLayoutPolylineWidget( QgsLayoutItemPolyline *polyline );
+    void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 
   protected:
 

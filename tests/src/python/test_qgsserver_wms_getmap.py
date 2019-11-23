@@ -903,10 +903,29 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
             "FILTER": "Country,Country_Diagrams: \"name\" IN ( 'africa , 'eurasia' );Hello: \"color\" IN ( 'magenta' , 'cerese' )"
         }.items())])
 
-        expected = self.strip_version_xmlns(b'<ServiceExceptionReport  >\n <ServiceException code="Security">The filter string  "name" IN ( \'africa , \'eurasia\' ) has been rejected because of security reasons. Note: Text strings have to be enclosed in single or double quotes. A space between each word / special character is mandatory. Allowed Keywords and special characters are  AND,OR,IN,&lt;,>=,>,>=,!=,\',\',(,),DMETAPHONE,SOUNDEX. Not allowed are semicolons in the filter expression.</ServiceException>\n</ServiceExceptionReport>\n')
+        expected = self.strip_version_xmlns(b'<ServiceExceptionReport  >\n <ServiceException code="Security">The filter string  "name" IN ( \'africa , \'eurasia\' ) has been rejected because of security reasons. Note: Text strings have to be enclosed in single or double quotes. A space between each word / special character is mandatory. Allowed Keywords and special characters are  IS,NOT,NULL,AND,OR,IN,=,&lt;,>=,>,>=,!=,\',\',(,),DMETAPHONE,SOUNDEX. Not allowed are semicolons in the filter expression.</ServiceException>\n</ServiceExceptionReport>\n')
         r, h = self._result(self._execute_request(qs))
 
         self.assertEqual(self.strip_version_xmlns(r), expected)
+
+        # Test IS NOT NULL, so display all features
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectStatePath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country,Hello",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "FILTER": "Country:\"name\" IS NOT NULL"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Filter3")
 
     def test_wms_getmap_filter_ogc(self):
         filter = "<Filter><PropertyIsEqualTo><PropertyName>name</PropertyName>" + \
@@ -1304,6 +1323,25 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_SLDRestored")
 
+        # Test SVG
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "REQUEST": "GetMap",
+            "VERSION": "1.1.1",
+            "SERVICE": "WMS",
+            "SLD": "http://localhost:" + str(port) + "/qgis_local_server/db_point_svg.sld",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "WIDTH": "500",
+            "HEIGHT": "500",
+            "LAYERS": "db_point",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_SLD_SVG")
+
         httpd.server_close()
 
     def test_wms_getmap_sld_body(self):
@@ -1358,6 +1396,43 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_SLDRestored")
+
+    def test_wms_getmap_sld_restore_labeling(self):
+        """QGIS Server has to restore all the style. This test is not done
+        to evaluate the SLD application but the style restoration and
+        specifically the labeling."""
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "pointlabel",
+            "STYLES": "",
+            "SLD_BODY": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><StyledLayerDescriptor xmlns=\"http://www.opengis.net/sld\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:ogc=\"http://www.opengis.net/ogc\" xsi:schemaLocation=\"http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd\" version=\"1.1.0\" xmlns:se=\"http://www.opengis.net/se\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"> <NamedLayer> <se:Name>pointlabel</se:Name> <UserStyle> <se:Name>pointlabel_style</se:Name> <se:FeatureTypeStyle> <se:Rule> <se:Name>Single symbol</se:Name> <se:PointSymbolizer uom=\"http://www.opengeospatial.org/se/units/metre\"> <se:Graphic> <se:Mark> <se:WellKnownName>square</se:WellKnownName> <se:Fill> <se:SvgParameter name=\"fill\">5e86a1</se:SvgParameter> </se:Fill> <se:Stroke> <se:SvgParameter name=\"stroke\">000000</se:SvgParameter> </se:Stroke> </se:Mark> <se:Size>0.007</se:Size> </se:Graphic> </se:PointSymbolizer> </se:Rule> </se:FeatureTypeStyle> </UserStyle> </NamedLayer> </StyledLayerDescriptor>",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+        r, h = self._result(self._execute_request(qs))
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "pointlabel",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Labeling_Complex")
 
     def test_wms_getmap_group(self):
         """A WMS shall render the requested layers by drawing the leftmost in the list
@@ -1633,6 +1708,27 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Tiled_True")
+
+    def test_mode8bit_with_transparency(self):
+
+        # 8 bits
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.testdata_path + 'test_project_wms_8bit_with_transparency.qgs'),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "test_layer",
+            "STYLES": "",
+            "FORMAT": "image/png; mode=8bit",
+            "BBOX": "913204.62,5606011.36,913217.45,5606025.58",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "TRANSPARENT": "TRUE"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Mode_8bit_with_transparency")
 
 
 if __name__ == '__main__':

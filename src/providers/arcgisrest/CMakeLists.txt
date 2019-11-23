@@ -6,13 +6,17 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/pal
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/auth
   ${CMAKE_SOURCE_DIR}/external
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
+
   ${CMAKE_BINARY_DIR}/src/ui
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
+
 )
 
 INCLUDE_DIRECTORIES(SYSTEM
@@ -36,13 +40,6 @@ SET (AFS_SRCS
   qgsafsprovider.cpp
   qgsafsshareddata.cpp
 )
-SET (AFS_MOC_HDRS
-  qgsarcgisrestutils.h
-  qgsafsdataitems.h
-  qgsafsprovider.h
-  qgsafsshareddata.h
-)
-
 IF (WITH_GUI)
   SET(AFS_SRCS ${AFS_SRCS}
     qgsafsprovidergui.cpp
@@ -50,17 +47,10 @@ IF (WITH_GUI)
     qgsafssourceselect.cpp
     qgsarcgisservicesourceselect.cpp
   )
-  SET(AFS_MOC_HDRS ${AFS_MOC_HDRS}
-    qgsafsdataitemguiprovider.h
-    qgsafssourceselect.h
-    qgsarcgisservicesourceselect.h
-  )
 ENDIF ()
 
-QT5_WRAP_CPP (AFS_MOC_SRCS ${AFS_MOC_HDRS})
-
-ADD_LIBRARY (arcgisfeatureserverprovider_a STATIC ${AFS_SRCS} ${AFS_MOC_SRCS})
-ADD_LIBRARY(arcgisfeatureserverprovider MODULE ${AFS_SRCS} ${AFS_MOC_SRCS})
+ADD_LIBRARY (arcgisfeatureserverprovider_a STATIC ${AFS_SRCS})
+ADD_LIBRARY(arcgisfeatureserverprovider MODULE ${AFS_SRCS})
 
 TARGET_LINK_LIBRARIES(arcgisfeatureserverprovider
   qgis_core
@@ -79,6 +69,8 @@ IF (WITH_GUI)
   TARGET_LINK_LIBRARIES(arcgisfeatureserverprovider_a
     qgis_gui
   )
+  ADD_DEPENDENCIES(arcgisfeatureserverprovider ui)
+  ADD_DEPENDENCIES(arcgisfeatureserverprovider_a ui)
 ENDIF ()
 
 INSTALL (TARGETS arcgisfeatureserverprovider
@@ -92,11 +84,6 @@ SET (AMS_SRCS
   qgsamsdataitems.cpp
   qgsamsprovider.cpp
 )
-SET (AMS_MOC_HDRS
-  qgsarcgisrestutils.h
-  qgsamsdataitems.h
-  qgsamsprovider.h
-)
 
 IF (WITH_GUI)
   SET(AMS_SRCS ${AMS_SRCS}
@@ -105,16 +92,9 @@ IF (WITH_GUI)
     qgsamssourceselect.cpp
     qgsarcgisservicesourceselect.cpp
   )
-  SET(AMS_MOC_HDRS ${AMS_MOC_HDRS}
-    qgsamsdataitemguiprovider.h
-    qgsamssourceselect.h
-    qgsarcgisservicesourceselect.h
-  )
 ENDIF ()
 
-QT5_WRAP_CPP (AMS_MOC_SRCS ${AMS_MOC_HDRS})
-
-ADD_LIBRARY(arcgismapserverprovider MODULE ${AMS_SRCS} ${AMS_MOC_SRCS})
+ADD_LIBRARY(arcgismapserverprovider MODULE ${AMS_SRCS})
 
 TARGET_LINK_LIBRARIES(arcgismapserverprovider
   qgis_core
@@ -125,6 +105,7 @@ IF (WITH_GUI)
   TARGET_LINK_LIBRARIES(arcgismapserverprovider
     qgis_gui
   )
+  ADD_DEPENDENCIES(arcgismapserverprovider ui)
 ENDIF ()
 
 INSTALL (TARGETS arcgismapserverprovider

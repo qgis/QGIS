@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="currentIndex">
-   <number>1</number>
+   <number>0</number>
   </property>
   <widget class="QWidget" name="mPageTableView">
    <layout class="QGridLayout" name="gridLayout_3">
@@ -28,7 +28,7 @@
      <number>0</number>
     </property>
     <item row="0" column="0">
-     <widget class="QSplitter" name="splitter">
+     <widget class="QSplitter" name="mConditionalSplitter">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
@@ -40,7 +40,7 @@
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QgsFieldConditionalFormatWidget" name="mConditionalFormatWidget" native="true">
+      <widget class="QgsPanelWidgetStack" name="mConditionalFormatWidgetStack" native="true">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>0</horstretch>
@@ -131,7 +131,7 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <layout class="QHBoxLayout" name="horizontalLayout">
+          <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,0,0,1,0,0,0,0">
            <property name="spacing">
             <number>1</number>
            </property>
@@ -155,6 +155,9 @@
                <height>24</height>
               </size>
              </property>
+             <property name="toolTip">
+              <string>Navigate to first feature</string>
+             </property>
              <property name="text">
               <string/>
              </property>
@@ -174,6 +177,9 @@
                <width>24</width>
                <height>24</height>
               </size>
+             </property>
+             <property name="toolTip">
+              <string>Navigate to previous feature</string>
              </property>
              <property name="text">
               <string/>
@@ -201,6 +207,9 @@
                <height>24</height>
               </size>
              </property>
+             <property name="toolTip">
+              <string>Navigate to next feature</string>
+             </property>
              <property name="text">
               <string/>
              </property>
@@ -220,6 +229,9 @@
                <width>24</width>
                <height>24</height>
               </size>
+             </property>
+             <property name="toolTip">
+              <string>Navigate to last feature</string>
              </property>
              <property name="text">
               <string/>
@@ -241,7 +253,7 @@
               </font>
              </property>
              <property name="text">
-              <string>TextLabel</string>
+              <string/>
              </property>
             </widget>
            </item>
@@ -395,9 +407,9 @@
    <header>attributetable/qgsfeaturelistview.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsFieldConditionalFormatWidget</class>
+   <class>QgsPanelWidgetStack</class>
    <extends>QWidget</extends>
-   <header>attributetable/qgsfieldconditionalformatwidget.h</header>
+   <header>qgspanelwidgetstack.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

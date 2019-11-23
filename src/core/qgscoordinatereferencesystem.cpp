@@ -19,6 +19,7 @@
 #include "qgscoordinatereferencesystem_p.h"
 
 #include "qgscoordinatereferencesystem_legacy.h"
+#include "qgsreadwritelocker.h"
 
 #include <cmath>
 
@@ -58,21 +59,34 @@
 //! The length of the string "+lat_1="
 const int LAT_PREFIX_LEN = 7;
 
-CUSTOM_CRS_VALIDATION QgsCoordinateReferenceSystem::mCustomSrsValidation = nullptr;
+CUSTOM_CRS_VALIDATION QgsCoordinateReferenceSystem::sCustomSrsValidation = nullptr;
 
-QReadWriteLock QgsCoordinateReferenceSystem::sSrIdCacheLock;
-QHash< long, QgsCoordinateReferenceSystem > QgsCoordinateReferenceSystem::sSrIdCache;
-QReadWriteLock QgsCoordinateReferenceSystem::sOgcLock;
-QHash< QString, QgsCoordinateReferenceSystem > QgsCoordinateReferenceSystem::sOgcCache;
-QReadWriteLock QgsCoordinateReferenceSystem::sProj4CacheLock;
-QHash< QString, QgsCoordinateReferenceSystem > QgsCoordinateReferenceSystem::sProj4Cache;
-QReadWriteLock QgsCoordinateReferenceSystem::sCRSWktLock;
-QHash< QString, QgsCoordinateReferenceSystem > QgsCoordinateReferenceSystem::sWktCache;
-QReadWriteLock QgsCoordinateReferenceSystem::sCRSSrsIdLock;
-QHash< long, QgsCoordinateReferenceSystem > QgsCoordinateReferenceSystem::sSrsIdCache;
-QReadWriteLock QgsCoordinateReferenceSystem::sCrsStringLock;
-QHash< QString, QgsCoordinateReferenceSystem > QgsCoordinateReferenceSystem::sStringCache;
+typedef QHash< long, QgsCoordinateReferenceSystem > SrIdCrsCacheHash;
+typedef QHash< QString, QgsCoordinateReferenceSystem > StringCrsCacheHash;
 
+Q_GLOBAL_STATIC( QReadWriteLock, sSrIdCacheLock )
+Q_GLOBAL_STATIC( SrIdCrsCacheHash, sSrIdCache )
+bool QgsCoordinateReferenceSystem::sDisableSrIdCache = false;
+
+Q_GLOBAL_STATIC( QReadWriteLock, sOgcLock )
+Q_GLOBAL_STATIC( StringCrsCacheHash, sOgcCache )
+bool QgsCoordinateReferenceSystem::sDisableOgcCache = false;
+
+Q_GLOBAL_STATIC( QReadWriteLock, sProj4CacheLock )
+Q_GLOBAL_STATIC( StringCrsCacheHash, sProj4Cache )
+bool QgsCoordinateReferenceSystem::sDisableProj4Cache = false;
+
+Q_GLOBAL_STATIC( QReadWriteLock, sCRSWktLock )
+Q_GLOBAL_STATIC( StringCrsCacheHash, sWktCache )
+bool QgsCoordinateReferenceSystem::sDisableWktCache = false;
+
+Q_GLOBAL_STATIC( QReadWriteLock, sCRSSrsIdLock )
+Q_GLOBAL_STATIC( SrIdCrsCacheHash, sSrsIdCache )
+bool QgsCoordinateReferenceSystem::sDisableSrsIdCache = false;
+
+Q_GLOBAL_STATIC( QReadWriteLock, sCrsStringLock )
+Q_GLOBAL_STATIC( StringCrsCacheHash, sStringCache )
+bool QgsCoordinateReferenceSystem::sDisableStringCache = false;
 
 #if PROJ_VERSION_MAJOR>=6
 QString getFullProjString( PJ *obj )
@@ -246,30 +260,43 @@ bool QgsCoordinateReferenceSystem::createFromId( const long id, CrsType type )
 
 bool QgsCoordinateReferenceSystem::createFromString( const QString &definition )
 {
-  sCrsStringLock.lockForRead();
-  QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = sStringCache.constFind( definition );
-  if ( crsIt != sStringCache.constEnd() )
+  QgsReadWriteLocker locker( *sCrsStringLock(), QgsReadWriteLocker::Read );
+  if ( !sDisableStringCache )
   {
-    // found a match in the cache
-    *this = crsIt.value();
-    sCrsStringLock.unlock();
-    return true;
+    QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = sStringCache()->constFind( definition );
+    if ( crsIt != sStringCache()->constEnd() )
+    {
+      // found a match in the cache
+      *this = crsIt.value();
+      return true;
+    }
   }
-  sCrsStringLock.unlock();
+  locker.unlock();
 
   bool result = false;
-  QRegularExpression reCrsId( "^(epsg|postgis|internal|user)\\:(\\d+)$", QRegularExpression::CaseInsensitiveOption );
+  QRegularExpression reCrsId( QStringLiteral( "^(epsg|esri|osgeo|ignf|zangi|iau2000|postgis|internal|user)\\:(\\w+)$" ), QRegularExpression::CaseInsensitiveOption );
   QRegularExpressionMatch match = reCrsId.match( definition );
   if ( match.capturedStart() == 0 )
   {
     QString authName = match.captured( 1 ).toLower();
-    CrsType type = InternalCrsId;
     if ( authName == QLatin1String( "epsg" ) )
-      type = EpsgCrsId;
-    if ( authName == QLatin1String( "postgis" ) )
-      type = PostgisCrsId;
-    long id = match.captured( 2 ).toLong();
-    result = createFromId( id, type );
+    {
+      result = createFromOgcWmsCrs( definition );
+    }
+    else if ( authName == QLatin1String( "postgis" ) )
+    {
+      const long id = match.captured( 2 ).toLong();
+      result = createFromId( id, PostgisCrsId );
+    }
+    else if ( authName == QLatin1String( "esri" ) || authName == QLatin1String( "osgeo" ) || authName == QLatin1String( "ignf" ) || authName == QLatin1String( "zangi" ) || authName == QLatin1String( "iau2000" ) )
+    {
+      result = createFromOgcWmsCrs( definition );
+    }
+    else
+    {
+      const long id = match.captured( 2 ).toLong();
+      result = createFromId( id, InternalCrsId );
+    }
   }
   else
   {
@@ -299,9 +326,9 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString &definition )
     }
   }
 
-  sCrsStringLock.lockForWrite();
-  sStringCache.insert( definition, *this );
-  sCrsStringLock.unlock();
+  locker.changeMode( QgsReadWriteLocker::Write );
+  if ( !sDisableStringCache )
+    sStringCache()->insert( definition, *this );
   return result;
 }
 
@@ -353,20 +380,22 @@ void QgsCoordinateReferenceSystem::setupESRIWktFix()
 
 bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
 {
-  sOgcLock.lockForRead();
-  QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = sOgcCache.constFind( crs );
-  if ( crsIt != sOgcCache.constEnd() )
+  QgsReadWriteLocker locker( *sOgcLock(), QgsReadWriteLocker::Read );
+  if ( !sDisableOgcCache )
   {
-    // found a match in the cache
-    *this = crsIt.value();
-    sOgcLock.unlock();
-    return true;
+    QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = sOgcCache()->constFind( crs );
+    if ( crsIt != sOgcCache()->constEnd() )
+    {
+      // found a match in the cache
+      *this = crsIt.value();
+      return true;
+    }
   }
-  sOgcLock.unlock();
+  locker.unlock();
 
   QString wmsCrs = crs;
 
-  QRegExp re_uri( "http://www\\.opengis\\.net/def/crs/([^/]+).+/(\\d+)", Qt::CaseInsensitive );
+  QRegExp re_uri( "http://www\\.opengis\\.net/def/crs/([^/]+).+/([^/]+)", Qt::CaseInsensitive );
   QRegExp re_urn( "urn:ogc:def:crs:([^:]+).+([^:]+)", Qt::CaseInsensitive );
   if ( re_uri.exactMatch( wmsCrs ) )
   {
@@ -381,9 +410,9 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
     re_urn.setPattern( QStringLiteral( "(user|custom|qgis):(\\d+)" ) );
     if ( re_urn.exactMatch( wmsCrs ) && createFromSrsId( re_urn.cap( 2 ).toInt() ) )
     {
-      sOgcLock.lockForWrite();
-      sOgcCache.insert( crs, *this );
-      sOgcLock.unlock();
+      locker.changeMode( QgsReadWriteLocker::Write );
+      if ( !sDisableOgcCache )
+        sOgcCache()->insert( crs, *this );
       return true;
     }
   }
@@ -400,9 +429,9 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
       const QString code = parts.at( 1 );
       if ( loadFromAuthCode( auth, code ) )
       {
-        sOgcLock.lockForWrite();
-        sOgcCache.insert( crs, *this );
-        sOgcLock.unlock();
+        locker.changeMode( QgsReadWriteLocker::Write );
+        if ( !sDisableOgcCache )
+          sOgcCache()->insert( crs, *this );
         return true;
       }
     }
@@ -411,9 +440,9 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
 
   if ( loadFromDatabase( QgsApplication::srsDatabaseFilePath(), QStringLiteral( "lower(auth_name||':'||auth_id)" ), wmsCrs.toLower() ) )
   {
-    sOgcLock.lockForWrite();
-    sOgcCache.insert( crs, *this );
-    sOgcLock.unlock();
+    locker.changeMode( QgsReadWriteLocker::Write );
+    if ( !sDisableOgcCache )
+      sOgcCache()->insert( crs, *this );
     return true;
   }
 
@@ -443,16 +472,16 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
     d->mAxisInverted = false;
     d->mAxisInvertedDirty = false;
 
-    sOgcLock.lockForWrite();
-    sOgcCache.insert( crs, *this );
-    sOgcLock.unlock();
+    locker.changeMode( QgsReadWriteLocker::Write );
+    if ( !sDisableOgcCache )
+      sOgcCache()->insert( crs, *this );
 
     return d->mIsValid;
   }
 
-  sOgcLock.lockForWrite();
-  sOgcCache.insert( crs, QgsCoordinateReferenceSystem() );
-  sOgcLock.unlock();
+  locker.changeMode( QgsReadWriteLocker::Write );
+  if ( !sDisableOgcCache )
+    sOgcCache()->insert( crs, QgsCoordinateReferenceSystem() );
   return false;
 }
 
@@ -461,33 +490,30 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
 
 void QgsCoordinateReferenceSystem::validate()
 {
-  if ( d->mIsValid )
+  if ( d->mIsValid || !sCustomSrsValidation )
     return;
 
   d.detach();
 
   // try to validate using custom validation routines
-  if ( mCustomSrsValidation )
-    mCustomSrsValidation( *this );
-
-  if ( !d->mIsValid )
-  {
-    *this = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
-  }
+  if ( sCustomSrsValidation )
+    sCustomSrsValidation( *this );
 }
 
 bool QgsCoordinateReferenceSystem::createFromSrid( const long id )
 {
-  sSrIdCacheLock.lockForRead();
-  QHash< long, QgsCoordinateReferenceSystem >::const_iterator crsIt = sSrIdCache.constFind( id );
-  if ( crsIt != sSrIdCache.constEnd() )
+  QgsReadWriteLocker locker( *sSrIdCacheLock(), QgsReadWriteLocker::Read );
+  if ( !sDisableSrIdCache )
   {
-    // found a match in the cache
-    *this = crsIt.value();
-    sSrIdCacheLock.unlock();
-    return true;
+    QHash< long, QgsCoordinateReferenceSystem >::const_iterator crsIt = sSrIdCache()->constFind( id );
+    if ( crsIt != sSrIdCache()->constEnd() )
+    {
+      // found a match in the cache
+      *this = crsIt.value();
+      return true;
+    }
   }
-  sSrIdCacheLock.unlock();
+  locker.unlock();
 
 #if PROJ_VERSION_MAJOR>=6
   // first chance for proj 6 - scan through legacy systems and try to use authid directly
@@ -500,9 +526,9 @@ bool QgsCoordinateReferenceSystem::createFromSrid( const long id )
       const QString code = parts.at( 1 );
       if ( loadFromAuthCode( auth, code ) )
       {
-        sSrIdCacheLock.lockForWrite();
-        sSrIdCache.insert( id, *this );
-        sSrIdCacheLock.unlock();
+        locker.changeMode( QgsReadWriteLocker::Write );
+        if ( !sDisableSrIdCache )
+          sSrIdCache()->insert( id, *this );
 
         return true;
       }
@@ -512,25 +538,27 @@ bool QgsCoordinateReferenceSystem::createFromSrid( const long id )
 
   bool result = loadFromDatabase( QgsApplication::srsDatabaseFilePath(), QStringLiteral( "srid" ), QString::number( id ) );
 
-  sSrIdCacheLock.lockForWrite();
-  sSrIdCache.insert( id, *this );
-  sSrIdCacheLock.unlock();
+  locker.changeMode( QgsReadWriteLocker::Write );
+  if ( !sDisableSrIdCache )
+    sSrIdCache()->insert( id, *this );
 
   return result;
 }
 
 bool QgsCoordinateReferenceSystem::createFromSrsId( const long id )
 {
-  sCRSSrsIdLock.lockForRead();
-  QHash< long, QgsCoordinateReferenceSystem >::const_iterator crsIt = sSrsIdCache.constFind( id );
-  if ( crsIt != sSrsIdCache.constEnd() )
+  QgsReadWriteLocker locker( *sCRSSrsIdLock(), QgsReadWriteLocker::Read );
+  if ( !sDisableSrsIdCache )
   {
-    // found a match in the cache
-    *this = crsIt.value();
-    sCRSSrsIdLock.unlock();
-    return true;
+    QHash< long, QgsCoordinateReferenceSystem >::const_iterator crsIt = sSrsIdCache()->constFind( id );
+    if ( crsIt != sSrsIdCache()->constEnd() )
+    {
+      // found a match in the cache
+      *this = crsIt.value();
+      return true;
+    }
   }
-  sCRSSrsIdLock.unlock();
+  locker.unlock();
 
 #if PROJ_VERSION_MAJOR>=6
   // first chance for proj 6 - scan through legacy systems and try to use authid directly
@@ -543,10 +571,9 @@ bool QgsCoordinateReferenceSystem::createFromSrsId( const long id )
       const QString code = parts.at( 1 );
       if ( loadFromAuthCode( auth, code ) )
       {
-        sCRSSrsIdLock.lockForWrite();
-        sSrsIdCache.insert( id, *this );
-        sCRSSrsIdLock.unlock();
-
+        locker.changeMode( QgsReadWriteLocker::Write );
+        if ( !sDisableSrsIdCache )
+          sSrsIdCache()->insert( id, *this );
         return true;
       }
     }
@@ -557,10 +584,9 @@ bool QgsCoordinateReferenceSystem::createFromSrsId( const long id )
                                   QgsApplication::qgisUserDatabaseFilePath(),
                                   QStringLiteral( "srs_id" ), QString::number( id ) );
 
-  sCRSSrsIdLock.lockForWrite();
-  sSrsIdCache.insert( id, *this );
-  sCRSSrsIdLock.unlock();
-
+  locker.changeMode( QgsReadWriteLocker::Write );
+  if ( !sDisableSrsIdCache )
+    sSrsIdCache()->insert( id, *this );
   return result;
 }
 
@@ -690,16 +716,18 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
 {
   d.detach();
 
-  sCRSWktLock.lockForRead();
-  QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = sWktCache.constFind( wkt );
-  if ( crsIt != sWktCache.constEnd() )
+  QgsReadWriteLocker locker( *sCRSWktLock(), QgsReadWriteLocker::Read );
+  if ( !sDisableWktCache )
   {
-    // found a match in the cache
-    *this = crsIt.value();
-    sCRSWktLock.unlock();
-    return true;
+    QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = sWktCache()->constFind( wkt );
+    if ( crsIt != sWktCache()->constEnd() )
+    {
+      // found a match in the cache
+      *this = crsIt.value();
+      return true;
+    }
   }
-  sCRSWktLock.unlock();
+  locker.unlock();
 
   d->mIsValid = false;
   d->mWkt.clear();
@@ -751,9 +779,9 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
 #endif
   if ( !res )
   {
-    sCRSWktLock.lockForWrite();
-    sWktCache.insert( wkt, *this );
-    sCRSWktLock.unlock();
+    locker.changeMode( QgsReadWriteLocker::Write );
+    if ( !sDisableWktCache )
+      sWktCache()->insert( wkt, *this );
     return d->mIsValid;
   }
 
@@ -766,9 +794,9 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
     {
       if ( loadFromAuthCode( authName, authCode ) )
       {
-        sCRSWktLock.lockForWrite();
-        sWktCache.insert( wkt, *this );
-        sCRSWktLock.unlock();
+        locker.changeMode( QgsReadWriteLocker::Write );
+        if ( !sDisableWktCache )
+          sWktCache()->insert( wkt, *this );
         return true;
       }
     }
@@ -780,9 +808,9 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
                      .arg( OSRGetAuthorityName( d->mCRS, nullptr ),
                            OSRGetAuthorityCode( d->mCRS, nullptr ) );
     bool result = createFromOgcWmsCrs( authid );
-    sCRSWktLock.lockForWrite();
-    sWktCache.insert( wkt, *this );
-    sCRSWktLock.unlock();
+    locker.changeMode( QgsReadWriteLocker::Write );
+    if ( !sDisableWktCache )
+      sWktCache()->insert( wkt, *this );
     return result;
   }
 #endif
@@ -848,9 +876,9 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
   CPLFree( proj4src );
 #endif
 
-  sCRSWktLock.lockForWrite();
-  sWktCache.insert( wkt, *this );
-  sCRSWktLock.unlock();
+  locker.changeMode( QgsReadWriteLocker::Write );
+  if ( !sDisableWktCache )
+    sWktCache()->insert( wkt, *this );
 
   return d->mIsValid;
   //setMapunits will be called by createfromproj above
@@ -873,16 +901,18 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
     return false;
   }
 
-  sProj4CacheLock.lockForRead();
-  QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = sProj4Cache.constFind( proj4String );
-  if ( crsIt != sProj4Cache.constEnd() )
+  QgsReadWriteLocker locker( *sProj4CacheLock(), QgsReadWriteLocker::Read );
+  if ( !sDisableProj4Cache )
   {
-    // found a match in the cache
-    *this = crsIt.value();
-    sProj4CacheLock.unlock();
-    return true;
+    QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = sProj4Cache()->constFind( proj4String );
+    if ( crsIt != sProj4Cache()->constEnd() )
+    {
+      // found a match in the cache
+      *this = crsIt.value();
+      return true;
+    }
   }
-  sProj4CacheLock.unlock();
+  locker.unlock();
 
   //
   // Examples:
@@ -945,9 +975,9 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
           const QString authid = QStringLiteral( "%1:%2" ).arg( authName, authCode );
           if ( createFromOgcWmsCrs( authid ) )
           {
-            sProj4CacheLock.lockForWrite();
-            sProj4Cache.insert( proj4String, *this );
-            sProj4CacheLock.unlock();
+            locker.changeMode( QgsReadWriteLocker::Write );
+            if ( !sDisableProj4Cache )
+              sProj4Cache()->insert( proj4String, *this );
             return true;
           }
         }
@@ -966,9 +996,9 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
   int myStart = myProjRegExp.indexIn( myProj4String );
   if ( myStart == -1 )
   {
-    sProj4CacheLock.lockForWrite();
-    sProj4Cache.insert( proj4String, *this );
-    sProj4CacheLock.unlock();
+    locker.changeMode( QgsReadWriteLocker::Write );
+    if ( !sDisableProj4Cache )
+      sProj4Cache()->insert( proj4String, *this );
 
     return d->mIsValid;
   }
@@ -1130,9 +1160,9 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
     setProj4String( myProj4String );
   }
 
-  sProj4CacheLock.lockForWrite();
-  sProj4Cache.insert( proj4String, *this );
-  sProj4CacheLock.unlock();
+  locker.changeMode( QgsReadWriteLocker::Write );
+  if ( !sDisableProj4Cache )
+    sProj4Cache()->insert( proj4String, *this );
 
   return d->mIsValid;
 }
@@ -1432,8 +1462,10 @@ void QgsCoordinateReferenceSystem::setProj4String( const QString &proj4String )
 
   if ( !d->mPj )
   {
+#ifdef QGISDEBUG
     const int errNo = proj_context_errno( ctx );
     QgsDebugMsg( QStringLiteral( "proj string rejected: %1" ).arg( proj_errno_string( errNo ) ) );
+#endif
     d->mIsValid = false;
   }
   else
@@ -1716,18 +1748,45 @@ bool QgsCoordinateReferenceSystem::operator!=( const QgsCoordinateReferenceSyste
   return  !( *this == srs );
 }
 
-QString QgsCoordinateReferenceSystem::toWkt() const
+QString QgsCoordinateReferenceSystem::toWkt( WktVariant variant, bool multiline, int indentationWidth ) const
 {
   if ( d->mWkt.isEmpty() )
   {
 #if PROJ_VERSION_MAJOR>=6
-    // TODO QGIS 4.0 - upgrade to wkt2 (this would be an API break).
     if ( d->mPj )
     {
-      const char *const options[] = {"MULTILINE=NO", "INDENTATION_WIDTH=0", nullptr};
-      d->mWkt = QString( proj_as_wkt( QgsProjContext::get(), d->mPj.get(), PJ_WKT1_GDAL, options ) );
+      PJ_WKT_TYPE type = PJ_WKT1_GDAL;
+      switch ( variant )
+      {
+        case WKT1_GDAL:
+          type = PJ_WKT1_GDAL;
+          break;
+        case WKT1_ESRI:
+          type = PJ_WKT1_ESRI;
+          break;
+        case WKT2_2015:
+          type = PJ_WKT2_2015;
+          break;
+        case WKT2_2015_SIMPLIFIED:
+          type = PJ_WKT2_2015_SIMPLIFIED;
+          break;
+        case WKT2_2018:
+          type = PJ_WKT2_2018;
+          break;
+        case WKT2_2018_SIMPLIFIED:
+          type = PJ_WKT2_2018_SIMPLIFIED;
+          break;
+      }
+
+      const QByteArray multiLineOption = QStringLiteral( "MULTILINE=%1" ).arg( multiline ? QStringLiteral( "YES" ) : QStringLiteral( "NO" ) ).toLocal8Bit();
+      const QByteArray indentatationWidthOption = QStringLiteral( "INDENTATION_WIDTH=%1" ).arg( multiline ? QString::number( indentationWidth ) : QStringLiteral( "0" ) ).toLocal8Bit();
+      const char *const options[] = {multiLineOption.constData(), indentatationWidthOption.constData(), nullptr};
+      d->mWkt = QString( proj_as_wkt( QgsProjContext::get(), d->mPj.get(), type, options ) );
     }
 #else
+    Q_UNUSED( variant )
+    Q_UNUSED( multiline )
+    Q_UNUSED( indentationWidth )
     char *wkt = nullptr;
     if ( OSRExportToWkt( d->mCRS, &wkt ) == OGRERR_NONE )
     {
@@ -1976,12 +2035,12 @@ int QgsCoordinateReferenceSystem::openDatabase( const QString &path, sqlite3_dat
 
 void QgsCoordinateReferenceSystem::setCustomCrsValidation( CUSTOM_CRS_VALIDATION f )
 {
-  mCustomSrsValidation = f;
+  sCustomSrsValidation = f;
 }
 
 CUSTOM_CRS_VALIDATION QgsCoordinateReferenceSystem::customCrsValidation()
 {
-  return mCustomSrsValidation;
+  return sCustomSrsValidation;
 }
 
 void QgsCoordinateReferenceSystem::debugPrint()
@@ -2393,6 +2452,9 @@ bool QgsCoordinateReferenceSystem::loadIds( QHash<int, QString> &wkts )
 #if PROJ_VERSION_MAJOR>=6
 static void sync_db_proj_logger( void * /* user_data */, int level, const char *message )
 {
+#ifndef QGISDEBUG
+  Q_UNUSED( message )
+#endif
   if ( level == PJ_LOG_ERROR )
   {
     QgsDebugMsgLevel( QStringLiteral( "PROJ: %1" ).arg( message ), 2 );
@@ -2906,7 +2968,11 @@ int QgsCoordinateReferenceSystem::syncDatabase()
     return -1;
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "CRS update (inserted:%1 updated:%2 deleted:%3 errors:%4)" ).arg( QString::number( inserted ), QString::number( updated ), QString::number( deleted ), QString::number( errors ) ), 4 );
+#ifdef QGISDEBUG
+  QgsDebugMsgLevel( QStringLiteral( "CRS update (inserted:%1 updated:%2 deleted:%3 errors:%4)" ).arg( inserted ).arg( updated ).arg( deleted ).arg( errors ), 4 );
+#else
+  Q_UNUSED( deleted )
+#endif
 
   if ( errors > 0 )
     return -errors;
@@ -3113,6 +3179,36 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString &dbPath )
 }
 #endif
 
+const QHash<QString, QgsCoordinateReferenceSystem> &QgsCoordinateReferenceSystem::stringCache()
+{
+  return *sStringCache();
+}
+
+const QHash<QString, QgsCoordinateReferenceSystem> &QgsCoordinateReferenceSystem::proj4Cache()
+{
+  return *sProj4Cache();
+}
+
+const QHash<QString, QgsCoordinateReferenceSystem> &QgsCoordinateReferenceSystem::ogcCache()
+{
+  return *sOgcCache();
+}
+
+const QHash<QString, QgsCoordinateReferenceSystem> &QgsCoordinateReferenceSystem::wktCache()
+{
+  return *sWktCache();
+}
+
+const QHash<long, QgsCoordinateReferenceSystem> &QgsCoordinateReferenceSystem::srIdCache()
+{
+  return *sSrIdCache();
+}
+
+const QHash<long, QgsCoordinateReferenceSystem> &QgsCoordinateReferenceSystem::srsIdCache()
+{
+  return *sSrsIdCache();
+}
+
 QString QgsCoordinateReferenceSystem::geographicCrsAuthId() const
 {
   if ( isGeographic() )
@@ -3186,24 +3282,59 @@ QStringList QgsCoordinateReferenceSystem::recentProjections()
   return projections;
 }
 
-void QgsCoordinateReferenceSystem::invalidateCache()
+void QgsCoordinateReferenceSystem::invalidateCache( bool disableCache )
 {
-  sSrIdCacheLock.lockForWrite();
-  sSrIdCache.clear();
-  sSrIdCacheLock.unlock();
-  sOgcLock.lockForWrite();
-  sOgcCache.clear();
-  sOgcLock.unlock();
-  sProj4CacheLock.lockForWrite();
-  sProj4Cache.clear();
-  sProj4CacheLock.unlock();
-  sCRSWktLock.lockForWrite();
-  sWktCache.clear();
-  sCRSWktLock.unlock();
-  sCRSSrsIdLock.lockForWrite();
-  sSrsIdCache.clear();
-  sCRSSrsIdLock.unlock();
-  sCrsStringLock.lockForWrite();
-  sStringCache.clear();
-  sCrsStringLock.unlock();
+  sSrIdCacheLock()->lockForWrite();
+  if ( !sDisableSrIdCache )
+  {
+    if ( disableCache )
+      sDisableSrIdCache = true;
+    sSrIdCache()->clear();
+  }
+  sSrIdCacheLock()->unlock();
+
+  sOgcLock()->lockForWrite();
+  if ( !sDisableOgcCache )
+  {
+    if ( disableCache )
+      sDisableOgcCache = true;
+    sOgcCache()->clear();
+  }
+  sOgcLock()->unlock();
+
+  sProj4CacheLock()->lockForWrite();
+  if ( !sDisableProj4Cache )
+  {
+    if ( disableCache )
+      sDisableProj4Cache = true;
+    sProj4Cache()->clear();
+  }
+  sProj4CacheLock()->unlock();
+
+  sCRSWktLock()->lockForWrite();
+  if ( !sDisableWktCache )
+  {
+    if ( disableCache )
+      sDisableWktCache = true;
+    sWktCache()->clear();
+  }
+  sCRSWktLock()->unlock();
+
+  sCRSSrsIdLock()->lockForWrite();
+  if ( !sDisableSrsIdCache )
+  {
+    if ( disableCache )
+      sDisableSrsIdCache = true;
+    sSrsIdCache()->clear();
+  }
+  sCRSSrsIdLock()->unlock();
+
+  sCrsStringLock()->lockForWrite();
+  if ( !sDisableStringCache )
+  {
+    if ( disableCache )
+      sDisableStringCache = true;
+    sStringCache()->clear();
+  }
+  sCrsStringLock()->unlock();
 }

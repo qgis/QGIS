@@ -51,8 +51,6 @@ Sets the context in which the symbol widget is shown, e.g., the associated map c
 :param context: symbol widget context
 
 .. seealso:: :py:func:`context`
-
-.. versionadded:: 3.0
 %End
 
     QgsSymbolWidgetContext context() const;
@@ -60,15 +58,16 @@ Sets the context in which the symbol widget is shown, e.g., the associated map c
 Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
 
 .. seealso:: :py:func:`setContext`
-
-.. versionadded:: 3.0
 %End
 
     const QgsVectorLayer *vectorLayer() const;
 %Docstring
 Returns the vector layer associated with the widget.
+%End
 
-.. versionadded:: 2.12
+    virtual void setGeometryType( QgsWkbTypes::GeometryType type ) = 0;
+%Docstring
+Sets the geometry ``type`` of the features to customize the widget accordingly.
 %End
 
   protected:

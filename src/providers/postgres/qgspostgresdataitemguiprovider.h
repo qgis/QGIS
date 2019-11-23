@@ -36,6 +36,8 @@ class QgsPostgresDataItemGuiProvider : public QObject, public QgsDataItemGuiProv
     bool acceptDrop( QgsDataItem *item, QgsDataItemGuiContext context ) override;
     bool handleDrop( QgsDataItem *item, QgsDataItemGuiContext context, const QMimeData *data, Qt::DropAction action ) override;
 
+    QWidget *createParamWidget( QgsDataItem *root, QgsDataItemGuiContext ) override;
+
   private:
     static void newConnection( QgsDataItem *item );
     static void editConnection( QgsDataItem *item );

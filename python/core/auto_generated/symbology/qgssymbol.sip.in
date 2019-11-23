@@ -272,16 +272,26 @@ layer.
 .. seealso:: :py:func:`setColor`
 %End
 
-    void drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext = 0 );
+    void drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext = 0, bool selected = false, const QgsExpressionContext *expressionContext = 0 );
 %Docstring
 Draws an icon of the symbol that occupies an area given by ``size`` using the specified ``painter``.
 
 Optionally a custom render context may be given in order to ensure that the preview icon exactly
 matches the settings from that context.
 
+:param painter: destination painter
+:param size: size of the icon
+:param customContext: the context in which the rendering happens
+:param selected: set to ``True`` to render the symbol in a selected state
+:param expressionContext: optional custom expression context
+
 .. seealso:: :py:func:`exportImage`
 
 .. seealso:: :py:func:`asImage`
+
+.. note::
+
+   Parameter selected added in QGIS 3.10
 
 .. versionadded:: 2.6
 %End
@@ -491,13 +501,15 @@ Returns whether the symbol utilizes any data defined properties.
 
    the layer will be ``None`` after stopRender
 
-.. deprecated:: Will be removed in QGIS 4.0
+.. deprecated::
+   Will be removed in QGIS 4.0
 %End
 
  const QgsVectorLayer *layer() const /Deprecated/;
 %Docstring
 
-.. deprecated:: Will be removed in QGIS 4.0
+.. deprecated::
+   Will be removed in QGIS 4.0
 %End
 
     void renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false, int currentVertexMarkerType = 0, double currentVertexMarkerSize = 0.0 ) throw( QgsCsException );
@@ -622,26 +634,30 @@ Sets the original value variable value for data defined symbology
 %Docstring
 Returns the output unit for the context.
 
-.. deprecated:: No longer used and will be removed in QGIS 4.0
+.. deprecated::
+   No longer used and will be removed in QGIS 4.0
 %End
 
  void setOutputUnit( QgsUnitTypes::RenderUnit u ) /Deprecated/;
 %Docstring
 Sets the output unit for the context.
 
-.. deprecated:: No longer used and will be removed in QGIS 4.0
+.. deprecated::
+   No longer used and will be removed in QGIS 4.0
 %End
 
  QgsMapUnitScale mapUnitScale() const /Deprecated/;
 %Docstring
 
-.. deprecated:: Will be removed in QGIS 4.0
+.. deprecated::
+   Will be removed in QGIS 4.0
 %End
 
  void setMapUnitScale( const QgsMapUnitScale &scale ) /Deprecated/;
 %Docstring
 
-.. deprecated:: Will be removed in QGIS 4.0
+.. deprecated::
+   Will be removed in QGIS 4.0
 %End
 
     qreal opacity() const;
@@ -758,13 +774,15 @@ Sets the part number of current geometry
  double outputLineWidth( double width ) const /Deprecated/;
 %Docstring
 
-.. deprecated:: Use the size conversion methods in QgsRenderContext instead.
+.. deprecated::
+   Use the size conversion methods in QgsRenderContext instead.
 %End
 
  double outputPixelSize( double size ) const /Deprecated/;
 %Docstring
 
-.. deprecated:: Use the size conversion methods in QgsRenderContext instead.
+.. deprecated::
+   Use the size conversion methods in QgsRenderContext instead.
 %End
 
 

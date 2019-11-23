@@ -44,6 +44,7 @@ class QgsRenderContext;
  */
 class QgsMeshLayerRendererFeedback : public QgsRasterBlockFeedback
 {
+    Q_OBJECT
 };
 
 
@@ -61,6 +62,7 @@ struct CORE_NO_EXPORT QgsMeshLayerRendererCache
   bool mScalarDataOnVertices = true;
   double mScalarDatasetMinimum = std::numeric_limits<double>::quiet_NaN();
   double mScalarDatasetMaximum = std::numeric_limits<double>::quiet_NaN();
+  QgsMeshRendererScalarSettings::DataInterpolationMethod mDataInterpolationMethod = QgsMeshRendererScalarSettings::None;
 
   // vector dataset
   QgsMeshDatasetIndex mActiveVectorDatasetIndex;
@@ -93,7 +95,7 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
 
   private:
     void renderMesh();
-    void renderMesh( const QgsMeshRendererMeshSettings &settings, const QVector<QgsMeshFace> &faces, const QList<int> facesInExtent );
+    void renderMesh( const QgsMeshRendererMeshSettings &settings, const QVector<QgsMeshFace> &faces, const QList<int> &facesInExtent );
     void renderScalarDataset();
     void renderVectorDataset();
     void copyScalarDatasetValues( QgsMeshLayer *layer );
@@ -125,9 +127,6 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     double mVectorDatasetGroupMagMinimum = std::numeric_limits<double>::quiet_NaN();
     double mVectorDatasetGroupMagMaximum = std::numeric_limits<double>::quiet_NaN();
     bool mVectorDataOnVertices = true;
-
-    // rendering context
-    QgsRenderContext &mContext;
 
     // copy of rendering settings
     QgsMeshRendererSettings mRendererSettings;

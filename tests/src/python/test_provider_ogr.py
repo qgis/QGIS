@@ -119,7 +119,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
         self.assertTrue(vl.isValid())
         self.assertEqual(len(vl.dataProvider().subLayers()), 1)
-        self.assertEqual(vl.dataProvider().subLayers()[0], QgsDataProvider.SUBLAYER_SEPARATOR.join(['0', 'testMixOfPolygonCurvePolygon', '4', 'CurvePolygon', '']))
+        self.assertEqual(vl.dataProvider().subLayers()[0], QgsDataProvider.SUBLAYER_SEPARATOR.join(['0', 'testMixOfPolygonCurvePolygon', '4', 'CurvePolygon', '', '']))
 
     def testMixOfLineStringCompoundCurve(self):
 
@@ -135,7 +135,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
         self.assertTrue(vl.isValid())
         self.assertEqual(len(vl.dataProvider().subLayers()), 1)
-        self.assertEqual(vl.dataProvider().subLayers()[0], QgsDataProvider.SUBLAYER_SEPARATOR.join(['0', 'testMixOfLineStringCompoundCurve', '5', 'CompoundCurve', '']))
+        self.assertEqual(vl.dataProvider().subLayers()[0], QgsDataProvider.SUBLAYER_SEPARATOR.join(['0', 'testMixOfLineStringCompoundCurve', '5', 'CompoundCurve', '', '']))
 
     def testGpxElevation(self):
         # GPX without elevation data
@@ -585,6 +585,29 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(vl.fields().at(0).type(), QVariant.Bool)
         self.assertEqual([f[0] for f in vl.getFeatures()], [True, False, NULL])
         self.assertEqual([f[0].__class__.__name__ for f in vl.getFeatures()], ['bool', 'bool', 'QVariant'])
+
+    def testReloadDataAndFeatureCount(self):
+
+        filename = '/vsimem/test.json'
+        gdal.FileFromMemBuffer(filename, """{
+"type": "FeatureCollection",
+"features": [
+{ "type": "Feature", "properties": null, "geometry": { "type": "Point", "coordinates": [2, 49] } },
+{ "type": "Feature", "properties": null, "geometry": { "type": "Point", "coordinates": [3, 50] } }
+]
+}""")
+        vl = QgsVectorLayer(filename, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 2)
+        gdal.FileFromMemBuffer(filename, """{
+"type": "FeatureCollection",
+"features": [
+{ "type": "Feature", "properties": null, "geometry": { "type": "Point", "coordinates": [2, 49] } }
+]
+}""")
+        vl.reload()
+        self.assertEqual(vl.featureCount(), 1)
+        gdal.Unlink(filename)
 
 
 if __name__ == '__main__':

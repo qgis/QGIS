@@ -120,7 +120,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
     def testWriteWithBoolField(self):
 
         # init connection string
-        dbconn = 'dbname=\'qgis_test\''
+        dbconn = 'service=qgis_test'
         if 'QGIS_PGTEST_DB' in os.environ:
             dbconn = os.environ['QGIS_PGTEST_DB']
 
@@ -800,6 +800,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertEqual(formats[1].driverName, 'ESRI Shapefile')
         self.assertEqual(formats[1].globs, ['*.shp'])
         self.assertTrue('ODS' in [f.driverName for f in formats])
+        self.assertTrue('PGDUMP' in [f.driverName for f in formats])
 
         interlis_format = [f for f in formats if f.driverName == 'Interlis 2'][0]
         self.assertEqual(interlis_format.globs, ['*.xtf', '*.xml', '*.ili'])
@@ -1142,6 +1143,40 @@ class TestQgsVectorFileWriter(unittest.TestCase):
 
         del vl
         os.unlink(filename + '.gpkg')
+
+    def testWriteKMLAxisOrderIssueGDAL3(self):
+        """Check axis order issue when writing KML with EPSG:4326."""
+
+        if not ogr.GetDriverByName('KML'):
+            return
+
+        vl = QgsVectorLayer(
+            'PointZ?crs=epsg:4326&field=name:string(20)',
+            'test',
+            'memory')
+
+        self.assertTrue(vl.isValid(), 'Provider not initialized')
+
+        ft = QgsFeature()
+        ft.setGeometry(QgsGeometry.fromWkt('Point(2 49)'))
+        myResult, myFeatures = vl.dataProvider().addFeatures([ft])
+        self.assertTrue(myResult)
+        self.assertTrue(myFeatures)
+
+        dest_file_name = os.path.join(str(QDir.tempPath()), 'testWriteKMLAxisOrderIssueGDAL3.kml')
+        write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
+            vl,
+            dest_file_name,
+            'utf-8',
+            vl.crs(),
+            'KML')
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
+
+        # Open result and check
+        created_layer = QgsVectorLayer(dest_file_name, 'test', 'ogr')
+        self.assertTrue(created_layer.isValid())
+        f = next(created_layer.getFeatures(QgsFeatureRequest()))
+        self.assertEqual(f.geometry().asWkt(), 'PointZ (2 49 0)')
 
 
 if __name__ == '__main__':

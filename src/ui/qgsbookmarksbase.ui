@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Spatial Bookmarks</string>
+   <string>Spatial Bookmark Manager</string>
   </property>
   <widget class="QWidget" name="bookmarksDockContents">
    <layout class="QGridLayout" name="gridLayout">

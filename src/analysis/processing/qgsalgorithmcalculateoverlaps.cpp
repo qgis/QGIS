@@ -85,11 +85,14 @@ bool QgsCalculateVectorOverlapsAlgorithm::prepareAlgorithm( const QVariantMap &p
   mOutputFields = mSource->fields();
 
   const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
+  mOverlayerSources.reserve( layers.size() );
+  mLayerNames.reserve( layers.size() );
   for ( QgsMapLayer *layer : layers )
   {
     if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer ) )
     {
-      mOverlayerSources[ layer->name() ] = qgis::make_unique< QgsVectorLayerFeatureSource >( vl );
+      mLayerNames << layer->name();
+      mOverlayerSources.emplace_back( qgis::make_unique< QgsVectorLayerFeatureSource >( vl ) );
       mOutputFields.append( QgsField( QStringLiteral( "%1_area" ).arg( vl->name() ), QVariant::Double ) );
       mOutputFields.append( QgsField( QStringLiteral( "%1_pc" ).arg( vl->name() ), QVariant::Double ) );
     }
@@ -112,12 +115,14 @@ QVariantMap QgsCalculateVectorOverlapsAlgorithm::processAlgorithm( const QVarian
 
   // build a spatial index for each constraint layer for speed. We also store input constraint geometries here,
   // to avoid refetching and projecting them later
-  QMap< QString, QgsSpatialIndex > spatialIndices;
-  for ( auto it = mOverlayerSources.begin(); it != mOverlayerSources.end(); ++ it )
+  QList< QgsSpatialIndex > spatialIndices;
+  spatialIndices.reserve( mLayerNames.size() );
+  auto nameIt = mLayerNames.constBegin();
+  for ( auto sourceIt = mOverlayerSources.begin(); sourceIt != mOverlayerSources.end(); ++sourceIt, ++nameIt )
   {
-    feedback->pushInfo( QObject::tr( "Preparing %1" ).arg( it->first ) );
-    QgsFeatureIterator featureIt = it->second->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ).setDestinationCrs( mCrs, context.transformContext() ).setInvalidGeometryCheck( context.invalidGeometryCheck() ).setInvalidGeometryCallback( context.invalidGeometryCallback() ) );
-    spatialIndices.insert( it->first, QgsSpatialIndex( featureIt, feedback, QgsSpatialIndex::FlagStoreFeatureGeometries ) );
+    feedback->pushInfo( QObject::tr( "Preparing %1" ).arg( *nameIt ) );
+    QgsFeatureIterator featureIt = ( *sourceIt )->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ).setDestinationCrs( mCrs, context.transformContext() ).setInvalidGeometryCheck( context.invalidGeometryCheck() ).setInvalidGeometryCallback( context.invalidGeometryCallback() ) );
+    spatialIndices << QgsSpatialIndex( featureIt, feedback, QgsSpatialIndex::FlagStoreFeatureGeometries );
   }
 
   QgsDistanceArea da;
@@ -144,13 +149,13 @@ QVariantMap QgsCalculateVectorOverlapsAlgorithm::processAlgorithm( const QVarian
       bufferGeomEngine->prepareGeometry();
 
       // calculate overlap attributes
-
-      for ( auto it = mOverlayerSources.begin(); it != mOverlayerSources.end(); ++ it )
+      auto spatialIteratorIt = spatialIndices.begin();
+      for ( auto it = mOverlayerSources.begin(); it != mOverlayerSources.end(); ++ it, ++spatialIteratorIt )
       {
         if ( feedback->isCanceled() )
           break;
 
-        QgsSpatialIndex &index = spatialIndices[ it->first ];
+        QgsSpatialIndex &index = *spatialIteratorIt;
         const QList<QgsFeatureId> matches = index.intersects( inputGeom.boundingBox() );
         QVector< QgsGeometry > intersectingGeoms;
         intersectingGeoms.reserve( matches.count() );

@@ -78,6 +78,25 @@ Construct a linestring from a single 2d line segment.
 .. versionadded:: 3.2
 %End
 
+    static QgsLineString *fromBezierCurve( const QgsPoint &start, const QgsPoint &controlPoint1, const QgsPoint &controlPoint2, const QgsPoint &end, int segments = 30 ) /Factory/;
+%Docstring
+Returns a new linestring created by segmentizing the bezier curve between ``start`` and ``end``, with
+the specified control points.
+
+The ``segments`` parameter controls how many line segments will be present in the returned linestring.
+
+Any z or m values present in the input coordinates will be interpolated along with the x and y values.
+
+.. versionadded:: 3.10
+%End
+
+    static QgsLineString *fromQPolygonF( const QPolygonF &polygon ) /Factory/;
+%Docstring
+Returns a new linestring from a QPolygonF ``polygon`` input.
+
+.. versionadded:: 3.10
+%End
+
     virtual bool equals( const QgsCurve &other ) const;
 
 

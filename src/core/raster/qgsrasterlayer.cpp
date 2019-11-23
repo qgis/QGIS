@@ -117,6 +117,8 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
   , QSTRING_NOT_SET( QStringLiteral( "Not Set" ) )
   , TRSTRING_NOT_SET( tr( "Not Set" ) )
 {
+  mShouldValidateCrs = !options.skipCrsValidation;
+
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   setProviderType( providerKey );
 
@@ -289,14 +291,14 @@ QgsLegendColorList QgsRasterLayer::legendSymbologyItems() const
 QString QgsRasterLayer::htmlMetadata() const
 {
   QgsLayerMetadataFormatter htmlFormatter( metadata() );
-  QString myMetadata = QStringLiteral( "<html>\n<body>\n" );
+  QString myMetadata = QStringLiteral( "<html><head></head>\n<body>\n" );
 
   // Begin Provider section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "Information from provider" ) + QStringLiteral( "</h1>\n<hr>\n" );
-  myMetadata += QLatin1String( "<table class=\"list-view\">\n" );
+  myMetadata += QStringLiteral( "<h1>" ) + tr( "Information from provider" ) + QStringLiteral( "</h1>\n<hr>\n" ) %
+                QStringLiteral( "<table class=\"list-view\">\n" ) %
 
-  // name
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Name" ) + QStringLiteral( "</td><td>" ) + name() + QStringLiteral( "</td></tr>\n" );
+                // name
+                QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Name" ) % QStringLiteral( "</td><td>" ) % name() % QStringLiteral( "</td></tr>\n" );
 
   // local path
   QVariantMap uriComponents = QgsProviderRegistry::instance()->decodeUri( mProviderKey, publicSource() );
@@ -305,59 +307,55 @@ QString QgsRasterLayer::htmlMetadata() const
   {
     path = uriComponents[QStringLiteral( "path" )].toString();
     if ( QFile::exists( path ) )
-      myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Path" ) + QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( path ).toString(), QDir::toNativeSeparators( path ) ) ) + QStringLiteral( "</td></tr>\n" );
+      myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Path" ) % QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( path ).toString(), QDir::toNativeSeparators( path ) ) ) + QStringLiteral( "</td></tr>\n" );
   }
   if ( uriComponents.contains( QStringLiteral( "url" ) ) )
   {
     const QString url = uriComponents[QStringLiteral( "url" )].toString();
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "URL" ) + QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl( url ).toString(), url ) ) + QStringLiteral( "</td></tr>\n" );
+    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "URL" ) % QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl( url ).toString(), url ) ) + QStringLiteral( "</td></tr>\n" );
   }
 
   // data source
   if ( publicSource() != path )
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Source" ) + QStringLiteral( "</td><td>%1" ).arg( publicSource() ) + QStringLiteral( "</td></tr>\n" );
-
-  // data source
-  if ( publicSource() != path )
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Source" ) + QStringLiteral( "</td><td>%1" ).arg( publicSource() ) + QStringLiteral( "</td></tr>\n" );
+    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Source" ) + QStringLiteral( "</td><td>%1" ).arg( publicSource() ) + QStringLiteral( "</td></tr>\n" );
 
   // EPSG
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "CRS" ) + QStringLiteral( "</td><td>" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "CRS" ) + QStringLiteral( "</td><td>" );
   if ( crs().isValid() )
   {
-    myMetadata += crs().authid() + QStringLiteral( " - " );
-    myMetadata += crs().description() + QStringLiteral( " - " );
+    myMetadata += crs().authid() % QStringLiteral( " - " ) %
+                  crs().description() + QStringLiteral( " - " );
     if ( crs().isGeographic() )
       myMetadata += tr( "Geographic" );
     else
       myMetadata += tr( "Projected" );
   }
-  myMetadata += QLatin1String( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "</td></tr>\n" ) %
 
-  // Extent
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Extent" ) + QStringLiteral( "</td><td>" ) + extent().toString() + QStringLiteral( "</td></tr>\n" );
+                // Extent
+                QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Extent" ) % QStringLiteral( "</td><td>" ) % extent().toString() % QStringLiteral( "</td></tr>\n" ) %
 
-  // unit
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Unit" ) + QStringLiteral( "</td><td>" ) + QgsUnitTypes::toString( crs().mapUnits() ) + QStringLiteral( "</td></tr>\n" );
+                // unit
+                QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Unit" ) % QStringLiteral( "</td><td>" ) % QgsUnitTypes::toString( crs().mapUnits() ) % QStringLiteral( "</td></tr>\n" ) %
 
-  // Raster Width
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Width" ) + QStringLiteral( "</td><td>" );
+                // Raster Width
+                QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Width" ) % QStringLiteral( "</td><td>" );
   if ( dataProvider()->capabilities() & QgsRasterDataProvider::Size )
     myMetadata += QString::number( width() );
   else
     myMetadata += tr( "n/a" );
-  myMetadata += QLatin1String( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "</td></tr>\n" ) %
 
-  // Raster height
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Height" ) + QStringLiteral( "</td><td>" );
+                // Raster height
+                QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Height" ) + QStringLiteral( "</td><td>" );
   if ( dataProvider()->capabilities() & QgsRasterDataProvider::Size )
     myMetadata += QString::number( height() );
   else
     myMetadata += tr( "n/a" );
-  myMetadata += QLatin1String( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "</td></tr>\n" ) %
 
-  // Data type
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Data type" ) + QStringLiteral( "</td><td>" );
+                // Data type
+                QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Data type" ) % QStringLiteral( "</td><td>" );
   // Just use the first band
   switch ( mDataProvider->sourceDataType( 1 ) )
   {
@@ -397,38 +395,39 @@ QString QgsRasterLayer::htmlMetadata() const
     default:
       myMetadata += tr( "Could not determine raster data type." );
   }
-  myMetadata += QLatin1String( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "</td></tr>\n" ) %
 
-  // Insert provider-specific (e.g. WMS-specific) metadata
-  myMetadata += mDataProvider->htmlMetadata();
+                // Insert provider-specific (e.g. WMS-specific) metadata
+                mDataProvider->htmlMetadata() %
 
-  // End Provider section
-  myMetadata += QLatin1String( "</table>\n<br><br>" );
+                // End Provider section
+                QStringLiteral( "</table>\n<br><br>" ) %
 
-  // Identification section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "Identification" ) + QStringLiteral( "</h1>\n<hr>\n" );
-  myMetadata += htmlFormatter.identificationSectionHtml();
-  myMetadata += QLatin1String( "<br><br>\n" );
+                // Identification section
+                QStringLiteral( "<h1>" ) % tr( "Identification" ) % QStringLiteral( "</h1>\n<hr>\n" ) %
+                htmlFormatter.identificationSectionHtml() %
+                QStringLiteral( "<br><br>\n" ) %
 
-  // extent section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "Extent" ) + QStringLiteral( "</h1>\n<hr>\n" );
-  myMetadata += htmlFormatter.extentSectionHtml( );
-  myMetadata += QLatin1String( "<br><br>\n" );
+                // extent section
+                QStringLiteral( "<h1>" ) % tr( "Extent" ) % QStringLiteral( "</h1>\n<hr>\n" ) %
+                htmlFormatter.extentSectionHtml( ) %
+                QStringLiteral( "<br><br>\n" ) %
 
-  // Start the Access section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "Access" ) + QStringLiteral( "</h1>\n<hr>\n" );
-  myMetadata += htmlFormatter.accessSectionHtml( );
-  myMetadata += QLatin1String( "<br><br>\n" );
+                // Start the Access section
+                QStringLiteral( "<h1>" ) % tr( "Access" ) % QStringLiteral( "</h1>\n<hr>\n" ) %
+                htmlFormatter.accessSectionHtml( ) %
+                QStringLiteral( "<br><br>\n" ) %
 
-  // Bands section
-  myMetadata += QStringLiteral( "</table>\n<br><br><h1>" ) + tr( "Bands" ) + QStringLiteral( "</h1>\n<hr>\n<table class=\"list-view\">\n" );
+                // Bands section
+                QStringLiteral( "</table>\n<br><br><h1>" ) % tr( "Bands" ) % QStringLiteral( "</h1>\n<hr>\n<table class=\"list-view\">\n" ) %
 
-  // Band count
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Band count" ) + QStringLiteral( "</td><td>" ) + QString::number( bandCount() ) + QStringLiteral( "</td></tr>\n" );
+                // Band count
+                QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Band count" ) % QStringLiteral( "</td><td>" ) % QString::number( bandCount() ) % QStringLiteral( "</td></tr>\n" );
 
   // Band table
-  myMetadata += QLatin1String( "</table>\n<br><table width=\"100%\" class=\"tabular-view\">\n" );
-  myMetadata += QLatin1String( "<tr><th>" ) + tr( "Number" ) + QLatin1String( "</th><th>" ) + tr( "Band" ) + QLatin1String( "</th><th>" ) + tr( "No-Data" ) + QLatin1String( "</th><th>" ) + tr( "Min" ) + QLatin1String( "</th><th>" ) + tr( "Max" ) + QLatin1String( "</th></tr>\n" );
+  QStringLiteral( "</table>\n<br><table width=\"100%\" class=\"tabular-view\">\n" ) %
+  QStringLiteral( "<tr><th>" ) % tr( "Number" ) % QStringLiteral( "</th><th>" ) % tr( "Band" ) % QStringLiteral( "</th><th>" ) % tr( "No-Data" ) % QStringLiteral( "</th><th>" ) %
+  tr( "Min" ) % QStringLiteral( "</th><th>" ) % tr( "Max" ) % QStringLiteral( "</th></tr>\n" );
 
   QgsRasterDataProvider *provider = const_cast< QgsRasterDataProvider * >( mDataProvider );
   for ( int i = 1; i <= bandCount(); i++ )
@@ -436,47 +435,48 @@ QString QgsRasterLayer::htmlMetadata() const
     QString rowClass;
     if ( i % 2 )
       rowClass = QStringLiteral( "class=\"odd-row\"" );
-    myMetadata += QLatin1String( "<tr " ) + rowClass + QLatin1String( "><td>" ) + QString::number( i ) + QLatin1String( "</td><td>" ) + bandName( i ) + QLatin1String( "</td><td>" );
+
+    myMetadata += QStringLiteral( "<tr " ) % rowClass % QStringLiteral( "><td>" ) % QString::number( i ) % QStringLiteral( "</td><td>" ) % bandName( i ) % QStringLiteral( "</td><td>" );
 
     if ( dataProvider()->sourceHasNoDataValue( i ) )
       myMetadata += QString::number( dataProvider()->sourceNoDataValue( i ) );
     else
       myMetadata += tr( "n/a" );
-    myMetadata += QLatin1String( "</td>" );
+    myMetadata += QStringLiteral( "</td>" );
 
     if ( provider->hasStatistics( i ) )
     {
       QgsRasterBandStats myRasterBandStats = provider->bandStatistics( i );
-      myMetadata += QLatin1String( "<td>" ) + QString::number( myRasterBandStats.minimumValue, 'f', 10 ) + QLatin1String( "</td>" );
-      myMetadata += QLatin1String( "<td>" ) + QString::number( myRasterBandStats.maximumValue, 'f', 10 ) + QLatin1String( "</td>" );
+      myMetadata += QStringLiteral( "<td>" ) % QString::number( myRasterBandStats.minimumValue, 'f', 10 ) % QStringLiteral( "</td>" ) %
+                    QStringLiteral( "<td>" ) % QString::number( myRasterBandStats.maximumValue, 'f', 10 ) % QStringLiteral( "</td>" );
     }
     else
     {
-      myMetadata += QLatin1String( "<td>" ) + tr( "n/a" ) + QLatin1String( "</td><td>" ) + tr( "n/a" ) + QLatin1String( "</td>" );
+      myMetadata += QStringLiteral( "<td>" ) % tr( "n/a" ) % QStringLiteral( "</td><td>" ) % tr( "n/a" ) % QStringLiteral( "</td>" );
     }
 
-    myMetadata += QLatin1String( "</tr>\n" );
+    myMetadata += QStringLiteral( "</tr>\n" );
   }
 
   //close previous bands table
-  myMetadata += QLatin1String( "</table>\n<br><br>" );
+  myMetadata +=  QStringLiteral( "</table>\n<br><br>" ) %
 
-  // Start the contacts section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "Contacts" ) + QStringLiteral( "</h1>\n<hr>\n" );
-  myMetadata += htmlFormatter.contactsSectionHtml( );
-  myMetadata += QLatin1String( "<br><br>\n" );
+                 // Start the contacts section
+                 QStringLiteral( "<h1>" ) % tr( "Contacts" ) % QStringLiteral( "</h1>\n<hr>\n" ) %
+                 htmlFormatter.contactsSectionHtml( ) %
+                 QStringLiteral( "<br><br>\n" ) %
 
-  // Start the links section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "References" ) + QStringLiteral( "</h1>\n<hr>\n" );
-  myMetadata += htmlFormatter.linksSectionHtml( );
-  myMetadata += QLatin1String( "<br><br>\n" );
+                 // Start the links section
+                 QStringLiteral( "<h1>" ) % tr( "References" ) % QStringLiteral( "</h1>\n<hr>\n" ) %
+                 htmlFormatter.linksSectionHtml( ) %
+                 QStringLiteral( "<br><br>\n" ) %
 
-  // Start the history section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "History" ) + QStringLiteral( "</h1>\n<hr>\n" );
-  myMetadata += htmlFormatter.historySectionHtml( );
-  myMetadata += QLatin1String( "<br><br>\n" );
+                 // Start the history section
+                 QStringLiteral( "<h1>" ) % tr( "History" ) % QStringLiteral( "</h1>\n<hr>\n" ) %
+                 htmlFormatter.historySectionHtml( ) %
+                 QStringLiteral( "<br><br>\n" ) %
 
-  myMetadata += QStringLiteral( "\n</body>\n</html>\n" );
+                 QStringLiteral( "\n</body>\n</html>\n" );
   return myMetadata;
 }
 
@@ -809,30 +809,34 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
 
 void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag )
 {
-
-  bool wasValid( isValid() );
+  bool hadRenderer( renderer() );
 
   QDomImplementation domImplementation;
   QDomDocumentType documentType;
-  QDomDocument doc;
   QString errorMsg;
-  QDomElement rootNode;
 
   // Store the original style
-  if ( wasValid && ! loadDefaultStyleFlag )
+  if ( hadRenderer && ! loadDefaultStyleFlag )
   {
     documentType = domImplementation.createDocumentType(
                      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
-    doc = QDomDocument( documentType );
-    rootNode = doc.createElement( QStringLiteral( "qgis" ) );
-    rootNode.setAttribute( QStringLiteral( "version" ), Qgis::QGIS_VERSION );
-    doc.appendChild( rootNode );
+
+    QDomDocument doc = QDomDocument( documentType );
+    QDomElement styleElem = doc.createElement( QStringLiteral( "qgis" ) );
+    styleElem.setAttribute( QStringLiteral( "version" ), Qgis::version() );
     QgsReadWriteContext writeContext;
-    if ( ! writeSymbology( rootNode, doc, errorMsg, writeContext ) )
+    if ( ! writeSymbology( styleElem, doc, errorMsg, writeContext ) )
     {
       QgsDebugMsg( QStringLiteral( "Could not store symbology for layer %1: %2" )
-                   .arg( name() )
-                   .arg( errorMsg ) );
+                   .arg( name(),
+                         errorMsg ) );
+    }
+    else
+    {
+      doc.appendChild( styleElem );
+
+      mOriginalStyleDocument = doc;
+      mOriginalStyleElement = styleElem;
     }
   }
 
@@ -855,23 +859,31 @@ void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &ba
   {
     // load default style
     bool defaultLoadedFlag = false;
+    bool restoredStyle = false;
     if ( loadDefaultStyleFlag )
     {
       loadDefaultStyle( defaultLoadedFlag );
     }
-    else if ( wasValid && errorMsg.isEmpty() )  // Restore the style
+    else if ( !mOriginalStyleElement.isNull() )  // Restore the style
     {
       QgsReadWriteContext readContext;
-      if ( ! readSymbology( rootNode, errorMsg, readContext ) )
+      if ( ! readSymbology( mOriginalStyleElement, errorMsg, readContext ) )
       {
         QgsDebugMsg( QStringLiteral( "Could not restore symbology for layer %1: %2" )
                      .arg( name() )
                      .arg( errorMsg ) );
 
       }
+      else
+      {
+        restoredStyle = true;
+        emit repaintRequested();
+        emit styleChanged();
+        emit rendererChanged();
+      }
     }
 
-    if ( !defaultLoadedFlag )
+    if ( !defaultLoadedFlag && !restoredStyle )
     {
       setDefaultContrastEnhancement();
     }
@@ -922,6 +934,10 @@ void QgsRasterLayer::computeMinMax( int band,
 
 }
 
+bool QgsRasterLayer::ignoreExtents() const
+{
+  return mDataProvider ? mDataProvider->ignoreExtents() : false;
+}
 
 void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm, QgsRasterMinMaxOrigin::Limits limits, const QgsRectangle &extent, int sampleSize, bool generateLookupTableFlag )
 {
@@ -1552,54 +1568,61 @@ QStringList QgsRasterLayer::subLayers() const
 // note: previewAsImage and previewAsPixmap should use a common low-level fct QgsRasterLayer::previewOnPaintDevice( QSize size, QColor bgColor, QPaintDevice &device )
 QImage QgsRasterLayer::previewAsImage( QSize size, const QColor &bgColor, QImage::Format format )
 {
-  QImage myQImage( size, format );
+  QImage image( size, format );
 
   if ( ! isValid( ) )
     return  QImage();
 
-  myQImage.setColor( 0, bgColor.rgba() );
-  myQImage.fill( 0 );  //defaults to white, set to transparent for rendering on a map
-
-
-  QgsRasterViewPort *myRasterViewPort = new QgsRasterViewPort();
-
-  double myMapUnitsPerPixel;
-  double myX = 0.0;
-  double myY = 0.0;
-  QgsRectangle myExtent = mDataProvider->extent();
-  if ( myExtent.width() / myExtent.height() >= static_cast< double >( myQImage.width() ) / myQImage.height() )
+  if ( image.format() == QImage::Format_Indexed8 )
   {
-    myMapUnitsPerPixel = myExtent.width() / myQImage.width();
-    myY = ( myQImage.height() - myExtent.height() / myMapUnitsPerPixel ) / 2;
+    image.setColor( 0, bgColor.rgba() );
+    image.fill( 0 );  //defaults to white, set to transparent for rendering on a map
   }
   else
   {
-    myMapUnitsPerPixel = myExtent.height() / myQImage.height();
-    myX = ( myQImage.width() - myExtent.width() / myMapUnitsPerPixel ) / 2;
+    image.fill( bgColor );
   }
 
-  double myPixelWidth = myExtent.width() / myMapUnitsPerPixel;
-  double myPixelHeight = myExtent.height() / myMapUnitsPerPixel;
+  QgsRasterViewPort *rasterViewPort = new QgsRasterViewPort();
 
-  myRasterViewPort->mTopLeftPoint = QgsPointXY( myX, myY );
-  myRasterViewPort->mBottomRightPoint = QgsPointXY( myPixelWidth, myPixelHeight );
-  myRasterViewPort->mWidth = myQImage.width();
-  myRasterViewPort->mHeight = myQImage.height();
+  double mapUnitsPerPixel;
+  double x = 0.0;
+  double y = 0.0;
+  QgsRectangle extent = mDataProvider->extent();
+  if ( extent.width() / extent.height() >= static_cast< double >( image.width() ) / image.height() )
+  {
+    mapUnitsPerPixel = extent.width() / image.width();
+    y = ( image.height() - extent.height() / mapUnitsPerPixel ) / 2;
+  }
+  else
+  {
+    mapUnitsPerPixel = extent.height() / image.height();
+    x = ( image.width() - extent.width() / mapUnitsPerPixel ) / 2;
+  }
 
-  myRasterViewPort->mDrawnExtent = myExtent;
-  myRasterViewPort->mSrcCRS = QgsCoordinateReferenceSystem(); // will be invalid
-  myRasterViewPort->mDestCRS = QgsCoordinateReferenceSystem(); // will be invalid
+  const double pixelWidth = extent.width() / mapUnitsPerPixel;
+  const double pixelHeight = extent.height() / mapUnitsPerPixel;
 
-  QgsMapToPixel *myMapToPixel = new QgsMapToPixel( myMapUnitsPerPixel );
+  rasterViewPort->mTopLeftPoint = QgsPointXY( x, y );
+  rasterViewPort->mBottomRightPoint = QgsPointXY( pixelWidth, pixelHeight );
+  rasterViewPort->mWidth = image.width();
+  rasterViewPort->mHeight = image.height();
 
-  QPainter *myQPainter = new QPainter( &myQImage );
-  draw( myQPainter, myRasterViewPort, myMapToPixel );
-  delete myRasterViewPort;
-  delete myMapToPixel;
-  myQPainter->end();
-  delete myQPainter;
+  rasterViewPort->mDrawnExtent = extent;
+  rasterViewPort->mSrcCRS = QgsCoordinateReferenceSystem(); // will be invalid
+  rasterViewPort->mDestCRS = QgsCoordinateReferenceSystem(); // will be invalid
 
-  return myQImage;
+  QgsMapToPixel *mapToPixel = new QgsMapToPixel( mapUnitsPerPixel );
+
+  QPainter *painter = new QPainter( &image );
+  draw( painter, rasterViewPort, mapToPixel );
+  delete rasterViewPort;
+  delete mapToPixel;
+
+  painter->end();
+  delete painter;
+
+  return image;
 }
 
 //////////////////////////////////////////////////////////
@@ -1766,7 +1789,6 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
       }
 
       // Collect format
-      QDomNode formatNode = rpNode.namedItem( QStringLiteral( "wmsFormat" ) );
       uri.setParam( QStringLiteral( "format" ), rpNode.namedItem( QStringLiteral( "wmsFormat" ) ).toElement().text() );
 
       // WMS CRS URL param should not be mixed with that assigned to the layer.
@@ -1782,6 +1804,11 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     QgsDataProvider::ProviderOptions providerOptions { context.transformContext() };
     setDataProvider( mProviderKey, providerOptions );
   }
+
+  mOriginalStyleElement = layer_node.namedItem( QStringLiteral( "originalStyle" ) ).firstChildElement();
+  if ( mOriginalStyleElement.isNull() )
+    mOriginalStyleElement = layer_node.toElement();
+  mOriginalStyleDocument = layer_node.ownerDocument();
 
   if ( ! mDataProvider )
   {
@@ -1857,14 +1884,8 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
   readStyleManager( layer_node );
 
   return res;
-} // QgsRasterLayer::readXml( QDomNode & layer_node )
+}
 
-/*
- * \param QDomNode the node that will have the style element added to it.
- * \param QDomDocument the document that will have the QDomNode added.
- * \param errorMessage reference to string that will be updated with any error messages
- * \return true in case of success.
- */
 bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &document, QString &errorMessage,
                                      const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
@@ -1887,12 +1908,18 @@ bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &documen
 
   layer_node.appendChild( pipeElement );
 
+  if ( !isValid() && !mOriginalStyleElement.isNull() )
+  {
+    QDomElement originalStyleElement = document.createElement( QStringLiteral( "originalStyle" ) );
+    originalStyleElement.appendChild( mOriginalStyleElement );
+    layer_node.appendChild( originalStyleElement );
+  }
+
   // add blend mode node
   QDomElement blendModeElement  = document.createElement( QStringLiteral( "blendMode" ) );
   QDomText blendModeText = document.createTextNode( QString::number( QgsPainting::getBlendModeEnum( blendMode() ) ) );
   blendModeElement.appendChild( blendModeText );
   layer_node.appendChild( blendModeElement );
-
   return true;
 }
 

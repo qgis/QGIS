@@ -34,7 +34,7 @@ QgsCoordinateBoundsPreviewMapWidget::QgsCoordinateBoundsPreviewMapWidget( QWidge
   QgsCoordinateReferenceSystem srs( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
   setDestinationCrs( srs );
 
-  QString layerPath = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.shp" );
+  QString layerPath = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.gpkg|layername=countries" );
   mLayers << new QgsVectorLayer( layerPath );
   setLayers( mLayers );
   setMapTool( new QgsMapToolPan( this ) );

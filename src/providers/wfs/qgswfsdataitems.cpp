@@ -19,11 +19,15 @@
 #include "qgsdataitemprovider.h"
 #include "qgsdataprovider.h"
 #include "qgslogger.h"
+#include "qgsoapiflandingpagerequest.h"
+#include "qgsoapifcollection.h"
+#include "qgsoapifprovider.h"
 #include "qgswfsconstants.h"
 #include "qgswfsconnection.h"
 #include "qgswfscapabilities.h"
 #include "qgswfsdataitems.h"
 #include "qgswfsdatasourceuri.h"
+#include "qgswfsprovider.h"
 #include "qgssettings.h"
 #include "qgsgeonodeconnection.h"
 #include "qgsgeonoderequest.h"
@@ -40,12 +44,12 @@
 // QgsWfsLayerItem
 //
 
-QgsWfsLayerItem::QgsWfsLayerItem( QgsDataItem *parent, QString name, const QgsDataSourceUri &uri, QString featureType, QString title, QString crsString )
-  : QgsLayerItem( parent, title, parent->path() + '/' + name, QString(), QgsLayerItem::Vector, QStringLiteral( "WFS" ) )
+QgsWfsLayerItem::QgsWfsLayerItem( QgsDataItem *parent, QString name, const QgsDataSourceUri &uri, QString featureType, QString title, QString crsString, const QString &providerKey )
+  : QgsLayerItem( parent, title.isEmpty() ? featureType : title, parent->path() + '/' + name, QString(), QgsLayerItem::Vector, providerKey )
 {
   QgsSettings settings;
   bool useCurrentViewExtent = settings.value( QStringLiteral( "Windows/WFSSourceSelect/FeatureCurrentViewExtent" ), true ).toBool();
-  mUri = QgsWFSDataSourceURI::build( uri.uri( false ), featureType, crsString, QString(), useCurrentViewExtent );
+  mUri = QgsWFSDataSourceURI::build( uri.uri( false ), featureType, crsString, QString(), QString(), useCurrentViewExtent );
   setState( Populated );
   mIconName = QStringLiteral( "mIconWfs.svg" );
   mBaseUri = uri.param( QStringLiteral( "url" ) );
@@ -140,35 +144,82 @@ QgsWfsConnectionItem::QgsWfsConnectionItem( QgsDataItem *parent, QString name, Q
   mCapabilities |= Collapse;
 }
 
+
+QVector<QgsDataItem *> QgsWfsConnectionItem::createChildrenOapif()
+{
+  QVector<QgsDataItem *> layers;
+  QgsDataSourceUri uri( mUri );
+  const bool synchronous = true;
+  const bool forceRefresh = false;
+
+  QgsOapifLandingPageRequest landingPageRequest( uri );
+  if ( landingPageRequest.request( synchronous, forceRefresh ) &&
+       landingPageRequest.errorCode() == QgsBaseNetworkRequest::NoError )
+  {
+    QString url = landingPageRequest.collectionsUrl();
+    while ( !url.isEmpty() )
+    {
+      QgsOapifCollectionsRequest collectionsRequest( uri, url );
+      url.clear();
+      if ( collectionsRequest.request( synchronous, forceRefresh ) &&
+           collectionsRequest.errorCode() == QgsBaseNetworkRequest::NoError )
+      {
+        for ( const auto &collection : collectionsRequest.collections() )
+        {
+          QgsWfsLayerItem *layer = new QgsWfsLayerItem(
+            this, mName, uri, collection.mId, collection.mTitle,
+            QString(), QgsOapifProvider::OAPIF_PROVIDER_KEY );
+          layers.append( layer );
+        }
+        url = collectionsRequest.nextUrl();
+      }
+    }
+  }
+
+  return layers;
+}
+
 QVector<QgsDataItem *> QgsWfsConnectionItem::createChildren()
 {
   QgsDataSourceUri uri( mUri );
   QgsDebugMsg( "mUri = " + mUri );
 
-  QgsWfsCapabilities capabilities( mUri );
-
   const bool synchronous = true;
   const bool forceRefresh = false;
-  capabilities.requestCapabilities( synchronous, forceRefresh );
-
-  QVector<QgsDataItem *> layers;
-  if ( capabilities.errorCode() == QgsWfsCapabilities::NoError )
+  auto version = QgsWFSDataSourceURI( mUri ).version();
+  if ( version == QLatin1String( "OGC_API_FEATURES" ) )
   {
-    QgsWfsCapabilities::Capabilities caps = capabilities.capabilities();
-    Q_FOREACH ( const QgsWfsCapabilities::FeatureType &featureType, caps.featureTypes )
-    {
-      //QgsWFSLayerItem* layer = new QgsWFSLayerItem( this, mName, featureType.name, featureType.title );
-      QgsWfsLayerItem *layer = new QgsWfsLayerItem( this, mName, uri, featureType.name, featureType.title, featureType.crslist.first() );
-      layers.append( layer );
-    }
+    return createChildrenOapif();
   }
   else
   {
-    //layers.append( new QgsErrorItem( this, tr( "Failed to retrieve layers" ), mPath + "/error" ) );
-    // TODO: show the error without adding child
-  }
+    QgsWfsCapabilities capabilities( mUri );
+    if ( version == QgsWFSConstants::VERSION_AUTO )
+    {
+      capabilities.setLogErrors( false ); // as this might be a OAPIF server
+    }
+    capabilities.requestCapabilities( synchronous, forceRefresh );
 
-  return layers;
+    QVector<QgsDataItem *> layers;
+    if ( capabilities.errorCode() == QgsWfsCapabilities::NoError )
+    {
+      const auto featureTypes = capabilities.capabilities().featureTypes;
+      for ( const QgsWfsCapabilities::FeatureType &featureType : featureTypes )
+      {
+        QgsWfsLayerItem *layer = new QgsWfsLayerItem(
+          this, mName, uri, featureType.name, featureType.title,
+          !featureType.crslist.isEmpty() ? featureType.crslist.first() : QString(),
+          QgsWFSProvider::WFS_PROVIDER_KEY );
+        layers.append( layer );
+      }
+    }
+    else if ( version == QgsWFSConstants::VERSION_AUTO )
+    {
+      return createChildrenOapif();
+    }
+
+    return layers;
+  }
 }
 
 
@@ -192,7 +243,7 @@ QVector<QgsDataItem *> QgsWfsRootItem::createChildren()
   {
     QgsWfsConnection connection( connName );
     QString path = "wfs:/" + connName;
-    QgsDataItem *conn = new QgsWfsConnectionItem( this, connName, path, connection.uri().uri() );
+    QgsDataItem *conn = new QgsWfsConnectionItem( this, connName, path, connection.uri().uri( false ) );
     connections.append( conn );
   }
   return connections;
@@ -234,7 +285,7 @@ QgsDataItem *QgsWfsDataItemProvider::createDataItem( const QString &path, QgsDat
   QgsDebugMsgLevel( "WFS path = " + path, 4 );
   if ( path.isEmpty() )
   {
-    return new QgsWfsRootItem( parentItem, QStringLiteral( "WFS" ), QStringLiteral( "wfs:" ) );
+    return new QgsWfsRootItem( parentItem, QStringLiteral( "WFS / OGC API - Features" ), QStringLiteral( "wfs:" ) );
   }
 
   // path schema: wfs:/connection name (used by OWS)
@@ -261,7 +312,7 @@ QgsDataItem *QgsWfsDataItemProvider::createDataItem( const QString &path, QgsDat
 
       QgsDebugMsgLevel( QStringLiteral( "WFS full uri: '%1'." ).arg( QString( sourceUri.uri() ) ), 4 );
 
-      return new QgsWfsConnectionItem( parentItem, QStringLiteral( "WFS" ), path, sourceUri.uri( false ) );
+      return new QgsWfsConnectionItem( parentItem, QStringLiteral( "WFS" ), path, sourceUri.uri() );
     }
   }
 
@@ -288,9 +339,9 @@ QVector<QgsDataItem *> QgsWfsDataItemProvider::createDataItems( const QString &p
         for ( const QString &encodedUri : encodedUris )
         {
           QgsWFSDataSourceURI uri( encodedUri );
-          QgsDebugMsgLevel( QStringLiteral( "WFS full uri: '%1'." ).arg( uri.uri( false ) ), 4 );
+          QgsDebugMsgLevel( QStringLiteral( "WFS full uri: '%1'." ).arg( uri.uri() ), 4 );
 
-          QgsDataItem *item = new QgsWfsConnectionItem( parentItem, QStringLiteral( "WFS" ), path, uri.uri( false ) );
+          QgsDataItem *item = new QgsWfsConnectionItem( parentItem, QStringLiteral( "WFS" ), path, uri.uri() );
           if ( item )
           {
             items.append( item );

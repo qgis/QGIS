@@ -57,7 +57,7 @@ from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout, QTextEdit, QMessageBox
 
 def extractSchemaPath(filepath):
     """
-    Trys to find where the file is relative to the QGIS source code directory.
+    Tries to find where the file is relative to the QGIS source code directory.
     If it is already placed in the processing or QGIS testdata directory it will
     return an appropriate schema and relative filepath
 

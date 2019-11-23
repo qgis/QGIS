@@ -1,4 +1,15 @@
--- Table: qgis_test.raster1
+DO $$
+BEGIN
+  IF EXISTS ( SELECT * FROM pg_catalog.pg_available_extensions
+              WHERE name = 'postgis_raster' )
+  THEN
+    RAISE NOTICE 'Loading postgis_raster';
+    CREATE EXTENSION IF NOT EXISTS postgis_raster;
+  END IF;
+END;
+$$;
+
+-- Table: qgis_test.Raster1
 
 CREATE TABLE qgis_test."Raster1"
 (

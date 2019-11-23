@@ -21,12 +21,15 @@
 #include "qgspanelwidget.h"
 
 class QgsLayout;
+class QgsMasterLayoutInterface;
 
 class QgsLayoutPropertiesWidget: public QgsPanelWidget, private Ui::QgsLayoutWidgetBase
 {
     Q_OBJECT
   public:
     QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout *layout );
+
+    void setMasterLayout( QgsMasterLayoutInterface *masterLayout );
 
   public slots:
 
@@ -57,6 +60,7 @@ class QgsLayoutPropertiesWidget: public QgsPanelWidget, private Ui::QgsLayoutWid
 
     void updateSnappingElements();
     void blockSignals( bool block );
+    bool mBlockVariableUpdates = false;
 
 };
 

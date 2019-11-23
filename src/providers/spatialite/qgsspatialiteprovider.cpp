@@ -30,6 +30,8 @@ email                : a.furieri@lqt.it
 #include "qgsspatialitefeatureiterator.h"
 #include "qgsfeedback.h"
 #include "qgsspatialitedataitems.h"
+#include "qgsspatialiteconnection.h"
+#include "qgsspatialiteproviderconnection.h"
 
 #include "qgsjsonutils.h"
 #include "qgsvectorlayer.h"
@@ -42,7 +44,7 @@ email                : a.furieri@lqt.it
 #include <QRegularExpression>
 
 #include <nlohmann/json.hpp>
-using json = nlohmann::json;
+using namespace nlohmann;
 
 
 const QString QgsSpatiaLiteProvider::SPATIALITE_KEY = QStringLiteral( "spatialite" );
@@ -4389,7 +4391,6 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
           first = false;
 
         QVariant::Type type = fld.type();
-        const auto typeName { fld.typeName() };
 
         if ( val.isNull() || !val.isValid() )
         {
@@ -6054,7 +6055,36 @@ QList< QgsDataItemProvider * > QgsSpatiaLiteProviderMetadata::dataItemProviders(
   return providers;
 }
 
+
+
+QMap<QString, QgsAbstractProviderConnection *> QgsSpatiaLiteProviderMetadata::connections( bool cached )
+{
+  return connectionsProtected< QgsSpatiaLiteProviderConnection, QgsSpatiaLiteConnection>( cached );
+}
+
+QgsAbstractProviderConnection *QgsSpatiaLiteProviderMetadata::createConnection( const QString &connName )
+{
+  return new QgsSpatiaLiteProviderConnection( connName );
+}
+
+QgsAbstractProviderConnection *QgsSpatiaLiteProviderMetadata::createConnection( const QString &uri, const QVariantMap &configuration )
+{
+  return new QgsSpatiaLiteProviderConnection( uri, configuration );
+}
+
+void QgsSpatiaLiteProviderMetadata::deleteConnection( const QString &name )
+{
+  deleteConnectionProtected<QgsSpatiaLiteProviderConnection>( name );
+}
+
+void QgsSpatiaLiteProviderMetadata::saveConnection( const QgsAbstractProviderConnection *conn, const QString &name )
+{
+  saveConnectionProtected( conn, name );
+}
+
+
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return new QgsSpatiaLiteProviderMetadata();
 }
+

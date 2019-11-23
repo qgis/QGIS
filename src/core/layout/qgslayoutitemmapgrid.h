@@ -149,7 +149,8 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     {
       MapUnit, //!< Grid units follow map units
       MM, //!< Grid units in millimeters
-      CM //!< Grid units in centimeters
+      CM, //!< Grid units in centimeters
+      DynamicPageSizeBased, //!< Dynamically sized, based on a on-page size range
     };
 
     /**
@@ -308,6 +309,8 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      */
     void calculateMaxExtension( double &top, double &right, double &bottom, double &left ) const;
 
+    void setEnabled( bool enabled ) override;
+
     //
     // GRID UNITS
     //
@@ -390,6 +393,50 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      */
     double offsetY() const { return mGridOffsetY; }
 
+    /**
+     * Returns the minimum width (in millimeters) for grid segments. This
+     * property is only effective if the units() is set
+     * to DynamicPageSizeBased.
+     * \see units()
+     * \see setMinimumIntervalWidth()
+     * \see maximumIntervalWidth()
+     * \since QGIS 3.10
+     */
+    double minimumIntervalWidth() const { return mMinimumIntervalWidth; }
+
+    /**
+     * Sets the minimum \a width (in millimeters) for grid segments. This
+     * property is only effective if the units() is set
+     * to DynamicPageSizeBased.
+     * \see minimumIntervalWidth()
+     * \see setMaximumIntervalWidth()
+     * \see setUnits()
+     * \since QGIS 3.10
+     */
+    void setMinimumIntervalWidth( double width );
+
+    /**
+     * Returns the maximum width (in millimeters) for grid segments. This
+     * property is only effective if the units() is set
+     * to DynamicPageSizeBased.
+     * \see units()
+     * \see setMaximumIntervalWidth()
+     * \see minimumIntervalWidth()
+     * \since QGIS 3.10
+     */
+    double maximumIntervalWidth() const { return mMaximumIntervalWidth; }
+
+    /**
+     * Sets the maximum \a width (in millimeters) for grid segments. This
+     * property is only effective if the units() is set
+     * to DynamicPageSizeBased.
+     * \see maximumIntervalWidth()
+     * \see setMinimumIntervalWidth()
+     * \see setUnits()
+     * \since QGIS 3.10
+     */
+    void setMaximumIntervalWidth( double width );
+
     //
     // GRID APPEARANCE
     //
@@ -413,7 +460,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * with QgsLayoutItemMapGrid::Cross styles.
      * \see crossLength()
      */
-    void setCrossLength( const double length ) { mCrossLength = length; }
+    void setCrossLength( const double length );
 
     /**
      * Retrieves the length (in layout units) of the cross segments drawn for the grid. This is only used for grids
@@ -589,7 +636,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * Sets the \a distance between the map frame and annotations. Units are layout units.
      * \see annotationFrameDistance()
      */
-    void setAnnotationFrameDistance( const double distance ) { mAnnotationFrameDistance = distance; }
+    void setAnnotationFrameDistance( const double distance );
 
     /**
      * Returns the distance between the map frame and annotations. Units are in layout units.
@@ -715,7 +762,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * setFramePenSize method.
      * \see frameWidth()
      */
-    void setFrameWidth( const double width ) { mGridFrameWidth = width; }
+    void setFrameWidth( const double width );
 
     /**
      * Gets the grid frame width in layout units. This property controls how wide the grid frame is.
@@ -731,7 +778,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * \see frameMargin()
      * \since QGIS 3.6
      */
-    void setFrameMargin( const double margin ) { mGridFrameMargin = margin; }
+    void setFrameMargin( const double margin );
 
     /**
      * Sets the grid frame Margin (in layout units).
@@ -746,7 +793,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * \see framePenSize()
      * \see setFramePenColor()
      */
-    void setFramePenSize( const double width ) { mGridFramePenThickness = width; }
+    void setFramePenSize( const double width );
 
     /**
      * Retrieves the width of the stroke drawn in the grid frame.
@@ -807,6 +854,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
 
     QgsExpressionContext createExpressionContext() const override;
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
+    void refresh() override;
 
   private:
 
@@ -887,6 +935,9 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     double mCrossLength = 3.0;
     double mGridFrameMargin = 0.0;
 
+    double mMinimumIntervalWidth = 50;
+    double mMaximumIntervalWidth = 100;
+
     //! Divisions for frame on left map side
     DisplayMode mLeftFrameDivisions = QgsLayoutItemMapGrid::ShowAll;
     //! Divisions for frame on right map side
@@ -910,6 +961,17 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     mutable QList< QgsPointXY > mTransformedIntersections;
     QRectF mPrevPaintRect;
     mutable QPolygonF mPrevMapPolygon;
+
+    bool mEvaluatedEnabled = true;
+    double mEvaluatedIntervalX = 0;
+    double mEvaluatedIntervalY = 0;
+    double mEvaluatedOffsetX = 0;
+    double mEvaluatedOffsetY = 0;
+    double mEvaluatedGridFrameWidth = 0;
+    double mEvaluatedGridFrameMargin = 0;
+    double mEvaluatedAnnotationFrameDistance = 0;
+    double mEvaluatedCrossLength = 0;
+    double mEvaluatedGridFrameLineThickness = 0;
 
     class QgsMapAnnotation
     {
@@ -1016,6 +1078,10 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
 
     bool shouldShowDivisionForSide( AnnotationCoordinate coordinate, BorderSide side ) const;
     bool shouldShowDivisionForDisplayMode( AnnotationCoordinate coordinate, DisplayMode mode ) const;
+    void refreshDataDefinedProperties();
+
+    //! Returns diagonal of map in CRS units
+    double mapWidth() const;
 
     friend class TestQgsLayoutMapGrid;
 

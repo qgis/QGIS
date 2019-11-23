@@ -178,6 +178,17 @@ Returns the combined extent for all layers on the map canvas
 Sets the extent of the map canvas
 %End
 
+    bool setReferencedExtent( const QgsReferencedRectangle &extent ) throw( QgsCsException );
+%Docstring
+Sets the canvas to the specified ``extent``.
+
+:return: ``True`` if the zoom was successful.
+
+:raises QgsCsException: if a transformation error occurred.
+
+.. versionadded:: 3.10
+%End
+
     double rotation() const;
 %Docstring
 Gets the current map canvas rotation in clockwise degrees
@@ -502,7 +513,7 @@ used to determine if anti-aliasing is enabled or not
 
     bool antiAliasingEnabled() const;
 %Docstring
-``True`` if antialising is enabled
+``True`` if antialiasing is enabled
 %End
 
     void enableMapTileRendering( bool flag );
@@ -719,6 +730,7 @@ for the canvas.
 .. versionadded:: 3.0
 %End
 
+
   public slots:
 
     void refresh();
@@ -728,9 +740,27 @@ Repaints the canvas map
 
     void refreshAllLayers();
 %Docstring
-Reload all layers, clear the cache and refresh the canvas
+Reload all layers (including refreshing layer properties from their data sources),
+clears the cache and refreshes the canvas.
+
+.. note::
+
+   Consider using the less expensive redrawAllLayers() method if a layer reload
+   from the data provider is not required.
 
 .. versionadded:: 2.9
+%End
+
+    void redrawAllLayers();
+%Docstring
+Clears all cached images and redraws all layers.
+
+.. note::
+
+   Unlike refreshAllLayers(), this does NOT reload layers themselves, and accordingly
+   is more "lightweight". Use this method when only an update of the layer's renderers is required.
+
+.. versionadded:: 3.10
 %End
 
     void selectionChangedSlot();
@@ -952,78 +982,48 @@ Emitted when the canvas has been assigned a different map theme.
 emit a message (usually to be displayed in a message bar)
 %End
 
+    void renderErrorOccurred( const QString &error, QgsMapLayer *layer );
+%Docstring
+Emitted whenever an error is encountered during a map render operation.
+
+The ``layer`` argument indicates the associated map layer, if available.
+
+.. versionadded:: 3.10.0
+%End
+
   protected:
 
     virtual bool event( QEvent *e );
 
-%Docstring
-Overridden standard event to be gestures aware
-%End
-
     virtual void keyPressEvent( QKeyEvent *e );
-
-%Docstring
-Overridden key press event
-%End
 
     virtual void keyReleaseEvent( QKeyEvent *e );
 
-%Docstring
-Overridden key release event
-%End
-
     virtual void mouseDoubleClickEvent( QMouseEvent *e );
-
-%Docstring
-Overridden mouse double-click event
-%End
 
     virtual void mouseMoveEvent( QMouseEvent *e );
 
-%Docstring
-Overridden mouse move event
-%End
-
     virtual void mousePressEvent( QMouseEvent *e );
-
-%Docstring
-Overridden mouse press event
-%End
 
     virtual void mouseReleaseEvent( QMouseEvent *e );
 
-%Docstring
-Overridden mouse release event
-%End
-
     virtual void wheelEvent( QWheelEvent *e );
-
-%Docstring
-Overridden mouse wheel event
-%End
 
     virtual void resizeEvent( QResizeEvent *e );
 
-%Docstring
-Overridden resize event
-%End
-
     virtual void paintEvent( QPaintEvent *e );
-
-%Docstring
-Overridden paint event
-%End
 
     virtual void dragEnterEvent( QDragEnterEvent *e );
 
-%Docstring
-Overridden drag enter event
-%End
 
     void moveCanvasContents( bool reset = false );
 %Docstring
 called when panning is in action, reset indicates end of panning
 %End
+
+    virtual void dropEvent( QDropEvent *event );
+
+
 
 
 

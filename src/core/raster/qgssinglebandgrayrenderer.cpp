@@ -116,7 +116,7 @@ QgsRasterBlock *QgsSingleBandGrayRenderer::block( int bandNo, const QgsRectangle
     return outputBlock.release();
   }
 
-  QRgb myDefaultColor = NODATA_COLOR;
+  const QRgb myDefaultColor = renderColorForNodataPixel();
   bool isNoData = false;
   for ( qgssize i = 0; i < ( qgssize )width * height; i++ )
   {
@@ -270,8 +270,9 @@ void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, 
     contrastEnhancement()->toSld( doc, contrastEnhancementElem );
 
     // do changes to minValue/maxValues depending on stretching algorithm. This is necessary because
-    // geoserver do a first stretch on min/max, then apply colo map rules. In some combination is necessary
-    // to use real min/max values and in othere the actual edited min/max values
+    // geoserver does a first stretch on min/max, then applies color map rules.
+    // In some combination it is necessary to use real min/max values and in
+    // others the actual edited min/max values
     switch ( contrastEnhancement()->contrastEnhancementAlgorithm() )
     {
       case QgsContrastEnhancement::StretchAndClipToMinimumMaximum:

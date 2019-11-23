@@ -240,13 +240,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
     }
 
     /**
-     * String sequence used for separating components of sublayers strings.
-     * \see subLayers()
-     * \since QGIS 3.0
-     */
-    static QString SUBLAYER_SEPARATOR;
-
-    /**
      * Sub-layer styles for each sub-layer handled by this provider,
      * in order from bottom to top
      *
@@ -545,6 +538,14 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * \since QGIS 3.8
      */
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) SIP_SKIP;
+
+    /**
+     * String sequence used for separating components of sublayers strings.
+     * \note Replaces the static const SUBLAYER_SEPARATOR
+     * \see subLayers()
+     * \since QGIS 3.12
+     */
+    static QString sublayerSeparator();
 
   signals:
 

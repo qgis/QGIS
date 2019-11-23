@@ -9,7 +9,37 @@
 
 
 
-class QgsMapRendererCustomPainterJob : QgsMapRendererJob
+class QgsMapRendererAbstractCustomPainterJob : QgsMapRendererJob
+{
+%Docstring
+Abstract base class for map renderer jobs which use custom painters.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsmaprenderercustompainterjob.h"
+%End
+  public:
+
+    QgsMapRendererAbstractCustomPainterJob( const QgsMapSettings &settings );
+%Docstring
+Constructor for QgsMapRendererAbstractCustomPainterJob, using the given
+map ``settings``.
+%End
+
+  protected:
+
+    void preparePainter( QPainter *painter, const QColor &backgroundColor = Qt::transparent );
+%Docstring
+Prepares the given ``painter`` ready for a map render.
+
+The ``backgroundColor`` argument specifies the color to use for the map's background.
+%End
+
+};
+
+class QgsMapRendererCustomPainterJob : QgsMapRendererAbstractCustomPainterJob
 {
 %Docstring
 Job implementation that renders everything sequentially using a custom painter.
@@ -67,6 +97,32 @@ This is an alternative to ordinary API (using start() + waiting for finished() s
 Users are discouraged to use this method unless they have a strong reason for doing it.
 The synchronous rendering blocks the main thread, making the application unresponsive.
 Also, it is not possible to cancel rendering while it is in progress.
+%End
+
+    void prepare();
+%Docstring
+Prepares the job for rendering synchronously in a background thread.
+
+Must be called from the main thread.
+
+This is an alternative to ordinary API (using start() + waiting for finished() signal),
+and an alternative to renderSynchronously() (which should only ever be called from the main thread).
+
+.. seealso:: :py:func:`renderPrepared`
+
+.. versionadded:: 3.10
+%End
+
+    void renderPrepared();
+%Docstring
+Render a pre-prepared job. Can be safely called in a background thread.
+
+Must be preceded by a call to prepare()
+
+This is an alternative to ordinary API (using start() + waiting for finished() signal),
+and an alternative to renderSynchronously() (which should only ever be called from the main thread).
+
+.. versionadded:: 3.10
 %End
 
 };

@@ -11,6 +11,8 @@
 
 
 
+
+
 class QgsServerException
 {
 %Docstring
@@ -92,6 +94,7 @@ Returns the exception version
 
 
 };
+
 
 
 /************************************************************************

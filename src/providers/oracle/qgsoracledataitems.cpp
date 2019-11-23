@@ -39,7 +39,7 @@ bool deleteLayer( const QString &uri, QString &errCause )
   QString tableName = dsUri.table();
   QString geometryCol = dsUri.geometryColumn();
 
-  QgsOracleConn *conn = QgsOracleConn::connectDb( dsUri );
+  QgsOracleConn *conn = QgsOracleConn::connectDb( dsUri, false );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed" );
@@ -359,9 +359,9 @@ bool QgsOracleConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction 
       {
         uri.setSrid( authid.mid( 5 ) );
       }
-      QgsDebugMsgLevel( "URI " + uri.uri(), 3 );
+      QgsDebugMsgLevel( "URI " + uri.uri( false ), 3 );
 
-      std::unique_ptr< QgsVectorLayerExporterTask > exportTask( QgsVectorLayerExporterTask::withLayerOwnership( srcLayer, uri.uri(), QStringLiteral( "oracle" ), srcLayer->crs() ) );
+      std::unique_ptr< QgsVectorLayerExporterTask > exportTask( QgsVectorLayerExporterTask::withLayerOwnership( srcLayer, uri.uri( false ), QStringLiteral( "oracle" ), srcLayer->crs() ) );
 
       // when export is successful:
       connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [ = ]()
@@ -469,8 +469,8 @@ QString QgsOracleLayerItem::createUri()
   uri.setWkbType( mLayerProperty.types.at( 0 ) );
   if ( mLayerProperty.isView && mLayerProperty.pkCols.size() > 0 )
     uri.setKeyColumn( mLayerProperty.pkCols[0] );
-  QgsDebugMsgLevel( QStringLiteral( "layer uri: %1" ).arg( uri.uri() ), 3 );
-  return uri.uri();
+  QgsDebugMsgLevel( QStringLiteral( "layer uri: %1" ).arg( uri.uri( false ) ), 3 );
+  return uri.uri( false );
 }
 
 // ---------------------------------------------------------------------------

@@ -71,6 +71,11 @@ QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags
   mProxyModel->setSourceModel( mModel );
   mLayoutListView->setModel( mProxyModel );
 
+  mSearchLineEdit->setShowSearchIcon( true );
+  mSearchLineEdit->setShowClearButton( true );
+  mSearchLineEdit->setFocus();
+  connect( mSearchLineEdit, &QgsFilterLineEdit::textChanged, mProxyModel, &QgsLayoutManagerProxyModel::setFilterString );
+
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsLayoutManagerDialog::showHelp );
   connect( mLayoutListView->selectionModel(), &QItemSelectionModel::selectionChanged,

@@ -207,6 +207,12 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      */
     void setAggregate( const QString &aggregate );
 
+    /**
+     * Returns the field index
+     * \since QGIS 3.10
+     */
+    int fieldIndex() const;
+
   public slots:
 
     /**

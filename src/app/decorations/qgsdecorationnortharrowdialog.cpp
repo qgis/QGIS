@@ -62,10 +62,18 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
 
   // placement
   cboPlacement->addItem( tr( "Top Left" ), QgsDecorationItem::TopLeft );
+  cboPlacement->addItem( tr( "Top Center" ), QgsDecorationItem::TopCenter );
   cboPlacement->addItem( tr( "Top Right" ), QgsDecorationItem::TopRight );
   cboPlacement->addItem( tr( "Bottom Left" ), QgsDecorationItem::BottomLeft );
+  cboPlacement->addItem( tr( "Bottom Center" ), QgsDecorationItem::BottomCenter );
   cboPlacement->addItem( tr( "Bottom Right" ), QgsDecorationItem::BottomRight );
+  connect( cboPlacement, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+  {
+    spinHorizontal->setMinimum( cboPlacement->currentData() == QgsDecorationItem::TopCenter || cboPlacement->currentData() == QgsDecorationItem::BottomCenter ? -100 : 0 );
+  } );
   cboPlacement->setCurrentIndex( cboPlacement->findData( mDeco.placement() ) );
+
+  spinHorizontal->setClearValue( 0 );
   spinHorizontal->setValue( mDeco.mMarginHorizontal );
   spinVertical->setValue( mDeco.mMarginVertical );
   wgtUnitSelection->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPercentage << QgsUnitTypes::RenderPixels );
@@ -190,7 +198,7 @@ void QgsDecorationNorthArrowDialog::drawNorthArrow()
     }
 
     QPixmap  myPainterPixmap( maxLength, maxLength );
-    myPainterPixmap.fill();
+    myPainterPixmap.fill( Qt::transparent );
 
     QPainter myQPainter;
     myQPainter.begin( &myPainterPixmap );
@@ -230,7 +238,7 @@ void QgsDecorationNorthArrowDialog::drawNorthArrow()
   else
   {
     QPixmap  myPainterPixmap( 200, 200 );
-    myPainterPixmap.fill();
+    myPainterPixmap.fill( Qt::transparent );
     QPainter myQPainter;
     myQPainter.begin( &myPainterPixmap );
     QFont myQFont( QStringLiteral( "time" ), 12, QFont::Bold );

@@ -1958,7 +1958,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         # expression field which references itself
         idx = layer.addExpressionField('sum(test2)', QgsField('test2', QVariant.LongLong))
         fet = next(layer.getFeatures())
-        self.assertEqual(fet['test2'], NULL)
+        self.assertEqual(fet['test2'], 0)
 
     def test_ExpressionFieldEllipsoidLengthCalculation(self):
         # create a temporary layer
@@ -2125,6 +2125,54 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertEqual(set(layer.selectedFeatureIds()), set([7, 11]))
         layer.selectByRect(QgsRectangle(-112, 30, -94, 45), QgsVectorLayer.RemoveFromSelection)
         self.assertEqual(set(layer.selectedFeatureIds()), set([]))
+
+    def testReselect(self):
+        layer = QgsVectorLayer(os.path.join(unitTestDataPath(), 'points.shp'), 'Points', 'ogr')
+
+        layer.selectByIds([1, 3, 5, 7], QgsVectorLayer.SetSelection)
+        self.assertCountEqual(layer.selectedFeatureIds(), [1, 3, 5, 7])
+
+        layer.reselect() # no effect, selection has not been cleared
+        self.assertCountEqual(layer.selectedFeatureIds(), [1, 3, 5, 7])
+
+        # clear selection
+        layer.removeSelection()
+        self.assertCountEqual(layer.selectedFeatureIds(), [])
+        # reselect should bring this back
+        layer.reselect()
+        self.assertCountEqual(layer.selectedFeatureIds(), [1, 3, 5, 7])
+        layer.reselect() # no change
+        self.assertCountEqual(layer.selectedFeatureIds(), [1, 3, 5, 7])
+
+        # change an existing selection
+        layer.selectByIds([1, 3, 5], QgsVectorLayer.SetSelection)
+        self.assertCountEqual(layer.selectedFeatureIds(), [1, 3, 5])
+        layer.reselect()  # no change
+        self.assertCountEqual(layer.selectedFeatureIds(), [1, 3, 5])
+
+        layer.removeSelection()
+        self.assertCountEqual(layer.selectedFeatureIds(), [])
+        # reselect should bring this back
+        layer.reselect()
+        self.assertCountEqual(layer.selectedFeatureIds(), [1, 3, 5])
+
+        layer.select(7)
+        self.assertCountEqual(layer.selectedFeatureIds(), [1, 3, 5, 7])
+        layer.reselect()
+        self.assertCountEqual(layer.selectedFeatureIds(), [1, 3, 5, 7])
+        layer.removeSelection()
+        layer.select([3, 5])
+        self.assertCountEqual(layer.selectedFeatureIds(), [3, 5])
+        layer.reselect()
+        self.assertCountEqual(layer.selectedFeatureIds(), [3, 5])
+        layer.deselect([5])
+        self.assertCountEqual(layer.selectedFeatureIds(), [3])
+        layer.reselect()
+        self.assertCountEqual(layer.selectedFeatureIds(), [3])
+        layer.modifySelection([5], [3])
+        self.assertCountEqual(layer.selectedFeatureIds(), [5])
+        layer.reselect()
+        self.assertCountEqual(layer.selectedFeatureIds(), [5])
 
     def testAggregate(self):
         """ Test aggregate calculation """

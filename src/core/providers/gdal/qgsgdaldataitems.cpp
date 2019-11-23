@@ -90,7 +90,7 @@ QVector<QgsDataItem *> QgsGdalLayerItem::createChildren()
       else
       {
         // remove driver name and file name and initial ':'
-        name.remove( name.split( QgsDataProvider::SUBLAYER_SEPARATOR )[0] + ':' );
+        name.remove( name.split( QgsDataProvider::sublayerSeparator() )[0] + ':' );
         name.remove( mPath );
       }
       // remove any : or " left over
@@ -121,11 +121,6 @@ QString QgsGdalLayerItem::layerName() const
 
 // ---------------------------------------------------------------------------
 
-static QString sFilterString;
-static QStringList sExtensions = QStringList();
-static QStringList sWildcards = QStringList();
-static QMutex sBuildingFilters;
-
 QString QgsGdalDataItemProvider::name()
 {
   return QStringLiteral( "GDAL" );
@@ -138,6 +133,11 @@ int QgsGdalDataItemProvider::capabilities() const
 
 QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )
 {
+  static QString sFilterString;
+  static QStringList sExtensions = QStringList();
+  static QStringList sWildcards = QStringList();
+  static QMutex sBuildingFilters;
+
   QString path( pathIn );
   if ( path.isEmpty() )
     return nullptr;

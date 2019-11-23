@@ -30,14 +30,12 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 #include <QDomElement>
 
 QgsContrastEnhancement::QgsContrastEnhancement( Qgis::DataType dataType )
-  : mRasterDataType( dataType )
+  : mMinimumValue( minimumValuePossible( dataType ) )
+  , mMaximumValue( maximumValuePossible( dataType ) )
+  , mRasterDataType( dataType )
+  , mRasterDataTypeRange( mMaximumValue - mMinimumValue )
+  , mLookupTableOffset( mMinimumValue * -1 )
 {
-  mMinimumValue = minimumValuePossible( mRasterDataType );
-  mMaximumValue = maximumValuePossible( mRasterDataType );
-  mRasterDataTypeRange = mMaximumValue - mMinimumValue;
-
-  mLookupTableOffset = mMinimumValue * -1;
-
   mContrastEnhancementFunction.reset( new QgsContrastEnhancementFunction( mRasterDataType, mMinimumValue, mMaximumValue ) );
 
   //If the data type is larger than 16-bit do not generate a lookup table
@@ -45,7 +43,6 @@ QgsContrastEnhancement::QgsContrastEnhancement( Qgis::DataType dataType )
   {
     mLookupTable = new int[static_cast <int>( mRasterDataTypeRange + 1 )];
   }
-
 }
 
 QgsContrastEnhancement::QgsContrastEnhancement( const QgsContrastEnhancement &ce )
@@ -71,89 +68,6 @@ QgsContrastEnhancement::~QgsContrastEnhancement()
 {
   delete [] mLookupTable;
 }
-/*
- *
- * Static methods
- *
- */
-
-double QgsContrastEnhancement::maximumValuePossible( Qgis::DataType dataType )
-{
-  switch ( dataType )
-  {
-    case Qgis::Byte:
-      return std::numeric_limits<unsigned char>::max();
-    case Qgis::UInt16:
-      return std::numeric_limits<unsigned short>::max();
-    case Qgis::Int16:
-      return std::numeric_limits<short>::max();
-    case Qgis::UInt32:
-      return std::numeric_limits<unsigned int>::max();
-    case Qgis::Int32:
-      return std::numeric_limits<int>::max();
-    case Qgis::Float32:
-      return std::numeric_limits<float>::max();
-    case Qgis::Float64:
-      return std::numeric_limits<double>::max();
-    case Qgis::CInt16:
-      return std::numeric_limits<short>::max();
-    case Qgis::CInt32:
-      return std::numeric_limits<int>::max();
-    case Qgis::CFloat32:
-      return std::numeric_limits<float>::max();
-    case Qgis::CFloat64:
-      return std::numeric_limits<double>::max();
-    case Qgis::ARGB32:
-    case Qgis::ARGB32_Premultiplied:
-    case Qgis::UnknownDataType:
-      // XXX - mloskot: not handled?
-      break;
-  }
-
-  return std::numeric_limits<double>::max();
-}
-
-double QgsContrastEnhancement::minimumValuePossible( Qgis::DataType dataType )
-{
-  switch ( dataType )
-  {
-    case Qgis::Byte:
-      return std::numeric_limits<unsigned char>::min();
-    case Qgis::UInt16:
-      return std::numeric_limits<unsigned short>::min();
-    case Qgis::Int16:
-      return std::numeric_limits<short>::min();
-    case Qgis::UInt32:
-      return std::numeric_limits<unsigned int>::min();
-    case Qgis::Int32:
-      return std::numeric_limits<int>::min();
-    case Qgis::Float32:
-      return std::numeric_limits<float>::max() * -1.0;
-    case Qgis::Float64:
-      return std::numeric_limits<double>::max() * -1.0;
-    case Qgis::CInt16:
-      return std::numeric_limits<short>::min();
-    case Qgis::CInt32:
-      return std::numeric_limits<int>::min();
-    case Qgis::CFloat32:
-      return std::numeric_limits<float>::max() * -1.0;
-    case Qgis::CFloat64:
-      return std::numeric_limits<double>::max() * -1.0;
-    case Qgis::ARGB32:
-    case Qgis::ARGB32_Premultiplied:
-    case Qgis::UnknownDataType:
-      // XXX - mloskot: not handled?
-      break;
-  }
-
-  return std::numeric_limits<double>::max() * -1.0;
-}
-
-/*
- *
- * Non-Static methods
- *
- */
 
 int QgsContrastEnhancement::enhanceContrast( double value )
 {

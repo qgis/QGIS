@@ -5,6 +5,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/kdbush/include
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
@@ -27,15 +28,17 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/scalebar
   ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/classification
   ${CMAKE_SOURCE_DIR}/src/core/mesh
   ${CMAKE_SOURCE_DIR}/src/test
+
   ${CMAKE_BINARY_DIR}/src/core
 )
 INCLUDE_DIRECTORIES(SYSTEM
-  ${QT_INCLUDE_DIR}
-  ${GDAL_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
+  ${QT_INCLUDE_DIR}
+  ${GDAL_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
@@ -61,7 +64,6 @@ MACRO (ADD_QGIS_TEST TESTSRC)
   STRING(REPLACE ".cpp" "" TESTNAME ${TESTNAME})
   SET (TESTNAME  "qgis_${TESTNAME}test")
   ADD_EXECUTABLE(${TESTNAME} ${TESTSRC} ${util_SRCS})
-  SET_TARGET_PROPERTIES(${TESTNAME} PROPERTIES AUTOMOC TRUE)
   TARGET_LINK_LIBRARIES(${TESTNAME}
     ${Qt5Core_LIBRARIES}
     ${Qt5Xml_LIBRARIES}
@@ -117,6 +119,7 @@ SET(TESTS
  testqgsgdalutils.cpp
  testqgsvectorfilewriter.cpp
  testqgsfontmarker.cpp
+ testqgsgeopdfexport.cpp
  testqgsgeometryimport.cpp
  testqgsgeometry.cpp
  testqgsgeometryutils.cpp
@@ -136,9 +139,11 @@ SET(TESTS
  testqgslayout.cpp
  testqgslayoutatlas.cpp
  testqgslayoutcontext.cpp
+ testqgslayoutexporter.cpp
  testqgslayouthtml.cpp
  testqgslayoutitem.cpp
  testqgslayoutitemgroup.cpp
+ testqgslayoutgeopdfexport.cpp
  testqgslayoutlabel.cpp
  testqgslayoutmap.cpp
  testqgslayoutmapgrid.cpp
@@ -228,12 +233,13 @@ SET(TESTS
  testqgsofflineediting.cpp
  testqgstranslateproject.cpp
  testqobjectuniqueptr.cpp
+ testqgspostgresstringutils.cpp
+ testqgsstoredexpressionmanager.cpp
 )
 
 IF(WITH_QTWEBKIT)
   SET(TESTS ${TESTS})
 ENDIF(WITH_QTWEBKIT)
-
 
 IF(HAVE_OPENCL)
   SET(TESTS ${TESTS}

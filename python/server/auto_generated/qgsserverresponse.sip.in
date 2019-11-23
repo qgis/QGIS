@@ -98,6 +98,7 @@ to the underlying I/O device
 
 
 
+
     virtual void write( const QgsServerException &ex );
 %Docstring
 Write server exception
@@ -108,17 +109,18 @@ Write server exception
 Returns the underlying QIODevice
 %End
 
-    virtual void finish() = 0;
+    virtual void finish() throw( QgsServerException ) /VirtualErrorHandler=server_exception_handler/;
 %Docstring
-Finish the response,  ending the transaction
+Finish the response, ending the transaction. The default implementation does nothing.
 %End
 
-    virtual void flush() = 0;
+    virtual void flush() throw( QgsServerException ) /VirtualErrorHandler=server_exception_handler/;
 %Docstring
 Flushes the current output buffer to the network
 
 'flush()' may be called multiple times. For HTTP transactions
 headers will be written on the first call to 'flush()'.
+The default implementation does nothing.
 %End
 
     virtual void clear() = 0;

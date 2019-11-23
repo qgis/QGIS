@@ -45,6 +45,7 @@ for my $f (<python/plugins/processing/algs/otb/description/*.xml>) {
 
 for my $f (<python/plugins/processing/algs/grass*/description/*.txt>) {
 	open I, $f;
+	binmode(I, ":utf8");
 	my $name = scalar(<I>);
 	my $desc = scalar(<I>);
 	my $group = scalar(<I>);
@@ -64,21 +65,22 @@ for my $f (<python/plugins/processing/algs/grass*/description/*.txt>) {
 	$strings{"GrassAlgorithm"}{$group} = $f;
 }
 
-for my $f (<python/plugins/processing/algs/saga/description/*/*.txt>) {
+for my $f (<python/plugins/processing/algs/saga/description/*.txt>) {
 	open I, $f;
+	binmode(I, ":utf8");
 	my $desc = scalar(<I>);
 
 	while( my($class, $name, $description, $rest) = split /\|/, scalar(<I>) ) {
 		next unless defined $description;
 		$description =~ s/\s+$//;
-		$strings{"SAGAAlgorithm"}{$description} = 1
+		$strings{"SAGAAlgorithm"}{$description} = $f
 	}
 
 	close I;
 
 	chop $desc;
 
-	$strings{"SAGAAlgorithm"}{$desc} = 1;
+	$strings{"SAGAAlgorithm"}{$desc} = $f;
 }
 
 for my $f (<python/plugins/processing/algs/help/*.yaml>) {
@@ -86,12 +88,13 @@ for my $f (<python/plugins/processing/algs/help/*.yaml>) {
 	$base = uc $base;
 	my $yaml = LoadFile($f);
 	for my $k (keys %$yaml) {
-		$strings{"${base}Algorithm"}{$yaml->{$k}} = $f;
+		$strings{"${base}Algorithm"}{$yaml->{$k}} = $k;
 	}
 }
 
 for my $f ( ("python/plugins/processing/gui/algnames.txt") ) {
 	open I, $f;
+	binmode(I, ":utf8");
 	while(<I>) {
 		chop;
 		s/^.*,//;

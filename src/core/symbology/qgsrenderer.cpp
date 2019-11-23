@@ -482,3 +482,13 @@ void QgsFeatureRenderer::convertSymbolRotation( QgsSymbol *symbol, const QString
     s->setDataDefinedAngle( dd );
   }
 }
+
+QgsSymbol *QgsSymbolLevelItem::symbol() const
+{
+  return mSymbol;
+}
+
+int QgsSymbolLevelItem::layer() const
+{
+  return mLayer;
+}

@@ -385,6 +385,16 @@ QgsSymbolWidgetContext QgsSymbolSelectorWidget::context() const
 
 void QgsSymbolSelectorWidget::loadSymbol( QgsSymbol *symbol, SymbolLayerItem *parent )
 {
+  if ( !symbol )
+    return;
+
+  if ( !parent )
+  {
+    mSymbol = symbol;
+    model->clear();
+    parent = static_cast<SymbolLayerItem *>( model->invisibleRootItem() );
+  }
+
   SymbolLayerItem *symbolItem = new SymbolLayerItem( symbol );
   QFont boldFont = symbolItem->font();
   boldFont.setBold( true );
@@ -407,7 +417,7 @@ void QgsSymbolSelectorWidget::loadSymbol( QgsSymbol *symbol, SymbolLayerItem *pa
 }
 
 
-void QgsSymbolSelectorWidget::loadSymbol()
+void QgsSymbolSelectorWidget::reloadSymbol()
 {
   model->clear();
   loadSymbol( mSymbol, static_cast<SymbolLayerItem *>( model->invisibleRootItem() ) );
@@ -442,6 +452,9 @@ void QgsSymbolSelectorWidget::updateUi()
 
 void QgsSymbolSelectorWidget::updatePreview()
 {
+  if ( !mSymbol )
+    return;
+
   std::unique_ptr< QgsSymbol > symbolClone( mSymbol->clone() );
   QImage preview = symbolClone->bigSymbolPreviewImage( &mPreviewExpressionContext );
   lblPreview->setPixmap( QPixmap::fromImage( preview ) );
@@ -546,7 +559,7 @@ void QgsSymbolSelectorWidget::symbolChanged()
   else
   {
     //it is the symbol itself
-    loadSymbol();
+    reloadSymbol();
     QModelIndex newIndex = layersTree->model()->index( 0, 0 );
     layersTree->setCurrentIndex( newIndex );
   }
@@ -769,9 +782,11 @@ QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *s
   layout()->addWidget( mSelectorWidget );
   layout()->addWidget( mButtonBox );
 
+  mSelectorWidget->setMinimumSize( 460, 560 );
+  setObjectName( QStringLiteral( "SymbolSelectorDialog" ) );
   QgsGui::instance()->enableAutoGeometryRestore( this );
 
-  // can be embedded in renderer properties dialog
+  // Can be embedded in renderer properties dialog
   if ( embedded )
   {
     mButtonBox->hide();
@@ -817,9 +832,9 @@ void QgsSymbolSelectorDialog::keyPressEvent( QKeyEvent *e )
   }
 }
 
-void QgsSymbolSelectorDialog::loadSymbol()
+void QgsSymbolSelectorDialog::reloadSymbol()
 {
-  mSelectorWidget->loadSymbol();
+  mSelectorWidget->reloadSymbol();
 }
 
 void QgsSymbolSelectorDialog::loadSymbol( QgsSymbol *symbol, SymbolLayerItem *parent )

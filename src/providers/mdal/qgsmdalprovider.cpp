@@ -273,7 +273,7 @@ void QgsMdalProvider::fileMeshFilters( QString &fileMeshFiltersString, QString &
 
   int driverCount = MDAL_driverCount();
 
-  QgsDebugMsg( QStringLiteral( "MDAL driver count: %1" ).arg( driverCount ) );
+  QgsDebugMsgLevel( QStringLiteral( "MDAL driver count: %1" ).arg( driverCount ), 2 );
 
   for ( int i = 0; i < driverCount; ++i )
   {
@@ -323,8 +323,8 @@ void QgsMdalProvider::fileMeshFilters( QString &fileMeshFiltersString, QString &
   if ( fileMeshFiltersString.endsWith( QLatin1String( ";;" ) ) ) fileMeshFiltersString.chop( 2 );
   if ( fileMeshDatasetFiltersString.endsWith( QLatin1String( ";;" ) ) ) fileMeshDatasetFiltersString.chop( 2 );
 
-  QgsDebugMsg( "Mesh filter list built: " + fileMeshFiltersString );
-  QgsDebugMsg( "Mesh dataset filter list built: " + fileMeshDatasetFiltersString );
+  QgsDebugMsgLevel( "Mesh filter list built: " + fileMeshFiltersString, 2 );
+  QgsDebugMsgLevel( "Mesh dataset filter list built: " + fileMeshDatasetFiltersString, 2 );
 }
 
 void QgsMdalProvider::fileMeshExtensions( QStringList &fileMeshExtensions,
@@ -375,8 +375,8 @@ void QgsMdalProvider::fileMeshExtensions( QStringList &fileMeshExtensions,
   fileMeshExtensions.erase( std::unique( fileMeshExtensions.begin(), fileMeshExtensions.end() ), fileMeshExtensions.end() );
   fileMeshDatasetExtensions.erase( std::unique( fileMeshDatasetExtensions.begin(), fileMeshDatasetExtensions.end() ), fileMeshDatasetExtensions.end() );
 
-  QgsDebugMsg( "Mesh extensions list built: " + fileMeshExtensions.join( QStringLiteral( ";;" ) ) );
-  QgsDebugMsg( "Mesh dataset extensions list built: " + fileMeshDatasetExtensions.join( QStringLiteral( ";;" ) ) );
+  QgsDebugMsgLevel( "Mesh extensions list built: " + fileMeshExtensions.join( QStringLiteral( ";;" ) ), 2 );
+  QgsDebugMsgLevel( "Mesh dataset extensions list built: " + fileMeshDatasetExtensions.join( QStringLiteral( ";;" ) ), 2 );
 }
 
 /*----------------------------------------------------------------------------------------------*/

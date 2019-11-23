@@ -42,7 +42,7 @@ QgsMapToolAddRegularPolygon::~QgsMapToolAddRegularPolygon()
 void QgsMapToolAddRegularPolygon::createNumberSidesSpinBox()
 {
   deleteNumberSidesSpinBox();
-  mNumberSidesSpinBox = std::unique_ptr<QgsSpinBox>( new QgsSpinBox() );
+  mNumberSidesSpinBox = qgis::make_unique<QgsSpinBox>();
   mNumberSidesSpinBox->setMaximum( 99999999 );
   mNumberSidesSpinBox->setMinimum( 3 );
   mNumberSidesSpinBox->setPrefix( tr( "Number of sides: " ) );

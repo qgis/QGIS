@@ -19,6 +19,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QSet>
+#include <QDirIterator>
 
 QString QgsFileUtils::representFileSize( qint64 bytes )
 {
@@ -128,3 +129,102 @@ QString QgsFileUtils::findClosestExistingPath( const QString &path )
 
   return res == QStringLiteral( "." ) ? QString() : res;
 }
+
+QStringList QgsFileUtils::findFile( const QString &file, const QString &basePath, int maxClimbs, int searchCeilling, const QString &currentDir )
+{
+  int depth = 0;
+  QString originalFolder;
+  QDir folder;
+  const QString fileName( basePath.isEmpty() ? QFileInfo( file ).fileName() : file );
+  const QString baseFolder( basePath.isEmpty() ? QFileInfo( file ).path() : basePath );
+
+  if ( QFileInfo( baseFolder ).isDir() )
+  {
+    folder = QDir( baseFolder ) ;
+    originalFolder = folder.absolutePath();
+  }
+  else // invalid folder or file path
+  {
+    folder = QDir( QFileInfo( baseFolder ).absolutePath() );
+    originalFolder = folder.absolutePath();
+  }
+
+  QStringList searchedFolder = QStringList();
+  QString existingBase;
+  QString backupDirectory = QDir::currentPath();
+  QStringList foundFiles;
+
+  if ( !currentDir.isEmpty() && backupDirectory != currentDir && QDir( currentDir ).exists() )
+    QDir::setCurrent( currentDir );
+
+  // find the nearest existing folder
+  while ( !folder.exists() && folder.absolutePath().count( '/' ) > searchCeilling )
+  {
+
+    existingBase = folder.path();
+    if ( !folder.cdUp() )
+      folder = QFileInfo( existingBase ).absoluteDir(); // using fileinfo to move up one level
+
+    depth += 1;
+
+    if ( depth > ( maxClimbs + 4 ) ) //break early when no folders can be found
+      break;
+  }
+  bool folderExists = folder.exists();
+
+  if ( depth > maxClimbs )
+    maxClimbs = depth;
+
+  if ( folder.absolutePath().count( '/' ) < searchCeilling )
+    searchCeilling = folder.absolutePath().count( '/' ) - 1;
+
+  while ( depth <= maxClimbs && folderExists && folder.absolutePath().count( '/' ) >= searchCeilling )
+  {
+
+    QDirIterator localFinder( folder.path(), QStringList() << fileName, QDir::Files, QDirIterator::NoIteratorFlags );
+    searchedFolder.append( folder.absolutePath() );
+    if ( localFinder.hasNext() )
+    {
+      foundFiles << localFinder.next();
+      return foundFiles;
+    }
+
+
+    const QFileInfoList subdirs = folder.entryInfoList( QDir::AllDirs );
+    for ( const QFileInfo subdir : subdirs )
+    {
+      if ( ! searchedFolder.contains( subdir.absolutePath() ) )
+      {
+        QDirIterator subDirFinder( subdir.path(), QStringList() << fileName, QDir::Files, QDirIterator::Subdirectories );
+        if ( subDirFinder.hasNext() )
+        {
+          QString possibleFile = subDirFinder.next();
+          if ( !subDirFinder.hasNext() )
+          {
+            foundFiles << possibleFile;
+            return foundFiles;
+          }
+
+          foundFiles << possibleFile;
+          while ( subDirFinder.hasNext() )
+          {
+            foundFiles << subDirFinder.next();
+          }
+          return foundFiles;
+        }
+      }
+    }
+    depth += 1;
+
+    if ( depth > maxClimbs )
+      break;
+
+    folderExists = folder.cdUp();
+  }
+
+  if ( QDir::currentPath() == currentDir && currentDir != backupDirectory )
+    QDir::setCurrent( backupDirectory );
+
+  return foundFiles;
+}
+

@@ -73,7 +73,6 @@ class GUI_EXPORT QgsTextEditWrapper : public QgsEditorWidgetWrapper
     bool valid() const override;
 
   public slots:
-    void setValue( const QVariant &value ) override;
     void setEnabled( bool enabled ) override;
     void setFeature( const QgsFeature &feature );
 
@@ -83,6 +82,8 @@ class GUI_EXPORT QgsTextEditWrapper : public QgsEditorWidgetWrapper
   private:
     bool mutable mInvalidJSON;
     QgsAttributeForm *mForm;
+    void updateValues( const QVariant &val, const QVariantList & = QVariantList() ) override;
+
     QTextBrowser *mTextBrowser = nullptr;
     QTextEdit *mTextEdit = nullptr;
     QPlainTextEdit *mPlainTextEdit = nullptr;

@@ -1,0 +1,54 @@
+Content-Type: application/geo+json
+
+{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          8.203547,
+          44.901436
+        ],
+        "type": "Point"
+      },
+      "id": 1,
+      "properties": {
+        "id": 2,
+        "name": "two",
+        "utf8nameè": "two àò"
+      },
+      "type": "Feature"
+    }
+  ],
+  "links": [
+    {
+      "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.geojson?limit=1&offset=1",
+      "rel": "self",
+      "title": "Retrieve the features of the collection as GEOJSON",
+      "type": "application/geo+json"
+    },
+    {
+      "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.html?limit=1&offset=1",
+      "rel": "alternate",
+      "title": "Retrieve the features of the collection as HTML",
+      "type": "text/html"
+    },
+    {
+      "href": "http://server.qgis.org/wfs3/collections/testlayer èé/items?&offset=0&limit=1",
+      "name": "Previous page",
+      "rel": "prev",
+      "title": "Retrieve the features of the collection as GEOJSON",
+      "type": "application/geo+json"
+    },
+    {
+      "href": "http://server.qgis.org/wfs3/collections/testlayer èé/items?&offset=2&limit=1",
+      "name": "Next page",
+      "rel": "next",
+      "title": "Retrieve the features of the collection as GEOJSON",
+      "type": "application/geo+json"
+    }
+  ],
+  "numberMatched": 3,
+  "numberReturned": 1,
+  "timeStamp": "2019-07-05T12:27:07Z",
+  "type": "FeatureCollection"
+}

@@ -79,6 +79,16 @@ The id of the feature on which this error has been detected.
 The geometry of the error in map units.
 %End
 
+    virtual QgsRectangle contextBoundingBox() const;
+%Docstring
+The context of the error.
+For topology checks like gap checks this returns the context of an error
+and the involved features.
+May be a NULL rectangle.
+
+.. versionadded:: 3.10
+%End
+
     virtual QgsRectangle affectedAreaBBox() const;
 %Docstring
 The bounding box of the affected area of the error.

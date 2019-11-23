@@ -56,40 +56,6 @@ namespace pal
       double cost;
   };
 
-  typedef struct _subpart
-  {
-
-    /**
-     * # of features in problem
-     */
-    int probSize;
-
-    /**
-     * # of features bounding the problem
-     */
-    int borderSize;
-
-    /**
-     *  total # features (prob + border)
-     */
-    int subSize;
-
-    /**
-     * wrap bw sub feat and main feat
-     */
-    int *sub = nullptr;
-
-    /**
-     * sub solution
-     */
-    int *sol = nullptr;
-
-    /**
-     * first feat in sub part
-     */
-    int seed;
-  } SubPart;
-
   typedef struct _chain
   {
     int degree;
@@ -141,42 +107,28 @@ namespace pal
       void reduce();
 
       /**
-       * \brief popmusic framework
-       */
-      void popmusic();
-
-      /**
        * \brief Test with very-large scale neighborhood
        */
       void chain_search();
 
-      QList<LabelPosition *> getSolution( bool returnInactive );
+      /**
+       * Solves the labeling problem, selecting the best candidate locations for all labels and returns a list of these
+       * calculated label positions.
+       *
+       * If \a returnInactive is true, then the best positions for ALL labels will be returned, regardless of whether these
+       * labels overlap other labels.
+       *
+       * If the optional \a unlabeled list is specified, it will be filled with a list of all feature labels which could
+       * not be placed in the returned solution (e.g. due to overlaps or other constraints).
+       *
+       * Ownership of the returned labels is not transferred - it resides with the pal object.
+       */
+      QList<LabelPosition *> getSolution( bool returnInactive, QList<LabelPosition *> *unlabeled = nullptr );
 
       PalStat *getStats();
 
       /* useful only for postscript post-conversion*/
       //void toFile(char *label_file);
-
-      SubPart *subPart( int r, int featseed, int *isIn );
-
-      void initialization();
-
-      double compute_feature_cost( SubPart *part, int feat_id, int label_id, int *nbOverlap );
-      double compute_subsolution_cost( SubPart *part, int *s, int *nbOverlap );
-
-      /**
-       *  POPMUSIC, chain
-       */
-      double popmusic_chain( SubPart *part );
-
-      double popmusic_tabu( SubPart *part );
-
-      /**
-       *
-       * POPMUSIC, Tabu search with  chain'
-       *
-       */
-      double popmusic_tabu_chain( SubPart *part );
 
       /**
        * \brief Basic initial solution : every feature to -1
@@ -185,6 +137,17 @@ namespace pal
       void init_sol_falp();
 
       static bool compareLabelArea( pal::LabelPosition *l1, pal::LabelPosition *l2 );
+
+      /**
+       * Returns a reference to the list of label positions which correspond to
+       * features with no candidates.
+       *
+       * Ownership of positions added to this list is transferred to the problem.
+       */
+      QList<LabelPosition *> *positionsWithNoCandidates()
+      {
+        return &mPositionsWithNoCandidates;
+      }
 
     private:
 
@@ -224,14 +187,12 @@ namespace pal
        */
       double bbox[4];
 
-      double *labelPositionCost = nullptr;
-      int *nbOlap = nullptr;
-
       QList< LabelPosition * > mLabelPositions;
 
       RTree<LabelPosition *, double, 2, double> *candidates = nullptr; // index all candidates
       RTree<LabelPosition *, double, 2, double> *candidates_sol = nullptr; // index active candidates
-      RTree<LabelPosition *, double, 2, double> *candidates_subsol = nullptr; // idem for subparts
+
+      QList< LabelPosition * > mPositionsWithNoCandidates;
 
       //int *feat;        // [nblp]
       int *featStartId = nullptr; // [nbft]
@@ -239,20 +200,13 @@ namespace pal
       double *inactiveCost = nullptr; //
 
       Sol *sol = nullptr;         // [nbft]
-      int nbActive = 0;
-
       double nbOverlap = 0.0;
-
-      int *featWrap = nullptr;
-
-      Chain *chain( SubPart *part, int seed );
 
       Chain *chain( int seed );
 
       Pal *pal = nullptr;
 
       void solution_cost();
-      void check_solution();
   };
 
 } // namespace

@@ -40,7 +40,7 @@ endif
 
 QT_PLUGINS_DIR = usr/lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"buster bionic cosmic disco"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"buster bionic disco eoan"))
 	DISTRIBUTION := sid
 endif
 
@@ -109,12 +109,12 @@ ifneq (,$(findstring $(DISTRIBUTION),"sid buster"))
 	CMAKE_OPTS += -DPOSTGRES_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpq.so
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid buster bionic cosmic disco"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid buster bionic disco eoan"))
 	CMAKE_OPTS += \
 		-DWITH_3D=TRUE \
 		-DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid buster cosmic disco"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid buster disco eoan"))
 # Qt3DExtras intentionally removed from debian (#895386) and in turn ubuntu
 	CMAKE_OPTS += \
 		-DCMAKE_PREFIX_PATH=$(realpath external/qt3dextra-headers/cmake) \
@@ -125,12 +125,12 @@ endif
 
 ifneq (,$(WITH_ORACLE))
 ifeq ($(DEB_BUILD_ARCH),amd64)
-	ORACLE_INCLUDEDIR=/usr/include/oracle/12.1/client64/
-	ORACLE_LIBDIR=/usr/lib/oracle/12.1/client64/lib/
+	ORACLE_INCLUDEDIR=/usr/include/oracle/18.5/client64/
+	ORACLE_LIBDIR=/usr/lib/oracle/18.5/client64/lib/
 endif
 ifeq ($(DEB_BUILD_ARCH),i386)
-	ORACLE_INCLUDEDIR=/usr/include/oracle/12.1/client/
-	ORACLE_LIBDIR=/usr/lib/oracle/12.1/client/lib/
+	ORACLE_INCLUDEDIR=/usr/include/oracle/18.5/client/
+	ORACLE_LIBDIR=/usr/lib/oracle/18.5/client/lib/
 endif
 	CMAKE_OPTS += \
 		-DWITH_ORACLE=TRUE \
@@ -149,7 +149,7 @@ endif
 ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 	CMAKE_OPTS += -DENABLE_TESTS=FALSE
 else
-	CMAKE_OPTS += -DENABLE_TESTS=TRUE
+	CMAKE_OPTS += -DENABLE_TESTS=TRUE -DDART_TESTING_TIMEOUT=60
 endif
 
 CPPFLAGS := $(shell dpkg-buildflags --get CPPFLAGS)
@@ -233,10 +233,11 @@ override_dh_auto_configure:
 
 override_dh_auto_build:
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-	ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR) $(DEB_TEST_TARGET)Build || \
-			cat $(QGIS_BUILDDIR)/Testing/Temporary/LastBuild_$$(head -1 $(QGIS_BUILDDIR)/Testing/TAG).log || \
-			ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR) $(DEB_TEST_TARGET)Submit || \
-			false
+	ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR) $(DEB_TEST_TARGET)Build
+	! grep -q "<Error>" $(QGIS_BUILDDIR)/Testing/$$(head -1 $(QGIS_BUILDDIR)/Testing/TAG)/Build.xml || { \
+		cat $(QGIS_BUILDDIR)/Testing/Temporary/LastBuild_$$(head -1 $(QGIS_BUILDDIR)/Testing/TAG).log; \
+		ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR) $(DEB_TEST_TARGET)Submit; \
+		false; }
 else
 	ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR)
 endif

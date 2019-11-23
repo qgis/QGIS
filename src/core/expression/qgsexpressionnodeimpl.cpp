@@ -203,7 +203,7 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
         return QVariant();
       else if ( mOp != boDiv && QgsExpressionUtils::isIntSafe( vL ) && QgsExpressionUtils::isIntSafe( vR ) )
       {
-        // both are integers - let's use integer arithmetics
+        // both are integers - let's use integer arithmetic
         qlonglong iL = QgsExpressionUtils::getIntValue( vL, parent );
         ENSURE_NO_EVAL_ERROR;
         qlonglong iR = QgsExpressionUtils::getIntValue( vR, parent );
@@ -389,8 +389,8 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
             return TVL_Unknown;
         }
       }
-      else if ( QgsExpressionUtils::isDoubleSafe( vL ) && QgsExpressionUtils::isDoubleSafe( vR ) &&
-                ( vL.type() != QVariant::String || vR.type() != QVariant::String ) )
+      else if ( ( vL.type() != QVariant::String || vR.type() != QVariant::String ) &&
+                QgsExpressionUtils::isDoubleSafe( vL ) && QgsExpressionUtils::isDoubleSafe( vR ) )
       {
         // do numeric comparison if both operators can be converted to numbers,
         // and they aren't both string
@@ -400,7 +400,8 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
         ENSURE_NO_EVAL_ERROR;
         return compare( fL - fR ) ? TVL_True : TVL_False;
       }
-      else if ( QgsExpressionUtils::isIntervalSafe( vL ) && QgsExpressionUtils::isIntervalSafe( vR ) )
+      // warning - QgsExpression::isIntervalSafe is VERY expensive and should not be used here
+      else if ( vL.canConvert< QgsInterval >() && vR.canConvert< QgsInterval >() )
       {
         double fL = QgsExpressionUtils::getInterval( vL, parent ).seconds();
         ENSURE_NO_EVAL_ERROR;

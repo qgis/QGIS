@@ -36,6 +36,7 @@
 #include "qgssnappingconfig.h"
 #include "qgsprojectversion.h"
 #include "qgsexpressioncontextgenerator.h"
+#include "qgsexpressioncontextscopegenerator.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgsprojectproperty.h"
@@ -70,23 +71,23 @@ class QgsLayerTree;
 class QgsLabelingEngineSettings;
 class QgsAuxiliaryStorage;
 class QgsMapLayer;
+class QgsBookmarkManager;
+class QgsProjectViewSettings;
 
 /**
  * \ingroup core
- * Reads and writes project states.
+ * Encapsulates a QGIS project, including sets of map layers and their styles,
+ * layouts, annotations, canvases, etc.
  *
-  \note
-
-  Has two general kinds of state to make persistent.  (I.e., to read and
-  write.)  First, QGIS proprietary information.  Second plug-in information.
-
-  A singleton since there shall only be one active project at a time; and
-  provides canonical location for plug-ins and main app to find/set
-  properties.
-
+ * QgsProject is available both as a singleton (QgsProject::instance()) and for use as
+ * standalone objects. The QGIS project singleton always gives access to the canonical project reference
+ * open within the main QGIS application.
+ *
+ * \note QgsProject has two general kinds of state to make persistent. (I.e., to read and
+ * write.) First, QGIS proprietary information. Second plugin information.
 */
 
-class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenerator, public QgsProjectTranslator
+class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenerator, public QgsExpressionContextScopeGenerator, public QgsProjectTranslator
 {
     Q_OBJECT
     Q_PROPERTY( QStringList nonIdentifiableLayers READ nonIdentifiableLayers WRITE setNonIdentifiableLayers NOTIFY nonIdentifiableLayersChanged )
@@ -100,6 +101,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_PROPERTY( QgsRelationManager *relationManager READ relationManager )
     Q_PROPERTY( QList<QgsVectorLayer *> avoidIntersectionsLayers READ avoidIntersectionsLayers WRITE setAvoidIntersectionsLayers NOTIFY avoidIntersectionsLayersChanged )
     Q_PROPERTY( QgsProjectMetadata metadata READ metadata WRITE setMetadata NOTIFY metadataChanged )
+    Q_PROPERTY( QColor backgroundColor READ backgroundColor WRITE setBackgroundColor NOTIFY backgroundColorChanged )
+    Q_PROPERTY( QColor selectionColor READ selectionColor WRITE setSelectionColor NOTIFY selectionColorChanged )
 
   public:
     //! Returns the QgsProject singleton instance
@@ -162,8 +165,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * replacements that are aware of the fact that projects may be saved in other project storages.
      *
      * \see fileName()
-     * \since QGIS 2.9
-     * \deprecated Use absoluteFilePath(), baseName() or lastModifiedTime() instead
+     * \deprecated since QGIS 3.2 use absoluteFilePath(), baseName() or lastModifiedTime() instead
      */
     Q_DECL_DEPRECATED QFileInfo fileInfo() const SIP_DEPRECATED;
 
@@ -211,11 +213,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Sets the project's native coordinate reference system.
+     * If \a adjustEllipsoid is set to TRUE, the ellpsoid of this project will be set to
+     * the ellipsoid imposed by the CRS.
+     *
      * \see crs()
      * \see setEllipsoid()
      * \since QGIS 3.0
      */
-    void setCrs( const QgsCoordinateReferenceSystem &crs );
+    void setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEllipsoid = false );
 
     /**
      * Returns a proj string representing the project's ellipsoid setting, e.g., "WGS84".
@@ -270,6 +275,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     enum ReadFlag
     {
       FlagDontResolveLayers = 1 << 0, //!< Don't resolve layer paths (i.e. don't load any layer content). Dramatically improves project read time if the actual data from the layers is not required.
+      FlagDontLoadLayouts = 1 << 1, //!< Don't load print layouts. Improves project read time if layouts are not required, and allows projects to be safely read in background threads (since print layouts are not thread safe).
     };
     Q_DECLARE_FLAGS( ReadFlags, ReadFlag )
 
@@ -543,6 +549,38 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsLayoutManager *layoutManager();
 
     /**
+     * Returns the project's bookmark manager, which manages bookmarks within
+     * the project.
+     * \note not available in Python bindings
+     * \since QGIS 3.10
+     */
+    const QgsBookmarkManager *bookmarkManager() const SIP_SKIP;
+
+    /**
+     * Returns the project's bookmark manager, which manages bookmarks within
+     * the project.
+     * \since QGIS 3.10
+     */
+    QgsBookmarkManager *bookmarkManager();
+
+    /**
+     * Returns the project's view settings, which contains settings and properties
+     * relating to how a QgsProject should be viewed and behave inside a map canvas
+     * (e.g. map scales and default view extent)
+     * \note not available in Python bindings
+     * \since QGIS 3.10.1
+     */
+    const QgsProjectViewSettings *viewSettings() const SIP_SKIP;
+
+    /**
+     * Returns the project's view settings, which contains settings and properties
+     * relating to how a QgsProject should be viewed and behave inside a map canvas
+     * (e.g. map scales and default view extent)
+     * \since QGIS 3.10.1
+     */
+    QgsProjectViewSettings *viewSettings();
+
+    /**
      * Returns pointer to the root (invisible) node of the project's layer tree
      * \since QGIS 2.4
      */
@@ -645,6 +683,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void setEvaluateDefaultValues( bool evaluateDefaultValues );
 
     QgsExpressionContext createExpressionContext() const override;
+    QgsExpressionContextScope *createExpressionContextScope() const override;
 
     /**
      * The snapping configuration for this project.
@@ -757,6 +796,18 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QList<QgsMapLayer *> mapLayersByName( const QString &layerName ) const;
 
     /**
+     * Retrieves a list of matching registered layers by layer \a shortName.
+     * If layer's short name is empty a match with layer's name is attempted.
+     *
+     * \returns list of matching layers
+     * \see mapLayer()
+     * \see mapLayers()
+     * \since QGIS 3.10
+     */
+    QList<QgsMapLayer *> mapLayersByShortName( const QString &shortName ) const;
+
+
+    /**
      * Returns a map of all registered layers by layer ID.
      *
      * \param validOnly if set only valid layers will be returned
@@ -789,6 +840,38 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     {
       return mLayerStore->layers<T>();
     }
+
+    /**
+     * Retrieves a list of matching registered layers by layer \a shortName with a specified layer type,
+     * if layer's short name is empty a match with layer's name is attempted.
+     *
+     * \param shortName short name of layers to match
+     * \returns list of matching layers
+     * \see mapLayer()
+     * \see mapLayers()
+     * \note not available in Python bindings
+     * \since QGIS 3.10
+     */
+    template <typename T>
+    QVector<T> mapLayersByShortName( const QString &shortName ) const
+    {
+      QVector<T> layers;
+      const auto constMapLayers { mLayerStore->layers<T>() };
+      for ( const auto l : constMapLayers )
+      {
+        if ( ! l->shortName().isEmpty() )
+        {
+          if ( l->shortName() == shortName )
+            layers << l;
+        }
+        else if ( l->name() == shortName )
+        {
+          layers << l;
+        }
+      }
+      return layers;
+    }
+
 #endif
 
     /**
@@ -1053,6 +1136,84 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void setProjectColors( const QgsNamedColorList &colors );
 
     /**
+     * Sets the default background \a color used by default map canvases.
+     *
+     * \see backgroundColor()
+     * \since QGIS 3.10
+     */
+    void setBackgroundColor( const QColor &color );
+
+    /**
+     * Returns the default background color used by default map canvases.
+     *
+     * \see setBackgroundColor()
+     * \since QGIS 3.10
+     */
+    QColor backgroundColor() const;
+
+    /**
+     * Sets the \a color used to highlight selected features.
+     *
+     * \see selectionColor()
+     * \since QGIS 3.10
+     */
+    void setSelectionColor( const QColor &color );
+
+    /**
+     * Returns the color used to highlight selected features
+     *
+     * \see setSelectionColor()
+     * \since QGIS 3.10
+     */
+    QColor selectionColor() const;
+
+    /**
+     * Sets the list of custom project map \a scales.
+     *
+     * The \a scales list consists of a list of scale denominator values, e.g.
+     * 1000 for a 1:1000 scale.
+     *
+     * \see mapScales()
+     * \see mapScalesChanged()
+     *
+     * \deprecated Use viewSettings() instead
+     */
+    Q_DECL_DEPRECATED void setMapScales( const QVector<double> &scales ) SIP_DEPRECATED;
+
+    /**
+     * Returns the list of custom project map scales.
+     *
+     * The scales list consists of a list of scale denominator values, e.g.
+     * 1000 for a 1:1000 scale.
+     *
+     * \see setMapScales()
+     * \see mapScalesChanged()
+     *
+     * \deprecated Use viewSettings() instead
+     */
+    Q_DECL_DEPRECATED QVector<double> mapScales() const SIP_DEPRECATED;
+
+    /**
+     * Sets whether project mapScales() are \a enabled.
+     *
+     * \see useProjectScales()
+     * \see setMapScales()
+     *
+     * \deprecated Use viewSettings() instead
+     */
+    Q_DECL_DEPRECATED void setUseProjectScales( bool enabled ) SIP_DEPRECATED;
+
+    /**
+     * Returns TRUE if project mapScales() are enabled.
+     *
+     * \see setUseProjectScales()
+     * \see mapScales()
+     *
+     * \deprecated Use viewSettings() instead
+     */
+    Q_DECL_DEPRECATED bool useProjectScales() const SIP_DEPRECATED;
+
+    /**
      * Triggers the collection strings of .qgs to be included in ts file and calls writeTsFile()
      * \since QGIS 3.4
      */
@@ -1080,6 +1241,15 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.10
      */
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsProject: '%1'%2>" ).arg( sipCpp->fileName(),
+                  sipCpp == QgsProject::instance() ? QStringLiteral( " (singleton instance)" ) : QString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
   signals:
 
@@ -1271,6 +1441,22 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void projectColorsChanged();
 
+    /**
+     * Emitted whenever the project's canvas background color has been changed.
+
+     * \see setBackgroundColor()
+     * \since QGIS 3.10
+     */
+    void backgroundColorChanged();
+
+    /**
+     * Emitted whenever the project's selection color has been changed.
+
+     * \see setSelectionColor()
+     * \since QGIS 3.10
+     */
+    void selectionColorChanged();
+
     //
     // signals from QgsMapLayerRegistry
     //
@@ -1396,6 +1582,16 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.8
      */
     void collectAttachedFiles( QgsStringMap &files SIP_INOUT ) SIP_SKIP;
+
+    /**
+     * Emitted when the list of custom project map scales changes.
+     *
+     * \see mapScales()
+     * \see setMapScales()
+     *
+     * \deprecated Use viewSettings() instead
+     */
+    Q_DECL_DEPRECATED void mapScalesChanged() SIP_DEPRECATED;
 
   public slots:
 
@@ -1544,6 +1740,10 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     std::unique_ptr<QgsAnnotationManager> mAnnotationManager;
     std::unique_ptr<QgsLayoutManager> mLayoutManager;
 
+    QgsBookmarkManager *mBookmarkManager = nullptr;
+
+    QgsProjectViewSettings *mViewSettings = nullptr;
+
     QgsLayerTree *mRootGroup = nullptr;
 
     QgsLayerTreeRegistryBridge *mLayerTreeRegistryBridge = nullptr;
@@ -1568,6 +1768,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * created based on file name.
      */
     QString mHomePath;
+    mutable QString mCachedHomePath;
+
+    QColor mBackgroundColor;
+    QColor mSelectionColor;
+
     mutable QgsProjectPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable
     bool mAutoTransaction = false;       // transaction grouped editing
     bool mEvaluateDefaultValues = false; // evaluate default values immediately
@@ -1583,6 +1788,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     std::unique_ptr< QTranslator > mTranslator;
 
     bool mIsBeingDeleted = false;
+
+    mutable std::unique_ptr< QgsExpressionContextScope > mProjectScope;
 
     friend class QgsProjectDirtyBlocker;
 
@@ -1656,5 +1863,32 @@ class CORE_EXPORT QgsProjectDirtyBlocker
    \note not available in Python bindings.
  */
 CORE_EXPORT QgsProjectVersion getVersion( QDomDocument const &doc ) SIP_SKIP;
+
+
+
+/// @cond PRIVATE
+#ifndef SIP_RUN
+class GetNamedProjectColor : public QgsScopedExpressionFunction
+{
+  public:
+    GetNamedProjectColor( const QgsProject *project );
+
+    /**
+     * Optimized constructor for GetNamedProjectColor when a list of map is already available
+     * and does not need to be read from a project.
+     */
+    GetNamedProjectColor( const QHash< QString, QColor > &colors );
+
+    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override;
+    QgsScopedExpressionFunction *clone() const override;
+
+  private:
+
+    QHash< QString, QColor > mColors;
+
+};
+
+#endif
+///@endcond
 
 #endif

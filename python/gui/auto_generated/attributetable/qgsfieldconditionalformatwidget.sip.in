@@ -8,7 +8,7 @@
 
 
 
-class QgsFieldConditionalFormatWidget : QWidget
+class QgsFieldConditionalFormatWidget : QgsPanelWidget
 {
 %Docstring
 A widget for customizing conditional formatting options.
@@ -26,50 +26,51 @@ A widget for customizing conditional formatting options.
 Constructor for QgsFieldConditionalFormatWidget.
 %End
 
-    void viewRules();
+ void viewRules() /Deprecated/;
 %Docstring
 Switches the widget to the rules page.
+
+.. deprecated::
+   no longer used, will be removed in QGIS 4.0
 %End
 
     void setLayer( QgsVectorLayer *layer );
 %Docstring
-Sets the vector layer associated with the widget.
-
-:param layer: vector layer
+Sets the vector ``layer`` associated with the widget.
 %End
+
 
     void editStyle( int index, const QgsConditionalStyle &style );
 %Docstring
-Switches the widget to the edit style mode for the specified style.
-
-:param index: index of conditional style to edit
-:param style: initial conditional styling options
+Switches the widget to the edit style mode for the specified style,
+where ``index`` is the index of the conditional style to edit
+and ``style`` is the initial definition of the style.
 %End
 
-    void loadStyle( const QgsConditionalStyle &style );
+ void loadStyle( const QgsConditionalStyle &style ) /Deprecated/;
 %Docstring
 
-:param style: initial conditional styling options
+.. deprecated::
+   no longer used, use QgsEditConditionalFormatRuleWidget.loadStyle instead.
 %End
 
-    void reset();
+ void reset() /Deprecated/;
 %Docstring
 Resets the formatting options to their default state.
+
+.. deprecated::
+   no longer used, will be removed in QGIS 4.0
 %End
 
     void setPresets( const QList<QgsConditionalStyle> &styles );
 %Docstring
-Set the presets that can be used for quick pick
-
-:param styles: A list of styles used as presets
+Sets the preset ``styles`` that can be used for quick pick.
 %End
 
-    QList<QgsConditionalStyle> defaultPresets() const;
+    static QList<QgsConditionalStyle> defaultPresets();
 %Docstring
-The default presets for the widget.  Normally set when the widget is
-created however called setPresets will override the default styles.
-
-:return: List of default presets.
+Returns a list of the default presets. Normally used when the widget is
+created, however calling setPresets() will override the default styles.
 %End
 
   signals:
@@ -78,10 +79,76 @@ created however called setPresets will override the default styles.
 %Docstring
 Emitted when the conditional styling rules are updated.
 
-:param fieldName: name of field whose rules have been modified.
+The ``fieldName`` argument indicates the name of the field whose rules
+have been modified, or an empty ``fieldName`` indicates that a row-based
+rule was updated.
 %End
 
-  public slots:
+};
+
+class QgsEditConditionalFormatRuleWidget : QgsPanelWidget
+{
+%Docstring
+A widget for customizing an individual conditional formatting rule.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsfieldconditionalformatwidget.h"
+%End
+  public:
+
+    explicit QgsEditConditionalFormatRuleWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for :py:class:`QgsFieldConditionalFormatWidget`, with the specified ``parent`` widget.
+%End
+
+    void setLayer( QgsVectorLayer *layer );
+%Docstring
+Sets the vector ``layer`` associated with the widget.
+%End
+
+    void setPresets( const QList<QgsConditionalStyle> &styles );
+%Docstring
+Sets the preset ``styles`` that can be used for quick pick.
+%End
+
+    void loadStyle( const QgsConditionalStyle &style );
+%Docstring
+Sets the widget to match the settings from the specified ``style``.
+
+.. seealso:: :py:func:`currentStyle`
+%End
+
+    QgsConditionalStyle currentStyle() const;
+%Docstring
+Returns the current style defined by the widget.
+
+.. seealso:: :py:func:`loadStyle`
+%End
+
+    void setRule( const QString &rule );
+%Docstring
+Sets the current expression ``rule`` to show in the widget.
+%End
+
+  signals:
+
+    void ruleSaved();
+%Docstring
+Emitted when a user has opted to save the current rule.
+%End
+
+    void ruleDeleted();
+%Docstring
+Emitted when a user has opted to deleted the current rule.
+%End
+
+    void canceled();
+%Docstring
+Emitted when a user has opted to cancel the rule modification.
+%End
 
 };
 

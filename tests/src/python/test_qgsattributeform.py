@@ -28,6 +28,7 @@ from qgis.gui import (
     QgsAttributeForm,
     QgsGui,
     QgsEditorWidgetWrapper,
+    QgsMapCanvas
 )
 
 
@@ -38,7 +39,8 @@ class TestQgsAttributeForm(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        QgsGui.editorWidgetRegistry().initEditors()
+        cls.mCanvas = QgsMapCanvas()
+        QgsGui.editorWidgetRegistry().initEditors(cls.mCanvas)
 
     @classmethod
     def createLayerWithOnePoint(cls, field_type):

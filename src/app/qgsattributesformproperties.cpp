@@ -1186,7 +1186,7 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
 
       QVBoxLayout *mainLayout = new QVBoxLayout();
       QHBoxLayout *qmlLayout = new QHBoxLayout();
-      QFormLayout *layout = new QFormLayout();
+      QVBoxLayout *layout = new QVBoxLayout();
       mainLayout->addLayout( qmlLayout );
       qmlLayout->addLayout( layout );
       dlg.setLayout( mainLayout );
@@ -1299,7 +1299,8 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
         qmlCode->insertPlainText( QStringLiteral( "expression.evaluate(\"%1\")" ).arg( expressionWidget->expression().replace( '"', QLatin1String( "\\\"" ) ) ) );
       } );
 
-      layout->addRow( tr( "Title" ), title );
+      layout->addWidget( new QLabel( tr( "Title" ) ) );
+      layout->addWidget( title );
       QGroupBox *qmlCodeBox = new QGroupBox( tr( "QML Code" ) );
       qmlCodeBox->setLayout( new QGridLayout );
       qmlCodeBox->layout()->addWidget( qmlObjectTemplate );
@@ -1309,7 +1310,7 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
       expressionWidgetBox->layout()->addWidget( expressionWidget );
       expressionWidgetBox->layout()->addWidget( addExpressionButton );
       qmlCodeBox->layout()->addWidget( qmlCode );
-      layout->addRow( qmlCodeBox );
+      layout->addWidget( qmlCodeBox );
       QScrollArea *qmlPreviewBox = new QScrollArea();
       qmlPreviewBox->setLayout( new QGridLayout );
       qmlPreviewBox->setMinimumWidth( 400 );

@@ -42,6 +42,7 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrastershader.h"
 #include "qgsrastertransparency.h"
+#include "qgspalettedrasterrenderer.h"
 
 //qgis unit test includes
 #include <qgsrenderchecker.h>
@@ -82,6 +83,14 @@ class TestQgsRasterLayer : public QObject
     void registry();
     void transparency();
     void multiBandColorRenderer();
+    void multiBandColorRendererNoData();
+    void multiBandColorRendererNoDataColor();
+    void palettedRendererNoData();
+    void palettedRendererNoDataColor();
+    void singleBandGrayRendererNoData();
+    void singleBandGrayRendererNoDataColor();
+    void singleBandPseudoRendererNoData();
+    void singleBandPseudoRendererNoDataColor();
     void setRenderer();
     void regression992(); //test for issue #992 - GeoJP2 images improperly displayed as all black
     void testRefreshRendererIfNeeded();
@@ -221,19 +230,19 @@ void TestQgsRasterLayer::pseudoColor()
   QList<QgsColorRampShader::ColorRampItem> colorRampItems;
   QgsColorRampShader::ColorRampItem firstItem;
   firstItem.value = 0.0;
-  firstItem.color = QColor( "#0000ff" );
+  firstItem.color = QColor( 0, 0, 255 );
   colorRampItems.append( firstItem );
   QgsColorRampShader::ColorRampItem secondItem;
   secondItem.value = 3.0;
-  secondItem.color = QColor( "#00ffff" );
+  secondItem.color = QColor( 0, 255, 255 );
   colorRampItems.append( secondItem );
   QgsColorRampShader::ColorRampItem thirdItem;
   thirdItem.value = 6.0;
-  thirdItem.color = QColor( "#ffff00" );
+  thirdItem.color = QColor( 255, 255, 0 );
   colorRampItems.append( thirdItem );
   QgsColorRampShader::ColorRampItem fourthItem;
   fourthItem.value = 9.0;
-  fourthItem.color = QColor( "#ff0000" );
+  fourthItem.color = QColor( 255, 0, 0 );
   colorRampItems.append( fourthItem );
 
   colorRampShader->setColorRampItemList( colorRampItems );
@@ -705,7 +714,187 @@ void TestQgsRasterLayer::multiBandColorRenderer()
   mMapSettings->setLayers( QList<QgsMapLayer *>() << mPngRasterLayer );
   mMapSettings->setDestinationCrs( mPngRasterLayer->crs() );
   mMapSettings->setExtent( mPngRasterLayer->extent() );
-  QVERIFY( render( "raster_multibandrenderer" ) );
+  QVERIFY( render( QStringLiteral( "raster_multibandrenderer" ) ) );
+}
+
+void TestQgsRasterLayer::multiBandColorRendererNoData()
+{
+  QgsMultiBandColorRenderer *rasterRenderer = new QgsMultiBandColorRenderer( mPngRasterLayer->dataProvider(), 1, 2, 3 );
+  mPngRasterLayer->dataProvider()->setNoDataValue( 3, 255 );
+  mPngRasterLayer->setRenderer( rasterRenderer );
+  mMapSettings->setLayers( QList<QgsMapLayer *>() << mPngRasterLayer );
+  mMapSettings->setDestinationCrs( mPngRasterLayer->crs() );
+  mMapSettings->setExtent( mPngRasterLayer->extent() );
+  QVERIFY( render( QStringLiteral( "raster_multibandrenderer_nodata" ) ) );
+  mPngRasterLayer->dataProvider()->setNoDataValue( 3, -999 );
+}
+
+void TestQgsRasterLayer::multiBandColorRendererNoDataColor()
+{
+  QgsMultiBandColorRenderer *rasterRenderer = new QgsMultiBandColorRenderer( mPngRasterLayer->dataProvider(), 1, 2, 3 );
+  rasterRenderer->setNodataColor( QColor( 255, 0, 255 ) );
+  mPngRasterLayer->dataProvider()->setNoDataValue( 3, 255 );
+  mPngRasterLayer->setRenderer( rasterRenderer );
+  mMapSettings->setLayers( QList<QgsMapLayer *>() << mPngRasterLayer );
+  mMapSettings->setDestinationCrs( mPngRasterLayer->crs() );
+  mMapSettings->setExtent( mPngRasterLayer->extent() );
+  QVERIFY( render( QStringLiteral( "raster_multibandrenderer_nodata_color" ) ) );
+  mPngRasterLayer->dataProvider()->setNoDataValue( 3, -999 );
+}
+
+void TestQgsRasterLayer::palettedRendererNoData()
+{
+  const QString rasterFileName = mTestDataDir + "raster/with_color_table.tif";
+  std::unique_ptr< QgsRasterLayer> rl = qgis::make_unique< QgsRasterLayer >( rasterFileName,
+                                        QStringLiteral( "rl" ) );
+  QVERIFY( rl->isValid() );
+
+  QgsPalettedRasterRenderer *rasterRenderer = new QgsPalettedRasterRenderer( rl->dataProvider(), 1, QList< QgsPalettedRasterRenderer::Class >()
+      << QgsPalettedRasterRenderer::Class( 1, QColor( 0, 255, 0 ), QStringLiteral( "class 2" ) )
+      << QgsPalettedRasterRenderer::Class( 3, QColor( 255, 0, 0 ), QStringLiteral( "class 1" ) ) );
+  rl->dataProvider()->setNoDataValue( 1, 2 );
+  rl->setRenderer( rasterRenderer );
+  mMapSettings->setLayers( QList<QgsMapLayer *>() << rl.get() );
+  mMapSettings->setDestinationCrs( rl->crs() );
+  mMapSettings->setExtent( rl->extent() );
+  QVERIFY( render( QStringLiteral( "raster_palettedrenderer_nodata" ) ) );
+}
+
+void TestQgsRasterLayer::palettedRendererNoDataColor()
+{
+  const QString rasterFileName = mTestDataDir + "raster/with_color_table.tif";
+  std::unique_ptr< QgsRasterLayer> rl = qgis::make_unique< QgsRasterLayer >( rasterFileName,
+                                        QStringLiteral( "rl" ) );
+  QVERIFY( rl->isValid() );
+
+  QgsPalettedRasterRenderer *rasterRenderer = new QgsPalettedRasterRenderer( rl->dataProvider(), 1, QList< QgsPalettedRasterRenderer::Class >()
+      << QgsPalettedRasterRenderer::Class( 1, QColor( 0, 255, 0 ), QStringLiteral( "class 2" ) )
+      << QgsPalettedRasterRenderer::Class( 3, QColor( 255, 0, 0 ), QStringLiteral( "class 1" ) ) );
+  rasterRenderer->setNodataColor( QColor( 255, 0, 255 ) );
+  rl->dataProvider()->setNoDataValue( 1, 2 );
+  rl->setRenderer( rasterRenderer );
+  mMapSettings->setLayers( QList<QgsMapLayer *>() << rl.get() );
+  mMapSettings->setDestinationCrs( rl->crs() );
+  mMapSettings->setExtent( rl->extent() );
+  QVERIFY( render( QStringLiteral( "raster_palettedrenderer_nodata_color" ) ) );
+}
+
+void TestQgsRasterLayer::singleBandGrayRendererNoData()
+{
+  const QString rasterFileName = mTestDataDir + "landsat.tif";
+  std::unique_ptr< QgsRasterLayer> rl = qgis::make_unique< QgsRasterLayer >( rasterFileName,
+                                        QStringLiteral( "rl" ) );
+  QVERIFY( rl->isValid() );
+
+  QgsSingleBandGrayRenderer *rasterRenderer = new QgsSingleBandGrayRenderer( rl->dataProvider(), 1 );
+  rl->dataProvider()->setNoDataValue( 1, 126 );
+  rl->setRenderer( rasterRenderer );
+  mMapSettings->setLayers( QList<QgsMapLayer *>() << rl.get() );
+  mMapSettings->setDestinationCrs( rl->crs() );
+  mMapSettings->setExtent( rl->extent() );
+  QVERIFY( render( QStringLiteral( "raster_singlebandgrey_nodata" ) ) );
+}
+
+void TestQgsRasterLayer::singleBandGrayRendererNoDataColor()
+{
+  const QString rasterFileName = mTestDataDir + "landsat.tif";
+  std::unique_ptr< QgsRasterLayer> rl = qgis::make_unique< QgsRasterLayer >( rasterFileName,
+                                        QStringLiteral( "rl" ) );
+  QVERIFY( rl->isValid() );
+
+  QgsSingleBandGrayRenderer *rasterRenderer = new QgsSingleBandGrayRenderer( rl->dataProvider(), 1 );
+  rl->dataProvider()->setNoDataValue( 1, 126 );
+  rasterRenderer->setNodataColor( QColor( 255, 0, 255 ) );
+  rl->setRenderer( rasterRenderer );
+  mMapSettings->setLayers( QList<QgsMapLayer *>() << rl.get() );
+  mMapSettings->setDestinationCrs( rl->crs() );
+  mMapSettings->setExtent( rl->extent() );
+  QVERIFY( render( QStringLiteral( "raster_singlebandgrey_nodata_color" ) ) );
+}
+
+void TestQgsRasterLayer::singleBandPseudoRendererNoData()
+{
+  const QString rasterFileName = mTestDataDir + "landsat.tif";
+  std::unique_ptr< QgsRasterLayer> rl = qgis::make_unique< QgsRasterLayer >( rasterFileName,
+                                        QStringLiteral( "rl" ) );
+  QVERIFY( rl->isValid() );
+
+  QgsRasterShader *rasterShader = new QgsRasterShader();
+  QgsColorRampShader *colorRampShader = new QgsColorRampShader();
+  colorRampShader->setColorRampType( QgsColorRampShader::Interpolated );
+
+  //items to imitate old pseudo color renderer
+  QList<QgsColorRampShader::ColorRampItem> colorRampItems;
+  QgsColorRampShader::ColorRampItem firstItem;
+  firstItem.value = 0.0;
+  firstItem.color = QColor( 0, 0, 255 );
+  colorRampItems.append( firstItem );
+  QgsColorRampShader::ColorRampItem secondItem;
+  secondItem.value = 3.0;
+  secondItem.color = QColor( 0, 255, 255 );
+  colorRampItems.append( secondItem );
+  QgsColorRampShader::ColorRampItem thirdItem;
+  thirdItem.value = 6.0;
+  thirdItem.color = QColor( 255, 255, 0 );
+  colorRampItems.append( thirdItem );
+  QgsColorRampShader::ColorRampItem fourthItem;
+  fourthItem.value = 9.0;
+  fourthItem.color = QColor( 255, 0, 0 );
+  colorRampItems.append( fourthItem );
+
+  colorRampShader->setColorRampItemList( colorRampItems );
+  rasterShader->setRasterShaderFunction( colorRampShader );
+
+  QgsSingleBandPseudoColorRenderer *rasterRenderer = new QgsSingleBandPseudoColorRenderer( rl->dataProvider(), 1, rasterShader );
+  rl->dataProvider()->setNoDataValue( 1, 126 );
+  rl->setRenderer( rasterRenderer );
+  mMapSettings->setLayers( QList<QgsMapLayer *>() << rl.get() );
+  mMapSettings->setDestinationCrs( rl->crs() );
+  mMapSettings->setExtent( rl->extent() );
+  QVERIFY( render( QStringLiteral( "raster_singlebandpseudo_nodata" ) ) );
+}
+
+void TestQgsRasterLayer::singleBandPseudoRendererNoDataColor()
+{
+  const QString rasterFileName = mTestDataDir + "landsat.tif";
+  std::unique_ptr< QgsRasterLayer> rl = qgis::make_unique< QgsRasterLayer >( rasterFileName,
+                                        QStringLiteral( "rl" ) );
+  QVERIFY( rl->isValid() );
+
+  QgsRasterShader *rasterShader = new QgsRasterShader();
+  QgsColorRampShader *colorRampShader = new QgsColorRampShader();
+  colorRampShader->setColorRampType( QgsColorRampShader::Interpolated );
+
+  //items to imitate old pseudo color renderer
+  QList<QgsColorRampShader::ColorRampItem> colorRampItems;
+  QgsColorRampShader::ColorRampItem firstItem;
+  firstItem.value = 0.0;
+  firstItem.color = QColor( 0, 0, 255 );
+  colorRampItems.append( firstItem );
+  QgsColorRampShader::ColorRampItem secondItem;
+  secondItem.value = 3.0;
+  secondItem.color = QColor( 0, 255, 255 );
+  colorRampItems.append( secondItem );
+  QgsColorRampShader::ColorRampItem thirdItem;
+  thirdItem.value = 6.0;
+  thirdItem.color = QColor( 255, 255, 0 );
+  colorRampItems.append( thirdItem );
+  QgsColorRampShader::ColorRampItem fourthItem;
+  fourthItem.value = 9.0;
+  fourthItem.color = QColor( 255, 0, 0 );
+  colorRampItems.append( fourthItem );
+
+  colorRampShader->setColorRampItemList( colorRampItems );
+  rasterShader->setRasterShaderFunction( colorRampShader );
+
+  QgsSingleBandPseudoColorRenderer *rasterRenderer = new QgsSingleBandPseudoColorRenderer( rl->dataProvider(), 1, rasterShader );
+  rl->dataProvider()->setNoDataValue( 1, 126 );
+  rasterRenderer->setNodataColor( QColor( 255, 0, 255 ) );
+  rl->setRenderer( rasterRenderer );
+  mMapSettings->setLayers( QList<QgsMapLayer *>() << rl.get() );
+  mMapSettings->setDestinationCrs( rl->crs() );
+  mMapSettings->setExtent( rl->extent() );
+  QVERIFY( render( QStringLiteral( "raster_singlebandpseudo_nodata_color" ) ) );
 }
 
 void TestQgsRasterLayer::setRenderer()

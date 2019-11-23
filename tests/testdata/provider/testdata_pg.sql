@@ -617,3 +617,57 @@ CREATE OR REPLACE VIEW qgis_test.b21839_pk_unicity_view AS
     b21839_pk_unicity.geom
    FROM qgis_test.b21839_pk_unicity;
 
+
+
+---------------------------------------------
+--
+-- Table and views for tests on QgsAbstractProviderConnection
+--
+
+CREATE TABLE qgis_test.geometries_table (name VARCHAR, geom GEOMETRY);
+
+INSERT INTO qgis_test.geometries_table VALUES
+  ('Point', 'POINT(0 0)'),
+  ('Point4326', 'SRID=4326;POINT(7 45)'),
+  ('Point3857', 'SRID=3857;POINT(100 100)'),
+  ('Linestring', 'LINESTRING(0 0, 1 1, 2 1, 2 2)'),
+  ('Polygon', 'POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))'),
+  ('PolygonWithHole', 'POLYGON((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1))'),
+  ('Collection', 'GEOMETRYCOLLECTION(POINT(2 0),POLYGON((0 0, 1 0, 1 1, 0 1, 0 0)))');
+
+CREATE VIEW qgis_test.geometries_view AS (SELECT * FROM qgis_test.geometries_table);
+
+CREATE TABLE qgis_test.geometryless_table (name VARCHAR, value INTEGER);
+
+---------------------------------------------
+--
+-- View with separate bbox field
+--
+
+CREATE VIEW qgis_test.some_poly_data_shift_bbox AS
+ SELECT pk,
+        geom,
+        ST_Translate(
+          ST_Envelope(geom),
+          ST_XMax(ST_Envelope(geom)) - ST_XMin(ST_Envelope(geom)),
+          0.0
+        ) AS shiftbox
+   FROM qgis_test.some_poly_data;
+
+
+---------------------------------------------
+--
+-- View with tid PK field
+--
+
+CREATE TABLE qgis_test.b31799_test_table AS (SELECT (ST_DumpPoints(ST_GeneratePoints(ST_Expand('SRID=4326;POINT(0 0)'::geometry,90),10))).geom, random());
+CREATE VIEW qgis_test.b31799_test_view_ctid AS (SELECT ctid, geom, random() FROM qgis_test.b31799_test_table, pg_sleep(0.1));
+
+---------------------------------------------
+--
+-- Geometryless view
+-- See https://github.com/qgis/QGIS/issues/32523
+--
+CREATE VIEW qgis_test.b32523 AS
+  SELECT pk, random()
+  FROM qgis_test.some_poly_data;

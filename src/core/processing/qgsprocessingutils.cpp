@@ -32,6 +32,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsmeshlayer.h"
 #include "qgsreferencedgeometry.h"
+#include "qgsrasterfilewriter.h"
 
 QList<QgsRasterLayer *> QgsProcessingUtils::compatibleRasterLayers( QgsProject *project, bool sort )
 {
@@ -192,28 +193,6 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
   return nullptr;
 }
 
-///@cond PRIVATE
-class ProjectionSettingRestorer
-{
-  public:
-
-    ProjectionSettingRestorer()
-    {
-      QgsSettings settings;
-      previousSetting = settings.value( QStringLiteral( "/Projections/defaultBehavior" ) ).toString();
-      settings.setValue( QStringLiteral( "/Projections/defaultBehavior" ), QStringLiteral( "useProject" ) );
-    }
-
-    ~ProjectionSettingRestorer()
-    {
-      QgsSettings settings;
-      settings.setValue( QStringLiteral( "/Projections/defaultBehavior" ), previousSetting );
-    }
-
-    QString previousSetting;
-};
-///@endcond PRIVATE
-
 QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, const QgsCoordinateTransformContext &transformContext, LayerHint typeHint )
 {
   QStringList components = string.split( '|' );
@@ -228,10 +207,6 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
   else
     return nullptr;
 
-  // TODO - remove when there is a cleaner way to block the unknown projection dialog!
-  ProjectionSettingRestorer restorer;
-  ( void )restorer; // no warnings
-
   QString name = fi.baseName();
 
   // brute force attempt to load a matching layer
@@ -239,6 +214,7 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
   {
     QgsVectorLayer::LayerOptions options { transformContext };
     options.loadDefaultStyle = false;
+    options.skipCrsValidation = true;
     std::unique_ptr< QgsVectorLayer > layer = qgis::make_unique<QgsVectorLayer>( string, name, QStringLiteral( "ogr" ), options );
     if ( layer->isValid() )
     {
@@ -249,6 +225,7 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
   {
     QgsRasterLayer::LayerOptions rasterOptions;
     rasterOptions.loadDefaultStyle = false;
+    rasterOptions.skipCrsValidation = true;
     std::unique_ptr< QgsRasterLayer > rasterLayer( new QgsRasterLayer( string, name, QStringLiteral( "gdal" ), rasterOptions ) );
     if ( rasterLayer->isValid() )
     {
@@ -258,6 +235,7 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
   if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::Mesh )
   {
     QgsMeshLayer::LayerOptions meshOptions;
+    meshOptions.skipCrsValidation = true;
     std::unique_ptr< QgsMeshLayer > meshLayer( new QgsMeshLayer( string, name, QStringLiteral( "mdal" ), meshOptions ) );
     if ( meshLayer->isValid() )
     {
@@ -778,7 +756,7 @@ QString QgsProcessingUtils::formatHelpMapAsHtml( const QVariantMap &map, const Q
   return s;
 }
 
-QString QgsProcessingUtils::convertToCompatibleFormat( const QgsVectorLayer *vl, bool selectedFeaturesOnly, const QString &baseName, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QString convertToCompatibleFormatInternal( const QgsVectorLayer *vl, bool selectedFeaturesOnly, const QString &baseName, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingContext &context, QgsProcessingFeedback *feedback, QString *layerName )
 {
   bool requiresTranslation = false;
 
@@ -795,6 +773,10 @@ QString QgsProcessingUtils::convertToCompatibleFormat( const QgsVectorLayer *vl,
   // a purely QGIS concept.
   requiresTranslation = requiresTranslation || !vl->subsetString().isEmpty();
 
+  // if the layer opened using GDAL's virtual I/O mechanism (/vsizip/, etc.), then
+  // we HAVE to convert as other tools may not work with it
+  requiresTranslation = requiresTranslation || vl->source().startsWith( QLatin1String( "/vsi" ) );
+
   // Check if layer is a disk based format and if so if the layer's path has a compatible filename suffix
   QString diskPath;
   if ( !requiresTranslation )
@@ -808,8 +790,17 @@ QString QgsProcessingUtils::convertToCompatibleFormat( const QgsVectorLayer *vl,
 
       // if the layer name doesn't match the filename, we need to convert the layer. This method can only return
       // a filename, and cannot handle layernames as well as file paths
-      const QString layerName = parts.value( QStringLiteral( "layerName" ) ).toString();
-      requiresTranslation = requiresTranslation || ( !layerName.isEmpty() && layerName != fi.baseName() );
+      const QString srcLayerName = parts.value( QStringLiteral( "layerName" ) ).toString();
+      if ( layerName )
+      {
+        // differing layer names are acceptable
+        *layerName = srcLayerName;
+      }
+      else
+      {
+        // differing layer names are NOT acceptable
+        requiresTranslation = requiresTranslation || ( !srcLayerName.isEmpty() && srcLayerName != fi.baseName() );
+      }
     }
     else
     {
@@ -842,6 +833,17 @@ QString QgsProcessingUtils::convertToCompatibleFormat( const QgsVectorLayer *vl,
   {
     return diskPath;
   }
+}
+
+QString QgsProcessingUtils::convertToCompatibleFormat( const QgsVectorLayer *vl, bool selectedFeaturesOnly, const QString &baseName, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  return convertToCompatibleFormatInternal( vl, selectedFeaturesOnly, baseName, compatibleFormats, preferredFormat, context, feedback, nullptr );
+}
+
+QString QgsProcessingUtils::convertToCompatibleFormatAndLayerName( const QgsVectorLayer *layer, bool selectedFeaturesOnly, const QString &baseName, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingContext &context, QgsProcessingFeedback *feedback, QString &layerName )
+{
+  layerName.clear();
+  return convertToCompatibleFormatInternal( layer, selectedFeaturesOnly, baseName, compatibleFormats, preferredFormat, context, feedback, &layerName );
 }
 
 QgsFields QgsProcessingUtils::combineFields( const QgsFields &fieldsA, const QgsFields &fieldsB, const QString &fieldsBPrefix )
@@ -909,6 +911,24 @@ QgsFields QgsProcessingUtils::indicesToFields( const QList<int> &indices, const 
   for ( int i : indices )
     fieldsSubset.append( fields.at( i ) );
   return fieldsSubset;
+}
+
+QString QgsProcessingUtils::defaultVectorExtension()
+{
+  QgsSettings settings;
+  const int setting = settings.value( QStringLiteral( "Processing/Configuration/DefaultOutputVectorLayerExt" ), -1 ).toInt();
+  if ( setting == -1 )
+    return QStringLiteral( "gpkg" );
+  return QgsVectorFileWriter::supportedFormatExtensions().value( setting, QStringLiteral( "gpkg" ) );
+}
+
+QString QgsProcessingUtils::defaultRasterExtension()
+{
+  QgsSettings settings;
+  const int setting = settings.value( QStringLiteral( "Processing/Configuration/DefaultOutputRasterLayerExt" ), -1 ).toInt();
+  if ( setting == -1 )
+    return QStringLiteral( "tif" );
+  return QgsRasterFileWriter::supportedFormatExtensions().value( setting, QStringLiteral( "tif" ) );
 }
 
 //
@@ -1017,6 +1037,11 @@ QgsRectangle QgsProcessingFeatureSource::sourceExtent() const
 QgsFeatureIds QgsProcessingFeatureSource::allFeatureIds() const
 {
   return mSource->allFeatureIds();
+}
+
+QgsFeatureSource::SpatialIndexPresence QgsProcessingFeatureSource::hasSpatialIndex() const
+{
+  return mSource->hasSpatialIndex();
 }
 
 QgsExpressionContextScope *QgsProcessingFeatureSource::createExpressionContextScope() const

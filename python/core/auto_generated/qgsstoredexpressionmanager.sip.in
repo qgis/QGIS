@@ -1,0 +1,138 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsstoredexpressionmanager.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+%ModuleHeaderCode
+#include <qgsstoredexpressionmanager.h>
+%End
+
+
+struct QgsStoredExpression
+{
+
+  enum Category
+  {
+    FilterExpression,
+    DefaultValueExpression,
+    All
+  };
+
+
+  QString id;
+  QString name;
+  QString expression;
+  Category tag;
+};
+
+class QgsStoredExpressionManager : QObject
+{
+%Docstring
+Manages stored expressions regarding creation, modification and storing in the project
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsstoredexpressionmanager.h"
+%End
+  public:
+
+    QgsStoredExpressionManager();
+%Docstring
+Constructor for QgsStoredExpressionManager
+%End
+
+    QString addStoredExpression( const QString &name, const QString &expression, const QgsStoredExpression::Category &tag =  QgsStoredExpression::Category::FilterExpression );
+%Docstring
+Adds an expression to the list
+
+:param name: optional name of the expression
+:param expression: expression text
+:param tag: category of the expression use case - default FilterExpression
+
+:return: generated id
+%End
+
+    void removeStoredExpression( const QString &id );
+%Docstring
+Removes an expression to the list
+
+:param id: id of the expression as identification
+%End
+
+    void updateStoredExpression( const QString &id, const QString &name, const QString &expression, const  QgsStoredExpression::Category &tag );
+%Docstring
+Updates an expression by ``id``.
+
+:param id: id of the expression as identification
+:param name: new name of the expression
+:param expression: new expression text
+:param tag: new category of the expression use case
+%End
+
+    void addStoredExpressions( const QList< QgsStoredExpression > &storedExpressions );
+%Docstring
+Appends a list of expressions to the existing list
+
+:param storedExpressions: list of expressions and the optional name
+%End
+
+    QList< QgsStoredExpression > storedExpressions( const  QgsStoredExpression::Category &tag = QgsStoredExpression::Category::All );
+%Docstring
+Returns the list of named expressions
+
+:param tag: category of the expression use case - default all
+%End
+
+
+    QgsStoredExpression storedExpression( const QString &id ) const;
+%Docstring
+Returns an expression according to the ``id``
+
+:param id: id of the expression as identification
+%End
+
+    QgsStoredExpression findStoredExpressionByExpression( const QString &expression, const  QgsStoredExpression::Category &tag = QgsStoredExpression::Category::All ) const;
+%Docstring
+Returns an expression according to the ``expression`` text
+
+:param expression: id of the expression as identification
+:param tag: category of the expression use case - default all
+%End
+
+    void clearStoredExpressions();
+%Docstring
+Clears list of stored expressions
+%End
+
+    bool writeXml( QDomNode &layerNode ) const;
+%Docstring
+Writes the stored expressions out in XML format
+%End
+
+    bool readXml( const QDomNode &layerNode );
+%Docstring
+Reads the  stored expressions in in XML format
+%End
+
+  signals:
+
+  public slots:
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsstoredexpressionmanager.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

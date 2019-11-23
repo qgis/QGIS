@@ -7,6 +7,7 @@ SET (util_SRCS)
 # the UI file won't be wrapped!
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/external
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
   ${CMAKE_SOURCE_DIR}/tests/core #for render checker class
   ${CMAKE_SOURCE_DIR}/src/3d
   ${CMAKE_SOURCE_DIR}/src/3d/chunks
@@ -22,6 +23,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/mesh
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
   ${CMAKE_SOURCE_DIR}/src/test
   ${CMAKE_SOURCE_DIR}/src/native
@@ -51,7 +53,6 @@ MACRO (ADD_QGIS_TEST testname testsrc)
   SET(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
   SET(qgis_${testname}_MOC_CPPS ${testsrc})
   ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS})
-  SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES AUTOMOC TRUE)
   SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES AUTORCC TRUE)
   TARGET_LINK_LIBRARIES(qgis_${testname}
     ${Qt5Xml_LIBRARIES}

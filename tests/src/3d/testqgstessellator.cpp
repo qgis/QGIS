@@ -101,6 +101,7 @@ bool checkTriangleOutput( const QVector<float> &data, bool withNormals, const QL
     TriangleCoords out( dataRaw, withNormals );
     if ( exp != out )
     {
+      qDebug() << i;
       qDebug() << "expected:";
       exp.dump();
       qDebug() << "got:";
@@ -135,6 +136,8 @@ class TestQgsTessellator : public QObject
     void testIssue17745();
     void testCrashSelfIntersection();
     void testCrashEmptyPolygon();
+    void testBoundsScaling();
+    void testNoZ();
 
   private:
 };
@@ -346,6 +349,41 @@ void TestQgsTessellator::testCrashEmptyPolygon()
   QVERIFY( resWktRead );
 
   t.addPolygon( p, 0 );  // must not crash - that's all we test here
+}
+
+void TestQgsTessellator::testBoundsScaling()
+{
+  QgsPolygon polygon;
+  polygon.fromWkt( "POLYGON((1 1, 1.00000001 1, 1.00000001 1.00000001, 1 1.0000000001, 1 1))" );
+
+  QList<TriangleCoords> tc;
+  tc << TriangleCoords( QVector3D( 0, 1e-10f, 0 ), QVector3D( 1e-08f, 0, 0 ), QVector3D( 1e-08f, 1e-08f, 0 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 0, 1 ) );
+  tc << TriangleCoords( QVector3D( 0, 1e-10f, 0 ), QVector3D( 0, 0, 0 ), QVector3D( 1e-08f, 0, 0 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 0, 1 ) );
+
+  // without using bounds -- numerically unstable, expect no result
+  QgsTessellator t( 0, 0, true );
+  t.addPolygon( polygon, 0 );
+  QCOMPARE( t.data().size(), 0 );
+
+  // using bounds scaling, expect good result
+  QgsTessellator t2( polygon.boundingBox(), true );
+  t2.addPolygon( polygon, 0 );
+  QVERIFY( checkTriangleOutput( t2.data(), true, tc ) );
+}
+
+void TestQgsTessellator::testNoZ()
+{
+  // test tessellation with no z support
+  QgsPolygon polygonZ;
+  polygonZ.fromWkt( "POLYGONZ((1 1 1, 2 1 1, 3 2 1, 1 2 1, 1 1 1))" );
+
+  QList<TriangleCoords> tc;
+  tc << TriangleCoords( QVector3D( 0, 1, 0 ), QVector3D( 1, 0, 0 ), QVector3D( 2, 1, 0 ) );
+  tc << TriangleCoords( QVector3D( 0, 1, 0 ), QVector3D( 0, 0, 0 ), QVector3D( 1, 0, 0 ) );
+
+  QgsTessellator t( polygonZ.boundingBox(), false, false, false, true );
+  t.addPolygon( polygonZ, 0 );
+  QVERIFY( checkTriangleOutput( t.data(), false, tc ) );
 }
 
 

@@ -23,6 +23,7 @@
 #include "qgisapp.h"
 #include "qgsvectorlayerutils.h"
 #include "qgsmapmouseevent.h"
+#include "qgspolygon.h"
 
 #include <limits>
 
@@ -88,7 +89,7 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
     vlayer->beginEditCommand( tr( "Ring added and filled" ) );
 
-    QVector< QgsPointXY > pointList = points();
+    QgsPointSequence pointList = pointsZM();
 
     QgsGeometry::OperationResult addRingReturnCode = vlayer->addRing( pointList, &fid );
 
@@ -127,7 +128,10 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       return;
     }
 
-    g = QgsGeometry::fromPolygonXY( QgsPolygonXY() << pointList );
+    QgsLineString ext( pointList );
+    std::unique_ptr< QgsPolygon > polygon = qgis::make_unique< QgsPolygon >( );
+    polygon->setExteriorRing( ext.clone() );
+    g = QgsGeometry( std::move( polygon ) );
   }
   else
   {

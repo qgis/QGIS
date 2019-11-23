@@ -25,6 +25,7 @@
 #include "qgsunittypes.h"
 #include "qgsapplication.h"
 #include "qgspainteffect.h"
+#include "qgssymbollayerreference.h"
 #include <QSharedData>
 #include <QPainter>
 
@@ -197,6 +198,41 @@ class QgsTextShadowSettingsPrivate : public QSharedData
 };
 
 
+class QgsTextMaskSettingsPrivate : public QSharedData
+{
+  public:
+
+    QgsTextMaskSettingsPrivate()
+    {
+
+    }
+
+    QgsTextMaskSettingsPrivate( const QgsTextMaskSettingsPrivate &other )
+      : QSharedData( other )
+      , enabled( other.enabled )
+      , type( other.type )
+      , size( other.size )
+      , sizeUnit( other.sizeUnit )
+      , sizeMapUnitScale( other.sizeMapUnitScale )
+      , joinStyle( other.joinStyle )
+      , opacity( other.opacity )
+      , paintEffect( other.paintEffect ? other.paintEffect->clone() : nullptr )
+      , maskedSymbolLayers( other.maskedSymbolLayers )
+    {
+    }
+
+    bool enabled = false;
+    QgsTextMaskSettings::MaskType type = QgsTextMaskSettings::MaskBuffer;
+    double size = 1.5;
+    QgsUnitTypes::RenderUnit sizeUnit = QgsUnitTypes::RenderMillimeters;
+    QgsMapUnitScale sizeMapUnitScale;
+    Qt::PenJoinStyle joinStyle = Qt::RoundJoin;
+    double opacity = 1.0;
+    std::unique_ptr< QgsPaintEffect > paintEffect;
+    QgsSymbolLayerReferenceList maskedSymbolLayers;
+};
+
+
 class QgsTextSettingsPrivate : public QSharedData
 {
   public:
@@ -217,7 +253,9 @@ class QgsTextSettingsPrivate : public QSharedData
       , opacity( other.opacity )
       , blendMode( other.blendMode )
       , multilineHeight( other.multilineHeight )
+      , orientation( other.orientation )
       , previewBackgroundColor( other.previewBackgroundColor )
+      , mDataDefinedProperties( other.mDataDefinedProperties )
     {
     }
 
@@ -230,7 +268,12 @@ class QgsTextSettingsPrivate : public QSharedData
     double opacity = 1.0;
     QPainter::CompositionMode blendMode = QPainter::CompositionMode_SourceOver;
     double multilineHeight = 1.0 ; //0.0 to 10.0, leading between lines as multiplyer of line height
+    QgsTextFormat::TextOrientation orientation = QgsTextFormat::HorizontalOrientation;
     QColor previewBackgroundColor = Qt::white;
+
+    //! Property collection for data defined settings
+    QgsPropertyCollection mDataDefinedProperties;
+
 
 };
 

@@ -44,12 +44,24 @@ relevant symbology elements to render them.
     enum Property
     {
       MinimumCalloutLength,
+      OffsetFromAnchor,
+      OffsetFromLabel,
+      DrawCalloutToAllParts,
+      AnchorPointPosition,
     };
 
     enum DrawOrder
     {
       OrderBelowAllLabels,
       OrderBelowIndividualLabels,
+    };
+
+    enum AnchorPoint
+    {
+      PoleOfInaccessibility,
+      PointOnExterior,
+      PointOnSurface,
+      Centroid,
     };
 
     QgsCallout();
@@ -156,7 +168,12 @@ Returns the desired drawing order (stacking) to use while rendering this callout
 The default order is QgsCallout.OrderBelowIndividualLabels.
 %End
 
-    void render( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor );
+    struct QgsCalloutContext
+    {
+      bool allFeaturePartsLabeled;
+    };
+
+    void render( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext );
 %Docstring
 Renders the callout onto the specified render ``context``.
 
@@ -171,6 +188,9 @@ E.g. a subclass may prefer to attach to the centroid of the ``anchor``, while an
 prefer to attach to the closest point on ``anchor`` instead.
 
 Both ``rect`` and ``anchor`` must be specified in painter coordinates (i.e. pixels).
+
+The ``calloutContext`` argument is used to specify additional contextual information about
+how a callout is being rendered.
 
 .. warning::
 
@@ -216,9 +236,45 @@ Any existing properties will be discarded.
 Returns the definitions for data defined properties available for use in callouts.
 %End
 
+    AnchorPoint anchorPoint() const;
+%Docstring
+Returns the feature's anchor point position.
+
+.. seealso:: :py:func:`setAnchorPoint`
+%End
+
+    void setAnchorPoint( AnchorPoint anchor );
+%Docstring
+Sets the feature's ``anchor`` point position.
+
+.. seealso:: :py:func:`anchorPoint`
+%End
+
+    static QString encodeAnchorPoint( AnchorPoint anchor );
+%Docstring
+Encodes an ``anchor`` point to its string representation.
+
+:return: encoded string
+
+.. seealso:: :py:func:`decodeAnchorPoint`
+%End
+
+    static QgsCallout::AnchorPoint decodeAnchorPoint( const QString &name, bool *ok = 0 );
+%Docstring
+Attempts to decode a string representation of an anchor point name to the corresponding
+anchor point.
+
+:param name: encoded anchor point name
+:param ok: if specified, will be set to ``True`` if the anchor point was successfully decoded
+
+:return: decoded name
+
+.. seealso:: :py:func:`encodeAnchorPoint`
+%End
+
   protected:
 
-    virtual void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor ) = 0;
+    virtual void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext ) = 0;
 %Docstring
 Performs the actual rendering of the callout implementation onto the specified render ``context``.
 
@@ -233,6 +289,9 @@ E.g. a subclass may prefer to attach to the centroid of the ``anchor``, while an
 prefer to attach to the closest point on ``anchor`` instead.
 
 Both ``rect`` and ``anchor`` are specified in painter coordinates (i.e. pixels).
+
+The ``calloutContext`` argument is used to specify additional contextual information about
+how a callout is being rendered.
 %End
 
 };
@@ -351,8 +410,139 @@ Returns the map unit scale for the minimum callout length.
 .. seealso:: :py:func:`minimumLength`
 %End
 
+
+    double offsetFromAnchor() const;
+%Docstring
+Returns the offset distance from the anchor point at which to start the line. Units are specified through offsetFromAnchorUnit().
+
+.. seealso:: :py:func:`setOffsetFromAnchor`
+
+.. seealso:: :py:func:`offsetFromAnchorUnit`
+%End
+
+    void setOffsetFromAnchor( double distance );
+%Docstring
+Sets the offset ``distance`` from the anchor point at which to start the line. Units are specified through setOffsetFromAnchorUnit().
+
+.. seealso:: :py:func:`offsetFromAnchor`
+
+.. seealso:: :py:func:`setOffsetFromAnchorUnit`
+%End
+
+    void setOffsetFromAnchorUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the offset from anchor distance.
+
+.. seealso:: :py:func:`offsetFromAnchor`
+
+.. seealso:: :py:func:`setOffsetFromAnchor`
+%End
+
+    QgsUnitTypes::RenderUnit offsetFromAnchorUnit() const;
+%Docstring
+Returns the units for the offset from anchor point.
+
+.. seealso:: :py:func:`setOffsetFromAnchorUnit`
+
+.. seealso:: :py:func:`offsetFromAnchor`
+%End
+
+    void setOffsetFromAnchorMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the offset from anchor.
+
+.. seealso:: :py:func:`offsetFromAnchorMapUnitScale`
+
+.. seealso:: :py:func:`setOffsetFromAnchorUnit`
+
+.. seealso:: :py:func:`setOffsetFromAnchor`
+%End
+
+    const QgsMapUnitScale &offsetFromAnchorMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the offset from anchor.
+
+.. seealso:: :py:func:`setOffsetFromAnchorMapUnitScale`
+
+.. seealso:: :py:func:`offsetFromAnchorUnit`
+
+.. seealso:: :py:func:`offsetFromAnchor`
+%End
+
+    double offsetFromLabel() const;
+%Docstring
+Returns the offset distance from label area at which to end the line. Units are specified through offsetFromLabelUnit().
+
+.. seealso:: :py:func:`setOffsetFromLabel`
+
+.. seealso:: :py:func:`offsetFromLabelUnit`
+%End
+
+    void setOffsetFromLabel( double distance );
+%Docstring
+Sets the offset ``distance`` from label area at which to end the line. Units are specified through setOffsetFromLabelUnit().
+
+.. seealso:: :py:func:`offsetFromLabel`
+
+.. seealso:: :py:func:`setOffsetFromLabelUnit`
+%End
+
+    void setOffsetFromLabelUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the offset from label area distance.
+
+.. seealso:: :py:func:`offsetFromLabel`
+
+.. seealso:: :py:func:`setOffsetFromLabel`
+%End
+
+    QgsUnitTypes::RenderUnit offsetFromLabelUnit() const;
+%Docstring
+Returns the units for the offset from label area.
+
+.. seealso:: :py:func:`setOffsetFromLabelUnit`
+
+.. seealso:: :py:func:`offsetFromLabel`
+%End
+
+    void setOffsetFromLabelMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the offset from label area.
+
+.. seealso:: :py:func:`offsetFromLabelMapUnitScale`
+
+.. seealso:: :py:func:`setOffsetFromLabelUnit`
+
+.. seealso:: :py:func:`setOffsetFromLabel`
+%End
+
+    const QgsMapUnitScale &offsetFromLabelMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the minimum callout length.
+
+.. seealso:: :py:func:`setOffsetFromLabelMapUnitScale`
+
+.. seealso:: :py:func:`offsetFromLabelUnit`
+
+.. seealso:: :py:func:`offsetFromLabel`
+%End
+
+    bool drawCalloutToAllParts() const;
+%Docstring
+Returns ``True`` if callout lines should be drawn to all feature parts.
+
+.. seealso:: :py:func:`setDrawCalloutToAllParts`
+%End
+
+    void setDrawCalloutToAllParts( bool drawToAllParts );
+%Docstring
+Sets whether callout lines should be drawn to all feature parts.
+
+.. seealso:: :py:func:`drawCalloutToAllParts`
+%End
+
   protected:
-    virtual void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor );
+    virtual void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext );
 
 
   private:
@@ -390,7 +580,7 @@ QgsManhattanLineCallout.properties() ).
 
 
   protected:
-    virtual void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor );
+    virtual void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext );
 
 
   private:

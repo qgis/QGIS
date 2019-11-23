@@ -120,7 +120,7 @@ and ``destinationTransformId`` transforms.
       QList< QgsDatumTransform::SingleOperationDetails > operationDetails;
     };
 
-    static QList< QgsDatumTransform::TransformDetails > operations( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination );
+    static QList< QgsDatumTransform::TransformDetails > operations( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, bool includeSuperseded = false );
 %Docstring
 Returns a list of coordinate operations available for transforming
 coordinates from the ``source`` to ``destination`` CRS.
@@ -129,8 +129,11 @@ This list is sorted in order of preference, with the most preferable
 operation listed first.
 
 Not all operations may be available for use. Check QgsDatumTransform.TransformDetails.isAvailable
-first. Operations may require grid transformation files which are not available on the local
+first. Operations may require grid shift files which are not available on the local
 install.
+
+If ``includeSuperseded`` is ``True``, superseded (but not deprecated) transforms will be included
+in the results. This requires Proj >= 6.2.
 
 .. note::
 
@@ -148,7 +151,8 @@ Returns a list of datum transformations which are available for the given ``sour
 
 .. seealso:: :py:func:`datumTransformInfo`
 
-.. deprecated:: Not used for builds based on Proj >= 6.0
+.. deprecated::
+   Not used for builds based on Proj >= 6.0
 %End
 
  static QString datumTransformToProj( int datumTransformId ) /Deprecated/;
@@ -161,7 +165,8 @@ Returns a proj string representing the specified ``datumTransformId`` datum tran
 
 .. seealso:: :py:func:`projStringToDatumTransformId`
 
-.. deprecated:: Not used for builds based on Proj >= 6.0
+.. deprecated::
+   Not used for builds based on Proj >= 6.0
 %End
 
  static int projStringToDatumTransformId( const QString &string ) /Deprecated/;
@@ -171,7 +176,8 @@ Returns -1 if matching datum ID was not found.
 
 .. seealso:: :py:func:`datumTransformToProj`
 
-.. deprecated:: Not used for builds based on Proj >= 6.0
+.. deprecated::
+   Not used for builds based on Proj >= 6.0
 %End
 
  static QgsDatumTransform::TransformInfo datumTransformInfo( int datumTransformId ) /Deprecated/;
@@ -184,7 +190,8 @@ If ``datumTransformId`` was not a valid transform ID, a TransformInfo with Trans
 
 .. seealso:: :py:func:`datumTransformToProj`
 
-.. deprecated:: Not used for builds based on Proj >= 6.0
+.. deprecated::
+   Not used for builds based on Proj >= 6.0
 %End
 
 

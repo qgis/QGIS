@@ -24,6 +24,7 @@
 #include "qgssymbol.h"
 #include "qgsfields.h"
 #include "qgsfeaturerequest.h"
+#include "qgssymbollayerreference.h"
 
 #include <QList>
 #include <QString>
@@ -63,8 +64,18 @@ class CORE_EXPORT QgsSymbolLevelItem
       : mSymbol( symbol )
       , mLayer( layer )
     {}
-    QgsSymbol *symbol() { return mSymbol; }
-    int layer() { return mLayer; }
+
+    /**
+     * The symbol of this symbol level
+     */
+    QgsSymbol *symbol() const;
+
+    /**
+     * The layer of this symbol level
+     */
+    int layer() const;
+
+    // TODO QGIS 4.0 -> make private
   protected:
     QgsSymbol *mSymbol = nullptr;
     int mLayer;

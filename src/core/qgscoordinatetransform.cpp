@@ -23,6 +23,7 @@
 #include "qgsrectangle.h"
 #include "qgsexception.h"
 #include "qgsproject.h"
+#include "qgsreadwritelocker.h"
 
 //qt includes
 #include <QDomNode>
@@ -46,6 +47,7 @@
 
 QReadWriteLock QgsCoordinateTransform::sCacheLock;
 QMultiHash< QPair< QString, QString >, QgsCoordinateTransform > QgsCoordinateTransform::sTransforms; //same auth_id pairs might have different datum transformations
+bool QgsCoordinateTransform::sDisableCache = false;
 
 QgsCoordinateTransform::QgsCoordinateTransform()
 {
@@ -515,19 +517,18 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
 
   // 64 points (<=2.12) is not enough, see #13665, for EPSG:4326 -> EPSG:3574 (say that it is a hard one),
   // are decent result from about 500 points and more. This method is called quite often, but
-  // even with 1000 points it takes < 1ms
+  // even with 1000 points it takes < 1ms.
   // TODO: how to effectively and precisely reproject bounding box?
   const int nPoints = 1000;
   double d = std::sqrt( ( rect.width() * rect.height() ) / std::pow( std::sqrt( static_cast< double >( nPoints ) ) - 1, 2.0 ) );
-  int nXPoints = static_cast< int >( std::ceil( rect.width() / d ) ) + 1;
-  int nYPoints = static_cast< int >( std::ceil( rect.height() / d ) ) + 1;
+  int nXPoints = std::min( static_cast< int >( std::ceil( rect.width() / d ) ) + 1, 1000 );
+  int nYPoints = std::min( static_cast< int >( std::ceil( rect.height() / d ) ) + 1, 1000 );
 
   QgsRectangle bb_rect;
   bb_rect.setMinimal();
 
   // We're interfacing with C-style vectors in the
   // end, so let's do C-style vectors here too.
-
   QVector<double> x( nXPoints * nYPoints );
   QVector<double> y( nXPoints * nYPoints );
   QVector<double> z( nXPoints * nYPoints );
@@ -661,7 +662,18 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
                       y, sizeof( double ), numPoints,
                       z, sizeof( double ), numPoints,
                       nullptr, sizeof( double ), 0 );
-  projResult = proj_errno( projData );
+  // Try to - approximatively - emulate the behavior of pj_transform()...
+  // In the case of a single point transform, and a transformation error occurs,
+  // pj_transform() would return the errno. In cases of multiple point transform,
+  // it would continue (for non-transient errors, that is pipeline definition
+  // errors) and just set the resulting x,y to infinity. This is in fact a
+  // bit more subtle than that, and I'm not completely sure the logic in
+  // pj_transform() was really sane & fully bullet proof
+  // So here just check proj_errno() for single point transform
+  if ( numPoints == 1 )
+  {
+    projResult = proj_errno( projData );
+  }
 #else
   bool sourceIsLatLong = false;
   bool destIsLatLong = false;
@@ -819,7 +831,10 @@ bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &s
   if ( sourceKey.isEmpty() || destKey.isEmpty() )
     return false;
 
-  sCacheLock.lockForRead();
+  QgsReadWriteLocker locker( sCacheLock, QgsReadWriteLocker::Read );
+  if ( sDisableCache )
+    return false;
+
   const QList< QgsCoordinateTransform > values = sTransforms.values( qMakePair( sourceKey, destKey ) );
   for ( auto valIt = values.constBegin(); valIt != values.constEnd(); ++valIt )
   {
@@ -831,7 +846,7 @@ bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &s
       bool hasContext = mHasContext;
 #endif
       *this = *valIt;
-      sCacheLock.unlock();
+      locker.unlock();
 
       mContext = context;
 #ifdef QGISDEBUG
@@ -841,7 +856,6 @@ bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &s
       return true;
     }
   }
-  sCacheLock.unlock();
   return false;
 }
 #else
@@ -858,7 +872,10 @@ bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &s
   if ( sourceKey.isEmpty() || destKey.isEmpty() )
     return false;
 
-  sCacheLock.lockForRead();
+  QgsReadWriteLocker locker( sCacheLock, QgsReadWriteLocker::Read );
+  if ( sDisableCache )
+    return false;
+
   const QList< QgsCoordinateTransform > values = sTransforms.values( qMakePair( src.authid(), dest.authid() ) );
   for ( auto valIt = values.constBegin(); valIt != values.constEnd(); ++valIt )
   {
@@ -872,7 +889,7 @@ bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &s
       bool hasContext = mHasContext;
 #endif
       *this = *valIt;
-      sCacheLock.unlock();
+      locker.unlock();
 
       mContext = context;
 #ifdef QGISDEBUG
@@ -883,7 +900,6 @@ bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &s
     }
     Q_NOWARN_DEPRECATED_POP
   }
-  sCacheLock.unlock();
   return false;
 }
 #endif
@@ -901,9 +917,11 @@ void QgsCoordinateTransform::addToCache()
   if ( sourceKey.isEmpty() || destKey.isEmpty() )
     return;
 
-  sCacheLock.lockForWrite();
+  QgsReadWriteLocker locker( sCacheLock, QgsReadWriteLocker::Write );
+  if ( sDisableCache )
+    return;
+
   sTransforms.insertMulti( qMakePair( sourceKey, destKey ), *this );
-  sCacheLock.unlock();
 }
 
 int QgsCoordinateTransform::sourceDatumTransformId() const
@@ -936,12 +954,44 @@ void QgsCoordinateTransform::setDestinationDatumTransformId( int dt )
   Q_NOWARN_DEPRECATED_POP
 }
 
-void QgsCoordinateTransform::invalidateCache()
+void QgsCoordinateTransform::invalidateCache( bool disableCache )
 {
-  sCacheLock.lockForWrite();
+  QgsReadWriteLocker locker( sCacheLock, QgsReadWriteLocker::Write );
+  if ( sDisableCache )
+    return;
+
+  if ( disableCache )
+  {
+    sDisableCache = true;
+  }
+
   sTransforms.clear();
-  sCacheLock.unlock();
 }
+
+#if PROJ_VERSION_MAJOR>=6
+void QgsCoordinateTransform::removeFromCacheObjectsBelongingToCurrentThread( void *pj_context )
+{
+  // Not completely sure about object order destruction after main() has
+  // exited. So it is safer to check sDisableCache before using sCacheLock
+  // in case sCacheLock would have been destroyed before the current TLS
+  // QgsProjContext object that has called us...
+  if ( sDisableCache )
+    return;
+
+  QgsReadWriteLocker locker( sCacheLock, QgsReadWriteLocker::Write );
+  if ( sDisableCache )
+    return;
+
+  for ( auto it = sTransforms.begin(); it != sTransforms.end(); )
+  {
+    auto &v = it.value();
+    if ( v.d->removeObjectsBelongingToCurrentThread( pj_context ) )
+      it = sTransforms.erase( it );
+    else
+      ++it;
+  }
+}
+#endif
 
 double QgsCoordinateTransform::scaleFactor( const QgsRectangle &ReferenceExtent ) const
 {

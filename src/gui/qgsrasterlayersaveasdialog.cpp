@@ -50,7 +50,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   setupUi( this );
   QgsGui::instance()->enableAutoGeometryRestore( this );
   connect( mRawModeRadioButton, &QRadioButton::toggled, this, &QgsRasterLayerSaveAsDialog::mRawModeRadioButton_toggled );
-  connect( mFormatComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsRasterLayerSaveAsDialog::mFormatComboBox_currentIndexChanged );
+  connect( mFormatComboBox, &QComboBox::currentTextChanged, this, &QgsRasterLayerSaveAsDialog::mFormatComboBox_currentIndexChanged );
   connect( mResolutionRadioButton, &QRadioButton::toggled, this, &QgsRasterLayerSaveAsDialog::mResolutionRadioButton_toggled );
   connect( mOriginalResolutionPushButton, &QPushButton::clicked, this, &QgsRasterLayerSaveAsDialog::mOriginalResolutionPushButton_clicked );
   connect( mXResolutionLineEdit, &QLineEdit::textEdited, this, &QgsRasterLayerSaveAsDialog::mXResolutionLineEdit_textEdited );

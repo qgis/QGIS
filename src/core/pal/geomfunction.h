@@ -86,7 +86,7 @@ namespace pal
        * \param cHull returns the point id (id of id's vector...) whom are parts of the convex hull
        * \returns convexHull's size
        */
-      static int convexHullId( int *id, const double *x, const double *y, int n, int *&cHull );
+      static int convexHullId( int *id, const std::vector< double > &x, const std::vector< double > &y, int n, int *&cHull );
 
       /**
        * Returns TRUE if the two segments intersect.
@@ -103,7 +103,7 @@ namespace pal
                                            double *x, double *y );
 
       //! Reorder points to have cross prod ((x,y)[i], (x,y)[i+1), point) > 0 when point is outside
-      static int reorderPolygon( int nbPoints, double *x, double *y );
+      static int reorderPolygon( int nbPoints, std::vector< double > &x, std::vector< double> &y );
 
       /**
        * Returns TRUE if a GEOS prepared geometry totally contains a label candidate.

@@ -1303,6 +1303,12 @@ namespace QgsWms
        */
       QString dxfCodec() const;
 
+      /**
+       * Returns the dimensions parameter.
+       * \since QGIS 3.10
+       */
+      QMap<QString, QString> dimensionValues() const;
+
     private:
       static bool isExternalLayer( const QString &name );
 

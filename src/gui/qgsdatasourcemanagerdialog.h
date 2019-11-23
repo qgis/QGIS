@@ -75,9 +75,10 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     //! Sync current page with the leftbar list
     void setCurrentPage( int index );
 
+    // TODO: use this with an internal source select dialog instead of forwarding the whole raster selection to app
+
     /**
      * A raster layer was added: for signal forwarding to QgisApp
-     * TODO: use this with an internal source select dialog instead of forwarding the whole raster selection to app
      */
     void rasterLayerAdded( QString const &uri, QString const &baseName, QString const &providerKey );
     //! A vector layer was added: for signal forwarding to QgisApp
@@ -88,6 +89,15 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     void setPreviousPage();
     //! Refresh the browser view
     void refresh();
+
+    /**
+     * Resets the interface of the datasource manager after reopening the dialog.
+     *
+     * Will clear the selection of embedded all source selection widgets.
+     *
+     * \since QGIS 3.10
+     */
+    void reset();
 
   protected:
     void showEvent( QShowEvent *event ) override;

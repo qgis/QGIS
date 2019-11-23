@@ -22,31 +22,18 @@ __date__ = 'December 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
 import os
-import warnings
-
-try:
-    # importing plotly throws Python warnings from within the library - filter these out
-    with warnings.catch_warnings():
-        warnings.filterwarnings("ignore", category=ResourceWarning)
-        warnings.filterwarnings("ignore", category=ImportWarning)
-        import plotly  # NOQA
-        hasPlotly = True
-except:
-    hasPlotly = False
 
 from qgis.core import (QgsApplication,
                        QgsProcessingProvider)
 
 from PyQt5.QtCore import QCoreApplication
 
-from processing.script import ScriptUtils
-
-from .QgisAlgorithm import QgisAlgorithm
-
 from .AddTableField import AddTableField
 from .Aggregate import Aggregate
 from .Aspect import Aspect
+from .BarPlot import BarPlot
 from .BasicStatistics import BasicStatisticsForField
+from .BoxPlot import BoxPlot
 from .CheckValidity import CheckValidity
 from .Climb import Climb
 from .ConcaveHull import ConcaveHull
@@ -57,7 +44,6 @@ from .DefineProjection import DefineProjection
 from .Delaunay import Delaunay
 from .DeleteColumn import DeleteColumn
 from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
-from .DensifyGeometries import DensifyGeometries
 from .EliminateSelection import EliminateSelection
 from .ExecuteSQL import ExecuteSQL
 from .ExportGeometryInfo import ExportGeometryInfo
@@ -69,7 +55,6 @@ from .FieldsMapper import FieldsMapper
 from .FindProjection import FindProjection
 from .GeometryConvert import GeometryConvert
 from .GeometryByExpression import GeometryByExpression
-from .Grid import Grid
 from .Heatmap import Heatmap
 from .Hillshade import Hillshade
 from .HubDistanceLines import HubDistanceLines
@@ -81,6 +66,7 @@ from .ImportIntoSpatialite import ImportIntoSpatialite
 from .KeepNBiggestParts import KeepNBiggestParts
 from .KNearestConcaveHull import KNearestConcaveHull
 from .LinesToPolygons import LinesToPolygons
+from .MeanAndStdDevPlot import MeanAndStdDevPlot
 from .MinimumBoundingGeometry import MinimumBoundingGeometry
 from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
 from .Orthogonalize import Orthogonalize
@@ -91,6 +77,7 @@ from .PointsFromPolygons import PointsFromPolygons
 from .PointsInPolygon import PointsInPolygon
 from .PointsLayerFromTable import PointsLayerFromTable
 from .PointsToPaths import PointsToPaths
+from .PolarPlot import PolarPlot
 from .PoleOfInaccessibility import PoleOfInaccessibility
 from .Polygonize import Polygonize
 from .PostGISExecuteSQL import PostGISExecuteSQL
@@ -103,8 +90,8 @@ from .RandomPointsLayer import RandomPointsLayer
 from .RandomPointsPolygons import RandomPointsPolygons
 from .RandomSelection import RandomSelection
 from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
-from .Rasterize import RasterizeAlgorithm
 from .RasterCalculator import RasterCalculator
+from .RasterLayerHistogram import RasterLayerHistogram
 from .RasterLayerStatistics import RasterLayerStatistics
 from .RasterSampling import RasterSampling
 from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
@@ -114,8 +101,6 @@ from .Relief import Relief
 from .Ruggedness import Ruggedness
 from .SelectByAttribute import SelectByAttribute
 from .SelectByExpression import SelectByExpression
-from .ServiceAreaFromLayer import ServiceAreaFromLayer
-from .ServiceAreaFromPoint import ServiceAreaFromPoint
 from .SetMValue import SetMValue
 from .SetRasterStyle import SetRasterStyle
 from .SetVectorStyle import SetVectorStyle
@@ -136,13 +121,12 @@ from .TopoColors import TopoColor
 from .TruncateTable import TruncateTable
 from .UniqueValues import UniqueValues
 from .VariableDistanceBuffer import VariableDistanceBuffer
+from .VectorLayerHistogram import VectorLayerHistogram
+from .VectorLayerScatterplot import VectorLayerScatterplot
+from .VectorLayerScatterplot3D import VectorLayerScatterplot3D
 from .VectorSplit import VectorSplit
 from .VoronoiPolygons import VoronoiPolygons
 from .ZonalStatistics import ZonalStatistics
-
-
-pluginPath = os.path.normpath(os.path.join(
-    os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
 
 class QgisAlgorithmProvider(QgsProcessingProvider):
@@ -157,7 +141,9 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
         algs = [AddTableField(),
                 Aggregate(),
                 Aspect(),
+                BarPlot(),
                 BasicStatisticsForField(),
+                BoxPlot(),
                 CheckValidity(),
                 Climb(),
                 ConcaveHull(),
@@ -168,7 +154,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 Delaunay(),
                 DeleteColumn(),
                 DeleteDuplicateGeometries(),
-                DensifyGeometries(),
                 EliminateSelection(),
                 ExecuteSQL(),
                 ExportGeometryInfo(),
@@ -180,7 +165,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 FindProjection(),
                 GeometryByExpression(),
                 GeometryConvert(),
-                Grid(),
                 Heatmap(),
                 Hillshade(),
                 HubDistanceLines(),
@@ -192,6 +176,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 KeepNBiggestParts(),
                 KNearestConcaveHull(),
                 LinesToPolygons(),
+                MeanAndStdDevPlot(),
                 MinimumBoundingGeometry(),
                 NearestNeighbourAnalysis(),
                 Orthogonalize(),
@@ -202,6 +187,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 PointsInPolygon(),
                 PointsLayerFromTable(),
                 PointsToPaths(),
+                PolarPlot(),
                 PoleOfInaccessibility(),
                 Polygonize(),
                 PostGISExecuteSQL(),
@@ -215,7 +201,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 RandomSelection(),
                 RandomSelectionWithinSubsets(),
                 RasterCalculator(),
-                RasterizeAlgorithm(),
+                RasterLayerHistogram(),
                 RasterLayerStatistics(),
                 RasterSampling(),
                 RectanglesOvalsDiamondsFixed(),
@@ -225,8 +211,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 Ruggedness(),
                 SelectByAttribute(),
                 SelectByExpression(),
-                ServiceAreaFromLayer(),
-                ServiceAreaFromPoint(),
                 SetMValue(),
                 SetRasterStyle(),
                 SetVectorStyle(),
@@ -248,36 +232,13 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 TruncateTable(),
                 UniqueValues(),
                 VariableDistanceBuffer(),
+                VectorLayerHistogram(),
+                VectorLayerScatterplot(),
+                VectorLayerScatterplot3D(),
                 VectorSplit(),
                 VoronoiPolygons(),
                 ZonalStatistics()
                 ]
-
-        if hasPlotly:
-            from .BarPlot import BarPlot
-            from .BoxPlot import BoxPlot
-            from .MeanAndStdDevPlot import MeanAndStdDevPlot
-            from .PolarPlot import PolarPlot
-            from .RasterLayerHistogram import RasterLayerHistogram
-            from .VectorLayerHistogram import VectorLayerHistogram
-            from .VectorLayerScatterplot import VectorLayerScatterplot
-            from .VectorLayerScatterplot3D import VectorLayerScatterplot3D
-
-            algs.extend([BarPlot(),
-                         BoxPlot(),
-                         MeanAndStdDevPlot(),
-                         PolarPlot(),
-                         RasterLayerHistogram(),
-                         VectorLayerHistogram(),
-                         VectorLayerScatterplot(),
-                         VectorLayerScatterplot3D()])
-
-        # to store algs added by 3rd party plugins as scripts
-        #folder = os.path.join(os.path.dirname(__file__), 'scripts')
-        #scripts = ScriptUtils.loadFromFolder(folder)
-        #for script in scripts:
-        #    script.allowEdit = False
-        #algs.extend(scripts)
 
         return algs
 

@@ -26,6 +26,7 @@
 #include "qgsattributeform.h"
 #include "qgsattributes.h"
 #include "qgsjsonutils.h"
+#include "qgspostgresstringutils.h"
 
 #include <QHeaderView>
 #include <QComboBox>
@@ -35,7 +36,7 @@
 #include <QCompleter>
 
 #include <nlohmann/json.hpp>
-using json = nlohmann::json;
+using namespace nlohmann;
 
 
 QgsValueRelationWidgetWrapper::QgsValueRelationWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
@@ -76,7 +77,7 @@ QVariant QgsValueRelationWidgetWrapper::value() const
     }
 
     QVariantList vl;
-    //store as QVariantList because it's json
+    //store as QVariantList because the field type supports data structure
     for ( const QString &s : qgis::as_const( selection ) )
     {
       // Convert to proper type
@@ -94,7 +95,17 @@ QVariant QgsValueRelationWidgetWrapper::value() const
           break;
       }
     }
-    v = vl;
+
+    if ( layer()->fields().at( fieldIdx() ).type() == QVariant::Map ||
+         layer()->fields().at( fieldIdx() ).type() == QVariant::List )
+    {
+      v = vl;
+    }
+    else
+    {
+      //make string
+      v = QgsPostgresStringUtils::buildArray( vl );
+    }
   }
 
   if ( mLineEdit )
@@ -161,7 +172,7 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget *editor )
   }
   else if ( mLineEdit )
   {
-    connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & value ) { emit valueChanged( value ); }, Qt::UniqueConnection );
+    connect( mLineEdit, &QLineEdit::textChanged, this, &QgsValueRelationWidgetWrapper::emitValueChangedInternal, Qt::UniqueConnection );
   }
 }
 
@@ -170,15 +181,15 @@ bool QgsValueRelationWidgetWrapper::valid() const
   return mTableWidget || mLineEdit || mComboBox;
 }
 
-void QgsValueRelationWidgetWrapper::setValue( const QVariant &value )
+void QgsValueRelationWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
   if ( mTableWidget )
   {
     QStringList checkList;
 
-    if ( layer()->fields().at( fieldIdx() ).type() == QVariant::Map )
+    if ( layer()->fields().at( fieldIdx() ).type() == QVariant::Map ||
+         layer()->fields().at( fieldIdx() ).type() == QVariant::List )
     {
-      //because of json it's stored as QVariantList
       checkList = value.toStringList();
     }
     else
@@ -257,7 +268,7 @@ void QgsValueRelationWidgetWrapper::widgetValueChanged( const QString &attribute
     {
       populate();
       // Restore value
-      setValue( value( ) );
+      updateValues( value( ) );
       // If the value has changed as a result of another widget's value change,
       // we need to emit the signal to make sure other dependent widgets are
       // updated.
@@ -265,7 +276,7 @@ void QgsValueRelationWidgetWrapper::widgetValueChanged( const QString &attribute
       {
         QString attributeName( formFeature().fields().names().at( fieldIdx() ) );
         setFormFeatureAttribute( attributeName, value( ) );
-        emitValueChanged( );
+        emitValueChanged();
       }
     }
   }
@@ -294,7 +305,7 @@ void QgsValueRelationWidgetWrapper::setFeature( const QgsFeature &feature )
     // set in the next, which is typically the "down" in a drill-down
     QTimer::singleShot( 0, this, [ this ]
     {
-      setValue( mCache.at( 0 ).key );
+      updateValues( mCache.at( 0 ).key );
     } );
   }
 }
@@ -439,4 +450,27 @@ void QgsValueRelationWidgetWrapper::setEnabled( bool enabled )
   }
   else
     QgsEditorWidgetWrapper::setEnabled( enabled );
+}
+
+
+QList<QgsVectorLayerRef> QgsValueRelationWidgetWrapper::layerDependencies() const
+{
+  QList<QgsVectorLayerRef> result;
+  const QString layerId { config().value( QStringLiteral( "Layer" ) ).toString() };
+  const QString layerName { config().value( QStringLiteral( "LayerName" ) ).toString() };
+  const QString providerName { config().value( QStringLiteral( "LayerProviderName" ) ).toString() };
+  const QString layerSource { config().value( QStringLiteral( "LayerSource" ) ).toString() };
+  if ( ! layerId.isEmpty() && ! layerName.isEmpty() && ! providerName.isEmpty() && ! layerSource.isEmpty() )
+  {
+    result.append( QgsVectorLayerRef( layerId, layerName, layerSource, providerName ) );
+  }
+  return result;
+}
+
+void QgsValueRelationWidgetWrapper::emitValueChangedInternal( const QString &value )
+{
+  Q_NOWARN_DEPRECATED_PUSH
+  emit valueChanged( value );
+  Q_NOWARN_DEPRECATED_POP
+  emit valuesChanged( value );
 }

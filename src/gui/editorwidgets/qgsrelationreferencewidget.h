@@ -19,6 +19,7 @@
 #include "qgsattributeeditorcontext.h"
 #include "qgis_sip.h"
 #include "qgsfeature.h"
+#include "qobjectuniqueptr.h"
 
 #include <QComboBox>
 #include <QToolButton>
@@ -32,7 +33,9 @@ class QgsVectorLayerTools;
 class QgsMapCanvas;
 class QgsMessageBar;
 class QgsHighlight;
+class QgsMapTool;
 class QgsMapToolIdentifyFeature;
+class QgsMapToolDigitizeFeature;
 class QgsMessageBarItem;
 class QgsFeatureListComboBox;
 class QgsCollapsibleGroupBox;
@@ -83,11 +86,31 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 
     void setRelationEditable( bool editable );
 
-    //! this sets the related feature using from the foreign key
-    void setForeignKey( const QVariant &value );
+    /**
+     * this sets the related feature using from the foreign key
+     * \deprecated since QGIS 3.10 use setForeignKeys
+     */
+    Q_DECL_DEPRECATED void setForeignKey( const QVariant &value ) SIP_DEPRECATED;
+
+    /**
+     * Sets the related feature using the foreign keys
+     * \since QGIS 3.10
+     */
+    void setForeignKeys( const QVariantList &values );
+
+    /**
+     * returns the related feature foreign key
+     * \deprecated since QGIS 3.10
+     */
+    Q_DECL_DEPRECATED QVariant foreignKey() const SIP_DEPRECATED;
 
     //! returns the related feature foreign key
-    QVariant foreignKey() const;
+
+    /**
+    * Returns the related feature foreign keys
+    * \since QGIS 3.10
+    */
+    QVariantList foreignKeys() const;
 
     void setEditorContext( const QgsAttributeEditorContext &context, QgsMapCanvas *canvas, QgsMessageBar *messageBar );
 
@@ -155,6 +178,19 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
      */
     void setAllowAddFeatures( bool allowAddFeatures );
 
+    /**
+     * Returns the current relation, which might be invalid
+     * \since QGIS 3.10
+     */
+    QgsRelation relation() const;
+
+    /**
+     * Set the current form feature (from the referencing layer)
+     *
+     * \since QGIS 3.10
+     */
+    void setFormFeature( const QgsFeature &formFeature );
+
   public slots:
     //! open the form of the related feature in a new dialog
     void openForm();
@@ -163,7 +199,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void mapIdentification();
 
     //! unset the currently related feature
-    void deleteForeignKey();
+    void deleteForeignKeys();
 
   protected:
     void showEvent( QShowEvent *e ) override;
@@ -171,18 +207,32 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void init();
 
   signals:
-    void foreignKeyChanged( const QVariant & );
+
+    /**
+     * Emitted when the foreign key changed
+     * \deprecated since QGIS 3.10
+     */
+    Q_DECL_DEPRECATED void foreignKeyChanged( const QVariant & ) SIP_DEPRECATED;
+
+    /**
+     * Emitted when the foreign keys changed
+     * \since QGIS 3.10
+     */
+    void foreignKeysChanged( const QVariantList & );
 
   private slots:
     void highlightActionTriggered( QAction *action );
     void deleteHighlight();
     void comboReferenceChanged( int index );
     void featureIdentified( const QgsFeature &feature );
+    void setMapTool( QgsMapTool *mapTool );
     void unsetMapTool();
     void mapToolDeactivated();
     void filterChanged();
     void addEntry();
     void updateAddEntryButton();
+    void entryAdded( const QgsFeature &f );
+    void onKeyPressed( QKeyEvent *e );
 
     /**
      * Updates the FK index as soon as the underlying model is updated when
@@ -194,23 +244,23 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void highlightFeature( QgsFeature f = QgsFeature(), CanvasExtent canvasExtent = Fixed );
     void updateAttributeEditorFrame( const QgsFeature &feature );
     void disableChainedComboBoxes( const QComboBox *cb );
-    void emitForeignKeyChanged( const QVariant &foreignKey );
+    void emitForeignKeysChanged( const QVariantList &foreignKeys, bool force = false );
 
     // initialized
     QgsAttributeEditorContext mEditorContext;
     QgsMapCanvas *mCanvas = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
-    QVariant mForeignKey;
+    QVariantList mForeignKeys;
     QgsFeature mFeature;
+    QgsFeature mFormFeature;
     // Index of the referenced layer key
-    int mReferencedFieldIdx = -1;
-    QString mReferencedField;
-    int mReferencingFieldIdx = -1;
+    QStringList mReferencedFields;
     bool mAllowNull = true;
     QgsHighlight *mHighlight = nullptr;
-    QgsMapToolIdentifyFeature *mMapTool = nullptr;
+    QgsMapTool *mCurrentMapTool = nullptr;
+    QObjectUniquePtr<QgsMapToolIdentifyFeature> mMapToolIdentify;
+    QObjectUniquePtr<QgsMapToolDigitizeFeature> mMapToolDigitize;
     QgsMessageBarItem *mMessageBarItem = nullptr;
-    QString mRelationName;
     QgsAttributeForm *mReferencedAttributeForm = nullptr;
     QgsVectorLayer *mReferencedLayer = nullptr;
     QgsVectorLayer *mReferencingLayer = nullptr;

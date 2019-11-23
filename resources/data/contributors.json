@@ -811,6 +811,23 @@
     {
       "type": "Feature",
       "properties": {
+        "Name": "Clemens Raffler",
+        "Committer": "No",
+        "First Commit Message": "[feature][processing] Initial Port of Create Grid algorithm to C++",
+        "First Commit Date": "30-09-2019",
+        "GIT Nickname": "root676"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.3302,
+          48.1779
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "Name": "Even Rouault",
         "Committer": "Yes",
         "First Commit Message": "OGR provider: don't segfault when the layer cannot be retrieved (e.g. datasource with 0 layer)",

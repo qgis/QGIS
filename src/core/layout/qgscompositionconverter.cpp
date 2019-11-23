@@ -139,17 +139,6 @@ std::unique_ptr< QgsPrintLayout > QgsCompositionConverter::createLayoutFromCompo
   float paperHeight = composerElement.attribute( QStringLiteral( "paperHeight" ) ).toDouble( );
   float paperWidth = composerElement.attribute( QStringLiteral( "paperWidth" ) ).toDouble( );
 
-  if ( composerElement.elementsByTagName( QStringLiteral( "symbol" ) ).size() )
-  {
-    QDomElement symbolElement = composerElement.elementsByTagName( QStringLiteral( "symbol" ) ).at( 0 ).toElement();
-    QgsReadWriteContext context;
-    if ( project )
-      context.setPathResolver( project->pathResolver() );
-    std::unique_ptr< QgsFillSymbol > symbol( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElement, context ) );
-    if ( symbol )
-      layout->pageCollection()->setPageStyleSymbol( symbol.get() );
-  }
-
   QString name = composerElement.attribute( QStringLiteral( "name" ) );
   // Try title
   if ( name.isEmpty() )
@@ -179,6 +168,19 @@ std::unique_ptr< QgsPrintLayout > QgsCompositionConverter::createLayoutFromCompo
       layout->guides().addGuide( guide.release() );
     }
   }
+
+
+  if ( composerElement.elementsByTagName( QStringLiteral( "symbol" ) ).size() )
+  {
+    QDomElement symbolElement = composerElement.elementsByTagName( QStringLiteral( "symbol" ) ).at( 0 ).toElement();
+    QgsReadWriteContext context;
+    if ( project )
+      context.setPathResolver( project->pathResolver() );
+    std::unique_ptr< QgsFillSymbol > symbol( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElement, context ) );
+    if ( symbol )
+      layout->pageCollection()->setPageStyleSymbol( symbol.get() );
+  }
+
   addItemsFromCompositionXml( layout.get(), composerElement );
 
   // Read atlas from the parent element (Composer)
@@ -207,7 +209,8 @@ void QgsCompositionConverter::adjustPos( QgsPrintLayout *layout, QgsLayoutItem *
     }
   }
 
-  layout->addLayoutItem( layoutItem );
+  if ( !layoutItem->scene() )
+    layout->addLayoutItem( layoutItem );
   layoutItem->setZValue( layoutItem->zValue() + zOrderOffset );
 }
 

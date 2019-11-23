@@ -33,6 +33,7 @@
 #include "qgsdatadefinedsizelegend.h"
 
 #include "diagram/qgsdiagram.h"
+#include "qgsreadwritecontext.h"
 
 class QgsDiagramRenderer;
 class QgsFeature;
@@ -394,8 +395,23 @@ class CORE_EXPORT QgsDiagramSettings
       Right
     };
 
+    /**
+     * Angular directions.
+     * \since QGIS 3.12
+     */
+    enum Direction
+    {
+      Clockwise, //!< Clockwise orientation
+      Counterclockwise, //!< Counter-clockwise orientation
+    };
+
     //! Constructor for QgsDiagramSettings
-    QgsDiagramSettings() = default;
+    QgsDiagramSettings();
+
+    //! Copy constructor
+    QgsDiagramSettings( const QgsDiagramSettings &other );
+
+    QgsDiagramSettings &operator=( const QgsDiagramSettings &other );
 
     bool enabled = true;
     QFont font;
@@ -467,10 +483,91 @@ class CORE_EXPORT QgsDiagramSettings
     //! Scale diagrams smaller than mMinimumSize to mMinimumSize
     double minimumSize = 0.0;
 
+    /**
+     * Returns the spacing between diagram contents.
+     *
+     * Spacing units can be retrieved by calling spacingUnit().
+     *
+     * \see setSpacing()
+     * \see spacingUnit()
+     * \see spacingMapUnitScale()
+     *
+     * \since QGIS 3.12
+     */
+    double spacing() const { return mSpacing; }
+
+    /**
+     * Sets the \a spacing between diagram contents.
+     *
+     * Spacing units are set via setSpacingUnit().
+     *
+     * \see spacing()
+     * \see setSpacingUnit()
+     * \see setSpacingMapUnitScale()
+     *
+     * \since QGIS 3.12
+     */
+    void setSpacing( double spacing ) { mSpacing = spacing; }
+
+    /**
+     * Sets the \a unit for the content spacing.
+     * \see spacingUnit()
+     * \see setSpacing()
+     * \see setSpacingMapUnitScale()
+     *
+     * \since QGIS 3.12
+    */
+    void setSpacingUnit( QgsUnitTypes::RenderUnit unit ) { mSpacingUnit = unit; }
+
+    /**
+     * Returns the units for the content spacing.
+     * \see setSpacingUnit()
+     * \see spacing()
+     * \see spacingMapUnitScale()
+     * \since QGIS 3.12
+    */
+    QgsUnitTypes::RenderUnit spacingUnit() const { return mSpacingUnit; }
+
+    /**
+     * Sets the map unit \a scale for the content spacing.
+     * \see spacingMapUnitScale()
+     * \see setSpacing()
+     * \see setSpacingUnit()
+     *
+     * \since QGIS 3.12
+    */
+    void setSpacingMapUnitScale( const QgsMapUnitScale &scale ) { mSpacingMapUnitScale = scale; }
+
+    /**
+     * Returns the map unit scale for the content spacing.
+     * \see setSpacingMapUnitScale()
+     * \see spacing()
+     * \see spacingUnit()
+     *
+     * \since QGIS 3.12
+    */
+    const QgsMapUnitScale &spacingMapUnitScale() const { return mSpacingMapUnitScale; }
+
+    /**
+     * Returns the chart's angular direction.
+     *
+     * \see setDirection()
+     * \since QGIS 3.12
+     */
+    Direction direction() const;
+
+    /**
+     * Sets the chart's angular \a direction.
+     *
+     * \see direction()
+     * \since QGIS 3.12
+     */
+    void setDirection( Direction direction );
+
     //! Reads diagram settings from XML
-    void readXml( const QDomElement &elem );
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() );
     //! Writes diagram settings to XML
-    void writeXml( QDomElement &rendererElem, QDomDocument &doc ) const;
+    void writeXml( QDomElement &rendererElem, QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
 
     /**
      * Returns list of legend nodes for the diagram
@@ -478,6 +575,58 @@ class CORE_EXPORT QgsDiagramSettings
      * \since QGIS 2.10
      */
     QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const SIP_FACTORY;
+
+    /**
+     * Returns the line symbol to use for rendering axis in diagrams.
+     *
+     * \see setAxisLineSymbol()
+     * \see showAxis()
+     *
+     * \since QGIS 3.12
+     */
+    QgsLineSymbol *axisLineSymbol() const;
+
+    /**
+     * Sets the line \a symbol to use for rendering axis in diagrams.
+     *
+     * Ownership of \a symbol is transferred to the settings.
+     *
+     * \see axisLineSymbol()
+     * \see setShowAxis()
+     *
+     * \since QGIS 3.12
+     */
+    void setAxisLineSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns TRUE if the diagram axis should be shown.
+     *
+     * \see setShowAxis()
+     * \see axisLineSymbol()
+     *
+     * \since QGIS 3.12
+     */
+    bool showAxis() const;
+
+    /**
+     * Sets whether the diagram axis should be shown.
+     *
+     * \see showAxis()
+     * \see setAxisLineSymbol()
+     *
+     * \since QGIS 3.12
+     */
+    void setShowAxis( bool showAxis );
+
+  private:
+
+    double mSpacing = 0;
+    QgsUnitTypes::RenderUnit mSpacingUnit;
+    QgsMapUnitScale mSpacingMapUnitScale;
+    Direction mDirection = Counterclockwise;
+
+    bool mShowAxis = false;
+    std::unique_ptr< QgsLineSymbol > mAxisLineSymbol;
 
 };
 

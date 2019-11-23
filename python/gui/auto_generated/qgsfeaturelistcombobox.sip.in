@@ -9,6 +9,7 @@
 
 
 
+
 class QgsFeatureListComboBox : QComboBox
 {
 %Docstring
@@ -38,6 +39,13 @@ The layer from which features should be listed.
     void setSourceLayer( QgsVectorLayer *sourceLayer );
 %Docstring
 The layer from which features should be listed.
+%End
+
+    void setCurrentFeature( const QgsFeature &feature );
+%Docstring
+Sets the current index by using the given feature
+
+.. versionadded:: 3.10
 %End
 
     QString displayExpression() const;
@@ -74,16 +82,45 @@ This can be used to integrate additional spatial or other constraints.
 TODO!
 %End
 
-    QVariant identifierValue() const;
+ QVariant identifierValue() const /Deprecated/;
 %Docstring
 The identifier value of the currently selected feature. A value from the
 identifierField.
+
+.. deprecated:: QGIS 3.10
 %End
 
-    void setIdentifierValue( const QVariant &identifierValue );
+    QVariantList identifierValues() const;
+%Docstring
+The identifier values of the currently selected feature. A value from the
+identifierField.
+
+.. versionadded:: 3.10
+%End
+
+
+ void setIdentifierValue( const QVariant &identifierValue ) /Deprecated/;
 %Docstring
 The identifier value of the currently selected feature. A value from the
 identifierField.
+
+.. deprecated:: QGIS 3.10
+   use setIdentifierValues
+%End
+
+    void setIdentifierValues( const QVariantList &identifierValues );
+%Docstring
+The identifier values of the currently selected feature. A value from the
+identifierFields.
+
+.. versionadded:: 3.10
+%End
+
+    void setIdentifierValuesToNull();
+%Docstring
+Sets the identifier values of the currently selected feature to NULL value(s).
+
+.. versionadded:: 3.10
 %End
 
     QgsFeatureRequest currentFeatureRequest() const;
@@ -102,16 +139,36 @@ Determines if a NULL value should be available in the list.
 Determines if a NULL value should be available in the list.
 %End
 
-    QString identifierField() const;
+ QString identifierField() const /Deprecated/;
 %Docstring
 Field name that will be used to uniquely identify the current feature.
 Normally the primary key of the layer.
+
+.. deprecated:: QGIS 3.10
 %End
 
-    void setIdentifierField( const QString &identifierField );
+    QStringList identifierFields() const;
 %Docstring
 Field name that will be used to uniquely identify the current feature.
 Normally the primary key of the layer.
+
+.. versionadded:: 3.10
+%End
+
+ void setIdentifierField( const QString &identifierField ) /Deprecated/;
+%Docstring
+Field name that will be used to uniquely identify the current feature.
+Normally the primary key of the layer.
+
+.. deprecated:: QGIS 3.10
+%End
+
+    void setIdentifierFields( const QStringList &identifierFields );
+%Docstring
+Field name that will be used to uniquely identify the current feature.
+Normally the primary key of the layer.
+
+.. versionadded:: 3.10
 %End
 
     QModelIndex currentModelIndex() const;
@@ -169,6 +226,8 @@ Determines if a NULL value should be available in the list.
 %End
 
 };
+
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

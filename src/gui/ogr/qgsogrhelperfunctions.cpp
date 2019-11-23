@@ -218,7 +218,7 @@ QString createDatabaseURI( const QString &connectionType, const QString &host, c
 }
 
 
-QString createProtocolURI( const QString &type, const QString &url,  const QString &configId, const QString &username, const QString &password, bool expandAuthConfig )
+QString createProtocolURI( const QString &type, const QString &url, const QString &configId, const QString &username, const QString &password, bool expandAuthConfig )
 {
   QString uri;
   if ( type == QLatin1String( "HTTP/HTTPS/FTP" ) )

@@ -26,6 +26,7 @@ class QgsGeometry;
 class QgsAbstractGeometry;
 class QgsLineString;
 class QgsLineSegment2D;
+class QgsFeedback;
 
 /**
  * \ingroup core
@@ -147,6 +148,23 @@ class QgsInternalGeometryEngine
      * \since QGIS 3.2
      */
     QgsGeometry variableWidthBufferByM( int segments ) const;
+
+    /**
+     * Returns a list of \a count random points generated inside a \a polygon geometry.
+     *
+     * Optionally, a specific random \a seed can be used when generating points. If \a seed
+     * is 0, then a completely random sequence of points will be generated.
+     *
+     * The \a acceptPoint function is used to filter result candidates. If the function returns
+     * FALSE, then the point will not be accepted and another candidate generated.
+     *
+     * The optional \a feedback argument can be used to provide cancellation support during
+     * the point generation.
+     *
+     * \since QGIS 3.10
+     */
+    static QVector< QgsPointXY > randomPointsInPolygon( const QgsGeometry &polygon, int count,
+        const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed = 0, QgsFeedback *feedback = nullptr );
 
   private:
     const QgsAbstractGeometry *mGeometry = nullptr;

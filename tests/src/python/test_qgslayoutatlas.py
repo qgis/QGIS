@@ -49,7 +49,8 @@ from qgis.core import (QgsUnitTypes,
                        QgsCategorizedSymbolRenderer,
                        QgsRendererCategory,
                        QgsMarkerSymbol,
-                       QgsLayoutItemLegend)
+                       QgsLayoutItemLegend,
+                       QgsLegendStyle)
 from qgis.PyQt.QtCore import QFileInfo, QRectF, QDir
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
@@ -430,8 +431,8 @@ class TestQgsLayoutAtlas(unittest.TestCase):
         self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.Predefined)
 
         scales = [1800000, 5000000]
-        self.layout.reportContext().setPredefinedScales(scales)
-        for i, s in enumerate(self.layout.reportContext().predefinedScales()):
+        self.layout.renderContext().setPredefinedScales(scales)
+        for i, s in enumerate(self.layout.renderContext().predefinedScales()):
             self.assertEqual(s, scales[i])
 
         self.atlas.beginRender()
@@ -552,6 +553,11 @@ class TestQgsLayoutAtlas(unittest.TestCase):
 
         # add a legend
         legend = QgsLayoutItemLegend(self.layout)
+        legend.rstyle(QgsLegendStyle.Title).setFont(QgsFontUtils.getStandardTestFont('Bold', 20))
+        legend.rstyle(QgsLegendStyle.Group).setFont(QgsFontUtils.getStandardTestFont('Bold', 18))
+        legend.rstyle(QgsLegendStyle.Subgroup).setFont(QgsFontUtils.getStandardTestFont('Bold', 18))
+        legend.rstyle(QgsLegendStyle.SymbolLabel).setFont(QgsFontUtils.getStandardTestFont('Bold', 14))
+
         legend.setTitle("Legend")
         legend.attemptMove(QgsLayoutPoint(200, 100))
         # sets the legend filter parameter
@@ -668,6 +674,51 @@ class TestQgsLayoutAtlas(unittest.TestCase):
         self.assertEqual(map.extent(), QgsRectangle(44, 49.5, 66, 60.5))
 
         QgsProject.instance().removeMapLayer(polygonLayer)
+
+    def testChangedSignal(self):
+        layout = QgsPrintLayout(QgsProject.instance())
+        atlas = layout.atlas()
+        s = QSignalSpy(atlas.changed)
+
+        atlas.setPageNameExpression('1+2')
+        self.assertEqual(len(s), 1)
+        atlas.setPageNameExpression('1+2')
+        self.assertEqual(len(s), 1)
+
+        atlas.setSortFeatures(True)
+        self.assertEqual(len(s), 2)
+        atlas.setSortFeatures(True)
+        self.assertEqual(len(s), 2)
+
+        atlas.setSortAscending(False)
+        self.assertEqual(len(s), 3)
+        atlas.setSortAscending(False)
+        self.assertEqual(len(s), 3)
+
+        atlas.setSortExpression('1+2')
+        self.assertEqual(len(s), 4)
+        atlas.setSortExpression('1+2')
+        self.assertEqual(len(s), 4)
+
+        atlas.setFilterFeatures(True)
+        self.assertEqual(len(s), 5)
+        atlas.setFilterFeatures(True)
+        self.assertEqual(len(s), 5)
+
+        atlas.setFilterExpression('1+2')
+        self.assertEqual(len(s), 6)
+        atlas.setFilterExpression('1+2')
+        self.assertEqual(len(s), 6)
+
+        atlas.setHideCoverage(True)
+        self.assertEqual(len(s), 7)
+        atlas.setHideCoverage(True)
+        self.assertEqual(len(s), 7)
+
+        atlas.setFilenameExpression('1+2')
+        self.assertEqual(len(s), 8)
+        atlas.setFilenameExpression('1+2')
+        self.assertEqual(len(s), 8)
 
 
 if __name__ == '__main__':

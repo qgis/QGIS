@@ -28,6 +28,11 @@
 #include "qgsnewsfeedmodel.h"
 #include "qgsnewsfeedparser.h"
 
+#include "qgsprojectstorage.h"
+#include "qgsprojectstorageguiprovider.h"
+#include "qgsprojectstorageguiregistry.h"
+#include "qgsprojectstorageregistry.h"
+
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QListView>
@@ -36,7 +41,7 @@
 #include <QMessageBox>
 #include <QSplitter>
 
-#define FEED_URL "http://0.0.0.0:8000/"
+#define FEED_URL "https://feed.qgis.org/"
 
 QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   : QWidget( parent )
@@ -248,6 +253,7 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
   if ( path.isEmpty() )
     return;
 
+  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( path );
   bool enabled = mRecentProjectsModel->flags( index ) & Qt::ItemIsEnabled;
 
   QMenu *menu = new QMenu( this );
@@ -274,12 +280,21 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
       } );
       menu->addAction( pinAction );
     }
-    QAction *openFolderAction = new QAction( tr( "Open Directory…" ), menu );
-    connect( openFolderAction, &QAction::triggered, this, [path]
+
+    if ( storage )
     {
-      QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( path );
-    } );
-    menu->addAction( openFolderAction );
+      path = storage->filePath( path );
+    }
+
+    if ( !path.isEmpty() )
+    {
+      QAction *openFolderAction = new QAction( tr( "Open Directory…" ), menu );
+      connect( openFolderAction, &QAction::triggered, this, [path]
+      {
+        QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( path );
+      } );
+      menu->addAction( openFolderAction );
+    }
   }
   else
   {
@@ -290,15 +305,30 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
     } );
     menu->addAction( rescanAction );
 
-    // add an entry to open the closest existing path to the original project file location
-    // to help users re-find moved/renamed projects!
-    const QString closestPath = QgsFileUtils::findClosestExistingPath( path );
-    QAction *openFolderAction = new QAction( tr( "Open “%1”…" ).arg( QDir::toNativeSeparators( closestPath ) ), menu );
-    connect( openFolderAction, &QAction::triggered, this, [closestPath]
+    bool showClosestPath = storage ? false : true;
+    if ( storage && ( storage->type() == QStringLiteral( "geopackage" ) ) )
     {
-      QDesktopServices::openUrl( QUrl::fromLocalFile( closestPath ) );
-    } );
-    menu->addAction( openFolderAction );
+      QRegularExpression reGpkg( "^(geopackage:)([^\?]+)\?(.+)$", QRegularExpression::CaseInsensitiveOption );
+      QRegularExpressionMatch matchGpkg = reGpkg.match( path );
+      if ( matchGpkg.hasMatch() )
+      {
+        path = matchGpkg.captured( 2 );
+        showClosestPath = true;
+      }
+    }
+
+    if ( showClosestPath )
+    {
+      // add an entry to open the closest existing path to the original project file or geopackage location
+      // to help users re-find moved/renamed projects!
+      const QString closestPath = QgsFileUtils::findClosestExistingPath( path );
+      QAction *openFolderAction = new QAction( tr( "Open “%1”…" ).arg( QDir::toNativeSeparators( closestPath ) ), menu );
+      connect( openFolderAction, &QAction::triggered, this, [closestPath]
+      {
+        QDesktopServices::openUrl( QUrl::fromLocalFile( closestPath ) );
+      } );
+      menu->addAction( openFolderAction );
+    }
   }
   QAction *removeProjectAction = new QAction( tr( "Remove from List" ), menu );
   connect( removeProjectAction, &QAction::triggered, this, [this, index]

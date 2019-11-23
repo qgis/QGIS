@@ -222,7 +222,7 @@ class CORE_EXPORT QgsExpressionContextUtils
      * For instance, current page name and number.
      * \param atlas source atlas. If NULLPTR, a set of default atlas variables will be added to the scope.
      */
-    static QgsExpressionContextScope *atlasScope( QgsLayoutAtlas *atlas ) SIP_FACTORY;
+    static QgsExpressionContextScope *atlasScope( const QgsLayoutAtlas *atlas ) SIP_FACTORY;
 
     /**
      * Creates a new scope which contains variables and functions relating to a QgsLayoutItem.
@@ -318,18 +318,57 @@ class CORE_EXPORT QgsExpressionContextUtils
     class GetLayerVisibility : public QgsScopedExpressionFunction
     {
       public:
-        GetLayerVisibility( const QList<QgsMapLayer *> &layers );
+        GetLayerVisibility( const QList<QgsMapLayer *> &layers, double scale = 0 );
         QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override;
         QgsScopedExpressionFunction *clone() const override;
 
       private:
+        GetLayerVisibility();
 
-        const QList< QPointer< QgsMapLayer > > mLayers;
+        QList< QPointer< QgsMapLayer > > mLayers;
+        QMap< QPointer< QgsMapLayer >, QPair< double, double > > mScaleBasedVisibilityDetails;
+        double mScale;
 
     };
 
     friend class QgsLayoutItemMap; // needs access to GetLayerVisibility
 
 };
+
+#ifndef SIP_RUN
+
+/**
+ * \class QgsExpressionContextScopePopper
+ * RAII class to pop scope from an expression context on destruction
+ * \ingroup core
+ * \since QGIS 3.10
+ */
+class QgsExpressionContextScopePopper
+{
+  public:
+
+    /**
+     * Constructor for QgsExpressionContextScopePopper. Appends the specified \a scope to the
+     * end of \a context. \a scope will be automatically popped and deleted when this QgsExpressionContextScopePopper
+     * is destroyed.
+     *
+     * Ownership of \a scope is transferred to the popper, but it is guaranteed to exist of the lifetime
+     * of the popper.
+     */
+    QgsExpressionContextScopePopper( QgsExpressionContext &context, QgsExpressionContextScope *scope )
+      : mContext( context )
+    {
+      mContext.appendScope( scope );
+    }
+
+    ~QgsExpressionContextScopePopper()
+    {
+      delete mContext.popScope();
+    }
+
+  private:
+    QgsExpressionContext &mContext;
+};
+#endif
 
 #endif // QGSEXPRESSIONCONTEXTUTILS_H

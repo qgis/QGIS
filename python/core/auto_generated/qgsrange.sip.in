@@ -9,6 +9,7 @@
 
 
 
+
 template <T>
 class QgsRange
 {
@@ -115,7 +116,6 @@ Returns ``True`` if this range overlaps another range.
 
 .. seealso:: :py:func:`contains`
 %End
-
 
 };
 
@@ -241,6 +241,19 @@ Returns ``True`` if this range contains a specified ``element``.
     bool overlaps( const QgsTemporalRange<T> &other ) const;
 %Docstring
 Returns ``True`` if this range overlaps another range.
+%End
+
+    bool extend( const QgsTemporalRange<T> &other );
+%Docstring
+Extends the range in place by extending this range out to include an ``other`` range.
+If ``other`` is empty the range is not changed.
+If the range is empty and ``other`` is not, the range is changed and set to ``other``.
+
+.. seealso:: :py:func:`isEmpty`
+
+:return: ``True`` if the range was extended
+
+.. versionadded:: 3.12
 %End
 
     bool operator==( const QgsTemporalRange<T> &other ) const;

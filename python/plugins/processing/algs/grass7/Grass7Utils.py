@@ -161,8 +161,8 @@ class Grass7Utils:
                 ]
         else:
             cmdList = [
-                "grass76", "grass74", "grass72", "grass70", "grass",
-                "grass76.sh", "grass74.sh", "grass72.sh", "grass70.sh", "grass.sh"
+                "grass78", "grass76", "grass74", "grass72", "grass70", "grass",
+                "grass78.sh", "grass76.sh", "grass74.sh", "grass72.sh", "grass70.sh", "grass.sh"
             ]
 
         # For MS-Windows there is a difference between GRASS Path and GRASS binary
@@ -226,7 +226,7 @@ class Grass7Utils:
             elif isMac():
                 # For MacOSX, we scan some well-known directories
                 # Start with QGIS bundle
-                for version in ['', '7', '76', '74', '72', '71', '70']:
+                for version in ['', '7', '78', '76', '74', '72', '71', '70']:
                     testfolder = os.path.join(str(QgsApplication.prefixPath()),
                                               'grass{}'.format(version))
                     if os.path.isdir(testfolder):
@@ -234,7 +234,7 @@ class Grass7Utils:
                         break
                     # If nothing found, try standalone GRASS installation
                     if folder is None:
-                        for version in ['6', '4', '2', '1', '0']:
+                        for version in ['8', '6', '4', '2', '1', '0']:
                             testfolder = '/Applications/GRASS-7.{}.app/Contents/MacOS'.format(version)
                             if os.path.isdir(testfolder):
                                 folder = testfolder
@@ -561,7 +561,7 @@ class Grass7Utils:
             return 'https://grass.osgeo.org/grass{}/manuals/'.format(version)
         else:
             # GRASS not available!
-            return 'https://grass.osgeo.org/grass76/manuals/'
+            return 'https://grass.osgeo.org/grass78/manuals/'
 
     @staticmethod
     def getSupportedOutputRasterExtensions():

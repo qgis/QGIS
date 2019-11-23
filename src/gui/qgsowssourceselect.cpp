@@ -124,6 +124,11 @@ void QgsOWSSourceSelect::refresh()
   populateConnectionList();
 }
 
+void QgsOWSSourceSelect::reset()
+{
+  mLayersTreeWidget->clearSelection();
+}
+
 void QgsOWSSourceSelect::clearFormats()
 {
   mFormatComboBox->clear();
@@ -439,7 +444,7 @@ void QgsOWSSourceSelect::populateCrs()
         defaultCRS = *it;
 
       // prefer value of DEFAULT_GEO_EPSG_CRS_ID if available
-      if ( *it == GEO_EPSG_CRS_AUTHID )
+      if ( *it == geoEpsgCrsAuthId() )
         defaultCRS = *it;
     }
 

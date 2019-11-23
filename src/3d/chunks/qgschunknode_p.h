@@ -42,6 +42,19 @@ class QgsChunkQueueJob;
 class QgsChunkQueueJobFactory;
 
 
+//! Helper class to store X,Y,Z integer coordinates of a node
+struct QgsChunkNodeId
+{
+  //! Constructs node ID
+  QgsChunkNodeId( int _x = -1, int _y = -1, int _z = -1 )
+    : x( _x ), y( _y ), z( _z ) {}
+
+  int x, y, z;
+
+  //! Returns textual representation of the node ID in form of "Z/X/Y"
+  QString text() const { return QStringLiteral( "%1/%2/%3" ).arg( z ).arg( x ).arg( y ); }
+};
+
 /**
  * \ingroup 3d
  * Data structure for keeping track of chunks of data for 3D entities that use "out of core" rendering,
@@ -102,6 +115,8 @@ class QgsChunkNode
     int tileY() const { return mTileY; }
     //! Returns chunk tile Z coordinate of the tiling scheme
     int tileZ() const { return mTileZ; }
+    //! Returns chunk tile coordinates of the tiling scheme
+    QgsChunkNodeId tileId() const { return QgsChunkNodeId( mTileX, mTileY, mTileZ ); }
     //! Returns pointer to the parent node. Parent is NULLPTR in the root node
     QgsChunkNode *parent() const { return mParent; }
     //! Returns array of the four children. Children may be NULLPTR if they were not created yet

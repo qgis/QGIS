@@ -90,7 +90,7 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
 
   mWidget->setRelation( relation, config( QStringLiteral( "AllowNULL" ) ).toBool() );
 
-  connect( mWidget, &QgsRelationReferenceWidget::foreignKeyChanged, this, &QgsRelationReferenceWidgetWrapper::foreignKeyChanged );
+  connect( mWidget, &QgsRelationReferenceWidget::foreignKeysChanged, this, &QgsRelationReferenceWidgetWrapper::foreignKeysChanged );
 }
 
 QVariant QgsRelationReferenceWidgetWrapper::value() const
@@ -98,15 +98,22 @@ QVariant QgsRelationReferenceWidgetWrapper::value() const
   if ( !mWidget )
     return QVariant( field().type() );
 
-  QVariant v = mWidget->foreignKey();
+  const QVariantList fkeys = mWidget->foreignKeys();
 
-  if ( v.isNull() )
+  if ( fkeys.isEmpty() )
   {
     return QVariant( field().type() );
   }
   else
   {
-    return v;
+    const QList<QgsRelation::FieldPair> fieldPairs = mWidget->relation().fieldPairs();
+    Q_ASSERT( fieldPairs.count() == fkeys.count() );
+    for ( int i = 0; i < fieldPairs.count(); i++ )
+    {
+      if ( fieldPairs.at( i ).referencingField() == field().name() )
+        return fkeys.at( i );
+    }
+    return QVariant( field().type() ); // should not happen
   }
 }
 
@@ -124,13 +131,72 @@ void QgsRelationReferenceWidgetWrapper::showIndeterminateState()
   mIndeterminateState = true;
 }
 
-void QgsRelationReferenceWidgetWrapper::setValue( const QVariant &val )
+QVariantList QgsRelationReferenceWidgetWrapper::additionalFieldValues() const
+{
+  if ( !mWidget || !mWidget->relation().isValid() )
+  {
+    QVariantList values;
+    for ( int i = 0; i < mWidget->relation().fieldPairs().count(); i++ )
+    {
+      values << QVariant();
+    }
+    return values;
+  }
+  else
+  {
+    QVariantList values = mWidget->foreignKeys();
+    const QList<QgsRelation::FieldPair> fieldPairs = mWidget->relation().fieldPairs();
+    int fieldCount = std::min( fieldPairs.count(), values.count() );
+    for ( int i = 0; i < fieldCount; i++ )
+    {
+      if ( fieldPairs.at( i ).referencingField() == field().name() )
+      {
+        values.removeAt( i );
+        break;
+      }
+    }
+    return values;
+  }
+}
+
+QStringList QgsRelationReferenceWidgetWrapper::additionalFields() const
+{
+  if ( !mWidget || !mWidget->relation().isValid() )
+    return QStringList();
+
+  QStringList fields;
+  const QList<QgsRelation::FieldPair> fieldPairs = mWidget->relation().fieldPairs();
+  for ( int i = 0; i < fieldPairs.count(); i++ )
+  {
+    if ( fieldPairs.at( i ).referencingField() == field().name() )
+      continue;
+
+    fields << fieldPairs.at( i ).referencingField();
+  }
+  return fields;
+}
+
+void QgsRelationReferenceWidgetWrapper::updateValues( const QVariant &val, const QVariantList &additionalValues )
 {
   if ( !mWidget || ( !mIndeterminateState && val == value() && val.isNull() == value().isNull() ) )
     return;
 
   mIndeterminateState = false;
-  mWidget->setForeignKey( val );
+
+  QVariantList values = additionalValues;
+  const QList<QgsRelation::FieldPair> fieldPairs = mWidget->relation().fieldPairs();
+  for ( int i = 0; i < fieldPairs.count(); i++ )
+  {
+    if ( fieldPairs.at( i ).referencingField() == field().name() )
+    {
+      values.insert( i, val );
+      break;
+    }
+  }
+  Q_ASSERT( values.count() == fieldPairs.count() );
+
+  mWidget->setForeignKeys( values );
+  mWidget->setFormFeature( formFeature() );
 }
 
 void QgsRelationReferenceWidgetWrapper::setEnabled( bool enabled )
@@ -141,13 +207,32 @@ void QgsRelationReferenceWidgetWrapper::setEnabled( bool enabled )
   mWidget->setRelationEditable( enabled );
 }
 
-void QgsRelationReferenceWidgetWrapper::foreignKeyChanged( QVariant value )
+void QgsRelationReferenceWidgetWrapper::foreignKeysChanged( const QVariantList &values )
 {
-  if ( !value.isValid() || value.isNull() )
+  QVariant mainValue = QVariant( field().type() );
+
+  if ( !mWidget || !mWidget->relation().isValid() )
   {
-    value = QVariant( field().type() );
+    Q_NOWARN_DEPRECATED_PUSH
+    emit valueChanged( mainValue );
+    Q_NOWARN_DEPRECATED_POP
+    emit valuesChanged( mainValue );
+    return;
   }
-  emit valueChanged( value );
+
+  QVariantList additionalValues = values;
+  const QList<QgsRelation::FieldPair> fieldPairs = mWidget->relation().fieldPairs();
+  for ( int i = 0; i < fieldPairs.count(); i++ )
+  {
+    if ( fieldPairs.at( i ).referencingField() == field().name() )
+      mainValue = additionalValues.takeAt( i ); // additional values in field pair order remain
+  }
+  Q_ASSERT( additionalValues.count() == values.count() - 1 );
+
+  Q_NOWARN_DEPRECATED_PUSH
+  emit valueChanged( mainValue );
+  Q_NOWARN_DEPRECATED_POP
+  emit valuesChanged( mainValue, additionalValues );
 }
 
 void QgsRelationReferenceWidgetWrapper::updateConstraintWidgetStatus()

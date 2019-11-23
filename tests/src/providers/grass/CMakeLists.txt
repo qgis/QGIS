@@ -3,9 +3,9 @@ INCLUDE_DIRECTORIES(
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${GDAL_INCLUDE_DIR}
-  ${GEOS_INCLUDE_DIR}
-  ${POSTGRES_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
+  ${POSTGRES_INCLUDE_DIR}
+  ${GEOS_INCLUDE_DIR}
 )
 
 
@@ -19,7 +19,6 @@ MACRO (ADD_QGIS_GRASS_TEST grass_build_version testname testsrc)
   )
 
   SET_TARGET_PROPERTIES(qgis_${testname}${grass_build_version} PROPERTIES
-    AUTOMOC TRUE
     COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX${grass_build_version}}\\\" \"-DGRASS_BUILD_VERSION=${grass_build_version}\""
   )
   TARGET_LINK_LIBRARIES(qgis_${testname}${grass_build_version}

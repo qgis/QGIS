@@ -47,16 +47,24 @@ QgsSingleSymbolRendererWidget::QgsSingleSymbolRendererWidget( QgsVectorLayer *la
   {
     QgsSymbol *symbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
 
-    mRenderer = new QgsSingleSymbolRenderer( symbol );
+    if ( symbol )
+      mRenderer = new QgsSingleSymbolRenderer( symbol );
   }
 
   // load symbol from it
-  mSingleSymbol = mRenderer->symbol()->clone();
+  if ( mRenderer )
+    mSingleSymbol = mRenderer->symbol()->clone();
 
   // setup ui
   mSelector = new QgsSymbolSelectorWidget( mSingleSymbol, mStyle, mLayer, nullptr );
   connect( mSelector, &QgsSymbolSelectorWidget::symbolModified, this, &QgsSingleSymbolRendererWidget::changeSingleSymbol );
   connect( mSelector, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
+  connect( this, &QgsRendererWidget::symbolLevelsChanged, [ = ]()
+  {
+    delete mSingleSymbol;
+    mSingleSymbol = mRenderer->symbol()->clone();
+    mSelector->loadSymbol( mSingleSymbol );
+  } );
 
   QVBoxLayout *layout = new QVBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );
@@ -67,7 +75,7 @@ QgsSingleSymbolRendererWidget::QgsSingleSymbolRendererWidget( QgsVectorLayer *la
 
   QAction *actionLevels = advMenu->addAction( tr( "Symbol Levels…" ) );
   connect( actionLevels, &QAction::triggered, this, &QgsSingleSymbolRendererWidget::showSymbolLevels );
-  if ( mSingleSymbol->type() == QgsSymbol::Marker )
+  if ( mSingleSymbol && mSingleSymbol->type() == QgsSymbol::Marker )
   {
     QAction *actionDdsLegend = advMenu->addAction( tr( "Data-defined Size Legend…" ) );
     // only from Qt 5.6 there is convenience addAction() with new style connection

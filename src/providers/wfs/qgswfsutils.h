@@ -15,68 +15,17 @@
 #ifndef QGSWFSUTILS_H
 #define QGSWFSUTILS_H
 
-#include "qgsfeature.h"
-
 #include <QString>
-#include <QThread>
-#include <QMutex>
-#include <QSharedMemory>
 
 /**
- * Utility class to deal mostly with the management of the temporary directory
-    that holds the on-disk cache. */
+ * Utility class */
 class QgsWFSUtils
 {
   public:
-    //! Returns the name of temporary directory.
-    static QString acquireCacheDirectory();
-
-    //! To be called when a temporary file is removed from the directory
-    static void releaseCacheDirectory();
-
-    //! Initial cleanup.
-    static void init();
-
     //! Removes a possible namespace prefix from a typename
     static QString removeNamespacePrefix( const QString &tname );
     //! Returns namespace prefix (or an empty string if there is no prefix)
     static QString nameSpacePrefix( const QString &tname );
-
-    //! Returns a unique identifier made from feature content
-    static QString getMD5( const QgsFeature &f );
-
-  protected:
-    friend class QgsWFSUtilsKeepAlive;
-    static QSharedMemory *createAndAttachSHM();
-
-  private:
-    static QMutex sMutex;
-    static QThread *sThread;
-    static bool sKeepAliveWorks;
-    static int sCounter;
-
-    //! Returns the name of temporary directory.
-    static QString getCacheDirectory( bool createIfNotExisting );
-
-    static QString getBaseCacheDirectory( bool createIfNotExisting );
-
-    //! Remove (recursively) a directory.
-    static bool removeDir( const QString &dirName );
-};
-
-//! For internal use of QgsWFSUtils
-class QgsWFSUtilsKeepAlive: public QThread
-{
-    Q_OBJECT
-  public:
-    QgsWFSUtilsKeepAlive();
-    ~QgsWFSUtilsKeepAlive() override;
-
-    void run() override;
-  private slots:
-    void updateTimestamp();
-  private:
-    QSharedMemory *mSharedMemory = nullptr;
 };
 
 #endif // QGSWFSUTILS_H

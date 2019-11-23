@@ -28,8 +28,10 @@ Stores global configuration for labeling engine
       RenderOutlineLabels,
       DrawLabelRectOnly,
       DrawCandidates,
+      DrawUnplacedLabels,
     };
     typedef QFlags<QgsLabelingEngineSettings::Flag> Flags;
+
 
 
     enum Search
@@ -74,13 +76,20 @@ Gets number of candidate positions that will be generated for each label feature
 Sets number of candidate positions that will be generated for each label feature
 %End
 
-    void setSearchMethod( Search s );
+ void setSearchMethod( Search s ) /Deprecated/;
 %Docstring
-Sets which search method to use for removal collisions between labels
+Used to set which search method to use for removal collisions between labels
+
+.. deprecated:: QGIS 3.10
+   - Chain is always used.
 %End
-    Search searchMethod() const;
+
+ Search searchMethod() const /Deprecated/;
 %Docstring
 Which search method to use for removal collisions between labels
+
+.. deprecated:: QGIS 3.10
+   - Chain is always used.
 %End
 
     void readSettingsFromProject( QgsProject *project );
@@ -109,6 +118,24 @@ Sets the default text rendering ``format`` for the labels.
 .. seealso:: :py:func:`defaultTextRenderFormat`
 
 .. versionadded:: 3.4.3
+%End
+
+    QColor unplacedLabelColor() const;
+%Docstring
+Returns the color to use when rendering unplaced labels.
+
+.. seealso:: :py:func:`setUnplacedLabelColor`
+
+.. versionadded:: 3.10
+%End
+
+    void setUnplacedLabelColor( const QColor &color );
+%Docstring
+Sets the ``color`` to use when rendering unplaced labels.
+
+.. seealso:: :py:func:`unplacedLabelColor`
+
+.. versionadded:: 3.10
 %End
 
 };

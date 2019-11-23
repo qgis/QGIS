@@ -32,7 +32,7 @@
 /**
  * \ingroup core
  * \brief Point geometry type, with support for z-dimension and m-values.
- * \since QGIS 3.0, (previously QgsPointv2 since QGIS 2.10)
+ * \since QGIS 3.0, (previously QgsPointV2 since QGIS 2.10)
  */
 class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 {
@@ -71,51 +71,73 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \endcode
      */
 #ifndef SIP_RUN
-    QgsPoint( double x = 0.0, double y = 0.0, double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN(), QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown );
+    QgsPoint( double x = std::numeric_limits<double>::quiet_NaN(), double y = std::numeric_limits<double>::quiet_NaN(), double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN(), QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown );
 #else
-    QgsPoint( double x = 0.0, double y = 0.0, SIP_PYOBJECT z = Py_None, SIP_PYOBJECT m = Py_None, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown )];
+    QgsPoint( SIP_PYOBJECT x = Py_None, SIP_PYOBJECT y = Py_None, SIP_PYOBJECT z = Py_None, SIP_PYOBJECT m = Py_None, SIP_PYOBJECT wkbType = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown )];
     % MethodCode
-    double z;
-    double m;
+    if ( sipCanConvertToType( a0, sipType_QgsPointXY, SIP_NOT_NONE ) && a1 == Py_None && a2 == Py_None && a3 == Py_None && a4 == Py_None )
+    {
+      int state;
+      int sipIsErr = 0;
 
-    if ( a2 == Py_None )
-    {
-      z = std::numeric_limits<double>::quiet_NaN();
+      QgsPointXY *p = reinterpret_cast<QgsPointXY *>( sipConvertToType( a0, sipType_QgsPointXY, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+      if ( sipIsErr )
+      {
+        sipReleaseType( p, sipType_QgsPointXY, state );
+      }
+      else
+      {
+        sipCpp = new sipQgsPoint( QgsPoint( *p ) );
+      }
     }
-    else
+    else if ( sipCanConvertToType( a0, sipType_QPointF, SIP_NOT_NONE ) && a1 == Py_None && a2 == Py_None && a3 == Py_None && a4 == Py_None )
     {
-      z = PyFloat_AsDouble( a2 );
-    }
+      int state;
+      int sipIsErr = 0;
 
-    if ( a3 == Py_None )
-    {
-      m = std::numeric_limits<double>::quiet_NaN();
+      QPointF *p = reinterpret_cast<QPointF *>( sipConvertToType( a0, sipType_QPointF, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+      if ( sipIsErr )
+      {
+        sipReleaseType( p, sipType_QPointF, state );
+      }
+      else
+      {
+        sipCpp = new sipQgsPoint( QgsPoint( *p ) );
+      }
     }
-    else
+    else if (
+      ( a0 == Py_None || PyFloat_AsDouble( a0 ) != -1.0 || !PyErr_Occurred() ) &&
+      ( a1 == Py_None || PyFloat_AsDouble( a1 ) != -1.0 || !PyErr_Occurred() ) &&
+      ( a2 == Py_None || PyFloat_AsDouble( a2 ) != -1.0 || !PyErr_Occurred() ) &&
+      ( a3 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) &&
+      ( a4 == Py_None || sipCanConvertToEnum( a4, sipType_QgsWkbTypes_Type ) ) )
     {
-      m = PyFloat_AsDouble( a3 );
+      double x = a0 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a0 );
+      double y = a1 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a1 );
+      double z = a2 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a2 );
+      double m = a3 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a3 );
+      QgsWkbTypes::Type wkbType = a4 == Py_None ? QgsWkbTypes::Unknown : static_cast<QgsWkbTypes::Type>( sipConvertToEnum( a4, sipType_QgsWkbTypes_Type ) );
+      sipCpp = new sipQgsPoint( QgsPoint( x, y, z, m, wkbType ) );
     }
-
-    sipCpp = new sipQgsPoint( a0, a1, z, m, a4 );
     % End
 #endif
 
     /**
      * Construct a QgsPoint from a QgsPointXY object
      */
-    explicit QgsPoint( const QgsPointXY &p );
+    explicit QgsPoint( const QgsPointXY &p ) SIP_SKIP;
 
     /**
      * Construct a QgsPoint from a QPointF
      */
-    explicit QgsPoint( QPointF p );
+    explicit QgsPoint( QPointF p ) SIP_SKIP;
 
     /**
      * Create a new point with the given wkbtype and values.
      *
      * \note Not available in Python bindings
      */
-    explicit QgsPoint( QgsWkbTypes::Type wkbType, double x = 0.0, double y = 0.0, double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN() ) SIP_SKIP;
+    explicit QgsPoint( QgsWkbTypes::Type wkbType, double x = std::numeric_limits<double>::quiet_NaN(), double y = std::numeric_limits<double>::quiet_NaN(), double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN() ) SIP_SKIP;
 
     bool operator==( const QgsAbstractGeometry &other ) const override
     {
@@ -125,15 +147,44 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 
       const QgsWkbTypes::Type type = wkbType();
 
-      bool equal = pt->wkbType() == type;
-      equal &= qgsDoubleNear( pt->x(), mX, 1E-8 );
-      equal &= qgsDoubleNear( pt->y(), mY, 1E-8 );
-      if ( QgsWkbTypes::hasZ( type ) )
-        equal &= qgsDoubleNear( pt->z(), mZ, 1E-8 ) || ( std::isnan( pt->z() ) && std::isnan( mZ ) );
-      if ( QgsWkbTypes::hasM( type ) )
-        equal &= qgsDoubleNear( pt->m(), mM, 1E-8 ) || ( std::isnan( pt->m() ) && std::isnan( mM ) );
+      if ( pt->wkbType() != type )
+        return false;
 
-      return equal;
+      const bool nan1X = std::isnan( mX );
+      const bool nan2X = std::isnan( pt->x() );
+      if ( nan1X != nan2X )
+        return false;
+      if ( !nan1X && !qgsDoubleNear( mX, pt->x(), 1E-8 ) )
+        return false;
+
+      const bool nan1Y = std::isnan( mY );
+      const bool nan2Y = std::isnan( pt->y() );
+      if ( nan1Y != nan2Y )
+        return false;
+      if ( !nan1Y && !qgsDoubleNear( mY, pt->y(), 1E-8 ) )
+        return false;
+
+      if ( QgsWkbTypes::hasZ( type ) )
+      {
+        const bool nan1Z = std::isnan( mZ );
+        const bool nan2Z = std::isnan( pt->z() );
+        if ( nan1Z != nan2Z )
+          return false;
+        if ( !nan1Z && !qgsDoubleNear( mZ, pt->z(), 1E-8 ) )
+          return false;
+      }
+
+      if ( QgsWkbTypes::hasM( type ) )
+      {
+        const bool nan1M = std::isnan( mM );
+        const bool nan2M = std::isnan( pt->m() );
+        if ( nan1M != nan2M )
+          return false;
+        if ( !nan1M && !qgsDoubleNear( mM, pt->m(), 1E-8 ) )
+          return false;
+      }
+
+      return true;
     }
 
     bool operator!=( const QgsAbstractGeometry &other ) const override
@@ -267,7 +318,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     }
 
     /**
-     * Returns the distance between this point and a specified x, y coordinate. In certain
+     * Returns the Cartesian 2D distance between this point and a specified x, y coordinate. In certain
      * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
      * when comparing distances.
      * \see distanceSquared()
@@ -279,7 +330,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     }
 
     /**
-     * Returns the 2D distance between this point and another point. In certain
+     * Returns the Cartesian 2D distance between this point and another point. In certain
      * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
      * when comparing distances.
      * \since QGIS 3.0
@@ -290,7 +341,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     }
 
     /**
-     * Returns the squared distance between this point a specified x, y coordinate. Calling
+     * Returns the Cartesian 2D squared distance between this point a specified x, y coordinate. Calling
      * this is faster than calling distance(), and may be useful in use cases such as comparing
      * distances where the extra expense of calling distance() is not required.
      * \see distance()
@@ -302,7 +353,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     }
 
     /**
-     * Returns the squared distance between this point another point. Calling
+     * Returns the Cartesian 2D squared distance between this point another point. Calling
      * this is faster than calling distance(), and may be useful in use cases such as comparing
      * distances where the extra expense of calling distance() is not required.
      * \see distance()
@@ -314,7 +365,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     }
 
     /**
-     * Returns the 3D distance between this point and a specified x, y, z coordinate. In certain
+     * Returns the Cartesian 3D distance between this point and a specified x, y, z coordinate. In certain
      * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
      * when comparing distances.
      * \see distanceSquared()
@@ -323,7 +374,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     double distance3D( double x, double y, double z ) const;
 
     /**
-     * Returns the 3D distance between this point and another point. In certain
+     * Returns the Cartesian 3D distance between this point and another point. In certain
      * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
      * when comparing distances.
      * \since QGIS 3.0
@@ -331,7 +382,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     double distance3D( const QgsPoint &other ) const;
 
     /**
-     * Returns the 3D squared distance between this point a specified x, y, z coordinate. Calling
+     * Returns the Cartesian 3D squared distance between this point a specified x, y, z coordinate. Calling
      * this is faster than calling distance(), and may be useful in use cases such as comparing
      * distances where the extra expense of calling distance() is not required.
      * \see distance()
@@ -340,7 +391,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     double distanceSquared3D( double x, double y, double z ) const;
 
     /**
-     * Returns the 3D squared distance between this point another point. Calling
+     * Returns the Cartesian 3D squared distance between this point another point. Calling
      * this is faster than calling distance(), and may be useful in use cases such as comparing
      * distances where the extra expense of calling distance() is not required.
      * \see distance()
@@ -349,13 +400,13 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     double distanceSquared3D( const QgsPoint &other ) const;
 
     /**
-     * Calculates azimuth between this point and other one (clockwise in degree, starting from north)
+     * Calculates Cartesian azimuth between this point and other one (clockwise in degree, starting from north)
      * \since QGIS 3.0
      */
     double azimuth( const QgsPoint &other ) const;
 
     /**
-     * Calculates inclination between this point and other one (starting from zenith = 0 to nadir = 180. Horizon = 90)
+     * Calculates Cartesian inclination between this point and other one (starting from zenith = 0 to nadir = 180. Horizon = 90)
      * Returns 90.0 if the distance between this point and other one is equal to 0 (same point).
      * \since QGIS 3.0
      */
@@ -363,7 +414,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 
     /**
      * Returns a new point which correspond to this point projected by a specified distance
-     * with specified angles (azimuth and inclination).
+     * with specified angles (azimuth and inclination), using Cartesian mathematics.
      * M value is preserved.
      * \param distance distance to project
      * \param azimuth angle to project in X Y, clockwise in degrees starting from north

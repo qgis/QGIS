@@ -130,7 +130,7 @@ class OneSideBuffer(GdalAlgorithm):
         for f in fields:
             if f.name() == geometry:
                 continue
-            other_fields.append(f.name())
+            other_fields.append('"{}"'.format(f.name()))
 
         if other_fields:
             other_fields = ',*'
@@ -145,12 +145,12 @@ class OneSideBuffer(GdalAlgorithm):
         arguments.append('-sql')
 
         if dissolve or fieldName:
-            sql = "SELECT ST_Union(ST_SingleSidedBuffer({}, {}, {})) AS {}{} FROM '{}'".format(geometry, distance, side, geometry, other_fields, layerName)
+            sql = 'SELECT ST_Union(ST_SingleSidedBuffer({}, {}, {})) AS {}{} FROM "{}"'.format(geometry, distance, side, geometry, other_fields, layerName)
         else:
-            sql = "SELECT ST_SingleSidedBuffer({}, {}, {}) AS {}{} FROM '{}'".format(geometry, distance, side, geometry, other_fields, layerName)
+            sql = 'SELECT ST_SingleSidedBuffer({}, {}, {}) AS {}{} FROM "{}"'.format(geometry, distance, side, geometry, other_fields, layerName)
 
         if fieldName:
-            sql = '"{} GROUP BY {}"'.format(sql, fieldName)
+            sql = '{} GROUP BY "{}"'.format(sql, fieldName)
 
         arguments.append(sql)
 

@@ -33,6 +33,7 @@
 #include "geomfunction.h"
 #include "qgsgeos.h"
 #include "qgsmessagelog.h"
+#include "qgsgeometryutils.h"
 #include <qglobal.h>
 
 using namespace pal;
@@ -40,18 +41,16 @@ using namespace pal;
 PointSet::PointSet()
 {
   nbPoints = cHullSize = 0;
-  x = nullptr;
-  y = nullptr;
   cHull = nullptr;
   type = -1;
 }
 
 PointSet::PointSet( int nbPoints, double *x, double *y )
-  : cHullSize( 0 )
+  : nbPoints( nbPoints )
+  , type( GEOS_POLYGON )
 {
-  this->nbPoints = nbPoints;
-  this->x = new double[nbPoints];
-  this->y = new double[nbPoints];
+  this->x.resize( nbPoints );
+  this->y.resize( nbPoints );
   int i;
 
   for ( i = 0; i < nbPoints; i++ )
@@ -59,27 +58,22 @@ PointSet::PointSet( int nbPoints, double *x, double *y )
     this->x[i] = x[i];
     this->y[i] = y[i];
   }
-  type = GEOS_POLYGON;
-  cHull = nullptr;
+
 }
 
 PointSet::PointSet( double aX, double aY )
-  : xmin( aX )
+  : type( GEOS_POINT )
+  , xmin( aX )
   , xmax( aY )
   , ymin( aX )
   , ymax( aY )
+
 {
   nbPoints = cHullSize = 1;
-  x = new double[1];
-  y = new double[1];
+  x.resize( 1 );
+  y.resize( 1 );
   x[0] = aX;
   y[0] = aY;
-
-  cHull = nullptr;
-  parent = nullptr;
-  holeOf = nullptr;
-
-  type = GEOS_POINT;
 }
 
 PointSet::PointSet( const PointSet &ps )
@@ -91,10 +85,8 @@ PointSet::PointSet( const PointSet &ps )
   int i;
 
   nbPoints = ps.nbPoints;
-  x = new double[nbPoints];
-  y = new double[nbPoints];
-  memcpy( x, ps.x, sizeof( double )* nbPoints );
-  memcpy( y, ps.y, sizeof( double )* nbPoints );
+  x = ps.x;
+  y = ps.y;
 
   if ( ps.cHull )
   {
@@ -135,15 +127,23 @@ void PointSet::createGeosGeom() const
   GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, nbPoints + ( needClose ? 1 : 0 ), 2 );
   for ( int i = 0; i < nbPoints; ++i )
   {
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+    GEOSCoordSeq_setXY_r( geosctxt, coord, i, x[i], y[i] );
+#else
     GEOSCoordSeq_setX_r( geosctxt, coord, i, x[i] );
     GEOSCoordSeq_setY_r( geosctxt, coord, i, y[i] );
+#endif
   }
 
   //close ring if needed
   if ( needClose )
   {
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+    GEOSCoordSeq_setXY_r( geosctxt, coord, nbPoints, x[0], y[0] );
+#else
     GEOSCoordSeq_setX_r( geosctxt, coord, nbPoints, x[0] );
     GEOSCoordSeq_setY_r( geosctxt, coord, nbPoints, y[0] );
+#endif
   }
 
   switch ( type )
@@ -205,10 +205,8 @@ PointSet::~PointSet()
 
 void PointSet::deleteCoords()
 {
-  delete[] x;
-  delete[] y;
-  x = nullptr;
-  y = nullptr;
+  x.clear();
+  y.clear();
 }
 
 PointSet *PointSet::extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty )
@@ -219,8 +217,8 @@ PointSet *PointSet::extractShape( int nbPtSh, int imin, int imax, int fps, int f
   PointSet *newShape = new PointSet();
   newShape->type = GEOS_POLYGON;
   newShape->nbPoints = nbPtSh;
-  newShape->x = new double[newShape->nbPoints];
-  newShape->y = new double[newShape->nbPoints];
+  newShape->x.resize( newShape->nbPoints );
+  newShape->y.resize( newShape->nbPoints );
 
   // new shape # 1 from imin to imax
   for ( j = 0, i = imin; i != ( imax + 1 ) % nbPoints; i = ( i + 1 ) % nbPoints, j++ )
@@ -239,15 +237,24 @@ PointSet *PointSet::extractShape( int nbPtSh, int imin, int imax, int fps, int f
   return newShape;
 }
 
+std::unique_ptr<PointSet> PointSet::clone() const
+{
+  return std::unique_ptr< PointSet>( new PointSet( *this ) );
+}
+
 bool PointSet::containsPoint( double x, double y ) const
 {
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   try
   {
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+    geos::unique_ptr point( GEOSGeom_createPointFromXY_r( geosctxt, x, y ) );
+#else
     GEOSCoordSequence *seq = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
     GEOSCoordSeq_setX_r( geosctxt, seq, 0, x );
     GEOSCoordSeq_setY_r( geosctxt, seq, 0, y );
     geos::unique_ptr point( GEOSGeom_createPoint_r( geosctxt, seq ) );
+#endif
     bool result = ( GEOSPreparedContainsProperly_r( geosctxt, preparedGeom(), point.get() ) == 1 );
 
     return result;
@@ -272,8 +279,8 @@ void PointSet::splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
   int i, j;
 
   int nbp;
-  double *x = nullptr;
-  double *y = nullptr;
+  std::vector< double > x;
+  std::vector< double > y;
 
   int *pts = nullptr;
 
@@ -542,6 +549,93 @@ void PointSet::splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
   }
 }
 
+void PointSet::extendLineByDistance( double startDistance, double endDistance, double smoothDistance )
+{
+  if ( nbPoints < 2 )
+    return;
+
+  double x0 = x[0];
+  double y0 = y[0];
+  if ( startDistance > 0 )
+  {
+    // trace forward by smoothDistance
+    double x1 = x[1];
+    double y1 = y[1];
+
+    double distanceConsumed = 0;
+    double lastX = x0;
+    double lastY = y0;
+    for ( int i = 1; i < nbPoints; ++i )
+    {
+      double thisX = x[i];
+      double thisY = y[i];
+      const double thisSegmentLength = std::sqrt( ( thisX - lastX ) * ( thisX - lastX ) + ( thisY - lastY ) * ( thisY - lastY ) );
+      distanceConsumed += thisSegmentLength;
+      if ( distanceConsumed >= smoothDistance )
+      {
+        double c = ( distanceConsumed - smoothDistance ) / thisSegmentLength;
+        x1 = lastX + c * ( thisX - lastX );
+        y1 = lastY + c * ( thisY - lastY );
+        break;
+      }
+      lastX = thisX;
+      lastY = thisY;
+    }
+
+    const double distance = std::sqrt( ( x1 - x0 ) * ( x1 - x0 ) + ( y1 - y0 ) * ( y1 - y0 ) );
+    const double extensionFactor = ( startDistance + distance ) / distance;
+    const QgsPointXY newStart = QgsGeometryUtils::interpolatePointOnLine( x1, y1, x0, y0, extensionFactor );
+    x0 = newStart.x();
+    y0 = newStart.y();
+    // defer actually changing the stored start until we've calculated the new end point
+  }
+
+  if ( endDistance > 0 )
+  {
+    double xend0 = x[nbPoints - 1];
+    double yend0 = y[nbPoints - 1];
+    double xend1 = x[nbPoints - 2];
+    double yend1 = y[nbPoints - 2];
+
+    // trace backward by smoothDistance
+    double distanceConsumed = 0;
+    double lastX = x0;
+    double lastY = y0;
+    for ( int i = nbPoints - 2; i >= 0; --i )
+    {
+      double thisX = x[i];
+      double thisY = y[i];
+      const double thisSegmentLength = std::sqrt( ( thisX - lastX ) * ( thisX - lastX ) + ( thisY - lastY ) * ( thisY - lastY ) );
+      distanceConsumed += thisSegmentLength;
+      if ( distanceConsumed >= smoothDistance )
+      {
+        double c = ( distanceConsumed - smoothDistance ) / thisSegmentLength;
+        xend1 = lastX + c * ( thisX - lastX );
+        yend1 = lastY + c * ( thisY - lastY );
+        break;
+      }
+      lastX = thisX;
+      lastY = thisY;
+    }
+
+    const double distance = std::sqrt( ( xend1 - xend0 ) * ( xend1 - xend0 ) + ( yend1 - yend0 ) * ( yend1 - yend0 ) );
+    const double extensionFactor = ( endDistance + distance ) / distance;
+    const QgsPointXY newEnd = QgsGeometryUtils::interpolatePointOnLine( xend1, yend1, xend0, yend0, extensionFactor );
+    x.emplace_back( newEnd.x() );
+    y.emplace_back( newEnd.y() );
+    nbPoints++;
+  }
+
+  if ( startDistance > 0 )
+  {
+    x.insert( x.begin(), x0 );
+    y.insert( y.begin(), y0 );
+    nbPoints++;
+  }
+
+  invalidateGeos();
+}
+
 CHullBox *PointSet::compute_chull_bbox()
 {
   int i;
@@ -701,11 +795,14 @@ double PointSet::minDistanceToPoint( double px, double py, double *rx, double *r
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   try
   {
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+    geos::unique_ptr geosPt( GEOSGeom_createPointFromXY_r( geosctxt, px, py ) );
+#else
     GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
     GEOSCoordSeq_setX_r( geosctxt, coord, 0, px );
     GEOSCoordSeq_setY_r( geosctxt, coord, 0, py );
     geos::unique_ptr geosPt( GEOSGeom_createPoint_r( geosctxt, coord ) );
-
+#endif
     int type = GEOSGeomTypeId_r( geosctxt, mGeos );
     const GEOSGeometry *extRing = nullptr;
     if ( type != GEOS_POLYGON )
@@ -720,8 +817,12 @@ double PointSet::minDistanceToPoint( double px, double py, double *rx, double *r
     geos::coord_sequence_unique_ptr nearestCoord( GEOSNearestPoints_r( geosctxt, extRing, geosPt.get() ) );
     double nx;
     double ny;
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+    ( void )GEOSCoordSeq_getXY_r( geosctxt, nearestCoord.get(), 0, &nx, &ny );
+#else
     ( void )GEOSCoordSeq_getX_r( geosctxt, nearestCoord.get(), 0, &nx );
     ( void )GEOSCoordSeq_getY_r( geosctxt, nearestCoord.get(), 0, &ny );
+#endif
 
     if ( rx )
       *rx = nx;
@@ -752,8 +853,12 @@ void PointSet::getCentroid( double &px, double &py, bool forceInside ) const
     if ( centroidGeom )
     {
       const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, centroidGeom.get() );
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+      GEOSCoordSeq_getXY_r( geosctxt, coordSeq, 0, &px, &py );
+#else
       GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, &px );
       GEOSCoordSeq_getY_r( geosctxt, coordSeq, 0, &py );
+#endif
     }
 
     // check if centroid inside in polygon
@@ -764,8 +869,12 @@ void PointSet::getCentroid( double &px, double &py, bool forceInside ) const
       if ( pointGeom )
       {
         const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, pointGeom.get() );
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+        GEOSCoordSeq_getXY_r( geosctxt, coordSeq, 0, &px, &py );
+#else
         GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, &px );
         GEOSCoordSeq_getY_r( geosctxt, coordSeq, 0, &py );
+#endif
       }
     }
   }
@@ -774,6 +883,17 @@ void PointSet::getCentroid( double &px, double &py, bool forceInside ) const
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
     return;
   }
+}
+
+bool PointSet::boundingBoxIntersects( const PointSet *other ) const
+{
+  double x1 = ( xmin > other->xmin ? xmin : other->xmin );
+  double x2 = ( xmax < other->xmax ? xmax : other->xmax );
+  if ( x1 > x2 )
+    return false;
+  double y1 = ( ymin > other->ymin ? ymin : other->ymin );
+  double y2 = ( ymax < other->ymax ? ymax : other->ymax );
+  return y1 <= y2;
 }
 
 void PointSet::getPointByDistance( double *d, double *ad, double dl, double *px, double *py )

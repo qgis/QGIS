@@ -34,11 +34,16 @@
 #include <QDialogButtonBox>
 
 
-QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString &layerId, const QString &providerId, int featureId, const QFont &labelFont, const QString &labelText, QWidget *parent, Qt::WindowFlags f ):
-  QDialog( parent, f ), mLabelFont( labelFont ), mCurLabelField( -1 )
+QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString &layerId, const QString &providerId, QgsFeatureId featureId, const QFont &labelFont, const QString &labelText, bool isPinned, const QgsPalLayerSettings &layerSettings, QWidget *parent, Qt::WindowFlags f )
+  : QDialog( parent, f )
+  , mLabelFont( labelFont )
+  , mIsPinned( isPinned )
 {
   setupUi( this );
   QgsGui::instance()->enableAutoGeometryRestore( this );
+
+  // set defaults to layer defaults
+  mLabelAllPartsCheckBox->setChecked( layerSettings.labelPerPart );
 
   connect( buttonBox, &QDialogButtonBox::clicked, this, &QgsLabelPropertyDialog::buttonBox_clicked );
   connect( mShowLabelChkbx, &QCheckBox::toggled, this, &QgsLabelPropertyDialog::mShowLabelChkbx_toggled );
@@ -48,7 +53,7 @@ QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString &layerId, const QS
   connect( mXCoordSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLabelPropertyDialog::mXCoordSpinBox_valueChanged );
   connect( mYCoordSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLabelPropertyDialog::mYCoordSpinBox_valueChanged );
   connect( mFontFamilyCmbBx, &QFontComboBox::currentFontChanged, this, &QgsLabelPropertyDialog::mFontFamilyCmbBx_currentFontChanged );
-  connect( mFontStyleCmbBx, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsLabelPropertyDialog::mFontStyleCmbBx_currentIndexChanged );
+  connect( mFontStyleCmbBx, &QComboBox::currentTextChanged, this, &QgsLabelPropertyDialog::mFontStyleCmbBx_currentIndexChanged );
   connect( mFontUnderlineBtn, &QToolButton::toggled, this, &QgsLabelPropertyDialog::mFontUnderlineBtn_toggled );
   connect( mFontStrikethroughBtn, &QToolButton::toggled, this, &QgsLabelPropertyDialog::mFontStrikethroughBtn_toggled );
   connect( mFontBoldBtn, &QToolButton::toggled, this, &QgsLabelPropertyDialog::mFontBoldBtn_toggled );
@@ -58,10 +63,14 @@ QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString &layerId, const QS
   connect( mRotationSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLabelPropertyDialog::mRotationSpinBox_valueChanged );
   connect( mFontColorButton, &QgsColorButton::colorChanged, this, &QgsLabelPropertyDialog::mFontColorButton_colorChanged );
   connect( mBufferColorButton, &QgsColorButton::colorChanged, this, &QgsLabelPropertyDialog::mBufferColorButton_colorChanged );
+  connect( mMultiLineAlignComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLabelPropertyDialog::mMultiLineAlignComboBox_currentIndexChanged );
   connect( mHaliComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLabelPropertyDialog::mHaliComboBox_currentIndexChanged );
   connect( mValiComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLabelPropertyDialog::mValiComboBox_currentIndexChanged );
   connect( mLabelTextLineEdit, &QLineEdit::textChanged, this, &QgsLabelPropertyDialog::mLabelTextLineEdit_textChanged );
+  connect( mLabelAllPartsCheckBox, &QCheckBox::toggled, this, &QgsLabelPropertyDialog::labelAllPartsToggled );
+
   mRotationSpinBox->setClearValue( 0 );
+  fillMultiLineAlignComboBox();
   fillHaliComboBox();
   fillValiComboBox();
 
@@ -87,7 +96,7 @@ void QgsLabelPropertyDialog::buttonBox_clicked( QAbstractButton *button )
   }
 }
 
-void QgsLabelPropertyDialog::init( const QString &layerId, const QString &providerId, int featureId, const QString &labelText )
+void QgsLabelPropertyDialog::init( const QString &layerId, const QString &providerId, QgsFeatureId featureId, const QString &labelText )
 {
   //get feature attributes
   QgsVectorLayer *vlayer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( layerId );
@@ -178,8 +187,28 @@ void QgsLabelPropertyDialog::init( const QString &layerId, const QString &provid
   mBufferColorButton->setColor( buffer.color() );
   mMinScaleWidget->setScale( layerSettings.minimumScale );
   mMaxScaleWidget->setScale( layerSettings.maximumScale );
-  mHaliComboBox->setCurrentIndex( mHaliComboBox->findData( "Left" ) );
-  mValiComboBox->setCurrentIndex( mValiComboBox->findData( "Bottom" ) );
+
+  QString defaultMultilineAlign;
+  switch ( layerSettings.multilineAlign )
+  {
+    case QgsPalLayerSettings::MultiLeft:
+      defaultMultilineAlign = QStringLiteral( "left" );
+      break;
+    case QgsPalLayerSettings::MultiCenter:
+      defaultMultilineAlign = QStringLiteral( "center" );
+      break;
+    case QgsPalLayerSettings::MultiRight:
+      defaultMultilineAlign = QStringLiteral( "right" );
+      break;
+    case QgsPalLayerSettings::MultiFollowPlacement:
+      defaultMultilineAlign = QStringLiteral( "follow label placement" );
+      break;
+  }
+  mMultiLineAlignComboBox->setItemText( mMultiLineAlignComboBox->findData( "" ), tr( "Layer default (%1)" ).arg( defaultMultilineAlign ) );
+  mMultiLineAlignComboBox->setCurrentIndex( mMultiLineAlignComboBox->findData( "" ) );
+
+  mHaliComboBox->setCurrentIndex( mHaliComboBox->findData( "left", Qt::UserRole, Qt::MatchFixedString ) );
+  mValiComboBox->setCurrentIndex( mValiComboBox->findData( "bottom", Qt::UserRole, Qt::MatchFixedString ) );
   mFontColorButton->setColorDialogTitle( tr( "Font Color" ) );
   mBufferColorButton->setColorDialogTitle( tr( "Buffer Color" ) );
 
@@ -215,9 +244,11 @@ void QgsLabelPropertyDialog::disableGuiElements()
   mLabelDistanceSpinBox->setEnabled( false );
   mXCoordSpinBox->setEnabled( false );
   mYCoordSpinBox->setEnabled( false );
+  mMultiLineAlignComboBox->setEnabled( false );
   mHaliComboBox->setEnabled( false );
   mValiComboBox->setEnabled( false );
   mRotationSpinBox->setEnabled( false );
+  mLabelAllPartsCheckBox->setEnabled( false );
 }
 
 void QgsLabelPropertyDialog::blockElementSignals( bool block )
@@ -240,9 +271,11 @@ void QgsLabelPropertyDialog::blockElementSignals( bool block )
   mLabelDistanceSpinBox->blockSignals( block );
   mXCoordSpinBox->blockSignals( block );
   mYCoordSpinBox->blockSignals( block );
+  mMultiLineAlignComboBox->blockSignals( block );
   mHaliComboBox->blockSignals( block );
   mValiComboBox->blockSignals( block );
   mRotationSpinBox->blockSignals( block );
+  mLabelAllPartsCheckBox->blockSignals( block );
 }
 
 void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
@@ -288,6 +321,10 @@ void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
 
       case QgsPalLayerSettings::CalloutDraw:
         mShowCalloutChkbx->setChecked( result.toBool() );
+        break;
+
+      case QgsPalLayerSettings::LabelAllParts:
+        mLabelAllPartsCheckBox->setChecked( result.toBool() );
         break;
 
       case QgsPalLayerSettings::MinimumScale:
@@ -344,11 +381,14 @@ void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
         }
         break;
       }
+      case QgsPalLayerSettings::MultiLineAlignment:
+        mMultiLineAlignComboBox->setCurrentIndex( mMultiLineAlignComboBox->findData( result.toString(), Qt::UserRole, Qt::MatchFixedString ) );
+        break;
       case QgsPalLayerSettings::Hali:
-        mHaliComboBox->setCurrentIndex( mHaliComboBox->findData( result.toString() ) );
+        mHaliComboBox->setCurrentIndex( mHaliComboBox->findData( result.toString(), Qt::UserRole, Qt::MatchFixedString ) );
         break;
       case QgsPalLayerSettings::Vali:
-        mValiComboBox->setCurrentIndex( mValiComboBox->findData( result.toString() ) );
+        mValiComboBox->setCurrentIndex( mValiComboBox->findData( result.toString(), Qt::UserRole, Qt::MatchFixedString ) );
         break;
       case QgsPalLayerSettings::BufferColor:
         mBufferColorButton->setColor( QColor( result.toString() ) );
@@ -383,6 +423,7 @@ void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
         break;
     }
   }
+  enableWidgetsForPinnedLabels();
 }
 
 void QgsLabelPropertyDialog::enableDataDefinedWidgets( QgsVectorLayer *vlayer )
@@ -438,11 +479,16 @@ void QgsLabelPropertyDialog::enableDataDefinedWidgets( QgsVectorLayer *vlayer )
       case QgsPalLayerSettings::LabelDistance:
         mLabelDistanceSpinBox->setEnabled( true );
         break;
+      case QgsPalLayerSettings::MultiLineAlignment:
+        mMultiLineAlignComboBox->setEnabled( true );
+        break;
       case QgsPalLayerSettings::Hali:
-        mHaliComboBox->setEnabled( true );
+        mCanSetHAlignment = true;
+        mHaliComboBox->setEnabled( mIsPinned );
         break;
       case QgsPalLayerSettings::Vali:
-        mValiComboBox->setEnabled( true );
+        mCanSetVAlignment = true;
+        mValiComboBox->setEnabled( mIsPinned );
         break;
       case QgsPalLayerSettings::BufferColor:
         mBufferColorButton->setEnabled( true );
@@ -477,6 +523,9 @@ void QgsLabelPropertyDialog::enableDataDefinedWidgets( QgsVectorLayer *vlayer )
         break;
       case QgsPalLayerSettings::CalloutDraw:
         mShowCalloutChkbx->setEnabled( true );
+        break;
+      case QgsPalLayerSettings::LabelAllParts:
+        mLabelAllPartsCheckBox->setEnabled( true );
         break;
       default:
         break;
@@ -524,6 +573,14 @@ void QgsLabelPropertyDialog::populateFontStyleComboBox()
   mFontStyleCmbBx->setCurrentIndex( curIndx );
 }
 
+void QgsLabelPropertyDialog::fillMultiLineAlignComboBox()
+{
+  mMultiLineAlignComboBox->addItem( tr( "Layer default" ), "" );
+  mMultiLineAlignComboBox->addItem( tr( "Left" ), "Left" );
+  mMultiLineAlignComboBox->addItem( tr( "Center" ), "Center" );
+  mMultiLineAlignComboBox->addItem( tr( "Right" ), "Right" );
+}
+
 void QgsLabelPropertyDialog::fillHaliComboBox()
 {
   mHaliComboBox->addItem( tr( "Left" ), "Left" );
@@ -548,6 +605,11 @@ void QgsLabelPropertyDialog::mShowLabelChkbx_toggled( bool chkd )
 void QgsLabelPropertyDialog::mAlwaysShowChkbx_toggled( bool chkd )
 {
   insertChangedValue( QgsPalLayerSettings::AlwaysShow, ( chkd ? 1 : 0 ) );
+}
+
+void QgsLabelPropertyDialog::labelAllPartsToggled( bool checked )
+{
+  insertChangedValue( QgsPalLayerSettings::LabelAllParts, ( checked ? 1 : 0 ) );
 }
 
 void QgsLabelPropertyDialog::showCalloutToggled( bool chkd )
@@ -584,7 +646,9 @@ void QgsLabelPropertyDialog::mXCoordSpinBox_valueChanged( double d )
     //null value
     x.clear();
   }
+
   insertChangedValue( QgsPalLayerSettings::PositionX, x );
+  enableWidgetsForPinnedLabels();
 }
 
 void QgsLabelPropertyDialog::mYCoordSpinBox_valueChanged( double d )
@@ -596,6 +660,7 @@ void QgsLabelPropertyDialog::mYCoordSpinBox_valueChanged( double d )
     y.clear();
   }
   insertChangedValue( QgsPalLayerSettings::PositionY, y );
+  enableWidgetsForPinnedLabels();
 }
 
 void QgsLabelPropertyDialog::mFontFamilyCmbBx_currentFontChanged( const QFont &f )
@@ -683,6 +748,11 @@ void QgsLabelPropertyDialog::mBufferColorButton_colorChanged( const QColor &colo
   insertChangedValue( QgsPalLayerSettings::BufferColor, color.name() );
 }
 
+void QgsLabelPropertyDialog::mMultiLineAlignComboBox_currentIndexChanged( const int index )
+{
+  insertChangedValue( QgsPalLayerSettings::MultiLineAlignment, mMultiLineAlignComboBox->itemData( index ) );
+}
+
 void QgsLabelPropertyDialog::mHaliComboBox_currentIndexChanged( const int index )
 {
   insertChangedValue( QgsPalLayerSettings::Hali, mHaliComboBox->itemData( index ) );
@@ -710,5 +780,25 @@ void QgsLabelPropertyDialog::insertChangedValue( QgsPalLayerSettings::Property p
     {
       mChangedProperties.insert( mCurLabelFeat.fieldNameIndex( prop.field() ), value );
     }
+  }
+}
+
+void QgsLabelPropertyDialog::enableWidgetsForPinnedLabels()
+{
+  const bool pinned = mXCoordSpinBox->value() >= ( mXCoordSpinBox->minimum() + mXCoordSpinBox->singleStep() ) &&
+                      mYCoordSpinBox->value() >= ( mYCoordSpinBox->minimum() + mYCoordSpinBox->singleStep() );
+
+  mHaliComboBox->setEnabled( pinned && mCanSetHAlignment );
+  mValiComboBox->setEnabled( pinned && mCanSetVAlignment );
+
+  if ( !pinned )
+  {
+    mHaliComboBox->setToolTip( tr( "Alignment can only be set for pinned labels" ) );
+    mValiComboBox->setToolTip( tr( "Alignment can only be set for pinned labels" ) );
+  }
+  else
+  {
+    mHaliComboBox->setToolTip( QString() );
+    mValiComboBox->setToolTip( QString() );
   }
 }

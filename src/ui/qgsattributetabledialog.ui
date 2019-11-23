@@ -155,6 +155,19 @@
         <item row="0" column="0">
          <widget class="QgsFilterLineEdit" name="mFilterQuery"/>
         </item>
+        <item row="0" column="1">
+         <widget class="QToolButton" name="mStoreFilterExpressionButton">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+          <property name="popupMode">
+           <enum>QToolButton::MenuButtonPopup</enum>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </item>
@@ -647,6 +660,57 @@
    </property>
    <property name="toolTip">
     <string>Dock Attribute Table</string>
+   </property>
+  </action>
+  <action name="mActionStoredFilterExpressions">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionHandleStoreFilterExpressionChecked.svg</normaloff>:/images/themes/default/mActionHandleStoreFilterExpressionChecked.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Stored Filter Expressions</string>
+   </property>
+   <property name="toolTip">
+    <string>Stored expressions to filter features</string>
+   </property>
+  </action>
+  <action name="mActionHandleStoreFilterExpression">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionHandleStoreFilterExpressionUnchecked.svg</normaloff>:/images/themes/default/mActionHandleStoreFilterExpressionUnchecked.svg</iconset>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="toolTip">
+    <string>Handle expression (save or delete)</string>
+   </property>
+  </action>
+  <action name="mActionSaveAsStoredFilterExpression">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionHandleStoreFilterExpressionUnchecked.svg</normaloff>:/images/themes/default/mActionHandleStoreFilterExpressionUnchecked.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Save Expression as...</string>
+   </property>
+   <property name="toolTip">
+    <string>Save expression under defined name</string>
+   </property>
+  </action>
+  <action name="mActionEditStoredFilterExpression">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionHandleStoreFilterExpressionChecked.svg</normaloff>:/images/themes/default/mActionHandleStoreFilterExpressionChecked.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Edit Expression</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit the stored expression (change name or content)</string>
    </property>
   </action>
  </widget>

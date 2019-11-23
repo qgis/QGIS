@@ -220,16 +220,13 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags f
 
   connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsOracleSourceSelect::treeWidgetSelectionChanged );
 
-  QgsSettings settings;
-  mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "qgis/addOracleDC" ), false ).toBool() ?
-                                     QAbstractItemView::ExtendedSelection :
-                                     QAbstractItemView::MultiSelection );
-
+  mTablesTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
   //for Qt < 4.3.2, passing -1 to include all model columns
   //in search does not seem to work
   mSearchColumnComboBox->setCurrentIndex( 2 );
 
+  QgsSettings settings;
   mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "/Windows/OracleSourceSelect/HoldDialogOpen" ), false ).toBool() );
 
   for ( int i = 0; i < mTableModel.columnCount(); i++ )
@@ -348,17 +345,9 @@ void QgsOracleSourceSelect::on_mTablesTreeView_clicked( const QModelIndex &index
   mBuildQueryButton->setEnabled( index.parent().isValid() );
 }
 
-void QgsOracleSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &index )
+void QgsOracleSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex & )
 {
-  QgsSettings settings;
-  if ( settings.value( QStringLiteral( "qgis/addOracleDC" ), false ).toBool() )
-  {
-    addButtonClicked();
-  }
-  else
-  {
-    setSql( index );
-  }
+  addButtonClicked();
 }
 
 void QgsOracleSourceSelect::on_mSearchGroupBox_toggled( bool checked )

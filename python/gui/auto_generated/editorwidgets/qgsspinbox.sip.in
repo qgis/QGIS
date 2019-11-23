@@ -146,6 +146,8 @@ is equal to minimum(). Typical use is to indicate that this choice has a special
 
     virtual void wheelEvent( QWheelEvent *event );
 
+    virtual void timerEvent( QTimerEvent *event );
+
 
 };
 

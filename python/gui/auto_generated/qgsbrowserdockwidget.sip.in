@@ -36,7 +36,8 @@ Constructor for QgsBrowserDockWidget
 %Docstring
 Add directory to favorites.
 
-.. deprecated:: will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead
+.. deprecated::
+   will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead
 %End
 
     void setMessageBar( QgsMessageBar *bar );
@@ -68,7 +69,8 @@ Adds the layer corresponding to the specified model ``index``.
 Returns ``True`` if the index was successfully intrepreted as a map layer and loaded, or
 ``False`` if the index is not a map layer or could not be loaded.
 
-.. deprecated:: will be removed in QGIS 4.0 - retrieve the QgsLayerItem itself and manually add to project.
+.. deprecated::
+   will be removed in QGIS 4.0 - retrieve the QgsLayerItem itself and manually add to project.
 %End
 
     void showContextMenu( QPoint );
@@ -80,21 +82,24 @@ Show context menu
 %Docstring
 Add current item to favorite.
 
-.. deprecated:: will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead
+.. deprecated::
+   will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead
 %End
 
  void addFavoriteDirectory() /Deprecated/;
 %Docstring
 Add directory from file dialog to favorite.
 
-.. deprecated:: will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead
+.. deprecated::
+   will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead
 %End
 
  void removeFavorite() /Deprecated/;
 %Docstring
 Remove from favorite.
 
-.. deprecated:: will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead
+.. deprecated::
+   will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead
 %End
 
     void refresh();
@@ -122,6 +127,10 @@ Sets filter case sensitivity
 %Docstring
 Apply filter to the model
 %End
+    void setActiveIndex( const QModelIndex &index );
+%Docstring
+Sets the selection to ``index`` and expand it
+%End
     void updateProjectHome();
 %Docstring
 Update project home directory
@@ -144,7 +153,8 @@ Hide current item
 %Docstring
 Toggle fast scan
 
-.. deprecated:: will be removed in QGIS 4.0
+.. deprecated::
+   will be removed in QGIS 4.0
 %End
 
 

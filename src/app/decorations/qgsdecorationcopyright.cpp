@@ -185,12 +185,12 @@ void QgsDecorationCopyright::render( const QgsMapSettings &mapSettings, QgsRende
       break;
     case TopCenter: // Top Center
       yOffset = yOffset + textHeight - textDescent;
-      xOffset = deviceWidth / 2;
+      xOffset = deviceWidth / 2 + xOffset;
       horizontalAlignment = QgsTextRenderer::AlignCenter;
       break;
     case BottomCenter: // Bottom Center
       yOffset = deviceHeight - yOffset - textDescent;
-      xOffset = deviceWidth / 2;
+      xOffset = deviceWidth / 2 + xOffset;
       horizontalAlignment = QgsTextRenderer::AlignCenter;
       break;
     default:

@@ -140,6 +140,17 @@ class TestQgsFeatureIterator(unittest.TestCase):
         self.assertEqual(fet['exp2'], -156)
         self.assertEqual(fet['exp1'], -234)
 
+    def test_ExpressionFieldDependingOnOtherFields(self):
+        myShpFile = os.path.join(TEST_DATA_DIR, 'points.shp')
+        layer = QgsVectorLayer(myShpFile, 'Points', 'ogr')
+        self.assertTrue(layer.isValid())
+
+        idx = layer.addExpressionField("eval('Class')", QgsField('exp1', QVariant.String))  # NOQA
+
+        fet = next(layer.getFeatures(QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes(['exp1'], layer.fields())))
+
+        self.assertEqual(fet['exp1'], 'Jet')
+
     def test_ExpressionFieldNestedCircular(self):
         """ test circular virtual field definitions """
 

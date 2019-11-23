@@ -118,9 +118,11 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/scalebar
   ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/classification
   ${CMAKE_SOURCE_DIR}/src/core/validity
   ${CMAKE_SOURCE_DIR}/src/plugins
   ${CMAKE_SOURCE_DIR}/external
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
 
   ${CMAKE_BINARY_DIR}  # qgsconfig.h, qgsversion.h
   ${CMAKE_BINARY_DIR}/src/core
@@ -255,6 +257,7 @@ IF (WITH_SERVER AND WITH_SERVER_PLUGINS)
   INCLUDE_DIRECTORIES(
     ../src/server
    ${CMAKE_BINARY_DIR}/src/server
+   ${CMAKE_SOURCE_DIR}/external
   )
 
   SET(PY_MODULES ${PY_MODULES} server)

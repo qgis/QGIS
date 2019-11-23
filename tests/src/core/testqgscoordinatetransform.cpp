@@ -40,9 +40,10 @@ class TestQgsCoordinateTransform: public QObject
     void scaleFactor_data();
     void transform_data();
     void transform();
-
-  private:
-
+    void transformLKS();
+    void transformContextNormalize();
+    void transformErrorMultiplePoints();
+    void transformErrorOnePoint();
 };
 
 
@@ -328,7 +329,50 @@ void TestQgsCoordinateTransform::transform_data()
       << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
       << QgsCoordinateReferenceSystem::fromEpsgId( 4164 )
       << 145.510966 <<  -37.961741 << static_cast< int >( QgsCoordinateTransform::ReverseTransform ) <<  145.512750 <<  -37.961375 << 0.0001;
-
+  QTest::newRow( "From LKS92/TM to Baltic93/TM" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 3059 )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 25884 )
+      << 725865.850 << 198519.947 << static_cast< int >( QgsCoordinateTransform::ForwardTransform ) << 725865.850 << 6198519.947 << 0.001;
+  QTest::newRow( "From LKS92/TM to Baltic93/TM (reverse)" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 3059 )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 25884 )
+      << 725865.850 << 6198519.947 << static_cast< int >( QgsCoordinateTransform::ReverseTransform ) << 725865.850 << 198519.947 << 0.001;
+  QTest::newRow( "From LKS92/TM to WGS84" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 3059 )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
+      << 725865.850 << 198519.947 << static_cast< int >( QgsCoordinateTransform::ForwardTransform ) << 27.61113711 << 55.87910378 << 0.00000001;
+  QTest::newRow( "From LKS92/TM to WGS84 (reverse)" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 3059 )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
+      << 27.61113711 << 55.87910378 << static_cast< int >( QgsCoordinateTransform::ReverseTransform ) << 725865.850 << 198519.947 << 0.001;
+  QTest::newRow( "From BNG to WGS84" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 27700 )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
+      << 7467023.96 << -5527971.74 << static_cast< int >( QgsCoordinateTransform::ForwardTransform ) << 51.400222 << 0.000025 << 0.4;
+  QTest::newRow( "From BNG to WGS84 2" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 27700 )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
+      << 246909.0 << 54108.0 << static_cast< int >( QgsCoordinateTransform::ForwardTransform ) << -4.153951 <<  50.366908  << 0.4;
+  QTest::newRow( "From BNG to WGS84 (reverse)" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 27700 )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
+      << 51.400222 << 0.000025 << static_cast< int >( QgsCoordinateTransform::ReverseTransform ) << 7467023.96 << -5527971.74 << 22000.0;
+  QTest::newRow( "From WGS84 to BNG (reverse)" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 27700 )
+      << 7467023.96 << -5527971.74 << static_cast< int >( QgsCoordinateTransform::ReverseTransform ) << 51.400222 << 0.000025 << 0.4;
+  QTest::newRow( "From WGS84 to BNG" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 27700 )
+      << 51.400222 << 0.000025 << static_cast< int >( QgsCoordinateTransform::ForwardTransform ) << 7467023.96 << -5527971.74 << 22000.0;
+  QTest::newRow( "From BNG to 3857" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 27700 )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 3857 )
+      << 7467023.96 << -5527971.74 << static_cast< int >( QgsCoordinateTransform::ForwardTransform ) << 5721846.47 << 2.78 << 43000.0;
+  QTest::newRow( "From BNG to 3857 (reverse)" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 27700 )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 3857 )
+      << 5721846.47 << 2.78 << static_cast< int >( QgsCoordinateTransform::ReverseTransform )  << 7467023.96 << -5527971.74 << 22000.0;
 }
 
 void TestQgsCoordinateTransform::transform()
@@ -390,6 +434,102 @@ void TestQgsCoordinateTransform::transformBoundingBox()
     errorObtained = true;
   }
   QVERIFY( errorObtained );
+}
+
+void TestQgsCoordinateTransform::transformLKS()
+{
+  QgsCoordinateReferenceSystem LKS92 = QgsCoordinateReferenceSystem::fromEpsgId( 3059 );
+  QVERIFY( LKS92.isValid() );
+  QgsCoordinateReferenceSystem Baltic93 = QgsCoordinateReferenceSystem::fromEpsgId( 25884 );
+  QVERIFY( Baltic93.isValid() );
+  QgsCoordinateReferenceSystem WGS84 = QgsCoordinateReferenceSystem::fromEpsgId( 4326 );
+  QVERIFY( WGS84.isValid() );
+
+  QgsCoordinateTransform Lks2Balt( LKS92, Baltic93, QgsProject::instance() );
+  QVERIFY( Lks2Balt.isValid() );
+  QgsCoordinateTransform Lks2Wgs( LKS92, WGS84, QgsProject::instance() );
+  QVERIFY( Lks2Wgs.isValid() );
+
+  QPolygonF sPoly = QgsGeometry::fromWkt( QStringLiteral( "Polygon (( 725865.850 198519.947, 363511.181 263208.769, 717694.697 333650.333, 725865.850 198519.947 ))" ) ).asQPolygonF();
+
+  Lks2Balt.transformPolygon( sPoly, QgsCoordinateTransform::ForwardTransform );
+
+  QGSCOMPARENEAR( sPoly.at( 0 ).x(), 725865.850, 0.001 );
+  QGSCOMPARENEAR( sPoly.at( 0 ).y(), 6198519.947, 0.001 );
+  QGSCOMPARENEAR( sPoly.at( 1 ).x(), 363511.181, 0.001 );
+  QGSCOMPARENEAR( sPoly.at( 1 ).y(), 6263208.769, 0.001 );
+  QGSCOMPARENEAR( sPoly.at( 2 ).x(), 717694.697, 0.001 );
+  QGSCOMPARENEAR( sPoly.at( 2 ).y(), 6333650.333, 0.001 );
+}
+
+void TestQgsCoordinateTransform::transformContextNormalize()
+{
+#if PROJ_VERSION_MAJOR >= 6
+  // coordinate operation for WGS84 to 27700
+  const QString coordOperation = QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=push +v_3 +step +proj=cart +ellps=WGS84 +step +inv +proj=helmert +x=446.448 +y=-125.157 +z=542.06 +rx=0.15 +ry=0.247 +rz=0.842 +s=-20.489 +convention=position_vector +step +inv +proj=cart +ellps=airy +step +proj=pop +v_3 +step +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy" );
+  QgsCoordinateTransformContext context;
+  context.addCoordinateOperation( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsCoordinateReferenceSystem::fromEpsgId( 27700 ), coordOperation );
+
+  QgsCoordinateTransform ct( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsCoordinateReferenceSystem::fromEpsgId( 27700 ), context );
+  QVERIFY( ct.isValid() );
+  QgsPointXY p( -4.17477, 50.3657 );
+  QgsPointXY p2 = ct.transform( p );
+  QGSCOMPARENEAR( p2.x(), 245424.604645, 0.01 );
+  QGSCOMPARENEAR( p2.y(), 54016.813093, 0.01 );
+
+  p = ct.transform( p2, QgsCoordinateTransform::ReverseTransform );
+  QGSCOMPARENEAR( p.x(), -4.17477, 0.01 );
+  QGSCOMPARENEAR( p.y(), 50.3657, 0.01 );
+
+  QgsCoordinateTransform ct2( QgsCoordinateReferenceSystem::fromEpsgId( 27700 ), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), context );
+  QVERIFY( ct2.isValid() );
+  p = QgsPointXY( 245424.604645, 54016.813093 );
+  p2 = ct2.transform( p );
+  QGSCOMPARENEAR( p2.x(), -4.17477, 0.01 );
+  QGSCOMPARENEAR( p2.y(), 50.3657, 0.01 );
+
+  p = ct2.transform( p2, QgsCoordinateTransform::ReverseTransform );
+  QGSCOMPARENEAR( p.x(), 245424.604645, 0.01 );
+  QGSCOMPARENEAR( p.y(), 54016.813093, 0.01 );
+
+#endif
+}
+
+
+void TestQgsCoordinateTransform::transformErrorMultiplePoints()
+{
+  // Check that we don't throw an exception when transforming multiple
+  // points and at least one fails.
+  QgsCoordinateTransformContext context;
+  QgsCoordinateTransform ct( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsCoordinateReferenceSystem::fromEpsgId( 3857 ), context );
+  QVERIFY( ct.isValid() );
+  double x[] = { 0, -1000 };
+  double y[] = { 0, 0 };
+  double z[] = { 0, 0 };
+  ct.transformCoords( 2, x, y, z );
+  QGSCOMPARENEAR( x[0], 0, 0.01 );
+  QGSCOMPARENEAR( y[0], 0, 0.01 );
+  QVERIFY( !std::isfinite( x[1] ) );
+  QVERIFY( !std::isfinite( y[1] ) );
+}
+
+
+void TestQgsCoordinateTransform::transformErrorOnePoint()
+{
+  QgsCoordinateTransformContext context;
+  QgsCoordinateTransform ct( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsCoordinateReferenceSystem::fromEpsgId( 3857 ), context );
+  QVERIFY( ct.isValid() );
+  double x[] = {  -1000 };
+  double y[] = {  0 };
+  double z[] = {  0 };
+  try
+  {
+    ct.transformCoords( 1, x, y, z );
+    QVERIFY( false );
+  }
+  catch ( QgsCsException & )
+  {
+  }
 }
 
 QGSTEST_MAIN( TestQgsCoordinateTransform )

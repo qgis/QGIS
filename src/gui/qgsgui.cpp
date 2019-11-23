@@ -15,6 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
+
+#include <QScreen>
+#include <QDesktopWidget>
+#include <QMessageBox>
+
 #include "qgsgui.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgslayertreeembeddedwidgetregistry.h"
@@ -49,6 +54,9 @@
 #include "qgsproviderregistry.h"
 #include "qgsproviderguiregistry.h"
 #include "qgsprojectstorageguiregistry.h"
+#include "qgsmessagebar.h"
+#include "qgsmessagebaritem.h"
+
 
 QgsGui *QgsGui::instance()
 {
@@ -165,6 +173,31 @@ QgsGui::~QgsGui()
   delete mProviderGuiRegistry;
 }
 
+QColor QgsGui::sampleColor( QPoint point )
+{
+  QScreen *screen = findScreenAt( point );
+  if ( ! screen )
+  {
+    return QColor();
+  }
+  QPixmap snappedPixmap = screen->grabWindow( QApplication::desktop()->winId(), point.x(), point.y(), 1, 1 );
+  QImage snappedImage = snappedPixmap.toImage();
+  return snappedImage.pixel( 0, 0 );
+}
+
+QScreen *QgsGui::findScreenAt( QPoint point )
+{
+  const QList< QScreen * > screens = QGuiApplication::screens();
+  for ( QScreen *screen : screens )
+  {
+    if ( screen->geometry().contains( point ) )
+    {
+      return screen;
+    }
+  }
+  return nullptr;
+}
+
 QgsGui::QgsGui()
 {
 #ifdef Q_OS_MAC
@@ -201,6 +234,77 @@ QgsGui::QgsGui()
   mWidgetStateHelper = new QgsWidgetStateHelper();
   mProcessingRecentAlgorithmLog = new QgsProcessingRecentAlgorithmLog();
   mProcessingGuiRegistry = new QgsProcessingGuiRegistry();
+}
 
+bool QgsGui::pythonMacroAllowed( void ( *lambda )(), QgsMessageBar *messageBar )
+{
+  Qgis::PythonMacroMode macroMode = QgsSettings().enumValue( QStringLiteral( "qgis/enableMacros" ), Qgis::PythonMacroMode::Ask );
 
+  switch ( macroMode )
+  {
+    case Qgis::PythonMacroMode::SessionOnly:
+    case Qgis::PythonMacroMode::Always:
+      if ( lambda )
+        lambda();
+      return true;
+    case Qgis::PythonMacroMode::Never:
+    case Qgis::PythonMacroMode::NotForThisSession:
+      if ( messageBar )
+      {
+        messageBar->pushMessage( tr( "Python Macros" ),
+                                 tr( "Python macros are currently disabled and will not be run" ),
+                                 Qgis::MessageLevel::Warning );
+      }
+      return false;
+    case Qgis::PythonMacroMode::Ask:
+      if ( !lambda )
+      {
+        QMessageBox msgBox( QMessageBox::Information, tr( "Python Macros" ),
+                            tr( "Python macros are currently disabled. Do you allow this macro to run?" ) );
+        QAbstractButton *stopSessionButton = msgBox.addButton( tr( "Don't Ask Anymore" ), QMessageBox::DestructiveRole );
+        msgBox.addButton( tr( "No" ), QMessageBox::NoRole );
+        QAbstractButton *yesButton = msgBox.addButton( tr( "Yes" ), QMessageBox::YesRole );
+        msgBox.exec();
+
+        QAbstractButton *clicked = msgBox.clickedButton();
+        if ( clicked == stopSessionButton )
+        {
+          QgsSettings().setEnumValue( QStringLiteral( "qgis/enableMacros" ), Qgis::PythonMacroMode::NotForThisSession );
+        }
+        return clicked == yesButton;
+      }
+      else
+      {
+        // create the notification widget for macros
+        Q_ASSERT( messageBar );
+        if ( messageBar )
+        {
+          QToolButton *btnEnableMacros = new QToolButton();
+          btnEnableMacros->setText( tr( "Enable Macros" ) );
+          btnEnableMacros->setStyleSheet( QStringLiteral( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" ) );
+          btnEnableMacros->setCursor( Qt::PointingHandCursor );
+          btnEnableMacros->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
+
+          QgsMessageBarItem *macroMsg = new QgsMessageBarItem(
+            tr( "Security warning" ),
+            tr( "Python macros cannot currently be run." ),
+            btnEnableMacros,
+            Qgis::Warning,
+            0,
+            messageBar );
+
+          connect( btnEnableMacros, &QToolButton::clicked, messageBar, [ = ]()
+          {
+            lambda();
+            messageBar->popWidget( macroMsg );
+          } );
+
+          // display the macros notification widget
+          messageBar->pushItem( macroMsg );
+        }
+
+        return false;
+      }
+  }
+  return false;
 }

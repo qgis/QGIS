@@ -47,6 +47,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
       FlagHideCoverageLayer = 1 << 6, //!< Hide coverage layer in outputs
       FlagDrawSelection = 1 << 7, //!< Draw selection
       FlagDisableTiledRasterLayerRenders = 1 << 8, //!< If set, then raster layers will not be drawn as separate tiles. This may improve the appearance in exported files, at the cost of much higher memory usage during exports.
+      FlagRenderLabelsByMapLayer = 1 << 9, //!< When rendering map items to multi-layered exports, render labels belonging to different layers into separate export layers
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -187,8 +188,9 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * If \a layer is -1, all item layers will be rendered.
      *
      * \see currentExportLayer()
+     * \deprecated Items should now handle this themselves, via QgsLayoutItem::exportLayerBehavior() and returning QgsLayoutItem::nextExportPart().
      */
-    void setCurrentExportLayer( int layer = -1 ) { mCurrentExportLayer = layer; }
+    Q_DECL_DEPRECATED void setCurrentExportLayer( int layer = -1 ) SIP_DEPRECATED { mCurrentExportLayer = layer; }
 
     /**
      * Returns the current item layer to draw while exporting. QgsLayoutItem subclasses
@@ -198,8 +200,9 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * If \a layer is -1, all item layers should be rendered.
      *
      * \see setCurrentExportLayer()
+     * \deprecated Items should now handle this themselves, via QgsLayoutItem::exportLayerBehavior() and returning QgsLayoutItem::nextExportPart().
      */
-    int currentExportLayer() const { return mCurrentExportLayer; }
+    Q_DECL_DEPRECATED int currentExportLayer() const SIP_DEPRECATED  { return mCurrentExportLayer; }
 
     /**
      * Returns the text render format, which dictates how text is rendered (e.g. as paths or real text objects).
@@ -223,6 +226,76 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
       mTextRenderFormat = format;
     }
 
+    /**
+     * Sets the simplification setting to use when rendering vector layers.
+     *
+     * If the simplify \a method is enabled, it apply to all vector layers rendered inside map items.
+     *
+     * This can be used to specify global simplification methods to apply during map exports,
+     * e.g. to allow vector layers to be simplified to an appropriate maximum level of detail
+     * during PDF exports (avoiding excessive PDF size due to huge numbers of vertices).
+     *
+     * The default is to use no simplification.
+     *
+     * \note This simplification method is only used during non-preview renders.
+     *
+     * \see simplifyMethod()
+     *
+     * \since QGIS 3.10
+     */
+    void setSimplifyMethod( const QgsVectorSimplifyMethod &method ) { mSimplifyMethod = method; }
+
+    /**
+     * Returns the simplification settings to use when rendering vector layers.
+     *
+     * If enabled, it will apply to all vector layers rendered for the map.
+     *
+     * The default is to use no simplification.
+     *
+     * \note This simplification method is only used during non-preview renders.
+     *
+     * \see setSimplifyMethod()
+     * \since QGIS 3.10
+     */
+    const QgsVectorSimplifyMethod &simplifyMethod() const { return mSimplifyMethod; }
+
+    /**
+     * Returns a list of map themes to use during the export.
+     *
+     * Items which handle layered exports (e.g. maps) may utilize this list to export different
+     * representations of the item as export layers, as they iterate through these included themes.
+     *
+     * \see setExportThemes()
+     * \since QGIS 3.10
+     */
+    QStringList exportThemes() const;
+
+    /**
+     * Sets a list of map \a themes to use during the export.
+     *
+     * Items which handle layered exports (e.g. maps) may utilize this list to export different
+     * representations of the item as export layers, as they iterate through these included themes.
+     *
+     * \see exportThemes()
+     * \since QGIS 3.10
+     */
+    void setExportThemes( const QStringList &themes );
+
+    /**
+     * Sets the list of predefined \a scales to use with the layout. This is used
+     * for maps which are set to the predefined atlas scaling mode.
+     * \see predefinedScales()
+     * \since QGIS 3.10
+     */
+    void setPredefinedScales( const QVector<qreal> &scales );
+
+    /**
+     * Returns the current list of predefined scales for use with the layout.
+     * \see setPredefinedScales()
+     * \since QGIS 3.10
+     */
+    QVector<qreal> predefinedScales() const { return mPredefinedScales; }
+
   signals:
 
     /**
@@ -235,6 +308,13 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * Emitted when the context's DPI is changed.
      */
     void dpiChanged();
+
+    /**
+     * Emitted when the list of predefined scales changes.
+     * \see predefinedScales()
+     * \since QGIS 3.10
+     */
+    void predefinedScalesChanged();
 
   private:
 
@@ -255,9 +335,17 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
 
     QgsRenderContext::TextRenderFormat mTextRenderFormat = QgsRenderContext::TextFormatAlwaysOutlines;
 
+    QStringList mExportThemes;
+
+    QgsVectorSimplifyMethod mSimplifyMethod;
+
+    QVector<qreal> mPredefinedScales;
+
     friend class QgsLayoutExporter;
     friend class TestQgsLayout;
     friend class LayoutContextPreviewSettingRestorer;
+    friend class TestQgsLayoutMap;
+    friend class TestQgsLayoutLabel;
 
 };
 

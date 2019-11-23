@@ -55,8 +55,8 @@ rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterf
   connect( mDeleteTestButton, &QAbstractButton::clicked, this, &rulesDialog::deleteTest );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &rulesDialog::showHelp );
 
-  connect( mLayer1Box, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &rulesDialog::updateRuleItems );
-  connect( mRuleBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &rulesDialog::showControls );
+  connect( mLayer1Box, &QComboBox::currentTextChanged, this, &rulesDialog::updateRuleItems );
+  connect( mRuleBox, &QComboBox::currentTextChanged, this, &rulesDialog::showControls );
 
   mRuleBox->setCurrentIndex( 0 );
 

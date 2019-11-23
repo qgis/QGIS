@@ -155,6 +155,26 @@ Returns the server-wide max width of a WMS GetMap request. The lower one of this
 .. versionadded:: 3.8
 %End
 
+    QString apiResourcesDirectory() const;
+%Docstring
+Returns the server-wide base directory where HTML templates and static assets (e.g. images, js and css files) are searched for.
+
+The default path is calculated by joining QgsApplication.pkgDataPath() with "resources/server/api", this path
+can be changed by setting the environment variable QGIS_SERVER_API_RESOURCES_DIRECTORY.
+
+.. versionadded:: 3.10
+%End
+
+    qlonglong apiWfs3MaxLimit() const;
+%Docstring
+Returns the server-wide maximum allowed value for \"limit\" in a features request.
+
+The default value is 10000, this value can be changed by setting the environment
+variable QGIS_SERVER_API_WFS3_MAX_LIMIT.
+
+.. versionadded:: 3.10
+%End
+
 };
 
 /************************************************************************

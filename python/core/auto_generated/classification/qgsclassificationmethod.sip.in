@@ -1,0 +1,320 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/classification/qgsclassificationmethod.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+// This is required for the ConvertToSubClassCode to work properly
+// so RTTI for casting is available in the whole module.
+%ModuleCode
+#include "qgsclassificationequalinterval.h"
+#include "qgsclassificationjenks.h"
+#include "qgsclassificationprettybreaks.h"
+#include "qgsclassificationquantile.h"
+#include "qgsclassificationstandarddeviation.h"
+%End
+
+
+
+class QgsClassificationRange
+{
+%Docstring
+QgsClassificationRange contains the information about a classification range
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsclassificationmethod.h"
+%End
+  public:
+    QgsClassificationRange( const QString &label, double lowerBound, double upperBound );
+%Docstring
+Constructor
+%End
+    double lowerBound() const;
+%Docstring
+Returns the lower bound
+%End
+    double upperBound() const;
+%Docstring
+Returns the upper bound
+%End
+
+    QString label() const;
+%Docstring
+Returns the lower bound
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsClassificationRange: '%1'>" ).arg( sipCpp->label() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+};
+
+
+
+class QgsClassificationMethod /Abstract/
+{
+%Docstring
+QgsClassificationMethod is an abstract class for implementations of classification methods
+
+.. seealso:: :py:class:`QgsClassificationMethodRegistry`
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsclassificationmethod.h"
+%End
+%ConvertToSubClassCode
+    if ( dynamic_cast<QgsClassificationEqualInterval *>( sipCpp ) )
+      sipType = sipType_QgsClassificationEqualInterval;
+    else if ( dynamic_cast<QgsClassificationJenks *>( sipCpp ) )
+      sipType = sipType_QgsClassificationJenks;
+    else if ( dynamic_cast<QgsClassificationPrettyBreaks *>( sipCpp ) )
+      sipType = sipType_QgsClassificationPrettyBreaks;
+    else if ( dynamic_cast<QgsClassificationQuantile *>( sipCpp ) )
+      sipType = sipType_QgsClassificationQuantile;
+    else if ( dynamic_cast<QgsClassificationStandardDeviation *>( sipCpp ) )
+      sipType = sipType_QgsClassificationStandardDeviation;
+    else
+      sipType = 0;
+%End
+  public:
+
+    enum MethodProperty
+    {
+      NoFlag,
+      ValuesNotRequired,
+      SymmetricModeAvailable,
+    };
+    typedef QFlags<QgsClassificationMethod::MethodProperty> MethodProperties;
+
+
+
+    enum ClassPosition
+    {
+      LowerBound,
+      Inner,
+      UpperBound
+    };
+
+    explicit QgsClassificationMethod( MethodProperties properties = NoFlag, int codeComplexity = 1 );
+%Docstring
+Creates a classification method.
+
+:param properties: The properties of the implemented method
+:param codeComplexity: as the exponent in the big O notation
+%End
+
+    virtual ~QgsClassificationMethod();
+
+    virtual QgsClassificationMethod *clone() const = 0 /Factory/;
+%Docstring
+Returns a clone of the method.
+Implementation can take advantage of copyBase method which copies the parameters of the base class
+%End
+
+    virtual QString name() const = 0;
+%Docstring
+The readable and translate name of the method
+%End
+
+    virtual QString id() const = 0;
+%Docstring
+The id of the method as saved in the project, must be unique in registry
+%End
+
+    virtual QIcon icon() const;
+%Docstring
+The icon of the method
+%End
+
+    virtual QString labelForRange( double lowerValue, double upperValue, ClassPosition position = Inner ) const;
+%Docstring
+Returns the label for a range
+%End
+
+
+    virtual void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const;
+%Docstring
+Writes extra information about the method
+%End
+    virtual void readXml( const QDomElement &element, const QgsReadWriteContext &context );
+%Docstring
+Reads extra information to apply it to the method
+%End
+
+
+    bool valuesRequired() const;
+%Docstring
+Returns if the method requires values to calculate the classes
+If not, bounds are sufficient
+%End
+
+    int codeComplexity() const;
+%Docstring
+Code complexity as the exponent in Big O notation
+%End
+
+    bool symmetricModeAvailable() const;
+%Docstring
+Returns if the method supports symmetric calculation
+%End
+
+    bool symmetricModeEnabled() const;
+%Docstring
+Returns if the symmetric mode is enabled
+%End
+
+    double symmetryPoint() const;
+%Docstring
+Returns the symmetry point for symmetric mode
+%End
+
+    bool symmetryAstride() const;
+%Docstring
+Returns if the symmetric mode is astride
+if ``True``, it will remove the symmetry point break so that the 2 classes form only one
+%End
+
+    void setSymmetricMode( bool enabled, double symmetryPoint = 0, bool symmetryAstride = false );
+%Docstring
+Defines if the symmetric mode is enables and configures its parameters.
+If the symmetric mode is not available in the current implementation, calling this method has no effect.
+
+:param enabled: if the symmetric mode is enabled
+:param symmetryPoint: the value of the symmetry point
+:param symmetryAstride: if ``True``, it will remove the symmetry point break so that the 2 classes form only one
+%End
+
+    QString labelFormat() const;
+%Docstring
+Returns the format of the label for the classes
+%End
+    void setLabelFormat( const QString &format );
+%Docstring
+Defines the format of the labels for the classes, using %1 and %2 for the bounds
+%End
+    int labelPrecision() const;
+%Docstring
+Returns the precision for the formatting of the labels
+%End
+    void setLabelPrecision( int labelPrecision );
+%Docstring
+Defines the precision for the formatting of the labels
+%End
+    bool labelTrimTrailingZeroes() const;
+%Docstring
+Returns if the trailing 0 are trimmed in the label
+%End
+    void setLabelTrimTrailingZeroes( bool trimTrailingZeroes );
+%Docstring
+Defines if the trailing 0 are trimmed in the label
+%End
+
+    static QList<double> rangesToBreaks( const QList<QgsClassificationRange> &classes );
+%Docstring
+Transforms a list of classes to a list of breaks
+%End
+
+    QList<QgsClassificationRange> classes( const QgsVectorLayer *layer, const QString &expression, int nclasses );
+%Docstring
+This will calculate the classes for a given layer to define the classes.
+
+:param layer: The vector layer
+:param expression: The name of the field on which the classes are calculated
+:param nclasses: The number of classes to be returned
+%End
+
+    QList<QgsClassificationRange> classes( const QList<double> &values, int nclasses );
+%Docstring
+This will calculate the classes for a list of values.
+
+:param values: The list of values
+:param nclasses: The number of classes to be returned
+%End
+
+    QList<QgsClassificationRange> classes( double minimum, double maximum, int nclasses );
+%Docstring
+This will calculate the classes for defined bounds without any values.
+
+.. warning::
+
+   If the method implementation requires values, this will return an empty list.
+
+:param minimum: The minimum value for the breaks
+:param maximum: The maximum value for the breaks
+:param nclasses: The number of classes to be returned
+%End
+
+    QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+%Docstring
+Saves the method to a DOM element and return it
+
+:param doc: the DOM document
+:param context: the read/write context
+%End
+
+    static QgsClassificationMethod *create( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+Reads the DOM element and return a new classification method from it
+
+:param element: the DOM element
+:param context: the read/write context
+%End
+
+    static void makeBreaksSymmetric( QList<double> &breaks /In,Out/, double symmetryPoint, bool astride );
+%Docstring
+Remove the breaks that are above the existing opposite sign classes to keep colors symmetrically balanced around symmetryPoint
+Does not put a break on the symmetryPoint. This is done before.
+
+:param breaks: The breaks of an already-done classification
+:param symmetryPoint: The point around which we want a symmetry
+:param astride: A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
+%End
+
+    QString labelForRange( const QgsRendererRange &range, ClassPosition position = Inner ) const;
+%Docstring
+Returns the label for a range
+%End
+
+
+
+    static const int MAX_PRECISION;
+    static const int MIN_PRECISION;
+
+  protected:
+
+    void copyBase( QgsClassificationMethod *c ) const;
+%Docstring
+Copy the parameters (shall be used in clone implementation)
+%End
+
+    QString formatNumber( double value ) const;
+%Docstring
+Format the number according to label properties
+%End
+
+};
+
+QFlags<QgsClassificationMethod::MethodProperty> operator|(QgsClassificationMethod::MethodProperty f1, QFlags<QgsClassificationMethod::MethodProperty> f2);
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/classification/qgsclassificationmethod.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

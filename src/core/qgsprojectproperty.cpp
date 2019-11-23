@@ -220,7 +220,7 @@ bool QgsProjectPropertyValue::readXml( const QDomNode &keyNode )
 #endif
 
     default :
-      QgsDebugMsg( QStringLiteral( "unsupported value type %1 .. not propertly translated to QVariant" ).arg( typeString ) );
+      QgsDebugMsg( QStringLiteral( "unsupported value type %1 .. not properly translated to QVariant" ).arg( typeString ) );
   }
 
   return true;

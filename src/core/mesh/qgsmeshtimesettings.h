@@ -35,7 +35,7 @@
 class CORE_EXPORT QgsMeshTimeSettings
 {
   public:
-    //! Default constructor for relative time formate and 0 offset
+    //! Default constructor for relative time format and 0 offset
     QgsMeshTimeSettings();
     //! Constructs relative time format settings with defined offset in hours
     QgsMeshTimeSettings( double relativeTimeOffsetHours, const QString &relativeTimeFormat );
@@ -57,6 +57,18 @@ class CORE_EXPORT QgsMeshTimeSettings
     //! Sets number of offset hours for relative time formatting
     void setRelativeTimeOffsetHours( double relativeTimeOffsetHours );
 
+    /**
+     * Returns number of seconds used as interval for dataset playback
+     * \since QGIS 3.12
+     */
+    double datasetPlaybackInterval() const; SIP_SKIP
+
+    /**
+     * Sets number of seconds used as interval for dataset playback
+     * \since QGIS 3.12
+     */
+    void setDatasetPlaybackInterval( double seconds ); SIP_SKIP
+
     //! Returns format used for relative time
     QString relativeTimeFormat() const;
     //! Sets format used for relative time
@@ -76,6 +88,7 @@ class CORE_EXPORT QgsMeshTimeSettings
     bool mUseAbsoluteTime = false;
 
     double mRelativeTimeOffsetHours = 0;
+    double mDatasetPlaybackIntervalSec = 3;
     QString mRelativeTimeFormat = QStringLiteral( "d hh:mm:ss" );
 
     QDateTime mAbsoluteTimeReferenceTime;

@@ -79,6 +79,7 @@ void QgsDecorationNorthArrow::saveToProject()
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/OutlineColor" ), QgsSymbolLayerUtils::encodeColor( mOutlineColor ) );
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Size" ), mSize );
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/SvgPath" ), mSvgPath );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Rotation" ), mRotationInt );
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Automatic" ), mAutomatic );
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginH" ), mMarginHorizontal );
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginV" ), mMarginVertical );
@@ -219,7 +220,12 @@ void QgsDecorationNorthArrow::render( const QgsMapSettings &mapSettings, QgsRend
                                       deviceHeight - yOffset - maxLength + ( maxLength - size.height() ) / 2 );
         break;
       case TopCenter:
+        context.painter()->translate( deviceWidth / 2 - size.width() / 2 + xOffset, yOffset );
+        break;
       case BottomCenter:
+        context.painter()->translate( deviceWidth / 2 - size.width() / 2 + xOffset,
+                                      deviceHeight - yOffset - size.height() );
+        break;
       default:
         QgsDebugMsg( QStringLiteral( "Unsupported placement index of %1" ).arg( static_cast<int>( mPlacement ) ) );
     }

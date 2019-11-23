@@ -295,7 +295,6 @@ QString QgsNewVectorLayerDialog::execAndCreateLayer( QString &errorMessage, QWid
   settings.setValue( QStringLiteral( "UI/encoding" ), enc );
 
   //try to create the new layer with OGRProvider instead of QgsVectorFileWriter
-  QString createError;
   if ( geometrytype != QgsWkbTypes::Unknown )
   {
     QgsCoordinateReferenceSystem srs = geomDialog.crs();

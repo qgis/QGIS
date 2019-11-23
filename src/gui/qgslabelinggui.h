@@ -52,27 +52,11 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
 
     void setSettings( const QgsPalLayerSettings &settings );
 
-    /**
-     * Deactivate a field from data defined properties and update the
-     * corresponding button.
-     *
-     * \param key The property key to deactivate
-     *
-     * \since QGIS 3.0
-     */
-    void deactivateField( QgsPalLayerSettings::Property key );
-
     void setContext( const QgsSymbolWidgetContext &context ) override;
-
-  signals:
-
-    void auxiliaryFieldCreated();
 
   public slots:
 
     void updateUi();
-
-    void createAuxiliaryField();
 
   protected slots:
     void setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type ) override;
@@ -100,23 +84,17 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
     void calloutTypeChanged();
 
   private:
+
     QgsWkbTypes::GeometryType mGeomType = QgsWkbTypes::UnknownGeometry;
     QgsPalLayerSettings mSettings;
-    QgsPropertyCollection mDataDefinedProperties;
     LabelMode mMode;
     QgsFeature mPreviewFeature;
     QgsMapCanvas *mCanvas = nullptr;
 
     QgsExpressionContext createExpressionContext() const override;
 
-    void populateDataDefinedButtons();
-    void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsPalLayerSettings::Property key );
-
-    QMap<QgsPalLayerSettings::Property, QgsPropertyOverrideButton *> mButtons;
-
   private slots:
 
-    void updateProperty();
     void initCalloutWidgets();
     void updateCalloutWidget( QgsCallout *callout );
 
@@ -142,6 +120,9 @@ class GUI_EXPORT QgsLabelSettingsDialog : public QDialog
 
     QgsLabelingGui *mWidget = nullptr;
     QDialogButtonBox *mButtonBox = nullptr;
+
+  private slots:
+    void showHelp();
 
 };
 

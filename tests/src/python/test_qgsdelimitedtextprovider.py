@@ -41,7 +41,9 @@ from qgis.core import (
     QgsFeatureRequest,
     QgsRectangle,
     QgsApplication,
-    QgsFeature)
+    QgsFeature,
+    QgsWkbTypes,
+    QgsFeatureSource)
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath, compareWkt
@@ -825,6 +827,85 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
         registry = QgsProviderRegistry.instance()
         components = registry.decodeUri('delimitedtext', uri)
         self.assertEqual(components['path'], filename)
+
+    def test_044_ZM(self):
+        # Create test layer
+        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
+        basetestfile = os.path.join(srcpath, 'delimited_xyzm.csv')
+
+        url = MyUrl.fromLocalFile(basetestfile)
+        url.addQueryItem("crs", "epsg:4326")
+        url.addQueryItem("type", "csv")
+        url.addQueryItem("xField", "X")
+        url.addQueryItem("yField", "Y")
+        url.addQueryItem("zField", "Z")
+        url.addQueryItem("mField", "M")
+        url.addQueryItem("spatialIndex", "no")
+        url.addQueryItem("subsetIndex", "no")
+        url.addQueryItem("watchFile", "no")
+
+        vl = QgsVectorLayer(url.toString(), 'test', 'delimitedtext')
+        assert vl.isValid(), "{} is invalid".format(basetestfile)
+        assert vl.wkbType() == QgsWkbTypes.PointZM, "wrong wkb type, should be PointZM"
+        assert vl.getFeature(2).geometry().asWkt() == "PointZM (-71.12300000000000466 78.23000000000000398 1 2)", "wrong PointZM geometry"
+
+    def test_045_Z(self):
+        # Create test layer
+        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
+        basetestfile = os.path.join(srcpath, 'delimited_xyzm.csv')
+
+        url = MyUrl.fromLocalFile(basetestfile)
+        url.addQueryItem("crs", "epsg:4326")
+        url.addQueryItem("type", "csv")
+        url.addQueryItem("xField", "X")
+        url.addQueryItem("yField", "Y")
+        url.addQueryItem("zField", "Z")
+        url.addQueryItem("spatialIndex", "no")
+        url.addQueryItem("subsetIndex", "no")
+        url.addQueryItem("watchFile", "no")
+
+        vl = QgsVectorLayer(url.toString(), 'test', 'delimitedtext')
+        assert vl.isValid(), "{} is invalid".format(basetestfile)
+        assert vl.wkbType() == QgsWkbTypes.PointZ, "wrong wkb type, should be PointZ"
+        assert vl.getFeature(2).geometry().asWkt() == "PointZ (-71.12300000000000466 78.23000000000000398 1)", "wrong PointZ geometry"
+
+    def test_046_M(self):
+        # Create test layer
+        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
+        basetestfile = os.path.join(srcpath, 'delimited_xyzm.csv')
+
+        url = MyUrl.fromLocalFile(basetestfile)
+        url.addQueryItem("crs", "epsg:4326")
+        url.addQueryItem("type", "csv")
+        url.addQueryItem("xField", "X")
+        url.addQueryItem("yField", "Y")
+        url.addQueryItem("mField", "M")
+        url.addQueryItem("spatialIndex", "no")
+        url.addQueryItem("subsetIndex", "no")
+        url.addQueryItem("watchFile", "no")
+
+        vl = QgsVectorLayer(url.toString(), 'test', 'delimitedtext')
+        assert vl.isValid(), "{} is invalid".format(basetestfile)
+        assert vl.wkbType() == QgsWkbTypes.PointM, "wrong wkb type, should be PointM"
+        assert vl.getFeature(2).geometry().asWkt() == "PointM (-71.12300000000000466 78.23000000000000398 2)", "wrong PointM geometry"
+
+    def testSpatialIndex(self):
+        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
+        basetestfile = os.path.join(srcpath, 'delimited_xyzm.csv')
+
+        url = MyUrl.fromLocalFile(basetestfile)
+        url.addQueryItem("crs", "epsg:4326")
+        url.addQueryItem("type", "csv")
+        url.addQueryItem("xField", "X")
+        url.addQueryItem("yField", "Y")
+        url.addQueryItem("spatialIndex", "no")
+
+        vl = QgsVectorLayer(url.toString(), 'test', 'delimitedtext')
+        self.assertTrue(vl.isValid())
+
+        self.assertEqual(vl.hasSpatialIndex(), QgsFeatureSource.SpatialIndexNotPresent)
+        vl.dataProvider().createSpatialIndex()
+        self.assertEqual(vl.hasSpatialIndex(), QgsFeatureSource.SpatialIndexPresent)
 
 
 if __name__ == '__main__':

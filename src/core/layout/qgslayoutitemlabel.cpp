@@ -66,20 +66,31 @@ QgsLayoutItemLabel::QgsLayoutItemLabel( QgsLayout *layout )
   //otherwise fields in the label aren't correctly evaluated until atlas preview feature changes (#9457)
   refreshExpressionContext();
 
-  mWebPage.reset( new QgsWebPage( this ) );
-  mWebPage->setIdentifier( tr( "Layout label item" ) );
-  mWebPage->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
+  // only possible on the main thread!
+  if ( QThread::currentThread() == QApplication::instance()->thread() )
+  {
+    mWebPage.reset( new QgsWebPage( this ) );
+  }
+  else
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Cannot load HTML based item label in background threads" ) );
+  }
+  if ( mWebPage )
+  {
+    mWebPage->setIdentifier( tr( "Layout label item" ) );
+    mWebPage->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
 
-  //This makes the background transparent. Found on http://blog.qt.digia.com/blog/2009/06/30/transparent-qwebview-or-qwebpage/
-  QPalette palette = mWebPage->palette();
-  palette.setBrush( QPalette::Base, Qt::transparent );
-  mWebPage->setPalette( palette );
+    //This makes the background transparent. Found on http://blog.qt.digia.com/blog/2009/06/30/transparent-qwebview-or-qwebpage/
+    QPalette palette = mWebPage->palette();
+    palette.setBrush( QPalette::Base, Qt::transparent );
+    mWebPage->setPalette( palette );
 
-  mWebPage->mainFrame()->setZoomFactor( 10.0 );
-  mWebPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
-  mWebPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
+    mWebPage->mainFrame()->setZoomFactor( 10.0 );
+    mWebPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
+    mWebPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
 
-  connect( mWebPage.get(), &QWebPage::loadFinished, this, &QgsLayoutItemLabel::loadingHtmlFinished );
+    connect( mWebPage.get(), &QWebPage::loadFinished, this, &QgsLayoutItemLabel::loadingHtmlFinished );
+  }
 }
 
 QgsLayoutItemLabel *QgsLayoutItemLabel::create( QgsLayout *layout )
@@ -119,10 +130,14 @@ void QgsLayoutItemLabel::draw( QgsLayoutItemRenderContext &context )
         contentChanged();
         mFirstRender = false;
       }
-      painter->scale( 1.0 / mHtmlUnitsToLayoutUnits / 10.0, 1.0 / mHtmlUnitsToLayoutUnits / 10.0 );
-      mWebPage->setViewportSize( QSize( painterRect.width() * mHtmlUnitsToLayoutUnits * 10.0, painterRect.height() * mHtmlUnitsToLayoutUnits * 10.0 ) );
-      mWebPage->settings()->setUserStyleSheetUrl( createStylesheetUrl() );
-      mWebPage->mainFrame()->render( painter );
+
+      if ( mWebPage )
+      {
+        painter->scale( 1.0 / mHtmlUnitsToLayoutUnits / 10.0, 1.0 / mHtmlUnitsToLayoutUnits / 10.0 );
+        mWebPage->setViewportSize( QSize( painterRect.width() * mHtmlUnitsToLayoutUnits * 10.0, painterRect.height() * mHtmlUnitsToLayoutUnits * 10.0 ) );
+        mWebPage->settings()->setUserStyleSheetUrl( createStylesheetUrl() );
+        mWebPage->mainFrame()->render( painter );
+      }
       break;
     }
 
@@ -145,6 +160,11 @@ void QgsLayoutItemLabel::contentChanged()
     case ModeHtml:
     {
       const QString textToDraw = currentText();
+      if ( !mWebPage )
+      {
+        mHtmlLoaded = true;
+        return;
+      }
 
       //mHtmlLoaded tracks whether the QWebPage has completed loading
       //its html contents, set it initially to false. The loadingHtmlFinished slot will
@@ -157,7 +177,10 @@ void QgsLayoutItemLabel::contentChanged()
       //For very basic html labels with no external assets, the html load will already be
       //complete before we even get a chance to start the QEventLoop. Make sure we check
       //this before starting the loop
-      if ( !mHtmlLoaded )
+
+      // important -- we CAN'T do this when it's a render inside the designer, otherwise the
+      // event loop will mess with the paint event and cause it to be deleted, and BOOM!
+      if ( !mHtmlLoaded && ( !mLayout || !mLayout->renderContext().isPreviewRender() ) )
       {
         //Setup event loop and timeout for rendering html
         QEventLoop loop;
@@ -185,6 +208,8 @@ void QgsLayoutItemLabel::loadingHtmlFinished( bool result )
 {
   Q_UNUSED( result )
   mHtmlLoaded = true;
+  invalidateCache();
+  update();
 }
 
 double QgsLayoutItemLabel::htmlUnitsToLayoutUnits()
@@ -486,6 +511,7 @@ void QgsLayoutItemLabel::setFrameStrokeWidth( const QgsLayoutMeasurement strokeW
 
 void QgsLayoutItemLabel::refresh()
 {
+  invalidateCache();
   QgsLayoutItem::refresh();
   refreshExpressionContext();
 }

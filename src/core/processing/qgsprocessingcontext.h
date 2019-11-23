@@ -54,15 +54,7 @@ class CORE_EXPORT QgsProcessingContext
     /**
      * Constructor for QgsProcessingContext.
      */
-    QgsProcessingContext()
-    {
-      auto callback = [ = ]( const QgsFeature & feature )
-      {
-        if ( mFeedback )
-          mFeedback->reportError( QObject::tr( "Encountered a transform error when reprojecting feature with id %1." ).arg( feature.id() ) );
-      };
-      mTransformErrorCallback = callback;
-    }
+    QgsProcessingContext();
 
     //! QgsProcessingContext cannot be copied
     QgsProcessingContext( const QgsProcessingContext &other ) = delete;
@@ -180,10 +172,17 @@ class CORE_EXPORT QgsProcessingContext
         //! Default constructor
         LayerDetails() = default;
 
-        //! Friendly name for layer, to use when loading layer into project.
+        /**
+         * Friendly name for layer, possibly for use when loading layer into project.
+         *
+         * \warning Instead of directly using this value, prefer to call setOutputLayerName() to
+         * generate a layer name which respects the user's local Processing settings.
+         */
         QString name;
 
-        //! Associated output name from algorithm which generated the layer.
+        /**
+         * Associated output name from algorithm which generated the layer.
+         */
         QString outputName;
 
         /**
@@ -209,6 +208,13 @@ class CORE_EXPORT QgsProcessingContext
          * \since QGIS 3.2
          */
         void setPostProcessor( QgsProcessingLayerPostProcessorInterface *processor SIP_TRANSFER );
+
+        /**
+         * Sets a \a layer name to match this output, respecting any local user settings which affect this name.
+         *
+         * \since QGIS 3.10.1
+         */
+        void setOutputLayerName( QgsMapLayer *layer ) const;
 
         //! Destination project
         QgsProject *project = nullptr;
@@ -442,6 +448,80 @@ class CORE_EXPORT QgsProcessingContext
      */
     QgsMapLayer *takeResultLayer( const QString &id ) SIP_TRANSFERBACK;
 
+    /**
+     * Returns the preferred vector format to use for vector outputs.
+     *
+     * This method returns a file extension to use when creating vector outputs (e.g. "shp"). Generally,
+     * it is preferable to use the extension associated with a particular parameter, which can be retrieved through
+     * QgsProcessingDestinationParameter::defaultFileExtension(). However, in some cases, a specific parameter
+     * may not be available to call this method on (e.g. for an algorithm which has only an output folder parameter
+     * and which creates multiple output layers in that folder). In this case, the format returned by this
+     * function should be used when creating these outputs.
+     *
+     * It is the algorithm's responsibility to check whether the returned format is acceptable for the algorithm,
+     * and to provide an appropriate fallback when the returned format is not usable.
+     *
+     * \see setPreferredVectorFormat()
+     * \see preferredRasterFormat()
+     *
+     * \since QGIS 3.10
+     */
+    QString preferredVectorFormat() const { return mPreferredVectorFormat; }
+
+    /**
+     * Sets the preferred vector \a format to use for vector outputs.
+     *
+     * This method sets a file extension to use when creating vector outputs (e.g. "shp"). Generally,
+     * it is preferable to use the extension associated with a particular parameter, which can be retrieved through
+     * QgsProcessingDestinationParameter::defaultFileExtension(). However, in some cases, a specific parameter
+     * may not be available to call this method on (e.g. for an algorithm which has only an output folder parameter
+     * and which creates multiple output layers in that folder). In this case, the format set by this
+     * function will be used when creating these outputs.
+     *
+     * \see preferredVectorFormat()
+     * \see setPreferredRasterFormat()
+     *
+     * \since QGIS 3.10
+     */
+    void setPreferredVectorFormat( const QString &format ) { mPreferredVectorFormat = format; }
+
+    /**
+     * Returns the preferred raster format to use for vector outputs.
+     *
+     * This method returns a file extension to use when creating raster outputs (e.g. "tif"). Generally,
+     * it is preferable to use the extension associated with a particular parameter, which can be retrieved through
+     * QgsProcessingDestinationParameter::defaultFileExtension(). However, in some cases, a specific parameter
+     * may not be available to call this method on (e.g. for an algorithm which has only an output folder parameter
+     * and which creates multiple output layers in that folder). In this case, the format returned by this
+     * function should be used when creating these outputs.
+     *
+     * It is the algorithm's responsibility to check whether the returned format is acceptable for the algorithm,
+     * and to provide an appropriate fallback when the returned format is not usable.
+     *
+     * \see setPreferredRasterFormat()
+     * \see preferredVectorFormat()
+     *
+     * \since QGIS 3.10
+     */
+    QString preferredRasterFormat() const { return mPreferredRasterFormat; }
+
+    /**
+     * Sets the preferred raster \a format to use for vector outputs.
+     *
+     * This method sets a file extension to use when creating raster outputs (e.g. "tif"). Generally,
+     * it is preferable to use the extension associated with a particular parameter, which can be retrieved through
+     * QgsProcessingDestinationParameter::defaultFileExtension(). However, in some cases, a specific parameter
+     * may not be available to call this method on (e.g. for an algorithm which has only an output folder parameter
+     * and which creates multiple output layers in that folder). In this case, the format set by this
+     * function will be used when creating these outputs.
+     *
+     * \see preferredRasterFormat()
+     * \see setPreferredVectorFormat()
+     *
+     * \since QGIS 3.10
+     */
+    void setPreferredRasterFormat( const QString &format ) { mPreferredRasterFormat = format; }
+
   private:
 
     QgsProcessingContext::Flags mFlags = nullptr;
@@ -457,6 +537,9 @@ class CORE_EXPORT QgsProcessingContext
     QMap< QString, LayerDetails > mLayersToLoadOnCompletion;
 
     QPointer< QgsProcessingFeedback > mFeedback;
+
+    QString mPreferredVectorFormat;
+    QString mPreferredRasterFormat;
 
 #ifdef SIP_RUN
     QgsProcessingContext( const QgsProcessingContext &other );

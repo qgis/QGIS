@@ -49,12 +49,12 @@ QgsDistanceArea::QgsDistanceArea()
   mInvFlattening = -1.0;
   QgsCoordinateTransformContext context; // this is ok - by default we have a source/dest of WGS84, so no reprojection takes place
   setSourceCrs( QgsCoordinateReferenceSystem::fromSrsId( GEOCRS_ID ), context ); // WGS 84
-  setEllipsoid( GEO_NONE );
+  setEllipsoid( geoNone() );
 }
 
 bool QgsDistanceArea::willUseEllipsoid() const
 {
-  return mEllipsoid != GEO_NONE;
+  return mEllipsoid != geoNone();
 }
 
 void QgsDistanceArea::setSourceCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateTransformContext &context )
@@ -66,9 +66,9 @@ void QgsDistanceArea::setSourceCrs( const QgsCoordinateReferenceSystem &srcCRS, 
 bool QgsDistanceArea::setEllipsoid( const QString &ellipsoid )
 {
   // Shortcut if ellipsoid is none.
-  if ( ellipsoid == GEO_NONE )
+  if ( ellipsoid == geoNone() )
   {
-    mEllipsoid = GEO_NONE;
+    mEllipsoid = geoNone();
     return true;
   }
 
@@ -476,7 +476,7 @@ double QgsDistanceArea::latitudeGeodesicCrossesAntimeridian( const QgsPointXY &p
   double lat = p2y;
   double lon = p2x;
 
-  if ( mEllipsoid == GEO_NONE )
+  if ( mEllipsoid == geoNone() )
   {
     fractionAlongLine = ( 180 - p1x ) / ( p2x - p1x );
     if ( p1.x() >= 180 )
@@ -971,7 +971,7 @@ double QgsDistanceArea::getQbar( double x ) const
 void QgsDistanceArea::computeAreaInit()
 {
   //don't try to perform calculations if no ellipsoid
-  if ( mEllipsoid == GEO_NONE )
+  if ( mEllipsoid == geoNone() )
   {
     return;
   }

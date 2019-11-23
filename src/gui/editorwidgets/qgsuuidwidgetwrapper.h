@@ -58,10 +58,11 @@ class GUI_EXPORT QgsUuidWidgetWrapper : public QgsEditorWidgetWrapper
     bool valid() const override;
 
   public slots:
-    void setValue( const QVariant &value ) override;
     void setEnabled( bool enabled ) override;
 
   private:
+    void updateValues( const QVariant &value, const QVariantList  & = QVariantList() ) override;
+
     QLabel *mLabel = nullptr;
     QLineEdit *mLineEdit = nullptr;
 };

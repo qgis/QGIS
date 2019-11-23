@@ -79,7 +79,7 @@ class CORE_EXPORT QgsLabelSearchTree
      * \returns TRUE in case of success
      * \note not available in Python bindings
      */
-    bool insertLabel( pal::LabelPosition *labelPos, QgsFeatureId featureId, const QString &layerName, const QString &labeltext, const QFont &labelfont, bool diagram = false, bool pinned = false, const QString &providerId = QString() ) SIP_SKIP;
+    bool insertLabel( pal::LabelPosition *labelPos, QgsFeatureId featureId, const QString &layerName, const QString &labeltext, const QFont &labelfont, bool diagram = false, bool pinned = false, const QString &providerId = QString(), bool isUnplaced = false ) SIP_SKIP;
 
     /**
      * Sets the map \a settings associated with the labeling run.

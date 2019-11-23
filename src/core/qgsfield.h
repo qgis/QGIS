@@ -20,7 +20,6 @@
 #include <QVariant>
 #include <QVector>
 #include <QSharedDataPointer>
-#include "qgsfield_p.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
@@ -35,6 +34,8 @@ typedef QList<int> QgsAttributeList SIP_SKIP;
 #include "qgseditorwidgetsetup.h"
 #include "qgsfieldconstraints.h"
 #include "qgsdefaultvalue.h"
+
+class QgsFieldPrivate;
 
 /**
  * \class QgsField
@@ -95,7 +96,7 @@ class CORE_EXPORT QgsField
      */
     QgsField &operator =( const QgsField &other ) SIP_SKIP;
 
-    virtual ~QgsField() = default;
+    virtual ~QgsField();
 
     bool operator==( const QgsField &other ) const;
     bool operator!=( const QgsField &other ) const;
@@ -115,6 +116,19 @@ class CORE_EXPORT QgsField
      * \since QGIS 3.0
      */
     QString displayName() const;
+
+    /**
+     * Returns the name to use when displaying this field and adds the alias in parenthesis if it is defined.
+     *
+     * This will be used when working close to the data structure (i.e. building expressions and queries),
+     * when the real field name must be shown but the alias is also useful to understand what the field
+     * represents.
+     *
+     * \see name()
+     * \see alias()
+     * \since QGIS 3.12
+     */
+    QString displayNameWithAlias() const;
 
     //! Gets variant type of the field as it will be retrieved from data source
     QVariant::Type type() const;

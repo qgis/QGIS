@@ -9,6 +9,10 @@
 
 
 
+%ModuleHeaderCode
+// For ConvertToSubClassCode.
+#include <qgsgeometryrubberband.h>
+%End
 
 
 class QgsGeometryRubberBand: QgsMapCanvasItem
@@ -19,6 +23,12 @@ A rubberband class for QgsAbstractGeometry (considering curved geometries)*
 
 %TypeHeaderCode
 #include "qgsgeometryrubberband.h"
+%End
+%ConvertToSubClassCode
+    if ( dynamic_cast<QgsGeometryRubberBand *>( sipCpp ) )
+      sipType = sipType_QgsGeometryRubberBand;
+    else
+      sipType = nullptr;
 %End
   public:
     enum IconType

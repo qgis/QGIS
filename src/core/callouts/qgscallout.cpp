@@ -22,6 +22,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsxmlutils.h"
 #include "qgslinestring.h"
+#include "qgslogger.h"
 #include <QPainter>
 #include <mutex>
 
@@ -34,6 +35,10 @@ void QgsCallout::initPropertyDefinitions()
   sPropertyDefinitions = QgsPropertiesDefinition
   {
     { QgsCallout::MinimumCalloutLength, QgsPropertyDefinition( "MinimumCalloutLength", QObject::tr( "Minimum callout length" ), QgsPropertyDefinition::DoublePositive, origin ) },
+    { QgsCallout::OffsetFromAnchor, QgsPropertyDefinition( "OffsetFromAnchor", QObject::tr( "Offset from feature" ), QgsPropertyDefinition::DoublePositive, origin ) },
+    { QgsCallout::OffsetFromLabel, QgsPropertyDefinition( "OffsetFromLabel", QObject::tr( "Offset from label" ), QgsPropertyDefinition::DoublePositive, origin ) },
+    { QgsCallout::DrawCalloutToAllParts, QgsPropertyDefinition( "DrawCalloutToAllParts", QObject::tr( "Draw lines to all feature parts" ), QgsPropertyDefinition::Boolean, origin ) },
+    { QgsCallout::AnchorPointPosition, QgsPropertyDefinition( "AnchorPointPosition", QgsPropertyDefinition::DataTypeString, QObject::tr( "Feature's anchor point position" ), QObject::tr( "string " ) + "[<b>pole_of_inaccessibility</b>|<b>point_on_exterior</b>|<b>point_on_surface</b>|<b>centroid</b>]", origin ) },
   };
 }
 
@@ -46,6 +51,7 @@ QVariantMap QgsCallout::properties( const QgsReadWriteContext & ) const
 {
   QVariantMap props;
   props.insert( QStringLiteral( "enabled" ), mEnabled ? "1" : "0" );
+  props.insert( QStringLiteral( "anchorPoint" ), encodeAnchorPoint( mAnchorPoint ) );
   props.insert( QStringLiteral( "ddProperties" ), mDataDefinedProperties.toVariant( propertyDefinitions() ) );
   return props;
 }
@@ -53,6 +59,7 @@ QVariantMap QgsCallout::properties( const QgsReadWriteContext & ) const
 void QgsCallout::readProperties( const QVariantMap &props, const QgsReadWriteContext & )
 {
   mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt();
+  mAnchorPoint = decodeAnchorPoint( props.value( QStringLiteral( "anchorPoint" ), QString( "" ) ).toString() );
   mDataDefinedProperties.loadVariant( props.value( QStringLiteral( "ddProperties" ) ), propertyDefinitions() );
 }
 
@@ -99,7 +106,7 @@ QgsCallout::DrawOrder QgsCallout::drawOrder() const
   return OrderBelowAllLabels;
 }
 
-void QgsCallout::render( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor )
+void QgsCallout::render( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext )
 {
   if ( !mEnabled )
     return;
@@ -123,7 +130,7 @@ void QgsCallout::render( QgsRenderContext &context, QRectF rect, const double an
   painter->drawRect( anchor.boundingBox( ).buffered( 30 ).toRectF() );
 #endif
 
-  draw( context, rect, angle, anchor );
+  draw( context, rect, angle, anchor, calloutContext );
 }
 
 void QgsCallout::setEnabled( bool enabled )
@@ -141,6 +148,41 @@ QgsPropertiesDefinition QgsCallout::propertyDefinitions()
   return sPropertyDefinitions;
 }
 
+QgsCallout::AnchorPoint QgsCallout::decodeAnchorPoint( const QString &name, bool *ok )
+{
+  if ( ok )
+    *ok = true;
+  QString cleaned = name.toLower().trimmed();
+
+  if ( cleaned == QLatin1String( "pole_of_inaccessibility" ) )
+    return PoleOfInaccessibility;
+  else if ( cleaned == QLatin1String( "point_on_exterior" ) )
+    return PointOnExterior;
+  else if ( cleaned == QLatin1String( "point_on_surface" ) )
+    return PointOnSurface;
+  else if ( cleaned == QLatin1String( "centroid" ) )
+    return Centroid;
+
+  if ( ok )
+    *ok = false;
+  return PoleOfInaccessibility;
+}
+
+QString QgsCallout::encodeAnchorPoint( AnchorPoint anchor )
+{
+  switch ( anchor )
+  {
+    case PoleOfInaccessibility:
+      return QStringLiteral( "pole_of_inaccessibility" );
+    case PointOnExterior:
+      return QStringLiteral( "point_on_exterior" );
+    case PointOnSurface:
+      return QStringLiteral( "point_on_surface" );
+    case Centroid:
+      return QStringLiteral( "centroid" );
+  }
+  return QString();
+}
 
 //
 // QgsSimpleLineCallout
@@ -160,6 +202,13 @@ QgsSimpleLineCallout::QgsSimpleLineCallout( const QgsSimpleLineCallout &other )
   , mMinCalloutLength( other.mMinCalloutLength )
   , mMinCalloutLengthUnit( other.mMinCalloutLengthUnit )
   , mMinCalloutLengthScale( other.mMinCalloutLengthScale )
+  , mOffsetFromAnchorDistance( other.mOffsetFromAnchorDistance )
+  , mOffsetFromAnchorUnit( other.mOffsetFromAnchorUnit )
+  , mOffsetFromAnchorScale( other.mOffsetFromAnchorScale )
+  , mOffsetFromLabelDistance( other.mOffsetFromLabelDistance )
+  , mOffsetFromLabelUnit( other.mOffsetFromLabelUnit )
+  , mOffsetFromLabelScale( other.mOffsetFromLabelScale )
+  , mDrawCalloutToAllParts( other.mDrawCalloutToAllParts )
 {
 
 }
@@ -193,6 +242,15 @@ QVariantMap QgsSimpleLineCallout::properties( const QgsReadWriteContext &context
   props[ QStringLiteral( "minLengthUnit" ) ] = QgsUnitTypes::encodeUnit( mMinCalloutLengthUnit );
   props[ QStringLiteral( "minLengthMapUnitScale" ) ] = QgsSymbolLayerUtils::encodeMapUnitScale( mMinCalloutLengthScale );
 
+  props[ QStringLiteral( "offsetFromAnchor" ) ] = mOffsetFromAnchorDistance;
+  props[ QStringLiteral( "offsetFromAnchorUnit" ) ] = QgsUnitTypes::encodeUnit( mOffsetFromAnchorUnit );
+  props[ QStringLiteral( "offsetFromAnchorMapUnitScale" ) ] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetFromAnchorScale );
+  props[ QStringLiteral( "offsetFromLabel" ) ] = mOffsetFromLabelDistance;
+  props[ QStringLiteral( "offsetFromLabelUnit" ) ] = QgsUnitTypes::encodeUnit( mOffsetFromLabelUnit );
+  props[ QStringLiteral( "offsetFromLabelMapUnitScale" ) ] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetFromLabelScale );
+
+  props[ QStringLiteral( "drawToAllParts" ) ] = mDrawCalloutToAllParts;
+
   return props;
 }
 
@@ -208,9 +266,18 @@ void QgsSimpleLineCallout::readProperties( const QVariantMap &props, const QgsRe
   if ( lineSymbol )
     mLineSymbol = std::move( lineSymbol );
 
-  mMinCalloutLength = props.value( QStringLiteral( "minLength" ), 0 ).toInt();
+  mMinCalloutLength = props.value( QStringLiteral( "minLength" ), 0 ).toDouble();
   mMinCalloutLengthUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "minLengthUnit" ) ).toString() );
   mMinCalloutLengthScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "minLengthMapUnitScale" ) ).toString() );
+
+  mOffsetFromAnchorDistance = props.value( QStringLiteral( "offsetFromAnchor" ), 0 ).toDouble();
+  mOffsetFromAnchorUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "offsetFromAnchorUnit" ) ).toString() );
+  mOffsetFromAnchorScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "offsetFromAnchorMapUnitScale" ) ).toString() );
+  mOffsetFromLabelDistance = props.value( QStringLiteral( "offsetFromLabel" ), 0 ).toDouble();
+  mOffsetFromLabelUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "offsetFromLabelUnit" ) ).toString() );
+  mOffsetFromLabelScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "offsetFromLabelMapUnitScale" ) ).toString() );
+
+  mDrawCalloutToAllParts = props.value( QStringLiteral( "drawToAllParts" ), false ).toBool();
 }
 
 void QgsSimpleLineCallout::startRender( QgsRenderContext &context )
@@ -245,45 +312,109 @@ void QgsSimpleLineCallout::setLineSymbol( QgsLineSymbol *symbol )
   mLineSymbol.reset( symbol );
 }
 
-void QgsSimpleLineCallout::draw( QgsRenderContext &context, QRectF rect, const double, const QgsGeometry &anchor )
+void QgsSimpleLineCallout::draw( QgsRenderContext &context, QRectF rect, const double, const QgsGeometry &anchor, QgsCalloutContext &calloutContext )
 {
   QgsGeometry label( QgsGeometry::fromRect( rect ) );
-  QgsGeometry line;
-  switch ( anchor.type() )
+  auto drawCalloutLine = [this, &context, &label]( const QgsGeometry & partAnchor )
   {
-    case QgsWkbTypes::PointGeometry:
-      line = label.shortestLine( anchor );
-      break;
+    QgsGeometry line;
+    AnchorPoint anchor = anchorPoint();
+    if ( dataDefinedProperties().isActive( QgsCallout::AnchorPointPosition ) )
+    {
+      QString encodedAnchor = encodeAnchorPoint( anchor );
+      context.expressionContext().setOriginalValueVariable( encodedAnchor );
+      anchor = decodeAnchorPoint( dataDefinedProperties().valueAsString( QgsCallout::AnchorPointPosition, context.expressionContext(), encodedAnchor ) );
+    }
+    switch ( partAnchor.type() )
+    {
+      case QgsWkbTypes::PointGeometry:
+        line = label.shortestLine( partAnchor );
+        break;
 
-    case QgsWkbTypes::LineGeometry:
-      line = label.shortestLine( anchor );
-      break;
+      case QgsWkbTypes::LineGeometry:
+        line = label.shortestLine( partAnchor );
+        break;
 
-    case QgsWkbTypes::PolygonGeometry:
-      if ( label.intersects( anchor ) )
-        return;
+      case QgsWkbTypes::PolygonGeometry:
+        if ( label.intersects( partAnchor ) )
+          return;
 
-      line = label.shortestLine( anchor.poleOfInaccessibility( std::max( anchor.boundingBox().width(), anchor.boundingBox().height() ) / 20.0 ) ); // really rough (but quick) pole of inaccessibility
-      break;
+        switch ( anchor )
+        {
+          case QgsCallout::PoleOfInaccessibility:
+            line = label.shortestLine( partAnchor.poleOfInaccessibility( std::max( partAnchor.boundingBox().width(), partAnchor.boundingBox().height() ) / 20.0 ) ); // really rough (but quick) pole of inaccessibility
+            break;
+          case QgsCallout::PointOnSurface:
+            line = label.shortestLine( partAnchor.pointOnSurface() );
+            break;
+          case QgsCallout::PointOnExterior:
+            line = label.shortestLine( partAnchor );
+            break;
+          case QgsCallout::Centroid:
+            line = label.shortestLine( partAnchor.centroid() );
+            break;
+        }
+        break;
 
-    case QgsWkbTypes::NullGeometry:
-    case QgsWkbTypes::UnknownGeometry:
-      return; // shouldn't even get here..
+      case QgsWkbTypes::NullGeometry:
+      case QgsWkbTypes::UnknownGeometry:
+        return; // shouldn't even get here..
+    }
+
+    if ( qgsDoubleNear( line.length(), 0 ) )
+      return;
+
+    double minLength = mMinCalloutLength;
+    if ( dataDefinedProperties().isActive( QgsCallout::MinimumCalloutLength ) )
+    {
+      context.expressionContext().setOriginalValueVariable( minLength );
+      minLength = dataDefinedProperties().valueAsDouble( QgsCallout::MinimumCalloutLength, context.expressionContext(), minLength );
+    }
+    double minLengthPixels = context.convertToPainterUnits( minLength, mMinCalloutLengthUnit, mMinCalloutLengthScale );
+    if ( minLengthPixels > 0 && line.length() < minLengthPixels )
+      return; // too small!
+
+    double offsetFromAnchor = mOffsetFromAnchorDistance;
+    if ( dataDefinedProperties().isActive( QgsCallout::OffsetFromAnchor ) )
+    {
+      context.expressionContext().setOriginalValueVariable( offsetFromAnchor );
+      offsetFromAnchor = dataDefinedProperties().valueAsDouble( QgsCallout::OffsetFromAnchor, context.expressionContext(), offsetFromAnchor );
+    }
+    const double offsetFromAnchorPixels = context.convertToPainterUnits( offsetFromAnchor, mOffsetFromAnchorUnit, mOffsetFromAnchorScale );
+
+    double offsetFromLabel = mOffsetFromLabelDistance;
+    if ( dataDefinedProperties().isActive( QgsCallout::OffsetFromLabel ) )
+    {
+      context.expressionContext().setOriginalValueVariable( offsetFromLabel );
+      offsetFromLabel = dataDefinedProperties().valueAsDouble( QgsCallout::OffsetFromLabel, context.expressionContext(), offsetFromLabel );
+    }
+    const double offsetFromLabelPixels = context.convertToPainterUnits( offsetFromLabel, mOffsetFromLabelUnit, mOffsetFromLabelScale );
+    if ( offsetFromAnchorPixels > 0 || offsetFromLabelPixels > 0 )
+    {
+      if ( QgsLineString *ls = qgsgeometry_cast< QgsLineString * >( line.get() ) )
+      {
+        line = QgsGeometry( ls->curveSubstring( offsetFromLabelPixels, ls->length() - offsetFromAnchorPixels ) );
+      }
+    }
+
+    mLineSymbol->renderPolyline( line.asQPolygonF(), nullptr, context );
+  };
+
+  bool toAllParts = mDrawCalloutToAllParts;
+  if ( dataDefinedProperties().isActive( QgsCallout::DrawCalloutToAllParts ) )
+  {
+    context.expressionContext().setOriginalValueVariable( toAllParts );
+    toAllParts = dataDefinedProperties().valueAsBool( QgsCallout::DrawCalloutToAllParts, context.expressionContext(), toAllParts );
   }
 
-  if ( qgsDoubleNear( line.length(), 0 ) )
-    return;
-
-  double minLength = mMinCalloutLength;
-  if ( dataDefinedProperties().isActive( QgsCallout::MinimumCalloutLength ) )
+  if ( calloutContext.allFeaturePartsLabeled || !toAllParts )
+    drawCalloutLine( anchor );
+  else
   {
-    minLength = dataDefinedProperties().valueAsDouble( QgsCallout::MinimumCalloutLength, context.expressionContext(), minLength );
+    const QVector< QgsGeometry > parts = anchor.asGeometryCollection();
+    for ( const QgsGeometry &part : parts )
+      drawCalloutLine( part );
   }
-  double minLengthPixels = context.convertToPainterUnits( minLength, mMinCalloutLengthUnit, mMinCalloutLengthScale );
-  if ( minLengthPixels > 0 && line.length() < minLengthPixels )
-    return; // too small!
-
-  mLineSymbol->renderPolyline( line.asQPolygonF(), nullptr, context );
 }
 
 
@@ -320,49 +451,110 @@ QgsManhattanLineCallout *QgsManhattanLineCallout::clone() const
   return new QgsManhattanLineCallout( *this );
 }
 
-void QgsManhattanLineCallout::draw( QgsRenderContext &context, QRectF rect, const double, const QgsGeometry &anchor )
+void QgsManhattanLineCallout::draw( QgsRenderContext &context, QRectF rect, const double, const QgsGeometry &anchor, QgsCalloutContext &calloutContext )
 {
   QgsGeometry label( QgsGeometry::fromRect( rect ) );
-  QgsGeometry line;
-  switch ( anchor.type() )
+  auto drawCalloutLine = [this, &context, &label]( const QgsGeometry & partAnchor )
   {
-    case QgsWkbTypes::PointGeometry:
-      line = label.shortestLine( anchor );
-      break;
+    QgsGeometry line;
+    AnchorPoint anchor = anchorPoint();
+    if ( dataDefinedProperties().isActive( QgsCallout::AnchorPointPosition ) )
+    {
+      QString encodedAnchor = encodeAnchorPoint( anchor );
+      context.expressionContext().setOriginalValueVariable( encodedAnchor );
+      anchor = decodeAnchorPoint( dataDefinedProperties().valueAsString( QgsCallout::AnchorPointPosition, context.expressionContext(), encodedAnchor ) );
+    }
+    switch ( partAnchor.type() )
+    {
+      case QgsWkbTypes::PointGeometry:
+        line = label.shortestLine( partAnchor );
+        break;
 
-    case QgsWkbTypes::LineGeometry:
-      line = label.shortestLine( anchor );
-      break;
+      case QgsWkbTypes::LineGeometry:
+        line = label.shortestLine( partAnchor );
+        break;
 
-    case QgsWkbTypes::PolygonGeometry:
-      if ( label.intersects( anchor ) )
-        return;
+      case QgsWkbTypes::PolygonGeometry:
+        if ( label.intersects( partAnchor ) )
+          return;
 
-      line = label.shortestLine( anchor.poleOfInaccessibility( std::max( anchor.boundingBox().width(), anchor.boundingBox().height() ) / 20.0 ) ); // really rough (but quick) pole of inaccessibility
-      break;
+        switch ( anchor )
+        {
+          case QgsCallout::PoleOfInaccessibility:
+            line = label.shortestLine( partAnchor.poleOfInaccessibility( std::max( partAnchor.boundingBox().width(), partAnchor.boundingBox().height() ) / 20.0 ) ); // really rough (but quick) pole of inaccessibility
+            break;
+          case QgsCallout::PointOnSurface:
+            line = label.shortestLine( partAnchor.pointOnSurface() );
+            break;
+          case QgsCallout::PointOnExterior:
+            line = label.shortestLine( partAnchor );
+            break;
+          case QgsCallout::Centroid:
+            line = label.shortestLine( partAnchor.centroid() );
+            break;
+        }
+        break;
 
-    case QgsWkbTypes::NullGeometry:
-    case QgsWkbTypes::UnknownGeometry:
-      return; // shouldn't even get here..
+      case QgsWkbTypes::NullGeometry:
+      case QgsWkbTypes::UnknownGeometry:
+        return; // shouldn't even get here..
+    }
+
+    if ( qgsDoubleNear( line.length(), 0 ) )
+      return;
+
+    double minLength = minimumLength();
+    if ( dataDefinedProperties().isActive( QgsCallout::MinimumCalloutLength ) )
+    {
+      minLength = dataDefinedProperties().valueAsDouble( QgsCallout::MinimumCalloutLength, context.expressionContext(), minLength );
+    }
+    double minLengthPixels = context.convertToPainterUnits( minLength, minimumLengthUnit(), minimumLengthMapUnitScale() );
+    if ( minLengthPixels > 0 && line.length() < minLengthPixels )
+      return; // too small!
+
+    const QgsPoint start = qgsgeometry_cast< const QgsLineString * >( line.constGet() )->startPoint();
+    const QgsPoint end = qgsgeometry_cast< const QgsLineString * >( line.constGet() )->endPoint();
+    QgsPoint mid1 = QgsPoint( start.x(), end.y() );
+
+    line = QgsGeometry::fromPolyline( QgsPolyline() << start << mid1 << end );
+    double offsetFromAnchorDist = offsetFromAnchor();
+    if ( dataDefinedProperties().isActive( QgsCallout::OffsetFromAnchor ) )
+    {
+      offsetFromAnchorDist = dataDefinedProperties().valueAsDouble( QgsCallout::OffsetFromAnchor, context.expressionContext(), offsetFromAnchorDist );
+    }
+    const double offsetFromAnchorPixels = context.convertToPainterUnits( offsetFromAnchorDist, offsetFromAnchorUnit(), offsetFromAnchorMapUnitScale() );
+
+    double offsetFromLabelDist = offsetFromLabel();
+    if ( dataDefinedProperties().isActive( QgsCallout::OffsetFromLabel ) )
+    {
+      offsetFromLabelDist = dataDefinedProperties().valueAsDouble( QgsCallout::OffsetFromLabel, context.expressionContext(), offsetFromLabelDist );
+    }
+    const double offsetFromLabelPixels = context.convertToPainterUnits( offsetFromLabelDist, offsetFromAnchorUnit(), offsetFromAnchorMapUnitScale() );
+
+    if ( offsetFromAnchorPixels > 0 || offsetFromLabelPixels > 0 )
+    {
+      if ( QgsLineString *ls = qgsgeometry_cast< QgsLineString * >( line.get() ) )
+      {
+        line = QgsGeometry( ls->curveSubstring( offsetFromLabelPixels, ls->length() - offsetFromAnchorPixels ) );
+      }
+    }
+
+    lineSymbol()->renderPolyline( line.asQPolygonF(), nullptr, context );
+  };
+
+  bool toAllParts = drawCalloutToAllParts();
+  if ( dataDefinedProperties().isActive( QgsCallout::DrawCalloutToAllParts ) )
+  {
+    context.expressionContext().setOriginalValueVariable( toAllParts );
+    toAllParts = dataDefinedProperties().valueAsBool( QgsCallout::DrawCalloutToAllParts, context.expressionContext(), toAllParts );
   }
 
-  if ( qgsDoubleNear( line.length(), 0 ) )
-    return;
-
-  double minLength = minimumLength();
-  if ( dataDefinedProperties().isActive( QgsCallout::MinimumCalloutLength ) )
+  if ( calloutContext.allFeaturePartsLabeled || !toAllParts )
+    drawCalloutLine( anchor );
+  else
   {
-    minLength = dataDefinedProperties().valueAsDouble( QgsCallout::MinimumCalloutLength, context.expressionContext(), minLength );
+    const QVector< QgsGeometry > parts = anchor.asGeometryCollection();
+    for ( const QgsGeometry &part : parts )
+      drawCalloutLine( part );
   }
-  double minLengthPixels = context.convertToPainterUnits( minLength, minimumLengthUnit(), minimumLengthMapUnitScale() );
-  if ( minLengthPixels > 0 && line.length() < minLengthPixels )
-    return; // too small!
-
-  const QgsPoint start = qgsgeometry_cast< const QgsLineString * >( line.constGet() )->startPoint();
-  const QgsPoint end = qgsgeometry_cast< const QgsLineString * >( line.constGet() )->endPoint();
-  QgsPoint mid1 = QgsPoint( start.x(), end.y() );
-
-  QPolygonF lineF = QPolygonF() << start.toQPointF() << mid1.toQPointF() << end.toQPointF();
-
-  lineSymbol()->renderPolyline( lineF, nullptr, context );
 }

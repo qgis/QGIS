@@ -43,6 +43,7 @@ class TestQgsFeatureListComboBox : public QObject
 
     void testSetGetLayer();
     void testSetGetForeignKey();
+    void testMultipleForeignKeys();
     void testAllowNull();
     void testValuesAndSelection();
     void nullRepresentation();
@@ -121,6 +122,7 @@ void TestQgsFeatureListComboBox::testSetGetForeignKey()
 {
   std::unique_ptr<QgsFeatureListComboBox> cb( new QgsFeatureListComboBox() );
 
+  Q_NOWARN_DEPRECATED_PUSH
   QVERIFY( cb->identifierValue().isNull() );
 
   cb->setSourceLayer( mLayer.get() );
@@ -135,6 +137,24 @@ void TestQgsFeatureListComboBox::testSetGetForeignKey()
 
   cb->setIdentifierValue( 20 );
   QCOMPARE( cb->identifierValue(), QVariant( 20 ) );
+  Q_NOWARN_DEPRECATED_POP
+}
+
+void TestQgsFeatureListComboBox::testMultipleForeignKeys()
+{
+  std::unique_ptr<QgsFeatureListComboBox> cb( new QgsFeatureListComboBox() );
+
+  QgsApplication::setNullRepresentation( QStringLiteral( "nope" ) );
+
+  QVERIFY( cb->identifierValues().isEmpty() );
+
+  cb->setSourceLayer( mLayer.get() );
+  cb->setIdentifierFields( QStringList() << "material" << "diameter" << "raccord" );
+  cb->setDisplayExpression( "\"material\" || ' ' || \"diameter\" || ' ' || \"raccord\"" );
+  cb->setAllowNull( true );
+
+  cb->setIdentifierValues( QVariantList() << "gold" << 777 << "rush" );
+  QCOMPARE( cb->identifierValues(), QVariantList() << "gold" << 777 << "rush" );
 }
 
 void TestQgsFeatureListComboBox::testAllowNull()

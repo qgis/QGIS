@@ -19,6 +19,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgschunknode_p.h"
 #include "qgsdemterraintilegeometry_p.h"
+#include "qgseventtracing.h"
 #include "qgsraycastingutils_p.h"
 #include "qgsterraingenerator.h"
 #include "qgsterraintexturegenerator_p.h"
@@ -88,8 +89,7 @@ QgsTerrainEntity::QgsTerrainEntity( int maxLevel, const Qgs3DMapSettings &map, Q
 QgsTerrainEntity::~QgsTerrainEntity()
 {
   // cancel / wait for jobs
-  if ( mActiveJob )
-    cancelActiveJob();
+  cancelActiveJobs();
 
   delete mTextureGenerator;
   delete mTerrainToMapTransform;
@@ -138,6 +138,8 @@ void QgsTerrainEntity::onShowBoundingBoxesChanged()
 
 void QgsTerrainEntity::invalidateMapImages()
 {
+  QgsEventTracing::addEvent( QgsEventTracing::Instant, QStringLiteral( "3D" ), QStringLiteral( "Invalidate textures" ) );
+
   // handle active nodes
 
   updateNodes( mActiveNodes, mUpdateJobFactory.get() );
@@ -190,7 +192,7 @@ TerrainMapUpdateJob::TerrainMapUpdateJob( QgsTerrainTextureGenerator *textureGen
 {
   QgsTerrainTileEntity *entity = qobject_cast<QgsTerrainTileEntity *>( node->entity() );
   connect( textureGenerator, &QgsTerrainTextureGenerator::tileReady, this, &TerrainMapUpdateJob::onTileReady );
-  mJobId = textureGenerator->render( entity->textureImage()->imageExtent(), entity->textureImage()->imageDebugText() );
+  mJobId = textureGenerator->render( entity->textureImage()->imageExtent(), node->tileId(), entity->textureImage()->imageDebugText() );
 }
 
 void TerrainMapUpdateJob::cancel()

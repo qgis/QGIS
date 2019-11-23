@@ -76,6 +76,12 @@ to change due to centralization.
 %End
   public:
 
+    enum StyleSheetType
+    {
+      Qt,
+      WebBrowser,
+    };
+
     static const char *QGIS_ORGANIZATION_NAME;
     static const char *QGIS_ORGANIZATION_DOMAIN;
     static const char *QGIS_APPLICATION_NAME;
@@ -503,20 +509,23 @@ Gets application icon
 Returns whether this machine uses big or little endian
 %End
 
-    static QString reportStyleSheet();
+    static QString reportStyleSheet( QgsApplication::StyleSheetType styleSheetType = QgsApplication::StyleSheetType::Qt );
 %Docstring
-Returns a standard css style sheet for reports.
+Returns a css style sheet for reports, the ``styleSheetType`` argument
+determines what type of stylesheet is supported by the widget.
 
 Typically you will use this method by doing:
 QString myStyle = QgsApplication.reportStyleSheet();
 textBrowserReport->document()->setDefaultStyleSheet(myStyle);
+if you are using a QgsWebView you will need to manually inject
+the CSS into a head -> script tag instead.
 
-:return: QString containing the CSS 2.1 compliant stylesheet.
+:return: the stylesheet CSS rules.
 
 .. note::
 
-   you can use the special Qt extensions too, for example
-   the gradient fills for backgrounds.
+   if styleSheetType equals StyleSheetType.Qt you can use the special Qt extensions too,
+   for example the gradient fills for backgrounds.
 %End
 
     static QString showSettings();
@@ -585,6 +594,32 @@ Apply the skipped drivers list to gdal
 .. seealso:: :py:func:`restoreGdalDriver`
 
 .. seealso:: :py:func:`skippedGdalDrivers`
+%End
+
+    static void registerGdalDriversFromSettings();
+%Docstring
+Register gdal drivers, excluding the ones mentioned in "gdal/skipList" setting.
+
+.. versionadded:: 3.10
+%End
+
+    static QStringList deferredSkippedGdalDrivers();
+%Docstring
+Returns the list of gdal drivers that have been disabled in the current session,
+and thus, for safety, should not be disabled right now, but at the
+next application restart.
+
+.. versionadded:: 3.10
+%End
+
+    static void setSkippedGdalDrivers( const QStringList &skippedGdalDrivers,
+                                       const QStringList &deferredSkippedGdalDrivers );
+%Docstring
+Sets the list of gdal drivers that should be disabled (``skippedGdalDrivers``),
+but excludes for now the ones defines in ``deferredSkippedGdalDrivers``.
+This writes the "gdal/skipList" setting.
+
+.. versionadded:: 3.10
 %End
 
     static int maxThreads();
@@ -709,6 +744,29 @@ Returns the application's GPS connection registry, used for managing GPS connect
 Returns the application's plugin layer registry, used for managing plugin layer types.
 
 .. versionadded:: 3.0
+%End
+
+    static QgsClassificationMethodRegistry *classificationMethodRegistry() /KeepReference/;
+%Docstring
+Returns the application's classification methods registry, used in graduated renderer
+
+.. versionadded:: 3.10
+%End
+
+    static QgsBookmarkManager *bookmarkManager();
+%Docstring
+Returns the application's bookmark manager, used for storing installation-wide bookmarks.
+
+.. versionadded:: 3.10
+%End
+
+    static QgsStyleModel *defaultStyleModel();
+%Docstring
+Returns a shared QgsStyleModel containing the default style library (see QgsStyle.defaultStyle()).
+
+Using this shared model instead of creating a new QgsStyleModel improves performance.
+
+.. versionadded:: 3.10
 %End
 
     static QgsMessageLog *messageLog();

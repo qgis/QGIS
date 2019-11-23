@@ -946,7 +946,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     {
       attrItem->webView()->setZoomFactor( attrItem->webView()->zoomFactor() * ( currentFormat == QgsRaster::IdentifyFormatHtml ? 0.7 : 0.9 ) );
     }
-    connect( attrItem->webView(), &QWebView::linkClicked, [ ]( const QUrl & url )
+    connect( attrItem->webView()->page(), &QWebPage::linkClicked, [ ]( const QUrl & url )
     {
       QDesktopServices::openUrl( url );
     } );
@@ -954,9 +954,10 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     featItem->addChild( attrItem ); // before setHtml()!
     if ( !attributes.isEmpty() )
     {
-      auto value { QgsStringUtils::insertLinks( attributes.begin().value() ) };
+      QString value { attributes.begin().value() };
       if ( currentFormat ==  QgsRaster::IdentifyFormatText )
       {
+        value = QgsStringUtils::insertLinks( value );
         value.prepend( QStringLiteral( "<pre style=\"font-family: monospace;\">" ) ).append( QStringLiteral( "</pre>" ) );
       }
       attrItem->setHtml( value );

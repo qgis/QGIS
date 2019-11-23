@@ -202,7 +202,14 @@ Qt::ItemFlags QgsBrowserModel::flags( const QModelIndex &index ) const
 
   Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
-  QgsDataItem *ptr = reinterpret_cast< QgsDataItem * >( index.internalPointer() );
+  QgsDataItem *ptr = dataItem( index );
+
+  if ( !ptr )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "FLAGS PROBLEM!" ), 4 );
+    return Qt::ItemFlags();
+  }
+
   if ( ptr->hasDragEnabled() )
     flags |= Qt::ItemIsDragEnabled;
 
@@ -498,7 +505,6 @@ QModelIndex QgsBrowserModel::findItem( QgsDataItem *item, QgsDataItem *parent ) 
     if ( childIndex.isValid() )
       return childIndex;
   }
-
   return QModelIndex();
 }
 

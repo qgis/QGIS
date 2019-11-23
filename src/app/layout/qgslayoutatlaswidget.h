@@ -50,9 +50,10 @@ class QgsLayoutAtlasWidget: public QWidget, private Ui::QgsLayoutAtlasWidgetBase
     void updateAtlasFeatures();
 
   private:
-    QgsPrintLayout *mLayout = nullptr;
+    QPointer< QgsPrintLayout > mLayout;
     QgsLayoutAtlas *mAtlas = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
+    bool mBlockUpdates = false;
 
     void blockAllSignals( bool b );
     void checkLayerType( QgsVectorLayer *layer );

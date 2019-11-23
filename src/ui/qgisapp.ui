@@ -105,6 +105,7 @@
      </property>
      <addaction name="mActionDecorationGrid"/>
      <addaction name="mActionDecorationScaleBar"/>
+     <addaction name="mActionDecorationImage"/>
      <addaction name="mActionDecorationNorthArrow"/>
      <addaction name="mActionDecorationTitle"/>
      <addaction name="mActionDecorationCopyright"/>
@@ -143,6 +144,7 @@
     <addaction name="mActionMapTips"/>
     <addaction name="mActionNewBookmark"/>
     <addaction name="mActionShowBookmarks"/>
+    <addaction name="mActionShowBookmarkManager"/>
     <addaction name="mActionDraw"/>
     <addaction name="separator"/>
     <addaction name="mActionShowAllLayers"/>
@@ -232,11 +234,17 @@
     <property name="title">
      <string>&amp;Help</string>
     </property>
+    <widget class="QMenu" name="mMenuPluginHelp">
+     <property name="title">
+      <string>Plugins</string>
+     </property>
+    </widget>
     <addaction name="mActionHelpContents"/>
     <addaction name="mActionHelpAPI"/>
     <addaction name="separator"/>
-    <addaction name="mActionReportaBug"/>
+    <addaction name="mMenuPluginHelp"/>
     <addaction name="separator"/>
+    <addaction name="mActionReportaBug"/>
     <addaction name="mActionNeedSupport"/>
     <addaction name="separator"/>
     <addaction name="mActionQgisHomePage"/>
@@ -284,6 +292,7 @@
      <addaction name="mActionSelectByForm"/>
      <addaction name="mActionSelectByExpression"/>
      <addaction name="mActionDeselectAll"/>
+     <addaction name="mActionReselect"/>
      <addaction name="mActionSelectAll"/>
      <addaction name="mActionInvertSelection"/>
     </widget>
@@ -605,7 +614,10 @@
    </attribute>
    <addaction name="mActionLabeling"/>
    <addaction name="mActionDiagramProperties"/>
+   <addaction name="separator"/>
    <addaction name="mActionShowPinnedLabels"/>
+   <addaction name="mActionShowUnplacedLabels"/>
+   <addaction name="separator"/>
    <addaction name="mActionPinLabels"/>
    <addaction name="mActionShowHideLabels"/>
    <addaction name="mActionMoveLabel"/>
@@ -1368,13 +1380,25 @@
      <normaloff>:/images/themes/default/mActionNewBookmark.svg</normaloff>:/images/themes/default/mActionNewBookmark.svg</iconset>
    </property>
    <property name="text">
-    <string>New Bookmark…</string>
+    <string>New Spatial Bookmark…</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+B</string>
    </property>
   </action>
   <action name="mActionShowBookmarks">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionShowBookmarks.svg</normaloff>:/images/themes/default/mActionShowBookmarks.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Show Spatial Bookmarks</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+B</string>
+   </property>
+  </action>
+  <action name="mActionShowBookmarkManager">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -1383,10 +1407,7 @@
      <normaloff>:/images/themes/default/mActionShowBookmarks.svg</normaloff>:/images/themes/default/mActionShowBookmarks.svg</iconset>
    </property>
    <property name="text">
-    <string>Show Bookmarks</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+B</string>
+    <string>Show Spatial Bookmark Manager</string>
    </property>
   </action>
   <action name="mActionDraw">
@@ -1531,9 +1552,6 @@
    </property>
    <property name="text">
     <string>Add MSSQL Spatial Layer…</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+M</string>
    </property>
   </action>
   <action name="mActionAddDb2Layer">
@@ -1866,7 +1884,7 @@
      <normaloff>:/images/themes/default/mActionHelpSponsors.png</normaloff>:/images/themes/default/mActionHelpSponsors.png</iconset>
    </property>
    <property name="text">
-    <string>QGIS Sponsors</string>
+    <string>QGIS Sustaining Members</string>
    </property>
   </action>
   <action name="mActionMoveLabel">
@@ -1881,7 +1899,8 @@
     <string>Move Label and Diagram</string>
    </property>
    <property name="toolTip">
-    <string>Move Label and Diagram</string>
+    <string>Moves a Label or Diagram
+Acts on all layers.</string>
    </property>
   </action>
   <action name="mActionRotateLabel">
@@ -1896,8 +1915,9 @@
     <string>Rotate Label</string>
    </property>
    <property name="toolTip">
-    <string>Rotate Label
-Ctrl (Cmd) increments by 15 deg.</string>
+    <string>Rotates a Label
+Holding Ctrl (Cmd) while rotating increments by 15 deg.
+Acts on all layers.</string>
    </property>
   </action>
   <action name="mActionChangeLabelProperties">
@@ -1910,6 +1930,11 @@ Ctrl (Cmd) increments by 15 deg.</string>
    </property>
    <property name="text">
     <string>Change Label</string>
+   </property>
+   <property name="toolTip">
+    <string>Change Label Properties
+Allows customization of individual label properties such as font size and color.
+Acts on all layers.</string>
    </property>
   </action>
   <action name="mActionStyleManager">
@@ -2018,6 +2043,21 @@ Ctrl (Cmd) increments by 15 deg.</string>
    </property>
    <property name="whatsThis">
     <string>Creates a copyright label that is displayed on the map canvas.</string>
+   </property>
+  </action>
+  <action name="mActionDecorationImage">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddImage.svg</normaloff>:/images/themes/default/mActionAddImage.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Image…</string>
+   </property>
+   <property name="toolTip">
+    <string>Image</string>
+   </property>
+   <property name="whatsThis">
+    <string>&quot;Creates an image that is displayed on the map canvas&quot;</string>
    </property>
   </action>
   <action name="mActionDecorationNorthArrow">
@@ -2162,9 +2202,9 @@ Ctrl (Cmd) increments by 15 deg.</string>
    </property>
    <property name="toolTip">
     <string>Pin/Unpin Labels and Diagrams
-Click or marquee on label/diagram to pin
-Shift unpins, Ctrl (Cmd) toggles state
-Acts on all editable layers</string>
+Click or marquee on label/diagram to pin.
+Shift clicking or marqueeing unpins labels, while Ctrl (Cmd) toggles label state.
+Acts on all layers.</string>
    </property>
   </action>
   <action name="mActionShowPinnedLabels">
@@ -2179,7 +2219,8 @@ Acts on all editable layers</string>
     <string>Highlight Pinned Labels and Diagrams</string>
    </property>
    <property name="toolTip">
-    <string>Highlight Pinned Labels and Diagrams</string>
+    <string>Highlight Pinned Labels and Diagrams
+Shows highlight rectangles around labels which are fixed in place, e.g. due to manual placement.</string>
    </property>
   </action>
   <action name="mActionNewBlankProject">
@@ -2231,9 +2272,9 @@ Acts on all editable layers</string>
    </property>
    <property name="toolTip">
     <string>Show/Hide Labels And Diagrams
-Click or marquee on feature to show label and diagram
-Shift+click or marquee on label or diagram to hide it
-Acts on currently active editable layer</string>
+Click or marquee on features to show individual labels or diagrams.
+Shift+click or marquee on a label or diagram to hide it.
+Acts on the currently active layer only.</string>
    </property>
   </action>
   <action name="mActionHtmlAnnotation">
@@ -2471,6 +2512,9 @@ Acts on currently active editable layer</string>
    <property name="toolTip">
     <string>Add Delimited Text Layer</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+T</string>
+   </property>
   </action>
   <action name="mActionAddVirtualLayer">
    <property name="icon">
@@ -2692,7 +2736,7 @@ Acts on currently active editable layer</string>
   </action>
   <action name="mActionReportaBug">
    <property name="text">
-    <string>Report an issue</string>
+    <string>Report an Issue</string>
    </property>
   </action>
   <action name="mActionDiagramProperties">
@@ -3049,7 +3093,7 @@ Acts on currently active editable layer</string>
     <string>New 3D Map View</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Shift+M</string>
+    <string>Ctrl+Alt+M</string>
    </property>
   </action>
   <action name="mActionShowLayoutManager">
@@ -3186,6 +3230,30 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>New Virtual Layer</string>
+   </property>
+  </action>
+  <action name="mActionShowUnplacedLabels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionShowUnplacedLabel.svg</normaloff>:/images/themes/default/mActionShowUnplacedLabel.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Show Unplaced Labels</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggles Display of Unplaced Labels
+Shows placeholders for labels which could not be placed, e.g. due to overlaps with other map labels.</string>
+   </property>
+  </action>
+  <action name="mActionReselect">
+   <property name="text">
+    <string>Reselect Features</string>
+   </property>
+   <property name="toolTip">
+    <string>Reselect Features from Current Layer</string>
    </property>
   </action>
  </widget>

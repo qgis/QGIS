@@ -21,23 +21,27 @@
 #include <QApplication>
 #include <QDesktopServices>
 
-//qgis includes...
-#include <qgsvectorlayer.h> //defines QgsFieldMap
-#include <qgsvectorfilewriter.h> //logic for writing shpfiles
-#include <qgsfeature.h> //we will need to pass a bunch of these for each rec
-#include <qgsgeometry.h> //each feature needs a geometry
-#include <qgspoint.h> //we will use point geometry
-#include <qgscoordinatereferencesystem.h> //needed for creating a srs
-#include <qgsapplication.h> //search path for srs.db
-#include <qgsfield.h>
-#include <qgis.h> //defines GEOWkt
+#include "qgsvectorlayer.h"
+#include "qgsvectorfilewriter.h"
+#include "qgsfeature.h"
+#include "qgsgeometry.h"
+#include "qgspoint.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsapplication.h"
+#include "qgsfield.h"
+#include "qgis.h"
 #include "qgsmaprenderersequentialjob.h"
-#include <qgsmaplayer.h>
-#include <qgsreadwritecontext.h>
-#include <qgsvectorlayer.h>
-#include <qgsapplication.h>
-#include <qgsproviderregistry.h>
-#include <qgsproject.h>
+#include "qgsmaplayer.h"
+#include "qgsreadwritecontext.h"
+#include "qgsproviderregistry.h"
+#include "qgsproject.h"
+#include "qgsrenderedfeaturehandlerinterface.h"
+#include "qgsmaprendererstagedrenderjob.h"
+#include "qgsmultirenderchecker.h"
+#include "qgspallabeling.h"
+#include "qgsvectorlayerlabeling.h"
+#include "qgsfontutils.h"
+#include "qgsrasterlayer.h"
 
 //qgs unit test utility class
 #include "qgsrenderchecker.h"
@@ -76,7 +80,13 @@ class TestQgsMapRendererJob : public QObject
     void testFourAdjacentTiles_data();
     void testFourAdjacentTiles();
 
+    void testRenderedFeatureHandlers();
+    void stagedRenderer();
+    void stagedRendererWithStagedLabeling();
+
   private:
+    bool imageCheck( const QString &type, const QImage &image, int mismatchCount = 0 );
+
     QString mEncoding;
     QgsVectorFileWriter::WriterError mError =  QgsVectorFileWriter::NoError ;
     QgsCoordinateReferenceSystem mCRS;
@@ -102,7 +112,7 @@ void TestQgsMapRendererJob::initTestCase()
   mEncoding = QStringLiteral( "UTF-8" );
   QgsField myField1( QStringLiteral( "Value" ), QVariant::Int, QStringLiteral( "int" ), 10, 0, QStringLiteral( "Value on lon" ) );
   mFields.append( myField1 );
-  mCRS = QgsCoordinateReferenceSystem( GEOWKT );
+  mCRS = QgsCoordinateReferenceSystem( geoWkt() );
   //
   // Create the test dataset if it doesn't exist
   //
@@ -328,6 +338,538 @@ void TestQgsMapRendererJob::testFourAdjacentTiles()
   bool result = checker.compareImages( QTest::currentDataTag(), 100, renderedImagePath );
   mReport += checker.report();
   QVERIFY( result );
+}
+
+
+class TestHandler : public QgsRenderedFeatureHandlerInterface
+{
+  public:
+
+    TestHandler( QList< QgsFeature > &features, QList< QgsGeometry > &geometries, bool allAttributes = false )
+      : features( features )
+      , geometries( geometries )
+      , mAllAttributes( allAttributes )
+    {}
+
+    void handleRenderedFeature( const QgsFeature &feature, const QgsGeometry &geom, const QgsRenderedFeatureHandlerInterface::RenderedFeatureContext & ) override
+    {
+      features.append( feature );
+      geometries.append( geom );
+    }
+
+    QSet< QString > usedAttributes( QgsVectorLayer *, const QgsRenderContext & ) const override
+    {
+      if ( !mAllAttributes )
+        return QSet< QString >();
+      else
+        return QSet< QString >() << QgsFeatureRequest::ALL_ATTRIBUTES;
+    }
+
+    QList< QgsFeature > &features;
+    QList< QgsGeometry > &geometries;
+
+    bool mAllAttributes = false;
+
+};
+
+
+void TestQgsMapRendererJob::testRenderedFeatureHandlers()
+{
+  std::unique_ptr< QgsVectorLayer > pointsLayer = qgis::make_unique< QgsVectorLayer >( TEST_DATA_DIR + QStringLiteral( "/points.shp" ),
+      QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
+  QVERIFY( pointsLayer->isValid() );
+  std::unique_ptr< QgsVectorLayer > linesLayer = qgis::make_unique< QgsVectorLayer >( TEST_DATA_DIR + QStringLiteral( "/lines.shp" ),
+      QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
+  QVERIFY( linesLayer->isValid() );
+  std::unique_ptr< QgsVectorLayer > polygonsLayer = qgis::make_unique< QgsVectorLayer >( TEST_DATA_DIR + QStringLiteral( "/polys.shp" ),
+      QStringLiteral( "polys" ), QStringLiteral( "ogr" ) );
+  QVERIFY( polygonsLayer->isValid() );
+
+  QgsMapSettings mapSettings;
+  mapSettings.setExtent( linesLayer->extent() );
+  mapSettings.setDestinationCrs( linesLayer->crs() );
+  mapSettings.setOutputSize( QSize( 256, 256 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << pointsLayer.get() << linesLayer.get() << polygonsLayer.get() );
+  mapSettings.setFlags( QgsMapSettings::RenderMapTile );
+  mapSettings.setOutputDpi( 96 );
+
+  QList< QgsFeature > features1;
+  QList< QgsGeometry > geometries1;
+  TestHandler handler1( features1, geometries1 );
+  QList< QgsFeature > features2;
+  QList< QgsGeometry > geometries2;
+  TestHandler handler2( features2, geometries2 );
+  mapSettings.addRenderedFeatureHandler( &handler1 );
+  mapSettings.addRenderedFeatureHandler( &handler2 );
+
+  QgsMapRendererSequentialJob renderJob( mapSettings );
+  renderJob.start();
+  renderJob.waitForFinished();
+
+  QCOMPARE( features1.count(), 33 );
+  QCOMPARE( geometries1.count(), 33 );
+  QCOMPARE( features2.count(), 33 );
+  QCOMPARE( geometries2.count(), 33 );
+  features1.clear();
+  geometries1.clear();
+  features2.clear();
+  geometries2.clear();
+
+  polygonsLayer->setSubsetString( QStringLiteral( "value=13" ) );
+  pointsLayer->setSubsetString( QStringLiteral( "importance<=3 and \"Cabin Crew\">=1 and \"Cabin Crew\"<=2 and \"heading\" > 90 and \"heading\" < 290" ) );
+  linesLayer->setSubsetString( QStringLiteral( "name='Highway'" ) );
+
+  QgsMapRendererSequentialJob renderJob2( mapSettings );
+  renderJob2.start();
+  renderJob2.waitForFinished();
+
+  QCOMPARE( features1.count(), 5 );
+  QCOMPARE( geometries1.count(), 5 );
+  QCOMPARE( features2.count(), 5 );
+  QCOMPARE( geometries2.count(), 5 );
+
+  QStringList attributes;
+  for ( const QgsFeature &f : qgis::as_const( features1 ) )
+  {
+    QStringList bits;
+    for ( const QVariant &v : f.attributes() )
+      bits << v.toString();
+    attributes << bits.join( ',' );
+  }
+  attributes.sort();
+  QCOMPARE( attributes.at( 0 ), QStringLiteral( "Biplane,,,,," ) );
+  QCOMPARE( attributes.at( 1 ), QStringLiteral( "Dam," ) );
+  QCOMPARE( attributes.at( 2 ), QStringLiteral( "Highway," ) );
+  QCOMPARE( attributes.at( 3 ), QStringLiteral( "Highway," ) );
+  QCOMPARE( attributes.at( 4 ), QStringLiteral( "Jet,,,,," ) );
+
+  QStringList wkts;
+  for ( const QgsGeometry &g : qgis::as_const( geometries1 ) )
+  {
+    QgsDebugMsg( g.asWkt( 1 ) );
+    wkts << g.asWkt( 1 );
+  }
+  wkts.sort();
+  QCOMPARE( wkts.at( 0 ), QStringLiteral( "MultiLineString ((0 124.4, 0.3 124.4, 4 123.4, 5.5 121.9, 7.3 119.5, 8.2 118.9, 10.6 116.4, 11.2 115.8, 15.8 113.1, 20.4 111, 24 110.1, 30.7 108.5, 32.8 108.5, 36.5 108.5, 42.6 109.1, 44.4 109.5, 47.4 110.4, 49.9 110.4, 54.1 111.9, 55 112.5, 57.2 113.1, 58.4 113.7, 60.8 114.9, 62 115.5, 63.8 116.4, 64.8 116.8, 66.3 117.4, 72.4 119.2, 80 119.5, 83.9 120.7, 85.7 121.3, 87.3 121.6, 89.4 121.6, 91.8 121.6, 93.6 121.9, 95.5 122.2, 99.7 122.2, 100.3 122.2, 103.7 122.8, 106.4 122.8, 109.8 122.5, 112.8 122.5, 117.1 122.5, 121 121, 125.6 119.5, 127.4 118.3, 134.7 118, 144.7 120.4, 148.4 121.3, 156 121.9, 159.6 121.9, 168.4 119.2, 173.6 116.4, 179.1 112.5, 183.9 110.1, 188.5 107.6, 197.3 104.9, 197.3 104.9, 198.5 104.6, 204 105.2, 206.4 106.4, 211.3 107.6, 216.2 109.5, 218 110.1, 221 111, 229.5 112.2, 230.8 112.2, 243.2 111.6, 243.5 111, 251.4 107.3, 253.3 106.7))" ) );
+  QCOMPARE( wkts.at( 1 ), QStringLiteral( "MultiLineString ((93.3 45.3, 94.6 48.3, 95.2 49.6, 95.8 50.5, 97.9 52.3, 104 55.3, 110.4 58.1, 112.2 59.6, 115.2 62.6, 115.5 63.2, 116.1 66.9, 116.4 68.7, 117.4 71.4, 117.7 72.7, 118 75.7, 118.6 76.6, 119.5 78.4, 120.4 80.3, 122.5 82.7, 122.8 83.3, 123.1 85.1, 123.1 87.9, 123.1 89.1, 123.7 91.5, 124.4 92.7, 126.8 94.6, 128.9 95.8, 131 97, 133.2 97.9, 133.5 99.7, 133.5 100.9, 132.3 103.1, 131.6 103.7, 130.7 105.5, 129.8 106.7, 128.9 107.6, 128.6 108.2, 128.3 109.8, 128 111, 128 112.2, 128.9 114.3, 129.5 115.5, 129.5 115.5, 132.6 122.2, 131 125.3, 129.8 126.5, 127.7 130.1, 127.7 132.6, 125 135, 124 136.5, 122.5 138.9, 122.5 140.2, 122.5 141.7, 122.5 142.9, 122.5 144.4, 123.4 145.6, 123.7 147.2, 124.4 148.4, 125.6 149.6, 126.8 151.4, 128.6 153.5, 131.6 159.3, 132 159.6, 134.1 161.7, 135 162.7, 137.1 165.7, 138.6 166.9, 141.4 168.7, 143.2 170.3, 145.3 172.4, 146.9 173.3, 149 175.1, 151.7 176.6, 153.8 178.2, 157.2 180.6, 158.4 181.8, 159.3 183.9, 159.3 185.8, 159.3 187.6, 159 188.2, 157.8 190, 156 192.8, 154.8 194, 154.5 195.2, 154.5 196.7, 154.8 197.9, 155.7 200.4, 156 201.6, 157.8 203.7, 158.7 204.6, 159.9 206.4, 161.7 209.2, 166.6 211.3))" ) );
+  QCOMPARE( wkts.at( 2 ), QStringLiteral( "MultiPolygon (((26.5 151.7, 31.3 153.8, 32.2 155.7, 32.8 156.3, 38 156.6, 41.3 156.6, 43.8 156.6, 48.3 157.5, 50.8 158.7, 52.9 160.8, 55 165.1, 55 165.1, 52.6 180.6, 52.6 182.7, 52.3 186.4, 50.2 190.3, 47.7 192.8, 45.9 194, 45 194.3, 30.4 193.7, 25.8 192.8, 20.4 190.9, 15.8 190, 13.4 188.8, 12.8 188.5, 11.6 187.9, 9.7 186.1, 8.8 184.9, 7.9 183.6, 7 181.8, 6.7 180.3, 7 177.9, 7.6 176.3, 8.5 173.9, 8.5 172.4, 7.9 170.6, 6.7 170, 4 168.4, -0.3 165.7, -1.8 163, -1.8 159.6, -1.5 156.6, 0 152.3, 7.6 147.5, 18.9 148.4, 25.2 150.5, 26.5 151.7)))" ) );
+  QCOMPARE( wkts.at( 3 ), QStringLiteral( "Polygon ((122.4 105.6, 165.2 105.6, 165.2 148.4, 122.4 148.4, 122.4 105.6))" ) );
+  QCOMPARE( wkts.at( 4 ), QStringLiteral( "Polygon ((4.2 59.5, 73.5 59.5, 73.5 128.8, 4.2 128.8, 4.2 59.5))" ) );
+
+  // now, use a handler which requires all attributes to be fetched
+  QList< QgsFeature > features3;
+  QList< QgsGeometry > geometries3;
+  TestHandler handler3( features3, geometries3, true );
+  mapSettings.addRenderedFeatureHandler( &handler3 );
+
+  QgsMapRendererSequentialJob renderJob3( mapSettings );
+  renderJob3.start();
+  renderJob3.waitForFinished();
+
+  QCOMPARE( features3.count(), 5 );
+  QCOMPARE( geometries3.count(), 5 );
+  attributes.clear();
+  for ( const QgsFeature &f : qgis::as_const( features3 ) )
+  {
+    QStringList bits;
+    for ( const QVariant &v : f.attributes() )
+      bits << v.toString();
+    attributes << bits.join( ',' );
+  }
+  attributes.sort();
+  QCOMPARE( attributes.at( 0 ), QStringLiteral( "Biplane,240,1,3,2,5" ) );
+  QCOMPARE( attributes.at( 1 ), QStringLiteral( "Dam,13" ) );
+  QCOMPARE( attributes.at( 2 ), QStringLiteral( "Highway,1" ) );
+  QCOMPARE( attributes.at( 3 ), QStringLiteral( "Highway,1" ) );
+  QCOMPARE( attributes.at( 4 ), QStringLiteral( "Jet,95,3,1,1,2" ) );
+
+}
+
+void TestQgsMapRendererJob::stagedRenderer()
+{
+  // test the staged map renderer job subclass
+
+  std::unique_ptr< QgsVectorLayer > pointsLayer = qgis::make_unique< QgsVectorLayer >( TEST_DATA_DIR + QStringLiteral( "/points.shp" ),
+      QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
+  QVERIFY( pointsLayer->isValid() );
+  std::unique_ptr< QgsVectorLayer > linesLayer = qgis::make_unique< QgsVectorLayer >( TEST_DATA_DIR + QStringLiteral( "/lines.shp" ),
+      QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
+  QVERIFY( linesLayer->isValid() );
+  std::unique_ptr< QgsVectorLayer > polygonsLayer = qgis::make_unique< QgsVectorLayer >( TEST_DATA_DIR + QStringLiteral( "/polys.shp" ),
+      QStringLiteral( "polys" ), QStringLiteral( "ogr" ) );
+  QVERIFY( polygonsLayer->isValid() );
+  std::unique_ptr< QgsRasterLayer > rasterLayer = qgis::make_unique< QgsRasterLayer >( TEST_DATA_DIR + QStringLiteral( "/raster_layer.tiff" ),
+      QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
+  QVERIFY( rasterLayer->isValid() );
+
+  QgsMapSettings mapSettings;
+  mapSettings.setExtent( linesLayer->extent() );
+  mapSettings.setDestinationCrs( linesLayer->crs() );
+  mapSettings.setOutputSize( QSize( 512, 512 ) );
+  mapSettings.setFlag( QgsMapSettings::DrawLabeling, false );
+  mapSettings.setOutputDpi( 96 );
+
+  std::unique_ptr< QgsMapRendererStagedRenderJob > job = qgis::make_unique< QgsMapRendererStagedRenderJob >( mapSettings );
+  job->start();
+  // nothing to render
+  QVERIFY( job->isFinished() );
+  QVERIFY( !job->renderCurrentPart( nullptr ) );
+  QVERIFY( job->currentLayerId().isEmpty() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Finished );
+
+  // with layers
+  mapSettings.setLayers( QList<QgsMapLayer *>() << pointsLayer.get() << linesLayer.get() << rasterLayer.get() << polygonsLayer.get() );
+  job = qgis::make_unique< QgsMapRendererStagedRenderJob >( mapSettings );
+  job->start();
+  QVERIFY( !job->isFinished() );
+  QCOMPARE( job->currentLayerId(), polygonsLayer->id() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
+
+  mapSettings.setBackgroundColor( QColor( 255, 255, 0 ) ); // should be ignored in this job
+  QImage im( 512, 512, QImage::Format_ARGB32_Premultiplied );
+  im.fill( Qt::transparent );
+  QPainter painter( &im );
+  QVERIFY( job->renderCurrentPart( &painter ) );
+  painter.end();
+  QVERIFY( imageCheck( QStringLiteral( "staged_render1" ), im ) );
+  QVERIFY( !job->isFinished() );
+  QVERIFY( job->nextPart() );
+  QCOMPARE( job->currentLayerId(), rasterLayer->id() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
+
+  // second layer
+  im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
+  im.fill( Qt::transparent );
+  painter.begin( &im );
+  QVERIFY( job->renderCurrentPart( &painter ) );
+  painter.end();
+  QVERIFY( imageCheck( QStringLiteral( "staged_render_raster" ), im ) );
+  QVERIFY( !job->isFinished() );
+  QVERIFY( job->nextPart() );
+  QCOMPARE( job->currentLayerId(), linesLayer->id() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
+
+  // third layer
+  im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
+  im.fill( Qt::transparent );
+  painter.begin( &im );
+  QVERIFY( job->renderCurrentPart( &painter ) );
+  painter.end();
+  QVERIFY( imageCheck( QStringLiteral( "staged_render2" ), im ) );
+  QVERIFY( !job->isFinished() );
+  QVERIFY( job->nextPart() );
+  QCOMPARE( job->currentLayerId(), pointsLayer->id() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
+
+  // fourth layer
+  im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
+  im.fill( Qt::transparent );
+  painter.begin( &im );
+  QVERIFY( job->renderCurrentPart( &painter ) );
+  painter.end();
+  QVERIFY( imageCheck( QStringLiteral( "staged_render3" ), im ) );
+
+  // nothing left!
+  QVERIFY( !job->nextPart() );
+  QVERIFY( job->currentLayerId().isEmpty() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Finished );
+  QVERIFY( job->isFinished() );
+  QVERIFY( !job->renderCurrentPart( &painter ) );
+  // double check...
+  QVERIFY( !job->renderCurrentPart( &painter ) );
+
+  // job with labels
+  mapSettings.setFlag( QgsMapSettings::DrawLabeling, true );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "Class" );
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 200, 0, 200 ) );
+  settings.setFormat( format );
+
+  pointsLayer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  pointsLayer->setLabelsEnabled( true );
+
+  job = qgis::make_unique< QgsMapRendererStagedRenderJob >( mapSettings );
+  job->start();
+  QVERIFY( !job->isFinished() );
+  QCOMPARE( job->currentLayerId(), polygonsLayer->id() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
+
+  mapSettings.setBackgroundColor( QColor( 255, 255, 0 ) ); // should be ignored in this job
+  im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
+  im.fill( Qt::transparent );
+  painter.begin( &im );
+  QVERIFY( job->renderCurrentPart( &painter ) );
+  painter.end();
+  QVERIFY( imageCheck( QStringLiteral( "staged_render1" ), im ) );
+  QVERIFY( job->nextPart() );
+  QVERIFY( !job->isFinished() );
+  QCOMPARE( job->currentLayerId(), rasterLayer->id() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
+
+  // second layer
+  im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
+  im.fill( Qt::transparent );
+  painter.begin( &im );
+  QVERIFY( job->renderCurrentPart( &painter ) );
+  painter.end();
+  QVERIFY( imageCheck( QStringLiteral( "staged_render_raster" ), im ) );
+  QVERIFY( job->nextPart() );
+  QVERIFY( !job->isFinished() );
+  QCOMPARE( job->currentLayerId(), linesLayer->id() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
+
+  // third layer
+  im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
+  im.fill( Qt::transparent );
+  painter.begin( &im );
+  QVERIFY( job->renderCurrentPart( &painter ) );
+  painter.end();
+  QVERIFY( imageCheck( QStringLiteral( "staged_render2" ), im ) );
+  QVERIFY( job->nextPart() );
+  QVERIFY( !job->isFinished() );
+  QCOMPARE( job->currentLayerId(), pointsLayer->id() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
+
+  // fourth layer
+  im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
+  im.fill( Qt::transparent );
+  painter.begin( &im );
+  QVERIFY( job->renderCurrentPart( &painter ) );
+  painter.end();
+  QVERIFY( imageCheck( QStringLiteral( "staged_render3" ), im ) );
+  QVERIFY( job->nextPart() );
+  QVERIFY( !job->isFinished() );
+  QVERIFY( job->currentLayerId().isEmpty() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Labels );
+  // labels
+  im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
+  im.fill( Qt::transparent );
+  painter.begin( &im );
+  QVERIFY( job->renderCurrentPart( &painter ) );
+  painter.end();
+  QVERIFY( imageCheck( QStringLiteral( "staged_render_points_labels" ), im ) );
+
+  // nothing left!
+  QVERIFY( !job->nextPart() );
+  QVERIFY( job->currentLayerId().isEmpty() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Finished );
+  QVERIFY( job->isFinished() );
+  QVERIFY( !job->renderCurrentPart( &painter ) );
+  // double check...
+  QVERIFY( !job->renderCurrentPart( &painter ) );
+}
+
+void TestQgsMapRendererJob::stagedRendererWithStagedLabeling()
+{
+  // test the staged map renderer job subclass, when using staged labeling
+
+  std::unique_ptr< QgsVectorLayer > pointsLayer = qgis::make_unique< QgsVectorLayer >( TEST_DATA_DIR + QStringLiteral( "/points.shp" ),
+      QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
+  QVERIFY( pointsLayer->isValid() );
+  std::unique_ptr< QgsVectorLayer > linesLayer = qgis::make_unique< QgsVectorLayer >( TEST_DATA_DIR + QStringLiteral( "/lines.shp" ),
+      QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
+  QVERIFY( linesLayer->isValid() );
+  std::unique_ptr< QgsVectorLayer > polygonsLayer = qgis::make_unique< QgsVectorLayer >( TEST_DATA_DIR + QStringLiteral( "/polys.shp" ),
+      QStringLiteral( "polys" ), QStringLiteral( "ogr" ) );
+  QVERIFY( polygonsLayer->isValid() );
+
+  QgsMapSettings mapSettings;
+  mapSettings.setExtent( linesLayer->extent() );
+  mapSettings.setDestinationCrs( linesLayer->crs() );
+  mapSettings.setOutputSize( QSize( 512, 512 ) );
+  mapSettings.setFlag( QgsMapSettings::DrawLabeling, false );
+  mapSettings.setOutputDpi( 96 );
+
+  std::unique_ptr< QgsMapRendererStagedRenderJob > job = qgis::make_unique< QgsMapRendererStagedRenderJob >( mapSettings, QgsMapRendererStagedRenderJob::RenderLabelsByMapLayer );
+  job->start();
+  // nothing to render
+  QVERIFY( job->isFinished() );
+  QVERIFY( !job->renderCurrentPart( nullptr ) );
+  QVERIFY( job->currentLayerId().isEmpty() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Finished );
+
+  // with layers
+  mapSettings.setLayers( QList<QgsMapLayer *>() << pointsLayer.get() << linesLayer.get() << polygonsLayer.get() );
+  job = qgis::make_unique< QgsMapRendererStagedRenderJob >( mapSettings, QgsMapRendererStagedRenderJob::RenderLabelsByMapLayer );
+  job->start();
+  QVERIFY( !job->isFinished() );
+  QCOMPARE( job->currentLayerId(), polygonsLayer->id() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
+
+  mapSettings.setBackgroundColor( QColor( 255, 255, 0 ) ); // should be ignored in this job
+  QImage im( 512, 512, QImage::Format_ARGB32_Premultiplied );
+  im.fill( Qt::transparent );
+  QPainter painter( &im );
+  QVERIFY( job->renderCurrentPart( &painter ) );
+  painter.end();
+  QVERIFY( imageCheck( QStringLiteral( "staged_render1" ), im ) );
+  QVERIFY( !job->isFinished() );
+  QVERIFY( job->nextPart() );
+  QCOMPARE( job->currentLayerId(), linesLayer->id() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
+
+  // second layer
+  im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
+  im.fill( Qt::transparent );
+  painter.begin( &im );
+  QVERIFY( job->renderCurrentPart( &painter ) );
+  painter.end();
+  QVERIFY( imageCheck( QStringLiteral( "staged_render2" ), im ) );
+  QVERIFY( !job->isFinished() );
+  QVERIFY( job->nextPart() );
+  QCOMPARE( job->currentLayerId(), pointsLayer->id() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
+
+  // third layer
+  im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
+  im.fill( Qt::transparent );
+  painter.begin( &im );
+  QVERIFY( job->renderCurrentPart( &painter ) );
+  painter.end();
+  QVERIFY( imageCheck( QStringLiteral( "staged_render3" ), im ) );
+
+  // nothing left!
+  QVERIFY( !job->nextPart() );
+  QVERIFY( job->currentLayerId().isEmpty() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Finished );
+  QVERIFY( job->isFinished() );
+  QVERIFY( !job->renderCurrentPart( &painter ) );
+  // double check...
+  QVERIFY( !job->renderCurrentPart( &painter ) );
+
+  // job with labels
+  mapSettings.setFlag( QgsMapSettings::DrawLabeling, true );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "Class" );
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 200, 0, 200 ) );
+  settings.setFormat( format );
+  settings.zIndex = 1;
+
+  pointsLayer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  pointsLayer->setLabelsEnabled( true );
+
+  settings.fieldName = QStringLiteral( "Name" );
+  settings.placement = QgsPalLayerSettings::Line;
+  settings.zIndex = 3;
+  linesLayer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  linesLayer->setLabelsEnabled( true );
+
+  settings.fieldName = QStringLiteral( "Name" );
+  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.zIndex = 2;
+  polygonsLayer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  polygonsLayer->setLabelsEnabled( true );
+
+  job = qgis::make_unique< QgsMapRendererStagedRenderJob >( mapSettings, QgsMapRendererStagedRenderJob::RenderLabelsByMapLayer );
+  job->start();
+  QVERIFY( !job->isFinished() );
+  QCOMPARE( job->currentLayerId(), polygonsLayer->id() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
+
+  mapSettings.setBackgroundColor( QColor( 255, 255, 0 ) ); // should be ignored in this job
+  im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
+  im.fill( Qt::transparent );
+  painter.begin( &im );
+  QVERIFY( job->renderCurrentPart( &painter ) );
+  painter.end();
+  QVERIFY( imageCheck( QStringLiteral( "staged_render1" ), im ) );
+  QVERIFY( job->nextPart() );
+  QVERIFY( !job->isFinished() );
+  QCOMPARE( job->currentLayerId(), linesLayer->id() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
+
+  // second layer
+  im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
+  im.fill( Qt::transparent );
+  painter.begin( &im );
+  QVERIFY( job->renderCurrentPart( &painter ) );
+  painter.end();
+  QVERIFY( imageCheck( QStringLiteral( "staged_render2" ), im ) );
+  QVERIFY( job->nextPart() );
+  QVERIFY( !job->isFinished() );
+  QCOMPARE( job->currentLayerId(), pointsLayer->id() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
+
+  // third layer
+  im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
+  im.fill( Qt::transparent );
+  painter.begin( &im );
+  QVERIFY( job->renderCurrentPart( &painter ) );
+  painter.end();
+  QVERIFY( imageCheck( QStringLiteral( "staged_render3" ), im ) );
+
+  // points labels (these must be in z-order!)
+  QVERIFY( job->nextPart() );
+  QVERIFY( !job->isFinished() );
+  QCOMPARE( job->currentLayerId(), pointsLayer->id() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Labels );
+  im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
+  im.fill( Qt::transparent );
+  painter.begin( &im );
+  QVERIFY( job->renderCurrentPart( &painter ) );
+  painter.end();
+  QVERIFY( imageCheck( QStringLiteral( "staged_render_points_staged_labels" ), im ) );
+
+  // polygon labels
+  QVERIFY( job->nextPart() );
+  QVERIFY( !job->isFinished() );
+  QCOMPARE( job->currentLayerId(), polygonsLayer->id() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Labels );
+  // labels
+  im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
+  im.fill( Qt::transparent );
+  painter.begin( &im );
+  QVERIFY( job->renderCurrentPart( &painter ) );
+  painter.end();
+  QVERIFY( imageCheck( QStringLiteral( "staged_render_polygons_staged_labels" ), im ) );
+
+  // line labels
+  QVERIFY( job->nextPart() );
+  QVERIFY( !job->isFinished() );
+  QCOMPARE( job->currentLayerId(), linesLayer->id() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Labels );
+  // labels
+  im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
+  im.fill( Qt::transparent );
+  painter.begin( &im );
+  QVERIFY( job->renderCurrentPart( &painter ) );
+  painter.end();
+  QVERIFY( imageCheck( QStringLiteral( "staged_render_lines_staged_labels" ), im ) );
+
+  // nothing left!
+  QVERIFY( !job->nextPart() );
+  QVERIFY( job->currentLayerId().isEmpty() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Finished );
+  QVERIFY( job->isFinished() );
+  QVERIFY( !job->renderCurrentPart( &painter ) );
+  // double check...
+  QVERIFY( !job->renderCurrentPart( &painter ) );
+}
+
+bool TestQgsMapRendererJob::imageCheck( const QString &testName, const QImage &image, int mismatchCount )
+{
+  mReport += "<h2>" + testName + "</h2>\n";
+  QString myTmpDir = QDir::tempPath() + '/';
+  QString myFileName = myTmpDir + testName + ".png";
+  image.save( myFileName, "PNG" );
+  QgsMultiRenderChecker myChecker;
+  myChecker.setControlPathPrefix( QStringLiteral( "map_renderer" ) );
+  myChecker.setControlName( "expected_" + testName );
+  myChecker.setRenderedImage( myFileName );
+  myChecker.setColorTolerance( 2 );
+  bool myResultFlag = myChecker.runTest( testName, mismatchCount );
+  mReport += myChecker.report();
+  return myResultFlag;
 }
 
 

@@ -21,7 +21,9 @@
 #include <QComboBox>
 #include <QListWidget>
 #include <QLineEdit>
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 class QgsRelationReferenceWidgetFactory;
 class QgsMapCanvas;
@@ -71,13 +73,17 @@ class GUI_EXPORT QgsRelationReferenceSearchWidgetWrapper : public QgsSearchWidge
 
   public slots:
 
-    //! Called when current value of search widget changes
-    void onValueChanged( const QVariant &value );
+    /**
+     * Called when current value of search widget changes
+     * \deprecated since QGIS 3.10 made private
+     */
+    Q_DECL_DEPRECATED void onValueChanged( const QVariant &value ) SIP_DEPRECATED;
 
   protected slots:
     void setExpression( const QString &exp ) override;
 
   private:
+    void onValuesChanged( const QVariantList &values );
 
     QgsRelationReferenceWidget *mWidget = nullptr;
     QgsVectorLayer *mLayer = nullptr;

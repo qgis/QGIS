@@ -59,7 +59,7 @@ void QgsTileScaleWidget::layerChanged( QgsMapLayer *layer )
   mResolutions.clear();
   for ( const double res : resolutions )
   {
-    QgsDebugMsg( QStringLiteral( "found resolution: %1" ).arg( res ) );
+    QgsDebugMsgLevel( QStringLiteral( "found resolution: %1" ).arg( res ), 2 );
     mResolutions << res;
   }
 
@@ -86,22 +86,22 @@ void QgsTileScaleWidget::scaleChanged( double scale )
     return;
 
   double mupp = mMapCanvas->mapUnitsPerPixel();
-  QgsDebugMsg( QStringLiteral( "resolution changed to %1" ).arg( mupp ) );
+  QgsDebugMsgLevel( QStringLiteral( "resolution changed to %1" ).arg( mupp ), 2 );
 
   int i;
   for ( i = 0; i < mResolutions.size() && mResolutions.at( i ) < mupp; i++ )
   {
-    QgsDebugMsg( QStringLiteral( "test resolution %1: %2 d:%3" ).arg( i ).arg( mResolutions.at( i ) ).arg( mupp - mResolutions.at( i ) ) );
+    QgsDebugMsgLevel( QStringLiteral( "test resolution %1: %2 d:%3" ).arg( i ).arg( mResolutions.at( i ) ).arg( mupp - mResolutions.at( i ) ), 2 );
   }
 
   if ( i == mResolutions.size() ||
        ( i > 0 && mResolutions.at( i ) - mupp > mupp - mResolutions.at( i - 1 ) ) )
   {
-    QgsDebugMsg( QStringLiteral( "previous resolution" ) );
+    QgsDebugMsgLevel( QStringLiteral( "previous resolution" ), 2 );
     i--;
   }
 
-  QgsDebugMsg( QStringLiteral( "selected resolution %1: %2" ).arg( i ).arg( mResolutions.at( i ) ) );
+  QgsDebugMsgLevel( QStringLiteral( "selected resolution %1: %2" ).arg( i ).arg( mResolutions.at( i ) ), 2 );
   mSlider->blockSignals( true );
   mSlider->setValue( i );
   mSlider->blockSignals( false );
@@ -109,7 +109,7 @@ void QgsTileScaleWidget::scaleChanged( double scale )
 
 void QgsTileScaleWidget::mSlider_valueChanged( int value )
 {
-  QgsDebugMsg( QStringLiteral( "slider released at %1: %2" ).arg( mSlider->value() ).arg( mResolutions.at( mSlider->value() ) ) );
+  QgsDebugMsgLevel( QStringLiteral( "slider released at %1: %2" ).arg( mSlider->value() ).arg( mResolutions.at( mSlider->value() ) ), 2 );
 
   // Invert value in tooltip to match expectation (i.e. 0 = zoomed out, maximum = zoomed in)
   QToolTip::showText( QCursor::pos(), tr( "Zoom level: %1" ).arg( mSlider->maximum() - value ) + "\n" + tr( "Resolution: %1" ).arg( mResolutions.at( value ) ), this );
@@ -131,7 +131,7 @@ void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
   }
 
   QgsMapCanvas *canvas = mainWindow->findChild<QgsMapCanvas *>( QStringLiteral( "theMapCanvas" ) );
-  QgsDebugMsg( QStringLiteral( "canvas:%1 [%2]" ).arg( ( quint64 ) canvas, 0, 16 ).arg( canvas ? canvas->objectName() : "" ) );
+  QgsDebugMsgLevel( QStringLiteral( "canvas:%1 [%2]" ).arg( ( quint64 ) canvas, 0, 16 ).arg( canvas ? canvas->objectName() : QString() ), 4 );
   if ( !canvas )
   {
     QgsDebugMsg( QStringLiteral( "map canvas mapCanvas not found" ) );

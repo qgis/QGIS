@@ -114,7 +114,7 @@ class CORE_EXPORT QgsLabelFeature
     const GEOSPreparedGeometry *permissibleZonePrepared() const { return mPermissibleZoneGeosPrepared.get(); }
 
     //! Size of the label (in map units)
-    QSizeF size() const { return mSize; }
+    QSizeF size( double angle = 0.0 ) const;
 
     /**
      * Sets the visual margin for the label feature. The visual margin represents a margin
@@ -348,6 +348,7 @@ class CORE_EXPORT QgsLabelFeature
      */
     void setArrangementFlags( pal::LineArrangementFlags flags ) { mArrangementFlags = flags; }
 
+
     /**
      * Text of the label
      *
@@ -358,7 +359,7 @@ class CORE_EXPORT QgsLabelFeature
     //! Sets text of the label
     void setLabelText( const QString &text ) { mLabelText = text; }
 
-    //! Gets additional infor required for curved label placement. Returns NULLPTR if not set
+    //! Gets additional info required for curved label placement. Returns NULLPTR if not set
     pal::LabelInfo *curvedLabelInfo() const { return mInfo; }
     //! takes ownership of the instance
     void setCurvedLabelInfo( pal::LabelInfo *info ) { mInfo = info; }
@@ -393,16 +394,77 @@ class CORE_EXPORT QgsLabelFeature
      *
      * \since QGIS 3.10
      */
-    const QgsSymbol *symbol() { return mSymbol.get(); }
+    const QgsSymbol *symbol() { return mSymbol; }
 
     /**
      * Sets the feature \a symbol associated with this label.
-     * Ownership of \a symbol is transferred to the label feature.
+     * Ownership of \a symbol is not transferred to the label feature, .
      * \see symbol()
      *
      * \since QGIS 3.10
      */
-    void setSymbol( const QgsSymbol *symbol SIP_TRANSFER ) { mSymbol.reset( symbol ); }
+    void setSymbol( const QgsSymbol *symbol ) { mSymbol = symbol; }
+
+    /**
+     * Returns the permissible distance (in map units) which labels are allowed to overrun the start
+     * or end of linear features.
+     *
+     * \see setOverrunDistance()
+     * \see overrunSmoothDistance()
+     * \since QGIS 3.10
+     */
+    double overrunDistance() const;
+
+    /**
+     * Sets the permissible \a distance (in map units) which labels are allowed to overrun the start
+     * or end of linear features.
+     *
+     * \see overrunDistance()
+     * \see setOverrunSmoothDistance()
+     * \since QGIS 3.10
+     */
+    void setOverrunDistance( double distance );
+
+    /**
+     * Returns the distance (in map units) with which the ends of linear features are averaged over when
+     * calculating the direction at which to overrun labels.
+     *
+     * \see setOverrunSmoothDistance()
+     * \see overrunDistance()
+     * \since QGIS 3.10
+     */
+    double overrunSmoothDistance() const;
+
+    /**
+     * Sets the \a distance (in map units) with which the ends of linear features are averaged over when
+     * calculating the direction at which to overrun labels.
+     *
+     * \see overrunSmoothDistance()
+     * \see setOverrunDistance()
+     * \since QGIS 3.10
+     */
+    void setOverrunSmoothDistance( double distance );
+
+    /**
+     * Returns TRUE if all parts of the feature should be labeled.
+     * \see setLabelAllParts()
+     * \since QGIS 3.10
+     */
+    bool labelAllParts() const { return mLabelAllParts; }
+
+    /**
+     * Sets whether all parts of the feature should be labeled.
+     * \see labelAllParts()
+     * \since QGIS 3.10
+     */
+    void setLabelAllParts( bool labelAllParts ) { mLabelAllParts = labelAllParts; }
+
+    /**
+     * Sets an alternate label \a size to be used when a label rotation angle is between 45 to 135
+     * and 235 to 313 degrees and the text rotation mode is set to rotation-based.
+     * \since QGIS 3.10
+     */
+    void setRotatedSize( QSizeF size ) { mRotatedSize = size; }
 
   protected:
     //! Pointer to PAL layer (assigned when registered to PAL)
@@ -418,6 +480,8 @@ class CORE_EXPORT QgsLabelFeature
     QgsGeometry mPermissibleZone;
     //! Width and height of the label
     QSizeF mSize;
+    //! Width and height of the label when rotated between 45 to 135 and 235 to 315 degrees;
+    QSizeF mRotatedSize;
     //! Visual margin of label contents
     QgsMargins mVisualMargin;
     //! Size of associated rendered symbol, if applicable
@@ -459,6 +523,11 @@ class CORE_EXPORT QgsLabelFeature
     //! extra information for curved labels (may be NULLPTR)
     pal::LabelInfo *mInfo = nullptr;
 
+    //! Distance to allow label to overrun linear features
+    double mOverrunDistance = 0;
+    //! Distance to smooth angle of line start and end when calculating overruns
+    double mOverrunSmoothDistance = 0;
+
     pal::LineArrangementFlags mArrangementFlags = nullptr;
 
   private:
@@ -471,7 +540,9 @@ class CORE_EXPORT QgsLabelFeature
 
     QgsFeature mFeature;
 
-    std::unique_ptr<const QgsSymbol> mSymbol;
+    const QgsSymbol *mSymbol = nullptr;
+
+    bool mLabelAllParts = false;
 
 };
 

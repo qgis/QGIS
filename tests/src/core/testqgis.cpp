@@ -49,6 +49,7 @@ class TestQgis : public QObject
     void testQgsVariantEqual();
     void testQgsEnumValueToKey();
     void testQgsEnumKeyToValue();
+    void testQMapQVariantList();
 
   private:
     QString mReport;
@@ -393,6 +394,11 @@ void TestQgis::testQgsVariantEqual()
   // NULL identities
   QVERIFY( qgsVariantEqual( QVariant( QVariant::Int ), QVariant( QVariant::Int ) ) );
   QVERIFY( qgsVariantEqual( QVariant( QVariant::Double ), QVariant( QVariant::Double ) ) );
+  QVERIFY( qgsVariantEqual( QVariant( QVariant::Int ), QVariant( QVariant::Double ) ) );
+  QVERIFY( qgsVariantEqual( QVariant( QVariant::Int ), QVariant( QVariant::String ) ) );
+
+  // NULL should not be equal to invalid
+  QVERIFY( !qgsVariantEqual( QVariant(), QVariant( QVariant::Int ) ) );
 }
 
 void TestQgis::testQgsEnumValueToKey()
@@ -405,6 +411,24 @@ void TestQgis::testQgsEnumKeyToValue()
   QCOMPARE( qgsEnumKeyToValue<QgsMapLayerModel::ItemDataRole>( QStringLiteral( "UnknownKey" ), QgsMapLayerModel::LayerIdRole ), QgsMapLayerModel::LayerIdRole );
 }
 
+void TestQgis::testQMapQVariantList()
+{
+  QMap<QVariantList, long> ids;
+  ids.insert( QVariantList() << "B" << "c", 5 );
+  ids.insert( QVariantList() << "b" << "C", 7 );
+
+  QVariantList v = QVariantList() << "b" << "C";
+  QMap<QVariantList, long>::const_iterator it = ids.constFind( v );
+
+  QVERIFY( it != ids.constEnd() );
+  QCOMPARE( it.value(), 7L );
+
+  v = QVariantList() << "B" << "c";
+  it = ids.constFind( v );
+
+  QVERIFY( it != ids.constEnd() );
+  QCOMPARE( it.value(), 5L );
+}
 
 
 QGSTEST_MAIN( TestQgis )

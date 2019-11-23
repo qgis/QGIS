@@ -99,6 +99,12 @@ QgsLayoutPolylineWidget::QgsLayoutPolylineWidget( QgsLayoutItemPolyline *polylin
   }
 }
 
+void QgsLayoutPolylineWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayout )
+{
+  if ( mItemPropertiesWidget )
+    mItemPropertiesWidget->setMasterLayout( masterLayout );
+}
+
 bool QgsLayoutPolylineWidget::setNewItem( QgsLayoutItem *item )
 {
   if ( item->type() != QgsLayoutItemRegistry::LayoutPolyline )

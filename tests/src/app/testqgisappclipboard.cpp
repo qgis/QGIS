@@ -141,12 +141,13 @@ void TestQgisAppClipboard::copyToText()
   // attributes only
   QgsSettings settings;
   settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesOnly );
-  QString result = mQgisApp->clipboard()->generateClipboardText();
+  QString result, resultHtml;
+  mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
   QCOMPARE( result, QString( "int_field\tstring_field\n9\tval\n19\tval2" ) );
 
   // attributes with WKT
   settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesWithWKT );
-  result = mQgisApp->clipboard()->generateClipboardText();
+  mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
   QCOMPARE( result, QString( "wkt_geom\tint_field\tstring_field\nPoint (5 6)\t9\tval\nPoint (7 8)\t19\tval2" ) );
 
   // HTML test
@@ -156,7 +157,7 @@ void TestQgisAppClipboard::copyToText()
 
   // GeoJSON
   settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::GeoJSON );
-  result = mQgisApp->clipboard()->generateClipboardText();
+  mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
   QString expected =  "{\"features\":[{\"geometry\":{\"coordinates\":[5.0,6.0],\"type\":\"Point\"},\"id\":5,"
                       "\"properties\":{\"int_field\":9,\"string_field\":\"val\"},\"type\":\"Feature\"},"
                       "{\"geometry\":{\"coordinates\":[7.0,8.0],\"type\":\"Point\"},\"id\":6,"
@@ -174,7 +175,7 @@ void TestQgisAppClipboard::copyToText()
   feats.setFields( fields );
   mQgisApp->clipboard()->replaceWithCopyOf( feats );
 
-  result = mQgisApp->clipboard()->generateClipboardText();
+  mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
 
   // just test coordinates as integers - that's enough to verify that reprojection has occurred
   // and helps avoid rounding issues
@@ -211,13 +212,13 @@ void TestQgisAppClipboard::copyToText()
 
   // attributes only
   settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesOnly );
-  result = mQgisApp->clipboard()->generateClipboardText();
+  mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
   qDebug() << result;
   QCOMPARE( result, QString( "int_field\tstring_field\n1\tSingle line text\n2\t\"Unix Multiline \nText\"\n3\t\"Windows Multiline \r\nText\"" ) );
 
   // attributes with WKT
   settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesWithWKT );
-  result = mQgisApp->clipboard()->generateClipboardText();
+  mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
   QCOMPARE( result, QString( "wkt_geom\tint_field\tstring_field\nPoint (5 6)\t1\tSingle line text\nPoint (7 8)\t2\t\"Unix Multiline \nText\"\nPoint (9 10)\t3\t\"Windows Multiline \r\nText\"" ) );
 }
 

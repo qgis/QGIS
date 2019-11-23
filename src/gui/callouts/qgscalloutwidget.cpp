@@ -145,9 +145,28 @@ QgsSimpleLineCalloutWidget::QgsSimpleLineCalloutWidget( QgsVectorLayer *vl, QWid
   mCalloutLineStyleButton->setLayer( vl );
   mMinCalloutWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                         << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mOffsetFromAnchorUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                         << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mOffsetFromLabelUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                        << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
   connect( mMinCalloutWidthUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsSimpleLineCalloutWidget::minimumLengthUnitWidgetChanged );
   connect( mMinCalloutLengthSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleLineCalloutWidget::minimumLengthChanged );
+
+  connect( mOffsetFromAnchorUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsSimpleLineCalloutWidget::offsetFromAnchorUnitWidgetChanged );
+  connect( mOffsetFromAnchorSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleLineCalloutWidget::offsetFromAnchorChanged );
+  connect( mOffsetFromLabelUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsSimpleLineCalloutWidget::offsetFromLabelUnitWidgetChanged );
+  connect( mOffsetFromLabelSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleLineCalloutWidget::offsetFromLabelChanged );
+
+  connect( mDrawToAllPartsCheck, &QCheckBox::toggled, this, &QgsSimpleLineCalloutWidget::drawToAllPartsToggled );
+
+  // Anchor point options
+  mAnchorPointComboBox->addItem( tr( "Pole of Inaccessibility" ), static_cast< int >( QgsCallout::PoleOfInaccessibility ) );
+  mAnchorPointComboBox->addItem( tr( "Point on Exterior" ), static_cast< int >( QgsCallout::PointOnExterior ) );
+  mAnchorPointComboBox->addItem( tr( "Point on Surface" ), static_cast< int >( QgsCallout::PointOnSurface ) );
+  mAnchorPointComboBox->addItem( tr( "Centroid" ), static_cast< int >( QgsCallout::Centroid ) );
+  connect( mAnchorPointComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSimpleLineCalloutWidget::mAnchorPointComboBox_currentIndexChanged );
+
   connect( mCalloutLineStyleButton, &QgsSymbolButton::changed, this, &QgsSimpleLineCalloutWidget::lineSymbolChanged );
 }
 
@@ -167,9 +186,39 @@ void QgsSimpleLineCalloutWidget::setCallout( QgsCallout *callout )
 
   whileBlocking( mMinCalloutLengthSpin )->setValue( mCallout->minimumLength() );
 
+  mOffsetFromAnchorUnitWidget->blockSignals( true );
+  mOffsetFromAnchorUnitWidget->setUnit( mCallout->offsetFromAnchorUnit() );
+  mOffsetFromAnchorUnitWidget->setMapUnitScale( mCallout->offsetFromAnchorMapUnitScale() );
+  mOffsetFromAnchorUnitWidget->blockSignals( false );
+  mOffsetFromLabelUnitWidget->blockSignals( true );
+  mOffsetFromLabelUnitWidget->setUnit( mCallout->offsetFromLabelUnit() );
+  mOffsetFromLabelUnitWidget->setMapUnitScale( mCallout->offsetFromLabelMapUnitScale() );
+  mOffsetFromLabelUnitWidget->blockSignals( false );
+  whileBlocking( mOffsetFromAnchorSpin )->setValue( mCallout->offsetFromAnchor() );
+  whileBlocking( mOffsetFromLabelSpin )->setValue( mCallout->offsetFromLabel() );
+
   whileBlocking( mCalloutLineStyleButton )->setSymbol( mCallout->lineSymbol()->clone() );
 
+  whileBlocking( mDrawToAllPartsCheck )->setChecked( mCallout->drawCalloutToAllParts() );
+
+  whileBlocking( mAnchorPointComboBox )->setCurrentIndex( mAnchorPointComboBox->findData( static_cast< int >( callout->anchorPoint() ) ) );
+
   registerDataDefinedButton( mMinCalloutLengthDDBtn, QgsCallout::MinimumCalloutLength );
+  registerDataDefinedButton( mOffsetFromAnchorDDBtn, QgsCallout::OffsetFromAnchor );
+  registerDataDefinedButton( mOffsetFromLabelDDBtn, QgsCallout::OffsetFromLabel );
+  registerDataDefinedButton( mDrawToAllPartsDDBtn, QgsCallout::DrawCalloutToAllParts );
+  registerDataDefinedButton( mAnchorPointDDBtn, QgsCallout::AnchorPointPosition );
+}
+
+void QgsSimpleLineCalloutWidget::setGeometryType( QgsWkbTypes::GeometryType type )
+{
+  bool isPolygon = type == QgsWkbTypes::PolygonGeometry;
+  mAnchorPointLbl->setEnabled( isPolygon );
+  mAnchorPointLbl->setVisible( isPolygon );
+  mAnchorPointComboBox->setEnabled( isPolygon );
+  mAnchorPointComboBox->setVisible( isPolygon );
+  mAnchorPointDDBtn->setEnabled( isPolygon );
+  mAnchorPointDDBtn->setVisible( isPolygon );
 }
 
 QgsCallout *QgsSimpleLineCalloutWidget::callout()
@@ -190,9 +239,47 @@ void QgsSimpleLineCalloutWidget::minimumLengthUnitWidgetChanged()
   emit changed();
 }
 
+void QgsSimpleLineCalloutWidget::offsetFromAnchorUnitWidgetChanged()
+{
+  mCallout->setOffsetFromAnchorUnit( mOffsetFromAnchorUnitWidget->unit() );
+  mCallout->setOffsetFromAnchorMapUnitScale( mOffsetFromAnchorUnitWidget->getMapUnitScale() );
+  emit changed();
+}
+
+void QgsSimpleLineCalloutWidget::offsetFromAnchorChanged()
+{
+  mCallout->setOffsetFromAnchor( mOffsetFromAnchorSpin->value() );
+  emit changed();
+}
+
+void QgsSimpleLineCalloutWidget::offsetFromLabelUnitWidgetChanged()
+{
+  mCallout->setOffsetFromLabelUnit( mOffsetFromLabelUnitWidget->unit() );
+  mCallout->setOffsetFromLabelMapUnitScale( mOffsetFromLabelUnitWidget->getMapUnitScale() );
+  emit changed();
+}
+
+void QgsSimpleLineCalloutWidget::offsetFromLabelChanged()
+{
+  mCallout->setOffsetFromLabel( mOffsetFromLabelSpin->value() );
+  emit changed();
+}
+
 void QgsSimpleLineCalloutWidget::lineSymbolChanged()
 {
   mCallout->setLineSymbol( mCalloutLineStyleButton->clonedSymbol< QgsLineSymbol >() );
+  emit changed();
+}
+
+void QgsSimpleLineCalloutWidget::mAnchorPointComboBox_currentIndexChanged( int index )
+{
+  mCallout->setAnchorPoint( static_cast<QgsCallout::AnchorPoint>( mAnchorPointComboBox->itemData( index ).toInt() ) );
+  emit changed();
+}
+
+void QgsSimpleLineCalloutWidget::drawToAllPartsToggled( bool active )
+{
+  mCallout->setDrawCalloutToAllParts( active );
   emit changed();
 }
 

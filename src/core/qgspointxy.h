@@ -62,6 +62,7 @@ class CORE_EXPORT QgsPointXY
     QgsPointXY( double x, double y )
       : mX( x )
       , mY( y )
+      , mIsEmpty( false )
     {}
 
     /**
@@ -72,6 +73,7 @@ class CORE_EXPORT QgsPointXY
     QgsPointXY( QPointF point )
       : mX( point.x() )
       , mY( point.y() )
+      , mIsEmpty( false )
     {}
 
     /**
@@ -82,6 +84,7 @@ class CORE_EXPORT QgsPointXY
     QgsPointXY( QPoint point )
       : mX( point.x() )
       , mY( point.y() )
+      , mIsEmpty( false )
     {}
 
     /**
@@ -104,6 +107,7 @@ class CORE_EXPORT QgsPointXY
     void setX( double x )
     {
       mX = x;
+      mIsEmpty = false;
     }
 
     /**
@@ -113,6 +117,7 @@ class CORE_EXPORT QgsPointXY
     void setY( double y )
     {
       mY = y;
+      mIsEmpty = false;
     }
 
     //! Sets the x and y value of the point
@@ -120,6 +125,7 @@ class CORE_EXPORT QgsPointXY
     {
       mX = x;
       mY = y;
+      mIsEmpty = false;
     }
 
     /**
@@ -219,6 +225,15 @@ class CORE_EXPORT QgsPointXY
     QgsPointXY project( double distance, double bearing ) const;
 
     /**
+     * Returns TRUE if the geometry is empty.
+     * Unlike QgsPoint, this class is also used to retrieve graphical coordinates like QPointF.
+     * It therefore has the default coordinates (0.0).
+     * A QgsPointXY is considered empty, when the coordinates have not been explicitly filled in.
+     * \since QGIS 3.10
+     */
+    bool isEmpty() const { return mIsEmpty; }
+
+    /**
      * Compares this point with another point with a fuzzy tolerance
      * \param other point to compare with
      * \param epsilon maximum difference for coordinates between the points
@@ -233,13 +248,35 @@ class CORE_EXPORT QgsPointXY
     //! equality operator
     bool operator==( const QgsPointXY &other )
     {
-      return ( qgsDoubleNear( mX, other.x() ) && qgsDoubleNear( mY, other.y() ) );
+      if ( isEmpty() && other.isEmpty() )
+        return true;
+      if ( isEmpty() && !other.isEmpty() )
+        return false;
+      if ( ! isEmpty() && other.isEmpty() )
+        return false;
+
+      bool equal = true;
+      equal &= qgsDoubleNear( other.x(), mX, 1E-8 );
+      equal &= qgsDoubleNear( other.y(), mY, 1E-8 );
+
+      return equal;
     }
 
     //! Inequality operator
     bool operator!=( const QgsPointXY &other ) const
     {
-      return !( qgsDoubleNear( mX, other.x() ) && qgsDoubleNear( mY, other.y() ) );
+      if ( isEmpty() && other.isEmpty() )
+        return false;
+      if ( isEmpty() && !other.isEmpty() )
+        return true;
+      if ( ! isEmpty() && other.isEmpty() )
+        return true;
+
+      bool equal = true;
+      equal &= qgsDoubleNear( other.x(), mX, 1E-8 );
+      equal &= qgsDoubleNear( other.y(), mY, 1E-8 );
+
+      return !equal;
     }
 
     //! Multiply x and y by the given value
@@ -256,6 +293,7 @@ class CORE_EXPORT QgsPointXY
       {
         mX = other.x();
         mY = other.y();
+        mIsEmpty = other.isEmpty();
       }
 
       return *this;
@@ -333,10 +371,13 @@ class CORE_EXPORT QgsPointXY
   private:
 
     //! x coordinate
-    double mX = 0.0;
+    double mX = 0; //std::numeric_limits<double>::quiet_NaN();
 
     //! y coordinate
-    double mY = 0.0;
+    double mY = 0; //std::numeric_limits<double>::quiet_NaN();
+
+    //! is point empty?
+    bool mIsEmpty = true;
 
     friend uint qHash( const QgsPointXY &pnt );
 
@@ -346,10 +387,22 @@ Q_DECLARE_METATYPE( QgsPointXY )
 
 inline bool operator==( const QgsPointXY &p1, const QgsPointXY &p2 ) SIP_SKIP
 {
-  if ( qgsDoubleNear( p1.x(), p2.x() ) && qgsDoubleNear( p1.y(), p2.y() ) )
-  { return true; }
-  else
-  { return false; }
+  const bool nan1X = std::isnan( p1.x() );
+  const bool nan2X = std::isnan( p2.x() );
+  if ( nan1X != nan2X )
+    return false;
+  if ( !nan1X && !qgsDoubleNear( p1.x(), p2.x(), 1E-8 ) )
+    return false;
+
+  const bool nan1Y = std::isnan( p1.y() );
+  const bool nan2Y = std::isnan( p2.y() );
+  if ( nan1Y != nan2Y )
+    return false;
+
+  if ( !nan1Y && !qgsDoubleNear( p1.y(), p2.y(), 1E-8 ) )
+    return false;
+
+  return true;
 }
 
 inline std::ostream &operator << ( std::ostream &os, const QgsPointXY &p ) SIP_SKIP

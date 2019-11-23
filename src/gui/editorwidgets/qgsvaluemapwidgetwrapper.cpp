@@ -69,7 +69,7 @@ bool QgsValueMapWidgetWrapper::valid() const
   return mComboBox;
 }
 
-void QgsValueMapWidgetWrapper::setValue( const QVariant &value )
+void QgsValueMapWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
   QString v;
   if ( value.isNull() )

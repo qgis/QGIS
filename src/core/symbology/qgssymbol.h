@@ -24,6 +24,7 @@
 #include "qgsfields.h"
 #include "qgsrendercontext.h"
 #include "qgsproperty.h"
+#include "qgssymbollayerreference.h"
 
 class QColor;
 class QImage;
@@ -139,6 +140,14 @@ class CORE_EXPORT QgsSymbol
      * \since QGIS 2.7
      */
     QgsSymbolLayer *symbolLayer( int layer );
+
+    /**
+     * Returns the symbol layer at the specified index, const variant
+     * \see symbolLayers
+     * \see symbolLayerCount
+     * \since QGIS 3.12
+     */
+    const QgsSymbolLayer *symbolLayer( int layer ) const;
 #else
 
     /**
@@ -322,12 +331,18 @@ class CORE_EXPORT QgsSymbol
      *
      * Optionally a custom render context may be given in order to ensure that the preview icon exactly
      * matches the settings from that context.
+     * \param painter destination painter
+     * \param size size of the icon
+     * \param customContext the context in which the rendering happens
+     * \param selected set to TRUE to render the symbol in a selected state
+     * \param expressionContext optional custom expression context
      *
      * \see exportImage()
      * \see asImage()
+     * \note Parameter selected added in QGIS 3.10
      * \since QGIS 2.6
      */
-    void drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext = nullptr );
+    void drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext = nullptr, bool selected = false, const QgsExpressionContext *expressionContext = nullptr );
 
     /**
      * Export the symbol as an image format, to the specified \a path and with the given \a size.
@@ -622,6 +637,32 @@ class CORE_EXPORT QgsSymbol
     //! Initialized in startRender, destroyed in stopRender
     std::unique_ptr< QgsSymbolRenderContext > mSymbolRenderContext;
 
+    /**
+     * Called before symbol layers will be rendered for a particular \a feature.
+     *
+     * This is always followed by a call to stopFeatureRender() after the feature
+     * has been completely rendered (i.e. all parts have been rendered).
+     *
+     * Internally, this notifies all symbol layers which will be used via a call to
+     * QgsSymbolLayer::startFeatureRender().
+     *
+     * \since QGIS 3.12
+     */
+    void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context, int layer = -1 );
+
+    /**
+     * Called after symbol layers have been rendered for a particular \a feature.
+     *
+     * This is always preceded by a call to startFeatureRender() just before the feature
+     * will be rendered.
+     *
+     * Internally, this notifies all symbol layers which were used via a call to
+     * QgsSymbolLayer::stopFeatureRender().
+     *
+     * \since QGIS 3.12
+     */
+    void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context, int layer = -1 );
+
     Q_DISABLE_COPY( QgsSymbol )
 
 };
@@ -638,7 +679,7 @@ class CORE_EXPORT QgsSymbolRenderContext
 {
   public:
 
-    //TODO QGIS 4.0 - remove mapUnitScale
+    //TODO QGIS 4.0 - remove mapUnitScale and renderunit
 
     /**
      * Constructor for QgsSymbolRenderContext

@@ -509,7 +509,7 @@
                 <number>0</number>
                </property>
                <item>
-                <widget class="QTextEdit" name="txtHelpText">
+                <widget class="QTextBrowser" name="txtHelpText">
                  <property name="readOnly">
                   <bool>true</bool>
                  </property>

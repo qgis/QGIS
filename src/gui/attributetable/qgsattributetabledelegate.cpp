@@ -107,25 +107,33 @@ void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemMode
   QgsFeatureId fid = model->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong();
   QVariant oldValue = model->data( index, Qt::EditRole );
 
-  QVariant newValue;
   QgsEditorWidgetWrapper *eww = QgsEditorWidgetWrapper::fromWidget( editor );
   if ( !eww )
     return;
 
-  newValue = eww->value();
+  QList<int> indexes = QList<int>() << fieldIdx;
+  QVariantList newValues = QVariantList() << eww->value();
+  const QStringList additionalFields = eww->additionalFields();
+  for ( const QString &fieldName : additionalFields )
+  {
+    indexes << eww->layer()->fields().lookupField( fieldName );
+  }
+  newValues.append( eww->additionalFieldValues() );
 
-  if ( ( oldValue != newValue && newValue.isValid() ) || oldValue.isNull() != newValue.isNull() )
+  if ( ( oldValue != newValues.at( 0 ) && newValues.at( 0 ).isValid() )
+       || oldValue.isNull() != newValues.at( 0 ).isNull()
+       || newValues.count() > 1 )
   {
     // This fixes https://github.com/qgis/QGIS/issues/24398
     QgsFeatureRequest request( fid );
     request.setFlags( QgsFeatureRequest::NoGeometry );
-    request.setNoAttributes();
     QgsFeature feature;
     vl->getFeatures( request ).nextFeature( feature );
     if ( feature.isValid() )
     {
       vl->beginEditCommand( tr( "Attribute changed" ) );
-      vl->changeAttributeValue( fid, fieldIdx, newValue, oldValue );
+      for ( int i = 0; i < newValues.count(); i++ )
+        vl->changeAttributeValue( fid, indexes.at( i ), newValues.at( i ), feature.attribute( indexes.at( i ) ) );
       vl->endEditCommand();
     }
   }
@@ -137,7 +145,27 @@ void QgsAttributeTableDelegate::setEditorData( QWidget *editor, const QModelInde
   if ( !eww )
     return;
 
-  eww->setValue( index.model()->data( index, Qt::EditRole ) );
+  QVariant value = index.model()->data( index, Qt::EditRole );
+  const QStringList additionalFields = eww->additionalFields();
+
+  if ( !additionalFields.empty() )
+  {
+    const QgsAttributeTableModel *model = masterModel( index.model() );
+    if ( model )
+    {
+      QgsFeature feat = model->feature( index );
+      QVariantList additionalFieldValues;
+      for ( QString fieldName : additionalFields )
+      {
+        additionalFieldValues << feat.attribute( fieldName );
+      }
+      eww->setValues( value, additionalFieldValues );
+    }
+  }
+  else
+  {
+    eww->setValues( value, QVariantList() );
+  }
 }
 
 void QgsAttributeTableDelegate::setFeatureSelectionModel( QgsFeatureSelectionModel *featureSelectionModel )

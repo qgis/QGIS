@@ -123,10 +123,7 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
     Q_ASSERT( map );
 
     //get the color for map canvas background and set map background color accordingly
-    int bgRedInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), 255 );
-    int bgGreenInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), 255 );
-    int bgBlueInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), 255 );
-    map->setBackgroundColor( QColor( bgRedInt, bgGreenInt, bgBlueInt ) );
+    map->setBackgroundColor( QgsProject::instance()->backgroundColor() );
 
     if ( QgisApp::instance()->mapCanvas() )
     {
@@ -207,6 +204,17 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
       legend->rstyle( QgsLegendStyle::Subgroup ).setAlignment( Qt::AlignRight );
       legend->rstyle( QgsLegendStyle::SymbolLabel ).setAlignment( Qt::AlignRight );
       legend->setTitleAlignment( Qt::AlignRight );
+    }
+
+    //set default legend font from settings
+    QgsSettings settings;
+    const QString defaultFontString = settings.value( QStringLiteral( "LayoutDesigner/defaultFont" ), QVariant(), QgsSettings::Gui ).toString();
+    if ( !defaultFontString.isEmpty() )
+    {
+      legend->rstyle( QgsLegendStyle::Title ).rfont().setFamily( defaultFontString );
+      legend->rstyle( QgsLegendStyle::Group ).rfont().setFamily( defaultFontString );
+      legend->rstyle( QgsLegendStyle::Subgroup ).rfont().setFamily( defaultFontString );
+      legend->rstyle( QgsLegendStyle::SymbolLabel ).rfont().setFamily( defaultFontString );
     }
 
     legend->updateLegend();

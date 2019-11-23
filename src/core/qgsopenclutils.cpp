@@ -24,11 +24,17 @@
 #include <QFile>
 #include <QDebug>
 
+#ifdef Q_OS_WIN
+#include <windows.h>
+#include <tchar.h>
+#endif
+
 QLatin1String QgsOpenClUtils::SETTINGS_GLOBAL_ENABLED_KEY = QLatin1Literal( "OpenClEnabled" );
 QLatin1String QgsOpenClUtils::SETTINGS_DEFAULT_DEVICE_KEY = QLatin1Literal( "OpenClDefaultDevice" );
 QLatin1String QgsOpenClUtils::LOGMESSAGE_TAG = QLatin1Literal( "OpenCL" );
 bool QgsOpenClUtils::sAvailable = false;
-QString QgsOpenClUtils::sSourcePath = QString();
+
+Q_GLOBAL_STATIC( QString, sSourcePath )
 
 
 const std::vector<cl::Device> QgsOpenClUtils::devices()
@@ -39,7 +45,10 @@ const std::vector<cl::Device> QgsOpenClUtils::devices()
   for ( auto &p : platforms )
   {
     std::string platver = p.getInfo<CL_PLATFORM_VERSION>();
-    QgsDebugMsg( QStringLiteral( "Found OpenCL platform %1: %2" ).arg( QString::fromStdString( platver ), QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ) );
+    QgsMessageLog::logMessage( QObject::tr( "Found OpenCL platform %1: %2" )
+                               .arg( QString::fromStdString( platver ),
+                                     QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ),
+                               LOGMESSAGE_TAG );
     if ( platver.find( "OpenCL " ) != std::string::npos )
     {
       std::vector<cl::Device> _devices;
@@ -50,15 +59,17 @@ const std::vector<cl::Device> QgsOpenClUtils::devices()
       }
       catch ( cl::Error &e )
       {
-        QgsDebugMsgLevel( QStringLiteral( "Error %1 on platform %3 searching for OpenCL device: %2" )
-                          .arg( errorText( e.err() ),
-                                QString::fromStdString( e.what() ),
-                                QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ), 2 );
+        QgsMessageLog::logMessage( QObject::tr( "Error %1 on platform %3 searching for OpenCL device: %2" )
+                                   .arg( errorText( e.err() ),
+                                         QString::fromStdString( e.what() ),
+                                         QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ), LOGMESSAGE_TAG );
       }
       if ( _devices.size() > 0 )
       {
         for ( unsigned long i = 0; i < _devices.size(); i++ )
         {
+          QgsMessageLog::logMessage( QObject::tr( "Found OpenCL device: %1" )
+                                     .arg( deviceId( _devices[i] ) ), LOGMESSAGE_TAG );
           existingDevices.push_back( _devices[i] );
         }
       }
@@ -81,6 +92,93 @@ void QgsOpenClUtils::init()
                                  LOGMESSAGE_TAG, Qgis::Critical );
       return;
     }
+
+#ifdef Q_OS_WIN
+    HMODULE hModule = GetModuleHandle( "OpenCL.dll" );
+    if ( hModule )
+    {
+      TCHAR pszFileName[1024];
+      if ( GetModuleFileName( hModule, pszFileName, 1024 ) < 1024 )
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Found OpenCL library filename %1" ).arg( pszFileName ), LOGMESSAGE_TAG );
+
+        DWORD dwUseless;
+        DWORD dwLen = GetFileVersionInfoSize( pszFileName, &dwUseless );
+        if ( dwLen )
+        {
+          LPTSTR lpVI = ( LPSTR ) malloc( dwLen );
+          if ( lpVI )
+          {
+            if ( GetFileVersionInfo( pszFileName, NULL, dwLen, lpVI ) )
+            {
+              VS_FIXEDFILEINFO *lpFFI;
+              if ( VerQueryValue( lpVI, "\\", ( LPVOID * ) &lpFFI, ( UINT * ) &dwUseless ) )
+              {
+                QgsMessageLog::logMessage( QObject::tr( "OpenCL Product version: %1.%2.%3.%4" )
+                                           .arg( lpFFI->dwProductVersionMS >> 16 )
+                                           .arg( lpFFI->dwProductVersionMS & 0xffff )
+                                           .arg( lpFFI->dwProductVersionLS >> 16 )
+                                           .arg( lpFFI->dwProductVersionLS & 0xffff ), LOGMESSAGE_TAG );
+              }
+
+              struct LANGANDCODEPAGE
+              {
+                WORD wLanguage;
+                WORD wCodePage;
+              } *lpTranslate;
+
+              DWORD cbTranslate;
+
+              if ( VerQueryValue( lpVI, _T( "\\VarFileInfo\\Translation" ), ( LPVOID * ) &lpTranslate, ( UINT * ) &cbTranslate ) && cbTranslate >= sizeof( struct LANGANDCODEPAGE ) )
+              {
+                QStringList items = QStringList()
+                                    << QStringLiteral( "Comments" )
+                                    << QStringLiteral( "InternalName" )
+                                    << QStringLiteral( "ProductName" )
+                                    << QStringLiteral( "CompanyName" )
+                                    << QStringLiteral( "LegalCopyright" )
+                                    << QStringLiteral( "ProductVersion" )
+                                    << QStringLiteral( "FileDescription" )
+                                    << QStringLiteral( "LegalTrademarks" )
+                                    << QStringLiteral( "PrivateBuild" )
+                                    << QStringLiteral( "FileVersion" )
+                                    << QStringLiteral( "OriginalFilename" )
+                                    << QStringLiteral( "SpecialBuild" );
+                for ( auto d : items )
+                {
+                  LPTSTR lpBuffer;
+                  QString subBlock = QString( QStringLiteral( "\\StringFileInfo\\%1%2\\%3" ) )
+                                     .arg( lpTranslate[0].wLanguage, 4, 16, QLatin1Char( '0' ) )
+                                     .arg( lpTranslate[0].wCodePage, 4, 16, QLatin1Char( '0' ) )
+                                     .arg( d );
+
+                  QgsDebugMsg( QString( "d:%1 subBlock:%2" ).arg( d ).arg( subBlock ) );
+
+                  BOOL r = VerQueryValue( lpVI, subBlock.toUtf8(), ( LPVOID * )&lpBuffer, ( UINT * )&dwUseless );
+
+                  if ( r && lpBuffer && lpBuffer != INVALID_HANDLE_VALUE && dwUseless < 1023 )
+                  {
+                    QgsMessageLog::logMessage( QObject::tr( "Found OpenCL version info %1: %2" ).arg( d ).arg( QString::fromLocal8Bit( lpBuffer ) ), LOGMESSAGE_TAG );
+                  }
+                }
+              }
+            }
+
+            free( lpVI );
+          }
+        }
+      }
+      else
+      {
+        QgsMessageLog::logMessage( QObject::tr( "No module handle to OpenCL library" ) );
+      }
+    }
+    else
+    {
+      QgsMessageLog::logMessage( QObject::tr( "No module handle to OpenCL library" ) );
+    }
+#endif
+
     try
     {
       activate( preferredDevice() );
@@ -97,12 +195,12 @@ void QgsOpenClUtils::init()
 
 QString QgsOpenClUtils::sourcePath()
 {
-  return sSourcePath;
+  return *sSourcePath();
 }
 
 void QgsOpenClUtils::setSourcePath( const QString &value )
 {
-  sSourcePath = value;
+  *sSourcePath() = value;
 }
 
 QString QgsOpenClUtils::activeDeviceInfo( const QgsOpenClUtils::Info infoType )

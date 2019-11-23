@@ -77,6 +77,22 @@ class CORE_EXPORT QgsMeshRendererMeshSettings
 class CORE_EXPORT QgsMeshRendererScalarSettings
 {
   public:
+    //! Interpolation of value defined on vertices from datasets with data defined on faces
+    enum DataInterpolationMethod
+    {
+
+      /**
+       * Use data defined on face centers, do not interpolate to vertices
+       */
+      None = 0,
+
+      /**
+       * For each vertex does a simple average of values defined for all faces that contains
+       * given vertex
+       */
+      NeighbourAverage,
+    };
+
     //! Returns color ramp shader function
     QgsColorRampShader colorRampShader() const;
     //! Sets color ramp shader function
@@ -94,6 +110,22 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
     //! Sets opacity
     void setOpacity( double opacity );
 
+    /**
+     * Returns the type of interpolation to use to
+     * convert face defined datasets to
+     * values on vertices
+     *
+     * \since QGIS 3.12
+     */
+    DataInterpolationMethod dataInterpolationMethod() const;
+
+    /**
+     * Sets data interpolation method
+     *
+     * \since QGIS 3.12
+     */
+    void setDataInterpolationMethod( const DataInterpolationMethod &dataInterpolationMethod );
+
     //! Writes configuration to a new DOM element
     QDomElement writeXml( QDomDocument &doc ) const;
     //! Reads configuration from the given DOM element
@@ -101,9 +133,11 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
 
   private:
     QgsColorRampShader mColorRampShader;
+    DataInterpolationMethod mDataInterpolationMethod = DataInterpolationMethod::None;
     double mClassificationMinimum = 0;
     double mClassificationMaximum = 0;
     double mOpacity = 1;
+
 };
 
 /**
@@ -267,15 +301,15 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
     void readXml( const QDomElement &elem );
 
   private:
-    double mLineWidth = DEFAULT_LINE_WIDTH; //in milimeters
+    double mLineWidth = DEFAULT_LINE_WIDTH; //in millimeters
     QColor mColor = Qt::black;
     double mFilterMin = -1; //disabled
     double mFilterMax = -1; //disabled
     QgsMeshRendererVectorSettings::ArrowScalingMethod mShaftLengthMethod = QgsMeshRendererVectorSettings::ArrowScalingMethod::MinMax;
-    double mMinShaftLength = 0.8; //in milimeters
-    double mMaxShaftLength = 10; //in milimeters
+    double mMinShaftLength = 0.8; //in millimeters
+    double mMaxShaftLength = 10; //in millimeters
     double mScaleFactor = 10;
-    double mFixedShaftLength = 20; //in milimeters
+    double mFixedShaftLength = 20; //in millimeters
     double mArrowHeadWidthRatio = 0.15;
     double mArrowHeadLengthRatio = 0.40;
     bool mOnUserDefinedGrid = false;

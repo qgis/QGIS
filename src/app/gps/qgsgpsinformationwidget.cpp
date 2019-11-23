@@ -39,6 +39,7 @@
 #include "qgsstatusbar.h"
 #include "gmath.h"
 #include "qgsmapcanvas.h"
+#include "qgsmessagebar.h"
 
 // QWT Charting widget
 
@@ -232,6 +233,8 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
 
   //auto digitizing behavior
   mCbxAutoAddVertices->setChecked( mySettings.value( QStringLiteral( "gps/autoAddVertices" ), "false" ).toBool() );
+
+  mBtnAddVertex->setEnabled( !mCbxAutoAddVertices->isChecked() );
 
   mCbxAutoCommit->setChecked( mySettings.value( QStringLiteral( "gps/autoCommit" ), "false" ).toBool() );
 
@@ -932,31 +935,20 @@ void QgsGpsInformationWidget::mBtnResetFeature_clicked()
 void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
-  QgsWkbTypes::Type layerWKBType = vlayer->wkbType();
+  if ( !vlayer )
+    return;
 
-  // -------------- preconditions ------------------------
-  // most of these preconditions are already handled due to the button being enabled/disabled based on layer geom type and editing capabilities, but not on valid GPS data
-
-  //lines: bail out if there are not at least two vertices
-  if ( layerWKBType == QgsWkbTypes::LineString  && mCaptureList.size() < 2 )
+  if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry && mCaptureList.size() < 2 )
   {
-    QMessageBox::information( nullptr, tr( "Add Feature" ),
-                              tr( "Cannot close a line feature until it has at least two vertices." ) );
+    QgisApp::instance()->messageBar()->pushWarning( tr( "Add Feature" ), tr( "Cannot close a line feature until it has at least two vertices." ) );
     return;
   }
-
-  //polygons: bail out if there are not at least three vertices
-  if ( layerWKBType == QgsWkbTypes::Polygon && mCaptureList.size() < 3 )
+  else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry && mCaptureList.size() < 3 )
   {
-    QMessageBox::information( nullptr, tr( "Add Feature" ),
-                              tr( "Cannot close a polygon feature until it has at least three vertices." ) );
+    QgisApp::instance()->messageBar()->pushWarning( tr( "Add Feature" ),
+        tr( "Cannot close a polygon feature until it has at least three vertices." ) );
     return;
   }
-  // -------------- end of preconditions ------------------------
-
-  //
-  // POINT CAPTURING
-  //
 
   // Handle timestamp
   QgsAttributeMap attrMap;
@@ -970,163 +962,149 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
     }
   }
 
-  if ( layerWKBType == QgsWkbTypes::Point )
+  QgsCoordinateTransform t( mWgs84CRS, vlayer->crs(), QgsProject::instance() );
+  switch ( vlayer->geometryType() )
   {
-    QgsFeature *f = new QgsFeature( 0 );
-
-    QgsCoordinateTransform t( mWgs84CRS, vlayer->crs(), QgsProject::instance() );
-    QgsPointXY myPoint = t.transform( mLastGpsPosition );
-    double x = myPoint.x();
-    double y = myPoint.y();
-
-    int size = 1 + sizeof( int ) + 2 * sizeof( double );
-    unsigned char *buf = new unsigned char[size];
-
-    QgsWkbPtr wkbPtr( buf, size );
-    wkbPtr << static_cast<char>( QgsApplication::endian() ) << QgsWkbTypes::Point << x << y;
-
-    QgsGeometry g;
-    g.fromWkb( buf, size );
-    f->setGeometry( g );
-
-    QgsFeatureAction action( tr( "Feature added" ), *f, vlayer, QString(), -1, this );
-    if ( action.addFeature( attrMap ) )
+    case QgsWkbTypes::PointGeometry:
     {
-      if ( mCbxAutoCommit->isChecked() )
+      QgsFeature f;
+      try
       {
-        // should canvas->isDrawing() be checked?
-        if ( !vlayer->commitChanges() ) //assumed to be vector layer and is editable and is in editing mode (preconditions have been tested)
+        QgsGeometry g = QgsGeometry::fromPointXY( t.transform( mLastGpsPosition ) );
+        if ( QgsWkbTypes::isMultiType( vlayer->wkbType() ) )
+          g.convertToMultiType();
+
+        f.setGeometry( g );
+      }
+      catch ( QgsCsException & )
+      {
+        QgisApp::instance()->messageBar()->pushCritical( tr( "Add Feature" ),
+            tr( "Error reprojecting feature to layer CRS." ) );
+        return;
+      }
+
+      QgsFeatureAction action( tr( "Feature Added" ), f, vlayer, QString(), -1, this );
+      if ( action.addFeature( attrMap ) )
+      {
+        if ( mCbxAutoCommit->isChecked() )
         {
-          QMessageBox::information( this,
-                                    tr( "Save Layer Edits" ),
-                                    tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
-                                    .arg( vlayer->name(),
-                                          vlayer->commitErrors().join( QStringLiteral( "\n  " ) ) ) );
+          // should canvas->isDrawing() be checked?
+          if ( !vlayer->commitChanges() ) //assumed to be vector layer and is editable and is in editing mode (preconditions have been tested)
+          {
+            QgisApp::instance()->messageBar()->pushCritical(
+              tr( "Save Layer Edits" ),
+              tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
+              .arg( vlayer->name(),
+                    vlayer->commitErrors().join( QStringLiteral( "\n  " ) ) ) );
+          }
+
+          vlayer->startEditing();
+        }
+      }
+
+      break;
+    }
+
+    case QgsWkbTypes::LineGeometry:
+    case QgsWkbTypes::PolygonGeometry:
+    {
+      disconnect( mNmea, &QgsGpsConnection::stateChanged,
+                  this, &QgsGpsInformationWidget::displayGPSInformation );
+
+      QgsFeature f;
+      QgsGeometry g;
+
+      if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry )
+      {
+        g = QgsGeometry::fromPolylineXY( mCaptureList );
+        try
+        {
+          g.transform( t );
+        }
+        catch ( QgsCsException & )
+        {
+          QgisApp::instance()->messageBar()->pushWarning( tr( "Add Feature" ),
+              tr( "Error reprojecting feature to layer CRS." ) );
+          return;
+        }
+        if ( QgsWkbTypes::isMultiType( vlayer->wkbType() ) )
+          g.convertToMultiType();
+      }
+      else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
+      {
+        QVector< QgsPointXY > line = mCaptureList;
+
+        // close ring if required
+        if ( line.constFirst() != line.constLast() )
+          line << line.constFirst();
+
+        g = QgsGeometry::fromPolygonXY( QVector< QgsPolylineXY > () << line );
+        try
+        {
+          g.transform( t );
+        }
+        catch ( QgsCsException & )
+        {
+          connectGpsSlot();
+          QgisApp::instance()->messageBar()->pushWarning( tr( "Add Feature" ),
+              tr( "Error reprojecting feature to layer CRS." ) );
+          return;
         }
 
-        vlayer->startEditing();
+        if ( QgsWkbTypes::isMultiType( vlayer->wkbType() ) )
+          g.convertToMultiType();
+
+        int avoidIntersectionsReturn = g.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
+        if ( avoidIntersectionsReturn == 1 )
+        {
+          //not a polygon type. Impossible to get there
+        }
+        else if ( avoidIntersectionsReturn == 2 )
+        {
+          //bail out...
+          QgisApp::instance()->messageBar()->pushWarning( tr( "Add Feature" ), tr( "The feature could not be added because removing the polygon intersections would change the geometry type." ) );
+          connectGpsSlot();
+          return;
+        }
+        else if ( avoidIntersectionsReturn == 3 )
+        {
+          QgisApp::instance()->messageBar()->pushCritical( tr( "Add Feature" ), tr( "An error was reported during intersection removal." ) );
+          connectGpsSlot();
+          return;
+        }
       }
-    }
 
-    delete f;
-  } // layerWKBType == QgsWkbTypes::Point
-  else // Line or poly
-  {
-    disconnect( mNmea, &QgsGpsConnection::stateChanged,
-                this, &QgsGpsInformationWidget::displayGPSInformation );
-
-    //create QgsFeature with wkb representation
-    QgsFeature *f = new QgsFeature( 0 );
-
-    if ( layerWKBType == QgsWkbTypes::LineString )
-    {
-      int size = 1 + 2 *  static_cast<int>( sizeof( int ) ) + 2 * mCaptureList.size() * static_cast<int>( sizeof( double ) );
-      unsigned char *buf = new unsigned char[size];
-
-      QgsWkbPtr wkbPtr( buf, size );
-      wkbPtr << static_cast< char >( QgsApplication::endian() ) << QgsWkbTypes::LineString << mCaptureList.size();
-
-      for ( QList<QgsPointXY>::const_iterator it = mCaptureList.constBegin(); it != mCaptureList.constEnd(); ++it )
+      f.setGeometry( g );
+      QgsFeatureAction action( tr( "Feature added" ), f, vlayer, QString(), -1, this );
+      if ( action.addFeature( attrMap ) )
       {
-        QgsPointXY savePoint = *it;
-        // transform the gps point into the layer crs
-        QgsCoordinateTransform t( mWgs84CRS, vlayer->crs(), QgsProject::instance() );
-        QgsPointXY myPoint = t.transform( savePoint );
+        if ( mCbxAutoCommit->isChecked() )
+        {
+          if ( !vlayer->commitChanges() )
+          {
+            QgisApp::instance()->messageBar()->pushCritical( tr( "Save Layer Edits" ),
+                tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
+                .arg( vlayer->name(),
+                      vlayer->commitErrors().join( QStringLiteral( "\n  " ) ) ) );
+          }
 
-        wkbPtr << myPoint.x() << myPoint.y();
-      }
+          vlayer->startEditing();
+        }
+        delete mRubberBand;
+        mRubberBand = nullptr;
 
-      QgsGeometry g;
-      g.fromWkb( buf, size );
-      f->setGeometry( g );
-    }
-    else if ( layerWKBType == QgsWkbTypes::Polygon )
-    {
-      int size = 1 + 3 * static_cast< int >( sizeof( int ) ) + 2 * ( mCaptureList.size() + 1 ) * static_cast< int >( sizeof( double ) );
-      unsigned char *buf = new unsigned char[size];
+        // delete the elements of mCaptureList
+        mCaptureList.clear();
+      } // action.addFeature()
 
-      QgsWkbPtr wkbPtr( buf, size );
-      wkbPtr << static_cast< char >( QgsApplication::endian() ) << QgsWkbTypes::Polygon << 1 << mCaptureList.size() + 1;
-
-      QList<QgsPointXY>::iterator it;
-      for ( it = mCaptureList.begin(); it != mCaptureList.end(); ++it )
-      {
-        QgsPointXY savePoint = *it;
-        // transform the gps point into the layer crs
-        QgsCoordinateTransform t( mWgs84CRS, vlayer->crs(), QgsProject::instance() );
-        QgsPointXY myPoint = t.transform( savePoint );
-        wkbPtr << myPoint.x() << myPoint.y();
-      }
-      // close the polygon
-      it = mCaptureList.begin();
-      QgsPointXY savePoint = *it;
-
-      wkbPtr << savePoint.x() << savePoint.y();
-
-      QgsGeometry g;
-      g.fromWkb( buf, size );
-      f->setGeometry( g );
-
-      QgsGeometry featGeom = f->geometry();
-      int avoidIntersectionsReturn = featGeom.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
-      f->setGeometry( featGeom );
-      if ( avoidIntersectionsReturn == 1 )
-      {
-        //not a polygon type. Impossible to get there
-      }
-      else if ( avoidIntersectionsReturn == 2 )
-      {
-        //bail out...
-        QMessageBox::critical( nullptr, tr( "Add Feature" ), tr( "The feature could not be added because removing the polygon intersections would change the geometry type." ) );
-        delete f;
-        connectGpsSlot();
-        return;
-      }
-      else if ( avoidIntersectionsReturn == 3 )
-      {
-        QMessageBox::critical( nullptr, tr( "Add Feature" ), tr( "An error was reported during intersection removal." ) );
-        delete f;
-        connectGpsSlot();
-        return;
-      }
-    }
-    // Should never get here, as preconditions should have removed any that aren't handled
-    else // layerWKBType == QgsWkbTypes::Polygon  -  unknown type
-    {
-      QMessageBox::critical( nullptr, tr( "Add Feature" ), tr( "Cannot add feature. "
-                             "Unknown WKB type. Choose a different layer and try again." ) );
       connectGpsSlot();
-      delete f;
-      return; //unknown wkbtype
-    } // layerWKBType == QgsWkbTypes::Polygon
+      break;
+    }
 
-    QgsFeatureAction action( tr( "Feature added" ), *f, vlayer, QString(), -1, this );
-    if ( action.addFeature( attrMap ) )
-    {
-      if ( mCbxAutoCommit->isChecked() )
-      {
-        if ( !vlayer->commitChanges() ) //swiped... er... appropriated from QgisApp saveEdits()
-        {
-          QMessageBox::information( this,
-                                    tr( "Save Layer Edits" ),
-                                    tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
-                                    .arg( vlayer->name(),
-                                          vlayer->commitErrors().join( QStringLiteral( "\n  " ) ) ) );
-        }
-
-        vlayer->startEditing();
-      }
-      delete mRubberBand;
-      mRubberBand = nullptr;
-
-      // delete the elements of mCaptureList
-      mCaptureList.clear();
-    } // action.addFeature()
-
-    delete f;
-    connectGpsSlot();
-  } // layerWKBType == QgsWkbTypes::Point
-
+    case QgsWkbTypes::NullGeometry:
+    case QgsWkbTypes::UnknownGeometry:
+      return;
+  }
   vlayer->triggerRepaint();
 
   // force focus back to GPS window/ Add Feature button for ease of use by keyboard
@@ -1237,32 +1215,34 @@ void QgsGpsInformationWidget::updateCloseFeatureButton( QgsMapLayer *lyr )
     mLastLayer = vlayer;
   }
 
-  QString buttonLabel = tr( "&Add feature" );
-  if ( vlayer ) // must be vector layer
+  QString buttonLabel = tr( "&Add Feature" );
+  if ( vlayer )
   {
     QgsVectorDataProvider *provider = vlayer->dataProvider();
-    QgsWkbTypes::Type layerWKBType = vlayer->wkbType();
+    const QgsWkbTypes::GeometryType layerGeometryType = vlayer->geometryType();
 
-    QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( layerWKBType );
+    bool enable = provider->capabilities() & QgsVectorDataProvider::AddFeatures &&  // layer can add features
+                  vlayer->isEditable() && vlayer->isSpatial();
 
-    bool enable =
-      ( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) &&  // layer can add features
-      vlayer->isEditable() && // layer is editing
-      ( // layer has geometry type that can be handled
-        flatType == QgsWkbTypes::Point ||
-        flatType == QgsWkbTypes::LineString ||
-        flatType == QgsWkbTypes::Polygon
-        // add more types here as they are handled
-      )
-      ;
+    switch ( layerGeometryType )
+    {
+      case QgsWkbTypes::PointGeometry:
+        buttonLabel = tr( "&Add Point" );
+        break;
 
-    if ( flatType == QgsWkbTypes::Point )
-      buttonLabel = tr( "&Add Point" );
-    else if ( flatType == QgsWkbTypes::LineString )
-      buttonLabel = tr( "&Add Line" );
-    else if ( flatType == QgsWkbTypes::Polygon )
-      buttonLabel = tr( "&Add Polygon" );
-    // TODO: Add multi types
+      case QgsWkbTypes::LineGeometry:
+        buttonLabel = tr( "&Add Line" );
+        break;
+
+      case QgsWkbTypes::PolygonGeometry:
+        buttonLabel = tr( "&Add Polygon" );
+        break;
+
+      case QgsWkbTypes::UnknownGeometry:
+      case QgsWkbTypes::NullGeometry:
+        enable = false;
+        break;
+    }
 
     mBtnCloseFeature->setEnabled( enable );
   }

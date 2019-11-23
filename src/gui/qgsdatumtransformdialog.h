@@ -73,7 +73,8 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
     static bool run( const QgsCoordinateReferenceSystem &sourceCrs = QgsCoordinateReferenceSystem(),
                      const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
                      QWidget *parent = nullptr,
-                     QgsMapCanvas *mapCanvas = nullptr );
+                     QgsMapCanvas *mapCanvas = nullptr,
+                     const QString &windowTitle = QString() );
 
     // TODO QGIS 4.0 - remove selectedDatumTransform
 
@@ -106,6 +107,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
     void tableCurrentItemChanged( QTableWidgetItem *, QTableWidgetItem * );
     void setSourceCrs( const QgsCoordinateReferenceSystem &sourceCrs );
     void setDestinationCrs( const QgsCoordinateReferenceSystem &destinationCrs );
+    void showSupersededToggled( bool toggled );
 
   private:
 
@@ -143,6 +145,11 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
      * Applies the defaultDatumTransform(), adding it to the current QgsProject instance.
      */
     void applyDefaultTransform();
+
+    /**
+     * Cleans up a PROJ scope string, adding friendly acronym descriptions.
+     */
+    QString formatScope( const QString &scope );
 
 #if PROJ_VERSION_MAJOR>=6
     QList< QgsDatumTransform::TransformDetails > mDatumTransforms;

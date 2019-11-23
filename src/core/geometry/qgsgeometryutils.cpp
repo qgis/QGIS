@@ -910,6 +910,8 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
   double increment = tolerance; //one segment per degree
   if ( toleranceType == QgsAbstractGeometry::MaximumDifference )
   {
+    // Ensure tolerance is not higher than twice the radius
+    tolerance = std::min( tolerance, radius * 2 );
     double halfAngle = std::acos( -tolerance / radius + 1 );
     increment = 2 * halfAngle;
   }
@@ -1141,7 +1143,7 @@ QDomElement QgsGeometryUtils::pointsToGML2( const QgsPointSequence &points, QDom
 
   // coordinate separator
   QString cs = QStringLiteral( "," );
-  // tupel separator
+  // tuple separator
   QString ts = QStringLiteral( " " );
 
   elemCoordinates.setAttribute( QStringLiteral( "cs" ), cs );
@@ -1233,12 +1235,27 @@ double QgsGeometryUtils::normalizedAngle( double angle )
 
 QPair<QgsWkbTypes::Type, QString> QgsGeometryUtils::wktReadBlock( const QString &wkt )
 {
-  QgsWkbTypes::Type wkbType = QgsWkbTypes::parseType( wkt );
-
-  QRegularExpression cooRegEx( QStringLiteral( "^[^\\(]*\\((.*)\\)[^\\)]*$" ) );
-  cooRegEx.setPatternOptions( QRegularExpression::DotMatchesEverythingOption );
-  QRegularExpressionMatch match = cooRegEx.match( wkt );
-  QString contents = match.hasMatch() ? match.captured( 1 ) : QString();
+  QString wktParsed = wkt;
+  QString contents;
+  if ( wkt.contains( QString( "EMPTY" ), Qt::CaseInsensitive ) )
+  {
+    QRegularExpression wktRegEx( QStringLiteral( "^\\s*(\\w+)\\s+(\\w+)\\s*$" ) );
+    wktRegEx.setPatternOptions( QRegularExpression::DotMatchesEverythingOption );
+    QRegularExpressionMatch match = wktRegEx.match( wkt );
+    if ( match.hasMatch() )
+    {
+      wktParsed = match.captured( 1 );
+      contents = match.captured( 2 ).toUpper();
+    }
+  }
+  else
+  {
+    QRegularExpression cooRegEx( QStringLiteral( "^[^\\(]*\\((.*)\\)[^\\)]*$" ) );
+    cooRegEx.setPatternOptions( QRegularExpression::DotMatchesEverythingOption );
+    QRegularExpressionMatch match = cooRegEx.match( wktParsed );
+    contents = match.hasMatch() ? match.captured( 1 ) : QString();
+  }
+  QgsWkbTypes::Type wkbType = QgsWkbTypes::parseType( wktParsed );
   return qMakePair( wkbType, contents );
 }
 
@@ -1579,6 +1596,30 @@ bool QgsGeometryUtils::linesIntersection3D( const QgsVector3D &La1, const QgsVec
 
   intersection = ( X1 + X2 ) / 2.0;
   return true;
+}
+
+double QgsGeometryUtils::triangleArea( double aX, double aY, double bX, double bY, double cX, double cY )
+{
+  return 0.5 * std::abs( ( aX - cX ) * ( bY - aY ) - ( aX - bX ) * ( cY - aY ) );
+}
+
+void QgsGeometryUtils::weightedPointInTriangle( const double aX, const double aY, const double bX, const double bY, const double cX, const double cY,
+    double weightB, double weightC, double &pointX, double &pointY )
+{
+  // if point will be outside of the triangle, invert weights
+  if ( weightB + weightC > 1 )
+  {
+    weightB = 1 - weightB;
+    weightC = 1 - weightC;
+  }
+
+  const double rBx = weightB * ( bX - aX );
+  const double rBy = weightB * ( bY - aY );
+  const double rCx = weightC * ( cX - aX );
+  const double rCy = weightC * ( cY - aY );
+
+  pointX = rBx + rCx + aX;
+  pointY = rBy + rCy + aY;
 }
 
 bool QgsGeometryUtils::setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point )

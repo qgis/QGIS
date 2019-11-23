@@ -1,8 +1,8 @@
 # Folders
 .build*/
 ci/
+debian/build/
 debian/build.*/
-debian/build*/
 debian/.*/usr/
 i18n/
 external/*
@@ -15,7 +15,6 @@ src/app/gps/qwtpolar-1.1.1/
 src/core/pal
 src/plugins/grass/qtermwidget/
 
-
 #Extensions
 *.*.orig
 *.*.sortinc
@@ -24,14 +23,13 @@ src/plugins/grass/qtermwidget/
 *.sld
 .agignore
 
-
-
 #Specific files
 ChangeLog
 debian/qgis.desktop
 debian/qgis-plugin-grass.lintian-overrides
 debian/qgis-provider-grass.lintian-overrides
 doc/contributors.json
+doc/TRANSLATORS
 Exception_to_GPL_for_Qt.txt
 images/svg/symbol/blue-marker.svg
 images/svg/symbol/red-marker.svg
@@ -56,9 +54,11 @@ resources/cpt-city-qgis-min/ocal/portugese-flag.svg
 resources/cpt-city-qgis-min/selections/div.xml
 resources/cpt-city-qgis-min/selections/reds.xml
 resources/cpt-city-qgis-min/wkp/schwarzwald/COPYING.xml
+resources/data/world_map_generalize.model3
 scripts/spell_check/spelling.dat
 scripts/spell_check/test.sh
 src/server/qgis_wms.xmi
+src/plugins/grass/modules/v.generalize.qgm
 tests/testdata/qgis_server_accesscontrol/Hello.qml
 tests/testdata/qgis_server_accesscontrol/project.qgs
 tests/testdata/qgis_server/ets-wms13/project.qgs

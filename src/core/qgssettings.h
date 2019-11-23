@@ -172,7 +172,7 @@ class CORE_EXPORT QgsSettings : public QObject
     //! Returns a list of all key top-level groups (same as childGroups) but only for groups defined in global settings.
     QStringList globalChildGroups() const;
     //! Returns the path to the Global Settings QSettings storage file
-    static QString globalSettingsPath() { return sGlobalSettingsPath; }
+    static QString globalSettingsPath();
     //! Sets the Global Settings QSettings storage file
     static bool setGlobalSettingsPath( const QString &path );
     //! Adds prefix to the current group and starts reading from an array. Returns the size of the array.
@@ -257,7 +257,7 @@ class CORE_EXPORT QgsSettings : public QObject
       if ( metaEnum.isValid() )
       {
         // read as string
-        QByteArray ba = value( key, metaEnum.valueToKey( defaultValue ), section ).toString().toUtf8();
+        QByteArray ba = value( key, metaEnum.valueToKey( static_cast<int>( defaultValue ) ), section ).toString().toUtf8();
         const char *vs = ba.data();
         v = static_cast<T>( metaEnum.keyToValue( vs, &ok ) );
         if ( ok )
@@ -300,7 +300,7 @@ class CORE_EXPORT QgsSettings : public QObject
       Q_ASSERT( metaEnum.isValid() );
       if ( metaEnum.isValid() )
       {
-        setValue( key, metaEnum.valueToKey( value ), section );
+        setValue( key, metaEnum.valueToKey( static_cast<int>( value ) ), section );
       }
       else
       {
@@ -329,7 +329,7 @@ class CORE_EXPORT QgsSettings : public QObject
         QgsDebugMsg( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
       }
 
-      T v;
+      T v = defaultValue;
       bool ok = false;
 
       if ( metaEnum.isValid() )
@@ -410,8 +410,6 @@ class CORE_EXPORT QgsSettings : public QObject
     void clear();
 
   private:
-
-    static QString sGlobalSettingsPath;
     void init();
     QString sanitizeKey( const QString &key ) const;
     QSettings *mUserSettings = nullptr;

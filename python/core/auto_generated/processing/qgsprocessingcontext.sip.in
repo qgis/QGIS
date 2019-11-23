@@ -162,6 +162,13 @@ Ownership of ``processor`` is transferred.
 .. versionadded:: 3.2
 %End
 
+        void setOutputLayerName( QgsMapLayer *layer ) const;
+%Docstring
+Sets a ``layer`` name to match this output, respecting any local user settings which affect this name.
+
+.. versionadded:: 3.10.1
+%End
+
         QgsProject *project;
 
     };
@@ -384,6 +391,84 @@ to remove temporary layers which are not required for further processing
 from a context.
 
 .. seealso:: :py:func:`getMapLayer`
+%End
+
+    QString preferredVectorFormat() const;
+%Docstring
+Returns the preferred vector format to use for vector outputs.
+
+This method returns a file extension to use when creating vector outputs (e.g. "shp"). Generally,
+it is preferable to use the extension associated with a particular parameter, which can be retrieved through
+:py:func:`QgsProcessingDestinationParameter.defaultFileExtension()` However, in some cases, a specific parameter
+may not be available to call this method on (e.g. for an algorithm which has only an output folder parameter
+and which creates multiple output layers in that folder). In this case, the format returned by this
+function should be used when creating these outputs.
+
+It is the algorithm's responsibility to check whether the returned format is acceptable for the algorithm,
+and to provide an appropriate fallback when the returned format is not usable.
+
+.. seealso:: :py:func:`setPreferredVectorFormat`
+
+.. seealso:: :py:func:`preferredRasterFormat`
+
+.. versionadded:: 3.10
+%End
+
+    void setPreferredVectorFormat( const QString &format );
+%Docstring
+Sets the preferred vector ``format`` to use for vector outputs.
+
+This method sets a file extension to use when creating vector outputs (e.g. "shp"). Generally,
+it is preferable to use the extension associated with a particular parameter, which can be retrieved through
+:py:func:`QgsProcessingDestinationParameter.defaultFileExtension()` However, in some cases, a specific parameter
+may not be available to call this method on (e.g. for an algorithm which has only an output folder parameter
+and which creates multiple output layers in that folder). In this case, the format set by this
+function will be used when creating these outputs.
+
+.. seealso:: :py:func:`preferredVectorFormat`
+
+.. seealso:: :py:func:`setPreferredRasterFormat`
+
+.. versionadded:: 3.10
+%End
+
+    QString preferredRasterFormat() const;
+%Docstring
+Returns the preferred raster format to use for vector outputs.
+
+This method returns a file extension to use when creating raster outputs (e.g. "tif"). Generally,
+it is preferable to use the extension associated with a particular parameter, which can be retrieved through
+:py:func:`QgsProcessingDestinationParameter.defaultFileExtension()` However, in some cases, a specific parameter
+may not be available to call this method on (e.g. for an algorithm which has only an output folder parameter
+and which creates multiple output layers in that folder). In this case, the format returned by this
+function should be used when creating these outputs.
+
+It is the algorithm's responsibility to check whether the returned format is acceptable for the algorithm,
+and to provide an appropriate fallback when the returned format is not usable.
+
+.. seealso:: :py:func:`setPreferredRasterFormat`
+
+.. seealso:: :py:func:`preferredVectorFormat`
+
+.. versionadded:: 3.10
+%End
+
+    void setPreferredRasterFormat( const QString &format );
+%Docstring
+Sets the preferred raster ``format`` to use for vector outputs.
+
+This method sets a file extension to use when creating raster outputs (e.g. "tif"). Generally,
+it is preferable to use the extension associated with a particular parameter, which can be retrieved through
+:py:func:`QgsProcessingDestinationParameter.defaultFileExtension()` However, in some cases, a specific parameter
+may not be available to call this method on (e.g. for an algorithm which has only an output folder parameter
+and which creates multiple output layers in that folder). In this case, the format set by this
+function will be used when creating these outputs.
+
+.. seealso:: :py:func:`preferredRasterFormat`
+
+.. seealso:: :py:func:`setPreferredVectorFormat`
+
+.. versionadded:: 3.10
 %End
 
   private:

@@ -23,6 +23,48 @@
  * See details in QEP #17
  ****************************************************************************/
 
+QString QgsUnitTypes::encodeUnitType( QgsUnitTypes::UnitType type )
+{
+  switch ( type )
+  {
+    case TypeDistance:
+      return QStringLiteral( "distance" );
+
+    case TypeArea:
+      return QStringLiteral( "area" );
+
+    case TypeVolume:
+      return QStringLiteral( "volume" );
+
+    case TypeUnknown:
+      return QStringLiteral( "<unknown>" );
+
+  }
+  return QString();
+}
+
+QgsUnitTypes::UnitType QgsUnitTypes::decodeUnitType( const QString &string, bool *ok )
+{
+  QString normalized = string.trimmed().toLower();
+
+  if ( ok )
+    *ok = true;
+
+  if ( normalized == encodeUnitType( TypeDistance ) )
+    return TypeDistance;
+  if ( normalized == encodeUnitType( TypeArea ) )
+    return TypeArea;
+  if ( normalized == encodeUnitType( TypeVolume ) )
+    return TypeVolume;
+  if ( normalized == encodeUnitType( TypeUnknown ) )
+    return TypeUnknown;
+
+  if ( ok )
+    *ok = false;
+
+  return TypeUnknown;
+}
+
 QgsUnitTypes::DistanceUnitType QgsUnitTypes::unitType( DistanceUnit unit )
 {
   switch ( unit )
@@ -694,7 +736,7 @@ QString QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::AreaUnit unit )
     case AreaHectares:
       return QObject::tr( "ha", "area" );
     case AreaAcres:
-      return QObject::tr( "ac²", "area" );
+      return QObject::tr( "ac", "area" );
     case AreaSquareNauticalMiles:
       return QObject::tr( "NM²", "area" );
     case AreaSquareDegrees:
@@ -1140,7 +1182,7 @@ QgsUnitTypes::AreaUnit QgsUnitTypes::distanceToAreaUnit( DistanceUnit distanceUn
       return AreaSquareCentimeters;
 
     case DistanceMillimeters:
-      return AreaSquareCentimeters;
+      return AreaSquareMillimeters;
 
     case DistanceFeet:
       return AreaSquareFeet;
@@ -1162,6 +1204,547 @@ QgsUnitTypes::AreaUnit QgsUnitTypes::distanceToAreaUnit( DistanceUnit distanceUn
   }
 
   return AreaUnknownUnit;
+}
+
+QgsUnitTypes::DistanceUnit QgsUnitTypes::areaToDistanceUnit( AreaUnit areaUnit )
+{
+  switch ( areaUnit )
+  {
+    case AreaSquareMeters:
+    case AreaHectares:
+      return DistanceMeters;
+
+    case AreaSquareKilometers:
+      return DistanceKilometers;
+
+    case AreaSquareCentimeters:
+      return DistanceCentimeters;
+
+    case AreaSquareMillimeters:
+      return DistanceMillimeters;
+
+    case AreaSquareFeet:
+      return DistanceFeet;
+
+    case AreaSquareYards:
+    case AreaAcres:
+      return DistanceYards;
+
+    case AreaSquareMiles:
+      return DistanceMiles;
+
+    case AreaSquareDegrees:
+      return DistanceDegrees;
+
+    case AreaUnknownUnit:
+      return DistanceUnknownUnit;
+
+    case AreaSquareNauticalMiles:
+      return DistanceNauticalMiles;
+  }
+
+  return DistanceUnknownUnit;
+}
+
+QgsUnitTypes::VolumeUnit QgsUnitTypes::decodeVolumeUnit( const QString &string, bool *ok )
+{
+  QString normalized = string.trimmed().toLower();
+
+  if ( ok )
+    *ok = true;
+
+  if ( normalized == encodeUnit( VolumeCubicMeters ) )
+    return VolumeCubicMeters;
+  if ( normalized == encodeUnit( VolumeCubicFeet ) )
+    return VolumeCubicFeet;
+  if ( normalized == encodeUnit( VolumeCubicYards ) )
+    return VolumeCubicYards;
+  if ( normalized == encodeUnit( VolumeBarrel ) )
+    return VolumeBarrel;
+  if ( normalized == encodeUnit( VolumeCubicDecimeter ) )
+    return VolumeCubicDecimeter;
+  if ( normalized == encodeUnit( VolumeLiters ) )
+    return VolumeLiters;
+  if ( normalized == encodeUnit( VolumeGallonUS ) )
+    return VolumeGallonUS;
+  if ( normalized == encodeUnit( VolumeCubicInch ) )
+    return VolumeCubicInch;
+  if ( normalized == encodeUnit( VolumeCubicCentimeter ) )
+    return VolumeCubicCentimeter;
+  if ( normalized == encodeUnit( VolumeCubicDegrees ) )
+    return VolumeCubicDegrees;
+  if ( normalized == encodeUnit( VolumeUnknownUnit ) )
+    return VolumeUnknownUnit;
+
+  if ( ok )
+    *ok = false;
+
+  return VolumeUnknownUnit;
+}
+
+QString QgsUnitTypes::toString( QgsUnitTypes::VolumeUnit unit )
+{
+  switch ( unit )
+  {
+    case VolumeCubicMeters:
+      return QObject::tr( "cubic meters", "volume" );
+    case VolumeCubicFeet:
+      return QObject::tr( "cubic feet", "volume" );
+    case VolumeCubicYards:
+      return QObject::tr( "cubic yards", "volume" );
+    case VolumeBarrel:
+      return QObject::tr( "barrels", "volume" );
+    case VolumeCubicDecimeter:
+      return QObject::tr( "cubic decimeters", "volume" );
+    case VolumeLiters:
+      return QObject::tr( "liters", "volume" );
+    case VolumeGallonUS:
+      return QObject::tr( "gallons", "volume" );
+    case VolumeCubicInch:
+      return QObject::tr( "cubic inches", "volume" );
+    case VolumeCubicCentimeter:
+      return QObject::tr( "cubic centimeters", "volume" );
+    case VolumeCubicDegrees:
+      return QObject::tr( "cubic degrees", "volume" );
+    case VolumeUnknownUnit:
+      return QObject::tr( "<unknown>", "volume" );
+  }
+  return QString();
+}
+
+QString QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::VolumeUnit unit )
+{
+  switch ( unit )
+  {
+    case VolumeCubicMeters:
+      return QObject::tr( "m³", "volume" );
+    case VolumeCubicFeet:
+      return QObject::tr( "ft³", "volume" );
+    case VolumeCubicYards:
+      return QObject::tr( "yds³", "volume" );
+    case VolumeBarrel:
+      return QObject::tr( "bbl", "volume" );
+    case VolumeCubicDecimeter:
+      return QObject::tr( "dm³", "volume" );
+    case VolumeLiters:
+      return QObject::tr( "l", "volume" );
+    case VolumeGallonUS:
+      return QObject::tr( "gal", "volume" );
+    case VolumeCubicInch:
+      return QObject::tr( "in³", "volume" );
+    case VolumeCubicCentimeter:
+      return QObject::tr( "cm³", "volume" );
+    case VolumeCubicDegrees:
+      return QObject::tr( "deg³", "volume" );
+    case VolumeUnknownUnit:
+      return QObject::tr( "<unknown>", "volume" );
+  }
+  return QString();
+
+}
+
+QgsUnitTypes::VolumeUnit QgsUnitTypes::stringToVolumeUnit( const QString &string, bool *ok )
+{
+  QString normalized = string.trimmed().toLower();
+
+  if ( ok )
+    *ok = true;
+
+  if ( normalized == toString( VolumeCubicMeters ) )
+    return VolumeCubicMeters;
+  if ( normalized == toString( VolumeCubicFeet ) )
+    return VolumeCubicFeet;
+  if ( normalized == toString( VolumeCubicYards ) )
+    return VolumeCubicYards;
+  if ( normalized == toString( VolumeBarrel ) )
+    return VolumeBarrel;
+  if ( normalized == toString( VolumeCubicDecimeter ) )
+    return VolumeCubicDecimeter;
+  if ( normalized == toString( VolumeLiters ) )
+    return VolumeLiters;
+  if ( normalized == toString( VolumeGallonUS ) )
+    return VolumeGallonUS;
+  if ( normalized == toString( VolumeCubicInch ) )
+    return VolumeCubicInch;
+  if ( normalized == toString( VolumeCubicCentimeter ) )
+    return VolumeCubicCentimeter;
+  if ( normalized == toString( VolumeCubicDegrees ) )
+    return VolumeCubicDegrees;
+  if ( normalized == toString( VolumeUnknownUnit ) )
+    return VolumeUnknownUnit;
+
+  if ( ok )
+    *ok = false;
+
+  return VolumeUnknownUnit;
+}
+
+#define DEG2_TO_M3 1379474361572186.2
+double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::VolumeUnit fromUnit, QgsUnitTypes::VolumeUnit toUnit )
+{
+  switch ( fromUnit )
+  {
+    case VolumeCubicMeters:
+    {
+      switch ( toUnit )
+      {
+        case VolumeCubicMeters:
+          return 1.0;
+        case VolumeCubicFeet:
+          return 35.314666572222;
+        case VolumeCubicYards:
+          return  1.307950613786;
+        case VolumeBarrel:
+          return 6.2898107438466;
+        case VolumeCubicDecimeter:
+          return 1000;
+        case VolumeLiters:
+          return 1000;
+        case VolumeGallonUS:
+          return 264.17205124156;
+        case VolumeCubicInch:
+          return 61023.7438368;
+        case VolumeCubicCentimeter:
+          return 1000000;
+        case VolumeCubicDegrees:
+          return 1 / DEG2_TO_M3; // basically meaningless!
+        case VolumeUnknownUnit:
+          return 1.0;
+      }
+      break;
+    }
+    case VolumeCubicFeet:
+    {
+      switch ( toUnit )
+      {
+        case VolumeCubicMeters:
+          return 0.028316846592;
+        case VolumeCubicFeet:
+          return 1.0;
+        case VolumeCubicYards:
+          return 0.037037037;
+        case VolumeBarrel:
+          return 0.178107622;
+        case VolumeCubicDecimeter:
+          return 28.31685;
+        case VolumeLiters:
+          return 28.31685;
+        case VolumeGallonUS:
+          return 7.480519954;
+        case VolumeCubicInch:
+          return 1728.000629765;
+        case VolumeCubicCentimeter:
+          return 28316.85;
+        case VolumeCubicDegrees:
+          return 0.028316846592 / DEG2_TO_M3; // basically meaningless!
+        case VolumeUnknownUnit:
+          return 1.0;
+      }
+      break;
+    }
+    case VolumeCubicYards:
+    {
+      switch ( toUnit )
+      {
+        case VolumeCubicMeters:
+          return 0.764554900;
+        case VolumeCubicFeet:
+          return 26.999998234;
+        case VolumeCubicYards:
+          return 1.0;
+        case VolumeBarrel:
+          return 4.808905491;
+        case VolumeCubicDecimeter:
+          return 764.5549;
+        case VolumeLiters:
+          return 764.5549;
+        case VolumeGallonUS:
+          return 201.974025549;
+        case VolumeCubicInch:
+          return 46656.013952472;
+        case VolumeCubicCentimeter:
+          return 764554.9;
+        case VolumeCubicDegrees:
+          return 0.764554900 / DEG2_TO_M3; // basically meaningless!
+        case VolumeUnknownUnit:
+          return 1.0;
+      }
+      break;
+    }
+    case VolumeBarrel:
+    {
+      switch ( toUnit )
+      {
+        case VolumeCubicMeters:
+          return 0.158987300;
+        case VolumeCubicFeet:
+          return 5.614582837;
+        case VolumeCubicYards:
+          return 0.207947526;
+        case VolumeBarrel:
+          return 1.0;
+        case VolumeCubicDecimeter:
+          return 158.9873;
+        case VolumeLiters:
+          return 158.9873;
+        case VolumeGallonUS:
+          return 41.999998943;
+        case VolumeCubicInch:
+          return 9702.002677722;
+        case VolumeCubicCentimeter:
+          return 158987.3;
+        case VolumeCubicDegrees:
+          return 0.158987300 / DEG2_TO_M3; // basically meaningless!
+        case VolumeUnknownUnit:
+          return 1.0;
+      }
+      break;
+    }
+    case VolumeCubicDecimeter:
+    case VolumeLiters:
+    {
+      switch ( toUnit )
+      {
+        case VolumeCubicMeters:
+          return 0.001;
+        case VolumeCubicFeet:
+          return 0.035314662;
+        case VolumeCubicYards:
+          return 0.001307951;
+        case VolumeBarrel:
+          return 0.006289811;
+        case VolumeCubicDecimeter:
+        case VolumeLiters:
+          return 1.0;
+        case VolumeGallonUS:
+          return 0.264172037;
+        case VolumeCubicInch:
+          return 61.023758990;
+        case VolumeCubicCentimeter:
+          return 1000;
+        case VolumeCubicDegrees:
+          return 0.001 / DEG2_TO_M3; // basically meaningless!
+        case VolumeUnknownUnit:
+          return 1.0;
+      }
+      break;
+    }
+    case VolumeGallonUS:
+    {
+      switch ( toUnit )
+      {
+        case VolumeCubicMeters:
+          return 0.003785412;
+        case VolumeCubicFeet:
+          return 0.133680547;
+        case VolumeCubicYards:
+          return 0.004951132;
+        case VolumeBarrel:
+          return 0.023809524;
+        case VolumeCubicDecimeter:
+        case VolumeLiters:
+          return 3.785412000;
+        case VolumeGallonUS:
+          return 1.0;
+        case VolumeCubicInch:
+          return 231.000069567;
+        case VolumeCubicCentimeter:
+          return 3785.412;
+        case VolumeCubicDegrees:
+          return 0.003785412 / DEG2_TO_M3; // basically meaningless!
+        case VolumeUnknownUnit:
+          return 1.0;
+      }
+      break;
+    }
+    case VolumeCubicInch:
+    {
+      switch ( toUnit )
+      {
+        case VolumeCubicMeters:
+          return 0.000016387;
+        case VolumeCubicFeet:
+          return 0.000578703;
+        case VolumeCubicYards:
+          return 0.000021433;
+        case VolumeBarrel:
+          return 0.000103072;
+        case VolumeCubicDecimeter:
+        case VolumeLiters:
+          return 0.016387060;
+        case VolumeGallonUS:
+          return 0.004329003;
+        case VolumeCubicInch:
+          return 1.0;
+        case VolumeCubicCentimeter:
+          return 16.387060000;
+        case VolumeCubicDegrees:
+          return 0.000016387 / DEG2_TO_M3; // basically meaningless!
+        case VolumeUnknownUnit:
+          return 1.0;
+      }
+      break;
+    }
+    case VolumeCubicCentimeter:
+    {
+      switch ( toUnit )
+      {
+        case VolumeCubicMeters:
+          return 0.000001;
+        case VolumeCubicFeet:
+          return 0.000035315;
+        case VolumeCubicYards:
+          return 0.000001308;
+        case VolumeBarrel:
+          return 0.000006290;
+        case VolumeCubicDecimeter:
+        case VolumeLiters:
+          return 0.001;
+        case VolumeGallonUS:
+          return 0.000264172 ;
+        case VolumeCubicInch:
+          return 0.061023759;
+        case VolumeCubicCentimeter:
+          return 1.0;
+        case VolumeCubicDegrees:
+          return 0.000001 / DEG2_TO_M3; // basically meaningless!
+        case VolumeUnknownUnit:
+          return 1.0;
+      }
+      break;
+    }
+    case VolumeCubicDegrees:
+      if ( toUnit == VolumeUnknownUnit || toUnit == VolumeCubicDegrees )
+        return 1.0;
+      else
+        return fromUnitToUnitFactor( toUnit, QgsUnitTypes::VolumeCubicMeters ) * DEG2_TO_M3;
+
+    case VolumeUnknownUnit:
+    {
+      return 1.0;
+    }
+  }
+  return 1.0;
+}
+
+QgsUnitTypes::VolumeUnit QgsUnitTypes::distanceToVolumeUnit( QgsUnitTypes::DistanceUnit distanceUnit )
+{
+  switch ( distanceUnit )
+  {
+    case DistanceMeters:
+      return VolumeCubicMeters;
+
+    case DistanceKilometers:
+      return VolumeCubicMeters;
+
+    case DistanceCentimeters:
+      return VolumeCubicCentimeter;
+
+    case DistanceMillimeters:
+      return VolumeCubicCentimeter;
+
+    case DistanceFeet:
+      return VolumeCubicFeet;
+
+    case DistanceYards:
+      return VolumeCubicYards;
+
+    case DistanceMiles:
+      return VolumeCubicFeet;
+
+    case DistanceDegrees:
+      return VolumeCubicDegrees;
+
+    case DistanceUnknownUnit:
+      return VolumeUnknownUnit;
+
+    case DistanceNauticalMiles:
+      return VolumeCubicFeet;
+  }
+
+  return VolumeUnknownUnit;
+}
+
+QgsUnitTypes::DistanceUnit QgsUnitTypes::volumeToDistanceUnit( QgsUnitTypes::VolumeUnit volumeUnit )
+{
+  switch ( volumeUnit )
+  {
+    case VolumeCubicMeters:
+      return DistanceMeters;
+    case VolumeCubicFeet:
+      return DistanceFeet;
+    case VolumeCubicYards:
+      return DistanceYards;
+    case VolumeBarrel:
+      return DistanceFeet;
+    case VolumeCubicDecimeter:
+      return DistanceCentimeters;
+    case VolumeLiters:
+      return DistanceMeters;
+    case VolumeGallonUS:
+      return DistanceFeet;
+    case VolumeCubicInch:
+      return DistanceFeet;
+    case VolumeCubicCentimeter:
+      return DistanceCentimeters;
+    case VolumeCubicDegrees:
+      return DistanceDegrees;
+    case VolumeUnknownUnit:
+      return DistanceUnknownUnit;
+  }
+  return DistanceUnknownUnit;
+}
+
+QgsUnitTypes::DistanceUnitType QgsUnitTypes::unitType( QgsUnitTypes::VolumeUnit unit )
+{
+  switch ( unit )
+  {
+    case VolumeCubicMeters:
+    case VolumeCubicFeet:
+    case VolumeCubicYards:
+    case VolumeBarrel:
+    case VolumeCubicDecimeter:
+    case VolumeLiters:
+    case VolumeGallonUS:
+    case VolumeCubicInch:
+    case VolumeCubicCentimeter:
+      return Standard;
+    case VolumeCubicDegrees:
+      return Geographic;
+    case VolumeUnknownUnit:
+      return UnknownType;
+  }
+  return UnknownType;
+}
+
+QString QgsUnitTypes::encodeUnit( QgsUnitTypes::VolumeUnit unit )
+{
+  switch ( unit )
+  {
+    case VolumeCubicMeters:
+      return QStringLiteral( "m3" );
+    case VolumeCubicFeet:
+      return QStringLiteral( "ft3" );
+    case VolumeCubicYards:
+      return QStringLiteral( "yd3" );
+    case VolumeBarrel:
+      return QStringLiteral( "bbl" );
+    case VolumeCubicDecimeter:
+      return QStringLiteral( "dm3" );
+    case VolumeLiters:
+      return QStringLiteral( "l" );
+    case VolumeGallonUS:
+      return QStringLiteral( "gal" );
+    case VolumeCubicInch:
+      return QStringLiteral( "in3" );
+    case VolumeCubicCentimeter:
+      return QStringLiteral( "cm3" );
+    case VolumeCubicDegrees:
+      return QStringLiteral( "deg3" );
+    case VolumeUnknownUnit:
+      return QStringLiteral( "<unknown>" );
+  }
+  return QString();
 }
 
 QString QgsUnitTypes::encodeUnit( QgsUnitTypes::AngleUnit unit )

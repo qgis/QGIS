@@ -20,6 +20,7 @@ from qgis.PyQt.QtWidgets import QApplication, QWidget, QTextEdit, QLineEdit, QDi
 from qgis.PyQt.QtTest import QTest
 
 from qgis.core import QgsProviderRegistry, QgsSettings
+from qgis.gui import QgsGui
 from qgis.testing import start_app, unittest
 
 
@@ -88,7 +89,7 @@ class TestPyQgsWFSProviderGUI(unittest.TestCase):
         # if 'TRAVIS_OS_NAME' in os.environ and os.environ['TRAVIS_OS_NAME'] == 'osx':
         #    return
 
-        main_dialog = QgsProviderRegistry.instance().createSelectionWidget("WFS")
+        main_dialog = QgsGui.providerGuiRegistry().sourceSelectProviders("WFS")[0].createDataSourceWidget()
         main_dialog.setProperty("hideDialogs", True)
 
         self.assertIsNotNone(main_dialog)
@@ -115,6 +116,8 @@ class TestPyQgsWFSProviderGUI(unittest.TestCase):
         self.assertIsNotNone(btnConnect)
         QTest.mouseClick(btnConnect, Qt.LeftButton)
         # Depends on asynchronous signal
+        QApplication.processEvents()
+        # Second attempt for OAPIF request
         QApplication.processEvents()
         error_box = find_window('WFSCapabilitiesErrorBox')
         self.assertIsNotNone(error_box)
@@ -217,7 +220,7 @@ class TestPyQgsWFSProviderGUI(unittest.TestCase):
         self.addWfsLayer_layer_name = None
         main_dialog.addVectorLayer.connect(self.slotAddWfsLayer)
         QTest.mouseClick(buttonAdd, Qt.LeftButton)
-        self.assertEqual(self.addWfsLayer_uri, ' pagingEnabled=\'true\' restrictToRequestBBOX=\'1\' srsname=\'EPSG:4326\' typename=\'my:typename\' url=\'' + "http://" + expected_endpoint + '\' version=\'auto\' table="" sql=')
+        self.assertEqual(self.addWfsLayer_uri, ' pagingEnabled=\'true\' restrictToRequestBBOX=\'1\' srsname=\'EPSG:4326\' typename=\'my:typename\' url=\'' + "http://" + expected_endpoint + '\' version=\'auto\'')
         self.assertEqual(self.addWfsLayer_layer_name, 'my:typename')
 
         # Click on Build Query
@@ -290,7 +293,7 @@ class TestPyQgsWFSProviderGUI(unittest.TestCase):
         self.addWfsLayer_layer_name = None
         main_dialog.addVectorLayer.connect(self.slotAddWfsLayer)
         QTest.mouseClick(buttonAdd, Qt.LeftButton)
-        self.assertEqual(self.addWfsLayer_uri, ' pagingEnabled=\'true\' restrictToRequestBBOX=\'1\' srsname=\'EPSG:4326\' typename=\'my:typename\' url=\'' + "http://" + expected_endpoint + '\' version=\'auto\' table="" sql=SELECT * FROM typename WHERE 1 = 1')
+        self.assertEqual(self.addWfsLayer_uri, ' pagingEnabled=\'true\' restrictToRequestBBOX=\'1\' srsname=\'EPSG:4326\' typename=\'my:typename\' url=\'' + "http://" + expected_endpoint + '\' version=\'auto\' sql=SELECT * FROM typename WHERE 1 = 1')
         self.assertEqual(self.addWfsLayer_layer_name, 'my:typename')
 
         # main_dialog.setProperty("hideDialogs", None)

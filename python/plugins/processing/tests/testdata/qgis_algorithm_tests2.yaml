@@ -73,6 +73,22 @@ tests:
       #  name: expected/triangulation.gml
       #  type: vector
 
+  - algorithm: qgis:tininterpolation
+    name: TIN interpolation with breaklines
+    params:
+      EXTENT: -0.4450000000000012,8.445,-5.2,3.2 [EPSG:4326]
+      INTERPOLATION_DATA:
+        name: pointsz.gml::~::1::~::-1::~::0::|::breaklines.gml::~::0::~::1::~::2
+        type: interpolation
+      METHOD: 0
+      PIXEL_SIZE: 0.1
+    results:
+      OUTPUT:
+        hash:
+        - 34ebe51b4ff75e2eb80746571ac4b72709d200f5d36a1d367d7b0b32
+        - d2529829631d5b816dba56305736ed7e6961bc63f224f351be719c78
+        type: rasterhash
+
   - algorithm: qgis:idwinterpolation
     name: IDW interpolation using attribute (old parameters)
     params:
@@ -150,6 +166,22 @@ tests:
       #TRIANULATION_FILE:
       #  name: expected/triangulation.gml
       #  type: vector
+
+  - algorithm: qgis:idwinterpolation
+    name: IDW interpolation with breakline
+    params:
+      DISTANCE_COEFFICIENT: 2.0
+      EXTENT: -0.4450000000000012,8.445,-5.2,3.2 [EPSG:4326]
+      INTERPOLATION_DATA:
+        name: pointsz.gml::~::1::~::-1::~::0::|::breaklines.gml::~::0::~::1::~::2
+        type: interpolation
+      PIXEL_SIZE: 0.1
+    results:
+      OUTPUT:
+        hash:
+        - 56ecc53f6c66a21dd0379170a833c87337932160767cdf9cc47695a8
+        - f096ffa048892c87eae61ddd4253501f1236ad785a9b084a2badf051
+        type: rasterhash
 
   - algorithm: native:removenullgeometries
     name: Remove null geometries
@@ -231,6 +263,120 @@ tests:
         compare:
           fields:
             fid: skip
+
+  - algorithm: native:fuzzifyrasterlinearmembership
+    name: Test (native:fuzzifyrasterlinearmembership)
+    params:
+      BAND: 1
+      FUZZYHIGHBOUND: 100.0
+      FUZZYLOWBOUND: 200.0
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: ed9591139fed080e0b5b789052b881c8fddb25c106ff14e89cbb06c5
+        type: rasterhash
+
+  - algorithm: native:fuzzifyrasterlinearmembership
+    name: Test (native:fuzzifyrasterlinearmembership)
+    params:
+      BAND: 1
+      FUZZYHIGHBOUND: 200.0
+      FUZZYLOWBOUND: 100.0
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: 980df1d095601a885a7518038cdb327d83366db6f33a3fe307eab149
+        type: rasterhash
+
+  - algorithm: native:fuzzifyrasterpowermembership
+    name: Test (native:fuzzifyrasterpowermembership)
+    params:
+      BAND: 1
+      FUZZYEXPONENT: 2.0
+      FUZZYHIGHBOUND: 100.0
+      FUZZYLOWBOUND: 200.0
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: d18f956cb94d09a449a62299408e442973f4391415a9005d4d6850dc
+        type: rasterhash
+
+  - algorithm: native:fuzzifyrasterpowermembership
+    name: Test (native:fuzzifyrasterpowermembership)
+    params:
+      BAND: 1
+      FUZZYEXPONENT: 2.0
+      FUZZYHIGHBOUND: 200.0
+      FUZZYLOWBOUND: 100.0
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: 782bcc1851b9e73b8c962d4850e356c3dab11999ee41dce9dd2aea5f
+        type: rasterhash
+
+  - algorithm: native:fuzzifyrasterlargemembership
+    name: Test (native:fuzzifyrasterlargemembership)
+    params:
+      BAND: 1
+      FUZZYMIDPOINT: 100.0
+      FUZZYSPREAD: 5.0
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: d4479a5077235cffe4586f40a7c867139a50347f8312fd443c130ccb
+        type: rasterhash
+
+  - algorithm: native:fuzzifyrastersmallmembership
+    name: Test (native:fuzzifyrastersmallmembership)
+    params:
+      BAND: 1
+      FUZZYMIDPOINT: 100.0
+      FUZZYSPREAD: 5.0
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: 31569e93dbdd82c85cbf72c4ceb521015bd143e2106968a413a4ec6c
+        type: rasterhash
+
+  - algorithm: native:fuzzifyrastergaussianmembership
+    name: Test (native:fuzzifyrastergaussianmembership)
+    params:
+      BAND: 1
+      FUZZYMIDPOINT: 100.0
+      FUZZYSPREAD: 0.01
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: e51532915836f3e77695fb8d650a2d1e0984a5be8e8bbf4df677d160
+        type: rasterhash
+
+  - algorithm: native:fuzzifyrasternearmembership
+    name: Test (native:fuzzifyrasternearmembership)
+    params:
+      BAND: 1
+      FUZZYMIDPOINT: 100.0
+      FUZZYSPREAD: 0.01
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: 71aecb383a686d78ea0e677901a8a93f822b9897d7a9e23ba4ebf24d
+        type: rasterhash
 
   - algorithm: qgis:geometrybyexpression
     name: Geometry by expression (point)
@@ -639,7 +785,7 @@ tests:
         name: expected/dropped_geometry.csv
         type: vector
 
-  - algorithm: qgis:creategrid
+  - algorithm: native:creategrid
     name: Create grid (lines)
     params:
       CRS: EPSG:4326
@@ -654,8 +800,17 @@ tests:
         compare:
           geometry:
             precision: 7
+          fields:
+            left:
+              precision: 7
+            right:
+              precision: 7
+            top:
+              precision: 7
+            bottom:
+              precision: 7
 
-  - algorithm: qgis:creategrid
+  - algorithm: native:creategrid
     name: Create grid (rectangles)
     params:
       CRS: EPSG:4326
@@ -670,8 +825,17 @@ tests:
         compare:
           geometry:
             precision: 7
+          fields:
+            left:
+              precision: 7
+            right:
+              precision: 7
+            top:
+              precision: 7
+            bottom:
+              precision: 7
 
-  - algorithm: qgis:creategrid
+  - algorithm: native:creategrid
     name: Create grid (diamond)
     params:
       CRS: EPSG:4326
@@ -686,8 +850,17 @@ tests:
         compare:
           geometry:
             precision: 7
+          fields:
+            left:
+              precision: 7
+            right:
+              precision: 7
+            top:
+              precision: 7
+            bottom:
+              precision: 7
 
-  - algorithm: qgis:creategrid
+  - algorithm: native:creategrid
     name: Create grid (hexagon)
     params:
       CRS: EPSG:4326
@@ -702,8 +875,17 @@ tests:
         compare:
           geometry:
             precision: 7
+          fields:
+            left:
+              precision: 7
+            right:
+              precision: 7
+            top:
+              precision: 7
+            bottom:
+              precision: 7
 
-  - algorithm: qgis:creategrid
+  - algorithm: native:creategrid
     name: Create grid (lines with overlay)
     params:
       CRS: EPSG:4326
@@ -717,8 +899,18 @@ tests:
       OUTPUT:
         name: expected/grid_lines_overlay.gml
         type: vector
+        compare:
+          fields:
+            left:
+              precision: 7
+            right:
+              precision: 7
+            top:
+              precision: 7
+            bottom:
+              precision: 7
 
-  - algorithm: qgis:creategrid
+  - algorithm: native:creategrid
     name: Create grid (rectangle with overlay)
     params:
       CRS: EPSG:4326
@@ -735,8 +927,17 @@ tests:
         compare:
           geometry:
             precision: 7
+          fields:
+            left:
+              precision: 7
+            right:
+              precision: 7
+            top:
+              precision: 7
+            bottom:
+              precision: 7
 
-  - algorithm: qgis:creategrid
+  - algorithm: native:creategrid
     name: Create grid (diamond with overlay)
     params:
       CRS: EPSG:4326
@@ -753,8 +954,17 @@ tests:
         compare:
           geometry:
             precision: 7
+          fields:
+            left:
+              precision: 7
+            right:
+              precision: 7
+            top:
+              precision: 7
+            bottom:
+              precision: 7
 
-  - algorithm: qgis:creategrid
+  - algorithm: native:creategrid
     name: Create grid (hexagon with overlay)
     params:
       CRS: EPSG:4326
@@ -771,6 +981,15 @@ tests:
         compare:
           geometry:
             precision: 7
+          fields:
+            left:
+              precision: 7
+            right:
+              precision: 7
+            top:
+              precision: 7
+            bottom:
+              precision: 7
 
   - algorithm: native:deleteholes
     name: Delete holes (no min)
@@ -1521,11 +1740,12 @@ tests:
             start: skip
             end: skip
 
-  - algorithm: qgis:serviceareafrompoint
-    name: Service area (from point, shortest)
+  - algorithm: native:serviceareafrompoint
+    name: Service area from point (shortest, nodes)
     params:
       DEFAULT_DIRECTION: 2
-      DEFAULT_SPEED: 5.0
+      DEFAULT_SPEED: 50.0
+      INCLUDE_BOUNDS: false
       INPUT:
         name: roads.gml
         type: vector
@@ -1538,7 +1758,7 @@ tests:
       VALUE_FORWARD: ''
     results:
       OUTPUT:
-        name: expected/service_area.gml
+        name: expected/service_area_from_point_nodes.gml
         type: vector
         compare:
           ignore_crs_check: true
@@ -1550,16 +1770,16 @@ tests:
             start: skip
             end: skip
 
-  - algorithm: qgis:serviceareafrompoint
-    name: Service area (from point, shortest, no bounds)
+  - algorithm: native:serviceareafrompoint
+    name: Service area from point (shortest, nodes, bounds)
     params:
       DEFAULT_DIRECTION: 2
-      DEFAULT_SPEED: 5.0
-      INCLUDE_BOUNDS: false
+      DEFAULT_SPEED: 50.0
+      INCLUDE_BOUNDS: true
       INPUT:
         name: roads.gml
         type: vector
-      START_POINT: 1002465.0089601517,6221875.432489508
+      START_POINT: 1002465.0089601517,6221875.432489508 [EPSG:32733]
       STRATEGY: 0
       TOLERANCE: 0.0
       TRAVEL_COST: 700.0
@@ -1568,23 +1788,14 @@ tests:
       VALUE_FORWARD: ''
     results:
       OUTPUT:
-        name: expected/service_area_no_bounds.gml
+        name: expected/service_area_from_point_nodes_bounds.gml
         type: vector
-        compare:
-          ignore_crs_check: true
-          geometry:
-            precision: 2
-          fields:
-            cost:
-              precision: 2
-            start: skip
-            end: skip
 
-  - algorithm: qgis:serviceareafrompoint
-    name: Service area from point, output lines
+  - algorithm: native:serviceareafrompoint
+    name: Service area from point (shortest, lines)
     params:
       DEFAULT_DIRECTION: 2
-      DEFAULT_SPEED: 5.0
+      DEFAULT_SPEED: 50.0
       INCLUDE_BOUNDS: false
       INPUT:
         name: roads.gml
@@ -1598,7 +1809,7 @@ tests:
       VALUE_FORWARD: ''
     results:
       OUTPUT_LINES:
-        name: expected/service_area_lines.gml
+        name: expected/service_area_from_point_lines.gml
         type: vector
         compare:
           ignore_crs_check: true
@@ -1610,45 +1821,11 @@ tests:
             start: skip
             end: skip
 
-  - algorithm: qgis:serviceareafromlayer
-    name: Service area from layer
+  - algorithm: native:serviceareafromlayer
+    name: Service area from layer (shortest, nodes)
     params:
       DEFAULT_DIRECTION: 2
-      DEFAULT_SPEED: 5.0
-      INPUT:
-        name: roads.gml
-        type: vector
-      START_POINTS:
-        name: custom/route_points.gml
-        type: vector
-      STRATEGY: 0
-      TOLERANCE: 0.0
-      TRAVEL_COST: 700.0
-      VALUE_BACKWARD: ''
-      VALUE_BOTH: ''
-      VALUE_FORWARD: ''
-    results:
-      OUTPUT:
-        name: expected/service_area_from_layer.shp
-        type: vector
-        compare:
-          ignore_crs_check: true
-          geometry:
-            precision: 2
-          fields:
-            cost:
-              precision: 2
-            start: skip
-            end: skip
-        pk:
-          - d
-          - type
-
-  - algorithm: qgis:serviceareafromlayer
-    name: Service area from layer no bounds
-    params:
-      DEFAULT_DIRECTION: 2
-      DEFAULT_SPEED: 5.0
+      DEFAULT_SPEED: 50.0
       INCLUDE_BOUNDS: false
       INPUT:
         name: roads.gml
@@ -1664,7 +1841,7 @@ tests:
       VALUE_FORWARD: ''
     results:
       OUTPUT:
-        name: expected/service_area_from_layer_no_bounds.shp
+        name: expected/service_area_from_layer_nodes.gml
         type: vector
         compare:
           ignore_crs_check: true
@@ -1679,11 +1856,34 @@ tests:
           - d
           - type
 
-  - algorithm: qgis:serviceareafromlayer
-    name: Service area from layer (lines)
+  - algorithm: native:serviceareafromlayer
+    name: Service area from layer (shortest, nodes, boundary)
     params:
       DEFAULT_DIRECTION: 2
-      DEFAULT_SPEED: 5.0
+      DEFAULT_SPEED: 50.0
+      INCLUDE_BOUNDS: true
+      INPUT:
+        name: roads.gml
+        type: vector
+      START_POINTS:
+        name: custom/route_points.gml
+        type: vector
+      STRATEGY: 0
+      TOLERANCE: 0.0
+      TRAVEL_COST: 700.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT:
+        name: expected/service_area_from_layer_nodes_bounds.gml
+        type: vector
+
+  - algorithm: native:serviceareafromlayer
+    name: Service area from layer (shortest, lines)
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 50.0
       INCLUDE_BOUNDS: false
       INPUT:
         name: roads.gml
@@ -1693,13 +1893,13 @@ tests:
         type: vector
       STRATEGY: 0
       TOLERANCE: 0.0
-      TRAVEL_COST: 500.0
+      TRAVEL_COST: 700.0
       VALUE_BACKWARD: ''
       VALUE_BOTH: ''
       VALUE_FORWARD: ''
     results:
       OUTPUT_LINES:
-        name: expected/service_area_from_layer_lines.shp
+        name: expected/service_area_from_layer_lines.gml
         type: vector
         compare:
           ignore_crs_check: true
@@ -1888,6 +2088,5 @@ tests:
       OUTPUT:
         name: expected/points_along_lines_m.shp
         type: vector
-
 
 # See ../README.md for a description of the file format

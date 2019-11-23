@@ -68,7 +68,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
     advancedLayout->setContentsMargins( 0, 0, 0, 0 );
   // tree view
   mLayerTreeView = new QTreeView();
-  QgsSnappingLayerTreeModel *model = new QgsSnappingLayerTreeModel( mProject, this );
+  QgsSnappingLayerTreeModel *model = new QgsSnappingLayerTreeModel( mProject, mCanvas, this );
   model->setLayerTreeModel( new QgsLayerTreeModel( mProject->layerTreeRoot(), model ) );
   // connections
   connect( model, &QgsSnappingLayerTreeModel::rowsInserted, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
@@ -167,10 +167,22 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   // units
   mUnitsComboBox = new QComboBox();
   mUnitsComboBox->addItem( tr( "px" ), QgsTolerance::Pixels );
-  mUnitsComboBox->addItem( QgsUnitTypes::toString( mProject->distanceUnits() ), QgsTolerance::ProjectUnits );
-  mUnitsComboBox->setToolTip( tr( "Snapping Unit Type: Pixels (px) or Map Units (mu)" ) );
+  // Get canvas units
+  const QString mapCanvasDistanceUnits { QgsUnitTypes::toString( mCanvas->mapSettings().mapUnits() ) };
+  mUnitsComboBox->addItem( mapCanvasDistanceUnits, QgsTolerance::ProjectUnits );
+  mUnitsComboBox->setToolTip( tr( "Snapping Unit Type: Pixels (px) or Project/Map Units (%1)" ).arg( mapCanvasDistanceUnits ) );
   mUnitsComboBox->setObjectName( QStringLiteral( "SnappingUnitComboBox" ) );
-  connect( mUnitsComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSnappingWidget::changeUnit );
+  connect( mUnitsComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
+           this, &QgsSnappingWidget::changeUnit );
+
+  connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, [ = ]
+  {
+    // Update map units from canvas
+    const QString mapCanvasDistanceUnits { QgsUnitTypes::toString( mCanvas->mapSettings().mapUnits() ) };
+    mUnitsComboBox->setItemText( 1, mapCanvasDistanceUnits );
+    mUnitsComboBox->setToolTip( tr( "Snapping Unit Type: Pixels (px) or Map Units (%1)" ).arg( mapCanvasDistanceUnits ) );
+    model->resetLayerTreeModel();
+  } );
 
   // topological editing button
   mTopologicalEditingAction = new QAction( tr( "Topological Editing" ), this );

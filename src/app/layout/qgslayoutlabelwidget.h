@@ -31,6 +31,7 @@ class QgsLayoutLabelWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayou
     Q_OBJECT
   public:
     explicit QgsLayoutLabelWidget( QgsLayoutItemLabel *label );
+    void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 
   protected:
 

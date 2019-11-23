@@ -230,7 +230,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
           icon = QgsLayerItem::iconDefault();
       }
 
-      if ( vlayer && vlayer->isEditable() )
+      if ( vlayer && vlayer->isEditable() && testFlag( UseTextFormatting ) )
       {
         const int iconSize = scaleIconSize( 16 );
         QPixmap pixmap( icon.pixmap( iconSize, iconSize ) );
@@ -265,7 +265,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       return nodeGroup->itemVisibilityChecked() ? Qt::Checked : Qt::Unchecked;
     }
   }
-  else if ( role == Qt::FontRole )
+  else if ( role == Qt::FontRole && testFlag( UseTextFormatting ) )
   {
     QFont f( QgsLayerTree::isLayer( node ) ? mFontLayer : ( QgsLayerTree::isGroup( node ) ? mFontGroup : QFont() ) );
     if ( index == mCurrentIndex )
@@ -280,7 +280,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
     }
     return f;
   }
-  else if ( role == Qt::ForegroundRole )
+  else if ( role == Qt::ForegroundRole && testFlag( UseTextFormatting ) )
   {
     QBrush brush( qApp->palette().color( QPalette::Text ), Qt::SolidPattern );
     if ( QgsLayerTree::isLayer( node ) )
@@ -1516,8 +1516,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::layerOriginalLegendNodes
 
 QgsLayerTreeModelLegendNode *QgsLayerTreeModel::findLegendNode( const QString &layerId, const QString &ruleKey ) const
 {
-  QMap<QgsLayerTreeLayer *, LayerLegendData>::const_iterator it = mLegend.constBegin();
-  for ( ; it != mLegend.constEnd(); ++it )
+  for ( auto it = mLegend.constBegin(); it != mLegend.constEnd(); ++it )
   {
     QgsLayerTreeLayer *layer = it.key();
     if ( layer->layerId() == layerId )
@@ -1557,8 +1556,7 @@ void QgsLayerTreeModel::invalidateLegendMapBasedData()
 
   std::unique_ptr<QgsRenderContext> context( createTemporaryRenderContext() );
 
-  const auto constMLegend = mLegend;
-  for ( const LayerLegendData &data : constMLegend )
+  for ( const LayerLegendData &data : qgis::as_const( mLegend ) )
   {
     QList<QgsSymbolLegendNode *> symbolNodes;
     QMap<QString, int> widthMax;

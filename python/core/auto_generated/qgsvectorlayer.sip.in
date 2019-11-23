@@ -115,7 +115,8 @@ starting with QGIS 2.16, a URI constructed using the QgsDataSourceUri class with
 - filter=string: QGIS expression or OGC/FES filter
 - restrictToRequestBBOX=1: to download only features in the view extent (or more generally
 in the bounding box of the feature iterator)
-- maxNumFeatures=number
+- pageSize=number: number of features to retrieve in a single request (WFS 2)
+- maxNumFeatures=number: maximum number of features to retrieve (possibly across several multiple paging requests)
 - IgnoreAxisOrientation=1: to ignore EPSG axis order for WFS 1.1 or 2.0
 - InvertAxisOrientation=1: to invert axis order
 - hideDownloadProgressDialog=1: to hide the download progress dialog
@@ -128,6 +129,23 @@ QGIS expression filter only supports” =, !=, <, >, <=, >=, AND, OR, NOT, LIKE,
 attribute operators, “BBOX, Disjoint, Intersects, Touches, Crosses, Contains, Overlaps, Within”
 spatial binary operators and the QGIS local “geomFromWKT, geomFromGML”
 geometry constructor functions.
+
+\subsection oapif OGC API - Features data provider (oapif)
+
+Used to access data provided by a OGC API - Features server.
+
+The URI should be constructed using the QgsDataSourceUri class with the following parameters:
+- url=string (mandatory): HTTP url to a OGC API - Features landing page.
+- typename=string (mandatory): Collection id
+- username=string
+- password=string
+- authcfg=string
+- filter=string: QGIS expression (only datetime filtering is forwarded to the server)
+- restrictToRequestBBOX=1: to download only features in the view extent (or more generally
+in the bounding box of the feature iterator)
+- pageSize=number: number of features to retrieve in a single request
+- maxNumFeatures=number: maximum number of features to retrieve (possibly across several multiple paging requests)
+- hideDownloadProgressDialog=1: to hide the download progress dialog.
 
 Also note:
 
@@ -352,6 +370,8 @@ Constructor for LayerOptions.
 
       QgsCoordinateReferenceSystem fallbackCrs;
 
+      bool skipCrsValidation;
+
     };
 
     explicit QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
@@ -465,6 +485,7 @@ Returns the join buffer object.
 
 .. versionadded:: 2.14.7
 %End
+
     const QList<QgsVectorLayerJoinInfo> vectorJoins() const;
 
     virtual bool setDependencies( const QSet<QgsMapLayerDependency> &layers ) ${SIP_FINAL};
@@ -546,6 +567,13 @@ which is used by the layer, so any changes are immediately applied.
 %End
 
 
+    QgsVectorLayerServerProperties *serverProperties() const;
+%Docstring
+Returns QGIS Server Properties of the vector layer
+
+.. versionadded:: 3.10
+%End
+
     int selectedFeatureCount() const;
 %Docstring
 Returns the number of features that are selected in this layer.
@@ -553,7 +581,7 @@ Returns the number of features that are selected in this layer.
 .. seealso:: :py:func:`selectedFeatureIds`
 %End
 
-    void selectByRect( QgsRectangle &rect, SelectBehavior behavior = SetSelection );
+    void selectByRect( QgsRectangle &rect, QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection );
 %Docstring
 Selects features found within the search rectangle (in layer's coordinates)
 
@@ -568,7 +596,7 @@ Selects features found within the search rectangle (in layer's coordinates)
 .. seealso:: :py:func:`selectByIds`
 %End
 
-    void selectByExpression( const QString &expression, SelectBehavior behavior = SetSelection );
+    void selectByExpression( const QString &expression, QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection );
 %Docstring
 Selects matching features using an expression.
 
@@ -583,7 +611,7 @@ Selects matching features using an expression.
 .. versionadded:: 2.16
 %End
 
-    void selectByIds( const QgsFeatureIds &ids, SelectBehavior behavior = SetSelection );
+    void selectByIds( const QgsFeatureIds &ids, QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection );
 %Docstring
 Selects matching features using a list of feature IDs. Will emit the
 selectionChanged() signal with the clearAndSelect flag set.
@@ -969,6 +997,16 @@ calculated by countSymbolFeatures()
 :return: number of features rendered by symbol or -1 if failed or counts are not available
 %End
 
+    QgsFeatureIds symbolFeatureIds( const QString &legendKey ) const;
+%Docstring
+Ids of features rendered with specified legend key. Features must be first
+calculated by countSymbolFeatures()
+
+:return: Ids of features rendered by symbol or -1 if failed or Ids are not available
+
+.. versionadded:: 3.10
+%End
+
     virtual FeatureAvailability hasFeatures() const ${SIP_FINAL};
 
 %Docstring
@@ -997,7 +1035,8 @@ if the geometry type of the new data source matches the current geometry type of
 
 .. versionadded:: 2.10
 
-.. deprecated:: Use version with ProviderOptions argument instead
+.. deprecated::
+   Use version with ProviderOptions argument instead
 %End
 
     virtual void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false );
@@ -1021,12 +1060,14 @@ if the geometry type of the new data source matches the current geometry type of
     virtual QString loadDefaultStyle( bool &resultFlag /Out/ ) ${SIP_FINAL};
 
 
-    QgsVectorLayerFeatureCounter *countSymbolFeatures();
+    QgsVectorLayerFeatureCounter *countSymbolFeatures( bool storeSymbolFids = false );
 %Docstring
 Count features for symbols.
 The method will return the feature counter task. You will need to
 connect to the symbolFeatureCountMapChanged() signal to be
 notified when the freshly updated feature counts are ready.
+
+:param storeSymbolFids: If ``True`` will gather the feature ids (fids) per symbol, otherwise only the count. Default ``False``.
 
 .. note::
 
@@ -1216,7 +1257,35 @@ Deletes the selected features
 :return: ``True`` in case of success and ``False`` otherwise
 %End
 
-    QgsGeometry::OperationResult addRing( const QVector<QgsPointXY> &ring, QgsFeatureId *featureId = 0 );
+ QgsGeometry::OperationResult addRing( const QVector<QgsPointXY> &ring, QgsFeatureId *featureId = 0 ) /Deprecated/;
+%Docstring
+Adds a ring to polygon/multipolygon features
+
+:param ring: ring to add
+:param featureId: if specified, feature ID for feature ring was added to will be stored in this parameter
+
+:return: QgsGeometry.OperationResult
+         - Success
+         - LayerNotEditable
+         - AddRingNotInExistingFeature
+         - InvalidInputGeometryType
+         - AddRingNotClosed
+         - AddRingNotValid
+         - AddRingCrossesExistingRings
+
+.. note::
+
+   Calls to addRing() are only valid for layers in which edits have been enabled
+   by a call to startEditing(). Changes made to features using this method are not committed
+   to the underlying data provider until a commitChanges() call is made. Any uncommitted
+   changes can be discarded by calling rollBack().
+
+.. deprecated:: QGIS 3.12
+   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+%End
+
+
+    QgsGeometry::OperationResult addRing( const QgsPointSequence &ring, QgsFeatureId *featureId = 0 );
 %Docstring
 Adds a ring to polygon/multipolygon features
 
@@ -1268,7 +1337,7 @@ Adds a ring to polygon/multipolygon features (takes ownership)
    changes can be discarded by calling rollBack().
 %End
 
-    QgsGeometry::OperationResult addPart( const QList<QgsPointXY> &ring );
+ QgsGeometry::OperationResult addPart( const QList<QgsPointXY> &ring ) /Deprecated/;
 %Docstring
 Adds a new part polygon to a multipart feature
 
@@ -1288,6 +1357,38 @@ Adds a new part polygon to a multipart feature
    by a call to startEditing(). Changes made to features using this method are not committed
    to the underlying data provider until a commitChanges() call is made. Any uncommitted
    changes can be discarded by calling rollBack().
+
+.. deprecated:: QGIS 3.12
+   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+%End
+
+ QgsGeometry::OperationResult addPart( const QVector<QgsPointXY> &ring ) /PyName=addPartV2,Deprecated/;
+%Docstring
+Adds a new part polygon to a multipart feature
+
+:return: QgsGeometry.OperationResult
+         - Success
+         - LayerNotEditable
+         - SelectionIsEmpty
+         - SelectionIsGreaterThanOne
+         - AddPartSelectedGeometryNotFound
+         - AddPartNotMultiGeometry
+         - InvalidBaseGeometry
+         - InvalidInputGeometryType
+
+.. note::
+
+   available in Python bindings as addPartV2
+
+.. note::
+
+   Calls to addPart() are only valid for layers in which edits have been enabled
+   by a call to startEditing(). Changes made to features using this method are not committed
+   to the underlying data provider until a commitChanges() call is made. Any uncommitted
+   changes can be discarded by calling rollBack().
+
+.. deprecated:: QGIS 3.12
+   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
 %End
 
     QgsGeometry::OperationResult addPart( const QgsPointSequence &ring ) /PyName=addPartV2/;
@@ -1349,7 +1450,34 @@ Translates feature by dx, dy
    changes can be discarded by calling rollBack().
 %End
 
-    QgsGeometry::OperationResult splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
+ QgsGeometry::OperationResult splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false ) /Deprecated/;
+%Docstring
+Splits parts cut by the given line
+
+:param splitLine: line that splits the layer features
+:param topologicalEditing: ``True`` if topological editing is enabled
+
+:return: QgsGeometry.OperationResult
+         - Success
+         - NothingHappened
+         - LayerNotEditable
+         - InvalidInputGeometryType
+         - InvalidBaseGeometry
+         - GeometryEngineError
+         - SplitCannotSplitPoint
+
+.. note::
+
+   Calls to splitParts() are only valid for layers in which edits have been enabled
+   by a call to startEditing(). Changes made to features using this method are not committed
+   to the underlying data provider until a commitChanges() call is made. Any uncommitted
+   changes can be discarded by calling rollBack().
+
+.. deprecated:: QGIS 3.12
+   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+%End
+
+    QgsGeometry::OperationResult splitParts( const QgsPointSequence &splitLine, bool topologicalEditing = false );
 %Docstring
 Splits parts cut by the given line
 
@@ -1373,7 +1501,34 @@ Splits parts cut by the given line
    changes can be discarded by calling rollBack().
 %End
 
-    QgsGeometry::OperationResult splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
+ QgsGeometry::OperationResult splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false ) /Deprecated/;
+%Docstring
+Splits features cut by the given line
+
+:param splitLine: line that splits the layer features
+:param topologicalEditing: ``True`` if topological editing is enabled
+
+:return: QgsGeometry.OperationResult
+         - Success
+         - NothingHappened
+         - LayerNotEditable
+         - InvalidInputGeometryType
+         - InvalidBaseGeometry
+         - GeometryEngineError
+         - SplitCannotSplitPoint
+
+.. note::
+
+   Calls to splitFeatures() are only valid for layers in which edits have been enabled
+   by a call to startEditing(). Changes made to features using this method are not committed
+   to the underlying data provider until a commitChanges() call is made. Any uncommitted
+   changes can be discarded by calling rollBack().
+
+.. deprecated:: QGIS 3.12
+   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+%End
+
+    QgsGeometry::OperationResult splitFeatures( const QgsPointSequence &splitLine, bool topologicalEditing = false );
 %Docstring
 Splits features cut by the given line
 
@@ -1417,10 +1572,10 @@ Adds topological points for every vertex of the geometry.
    changes can be discarded by calling rollBack().
 %End
 
-    int addTopologicalPoints( const QgsPointXY &p );
+ int addTopologicalPoints( const QgsPointXY &p )  /Deprecated/;
 %Docstring
-Adds a vertex to segments which intersect point p but don't
-already have a vertex there. If a feature already has a vertex at position p,
+Adds a vertex to segments which intersect point ``p`` but don't
+already have a vertex there. If a feature already has a vertex at position ``p``,
 no additional vertex is inserted. This method is useful for topological
 editing.
 
@@ -1434,6 +1589,30 @@ editing.
    by a call to startEditing(). Changes made to features using this method are not committed
    to the underlying data provider until a commitChanges() call is made. Any uncommitted
    changes can be discarded by calling rollBack().
+
+.. deprecated:: QGIS 3.12
+   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+%End
+
+    int addTopologicalPoints( const QgsPoint &p );
+%Docstring
+Adds a vertex to segments which intersect point ``p`` but don't
+already have a vertex there. If a feature already has a vertex at position ``p``,
+no additional vertex is inserted. This method is useful for topological
+editing.
+
+:param p: position of the vertex
+
+:return: 0 in case of success
+
+.. note::
+
+   Calls to addTopologicalPoints() are only valid for layers in which edits have been enabled
+   by a call to startEditing(). Changes made to features using this method are not committed
+   to the underlying data provider until a commitChanges() call is made. Any uncommitted
+   changes can be discarded by calling rollBack().
+
+.. versionadded:: 3.10
 %End
 
 
@@ -1869,7 +2048,8 @@ Destroy active command and reverts all changes in it
 %Docstring
 Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex editing.)
 
-.. deprecated:: Use the equivalent QgsSymbolLayerUtils.drawVertexMarker function instead
+.. deprecated::
+   Use the equivalent QgsSymbolLayerUtils.drawVertexMarker function instead
 %End
 
     void updateFields();
@@ -2279,6 +2459,12 @@ Configuration and logic to apply automatically on any edit happening on this lay
 
 
 
+    QgsStoredExpressionManager *storedExpressionManager();
+%Docstring
+Returns the manager of the stored expressions for this layer.
+
+.. versionadded:: 3.10
+%End
 
   public slots:
 
@@ -2323,6 +2509,21 @@ Deselects features by their ID
 Clear selection
 
 .. seealso:: :py:func:`selectByIds`
+
+.. seealso:: :py:func:`reselect`
+%End
+
+    void reselect();
+%Docstring
+Reselects the previous set of selected features. This is only applicable
+after a prior call to removeSelection().
+
+Any other modifications to the selection following a call to removeSelection() clears
+memory of the previous selection and consequently calling reselect() has no impact.
+
+.. seealso:: :py:func:`removeSelection`
+
+.. versionadded:: 3.10
 %End
 
     virtual void updateExtents( bool force = false );
@@ -2356,6 +2557,9 @@ Sets the coordinate transform context to ``transformContext``
 
 .. versionadded:: 3.8
 %End
+
+    virtual SpatialIndexPresence hasSpatialIndex() const;
+
 
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 

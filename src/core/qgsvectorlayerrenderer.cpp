@@ -37,14 +37,13 @@
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsrenderedfeaturehandlerinterface.h"
 
 #include <QPicture>
 
 
 QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRenderContext &context )
-  : QgsMapLayerRenderer( layer->id() )
-  , mContext( context )
-  , mInterruptionChecker( qgis::make_unique< QgsVectorLayerRendererInterruptionChecker >( context ) )
+  : QgsMapLayerRenderer( layer->id(), &context )
   , mLayer( layer )
   , mFields( layer->fields() )
   , mLabeling( false )
@@ -60,8 +59,20 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   mGeometryType = layer->geometryType();
 
   mFeatureBlendMode = layer->featureBlendMode();
-  mSimplifyMethod = layer->simplifyMethod();
-  mSimplifyGeometry = layer->simplifyDrawingCanbeApplied( mContext, QgsVectorSimplifyMethod::GeometrySimplification );
+
+  // if there's already a simplification method specified via the context, we respect that. Otherwise, we fall back
+  // to the layer's individual setting
+  if ( renderContext()->vectorSimplifyMethod().simplifyHints() != QgsVectorSimplifyMethod::NoSimplification )
+  {
+    mSimplifyMethod = renderContext()->vectorSimplifyMethod();
+    mSimplifyGeometry = renderContext()->vectorSimplifyMethod().simplifyHints() & QgsVectorSimplifyMethod::GeometrySimplification ||
+                        renderContext()->vectorSimplifyMethod().simplifyHints() & QgsVectorSimplifyMethod::FullSimplification;
+  }
+  else
+  {
+    mSimplifyMethod = layer->simplifyMethod();
+    mSimplifyGeometry = layer->simplifyDrawingCanbeApplied( *renderContext(), QgsVectorSimplifyMethod::GeometrySimplification );
+  }
 
   QgsSettings settings;
   mVertexMarkerOnlyForSelection = settings.value( QStringLiteral( "qgis/digitizing/marker_only_for_selected" ), true ).toBool();
@@ -92,9 +103,15 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
     // set editing vertex markers style
     mRenderer->setVertexMarkerAppearance( mVertexMarkerStyle, mVertexMarkerSize );
   }
-  mContext.expressionContext() << QgsExpressionContextUtils::layerScope( layer );
+  renderContext()->expressionContext() << QgsExpressionContextUtils::layerScope( layer );
 
   mAttrNames = mRenderer->usedAttributes( context );
+  if ( context.hasRenderedFeatureHandlers() )
+  {
+    const QList< QgsRenderedFeatureHandlerInterface * > handlers = context.renderedFeatureHandlers();
+    for ( QgsRenderedFeatureHandlerInterface *handler : handlers )
+      mAttrNames.unite( handler->usedAttributes( layer, context ) );
+  }
 
   //register label and diagram layer to the labeling engine
   prepareLabeling( layer, mAttrNames );
@@ -132,38 +149,42 @@ bool QgsVectorLayerRenderer::render()
       return true;
   }
 
+  QgsRenderContext &context = *renderContext();
+
+  // MUST be created in the thread doing the rendering
+  mInterruptionChecker = qgis::make_unique< QgsVectorLayerRendererInterruptionChecker >( context );
   bool usingEffect = false;
   if ( mRenderer->paintEffect() && mRenderer->paintEffect()->enabled() )
   {
     usingEffect = true;
-    mRenderer->paintEffect()->begin( mContext );
+    mRenderer->paintEffect()->begin( context );
   }
 
   // Per feature blending mode
-  if ( mContext.useAdvancedEffects() && mFeatureBlendMode != QPainter::CompositionMode_SourceOver )
+  if ( context.useAdvancedEffects() && mFeatureBlendMode != QPainter::CompositionMode_SourceOver )
   {
     // set the painter to the feature blend mode, so that features drawn
     // on this layer will interact and blend with each other
-    mContext.painter()->setCompositionMode( mFeatureBlendMode );
+    context.painter()->setCompositionMode( mFeatureBlendMode );
   }
 
-  mRenderer->startRender( mContext, mFields );
+  mRenderer->startRender( context, mFields );
 
   QString rendererFilter = mRenderer->filter( mFields );
 
-  QgsRectangle requestExtent = mContext.extent();
-  mRenderer->modifyRequestExtent( requestExtent, mContext );
+  QgsRectangle requestExtent = context.extent();
+  mRenderer->modifyRequestExtent( requestExtent, context );
 
   QgsFeatureRequest featureRequest = QgsFeatureRequest()
                                      .setFilterRect( requestExtent )
                                      .setSubsetOfAttributes( mAttrNames, mFields )
-                                     .setExpressionContext( mContext.expressionContext() );
+                                     .setExpressionContext( context.expressionContext() );
   if ( mRenderer->orderByEnabled() )
   {
     featureRequest.setOrderBy( mRenderer->orderBy() );
   }
 
-  const QgsFeatureFilterProvider *featureFilterProvider = mContext.featureFilterProvider();
+  const QgsFeatureFilterProvider *featureFilterProvider = context.featureFilterProvider();
   if ( featureFilterProvider )
   {
     featureFilterProvider->filterFeatures( mLayer, featureRequest );
@@ -179,16 +200,16 @@ bool QgsVectorLayerRenderer::render()
     double map2pixelTol = mSimplifyMethod.threshold();
     bool validTransform = true;
 
-    const QgsMapToPixel &mtp = mContext.mapToPixel();
+    const QgsMapToPixel &mtp = context.mapToPixel();
     map2pixelTol *= mtp.mapUnitsPerPixel();
-    QgsCoordinateTransform ct = mContext.coordinateTransform();
+    QgsCoordinateTransform ct = context.coordinateTransform();
 
     // resize the tolerance using the change of size of an 1-BBOX from the source CoordinateSystem to the target CoordinateSystem
     if ( ct.isValid() && !ct.isShortCircuited() )
     {
       try
       {
-        QgsPointXY center = mContext.extent().center();
+        QgsPointXY center = context.extent().center();
         double rectSize = ct.sourceCrs().isGeographic() ? 0.0008983 /* ~100/(40075014/360=111319.4833) */ : 100;
 
         QgsRectangle sourceRect = QgsRectangle( center.x(), center.y(), center.x() + rectSize, center.y() + rectSize );
@@ -232,20 +253,20 @@ bool QgsVectorLayerRenderer::render()
 
       QgsVectorSimplifyMethod vectorMethod = mSimplifyMethod;
       vectorMethod.setTolerance( map2pixelTol );
-      mContext.setVectorSimplifyMethod( vectorMethod );
+      context.setVectorSimplifyMethod( vectorMethod );
     }
     else
     {
       QgsVectorSimplifyMethod vectorMethod;
       vectorMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
-      mContext.setVectorSimplifyMethod( vectorMethod );
+      context.setVectorSimplifyMethod( vectorMethod );
     }
   }
   else
   {
     QgsVectorSimplifyMethod vectorMethod;
     vectorMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
-    mContext.setVectorSimplifyMethod( vectorMethod );
+    context.setVectorSimplifyMethod( vectorMethod );
   }
 
   QgsFeatureIterator fit = mSource->getFeatures( featureRequest );
@@ -267,9 +288,10 @@ bool QgsVectorLayerRenderer::render()
 
   if ( usingEffect )
   {
-    mRenderer->paintEffect()->end( mContext );
+    mRenderer->paintEffect()->end( context );
   }
 
+  mInterruptionChecker.reset();
   return true;
 }
 
@@ -277,14 +299,15 @@ bool QgsVectorLayerRenderer::render()
 void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator &fit )
 {
   QgsExpressionContextScope *symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );
-  mContext.expressionContext().appendScope( symbolScope );
+  QgsRenderContext &context = *renderContext();
+  context.expressionContext().appendScope( symbolScope );
 
   QgsFeature fet;
   while ( fit.nextFeature( fet ) )
   {
     try
     {
-      if ( mContext.renderingStopped() )
+      if ( context.renderingStopped() )
       {
         QgsDebugMsg( QStringLiteral( "Drawing of vector layer %1 canceled." ).arg( layerId() ) );
         break;
@@ -293,41 +316,41 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator &fit )
       if ( !fet.hasGeometry() || fet.geometry().isEmpty() )
         continue; // skip features without geometry
 
-      mContext.expressionContext().setFeature( fet );
+      context.expressionContext().setFeature( fet );
 
-      bool sel = mContext.showSelection() && mSelectedFeatureIds.contains( fet.id() );
-      bool drawMarker = ( mDrawVertexMarkers && mContext.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || sel ) );
+      bool sel = context.showSelection() && mSelectedFeatureIds.contains( fet.id() );
+      bool drawMarker = ( mDrawVertexMarkers && context.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || sel ) );
 
       // render feature
-      bool rendered = mRenderer->renderFeature( fet, mContext, -1, sel, drawMarker );
+      bool rendered = mRenderer->renderFeature( fet, context, -1, sel, drawMarker );
 
       // labeling - register feature
       if ( rendered )
       {
         // new labeling engine
-        if ( mContext.labelingEngine() && ( mLabelProvider || mDiagramProvider ) )
+        if ( context.labelingEngine() && ( mLabelProvider || mDiagramProvider ) )
         {
           QgsGeometry obstacleGeometry;
-          QgsSymbolList symbols = mRenderer->originalSymbolsForFeature( fet, mContext );
-          std::unique_ptr< QgsSymbol > symbol;
+          QgsSymbolList symbols = mRenderer->originalSymbolsForFeature( fet, context );
+          QgsSymbol *symbol = nullptr;
           if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::PointGeometry )
           {
-            obstacleGeometry = QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, mContext, symbols );
+            obstacleGeometry = QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, context, symbols );
           }
 
           if ( !symbols.isEmpty() )
           {
-            symbol.reset( symbols.at( 0 )->clone() );
-            QgsExpressionContextUtils::updateSymbolScope( symbol.get(), symbolScope );
+            symbol = symbols.at( 0 );
+            QgsExpressionContextUtils::updateSymbolScope( symbol, symbolScope );
           }
 
           if ( mLabelProvider )
           {
-            mLabelProvider->registerFeature( fet, mContext, obstacleGeometry, symbol.release() );
+            mLabelProvider->registerFeature( fet, context, obstacleGeometry, symbol );
           }
           if ( mDiagramProvider )
           {
-            mDiagramProvider->registerFeature( fet, mContext, obstacleGeometry );
+            mDiagramProvider->registerFeature( fet, context, obstacleGeometry );
           }
         }
       }
@@ -340,7 +363,7 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator &fit )
     }
   }
 
-  delete mContext.expressionContext().popScope();
+  delete context.expressionContext().popScope();
 
   stopRenderer( nullptr );
 }
@@ -348,36 +371,36 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator &fit )
 void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
 {
   QHash< QgsSymbol *, QList<QgsFeature> > features; // key = symbol, value = array of features
+  QgsRenderContext &context = *renderContext();
 
   QgsSingleSymbolRenderer *selRenderer = nullptr;
   if ( !mSelectedFeatureIds.isEmpty() )
   {
     selRenderer = new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( mGeometryType ) );
-    selRenderer->symbol()->setColor( mContext.selectionColor() );
+    selRenderer->symbol()->setColor( context.selectionColor() );
     selRenderer->setVertexMarkerAppearance( mVertexMarkerStyle, mVertexMarkerSize );
-    selRenderer->startRender( mContext, mFields );
+    selRenderer->startRender( context, mFields );
   }
 
   QgsExpressionContextScope *symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );
-  mContext.expressionContext().appendScope( symbolScope );
+  std::unique_ptr< QgsExpressionContextScopePopper > scopePopper = qgis::make_unique< QgsExpressionContextScopePopper >( context.expressionContext(), symbolScope );
 
   // 1. fetch features
   QgsFeature fet;
   while ( fit.nextFeature( fet ) )
   {
-    if ( mContext.renderingStopped() )
+    if ( context.renderingStopped() )
     {
       qDebug( "rendering stop!" );
       stopRenderer( selRenderer );
-      delete mContext.expressionContext().popScope();
       return;
     }
 
     if ( !fet.hasGeometry() )
       continue; // skip features without geometry
 
-    mContext.expressionContext().setFeature( fet );
-    QgsSymbol *sym = mRenderer->symbolForFeature( fet, mContext );
+    context.expressionContext().setFeature( fet );
+    QgsSymbol *sym = mRenderer->symbolForFeature( fet, context );
     if ( !sym )
     {
       continue;
@@ -390,34 +413,34 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
     features[sym].append( fet );
 
     // new labeling engine
-    if ( mContext.labelingEngine() )
+    if ( context.labelingEngine() && ( mLabelProvider || mDiagramProvider ) )
     {
       QgsGeometry obstacleGeometry;
-      QgsSymbolList symbols = mRenderer->originalSymbolsForFeature( fet, mContext );
-      std::unique_ptr< QgsSymbol > symbol;
+      QgsSymbolList symbols = mRenderer->originalSymbolsForFeature( fet, context );
+      QgsSymbol *symbol = nullptr;
       if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::PointGeometry )
       {
-        obstacleGeometry = QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, mContext, symbols );
+        obstacleGeometry = QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, context, symbols );
       }
 
       if ( !symbols.isEmpty() )
       {
-        symbol.reset( symbols.at( 0 )->clone() );
-        QgsExpressionContextUtils::updateSymbolScope( symbol.get(), symbolScope );
+        symbol = symbols.at( 0 );
+        QgsExpressionContextUtils::updateSymbolScope( symbol, symbolScope );
       }
 
       if ( mLabelProvider )
       {
-        mLabelProvider->registerFeature( fet, mContext, obstacleGeometry, symbol.release() );
+        mLabelProvider->registerFeature( fet, context, obstacleGeometry, symbol );
       }
       if ( mDiagramProvider )
       {
-        mDiagramProvider->registerFeature( fet, mContext, obstacleGeometry );
+        mDiagramProvider->registerFeature( fet, context, obstacleGeometry );
       }
     }
   }
 
-  delete mContext.expressionContext().popScope();
+  scopePopper.reset();
 
   if ( features.empty() )
   {
@@ -428,7 +451,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
 
   // find out the order
   QgsSymbolLevelOrder levels;
-  QgsSymbolList symbols = mRenderer->symbols( mContext );
+  QgsSymbolList symbols = mRenderer->symbols( context );
   for ( int i = 0; i < symbols.count(); i++ )
   {
     QgsSymbol *sym = symbols[i];
@@ -461,21 +484,21 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
       QList<QgsFeature>::iterator fit;
       for ( fit = lst.begin(); fit != lst.end(); ++fit )
       {
-        if ( mContext.renderingStopped() )
+        if ( context.renderingStopped() )
         {
           stopRenderer( selRenderer );
           return;
         }
 
-        bool sel = mContext.showSelection() && mSelectedFeatureIds.contains( fit->id() );
+        bool sel = context.showSelection() && mSelectedFeatureIds.contains( fit->id() );
         // maybe vertex markers should be drawn only during the last pass...
-        bool drawMarker = ( mDrawVertexMarkers && mContext.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || sel ) );
+        bool drawMarker = ( mDrawVertexMarkers && context.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || sel ) );
 
-        mContext.expressionContext().setFeature( *fit );
+        context.expressionContext().setFeature( *fit );
 
         try
         {
-          mRenderer->renderFeature( *fit, mContext, layer, sel, drawMarker );
+          mRenderer->renderFeature( *fit, context, layer, sel, drawMarker );
         }
         catch ( const QgsCsException &cse )
         {
@@ -493,10 +516,11 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
 
 void QgsVectorLayerRenderer::stopRenderer( QgsSingleSymbolRenderer *selRenderer )
 {
-  mRenderer->stopRender( mContext );
+  QgsRenderContext &context = *renderContext();
+  mRenderer->stopRender( context );
   if ( selRenderer )
   {
-    selRenderer->stopRender( mContext );
+    selRenderer->stopRender( context );
     delete selRenderer;
   }
 }
@@ -506,8 +530,9 @@ void QgsVectorLayerRenderer::stopRenderer( QgsSingleSymbolRenderer *selRenderer 
 
 void QgsVectorLayerRenderer::prepareLabeling( QgsVectorLayer *layer, QSet<QString> &attributeNames )
 {
+  QgsRenderContext &context = *renderContext();
   // TODO: add attributes for geometry generator
-  if ( QgsLabelingEngine *engine2 = mContext.labelingEngine() )
+  if ( QgsLabelingEngine *engine2 = context.labelingEngine() )
   {
     if ( layer->labelsEnabled() )
     {
@@ -515,7 +540,7 @@ void QgsVectorLayerRenderer::prepareLabeling( QgsVectorLayer *layer, QSet<QStrin
       if ( mLabelProvider )
       {
         engine2->addProvider( mLabelProvider );
-        if ( !mLabelProvider->prepare( mContext, attributeNames ) )
+        if ( !mLabelProvider->prepare( context, attributeNames ) )
         {
           engine2->removeProvider( mLabelProvider );
           mLabelProvider = nullptr; // deleted by engine
@@ -555,14 +580,15 @@ void QgsVectorLayerRenderer::prepareLabeling( QgsVectorLayer *layer, QSet<QStrin
 
 void QgsVectorLayerRenderer::prepareDiagrams( QgsVectorLayer *layer, QSet<QString> &attributeNames )
 {
-  if ( QgsLabelingEngine *engine2 = mContext.labelingEngine() )
+  QgsRenderContext &context = *renderContext();
+  if ( QgsLabelingEngine *engine2 = context.labelingEngine() )
   {
     if ( layer->diagramsEnabled() )
     {
       mDiagramProvider = new QgsVectorLayerDiagramProvider( layer );
       // need to be added before calling prepare() - uses map settings from engine
       engine2->addProvider( mDiagramProvider );
-      if ( !mDiagramProvider->prepare( mContext, attributeNames ) )
+      if ( !mDiagramProvider->prepare( context, attributeNames ) )
       {
         engine2->removeProvider( mDiagramProvider );
         mDiagramProvider = nullptr;  // deleted by engine

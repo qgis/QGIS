@@ -25,6 +25,7 @@
 #include "qgssymbolbutton.h"
 #include "qgsfontbutton.h"
 #include "qgslayoutdesignerinterface.h"
+#include "qgslayoutpagecollection.h"
 #include <QButtonGroup>
 
 //
@@ -198,6 +199,11 @@ void QgsLayoutItemBaseWidget::setDesignerInterface( QgsLayoutDesignerInterface *
   }
 }
 
+void QgsLayoutItemBaseWidget::setMasterLayout( QgsMasterLayoutInterface * )
+{
+
+}
+
 void QgsLayoutItemBaseWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsLayoutObject::DataDefinedProperty property )
 {
   mConfigObject->initializeDataDefinedButton( button, property );
@@ -333,9 +339,14 @@ QgsLayoutItemPropertiesWidget::QgsLayoutItemPropertiesWidget( QWidget *parent, Q
   // listen out for variable edits
   connect( QgsApplication::instance(), &QgsApplication::customVariablesChanged, this, &QgsLayoutItemPropertiesWidget::updateVariables );
   connect( item->layout()->project(), &QgsProject::customVariablesChanged, this, &QgsLayoutItemPropertiesWidget::updateVariables );
+  connect( item->layout()->project(), &QgsProject::metadataChanged, this, &QgsLayoutItemPropertiesWidget::updateVariables );
 
   if ( item->layout() )
+  {
     connect( item->layout(), &QgsLayout::variablesChanged, this, &QgsLayoutItemPropertiesWidget::updateVariables );
+    connect( &item->layout()->renderContext(), &QgsLayoutRenderContext::dpiChanged, this, &QgsLayoutItemPropertiesWidget::updateVariables );
+    connect( item->layout()->pageCollection(), &QgsLayoutPageCollection::changed, this, &QgsLayoutItemPropertiesWidget::updateVariables );
+  }
 }
 
 void QgsLayoutItemPropertiesWidget::showBackgroundGroup( bool showGroup )
@@ -365,6 +376,15 @@ void QgsLayoutItemPropertiesWidget::setItem( QgsLayoutItem *item )
   mConfigObject->setObject( mItem );
 
   setValuesForGuiElements();
+}
+
+void QgsLayoutItemPropertiesWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayout )
+{
+  if ( QgsPrintLayout *printLayout = dynamic_cast< QgsPrintLayout * >( masterLayout ) )
+  {
+    connect( printLayout, &QgsPrintLayout::nameChanged, this, &QgsLayoutItemPropertiesWidget::updateVariables );
+    connect( printLayout->atlas(), &QgsLayoutAtlas::coverageLayerChanged, this, &QgsLayoutItemPropertiesWidget::updateVariables );
+  }
 }
 
 //slots

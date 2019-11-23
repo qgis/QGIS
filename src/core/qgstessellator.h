@@ -18,6 +18,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsrectangle.h"
 
 class QgsPolygon;
 class QgsMultiPolygon;
@@ -42,6 +43,17 @@ class CORE_EXPORT QgsTessellator
     //! Creates tessellator with a specified origin point of the world (in map coordinates)
     QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals = false, bool addBackFaces = false );
 
+    /**
+     * Creates tessellator with a specified \a bounds of input geometry coordinates.
+     * This constructor allows the tessellator to map input coordinates to a desirable range for numerical
+     * stability during calculations.
+     *
+     * If \a noZ is TRUE, then a 2-dimensional tessellation only will be performed and all z coordinates will be ignored.
+     *
+     * \since QGIS 3.10
+     */
+    QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false );
+
     //! Tessellates a triangle and adds its vertex entries to the output data array
     void addPolygon( const QgsPolygon &polygon, float extrusionHeight );
 
@@ -64,12 +76,16 @@ class CORE_EXPORT QgsTessellator
     std::unique_ptr< QgsMultiPolygon > asMultiPolygon() const SIP_SKIP;
 
   private:
+    void init();
+
+    QgsRectangle mBounds;
     double mOriginX = 0, mOriginY = 0;
     bool mAddNormals = false;
     bool mInvertNormals = false;
     bool mAddBackFaces = false;
     QVector<float> mData;
     int mStride;
+    bool mNoZ = false;
 };
 
 #endif // QGSTESSELLATOR_H

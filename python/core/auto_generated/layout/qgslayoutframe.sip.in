@@ -115,6 +115,8 @@ Returns whether the frame is empty.
 
     virtual QgsExpressionContext createExpressionContext() const;
 
+    virtual ExportLayerBehavior exportLayerBehavior() const;
+
 
   protected:
 

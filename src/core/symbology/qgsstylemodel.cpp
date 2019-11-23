@@ -20,6 +20,7 @@
 #include "qgssvgcache.h"
 #include "qgsimagecache.h"
 #include "qgsproject.h"
+#include "qgsexpressioncontextutils.h"
 #include <QIcon>
 
 const double ICON_PADDING_FACTOR = 0.16;
@@ -128,7 +129,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
                 {
                   int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * QFontMetrics( data( index, Qt::FontRole ).value< QFont >() ).width( 'X' ) * 23 );
                   int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
-                  QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), QSize( width, height ), height / 20 );
+                  QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), QSize( width, height ), height / 20, nullptr, false, mExpressionContext.get() );
                   QByteArray data;
                   QBuffer buffer( &data );
                   pm.save( &buffer, "PNG", 100 );
@@ -185,6 +186,17 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
     {
       // Generate icons at all additional sizes specified for the model.
       // This allows the model to have size responsive icons.
+
+      if ( !mExpressionContext )
+      {
+        // build the expression context once, and keep it around. Usually this is a no-no, but in this
+        // case we want to avoid creating potentially thousands of contexts one-by-one (usually one context
+        // is created for a batch of multiple evalutions like this), and we only use a very minimal context
+        // anyway...
+        mExpressionContext = qgis::make_unique< QgsExpressionContext >();
+        mExpressionContext->appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( nullptr ) );
+      }
+
       switch ( index.column() )
       {
         case Name:
@@ -201,12 +213,11 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
               if ( symbol )
               {
                 if ( mAdditionalSizes.isEmpty() )
-                  icon.addPixmap( QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), QSize( 24, 24 ), 1 ) );
+                  icon.addPixmap( QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), QSize( 24, 24 ), 1, nullptr, false, mExpressionContext.get() ) );
 
-                for ( const QVariant &size : mAdditionalSizes )
+                for ( const QSize &s : mAdditionalSizes )
                 {
-                  QSize s = size.toSize();
-                  icon.addPixmap( QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), s, static_cast< int >( s.width() * ICON_PADDING_FACTOR ) ) );
+                  icon.addPixmap( QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), s, static_cast< int >( s.width() * ICON_PADDING_FACTOR ), nullptr, false, mExpressionContext.get() ) );
                 }
 
               }
@@ -225,9 +236,8 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
               {
                 if ( mAdditionalSizes.isEmpty() )
                   icon.addPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( ramp.get(), QSize( 24, 24 ), 1 ) );
-                for ( const QVariant &size : mAdditionalSizes )
+                for ( const QSize &s : mAdditionalSizes )
                 {
-                  QSize s = size.toSize();
                   icon.addPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( ramp.get(), s, static_cast< int >( s.width() * ICON_PADDING_FACTOR ) ) );
                 }
 
@@ -246,9 +256,8 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
               const QgsTextFormat format( mStyle->textFormat( name ) );
               if ( mAdditionalSizes.isEmpty() )
                 icon.addPixmap( QgsTextFormat::textFormatPreviewPixmap( format, QSize( 24, 24 ), QString(),  1 ) );
-              for ( const QVariant &size : mAdditionalSizes )
+              for ( const QSize &s : mAdditionalSizes )
               {
-                QSize s = size.toSize();
                 icon.addPixmap( QgsTextFormat::textFormatPreviewPixmap( format, s, QString(),  static_cast< int >( s.width() * ICON_PADDING_FACTOR ) ) );
               }
               mTextFormatIconCache.insert( name, icon );
@@ -265,9 +274,8 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
               const QgsPalLayerSettings settings( mStyle->labelSettings( name ) );
               if ( mAdditionalSizes.isEmpty() )
                 icon.addPixmap( QgsPalLayerSettings::labelSettingsPreviewPixmap( settings, QSize( 24, 24 ), QString(),  1 ) );
-              for ( const QVariant &size : mAdditionalSizes )
+              for ( const QSize &s : mAdditionalSizes )
               {
-                QSize s = size.toSize();
                 icon.addPixmap( QgsPalLayerSettings::labelSettingsPreviewPixmap( settings, s, QString(),  static_cast< int >( s.width() * ICON_PADDING_FACTOR ) ) );
               }
               mLabelSettingsIconCache.insert( name, icon );
@@ -315,8 +323,9 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
     default:
       return QVariant();
   }
-
-  return QVariant();
+#ifndef _MSC_VER // avoid warning
+  return QVariant();  // avoid warning
+#endif
 }
 
 bool QgsStyleModel::setData( const QModelIndex &index, const QVariant &value, int role )
@@ -460,6 +469,9 @@ int QgsStyleModel::columnCount( const QModelIndex & ) const
 
 void QgsStyleModel::addDesiredIconSize( QSize size )
 {
+  if ( mAdditionalSizes.contains( size ) )
+    return;
+
   mAdditionalSizes << size;
   mSymbolIconCache.clear();
   mColorRampIconCache.clear();
@@ -769,6 +781,7 @@ void QgsStyleModel::onTagsChanged( int entity, const QString &name, const QStrin
 void QgsStyleModel::rebuildSymbolIcons()
 {
   mSymbolIconCache.clear();
+  mExpressionContext.reset();
   emit dataChanged( index( 0, 0 ), index( mSymbolNames.count() - 1, 0 ), QVector<int>() << Qt::DecorationRole );
 }
 
@@ -792,6 +805,11 @@ QgsStyleProxyModel::QgsStyleProxyModel( QgsStyle *style, QObject *parent )
   , mStyle( style )
 {
   mModel = new QgsStyleModel( mStyle, this );
+  initialize();
+}
+
+void QgsStyleProxyModel::initialize()
+{
   setSortCaseSensitivity( Qt::CaseInsensitive );
 //  setSortLocaleAware( true );
   setSourceModel( mModel );
@@ -834,6 +852,14 @@ QgsStyleProxyModel::QgsStyleProxyModel( QgsStyle *style, QObject *parent )
     if ( mSmartGroupId >= 0 )
       setSmartGroupId( mSmartGroupId );
   } );
+}
+
+QgsStyleProxyModel::QgsStyleProxyModel( QgsStyleModel *model, QObject *parent )
+  : QSortFilterProxyModel( parent )
+  , mModel( model )
+  , mStyle( model->style() )
+{
+  initialize();
 }
 
 bool QgsStyleProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
@@ -902,6 +928,7 @@ void QgsStyleProxyModel::setFilterString( const QString &filter )
   mFilterString = filter;
   invalidateFilter();
 }
+
 
 bool QgsStyleProxyModel::favoritesOnly() const
 {

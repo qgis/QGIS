@@ -31,6 +31,13 @@
 class QgsVectorLayer;
 class QPaintEvent;
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+// For ConvertToSubClassCode.
+#include <qgsrubberband.h>
+% End
+#endif
+
 /**
  * \ingroup gui
  * A class for drawing transient features (e.g. digitizing lines) on the map.
@@ -38,9 +45,23 @@ class QPaintEvent;
  * The QgsRubberBand class provides a transparent overlay widget
  * for tracking the mouse while drawing polylines or polygons.
  */
+#ifndef SIP_RUN
 class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
 {
+#else
+class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
+{
+#endif
     Q_OBJECT
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsRubberBand *>( sipCpp ) )
+      sipType = sipType_QgsRubberBand;
+    else
+      sipType = nullptr;
+    SIP_END
+#endif
   public:
 
     Q_PROPERTY( QColor fillColor READ fillColor WRITE setFillColor )
@@ -180,7 +201,7 @@ class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
      * \param drawOffset The offset where to draw the image origin
      * \since QGIS 3.10
      */
-    void setSvgIcon( const QString &path, const QPoint &drawOffset );
+    void setSvgIcon( const QString &path, QPoint drawOffset );
 
 
     /**

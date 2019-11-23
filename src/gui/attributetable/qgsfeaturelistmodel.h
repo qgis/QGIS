@@ -185,6 +185,10 @@ class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsF
      */
     Q_DECL_DEPRECATED void onEndInsertRows( const QModelIndex &parent, int first, int last );
 
+  private slots:
+
+    void conditionalStylesChanged();
+
   private:
     mutable QgsExpression mDisplayExpression;
     QgsAttributeTableFilterModel *mFilterModel = nullptr;
@@ -193,6 +197,7 @@ class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsF
     mutable QgsExpressionContext mExpressionContext;
     mutable QMap< QgsFeatureId, QList<QgsConditionalStyle> > mRowStylesMap;
     bool mSortByDisplayExpression = false;
+    QPointer< QgsVectorLayer > mSourceLayer;
 };
 
 Q_DECLARE_METATYPE( QgsFeatureListModel::FeatureInfo )

@@ -83,7 +83,7 @@ gray = no data
         </sizepolicy>
        </property>
        <property name="text">
-        <string>&amp;Add feature</string>
+        <string>&amp;Add Feature</string>
        </property>
       </widget>
      </item>
@@ -99,7 +99,7 @@ gray = no data
         </sizepolicy>
        </property>
        <property name="text">
-        <string>Add track point</string>
+        <string>Add Track Point</string>
        </property>
       </widget>
      </item>

@@ -188,6 +188,21 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
        */
       QgsCoordinateTransformContext transformContext = QgsCoordinateTransformContext();
 
+      /**
+       * Controls whether the layer is allowed to have an invalid/unknown CRS.
+       *
+       * If TRUE, then no validation will be performed on the layer's CRS and the layer
+       * layer's crs() may be invalid() (i.e. the layer will have no georeferencing available
+       * and will be treated as having purely numerical coordinates).
+       *
+       * If FALSE (the default), the layer's CRS will be validated using QgsCoordinateReferenceSystem::validate(),
+       * which may cause a blocking, user-facing dialog asking users to manually select the correct CRS for the
+       * layer.
+       *
+       * \since QGIS 3.10
+       */
+      bool skipCrsValidation = false;
+
     };
 
     /**
@@ -286,14 +301,41 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      */
     LayerType rasterType() { return mRasterType; }
 
-    //! Sets raster renderer. Takes ownership of the renderer object
+    /**
+     * Sets the raster's \a renderer. Takes ownership of the renderer object.
+     * \see renderer()
+     */
     void setRenderer( QgsRasterRenderer *renderer SIP_TRANSFER );
+
+    /**
+     * Returns the raster's renderer.
+     *
+     * \see setRenderer()
+     */
     QgsRasterRenderer *renderer() const { return mPipe.renderer(); }
 
-    //! Sets raster resample filter. Takes ownership of the resample filter object
+    /**
+     * Returns the raster's resample filter.
+     *
+     * \see brightnessFilter()
+     * \see hueSaturationFilter()
+     */
     QgsRasterResampleFilter *resampleFilter() const { return mPipe.resampleFilter(); }
 
+    /**
+     * Returns the raster's brightness/contrast filter.
+     *
+     * \see resampleFilter()
+     * \see hueSaturationFilter()
+     */
     QgsBrightnessContrastFilter *brightnessFilter() const { return mPipe.brightnessFilter(); }
+
+    /**
+     * Returns the raster's hue/saturation filter.
+     *
+     * \see resampleFilter()
+     * \see brightnessFilter()
+     */
     QgsHueSaturationFilter *hueSaturationFilter() const { return mPipe.hueSaturationFilter(); }
 
     /**
@@ -323,10 +365,18 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      */
     QString bandName( int bandNoInt ) const;
 
-    // Returns nullptr if not using the data provider model (i.e. directly using GDAL)
+    /**
+     * Returns the source data provider.
+     *
+     * This will be NULLPTR if the layer is invalid.
+     */
     QgsRasterDataProvider *dataProvider() override;
 
-    // Returns nullptr if not using the data provider model (i.e. directly using GDAL)
+    /**
+     * Returns the source data provider.
+     *
+     * This will be NULLPTR if the layer is invalid.
+     */
     const QgsRasterDataProvider *dataProvider() const SIP_PYNAME( constDataProvider ) override;
 
     void reload() override;
@@ -434,6 +484,15 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      */
     bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsStringMap &props = QgsStringMap() ) const;
 
+    /**
+     * If the ignoreExtent flag is set, the layer will also render outside the
+     * bounding box reported by the data provider.
+     * To be used for example for WMS layers with labels or symbology that happens
+     * to be drawn outside the data extent.
+     *
+     * \since QGIS 3.10
+     */
+    bool ignoreExtents() const;
 
   public slots:
     void showStatusMessage( const QString &message );
@@ -501,6 +560,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     //! To save computations and possible infinite cycle of notifications
     QgsRectangle mLastRectangleUsedByRefreshContrastEnhancementIfNeeded;
+
+    QDomDocument mOriginalStyleDocument;
+    QDomElement mOriginalStyleElement;
 };
 
 // clazy:excludeall=qstring-allocations

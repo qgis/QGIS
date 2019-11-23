@@ -527,6 +527,8 @@ Returns the legend's renderer settings object.
 
     virtual QgsExpressionContext createExpressionContext() const;
 
+    virtual ExportLayerBehavior exportLayerBehavior() const;
+
 
   public slots:
 

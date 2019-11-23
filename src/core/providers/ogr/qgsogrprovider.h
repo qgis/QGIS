@@ -77,7 +77,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
       QString *errorMessage = nullptr,
-      const QMap<QString, QVariant> *coordinateTransformContext = nullptr
+      const QMap<QString, QVariant> *options = nullptr
     );
 
     /**
@@ -131,6 +131,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     bool createSpatialIndex() override;
     bool createAttributeIndex( int field ) override;
     QgsVectorDataProvider::Capabilities capabilities() const override;
+    QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
     void setEncoding( const QString &e ) override;
     bool enterUpdateMode() override { return _enterUpdateMode(); }
     bool leaveUpdateMode() override;
@@ -230,6 +231,8 @@ class QgsOgrProvider : public QgsVectorDataProvider
     bool mFirstFieldIsFid = false;
     mutable std::unique_ptr< OGREnvelope > mExtent;
     bool mForceRecomputeExtent = false;
+
+    QList<int> mPrimaryKeyAttrs;
 
     /**
      * This member variable receives the same value as extent_
@@ -378,20 +381,8 @@ class CORE_EXPORT QgsOgrProviderUtils
         DatasetWithLayers(): mutex( QMutex::Recursive ) {}
     };
 
-    //! Global mutex for QgsOgrProviderUtils
-    static QMutex sGlobalMutex;
-
     //! Map dataset identification to a list of corresponding DatasetWithLayers*
     static QMap< DatasetIdentification, QList<DatasetWithLayers *> > sMapSharedDS;
-
-    //! Map a dataset name to the number of opened GDAL dataset objects on it (if opened with GDALOpenWrapper, only for GPKG)
-    static QMap< QString, int > sMapCountOpenedDS;
-
-    //! Map a dataset handle to its update open mode (if opened with GDALOpenWrapper, only for GPKG)
-    static QHash< GDALDatasetH, bool> sMapDSHandleToUpdateMode;
-
-    //! Map a dataset name to its last modified data
-    static QMap< QString, QDateTime > sMapDSNameToLastModifiedDate;
 
     static bool canUseOpenedDatasets( const QString &dsName );
 
@@ -734,6 +725,9 @@ class QgsOgrLayer
 
     //! Wrapper of GDALDatasetExecuteSQL().
     QgsOgrLayerUniquePtr ExecuteSQL( const QByteArray &sql );
+
+    // Wrapper of GDALGetMetadataItem()
+    QString GetMetadataItem( const QString &key, const QString &domain = QString() );
 };
 
 /**
@@ -743,7 +737,9 @@ class QgsOgrLayer
 class QgsOgrProviderMetadata: public QgsProviderMetadata
 {
   public:
+
     QgsOgrProviderMetadata();
+
     void initProvider() override;
     void cleanupProvider() override;
     QList< QgsDataItemProvider * > dataItemProviders() const override;
@@ -772,6 +768,18 @@ class QgsOgrProviderMetadata: public QgsProviderMetadata
 
     // -----
     QgsTransaction *createTransaction( const QString &connString ) override;
+
+    // QgsProviderMetadata interface
+  public:
+    QMap<QString, QgsAbstractProviderConnection *> connections( bool cached ) override;
+    QgsAbstractProviderConnection *createConnection( const QString &name ) override;
+    void deleteConnection( const QString &name ) override;
+    void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name ) override;
+
+  protected:
+
+    QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration ) override;
+
 };
 
 ///@endcond

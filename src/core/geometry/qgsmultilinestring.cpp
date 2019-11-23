@@ -155,6 +155,7 @@ bool QgsMultiLineString::insertGeometry( QgsAbstractGeometry *g, int index )
 QgsMultiCurve *QgsMultiLineString::toCurveType() const
 {
   QgsMultiCurve *multiCurve = new QgsMultiCurve();
+  multiCurve->reserve( mGeometries.size() );
   for ( int i = 0; i < mGeometries.size(); ++i )
   {
     multiCurve->addGeometry( mGeometries.at( i )->toCurveType() );

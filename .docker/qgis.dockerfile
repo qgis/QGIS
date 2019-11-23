@@ -1,27 +1,32 @@
 
-# CACHE_TAG is provided by Docker cloud
 # see https://docs.docker.com/docker-cloud/builds/advanced/
 # using ARG in FROM requires min v17.05.0-ce
 ARG DOCKER_TAG=latest
 
-FROM  qgis/qgis3-build-deps:${DOCKER_TAG}
+FROM  qgis/qgis3-build-deps:${DOCKER_TAG} AS BUILDER
 MAINTAINER Denis Rouzaud <denis@opengis.ch>
 
 LABEL Description="Docker container with QGIS" Vendor="QGIS.org" Version="1.1"
 
+# build timeout in seconds, so no timeout by default
+ARG BUILD_TIMEOUT=360000
+
 ARG CC=/usr/lib/ccache/clang
-ARG CXX=/usr/lib/ccache/clang++
+ARG CXX=/usr/lib/ccache/clazy
 ENV LANG=C.UTF-8
 
-COPY . /usr/src/QGIS
+COPY . /QGIS
 
 # If this directory is changed, also adapt script.sh which copies the directory
-RUN mkdir -p /usr/src/.ccache_image_build
-ENV CCACHE_DIR=/usr/src/.ccache_image_build
+# if ccache directory is not provided with the source
+RUN mkdir -p /QGIS/.ccache_image_build
+ENV CCACHE_DIR=/QGIS/.ccache_image_build
 RUN ccache -M 1G
 RUN ccache -s
 
-WORKDIR /usr/src/QGIS/build
+RUN echo "ccache_dir: "$(du -h --max-depth=0 ${CCACHE_DIR})
+
+WORKDIR /QGIS/build
 
 RUN cmake \
   -GNinja \
@@ -42,13 +47,18 @@ RUN cmake \
   -DWITH_APIDOC=OFF \
   -DWITH_ASTYLE=OFF \
   -DQT5_3DEXTRA_LIBRARY="/usr/lib/x86_64-linux-gnu/libQt53DExtras.so" \
-  -DQT5_3DEXTRA_INCLUDE_DIR="/usr/src/QGIS/external/qt3dextra-headers" \
-  -DCMAKE_PREFIX_PATH="/usr/src/QGIS/external/qt3dextra-headers/cmake" \
+  -DQT5_3DEXTRA_INCLUDE_DIR="/QGIS/external/qt3dextra-headers" \
+  -DCMAKE_PREFIX_PATH="/QGIS/external/qt3dextra-headers/cmake" \
  .. \
- && ninja install \
- && rm -rf /usr/src/QGIS
+ && echo "Timeout: ${BUILD_TIMEOUT}s" \
+ && SUCCESS=OK \
+ && timeout ${BUILD_TIMEOUT}s ninja install || SUCCESS=TIMEOUT \
+ && echo "$SUCCESS" > /QGIS/build_exit_value
 
 ################################################################################
+ARG DELETE_CACHE=FALSE
+RUN if [[ ${DELETE_CACHE} == TRUE ]]; then rm /QGIS; fi
+
 # Python testing environment setup
 
 # Add QGIS test runner

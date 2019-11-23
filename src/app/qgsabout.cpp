@@ -143,8 +143,8 @@ void QgsAbout::init()
     QString donorsHTML = ""
                          + tr( "<p>For a list of individuals and institutions who have contributed "
                                "money to fund QGIS development and other project costs see "
-                               "<a href=\"http://qgis.org/en/site/about/sponsorship.html#list-of-donors\">"
-                               "http://qgis.org/en/site/about/sponsorship.html#list-of-donors</a></p>" );
+                               "<a href=\"https://qgis.org/en/site/about/sustaining_members.html#list-of-donors\">"
+                               "https://qgis.org/en/site/about/sustaining_members.html#list-of-donors</a></p>" );
 #if 0
     QString website;
     QTextStream donorsStream( &donorsFile );
@@ -230,7 +230,7 @@ void QgsAbout::setWhatsNew()
 {
   txtWhatsNew->clear();
   txtWhatsNew->document()->setDefaultStyleSheet( QgsApplication::reportStyleSheet() );
-  txtWhatsNew->setSource( "file:///" + QgsApplication::pkgDataPath() + "/doc/news.html" );
+  txtWhatsNew->setSource( "file:///" + QgsApplication::pkgDataPath() + "/doc/NEWS.html" );
 }
 
 void QgsAbout::setPluginInfo()
@@ -270,7 +270,7 @@ void QgsAbout::setPluginInfo()
 
 void QgsAbout::btnQgisUser_clicked()
 {
-  openUrl( QStringLiteral( "http://lists.osgeo.org/mailman/listinfo/qgis-user" ) );
+  openUrl( QStringLiteral( "https://lists.osgeo.org/mailman/listinfo/qgis-user" ) );
 }
 
 void QgsAbout::btnQgisHome_clicked()

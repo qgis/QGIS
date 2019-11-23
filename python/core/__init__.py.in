@@ -26,7 +26,6 @@ from qgis._core import *
 
 from .additions.edit import edit, QgsEditError
 from .additions.fromfunction import fromFunction
-from .additions.markerlinesymbollayer import *
 from .additions.metaenum import metaEnumFromType, metaEnumFromValue
 from .additions.processing import processing_output_layer_repr, processing_source_repr
 from .additions.projectdirtyblocker import ProjectDirtyBlocker
@@ -55,3 +54,26 @@ QgsTask.fromFunction = fromFunction
 
 # Classes patched using a derived class
 QgsProviderMetadata = PyProviderMetadata
+
+# monkey patch deprecated enum values to maintain API
+# TODO - remove for QGIS 4.0
+QgsMarkerLineSymbolLayer.Interval = QgsTemplatedLineSymbolLayerBase.Interval
+QgsMarkerLineSymbolLayer.Vertex = QgsTemplatedLineSymbolLayerBase.Vertex
+QgsMarkerLineSymbolLayer.LastVertex = QgsTemplatedLineSymbolLayerBase.LastVertex
+QgsMarkerLineSymbolLayer.FirstVertex = QgsTemplatedLineSymbolLayerBase.FirstVertex
+QgsMarkerLineSymbolLayer.CentralPoint = QgsTemplatedLineSymbolLayerBase.CentralPoint
+QgsMarkerLineSymbolLayer.CurvePoint = QgsTemplatedLineSymbolLayerBase.CurvePoint
+
+# Monkey patch static const "QgsDataProvider.SUBLAYER_SEPARATOR" which was removed for QGIS 3.12
+QgsDataProvider.SUBLAYER_SEPARATOR = QgsDataProvider.sublayerSeparator()
+
+# Monkey patch Qgis vars
+Qgis.QGIS_VERSION = Qgis.version()
+Qgis.QGIS_VERSION_INT = Qgis.versionInt()
+Qgis.QGIS_RELEASE_NAME = Qgis.releaseName()
+
+GEOWKT = geoWkt()
+PROJECT_SCALES = Qgis.defaultProjectScales()
+GEOPROJ4 = geoProj4()
+GEO_EPSG_CRS_AUTHID = geoEpsgCrsAuthId()
+GEO_NONE = geoNone()

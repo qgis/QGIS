@@ -28,6 +28,7 @@ This class enables simplify the geometries to be rendered in a MapCanvas target 
       Distance,
       SnapToGrid,
       Visvalingam,
+      SnappedToGridGlobal,
     };
 
     QgsMapToPixelSimplifier( int simplifyFlags, double tolerance, SimplifyAlgorithm simplifyAlgorithm = Distance );

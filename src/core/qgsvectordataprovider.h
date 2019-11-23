@@ -166,7 +166,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     long featureCount() const override = 0;
 
     /**
-     * Returns TRUE if the layer contains at least one feature.
+     * Returns TRUE if the layer does not contain any feature.
      *
      * \since QGIS 3.4
      */

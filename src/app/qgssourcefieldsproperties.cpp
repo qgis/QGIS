@@ -60,8 +60,12 @@ QgsSourceFieldsProperties::QgsSourceFieldsProperties( QgsVectorLayer *layer, QWi
   mFieldsList->setHorizontalHeaderItem( AttrLengthCol, new QTableWidgetItem( tr( "Length" ) ) );
   mFieldsList->setHorizontalHeaderItem( AttrPrecCol, new QTableWidgetItem( tr( "Precision" ) ) );
   mFieldsList->setHorizontalHeaderItem( AttrCommentCol, new QTableWidgetItem( tr( "Comment" ) ) );
-  mFieldsList->setHorizontalHeaderItem( AttrWMSCol, new QTableWidgetItem( QStringLiteral( "WMS" ) ) );
-  mFieldsList->setHorizontalHeaderItem( AttrWFSCol, new QTableWidgetItem( QStringLiteral( "WFS" ) ) );
+  const auto wmsWi = new QTableWidgetItem( QStringLiteral( "WMS" ) );
+  wmsWi->setToolTip( tr( "Defines if this field is available in QGIS Server WMS service" ) );
+  mFieldsList->setHorizontalHeaderItem( AttrWMSCol, wmsWi );
+  const auto wfsWi = new QTableWidgetItem( QStringLiteral( "WFS" ) );
+  wfsWi->setToolTip( tr( "Defines if this field is available in QGIS Server WFS (and OAPIF) service" ) );
+  mFieldsList->setHorizontalHeaderItem( AttrWFSCol, wfsWi );
   mFieldsList->setHorizontalHeaderItem( AttrAliasCol, new QTableWidgetItem( tr( "Alias" ) ) );
 
   mFieldsList->setSortingEnabled( true );
@@ -265,6 +269,7 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
   wfsAttrItem->setCheckState( mLayer->excludeAttributesWfs().contains( field.name() ) ? Qt::Unchecked : Qt::Checked );
   wfsAttrItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
   mFieldsList->setItem( row, AttrWFSCol, wfsAttrItem );
+
 }
 
 bool QgsSourceFieldsProperties::addAttribute( const QgsField &field )
@@ -302,7 +307,6 @@ void QgsSourceFieldsProperties::apply()
 
   mLayer->setExcludeAttributesWms( excludeAttributesWMS );
   mLayer->setExcludeAttributesWfs( excludeAttributesWFS );
-
 }
 
 //SLOTS

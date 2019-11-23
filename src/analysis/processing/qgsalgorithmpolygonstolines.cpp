@@ -121,6 +121,7 @@ QgsGeometry QgsPolygonsToLinesAlgorithm::convertToLines( const QgsGeometry &geom
   else
     lineGeometry = qgis::make_unique<QgsMultiCurve>();
 
+  lineGeometry->reserve( rings.size() );
   for ( auto ring : qgis::as_const( rings ) )
     lineGeometry->addGeometry( ring );
 

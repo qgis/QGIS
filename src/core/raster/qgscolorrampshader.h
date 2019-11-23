@@ -123,11 +123,12 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     bool isEmpty() const;
 
     /**
-     * Gets the source color ramp
+     * Returns the source color ramp.
+     *
      * \see setSourceColorRamp()
      * \since QGIS 3.0
      */
-    QgsColorRamp *sourceColorRamp() const SIP_FACTORY;
+    QgsColorRamp *sourceColorRamp() const;
 
     /**
      * Set the source color ramp. Ownership is transferred to the shader.

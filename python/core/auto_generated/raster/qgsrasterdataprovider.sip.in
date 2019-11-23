@@ -152,7 +152,7 @@ Read band offset for raster value
 %End
 
 
-    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &boundingBox, int width, int height, QgsRasterBlockFeedback *feedback = 0 );
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &boundingBox, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
 
 %Docstring
 Read block of data using given extent and size.
@@ -477,6 +477,14 @@ was originally created.
 Resolutions are calculated in the provider's crs().
 
 .. versionadded:: 3.8.0
+%End
+
+    virtual bool ignoreExtents() const;
+%Docstring
+Returns true if the extents reported by the data provider are not reliable
+and it's possible that there is renderable content outside of these extents.
+
+.. versionadded:: 3.10.0
 %End
 
   signals:

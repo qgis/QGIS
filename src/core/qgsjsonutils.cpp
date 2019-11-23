@@ -107,7 +107,7 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
       try
       {
         QgsGeometry transformed = geom;
-        if ( transformed.transform( mTransform ) == 0 )
+        if ( mTransformGeometries && transformed.transform( mTransform ) == 0 )
           geom = transformed;
       }
       catch ( QgsCsException &cse )
@@ -119,12 +119,12 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
 
     if ( QgsWkbTypes::flatType( geom.wkbType() ) != QgsWkbTypes::Point )
     {
-      featureJson[ "bbox" ] = { {
-          box.xMinimum(),
-          box.yMinimum(),
-          box.xMaximum(),
-          box.yMaximum()
-        }
+      featureJson[ "bbox" ] =
+      {
+        qgsRound( box.xMinimum(), mPrecision ),
+        qgsRound( box.yMinimum(), mPrecision ),
+        qgsRound( box.xMaximum(), mPrecision ),
+        qgsRound( box.yMaximum(), mPrecision )
       };
     }
     featureJson[ "geometry" ] = geom.asJsonObject( mPrecision );
@@ -225,17 +225,21 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
 
 QString QgsJsonExporter::exportFeatures( const QgsFeatureList &features, int indent ) const
 {
+  return QString::fromStdString( exportFeaturesToJsonObject( features ).dump( indent ) );
+}
+
+json QgsJsonExporter::exportFeaturesToJsonObject( const QgsFeatureList &features ) const
+{
   json data
   {
     { "type", "FeatureCollection" },
     { "features", json::array() }
   };
-  const auto constFeatures = features;
-  for ( const QgsFeature &feature : constFeatures )
+  for ( const QgsFeature &feature : qgis::as_const( features ) )
   {
     data["features"].push_back( exportFeatureToJsonObject( feature ) );
   }
-  return QString::fromStdString( data.dump( indent ) );
+  return data;
 }
 
 //
@@ -244,11 +248,17 @@ QString QgsJsonExporter::exportFeatures( const QgsFeatureList &features, int ind
 
 QgsFeatureList QgsJsonUtils::stringToFeatureList( const QString &string, const QgsFields &fields, QTextCodec *encoding )
 {
+  if ( !encoding )
+    encoding = QTextCodec::codecForName( "UTF-8" );
+
   return QgsOgrUtils::stringToFeatureList( string, fields, encoding );
 }
 
 QgsFields QgsJsonUtils::stringToFields( const QString &string, QTextCodec *encoding )
 {
+  if ( !encoding )
+    encoding = QTextCodec::codecForName( "UTF-8" );
+
   return QgsOgrUtils::stringToFields( string, encoding );
 }
 
@@ -391,18 +401,18 @@ json QgsJsonUtils::jsonFromVariant( const QVariant &val )
   json j;
   if ( val.type() == QVariant::Type::Map )
   {
-    const auto vMap { val.toMap() };
-    auto jMap { json::object() };
+    const QVariantMap &vMap = val.toMap();
+    json jMap = json::object();
     for ( auto it = vMap.constBegin(); it != vMap.constEnd(); it++ )
     {
       jMap[ it.key().toStdString() ] = jsonFromVariant( it.value() );
     }
     j = jMap;
   }
-  else if ( val.type() == QVariant::Type::List )
+  else if ( val.type() == QVariant::Type::List || val.type() == QVariant::Type::StringList )
   {
-    const auto vList{ val.toList() };
-    auto jList { json::array() };
+    const QVariantList &vList = val.toList();
+    json jList = json::array();
     for ( const auto &v : vList )
     {
       jList.push_back( jsonFromVariant( v ) );
@@ -426,6 +436,9 @@ json QgsJsonUtils::jsonFromVariant( const QVariant &val )
       case QMetaType::Bool:
         j = val.toBool();
         break;
+      case QMetaType::QByteArray:
+        j = val.toByteArray().toBase64().toStdString();
+        break;
       default:
         j = val.toString().toStdString();
         break;
@@ -438,7 +451,6 @@ QVariant QgsJsonUtils::parseJson( const std::string &jsonString )
 {
   std::function<QVariant( json )> _parser { [ & ]( json jObj ) -> QVariant {
       QVariant result;
-      QString errorMessage;
       if ( jObj.is_array() )
       {
         QVariantList results;

@@ -24,6 +24,7 @@
 
 #include "qgsserverresponse.h"
 #include "qgsserverfilter.h"
+#include "qgsserverexception.h"
 
 /**
  * \ingroup server
@@ -45,7 +46,7 @@ class QgsFilterResponseDecorator: public QgsServerResponse
     /**
      * Call filters requestReady() method
      */
-    void start();
+    void start() SIP_THROW( QgsServerException ) SIP_VIRTUALERRORHANDLER( server_exception_handler );
 
     // QgsServerResponse overrides
 

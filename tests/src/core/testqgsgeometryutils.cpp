@@ -76,6 +76,10 @@ class TestQgsGeometryUtils: public QObject
     void testSegmentizeArcHalfCircle();
     void testSegmentizeArcHalfCircleOtherDirection();
     void testSegmentizeArcFullCircle();
+    void testTriangleArea_data();
+    void testTriangleArea();
+    void testWeightedPointInTriangle_data();
+    void testWeightedPointInTriangle();
 };
 
 
@@ -198,11 +202,12 @@ void TestQgsGeometryUtils::testSegmentMidPoint_data()
   QTest::addColumn<double>( "pt2x" );
   QTest::addColumn<double>( "pt2y" );
   QTest::addColumn<double>( "radius" );
-  QTest::addColumn<bool>( "left" );
+  QTest::addColumn<double>( "mouseX" );
+  QTest::addColumn<double>( "mouseY" );
   QTest::addColumn<double>( "expectedX" );
   QTest::addColumn<double>( "expectedY" );
 
-  QTest::newRow( "testSegmentMidPoint1" ) << 0.0 << 0.0 << 1.0 << 0.0 << 0.5 << true << 0.5 << 0.5;
+  QTest::newRow( "testSegmentMidPoint1" ) << 0.0 << 0.0 << 1.0 << 0.0 << 0.5 << 1.0 << 0.0 << 0.5 << 0.5;
 }
 
 void TestQgsGeometryUtils::testSegmentMidPoint()
@@ -212,13 +217,14 @@ void TestQgsGeometryUtils::testSegmentMidPoint()
   QFETCH( double, pt2x );
   QFETCH( double, pt2y );
   QFETCH( double, radius );
-  QFETCH( bool, left );
+  QFETCH( double, mouseX );
+  QFETCH( double, mouseY );
   QFETCH( double, expectedX );
   QFETCH( double, expectedY );
 
   QgsPoint midPoint;
   bool ok = QgsGeometryUtils::segmentMidPoint( QgsPoint( pt1x, pt1y ), QgsPoint( pt2x, pt2y ),
-            midPoint, radius, left );
+            midPoint, radius, QgsPoint( mouseX, mouseY ) );
 
   QVERIFY( ok );
   QGSCOMPARENEAR( midPoint.x(), expectedX, 4 * std::numeric_limits<double>::epsilon() );
@@ -1343,6 +1349,83 @@ void TestQgsGeometryUtils::testSegmentizeArcFullCircle()
   QGSCOMPARENEAR( points[3].y(), yoff + 1.0, 0.00001 );
   QGSCOMPARENEAR( points[4].x(), xoff + 0.0, 0.00001 );
   QGSCOMPARENEAR( points[4].y(), yoff + 0.0, 0.00001 );
+}
+
+void TestQgsGeometryUtils::testTriangleArea_data()
+{
+  QTest::addColumn<double>( "aX" );
+  QTest::addColumn<double>( "aY" );
+  QTest::addColumn<double>( "bX" );
+  QTest::addColumn<double>( "bY" );
+  QTest::addColumn<double>( "cX" );
+  QTest::addColumn<double>( "cY" );
+  QTest::addColumn<double>( "expectedResult" );
+
+  QTest::newRow( "area 1" ) << 15.0 << 15.0 << 23.0 << 30.0 << 50.0 << 25.0 << 222.5;
+  QTest::newRow( "area 2" ) << 23.0 << 30.0 << 15.0 << 15.0 << 50.0 << 25.0 << 222.5;
+  QTest::newRow( "area 3" ) << 15.0 << 15.0 << 50.0 << 25.0 << 23.0 << 30.0 << 222.5;
+  QTest::newRow( "area 4" ) << -15.0 << 15.0 << -50.0 << 25.0 << -23.0 << 30.0 << 222.5;
+  QTest::newRow( "area 5" ) << 15.0 << 15.0 << 15.0 << 15.0 << 15.0 << 15.0 << 0.0;
+  QTest::newRow( "area 6" ) << 29.0 << 23.0 << 35.0 << 18.0 << 29.0 << 10.0 << 39.0;
+}
+
+void TestQgsGeometryUtils::testTriangleArea()
+{
+  QFETCH( double, aX );
+  QFETCH( double, aY );
+  QFETCH( double, bX );
+  QFETCH( double, bY );
+  QFETCH( double, cX );
+  QFETCH( double, cY );
+  QFETCH( double, expectedResult );
+
+  QGSCOMPARENEAR( QgsGeometryUtils::triangleArea( aX, aY, bX, bY, cX, cY ), expectedResult, 0.0000001 );
+}
+
+void TestQgsGeometryUtils::testWeightedPointInTriangle_data()
+{
+  QTest::addColumn<double>( "aX" );
+  QTest::addColumn<double>( "aY" );
+  QTest::addColumn<double>( "bX" );
+  QTest::addColumn<double>( "bY" );
+  QTest::addColumn<double>( "cX" );
+  QTest::addColumn<double>( "cY" );
+  QTest::addColumn<double>( "weightB" );
+  QTest::addColumn<double>( "weightC" );
+  QTest::addColumn<double>( "expectedX" );
+  QTest::addColumn<double>( "expectedY" );
+
+  QTest::newRow( "weighted 1" ) << 15.0 << 15.0 << 23.0 << 30.0 << 50.0 << 25.0 << 0.0 << 0.0 << 15.0 << 15.0;
+  QTest::newRow( "weighted 2" ) << 15.0 << 15.0 << 23.0 << 30.0 << 50.0 << 25.0 << 0.5 << 0.0 << 19.0 << 22.5;
+  QTest::newRow( "weighted 3" ) << 15.0 << 15.0 << 23.0 << 30.0 << 50.0 << 25.0 << 1.0 << 0.0 << 23.0 << 30.0;
+  QTest::newRow( "weighted 4" ) << 15.0 << 15.0 << 23.0 << 30.0 << 50.0 << 25.0 << 0.0 << 0.5 << 32.5 << 20.0;
+  QTest::newRow( "weighted 5" ) << 15.0 << 15.0 << 23.0 << 30.0 << 50.0 << 25.0 << 0.0 << 1.0 << 50.0 << 25.0;
+  QTest::newRow( "weighted 6" ) << 15.0 << 15.0 << 23.0 << 30.0 << 50.0 << 25.0 << 0.5 << 0.5 << 36.5 << 27.5;
+  QTest::newRow( "weighted 7" ) << 15.0 << 15.0 << 23.0 << 30.0 << 50.0 << 25.0 << 1.0 << 1.0 << 15.0 << 15.0;
+  QTest::newRow( "weighted 8" ) << 15.0 << 16.0 << 15.0 << 16.0 << 15.0 << 25.0 << 0.0 << 0.0 << 15.0 << 16.0;
+  QTest::newRow( "weighted 9" ) << 15.0 << 16.0 << 15.0 << 16.0 << 15.0 << 25.0 << 1.0 << 0.0 << 15.0 << 16.0;
+  QTest::newRow( "weighted 10" ) << 15.0 << 16.0 << 15.0 << 16.0 << 15.0 << 16.0 << 0.0 << 1.0 << 15.0 << 16.0;
+  QTest::newRow( "weighted 11" ) << 15.0 << 16.0 << 15.0 << 16.0 << 15.0 << 16.0 << 1.0 << 1.0 << 15.0 << 16.0;
+  QTest::newRow( "weighted 12" ) << -15.0 << -15.0 << -23.0 << -30.0 << -50.0 << -25.0 << 0.5 << 0.5 << -36.5 << -27.5;
+}
+
+void TestQgsGeometryUtils::testWeightedPointInTriangle()
+{
+  QFETCH( double, aX );
+  QFETCH( double, aY );
+  QFETCH( double, bX );
+  QFETCH( double, bY );
+  QFETCH( double, cX );
+  QFETCH( double, cY );
+  QFETCH( double, weightB );
+  QFETCH( double, weightC );
+  QFETCH( double, expectedX );
+  QFETCH( double, expectedY );
+
+  double x, y;
+  QgsGeometryUtils::weightedPointInTriangle( aX, aY, bX, bY, cX, cY, weightB, weightC, x, y );
+  QGSCOMPARENEAR( x, expectedX, 0.0000001 );
+  QGSCOMPARENEAR( y, expectedY, 0.0000001 );
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtils )

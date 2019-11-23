@@ -40,6 +40,7 @@ class TestQgsGpsInformationWidget : public QObject
     void testStorePreferredFields();
     void testTimestamp();
     void testTimestampWrite();
+    void testMultiPartLayers();
 
   private:
     std::unique_ptr<QgsGpsInformationWidget> prepareWidget();
@@ -294,6 +295,62 @@ void TestQgsGpsInformationWidget::testTimestampWrite()
                         Qt::TimeSpec::TimeZone, true ).toString( Qt::DateFormat::ISODate ),  tzTime.toString( Qt::DateFormat::ISODate ) );
 
 
+}
+
+void TestQgsGpsInformationWidget::testMultiPartLayers()
+{
+  std::unique_ptr< QgsVectorLayer >multiLineString = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "MultiLinestring?crs=epsg:4326&field=intf:int&field=stringf:string" ),
+      QStringLiteral( "vl4" ),
+      QStringLiteral( "memory" ) );
+
+  QgsMapCanvas *canvas = mQgisApp->mapCanvas();
+  std::unique_ptr<QgsGpsInformationWidget> widget = qgis::make_unique<QgsGpsInformationWidget>( canvas );
+  widget->mMapCanvas->setCurrentLayer( multiLineString.get() );
+  multiLineString->startEditing();
+
+  // not possible, no points
+  widget->mBtnCloseFeature_clicked();
+  QCOMPARE( multiLineString->featureCount(), 0L );
+  // need at least 2 points
+  widget->mBtnAddVertex_clicked();
+  widget->mBtnCloseFeature_clicked();
+  QCOMPARE( multiLineString->featureCount(), 0L );
+
+  widget->mBtnAddVertex_clicked();
+  widget->mBtnCloseFeature_clicked();
+  QCOMPARE( multiLineString->featureCount(), 1L );
+  QgsFeature f;
+  QVERIFY( multiLineString->getFeatures().nextFeature( f ) );
+  QCOMPARE( f.geometry().wkbType(), QgsWkbTypes::MultiLineString );
+  multiLineString->rollBack();
+
+  // multipolygon
+  std::unique_ptr< QgsVectorLayer >multiPolygon = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "MultiPolygon?crs=epsg:4326&field=intf:int&field=stringf:string" ),
+      QStringLiteral( "vl4" ),
+      QStringLiteral( "memory" ) );
+
+  widget = qgis::make_unique<QgsGpsInformationWidget>( canvas );
+  widget->mMapCanvas->setCurrentLayer( multiPolygon.get() );
+  multiPolygon->startEditing();
+
+  // not possible, no points
+  widget->mBtnCloseFeature_clicked();
+  QCOMPARE( multiPolygon->featureCount(), 0L );
+
+  // need at least 3 points
+  widget->mBtnAddVertex_clicked();
+  widget->mBtnCloseFeature_clicked();
+  QCOMPARE( multiPolygon->featureCount(), 0L );
+  widget->mBtnAddVertex_clicked();
+  widget->mBtnCloseFeature_clicked();
+  QCOMPARE( multiPolygon->featureCount(), 0L );
+
+  widget->mBtnAddVertex_clicked();
+  widget->mBtnCloseFeature_clicked();
+  QCOMPARE( multiPolygon->featureCount(), 1L );
+  QVERIFY( multiPolygon->getFeatures().nextFeature( f ) );
+  QCOMPARE( f.geometry().wkbType(), QgsWkbTypes::MultiPolygon );
+  multiPolygon->rollBack();
 }
 
 

@@ -1,6 +1,5 @@
 /***************************************************************************
   qgsfeaturefiltermodel.h - QgsFeatureFilterModel
-
  ---------------------
  begin                : 10.3.2017
  copyright            : (C) 2017 by Matthias Kuhn
@@ -61,7 +60,8 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
      */
     enum Role
     {
-      IdentifierValueRole = Qt::UserRole, //!< Used to retrieve the identifierValue (primary key) of a feature.
+      IdentifierValueRole = Qt::UserRole, //!< \deprecated Use IdentifierValuesRole instead
+      IdentifierValuesRole, //!< Used to retrieve the identifierValues (primary keys) of a feature.
       ValueRole //!< Used to retrieve the displayExpression of a feature.
     };
 
@@ -137,26 +137,67 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
     /**
      * The identifier field should be a unique field that can be used to identify individual features.
      * It is normally set to the primary key of the layer.
+     * If there are several identifier fields defined, the behavior is not guaranteed
+     * \deprecated since QGIS 3.10 use identifierFields instead
      */
-    QString identifierField() const;
+    Q_DECL_DEPRECATED QString identifierField() const;
 
     /**
      * The identifier field should be a unique field that can be used to identify individual features.
      * It is normally set to the primary key of the layer.
+     * \since QGIS 3.10
      */
-    void setIdentifierField( const QString &identifierField );
+    QStringList identifierFields() const;
+
+    /**
+     * The identifier field should be a unique field that can be used to identify individual features.
+     * It is normally set to the primary key of the layer.
+     * \deprecated since QGIS 3.10
+     */
+    Q_DECL_DEPRECATED void setIdentifierField( const QString &identifierField );
+
+    /**
+     * The identifier field should be a unique field that can be used to identify individual features.
+     * It is normally set to the primary key of the layer.
+     * \note This will also reset identifier fields to NULL
+     * \since QGIS 3.10
+     */
+    void setIdentifierFields( const QStringList &identifierFields );
 
     /**
      * Allows specifying one value that does not need to match the filter criteria but will
      * still be available in the model.
+     * \deprecated since QGIS 3.10
      */
-    QVariant extraIdentifierValue() const;
+    Q_DECL_DEPRECATED QVariant extraIdentifierValue() const;
 
     /**
      * Allows specifying one value that does not need to match the filter criteria but will
      * still be available in the model.
+     * \since QGIS 3.10
      */
-    void setExtraIdentifierValue( const QVariant &extraIdentifierValue );
+    QVariantList extraIdentifierValues() const;
+
+    /**
+     * Allows specifying one value that does not need to match the filter criteria but will
+     * still be available in the model.
+     * \deprecated since QGIS 3.10
+     */
+    Q_DECL_DEPRECATED void setExtraIdentifierValue( const QVariant &extraIdentifierValue );
+
+    /**
+     * Allows specifying one value that does not need to match the filter criteria but will
+     * still be available in the model.
+     * \since QGIS 3.10
+     */
+    void setExtraIdentifierValues( const QVariantList &extraIdentifierValues );
+
+    /**
+     * Allows specifying one value that does not need to match the filter criteria but will
+     * still be available in the model as NULL value(s).
+     * \since QGIS 3.10
+     */
+    void setExtraIdentifierValuesToNull();
 
     /**
      * The index at which the extra identifier value is available within the model.
@@ -260,27 +301,28 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
 
   private:
     QSet<QString> requestedAttributes() const;
-    void setExtraIdentifierValueIndex( int index, bool force = false );
+    void setExtraIdentifierValuesIndex( int index, bool force = false );
     void setExtraValueDoesNotExist( bool extraValueDoesNotExist );
     void reload();
     void reloadCurrentFeature();
-    void setExtraIdentifierValueUnguarded( const QVariant &extraIdentifierValue );
+    void setExtraIdentifierValuesUnguarded( const QVariantList &extraIdentifierValues );
     struct Entry
     {
       Entry() = default;
 
-      Entry( const QVariant &_identifierValue, const QString &_value, const QgsFeature &_feature )
-        : identifierValue( _identifierValue )
+      Entry( const QVariantList &_identifierValues, const QString &_value, const QgsFeature &_feature )
+        : identifierValues( _identifierValues )
         , value( _value )
         , feature( _feature )
       {}
 
-      QVariant identifierValue;
+      QVariantList identifierValues;
       QString value;
       QgsFeature feature;
 
       bool operator()( const Entry &lhs, const Entry &rhs ) const;
     };
+    Entry nullEntry();
 
     QgsConditionalStyle featureStyle( const QgsFeature &feature ) const;
 
@@ -299,9 +341,8 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
     bool mAllowNull = false;
     bool mIsSettingExtraIdentifierValue = false;
 
-    QString mIdentifierField;
-
-    QVariant mExtraIdentifierValue;
+    QStringList mIdentifierFields;
+    QVariantList mExtraIdentifierValues;
 
     int mExtraIdentifierValueIndex = -1;
 

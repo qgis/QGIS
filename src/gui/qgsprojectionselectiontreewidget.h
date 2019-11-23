@@ -228,6 +228,8 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
 
     QString selectedProj4String();
 
+    QString selectedWktString();
+
     //! Gets the current QGIS projection identfier
     long selectedCrsId();
 
@@ -286,6 +288,8 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     void hideDeprecated( QTreeWidgetItem *item );
 
     bool mShowMap = true;
+
+    bool mInitialized = false;
 
   private slots:
     //! Gets list of authorities

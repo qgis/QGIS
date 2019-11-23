@@ -132,8 +132,8 @@ QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   connect( btnLoad, &QPushButton::clicked, this, &QgsDb2SourceSelect::btnLoad_clicked );
   connect( mSearchGroupBox, &QGroupBox::toggled, this, &QgsDb2SourceSelect::mSearchGroupBox_toggled );
   connect( mSearchTableEdit, &QLineEdit::textChanged, this, &QgsDb2SourceSelect::mSearchTableEdit_textChanged );
-  connect( mSearchColumnComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsDb2SourceSelect::mSearchColumnComboBox_currentIndexChanged );
-  connect( mSearchModeComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsDb2SourceSelect::mSearchModeComboBox_currentIndexChanged );
+  connect( mSearchColumnComboBox, &QComboBox::currentTextChanged, this, &QgsDb2SourceSelect::mSearchColumnComboBox_currentIndexChanged );
+  connect( mSearchModeComboBox, &QComboBox::currentTextChanged, this, &QgsDb2SourceSelect::mSearchModeComboBox_currentIndexChanged );
   connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsDb2SourceSelect::cmbConnections_activated );
   connect( mTablesTreeView, &QTreeView::clicked, this, &QgsDb2SourceSelect::mTablesTreeView_clicked );
   connect( mTablesTreeView, &QTreeView::doubleClicked, this, &QgsDb2SourceSelect::mTablesTreeView_doubleClicked );
@@ -184,9 +184,7 @@ QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsDb2SourceSelect::treeWidgetSelectionChanged );
 
   QgsSettings settings;
-  mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "qgis/addDb2DC" ), false ).toBool() ?
-                                     QAbstractItemView::ExtendedSelection :
-                                     QAbstractItemView::MultiSelection );
+  mTablesTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
 
   //for Qt < 4.3.2, passing -1 to include all model columns
@@ -316,17 +314,9 @@ void QgsDb2SourceSelect::mTablesTreeView_clicked( const QModelIndex &index )
   mBuildQueryButton->setEnabled( index.parent().isValid() );
 }
 
-void QgsDb2SourceSelect::mTablesTreeView_doubleClicked( const QModelIndex &index )
+void QgsDb2SourceSelect::mTablesTreeView_doubleClicked( const QModelIndex & )
 {
-  QgsSettings settings;
-  if ( settings.value( QStringLiteral( "qgis/addDb2DC" ), false ).toBool() )
-  {
-    addButtonClicked();
-  }
-  else
-  {
-    setSql( index );
-  }
+  addButtonClicked();
 }
 
 void QgsDb2SourceSelect::mSearchGroupBox_toggled( bool checked )

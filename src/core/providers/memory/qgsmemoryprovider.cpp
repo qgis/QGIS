@@ -28,8 +28,8 @@
 
 ///@cond PRIVATE
 
-static const QString TEXT_PROVIDER_KEY = QStringLiteral( "memory" );
-static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "Memory provider" );
+#define TEXT_PROVIDER_KEY QStringLiteral( "memory" )
+#define TEXT_PROVIDER_DESCRIPTION QStringLiteral( "Memory provider" )
 
 QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions &options )
   : QgsVectorDataProvider( uri, options )
@@ -60,6 +60,12 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
   {
     QString crsDef = url.queryItemValue( QStringLiteral( "crs" ) );
     mCrs.createFromString( crsDef );
+  }
+  else
+  {
+    // TODO - remove in QGIS 4.0. Layers without an explicit CRS set SHOULD have an invalid CRS. But in order to maintain
+    // 3.x api, we have to be tolerant/shortsighted(?) here and fallback to EPSG:4326
+    mCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
   }
 
   mNextFeatureId = 1;
@@ -622,6 +628,11 @@ bool QgsMemoryProvider::createSpatialIndex()
     }
   }
   return true;
+}
+
+QgsFeatureSource::SpatialIndexPresence QgsMemoryProvider::hasSpatialIndex() const
+{
+  return mSpatialIndex ? SpatialIndexPresent : SpatialIndexNotPresent;
 }
 
 QgsVectorDataProvider::Capabilities QgsMemoryProvider::capabilities() const

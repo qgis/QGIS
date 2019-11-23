@@ -37,13 +37,42 @@ Stores metadata about one renderer class.
 
 
     QgsRendererAbstractMetadata( const QString &name, const QString &visibleName, const QIcon &icon = QIcon() );
+%Docstring
+Constructor for QgsRendererAbstractMetadata, with the specified ``name``.
+
+The ``visibleName`` argument gives a translated, user friendly string identifying the renderer type.
+
+The ``icon`` argument can be used to specify an icon representing the renderer.
+%End
     virtual ~QgsRendererAbstractMetadata();
 
     QString name() const;
+%Docstring
+Returns the unique name of the renderer. This value is not translated.
+
+.. seealso:: :py:func:`visibleName`
+%End
+
     QString visibleName() const;
+%Docstring
+Returns a friendly display name of the renderer. This value is translated.
+
+.. seealso:: :py:func:`name`
+%End
 
     QIcon icon() const;
+%Docstring
+Returns an icon representing the renderer.
+
+.. seealso:: :py:func:`setIcon`
+%End
+
     void setIcon( const QIcon &icon );
+%Docstring
+Sets an ``icon`` representing the renderer.
+
+.. seealso:: :py:func:`icon`
+%End
 
     virtual QgsRendererAbstractMetadata::LayerTypes compatibleLayerTypes() const;
 %Docstring
@@ -65,7 +94,6 @@ Returns new instance of settings widget for the renderer. Returns ``None`` on er
 The ``oldRenderer`` argument may refer to previously used renderer (or it is ``None``).
 If not ``None``, it may be used to initialize GUI of the widget from the previous settings.
 The old renderer does not have to be of the same type as returned by createRenderer().
-When using ``oldRenderer`` make sure to make a copy of it - it will be deleted afterwards.
 %End
 
     virtual QgsFeatureRenderer *createRendererFromSld( QDomElement &elem, QgsWkbTypes::GeometryType geomType ) /Factory/;

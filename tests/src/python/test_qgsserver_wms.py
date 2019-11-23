@@ -48,7 +48,8 @@ class TestQgsServerWMSTestBase(QgsServerTestBase):
     regenerate_reference = False
 
     def wms_request(self, request, extra=None, project='test_project.qgs', version='1.3.0'):
-        project = self.testdata_path + project
+        if not os.path.exists(project):
+            project = os.path.join(self.testdata_path, project)
         assert os.path.exists(project), "Project file not found: " + project
         query_string = 'https://www.qgis.org/?MAP=%s&SERVICE=WMS&VERSION=%s&REQUEST=%s' % (urllib.parse.quote(project), version, request)
         if extra is not None:
@@ -59,7 +60,7 @@ class TestQgsServerWMSTestBase(QgsServerTestBase):
     def wms_request_compare(self, request, extra=None, reference_file=None, project='test_project.qgs', version='1.3.0', ignoreExtent=False, normalizeJson=False):
         response_header, response_body, query_string = self.wms_request(request, extra, project, version)
         response = response_header + response_body
-        reference_path = self.testdata_path + (request.lower() if not reference_file else reference_file) + '.txt'
+        reference_path = os.path.join(self.testdata_path, (request.lower() if not reference_file else reference_file) + '.txt')
         self.store_reference(reference_path, response)
         f = open(reference_path, 'rb')
         expected = f.read()
@@ -94,6 +95,10 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
     def test_getcapabilities(self):
         self.wms_request_compare('GetCapabilities')
 
+    def test_getcapabilities_case_insensitive(self):
+        self.wms_request_compare('getcapabilities')
+        self.wms_request_compare('GETCAPABILITIES')
+
     def test_getprojectsettings(self):
         self.wms_request_compare('GetProjectSettings')
 
@@ -116,6 +121,12 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         self.wms_request_compare('GetStyles',
                                  '&layers=testlayer%20%C3%A8%C3%A9&',
                                  'getstyles')
+
+        # Test GetStyles with labeling
+        self.wms_request_compare('GetStyles',
+                                 '&layers=pointlabel',
+                                 'getstyles_pointlabel',
+                                 project=self.projectPath)
 
     def test_wms_getschemaextension(self):
         self.wms_request_compare('GetSchemaExtension',
@@ -313,7 +324,7 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         f.close()
 
         # clean header in doc
-        doc = doc.replace('Content-Length: 6575\n', '')
+        doc = doc.replace('Content-Length: 15066\n', '')
         doc = doc.replace('Content-Type: text/xml; charset=utf-8\n\n', '')
         doc = doc.replace('<?xml version="1.0" encoding="utf-8"?>\n', '')
 

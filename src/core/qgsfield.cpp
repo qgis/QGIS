@@ -57,6 +57,8 @@ QgsField::QgsField( const QgsField &other ) //NOLINT
 
 }
 
+QgsField::~QgsField() = default;
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests in testqgsfield.cpp.
@@ -90,6 +92,15 @@ QString QgsField::displayName() const
     return d->alias;
   else
     return d->name;
+}
+
+QString QgsField::displayNameWithAlias() const
+{
+  if ( alias().isEmpty() )
+  {
+    return name();
+  }
+  return QStringLiteral( "%1 (%2)" ).arg( name() ).arg( alias() );
 }
 
 QVariant::Type QgsField::type() const

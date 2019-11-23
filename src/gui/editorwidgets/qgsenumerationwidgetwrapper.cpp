@@ -72,7 +72,7 @@ bool QgsEnumerationWidgetWrapper::valid() const
   return mComboBox;
 }
 
-void QgsEnumerationWidgetWrapper::setValue( const QVariant &value )
+void QgsEnumerationWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
   if ( mComboBox )
   {

@@ -155,7 +155,13 @@ void QgsTextEditWrapper::initWidget( QWidget *editor )
       fle->setNullValue( defVal.toString() );
     }
 
-    connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & value ) { emit valueChanged( value ); } );
+    connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & value )
+    {
+      Q_NOWARN_DEPRECATED_PUSH
+      emit valueChanged( value );
+      Q_NOWARN_DEPRECATED_POP
+      emit valuesChanged( value );
+    } );
     connect( mLineEdit, &QLineEdit::textChanged, this, &QgsTextEditWrapper::textChanged );
 
     mWritablePalette = mLineEdit->palette();
@@ -205,7 +211,7 @@ void QgsTextEditWrapper::setFeature( const QgsFeature &feature )
   setValue( feature.attribute( mFieldIdx ) );
 }
 
-void QgsTextEditWrapper::setValue( const QVariant &val )
+void QgsTextEditWrapper::updateValues( const QVariant &val, const QVariantList & )
 {
   if ( mLineEdit )
   {

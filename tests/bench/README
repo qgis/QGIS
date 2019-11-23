@@ -1,7 +1,7 @@
     Time measurement
    ------------------
 
-For usable benchmarking we need a precise, reliable and repeatable time measurement. It seems to be easy? We are on computer right? Unfortunetly I found it almost impossible! Hopefully I am totaly wrong. 
+For usable benchmarking we need a precise, reliable and repeatable time measurement. It seems to be easy? We are on computer right? Unfortunately I found it almost impossible! Hopefully I am totaly wrong. 
 
 Several "kind of time" exist: real (wall clock), user CPU time, system CPU time. What I believe we have to use is task user + system CPU time.
 

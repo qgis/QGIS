@@ -596,25 +596,10 @@ void QgsColorRampShaderWidget::mColormapTreeWidget_itemDoubleClicked( QTreeWidge
     return;
   }
 
-  if ( column == ColorColumn )
+  if ( column == LabelColumn )
   {
-    item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    QColor newColor = QgsColorDialog::getColor( item->data( column, Qt::EditRole ).value<QColor>(), this, QStringLiteral( "Change Color" ), true );
-    if ( newColor.isValid() )
-    {
-      item->setData( ColorColumn, Qt::EditRole, newColor );
-      loadMinimumMaximumFromTree();
-      emit widgetChanged();
-    }
-  }
-  else
-  {
-    if ( column == LabelColumn )
-    {
-      // Set text color to default black, which signifies a manually edited label
-      item->setForeground( LabelColumn, QBrush() );
-    }
-    item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
+    // Set text color to default black, which signifies a manually edited label
+    item->setForeground( LabelColumn, QBrush() );
   }
 }
 
@@ -622,20 +607,33 @@ void QgsColorRampShaderWidget::mColormapTreeWidget_itemEdited( QTreeWidgetItem *
 {
   Q_UNUSED( item )
 
-  if ( column == ValueColumn )
+  switch ( column )
   {
-    mColormapTreeWidget->sortItems( ValueColumn, Qt::AscendingOrder );
-    autoLabel();
+    case ValueColumn:
+    {
+      mColormapTreeWidget->sortItems( ValueColumn, Qt::AscendingOrder );
+      autoLabel();
 
-    loadMinimumMaximumFromTree();
+      loadMinimumMaximumFromTree();
 
-    emit widgetChanged();
-  }
-  else if ( column == LabelColumn )
-  {
-    // call autoLabel to fill when empty or gray out when same as autoLabel
-    autoLabel();
-    emit widgetChanged();
+      emit widgetChanged();
+      break;
+    }
+
+    case LabelColumn:
+    {
+      // call autoLabel to fill when empty or gray out when same as autoLabel
+      autoLabel();
+      emit widgetChanged();
+      break;
+    }
+
+    case ColorColumn:
+    {
+      loadMinimumMaximumFromTree();
+      emit widgetChanged();
+      break;
+    }
   }
 }
 
@@ -773,18 +771,39 @@ void QgsColorRampShaderWidget::changeColor()
   }
   QTreeWidgetItem *firstItem = itemList.first();
 
-  QColor newColor = QgsColorDialog::getColor( firstItem->data( ColorColumn, Qt::EditRole ).value<QColor>(), this, QStringLiteral( "Change Color" ), true );
-  if ( newColor.isValid() )
+  QColor currentColor = firstItem->data( ColorColumn, Qt::EditRole ).value<QColor>();
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( qobject_cast< QWidget * >( parent() ) );
+  if ( panel && panel->dockMode() )
   {
-    const auto constItemList = itemList;
-    for ( QTreeWidgetItem *item : constItemList )
+    QgsCompoundColorWidget *colorWidget = new QgsCompoundColorWidget( panel, currentColor, QgsCompoundColorWidget::LayoutVertical );
+    colorWidget->setPanelTitle( tr( "Select Color" ) );
+    colorWidget->setAllowOpacity( true );
+    connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, [ = ]( const QColor & newColor )
     {
-      item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-      item->setData( ColorColumn, Qt::EditRole, newColor );
-    }
+      for ( QTreeWidgetItem *item : qgis::as_const( itemList ) )
+      {
+        item->setData( ColorColumn, Qt::EditRole, newColor );
+      }
 
-    loadMinimumMaximumFromTree();
-    emit widgetChanged();
+      loadMinimumMaximumFromTree();
+      emit widgetChanged();
+    } );
+    panel->openPanel( colorWidget );
+  }
+  else
+  {
+    // modal dialog version... yuck
+    QColor newColor = QgsColorDialog::getColor( currentColor, this, QStringLiteral( "Change Color" ), true );
+    if ( newColor.isValid() )
+    {
+      for ( QTreeWidgetItem *item : qgis::as_const( itemList ) )
+      {
+        item->setData( ColorColumn, Qt::EditRole, newColor );
+      }
+
+      loadMinimumMaximumFromTree();
+      emit widgetChanged();
+    }
   }
 }
 

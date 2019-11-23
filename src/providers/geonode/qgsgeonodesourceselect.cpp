@@ -77,6 +77,11 @@ QgsGeoNodeSourceSelect::~QgsGeoNodeSourceSelect()
   emit abortRequests();
 }
 
+void QgsGeoNodeSourceSelect::reset()
+{
+  treeView->clearSelection();
+}
+
 void QgsGeoNodeSourceSelect::addConnectionsEntryList()
 {
   QgsGeoNodeNewConnection nc( this );

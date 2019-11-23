@@ -27,11 +27,11 @@
 #include <sqlite3.h>
 #include <QFile>
 
-const QString AS_JOINFIELD = "ASPK";
-const QString AS_EXTENSION = "qgd";
-const QString AS_JOINPREFIX = "auxiliary_storage_";
-
-const QVector<QgsPalLayerSettings::Property> palHiddenProperties
+#define AS_JOINFIELD QStringLiteral( "ASPK" )
+#define AS_EXTENSION QStringLiteral( "qgd" )
+#define AS_JOINPREFIX QStringLiteral( "auxiliary_storage_" )
+typedef QVector<QgsPalLayerSettings::Property> PalPropertyList;
+Q_GLOBAL_STATIC_WITH_ARGS( PalPropertyList, palHiddenProperties, (
 {
   QgsPalLayerSettings::PositionX,
   QgsPalLayerSettings::PositionY,
@@ -45,6 +45,7 @@ const QVector<QgsPalLayerSettings::Property> palHiddenProperties
   QgsPalLayerSettings::Underline,
   QgsPalLayerSettings::Color,
   QgsPalLayerSettings::Strikeout,
+  QgsPalLayerSettings::MultiLineAlignment,
   QgsPalLayerSettings::BufferSize,
   QgsPalLayerSettings::BufferColor,
   QgsPalLayerSettings::LabelDistance,
@@ -53,8 +54,10 @@ const QVector<QgsPalLayerSettings::Property> palHiddenProperties
   QgsPalLayerSettings::ScaleVisibility,
   QgsPalLayerSettings::MinScale,
   QgsPalLayerSettings::MaxScale,
-  QgsPalLayerSettings::AlwaysShow
-};
+  QgsPalLayerSettings::AlwaysShow,
+  QgsPalLayerSettings::CalloutDraw,
+  QgsPalLayerSettings::LabelAllParts
+} ) )
 
 //
 // QgsAuxiliaryLayer
@@ -286,7 +289,8 @@ bool QgsAuxiliaryLayer::isHiddenProperty( int index ) const
 
   if ( def.origin().compare( QLatin1String( "labeling" ) ) == 0 )
   {
-    for ( const QgsPalLayerSettings::Property &p : palHiddenProperties )
+    const PalPropertyList &palProps = *palHiddenProperties();
+    for ( const QgsPalLayerSettings::Property &p : palProps )
     {
       const QString propName = QgsPalLayerSettings::propertyDefinitions()[ p ].name();
       if ( propName.compare( def.name() ) == 0 )

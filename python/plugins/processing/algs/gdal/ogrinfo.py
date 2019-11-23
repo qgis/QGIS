@@ -81,8 +81,9 @@ class ogrinfo(GdalAlgorithm):
         if inLayer is None:
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
-        connectionString = GdalUtils.ogrConnectionStringFromLayer(inLayer)
-        arguments.append(connectionString)
+        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
+        arguments.append(ogrLayer)
+        arguments.append(layerName)
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
 
     def processAlgorithm(self, parameters, context, feedback):

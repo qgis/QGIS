@@ -16,16 +16,18 @@
 #ifndef QGSLAYOUTEXPORTER_H
 #define QGSLAYOUTEXPORTER_H
 
-#include <QPrinter>
 #include "qgis_core.h"
 #include "qgsmargins.h"
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"
+#include "qgslayoutitem.h"
 #include <QPointer>
 #include <QSize>
 #include <QRectF>
+#include <functional>
 
 #ifndef QT_NO_PRINTER
+#include <QPrinter>
 
 class QgsLayout;
 class QPainter;
@@ -208,6 +210,13 @@ class CORE_EXPORT QgsLayoutExporter
        */
       QgsLayoutRenderContext::Flags flags = nullptr;
 
+      /**
+       * A list of predefined scales to use with the layout. This is used
+       * for maps which are set to the predefined atlas scaling mode.
+       * \since QGIS 3.10
+       */
+      QVector<qreal> predefinedMapScales;
+
     };
 
     /**
@@ -266,6 +275,13 @@ class CORE_EXPORT QgsLayoutExporter
       bool forceVectorOutput = false;
 
       /**
+       * Indicates whether PDF export should append georeference data
+       *
+       * \since QGIS 3.10
+       */
+      bool appendGeoreference = true;
+
+      /**
        * Indicates whether PDF export should include metadata generated
        * from the layout's project's metadata.
        *
@@ -285,6 +301,72 @@ class CORE_EXPORT QgsLayoutExporter
        * \since QGIS 3.4.3
        */
       QgsRenderContext::TextRenderFormat textRenderFormat = QgsRenderContext::TextFormatAlwaysOutlines;
+
+      /**
+       * Indicates whether vector geometries should be simplified to avoid redundant extraneous detail,
+       * such as vertices which are not visible at the specified dpi of the output.
+       *
+       * \since QGIS 3.10
+       */
+      bool simplifyGeometries = true;
+
+      /**
+       * TRUE if GeoPDF files should be created, instead of normal PDF files.
+       *
+       * Whilst GeoPDF files can include some desirable properties like the ability to interactively
+       * query map features, they also can result in lower-quality output files, or forced rasterization
+       * of layers.
+       *
+       * \note Requires builds based on GDAL 3.0 or greater.
+       *
+       * \since QGIS 3.10
+       */
+      bool writeGeoPdf = false;
+
+      /**
+       * TRUE if ISO3200 extension format georeferencing should be used.
+       *
+       * This is a recommended setting which results in Geospatial PDF files compatible
+       * with the built-in Acrobat geospatial tools.
+       *
+       * If PdfExportSettings::writeGeoPdf is FALSE than this option has no effect.
+       */
+      bool useIso32000ExtensionFormatGeoreferencing = true;
+
+      /**
+       * TRUE if OGC "best practice" format georeferencing should be used.
+       *
+       * \warning This results in GeoPDF files compatible with the TerraGo suite of tools, but
+       * can break compatibility with the built-in Acrobat geospatial tools (yes, GeoPDF
+       * format is a mess!).
+       *
+       * If PdfExportSettings::writeGeoPdf is FALSE than this option has no effect.
+      */
+      bool useOgcBestPracticeFormatGeoreferencing = false;
+
+      /**
+       * TRUE if feature vector information (such as attributes) should be exported during GeoPDF exports.
+       *
+       * If PdfExportSettings::writeGeoPdf is FALSE than this option has no effect.
+       */
+      bool includeGeoPdfFeatures = true;
+
+      /**
+       * Optional list of map themes to export as GeoPDF layer groups.
+       *
+       * If set, map item's which are not assigned a specific map theme will iterate through all listed
+       * themes and a GeoPDF layer group will be created for each.
+       *
+       * If PdfExportSettings::writeGeoPdf is FALSE than this option has no effect.
+       */
+      QStringList exportThemes;
+
+      /**
+       * A list of predefined scales to use with the layout. This is used
+       * for maps which are set to the predefined atlas scaling mode.
+       * \since QGIS 3.10
+       */
+      QVector<qreal> predefinedMapScales;
 
     };
 
@@ -351,6 +433,13 @@ class CORE_EXPORT QgsLayoutExporter
        */
       QgsLayoutRenderContext::Flags flags = nullptr;
 
+      /**
+       * A list of predefined scales to use with the layout. This is used
+       * for maps which are set to the predefined atlas scaling mode.
+       * \since QGIS 3.10
+       */
+      QVector<qreal> predefinedMapScales;
+
     };
 
     /**
@@ -413,6 +502,16 @@ class CORE_EXPORT QgsLayoutExporter
       bool exportAsLayers = false;
 
       /**
+       * Set to TRUE to export labels to separate layers (grouped by map layer)
+       * in layered SVG exports.
+       *
+       * This option is only used if exportAsLayers is TRUE.
+       *
+       * \since QGIS 3.10
+       */
+      bool exportLabelsToSeparateLayers = true;
+
+      /**
        * Indicates whether SVG export should include RDF metadata generated
        * from the layout's project's metadata.
        *
@@ -433,6 +532,20 @@ class CORE_EXPORT QgsLayoutExporter
        */
       QgsRenderContext::TextRenderFormat textRenderFormat = QgsRenderContext::TextFormatAlwaysOutlines;
 
+      /**
+       * Indicates whether vector geometries should be simplified to avoid redundant extraneous detail,
+       * such as vertices which are not visible at the specified dpi of the output.
+       *
+       * \since QGIS 3.10
+       */
+      bool simplifyGeometries = true;
+
+      /**
+       * A list of predefined scales to use with the layout. This is used
+       * for maps which are set to the predefined atlas scaling mode.
+       * \since QGIS 3.10
+       */
+      QVector<qreal> predefinedMapScales;
     };
 
     /**
@@ -568,7 +681,7 @@ class CORE_EXPORT QgsLayoutExporter
     static void updatePrinterPageSize( QgsLayout *layout, QPrinter &printer, int page );
 
     ExportResult renderToLayeredSvg( const SvgExportSettings &settings, double width, double height, int page, const QRectF &bounds,
-                                     const QString &filename, int svgLayerId, const QString &layerName,
+                                     const QString &filename, unsigned int svgLayerId, const QString &layerName,
                                      QDomDocument &svg, QDomNode &svgDocRoot, bool includeMetadata ) const;
 
     void appendMetadataToSvg( QDomDocument &svg ) const;
@@ -576,7 +689,11 @@ class CORE_EXPORT QgsLayoutExporter
     bool georeferenceOutputPrivate( const QString &file, QgsLayoutItemMap *referenceMap = nullptr,
                                     const QRectF &exportRegion = QRectF(), double dpi = -1, bool includeGeoreference = true, bool includeMetadata = false ) const;
 
+    ExportResult handleLayeredExport( const QList<QGraphicsItem *> &items, const std::function<QgsLayoutExporter::ExportResult( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail &layerDetails )> &exportFunc );
+
+    static QgsVectorSimplifyMethod createExportSimplifyMethod();
     friend class TestQgsLayout;
+    friend class TestQgsLayoutExporter;
 
 };
 

@@ -17,6 +17,8 @@
 
 #include "qgscrashdialog.h"
 
+#include "qgscrashreport.h"
+
 #include <QClipboard>
 #include <QProcess>
 
@@ -24,21 +26,22 @@ QgsCrashDialog::QgsCrashDialog( QWidget *parent )
   : QDialog( parent )
 {
   setupUi( this );
-  setWindowTitle( tr( "Oh Uh!" ) );
+  setWindowTitle( tr( "Uh-oh!" ) );
 
-  mCrashHeaderMessage->setText( tr( ":( QGIS Crashed" ) );
-  mCrashMessage->setText( tr( "Sorry. It looks something unexpected happened that we didn't handle and QGIS crashed." ) );
+  mCrashHeaderMessage->setText( tr( "QGIS unexpectedly ended" ) );
   connect( mReloadQGISButton, &QPushButton::clicked, this, &QgsCrashDialog::reloadQGIS );
   connect( mCopyReportButton, &QPushButton::clicked, this, &QgsCrashDialog::createBugReport );
   mCopyReportButton->setEnabled( false );
 
-  mHelpLabel->setText( tr( "Keen to help us fix bugs? "
-                           "<a href=\"http://qgis.org/en/site/getinvolved/development/bugreporting.html#bugs-features-and-issues\">Follow the steps to help our developers.</a>"
-                           "<br><br>"
-                           "You can also send us a helpful bug report using the Copy Report button <br>and opening a ticket at "
-                           "<a href=\"https://github.com/qgis/QGIS/issues\">QGIS Issue Tracker</a>" ) );
-  mHelpLabel->setTextInteractionFlags( Qt::TextBrowserInteraction );
-  mHelpLabel->setOpenExternalLinks( true );
+  mCrashMessage->setText( tr( "Sorry :( It looks something unexpected happened that we didn't handle and QGIS ended unexpectedly."
+                              "<br><br>" )
+                          +  tr( "Keen to help us fix bugs? "
+                                 "<a href=\"http://qgis.org/en/site/getinvolved/development/bugreporting.html#bugs-features-and-issues\">Follow the steps to help our developers</a>."
+                                 "<br><br>"
+                                 "You can also send us a helpful bug report using the Copy Report button <br>and opening a ticket at "
+                                 "<a href=\"https://github.com/qgis/QGIS/issues\">QGIS Issue Tracker</a>." ) );
+  mCrashMessage->setTextInteractionFlags( Qt::TextBrowserInteraction );
+  mCrashMessage->setOpenExternalLinks( true );
 
 }
 
@@ -68,7 +71,7 @@ void QgsCrashDialog::createBugReport()
   QString userText = "## User Feedback\n\n" + mUserFeedbackText->toPlainText();
   QString details = "## Report Details\n\n" + mReportData;
   QString finalText = userText + "\n\n" + details;
-  QString markdown = htmlToMarkdown( finalText );
+  QString markdown = QgsCrashReport::htmlToMarkdown( finalText );
   clipboard->setText( markdown );
 }
 
@@ -80,13 +83,3 @@ void QgsCrashDialog::reloadQGIS()
     accept();
   }
 }
-
-QString QgsCrashDialog::htmlToMarkdown( const QString &html )
-{
-  QString markdown = html;
-  markdown.replace( QLatin1String( "<br>" ), QLatin1String( "\n" ) );
-  markdown.replace( QLatin1String( "<b>" ), QLatin1String( "*" ) );
-  markdown.replace( QLatin1String( "</b>" ), QLatin1String( "*" ) );
-  return markdown;
-}
-

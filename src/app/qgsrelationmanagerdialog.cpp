@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsdiscoverrelationsdlg.h"
+#include "qgsdiscoverrelationsdialog.h"
 #include "qgsrelationadddlg.h"
 #include "qgsrelationmanagerdialog.h"
 #include "qgsrelationmanager.h"
@@ -53,6 +53,14 @@ void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
   if ( ! rel.isValid() )
     return;
 
+  QString referencingFields = rel.fieldPairs().at( 0 ).referencingField();
+  QString referencedFields = rel.fieldPairs().at( 0 ).referencedField();
+  for ( int i = 1; i < rel.fieldPairs().count(); i++ )
+  {
+    referencingFields.append( QStringLiteral( ", %1" ).arg( rel.fieldPairs().at( i ).referencingField() ) );
+    referencedFields.append( QStringLiteral( ", %1" ).arg( rel.fieldPairs().at( i ).referencedField() ) );
+  }
+
   mRelationsTable->setSortingEnabled( false );
   int row = mRelationsTable->rowCount();
   mRelationsTable->insertRow( row );
@@ -66,7 +74,7 @@ void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
   item->setFlags( Qt::ItemIsEnabled );
   mRelationsTable->setItem( row, 1, item );
 
-  item = new QTableWidgetItem( rel.fieldPairs().at( 0 ).referencedField() );
+  item = new QTableWidgetItem( referencedFields );
   item->setFlags( Qt::ItemIsEnabled );
   mRelationsTable->setItem( row, 2, item );
 
@@ -74,7 +82,7 @@ void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
   item->setFlags( Qt::ItemIsEnabled );
   mRelationsTable->setItem( row, 3, item );
 
-  item = new QTableWidgetItem( rel.fieldPairs().at( 0 ).referencingField() );
+  item = new QTableWidgetItem( referencingFields );
   item->setFlags( Qt::ItemIsEnabled );
   mRelationsTable->setItem( row, 4, item );
 
@@ -140,7 +148,7 @@ void QgsRelationManagerDialog::mBtnAddRelation_clicked()
 
 void QgsRelationManagerDialog::mBtnDiscoverRelations_clicked()
 {
-  QgsDiscoverRelationsDlg discoverDlg( relations(), mLayers, this );
+  QgsDiscoverRelationsDialog discoverDlg( relations(), mLayers, this );
   if ( discoverDlg.exec() )
   {
     const auto constRelations = discoverDlg.relations();
@@ -169,7 +177,7 @@ QList< QgsRelation > QgsRelationManagerDialog::relations()
   for ( int i = 0; i < rows; ++i )
   {
     QgsRelation relation = mRelationsTable->item( i, 0 )->data( Qt::UserRole ).value<QgsRelation>();
-    // The name can be editted in the table, so apply this one
+    // The name can be edited in the table, so apply this one
     relation.setName( mRelationsTable->item( i, 0 )->data( Qt::DisplayRole ).toString() );
     relations << relation;
   }

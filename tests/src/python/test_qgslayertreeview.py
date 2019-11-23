@@ -211,6 +211,22 @@ class TestQgsLayerTreeView(unittest.TestCase):
             groupname + '-' + self.layer4.name(),
         ])
 
+    def testSetLayerVisible(self):
+        view = QgsLayerTreeView()
+        view.setModel(self.model)
+        self.project.layerTreeRoot().findLayer(self.layer).setItemVisibilityChecked(True)
+        self.project.layerTreeRoot().findLayer(self.layer2).setItemVisibilityChecked(True)
+        self.assertTrue(self.project.layerTreeRoot().findLayer(self.layer).itemVisibilityChecked())
+        self.assertTrue(self.project.layerTreeRoot().findLayer(self.layer2).itemVisibilityChecked())
+
+        view.setLayerVisible(None, True)
+        view.setLayerVisible(self.layer, True)
+        self.assertTrue(self.project.layerTreeRoot().findLayer(self.layer).itemVisibilityChecked())
+        view.setLayerVisible(self.layer2, False)
+        self.assertFalse(self.project.layerTreeRoot().findLayer(self.layer2).itemVisibilityChecked())
+        view.setLayerVisible(self.layer2, True)
+        self.assertTrue(self.project.layerTreeRoot().findLayer(self.layer2).itemVisibilityChecked())
+
 
 if __name__ == '__main__':
     unittest.main()

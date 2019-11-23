@@ -93,6 +93,10 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkt( const QStr
   {
     geom = qgis::make_unique< QgsPolygon >();
   }
+  else if ( trimmed.startsWith( QLatin1String( "Triangle" ), Qt::CaseInsensitive ) )
+  {
+    geom = qgis::make_unique< QgsTriangle >();
+  }
   else if ( trimmed.startsWith( QLatin1String( "CurvePolygon" ), Qt::CaseInsensitive ) )
   {
     geom = qgis::make_unique< QgsCurvePolygon >();
@@ -141,6 +145,7 @@ std::unique_ptr<QgsMultiPoint> QgsGeometryFactory::fromMultiPointXY( const QgsMu
 {
   std::unique_ptr< QgsMultiPoint > mp = qgis::make_unique< QgsMultiPoint >();
   QgsMultiPointXY::const_iterator ptIt = multipoint.constBegin();
+  mp->reserve( multipoint.size() );
   for ( ; ptIt != multipoint.constEnd(); ++ptIt )
   {
     QgsPoint *pt = new QgsPoint( ptIt->x(), ptIt->y() );
@@ -157,6 +162,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::fromPolylineXY( const Q
 std::unique_ptr<QgsMultiLineString> QgsGeometryFactory::fromMultiPolylineXY( const QgsMultiPolylineXY &multiline )
 {
   std::unique_ptr< QgsMultiLineString > mLine = qgis::make_unique< QgsMultiLineString >();
+  mLine->reserve( multiline.size() );
   for ( int i = 0; i < multiline.size(); ++i )
   {
     mLine->addGeometry( fromPolylineXY( multiline.at( i ) ).release() );
@@ -191,6 +197,7 @@ std::unique_ptr<QgsPolygon> QgsGeometryFactory::fromPolygonXY( const QgsPolygonX
 std::unique_ptr< QgsMultiPolygon > QgsGeometryFactory::fromMultiPolygonXY( const QgsMultiPolygonXY &multipoly )
 {
   std::unique_ptr< QgsMultiPolygon > mp = qgis::make_unique< QgsMultiPolygon >();
+  mp->reserve( multipoly.size() );
   for ( int i = 0; i < multipoly.size(); ++i )
   {
     mp->addGeometry( fromPolygonXY( multipoly.at( i ) ).release() );
@@ -200,15 +207,19 @@ std::unique_ptr< QgsMultiPolygon > QgsGeometryFactory::fromMultiPolygonXY( const
 
 std::unique_ptr<QgsLineString> QgsGeometryFactory::linestringFromPolyline( const QgsPolylineXY &polyline )
 {
+  const int size = polyline.size();
   QVector< double > x;
-  x.reserve( polyline.size() );
+  x.resize( size );
   QVector< double > y;
-  y.reserve( polyline.size() );
-  QgsPolylineXY::const_iterator it = polyline.constBegin();
-  for ( ; it != polyline.constEnd(); ++it )
+  y.resize( size );
+  double *destX = x.data();
+  double *destY = y.data();
+  const QgsPointXY *src = polyline.data();
+  for ( int i = 0; i < size; ++i )
   {
-    x << it->x();
-    y << it->y();
+    *destX++ = src->x();
+    *destY++ = src->y();
+    src++;
   }
   std::unique_ptr< QgsLineString > line = qgis::make_unique< QgsLineString >( x, y );
   return line;

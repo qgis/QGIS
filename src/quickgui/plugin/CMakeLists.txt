@@ -15,6 +15,7 @@ SET(QGIS_QUICK_PLUGIN_RESOURCES
   editor/qgsquickcheckbox.qml
   editor/qgsquickdatetime.qml
   editor/qgsquickexternalresource.qml
+  editor/qgsquickrange.qml
   editor/qgsquicktextedit.qml
   editor/qgsquickvaluemap.qml
   editor/qgsquickvaluerelation.qml
@@ -28,7 +29,7 @@ SET(QGIS_QUICK_PLUGIN_RESOURCES
 )
 
 IF (IOS)
-  SET(QGIS_QUICK_PLUGIN_RESOURCES ${QGIS_QUICK_PLUGIN_RESOURCES} ios/qmldir qgsquick.qrc )
+  SET(QGIS_QUICK_PLUGIN_RESOURCES ${QGIS_QUICK_PLUGIN_RESOURCES} ios/qmldir ios/qgsquick.qrc )
 ELSE (IOS)
   SET(QGIS_QUICK_PLUGIN_RESOURCES ${QGIS_QUICK_PLUGIN_RESOURCES} qmldir)
 ENDIF (IOS)
@@ -61,19 +62,17 @@ INCLUDE_DIRECTORIES(
 )
 
 INCLUDE_DIRECTORIES(SYSTEM
+  ${GDAL_INCLUDE_DIR}
+  ${PROJ_INCLUDE_DIR}
   ${LIBZIP_INCLUDE_DIRS}
   ${SPATIALINDEX_INCLUDE_DIR}
-  ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
-  ${GDAL_INCLUDE_DIR}
   ${EXPAT_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
   ${SPATIALITE_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
 )
-
-ADD_DEFINITIONS(-DCORE_EXPORT=)
 
 ############################################################
 # qgis_quick_plugin module (QML) library
@@ -95,7 +94,7 @@ ADD_LIBRARY(qgis_quick_plugin ${LIBRARY_TYPE}
 )
 TARGET_LINK_LIBRARIES(qgis_quick_plugin qgis_quick)
 SET_TARGET_PROPERTIES(qgis_quick_plugin PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${QGIS_QUICK_PLUGIN_RUNTIME_DIR})
-TARGET_COMPILE_DEFINITIONS(qgis_quick_plugin PRIVATE "-DQUICK_EXPORT=" "-DQT_NO_FOREACH")
+TARGET_COMPILE_DEFINITIONS(qgis_quick_plugin PRIVATE "-DQT_NO_FOREACH")
 
 # Copy qml files to output directory, we need qml files in the same directory as the plugin shared library
 FOREACH(qmlfile ${QGIS_QUICK_PLUGIN_RESOURCES})

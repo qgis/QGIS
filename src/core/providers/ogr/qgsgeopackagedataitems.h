@@ -26,53 +26,6 @@
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
-/**
- * \brief The QgsGeoPackageAbstractLayerItem class is the base class for GeoPackage raster and vector layers
- */
-class CORE_EXPORT QgsGeoPackageAbstractLayerItem : public QgsLayerItem
-{
-    Q_OBJECT
-
-  public:
-
-    /**
-     * Returns a list of all table names for the geopackage
-     */
-    QStringList tableNames();
-
-    //! Checks if the data source has any layer in the current project returns them
-    QList<QgsMapLayer *> layersInProject() const;
-
-    /**
-     * Deletes a layer.
-     * Subclasses need to implement this function with
-     * the real deletion implementation
-     */
-    virtual bool executeDeleteLayer( QString &errCause );
-
-  protected:
-    QgsGeoPackageAbstractLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType, const QString &providerKey );
-};
-
-class CORE_EXPORT QgsGeoPackageRasterLayerItem : public QgsGeoPackageAbstractLayerItem
-{
-    Q_OBJECT
-
-  public:
-    QgsGeoPackageRasterLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri );
-    bool executeDeleteLayer( QString &errCause ) override;
-};
-
-
-class CORE_EXPORT QgsGeoPackageVectorLayerItem : public QgsGeoPackageAbstractLayerItem
-{
-    Q_OBJECT
-
-  public:
-    QgsGeoPackageVectorLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType );
-    bool executeDeleteLayer( QString &errCause ) override;
-};
-
 
 /**
  * \brief The QgsGeoPackageCollectionItem class is the base class for
@@ -91,24 +44,85 @@ class CORE_EXPORT QgsGeoPackageCollectionItem : public QgsDataCollectionItem
     static QgsLayerItem::LayerType layerTypeFromDb( const QString &geometryType );
 
     //! Deletes a geopackage raster layer
-    static bool deleteGeoPackageRasterLayer( const QString &uri, QString &errCause );
+    bool deleteRasterLayer( const QString &layerName, QString &errCause );
+
+    //! Deletes a geopackage vector layer
+    bool deleteVectorLayer( const QString &layerName, QString &errCause );
 
     /**
      * Compacts (VACUUM) a geopackage database
-     * \param path DB path
-     * \param name DB name
+     * \param name DB connection name
+     * \param path DB connection path
      * \param errCause contains the error message
      * \return true on success
      */
-    static bool vacuumGeoPackageDb( const QString &path, const QString &name, QString &errCause );
+    static bool vacuumGeoPackageDb( const QString &name, const QString &path, QString &errCause );
 
     void addConnection();
     void deleteConnection();
 
-  protected:
-    QString mPath;
 };
 
+
+/**
+ * \brief The QgsGeoPackageAbstractLayerItem class is the base class for GeoPackage raster and vector layers
+ */
+class CORE_EXPORT QgsGeoPackageAbstractLayerItem : public QgsLayerItem
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Returns a list of all table names for the geopackage
+     */
+    QStringList tableNames() const;
+
+    //! Checks if the data source has any layer in the current project returns them
+    QList<QgsMapLayer *> layersInProject() const;
+
+    /**
+     * Deletes a layer.
+     * Subclasses need to implement this function with
+     * the real deletion implementation
+     */
+    virtual bool executeDeleteLayer( QString &errCause ) = 0;
+
+    /**
+     * Returns the parent collection item
+     * \since QGIS 3.10
+     */
+    QgsGeoPackageCollectionItem *collection() const;
+
+  protected:
+    QgsGeoPackageAbstractLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType, const QString &providerKey );
+
+  private:
+
+    //! Store a casted pointer to the parent collection
+    QgsGeoPackageCollectionItem *mCollection = nullptr;
+};
+
+class CORE_EXPORT QgsGeoPackageRasterLayerItem : public QgsGeoPackageAbstractLayerItem
+{
+    Q_OBJECT
+
+  public:
+    QgsGeoPackageRasterLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri );
+    bool executeDeleteLayer( QString &errCause ) override;
+};
+
+
+
+class CORE_EXPORT QgsGeoPackageVectorLayerItem : public QgsGeoPackageAbstractLayerItem
+{
+    Q_OBJECT
+
+  public:
+    QgsGeoPackageVectorLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType );
+    bool executeDeleteLayer( QString &errCause ) override;
+
+};
 
 /**
  * \brief The QgsGeoPackageConnectionItem class adds the stored

@@ -29,7 +29,6 @@ extern "C"
 #include "qgsvirtuallayerfeatureiterator.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
-#include "qgsdatasourceuri.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
 

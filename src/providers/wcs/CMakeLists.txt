@@ -6,25 +6,13 @@ SET (WCS_SRCS
   qgswcsdataitems.cpp
 )
 
-SET (WCS_MOC_HDRS
-  qgswcsprovider.h
-  qgswcscapabilities.h
-  qgswcsdataitems.h
-)
-
 IF (WITH_GUI)
   SET(WCS_SRCS ${WCS_SRCS}
     qgswcsprovidergui.cpp
     qgswcsdataitemguiprovider.cpp
     qgswcssourceselect.cpp
   )
-  SET(WCS_MOC_HDRS ${WCS_MOC_HDRS}
-    qgswcsdataitemguiprovider.h
-    qgswcssourceselect.h
-  )
 ENDIF ()
-
-QT5_WRAP_CPP (WCS_MOC_SRCS ${WCS_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core
@@ -33,10 +21,12 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/auth
   ${CMAKE_SOURCE_DIR}/src/core/providers/gdal
   ${CMAKE_SOURCE_DIR}/external
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
@@ -48,7 +38,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QTKEYCHAIN_INCLUDE_DIR}
 )
 
-ADD_LIBRARY(wcsprovider MODULE ${WCS_SRCS} ${WCS_MOC_SRCS})
+ADD_LIBRARY(wcsprovider MODULE ${WCS_SRCS})
 
 TARGET_LINK_LIBRARIES(wcsprovider
   qgis_core

@@ -141,6 +141,10 @@ is set to QgsFileWidget.RelativeDefaultPath.
 emitteed as soon as the current document changes
 %End
 
+  protected:
+    virtual bool eventFilter( QObject *watched, QEvent *event );
+
+
 };
 
 /************************************************************************

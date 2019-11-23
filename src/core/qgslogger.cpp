@@ -28,19 +28,19 @@
 
 int QgsLogger::sDebugLevel = -999; // undefined value
 int QgsLogger::sPrefixLength = -1;
-QString QgsLogger::sFileFilter;
-QString QgsLogger::sLogFile;
-QTime QgsLogger::sTime;
+Q_GLOBAL_STATIC( QString, sFileFilter )
+Q_GLOBAL_STATIC( QString, sLogFile )
+Q_GLOBAL_STATIC( QTime, sTime )
 
 void QgsLogger::init()
 {
   if ( sDebugLevel != -999 )
     return;
 
-  sTime.start();
+  sTime()->start();
 
-  sLogFile = getenv( "QGIS_LOG_FILE" ) ? getenv( "QGIS_LOG_FILE" ) : "";
-  sFileFilter = getenv( "QGIS_DEBUG_FILE" ) ? getenv( "QGIS_DEBUG_FILE" ) : "";
+  *sLogFile() = getenv( "QGIS_LOG_FILE" ) ? getenv( "QGIS_LOG_FILE" ) : "";
+  *sFileFilter() = getenv( "QGIS_DEBUG_FILE" ) ? getenv( "QGIS_DEBUG_FILE" ) : "";
   sDebugLevel = getenv( "QGIS_DEBUG" ) ? atoi( getenv( "QGIS_DEBUG" ) ) :
 #ifdef QGISDEBUG
                 1
@@ -58,7 +58,7 @@ void QgsLogger::debug( const QString &msg, int debuglevel, const char *file, con
 {
   init();
 
-  if ( !file && !sFileFilter.isEmpty() && !sFileFilter.endsWith( file ) )
+  if ( !file && !sFileFilter()->isEmpty() && !sFileFilter()->endsWith( file ) )
     return;
 
   if ( sDebugLevel == 0 || debuglevel > sDebugLevel )
@@ -74,8 +74,8 @@ void QgsLogger::debug( const QString &msg, int debuglevel, const char *file, con
       m.prepend( QStringLiteral( "[thread:0x%1] " ).arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 ) );
     }
 
-    m.prepend( QStringLiteral( "[%1ms] " ).arg( sTime.elapsed() ) );
-    sTime.restart();
+    m.prepend( QStringLiteral( "[%1ms] " ).arg( sTime()->elapsed() ) );
+    sTime()->restart();
 
     if ( function )
     {
@@ -98,7 +98,7 @@ void QgsLogger::debug( const QString &msg, int debuglevel, const char *file, con
 #endif
   }
 
-  if ( sLogFile.isEmpty() )
+  if ( sLogFile()->isEmpty() )
   {
     qDebug( "%s", m.toUtf8().constData() );
   }
@@ -121,31 +121,37 @@ void QgsLogger::debug( const QString &var, double val, int debuglevel, const cha
 void QgsLogger::warning( const QString &msg )
 {
   logMessageToFile( msg );
-  qWarning( "%s", msg.toLocal8Bit().constData() );
+  qWarning( "Logged warning: %s", msg.toLocal8Bit().constData() );
 }
 
 void QgsLogger::critical( const QString &msg )
 {
   logMessageToFile( msg );
-  qCritical( "%s", msg.toLocal8Bit().constData() );
+  qCritical( "Logged critical: %s", msg.toLocal8Bit().constData() );
 }
 
 void QgsLogger::fatal( const QString &msg )
 {
   logMessageToFile( msg );
-  qFatal( "%s", msg.toLocal8Bit().constData() );
+  qFatal( "Logged fatal: %s", msg.toLocal8Bit().constData() );
 }
 
 void QgsLogger::logMessageToFile( const QString &message )
 {
-  if ( sLogFile.isEmpty() )
+  if ( sLogFile()->isEmpty() )
     return;
 
   //Maybe more efficient to keep the file open for the life of qgis...
-  QFile file( sLogFile );
+  QFile file( *sLogFile() );
   if ( !file.open( QIODevice::Append ) )
     return;
   file.write( message.toLocal8Bit().constData() );
   file.write( "\n" );
   file.close();
+}
+
+QString QgsLogger::logFile()
+{
+  init();
+  return *sLogFile();
 }

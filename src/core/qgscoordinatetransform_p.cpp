@@ -24,6 +24,7 @@
 #if PROJ_VERSION_MAJOR>=6
 #include "qgsprojutils.h"
 #include <proj.h>
+#include <proj_experimental.h>
 #else
 #include <proj_api.h>
 #endif
@@ -277,6 +278,9 @@ static void proj_collecting_logger( void *user_data, int /*level*/, const char *
 
 static void proj_logger( void *, int level, const char *message )
 {
+#ifndef QGISDEBUG
+  Q_UNUSED( message )
+#endif
   if ( level == PJ_LOG_ERROR )
   {
     QgsDebugMsg( QString( message ) );
@@ -350,6 +354,17 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
       }
 
       transform.reset();
+    }
+    else
+    {
+      // transform may have either the source or destination CRS using swapped axis order. For QGIS, we ALWAYS need regular x/y axis order
+      transform.reset( proj_normalize_for_visualization( context, transform.get() ) );
+      if ( !transform )
+      {
+        const QString err = QObject::tr( "Cannot normalize transform between %1 and %2" ).arg( mSourceCRS.authid(),
+                            mDestCRS.authid() );
+        QgsMessageLog::logMessage( err, QString(), Qgis::Critical );
+      }
     }
   }
 
@@ -638,17 +653,50 @@ void QgsCoordinateTransformPrivate::addNullGridShifts( QString &srcProjString, Q
 void QgsCoordinateTransformPrivate::freeProj()
 {
   QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Write );
+  if ( mProjProjections.isEmpty() )
+    return;
   QMap < uintptr_t, ProjData >::const_iterator it = mProjProjections.constBegin();
+#if PROJ_VERSION_MAJOR>=6
+  // During destruction of PJ* objects, the errno is set in the underlying
+  // context. Consequently the context attached to the PJ* must still exist !
+  // Which is not necessarily the case currently unfortunately. So
+  // create a temporary dummy context, and attach it to the PJ* before destroying
+  // it
+  PJ_CONTEXT *tmpContext = proj_context_create();
   for ( ; it != mProjProjections.constEnd(); ++it )
   {
-#if PROJ_VERSION_MAJOR>=6
+    proj_assign_context( it.value(), tmpContext );
     proj_destroy( it.value() );
-#else
-    pj_free( it.value().first );
-    pj_free( it.value().second );
-#endif
   }
+  proj_context_destroy( tmpContext );
+#else
+  projCtx tmpContext = pj_ctx_alloc();
+  for ( ; it != mProjProjections.constEnd(); ++it )
+  {
+    pj_set_ctx( it.value().first, tmpContext );
+    pj_free( it.value().first );
+    pj_set_ctx( it.value().second, tmpContext );
+    pj_free( it.value().second );
+  }
+  pj_ctx_free( tmpContext );
+#endif
   mProjProjections.clear();
 }
+
+#if PROJ_VERSION_MAJOR>=6
+bool QgsCoordinateTransformPrivate::removeObjectsBelongingToCurrentThread( void *pj_context )
+{
+  QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Write );
+
+  QMap < uintptr_t, ProjData >::iterator it = mProjProjections.find( reinterpret_cast< uintptr_t>( pj_context ) );
+  if ( it != mProjProjections.end() )
+  {
+    proj_destroy( it.value() );
+    mProjProjections.erase( it );
+  }
+
+  return mProjProjections.isEmpty();
+}
+#endif
 
 ///@endcond

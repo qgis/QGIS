@@ -114,6 +114,8 @@ Constructor for LayerOptions.
 
       QgsCoordinateTransformContext transformContext;
 
+      bool skipCrsValidation;
+
     };
 
     explicit QgsRasterLayer( const QString &uri,
@@ -185,7 +187,8 @@ Returns time stamp for given file name
 %Docstring
 Set the data provider.
 
-.. deprecated:: Use the version with ProviderOptions instead.
+.. deprecated::
+   Use the version with ProviderOptions instead.
 %End
 
     void setDataProvider( const QString &provider, const QgsDataProvider::ProviderOptions &options );
@@ -223,17 +226,44 @@ Returns the raster layer type (which is a read only property).
 
     void setRenderer( QgsRasterRenderer *renderer /Transfer/ );
 %Docstring
-Sets raster renderer. Takes ownership of the renderer object
+Sets the raster's ``renderer``. Takes ownership of the renderer object.
+
+.. seealso:: :py:func:`renderer`
 %End
+
     QgsRasterRenderer *renderer() const;
+%Docstring
+Returns the raster's renderer.
+
+.. seealso:: :py:func:`setRenderer`
+%End
 
     QgsRasterResampleFilter *resampleFilter() const;
 %Docstring
-Sets raster resample filter. Takes ownership of the resample filter object
+Returns the raster's resample filter.
+
+.. seealso:: :py:func:`brightnessFilter`
+
+.. seealso:: :py:func:`hueSaturationFilter`
 %End
 
     QgsBrightnessContrastFilter *brightnessFilter() const;
+%Docstring
+Returns the raster's brightness/contrast filter.
+
+.. seealso:: :py:func:`resampleFilter`
+
+.. seealso:: :py:func:`hueSaturationFilter`
+%End
+
     QgsHueSaturationFilter *hueSaturationFilter() const;
+%Docstring
+Returns the raster's hue/saturation filter.
+
+.. seealso:: :py:func:`resampleFilter`
+
+.. seealso:: :py:func:`brightnessFilter`
+%End
 
     QgsRasterPipe *pipe();
 %Docstring
@@ -266,9 +296,19 @@ Returns the name of a band given its number.
 
     virtual QgsRasterDataProvider *dataProvider();
 
+%Docstring
+Returns the source data provider.
+
+This will be ``None`` if the layer is invalid.
+%End
 
     virtual const QgsRasterDataProvider *dataProvider() const /PyName=constDataProvider/;
 
+%Docstring
+Returns the source data provider.
+
+This will be ``None`` if the layer is invalid.
+%End
 
     virtual void reload();
 
@@ -382,6 +422,15 @@ Writes the symbology of the layer into the document provided in SLD 1.0.0 format
 .. versionadded:: 3.6
 %End
 
+    bool ignoreExtents() const;
+%Docstring
+If the ignoreExtent flag is set, the layer will also render outside the
+bounding box reported by the data provider.
+To be used for example for WMS layers with labels or symbology that happens
+to be drawn outside the data extent.
+
+.. versionadded:: 3.10
+%End
 
   public slots:
     void showStatusMessage( const QString &message );

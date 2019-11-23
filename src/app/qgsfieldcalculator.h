@@ -56,8 +56,6 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
     void populateOutputFieldTypes();
 
     QgsVectorLayer *mVectorLayer = nullptr;
-    //! Key: field name, Value: field index
-    QMap<QString, int> mFieldMap;
 
     //! Create a field based on the definitions
     QgsField fieldDefinition();

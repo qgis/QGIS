@@ -40,7 +40,7 @@ QVector<QgsDataItem *> QgsWCSConnectionItem::createChildren()
 
   QgsDataSourceUri uri;
   uri.setEncodedUri( mUri );
-  QgsDebugMsg( "mUri = " + mUri );
+  QgsDebugMsgLevel( "mUri = " + mUri, 2 );
 
   mWcsCapabilities.setUri( uri );
 
@@ -55,7 +55,7 @@ QVector<QgsDataItem *> QgsWCSConnectionItem::createChildren()
   Q_FOREACH ( const QgsWcsCoverageSummary &coverageSummary, mWcsCapabilities.capabilities().contents.coverageSummary )
   {
     // Attention, the name may be empty
-    QgsDebugMsg( QString::number( coverageSummary.orderId ) + ' ' + coverageSummary.identifier + ' ' + coverageSummary.title );
+    QgsDebugMsgLevel( QString::number( coverageSummary.orderId ) + ' ' + coverageSummary.identifier + ' ' + coverageSummary.title, 2 );
     QString pathName = coverageSummary.identifier.isEmpty() ? QString::number( coverageSummary.orderId ) : coverageSummary.identifier;
 
     QgsWCSLayerItem *layer = new QgsWCSLayerItem( this, coverageSummary.title, mPath + '/' + pathName, mWcsCapabilities.capabilities(), uri, coverageSummary );
@@ -90,13 +90,13 @@ QgsWCSLayerItem::QgsWCSLayerItem( QgsDataItem *parent, QString name, QString pat
   , mCoverageSummary( coverageSummary )
 {
   mSupportedCRS = mCoverageSummary.supportedCrs;
-  QgsDebugMsg( "uri = " + mDataSourceUri.encodedUri() );
+  QgsDebugMsgLevel( "uri = " + mDataSourceUri.encodedUri(), 2 );
   mUri = createUri();
   // Populate everything, it costs nothing, all info about layers is collected
   Q_FOREACH ( const QgsWcsCoverageSummary &coverageSummary, mCoverageSummary.coverageSummary )
   {
     // Attention, the name may be empty
-    QgsDebugMsg( QString::number( coverageSummary.orderId ) + ' ' + coverageSummary.identifier + ' ' + coverageSummary.title );
+    QgsDebugMsgLevel( QString::number( coverageSummary.orderId ) + ' ' + coverageSummary.identifier + ' ' + coverageSummary.title, 2 );
     QString pathName = coverageSummary.identifier.isEmpty() ? QString::number( coverageSummary.orderId ) : coverageSummary.identifier;
     QgsWCSLayerItem *layer = new QgsWCSLayerItem( this, coverageSummary.title, mPath + '/' + pathName, mCapabilities, mDataSourceUri, coverageSummary );
     mChildren.append( layer );
@@ -227,7 +227,7 @@ int QgsWcsDataItemProvider::capabilities() const
 
 QgsDataItem *QgsWcsDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
-  QgsDebugMsg( "thePath = " + path );
+  QgsDebugMsgLevel( "thePath = " + path, 2 );
   if ( path.isEmpty() )
   {
     // Top level WCS

@@ -94,6 +94,23 @@ Decodes a QSizeF from a string.
 .. seealso:: :py:func:`decodeSize`
 %End
 
+    static QPointF toPoint( const QVariant &value, bool *ok /Out/ = 0 );
+%Docstring
+Converts a ``value`` to a point.
+
+:param value: value to convert
+
+:return: - converted point
+         - ok: will be set to ``True`` if value was successfully converted
+
+
+.. seealso:: :py:func:`decodePoint`
+
+.. seealso:: :py:func:`toSize`
+
+.. versionadded:: 3.10
+%End
+
     static QString encodeSize( QSizeF size );
 %Docstring
 Encodes a QSizeF to a string.
@@ -114,6 +131,23 @@ Decodes a QSizeF from a string.
 .. seealso:: :py:func:`decodePoint`
 
 .. versionadded:: 3.0
+%End
+
+    static QSizeF toSize( const QVariant &value, bool *ok /Out/ = 0 );
+%Docstring
+Converts a ``value`` to a size.
+
+:param value: value to convert
+
+:return: - converted size
+         - ok: will be set to ``True`` if value was successfully converted
+
+
+.. seealso:: :py:func:`decodeSize`
+
+.. seealso:: :py:func:`toPoint`
+
+.. versionadded:: 3.10
 %End
 
     static QString encodeMapUnitScale( const QgsMapUnitScale &mapUnitScale );
@@ -177,7 +211,8 @@ Returns an icon preview for a color ramp.
 .. seealso:: :py:func:`symbolPreviewPixmap`
 %End
 
-    static QPixmap symbolPreviewPixmap( const QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = 0 );
+    static QPixmap symbolPreviewPixmap( const QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = 0, bool selected = false,
+                                        const QgsExpressionContext *expressionContext = 0 );
 %Docstring
 Returns a pixmap preview for a color ramp.
 
@@ -185,10 +220,20 @@ Returns a pixmap preview for a color ramp.
 :param size: target pixmap size
 :param padding: space between icon edge and symbol
 :param customContext: render context to use when rendering symbol
+:param selected: set to ``True`` to render the symbol in a selected state
+:param expressionContext: optional custom expression context
 
 .. note::
 
    Parameter customContext added in QGIS 2.6
+
+.. note::
+
+   Parameter selected added in QGIS 3.10
+
+.. note::
+
+   Parameter expressionContext added in QGIS 3.10
 
 .. seealso:: :py:func:`symbolPreviewIcon`
 %End
@@ -274,7 +319,7 @@ Attempts to load a symbol from a DOM element
 %Docstring
 Reads and returns symbol layer from XML. Caller is responsible for deleting the returned object
 %End
-    static QDomElement saveSymbol( const QString &symbolName, QgsSymbol *symbol, QDomDocument &doc, const QgsReadWriteContext &context );
+    static QDomElement saveSymbol( const QString &symbolName, const QgsSymbol *symbol, QDomDocument &doc, const QgsReadWriteContext &context );
 %Docstring
 Writes a symbol definition to XML
 %End
@@ -418,7 +463,7 @@ Writes a collection of symbols to XML with specified tagName for the top-level e
 
     static void clearSymbolMap( QgsSymbolMap &symbols );
 
-    static QMimeData *symbolToMimeData( QgsSymbol *symbol ) /Factory/;
+    static QMimeData *symbolToMimeData( const QgsSymbol *symbol ) /Factory/;
 %Docstring
 Creates new mime data from a ``symbol``.
 This also sets the mime color data to match the symbol's color, so that copied symbols
@@ -756,6 +801,12 @@ Encodes a reference to a parametric SVG into a path with parameters according to
 .. versionadded:: 3.0
 %End
 
+    static QSet<const QgsSymbolLayer *> toSymbolLayerPointers( QgsFeatureRenderer *renderer, const QSet<QgsSymbolLayerId> &symbolLayerIds );
+%Docstring
+Converts a set of symbol layer id to a set of pointers to actual symbol layers carried by the feature renderer.
+
+.. versionadded:: 3.12
+%End
 };
 
 

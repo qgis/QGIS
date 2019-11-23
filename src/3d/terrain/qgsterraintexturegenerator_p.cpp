@@ -23,6 +23,8 @@
 
 #include "qgs3dmapsettings.h"
 
+#include "qgseventtracing.h"
+
 ///@cond PRIVATE
 
 QgsTerrainTextureGenerator::QgsTerrainTextureGenerator( const Qgs3DMapSettings &map )
@@ -31,10 +33,12 @@ QgsTerrainTextureGenerator::QgsTerrainTextureGenerator( const Qgs3DMapSettings &
 {
 }
 
-int QgsTerrainTextureGenerator::render( const QgsRectangle &extent, const QString &debugText )
+int QgsTerrainTextureGenerator::render( const QgsRectangle &extent, QgsChunkNodeId tileId, const QString &debugText )
 {
   QgsMapSettings mapSettings( baseMapSettings() );
   mapSettings.setExtent( extent );
+
+  QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, QStringLiteral( "3D" ), QStringLiteral( "Texture" ), tileId.text() );
 
   QgsMapRendererSequentialJob *job = new QgsMapRendererSequentialJob( mapSettings );
   connect( job, &QgsMapRendererJob::finished, this, &QgsTerrainTextureGenerator::onRenderingFinished );
@@ -42,6 +46,7 @@ int QgsTerrainTextureGenerator::render( const QgsRectangle &extent, const QStrin
 
   JobData jobData;
   jobData.jobId = ++mLastJobId;
+  jobData.tileId = tileId;
   jobData.job = job;
   jobData.extent = extent;
   jobData.debugText = debugText;
@@ -120,6 +125,8 @@ void QgsTerrainTextureGenerator::onRenderingFinished()
   mJobs.remove( mapJob );
 
   //qDebug() << "finished job " << jobData.jobId << "  ... in queue: " << jobs.count();
+
+  QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, QStringLiteral( "3D" ), QStringLiteral( "Texture" ), jobData.tileId.text() );
 
   // pass QImage further
   emit tileReady( jobData.jobId, img );

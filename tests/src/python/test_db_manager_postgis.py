@@ -171,7 +171,7 @@ class TestPyQgsDBManagerPostgis(unittest.TestCase):
 
     @classmethod
     def setUpProvider(cls, authId):
-        cls.dbconn = 'dbname=\'qgis_test\''
+        cls.dbconn = 'service=qgis_test'
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
         uri = QgsDataSourceUri()
@@ -277,7 +277,7 @@ class TestPyQgsDBManagerPostgis(unittest.TestCase):
                 f.setPermissions(QFile.WriteOwner)
                 f.remove()
 
-        # remove any temppki in temprorary path to check that no
+        # remove any temppki in temporary path to check that no
         # other pki remain after connection
         cleanTempPki()
         # connect

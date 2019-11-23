@@ -70,7 +70,6 @@ namespace pal
       friend class LabelPosition;
 
     public:
-      enum LabelMode { LabelPerFeature, LabelPerFeaturePart };
       enum UpsideDownLabels
       {
         Upright, // upside-down labels (90 <= angle < 270) are shown upright
@@ -86,6 +85,69 @@ namespace pal
        * Returns the number of features in layer.
        */
       int featureCount() { return mHashtable.size(); }
+
+      /**
+       * Returns the maximum number of point label candidates to generate for features
+       * in this layer.
+       */
+      int maximumPointLabelCandidates() const
+      {
+        // when an extreme number of features exist in the layer, we limit the number of candidates
+        // to avoid the engine processing endlessly...
+        const int size = mHashtable.size();
+        if ( size > 1000 )
+          return std::min( pal->point_p, 4 );
+        else if ( size > 500 )
+          return std::min( pal->point_p, 6 );
+        else if ( size > 200 )
+          return std::min( pal->point_p, 8 );
+        else if ( size > 100 )
+          return std::min( pal->point_p, 12 );
+        else
+          return pal->point_p;
+      }
+
+      /**
+       * Returns the maximum number of line label candidates to generate for features
+       * in this layer.
+       */
+      int maximumLineLabelCandidates() const
+      {
+        // when an extreme number of features exist in the layer, we limit the number of candidates
+        // to avoid the engine processing endlessly...
+        const int size = mHashtable.size();
+        if ( size > 1000 )
+          return std::min( pal->line_p, 5 );
+        else if ( size > 500 )
+          return std::min( pal->line_p, 10 );
+        else if ( size > 200 )
+          return std::min( pal->line_p, 20 );
+        else if ( size > 100 )
+          return std::min( pal->line_p, 40 );
+        else
+          return pal->line_p;
+      }
+
+      /**
+       * Returns the maximum number of polygon label candidates to generate for features
+       * in this layer.
+       */
+      int maximumPolygonLabelCandidates() const
+      {
+        // when an extreme number of features exist in the layer, we limit the number of candidates
+        // to avoid the engine processing endlessly...
+        const int size = mHashtable.size();
+        if ( size > 1000 )
+          return std::min( pal->poly_p, 5 );
+        else if ( size > 500 )
+          return std::min( pal->poly_p, 15 );
+        else if ( size > 200 )
+          return std::min( pal->poly_p, 20 );
+        else if ( size > 100 )
+          return std::min( pal->poly_p, 25 );
+        else
+          return pal->poly_p;
+      }
 
       //! Returns pointer to the associated provider
       QgsAbstractLabelProvider *provider() const { return mProvider; }
@@ -177,19 +239,6 @@ namespace pal
       double priority() const { return mDefaultPriority; }
 
       /**
-       * Sets the layer's labeling mode.
-       * \param mode label mode
-       * \see labelMode
-       */
-      void setLabelMode( LabelMode mode ) { mMode = mode; }
-
-      /**
-       * Returns the layer's labeling mode.
-       * \see setLabelMode
-       */
-      LabelMode labelMode() const { return mMode; }
-
-      /**
        * Sets whether connected lines should be merged before labeling
        * \param merge set to TRUE to merge connected lines
        * \see mergeConnectedLines
@@ -278,7 +327,6 @@ namespace pal
       //! Optional flags used for some placement methods
       QgsPalLayerSettings::Placement mArrangement;
 
-      LabelMode mMode;
       bool mMergeLines;
 
       UpsideDownLabels mUpsidedownLabels;

@@ -37,8 +37,8 @@ email                : morb at ozemail dot com dot au
 #include "qgsfeatureid.h"
 
 #ifndef SIP_RUN
-#include <nlohmann/json_fwd.hpp>
-using json = nlohmann::json;
+#include <json_fwd.hpp>
+using namespace nlohmann;
 #endif
 
 class QgsGeometryEngine;
@@ -47,6 +47,7 @@ class QgsMapToPixel;
 class QPainter;
 class QgsPolygon;
 class QgsLineString;
+class QgsFeedback;
 
 /**
  * Polyline as represented as a vector of two-dimensional points.
@@ -66,7 +67,7 @@ typedef QVector<QgsPointXY> QgsPolylineXY;
  *
  * \since QGIS 3.0
  */
-typedef QVector<QgsPoint> QgsPolyline;
+typedef QgsPointSequence QgsPolyline;
 
 //! Polygon: first item of the list is outer ring, inner rings (if any) start from second item
 #ifndef SIP_RUN
@@ -100,14 +101,24 @@ struct QgsGeometryPrivate;
 
 /**
  * \ingroup core
- * A geometry is the spatial representation of a feature. Since QGIS 2.10, QgsGeometry acts as a generic container
- * for geometry objects. QgsGeometry is implicitly shared, so making copies of geometries is inexpensive. The geometry
- * container class can also be stored inside a QVariant object.
+ * A geometry is the spatial representation of a feature.
+ *
+ * QgsGeometry acts as a generic container for geometry objects. QgsGeometry objects are implicitly shared,
+ * so making copies of geometries is inexpensive. The geometry container class can also be stored inside
+ * a QVariant object.
  *
  * The actual geometry representation is stored as a QgsAbstractGeometry within the container, and
- * can be accessed via the get() method or set using the set() method.
+ * can be accessed via the get() method or set using the set() method. This gives access to the underlying
+ * raw geometry primitive, such as the point, line, polygon, curve or other geometry subclasses.
+ *
+ * \note QgsGeometry objects are inherently Cartesian/planar geometries. They have no concept of geodesy, and none
+ * of the methods or properties exposed from the QgsGeometry API (or QgsAbstractGeometry subclasses) utilize
+ * geodesic calculations. Accordingly, properties like length() and area() or spatial operations like buffer()
+ * are always calculated using strictly Cartesian mathematics. In contrast, the QgsDistanceArea class exposes
+ * methods for working with geodesic calculations and spatial operations on geometries,
+ * and should be used whenever calculations which account for the curvature of the Earth (or any other celestial body)
+ * are required.
  */
-
 class CORE_EXPORT QgsGeometry
 {
     Q_GADGET
@@ -141,6 +152,7 @@ class CORE_EXPORT QgsGeometry
       /* Split features */
       SplitCannotSplitPoint, //!< Cannot split points
     };
+    Q_ENUM( OperationResult )
 
     //! Constructor
     QgsGeometry();
@@ -377,22 +389,39 @@ class CORE_EXPORT QgsGeometry
     bool isSimple() const;
 
     /**
-     * Returns the area of the geometry using GEOS
+     * Returns the planar, 2-dimensional area of the geometry.
+     *
+     * \warning QgsGeometry objects are inherently Cartesian/planar geometries, and the area
+     * returned by this method is calculated using strictly Cartesian mathematics. In contrast,
+     * the QgsDistanceArea class exposes methods for calculating the areas of geometries using
+     * geodesic calculations which account for the curvature of the Earth (or any other
+     * celestial body).
+     *
+     * \see length()
      * \since QGIS 1.5
      */
     double area() const;
 
     /**
-     * Returns the length of geometry using GEOS
+     * Returns the planar, 2-dimensional length of geometry.
+     *
+     * \warning QgsGeometry objects are inherently Cartesian/planar geometries, and the length
+     * returned by this method is calculated using strictly Cartesian mathematics. In contrast,
+     * the QgsDistanceArea class exposes methods for calculating the lengths of geometries using
+     * geodesic calculations which account for the curvature of the Earth (or any other
+     * celestial body).
+     *
+     * \see area()
      * \since QGIS 1.5
      */
     double length() const;
 
     /**
-     * Returns the minimum distance between this geometry and another geometry, using GEOS.
-     * Will return a negative value if a geometry is missing.
+     * Returns the minimum distance between this geometry and another geometry.
+     * Will return a negative value if either geometry is empty or null.
      *
-     * \param geom geometry to find minimum distance to
+     * \warning QgsGeometry objects are inherently Cartesian/planar geometries, and the distance
+     * returned by this method is calculated using strictly Cartesian mathematics.
      */
     double distance( const QgsGeometry &geom ) const;
 
@@ -611,6 +640,8 @@ class CORE_EXPORT QgsGeometry
      * Returns the distance along this geometry from its first vertex to the specified vertex.
      * \param vertex vertex index to calculate distance to
      * \returns distance to vertex (following geometry), or -1 for invalid vertex numbers
+     * \warning QgsGeometry objects are inherently Cartesian/planar geometries, and the distance
+     * returned by this method is calculated using strictly Cartesian mathematics.
      * \since QGIS 2.16
      */
     double distanceToVertex( int vertex ) const;
@@ -721,6 +752,11 @@ class CORE_EXPORT QgsGeometry
     /**
      * Returns the shortest line joining this geometry to another geometry.
      * \see nearestPoint()
+     *
+     * \warning QgsGeometry objects are inherently Cartesian/planar geometries, and the line
+     * returned by this method is calculated using strictly Cartesian mathematics. See QgsDistanceArea
+     * for similar methods which account for the curvature of an ellipsoidal body such as the Earth.
+     *
      * \since QGIS 2.14
      */
     QgsGeometry shortestLine( const QgsGeometry &other ) const;
@@ -846,8 +882,19 @@ class CORE_EXPORT QgsGeometry
      * \param topological TRUE if topological editing is enabled
      * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
      * \returns OperationResult a result code: success or reason of failure
+     * \deprecated since QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
      */
-    OperationResult splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries SIP_OUT, bool topological, QVector<QgsPointXY> &topologyTestPoints SIP_OUT );
+    Q_DECL_DEPRECATED OperationResult splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries SIP_OUT, bool topological, QVector<QgsPointXY> &topologyTestPoints SIP_OUT ) SIP_DEPRECATED;
+
+    /**
+     * Splits this geometry according to a given line.
+     * \param splitLine the line that splits the geometry
+     * \param[out] newGeometries list of new geometries that have been created with the split
+     * \param topological TRUE if topological editing is enabled
+     * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
+     * \returns OperationResult a result code: success or reason of failure
+     */
+    OperationResult splitGeometry( const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries SIP_OUT, bool topological, QgsPointSequence &topologyTestPoints SIP_OUT );
 
     /**
      * Replaces a part of this geometry with another line
@@ -1000,42 +1047,45 @@ class CORE_EXPORT QgsGeometry
      */
     bool boundingBoxIntersects( const QgsGeometry &geometry ) const;
 
-    //! Tests for containment of a point (uses GEOS)
+    /**
+     * Returns TRUE if the geometry contains the point \a p.
+     */
     bool contains( const QgsPointXY *p ) const;
 
     /**
-     * Tests for if geometry is contained in another (uses GEOS)
-     *  \since QGIS 1.5
+     * Returns TRUE if the geometry completely contains another \a geometry.
+     * \since QGIS 1.5
      */
     bool contains( const QgsGeometry &geometry ) const;
 
     /**
-     * Tests for if geometry is disjoint of another (uses GEOS)
-     *  \since QGIS 1.5
+     * Returns TRUE if the geometry is disjoint of another \a geometry.
+     * \since QGIS 1.5
      */
     bool disjoint( const QgsGeometry &geometry ) const;
 
     /**
-     * Test for if geometry touch another (uses GEOS)
-     *  \since QGIS 1.5
+     * Returns TRUE if the geometry touches another \a geometry.
+     * \since QGIS 1.5
      */
     bool touches( const QgsGeometry &geometry ) const;
 
     /**
-     * Test for if geometry overlaps another (uses GEOS)
-     *  \since QGIS 1.5
+     * Returns TRUE if the geometry overlaps another \a geometry.
+     * \since QGIS 1.5
      */
     bool overlaps( const QgsGeometry &geometry ) const;
 
     /**
-     * Test for if geometry is within another (uses GEOS)
-     *  \since QGIS 1.5
+     * Returns TRUE if the geometry is completely within another \a geometry.
+     * \since QGIS 1.5
      */
     bool within( const QgsGeometry &geometry ) const;
 
+
     /**
-     * Test for if geometry crosses another (uses GEOS)
-     *  \since QGIS 1.5
+     * Returns TRUE if the geometry crosses another \a geometry.
+     * \since QGIS 1.5
      */
     bool crosses( const QgsGeometry &geometry ) const;
 
@@ -1398,6 +1448,79 @@ class CORE_EXPORT QgsGeometry
 
     //! Returns an extruded version of this geometry.
     QgsGeometry extrude( double x, double y );
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns a list of \a count random points generated inside a (multi)polygon geometry.
+     *
+     * Optionally, a specific random \a seed can be used when generating points. If \a seed
+     * is 0, then a completely random sequence of points will be generated.
+     *
+     * If the source geometry is not a (multi)polygon, an empty list will be returned.
+     *
+     * The \a acceptPoint function is used to filter result candidates. If the function returns
+     * FALSE, then the point will not be accepted and another candidate generated.
+     *
+     * The optional \a feedback argument can be used to provide cancellation support during
+     * the point generation.
+     *
+     * \since QGIS 3.10
+     */
+    QVector< QgsPointXY > randomPointsInPolygon( int count, const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed = 0, QgsFeedback *feedback = nullptr ) const;
+
+    /**
+     * Returns a list of \a count random points generated inside a (multi)polygon geometry.
+     *
+     * Optionally, a specific random \a seed can be used when generating points. If \a seed
+     * is 0, then a completely random sequence of points will be generated.
+     *
+     * If the source geometry is not a (multi)polygon, an empty list will be returned.
+     *
+     * The optional \a feedback argument can be used to provide cancellation support during
+     * the point generation.
+     *
+     * \since QGIS 3.10
+     */
+    QVector< QgsPointXY > randomPointsInPolygon( int count, unsigned long seed = 0, QgsFeedback *feedback = nullptr ) const;
+    ///@cond PRIVATE
+#else
+
+    /**
+     * Returns a list of \a count random points generated inside a (multi)polygon geometry.
+     *
+     * Optionally, a specific random \a seed can be used when generating points. If \a seed
+     * is 0, then a completely random sequence of points will be generated.
+     *
+     * This method works only with (multi)polygon geometry types. If the geometry
+     * is not a polygon type, a TypeError will be raised. If the geometry
+     * is null, a ValueError will be raised.
+     *
+     * \since QGIS 3.10
+     */
+    SIP_PYOBJECT randomPointsInPolygon( int count, unsigned long seed = 0 ) const SIP_TYPEHINT( QgsPolylineXY );
+    % MethodCode
+    const QgsWkbTypes::GeometryType type = sipCpp->type();
+    if ( sipCpp->isNull() )
+    {
+      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Cannot generate points inside a null geometry." ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else if ( type != QgsWkbTypes::PolygonGeometry )
+    {
+      PyErr_SetString( PyExc_TypeError, QStringLiteral( "Cannot generate points inside a %1 geometry. Only Polygon types are permitted." ).arg( QgsWkbTypes::displayString( sipCpp->wkbType() ) ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      const sipMappedType *qvector_type = sipFindMappedType( "QVector<QgsPointXY>" );
+      sipRes = sipConvertFromNewType( new QVector< QgsPointXY >( sipCpp->randomPointsInPolygon( a0, a1 ) ), qvector_type, Py_None );
+    }
+    % End
+
+
+#endif
+///@endcond
 
     /**
      * Export the geometry to WKB
@@ -2024,16 +2147,18 @@ class CORE_EXPORT QgsGeometry
      * \param polygon source polygon
      * \returns QgsPolylineXY
      * \see createPolygonFromQPolygonF
+     * \deprecated use QgsGeometry::fromQPolygonF() or QgsLineString::fromQPolygonF() instead.
      */
-    static QgsPolylineXY createPolylineFromQPolygonF( const QPolygonF &polygon ) SIP_FACTORY;
+    Q_DECL_DEPRECATED static QgsPolylineXY createPolylineFromQPolygonF( const QPolygonF &polygon ) SIP_DEPRECATED;
 
     /**
      * Creates a QgsPolygonXYfrom a QPolygonF.
      * \param polygon source polygon
      * \returns QgsPolygon
      * \see createPolylineFromQPolygonF
+     * \deprecated use QgsGeometry::fromQPolygonF() or QgsLineString::fromQPolygonF() instead.
      */
-    static QgsPolygonXY createPolygonFromQPolygonF( const QPolygonF &polygon ) SIP_FACTORY;
+    Q_DECL_DEPRECATED static QgsPolygonXY createPolygonFromQPolygonF( const QPolygonF &polygon ) SIP_DEPRECATED;
 
 #ifndef SIP_RUN
 

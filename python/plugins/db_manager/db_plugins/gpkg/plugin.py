@@ -27,7 +27,13 @@ from .connector import GPKGDBConnector
 from qgis.PyQt.QtCore import Qt, QFileInfo, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QApplication, QAction, QFileDialog
-from qgis.core import Qgis, QgsApplication, QgsDataSourceUri, QgsSettings
+from qgis.core import (
+    Qgis,
+    QgsApplication,
+    QgsDataSourceUri,
+    QgsSettings,
+    QgsProviderRegistry,
+)
 from qgis.gui import QgsMessageBar
 
 from ..plugin import DBPlugin, Database, Table, VectorTable, RasterTable, TableField, TableIndex, TableTrigger, \
@@ -65,23 +71,22 @@ class GPKGDBPlugin(DBPlugin):
 
     def connect(self, parent=None):
         conn_name = self.connectionName()
-        settings = QgsSettings()
-        settings.beginGroup(u"/%s/%s" % (self.connectionSettingsKey(), conn_name))
 
-        if not settings.contains("path"):  # non-existent entry?
+        md = QgsProviderRegistry.instance().providerMetadata(self.providerName())
+        conn = md.findConnection(conn_name)
+
+        if conn is None:  # non-existent entry?
             raise InvalidDataException(self.tr(u'There is no defined database connection "{0}".').format(conn_name))
 
-        database = settings.value("path")
-
         uri = QgsDataSourceUri()
-        uri.setDatabase(database)
+        uri.setDatabase(conn.uri())
         return self.connectToUri(uri)
 
     @classmethod
     def addConnection(self, conn_name, uri):
-        settings = QgsSettings()
-        settings.beginGroup(u"/%s/%s" % (self.connectionSettingsKey(), conn_name))
-        settings.setValue("path", uri.database())
+        md = QgsProviderRegistry.instance().providerMetadata(self.providerName())
+        conn = md.createConnection(uri.database(), {})
+        md.saveConnection(conn, conn_name)
         return True
 
     @classmethod
@@ -108,7 +113,7 @@ class GPKGDatabase(Database):
         Database.__init__(self, connection, uri)
 
     def connectorsFactory(self, uri):
-        return GPKGDBConnector(uri)
+        return GPKGDBConnector(uri, self.connection())
 
     def dataTablesFactory(self, row, db, schema=None):
         return GPKGTable(row, db, schema)
@@ -184,6 +189,16 @@ class GPKGDatabase(Database):
 class GPKGTable(Table):
 
     def __init__(self, row, db, schema=None):
+        """Constructs a GPKGTable
+
+        :param row: a three elements array with: [table_name, is_view, is_sys_table]
+        :type row: array [str, bool, bool]
+        :param db: database instance
+        :type db:
+        :param schema: schema name, defaults to None, ignored by GPKG
+        :type schema: str, optional
+        """
+
         Table.__init__(self, db, None)
         self.name, self.isView, self.isSysTable = row
 

@@ -66,6 +66,12 @@ QgsLayoutLabelWidget::QgsLayoutLabelWidget( QgsLayoutItemLabel *label )
   connect( mJustifyRadioButton, &QRadioButton::clicked, this, &QgsLayoutLabelWidget::justifyClicked );
 }
 
+void QgsLayoutLabelWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayout )
+{
+  if ( mItemPropertiesWidget )
+    mItemPropertiesWidget->setMasterLayout( masterLayout );
+}
+
 bool QgsLayoutLabelWidget::setNewItem( QgsLayoutItem *item )
 {
   if ( item->type() != QgsLayoutItemRegistry::LayoutLabel )

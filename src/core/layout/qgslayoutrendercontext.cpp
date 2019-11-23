@@ -21,7 +21,9 @@ QgsLayoutRenderContext::QgsLayoutRenderContext( QgsLayout *layout )
   : QObject( layout )
   , mFlags( FlagAntialiasing | FlagUseAdvancedEffects )
   , mLayout( layout )
-{}
+{
+  mSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+}
 
 void QgsLayoutRenderContext::setFlags( const QgsLayoutRenderContext::Flags flags )
 {
@@ -107,4 +109,25 @@ void QgsLayoutRenderContext::setBoundingBoxesVisible( bool visible )
 void QgsLayoutRenderContext::setPagesVisible( bool visible )
 {
   mPagesVisible = visible;
+}
+
+QStringList QgsLayoutRenderContext::exportThemes() const
+{
+  return mExportThemes;
+}
+
+void QgsLayoutRenderContext::setExportThemes( const QStringList &exportThemes )
+{
+  mExportThemes = exportThemes;
+}
+
+void QgsLayoutRenderContext::setPredefinedScales( const QVector<qreal> &scales )
+{
+  if ( scales == mPredefinedScales )
+    return;
+
+  mPredefinedScales = scales;
+  // make sure the list is sorted
+  std::sort( mPredefinedScales.begin(), mPredefinedScales.end() ); // clazy:exclude=detaching-member
+  emit predefinedScalesChanged();
 }

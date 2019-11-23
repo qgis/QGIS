@@ -29,6 +29,7 @@
 #include "qgsreadwritecontext.h"
 #include "qgsapplication.h"
 #include "qgsogrutils.h"
+#include "qgsproject.h"
 
 
 static bool _parseMetadataDocument( const QJsonDocument &doc, QgsProjectStorage::Metadata &metadata )
@@ -234,7 +235,7 @@ bool QgsGeoPackageProjectStorage::writeProject( const QString &uri, QIODevice *d
   // read from device and write to the table
   QByteArray content = device->readAll();
   QString metadataExpr = QStringLiteral( "{\"last_modified_time\": \"%1\", \"last_modified_user\": \"%2\" }" ).arg(
-                           QTime().toString(),
+                           QDateTime::currentDateTime().toString( Qt::DateFormat::ISODate ),
                            QgsApplication::instance()->userLoginName()
                          );
   QString sql;
@@ -248,7 +249,7 @@ bool QgsGeoPackageProjectStorage::writeProject( const QString &uri, QIODevice *d
   }
   sql = sql.arg( QgsSqliteUtils::quotedIdentifier( projectUri.projectName ),
                  QgsSqliteUtils::quotedValue( metadataExpr ),
-                 QgsSqliteUtils::quotedValue( QString::fromAscii( content.toHex() ) )
+                 QgsSqliteUtils::quotedValue( QString::fromLatin1( content.toHex() ) )
                );
 
   errCause = _executeSql( projectUri.database, sql );
@@ -269,7 +270,18 @@ QString QgsGeoPackageProjectStorage::encodeUri( const QgsGeoPackageProjectUri &g
   QUrl u;
   QUrlQuery urlQuery;
   u.setScheme( QStringLiteral( "geopackage" ) );
-  u.setPath( gpkgUri.database );
+
+  // Check for windows network shares: github issue #31310
+  QString database { gpkgUri.database };
+  if ( database.startsWith( QStringLiteral( "//" ) ) )
+  {
+    u.setPath( database.replace( '/', '\\' ) );
+  }
+  else
+  {
+    u.setPath( database );
+  }
+
   if ( !gpkgUri.projectName.isEmpty() )
     urlQuery.addQueryItem( QStringLiteral( "projectName" ), gpkgUri.projectName );
   u.setQuery( urlQuery );
@@ -283,8 +295,12 @@ QgsGeoPackageProjectUri QgsGeoPackageProjectStorage::decodeUri( const QString &u
   QUrlQuery urlQuery( url.query() );
 
   QgsGeoPackageProjectUri gpkgUri;
-  gpkgUri.valid = url.isValid() && QFile::exists( url.path() );
-  gpkgUri.database = url.path();
+
+  // Check for windows network shares: github issue #31310
+  const QString path { url.toString().startsWith( QStringLiteral( "//" ) ) ? url.toString() : url.path() };
+  gpkgUri.valid = url.isValid() && QFile::exists( path );
+  gpkgUri.database = path;
+
   gpkgUri.projectName = urlQuery.queryItemValue( "projectName" );
   return gpkgUri;
 }
@@ -339,7 +355,12 @@ bool QgsGeoPackageProjectStorage::removeProject( const QString &uri )
     errCause = QObject::tr( "Could not remove project %1: %2" ).arg( uri, errCause );
     QgsMessageLog::logMessage( errCause, QStringLiteral( "OGR" ), Qgis::MessageLevel::Warning );
   }
-  return  errCause.isEmpty();
+  else if ( QgsProject::instance()->fileName() == uri )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Current project was removed from storage, marking it dirty." ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Warning );
+    QgsProject::instance()->setDirty( true );
+  }
+  return errCause.isEmpty();
 }
 
 bool QgsGeoPackageProjectStorage::renameProject( const QString &uri, const QString &uriNew )

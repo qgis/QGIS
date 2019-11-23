@@ -487,6 +487,6 @@ int QgsDb2DataItemProvider::capabilities() const
 QgsDataItem *QgsDb2DataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )
 {
   Q_UNUSED( pathIn );
-  QgsDebugMsg( QStringLiteral( "DB2: Browser Panel; data item detected." ) );
+  QgsDebugMsgLevel( QStringLiteral( "DB2: Browser Panel; data item detected." ), 2 );
   return new QgsDb2RootItem( parentItem, PROVIDER_KEY, QStringLiteral( "DB2:" ) );
 }

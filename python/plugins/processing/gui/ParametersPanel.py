@@ -37,8 +37,10 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterVectorDestination,
+                       QgsProcessingOutputLayerDefinition,
                        QgsProject,
-                       QgsProcessingModelAlgorithm)
+                       QgsProcessingModelAlgorithm,
+                       QgsVectorFileWriter)
 from qgis.gui import (QgsProcessingContextGenerator,
                       QgsProcessingParameterWidgetContext)
 from qgis.utils import iface
@@ -48,12 +50,13 @@ from qgis.PyQt.QtCore import QCoreApplication, Qt
 from qgis.PyQt.QtWidgets import (QWidget, QHBoxLayout, QToolButton,
                                  QLabel, QCheckBox, QSizePolicy)
 from qgis.PyQt.QtGui import QIcon
+from osgeo import gdal
 
 from processing.gui.DestinationSelectionPanel import DestinationSelectionPanel
 from processing.gui.wrappers import WidgetWrapperFactory, WidgetWrapper
 from processing.tools.dataobjects import createContext
 
-pluginPath = os.path.split(os.path.dirname(__file__))[0]\
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -223,13 +226,29 @@ class ParametersPanel(BASE, WIDGET):
                 check = QCheckBox()
                 check.setText(QCoreApplication.translate('ParametersPanel', 'Open output file after running algorithm'))
 
-                def skipOutputChanged(checkbox, skipped):
-                    checkbox.setEnabled(not skipped)
-                    if skipped:
-                        checkbox.setChecked(False)
+                def skipOutputChanged(widget, checkbox, skipped):
+
+                    enabled = not skipped
+
+                    # Do not try to open formats that are write-only.
+                    value = widget.getValue()
+                    if value and isinstance(value, QgsProcessingOutputLayerDefinition) and isinstance(output, (
+                            QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorDestination)):
+                        filename = value.sink.staticValue()
+                        if filename not in ('memory:', ''):
+                            path, ext = os.path.splitext(filename)
+                            format = QgsVectorFileWriter.driverForExtension(ext)
+                            drv = gdal.GetDriverByName(format)
+                            if drv:
+                                if drv.GetMetadataItem(gdal.DCAP_OPEN) is None:
+                                    enabled = False
+
+                    checkbox.setEnabled(enabled)
+                    checkbox.setChecked(enabled)
+
                 check.setChecked(not widget.outputIsSkipped())
                 check.setEnabled(not widget.outputIsSkipped())
-                widget.skipOutputChanged.connect(partial(skipOutputChanged, check))
+                widget.skipOutputChanged.connect(partial(skipOutputChanged, widget, check))
                 self.layoutMain.insertWidget(self.layoutMain.count() - 1, check)
                 self.checkBoxes[output.name()] = check
 

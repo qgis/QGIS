@@ -509,8 +509,9 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
     default:
       return QVariant();
   }
-
+#ifndef _MSC_VER  // avoid warning
   return QVariant();
+#endif
 }
 
 int QgsProcessingToolboxModel::rowCount( const QModelIndex &parent ) const

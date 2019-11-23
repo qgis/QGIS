@@ -31,6 +31,7 @@ Stores information relating to the current rendering settings for a layout.
       FlagHideCoverageLayer,
       FlagDrawSelection,
       FlagDisableTiledRasterLayerRenders,
+      FlagRenderLabelsByMapLayer,
     };
     typedef QFlags<QgsLayoutRenderContext::Flag> Flags;
 
@@ -183,7 +184,7 @@ whether they will be rendered in layout exports.
 .. seealso:: :py:func:`setPagesVisible`
 %End
 
-    void setCurrentExportLayer( int layer = -1 );
+ void setCurrentExportLayer( int layer = -1 ) /Deprecated/;
 %Docstring
 Sets the current item ``layer`` to draw while exporting. QgsLayoutItem subclasses
 which support multi-layer SVG exports must check the currentExportLayer()
@@ -192,9 +193,12 @@ and customize their rendering based on the layer.
 If ``layer`` is -1, all item layers will be rendered.
 
 .. seealso:: :py:func:`currentExportLayer`
+
+.. deprecated::
+   Items should now handle this themselves, via QgsLayoutItem.exportLayerBehavior() and returning QgsLayoutItem.nextExportPart().
 %End
 
-    int currentExportLayer() const;
+ int currentExportLayer() const /Deprecated/;
 %Docstring
 Returns the current item layer to draw while exporting. QgsLayoutItem subclasses
 which support multi-layer SVG exports must check this
@@ -203,6 +207,9 @@ and customize their rendering based on the layer.
 If ``layer`` is -1, all item layers should be rendered.
 
 .. seealso:: :py:func:`setCurrentExportLayer`
+
+.. deprecated::
+   Items should now handle this themselves, via QgsLayoutItem.exportLayerBehavior() and returning QgsLayoutItem.nextExportPart().
 %End
 
     QgsRenderContext::TextRenderFormat textRenderFormat() const;
@@ -223,6 +230,88 @@ Sets the text render ``format``, which dictates how text is rendered (e.g. as pa
 .. versionadded:: 3.4.3
 %End
 
+    void setSimplifyMethod( const QgsVectorSimplifyMethod &method );
+%Docstring
+Sets the simplification setting to use when rendering vector layers.
+
+If the simplify ``method`` is enabled, it apply to all vector layers rendered inside map items.
+
+This can be used to specify global simplification methods to apply during map exports,
+e.g. to allow vector layers to be simplified to an appropriate maximum level of detail
+during PDF exports (avoiding excessive PDF size due to huge numbers of vertices).
+
+The default is to use no simplification.
+
+.. note::
+
+   This simplification method is only used during non-preview renders.
+
+.. seealso:: :py:func:`simplifyMethod`
+
+
+.. versionadded:: 3.10
+%End
+
+    const QgsVectorSimplifyMethod &simplifyMethod() const;
+%Docstring
+Returns the simplification settings to use when rendering vector layers.
+
+If enabled, it will apply to all vector layers rendered for the map.
+
+The default is to use no simplification.
+
+.. note::
+
+   This simplification method is only used during non-preview renders.
+
+.. seealso:: :py:func:`setSimplifyMethod`
+
+.. versionadded:: 3.10
+%End
+
+    QStringList exportThemes() const;
+%Docstring
+Returns a list of map themes to use during the export.
+
+Items which handle layered exports (e.g. maps) may utilize this list to export different
+representations of the item as export layers, as they iterate through these included themes.
+
+.. seealso:: :py:func:`setExportThemes`
+
+.. versionadded:: 3.10
+%End
+
+    void setExportThemes( const QStringList &themes );
+%Docstring
+Sets a list of map ``themes`` to use during the export.
+
+Items which handle layered exports (e.g. maps) may utilize this list to export different
+representations of the item as export layers, as they iterate through these included themes.
+
+.. seealso:: :py:func:`exportThemes`
+
+.. versionadded:: 3.10
+%End
+
+    void setPredefinedScales( const QVector<qreal> &scales );
+%Docstring
+Sets the list of predefined ``scales`` to use with the layout. This is used
+for maps which are set to the predefined atlas scaling mode.
+
+.. seealso:: :py:func:`predefinedScales`
+
+.. versionadded:: 3.10
+%End
+
+    QVector<qreal> predefinedScales() const;
+%Docstring
+Returns the current list of predefined scales for use with the layout.
+
+.. seealso:: :py:func:`setPredefinedScales`
+
+.. versionadded:: 3.10
+%End
+
   signals:
 
     void flagsChanged( QgsLayoutRenderContext::Flags flags );
@@ -235,6 +324,15 @@ Emitted whenever the context's ``flags`` change.
     void dpiChanged();
 %Docstring
 Emitted when the context's DPI is changed.
+%End
+
+    void predefinedScalesChanged();
+%Docstring
+Emitted when the list of predefined scales changes.
+
+.. seealso:: :py:func:`predefinedScales`
+
+.. versionadded:: 3.10
 %End
 
 };

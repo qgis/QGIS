@@ -82,7 +82,7 @@ MDAL::Driver2dm::Driver2dm():
   Driver( DRIVER_NAME,
           "2DM Mesh File",
           "*.2dm",
-          Capability::ReadMesh
+          Capability::ReadMesh | Capability::SaveMesh
         )
 {
 }
@@ -271,7 +271,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, 
     new Mesh2dm(
       vertices.size(),
       faces.size(),
-      4, //maximum quads
+      MAX_VERTICES_PER_FACE_2DM,
       computeExtent( vertices ),
       mMeshFile,
       vertexIDtoIndex
@@ -285,4 +285,67 @@ std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, 
   MDAL::addBedElevationDatasetGroup( mesh.get(), vertices );
 
   return std::unique_ptr<Mesh>( mesh.release() );
+}
+
+void MDAL::Driver2dm::save( const std::string &uri, MDAL::Mesh *mesh, MDAL_Status *status )
+{
+  if ( status ) *status = MDAL_Status::None;
+
+  std::ofstream file( uri, std::ofstream::out );
+
+  if ( !file.is_open() )
+  {
+    if ( status ) *status = MDAL_Status::Err_FailToWriteToDisk;
+  }
+
+  std::string line = "MESH2D";
+  file << line << std::endl;
+
+  //write vertices
+  std::unique_ptr<MDAL::MeshVertexIterator> vertexIterator = mesh->readVertices();
+  double vertex[3];
+  for ( size_t i = 0; i < mesh->verticesCount(); ++i )
+  {
+    vertexIterator->next( 1, vertex );
+    line = "ND ";
+    line.append( std::to_string( i + 1 ) );
+    for ( size_t j = 0; j < 2; ++j )
+    {
+      line.append( " " );
+      line.append( MDAL::coordinateToString( vertex[j] ) );
+    }
+    line.append( " " );
+    line.append( MDAL::doubleToString( vertex[2] ) );
+
+    file << line << std::endl;
+  }
+
+  //write faces
+  std::unique_ptr<MDAL::MeshFaceIterator> faceIterator = mesh->readFaces();
+  for ( size_t i = 0; i < mesh->facesCount(); ++i )
+  {
+    int faceOffsets[1];
+    int vertexIndices[4]; //max 4 vertices for a face
+    faceIterator->next( 1, faceOffsets, 4, vertexIndices );
+
+    if ( faceOffsets[0] > 2 && faceOffsets[0] < 5 )
+    {
+      if ( faceOffsets[0] == 3 )
+        line = "E3T ";
+      if ( faceOffsets[0] == 4 )
+        line = "E4Q ";
+
+      line.append( std::to_string( i + 1 ) );
+
+      for ( int j = 0; j < faceOffsets[0]; ++j )
+      {
+        line.append( " " );
+        line.append( std::to_string( vertexIndices[j] + 1 ) );
+      }
+    }
+
+    file << line << std::endl;
+
+  }
+  file.close();
 }

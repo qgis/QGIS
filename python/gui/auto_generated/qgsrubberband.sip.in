@@ -10,7 +10,12 @@
 
 
 
-class QgsRubberBand : QObject, QgsMapCanvasItem
+%ModuleHeaderCode
+// For ConvertToSubClassCode.
+#include <qgsrubberband.h>
+%End
+
+class QgsRubberBand : QgsMapCanvasItem
 {
 %Docstring
 A class for drawing transient features (e.g. digitizing lines) on the map.
@@ -21,6 +26,12 @@ for tracking the mouse while drawing polylines or polygons.
 
 %TypeHeaderCode
 #include "qgsrubberband.h"
+%End
+%ConvertToSubClassCode
+    if ( dynamic_cast<QgsRubberBand *>( sipCpp ) )
+      sipType = sipType_QgsRubberBand;
+    else
+      sipType = nullptr;
 %End
   public:
 
@@ -128,7 +139,7 @@ Sets the icon type to highlight point geometries.
 :param icon: The icon to visualize point geometries
 %End
 
-    void setSvgIcon( const QString &path, const QPoint &drawOffset );
+    void setSvgIcon( const QString &path, QPoint drawOffset );
 %Docstring
 Set the path to the svg file to use to draw points.
 Calling this function automatically calls setIcon(ICON_SVG)

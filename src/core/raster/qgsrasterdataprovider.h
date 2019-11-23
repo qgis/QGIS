@@ -229,7 +229,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     // TODO: remove or make protected all readBlock working with void*
 
     //! Read block of data using given extent and size.
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &boundingBox, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &boundingBox, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 
     //! Returns TRUE if source band has no data value
     virtual bool sourceHasNoDataValue( int bandNo ) const { return mSrcHasNoDataValue.value( bandNo - 1 ); }
@@ -537,6 +537,14 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \since QGIS 3.8.0
      */
     virtual QList< double > nativeResolutions() const;
+
+    /**
+     * Returns true if the extents reported by the data provider are not reliable
+     * and it's possible that there is renderable content outside of these extents.
+     *
+     * \since QGIS 3.10.0
+     */
+    virtual bool ignoreExtents() const;
 
   signals:
 

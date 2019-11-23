@@ -19,6 +19,8 @@
 #include "qgsgeometry.h"
 #include "qgsfields.h"
 #include "qgslinestring.h"
+#include "qgsmultipoint.h"
+#include "qgsmultilinestring.h"
 #include <QTextCodec>
 #include <QUuid>
 #include <cpl_error.h>
@@ -167,9 +169,23 @@ QgsFields QgsOgrUtils::readOgrFields( OGRFeatureH ogrFet, QTextCodec *encoding )
   return fields;
 }
 
+
 QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsFields &fields, int attIndex, QTextCodec *encoding, bool *ok )
 {
-  if ( !ogrFet || attIndex < 0 || attIndex >= fields.count() )
+  if ( attIndex < 0 || attIndex >= fields.count() )
+  {
+    if ( ok )
+      *ok = false;
+    return QVariant();
+  }
+
+  const QgsField field = fields.at( attIndex );
+  return getOgrFeatureAttribute( ogrFet, field, attIndex, encoding, ok );
+}
+
+QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField &field, int attIndex, QTextCodec *encoding, bool *ok )
+{
+  if ( !ogrFet || attIndex < 0 )
   {
     if ( ok )
       *ok = false;
@@ -194,7 +210,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
 
   if ( OGR_F_IsFieldSetAndNotNull( ogrFet, attIndex ) )
   {
-    switch ( fields.at( attIndex ).type() )
+    switch ( field.type() )
     {
       case QVariant::String:
       {
@@ -223,9 +239,9 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
         int year, month, day, hour, minute, second, tzf;
 
         OGR_F_GetFieldAsDateTime( ogrFet, attIndex, &year, &month, &day, &hour, &minute, &second, &tzf );
-        if ( fields.at( attIndex ).type() == QVariant::Date )
+        if ( field.type() == QVariant::Date )
           value = QDate( year, month, day );
-        else if ( fields.at( attIndex ).type() == QVariant::Time )
+        else if ( field.type() == QVariant::Time )
           value = QTime( hour, minute, second );
         else
           value = QDateTime( QDate( year, month, day ), QTime( hour, minute, second ) );
@@ -248,7 +264,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
 
       case QVariant::List:
       {
-        if ( fields.at( attIndex ).subType() == QVariant::String )
+        if ( field.subType() == QVariant::String )
         {
           QStringList list;
           char **lst = OGR_F_GetFieldAsStringList( ogrFet, attIndex );
@@ -342,6 +358,20 @@ std::unique_ptr< QgsPoint > ogrGeometryToQgsPoint( OGRGeometryH geom )
   return qgis::make_unique< QgsPoint >( wkbType, x, y, z, m );
 }
 
+std::unique_ptr< QgsMultiPoint > ogrGeometryToQgsMultiPoint( OGRGeometryH geom )
+{
+  std::unique_ptr< QgsMultiPoint > mp = qgis::make_unique< QgsMultiPoint >();
+
+  const int count = OGR_G_GetGeometryCount( geom );
+  mp->reserve( count );
+  for ( int i = 0; i < count; ++i )
+  {
+    mp->addGeometry( ogrGeometryToQgsPoint( OGR_G_GetGeometryRef( geom, i ) ).release() );
+  }
+
+  return mp;
+}
+
 std::unique_ptr< QgsLineString > ogrGeometryToQgsLineString( OGRGeometryH geom )
 {
   QgsWkbTypes::Type wkbType = static_cast<QgsWkbTypes::Type>( OGR_G_GetGeometryType( geom ) );
@@ -366,6 +396,20 @@ std::unique_ptr< QgsLineString > ogrGeometryToQgsLineString( OGRGeometryH geom )
   OGR_G_GetPointsZM( geom, x.data(), sizeof( double ), y.data(), sizeof( double ), pz, sizeof( double ), pm, sizeof( double ) );
 
   return qgis::make_unique< QgsLineString>( x, y, z, m, wkbType == QgsWkbTypes::LineString25D );
+}
+
+std::unique_ptr< QgsMultiLineString > ogrGeometryToQgsMultiLineString( OGRGeometryH geom )
+{
+  std::unique_ptr< QgsMultiLineString > mp = qgis::make_unique< QgsMultiLineString >();
+
+  const int count = OGR_G_GetGeometryCount( geom );
+  mp->reserve( count );
+  for ( int i = 0; i < count; ++i )
+  {
+    mp->addGeometry( ogrGeometryToQgsLineString( OGR_G_GetGeometryRef( geom, i ) ).release() );
+  }
+
+  return mp;
 }
 
 QgsWkbTypes::Type QgsOgrUtils::ogrGeometryTypeToQgsWkbType( OGRwkbGeometryType ogrGeomType )
@@ -471,10 +515,21 @@ QgsGeometry QgsOgrUtils::ogrGeometryToQgsGeometry( OGRGeometryH geom )
       return QgsGeometry( ogrGeometryToQgsPoint( geom ) );
     }
 
+    case QgsWkbTypes::MultiPoint:
+    {
+      return QgsGeometry( ogrGeometryToQgsMultiPoint( geom ) );
+    }
+
     case QgsWkbTypes::LineString:
     {
       // optimised case for line -- avoid wkb conversion
       return QgsGeometry( ogrGeometryToQgsLineString( geom ) );
+    }
+
+    case QgsWkbTypes::MultiLineString:
+    {
+      // optimised case for line -- avoid wkb conversion
+      return QgsGeometry( ogrGeometryToQgsMultiLineString( geom ) );
     }
 
     default:
@@ -499,7 +554,7 @@ QgsGeometry QgsOgrUtils::ogrGeometryToQgsGeometry( OGRGeometryH geom )
   // get the wkb representation
   int memorySize = OGR_G_WkbSize( geom );
   unsigned char *wkb = new unsigned char[memorySize];
-  OGR_G_ExportToWkb( geom, ( OGRwkbByteOrder ) QgsApplication::endian(), wkb );
+  OGR_G_ExportToWkb( geom, static_cast<OGRwkbByteOrder>( QgsApplication::endian() ), wkb );
 
   // Read original geometry type
   uint32_t origGeomType;

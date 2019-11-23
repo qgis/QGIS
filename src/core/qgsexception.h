@@ -90,4 +90,23 @@ class CORE_EXPORT QgsProcessingException : public QgsException
 
 };
 
+
+/**
+ * \class QgsProviderConnectionException
+ * \ingroup core
+ * Custom exception class for provider connection related exceptions.
+ * \since QGIS 3.10
+ */
+class CORE_EXPORT QgsProviderConnectionException: public QgsException
+{
+  public:
+
+    /**
+     * Constructor for QgsProviderConnectionException, with the specified error \a message.
+     */
+    QgsProviderConnectionException( const QString &message ) : QgsException( message ) {}
+
+};
+
+
 #endif

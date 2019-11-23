@@ -17,11 +17,13 @@
 #include "qgsstyleexportimportdialog.h"
 #include "ui_qgsstyleexportimportdialogbase.h"
 
+#include "qgsapplication.h"
 #include "qgsstyle.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
 #include "qgslogger.h"
+#include "qgsnetworkcontentfetchertask.h"
 #include "qgsstylegroupselectiondialog.h"
 #include "qgsguiutils.h"
 #include "qgssettings.h"
@@ -33,11 +35,10 @@
 #include <QCloseEvent>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QNetworkReply>
 #include <QProgressDialog>
 #include <QPushButton>
 #include <QStandardItemModel>
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
 
 
 QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget *parent, Mode mode )
@@ -62,11 +63,8 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
   mTempStyle->createMemoryDatabase();
 
   // TODO validate
-  mProgressDlg = nullptr;
   mGroupSelectionDlg = nullptr;
   mTempFile = nullptr;
-  mNetManager = new QNetworkAccessManager( this );
-  mNetReply = nullptr;
 
   if ( mDialogMode == Import )
   {
@@ -387,77 +385,43 @@ void QgsStyleExportImportDialog::importFileChanged( const QString &path )
 
 void QgsStyleExportImportDialog::downloadStyleXml( const QUrl &url )
 {
-  // XXX Try to move this code to some core Network interface,
-  // HTTP downloading is a generic functionality that might be used elsewhere
-
   mTempFile = new QTemporaryFile();
   if ( mTempFile->open() )
   {
     mFileName = mTempFile->fileName();
 
-    if ( mProgressDlg )
+    QProgressDialog *progressDlg = new QProgressDialog( this );
+    progressDlg->setLabelText( tr( "Downloading style…" ) );
+    progressDlg->setAutoClose( true );
+    progressDlg->show();
+
+    QgsNetworkContentFetcherTask *fetcher = new QgsNetworkContentFetcherTask( url );
+    fetcher->setDescription( tr( "Downloading style" ) );
+    connect( progressDlg, &QProgressDialog::canceled, fetcher, &QgsNetworkContentFetcherTask::cancel );
+    connect( fetcher, &QgsNetworkContentFetcherTask::progressChanged, progressDlg, &QProgressDialog::setValue );
+    connect( fetcher, &QgsNetworkContentFetcherTask::fetched, this, [this, fetcher, progressDlg]
     {
-      QProgressDialog *dummy = mProgressDlg;
-      mProgressDlg = nullptr;
-      delete dummy;
-    }
-    mProgressDlg = new QProgressDialog();
-    mProgressDlg->setLabelText( tr( "Downloading style…" ) );
-    mProgressDlg->setAutoClose( true );
+      QNetworkReply *reply = fetcher->reply();
+      if ( !reply || reply->error() != QNetworkReply::NoError )
+      {
+        mTempFile->remove();
+        mFileName.clear();
+        if ( reply )
+          QMessageBox::information( this, tr( "Import from URL" ),
+                                    tr( "HTTP Error! Download failed: %1." ).arg( reply->errorString() ) );
+      }
+      else
+      {
+        mTempFile->write( reply->readAll() );
+        mTempFile->flush();
+        mTempFile->close();
+        populateStyles();
+      }
+      progressDlg->deleteLater();
+    } );
 
-    connect( mProgressDlg, &QProgressDialog::canceled, this, &QgsStyleExportImportDialog::downloadCanceled );
-
-    // open the network connection and connect the respective slots
-    if ( mNetReply )
-    {
-      QNetworkReply *dummyReply = mNetReply;
-      mNetReply = nullptr;
-      delete dummyReply;
-    }
-    mNetReply = mNetManager->get( QNetworkRequest( url ) );
-
-    connect( mNetReply, &QNetworkReply::finished, this, &QgsStyleExportImportDialog::httpFinished );
-    connect( mNetReply, &QIODevice::readyRead, this, &QgsStyleExportImportDialog::fileReadyRead );
-    connect( mNetReply, &QNetworkReply::downloadProgress, this, &QgsStyleExportImportDialog::updateProgress );
+    QgsApplication::taskManager()->addTask( fetcher );
   }
-}
-
-void QgsStyleExportImportDialog::httpFinished()
-{
-  if ( mNetReply->error() )
-  {
-    mTempFile->remove();
-    mFileName.clear();
-    mProgressDlg->hide();
-    QMessageBox::information( this, tr( "Import from URL" ),
-                              tr( "HTTP Error! Download failed: %1." ).arg( mNetReply->errorString() ) );
-    return;
-  }
-  else
-  {
-    mTempFile->flush();
-    mTempFile->close();
-    mTempStyle->clear();
-    populateStyles();
-  }
-}
-
-void QgsStyleExportImportDialog::fileReadyRead()
-{
-  mTempFile->write( mNetReply->readAll() );
-}
-
-void QgsStyleExportImportDialog::updateProgress( qint64 bytesRead, qint64 bytesTotal )
-{
-  mProgressDlg->setMaximum( bytesTotal );
-  mProgressDlg->setValue( bytesRead );
-}
-
-void QgsStyleExportImportDialog::downloadCanceled()
-{
-  mNetReply->abort();
-  mTempFile->remove();
-  mFileName.clear();
 }
 
 void QgsStyleExportImportDialog::selectionChanged( const QItemSelection &selected, const QItemSelection &deselected )

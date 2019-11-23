@@ -88,6 +88,7 @@ class GUI_EXPORT QgsSourceSelectProviderRegistry
       Qt::WindowFlags fl,
       QgsProviderRegistry::WidgetMode widgetMode
     );
+
   private:
 #ifdef SIP_RUN
     QgsSourceSelectProviderRegistry( const QgsSourceSelectProviderRegistry &rh );

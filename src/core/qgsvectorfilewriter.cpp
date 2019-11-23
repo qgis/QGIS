@@ -398,6 +398,12 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     QString srsWkt = srs.toWkt();
     QgsDebugMsg( "WKT to save as is " + srsWkt );
     mOgrRef = OSRNewSpatialReference( srsWkt.toLocal8Bit().constData() );
+#if GDAL_VERSION_MAJOR >= 3
+    if ( mOgrRef )
+    {
+      OSRSetAxisMappingStrategy( mOgrRef, OAMS_TRADITIONAL_GIS_ORDER );
+    }
+#endif
   }
 
   // datasource created, now create the output layer
@@ -961,6 +967,23 @@ class QgsVectorFileWriterMetadataContainer
                                layerOptions
                              )
                            );
+
+#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,1,0)
+      // FlatGeobuf
+      datasetOptions.clear();
+      layerOptions.clear();
+
+      driverMetadata.insert( QStringLiteral( "FlatGeobuf" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "FlatGeobuf" ),
+                               QObject::tr( "FlatGeobuf" ),
+                               QStringLiteral( "*.fgb" ),
+                               QStringLiteral( "fgb" ),
+                               datasetOptions,
+                               layerOptions
+                             )
+                           );
+#endif
 
       // ESRI Shapefile
       datasetOptions.clear();
@@ -2050,6 +2073,93 @@ class QgsVectorFileWriterMetadataContainer
                                QStringLiteral( "UTF-8" )
                              )
                            );
+
+      // PGDump
+      datasetOptions.clear();
+      layerOptions.clear();
+
+      datasetOptions.insert( QStringLiteral( "LINEFORMAT" ), new QgsVectorFileWriter::SetOption(
+                               QObject::tr( "Line termination character sequence." ),
+                               QStringList()
+                               << QStringLiteral( "CRLF" )
+                               << QStringLiteral( "LF" ),
+                               QString( "LF" ), // Default value
+                               false // Allow None
+                             ) );
+
+
+      layerOptions.insert( QStringLiteral( "GEOM_TYPE" ), new QgsVectorFileWriter::SetOption(
+                             QObject::tr( "Format of geometry columns." ),
+                             QStringList()
+                             << QStringLiteral( "geometry" )
+                             << QStringLiteral( "geography" ),
+                             QStringLiteral( "geometry" ), // Default value
+                             false // Allow None
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "LAUNDER" ), new QgsVectorFileWriter::BoolOption(
+                             QObject::tr( "Controls whether layer and field names will be laundered for easier use. "
+                                          "Laundered names will be converted to lower case and some special "
+                                          "characters(' - #) will be changed to underscores." ),
+                             true  // Default value
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "GEOMETRY_NAME" ), new QgsVectorFileWriter::StringOption(
+                             QObject::tr( "Name for the geometry column. Defaults to wkb_geometry "
+                                          "for GEOM_TYPE=geometry or the_geog for GEOM_TYPE=geography" ) ) );
+
+      layerOptions.insert( QStringLiteral( "SCHEMA" ), new QgsVectorFileWriter::StringOption(
+                             QObject::tr( "Name of schema into which to create the new table" ) ) );
+
+      layerOptions.insert( QStringLiteral( "CREATE_SCHEMA" ), new QgsVectorFileWriter::BoolOption(
+                             QObject::tr( "Whether to explicitly emit the CREATE SCHEMA statement to create the specified schema." ),
+                             true  // Default value
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "CREATE_TABLE" ), new QgsVectorFileWriter::BoolOption(
+                             QObject::tr( "Whether to explicitly recreate the table if necessary." ),
+                             true  // Default value
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "DROP_TABLE" ), new QgsVectorFileWriter::SetOption(
+                             QObject::tr( "Whether to explicitly destroy tables before recreating them." ),
+                             QStringList()
+                             << QStringLiteral( "YES" )
+                             << QStringLiteral( "NO" )
+                             << QStringLiteral( "IF_EXISTS" ),
+                             QStringLiteral( "YES" ), // Default value
+                             false // Allow None
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "SRID" ), new QgsVectorFileWriter::StringOption(
+                             QObject::tr( "Used to force the SRID number of the SRS associated with the layer. "
+                                          "When this option isn't specified and that a SRS is associated with the "
+                                          "layer, a search is made in the spatial_ref_sys to find a match for the "
+                                          "SRS, and, if there is no match, a new entry is inserted for the SRS in "
+                                          "the spatial_ref_sys table. When the SRID option is specified, this "
+                                          "search (and the eventual insertion of a new entry) will not be done: "
+                                          "the specified SRID is used as such." ),
+                             QString()  // Default value
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "POSTGIS_VERSION" ), new QgsVectorFileWriter::StringOption(
+                             QObject::tr( "Can be set to 2.0 or 2.2 for PostGIS 2.0/2.2 compatibility. "
+                                          "Important to set it correctly if using non-linear geometry types" ),
+                             QString( "2.2" ) // Default value
+                           ) );
+
+      driverMetadata.insert( QStringLiteral( "PGDUMP" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "PostgreSQL SQL dump" ),
+                               QObject::tr( "PostgreSQL SQL dump" ),
+                               QStringLiteral( "*.sql" ),
+                               QStringLiteral( "sql" ),
+                               datasetOptions,
+                               layerOptions,
+                               QStringLiteral( "UTF-8" )
+                             )
+                           );
+
     }
 
     QgsVectorFileWriterMetadataContainer( const QgsVectorFileWriterMetadataContainer &other ) = delete;
@@ -2077,6 +2187,13 @@ bool QgsVectorFileWriter::driverMetadata( const QString &driverName, QgsVectorFi
 
   for ( ; it != sDriverMetadata.driverMetadata.constEnd(); ++it )
   {
+    if ( it.key() == QLatin1String( "PGDUMP" ) &&
+         driverName != QLatin1String( "PGDUMP" ) &&
+         driverName != QLatin1String( "PostgreSQL SQL dump" ) )
+    {
+      // We do not want the 'PG' driver to be wrongly identified with PGDUMP
+      continue;
+    }
     if ( it.key().startsWith( driverName ) || it.value().longName.startsWith( driverName ) )
     {
       driverMetadata = it.value();
@@ -3172,7 +3289,7 @@ QList< QgsVectorFileWriter::DriverDetails > QgsVectorFileWriter::ogrDriverList( 
           // OGR SQLite driver is compiled with SpatiaLite support.
           // We have HAVE_SPATIALITE in QGIS, but that may differ from OGR
           // http://lists.osgeo.org/pipermail/gdal-dev/2012-November/034580.html
-          // -> test if creation failes
+          // -> test if creation fails
           QString option = QStringLiteral( "SPATIALITE=YES" );
           char *options[2] = { CPLStrdup( option.toLocal8Bit().constData() ), nullptr };
           OGRSFDriverH poDriver;

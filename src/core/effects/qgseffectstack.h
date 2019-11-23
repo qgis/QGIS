@@ -62,6 +62,11 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect
     QgsEffectStack( const QgsEffectStack &other );
 
     /**
+     * Move constructor.
+     */
+    QgsEffectStack( QgsEffectStack &&other ) SIP_SKIP;
+
+    /**
      * Creates a new QgsEffectStack effect from a single initial effect.
      * \param effect initial effect to add to the stack. The effect will
      * be cloned, so ownership is not transferred to the stack.
@@ -138,6 +143,9 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect
     QgsPaintEffect *effect( int index ) const;
 
     QgsEffectStack &operator=( const QgsEffectStack &rhs );
+
+    QgsEffectStack &operator=( QgsEffectStack &&other ) SIP_SKIP;
+
 
   protected:
 

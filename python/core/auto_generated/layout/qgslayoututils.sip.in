@@ -236,6 +236,16 @@ match was not found.
 .. versionadded:: 3.2
 %End
 
+    static double calculatePrettySize( double minimumSize, double maximumSize );
+%Docstring
+Calculates a "pretty" size which falls between the range [``minimumSize``, ``maximumSize``].
+
+This method will return an optimal round number which falls within the given range, finding
+the largest "pretty" number possible.
+
+.. versionadded:: 3.10
+%End
+
 };
 
 /************************************************************************

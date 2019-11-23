@@ -77,8 +77,19 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * all intersecting features are tested and the ring is added to the first valid feature.
      * \param modifiedFeatureId if specified, feature ID for feature that ring was added to will be stored in this parameter
      * \return OperationResult result code: success or reason of failure
+     * \deprecated since QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
      */
-    QgsGeometry::OperationResult addRing( const QVector<QgsPointXY> &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = nullptr );
+    Q_DECL_DEPRECATED QgsGeometry::OperationResult addRing( const QVector<QgsPointXY> &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = nullptr ) SIP_DEPRECATED;
+
+    /**
+     * Adds a ring to polygon/multipolygon features
+     * \param ring ring to add
+     * \param targetFeatureIds if specified, only these features will be the candidates for adding a ring. Otherwise
+     * all intersecting features are tested and the ring is added to the first valid feature.
+     * \param modifiedFeatureId if specified, feature ID for feature that ring was added to will be stored in this parameter
+     * \return OperationResult result code: success or reason of failure
+     */
+    QgsGeometry::OperationResult addRing( const QgsPointSequence &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = nullptr );
 
     /**
      * Adds a ring to polygon/multipolygon features
@@ -98,8 +109,9 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * - QgsGeometry::AddPartNotMultiGeometry
      * - QgsGeometry::InvalidBaseGeometry
      * - QgsGeometry::InvalidInput
+     * \deprecated since QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
      */
-    QgsGeometry::OperationResult addPart( const QList<QgsPointXY> &ring, QgsFeatureId featureId );
+    Q_DECL_DEPRECATED QgsGeometry::OperationResult addPart( const QVector<QgsPointXY> &ring, QgsFeatureId featureId ) SIP_DEPRECATED;
 
     /**
      * Adds a new part polygon to a multipart feature
@@ -146,8 +158,33 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      *  - QgsGeometry::InvalidBaseGeometry
      *  - QgsGeometry::GeometryEngineError
      *  - QgsGeometry::SplitCannotSplitPoint
+     * \deprecated since QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
      */
-    QgsGeometry::OperationResult splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
+    Q_DECL_DEPRECATED QgsGeometry::OperationResult splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false ) SIP_DEPRECATED;
+
+    /**
+     * Splits parts cut by the given line
+     * \param splitLine line that splits the layer feature parts
+     * \param topologicalEditing TRUE if topological editing is enabled
+     * \returns  - QgsGeometry::InvalidBaseGeometry
+     *  - QgsGeometry::Success
+     *  - QgsGeometry::InvalidInput
+     *  - QgsGeometry::NothingHappened if a selection is present but no feature has been split
+     *  - QgsGeometry::InvalidBaseGeometry
+     *  - QgsGeometry::GeometryEngineError
+     *  - QgsGeometry::SplitCannotSplitPoint
+     */
+    QgsGeometry::OperationResult splitParts( const QgsPointSequence &splitLine, bool topologicalEditing = false );
+
+    /**
+     * Splits features cut by the given line
+     * \param splitLine line that splits the layer features
+     * \param topologicalEditing TRUE if topological editing is enabled
+     * \returns 0 in case of success,
+     *  4 if there is a selection but no feature split
+     * \deprecated since QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+     */
+    Q_DECL_DEPRECATED QgsGeometry::OperationResult splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false ) SIP_DEPRECATED;
 
     /**
      * Splits features cut by the given line
@@ -156,7 +193,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * \returns 0 in case of success,
      *  4 if there is a selection but no feature split
      */
-    QgsGeometry::OperationResult splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
+    QgsGeometry::OperationResult splitFeatures( const QgsPointSequence &splitLine, bool topologicalEditing = false );
 
     /**
      * Adds topological points for every vertex of the geometry.
@@ -167,14 +204,23 @@ class CORE_EXPORT QgsVectorLayerEditUtils
     int addTopologicalPoints( const QgsGeometry &geom );
 
     /**
-     * Adds a vertex to segments which intersect point p but don't
+     * Adds a vertex to segments which intersect point \a p but don't
      * already have a vertex there. If a feature already has a vertex at position p,
      * no additional vertex is inserted. This method is useful for topological
      * editing.
-     * \param p position of the vertex
      * \return 0 in case of success
      */
     int addTopologicalPoints( const QgsPointXY &p );
+
+    /**
+     * Adds a vertex to segments which intersect point \a p but don't
+     * already have a vertex there. If a feature already has a vertex at position p,
+     * no additional vertex is inserted. This method is useful for topological
+     * editing.
+     * \return 0 in case of success
+     * \since QGIS 3.10
+     */
+    int addTopologicalPoints( const QgsPoint &p );
 
   private:
 
@@ -182,7 +228,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * Little helper function that gives bounding box from a list of points.
      * \returns TRUE in case of success
      */
-    bool boundingBoxFromPointList( const QVector<QgsPointXY> &list, double &xmin, double &ymin, double &xmax, double &ymax ) const;
+    bool boundingBoxFromPointList( const QgsPointSequence &list, double &xmin, double &ymin, double &xmax, double &ymax ) const;
 
     QgsVectorLayer *mLayer = nullptr;
 };

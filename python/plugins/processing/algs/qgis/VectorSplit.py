@@ -29,11 +29,11 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFolderDestination,
-                       QgsProcessingOutputFolder,
                        QgsProcessingException,
                        QgsProcessingOutputMultipleLayers,
                        QgsExpression,
-                       QgsFeatureRequest)
+                       QgsFeatureRequest,
+                       QgsVectorFileWriter)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools.system import mkdir
@@ -88,6 +88,11 @@ class VectorSplit(QgisAlgorithm):
         fieldName = self.parameterAsString(parameters, self.FIELD, context)
         directory = self.parameterAsString(parameters, self.OUTPUT, context)
 
+        output_format = context.preferredVectorFormat()
+        if not output_format in QgsVectorFileWriter.supportedFormatExtensions():
+            # fallback to gpkg if preferred format is not available
+            output_format = 'gpkg'
+
         mkdir(directory)
 
         fieldIndex = source.fields().lookupField(fieldName)
@@ -104,7 +109,7 @@ class VectorSplit(QgisAlgorithm):
         for current, i in enumerate(uniqueValues):
             if feedback.isCanceled():
                 break
-            fName = '{0}_{1}.gpkg'.format(baseName, str(i).strip())
+            fName = '{0}_{1}.{2}'.format(baseName, str(i).strip(), output_format)
             feedback.pushInfo(self.tr('Creating layer: {}').format(fName))
 
             sink, dest = QgsProcessingUtils.createFeatureSink(fName, context, fields, geomType, crs)

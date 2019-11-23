@@ -1,0 +1,14 @@
+<!-- template for the WFS3 API collections page -->
+{% include "header.html" %}
+
+    <h1>Collections</h1>
+
+    {% for collection in collections %}
+        <h3><a href="{% for link in links_filter( collection.links, "type", "text/html" ) %}
+        {{ path_chomp( link.href ) }}
+        {% endfor %}">{{ collection.title }}</a></h3>
+
+    {% endfor %}
+
+
+{% include "footer.html" %}

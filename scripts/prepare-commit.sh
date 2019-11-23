@@ -120,11 +120,15 @@ for f in $MODIFIED; do
     if grep -Fq "$sip_file" "${TOPLEVEL}"/python/"${module}"/"${module}"_auto.sip; then
       sip_file=$(${GP}sed -r 's@^src/(core|gui|analysis|server|3d)@\1/auto_generated@; s@\.h$@.sip.in@' <<<"$f" )
       m=python/$sip_file.$REV.prepare
-      touch python/"$sip_file"
+      if [ ! -f python/"$sip_file" ]; then
+        touch python/"$sip_file"
+      fi
       cp python/"$sip_file" "$m"
-      "${TOPLEVEL}"/scripts/sipify.pl -s python/"$sip_file" -p python/"${module}"/auto_additions/"${pyfile}" "$f"
-      if ! diff -u "$m" python/"$sip_file" >>"$SIPIFYDIFF"; then
+      "${TOPLEVEL}"/scripts/sipify.pl -s $m -p python/"${module}"/auto_additions/"${pyfile}" "$f"
+      # only replace sip files if they have changed
+      if ! diff -u python/"$sip_file" "$m" >>"$SIPIFYDIFF"; then
         echo "python/$sip_file is not up to date"
+        cp "$m" python/"$sip_file"
       fi
       rm "$m"
     fi

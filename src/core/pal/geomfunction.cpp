@@ -33,10 +33,11 @@
 #include "qgis.h"
 #include "pal.h"
 #include "qgsmessagelog.h"
+#include <vector>
 
 using namespace pal;
 
-void heapsort( int *sid, int *id, const double *const x, int N )
+void heapsort( int *sid, int *id, const std::vector< double > &x, int N )
 {
   unsigned int n = N, i = n / 2, parent, child;
   int tx;
@@ -162,7 +163,7 @@ bool GeomFunction::computeLineIntersection( double x1, double y1, double x2, dou
   return true;
 }
 
-int GeomFunction::convexHullId( int *id, const double *const x, const double *const y, int n, int *&cHull )
+int GeomFunction::convexHullId( int *id, const std::vector< double > &x, const std::vector< double > &y, int n, int *&cHull )
 {
   int i;
 
@@ -263,7 +264,7 @@ int GeomFunction::convexHullId( int *id, const double *const x, const double *co
   return top + 1;
 }
 
-int GeomFunction::reorderPolygon( int nbPoints, double *x, double *y )
+int GeomFunction::reorderPolygon( int nbPoints, std::vector<double> &x, std::vector<double> &y )
 {
   int inc = 0;
   int *cHull = nullptr;
@@ -325,8 +326,12 @@ bool GeomFunction::containsCandidate( const GEOSPreparedGeometry *geom, double x
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 5, 2 );
 
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+  GEOSCoordSeq_setXY_r( geosctxt, coord, 0, x, y );
+#else
   GEOSCoordSeq_setX_r( geosctxt, coord, 0, x );
   GEOSCoordSeq_setY_r( geosctxt, coord, 0, y );
+#endif
   if ( !qgsDoubleNear( alpha, 0.0 ) )
   {
     double beta = alpha + M_PI_2;
@@ -334,25 +339,41 @@ bool GeomFunction::containsCandidate( const GEOSPreparedGeometry *geom, double x
     double dy1 = std::sin( alpha ) * width;
     double dx2 = std::cos( beta ) * height;
     double dy2 = std::sin( beta ) * height;
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+    GEOSCoordSeq_setXY_r( geosctxt, coord, 1, x  + dx1, y + dy1 );
+    GEOSCoordSeq_setXY_r( geosctxt, coord, 2, x + dx1 + dx2, y + dy1 + dy2 );
+    GEOSCoordSeq_setXY_r( geosctxt, coord, 3, x + dx2, y + dy2 );
+#else
     GEOSCoordSeq_setX_r( geosctxt, coord, 1, x  + dx1 );
     GEOSCoordSeq_setY_r( geosctxt, coord, 1, y + dy1 );
     GEOSCoordSeq_setX_r( geosctxt, coord, 2, x + dx1 + dx2 );
     GEOSCoordSeq_setY_r( geosctxt, coord, 2, y + dy1 + dy2 );
     GEOSCoordSeq_setX_r( geosctxt, coord, 3, x + dx2 );
     GEOSCoordSeq_setY_r( geosctxt, coord, 3, y + dy2 );
+#endif
   }
   else
   {
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+    GEOSCoordSeq_setXY_r( geosctxt, coord, 1, x + width, y );
+    GEOSCoordSeq_setXY_r( geosctxt, coord, 2, x + width, y + height );
+    GEOSCoordSeq_setXY_r( geosctxt, coord, 3, x, y + height );
+#else
     GEOSCoordSeq_setX_r( geosctxt, coord, 1, x + width );
     GEOSCoordSeq_setY_r( geosctxt, coord, 1, y );
     GEOSCoordSeq_setX_r( geosctxt, coord, 2, x + width );
     GEOSCoordSeq_setY_r( geosctxt, coord, 2, y + height );
     GEOSCoordSeq_setX_r( geosctxt, coord, 3, x );
     GEOSCoordSeq_setY_r( geosctxt, coord, 3, y + height );
+#endif
   }
   //close ring
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+  GEOSCoordSeq_setXY_r( geosctxt, coord, 4, x, y );
+#else
   GEOSCoordSeq_setX_r( geosctxt, coord, 4, x );
   GEOSCoordSeq_setY_r( geosctxt, coord, 4, y );
+#endif
 
   try
   {

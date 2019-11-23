@@ -53,7 +53,7 @@ QgsLayoutPagePropertiesWidget::QgsLayoutPagePropertiesWidget( QWidget *parent, Q
   mLockAspectRatio->setHeightSpinBox( mHeightSpin );
 
   mSymbolButton->setSymbolType( QgsSymbol::Fill );
-  mSymbolButton->setSymbol( mPage->layout()->pageCollection()->pageStyleSymbol()->clone() );
+  mSymbolButton->setSymbol( mPage->pageStyleSymbol()->clone() );
 
   connect( mPageSizeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutPagePropertiesWidget::pageSizeChanged );
   connect( mPageOrientationComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutPagePropertiesWidget::orientationChanged );
@@ -183,7 +183,7 @@ void QgsLayoutPagePropertiesWidget::setToCustomSize()
 void QgsLayoutPagePropertiesWidget::symbolChanged()
 {
   mPage->layout()->undoStack()->beginCommand( mPage->layout()->pageCollection(), tr( "Change Page Background" ), QgsLayoutItemPage::UndoPageSymbol );
-  mPage->layout()->pageCollection()->setPageStyleSymbol( static_cast< QgsFillSymbol * >( mSymbolButton->symbol() )->clone() );
+  mPage->setPageStyleSymbol( static_cast< QgsFillSymbol * >( mSymbolButton->symbol() )->clone() );
   mPage->layout()->undoStack()->endCommand();
 }
 

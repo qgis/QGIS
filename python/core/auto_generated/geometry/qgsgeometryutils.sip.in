@@ -627,6 +627,33 @@ An algorithm to calculate an (approximate) intersection of two lines in 3D.
        # (True, PyQt5.QtGui.QgsVector3D(0.0, 5.0, 5.0))
 %End
 
+    static double triangleArea( double aX, double aY, double bX, double bY, double cX, double cY );
+%Docstring
+Returns the area of the triangle denoted by the points (``aX``, ``aY``), (``bX``, ``bY``) and
+(``cX``, ``cY``).
+
+.. versionadded:: 3.10
+%End
+
+    static void weightedPointInTriangle( double aX, double aY, double bX, double bY, double cX, double cY,
+                                         double weightB, double weightC, double &pointX /Out/, double &pointY /Out/ );
+%Docstring
+Returns a weighted point inside the triangle denoted by the points (``aX``, ``aY``), (``bX``, ``bY``) and
+(``cX``, ``cY``).
+
+:param aX: x-coordinate of first vertex in triangle
+:param aY: y-coordinate of first vertex in triangle
+:param bX: x-coordinate of second vertex in triangle
+:param bY: y-coordinate of second vertex in triangle
+:param cX: x-coordinate of third vertex in triangle
+:param cY: y-coordinate of third vertex in triangle
+:param weightB: weighting factor along axis A-B (between 0 and 1)
+:param weightC: weighting factor along axis A-C (between 0 and 1)
+:param pointY: y-coordinate of generated point
+
+.. versionadded:: 3.10
+%End
+
     static bool setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point );
 %Docstring
 A Z dimension is added to ``point`` if one of the point in the list

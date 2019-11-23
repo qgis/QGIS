@@ -37,6 +37,8 @@
 #include <cmath>
 #include <QLinkedList>
 #include <geos_c.h>
+#include <memory>
+#include <vector>
 
 #include "qgis_core.h"
 
@@ -81,6 +83,11 @@ namespace pal
       PointSet *extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty );
 
       /**
+       * Returns a copy of the point set.
+       */
+      std::unique_ptr< PointSet > clone() const;
+
+      /**
        * Tests whether point set contains a specified point.
        * \param x x-coordinate of point
        * \param y y-coordinate of point
@@ -109,6 +116,16 @@ namespace pal
                                  double xrm, double yrm );
 
       /**
+       * Extends linestrings by the specified amount at the start and end of the line,
+       * by extending the existing lines following the same direction as the original line
+       * start or end.
+       *
+       * The \a smoothDistance argument specifies the distance over which to smooth the direction
+       * of the line at its start and end points.
+       */
+      void extendLineByDistance( double startDistance, double endDistance, double smoothDistance );
+
+      /**
        * Returns the squared minimum distance between the point set geometry and the point (px,py)
        * Optionally, the nearest point is stored in (rx,ry).
        * \param px x coordinate of the point
@@ -130,6 +147,12 @@ namespace pal
         max[0] = xmax;
         max[1] = ymax;
       }
+
+      /**
+       * Returns TRUE if the bounding box of this pointset intersects the bounding box
+       * of another pointset.
+       */
+      bool boundingBoxIntersects( const PointSet *other ) const;
 
       //! Returns NULLPTR if this isn't a hole. Otherwise returns pointer to parent pointset.
       PointSet *getHoleOf() { return holeOf; }
@@ -161,16 +184,16 @@ namespace pal
        */
       bool isClosed() const;
 
+      int nbPoints;
+      std::vector< double > x;
+      std::vector< double > y;   // points order is counterclockwise
+
     protected:
       mutable GEOSGeometry *mGeos = nullptr;
       mutable bool mOwnsGeom = false;
 
-      int nbPoints;
-      double *x = nullptr;
-      double *y = nullptr;   // points order is counterclockwise
-
       int *cHull = nullptr;
-      int cHullSize;
+      int cHullSize = 0;
 
       int type;
 

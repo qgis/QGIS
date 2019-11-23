@@ -150,6 +150,12 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   // non-default themes are best rendered using the Fusion style, therefore changing themes must require a restart to
   lblUITheme->setText( QStringLiteral( "%1 <i>(%2)</i>" ).arg( lblUITheme->text(), tr( "QGIS restart required" ) ) );
 
+  mEnableMacrosComboBox->addItem( tr( "Never" ), QVariant::fromValue( Qgis::PythonMacroMode::Never ) );
+  mEnableMacrosComboBox->addItem( tr( "Ask" ), QVariant::fromValue( Qgis::PythonMacroMode::Ask ) );
+  mEnableMacrosComboBox->addItem( tr( "For this session only" ), QVariant::fromValue( Qgis::PythonMacroMode::SessionOnly ) );
+  mEnableMacrosComboBox->addItem( tr( "Not during this session" ), QVariant::fromValue( Qgis::PythonMacroMode::NotForThisSession ) );
+  mEnableMacrosComboBox->addItem( tr( "Always (not recommended)" ), QVariant::fromValue( Qgis::PythonMacroMode::Always ) );
+
   mIdentifyHighlightColorButton->setColorDialogTitle( tr( "Identify Highlight Color" ) );
   mIdentifyHighlightColorButton->setAllowOpacity( true );
   mIdentifyHighlightColorButton->setContext( QStringLiteral( "gui" ) );
@@ -359,20 +365,20 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   QString settingProxyType = mSettings->value( QStringLiteral( "proxy/proxyType" ), QStringLiteral( "DefaultProxy" ) ).toString();
   mProxyTypeComboBox->setCurrentIndex( mProxyTypeComboBox->findText( settingProxyType ) );
 
-  //URLs excluded not going through proxies
-  const QStringList excludedUrlPathList = mSettings->value( QStringLiteral( "proxy/proxyExcludedUrls" ) ).toStringList();
-  for ( const QString &path : excludedUrlPathList )
+  //url with no proxy at all
+  const QStringList noProxyUrlPathList = mSettings->value( QStringLiteral( "proxy/noProxyUrls" ) ).toStringList();
+  for ( const QString &path : noProxyUrlPathList )
   {
     if ( path.trimmed().isEmpty() )
       continue;
 
-    QListWidgetItem *newItem = new QListWidgetItem( mExcludeUrlListWidget );
+    QListWidgetItem *newItem = new QListWidgetItem( mNoProxyUrlListWidget );
     newItem->setText( path );
     newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    mExcludeUrlListWidget->addItem( newItem );
+    mNoProxyUrlListWidget->addItem( newItem );
   }
-  connect( mAddUrlPushButton, &QAbstractButton::clicked, this, &QgsOptions::addExcludedUrl );
-  connect( mRemoveUrlPushButton, &QAbstractButton::clicked, this, &QgsOptions::removeExcludedUrl );
+  connect( mAddUrlPushButton, &QAbstractButton::clicked, this, &QgsOptions::addNoProxyUrl );
+  connect( mRemoveUrlPushButton, &QAbstractButton::clicked, this, &QgsOptions::removeNoProxyUrl );
 
   // cache settings
   mCacheDirectory->setText( mSettings->value( QStringLiteral( "cache/directory" ) ).toString() );
@@ -447,23 +453,28 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mLogCanvasRefreshChkBx->setChecked( mSettings->value( QStringLiteral( "/Map/logCanvasRefreshEvent" ), false ).toBool() );
 
   //set the default projection behavior radio buttons
-  if ( mSettings->value( QStringLiteral( "/Projections/defaultBehavior" ), "prompt" ).toString() == QLatin1String( "prompt" ) )
+  const QgsOptions::UnknownLayerCrsBehavior mode = QgsSettings().enumValue( QStringLiteral( "/projections/unknownCrsBehavior" ), QgsOptions::UnknownLayerCrsBehavior::NoAction, QgsSettings::App );
+  switch ( mode )
   {
-    radPromptForProjection->setChecked( true );
+    case NoAction:
+      radCrsNoAction->setChecked( true );
+      break;
+    case PromptUserForCrs:
+      radPromptForProjection->setChecked( true );
+      break;
+    case UseProjectCrs:
+      radUseProjectProjection->setChecked( true );
+      break;
+    case UseDefaultCrs:
+      radUseGlobalProjection->setChecked( true );
+      break;
   }
-  else if ( mSettings->value( QStringLiteral( "/Projections/defaultBehavior" ), "prompt" ).toString() == QLatin1String( "useProject" ) )
-  {
-    radUseProjectProjection->setChecked( true );
-  }
-  else //useGlobal
-  {
-    radUseGlobalProjection->setChecked( true );
-  }
-  QString myLayerDefaultCrs = mSettings->value( QStringLiteral( "/Projections/layerDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString();
+
+  QString myLayerDefaultCrs = mSettings->value( QStringLiteral( "/Projections/layerDefaultCrs" ), geoEpsgCrsAuthId() ).toString();
   mLayerDefaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( myLayerDefaultCrs );
   leLayerGlobalCrs->setCrs( mLayerDefaultCrs );
 
-  const QString defaultProjectCrs = mSettings->value( QStringLiteral( "/projections/defaultProjectCrs" ), GEO_EPSG_CRS_AUTHID, QgsSettings::App ).toString();
+  const QString defaultProjectCrs = mSettings->value( QStringLiteral( "/projections/defaultProjectCrs" ), geoEpsgCrsAuthId(), QgsSettings::App ).toString();
   leProjectGlobalCrs->setOptionVisible( QgsProjectionSelectionWidget::DefaultCrs, false );
   leProjectGlobalCrs->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, true );
   leProjectGlobalCrs->setNotSetText( tr( "No projection (or unknown/non-Earth projection)" ) );
@@ -556,6 +567,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   {
     mKeepBaseUnitCheckBox->setChecked( false );
   }
+  mPlanimetricMeasurementsComboBox->setChecked( mSettings->value( QStringLiteral( "measure/planimetric" ), false, QgsSettings::Core ).toBool() );
 
   cmbIconSize->setCurrentIndex( cmbIconSize->findText( mSettings->value( QStringLiteral( "qgis/iconSize" ), QGIS_ICON_SIZE ).toString() ) );
 
@@ -634,7 +646,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   }
   mSegmentationToleranceSpinBox->setValue( tolerance );
 
-  QStringList myScalesList = PROJECT_SCALES.split( ',' );
+  QStringList myScalesList = Qgis::defaultProjectScales().split( ',' );
   myScalesList.append( QStringLiteral( "1:1" ) );
   mSimplifyMaximumScaleComboBox->updateScales( myScalesList );
   mSimplifyMaximumScaleComboBox->setScale( mSettings->value( QStringLiteral( "/qgis/simplifyMaxScale" ), 1 ).toFloat() );
@@ -665,8 +677,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   cbxCheckVersion->setChecked( mSettings->value( QStringLiteral( "/qgis/checkVersion" ), true ).toBool() );
   cbxCheckVersion->setVisible( mSettings->value( QStringLiteral( "/qgis/allowVersionCheck" ), true ).toBool() );
   cbxAttributeTableDocked->setChecked( mSettings->value( QStringLiteral( "/qgis/dockAttributeTable" ), false ).toBool() );
-  cbxAddPostgisDC->setChecked( mSettings->value( QStringLiteral( "/qgis/addPostgisDC" ), false ).toBool() );
-  cbxAddOracleDC->setChecked( mSettings->value( QStringLiteral( "/qgis/addOracleDC" ), false ).toBool() );
   cbxCompileExpressions->setChecked( mSettings->value( QStringLiteral( "/qgis/compileExpressions" ), true ).toBool() );
 
   mComboCopyFeatureFormat->addItem( tr( "Plain text, no geometry" ), QgsClipboard::AttributesOnly );
@@ -760,7 +770,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   chbAskToSaveProjectChanges->setChecked( mSettings->value( QStringLiteral( "qgis/askToSaveProjectChanges" ), QVariant( true ) ).toBool() );
   mLayerDeleteConfirmationChkBx->setChecked( mSettings->value( QStringLiteral( "qgis/askToDeleteLayers" ), true ).toBool() );
   chbWarnOldProjectVersion->setChecked( mSettings->value( QStringLiteral( "/qgis/warnOldProjectVersion" ), QVariant( true ) ).toBool() );
-  cmbEnableMacros->setCurrentIndex( mSettings->value( QStringLiteral( "/qgis/enableMacros" ), 1 ).toInt() );
+  Qgis::PythonMacroMode pyMacroMode = mSettings->enumValue( QStringLiteral( "/qgis/enableMacros" ), Qgis::PythonMacroMode::Ask );
+  mEnableMacrosComboBox->setCurrentIndex( mEnableMacrosComboBox->findData( QVariant::fromValue( pyMacroMode ) ) );
 
   // templates
   cbxProjectDefaultNew->setChecked( mSettings->value( QStringLiteral( "/qgis/newProjectDefault" ), QVariant( false ) ).toBool() );
@@ -781,7 +792,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   setZoomFactorValue();
 
   // predefined scales for scale combobox
-  QString scalePaths = mSettings->value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString();
+  QString scalePaths = mSettings->value( QStringLiteral( "Map/scales" ), Qgis::defaultProjectScales() ).toString();
   if ( !scalePaths.isEmpty() )
   {
     const QStringList scalesList = scalePaths.split( ',' );
@@ -1426,16 +1437,16 @@ void QgsOptions::saveOptions()
 
   mSettings->setValue( QStringLiteral( "cache/size" ), QVariant::fromValue( mCacheSize->value() * 1024L ) );
 
-  //url to exclude from proxys
-  QStringList excludedUrls;
-  excludedUrls.reserve( mExcludeUrlListWidget->count() );
-  for ( int i = 0; i < mExcludeUrlListWidget->count(); ++i )
+  //url with no proxy at all
+  QStringList noProxyUrls;
+  noProxyUrls.reserve( mNoProxyUrlListWidget->count() );
+  for ( int i = 0; i < mNoProxyUrlListWidget->count(); ++i )
   {
-    const QString host = mExcludeUrlListWidget->item( i )->text();
+    const QString host = mNoProxyUrlListWidget->item( i )->text();
     if ( !host.trimmed().isEmpty() )
-      excludedUrls << host;
+      noProxyUrls << host;
   }
-  mSettings->setValue( QStringLiteral( "proxy/proxyExcludedUrls" ), excludedUrls );
+  mSettings->setValue( QStringLiteral( "proxy/noProxyUrls" ), noProxyUrls );
 
   QgisApp::instance()->namUpdate();
 
@@ -1468,8 +1479,6 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/ignoreShapeEncoding" ), cbxIgnoreShapeEncoding->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/mainSnappingWidgetMode" ), mSnappingMainDialogComboBox->currentData() );
 
-  mSettings->setValue( QStringLiteral( "/qgis/addPostgisDC" ), cbxAddPostgisDC->isChecked() );
-  mSettings->setValue( QStringLiteral( "/qgis/addOracleDC" ), cbxAddOracleDC->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/compileExpressions" ), cbxCompileExpressions->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/defaultLegendGraphicResolution" ), mLegendGraphicResolutionSpinBox->value() );
   mSettings->setValue( QStringLiteral( "/qgis/mapTipsDelay" ), mMapTipsDelaySpinBox->value() );
@@ -1527,7 +1536,7 @@ void QgsOptions::saveOptions()
     mSettings->setValue( QStringLiteral( "/qgis/projectTemplateDir" ), leTemplateFolder->text() );
     QgisApp::instance()->updateProjectFromTemplates();
   }
-  mSettings->setValue( QStringLiteral( "/qgis/enableMacros" ), cmbEnableMacros->currentIndex() );
+  mSettings->setEnumValue( QStringLiteral( "/qgis/enableMacros" ), mEnableMacrosComboBox->currentData().value<Qgis::PythonMacroMode>() );
 
   QgsApplication::setNullRepresentation( leNullValue->text() );
   mSettings->setValue( QStringLiteral( "/qgis/style" ), cmbStyle->currentText() );
@@ -1566,15 +1575,19 @@ void QgsOptions::saveOptions()
   //projection defined...
   if ( radPromptForProjection->isChecked() )
   {
-    mSettings->setValue( QStringLiteral( "/Projections/defaultBehavior" ), "prompt" );
+    mSettings->setEnumValue( QStringLiteral( "/projections/unknownCrsBehavior" ), QgsOptions::UnknownLayerCrsBehavior::PromptUserForCrs, QgsSettings::App );
   }
   else if ( radUseProjectProjection->isChecked() )
   {
-    mSettings->setValue( QStringLiteral( "/Projections/defaultBehavior" ), "useProject" );
+    mSettings->setEnumValue( QStringLiteral( "/projections/unknownCrsBehavior" ), QgsOptions::UnknownLayerCrsBehavior::UseProjectCrs, QgsSettings::App );
   }
-  else //assumes radUseGlobalProjection is checked
+  else if ( radCrsNoAction->isChecked() )
   {
-    mSettings->setValue( QStringLiteral( "/Projections/defaultBehavior" ), "useGlobal" );
+    mSettings->setEnumValue( QStringLiteral( "/projections/unknownCrsBehavior" ), QgsOptions::UnknownLayerCrsBehavior::NoAction, QgsSettings::App );
+  }
+  else
+  {
+    mSettings->setEnumValue( QStringLiteral( "/projections/unknownCrsBehavior" ), QgsOptions::UnknownLayerCrsBehavior::UseDefaultCrs, QgsSettings::App );
   }
 
   mSettings->setValue( QStringLiteral( "/Projections/layerDefaultCrs" ), mLayerDefaultCrs.authid() );
@@ -1583,6 +1596,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/projections/promptWhenMultipleTransformsExist" ), mShowDatumTransformDialogCheckBox->isChecked(), QgsSettings::App );
 
   //measurement settings
+  mSettings->setValue( QStringLiteral( "/qgis/measure/planimetric" ), mPlanimetricMeasurementsComboBox->isChecked() );
 
   QgsUnitTypes::DistanceUnit distanceUnit = static_cast< QgsUnitTypes::DistanceUnit >( mDistanceUnitsComboBox->currentData().toInt() );
   mSettings->setValue( QStringLiteral( "/qgis/measure/displayunits" ), QgsUnitTypes::encodeUnit( distanceUnit ) );
@@ -2130,19 +2144,19 @@ void QgsOptions::removeSVGPath()
   delete itemToRemove;
 }
 
-void QgsOptions::addExcludedUrl()
+void QgsOptions::addNoProxyUrl()
 {
-  QListWidgetItem *newItem = new QListWidgetItem( mExcludeUrlListWidget );
+  QListWidgetItem *newItem = new QListWidgetItem( mNoProxyUrlListWidget );
   newItem->setText( QStringLiteral( "URL" ) );
   newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-  mExcludeUrlListWidget->addItem( newItem );
-  mExcludeUrlListWidget->setCurrentItem( newItem );
+  mNoProxyUrlListWidget->addItem( newItem );
+  mNoProxyUrlListWidget->setCurrentItem( newItem );
 }
 
-void QgsOptions::removeExcludedUrl()
+void QgsOptions::removeNoProxyUrl()
 {
-  int currentRow = mExcludeUrlListWidget->currentRow();
-  QListWidgetItem *itemToRemove = mExcludeUrlListWidget->takeItem( currentRow );
+  int currentRow = mNoProxyUrlListWidget->currentRow();
+  QListWidgetItem *itemToRemove = mNoProxyUrlListWidget->takeItem( currentRow );
   delete itemToRemove;
 }
 
@@ -2189,7 +2203,9 @@ void QgsOptions::optionsStackedWidget_CurrentChanged( int index )
 
 void QgsOptions::loadGdalDriverList()
 {
-  QStringList mySkippedDrivers = QgsApplication::skippedGdalDrivers();
+  QgsApplication::registerGdalDriversFromSettings();
+
+  const QStringList mySkippedDrivers = QgsApplication::skippedGdalDrivers();
   GDALDriverH myGdalDriver; // current driver
   QString myGdalDriverDescription;
   QStringList myDrivers;
@@ -2251,8 +2267,8 @@ void QgsOptions::loadGdalDriverList()
     myDriversLongName[myGdalDriverDescription] = QString( GDALGetMetadataItem( myGdalDriver, "DMD_LONGNAME", "" ) );
 
   }
-  // restore GDAL_SKIP just in case
-  CPLSetConfigOption( "GDAL_SKIP", mySkippedDrivers.join( QStringLiteral( " " ) ).toUtf8() );
+  // restore active drivers
+  QgsApplication::applyGdalSkippedDrivers();
 
   myDrivers.removeDuplicates();
   // myDrivers.sort();
@@ -2306,19 +2322,38 @@ void QgsOptions::loadGdalDriverList()
 
 void QgsOptions::saveGdalDriverList()
 {
+  bool driverUnregisterNeeded = false;
+  const auto oldSkippedGdalDrivers = QgsApplication::skippedGdalDrivers();
+  auto deferredSkippedGdalDrivers = QgsApplication::deferredSkippedGdalDrivers();
+  QStringList skippedGdalDrivers;
   for ( int i = 0; i < lstGdalDrivers->topLevelItemCount(); i++ )
   {
     QTreeWidgetItem *mypItem = lstGdalDrivers->topLevelItem( i );
+    const auto &driverName( mypItem->text( 0 ) );
     if ( mypItem->checkState( 0 ) == Qt::Unchecked )
     {
-      QgsApplication::skipGdalDriver( mypItem->text( 0 ) );
+      skippedGdalDrivers << driverName;
+      if ( !deferredSkippedGdalDrivers.contains( driverName ) &&
+           !oldSkippedGdalDrivers.contains( driverName ) )
+      {
+        deferredSkippedGdalDrivers << driverName;
+        driverUnregisterNeeded = true;
+      }
     }
     else
     {
-      QgsApplication::restoreGdalDriver( mypItem->text( 0 ) );
+      if ( deferredSkippedGdalDrivers.contains( driverName ) )
+      {
+        deferredSkippedGdalDrivers.removeAll( driverName );
+      }
     }
   }
-  mSettings->setValue( QStringLiteral( "gdal/skipList" ), QgsApplication::skippedGdalDrivers().join( QStringLiteral( " " ) ) );
+  if ( driverUnregisterNeeded )
+  {
+    QMessageBox::information( this, tr( "Drivers Disabled" ),
+                              tr( "One or more drivers have been disabled. This will only take effect after QGIS is restarted." ) );
+  }
+  QgsApplication::setSkippedGdalDrivers( skippedGdalDrivers, deferredSkippedGdalDrivers );
 }
 
 void QgsOptions::addScale()
@@ -2349,7 +2384,7 @@ void QgsOptions::restoreDefaultScaleValues()
 {
   mListGlobalScales->clear();
 
-  QStringList myScalesList = PROJECT_SCALES.split( ',' );
+  QStringList myScalesList = Qgis::defaultProjectScales().split( ',' );
   const auto constMyScalesList = myScalesList;
   for ( const QString &scale : constMyScalesList )
   {

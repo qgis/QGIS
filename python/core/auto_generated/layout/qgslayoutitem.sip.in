@@ -186,6 +186,7 @@ Base class for graphical items within a :py:class:`QgsLayout`.
       UndoMapGridAnnotationFontColor,
       UndoMapGridLineSymbol,
       UndoMapGridMarkerSymbol,
+      UndoMapGridIntervalRange,
       UndoMapLabelMargin,
       UndoPictureRotation,
       UndoPictureFillColor,
@@ -386,7 +387,26 @@ Sets the item's parent ``group``.
 .. seealso:: :py:func:`parentGroup`
 %End
 
-    virtual int numberExportLayers() const;
+    enum ExportLayerBehavior
+    {
+      CanGroupWithAnyOtherItem,
+      CanGroupWithItemsOfSameType,
+      MustPlaceInOwnLayer,
+      ItemContainsSubLayers,
+    };
+
+    virtual ExportLayerBehavior exportLayerBehavior() const;
+%Docstring
+Returns the behavior of this item during exporting to layered exports (e.g. SVG).
+
+.. seealso:: :py:func:`numberExportLayers`
+
+.. seealso:: :py:func:`exportLayerDetails`
+
+.. versionadded:: 3.10
+%End
+
+ virtual int numberExportLayers() const /Deprecated/;
 %Docstring
 Returns the number of layers that this item requires for exporting during layered exports (e.g. SVG).
 Returns 0 if this item is to be placed on the same layer as the previous item,
@@ -394,6 +414,64 @@ Returns 0 if this item is to be placed on the same layer as the previous item,
 
 Items which require multiply layers should check QgsLayoutContext.currentExportLayer() during
 their rendering to determine which layer should be drawn.
+
+.. seealso:: :py:func:`exportLayerBehavior`
+
+.. seealso:: :py:func:`exportLayerDetails`
+
+.. deprecated::
+   Use nextExportPart() and exportLayerBehavior() instead.
+%End
+
+    virtual void startLayeredExport();
+%Docstring
+Starts a multi-layer export operation.
+
+.. seealso:: :py:func:`stopLayeredExport`
+
+.. seealso:: :py:func:`nextExportPart`
+
+.. versionadded:: 3.10
+%End
+
+    virtual void stopLayeredExport();
+%Docstring
+Stops a multi-layer export operation.
+
+.. seealso:: :py:func:`startLayeredExport`
+
+.. seealso:: :py:func:`nextExportPart`
+
+.. versionadded:: 3.10
+%End
+
+    virtual bool nextExportPart();
+%Docstring
+Moves to the next export part for a multi-layered export item, during a multi-layered export.
+
+.. seealso:: :py:func:`startLayeredExport`
+
+.. seealso:: :py:func:`stopLayeredExport`
+
+.. versionadded:: 3.10
+%End
+
+    struct ExportLayerDetail
+    {
+      QString name;
+
+      QString mapLayerId;
+
+      QString mapTheme;
+    };
+
+    virtual QgsLayoutItem::ExportLayerDetail exportLayerDetails() const;
+%Docstring
+Returns the details for the specified current export layer.
+
+Only valid between calls to startLayeredExport() and stopLayeredExport()
+
+.. versionadded:: 3.10
 %End
 
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
@@ -1014,6 +1092,13 @@ Emitted on item rotation change.
     void sizePositionChanged();
 %Docstring
 Emitted when the item's size or position changes.
+%End
+
+    void backgroundTaskCountChanged( int count );
+%Docstring
+Emitted whenever the number of background tasks an item is executing changes.
+
+.. versionadded:: 3.10
 %End
 
   protected:

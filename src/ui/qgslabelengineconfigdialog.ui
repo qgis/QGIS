@@ -6,60 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>420</width>
-    <height>358</height>
+    <width>437</width>
+    <height>426</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Automated Placement Engine</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QLabel" name="label">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Search method</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="cboSearchMethod">
-       <item>
-        <property name="text">
-         <string>Chain (fast)</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Popmusic Tabu</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Popmusic Chain</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Popmusic Tabu Chain</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>FALP (fastest)</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-    </layout>
-   </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
@@ -205,25 +159,8 @@
     </layout>
    </item>
    <item>
-    <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1">
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_5">
-       <property name="text">
-        <string>Text rendering</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QComboBox" name="mTextRenderFormatComboBox"/>
-     </item>
-     <item row="1" column="0" colspan="2">
-      <widget class="QCheckBox" name="chkShowPartialsLabels">
-       <property name="text">
-        <string>Allow truncated labels on edges of map</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0" colspan="2">
+    <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0,0">
+     <item row="2" column="0" colspan="3">
       <widget class="QCheckBox" name="chkShowAllLabels">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -239,10 +176,73 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="0" colspan="2">
+     <item row="4" column="0" colspan="3">
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <property name="leftMargin">
+        <number>40</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="label_6">
+         <property name="text">
+          <string>Color for unplaced labels</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsColorButton" name="mUnplacedColorButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="0" column="1" colspan="2">
+      <widget class="QComboBox" name="mTextRenderFormatComboBox"/>
+     </item>
+     <item row="5" column="0" colspan="3">
       <widget class="QCheckBox" name="chkShowCandidates">
        <property name="text">
         <string>Show candidates (for debugging)</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0" colspan="3">
+      <widget class="QCheckBox" name="chkShowPartialsLabels">
+       <property name="text">
+        <string>Allow truncated labels on edges of map</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>Text rendering</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0" colspan="3">
+      <widget class="QCheckBox" name="chkShowUnplaced">
+       <property name="text">
+        <string>Show unplaced labels</string>
        </property>
       </widget>
      </item>
@@ -273,14 +273,23 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
-  <tabstop>cboSearchMethod</tabstop>
   <tabstop>spinCandPoint</tabstop>
   <tabstop>spinCandLine</tabstop>
   <tabstop>spinCandPolygon</tabstop>
   <tabstop>mTextRenderFormatComboBox</tabstop>
   <tabstop>chkShowPartialsLabels</tabstop>
   <tabstop>chkShowAllLabels</tabstop>
+  <tabstop>chkShowUnplaced</tabstop>
+  <tabstop>mUnplacedColorButton</tabstop>
   <tabstop>chkShowCandidates</tabstop>
  </tabstops>
  <resources/>

@@ -181,8 +181,19 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     QgsFilterLineEdit *lineEdit();
 
   signals:
-    //! emitted as soon as the current file or directory is changed
-    void fileChanged( const QString & );
+
+    /**
+     * Emitted whenever the current file or directory \a path is changed.
+     */
+    void fileChanged( const QString &path );
+
+    /**
+     * Emitted before and after showing the file dialog.
+     *
+     * \note not available in Python bindings
+     * \since QGIS 3.10
+     */
+    void blockEvents( bool ) SIP_SKIP;
 
   private slots:
     void openFileDialog();

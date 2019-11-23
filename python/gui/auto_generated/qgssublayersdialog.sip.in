@@ -29,6 +29,7 @@ class QgsSublayersDialog : QDialog
       QString layerName;  //!< Name of the layer (not necessarily unique)
       int count;
       QString type;       //!< Extra type depending on the use (e.g. geometry type for vector sublayers)
+      QString description;  //!< Description. Added in QGIS 3.10
     };
 
     typedef QList<QgsSublayersDialog::LayerDefinition> LayerDefinitionList;

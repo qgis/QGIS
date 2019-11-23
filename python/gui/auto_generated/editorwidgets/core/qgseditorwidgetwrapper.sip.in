@@ -21,6 +21,9 @@ widget or use a pre-existent widget. It is able to set the widget to the value i
 by a field of a vector layer, or return the value it currently holds. Every time it is changed
 it has to emit a valueChanged signal. If it fails to do so, there is no guarantee that the
 changed status of the widget will be saved.
+
+It can also handle additional fields of a vector layer and would set the widget
+for their corresponding values and emit valuesChanged signal.
 %End
 
 %TypeHeaderCode
@@ -54,6 +57,24 @@ If an invalid variant is returned this will be interpreted as no change.
 Be sure to return a NULL QVariant if it should be set to NULL.
 
 :return: The current value the widget represents
+%End
+
+    virtual QStringList additionalFields() const;
+%Docstring
+Returns the list of additional fields which the editor handles
+
+.. versionadded:: 3.10
+%End
+
+    virtual QVariantList additionalFieldValues() const;
+%Docstring
+Will be used to access the widget's values for potential additional fields handled by the widget
+
+:return: A map of additional field names with their corresponding values
+
+.. seealso:: :py:func:`additionalFields`
+
+.. versionadded:: 3.10
 %End
 
     int fieldIdx() const;
@@ -166,6 +187,7 @@ of attribute values failing enforced field constraints.
 .. versionadded:: 3.0
 %End
 
+
     QString constraintFailureReason() const;
 %Docstring
 Returns the reason why a constraint check has failed (or an empty string
@@ -217,11 +239,25 @@ This will be disabled when the form is not editable.
 
   signals:
 
-    void valueChanged( const QVariant &value );
+ void valueChanged( const QVariant &value );
 %Docstring
 Emit this signal, whenever the value changed.
 
 :param value: The new value
+
+.. deprecated:: QGIS 3.10
+   use valuesChanged signal instead
+%End
+
+    void valuesChanged( const QVariant &value, const QVariantList &additionalFieldValues = QVariantList() );
+%Docstring
+Emit this signal, whenever the value changed.
+It will also return the values for the additional fields handled by the widget
+
+:param value: The new value
+:param additionalFieldValues: A map of additional field names with their corresponding values
+
+.. versionadded:: 3.10
 %End
 
     void constraintStatusChanged( const QString &constraint, const QString &desc, const QString &err, QgsEditorWidgetWrapper::ConstraintResult status );
@@ -247,17 +283,20 @@ Emit this signal when the constraint result visibility changed.
 %Docstring
 Will be called when the feature changes
 
-Is forwarded to the slot setValue()
+Is forwarded to the slot setValues()
 
 :param feature: The new feature
 %End
 
-    virtual void setValue( const QVariant &value ) = 0;
-%Docstring
-Is called, when the value of the widget needs to be changed. Update the widget representation
-to reflect the new value.
+    virtual void setValue( const QVariant &value ) /Deprecated/;
 
-:param value: The new value of the attribute
+    void setValues( const QVariant &value, const QVariantList &additionalValues );
+%Docstring
+Is called, when the value of the widget or additional field values
+needs to be changed. Update the widget representation
+to reflect the new values.
+
+.. versionadded:: 3.10
 %End
 
     void emitValueChanged();

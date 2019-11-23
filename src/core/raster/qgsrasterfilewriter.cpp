@@ -30,6 +30,8 @@
 #include <QTextStream>
 #include <QMessageBox>
 
+#include <cmath>
+
 #include <gdal.h>
 #include <cpl_string.h>
 
@@ -210,14 +212,22 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
   destHasNoDataValueList.reserve( nBands );
   destNoDataValueList.reserve( nBands );
 
+  const bool isGpkgOutput = mOutputProviderKey == "gdal" &&
+                            mOutputFormat.compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0;
+  double pixelSize;
+  double geoTransform[6];
+  globalOutputParameters( outputExtent, nCols, nRows, geoTransform, pixelSize );
+  const auto srcProviderExtent( srcProvider->extent() );
+
   for ( int bandNo = 1; bandNo <= nBands; bandNo++ )
   {
     QgsRasterNuller *nuller = pipe->nuller();
 
-    bool srcHasNoDataValue = srcProvider->sourceHasNoDataValue( bandNo );
+    const bool srcHasNoDataValue = srcProvider->sourceHasNoDataValue( bandNo );
     bool destHasNoDataValue = false;
     double destNoDataValue = std::numeric_limits<double>::quiet_NaN();
-    Qgis::DataType destDataType = srcProvider->sourceDataType( bandNo );
+    const Qgis::DataType srcDataType = srcProvider->sourceDataType( bandNo );
+    Qgis::DataType destDataType = srcDataType;
     // TODO: verify what happens/should happen if srcNoDataValue is disabled by setUseSrcNoDataValue
     QgsDebugMsgLevel( QStringLiteral( "srcHasNoDataValue = %1 srcNoDataValue = %2" ).arg( srcHasNoDataValue ).arg( srcProvider->sourceNoDataValue( bandNo ) ), 4 );
     if ( srcHasNoDataValue )
@@ -233,25 +243,32 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
       destNoDataValue = nuller->noData( bandNo ).value( 0 ).min();
       destHasNoDataValue = true;
     }
-    else
+    // GeoPackage does not support nodata for Byte output, and does not
+    // support non-Byte multiband output, so do not take the risk of an accidental
+    // data type promotion.
+    else if ( !( isGpkgOutput && destDataType == Qgis::Byte ) )
     {
       // Verify if we really need no data value, i.e.
-      QgsRectangle srcExtent = outputExtent;
+      QgsRectangle outputExtentInSrcCrs = outputExtent;
       QgsRasterProjector *projector = pipe->projector();
       if ( projector && projector->destinationCrs() != projector->sourceCrs() )
       {
         QgsCoordinateTransform ct( projector->destinationCrs(), projector->sourceCrs(), transformContext );
-        srcExtent = ct.transformBoundingBox( outputExtent );
+        outputExtentInSrcCrs = ct.transformBoundingBox( outputExtent );
       }
-      if ( !srcProvider->extent().contains( srcExtent ) )
+      if ( !srcProviderExtent.contains( outputExtentInSrcCrs ) &&
+           ( std::fabs( srcProviderExtent.xMinimum() - outputExtentInSrcCrs.xMinimum() ) > geoTransform[1] / 2 ||
+             std::fabs( srcProviderExtent.xMaximum() - outputExtentInSrcCrs.xMaximum() ) > geoTransform[1] / 2 ||
+             std::fabs( srcProviderExtent.yMinimum() - outputExtentInSrcCrs.yMinimum() ) > std::fabs( geoTransform[5] ) / 2 ||
+             std::fabs( srcProviderExtent.yMaximum() - outputExtentInSrcCrs.yMaximum() ) > std::fabs( geoTransform[5] ) / 2 ) )
       {
-        // Destination extent is larger than source extent, we need destination no data values
+        // Destination extent is (at least partially) outside of source extent, we need destination no data values
         // Get src sample statistics (estimation from sample)
-        QgsRasterBandStats stats = srcProvider->bandStatistics( bandNo, QgsRasterBandStats::Min | QgsRasterBandStats::Max, srcExtent, 250000 );
+        QgsRasterBandStats stats = srcProvider->bandStatistics( bandNo, QgsRasterBandStats::Min | QgsRasterBandStats::Max, outputExtentInSrcCrs, 250000 );
 
         // Test if we have free (not used) values
-        double typeMinValue = QgsContrastEnhancement::maximumValuePossible( static_cast< Qgis::DataType >( srcProvider->sourceDataType( bandNo ) ) );
-        double typeMaxValue = QgsContrastEnhancement::maximumValuePossible( static_cast< Qgis::DataType >( srcProvider->sourceDataType( bandNo ) ) );
+        const double typeMinValue = QgsContrastEnhancement::minimumValuePossible( srcDataType );
+        const double typeMaxValue = QgsContrastEnhancement::maximumValuePossible( srcDataType );
         if ( stats.minimumValue > typeMinValue )
         {
           destNoDataValue = typeMinValue;
@@ -291,48 +308,92 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
     }
   }
 
-  //create destProvider for whole dataset here
-  QgsRasterDataProvider *destProvider = nullptr;
-  double pixelSize;
-  double geoTransform[6];
-  globalOutputParameters( outputExtent, nCols, nRows, geoTransform, pixelSize );
-
-  // initOutput() returns 0 in tile mode!
-  destProvider = initOutput( nCols, nRows, crs, geoTransform, nBands, destDataType, destHasNoDataValueList, destNoDataValueList );
-
-  WriterError error = writeDataRaster( pipe, iter, nCols, nRows, outputExtent, crs, destDataType, destHasNoDataValueList, destNoDataValueList, destProvider, feedback );
-
-  if ( error == NoDataConflict )
+  WriterError error;
+  for ( int attempt = 0; attempt < 2; attempt ++ )
   {
-    // The value used for no data was found in source data, we must use wider data type
-    if ( destProvider ) // no tiles
+    //create destProvider for whole dataset here
+    // initOutput() returns 0 in tile mode!
+    std::unique_ptr<QgsRasterDataProvider> destProvider(
+      initOutput( nCols, nRows, crs, geoTransform, nBands, destDataType, destHasNoDataValueList, destNoDataValueList ) );
+    if ( !mTiledMode )
     {
-      destProvider->remove();
-      delete destProvider;
-      destProvider = nullptr;
-    }
-    else // VRT
-    {
-      // TODO: remove created VRT
+      if ( !destProvider )
+      {
+        return CreateDatasourceError;
+      }
+      if ( !destProvider->isValid() )
+      {
+        if ( feedback && !destProvider->error().isEmpty() )
+        {
+          feedback->appendError( destProvider->error().summary() );
+        }
+        return CreateDatasourceError;
+      }
+      if ( nCols != destProvider->xSize() || nRows != destProvider->ySize() )
+      {
+        QgsDebugMsg( QStringLiteral( "Created raster does not have requested dimensions" ) );
+        if ( feedback )
+        {
+          feedback->appendError( QObject::tr( "Created raster does not have requested dimensions" ) );
+        }
+        return CreateDatasourceError;
+      }
+      if ( nBands != destProvider->bandCount() )
+      {
+        QgsDebugMsg( QStringLiteral( "Created raster does not have requested band count" ) );
+        if ( feedback )
+        {
+          feedback->appendError( QObject::tr( "Created raster does not have requested band count" ) );
+        }
+        return CreateDatasourceError;
+      }
+      if ( nBands )
+      {
+        // Some driver like GS7BG may accept Byte as requested data type,
+        // but actually return a driver with Float64...
+        destDataType = destProvider->dataType( 1 );
+      }
     }
 
-    // But we don't know which band -> wider all
-    for ( int i = 0; i < nBands; i++ )
-    {
-      double destNoDataValue;
-      Qgis::DataType destDataType = QgsRasterBlock::typeWithNoDataValue( destDataTypeList.value( i ), &destNoDataValue );
-      destDataTypeList.replace( i, destDataType );
-      destNoDataValueList.replace( i, destNoDataValue );
-    }
-    destDataType = destDataTypeList.value( 0 );
+    error = writeDataRaster( pipe, iter, nCols, nRows, outputExtent, crs, destDataType, destHasNoDataValueList, destNoDataValueList, destProvider.get(), feedback );
 
-    // Try again
-    destProvider = initOutput( nCols, nRows, crs, geoTransform, nBands, destDataType, destHasNoDataValueList, destNoDataValueList );
-    error = writeDataRaster( pipe, iter, nCols, nRows, outputExtent, crs, destDataType, destHasNoDataValueList, destNoDataValueList, destProvider, feedback );
+    if ( attempt == 0 && error == NoDataConflict )
+    {
+      // The value used for no data was found in source data, we must use wider data type
+      if ( destProvider ) // no tiles
+      {
+        destProvider->remove();
+        destProvider.reset();
+      }
+      else // VRT
+      {
+        // TODO: remove created VRT
+      }
+
+      // But we don't know which band -> wider all
+      for ( int i = 0; i < nBands; i++ )
+      {
+        double destNoDataValue;
+        Qgis::DataType destDataType = QgsRasterBlock::typeWithNoDataValue( destDataTypeList.value( i ), &destNoDataValue );
+        destDataTypeList.replace( i, destDataType );
+        destNoDataValueList.replace( i, destNoDataValue );
+      }
+      destDataType = destDataTypeList.value( 0 );
+
+      // Try again
+    }
+    else
+    {
+      break;
+    }
   }
 
-  delete destProvider;
   return error;
+}
+
+static int qgsDivRoundUp( int a, int b )
+{
+  return a / b + ( ( ( a % b ) != 0 ) ? 1 : 0 );
 }
 
 QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const QgsRasterPipe *pipe,
@@ -361,12 +422,15 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
   int iterCols = 0;
   int iterRows = 0;
 
-  QList<QgsRasterBlock *> blockList;
-  blockList.reserve( nBands );
+  std::vector< std::unique_ptr<QgsRasterBlock> > blockList;
+  std::vector< std::unique_ptr<QgsRasterBlock> > destBlockList;
+
+  blockList.resize( nBands );
+  destBlockList.resize( nBands );
+
   for ( int i = 1; i <= nBands; ++i )
   {
     iter->startRasterRead( i, nCols, nRows, outputExtent );
-    blockList.push_back( nullptr );
     if ( destProvider && destHasNoDataValueList.value( i - 1 ) ) // no tiles
     {
       destProvider->setNoDataValue( i, destNoDataValueList.value( i - 1 ) );
@@ -377,8 +441,8 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
   int fileIndex = 0;
   if ( feedback )
   {
-    int nPartsX = nCols / iter->maximumTileWidth() + 1;
-    int nPartsY = nRows / iter->maximumTileHeight() + 1;
+    int nPartsX = qgsDivRoundUp( nCols, iter->maximumTileWidth() );
+    int nPartsY = qgsDivRoundUp( nRows, iter->maximumTileHeight() );
     nParts = nPartsX * nPartsY;
   }
 
@@ -388,7 +452,8 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
   {
     for ( int i = 1; i <= nBands; ++i )
     {
-      if ( !iter->readNextRasterPart( i, iterCols, iterRows, &( blockList[i - 1] ), iterLeft, iterTop ) )
+      QgsRasterBlock *block = nullptr;
+      if ( !iter->readNextRasterPart( i, iterCols, iterRows, &block, iterLeft, iterTop ) )
       {
         // No more parts, create VRT and return
         if ( mTiledMode )
@@ -411,6 +476,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
         QgsDebugMsgLevel( QStringLiteral( "Done" ), 4 );
         return NoError; //reached last tile, bail out
       }
+      blockList[i - 1].reset( block );
       // TODO: verify if NoDataConflict happened, to do that we need the whole pipe or nuller interface
     }
 
@@ -419,61 +485,61 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
       feedback->setProgress( 100.0 * fileIndex / static_cast< double >( nParts ) );
       if ( feedback->isCanceled() )
       {
-        for ( int i = 0; i < nBands; ++i )
-        {
-          delete blockList[i];
-        }
         break;
       }
     }
 
     // It may happen that internal data type (dataType) is wider than destDataType
-    QList<QgsRasterBlock *> destBlockList;
     for ( int i = 1; i <= nBands; ++i )
     {
       if ( srcProvider && srcProvider->dataType( i ) == destDataType )
       {
-        destBlockList.push_back( blockList[i - 1] );
+        // nothing
       }
       else
       {
         // TODO: this conversion should go to QgsRasterDataProvider::write with additional input data type param
         blockList[i - 1]->convert( destDataType );
-        destBlockList.push_back( blockList[i - 1] );
       }
-      blockList[i - 1] = nullptr;
+      destBlockList[i - 1] = std::move( blockList[i - 1] );
     }
 
     if ( mTiledMode ) //write to file
     {
-      QgsRasterDataProvider *partDestProvider = createPartProvider( outputExtent,
+      std::unique_ptr< QgsRasterDataProvider > partDestProvider( createPartProvider( outputExtent,
           nCols, iterCols, iterRows,
           iterLeft, iterTop, mOutputUrl,
-          fileIndex, nBands, destDataType, crs );
+          fileIndex, nBands, destDataType, crs ) );
 
-      if ( partDestProvider )
+      if ( !partDestProvider || !partDestProvider->isValid() )
       {
-        //write data to output file. todo: loop over the data list
-        for ( int i = 1; i <= nBands; ++i )
-        {
-          if ( destHasNoDataValueList.value( i - 1 ) )
-          {
-            partDestProvider->setNoDataValue( i, destNoDataValueList.value( i - 1 ) );
-          }
-          partDestProvider->write( destBlockList[i - 1]->bits( 0 ), i, iterCols, iterRows, 0, 0 );
-          delete destBlockList[i - 1];
-          addToVRT( partFileName( fileIndex ), i, iterCols, iterRows, iterLeft, iterTop );
-        }
-        delete partDestProvider;
+        return DestProviderError;
       }
+
+      //write data to output file. todo: loop over the data list
+      for ( int i = 1; i <= nBands; ++i )
+      {
+        if ( destHasNoDataValueList.value( i - 1 ) )
+        {
+          partDestProvider->setNoDataValue( i, destNoDataValueList.value( i - 1 ) );
+        }
+        if ( !partDestProvider->write( destBlockList[i - 1]->bits( 0 ), i, iterCols, iterRows, 0, 0 ) )
+        {
+          return WriteError;
+        }
+        addToVRT( partFileName( fileIndex ), i, iterCols, iterRows, iterLeft, iterTop );
+      }
+
     }
     else if ( destProvider )
     {
       //loop over data
       for ( int i = 1; i <= nBands; ++i )
       {
-        destProvider->write( destBlockList[i - 1]->bits( 0 ), i, iterCols, iterRows, iterLeft, iterTop );
-        delete destBlockList[i - 1];
+        if ( !destProvider->write( destBlockList[i - 1]->bits( 0 ), i, iterCols, iterRows, iterLeft, iterTop ) )
+        {
+          return WriteError;
+        }
       }
     }
     ++fileIndex;
@@ -501,14 +567,16 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   {
     return SourceProviderError;
   }
+  const bool isPremultiplied = ( inputDataType == Qgis::ARGB32_Premultiplied );
 
   iter->setMaximumTileWidth( mMaxTileWidth );
   iter->setMaximumTileHeight( mMaxTileHeight );
 
-  void *redData = qgsMalloc( static_cast<size_t>( mMaxTileWidth * mMaxTileHeight ) );
-  void *greenData = qgsMalloc( static_cast<size_t>( mMaxTileWidth * mMaxTileHeight ) );
-  void *blueData = qgsMalloc( static_cast<size_t>( mMaxTileWidth * mMaxTileHeight ) );
-  void *alphaData = qgsMalloc( static_cast<size_t>( mMaxTileWidth * mMaxTileHeight ) );
+  const size_t nMaxPixels = static_cast<size_t>( mMaxTileWidth ) * mMaxTileHeight;
+  std::vector<unsigned char> redData( nMaxPixels );
+  std::vector<unsigned char> greenData( nMaxPixels );
+  std::vector<unsigned char> blueData( nMaxPixels );
+  std::vector<unsigned char> alphaData( nMaxPixels );
   int iterLeft = 0, iterTop = 0, iterCols = 0, iterRows = 0;
   int fileIndex = 0;
 
@@ -517,15 +585,58 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   double geoTransform[6];
   globalOutputParameters( outputExtent, nCols, nRows, geoTransform, pixelSize );
 
-  std::unique_ptr< QgsRasterDataProvider > destProvider( initOutput( nCols, nRows, crs, geoTransform, 4, Qgis::Byte ) );
+  const int nOutputBands = 4;
+  std::unique_ptr< QgsRasterDataProvider > destProvider( initOutput( nCols, nRows, crs, geoTransform, nOutputBands, Qgis::Byte ) );
+  if ( !mTiledMode )
+  {
+    if ( !destProvider )
+    {
+      return CreateDatasourceError;
+    }
+    if ( !destProvider->isValid() )
+    {
+      if ( feedback && !destProvider->error().isEmpty() )
+      {
+        feedback->appendError( destProvider->error().summary() );
+      }
+      return CreateDatasourceError;
+    }
+    if ( nCols != destProvider->xSize() || nRows != destProvider->ySize() )
+    {
+      QgsDebugMsg( QStringLiteral( "Created raster does not have requested dimensions" ) );
+      if ( feedback )
+      {
+        feedback->appendError( QObject::tr( "Created raster does not have requested dimensions" ) );
+      }
+      return CreateDatasourceError;
+    }
+    if ( nOutputBands != destProvider->bandCount() )
+    {
+      QgsDebugMsg( QStringLiteral( "Created raster does not have requested band count" ) );
+      if ( feedback )
+      {
+        feedback->appendError( QObject::tr( "Created raster does not have requested band count" ) );
+      }
+      return CreateDatasourceError;
+    }
+    if ( Qgis::Byte != destProvider->dataType( 1 ) )
+    {
+      QgsDebugMsg( QStringLiteral( "Created raster does not have requested data type" ) );
+      if ( feedback )
+      {
+        feedback->appendError( QObject::tr( "Created raster does not have requested data type" ) );
+      }
+      return CreateDatasourceError;
+    }
+  }
 
   iter->startRasterRead( 1, nCols, nRows, outputExtent, feedback );
 
   int nParts = 0;
   if ( feedback )
   {
-    int nPartsX = nCols / iter->maximumTileWidth() + 1;
-    int nPartsY = nRows / iter->maximumTileHeight() + 1;
+    int nPartsX = qgsDivRoundUp( nCols, iter->maximumTileWidth() );
+    int nPartsY = qgsDivRoundUp( nRows, iter->maximumTileHeight() );
     nParts = nPartsX * nPartsY;
   }
 
@@ -548,72 +659,60 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
 
     //fill into red/green/blue/alpha channels
     qgssize nPixels = static_cast< qgssize >( iterCols ) * iterRows;
-    // TODO: should be char not int? we are then copying 1 byte
-    int red = 0;
-    int green = 0;
-    int blue = 0;
-    int alpha = 255;
     for ( qgssize i = 0; i < nPixels; ++i )
     {
       QRgb c = inputBlock->color( i );
-      alpha = qAlpha( c );
-      red = qRed( c );
-      green = qGreen( c );
-      blue = qBlue( c );
-
-      if ( inputDataType == Qgis::ARGB32_Premultiplied )
+      if ( isPremultiplied )
       {
-        double a = alpha / 255.;
-        QgsDebugMsgLevel( QStringLiteral( "red = %1 green = %2 blue = %3 alpha = %4 p = %5 a = %6" ).arg( red ).arg( green ).arg( blue ).arg( alpha ).arg( static_cast< int >( c ), 0, 16 ).arg( a ), 5 );
-        red /= a;
-        green /= a;
-        blue /= a;
+        c = qUnpremultiply( c );
       }
-      memcpy( reinterpret_cast< char * >( redData ) + i, &red, 1 );
-      memcpy( reinterpret_cast< char * >( greenData ) + i, &green, 1 );
-      memcpy( reinterpret_cast< char * >( blueData ) + i, &blue, 1 );
-      memcpy( reinterpret_cast< char * >( alphaData ) + i, &alpha, 1 );
+      redData[i] = static_cast<unsigned char>( qRed( c ) );
+      greenData[i] = static_cast<unsigned char>( qGreen( c ) );
+      blueData[i] = static_cast<unsigned char>( qBlue( c ) );
+      alphaData[i] = static_cast<unsigned char>( qAlpha( c ) );
     }
 
     //create output file
     if ( mTiledMode )
     {
-      //delete destProvider;
       std::unique_ptr< QgsRasterDataProvider > partDestProvider( createPartProvider( outputExtent,
           nCols, iterCols, iterRows,
           iterLeft, iterTop, mOutputUrl, fileIndex,
           4, Qgis::Byte, crs ) );
 
-      if ( partDestProvider )
+      if ( !partDestProvider || partDestProvider->isValid() )
       {
-        //write data to output file
-        partDestProvider->write( redData, 1, iterCols, iterRows, 0, 0 );
-        partDestProvider->write( greenData, 2, iterCols, iterRows, 0, 0 );
-        partDestProvider->write( blueData, 3, iterCols, iterRows, 0, 0 );
-        partDestProvider->write( alphaData, 4, iterCols, iterRows, 0, 0 );
-
-        addToVRT( partFileName( fileIndex ), 1, iterCols, iterRows, iterLeft, iterTop );
-        addToVRT( partFileName( fileIndex ), 2, iterCols, iterRows, iterLeft, iterTop );
-        addToVRT( partFileName( fileIndex ), 3, iterCols, iterRows, iterLeft, iterTop );
-        addToVRT( partFileName( fileIndex ), 4, iterCols, iterRows, iterLeft, iterTop );
+        return DestProviderError;
       }
+
+      //write data to output file
+      if ( !partDestProvider->write( &redData[0], 1, iterCols, iterRows, 0, 0 ) ||
+           !partDestProvider->write( &greenData[0], 2, iterCols, iterRows, 0, 0 ) ||
+           !partDestProvider->write( &blueData[0], 3, iterCols, iterRows, 0, 0 ) ||
+           !partDestProvider->write( &alphaData[0], 4, iterCols, iterRows, 0, 0 ) )
+      {
+        return WriteError;
+      }
+
+      addToVRT( partFileName( fileIndex ), 1, iterCols, iterRows, iterLeft, iterTop );
+      addToVRT( partFileName( fileIndex ), 2, iterCols, iterRows, iterLeft, iterTop );
+      addToVRT( partFileName( fileIndex ), 3, iterCols, iterRows, iterLeft, iterTop );
+      addToVRT( partFileName( fileIndex ), 4, iterCols, iterRows, iterLeft, iterTop );
     }
     else if ( destProvider )
     {
-      destProvider->write( redData, 1, iterCols, iterRows, iterLeft, iterTop );
-      destProvider->write( greenData, 2, iterCols, iterRows, iterLeft, iterTop );
-      destProvider->write( blueData, 3, iterCols, iterRows, iterLeft, iterTop );
-      destProvider->write( alphaData, 4, iterCols, iterRows, iterLeft, iterTop );
+      if ( !destProvider->write( &redData[0], 1, iterCols, iterRows, iterLeft, iterTop ) ||
+           !destProvider->write( &greenData[0], 2, iterCols, iterRows, iterLeft, iterTop ) ||
+           !destProvider->write( &blueData[0], 3, iterCols, iterRows, iterLeft, iterTop ) ||
+           !destProvider->write( &alphaData[0], 4, iterCols, iterRows, iterLeft, iterTop ) )
+      {
+        return WriteError;
+      }
     }
 
     ++fileIndex;
   }
   destProvider.reset();
-
-  qgsFree( redData );
-  qgsFree( greenData );
-  qgsFree( blueData );
-  qgsFree( alphaData );
 
   if ( feedback )
   {

@@ -36,28 +36,54 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
 
   public:
 
-    //! Constructor for QgsDateTimeEdit
+    /**
+     * Constructor for QgsDateTimeEdit.
+     * The current date and time is used by default.
+     * The widget is allowing null by default.
+     * If allow null is disabled, you should check allowNull before getting values from the widget.
+     */
     explicit QgsDateTimeEdit( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    //! Determines if the widget allows setting null date/time.
+    /**
+     * Determines if the widget allows setting null date/time.
+     * \see allowNull
+     */
     void setAllowNull( bool allowNull );
+
+    /**
+     * If the widget allows setting null date/time.
+     * \see setAllowNull
+     */
     bool allowNull() const {return mAllowNull;}
 
     /**
-     * \brief setDateTime set the date time in the widget and handles null date times.
-     * \note since QDateTimeEdit::setDateTime() is not virtual, setDateTime must be called for QgsDateTimeEdit.
+     * \brief Set the date time in the widget and handles null date times.
+     * \note Since QDateTimeEdit::setDateTime() is not virtual, setDateTime must be called for QgsDateTimeEdit.
      */
     void setDateTime( const QDateTime &dateTime );
 
     /**
-     * \brief dateTime returns the date time which can eventually be a null date/time
-     * \note since QDateTimeEdit::dateTime() is not virtual, dateTime must be called for QgsDateTimeEdit.
+     * \brief Returns the date time which can be a null date/time.
+     * \note Before QGIS 3.10, you mustn't call date() or time() because they can't return a NULL value.
+     * \note Since QDateTimeEdit::dateTime() is not virtual, dateTime must be called for QgsDateTimeEdit.
      */
     QDateTime dateTime() const;
 
     /**
-     * Set the current date as NULL
-     * \note if the widget is not configured to accept NULL dates, this will have no effect
+     * \brief Returns the time which can be a null time.
+     * \since QGIS 3.10
+     */
+    QTime time() const;
+
+    /**
+     * \brief Returns the date which can be a null date.
+     * \since QGIS 3.10
+     */
+    QDate date() const;
+
+    /**
+     * Set the current date as NULL.
+     * \note If the widget is not configured to accept NULL dates, this will have no effect.
      */
     void clear() override;
 
@@ -70,14 +96,15 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
   signals:
 
     /**
-     * signal emitted whenever the value changes.
-     * \param date the new date/time value.
+     * Signal emitted whenever the value changes.
+     * \param date The new date/time value.
      */
     void valueChanged( const QDateTime &date );
 
   protected:
     void mousePressEvent( QMouseEvent *event ) override;
     void focusOutEvent( QFocusEvent *event ) override;
+    void focusInEvent( QFocusEvent *event ) override;
     void wheelEvent( QWheelEvent *event ) override;
     void showEvent( QShowEvent *event ) override;
 
@@ -93,7 +120,16 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     QString mOriginalStyleSheet = QString();
     QAction *mClearAction;
 
+    /**
+    * write the null value representation to the line edit without changing the value
+    * \param updateCalendar Flag if calendar is open and minimum date needs to be set
+    */
     void displayNull( bool updateCalendar = false );
+
+    /**
+    * write the current date into the line edit without changing the value
+    */
+    void displayCurrentDate();
 
     //! reset the value to current date time
     void resetBeforeChange( int delta );
@@ -113,6 +149,8 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     {
       setMinimumDateTime( QDateTime::fromString( QStringLiteral( "0100-01-01" ), Qt::ISODate ) );
     }
+
+    friend class TestQgsDateTimeEdit;
 };
 
 #endif // QGSDATETIMEEDIT_H

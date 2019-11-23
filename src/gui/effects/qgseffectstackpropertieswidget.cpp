@@ -22,6 +22,7 @@
 #include "qgsapplication.h"
 #include "qgssymbollayerutils.h"
 #include "qgspanelwidget.h"
+#include "qgshelp.h"
 
 #include <QPicture>
 #include <QPainter>
@@ -363,11 +364,15 @@ void QgsEffectStackPropertiesWidget::changeEffect( QgsPaintEffect *newEffect )
 //
 
 QgsEffectStackPropertiesDialog::QgsEffectStackPropertiesDialog( QgsEffectStack *stack, QWidget *parent, Qt::WindowFlags f )
-  : QgsDialog( parent, f, QDialogButtonBox::Ok | QDialogButtonBox::Cancel )
+  : QgsDialog( parent, f, QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok )
 
 {
   setWindowTitle( tr( "Effect Properties" ) );
   mPropertiesWidget = new QgsEffectStackPropertiesWidget( stack, this );
+
+  QDialogButtonBox *buttonBox = this->findChild<QDialogButtonBox *>( QString(), Qt::FindDirectChildrenOnly );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsEffectStackPropertiesDialog::showHelp );
+
   layout()->addWidget( mPropertiesWidget );
 }
 
@@ -380,6 +385,12 @@ void QgsEffectStackPropertiesDialog::setPreviewPicture( const QPicture &picture 
 {
   mPropertiesWidget->setPreviewPicture( picture );
 }
+
+void QgsEffectStackPropertiesDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#draw-effects" ) );
+}
+
 
 //
 // QgsEffectStackCompactWidget
@@ -458,23 +469,28 @@ void QgsEffectStackCompactWidget::showDialog()
   if ( !mStack )
     return;
 
-  QgsEffectStack *clone = static_cast<QgsEffectStack *>( mStack->clone() );
+  QgsEffectStack *clone = mStack->clone();
   QgsEffectStackPropertiesWidget *widget = new QgsEffectStackPropertiesWidget( clone, nullptr );
   if ( mPreviewPicture )
   {
     widget->setPreviewPicture( *mPreviewPicture );
   }
-  connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsEffectStackCompactWidget::updateEffectLive );
-  connect( widget, &QgsPanelWidget::panelAccepted, this, &QgsEffectStackCompactWidget::updateAcceptWidget );
 
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( qobject_cast< QWidget * >( parent() ) );
   if ( panel && panel->dockMode() )
   {
+    connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsEffectStackCompactWidget::updateEffectLive );
+    connect( widget, &QgsPanelWidget::panelAccepted, this, &QgsEffectStackCompactWidget::updateAcceptWidget );
     panel->openPanel( widget );
   }
   else
   {
-    openPanel( widget );
+    QgsEffectStackPropertiesDialog dlg( clone, this );
+    if ( dlg.exec() == QDialog::Accepted )
+    {
+      *mStack = *clone;
+      emit changed();
+    }
   }
 }
 

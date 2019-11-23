@@ -215,9 +215,9 @@ class warp(GdalAlgorithm):
             arguments.append(extent.yMaximum())
 
             extentCrs = self.parameterAsCrs(parameters, self.TARGET_EXTENT_CRS, context)
-            if extentCrs:
+            if extentCrs.isValid():
                 arguments.append('-te_srs')
-                arguments.append(extentCrs.authid())
+                arguments.append(GdalUtils.gdal_crs_string(extentCrs))
 
         if self.parameterAsBoolean(parameters, self.MULTITHREADING, context):
             arguments.append('-multi')

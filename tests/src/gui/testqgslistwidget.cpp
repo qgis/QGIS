@@ -49,7 +49,7 @@ class TestQgsListWidget : public QObject
 
       QStringList initial;
       initial << QStringLiteral( "one" ) << QStringLiteral( "two" );
-      wrapper->setValue( initial );
+      wrapper->setValues( initial, QVariantList() );
 
       const QVariant value = wrapper->value();
       QCOMPARE( int( value.type() ), int( QVariant::StringList ) );
@@ -84,7 +84,7 @@ class TestQgsListWidget : public QObject
 
       QVariantList initial;
       initial << 1 << -2;
-      wrapper->setValue( initial );
+      wrapper->setValues( initial, QVariantList() );
 
       const QVariant value = wrapper->value();
       QCOMPARE( int( value.type() ), int( QVariant::List ) );

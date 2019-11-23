@@ -247,7 +247,7 @@ void QgsLocatorModel::addResult( const QgsLocatorResult &result )
   Entry entry;
   entry.result = result;
   // keep the group title empty to allow differecing group title from results
-  entry.groupSorting = result.group.isEmpty() ? NoGroup : mFoundResultsFilterGroups[result.filter].count();
+  entry.groupSorting = result.group.isEmpty() ? NoGroup : mFoundResultsFilterGroups[result.filter].indexOf( result.group ) + 1;
   mResults << entry;
 
   if ( mDeferredClear )

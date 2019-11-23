@@ -18,7 +18,7 @@
 #include "qgis.h"
 #include "ui_qgsgeometrycheckersetuptab.h"
 
-struct QgsGeometryCheckContext;
+class QgsGeometryCheckContext;
 class QgsGeometryCheck;
 
 class QgsGeometryCheckFactory

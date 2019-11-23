@@ -50,6 +50,18 @@ class CORE_EXPORT QgsUnitTypes
     };
     Q_ENUM( SystemOfMeasurement )
 
+    /**
+     * Unit types.
+     * \since QGIS 3.10
+     */
+    enum UnitType
+    {
+      TypeDistance = 0, //!< Distance unit
+      TypeArea, //!< Area unit
+      TypeVolume, //!< Volume unit
+      TypeUnknown, //!< Unknown unit type
+    };
+
     //! Units of distance
     enum DistanceUnit
     {
@@ -93,6 +105,26 @@ class CORE_EXPORT QgsUnitTypes
       AreaUnknownUnit, //!< Unknown areal unit
     };
     Q_ENUM( AreaUnit )
+
+    /**
+     * Units of volume.
+     * \since QGIS 3.10
+     */
+    enum VolumeUnit
+    {
+      VolumeCubicMeters = 0, //!< Cubic meters
+      VolumeCubicFeet, //!< Cubic feet
+      VolumeCubicYards, //!< Cubic yards
+      VolumeBarrel, //!< Barrels
+      VolumeCubicDecimeter, //!< Cubic decimeters
+      VolumeLiters, //!< Litres
+      VolumeGallonUS, //!< US Gallons
+      VolumeCubicInch, //!< Cubic inches
+      VolumeCubicCentimeter, //!< Cubic Centimeters
+      VolumeCubicDegrees, //!< Cubic degrees, for planar geographic CRS volume measurements
+      VolumeUnknownUnit, //!< Unknown volume unit
+    };
+    Q_ENUM( VolumeUnit )
 
     //! Units of angles
     enum AngleUnit
@@ -185,12 +217,31 @@ class CORE_EXPORT QgsUnitTypes
     //! List of render units
     typedef QList<QgsUnitTypes::RenderUnit> RenderUnitList;
 
+    /**
+     * Encodes a unit \a type to a string.
+     * \returns encoded string
+     * \see decodeUnitType()
+     * \since QGIS 3.10
+     */
+    Q_INVOKABLE static QString encodeUnitType( QgsUnitTypes::UnitType type );
+
+    /**
+     * Decodes a unit type from a \a string.
+     * \param string string to decode
+     * \param ok optional boolean, will be set to TRUE if string was converted successfully
+     * \returns decoded unit type
+     * \see encodeUnitType()
+     * \since QGIS 3.10
+     */
+    Q_INVOKABLE static QgsUnitTypes::UnitType decodeUnitType( const QString &string, bool *ok SIP_OUT = nullptr );
+
+
     // DISTANCE UNITS
 
     /**
      * Returns the type for a distance unit.
      */
-    Q_INVOKABLE static DistanceUnitType unitType( QgsUnitTypes::DistanceUnit unit );
+    Q_INVOKABLE static QgsUnitTypes::DistanceUnitType unitType( QgsUnitTypes::DistanceUnit unit );
 
     /**
      * Encodes a distance unit to a string.
@@ -247,7 +298,7 @@ class CORE_EXPORT QgsUnitTypes
     /**
      * Returns the type for an areal unit.
     */
-    Q_INVOKABLE static DistanceUnitType unitType( QgsUnitTypes::AreaUnit unit );
+    Q_INVOKABLE static QgsUnitTypes::DistanceUnitType unitType( QgsUnitTypes::AreaUnit unit );
 
     /**
      * Encodes an areal unit to a string.
@@ -264,7 +315,7 @@ class CORE_EXPORT QgsUnitTypes
      * \returns decoded units
      * \see encodeUnit()
     */
-    Q_INVOKABLE static AreaUnit decodeAreaUnit( const QString &string, bool *ok SIP_OUT = nullptr );
+    Q_INVOKABLE static QgsUnitTypes::AreaUnit decodeAreaUnit( const QString &string, bool *ok SIP_OUT = nullptr );
 
     /**
      * Returns a translated string representing an areal unit.
@@ -289,7 +340,7 @@ class CORE_EXPORT QgsUnitTypes
      * \returns the area unit
      * \see toString()
      */
-    Q_INVOKABLE static AreaUnit stringToAreaUnit( const QString &string, bool *ok SIP_OUT = nullptr );
+    Q_INVOKABLE static QgsUnitTypes::AreaUnit stringToAreaUnit( const QString &string, bool *ok SIP_OUT = nullptr );
 
     /**
      * Returns the conversion factor between the specified areal units.
@@ -305,6 +356,90 @@ class CORE_EXPORT QgsUnitTypes
      * \returns matching areal unit
      */
     Q_INVOKABLE static QgsUnitTypes::AreaUnit distanceToAreaUnit( QgsUnitTypes::DistanceUnit distanceUnit );
+
+    /**
+     * Converts an area unit to its corresponding distance unit, e.g., square meters to meters
+     * \param areaUnit area unit to convert
+     * \returns matching distance unit
+     * \since QGIS 3.10
+     */
+    Q_INVOKABLE static QgsUnitTypes::DistanceUnit areaToDistanceUnit( QgsUnitTypes::AreaUnit areaUnit );
+
+    // VOLUME UNITS
+
+    /**
+     * Returns the type for an volume unit.
+     * \since QGIS 3.10
+    */
+    Q_INVOKABLE static QgsUnitTypes::DistanceUnitType unitType( QgsUnitTypes::VolumeUnit unit );
+
+    /**
+     * Encodes a volume \a unit to a string.
+     * \returns encoded string
+     * \see decodeVolumeUnit()
+     * \since QGIS 3.10
+    */
+    Q_INVOKABLE static QString encodeUnit( QgsUnitTypes::VolumeUnit unit );
+
+    /**
+     * Decodes a volume unit from a \a string.
+     * \param string string to decode
+     * \param ok optional boolean, will be set to TRUE if string was converted successfully
+     * \returns decoded units
+     * \see encodeUnit()
+     * \since QGIS 3.10
+    */
+    Q_INVOKABLE static QgsUnitTypes::VolumeUnit decodeVolumeUnit( const QString &string, bool *ok SIP_OUT = nullptr );
+
+    /**
+     * Returns a translated string representing a volume \a unit.
+     * \see stringToVolumeUnit()
+     * \since QGIS 3.10
+     */
+    static QString toString( QgsUnitTypes::VolumeUnit unit );
+
+    /**
+     * Returns a translated abbreviation representing a volume \a unit.
+     * \see stringToVolumeUnit()
+     *
+     * \since QGIS 3.10
+     */
+    static QString toAbbreviatedString( QgsUnitTypes::VolumeUnit unit );
+
+    /**
+     * Converts a translated\a  string to a volume unit.
+     * \param string string representing a volume unit
+     * \param ok optional boolean, will be set to TRUE if string was converted successfully
+     * \returns the volume unit
+     * \see toString()
+     * \since QGIS 3.10
+     */
+    Q_INVOKABLE static QgsUnitTypes::VolumeUnit stringToVolumeUnit( const QString &string, bool *ok SIP_OUT = nullptr );
+
+    /**
+     * Returns the conversion factor between the specified volume units.
+     * \param fromUnit volume unit to convert from
+     * \param toUnit volume unit to convert to
+     * \returns multiplication factor to convert between units
+     * \since QGIS 3.10
+     */
+    Q_INVOKABLE static double fromUnitToUnitFactor( QgsUnitTypes::VolumeUnit fromUnit, QgsUnitTypes::VolumeUnit toUnit );
+
+    /**
+     * Converts a distance unit to its corresponding volume unit, e.g., meters to cubic meters
+     * \param distanceUnit distance unit to convert
+     * \returns matching volume unit
+     * \since QGIS 3.10
+     */
+    Q_INVOKABLE static QgsUnitTypes::VolumeUnit distanceToVolumeUnit( QgsUnitTypes::DistanceUnit distanceUnit );
+
+    /**
+     * Converts a volume unit to its corresponding distance unit, e.g., cubic meters to meters
+     * \param volumeUnit volume unit to convert
+     * \returns matching distance unit
+     * \since QGIS 3.10
+     */
+    Q_INVOKABLE static QgsUnitTypes::DistanceUnit volumeToDistanceUnit( QgsUnitTypes::VolumeUnit volumeUnit );
 
     // ANGULAR UNITS
 

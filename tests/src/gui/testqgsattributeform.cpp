@@ -16,6 +16,7 @@
 
 #include "qgstest.h"
 #include <QPushButton>
+#include <QLineEdit>
 
 #include <editorwidgets/core/qgseditorwidgetregistry.h>
 #include "qgsattributeform.h"
@@ -27,6 +28,8 @@
 #include <qgsvectorlayerjoininfo.h>
 #include "qgsgui.h"
 #include "qgsattributeformeditorwidget.h"
+#include "qgsattributeforminterface.h"
+#include "qgsmultiedittoolbutton.h"
 
 class TestQgsAttributeForm : public QObject
 {
@@ -47,6 +50,9 @@ class TestQgsAttributeForm : public QObject
     void testConstraintsOnJoinedFields();
     void testEditableJoin();
     void testUpsertOnEdit();
+    void testAttributeFormInterface();
+    void testDefaultValueUpdate();
+    void testDefaultValueUpdateRecursion();
 
   private:
     QLabel *constraintsLabel( QgsAttributeForm *form, QgsEditorWidgetWrapper *ww )
@@ -115,19 +121,19 @@ void TestQgsAttributeForm::testFieldConstraint()
   ww = qobject_cast<QgsEditorWidgetWrapper *>( form2.mWidgets[0] );
 
   // set value to 1
-  ww->setValue( 1 );
+  ww->setValues( 1, QVariantList() );
   QCOMPARE( spy.count(), 1 );
   QCOMPARE( constraintsLabel( &form2, ww )->text(), validLabel );
 
   // set value to null
   spy.clear();
-  ww->setValue( QVariant() );
+  ww->setValues( QVariant(), QVariantList() );
   QCOMPARE( spy.count(), 1 );
   QCOMPARE( constraintsLabel( &form2, ww )->text(), invalidLabel );
 
   // set value to 1
   spy.clear();
-  ww->setValue( 1 );
+  ww->setValues( 1, QVariantList() );
   QCOMPARE( spy.count(), 1 );
   QCOMPARE( constraintsLabel( &form2, ww )->text(), validLabel );
 
@@ -140,15 +146,15 @@ void TestQgsAttributeForm::testFieldConstraint()
   ww = qobject_cast<QgsEditorWidgetWrapper *>( form3.mWidgets[0] );
 
   // set value to 1
-  ww->setValue( 1 );
+  ww->setValues( 1, QVariantList() );
   QCOMPARE( constraintsLabel( &form3, ww )->text(), validLabel );
 
   // set value to null
-  ww->setValue( QVariant() );
+  ww->setValues( QVariant(), QVariantList() );
   QCOMPARE( constraintsLabel( &form3, ww )->text(), warningLabel );
 
   // set value to 1
-  ww->setValue( 1 );
+  ww->setValues( 1, QVariantList() );
   QCOMPARE( constraintsLabel( &form3, ww )->text(), validLabel );
 }
 
@@ -208,7 +214,7 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
   QSignalSpy spy2( &form2, SIGNAL( widgetValueChanged( QString, QVariant, bool ) ) );
 
   // change value
-  ww0->setValue( 2 ); // update col0
+  ww0->setValues( 2, QVariantList() ); // update col0
   QCOMPARE( spy2.count(), 1 );
 
   QCOMPARE( constraintsLabel( &form2, ww0 )->text(), inv ); // 2 < ( 1 + 2 )
@@ -218,7 +224,7 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
 
   // change value
   spy2.clear();
-  ww0->setValue( 1 ); // update col0
+  ww0->setValues( 1, QVariantList() ); // update col0
   QCOMPARE( spy2.count(), 1 );
 
   QCOMPARE( constraintsLabel( &form2, ww0 )->text(), val ); // 1 < ( 1 + 2 )
@@ -272,7 +278,7 @@ void TestQgsAttributeForm::testOKButtonStatus()
   form2.setFeature( ft );
   ww = qobject_cast<QgsEditorWidgetWrapper *>( form2.mWidgets[0] );
   okButton = form2.mButtonBox->button( QDialogButtonBox::Ok );
-  ww->setValue( 1 );
+  ww->setValues( 1, QVariantList() );
   QCOMPARE( okButton->isEnabled(), false );
 
   // valid constraint and editable layer : OK button enabled
@@ -282,7 +288,7 @@ void TestQgsAttributeForm::testOKButtonStatus()
   ww = qobject_cast<QgsEditorWidgetWrapper *>( form3.mWidgets[0] );
   okButton = form3.mButtonBox->button( QDialogButtonBox::Ok );
 
-  ww->setValue( 2 );
+  ww->setValues( 2, QVariantList() );
   QCOMPARE( okButton->isEnabled(), true );
 
   // valid constraint and not editable layer : OK button disabled
@@ -297,7 +303,7 @@ void TestQgsAttributeForm::testOKButtonStatus()
   form4.setFeature( ft );
   ww = qobject_cast<QgsEditorWidgetWrapper *>( form4.mWidgets[0] );
   okButton = form4.mButtonBox->button( QDialogButtonBox::Ok );
-  ww->setValue( 1 );
+  ww->setValues( 1, QVariantList() );
   QVERIFY( !okButton->isEnabled() );
   layer->startEditing();
   // just a soft constraint, so OK should be enabled
@@ -615,6 +621,25 @@ void TestQgsAttributeForm::testEditableJoin()
   ft0C = layerC->getFeature( 1 );
   QCOMPARE( ft0C.attribute( "col0" ), QVariant( 13 ) );
 
+  // all editor widget must have a multi edit button
+  layerA->startEditing();
+  layerB->startEditing();
+  layerC->startEditing();
+  layerA->select( ftA.id() );
+  form.setMode( QgsAttributeEditorContext::MultiEditMode );
+
+  // multi edit button must be displayed for A
+  QgsAttributeFormEditorWidget *formWidget = qobject_cast<QgsAttributeFormEditorWidget *>( form.mFormWidgets[1] );
+  QVERIFY( formWidget->mMultiEditButton->parent() );
+
+  // multi edit button must be displayed for B (join is editable)
+  formWidget = qobject_cast<QgsAttributeFormEditorWidget *>( form.mFormWidgets[1] );
+  QVERIFY( formWidget->mMultiEditButton->parent() );
+
+  // multi edit button must not be displayed for C (join is not editable)
+  formWidget = qobject_cast<QgsAttributeFormEditorWidget *>( form.mFormWidgets[2] );
+  QVERIFY( !formWidget->mMultiEditButton->parent() );
+
   // clean
   delete layerA;
   delete layerB;
@@ -851,6 +876,196 @@ void TestQgsAttributeForm::testUpsertOnEdit()
   delete layerC;
 }
 
+void TestQgsAttributeForm::testAttributeFormInterface()
+{
+  // Issue https://github.com/qgis/QGIS/issues/29667
+  // we simulate a python code execution that would be triggered
+  // at form opening and that would modify the value of a widget.
+  // We want to check that emitted signal widgetValueChanged is
+  // correctly emitted with correct parameters
+
+  // make a temporary vector layer
+  QString def = QStringLiteral( "Point?field=col0:integer" );
+  QgsVectorLayer *layer = new QgsVectorLayer( def, QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+  layer->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "TextEdit" ), QVariantMap() ) );
+
+  // add a feature to the vector layer
+  QgsFeature ft( layer->dataProvider()->fields(), 1 );
+  ft.setAttribute( QStringLiteral( "col0" ), 10 );
+
+  class MyInterface : public QgsAttributeFormInterface
+  {
+    public:
+      MyInterface( QgsAttributeForm *form )
+        : QgsAttributeFormInterface( form ) {}
+
+      virtual void featureChanged()
+      {
+        QgsAttributeForm *f = form();
+        QLineEdit *le = f->findChild<QLineEdit *>( "col0" );
+        le->setText( "100" );
+      }
+  };
+
+  // build a form for this feature
+  QgsAttributeForm form( layer );
+  form.addInterface( new MyInterface( &form ) );
+
+  bool set = false;
+  connect( &form, &QgsAttributeForm::widgetValueChanged, this,
+           [&set]( const QString & attribute, const QVariant & newValue, bool attributeChanged )
+  {
+
+    // Check that our value set by the QgsAttributeFormInterface has correct parameters.
+    // attributeChanged has to be true because it won't be taken into account by others
+    // (QgsValueRelationWidgetWrapper for instance)
+    if ( attribute == "col0" && newValue.toInt() == 100 && attributeChanged )
+      set = true;
+  } );
+
+  form.setFeature( ft );
+  QVERIFY( set );
+}
+
+
+void TestQgsAttributeForm::testDefaultValueUpdate()
+{
+  // make a temporary layer to check through
+  QString def = QStringLiteral( "Point?field=col0:integer&field=col1:integer&field=col2:integer&field=col3:integer" );
+  QgsVectorLayer *layer = new QgsVectorLayer( def, QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+
+  //set defaultValueDefinitions
+  //col0 - no default value
+  //col1 - "col0"+1
+  //col2 - "col0"+"col1"
+  //col3 - "col2"
+
+  // set constraints for each field
+  layer->setDefaultValueDefinition( 1, QgsDefaultValue( QStringLiteral( "\"col0\"+1" ) ) );
+  layer->setDefaultValueDefinition( 2, QgsDefaultValue( QStringLiteral( "\"col0\"+\"col1\"" ) ) );
+  layer->setDefaultValueDefinition( 3, QgsDefaultValue( QStringLiteral( "\"col2\"" ) ) );
+
+  layer->startEditing();
+
+  // build a form for this feature
+  QgsFeature ft( layer->dataProvider()->fields(), 1 );
+  ft.setAttribute( QStringLiteral( "col0" ), 0 );
+  QgsAttributeForm form( layer );
+  form.setMode( QgsAttributeEditorContext::AddFeatureMode );
+  form.setFeature( ft );
+
+  // get wrappers for each widget
+  QgsEditorWidgetWrapper *ww0, *ww1, *ww2, *ww3;
+  ww0 = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[0] );
+  ww1 = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[1] );
+  ww2 = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[2] );
+  ww3 = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[3] );
+
+  //set value in col0:
+  ww0->setValue( 5 );
+
+  //we expect
+  //col0 - 5
+  //col1 - 6
+  //col2 - 11
+  //col3 - 11
+
+  QCOMPARE( ww0->value().toInt(), 5 );
+  QCOMPARE( ww1->value().toInt(), 6 );
+  QCOMPARE( ww2->value().toInt(), 11 );
+  QCOMPARE( ww3->value().toInt(), 11 );
+
+  //set value in col1:
+  ww1->setValue( 10 );
+
+  //we expect
+  //col0 - 5
+  //col1 - 10
+  //col2 - 15
+  //col3 - 15
+
+  QCOMPARE( ww0->value().toInt(), 5 );
+  QCOMPARE( ww1->value().toInt(), 10 );
+  QCOMPARE( ww2->value().toInt(), 15 );
+  QCOMPARE( ww3->value().toInt(), 15 );
+}
+
+void TestQgsAttributeForm::testDefaultValueUpdateRecursion()
+{
+  // make a temporary layer to check through
+  QString def = QStringLiteral( "Point?field=col0:integer&field=col1:integer&field=col2:integer&field=col3:integer" );
+  QgsVectorLayer *layer = new QgsVectorLayer( def, QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+
+  //let's make a recursion
+  //col0 - COALESCE( 0, "col3"+1)
+  //col1 - COALESCE( 0, "col0"+1)
+  //col2 - COALESCE( 0, "col1"+1)
+  //col3 - COALESCE( 0, "col2"+1)
+
+  // set constraints for each field
+  layer->setDefaultValueDefinition( 0, QgsDefaultValue( QStringLiteral( "\"col3\"+1" ) ) );
+  layer->setDefaultValueDefinition( 1, QgsDefaultValue( QStringLiteral( "\"col0\"+1" ) ) );
+  layer->setDefaultValueDefinition( 2, QgsDefaultValue( QStringLiteral( "\"col1\"+1" ) ) );
+  layer->setDefaultValueDefinition( 3, QgsDefaultValue( QStringLiteral( "\"col2\"+1" ) ) );
+
+  layer->startEditing();
+
+  // build a form for this feature
+  QgsFeature ft( layer->dataProvider()->fields(), 1 );
+  ft.setAttribute( QStringLiteral( "col0" ), 0 );
+  QgsAttributeForm form( layer );
+  form.setMode( QgsAttributeEditorContext::AddFeatureMode );
+  form.setFeature( ft );
+
+  // get wrappers for each widget
+  QgsEditorWidgetWrapper *ww0, *ww1, *ww2, *ww3;
+  ww0 = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[0] );
+  ww1 = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[1] );
+  ww2 = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[2] );
+  ww3 = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[3] );
+
+  //set value in col0:
+  ww0->setValue( 20 );
+
+  //we expect
+  //col0 - 20
+  //col1 - 21
+  //col2 - 22
+  //col3 - 23
+
+  QCOMPARE( ww0->value().toInt(), 20 );
+  QCOMPARE( ww1->value().toInt(), 21 );
+  QCOMPARE( ww2->value().toInt(), 22 );
+  QCOMPARE( ww3->value().toInt(), 23 );
+
+  //set value in col2:
+  ww2->setValue( 30 );
+
+  //we expect
+  //col0 - 32
+  //col1 - 33
+  //col2 - 30
+  //col3 - 31
+
+  QCOMPARE( ww0->value().toInt(), 32 );
+  QCOMPARE( ww1->value().toInt(), 33 );
+  QCOMPARE( ww2->value().toInt(), 30 );
+  QCOMPARE( ww3->value().toInt(), 31 );
+
+  //set value in col0 again:
+  ww0->setValue( 40 );
+
+  //we expect
+  //col0 - 40
+  //col1 - 41
+  //col2 - 42
+  //col3 - 43
+
+  QCOMPARE( ww0->value().toInt(), 40 );
+  QCOMPARE( ww1->value().toInt(), 41 );
+  QCOMPARE( ww2->value().toInt(), 42 );
+  QCOMPARE( ww3->value().toInt(), 43 );
+}
 
 QGSTEST_MAIN( TestQgsAttributeForm )
 #include "testqgsattributeform.moc"

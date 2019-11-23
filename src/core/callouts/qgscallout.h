@@ -69,6 +69,10 @@ class CORE_EXPORT QgsCallout
     enum Property
     {
       MinimumCalloutLength, //!< Minimum length of callouts
+      OffsetFromAnchor, //!< Distance to offset lines from anchor points
+      OffsetFromLabel, //!< Distance to offset lines from label area
+      DrawCalloutToAllParts, //!< Whether callout lines should be drawn to all feature parts
+      AnchorPointPosition, //!< Feature's anchor point position
     };
 
     //! Options for draw order (stacking) of callouts
@@ -76,6 +80,15 @@ class CORE_EXPORT QgsCallout
     {
       OrderBelowAllLabels, //!< Render callouts below all labels
       OrderBelowIndividualLabels, //!< Render callouts below their individual associated labels, some callouts may be drawn over other labels
+    };
+
+    //! Feature's anchor point position
+    enum AnchorPoint
+    {
+      PoleOfInaccessibility = 0, //!< The surface's pole of inaccessibility used as anchor for polygon geometries
+      PointOnExterior, //!< A point on the surface's outline closest to the label is used as anchor for polygon geometries
+      PointOnSurface, //!< A point guaranteed to be on the surface is used as anchor for polygon geometries
+      Centroid, //!< The surface's centroid is used as anchor for polygon geometries
     };
 
     /**
@@ -174,6 +187,18 @@ class CORE_EXPORT QgsCallout
     virtual DrawOrder drawOrder() const;
 
     /**
+     * Contains additional contextual information about the context in which a callout is
+     * being rendered.
+     * \ingroup core
+     * \since QGIS 3.10
+     */
+    struct CORE_EXPORT QgsCalloutContext
+    {
+      //! TRUE if all parts of associated feature were labeled
+      bool allFeaturePartsLabeled = false;
+    };
+
+    /**
      * Renders the callout onto the specified render \a context.
      *
      * The \a rect argument gives the desired size and position of the body of the callout (e.g. the
@@ -188,10 +213,13 @@ class CORE_EXPORT QgsCallout
      *
      * Both \a rect and \a anchor must be specified in painter coordinates (i.e. pixels).
      *
+     * The \a calloutContext argument is used to specify additional contextual information about
+     * how a callout is being rendered.
+     *
      * \warning A prior call to startRender() must have been made before calling this method, and
      * after all render() operations are complete a call to stopRender() must be made.
      */
-    void render( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor );
+    void render( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext );
 
     /**
      * Returns TRUE if the the callout is enabled.
@@ -234,6 +262,37 @@ class CORE_EXPORT QgsCallout
      */
     static QgsPropertiesDefinition propertyDefinitions();
 
+    /**
+     * Returns the feature's anchor point position.
+     *
+     * \see setAnchorPoint()
+     */
+    AnchorPoint anchorPoint() const { return mAnchorPoint; }
+
+    /**
+     * Sets the feature's \a anchor point position.
+     *
+     * \see anchorPoint()
+     */
+    void setAnchorPoint( AnchorPoint anchor ) { mAnchorPoint = anchor; }
+
+    /**
+     * Encodes an \a anchor point to its string representation.
+     * \returns encoded string
+     * \see decodeAnchorPoint()
+     */
+    static QString encodeAnchorPoint( AnchorPoint anchor );
+
+    /**
+     * Attempts to decode a string representation of an anchor point name to the corresponding
+     * anchor point.
+     * \param name encoded anchor point name
+     * \param ok if specified, will be set to TRUE if the anchor point was successfully decoded
+     * \returns decoded name
+     * \see encodeAnchorPoint()
+     */
+    static QgsCallout::AnchorPoint decodeAnchorPoint( const QString &name, bool *ok = nullptr );
+
   protected:
 
     /**
@@ -250,12 +309,17 @@ class CORE_EXPORT QgsCallout
      * prefer to attach to the closest point on \a anchor instead.
      *
      * Both \a rect and \a anchor are specified in painter coordinates (i.e. pixels).
+     *
+     * The \a calloutContext argument is used to specify additional contextual information about
+     * how a callout is being rendered.
      */
-    virtual void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor ) = 0;
+    virtual void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext ) = 0;
 
   private:
 
     bool mEnabled = false;
+
+    AnchorPoint mAnchorPoint = PoleOfInaccessibility;
 
     //! Property collection for data defined callout settings
     QgsPropertyCollection mDataDefinedProperties;
@@ -364,8 +428,111 @@ class CORE_EXPORT QgsSimpleLineCallout : public QgsCallout
      */
     const QgsMapUnitScale &minimumLengthMapUnitScale() const { return mMinCalloutLengthScale; }
 
+
+    /**
+     * Returns the offset distance from the anchor point at which to start the line. Units are specified through offsetFromAnchorUnit().
+     * \see setOffsetFromAnchor()
+     * \see offsetFromAnchorUnit()
+     */
+    double offsetFromAnchor() const { return mOffsetFromAnchorDistance; }
+
+    /**
+     * Sets the offset \a distance from the anchor point at which to start the line. Units are specified through setOffsetFromAnchorUnit().
+     * \see offsetFromAnchor()
+     * \see setOffsetFromAnchorUnit()
+     */
+    void setOffsetFromAnchor( double distance ) { mOffsetFromAnchorDistance = distance; }
+
+    /**
+     * Sets the \a unit for the offset from anchor distance.
+     * \see offsetFromAnchor()
+     * \see setOffsetFromAnchor()
+    */
+    void setOffsetFromAnchorUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetFromAnchorUnit = unit; }
+
+    /**
+     * Returns the units for the offset from anchor point.
+     * \see setOffsetFromAnchorUnit()
+     * \see offsetFromAnchor()
+    */
+    QgsUnitTypes::RenderUnit offsetFromAnchorUnit() const { return mOffsetFromAnchorUnit; }
+
+    /**
+     * Sets the map unit \a scale for the offset from anchor.
+     * \see offsetFromAnchorMapUnitScale()
+     * \see setOffsetFromAnchorUnit()
+     * \see setOffsetFromAnchor()
+     */
+    void setOffsetFromAnchorMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetFromAnchorScale = scale; }
+
+    /**
+     * Returns the map unit scale for the offset from anchor.
+     * \see setOffsetFromAnchorMapUnitScale()
+     * \see offsetFromAnchorUnit()
+     * \see offsetFromAnchor()
+     */
+    const QgsMapUnitScale &offsetFromAnchorMapUnitScale() const { return mOffsetFromAnchorScale; }
+
+    /**
+     * Returns the offset distance from label area at which to end the line. Units are specified through offsetFromLabelUnit().
+     * \see setOffsetFromLabel()
+     * \see offsetFromLabelUnit()
+     */
+    double offsetFromLabel() const { return mOffsetFromLabelDistance; }
+
+    /**
+     * Sets the offset \a distance from label area at which to end the line. Units are specified through setOffsetFromLabelUnit().
+     * \see offsetFromLabel()
+     * \see setOffsetFromLabelUnit()
+     */
+    void setOffsetFromLabel( double distance ) { mOffsetFromLabelDistance = distance; }
+
+    /**
+     * Sets the \a unit for the offset from label area distance.
+     * \see offsetFromLabel()
+     * \see setOffsetFromLabel()
+    */
+    void setOffsetFromLabelUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetFromLabelUnit = unit; }
+
+    /**
+     * Returns the units for the offset from label area.
+     * \see setOffsetFromLabelUnit()
+     * \see offsetFromLabel()
+    */
+    QgsUnitTypes::RenderUnit offsetFromLabelUnit() const { return mOffsetFromLabelUnit; }
+
+    /**
+     * Sets the map unit \a scale for the offset from label area.
+     * \see offsetFromLabelMapUnitScale()
+     * \see setOffsetFromLabelUnit()
+     * \see setOffsetFromLabel()
+     */
+    void setOffsetFromLabelMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetFromLabelScale = scale; }
+
+    /**
+     * Returns the map unit scale for the minimum callout length.
+     * \see setOffsetFromLabelMapUnitScale()
+     * \see offsetFromLabelUnit()
+     * \see offsetFromLabel()
+     */
+    const QgsMapUnitScale &offsetFromLabelMapUnitScale() const { return mOffsetFromLabelScale; }
+
+    /**
+     * Returns TRUE if callout lines should be drawn to all feature parts.
+     *
+     * \see setDrawCalloutToAllParts()
+     */
+    bool drawCalloutToAllParts() const { return mDrawCalloutToAllParts; }
+
+    /**
+     * Sets whether callout lines should be drawn to all feature parts.
+     *
+     * \see drawCalloutToAllParts()
+     */
+    void setDrawCalloutToAllParts( bool drawToAllParts ) { mDrawCalloutToAllParts = drawToAllParts; }
+
   protected:
-    void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor ) override;
+    void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext ) override;
 
   private:
 
@@ -378,6 +545,16 @@ class CORE_EXPORT QgsSimpleLineCallout : public QgsCallout
     double mMinCalloutLength = 0;
     QgsUnitTypes::RenderUnit mMinCalloutLengthUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mMinCalloutLengthScale;
+
+    double mOffsetFromAnchorDistance = 0;
+    QgsUnitTypes::RenderUnit mOffsetFromAnchorUnit = QgsUnitTypes::RenderMillimeters;
+    QgsMapUnitScale mOffsetFromAnchorScale;
+
+    double mOffsetFromLabelDistance = 0;
+    QgsUnitTypes::RenderUnit mOffsetFromLabelUnit = QgsUnitTypes::RenderMillimeters;
+    QgsMapUnitScale mOffsetFromLabelScale;
+
+    bool mDrawCalloutToAllParts = false;
 };
 
 
@@ -414,7 +591,7 @@ class CORE_EXPORT QgsManhattanLineCallout : public QgsSimpleLineCallout
     QgsManhattanLineCallout *clone() const override;
 
   protected:
-    void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor ) override;
+    void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext ) override;
 
   private:
 #ifdef SIP_RUN

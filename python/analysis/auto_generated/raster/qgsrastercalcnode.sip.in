@@ -50,6 +50,9 @@ class QgsRasterCalcNode
       opSIGN,
       opLOG,
       opLOG10,
+      opABS,
+      opMAX,
+      opMIN,
       opNONE,
     };
 

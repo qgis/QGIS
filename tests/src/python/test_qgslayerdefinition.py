@@ -10,6 +10,7 @@ __author__ = 'Hugo Mercier'
 __date__ = '07/01/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
+import os
 import qgis  # NOQA
 
 from qgis.core import (QgsProject,
@@ -51,6 +52,12 @@ class TestQgsLayerDefinition(unittest.TestCase):
         self.assertEqual(nodes[1].firstChildElement("id").text(), "layerB")
         self.assertEqual(nodeIds[0], "layerA")
         self.assertEqual(nodeIds[1], "layerB")
+
+    def testDependencyQgz(self):
+        path = os.path.join(TEST_DATA_DIR, "embedded_groups", "project1.qgz")
+        dep = QgsLayerDefinition.DependencySorter(path)
+        ids = dep.sortedLayerIds()
+        self.assertEqual(len(ids), 3)
 
     def testMissingDependency(self):
         inDoc = """

@@ -49,12 +49,15 @@ QgsRasterTransparencyWidget::QgsRasterTransparencyWidget( QgsRasterLayer *layer,
   connect( pbnImportTransparentPixelValues, &QToolButton::clicked, this, &QgsRasterTransparencyWidget::pbnImportTransparentPixelValues_clicked );
   connect( pbnRemoveSelectedRow, &QToolButton::clicked, this, &QgsRasterTransparencyWidget::pbnRemoveSelectedRow_clicked );
 
+  mNodataColorButton->setShowNoColor( true );
+  mNodataColorButton->setColorDialogTitle( tr( "Select No Data Color" ) );
   syncToLayer();
 
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPanelWidget::widgetChanged );
   connect( cboxTransparencyBand, &QgsRasterBandComboBox::bandChanged, this, &QgsPanelWidget::widgetChanged );
   connect( mSrcNoDataValueCheckBox, &QCheckBox::stateChanged, this, &QgsPanelWidget::widgetChanged );
   connect( leNoDataValue, &QLineEdit::textEdited, this, &QgsPanelWidget::widgetChanged );
+  connect( mNodataColorButton, &QgsColorButton::colorChanged, this, &QgsPanelWidget::widgetChanged );
 
   mPixelSelectorTool = nullptr;
   if ( mMapCanvas )
@@ -70,8 +73,6 @@ QgsRasterTransparencyWidget::QgsRasterTransparencyWidget( QgsRasterLayer *layer,
 
 void QgsRasterTransparencyWidget::syncToLayer()
 {
-  if ( ! mRasterLayer->isValid() )
-    return;
   QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
   QgsRasterRenderer *renderer = mRasterLayer->renderer();
   if ( provider )
@@ -106,6 +107,14 @@ void QgsRasterTransparencyWidget::syncToLayer()
 
   mSrcNoDataValueCheckBox->setEnabled( enableSrcNoData );
   lblSrcNoDataValue->setEnabled( enableSrcNoData );
+
+  if ( renderer )
+  {
+    if ( renderer->nodataColor().isValid() )
+      mNodataColorButton->setColor( renderer->nodataColor() );
+    else
+      mNodataColorButton->setToNull();
+  }
 
   QgsRasterRangeList noDataRangeList = mRasterLayer->dataProvider()->userNoDataValues( 1 );
   QgsDebugMsg( QStringLiteral( "noDataRangeList.size = %1" ).arg( noDataRangeList.size() ) );
@@ -404,6 +413,7 @@ void QgsRasterTransparencyWidget::apply()
   if ( rasterRenderer )
   {
     rasterRenderer->setAlphaBand( cboxTransparencyBand->currentBand() );
+    rasterRenderer->setNodataColor( mNodataColorButton->color() );
 
     //Walk through each row in table and test value. If not valid set to 0.0 and continue building transparency list
     QgsRasterTransparency *rasterTransparency = new QgsRasterTransparency();

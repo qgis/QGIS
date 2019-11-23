@@ -27,10 +27,13 @@
 #include "qgsmultipolygon.h"
 #include "qgslogger.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsmaskidprovider.h"
 
 #include "feature.h"
 #include "labelposition.h"
 #include "callouts/qgscallout.h"
+
+#include "pal/layer.h"
 
 #include <QPicture>
 
@@ -66,8 +69,6 @@ void QgsVectorLayerLabelProvider::init()
     mFlags |= MergeConnectedLines;
   if ( mSettings.centroidInside )
     mFlags |= CentroidMustBeInside;
-  if ( mSettings.labelPerPart )
-    mFlags |= LabelPerFeaturePart;
 
   mPriority = 1 - mSettings.priority / 10.0; // convert 0..10 --> 1..0
 
@@ -141,7 +142,7 @@ QList<QgsLabelFeature *> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCo
   while ( fit.nextFeature( fet ) )
   {
     QgsGeometry obstacleGeometry;
-    std::unique_ptr< QgsSymbol > symbol;
+    const QgsSymbol *symbol = nullptr;
     if ( mRenderer )
     {
       QgsSymbolList symbols = mRenderer->originalSymbolsForFeature( fet, ctx );
@@ -152,12 +153,12 @@ QList<QgsLabelFeature *> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCo
       }
       if ( !symbols.isEmpty() )
       {
-        symbol.reset( symbols.at( 0 )->clone() );
-        symbolScope = QgsExpressionContextUtils::updateSymbolScope( symbol.get(), symbolScope );
+        symbol = symbols.at( 0 );
+        symbolScope = QgsExpressionContextUtils::updateSymbolScope( symbol, symbolScope );
       }
     }
     ctx.expressionContext().setFeature( fet );
-    registerFeature( fet, ctx, obstacleGeometry, symbol.release() );
+    registerFeature( fet, ctx, obstacleGeometry, symbol );
   }
 
   if ( ctx.expressionContext().lastScope() == symbolScope )
@@ -294,8 +295,12 @@ void QgsVectorLayerLabelProvider::drawLabelBackground( QgsRenderContext &context
 
 void QgsVectorLayerLabelProvider::drawCallout( QgsRenderContext &context, pal::LabelPosition *label ) const
 {
-  context.expressionContext().setOriginalValueVariable( mSettings.callout()->enabled() );
-  const bool enabled = mSettings.dataDefinedProperties().valueAsBool( QgsPalLayerSettings::CalloutDraw, context.expressionContext(), mSettings.callout()->enabled() );
+  bool enabled = mSettings.callout()->enabled();
+  if ( mSettings.dataDefinedProperties().isActive( QgsPalLayerSettings::CalloutDraw ) )
+  {
+    context.expressionContext().setOriginalValueVariable( enabled );
+    enabled = mSettings.dataDefinedProperties().valueAsBool( QgsPalLayerSettings::CalloutDraw, context.expressionContext(), enabled );
+  }
   if ( enabled )
   {
     QgsMapToPixel xform = context.mapToPixel();
@@ -306,7 +311,9 @@ void QgsVectorLayerLabelProvider::drawCallout( QgsRenderContext &context, pal::L
 
     QgsGeometry g( QgsGeos::fromGeos( label->getFeaturePart()->feature()->geometry() ) );
     g.transform( xform.transform() );
-    mSettings.callout()->render( context, rect, label->getAlpha() * 180 / M_PI, g );
+    QgsCallout::QgsCalloutContext calloutContext;
+    calloutContext.allFeaturePartsLabeled = label->getFeaturePart()->feature()->labelAllParts();
+    mSettings.callout()->render( context, rect, label->getAlpha() * 180 / M_PI, g, calloutContext );
   }
 }
 
@@ -368,6 +375,9 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::Lab
   // update tmpLyr with any data defined text buffer values
   QgsPalLabeling::dataDefinedTextBuffer( tmpLyr, ddValues );
 
+  // update tmpLyr with any data defined text mask values
+  QgsPalLabeling::dataDefinedTextMask( tmpLyr, ddValues );
+
   // update tmpLyr with any data defined text formatting values
   QgsPalLabeling::dataDefinedTextFormatting( tmpLyr, ddValues );
 
@@ -423,6 +433,23 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::Lab
   mEngine->results()->mLabelSearchTree->insertLabel( label, label->getFeaturePart()->featureId(), mLayerId, labeltext, dFont, false, lf->hasFixedPosition(), mProviderId );
 }
 
+void QgsVectorLayerLabelProvider::drawUnplacedLabel( QgsRenderContext &context, LabelPosition *label ) const
+{
+  if ( !mSettings.drawLabels )
+    return;
+
+  QgsTextLabelFeature *lf = dynamic_cast<QgsTextLabelFeature *>( label->getFeaturePart()->feature() );
+
+  QgsPalLayerSettings tmpLyr( mSettings );
+  QgsTextFormat format = tmpLyr.format();
+  format.setColor( mEngine->engineSettings().unplacedLabelColor() );
+  tmpLyr.setFormat( format );
+  drawLabelPrivate( label, context, tmpLyr, QgsTextRenderer::Text );
+
+  // add to the results
+  QString labeltext = label->getFeaturePart()->feature()->labelText();
+  mEngine->results()->mLabelSearchTree->insertLabel( label, label->getFeaturePart()->featureId(), mLayerId, labeltext, tmpLyr.format().font(), false, lf->hasFixedPosition(), mProviderId, true );
+}
 
 void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, QgsRenderContext &context, QgsPalLayerSettings &tmpLyr, QgsTextRenderer::TextPart drawType, double dpiRatio ) const
 {
@@ -515,6 +542,13 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
     QString txt = lf->text( label->getPartId() );
     QFontMetricsF *labelfm = lf->labelFontMetrics();
 
+    if ( context.maskIdProvider() )
+    {
+      int maskId = context.maskIdProvider()->maskId( label->getFeaturePart()->layer()->provider()->layerId(),
+                   label->getFeaturePart()->layer()->provider()->providerId() );
+      context.setCurrentMaskId( maskId );
+    }
+
     //add the direction symbol if needed
     if ( !txt.isEmpty() && tmpLyr.placement == QgsPalLayerSettings::Line &&
          tmpLyr.addDirectionSymbol )
@@ -584,4 +618,9 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
   // NOTE: this used to be within above multi-line loop block, at end. (a mistake since 2010? [LS])
   if ( label->getNextPart() )
     drawLabelPrivate( label->getNextPart(), context, tmpLyr, drawType, dpiRatio );
+}
+
+const QgsPalLayerSettings &QgsVectorLayerLabelProvider::settings() const
+{
+  return mSettings;
 }

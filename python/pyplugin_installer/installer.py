@@ -33,7 +33,7 @@ from qgis.PyQt.QtNetwork import QNetworkRequest
 
 import qgis
 from qgis.core import Qgis, QgsApplication, QgsNetworkAccessManager, QgsSettings, QgsNetworkRequestParameters
-from qgis.gui import QgsMessageBar, QgsPasswordLineEdit
+from qgis.gui import QgsMessageBar, QgsPasswordLineEdit, QgsHelp
 from qgis.utils import (iface, startPlugin, unloadPlugin, loadPlugin,
                         reloadPlugin, updateAvailablePlugins, plugins_metadata_parser)
 from .installer_data import (repositories, plugins, officialRepo,
@@ -554,6 +554,18 @@ class QgsPluginInstaller(QObject):
             pluginName = os.path.split(zf.namelist()[0])[0]
 
         pluginFileName = os.path.splitext(os.path.basename(filePath))[0]
+
+        if not pluginName:
+            msg_box = QMessageBox()
+            msg_box.setIcon(QMessageBox.Warning)
+            msg_box.setWindowTitle(self.tr("QGIS Python Install from ZIP Plugin Installer"))
+            msg_box.setText(self.tr("The Zip file is not a valid QGIS python plugin. No root folder was found inside."))
+            msg_box.setStandardButtons(QMessageBox.Ok)
+            more_info_btn = msg_box.addButton(self.tr("More Information"), QMessageBox.HelpRole)
+            msg_box.exec()
+            if msg_box.clickedButton() == more_info_btn:
+                QgsHelp.openHelp("plugins/plugins.html#the-install-from-zip-tab")
+            return
 
         pluginsDirectory = qgis.utils.home_plugin_path
         if not QDir(pluginsDirectory).exists():

@@ -32,9 +32,6 @@ class QgsStyleGroupSelectionDialog;
 class QgsTemporaryCursorOverride;
 class QgsStyleModel;
 class QTemporaryFile;
-class QProgressDialog;
-class QNetworkAccessManager;
-class QNetworkReply;
 
 /**
  * \ingroup gui
@@ -126,10 +123,6 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
     void importTypeChanged( int );
 
   private slots:
-    void httpFinished();
-    void fileReadyRead();
-    void updateProgress( qint64, qint64 );
-    void downloadCanceled();
     void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     void showHelp();
 
@@ -149,11 +142,8 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
     bool populateStyles();
     void moveStyles( QModelIndexList *selection, QgsStyle *src, QgsStyle *dst );
 
-    QProgressDialog *mProgressDlg = nullptr;
     QgsStyleGroupSelectionDialog *mGroupSelectionDlg = nullptr;
     QTemporaryFile *mTempFile = nullptr;
-    QNetworkAccessManager *mNetManager = nullptr;
-    QNetworkReply *mNetReply = nullptr;
 
     QString mFileName;
     Mode mDialogMode;

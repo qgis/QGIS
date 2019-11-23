@@ -36,8 +36,9 @@ from qgis.core import (QgsFeature,
                        QgsProject,
                        QgsWkbTypes,
                        QgsDataProvider,
-                       QgsVectorDataProvider)
-from qgis.PyQt.QtCore import QCoreApplication, QVariant
+                       QgsVectorDataProvider,
+                       NULL)
+from qgis.PyQt.QtCore import QCoreApplication, QVariant, QDate, QTime, QDateTime, Qt
 from qgis.testing import start_app, unittest
 from qgis.utils import spatialite_connect
 from utilities import unitTestDataPath
@@ -139,7 +140,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         ds = None
 
         vl = QgsVectorLayer('{}'.format(tmpfile), 'test', 'ogr')
-        self.assertEqual(vl.dataProvider().subLayers(), [QgsDataProvider.SUBLAYER_SEPARATOR.join(['0', 'test', '0', 'CurvePolygon', 'geom'])])
+        self.assertEqual(vl.dataProvider().subLayers(), [QgsDataProvider.SUBLAYER_SEPARATOR.join(['0', 'test', '0', 'CurvePolygon', 'geom', ''])])
         f = QgsFeature()
         f.setGeometry(QgsGeometry.fromWkt('POLYGON ((0 0,0 1,1 1,0 0))'))
         vl.dataProvider().addFeatures([f])
@@ -737,6 +738,21 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         features = [f for f in vl1.getFeatures(request)]
         self.assertEqual(len(features), 1)
 
+    def testPkAttributeIndexes(self):
+        ''' Test the primary key index '''
+        tmpfile = os.path.join(self.basetestpath, 'testPkAttributeIndexes.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        ds.CreateLayer('test', geom_type=ogr.wkbPoint, options=['COLUMN_TYPES=foo=int8,bar=string', 'GEOMETRY_NAME=the_geom', 'FID=customfid'])
+        ds = None
+        vl = QgsVectorLayer('{}|layerid=0'.format(tmpfile), 'test', 'ogr')
+        pks = vl.primaryKeyAttributes()
+        fields = vl.fields()
+        pkfield = fields.at(pks[0])
+        self.assertEqual(len(pks), 1)
+        self.assertEqual(pks[0], 0)
+        self.assertEqual(pkfield.name(), 'customfid')
+        self.assertTrue(pkfield.constraints().constraints() & QgsFieldConstraints.ConstraintUnique)
+
     def testSublayerWithComplexLayerName(self):
         ''' Test reading a gpkg with a sublayer name containing : '''
         tmpfile = os.path.join(self.basetestpath, 'testGeopackageComplexLayerName.gpkg')
@@ -749,7 +765,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         f = None
 
         vl = QgsVectorLayer(u'{}'.format(tmpfile), u'layer', u'ogr')
-        self.assertEqual(vl.dataProvider().subLayers(), [QgsDataProvider.SUBLAYER_SEPARATOR.join(['0', 'layer1:', '1', 'Point', 'geom:'])])
+        self.assertEqual(vl.dataProvider().subLayers(), [QgsDataProvider.SUBLAYER_SEPARATOR.join(['0', 'layer1:', '1', 'Point', 'geom:', ''])])
 
     def testGeopackageManyLayers(self):
         ''' test opening more than 64 layers without running out of Spatialite connections '''
@@ -819,8 +835,8 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
 
         vl2 = QgsVectorLayer(u'{}'.format(tmpfile), 'test', u'ogr')
         vl2.subLayers()
-        self.assertEqual(vl2.dataProvider().subLayers(), [QgsDataProvider.SUBLAYER_SEPARATOR.join(['0', 'test', '0', 'Point', 'geom']),
-                                                          QgsDataProvider.SUBLAYER_SEPARATOR.join(['1', 'test2', '0', 'Point', 'geom'])])
+        self.assertEqual(vl2.dataProvider().subLayers(), [QgsDataProvider.SUBLAYER_SEPARATOR.join(['0', 'test', '0', 'Point', 'geom', '']),
+                                                          QgsDataProvider.SUBLAYER_SEPARATOR.join(['1', 'test2', '0', 'Point', 'geom', ''])])
 
     def testGeopackageLargeFID(self):
 
@@ -1158,6 +1174,41 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         fids = set([f['fid'] for f in lyr.getFeatures()])
         self.assertEqual(len(fids), 4)
 
+    def testExportWithoutFids(self):
+        """ Test export with a feature without fid, regression GH #32927
+
+        This test case is related to testRegenerateFid
+        """
+
+        fields = QgsFields()
+        fields.append(QgsField('one', QVariant.Int))
+        fields.append(QgsField('two', QVariant.Int))
+        tmpfile = os.path.join(self.basetestpath, 'testExportWithoutFids.gpkg')
+        options = {}
+        options['update'] = True
+        options['driverName'] = 'GPKG'
+        options['layerName'] = 'output'
+        exporter = QgsVectorLayerExporter(tmpfile, "ogr", fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem(4326), False, options, QgsFeatureSink.RegeneratePrimaryKey)
+        self.assertFalse(exporter.errorCode(),
+                         'unexpected export error {}: {}'.format(exporter.errorCode(), exporter.errorMessage()))
+
+        feat = QgsFeature(fields)
+
+        feat['one'] = 100
+        feat['two'] = 200
+        feat.setGeometry(QgsGeometry.fromWkt('point(4 45)'))
+        exporter.addFeature(feat)
+
+        del exporter
+        # make sure layers exist
+        lyr = QgsVectorLayer('{}|layername=output'.format(tmpfile), "lyr1", "ogr")
+        self.assertTrue(lyr.isValid())
+        self.assertEqual(lyr.crs().authid(), 'EPSG:4326')
+        self.assertEqual(lyr.wkbType(), QgsWkbTypes.Point)
+        feat_out = next(lyr.getFeatures())
+        self.assertEqual(feat_out.attribute('two'), 200)
+        self.assertEqual(feat_out.attribute('one'), 100)
+
     def testTransaction(self):
 
         tmpfile = os.path.join(self.basetestpath, 'testTransaction.gpkg')
@@ -1360,6 +1411,92 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertTrue(vl.isValid())
         fids = set([f['fid'] for f in vl.getFeatures()])
         self.assertEqual(len(fids), 1)
+
+    def testExportMultiFromShp(self):
+        """Test if a Point is imported as single geom and MultiPoint as multi"""
+
+        single_tmpfile = os.path.join(self.basetestpath, 'testExportMultiFromShp_point.shp')
+        ds = ogr.GetDriverByName('ESRI Shapefile').CreateDataSource(single_tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint)
+        lyr.CreateField(ogr.FieldDefn('str_field', ogr.OFTString))
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT (0 0)'))
+        f.SetField('str_field', 'one')
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT (1 1)'))
+        f.SetField('str_field', 'two')
+        lyr.CreateFeature(f)
+        f = None
+        ds = None
+
+        multi_tmpfile = os.path.join(self.basetestpath, 'testExportMultiFromShp_multipoint.shp')
+        ds = ogr.GetDriverByName('ESRI Shapefile').CreateDataSource(multi_tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbMultiPoint)
+        lyr.CreateField(ogr.FieldDefn('str_field', ogr.OFTString))
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('MULTIPOINT ((0 0))'))
+        f.SetField('str_field', 'one')
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('MULTIPOINT ((1 1), (2 2))'))
+        f.SetField('str_field', 'two')
+        lyr.CreateFeature(f)
+        f = None
+        ds = None
+
+        tmpfile = os.path.join(self.basetestpath, 'testExportMultiFromShpMulti.gpkg')
+        options = {}
+        options['driverName'] = 'GPKG'
+        lyr = QgsVectorLayer(multi_tmpfile, 'y', 'ogr')
+        self.assertTrue(lyr.isValid())
+        self.assertEqual(lyr.featureCount(), 2)
+        err, _ = QgsVectorLayerExporter.exportLayer(lyr, tmpfile, "ogr", lyr.crs(), False, options)
+        self.assertEqual(err, 0)
+        lyr = QgsVectorLayer(tmpfile, "y", "ogr")
+        self.assertTrue(lyr.isValid())
+        self.assertEqual(lyr.wkbType(), QgsWkbTypes.MultiPoint)
+        features = lyr.getFeatures()
+        f = next(features)
+        self.assertEqual(f.geometry().asWkt().upper(), 'MULTIPOINT ((0 0))')
+        f = next(features)
+        self.assertEqual(f.geometry().asWkt().upper(), 'MULTIPOINT ((1 1),(2 2))')
+
+        tmpfile = os.path.join(self.basetestpath, 'testExportMultiFromShpSingle.gpkg')
+        options = {}
+        options['driverName'] = 'GPKG'
+        lyr = QgsVectorLayer(single_tmpfile, 'y', 'ogr')
+        self.assertTrue(lyr.isValid())
+        self.assertEqual(lyr.featureCount(), 2)
+        err, _ = QgsVectorLayerExporter.exportLayer(lyr, tmpfile, "ogr", lyr.crs(), False, options)
+        self.assertEqual(err, 0)
+        lyr = QgsVectorLayer(tmpfile, "y", "ogr")
+        self.assertTrue(lyr.isValid())
+        self.assertEqual(lyr.wkbType(), QgsWkbTypes.Point)
+        features = lyr.getFeatures()
+        f = next(features)
+        self.assertEqual(f.geometry().asWkt().upper(), 'POINT (0 0)')
+        f = next(features)
+        self.assertEqual(f.geometry().asWkt().upper(), 'POINT (1 1)')
+
+    def testMinMaxDateField(self):
+        """
+        Test that provider min/max calls work with date fields
+        :return:
+        """
+        tmpfile = os.path.join(self.basetestpath, 'test_min_max_date_field.gpkg')
+        shutil.copy(TEST_DATA_DIR + '/' + 'qgis_server/test_project_api_timefilters.gpkg', tmpfile)
+
+        vl = QgsVectorLayer(tmpfile, 'subset_test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.fields().at(2).type(), QVariant.Date)
+        self.assertEqual(vl.fields().at(3).type(), QVariant.DateTime)
+        self.assertEqual(vl.dataProvider().minimumValue(2), QDate(2010, 1, 1))
+        self.assertEqual(vl.dataProvider().maximumValue(2), QDate(2019, 1, 1))
+        self.assertEqual(vl.dataProvider().minimumValue(3), QDateTime(2010, 1, 1, 1, 1, 1, 0, Qt.TimeSpec(1)))
+        self.assertEqual(vl.dataProvider().maximumValue(3), QDateTime(2022, 1, 1, 1, 1, 1, 0, Qt.TimeSpec(1)))
+        self.assertEqual(vl.dataProvider().uniqueValues(2), {QDate(2017, 1, 1), NULL, QDate(2018, 1, 1), QDate(2019, 1, 1), QDate(2010, 1, 1)})
+        self.assertEqual(vl.dataProvider().uniqueValues(3), {QDateTime(2022, 1, 1, 1, 1, 1), NULL, QDateTime(2019, 1, 1, 1, 1, 1), QDateTime(2021, 1, 1, 1, 1, 1), QDateTime(2010, 1, 1, 1, 1, 1)})
 
 
 if __name__ == '__main__':

@@ -223,8 +223,9 @@ QgsAbstractGeometry *QgsPolygon::boundary() const
   else
   {
     QgsMultiLineString *multiLine = new QgsMultiLineString();
-    multiLine->addGeometry( mExteriorRing->clone() );
     int nInteriorRings = mInteriorRings.size();
+    multiLine->reserve( nInteriorRings + 1 );
+    multiLine->addGeometry( mExteriorRing->clone() );
     for ( int i = 0; i < nInteriorRings; ++i )
     {
       multiLine->addGeometry( mInteriorRings.at( i )->clone() );

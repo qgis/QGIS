@@ -105,6 +105,7 @@ typedef SInt32 SRefCon;
 #include "qgsversionmigration.h"
 #include "qgsfirstrundialog.h"
 #include "qgsproxystyle.h"
+#include "qgsmessagebar.h"
 
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
@@ -385,9 +386,13 @@ void myMessageOutput( QtMsgType type, const char *msg )
       break;
     case QtWarningMsg:
     {
-      // Ignore libpng iCPP known incorrect SRGB profile errors
-      // (which are thrown by 3rd party components we have no control over and have low value anyway).
-      if ( strncmp( msg, "libpng warning: iCCP: known incorrect sRGB profile", 50 ) == 0 )
+      /* Ignore:
+       * - libpng iCPP known incorrect SRGB profile errors (which are thrown by 3rd party components
+       *  we have no control over and have low value anyway);
+       * - QtSVG warnings with regards to lack of implementation beyond Tiny SVG 1.2
+       */
+      if ( strncmp( msg, "libpng warning: iCCP: known incorrect sRGB profile", 50 ) == 0 ||
+           strstr( msg, "Could not add child element to parent element because the types are incorrect" ) )
         break;
 
       myPrint( "Warning: %s\n", msg );
@@ -395,11 +400,22 @@ void myMessageOutput( QtMsgType type, const char *msg )
 #ifdef QGISDEBUG
       // Print all warnings except setNamedColor.
       // Only seems to happen on windows
-      if ( 0 != strncmp( msg, "QColor::setNamedColor: Unknown color name 'param", 48 ) )
+      if ( 0 != strncmp( msg, "QColor::setNamedColor: Unknown color name 'param", 48 ) &&
+           0 != strncmp( msg, "Trying to create a QVariant instance of QMetaType::Void type, an invalid QVariant will be constructed instead", 109 ) &&
+           0 != strncmp( msg, "Logged warning", 14 ) )
       {
         // TODO: Verify this code in action.
         dumpBacktrace( 20 );
-        QgsMessageLog::logMessage( msg, QStringLiteral( "Qt" ) );
+
+        // also be super obnoxious -- we DON'T want to allow these errors to be ignored!!
+        if ( QgisApp::instance() && QgisApp::instance()->messageBar() && QgisApp::instance()->thread() == QThread::currentThread() )
+        {
+          QgisApp::instance()->messageBar()->pushCritical( QStringLiteral( "Qt" ), msg );
+        }
+        else
+        {
+          QgsMessageLog::logMessage( msg, QStringLiteral( "Qt" ) );
+        }
       }
 #endif
 
@@ -572,7 +588,6 @@ int main( int argc, char *argv[] )
 
   // The user can specify a path which will override the default path of custom
   // user settings (~/.qgis) and it will be used for QgsSettings INI file
-  QString configpath;
   QString authdbdirectory;
 
   QString pythonfile;
@@ -588,7 +603,7 @@ int main( int argc, char *argv[] )
 #if defined(ANDROID)
   QgsDebugMsg( QStringLiteral( "Android: All params stripped" ) );// Param %1" ).arg( argv[0] ) );
   //put all QGIS settings in the same place
-  configpath = QgsApplication::qgisSettingsDirPath();
+  QString configpath = QgsApplication::qgisSettingsDirPath();
   QgsDebugMsg( QStringLiteral( "Android: configpath set to %1" ).arg( configpath ) );
 #endif
 
@@ -848,7 +863,7 @@ int main( int argc, char *argv[] )
                 "You are seeing this message most likely because you "
                 "have no DISPLAY environment variable set.\n"
               ).toUtf8().constData();
-    exit( 1 ); //exit for now until a version of qgis is capabable of running non interactive
+    exit( 1 ); //exit for now until a version of qgis is capable of running non interactive
   }
 
   // GUI customization is enabled according to settings (loaded when instance is created)
@@ -1004,9 +1019,9 @@ int main( int argc, char *argv[] )
 
     QgsSettings migSettings;
     int firstRunVersion = migSettings.value( QStringLiteral( "migration/firstRunVersionFlag" ), 0 ).toInt();
-    bool showWelcome = ( firstRunVersion == 0  || Qgis::QGIS_VERSION_INT > firstRunVersion );
+    bool showWelcome = ( firstRunVersion == 0  || Qgis::versionInt() > firstRunVersion );
 
-    std::unique_ptr< QgsVersionMigration > migration( QgsVersionMigration::canMigrate( 20000, Qgis::QGIS_VERSION_INT ) );
+    std::unique_ptr< QgsVersionMigration > migration( QgsVersionMigration::canMigrate( 20000, Qgis::versionInt() ) );
     if ( migration && ( settingsMigrationForce || migration->requiresMigration() ) )
     {
       bool runMigration = true;
@@ -1019,7 +1034,7 @@ int main( int argc, char *argv[] )
         }
         dlg.exec();
         runMigration = dlg.migrateSettings();
-        migSettings.setValue( QStringLiteral( "migration/firstRunVersionFlag" ), Qgis::QGIS_VERSION_INT );
+        migSettings.setValue( QStringLiteral( "migration/firstRunVersionFlag" ), Qgis::versionInt() );
       }
 
       if ( runMigration )
@@ -1494,13 +1509,28 @@ int main( int argc, char *argv[] )
       dxfFile.setFileName( dxfOutputFile );
     }
 
-    int res = dxfExport.writeToFile( &dxfFile, dxfEncoding );
-    if ( res )
-      std::cerr << "dxf output failed with error code " << res << std::endl;
+    QgsDxfExport::ExportResult res = dxfExport.writeToFile( &dxfFile, dxfEncoding );
+    switch ( res )
+    {
+      case QgsDxfExport::ExportResult::Success:
+        break;
+
+      case QgsDxfExport::ExportResult::DeviceNotWritableError:
+        std::cerr << "dxf output failed, the device is not wriable" << std::endl;
+        break;
+
+      case QgsDxfExport::ExportResult::InvalidDeviceError:
+        std::cerr << "dxf output failed, the device is invalid" << std::endl;
+        break;
+
+      case QgsDxfExport::ExportResult::EmptyExtentError:
+        std::cerr << "dxf output failed, the extent could not be determined" << std::endl;
+        break;
+    }
 
     delete qgis;
 
-    return res;
+    return static_cast<int>( res );
   }
 
   // make sure we don't have a dirty blank project after launch

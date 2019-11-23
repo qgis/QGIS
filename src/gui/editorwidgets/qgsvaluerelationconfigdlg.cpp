@@ -25,6 +25,8 @@ QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer *vl, int fi
 {
   setupUi( this );
   mLayerName->setFilters( QgsMapLayerProxyModel::VectorLayer );
+  mKeyColumn->setLayer( mLayerName->currentLayer() );
+  mValueColumn->setLayer( mLayerName->currentLayer() );
   connect( mLayerName, &QgsMapLayerComboBox::layerChanged, mKeyColumn, &QgsFieldComboBox::setLayer );
   connect( mLayerName, &QgsMapLayerComboBox::layerChanged, mValueColumn, &QgsFieldComboBox::setLayer );
   connect( mEditExpression, &QAbstractButton::clicked, this, &QgsValueRelationConfigDlg::editExpression );

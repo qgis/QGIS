@@ -234,7 +234,6 @@ void QgsGrassPlugin::initGui()
 
   // Connect project
   connect( qGisInterface, &QgisInterface::projectRead, this, &QgsGrassPlugin::projectRead );
-  connect( qGisInterface, &QgisInterface::newProject, this, &QgsGrassPlugin::newProject );
 
   // Set icons to current theme
   setCurrentTheme( QString() );
@@ -768,10 +767,6 @@ void QgsGrassPlugin::projectRead()
   }
 }
 
-void QgsGrassPlugin::newProject()
-{
-}
-
 // Unload the plugin by cleaning up the GUI
 void QgsGrassPlugin::unload()
 {
@@ -782,7 +777,6 @@ void QgsGrassPlugin::unload()
 
   // disconnect slots of QgsGrassPlugin so they're not fired also after unload
   disconnect( qGisInterface, &QgisInterface::projectRead, this, &QgsGrassPlugin::projectRead );
-  disconnect( qGisInterface, &QgisInterface::newProject, this, &QgsGrassPlugin::newProject );
   disconnect( qGisInterface, &QgisInterface::currentThemeChanged, this, &QgsGrassPlugin::setCurrentTheme );
   disconnect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsGrassPlugin::setTransform );
   disconnect( mCanvas, &QgsMapCanvas::renderComplete, this, &QgsGrassPlugin::postRender );

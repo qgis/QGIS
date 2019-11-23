@@ -32,7 +32,10 @@
 #include "qgis_core.h"
 #include <functional>
 #include "qgsvectorlayerexporter.h"
+#include "qgsabstractproviderconnection.h"
+#include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsfields.h"
+#include "qgsexception.h"
 
 class QgsDataItem;
 class QgsDataItemProvider;
@@ -158,12 +161,22 @@ class CORE_EXPORT QgsProviderMetadata
      */
     virtual QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) SIP_FACTORY;
 
+#ifndef SIP_RUN
+
     /**
      * Creates new empty vector layer
      * \note not available in Python bindings
      * \since QGIS 3.10
      */
-    SIP_SKIP virtual QgsVectorLayerExporter::ExportError createEmptyLayer( const QString &uri, const QgsFields &fields, QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options );
+    virtual QgsVectorLayerExporter::ExportError createEmptyLayer( const QString &uri,
+        const QgsFields &fields,
+        QgsWkbTypes::Type wkbType,
+        const QgsCoordinateReferenceSystem &srs,
+        bool overwrite,
+        QMap<int, int> &oldToNewAttrIdxMap,
+        QString &errorMessage,
+        const QMap<QString, QVariant> *options );
+#endif
 
     /**
      * Creates a new instance of the raster data provider.
@@ -249,6 +262,123 @@ class CORE_EXPORT QgsProviderMetadata
      */
     virtual QgsTransaction *createTransaction( const QString &connString ) SIP_FACTORY;
 
+    /**
+     * Returns a dictionary of stored provider connections,
+     * the dictionary key is the connection identifier.
+     * Ownership is not transferred.
+     * Raises a QgsProviderConnectionException if any errors are encountered.
+     * \param cached if FALSE connections will be re-read from the settings
+     * \throws QgsProviderConnectionException
+     * \since QGIS 3.10
+     */
+    virtual QMap<QString, QgsAbstractProviderConnection *> connections( bool cached = true ) SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Returns a dictionary of database provider connections,
+     * the dictionary key is the connection identifier.
+     * Ownership is not transferred.
+     * Raises a QgsProviderConnectionException if any errors are encountered.
+     * \param cached if FALSE connections will be re-read from the settings
+     * \throws QgsProviderConnectionException
+     * \since QGIS 3.10
+     */
+    QMap<QString, QgsAbstractDatabaseProviderConnection *> dbConnections( bool cached = true ) SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Searches and returns a (possibly NULL) connection from the stored provider connections.
+     * Ownership is not transferred.
+     * Raises a QgsProviderConnectionException if any errors are encountered.
+     * \param name the connection name
+     * \param cached if FALSE connections will be re-read from the settings
+     * \throws QgsProviderConnectionException
+     * \since QGIS 3.10
+     */
+    QgsAbstractProviderConnection *findConnection( const QString &name, bool cached = true ) SIP_THROW( QgsProviderConnectionException );
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns a dictionary of provider connections of the specified type T,
+     * the dictionary key is the connection identifier.
+     * \param cached if FALSE connections will be re-read from the settings
+     * \note not available in Python bindings
+     * \since QGIS 3.10
+     */
+    template <typename T> QMap<QString, T *>connections( bool cached = true );
+
+
+#endif
+
+    /**
+     * Creates a new connection from \a uri and \a configuration,
+     * the newly created connection is not automatically stored in the settings, call
+     * saveConnection() to save it.
+     * Ownership is transferred to the caller.
+     * \see saveConnection()
+     * \since QGIS 3.10
+     */
+    virtual QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration ) SIP_FACTORY;
+
+    /**
+     * Creates a new connection by loading the connection with the given \a name from the settings.
+     * Ownership is transferred to the caller.
+     * \see findConnection()
+     */
+    virtual QgsAbstractProviderConnection *createConnection( const QString &name );
+
+    /**
+     * Removes the connection with the given \a name from the settings.
+     * Raises a QgsProviderConnectionException if any errors are encountered.
+     * \throws QgsProviderConnectionException
+     * \since QGIS 3.10
+     */
+    virtual void deleteConnection( const QString &name ) SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Stores the connection in the settings
+     * \param connection the connection to be stored in the settings
+     * \param name the name under which the connection will be stored
+     * \since QGIS 3.10
+     */
+    virtual void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name );
+
+  protected:
+
+#ifndef SIP_RUN
+///@cond PRIVATE
+
+    // Common functionality for connections management, to be moved into the class
+    // when all the providers are ready
+    // T_provider_conn: subclass of QgsAbstractProviderConnection,
+    // T_conn: provider connection class (such as QgsOgrDbConnection or QgsPostgresConn)
+    // TODO QGIS4: remove all old provider conn classes and move functionality into QgsAbstractProviderConnection subclasses
+    template <class T_provider_conn, class T_conn> QMap<QString, QgsAbstractProviderConnection *> connectionsProtected( bool cached = true )
+    {
+      if ( ! cached || mProviderConnections.isEmpty() )
+      {
+        qDeleteAll( mProviderConnections );
+        mProviderConnections.clear();
+        const auto connNames { T_conn::connectionList() };
+        for ( const auto &cname : connNames )
+        {
+          mProviderConnections.insert( cname, new T_provider_conn( cname ) );
+        }
+      }
+      return mProviderConnections;
+    }
+
+    template <class T_provider_conn> void deleteConnectionProtected( const QString &name )
+    {
+      T_provider_conn conn( name );
+      conn.remove( name );
+      mProviderConnections.clear();
+    }
+    virtual void saveConnectionProtected( const QgsAbstractProviderConnection *connection, const QString &name );
+    //! Provider connections cache
+    QMap<QString, QgsAbstractProviderConnection *> mProviderConnections;
+
+/// @endcond
+#endif
 
   private:
 
@@ -263,6 +393,7 @@ class CORE_EXPORT QgsProviderMetadata
     QString mLibrary;
 
     CreateDataProviderFunction mCreateFunction = nullptr;
+
 };
 
 #endif //QGSPROVIDERMETADATA_H

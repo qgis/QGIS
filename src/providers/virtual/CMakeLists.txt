@@ -4,7 +4,7 @@
 
 QT5_ADD_RESOURCES(QGIS_VLAYER_SQL_FUNCTIONS_RCC sqlfunctionslist.qrc)
 
-SET(vlayer_provider_MOC_HDRS
+SET(QGIS_VLAYER_PROVIDER_HDRS
   qgsvirtuallayerprovider.h
   qgsslottofunction.h
 )
@@ -23,15 +23,13 @@ IF (WITH_GUI)
     qgsvirtuallayersourceselect.cpp
     qgsembeddedlayerselectdialog.cpp
   )
-  SET(vlayer_provider_MOC_HDRS ${vlayer_provider_MOC_HDRS}
+  SET(QGIS_VLAYER_PROVIDER_HDRS ${QGIS_VLAYER_PROVIDER_HDRS}
     qgsvirtuallayersourceselect.h
     qgsembeddedlayerselectdialog.h
   )
 ENDIF ()
 
 QT5_WRAP_UI(vlayer_provider_UI_H qgsvirtuallayersourceselectbase.ui qgsembeddedlayerselect.ui)
-
-QT5_WRAP_CPP(vlayer_provider_MOC_SRCS ${vlayer_provider_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core
@@ -41,9 +39,11 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/auth
   ${CMAKE_SOURCE_DIR}/external
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
@@ -67,7 +67,7 @@ ENDIF ()
 
 ADD_LIBRARY(virtuallayerprovider MODULE
   ${QGIS_VLAYER_PROVIDER_SRCS}
-  ${vlayer_provider_MOC_SRCS}
+  ${QGIS_VLAYER_PROVIDER_HDRS}
   ${vlayer_provider_UI_H}
   ${QGIS_VLAYER_SQL_FUNCTIONS_RCC}
 )
@@ -85,6 +85,7 @@ IF (WITH_GUI)
   TARGET_LINK_LIBRARIES (virtuallayerprovider
     qgis_gui
   )
+  ADD_DEPENDENCIES(virtuallayerprovider ui)
 ENDIF ()
 
 INSTALL(TARGETS virtuallayerprovider

@@ -331,7 +331,7 @@ def main():
 
     updateColumn(mapName, columnWithClass, cats, classes)
 
-    # TODO: outupt as a new map (use INSERT, can be faster)
+    # TODO: output as a new map (use INSERT, can be faster)
     # TODO: output as a new layer?
 
 

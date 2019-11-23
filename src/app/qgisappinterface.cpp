@@ -564,6 +564,7 @@ QMenu *QgisAppInterface::newLayerMenu() { return qgis->newLayerMenu(); }
 QMenu *QgisAppInterface::addLayerMenu() { return qgis->addLayerMenu(); }
 QMenu *QgisAppInterface::settingsMenu() { return qgis->settingsMenu(); }
 QMenu *QgisAppInterface::pluginMenu() { return qgis->pluginMenu(); }
+QMenu *QgisAppInterface::pluginHelpMenu() { return qgis->pluginHelpMenu(); }
 QMenu *QgisAppInterface::rasterMenu() { return qgis->rasterMenu(); }
 QMenu *QgisAppInterface::vectorMenu() { return qgis->vectorMenu(); }
 QMenu *QgisAppInterface::databaseMenu() { return qgis->databaseMenu(); }
@@ -771,6 +772,12 @@ QgsStatusBar *QgisAppInterface::statusBarIface()
   return qgis->statusBarIface();
 }
 
+void QgisAppInterface::locatorSearch( const QString &searchText )
+{
+  qgis->mLocatorWidget->invalidateResults();
+  qgis->mLocatorWidget->search( searchText );
+}
+
 void QgisAppInterface::registerLocatorFilter( QgsLocatorFilter *filter )
 {
   qgis->mLocatorWidget->locator()->registerFilter( filter );
@@ -799,4 +806,9 @@ void QgisAppInterface::takeAppScreenShots( const QString &saveDirectory, const i
 QgsBrowserGuiModel *QgisAppInterface::browserModel()
 {
   return qgis->mBrowserModel;
+}
+
+QgsLayerTreeRegistryBridge::InsertionPoint QgisAppInterface::layerTreeInsertionPoint()
+{
+  return qgis->layerTreeInsertionPoint();
 }

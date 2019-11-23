@@ -50,6 +50,7 @@ class QgsPropertyPrivate : public QSharedData
       , cachedFieldIdx( other.cachedFieldIdx )
       , expressionString( other.expressionString )
       , expressionPrepared( other.expressionPrepared )
+      , expressionIsInvalid( other.expressionIsInvalid )
       , expression( other.expression )
       , expressionReferencedCols( other.expressionReferencedCols )
     {}
@@ -77,6 +78,7 @@ class QgsPropertyPrivate : public QSharedData
     // ExpressionData
     QString expressionString;
     mutable bool expressionPrepared = false;
+    mutable bool expressionIsInvalid = false;
     mutable QgsExpression expression;
     //! Cached set of referenced columns
     mutable QSet< QString > expressionReferencedCols;

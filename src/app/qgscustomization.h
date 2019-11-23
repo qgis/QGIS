@@ -92,7 +92,8 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
     void actionCollapseAll_triggered( bool checked );
     void actionSelectAll_triggered( bool checked );
 
-    void mCustomizationEnabledCheckBox_toggled( bool checked );
+    void enableCustomization( bool checked );
+    bool filterItems( const QString &text );
 
   private:
     void init();
@@ -101,6 +102,10 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
 
     QString mLastDirSettingsName;
     QSettings *mSettings = nullptr;
+
+  protected:
+    QMap<QTreeWidgetItem *, bool> mTreeInitialExpand;
+    QMap<QTreeWidgetItem *, bool> mTreeInitialVisible;
 };
 
 class APP_EXPORT QgsCustomization : public QObject
@@ -132,14 +137,11 @@ class APP_EXPORT QgsCustomization : public QObject
 
     void setSettings( QSettings *settings ) { mSettings = settings ;}
 
-    // Return the path to the splash screen
+    // Returns the path to the splash screen
     QString splashPath() const;
 
-    // Load and set default customization
+    // Loads and sets default customization
     void loadDefault();
-
-    // Internal Qt widget which has to bes kipped in paths
-    static QStringList sInternalWidgets;
 
     QString statusPath() const { return mStatusPath; }
 
@@ -164,8 +166,6 @@ class APP_EXPORT QgsCustomization : public QObject
     void addTreeItemActions( QTreeWidgetItem *parentItem, const QList<QAction *> &actions );
     QList<QTreeWidgetItem *> mMainWindowItems;
     friend class QgsCustomizationDialog; // in order to access mMainWindowItems
-
-  private slots:
 
   private:
     static QgsCustomization *sInstance;

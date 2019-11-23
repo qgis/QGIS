@@ -145,6 +145,21 @@ Returns the platform's HIG flags.
 
     ~QgsGui();
 
+    static QColor sampleColor( QPoint point );
+%Docstring
+Samples the color on screen at the specified global ``point`` (pixel).
+
+.. versionadded:: 3.10
+%End
+
+    static QScreen *findScreenAt( QPoint point );
+%Docstring
+Returns the screen at the given global ``point`` (pixel).
+
+.. versionadded:: 3.10
+%End
+
+
   private:
     QgsGui( const QgsGui &other );
 };

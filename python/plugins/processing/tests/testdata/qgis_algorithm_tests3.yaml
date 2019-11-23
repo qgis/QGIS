@@ -396,7 +396,7 @@ tests:
         name: expected/buffer_ovals.gml
         type: vector
 
-  - algorithm: qgis:creategrid
+  - algorithm: native:creategrid
     name: Lines grid 0.1 degree spacing
     params:
       CRS: EPSG:4326
@@ -410,6 +410,16 @@ tests:
       OUTPUT:
         name: expected/create_grid_lines.gml
         type: vector
+        compare:
+          fields:
+            left:
+              precision: 7
+            right:
+              precision: 7
+            top:
+              precision: 7
+            bottom:
+              precision: 7
 
   - algorithm: qgis:convertgeometrytype
     name: polygon to centroid
@@ -1876,5 +1886,25 @@ tests:
             __all__:
               precision: 7
 
+  - algorithm: qgis:buildvirtualvector
+    name: Build virtual vector
+    params:
+      INPUT:
+        params:
+        - name: lines.gml|layername=lines
+          type: vector
+        - name: multilines.gml|layername=multilines
+          type: vector
+        type: multi
+      UNIONED: true
+    results:
+      OUTPUT:
+        name: expected/vrt_lines.vrt
+        type: regex
+        rules:
+          - '<SrcDataSource>.*\/lines\.gml</SrcDataSource>'
+          - '<SrcLayer>lines</SrcLayer>'
+          - '<SrcDataSource>.*\/multilines\.gml</SrcDataSource>'
+          - '<SrcLayer>multilines</SrcLayer>'
 
 # See ../README.md for a description of the file format

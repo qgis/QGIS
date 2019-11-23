@@ -87,7 +87,8 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
 
   protected:
     //! Cancels the background job that is currently in progress
-    void cancelActiveJob();
+    void cancelActiveJob( QgsChunkQueueJob *job );
+    void cancelActiveJobs();
     //! Sets whether the entity needs to get active nodes updated
     void setNeedsUpdate( bool needsUpdate ) { mNeedsUpdate = needsUpdate; }
 
@@ -97,7 +98,8 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
     //! make sure that the chunk will be loaded soon (if not loaded yet) and not unloaded anytime soon (if loaded already)
     void requestResidency( QgsChunkNode *node );
 
-    void startJob();
+    void startJobs();
+    QgsChunkQueueJob *startJob( QgsChunkNode *node );
 
   private slots:
     void onActiveJobFinished();
@@ -136,8 +138,8 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
     //! Entity that shows bounding boxes of active chunks (NULLPTR if not enabled)
     QgsChunkBoundsEntity *mBboxesEntity = nullptr;
 
-    //! job that is currently being processed (asynchronously in a worker thread)
-    QgsChunkQueueJob *mActiveJob = nullptr;
+    //! jobs that are currently being processed (asynchronously in worker threads)
+    QList<QgsChunkQueueJob *> mActiveJobs;
 };
 
 /// @endcond

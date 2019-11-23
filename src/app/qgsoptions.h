@@ -44,6 +44,20 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
   public:
 
     /**
+     * Behavior to use when encountering a layer with an unknown CRS
+     * \since QGIS 3.10
+     */
+    enum UnknownLayerCrsBehavior
+    {
+      NoAction = 0, //!< Take no action and leave as unknown CRS
+      PromptUserForCrs = 1, //!< User is prompted for a CRS choice
+      UseProjectCrs = 2, //!< Copy the current project's CRS
+      UseDefaultCrs = 3, //!< Use the default layer CRS set via QGIS options
+    };
+    Q_ENUM( UnknownLayerCrsBehavior )
+
+
+    /**
      * Constructor
      * \param parent Parent widget (usually a QgisApp)
      * \param name name for the widget
@@ -115,11 +129,11 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     void mProxyTypeComboBox_currentIndexChanged( int idx );
 
-    //! Add a new URL to exclude from Proxy
-    void addExcludedUrl();
+    //! Add a new URL to no proxy URL list
+    void addNoProxyUrl();
 
-    //! Remove an URL to exclude from Proxy
-    void removeExcludedUrl();
+    //! Remove current URL from no proxy URL list
+    void removeNoProxyUrl();
 
     //! Slot to flag restoring/delete window state settings upon restart
     void restoreDefaultWindowState();
@@ -229,6 +243,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
   private:
     QgsSettings *mSettings = nullptr;
     QStringList i18nList();
+
     void initContrastEnhancement( QComboBox *cbox, const QString &name, const QString &defaultVal );
     void saveContrastEnhancement( QComboBox *cbox, const QString &name );
     void initMinMaxLimits( QComboBox *cbox, const QString &name, const QString &defaultVal );

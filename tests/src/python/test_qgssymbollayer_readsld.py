@@ -126,7 +126,7 @@ class TestQgsSymbolLayerReadSld(unittest.TestCase):
         <se:Rotation><ogc:Literal>50</ogc:Literal></se:Rotation>
         """
         # technically it's not necessary to use a real shape, but a empty memory
-        # layer. In case these tests will upgrate to a rendering where to
+        # layer. In case these tests will upgrade to a rendering where to
         # compare also rendering not only properties
         #myShpFile = os.path.join(unitTestDataPath(), 'points.shp')
         #layer = QgsVectorLayer(myShpFile, 'points', 'ogr')

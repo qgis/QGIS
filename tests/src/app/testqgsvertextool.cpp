@@ -23,6 +23,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsmapmouseevent.h"
 #include "vertextool/qgsvertextool.h"
+#include "qgslinestring.h"
+#include "qgssnappingconfig.h"
+#include "qgssettings.h"
+#include "testqgsmaptoolutils.h"
 
 bool operator==( const QgsGeometry &g1, const QgsGeometry &g2 )
 {
@@ -56,6 +60,8 @@ class TestQgsVertexTool : public QObject
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
 
+    void testTopologicalEditingMoveVertexZ();
+    void testTopologicalEditingMoveVertexOnSegmentZ();
     void testMoveVertex();
     void testMoveEdge();
     void testAddVertex();
@@ -86,31 +92,37 @@ class TestQgsVertexTool : public QObject
       mVertexTool->cadCanvasMoveEvent( &e );
     }
 
-    void mousePress( double mapX, double mapY, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers() )
+    void mousePress( double mapX, double mapY, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers(), bool snap = false )
     {
       QgsMapMouseEvent e1( mCanvas, QEvent::MouseButtonPress, mapToScreen( mapX, mapY ), button, button, stateKey );
+      if ( snap )
+        e1.snapPoint();
       mVertexTool->cadCanvasPressEvent( &e1 );
     }
 
-    void mouseRelease( double mapX, double mapY, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers() )
+    void mouseRelease( double mapX, double mapY, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers(), bool snap = false )
     {
       QgsMapMouseEvent e2( mCanvas, QEvent::MouseButtonRelease, mapToScreen( mapX, mapY ), button, Qt::MouseButton(), stateKey );
+      if ( snap )
+        e2.snapPoint();
       mVertexTool->cadCanvasReleaseEvent( &e2 );
     }
 
-    void mouseClick( double mapX, double mapY, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers() )
+    void mouseClick( double mapX, double mapY, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers(), bool snap = false )
     {
-      mousePress( mapX, mapY, button, stateKey );
-      mouseRelease( mapX, mapY, button, stateKey );
+      mousePress( mapX, mapY, button, stateKey, snap );
+      mouseRelease( mapX, mapY, button, stateKey, snap );
     }
 
-    void mouseDoubleClick( double mapX, double mapY, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers() )
+    void mouseDoubleClick( double mapX, double mapY, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers(), bool snap = false )
     {
       // this is how Qt passes the events: 1. mouse press, 2. mouse release, 3. mouse double-click, 4. mouse release
 
-      mouseClick( mapX, mapY, button, stateKey );
+      mouseClick( mapX, mapY, button, stateKey, snap );
 
       QgsMapMouseEvent e( mCanvas, QEvent::MouseButtonDblClick, mapToScreen( mapX, mapY ), button, button, stateKey );
+      if ( snap )
+        e.snapPoint();
       mVertexTool->canvasDoubleClickEvent( &e );
 
       mouseRelease( mapX, mapY, button, stateKey );
@@ -127,11 +139,15 @@ class TestQgsVertexTool : public QObject
 
   private:
     QgsMapCanvas *mCanvas = nullptr;
+    QgisApp *mQgisApp = nullptr;
     QgsAdvancedDigitizingDockWidget *mAdvancedDigitizingDockWidget = nullptr;
     QgsVertexTool *mVertexTool = nullptr;
     QgsVectorLayer *mLayerLine = nullptr;
     QgsVectorLayer *mLayerPolygon = nullptr;
     QgsVectorLayer *mLayerPoint = nullptr;
+    QgsVectorLayer *mLayerLineZ = nullptr;
+    QgsFeatureId mFidLineZF1 = 0;
+    QgsFeatureId mFidLineZF2 = 0;
     QgsFeatureId mFidLineF1 = 0;
     QgsFeatureId mFidPolygonF1 = 0;
     QgsFeatureId mFidPointF1 = 0;
@@ -147,6 +163,7 @@ void TestQgsVertexTool::initTestCase()
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();
+  mQgisApp = new QgisApp();
 
   // Set up the QSettings environment
   QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
@@ -166,7 +183,9 @@ void TestQgsVertexTool::initTestCase()
   QVERIFY( mLayerPolygon->isValid() );
   mLayerPoint = new QgsVectorLayer( QStringLiteral( "Point?crs=EPSG:27700" ), QStringLiteral( "layer point" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerPoint->isValid() );
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerPolygon << mLayerPoint );
+  mLayerLineZ = new QgsVectorLayer( QStringLiteral( "LineStringZ?crs=EPSG:27700" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerLineZ->isValid() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerPolygon << mLayerPoint << mLayerLineZ );
 
   QgsPolylineXY line1;
   line1 << QgsPointXY( 2, 1 ) << QgsPointXY( 1, 1 ) << QgsPointXY( 1, 3 );
@@ -183,6 +202,15 @@ void TestQgsVertexTool::initTestCase()
   QgsFeature pointF1;
   pointF1.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 2, 3 ) ) );
 
+  QgsFeature linez1, linez2;
+  QVector<QgsPoint> linez1pts, linez2pts;
+  linez1pts << QgsPoint( 5, 5, 1 ) << QgsPoint( 6, 6, 1 ) << QgsPoint( 7, 5, 1 );
+  linez2pts << QgsPoint( 5, 7, 5 ) << QgsPoint( 7, 7, 10 );
+  QgsLineString linez1geom( linez1pts );
+  QgsLineString linez2geom( linez2pts );
+  linez1.setGeometry( std::unique_ptr< QgsAbstractGeometry >( linez1geom.clone() ) );
+  linez2.setGeometry( std::unique_ptr< QgsAbstractGeometry >( linez2geom.clone() ) );
+
   mLayerLine->startEditing();
   mLayerLine->addFeature( lineF1 );
   mFidLineF1 = lineF1.id();
@@ -198,10 +226,19 @@ void TestQgsVertexTool::initTestCase()
   mFidPointF1 = pointF1.id();
   QCOMPARE( mLayerPoint->featureCount(), ( long )1 );
 
+  mLayerLineZ->startEditing();
+  mLayerLineZ->addFeature( linez1 );
+  mLayerLineZ->addFeature( linez2 );
+  mFidLineZF1 = linez1.id();
+  mFidLineZF2 = linez2.id();
+  QCOMPARE( mLayerLineZ->featureCount(), ( long ) 2 );
+
   // just one added feature in each undo stack
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
   QCOMPARE( mLayerPolygon->undoStack()->index(), 1 );
   QCOMPARE( mLayerPoint->undoStack()->index(), 1 );
+  // except for layerLineZ
+  QCOMPARE( mLayerLineZ->undoStack()->index(), 2 );
 
   mCanvas->setFrameStyle( QFrame::NoFrame );
   mCanvas->resize( 512, 512 );
@@ -211,11 +248,15 @@ void TestQgsVertexTool::initTestCase()
   QCOMPARE( mCanvas->mapSettings().outputSize(), QSize( 512, 512 ) );
   QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( 0, 0, 8, 8 ) );
 
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerPolygon << mLayerPoint );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerPolygon << mLayerPoint << mLayerLineZ );
 
-  // TODO: set up snapping
+  QgsMapCanvasSnappingUtils *snappingUtils = new QgsMapCanvasSnappingUtils( mCanvas, this );
+  mCanvas->setSnappingUtils( snappingUtils );
 
-  mCanvas->setSnappingUtils( new QgsMapCanvasSnappingUtils( mCanvas, this ) );
+  snappingUtils->locatorForLayer( mLayerLine )->init();
+  snappingUtils->locatorForLayer( mLayerPolygon )->init();
+  snappingUtils->locatorForLayer( mLayerPoint )->init();
+  snappingUtils->locatorForLayer( mLayerLineZ )->init();
 
   // create vertex tool
   mVertexTool = new QgsVertexTool( mCanvas, mAdvancedDigitizingDockWidget );
@@ -230,6 +271,54 @@ void TestQgsVertexTool::cleanupTestCase()
   delete mAdvancedDigitizingDockWidget;
   delete mCanvas;
   QgsApplication::exitQgis();
+}
+
+void TestQgsVertexTool::testTopologicalEditingMoveVertexZ()
+{
+  bool topologicalEditing = QgsProject::instance()->topologicalEditing();
+  QgsProject::instance()->setTopologicalEditing( true );
+  QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
+  cfg.setMode( QgsSnappingConfig::AllLayers );
+  cfg.setTolerance( 10 );
+  cfg.setType( QgsSnappingConfig::VertexAndSegment );
+  cfg.setEnabled( true );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  mouseClick( 6, 6, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  mouseClick( 5, 7, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt(), QString( "LineStringZ (5 5 1, 5 7 5, 7 5 1)" ) );
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF2 ).geometry().asWkt(), QString( "LineStringZ (5 7 5, 7 7 10)" ) );
+
+  QgsProject::instance()->setTopologicalEditing( topologicalEditing );
+  mLayerLineZ->undoStack()->undo();
+  cfg.setEnabled( false );
+  mCanvas->snappingUtils()->setConfig( cfg );
+}
+
+void TestQgsVertexTool::testTopologicalEditingMoveVertexOnSegmentZ()
+{
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 333 );
+
+  bool topologicalEditing = QgsProject::instance()->topologicalEditing();
+  QgsProject::instance()->setTopologicalEditing( true );
+  QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
+  cfg.setMode( QgsSnappingConfig::AllLayers );
+  cfg.setTolerance( 10 );
+  cfg.setType( QgsSnappingConfig::VertexAndSegment );
+  cfg.setEnabled( true );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  mouseClick( 6, 6, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  mouseClick( 6, 7, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt(), QString( "LineStringZ (5 5 1, 6 7 1, 7 5 1)" ) );
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF2 ).geometry().asWkt(), QString( "LineStringZ (5 7 5, 6 7 333, 7 7 10)" ) );
+
+  QgsProject::instance()->setTopologicalEditing( topologicalEditing );
+  mLayerLineZ->undoStack()->undo();
+  cfg.setEnabled( false );
+  mCanvas->snappingUtils()->setConfig( cfg );
 }
 
 void TestQgsVertexTool::testMoveVertex()
@@ -785,6 +874,8 @@ void TestQgsVertexTool::testActiveLayerPriority()
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerPolygon << mLayerPoint << layerLine2 );
 
   // make one layer active and check its vertex is used
+
+  mCanvas->snappingUtils()->locatorForLayer( layerLine2 )->init();
 
   mCanvas->setCurrentLayer( mLayerLine );
 

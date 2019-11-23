@@ -16,6 +16,7 @@
 #define QGSLABELINGENGINESETTINGS_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsrendercontext.h"
 #include <QFlags>
 
@@ -38,8 +39,11 @@ class CORE_EXPORT QgsLabelingEngineSettings
       RenderOutlineLabels   = 1 << 3,  //!< Whether to render labels as text or outlines. Deprecated and of QGIS 3.4.3 - use defaultTextRenderFormat() instead.
       DrawLabelRectOnly     = 1 << 4,  //!< Whether to only draw the label rect and not the actual label text (used for unit tests)
       DrawCandidates        = 1 << 5,  //!< Whether to draw rectangles of generated candidates (good for debugging)
+      DrawUnplacedLabels    = 1 << 6,  //!< Whether to render unplaced labels as an indicator/warning for users
     };
     Q_DECLARE_FLAGS( Flags, Flag )
+
+    // TODO QGIS 4 - remove
 
     /**
      * Search methods in the PAL library to remove colliding labels
@@ -73,10 +77,17 @@ class CORE_EXPORT QgsLabelingEngineSettings
     //! Sets number of candidate positions that will be generated for each label feature
     void setNumCandidatePositions( int candPoint, int candLine, int candPolygon ) { mCandPoint = candPoint; mCandLine = candLine; mCandPolygon = candPolygon; }
 
-    //! Sets which search method to use for removal collisions between labels
-    void setSearchMethod( Search s ) { mSearchMethod = s; }
-    //! Which search method to use for removal collisions between labels
-    Search searchMethod() const { return mSearchMethod; }
+    /**
+     * Used to set which search method to use for removal collisions between labels
+     * \deprecated since QGIS 3.10 - Chain is always used.
+     */
+    Q_DECL_DEPRECATED void setSearchMethod( Search s ) SIP_DEPRECATED { Q_UNUSED( s ) }
+
+    /**
+     * Which search method to use for removal collisions between labels
+     * \deprecated since QGIS 3.10 - Chain is always used.
+     */
+    Q_DECL_DEPRECATED Search searchMethod() const SIP_DEPRECATED { return Chain; }
 
     //! Read configuration of the labeling engine from a project
     void readSettingsFromProject( QgsProject *project );
@@ -109,6 +120,22 @@ class CORE_EXPORT QgsLabelingEngineSettings
       mDefaultTextRenderFormat = format;
     }
 
+    /**
+     * Returns the color to use when rendering unplaced labels.
+     *
+     * \see setUnplacedLabelColor()
+     * \since QGIS 3.10
+     */
+    QColor unplacedLabelColor() const;
+
+    /**
+     * Sets the \a color to use when rendering unplaced labels.
+     *
+     * \see unplacedLabelColor()
+     * \since QGIS 3.10
+     */
+    void setUnplacedLabelColor( const QColor &color );
+
   private:
     //! Flags
     Flags mFlags;
@@ -116,6 +143,8 @@ class CORE_EXPORT QgsLabelingEngineSettings
     Search mSearchMethod = Chain;
     //! Number of candedate positions that will be generated for features
     int mCandPoint = 16, mCandLine = 50, mCandPolygon = 30;
+
+    QColor mUnplacedLabelColor = QColor( 255, 0, 0 );
 
     QgsRenderContext::TextRenderFormat mDefaultTextRenderFormat = QgsRenderContext::TextFormatAlwaysOutlines;
 

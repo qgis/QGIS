@@ -60,9 +60,6 @@ class GUI_EXPORT QgsBinaryWidgetWrapper : public QgsEditorWidgetWrapper
     void initWidget( QWidget *editor ) override;
     bool valid() const override;
 
-  public slots:
-    void setValue( const QVariant &value ) override;
-
   private slots:
 
     void saveContent();
@@ -70,6 +67,8 @@ class GUI_EXPORT QgsBinaryWidgetWrapper : public QgsEditorWidgetWrapper
     void clear();
 
   private:
+    void updateValues( const QVariant &value, const QVariantList & = QVariantList() ) override;
+
     QString defaultPath();
 
     QByteArray mValue;

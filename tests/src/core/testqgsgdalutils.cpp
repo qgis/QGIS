@@ -36,10 +36,15 @@ class TestQgsGdalUtils: public QObject
     void cleanup();// will be called after every testfunction.
     void supportsRasterCreate();
     void testCreateSingleBandMemoryDataset();
+    void testCreateMultiBandMemoryDataset();
     void testCreateSingleBandTiffDataset();
     void testResampleSingleBandRaster();
+    void testImageToDataset();
+    void testResampleImageToImage();
 
   private:
+
+    double identify( GDALDatasetH dataset, int band, int px, int py );
 };
 
 void TestQgsGdalUtils::initTestCase()
@@ -109,6 +114,27 @@ void TestQgsGdalUtils::testCreateSingleBandMemoryDataset()
   QCOMPARE( GDALGetRasterDataType( GDALGetRasterBand( ds1.get(), 1 ) ), GDT_Float32 );
 }
 
+void TestQgsGdalUtils::testCreateMultiBandMemoryDataset()
+{
+  gdal::dataset_unique_ptr ds1 = QgsGdalUtils::createMultiBandMemoryDataset( GDT_Float32, 4, QgsRectangle( 1, 1, 21, 11 ), 40, 20, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+  QVERIFY( ds1 );
+
+  QCOMPARE( GDALGetRasterCount( ds1.get() ), 4 );
+  QCOMPARE( GDALGetRasterXSize( ds1.get() ), 40 );
+  QCOMPARE( GDALGetRasterYSize( ds1.get() ), 20 );
+
+  QCOMPARE( GDALGetProjectionRef( ds1.get() ), EPSG_4326_WKT );
+  double geoTransform[6];
+  double geoTransformExpected[] = { 1, 0.5, 0, 11, 0, -0.5 };
+  QCOMPARE( GDALGetGeoTransform( ds1.get(), geoTransform ), CE_None );
+  QVERIFY( memcmp( geoTransform, geoTransformExpected, sizeof( double ) * 6 ) == 0 );
+
+  QCOMPARE( GDALGetRasterDataType( GDALGetRasterBand( ds1.get(), 1 ) ), GDT_Float32 );
+  QCOMPARE( GDALGetRasterDataType( GDALGetRasterBand( ds1.get(), 2 ) ), GDT_Float32 );
+  QCOMPARE( GDALGetRasterDataType( GDALGetRasterBand( ds1.get(), 3 ) ), GDT_Float32 );
+  QCOMPARE( GDALGetRasterDataType( GDALGetRasterBand( ds1.get(), 4 ) ), GDT_Float32 );
+}
+
 void TestQgsGdalUtils::testCreateSingleBandTiffDataset()
 {
   QString filename = QDir::tempPath() + "/qgis_test_single_band_raster.tif";
@@ -167,6 +193,98 @@ void TestQgsGdalUtils::testResampleSingleBandRaster()
 
   layer.reset();
   QFile::remove( outputFilename );
+}
+
+void TestQgsGdalUtils::testImageToDataset()
+{
+  QString inputFilename = QString( TEST_DATA_DIR ) + "/rgb256x256.png";
+  QImage src = QImage( inputFilename );
+  src = src.convertToFormat( QImage::Format_ARGB32 );
+  QVERIFY( !src.isNull() );
+
+  gdal::dataset_unique_ptr dstDS = QgsGdalUtils::imageToMemoryDataset( QImage() );
+  QVERIFY( !dstDS );
+
+  dstDS = QgsGdalUtils::imageToMemoryDataset( src );
+  QVERIFY( dstDS );
+
+  QCOMPARE( GDALGetRasterCount( dstDS.get() ), 4 );
+  QCOMPARE( GDALGetRasterXSize( dstDS.get() ), 256 );
+  QCOMPARE( GDALGetRasterYSize( dstDS.get() ), 256 );
+
+  QCOMPARE( GDALGetRasterDataType( GDALGetRasterBand( dstDS.get(), 1 ) ), GDT_Byte );
+  QCOMPARE( GDALGetRasterDataType( GDALGetRasterBand( dstDS.get(), 2 ) ), GDT_Byte );
+  QCOMPARE( GDALGetRasterDataType( GDALGetRasterBand( dstDS.get(), 3 ) ), GDT_Byte );
+  QCOMPARE( GDALGetRasterDataType( GDALGetRasterBand( dstDS.get(), 4 ) ), GDT_Byte );
+
+  QCOMPARE( identify( dstDS.get(), 1, 50, 50 ), 255.0 );
+  QCOMPARE( identify( dstDS.get(), 1, 200, 50 ), 255.0 );
+  QCOMPARE( identify( dstDS.get(), 1, 50, 200 ), 0.0 );
+  QCOMPARE( identify( dstDS.get(), 1, 200, 200 ), 0.0 );
+
+  QCOMPARE( identify( dstDS.get(), 2, 50, 50 ), 255.0 );
+  QCOMPARE( identify( dstDS.get(), 2, 200, 50 ), 0.0 );
+  QCOMPARE( identify( dstDS.get(), 2, 50, 200 ), 255.0 );
+  QCOMPARE( identify( dstDS.get(), 2, 200, 200 ), 0.0 );
+
+  QCOMPARE( identify( dstDS.get(), 3, 50, 50 ), 0.0 );
+  QCOMPARE( identify( dstDS.get(), 3, 200, 50 ), 0.0 );
+  QCOMPARE( identify( dstDS.get(), 3, 50, 200 ), 0.0 );
+  QCOMPARE( identify( dstDS.get(), 3, 200, 200 ), 255.0 );
+
+  QCOMPARE( identify( dstDS.get(), 4, 50, 50 ), 255.0 );
+  QCOMPARE( identify( dstDS.get(), 4, 200, 50 ), 255.0 );
+  QCOMPARE( identify( dstDS.get(), 4, 50, 200 ), 255.0 );
+  QCOMPARE( identify( dstDS.get(), 4, 200, 200 ), 255.0 );
+}
+
+void TestQgsGdalUtils::testResampleImageToImage()
+{
+  QString inputFilename = QString( TEST_DATA_DIR ) + "/rgb256x256.png";
+  QImage src = QImage( inputFilename );
+  src = src.convertToFormat( QImage::Format_ARGB32 );
+  QVERIFY( !src.isNull() );
+
+  QImage res = QgsGdalUtils::resampleImage( QImage(), QSize( 50, 50 ), GRIORA_NearestNeighbour );
+  QVERIFY( res.isNull() );
+
+  res = QgsGdalUtils::resampleImage( src, QSize( 50, 50 ), GRIORA_NearestNeighbour );
+  QVERIFY( !res.isNull() );
+  QCOMPARE( res.width(), 50 );
+  QCOMPARE( res.height(), 50 );
+
+  QCOMPARE( qRed( res.pixel( 10, 10 ) ), 255 );
+  QCOMPARE( qGreen( res.pixel( 10, 10 ) ), 255 );
+  QCOMPARE( qBlue( res.pixel( 10, 10 ) ), 0 );
+  QCOMPARE( qAlpha( res.pixel( 10, 10 ) ), 255 );
+
+  QCOMPARE( qRed( res.pixel( 40, 10 ) ), 255 );
+  QCOMPARE( qGreen( res.pixel( 40, 10 ) ), 0 );
+  QCOMPARE( qBlue( res.pixel( 40, 10 ) ), 0 );
+  QCOMPARE( qAlpha( res.pixel( 40, 10 ) ), 255 );
+
+  QCOMPARE( qRed( res.pixel( 10, 40 ) ), 0 );
+  QCOMPARE( qGreen( res.pixel( 10, 40 ) ), 255 );
+  QCOMPARE( qBlue( res.pixel( 10, 40 ) ), 0 );
+  QCOMPARE( qAlpha( res.pixel( 10, 40 ) ), 255 );
+
+  QCOMPARE( qRed( res.pixel( 40, 40 ) ), 0 );
+  QCOMPARE( qGreen( res.pixel( 40, 40 ) ), 0 );
+  QCOMPARE( qBlue( res.pixel( 40, 40 ) ), 255 );
+  QCOMPARE( qAlpha( res.pixel( 40, 40 ) ), 255 );
+}
+
+double TestQgsGdalUtils::identify( GDALDatasetH dataset, int band, int px, int py )
+{
+  GDALRasterBandH hBand = GDALGetRasterBand( dataset, band );
+
+  float *pafScanline = ( float * ) CPLMalloc( sizeof( float ) );
+  CPLErr err = GDALRasterIO( hBand, GF_Read, px, py, 1, 1,
+                             pafScanline, 1, 1, GDT_Float32, 0, 0 );
+  double value = err == CE_None ? pafScanline[0] : std::numeric_limits<double>::quiet_NaN();
+  CPLFree( pafScanline );
+
+  return value;
 }
 
 QGSTEST_MAIN( TestQgsGdalUtils )

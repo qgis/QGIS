@@ -121,7 +121,7 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
     QgsProject *project();
 
     // TODO - how to handle this?
-    int count() override { return -1; }
+    int count() const override { return -1; }
 
     QString filePath( const QString &baseFilePath, const QString &extension ) override;
     QgsLayout *layout() override;

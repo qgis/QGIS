@@ -52,8 +52,8 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
   connect( btnDelete, &QPushButton::clicked, this, &QgsSpatiaLiteSourceSelect::btnDelete_clicked );
   connect( mSearchGroupBox, &QGroupBox::toggled, this, &QgsSpatiaLiteSourceSelect::mSearchGroupBox_toggled );
   connect( mSearchTableEdit, &QLineEdit::textChanged, this, &QgsSpatiaLiteSourceSelect::mSearchTableEdit_textChanged );
-  connect( mSearchColumnComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsSpatiaLiteSourceSelect::mSearchColumnComboBox_currentIndexChanged );
-  connect( mSearchModeComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsSpatiaLiteSourceSelect::mSearchModeComboBox_currentIndexChanged );
+  connect( mSearchColumnComboBox, &QComboBox::currentTextChanged, this, &QgsSpatiaLiteSourceSelect::mSearchColumnComboBox_currentIndexChanged );
+  connect( mSearchModeComboBox, &QComboBox::currentTextChanged, this, &QgsSpatiaLiteSourceSelect::mSearchModeComboBox_currentIndexChanged );
   connect( cbxAllowGeometrylessTables, &QCheckBox::stateChanged, this, &QgsSpatiaLiteSourceSelect::cbxAllowGeometrylessTables_stateChanged );
   connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsSpatiaLiteSourceSelect::cmbConnections_activated );
   connect( mTablesTreeView, &QTreeView::clicked, this, &QgsSpatiaLiteSourceSelect::mTablesTreeView_clicked );
@@ -283,7 +283,6 @@ bool QgsSpatiaLiteSourceSelect::newConnection( QWidget *parent )
 
   QFileInfo myFI( myFile );
   QString myPath = myFI.path();
-  QString myName = myFI.fileName();
   QString savedName = myFI.fileName();
   QString baseKey = QStringLiteral( "/SpatiaLite/connections/" );
 

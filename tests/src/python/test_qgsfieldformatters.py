@@ -15,7 +15,7 @@ import qgis  # NOQA
 from qgis.core import (QgsFeature, QgsProject, QgsRelation, QgsVectorLayer,
                        QgsValueMapFieldFormatter, QgsValueRelationFieldFormatter,
                        QgsRelationReferenceFieldFormatter, QgsRangeFieldFormatter,
-                       QgsSettings, QgsGeometry, QgsPointXY)
+                       QgsCheckBoxFieldFormatter, QgsSettings, QgsGeometry, QgsPointXY)
 
 from qgis.PyQt.QtCore import QCoreApplication, QLocale
 from qgis.testing import start_app, unittest
@@ -355,6 +355,40 @@ class TestQgsRangeFieldFormatter(unittest.TestCase):
         self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '123000'), '123000.00')
 
         QgsProject.instance().removeAllMapLayers()
+
+
+class TestQgsCheckBoxFieldFormatter(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        QCoreApplication.setOrganizationName("QGIS_Test")
+        QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsCheckBoxFieldFormatter.com")
+        QCoreApplication.setApplicationName("QGIS_TestPyQgsCheckBoxFieldFormatter")
+        QgsSettings().clear()
+        start_app()
+
+    def test_representValue(self):
+        null_value = "NULL"
+        QgsSettings().setValue("qgis/nullValue", null_value)
+        layer = QgsVectorLayer("point?field=int:integer&field=str:string", "layer", "memory")
+        self.assertTrue(layer.isValid())
+
+        field_formatter = QgsCheckBoxFieldFormatter()
+
+        # test with integer
+        # normal case
+        self.assertEqual(field_formatter.representValue(layer, 0, {'UncheckedState': 0, 'CheckedState': 1}, None, 1), 'true')
+        self.assertEqual(field_formatter.representValue(layer, 0, {'UncheckedState': 0, 'CheckedState': 1}, None, 0), 'false')
+        self.assertEqual(field_formatter.representValue(layer, 0, {'UncheckedState': 0, 'CheckedState': 1}, None, 10), "(10)")
+        # invert true/false
+        self.assertEqual(field_formatter.representValue(layer, 0, {'UncheckedState': 1, 'CheckedState': 0}, None, 0), 'true')
+        self.assertEqual(field_formatter.representValue(layer, 0, {'UncheckedState': 1, 'CheckedState': 0}, None, 1), 'false')
+
+        # test with string
+        self.assertEqual(field_formatter.representValue(layer, 1, {'UncheckedState': 'nooh', 'CheckedState': 'yeah'}, None, 'yeah'), 'true')
+        self.assertEqual(field_formatter.representValue(layer, 1, {'UncheckedState': 'nooh', 'CheckedState': 'yeah'}, None, 'nooh'), 'false')
+        self.assertEqual(field_formatter.representValue(layer, 1, {'UncheckedState': 'nooh', 'CheckedState': 'yeah'}, None, 'oops'), "(oops)")
 
 
 if __name__ == '__main__':

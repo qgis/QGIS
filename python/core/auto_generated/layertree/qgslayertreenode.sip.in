@@ -169,6 +169,8 @@ Returns whether a node is checked (independently of its ancestors or children)
 %Docstring
 Check or uncheck a node (independently of its ancestors or children)
 
+.. seealso:: :py:func:`QgsLayerTreeView.setLayerVisible`
+
 .. versionadded:: 3.0
 %End
 

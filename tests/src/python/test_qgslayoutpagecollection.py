@@ -173,8 +173,10 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         self.assertEqual(collection.pageCount(), 2)
         self.assertEqual(len(page_about_to_be_removed_spy), 0)
 
+        self.assertEqual(l.layoutBounds(ignorePages=False), QRectF(0.0, 0.0, 210.0, 517.0))
         collection.deletePage(page)
         self.assertEqual(collection.pageCount(), 1)
+        self.assertEqual(l.layoutBounds(ignorePages=False), QRectF(0.0, 0.0, 148.0, 210.0))
         self.assertFalse(page in collection.pages())
         QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
         self.assertTrue(sip.isdeleted(page))
@@ -184,6 +186,7 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         collection.deletePage(page2)
         self.assertEqual(collection.pageCount(), 0)
         self.assertFalse(collection.pages())
+        self.assertEqual(l.layoutBounds(ignorePages=False), QRectF())
         QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
         self.assertTrue(sip.isdeleted(page2))
         self.assertEqual(len(page_about_to_be_removed_spy), 2)
@@ -898,6 +901,19 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         p = QgsProject()
         l = QgsLayout(p)
 
+        # no items -- no crash!
+        l.pageCollection().resizeToContents(QgsMargins(1, 2, 3, 4), QgsUnitTypes.LayoutCentimeters)
+        page = QgsLayoutItemPage(l)
+        page.setPageSize("A5", QgsLayoutItemPage.Landscape)
+        l.pageCollection().addPage(page)
+        # no items, no change
+        l.pageCollection().resizeToContents(QgsMargins(1, 2, 3, 4), QgsUnitTypes.LayoutCentimeters)
+        self.assertEqual(l.pageCollection().pageCount(), 1)
+        self.assertAlmostEqual(l.pageCollection().page(0).sizeWithUnits().width(), 210.0, 2)
+        self.assertAlmostEqual(l.pageCollection().page(0).sizeWithUnits().height(), 148.0, 2)
+
+        p = QgsProject()
+        l = QgsLayout(p)
         shape1 = QgsLayoutItemShape(l)
         shape1.attemptResize(QgsLayoutSize(90, 50))
         shape1.attemptMove(QgsLayoutPoint(90, 50))

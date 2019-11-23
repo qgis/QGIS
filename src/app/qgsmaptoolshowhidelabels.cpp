@@ -136,7 +136,39 @@ void QgsMapToolShowHideLabels::showHideLabels( QMouseEvent *e )
   vlayer->beginEditCommand( editTxt );
 
   bool labelChanged = false;
-  if ( doHide )
+  if ( !mDragging )
+  {
+    // if single click only, clicking on an existing label hides it, while clicking on a feature shows it
+    QList<QgsLabelPosition> positions;
+    if ( selectedLabelFeatures( vlayer, positions ) )
+    {
+      // clicked on a label
+      if ( showHide( positions.at( 0 ), false ) )
+        labelChanged = true;
+    }
+    else
+    {
+      // clicked on a feature
+      QgsFeatureIds fids;
+      if ( selectedFeatures( vlayer, fids ) )
+      {
+        QgsLabelPosition pos;
+        pos.featureId = *fids.constBegin();
+        pos.layerID = vlayer->id();
+
+        // we want to show labels...
+        pos.isDiagram = false;
+        if ( showHide( pos, true ) )
+          labelChanged = true;
+
+        // ... and diagrams
+        pos.isDiagram = true;
+        if ( showHide( pos, true ) )
+          labelChanged = true;
+      }
+    }
+  }
+  else if ( doHide )
   {
     QList<QgsLabelPosition> positions;
     if ( selectedLabelFeatures( vlayer, positions ) )
@@ -188,7 +220,15 @@ bool QgsMapToolShowHideLabels::selectedFeatures( QgsVectorLayer *vlayer,
 {
   // culled from QgsMapToolSelectUtils::setSelectFeatures()
 
-  QgsGeometry selectGeometry = mRubberBand->asGeometry();
+  QgsGeometry selectGeometry;
+  if ( mDragging )
+  {
+    selectGeometry = mRubberBand->asGeometry();
+  }
+  else
+  {
+    selectGeometry = QgsGeometry::fromRect( QgsMapToolSelectUtils::expandSelectRectangle( mRubberBand->asGeometry().centroid().asPoint(), canvas(), vlayer ) );
+  }
 
   // toLayerCoordinates will throw an exception for any 'invalid' points in
   // the rubber band.
@@ -228,7 +268,7 @@ bool QgsMapToolShowHideLabels::selectedFeatures( QgsVectorLayer *vlayer,
 
   QApplication::restoreOverrideCursor();
 
-  return true;
+  return !selectedFeatIds.empty();
 }
 
 bool QgsMapToolShowHideLabels::selectedLabelFeatures( QgsVectorLayer *vlayer,
@@ -265,7 +305,7 @@ bool QgsMapToolShowHideLabels::selectedLabelFeatures( QgsVectorLayer *vlayer,
 
   QApplication::restoreOverrideCursor();
 
-  return true;
+  return !listPos.empty();
 }
 
 bool QgsMapToolShowHideLabels::showHide( const QgsLabelPosition &pos, bool show )

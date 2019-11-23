@@ -74,6 +74,16 @@ void QgsMeshTimeSettings::setRelativeTimeOffsetHours( double relativeTimeOffsetH
   mRelativeTimeOffsetHours = relativeTimeOffsetHours;
 }
 
+double QgsMeshTimeSettings::datasetPlaybackInterval() const
+{
+  return mDatasetPlaybackIntervalSec;
+}
+
+void QgsMeshTimeSettings::setDatasetPlaybackInterval( double seconds )
+{
+  mDatasetPlaybackIntervalSec = seconds;
+}
+
 QString QgsMeshTimeSettings::relativeTimeFormat() const
 {
   return mRelativeTimeFormat;

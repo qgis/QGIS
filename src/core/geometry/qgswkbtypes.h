@@ -150,6 +150,7 @@ class CORE_EXPORT QgsWkbTypes
      * Returns the single type for a WKB type. For example, for MultiPolygon WKB types the single type would be Polygon.
      * \see isSingleType()
      * \see multiType()
+     * \see curveType()
      * \see flatType()
      */
     static Type singleType( Type type )
@@ -294,6 +295,7 @@ class CORE_EXPORT QgsWkbTypes
      * Returns the multi type for a WKB type. For example, for Polygon WKB types the multi type would be MultiPolygon.
      * \see isMultiType()
      * \see singleType()
+     * \see curveType()
      * \see flatType()
      */
     static Type multiType( Type type )
@@ -421,11 +423,155 @@ class CORE_EXPORT QgsWkbTypes
       return Unknown;
     }
 
+
+    /**
+     * Returns the curve type for a WKB type. For example, for Polygon WKB types the curve type would be CurvePolygon.
+     *
+     * \note Returns `CompoundCurve` for `CircularString` (and its Z/M variants)
+     *
+     * \see isMultiType()
+     * \see isCurvedType()
+     * \see singleType()
+     * \see flatType()
+     * \see multiType()
+     *
+     * \since QGIS 3.10
+     */
+    static Type curveType( Type type )
+    {
+      switch ( type )
+      {
+        case Unknown:
+        case Triangle:
+        case TriangleZ:
+        case TriangleM:
+        case TriangleZM:
+          return Unknown;
+
+        case GeometryCollection:
+          return GeometryCollection;
+
+        case GeometryCollectionZ:
+          return GeometryCollectionZ;
+
+        case GeometryCollectionM:
+          return GeometryCollectionM;
+
+        case GeometryCollectionZM:
+          return GeometryCollectionZM;
+
+        case Point:
+          return Point;
+
+        case MultiPoint:
+          return MultiPoint;
+
+        case PointZ:
+          return PointZ;
+
+        case MultiPointZ:
+          return MultiPointZ;
+
+        case PointM:
+          return PointM;
+
+        case MultiPointM:
+          return MultiPointM;
+
+        case PointZM:
+          return PointZM;
+
+        case MultiPointZM:
+          return MultiPointZM;
+
+        case LineString:
+        case CompoundCurve:
+        case CircularString:
+          return CompoundCurve;
+
+        case MultiLineString:
+        case MultiCurve:
+          return MultiCurve;
+
+        case LineStringZ:
+        case CompoundCurveZ:
+        case CircularStringZ:
+        case LineString25D:
+          return CompoundCurveZ;
+
+        case MultiLineStringZ:
+        case MultiCurveZ:
+        case MultiLineString25D:
+          return MultiCurveZ;
+
+        case LineStringM:
+        case CompoundCurveM:
+        case CircularStringM:
+          return CompoundCurveM;
+
+        case MultiLineStringM:
+        case MultiCurveM:
+          return MultiCurveM;
+
+        case LineStringZM:
+        case CompoundCurveZM:
+        case CircularStringZM:
+          return CompoundCurveZM;
+
+        case MultiLineStringZM:
+        case MultiCurveZM:
+          return MultiCurveZM;
+
+        case Polygon:
+        case CurvePolygon:
+          return CurvePolygon;
+
+        case MultiPolygon:
+        case MultiSurface:
+          return MultiSurface;
+
+        case PolygonZ:
+        case CurvePolygonZ:
+        case Polygon25D:
+          return CurvePolygonZ;
+
+        case MultiPolygonZ:
+        case MultiSurfaceZ:
+        case MultiPolygon25D:
+          return MultiSurfaceZ;
+
+        case PolygonM:
+        case CurvePolygonM:
+          return CurvePolygonM;
+
+        case MultiPolygonM:
+        case MultiSurfaceM:
+          return MultiSurfaceM;
+
+        case PolygonZM:
+        case CurvePolygonZM:
+          return CurvePolygonZM;
+
+        case MultiPolygonZM:
+        case MultiSurfaceZM:
+          return MultiSurfaceZM;
+
+        case NoGeometry:
+          return NoGeometry;
+
+        case Point25D:
+        case MultiPoint25D:
+          return MultiPoint25D;
+      }
+      return Unknown;
+    }
+
     /**
      * Returns the flat type for a WKB type. This is the WKB type minus any Z or M dimensions.
      * For example, for PolygonZM WKB types the single type would be Polygon.
      * \see singleType()
      * \see multiType()
+     * \see curveType()
      */
     static Type flatType( Type type )
     {
@@ -966,32 +1112,6 @@ class CORE_EXPORT QgsWkbTypes
         return Unknown;
     }
 
-  private:
-
-    struct wkbEntry
-    {
-      wkbEntry( const QString &name, bool isMultiType, Type multiType, Type singleType, Type flatType, GeometryType geometryType,
-                bool hasZ, bool hasM )
-        : mName( name )
-        , mIsMultiType( isMultiType )
-        , mMultiType( multiType )
-        , mSingleType( singleType )
-        , mFlatType( flatType )
-        , mGeometryType( geometryType )
-        , mHasZ( hasZ )
-        , mHasM( hasM )
-      {}
-      QString mName;
-      bool mIsMultiType;
-      Type mMultiType;
-      Type mSingleType;
-      Type mFlatType;
-      GeometryType mGeometryType;
-      bool mHasZ;
-      bool mHasM;
-    };
-
-    static const QMap<Type, wkbEntry> ENTRIES;
 };
 
 #endif // QGSWKBTYPES_H

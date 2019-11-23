@@ -24,6 +24,8 @@
 #include "qgschunkloader_p.h"
 #include "qgschunknode_p.h"
 
+#include "qgseventtracing.h"
+
 ///@cond PRIVATE
 
 static float screenSpaceError( float epsilon, float distance, float screenSize, float fov )
@@ -79,7 +81,7 @@ QgsChunkedEntity::~QgsChunkedEntity()
   // derived classes have to make sure that any pending active job has finished / been canceled
   // before getting to this destructor - here it would be too late to cancel them
   // (e.g. objects required for loading/updating have been deleted already)
-  Q_ASSERT( !mActiveJob );
+  Q_ASSERT( mActiveJobs.isEmpty() );
 
   // clean up any pending load requests
   while ( !mChunkLoaderQueue->isEmpty() )
@@ -165,15 +167,14 @@ void QgsChunkedEntity::update( const SceneState &state )
   }
 
   // start a job from queue if there is anything waiting
-  if ( !mActiveJob )
-    startJob();
+  startJobs();
 
   mNeedsUpdate = false;  // just updated
 
   if ( pendingJobsCount() != oldJobsCount )
     emit pendingJobsCountChanged();
 
-  qDebug() << "update: active " << mActiveNodes.count() << " enabled " << enabled << " disabled " << disabled << " | culled " << mFrustumCulled << " | loading " << mChunkLoaderQueue->count() << " loaded " << mReplacementQueue->count() << " | unloaded " << unloaded << " elapsed " << t.elapsed() << "ms";
+//  qDebug() << "update: active " << mActiveNodes.count() << " enabled " << enabled << " disabled " << disabled << " | culled " << mFrustumCulled << " | loading " << mChunkLoaderQueue->count() << " loaded " << mReplacementQueue->count() << " | unloaded " << unloaded << " elapsed " << t.elapsed() << "ms";
 }
 
 void QgsChunkedEntity::setShowBoundingBoxes( bool enabled )
@@ -203,7 +204,7 @@ void QgsChunkedEntity::updateNodes( const QList<QgsChunkNode *> &nodes, QgsChunk
     }
     else if ( node->state() == QgsChunkNode::Updating )
     {
-      cancelActiveJob();  // we have currently just one active job so that must be it
+      cancelActiveJob( node->updater() );
     }
 
     Q_ASSERT( node->state() == QgsChunkNode::Loaded );
@@ -214,13 +215,12 @@ void QgsChunkedEntity::updateNodes( const QList<QgsChunkNode *> &nodes, QgsChunk
   }
 
   // trigger update
-  if ( !mActiveJob )
-    startJob();
+  startJobs();
 }
 
 int QgsChunkedEntity::pendingJobsCount() const
 {
-  return mChunkLoaderQueue->count() + ( mActiveJob ? 1 : 0 );
+  return mChunkLoaderQueue->count() + mActiveJobs.count();
 }
 
 
@@ -321,7 +321,7 @@ void QgsChunkedEntity::onActiveJobFinished()
 
   QgsChunkQueueJob *job = qobject_cast<QgsChunkQueueJob *>( sender() );
   Q_ASSERT( job );
-  Q_ASSERT( job == mActiveJob );
+  Q_ASSERT( mActiveJobs.contains( job ) );
 
   QgsChunkNode *node = job->chunk();
 
@@ -330,6 +330,10 @@ void QgsChunkedEntity::onActiveJobFinished()
     Q_ASSERT( node->state() == QgsChunkNode::Loading );
     Q_ASSERT( node->loader() == loader );
 
+    QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, QStringLiteral( "3D" ), QStringLiteral( "Load " ) + node->tileId().text(), node->tileId().text() );
+    QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, QStringLiteral( "3D" ), QStringLiteral( "Load" ), node->tileId().text() );
+
+    QgsEventTracing::ScopedEvent e( "3D", QString( "create" ) );
     // mark as loaded + create entity
     Qt3DCore::QEntity *entity = node->loader()->createEntity( this );
 
@@ -352,68 +356,98 @@ void QgsChunkedEntity::onActiveJobFinished()
   else
   {
     Q_ASSERT( node->state() == QgsChunkNode::Updating );
+    QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, QStringLiteral( "3D" ), QStringLiteral( "Update" ), node->tileId().text() );
     node->setUpdated();
   }
 
   // cleanup the job that has just finished
-  mActiveJob->deleteLater();
-  mActiveJob = nullptr;
+  mActiveJobs.removeOne( job );
+  job->deleteLater();
 
   // start another job - if any
-  startJob();
+  startJobs();
 
   if ( pendingJobsCount() != oldJobsCount )
     emit pendingJobsCountChanged();
 }
 
-void QgsChunkedEntity::startJob()
+void QgsChunkedEntity::startJobs()
 {
-  Q_ASSERT( !mActiveJob );
-  if ( mChunkLoaderQueue->isEmpty() )
-    return;
+  while ( mActiveJobs.count() < 4 )
+  {
+    if ( mChunkLoaderQueue->isEmpty() )
+      return;
 
-  QgsChunkListEntry *entry = mChunkLoaderQueue->takeFirst();
-  Q_ASSERT( entry );
-  QgsChunkNode *node = entry->chunk;
-  delete entry;
+    QgsChunkListEntry *entry = mChunkLoaderQueue->takeFirst();
+    Q_ASSERT( entry );
+    QgsChunkNode *node = entry->chunk;
+    delete entry;
 
+    QgsChunkQueueJob *job = startJob( node );
+    mActiveJobs.append( job );
+  }
+}
+
+QgsChunkQueueJob *QgsChunkedEntity::startJob( QgsChunkNode *node )
+{
   if ( node->state() == QgsChunkNode::QueuedForLoad )
   {
+    QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, QStringLiteral( "3D" ), QStringLiteral( "Load" ), node->tileId().text() );
+    QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, QStringLiteral( "3D" ), QStringLiteral( "Load " ) + node->tileId().text(), node->tileId().text() );
+
     QgsChunkLoader *loader = mChunkLoaderFactory->createChunkLoader( node );
     connect( loader, &QgsChunkQueueJob::finished, this, &QgsChunkedEntity::onActiveJobFinished );
     node->setLoading( loader );
-    mActiveJob = loader;
+    return loader;
   }
   else if ( node->state() == QgsChunkNode::QueuedForUpdate )
   {
+    QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, QStringLiteral( "3D" ), QStringLiteral( "Update" ), node->tileId().text() );
+
     node->setUpdating();
     connect( node->updater(), &QgsChunkQueueJob::finished, this, &QgsChunkedEntity::onActiveJobFinished );
-    mActiveJob = node->updater();
+    return node->updater();
   }
   else
+  {
     Q_ASSERT( false );  // not possible
+    return nullptr;
+  }
 }
 
-void QgsChunkedEntity::cancelActiveJob()
+void QgsChunkedEntity::cancelActiveJob( QgsChunkQueueJob *job )
 {
-  Q_ASSERT( mActiveJob );
+  Q_ASSERT( job );
 
-  QgsChunkNode *node = mActiveJob->chunk();
+  QgsChunkNode *node = job->chunk();
 
-  if ( qobject_cast<QgsChunkLoader *>( mActiveJob ) )
+  if ( qobject_cast<QgsChunkLoader *>( job ) )
   {
     // return node back to skeleton
     node->cancelLoading();
+
+    QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, QStringLiteral( "3D" ), QStringLiteral( "Load " ) + node->tileId().text(), node->tileId().text() );
+    QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, QStringLiteral( "3D" ), QStringLiteral( "Load" ), node->tileId().text() );
   }
   else
   {
     // return node back to loaded state
     node->cancelUpdating();
+
+    QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, QStringLiteral( "3D" ), QStringLiteral( "Update" ), node->tileId().text() );
   }
 
-  mActiveJob->cancel();
-  mActiveJob->deleteLater();
-  mActiveJob = nullptr;
+  job->cancel();
+  mActiveJobs.removeOne( job );
+  job->deleteLater();
+}
+
+void QgsChunkedEntity::cancelActiveJobs()
+{
+  while ( !mActiveJobs.isEmpty() )
+  {
+    cancelActiveJob( mActiveJobs.takeFirst() );
+  }
 }
 
 /// @endcond

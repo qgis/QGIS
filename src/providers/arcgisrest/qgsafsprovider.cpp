@@ -113,7 +113,15 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   if ( mSharedData->mExtent.isEmpty() )
   {
     mSharedData->mExtent = originalExtent;
-    mSharedData->mExtent = QgsCoordinateTransform( extentCrs, mSharedData->mSourceCRS, options.transformContext ).transformBoundingBox( mSharedData->mExtent );
+    QgsCoordinateTransform ct( extentCrs, mSharedData->mSourceCRS, options.transformContext );
+    try
+    {
+      mSharedData->mExtent = ct.transformBoundingBox( mSharedData->mExtent );
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugMsg( QStringLiteral( "Exception raised while transforming layer extent" ) );
+    }
   }
 
   QString objectIdFieldName;

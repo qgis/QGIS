@@ -773,6 +773,11 @@ void qgisFunctionWrapper( sqlite3_context *ctxt, int nArgs, sqlite3_value **args
     };
   }
 
+  // add default value for any omitted optional parameters
+  QList< QgsExpressionFunction::Parameter > params = foo->parameters();
+  for ( int i = variants.count(); i < params.count(); i++ )
+    variants << QVariant( params[i - 1].defaultValue() );
+
   QgsExpression parentExpr = QgsExpression( QString() );
   QVariant ret = foo->func( variants, &qgisFunctionExpressionContext, &parentExpr, nullptr );
   if ( parentExpr.hasEvalError() )
@@ -858,6 +863,13 @@ void registerQgisFunctions( sqlite3 *db )
     names << foo->name();
     names << foo->aliases();
 
+    int params = foo->params();
+    if ( foo->minParams() != params )
+    {
+      // the function has a number of optional parameters, don't set a fixed number of parameters
+      params = -1;
+    }
+
     Q_FOREACH ( QString name, names ) // for each alias
     {
       if ( reservedFunctions.contains( name ) ) // reserved keyword
@@ -866,13 +878,13 @@ void registerQgisFunctions( sqlite3 *db )
         continue;
 
       // register the function and pass the pointer to the Function* as user data
-      int r = sqlite3_create_function( db, name.toUtf8().constData(), foo->params(), SQLITE_UTF8, foo, qgisFunctionWrapper, nullptr, nullptr );
+      int r = sqlite3_create_function( db, name.toUtf8().constData(), params, SQLITE_UTF8, foo, qgisFunctionWrapper, nullptr, nullptr );
       if ( r != SQLITE_OK )
       {
         // is it because a function of the same name already exist (in SpatiaLite for instance ?)
         // we then try to recreate it with a prefix
         name = "qgis_" + name;
-        sqlite3_create_function( db, name.toUtf8().constData(), foo->params(), SQLITE_UTF8, foo, qgisFunctionWrapper, nullptr, nullptr );
+        sqlite3_create_function( db, name.toUtf8().constData(), params, SQLITE_UTF8, foo, qgisFunctionWrapper, nullptr, nullptr );
       }
     }
   }

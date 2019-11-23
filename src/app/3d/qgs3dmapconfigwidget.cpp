@@ -91,7 +91,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
 
   // populate combo box with map themes
   const QStringList mapThemeNames = QgsProject::instance()->mapThemeCollection()->mapThemes();
-  cboTerrainMapTheme->addItem( QString() );  // empty item for no map theme
+  cboTerrainMapTheme->addItem( tr( "(none)" ) );  // item for no map theme
   for ( QString themeName : mapThemeNames )
     cboTerrainMapTheme->addItem( themeName );
 

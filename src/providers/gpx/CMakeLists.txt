@@ -8,10 +8,6 @@ SET (GPX_SRCS
   gpsdata.cpp
 )
 
-SET (GPX_MOC_HDRS
-	qgsgpxprovider.h
-)
-
 ########################################################
 # Build
 
@@ -20,7 +16,9 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/external
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
@@ -29,9 +27,7 @@ INCLUDE_DIRECTORIES (SYSTEM
   ${EXPAT_INCLUDE_DIR}
 )
 
-QT5_WRAP_CPP(GPX_MOC_SRCS ${GPX_MOC_HDRS})
-
-ADD_LIBRARY(gpxprovider MODULE ${GPX_SRCS} ${GPX_MOC_SRCS})
+ADD_LIBRARY(gpxprovider MODULE ${GPX_SRCS})
 
 TARGET_LINK_LIBRARIES(gpxprovider
   ${EXPAT_LIBRARY}

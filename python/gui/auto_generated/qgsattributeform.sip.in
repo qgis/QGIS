@@ -170,7 +170,8 @@ back to the original one.
 :param attribute: The name of the attribute that changed.
 :param value: The new value of the attribute.
 
-.. deprecated:: since 3.0
+.. deprecated::
+   since 3.0
 %End
 
     void widgetValueChanged( const QString &attribute, const QVariant &value, bool attributeChanged );

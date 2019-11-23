@@ -87,7 +87,7 @@ class CORE_EXPORT QgsOgrDataCollectionItem : public QgsDataCollectionItem
      * \param path to the DB
      * \param ogrDriverName the OGR/GDAL driver name (e.g. "GPKG")
      */
-    static bool storeConnection( const QString &path, const QString &ogrDriverName );
+    static bool saveConnection( const QString &path, const QString &ogrDriverName );
 
     /**
      * Utility function to create and store a new DB connection

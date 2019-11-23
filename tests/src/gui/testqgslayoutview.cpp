@@ -125,7 +125,7 @@ void TestQgsLayoutView::tool()
   delete view;
 }
 
-class LoggingTool : public QgsLayoutViewTool
+class LoggingTool : public QgsLayoutViewTool // clazy:exclude=missing-qobject-macro
 {
   public:
 
@@ -237,7 +237,7 @@ void TestQgsLayoutView::events()
 }
 
 //simple item for testing, since some methods in QgsLayoutItem are pure virtual
-class TestItem : public QgsLayoutItem
+class TestItem : public QgsLayoutItem // clazy:exclude=missing-qobject-macro
 {
   public:
 
@@ -320,7 +320,7 @@ void TestQgsLayoutView::guiRegistry()
   //creating item
   QgsLayoutItem *item = registry.createItem( uuid, nullptr );
   QVERIFY( !item );
-  QgsApplication::layoutItemRegistry()->addLayoutItemType( new QgsLayoutItemMetadata( QgsLayoutItemRegistry::LayoutItem + 101, QStringLiteral( "my type" ), []( QgsLayout * layout )->QgsLayoutItem*
+  QgsApplication::layoutItemRegistry()->addLayoutItemType( new QgsLayoutItemMetadata( QgsLayoutItemRegistry::LayoutItem + 101, QStringLiteral( "my type" ), QStringLiteral( "my types" ), []( QgsLayout * layout )->QgsLayoutItem*
   {
     return new TestItem( layout );
   } ) );

@@ -16,10 +16,13 @@
 #include "qgspathresolver.h"
 
 #include "qgis.h"
-
+#include "qgsapplication.h"
 #include <QFileInfo>
 #include <QUrl>
+#include <QUuid>
 
+typedef std::vector< std::pair< QString, std::function< QString( const QString & ) > > > CustomResolvers;
+Q_GLOBAL_STATIC( CustomResolvers, sCustomResolvers )
 
 QgsPathResolver::QgsPathResolver( const QString &baseFileName )
   : mBaseFileName( baseFileName )
@@ -27,12 +30,23 @@ QgsPathResolver::QgsPathResolver( const QString &baseFileName )
 }
 
 
-QString QgsPathResolver::readPath( const QString &filename ) const
+QString QgsPathResolver::readPath( const QString &f ) const
 {
+  QString filename = f;
+
+  const CustomResolvers customResolvers = *sCustomResolvers();
+  for ( const auto &resolver : customResolvers )
+    filename = resolver.second( filename );
+
   if ( filename.isEmpty() )
     return QString();
 
   QString src = filename;
+  if ( src.startsWith( QLatin1String( "inbuilt:" ) ) )
+  {
+    // strip away "inbuilt:" prefix, replace with actual  inbuilt data folder path
+    return QgsApplication::pkgDataPath() + QStringLiteral( "/resources" ) + src.mid( 8 );
+  }
 
   if ( mBaseFileName.isNull() )
   {
@@ -142,9 +156,37 @@ QString QgsPathResolver::readPath( const QString &filename ) const
   return vsiPrefix + projElems.join( QStringLiteral( "/" ) );
 }
 
+QString QgsPathResolver::setPathPreprocessor( const std::function<QString( const QString & )> &processor )
+{
+  QString id = QUuid::createUuid().toString();
+  sCustomResolvers()->emplace_back( std::make_pair( id, processor ) );
+  return id;
+}
+
+bool QgsPathResolver::removePathPreprocessor( const QString &id )
+{
+  const size_t prevCount = sCustomResolvers()->size();
+  sCustomResolvers()->erase( std::remove_if( sCustomResolvers()->begin(), sCustomResolvers()->end(), [id]( std::pair< QString, std::function< QString( const QString & ) > > &a )
+  {
+    return a.first == id;
+  } ), sCustomResolvers()->end() );
+  return prevCount != sCustomResolvers()->size();
+}
+
 QString QgsPathResolver::writePath( const QString &src ) const
 {
-  if ( mBaseFileName.isEmpty() || src.isEmpty() )
+  if ( src.isEmpty() )
+  {
+    return src;
+  }
+
+  if ( src.startsWith( QgsApplication::pkgDataPath() + QStringLiteral( "/resources" ) ) )
+  {
+    // replace inbuilt data folder path with "inbuilt:" prefix
+    return QStringLiteral( "inbuilt:" ) + src.mid( QgsApplication::pkgDataPath().length() + 10 );
+  }
+
+  if ( mBaseFileName.isEmpty() )
   {
     return src;
   }

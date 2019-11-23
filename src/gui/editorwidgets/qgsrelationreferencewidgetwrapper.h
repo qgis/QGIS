@@ -58,19 +58,21 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
     QVariant value() const override;
     bool valid() const override;
     void showIndeterminateState() override;
+    QVariantList additionalFieldValues() const override;
+    QStringList additionalFields() const override;
 
   public slots:
-    void setValue( const QVariant &value ) override;
     void setEnabled( bool enabled ) override;
 
   private slots:
-    void foreignKeyChanged( QVariant value );
+    void foreignKeysChanged( const QVariantList &values );
 
   protected:
-
     void updateConstraintWidgetStatus() override;
 
   private:
+    void updateValues( const QVariant &val, const QVariantList &additionalValues = QVariantList() ) override;
+
     QgsRelationReferenceWidget *mWidget = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
     QgsMessageBar *mMessageBar = nullptr;

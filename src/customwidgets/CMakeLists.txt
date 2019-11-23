@@ -12,6 +12,7 @@ SET(QT_USE_QTDESIGNER ON)
 
 SET (QGIS_CUSTOMWIDGETS_SRCS
   qgiscustomwidgets.cpp
+  qgsauthconfigselectplugin.cpp
   qgscollapsiblegroupboxplugin.cpp
   qgscolorbuttonplugin.cpp
   qgscheckablecomboboxplugin.cpp
@@ -43,6 +44,7 @@ SET (QGIS_CUSTOMWIDGETS_SRCS
 
 SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
   qgiscustomwidgets.h
+  qgsauthconfigselectplugin.h
   qgscollapsiblegroupboxplugin.h
   qgscolorbuttonplugin.h
   qgscheckablecomboboxplugin.h
@@ -86,12 +88,15 @@ ENDIF(MSVC)
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/attributetable
+  ${CMAKE_SOURCE_DIR}/src/gui/auth
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
   ${CMAKE_SOURCE_DIR}/src/gui/raster
@@ -101,6 +106,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/customwidgets
   ${CMAKE_SOURCE_DIR}/external
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
 )
 INCLUDE_DIRECTORIES(SYSTEM

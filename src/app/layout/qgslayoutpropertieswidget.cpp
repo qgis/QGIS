@@ -21,6 +21,8 @@
 #include "qgslayoutundostack.h"
 #include "qgslayoutitemmap.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsprintlayout.h"
+#include "qgslayoutatlas.h"
 
 QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout *layout )
   : QgsPanelWidget( parent )
@@ -94,8 +96,21 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
   // listen out for variable edits
   connect( QgsApplication::instance(), &QgsApplication::customVariablesChanged, this, &QgsLayoutPropertiesWidget::updateVariables );
   connect( QgsProject::instance(), &QgsProject::customVariablesChanged, this, &QgsLayoutPropertiesWidget::updateVariables );
+  connect( QgsProject::instance(), &QgsProject::metadataChanged, this, &QgsLayoutPropertiesWidget::updateVariables );
+  connect( &mLayout->renderContext(), &QgsLayoutRenderContext::dpiChanged, this, &QgsLayoutPropertiesWidget::updateVariables );
+  connect( mLayout->pageCollection(), &QgsLayoutPageCollection::changed, this, &QgsLayoutPropertiesWidget::updateVariables );
+  connect( mLayout, &QgsLayout::variablesChanged, this, &QgsLayoutPropertiesWidget::updateVariables );
 
   updateGui();
+}
+
+void QgsLayoutPropertiesWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayout )
+{
+  if ( QgsPrintLayout *printLayout = dynamic_cast< QgsPrintLayout * >( masterLayout ) )
+  {
+    connect( printLayout, &QgsPrintLayout::nameChanged, this, &QgsLayoutPropertiesWidget::updateVariables );
+    connect( printLayout->atlas(), &QgsLayoutAtlas::coverageLayerChanged, this, &QgsLayoutPropertiesWidget::updateVariables );
+  }
 }
 
 void QgsLayoutPropertiesWidget::updateGui()
@@ -241,11 +256,16 @@ void QgsLayoutPropertiesWidget::forceVectorToggled()
 
 void QgsLayoutPropertiesWidget::variablesChanged()
 {
+  mBlockVariableUpdates = true;
   QgsExpressionContextUtils::setLayoutVariables( mLayout, mVariableEditor->variablesInActiveScope() );
+  mBlockVariableUpdates = false;
 }
 
 void QgsLayoutPropertiesWidget::updateVariables()
 {
+  if ( mBlockVariableUpdates )
+    return;
+
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
           << QgsExpressionContextUtils::projectScope( QgsProject::instance() )

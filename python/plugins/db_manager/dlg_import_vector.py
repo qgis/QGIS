@@ -165,7 +165,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
         self.cboInputLayer.setEditText(filename)
 
     def reloadInputLayer(self):
-        """ create the input layer and update available options """
+        """Creates the input layer and update available options """
         if self.mode != self.ASK_FOR_INPUT_MODE:
             return True
 

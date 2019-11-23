@@ -18,6 +18,8 @@
 #include <QApplication>
 #include <QFileInfo>
 
+// clazy:excludeall=qcolor-from-literal
+
 //qgis includes...
 #include "qgsmultirenderchecker.h"
 #include <qgsapplication.h>

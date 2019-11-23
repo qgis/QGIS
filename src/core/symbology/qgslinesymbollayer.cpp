@@ -25,6 +25,7 @@
 #include "qgsgeometrysimplifier.h"
 #include "qgsunittypes.h"
 #include "qgsproperty.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QPainter>
 #include <QDomDocument>
@@ -790,6 +791,10 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &points, Q
       {
         placement = QgsTemplatedLineSymbolLayerBase::CurvePoint;
       }
+      else if ( placementString.compare( QLatin1String( "segmentcenter" ), Qt::CaseInsensitive ) == 0 )
+      {
+        placement = QgsTemplatedLineSymbolLayerBase::SegmentCenter;
+      }
       else
       {
         placement = QgsTemplatedLineSymbolLayerBase::Interval;
@@ -824,6 +829,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &points, Q
       case LastVertex:
       case FirstVertex:
       case CurvePoint:
+      case SegmentCenter:
         renderPolylineVertex( points, context, placement );
         break;
     }
@@ -851,6 +857,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &points, Q
         case LastVertex:
         case FirstVertex:
         case CurvePoint:
+        case SegmentCenter:
           renderPolylineVertex( points2, context, placement );
           break;
       }
@@ -970,6 +977,9 @@ QgsStringMap QgsTemplatedLineSymbolLayerBase::properties() const
     case Interval:
       map[QStringLiteral( "placement" )] = QStringLiteral( "interval" );
       break;
+    case SegmentCenter:
+      map[QStringLiteral( "placement" )] = QStringLiteral( "segmentcenter" );
+      break;
   }
 
   map[QStringLiteral( "ring_filter" )] = QString::number( static_cast< int >( mRingFilter ) );
@@ -1057,6 +1067,8 @@ void QgsTemplatedLineSymbolLayerBase::setCommonProperties( QgsTemplatedLineSymbo
       destLayer->setPlacement( QgsTemplatedLineSymbolLayerBase::CentralPoint );
     else if ( properties[QStringLiteral( "placement" )] == QLatin1String( "curvepoint" ) )
       destLayer->setPlacement( QgsTemplatedLineSymbolLayerBase::CurvePoint );
+    else if ( properties[QStringLiteral( "placement" )] == QLatin1String( "segmentcenter" ) )
+      destLayer->setPlacement( QgsTemplatedLineSymbolLayerBase::SegmentCenter );
     else
       destLayer->setPlacement( QgsTemplatedLineSymbolLayerBase::Interval );
   }
@@ -1080,7 +1092,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
   double interval = mInterval;
 
   QgsExpressionContextScope *scope = new QgsExpressionContextScope();
-  context.renderContext().expressionContext().appendScope( scope );
+  QgsExpressionContextScopePopper scopePopper( context.renderContext().expressionContext(), scope );
 
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyInterval ) )
   {
@@ -1211,8 +1223,6 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
     }
 
   }
-
-  delete context.renderContext().expressionContext().popScope();
 }
 
 static double _averageAngle( QPointF prevPt, QPointF pt, QPointF nextPt )
@@ -1233,11 +1243,11 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
   QgsRenderContext &rc = context.renderContext();
 
   double origAngle = symbolAngle();
-  int i, maxCount;
+  int i = -1, maxCount = 0;
   bool isRing = false;
 
   QgsExpressionContextScope *scope = new QgsExpressionContextScope();
-  context.renderContext().expressionContext().appendScope( scope );
+  QgsExpressionContextScopePopper scopePopper( context.renderContext().expressionContext(), scope );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT, points.size(), true ) );
 
   double offsetAlongLine = mOffsetAlongLine;
@@ -1293,7 +1303,6 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
       }
     }
 
-    delete context.renderContext().expressionContext().popScope();
     return;
   }
 
@@ -1314,8 +1323,9 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
     }
 
     case Vertex:
+    case SegmentCenter:
     {
-      i = 0;
+      i = placement == Vertex ? 0 : 1;
       maxCount = points.count();
       if ( points.first() == points.last() )
         isRing = true;
@@ -1326,7 +1336,6 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
     case CentralPoint:
     case CurvePoint:
     {
-      delete context.renderContext().expressionContext().popScope();
       return;
     }
   }
@@ -1339,11 +1348,15 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
     // restore original rotation
     setSymbolAngle( origAngle );
 
-    delete context.renderContext().expressionContext().popScope();
     return;
   }
 
   int pointNum = 0;
+  QPointF prevPoint;
+  if ( placement == SegmentCenter && !points.empty() )
+    prevPoint = points.at( 0 );
+
+  QPointF symbolPoint;
   for ( ; i < maxCount; ++i )
   {
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum, true ) );
@@ -1352,20 +1365,36 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
     {
       continue; // don't draw the last marker - it has been drawn already
     }
-    // rotate marker (if desired)
-    if ( rotateSymbols() )
+
+    if ( placement == SegmentCenter )
     {
-      double angle = markerAngle( points, isRing, i );
-      setSymbolAngle( origAngle + angle * 180 / M_PI );
+      QPointF currentPoint = points.at( i );
+      symbolPoint = QPointF( 0.5 * ( currentPoint.x() + prevPoint.x() ),
+                             0.5 * ( currentPoint.y() + prevPoint.y() ) );
+      if ( rotateSymbols() )
+      {
+        double angle = std::atan2( currentPoint.y() - prevPoint.y(),
+                                   currentPoint.x() - prevPoint.x() );
+        setSymbolAngle( origAngle + angle * 180 / M_PI );
+      }
+      prevPoint = currentPoint;
+    }
+    else
+    {
+      symbolPoint = points.at( i );
+      // rotate marker (if desired)
+      if ( rotateSymbols() )
+      {
+        double angle = markerAngle( points, isRing, i );
+        setSymbolAngle( origAngle + angle * 180 / M_PI );
+      }
     }
 
-    renderSymbol( points.at( i ), context.feature(), rc, -1, context.selected() );
+    renderSymbol( symbolPoint, context.feature(), rc, -1, context.selected() );
   }
 
   // restore original rotation
   setSymbolAngle( origAngle );
-
-  delete context.renderContext().expressionContext().popScope();
 }
 
 double QgsTemplatedLineSymbolLayerBase::markerAngle( const QPolygonF &points, bool isRing, int vertex )

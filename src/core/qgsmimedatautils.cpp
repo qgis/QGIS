@@ -30,7 +30,7 @@ static const char *QGIS_URILIST_MIMETYPE = "application/x-vnd.qgis.qgis.uri";
 
 QgsMimeDataUtils::Uri::Uri( const QString &encData )
 {
-  QgsDebugMsg( "encData: " + encData );
+  QgsDebugMsgLevel( "encData: " + encData, 4 );
   const QStringList decoded = decode( encData );
   if ( decoded.size() < 4 )
     return;
@@ -210,7 +210,7 @@ QgsMimeDataUtils::UriList QgsMimeDataUtils::decodeUriList( const QMimeData *data
   while ( !stream.atEnd() )
   {
     stream >> xUri;
-    QgsDebugMsg( xUri );
+    QgsDebugMsgLevel( xUri, 4 );
     list.append( Uri( xUri ) );
   }
   return list;

@@ -37,6 +37,7 @@ class QgsCheckableStyleModel: public QgsStyleProxyModel
     Q_OBJECT
   public:
 
+    explicit QgsCheckableStyleModel( QgsStyleModel *sourceModel, QObject *parent = nullptr, bool readOnly = false );
     explicit QgsCheckableStyleModel( QgsStyle *style, QObject *parent = nullptr, bool readOnly = false );
 
     void setCheckable( bool checkable );
@@ -191,7 +192,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     void showHelp();
 
     /**
-     * \deprecated in QGIS 3.6 - has no effect and will be removed in QGIS 4.0
+     * \deprecated since QGIS 3.6 - has no effect and will be removed in QGIS 4.0
      */
     Q_DECL_DEPRECATED void itemChanged( QStandardItem *item ) SIP_DEPRECATED;
 
@@ -231,7 +232,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     void editSmartgroupAction();
 
     /**
-     * \deprecated in QGIS 3.6 - has no effect and will be removed in QGIS 4.0
+     * \deprecated since QGIS 3.6 - has no effect and will be removed in QGIS 4.0
      */
     Q_DECL_DEPRECATED void regrouped( QStandardItem * ) SIP_DEPRECATED;
 
@@ -268,7 +269,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     /**
      * Populate combo box with known style items (symbols, color ramps).
      *
-     * \deprecated in QGIS 3.6 - has no effect and will be removed in QGIS 4.0
+     * \deprecated since QGIS 3.6 - has no effect and will be removed in QGIS 4.0
      */
     Q_DECL_DEPRECATED void populateTypes() SIP_DEPRECATED;
 
@@ -276,7 +277,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     void populateGroups();
 
     /**
-     * \deprecated in QGIS 3.6 - has no effect and will be removed in QGIS 4.0
+     * \deprecated since QGIS 3.6 - has no effect and will be removed in QGIS 4.0
      */
     Q_DECL_DEPRECATED void setSymbolsChecked( const QStringList & ) SIP_DEPRECATED;
 
@@ -306,12 +307,12 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     bool editColorRamp();
 
     /**
-     * \deprecated in QGIS 3.6 - has no effect and will be removed in QGIS 4.0
+     * \deprecated since QGIS 3.6 - has no effect and will be removed in QGIS 4.0
      */
     Q_DECL_DEPRECATED bool removeSymbol() SIP_DEPRECATED;
 
     /**
-     * \deprecated in QGIS 3.6 - has no effect and will be removed in QGIS 4.0
+     * \deprecated since QGIS 3.6 - has no effect and will be removed in QGIS 4.0
      */
     Q_DECL_DEPRECATED bool removeColorRamp() SIP_DEPRECATED;
 
@@ -330,6 +331,10 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     void tabItemType_currentChanged( int );
 
     void copyItemsToDefault();
+
+    void copyItem();
+
+    void pasteItem();
 
   private:
     int selectedItemType();
@@ -390,6 +395,9 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     QMenu *mMenuBtnAddItemLabelSettings = nullptr;
 
     QAction *mActionCopyToDefault = nullptr;
+
+    QAction *mActionCopyItem = nullptr;
+    QAction *mActionPasteItem = nullptr;
 
     int mBlockGroupUpdates = 0;
 

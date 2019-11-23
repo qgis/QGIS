@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer.
 
+From build dir, run: ctest -R PyQgsServerAccessControlWMS -V
+
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -12,14 +14,26 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 
 print('CTEST_FULL_OUTPUT')
 
+import os
+import json
 from qgis.testing import unittest
 import urllib.request
 import urllib.parse
 import urllib.error
 from test_qgsserver_accesscontrol import TestQgsServerAccessControl
+from utilities import unitTestDataPath
+
+from qgis.core import QgsProject
+from qgis.server import (
+    QgsServer,
+    QgsBufferServerRequest,
+    QgsBufferServerResponse,
+    QgsAccessControlFilter
+)
 
 
 class TestQgsServerAccessControlWMS(TestQgsServerAccessControl):
+    """QGIS Server Access Control WMS Tests"""
 
     def test_wms_getcapabilities(self):
         query_string = "&".join(["%s=%s" % i for i in list({
@@ -97,8 +111,8 @@ class TestQgsServerAccessControlWMS(TestQgsServerAccessControl):
             str(response).find("name=\"Country\"") != -1,
             "No Country layer in GetProjectSettings\n%s" % response)
         self.assertTrue(
-            str(response).find("name=\"Country\"")
-            < str(response).find("name=\"Hello\""),
+            str(response).find("name=\"Country\"") <
+            str(response).find("name=\"Hello\""),
             "Hello layer not after Country layer\n%s" % response)
 
         response, headers = self._get_restricted(query_string)
@@ -897,6 +911,42 @@ class TestQgsServerAccessControlWMS(TestQgsServerAccessControl):
         self.assertFalse(
             str(response).find("<qgs:pk>") != -1,
             "Unexpected result from GetFeatureInfo Hello/2\n%s" % response)
+
+    def test_security_issue_gh32475(self):
+        """Test access control security issue GH 32475"""
+
+        class Filter(QgsAccessControlFilter):
+            def layerFilterSubsetString(self, layer):
+                handler = iface.requestHandler()
+                if handler.parameter("LAYER_PERM") == "yes":
+                    if layer.name() == "as_symbols" or layer.shortName() == "as_symbols":
+                        return "\"gid\" != 1"
+                return None
+
+        def _gfi(restrict, layers):
+            qs = ("?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&"
+                  + "BBOX=612616,5810132,619259,5813237"
+                  + "&CRS=EPSG:25832&WIDTH=2759&HEIGHT=1290&&STYLES="
+                  + "&FORMAT=application/json&QUERY_LAYERS=%s"
+                  + "&INFO_FORMAT=application/json&I=508&J=560&FEATURE_COUNT=10") % layers
+            if restrict:
+                qs = qs + "&LAYER_PERM=yes"
+            request = QgsBufferServerRequest(qs)
+            response = QgsBufferServerResponse()
+            server.handleRequest(request, response, project)
+            return json.loads(bytes(response.body()).decode('utf8'))['features']
+
+        server = self._server
+        project = QgsProject()
+        project.read(os.path.join(unitTestDataPath('qgis_server'), 'test_project_wms_grouped_nested_layers.qgs'))
+        iface = server.serverInterface()
+        filter = Filter(iface)
+        iface.registerAccessControl(filter, 100)
+
+        self.assertEqual(len(_gfi(False, 'areas and symbols')), 1)
+        self.assertEqual(len(_gfi(True, 'areas and symbols')), 0)
+        self.assertEqual(len(_gfi(False, 'as_symbols')), 1)
+        self.assertEqual(len(_gfi(True, 'as_symbols')), 0)
 
 
 if __name__ == "__main__":

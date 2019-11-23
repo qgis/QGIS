@@ -49,7 +49,7 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
     return;
   }
   setupUi( this );
-  connect( mLabelFieldComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsPointDisplacementRendererWidget::mLabelFieldComboBox_currentIndexChanged );
+  connect( mLabelFieldComboBox, &QComboBox::currentTextChanged, this, &QgsPointDisplacementRendererWidget::mLabelFieldComboBox_currentIndexChanged );
   connect( mRendererComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointDisplacementRendererWidget::mRendererComboBox_currentIndexChanged );
   connect( mPlacementComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointDisplacementRendererWidget::mPlacementComboBox_currentIndexChanged );
   connect( mCircleWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsPointDisplacementRendererWidget::mCircleWidthSpinBox_valueChanged );
@@ -245,7 +245,8 @@ void QgsPointDisplacementRendererWidget::mRendererComboBox_currentIndexChanged( 
   if ( m )
   {
     // unfortunately renderer conversion is only available through the creation of a widget...
-    QgsRendererWidget *tempRenderWidget = m->createRendererWidget( mLayer, mStyle, mRenderer->embeddedRenderer()->clone() );
+    std::unique_ptr< QgsFeatureRenderer> oldRenderer( mRenderer->embeddedRenderer()->clone() );
+    QgsRendererWidget *tempRenderWidget = m->createRendererWidget( mLayer, mStyle, oldRenderer.get() );
     mRenderer->setEmbeddedRenderer( tempRenderWidget->renderer()->clone() );
     delete tempRenderWidget;
     emit widgetChanged();

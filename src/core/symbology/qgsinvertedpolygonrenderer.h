@@ -84,6 +84,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
     QgsSymbolList symbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
     QgsSymbolList originalSymbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
+    QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
     QgsLegendSymbolList legendSymbolItems() const override;
     bool willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
 

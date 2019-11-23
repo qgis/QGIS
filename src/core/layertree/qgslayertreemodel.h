@@ -97,6 +97,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
       ShowLegendAsTree           = 0x0004,  //!< For legends that support it, will show them in a tree instead of a list (needs also ShowLegend). Added in 2.8
       DeferredLegendInvalidation = 0x0008,  //!< Defer legend model invalidation
       UseEmbeddedWidgets         = 0x0010,  //!< Layer nodes may optionally include extra embedded widgets (if used in QgsLayerTreeView). Added in 2.16
+      UseTextFormatting          = 0x0020,  //!< Layer nodes will alter text appearance based on layer properties, such as scale based visibility
 
       // behavioral flags
       AllowNodeReorder           = 0x1000,  //!< Allow reordering with drag'n'drop
@@ -250,7 +251,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     /**
      * Give the layer tree model hints about the currently associated map view
-     * so that legend nodes that use map units can be scaled currectly
+     * so that legend nodes that use map units can be scaled correctly
      * \since QGIS 2.6
      */
     void setLegendMapViewData( double mapUnitsPerPixel, int dpi, double scale );
@@ -422,7 +423,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     QMap<QString, QString> mLayerStyleOverrides;
 
     //! Per layer data about layer's legend nodes
-    QMap<QgsLayerTreeLayer *, LayerLegendData> mLegend;
+    QHash<QgsLayerTreeLayer *, LayerLegendData> mLegend;
 
     QFont mFontLayer;
     QFont mFontGroup;

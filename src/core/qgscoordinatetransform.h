@@ -419,13 +419,30 @@ class CORE_EXPORT QgsCoordinateTransform
      */
     Q_DECL_DEPRECATED void setDestinationDatumTransformId( int datumId ) SIP_DEPRECATED;
 
+#ifndef SIP_RUN
+
     /**
      * Clears the internal cache used to initialize QgsCoordinateTransform objects.
      * This should be called whenever the srs database has
      * been modified in order to ensure that outdated CRS transforms are not created.
+     *
+     * If \a disableCache is TRUE then the inbuilt cache will be completely disabled. This
+     * argument is for internal use only.
+     *
      * \since QGIS 3.0
      */
-    static void invalidateCache();
+    static void invalidateCache( bool disableCache = false );
+#else
+
+    /**
+     * Clears the internal cache used to initialize QgsCoordinateTransform objects.
+     * This should be called whenever the srs database has
+     * been modified in order to ensure that outdated CRS transforms are not created.
+     *
+     * \since QGIS 3.0
+     */
+    static void invalidateCache( bool disableCache SIP_PYARGREMOVE = false );
+#endif
 
     /**
      * Computes an *estimated* conversion factor between source and destination units:
@@ -437,6 +454,15 @@ class CORE_EXPORT QgsCoordinateTransform
      * \since QGIS 3.4
      */
     double scaleFactor( const QgsRectangle &referenceExtent ) const;
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsCoordinateTransform: %1 to %2>" ).arg( sipCpp->sourceCrs().isValid() ? sipCpp->sourceCrs().authid() : QStringLiteral( "NULL" ),
+                  sipCpp->destinationCrs().isValid() ? sipCpp->destinationCrs().authid() : QStringLiteral( "NULL" ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
 #ifndef SIP_RUN
 
@@ -510,6 +536,15 @@ class CORE_EXPORT QgsCoordinateTransform
         const QgsDatumTransform::TransformDetails &desiredOperation )> &handler );
 #endif
 
+#ifndef SIP_RUN
+#if PROJ_VERSION_MAJOR>=6
+  protected:
+    friend class QgsProjContext;
+
+    // Only meant to be called by QgsProjContext::~QgsProjContext()
+    static void removeFromCacheObjectsBelongingToCurrentThread( void *pj_context );
+#endif
+#endif
   private:
 
     mutable QExplicitlySharedDataPointer<QgsCoordinateTransformPrivate> d;
@@ -536,6 +571,7 @@ class CORE_EXPORT QgsCoordinateTransform
     // cache
     static QReadWriteLock sCacheLock;
     static QMultiHash< QPair< QString, QString >, QgsCoordinateTransform > sTransforms; //same auth_id pairs might have different datum transformations
+    static bool sDisableCache;
 
 };
 

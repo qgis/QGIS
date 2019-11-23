@@ -170,6 +170,7 @@ bool QgsMultiPolygon::insertGeometry( QgsAbstractGeometry *g, int index )
 QgsMultiSurface *QgsMultiPolygon::toCurveType() const
 {
   QgsMultiSurface *multiSurface = new QgsMultiSurface();
+  multiSurface->reserve( mGeometries.size() );
   for ( int i = 0; i < mGeometries.size(); ++i )
   {
     multiSurface->addGeometry( mGeometries.at( i )->clone() );
@@ -180,6 +181,7 @@ QgsMultiSurface *QgsMultiPolygon::toCurveType() const
 QgsAbstractGeometry *QgsMultiPolygon::boundary() const
 {
   std::unique_ptr< QgsMultiLineString > multiLine( new QgsMultiLineString() );
+  multiLine->reserve( mGeometries.size() );
   for ( int i = 0; i < mGeometries.size(); ++i )
   {
     if ( QgsPolygon *polygon = qgsgeometry_cast<QgsPolygon *>( mGeometries.at( i ) ) )

@@ -192,21 +192,39 @@ Returns the proxy exclude list.
 
 This list consists of the beginning of URL strings which will not use the fallback proxy.
 
+.. seealso:: :py:func:`noProxyList`
+
 .. seealso:: :py:func:`fallbackProxy`
 
 .. seealso:: :py:func:`setFallbackProxyAndExcludes`
 %End
 
-    void setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes );
+    QStringList noProxyList() const;
+%Docstring
+Returns the no proxy list.
+
+This list consists of the beginning of URL strings which will not use any proxy at all
+
+.. seealso:: :py:func:`excludeList`
+
+.. seealso:: :py:func:`fallbackProxy`
+
+.. seealso:: :py:func:`setFallbackProxyAndExcludes`
+%End
+
+    void setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes, const QStringList &noProxyURLs );
 %Docstring
 Sets the fallback ``proxy`` and URLs which shouldn't use it.
 
 The fallback proxy is used for URLs which no other proxy factory returned proxies for.
 The ``excludes`` list specifies the beginning of URL strings which will not use this fallback proxy.
+The ``noProxyURLs`` list specifies the beginning of URL strings which will not use any proxy at all
 
 .. seealso:: :py:func:`fallbackProxy`
 
 .. seealso:: :py:func:`excludeList`
+
+.. seealso:: :py:func:`noProxyList`
 %End
 
     static QString cacheLoadControlName( QNetworkRequest::CacheLoadControl control );
@@ -306,7 +324,8 @@ The contents of the reply will be returned after the request is completed or an 
  void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * ) /Deprecated/;
 %Docstring
 
-.. deprecated:: Use the thread-safe requestAboutToBeCreated( QgsNetworkRequestParameters ) signal instead.
+.. deprecated::
+   Use the thread-safe requestAboutToBeCreated( QgsNetworkRequestParameters ) signal instead.
 %End
 
     void requestAboutToBeCreated( QgsNetworkRequestParameters request );
@@ -431,7 +450,8 @@ See QgsSslErrorHandler for details on how to handle SSL errors and potentially i
  void requestCreated( QNetworkReply * ) /Deprecated/;
 %Docstring
 
-.. deprecated:: Use the thread-safe requestAboutToBeCreated( QgsNetworkRequestParameters ) signal instead.
+.. deprecated::
+   Use the thread-safe requestAboutToBeCreated( QgsNetworkRequestParameters ) signal instead.
 %End
 
     void requestTimedOut( QNetworkReply * );
@@ -443,7 +463,6 @@ See QgsSslErrorHandler for details on how to handle SSL errors and potentially i
 
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

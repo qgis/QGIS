@@ -26,6 +26,7 @@ Features are fetched asynchronously.
     enum Role
     {
       IdentifierValueRole,
+      IdentifierValuesRole,
       ValueRole
     };
 
@@ -103,28 +104,82 @@ Can be used for spatial filtering etc.
 Indicator if the model is currently performing any feature iteration in the background.
 %End
 
-    QString identifierField() const;
+ QString identifierField() const;
 %Docstring
 The identifier field should be a unique field that can be used to identify individual features.
 It is normally set to the primary key of the layer.
+If there are several identifier fields defined, the behavior is not guaranteed
+
+.. deprecated:: QGIS 3.10
+   use identifierFields instead
 %End
 
-    void setIdentifierField( const QString &identifierField );
+    QStringList identifierFields() const;
 %Docstring
 The identifier field should be a unique field that can be used to identify individual features.
 It is normally set to the primary key of the layer.
+
+.. versionadded:: 3.10
 %End
 
-    QVariant extraIdentifierValue() const;
+ void setIdentifierField( const QString &identifierField );
+%Docstring
+The identifier field should be a unique field that can be used to identify individual features.
+It is normally set to the primary key of the layer.
+
+.. deprecated:: QGIS 3.10
+%End
+
+    void setIdentifierFields( const QStringList &identifierFields );
+%Docstring
+The identifier field should be a unique field that can be used to identify individual features.
+It is normally set to the primary key of the layer.
+
+.. note::
+
+   This will also reset identifier fields to NULL
+
+.. versionadded:: 3.10
+%End
+
+ QVariant extraIdentifierValue() const;
 %Docstring
 Allows specifying one value that does not need to match the filter criteria but will
 still be available in the model.
+
+.. deprecated:: QGIS 3.10
 %End
 
-    void setExtraIdentifierValue( const QVariant &extraIdentifierValue );
+    QVariantList extraIdentifierValues() const;
 %Docstring
 Allows specifying one value that does not need to match the filter criteria but will
 still be available in the model.
+
+.. versionadded:: 3.10
+%End
+
+ void setExtraIdentifierValue( const QVariant &extraIdentifierValue );
+%Docstring
+Allows specifying one value that does not need to match the filter criteria but will
+still be available in the model.
+
+.. deprecated:: QGIS 3.10
+%End
+
+    void setExtraIdentifierValues( const QVariantList &extraIdentifierValues );
+%Docstring
+Allows specifying one value that does not need to match the filter criteria but will
+still be available in the model.
+
+.. versionadded:: 3.10
+%End
+
+    void setExtraIdentifierValuesToNull();
+%Docstring
+Allows specifying one value that does not need to match the filter criteria but will
+still be available in the model as NULL value(s).
+
+.. versionadded:: 3.10
 %End
 
     int extraIdentifierValueIndex() const;

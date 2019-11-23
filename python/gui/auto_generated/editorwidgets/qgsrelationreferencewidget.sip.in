@@ -46,14 +46,34 @@ class QgsRelationReferenceWidget : QWidget
 
     void setRelationEditable( bool editable );
 
-    void setForeignKey( const QVariant &value );
+ void setForeignKey( const QVariant &value ) /Deprecated/;
 %Docstring
 this sets the related feature using from the foreign key
+
+.. deprecated:: QGIS 3.10
+   use setForeignKeys
 %End
 
-    QVariant foreignKey() const;
+    void setForeignKeys( const QVariantList &values );
+%Docstring
+Sets the related feature using the foreign keys
+
+.. versionadded:: 3.10
+%End
+
+ QVariant foreignKey() const /Deprecated/;
 %Docstring
 returns the related feature foreign key
+
+.. deprecated:: QGIS 3.10
+%End
+
+
+    QVariantList foreignKeys() const;
+%Docstring
+Returns the related feature foreign keys
+
+.. versionadded:: 3.10
 %End
 
     void setEditorContext( const QgsAttributeEditorContext &context, QgsMapCanvas *canvas, QgsMessageBar *messageBar );
@@ -137,6 +157,20 @@ Determines if a button for adding new features should be shown.
 .. versionadded:: 2.16
 %End
 
+    QgsRelation relation() const;
+%Docstring
+Returns the current relation, which might be invalid
+
+.. versionadded:: 3.10
+%End
+
+    void setFormFeature( const QgsFeature &formFeature );
+%Docstring
+Set the current form feature (from the referencing layer)
+
+.. versionadded:: 3.10
+%End
+
   public slots:
     void openForm();
 %Docstring
@@ -148,7 +182,7 @@ open the form of the related feature in a new dialog
 activate the map tool to select a new related feature on the map
 %End
 
-    void deleteForeignKey();
+    void deleteForeignKeys();
 %Docstring
 unset the currently related feature
 %End
@@ -160,7 +194,20 @@ unset the currently related feature
     void init();
 
   signals:
-    void foreignKeyChanged( const QVariant & );
+
+ void foreignKeyChanged( const QVariant & ) /Deprecated/;
+%Docstring
+Emitted when the foreign key changed
+
+.. deprecated:: QGIS 3.10
+%End
+
+    void foreignKeysChanged( const QVariantList & );
+%Docstring
+Emitted when the foreign keys changed
+
+.. versionadded:: 3.10
+%End
 
 };
 

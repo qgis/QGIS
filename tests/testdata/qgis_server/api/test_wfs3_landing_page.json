@@ -1,0 +1,37 @@
+Content-Type: application/json
+
+{
+  "links": [
+    {
+      "href": "http://server.qgis.org/wfs3.json",
+      "rel": "self",
+      "title": "Landing page as JSON",
+      "type": "application/json"
+    },
+    {
+      "href": "http://server.qgis.org/wfs3.html",
+      "rel": "alternate",
+      "title": "Landing page as HTML",
+      "type": "text/html"
+    },
+    {
+      "href": "http://server.qgis.org/wfs3/collections",
+      "rel": "data",
+      "title": "Feature collections",
+      "type": "application/json"
+    },
+    {
+      "href": "http://server.qgis.org/wfs3/conformance",
+      "rel": "conformance",
+      "title": "Conformance classes",
+      "type": "application/json"
+    },
+    {
+      "href": "http://server.qgis.org/wfs3/api",
+      "rel": "service-desc",
+      "title": "API description",
+      "type": "application/openapi+json;version=3.0"
+    }
+  ],
+  "timeStamp": "2019-07-05T12:27:07Z"
+}

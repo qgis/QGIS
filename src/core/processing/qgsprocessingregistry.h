@@ -134,6 +134,19 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
     QgsProcessingAlgorithm *createAlgorithmById( const QString &id, const QVariantMap &configuration = QVariantMap() ) const SIP_TRANSFERBACK;
 
     /**
+     * Adds a new alias to an existing algorithm.
+     *
+     * This allows algorithms to be referred to by a different provider ID and algorithm name to their actual underlying provider and algorithm name.
+     * It provides a mechanism to allow algorithms to be moved between providers without breaking existing scripts or plugins.
+     *
+     * The \a aliasId argument specifies the "fake" algorithm id (eg "fake_provider:fake_alg") by which the algorithm can
+     * be referred to, and the \a actualId argument specifies the real algorithm ID for the algorithm.
+     *
+     * \since QGIS 3.10
+     */
+    void addAlgorithmAlias( const QString &aliasId, const QString &actualId );
+
+    /**
      * Register a new parameter type for processing.
      * Ownership is transferred to the registry.
      * Will emit parameterTypeAdded.
@@ -199,6 +212,8 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
 
     //! Hash of available parameter types by id. This object owns the pointers.
     QMap<QString, QgsProcessingParameterType *> mParameterTypes;
+
+    QMap< QString, QString > mAlgorithmAliases;
 
 #ifdef SIP_RUN
     QgsProcessingRegistry( const QgsProcessingRegistry &other );

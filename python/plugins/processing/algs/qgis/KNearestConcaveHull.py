@@ -240,9 +240,9 @@ def remove_point(vector, element):
     return vector
 
 
-def euclidian_distance(point1, point2):
+def euclidean_distance(point1, point2):
     """
-    Returns the euclidian distance of the 2 given points.
+    Returns the euclidean distance of the 2 given points.
 
     :param point1: tuple (x, y)
     :param point2: tuple (x, y)
@@ -266,7 +266,7 @@ def nearest_points(list_of_points, point, k):
     # their respective index of list *list_of_distances*
     list_of_distances = []
     for index in range(len(list_of_points)):
-        list_of_distances.append((euclidian_distance(list_of_points[index], point), index))
+        list_of_distances.append((euclidean_distance(list_of_points[index], point), index))
 
     # sort distances in ascending order
     list_of_distances.sort()

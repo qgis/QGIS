@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgsreadwritecontext.h"
+#include <QIcon>
 
 class QgsPathResolver;
 class QgsVectorLayer;
@@ -43,10 +44,13 @@ class CORE_EXPORT QgsCalloutAbstractMetadata
      * Constructor for QgsCalloutAbstractMetadata, with the specified \a name.
      *
      * The \a visibleName argument gives a translated, user friendly string identifying the callout type.
+     *
+     * The \a icon argument can be used to specify an icon representing the callout.
      */
-    QgsCalloutAbstractMetadata( const QString &name, const QString &visibleName )
+    QgsCalloutAbstractMetadata( const QString &name, const QString &visibleName, const QIcon &icon = QIcon() )
       : mName( name )
       , mVisibleName( visibleName )
+      , mIcon( icon )
     {}
 
     virtual ~QgsCalloutAbstractMetadata() = default;
@@ -62,6 +66,18 @@ class CORE_EXPORT QgsCalloutAbstractMetadata
      * \see name()
      */
     QString visibleName() const { return mVisibleName; }
+
+    /**
+     * Returns an icon representing the callout.
+     * \see setIcon()
+     */
+    QIcon icon() const { return mIcon; }
+
+    /**
+     * Sets an \a icon representing the callout.
+     * \see icon()
+     */
+    void setIcon( const QIcon &icon ) { mIcon = icon; }
 
     /**
      * Create a callout of this type given the map of \a properties.
@@ -80,6 +96,7 @@ class CORE_EXPORT QgsCalloutAbstractMetadata
   protected:
     QString mName;
     QString mVisibleName;
+    QIcon mIcon;
 };
 
 typedef QgsCallout *( *QgsCalloutCreateFunc )( const QVariantMap &, const QgsReadWriteContext & ) SIP_SKIP;
@@ -96,9 +113,10 @@ class CORE_EXPORT QgsCalloutMetadata : public QgsCalloutAbstractMetadata
 
     //! \note not available in Python bindings
     QgsCalloutMetadata( const QString &name, const QString &visibleName,
+                        const QIcon &icon,
                         QgsCalloutCreateFunc pfCreate,
                         QgsCalloutWidgetFunc pfWidget = nullptr ) SIP_SKIP
-  : QgsCalloutAbstractMetadata( name, visibleName )
+  : QgsCalloutAbstractMetadata( name, visibleName, icon )
     , mCreateFunc( pfCreate )
     , mWidgetFunc( pfWidget )
     {}

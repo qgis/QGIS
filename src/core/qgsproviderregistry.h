@@ -266,7 +266,7 @@ class CORE_EXPORT QgsProviderRegistry
     QStringList providerList() const;
 
     //! Returns metadata of the provider or NULLPTR if not found
-    const QgsProviderMetadata *providerMetadata( const QString &providerKey ) const;
+    QgsProviderMetadata *providerMetadata( const QString &providerKey ) const;
 
     /**
      * Returns vector file filter string

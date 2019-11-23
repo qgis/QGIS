@@ -1,0 +1,141 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsserverogcapi.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsServerOgcApi : QgsServerApi
+{
+%Docstring
+QGIS Server OGC API endpoint. QgsServerOgcApi provides the foundation for
+the new generation of REST-API based OGC services (e.g. WFS3).
+
+This class can be used directly and configured by registering handlers
+as instances of QgsServerOgcApiHandler.
+
+.. code-block:: python
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsserverogcapi.h"
+%End
+  public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+
+    enum Rel
+    {
+      // The following registered link relation types are used
+      alternate,
+      describedBy,
+      collection,
+      item,
+      self,
+      service_desc,
+      service_doc,
+      prev,
+      next,
+      license,
+      // In addition the following link relation types are used for which no applicable registered link relation type could be identified:
+      items,
+      conformance,
+      data
+    };
+
+    enum ContentType
+    {
+      GEOJSON,
+      OPENAPI3,
+      JSON,
+      HTML,
+      XML
+    };
+
+    QgsServerOgcApi( QgsServerInterface *serverIface,
+                     const QString &rootPath,
+                     const QString &name,
+                     const QString &description = QString(),
+                     const QString &version = QString() );
+%Docstring
+QgsServerOgcApi constructor
+
+:param serverIface: pointer to the server interface
+:param rootPath: root path for this API (usually starts with a "/", e.g. "/wfs3")
+:param name: API name
+:param description: API description
+:param version: API version
+%End
+
+    virtual const QString name() const;
+    virtual const QString description() const;
+    virtual const QString version() const;
+    virtual const QString rootPath() const;
+
+    ~QgsServerOgcApi();
+
+    virtual void executeRequest( const QgsServerApiContext &context ) const throw( QgsServerApiBadRequestException ) /VirtualErrorHandler=serverapi_badrequest_exception_handler/;
+%Docstring
+Executes a request by passing the given ``context`` to the API handlers.
+%End
+
+
+
+
+    void registerHandler( QgsServerOgcApiHandler *handler /Transfer/ );
+%Docstring
+Registers an OGC API ``handler``, ownership of the handler is transferred to the API
+%End
+
+    static QUrl sanitizeUrl( const QUrl &url );
+%Docstring
+Returns a sanitized ``url`` with extra slashes removed
+%End
+
+    static std::string relToString( const QgsServerOgcApi::Rel &rel );
+%Docstring
+Returns the string representation of ``rel`` attribute.
+%End
+
+    static QString contentTypeToString( const QgsServerOgcApi::ContentType &ct );
+%Docstring
+Returns the string representation of a ``ct`` (Content-Type) attribute.
+%End
+
+    static std::string contentTypeToStdString( const QgsServerOgcApi::ContentType &ct );
+%Docstring
+Returns the string representation of a ``ct`` (Content-Type) attribute.
+%End
+
+    static QString contentTypeToExtension( const QgsServerOgcApi::ContentType &ct );
+%Docstring
+Returns the file extension for a ``ct`` (Content-Type).
+%End
+
+    static QgsServerOgcApi::ContentType contenTypeFromExtension( const std::string &extension );
+%Docstring
+Returns the Content-Type value corresponding to ``extension``.
+%End
+
+    static std::string mimeType( const QgsServerOgcApi::ContentType &contentType );
+%Docstring
+Returns the mime-type for the ``contentType`` or an empty string if not found
+%End
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsserverogcapi.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

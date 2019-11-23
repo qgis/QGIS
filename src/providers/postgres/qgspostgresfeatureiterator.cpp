@@ -457,7 +457,7 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
                         mSource->mSpatialColType == SctPcPatch;
 
   QString whereClause = QStringLiteral( "%1%2 && %3" )
-                        .arg( QgsPostgresConn::quotedIdentifier( mSource->mGeometryColumn ),
+                        .arg( QgsPostgresConn::quotedIdentifier( mSource->mBoundingBoxColumn ),
                               castToGeometry ? "::geometry" : "",
                               qBox );
 
@@ -857,6 +857,7 @@ void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult
 QgsPostgresFeatureSource::QgsPostgresFeatureSource( const QgsPostgresProvider *p )
   : mConnInfo( p->mUri.connectionInfo( false ) )
   , mGeometryColumn( p->mGeometryColumn )
+  , mBoundingBoxColumn( p->mBoundingBoxColumn )
   , mSqlWhereClause( p->filterWhereClause() )
   , mFields( p->mAttributeFields )
   , mSpatialColType( p->mSpatialColType )

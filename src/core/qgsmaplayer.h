@@ -261,7 +261,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *  used by QGIS Server to identify the layer.
      * \see setShortName()
      */
-    QString shortName() const { return mShortName; }
+    QString shortName() const;
 
     /**
      * Sets the title of the layer
@@ -521,6 +521,16 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 2.16
      */
     virtual bool isSpatial() const;
+
+    /**
+     * Returns TRUE if the layer is considered a temporary layer.
+     *
+     * These include memory-only layers such as those created by the "memory" data provider, or layers
+     * stored inside a local temporary folder (such as the "/tmp" folder on Linux).
+     *
+     * \since QGIS 3.10.1
+     */
+    virtual bool isTemporary() const;
 
     /**
      * Flags which control project read behavior.
@@ -1244,7 +1254,23 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) = 0;
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsMapLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider()->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
   signals:
+
+    /**
+     * Emitted when all layers are loaded and references can be resolved,
+     * just before the references of this layer are resolved.
+     *
+     * \since QGIS 3.10
+     */
+    void beforeResolveReferences( QgsProject *project );
 
     //! Emit a signal with status (e.g. to be caught by QgisApp and display a msg on status bar)
     void statusChanged( const QString &status );
@@ -1353,6 +1379,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 3.5
      */
     void dataSourceChanged();
+
+    /**
+     * Emitted when a style has been loaded
+     * \param categories style categories
+     * \since QGIS 3.12
+     */
+    void styleLoaded( QgsMapLayer::StyleCategories categories );
 
 
   private slots:
@@ -1499,8 +1532,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! List of layers that may modify this layer on modification
     QSet<QgsMapLayerDependency> mDependencies;
 
-    //! Checks whether a new set of dependencies will introduce a cycle
-    bool hasDependencyCycle( const QSet<QgsMapLayerDependency> &layers ) const;
+    /**
+     * Checks whether a new set of dependencies will introduce a cycle
+     * this method is now deprecated and always return false, because circular dependencies are now correctly managed.
+     * \deprecated since QGIS 3.10
+     */
+    Q_DECL_DEPRECATED bool hasDependencyCycle( const QSet<QgsMapLayerDependency> & ) const {return false;}
 
     bool mIsRefreshOnNofifyEnabled = false;
     QString mRefreshOnNofifyMessage;
@@ -1512,6 +1549,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! Read flags. It's up to the subclass to respect these when restoring state from XML
     QgsMapLayer::ReadFlags mReadFlags = nullptr;
+
+    /**
+     * TRUE if the layer's CRS should be validated and invalid CRSes are not permitted.
+     *
+     * \since QGIS 3.10
+     */
+    bool mShouldValidateCrs = true;
 
   private:
 
@@ -1585,7 +1629,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     QString mOriginalXmlProperties;
 
-
+    //! To avoid firing multiple time repaintRequested signal on circular layer circular dependencies
+    bool mRepaintRequestedFired = false;
 };
 
 Q_DECLARE_METATYPE( QgsMapLayer * )

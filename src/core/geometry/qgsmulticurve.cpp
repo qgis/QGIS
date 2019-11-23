@@ -169,6 +169,7 @@ bool QgsMultiCurve::insertGeometry( QgsAbstractGeometry *g, int index )
 QgsMultiCurve *QgsMultiCurve::reversed() const
 {
   QgsMultiCurve *reversedMultiCurve = new QgsMultiCurve();
+  reversedMultiCurve->reserve( mGeometries.size() );
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
     if ( qgsgeometry_cast<const QgsCurve *>( geom ) )
@@ -182,6 +183,7 @@ QgsMultiCurve *QgsMultiCurve::reversed() const
 QgsAbstractGeometry *QgsMultiCurve::boundary() const
 {
   std::unique_ptr< QgsMultiPoint > multiPoint( new QgsMultiPoint() );
+  multiPoint->reserve( mGeometries.size() * 2 );
   for ( int i = 0; i < mGeometries.size(); ++i )
   {
     if ( QgsCurve *curve = qgsgeometry_cast<QgsCurve *>( mGeometries.at( i ) ) )

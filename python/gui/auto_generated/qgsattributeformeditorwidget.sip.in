@@ -41,12 +41,13 @@ Constructor for QgsAttributeFormEditorWidget.
     virtual void createSearchWidgetWrappers( const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
 
 
-    void initialize( const QVariant &initialValue, bool mixedValues = false );
+    void initialize( const QVariant &initialValue, bool mixedValues = false, const QVariantList &additionalFieldValues = QVariantList() );
 %Docstring
 Resets the widget to an initial value.
 
 :param initialValue: initial value to show in widget
 :param mixedValues: set to ``True`` to initially show the mixed values state
+:param additionalFieldValues: a variant map of additional field names with their corresponding values
 %End
 
     bool hasChanged() const;
@@ -71,6 +72,13 @@ Set the constraint status for this widget.
 Set the constraint result label visible or invisible according to the layer editable status
 %End
 
+    QgsEditorWidgetWrapper *editorWidget() const;
+%Docstring
+Returns the editor widget wrapper
+
+.. versionadded:: 3.10
+%End
+
   public slots:
 
     void setIsMixed( bool mixed );
@@ -87,11 +95,24 @@ Called when field values have been committed;
 
   signals:
 
-    void valueChanged( const QVariant &value );
+ void valueChanged( const QVariant &value );
 %Docstring
 Emitted when the widget's value changes
 
 :param value: new widget value
+
+.. deprecated:: QGIS 3.10
+   use valuesChanged instead
+%End
+
+    void valuesChanged( const QVariant &value, const QVariantList &additionalFieldValues );
+%Docstring
+Emitted when the widget's value changes
+
+:param value: new widget value
+:param additionalFieldValues: of the potential additional fields
+
+.. versionadded:: 3.10
 %End
 
 };

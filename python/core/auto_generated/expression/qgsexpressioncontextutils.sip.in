@@ -240,7 +240,7 @@ with the variables specified.
 .. versionadded:: 3.0
 %End
 
-    static QgsExpressionContextScope *atlasScope( QgsLayoutAtlas *atlas ) /Factory/;
+    static QgsExpressionContextScope *atlasScope( const QgsLayoutAtlas *atlas ) /Factory/;
 %Docstring
 Creates a new scope which contains variables and functions relating to a :py:class:`QgsLayoutAtlas`.
 For instance, current page name and number.
@@ -360,6 +360,7 @@ Registers all known core functions provided by QgsExpressionContextScope objects
 
       public:
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

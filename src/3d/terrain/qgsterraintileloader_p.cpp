@@ -61,7 +61,7 @@ QgsTerrainTileLoader::QgsTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkN
 void QgsTerrainTileLoader::loadTexture()
 {
   connect( mTerrain->textureGenerator(), &QgsTerrainTextureGenerator::tileReady, this, &QgsTerrainTileLoader::onImageReady );
-  mTextureJobId = mTerrain->textureGenerator()->render( mExtentMapCrs, mTileDebugText );
+  mTextureJobId = mTerrain->textureGenerator()->render( mExtentMapCrs, mNode->tileId(), mTileDebugText );
 }
 
 void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity, bool isShadingEnabled, const QgsPhongMaterialSettings &shadingMaterial )

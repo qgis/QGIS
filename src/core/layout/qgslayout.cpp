@@ -797,14 +797,6 @@ bool QgsLayout::accept( QgsStyleEntityVisitorInterface *visitor ) const
     if ( !layoutItem->accept( visitor ) )
       return false;
   }
-
-  if ( pageCollection()->pageStyleSymbol() )
-  {
-    QgsStyleSymbolEntity entity( pageCollection()->pageStyleSymbol() );
-    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, QStringLiteral( "page" ), QObject::tr( "Page" ) ) ) )
-      return false;
-  }
-
   return true;
 }
 
@@ -854,7 +846,8 @@ QDomElement QgsLayout::writeXml( QDomDocument &document, const QgsReadWriteConte
   //save multiframes
   for ( QgsLayoutMultiFrame *mf : mMultiFrames )
   {
-    mf->writeXml( element, document, context );
+    if ( mf->frameCount() > 0 )
+      mf->writeXml( element, document, context );
   }
 
   writeXmlLayoutSettings( element, document, context );
@@ -877,6 +870,7 @@ void QgsLayout::addLayoutItemPrivate( QgsLayoutItem *item )
   addItem( item );
   updateBounds();
   mItemsModel->rebuildZList();
+  connect( item, &QgsLayoutItem::backgroundTaskCountChanged, this, &QgsLayout::itemBackgroundTaskCountChanged );
 }
 
 void QgsLayout::removeLayoutItemPrivate( QgsLayoutItem *item )
@@ -1106,4 +1100,25 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
 void QgsLayout::updateBounds()
 {
   setSceneRect( layoutBounds( false, 0.05 ) );
+}
+
+void QgsLayout::itemBackgroundTaskCountChanged( int count )
+{
+  QgsLayoutItem *item = qobject_cast<QgsLayoutItem *>( sender() );
+  if ( !item )
+    return;
+
+  if ( count > 0 )
+    mBackgroundTaskCount.insert( item, count );
+  else
+    mBackgroundTaskCount.remove( item );
+
+  // sum up new count of background tasks
+  int total = 0;
+  for ( auto it = mBackgroundTaskCount.constBegin(); it != mBackgroundTaskCount.constEnd(); ++it )
+  {
+    total += it.value();
+  }
+
+  emit backgroundTaskCountChanged( total );
 }

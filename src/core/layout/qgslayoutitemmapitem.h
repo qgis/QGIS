@@ -115,7 +115,7 @@ class CORE_EXPORT QgsLayoutItemMapItem : public QgsLayoutObject
      * Controls whether the item will be drawn. Set \a enabled to TRUE to enable drawing of the item.
      * \see enabled()
      */
-    void setEnabled( bool enabled );
+    virtual void setEnabled( bool enabled );
 
     /**
      * Returns whether the item will be drawn.
@@ -188,6 +188,8 @@ class CORE_EXPORT QgsLayoutItemMapItem : public QgsLayoutObject
      * \since QGIS 3.10
      */
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
+    QgsExpressionContext createExpressionContext() const override;
 
   protected:
 
@@ -273,6 +275,13 @@ class CORE_EXPORT QgsLayoutItemMapItemStack
      * such as blending modes.
      */
     bool containsAdvancedEffects() const;
+
+    /**
+     * Returns TRUE if the stack has any currently enabled items.
+     *
+     * \since QGIS 3.10
+     */
+    bool hasEnabledItems() const;
 
     /**
      * Returns a reference to the item at the specified \a index within the stack.

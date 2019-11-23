@@ -113,16 +113,14 @@ def load(fileName, name=None, crs=None, style=None, isRaster=False):
 
     if fileName is None:
         return
-    prjSetting = None
-    settings = QgsSettings()
-    if crs is not None:
-        prjSetting = settings.value('/Projections/defaultBehavior')
-        settings.setValue('/Projections/defaultBehavior', '')
+
     if name is None:
         name = os.path.split(fileName)[1]
 
     if isRaster:
-        qgslayer = QgsRasterLayer(fileName, name)
+        options = QgsRasterLayer.LayerOptions()
+        options.skipCrsValidation = True
+        qgslayer = QgsRasterLayer(fileName, name, 'gdal', options)
         if qgslayer.isValid():
             if crs is not None and qgslayer.crs() is None:
                 qgslayer.setCrs(crs, False)
@@ -131,13 +129,13 @@ def load(fileName, name=None, crs=None, style=None, isRaster=False):
             qgslayer.loadNamedStyle(style)
             QgsProject.instance().addMapLayers([qgslayer])
         else:
-            if prjSetting:
-                settings.setValue('/Projections/defaultBehavior', prjSetting)
             raise RuntimeError(QCoreApplication.translate('dataobject',
                                                           'Could not load layer: {0}\nCheck the processing framework log to look for errors.').format(
                 fileName))
     else:
-        qgslayer = QgsVectorLayer(fileName, name, 'ogr')
+        options = QgsVectorLayer.LayerOptions()
+        options.skipCrsValidation = True
+        qgslayer = QgsVectorLayer(fileName, name, 'ogr', options)
         if qgslayer.isValid():
             if crs is not None and qgslayer.crs() is None:
                 qgslayer.setCrs(crs, False)
@@ -150,9 +148,6 @@ def load(fileName, name=None, crs=None, style=None, isRaster=False):
                     style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POLYGON_STYLE)
             qgslayer.loadNamedStyle(style)
             QgsProject.instance().addMapLayers([qgslayer])
-
-    if prjSetting:
-        settings.setValue('/Projections/defaultBehavior', prjSetting)
 
     return qgslayer
 

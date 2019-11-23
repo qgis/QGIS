@@ -1,0 +1,25 @@
+Content-Type: application/json
+
+{
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core",
+    "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/oas30",
+    "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/html",
+    "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson"
+  ],
+  "links": [
+    {
+      "href": "http://server.qgis.org/wfs3/conformance.json",
+      "rel": "self",
+      "title": "WFS 3.0 conformance classes as JSON",
+      "type": "application/json"
+    },
+    {
+      "href": "http://server.qgis.org/wfs3/conformance.html",
+      "rel": "alternate",
+      "title": "WFS 3.0 conformance classes as HTML",
+      "type": "text/html"
+    }
+  ],
+  "timeStamp": "2019-07-05T12:27:07Z"
+}

@@ -211,6 +211,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QString lastError() override;
     QString lastErrorFormat() override;
     QString name() const override;
+    static QString providerKey();
     QString description() const override;
     void reloadData() override;
     bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
@@ -329,6 +330,8 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
     /* \brief add SRS or CRS parameter */
     void setSRSQueryItem( QUrl &url );
+
+    bool ignoreExtents() const override;
 
   private:
 

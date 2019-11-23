@@ -50,6 +50,7 @@ class TestQgsAttributeTable : public QObject
     void testFieldCalculationArea();
     void testNoGeom();
     void testSelected();
+    void testSelectedOnTop();
     void testSortByDisplayExpression();
     void testOrderColumn();
 
@@ -240,6 +241,56 @@ void TestQgsAttributeTable::testSelected()
   tempLayer->removeSelection();
   QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
   QVERIFY( dlg->mMainView->masterModel()->request().filterFids().isEmpty() );
+}
+
+void TestQgsAttributeTable::testSelectedOnTop()
+{
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QVERIFY( tempLayer->isValid() );
+
+  QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
+  f1.setAttribute( 0, 1 );
+  f1.setAttribute( 1, 3.2 );
+  QgsFeature f2( tempLayer->dataProvider()->fields(), 2 );
+  f2.setAttribute( 0, 2 );
+  f2.setAttribute( 1, 1.8 );
+  QgsFeature f3( tempLayer->dataProvider()->fields(), 3 );
+  f3.setAttribute( 0, 3 );
+  f3.setAttribute( 1, 5.0 );
+  QVERIFY( tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 ) );
+
+  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get() ) );
+
+  dlg->mMainView->setSortExpression( "pk" );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 0, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 1 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 1, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 2 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 2, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 3 ) );
+
+  tempLayer->selectByIds( QgsFeatureIds() << 2 );
+  dlg->mMainView->setSelectedOnTop( true );
+
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 0, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 2 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 1, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 1 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 2, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 3 ) );
+
+  dlg->mMainView->setSelectedOnTop( false );
+
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 0, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 1 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 1, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 2 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 2, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 3 ) );
+
+  tempLayer->selectByIds( QgsFeatureIds() << 3 );
+
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 0, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 1 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 1, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 2 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 2, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 3 ) );
+
+  dlg->mMainView->setSelectedOnTop( true );
+
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 0, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 3 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 1, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 1 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 2, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 2 ) );
+
 }
 
 void TestQgsAttributeTable::testSortByDisplayExpression()

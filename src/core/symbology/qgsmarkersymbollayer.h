@@ -978,6 +978,12 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
     QPen mPen;
     QBrush mBrush;
 
+    bool mUseCachedPath = false;
+    QPainterPath mCachedPath;
+
+    // If font has a zero (or nearly zero) size, we skip rendering altogether..
+    bool mNonZeroFontSize = true;
+
     QString characterToRender( QgsSymbolRenderContext &context, QPointF &charOffset, double &charWidth );
     void calculateOffsetAndRotation( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedRotation, QPointF &offset, double &angle ) const;
     double calculateSize( QgsSymbolRenderContext &context );

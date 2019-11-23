@@ -115,16 +115,7 @@ void QgsLayerTreeViewIndicatorProvider::onLayerChanged()
   if ( !layer )
     return;
 
-  // walk the tree and find layer node that needs to be updated
-  const QList<QgsLayerTreeLayer *> layerNodes = mLayerTreeView->layerTreeModel()->rootGroup()->findLayers();
-  for ( QgsLayerTreeLayer *node : layerNodes )
-  {
-    if ( node->layer() && node->layer() == layer )
-    {
-      addOrRemoveIndicator( node, layer );
-      break;
-    }
-  }
+  updateLayerIndicator( layer );
 }
 
 void QgsLayerTreeViewIndicatorProvider::connectSignals( QgsMapLayer *layer )
@@ -141,6 +132,20 @@ void QgsLayerTreeViewIndicatorProvider::disconnectSignals( QgsMapLayer *layer )
     return;
   QgsMapLayer *mapLayer = layer;
   disconnect( mapLayer, &QgsMapLayer::dataSourceChanged, this, &QgsLayerTreeViewIndicatorProvider::onLayerChanged );
+}
+
+void QgsLayerTreeViewIndicatorProvider::updateLayerIndicator( QgsMapLayer *layer )
+{
+  // walk the tree and find layer node that needs to be updated
+  const QList<QgsLayerTreeLayer *> layerNodes = mLayerTreeView->layerTreeModel()->rootGroup()->findLayers();
+  for ( QgsLayerTreeLayer *node : layerNodes )
+  {
+    if ( node->layer() && node->layer() == layer )
+    {
+      addOrRemoveIndicator( node, layer );
+      break;
+    }
+  }
 }
 
 std::unique_ptr< QgsLayerTreeViewIndicator > QgsLayerTreeViewIndicatorProvider::newIndicator( QgsMapLayer *layer )

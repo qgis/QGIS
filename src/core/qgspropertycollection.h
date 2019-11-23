@@ -101,6 +101,8 @@ class CORE_EXPORT QgsAbstractPropertyCollection
 
     /**
      * Returns the calculated value of the property with the specified key from within the collection.
+     * If you need the validity of the value (like ok provided from the
+     * valueAs* variants) refer to the property() and QgsProperty::value()
      * \param key integer key for property to return. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
      * \param context expression context to evaluate property against

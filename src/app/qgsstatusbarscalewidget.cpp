@@ -23,6 +23,8 @@
 
 #include "qgsmapcanvas.h"
 #include "qgsscalecombobox.h"
+#include "qgsproject.h"
+#include "qgsprojectviewsettings.h"
 
 QgsStatusBarScaleWidget::QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget *parent )
   : QWidget( parent )
@@ -88,9 +90,22 @@ void QgsStatusBarScaleWidget::setFont( const QFont &font )
   mScale->lineEdit()->setFont( font );
 }
 
-void QgsStatusBarScaleWidget::updateScales( const QStringList &scales )
+void QgsStatusBarScaleWidget::updateScales()
 {
-  mScale->updateScales( scales );
+  if ( QgsProject::instance()->viewSettings()->useProjectScales() )
+  {
+    const QVector< double > scales = QgsProject::instance()->viewSettings()->mapScales();
+    QStringList textScales;
+    textScales.reserve( scales.size() );
+    for ( double scale : scales )
+      textScales << QStringLiteral( "1:%1" ).arg( scale );
+    mScale->updateScales( textScales );
+  }
+  else
+  {
+    // use global scales
+    mScale->updateScales();
+  }
 }
 
 void QgsStatusBarScaleWidget::userScale() const

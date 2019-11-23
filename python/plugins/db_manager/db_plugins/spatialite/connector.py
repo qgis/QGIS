@@ -363,7 +363,7 @@ class SpatiaLiteDBConnector(DBConnector):
         return c.fetchall()
 
     def deleteTableTrigger(self, trigger, table=None):
-        """ delete trigger """
+        """Deletes trigger """
         sql = u"DROP TRIGGER %s" % self.quoteId(trigger)
         self._execute_and_commit(sql)
 
@@ -424,7 +424,7 @@ class SpatiaLiteDBConnector(DBConnector):
         return False
 
     def createTable(self, table, field_defs, pkey):
-        """ create ordinary table
+        """Creates ordinary table
                         'fields' is array containing field definitions
                         'pkey' is the primary key name
         """
@@ -441,7 +441,7 @@ class SpatiaLiteDBConnector(DBConnector):
         return True
 
     def deleteTable(self, table):
-        """ delete table from the database """
+        """Deletes table from the database """
         if self.isRasterTable(table):
             return False
 
@@ -456,7 +456,7 @@ class SpatiaLiteDBConnector(DBConnector):
         return True
 
     def emptyTable(self, table):
-        """ delete all rows from table """
+        """Deletes all rows from table """
         if self.isRasterTable(table):
             return False
 
@@ -560,7 +560,7 @@ class SpatiaLiteDBConnector(DBConnector):
         self.connection.isolation_level = '' # reset to default isolation
 
     def addTableColumn(self, table, field_def):
-        """ add a column to table """
+        """Adds a column to table """
         sql = u"ALTER TABLE %s ADD %s" % (self.quoteId(table), field_def)
         self._execute(None, sql)
 
@@ -574,7 +574,7 @@ class SpatiaLiteDBConnector(DBConnector):
         return True
 
     def deleteTableColumn(self, table, column):
-        """ delete column from a table """
+        """Deletes column from a table """
         if not self.isGeometryColumn(table, column):
             return False  # column editing not supported
 
@@ -591,15 +591,15 @@ class SpatiaLiteDBConnector(DBConnector):
         return False  # column editing not supported
 
     def setColumnType(self, table, column, data_type):
-        """ change column type """
+        """Changes column type """
         return False  # column editing not supported
 
     def setColumnDefault(self, table, column, default):
-        """ change column's default value. If default=None drop default value """
+        """Changes column's default value. If default=None drop default value """
         return False  # column editing not supported
 
     def setColumnNull(self, table, column, is_null):
-        """ change whether column can contain null values """
+        """Changes whether column can contain null values """
         return False  # column editing not supported
 
     def isGeometryColumn(self, table, column):
@@ -622,20 +622,20 @@ class SpatiaLiteDBConnector(DBConnector):
         return self.deleteTableColumn(table, geom_column)
 
     def addTableUniqueConstraint(self, table, column):
-        """ add a unique constraint to a table """
+        """Adds a unique constraint to a table """
         return False  # constraints not supported
 
     def deleteTableConstraint(self, table, constraint):
-        """ delete constraint in a table """
+        """Deletes constraint in a table """
         return False  # constraints not supported
 
     def addTablePrimaryKey(self, table, column):
-        """ add a primery key (with one column) to a table """
+        """Adds a primery key (with one column) to a table """
         sql = u"ALTER TABLE %s ADD PRIMARY KEY (%s)" % (self.quoteId(table), self.quoteId(column))
         self._execute_and_commit(sql)
 
     def createTableIndex(self, table, name, column, unique=False):
-        """ create index on one column using default options """
+        """Creates index on one column using default options """
         unique_str = u"UNIQUE" if unique else ""
         sql = u"CREATE %s INDEX %s ON %s (%s)" % (
             unique_str, self.quoteId(name), self.quoteId(table), self.quoteId(column))

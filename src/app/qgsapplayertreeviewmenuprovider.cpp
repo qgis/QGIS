@@ -39,8 +39,10 @@
 #include "qgssymbolselectordialog.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgsmaplayerstylecategoriesmodel.h"
+#include "qgssymbollayerutils.h"
 #include "qgsxmlutils.h"
 
+#include <QClipboard>
 
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView *view, QgsMapCanvas *canvas )
   : mView( view )
@@ -103,9 +105,11 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       menu->addAction( actions->actionMutuallyExclusiveGroup( menu ) );
 
-      menu->addAction( actions->actionCheckAndAllChildren( menu ) );
+      if ( QAction *checkAll = actions->actionCheckAndAllChildren( menu ) )
+        menu->addAction( checkAll );
 
-      menu->addAction( actions->actionUncheckAndAllChildren( menu ) );
+      if ( QAction *unCheckAll = actions->actionUncheckAndAllChildren( menu ) )
+        menu->addAction( unCheckAll );
 
       if ( !( mView->selectedNodes( true ).count() == 1 && idx.row() == 0 ) )
       {
@@ -294,7 +298,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       if ( vlayer )
       {
-        if ( vlayer->providerType() == QLatin1String( "memory" ) )
+        if ( vlayer->isTemporary() )
         {
           QAction *actionMakePermanent = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileSave.svg" ) ), tr( "Make Permanent…" ), menu );
           connect( actionMakePermanent, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->makeMemoryLayerPermanent( vlayer ); } );
@@ -457,11 +461,34 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
             }
 
             menuStyleManager->addSeparator();
+            const QString layerId = vlayer->id();
+
             QAction *editSymbolAction = new QAction( tr( "Edit Symbol…" ), menuStyleManager );
-            //store the layer id in action, so we can later retrieve the corresponding layer
-            editSymbolAction->setProperty( "layerId", vlayer->id() );
-            connect( editSymbolAction, &QAction::triggered, this, &QgsAppLayerTreeViewMenuProvider::editVectorSymbol );
+            connect( editSymbolAction, &QAction::triggered, this, [this, layerId]
+            {
+              editVectorSymbol( layerId );
+            } );
             menuStyleManager->addAction( editSymbolAction );
+
+            QAction *copySymbolAction = new QAction( tr( "Copy Symbol" ), menuStyleManager );
+            connect( copySymbolAction, &QAction::triggered, this, [this, layerId]
+            {
+              copyVectorSymbol( layerId );
+            } );
+            menuStyleManager->addAction( copySymbolAction );
+
+            bool enablePaste = false;
+            std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
+            if ( tempSymbol )
+              enablePaste = true;
+
+            QAction *pasteSymbolAction = new QAction( tr( "Paste Symbol" ), menuStyleManager );
+            connect( pasteSymbolAction, &QAction::triggered, this, [this, layerId]
+            {
+              pasteVectorSymbol( layerId );
+            } );
+            pasteSymbolAction->setEnabled( enablePaste );
+            menuStyleManager->addAction( pasteSymbolAction );
           }
         }
 
@@ -524,20 +551,40 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         menu->addSeparator();
       }
 
+      const QString layerId = symbolNode->layerNode()->layerId();
+      const QString ruleKey = symbolNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString();
+
       QAction *editSymbolAction = new QAction( tr( "Edit Symbol…" ), menu );
-      //store the layer id and rule key in action, so we can later retrieve the corresponding
-      //legend node, if it still exists
-      editSymbolAction->setProperty( "layerId", symbolNode->layerNode()->layerId() );
-      editSymbolAction->setProperty( "ruleKey", symbolNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString() );
-      connect( editSymbolAction, &QAction::triggered, this, &QgsAppLayerTreeViewMenuProvider::editSymbolLegendNodeSymbol );
+      connect( editSymbolAction, &QAction::triggered, this, [this, layerId, ruleKey ]
+      {
+        editSymbolLegendNodeSymbol( layerId, ruleKey );
+      } );
       menu->addAction( editSymbolAction );
+
+      QAction *copySymbolAction = new QAction( tr( "Copy Symbol" ), menu );
+      connect( copySymbolAction, &QAction::triggered, this, [this, layerId, ruleKey ]
+      {
+        copySymbolLegendNodeSymbol( layerId, ruleKey );
+      } );
+      menu->addAction( copySymbolAction );
+
+      bool enablePaste = false;
+      std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
+      if ( tempSymbol )
+        enablePaste = true;
+
+      QAction *pasteSymbolAction = new QAction( tr( "Paste Symbol" ), menu );
+      connect( pasteSymbolAction, &QAction::triggered, this, [this, layerId, ruleKey]
+      {
+        pasteSymbolLegendNodeSymbol( layerId, ruleKey );
+      } );
+      pasteSymbolAction->setEnabled( enablePaste );
+      menu->addAction( pasteSymbolAction );
     }
   }
 
   return menu;
 }
-
-
 
 void QgsAppLayerTreeViewMenuProvider::addLegendLayerAction( QAction *action, const QString &menu,
     QgsMapLayerType type, bool allLayers )
@@ -685,13 +732,8 @@ void QgsAppLayerTreeViewMenuProvider::addCustomLayerActions( QMenu *menu, QgsMap
   }
 }
 
-void QgsAppLayerTreeViewMenuProvider::editVectorSymbol()
+void QgsAppLayerTreeViewMenuProvider::editVectorSymbol( const QString &layerId )
 {
-  QAction *action = qobject_cast< QAction *>( sender() );
-  if ( !action )
-    return;
-
-  QString layerId = action->property( "layerId" ).toString();
   QgsVectorLayer *layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( layerId );
   if ( !layer )
     return;
@@ -712,7 +754,46 @@ void QgsAppLayerTreeViewMenuProvider::editVectorSymbol()
     singleRenderer->setSymbol( symbol.release() );
     layer->triggerRepaint();
     mView->refreshLayerSymbology( layer->id() );
+    layer->emitStyleChanged();
+    QgsProject::instance()->setDirty( true );
   }
+}
+
+void QgsAppLayerTreeViewMenuProvider::copyVectorSymbol( const QString &layerId )
+{
+  QgsVectorLayer *layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( layerId );
+  if ( !layer )
+    return;
+
+  QgsSingleSymbolRenderer *singleRenderer = dynamic_cast< QgsSingleSymbolRenderer * >( layer->renderer() );
+  if ( !singleRenderer )
+    return;
+
+  QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::symbolToMimeData( singleRenderer->symbol() ) );
+}
+
+void QgsAppLayerTreeViewMenuProvider::pasteVectorSymbol( const QString &layerId )
+{
+  QgsVectorLayer *layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( layerId );
+  if ( !layer )
+    return;
+
+  QgsSingleSymbolRenderer *singleRenderer = dynamic_cast< QgsSingleSymbolRenderer * >( layer->renderer() );
+  if ( !singleRenderer )
+    return;
+
+  std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
+  if ( !tempSymbol )
+    return;
+
+  if ( !singleRenderer->symbol() || singleRenderer->symbol()->type() != tempSymbol->type() )
+    return;
+
+  singleRenderer->setSymbol( tempSymbol.release() );
+  layer->triggerRepaint();
+  layer->emitStyleChanged();
+  mView->refreshLayerSymbology( layer->id() );
+  QgsProject::instance()->setDirty( true );
 }
 
 void QgsAppLayerTreeViewMenuProvider::setVectorSymbolColor( const QColor &color )
@@ -758,17 +839,11 @@ void QgsAppLayerTreeViewMenuProvider::setVectorSymbolColor( const QColor &color 
   layer->triggerRepaint();
   layer->emitStyleChanged();
   mView->refreshLayerSymbology( layer->id() );
+  QgsProject::instance()->setDirty( true );
 }
 
-void QgsAppLayerTreeViewMenuProvider::editSymbolLegendNodeSymbol()
+void QgsAppLayerTreeViewMenuProvider::editSymbolLegendNodeSymbol( const QString &layerId, const QString &ruleKey )
 {
-  QAction *action = qobject_cast< QAction *>( sender() );
-  if ( !action )
-    return;
-
-  QString layerId = action->property( "layerId" ).toString();
-  QString ruleKey = action->property( "ruleKey" ).toString();
-
   QgsSymbolLegendNode *node = qobject_cast<QgsSymbolLegendNode *>( mView->layerTreeModel()->findLegendNode( layerId, ruleKey ) );
   if ( !node )
     return;
@@ -792,6 +867,44 @@ void QgsAppLayerTreeViewMenuProvider::editSymbolLegendNodeSymbol()
     {
       vlayer->emitStyleChanged();
     }
+    QgsProject::instance()->setDirty( true );
+  }
+}
+
+void QgsAppLayerTreeViewMenuProvider::copySymbolLegendNodeSymbol( const QString &layerId, const QString &ruleKey )
+{
+  QgsSymbolLegendNode *node = qobject_cast<QgsSymbolLegendNode *>( mView->layerTreeModel()->findLegendNode( layerId, ruleKey ) );
+  if ( !node )
+    return;
+
+  const QgsSymbol *originalSymbol = node->symbol();
+  if ( !originalSymbol )
+    return;
+
+  QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::symbolToMimeData( originalSymbol ) );
+}
+
+void QgsAppLayerTreeViewMenuProvider::pasteSymbolLegendNodeSymbol( const QString &layerId, const QString &ruleKey )
+{
+  QgsSymbolLegendNode *node = qobject_cast<QgsSymbolLegendNode *>( mView->layerTreeModel()->findLegendNode( layerId, ruleKey ) );
+  if ( !node )
+    return;
+
+  const QgsSymbol *originalSymbol = node->symbol();
+  if ( !originalSymbol )
+    return;
+
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( node->layerNode()->layer() );
+
+  std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
+  if ( tempSymbol && tempSymbol->type() == originalSymbol->type() )
+  {
+    node->setSymbol( tempSymbol.release() );
+    if ( vlayer )
+    {
+      vlayer->emitStyleChanged();
+    }
+    QgsProject::instance()->setDirty( true );
   }
 }
 
@@ -819,6 +932,7 @@ void QgsAppLayerTreeViewMenuProvider::setSymbolLegendNodeColor( const QColor &co
   {
     layer->emitStyleChanged();
   }
+  QgsProject::instance()->setDirty( true );
 }
 
 bool QgsAppLayerTreeViewMenuProvider::removeActionEnabled()

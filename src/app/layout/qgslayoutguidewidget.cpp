@@ -55,8 +55,15 @@ QgsLayoutGuideWidget::QgsLayoutGuideWidget( QWidget *parent, QgsLayout *layout, 
   connect( mClearAllButton, &QPushButton::clicked, this, &QgsLayoutGuideWidget::clearAll );
   connect( mApplyToAllButton, &QPushButton::clicked, this, &QgsLayoutGuideWidget::applyToAll );
 
-  connect( layoutView, &QgsLayoutView::pageChanged, this, &QgsLayoutGuideWidget::pageChanged );
-  pageChanged( 0 );
+  connect( mLayout->pageCollection(), &QgsLayoutPageCollection::changed, this, &QgsLayoutGuideWidget::updatePageCount );
+  updatePageCount();
+  connect( mPageNumberComboBox, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+  {
+    setCurrentPage( mPageNumberComboBox->currentData().toInt() );
+  } );
+
+  connect( layoutView, &QgsLayoutView::pageChanged, this, &QgsLayoutGuideWidget::setCurrentPage );
+  setCurrentPage( 0 );
 }
 
 void QgsLayoutGuideWidget::addHorizontalGuide()
@@ -97,7 +104,7 @@ void QgsLayoutGuideWidget::deleteVerticalGuide()
   mLayout->undoStack()->endMacro();
 }
 
-void QgsLayoutGuideWidget::pageChanged( int page )
+void QgsLayoutGuideWidget::setCurrentPage( int page )
 {
   mPage = page;
 
@@ -117,7 +124,8 @@ void QgsLayoutGuideWidget::pageChanged( int page )
 
   mHozProxyModel->setPage( page );
   mVertProxyModel->setPage( page );
-  mPageLabel->setText( tr( "Guides for page %1" ).arg( page + 1 ) );
+
+  whileBlocking( mPageNumberComboBox )->setCurrentIndex( page );
 }
 
 void QgsLayoutGuideWidget::clearAll()
@@ -143,6 +151,17 @@ void QgsLayoutGuideWidget::clearAll()
 void QgsLayoutGuideWidget::applyToAll()
 {
   mLayout->guides().applyGuidesToAllOtherPages( mPage );
+}
+
+void QgsLayoutGuideWidget::updatePageCount()
+{
+  const int prevPage = mPageNumberComboBox->currentIndex();
+  mPageNumberComboBox->clear();
+  for ( int i = 0; i < mLayout->pageCollection()->pageCount(); ++ i )
+    mPageNumberComboBox->addItem( QString::number( i + 1 ), i );
+
+  if ( mPageNumberComboBox->count() > prevPage )
+    mPageNumberComboBox->setCurrentIndex( prevPage );
 }
 
 

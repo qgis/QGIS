@@ -1,0 +1,105 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsabstractproviderconnection.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsAbstractProviderConnection
+{
+%Docstring
+The QgsAbstractProviderConnection provides an interface for data provider connections.
+
+Connections objects can be constructed loading them from the connections stored
+in the settings by passing the connection name.
+A new connection object can also be created by passing a data source URI in the constructor.
+
+Provider metadata keep a cache of the existing connections, to manage stored
+connections it is recommendend to call metadata methods instead of loading and
+storing the connections directly.
+
+Concrete classes must implement methods to retrieve, save and remove connections from
+the settings.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsabstractproviderconnection.h"
+%End
+%ConvertToSubClassCode
+    if ( dynamic_cast<QgsAbstractDatabaseProviderConnection *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsAbstractDatabaseProviderConnection;
+    }
+    else if ( dynamic_cast<QgsAbstractProviderConnection *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsAbstractProviderConnection;
+    }
+    else
+    {
+      sipType = 0;
+    }
+%End
+  public:
+
+    QgsAbstractProviderConnection( const QString &name );
+%Docstring
+Creates a new connection with ``name`` by reading its configuration from the settings.
+If a connection with this name cannot be found, an empty connection will be returned.
+%End
+
+    QgsAbstractProviderConnection( const QString &uri, const QVariantMap &configuration );
+%Docstring
+Creates a new connection from the given ``uri`` and ``configuration``.
+The connection is not automatically stored in the settings.
+
+.. seealso:: :py:func:`store`
+%End
+
+    virtual ~QgsAbstractProviderConnection();
+
+    virtual void store( const QString &name ) const = 0;
+%Docstring
+Stores the connection in the settings.
+
+:param name: the name under which the connection will be stored
+%End
+
+    virtual void remove( const QString &name ) const = 0;
+%Docstring
+Deletes the connection from the settings.
+%End
+
+    QString uri() const;
+%Docstring
+Returns the connection data source URI string representation
+%End
+
+    void setUri( const QString &uri );
+%Docstring
+Sets the connection data source URI to ``uri``
+%End
+
+    QVariantMap configuration() const;
+%Docstring
+Returns the connection configuration parameters
+%End
+
+    void setConfiguration( const QVariantMap &configuration );
+%Docstring
+Sets the connection ``configuration``
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsabstractproviderconnection.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

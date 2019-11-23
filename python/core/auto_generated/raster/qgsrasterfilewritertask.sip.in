@@ -38,7 +38,8 @@ Constructor for QgsRasterFileWriterTask. Takes a source ``writer``,
 Ownership of the ``pipe`` is transferred to the writer task, and will
 be deleted when the task completes.
 
-.. deprecated:: since QGIS 3.8, use version with transformContext instead
+.. deprecated:: QGIS 3.8
+  use version with transformContext instead
 %End
 
 
@@ -71,6 +72,18 @@ parameter indicates the file path for the written file(s).
 %Docstring
 Emitted when an error occurs which prevented the file being written (or if
 the task is canceled). The writing ``error`` will be reported.
+
+.. deprecated:: QGIS 3.10.
+   Use errorOccurred(int, const QString&)
+%End
+
+    void errorOccurred( int error, const QString &errorMessage );
+%Docstring
+Emitted when an error occurs which prevented the file being written (or if
+the task is canceled). The writing ``error`` will be reported and a
+``errorMessage`` will be potentially set.
+
+.. versionadded:: 3.10
 %End
 
   protected:

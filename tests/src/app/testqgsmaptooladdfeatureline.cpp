@@ -29,7 +29,6 @@
 #include "qgsmapmouseevent.h"
 #include "testqgsmaptoolutils.h"
 
-
 bool operator==( const QgsGeometry &g1, const QgsGeometry &g2 )
 {
   if ( g1.isNull() && g2.isNull() )
@@ -68,6 +67,7 @@ class TestQgsMapToolAddFeatureLine : public QObject
     void testTracingWithOffset();
     void testZ();
     void testZMSnapping();
+    void testTopologicalEditingZ();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -78,6 +78,7 @@ class TestQgsMapToolAddFeatureLine : public QObject
     QgsVectorLayer *mLayerLine = nullptr;
     QgsVectorLayer *mLayerLineZ = nullptr;
     QgsVectorLayer *mLayerPointZM = nullptr;
+    QgsVectorLayer *mLayerTopoZ = nullptr;
     QgsFeatureId mFidLineF1 = 0;
 };
 
@@ -156,7 +157,19 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
   mLayerPointZM->addFeature( pointF );
   QCOMPARE( mLayerPointZM->featureCount(), ( long )1 );
 
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerLineZ << mLayerPointZM ); //<< mLayerPolygon << mLayerPoint );
+  // make layer for topologicalEditing with Z
+  mLayerTopoZ = new QgsVectorLayer( QStringLiteral( "MultiLineStringZ?crs=EPSG:27700" ), QStringLiteral( "layer topologicalEditing Z" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerTopoZ->isValid() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerTopoZ );
+
+  mLayerTopoZ->startEditing();
+  QgsFeature topoFeat;
+  topoFeat.setGeometry( QgsGeometry::fromWkt( "MultiLineStringZ ((7.25 6 0, 7.25 7 0, 7.5 7 0, 7.5 6 0, 7.25 6 0),(6 6 0, 6 7 10, 7 7 0, 7 6 0, 6 6 0),(6.25 6.25 0, 6.75 6.25 0, 6.75 6.75 0, 6.25 6.75 0, 6.25 6.25 0)));" ) );
+
+  mLayerTopoZ->addFeature( topoFeat );
+  QCOMPARE( mLayerTopoZ->featureCount(), ( long ) 1 );
+
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerLineZ << mLayerPointZM << mLayerTopoZ );
 
   mCanvas->setSnappingUtils( new QgsMapCanvasSnappingUtils( mCanvas, this ) );
 
@@ -397,5 +410,44 @@ void TestQgsMapToolAddFeatureLine::testZMSnapping()
   mCanvas->snappingUtils()->setConfig( cfg );
 }
 
+void TestQgsMapToolAddFeatureLine::testTopologicalEditingZ()
+{
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+
+  mCanvas->setCurrentLayer( mLayerTopoZ );
+
+  // test with default Z value = 333
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 333 );
+
+  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
+
+  QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
+  bool topologicalEditing = cfg.project()->topologicalEditing();
+  cfg.project()->setTopologicalEditing( true );
+
+  cfg.setMode( QgsSnappingConfig::AllLayers );
+  cfg.setEnabled( true );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  oldFids = utils.existingFeatureIds();
+  utils.mouseClick( 6, 6.5, Qt::LeftButton );
+  utils.mouseClick( 6.25, 6.5, Qt::LeftButton );
+  utils.mouseClick( 6.75, 6.5, Qt::LeftButton );
+  utils.mouseClick( 7.25, 6.5, Qt::LeftButton );
+  utils.mouseClick( 7.5, 6.5, Qt::LeftButton );
+  utils.mouseClick( 8, 6.5, Qt::RightButton );
+  QgsFeatureId newFid = utils.newFeatureId( oldFids );
+
+  QString wkt = "LineStringZ (6 6.5 5, 6.25 6.5 333, 6.75 6.5 333, 7.25 6.5 333, 7.5 6.5 333)";
+  QCOMPARE( mLayerTopoZ->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
+  wkt = "MultiLineStringZ ((7.25 6 0, 7.25 6.5 333, 7.25 7 0, 7.5 7 0, 7.5 6.5 333, 7.5 6 0, 7.25 6 0),(6 6 0, 6 6.5 5, 6 7 10, 7 7 0, 7 6 0, 6 6 0),(6.25 6.25 0, 6.75 6.25 0, 6.75 6.5 333, 6.75 6.75 0, 6.25 6.75 0, 6.25 6.5 333, 6.25 6.25 0))";
+  QCOMPARE( mLayerTopoZ->getFeature( oldFids.toList().last() ).geometry(), QgsGeometry::fromWkt( wkt ) );
+
+  mLayerLine->undoStack()->undo();
+
+  cfg.setEnabled( false );
+  mCanvas->snappingUtils()->setConfig( cfg );
+  cfg.project()->setTopologicalEditing( topologicalEditing );
+}
 QGSTEST_MAIN( TestQgsMapToolAddFeatureLine )
 #include "testqgsmaptooladdfeatureline.moc"

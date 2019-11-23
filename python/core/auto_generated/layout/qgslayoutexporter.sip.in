@@ -141,6 +141,8 @@ Constructor for ImageExportSettings
 
       QgsLayoutRenderContext::Flags flags;
 
+      QVector<qreal> predefinedMapScales;
+
     };
 
     ExportResult exportToImage( const QString &filePath, const QgsLayoutExporter::ImageExportSettings &settings );
@@ -184,11 +186,27 @@ Constructor for PdfExportSettings
 
       bool forceVectorOutput;
 
+      bool appendGeoreference;
+
       bool exportMetadata;
 
       QgsLayoutRenderContext::Flags flags;
 
       QgsRenderContext::TextRenderFormat textRenderFormat;
+
+      bool simplifyGeometries;
+
+      bool writeGeoPdf;
+
+      bool useIso32000ExtensionFormatGeoreferencing;
+
+      bool useOgcBestPracticeFormatGeoreferencing;
+
+      bool includeGeoPdfFeatures;
+
+      QStringList exportThemes;
+
+      QVector<qreal> predefinedMapScales;
 
     };
 
@@ -245,6 +263,8 @@ Constructor for PrintExportSettings
 
       QgsLayoutRenderContext::Flags flags;
 
+      QVector<qreal> predefinedMapScales;
+
     };
 
     ExportResult print( QPrinter &printer, const QgsLayoutExporter::PrintExportSettings &settings );
@@ -284,12 +304,17 @@ Constructor for SvgExportSettings
 
       bool exportAsLayers;
 
+      bool exportLabelsToSeparateLayers;
+
       bool exportMetadata;
 
       QgsLayoutRenderContext::Flags flags;
 
       QgsRenderContext::TextRenderFormat textRenderFormat;
 
+      bool simplifyGeometries;
+
+      QVector<qreal> predefinedMapScales;
     };
 
     ExportResult exportToSvg( const QString &filePath, const QgsLayoutExporter::SvgExportSettings &settings );

@@ -27,6 +27,12 @@
 
 class QIODevice;
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include "qgsgpsconnection.h"
+% End
+#endif
+
 struct CORE_EXPORT QgsSatelliteInfo
 {
   int id;
@@ -38,25 +44,50 @@ struct CORE_EXPORT QgsSatelliteInfo
 
 struct CORE_EXPORT QgsGpsInformation
 {
-  double latitude;
-  double longitude;
-  double elevation;
-  double speed; //in km/h
-  double direction;
+
+  /**
+   * GPS fix status
+   * \since QGIS 3.10
+   */
+  enum FixStatus
+  {
+    NoData,
+    NoFix,
+    Fix2D,
+    Fix3D
+  };
+
+  double latitude = 0;
+  double longitude = 0;
+  double elevation = 0;
+  double speed = 0; //in km/h
+  double direction = 0;
   QList<QgsSatelliteInfo> satellitesInView;
-  double pdop;
-  double hdop;
-  double vdop;
-  double hacc; //horizontal accuracy in meters
-  double vacc; //vertical accuracy in meters
+  double pdop = 0;
+  double hdop = 0;
+  double vdop = 0;
+  double hacc = -1; //horizontal accuracy in meters
+  double vacc = -1; //vertical accuracy in meters
   QDateTime utcDateTime;
   QChar fixMode;
-  int fixType;
-  int quality; // from GPGGA
-  int satellitesUsed; // from GPGGA
+  int fixType = 0; // valid values: 1,2,3
+  int quality = -1; // from GPGGA, valid values: 0,1,2, maybe others
+  int satellitesUsed = 0; // from GPGGA
   QChar status; // from GPRMC A,V
   QList<int> satPrn; // list of SVs in use; needed for QgsSatelliteInfo.inUse and other uses
-  bool satInfoComplete; // based on GPGSV sentences - to be used to determine when to graph signal and satellite position
+  bool satInfoComplete = false; // based on GPGSV sentences - to be used to determine when to graph signal and satellite position
+
+  /**
+   * Returns whether the connection information is valid
+   * \since QGIS 3.10
+   */
+  bool isValid() const;
+
+  /**
+   * Returns the fix status
+   * \since QGIS 3.10
+   */
+  FixStatus fixStatus() const;
 };
 
 /**

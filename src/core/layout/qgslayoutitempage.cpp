@@ -22,6 +22,8 @@
 #include "qgslayoutitemundocommand.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutundostack.h"
+#include "qgsstyle.h"
+#include "qgsstyleentityvisitor.h"
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
@@ -44,7 +46,11 @@ QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
 
   mGrid.reset( new QgsLayoutItemPageGrid( pos().x(), pos().y(), rect().width(), rect().height(), mLayout ) );
   mGrid->setParentItem( this );
+
+  createDefaultPageStyleSymbol();
 }
+
+QgsLayoutItemPage::~QgsLayoutItemPage() = default;
 
 QgsLayoutItemPage *QgsLayoutItemPage::create( QgsLayout *layout )
 {
@@ -54,6 +60,11 @@ QgsLayoutItemPage *QgsLayoutItemPage::create( QgsLayout *layout )
 int QgsLayoutItemPage::type() const
 {
   return QgsLayoutItemRegistry::LayoutPage;
+}
+
+QString QgsLayoutItemPage::displayName() const
+{
+  return QObject::tr( "Page" );
 }
 
 void QgsLayoutItemPage::setPageSize( const QgsLayoutSize &size )
@@ -103,6 +114,12 @@ QgsLayoutItemPage::Orientation QgsLayoutItemPage::orientation() const
     return Portrait;
 }
 
+void QgsLayoutItemPage::setPageStyleSymbol( QgsFillSymbol *symbol )
+{
+  mPageStyleSymbol.reset( symbol );
+  update();
+}
+
 QgsLayoutItemPage::Orientation QgsLayoutItemPage::decodePageOrientation( const QString &string, bool *ok )
 {
   if ( ok )
@@ -144,6 +161,18 @@ void QgsLayoutItemPage::attemptResize( const QgsLayoutSize &size, bool includesF
   mLayout->guides().update();
 }
 
+void QgsLayoutItemPage::createDefaultPageStyleSymbol()
+{
+  QgsStringMap properties;
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "white" ) );
+  properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
+  properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "no" ) );
+  properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
+  mPageStyleSymbol.reset( QgsFillSymbol::createSimple( properties ) );
+}
+
+
+
 ///@cond PRIVATE
 class QgsLayoutItemPageUndoCommand: public QgsLayoutItemUndoCommand
 {
@@ -173,6 +202,19 @@ class QgsLayoutItemPageUndoCommand: public QgsLayoutItemUndoCommand
 QgsAbstractLayoutUndoCommand *QgsLayoutItemPage::createCommand( const QString &text, int id, QUndoCommand *parent )
 {
   return new QgsLayoutItemPageUndoCommand( this, text, id, parent );
+}
+
+QgsLayoutItem::ExportLayerBehavior QgsLayoutItemPage::exportLayerBehavior() const
+{
+  return CanGroupWithItemsOfSameType;
+}
+
+bool QgsLayoutItemPage::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  QgsStyleSymbolEntity entity( pageStyleSymbol() );
+  if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, QStringLiteral( "page" ), QObject::tr( "Page" ) ) ) )
+    return false;
+  return true;
 }
 
 void QgsLayoutItemPage::redraw()
@@ -219,27 +261,30 @@ void QgsLayoutItemPage::draw( QgsLayoutItemRenderContext &context )
     painter->drawRect( pageRect );
   }
 
-  std::unique_ptr< QgsFillSymbol > symbol( mLayout->pageCollection()->pageStyleSymbol()->clone() );
-  symbol->startRender( context.renderContext() );
-
-  //get max bleed from symbol
-  double maxBleedPixels = QgsSymbolLayerUtils::estimateMaxSymbolBleed( symbol.get(), context.renderContext() );
-
-  //Now subtract 1 pixel to prevent semi-transparent borders at edge of solid page caused by
-  //anti-aliased painting. This may cause a pixel to be cropped from certain edge lines/symbols,
-  //but that can be counteracted by adding a dummy transparent line symbol layer with a wider line width
-  if ( !mLayout->renderContext().isPreviewRender() || !qgsDoubleNear( maxBleedPixels, 0.0 ) )
+  if ( mPageStyleSymbol )
   {
-    maxBleedPixels = std::floor( maxBleedPixels - 2 );
+    std::unique_ptr< QgsFillSymbol > symbol( mPageStyleSymbol->clone() );
+    symbol->startRender( context.renderContext() );
+
+    //get max bleed from symbol
+    double maxBleedPixels = QgsSymbolLayerUtils::estimateMaxSymbolBleed( symbol.get(), context.renderContext() );
+
+    //Now subtract 1 pixel to prevent semi-transparent borders at edge of solid page caused by
+    //anti-aliased painting. This may cause a pixel to be cropped from certain edge lines/symbols,
+    //but that can be counteracted by adding a dummy transparent line symbol layer with a wider line width
+    if ( !mLayout->renderContext().isPreviewRender() || !qgsDoubleNear( maxBleedPixels, 0.0 ) )
+    {
+      maxBleedPixels = std::floor( maxBleedPixels - 2 );
+    }
+
+    // round up
+    QPolygonF pagePolygon = QPolygonF( QRectF( maxBleedPixels, maxBleedPixels,
+                                       std::ceil( rect().width() * scale ) - 2 * maxBleedPixels, std::ceil( rect().height() * scale ) - 2 * maxBleedPixels ) );
+    QList<QPolygonF> rings; //empty list
+
+    symbol->renderPolygon( pagePolygon, &rings, nullptr, context.renderContext() );
+    symbol->stopRender( context.renderContext() );
   }
-
-  // round up
-  QPolygonF pagePolygon = QPolygonF( QRectF( maxBleedPixels, maxBleedPixels,
-                                     std::ceil( rect().width() * scale ) - 2 * maxBleedPixels, std::ceil( rect().height() * scale ) - 2 * maxBleedPixels ) );
-  QList<QPolygonF> rings; //empty list
-
-  symbol->renderPolygon( pagePolygon, &rings, nullptr, context.renderContext() );
-  symbol->stopRender( context.renderContext() );
 
   painter->restore();
 }
@@ -249,6 +294,28 @@ void QgsLayoutItemPage::drawFrame( QgsRenderContext & )
 
 void QgsLayoutItemPage::drawBackground( QgsRenderContext & )
 {}
+
+bool QgsLayoutItemPage::writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
+{
+  QDomElement styleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mPageStyleSymbol.get(), document, context );
+  element.appendChild( styleElem );
+  return true;
+}
+
+bool QgsLayoutItemPage::readPropertiesFromElement( const QDomElement &element, const QDomDocument &, const QgsReadWriteContext &context )
+{
+  QDomElement symbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
+  if ( !symbolElem.isNull() )
+  {
+    mPageStyleSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem, context ) );
+  }
+  else
+  {
+    createDefaultPageStyleSymbol();
+  }
+
+  return true;
+}
 
 //
 // QgsLayoutItemPageGrid

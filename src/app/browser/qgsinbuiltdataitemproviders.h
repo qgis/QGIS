@@ -46,7 +46,7 @@ class QgsAppDirectoryItemGuiProvider : public QObject, public QgsDataItemGuiProv
     void renameFavorite( QgsFavoriteItem *favorite );
     void hideDirectory( QgsDirectoryItem *item );
     void toggleFastScan( QgsDirectoryItem *item );
-    void showProperties( QgsDirectoryItem *item );
+    void showProperties( QgsDirectoryItem *item, QgsDataItemGuiContext context );
 };
 
 
@@ -99,7 +99,7 @@ class QgsLayerItemGuiProvider : public QObject, public QgsDataItemGuiProvider
   private:
 
     void addLayersFromItems( const QList<QgsDataItem *> &items );
-    void showPropertiesForItem( QgsLayerItem *item );
+    void showPropertiesForItem( QgsLayerItem *item, QgsDataItemGuiContext context );
     void deleteLayers( const QStringList &itemPath, QgsDataItemGuiContext context );
 
 };

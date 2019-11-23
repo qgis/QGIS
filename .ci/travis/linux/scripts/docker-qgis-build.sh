@@ -6,7 +6,7 @@ set -e
 # Setup ccache
 ##############
 export CCACHE_TEMPDIR=/tmp
-ccache -M 1G
+ccache -M 1.2G
 
 # Temporarily uncomment to debug ccache issues
 # export CCACHE_LOGFILE=/tmp/cache.debug
@@ -43,6 +43,7 @@ cmake \
  -DSUPPRESS_QT_WARNINGS=ON \
  -DENABLE_MODELTEST=ON \
  -DENABLE_PGTEST=ON \
+ -DENABLE_SAGA_TESTS=ON \
  -DENABLE_MSSQLTEST=ON \
  -DWITH_QSPATIALITE=ON \
  -DWITH_QWTPOLAR=OFF \
@@ -55,6 +56,7 @@ cmake \
  -DPYTHON_TEST_WRAPPER="timeout -sSIGSEGV 55s"\
  -DCXX_EXTRA_FLAGS="${CLANG_WARNINGS}" \
  -DWERROR=TRUE \
+ -DADD_CLAZY_CHECKS=ON \
  -DQT5_3DEXTRA_LIBRARY="/usr/lib/x86_64-linux-gnu/libQt53DExtras.so" \
  -DQT5_3DEXTRA_INCLUDE_DIR="/root/QGIS/external/qt3dextra-headers" \
  -DCMAKE_PREFIX_PATH="/root/QGIS/external/qt3dextra-headers/cmake" \

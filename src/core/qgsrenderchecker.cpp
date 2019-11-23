@@ -386,6 +386,28 @@ bool QgsRenderChecker::compareImages( const QString &testName,
     }
   }
 
+  if ( myExpectedImage.format() == QImage::Format_Indexed8 )
+  {
+    if ( myResultImage.format() != QImage::Format_Indexed8 )
+    {
+      qDebug() << "Expected image and result image for " << testName << " have different formats (8bit format is expected) - FAILING!";
+
+      mReport += QLatin1String( "<tr><td colspan=3>" );
+      mReport += "<font color=red>Expected image and result image for " + testName + " have different formats (8bit format is expected) - FAILING!</font>";
+      mReport += QLatin1String( "</td></tr>" );
+      mReport += myImagesString;
+      delete maskImage;
+      return false;
+    }
+
+    // When we compute the diff between the 2 images, we use constScanLine expecting a QRgb color
+    // but this method returns color table index for 8 bit image, not color.
+    // So we convert the 2 images in 32 bits so the diff works correctly
+    myResultImage = myResultImage.convertToFormat( QImage::Format_ARGB32 );
+    myExpectedImage = myExpectedImage.convertToFormat( QImage::Format_ARGB32 );
+  }
+
+
   //
   // Now iterate through them counting how many
   // dissimilar pixel values there are

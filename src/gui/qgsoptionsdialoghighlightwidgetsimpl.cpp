@@ -25,6 +25,7 @@
 
 #include "qgsoptionsdialoghighlightwidget.h"
 #include "qgsmessagebaritem.h"
+#include "qgslogger.h"
 
 #include "qgsoptionsdialoghighlightwidgetsimpl.h"
 
@@ -235,13 +236,9 @@ bool QgsOptionsDialogHighlightTree::highlightText( const QString &text )
 
     QList<QTreeWidgetItem *> items = treeWidget->findItems( text, Qt::MatchContains | Qt::MatchRecursive, 0 );
     success = !items.empty();
-    mTreeInitialStyle.clear();
     mTreeInitialExpand.clear();
     for ( QTreeWidgetItem *item : items )
     {
-      mTreeInitialStyle.insert( item, qMakePair( item->background( 0 ), item->foreground( 0 ) ) );
-      item->setBackground( 0, QBrush( QColor( HIGHLIGHT_BACKGROUND_RED, HIGHLIGHT_BACKGROUND_GREEN, HIGHLIGHT_BACKGROUND_BLUE ) ) );
-      item->setForeground( 0, QBrush( QColor( HIGHLIGHT_TEXT_RED, HIGHLIGHT_TEXT_GREEN, HIGHLIGHT_TEXT_BLUE ) ) );
       setChildrenVisible( item, true );
 
       QTreeWidgetItem *parent = item;
@@ -284,15 +281,6 @@ void QgsOptionsDialogHighlightTree::reset()
         item->setExpanded( mTreeInitialExpand.value( item ) );
       }
     }
-    for ( QTreeWidgetItem *item : mTreeInitialStyle.keys() )
-    {
-      if ( item )
-      {
-        item->setBackground( 0, mTreeInitialStyle.value( item ).first );
-        item->setForeground( 0, mTreeInitialStyle.value( item ).second );
-      }
-    }
-    mTreeInitialStyle.clear();
     mTreeInitialExpand.clear();
   }
 }

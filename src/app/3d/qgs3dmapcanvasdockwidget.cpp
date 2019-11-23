@@ -27,10 +27,12 @@
 #include "qgs3dmapconfigwidget.h"
 #include "qgs3dmapscene.h"
 #include "qgscameracontroller.h"
+#include "qgshelp.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 #include "qgs3danimationsettings.h"
 #include "qgs3danimationwidget.h"
@@ -227,12 +229,16 @@ void Qgs3DMapCanvasDockWidget::configure()
 {
   QDialog dlg;
   dlg.setWindowTitle( tr( "3D Configuration" ) );
+  dlg.setObjectName( QStringLiteral( "3DConfigurationDialog" ) );
+  dlg.setMinimumSize( 380, 460 );
+  QgsGui::instance()->enableAutoGeometryRestore( &dlg );
 
   Qgs3DMapSettings *map = mCanvas->map();
   Qgs3DMapConfigWidget *w = new Qgs3DMapConfigWidget( map, mMainCanvas, &dlg );
-  QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dlg );
+  QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help, &dlg );
   connect( buttons, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
   connect( buttons, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
+  connect( buttons, &QDialogButtonBox::helpRequested, w, []() { QgsHelp::openHelp( QStringLiteral( "introduction/qgis_gui.html#d-map-view" ) ); } );
 
   QVBoxLayout *layout = new QVBoxLayout( &dlg );
   layout->addWidget( w, 1 );

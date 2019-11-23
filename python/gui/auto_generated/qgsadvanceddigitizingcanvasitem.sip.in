@@ -11,6 +11,11 @@
 
 
 
+%ModuleHeaderCode
+// For ConvertToSubClassCode.
+#include <qgsadvanceddigitizingcanvasitem.h>
+%End
+
 class QgsAdvancedDigitizingCanvasItem : QgsMapCanvasItem
 {
 %Docstring
@@ -19,6 +24,12 @@ The QgsAdvancedDigitizingCanvasItem class draws the graphical elements of the CA
 
 %TypeHeaderCode
 #include "qgsadvanceddigitizingcanvasitem.h"
+%End
+%ConvertToSubClassCode
+    if ( dynamic_cast<QgsAdvancedDigitizingCanvasItem *>( sipCpp ) )
+      sipType = sipType_QgsAdvancedDigitizingCanvasItem;
+    else
+      sipType = nullptr;
 %End
   public:
     explicit QgsAdvancedDigitizingCanvasItem( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );

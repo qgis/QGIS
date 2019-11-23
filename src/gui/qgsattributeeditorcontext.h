@@ -27,6 +27,7 @@
 #include "qgsproject.h"
 
 class QgsMapCanvas;
+class QgsAdvancedDigitizingDockWidget;
 
 /**
  * \ingroup gui
@@ -78,6 +79,7 @@ class GUI_EXPORT QgsAttributeEditorContext
       : mParentContext( &parentContext )
       , mVectorLayerTools( parentContext.mVectorLayerTools )
       , mMapCanvas( parentContext.mMapCanvas )
+      , mCadDockWidget( parentContext.mCadDockWidget )
       , mDistanceArea( parentContext.mDistanceArea )
       , mFormFeature( parentContext.mFormFeature )
       , mFormMode( formMode )
@@ -89,6 +91,7 @@ class GUI_EXPORT QgsAttributeEditorContext
       : mParentContext( &parentContext )
       , mVectorLayerTools( parentContext.mVectorLayerTools )
       , mMapCanvas( parentContext.mMapCanvas )
+      , mCadDockWidget( parentContext.mCadDockWidget )
       , mDistanceArea( parentContext.mDistanceArea )
       , mRelation( relation )
       , mRelationMode( relationMode )
@@ -131,6 +134,22 @@ class GUI_EXPORT QgsAttributeEditorContext
      * \since QGIS 3.2
      */
     inline QgsMapCanvas *mapCanvas() const { return mMapCanvas; }
+
+    /**
+     * Sets the associated CAD dock widget, \a cadDockWidget, (e.g. to be used in map tools).
+     * \note Unstable API. This method is unstable API and may be modified or removed at any time.
+     * \see cadDockWidget()
+     * \since QGIS 3.10
+     */
+    void setCadDockWidget( QgsAdvancedDigitizingDockWidget *cadDockWidget );
+
+    /**
+     * Returns the associated CAD dock widget (e.g. to be used in map tools).
+     * \note Unstable API. This method is unstable API and may be modified or removed at any time.
+     * \see setCadDockWidget()
+     * \since QGIS 3.10
+     */
+    QgsAdvancedDigitizingDockWidget *cadDockWidget() const { return mCadDockWidget; }
 
     /**
      * Sets the associated vector layer tools.
@@ -247,6 +266,7 @@ class GUI_EXPORT QgsAttributeEditorContext
     QgsVectorLayer *mLayer = nullptr;
     QgsVectorLayerTools *mVectorLayerTools = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
+    QgsAdvancedDigitizingDockWidget *mCadDockWidget = nullptr;
     QgsDistanceArea mDistanceArea;
     QgsRelation mRelation;
     RelationMode mRelationMode = Undefined;
@@ -258,4 +278,3 @@ class GUI_EXPORT QgsAttributeEditorContext
 };
 
 #endif // QGSATTRIBUTEEDITORCONTEXT_H
-

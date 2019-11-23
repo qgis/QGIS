@@ -25,8 +25,8 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgswkbptr.h"
 
 #ifndef SIP_RUN
-#include <nlohmann/json_fwd.hpp>
-using json = nlohmann::json;
+#include <json_fwd.hpp>
+using namespace nlohmann;
 #endif
 
 class QgsMapToPixel;
@@ -57,6 +57,15 @@ typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;
  * \ingroup core
  * \class QgsAbstractGeometry
  * \brief Abstract base class for all geometries
+ *
+ * \note QgsAbstractGeometry objects are inherently Cartesian/planar geometries. They have no concept of geodesy, and none
+ * of the methods or properties exposed from the QgsAbstractGeometry API (or QgsGeometry API) utilize
+ * geodesic calculations. Accordingly, properties like length() and area() and spatial operations like centroid()
+ * are always calculated using strictly Cartesian mathematics. In contrast, the QgsDistanceArea class exposes
+ * methods for working with geodesic calculations and spatial operations on geometries,
+ * and should be used whenever calculations which account for the curvature of the Earth (or any other celestial body)
+ * are required.
+ *
  * \since QGIS 2.10
  */
 class CORE_EXPORT QgsAbstractGeometry
@@ -419,21 +428,42 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual bool deleteVertex( QgsVertexId position ) = 0;
 
     /**
-     * Returns the length of the geometry.
+     * Returns the planar, 2-dimensional length of the geometry.
+     *
+     * \warning QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the length
+     * returned by this method is calculated using strictly Cartesian mathematics. In contrast,
+     * the QgsDistanceArea class exposes methods for calculating the lengths of geometries using
+     * geodesic calculations which account for the curvature of the Earth (or any other
+     * celestial body).
+     *
      * \see area()
      * \see perimeter()
      */
     virtual double length() const;
 
     /**
-     * Returns the perimeter of the geometry.
+     * Returns the planar, 2-dimensional perimeter of the geometry.
+     *
+     * \warning QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the perimeter
+     * returned by this method is calculated using strictly Cartesian mathematics. In contrast,
+     * the QgsDistanceArea class exposes methods for calculating the perimeters of geometries using
+     * geodesic calculations which account for the curvature of the Earth (or any other
+     * celestial body).
+     *
      * \see area()
      * \see length()
      */
     virtual double perimeter() const;
 
     /**
-     * Returns the area of the geometry.
+     * Returns the planar, 2-dimensional area of the geometry.
+     *
+     * \warning QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the area
+     * returned by this method is calculated using strictly Cartesian mathematics. In contrast,
+     * the QgsDistanceArea class exposes methods for calculating the areas of geometries using
+     * geodesic calculations which account for the curvature of the Earth (or any other
+     * celestial body).
+     *
      * \see length()
      * \see perimeter()
      */
@@ -441,6 +471,10 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /**
      * Returns the length of the segment of the geometry which begins at \a startVertex.
+     *
+     * \warning QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the lengths
+     * returned by this method are calculated using strictly Cartesian mathematics.
+     *
      * \since QGIS 3.0
      */
     virtual double segmentLength( QgsVertexId startVertex ) const = 0;

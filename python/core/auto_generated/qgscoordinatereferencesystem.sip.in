@@ -604,11 +604,25 @@ Returns the ellipsoid acronym for the ellipsoid used by the CRS.
 .. seealso:: :py:func:`projectionAcronym`
 %End
 
-    QString toWkt() const;
+    enum WktVariant
+    {
+      WKT1_GDAL,
+      WKT1_ESRI,
+      WKT2_2015,
+      WKT2_2015_SIMPLIFIED,
+      WKT2_2018,
+      WKT2_2018_SIMPLIFIED,
+    };
+
+    QString toWkt( WktVariant variant = WKT1_GDAL, bool multiline = false, int indentationWidth = 4 ) const;
 %Docstring
 Returns a WKT representation of this CRS.
 
-:return: string containing WKT of the CRS
+The ``variant`` argument specifies the formatting variant to use when creating the WKT string. This is
+only used on builds based on Proj >= 6, with earlier versions always using WKT1_GDAL.
+
+If ``multiline`` is ``True`` then a formatted multiline string will be returned, using the specified ``indentationWidth``.
+This is only used on builds based on Proj >= 6.
 
 .. seealso:: :py:func:`toProj4`
 %End
@@ -695,6 +709,12 @@ Returns the new CRS srsid(), or -1 if the CRS could not be saved.
 Returns auth id of related geographic CRS
 %End
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsCoordinateReferenceSystem: %1>" ).arg( sipCpp->authid() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
 
     static QStringList recentProjections();
 %Docstring
@@ -704,6 +724,7 @@ Returns a list of recently used projections
 
 .. versionadded:: 2.7
 %End
+
 
     static void invalidateCache();
 %Docstring

@@ -175,6 +175,10 @@ class PyQgsStringUtils(unittest.TestCase):
         self.assertEqual(QgsStringUtils.capitalize('    testing abc', QgsStringUtils.ForceFirstLetterToCapital),
                          '    Testing Abc')
 
+    def testSubstituteVerticalCharacters(self):
+        """ test substitute vertical characters """
+        self.assertEqual(QgsStringUtils.substituteVerticalCharacters('123{[(45654)]}321'), '123︷﹇︵45654︶﹈︸321')
+
 
 if __name__ == '__main__':
     unittest.main()

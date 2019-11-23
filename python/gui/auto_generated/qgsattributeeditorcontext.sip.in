@@ -96,6 +96,32 @@ Returns the associated map canvas (e.g. to zoom to related features).
 .. versionadded:: 3.2
 %End
 
+    void setCadDockWidget( QgsAdvancedDigitizingDockWidget *cadDockWidget );
+%Docstring
+Sets the associated CAD dock widget, ``cadDockWidget``, (e.g. to be used in map tools).
+
+.. note::
+
+   Unstable API. This method is unstable API and may be modified or removed at any time.
+
+.. seealso:: :py:func:`cadDockWidget`
+
+.. versionadded:: 3.10
+%End
+
+    QgsAdvancedDigitizingDockWidget *cadDockWidget() const;
+%Docstring
+Returns the associated CAD dock widget (e.g. to be used in map tools).
+
+.. note::
+
+   Unstable API. This method is unstable API and may be modified or removed at any time.
+
+.. seealso:: :py:func:`setCadDockWidget`
+
+.. versionadded:: 3.10
+%End
+
     void setVectorLayerTools( QgsVectorLayerTools *vlTools );
 %Docstring
 Sets the associated vector layer tools.
@@ -233,7 +259,6 @@ Returns given ``attributeFormMode`` as string
 %End
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

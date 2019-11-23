@@ -37,7 +37,13 @@ Qt::ItemFlags QgsBrowserGuiModel::flags( const QModelIndex &index ) const
     return Qt::ItemFlags();
 
   Qt::ItemFlags flags = QgsBrowserModel::flags( index );
-  QgsDataItem *ptr = reinterpret_cast< QgsDataItem * >( index.internalPointer() );
+  QgsDataItem *ptr = dataItem( index );
+
+  if ( !ptr )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "FLAGS PROBLEM!" ), 4 );
+    return Qt::ItemFlags();
+  }
 
   Q_NOWARN_DEPRECATED_PUSH
   bool legacyAcceptDrop = ptr->acceptDrop();
@@ -92,6 +98,40 @@ bool QgsBrowserGuiModel::dropMimeData( const QMimeData *data, Qt::DropAction act
       {
         return true;
       }
+    }
+  }
+  return false;
+}
+
+bool QgsBrowserGuiModel::setData( const QModelIndex &index, const QVariant &value, int role )
+{
+  QgsDataItem *item = dataItem( index );
+  if ( !item )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "RENAME PROBLEM!" ), 4 );
+    return false;
+  }
+
+  if ( !( item->capabilities2() & QgsDataItem::Rename ) )
+    return false;
+
+  switch ( role )
+  {
+    case Qt::EditRole:
+    {
+      // new support
+      const QList<QgsDataItemGuiProvider *> providers = QgsGui::dataItemGuiProviderRegistry()->providers();
+      for ( QgsDataItemGuiProvider *provider : providers )
+      {
+        if ( provider->rename( item, value.toString(), createDataItemContext() ) )
+        {
+          return true;
+        }
+      }
+
+      Q_NOWARN_DEPRECATED_PUSH
+      return item->rename( value.toString() );
+      Q_NOWARN_DEPRECATED_POP
     }
   }
   return false;

@@ -2,10 +2,6 @@ SET(OWS_SRCS
   qgsowsprovider.cpp
   qgsowsdataitems.cpp
 )
-SET(OWS_MOC_HDRS
-  qgsowsprovider.h
-  qgsowsdataitems.h
-)
 
 INCLUDE_DIRECTORIES (
   ${CMAKE_SOURCE_DIR}/src/core
@@ -13,9 +9,11 @@ INCLUDE_DIRECTORIES (
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/auth
   ${CMAKE_SOURCE_DIR}/external
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
@@ -24,8 +22,7 @@ INCLUDE_DIRECTORIES (
 INCLUDE_DIRECTORIES(SYSTEM
 )
 
-QT5_WRAP_CPP(OWS_MOC_SRCS ${OWS_MOC_HDRS})
-ADD_LIBRARY (owsprovider MODULE ${OWS_SRCS} ${OWS_MOC_SRCS})
+ADD_LIBRARY (owsprovider MODULE ${OWS_SRCS})
 
 TARGET_LINK_LIBRARIES (owsprovider
   qgis_core

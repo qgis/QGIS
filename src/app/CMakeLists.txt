@@ -21,6 +21,7 @@ SET(QGIS_APP_SRCS
   qgsaddtaborgroup.cpp
   qgsappscreenshots.cpp
   qgsjoindialog.cpp
+  qgswmsdimensiondialog.cpp
   qgsannotationwidget.cpp
   qgsappsslerrorhandler.cpp
   qgsattributeactiondialog.cpp
@@ -30,11 +31,12 @@ SET(QGIS_APP_SRCS
   qgsattributesforminitcode.cpp
   qgsattributetabledialog.cpp
   qgsbookmarks.cpp
+  qgsbookmarkeditordialog.cpp
   qgsclipboard.cpp
   qgscustomization.cpp
   qgscustomprojectiondialog.cpp
   qgsdatumtransformtablewidget.cpp
-  qgsdiscoverrelationsdlg.cpp
+  qgsdiscoverrelationsdialog.cpp
   qgsdxfexportdialog.cpp
   qgsformannotationdialog.cpp
   qgsguivectorlayertools.cpp
@@ -50,6 +52,7 @@ SET(QGIS_APP_SRCS
   qgssourcefieldsproperties.cpp
   qgsattributesformproperties.cpp
   qgsidentifyresultsdialog.cpp
+  qgsinstallgridshiftdialog.cpp
   qgsfeatureaction.cpp
   qgslabelpropertydialog.cpp
   qgslabelengineconfigdialog.cpp
@@ -59,8 +62,11 @@ SET(QGIS_APP_SRCS
   qgslayertreeviewembeddedindicator.cpp
   qgslayertreeviewfilterindicator.cpp
   qgslayertreeviewmemoryindicator.cpp
+  qgslayertreeviewnocrsindicator.cpp
   qgslayertreeviewnonremovableindicator.cpp
   qgslayertreeviewbadlayerindicator.cpp
+  qgsmaskingwidget.cpp
+  qgsmasksourceselectionwidget.cpp
   qgsmapcanvasdockwidget.cpp
   qgsmaplayerstylecategoriesmodel.cpp
   qgsmaplayerstyleguiutils.cpp
@@ -74,6 +80,7 @@ SET(QGIS_APP_SRCS
   qgsstatusbarcoordinateswidget.cpp
   qgsstatusbarmagnifierwidget.cpp
   qgsstatusbarscalewidget.cpp
+  qgssymbollayerselectionwidget.cpp
   qgstemplateprojectsmodel.cpp
   qgsvectorlayerloadstyledialog.cpp
   qgsversioninfo.cpp
@@ -81,7 +88,6 @@ SET(QGIS_APP_SRCS
   qgswelcomepage.cpp
 
   qgsmaptooladdfeature.cpp
-  qgsmaptooldigitizefeature.cpp
   qgsmaptooladdpart.cpp
   qgsmaptooladdring.cpp
   qgsmaptoolfillring.cpp
@@ -122,6 +128,8 @@ SET(QGIS_APP_SRCS
   decorations/qgsdecorationtitledialog.cpp
   decorations/qgsdecorationcopyright.cpp
   decorations/qgsdecorationcopyrightdialog.cpp
+  decorations/qgsdecorationimage.cpp
+  decorations/qgsdecorationimagedialog.cpp
   decorations/qgsdecorationlayoutextent.cpp
   decorations/qgsdecorationlayoutextentdialog.cpp
   decorations/qgsdecorationnortharrow.cpp
@@ -185,6 +193,7 @@ SET(QGIS_APP_SRCS
 
   browser/qgsinbuiltdataitemproviders.cpp
 
+  layout/qgsgeopdflayertreemodel.cpp
   layout/qgslayoutaddpagesdialog.cpp
   layout/qgslayoutapputils.cpp
   layout/qgslayoutatlaswidget.cpp
@@ -203,6 +212,7 @@ SET(QGIS_APP_SRCS
   layout/qgslayoutmapwidget.cpp
   layout/qgslayoutmapgridwidget.cpp
   layout/qgslayoutpagepropertieswidget.cpp
+  layout/qgslayoutpdfexportoptionsdialog.cpp
   layout/qgslayoutpicturewidget.cpp
   layout/qgslayoutpolygonwidget.cpp
   layout/qgslayoutpolylinewidget.cpp
@@ -250,236 +260,6 @@ SET(QGIS_APP_SRCS
   mesh/qgsmeshtimeformatdialog.cpp
 )
 
-SET (QGIS_APP_MOC_HDRS
-  qgisapp.h
-  qgisappinterface.h
-  qgisappstylesheet.h
-  qgsabout.h
-  qgsaddattrdialog.h
-  qgsalignrasterdialog.h
-  qgsappbrowserproviders.h
-  qgsappcoordinateoperationhandlers.h
-  qgsappscreenshots.h
-  qgsjoindialog.h
-  qgsaddtaborgroup.h
-  qgsannotationwidget.h
-  qgsapplayertreeviewmenuprovider.h
-  qgsattributeactiondialog.h
-  qgsattributeactionpropertiesdialog.h
-  qgsattributetypedialog.h
-  qgsattributerelationedit.h
-  qgsattributesforminitcode.h
-  qgsattributetabledialog.h
-  qgsbookmarks.h
-  qgsclipboard.h
-  qgscustomization.h
-  qgscustomprojectiondialog.h
-  qgsdatumtransformtablewidget.h
-  qgsdelattrdialog.h
-  qgsdiagramproperties.h
-  qgsdiscoverrelationsdlg.h
-  qgsdisplayangle.h
-  qgsdxfexportdialog.h
-  qgsfeatureaction.h
-  qgsfieldcalculator.h
-  qgsfirstrundialog.h
-  qgssourcefieldsproperties.h
-  qgsattributesformproperties.h
-  qgsformannotationdialog.h
-  qgsguivectorlayertools.h
-  qgsgeometryvalidationservice.h
-  qgsgeometryvalidationdock.h
-  qgsgeometryvalidationmodel.h
-  qgshtmlannotationdialog.h
-  qgsidentifyresultsdialog.h
-  qgslabelengineconfigdialog.h
-  qgslabelingwidget.h
-  qgslabelpropertydialog.h
-  qgslayercapabilitiesmodel.h
-  qgslayertreeviewindicatorprovider.h
-  qgslayertreeviewembeddedindicator.h
-  qgslayertreeviewmemoryindicator.h
-  qgslayertreeviewfilterindicator.h
-  qgslayertreeviewnonremovableindicator.h
-  qgslayertreeviewbadlayerindicator.h
-  qgsmapcanvasdockwidget.h
-  qgsmaplayerstylecategoriesmodel.h
-  qgsmaplayerstyleguiutils.h
-  qgsmapsavedialog.h
-  qgspuzzlewidget.h
-  qgsprojectlistitemdelegate.h
-  qgsrulebasedlabelingwidget.h
-  qgssnappinglayertreemodel.h
-  qgssnappingwidget.h
-  qgsstatusbarcoordinateswidget.h
-  qgsstatusbarmagnifierwidget.h
-  qgsstatusbarscalewidget.h
-  qgstemplateprojectsmodel.h
-  qgsvectorlayerloadstyledialog.h
-  qgsversioninfo.h
-  qgsrecentprojectsitemsmodel.h
-  qgswelcomepage.h
-
-  qgsmaptooladdfeature.h
-  qgsmaptooldigitizefeature.h
-  qgsmaptoolannotation.h
-  qgsmaptoolcircularstringradius.h
-  qgsmaptooladdpart.h
-  qgsmaptooladdring.h
-  qgsmaptoolfillring.h
-  qgsmaptoolchangelabelproperties.h
-  qgsmaptooldeletepart.h
-  qgsmaptooldeletering.h
-  qgsmaptooltrimextendfeature.h
-  qgsmaptoolfeatureaction.h
-  qgsmaptoolformannotation.h
-  qgsmaptoolhtmlannotation.h
-  qgsmaptoolpinlabels.h
-  qgsmaptoolshowhidelabels.h
-  qgsmaptoolidentifyaction.h
-  qgsmaptoolmeasureangle.h
-  qgsmaptoolmovefeature.h
-  qgsmaptoolmovelabel.h
-  qgsmaptoollabel.h
-  qgsmaptooloffsetcurve.h
-  qgsmaptooloffsetpointsymbol.h
-  qgsmaptoolpointsymbol.h
-  qgsmaptoolreshape.h
-  qgsmaptoolreverseline.h
-  qgsmaptoolrotatefeature.h
-  qgsmaptoolrotatelabel.h
-  qgsmaptoolrotatepointsymbols.h
-  qgsmaptoolselect.h
-  qgsmaptoolselectionhandler.h
-  qgsmaptoolsimplify.h
-  qgsmaptoolsplitfeatures.h
-  qgsmaptoolsplitparts.h
-  qgsmaptoolsvgannotation.h
-  qgsmaptooltextannotation.h
-  qgsmaptooladdcircularstring.h
-  qgsmaptoolcircularstringcurvepoint.h
-  qgsmaptooladdcircle.h
-  qgsmaptoolcircle2points.h
-  qgsmaptoolcircle3points.h
-  qgsmaptoolcircle3tangents.h
-  qgsmaptoolcircle2tangentspoint.h
-  qgsmaptoolcirclecenterpoint.h
-  qgsmaptooladdellipse.h
-  qgsmaptoolellipsefoci.h
-  qgsmaptoolellipseextent.h
-  qgsmaptoolellipsecenterpoint.h
-  qgsmaptoolellipsecenter2points.h
-  qgsmaptooladdrectangle.h
-  qgsmaptooladdregularpolygon.h
-  qgsmaptoolrectanglecenter.h
-  qgsmaptoolrectangleextent.h
-  qgsmaptoolrectangle3points.h
-  qgsmaptoolregularpolygon2points.h
-  qgsmaptoolregularpolygoncenterpoint.h
-  qgsmaptoolregularpolygoncentercorner.h
-
-  decorations/qgsdecorationitem.h
-  decorations/qgsdecorationtitle.h
-  decorations/qgsdecorationtitledialog.h
-  decorations/qgsdecorationcopyright.h
-  decorations/qgsdecorationcopyrightdialog.h
-  decorations/qgsdecorationlayoutextent.h
-  decorations/qgsdecorationlayoutextentdialog.h
-  decorations/qgsdecorationnortharrow.h
-  decorations/qgsdecorationnortharrowdialog.h
-  decorations/qgsdecorationscalebar.h
-  decorations/qgsdecorationscalebardialog.h
-  decorations/qgsdecorationgrid.h
-  decorations/qgsdecorationgriddialog.h
-
-  vertextool/qgslockedfeature.h
-  vertextool/qgsvertexeditor.h
-  vertextool/qgsvertextool.h
-
-  qgslayerstylingwidget.h
-  qgsmeasuredialog.h
-  qgsmeasuretool.h
-  qgsmergeattributesdialog.h
-  qgsoptions.h
-  qgsprojectlayergroupdialog.h
-  qgsprojectproperties.h
-  qgsrastercalcdialog.h
-  qgsrasterlayerproperties.h
-  qgsrelationmanagerdialog.h
-  qgsrelationadddlg.h
-  qgsselectbyformdialog.h
-  qgsstatisticalsummarydockwidget.h
-  qgssvgannotationdialog.h
-  qgstextannotationdialog.h
-  qgsundowidget.h
-  qgsvectorlayerlegendwidget.h
-  qgsvectorlayersavestyledialog.h
-  qgsvectorlayerproperties.h
-  qgsmapthemes.h
-  qgshandlebadlayers.h
-
-  browser/qgsinbuiltdataitemproviders.h
-
-  layout/qgslayoutaddpagesdialog.h
-  layout/qgslayoutappmenuprovider.h
-  layout/qgslayoutatlaswidget.h
-  layout/qgslayoutattributeselectiondialog.h
-  layout/qgslayoutattributetablewidget.h
-  layout/qgslayoutdesignerdialog.h
-  layout/qgslayoutguidewidget.h
-  layout/qgslayouthtmlwidget.h
-  layout/qgslayoutimageexportoptionsdialog.h
-  layout/qgslayoutitemslistview.h
-  layout/qgslayoutlabelwidget.h
-  layout/qgslayoutlegendwidget.h
-  layout/qgslayoutlegendlayersdialog.h
-  layout/qgslayoutmanagerdialog.h
-  layout/qgslayoutmapwidget.h
-  layout/qgslayoutmapgridwidget.h
-  layout/qgslayoutpagepropertieswidget.h
-  layout/qgslayoutpicturewidget.h
-  layout/qgslayoutpolygonwidget.h
-  layout/qgslayoutpolylinewidget.h
-  layout/qgslayoutpropertieswidget.h
-  layout/qgslayoutqptdrophandler.h
-  layout/qgslayoutscalebarwidget.h
-  layout/qgslayoutshapewidget.h
-  layout/qgslayouttablebackgroundcolorsdialog.h
-  layout/qgsreportfieldgroupsectionwidget.h
-  layout/qgsreportlayoutsectionwidget.h
-  layout/qgsreportorganizerwidget.h
-  layout/qgsreportsectionmodel.h
-  layout/qgsreportsectionwidget.h
-
-  locator/qgsinbuiltlocatorfilters.h
-  locator/qgslocatoroptionswidget.h
-
-  gps/qgsgpsinformationwidget.h
-
-  dwg/qgsdwgimportdialog.h
-
-  pluginmanager/qgspluginmanager.h
-  pluginmanager/qgsapppluginmanagerinterface.h
-  pluginmanager/qgspluginsortfilterproxymodel.h
-  pluginmanager/qgspluginitemdelegate.h
-
-  qgsnewspatialitelayerdialog.h
-
-  qgssettingstree.h
-  qgsvariantdelegate.h
-
-  mesh/qgsmeshlayerproperties.h
-  mesh/qgsrenderermeshpropertieswidget.h
-  mesh/qgsmeshrenderermeshsettingswidget.h
-  mesh/qgsmeshrendererscalarsettingswidget.h
-  mesh/qgsmeshrenderervectorsettingswidget.h
-  mesh/qgsmeshrendereractivedatasetwidget.h
-  mesh/qgsmeshdatasetgrouptreeview.h
-  mesh/qgsmeshcalculatordialog.h
-  mesh/qgsmeshtimeformatdialog.h
-)
-
-
 IF (WITH_3D)
   SET(QGIS_APP_SRCS
     ${QGIS_APP_SRCS}
@@ -504,31 +284,6 @@ IF (WITH_3D)
     3d/qgsvectorlayer3drendererwidget.cpp
     3d/qgsmeshlayer3drendererwidget.cpp
     layout/qgslayout3dmapwidget.cpp
-  )
-
-  SET (QGIS_APP_MOC_HDRS
-    ${QGIS_APP_MOC_HDRS}
-    3d/qgs3danimationwidget.h
-    3d/qgs3danimationexportdialog.h
-    3d/qgs3dmapcanvas.h
-    3d/qgs3dmapcanvasdockwidget.h
-    3d/qgs3dmapconfigwidget.h
-    3d/qgs3dmaptool.h
-    3d/qgs3dmaptoolidentify.h
-    3d/qgs3dmaptoolmeasureline.h
-    3d/qgs3dmeasuredialog.h
-    3d/qgs3dnavigationwidget.h
-    3d/qgslightswidget.h
-    3d/qgsline3dsymbolwidget.h
-    3d/qgsmesh3dsymbolwidget.h
-    3d/qgspoint3dsymbolwidget.h
-    3d/qgspolygon3dsymbolwidget.h
-    3d/qgsphongmaterialwidget.h
-    3d/qgsrulebased3drendererwidget.h
-    3d/qgssymbol3dwidget.h
-    3d/qgsvectorlayer3drendererwidget.h
-    3d/qgsmeshlayer3drendererwidget.h
-    layout/qgslayout3dmapwidget.h
   )
 ENDIF (WITH_3D)
 
@@ -567,16 +322,6 @@ IF (WITH_QWTPOLAR)
       ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_spectrogram.cpp
     )
 
-    SET (QGIS_APP_MOC_HDRS
-      ${QGIS_APP_MOC_HDRS}
-      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_canvas.h
-      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_magnifier.h
-      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_panner.h
-      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_picker.h
-      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_plot.h
-      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_renderer.h
-    )
-
     SET(QWTPOLAR_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1)
 
     SET(QWTPOLAR_LIBRARY "")
@@ -603,8 +348,6 @@ QT5_ADD_RESOURCES(IMAGE_RCC_SRCS ${IMAGE_RCCS})
 # add test resources, e.g. standard test font
 SET(TEST_RCCS ../../tests/testdata/testdata.qrc)
 QT5_ADD_RESOURCES(TEST_RCC_SRCS ${TEST_RCCS})
-
-QT5_WRAP_CPP(QGIS_APP_MOC_SRCS ${QGIS_APP_MOC_HDRS})
 
 IF (WIN32)
   SET (QGIS_APP_SRCS ${QGIS_APP_SRCS} main.cpp ${IMAGE_RCC_SRCS} ${TEST_RCC_SRCS})
@@ -699,6 +442,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/scalebar
   ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/validity
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/symbology
@@ -780,7 +524,9 @@ INCLUDE_DIRECTORIES(
   gps
   dwg
   ${CMAKE_SOURCE_DIR}/external/libdxfrw
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
   ${CMAKE_SOURCE_DIR}/src/native
+
   ${CMAKE_BINARY_DIR}/src/native
 )
 INCLUDE_DIRECTORIES(SYSTEM
@@ -823,7 +569,7 @@ ENDIF (ANDROID)
 
 # Putting IMAGE_RCC_SRCS into qgis_app lib is causing problems when the lib is
 # loaded (by plugin for example) in test unit (qgis_layoutpicturetest).
-ADD_LIBRARY(qgis_app SHARED ${QGIS_APP_SRCS} ${QGIS_APP_MOC_SRCS} ${QGIS_APP_HDRS} ${QGIS_APP_MOC_HDRS})
+ADD_LIBRARY(qgis_app SHARED ${QGIS_APP_SRCS})
 
 TARGET_LINK_LIBRARIES(qgis_app
   ${QWT_LIBRARY}
@@ -859,6 +605,7 @@ GENERATE_EXPORT_HEADER(
    EXPORT_FILE_NAME qgis_app.h
 )
 
+
 IF (NOT ANDROID)
   SET_TARGET_PROPERTIES(qgis_app PROPERTIES
     VERSION ${COMPLETE_VERSION}
@@ -869,7 +616,6 @@ ENDIF (NOT ANDROID)
 IF (APPLE)
   TARGET_LINK_LIBRARIES(qgis_app ${APP_SERVICES_LIBRARY})
 ENDIF(APPLE)
-
 
 if(MSVC AND CMAKE_SIZEOF_VOID_P EQUAL 8)
   SET_TARGET_PROPERTIES(qgis_app PROPERTIES STATIC_LIBRARY_FLAGS "/machine:x64")

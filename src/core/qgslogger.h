@@ -110,7 +110,7 @@ class CORE_EXPORT QgsLogger
     /**
      * Reads the environment variable QGIS_LOG_FILE. Returns NULL if the variable is not set,
      * otherwise returns a file name for writing log messages to.*/
-    static const QString logFile() { init(); return sLogFile; }
+    static QString logFile();
 
   private:
     static void init();
@@ -118,9 +118,6 @@ class CORE_EXPORT QgsLogger
     //! Current debug level
     static int sDebugLevel;
     static int sPrefixLength;
-    static QString sLogFile;
-    static QString sFileFilter;
-    static QTime sTime;
 };
 
 /**

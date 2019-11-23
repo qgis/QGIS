@@ -56,7 +56,7 @@
 
 QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
-  , mDefaultCRS( GEO_EPSG_CRS_AUTHID )
+  , mDefaultCRS( geoEpsgCrsAuthId() )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
@@ -276,7 +276,7 @@ void QgsWMSSourceSelect::clear()
 
 bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabilities )
 {
-  QVector<QgsWmsLayerProperty> layers = capabilities.supportedLayers();
+  const QVector<QgsWmsLayerProperty> layers = capabilities.supportedLayers();
 
   bool first = true;
   QSet<QString> alreadyAddedLabels;
@@ -316,32 +316,30 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabiliti
 
   int layerAndStyleCount = -1;
 
-  for ( QVector<QgsWmsLayerProperty>::iterator layer = layers.begin();
-        layer != layers.end();
-        ++layer )
+  for ( const QgsWmsLayerProperty &layer : layers )
   {
-    QgsTreeWidgetItem *lItem = createItem( layer->orderId, QStringList() << layer->name << layer->title << layer->abstract, items, layerAndStyleCount, layerParents, layerParentNames );
+    QgsTreeWidgetItem *lItem = createItem( layer.orderId, QStringList() << layer.name << layer.title << layer.abstract, items, layerAndStyleCount, layerParents, layerParentNames );
 
-    lItem->setData( 0, Qt::UserRole + 0, layer->name );
+    lItem->setData( 0, Qt::UserRole + 0, layer.name );
     lItem->setData( 0, Qt::UserRole + 1, "" );
-    lItem->setData( 0, Qt::UserRole + 2, layer->crs );
-    lItem->setData( 0, Qt::UserRole + 3, layer->title.isEmpty() ? layer->name : layer->title );
+    lItem->setData( 0, Qt::UserRole + 2, layer.crs );
+    lItem->setData( 0, Qt::UserRole + 3, layer.title.isEmpty() ? layer.name : layer.title );
 
     // Also insert the styles
     // Layer Styles
-    for ( int j = 0; j < layer->style.size(); j++ )
+    for ( const QgsWmsStyleProperty &property : layer.style )
     {
-      QgsDebugMsg( QStringLiteral( "got style name %1 and title '%2'." ).arg( layer->style.at( j ).name, layer->style.at( j ).title ) );
+      QgsDebugMsg( QStringLiteral( "got style name %1 and title '%2'." ).arg( property.name, property.title ) );
 
       QgsTreeWidgetItem *lItem2 = new QgsTreeWidgetItem( lItem );
       lItem2->setText( 0, QString::number( ++layerAndStyleCount ) );
-      lItem2->setText( 1, layer->style.at( j ).name.simplified() );
-      lItem2->setText( 2, layer->style.at( j ).title.simplified() );
-      lItem2->setText( 3, layer->style.at( j ).abstract.simplified() );
+      lItem2->setText( 1, property.name.simplified() );
+      lItem2->setText( 2, property.title.simplified() );
+      lItem2->setText( 3, property.abstract.simplified() );
 
-      lItem2->setData( 0, Qt::UserRole + 0, layer->name );
-      lItem2->setData( 0, Qt::UserRole + 1, layer->style.at( j ).name );
-      lItem2->setData( 0, Qt::UserRole + 3, layer->style.at( j ).title.isEmpty() ? layer->style.at( j ).name : layer->style.at( j ).title );
+      lItem2->setData( 0, Qt::UserRole + 0, layer.name );
+      lItem2->setData( 0, Qt::UserRole + 1, property.name );
+      lItem2->setData( 0, Qt::UserRole + 3, property.title.isEmpty() ? property.name : property.title );
     }
   }
 
@@ -590,6 +588,11 @@ void QgsWMSSourceSelect::addButtonClicked()
   emit addRasterLayer( uri.encodedUri(),
                        leLayerName->text().isEmpty() ? titles.join( QStringLiteral( "/" ) ) : leLayerName->text(),
                        QStringLiteral( "wms" ) );
+}
+
+void QgsWMSSourceSelect::reset()
+{
+  lstLayers->clearSelection();
 }
 
 void QgsWMSSourceSelect::enableLayersForCrs( QTreeWidgetItem *item )

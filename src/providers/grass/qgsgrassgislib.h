@@ -42,8 +42,8 @@ class QgsRectangle;
 class GRASS_LIB_EXPORT QgsGrassGisLib
 {
   public:
-    // Region term is used in modules (g.region), internaly it is hold in structure
-    // Cell_head, but variables keeping that struture are usually called window
+    // Region term is used in modules (g.region), internally it is hold in structure
+    // Cell_head, but variables keeping that structure are usually called window
 #if 0
     class Region
     {

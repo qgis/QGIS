@@ -20,117 +20,11 @@
 #include "qgis.h"
 #include "qgssymbol.h"
 #include "qgsrenderer.h"
+#include "qgsrendererrange.h"
 #include "qgsexpression.h"
 #include "qgsdatadefinedsizelegend.h"
+#include "qgsclassificationmethod.h"
 
-#include <QRegExp>
-
-
-/**
- * \ingroup core
- * \class QgsRendererRange
- */
-class CORE_EXPORT QgsRendererRange
-{
-  public:
-
-    /**
-     * Constructor for QgsRendererRange.
-     */
-    QgsRendererRange() = default;
-    QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol SIP_TRANSFER, const QString &label, bool render = true );
-    QgsRendererRange( const QgsRendererRange &range );
-
-    // default dtor is OK
-    QgsRendererRange &operator=( QgsRendererRange range );
-
-    bool operator<( const QgsRendererRange &other ) const;
-
-    double lowerValue() const;
-    double upperValue() const;
-
-    QgsSymbol *symbol() const;
-    QString label() const;
-
-    void setSymbol( QgsSymbol *s SIP_TRANSFER );
-    void setLabel( const QString &label );
-    void setLowerValue( double lowerValue );
-    void setUpperValue( double upperValue );
-
-    // \since QGIS 2.5
-    bool renderState() const;
-    void setRenderState( bool render );
-
-    // debugging
-    QString dump() const;
-
-    /**
-     * Creates a DOM element representing the range in SLD format.
-     * \param doc DOM document
-     * \param element destination DOM element
-     * \param props graduated renderer properties
-     * \param firstRange set to TRUE if the range is the first range, where the lower value uses a <= test
-     * rather than a < test.
-     */
-    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props, bool firstRange = false ) const;
-
-  protected:
-    double mLowerValue = 0, mUpperValue = 0;
-    std::unique_ptr<QgsSymbol> mSymbol;
-    QString mLabel;
-    bool mRender = true;
-
-    // for cpy+swap idiom
-    void swap( QgsRendererRange &other );
-};
-
-typedef QList<QgsRendererRange> QgsRangeList;
-
-
-/**
- * \ingroup core
- * \class QgsRendererRangeLabelFormat
- * \since QGIS 2.6
- */
-class CORE_EXPORT QgsRendererRangeLabelFormat
-{
-  public:
-    QgsRendererRangeLabelFormat();
-    QgsRendererRangeLabelFormat( const QString &format, int precision = 4, bool trimTrailingZeroes = false );
-
-    bool operator==( const QgsRendererRangeLabelFormat &other ) const;
-    bool operator!=( const QgsRendererRangeLabelFormat &other ) const;
-
-    QString format() const { return mFormat; }
-    void setFormat( const QString &format ) { mFormat = format; }
-
-    int precision() const { return mPrecision; }
-    void setPrecision( int precision );
-
-    bool trimTrailingZeroes() const { return mTrimTrailingZeroes; }
-    void setTrimTrailingZeroes( bool trimTrailingZeroes ) { mTrimTrailingZeroes = trimTrailingZeroes; }
-
-    //! \note labelForLowerUpper in Python bindings
-    QString labelForRange( double lower, double upper ) const SIP_PYNAME( labelForLowerUpper );
-    QString labelForRange( const QgsRendererRange &range ) const;
-    QString formatNumber( double value ) const;
-
-    void setFromDomElement( QDomElement &element );
-    void saveToDomElement( QDomElement &element );
-
-    static const int MAX_PRECISION;
-    static const int MIN_PRECISION;
-
-  protected:
-    QString mFormat;
-    int mPrecision = 4;
-    bool mTrimTrailingZeroes = false;
-    // values used to manage number formatting - precision and trailing zeroes
-    double mNumberScale = 1.0;
-    QString mNumberSuffix;
-    QRegExp mReTrailingZeroes;
-    QRegExp mReNegativeZero;
-};
 
 class QgsVectorLayer;
 class QgsColorRamp;
@@ -211,6 +105,23 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     void sortByValue( Qt::SortOrder order = Qt::AscendingOrder );
     void sortByLabel( Qt::SortOrder order = Qt::AscendingOrder );
 
+    /**
+     * Returns the classification method
+     * \since QGIS 3.10
+     */
+    QgsClassificationMethod *classificationMethod() const;
+
+    /**
+     * Defines the classification method
+     * This will take ownership of the method
+     * \since QGIS 3.10
+     */
+    void setClassificationMethod( QgsClassificationMethod *method SIP_TRANSFER );
+
+    /**
+      * Classification mode
+      * \deprecated since QGIS 3.10 use QgsClassificationMethod::MethodId instead
+      */
     enum Mode
     {
       EqualInterval,
@@ -220,59 +131,58 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
       Pretty,
       Custom
     };
+    // TODO QGIS 4: remove
+    // this could not be tagged with Q_DECL_DEPRECATED due to Doxygen warning
+    // might be fixed in newer Doxygen (does not on 1.8.13, might be ok on 1.8.16)
 
-    Mode mode() const { return mMode; }
-    void setMode( Mode mode ) { mMode = mode; }
+
+    //! \deprecated since QGIS 3.10 use classficationMethod instead
+    Q_DECL_DEPRECATED Mode mode() const SIP_DEPRECATED { return modeFromMethodId( mClassificationMethod->id() ); }
+    //! \deprecated since QGIS 3.10 use classficationMethod instead
+    Q_DECL_DEPRECATED void setMode( Mode mode ) SIP_DEPRECATED;
 
     /**
      * Returns if we want to classify symmetric around a given value
      * \since QGIS 3.4
+     * \deprecated since QGIS 3.10 use classficationMethod instead
      */
-    bool useSymmetricMode() const { return mUseSymmetricMode; }
+    Q_DECL_DEPRECATED bool useSymmetricMode() const SIP_DEPRECATED { return mClassificationMethod->symmetricModeEnabled(); }
 
     /**
      * Set if we want to classify symmetric around a given value
      * \since QGIS 3.4
+     * \deprecated since QGIS 3.10 use classficationMethod instead
      */
-    void setUseSymmetricMode( bool useSymmetricMode ) { mUseSymmetricMode = useSymmetricMode; }
+    Q_DECL_DEPRECATED  void setUseSymmetricMode( bool useSymmetricMode ) SIP_DEPRECATED;
 
     /**
      * Returns the pivot value for symmetric classification
      * \since QGIS 3.4
+     * \deprecated since QGIS 3.10 use classficationMethod instead
      */
-    double symmetryPoint() const { return mSymmetryPoint; }
+    Q_DECL_DEPRECATED double symmetryPoint() const SIP_DEPRECATED { return mClassificationMethod->symmetryPoint(); }
 
     /**
      * Set the pivot point
      * \since QGIS 3.4
+     * \deprecated since QGIS 3.10 use classficationMethod instead
      */
-    void setSymmetryPoint( double symmetryPoint ) { mSymmetryPoint = symmetryPoint; }
+    Q_DECL_DEPRECATED void setSymmetryPoint( double symmetryPoint ) SIP_DEPRECATED;
 
-    /**
-     * Returns the list of breaks used in the prettybreaks mode. Needed to recover this list in saved configuration, or when property window in closed and reopened
-     * \note Not available in Python bindings, not stable API
-     * \since QGIS 3.4
-     */
-    QStringList listForCboPrettyBreaks() const { return mListForCboPrettyBreaks; } SIP_SKIP
-
-    /**
-     * Set the list of breaks used in the prettybreaks mode, which is needed to recover this list in saved configuration, or when property window is closed and reopened
-     * \note Not available in Python bindings, not stable API
-     * \since QGIS 3.4
-     */
-    void setListForCboPrettyBreaks( const QStringList &listForCboPrettyBreaks ) { mListForCboPrettyBreaks = listForCboPrettyBreaks; } SIP_SKIP
 
     /**
      * Returns if we want to have a central class astride the pivot value
      * \since QGIS 3.4
+     * \deprecated since QGIS 3.10 use classficationMethod instead
      */
-    bool astride() const { return mAstride; }
+    Q_DECL_DEPRECATED bool astride() const SIP_DEPRECATED { return mClassificationMethod->symmetryAstride(); }
 
     /**
      * Set if we want a central class astride the pivot value
      * \since QGIS 3.4
+     * \deprecated since QGIS 3.10 use classficationMethod instead
      */
-    void setAstride( bool astride ) { mAstride = astride; }
+    Q_DECL_DEPRECATED void setAstride( bool astride ) SIP_DEPRECATED;
 
     /**
      * Remove the breaks that are above the existing opposite sign classes to keep colors symmetrically balanced around symmetryPoint
@@ -281,8 +191,9 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \param symmetryPoint The point around which we want a symmetry
      * \param astride A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
      * \since QGIS 3.4
+     * \deprecated since QGIS 3.10, use QgsClassificationMethod::makeBreaksSymmetric instead
      */
-    static void makeBreaksSymmetric( QList<double> &breaks, double symmetryPoint, bool astride );
+    Q_DECL_DEPRECATED static void makeBreaksSymmetric( QList<double> &breaks SIP_INOUT, double symmetryPoint, bool astride ) SIP_DEPRECATED;
 
     /**
      * Compute the equal interval classification
@@ -292,8 +203,9 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \param useSymmetricMode A bool indicating if we want to have classes and hence colors ramp symmetric around a value
      * \param symmetryPoint The point around which we want a symmetry
      * \param astride A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
+     * \deprecated since QGIS 3.10 use QgsClassificationEqualInterval class instead
      */
-    static QList<double> calcEqualIntervalBreaks( double minimum, double maximum, int classes, bool useSymmetricMode, double symmetryPoint, bool astride );
+    Q_DECL_DEPRECATED static QList<double> calcEqualIntervalBreaks( double minimum, double maximum, int classes, bool useSymmetricMode, double symmetryPoint, bool astride ) SIP_DEPRECATED;
 
     /**
      * Recalculate classes for a layer
@@ -304,22 +216,36 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \param symmetryPoint The value around which the classes will be symmetric if useSymmetricMode is checked
      * \param astride A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
      * \since QGIS 2.6 (three first arguments) and 3.4 (three last arguments)
+     * \deprecated since QGIS 3.10
      */
-    void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses, bool useSymmetricMode = false, double symmetryPoint = 0.0, bool astride = false );
+    Q_DECL_DEPRECATED void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses, bool useSymmetricMode = false, double symmetryPoint = 0.0, bool astride = false ) SIP_DEPRECATED;
+
+    /**
+     * Recalculate classes for a layer
+     * \param vl  The layer being rendered (from which data values are calculated)
+     * \param nclasses the number of classes
+     */
+    void updateClasses( const QgsVectorLayer *vl, int nclasses );
+
+    Q_NOWARN_DEPRECATED_PUSH;
 
     /**
      * Returns the label format used to generate default classification labels
      * \since QGIS 2.6
+     * \deprecated since QGIS 3.10 use classificationMethod() and QgsClassificationMethod::setLabelFormat instead
      */
-    const QgsRendererRangeLabelFormat &labelFormat() const { return mLabelFormat; }
+    Q_DECL_DEPRECATED QgsRendererRangeLabelFormat labelFormat() const SIP_DEPRECATED;
 
     /**
      * Set the label format used to generate default classification labels
      * \param labelFormat The string appended to classification labels
      * \param updateRanges If TRUE then ranges ending with the old unit string are updated to the new.
      * \since QGIS 2.6
+     * \deprecated since QGIS 3.10 use classificationMethod() and QgsClassificationMethod::setLabelFormat instead
      */
-    void setLabelFormat( const QgsRendererRangeLabelFormat &labelFormat, bool updateRanges = false );
+    Q_DECL_DEPRECATED void setLabelFormat( const QgsRendererRangeLabelFormat &labelFormat, bool updateRanges = false ) SIP_DEPRECATED;
+
+    Q_NOWARN_DEPRECATED_POP;
 
     /**
      * Reset the label decimal places to a numberbased on the minimum class interval
@@ -327,6 +253,8 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \since QGIS 2.6
      */
     void calculateLabelPrecision( bool updateRanges = true );
+
+    Q_NOWARN_DEPRECATED_PUSH;
 
     /**
      * Creates a new graduated renderer.
@@ -342,8 +270,9 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \param listForCboPrettyBreaks The list of potential pivot values for symmetric mode with prettybreaks mode
      * \param astride A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
      * \returns new QgsGraduatedSymbolRenderer object
+     * \deprecated since QGIS 3.10
      */
-    static QgsGraduatedSymbolRenderer *createRenderer( QgsVectorLayer *vlayer,
+    static Q_DECL_DEPRECATED QgsGraduatedSymbolRenderer *createRenderer( QgsVectorLayer *vlayer,
         const QString &attrName,
         int classes,
         Mode mode,
@@ -352,8 +281,9 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
         const QgsRendererRangeLabelFormat &legendFormat = QgsRendererRangeLabelFormat(),
         bool useSymmetricMode = false,
         double symmetryPoint = 0.0,
-        QStringList listForCboPrettyBreaks = QStringList(),
-        bool astride = false );
+        const QStringList &listForCboPrettyBreaks = QStringList(),
+        bool astride = false ) SIP_DEPRECATED;
+    Q_NOWARN_DEPRECATED_POP;
 
     //! create renderer from XML element
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
@@ -371,6 +301,15 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     QgsSymbol *sourceSymbol();
 
     /**
+     * Returns the renderer's source symbol, which is the base symbol used for the each classes' symbol before applying
+     * the classes' color.
+     * \see setSourceSymbol()
+     * \see sourceColorRamp()
+     * \note Not available in Python bindings.
+     */
+    const QgsSymbol *sourceSymbol() const SIP_SKIP;
+
+    /**
      * Sets the source symbol for the renderer, which is the base symbol used for the each classes' symbol before applying
      * the classes' color.
      * \param sym source symbol, ownership is transferred to the renderer
@@ -385,6 +324,14 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \see sourceSymbol()
      */
     QgsColorRamp *sourceColorRamp();
+
+    /**
+     * Returns the source color ramp, from which each classes' color is derived.
+     * \see setSourceColorRamp()
+     * \see sourceSymbol()
+     * \note Not available in Python bindings.
+     */
+    const QgsColorRamp *sourceColorRamp() const SIP_SKIP;
 
     /**
      * Sets the source color ramp.
@@ -476,13 +423,25 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      */
     QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const;
 
+    /**
+     * Updates the labels of the ranges
+     * \since QGIS 3.10
+     */
+    void updateRangeLabels();
+
+    /**
+     * Returns the renderer range matching the provided \a value, or NULLPTR if no
+     * range matches the value.
+     *
+     * \since QGIS 3.10.1
+     */
+    const QgsRendererRange *rangeForValue( double value ) const;
+
   protected:
     QString mAttrName;
     QgsRangeList mRanges;
-    Mode mMode = Custom;
     std::unique_ptr<QgsSymbol> mSourceSymbol;
     std::unique_ptr<QgsColorRamp> mSourceColorRamp;
-    QgsRendererRangeLabelFormat mLabelFormat;
 
     std::unique_ptr<QgsExpression> mExpression;
     GraduatedMethod mGraduatedMethod = GraduatedColor;
@@ -504,12 +463,9 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     QString legendKeyForValue( double value ) const;
 
     //! \note not available in Python bindings
-    static const char *graduatedMethodStr( GraduatedMethod method ) SIP_SKIP;
+    static QString graduatedMethodStr( GraduatedMethod method ) SIP_SKIP;
 
-    bool mUseSymmetricMode = false;
-    double mSymmetryPoint = 0.0;
-    QStringList mListForCboPrettyBreaks = QStringList();
-    bool mAstride = false;
+    std::shared_ptr<QgsClassificationMethod> mClassificationMethod;
 
   private:
 
@@ -521,10 +477,18 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     //! Returns list of legend symbol items from individual ranges
     QgsLegendSymbolList baseLegendSymbolItems() const;
 
+    // TODO QGIS 4: remove
+    Q_NOWARN_DEPRECATED_PUSH
+    static QString methodIdFromMode( QgsGraduatedSymbolRenderer::Mode mode );
+    static QgsGraduatedSymbolRenderer::Mode modeFromMethodId( const QString &methodId );
+    Q_NOWARN_DEPRECATED_POP
+
 #ifdef SIP_RUN
     QgsGraduatedSymbolRenderer( const QgsGraduatedSymbolRenderer & );
     QgsGraduatedSymbolRenderer &operator=( const QgsGraduatedSymbolRenderer & );
 #endif
+
+    friend class TestQgsGraduatedSymbolRenderer;
 
 };
 

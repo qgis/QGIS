@@ -444,7 +444,7 @@ void QgsBrowserDockWidget::showProperties()
   {
     QgsBrowserPropertiesDialog *dialog = new QgsBrowserPropertiesDialog( settingsSection(), this );
     dialog->setAttribute( Qt::WA_DeleteOnClose );
-    dialog->setItem( item );
+    dialog->setItem( item, createContext() );
     dialog->show();
   }
 }
@@ -563,7 +563,8 @@ void QgsBrowserDockWidget::setPropertiesWidget()
     {
       QModelIndex index = mProxyModel->mapToSource( indexes.value( 0 ) );
       QgsDataItem *item = mModel->dataItem( index );
-      QgsBrowserPropertiesWidget *propertiesWidget = QgsBrowserPropertiesWidget::createWidget( item, mPropertiesWidget );
+      QgsDataItemGuiContext context = createContext();
+      QgsBrowserPropertiesWidget *propertiesWidget = QgsBrowserPropertiesWidget::createWidget( item, context, mPropertiesWidget );
       if ( propertiesWidget )
       {
         propertiesWidget->setCondensedMode( true );
@@ -584,6 +585,16 @@ void QgsBrowserDockWidget::enablePropertiesWidget( bool enable )
   else
   {
     clearPropertiesWidget();
+  }
+}
+
+void QgsBrowserDockWidget::setActiveIndex( const QModelIndex &index )
+{
+  if ( index.isValid() )
+  {
+    QModelIndex proxyIndex = mProxyModel->mapFromSource( index );
+    mBrowserView->expand( proxyIndex );
+    mBrowserView->setCurrentIndex( proxyIndex );
   }
 }
 

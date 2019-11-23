@@ -8,7 +8,7 @@
 
 
 
-class QgsLayoutAtlas : QObject, QgsAbstractLayoutIterator, QgsLayoutSerializableObject
+class QgsLayoutAtlas : QObject, QgsAbstractLayoutIterator, QgsLayoutSerializableObject, QgsExpressionContextGenerator
 {
 %Docstring
 Class used to render QgsLayout as an atlas, by iterating over the features from an associated vector layer.
@@ -267,7 +267,7 @@ number of matching features.
 
     virtual bool endRender();
 
-    virtual int count();
+    virtual int count() const;
 
     virtual QString filePath( const QString &baseFilePath, const QString &extension );
 
@@ -276,6 +276,9 @@ number of matching features.
 %Docstring
 Returns the current feature number, where a value of 0 corresponds to the first feature.
 %End
+
+    virtual QgsExpressionContext createExpressionContext() const;
+
 
   public slots:
 

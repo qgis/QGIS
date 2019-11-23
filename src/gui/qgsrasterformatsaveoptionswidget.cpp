@@ -90,7 +90,7 @@ QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget *par
         << PYRAMID_JPEG_YCBCR_COMPRESSION );
   }
 
-  connect( mProfileComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ),
+  connect( mProfileComboBox, &QComboBox::currentTextChanged,
            this, &QgsRasterFormatSaveOptionsWidget::updateOptions );
   connect( mOptionsTable, &QTableWidget::cellChanged, this, &QgsRasterFormatSaveOptionsWidget::optionsTableChanged );
   connect( mOptionsHelpButton, &QAbstractButton::clicked, this, &QgsRasterFormatSaveOptionsWidget::helpOptions );
@@ -269,13 +269,14 @@ void QgsRasterFormatSaveOptionsWidget::helpOptions()
   else if ( mProvider == QLatin1String( "gdal" ) && mPyramids )
   {
     message = tr( "For details on pyramids options please see the following pages" );
-    message += QLatin1String( "\n\nhttp://www.gdal.org/gdaladdo.html\n\nhttp://www.gdal.org/frmt_gtiff.html" );
+    message += QLatin1String( "\n\nhttps://gdal.org/programs/gdaladdo.html\n\nhttps://gdal.org/drivers/raster/gtiff.html" );
   }
   else
     message = tr( "No help available" );
 
   // show simple non-modal dialog - should we make the basic xml prettier?
   QgsDialog *dlg = new QgsDialog( this );
+  dlg->setWindowTitle( tr( "Create Options for %1" ).arg( mFormat ) );
   QTextEdit *textEdit = new QTextEdit( dlg );
   textEdit->setReadOnly( true );
   // message = tr( "Create Options:\n\n%1" ).arg( message );
@@ -301,22 +302,10 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
   bool tmpLayer = false;
   if ( !( mRasterLayer && rasterLayer->dataProvider() ) && ! mRasterFileName.isNull() )
   {
-    // temporarily override /Projections/defaultBehavior to avoid dialog prompt
-    // this is taken from qgsbrowserdockwidget.cpp
-    // TODO - integrate this into qgis core
-    QgsSettings settings;
-    QString defaultProjectionOption = settings.value( QStringLiteral( "Projections/defaultBehavior" ), "prompt" ).toString();
-    if ( settings.value( QStringLiteral( "Projections/defaultBehavior" ), "prompt" ).toString() == QLatin1String( "prompt" ) )
-    {
-      settings.setValue( QStringLiteral( "Projections/defaultBehavior" ), "useProject" );
-    }
     tmpLayer = true;
-    rasterLayer = new QgsRasterLayer( mRasterFileName, QFileInfo( mRasterFileName ).baseName(), QStringLiteral( "gdal" ) );
-    // restore /Projections/defaultBehavior
-    if ( defaultProjectionOption == QLatin1String( "prompt" ) )
-    {
-      settings.setValue( QStringLiteral( "Projections/defaultBehavior" ), defaultProjectionOption );
-    }
+    QgsRasterLayer::LayerOptions options;
+    options.skipCrsValidation = true;
+    rasterLayer = new QgsRasterLayer( mRasterFileName, QFileInfo( mRasterFileName ).baseName(), QStringLiteral( "gdal" ), options );
   }
 
   if ( mProvider == QLatin1String( "gdal" ) && mPyramids )

@@ -34,6 +34,10 @@ class QgsSymbol;
  * A QAbstractItemModel subclass for showing symbol and color ramp entities contained
  * within a QgsStyle database.
  *
+ * If you are creating a style model for the default application style (see QgsStyle::defaultStyle()),
+ * consider using the shared style model available at QgsApplication::defaultStyleModel() for performance
+ * instead.
+ *
  * \see QgsStyleProxyModel
  *
  * \since QGIS 3.4
@@ -67,6 +71,13 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
      * The \a style object must exist for the lifetime of this model.
      */
     explicit QgsStyleModel( QgsStyle *style, QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Returns the style managed by the model.
+     *
+     * \since QGIS 3.10
+     */
+    QgsStyle *style() { return mStyle; }
 
     QVariant data( const QModelIndex &index, int role ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
@@ -119,6 +130,7 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
     QStringList mTextFormatNames;
     QStringList mLabelSettingsNames;
     QList< QSize > mAdditionalSizes;
+    mutable std::unique_ptr< QgsExpressionContext > mExpressionContext;
 
     mutable QHash< QString, QIcon > mSymbolIconCache;
     mutable QHash< QString, QIcon > mColorRampIconCache;
@@ -151,6 +163,13 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
      * The \a style object must exist for the lifetime of this model.
      */
     explicit QgsStyleProxyModel( QgsStyle *style, QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Constructor for QgsStyleProxyModel, using the specified source \a model and \a parent object.
+     *
+     * The source \a model object must exist for the lifetime of this model.
+     */
+    explicit QgsStyleProxyModel( QgsStyleModel *model, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns the current filter string, if set.
@@ -336,6 +355,8 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     void setFilterString( const QString &filter );
 
   private:
+
+    void initialize();
 
     QgsStyleModel *mModel = nullptr;
     QgsStyle *mStyle = nullptr;

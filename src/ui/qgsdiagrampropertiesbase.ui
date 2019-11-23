@@ -545,11 +545,11 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>626</width>
-                   <height>494</height>
+                   <width>630</width>
+                   <height>535</height>
                   </rect>
                  </property>
-                 <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,1">
+                 <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0">
                   <property name="leftMargin">
                    <number>0</number>
                   </property>
@@ -570,50 +570,47 @@
                     <property name="syncGroup" stdset="0">
                      <string notr="true">labelrenderinggroup</string>
                     </property>
-                    <layout class="QGridLayout" name="gridLayout_7" rowstretch="0,0">                        
-                     <item row="0" column="0">
-                      <widget class="QLabel" name="mOpacityLabel">
-                       <property name="minimumSize">
-                        <size>
-                         <width>130</width>
-                         <height>0</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string>Opacity</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="4" column="2">
-                      <widget class="QgsUnitSelectionWidget" name="mDiagramLineUnitComboBox" native="true">
-                       <property name="focusPolicy">
-                        <enum>Qt::StrongFocus</enum>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="4" column="0">
+                    <layout class="QGridLayout" name="gridLayout_7" rowstretch="0,0,0,0,0,0,0,0,0,0">
+                     <item row="5" column="0">
                       <widget class="QLabel" name="mPenWidthLabel">
                        <property name="text">
                         <string>Line width</string>
                        </property>
                       </widget>
                      </item>
-                     <item row="5" column="0">
-                      <widget class="QLabel" name="mAngleOffsetLabel">
+                     <item row="4" column="0">
+                      <widget class="QLabel" name="mPenColorLabel">
                        <property name="text">
-                        <string>Start angle</string>
+                        <string>Line color</string>
                        </property>
                       </widget>
                      </item>
-                     <item row="2" column="3">
-                      <widget class="QgsPropertyOverrideButton" name="mBackgroundColorDDBtn">
+                     <item row="6" column="1" colspan="2">
+                      <widget class="QComboBox" name="mAngleOffsetComboBox">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="2">
+                      <widget class="QgsUnitSelectionWidget" name="mDiagramLineUnitComboBox" native="true">
+                       <property name="focusPolicy">
+                        <enum>Qt::StrongFocus</enum>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="3">
+                      <widget class="QgsPropertyOverrideButton" name="mLineColorDDBtn">
                        <property name="text">
                         <string>…</string>
                        </property>
                       </widget>
                      </item>
-                     <item row="2" column="1" colspan="2">
-                      <widget class="QgsColorButton" name="mBackgroundColorButton">
+                     <item row="4" column="1" colspan="2">
+                      <widget class="QgsColorButton" name="mDiagramPenColorButton">
                        <property name="sizePolicy">
                         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                          <horstretch>0</horstretch>
@@ -637,7 +634,35 @@
                        </property>
                       </widget>
                      </item>
-                     <item row="4" column="1">
+                     <item row="3" column="3">
+                      <widget class="QgsPropertyOverrideButton" name="mBackgroundColorDDBtn">
+                       <property name="text">
+                        <string>…</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="6" column="0">
+                      <widget class="QLabel" name="mAngleOffsetLabel">
+                       <property name="text">
+                        <string>Start angle</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="7" column="0">
+                      <widget class="QLabel" name="mAngleDirectionLabel">
+                       <property name="text">
+                        <string>Direction</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="mBarWidthLabel">
+                       <property name="text">
+                        <string>Bar width</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="1">
                       <widget class="QgsDoubleSpinBox" name="mPenWidthSpinBox">
                        <property name="sizePolicy">
                         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -656,6 +681,26 @@
                        </property>
                       </widget>
                      </item>
+                     <item row="0" column="1" colspan="3">
+                      <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="focusPolicy">
+                        <enum>Qt::StrongFocus</enum>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="mBarSpacingLabel">
+                       <property name="text">
+                        <string>Bar spacing</string>
+                       </property>
+                      </widget>
+                     </item>
                      <item row="1" column="1" colspan="3">
                       <widget class="QgsDoubleSpinBox" name="mBarWidthSpinBox">
                        <property name="decimals">
@@ -671,12 +716,31 @@
                         <double>0.200000000000000</double>
                        </property>
                        <property name="value">
+                        <double>0.000000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QgsDoubleSpinBox" name="mBarSpacingSpinBox">
+                       <property name="decimals">
+                        <number>5</number>
+                       </property>
+                       <property name="minimum">
+                        <double>0.000000000000000</double>
+                       </property>
+                       <property name="maximum">
+                        <double>99999.990000000005239</double>
+                       </property>
+                       <property name="singleStep">
+                        <double>0.200000000000000</double>
+                       </property>
+                       <property name="value">
                         <double>5.000000000000000</double>
                        </property>
                       </widget>
                      </item>
                      <item row="3" column="1" colspan="2">
-                      <widget class="QgsColorButton" name="mDiagramPenColorButton">
+                      <widget class="QgsColorButton" name="mBackgroundColorButton">
                        <property name="sizePolicy">
                         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                          <horstretch>0</horstretch>
@@ -700,28 +764,51 @@
                        </property>
                       </widget>
                      </item>
-                     <item row="3" column="0">
-                      <widget class="QLabel" name="mPenColorLabel">
-                       <property name="text">
-                        <string>Line color</string>
+                     <item row="7" column="1" colspan="3">
+                      <widget class="QComboBox" name="mAngleDirectionComboBox">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
                        </property>
                       </widget>
                      </item>
-                     <item row="4" column="3">
+                     <item row="5" column="3">
                       <widget class="QgsPropertyOverrideButton" name="mLineWidthDDBtn">
                        <property name="text">
                         <string>…</string>
                        </property>
                       </widget>
                      </item>
-                     <item row="3" column="3">
-                      <widget class="QgsPropertyOverrideButton" name="mLineColorDDBtn">
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="mOpacityLabel">
+                       <property name="minimumSize">
+                        <size>
+                         <width>130</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                       <property name="text">
+                        <string>Opacity</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="0">
+                      <widget class="QLabel" name="mBackgroundColorLabel">
+                       <property name="text">
+                        <string>Background color</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="6" column="3">
+                      <widget class="QgsPropertyOverrideButton" name="mStartAngleDDBtn">
                        <property name="text">
                         <string>…</string>
                        </property>
                       </widget>
                      </item>
-                     <item row="6" column="0" colspan="4">
+                     <item row="9" column="0" colspan="4">
                       <widget class="QgsFontButton" name="mDiagramFontButton">
                        <property name="sizePolicy">
                         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -734,50 +821,45 @@
                        </property>
                       </widget>
                      </item>
-                     <item row="2" column="0">
-                      <widget class="QLabel" name="mBackgroundColorLabel">
-                       <property name="text">
-                        <string>Background color</string>
+                     <item row="2" column="2" colspan="2">
+                      <widget class="QgsUnitSelectionWidget" name="mBarSpacingUnitComboBox" native="true">
+                       <property name="focusPolicy">
+                        <enum>Qt::StrongFocus</enum>
                        </property>
                       </widget>
                      </item>
-                     <item row="1" column="0">
-                      <widget class="QLabel" name="mBarWidthLabel">
-                       <property name="text">
-                        <string>Bar width</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="5" column="3">
-                      <widget class="QgsPropertyOverrideButton" name="mStartAngleDDBtn">
-                       <property name="text">
-                        <string>…</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="5" column="1" colspan="2">
-                      <widget class="QComboBox" name="mAngleOffsetComboBox">
+                    </layout>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QgsCollapsibleGroupBox" name="mShowAxisGroupBox">
+                    <property name="title">
+                     <string>Show Axis</string>
+                    </property>
+                    <property name="checkable">
+                     <bool>true</bool>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_5">
+                     <item row="0" column="1">
+                      <widget class="QgsSymbolButton" name="mAxisLineStyleButton">
                        <property name="sizePolicy">
                         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                          <horstretch>0</horstretch>
                          <verstretch>0</verstretch>
                         </sizepolicy>
                        </property>
+                       <property name="text">
+                        <string/>
+                       </property>
                       </widget>
                      </item>
-                     <item row="0" column="1" colspan="3">
-                      <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="focusPolicy">
-                        <enum>Qt::StrongFocus</enum>
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="label_2">
+                       <property name="text">
+                        <string>Axis line symbol</string>
                        </property>
                       </widget>
-                     </item>                      
+                     </item>
                     </layout>
                    </widget>
                   </item>
@@ -859,7 +941,7 @@
                            </property>
                           </widget>
                          </item>
-                         <item row="0" column="2">
+                         <item>
                           <widget class="Line" name="line_4">
                            <property name="orientation">
                             <enum>Qt::Vertical</enum>
@@ -1073,10 +1155,13 @@
                      </sizepolicy>
                     </property>
                     <property name="decimals">
-                     <number>5</number>
+                     <number>6</number>
                     </property>
                     <property name="maximum">
                      <double>9999999.990000000223517</double>
+                    </property>
+                    <property name="singleStep">
+                     <double>0.200000000000000</double>
                     </property>
                    </widget>
                   </item>
@@ -1137,16 +1222,6 @@
                         <widget class="QLabel" name="mSizeLabel">
                          <property name="text">
                           <string>Size</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="3" column="1" colspan="2">
-                        <widget class="QgsSpinBox" name="mSizeSpinBox">
-                         <property name="maximum">
-                          <number>10000000</number>
-                         </property>
-                         <property name="value">
-                          <number>50</number>
                          </property>
                         </widget>
                        </item>
@@ -1264,6 +1339,22 @@
                          </property>
                          <property name="maximum">
                           <double>99999999.000000000000000</double>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="3" column="1" colspan="2">
+                        <widget class="QgsDoubleSpinBox" name="mSizeSpinBox">
+                         <property name="decimals">
+                          <number>6</number>
+                         </property>
+                         <property name="maximum">
+                          <double>9999999.000000000000000</double>
+                         </property>
+                         <property name="singleStep">
+                          <double>0.200000000000000</double>
+                         </property>
+                         <property name="value">
+                          <double>5.000000000000000</double>
                          </property>
                         </widget>
                        </item>
@@ -2150,11 +2241,6 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
@@ -2198,6 +2284,11 @@
    <extends>QWidget</extends>
    <header>qgsscalerangewidget.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsSymbolButton</class>
+   <extends>QToolButton</extends>
+   <header>qgssymbolbutton.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mDiagramTypeComboBox</tabstop>
@@ -2212,6 +2303,8 @@
   <tabstop>scrollArea_4</tabstop>
   <tabstop>mOpacityWidget</tabstop>
   <tabstop>mBarWidthSpinBox</tabstop>
+  <tabstop>mBarSpacingSpinBox</tabstop>
+  <tabstop>mBarSpacingUnitComboBox</tabstop>
   <tabstop>mBackgroundColorButton</tabstop>
   <tabstop>mBackgroundColorDDBtn</tabstop>
   <tabstop>mDiagramPenColorButton</tabstop>
@@ -2221,7 +2314,10 @@
   <tabstop>mLineWidthDDBtn</tabstop>
   <tabstop>mAngleOffsetComboBox</tabstop>
   <tabstop>mStartAngleDDBtn</tabstop>
+  <tabstop>mAngleDirectionComboBox</tabstop>
   <tabstop>mDiagramFontButton</tabstop>
+  <tabstop>mShowAxisGroupBox</tabstop>
+  <tabstop>mAxisLineStyleButton</tabstop>
   <tabstop>mZIndexSpinBox</tabstop>
   <tabstop>mZOrderDDBtn</tabstop>
   <tabstop>mShowAllCheckBox</tabstop>

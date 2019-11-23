@@ -183,7 +183,7 @@ bool QgsPostgresProjectStorage::writeProject( const QString &uri, QIODevice *dev
                  QgsPostgresConn::quotedValue( projectUri.projectName ),
                  metadataExpr  // no need to quote: already quoted
                );
-  sql += QString::fromAscii( content.toHex() );
+  sql += QString::fromLatin1( content.toHex() );
   sql += "') ON CONFLICT (name) DO UPDATE SET content = EXCLUDED.content, metadata = EXCLUDED.metadata;";
 
   QgsPostgresResult res( conn->PQexec( sql ) );

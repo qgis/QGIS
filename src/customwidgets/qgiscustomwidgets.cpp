@@ -16,6 +16,7 @@
 #include "qplugin.h"
 
 #include "qgiscustomwidgets.h"
+#include "qgsauthconfigselectplugin.h"
 #include "qgscheckablecomboboxplugin.h"
 #include "qgscollapsiblegroupboxplugin.h"
 #include "qgscolorbuttonplugin.h"
@@ -47,6 +48,7 @@
 QgisCustomWidgets::QgisCustomWidgets( QObject *parent )
   : QObject( parent )
 {
+  mWidgets.append( new QgsAuthConfigSelectPlugin( this ) );
   mWidgets.append( new QgsCheckableComboBoxPlugin( this ) );
   mWidgets.append( new QgsCollapsibleGroupBoxPlugin( this ) );
   mWidgets.append( new QgsColorButtonPlugin( this ) );

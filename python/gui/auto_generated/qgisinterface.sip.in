@@ -208,6 +208,16 @@ Returns a reference to the main window "Settings" menu.
 Returns a reference to the main window "Plugin" menu.
 %End
 
+    virtual QMenu *pluginHelpMenu() = 0;
+%Docstring
+Returns a reference to the main window "Plugin Help" sub-menu.
+
+Plugins are encouraged to insert help and about actions in this submenu instead of creating
+a submenu under the pluginMenu() which solely contains Plugin Help or About actions.
+
+.. versionadded:: 3.10
+%End
+
     virtual QMenu *rasterMenu() = 0;
 %Docstring
 Returns a reference to the main window "Raster" menu.
@@ -620,6 +630,14 @@ Take screenshots for user documentation
 :param categories: an int as a flag value of QgsAppScreenShots.Categories
 
 .. versionadded:: 3.4
+%End
+
+    virtual QgsLayerTreeRegistryBridge::InsertionPoint layerTreeInsertionPoint() = 0;
+%Docstring
+Returns the insertion point.
+This represents the current layer tree group and index where newly added map layers should be inserted into.
+
+.. versionadded:: 3.10
 %End
 
   public slots: // TODO: do these functions really need to be slots?
@@ -1093,7 +1111,8 @@ QGIS documentation, set useQgisDocDirectory to ``False``.
 :param useQgisDocDirectory: If ``True``, the URL will be formed by concatenating
                             url to the QGIS documentation directory path (prefix/share/doc)
 
-.. deprecated:: Use QDesktopServices instead
+.. deprecated::
+   Use QDesktopServices instead
 %End
 
     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false, bool showModal = true ) = 0;
@@ -1129,6 +1148,15 @@ You only need to call this once. After that you can call openFeatureForm/getFeat
 like usual.
 
 More information here: http://qt-project.org/forums/viewthread/27098
+%End
+
+    virtual void locatorSearch( const QString &searchText ) = 0;
+%Docstring
+This will perform a search in the locator bar
+by setting the line edit text to ``searchText``
+and automatically displaying any results.
+
+.. versionadded:: 3.10
 %End
 
     virtual void registerLocatorFilter( QgsLocatorFilter *filter /Transfer/ ) = 0;

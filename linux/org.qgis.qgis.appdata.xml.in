@@ -8,7 +8,7 @@
   </screenshots>
   <description><p>QGIS is a user friendly Open Source Geographic Information System (GIS) licensed under the GNU General Public License. QGIS is an official project of the Open Source Geospatial Foundation (OSGeo). It runs on Linux, Unix, Mac OSX, Windows and Android and supports numerous vector, raster, and database formats and functionalities.</p></description>
 
-  <metadata_license>MIT</metadata_license>
+  <metadata_license>CC-BY-3.0</metadata_license>
   <project_license>GPL-2.0+</project_license>
   <url type="bugtracker">https://github.com/qgis/QGIS/issues</url>
   <url type="donation">https://qgis.org/en/site/getinvolved/donations.html</url>
@@ -18,6 +18,7 @@
 
   <project_group>QGIS</project_group>
   <releases>
+    <release version="3.10.0" date="2019-10-25" />
     <release version="3.8.0" date="2019-06-21" />
     <release version="3.6.0" date="2019-02-22" />
     <release version="3.4.0" date="2018-10-26" />

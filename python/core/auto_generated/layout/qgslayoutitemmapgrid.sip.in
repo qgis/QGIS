@@ -141,7 +141,8 @@ An individual grid which is drawn above the map content in a
     {
       MapUnit,
       MM,
-      CM
+      CM,
+      DynamicPageSizeBased,
     };
 
     enum GridStyle
@@ -284,6 +285,9 @@ map item separately.
 .. seealso:: :py:func:`maxExtension`
 %End
 
+    virtual void setEnabled( bool enabled );
+
+
 
     void setUnits( GridUnit unit );
 %Docstring
@@ -379,6 +383,66 @@ are retrieved through the units() method.
 .. seealso:: :py:func:`setOffsetY`
 
 .. seealso:: :py:func:`offsetX`
+%End
+
+    double minimumIntervalWidth() const;
+%Docstring
+Returns the minimum width (in millimeters) for grid segments. This
+property is only effective if the units() is set
+to DynamicPageSizeBased.
+
+.. seealso:: :py:func:`units`
+
+.. seealso:: :py:func:`setMinimumIntervalWidth`
+
+.. seealso:: :py:func:`maximumIntervalWidth`
+
+.. versionadded:: 3.10
+%End
+
+    void setMinimumIntervalWidth( double width );
+%Docstring
+Sets the minimum ``width`` (in millimeters) for grid segments. This
+property is only effective if the units() is set
+to DynamicPageSizeBased.
+
+.. seealso:: :py:func:`minimumIntervalWidth`
+
+.. seealso:: :py:func:`setMaximumIntervalWidth`
+
+.. seealso:: :py:func:`setUnits`
+
+.. versionadded:: 3.10
+%End
+
+    double maximumIntervalWidth() const;
+%Docstring
+Returns the maximum width (in millimeters) for grid segments. This
+property is only effective if the units() is set
+to DynamicPageSizeBased.
+
+.. seealso:: :py:func:`units`
+
+.. seealso:: :py:func:`setMaximumIntervalWidth`
+
+.. seealso:: :py:func:`minimumIntervalWidth`
+
+.. versionadded:: 3.10
+%End
+
+    void setMaximumIntervalWidth( double width );
+%Docstring
+Sets the maximum ``width`` (in millimeters) for grid segments. This
+property is only effective if the units() is set
+to DynamicPageSizeBased.
+
+.. seealso:: :py:func:`maximumIntervalWidth`
+
+.. seealso:: :py:func:`setMinimumIntervalWidth`
+
+.. seealso:: :py:func:`setUnits`
+
+.. versionadded:: 3.10
 %End
 
 
@@ -863,6 +927,8 @@ Retrieves the second fill color for the grid frame.
     virtual QgsExpressionContext createExpressionContext() const;
 
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
+    virtual void refresh();
 
 
       public:

@@ -60,7 +60,7 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
   }
 
   // Read necessary extent only
-  QgsRectangle tmpExtent = extent().intersect( boundingBox );
+  QgsRectangle tmpExtent = boundingBox;
 
   if ( tmpExtent.isEmpty() )
   {
@@ -420,7 +420,10 @@ QgsRasterDataProvider *QgsRasterDataProvider::create( const QString &providerKey
                                  nBands, type, width,
                                  height, geoTransform, crs, createOptions );
   if ( !ret )
+  {
     QgsDebugMsg( "Cannot resolve 'createRasterDataProviderFunction' function in " + providerKey + " provider" );
+  }
+
   // TODO: it would be good to return invalid QgsRasterDataProvider
   // with QgsError set, but QgsRasterDataProvider has pure virtual methods
 
@@ -490,6 +493,11 @@ QgsRasterInterface::Capability QgsRasterDataProvider::identifyFormatToCapability
 QList<double> QgsRasterDataProvider::nativeResolutions() const
 {
   return QList< double >();
+}
+
+bool QgsRasterDataProvider::ignoreExtents() const
+{
+  return false;
 }
 
 bool QgsRasterDataProvider::userNoDataValuesContains( int bandNo, double value ) const

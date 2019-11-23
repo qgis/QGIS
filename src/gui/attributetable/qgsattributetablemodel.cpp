@@ -40,6 +40,7 @@
 #include "qgsfieldmodel.h"
 #include "qgstexteditwidgetfactory.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsvectorlayerutils.h"
 
 #include <QVariant>
 
@@ -688,8 +689,11 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   {
     case Qt::DisplayRole:
     case Qt::ToolTipRole:
-      return mFieldFormatters.at( index.column() )->representValue( layer(), fieldId, mWidgetConfigs.at( index.column() ),
-             mAttributeWidgetCaches.at( index.column() ), val );
+      return mFieldFormatters.at( index.column() )->representValue( layer(),
+             fieldId,
+             mWidgetConfigs.at( index.column() ),
+             mAttributeWidgetCaches.at( index.column() ),
+             val );
 
     case Qt::EditRole:
       return val;
@@ -761,31 +765,13 @@ Qt::ItemFlags QgsAttributeTableModel::flags( const QModelIndex &index ) const
 
   Qt::ItemFlags flags = QAbstractTableModel::flags( index );
 
-  bool editable = false;
   const int fieldIndex = mAttributes[index.column()];
   const QgsFeatureId fid = rowToId( index.row() );
-  if ( layer()->fields().fieldOrigin( fieldIndex ) == QgsFields::OriginJoin )
-  {
-    int srcFieldIndex;
-    const QgsVectorLayerJoinInfo *info = layer()->joinBuffer()->joinForFieldIndex( fieldIndex, layer()->fields(), srcFieldIndex );
 
-    if ( info && info->isEditable() )
-      editable = fieldIsEditable( *info->joinLayer(), srcFieldIndex, fid );
-  }
-  else
-    editable = fieldIsEditable( *layer(), fieldIndex, fid );
-
-  if ( editable )
+  if ( QgsVectorLayerUtils::fieldIsEditable( layer(), fieldIndex, fid ) )
     flags |= Qt::ItemIsEditable;
 
   return flags;
-}
-
-bool QgsAttributeTableModel::fieldIsEditable( const QgsVectorLayer &layer, int fieldIndex, QgsFeatureId fid ) const
-{
-  return ( layer.isEditable() &&
-           !layer.editFormConfig().readOnly( fieldIndex ) &&
-           ( ( layer.dataProvider() && layer.dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) || FID_IS_NEW( fid ) ) );
 }
 
 void QgsAttributeTableModel::bulkEditCommandStarted()

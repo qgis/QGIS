@@ -358,7 +358,7 @@
            <widget class="QWidget" name="tabTextFormat">
             <attribute name="icon">
              <iconset resource="../../images/images.qrc">
-              <normaloff>:/images/themes/default/mIconFieldText.svg</normaloff>:/images/themes/default/mIconFieldText.svg</iconset>
+              <normaloff>:/images/themes/default/propertyicons/labeltext.svg</normaloff>:/images/themes/default/propertyicons/labeltext.svg</iconset>
             </attribute>
             <attribute name="title">
              <string>Text Format</string>

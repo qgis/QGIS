@@ -16,6 +16,7 @@
 #include "qgsdiagramrenderer.h"
 #include "qgsrendercontext.h"
 #include "qgsexpression.h"
+#include "qgssymbollayerutils.h"
 
 #include <QPainter>
 
@@ -61,19 +62,33 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsFeature &feature, const QgsRen
     maxValue = s.minimumSize;
   }
 
+  // eh - this method returns size in unknown units ...! We'll have to fake it and use a rough estimation of
+  // a conversion factor to painter units...
+  // TODO QGIS 4.0 -- these methods should all use painter units, dependent on the render context scaling...
+  double painterUnitConversionScale = c.convertToPainterUnits( 1, s.sizeType );
+
+  const double spacing = c.convertToPainterUnits( s.spacing(), s.spacingUnit(), s.spacingMapUnitScale() ) / painterUnitConversionScale;
+
   switch ( s.diagramOrientation )
   {
     case QgsDiagramSettings::Up:
     case QgsDiagramSettings::Down:
       mScaleFactor = ( ( is.upperSize.width() - is.lowerSize.height() ) / ( is.upperValue - is.lowerValue ) );
-      size.scale( s.barWidth * s.categoryAttributes.size(), maxValue * mScaleFactor, Qt::IgnoreAspectRatio );
+      size.scale( s.barWidth * s.categoryAttributes.size() + spacing * std::max( 0, s.categoryAttributes.size() - 1 ), maxValue * mScaleFactor, Qt::IgnoreAspectRatio );
       break;
 
     case QgsDiagramSettings::Right:
     case QgsDiagramSettings::Left:
       mScaleFactor = ( ( is.upperSize.width() - is.lowerSize.width() ) / ( is.upperValue - is.lowerValue ) );
-      size.scale( maxValue * mScaleFactor, s.barWidth * s.categoryAttributes.size(), Qt::IgnoreAspectRatio );
+      size.scale( maxValue * mScaleFactor, s.barWidth * s.categoryAttributes.size() + spacing * std::max( 0, s.categoryAttributes.size() - 1 ), Qt::IgnoreAspectRatio );
       break;
+  }
+
+  if ( s.showAxis() && s.axisLineSymbol() )
+  {
+    const double maxBleed = QgsSymbolLayerUtils::estimateMaxSymbolBleed( s.axisLineSymbol(), c ) / painterUnitConversionScale;
+    size.setWidth( size.width() + 2 * maxBleed );
+    size.setHeight( size.height() + 2 * maxBleed );
   }
 
   return size;
@@ -116,20 +131,33 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes &attributes, const 
     maxValue = std::max( attributes.at( i ).toDouble(), maxValue );
   }
 
+  // eh - this method returns size in unknown units ...! We'll have to fake it and use a rough estimation of
+  // a conversion factor to painter units...
+  // TODO QGIS 4.0 -- these methods should all use painter units, dependent on the render context scaling...
+  double painterUnitConversionScale = c.convertToPainterUnits( 1, s.sizeType );
+
+  const double spacing = c.convertToPainterUnits( s.spacing(), s.spacingUnit(), s.spacingMapUnitScale() ) / painterUnitConversionScale;
+
   switch ( s.diagramOrientation )
   {
     case QgsDiagramSettings::Up:
     case QgsDiagramSettings::Down:
       mScaleFactor = maxValue / s.size.height();
-      size.scale( s.barWidth * s.categoryColors.size(), s.size.height(), Qt::IgnoreAspectRatio );
+      size.scale( s.barWidth * s.categoryColors.size() + spacing * std::max( 0, s.categoryAttributes.size() - 1 ), s.size.height(), Qt::IgnoreAspectRatio );
       break;
 
     case QgsDiagramSettings::Right:
     case QgsDiagramSettings::Left:
-    default: // just in case...
       mScaleFactor = maxValue / s.size.width();
-      size.scale( s.size.width(), s.barWidth * s.categoryColors.size(), Qt::IgnoreAspectRatio );
+      size.scale( s.size.width(), s.barWidth * s.categoryColors.size() + spacing * std::max( 0, s.categoryAttributes.size() - 1 ), Qt::IgnoreAspectRatio );
       break;
+  }
+
+  if ( s.showAxis() && s.axisLineSymbol() )
+  {
+    const double maxBleed = QgsSymbolLayerUtils::estimateMaxSymbolBleed( s.axisLineSymbol(), c ) / painterUnitConversionScale;
+    size.setWidth( size.width() + 2 * maxBleed );
+    size.setHeight( size.height() + 2 * maxBleed );
   }
 
   return size;
@@ -151,6 +179,7 @@ void QgsHistogramDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCon
   if ( !feature.fields().isEmpty() )
     expressionContext.setFields( feature.fields() );
 
+  values.reserve( s.categoryAttributes.size() );
   for ( const QString &cat : qgis::as_const( s.categoryAttributes ) )
   {
     QgsExpression *expression = getExpression( cat, expressionContext );
@@ -164,8 +193,20 @@ void QgsHistogramDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCon
   double currentOffset = 0;
   double scaledWidth = sizePainterUnits( s.barWidth, s, c );
 
+  const double spacing = c.convertToPainterUnits( s.spacing(), s.spacingUnit(), s.spacingMapUnitScale() );
+
   double baseX = position.x();
   double baseY = position.y();
+
+  if ( s.showAxis() && s.axisLineSymbol() )
+  {
+    // if showing axis, the diagram position needs shifting from the default base x so that the axis
+    // line stroke sits within the desired label engine rect (otherwise we risk overlaps of the axis line stroke)
+    const double maxBleed = QgsSymbolLayerUtils::estimateMaxSymbolBleed( s.axisLineSymbol(), c );
+    baseX += maxBleed;
+    baseY -= maxBleed;
+  }
+
 
   mPen.setColor( s.penColor );
   setPenWidth( mPen, s, c );
@@ -183,22 +224,53 @@ void QgsHistogramDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCon
     switch ( s.diagramOrientation )
     {
       case QgsDiagramSettings::Up:
-        p->drawRect( baseX + currentOffset, baseY, scaledWidth, length * -1 );
+        p->drawRect( QRectF( baseX + currentOffset, baseY, scaledWidth, length * -1 ) );
         break;
 
       case QgsDiagramSettings::Down:
-        p->drawRect( baseX + currentOffset, baseY - scaledMaxVal, scaledWidth, length );
+        p->drawRect( QRectF( baseX + currentOffset, baseY - scaledMaxVal, scaledWidth, length ) );
         break;
 
       case QgsDiagramSettings::Right:
-        p->drawRect( baseX, baseY - currentOffset, length, scaledWidth * -1 );
+        p->drawRect( QRectF( baseX, baseY - scaledWidth * values.size() - spacing * std::max( 0, values.size() - 1 ) + currentOffset, length, scaledWidth ) );
         break;
 
       case QgsDiagramSettings::Left:
-        p->drawRect( baseX + scaledMaxVal, baseY - currentOffset, 0 - length, scaledWidth * -1 );
+        p->drawRect( QRectF( baseX + scaledMaxVal, baseY - scaledWidth * values.size() - spacing * std::max( 0, values.size() - 1 ) + currentOffset, 0 - length, scaledWidth ) );
         break;
     }
 
-    currentOffset += scaledWidth;
+    currentOffset += scaledWidth + spacing;
+  }
+
+  if ( s.showAxis() && s.axisLineSymbol() )
+  {
+    s.axisLineSymbol()->startRender( c );
+    QPolygonF axisPoints;
+    switch ( s.diagramOrientation )
+    {
+      case QgsDiagramSettings::Up:
+        axisPoints << QPointF( baseX, baseY - scaledMaxVal ) << QPointF( baseX, baseY ) << QPointF( baseX + scaledWidth * values.size() + spacing * std::max( 0, values.size() - 1 ), baseY );
+        break;
+
+      case QgsDiagramSettings::Down:
+        axisPoints << QPointF( baseX, baseY ) << QPointF( baseX, baseY - scaledMaxVal ) << QPointF( baseX + scaledWidth * values.size() + spacing * std::max( 0, values.size() - 1 ), baseY - scaledMaxVal );
+        break;
+
+      case QgsDiagramSettings::Right:
+        axisPoints << QPointF( baseX + scaledMaxVal, baseY - scaledWidth * values.size() - spacing * std::max( 0, values.size() - 1 ) )
+                   << QPointF( baseX, baseY - scaledWidth * values.size() - spacing * std::max( 0, values.size() - 1 ) )
+                   << QPointF( baseX, baseY );
+        break;
+
+      case QgsDiagramSettings::Left:
+        axisPoints << QPointF( baseX, baseY - scaledWidth * values.size() - spacing * std::max( 0, values.size() - 1 ) )
+                   << QPointF( baseX + scaledMaxVal, baseY - scaledWidth * values.size() - spacing * std::max( 0, values.size() - 1 ) )
+                   << QPointF( baseX + scaledMaxVal, baseY );
+        break;
+    }
+
+    s.axisLineSymbol()->renderPolyline( axisPoints, nullptr, c );
+    s.axisLineSymbol()->stopRender( c );
   }
 }

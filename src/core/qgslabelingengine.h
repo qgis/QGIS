@@ -58,7 +58,6 @@ class CORE_EXPORT QgsAbstractLabelProvider
       DrawAllLabels           = 1 << 2,  //!< Whether all features will be labelled even though overlaps occur
       MergeConnectedLines     = 1 << 3,  //!< Whether adjacent lines (with the same label text) should be merged
       CentroidMustBeInside    = 1 << 4,  //!< Whether location of centroid must be inside of polygons
-      LabelPerFeaturePart     = 1 << 6,  //!< Whether to label each part of multi-part features separately
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -72,6 +71,19 @@ class CORE_EXPORT QgsAbstractLabelProvider
      * startRender() and a corresponding call to stopRender().
      */
     virtual void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const = 0;
+
+    /**
+     * Draw an unplaced label. These correspond to features which were registered for labeling,
+     * but which could not be labeled (e.g. due to conflicting labels).
+     *
+     * The default behavior is to draw nothing for these labels.
+     *
+     * \note This method is only used if the QgsLabelingEngineSettings::DrawUnplacedLabels flag
+     * is set on the labeling engine.
+     *
+     * \since QGIS 3.10
+     */
+    virtual void drawUnplacedLabel( QgsRenderContext &context, pal::LabelPosition *label ) const;
 
     /**
      * Draw the background for the specified \a label.
@@ -201,7 +213,7 @@ class CORE_EXPORT QgsLabelingEngine
     //! Construct the labeling engine with default settings
     QgsLabelingEngine();
     //! Clean up everything (especially the registered providers)
-    ~QgsLabelingEngine();
+    virtual ~QgsLabelingEngine();
 
     //! QgsLabelingEngine cannot be copied.
     QgsLabelingEngine( const QgsLabelingEngine &rh ) = delete;
@@ -222,14 +234,26 @@ class CORE_EXPORT QgsLabelingEngine
      */
     QList< QgsMapLayer * > participatingLayers() const;
 
+    /**
+     * Returns a list of layer IDs for layers with providers in the engine.
+     * \since QGIS 3.10
+     */
+    QStringList participatingLayerIds() const;
+
     //! Add provider of label features. Takes ownership of the provider
     void addProvider( QgsAbstractLabelProvider *provider );
 
     //! Remove provider if the provider's initialization failed. Provider instance is deleted.
     void removeProvider( QgsAbstractLabelProvider *provider );
 
-    //! compute the labeling with given map settings and providers
-    void run( QgsRenderContext &context );
+    /**
+     * Runs the labeling job.
+     *
+     * Depending on the concrete labeling engine class, this will either run the whole
+     * labeling job, including rendering the labels themselves, OR possibly just run the labeling
+     * job but leave the rendering to a future, deferred stage.
+     */
+    virtual void run( QgsRenderContext &context ) = 0;
 
     //! Returns pointer to recently computed results and pass the ownership of results to the caller
     QgsLabelingResults *takeResults();
@@ -241,6 +265,44 @@ class CORE_EXPORT QgsLabelingEngine
     void processProvider( QgsAbstractLabelProvider *provider, QgsRenderContext &context, pal::Pal &p );
 
   protected:
+
+    /**
+     * Runs the label registration step.
+     *
+     * Must be called by subclasses prior to solve() and drawLabels()
+     *
+     * \since QGIS 3.10
+     */
+    void registerLabels( QgsRenderContext &context );
+
+    /**
+     * Solves the label problem.
+     *
+     * Must be called by subclasses prior to drawLabels(), and must be
+     * preceded by a call to registerLabels()
+     *
+     * \since QGIS 3.10
+     */
+    void solve( QgsRenderContext &context );
+
+    /**
+     * Draws labels to the specified render \a context.
+     *
+     * If \a layerId is specified, only labels from the matching layer will
+     * be rendered.
+     *
+     * Must be preceded by a call to registerLabels() and solve()
+     *
+     * \since QGIS 3.10
+     */
+    void drawLabels( QgsRenderContext &context, const QString &layerId = QString() );
+
+    /**
+     * Cleans up the engine following a call to registerLabels() or solve().
+     * \since QGIS 3.10
+     */
+    void cleanup();
+
     //! Associated map settings instance
     QgsMapSettings mMapSettings;
 
@@ -251,6 +313,72 @@ class CORE_EXPORT QgsLabelingEngine
     //! Resulting labeling layout
     std::unique_ptr< QgsLabelingResults > mResults;
 
+    std::unique_ptr< pal::Pal > mPal;
+    std::unique_ptr< pal::Problem > mProblem;
+    QList<pal::LabelPosition *> mUnlabeled;
+    QList<pal::LabelPosition *> mLabels;
+
+};
+
+/**
+ * \ingroup core
+ * \class QgsDefaultLabelingEngine
+ * \brief Default QgsLabelingEngine implementation, which completes the whole
+ * labeling operation (including label rendering) in the run() method.
+ * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
+ * \note not available in Python bindings
+ * \since QGIS 3.10
+ */
+class CORE_EXPORT QgsDefaultLabelingEngine : public QgsLabelingEngine
+{
+  public:
+    //! Construct the labeling engine with default settings
+    QgsDefaultLabelingEngine();
+
+    //! QgsDefaultLabelingEngine cannot be copied.
+    QgsDefaultLabelingEngine( const QgsDefaultLabelingEngine &rh ) = delete;
+    //! QgsDefaultLabelingEngine cannot be copied.
+    QgsDefaultLabelingEngine &operator=( const QgsDefaultLabelingEngine &rh ) = delete;
+
+    void run( QgsRenderContext &context ) override;
+
+};
+
+/**
+ * \ingroup core
+ * \class QgsStagedRenderLabelingEngine
+ * \brief A QgsLabelingEngine implementation, which only calculates
+ * the labeling solution during its run() method. The actual rendering
+ * of labels themselves is deferred to follow up calls to ....
+ *
+ * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
+ * \note not available in Python bindings
+ * \since QGIS 3.10
+ */
+class CORE_EXPORT QgsStagedRenderLabelingEngine : public QgsLabelingEngine
+{
+  public:
+    //! Construct the labeling engine with default settings
+    QgsStagedRenderLabelingEngine();
+
+    //! QgsStagedRenderLabelingEngine cannot be copied.
+    QgsStagedRenderLabelingEngine( const QgsStagedRenderLabelingEngine &rh ) = delete;
+    //! QgsStagedRenderLabelingEngine cannot be copied.
+    QgsStagedRenderLabelingEngine &operator=( const QgsStagedRenderLabelingEngine &rh ) = delete;
+
+    void run( QgsRenderContext &context ) override;
+
+    /**
+     * Renders all the labels which belong only to the layer with matching \a layerId
+     * to the specified render \a context.
+     */
+    void renderLabelsForLayer( QgsRenderContext &context, const QString &layerId );
+
+    /**
+     * Finalizes and cleans up the engine following the rendering of labels for the last layer
+     * to be labeled (via renderLabelsForLayer() ).
+     */
+    void finalize();
 };
 
 
@@ -262,7 +390,6 @@ class CORE_EXPORT QgsLabelingEngine
  * \note not available in Python bindings
  * \since QGIS 2.14
  */
-
 class CORE_EXPORT QgsLabelingUtils
 {
   public:

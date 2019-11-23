@@ -739,7 +739,7 @@ bool QgsCptCityColorRamp::loadFile()
   mFileLoaded = false;
   mStops.clear();
   QMap<double, QPair<QColor, QColor> >::const_iterator it, prev;
-  // first detect if file is gradient is continuous or dicrete
+  // first detect if file is gradient is continuous or discrete
   // discrete: stop contains 2 colors and first color is identical to previous second
   // multi: stop contains 2 colors and no relation with previous stop
   mDiscrete = false;

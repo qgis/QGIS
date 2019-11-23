@@ -612,6 +612,11 @@ QString QgsProcessingAlgorithm::parameterAsCompatibleSourceLayerPath( const QVar
   return QgsProcessingParameters::parameterAsCompatibleSourceLayerPath( parameterDefinition( name ), parameters, context, compatibleFormats, preferredFormat, feedback );
 }
 
+QString QgsProcessingAlgorithm::parameterAsCompatibleSourceLayerPathAndLayerName( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingFeedback *feedback, QString *layerName )
+{
+  return QgsProcessingParameters::parameterAsCompatibleSourceLayerPathAndLayerName( parameterDefinition( name ), parameters, context, compatibleFormats, preferredFormat, feedback, layerName );
+}
+
 QgsMapLayer *QgsProcessingAlgorithm::parameterAsLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
   return QgsProcessingParameters::parameterAsLayer( parameterDefinition( name ), parameters, context );

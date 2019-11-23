@@ -571,12 +571,29 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     QString ellipsoidAcronym() const;
 
+    //! WKT formatting variants, only used for builds based on Proj >= 6
+    enum WktVariant
+    {
+      WKT1_GDAL, //!< WKT1 as traditionally output by GDAL, deriving from OGC 01-009. A notable departure from WKT1_GDAL with respect to OGC 01-009 is that in WKT1_GDAL, the unit of the PRIMEM value is always degrees.
+      WKT1_ESRI, //!< WKT1 as traditionally output by ESRI software, deriving from OGC 99-049.
+      WKT2_2015, //!< Full WKT2 string, conforming to ISO 19162:2015(E) / OGC 12-063r5 with all possible nodes and new keyword names.
+      WKT2_2015_SIMPLIFIED, //!< Same as WKT2_2015 with the following exceptions: UNIT keyword used. ID node only on top element. No ORDER element in AXIS element. PRIMEM node omitted if it is Greenwich.  ELLIPSOID.UNIT node omitted if it is UnitOfMeasure::METRE. PARAMETER.UNIT / PRIMEM.UNIT omitted if same as AXIS. AXIS.UNIT omitted and replaced by a common GEODCRS.UNIT if they are all the same on all axis.
+      WKT2_2018, //!< Full WKT2 string, conforming to ISO 19162:2018 / OGC 18-010, with all possible nodes and new keyword names. Non-normative list of differences: WKT2_2018 uses GEOGCRS / BASEGEOGCRS keywords for GeographicCRS.
+      WKT2_2018_SIMPLIFIED, //!< WKT2_2018 with the simplification rule of WKT2_SIMPLIFIED
+    };
+
     /**
      * Returns a WKT representation of this CRS.
-     * \returns string containing WKT of the CRS
+     *
+     * The \a variant argument specifies the formatting variant to use when creating the WKT string. This is
+     * only used on builds based on Proj >= 6, with earlier versions always using WKT1_GDAL.
+     *
+     * If \a multiline is TRUE then a formatted multiline string will be returned, using the specified \a indentationWidth.
+     * This is only used on builds based on Proj >= 6.
+     *
      * \see toProj4()
      */
-    QString toWkt() const;
+    QString toWkt( WktVariant variant = WKT1_GDAL, bool multiline = false, int indentationWidth = 4 ) const;
 
     /**
      * Returns a Proj4 string representation of this CRS.
@@ -648,6 +665,14 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     //! Returns auth id of related geographic CRS
     QString geographicCrsAuthId() const;
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsCoordinateReferenceSystem: %1>" ).arg( sipCpp->authid() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
 #ifndef SIP_RUN
 #if PROJ_VERSION_MAJOR>=6
 
@@ -671,13 +696,30 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     static QStringList recentProjections();
 
+#ifndef SIP_RUN
+
     /**
      * Clears the internal cache used to initialize QgsCoordinateReferenceSystem objects.
      * This should be called whenever the srs database has been modified in order to ensure
      * that outdated CRS objects are not created.
+     *
+     * If \a disableCache is TRUE then the inbuilt cache will be completely disabled. This
+     * argument is for internal use only.
+     *
      * \since QGIS 3.0
      */
-    static void invalidateCache();
+    static void invalidateCache( bool disableCache = false );
+#else
+
+    /**
+     * Clears the internal cache used to initialize QgsCoordinateReferenceSystem objects.
+     * This should be called whenever the srs database has been modified in order to ensure
+     * that outdated CRS objects are not created.
+     *
+     * \since QGIS 3.0
+     */
+    static void invalidateCache( bool disableCache SIP_PYARGREMOVE = false );
+#endif
 
     // Mutators -----------------------------------
     // We don't want to expose these to the public api since they won't create
@@ -730,7 +772,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /**
      * Set the EpsgCrsId identifier for this CRS
-     * \param epsg the ESPG identifier for this CRS (defaults to 0)
+     * \param epsg the EPSG identifier for this CRS (defaults to 0)
      */
     void setEpsg( long epsg );
 
@@ -802,23 +844,25 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     QExplicitlySharedDataPointer<QgsCoordinateReferenceSystemPrivate> d;
 
     //! Function for CRS validation. May be NULLPTR.
-    static CUSTOM_CRS_VALIDATION mCustomSrsValidation;
+    static CUSTOM_CRS_VALIDATION sCustomSrsValidation;
 
 
     // cache
 
-    static QReadWriteLock sSrIdCacheLock;
-    static QHash< long, QgsCoordinateReferenceSystem > sSrIdCache;
-    static QReadWriteLock sOgcLock;
-    static QHash< QString, QgsCoordinateReferenceSystem > sOgcCache;
-    static QReadWriteLock sProj4CacheLock;
-    static QHash< QString, QgsCoordinateReferenceSystem > sProj4Cache;
-    static QReadWriteLock sCRSWktLock;
-    static QHash< QString, QgsCoordinateReferenceSystem > sWktCache;
-    static QReadWriteLock sCRSSrsIdLock;
-    static QHash< long, QgsCoordinateReferenceSystem > sSrsIdCache;
-    static QReadWriteLock sCrsStringLock;
-    static QHash< QString, QgsCoordinateReferenceSystem > sStringCache;
+    static bool sDisableSrIdCache;
+    static bool sDisableOgcCache;
+    static bool sDisableProj4Cache;
+    static bool sDisableWktCache;
+    static bool sDisableSrsIdCache;
+    static bool sDisableStringCache;
+
+    // for tests
+    static const QHash< QString, QgsCoordinateReferenceSystem > &stringCache();
+    static const QHash< QString, QgsCoordinateReferenceSystem > &proj4Cache();
+    static const QHash< QString, QgsCoordinateReferenceSystem > &ogcCache();
+    static const QHash< QString, QgsCoordinateReferenceSystem > &wktCache();
+    static const QHash< long, QgsCoordinateReferenceSystem > &srsIdCache();
+    static const QHash< long, QgsCoordinateReferenceSystem > &srIdCache();
 
     friend class TestQgsCoordinateReferenceSystem;
 };

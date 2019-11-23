@@ -55,6 +55,8 @@ class APP_EXPORT QgsMapToolTrimExtendFeature : public QgsMapToolEdit
     QgsPointXY mMapPoint;
     //! geometry that will be returned
     QgsGeometry mGeom;
+    //! Limit layer which will be snapped
+    QgsVectorLayer *mLimitLayer = nullptr;
     //! Current layer which will be modified
     QgsVectorLayer *mVlayer = nullptr;
     //! Keep information about the state of the intersection

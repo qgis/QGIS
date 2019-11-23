@@ -16,56 +16,13 @@
 #ifndef QGSWFSDATASOURCEURI_H
 #define QGSWFSDATASOURCEURI_H
 
-#include "qgsauthmanager.h"
 #include "qgsdatasourceuri.h"
 #include "qgsrectangle.h"
 #include "qgsapplication.h"
+#include "qgsauthorizationsettings.h"
 
 #include <QNetworkRequest>
 #include <QString>
-
-// TODO: merge with QgsWmsAuthorization?
-struct QgsWFSAuthorization
-{
-  QgsWFSAuthorization( const QString &userName = QString(), const QString &password = QString(), const QString &authcfg = QString() )
-    : mUserName( userName )
-    , mPassword( password )
-    , mAuthCfg( authcfg )
-  {}
-
-  //! update authorization for request
-  bool setAuthorization( QNetworkRequest &request ) const
-  {
-    if ( !mAuthCfg.isEmpty() ) // must be non-empty value
-    {
-      return QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg );
-    }
-    else if ( !mUserName.isNull() || !mPassword.isNull() ) // allow empty values
-    {
-      request.setRawHeader( "Authorization", "Basic " + QStringLiteral( "%1:%2" ).arg( mUserName, mPassword ).toLatin1().toBase64() );
-    }
-    return true;
-  }
-
-  //! update authorization for reply
-  bool setAuthorizationReply( QNetworkReply *reply ) const
-  {
-    if ( !mAuthCfg.isEmpty() )
-    {
-      return QgsApplication::authManager()->updateNetworkReply( reply, mAuthCfg );
-    }
-    return true;
-  }
-
-  //! Username for basic http authentication
-  QString mUserName;
-
-  //! Password for basic http authentication
-  QString mPassword;
-
-  //! Authentication configuration ID
-  QString mAuthCfg;
-};
 
 /**
  * Utility class that wraps a QgsDataSourceUri with conveniency
@@ -85,7 +42,7 @@ class QgsWFSDataSourceURI
     explicit QgsWFSDataSourceURI( const QString &uri );
 
     //! Returns the URI, avoiding expansion of authentication configuration, which is handled during network access
-    const QString uri( bool expandAuthConfig = false ) const;
+    const QString uri() const;
 
     //! Returns base URL (with SERVICE=WFS parameter if bIncludeServiceWFS=true)
     QUrl baseURL( bool bIncludeServiceWFS = true ) const;
@@ -157,13 +114,14 @@ class QgsWFSDataSourceURI
     bool hideDownloadProgressDialog() const;
 
     //! Returns authorization parameters
-    QgsWFSAuthorization &auth() { return mAuth; }
+    const QgsAuthorizationSettings &auth() const { return mAuth; }
 
     //! Builds a derived uri from a base uri
     static QString build( const QString &uri,
                           const QString &typeName,
                           const QString &crsString = QString(),
                           const QString &sql = QString(),
+                          const QString &filter = QString(),
                           bool restrictToCurrentViewExtent = false );
 
     //! Sets Get DCP endpoints
@@ -174,7 +132,7 @@ class QgsWFSDataSourceURI
 
   private:
     QgsDataSourceUri    mURI;
-    QgsWFSAuthorization mAuth;
+    QgsAuthorizationSettings mAuth;
     QgsStringMap mGetEndpoints;
     QgsStringMap mPostEndpoints;
 };

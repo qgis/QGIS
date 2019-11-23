@@ -36,6 +36,8 @@
 #include "qgsapplication.h"
 #include "processing/qgsprojectstylealgorithms.h"
 #include "qgsstylemanagerdialog.h"
+
+#include <QFileInfo>
 #include <QMenu>
 #include <QInputDialog>
 #include <QMessageBox>
@@ -199,7 +201,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   QAction *propertiesAction = new QAction( tr( "Properties…" ), menu );
   connect( propertiesAction, &QAction::triggered, this, [ = ]
   {
-    showProperties( directoryItem );
+    showProperties( directoryItem, context );
   } );
   menu->addAction( propertiesAction );
 
@@ -264,7 +266,7 @@ void QgsAppDirectoryItemGuiProvider::toggleFastScan( QgsDirectoryItem *item )
   settings.setValue( QStringLiteral( "qgis/scanItemsFastScanUris" ), fastScanDirs );
 }
 
-void QgsAppDirectoryItemGuiProvider::showProperties( QgsDirectoryItem *item )
+void QgsAppDirectoryItemGuiProvider::showProperties( QgsDirectoryItem *item, QgsDataItemGuiContext context )
 {
   if ( ! item )
     return;
@@ -272,7 +274,7 @@ void QgsAppDirectoryItemGuiProvider::showProperties( QgsDirectoryItem *item )
   QgsBrowserPropertiesDialog *dialog = new QgsBrowserPropertiesDialog( QStringLiteral( "browser" ), QgisApp::instance() );
   dialog->setAttribute( Qt::WA_DeleteOnClose );
 
-  dialog->setItem( item );
+  dialog->setItem( item, context );
   dialog->show();
 }
 
@@ -423,17 +425,32 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
   QAction *propertiesAction = new QAction( tr( "Layer Properties…" ), menu );
   connect( propertiesAction, &QAction::triggered, this, [ = ]
   {
-    showPropertiesForItem( layerItem );
+    showPropertiesForItem( layerItem, context );
   } );
   menu->addAction( propertiesAction );
 
   if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::NativeFilePropertiesDialog )
   {
-    QAction *action = menu->addAction( tr( "File Properties…" ) );
-    connect( action, &QAction::triggered, this, [ = ]
+    bool isFile = false;
+    if ( layerItem )
     {
-      QgsGui::nativePlatformInterface()->showFileProperties( item->path() );
-    } );
+      // Also check for postgres layers (rasters are handled by GDAL)
+      isFile = ( layerItem->providerKey() == QStringLiteral( "ogr" ) ||
+                 layerItem->providerKey() == QStringLiteral( "gdal" ) ) &&
+               ! layerItem->uri().startsWith( QStringLiteral( "PG:" ) );
+    }
+    else
+    {
+      isFile = QFileInfo::exists( item->path() );
+    }
+    if ( isFile )
+    {
+      QAction *action = menu->addAction( tr( "File Properties…" ) );
+      connect( action, &QAction::triggered, this, [ = ]
+      {
+        QgsGui::nativePlatformInterface()->showFileProperties( item->path() );
+      } );
+    }
   }
 }
 
@@ -523,14 +540,14 @@ void QgsLayerItemGuiProvider::deleteLayers( const QStringList &itemPaths, QgsDat
   }
 }
 
-void QgsLayerItemGuiProvider::showPropertiesForItem( QgsLayerItem *item )
+void QgsLayerItemGuiProvider::showPropertiesForItem( QgsLayerItem *item, QgsDataItemGuiContext context )
 {
   if ( ! item )
     return;
 
   QgsBrowserPropertiesDialog *dialog = new QgsBrowserPropertiesDialog( QStringLiteral( "browser" ), QgisApp::instance() );
   dialog->setAttribute( Qt::WA_DeleteOnClose );
-  dialog->setItem( item );
+  dialog->setItem( item, context );
   dialog->show();
 }
 

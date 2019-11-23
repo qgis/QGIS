@@ -17,24 +17,32 @@
 #include <QObject>
 
 #include "qgsapplication.h"
+#include "qgsblureffect.h"
 #include "qgscategorizedsymbolrenderer.h"
 #include "qgsdatadefinedsizelegend.h"
+#include "qgseffectstack.h"
+#include "qgsfillsymbollayer.h"
 #include "qgsfontutils.h"
+#include "qgsgloweffect.h"
 #include "qgslayertree.h"
 #include "qgslayertreeutils.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgslinesymbollayer.h"
 #include "qgsmaplayerlegend.h"
+#include "qgspainteffect.h"
 #include "qgsproject.h"
 #include "qgslegendrenderer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrenderchecker.h"
+#include "qgsshadoweffect.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsgeometry.h"
 #include "qgsdiagramrenderer.h"
 #include "diagram/qgspiediagram.h"
+#include "qgspropertytransformer.h"
 
 static QString _fileNameForTest( const QString &testName )
 {
@@ -123,6 +131,7 @@ class TestQgsLegendRenderer : public QObject
     void testModel();
 
     void testBasic();
+    void testEffects();
     void testBigMarker();
 
     void testRightAlignText();
@@ -300,6 +309,66 @@ void TestQgsLegendRenderer::testModel()
 void TestQgsLegendRenderer::testBasic()
 {
   QString testName = QStringLiteral( "legend_basic" );
+
+  QgsLayerTreeModel legendModel( mRoot );
+
+  QgsLegendSettings settings;
+  _setStandardTestFont( settings );
+  _renderLegend( testName, &legendModel, settings );
+  QVERIFY( _verifyImage( testName, mReport ) );
+}
+
+void TestQgsLegendRenderer::testEffects()
+{
+  QString testName = QStringLiteral( "legend_effects" );
+
+  QgsEffectStack *effect = new QgsEffectStack();
+  QgsSingleSymbolRenderer *renderer;
+  QgsSymbol *symbol;
+
+  renderer = dynamic_cast<QgsSingleSymbolRenderer *>( mVL1->renderer() );
+  QVERIFY( renderer );
+  symbol = renderer->symbol();
+  QgsSimpleLineSymbolLayer *lineLayer = dynamic_cast<QgsSimpleLineSymbolLayer *>( symbol->symbolLayer( 0 ) );
+  QVERIFY( lineLayer );
+  lineLayer->setWidth( 1.8 );
+  effect = new QgsEffectStack();
+  effect->appendEffect( new QgsDropShadowEffect() );
+  effect->appendEffect( new QgsDrawSourceEffect() );
+  lineLayer->setPaintEffect( effect );
+
+  renderer = dynamic_cast<QgsSingleSymbolRenderer *>( mVL2->renderer() );
+  symbol = renderer->symbol();
+  QVERIFY( renderer );
+  QgsSimpleFillSymbolLayer *fillLayer = dynamic_cast<QgsSimpleFillSymbolLayer *>( symbol->takeSymbolLayer( 0 ) );
+  QVERIFY( fillLayer );
+  fillLayer->setColor( Qt::blue );
+  effect = new QgsEffectStack();
+  effect->appendEffect( new QgsDrawSourceEffect() );
+  effect->appendEffect( new QgsInnerGlowEffect() );
+  fillLayer->setPaintEffect( effect );
+
+  lineLayer = new QgsSimpleLineSymbolLayer();
+  lineLayer->setColor( Qt::cyan );
+  lineLayer->setWidth( 1.8 );
+  effect = new QgsEffectStack();
+  effect->appendEffect( new QgsDropShadowEffect() );
+  effect->appendEffect( new QgsDrawSourceEffect() );
+  lineLayer->setPaintEffect( effect );
+
+  symbol->appendSymbolLayer( lineLayer );
+  symbol->appendSymbolLayer( fillLayer );
+
+  symbol = new QgsMarkerSymbol();
+  symbol->setColor( Qt::black );
+  effect = new QgsEffectStack();
+  effect->appendEffect( new QgsDropShadowEffect() );
+  effect->appendEffect( new QgsDrawSourceEffect() );
+  symbol->symbolLayer( 0 )->setPaintEffect( effect );
+
+  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  QVERIFY( catRenderer );
+  catRenderer->updateCategorySymbol( 0, symbol );
 
   QgsLayerTreeModel legendModel( mRoot );
 

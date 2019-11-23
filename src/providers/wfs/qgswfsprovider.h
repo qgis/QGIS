@@ -98,6 +98,8 @@ class QgsWFSProvider : public QgsVectorDataProvider
 
     QgsVectorDataProvider::Capabilities capabilities() const override;
 
+    QString storageType() const override { return QStringLiteral( "OGC WFS (Web Feature Service)" ); }
+
     /* new functions */
 
     QString geometryAttribute() const;
@@ -124,7 +126,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
 
   private slots:
 
-    void featureReceivedAnalyzeOneFeature( QVector<QgsWFSFeatureGmlIdPair> );
+    void featureReceivedAnalyzeOneFeature( QVector<QgsFeatureUniqueIdPair> );
 
     void pushErrorSlot( const QString &errorMsg );
 
@@ -197,7 +199,6 @@ class QgsWfsProviderMetadata: public QgsProviderMetadata
 {
   public:
     QgsWfsProviderMetadata();
-    void initProvider() override;
     QList<QgsDataItemProvider *> dataItemProviders() const override;
     QgsWFSProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
 };

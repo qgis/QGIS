@@ -256,6 +256,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     QgsVectorLayerFeatureIterator( const QgsVectorLayerFeatureIterator &rhs );
 #endif
 
+    void createExpressionContext();
     std::unique_ptr<QgsExpressionContext> mExpressionContext;
 
     QgsFeedback *mInterruptionChecker = nullptr;
@@ -314,7 +315,7 @@ class CORE_EXPORT QgsVectorLayerSelectedFeatureSource : public QgsFeatureSource,
     long featureCount() const override;
     QString sourceName() const override;
     QgsExpressionContextScope *createExpressionContextScope() const override;
-
+    SpatialIndexPresence hasSpatialIndex() const override;
 
   private:
 

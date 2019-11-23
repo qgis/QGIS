@@ -103,6 +103,12 @@ QgsLayoutPictureWidget::QgsLayoutPictureWidget( QgsLayoutItemPicture *picture )
   registerDataDefinedButton( mStrokeWidthDDBtn, QgsLayoutObject::PictureSvgStrokeWidth );
 }
 
+void QgsLayoutPictureWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayout )
+{
+  if ( mItemPropertiesWidget )
+    mItemPropertiesWidget->setMasterLayout( masterLayout );
+}
+
 void QgsLayoutPictureWidget::mPictureBrowseButton_clicked()
 {
   QgsSettings s;

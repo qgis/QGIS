@@ -1,0 +1,148 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsprojectviewsettings.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsProjectViewSettings : QObject
+{
+%Docstring
+Contains settings and properties relating to how a QgsProject should be displayed inside
+map canvas, e.g. map scales and default view extent for the project.
+
+.. versionadded:: 3.10.1
+%End
+
+%TypeHeaderCode
+#include "qgsprojectviewsettings.h"
+%End
+  public:
+
+    QgsProjectViewSettings( QObject *parent = 0 );
+%Docstring
+Constructor for QgsProjectViewSettings with the specified ``parent`` object.
+%End
+
+    void reset();
+%Docstring
+Resets the settings to a default state.
+%End
+
+    QgsReferencedRectangle defaultViewExtent() const;
+%Docstring
+Returns the default view extent, which should be used as the initial map extent
+when this project is opened.
+
+.. warning::
+
+   When a project is opened in the QGIS desktop application and saved, individual
+   map canvases will store their own previous view extent as custom project properties. Reloading
+   this saved version of the project will trigger the canvases to restore their individual last view
+   extents. Accordingly, in the QGIS desktop application, this setting only forms a default, initial
+   view used when the project is opened for the very first time.
+
+.. seealso:: :py:func:`setDefaultViewExtent`
+%End
+
+    void setDefaultViewExtent( const QgsReferencedRectangle &extent );
+%Docstring
+Sets the default view ``extent``, which should be used as the initial map extent
+when this project is opened.
+
+.. warning::
+
+   When a project is opened in the QGIS desktop application and saved, individual
+   map canvases will store their own previous view extent as custom project properties. Reloading
+   this saved version of the project will trigger the canvases to restore their individual last view
+   extents. Accordingly, in the QGIS desktop application, this setting only forms a default, initial
+   view used when the project is opened for the very first time.
+
+.. seealso:: :py:func:`defaultViewExtent`
+%End
+
+    void setMapScales( const QVector<double> &scales );
+%Docstring
+Sets the list of custom project map ``scales``.
+
+The ``scales`` list consists of a list of scale denominator values, e.g.
+1000 for a 1:1000 scale.
+
+.. seealso:: :py:func:`mapScales`
+
+.. seealso:: :py:func:`mapScalesChanged`
+%End
+
+    QVector<double> mapScales() const;
+%Docstring
+Returns the list of custom project map scales.
+
+The scales list consists of a list of scale denominator values, e.g.
+1000 for a 1:1000 scale.
+
+.. seealso:: :py:func:`setMapScales`
+
+.. seealso:: :py:func:`mapScalesChanged`
+%End
+
+    void setUseProjectScales( bool enabled );
+%Docstring
+Sets whether project mapScales() are ``enabled``.
+
+When project map scales are enabled these scales will replace the default QGIS map scales list
+while working with this project.
+
+.. seealso:: :py:func:`useProjectScales`
+
+.. seealso:: :py:func:`setMapScales`
+%End
+
+    bool useProjectScales() const;
+%Docstring
+Returns ``True`` if project mapScales() are enabled.
+
+When project map scales are enabled these scales will replace the default QGIS map scales list
+while working with this project.
+
+.. seealso:: :py:func:`setUseProjectScales`
+
+.. seealso:: :py:func:`mapScales`
+%End
+
+    bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+%Docstring
+Reads the settings's state from a DOM element.
+
+.. seealso:: :py:func:`writeXml`
+%End
+
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+%Docstring
+Returns a DOM element representing the settings.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+  signals:
+
+    void mapScalesChanged();
+%Docstring
+Emitted when the list of custom project map scales changes.
+
+.. seealso:: :py:func:`mapScales`
+
+.. seealso:: :py:func:`setMapScales`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsprojectviewsettings.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

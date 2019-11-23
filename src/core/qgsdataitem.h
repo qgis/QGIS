@@ -37,6 +37,7 @@
 class QgsDataProvider;
 class QgsDataItem;
 class QgsAnimatedIcon;
+class QgsBookmarkManager;
 
 typedef QgsDataItem *dataItem_t( QString, QgsDataItem * ) SIP_SKIP;
 
@@ -142,7 +143,15 @@ class CORE_EXPORT QgsDataItem : public QObject
      * Returns TRUE if this item is equal to another item (by testing item type and path).
      */
     virtual bool equal( const QgsDataItem *other );
-    virtual QWidget *paramWidget() SIP_FACTORY { return nullptr; }
+
+    /**
+     * Returns source widget from data item for QgsBrowserPropertiesWidget
+     *
+     * Use QgsDataItemGuiProvider::createParamWidget() instead
+     *
+     * \deprecated QGIS 3.10
+     */
+    Q_DECL_DEPRECATED virtual QWidget *paramWidget() SIP_FACTORY SIP_DEPRECATED { return nullptr; }
 
     /**
      * Returns the list of actions available for this item. This is usually used for the popup menu on right-clicking
@@ -211,7 +220,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     enum Capability
     {
       NoCapabilities    = 0,
-      SetCrs            = 1 << 0, //!< Can set CRS on layer or group of layers. \deprecated in QGIS 3.6 -- no longer used by QGIS and will be removed in QGIS 4.0
+      SetCrs            = 1 << 0, //!< Can set CRS on layer or group of layers. \deprecated since QGIS 3.6 -- no longer used by QGIS and will be removed in QGIS 4.0
       Fertile           = 1 << 1, //!< Can create children. Even items without this capability may have children, but cannot create them, it means that children are created by item ancestors.
       Fast              = 1 << 2, //!< CreateChildren() is fast enough to be run in main thread when refreshing items, most root items (wms,wfs,wcs,postgres...) are considered fast because they are reading data only from QgsSettings
       Collapse          = 1 << 3, //!< The collapse/expand status for this items children should be ignored in order to avoid undesired network connections (wms etc.)
@@ -625,7 +634,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 
     bool equal( const QgsDataItem *other ) override;
     QIcon icon() override;
-    QWidget *paramWidget() override SIP_FACTORY;
+    Q_DECL_DEPRECATED QWidget *paramWidget() override SIP_FACTORY SIP_DEPRECATED;
     bool hasDragEnabled() const override { return true; }
     QgsMimeDataUtils::Uri mimeUri() const override;
 
@@ -682,12 +691,13 @@ class CORE_EXPORT QgsErrorItem : public QgsDataItem
 
 };
 
-
 // ---------
 
 /**
  * \ingroup core
  * \class QgsDirectoryParamWidget
+ *
+ * TODO: move to qgis_gui for QGIS 4
  */
 class CORE_EXPORT QgsDirectoryParamWidget : public QTreeWidget
 {
@@ -821,6 +831,7 @@ class CORE_EXPORT QgsProjectHomeItem : public QgsDirectoryItem
  * A directory item showing the a single favorite directory.
  * \since QGIS 3.0
 */
+Q_NOWARN_DEPRECATED_PUSH  // rename is deprecated
 class CORE_EXPORT QgsFavoriteItem : public QgsDirectoryItem
 {
     Q_OBJECT
@@ -835,6 +846,7 @@ class CORE_EXPORT QgsFavoriteItem : public QgsDirectoryItem
 
     QgsFavoritesItem *mFavorites = nullptr;
 };
+Q_NOWARN_DEPRECATED_POP
 
 #endif
 ///@endcond

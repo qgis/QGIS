@@ -178,7 +178,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
       {
         for ( const QgsGeometry &splitGeom : qgis::as_const( splittingLines ) )
         {
-          QVector<QgsPointXY> splitterPList;
+          QgsPointSequence splitterPList;
           QVector< QgsGeometry > outGeoms;
 
           // use prepared geometries for faster intersection tests
@@ -207,14 +207,14 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
                   {
                     for ( const QgsPoint &pt : ring )
                     {
-                      splitterPList << QgsPointXY( pt );
+                      splitterPList << pt;
                     }
                   }
                 }
               }
 
               QVector< QgsGeometry > newGeometries;
-              QVector<QgsPointXY> topologyTestPoints;
+              QgsPointSequence topologyTestPoints;
               QgsGeometry::OperationResult result = inGeom.splitGeometry( splitterPList, newGeometries, false, topologyTestPoints );
 
               // splitGeometry: If there are several intersections

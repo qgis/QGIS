@@ -86,78 +86,21 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     /* Implementation of functions from QgsVectorDataProvider */
 
     QgsAbstractFeatureSource *featureSource() const override;
-
-    /**
-     * Returns the permanent storage type for this layer as a friendly name.
-     */
     QString storageType() const override;
-
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
-
     QgsWkbTypes::Type wkbType() const override;
-
     long featureCount() const override;
-
     QgsFields fields() const override;
-
-    /**
-     * Returns a bitmask containing the supported capabilities
-     * Note, some capabilities may change depending on whether
-     * a spatial filter is active on this provider, so it may
-     * be prudent to check this value per intended operation.
-     */
     QgsVectorDataProvider::Capabilities capabilities() const override;
-
-    /**
-     * Creates a spatial index on the data
-     * \returns indexCreated  Returns true if a spatial index is created
-     */
     bool createSpatialIndex() override;
-
-    /* Implementation of functions from QgsDataProvider */
-
-    /**
-     * Returns a provider name
-     *
-     *  Essentially just returns the provider key.  Should be used to build file
-     *  dialogs so that providers can be shown with their supported types. Thus
-     *  if more than one provider supports a given format, the user is able to
-     *  select a specific provider to open that file.
-     *
-     *  \note
-     *
-     *  Instead of being pure virtual, might be better to generalize this
-     *  behavior and presume that none of the sub-classes are going to do
-     *  anything strange with regards to their name or description?
-     */
+    QgsFeatureSource::SpatialIndexPresence hasSpatialIndex() const override;
     QString name() const override;
-
-    /**
-     * Returns description
-     *
-     *  Return a terse string describing what the provider is.
-     *
-     *  \note
-     *
-     *  Instead of being pure virtual, might be better to generalize this
-     *  behavior and presume that none of the sub-classes are going to do
-     *  anything strange with regards to their name or description?
-     */
     QString description() const override;
-
     QgsRectangle extent() const override;
     bool isValid() const override;
-
     QgsCoordinateReferenceSystem crs() const override;
-
-    /**
-     * Set the subset string used to create a subset of features in
-     * the layer.
-     */
     bool setSubsetString( const QString &subset, bool updateFeatureCount = true ) override;
-
     bool supportsSubsetString() const override { return true; }
-
     QString subsetString() const override
     {
       return mSubsetString;
@@ -211,7 +154,8 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
 
     static QgsGeometry geomFromWkt( QString &sWkt, bool wktHasPrefixRegexp );
-    static bool pointFromXY( QString &sX, QString &sY, QgsPointXY &point, const QString &decimalPoint, bool xyDms );
+    static bool pointFromXY( QString &sX, QString &sY, QgsPoint &point, const QString &decimalPoint, bool xyDms );
+    static void appendZM( QString &sZ, QString &sM, QgsPoint &point, const QString &decimalPoint );
     static double dmsStringToDouble( const QString &sX, bool *xOk );
 
     // mLayerValid defines whether the layer has been loaded as a valid layer
@@ -232,10 +176,14 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     QString mWktFieldName;
     QString mXFieldName;
     QString mYFieldName;
+    QString mZFieldName;
+    QString mMFieldName;
     bool mDetectTypes = true;
 
     mutable int mXFieldIndex = -1;
     mutable int mYFieldIndex = -1;
+    mutable int mZFieldIndex = -1;
+    mutable int mMFieldIndex = -1;
     mutable int mWktFieldIndex = -1;
 
     // mWktPrefix regexp is used to clean up

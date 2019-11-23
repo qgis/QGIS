@@ -31,7 +31,7 @@ class DummyCallout : public QgsCallout
     QgsCallout *clone() const override { return new DummyCallout(); }
     static QgsCallout *create( const QVariantMap &, const QgsReadWriteContext & ) { return new DummyCallout(); }
   protected:
-    void draw( QgsRenderContext &, QRectF, const double, const QgsGeometry & ) override {}
+    void draw( QgsRenderContext &, QRectF, const double, const QgsGeometry &, QgsCallout::QgsCalloutContext & ) override {}
 
 };
 
@@ -79,7 +79,7 @@ void TestQgsCalloutRegistry::cleanup()
 
 void TestQgsCalloutRegistry::metadata()
 {
-  QgsCalloutMetadata metadata = QgsCalloutMetadata( QStringLiteral( "name" ), QStringLiteral( "display name" ), DummyCallout::create );
+  QgsCalloutMetadata metadata = QgsCalloutMetadata( QStringLiteral( "name" ), QStringLiteral( "display name" ), QIcon(), DummyCallout::create );
   QCOMPARE( metadata.name(), QString( "name" ) );
   QCOMPARE( metadata.visibleName(), QString( "display name" ) );
 
@@ -111,10 +111,10 @@ void TestQgsCalloutRegistry::addCallout()
   QgsCalloutRegistry *registry = QgsApplication::calloutRegistry();
   int previousCount = registry->calloutTypes().length();
 
-  registry->addCalloutType( new QgsCalloutMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "Dummy callout" ), DummyCallout::create ) );
+  registry->addCalloutType( new QgsCalloutMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "Dummy callout" ), QIcon(), DummyCallout::create ) );
   QCOMPARE( registry->calloutTypes().length(), previousCount + 1 );
   //try adding again, should have no effect
-  QgsCalloutMetadata *dupe = new QgsCalloutMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "Dummy callout" ), DummyCallout::create );
+  QgsCalloutMetadata *dupe = new QgsCalloutMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "Dummy callout" ), QIcon(), DummyCallout::create );
   QVERIFY( ! registry->addCalloutType( dupe ) );
   QCOMPARE( registry->calloutTypes().length(), previousCount + 1 );
   delete dupe;

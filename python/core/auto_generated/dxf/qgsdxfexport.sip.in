@@ -34,6 +34,17 @@ Returns the layer
 %Docstring
 Returns the attribute index used to split into multiple layers.
 The attribute value is used for layer names.
+
+.. seealso:: :py:func:`splitLayerAttribute`
+%End
+
+        QString splitLayerAttribute() const;
+%Docstring
+If the split layer attribute is set, the vector layer
+will be split into several dxf layers, one per each
+unique value.
+
+.. versionadded:: 3.12
 %End
 
     };
@@ -52,10 +63,40 @@ The attribute value is used for layer names.
     typedef QFlags<QgsDxfExport::Flag> Flags;
 
 
+    enum class ExportResult
+    {
+      Success,
+      InvalidDeviceError,
+      DeviceNotWritableError,
+      EmptyExtentError
+    };
+
+    enum class VAlign
+    {
+      VBaseLine,
+      VBottom,
+      VMiddle,
+      VTop,
+      Undefined
+    };
+
+    enum class HAlign
+    {
+      HLeft,
+      HCenter,
+      HRight,
+      HAligned,
+      HMiddle,
+      HFit,
+      Undefined
+    };
+
     QgsDxfExport();
 %Docstring
 Constructor for QgsDxfExport.
 %End
+
+    ~QgsDxfExport();
 
     void setMapSettings( const QgsMapSettings &settings );
 %Docstring
@@ -91,7 +132,7 @@ Add layers to export
 .. seealso:: :py:func:`setLayerTitleAsName`
 %End
 
-    int writeToFile( QIODevice *d, const QString &codec );  //maybe add progress dialog? other parameters (e.g. scale, dpi)?
+    ExportResult writeToFile( QIODevice *d, const QString &codec );  //maybe add progress dialog? other parameters (e.g. scale, dpi)?
 
     void setSymbologyScale( double scale );
 %Docstring
@@ -377,7 +418,7 @@ Write circle (as polyline)
 .. versionadded:: 2.15
 %End
 
-    void writeText( const QString &layer, const QString &text, const QgsPoint &pt, double size, double angle, const QColor &color ) /PyName=writeTextV2/;
+    void writeText( const QString &layer, const QString &text, const QgsPoint &pt, double size, double angle, const QColor &color, QgsDxfExport::HAlign hali = QgsDxfExport::HAlign::Undefined, QgsDxfExport::VAlign vali = QgsDxfExport::VAlign::Undefined ) /PyName=writeTextV2/;
 %Docstring
 Write text (TEXT)
 
@@ -443,6 +484,9 @@ Register name of layer for feature
 :param layer: dxf layer of feature
 %End
 
+  private:
+    QgsDxfExport( const QgsDxfExport &other );
+    QgsDxfExport &operator=( const QgsDxfExport & );
 };
 
 QFlags<QgsDxfExport::Flag> operator|(QgsDxfExport::Flag f1, QFlags<QgsDxfExport::Flag> f2);

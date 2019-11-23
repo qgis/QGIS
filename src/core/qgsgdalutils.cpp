@@ -14,12 +14,14 @@
  ***************************************************************************/
 
 #include "qgsgdalutils.h"
+#include "qgslogger.h"
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include "gdal.h"
 #include "cpl_string.h"
 
 #include <QString>
+#include <QImage>
 
 bool QgsGdalUtils::supportsRasterCreate( GDALDriverH driver )
 {
@@ -34,7 +36,12 @@ bool QgsGdalUtils::supportsRasterCreate( GDALDriverH driver )
           CSLFetchBoolean( driverMetadata, GDAL_DCAP_RASTER, false );
 }
 
-gdal::dataset_unique_ptr QgsGdalUtils::createSingleBandMemoryDataset( GDALDataType dataType, QgsRectangle extent, int width, int height, const QgsCoordinateReferenceSystem &crs )
+gdal::dataset_unique_ptr QgsGdalUtils::createSingleBandMemoryDataset( GDALDataType dataType, const QgsRectangle &extent, int width, int height, const QgsCoordinateReferenceSystem &crs )
+{
+  return createMultiBandMemoryDataset( dataType, 1, extent, width, height, crs );
+}
+
+gdal::dataset_unique_ptr QgsGdalUtils::createMultiBandMemoryDataset( GDALDataType dataType, int bands, const QgsRectangle &extent, int width, int height, const QgsCoordinateReferenceSystem &crs )
 {
   GDALDriverH hDriverMem = GDALGetDriverByName( "MEM" );
   if ( !hDriverMem )
@@ -42,7 +49,7 @@ gdal::dataset_unique_ptr QgsGdalUtils::createSingleBandMemoryDataset( GDALDataTy
     return gdal::dataset_unique_ptr();
   }
 
-  gdal::dataset_unique_ptr hSrcDS( GDALCreate( hDriverMem, "", width, height, 1, dataType, nullptr ) );
+  gdal::dataset_unique_ptr hSrcDS( GDALCreate( hDriverMem, "", width, height, bands, dataType, nullptr ) );
 
   double cellSizeX = extent.width() / width;
   double cellSizeY = extent.height() / height;
@@ -59,7 +66,7 @@ gdal::dataset_unique_ptr QgsGdalUtils::createSingleBandMemoryDataset( GDALDataTy
   return hSrcDS;
 }
 
-gdal::dataset_unique_ptr QgsGdalUtils::createSingleBandTiffDataset( QString filename, GDALDataType dataType, QgsRectangle extent, int width, int height, const QgsCoordinateReferenceSystem &crs )
+gdal::dataset_unique_ptr QgsGdalUtils::createSingleBandTiffDataset( const QString &filename, GDALDataType dataType, const QgsRectangle &extent, int width, int height, const QgsCoordinateReferenceSystem &crs )
 {
   double cellSizeX = extent.width() / width;
   double cellSizeY = extent.height() / height;
@@ -90,6 +97,50 @@ gdal::dataset_unique_ptr QgsGdalUtils::createSingleBandTiffDataset( QString file
   return hDstDS;
 }
 
+gdal::dataset_unique_ptr QgsGdalUtils::imageToMemoryDataset( const QImage &image )
+{
+  if ( image.isNull() )
+    return nullptr;
+
+  const QRgb *rgb = reinterpret_cast<const QRgb *>( image.constBits() );
+  GDALDriverH hDriverMem = GDALGetDriverByName( "MEM" );
+  if ( !hDriverMem )
+  {
+    return nullptr;
+  }
+  gdal::dataset_unique_ptr hSrcDS( GDALCreate( hDriverMem, "",  image.width(), image.height(), 0, GDT_Byte, nullptr ) );
+
+  char **papszOptions = QgsGdalUtils::papszFromStringList( QStringList()
+                        << QStringLiteral( "PIXELOFFSET=%1" ).arg( sizeof( QRgb ) )
+                        << QStringLiteral( "LINEOFFSET=%1" ).arg( image.bytesPerLine() )
+                        << QStringLiteral( "DATAPOINTER=%1" ).arg( reinterpret_cast< qulonglong >( rgb ) + 2 ) );
+  GDALAddBand( hSrcDS.get(), GDT_Byte, papszOptions );
+  CSLDestroy( papszOptions );
+
+  papszOptions = QgsGdalUtils::papszFromStringList( QStringList()
+                 << QStringLiteral( "PIXELOFFSET=%1" ).arg( sizeof( QRgb ) )
+                 << QStringLiteral( "LINEOFFSET=%1" ).arg( image.bytesPerLine() )
+                 << QStringLiteral( "DATAPOINTER=%1" ).arg( reinterpret_cast< qulonglong >( rgb ) + 1 ) );
+  GDALAddBand( hSrcDS.get(), GDT_Byte, papszOptions );
+  CSLDestroy( papszOptions );
+
+  papszOptions = QgsGdalUtils::papszFromStringList( QStringList()
+                 << QStringLiteral( "PIXELOFFSET=%1" ).arg( sizeof( QRgb ) )
+                 << QStringLiteral( "LINEOFFSET=%1" ).arg( image.bytesPerLine() )
+                 << QStringLiteral( "DATAPOINTER=%1" ).arg( reinterpret_cast< qulonglong >( rgb ) ) );
+  GDALAddBand( hSrcDS.get(), GDT_Byte, papszOptions );
+  CSLDestroy( papszOptions );
+
+  papszOptions = QgsGdalUtils::papszFromStringList( QStringList()
+                 << QStringLiteral( "PIXELOFFSET=%1" ).arg( sizeof( QRgb ) )
+                 << QStringLiteral( "LINEOFFSET=%1" ).arg( image.bytesPerLine() )
+                 << QStringLiteral( "DATAPOINTER=%1" ).arg( reinterpret_cast< qulonglong >( rgb ) + 3 ) );
+  GDALAddBand( hSrcDS.get(), GDT_Byte, papszOptions );
+  CSLDestroy( papszOptions );
+
+  return hSrcDS;
+}
+
 void QgsGdalUtils::resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH hDstDS, GDALResampleAlg resampleAlg )
 {
   gdal::warp_options_unique_ptr psWarpOptions( GDALCreateWarpOptions() );
@@ -97,8 +148,8 @@ void QgsGdalUtils::resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH h
   psWarpOptions->hDstDS = hDstDS;
 
   psWarpOptions->nBandCount = 1;
-  psWarpOptions->panSrcBands = ( int * ) CPLMalloc( sizeof( int ) * 1 );
-  psWarpOptions->panDstBands = ( int * ) CPLMalloc( sizeof( int ) * 1 );
+  psWarpOptions->panSrcBands = reinterpret_cast< int * >( CPLMalloc( sizeof( int ) * 1 ) );
+  psWarpOptions->panDstBands = reinterpret_cast< int * >( CPLMalloc( sizeof( int ) * 1 ) );
   psWarpOptions->panSrcBands[0] = 1;
   psWarpOptions->panDstBands[0] = 1;
 
@@ -120,7 +171,58 @@ void QgsGdalUtils::resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH h
   GDALDestroyGenImgProjTransformer( psWarpOptions->pTransformerArg );
 }
 
-QString QgsGdalUtils::helpCreationOptionsFormat( QString format )
+QImage QgsGdalUtils::resampleImage( const QImage &image, QSize outputSize, GDALRIOResampleAlg resampleAlg )
+{
+  gdal::dataset_unique_ptr srcDS = QgsGdalUtils::imageToMemoryDataset( image );
+  if ( !srcDS )
+    return QImage();
+
+  GDALRasterIOExtraArg extra;
+  INIT_RASTERIO_EXTRA_ARG( extra );
+  extra.eResampleAlg = resampleAlg;
+
+  QImage res( outputSize, image.format() );
+  if ( res.isNull() )
+    return QImage();
+
+  GByte *rgb = reinterpret_cast<GByte *>( res.bits() );
+
+  CPLErr err = GDALRasterIOEx( GDALGetRasterBand( srcDS.get(), 1 ), GF_Read, 0, 0, image.width(), image.height(), rgb + 2, outputSize.width(),
+                               outputSize.height(), GDT_Byte, sizeof( QRgb ), res.bytesPerLine(), &extra );
+  if ( err != CE_None )
+  {
+    QgsDebugMsg( QStringLiteral( "failed to read red band" ) );
+    return QImage();
+  }
+
+  err = GDALRasterIOEx( GDALGetRasterBand( srcDS.get(), 2 ), GF_Read, 0, 0, image.width(), image.height(), rgb + 1, outputSize.width(),
+                        outputSize.height(), GDT_Byte, sizeof( QRgb ), res.bytesPerLine(), &extra );
+  if ( err != CE_None )
+  {
+    QgsDebugMsg( QStringLiteral( "failed to read green band" ) );
+    return QImage();
+  }
+
+  err = GDALRasterIOEx( GDALGetRasterBand( srcDS.get(), 3 ), GF_Read, 0, 0, image.width(), image.height(), rgb, outputSize.width(),
+                        outputSize.height(), GDT_Byte, sizeof( QRgb ), res.bytesPerLine(), &extra );
+  if ( err != CE_None )
+  {
+    QgsDebugMsg( QStringLiteral( "failed to read blue band" ) );
+    return QImage();
+  }
+
+  err = GDALRasterIOEx( GDALGetRasterBand( srcDS.get(), 4 ), GF_Read, 0, 0, image.width(), image.height(), rgb + 3, outputSize.width(),
+                        outputSize.height(), GDT_Byte, sizeof( QRgb ), res.bytesPerLine(), &extra );
+  if ( err != CE_None )
+  {
+    QgsDebugMsg( QStringLiteral( "failed to read alpha band" ) );
+    return QImage();
+  }
+
+  return res;
+}
+
+QString QgsGdalUtils::helpCreationOptionsFormat( const QString &format )
 {
   QString message;
   GDALDriverH myGdalDriver = GDALGetDriverByName( format.toLocal8Bit().constData() );
@@ -160,7 +262,7 @@ char **QgsGdalUtils::papszFromStringList( const QStringList &list )
   return papszRetList;
 }
 
-QString QgsGdalUtils::validateCreationOptionsFormat( const QStringList &createOptions, QString format )
+QString QgsGdalUtils::validateCreationOptionsFormat( const QStringList &createOptions, const QString &format )
 {
   GDALDriverH myGdalDriver = GDALGetDriverByName( format.toLocal8Bit().constData() );
   if ( ! myGdalDriver )

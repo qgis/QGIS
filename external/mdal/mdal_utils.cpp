@@ -586,3 +586,43 @@ bool MDAL::isNativeLittleEndian()
   int n = 1;
   return ( *( char * )&n == 1 );
 }
+
+std::string MDAL::coordinateToString( double coordinate, int precision )
+{
+
+  std::ostringstream oss;
+  oss.setf( std::ios::fixed );
+  if ( fabs( coordinate ) > 180 )
+    oss.precision( precision ); //seems to not be a geographic coordinate, so 'precision' digits after the digital point
+  else
+    oss.precision( 6 + precision ); //could be a geographic coordinate, so 'precision'+6 digits after the digital point
+
+  oss << coordinate;
+
+  std::string returnString = oss.str();
+  returnString.back();
+
+  //remove unnecessary '0' or '.'
+  if ( returnString.size() > 0 )
+  {
+    while ( '0' == returnString.back() )
+    {
+      returnString.pop_back();
+    }
+
+    if ( '.' == returnString.back() )
+      returnString.pop_back();
+  }
+
+  return returnString;
+}
+
+std::string MDAL::doubleToString( double value, int precision )
+{
+  std::ostringstream oss;
+  oss.precision( precision );
+  oss << value;
+  return oss.str();
+}
+
+

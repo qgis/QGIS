@@ -29,6 +29,7 @@ class QgsFeatureRequest;
 class QSignalMapper;
 class QgsMapLayerAction;
 class QgsScrollArea;
+class QgsFieldConditionalFormatWidget;
 
 /**
  * \ingroup gui
@@ -81,6 +82,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * \param parent  The parent widget
      */
     explicit QgsDualView( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsDualView() override;
 
     /**
      * Has to be called to initialize the dual view.
@@ -310,9 +312,9 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     void previewColumnChanged( QAction *previewAction, const QString &expression );
 
-    void viewWillShowContextMenu( QMenu *menu, const QModelIndex &atIndex );
+    void viewWillShowContextMenu( QMenu *menu, const QgsFeatureId featureId );
 
-    void widgetWillShowContextMenu( QgsActionMenu *menu, const QModelIndex &atIndex );
+    void widgetWillShowContextMenu( QgsActionMenu *menu, const QgsFeatureId featureId );
 
     void showViewHeaderMenu( QPoint point );
 
@@ -387,6 +389,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void updateEditSelectionProgress( int progress, int count );
     void panOrZoomToFeature( const QgsFeatureIds &featureset );
 
+    QgsFieldConditionalFormatWidget *mConditionalFormatWidget = nullptr;
     QgsAttributeEditorContext mEditorContext;
     QgsAttributeTableModel *mMasterModel = nullptr;
     QgsAttributeTableFilterModel *mFilterModel = nullptr;
@@ -406,6 +409,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     // If the current feature is set, while the form is still not initialized
     // we will temporarily save it in here and set it on init
     QgsFeature mTempAttributeFormFeature;
+    QgsFeatureIds mLastFeatureSet;
 
     friend class TestQgsDualView;
     friend class TestQgsAttributeTable;

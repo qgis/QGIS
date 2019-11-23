@@ -57,6 +57,7 @@
 #include "qgssettings.h"
 #include "qgsmaplayerlegend.h"
 #include "qgsfileutils.h"
+#include "qgswebview.h"
 
 #include <QDesktopServices>
 #include <QTableWidgetItem>
@@ -108,7 +109,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
   // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
   initOptionsBase( false );
-
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsRasterLayerProperties::showHelp );
 
   mBtnStyle = new QPushButton( tr( "Style" ) );
@@ -437,6 +437,21 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
     }
   }
 
+#ifdef WITH_QTWEBKIT
+  // Setup information tab
+  const int horizontalDpi = qApp->desktop()->screen()->logicalDpiX();
+  // Adjust zoom: text is ok, but HTML seems rather big at least on Linux/KDE
+  if ( horizontalDpi > 96 )
+  {
+    mMetadataViewer->setZoomFactor( mMetadataViewer->zoomFactor() * 0.9 );
+  }
+  mMetadataViewer->page()->setLinkDelegationPolicy( QWebPage::LinkDelegationPolicy::DelegateAllLinks );
+  connect( mMetadataViewer->page(), &QWebPage::linkClicked, this, &QgsRasterLayerProperties::urlClicked );
+  mMetadataViewer->page()->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
+  mMetadataViewer->page()->settings()->setAttribute( QWebSettings::JavascriptEnabled, true );
+
+#endif
+
   mRenderTypeComboBox_currentIndexChanged( widgetIndex );
 
   // update based on lyr's current state
@@ -564,11 +579,13 @@ void QgsRasterLayerProperties::setRendererWidget( const QString &rendererName )
 
   int alphaBand = -1;
   double opacity = 1;
+  QColor nodataColor;
   if ( oldRenderer )
   {
     // Retain alpha band and opacity when switching renderer
     alphaBand = oldRenderer->alphaBand();
     opacity = oldRenderer->opacity();
+    nodataColor = oldRenderer->nodataColor();
   }
 
   QgsRasterRendererRegistryEntry rendererEntry;
@@ -594,6 +611,7 @@ void QgsRasterLayerProperties::setRendererWidget( const QString &rendererName )
       }
       mRasterLayer->renderer()->setAlphaBand( alphaBand );
       mRasterLayer->renderer()->setOpacity( opacity );
+      mRasterLayer->renderer()->setNodataColor( nodataColor );
       mRendererWidget = rendererEntry.widgetCreateFunction( mRasterLayer, myExtent );
       mRendererWidget->setMapCanvas( mMapCanvas );
       mRendererStackedWidget->addWidget( mRendererWidget );
@@ -612,6 +630,14 @@ void QgsRasterLayerProperties::setRendererWidget( const QString &rendererName )
         delete newRenderer;
       }
     }
+  }
+
+  const int widgetIndex = mRenderTypeComboBox->findData( rendererName );
+  if ( widgetIndex != -1 )
+  {
+    mDisableRenderTypeComboBoxCurrentIndexChanged = true;
+    mRenderTypeComboBox->setCurrentIndex( widgetIndex );
+    mDisableRenderTypeComboBoxCurrentIndexChanged = false;
   }
 
   if ( mRendererWidget != oldWidget )
@@ -765,13 +791,7 @@ void QgsRasterLayerProperties::sync()
    * Metadata Tab
    */
   //populate the metadata tab's text browser widget with gdal metadata info
-  QString myStyle = QgsApplication::reportStyleSheet();
-  myStyle.append( QStringLiteral( "body { margin: 10px; }\n " ) );
-  teMetadataViewer->document()->setDefaultStyleSheet( myStyle );
-  teMetadataViewer->setHtml( mRasterLayer->htmlMetadata() );
-  teMetadataViewer->setOpenLinks( false );
-  connect( teMetadataViewer, &QTextBrowser::anchorClicked, this, &QgsRasterLayerProperties::urlClicked );
-  mMetadataFilled = true;
+  updateInformationContent();
 
   // WMS Name as layer short name
   mLayerShortNameLineEdit->setText( mRasterLayer->shortName() );
@@ -1184,9 +1204,7 @@ void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
   // pixmapLegend->repaint();
 
   //populate the metadata tab's text browser widget with gdal metadata info
-  QString myStyle = QgsApplication::reportStyleSheet();
-  teMetadataViewer->setHtml( mRasterLayer->htmlMetadata() );
-  teMetadataViewer->document()->setDefaultStyleSheet( myStyle );
+  updateInformationContent();
 }
 
 void QgsRasterLayerProperties::urlClicked( const QUrl &url )
@@ -1254,7 +1272,7 @@ void QgsRasterLayerProperties::pbnAddValuesManually_clicked()
 
 void QgsRasterLayerProperties::mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
-  QgisApp::instance()->askUserForDatumTransform( crs, QgsProject::instance()->crs() );
+  QgisApp::instance()->askUserForDatumTransform( crs, QgsProject::instance()->crs(), mRasterLayer );
   mRasterLayer->setCrs( crs );
   mMetadataWidget->crsChanged();
 }
@@ -1537,10 +1555,10 @@ void QgsRasterLayerProperties::optionsStackedWidget_CurrentChanged( int index )
   }
 
   if ( index == mOptStackedWidget->indexOf( mOptsPage_Information ) || !mMetadataFilled )
+  {
     //set the metadata contents (which can be expensive)
-    teMetadataViewer->clear();
-  teMetadataViewer->setHtml( mRasterLayer->htmlMetadata() );
-  mMetadataFilled = true;
+    updateInformationContent();
+  }
 }
 
 void QgsRasterLayerProperties::pbnImportTransparentPixelValues_clicked()
@@ -1811,7 +1829,7 @@ void QgsRasterLayerProperties::loadDefaultStyle_clicked()
 void QgsRasterLayerProperties::saveDefaultStyle_clicked()
 {
 
-  apply(); // make sure the style to save is uptodate
+  apply(); // make sure the style to save is up-to-date
 
   // a flag passed by reference
   bool defaultSavedFlag = false;
@@ -1883,7 +1901,7 @@ void QgsRasterLayerProperties::saveStyleAs_clicked()
     // ensure the user never omits the extension from the file name
     outputFileName = QgsFileUtils::ensureFileNameHasExtension( outputFileName, QStringList() << QStringLiteral( "qml" ) );
 
-  apply(); // make sure the style to save is uptodate
+  apply(); // make sure the style to save is up-to-date
 
   // then export style
   bool defaultLoadedFlag = false;
@@ -2041,6 +2059,15 @@ void QgsRasterLayerProperties::mResetColorRenderingBtn_clicked()
 bool QgsRasterLayerProperties::rasterIsMultiBandColor()
 {
   return mRasterLayer && nullptr != dynamic_cast<QgsMultiBandColorRenderer *>( mRasterLayer->renderer() );
+}
+
+void QgsRasterLayerProperties::updateInformationContent()
+{
+  const QString myStyle = QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType::WebBrowser );
+  // Inject the stylesheet
+  const QString html { mRasterLayer->htmlMetadata().replace( QStringLiteral( "<head>" ), QStringLiteral( R"raw(<head><style type="text/css">%1</style>)raw" ) ).arg( myStyle ) };
+  mMetadataViewer->setHtml( html );
+  mMetadataFilled = true;
 }
 
 void QgsRasterLayerProperties::onCancel()

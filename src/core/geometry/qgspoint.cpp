@@ -163,6 +163,9 @@ bool QgsPoint::fromWkt( const QString &wkt )
     return false;
   mWkbType = parts.first;
 
+  if ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 )
+    return true;
+
   QRegularExpression rx( QStringLiteral( "\\s" ) );
   QStringList coordinates = parts.second.split( rx, QString::SkipEmptyParts );
   if ( coordinates.size() < 2 )
@@ -225,13 +228,20 @@ QByteArray QgsPoint::asWkb() const
 
 QString QgsPoint::asWkt( int precision ) const
 {
-  QString wkt = wktTypeStr() + QLatin1String( " (" );
-  wkt += qgsDoubleToString( mX, precision ) + ' ' + qgsDoubleToString( mY, precision );
-  if ( is3D() )
-    wkt += ' ' + qgsDoubleToString( mZ, precision );
-  if ( isMeasure() )
-    wkt += ' ' + qgsDoubleToString( mM, precision );
-  wkt += ')';
+  QString wkt = wktTypeStr();
+
+  if ( isEmpty() )
+    wkt += QStringLiteral( " EMPTY" );
+  else
+  {
+    wkt += QLatin1String( " (" );
+    wkt += qgsDoubleToString( mX, precision ) + ' ' + qgsDoubleToString( mY, precision );
+    if ( is3D() )
+      wkt += ' ' + qgsDoubleToString( mZ, precision );
+    if ( isMeasure() )
+      wkt += ' ' + qgsDoubleToString( mM, precision );
+    wkt += ')';
+  }
   return wkt;
 }
 
@@ -242,7 +252,7 @@ QDomElement QgsPoint::asGml2( QDomDocument &doc, int precision, const QString &n
 
   // coordinate separator
   QString cs = QStringLiteral( "," );
-  // tupel separator
+  // tuple separator
   QString ts = QStringLiteral( " " );
 
   elemCoordinates.setAttribute( QStringLiteral( "cs" ), cs );
@@ -282,11 +292,16 @@ json QgsPoint::asJsonObject( int precision ) const
   json j
   {
     { "type", "Point" },
-    { "coordinates", { qgsRound( mX, precision ), qgsRound( mY, precision ) } },
+    { "coordinates", json::array() },
   };
-  if ( is3D() )
+  if ( ! isEmpty() )
   {
-    j["coordinates"].push_back( qgsRound( mZ, precision ) );
+    j["coordinates"].push_back( qgsRound( mX, precision ) );
+    j["coordinates"].push_back( qgsRound( mY, precision ) );
+    if ( is3D() )
+    {
+      j["coordinates"].push_back( qgsRound( mZ, precision ) );
+    }
   }
   return j;
 }
@@ -298,7 +313,7 @@ void QgsPoint::draw( QPainter &p ) const
 
 void QgsPoint::clear()
 {
-  mX = mY = 0.;
+  mX = mY = std::numeric_limits<double>::quiet_NaN();
   if ( is3D() )
     mZ = 0.;
   else
@@ -686,7 +701,7 @@ QgsPoint QgsPoint::project( double distance, double azimuth, double inclination 
 
 bool QgsPoint::isEmpty() const
 {
-  return false;
+  return std::isnan( mX ) || std::isnan( mY );
 }
 
 QgsRectangle QgsPoint::boundingBox() const

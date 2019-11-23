@@ -66,7 +66,7 @@ const QStringList QgsMapSettingsUtils::containsAdvancedEffects( const QgsMapSett
   return layers.toList();
 }
 
-QString QgsMapSettingsUtils::worldFileContent( const QgsMapSettings &mapSettings )
+void QgsMapSettingsUtils::worldFileParameters( const QgsMapSettings &mapSettings, double &a, double &b, double &c, double &d, double &e, double &f )
 {
   QgsMapSettings ms = mapSettings;
 
@@ -101,14 +101,20 @@ QString QgsMapSettingsUtils::worldFileContent( const QgsMapSettings &mapSettings
   r[5] = - xCenter * std::sin( alpha ) + yCenter * ( 1 - std::cos( alpha ) );
 
   // result = rotation x scaling = rotation(scaling(X))
-  double a = r[0] * s[0] + r[1] * s[3];
-  double b = r[0] * s[1] + r[1] * s[4];
-  double c = r[0] * s[2] + r[1] * s[5] + r[2];
-  double d = r[3] * s[0] + r[4] * s[3];
+  a = r[0] * s[0] + r[1] * s[3];
+  b = r[0] * s[1] + r[1] * s[4];
+  c = r[0] * s[2] + r[1] * s[5] + r[2];
+  d = r[3] * s[0] + r[4] * s[3];
   // Pixel YDim - almost always negative
   // See https://en.wikipedia.org/wiki/World_file#cite_ref-3, https://github.com/qgis/QGIS/issues/26379
-  double e =  r[3] * s[1] + r[4] * s[4];
-  double f = r[3] * s[2] + r[4] * s[5] + r[5];
+  e = r[3] * s[1] + r[4] * s[4];
+  f = r[3] * s[2] + r[4] * s[5] + r[5];
+}
+
+QString QgsMapSettingsUtils::worldFileContent( const QgsMapSettings &mapSettings )
+{
+  double a, b, c, d, e, f;
+  worldFileParameters( mapSettings, a, b, c, d, e, f );
 
   QString content;
   // Pixel XDim
@@ -119,9 +125,9 @@ QString QgsMapSettingsUtils::worldFileContent( const QgsMapSettings &mapSettings
   content += qgsDoubleToString( b ) + "\r\n";
   // Pixel YDim
   content += qgsDoubleToString( e ) + "\r\n";
-  // Origin X (center of top left cell)
+  // Origin X (top left cell)
   content += qgsDoubleToString( c ) + "\r\n";
-  // Origin Y (center of top left cell)
+  // Origin Y (top left cell)
   content += qgsDoubleToString( f ) + "\r\n";
 
   return content;

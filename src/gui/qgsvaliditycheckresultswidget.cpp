@@ -110,6 +110,14 @@ void QgsValidityCheckResultsWidget::setResults( const QList<QgsValidityCheckResu
 
   connect( mResultsListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsValidityCheckResultsWidget::selectionChanged );
 
+  if ( mResultsModel->rowCount() > 0 )
+  {
+    // auto select first result in list
+    const QModelIndex firstResult( mResultsModel->index( 0, 0, QModelIndex() ) );
+    mResultsListView->selectionModel()->select( firstResult, QItemSelectionModel::ClearAndSelect );
+    selectionChanged( firstResult, QModelIndex() );
+  }
+
   mDescriptionLabel->hide();
 }
 

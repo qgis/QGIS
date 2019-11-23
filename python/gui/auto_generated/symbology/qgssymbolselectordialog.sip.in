@@ -37,6 +37,10 @@ Symbol selector widget that can be used to select and build a symbol
 :param style: The style used by the widget.
 :param vl: The vector layer for the symbol.
 :param parent:
+
+.. note::
+
+   The ownership of the symbol is not transferred and must exist for the lifetime of the widget.
 %End
 
     QMenu *advancedMenu();
@@ -71,52 +75,7 @@ Returns the symbol that is currently active in the widget. Can be ``None``.
 :return: The active symbol.
 %End
 
-  protected:
 
-    void loadSymbol();
-%Docstring
-Reload the current symbol in the view.
-%End
-
-
-    void updateUi();
-%Docstring
-Update the state of the UI based on the currently set symbol layer.
-%End
-
-    void updateLockButton();
-%Docstring
-Update the lock button states based on the current symbol layer.
-%End
-
-
-    QgsSymbolLayer *currentLayer();
-%Docstring
-The current symbol layer that is active in the interface.
-
-:return: The active symbol layer.
-%End
-
-    void moveLayerByOffset( int offset );
-%Docstring
-Move the current active layer by a set offset in the list.
-
-:param offset: The offset to move the layer by
-%End
-
-    void setWidget( QWidget *widget );
-%Docstring
-Set the properties widget for the active symbol layer.
-
-:param widget: The widget to set to configure the active symbol layer.
-%End
-
-  signals:
-
-    void symbolModified();
-%Docstring
-Emiited when a symbol is modified in the widget.
-%End
 
   public slots:
 
@@ -179,9 +138,12 @@ alters tree and sets proper widget when Layer Type is changed
 \note: The layer is received from the LayerPropertiesWidget
 %End
 
+  signals:
 
-  protected: // data
-
+    void symbolModified();
+%Docstring
+Emitted when a symbol is modified in the widget.
+%End
 
 };
 
@@ -236,6 +198,7 @@ Returns the symbol that is currently active in the widget. Can be ``None``.
 :return: The active symbol.
 %End
 
+
     QDialogButtonBox *buttonBox() const;
 %Docstring
 Returns a reference to the dialog's button box.
@@ -243,27 +206,8 @@ Returns a reference to the dialog's button box.
 .. versionadded:: 3.10
 %End
 
-  protected:
-    virtual void keyPressEvent( QKeyEvent *e );
-
-
-    void loadSymbol();
-
-
-    void updateUi();
-
-    void updateLockButton();
-
-    QgsSymbolLayer *currentLayer();
-
-    void moveLayerByOffset( int offset );
-
-    void setWidget( QWidget *widget );
-
-  signals:
-    void symbolModified();
-
   public slots:
+
     void moveLayerDown();
     void moveLayerUp();
 
@@ -294,6 +238,15 @@ Slot to update tree when a new symbol from style
 alters tree and sets proper widget when Layer Type is changed
 \note: The layer is received from the LayerPropertiesWidget
 %End
+
+  protected:
+
+    virtual void keyPressEvent( QKeyEvent *e );
+
+
+  signals:
+
+    void symbolModified();
 
 };
 

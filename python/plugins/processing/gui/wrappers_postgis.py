@@ -103,7 +103,7 @@ class SchemaWidgetWrapper(WidgetWrapper):
 
     def setConnection(self, connection):
         self._connection = connection
-        # when there is NO connection (yet), this get's called with a ''-connection
+        # when there is NO connection (yet), this gets called with a ''-connection
         if isinstance(connection, str) and connection != '':
             self._database = GeoDB.from_name(connection)
         else:

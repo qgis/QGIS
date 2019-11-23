@@ -377,7 +377,7 @@ void QgsImageOperation::distanceTransform( QImage &image, const DistanceTransfor
   }
 
   //first convert to 1 bit alpha mask array
-  double *array = new double[ image.width() * image.height()];
+  double *array = new double[ static_cast< qgssize >( image.width() ) * image.height()];
   ConvertToArrayPixelOperation convertToArray( image.width(), array, properties.shadeExterior );
   runPixelOperation( image, convertToArray );
 
@@ -402,7 +402,7 @@ void QgsImageOperation::distanceTransform( QImage &image, const DistanceTransfor
 
 void QgsImageOperation::ConvertToArrayPixelOperation::operator()( QRgb &rgb, const int x, const int y )
 {
-  int idx = y * mWidth + x;
+  qgssize idx = y * static_cast< qgssize >( mWidth ) + x;
   if ( mExterior )
   {
     if ( qAlpha( rgb ) > 0 )
@@ -595,32 +595,6 @@ void QgsImageOperation::stackBlur( QImage &image, const int radius, const bool a
   {
     image = pImage->convertToFormat( originalFormat );
     delete pImage;
-  }
-}
-
-void QgsImageOperation::StackBlurLineOperation::operator()( QRgb *startRef, const int lineLength, const int bytesPerLine )
-{
-  unsigned char *p = reinterpret_cast< unsigned char * >( startRef );
-  int rgba[4];
-  int increment = ( mDirection == QgsImageOperation::ByRow ) ? 4 : bytesPerLine;
-  if ( !mForwardDirection )
-  {
-    p += ( lineLength - 1 ) * increment;
-    increment = -increment;
-  }
-
-  for ( int i = mi1; i <= mi2; ++i )
-  {
-    rgba[i] = p[i] << 4;
-  }
-
-  p += increment;
-  for ( int j = 1; j < lineLength; ++j, p += increment )
-  {
-    for ( int i = mi1; i <= mi2; ++i )
-    {
-      p[i] = ( rgba[i] += ( ( p[i] << 4 ) - rgba[i] ) * mAlpha / 16 ) >> 4;
-    }
   }
 }
 

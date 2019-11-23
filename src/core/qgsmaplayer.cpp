@@ -120,6 +120,7 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
   layer->setLegendUrl( legendUrl() );
   layer->setLegendUrlFormat( legendUrlFormat() );
   layer->setDependencies( dependencies() );
+  layer->mShouldValidateCrs = mShouldValidateCrs;
   layer->setCrs( crs() );
   layer->setCustomProperties( mCustomProperties );
 }
@@ -172,6 +173,11 @@ QgsDataProvider *QgsMapLayer::dataProvider()
 const QgsDataProvider *QgsMapLayer::dataProvider() const
 {
   return nullptr;
+}
+
+QString QgsMapLayer::shortName() const
+{
+  return mShortName;
 }
 
 QString QgsMapLayer::publicSource() const
@@ -607,6 +613,7 @@ QString QgsMapLayer::decodedSource( const QString &source, const QString &dataPr
 
 void QgsMapLayer::resolveReferences( QgsProject *project )
 {
+  emit beforeResolveReferences( project );
   if ( m3DRenderer )
     m3DRenderer->resolveReferences( *project );
 }
@@ -758,7 +765,7 @@ void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSign
 {
   mCRS = srs;
 
-  if ( isSpatial() && !mCRS.isValid() )
+  if ( mShouldValidateCrs && isSpatial() && !mCRS.isValid() )
   {
     mCRS.setValidationHint( tr( "Specify CRS for layer %1" ).arg( name() ) );
     mCRS.validate();
@@ -1030,7 +1037,7 @@ bool QgsMapLayer::importNamedStyle( QDomDocument &myDocument, QString &myErrorMe
 
   // get style file version string, if any
   QgsProjectVersion fileVersion( myRoot.attribute( QStringLiteral( "version" ) ) );
-  QgsProjectVersion thisVersion( Qgis::QGIS_VERSION );
+  QgsProjectVersion thisVersion( Qgis::version() );
 
   if ( thisVersion > fileVersion )
   {
@@ -1068,7 +1075,7 @@ void QgsMapLayer::exportNamedMetadata( QDomDocument &doc, QString &errorMsg ) co
   QDomDocument myDocument( documentType );
 
   QDomElement myRootNode = myDocument.createElement( QStringLiteral( "qgis" ) );
-  myRootNode.setAttribute( QStringLiteral( "version" ), Qgis::QGIS_VERSION );
+  myRootNode.setAttribute( QStringLiteral( "version" ), Qgis::version() );
   myDocument.appendChild( myRootNode );
 
   if ( !mMetadata.writeMetadataXml( myRootNode, myDocument ) )
@@ -1087,7 +1094,7 @@ void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg, const 
   QDomDocument myDocument( documentType );
 
   QDomElement myRootNode = myDocument.createElement( QStringLiteral( "qgis" ) );
-  myRootNode.setAttribute( QStringLiteral( "version" ), Qgis::QGIS_VERSION );
+  myRootNode.setAttribute( QStringLiteral( "version" ), Qgis::version() );
   myDocument.appendChild( myRootNode );
 
   if ( !writeSymbology( myRootNode, myDocument, errorMsg, context, categories ) )  // TODO: support relative paths in QML?
@@ -1720,6 +1727,31 @@ bool QgsMapLayer::isSpatial() const
   return true;
 }
 
+bool QgsMapLayer::isTemporary() const
+{
+  // invalid layers are temporary? -- who knows?!
+  if ( !isValid() )
+    return false;
+
+  if ( mProviderKey == QLatin1String( "memory" ) )
+    return true;
+
+  const QVariantMap sourceParts = QgsProviderRegistry::instance()->decodeUri( mProviderKey, mDataSource );
+  const QString path = sourceParts.value( QStringLiteral( "path" ) ).toString();
+  if ( path.isEmpty() )
+    return false;
+
+  // check if layer path is inside one of the standard temporary file locations for this platform
+  const QStringList tempPaths = QStandardPaths::standardLocations( QStandardPaths::TempLocation );
+  for ( const QString &tempPath : tempPaths )
+  {
+    if ( path.startsWith( tempPath ) )
+      return true;
+  }
+
+  return false;
+}
+
 void QgsMapLayer::setValid( bool valid )
 {
   mValid = valid;
@@ -1769,7 +1801,12 @@ QgsAbstract3DRenderer *QgsMapLayer::renderer3D() const
 
 void QgsMapLayer::triggerRepaint( bool deferredUpdate )
 {
+  if ( mRepaintRequestedFired )
+    return;
+
+  mRepaintRequestedFired = true;
   emit repaintRequested( deferredUpdate );
+  mRepaintRequestedFired = false;
 }
 
 void QgsMapLayer::setMetadata( const QgsLayerMetadata &metadata )
@@ -1797,54 +1834,6 @@ void QgsMapLayer::emitStyleChanged()
 void QgsMapLayer::setExtent( const QgsRectangle &r )
 {
   mExtent = r;
-}
-
-static QList<const QgsMapLayer *> _depOutEdges( const QgsMapLayer *vl, const QgsMapLayer *that, const QSet<QgsMapLayerDependency> &layers )
-{
-  QList<const QgsMapLayer *> lst;
-  if ( vl == that )
-  {
-    const auto constLayers = layers;
-    for ( const QgsMapLayerDependency &dep : constLayers )
-    {
-      if ( const QgsMapLayer *l = QgsProject::instance()->mapLayer( dep.layerId() ) )
-        lst << l;
-    }
-  }
-  else
-  {
-    const auto constDependencies = vl->dependencies();
-    for ( const QgsMapLayerDependency &dep : constDependencies )
-    {
-      if ( const QgsMapLayer *l = QgsProject::instance()->mapLayer( dep.layerId() ) )
-        lst << l;
-    }
-  }
-  return lst;
-}
-
-static bool _depHasCycleDFS( const QgsMapLayer *n, QHash<const QgsMapLayer *, int> &mark, const QgsMapLayer *that, const QSet<QgsMapLayerDependency> &layers )
-{
-  if ( mark.value( n ) == 1 ) // temporary
-    return true;
-  if ( mark.value( n ) == 0 ) // not visited
-  {
-    mark[n] = 1; // temporary
-    const auto depOutEdges { _depOutEdges( n, that, layers ) };
-    for ( const QgsMapLayer *m : depOutEdges )
-    {
-      if ( _depHasCycleDFS( m, mark, that, layers ) )
-        return true;
-    }
-    mark[n] = 2; // permanent
-  }
-  return false;
-}
-
-bool QgsMapLayer::hasDependencyCycle( const QSet<QgsMapLayerDependency> &layers ) const
-{
-  QHash<const QgsMapLayer *, int> marks;
-  return _depHasCycleDFS( this, marks, this, layers );
 }
 
 bool QgsMapLayer::isReadOnly() const
@@ -1902,8 +1891,6 @@ bool QgsMapLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
     if ( dep.origin() == QgsMapLayerDependency::FromUser )
       deps << dep;
   }
-  if ( hasDependencyCycle( deps ) )
-    return false;
 
   mDependencies = deps;
   emit dependenciesChanged();
@@ -1933,4 +1920,3 @@ void QgsMapLayer::onNotifiedTriggerRepaint( const QString &message )
   if ( refreshOnNotifyMessage().isEmpty() || refreshOnNotifyMessage() == message )
     triggerRepaint();
 }
-

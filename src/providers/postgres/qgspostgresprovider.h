@@ -84,7 +84,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
       QString *errorMessage = nullptr,
-      const QMap<QString, QVariant> *coordinateTransformContext = nullptr
+      const QMap<QString, QVariant> *options = nullptr
     );
 
     /**
@@ -206,6 +206,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QString name() const override;
     QString description() const override;
     QgsTransaction *transaction() const override;
+    static QString providerKey();
 
     /**
      * Convert the postgres string representation into the given QVariant type.
@@ -381,6 +382,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QString mPrimaryKeyDefault;
 
     QString mGeometryColumn;          //!< Name of the geometry column
+    QString mBoundingBoxColumn;       //!< Name of the bounding box column
     mutable QgsRectangle mLayerExtent;        //!< Rectangle that contains the extent (bounding box) of the layer
 
     QgsWkbTypes::Type mDetectedGeomType = QgsWkbTypes::Unknown ;  //!< Geometry type detected in the database
@@ -564,8 +566,14 @@ class QgsPostgresProviderMetadata: public QgsProviderMetadata
     bool deleteStyleById( const QString &uri, QString styleId, QString &errCause ) override;
     QString getStyleById( const QString &uri, QString styleId, QString &errCause ) override;
     QgsTransaction *createTransaction( const QString &connString ) override;
+    QMap<QString, QgsAbstractProviderConnection *> connections( bool cached = true ) override;
+    QgsAbstractProviderConnection *createConnection( const QString &name ) override;
+    QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration ) override;
+    void deleteConnection( const QString &name ) override;
+    void saveConnection( const QgsAbstractProviderConnection *createConnection, const QString &name ) override;
     void initProvider() override;
     void cleanupProvider() override;
+    QVariantMap decodeUri( const QString &uri ) override;
 };
 
 // clazy:excludeall=qstring-allocations

@@ -440,16 +440,23 @@ void O2::onRefreshFinished() {
     if (refreshReply->error() == QNetworkReply::NoError) {
         QByteArray reply = refreshReply->readAll();
         QVariantMap tokens = parseTokenResponse(reply);
-        setToken(tokens.value(O2_OAUTH2_ACCESS_TOKEN).toString());
-        setExpires(QDateTime::currentMSecsSinceEpoch() / 1000 + tokens.value(O2_OAUTH2_EXPIRES_IN).toInt());
-        const QString refreshToken = tokens.value(O2_OAUTH2_REFRESH_TOKEN).toString();
-        if ( !refreshToken.isEmpty() )
-          setRefreshToken(refreshToken);
+        if ( tokens.contains(QStringLiteral("error")) ) {
+          qDebug() << " Error refreshing token" << tokens.value(QStringLiteral("error")).toMap().value(QStringLiteral("message")).toString().toLocal8Bit().constData();
+          unlink();
+        }
+        else
+        {
+          setToken(tokens.value(O2_OAUTH2_ACCESS_TOKEN).toString());
+          setExpires(QDateTime::currentMSecsSinceEpoch() / 1000 + tokens.value(O2_OAUTH2_EXPIRES_IN).toInt());
+          const QString refreshToken = tokens.value(O2_OAUTH2_REFRESH_TOKEN).toString();
+          if ( !refreshToken.isEmpty() )
+            setRefreshToken(refreshToken);
+          setLinked(true);
+          qDebug() << " New token expires in" << expires() << "seconds";
+          Q_EMIT linkingSucceeded();
+        }
         timedReplies_.remove(refreshReply);
-        setLinked(true);
-        Q_EMIT linkingSucceeded();
         Q_EMIT refreshFinished(QNetworkReply::NoError);
-        qDebug() << " New token expires in" << expires() << "seconds";
     }
     else
     {

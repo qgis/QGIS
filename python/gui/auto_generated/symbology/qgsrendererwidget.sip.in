@@ -78,7 +78,14 @@ vector layers have been changed. Will request the parent dialog
 to re-synchronize with the variables.
 %End
 
+    void symbolLevelsChanged();
+%Docstring
+Emitted when the symbol levels settings have been changed.
+%End
+
   protected:
+
+
 
 
     virtual QList<QgsSymbol *> selectedSymbols();
@@ -123,8 +130,16 @@ Change marker sizes of selected symbols
 Change marker angles of selected symbols
 %End
 
+
     virtual void copy();
     virtual void paste();
+
+    virtual void pasteSymbolToSelection();
+%Docstring
+Pastes the clipboard symbol over selected items.
+
+.. versionadded:: 3.10
+%End
 
   private:
     virtual void apply();

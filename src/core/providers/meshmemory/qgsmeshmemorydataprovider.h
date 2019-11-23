@@ -77,7 +77,7 @@ class CORE_EXPORT QgsMeshMemoryDataProvider: public QgsMeshDataProvider
     /**
      * Construct a mesh in-memory data provider from data string
      *
-     * Data string constains simple definition of vertices and faces
+     * Data string contains simple definition of vertices and faces
      * Each entry is separated by "\n" sign and section deliminer "---"
      * vertex is x and y coordinate separated by comma
      * face is list of vertex indexes, numbered from 0
@@ -111,7 +111,7 @@ class CORE_EXPORT QgsMeshMemoryDataProvider: public QgsMeshDataProvider
     /**
      * Adds dataset to a mesh in-memory data provider from data string
      *
-     * Data string constains simple definition of datasets
+     * Data string contains simple definition of datasets
      * Each entry is separated by "\n" sign and section deliminer "---"
      * First section defines the dataset group: Vertex/Face Vector/Scalar Name
      * Second section defines the group metadata: key: value pairs

@@ -140,6 +140,11 @@ class GUI_EXPORT QgsMapUnitScaleDialog : public QDialog
      */
     void setMapCanvas( QgsMapCanvas *canvas );
 
+  private slots:
+
+    void showHelp();
+
+
   private:
 
     QgsMapUnitScaleWidget *mWidget = nullptr;

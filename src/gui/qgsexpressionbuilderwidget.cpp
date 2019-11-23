@@ -48,6 +48,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   , mProject( QgsProject::instance() )
 {
   setupUi( this );
+
   connect( btnRun, &QToolButton::pressed, this, &QgsExpressionBuilderWidget::btnRun_pressed );
   connect( btnNewFile, &QToolButton::pressed, this, &QgsExpressionBuilderWidget::btnNewFile_pressed );
   connect( cmbFileNames, &QListWidget::currentItemChanged, this, &QgsExpressionBuilderWidget::cmbFileNames_currentItemChanged );
@@ -58,6 +59,8 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   connect( txtSearchEdit, &QgsFilterLineEdit::textChanged, this, &QgsExpressionBuilderWidget::txtSearchEdit_textChanged );
   connect( lblPreview, &QLabel::linkActivated, this, &QgsExpressionBuilderWidget::lblPreview_linkActivated );
   connect( mValuesListView, &QListView::doubleClicked, this, &QgsExpressionBuilderWidget::mValuesListView_doubleClicked );
+
+  txtHelpText->setOpenExternalLinks( true );
 
   mValueGroupBox->hide();
 //  highlighter = new QgsExpressionHighlighter( txtExpressionString->document() );
@@ -408,17 +411,13 @@ void QgsExpressionBuilderWidget::loadFieldNames( const QgsFields &fields )
 
   txtExpressionString->setFields( fields );
 
-  QStringList fieldNames;
-  fieldNames.reserve( fields.count() );
   for ( int i = 0; i < fields.count(); ++i )
   {
-    QgsField field = fields.at( i );
-    QString fieldName = field.name();
-    fieldNames << fieldName;
+    const QgsField field = fields.at( i );
     QIcon icon = fields.iconForField( i );
-    registerItem( QStringLiteral( "Fields and Values" ), fieldName, " \"" + fieldName + "\" ", QString(), QgsExpressionItem::Field, false, i, icon );
+    registerItem( QStringLiteral( "Fields and Values" ), field.displayNameWithAlias(),
+                  " \"" + field.name() + "\" ", QString(), QgsExpressionItem::Field, false, i, icon );
   }
-  //  highlighter->addFields( fieldNames );
 }
 
 void QgsExpressionBuilderWidget::loadFieldsAndValues( const QMap<QString, QStringList> &fieldValues )

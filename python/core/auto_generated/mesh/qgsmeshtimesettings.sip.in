@@ -25,7 +25,7 @@ Represents a mesh time settings for mesh datasets
   public:
     QgsMeshTimeSettings();
 %Docstring
-Default constructor for relative time formate and 0 offset
+Default constructor for relative time format and 0 offset
 %End
     QgsMeshTimeSettings( double relativeTimeOffsetHours, const QString &relativeTimeFormat );
 %Docstring

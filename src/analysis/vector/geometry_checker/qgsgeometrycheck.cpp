@@ -31,6 +31,12 @@ QgsGeometryCheck::QgsGeometryCheck( const QgsGeometryCheckContext *context, cons
   , mConfiguration( configuration )
 {}
 
+void QgsGeometryCheck::prepare( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
+{
+  Q_UNUSED( context )
+  Q_UNUSED( configuration )
+}
+
 bool QgsGeometryCheck::isCompatible( QgsVectorLayer *layer ) const
 {
   return compatibleGeometryTypes().contains( layer->geometryType() );

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>344</width>
-    <height>267</height>
+    <height>377</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -68,6 +68,20 @@
         <string>Load</string>
        </property>
       </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QLabel" name="mLabelDataInterpolation">
+       <property name="text">
+        <string>Resampling method</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="mScalarInterpolationTypeComboBox"/>
      </item>
     </layout>
    </item>

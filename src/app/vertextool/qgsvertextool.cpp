@@ -760,7 +760,7 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
 
       snapUtils->setConfig( config );
       SelectedMatchFilter filter( tol, mLockedFeature.get() );
-      m = snapUtils->snapToMap( mapPoint, &filter );
+      m = snapUtils->snapToMap( mapPoint, &filter, true );
 
       // we give priority to snap matches that are from selected features
       if ( filter.hasSelectedMatch() )
@@ -787,7 +787,7 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
 
     snapUtils->setConfig( config );
     SelectedMatchFilter filter( tol, mLockedFeature.get() );
-    m = snapUtils->snapToMap( mapPoint, &filter );
+    m = snapUtils->snapToMap( mapPoint, &filter, true );
 
     // we give priority to snap matches that are from selected features
     if ( filter.hasSelectedMatch() )
@@ -802,7 +802,7 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
   if ( mLastSnap )
   {
     OneFeatureFilter filterLast( mLastSnap->layer(), mLastSnap->featureId() );
-    QgsPointLocator::Match lastMatch = snapUtils->snapToMap( mapPoint, &filterLast );
+    QgsPointLocator::Match lastMatch = snapUtils->snapToMap( mapPoint, &filterLast, true );
     // but skip the the previously used feature if it would only snap to segment, while now we have snap to vertex
     // so that if there is a point on a line, it gets priority (as is usual with combined vertex+segment snapping)
     bool matchHasVertexLastHasEdge = m.hasVertex() && lastMatch.hasEdge();
@@ -834,7 +834,7 @@ QgsPointLocator::Match QgsVertexTool::snapToPolygonInterior( QgsMapMouseEvent *e
   {
     if ( currentVlayer->isEditable() && currentVlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
     {
-      QgsPointLocator::MatchList matchList = snapUtils->locatorForLayer( currentVlayer )->pointInPolygon( mapPoint );
+      QgsPointLocator::MatchList matchList = snapUtils->locatorForLayer( currentVlayer )->pointInPolygon( mapPoint, true );
       if ( !matchList.isEmpty() )
       {
         m = matchList.first();
@@ -854,7 +854,7 @@ QgsPointLocator::Match QgsVertexTool::snapToPolygonInterior( QgsMapMouseEvent *e
 
       if ( vlayer->isEditable() && vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
       {
-        QgsPointLocator::MatchList matchList = snapUtils->locatorForLayer( vlayer )->pointInPolygon( mapPoint );
+        QgsPointLocator::MatchList matchList = snapUtils->locatorForLayer( vlayer )->pointInPolygon( mapPoint, true );
         if ( !matchList.isEmpty() )
         {
           m = matchList.first();
@@ -886,7 +886,7 @@ QList<QgsPointLocator::Match> QgsVertexTool::findEditableLayerMatches( const Qgs
 
   if ( layer->geometryType() == QgsWkbTypes::PolygonGeometry )
   {
-    matchList << locator->pointInPolygon( mapPoint );
+    matchList << locator->pointInPolygon( mapPoint, true );
   }
 
   double tolerance = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
@@ -1413,12 +1413,13 @@ void QgsVertexTool::showVertexEditor()  //#spellok
 
 void QgsVertexTool::cleanupVertexEditor()
 {
-  mLockedFeature.reset();
-  // do not delete immediately because vertex editor
-  // can be still used in the qt event loop
-  mVertexEditor->deleteLater();
-
-  updateLockedFeatureVertices();
+  if ( mVertexEditor )
+  {
+    cleanupLockedFeature();
+    // do not delete immediately because vertex editor
+    // can be still used in the qt event loop
+    mVertexEditor->deleteLater();
+  }
 }
 
 void QgsVertexTool::cleanupLockedFeature()
@@ -1773,7 +1774,7 @@ QList<QgsPointLocator::Match> QgsVertexTool::layerVerticesSnappedToPoint( QgsVec
 {
   MatchCollectingFilter myfilter( this );
   QgsPointLocator *loc = canvas()->snappingUtils()->locatorForLayer( layer );
-  loc->nearestVertex( mapPoint, 0, &myfilter );
+  loc->nearestVertex( mapPoint, 0, &myfilter, true );
   return myfilter.matches;
 }
 
@@ -1934,7 +1935,7 @@ void QgsVertexTool::stopDragging()
   mSnapIndicator->setMatch( QgsPointLocator::Match() );
 }
 
-QgsPointXY QgsVertexTool::matchToLayerPoint( const QgsVectorLayer *destLayer, const QgsPointXY &mapPoint, const QgsPointLocator::Match *match )
+QgsPoint QgsVertexTool::matchToLayerPoint( const QgsVectorLayer *destLayer, const QgsPointXY &mapPoint, const QgsPointLocator::Match *match )
 {
   // try to use point coordinates in the original CRS if it is the same
   if ( match && match->hasVertex() && match->layer() && match->layer()->crs() == destLayer->crs() )
@@ -1946,7 +1947,7 @@ QgsPointXY QgsVertexTool::matchToLayerPoint( const QgsVectorLayer *destLayer, co
   }
 
   // fall back to reprojection of the map point to layer point if they are not the same CRS
-  return toLayerCoordinates( destLayer, mapPoint );
+  return QgsPoint( toLayerCoordinates( destLayer, mapPoint ) );
 }
 
 void QgsVertexTool::moveEdge( const QgsPointXY &mapPoint )
@@ -1973,7 +1974,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
   QgsGeometry geom = cachedGeometryForVertex( *mDraggingVertex );
   stopDragging();
 
-  QgsPointXY layerPoint = matchToLayerPoint( dragLayer, mapPoint, mapPointMatch );
+  QgsPoint layerPoint = matchToLayerPoint( dragLayer, mapPoint, mapPointMatch );
 
   QgsVertexId vid;
   if ( !geom.vertexIdFromVertexNr( dragVertexId, vid ) )
@@ -1991,7 +1992,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
       vid.vertex++;
 
     QgsPoint pt( layerPoint );
-    if ( QgsWkbTypes::hasZ( dragLayer->wkbType() ) )
+    if ( QgsWkbTypes::hasZ( dragLayer->wkbType() ) && !pt.is3D() )
       pt.addZValue( defaultZValue() );
 
     if ( !geomTmp->insertVertex( vid, pt ) )
@@ -2002,7 +2003,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
   }
   else
   {
-    if ( !geomTmp->moveVertex( vid, QgsPoint( layerPoint ) ) )
+    if ( !geomTmp->moveVertex( vid, layerPoint ) )
     {
       QgsDebugMsg( QStringLiteral( "move vertex failed!" ) );
       return;
@@ -2035,7 +2036,10 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
     {
       if ( layer->crs() == mapPointMatch->layer()->crs() )
       {
+        if ( !layerPoint.is3D() )
+          layerPoint.addZValue( defaultZValue() );
         layer->addTopologicalPoints( layerPoint );
+        mapPointMatch->layer()->addTopologicalPoints( layerPoint );
       }
     }
   }
@@ -2061,7 +2065,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
 }
 
 
-void QgsVertexTool::addExtraVerticesToEdits( QgsVertexTool::VertexEdits &edits, const QgsPointXY &mapPoint, QgsVectorLayer *dragLayer, const QgsPointXY &layerPoint )
+void QgsVertexTool::addExtraVerticesToEdits( QgsVertexTool::VertexEdits &edits, const QgsPointXY &mapPoint, QgsVectorLayer *dragLayer, const QgsPoint &layerPoint )
 {
   Q_ASSERT( mDraggingExtraVertices.count() == mDraggingExtraVerticesOffset.count() );
   // add moved vertices from other layers
@@ -2077,11 +2081,11 @@ void QgsVertexTool::addExtraVerticesToEdits( QgsVertexTool::VertexEdits &edits, 
     else
       topoGeom = QgsGeometry( cachedGeometryForVertex( topo ) );
 
-    QgsPointXY point;
+    QgsPoint point;
     if ( dragLayer && topo.layer->crs() == dragLayer->crs() )
       point = layerPoint;  // this point may come from exact match so it may be more precise
     else
-      point = toLayerCoordinates( topo.layer, mapPoint );
+      point = QgsPoint( toLayerCoordinates( topo.layer, mapPoint ) );
 
     if ( offset.x() || offset.y() )
     {
@@ -2098,7 +2102,7 @@ void QgsVertexTool::addExtraVerticesToEdits( QgsVertexTool::VertexEdits &edits, 
 }
 
 
-void QgsVertexTool::addExtraSegmentsToEdits( QgsVertexTool::VertexEdits &edits, const QgsPointXY &mapPoint, QgsVectorLayer *dragLayer, const QgsPointXY &layerPoint )
+void QgsVertexTool::addExtraSegmentsToEdits( QgsVertexTool::VertexEdits &edits, const QgsPointXY &mapPoint, QgsVectorLayer *dragLayer, const QgsPoint &layerPoint )
 {
   // insert new vertex also to other geometries/layers
   for ( int i = 0; i < mDraggingExtraSegments.count(); ++i )
@@ -2116,7 +2120,7 @@ void QgsVertexTool::addExtraSegmentsToEdits( QgsVertexTool::VertexEdits &edits, 
     if ( dragLayer && topo.layer->crs() == dragLayer->crs() )
       point = layerPoint;  // this point may come from exact match so it may be more precise
     else
-      point = toLayerCoordinates( topo.layer, mapPoint );
+      point = QgsPoint( toLayerCoordinates( topo.layer, mapPoint ) );
 
     QgsPoint pt( point );
     if ( QgsWkbTypes::hasZ( topo.layer->wkbType() ) )

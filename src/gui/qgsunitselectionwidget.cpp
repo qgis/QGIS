@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgsunitselectionwidget.h"
+#include "qgshelp.h"
 #include <QDialogButtonBox>
 
 QgsMapUnitScaleWidget::QgsMapUnitScaleWidget( QWidget *parent )
@@ -159,7 +160,7 @@ void QgsUnitSelectionWidget::setUnits( const QgsUnitTypes::RenderUnitList &units
   mMapUnitIdx = -1;
   if ( units.contains( QgsUnitTypes::RenderMillimeters ) )
   {
-    mUnitCombo->addItem( tr( "Millimeter" ), QgsUnitTypes::RenderMillimeters );
+    mUnitCombo->addItem( tr( "Millimeters" ), QgsUnitTypes::RenderMillimeters );
   }
   if ( units.contains( QgsUnitTypes::RenderPoints ) )
   {
@@ -273,9 +274,10 @@ QgsMapUnitScaleDialog::QgsMapUnitScaleDialog( QWidget *parent )
   QVBoxLayout *vLayout = new QVBoxLayout();
   mWidget = new QgsMapUnitScaleWidget();
   vLayout->addWidget( mWidget );
-  QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal );
+  QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok, Qt::Horizontal );
   connect( bbox, &QDialogButtonBox::accepted, this, &QgsMapUnitScaleDialog::accept );
   connect( bbox, &QDialogButtonBox::rejected, this, &QgsMapUnitScaleDialog::reject );
+  connect( bbox, &QDialogButtonBox::helpRequested, this, &QgsMapUnitScaleDialog::showHelp );
   vLayout->addWidget( bbox );
   setLayout( vLayout );
   setWindowTitle( tr( "Adjust Scaling Range" ) );
@@ -294,4 +296,9 @@ void QgsMapUnitScaleDialog::setMapUnitScale( const QgsMapUnitScale &scale )
 void QgsMapUnitScaleDialog::setMapCanvas( QgsMapCanvas *canvas )
 {
   mWidget->setMapCanvas( canvas );
+}
+
+void QgsMapUnitScaleDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#unit-selector" ) );
 }

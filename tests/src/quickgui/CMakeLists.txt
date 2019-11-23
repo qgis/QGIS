@@ -28,18 +28,18 @@ INCLUDE_DIRECTORIES(
     ${CMAKE_SOURCE_DIR}/src/quickgui
     ${CMAKE_SOURCE_DIR}/src/test
     ${CMAKE_SOURCE_DIR}/external
+    ${CMAKE_SOURCE_DIR}/external/nlohmann
 
     ${CMAKE_BINARY_DIR}/src/core
     ${CMAKE_BINARY_DIR}/src/native
     ${CMAKE_BINARY_DIR}/src/quickgui
-
 )
 
 INCLUDE_DIRECTORIES(SYSTEM
-    ${LIBZIP_INCLUDE_DIRS}
-    ${SPATIALINDEX_INCLUDE_DIR}
     ${PROJ_INCLUDE_DIR}
     ${GEOS_INCLUDE_DIR}
+    ${LIBZIP_INCLUDE_DIRS}
+    ${SPATIALINDEX_INCLUDE_DIR}
     ${GDAL_INCLUDE_DIR}
     ${EXPAT_INCLUDE_DIR}
     ${SQLITE3_INCLUDE_DIR}
@@ -61,7 +61,6 @@ MACRO (ADD_QGIS_TEST testname testsrc)
   SET(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
   ADD_CUSTOM_TARGET(qgis_${testname}moc ALL DEPENDS ${qgis_${testname}_MOC_SRCS})
   ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS})
-  SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES AUTOMOC TRUE)
   TARGET_LINK_LIBRARIES(qgis_${testname}
     ${Qt5Xml_LIBRARIES}
     ${Qt5Core_LIBRARIES}

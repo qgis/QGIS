@@ -163,6 +163,17 @@ class GUI_EXPORT QgsDataItemGuiProvider
      * \since QGIS 3.10
      */
     virtual bool handleDrop( QgsDataItem *item, QgsDataItemGuiContext context, const QMimeData *data, Qt::DropAction action );
+
+    /**
+     * Creates source widget from data item for QgsBrowserPropertiesWidget
+     * By default it returns nullptr.
+     * Caller takes responsibility of deleting created.
+     *
+     * The function is replacement of QgsDataItem::paramWidget()
+     *
+     * \since QGIS 3.10
+     */
+    virtual QWidget *createParamWidget( QgsDataItem *item, QgsDataItemGuiContext context ) SIP_FACTORY;
 };
 
 #endif // QGSDATAITEMGUIPROVIDER_H

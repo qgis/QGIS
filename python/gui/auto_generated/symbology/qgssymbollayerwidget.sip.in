@@ -655,6 +655,46 @@ Creates a new QgsPointPatternFillSymbolLayerWidget.
 
 
 
+
+class QgsRandomMarkerFillSymbolLayerWidget: QgsSymbolLayerWidget
+{
+%Docstring
+
+Widget for controlling the properties of a :py:class:`QgsRandomMarkerFillSymbolLayer`.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgssymbollayerwidget.h"
+%End
+  public:
+
+    QgsRandomMarkerFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsRandomMarkerFillSymbolLayerWidget.
+
+:param vl: associated vector layer
+:param parent: parent widget
+%End
+
+    static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
+%Docstring
+Creates a new QgsRandomMarkerFillSymbolLayerWidget.
+
+:param vl: associated vector layer
+%End
+
+    virtual void setSymbolLayer( QgsSymbolLayer *layer );
+
+    virtual QgsSymbolLayer *symbolLayer();
+
+
+};
+
+
+
+
 class QgsFontMarkerSymbolLayerWidget : QgsSymbolLayerWidget
 {
 

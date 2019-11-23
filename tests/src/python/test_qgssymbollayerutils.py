@@ -38,6 +38,51 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
         s2 = QgsSymbolLayerUtils.decodeSize('')
         self.assertEqual(s2, QSizeF(0, 0))
 
+    def testToSize(self):
+        s2, ok = QgsSymbolLayerUtils.toSize(None)
+        self.assertFalse(ok)
+
+        s2, ok = QgsSymbolLayerUtils.toSize(4)
+        self.assertFalse(ok)
+
+        s2, ok = QgsSymbolLayerUtils.toSize('4')
+        self.assertFalse(ok)
+
+        # arrays
+        s2, ok = QgsSymbolLayerUtils.toSize([4])
+        self.assertFalse(ok)
+
+        s2, ok = QgsSymbolLayerUtils.toSize([])
+        self.assertFalse(ok)
+
+        s2, ok = QgsSymbolLayerUtils.toSize([4, 5, 6])
+        self.assertFalse(ok)
+
+        s2, ok = QgsSymbolLayerUtils.toSize([4, 5])
+        self.assertTrue(ok)
+        self.assertEqual(s2, QSizeF(4, 5))
+
+        s2, ok = QgsSymbolLayerUtils.toSize(['4', '5'])
+        self.assertTrue(ok)
+        self.assertEqual(s2, QSizeF(4, 5))
+
+        # string values
+        s = QSizeF()
+        string = QgsSymbolLayerUtils.encodeSize(s)
+        s2, ok = QgsSymbolLayerUtils.toSize(string)
+        self.assertTrue(ok)
+        self.assertEqual(s2, s)
+        s = QSizeF(1.5, 2.5)
+        string = QgsSymbolLayerUtils.encodeSize(s)
+        s2, ok = QgsSymbolLayerUtils.toSize(string)
+        self.assertTrue(ok)
+        self.assertEqual(s2, s)
+
+        # bad string
+        s2, ok = QgsSymbolLayerUtils.toSize('')
+        self.assertFalse(ok)
+        self.assertEqual(s2, QSizeF())
+
     def testEncodeDecodePoint(self):
         s = QPointF()
         string = QgsSymbolLayerUtils.encodePoint(s)
@@ -50,6 +95,51 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
 
         # bad string
         s2 = QgsSymbolLayerUtils.decodePoint('')
+        self.assertEqual(s2, QPointF())
+
+    def testToPoint(self):
+        s2, ok = QgsSymbolLayerUtils.toPoint(None)
+        self.assertFalse(ok)
+
+        s2, ok = QgsSymbolLayerUtils.toPoint(4)
+        self.assertFalse(ok)
+
+        s2, ok = QgsSymbolLayerUtils.toPoint('4')
+        self.assertFalse(ok)
+
+        # arrays
+        s2, ok = QgsSymbolLayerUtils.toPoint([4])
+        self.assertFalse(ok)
+
+        s2, ok = QgsSymbolLayerUtils.toPoint([])
+        self.assertFalse(ok)
+
+        s2, ok = QgsSymbolLayerUtils.toPoint([4, 5, 6])
+        self.assertFalse(ok)
+
+        s2, ok = QgsSymbolLayerUtils.toPoint([4, 5])
+        self.assertTrue(ok)
+        self.assertEqual(s2, QPointF(4, 5))
+
+        s2, ok = QgsSymbolLayerUtils.toPoint(['4', '5'])
+        self.assertTrue(ok)
+        self.assertEqual(s2, QPointF(4, 5))
+
+        # string values
+        s = QPointF()
+        string = QgsSymbolLayerUtils.encodePoint(s)
+        s2, ok = QgsSymbolLayerUtils.toPoint(string)
+        self.assertTrue(ok)
+        self.assertEqual(s2, s)
+        s = QPointF(1.5, 2.5)
+        string = QgsSymbolLayerUtils.encodePoint(s)
+        s2, ok = QgsSymbolLayerUtils.toPoint(string)
+        self.assertTrue(ok)
+        self.assertEqual(s2, s)
+
+        # bad string
+        s2, ok = QgsSymbolLayerUtils.toPoint('')
+        self.assertFalse(ok)
         self.assertEqual(s2, QPointF())
 
     def testDecodeArrowHeadType(self):

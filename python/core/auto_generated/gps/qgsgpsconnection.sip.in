@@ -11,6 +11,10 @@
 
 
 
+%ModuleHeaderCode
+#include "qgsgpsconnection.h"
+%End
+
 struct QgsSatelliteInfo
 {
   int id;
@@ -22,25 +26,48 @@ struct QgsSatelliteInfo
 
 struct QgsGpsInformation
 {
+
+  enum FixStatus
+  {
+    NoData,
+    NoFix,
+    Fix2D,
+    Fix3D
+  };
+
   double latitude;
   double longitude;
   double elevation;
-  double speed; //in km/h
+  double speed;
   double direction;
   QList<QgsSatelliteInfo> satellitesInView;
   double pdop;
   double hdop;
   double vdop;
-  double hacc; //horizontal accuracy in meters
-  double vacc; //vertical accuracy in meters
+  double hacc;
+  double vacc;
   QDateTime utcDateTime;
   QChar fixMode;
   int fixType;
-  int quality; // from GPGGA
-  int satellitesUsed; // from GPGGA
+  int quality;
+  int satellitesUsed;
   QChar status; // from GPRMC A,V
   QList<int> satPrn; // list of SVs in use; needed for QgsSatelliteInfo.inUse and other uses
-  bool satInfoComplete; // based on GPGSV sentences - to be used to determine when to graph signal and satellite position
+  bool satInfoComplete;
+
+  bool isValid() const;
+%Docstring
+Returns whether the connection information is valid
+
+.. versionadded:: 3.10
+%End
+
+  FixStatus fixStatus() const;
+%Docstring
+Returns the fix status
+
+.. versionadded:: 3.10
+%End
 };
 
 class QgsGpsConnection : QObject

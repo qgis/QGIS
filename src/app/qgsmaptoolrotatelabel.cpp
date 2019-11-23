@@ -235,14 +235,56 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolRotateLabel::keyReleaseEvent( QKeyEvent *e )
 {
-  if ( mLabelRubberBand && e->key() == Qt::Key_Escape )
+  if ( mLabelRubberBand )
   {
-    // escape is cancel
-    deleteRubberBands();
-    delete mRotationItem;
-    mRotationItem = nullptr;
-    delete mRotationPreviewBox;
-    mRotationPreviewBox = nullptr;
+    switch ( e->key() )
+    {
+      case Qt::Key_Delete:
+      {
+        // delete the label rotation
+        QgsVectorLayer *vlayer = mCurrentLabel.layer;
+        if ( vlayer )
+        {
+          int rotationCol;
+          if ( labelIsRotatable( vlayer, mCurrentLabel.settings, rotationCol ) )
+          {
+            vlayer->beginEditCommand( tr( "Delete Label Rotation" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
+            if ( !vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, rotationCol, QVariant() ) )
+            {
+              // if the edit command fails, it's likely because the label x/y is being stored in a physical field (not a auxiliary one!)
+              // and the layer isn't in edit mode
+              if ( !vlayer->isEditable() )
+              {
+                QgisApp::instance()->messageBar()->pushWarning( tr( "Delete Label Rotation" ), tr( "Layer “%1” must be editable in order to move labels from it" ).arg( vlayer->name() ) );
+              }
+              else
+              {
+                QgisApp::instance()->messageBar()->pushWarning( tr( "Delete Label Rotation" ), tr( "Error encountered while storing new label position" ) );
+              }
+
+            }
+            vlayer->endEditCommand();
+            deleteRubberBands();
+            delete mRotationItem;
+            mRotationItem = nullptr;
+            delete mRotationPreviewBox;
+            mRotationPreviewBox = nullptr;
+            vlayer->triggerRepaint();
+          }
+        }
+        break;
+      }
+
+      case Qt::Key_Escape:
+      {
+        // escape is cancel
+        deleteRubberBands();
+        delete mRotationItem;
+        mRotationItem = nullptr;
+        delete mRotationPreviewBox;
+        mRotationPreviewBox = nullptr;
+      }
+    }
   }
 }
 

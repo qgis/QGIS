@@ -2,7 +2,7 @@
 ########################################################
 # Files
 
-SET (wmts_SRCS
+SET (WMTS_SRCS
   qgswmts.cpp
   qgswmtsutils.cpp
   qgswmtsgetcapabilities.cpp
@@ -11,16 +11,14 @@ SET (wmts_SRCS
   qgswmtsparameters.cpp
 )
 
-SET (wmts_MOC_HDRS
+SET (WMTS_HDRS
   qgswmtsparameters.h
 )
 
 ########################################################
 # Build
 
-QT5_WRAP_CPP(wmts_MOC_SRCS ${wmts_MOC_HDRS})
-
-ADD_LIBRARY (wmts MODULE ${wmts_SRCS} ${wmts_MOC_SRCS} ${wmts_MOC_HDRS})
+ADD_LIBRARY (wmts MODULE ${WMTS_SRCS} ${WMTS_HDRS})
 
 
 INCLUDE_DIRECTORIES(SYSTEM
@@ -29,24 +27,30 @@ INCLUDE_DIRECTORIES(SYSTEM
 )
 
 INCLUDE_DIRECTORIES(
+  ${CMAKE_SOURCE_DIR}/external
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
+
+  ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/dxf
+  ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/effects
+  ${CMAKE_SOURCE_DIR}/src/core/layertree
+  ${CMAKE_SOURCE_DIR}/src/server/
+  ${CMAKE_SOURCE_DIR}/src/server/services
+  ${CMAKE_SOURCE_DIR}/src/server/services/wmts
+  ${CMAKE_SOURCE_DIR}/src/server/services/wms
+
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/python
   ${CMAKE_BINARY_DIR}/src/analysis
   ${CMAKE_BINARY_DIR}/src/server
+
   ${CMAKE_CURRENT_BINARY_DIR}
-  ${CMAKE_SOURCE_DIR}/external
-  ../wms
-  ../../../core
-  ../../../core/dxf
-  ../../../core/expression
-  ../../../core/geometry
-  ../../../core/metadata
-  ../../../core/raster
-  ../../../core/symbology
-  ../../../core/layertree
-  ../..
-  ..
-  .
+
 )
 
 

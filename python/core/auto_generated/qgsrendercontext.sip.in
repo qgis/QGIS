@@ -12,6 +12,7 @@
 
 
 
+
 class QgsRenderContext
 {
 %Docstring
@@ -41,6 +42,7 @@ to be rendered etc.
       Antialiasing,
       RenderPartialOutput,
       RenderPreviewJob,
+      RenderBlocking,
     };
     typedef QFlags<QgsRenderContext::Flag> Flags;
 
@@ -105,6 +107,48 @@ DPI of 88 will be assumed.
 Returns the destination QPainter for the render operation.
 
 .. seealso:: :py:func:`setPainter`
+%End
+
+    QPainter *maskPainter( int id = 0 );
+%Docstring
+Returns a mask QPainter for the render operation.
+Multiple mask painters can be defined, each with a unique identifier.
+None is returned if a mask painter with the given identifier does not exist.
+This is currently used to implement selective masking.
+
+.. seealso:: :py:func:`setMaskPainter`
+
+.. seealso:: :py:func:`currentMaskId`
+
+.. versionadded:: 3.12
+%End
+
+    QSet<const QgsSymbolLayer *> disabledSymbolLayers() const;
+%Docstring
+When rendering a map layer in a second pass (for selective masking),
+some symbol layers may be disabled.
+
+Returns the list of disabled symbol layers.
+
+.. seealso:: :py:func:`setDisabledSymbolLayers`
+
+.. seealso:: :py:func:`isSymbolLayerEnabled`
+
+.. versionadded:: 3.12
+%End
+
+    bool isSymbolLayerEnabled( const QgsSymbolLayer *layer ) const;
+%Docstring
+When rendering a map layer in a second pass (for selective masking),
+some symbol layers may be disabled.
+
+Checks whether a given symbol layer has been disabled for the current pass.
+
+.. seealso:: :py:func:`setDisabledSymbolLayers`
+
+.. seealso:: :py:func:`disabledSymbolLayers`
+
+.. versionadded:: 3.12
 %End
 
     QgsCoordinateTransform coordinateTransform() const;
@@ -378,6 +422,30 @@ of any rendering operations.
 .. seealso:: :py:func:`painter`
 %End
 
+    void setMaskPainter( QPainter *p, int id = 0 );
+%Docstring
+Sets a mask QPainter for the render operation. Ownership of the painter
+is not transferred and the QPainter must stay alive for the duration
+of any rendering operations.
+Multiple mask painters can be defined and the second parameter gives a unique identifier to each one.
+
+.. seealso:: :py:func:`maskPainter`
+%End
+
+    void setDisabledSymbolLayers( const QSet<const QgsSymbolLayer *> &symbolLayers );
+%Docstring
+When rendering a map layer in a second pass (for selective masking),
+some symbol layers may be disabled.
+
+Sets the list of disabled symbol layers.
+
+.. seealso:: :py:func:`disabledSymbolLayers`
+
+.. seealso:: :py:func:`isSymbolLayerEnabled`
+
+.. versionadded:: 3.12
+%End
+
     void setForceVectorOutput( bool force );
 %Docstring
 Sets whether rendering operations should use vector operations instead
@@ -416,9 +484,29 @@ Returns ``True`` if the rendering optimization (geometry simplification) can be 
 
     const QgsVectorSimplifyMethod &vectorSimplifyMethod() const;
 %Docstring
-Added in QGIS v2.4
+Returns the simplification settings to use when rendering vector layers.
+
+The default is to use no simplification.
+
+.. seealso:: :py:func:`setVectorSimplifyMethod`
+
+.. versionadded:: 2.4
 %End
+
     void setVectorSimplifyMethod( const QgsVectorSimplifyMethod &simplifyMethod );
+%Docstring
+Sets the simplification setting to use when rendering vector layers.
+
+This can be used to specify simplification methods to apply during map exports and renders,
+e.g. to allow vector layers to be simplified to an appropriate maximum level of detail
+during PDF exports or to speed up layer rendering
+
+The default is to use no simplification.
+
+.. seealso:: :py:func:`vectorSimplifyMethod`
+
+.. versionadded:: 2.4
+%End
 
     void setExpressionContext( const QgsExpressionContext &context );
 %Docstring
@@ -549,6 +637,95 @@ Sets the text render ``format``, which dictates how text is rendered (e.g. as pa
 .. seealso:: :py:func:`textRenderFormat`
 
 .. versionadded:: 3.4.3
+%End
+
+    QList<QgsRenderedFeatureHandlerInterface *> renderedFeatureHandlers() const;
+%Docstring
+Returns the list of rendered feature handlers to use while rendering map layers.
+
+.. seealso:: :py:func:`hasRenderedFeatureHandlers`
+
+.. versionadded:: 3.10
+%End
+
+    bool hasRenderedFeatureHandlers() const;
+%Docstring
+Returns ``True`` if the context has any rendered feature handlers.
+
+.. seealso:: :py:func:`renderedFeatureHandlers`
+
+.. versionadded:: 3.10
+%End
+
+    void setMaskIdProvider( QgsMaskIdProvider *provider );
+%Docstring
+Attaches a mask id provider to the context. It will allow some rendering operations to set the current mask id
+based on the context (label layer names and label rules for instance).
+
+.. seealso:: :py:class:`QgsMaskIdProvider`
+
+.. seealso:: :py:func:`setCurrentMaskId`
+
+.. seealso:: :py:func:`maskIdProvider`
+
+.. versionadded:: 3.12
+%End
+
+    const QgsMaskIdProvider *maskIdProvider() const;
+%Docstring
+Returns the mask id provider attached to the context.
+
+.. seealso:: :py:func:`setMaskIdProvider`
+
+.. versionadded:: 3.12
+%End
+
+    void setCurrentMaskId( int id );
+%Docstring
+Stores a mask id as the "current" one.
+
+.. seealso:: :py:func:`currentMaskId`
+
+.. versionadded:: 3.12
+%End
+
+    int currentMaskId() const;
+%Docstring
+Returns the current mask id, which can be used with maskPainter()
+
+.. seealso:: :py:func:`setCurrentMaskId`
+
+.. seealso:: :py:func:`maskPainter`
+
+.. versionadded:: 3.12
+%End
+
+    void setIsGuiPreview( bool preview );
+%Docstring
+Sets GUI preview mode.
+GUI preview mode is used to change the behavior of some renderings when
+they are done to preview of symbology in the GUI.
+This is especially used to display mask symbol layers rather than painting them
+in a mask painter, which is not meant to be visible, by definition.
+
+.. seealso:: :py:func:`isGuiPreview`
+
+.. versionadded:: 3.12
+%End
+
+    bool isGuiPreview() const;
+%Docstring
+Returns the Gui preview mode.
+GUI preview mode is used to change the behavior of some renderings when
+they are done to preview of symbology in the GUI.
+This is especially used to display mask symbol layers rather than painting them
+in a mask painter, which is not meant to be visible, by definition.
+
+.. seealso:: :py:func:`isGuiPreview`
+
+.. seealso:: :py:func:`setIsGuiPreview`
+
+.. versionadded:: 3.12
 %End
 
 };

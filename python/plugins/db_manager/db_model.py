@@ -31,7 +31,18 @@ from .db_plugins import supportedDbTypes, createDbPlugin
 from .db_plugins.plugin import BaseError, Table, Database
 from .dlg_db_error import DlgDbError
 
-from qgis.core import QgsApplication, QgsDataSourceUri, QgsVectorLayer, QgsRasterLayer, QgsMimeDataUtils
+from qgis.core import (
+    QgsApplication,
+    QgsDataSourceUri,
+    QgsVectorLayer,
+    QgsRasterLayer,
+    QgsMimeDataUtils,
+    QgsProviderConnectionException,
+    QgsProviderRegistry,
+    QgsAbstractDatabaseProviderConnection,
+    QgsMessageLog,
+)
+
 from qgis.utils import OverrideCursor
 
 from . import resources_rc  # NOQA

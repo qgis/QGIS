@@ -122,7 +122,16 @@ Removes a child item and returns it without deleting it. Emits relevant signals 
 %Docstring
 Returns ``True`` if this item is equal to another item (by testing item type and path).
 %End
-    virtual QWidget *paramWidget() /Factory/;
+
+ virtual QWidget *paramWidget() /Factory,Deprecated/;
+%Docstring
+Returns source widget from data item for :py:class:`QgsBrowserPropertiesWidget`
+
+Use QgsDataItemGuiProvider.createParamWidget() instead
+
+.. deprecated::
+   QGIS 3.10
+%End
 
     virtual QList<QAction *> actions( QWidget *parent );
 %Docstring
@@ -155,7 +164,8 @@ Subclasses should override this and handleDrop() to accept dropped layers.
 
 .. seealso:: :py:func:`QgsDataItemGuiProvider.handleDrop`
 
-.. deprecated:: QGIS 3.10
+.. deprecated::
+   QGIS 3.10
 %End
 
  virtual bool handleDrop( const QMimeData * /*data*/, Qt::DropAction /*action*/ ) /Deprecated/;
@@ -167,7 +177,8 @@ accept dropped layers.
 
 .. seealso:: :py:func:`QgsDataItemGuiProvider.handleDrop`
 
-.. deprecated:: QGIS 3.10
+.. deprecated::
+   QGIS 3.10
 %End
 
     virtual bool handleDoubleClick();
@@ -218,7 +229,8 @@ Items that return valid URI will be returned in mime data when dragging a select
 Writes the selected crs into data source. The original data source will be modified when calling this
 method.
 
-.. deprecated:: since QGIS 3.6. This method is no longer used by QGIS and will be removed in QGIS 4.0.
+.. deprecated:: QGIS 3.6.
+   This method is no longer used by QGIS and will be removed in QGIS 4.0.
 %End
 
  virtual bool rename( const QString &name ) /Deprecated/;
@@ -233,7 +245,8 @@ Use QgsDataItemGuiProvider:
 
 .. versionadded:: 3.4
 
-.. deprecated:: QGIS 3.10
+.. deprecated::
+   QGIS 3.10
 %End
 
 
@@ -506,7 +519,8 @@ Returns the icon name of the given ``layerType``
 Delete this layer item
 Use QgsDataItemGuiProvider.deleteLayer instead
 
-.. deprecated:: QGIS 3.10
+.. deprecated::
+   QGIS 3.10
 %End
 
   protected:
@@ -616,7 +630,7 @@ Returns the full path to the directory the item represents.
 
     virtual QIcon icon();
 
-    virtual QWidget *paramWidget() /Factory/;
+ virtual QWidget *paramWidget() /Factory,Deprecated/;
 
     virtual bool hasDragEnabled() const;
     virtual QgsMimeDataUtils::Uri mimeUri() const;
@@ -680,9 +694,12 @@ Data item that can be used to report problems (e.g. network error)
 };
 
 
-
 class QgsDirectoryParamWidget : QTreeWidget
 {
+%Docstring
+
+TODO: move to qgis_gui for QGIS 4
+%End
 
 %TypeHeaderCode
 #include "qgsdataitem.h"

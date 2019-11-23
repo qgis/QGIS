@@ -243,10 +243,54 @@ void QgsMapToolMoveLabel::canvasPressEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolMoveLabel::keyReleaseEvent( QKeyEvent *e )
 {
-  if ( mLabelRubberBand && e->key() == Qt::Key_Escape )
+  if ( mLabelRubberBand )
   {
-    // escape is cancel
-    deleteRubberBands();
+    switch ( e->key() )
+    {
+      case Qt::Key_Delete:
+      {
+        // delete the label position
+        QgsVectorLayer *vlayer = mCurrentLabel.layer;
+        if ( vlayer )
+        {
+          int xCol, yCol;
+          double xPosOrig, yPosOrig;
+          bool xSuccess, ySuccess;
+
+          if ( currentLabelDataDefinedPosition( xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol ) )
+          {
+            vlayer->beginEditCommand( tr( "Delete Label Position" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
+            bool success = vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, xCol, QVariant() );
+            success = vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, yCol, QVariant() ) && success;
+            if ( !success )
+            {
+              // if the edit command fails, it's likely because the label x/y is being stored in a physical field (not a auxiliary one!)
+              // and the layer isn't in edit mode
+              if ( !vlayer->isEditable() )
+              {
+                QgisApp::instance()->messageBar()->pushWarning( tr( "Delete Label Position" ), tr( "Layer “%1” must be editable in order to remove stored label positions" ).arg( vlayer->name() ) );
+              }
+              else
+              {
+                QgisApp::instance()->messageBar()->pushWarning( tr( "Delete Label Position" ), tr( "Error encountered while removing stored label position" ) );
+              }
+
+            }
+            vlayer->endEditCommand();
+            deleteRubberBands();
+            vlayer->triggerRepaint();
+          }
+        }
+        break;
+      }
+
+      case Qt::Key_Escape:
+      {
+        // escape is cancel
+        deleteRubberBands();
+        break;
+      }
+    }
   }
 }
 

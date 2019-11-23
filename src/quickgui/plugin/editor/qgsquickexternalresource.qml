@@ -24,6 +24,33 @@ import QgsQuick 0.1 as QgsQuick
  * Requires various global properties set to function, see qgsquickfeatureform Loader section
  * Do not use directly from Application QML
  * The widget is interactive which allows interactions even in readOnly state (e.g showing preview), but no edit!
+ *
+ * Overview of path handling
+ * -------------------------
+ *
+ * Project home path: comes from QgsProject::homePath() - by default it points to the folder where
+ * the .qgs/.qgz project file is stored, but can be changed manually by the user.
+ *
+ * Default path: defined in the field's configuration. This is the path where newly captured images will be stored.
+ * It has to be an absolute path. It can be defined as an expression (e.g. @project_home || '/photos') or
+ * by plain path (e.g. /home/john/photos). If not defined, project home path is used.
+ *
+ * In the field's configuration, there are three ways how path to pictures is stored in field values:
+ * absolute paths, relative to default path and relative to project path. Below is an example of how
+ * the final field values of paths are calculated.
+ *
+ *   variable         |     value
+ * -------------------+--------------------------------
+ * project home path  |  /home/john
+ * default path       |  /home/john/photos
+ * image path         |  /home/john/photos/img0001.jpg
+ *
+ *
+ *    storage type          |   calculation of field value    |      final field value
+ * -------------------------+---------------------------------+--------------------------------
+ * absolute path            |  image path                     |   /home/john/photos/img0001.jpg
+ * relative to default path |  image path - default path      |   img0001.jpg
+ * relative to project path |  image path - project home path |   photos/img0001.jpg
  */
 Item {
   signal valueChanged(var value, bool isNull)
@@ -34,8 +61,49 @@ Item {
   property var galleryIcon: customStyle.icons.gallery
   property var brokenImageIcon: customStyle.icons.brokenImage
   property var notAvailableImageIcon: customStyle.icons.notAvailable
+  property var backIcon: customStyle.icons.back
   property real iconSize:  customStyle.fields.height
   property real textMargin: QgsQuick.Utils.dp * 10
+  /**
+   * 0 - Relative path disabled
+   * 1 - Relative path to project
+   * 2 - Relative path to defaultRoot defined in the config - Default path field in the widget configuration form
+   */
+  property int relativeStorageMode: config["RelativeStorage"]
+
+  /**
+   * This evaluates the "default path" with the following order:
+   * 1. evaluate default path expression if defined,
+   * 2. use default path value if not empty,
+   * 3. use project home folder
+   */
+  property string targetDir: {
+    var expression = undefined
+    var collection = config["PropertyCollection"]
+    var props = collection["properties"]
+    if (props) {
+      if(props["propertyRootPath"]) {
+        var rootPathProps = props["propertyRootPath"]
+        expression = rootPathProps["expression"]
+      }
+    }
+
+    if (expression) {
+      QgsQuick.Utils.evaluateExpression(featurePair, activeProject, expression)
+    } else {
+      config["DefaultRoot"] ? config["DefaultRoot"] : homePath
+    }
+  }
+  property string prefixToRelativePath: {
+    if (relativeStorageMode === 1 ) {
+      return homePath
+    } else if (relativeStorageMode === 2 ) {
+      return targetDir
+    }
+
+    // Prefix for absolute paths is empty
+    return ""
+  }
   // Meant to be use with the save callback - stores image source
   property string sourceToDelete
 
@@ -44,6 +112,10 @@ Item {
   }
   function callbackOnCancel() {
     externalResourceHandler.onFormCanceled(fieldItem)
+  }
+
+  function getAbsolutePath(prefix, pathFromValue) {
+    return (prefix) ? prefix + "/" + pathFromValue : pathFromValue
   }
 
   id: fieldItem
@@ -67,13 +139,13 @@ Item {
     }
   ]
 
-  QgsQuick.PhotoCapture {
-    id: photoCapturePanel
-    visible: false
-    height: window.height
-    width: window.width
-    edge: Qt.RightEdge
-    imageButtonSize: fieldItem.iconSize
+  Loader {
+    id: photoCapturePanelLoader
+  }
+
+  Connections {
+    target: photoCapturePanelLoader.item
+    onConfirmButtonClicked: externalResourceHandler.confirmImage(fieldItem, path, filename)
   }
 
   Rectangle {
@@ -97,30 +169,29 @@ Item {
 
       MouseArea {
         anchors.fill: parent
-        onClicked: externalResourceHandler.previewImage(homePath + "/" + image.currentValue)
+        onClicked: externalResourceHandler.previewImage(getAbsolutePath(prefixToRelativePath, image.currentValue))
       }
 
       onCurrentValueChanged: {
         image.source = image.getSource()
       }
 
-      Component.onCompleted: image.source = getSource()
-
       function getSource() {
+        var absolutePath = getAbsolutePath(prefixToRelativePath, image.currentValue)
         if (image.status === Image.Error) {
           fieldItem.state = "notAvailable"
           return ""
         }
-        else if (image.currentValue && QgsQuick.Utils.fileExists(homePath + "/" + image.currentValue)) {
+        else if (image.currentValue && QgsQuick.Utils.fileExists(absolutePath)) {
           fieldItem.state = "valid"
-          return homePath + "/" + image.currentValue
+          return "file://" + absolutePath
         }
         else if (!image.currentValue) {
           fieldItem.state = "notSet"
           return ""
         }
         fieldItem.state = "notAvailable"
-        return homePath + "/" + image.currentValue
+        return "file://" + absolutePath
       }
     }
   }
@@ -136,7 +207,7 @@ Item {
     anchors.bottom: imageContainer.bottom
     anchors.margins: buttonsContainer.itemHeight/4
 
-    onClicked: externalResourceHandler.removeImage(fieldItem, homePath + "/" + image.currentValue)
+    onClicked: externalResourceHandler.removeImage(fieldItem, getAbsolutePath(prefixToRelativePath, image.currentValue))
 
     background: Image {
       id: deleteIcon
@@ -188,9 +259,20 @@ Item {
         MouseArea {
           anchors.fill: parent
           onClicked: {
-            photoCapturePanel.visible = true
-            photoCapturePanel.targetDir = homePath
-            photoCapturePanel.fieldItem = fieldItem
+            var photoCapturePanel = photoCapturePanelLoader.item
+            if (!photoCapturePanelLoader.item) {
+              // Load the photo capture panel if not loaded yet
+              photoCapturePanelLoader.setSource("qgsquickphotopanel.qml")
+              photoCapturePanelLoader.item.height = window.height
+              photoCapturePanelLoader.item.width = window.width
+              photoCapturePanelLoader.item.edge = Qt.RightEdge
+              photoCapturePanelLoader.item.imageButtonSize = fieldItem.iconSize
+              photoCapturePanelLoader.item.backButtonSource = fieldItem.backIcon
+            }
+            photoCapturePanelLoader.item.visible = true
+            photoCapturePanelLoader.item.targetDir = targetDir
+            photoCapturePanelLoader.item.prefixToRelativePath = prefixToRelativePath
+            photoCapturePanelLoader.item.fieldItem = fieldItem
           }
         }
       }
@@ -219,7 +301,7 @@ Item {
     id: text
     height: parent.height
     width: imageContainer.width - 2* fieldItem.textMargin
-    wrapMode: Text.WordWrap
+    wrapMode: Text.WrapAtWordBoundaryOrAnywhere
     minimumPixelSize: 50 * QgsQuick.Utils.dp
     text: qsTr("Image is not available: ") + image.currentValue
     font.pixelSize: buttonsContainer.itemHeight * 0.75

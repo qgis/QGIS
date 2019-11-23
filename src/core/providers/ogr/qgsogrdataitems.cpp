@@ -122,7 +122,7 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
     int prevIdx = -1;
     for ( const QString &descriptor : subLayersList )
     {
-      QStringList pieces = descriptor.split( QgsDataProvider::SUBLAYER_SEPARATOR );
+      QStringList pieces = descriptor.split( QgsDataProvider::sublayerSeparator() );
       int idx = pieces[0].toInt();
       subLayersMap.insert( idx, pieces );
       if ( pieces.count() >= 4 && idx != prevIdx )
@@ -372,7 +372,7 @@ QVector<QgsDataItem *> QgsOgrDataCollectionItem::createChildren()
   return children;
 }
 
-bool QgsOgrDataCollectionItem::storeConnection( const QString &path, const QString &ogrDriverName )
+bool QgsOgrDataCollectionItem::saveConnection( const QString &path, const QString &ogrDriverName )
 {
   QFileInfo fileInfo( path );
   QString connName = fileInfo.fileName();
@@ -400,7 +400,7 @@ bool QgsOgrDataCollectionItem::storeConnection( const QString &path, const QStri
 bool QgsOgrDataCollectionItem::createConnection( const QString &name, const QString &extensions, const QString &ogrDriverName )
 {
   QString path = QFileDialog::getOpenFileName( nullptr, tr( "Open %1" ).arg( name ), QString(), extensions );
-  return storeConnection( path, ogrDriverName );
+  return saveConnection( path, ogrDriverName );
 }
 
 // ---------------------------------------------------------------------------

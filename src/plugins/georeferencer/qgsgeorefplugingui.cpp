@@ -733,7 +733,7 @@ void QgsGeorefPluginGui::extentsChangedGeorefCanvas()
 
     mExtentsChangedRecursionGuard = true;
     // Just set the whole extent for now
-    // TODO: better fitting function which acounts for differing aspect ratios etc.
+    // TODO: better fitting function which accounts for differing aspect ratios etc.
     mIface->mapCanvas()->setExtent( boundingBox );
     mIface->mapCanvas()->refresh();
     mExtentsChangedRecursionGuard = false;
@@ -763,7 +763,7 @@ void QgsGeorefPluginGui::extentsChangedQGisCanvas()
 
     mExtentsChangedRecursionGuard = true;
     // Just set the whole extent for now
-    // TODO: better fitting function which acounts for differing aspect ratios etc.
+    // TODO: better fitting function which accounts for differing aspect ratios etc.
     mCanvas->setExtent( rectMap );
     mCanvas->refresh();
     mExtentsChangedRecursionGuard = false;
@@ -1113,6 +1113,8 @@ void QgsGeorefPluginGui::removeOldLayer()
       ( QStringList() << mLayer->id() ) );
     mLayer = nullptr;
   }
+  mCanvas->setLayers( QList<QgsMapLayer *>() );
+  mCanvas->clearCache();
   mCanvas->refresh();
 }
 
@@ -1895,6 +1897,15 @@ QString QgsGeorefPluginGui::generateGDALwarpCommand( const QString &resampling, 
   if ( targetResX != 0.0 && targetResY != 0.0 )
   {
     gdalCommand << QStringLiteral( "-tr" ) << QString::number( targetResX, 'f' ) << QString::number( targetResY, 'f' );
+  }
+
+  if ( mProjection.authid().startsWith( QStringLiteral( "EPSG:" ), Qt::CaseInsensitive ) )
+  {
+    gdalCommand << QStringLiteral( "-t_srs %1" ).arg( mProjection.authid() );
+  }
+  else
+  {
+    gdalCommand << QStringLiteral( "-t_srs \"%1\"" ).arg( mProjection.toProj4().simplified() );
   }
 
   gdalCommand << QStringLiteral( "\"%1\"" ).arg( mTranslatedRasterFileName ) << QStringLiteral( "\"%1\"" ).arg( mModifiedRasterFileName );

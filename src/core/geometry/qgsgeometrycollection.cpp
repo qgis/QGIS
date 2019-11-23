@@ -195,6 +195,11 @@ int QgsGeometryCollection::vertexNumberFromVertexId( QgsVertexId id ) const
   return -1; // should not happen
 }
 
+void QgsGeometryCollection::reserve( int size )
+{
+  mGeometries.reserve( size );
+}
+
 QgsAbstractGeometry *QgsGeometryCollection::geometryN( int n )
 {
   clearCache();
@@ -317,6 +322,7 @@ bool QgsGeometryCollection::fromWkb( QgsConstWkbPtr &wkbPtr )
 
   QVector<QgsAbstractGeometry *> geometryListBackup = mGeometries;
   mGeometries.clear();
+  mGeometries.reserve( nGeometries );
   for ( int i = 0; i < nGeometries; ++i )
   {
     std::unique_ptr< QgsAbstractGeometry > geom( QgsGeometryFactory::geomFromWkb( wkbPtr ) );  // also updates wkbPtr
@@ -376,21 +382,28 @@ QByteArray QgsGeometryCollection::asWkb() const
 
 QString QgsGeometryCollection::asWkt( int precision ) const
 {
-  QString wkt = wktTypeStr() + QLatin1String( " (" );
-  for ( const QgsAbstractGeometry *geom : mGeometries )
+  QString wkt = wktTypeStr();
+
+  if ( isEmpty() )
+    wkt += QStringLiteral( " EMPTY" );
+  else
   {
-    QString childWkt = geom->asWkt( precision );
-    if ( wktOmitChildType() )
+    wkt += QLatin1String( " (" );
+    for ( const QgsAbstractGeometry *geom : mGeometries )
     {
-      childWkt = childWkt.mid( childWkt.indexOf( '(' ) );
+      QString childWkt = geom->asWkt( precision );
+      if ( wktOmitChildType() )
+      {
+        childWkt = childWkt.mid( childWkt.indexOf( '(' ) );
+      }
+      wkt += childWkt + ',';
     }
-    wkt += childWkt + ',';
+    if ( wkt.endsWith( ',' ) )
+    {
+      wkt.chop( 1 ); // Remove last ','
+    }
+    wkt += ')';
   }
-  if ( wkt.endsWith( ',' ) )
-  {
-    wkt.chop( 1 ); // Remove last ','
-  }
-  wkt += ')';
   return wkt;
 }
 
@@ -636,6 +649,9 @@ bool QgsGeometryCollection::fromCollectionWkt( const QString &wkt, const QVector
   }
   mWkbType = parts.first;
 
+  if ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 )
+    return true;
+
   QString defChildWkbType = QStringLiteral( "%1%2%3 " ).arg( defaultChildWkbType, is3D() ? QStringLiteral( "Z" ) : QString(), isMeasure() ? QStringLiteral( "M" ) : QString() );
 
   const QStringList blocks = QgsGeometryUtils::wktGetChildBlocks( parts.second, defChildWkbType );
@@ -706,6 +722,7 @@ QgsAbstractGeometry *QgsGeometryCollection::segmentize( double tolerance, Segmen
     return clone();
   }
 
+  geomCollection->reserve( mGeometries.size() );
   QVector< QgsAbstractGeometry * >::const_iterator geomIt = mGeometries.constBegin();
   for ( ; geomIt != mGeometries.constEnd(); ++geomIt )
   {
@@ -887,6 +904,7 @@ void QgsGeometryCollection::swapXy()
 QgsGeometryCollection *QgsGeometryCollection::toCurveType() const
 {
   std::unique_ptr< QgsGeometryCollection > newCollection( new QgsGeometryCollection() );
+  newCollection->reserve( mGeometries.size() );
   for ( QgsAbstractGeometry *geom : mGeometries )
   {
     newCollection->addGeometry( geom->toCurveType() );

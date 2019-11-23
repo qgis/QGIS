@@ -28,13 +28,15 @@ class QgsLayoutItemScaleBar;
  * \ingroup app
  * A widget to define the properties of a QgsLayoutItemScaleBar.
  */
-class QgsLayoutScaleBarWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutScaleBarWidgetBase
+class QgsLayoutScaleBarWidget: public QgsLayoutItemBaseWidget, public QgsExpressionContextGenerator, private Ui::QgsLayoutScaleBarWidgetBase
 {
     Q_OBJECT
 
   public:
     explicit QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBar );
+    void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 
+    QgsExpressionContext createExpressionContext() const override;
   protected:
 
     bool setNewItem( QgsLayoutItem *item ) override;
@@ -54,7 +56,9 @@ class QgsLayoutScaleBarWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLa
     void mStyleComboBox_currentIndexChanged( const QString &text );
     void mLabelBarSpaceSpinBox_valueChanged( double d );
     void mBoxSizeSpinBox_valueChanged( double d );
-    void mAlignmentComboBox_currentIndexChanged( int index );
+    void mLabelVerticalPlacementComboBox_currentIndexChanged( int index );
+    void mLabelHorizontalPlacementComboBox_currentIndexChanged( int index );
+    void alignmentChanged();
     void mUnitsComboBox_currentIndexChanged( int index );
     void mLineJoinStyleCombo_currentIndexChanged( int index );
     void mLineCapStyleCombo_currentIndexChanged( int index );

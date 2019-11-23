@@ -29,6 +29,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmapcanvassnappingutils.h"
+#include "qgisapp.h"
 
 #include "qgsmaptooltrimextendfeature.h"
 
@@ -41,7 +42,7 @@ class TestQgsMapToolTrimExtendFeature : public QObject
     TestQgsMapToolTrimExtendFeature() = default;
 
   private:
-    std::unique_ptr<QgsVectorLayer> vlPolygon, vlMultiLine, vlLineZ;
+    std::unique_ptr<QgsVectorLayer> vlPolygon, vlMultiLine, vlLineZ, vlTopoEdit, vlTopoLimit;
     QgsFeature f1, f2;
     QgsMapCanvas *mCanvas = nullptr;
 
@@ -131,16 +132,37 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       vlLineZ->dataProvider()->addFeatures( QgsFeatureList() << linez << linez2 );
 
 
+      /*
+       *       |
+       * ----  |
+       *       |
+       *
+       */
+      vlTopoEdit.reset( new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:3946&field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+      QVERIFY( vlTopoEdit->isValid() );
+      vlTopoLimit.reset( new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:3946&field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+      QVERIFY( vlTopoLimit->isValid() );
+      QgsFeature lineEdit( vlTopoEdit->dataProvider()->fields(), 1 );
+      lineEdit.setAttribute( QStringLiteral( "pk" ), 1 );
+      lineEdit.setGeometry( QgsGeometry::fromWkt( QStringLiteral( " LineString (20 15, 25 15) " ) ) );
+      QgsFeature lineLimit( vlTopoLimit->dataProvider()->fields(), 1 );
+      lineLimit.setAttribute( QStringLiteral( "pk" ), 1 );
+      lineLimit.setGeometry( QgsGeometry::fromWkt( QStringLiteral( " LineString (30 0, 30 30) " ) ) );
+
+      vlTopoEdit->dataProvider()->addFeatures( QgsFeatureList() << lineEdit );
+      vlTopoLimit->dataProvider()->addFeatures( QgsFeatureList() << lineLimit );
+
+
       mCanvas = new QgsMapCanvas();
       mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
-      mCanvas->setLayers( QList<QgsMapLayer *>() << vlPolygon.get() << vlMultiLine.get() << vlLineZ.get() );
+      mCanvas->setLayers( QList<QgsMapLayer *>() << vlPolygon.get() << vlMultiLine.get() << vlLineZ.get() << vlTopoEdit.get() << vlTopoLimit.get() );
 
       QgsMapSettings mapSettings;
       mapSettings.setOutputSize( QSize( 50, 50 ) );
       mapSettings.setExtent( QgsRectangle( -1, -1, 4, 4 ) );
       QVERIFY( mapSettings.hasValidSettings() );
 
-      mapSettings.setLayers( QList<QgsMapLayer *>() << vlPolygon.get() << vlMultiLine.get() << vlLineZ.get() );
+      mapSettings.setLayers( QList<QgsMapLayer *>() << vlPolygon.get() << vlMultiLine.get() << vlLineZ.get() << vlTopoEdit.get() << vlTopoLimit.get() );
 
       QgsSnappingUtils *mSnappingUtils = new QgsMapCanvasSnappingUtils( mCanvas, this );
       QgsSnappingConfig snappingConfig = mSnappingUtils->config();
@@ -151,6 +173,12 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       snappingConfig.setUnits( QgsTolerance::Pixels );
       snappingConfig.setMode( QgsSnappingConfig::AllLayers );
       mSnappingUtils->setConfig( snappingConfig );
+
+      mSnappingUtils->locatorForLayer( vlPolygon.get() )->init();
+      mSnappingUtils->locatorForLayer( vlMultiLine.get() )->init();
+      mSnappingUtils->locatorForLayer( vlLineZ.get() )->init();
+      mSnappingUtils->locatorForLayer( vlTopoEdit.get() )->init();
+      mSnappingUtils->locatorForLayer( vlTopoLimit.get() )->init();
 
       mCanvas->setSnappingUtils( mSnappingUtils );
     }
@@ -442,6 +470,63 @@ class TestQgsMapToolTrimExtendFeature : public QObject
 
       vlLineZ->rollBack();
     }
+
+    void testTopologicalPoints()
+    {
+      bool topologicalEditing = QgsProject::instance()->topologicalEditing();
+      QgsProject::instance()->setTopologicalEditing( true );
+
+      mCanvas->setCurrentLayer( vlTopoEdit.get() );
+      std::unique_ptr< QgsMapToolTrimExtendFeature > tool( new QgsMapToolTrimExtendFeature( mCanvas ) );
+
+      vlTopoLimit->startEditing();
+      vlTopoEdit->startEditing();
+      // Limit
+      QgsPointXY pt;
+      pt = tool->canvas()->mapSettings().mapToPixel().transform( 30, 15 );
+      std::unique_ptr< QgsMapMouseEvent > event( new QgsMapMouseEvent(
+            mCanvas,
+            QEvent::MouseMove,
+            QPoint( std::round( pt.x() ), std::round( pt.y() ) )
+          ) );
+      tool->canvasMoveEvent( event.get() );
+      event.reset( new QgsMapMouseEvent(
+                     mCanvas,
+                     QEvent::MouseButtonRelease,
+                     QPoint( std::round( pt.x() ), std::round( pt.y() ) ),
+                     Qt::LeftButton
+                   ) );
+      tool->canvasReleaseEvent( event.get() );
+
+      // Extend
+      pt = tool->canvas()->mapSettings().mapToPixel().transform( 22, 15 );
+      event.reset( new QgsMapMouseEvent(
+                     mCanvas,
+                     QEvent::MouseMove,
+                     QPoint( std::round( pt.x() ), std::round( pt.y() ) )
+                   ) );
+      tool->canvasMoveEvent( event.get() );
+      event.reset( new QgsMapMouseEvent(
+                     mCanvas,
+                     QEvent::MouseButtonRelease,
+                     QPoint( std::round( pt.x() ), std::round( pt.y() ) ),
+                     Qt::LeftButton
+                   ) );
+      tool->canvasReleaseEvent( event.get() );
+
+      QgsFeature fEdit = vlTopoEdit->getFeature( 1 );
+      QgsFeature fLimit = vlTopoLimit->getFeature( 1 );
+
+      QString wktEdit = "LineString (20 15, 30 15)";
+      QString wktLimit = "LineString (30 0, 30 15, 30 30)";
+      QCOMPARE( fEdit.geometry().asWkt(), wktEdit );
+      QCOMPARE( fLimit.geometry().asWkt(), wktLimit );
+
+      vlTopoEdit->rollBack();
+
+      QgsProject::instance()->setTopologicalEditing( topologicalEditing );
+    }
+
 };
 
 QGSTEST_MAIN( TestQgsMapToolTrimExtendFeature )

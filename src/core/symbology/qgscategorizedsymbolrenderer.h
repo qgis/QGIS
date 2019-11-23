@@ -324,6 +324,15 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     QgsSymbol *sourceSymbol();
 
     /**
+     * Returns the renderer's source symbol, which is the base symbol used for the each categories' symbol before applying
+     * the categories' color.
+     * \see setSourceSymbol()
+     * \see sourceColorRamp()
+     * \note Not available in Python bindings.
+     */
+    const QgsSymbol *sourceSymbol() const SIP_SKIP;
+
+    /**
      * Sets the source symbol for the renderer, which is the base symbol used for the each categories' symbol before applying
      * the categories' color.
      * \param sym source symbol, ownership is transferred to the renderer
@@ -338,6 +347,14 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
      * \see sourceSymbol()
      */
     QgsColorRamp *sourceColorRamp();
+
+    /**
+     * Returns the source color ramp, from which each categories' color is derived.
+     * \see setSourceColorRamp()
+     * \see sourceSymbol()
+     * \note Not available in Python bindings.
+     */
+    const QgsColorRamp *sourceColorRamp() const SIP_SKIP;
 
     /**
      * Sets the source color ramp.

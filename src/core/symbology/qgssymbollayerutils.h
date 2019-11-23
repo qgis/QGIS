@@ -123,6 +123,20 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static QPointF decodePoint( const QString &string );
 
     /**
+     * Converts a \a value to a point.
+     *
+     * \param value value to convert
+     * \param ok if specified, will be set to TRUE if value was successfully converted
+     *
+     * \returns converted point
+     *
+     * \see decodePoint()
+     * \see toSize()
+     * \since QGIS 3.10
+     */
+    static QPointF toPoint( const QVariant &value, bool *ok SIP_OUT = nullptr );
+
+    /**
      * Encodes a QSizeF to a string.
      * \see decodeSize()
      * \see encodePoint()
@@ -137,6 +151,20 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \since QGIS 3.0
      */
     static QSizeF decodeSize( const QString &string );
+
+    /**
+     * Converts a \a value to a size.
+     *
+     * \param value value to convert
+     * \param ok if specified, will be set to TRUE if value was successfully converted
+     *
+     * \returns converted size
+     *
+     * \see decodeSize()
+     * \see toPoint()
+     * \since QGIS 3.10
+     */
+    static QSizeF toSize( const QVariant &value, bool *ok SIP_OUT = nullptr );
 
     static QString encodeMapUnitScale( const QgsMapUnitScale &mapUnitScale );
     static QgsMapUnitScale decodeMapUnitScale( const QString &str );
@@ -194,10 +222,15 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param size target pixmap size
      * \param padding space between icon edge and symbol
      * \param customContext render context to use when rendering symbol
+     * \param selected set to TRUE to render the symbol in a selected state
+     * \param expressionContext optional custom expression context
      * \note Parameter customContext added in QGIS 2.6
+     * \note Parameter selected added in QGIS 3.10
+     * \note Parameter expressionContext added in QGIS 3.10
      * \see symbolPreviewIcon()
      */
-    static QPixmap symbolPreviewPixmap( const QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = nullptr );
+    static QPixmap symbolPreviewPixmap( const QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = nullptr, bool selected = false,
+                                        const QgsExpressionContext *expressionContext = nullptr );
 
     /**
      * Draws a symbol layer preview to a QPicture
@@ -287,7 +320,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     //! Reads and returns symbol layer from XML. Caller is responsible for deleting the returned object
     static QgsSymbolLayer *loadSymbolLayer( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
     //! Writes a symbol definition to XML
-    static QDomElement saveSymbol( const QString &symbolName, QgsSymbol *symbol, QDomDocument &doc, const QgsReadWriteContext &context );
+    static QDomElement saveSymbol( const QString &symbolName, const QgsSymbol *symbol, QDomDocument &doc, const QgsReadWriteContext &context );
 
     /**
      * Returns a string representing the symbol. Can be used to test for equality
@@ -424,7 +457,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \see symbolFromMimeData()
      * \since QGIS 3.0
      */
-    static QMimeData *symbolToMimeData( QgsSymbol *symbol ) SIP_FACTORY;
+    static QMimeData *symbolToMimeData( const QgsSymbol *symbol ) SIP_FACTORY;
 
     /**
      * Attempts to parse \a mime data as a symbol. A new symbol instance will be returned
@@ -686,6 +719,11 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static QString getSvgParametricPath( const QString &basePath, const QColor &fillColor, const QColor &strokeColor, double strokeWidth );
 
+    /**
+     * Converts a set of symbol layer id to a set of pointers to actual symbol layers carried by the feature renderer.
+     * \since QGIS 3.12
+     */
+    static QSet<const QgsSymbolLayer *> toSymbolLayerPointers( QgsFeatureRenderer *renderer, const QSet<QgsSymbolLayerId> &symbolLayerIds );
 };
 
 class QPolygonF;

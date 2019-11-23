@@ -276,6 +276,29 @@ A custom delimiter can be specified to use instead of space characters.
 
 .. versionadded:: 3.4
 %End
+
+    static QString substituteVerticalCharacters( QString string );
+%Docstring
+Returns a string with characters having vertical representation form substituted.
+
+:param string: input string
+
+:return: string with substitution applied
+
+.. versionadded:: 3.10
+%End
+
+    static QString htmlToMarkdown( const QString &html );
+%Docstring
+Convert simple HTML to markdown. Only br, b and link are supported.
+
+:param html: HTML to convert to markdown
+
+:return: String formatted as markdown
+
+.. versionadded:: 3.10
+%End
+
 };
 
 /************************************************************************

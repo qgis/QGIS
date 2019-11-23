@@ -47,6 +47,7 @@ class TestQgsField: public QObject
     void convertCompatible();
     void dataStream();
     void displayName();
+    void displayNameWithAlias();
     void editorWidgetSetup();
     void collection();
 
@@ -713,6 +714,19 @@ void TestQgsField::displayName()
   field.setAlias( QString() );
   QCOMPARE( field.displayName(), QString( "name" ) );
 }
+
+
+void TestQgsField::displayNameWithAlias()
+{
+  QgsField field;
+  field.setName( QStringLiteral( "name" ) );
+  QCOMPARE( field.displayNameWithAlias(), QString( "name" ) );
+  field.setAlias( QStringLiteral( "alias" ) );
+  QCOMPARE( field.displayNameWithAlias(), QString( "name (alias)" ) );
+  field.setAlias( QString() );
+  QCOMPARE( field.displayNameWithAlias(), QString( "name" ) );
+}
+
 
 void TestQgsField::editorWidgetSetup()
 {

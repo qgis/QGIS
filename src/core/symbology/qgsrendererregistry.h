@@ -55,6 +55,13 @@ class CORE_EXPORT QgsRendererAbstractMetadata
     };
     Q_DECLARE_FLAGS( LayerTypes, LayerType )
 
+    /**
+     * Constructor for QgsRendererAbstractMetadata, with the specified \a name.
+     *
+     * The \a visibleName argument gives a translated, user friendly string identifying the renderer type.
+     *
+     * The \a icon argument can be used to specify an icon representing the renderer.
+     */
     QgsRendererAbstractMetadata( const QString &name, const QString &visibleName, const QIcon &icon = QIcon() )
       : mName( name )
       , mVisibleName( visibleName )
@@ -62,10 +69,28 @@ class CORE_EXPORT QgsRendererAbstractMetadata
     {}
     virtual ~QgsRendererAbstractMetadata() = default;
 
+    /**
+     * Returns the unique name of the renderer. This value is not translated.
+     * \see visibleName()
+     */
     QString name() const { return mName; }
+
+    /**
+     * Returns a friendly display name of the renderer. This value is translated.
+     * \see name()
+     */
     QString visibleName() const { return mVisibleName; }
 
+    /**
+     * Returns an icon representing the renderer.
+     * \see setIcon()
+     */
     QIcon icon() const { return mIcon; }
+
+    /**
+     * Sets an \a icon representing the renderer.
+     * \see icon()
+     */
     void setIcon( const QIcon &icon ) { mIcon = icon; }
 
     /**
@@ -85,7 +110,6 @@ class CORE_EXPORT QgsRendererAbstractMetadata
      * The \a oldRenderer argument may refer to previously used renderer (or it is NULLPTR).
      * If not NULLPTR, it may be used to initialize GUI of the widget from the previous settings.
      * The old renderer does not have to be of the same type as returned by createRenderer().
-     * When using \a oldRenderer make sure to make a copy of it - it will be deleted afterwards.
      */
     virtual QgsRendererWidget *createRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *oldRenderer ) SIP_FACTORY
     { Q_UNUSED( layer ) Q_UNUSED( style ); Q_UNUSED( oldRenderer ); return nullptr; }

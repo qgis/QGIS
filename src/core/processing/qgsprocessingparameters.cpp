@@ -480,7 +480,7 @@ QgsProcessingFeatureSource *QgsProcessingParameters::parameterAsSource( const Qg
   return QgsProcessingUtils::variantToSource( value, context, definition->defaultValue() );
 }
 
-QString QgsProcessingParameters::parameterAsCompatibleSourceLayerPath( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingFeedback *feedback )
+QString parameterAsCompatibleSourceLayerPathInternal( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingFeedback *feedback, QString *layerName )
 {
   if ( !definition )
     return QString();
@@ -544,8 +544,29 @@ QString QgsProcessingParameters::parameterAsCompatibleSourceLayerPath( const Qgs
   if ( !vl )
     return QString();
 
-  return QgsProcessingUtils::convertToCompatibleFormat( vl, selectedFeaturesOnly, definition->name(),
-         compatibleFormats, preferredFormat, context, feedback );
+  if ( layerName )
+    return QgsProcessingUtils::convertToCompatibleFormatAndLayerName( vl, selectedFeaturesOnly, definition->name(),
+           compatibleFormats, preferredFormat, context, feedback, *layerName );
+  else
+    return QgsProcessingUtils::convertToCompatibleFormat( vl, selectedFeaturesOnly, definition->name(),
+           compatibleFormats, preferredFormat, context, feedback );
+}
+
+QString QgsProcessingParameters::parameterAsCompatibleSourceLayerPath( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingFeedback *feedback )
+{
+  return parameterAsCompatibleSourceLayerPathInternal( definition, parameters, context, compatibleFormats, preferredFormat, feedback, nullptr );
+}
+
+QString QgsProcessingParameters::parameterAsCompatibleSourceLayerPathAndLayerName( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingFeedback *feedback, QString *layerName )
+{
+  QString *destLayer = layerName;
+  QString tmp;
+  if ( destLayer )
+    destLayer->clear();
+  else
+    destLayer = &tmp;
+
+  return parameterAsCompatibleSourceLayerPathInternal( definition, parameters, context, compatibleFormats, preferredFormat, feedback, destLayer );
 }
 
 
@@ -4491,10 +4512,9 @@ QString QgsProcessingParameterFeatureSink::defaultFileExtension() const
   }
   else
   {
-    QgsSettings settings;
     if ( hasGeometry() )
     {
-      return settings.value( QStringLiteral( "Processing/DefaultOutputVectorLayerExt" ), QStringLiteral( "shp" ), QgsSettings::Core ).toString();
+      return QgsProcessingUtils::defaultVectorExtension();
     }
     else
     {
@@ -4712,8 +4732,7 @@ QString QgsProcessingParameterRasterDestination::defaultFileExtension() const
   }
   else
   {
-    QgsSettings settings;
-    return settings.value( QStringLiteral( "Processing/DefaultOutputRasterLayerExt" ), QStringLiteral( "tif" ), QgsSettings::Core ).toString();
+    return QgsProcessingUtils::defaultRasterExtension();
   }
 }
 
@@ -5128,10 +5147,9 @@ QString QgsProcessingParameterVectorDestination::defaultFileExtension() const
   }
   else
   {
-    QgsSettings settings;
     if ( hasGeometry() )
     {
-      return settings.value( QStringLiteral( "Processing/DefaultOutputVectorLayerExt" ), QStringLiteral( "shp" ), QgsSettings::Core ).toString();
+      return QgsProcessingUtils::defaultVectorExtension();
     }
     else
     {

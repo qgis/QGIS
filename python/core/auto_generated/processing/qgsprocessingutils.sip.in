@@ -191,7 +191,8 @@ using the specified ``context``.
 Combines the extent of several map ``layers``. If specified, the target ``crs``
 will be used to transform the layer's extent to the desired output reference system.
 
-.. deprecated:: Use version with QgsProcessingContext argument instead
+.. deprecated::
+   Use version with QgsProcessingContext argument instead
 %End
 
     static QVariant generateIteratingDestination( const QVariant &input, const QVariant &id, QgsProcessingContext &context );
@@ -232,7 +233,7 @@ a specified ``algorithm``.
         QgsProcessingContext &context,
         QgsProcessingFeedback *feedback );
 %Docstring
-Converts a source vector ``layer`` to a file path to a vector layer of compatible format.
+Converts a source vector ``layer`` to a file path of a vector layer of compatible format.
 
 If the specified ``layer`` is not of the format listed in the
 ``compatibleFormats`` argument, then the layer will first be exported to a compatible format
@@ -242,6 +243,52 @@ in a temporary location using ``baseName``. The function will then return the pa
 
 The ``preferredFormat`` argument is used to specify to desired file extension to use when a temporary
 layer export is required. This defaults to shapefiles.
+
+When an algorithm is capable of handling multi-layer input files (such as Geopackage), it is preferable
+to use convertToCompatibleFormatAndLayerName() which may avoid conversion in more situations.
+
+.. seealso:: :py:func:`convertToCompatibleFormatAndLayerName`
+%End
+
+    static QString convertToCompatibleFormatAndLayerName( const QgsVectorLayer *layer,
+        bool selectedFeaturesOnly,
+        const QString &baseName,
+        const QStringList &compatibleFormats,
+        const QString &preferredFormat,
+        QgsProcessingContext &context,
+        QgsProcessingFeedback *feedback,
+        QString &layerName /Out/ );
+%Docstring
+Converts a source vector ``layer`` to a file path and layer name of a vector layer of compatible format.
+
+If the specified ``layer`` is not of the format listed in the
+``compatibleFormats`` argument, then the layer will first be exported to a compatible format
+in a temporary location using ``baseName``. The function will then return the path to that temporary file.
+
+``compatibleFormats`` should consist entirely of lowercase file extensions, e.g. 'shp'.
+
+The ``preferredFormat`` argument is used to specify to desired file extension to use when a temporary
+layer export is required. This defaults to shapefiles.
+
+This method should be preferred over convertToCompatibleFormat() when an algorithm is able
+to correctly handle files with multiple layers. Unlike convertToCompatibleFormat(), it will not force
+a conversion in this case and will return the target layer name in the ``layerName`` argument.
+
+:param layer: source layer to convert (if required)
+:param selectedFeaturesOnly: ``True`` if only selected features from the layer should be used
+:param baseName: base file name for converted layer, if required
+:param compatibleFormats: a list of lowercase file extensions compatible with the algorithm
+:param preferredFormat: preferred format extension to use if conversion if required
+:param context: processing context
+:param feedback: feedback object
+
+:return: - path to source layer, or nearly converted compatible layer
+         - layerName: will be set to the target layer name for multi-layer sources (e.g. Geopackage)
+
+
+.. seealso:: :py:func:`convertToCompatibleFormat`
+
+.. versionadded:: 3.10
 %End
 
     static QgsFields combineFields( const QgsFields &fieldsA, const QgsFields &fieldsB, const QString &fieldsBPrefix = QString() );
@@ -271,6 +318,32 @@ If the list of field names is empty, it is assumed that all fields are required.
 Returns a subset of fields based on the indices of desired fields.
 
 .. versionadded:: 3.2
+%End
+
+    static QString defaultVectorExtension();
+%Docstring
+Returns the default vector extension to use, in the absence of all other constraints (e.g.
+provider based support for extensions).
+
+This method returns the user-set default extension from the processing settings, or
+a fallback value of "gpkg".
+
+.. seealso:: :py:func:`defaultRasterExtension`
+
+.. versionadded:: 3.10
+%End
+
+    static QString defaultRasterExtension();
+%Docstring
+Returns the default raster extension to use, in the absence of all other constraints (e.g.
+provider based support for extensions).
+
+This method returns the user-set default extension from the processing settings, or
+a fallback value of "tif".
+
+.. seealso:: :py:func:`defaultVectorExtension`
+
+.. versionadded:: 3.10
 %End
 
 };
@@ -338,6 +411,8 @@ iterator, eg by restricting the returned attributes or geometry.
     virtual QgsRectangle sourceExtent() const;
 
     virtual QgsFeatureIds allFeatureIds() const;
+
+    virtual SpatialIndexPresence hasSpatialIndex() const;
 
 
     QgsExpressionContextScope *createExpressionContextScope() const /Factory/;

@@ -9,105 +9,6 @@
 
 
 
-class QgsRendererRange
-{
-
-%TypeHeaderCode
-#include "qgsgraduatedsymbolrenderer.h"
-%End
-  public:
-
-    QgsRendererRange();
-%Docstring
-Constructor for QgsRendererRange.
-%End
-    QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol /Transfer/, const QString &label, bool render = true );
-    QgsRendererRange( const QgsRendererRange &range );
-
-
-    bool operator<( const QgsRendererRange &other ) const;
-
-    double lowerValue() const;
-    double upperValue() const;
-
-    QgsSymbol *symbol() const;
-    QString label() const;
-
-    void setSymbol( QgsSymbol *s /Transfer/ );
-    void setLabel( const QString &label );
-    void setLowerValue( double lowerValue );
-    void setUpperValue( double upperValue );
-
-    bool renderState() const;
-    void setRenderState( bool render );
-
-    QString dump() const;
-
-    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props, bool firstRange = false ) const;
-%Docstring
-Creates a DOM element representing the range in SLD format.
-
-:param doc: DOM document
-:param element: destination DOM element
-:param props: graduated renderer properties
-:param firstRange: set to ``True`` if the range is the first range, where the lower value uses a <= test
-                   rather than a < test.
-%End
-
-  protected:
-
-    void swap( QgsRendererRange &other );
-};
-
-typedef QList<QgsRendererRange> QgsRangeList;
-
-
-class QgsRendererRangeLabelFormat
-{
-%Docstring
-
-.. versionadded:: 2.6
-%End
-
-%TypeHeaderCode
-#include "qgsgraduatedsymbolrenderer.h"
-%End
-  public:
-    QgsRendererRangeLabelFormat();
-    QgsRendererRangeLabelFormat( const QString &format, int precision = 4, bool trimTrailingZeroes = false );
-
-    bool operator==( const QgsRendererRangeLabelFormat &other ) const;
-    bool operator!=( const QgsRendererRangeLabelFormat &other ) const;
-
-    QString format() const;
-    void setFormat( const QString &format );
-
-    int precision() const;
-    void setPrecision( int precision );
-
-    bool trimTrailingZeroes() const;
-    void setTrimTrailingZeroes( bool trimTrailingZeroes );
-
-    QString labelForRange( double lower, double upper ) const /PyName=labelForLowerUpper/;
-%Docstring
-
-.. note::
-
-   labelForLowerUpper in Python bindings
-%End
-    QString labelForRange( const QgsRendererRange &range ) const;
-    QString formatNumber( double value ) const;
-
-    void setFromDomElement( QDomElement &element );
-    void saveToDomElement( QDomElement &element );
-
-    static const int MAX_PRECISION;
-    static const int MIN_PRECISION;
-
-  protected:
-};
-
-
 class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
 {
 
@@ -216,6 +117,21 @@ Tests whether classes assigned to the renderer have gaps between the ranges.
     void sortByValue( Qt::SortOrder order = Qt::AscendingOrder );
     void sortByLabel( Qt::SortOrder order = Qt::AscendingOrder );
 
+    QgsClassificationMethod *classificationMethod() const;
+%Docstring
+Returns the classification method
+
+.. versionadded:: 3.10
+%End
+
+    void setClassificationMethod( QgsClassificationMethod *method /Transfer/ );
+%Docstring
+Defines the classification method
+This will take ownership of the method
+
+.. versionadded:: 3.10
+%End
+
     enum Mode
     {
       EqualInterval,
@@ -226,54 +142,82 @@ Tests whether classes assigned to the renderer have gaps between the ranges.
       Custom
     };
 
-    Mode mode() const;
-    void setMode( Mode mode );
 
-    bool useSymmetricMode() const;
+ Mode mode() const /Deprecated/;
+%Docstring
+
+.. deprecated:: QGIS 3.10
+   use classficationMethod instead
+%End
+ void setMode( Mode mode ) /Deprecated/;
+%Docstring
+
+.. deprecated:: QGIS 3.10
+   use classficationMethod instead
+%End
+
+ bool useSymmetricMode() const /Deprecated/;
 %Docstring
 Returns if we want to classify symmetric around a given value
 
 .. versionadded:: 3.4
+
+.. deprecated:: QGIS 3.10
+   use classficationMethod instead
 %End
 
-    void setUseSymmetricMode( bool useSymmetricMode );
+  void setUseSymmetricMode( bool useSymmetricMode ) /Deprecated/;
 %Docstring
 Set if we want to classify symmetric around a given value
 
 .. versionadded:: 3.4
+
+.. deprecated:: QGIS 3.10
+   use classficationMethod instead
 %End
 
-    double symmetryPoint() const;
+ double symmetryPoint() const /Deprecated/;
 %Docstring
 Returns the pivot value for symmetric classification
 
 .. versionadded:: 3.4
+
+.. deprecated:: QGIS 3.10
+   use classficationMethod instead
 %End
 
-    void setSymmetryPoint( double symmetryPoint );
+ void setSymmetryPoint( double symmetryPoint ) /Deprecated/;
 %Docstring
 Set the pivot point
 
 .. versionadded:: 3.4
+
+.. deprecated:: QGIS 3.10
+   use classficationMethod instead
 %End
 
 
-
-    bool astride() const;
+ bool astride() const /Deprecated/;
 %Docstring
 Returns if we want to have a central class astride the pivot value
 
 .. versionadded:: 3.4
+
+.. deprecated:: QGIS 3.10
+   use classficationMethod instead
 %End
 
-    void setAstride( bool astride );
+ void setAstride( bool astride ) /Deprecated/;
 %Docstring
 Set if we want a central class astride the pivot value
 
 .. versionadded:: 3.4
+
+.. deprecated:: QGIS 3.10
+   use classficationMethod instead
 %End
 
-    static void makeBreaksSymmetric( QList<double> &breaks, double symmetryPoint, bool astride );
+ static void makeBreaksSymmetric( QList<double> &breaks /In,Out/, double symmetryPoint, bool astride ) /Deprecated/;
 %Docstring
 Remove the breaks that are above the existing opposite sign classes to keep colors symmetrically balanced around symmetryPoint
 Does not put a break on the symmetryPoint. This is done before.
@@ -283,9 +227,12 @@ Does not put a break on the symmetryPoint. This is done before.
 :param astride: A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
 
 .. versionadded:: 3.4
+
+.. deprecated:: QGIS 3.10
+  use QgsClassificationMethod.makeBreaksSymmetric instead
 %End
 
-    static QList<double> calcEqualIntervalBreaks( double minimum, double maximum, int classes, bool useSymmetricMode, double symmetryPoint, bool astride );
+ static QList<double> calcEqualIntervalBreaks( double minimum, double maximum, int classes, bool useSymmetricMode, double symmetryPoint, bool astride ) /Deprecated/;
 %Docstring
 Compute the equal interval classification
 
@@ -295,9 +242,12 @@ Compute the equal interval classification
 :param useSymmetricMode: A bool indicating if we want to have classes and hence colors ramp symmetric around a value
 :param symmetryPoint: The point around which we want a symmetry
 :param astride: A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
+
+.. deprecated:: QGIS 3.10
+   use QgsClassificationEqualInterval class instead
 %End
 
-    void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses, bool useSymmetricMode = false, double symmetryPoint = 0.0, bool astride = false );
+ void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses, bool useSymmetricMode = false, double symmetryPoint = 0.0, bool astride = false ) /Deprecated/;
 %Docstring
 Recalculate classes for a layer
 
@@ -309,16 +259,30 @@ Recalculate classes for a layer
 :param astride: A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
 
 .. versionadded:: 2.6
+
+.. deprecated:: QGIS 3.10
 %End
 
-    const QgsRendererRangeLabelFormat &labelFormat() const;
+    void updateClasses( const QgsVectorLayer *vl, int nclasses );
+%Docstring
+Recalculate classes for a layer
+
+:param vl: The layer being rendered (from which data values are calculated)
+:param nclasses: the number of classes
+%End
+
+
+ QgsRendererRangeLabelFormat labelFormat() const /Deprecated/;
 %Docstring
 Returns the label format used to generate default classification labels
 
 .. versionadded:: 2.6
+
+.. deprecated:: QGIS 3.10
+   use classificationMethod() and QgsClassificationMethod.setLabelFormat instead
 %End
 
-    void setLabelFormat( const QgsRendererRangeLabelFormat &labelFormat, bool updateRanges = false );
+ void setLabelFormat( const QgsRendererRangeLabelFormat &labelFormat, bool updateRanges = false ) /Deprecated/;
 %Docstring
 Set the label format used to generate default classification labels
 
@@ -326,7 +290,11 @@ Set the label format used to generate default classification labels
 :param updateRanges: If ``True`` then ranges ending with the old unit string are updated to the new.
 
 .. versionadded:: 2.6
+
+.. deprecated:: QGIS 3.10
+   use classificationMethod() and QgsClassificationMethod.setLabelFormat instead
 %End
+
 
     void calculateLabelPrecision( bool updateRanges = true );
 %Docstring
@@ -337,6 +305,7 @@ Reset the label decimal places to a numberbased on the minimum class interval
 .. versionadded:: 2.6
 %End
 
+
     static QgsGraduatedSymbolRenderer *createRenderer( QgsVectorLayer *vlayer,
         const QString &attrName,
         int classes,
@@ -346,8 +315,8 @@ Reset the label decimal places to a numberbased on the minimum class interval
         const QgsRendererRangeLabelFormat &legendFormat = QgsRendererRangeLabelFormat(),
         bool useSymmetricMode = false,
         double symmetryPoint = 0.0,
-        QStringList listForCboPrettyBreaks = QStringList(),
-        bool astride = false );
+        const QStringList &listForCboPrettyBreaks = QStringList(),
+        bool astride = false ) /Deprecated/;
 %Docstring
 Creates a new graduated renderer.
 
@@ -364,6 +333,8 @@ Creates a new graduated renderer.
 :param astride: A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
 
 :return: new QgsGraduatedSymbolRenderer object
+
+.. deprecated:: QGIS 3.10
 %End
 
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
@@ -388,6 +359,7 @@ the classes' color.
 .. seealso:: :py:func:`sourceColorRamp`
 %End
 
+
     void setSourceSymbol( QgsSymbol *sym /Transfer/ );
 %Docstring
 Sets the source symbol for the renderer, which is the base symbol used for the each classes' symbol before applying
@@ -408,6 +380,7 @@ Returns the source color ramp, from which each classes' color is derived.
 
 .. seealso:: :py:func:`sourceSymbol`
 %End
+
 
     void setSourceColorRamp( QgsColorRamp *ramp /Transfer/ );
 %Docstring
@@ -517,6 +490,21 @@ Returns configuration of appearance of legend when using data-defined size for m
 Will return ``None`` if the functionality is disabled.
 
 .. versionadded:: 3.0
+%End
+
+    void updateRangeLabels();
+%Docstring
+Updates the labels of the ranges
+
+.. versionadded:: 3.10
+%End
+
+    const QgsRendererRange *rangeForValue( double value ) const;
+%Docstring
+Returns the renderer range matching the provided ``value``, or ``None`` if no
+range matches the value.
+
+.. versionadded:: 3.10.1
 %End
 
   protected:

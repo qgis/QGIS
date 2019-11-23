@@ -117,7 +117,7 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
   //adjust box if width or height is too small
   if ( mSizeToContents )
   {
-    QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, nullptr );
+    QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, painter );
     QSizeF size = legendRenderer.minimumSize( &context );
     if ( mForceResize )
     {
@@ -175,6 +175,9 @@ void QgsLayoutItemLegend::draw( QgsLayoutItemRenderContext &context )
     QRectF thisPaintRect = QRectF( 0, 0, rect().width(), rect().height() );
     painter->setClipRect( thisPaintRect );
   }
+
+  if ( mLayout )
+    mSettings.setDpi( mLayout->renderContext().dpi() );
 
   QgsLegendRenderer legendRenderer( mLegendModel.get(), mSettings );
   legendRenderer.setLegendSize( rect().size() );
@@ -865,6 +868,11 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext() const
   return context;
 }
 
+QgsLayoutItem::ExportLayerBehavior QgsLayoutItemLegend::exportLayerBehavior() const
+{
+  return MustPlaceInOwnLayer;
+}
+
 
 // -------------------------------------------------------------------------
 #include "qgslayertreemodellegendnode.h"
@@ -942,7 +950,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
         }
       }
       else if ( QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
-        name = symnode->evaluateLabel( expressionContext, name );
+        name = symnode->evaluateLabel( expressionContext );
     }
     return name;
   }

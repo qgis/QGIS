@@ -31,6 +31,12 @@ QgsEffectStack::QgsEffectStack( const QgsEffectStack &other )
   }
 }
 
+QgsEffectStack::QgsEffectStack( QgsEffectStack &&other )
+  : QgsPaintEffect( other )
+{
+  std::swap( mEffectList, other.mEffectList );
+}
+
 QgsEffectStack::QgsEffectStack( const QgsPaintEffect &effect )
 {
   appendEffect( effect.clone() );
@@ -53,6 +59,13 @@ QgsEffectStack &QgsEffectStack::operator=( const QgsEffectStack &rhs )
     appendEffect( rhs.effect( i )->clone() );
   }
   mEnabled = rhs.enabled();
+  return *this;
+}
+
+QgsEffectStack &QgsEffectStack::operator=( QgsEffectStack &&other )
+{
+  std::swap( mEffectList, other.mEffectList );
+  mEnabled = other.enabled();
   return *this;
 }
 

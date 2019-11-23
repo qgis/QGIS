@@ -40,6 +40,7 @@ namespace MDAL
                                int sflg,
                                std::ifstream &in );
 
+      double convertTimeDataToHours( double time, int originalTimeDataUnit );
       std::string mDatFile;
   };
 

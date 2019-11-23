@@ -16,7 +16,7 @@
 
 typedef QVector<QgsPointXY> QgsPolylineXY;
 
-typedef QVector<QgsPoint> QgsPolyline;
+typedef QgsPointSequence QgsPolyline;
 
 typedef QVector<QVector<QgsPointXY>> QgsPolygonXY;
 
@@ -29,16 +29,28 @@ typedef QVector<QVector<QVector<QgsPointXY>>> QgsMultiPolygonXY;
 
 
 
-
 class QgsGeometry
 {
 %Docstring
-A geometry is the spatial representation of a feature. Since QGIS 2.10, QgsGeometry acts as a generic container
-for geometry objects. QgsGeometry is implicitly shared, so making copies of geometries is inexpensive. The geometry
-container class can also be stored inside a QVariant object.
+A geometry is the spatial representation of a feature.
+
+QgsGeometry acts as a generic container for geometry objects. QgsGeometry objects are implicitly shared,
+so making copies of geometries is inexpensive. The geometry container class can also be stored inside
+a QVariant object.
 
 The actual geometry representation is stored as a QgsAbstractGeometry within the container, and
-can be accessed via the get() method or set using the set() method.
+can be accessed via the get() method or set using the set() method. This gives access to the underlying
+raw geometry primitive, such as the point, line, polygon, curve or other geometry subclasses.
+
+.. note::
+
+   QgsGeometry objects are inherently Cartesian/planar geometries. They have no concept of geodesy, and none
+   of the methods or properties exposed from the QgsGeometry API (or QgsAbstractGeometry subclasses) utilize
+   geodesic calculations. Accordingly, properties like length() and area() or spatial operations like buffer()
+   are always calculated using strictly Cartesian mathematics. In contrast, the QgsDistanceArea class exposes
+   methods for working with geodesic calculations and spatial operations on geometries,
+   and should be used whenever calculations which account for the curvature of the Earth (or any other celestial body)
+   are required.
 %End
 
 %TypeHeaderCode
@@ -345,24 +357,47 @@ Uses GEOS library for the test.
 
     double area() const;
 %Docstring
-Returns the area of the geometry using GEOS
+Returns the planar, 2-dimensional area of the geometry.
+
+.. warning::
+
+   QgsGeometry objects are inherently Cartesian/planar geometries, and the area
+   returned by this method is calculated using strictly Cartesian mathematics. In contrast,
+   the QgsDistanceArea class exposes methods for calculating the areas of geometries using
+   geodesic calculations which account for the curvature of the Earth (or any other
+   celestial body).
+
+.. seealso:: :py:func:`length`
 
 .. versionadded:: 1.5
 %End
 
     double length() const;
 %Docstring
-Returns the length of geometry using GEOS
+Returns the planar, 2-dimensional length of geometry.
+
+.. warning::
+
+   QgsGeometry objects are inherently Cartesian/planar geometries, and the length
+   returned by this method is calculated using strictly Cartesian mathematics. In contrast,
+   the QgsDistanceArea class exposes methods for calculating the lengths of geometries using
+   geodesic calculations which account for the curvature of the Earth (or any other
+   celestial body).
+
+.. seealso:: :py:func:`area`
 
 .. versionadded:: 1.5
 %End
 
     double distance( const QgsGeometry &geom ) const;
 %Docstring
-Returns the minimum distance between this geometry and another geometry, using GEOS.
-Will return a negative value if a geometry is missing.
+Returns the minimum distance between this geometry and another geometry.
+Will return a negative value if either geometry is empty or null.
 
-:param geom: geometry to find minimum distance to
+.. warning::
+
+   QgsGeometry objects are inherently Cartesian/planar geometries, and the distance
+   returned by this method is calculated using strictly Cartesian mathematics.
 %End
 
 
@@ -533,6 +568,11 @@ Returns the distance along this geometry from its first vertex to the specified 
 
 :return: distance to vertex (following geometry), or -1 for invalid vertex numbers
 
+.. warning::
+
+   QgsGeometry objects are inherently Cartesian/planar geometries, and the distance
+   returned by this method is calculated using strictly Cartesian mathematics.
+
 .. versionadded:: 2.16
 %End
 
@@ -653,6 +693,12 @@ Returns the nearest point on this geometry to another geometry.
 Returns the shortest line joining this geometry to another geometry.
 
 .. seealso:: :py:func:`nearestPoint`
+
+.. warning::
+
+   QgsGeometry objects are inherently Cartesian/planar geometries, and the line
+   returned by this method is calculated using strictly Cartesian mathematics. See :py:class:`QgsDistanceArea`
+   for similar methods which account for the curvature of an ellipsoidal body such as the Earth.
 
 .. versionadded:: 2.14
 %End
@@ -793,7 +839,22 @@ Rotate this geometry around the Z axis
 :return: OperationResult a result code: success or reason of failure
 %End
 
-    OperationResult splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries /Out/, bool topological, QVector<QgsPointXY> &topologyTestPoints /Out/ );
+ OperationResult splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries /Out/, bool topological, QVector<QgsPointXY> &topologyTestPoints /Out/ ) /Deprecated/;
+%Docstring
+Splits this geometry according to a given line.
+
+:param splitLine: the line that splits the geometry
+\param[out] newGeometries list of new geometries that have been created with the split
+:param topological: ``True`` if topological editing is enabled
+\param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
+
+:return: OperationResult a result code: success or reason of failure
+
+.. deprecated:: QGIS 3.12
+   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+%End
+
+    OperationResult splitGeometry( const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries /Out/, bool topological, QgsPointSequence &topologyTestPoints /Out/ );
 %Docstring
 Splits this geometry according to a given line.
 
@@ -953,47 +1014,48 @@ geometries.
 
     bool contains( const QgsPointXY *p ) const;
 %Docstring
-Tests for containment of a point (uses GEOS)
+Returns ``True`` if the geometry contains the point ``p``.
 %End
 
     bool contains( const QgsGeometry &geometry ) const;
 %Docstring
-Tests for if geometry is contained in another (uses GEOS)
+Returns ``True`` if the geometry completely contains another ``geometry``.
 
 .. versionadded:: 1.5
 %End
 
     bool disjoint( const QgsGeometry &geometry ) const;
 %Docstring
-Tests for if geometry is disjoint of another (uses GEOS)
+Returns ``True`` if the geometry is disjoint of another ``geometry``.
 
 .. versionadded:: 1.5
 %End
 
     bool touches( const QgsGeometry &geometry ) const;
 %Docstring
-Test for if geometry touch another (uses GEOS)
+Returns ``True`` if the geometry touches another ``geometry``.
 
 .. versionadded:: 1.5
 %End
 
     bool overlaps( const QgsGeometry &geometry ) const;
 %Docstring
-Test for if geometry overlaps another (uses GEOS)
+Returns ``True`` if the geometry overlaps another ``geometry``.
 
 .. versionadded:: 1.5
 %End
 
     bool within( const QgsGeometry &geometry ) const;
 %Docstring
-Test for if geometry is within another (uses GEOS)
+Returns ``True`` if the geometry is completely within another ``geometry``.
 
 .. versionadded:: 1.5
 %End
 
+
     bool crosses( const QgsGeometry &geometry ) const;
 %Docstring
-Test for if geometry crosses another (uses GEOS)
+Returns ``True`` if the geometry crosses another ``geometry``.
 
 .. versionadded:: 1.5
 %End
@@ -1402,6 +1464,41 @@ by calling `error()` on the returned geometry.
 %Docstring
 Returns an extruded version of this geometry.
 %End
+
+
+    SIP_PYOBJECT randomPointsInPolygon( int count, unsigned long seed = 0 ) const /TypeHint="QgsPolylineXY"/;
+%Docstring
+Returns a list of ``count`` random points generated inside a (multi)polygon geometry.
+
+Optionally, a specific random ``seed`` can be used when generating points. If ``seed``
+is 0, then a completely random sequence of points will be generated.
+
+This method works only with (multi)polygon geometry types. If the geometry
+is not a polygon type, a TypeError will be raised. If the geometry
+is null, a ValueError will be raised.
+
+.. versionadded:: 3.10
+%End
+%MethodCode
+    const QgsWkbTypes::GeometryType type = sipCpp->type();
+    if ( sipCpp->isNull() )
+    {
+      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Cannot generate points inside a null geometry." ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else if ( type != QgsWkbTypes::PolygonGeometry )
+    {
+      PyErr_SetString( PyExc_TypeError, QStringLiteral( "Cannot generate points inside a %1 geometry. Only Polygon types are permitted." ).arg( QgsWkbTypes::displayString( sipCpp->wkbType() ) ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      const sipMappedType *qvector_type = sipFindMappedType( "QVector<QgsPointXY>" );
+      sipRes = sipConvertFromNewType( new QVector< QgsPointXY >( sipCpp->randomPointsInPolygon( a0, a1 ) ), qvector_type, Py_None );
+    }
+%End
+
+
 
     QByteArray asWkb() const;
 %Docstring
@@ -1930,7 +2027,7 @@ geometry will be a polyline.
 .. versionadded:: 2.7
 %End
 
-    static QgsPolylineXY createPolylineFromQPolygonF( const QPolygonF &polygon ) /Factory/;
+ static QgsPolylineXY createPolylineFromQPolygonF( const QPolygonF &polygon ) /Deprecated/;
 %Docstring
 Creates a QgsPolylineXY from a QPolygonF.
 
@@ -1939,9 +2036,12 @@ Creates a QgsPolylineXY from a QPolygonF.
 :return: :py:class:`QgsPolylineXY`
 
 .. seealso:: :py:func:`createPolygonFromQPolygonF`
+
+.. deprecated::
+   use QgsGeometry.fromQPolygonF() or QgsLineString.fromQPolygonF() instead.
 %End
 
-    static QgsPolygonXY createPolygonFromQPolygonF( const QPolygonF &polygon ) /Factory/;
+ static QgsPolygonXY createPolygonFromQPolygonF( const QPolygonF &polygon ) /Deprecated/;
 %Docstring
 Creates a QgsPolygonXYfrom a QPolygonF.
 
@@ -1950,6 +2050,9 @@ Creates a QgsPolygonXYfrom a QPolygonF.
 :return: :py:class:`QgsPolygon`
 
 .. seealso:: :py:func:`createPolylineFromQPolygonF`
+
+.. deprecated::
+   use QgsGeometry.fromQPolygonF() or QgsLineString.fromQPolygonF() instead.
 %End
 
 

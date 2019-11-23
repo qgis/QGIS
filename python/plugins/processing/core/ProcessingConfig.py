@@ -31,6 +31,7 @@ from qgis.core import (NULL,
                        QgsRasterFileWriter)
 from processing.tools.system import defaultOutputFolder
 import processing.tools.dataobjects
+from multiprocessing import cpu_count
 
 
 class SettingsWatcher(QObject):
@@ -48,7 +49,7 @@ class ProcessingConfig:
     VECTOR_LINE_STYLE = 'VECTOR_LINE_STYLE'
     VECTOR_POLYGON_STYLE = 'VECTOR_POLYGON_STYLE'
     FILTER_INVALID_GEOMETRIES = 'FILTER_INVALID_GEOMETRIES'
-    USE_FILENAME_AS_LAYER_NAME = 'USE_FILENAME_AS_LAYER_NAME'
+    PREFER_FILENAME_AS_LAYER_NAME = 'PREFER_FILENAME_AS_LAYER_NAME'
     KEEP_DIALOG_OPEN = 'KEEP_DIALOG_OPEN'
     PRE_EXECUTION_SCRIPT = 'PRE_EXECUTION_SCRIPT'
     POST_EXECUTION_SCRIPT = 'POST_EXECUTION_SCRIPT'
@@ -56,6 +57,9 @@ class ProcessingConfig:
     WARN_UNMATCHING_CRS = 'WARN_UNMATCHING_CRS'
     SHOW_PROVIDERS_TOOLTIP = 'SHOW_PROVIDERS_TOOLTIP'
     SHOW_ALGORITHMS_KNOWN_ISSUES = 'SHOW_ALGORITHMS_KNOWN_ISSUES'
+    MAX_THREADS = 'MAX_THREADS'
+    DEFAULT_OUTPUT_RASTER_LAYER_EXT = 'DefaultOutputRasterLayerExt'
+    DEFAULT_OUTPUT_VECTOR_LAYER_EXT = 'DefaultOutputVectorLayerExt'
 
     settings = {}
     settingIcons = {}
@@ -70,8 +74,8 @@ class ProcessingConfig:
             ProcessingConfig.tr('Keep dialog open after running an algorithm'), True))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
-            ProcessingConfig.USE_FILENAME_AS_LAYER_NAME,
-            ProcessingConfig.tr('Use filename as layer name'), False))
+            ProcessingConfig.PREFER_FILENAME_AS_LAYER_NAME,
+            ProcessingConfig.tr('Prefer output filename for layer names'), True))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.SHOW_PROVIDERS_TOOLTIP,
@@ -134,6 +138,32 @@ class ProcessingConfig:
             invalidFeaturesOptions[2],
             valuetype=Setting.SELECTION,
             options=invalidFeaturesOptions))
+
+        threads = QgsApplication.maxThreads() # if user specified limit for rendering, lets keep that as default here, otherwise max
+        threads = cpu_count() if threads == -1 else threads # if unset, maxThreads() returns -1
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.MAX_THREADS,
+            ProcessingConfig.tr('Max Threads'), threads,
+            valuetype=Setting.INT))
+
+        extensions = QgsVectorFileWriter.supportedFormatExtensions()
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.DEFAULT_OUTPUT_VECTOR_LAYER_EXT,
+            ProcessingConfig.tr('Default output vector layer extension'),
+            QgsVectorFileWriter.supportedFormatExtensions()[0],
+            valuetype=Setting.SELECTION,
+            options=extensions))
+
+        extensions = QgsRasterFileWriter.supportedFormatExtensions()
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_EXT,
+            ProcessingConfig.tr('Default output raster layer extension'),
+            'tif',
+            valuetype=Setting.SELECTION,
+            options=extensions))
 
     @staticmethod
     def setGroupIcon(group, icon):

@@ -219,6 +219,8 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     void mousePressEvent( QMouseEvent *e ) override;
     // Reimplemented to allow dragging colors/symbols from button
     void mouseMoveEvent( QMouseEvent *e ) override;
+    void mouseReleaseEvent( QMouseEvent *e ) override;
+    void keyPressEvent( QKeyEvent *e ) override;
     // Reimplemented to accept dragged colors
     void dragEnterEvent( QDragEnterEvent *e ) override;
 
@@ -240,6 +242,11 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     void prepareMenu();
 
     void addRecentColor( const QColor &color );
+
+    /**
+     * Activates the color picker tool, which allows for sampling a color from anywhere on the screen
+     */
+    void activatePicker();
 
   private:
 
@@ -264,6 +271,8 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
 
     QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
 
+    bool mPickingColor = false;
+
     /**
      * Regenerates the text preview. If \a color is specified, a temporary color preview
      * is shown instead.
@@ -285,6 +294,16 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
      * Create a \a color icon for display in the drop-down menu.
      */
     QPixmap createColorIcon( const QColor &color ) const;
+
+    /**
+     * Ends a color picking operation
+     * \param eventPos global position of pixel to sample color from
+     * \param samplingColor set to TRUE to actually sample the color, FALSE to just cancel
+     * the color picking operation
+     */
+    void stopPicking( QPoint eventPos, bool samplingColor = true );
+
+    void showColorDialog();
 
 };
 

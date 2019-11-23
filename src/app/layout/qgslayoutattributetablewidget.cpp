@@ -87,9 +87,8 @@ QgsLayoutAttributeTableWidget::QgsLayoutAttributeTableWidget( QgsLayoutFrame *fr
   mWrapBehaviorComboBox->addItem( tr( "Truncate text" ), QgsLayoutTable::TruncateText );
   mWrapBehaviorComboBox->addItem( tr( "Wrap text" ), QgsLayoutTable::WrapText );
 
-  bool atlasEnabled = layoutAtlas() && layoutAtlas()->enabled();
   mSourceComboBox->addItem( tr( "Layer features" ), QgsLayoutItemAttributeTable::LayerAttributes );
-  toggleAtlasSpecificControls( atlasEnabled );
+  toggleAtlasSpecificControls( static_cast< bool >( coverageLayer() ) );
 
   //update relations combo when relations modified in project
   connect( QgsProject::instance()->relationManager(), &QgsRelationManager::changed, this, &QgsLayoutAttributeTableWidget::updateRelationsCombo );
@@ -125,11 +124,12 @@ QgsLayoutAttributeTableWidget::QgsLayoutAttributeTableWidget( QgsLayoutFrame *fr
 
     // repopulate relations combo box if atlas layer changes
     connect( &mTable->layout()->reportContext(), &QgsLayoutReportContext::layerChanged,
-             this, &QgsLayoutAttributeTableWidget::updateRelationsCombo );
+             this, &QgsLayoutAttributeTableWidget::atlasToggled );
 
     if ( QgsLayoutAtlas *atlas = layoutAtlas() )
     {
       connect( atlas, &QgsLayoutAtlas::toggled, this, &QgsLayoutAttributeTableWidget::atlasToggled );
+      atlasToggled();
     }
 
     mLayerSourceDDBtn->registerExpressionContextGenerator( mTable );
@@ -152,6 +152,17 @@ QgsLayoutAttributeTableWidget::QgsLayoutAttributeTableWidget( QgsLayoutFrame *fr
 void QgsLayoutAttributeTableWidget::setReportTypeString( const QString &string )
 {
   mIntersectAtlasCheckBox->setText( tr( "Show only features intersecting %1 feature" ).arg( string ) );
+  const int atlasFeatureIndex = mSourceComboBox->findData( QgsLayoutItemAttributeTable::AtlasFeature );
+  if ( atlasFeatureIndex != -1 )
+  {
+    mSourceComboBox->setItemText( atlasFeatureIndex,  tr( "Current %1 feature" ).arg( string ) );
+  }
+}
+
+void QgsLayoutAttributeTableWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayout )
+{
+  if ( mItemPropertiesWidget )
+    mItemPropertiesWidget->setMasterLayout( masterLayout );
 }
 
 bool QgsLayoutAttributeTableWidget::setNewItem( QgsLayoutItem *item )
@@ -492,8 +503,11 @@ void QgsLayoutAttributeTableWidget::updateGuiElements()
 
 void QgsLayoutAttributeTableWidget::atlasToggled()
 {
-  //display/hide atlas options in source combobox depending on atlas status
-  bool atlasEnabled = layoutAtlas() && layoutAtlas()->enabled();
+  // display/hide atlas options in source combobox depending on atlas status
+  // if there's no atlas but there IS a coverageLayer, it's a report export and we should enable the controls
+  bool atlasEnabled = ( layoutAtlas() && layoutAtlas()->enabled() ) || ( !layoutAtlas() && coverageLayer() );
+
+
   toggleAtlasSpecificControls( atlasEnabled );
 
   if ( !mTable )

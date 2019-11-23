@@ -33,6 +33,7 @@ class QgsLayoutHtmlWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayout
   public:
     QgsLayoutHtmlWidget() = delete;
     QgsLayoutHtmlWidget( QgsLayoutFrame *frame );
+    void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 
   protected:
 

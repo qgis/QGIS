@@ -26,9 +26,15 @@
 #include "qgsmapdecoration.h"
 #include "qgstaskmanager.h"
 #include "qgsmaprenderercustompainterjob.h"
+#include "qgsabstractgeopdfexporter.h"
 
 #include <QPainter>
+#ifndef QT_NO_PRINTER
+#include <QPrinter>
+#endif
+
 class QgsMapRendererCustomPainterJob;
+class QgsAbstractGeoPdfExporter;
 
 /**
  * \class QgsMapRendererTask
@@ -53,11 +59,22 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
 
     /**
      * Constructor for QgsMapRendererTask to render a map to an image file.
+     *
+     * If the output \a fileFormat is set to PDF, the \a geoPdf argument controls whether a GeoPDF file is created.
+     * See QgsAbstractGeoPdfExporter::geoPDFCreationAvailable() for conditions on GeoPDF creation availability.
      */
+#ifndef SIP_RUN
+    QgsMapRendererTask( const QgsMapSettings &ms,
+                        const QString &fileName,
+                        const QString &fileFormat = QString( "PNG" ),
+                        bool forceRaster = false,
+                        bool geoPdf = false, const QgsAbstractGeoPdfExporter::ExportDetails &geoPdfExportDetails = QgsAbstractGeoPdfExporter::ExportDetails() );
+#else
     QgsMapRendererTask( const QgsMapSettings &ms,
                         const QString &fileName,
                         const QString &fileFormat = QString( "PNG" ),
                         bool forceRaster = false );
+#endif
 
     /**
      * Constructor for QgsMapRendererTask to render a map to a QPainter object.
@@ -65,10 +82,12 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
     QgsMapRendererTask( const QgsMapSettings &ms,
                         QPainter *p );
 
+    ~QgsMapRendererTask() override;
+
     /**
      * Adds \a annotations to be rendered on the map.
      */
-    void addAnnotations( QList< QgsAnnotation * > annotations );
+    void addAnnotations( const QList<QgsAnnotation *> &annotations );
 
     /**
      * Adds \a decorations to be rendered on the map.
@@ -76,9 +95,14 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
     void addDecorations( const QList<QgsMapDecoration *> &decorations );
 
     /**
-     * Sets whether a world file will be created alongside an image file.
+     * Sets whether the image file will be georeferenced (embedded or via a world file).
      */
     void setSaveWorldFile( bool save ) { mSaveWorldFile = save; }
+
+    /**
+     * Sets whether metadata such as title and subject will be exported whenever possible.
+     */
+    void setExportMetadata( bool exportMetadata ) { mExportMetadata = exportMetadata; }
 
     void cancel() override;
 
@@ -101,22 +125,41 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
 
   private:
 
+    //! Prepares the job, doing the work which HAS to be done on the main thread in advance
+    void prepare();
+    bool mErrored = false;
+
     QgsMapSettings mMapSettings;
 
     QMutex mJobMutex;
-    std::unique_ptr< QgsMapRendererCustomPainterJob > mJob;
+    std::unique_ptr< QgsMapRendererJob > mJob;
+
+    std::unique_ptr< QgsAbstractGeoPdfExporter > mGeoPdfExporter;
+    std::unique_ptr< QgsRenderedFeatureHandlerInterface > mRenderedFeatureHandler;
 
     QPainter *mPainter = nullptr;
+    QPainter *mDestPainter = nullptr;
+    QImage mImage;
+#ifndef QT_NO_PRINTER
+    std::unique_ptr< QPrinter > mPrinter;
+#endif // ! QT_NO_PRINTER
+
+    std::unique_ptr< QPainter > mTempPainter;
 
     QString mFileName;
     QString mFileFormat;
     bool mForceRaster = false;
     bool mSaveWorldFile = false;
+    bool mExportMetadata = false;
+    bool mGeoPDF = false;
+    QgsAbstractGeoPdfExporter::ExportDetails mGeoPdfExportDetails;
 
     QList< QgsAnnotation * > mAnnotations;
     QList< QgsMapDecoration * > mDecorations;
 
     int mError = 0;
+
+
 };
 
 // clazy:excludeall=qstring-allocations

@@ -24,7 +24,7 @@
 #include "qgsstatusbar.h"
 #include "qgslinestring.h"
 #include "qgsmultipolygon.h"
-#include "qgsspinbox.h"
+#include "qgsdoublespinbox.h"
 #include "qgsgeometryutils.h"
 #include <memory>
 #include "qgsmapmouseevent.h"
@@ -193,14 +193,15 @@ void QgsMapToolCircle2TangentsPoint::getPossibleCenter( )
 void QgsMapToolCircle2TangentsPoint::createRadiusSpinBox()
 {
   deleteRadiusSpinBox();
-  mRadiusSpinBox = new QgsSpinBox();
+  mRadiusSpinBox = new QgsDoubleSpinBox();
   mRadiusSpinBox->setMaximum( 99999999 );
   mRadiusSpinBox->setMinimum( 0 );
+  mRadiusSpinBox->setDecimals( 2 );
   mRadiusSpinBox->setPrefix( tr( "Radius of the circle: " ) );
   mRadiusSpinBox->setValue( mRadius );
   QgisApp::instance()->addUserInputWidget( mRadiusSpinBox );
   mRadiusSpinBox->setFocus( Qt::TabFocusReason );
-  QObject::connect( mRadiusSpinBox, qgis::overload< int >::of( &QgsSpinBox::valueChanged ), this, &QgsMapToolCircle2TangentsPoint::radiusSpinBoxChanged );
+  QObject::connect( mRadiusSpinBox, qgis::overload< double >::of( &QDoubleSpinBox::valueChanged ), this, &QgsMapToolCircle2TangentsPoint::radiusSpinBoxChanged );
 }
 
 void QgsMapToolCircle2TangentsPoint::deleteRadiusSpinBox()
@@ -212,7 +213,7 @@ void QgsMapToolCircle2TangentsPoint::deleteRadiusSpinBox()
   }
 }
 
-void QgsMapToolCircle2TangentsPoint::radiusSpinBoxChanged( int radius )
+void QgsMapToolCircle2TangentsPoint::radiusSpinBoxChanged( double radius )
 {
   mRadius = radius;
   getPossibleCenter( );

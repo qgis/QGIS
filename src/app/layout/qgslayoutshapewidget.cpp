@@ -29,7 +29,7 @@ QgsLayoutShapeWidget::QgsLayoutShapeWidget( QgsLayoutItemShape *shape )
   Q_ASSERT( mShape );
 
   setupUi( this );
-  connect( mShapeComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutShapeWidget::mShapeComboBox_currentIndexChanged );
+  connect( mShapeComboBox, &QComboBox::currentTextChanged, this, &QgsLayoutShapeWidget::mShapeComboBox_currentIndexChanged );
   connect( mCornerRadiusSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutShapeWidget::mCornerRadiusSpinBox_valueChanged );
   setPanelTitle( tr( "Shape Properties" ) );
 
@@ -66,6 +66,12 @@ QgsLayoutShapeWidget::QgsLayoutShapeWidget( QgsLayoutItemShape *shape )
   {
     connect( &mShape->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mShapeStyleButton, &QgsSymbolButton::setLayer );
   }
+}
+
+void QgsLayoutShapeWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayout )
+{
+  if ( mItemPropertiesWidget )
+    mItemPropertiesWidget->setMasterLayout( masterLayout );
 }
 
 bool QgsLayoutShapeWidget::setNewItem( QgsLayoutItem *item )

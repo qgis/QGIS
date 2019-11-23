@@ -453,10 +453,6 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
   private:
 
-
-    QColor sampleColor( QPoint point ) const;
-
-    static QScreen *findScreenAt( QPoint pos );
     Behavior mBehavior = QgsColorButton::ShowDialog;
     QString mColorDialogTitle;
     QColor mColor;

@@ -26,6 +26,7 @@
 class QgsLayoutDesignerInterface;
 class QgsPropertyOverrideButton;
 class QgsLayoutAtlas;
+class QgsMasterLayoutInterface;
 
 // NOTE - the inheritance here is tricky, as we need to avoid the multiple inheritance
 // diamond problem and the ideal base object (QgsLayoutConfigObject) MUST be a QObject
@@ -160,6 +161,13 @@ class GUI_EXPORT QgsLayoutItemBaseWidget: public QgsPanelWidget
      */
     virtual void setDesignerInterface( QgsLayoutDesignerInterface *iface );
 
+    /**
+     * Sets the master layout associated with the item.
+     *
+     * \since QGIS 3.10
+     */
+    virtual void setMasterLayout( QgsMasterLayoutInterface *masterLayout );
+
   protected:
 
     /**
@@ -229,6 +237,20 @@ class GUI_EXPORT QgsLayoutItemPropertiesWidget: public QWidget, private Ui::QgsL
     //! Sets the layout item
     void setItem( QgsLayoutItem *item );
 
+    /**
+     * Sets the master layout associated with the item.
+     *
+     * \since QGIS 3.10
+     */
+    void setMasterLayout( QgsMasterLayoutInterface *masterLayout );
+
+    /**
+     * Updates the variables widget, refreshing the values of variables shown.
+     *
+     * \since QGIS 3.10
+     */
+    void updateVariables();
+
   protected slots:
     //! Initializes data defined buttons to current atlas coverage layer
     void initializeDataDefinedButtons();
@@ -287,7 +309,6 @@ class GUI_EXPORT QgsLayoutItemPropertiesWidget: public QWidget, private Ui::QgsL
     void setValuesForGuiNonPositionElements();
 
     void variablesChanged();
-    void updateVariables();
 
   private:
 

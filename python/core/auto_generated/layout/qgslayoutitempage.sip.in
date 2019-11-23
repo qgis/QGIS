@@ -38,6 +38,7 @@ Item representing the paper in a layout.
 %Docstring
 Constructor for QgsLayoutItemPage, with the specified parent ``layout``.
 %End
+    ~QgsLayoutItemPage();
 
     static QgsLayoutItemPage *create( QgsLayout *layout ) /Factory/;
 %Docstring
@@ -47,6 +48,8 @@ The caller takes responsibility for deleting the returned object.
 %End
 
     virtual int type() const;
+
+    virtual QString displayName() const;
 
 
     void setPageSize( const QgsLayoutSize &size );
@@ -84,6 +87,26 @@ Returns the page orientation.
    There is no direct setter for page orientation - use setPageSize() instead.
 %End
 
+    void setPageStyleSymbol( QgsFillSymbol *symbol /Transfer/ );
+%Docstring
+Sets the ``symbol`` to use for drawing the page background.
+
+Ownership of ``symbol`` is transferred to the page.
+
+.. seealso:: :py:func:`pageStyleSymbol`
+
+.. versionadded:: 3.10
+%End
+
+    const QgsFillSymbol *pageStyleSymbol() const;
+%Docstring
+Returns the symbol to use for drawing the page background.
+
+.. seealso:: :py:func:`setPageStyleSymbol`
+
+.. versionadded:: 3.10
+%End
+
     static QgsLayoutItemPage::Orientation decodePageOrientation( const QString &string, bool *ok /Out/ = 0 );
 %Docstring
 Decodes a ``string`` representing a page orientation. If specified, ``ok``
@@ -96,6 +119,10 @@ page orientation.
     virtual void attemptResize( const QgsLayoutSize &size, bool includesFrame = false );
 
     virtual QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = 0 ) /Factory/;
+
+    virtual ExportLayerBehavior exportLayerBehavior() const;
+
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
 
   public slots:
@@ -110,6 +137,10 @@ page orientation.
     virtual void drawFrame( QgsRenderContext &context );
 
     virtual void drawBackground( QgsRenderContext &context );
+
+    virtual bool writePropertiesToElement( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual bool readPropertiesFromElement( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context );
 
 
 };

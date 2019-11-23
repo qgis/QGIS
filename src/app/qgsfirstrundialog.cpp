@@ -20,8 +20,8 @@ QgsFirstRunDialog::QgsFirstRunDialog( QWidget *parent ) : QDialog( parent )
 {
   setupUi( this );
   mWelcomeDevLabel->hide();
-  mWelcomeLabel->setText( tr( "Welcome to QGIS %1" ).arg( Qgis::QGIS_VERSION ) );
-  if ( Qgis::QGIS_VERSION.endsWith( QLatin1String( "Master" ) ) )
+  mWelcomeLabel->setText( tr( "Welcome to QGIS %1" ).arg( Qgis::version() ) );
+  if ( Qgis::version().endsWith( QLatin1String( "Master" ) ) )
   {
     mWelcomeDevLabel->show();
   }

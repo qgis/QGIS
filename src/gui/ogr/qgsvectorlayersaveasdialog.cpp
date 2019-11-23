@@ -30,6 +30,7 @@
 #include <QFileDialog>
 #include <QTextCodec>
 #include <QSpinBox>
+#include "gdal.h"
 
 static const int COLUMN_IDX_NAME = 0;
 static const int COLUMN_IDX_TYPE = 1;
@@ -99,7 +100,7 @@ void QgsVectorLayerSaveAsDialog::setup()
 
   connect( mFormatComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged );
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsVectorLayerSaveAsDialog::mCrsSelector_crsChanged );
-  connect( mSymbologyExportComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsVectorLayerSaveAsDialog::mSymbologyExportComboBox_currentIndexChanged );
+  connect( mSymbologyExportComboBox, &QComboBox::currentTextChanged, this, &QgsVectorLayerSaveAsDialog::mSymbologyExportComboBox_currentIndexChanged );
   connect( mGeometryTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsVectorLayerSaveAsDialog::mGeometryTypeComboBox_currentIndexChanged );
   connect( mSelectAllAttributes, &QPushButton::clicked, this, &QgsVectorLayerSaveAsDialog::mSelectAllAttributes_clicked );
   connect( mDeselectAllAttributes, &QPushButton::clicked, this, &QgsVectorLayerSaveAsDialog::mDeselectAllAttributes_clicked );
@@ -396,6 +397,20 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
   mFilename->setEnabled( true );
   mFilename->setFilter( QgsVectorFileWriter::filterForDriver( format() ) );
 
+  // if output filename already defined we need to replace old suffix
+  // to avoid double extensions like .gpkg.shp
+  if ( !mFilename->filePath().isEmpty() )
+  {
+    QRegularExpression rx( "\\.(.*?)[\\s]" );
+    QString ext;
+    ext = rx.match( QgsVectorFileWriter::filterForDriver( format() ) ).captured( 1 );
+    if ( !ext.isEmpty() )
+    {
+      QFileInfo fi( mFilename->filePath() );
+      mFilename->setFilePath( QStringLiteral( "%1/%2.%3" ).arg( fi.path() ).arg( fi.baseName() ).arg( ext ) );
+    }
+  }
+
   bool selectAllFields = true;
   bool fieldsAsDisplayedValues = false;
 
@@ -598,6 +613,12 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
   else
   {
     mEncodingComboBox->setEnabled( true );
+  }
+
+  GDALDriverH hDriver = GDALGetDriverByName( format().toUtf8().constData() );
+  if ( hDriver )
+  {
+    mAddToCanvas->setEnabled( GDALGetMetadataItem( hDriver, GDAL_DCAP_OPEN, nullptr ) != nullptr );
   }
 }
 
@@ -870,7 +891,7 @@ QgsAttributeList QgsVectorLayerSaveAsDialog::attributesAsDisplayedValues() const
 
 bool QgsVectorLayerSaveAsDialog::addToCanvas() const
 {
-  return mAddToCanvas->isChecked();
+  return mAddToCanvas->isChecked() && mAddToCanvas->isEnabled();
 }
 
 void QgsVectorLayerSaveAsDialog::setAddToCanvas( bool enabled )

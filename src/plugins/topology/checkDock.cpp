@@ -64,9 +64,9 @@ checkDock::checkDock( QgisInterface *qIface, QWidget *parent )
   mTestTable = mConfigureDialog->rulesTable();
 
   QgsMapCanvas *canvas = qIface->mapCanvas();// mQgisApp->mapCanvas();
-  mRBFeature1 = new QgsRubberBand( canvas );
-  mRBFeature2 = new QgsRubberBand( canvas );
-  mRBConflict = new QgsRubberBand( canvas );
+  mRBFeature1.reset( new QgsRubberBand( canvas ) );
+  mRBFeature2.reset( new QgsRubberBand( canvas ) );
+  mRBConflict.reset( new QgsRubberBand( canvas ) );
 
   mRBFeature1->setColor( QColor( 0, 0, 255, 65 ) );
   mRBFeature2->setColor( QColor( 0, 255, 0, 65 ) );
@@ -130,9 +130,12 @@ void checkDock::updateRubberBands( bool visible )
 {
   if ( !visible )
   {
-    mRBConflict->reset();
-    mRBFeature1->reset();
-    mRBFeature2->reset();
+    if ( mRBConflict )
+      mRBConflict->reset();
+    if ( mRBFeature1 )
+      mRBFeature1->reset();
+    if ( mRBFeature2 )
+      mRBFeature2->reset();
 
     clearVertexMarkers();
   }
@@ -321,8 +324,13 @@ void checkDock::fix()
 
 void checkDock::runTests( ValidateType type )
 {
+  mTest->resetCanceledFlag();
+
   for ( int i = 0; i < mTestTable->rowCount(); ++i )
   {
+    if ( mTest->testCanceled() )
+      break;
+
     QString testName = mTestTable->item( i, 0 )->text();
     QString layer1Str = mTestTable->item( i, 3 )->text();
     QString layer2Str = mTestTable->item( i, 4 )->text();
@@ -372,8 +380,6 @@ void checkDock::runTests( ValidateType type )
       rb->show();
       mRbErrorMarkers << rb;
     }
-    disconnect( &progress, &QProgressDialog::canceled, mTest, &topolTest::setTestCanceled );
-    disconnect( mTest, &topolTest::progress, &progress, &QProgressDialog::setValue );
     mErrorList << errors;
   }
   mToggleRubberband->setChecked( true );

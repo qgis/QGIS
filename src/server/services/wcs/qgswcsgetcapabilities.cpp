@@ -56,6 +56,7 @@ namespace QgsWcs
     }
 #else
     doc = createGetCapabilitiesDocument( serverIface, project, version, request );
+    capabilitiesDocument = &doc;
 #endif
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
     response.write( capabilitiesDocument->toByteArray() );

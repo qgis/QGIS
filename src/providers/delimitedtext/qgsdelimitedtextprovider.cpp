@@ -101,8 +101,14 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
       mGeometryType = QgsWkbTypes::PointGeometry;
       mXFieldName = url.queryItemValue( QStringLiteral( "xField" ) );
       mYFieldName = url.queryItemValue( QStringLiteral( "yField" ) );
+      if ( url.hasQueryItem( QStringLiteral( "zField" ) ) )
+        mZFieldName = url.queryItemValue( QStringLiteral( "zField" ) );
+      if ( url.hasQueryItem( QStringLiteral( "mField" ) ) )
+        mMFieldName = url.queryItemValue( QStringLiteral( "mField" ) );
       QgsDebugMsg( "xField is: " + mXFieldName );
       QgsDebugMsg( "yField is: " + mYFieldName );
+      QgsDebugMsg( "zField is: " + mZFieldName );
+      QgsDebugMsg( "mField is: " + mMFieldName );
 
       if ( url.hasQueryItem( QStringLiteral( "xyDms" ) ) )
       {
@@ -276,6 +282,11 @@ bool QgsDelimitedTextProvider::createSpatialIndex()
   return true;
 }
 
+QgsFeatureSource::SpatialIndexPresence QgsDelimitedTextProvider::hasSpatialIndex() const
+{
+  return mSpatialIndex ? QgsFeatureSource::SpatialIndexPresent : QgsFeatureSource::SpatialIndexNotPresent;
+}
+
 // Really want to merge scanFile and rescan into single code.  Currently the reason
 // this is not done is that scanFile is done initially to create field names and, rescan
 // file includes building subset expression and assumes field names/types are already
@@ -336,11 +347,27 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
     mYFieldIndex = mFile->fieldIndex( mYFieldName );
     if ( mXFieldIndex < 0 )
     {
-      messages.append( tr( "%0 field %1 is not defined in delimited text file" ).arg( QStringLiteral( "X" ), mWktFieldName ) );
+      messages.append( tr( "%0 field %1 is not defined in delimited text file" ).arg( QStringLiteral( "X" ), mXFieldName ) );
     }
     if ( mYFieldIndex < 0 )
     {
-      messages.append( tr( "%0 field %1 is not defined in delimited text file" ).arg( QStringLiteral( "Y" ), mWktFieldName ) );
+      messages.append( tr( "%0 field %1 is not defined in delimited text file" ).arg( QStringLiteral( "Y" ), mYFieldName ) );
+    }
+    if ( !mZFieldName.isEmpty() )
+    {
+      mZFieldIndex = mFile->fieldIndex( mZFieldName );
+      if ( mZFieldIndex < 0 )
+      {
+        messages.append( tr( "%0 field %1 is not defined in delimited text file" ).arg( QStringLiteral( "Z" ), mZFieldName ) );
+      }
+    }
+    if ( !mMFieldName.isEmpty() )
+    {
+      mMFieldIndex = mFile->fieldIndex( mMFieldName );
+      if ( mMFieldIndex < 0 )
+      {
+        messages.append( tr( "%0 field %1 is not defined in delimited text file" ).arg( QStringLiteral( "M" ), mMFieldName ) );
+      }
     }
   }
   if ( !messages.isEmpty() )
@@ -466,6 +493,11 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
 
       QString sX = mXFieldIndex < parts.size() ? parts[mXFieldIndex] : QString();
       QString sY = mYFieldIndex < parts.size() ? parts[mYFieldIndex] : QString();
+      QString sZ, sM;
+      if ( mZFieldIndex > -1 )
+        sZ = mZFieldIndex < parts.size() ? parts[mZFieldIndex] : QString();
+      if ( mMFieldIndex > -1 )
+        sM = mMFieldIndex < parts.size() ? parts[mMFieldIndex] : QString();
       if ( sX.isEmpty() && sY.isEmpty() )
       {
         nEmptyGeometry++;
@@ -473,11 +505,14 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
       }
       else
       {
-        QgsPointXY pt;
+        QgsPoint pt;
         bool ok = pointFromXY( sX, sY, pt, mDecimalPoint, mXyDms );
 
         if ( ok )
         {
+          if ( !sZ.isEmpty() || sM.isEmpty() )
+            appendZM( sZ, sM, pt, mDecimalPoint );
+
           if ( foundFirstGeometry )
           {
             mExtent.combineExtentWith( pt.x(), pt.y() );
@@ -487,6 +522,10 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
             // Extent for the first point is just the first point
             mExtent.set( pt.x(), pt.y(), pt.x(), pt.y() );
             mWkbType = QgsWkbTypes::Point;
+            if ( mZFieldIndex > -1 )
+              mWkbType = QgsWkbTypes::addZ( mWkbType );
+            if ( mMFieldIndex > -1 )
+              mWkbType = QgsWkbTypes::addM( mWkbType );
             mGeometryType = QgsWkbTypes::PointGeometry;
             foundFirstGeometry = true;
           }
@@ -841,7 +880,31 @@ double QgsDelimitedTextProvider::dmsStringToDouble( const QString &sX, bool *xOk
   return x;
 }
 
-bool QgsDelimitedTextProvider::pointFromXY( QString &sX, QString &sY, QgsPointXY &pt, const QString &decimalPoint, bool xyDms )
+void QgsDelimitedTextProvider::appendZM( QString &sZ, QString &sM, QgsPoint &point, const QString &decimalPoint )
+{
+  if ( ! decimalPoint.isEmpty() )
+  {
+    sZ.replace( decimalPoint, QLatin1String( "." ) );
+    sM.replace( decimalPoint, QLatin1String( "." ) );
+  }
+
+  bool zOk, mOk;
+  double z, m;
+  if ( !sZ.isEmpty() )
+  {
+    z = sZ.toDouble( &zOk );
+    if ( zOk )
+      point.addZValue( z );
+  }
+  if ( !sM.isEmpty() )
+  {
+    m = sM.toDouble( &mOk );
+    if ( mOk )
+      point.addMValue( m );
+  }
+}
+
+bool QgsDelimitedTextProvider::pointFromXY( QString &sX, QString &sY, QgsPoint &pt, const QString &decimalPoint, bool xyDms )
 {
   if ( ! decimalPoint.isEmpty() )
   {
@@ -1080,6 +1143,7 @@ void QgsDelimitedTextProvider::onFileUpdated()
     messages.append( tr( "The file has been updated by another application - reloading" ) );
     reportErrors( messages );
     mRescanRequired = true;
+    emit dataChanged();
   }
 }
 

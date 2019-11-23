@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>359</width>
-    <height>301</height>
+    <width>462</width>
+    <height>376</height>
    </rect>
   </property>
   <property name="baseSize">
@@ -23,7 +23,7 @@
    <iconset>
     <normaloff>.</normaloff>.</iconset>
   </property>
-  <layout class="QGridLayout">
+  <layout class="QGridLayout" name="mGrid">
    <property name="leftMargin">
     <number>9</number>
    </property>
@@ -39,51 +39,6 @@
    <property name="spacing">
     <number>6</number>
    </property>
-   <item row="4" column="0">
-    <widget class="QLabel" name="textLabel2">
-     <property name="text">
-      <string>Total</string>
-     </property>
-     <property name="buddy">
-      <cstring>editTotal</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="2">
-    <widget class="QLineEdit" name="editTotal">
-     <property name="font">
-      <font>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight</set>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
-    <spacer>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeType">
-      <enum>QSizePolicy::Fixed</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>41</width>
-       <height>25</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="4" column="3">
-    <widget class="QComboBox" name="mUnitsCombo"/>
-   </item>
    <item row="2" column="0" colspan="4">
     <widget class="QTreeWidget" name="mTable">
      <property name="editTriggers">
@@ -105,14 +60,76 @@
      </column>
     </widget>
    </item>
-   <item row="7" column="0" colspan="4">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
+   <item row="4" column="0">
+    <widget class="QLabel" name="totalDistanceLabel">
+     <property name="text">
+      <string>Total</string>
+     </property>
+     <property name="buddy">
+      <cstring>editTotal</cstring>
      </property>
     </widget>
    </item>
-   <item row="6" column="0" colspan="4">
+   <item row="4" column="1">
+    <spacer>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Fixed</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>41</width>
+       <height>25</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="totalHorizontalDistanceLabel">
+     <property name="text">
+      <string>Total Horizontal Distance</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="2">
+    <widget class="QLineEdit" name="editHorizontalTotal">
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="2">
+    <widget class="QRadioButton" name="mEllipsoidal">
+     <property name="text">
+      <string>Ellipsoidal</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0">
+    <widget class="QRadioButton" name="mCartesian">
+     <property name="text">
+      <string>Cartesian</string>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="0" colspan="4">
     <widget class="QgsCollapsibleGroupBox" name="groupBox">
      <property name="title">
       <string>Info</string>
@@ -131,25 +148,44 @@
      </layout>
     </widget>
    </item>
-   <item row="5" column="0">
-    <widget class="QRadioButton" name="mCartesian">
-     <property name="text">
-      <string>Cartesian</string>
-     </property>
-     <property name="checked">
-      <bool>false</bool>
+   <item row="4" column="3">
+    <widget class="QComboBox" name="mUnitsCombo"/>
+   </item>
+   <item row="11" column="0" colspan="4">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
      </property>
     </widget>
    </item>
-   <item row="5" column="2">
-    <widget class="QRadioButton" name="mEllipsoidal">
-     <property name="text">
-      <string>Ellipsoidal</string>
+   <item row="4" column="2">
+    <widget class="QLineEdit" name="editTotal">
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
      </property>
-     <property name="checked">
+     <property name="alignment">
+      <set>Qt::AlignRight</set>
+     </property>
+     <property name="readOnly">
       <bool>true</bool>
      </property>
     </widget>
+   </item>
+   <item row="10" column="0" colspan="4">
+    <spacer name="mSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>

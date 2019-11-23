@@ -179,6 +179,28 @@ class CORE_EXPORT QgsFeatureSource
      */
     QgsVectorLayer *materialize( const QgsFeatureRequest &request,
                                  QgsFeedback *feedback = nullptr ) SIP_FACTORY;
+
+    /**
+     * Enumeration of spatial index presence states.
+     * \since QGIS 3.10.1
+     */
+    enum SpatialIndexPresence
+    {
+      SpatialIndexUnknown = 0, //!< Spatial index presence cannot be determined, index may or may not exist
+      SpatialIndexNotPresent = 1, //!< No spatial index exists for the source
+      SpatialIndexPresent = 2, //!< A valid spatial index exists for the source
+    };
+
+    /**
+     * Returns an enum value representing the presence of a valid spatial index on the source,
+     * if it can be determined.
+     *
+     * If QgsFeatureSource::SpatialIndexUnknown is returned then the presence of an index cannot
+     * be determined.
+     *
+     * \since QGIS 3.10.1
+     */
+    virtual SpatialIndexPresence hasSpatialIndex() const;
 };
 
 Q_DECLARE_METATYPE( QgsFeatureSource * )

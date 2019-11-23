@@ -378,7 +378,7 @@ bool QgsVectorLayerCache::canUseCacheForRequest( const QgsFeatureRequest &featur
 QgsFeatureIterator QgsVectorLayerCache::getFeatures( const QgsFeatureRequest &featureRequest )
 {
   QgsFeatureIterator it;
-  bool requiresWriterIt = true; // If a not yet cached, but cachable request is made, this stays true.
+  bool requiresWriterIt = true; // If a not yet cached, but cacheable request is made, this stays true.
 
   if ( checkInformationCovered( featureRequest ) )
   {

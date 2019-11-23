@@ -237,6 +237,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoMapGridAnnotationFontColor, //!< Map frame annotation color
       UndoMapGridLineSymbol, //!< Grid line symbol
       UndoMapGridMarkerSymbol, //!< Grid marker symbol
+      UndoMapGridIntervalRange, //!< Grid interval range
       UndoMapLabelMargin, //!< Margin for labels from edge of map
       UndoPictureRotation, //!< Picture rotation
       UndoPictureFillColor, //!< Picture fill color
@@ -415,14 +416,92 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     void setParentGroup( QgsLayoutItemGroup *group );
 
     /**
+     * Behavior of item when exporting to layered outputs.
+     * \since QGIS 3.10
+     */
+    enum ExportLayerBehavior
+    {
+      CanGroupWithAnyOtherItem, //!< Item can be placed on a layer with any other item (default behavior)
+      CanGroupWithItemsOfSameType, //!< Item can only be placed on layers with other items of the same type, but multiple items of this type can be grouped together
+      MustPlaceInOwnLayer, //!< Item must be placed in its own individual layer
+      ItemContainsSubLayers, //!< Item contains multiple sublayers which must be individually exported
+    };
+
+    /**
+     * Returns the behavior of this item during exporting to layered exports (e.g. SVG).
+     * \see numberExportLayers()
+     * \see exportLayerDetails()
+     * \since QGIS 3.10
+     */
+    virtual ExportLayerBehavior exportLayerBehavior() const;
+
+    /**
      * Returns the number of layers that this item requires for exporting during layered exports (e.g. SVG).
      * Returns 0 if this item is to be placed on the same layer as the previous item,
      * 1 if it should be placed on its own layer, and >1 if it requires multiple export layers.
      *
      * Items which require multiply layers should check QgsLayoutContext::currentExportLayer() during
      * their rendering to determine which layer should be drawn.
+     *
+     * \see exportLayerBehavior()
+     * \see exportLayerDetails()
+     *
+     * \deprecated Use nextExportPart() and exportLayerBehavior() instead.
      */
-    virtual int numberExportLayers() const { return 0; }
+    Q_DECL_DEPRECATED virtual int numberExportLayers() const SIP_DEPRECATED;
+
+    /**
+     * Starts a multi-layer export operation.
+     *
+     * \see stopLayeredExport()
+     * \see nextExportPart()
+     * \since QGIS 3.10
+     */
+    virtual void startLayeredExport();
+
+    /**
+     * Stops a multi-layer export operation.
+     *
+     * \see startLayeredExport()
+     * \see nextExportPart()
+     * \since QGIS 3.10
+     */
+    virtual void stopLayeredExport();
+
+    /**
+     * Moves to the next export part for a multi-layered export item, during a multi-layered export.
+     *
+     * \see startLayeredExport()
+     * \see stopLayeredExport()
+     * \since QGIS 3.10
+     */
+    virtual bool nextExportPart();
+
+    /**
+     * Contains details of a particular export layer relating to a layout item.
+     * \ingroup core
+     * \since QGIS 3.10
+     */
+    struct CORE_EXPORT ExportLayerDetail
+    {
+      //! User-friendly name for the export layer
+      QString name;
+
+      //! Associated map layer ID, or an empty string if this export layer is not associated with a map layer
+      QString mapLayerId;
+
+      //! Associated map theme, or an empty string if this export layer does not need to be associated with a map theme
+      QString mapTheme;
+    };
+
+    /**
+     * Returns the details for the specified current export layer.
+     *
+     * Only valid between calls to startLayeredExport() and stopLayeredExport()
+     *
+     * \since QGIS 3.10
+     */
+    virtual QgsLayoutItem::ExportLayerDetail exportLayerDetails() const;
 
     /**
      * Handles preparing a paint surface for the layout item and painting the item's
@@ -941,6 +1020,13 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * Emitted when the item's size or position changes.
      */
     void sizePositionChanged();
+
+    /**
+     * Emitted whenever the number of background tasks an item is executing changes.
+     *
+     * \since QGIS 3.10
+     */
+    void backgroundTaskCountChanged( int count );
 
   protected:
 

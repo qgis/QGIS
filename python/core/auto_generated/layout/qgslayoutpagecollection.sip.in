@@ -195,11 +195,14 @@ Ownership is not transferred, and a copy of the symbol is created internally.
 .. seealso:: :py:func:`pageStyleSymbol`
 %End
 
-    const QgsFillSymbol *pageStyleSymbol() const;
+ const QgsFillSymbol *pageStyleSymbol() const /Deprecated/;
 %Docstring
 Returns the symbol to use for drawing pages in the collection.
 
 .. seealso:: :py:func:`setPageStyleSymbol`
+
+.. deprecated::
+   Use QgsLayoutItemPage.pageStyleSymbol() instead.
 %End
 
     void beginPageSizeChange();

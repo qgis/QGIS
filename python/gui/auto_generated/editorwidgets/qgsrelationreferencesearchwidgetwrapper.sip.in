@@ -11,6 +11,7 @@
 
 
 
+
 class QgsRelationReferenceSearchWidgetWrapper : QgsSearchWidgetWrapper
 {
 %Docstring
@@ -65,9 +66,12 @@ Returns a variant representing the current state of the widget.
 
   public slots:
 
-    void onValueChanged( const QVariant &value );
+ void onValueChanged( const QVariant &value ) /Deprecated/;
 %Docstring
 Called when current value of search widget changes
+
+.. deprecated:: QGIS 3.10
+   made private
 %End
 
   protected slots:

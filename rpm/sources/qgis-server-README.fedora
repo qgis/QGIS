@@ -25,8 +25,10 @@ QGIS project is "/var/www/ows/my_qgis_project.qgs". The sample
 configuration automatically adds the project file extension for you.
 
 The actual data can stay where it is. Make sure QGIS server can
-access the project file and don't forget to let Httpd reload its
-configuration before sending your requests!
+access the project file and don't forget to let the web server reload its
+configuration before sending your requests! Make also sure that
+the environment variable 'QGIS_PREFIX_PATH' is set to '/usr' before
+running the FCGI server; see the examples for further details.
 
 Please fill in the metadata tab for your QGIS project.
 

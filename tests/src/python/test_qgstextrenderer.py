@@ -14,6 +14,7 @@ import qgis  # NOQA
 import os
 
 from qgis.core import (QgsTextBufferSettings,
+                       QgsTextMaskSettings,
                        QgsTextBackgroundSettings,
                        QgsTextShadowSettings,
                        QgsTextFormat,
@@ -27,7 +28,12 @@ from qgis.core import (QgsTextBufferSettings,
                        QgsRectangle,
                        QgsRenderChecker,
                        QgsBlurEffect,
-                       QgsMarkerSymbol)
+                       QgsMarkerSymbol,
+                       QgsPalLayerSettings,
+                       QgsProperty,
+                       QgsFontUtils,
+                       QgsSymbolLayerId,
+                       QgsSymbolLayerReference)
 from qgis.PyQt.QtGui import (QColor, QPainter, QFont, QImage, QBrush, QPen, QFontMetricsF)
 from qgis.PyQt.QtCore import (Qt, QSizeF, QPointF, QRectF, QDir, QSize)
 from qgis.PyQt.QtXml import QDomDocument
@@ -48,6 +54,7 @@ class PyQgsTextRenderer(unittest.TestCase):
 
     def setUp(self):
         self.report = "<h1>Python QgsTextRenderer Tests</h1>\n"
+        QgsFontUtils.loadStandardTestFonts(['Bold', 'Oblique'])
 
     def tearDown(self):
         report_file_path = "%s/qgistest.html" % QDir.tempPath()
@@ -110,6 +117,57 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.checkBufferSettings(s2)
         s3 = QgsTextBufferSettings(s)
         self.checkBufferSettings(s3)
+
+    def createMaskSettings(self):
+        s = QgsTextMaskSettings()
+        s.setEnabled(True)
+        s.setType(QgsTextMaskSettings.MaskBuffer)
+        s.setSize(5)
+        s.setSizeUnit(QgsUnitTypes.RenderPoints)
+        s.setSizeMapUnitScale(QgsMapUnitScale(1, 2))
+        s.setOpacity(0.5)
+        s.setJoinStyle(Qt.RoundJoin)
+        s.setMaskedSymbolLayers([QgsSymbolLayerReference("layerid1", QgsSymbolLayerId("symbol", 1)),
+                                 QgsSymbolLayerReference("layerid2", QgsSymbolLayerId("symbol2", 2))])
+        return s
+
+    def checkMaskSettings(self, s):
+        """ test QgsTextMaskSettings """
+        self.assertTrue(s.enabled())
+        self.assertEqual(s.type(), QgsTextMaskSettings.MaskBuffer)
+        self.assertEqual(s.size(), 5)
+        self.assertEqual(s.sizeUnit(), QgsUnitTypes.RenderPoints)
+        self.assertEqual(s.sizeMapUnitScale(), QgsMapUnitScale(1, 2))
+        self.assertEqual(s.opacity(), 0.5)
+        self.assertEqual(s.joinStyle(), Qt.RoundJoin)
+        self.assertEqual(s.maskedSymbolLayers(), [QgsSymbolLayerReference("layerid1", QgsSymbolLayerId("symbol", 1)),
+                                                  QgsSymbolLayerReference("layerid2", QgsSymbolLayerId("symbol2", 2))])
+
+    def testMaskGettersSetters(self):
+        s = self.createMaskSettings()
+        self.checkMaskSettings(s)
+
+        # some other checks
+        s.setEnabled(False)
+        self.assertFalse(s.enabled())
+
+    def testMaskReadWriteXml(self):
+        """test saving and restoring state of a mask to xml"""
+        doc = QDomDocument("testdoc")
+        s = self.createMaskSettings()
+        elem = s.writeXml(doc)
+        parent = doc.createElement("settings")
+        parent.appendChild(elem)
+        t = QgsTextMaskSettings()
+        t.readXml(parent)
+        self.checkMaskSettings(t)
+
+    def testMaskCopy(self):
+        s = self.createMaskSettings()
+        s2 = s
+        self.checkMaskSettings(s2)
+        s3 = QgsTextMaskSettings(s)
+        self.checkMaskSettings(s3)
 
     def createBackgroundSettings(self):
         s = QgsTextBackgroundSettings()
@@ -275,11 +333,15 @@ class PyQgsTextRenderer(unittest.TestCase):
         s = QgsTextFormat()
         s.buffer().setEnabled(True)
         s.buffer().setSize(25)
+        s.mask().setEnabled(True)
+        s.mask().setSize(32)
         s.background().setEnabled(True)
         s.background().setSvgFile('test.svg')
         s.shadow().setEnabled(True)
         s.shadow().setOffsetAngle(223)
-        s.setFont(getTestFont())
+        font = getTestFont()
+        font.setKerning(False)
+        s.setFont(font)
         s.setNamedStyle('Italic')
         s.setSize(5)
         s.setSizeUnit(QgsUnitTypes.RenderPoints)
@@ -289,17 +351,21 @@ class PyQgsTextRenderer(unittest.TestCase):
         s.setBlendMode(QPainter.CompositionMode_DestinationAtop)
         s.setLineHeight(5)
         s.setPreviewBackgroundColor(QColor(100, 150, 200))
+        s.dataDefinedProperties().setProperty(QgsPalLayerSettings.Bold, QgsProperty.fromExpression('1>2'))
         return s
 
     def checkTextFormat(self, s):
         """ test QgsTextFormat """
         self.assertTrue(s.buffer().enabled())
         self.assertEqual(s.buffer().size(), 25)
+        self.assertTrue(s.mask().enabled())
+        self.assertEqual(s.mask().size(), 32)
         self.assertTrue(s.background().enabled())
         self.assertEqual(s.background().svgFile(), 'test.svg')
         self.assertTrue(s.shadow().enabled())
         self.assertEqual(s.shadow().offsetAngle(), 223)
         self.assertEqual(s.font().family(), 'QGIS Vera Sans')
+        self.assertFalse(s.font().kerning())
         self.assertEqual(s.namedStyle(), 'Italic')
         self.assertEqual(s.size(), 5)
         self.assertEqual(s.sizeUnit(), QgsUnitTypes.RenderPoints)
@@ -309,6 +375,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertEqual(s.blendMode(), QPainter.CompositionMode_DestinationAtop)
         self.assertEqual(s.lineHeight(), 5)
         self.assertEqual(s.previewBackgroundColor().name(), '#6496c8')
+        self.assertEqual(s.dataDefinedProperties().property(QgsPalLayerSettings.Bold).expressionString(), '1>2')
 
     def testFormatGettersSetters(self):
         s = self.createFormatSettings()
@@ -371,6 +438,349 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertTrue(t.containsAdvancedEffects())
         t.shadow().setBlendMode(QPainter.CompositionMode_SourceOver)
         self.assertFalse(t.containsAdvancedEffects())
+
+    def testDataDefinedBufferSettings(self):
+        f = QgsTextFormat()
+        context = QgsRenderContext()
+
+        # buffer enabled
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.BufferDraw, QgsProperty.fromExpression('1'))
+        f.updateDataDefinedProperties(context)
+        self.assertTrue(f.buffer().enabled())
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.BufferDraw, QgsProperty.fromExpression('0'))
+        context = QgsRenderContext()
+        f.updateDataDefinedProperties(context)
+        self.assertFalse(f.buffer().enabled())
+
+        # buffer size
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.BufferSize, QgsProperty.fromExpression('7.8'))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.buffer().size(), 7.8)
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.BufferUnit, QgsProperty.fromExpression("'pixel'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.buffer().sizeUnit(), QgsUnitTypes.RenderPixels)
+
+        # buffer opacity
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.BufferOpacity, QgsProperty.fromExpression('37'))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.buffer().opacity(), 0.37)
+
+        # blend mode
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.BufferBlendMode, QgsProperty.fromExpression("'burn'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.buffer().blendMode(), QPainter.CompositionMode_ColorBurn)
+
+        # join style
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.BufferJoinStyle, QgsProperty.fromExpression("'miter'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.buffer().joinStyle(), Qt.MiterJoin)
+
+        # color
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.BufferColor, QgsProperty.fromExpression("'#ff0088'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.buffer().color().name(), '#ff0088')
+
+    def testDataDefinedMaskSettings(self):
+        f = QgsTextFormat()
+        context = QgsRenderContext()
+
+        # mask enabled
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.MaskEnabled, QgsProperty.fromExpression('1'))
+        f.updateDataDefinedProperties(context)
+        self.assertTrue(f.mask().enabled())
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.MaskEnabled, QgsProperty.fromExpression('0'))
+        context = QgsRenderContext()
+        f.updateDataDefinedProperties(context)
+        self.assertFalse(f.mask().enabled())
+
+        # mask buffer size
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.MaskBufferSize, QgsProperty.fromExpression('7.8'))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.mask().size(), 7.8)
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.MaskBufferUnit, QgsProperty.fromExpression("'pixel'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.mask().sizeUnit(), QgsUnitTypes.RenderPixels)
+
+        # mask opacity
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.MaskOpacity, QgsProperty.fromExpression('37'))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.mask().opacity(), 0.37)
+
+        # join style
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.MaskJoinStyle, QgsProperty.fromExpression("'miter'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.mask().joinStyle(), Qt.MiterJoin)
+
+    def testDataDefinedBackgroundSettings(self):
+        f = QgsTextFormat()
+        context = QgsRenderContext()
+
+        # background enabled
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeDraw, QgsProperty.fromExpression('1'))
+        f.updateDataDefinedProperties(context)
+        self.assertTrue(f.background().enabled())
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeDraw, QgsProperty.fromExpression('0'))
+        context = QgsRenderContext()
+        f.updateDataDefinedProperties(context)
+        self.assertFalse(f.background().enabled())
+
+        # background size
+        f.background().setSize(QSizeF(13, 14))
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeSizeX, QgsProperty.fromExpression('7.8'))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.background().size().width(), 7.8)
+        self.assertEqual(f.background().size().height(), 14)
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeSizeY, QgsProperty.fromExpression('17.8'))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.background().size().width(), 7.8)
+        self.assertEqual(f.background().size().height(), 17.8)
+
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeSizeUnits, QgsProperty.fromExpression("'pixel'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.background().sizeUnit(), QgsUnitTypes.RenderPixels)
+
+        # shape kind
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeKind, QgsProperty.fromExpression("'square'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.background().type(), QgsTextBackgroundSettings.ShapeSquare)
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeKind, QgsProperty.fromExpression("'ellipse'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.background().type(), QgsTextBackgroundSettings.ShapeEllipse)
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeKind, QgsProperty.fromExpression("'circle'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.background().type(), QgsTextBackgroundSettings.ShapeCircle)
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeKind, QgsProperty.fromExpression("'svg'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.background().type(), QgsTextBackgroundSettings.ShapeSVG)
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeKind, QgsProperty.fromExpression("'marker'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.background().type(), QgsTextBackgroundSettings.ShapeMarkerSymbol)
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeKind, QgsProperty.fromExpression("'rect'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.background().type(), QgsTextBackgroundSettings.ShapeRectangle)
+
+        # size type
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeSizeType, QgsProperty.fromExpression("'fixed'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.background().sizeType(), QgsTextBackgroundSettings.SizeFixed)
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeSizeType, QgsProperty.fromExpression("'buffer'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.background().sizeType(), QgsTextBackgroundSettings.SizeBuffer)
+
+        # svg path
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeSVGFile, QgsProperty.fromExpression("'my.svg'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.background().svgFile(), 'my.svg')
+
+        # shape rotation
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeRotation, QgsProperty.fromExpression('67'))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.background().rotation(), 67)
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeRotationType, QgsProperty.fromExpression("'offset'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.background().rotationType(), QgsTextBackgroundSettings.RotationOffset)
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeRotationType, QgsProperty.fromExpression("'fixed'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.background().rotationType(), QgsTextBackgroundSettings.RotationFixed)
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeRotationType, QgsProperty.fromExpression("'sync'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.background().rotationType(), QgsTextBackgroundSettings.RotationSync)
+
+        # shape offset
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeOffset, QgsProperty.fromExpression("'7,9'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.background().offset(), QPointF(7, 9))
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeOffsetUnits, QgsProperty.fromExpression("'pixel'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.background().offsetUnit(), QgsUnitTypes.RenderPixels)
+
+        # shape radii
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeRadii, QgsProperty.fromExpression("'18,19'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.background().radii(), QSizeF(18, 19))
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeRadiiUnits, QgsProperty.fromExpression("'pixel'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.background().radiiUnit(), QgsUnitTypes.RenderPixels)
+
+        # shape opacity
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeOpacity, QgsProperty.fromExpression('37'))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.background().opacity(), 0.37)
+
+        # color
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeFillColor, QgsProperty.fromExpression("'#ff0088'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.background().fillColor().name(), '#ff0088')
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeStrokeColor, QgsProperty.fromExpression("'#8800ff'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.background().strokeColor().name(), '#8800ff')
+
+        # stroke width
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeStrokeWidth, QgsProperty.fromExpression('88'))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.background().strokeWidth(), 88)
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeStrokeWidthUnits, QgsProperty.fromExpression("'pixel'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.background().strokeWidthUnit(), QgsUnitTypes.RenderPixels)
+
+        # blend mode
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeBlendMode, QgsProperty.fromExpression("'burn'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.background().blendMode(), QPainter.CompositionMode_ColorBurn)
+
+        # join style
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeJoinStyle, QgsProperty.fromExpression("'miter'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.background().joinStyle(), Qt.MiterJoin)
+
+    def testDataDefinedShadowSettings(self):
+        f = QgsTextFormat()
+        context = QgsRenderContext()
+
+        # shadow enabled
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShadowDraw, QgsProperty.fromExpression('1'))
+        f.updateDataDefinedProperties(context)
+        self.assertTrue(f.shadow().enabled())
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShadowDraw, QgsProperty.fromExpression('0'))
+        context = QgsRenderContext()
+        f.updateDataDefinedProperties(context)
+        self.assertFalse(f.shadow().enabled())
+
+        # placement type
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShadowUnder, QgsProperty.fromExpression("'text'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.shadow().shadowPlacement(), QgsTextShadowSettings.ShadowText)
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShadowUnder, QgsProperty.fromExpression("'buffer'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.shadow().shadowPlacement(), QgsTextShadowSettings.ShadowBuffer)
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShadowUnder, QgsProperty.fromExpression("'background'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.shadow().shadowPlacement(), QgsTextShadowSettings.ShadowShape)
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShadowUnder, QgsProperty.fromExpression("'svg'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.shadow().shadowPlacement(), QgsTextShadowSettings.ShadowLowest)
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShadowUnder, QgsProperty.fromExpression("'lowest'"))
+
+        # offset angle
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShadowOffsetAngle, QgsProperty.fromExpression('67'))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.shadow().offsetAngle(), 67)
+
+        # offset distance
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShadowOffsetDist, QgsProperty.fromExpression('38'))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.shadow().offsetDistance(), 38)
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShadowOffsetUnits, QgsProperty.fromExpression("'pixel'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.shadow().offsetUnit(), QgsUnitTypes.RenderPixels)
+
+        # radius
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShadowRadius, QgsProperty.fromExpression('58'))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.shadow().blurRadius(), 58)
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShadowRadiusUnits, QgsProperty.fromExpression("'pixel'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.shadow().blurRadiusUnit(), QgsUnitTypes.RenderPixels)
+
+        # opacity
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShadowOpacity, QgsProperty.fromExpression('37'))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.shadow().opacity(), 0.37)
+
+        # color
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShadowColor, QgsProperty.fromExpression("'#ff0088'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.shadow().color().name(), '#ff0088')
+
+        # blend mode
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShadowBlendMode, QgsProperty.fromExpression("'burn'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.shadow().blendMode(), QPainter.CompositionMode_ColorBurn)
+
+    def testDataDefinedFormatSettings(self):
+        f = QgsTextFormat()
+        font = f.font()
+        font.setUnderline(True)
+        font.setStrikeOut(True)
+        font.setWordSpacing(5.7)
+        font.setLetterSpacing(QFont.AbsoluteSpacing, 3.3)
+        f.setFont(font)
+        context = QgsRenderContext()
+
+        # family
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.Family, QgsProperty.fromExpression("'{}'".format(QgsFontUtils.getStandardTestFont().family())))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.font().family(), QgsFontUtils.getStandardTestFont().family())
+
+        # style
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.FontStyle, QgsProperty.fromExpression("'Bold'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.font().styleName(), 'Bold')
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.FontStyle, QgsProperty.fromExpression("'Roman'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.font().styleName(), 'Roman')
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.Bold, QgsProperty.fromExpression("1"))
+        f.updateDataDefinedProperties(context)
+        self.assertTrue(f.font().bold())
+        self.assertFalse(f.font().italic())
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.Bold, QgsProperty.fromExpression("0"))
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.Italic, QgsProperty.fromExpression("1"))
+        f.updateDataDefinedProperties(context)
+        self.assertFalse(f.font().bold())
+        self.assertTrue(f.font().italic())
+        self.assertTrue(f.font().underline())
+        self.assertTrue(f.font().strikeOut())
+        self.assertAlmostEqual(f.font().wordSpacing(), 5.7, 1)
+        self.assertAlmostEqual(f.font().letterSpacing(), 3.3, 1)
+
+        # underline
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.Underline, QgsProperty.fromExpression("0"))
+        f.updateDataDefinedProperties(context)
+        self.assertFalse(f.font().underline())
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.Underline, QgsProperty.fromExpression("1"))
+        f.updateDataDefinedProperties(context)
+        self.assertTrue(f.font().underline())
+
+        # strikeout
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.Strikeout, QgsProperty.fromExpression("0"))
+        f.updateDataDefinedProperties(context)
+        self.assertFalse(f.font().strikeOut())
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.Strikeout, QgsProperty.fromExpression("1"))
+        f.updateDataDefinedProperties(context)
+        self.assertTrue(f.font().strikeOut())
+
+        # color
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.Color, QgsProperty.fromExpression("'#ff0088'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.color().name(), '#ff0088')
+
+        # size
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.Size, QgsProperty.fromExpression('38'))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.size(), 38)
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.FontSizeUnit, QgsProperty.fromExpression("'pixel'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.sizeUnit(), QgsUnitTypes.RenderPixels)
+
+        # opacity
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.FontOpacity, QgsProperty.fromExpression('37'))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.opacity(), 0.37)
+
+        # letter spacing
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.FontLetterSpacing, QgsProperty.fromExpression('58'))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.font().letterSpacing(), 58)
+
+        # word spacing
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.FontWordSpacing, QgsProperty.fromExpression('8'))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.font().wordSpacing(), 8)
+
+        # blend mode
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.FontBlendMode, QgsProperty.fromExpression("'burn'"))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.blendMode(), QPainter.CompositionMode_ColorBurn)
 
     def testFontFoundFromLayer(self):
         layer = createEmptyLayer()
@@ -1733,6 +2143,35 @@ class PyQgsTextRenderer(unittest.TestCase):
         assert self.checkRenderPoint(format, 'text_point_center_aligned', text=['test'],
                                      alignment=QgsTextRenderer.AlignCenter, point=QPointF(200, 200))
 
+    def testDrawTextDataDefinedColorPoint(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(0, 255, 0))
+        format.dataDefinedProperties().setProperty(QgsPalLayerSettings.Color, QgsProperty.fromExpression("'#bb00cc'"))
+        assert self.checkRenderPoint(format, 'text_dd_color_point', None, text=['test'], point=QPointF(50, 200))
+
+    def testDrawTextDataDefinedColorRect(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(0, 255, 0))
+        format.dataDefinedProperties().setProperty(QgsPalLayerSettings.Color, QgsProperty.fromExpression("'#bb00cc'"))
+        assert self.checkRender(format, 'text_dd_color_rect', None, text=['test'], alignment=QgsTextRenderer.AlignCenter, rect=QRectF(100, 100, 100, 100))
+
+    def testDrawTextDataDefinedBufferColorPoint(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(0, 255, 0))
+        format.dataDefinedProperties().setProperty(QgsPalLayerSettings.BufferColor, QgsProperty.fromExpression("'#bb00cc'"))
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(5)
+        assert self.checkRenderPoint(format, 'text_dd_buffer_color', None, text=['test'], point=QPointF(50, 200))
+
     def testTextRenderFormat(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
@@ -1810,6 +2249,38 @@ class PyQgsTextRenderer(unittest.TestCase):
             lines = ''.join(f.readlines())
         self.assertNotIn('<text', lines)
         self.assertNotIn('>my test text<', lines)
+
+    def testDrawTextVerticalRectMode(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setOrientation(QgsTextFormat.VerticalOrientation)
+        assert self.checkRender(format, 'text_vertical_rect_mode', QgsTextRenderer.Text, text=['1234'], rect=QRectF(40, 20, 350, 350))
+
+    def testDrawTextVerticalRectModeCenterAligned(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setOrientation(QgsTextFormat.VerticalOrientation)
+        assert self.checkRender(format, 'text_vertical_rect_mode_center_aligned', QgsTextRenderer.Text, text=['1234', '5678'], rect=QRectF(40, 20, 350, 350), alignment=QgsTextRenderer.AlignCenter)
+
+    def testDrawTextVerticalRectModeRightAligned(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setOrientation(QgsTextFormat.VerticalOrientation)
+        assert self.checkRender(format, 'text_vertical_rect_mode_right_aligned', QgsTextRenderer.Text, text=['1234', '5678'], rect=QRectF(40, 20, 350, 350), alignment=QgsTextRenderer.AlignRight)
+
+    def testDrawTextVerticalPointMode(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setOrientation(QgsTextFormat.VerticalOrientation)
+        assert self.checkRenderPoint(format, 'text_vertical_point_mode', QgsTextRenderer.Text, text=['1234', '5678'], point=QPointF(40, 380))
 
 
 if __name__ == '__main__':

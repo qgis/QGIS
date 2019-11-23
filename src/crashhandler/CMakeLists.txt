@@ -12,15 +12,15 @@ QT5_ADD_RESOURCES(IMAGE_RCC_SRCS ${IMAGE_RCCS})
 SET_SOURCE_FILES_PROPERTIES(qgsstacktrace.cpp PROPERTIES COMPILE_FLAGS -wd4091)
 
 ADD_EXECUTABLE(qgiscrashhandler WIN32
-    main.cpp
-    ${CRASH_UIS_H} 
-    ${CRASH_HDR_MOC}
-    ${IMAGE_RCC_SRCS}
-    qgscrashdialog.cpp
-    qgsstacktrace.cpp
-    qgscrashreport.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/../app/qgis_win32.rc
-    )
+  main.cpp
+  ${CRASH_UIS_H}
+  ${CRASH_HDR_MOC}
+  ${IMAGE_RCC_SRCS}
+  qgscrashdialog.cpp
+  qgsstacktrace.cpp
+  qgscrashreport.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/../app/qgis_win32.rc
+)
 
 TARGET_LINK_LIBRARIES(qgiscrashhandler
   ${Qt5Core_LIBRARIES}

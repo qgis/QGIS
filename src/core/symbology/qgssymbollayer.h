@@ -30,6 +30,7 @@
 #include "qgssymbol.h"
 #include "qgsfields.h"
 #include "qgspropertycollection.h"
+#include "qgspainteffect.h"
 
 class QPainter;
 class QSize;
@@ -38,7 +39,6 @@ class QPolygonF;
 class QgsDxfExport;
 class QgsExpression;
 class QgsRenderContext;
-class QgsPaintEffect;
 
 #ifndef SIP_RUN
 typedef QMap<QString, QString> QgsStringMap;
@@ -74,6 +74,8 @@ class CORE_EXPORT QgsSymbolLayer
           sipType = sipType_QgsRasterMarkerSymbolLayer;
         else if ( sipCpp->layerType() == "VectorField" )
           sipType = sipType_QgsVectorFieldSymbolLayer;
+        else if ( sipCpp->layerType() == "MaskMarker" )
+          sipType = sipType_QgsMaskMarkerSymbolLayer;
         else
           sipType = sipType_QgsMarkerSymbolLayer;
         break;
@@ -106,6 +108,8 @@ class CORE_EXPORT QgsSymbolLayer
           sipType = sipType_QgsGradientFillSymbolLayer;
         else if ( sipCpp->layerType() == "ShapeburstFill" )
           sipType = sipType_QgsShapeburstFillSymbolLayer;
+        else if ( sipCpp->layerType() == "RandomMarkerFill" )
+          sipType = sipType_QgsRandomMarkerFillSymbolLayer;
         else
           sipType = sipType_QgsFillSymbolLayer;
         break;
@@ -177,6 +181,10 @@ class CORE_EXPORT QgsSymbolLayer
       PropertyArrowType, //!< Arrow type
       PropertyOffsetX, //!< Horizontal offset
       PropertyOffsetY, //!< Vertical offset
+      PropertyPointCount, //!< Point count
+      PropertyRandomSeed, //!< Random number seed
+      PropertyClipPoints, //!< Whether markers should be clipped to polygon boundaries
+      PropertyDensityArea, //<! Density area
     };
 
     /**
@@ -186,6 +194,12 @@ class CORE_EXPORT QgsSymbolLayer
     static const QgsPropertiesDefinition &propertyDefinitions();
 
     virtual ~QgsSymbolLayer();
+
+    //! QgsSymbolLayer cannot be copied
+    QgsSymbolLayer( const QgsSymbolLayer &other ) = delete;
+
+    //! QgsSymbolLayer cannot be copied
+    QgsSymbolLayer &operator=( const QgsSymbolLayer &other ) = delete;
 
     /**
      * Returns TRUE if symbol layer is enabled and will be drawn.
@@ -239,8 +253,72 @@ class CORE_EXPORT QgsSymbolLayer
      */
     virtual QString layerType() const = 0;
 
+    /**
+     * Called before a set of rendering operations commences on the supplied render \a context.
+     *
+     * This is always followed by a call to stopRender() after all rendering operations
+     * have been completed.
+     *
+     * Subclasses can use this method to prepare for a set of rendering operations, e.g. by
+     * pre-evaluating paths or images to render, and performing other one-time optimisations.
+     *
+     * \see startFeatureRender()
+     * \see stopRender()
+     */
     virtual void startRender( QgsSymbolRenderContext &context ) = 0;
+
+    /**
+     * Called after a set of rendering operations has finished on the supplied render \a context.
+     *
+     * This is always preceded by a call to startRender() before all rendering operations
+     * are commenced.
+     *
+     * Subclasses can use this method to cleanup after a set of rendering operations.
+     *
+     * \see startRender()
+     * \see stopFeatureRender()
+     */
     virtual void stopRender( QgsSymbolRenderContext &context ) = 0;
+
+    /**
+     * Called before the layer will be rendered for a particular \a feature.
+     *
+     * This is always followed by a call to stopFeatureRender() after the feature
+     * has been completely rendered (i.e. all parts have been rendered).
+     *
+     * The default implementation does nothing.
+     *
+     * \note In some circumstances, startFeatureRender() and stopFeatureRender() may not be called
+     * before a symbol layer is rendered. E.g., when a symbol layer is being rendered in isolation
+     * and not as a result of rendering a feature (for instance, when rendering a legend patch or other
+     * non-feature based shape).
+     *
+     * \see stopFeatureRender()
+     * \see startRender()
+     *
+     * \since QGIS 3.12
+     */
+    virtual void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+
+    /**
+     * Called after the layer has been rendered for a particular \a feature.
+     *
+     * This is always preceded by a call to startFeatureRender() just before the feature
+     * will be rendered.
+     *
+     * The default implementation does nothing.
+     *
+     * \note In some circumstances, startFeatureRender() and stopFeatureRender() may not be called
+     * before a symbol layer is rendered. E.g., when a symbol layer is being rendered in isolation
+     * and not as a result of rendering a feature (for instance, when rendering a legend patch or other
+     * non-feature based shape).
+     *
+     * \see startFeatureRender()
+     * \see stopRender()
+     *
+     * \since QGIS 3.12
+     */
+    virtual void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
 
     /**
      * Shall be reimplemented by subclasses to create a deep copy of the instance.
@@ -420,6 +498,13 @@ class CORE_EXPORT QgsSymbolLayer
      */
     virtual bool hasDataDefinedProperties() const;
 
+    /**
+     * Returns masks defined by this symbol layer.
+     * This is a list of symbol layers of other layers that should be occluded.
+     * \since QGIS 3.12
+     */
+    virtual QgsSymbolLayerReferenceList masks() const;
+
   protected:
 
     QgsSymbolLayer( QgsSymbol::SymbolType type, bool locked = false );
@@ -427,15 +512,15 @@ class CORE_EXPORT QgsSymbolLayer
     QgsSymbol::SymbolType mType;
 
     //! True if layer is enabled and should be drawn
-    bool mEnabled;
+    bool mEnabled = true;
 
-    bool mLocked;
+    bool mLocked = false;
     QColor mColor;
     int mRenderingPass = 0;
 
     QgsPropertyCollection mDataDefinedProperties;
 
-    QgsPaintEffect *mPaintEffect = nullptr;
+    std::unique_ptr< QgsPaintEffect > mPaintEffect;
     QgsFields mFields;
 
     // Configuration of selected symbology implementation
@@ -471,6 +556,10 @@ class CORE_EXPORT QgsSymbolLayer
     //! Property definitions
     static QgsPropertiesDefinition sPropertyDefinitions;
 
+#ifdef SIP_RUN
+    QgsSymbolLayer( const QgsSymbolLayer &other );
+#endif
+
 };
 
 //////////////////////
@@ -499,6 +588,12 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
       VCenter, //!< Align to vertical center of symbol
       Bottom, //!< Align to bottom of symbol
     };
+
+    //! QgsMarkerSymbolLayer cannot be copied
+    QgsMarkerSymbolLayer( const QgsMarkerSymbolLayer &other ) = delete;
+
+    //! QgsMarkerSymbolLayer cannot be copied
+    QgsMarkerSymbolLayer &operator=( const QgsMarkerSymbolLayer &other ) = delete;
 
     void startRender( QgsSymbolRenderContext &context ) override;
 
@@ -783,6 +878,10 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
   private:
     static QgsMarkerSymbolLayer::HorizontalAnchorPoint decodeHorizontalAnchorPoint( const QString &str );
     static QgsMarkerSymbolLayer::VerticalAnchorPoint decodeVerticalAnchorPoint( const QString &str );
+
+#ifdef SIP_RUN
+    QgsMarkerSymbolLayer( const QgsMarkerSymbolLayer &other );
+#endif
 };
 
 /**
@@ -800,6 +899,12 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
       ExteriorRingOnly, //!< Render the exterior ring only
       InteriorRingsOnly, //!< Render the interior rings only
     };
+
+    //! QgsLineSymbolLayer cannot be copied
+    QgsLineSymbolLayer( const QgsLineSymbolLayer &other ) = delete;
+
+    //! QgsLineSymbolLayer cannot be copied
+    QgsLineSymbolLayer &operator=( const QgsLineSymbolLayer &other ) = delete;
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
@@ -970,6 +1075,11 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
     QgsMapUnitScale mOffsetMapUnitScale;
 
     RenderRingFilter mRingFilter = AllRings;
+
+  private:
+#ifdef SIP_RUN
+    QgsLineSymbolLayer( const QgsLineSymbolLayer &other );
+#endif
 };
 
 /**
@@ -979,6 +1089,13 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
 class CORE_EXPORT QgsFillSymbolLayer : public QgsSymbolLayer
 {
   public:
+
+    //! QgsFillSymbolLayer cannot be copied
+    QgsFillSymbolLayer( const QgsFillSymbolLayer &other ) = delete;
+
+    //! QgsFillSymbolLayer cannot be copied
+    QgsFillSymbolLayer &operator=( const QgsFillSymbolLayer &other ) = delete;
+
     virtual void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) = 0;
 
     void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
@@ -992,6 +1109,11 @@ class CORE_EXPORT QgsFillSymbolLayer : public QgsSymbolLayer
     void _renderPolygon( QPainter *p, const QPolygonF &points, const QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
     double mAngle = 0.0;
+
+  private:
+#ifdef SIP_RUN
+    QgsFillSymbolLayer( const QgsFillSymbolLayer &other );
+#endif
 };
 
 class QgsSymbolLayerWidget;  // why does SIP fail, when this isn't here

@@ -97,7 +97,7 @@
            <string>Information</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/metadata.svg</normaloff>:/images/themes/default/propertyicons/metadata.svg</iconset>
           </property>
          </item>
@@ -106,7 +106,7 @@
            <string>Source</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/system.svg</normaloff>:/images/themes/default/propertyicons/system.svg</iconset>
           </property>
          </item>
@@ -118,7 +118,7 @@
            <string>Symbology</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/symbology.svg</normaloff>:/images/themes/default/propertyicons/symbology.svg</iconset>
           </property>
          </item>
@@ -130,7 +130,7 @@
            <string>Transparency</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/transparency.svg</normaloff>:/images/themes/default/propertyicons/transparency.svg</iconset>
           </property>
          </item>
@@ -142,7 +142,7 @@
            <string>Histogram</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/histogram.svg</normaloff>:/images/themes/default/propertyicons/histogram.svg</iconset>
           </property>
          </item>
@@ -154,7 +154,7 @@
            <string>Rendering</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/rendering.svg</normaloff>:/images/themes/default/propertyicons/rendering.svg</iconset>
           </property>
          </item>
@@ -166,7 +166,7 @@
            <string>Pyramids</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/pyramids.svg</normaloff>:/images/themes/default/propertyicons/pyramids.svg</iconset>
           </property>
          </item>
@@ -175,7 +175,7 @@
            <string>Metadata</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/editmetadata.svg</normaloff>:/images/themes/default/propertyicons/editmetadata.svg</iconset>
           </property>
          </item>
@@ -184,7 +184,7 @@
            <string>Legend</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/legend.svg</normaloff>:/images/themes/default/legend.svg</iconset>
           </property>
          </item>
@@ -196,7 +196,7 @@
            <string>Edit QGIS Server settings</string>
           </property>
           <property name="icon">
-           <iconset resource="../../images/images.qrc">
+           <iconset>
             <normaloff>:/images/themes/default/propertyicons/overlay.svg</normaloff>:/images/themes/default/propertyicons/overlay.svg</iconset>
           </property>
          </item>
@@ -239,12 +239,12 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>2</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_20">
            <item>
-            <widget class="QTextBrowser" name="teMetadataViewer"/>
+            <widget class="QgsWebView" name="mMetadataViewer" native="true"/>
            </item>
           </layout>
          </widget>
@@ -275,8 +275,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>643</width>
-                <height>729</height>
+                <width>263</width>
+                <height>98</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -381,8 +381,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>643</width>
-                <height>729</height>
+                <width>488</width>
+                <height>532</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -701,7 +701,7 @@ border-radius: 2px;</string>
                      <string>Reset</string>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../images/images.qrc">
+                     <iconset>
                       <normaloff>:/images/themes/default/mActionUndo.svg</normaloff>:/images/themes/default/mActionUndo.svg</iconset>
                     </property>
                     <property name="toolButtonStyle">
@@ -969,8 +969,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>348</width>
-                <height>446</height>
+                <width>350</width>
+                <height>477</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1167,7 +1167,7 @@ border-radius: 2px;</string>
                        <string>…</string>
                       </property>
                       <property name="icon">
-                       <iconset resource="../../images/images.qrc">
+                       <iconset>
                         <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
                       </property>
                      </widget>
@@ -1184,7 +1184,7 @@ border-radius: 2px;</string>
                        <string>…</string>
                       </property>
                       <property name="icon">
-                       <iconset resource="../../images/images.qrc">
+                       <iconset>
                         <normaloff>:/images/themes/default/mActionContextHelp.png</normaloff>:/images/themes/default/mActionContextHelp.png</iconset>
                       </property>
                      </widget>
@@ -1198,7 +1198,7 @@ border-radius: 2px;</string>
                        <string>…</string>
                       </property>
                       <property name="icon">
-                       <iconset resource="../../images/images.qrc">
+                       <iconset>
                         <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                       </property>
                      </widget>
@@ -1212,7 +1212,7 @@ border-radius: 2px;</string>
                        <string>…</string>
                       </property>
                       <property name="icon">
-                       <iconset resource="../../images/images.qrc">
+                       <iconset>
                         <normaloff>:/images/themes/default/mActionOpenTable.svg</normaloff>:/images/themes/default/mActionOpenTable.svg</iconset>
                       </property>
                      </widget>
@@ -1226,7 +1226,7 @@ border-radius: 2px;</string>
                        <string>…</string>
                       </property>
                       <property name="icon">
-                       <iconset resource="../../images/images.qrc">
+                       <iconset>
                         <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
                       </property>
                      </widget>
@@ -1240,7 +1240,7 @@ border-radius: 2px;</string>
                        <string>…</string>
                       </property>
                       <property name="icon">
-                       <iconset resource="../../images/images.qrc">
+                       <iconset>
                         <normaloff>:/images/themes/default/mActionFileSave.svg</normaloff>:/images/themes/default/mActionFileSave.svg</iconset>
                       </property>
                      </widget>
@@ -1317,7 +1317,7 @@ border-radius: 2px;</string>
                 <x>0</x>
                 <y>0</y>
                 <width>86</width>
-                <height>42</height>
+                <height>45</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -1481,8 +1481,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>553</width>
-                <height>193</height>
+                <width>643</width>
+                <height>727</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1545,7 +1545,7 @@ border-radius: 2px;</string>
                        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Noto Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Cantarell'; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
@@ -1682,7 +1682,7 @@ p, li { white-space: pre-wrap; }
                 <x>0</x>
                 <y>0</y>
                 <width>643</width>
-                <height>729</height>
+                <height>727</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_12">
@@ -2176,11 +2176,16 @@ p, li { white-space: pre-wrap; }
    <header>qgsopacitywidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsWebView</class>
+   <extends>QWidget</extends>
+   <header>qgswebview.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mSearchLineEdit</tabstop>
   <tabstop>mOptionsListWidget</tabstop>
-  <tabstop>teMetadataViewer</tabstop>
   <tabstop>scrollArea_3</tabstop>
   <tabstop>mLayerOrigNameLineEd</tabstop>
   <tabstop>leDisplayName</tabstop>
@@ -2243,37 +2248,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>mPublishDataSourceUrlCheckBox</tabstop>
   <tabstop>mBackgroundLayerCheckBox</tabstop>
  </tabstops>
- <resources>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>mOptionsListWidget</sender>

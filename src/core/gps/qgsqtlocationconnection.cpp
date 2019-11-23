@@ -47,7 +47,7 @@ void QgsQtLocationConnection::broadcastConnectionAvailable()
   }
 }
 
-//TODO: Temporarely needed to workaround https://sourceforge.net/p/necessitas/tickets/147/
+//TODO: Temporarily needed to workaround https://sourceforge.net/p/necessitas/tickets/147/
 void QgsQtLocationConnection::positionUpdated( const QGeoPositionInfo &info )
 {
   mInfo = info;

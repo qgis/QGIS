@@ -90,7 +90,7 @@ void QgsMapTool::activate()
 
   // set cursor (map tools usually set it in constructor)
   mCanvas->setCursor( mCursor );
-  QgsDebugMsg( QStringLiteral( "Cursor has been set" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Cursor has been set" ), 4 );
 
   emit activated();
 }

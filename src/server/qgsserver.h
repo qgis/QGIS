@@ -84,7 +84,7 @@ class SERVER_EXPORT QgsServer
 
     /**
      * Initialize Python
-     * Note: not in Python bindings
+     * \note not available in Python bindings
      */
     void initPython();
 #endif

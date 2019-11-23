@@ -363,7 +363,7 @@ void QgsAttributeTableView::contextMenuEvent( QContextMenuEvent *event )
   mActionPopup->addAction( tr( "Select All" ), this, SLOT( selectAll() ), QKeySequence::SelectAll );
 
   // let some other parts of the application add some actions
-  emit willShowContextMenu( mActionPopup, idx );
+  emit willShowContextMenu( mActionPopup, mFilterModel->rowToId( idx ) );
 
   if ( !mActionPopup->actions().isEmpty() )
   {

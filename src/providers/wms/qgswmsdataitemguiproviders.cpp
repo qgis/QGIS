@@ -22,10 +22,22 @@
 #include "qgsxyzconnectiondialog.h"
 #include "qgsxyzconnection.h"
 #include "qgsmanageconnectionsdialog.h"
+#include "qgswmssourceselect.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
 
+static QWidget *_paramWidget( QgsDataItem *root )
+{
+  if ( qobject_cast<QgsWMSRootItem *>( root ) != nullptr )
+  {
+    return new QgsWMSSourceSelect( nullptr, nullptr, QgsProviderRegistry::WidgetMode::Manager );
+  }
+  else
+  {
+    return nullptr;
+  }
+}
 
 void QgsWmsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
 {
@@ -46,6 +58,11 @@ void QgsWmsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
     connect( actionNew, &QAction::triggered, this, [wmsRootItem] { newConnection( wmsRootItem ); } );
     menu->addAction( actionNew );
   }
+}
+
+QWidget *QgsWmsDataItemGuiProvider::createParamWidget( QgsDataItem *root, QgsDataItemGuiContext )
+{
+  return _paramWidget( root );
 }
 
 void QgsWmsDataItemGuiProvider::editConnection( QgsDataItem *item )
@@ -111,6 +128,11 @@ void QgsXyzDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
     connect( actionLoadXyzTilesServers, &QAction::triggered, this, [rootItem] { loadXyzTilesServers( rootItem ); } );
     menu->addAction( actionLoadXyzTilesServers );
   }
+}
+
+QWidget *QgsXyzDataItemGuiProvider::createParamWidget( QgsDataItem *root, QgsDataItemGuiContext )
+{
+  return _paramWidget( root );
 }
 
 void QgsXyzDataItemGuiProvider::editConnection( QgsDataItem *item )

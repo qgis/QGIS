@@ -15,6 +15,9 @@
 *   (at your option) any later version.                                   *
 *                                                                         *
 ***************************************************************************
+
+From build dir, run: ctest -R PyQgsRulebasedRenderer -V
+
 """
 
 __author__ = 'Matthias Kuhn'
@@ -25,7 +28,8 @@ import qgis  # NOQA
 
 import os
 
-from qgis.PyQt.QtCore import QSize
+from qgis.PyQt.QtCore import Qt, QSize
+from qgis.PyQt.QtGui import QColor
 
 from qgis.core import (QgsVectorLayer,
                        QgsMapSettings,
@@ -39,7 +43,10 @@ from qgis.core import (QgsVectorLayer,
                        QgsCategorizedSymbolRenderer,
                        QgsGraduatedSymbolRenderer,
                        QgsRendererRange,
-                       QgsRenderContext
+                       QgsRenderContext,
+                       QgsSymbolLayer,
+                       QgsSimpleMarkerSymbolLayer,
+                       QgsProperty
                        )
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -52,9 +59,15 @@ TEST_DATA_DIR = unitTestDataPath()
 
 class TestQgsRulebasedRenderer(unittest.TestCase):
 
+    @classmethod
+    def setUpClass(cls):
+        # Super ugly hack to make sure python does not clean up our mapsetting objects
+        # this might lead to occasional crashes on travis
+        cls.mapsettings_archive = list()
+
     def setUp(self):
         myShpFile = os.path.join(TEST_DATA_DIR, 'rectangles.shp')
-        layer = QgsVectorLayer(myShpFile, 'Points', 'ogr')
+        layer = QgsVectorLayer(myShpFile, 'Rectangles', 'ogr')
         QgsProject.instance().addMapLayer(layer)
 
         # Create rulebased style
@@ -79,15 +92,14 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
 
         rendered_layers = [layer]
         self.mapsettings.setLayers(rendered_layers)
+        self.mapsettings_archive.append(self.mapsettings)
 
     def testElse(self):
         # Setup rendering check
         renderchecker = QgsMultiRenderChecker()
         renderchecker.setMapSettings(self.mapsettings)
         renderchecker.setControlName('expected_rulebased_else')
-        result = renderchecker.runTest('rulebased_else')
-
-        assert result
+        self.assertTrue(renderchecker.runTest('rulebased_else'))
 
     def testDisabledElse(self):
         # Disable a rule and assert that it's hidden not rendered with else
@@ -96,9 +108,7 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         renderchecker = QgsMultiRenderChecker()
         renderchecker.setMapSettings(self.mapsettings)
         renderchecker.setControlName('expected_rulebased_disabled_else')
-        result = renderchecker.runTest('rulebased_disabled_else')
-
-        assert result
+        self.assertTrue(renderchecker.runTest('rulebased_disabled_else'))
 
     def testWillRenderFeature(self):
         vl = self.mapsettings.layers()[0]
@@ -116,12 +126,12 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         rendered = renderer.willRenderFeature(ft, ctx)
         renderer.stopRender(ctx)
         renderer.rootRule().children()[0].setActive(True)
-        assert rendered == False
+        self.assertFalse(rendered)
 
         renderer.startRender(ctx, vl.fields()) # build mActiveChlidren
         rendered = renderer.willRenderFeature(ft, ctx)
         renderer.stopRender(ctx)
-        assert rendered == True
+        self.assertTrue(rendered)
 
     def testWillRenderFeatureNestedElse(self):
         vl = self.mapsettings.layers()[0]
@@ -177,10 +187,10 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
             if rule.filterExpression() == 'ELSE':
                 elseRule = rule
 
-        assert elseRule != None
+        self.assertIsNotNone(elseRule)
 
         cnt = counter.featureCount(elseRule.ruleKey())
-        assert cnt == 1
+        self.assertEqual(cnt, 1)
 
     def testRefineWithCategories(self):
         # Test refining rule with categories (refs #10815)
@@ -192,8 +202,8 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         c = QgsCategorizedSymbolRenderer("id", cats)
 
         QgsRuleBasedRenderer.refineRuleCategories(self.r2, c)
-        assert self.r2.children()[0].filterExpression() == '"id" = 1'
-        assert self.r2.children()[1].filterExpression() == '"id" = 2'
+        self.assertEqual(self.r2.children()[0].filterExpression(), '"id" = 1')
+        self.assertEqual(self.r2.children()[1].filterExpression(), '"id" = 2')
 
         # Next try with an expression based category
         cats = []
@@ -202,8 +212,8 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         c = QgsCategorizedSymbolRenderer("id + 1", cats)
 
         QgsRuleBasedRenderer.refineRuleCategories(self.r1, c)
-        assert self.r1.children()[0].filterExpression() == 'id + 1 = 1'
-        assert self.r1.children()[1].filterExpression() == 'id + 1 = 2'
+        self.assertEqual(self.r1.children()[0].filterExpression(), 'id + 1 = 1')
+        self.assertEqual(self.r1.children()[1].filterExpression(), 'id + 1 = 2')
 
         # Last try with an expression which is just a quoted field name
         cats = []
@@ -212,8 +222,8 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         c = QgsCategorizedSymbolRenderer('"id"', cats)
 
         QgsRuleBasedRenderer.refineRuleCategories(self.r3, c)
-        assert self.r3.children()[0].filterExpression() == '"id" = 1'
-        assert self.r3.children()[1].filterExpression() == '"id" = 2'
+        self.assertEqual(self.r3.children()[0].filterExpression(), '"id" = 1')
+        self.assertEqual(self.r3.children()[1].filterExpression(), '"id" = 2')
 
     def testRefineWithRanges(self):
         # Test refining rule with ranges (refs #10815)
@@ -225,8 +235,8 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         g = QgsGraduatedSymbolRenderer("id", ranges)
 
         QgsRuleBasedRenderer.refineRuleRanges(self.r2, g)
-        assert self.r2.children()[0].filterExpression() == '"id" >= 0.0000 AND "id" <= 1.0000'
-        assert self.r2.children()[1].filterExpression() == '"id" > 1.0000 AND "id" <= 2.0000'
+        self.assertEqual(self.r2.children()[0].filterExpression(), '"id" >= 0.0000 AND "id" <= 1.0000')
+        self.assertEqual(self.r2.children()[1].filterExpression(), '"id" > 1.0000 AND "id" <= 2.0000')
 
         # Next try with an expression based range
         ranges = []
@@ -235,8 +245,8 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         g = QgsGraduatedSymbolRenderer("id / 2", ranges)
 
         QgsRuleBasedRenderer.refineRuleRanges(self.r1, g)
-        assert self.r1.children()[0].filterExpression() == '(id / 2) >= 0.0000 AND (id / 2) <= 1.0000'
-        assert self.r1.children()[1].filterExpression() == '(id / 2) > 1.0000 AND (id / 2) <= 2.0000'
+        self.assertEqual(self.r1.children()[0].filterExpression(), '(id / 2) >= 0.0000 AND (id / 2) <= 1.0000')
+        self.assertEqual(self.r1.children()[1].filterExpression(), '(id / 2) > 1.0000 AND (id / 2) <= 2.0000')
 
         # Last try with an expression which is just a quoted field name
         ranges = []
@@ -245,8 +255,8 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         g = QgsGraduatedSymbolRenderer('"id"', ranges)
 
         QgsRuleBasedRenderer.refineRuleRanges(self.r3, g)
-        assert self.r3.children()[0].filterExpression() == '"id" >= 0.0000 AND "id" <= 1.0000'
-        assert self.r3.children()[1].filterExpression() == '"id" > 1.0000 AND "id" <= 2.0000'
+        self.assertEqual(self.r3.children()[0].filterExpression(), '"id" >= 0.0000 AND "id" <= 1.0000')
+        self.assertEqual(self.r3.children()[1].filterExpression(), '"id" > 1.0000 AND "id" <= 2.0000')
 
     def testConvertFromCategorisedRenderer(self):
         # Test converting categorised renderer to rule based
@@ -369,6 +379,82 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         self.assertEqual(len(rootrule.rulesForFeature(ft, ctx)), 1)
         self.assertEqual(rootrule.rulesForFeature(ft, ctx)[0], self.rx3)
         renderer.stopRender(ctx)
+
+    def testUsedAttributes(self):
+        ctx = QgsRenderContext.fromMapSettings(self.mapsettings)
+
+        # Create rulebased style
+        sym2 = QgsFillSymbol.createSimple({'color': '#71bd6c', 'outline_color': 'black'})
+        sym3 = QgsFillSymbol.createSimple({'color': '#1f78b4', 'outline_color': 'black'})
+
+        self.rx2 = QgsRuleBasedRenderer.Rule(sym2, 0, 0, '"id" = 200')
+        self.rx3 = QgsRuleBasedRenderer.Rule(sym3, 1000, 100000000, 'ELSE')
+
+        rootrule = QgsRuleBasedRenderer.Rule(None)
+        rootrule.appendChild(self.rx2)
+        rootrule.appendChild(self.rx3)
+
+        renderer = QgsRuleBasedRenderer(rootrule)
+
+        self.assertCountEqual(renderer.usedAttributes(ctx), {'id'})
+
+    def testPointsUsedAttributes(self):
+        points_shp = os.path.join(TEST_DATA_DIR, 'points.shp')
+        points_layer = QgsVectorLayer(points_shp, 'Points', 'ogr')
+        QgsProject.instance().addMapLayer(points_layer)
+
+        # Create rulebased style
+        sym1 = QgsMarkerSymbol()
+        l1 = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 5)
+        l1.setColor(QColor(255, 0, 0))
+        l1.setStrokeStyle(Qt.NoPen)
+        l1.setDataDefinedProperty(QgsSymbolLayer.PropertyAngle, QgsProperty.fromField("Heading"))
+        sym1.changeSymbolLayer(0, l1)
+
+        sym2 = QgsMarkerSymbol()
+        l2 = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 5)
+        l2.setColor(QColor(0, 255, 0))
+        l2.setStrokeStyle(Qt.NoPen)
+        l2.setDataDefinedProperty(QgsSymbolLayer.PropertyAngle, QgsProperty.fromField("Heading"))
+        sym2.changeSymbolLayer(0, l2)
+
+        sym3 = QgsMarkerSymbol()
+        l3 = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 5)
+        l3.setColor(QColor(0, 0, 255))
+        l3.setStrokeStyle(Qt.NoPen)
+        l3.setDataDefinedProperty(QgsSymbolLayer.PropertyAngle, QgsProperty.fromField("Heading"))
+        sym3.changeSymbolLayer(0, l3)
+
+        r1 = QgsRuleBasedRenderer.Rule(sym1, 0, 0, '"Class" = \'B52\'')
+        r2 = QgsRuleBasedRenderer.Rule(sym2, 0, 0, '"Class" = \'Biplane\'')
+        r3 = QgsRuleBasedRenderer.Rule(sym3, 0, 0, '"Class" = \'Jet\'')
+
+        rootrule = QgsRuleBasedRenderer.Rule(None)
+        rootrule.appendChild(r1)
+        rootrule.appendChild(r2)
+        rootrule.appendChild(r3)
+
+        renderer = QgsRuleBasedRenderer(rootrule)
+
+        points_layer.setRenderer(renderer)
+
+        ms = QgsMapSettings()
+        ms.setOutputSize(QSize(400, 400))
+        ms.setOutputDpi(96)
+        ms.setExtent(QgsRectangle(-133, 22, -70, 52))
+        ms.setLayers([points_layer])
+
+        ctx = QgsRenderContext.fromMapSettings(ms)
+        ctx.expressionContext().appendScope(points_layer.createExpressionContextScope())
+
+        # for symbol layer
+        self.assertCountEqual(l1.usedAttributes(ctx), {'Heading'})
+        # for symbol
+        self.assertCountEqual(sym1.usedAttributes(ctx), {'Heading'})
+        # for symbol renderer
+        self.assertCountEqual(renderer.usedAttributes(ctx), {'Class', 'Heading'})
+
+        QgsProject.instance().removeMapLayer(points_layer)
 
 
 if __name__ == '__main__':

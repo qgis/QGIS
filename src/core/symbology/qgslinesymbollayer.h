@@ -266,6 +266,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
       FirstVertex, //!< Place symbols on the first vertex in the line
       CentralPoint, //!< Place symbols at the mid point of the line
       CurvePoint, //!< Place symbols at every virtual curve point in the line (used when rendering curved geometry types only)
+      SegmentCenter, //!< Place symbols at the center of every line segment
     };
 
     /**

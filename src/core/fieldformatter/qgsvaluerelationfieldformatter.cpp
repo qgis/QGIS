@@ -22,9 +22,11 @@
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsvectorlayerref.h"
+#include "qgspostgresstringutils.h"
+#include "qgsmessagelog.h"
 
 #include <nlohmann/json.hpp>
-using json = nlohmann::json;
+using namespace nlohmann;
 
 #include <QSettings>
 
@@ -173,43 +175,50 @@ QStringList QgsValueRelationFieldFormatter::valueToStringList( const QVariant &v
   {
     checkList = value.toStringList();
   }
-  else if ( value.type() == QVariant::String )
+  else
   {
-    // This must be an array representation
-    auto newVal { value };
-    if ( newVal.toString().trimmed().startsWith( '{' ) )
+    QVariantList valuesList;
+    if ( value.type() == QVariant::String )
     {
-      newVal = QVariant( newVal.toString().trimmed().mid( 1 ).mid( 0, newVal.toString().length() - 2 ).prepend( '[' ).append( ']' ) );
-    }
-    if ( newVal.toString().trimmed().startsWith( '[' ) )
-    {
-      try
+      // This must be an array representation
+      auto newVal { value };
+      if ( newVal.toString().trimmed().startsWith( '{' ) )
       {
-        for ( auto &element : json::parse( newVal.toString().toStdString() ) )
+        //normal case
+        valuesList = QgsPostgresStringUtils::parseArray( newVal.toString() );
+      }
+      else if ( newVal.toString().trimmed().startsWith( '[' ) )
+      {
+        //fallback, in case it's a json array
+        try
         {
-          if ( element.is_number_integer() )
+          for ( auto &element : json::parse( newVal.toString().toStdString() ) )
           {
-            checkList << QString::number( element.get<int>() );
-          }
-          else if ( element.is_number_unsigned() )
-          {
-            checkList << QString::number( element.get<unsigned>() );
-          }
-          else if ( element.is_string() )
-          {
-            checkList << QString::fromStdString( element.get<std::string>() );
+            if ( element.is_number_integer() )
+            {
+              valuesList.push_back( element.get<int>() );
+            }
+            else if ( element.is_number_unsigned() )
+            {
+              valuesList.push_back( element.get<unsigned>() );
+            }
+            else if ( element.is_string() )
+            {
+              valuesList.push_back( QString::fromStdString( element.get<std::string>() ) );
+            }
           }
         }
-      }
-      catch ( json::parse_error &ex )
-      {
-        qDebug() << QString::fromStdString( ex.what() );
+        catch ( json::parse_error &ex )
+        {
+          QgsMessageLog::logMessage( QObject::tr( "Cannot parse JSON like string '%1' Error: %2" ).arg( newVal.toString(), ex.what() ) );
+        }
       }
     }
-  }
-  else if ( value.type() == QVariant::List )
-  {
-    QVariantList valuesList( value.toList( ) );
+    else if ( value.type() == QVariant::List )
+    {
+      valuesList = value.toList( );
+    }
+
     checkList.reserve( valuesList.size() );
     for ( const QVariant &listItem : qgis::as_const( valuesList ) )
     {

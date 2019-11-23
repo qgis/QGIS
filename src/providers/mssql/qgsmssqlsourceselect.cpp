@@ -135,8 +135,8 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl,
   connect( btnLoad, &QPushButton::clicked, this, &QgsMssqlSourceSelect::btnLoad_clicked );
   connect( mSearchGroupBox, &QGroupBox::toggled, this, &QgsMssqlSourceSelect::mSearchGroupBox_toggled );
   connect( mSearchTableEdit, &QLineEdit::textChanged, this, &QgsMssqlSourceSelect::mSearchTableEdit_textChanged );
-  connect( mSearchColumnComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsMssqlSourceSelect::mSearchColumnComboBox_currentIndexChanged );
-  connect( mSearchModeComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsMssqlSourceSelect::mSearchModeComboBox_currentIndexChanged );
+  connect( mSearchColumnComboBox, &QComboBox::currentTextChanged, this, &QgsMssqlSourceSelect::mSearchColumnComboBox_currentIndexChanged );
+  connect( mSearchModeComboBox, &QComboBox::currentTextChanged, this, &QgsMssqlSourceSelect::mSearchModeComboBox_currentIndexChanged );
   connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsMssqlSourceSelect::cmbConnections_activated );
   connect( mTablesTreeView, &QTreeView::clicked, this, &QgsMssqlSourceSelect::mTablesTreeView_clicked );
   connect( mTablesTreeView, &QTreeView::doubleClicked, this, &QgsMssqlSourceSelect::mTablesTreeView_doubleClicked );
@@ -190,9 +190,7 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl,
   connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsMssqlSourceSelect::treeWidgetSelectionChanged );
 
   QgsSettings settings;
-  mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "qgis/addMSSQLDC" ), false ).toBool() ?
-                                     QAbstractItemView::ExtendedSelection :
-                                     QAbstractItemView::MultiSelection );
+  mTablesTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
 
   //for Qt < 4.3.2, passing -1 to include all model columns
@@ -315,17 +313,9 @@ void QgsMssqlSourceSelect::mTablesTreeView_clicked( const QModelIndex &index )
   mBuildQueryButton->setEnabled( index.parent().isValid() );
 }
 
-void QgsMssqlSourceSelect::mTablesTreeView_doubleClicked( const QModelIndex &index )
+void QgsMssqlSourceSelect::mTablesTreeView_doubleClicked( const QModelIndex & )
 {
-  QgsSettings settings;
-  if ( settings.value( QStringLiteral( "qgis/addMSSQLDC" ), false ).toBool() )
-  {
-    addButtonClicked();
-  }
-  else
-  {
-    setSql( index );
-  }
+  addButtonClicked();
 }
 
 void QgsMssqlSourceSelect::mSearchGroupBox_toggled( bool checked )
@@ -524,8 +514,6 @@ void QgsMssqlSourceSelect::btnConnect_clicked()
     return;
   }
 
-  QString connectionName = db.connectionName();
-
   // Test for geometry columns table first.  Don't use it if not found.
   QSqlQuery q = QSqlQuery( db );
   q.setForwardOnly( true );
@@ -554,16 +542,16 @@ void QgsMssqlSourceSelect::btnConnect_clicked()
   QString query( QStringLiteral( "select " ) );
   if ( useGeometryColumns )
   {
-    query += QLatin1String( "f_table_schema, f_table_name, f_geometry_column, srid, geometry_type from geometry_columns" );
+    query += QLatin1String( "f_table_schema, f_table_name, f_geometry_column, srid, geometry_type, 0 from geometry_columns" );
   }
   else
   {
-    query += QLatin1String( "sys.schemas.name, sys.objects.name, sys.columns.name, null, 'GEOMETRY' from sys.columns join sys.types on sys.columns.system_type_id = sys.types.system_type_id and sys.columns.user_type_id = sys.types.user_type_id join sys.objects on sys.objects.object_id = sys.columns.object_id join sys.schemas on sys.objects.schema_id = sys.schemas.schema_id where (sys.types.name = 'geometry' or sys.types.name = 'geography') and (sys.objects.type = 'U' or sys.objects.type = 'V')" );
+    query += QLatin1String( "sys.schemas.name, sys.objects.name, sys.columns.name, null, 'GEOMETRY', case when sys.objects.type = 'V' then 1 else 0 end from sys.columns join sys.types on sys.columns.system_type_id = sys.types.system_type_id and sys.columns.user_type_id = sys.types.user_type_id join sys.objects on sys.objects.object_id = sys.columns.object_id join sys.schemas on sys.objects.schema_id = sys.schemas.schema_id where (sys.types.name = 'geometry' or sys.types.name = 'geography') and (sys.objects.type = 'U' or sys.objects.type = 'V')" );
   }
 
   if ( allowGeometrylessTables )
   {
-    query += QLatin1String( " union all select sys.schemas.name, sys.objects.name, null, null, 'NONE' from sys.objects join sys.schemas on sys.objects.schema_id = sys.schemas.schema_id where not exists (select * from sys.columns sc1 join sys.types on sc1.system_type_id = sys.types.system_type_id where (sys.types.name = 'geometry' or sys.types.name = 'geography') and sys.objects.object_id = sc1.object_id) and (sys.objects.type = 'U' or sys.objects.type = 'V')" );
+    query += QLatin1String( " union all select sys.schemas.name, sys.objects.name, null, null, 'NONE', case when sys.objects.type = 'V' then 1 else 0 end from sys.objects join sys.schemas on sys.objects.schema_id = sys.schemas.schema_id where not exists (select * from sys.columns sc1 join sys.types on sc1.system_type_id = sys.types.system_type_id where (sys.types.name = 'geometry' or sys.types.name = 'geography') and sys.objects.object_id = sc1.object_id) and (sys.objects.type = 'U' or sys.objects.type = 'V')" );
   }
 
   // issue the sql query
@@ -581,6 +569,7 @@ void QgsMssqlSourceSelect::btnConnect_clicked()
       layer.geometryColName = q.value( 2 ).toString();
       layer.srid = q.value( 3 ).toString();
       layer.type = q.value( 4 ).toString();
+      layer.isView = q.value( 5 ).toBool();
       layer.pkCols = QStringList(); //TODO
       layer.isGeography = false;
 
@@ -660,6 +649,11 @@ QStringList QgsMssqlSourceSelect::selectedTables()
 QString QgsMssqlSourceSelect::connectionInfo()
 {
   return mConnInfo;
+}
+
+void QgsMssqlSourceSelect::reset()
+{
+  mTablesTreeView->clearSelection();
 }
 
 void QgsMssqlSourceSelect::refresh()

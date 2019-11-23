@@ -43,8 +43,8 @@ QgsOgrDbSourceSelect::QgsOgrDbSourceSelect( const QString &theSettingsKey, const
   connect( btnDelete, &QPushButton::clicked, this, &QgsOgrDbSourceSelect::btnDelete_clicked );
   connect( mSearchGroupBox, &QGroupBox::toggled, this, &QgsOgrDbSourceSelect::mSearchGroupBox_toggled );
   connect( mSearchTableEdit, &QLineEdit::textChanged, this, &QgsOgrDbSourceSelect::mSearchTableEdit_textChanged );
-  connect( mSearchColumnComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsOgrDbSourceSelect::mSearchColumnComboBox_currentIndexChanged );
-  connect( mSearchModeComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsOgrDbSourceSelect::mSearchModeComboBox_currentIndexChanged );
+  connect( mSearchColumnComboBox, &QComboBox::currentTextChanged, this, &QgsOgrDbSourceSelect::mSearchColumnComboBox_currentIndexChanged );
+  connect( mSearchModeComboBox, &QComboBox::currentTextChanged, this, &QgsOgrDbSourceSelect::mSearchModeComboBox_currentIndexChanged );
   connect( cbxAllowGeometrylessTables, &QCheckBox::stateChanged, this, &QgsOgrDbSourceSelect::cbxAllowGeometrylessTables_stateChanged );
   connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsOgrDbSourceSelect::cmbConnections_activated );
   connect( mTablesTreeView, &QTreeView::clicked, this, &QgsOgrDbSourceSelect::mTablesTreeView_clicked );

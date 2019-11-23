@@ -336,6 +336,7 @@ the categories' color.
 .. seealso:: :py:func:`sourceColorRamp`
 %End
 
+
     void setSourceSymbol( QgsSymbol *sym /Transfer/ );
 %Docstring
 Sets the source symbol for the renderer, which is the base symbol used for the each categories' symbol before applying
@@ -356,6 +357,7 @@ Returns the source color ramp, from which each categories' color is derived.
 
 .. seealso:: :py:func:`sourceSymbol`
 %End
+
 
     void setSourceColorRamp( QgsColorRamp *ramp /Transfer/ );
 %Docstring
@@ -463,14 +465,16 @@ hashtable for faster access to symbols
  QgsSymbol *skipRender() /Deprecated/;
 %Docstring
 
-.. deprecated:: No longer used, will be removed in QGIS 4.0
+.. deprecated::
+   No longer used, will be removed in QGIS 4.0
 %End
 
  QgsSymbol *symbolForValue( const QVariant &value ) const /Deprecated/;
 %Docstring
 Returns the matching symbol corresponding to an attribute ``value``.
 
-.. deprecated:: use variant which takes a second bool argument instead.
+.. deprecated::
+   use variant which takes a second bool argument instead.
 %End
 
 

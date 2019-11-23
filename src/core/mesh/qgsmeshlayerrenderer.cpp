@@ -37,9 +37,8 @@
 
 
 QgsMeshLayerRenderer::QgsMeshLayerRenderer( QgsMeshLayer *layer, QgsRenderContext &context )
-  : QgsMapLayerRenderer( layer->id() )
+  : QgsMapLayerRenderer( layer->id(), &context )
   , mFeedback( new QgsMeshLayerRendererFeedback )
-  , mContext( context )
   , mRendererSettings( layer->rendererSettings() )
 {
   // make copies for mesh data
@@ -65,8 +64,9 @@ QgsFeedback *QgsMeshLayerRenderer::feedback() const
 void QgsMeshLayerRenderer::calculateOutputSize()
 {
   // figure out image size
-  QgsRectangle extent = mContext.extent();  // this is extent in layer's coordinate system - but we need it in map coordinate system
-  QgsMapToPixel mapToPixel = mContext.mapToPixel();
+  QgsRenderContext &context = *renderContext();
+  QgsRectangle extent = context.extent();  // this is extent in layer's coordinate system - but we need it in map coordinate system
+  QgsMapToPixel mapToPixel = context.mapToPixel();
   QgsPointXY topleft = mapToPixel.transform( extent.xMinimum(), extent.yMaximum() );
   QgsPointXY bottomright = mapToPixel.transform( extent.xMaximum(), extent.yMinimum() );
   int width = int( bottomright.x() - topleft.x() );
@@ -80,9 +80,11 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
 
   // Find out if we can use cache up to date. If yes, use it and return
   const int datasetGroupCount = layer->dataProvider()->datasetGroupCount();
+  const QgsMeshRendererScalarSettings::DataInterpolationMethod method = mRendererSettings.scalarSettings( datasetIndex.group() ).dataInterpolationMethod();
   QgsMeshLayerRendererCache *cache = layer->rendererCache();
   if ( ( cache->mDatasetGroupsCount == datasetGroupCount ) &&
-       ( cache->mActiveScalarDatasetIndex == datasetIndex ) )
+       ( cache->mActiveScalarDatasetIndex == datasetIndex ) &&
+       ( cache->mDataInterpolationMethod ==  method ) )
   {
     mScalarDatasetValues = cache->mScalarDatasetValues;
     mScalarActiveFaceFlagValues = cache->mScalarActiveFaceFlagValues;
@@ -113,6 +115,19 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
                                     0,
                                     mNativeMesh.faces.count() );
 
+    // for data on faces, there could be request to interpolate the data to vertices
+    if ( ( !mScalarDataOnVertices ) && ( method != QgsMeshRendererScalarSettings::None ) )
+    {
+      mScalarDataOnVertices = true;
+      mScalarDatasetValues = QgsMeshLayerUtils::interpolateFromFacesData(
+                               mScalarDatasetValues,
+                               &mNativeMesh,
+                               &mTriangularMesh,
+                               &mScalarActiveFaceFlagValues,
+                               method
+                             );
+    }
+
     const QgsMeshDatasetMetadata datasetMetadata = layer->dataProvider()->datasetMetadata( datasetIndex );
     mScalarDatasetMinimum = datasetMetadata.minimum();
     mScalarDatasetMaximum = datasetMetadata.maximum();
@@ -121,6 +136,7 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
   // update cache
   cache->mDatasetGroupsCount = datasetGroupCount;
   cache->mActiveScalarDatasetIndex = datasetIndex;
+  cache->mDataInterpolationMethod = method;
   cache->mScalarDatasetValues = mScalarDatasetValues;
   cache->mScalarActiveFaceFlagValues = mScalarActiveFaceFlagValues;
   cache->mScalarDataOnVertices = mScalarDataOnVertices;
@@ -212,7 +228,7 @@ void QgsMeshLayerRenderer::renderMesh()
     return;
 
   // triangular mesh
-  const QList<int> trianglesInExtent = mTriangularMesh.faceIndexesForRectangle( mContext.extent() );
+  const QList<int> trianglesInExtent = mTriangularMesh.faceIndexesForRectangle( renderContext()->extent() );
   if ( mRendererSettings.triangularMeshSettings().isEnabled() )
   {
     renderMesh( mRendererSettings.triangularMeshSettings(),
@@ -231,21 +247,22 @@ void QgsMeshLayerRenderer::renderMesh()
   }
 };
 
-void QgsMeshLayerRenderer::renderMesh( const QgsMeshRendererMeshSettings &settings, const QVector<QgsMeshFace> &faces, const QList<int> facesInExtent )
+void QgsMeshLayerRenderer::renderMesh( const QgsMeshRendererMeshSettings &settings, const QVector<QgsMeshFace> &faces, const QList<int> &facesInExtent )
 {
   Q_ASSERT( settings.isEnabled() );
 
+  QgsRenderContext &context = *renderContext();
   // Set up the render configuration options
-  QPainter *painter = mContext.painter();
+  QPainter *painter = context.painter();
   painter->save();
-  if ( mContext.flags() & QgsRenderContext::Antialiasing )
+  if ( context.flags() & QgsRenderContext::Antialiasing )
     painter->setRenderHint( QPainter::Antialiasing, true );
 
   QPen pen = painter->pen();
   pen.setCapStyle( Qt::FlatCap );
   pen.setJoinStyle( Qt::MiterJoin );
 
-  double penWidth = mContext.convertToPainterUnits( settings.lineWidth(),
+  double penWidth = context.convertToPainterUnits( settings.lineWidth(),
                     QgsUnitTypes::RenderUnit::RenderMillimeters );
   pen.setWidthF( penWidth );
   pen.setColor( settings.color() );
@@ -256,7 +273,7 @@ void QgsMeshLayerRenderer::renderMesh( const QgsMeshRendererMeshSettings &settin
 
   for ( const int i : facesInExtent )
   {
-    if ( mContext.renderingStopped() )
+    if ( context.renderingStopped() )
       break;
 
     const QgsMeshFace &face = faces[i];
@@ -276,8 +293,8 @@ void QgsMeshLayerRenderer::renderMesh( const QgsMeshRendererMeshSettings &settin
 
       const QgsMeshVertex &startVertex = vertices[startVertexId];
       const QgsMeshVertex &endVertex = vertices[endVertexId];
-      const QgsPointXY lineStart = mContext.mapToPixel().transform( startVertex.x(), startVertex.y() );
-      const QgsPointXY lineEnd = mContext.mapToPixel().transform( endVertex.x(), endVertex.y() );
+      const QgsPointXY lineStart = context.mapToPixel().transform( startVertex.x(), startVertex.y() );
+      const QgsPointXY lineEnd = context.mapToPixel().transform( endVertex.x(), endVertex.y() );
       painter->drawLine( lineStart.toQPointF(), lineEnd.toQPointF() );
     }
   }
@@ -297,6 +314,7 @@ void QgsMeshLayerRenderer::renderScalarDataset()
   if ( !index.isValid() )
     return; // no shader
 
+  QgsRenderContext &context = *renderContext();
   const QgsMeshRendererScalarSettings scalarSettings = mRendererSettings.scalarSettings( index.group() );
   QgsColorRampShader *fcn = new QgsColorRampShader( scalarSettings.colorRampShader() );
   QgsRasterShader *sh = new QgsRasterShader();
@@ -305,17 +323,17 @@ void QgsMeshLayerRenderer::renderScalarDataset()
                                          mScalarDatasetValues,
                                          mScalarActiveFaceFlagValues,
                                          mScalarDataOnVertices,
-                                         mContext,
+                                         context,
                                          mOutputSize );
   QgsSingleBandPseudoColorRenderer renderer( &interpolator, 0, sh );  // takes ownership of sh
   renderer.setClassificationMin( scalarSettings.classificationMinimum() );
   renderer.setClassificationMax( scalarSettings.classificationMaximum() );
   renderer.setOpacity( scalarSettings.opacity() );
 
-  std::unique_ptr<QgsRasterBlock> bl( renderer.block( 0, mContext.extent(), mOutputSize.width(), mOutputSize.height(), mFeedback.get() ) );
+  std::unique_ptr<QgsRasterBlock> bl( renderer.block( 0, context.extent(), mOutputSize.width(), mOutputSize.height(), mFeedback.get() ) );
   QImage img = bl->image();
 
-  mContext.painter()->drawImage( 0, 0, img );
+  context.painter()->drawImage( 0, 0, img );
 }
 
 void QgsMeshLayerRenderer::renderVectorDataset()
@@ -337,7 +355,7 @@ void QgsMeshLayerRenderer::renderVectorDataset()
                                   mVectorDatasetMagMaximum,
                                   mVectorDataOnVertices,
                                   mRendererSettings.vectorSettings( index.group() ),
-                                  mContext,
+                                  *renderContext(),
                                   mOutputSize );
 
   renderer.draw();

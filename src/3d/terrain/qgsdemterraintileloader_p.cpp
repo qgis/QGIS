@@ -19,6 +19,7 @@
 #include "qgschunknode_p.h"
 #include "qgsdemterraingenerator.h"
 #include "qgsdemterraintilegeometry_p.h"
+#include "qgseventtracing.h"
 #include "qgsonlineterraingenerator.h"
 #include "qgsterrainentity_p.h"
 #include "qgsterraintexturegenerator_p.h"
@@ -99,7 +100,7 @@ Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *par
   double half = side / 2;
 
 
-  QgsTerrainTileEntity *entity = new QgsTerrainTileEntity;
+  QgsTerrainTileEntity *entity = new QgsTerrainTileEntity( mNode->tileId() );
 
   // create geometry renderer
 
@@ -163,12 +164,10 @@ QgsDemHeightMapGenerator::~QgsDemHeightMapGenerator()
   delete mClonedProvider;
 }
 
-#include <QElapsedTimer>
 
 static QByteArray _readDtmData( QgsRasterDataProvider *provider, const QgsRectangle &extent, int res, const QgsCoordinateReferenceSystem &destCrs )
 {
-  QElapsedTimer t;
-  t.start();
+  QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "DEM" ) );
 
   // TODO: use feedback object? (but GDAL currently does not support cancellation anyway)
   QgsRasterInterface *input = provider;
@@ -213,7 +212,9 @@ static QByteArray _readOnlineDtm( QgsTerrainDownloader *downloader, const QgsRec
 
 int QgsDemHeightMapGenerator::render( int x, int y, int z )
 {
-  Q_ASSERT( mJobs.isEmpty() );  // should be always just one active job...
+  QgsChunkNodeId tileId( x, y, z );
+
+  QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, QStringLiteral( "3D" ), QStringLiteral( "DEM" ), tileId.text() );
 
   // extend the rect by half-pixel on each side? to get the values in "corners"
   QgsRectangle extent = mTilingScheme.tileToExtent( x, y, z );
@@ -225,6 +226,7 @@ int QgsDemHeightMapGenerator::render( int x, int y, int z )
 
   JobData jd;
   jd.jobId = ++mLastJobId;
+  jd.tileId = tileId;
   jd.extent = extent;
   jd.timer.start();
   // make a clone of the data provider so it is safe to use in worker thread
@@ -299,6 +301,8 @@ void QgsDemHeightMapGenerator::onFutureFinished()
 
   mJobs.remove( fw );
   fw->deleteLater();
+
+  QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, QStringLiteral( "3D" ), QStringLiteral( "DEM" ), jobData.tileId.text() );
 
   QByteArray data = jobData.future.result();
   emit heightMapReady( jobData.jobId, data );

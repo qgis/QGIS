@@ -585,7 +585,7 @@ static GEOSGeometry *LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry *gin, QStr
 
     if ( GEOSisEmpty_r( handle, new_area ) )
     {
-      // no more rings can be build with thes edges
+      // no more rings can be build with the edges
       GEOSGeom_destroy_r( handle, new_area );
       break;
     }

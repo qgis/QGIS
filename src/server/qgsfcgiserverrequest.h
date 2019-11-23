@@ -46,7 +46,7 @@ class SERVER_EXPORT QgsFcgiServerRequest: public QgsServerRequest
 
     // Log request info: print debug infos
     // about the request
-    void printRequestInfos();
+    void printRequestInfos( const QUrl &url );
 
 
     QByteArray mData;

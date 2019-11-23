@@ -246,7 +246,7 @@ class TestAuthManager(unittest.TestCase):
                 f.setPermissions(QFile.WriteOwner)
                 f.remove()
 
-        # remove any temppki in temprorary path to check that no
+        # remove any temppki in temporary path to check that no
         # other pki remain after connection
         cleanTempPki()
         # connect using postgres provider

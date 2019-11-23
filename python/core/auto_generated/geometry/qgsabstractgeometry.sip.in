@@ -22,6 +22,16 @@ class QgsAbstractGeometry
 %Docstring
 Abstract base class for all geometries
 
+.. note::
+
+   QgsAbstractGeometry objects are inherently Cartesian/planar geometries. They have no concept of geodesy, and none
+   of the methods or properties exposed from the QgsAbstractGeometry API (or QgsGeometry API) utilize
+   geodesic calculations. Accordingly, properties like length() and area() and spatial operations like centroid()
+   are always calculated using strictly Cartesian mathematics. In contrast, the QgsDistanceArea class exposes
+   methods for working with geodesic calculations and spatial operations on geometries,
+   and should be used whenever calculations which account for the curvature of the Earth (or any other celestial body)
+   are required.
+
 .. versionadded:: 2.10
 %End
 
@@ -400,7 +410,15 @@ Deletes a vertex within the geometry
 
     virtual double length() const;
 %Docstring
-Returns the length of the geometry.
+Returns the planar, 2-dimensional length of the geometry.
+
+.. warning::
+
+   QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the length
+   returned by this method is calculated using strictly Cartesian mathematics. In contrast,
+   the QgsDistanceArea class exposes methods for calculating the lengths of geometries using
+   geodesic calculations which account for the curvature of the Earth (or any other
+   celestial body).
 
 .. seealso:: :py:func:`area`
 
@@ -409,7 +427,15 @@ Returns the length of the geometry.
 
     virtual double perimeter() const;
 %Docstring
-Returns the perimeter of the geometry.
+Returns the planar, 2-dimensional perimeter of the geometry.
+
+.. warning::
+
+   QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the perimeter
+   returned by this method is calculated using strictly Cartesian mathematics. In contrast,
+   the QgsDistanceArea class exposes methods for calculating the perimeters of geometries using
+   geodesic calculations which account for the curvature of the Earth (or any other
+   celestial body).
 
 .. seealso:: :py:func:`area`
 
@@ -418,7 +444,15 @@ Returns the perimeter of the geometry.
 
     virtual double area() const;
 %Docstring
-Returns the area of the geometry.
+Returns the planar, 2-dimensional area of the geometry.
+
+.. warning::
+
+   QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the area
+   returned by this method is calculated using strictly Cartesian mathematics. In contrast,
+   the QgsDistanceArea class exposes methods for calculating the areas of geometries using
+   geodesic calculations which account for the curvature of the Earth (or any other
+   celestial body).
 
 .. seealso:: :py:func:`length`
 
@@ -428,6 +462,11 @@ Returns the area of the geometry.
     virtual double segmentLength( QgsVertexId startVertex ) const = 0;
 %Docstring
 Returns the length of the segment of the geometry which begins at ``startVertex``.
+
+.. warning::
+
+   QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the lengths
+   returned by this method are calculated using strictly Cartesian mathematics.
 
 .. versionadded:: 3.0
 %End

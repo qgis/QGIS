@@ -42,6 +42,7 @@
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgsauxiliarystorage.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgspropertytransformer.h"
 
 #include <QList>
 #include <QMessageBox>
@@ -83,6 +84,10 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   // get rid of annoying outer focus rect on Mac
   mDiagramOptionsListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
 
+  mBarSpacingSpinBox->setClearValue( 0 );
+  mBarSpacingUnitComboBox->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+
   mDiagramFontButton->setMode( QgsFontButton::ModeQFont );
 
   mDiagramTypeComboBox->blockSignals( true );
@@ -95,6 +100,9 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   pix = QgsApplication::getThemePixmap( QStringLiteral( "histogram" ) );
   mDiagramTypeComboBox->addItem( pix, tr( "Histogram" ), DIAGRAM_NAME_HISTOGRAM );
   mDiagramTypeComboBox->blockSignals( false );
+
+  mAxisLineStyleButton->setSymbolType( QgsSymbol::Line );
+  mAxisLineStyleButton->setDialogTitle( tr( "Axis Line Symbol" ) );
 
   mScaleRangeWidget->setMapCanvas( mMapCanvas );
   mSizeFieldExpressionWidget->registerExpressionContextGenerator( this );
@@ -111,6 +119,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   mDiagramPenColorButton->setNoColorString( tr( "Transparent Stroke" ) );
 
   mMaxValueSpinBox->setShowClearButton( false );
+  mSizeSpinBox->setClearValue( 5 );
 
   mDiagramAttributesTreeWidget->setItemDelegateForColumn( ColumnAttributeExpression, new EditBlockerDelegate( this ) );
   mDiagramAttributesTreeWidget->setItemDelegateForColumn( ColumnColor, new EditBlockerDelegate( this ) );
@@ -186,6 +195,9 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   mAngleOffsetComboBox->addItem( tr( "Right" ), 0 );
   mAngleOffsetComboBox->addItem( tr( "Bottom" ), 90 );
   mAngleOffsetComboBox->addItem( tr( "Left" ), 180 );
+
+  mAngleDirectionComboBox->addItem( tr( "Clockwise" ), QgsDiagramSettings::Clockwise );
+  mAngleDirectionComboBox->addItem( tr( "Counter-clockwise" ), QgsDiagramSettings::Counterclockwise );
 
   QgsSettings settings;
 
@@ -315,6 +327,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
       }
 
       mAngleOffsetComboBox->setCurrentIndex( mAngleOffsetComboBox->findData( settingList.at( 0 ).rotationOffset ) );
+      mAngleDirectionComboBox->setCurrentIndex( mAngleDirectionComboBox->findData( settingList.at( 0 ).direction() ) );
 
       mOrientationLeftButton->setProperty( "direction", QgsDiagramSettings::Left );
       mOrientationRightButton->setProperty( "direction", QgsDiagramSettings::Right );
@@ -340,6 +353,13 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
       }
 
       mBarWidthSpinBox->setValue( settingList.at( 0 ).barWidth );
+      mBarSpacingSpinBox->setValue( settingList.at( 0 ).spacing() );
+      mBarSpacingUnitComboBox->setUnit( settingList.at( 0 ).spacingUnit() );
+      mBarSpacingUnitComboBox->setMapUnitScale( settingList.at( 0 ).spacingMapUnitScale() );
+
+      mShowAxisGroupBox->setChecked( settingList.at( 0 ).showAxis() );
+      if ( settingList.at( 0 ).axisLineSymbol() )
+        mAxisLineStyleButton->setSymbol( settingList.at( 0 ).axisLineSymbol()->clone() );
 
       mIncreaseSmallDiagramsCheck->setChecked( settingList.at( 0 ).minimumSize != 0 );
       mIncreaseMinimumSizeSpinBox->setEnabled( mIncreaseSmallDiagramsCheck->isChecked() );
@@ -533,7 +553,11 @@ void QgsDiagramProperties::mDiagramTypeComboBox_currentIndexChanged( int index )
     {
       mBarWidthLabel->show();
       mBarWidthSpinBox->show();
+      mBarSpacingLabel->show();
+      mBarSpacingSpinBox->show();
+      mBarSpacingUnitComboBox->show();
       mBarOptionsFrame->show();
+      mShowAxisGroupBox->show();
       mAttributeBasedScalingRadio->setChecked( true );
       mFixedSizeRadio->setEnabled( false );
       mDiagramSizeSpinBox->setEnabled( false );
@@ -545,6 +569,10 @@ void QgsDiagramProperties::mDiagramTypeComboBox_currentIndexChanged( int index )
     {
       mBarWidthLabel->hide();
       mBarWidthSpinBox->hide();
+      mBarSpacingLabel->hide();
+      mBarSpacingSpinBox->hide();
+      mBarSpacingUnitComboBox->hide();
+      mShowAxisGroupBox->hide();
       mBarOptionsFrame->hide();
       mLinearlyScalingLabel->setText( tr( "Scale linearly between 0 and the following attribute value / diagram size:" ) );
       mSizeLabel->setText( tr( "Size" ) );
@@ -568,12 +596,16 @@ void QgsDiagramProperties::mDiagramTypeComboBox_currentIndexChanged( int index )
     if ( DIAGRAM_NAME_PIE == mDiagramType )
     {
       mAngleOffsetComboBox->show();
+      mAngleDirectionComboBox->show();
+      mAngleDirectionLabel->show();
       mAngleOffsetLabel->show();
       mStartAngleDDBtn->show();
     }
     else
     {
       mAngleOffsetComboBox->hide();
+      mAngleDirectionComboBox->hide();
+      mAngleDirectionLabel->hide();
       mAngleOffsetLabel->hide();
       mStartAngleDDBtn->hide();
     }
@@ -787,11 +819,19 @@ void QgsDiagramProperties::apply()
 
   // Diagram angle offset (pie)
   ds.rotationOffset = mAngleOffsetComboBox->currentData().toInt();
+  ds.setDirection( static_cast< QgsDiagramSettings::Direction>( mAngleDirectionComboBox->currentData().toInt() ) );
 
   // Diagram orientation (histogram)
   ds.diagramOrientation = static_cast<QgsDiagramSettings::DiagramOrientation>( mOrientationButtonGroup->checkedButton()->property( "direction" ).toInt() );
 
   ds.barWidth = mBarWidthSpinBox->value();
+
+  ds.setAxisLineSymbol( mAxisLineStyleButton->clonedSymbol< QgsLineSymbol >() );
+  ds.setShowAxis( mShowAxisGroupBox->isChecked() );
+
+  ds.setSpacing( mBarSpacingSpinBox->value() );
+  ds.setSpacingUnit( mBarSpacingUnitComboBox->unit() );
+  ds.setSpacingMapUnitScale( mBarSpacingUnitComboBox->getMapUnitScale() );
 
   QgsDiagramRenderer *renderer = nullptr;
   if ( mFixedSizeRadio->isChecked() )

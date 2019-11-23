@@ -101,7 +101,7 @@ QgsImageCache::QgsImageCache( QObject *parent )
   connect( this, &QgsAbstractContentCacheBase::remoteContentFetched, this, &QgsImageCache::remoteImageFetched );
 }
 
-QImage QgsImageCache::pathAsImage( const QString &f, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache )
+QImage QgsImageCache::pathAsImage( const QString &f, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache, bool blocking )
 {
   const QString file = f.trimmed();
 
@@ -122,7 +122,7 @@ QImage QgsImageCache::pathAsImage( const QString &f, const QSize size, const boo
   if ( currentEntry->image.isNull() )
   {
     long cachedDataSize = 0;
-    result = renderImage( file, size, keepAspectRatio, opacity );
+    result = renderImage( file, size, keepAspectRatio, opacity, blocking );
     cachedDataSize += result.width() * result.height() * 32;
     if ( cachedDataSize > mMaxCacheSize / 2 )
     {
@@ -144,7 +144,7 @@ QImage QgsImageCache::pathAsImage( const QString &f, const QSize size, const boo
   return result;
 }
 
-QSize QgsImageCache::originalSize( const QString &path ) const
+QSize QgsImageCache::originalSize( const QString &path, bool blocking ) const
 {
   if ( path.isEmpty() )
     return QSize();
@@ -160,7 +160,7 @@ QSize QgsImageCache::originalSize( const QString &path ) const
   }
   else
   {
-    QByteArray ba = getContent( path, QByteArray( "broken" ), QByteArray( "fetching" ) );
+    QByteArray ba = getContent( path, QByteArray( "broken" ), QByteArray( "fetching" ), blocking );
 
     if ( ba != "broken" && ba != "fetching" )
     {
@@ -180,7 +180,7 @@ QSize QgsImageCache::originalSize( const QString &path ) const
   return QSize();
 }
 
-QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool keepAspectRatio, const double opacity ) const
+QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool keepAspectRatio, const double opacity, bool blocking ) const
 {
   QImage im;
   // direct read if path is a file -- maybe more efficient than going the bytearray route? (untested!)
@@ -190,7 +190,7 @@ QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool k
   }
   else
   {
-    QByteArray ba = getContent( path, QByteArray( "broken" ), QByteArray( "fetching" ) );
+    QByteArray ba = getContent( path, QByteArray( "broken" ), QByteArray( "fetching" ), blocking );
 
     if ( ba == "broken" )
     {

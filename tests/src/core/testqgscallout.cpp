@@ -42,6 +42,7 @@
 #include "qgsfontutils.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgsvectorlayerlabelprovider.h"
+#include "qgsnullsymbolrenderer.h"
 
 
 //qgis test includes
@@ -76,7 +77,7 @@ class DummyCallout : public QgsCallout
 
   protected:
 
-    void draw( QgsRenderContext &, QRectF, const double, const QgsGeometry & ) override { }
+    void draw( QgsRenderContext &, QRectF, const double, const QgsGeometry &, QgsCallout::QgsCalloutContext & ) override { }
 
   private:
     QString mProp1;
@@ -128,10 +129,22 @@ class TestQgsCallout: public QObject
     void calloutDataDefinedSymbolColor();
     void calloutMinimumDistance();
     void calloutDataDefinedMinimumDistance();
+    void calloutOffsetFromAnchor();
+    void calloutDataDefinedOffsetFromAnchor();
+    void calloutOffsetFromLabel();
+    void calloutDataDefinedOffsetFromLabel();
     void calloutBehindLabel();
     void calloutBehindIndividualLabels();
+    void calloutNoDrawToAllParts();
+    void calloutDrawToAllParts();
+    void calloutDataDefinedDrawToAllParts();
+    void calloutPointOnExterior();
+    void calloutDataDefinedAnchorPoint();
     void manhattan();
     void manhattanRotated();
+    void manhattanNoDrawToAllParts();
+    void manhattanDrawToAllParts();
+    void manhattanDataDefinedDrawToAllParts();
 
   private:
     bool imageCheck( const QString &testName, QImage &image, int mismatchCount = 0 );
@@ -153,7 +166,7 @@ void TestQgsCallout::initTestCase()
   mReport += QLatin1String( "<h1>Callout Tests</h1>\n" );
 
   QgsCalloutRegistry *registry = QgsApplication::calloutRegistry();
-  registry->addCalloutType( new QgsCalloutMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "Dummy callout" ), DummyCallout::create ) );
+  registry->addCalloutType( new QgsCalloutMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "Dummy callout" ), QIcon(), DummyCallout::create ) );
 
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mTestDataDir = myDataDir + '/';
@@ -283,7 +296,7 @@ void TestQgsCallout::calloutsInLabeling()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   vl->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -345,7 +358,7 @@ void TestQgsCallout::calloutsWithRotation()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -444,7 +457,7 @@ void TestQgsCallout::calloutsDisabled()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -496,7 +509,7 @@ void TestQgsCallout::calloutsDataDefinedDisabled()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -548,7 +561,7 @@ void TestQgsCallout::calloutDataDefinedSymbol()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -600,7 +613,7 @@ void TestQgsCallout::calloutDataDefinedSymbolColor()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -652,7 +665,7 @@ void TestQgsCallout::calloutMinimumDistance()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -705,7 +718,7 @@ void TestQgsCallout::calloutDataDefinedMinimumDistance()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -714,6 +727,216 @@ void TestQgsCallout::calloutDataDefinedMinimumDistance()
   p.end();
 
   QVERIFY( imageCheck( "callout_data_defined_minimum_length", img, 20 ) );
+}
+
+void TestQgsCallout::calloutOffsetFromAnchor()
+{
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setRotation( 45 );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+
+  QPainter p( &img );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  context.setPainter( &p );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "Class" );
+  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.dist = 10;
+
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 200, 0, 200 ) );
+  settings.setFormat( format );
+
+  QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
+  callout->setEnabled( true );
+  callout->lineSymbol()->setWidth( 1 );
+  callout->setOffsetFromAnchor( 4 );
+  settings.setCallout( callout );
+
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabelsEnabled( true );
+
+  QgsDefaultLabelingEngine engine;
+  engine.setMapSettings( mapSettings );
+  engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
+  //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
+  engine.run( context );
+
+  p.end();
+
+  QVERIFY( imageCheck( "callout_offset_from_anchor", img, 20 ) );
+}
+
+void TestQgsCallout::calloutDataDefinedOffsetFromAnchor()
+{
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setRotation( 45 );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+
+  QPainter p( &img );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  context.setPainter( &p );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "Class" );
+  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.dist = 10;
+
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 200, 0, 200 ) );
+  settings.setFormat( format );
+
+  QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
+  callout->setEnabled( true );
+  callout->lineSymbol()->setWidth( 1 );
+  callout->dataDefinedProperties().setProperty( QgsCallout::OffsetFromAnchor, QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 2 else 6 end" ) ) );
+  settings.setCallout( callout );
+
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabelsEnabled( true );
+
+  QgsDefaultLabelingEngine engine;
+  engine.setMapSettings( mapSettings );
+  engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
+  //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
+  engine.run( context );
+
+  p.end();
+
+  QVERIFY( imageCheck( "callout_data_defined_offset_from_anchor", img, 20 ) );
+}
+
+void TestQgsCallout::calloutOffsetFromLabel()
+{
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setRotation( 45 );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+
+  QPainter p( &img );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  context.setPainter( &p );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "Class" );
+  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.dist = 10;
+
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 200, 0, 200 ) );
+  settings.setFormat( format );
+
+  QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
+  callout->setEnabled( true );
+  callout->lineSymbol()->setWidth( 1 );
+  callout->setOffsetFromAnchor( 4 );
+  callout->setOffsetFromLabel( 4 );
+  settings.setCallout( callout );
+
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabelsEnabled( true );
+
+  QgsDefaultLabelingEngine engine;
+  engine.setMapSettings( mapSettings );
+  engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
+  //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
+  engine.run( context );
+
+  p.end();
+
+  QVERIFY( imageCheck( "callout_offset_from_label", img, 20 ) );
+}
+
+void TestQgsCallout::calloutDataDefinedOffsetFromLabel()
+{
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setRotation( 45 );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+
+  QPainter p( &img );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  context.setPainter( &p );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "Class" );
+  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.dist = 10;
+
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 200, 0, 200 ) );
+  settings.setFormat( format );
+
+  QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
+  callout->setEnabled( true );
+  callout->lineSymbol()->setWidth( 1 );
+  callout->dataDefinedProperties().setProperty( QgsCallout::OffsetFromAnchor, QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 2 else 6 end" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::OffsetFromLabel, QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 3 else 4 end" ) ) );
+  settings.setCallout( callout );
+
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabelsEnabled( true );
+
+  QgsDefaultLabelingEngine engine;
+  engine.setMapSettings( mapSettings );
+  engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
+  //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
+  engine.run( context );
+
+  p.end();
+
+  QVERIFY( imageCheck( "callout_data_defined_offset_from_label", img, 20 ) );
 }
 
 void TestQgsCallout::calloutBehindLabel()
@@ -761,7 +984,7 @@ void TestQgsCallout::calloutBehindLabel()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -817,7 +1040,7 @@ void TestQgsCallout::calloutBehindIndividualLabels()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -826,6 +1049,338 @@ void TestQgsCallout::calloutBehindIndividualLabels()
   p.end();
 
   QVERIFY( imageCheck( "callout_behind_individual_labels", img, 20 ) );
+}
+
+void TestQgsCallout::calloutNoDrawToAllParts()
+{
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
+  marker->setColor( QColor( 255, 0, 0 ) );
+  marker->setSize( 3 );
+  static_cast< QgsSimpleMarkerSymbolLayer * >( marker->symbolLayer( 0 ) )->setStrokeStyle( Qt::NoPen );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( marker ) );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 << 190040 << 5000030 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiPoint (190030 5000000, 190084 5000000 )" ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  f.setAttributes( QgsAttributes() << 2 << 190040 << 5000050 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiPoint (190030 5000060, 190084 5000060 )" ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setOutputSize( size );
+  mapSettings.setDestinationCrs( vl2->crs() );
+  mapSettings.setExtent( QgsRectangle( 190000, 5000000, 190200, 5000010 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+
+  QPainter p( &img );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  context.setPainter( &p );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "'X'" );
+  settings.isExpression = true;
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 200, 0, 200 ) );
+  settings.setFormat( format );
+
+  QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
+  callout->setEnabled( true );
+  callout->lineSymbol()->setWidth( 1 );
+  settings.setCallout( callout );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  QgsDefaultLabelingEngine engine;
+  engine.setMapSettings( mapSettings );
+  engine.addProvider( new QgsVectorLayerLabelProvider( vl2.get(), QString(), true, &settings ) );
+  //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
+  engine.run( context );
+
+  p.end();
+
+  QVERIFY( imageCheck( "callout_no_draw_to_all_parts_simple", img, 20 ) );
+}
+
+void TestQgsCallout::calloutDrawToAllParts()
+{
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
+  marker->setColor( QColor( 255, 0, 0 ) );
+  marker->setSize( 3 );
+  static_cast< QgsSimpleMarkerSymbolLayer * >( marker->symbolLayer( 0 ) )->setStrokeStyle( Qt::NoPen );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( marker ) );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 << 190040 << 5000030 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiPoint (190030 5000000, 190084 5000000 )" ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  f.setAttributes( QgsAttributes() << 2 << 190040 << 5000050 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiPoint (190030 5000060, 190084 5000060 )" ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setOutputSize( size );
+  mapSettings.setDestinationCrs( vl2->crs() );
+  mapSettings.setExtent( QgsRectangle( 190000, 5000000, 190200, 5000010 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+
+  QPainter p( &img );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  context.setPainter( &p );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "'X'" );
+  settings.isExpression = true;
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 200, 0, 200 ) );
+  settings.setFormat( format );
+
+  QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
+  callout->setEnabled( true );
+  callout->lineSymbol()->setWidth( 1 );
+  callout->setDrawCalloutToAllParts( true );
+  settings.setCallout( callout );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  QgsDefaultLabelingEngine engine;
+  engine.setMapSettings( mapSettings );
+  engine.addProvider( new QgsVectorLayerLabelProvider( vl2.get(), QString(), true, &settings ) );
+  //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
+  engine.run( context );
+
+  p.end();
+
+  QVERIFY( imageCheck( "callout_draw_to_all_parts_simple", img, 20 ) );
+}
+
+void TestQgsCallout::calloutDataDefinedDrawToAllParts()
+{
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
+  marker->setColor( QColor( 255, 0, 0 ) );
+  marker->setSize( 3 );
+  static_cast< QgsSimpleMarkerSymbolLayer * >( marker->symbolLayer( 0 ) )->setStrokeStyle( Qt::NoPen );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( marker ) );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 << 190040 << 5000030 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiPoint (190030 5000000, 190084 5000000 )" ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  f.setAttributes( QgsAttributes() << 2 << 190040 << 5000050 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiPoint (190030 5000060, 190084 5000060 )" ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setOutputSize( size );
+  mapSettings.setDestinationCrs( vl2->crs() );
+  mapSettings.setExtent( QgsRectangle( 190000, 5000000, 190200, 5000010 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+
+  QPainter p( &img );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  context.setPainter( &p );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "'X'" );
+  settings.isExpression = true;
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 200, 0, 200 ) );
+  settings.setFormat( format );
+
+  QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
+  callout->setEnabled( true );
+  callout->lineSymbol()->setWidth( 1 );
+  callout->dataDefinedProperties().setProperty( QgsCallout::DrawCalloutToAllParts, QgsProperty::fromExpression( QStringLiteral( "\"id\"=1" ) ) );
+  settings.setCallout( callout );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  QgsDefaultLabelingEngine engine;
+  engine.setMapSettings( mapSettings );
+  engine.addProvider( new QgsVectorLayerLabelProvider( vl2.get(), QString(), true, &settings ) );
+  //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
+  engine.run( context );
+
+  p.end();
+
+  QVERIFY( imageCheck( "callout_data_defined_draw_to_all_parts_simple", img, 20 ) );
+}
+
+void TestQgsCallout::calloutPointOnExterior()
+{
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QgsFillSymbol *fill = static_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry ) );
+  fill->setColor( QColor( 255, 0, 0 ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( fill ) );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 << 189950 << 5000000 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((190000 4999900, 190100 5000100, 190100 5000100, 190000 5000100, 190000 4999900 ))" ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setOutputSize( size );
+  mapSettings.setDestinationCrs( vl2->crs() );
+  mapSettings.setExtent( QgsRectangle( 189900, 4999800, 190200, 5000200 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+
+  QPainter p( &img );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  context.setPainter( &p );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "'X'" );
+  settings.isExpression = true;
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 200, 0, 200 ) );
+  settings.setFormat( format );
+
+  QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
+  callout->setEnabled( true );
+  callout->lineSymbol()->setWidth( 1 );
+  callout->setAnchorPoint( QgsCallout::PointOnExterior );
+  settings.setCallout( callout );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  QgsDefaultLabelingEngine engine;
+  engine.setMapSettings( mapSettings );
+  engine.addProvider( new QgsVectorLayerLabelProvider( vl2.get(), QString(), true, &settings ) );
+  //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
+  engine.run( context );
+
+  p.end();
+
+  QVERIFY( imageCheck( "callout_point_on_exterior", img, 20 ) );
+}
+
+void TestQgsCallout::calloutDataDefinedAnchorPoint()
+{
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QgsFillSymbol *fill = static_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry ) );
+  fill->setColor( QColor( 255, 0, 0 ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( fill ) );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 << 189950 << 5000000 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((190000 4999900, 190100 5000100, 190100 5000100, 190000 5000100, 190000 4999900 ))" ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setOutputSize( size );
+  mapSettings.setDestinationCrs( vl2->crs() );
+  mapSettings.setExtent( QgsRectangle( 189900, 4999800, 190200, 5000200 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+
+  QPainter p( &img );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  context.setPainter( &p );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "'X'" );
+  settings.isExpression = true;
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 200, 0, 200 ) );
+  settings.setFormat( format );
+
+  QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
+  callout->setEnabled( true );
+  callout->lineSymbol()->setWidth( 1 );
+  callout->dataDefinedProperties().setProperty( QgsCallout::AnchorPointPosition, QgsProperty::fromExpression( QStringLiteral( "'centroid'" ) ) );
+  settings.setCallout( callout );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  QgsDefaultLabelingEngine engine;
+  engine.setMapSettings( mapSettings );
+  engine.addProvider( new QgsVectorLayerLabelProvider( vl2.get(), QString(), true, &settings ) );
+  //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
+  engine.run( context );
+
+  p.end();
+
+  QVERIFY( imageCheck( "callout_data_defined_anchor_point", img, 20 ) );
 }
 
 void TestQgsCallout::manhattan()
@@ -869,7 +1424,7 @@ void TestQgsCallout::manhattan()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   vl->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -922,7 +1477,7 @@ void TestQgsCallout::manhattanRotated()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   vl->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -931,6 +1486,212 @@ void TestQgsCallout::manhattanRotated()
   p.end();
 
   QVERIFY( imageCheck( "manhattan_callout_rotated", img, 20 ) );
+}
+
+void TestQgsCallout::manhattanNoDrawToAllParts()
+{
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
+  marker->setColor( QColor( 255, 0, 0 ) );
+  marker->setSize( 3 );
+  static_cast< QgsSimpleMarkerSymbolLayer * >( marker->symbolLayer( 0 ) )->setStrokeStyle( Qt::NoPen );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( marker ) );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 << 190040 << 5000030 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiPoint (190030 5000000, 190084 5000000 )" ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  f.setAttributes( QgsAttributes() << 2 << 190040 << 5000050 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiPoint (190030 5000060, 190084 5000060 )" ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setOutputSize( size );
+  mapSettings.setDestinationCrs( vl2->crs() );
+  mapSettings.setExtent( QgsRectangle( 190000, 5000000, 190200, 5000010 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+
+  QPainter p( &img );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  context.setPainter( &p );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "'X'" );
+  settings.isExpression = true;
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 200, 0, 200 ) );
+  settings.setFormat( format );
+
+  QgsManhattanLineCallout *callout = new QgsManhattanLineCallout();
+  callout->setEnabled( true );
+  callout->lineSymbol()->setWidth( 1 );
+  settings.setCallout( callout );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  QgsDefaultLabelingEngine engine;
+  engine.setMapSettings( mapSettings );
+  engine.addProvider( new QgsVectorLayerLabelProvider( vl2.get(), QString(), true, &settings ) );
+  //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
+  engine.run( context );
+
+  p.end();
+
+  QVERIFY( imageCheck( "manhattan_no_draw_to_all_parts_simple", img, 20 ) );
+}
+
+void TestQgsCallout::manhattanDrawToAllParts()
+{
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
+  marker->setColor( QColor( 255, 0, 0 ) );
+  marker->setSize( 3 );
+  static_cast< QgsSimpleMarkerSymbolLayer * >( marker->symbolLayer( 0 ) )->setStrokeStyle( Qt::NoPen );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( marker ) );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 << 190040 << 5000030 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiPoint (190030 5000000, 190084 5000000 )" ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  f.setAttributes( QgsAttributes() << 2 << 190040 << 5000050 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiPoint (190030 5000060, 190084 5000060 )" ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setOutputSize( size );
+  mapSettings.setDestinationCrs( vl2->crs() );
+  mapSettings.setExtent( QgsRectangle( 190000, 5000000, 190200, 5000010 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+
+  QPainter p( &img );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  context.setPainter( &p );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "'X'" );
+  settings.isExpression = true;
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 200, 0, 200 ) );
+  settings.setFormat( format );
+
+  QgsManhattanLineCallout *callout = new QgsManhattanLineCallout();
+  callout->setEnabled( true );
+  callout->lineSymbol()->setWidth( 1 );
+  callout->setDrawCalloutToAllParts( true );
+  settings.setCallout( callout );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  QgsDefaultLabelingEngine engine;
+  engine.setMapSettings( mapSettings );
+  engine.addProvider( new QgsVectorLayerLabelProvider( vl2.get(), QString(), true, &settings ) );
+  //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
+  engine.run( context );
+
+  p.end();
+
+  QVERIFY( imageCheck( "manhattan_draw_to_all_parts_simple", img, 20 ) );
+}
+
+void TestQgsCallout::manhattanDataDefinedDrawToAllParts()
+{
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
+  marker->setColor( QColor( 255, 0, 0 ) );
+  marker->setSize( 3 );
+  static_cast< QgsSimpleMarkerSymbolLayer * >( marker->symbolLayer( 0 ) )->setStrokeStyle( Qt::NoPen );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( marker ) );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 << 190040 << 5000030 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiPoint (190030 5000000, 190084 5000000 )" ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  f.setAttributes( QgsAttributes() << 2 << 190040 << 5000050 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiPoint (190030 5000060, 190084 5000060 )" ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setOutputSize( size );
+  mapSettings.setDestinationCrs( vl2->crs() );
+  mapSettings.setExtent( QgsRectangle( 190000, 5000000, 190200, 5000010 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+
+  QPainter p( &img );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  context.setPainter( &p );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "'X'" );
+  settings.isExpression = true;
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 200, 0, 200 ) );
+  settings.setFormat( format );
+
+  QgsManhattanLineCallout *callout = new QgsManhattanLineCallout();
+  callout->setEnabled( true );
+  callout->lineSymbol()->setWidth( 1 );
+  callout->dataDefinedProperties().setProperty( QgsCallout::DrawCalloutToAllParts, QgsProperty::fromExpression( QStringLiteral( "\"id\"=1" ) ) );
+  settings.setCallout( callout );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  QgsDefaultLabelingEngine engine;
+  engine.setMapSettings( mapSettings );
+  engine.addProvider( new QgsVectorLayerLabelProvider( vl2.get(), QString(), true, &settings ) );
+  //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
+  engine.run( context );
+
+  p.end();
+
+  QVERIFY( imageCheck( "manhattan_data_defined_draw_to_all_parts_simple", img, 20 ) );
 }
 
 //

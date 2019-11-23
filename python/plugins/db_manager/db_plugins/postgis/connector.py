@@ -27,7 +27,7 @@ from builtins import range
 from functools import cmp_to_key
 
 from qgis.PyQt.QtCore import QRegExp, QFile, QCoreApplication
-from qgis.core import Qgis, QgsCredentials, QgsDataSourceUri
+from qgis.core import Qgis, QgsCredentials, QgsDataSourceUri, QgsCoordinateReferenceSystem
 
 from ..connector import DBConnector
 from ..plugin import ConnectionError, DbError, Table
@@ -489,6 +489,9 @@ class PostGisDBConnector(DBConnector):
         schema, tablename = self.getSchemaTableName(table)
         schema_where = u" AND nspname=%s " % self.quoteString(schema) if schema is not None else ""
 
+        version_number = int(self.getInfo()[0].split(' ')[1].split('.')[0])
+        ad_col_name = 'adsrc' if version_number < 12 else 'adbin'
+
         sql = u"""SELECT a.attnum AS ordinal_position,
                                 a.attname AS column_name,
                                 t.typname AS data_type,
@@ -496,7 +499,7 @@ class PostGisDBConnector(DBConnector):
                                 a.atttypmod AS modifier,
                                 a.attnotnull AS notnull,
                                 a.atthasdef AS hasdefault,
-                                adef.adsrc AS default_value,
+                                adef.%s AS default_value,
                                 pg_catalog.format_type(a.atttypid,a.atttypmod) AS formatted_type
                         FROM pg_class c
                         JOIN pg_attribute a ON a.attrelid = c.oid
@@ -505,7 +508,7 @@ class PostGisDBConnector(DBConnector):
                         LEFT JOIN pg_attrdef adef ON adef.adrelid = a.attrelid AND adef.adnum = a.attnum
                         WHERE
                           a.attnum > 0 AND c.relname=%s %s
-                        ORDER BY a.attnum""" % (self.quoteString(tablename), schema_where)
+                        ORDER BY a.attnum""" % (ad_col_name, self.quoteString(tablename), schema_where)
 
         c = self._execute(None, sql)
         res = self._fetchall(c)
@@ -534,12 +537,15 @@ class PostGisDBConnector(DBConnector):
         schema, tablename = self.getSchemaTableName(table)
         schema_where = u" AND nspname=%s " % self.quoteString(schema) if schema is not None else ""
 
-        sql = u"""SELECT c.conname, c.contype, c.condeferrable, c.condeferred, array_to_string(c.conkey, ' '), c.consrc,
+        version_number = int(self.getInfo()[0].split(' ')[1].split('.')[0])
+        con_col_name = 'consrc' if version_number < 12 else 'conbin'
+
+        sql = u"""SELECT c.conname, c.contype, c.condeferrable, c.condeferred, array_to_string(c.conkey, ' '), c.%s,
                          t2.relname, c.confupdtype, c.confdeltype, c.confmatchtype, array_to_string(c.confkey, ' ') FROM pg_constraint c
                   LEFT JOIN pg_class t ON c.conrelid = t.oid
                         LEFT JOIN pg_class t2 ON c.confrelid = t2.oid
                         JOIN pg_namespace nsp ON t.relnamespace = nsp.oid
-                        WHERE t.relname = %s %s """ % (self.quoteString(tablename), schema_where)
+                        WHERE t.relname = %s %s """ % (con_col_name, self.quoteString(tablename), schema_where)
 
         c = self._execute(None, sql)
         res = self._fetchall(c)
@@ -574,7 +580,7 @@ class PostGisDBConnector(DBConnector):
         self._execute_and_commit(sql)
 
     def deleteTableTrigger(self, trigger, table):
-        """ delete trigger on table """
+        """Deletes trigger on table """
         sql = u"DROP TRIGGER %s ON %s" % (self.quoteId(trigger), self.quoteId(table))
         self._execute_and_commit(sql)
 
@@ -592,7 +598,7 @@ class PostGisDBConnector(DBConnector):
         return res
 
     def deleteTableRule(self, rule, table):
-        """ delete rule on table """
+        """Deletes rule on table """
         sql = u"DROP RULE %s ON %s" % (self.quoteId(rule), self.quoteId(table))
         self._execute_and_commit(sql)
 
@@ -642,6 +648,23 @@ class PostGisDBConnector(DBConnector):
         self._close_cursor(c)
         return res[0] if res is not None else None
 
+    def getCrs(self, srid):
+        if not self.has_spatial:
+            return QgsCoordinateReferenceSystem()
+
+        try:
+            c = self._execute(None, "SELECT proj4text FROM spatial_ref_sys WHERE srid = '%d'" % srid)
+        except DbError:
+            return QgsCoordinateReferenceSystem()
+        res = self._fetchone(c)
+        self._close_cursor(c)
+        if res is None:
+            return QgsCoordinateReferenceSystem()
+
+        proj4text = res[0]
+        crs = QgsCoordinateReferenceSystem.fromProj4(proj4text)
+        return crs
+
     def getSpatialRefInfo(self, srid):
         if not self.has_spatial:
             return
@@ -689,7 +712,7 @@ class PostGisDBConnector(DBConnector):
         return False
 
     def createTable(self, table, field_defs, pkey):
-        """ create ordinary table
+        """Creates ordinary table
                         'fields' is array containing field definitions
                         'pkey' is the primary key name
         """
@@ -706,7 +729,7 @@ class PostGisDBConnector(DBConnector):
         return True
 
     def deleteTable(self, table):
-        """ delete table and its reference in either geometry_columns or raster_columns """
+        """Deletes table and its reference in either geometry_columns or raster_columns """
         schema, tablename = self.getSchemaTableName(table)
         schema_part = u"%s, " % self.quoteString(schema) if schema is not None else ""
         if self.isVectorTable(table):
@@ -719,19 +742,19 @@ class PostGisDBConnector(DBConnector):
         self._execute_and_commit(sql)
 
     def emptyTable(self, table):
-        """ delete all rows from table """
+        """Deletes all rows from table """
         sql = u"TRUNCATE %s" % self.quoteId(table)
         self._execute_and_commit(sql)
 
     def renameTable(self, table, new_table):
-        """ rename a table in database """
+        """Renames a table in database """
         schema, tablename = self.getSchemaTableName(table)
         if new_table == tablename:
             return
 
         c = self._get_cursor()
 
-        sql = u"ALTER TABLE %s RENAME TO %s" % (self.quoteId(table), self.quoteId(new_table))
+        sql = u"ALTER TABLE %s RENAME  TO %s" % (self.quoteId(table), self.quoteId(new_table))
         self._execute(c, sql)
 
         # update geometry_columns if PostGIS is enabled
@@ -798,13 +821,13 @@ class PostGisDBConnector(DBConnector):
         c = self._get_cursor()
         t = u"__new_table__"
 
-        sql = u"ALTER TABLE %s RENAME TO %s" % (self.quoteId(table), self.quoteId(t))
+        sql = u"ALTER TABLE %s RENAME  TO %s" % (self.quoteId(table), self.quoteId(t))
         self._execute(c, sql)
 
         sql = u"ALTER TABLE %s SET SCHEMA %s" % (self.quoteId((schema, t)), self.quoteId(new_schema))
         self._execute(c, sql)
 
-        sql = u"ALTER TABLE %s RENAME TO %s" % (self.quoteId((new_schema, t)), self.quoteId(table))
+        sql = u"ALTER TABLE %s RENAME  TO %s" % (self.quoteId((new_schema, t)), self.quoteId(table))
         self._execute(c, sql)
 
         # update geometry_columns if PostGIS is enabled
@@ -830,47 +853,47 @@ class PostGisDBConnector(DBConnector):
         self._execute_and_commit(sql)
 
     def renameView(self, view, new_name):
-        """ rename view in database """
+        """Renames view in database """
         self.renameTable(view, new_name)
 
     def createSchema(self, schema):
-        """ create a new empty schema in database """
+        """Creates a new empty schema in database """
         sql = u"CREATE SCHEMA %s" % self.quoteId(schema)
         self._execute_and_commit(sql)
 
     def deleteSchema(self, schema):
-        """ drop (empty) schema from database """
+        """Drops (empty) schema from database """
         sql = u"DROP SCHEMA %s" % self.quoteId(schema)
         self._execute_and_commit(sql)
 
-    def renameSchema(self, schema, new_schema):
-        """ rename a schema in database """
-        sql = u"ALTER SCHEMA %s RENAME TO %s" % (self.quoteId(schema), self.quoteId(new_schema))
+    def renamesSchema(self, schema, new_schema):
+        """Renames a schema in database """
+        sql = u"ALTER SCHEMA %s RENAME  TO %s" % (self.quoteId(schema), self.quoteId(new_schema))
         self._execute_and_commit(sql)
 
     def runVacuum(self):
-        """ run vacuum on the db """
+        """Runs vacuum on the db """
         self._execute_and_commit("VACUUM")
 
     def runVacuumAnalyze(self, table):
-        """ run vacuum analyze on a table """
+        """Runs vacuum analyze on a table """
         sql = u"VACUUM ANALYZE %s" % self.quoteId(table)
         self._execute(None, sql)
         self._commit()
 
     def runRefreshMaterializedView(self, table):
-        """ run refresh materialized view on a table """
+        """Runs refresh materialized view on a table """
         sql = u"REFRESH MATERIALIZED VIEW %s" % self.quoteId(table)
         self._execute(None, sql)
         self._commit()
 
     def addTableColumn(self, table, field_def):
-        """ add a column to table """
+        """Adds a column to table """
         sql = u"ALTER TABLE %s ADD %s" % (self.quoteId(table), field_def)
         self._execute_and_commit(sql)
 
     def deleteTableColumn(self, table, column):
-        """ delete column from a table """
+        """Deletes column from a table """
         if self.isGeometryColumn(table, column):
             # use PostGIS function to delete geometry column correctly
             schema, tablename = self.getSchemaTableName(table)
@@ -905,9 +928,9 @@ class PostGisDBConnector(DBConnector):
                 sql += u" %s %s," % (alter_col_str, a)
             self._execute(c, sql[:-1])
 
-        # rename the column
+        #Renames the column
         if new_name is not None and new_name != column:
-            sql = u"ALTER TABLE %s RENAME %s TO %s" % (
+            sql = u"ALTER TABLE %s RENAME  %s TO %s" % (
                 self.quoteId(table), self.quoteId(column), self.quoteId(new_name))
             self._execute(c, sql)
 
@@ -928,20 +951,20 @@ class PostGisDBConnector(DBConnector):
 
         self._commit()
 
-    def renameTableColumn(self, table, column, new_name):
-        """ rename column in a table """
+    def renamesTableColumn(self, table, column, new_name):
+        """Renames column in a table """
         return self.updateTableColumn(table, column, new_name)
 
     def setTableColumnType(self, table, column, data_type):
-        """ change column type """
+        """Changes column type """
         return self.updateTableColumn(table, column, None, data_type)
 
     def setTableColumnNull(self, table, column, is_null):
-        """ change whether column can contain null values """
+        """Changes whether column can contain null values """
         return self.updateTableColumn(table, column, None, None, not is_null)
 
     def setTableColumnDefault(self, table, column, default):
-        """ change column's default value.
+        """Changes column's default value.
                 If default=None or an empty string drop default value """
         return self.updateTableColumn(table, column, None, None, None, default)
 
@@ -970,22 +993,22 @@ class PostGisDBConnector(DBConnector):
         return self.deleteTableColumn(table, geom_column)
 
     def addTableUniqueConstraint(self, table, column):
-        """ add a unique constraint to a table """
+        """Adds a unique constraint to a table """
         sql = u"ALTER TABLE %s ADD UNIQUE (%s)" % (self.quoteId(table), self.quoteId(column))
         self._execute_and_commit(sql)
 
     def deleteTableConstraint(self, table, constraint):
-        """ delete constraint in a table """
+        """Deletes constraint in a table """
         sql = u"ALTER TABLE %s DROP CONSTRAINT %s" % (self.quoteId(table), self.quoteId(constraint))
         self._execute_and_commit(sql)
 
     def addTablePrimaryKey(self, table, column):
-        """ add a primery key (with one column) to a table """
+        """Adds a primery key (with one column) to a table """
         sql = u"ALTER TABLE %s ADD PRIMARY KEY (%s)" % (self.quoteId(table), self.quoteId(column))
         self._execute_and_commit(sql)
 
     def createTableIndex(self, table, name, column):
-        """ create index on one column using default options """
+        """Creates index on one column using default options """
         sql = u"CREATE INDEX %s ON %s (%s)" % (self.quoteId(name), self.quoteId(table), self.quoteId(column))
         self._execute_and_commit(sql)
 

@@ -184,10 +184,12 @@ the appearance and behavior of the line edit portion of the widget.
 %End
 
   signals:
-    void fileChanged( const QString & );
+
+    void fileChanged( const QString &path );
 %Docstring
-emitted as soon as the current file or directory is changed
+Emitted whenever the current file or directory ``path`` is changed.
 %End
+
 
 };
 

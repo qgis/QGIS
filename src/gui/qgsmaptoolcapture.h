@@ -224,15 +224,34 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     /**
      * List of digitized points
      * \returns List of points
+     * \deprecated since QGIS 3.12 - will be removed in QGIS 4.0. Use the variant returns QgsPoint objects instead of QgsPointXY.
      */
-    QVector<QgsPointXY> points() const;
+    Q_DECL_DEPRECATED QVector<QgsPointXY> points() const SIP_DEPRECATED;
+
+    // TODO QGIS 4.0 rename it to points()
+
+    /**
+     * List of digitized points
+     * \returns List of points
+     * \since QGIS 3.12
+     */
+    QgsPointSequence pointsZM() const;
 
     /**
      * Set the points on which to work
      *
      * \param pointList A list of points
+     * \deprecated since QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
      */
-    void setPoints( const QVector<QgsPointXY> &pointList );
+    Q_DECL_DEPRECATED void setPoints( const QVector<QgsPointXY> &pointList ) SIP_DEPRECATED;
+
+    /**
+     * Set the points on which to work
+     *
+     * \param pointList A list of points
+     * \since QGIS 3.12
+     */
+    void setPoints( const QgsPointSequence &pointList );
 
     /**
      * Close an open polygon

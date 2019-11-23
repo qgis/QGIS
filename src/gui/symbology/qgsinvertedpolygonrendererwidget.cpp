@@ -133,7 +133,8 @@ void QgsInvertedPolygonRendererWidget::mRendererComboBox_currentIndexChanged( in
   QgsRendererAbstractMetadata *m = QgsApplication::rendererRegistry()->rendererMetadata( rendererId );
   if ( m )
   {
-    mEmbeddedRendererWidget.reset( m->createRendererWidget( mLayer, mStyle, const_cast<QgsFeatureRenderer *>( mRenderer->embeddedRenderer() )->clone() ) );
+    std::unique_ptr< QgsFeatureRenderer > oldRenderer( mRenderer->embeddedRenderer()->clone() );
+    mEmbeddedRendererWidget.reset( m->createRendererWidget( mLayer, mStyle, oldRenderer.get() ) );
     connect( mEmbeddedRendererWidget.get(), &QgsRendererWidget::widgetChanged, this, &QgsInvertedPolygonRendererWidget::widgetChanged );
     mEmbeddedRendererWidget->setContext( mContext );
     mEmbeddedRendererWidget->setDockMode( this->dockMode() );

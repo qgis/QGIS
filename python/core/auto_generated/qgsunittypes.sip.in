@@ -34,6 +34,14 @@ Helper functions for various unit types.
       USCSSystem
     };
 
+    enum UnitType
+    {
+      TypeDistance,
+      TypeArea,
+      TypeVolume,
+      TypeUnknown,
+    };
+
     enum DistanceUnit
     {
       DistanceMeters,
@@ -69,6 +77,21 @@ Helper functions for various unit types.
       AreaSquareCentimeters,
       AreaSquareMillimeters,
       AreaUnknownUnit,
+    };
+
+    enum VolumeUnit
+    {
+      VolumeCubicMeters,
+      VolumeCubicFeet,
+      VolumeCubicYards,
+      VolumeBarrel,
+      VolumeCubicDecimeter,
+      VolumeLiters,
+      VolumeGallonUS,
+      VolumeCubicInch,
+      VolumeCubicCentimeter,
+      VolumeCubicDegrees,
+      VolumeUnknownUnit,
     };
 
     enum AngleUnit
@@ -132,8 +155,34 @@ Helper functions for various unit types.
 
     typedef QList<QgsUnitTypes::RenderUnit> RenderUnitList;
 
+    static QString encodeUnitType( QgsUnitTypes::UnitType type );
+%Docstring
+Encodes a unit ``type`` to a string.
 
-    static DistanceUnitType unitType( QgsUnitTypes::DistanceUnit unit );
+:return: encoded string
+
+.. seealso:: :py:func:`decodeUnitType`
+
+.. versionadded:: 3.10
+%End
+
+    static QgsUnitTypes::UnitType decodeUnitType( const QString &string, bool *ok /Out/ = 0 );
+%Docstring
+Decodes a unit type from a ``string``.
+
+:param string: string to decode
+
+:return: - decoded unit type
+         - ok: boolean, will be set to ``True`` if string was converted successfully
+
+.. seealso:: :py:func:`encodeUnitType`
+
+.. versionadded:: 3.10
+%End
+
+
+
+    static QgsUnitTypes::DistanceUnitType unitType( QgsUnitTypes::DistanceUnit unit );
 %Docstring
 Returns the type for a distance unit.
 %End
@@ -204,7 +253,7 @@ Returns the conversion factor between the specified distance units.
 %End
 
 
-    static DistanceUnitType unitType( QgsUnitTypes::AreaUnit unit );
+    static QgsUnitTypes::DistanceUnitType unitType( QgsUnitTypes::AreaUnit unit );
 %Docstring
 Returns the type for an areal unit.
 %End
@@ -220,7 +269,7 @@ Encodes an areal unit to a string.
 .. seealso:: :py:func:`decodeAreaUnit`
 %End
 
-    static AreaUnit decodeAreaUnit( const QString &string, bool *ok /Out/ = 0 );
+    static QgsUnitTypes::AreaUnit decodeAreaUnit( const QString &string, bool *ok /Out/ = 0 );
 %Docstring
 Decodes an areal unit from a string.
 
@@ -252,7 +301,7 @@ Returns a translated abbreviation representing an areal unit.
 .. versionadded:: 3.0
 %End
 
-    static AreaUnit stringToAreaUnit( const QString &string, bool *ok /Out/ = 0 );
+    static QgsUnitTypes::AreaUnit stringToAreaUnit( const QString &string, bool *ok /Out/ = 0 );
 %Docstring
 Converts a translated string to an areal unit.
 
@@ -281,6 +330,116 @@ Converts a distance unit to its corresponding area unit, e.g., meters to square 
 :param distanceUnit: distance unit to convert
 
 :return: matching areal unit
+%End
+
+    static QgsUnitTypes::DistanceUnit areaToDistanceUnit( QgsUnitTypes::AreaUnit areaUnit );
+%Docstring
+Converts an area unit to its corresponding distance unit, e.g., square meters to meters
+
+:param areaUnit: area unit to convert
+
+:return: matching distance unit
+
+.. versionadded:: 3.10
+%End
+
+
+    static QgsUnitTypes::DistanceUnitType unitType( QgsUnitTypes::VolumeUnit unit );
+%Docstring
+Returns the type for an volume unit.
+
+.. versionadded:: 3.10
+%End
+
+    static QString encodeUnit( QgsUnitTypes::VolumeUnit unit );
+%Docstring
+Encodes a volume ``unit`` to a string.
+
+:return: encoded string
+
+.. seealso:: :py:func:`decodeVolumeUnit`
+
+.. versionadded:: 3.10
+%End
+
+    static QgsUnitTypes::VolumeUnit decodeVolumeUnit( const QString &string, bool *ok /Out/ = 0 );
+%Docstring
+Decodes a volume unit from a ``string``.
+
+:param string: string to decode
+
+:return: - decoded units
+         - ok: boolean, will be set to ``True`` if string was converted successfully
+
+.. seealso:: :py:func:`encodeUnit`
+
+.. versionadded:: 3.10
+%End
+
+    static QString toString( QgsUnitTypes::VolumeUnit unit );
+%Docstring
+Returns a translated string representing a volume ``unit``.
+
+.. seealso:: :py:func:`stringToVolumeUnit`
+
+.. versionadded:: 3.10
+%End
+
+    static QString toAbbreviatedString( QgsUnitTypes::VolumeUnit unit );
+%Docstring
+Returns a translated abbreviation representing a volume ``unit``.
+
+.. seealso:: :py:func:`stringToVolumeUnit`
+
+.. versionadded:: 3.10
+%End
+
+    static QgsUnitTypes::VolumeUnit stringToVolumeUnit( const QString &string, bool *ok /Out/ = 0 );
+%Docstring
+Converts a translated`` ``string to a volume unit.
+
+:param string: string representing a volume unit
+
+:return: - the volume unit
+         - ok: boolean, will be set to ``True`` if string was converted successfully
+
+.. seealso:: :py:func:`toString`
+
+.. versionadded:: 3.10
+%End
+
+    static double fromUnitToUnitFactor( QgsUnitTypes::VolumeUnit fromUnit, QgsUnitTypes::VolumeUnit toUnit );
+%Docstring
+Returns the conversion factor between the specified volume units.
+
+:param fromUnit: volume unit to convert from
+:param toUnit: volume unit to convert to
+
+:return: multiplication factor to convert between units
+
+.. versionadded:: 3.10
+%End
+
+    static QgsUnitTypes::VolumeUnit distanceToVolumeUnit( QgsUnitTypes::DistanceUnit distanceUnit );
+%Docstring
+Converts a distance unit to its corresponding volume unit, e.g., meters to cubic meters
+
+:param distanceUnit: distance unit to convert
+
+:return: matching volume unit
+
+.. versionadded:: 3.10
+%End
+
+    static QgsUnitTypes::DistanceUnit volumeToDistanceUnit( QgsUnitTypes::VolumeUnit volumeUnit );
+%Docstring
+Converts a volume unit to its corresponding distance unit, e.g., cubic meters to meters
+
+:param volumeUnit: volume unit to convert
+
+:return: matching distance unit
+
+.. versionadded:: 3.10
 %End
 
 

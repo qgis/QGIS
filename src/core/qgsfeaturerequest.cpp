@@ -273,7 +273,13 @@ bool QgsFeatureRequest::acceptFeature( const QgsFeature &feature )
 {
   if ( !mFilterRect.isNull() )
   {
-    if ( !feature.hasGeometry() || !feature.geometry().intersects( mFilterRect ) )
+    if ( !feature.hasGeometry() ||
+         (
+           ( mFlags & ExactIntersect && !feature.geometry().intersects( mFilterRect ) )
+           ||
+           ( !( mFlags & ExactIntersect ) && !feature.geometry().boundingBoxIntersects( mFilterRect ) )
+         )
+       )
       return false;
   }
 

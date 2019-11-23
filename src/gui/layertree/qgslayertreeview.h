@@ -88,6 +88,14 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     QgsMapLayer *currentLayer() const;
 
     /**
+     * Convenience methods which sets the visible state of the specified map \a layer.
+     *
+     * \see QgsLayerTreeNode::setItemVisibilityChecked()
+     * \since QGIS 3.10
+     */
+    void setLayerVisible( QgsMapLayer *layer, bool visible );
+
+    /**
      * Sets the currently selected \a layer.
      *
      * If \a layer is NULLPTR then all layers will be deselected.

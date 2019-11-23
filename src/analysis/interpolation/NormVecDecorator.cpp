@@ -254,7 +254,7 @@ bool NormVecDecorator::getTriangle( double x, double y, QgsPoint &p1, Vector3D *
     int nr2 = 0;
     int nr3 = 0;
 
-    if ( TriDecorator::getTriangle( x, y, p1, nr1, p2, nr2, p3, nr3 ) )//everything allright
+    if ( TriDecorator::getTriangle( x, y, p1, nr1, p2, nr2, p3, nr3 ) )//everything alright
     {
       if ( ( *mNormVec )[ nr1 ] && ( *mNormVec )[ nr2 ] && ( *mNormVec )[ nr3 ] )
       {
@@ -308,7 +308,7 @@ bool NormVecDecorator::getTriangle( double x, double y, QgsPoint &p1, int &ptn1,
 {
   if ( v1 && v2 && v3 && state1 && state2 && state3 )
   {
-    if ( TriDecorator::getTriangle( x, y, p1, ptn1, p2, ptn2, p3, ptn3 ) )//everything allright
+    if ( TriDecorator::getTriangle( x, y, p1, ptn1, p2, ptn2, p3, ptn3 ) )//everything alright
     {
       v1->setX( ( *mNormVec )[( ptn1 )]->getX() );
       v1->setY( ( *mNormVec )[( ptn1 )]->getY() );

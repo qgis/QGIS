@@ -1,0 +1,110 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsserverquerystringparameter.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+
+class QgsServerQueryStringParameter
+{
+%Docstring
+The QgsServerQueryStringParameter class holds the information regarding
+a query string input parameter and its validation.
+
+The class is extendable through custom validators (C++ only) and/or by
+subclassing and overriding the value() method.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsserverquerystringparameter.h"
+%End
+  public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+
+    enum class Type
+    {
+      String,
+      Integer,
+      Double,
+      Boolean,
+      List,
+    };
+
+
+    QgsServerQueryStringParameter( const QString name,
+                                   bool required = false,
+                                   Type type = QgsServerQueryStringParameter::Type::String,
+                                   const QString &description = QString(),
+                                   const QVariant &defaultValue = QVariant() );
+%Docstring
+Constructs a QgsServerQueryStringParameter object.
+
+:param name: parameter name
+:param required:
+:param type: the parameter type
+:param description: parameter description
+:param defaultValue: default value, it is ignored if the parameter is required
+%End
+
+    virtual ~QgsServerQueryStringParameter();
+
+    virtual QVariant value( const QgsServerApiContext &context ) const;
+%Docstring
+Extracts the value from the request ``context`` by validating the parameter
+value and converting it to its proper Type.
+If the value is not set and a default was not provided an invalid QVariant is returned.
+
+Validation steps:
+- required
+- can convert to proper Type
+- custom validator (if set - not available in Python bindings)
+
+.. seealso:: :py:func:`setCustomValidator`
+
+:return: the parameter value or an invalid QVariant if not found (and not required)
+
+:raises QgsServerApiBadRequestError: if validation fails
+%End
+
+
+    QString description() const;
+%Docstring
+Returns parameter description
+%End
+
+    static QString typeName( const Type type );
+%Docstring
+Returns the name of the ``type``
+%End
+
+    QString name() const;
+%Docstring
+Returns the name of the parameter
+%End
+
+    void setDescription( const QString &description );
+%Docstring
+Sets validator ``description``
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsserverquerystringparameter.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

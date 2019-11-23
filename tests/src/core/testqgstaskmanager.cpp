@@ -241,6 +241,29 @@ void flushEvents()
   }
 }
 
+class WaitTask : public QgsTask
+{
+  public:
+
+    WaitTask( const QString &desc = QString() ) : QgsTask( desc )
+    {
+      qDebug() << "created task " << desc;
+    }
+
+    ~WaitTask() override
+    {
+      qDebug() << "deleting task " << description();
+    }
+
+  protected:
+
+    bool run() override
+    {
+      QThread::sleep( 2 );
+      return true;
+    }
+};
+
 class TestQgsTaskManager : public QObject
 {
     Q_OBJECT
@@ -260,6 +283,7 @@ class TestQgsTaskManager : public QObject
     void taskTerminationBeforeDelete();
     void taskId();
     void waitForFinished();
+    void waitForFinishedBeforeStart();
     void progressChanged();
     void statusChanged();
     void allTasksFinished();
@@ -815,6 +839,40 @@ void TestQgsTaskManager::waitForFinished()
   flushEvents();
 }
 
+void TestQgsTaskManager::waitForFinishedBeforeStart()
+{
+  // backup max thread count and force it to 1 so there is only one slot in task manager queue
+  int maxThreadCount = QThreadPool::globalInstance()->maxThreadCount();
+  QThreadPool::globalInstance()->setMaxThreadCount( 1 );
+
+  QgsTaskManager manager;
+
+  // add a wait task so the test task is not started when we call waitforfinished
+  QPointer<QgsTask> waitTask = new WaitTask();
+  manager.addTask( waitTask );
+
+  QPointer<QgsTask> testTask = new TestTask();
+  manager.addTask( testTask );
+
+  testTask->waitForFinished();
+
+  QgsTask::TaskStatus status = testTask->status();
+
+  Q_ASSERT( status == QgsTask::Complete );
+
+  waitTask->waitForFinished();
+  Q_ASSERT( waitTask->status() == QgsTask::Complete );
+
+  // wait for task to be removed from active task
+  while ( manager.count() > 0 )
+  {
+    QCoreApplication::processEvents();
+  }
+
+  // restore max thread count (for other tests)
+  QThreadPool::globalInstance()->setMaxThreadCount( maxThreadCount );
+}
+
 void TestQgsTaskManager::progressChanged()
 {
   // check that progressChanged signals emitted by tasks result in progressChanged signal from manager
@@ -1213,7 +1271,7 @@ void TestQgsTaskManager::layerDependencies()
 
 void TestQgsTaskManager::managerWithSubTasks()
 {
-  if ( QgsTest::isTravis() )
+  if ( !QgsTest::runFlakyTests() )
     QSKIP( "This test is disabled on Travis CI environment" );
 
   // parent with subtasks
@@ -1369,6 +1427,11 @@ void TestQgsTaskManager::cancelBeforeStart()
   for ( QgsTask *t : qgis::as_const( tasks ) )
   {
     t->cancel();
+  }
+
+  for ( QgsTask *t : qgis::as_const( tasks ) )
+  {
+    t->waitForFinished();
   }
 
   while ( manager.countActiveTasks() > 1 )

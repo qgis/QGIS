@@ -26,6 +26,7 @@
 #include "qgsrastershader.h"
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgsvectorlayer.h"
+#include "qgsapplication.h"
 
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
@@ -41,9 +42,13 @@
 #include "qgsterrainentity_p.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "qgsmeshlayer3drenderer.h"
+#include "qgspoint3dsymbol.h"
+#include "qgssymbollayer.h"
+#include "qgsmarkersymbollayer.h"
 
 #include <QFileInfo>
 #include <QDir>
+#include <QDesktopWidget>
 
 class TestQgs3DRendering : public QObject
 {
@@ -60,6 +65,7 @@ class TestQgs3DRendering : public QObject
     void testMesh();
     void testRuleBasedRenderer();
     void testAnimationExport();
+    void testBillboardRendering();
 
   private:
     bool renderCheck( const QString &testName, QImage &image, int mismatchCount = 0 );
@@ -280,7 +286,6 @@ void TestQgs3DRendering::testExtrudedPolygons()
 
   QVERIFY( renderCheck( "polygon3d_extrusion", img, 40 ) );
 }
-
 
 void TestQgs3DRendering::testLineRendering()
 {
@@ -508,7 +513,73 @@ void TestQgs3DRendering::testAnimationExport()
                    nullptr );
 
   QVERIFY( success );
-  QVERIFY( QFileInfo( QDir( dir ).filePath( QStringLiteral( "test3danimation001.png" ) ) ).exists() );
+  QVERIFY( QFileInfo::exists( ( QDir( dir ).filePath( QStringLiteral( "test3danimation001.png" ) ) ) ) );
+}
+
+void TestQgs3DRendering::testBillboardRendering()
+{
+  QgsRectangle fullExtent( 0, 0, 1000, 1000 );
+
+  std::unique_ptr<QgsVectorLayer> layerPointsZ( new QgsVectorLayer( "PointZ?crs=EPSG:27700", "points Z", "memory" ) );
+
+  QgsPoint *p1 = new QgsPoint( 0, 0, 50 );
+  QgsPoint *p2 = new QgsPoint( 0, 1000, 100 );
+  QgsPoint *p3 = new QgsPoint( 1000, 1000, 200 );
+
+  QgsFeature f1( layerPointsZ->fields() );
+  QgsFeature f2( layerPointsZ->fields() );
+  QgsFeature f3( layerPointsZ->fields() );
+
+  f1.setGeometry( QgsGeometry( p1 ) );
+  f2.setGeometry( QgsGeometry( p2 ) );
+  f3.setGeometry( QgsGeometry( p3 ) );
+
+  QgsFeatureList featureList;
+  featureList << f1 << f2 << f3;
+  layerPointsZ->dataProvider()->addFeatures( featureList );
+
+  QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
+  markerSymbol->setColor( QColor( 255, 0, 0 ) );
+  markerSymbol->setSize( 4 );
+  QgsSimpleMarkerSymbolLayer *sl = static_cast<QgsSimpleMarkerSymbolLayer *>( markerSymbol->symbolLayer( 0 ) ) ;
+  sl->setStrokeColor( QColor( 0, 0, 255 ) );
+  sl->setStrokeWidth( 2 );
+  QgsPoint3DSymbol *point3DSymbol = new QgsPoint3DSymbol();
+  point3DSymbol->setBillboardSymbol( markerSymbol );
+  point3DSymbol->setShape( QgsPoint3DSymbol::Billboard );
+
+  layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( point3DSymbol ) );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  map->setLayers( QList<QgsMapLayer *>() << layerPointsZ.get() );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs() );
+  flatTerrain->setExtent( fullExtent );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  // look from the top
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 0, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QVERIFY( renderCheck( "billboard_rendering_1", img, 40 ) );
+
+  // more perspective look
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 45, 45 );
+
+  QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
+  QVERIFY( renderCheck( "billboard_rendering_2", img2, 40 ) );
 }
 
 QGSTEST_MAIN( TestQgs3DRendering )

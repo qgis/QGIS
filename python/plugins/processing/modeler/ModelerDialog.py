@@ -281,6 +281,7 @@ class ModelerDialog(BASE, WIDGET):
         self.toolbutton_export_to_script.setPopupMode(QToolButton.InstantPopup)
         self.export_to_script_algorithm_action = QAction(QCoreApplication.translate('ModelerDialog', 'Export as Script Algorithm…'))
         self.toolbutton_export_to_script.addActions([self.export_to_script_algorithm_action])
+        self.toolbutton_export_to_script.setDefaultAction(self.export_to_script_algorithm_action)
         self.mToolbar.insertWidget(self.mActionExportImage, self.toolbutton_export_to_script)
         self.export_to_script_algorithm_action.triggered.connect(self.export_as_script_algorithm)
 

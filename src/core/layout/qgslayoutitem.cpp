@@ -244,6 +244,44 @@ void QgsLayoutItem::setParentGroup( QgsLayoutItemGroup *group )
   setFlag( QGraphicsItem::ItemIsSelectable, !static_cast< bool>( group ) ); //item in groups cannot be selected
 }
 
+QgsLayoutItem::ExportLayerBehavior QgsLayoutItem::exportLayerBehavior() const
+{
+  return CanGroupWithAnyOtherItem;
+}
+
+int QgsLayoutItem::numberExportLayers() const
+{
+  return 0;
+}
+
+void QgsLayoutItem::startLayeredExport()
+{
+
+}
+
+void QgsLayoutItem::stopLayeredExport()
+{
+
+}
+
+bool QgsLayoutItem::nextExportPart()
+{
+  Q_NOWARN_DEPRECATED_PUSH
+  if ( !mLayout || mLayout->renderContext().currentExportLayer() == -1 )
+    return false;
+
+  // QGIS 4- return false from base class implementation
+
+  const int layers = numberExportLayers();
+  return mLayout->renderContext().currentExportLayer() < layers;
+  Q_NOWARN_DEPRECATED_POP
+}
+
+QgsLayoutItem::ExportLayerDetail QgsLayoutItem::exportLayerDetails() const
+{
+  return QgsLayoutItem::ExportLayerDetail();
+}
+
 void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget * )
 {
   if ( !painter || !painter->device() || !shouldDrawItem() )

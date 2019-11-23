@@ -49,6 +49,11 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
 
     // static stuff
 
+    /**
+     * Creates a new QgsSimpleFillSymbolLayer using the specified \a properties map containing symbol properties (see properties()).
+     *
+     * Caller takes ownership of the returned symbol layer.
+     */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
     static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
@@ -209,6 +214,11 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
 
     // static stuff
 
+    /**
+     * Creates a new QgsGradientFillSymbolLayer using the specified \a properties map containing symbol properties (see properties()).
+     *
+     * Caller takes ownership of the returned symbol layer.
+     */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
     // implemented from base classes
@@ -366,6 +376,11 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
     // static stuff
 
+    /**
+     * Creates a new QgsShapeburstFillSymbolLayer using the specified \a properties map containing symbol properties (see properties()).
+     *
+     * Caller takes ownership of the returned symbol layer.
+     */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
     // implemented from base classes
@@ -485,13 +500,15 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     ShapeburstColorType colorType() const { return mColorType; }
 
     /**
-     * Sets the color ramp used to draw the shapeburst fill. Color ramps are only used if setColorType is set ShapeburstColorType::ColorRamp.
-     * \param ramp color ramp to use for shapeburst fill
+     * Sets the color \a ramp used to draw the shapeburst fill. Color ramps are only used if setColorType is set ShapeburstColorType::ColorRamp.
+     *
+     * Ownership of \a ramp is transferred to the fill.
+     *
      * \see setColorType
      * \see colorRamp
      * \since QGIS 2.3
      */
-    void setColorRamp( QgsColorRamp *ramp );
+    void setColorRamp( QgsColorRamp *ramp SIP_TRANSFER );
 
     /**
      * Returns the color ramp used for the shapeburst fill. The color ramp is only used if the colorType is set to ShapeburstColorType::ColorRamp
@@ -616,7 +633,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     double *distanceTransform( QImage *im, QgsRenderContext &context );
 
     /* fills a QImage with values from an array of doubles containing squared distance transform values */
-    void dtArrayToQImage( double *array, QImage *im, QgsColorRamp *ramp, QgsRenderContext &context, double layerAlpha = 1, bool useWholeShape = true, int maxPixelDistance = 0 );
+    void dtArrayToQImage( double *array, QImage *im, QgsColorRamp *ramp, QgsRenderContext &context, bool useWholeShape = true, int maxPixelDistance = 0 );
 
 #ifdef SIP_RUN
     QgsShapeburstFillSymbolLayer( const QgsShapeburstFillSymbolLayer &other );
@@ -1450,6 +1467,11 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsPointPatternFillSymbolLayer();
     ~QgsPointPatternFillSymbolLayer() override;
 
+    /**
+     * Creates a new QgsPointPatternFillSymbolLayer using the specified \a properties map containing symbol properties (see properties()).
+     *
+     * Caller takes ownership of the returned symbol layer.
+     */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
     static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
@@ -1702,6 +1724,199 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
 /**
  * \ingroup core
+ * \class QgsRandomMarkerFillSymbolLayer
+ *
+ * A fill symbol layer which places markers at random locations within polygons.
+ *
+ * \since QGIS 3.12
+ */
+class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
+{
+  public:
+
+    //! Methods to define the number of points randomly filling the polygon
+    enum CountMethod
+    {
+      AbsoluteCount, //!< The point count is used as an absolute count of markers
+      DensityBasedCount, //!< The point count is part of a marker density count
+    };
+
+    /**
+     * Constructor for QgsRandomMarkerFillSymbolLayer, with the specified \a pointCount.
+     *
+     * Optionally a specific random number \a seed can be used when generating points. A \a seed of 0 indicates that
+     * a truly random sequence will be used on every rendering, causing points to appear in different locations with every map refresh.
+     */
+    QgsRandomMarkerFillSymbolLayer( int pointCount = 10, CountMethod method = AbsoluteCount, double densityArea = 250.0, unsigned long seed = 0 );
+
+    /**
+     * Creates a new QgsRandomMarkerFillSymbolLayer using the specified \a properties map containing symbol properties (see properties()).
+     *
+     * Caller takes ownership of the returned symbol layer.
+     */
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+
+    QString layerType() const override;
+    void startRender( QgsSymbolRenderContext &context ) override;
+    void stopRender( QgsSymbolRenderContext &context ) override;
+    void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
+    QgsStringMap properties() const override;
+    QgsRandomMarkerFillSymbolLayer *clone() const override SIP_FACTORY;
+
+    void setColor( const QColor &color ) override;
+    QColor color() const override;
+
+    QgsSymbol *subSymbol() override;
+    bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
+
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
+    QgsUnitTypes::RenderUnit outputUnit() const override;
+
+    void setMapUnitScale( const QgsMapUnitScale &scale ) override;
+    QgsMapUnitScale mapUnitScale() const override;
+
+    QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    bool hasDataDefinedProperties() const override;
+
+    /**
+     * Returns the count of random points to render in the fill.
+     *
+     * \see setPointCount()
+     */
+    int pointCount() const;
+
+    /**
+     * Sets the \a count of random points to render in the fill.
+     *
+     * \see pointCount()
+     */
+    void setPointCount( int count );
+
+    /**
+     * Returns the random number seed to use when generating points, or 0 if
+     * a truly random sequence will be used (causing points to appear in different locations with every map refresh).
+     * \see setSeed()
+     */
+    unsigned long seed() const;
+
+    /**
+     * Sets the random number \a seed to use when generating points, or 0 if
+     * a truly random sequence will be used on every rendering (causing points to appear
+     * in different locations with every map refresh).
+     *
+     * \see seed()
+     */
+    void setSeed( unsigned long seed );
+
+    /**
+     * Returns TRUE if point markers should be clipped to the polygon boundary.
+     *
+     * \see setClipPoints()
+     */
+    bool clipPoints() const;
+
+    /**
+     * Sets whether point markers should be \a clipped to the polygon boundary.
+     *
+     * \see clipPoints()
+     */
+    void setClipPoints( bool clipped );
+
+    /**
+     * Returns the count method used to randomly fill the polygon.
+     *
+     * \see setCountMethod()
+     */
+    CountMethod countMethod() const;
+
+    /**
+     * Sets the count \a method used to randomly fill the polygon.
+     *
+     * \see countMethod()
+     */
+    void setCountMethod( CountMethod method );
+
+    /**
+     * Returns the density area used to count the number of points to randomly fill the polygon.
+     *
+     * Only used when the count method is set to QgsRandomMarkerFillSymbolLayer::DensityBasedCount.
+     *
+     * Units are specified by setDensityAreaUnit().
+     *
+     * \see setDensityArea()
+     */
+    double densityArea() const;
+
+    /**
+     * Sets the density \a area used to count the number of points to randomly fill the polygon.
+     *
+     * \see densityArea()
+     */
+    void setDensityArea( double area );
+
+    /**
+     * Sets the units for the density area.
+     * \param unit width units
+     * \see densityAreaUnit()
+    */
+    void setDensityAreaUnit( QgsUnitTypes::RenderUnit unit ) { mDensityAreaUnit = unit; }
+
+    /**
+     * Returns the units for the density area.
+     * \see setDensityAreaUnit()
+    */
+    QgsUnitTypes::RenderUnit densityAreaUnit() const { return mDensityAreaUnit; }
+
+    /**
+     * Sets the map scale for the density area.
+     * \param scale density area map unit scale
+     * \see densityAreaUnitScale()
+     * \see setDensityArea()
+     * \see setDensityAreaUnit()
+     */
+    void setDensityAreaUnitScale( const QgsMapUnitScale &scale ) { mDensityAreaUnitScale = scale; }
+
+    /**
+     * Returns the map scale for the density area.
+     * \see setDensityAreaUnitScale()
+     * \see densityArea()
+     * \see densityAreaUnit()
+     */
+    const QgsMapUnitScale &densityAreaUnitScale() const { return mDensityAreaUnitScale; }
+
+    void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
+    void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
+
+  private:
+#ifdef SIP_RUN
+    QgsRandomMarkerFillSymbolLayer( const QgsRandomMarkerFillSymbolLayer &other );
+#endif
+
+    struct Part
+    {
+      QPolygonF exterior;
+      QList<QPolygonF> rings;
+    };
+
+    QVector< Part > mCurrentParts;
+
+    void render( QgsRenderContext &context, const QVector< Part > &parts, const QgsFeature &feature, bool selected );
+
+    std::unique_ptr< QgsMarkerSymbol > mMarker;
+    CountMethod mCountMethod = AbsoluteCount;
+    int mPointCount = 10;
+    double mDensityArea = 250.0;
+    QgsUnitTypes::RenderUnit mDensityAreaUnit = QgsUnitTypes::RenderMillimeters;
+    QgsMapUnitScale mDensityAreaUnitScale;
+    unsigned long mSeed = 0;
+    bool mClipPoints = false;
+
+    bool mRenderingFeature = false;
+};
+
+
+/**
+ * \ingroup core
  * \class QgsCentroidFillSymbolLayer
  */
 class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
@@ -1711,6 +1926,11 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
 
     // static stuff
 
+    /**
+     * Creates a new QgsCentroidFillSymbolLayer using the specified \a properties map containing symbol properties (see properties()).
+     *
+     * Caller takes ownership of the returned symbol layer.
+     */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
     static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 

@@ -366,10 +366,22 @@ QgsDiagramLayerSettings stores settings which control how ALL diagrams within a 
       Right
     };
 
+    enum Direction
+    {
+      Clockwise,
+      Counterclockwise,
+    };
+
     QgsDiagramSettings();
 %Docstring
 Constructor for QgsDiagramSettings
 %End
+
+    QgsDiagramSettings( const QgsDiagramSettings &other );
+%Docstring
+Copy constructor
+%End
+
 
     bool enabled;
     QFont font;
@@ -407,11 +419,111 @@ Constructor for QgsDiagramSettings
 
     double minimumSize;
 
-    void readXml( const QDomElement &elem );
+    double spacing() const;
+%Docstring
+Returns the spacing between diagram contents.
+
+Spacing units can be retrieved by calling spacingUnit().
+
+.. seealso:: :py:func:`setSpacing`
+
+.. seealso:: :py:func:`spacingUnit`
+
+.. seealso:: :py:func:`spacingMapUnitScale`
+
+.. versionadded:: 3.12
+%End
+
+    void setSpacing( double spacing );
+%Docstring
+Sets the ``spacing`` between diagram contents.
+
+Spacing units are set via setSpacingUnit().
+
+.. seealso:: :py:func:`spacing`
+
+.. seealso:: :py:func:`setSpacingUnit`
+
+.. seealso:: :py:func:`setSpacingMapUnitScale`
+
+.. versionadded:: 3.12
+%End
+
+    void setSpacingUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the content spacing.
+
+.. seealso:: :py:func:`spacingUnit`
+
+.. seealso:: :py:func:`setSpacing`
+
+.. seealso:: :py:func:`setSpacingMapUnitScale`
+
+.. versionadded:: 3.12
+%End
+
+    QgsUnitTypes::RenderUnit spacingUnit() const;
+%Docstring
+Returns the units for the content spacing.
+
+.. seealso:: :py:func:`setSpacingUnit`
+
+.. seealso:: :py:func:`spacing`
+
+.. seealso:: :py:func:`spacingMapUnitScale`
+
+.. versionadded:: 3.12
+%End
+
+    void setSpacingMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the content spacing.
+
+.. seealso:: :py:func:`spacingMapUnitScale`
+
+.. seealso:: :py:func:`setSpacing`
+
+.. seealso:: :py:func:`setSpacingUnit`
+
+.. versionadded:: 3.12
+%End
+
+    const QgsMapUnitScale &spacingMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the content spacing.
+
+.. seealso:: :py:func:`setSpacingMapUnitScale`
+
+.. seealso:: :py:func:`spacing`
+
+.. seealso:: :py:func:`spacingUnit`
+
+.. versionadded:: 3.12
+%End
+
+    Direction direction() const;
+%Docstring
+Returns the chart's angular direction.
+
+.. seealso:: :py:func:`setDirection`
+
+.. versionadded:: 3.12
+%End
+
+    void setDirection( Direction direction );
+%Docstring
+Sets the chart's angular ``direction``.
+
+.. seealso:: :py:func:`direction`
+
+.. versionadded:: 3.12
+%End
+
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() );
 %Docstring
 Reads diagram settings from XML
 %End
-    void writeXml( QDomElement &rendererElem, QDomDocument &doc ) const;
+    void writeXml( QDomElement &rendererElem, QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
 %Docstring
 Writes diagram settings to XML
 %End
@@ -425,6 +537,52 @@ Returns list of legend nodes for the diagram
    caller is responsible for deletion of :py:class:`QgsLayerTreeModelLegendNodes`
 
 .. versionadded:: 2.10
+%End
+
+    QgsLineSymbol *axisLineSymbol() const;
+%Docstring
+Returns the line symbol to use for rendering axis in diagrams.
+
+.. seealso:: :py:func:`setAxisLineSymbol`
+
+.. seealso:: :py:func:`showAxis`
+
+.. versionadded:: 3.12
+%End
+
+    void setAxisLineSymbol( QgsLineSymbol *symbol /Transfer/ );
+%Docstring
+Sets the line ``symbol`` to use for rendering axis in diagrams.
+
+Ownership of ``symbol`` is transferred to the settings.
+
+.. seealso:: :py:func:`axisLineSymbol`
+
+.. seealso:: :py:func:`setShowAxis`
+
+.. versionadded:: 3.12
+%End
+
+    bool showAxis() const;
+%Docstring
+Returns ``True`` if the diagram axis should be shown.
+
+.. seealso:: :py:func:`setShowAxis`
+
+.. seealso:: :py:func:`axisLineSymbol`
+
+.. versionadded:: 3.12
+%End
+
+    void setShowAxis( bool showAxis );
+%Docstring
+Sets whether the diagram axis should be shown.
+
+.. seealso:: :py:func:`showAxis`
+
+.. seealso:: :py:func:`setAxisLineSymbol`
+
+.. versionadded:: 3.12
 %End
 
 };

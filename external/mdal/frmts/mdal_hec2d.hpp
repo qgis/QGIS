@@ -26,6 +26,14 @@ namespace MDAL
    * There is a small change in the format in HEC-RAS 5.0.5+, where
    *    - Header File Type is different (HEC-RAS Results vs HEC-RAS Geometry)
    *    - Names or areas are stored in different place (names array vs attributes array)
+   *
+   * Time data unit should be present in Time dataset and Time or Variable attribute for given dataset root,
+   * Since MDAL API is reporting times in float hours, the original values need to be corrected
+   * based on value found in the Time attribute.
+   *
+   * All reference times can be found in Time Data Stamp dataset.
+   * First value in the dataset is reported by MDAL as reference time
+   *
    */
   class DriverHec2D: public Driver
   {
@@ -56,7 +64,8 @@ namespace MDAL
                            const std::vector<std::string> &flowAreaNames,
                            const std::string rawDatasetName,
                            const std::string datasetName,
-                           const std::vector<float> &times );
+                           const std::vector<float> &times,
+                           const std::string &referenceTime );
 
       void readFaceResults( const HdfFile &hdfFile,
                             const std::vector<size_t> &areaElemStartIndex,
@@ -69,7 +78,8 @@ namespace MDAL
         const std::string rawDatasetName,
         const std::string datasetName,
         const std::vector<float> &times,
-        std::shared_ptr<MDAL::MemoryDataset> bed_elevation );
+        std::shared_ptr<MDAL::MemoryDataset> bed_elevation,
+        const std::string &referenceTime );
 
       std::shared_ptr<MDAL::MemoryDataset> readBedElevation(
         const HdfGroup &gGeom2DFlowAreas,

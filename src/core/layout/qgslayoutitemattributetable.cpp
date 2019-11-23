@@ -225,6 +225,19 @@ void QgsLayoutItemAttributeTable::resetColumns()
   }
 }
 
+void QgsLayoutItemAttributeTable::disconnectCurrentMap()
+{
+  if ( !mMap )
+  {
+    return;
+  }
+
+  disconnect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutTable::refreshAttributes );
+  disconnect( mMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutTable::refreshAttributes );
+  disconnect( mMap, &QObject::destroyed, this, &QgsLayoutItemAttributeTable::disconnectCurrentMap );
+  mMap = nullptr;
+}
+
 void QgsLayoutItemAttributeTable::setMap( QgsLayoutItemMap *map )
 {
   if ( map == mMap )
@@ -232,19 +245,15 @@ void QgsLayoutItemAttributeTable::setMap( QgsLayoutItemMap *map )
     //no change
     return;
   }
+  disconnectCurrentMap();
 
-  if ( mMap )
-  {
-    //disconnect from previous map
-    disconnect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutTable::refreshAttributes );
-    disconnect( mMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutTable::refreshAttributes );
-  }
   mMap = map;
   if ( mMap )
   {
     //listen out for extent changes in linked map
     connect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutTable::refreshAttributes );
     connect( mMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutTable::refreshAttributes );
+    connect( mMap, &QObject::destroyed, this, &QgsLayoutItemAttributeTable::disconnectCurrentMap );
   }
   refreshAttributes();
   emit changed();

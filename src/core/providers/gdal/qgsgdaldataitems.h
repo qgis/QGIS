@@ -25,6 +25,7 @@
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
+Q_NOWARN_DEPRECATED_PUSH  // setCrs is deprecated
 class CORE_EXPORT QgsGdalLayerItem : public QgsLayerItem
 {
     Q_OBJECT
@@ -44,6 +45,7 @@ class CORE_EXPORT QgsGdalLayerItem : public QgsLayerItem
 
     QString layerName() const override;
 };
+Q_NOWARN_DEPRECATED_POP
 
 //! Provider for GDAL root data item
 class QgsGdalDataItemProvider : public QgsDataItemProvider

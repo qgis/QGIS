@@ -120,6 +120,16 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex SIP_OUT, QgsVertexId &nextVertex SIP_OUT ) const override;
     int vertexNumberFromVertexId( QgsVertexId id ) const override;
 
+    /**
+     * Attempts to allocate memory for at least \a size geometries.
+     *
+     * If the number of geometries is known in advance, calling this function prior to adding geometries will prevent
+     * reallocations and memory fragmentation.
+     *
+     * \since QGIS 3.10
+     */
+    void reserve( int size );
+
     //! Adds a geometry and takes ownership. Returns TRUE in case of success.
     virtual bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER );
 

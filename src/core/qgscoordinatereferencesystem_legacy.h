@@ -19,6 +19,7 @@
 #include <QMap>
 #include <QString>
 
+#if PROJ_VERSION_MAJOR>=6
 // maps QGIS custom db srs ids to proj auth/codes
 const QMap< QString, QString > sAuthIdToQgisSrsIdMap
 {
@@ -6782,3 +6783,4 @@ const QMap< QString, QString > sAuthIdToQgisSrsIdMap
   {"EPSG:8320", "29667,8320"},
   {"EPSG:8321", "29668,8321"}
 };
+#endif // PROJ_VERSION_MAJOR>=6

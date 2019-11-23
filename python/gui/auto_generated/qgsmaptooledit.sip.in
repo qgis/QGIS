@@ -61,13 +61,28 @@ returned object
 Returns the current vector layer of the map canvas or 0
 %End
 
-    int addTopologicalPoints( const QVector<QgsPointXY> &geom );
+    enum TopologicalResult
+    {
+      Success,
+      InvalidCanvas,
+      InvalidLayer,
+    };
+
+ TopologicalResult addTopologicalPoints( const QVector<QgsPointXY> &vertices )  /Deprecated/;
 %Docstring
-Adds vertices to other features to keep topology up to date, e.g. to neighbouring polygons.
+Adds a list of ``vertices`` to other features to keep topology up to date, e.g. to neighbouring polygons.
+The ``vertices`` list specifies a set of topological points to add, in the layer's coordinate reference system.
 
-:param geom: list of points (in layer coordinate system)
+.. deprecated:: QGIS 3.12
+   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+%End
 
-:return: 0 in case of success
+    TopologicalResult addTopologicalPoints( const QVector<QgsPoint> &vertices );
+%Docstring
+Adds a list of ``vertices`` to other features to keep topology up to date, e.g. to neighbouring polygons.
+The ``vertices`` list specifies a set of topological points to add, in the layer's coordinate reference system.
+
+.. versionadded:: 3.10
 %End
 
     void notifyNotVectorLayer();

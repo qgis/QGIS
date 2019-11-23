@@ -72,7 +72,24 @@
       <string notr="true">rastertransp</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_11">
-      <item row="0" column="0">
+      <item row="2" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Display no data as</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="lblUserNoDataValueLabel">
+        <property name="toolTip">
+         <string>Additional user defined no data value.</string>
+        </property>
+        <property name="text">
+         <string>Additional no data value</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_5">
         <property name="leftMargin">
          <number>1</number>
@@ -105,26 +122,37 @@
         </item>
        </layout>
       </item>
-      <item row="1" column="0">
-       <layout class="QHBoxLayout" name="horizontalLayout_6">
-        <item>
-         <widget class="QLabel" name="lblUserNoDataValueLabel">
-          <property name="toolTip">
-           <string>Additional user defined no data value.</string>
-          </property>
-          <property name="text">
-           <string>Additional no data value</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="leNoDataValue">
-          <property name="toolTip">
-           <string>Additional user defined no data value.</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="leNoDataValue">
+        <property name="toolTip">
+         <string>Additional user defined no data value.</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QgsColorButton" name="mNodataColorButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -150,42 +178,6 @@
       <property name="leftMargin">
        <number>3</number>
       </property>
-      <item row="0" column="0">
-       <layout class="QHBoxLayout" name="horizontalLayout_7">
-        <item>
-         <widget class="QLabel" name="lblTransparent">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>Transparency band</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QgsRasterBandComboBox" name="cboxTransparencyBand">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>150</width>
-            <height>0</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_6">
         <property name="text">
@@ -337,6 +329,42 @@
         </item>
        </layout>
       </item>
+      <item row="0" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_7">
+        <item>
+         <widget class="QLabel" name="lblTransparent">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Transparency band</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QgsRasterBandComboBox" name="cboxTransparencyBand">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>150</width>
+            <height>0</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
      </layout>
     </widget>
    </item>
@@ -355,6 +383,12 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsOpacityWidget</class>
    <extends>QWidget</extends>
    <header>qgsopacitywidget.h</header>
@@ -365,6 +399,7 @@
   <tabstop>mOpacityWidget</tabstop>
   <tabstop>mSrcNoDataValueCheckBox</tabstop>
   <tabstop>leNoDataValue</tabstop>
+  <tabstop>mNodataColorButton</tabstop>
   <tabstop>cboxTransparencyBand</tabstop>
   <tabstop>pbnExportTransparentPixelValues</tabstop>
   <tabstop>pbnImportTransparentPixelValues</tabstop>

@@ -21,6 +21,7 @@
 
 #include "qgis_server.h"
 #include "qgis_sip.h"
+#include "qgsserverexception.h"
 
 #include <QString>
 #include <QIODevice>
@@ -138,6 +139,17 @@ class SERVER_EXPORT QgsServerResponse
     virtual qint64 write( const char *data ) SIP_SKIP;
 
     /**
+     * Writes at most maxSize bytes of data
+     *
+     * This is a convenient method that will write directly
+     * to the underlying I/O device
+     * \returns the number of bytes written
+     * \note not available in Python bindings
+     * \since QGIS 3.10
+     */
+    virtual qint64 write( std::string data ) SIP_SKIP;
+
+    /**
      * Write server exception
      */
     virtual void write( const QgsServerException &ex );
@@ -148,17 +160,18 @@ class SERVER_EXPORT QgsServerResponse
     virtual QIODevice *io() = 0;
 
     /**
-     * Finish the response,  ending the transaction
+     * Finish the response, ending the transaction. The default implementation does nothing.
      */
-    virtual void finish() = 0;
+    virtual void finish() SIP_THROW( QgsServerException ) SIP_VIRTUALERRORHANDLER( server_exception_handler );
 
     /**
      * Flushes the current output buffer to the network
      *
      * 'flush()' may be called multiple times. For HTTP transactions
      * headers will be written on the first call to 'flush()'.
+     * The default implementation does nothing.
      */
-    virtual void flush() = 0;
+    virtual void flush() SIP_THROW( QgsServerException ) SIP_VIRTUALERRORHANDLER( server_exception_handler );
 
     /**
      * Reset all headers and content for this response

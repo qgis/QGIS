@@ -50,7 +50,7 @@ bool QgsWfsCapabilities::requestCapabilities( bool synchronous, bool forceRefres
   else
     url.addQueryItem( QStringLiteral( "VERSION" ), version );
 
-  if ( !sendGET( url, synchronous, forceRefresh ) )
+  if ( !sendGET( url, QString(), synchronous, forceRefresh ) )
   {
     emit gotCapabilities();
     return false;
@@ -145,6 +145,11 @@ class CPLXMLTreeUniquePointer
 
 void QgsWfsCapabilities::capabilitiesReplyFinished()
 {
+  if ( mErrorCode != QgsBaseNetworkRequest::NoError )
+  {
+    emit gotCapabilities();
+    return;
+  }
   const QByteArray &buffer = mResponse;
 
   QgsDebugMsgLevel( QStringLiteral( "parsing capabilities: " ) + buffer, 4 );
@@ -154,7 +159,8 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
   QDomDocument capabilitiesDocument;
   if ( !capabilitiesDocument.setContent( buffer, true, &capabilitiesDocError ) )
   {
-    mErrorCode = QgsWfsRequest::XmlError;
+    mErrorCode = QgsWfsRequest::ApplicationLevelError;
+    mAppLevelError = ApplicationLevelError::XmlError;
     mErrorMessage = capabilitiesDocError;
     emit gotCapabilities();
     return;
@@ -184,17 +190,18 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
        !mCaps.version.startsWith( QLatin1String( "1.1" ) ) &&
        !mCaps.version.startsWith( QLatin1String( "2.0" ) ) )
   {
-    mErrorCode = WFSVersionNotSupported;
+    mErrorCode = QgsWfsRequest::ApplicationLevelError;
+    mAppLevelError = ApplicationLevelError::VersionNotSupported;
     mErrorMessage = tr( "WFS version %1 not supported" ).arg( mCaps.version );
     emit gotCapabilities();
     return;
   }
 
   // WFS 2.0 implementation are supposed to implement resultType=hits, and some
-  // implementations (GeoServer) might advertize it, whereas others (MapServer) do not.
+  // implementations (GeoServer) might advertise it, whereas others (MapServer) do not.
   // WFS 1.1 implementation too I think, but in the examples of the GetCapabilities
   // response of the WFS 1.1 standard (and in common implementations), this is
-  // explicitly advertized
+  // explicitly advertised
   if ( mCaps.version.startsWith( QLatin1String( "2.0" ) ) )
     mCaps.supportsHits = true;
 
@@ -467,7 +474,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
     if ( defaultCRSList.length() > 0 )
     {
       QString srsname( defaultCRSList.at( 0 ).toElement().text() );
-      // Some servers like Geomedia advertize EPSG:XXXX even in WFS 1.1 or 2.0
+      // Some servers like Geomedia advertise EPSG:XXXX even in WFS 1.1 or 2.0
       if ( srsname.startsWith( QLatin1String( "EPSG:" ) ) )
         mCaps.useEPSGColumnFormat = true;
       featureType.crslist.append( NormalizeSRSName( srsname ) );
@@ -702,7 +709,7 @@ void QgsWfsCapabilities::parseSupportedOperations( const QDomElement &operations
 static QgsWfsCapabilities::Function getSpatialPredicate( const QString &name )
 {
   QgsWfsCapabilities::Function f;
-  // WFS 1.0 advertize Intersect, but for conveniency we internally convert it to Intersects
+  // WFS 1.0 advertise Intersect, but for conveniency we internally convert it to Intersects
   if ( name == QLatin1String( "Intersect" ) )
     f.name = QStringLiteral( "ST_Intersects" );
   else

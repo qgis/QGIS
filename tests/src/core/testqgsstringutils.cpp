@@ -39,6 +39,7 @@ class TestQgsStringUtils : public QObject
     void camelCase();
     void ampersandEncode_data();
     void ampersandEncode();
+    void htmlToMarkdown();
     void wordWrap_data();
     void wordWrap();
 
@@ -198,6 +199,12 @@ void TestQgsStringUtils::camelCase()
   QCOMPARE( QgsStringUtils::capitalize( QString( "ABC DEF" ), QgsStringUtils::UpperCamelCase ), QString( "AbcDef" ) );
   QCOMPARE( QgsStringUtils::capitalize( QString( "àbc def" ), QgsStringUtils::UpperCamelCase ), QString( "ÀbcDef" ) );
   QCOMPARE( QgsStringUtils::capitalize( QString( "àbc dÉf" ), QgsStringUtils::UpperCamelCase ), QString( "ÀbcDéf" ) );
+}
+
+void TestQgsStringUtils::htmlToMarkdown()
+{
+  QCOMPARE( QgsStringUtils::htmlToMarkdown( QString( "<b>Visit</b> <a href=\"http://qgis.org\">!</a>" ) ), QString( "**Visit** [!](http://qgis.org)" ) );
+  QCOMPARE( QgsStringUtils::htmlToMarkdown( QString( "<b>Visit</b><br><a href='http://qgis.org'>QGIS</a>" ) ), QString( "**Visit**\n[QGIS](http://qgis.org)" ) );
 }
 
 void TestQgsStringUtils::ampersandEncode_data()

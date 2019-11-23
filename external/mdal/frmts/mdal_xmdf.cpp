@@ -247,7 +247,8 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverXmdf::readXmdfGroupAsDatasetGrou
   bool isVector = dimValues.size() == 3;
 
   std::vector<double> times = dsTimes.readArrayDouble();
-
+  std::string timeUnit = rootGroup.attribute( "TimeUnits" ).readString();
+  convertTimeDataToHours( times, timeUnit );
   // all fine, set group and return
   group = std::make_shared<MDAL::DatasetGroup>(
             name(),
@@ -257,6 +258,7 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverXmdf::readXmdfGroupAsDatasetGrou
           );
   group->setIsScalar( !isVector );
   group->setIsOnVertices( true );
+  group->setMetadata( "TIMEUNITS", timeUnit );
 
   // lazy loading of min and max of the dataset group
   std::vector<float> mins = dsMins.readArray();
@@ -278,4 +280,17 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverXmdf::readXmdfGroupAsDatasetGrou
   }
 
   return group;
+}
+
+void MDAL::DriverXmdf::convertTimeDataToHours( std::vector<double> &times, const std::string &originalTimeDataUnit )
+{
+  if ( originalTimeDataUnit != "Hours" )
+  {
+    for ( size_t i = 0; i < times.size(); i++ )
+    {
+      if ( originalTimeDataUnit == "Seconds" ) { times[i] /= 3600.0; }
+      else if ( originalTimeDataUnit == "Minutes" ) { times[i] /= 60.0; }
+      else if ( originalTimeDataUnit == "Days" ) { times[i] *= 24; }
+    }
+  }
 }

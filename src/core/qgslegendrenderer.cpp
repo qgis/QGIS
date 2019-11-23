@@ -130,7 +130,13 @@ QSizeF QgsLegendRenderer::paintAndDetermineSizeInternal( QgsRenderContext *conte
   if ( !rootGroup )
     return size;
 
-  QList<LegendComponentGroup> componentGroups = createComponentGroupList( rootGroup, mSettings.splitLayer() );
+  // temporarily remove painter from context -- we don't need to actually draw anything yet. But we DO need
+  // to send the full render context so that an expression context is available during the size calculation
+  QPainter *prevPainter = context ? context->painter() : nullptr;
+  if ( context )
+    context->setPainter( nullptr );
+
+  QList<LegendComponentGroup> componentGroups = createComponentGroupList( rootGroup, mSettings.splitLayer(), context );
 
   setColumns( componentGroups );
 
@@ -143,11 +149,6 @@ QSizeF QgsLegendRenderer::paintAndDetermineSizeInternal( QgsRenderContext *conte
   // until now. BUUUUUUUUUUUUT. Because everything sucks, we can't even start the actual render of items
   // at the same time we calculate this -- legend items REQUIRE the REAL width of the columns in order to
   // correctly align right or center-aligned symbols/text. Bah -- A triple iteration it is!
-  // temporarily remove painter from context -- we don't need to actually draw anything yet. But we DO need
-  // to send the full render context so that an expression context is available during the size calculation
-  QPainter *prevPainter = context ? context->painter() : nullptr;
-  if ( context )
-    context->setPainter( nullptr );
   for ( const LegendComponentGroup &group : qgis::as_const( componentGroups ) )
   {
     const QSizeF actualSize = drawGroup( group, context, ColumnContext() );
@@ -255,7 +256,7 @@ void QgsLegendRenderer::widthAndOffsetForTitleText( const Qt::AlignmentFlag hali
   }
 }
 
-QList<QgsLegendRenderer::LegendComponentGroup> QgsLegendRenderer::createComponentGroupList( QgsLayerTreeGroup *parentGroup, bool splitLayer )
+QList<QgsLegendRenderer::LegendComponentGroup> QgsLegendRenderer::createComponentGroupList( QgsLayerTreeGroup *parentGroup, bool splitLayer, QgsRenderContext *context )
 {
   QList<LegendComponentGroup> componentGroups;
 
@@ -270,7 +271,7 @@ QList<QgsLegendRenderer::LegendComponentGroup> QgsLegendRenderer::createComponen
       QgsLayerTreeGroup *nodeGroup = QgsLayerTree::toGroup( node );
 
       // Group subitems
-      QList<LegendComponentGroup> subgroups = createComponentGroupList( nodeGroup, splitLayer );
+      QList<LegendComponentGroup> subgroups = createComponentGroupList( nodeGroup, splitLayer, context );
       bool hasSubItems = !subgroups.empty();
 
       if ( nodeLegendStyle( nodeGroup ) != QgsLegendStyle::Hidden )
@@ -337,7 +338,7 @@ QList<QgsLegendRenderer::LegendComponentGroup> QgsLegendRenderer::createComponen
       {
         QgsLayerTreeModelLegendNode *legendNode = legendNodes.at( j );
 
-        LegendComponent symbolComponent = drawSymbolItem( legendNode );
+        LegendComponent symbolComponent = drawSymbolItem( legendNode, context, ColumnContext(), 0 );
 
         if ( !mSettings.splitLayer() || j == 0 )
         {

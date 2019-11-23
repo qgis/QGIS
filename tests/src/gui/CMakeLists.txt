@@ -25,11 +25,13 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/classification
   ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
   ${CMAKE_SOURCE_DIR}/src/test
   ${CMAKE_SOURCE_DIR}/src/native
   ${CMAKE_SOURCE_DIR}/external
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
 
   ${CMAKE_BINARY_DIR}/src/analysis
   ${CMAKE_BINARY_DIR}/src/core
@@ -87,7 +89,6 @@ MACRO (ADD_QGIS_TEST testname testsrc)
   SET(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
   SET(qgis_${testname}_MOC_CPPS ${testsrc})
   ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS})
-  SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES AUTOMOC TRUE)
   SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES AUTORCC TRUE)
   TARGET_LINK_LIBRARIES(qgis_${testname}
     ${Qt5Xml_LIBRARIES}
@@ -127,6 +128,7 @@ ADD_QGIS_TEST(datumtransformdialog testqgsdatumtransformdialog.cpp)
 ADD_QGIS_TEST(doublespinbox testqgsdoublespinbox.cpp)
 ADD_QGIS_TEST(dualviewtest testqgsdualview.cpp)
 ADD_QGIS_TEST(attributeformtest testqgsattributeform.cpp)
+ADD_QGIS_TEST(datetimedittest testqgsdatetimeedit.cpp)
 ADD_QGIS_TEST(dockwidget testqgsdockwidget.cpp)
 ADD_QGIS_TEST(fieldexpressionwidget testqgsfieldexpressionwidget.cpp)
 ADD_QGIS_TEST(filewidget testqgsfilewidget.cpp)

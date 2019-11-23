@@ -87,8 +87,6 @@ struct sqlstatement_parser_context
 %lex-param {void * scanner}
 %parse-param {sqlstatement_parser_context* parser_ctx}
 
-%name-prefix "sqlstatement_"
-
 %union
 {
   QgsSQLStatement::Node* node;
@@ -164,7 +162,7 @@ struct sqlstatement_parser_context
 %type <boolVal> select_type;
 
 // debugging
-%error-verbose
+%define parse.error verbose
 
 //
 // operator precedence
@@ -376,7 +374,7 @@ selected_column:
             delete $1;
             QgsSQLStatement::NodeList* nodeList = new QgsSQLStatement::NodeList();
             nodeList->append( new QgsSQLStatement::NodeColumnRef("*", true) );
-            $$ = new QgsSQLStatement::NodeSelectedColumn( 
+            $$ = new QgsSQLStatement::NodeSelectedColumn(
                     new QgsSQLStatement::NodeFunction( "COUNT", nodeList) );
         }
 
@@ -393,7 +391,7 @@ selected_column:
             delete $1;
             QgsSQLStatement::NodeList* nodeList = new QgsSQLStatement::NodeList();
             nodeList->append( new QgsSQLStatement::NodeColumnRef("*", true) );
-            $$ = new QgsSQLStatement::NodeSelectedColumn( 
+            $$ = new QgsSQLStatement::NodeSelectedColumn(
                     new QgsSQLStatement::NodeFunction( "COUNT", nodeList) );
             $$->setAlias(*$5);
             delete $5;
@@ -414,7 +412,7 @@ selected_column:
             QgsSQLStatement::NodeList* nodeList = new QgsSQLStatement::NodeList();
             $4->setDistinct();
             nodeList->append( $4 );
-            $$ = new QgsSQLStatement::NodeSelectedColumn( 
+            $$ = new QgsSQLStatement::NodeSelectedColumn(
                     new QgsSQLStatement::NodeFunction( "COUNT", nodeList) );
         }
 
@@ -434,7 +432,7 @@ selected_column:
             QgsSQLStatement::NodeList* nodeList = new QgsSQLStatement::NodeList();
             $4->setDistinct();
             nodeList->append( $4 );
-            $$ = new QgsSQLStatement::NodeSelectedColumn( 
+            $$ = new QgsSQLStatement::NodeSelectedColumn(
                     new QgsSQLStatement::NodeFunction( "COUNT", nodeList) );
             $$->setAlias(*$6);
             delete $6;

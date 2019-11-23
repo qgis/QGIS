@@ -78,8 +78,9 @@ class QgsDxfRuleBasedLabelProvider : public QgsRuleBasedLabelProvider
     /**
      * Reinitialize the subproviders with QgsDxfLabelProviders
      * \param layer layer
+     * \deprecated since QGIS 3.12
      */
-    void reinit( QgsVectorLayer *layer );
+    Q_DECL_DEPRECATED void reinit( QgsVectorLayer *layer );
 
     /**
      * Re-implementation that writes to DXF file instead of drawing with QPainter

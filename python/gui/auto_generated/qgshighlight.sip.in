@@ -8,6 +8,11 @@
 
 
 
+%ModuleHeaderCode
+// For ConvertToSubClassCode.
+#include <qgshighlight.h>
+%End
+
 class QgsHighlight: QObject, QgsMapCanvasItem
 {
 %Docstring
@@ -29,9 +34,16 @@ for highlighting features or geometries on a map canvas.
 %TypeHeaderCode
 #include "qgshighlight.h"
 %End
+%ConvertToSubClassCode
+    if ( dynamic_cast<QgsHighlight *>( sipCpp ) )
+      sipType = sipType_QgsHighlight;
+    else
+      sipType = nullptr;
+%End
   public:
 
-    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry &geom, QgsMapLayer *layer );
+
+    QgsHighlight( QgsMapCanvas *mapCanvas /TransferThis/, const QgsGeometry &geom, QgsMapLayer *layer );
 %Docstring
 Constructor for QgsHighlight
 
@@ -40,7 +52,7 @@ Constructor for QgsHighlight
 :param layer: associated map layer
 %End
 
-    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsFeature &feature, QgsVectorLayer *layer );
+    QgsHighlight( QgsMapCanvas *mapCanvas /TransferThis/, const QgsFeature &feature, QgsVectorLayer *layer );
 %Docstring
 Constructor for highlighting ``True`` feature shape using feature attributes
 and renderer.

@@ -173,7 +173,7 @@ void TestQgsRasterCalculator::dualOp()
 
   QgsRasterCalcNode node( op, new QgsRasterCalcNode( left ), new QgsRasterCalcNode( right ) );
 
-  QgsRasterMatrix result;
+  QgsRasterMatrix result( 1, 1, nullptr, -999 );
   result.setNodataValue( -9999 );
   QMap<QString, QgsRasterBlock *> rasterData;
 
@@ -223,8 +223,7 @@ void TestQgsRasterCalculator::singleOp()
 
   QgsRasterCalcNode node( op, new QgsRasterCalcNode( value ), nullptr );
 
-  QgsRasterMatrix result;
-  result.setNodataValue( -9999 );
+  QgsRasterMatrix result( 1, 1, nullptr, -9999 );
   QMap<QString, QgsRasterBlock *> rasterData;
 
   QVERIFY( node.calculate( rasterData, result ) );
@@ -249,8 +248,7 @@ void TestQgsRasterCalculator::singleOpMatrices()
 
   QgsRasterCalcNode node( QgsRasterCalcNode::opSIGN, new QgsRasterCalcNode( &m ), nullptr );
 
-  QgsRasterMatrix result;
-  result.setNodataValue( -9999 );
+  QgsRasterMatrix result( 1, 1, nullptr, -9999 );
   QMap<QString, QgsRasterBlock *> rasterData;
 
   QVERIFY( node.calculate( rasterData, result ) );
@@ -278,8 +276,7 @@ void TestQgsRasterCalculator::dualOpNumberMatrix()
 
   QgsRasterCalcNode node( QgsRasterCalcNode::opPLUS, new QgsRasterCalcNode( 5.0 ), new QgsRasterCalcNode( &m ) );
 
-  QgsRasterMatrix result;
-  result.setNodataValue( -9999 );
+  QgsRasterMatrix result( 1, 1, nullptr, -9999 );
   QMap<QString, QgsRasterBlock *> rasterData;
 
   QVERIFY( node.calculate( rasterData, result ) );
@@ -312,8 +309,7 @@ void TestQgsRasterCalculator::dualOpMatrixNumber()
 
   QgsRasterCalcNode node( QgsRasterCalcNode::opPLUS, new QgsRasterCalcNode( &m ), new QgsRasterCalcNode( 5.0 ) );
 
-  QgsRasterMatrix result;
-  result.setNodataValue( -9999 );
+  QgsRasterMatrix result( 1, 1, nullptr, -9999 );
   QMap<QString, QgsRasterBlock *> rasterData;
 
   QVERIFY( node.calculate( rasterData, result ) );
@@ -354,8 +350,7 @@ void TestQgsRasterCalculator::dualOpMatrixMatrix()
 
   QgsRasterCalcNode node( QgsRasterCalcNode::opPLUS, new QgsRasterCalcNode( &m1 ), new QgsRasterCalcNode( &m2 ) );
 
-  QgsRasterMatrix result;
-  result.setNodataValue( -9999 );
+  QgsRasterMatrix result( 1, 1, nullptr, -9999 );
   QMap<QString, QgsRasterBlock *> rasterData;
 
   QVERIFY( node.calculate( rasterData, result ) );
@@ -373,8 +368,7 @@ void TestQgsRasterCalculator::rasterRefOp()
   // test single op run on raster ref
   QgsRasterCalcNode node( QgsRasterCalcNode::opSIGN, new QgsRasterCalcNode( QStringLiteral( "raster" ) ), nullptr );
 
-  QgsRasterMatrix result;
-  result.setNodataValue( -9999 );
+  QgsRasterMatrix result( 1, 1, nullptr, -9999 );
   QMap<QString, QgsRasterBlock *> rasterData;
 
   //first test invalid raster ref
@@ -427,8 +421,7 @@ void TestQgsRasterCalculator::dualOpRasterRaster()
 
   QgsRasterCalcNode node( QgsRasterCalcNode::opPLUS, new QgsRasterCalcNode( QStringLiteral( "raster1" ) ), new QgsRasterCalcNode( QStringLiteral( "raster2" ) ) );
 
-  QgsRasterMatrix result;
-  result.setNodataValue( -9999 );
+  QgsRasterMatrix result( 1, 1, nullptr, -9999 );
 
   QVERIFY( node.calculate( rasterData, result ) );
   QCOMPARE( result.data()[0], 0.0 );
@@ -587,6 +580,18 @@ void TestQgsRasterCalculator::findNodes()
   QVERIFY( ! node );
   QVERIFY( ! errorString.isEmpty() );
 
+  // Test new abs, min, max
+  errorString.clear();
+  node = QgsRasterCalcNode::parseRasterCalcString( QStringLiteral( "abs(2)" ), errorString );
+  QVERIFY( node );
+  QVERIFY( errorString.isEmpty() );
+  node = QgsRasterCalcNode::parseRasterCalcString( QStringLiteral( "min(-1,1)" ), errorString );
+  QVERIFY( node );
+  QVERIFY( errorString.isEmpty() );
+  node = QgsRasterCalcNode::parseRasterCalcString( QStringLiteral( "max(-1,1)" ), errorString );
+  QVERIFY( node );
+  QVERIFY( errorString.isEmpty() );
+
 }
 
 void TestQgsRasterCalculator::testRasterEntries()
@@ -719,13 +724,28 @@ void TestQgsRasterCalculator::toString()
     return calcNode->toString( cStyle );
   };
   QCOMPARE( _test( QStringLiteral( "\"raster@1\"  + 2" ), false ), QString( "( \"raster@1\" + 2 )" ) );
-  QCOMPARE( _test( QStringLiteral( "\"raster@1\"  +  2" ), true ), QString( "( \"raster@1\" + (float) ( 2 ) )" ) );
+  QCOMPARE( _test( QStringLiteral( "\"raster@1\"  +  2" ), true ), QString( "( ( float ) \"raster@1\" + ( float ) 2 )" ) );
   QCOMPARE( _test( QStringLiteral( "\"raster@1\" ^ 3  +  2" ), false ), QString( "( \"raster@1\"^3 + 2 )" ) );
-  QCOMPARE( _test( QStringLiteral( "\"raster@1\" ^ 3  +  2" ), true ), QString( "( pow( \"raster@1\", (float) ( 3 ) ) + (float) ( 2 ) )" ) );
+  QCOMPARE( _test( QStringLiteral( "\"raster@1\" ^ 3  +  2" ), true ), QString( "( pow( ( float ) \"raster@1\", ( float ) 3 ) + ( float ) 2 )" ) );
   QCOMPARE( _test( QStringLiteral( "atan(\"raster@1\") * cos( 3  +  2 )" ), false ), QString( "atan( \"raster@1\" ) * cos( ( 3 + 2 ) )" ) );
-  QCOMPARE( _test( QStringLiteral( "atan(\"raster@1\") * cos( 3  +  2 )" ), true ), QString( "atan( \"raster@1\" ) * cos( ( (float) ( 3 ) + (float) ( 2 ) ) )" ) );
+  QCOMPARE( _test( QStringLiteral( "atan(\"raster@1\") * cos( 3  +  2 )" ), true ), QString( "atan( ( float ) \"raster@1\" ) * cos( ( ( float ) 3 + ( float ) 2 ) )" ) );
   QCOMPARE( _test( QStringLiteral( "0.5 * ( 1.4 * (\"raster@1\" + 2) )" ), false ), QString( "0.5 * 1.4 * ( \"raster@1\" + 2 )" ) );
-  QCOMPARE( _test( QStringLiteral( "0.5 * ( 1.4 * (\"raster@1\" + 2) )" ), true ), QString( "(float) ( 0.5 ) * (float) ( 1.4 ) * ( \"raster@1\" + (float) ( 2 ) )" ) );
+  QCOMPARE( _test( QStringLiteral( "0.5 * ( 1.4 * (\"raster@1\" + 2) )" ), true ), QString( "( float ) 0.5 * ( float ) 1.4 * ( ( float ) \"raster@1\" + ( float ) 2 )" ) );
+  QCOMPARE( _test( QStringLiteral( "0.5 * ( 1 > 0 )" ), false ), QString( "0.5 * 1 > 0" ) );
+  QCOMPARE( _test( QStringLiteral( "0.5 * ( 1 > 0 )" ), true ), QString( "( float ) 0.5 * ( float ) ( ( float ) 1 > ( float ) 0 )" ) );
+  // Test negative numbers
+  QCOMPARE( _test( QStringLiteral( "0.5 * ( -1 > 0 )" ), false ), QString( "0.5 * -1 > 0" ) );
+  QCOMPARE( _test( QStringLiteral( "0.5 * ( -1 > 0 )" ), true ), QString( "( float ) 0.5 * ( float ) ( -( float ) 1 > ( float ) 0 )" ) );
+  // Test new functions
+  QCOMPARE( _test( QStringLiteral( "0.5 * abs( -1 )" ), false ), QString( "0.5 * abs( -1 )" ) );
+  QCOMPARE( _test( QStringLiteral( "0.5 * abs( -1 )" ), true ), QString( "( float ) 0.5 * fabs( -( float ) 1 )" ) );
+  QCOMPARE( _test( QStringLiteral( "0.5 * min( -1, 1 )" ), false ), QString( "0.5 * min( -1, 1 )" ) );
+  QCOMPARE( _test( QStringLiteral( "0.5 * min( -1, 1 )" ), true ), QString( "( float ) 0.5 * min( ( float ) ( -( float ) 1 ), ( float ) ( ( float ) 1 ) )" ) );
+  QCOMPARE( _test( QStringLiteral( "0.5 * max( -1, 1 )" ), false ), QString( "0.5 * max( -1, 1 )" ) );
+  QCOMPARE( _test( QStringLiteral( "0.5 * max( -1, 1 )" ), true ), QString( "( float ) 0.5 * max( ( float ) ( -( float ) 1 ), ( float ) ( ( float ) 1 ) )" ) );
+  // Test regression #32477
+  QCOMPARE( _test( QStringLiteral( R"raw(("r@1"<100.09)*0.1)raw" ), true ),
+            QString( R"raw(( float ) ( ( float ) "r@1" < ( float ) 100.09 ) * ( float ) 0.1)raw" ) );
 }
 
 void TestQgsRasterCalculator::calcFormulasWithReprojectedLayers()
@@ -751,6 +771,8 @@ void TestQgsRasterCalculator::calcFormulasWithReprojectedLayers()
   auto _chk = [ = ]( const QString & formula, const std::vector<float> &values, bool useOpenCL )
   {
 
+    qDebug() << formula;
+
 #ifdef HAVE_OPENCL
     if ( ! QgsOpenClUtils::available() )
       return ;
@@ -774,14 +796,15 @@ void TestQgsRasterCalculator::calcFormulasWithReprojectedLayers()
     QCOMPARE( result->width(), 2 );
     QCOMPARE( result->height(), 3 );
     QgsRasterBlock *block = result->dataProvider()->block( 1, extent, 2, 3 );
-    qDebug() << block->value( 0, 0 ) << block->value( 0, 1 ) <<  block->value( 1, 0 ) <<  block->value( 1, 1 ) <<  block->value( 2, 0 ) <<  block->value( 2, 1 );
-    const float epsilon { 0.0001f };
-    QVERIFY( std::abs( ( static_cast<float>( block->value( 0, 0 ) ) - values[0] ) / values[0] ) < epsilon );
-    QVERIFY( std::abs( ( static_cast<float>( block->value( 0, 1 ) ) - values[1] ) / values[1] ) < epsilon );
-    QVERIFY( std::abs( ( static_cast<float>( block->value( 1, 0 ) ) - values[2] ) / values[2] ) < epsilon );
-    QVERIFY( std::abs( ( static_cast<float>( block->value( 1, 1 ) ) - values[3] ) / values[3] ) < epsilon );
-    QVERIFY( std::abs( ( static_cast<float>( block->value( 2, 0 ) ) - values[4] ) / values[4] ) < epsilon );
-    QVERIFY( std::abs( ( static_cast<float>( block->value( 2, 1 ) ) - values[5] ) / values[5] ) < epsilon );
+    qDebug() << "Actual:" << block->value( 0, 0 ) << block->value( 0, 1 ) <<  block->value( 1, 0 ) <<  block->value( 1, 1 ) <<  block->value( 2, 0 ) <<  block->value( 2, 1 );
+    qDebug() << "Expected:" << values[0] << values[1] <<  values[2] << values[3] << values[4] << values[5];
+    const double epsilon { 0.0001 };
+    QVERIFY( qgsDoubleNear( block->value( 0, 0 ), static_cast<double>( values[0] ), epsilon ) );
+    QVERIFY( qgsDoubleNear( block->value( 0, 1 ), static_cast<double>( values[1] ), epsilon ) );
+    QVERIFY( qgsDoubleNear( block->value( 1, 0 ), static_cast<double>( values[2] ), epsilon ) );
+    QVERIFY( qgsDoubleNear( block->value( 1, 1 ), static_cast<double>( values[3] ), epsilon ) );
+    QVERIFY( qgsDoubleNear( block->value( 2, 0 ), static_cast<double>( values[4] ), epsilon ) );
+    QVERIFY( qgsDoubleNear( block->value( 2, 1 ), static_cast<double>( values[5] ), epsilon ) );
     delete result;
     delete block;
   };
@@ -792,6 +815,29 @@ void TestQgsRasterCalculator::calcFormulasWithReprojectedLayers()
   _chk( QStringLiteral( "\"landsat@1\"^2 + 3 + \"landsat_4326@2\"" ), {15767, 15766, 15519, 15767, 15769, 15516}, true );
   _chk( QStringLiteral( "0.5*((2*\"landsat@1\"+1)-sqrt((2*\"landsat@1\"+1)^2-8*(\"landsat@1\"-\"landsat_4326@2\")))" ), {-0.111504f, -0.103543f, -0.128448f, -0.111504f, -0.127425f, -0.104374f}, false );
   _chk( QStringLiteral( "0.5*((2*\"landsat@1\"+1)-sqrt((2*\"landsat@1\"+1)^2-8*(\"landsat@1\"-\"landsat_4326@2\")))" ), {-0.111504f, -0.103543f, -0.128448f, -0.111504f, -0.127425f, -0.104374f}, true );
+  _chk( QStringLiteral( "\"landsat@1\" * ( \"landsat@1\" > 124 )" ), {125.0, 125.0, 0.0, 125.0, 125.0, 0.0}, false );
+  _chk( QStringLiteral( "\"landsat@1\" * ( \"landsat@1\" > 124 )" ), {125.0, 125.0, 0.0, 125.0, 125.0, 0.0}, true );
+
+  // Test negative numbers
+  _chk( QStringLiteral( "-2.5" ), { -2.5, -2.5, -2.5, -2.5, -2.5, -2.5 }, false );
+  _chk( QStringLiteral( "- 2.5" ), { -2.5, -2.5, -2.5, -2.5, -2.5, -2.5 }, false );
+  _chk( QStringLiteral( "-2.5" ), { -2.5, -2.5, -2.5, -2.5, -2.5, -2.5 }, true );
+  _chk( QStringLiteral( "- 2.5" ), { -2.5, -2.5, -2.5, -2.5, -2.5, -2.5 }, true );
+  _chk( QStringLiteral( "-\"landsat@1\"" ), {-125, -125, -124, -125, -125, -124}, false );
+  _chk( QStringLiteral( "-\"landsat@1\"" ), {-125, -125, -124, -125, -125, -124}, true );
+
+  // Test abs, min and max
+  // landsat values: 125 125 124 125 125 124
+  // landsat_4326 values: 139 138 140 139 141 137
+  _chk( QStringLiteral( "abs(-123)" ), {123, 123, 123, 123, 123, 123}, false );
+  _chk( QStringLiteral( "abs(-\"landsat@1\")" ), {125, 125, 124, 125, 125, 124}, true );
+  _chk( QStringLiteral( "abs(-123)" ), {123, 123, 123, 123, 123, 123}, false );
+  _chk( QStringLiteral( "abs(-\"landsat@1\")" ), {125, 125, 124, 125, 125, 124}, true );
+  _chk( QStringLiteral( "-\"landsat_4326@2\" + 15" ), {-124, -123, -125, -124, -126, -122}, false );
+  _chk( QStringLiteral( "min(-\"landsat@1\", -\"landsat_4326@2\" + 15 )" ), {-125, -125, -125, -125, -126, -124}, false );
+  _chk( QStringLiteral( "min(-\"landsat@1\", -\"landsat_4326@2\" + 15 )" ), {-125, -125, -125, -125, -126, -124}, true );
+  _chk( QStringLiteral( "max(-\"landsat@1\", -\"landsat_4326@2\" + 15 )" ), {-124, -123, -124, -124, -125, -122}, false );
+  _chk( QStringLiteral( "max(-\"landsat@1\", -\"landsat_4326@2\" + 15 )" ), {-124, -123, -124, -124, -125, -122}, true );
 
 }
 

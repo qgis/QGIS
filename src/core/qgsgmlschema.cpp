@@ -31,7 +31,7 @@
 #include <limits>
 
 const char NS_SEPARATOR = '?';
-const QString GML_NAMESPACE = QStringLiteral( "http://www.opengis.net/gml" );
+#define GML_NAMESPACE QStringLiteral( "http://www.opengis.net/gml" )
 
 
 QgsGmlFeatureClass::QgsGmlFeatureClass( const QString &name, const QString &path )
@@ -88,7 +88,7 @@ bool QgsGmlSchema::parseXSD( const QByteArray &xml )
 
   QList<QDomElement> elementElements = domElements( docElem, QStringLiteral( "element" ) );
 
-  //QgsDebugMsg( QStringLiteral( "%1 elemets read" ).arg( elementElements.size() ) );
+  //QgsDebugMsg( QStringLiteral( "%1 elements read" ).arg( elementElements.size() ) );
 
   const auto constElementElements = elementElements;
   for ( const QDomElement &elementElement : constElementElements )

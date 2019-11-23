@@ -30,6 +30,7 @@ itself the min/max values.
 
     static const double DEFAULT_STDDEV_FACTOR;
 
+    //! \brief This enumerator describes the limits used to compute min/max values
     enum Limits
     {
       None /PyName=None_/,

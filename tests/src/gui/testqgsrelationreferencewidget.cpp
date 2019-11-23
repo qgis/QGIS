@@ -29,6 +29,9 @@
 #include "qgsfeaturefiltermodel.h"
 #include "qgsgui.h"
 #include "qgsmapcanvas.h"
+#include "qgsvectorlayertools.h"
+#include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsmaptooldigitizefeature.h"
 
 class TestQgsRelationReferenceWidget : public QObject
 {
@@ -48,6 +51,8 @@ class TestQgsRelationReferenceWidget : public QObject
     void testInvalidRelation();
     void testSetGetForeignKey();
     void testIdentifyOnMap();
+    void testAddEntry();
+    void testAddEntryNoGeom();
 
   private:
     std::unique_ptr<QgsVectorLayer> mLayer1;
@@ -247,17 +252,17 @@ void TestQgsRelationReferenceWidget::testChainFilterRefreshed()
   QCOMPARE( cbs[2]->currentText(), QString( "raccord" ) );
 
   // update foreign key
-  w.setForeignKey( QVariant( 12 ) );
+  w.setForeignKeys( QVariantList() << QVariant( 12 ) );
   QCOMPARE( cbs[0]->currentText(), QString( "steel" ) );
   QCOMPARE( cbs[1]->currentText(), QString( "120" ) );
   QCOMPARE( cbs[2]->currentText(), QString( "collar" ) );
 
-  w.setForeignKey( QVariant( 10 ) );
+  w.setForeignKeys( QVariantList() << QVariant( 10 ) );
   QCOMPARE( cbs[0]->currentText(), QString( "iron" ) );
   QCOMPARE( cbs[1]->currentText(), QString( "120" ) );
   QCOMPARE( cbs[2]->currentText(), QString( "brides" ) );
 
-  w.setForeignKey( QVariant( 11 ) );
+  w.setForeignKeys( QVariantList() << QVariant( 11 ) );
   QCOMPARE( cbs[0]->currentText(), QString( "iron" ) );
   QCOMPARE( cbs[1]->currentText(), QString( "120" ) );
   QCOMPARE( cbs[2]->currentText(), QString( "sleeve" ) );
@@ -287,14 +292,14 @@ void TestQgsRelationReferenceWidget::testChainFilterDeleteForeignKey()
   QCOMPARE( cbs[2]->isEnabled(), false );
 
   // set a foreign key
-  w.setForeignKey( QVariant( 11 ) );
+  w.setForeignKeys( QVariantList() << QVariant( 11 ) );
 
   QCOMPARE( cbs[0]->currentText(), QString( "iron" ) );
   QCOMPARE( cbs[1]->currentText(), QString( "120" ) );
   QCOMPARE( cbs[2]->currentText(), QString( "sleeve" ) );
 
   // delete the foreign key
-  w.deleteForeignKey();
+  w.deleteForeignKeys();
 
   QCOMPARE( cbs[0]->currentText(), QString( "material" ) );
   QCOMPARE( cbs[0]->isEnabled(), true );
@@ -326,18 +331,18 @@ void TestQgsRelationReferenceWidget::testSetGetForeignKey()
 
   QSignalSpy spy( &w, SIGNAL( foreignKeyChanged( QVariant ) ) );
 
-  w.setForeignKey( 11 );
-  QCOMPARE( w.foreignKey(), QVariant( 11 ) );
+  w.setForeignKeys( QVariantList() << 11 );
+  QCOMPARE( w.foreignKeys().at( 0 ), QVariant( 11 ) );
   QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "(11)" ) );
   QCOMPARE( spy.count(), 1 );
 
-  w.setForeignKey( 12 );
-  QCOMPARE( w.foreignKey(), QVariant( 12 ) );
+  w.setForeignKeys( QVariantList() << 12 );
+  QCOMPARE( w.foreignKeys().at( 0 ), QVariant( 12 ) );
   QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "(12)" ) );
   QCOMPARE( spy.count(), 2 );
 
-  w.setForeignKey( QVariant( QVariant::Int ) );
-  Q_ASSERT( w.foreignKey().isNull() );
+  w.setForeignKeys( QVariantList() << QVariant( QVariant::Int ) );
+  Q_ASSERT( w.foreignKeys().at( 0 ).isNull() );
   QCOMPARE( spy.count(), 3 );
 }
 
@@ -356,7 +361,7 @@ void TestQgsRelationReferenceWidget::testIdentifyOnMap()
   // Populate model (I tried to listen to signals but the module reload() runs twice
   // (the first load triggers a second one which does the population of the combo)
   // and I haven't fin a way to properly wait for it.
-  QTimer::singleShot( 300, [&] { loop.quit(); } );
+  QTimer::singleShot( 300, this, [&] { loop.quit(); } );
   loop.exec();
   QgsFeature feature;
   mLayer2->getFeatures( QStringLiteral( "pk = %1" ).arg( 11 ) ).nextFeature( feature );
@@ -372,6 +377,99 @@ void TestQgsRelationReferenceWidget::testIdentifyOnMap()
   QCOMPARE( w.mComboBox->currentData( Qt::DisplayRole ).toInt(), 10 );
 
   mLayer1->rollBack();
+}
+
+// Monkey patch gui vector layer tool in order to simple add a new feature in
+// referenced layer
+class DummyVectorLayerTools : public QgsVectorLayerTools // clazy:exclude=missing-qobject-macro
+{
+    bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &, const QgsGeometry &, QgsFeature *feat = nullptr ) const override
+    {
+      feat->setAttribute( QStringLiteral( "pk" ), 13 );
+      feat->setAttribute( QStringLiteral( "material" ), QStringLiteral( "steel" ) );
+      feat->setAttribute( QStringLiteral( "diameter" ), 140 );
+      feat->setAttribute( QStringLiteral( "raccord" ), "collar" );
+      layer->addFeature( *feat );
+      return true;
+    }
+
+    bool startEditing( QgsVectorLayer * ) const override {return true;}
+
+    bool stopEditing( QgsVectorLayer *, bool = true ) const override {return true;};
+
+    bool saveEdits( QgsVectorLayer * ) const override {return true;};
+};
+
+void TestQgsRelationReferenceWidget::testAddEntry()
+{
+  // check that a new added entry in referenced layer populate correctly the
+  // referencing combobox
+  QgsMapCanvas canvas;
+  QgsRelationReferenceWidget w( &canvas );
+  QVERIFY( mLayer1->startEditing() );
+  w.setRelation( *mRelation, true );
+  w.init();
+
+  QgsAdvancedDigitizingDockWidget cadDockWidget( &canvas );
+  QgsAttributeEditorContext context;
+  DummyVectorLayerTools tools;
+  context.setVectorLayerTools( &tools );
+  context.setCadDockWidget( &cadDockWidget );
+  w.setEditorContext( context, &canvas, nullptr );
+  w.addEntry();
+
+  QVERIFY( w.mCurrentMapTool );
+  QgsFeature feat( mLayer1->fields() );
+  w.mMapToolDigitize->digitized( feat );
+
+  QCOMPARE( w.mComboBox->identifierValues().at( 0 ).toInt(), 13 );
+}
+
+void TestQgsRelationReferenceWidget::testAddEntryNoGeom()
+{
+  QgsVectorLayer mLayer1( QStringLiteral( "Point?crs=epsg:3111&field=pk:int&field=fk:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( &mLayer1, false, false );
+
+  QgsVectorLayer mLayer2( QStringLiteral( "None?field=pk:int&field=material:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( &mLayer2, false, false );
+
+  // create relation
+  QgsRelation mRelation;
+  mRelation.setId( QStringLiteral( "vl1.vl2" ) );
+  mRelation.setName( QStringLiteral( "vl1.vl2" ) );
+  mRelation.setReferencingLayer( mLayer1.id() );
+  mRelation.setReferencedLayer( mLayer2.id() );
+  mRelation.addFieldPair( QStringLiteral( "fk" ), QStringLiteral( "pk" ) );
+  QVERIFY( mRelation.isValid() );
+  QgsProject::instance()->relationManager()->addRelation( mRelation );
+
+  // add feature
+  QgsFeature ft0( mLayer1.fields() );
+  ft0.setAttribute( QStringLiteral( "pk" ), 0 );
+  ft0.setAttribute( QStringLiteral( "fk" ), 0 );
+  mLayer1.startEditing();
+  mLayer1.addFeature( ft0 );
+  mLayer1.commitChanges();
+
+  // check that a new added entry in referenced layer populate correctly the
+  // referencing combobox
+  QgsMapCanvas canvas;
+  QgsRelationReferenceWidget w( &canvas );
+  QVERIFY( mLayer1.startEditing() );
+  w.setRelation( mRelation, true );
+  w.init();
+
+  QgsAdvancedDigitizingDockWidget cadDockWidget( &canvas );
+  QgsAttributeEditorContext context;
+  DummyVectorLayerTools tools;
+  context.setVectorLayerTools( &tools );
+  context.setCadDockWidget( &cadDockWidget );
+  w.setEditorContext( context, &canvas, nullptr );
+  w.addEntry();
+
+  QVERIFY( !w.mCurrentMapTool );
+
+  QCOMPARE( w.mComboBox->identifierValues().at( 0 ).toInt(), 13 );
 }
 
 QGSTEST_MAIN( TestQgsRelationReferenceWidget )

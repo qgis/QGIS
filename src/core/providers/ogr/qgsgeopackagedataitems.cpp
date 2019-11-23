@@ -20,8 +20,6 @@
 #include <QFileDialog>
 #include <QInputDialog>
 
-#include <sqlite3.h>
-
 #include "qgssqliteutils.h"
 #include "qgsgeopackagedataitems.h"
 #include "qgsogrdbconnection.h"
@@ -41,6 +39,7 @@
 #include "qgsproxyprogresstask.h"
 #include "qgsprojectstorageregistry.h"
 #include "qgsgeopackageprojectstorage.h"
+#include "qgsgeopackageproviderconnection.h"
 
 QString QgsGeoPackageDataItemProvider::name()
 {
@@ -54,7 +53,7 @@ int QgsGeoPackageDataItemProvider::capabilities() const
 
 QgsDataItem *QgsGeoPackageDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
-  QgsDebugMsg( "path = " + path );
+  QgsDebugMsgLevel( "path = " + path, 2 );
   if ( path.isEmpty() )
   {
     return new QgsGeoPackageRootItem( parentItem, QStringLiteral( "GeoPackage" ), QStringLiteral( "gpkg:" ) );
@@ -99,7 +98,6 @@ void QgsGeoPackageRootItem::newConnection()
 
 QgsGeoPackageCollectionItem::QgsGeoPackageCollectionItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, name, path )
-  , mPath( path )
 {
   mToolTip = path;
   mCapabilities |= Collapse;
@@ -146,6 +144,54 @@ bool QgsGeoPackageCollectionItem::equal( const QgsDataItem *other )
 
 }
 
+bool QgsGeoPackageCollectionItem::deleteRasterLayer( const QString &layerName, QString &errCause )
+{
+  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
+  std::unique_ptr<QgsGeoPackageProviderConnection> conn( static_cast<QgsGeoPackageProviderConnection *>( md->createConnection( path(), QVariantMap() ) ) );
+  if ( conn )
+  {
+    try
+    {
+      conn->dropRasterTable( QString(), layerName );
+    }
+    catch ( QgsProviderConnectionException &ex )
+    {
+      errCause = ex.what();
+      return false;
+    }
+  }
+  else
+  {
+    errCause = QObject::tr( "There was an error retrieving the connection %1!" ).arg( path() );
+    return false;
+  }
+  return true;
+}
+
+bool QgsGeoPackageCollectionItem::deleteVectorLayer( const QString &layerName, QString &errCause )
+{
+  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
+  std::unique_ptr<QgsGeoPackageProviderConnection> conn( static_cast<QgsGeoPackageProviderConnection *>( md->createConnection( path(), QVariantMap() ) ) );
+  if ( conn )
+  {
+    try
+    {
+      conn->dropVectorTable( QString(), layerName );
+    }
+    catch ( QgsProviderConnectionException &ex )
+    {
+      errCause = ex.what();
+      return false;
+    }
+  }
+  else
+  {
+    errCause = QObject::tr( "There was an error retrieving the connection %1!" ).arg( path() );
+    return false;
+  }
+  return true;
+}
+
 QWidget *QgsGeoPackageRootItem::paramWidget()
 {
   return nullptr;
@@ -165,156 +211,29 @@ void QgsGeoPackageCollectionItem::deleteConnection()
   mParent->refreshConnections();
 }
 
-bool QgsGeoPackageCollectionItem::vacuumGeoPackageDb( const QString &path, const QString &name, QString &errCause )
+bool QgsGeoPackageCollectionItem::vacuumGeoPackageDb( const QString &name, const QString &path, QString &errCause )
 {
   QgsScopedProxyProgressTask task( tr( "Vacuuming %1" ).arg( name ) );
-
-  bool result = false;
-  // Better safe than sorry
-  if ( ! path.isEmpty( ) )
+  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
+  std::unique_ptr<QgsGeoPackageProviderConnection> conn( static_cast<QgsGeoPackageProviderConnection *>( md->createConnection( path, QVariantMap() ) ) );
+  if ( conn )
   {
-    char *errmsg = nullptr;
-    sqlite3_database_unique_ptr database;
-    int status = database.open_v2( path, SQLITE_OPEN_READWRITE, nullptr );
-    if ( status != SQLITE_OK )
+    try
     {
-      errCause = sqlite3_errmsg( database.get() );
+      conn->vacuum( QString(), QString() );
     }
-    else
+    catch ( QgsProviderConnectionException &ex )
     {
-      ( void )sqlite3_exec(
-        database.get(),                      /* An open database */
-        "VACUUM",                            /* SQL to be evaluated */
-        nullptr,                             /* Callback function */
-        nullptr,                             /* 1st argument to callback */
-        &errmsg                              /* Error msg written here */
-      );
-    }
-    if ( status != SQLITE_OK || errmsg )
-    {
-      errCause = tr( "There was an error compacting (VACUUM) the database <b>%1</b>: %2" )
-                 .arg( name,
-                       QString::fromUtf8( errmsg ) );
-    }
-    else
-    {
-      result = true;
-    }
-    sqlite3_free( errmsg );
-  }
-  else
-  {
-    // This should never happen!
-    errCause = tr( "Layer path is empty: layer cannot be deleted!" );
-  }
-  return result;
-}
-
-bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &uri, QString &errCause )
-{
-  bool result = false;
-  // Better safe than sorry
-  if ( ! uri.isEmpty( ) )
-  {
-    QVariantMap pieces( QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), uri ) );
-    QString baseUri = pieces[QStringLiteral( "path" )].toString();
-    QString layerName = pieces[QStringLiteral( "layerName" )].toString();
-
-    if ( baseUri.isEmpty() || layerName.isEmpty() )
-    {
-      errCause = QStringLiteral( "Layer URI is malformed: layer <b>%1</b> cannot be deleted!" ).arg( uri );
-    }
-    else
-    {
-      sqlite3_database_unique_ptr database;
-      int status = database.open_v2( baseUri, SQLITE_OPEN_READWRITE, nullptr );
-      if ( status != SQLITE_OK )
-      {
-        errCause = sqlite3_errmsg( database.get() );
-      }
-      else
-      {
-        // Remove table
-        char *errmsg = nullptr;
-        char *sql = sqlite3_mprintf(
-                      "DROP table IF EXISTS \"%w\";"
-                      "DELETE FROM gpkg_contents WHERE table_name = '%q';"
-                      "DELETE FROM gpkg_tile_matrix WHERE table_name = '%q';"
-                      "DELETE FROM gpkg_tile_matrix_set WHERE table_name = '%q';",
-                      layerName.toUtf8().constData(),
-                      layerName.toUtf8().constData(),
-                      layerName.toUtf8().constData(),
-                      layerName.toUtf8().constData() );
-        status = sqlite3_exec(
-                   database.get(),               /* An open database */
-                   sql,                          /* SQL to be evaluated */
-                   nullptr,                      /* Callback function */
-                   nullptr,                      /* 1st argument to callback */
-                   &errmsg                       /* Error msg written here */
-                 );
-        sqlite3_free( sql );
-        // Remove from optional tables, may silently fail
-        QStringList optionalTables;
-        optionalTables << QStringLiteral( "gpkg_extensions" )
-                       << QStringLiteral( "gpkg_metadata_reference" );
-        for ( const QString &tableName : qgis::as_const( optionalTables ) )
-        {
-          char *sql = sqlite3_mprintf( "DELETE FROM %w WHERE table_name = '%q'",
-                                       tableName.toUtf8().constData(),
-                                       layerName.toUtf8().constData() );
-          ( void )sqlite3_exec(
-            database.get(),                      /* An open database */
-            sql,                                 /* SQL to be evaluated */
-            nullptr,                             /* Callback function */
-            nullptr,                             /* 1st argument to callback */
-            nullptr                              /* Error msg written here */
-          );
-          sqlite3_free( sql );
-        }
-        // Other tables, ignore errors
-        {
-          char *sql = sqlite3_mprintf( "DELETE FROM gpkg_2d_gridded_coverage_ancillary WHERE tile_matrix_set_name = '%q'",
-                                       layerName.toUtf8().constData() );
-          ( void )sqlite3_exec(
-            database.get(),                      /* An open database */
-            sql,                                 /* SQL to be evaluated */
-            nullptr,                             /* Callback function */
-            nullptr,                             /* 1st argument to callback */
-            nullptr                              /* Error msg written here */
-          );
-          sqlite3_free( sql );
-        }
-        {
-          char *sql = sqlite3_mprintf( "DELETE FROM gpkg_2d_gridded_tile_ancillary WHERE tpudt_name = '%q'",
-                                       layerName.toUtf8().constData() );
-          ( void )sqlite3_exec(
-            database.get(),                      /* An open database */
-            sql,                                 /* SQL to be evaluated */
-            nullptr,                             /* Callback function */
-            nullptr,                             /* 1st argument to callback */
-            nullptr                              /* Error msg written here */
-          );
-          sqlite3_free( sql );
-        }
-
-        if ( status == SQLITE_OK )
-        {
-          result = true;
-        }
-        else
-        {
-          errCause = tr( "There was an error deleting the layer %1: %2" ).arg( layerName, QString::fromUtf8( errmsg ) );
-        }
-        sqlite3_free( errmsg );
-      }
+      errCause = ex.what();
+      return false;
     }
   }
   else
   {
-    // This should never happen!
-    errCause = tr( "Layer URI is empty: layer cannot be deleted!" );
+    errCause = QObject::tr( "There was an error retrieving the connection %1!" ).arg( name );
+    return false;
   }
-  return result;
+  return true;
 }
 
 QgsGeoPackageConnectionItem::QgsGeoPackageConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
@@ -336,54 +255,25 @@ bool QgsGeoPackageConnectionItem::equal( const QgsDataItem *other )
 
 QgsGeoPackageAbstractLayerItem::QgsGeoPackageAbstractLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, QgsLayerItem::LayerType layerType, const QString &providerKey )
   : QgsLayerItem( parent, name, path, uri, layerType, providerKey )
+  , mCollection( qobject_cast<QgsGeoPackageCollectionItem*>( parent ) )
 {
   mCapabilities |= Delete;
   mToolTip = uri;
   setState( Populated ); // no children are expected
 }
 
-bool QgsGeoPackageAbstractLayerItem::executeDeleteLayer( QString &errCause )
-{
-  errCause = QObject::tr( "The layer <b>%1</b> cannot be deleted because this feature is not yet implemented for this kind of layers." ).arg( mName );
-  return false;
-}
 
-static int collect_strings( void *names, int, char **argv, char ** )
-{
-  *static_cast<QList<QString>*>( names ) << QString::fromUtf8( argv[ 0 ] );
-  return 0;
-}
-
-QStringList QgsGeoPackageAbstractLayerItem::tableNames()
+QStringList QgsGeoPackageAbstractLayerItem::tableNames() const
 {
   QStringList names;
-  QVariantMap pieces( QgsProviderRegistry::instance()->decodeUri( providerKey(), mUri ) );
-  QString baseUri = pieces[QStringLiteral( "path" )].toString();
-  if ( !baseUri.isEmpty() )
+  // note: not using providerKey() because GPKG methods are implemented in OGR
+  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
+  QgsGeoPackageProviderConnection *conn { static_cast<QgsGeoPackageProviderConnection *>( md->findConnection( parent()->name() ) ) };
+  if ( conn )
   {
-    char *errmsg = nullptr;
-    sqlite3_database_unique_ptr database;
-    int status = database.open_v2( baseUri, SQLITE_OPEN_READONLY, nullptr );
-    if ( status == SQLITE_OK )
+    for ( const QgsGeoPackageProviderConnection::TableProperty &p : conn->tables( ) )
     {
-      char *sql = sqlite3_mprintf( "SELECT table_name FROM gpkg_contents;" );
-      status = sqlite3_exec(
-                 database.get(),              /* An open database */
-                 sql,                         /* SQL to be evaluated */
-                 collect_strings,             /* Callback function */
-                 &names,                      /* 1st argument to callback */
-                 &errmsg                      /* Error msg written here */
-               );
-      sqlite3_free( sql );
-      if ( status != SQLITE_OK )
-      {
-        QgsDebugMsg( QStringLiteral( "There was an error reading tables from GPKG layer %1: %2" ).arg( mUri, QString::fromUtf8( errmsg ) ) );
-      }
-      sqlite3_free( errmsg );
-    }
-    else
-    {
-      QgsDebugMsg( QStringLiteral( "There was an error opening GPKG %1" ).arg( mUri ) );
+      names.push_back( p.tableName() );
     }
   }
   return  names;
@@ -405,6 +295,11 @@ QList<QgsMapLayer *> QgsGeoPackageAbstractLayerItem::layersInProject() const
   return layersList;
 }
 
+QgsGeoPackageCollectionItem *QgsGeoPackageAbstractLayerItem::collection() const
+{
+  return mCollection;
+}
+
 QgsGeoPackageVectorLayerItem::QgsGeoPackageVectorLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType )
   : QgsGeoPackageAbstractLayerItem( parent, name, path, uri, layerType, QStringLiteral( "ogr" ) )
 {
@@ -415,17 +310,60 @@ QgsGeoPackageVectorLayerItem::QgsGeoPackageVectorLayerItem( QgsDataItem *parent,
 QgsGeoPackageRasterLayerItem::QgsGeoPackageRasterLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri )
   : QgsGeoPackageAbstractLayerItem( parent, name, path, uri, QgsLayerItem::LayerType::Raster, QStringLiteral( "gdal" ) )
 {
-
 }
 
 bool QgsGeoPackageRasterLayerItem::executeDeleteLayer( QString &errCause )
 {
-  return QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( mUri, errCause );
+  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
+  std::unique_ptr<QgsGeoPackageProviderConnection> conn( static_cast<QgsGeoPackageProviderConnection *>( md->createConnection( collection()->path(), QVariantMap() ) ) );
+  QString tableName = name();
+  if ( conn->tableExists( QString(), tableName ) )
+  {
+    try
+    {
+      conn->dropRasterTable( QString(), tableName );
+    }
+    catch ( QgsProviderConnectionException &ex )
+    {
+      errCause = ex.what();
+      return false;
+    }
+  }
+  else
+  {
+    errCause = QObject::tr( "There was an error deleting '%1' on '%2'!" )
+               .arg( tableName )
+               .arg( collection()->path() );
+    return false;
+  }
+  return true;
 }
 
 bool QgsGeoPackageVectorLayerItem::executeDeleteLayer( QString &errCause )
 {
-  return QgsOgrProviderUtils::deleteLayer( mUri, errCause );
+  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
+  std::unique_ptr<QgsGeoPackageProviderConnection> conn( static_cast<QgsGeoPackageProviderConnection *>( md->createConnection( collection()->path(), QVariantMap() ) ) );
+  QString tableName = name();
+  if ( conn )
+  {
+    try
+    {
+      conn->dropVectorTable( QString(), tableName );
+    }
+    catch ( QgsProviderConnectionException &ex )
+    {
+      errCause = ex.what();
+      return false;
+    }
+  }
+  else
+  {
+    errCause = QObject::tr( "There was an error deleting '%1' on '%2'!" )
+               .arg( tableName )
+               .arg( parent()->path() );
+    return false;
+  }
+  return true;
 }
 
 ///@endcond

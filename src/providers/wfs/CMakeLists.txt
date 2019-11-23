@@ -3,6 +3,7 @@
 # Files
 
 SET(WFS_SRCS
+  ${CMAKE_SOURCE_DIR}/external/nlohmann/json.hpp
   qgswfsprovider.cpp
   qgswfscapabilities.cpp
   qgswfsdataitems.cpp
@@ -15,19 +16,16 @@ SET(WFS_SRCS
   qgswfsshareddata.cpp
   qgswfstransactionrequest.cpp
   qgswfsutils.cpp
-)
-
-SET (WFS_MOC_HDRS
-  qgswfscapabilities.h
-  qgswfsconnection.h
-  qgswfsdataitems.h
-  qgswfsprovider.h
-  qgswfsfeatureiterator.h
-  qgswfsrequest.h
-  qgswfsdescribefeaturetype.h
-  qgswfstransactionrequest.h
-  qgswfsshareddata.h
-  qgswfsutils.h
+  qgsbackgroundcachedfeatureiterator.cpp
+  qgsbackgroundcachedshareddata.cpp
+  qgscachedirectorymanager.cpp
+  qgsbasenetworkrequest.cpp
+  qgsoapiflandingpagerequest.cpp
+  qgsoapifapirequest.cpp
+  qgsoapifcollection.cpp
+  qgsoapifitemsrequest.cpp
+  qgsoapifprovider.cpp
+  qgsoapifutils.cpp
 )
 
 IF (WITH_GUI)
@@ -36,18 +34,12 @@ IF (WITH_GUI)
     qgswfsdataitemguiprovider.cpp
     qgswfssourceselect.cpp
     qgswfsnewconnection.cpp
-  )
-  SET(WFS_MOC_HDRS ${WFS_MOC_HDRS}
-    qgswfsdataitemguiprovider.h
-    qgswfssourceselect.h
-    qgswfsnewconnection.h
+    qgswfsguiutils.cpp
   )
 ENDIF ()
 
 ########################################################
 # Build
-
-QT5_WRAP_CPP(WFS_MOC_SRCS ${WFS_MOC_HDRS})
 
 INCLUDE_DIRECTORIES (
   ${CMAKE_SOURCE_DIR}/src/core
@@ -55,11 +47,13 @@ INCLUDE_DIRECTORIES (
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/symbology  # needed by qgsvectorfilewriter.h
+  ${CMAKE_SOURCE_DIR}/src/core/effects    # needed by qgssymbollayer.h
   ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/auth
   ${CMAKE_SOURCE_DIR}/external
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
@@ -80,7 +74,7 @@ IF (WITH_GUI)
   )
 ENDIF ()
 
-ADD_LIBRARY (wfsprovider MODULE ${WFS_SRCS} ${WFS_MOC_SRCS})
+ADD_LIBRARY (wfsprovider MODULE ${WFS_SRCS})
 
 TARGET_LINK_LIBRARIES (wfsprovider
   ${EXPAT_LIBRARY}
@@ -91,6 +85,7 @@ IF (WITH_GUI)
   TARGET_LINK_LIBRARIES (wfsprovider
     qgis_gui
   )
+  ADD_DEPENDENCIES(wfsprovider ui)
 ENDIF ()
 
 ########################################################

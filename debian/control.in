@@ -101,7 +101,8 @@ Depends:
  ${misc:Depends},
  python3-qgis (= ${binary:Version}),
  qgis-providers (= ${binary:Version}),
- qgis-common (= ${source:Version})
+ qgis-common (= ${source:Version}),
+ qt5-image-formats-plugins
 Recommends:
  qgis-plugin-grass
 Suggests: gpsbabel
@@ -410,7 +411,7 @@ Architecture: all
 Section: python
 Depends:
  gdal-bin,
- python-gdal,
+#disco eoan buster# python-gdal,
  python3-gdal,
  python3-matplotlib,
  libqgis-customwidgets (>= ${source:Version}),
@@ -418,7 +419,9 @@ Depends:
  ${misc:Depends}
 Breaks: python-qgis-common (<< ${source:Version})
 Replaces: python-qgis-common (<< ${source:Version})
-Suggests: saga
+Suggests:
+#disco eoan buster sid# otb-qgis,
+  saga
 Description: Python bindings to QGIS - architecture-independent files
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -460,6 +463,7 @@ Package: qgis-server
 Architecture: any
 Depends:
  qgis-providers (= ${binary:Version}),
+ python3-qgis (= ${binary:Version}),
  ${shlibs:Depends},
  ${misc:Depends}
 Conflicts: qgis-mapserver

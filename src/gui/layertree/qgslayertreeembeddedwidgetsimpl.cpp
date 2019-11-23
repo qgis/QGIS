@@ -32,7 +32,7 @@ QgsLayerTreeOpacityWidget::QgsLayerTreeOpacityWidget( QgsMapLayer *layer )
   : mLayer( layer )
 {
   setAutoFillBackground( true ); // override the content from model
-  QLabel *l = new QLabel( QStringLiteral( "Opacity" ), this );
+  QLabel *l = new QLabel( tr( "Opacity" ), this );
   mSlider = new QSlider( Qt::Horizontal, this );
   mSlider->setRange( 0, 1000 );
   int sliderW = static_cast< int >( QFontMetricsF( font() ).width( 'X' ) * 16 * Qgis::UI_SCALE_FACTOR );
@@ -66,7 +66,7 @@ QgsLayerTreeOpacityWidget::QgsLayerTreeOpacityWidget( QgsMapLayer *layer )
 
     case QgsMapLayerType::RasterLayer:
     {
-      mSlider->setValue( 1000 - qobject_cast<QgsRasterLayer *>( mLayer )->renderer()->opacity() * 1000 );
+      mSlider->setValue( qobject_cast<QgsRasterLayer *>( mLayer )->renderer()->opacity() * 1000 );
       // TODO: there is no signal for raster layers
       break;
     }
@@ -106,7 +106,7 @@ void QgsLayerTreeOpacityWidget::updateOpacityFromSlider()
     }
     case QgsMapLayerType::RasterLayer:
     {
-      qobject_cast<QgsRasterLayer *>( mLayer )->renderer()->setOpacity( 1 - value / 1000.0 );
+      qobject_cast<QgsRasterLayer *>( mLayer )->renderer()->setOpacity( value / 1000.0 );
       break;
     }
 

@@ -33,6 +33,7 @@ class QgsReadOnlyStyleModel : public QgsStyleProxyModel
     Q_OBJECT
   public:
 
+    explicit QgsReadOnlyStyleModel( QgsStyleModel *sourceModel, QObject *parent = nullptr );
     explicit QgsReadOnlyStyleModel( QgsStyle *style, QObject *parent = nullptr );
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     QVariant data( const QModelIndex &index, int role ) const override;

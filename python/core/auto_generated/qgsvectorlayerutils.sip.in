@@ -9,6 +9,7 @@
 
 
 
+
 class QgsVectorLayerUtils
 {
 %Docstring
@@ -275,6 +276,16 @@ The following operations will be performed to convert the input features:
 
 .. versionadded:: 3.4
 %End
+
+    static bool fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature );
+%Docstring
+
+:return: true if the:param feature: field at index:param fieldIndex: from:param layer:
+          is editable, false if the field is readonly
+
+.. versionadded:: 3.10
+%End
+
 
 };
 

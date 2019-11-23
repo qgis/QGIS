@@ -41,6 +41,7 @@ class QgsField;
 class QgsGeometry;
 class QgsOracleFeatureIterator;
 class QgsOracleSharedData;
+class QgsOracleTransaction;
 
 enum QgsOraclePrimaryKeyType
 {
@@ -164,6 +165,8 @@ class QgsOracleProvider : public QgsVectorDataProvider
     static bool exec( QSqlQuery &qry, QString sql, const QVariantList &args );
 
     bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
+    void setTransaction( QgsTransaction *transaction ) override;
+    QgsTransaction *transaction() const override;
 
     /**
      * Switch to oracle workspace
@@ -178,7 +181,11 @@ class QgsOracleProvider : public QgsVectorDataProvider
   private:
     QString whereClause( QgsFeatureId featureId, QVariantList &args ) const;
     QString pkParamWhereClause() const;
-    QString paramValue( QString fieldvalue, const QString &defaultValue ) const;
+
+    /**
+     * Evaluates the given expression string server-side and convert the result to the given type
+     */
+    QVariant evaluateDefaultExpression( const QString &value, const QVariant::Type &fieldType ) const;
     void appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry ) const;
     void appendPkParams( QgsFeatureId fid, QSqlQuery &qry ) const;
 
@@ -259,6 +266,8 @@ class QgsOracleProvider : public QgsVectorDataProvider
     /* Include additional geo attributes */
     bool mIncludeGeoAttributes;
 
+    QgsOracleTransaction *mTransaction = nullptr;
+
     struct OracleFieldNotFound {}; //! Exception to throw
 
     struct OracleException
@@ -295,7 +304,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     };
 
     // A function that determines if the given schema.table.column
-    // contains unqiue entries
+    // contains unique entries
     bool uniqueData( QString query, QString colName );
 
     void disconnectDb();
@@ -310,6 +319,9 @@ class QgsOracleProvider : public QgsVectorDataProvider
     QString mSpatialIndexName;               //!< Name of spatial index of geometry column
 
     std::shared_ptr<QgsOracleSharedData> mShared;
+
+    QgsOracleConn *connectionRW();
+    QgsOracleConn *connectionRO() const;
 
     friend class QgsOracleFeatureIterator;
     friend class QgsOracleFeatureSource;
@@ -379,6 +391,8 @@ class QgsOracleProviderMetadata: public QgsProviderMetadata
 
     QgsOracleProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
     QList<QgsDataItemProvider *> dataItemProviders() const override;
+
+    QgsTransaction *createTransaction( const QString &connString ) override;
 };
 
 #ifdef HAVE_GUI

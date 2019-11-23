@@ -79,6 +79,7 @@ The function is replacement of  QgsProviderRegistry.createSelectionWidget() from
 
 .. versionadded:: 3.10
 %End
+
   private:
     QgsSourceSelectProviderRegistry( const QgsSourceSelectProviderRegistry &rh );
 };

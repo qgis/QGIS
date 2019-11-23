@@ -48,7 +48,7 @@ class GUI_EXPORT QgsFieldComboBox : public QComboBox
      */
     explicit QgsFieldComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    //! setFilters allows fitering according to the type of field
+    //! setFilters allows filtering according to the type of field
     void setFilters( QgsFieldProxyModel::Filters filters );
 
     //! currently used filter on list of fields

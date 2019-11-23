@@ -19,6 +19,7 @@
 #include "qgslayout.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgslayoutitemgroup.h"
 #include <QApplication>
 #include <QGraphicsItem>
 #include <QDomDocument>
@@ -924,7 +925,18 @@ void QgsLayoutModel::setSelected( const QModelIndex &index )
     return;
   }
 
+  // find top level group this item is contained within, and mark the group as selected
+  QgsLayoutItemGroup *group = item->parentGroup();
+  while ( group && group->parentGroup() )
+  {
+    group = group->parentGroup();
+  }
+
+  // but the actual main selected item is the item itself (allows editing of item properties)
   mLayout->setSelectedItem( item );
+
+  if ( group && group != item )
+    group->setSelected( true );
 }
 ///@endcond
 

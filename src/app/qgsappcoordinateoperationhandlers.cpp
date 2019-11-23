@@ -19,6 +19,7 @@
 #include "qgsmessagebaritem.h"
 #include "qgsmessageoutput.h"
 #include "qgsproject.h"
+#include "qgsinstallgridshiftdialog.h"
 
 //
 // QgsAppMissingRequiredGridHandler
@@ -89,6 +90,7 @@ void QgsAppMissingGridHandler::onMissingRequiredGrid( const QgsCoordinateReferen
                                displayIdentifierForCrs( destinationCrs, true ) );
 
   QString downloadMessage;
+  const QString gridName = grid.shortName;
   if ( !grid.url.isEmpty() )
   {
     if ( !grid.packageName.isEmpty() )
@@ -102,21 +104,24 @@ void QgsAppMissingGridHandler::onMissingRequiredGrid( const QgsCoordinateReferen
   }
 
   const QString longMessage = tr( "<p>No transform is available between <i>%1</i> and <i>%2</i>.</p>"
-                                  "<p>This transformation requires the grid file “%3”, which is not available for use on the system.%4</p>" ).arg( displayIdentifierForCrs( sourceCrs ),
+                                  "<p>This transformation requires the grid file “%3”, which is not available for use on the system.</p>" ).arg( displayIdentifierForCrs( sourceCrs ),
                                       displayIdentifierForCrs( destinationCrs ),
-                                      grid.shortName,
-                                      downloadMessage.isEmpty() ? QString() : " " + downloadMessage );
+                                      grid.shortName );
 
   QgsMessageBar *bar = QgisApp::instance()->messageBar();
   QgsMessageBarItem *widget = bar->createMessage( QString(), shortMessage );
   QPushButton *detailsButton = new QPushButton( tr( "Details" ) );
-  connect( detailsButton, &QPushButton::clicked, this, [longMessage]
+  connect( detailsButton, &QPushButton::clicked, this, [longMessage, downloadMessage, bar, widget, gridName]
   {
-    // dlg has deleted on close
-    QgsMessageOutput * dlg( QgsMessageOutput::createMessageOutput() );
-    dlg->setTitle( tr( "No Transformations Available" ) );
-    dlg->setMessage( longMessage, QgsMessageOutput::MessageHtml );
-    dlg->showMessage();
+    QgsInstallGridShiftFileDialog *dlg = new QgsInstallGridShiftFileDialog( gridName, QgisApp::instance() );
+    dlg->setAttribute( Qt::WA_DeleteOnClose );
+    dlg->setWindowTitle( tr( "No Transformations Available" ) );
+    dlg->setDescription( longMessage );
+    dlg->setDownloadMessage( downloadMessage );
+    if ( dlg->exec() )
+    {
+      bar->popWidget( widget );
+    }
   } );
 
   widget->layout()->addWidget( detailsButton );
@@ -132,20 +137,23 @@ void QgsAppMissingGridHandler::onMissingPreferredGrid( const QgsCoordinateRefere
                                displayIdentifierForCrs( destinationCrs, true ) );
 
   QString gridMessage;
+  QString downloadMessage;
+  QString gridName;
   for ( const QgsDatumTransform::GridDetails &grid : preferredOperation.grids )
   {
     if ( !grid.isAvailable )
     {
       QString m = tr( "This transformation requires the grid file “%1”, which is not available for use on the system." ).arg( grid.shortName );
+      gridName = grid.shortName;
       if ( !grid.url.isEmpty() )
       {
         if ( !grid.packageName.isEmpty() )
         {
-          m += ' ' +  tr( "This grid is part of the <i>%1</i> package, available for download from <a href=\"%2\">%2</a>." ).arg( grid.packageName, grid.url );
+          downloadMessage = tr( "This grid is part of the <i>%1</i> package, available for download from <a href=\"%2\">%2</a>." ).arg( grid.packageName, grid.url );
         }
         else
         {
-          m += ' ' + tr( "This grid is available for download from <a href=\"%1\">%1</a>." ).arg( grid.url );
+          downloadMessage = tr( "This grid is available for download from <a href=\"%1\">%1</a>." ).arg( grid.url );
         }
       }
       gridMessage += QStringLiteral( "<li>%1</li>" ).arg( m );
@@ -171,13 +179,17 @@ void QgsAppMissingGridHandler::onMissingPreferredGrid( const QgsCoordinateRefere
   QgsMessageBar *bar = QgisApp::instance()->messageBar();
   QgsMessageBarItem *widget = bar->createMessage( QString(), shortMessage );
   QPushButton *detailsButton = new QPushButton( tr( "Details" ) );
-  connect( detailsButton, &QPushButton::clicked, this, [longMessage]
+  connect( detailsButton, &QPushButton::clicked, this, [longMessage, downloadMessage, gridName, widget, bar]
   {
-    // dlg has deleted on close
-    QgsMessageOutput * dlg( QgsMessageOutput::createMessageOutput() );
-    dlg->setTitle( tr( "Preferred Transformation Not Available" ) );
-    dlg->setMessage( longMessage, QgsMessageOutput::MessageHtml );
-    dlg->showMessage();
+    QgsInstallGridShiftFileDialog *dlg = new QgsInstallGridShiftFileDialog( gridName, QgisApp::instance() );
+    dlg->setAttribute( Qt::WA_DeleteOnClose );
+    dlg->setWindowTitle( tr( "Preferred Transformation Not Available" ) );
+    dlg->setDescription( longMessage );
+    dlg->setDownloadMessage( downloadMessage );
+    if ( dlg->exec() )
+    {
+      bar->popWidget( widget );
+    }
   } );
 
   widget->layout()->addWidget( detailsButton );
@@ -217,20 +229,23 @@ void QgsAppMissingGridHandler::onMissingGridUsedByContextHandler( const QgsCoord
                                displayIdentifierForCrs( destinationCrs, true ) );
 
   QString gridMessage;
+  QString downloadMessage;
+  QString gridName;
   for ( const QgsDatumTransform::GridDetails &grid : desired.grids )
   {
     if ( !grid.isAvailable )
     {
+      gridName = grid.shortName;
       QString m = tr( "This transformation requires the grid file “%1”, which is not available for use on the system." ).arg( grid.shortName );
       if ( !grid.url.isEmpty() )
       {
         if ( !grid.packageName.isEmpty() )
         {
-          m += ' ' +  tr( "This grid is part of the <i>%1</i> package, available for download from <a href=\"%2\">%2</a>." ).arg( grid.packageName, grid.url );
+          downloadMessage = tr( "This grid is part of the <i>%1</i> package, available for download from <a href=\"%2\">%2</a>." ).arg( grid.packageName, grid.url );
         }
         else
         {
-          m += ' ' + tr( "This grid is available for download from <a href=\"%1\">%1</a>." ).arg( grid.url );
+          downloadMessage = tr( "This grid is available for download from <a href=\"%1\">%1</a>." ).arg( grid.url );
         }
       }
       gridMessage += QStringLiteral( "<li>%1</li>" ).arg( m );
@@ -246,17 +261,20 @@ void QgsAppMissingGridHandler::onMissingGridUsedByContextHandler( const QgsCoord
                               + gridMessage
                               + tr( "<p>The operation specified for use in the project is:</p><p><code>%1</code></p>" ).arg( desired.proj ) ;
 
-
   QgsMessageBar *bar = QgisApp::instance()->messageBar();
   QgsMessageBarItem *widget = bar->createMessage( QString(), shortMessage );
   QPushButton *detailsButton = new QPushButton( tr( "Details" ) );
-  connect( detailsButton, &QPushButton::clicked, this, [longMessage]
+  connect( detailsButton, &QPushButton::clicked, this, [longMessage, gridName, downloadMessage, bar, widget]
   {
-    // dlg has deleted on close
-    QgsMessageOutput * dlg( QgsMessageOutput::createMessageOutput() );
-    dlg->setTitle( tr( "Project Transformation Not Available" ) );
-    dlg->setMessage( longMessage, QgsMessageOutput::MessageHtml );
-    dlg->showMessage();
+    QgsInstallGridShiftFileDialog *dlg = new QgsInstallGridShiftFileDialog( gridName, QgisApp::instance() );
+    dlg->setAttribute( Qt::WA_DeleteOnClose );
+    dlg->setWindowTitle( tr( "Project Transformation Not Available" ) );
+    dlg->setDescription( longMessage );
+    dlg->setDownloadMessage( downloadMessage );
+    if ( dlg->exec() )
+    {
+      bar->popWidget( widget );
+    }
   } );
 
   widget->layout()->addWidget( detailsButton );

@@ -13,19 +13,20 @@
 
 
 
-class QgsProject : QObject, QgsExpressionContextGenerator, QgsProjectTranslator
+class QgsProject : QObject, QgsExpressionContextGenerator, QgsExpressionContextScopeGenerator, QgsProjectTranslator
 {
 %Docstring
-Reads and writes project states.
+Encapsulates a QGIS project, including sets of map layers and their styles,
+layouts, annotations, canvases, etc.
 
-\note
+QgsProject is available both as a singleton (QgsProject.instance()) and for use as
+standalone objects. The QGIS project singleton always gives access to the canonical project reference
+open within the main QGIS application.
 
-Has two general kinds of state to make persistent.  (I.e., to read and
-write.)  First, QGIS proprietary information.  Second plug-in information.
+.. note::
 
-A singleton since there shall only be one active project at a time; and
-provides canonical location for plug-ins and main app to find/set
-properties.
+   QgsProject has two general kinds of state to make persistent. (I.e., to read and
+   write.) First, QGIS proprietary information. Second plugin information.
 %End
 
 %TypeHeaderCode
@@ -109,9 +110,8 @@ Returns QFileInfo object for the project's associated file.
 
 .. seealso:: :py:func:`fileName`
 
-.. versionadded:: 2.9
-
-.. deprecated:: Use absoluteFilePath(), baseName() or lastModifiedTime() instead
+.. deprecated:: QGIS 3.2
+   use absoluteFilePath(), baseName() or lastModifiedTime() instead
 %End
 
     QgsProjectStorage *projectStorage() const;
@@ -164,9 +164,11 @@ Returns the project's native coordinate reference system.
 .. versionadded:: 3.0
 %End
 
-    void setCrs( const QgsCoordinateReferenceSystem &crs );
+    void setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEllipsoid = false );
 %Docstring
 Sets the project's native coordinate reference system.
+If ``adjustEllipsoid`` is set to ``True``, the ellpsoid of this project will be set to
+the ellipsoid imposed by the CRS.
 
 .. seealso:: :py:func:`crs`
 
@@ -236,6 +238,7 @@ Clears the project, removing all settings and resetting it back to an empty, def
     enum ReadFlag
     {
       FlagDontResolveLayers,
+      FlagDontLoadLayouts,
     };
     typedef QFlags<QgsProject::ReadFlag> ReadFlags;
 
@@ -553,6 +556,25 @@ the project.
 .. versionadded:: 3.0
 %End
 
+
+    QgsBookmarkManager *bookmarkManager();
+%Docstring
+Returns the project's bookmark manager, which manages bookmarks within
+the project.
+
+.. versionadded:: 3.10
+%End
+
+
+    QgsProjectViewSettings *viewSettings();
+%Docstring
+Returns the project's view settings, which contains settings and properties
+relating to how a QgsProject should be viewed and behave inside a map canvas
+(e.g. map scales and default view extent)
+
+.. versionadded:: 3.10.1
+%End
+
     QgsLayerTree *layerTreeRoot() const;
 %Docstring
 Returns pointer to the root (invisible) node of the project's layer tree
@@ -590,21 +612,24 @@ Returns pointer to the project's annotation manager.
 %Docstring
 Set a list of layers which should not be taken into account on map identification
 
-.. deprecated:: since QGIS 3.4 use QgsMapLayer.setFlags() instead
+.. deprecated:: QGIS 3.4
+   use QgsMapLayer.setFlags() instead
 %End
 
  void setNonIdentifiableLayers( const QStringList &layerIds );
 %Docstring
 Set a list of layers which should not be taken into account on map identification
 
-.. deprecated:: since QGIS 3.4 use QgsMapLayer.setFlags() instead
+.. deprecated:: QGIS 3.4
+   use QgsMapLayer.setFlags() instead
 %End
 
  QStringList nonIdentifiableLayers() const;
 %Docstring
 Gets the list of layers which currently should not be taken into account on map identification
 
-.. deprecated:: since QGIS 3.4 use QgsMapLayer.setFlags() instead
+.. deprecated:: QGIS 3.4
+   use QgsMapLayer.setFlags() instead
 %End
 
     bool autoTransaction() const;
@@ -652,6 +677,8 @@ Defines if default values should be evaluated on provider side when requested an
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;
+
+    virtual QgsExpressionContextScope *createExpressionContextScope() const;
 
 
     QgsSnappingConfig snappingConfig() const;
@@ -746,6 +773,21 @@ Retrieve a list of matching registered layers by layer name.
 
 .. seealso:: :py:func:`mapLayers`
 %End
+
+    QList<QgsMapLayer *> mapLayersByShortName( const QString &shortName ) const;
+%Docstring
+Retrieves a list of matching registered layers by layer ``shortName``.
+If layer's short name is empty a match with layer's name is attempted.
+
+:return: list of matching layers
+
+.. seealso:: :py:func:`mapLayer`
+
+.. seealso:: :py:func:`mapLayers`
+
+.. versionadded:: 3.10
+%End
+
 
     QMap<QString, QgsMapLayer *> mapLayers( const bool validOnly = false ) const;
 %Docstring
@@ -1020,7 +1062,8 @@ removed from the project. The set of layers may be configured by users in projec
 and it is mainly a hint for the user interface to protect users from removing layers that important
 in the project. The removeMapLayer(), removeMapLayers() calls do not block removal of layers listed here.
 
-.. deprecated:: since QGIS 3.4 use QgsMapLayer.flags() instead
+.. deprecated:: QGIS 3.4
+   use QgsMapLayer.flags() instead
 
 .. versionadded:: 3.2
 %End
@@ -1032,7 +1075,8 @@ removed from the project. The set of layers may be configured by users in projec
 and it is mainly a hint for the user interface to protect users from removing layers that important
 in the project. The removeMapLayer(), removeMapLayers() calls do not block removal of layers listed here.
 
-.. deprecated:: since QGIS 3.4 use QgsMapLayer.setFlags() instead
+.. deprecated:: QGIS 3.4
+   use QgsMapLayer.setFlags() instead
 
 .. versionadded:: 3.2
 %End
@@ -1044,6 +1088,96 @@ Sets the ``colors`` for the project's color scheme (see QgsProjectColorScheme).
 .. seealso:: :py:func:`projectColorsChanged`
 
 .. versionadded:: 3.6
+%End
+
+    void setBackgroundColor( const QColor &color );
+%Docstring
+Sets the default background ``color`` used by default map canvases.
+
+.. seealso:: :py:func:`backgroundColor`
+
+.. versionadded:: 3.10
+%End
+
+    QColor backgroundColor() const;
+%Docstring
+Returns the default background color used by default map canvases.
+
+.. seealso:: :py:func:`setBackgroundColor`
+
+.. versionadded:: 3.10
+%End
+
+    void setSelectionColor( const QColor &color );
+%Docstring
+Sets the ``color`` used to highlight selected features.
+
+.. seealso:: :py:func:`selectionColor`
+
+.. versionadded:: 3.10
+%End
+
+    QColor selectionColor() const;
+%Docstring
+Returns the color used to highlight selected features
+
+.. seealso:: :py:func:`setSelectionColor`
+
+.. versionadded:: 3.10
+%End
+
+ void setMapScales( const QVector<double> &scales ) /Deprecated/;
+%Docstring
+Sets the list of custom project map ``scales``.
+
+The ``scales`` list consists of a list of scale denominator values, e.g.
+1000 for a 1:1000 scale.
+
+.. seealso:: :py:func:`mapScales`
+
+.. seealso:: :py:func:`mapScalesChanged`
+
+.. deprecated::
+   Use viewSettings() instead
+%End
+
+ QVector<double> mapScales() const /Deprecated/;
+%Docstring
+Returns the list of custom project map scales.
+
+The scales list consists of a list of scale denominator values, e.g.
+1000 for a 1:1000 scale.
+
+.. seealso:: :py:func:`setMapScales`
+
+.. seealso:: :py:func:`mapScalesChanged`
+
+.. deprecated::
+   Use viewSettings() instead
+%End
+
+ void setUseProjectScales( bool enabled ) /Deprecated/;
+%Docstring
+Sets whether project mapScales() are ``enabled``.
+
+.. seealso:: :py:func:`useProjectScales`
+
+.. seealso:: :py:func:`setMapScales`
+
+.. deprecated::
+   Use viewSettings() instead
+%End
+
+ bool useProjectScales() const /Deprecated/;
+%Docstring
+Returns ``True`` if project mapScales() are enabled.
+
+.. seealso:: :py:func:`setUseProjectScales`
+
+.. seealso:: :py:func:`mapScales`
+
+.. deprecated::
+   Use viewSettings() instead
 %End
 
     void generateTsFile( const QString &locale );
@@ -1077,6 +1211,13 @@ Returns ``True`` if the visitor should continue visiting other objects, or ``Fal
 should be canceled.
 
 .. versionadded:: 3.10
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsProject: '%1'%2>" ).arg( sipCpp->fileName(),
+                  sipCpp == QgsProject::instance() ? QStringLiteral( " (singleton instance)" ) : QString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
   signals:
@@ -1163,7 +1304,7 @@ Emitted when loading layers has produced some messages
 %Docstring
 Emitted when the list of layer which are excluded from map identification changes
 
-.. deprecated:: since QGIS 3.4
+.. deprecated:: QGIS 3.4
 %End
 
     void fileNameChanged();
@@ -1289,6 +1430,24 @@ Emitted whenever the project's color scheme has been changed.
 .. seealso:: :py:func:`setProjectColors`
 
 .. versionadded:: 3.6
+%End
+
+    void backgroundColorChanged();
+%Docstring
+Emitted whenever the project's canvas background color has been changed.
+
+.. seealso:: :py:func:`setBackgroundColor`
+
+.. versionadded:: 3.10
+%End
+
+    void selectionColorChanged();
+%Docstring
+Emitted whenever the project's selection color has been changed.
+
+.. seealso:: :py:func:`setSelectionColor`
+
+.. versionadded:: 3.10
 %End
 
 
@@ -1419,6 +1578,18 @@ Emitted when the project dirty status changes.
 %End
 
 
+ void mapScalesChanged() /Deprecated/;
+%Docstring
+Emitted when the list of custom project map scales changes.
+
+.. seealso:: :py:func:`mapScales`
+
+.. seealso:: :py:func:`setMapScales`
+
+.. deprecated::
+   Use viewSettings() instead
+%End
+
   public slots:
 
     void setSnappingConfig( const QgsSnappingConfig &snappingConfig );
@@ -1522,6 +1693,9 @@ This will block dirtying the specified ``project`` for the lifetime of this obje
   private:
     QgsProjectDirtyBlocker( const QgsProjectDirtyBlocker &other );
 };
+
+
+
 
 
 /************************************************************************

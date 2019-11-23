@@ -242,20 +242,6 @@ void QgsLayoutItemScaleBar::refreshDataDefinedProperty( const QgsLayoutObject::D
   QgsLayoutItem::refreshDataDefinedProperty( property );
 }
 
-// nextNiceNumber(4573.23, d) = 5000 (d=1) -> 4600 (d=10) -> 4580 (d=100) -> 4574 (d=1000) -> etc
-inline double nextNiceNumber( double a, double d = 1 )
-{
-  double s = std::pow( 10.0, std::floor( std::log10( a ) ) ) / d;
-  return std::ceil( a / s ) * s;
-}
-
-// prevNiceNumber(4573.23, d) = 4000 (d=1) -> 4500 (d=10) -> 4570 (d=100) -> 4573 (d=1000) -> etc
-inline double prevNiceNumber( double a, double d = 1 )
-{
-  double s = std::pow( 10.0, std::floor( std::log10( a ) ) ) / d;
-  return std::floor( a / s ) * s;
-}
-
 void QgsLayoutItemScaleBar::refreshSegmentMillimeters()
 {
   if ( mMap )
@@ -263,42 +249,31 @@ void QgsLayoutItemScaleBar::refreshSegmentMillimeters()
     //get mm dimension of composer map
     QRectF composerItemRect = mMap->rect();
 
-    if ( mSettings.segmentSizeMode() == QgsScaleBarSettings::SegmentSizeFixed )
+    switch ( mSettings.segmentSizeMode() )
     {
-      //calculate size depending on mNumUnitsPerSegment
-      mSegmentMillimeters = composerItemRect.width() / mapWidth() * mSettings.unitsPerSegment();
-    }
-    else /*if(mSegmentSizeMode == SegmentSizeFitWidth)*/
-    {
-      if ( mSettings.maximumBarWidth() < mSettings.minimumBarWidth() )
+      case QgsScaleBarSettings::SegmentSizeFixed:
       {
-        mSegmentMillimeters = 0;
-      }
-      else
-      {
-        double nSegments = ( mSettings.numberOfSegmentsLeft() != 0 ) + mSettings.numberOfSegments();
-        // unitsPerSegments which fit minBarWidth resp. maxBarWidth
-        double minUnitsPerSeg = ( mSettings.minimumBarWidth() * mapWidth() ) / ( nSegments * composerItemRect.width() );
-        double maxUnitsPerSeg = ( mSettings.maximumBarWidth() * mapWidth() ) / ( nSegments * composerItemRect.width() );
-
-        // Start with coarsest "nice" number closest to minUnitsPerSeg resp
-        // maxUnitsPerSeg, then proceed to finer numbers as long as neither
-        // lowerNiceUnitsPerSeg nor upperNiceUnitsPerSeg are in
-        // [minUnitsPerSeg, maxUnitsPerSeg]
-        double lowerNiceUnitsPerSeg = nextNiceNumber( minUnitsPerSeg );
-        double upperNiceUnitsPerSeg = prevNiceNumber( maxUnitsPerSeg );
-
-        double d = 1;
-        while ( lowerNiceUnitsPerSeg > maxUnitsPerSeg && upperNiceUnitsPerSeg < minUnitsPerSeg )
-        {
-          d *= 10;
-          lowerNiceUnitsPerSeg = nextNiceNumber( minUnitsPerSeg, d );
-          upperNiceUnitsPerSeg = prevNiceNumber( maxUnitsPerSeg, d );
-        }
-
-        // Pick mNumUnitsPerSegment from {lowerNiceUnitsPerSeg, upperNiceUnitsPerSeg}, use the larger if possible
-        mSettings.setUnitsPerSegment( upperNiceUnitsPerSeg < minUnitsPerSeg ? lowerNiceUnitsPerSeg : upperNiceUnitsPerSeg );
+        //calculate size depending on mNumUnitsPerSegment
         mSegmentMillimeters = composerItemRect.width() / mapWidth() * mSettings.unitsPerSegment();
+        break;
+      }
+
+      case QgsScaleBarSettings::SegmentSizeFitWidth:
+      {
+        if ( mSettings.maximumBarWidth() < mSettings.minimumBarWidth() )
+        {
+          mSegmentMillimeters = 0;
+        }
+        else
+        {
+          double nSegments = ( mSettings.numberOfSegmentsLeft() != 0 ) + mSettings.numberOfSegments();
+          // unitsPerSegments which fit minBarWidth resp. maxBarWidth
+          double minUnitsPerSeg = ( mSettings.minimumBarWidth() * mapWidth() ) / ( nSegments * composerItemRect.width() );
+          double maxUnitsPerSeg = ( mSettings.maximumBarWidth() * mapWidth() ) / ( nSegments * composerItemRect.width() );
+          mSettings.setUnitsPerSegment( QgsLayoutUtils::calculatePrettySize( minUnitsPerSeg, maxUnitsPerSeg ) );
+          mSegmentMillimeters = composerItemRect.width() / mapWidth() * mSettings.unitsPerSegment();
+        }
+        break;
       }
     }
   }
@@ -337,6 +312,20 @@ QgsScaleBarRenderer::ScaleBarContext QgsLayoutItemScaleBar::createScaleContext()
   scaleContext.segmentWidth = mSegmentMillimeters;
   scaleContext.scale = mMap ? mMap->scale() : 1.0;
   return scaleContext;
+}
+
+void QgsLayoutItemScaleBar::setLabelVerticalPlacement( QgsScaleBarSettings::LabelVerticalPlacement placement )
+{
+  mSettings.setLabelVerticalPlacement( placement );
+  refreshItemSize();
+  emit changed();
+}
+
+void QgsLayoutItemScaleBar::setLabelHorizontalPlacement( QgsScaleBarSettings::LabelHorizontalPlacement placement )
+{
+  mSettings.setLabelHorizontalPlacement( placement );
+  refreshItemSize();
+  emit changed();
 }
 
 void QgsLayoutItemScaleBar::setAlignment( QgsScaleBarSettings::Alignment a )
@@ -649,6 +638,10 @@ bool QgsLayoutItemScaleBar::writePropertiesToElement( QDomElement &composerScale
   strokeColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( mSettings.lineColor().alpha() ) );
   composerScaleBarElem.appendChild( strokeColorElem );
 
+  //label vertical/horizontal placement
+  composerScaleBarElem.setAttribute( QStringLiteral( "labelVerticalPlacement" ), QString::number( static_cast< int >( mSettings.labelVerticalPlacement() ) ) );
+  composerScaleBarElem.setAttribute( QStringLiteral( "labelHorizontalPlacement" ), QString::number( static_cast< int >( mSettings.labelHorizontalPlacement() ) ) );
+
   //alignment
   composerScaleBarElem.setAttribute( QStringLiteral( "alignment" ), QString::number( static_cast< int >( mSettings.alignment() ) ) );
 
@@ -828,6 +821,10 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
   {
     mSettings.setUnits( QgsUnitTypes::decodeDistanceUnit( itemElem.attribute( QStringLiteral( "unitType" ) ) ) );
   }
+
+  mSettings.setLabelVerticalPlacement( static_cast< QgsScaleBarSettings::LabelVerticalPlacement >( itemElem.attribute( QStringLiteral( "labelVerticalPlacement" ), QStringLiteral( "0" ) ).toInt() ) );
+  mSettings.setLabelHorizontalPlacement( static_cast< QgsScaleBarSettings::LabelHorizontalPlacement >( itemElem.attribute( QStringLiteral( "labelHorizontalPlacement" ), QStringLiteral( "0" ) ).toInt() ) );
+
   mSettings.setAlignment( static_cast< QgsScaleBarSettings::Alignment >( itemElem.attribute( QStringLiteral( "alignment" ), QStringLiteral( "0" ) ).toInt() ) );
 
   //map
@@ -861,4 +858,9 @@ bool QgsLayoutItemScaleBar::accept( QgsStyleEntityVisitorInterface *visitor ) co
     return false;
 
   return true;
+}
+
+QgsLayoutItem::ExportLayerBehavior QgsLayoutItemScaleBar::exportLayerBehavior() const
+{
+  return CanGroupWithItemsOfSameType;
 }

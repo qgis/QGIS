@@ -30,6 +30,7 @@ class QgsTemplateProjectsModel : public QStandardItemModel
   private slots:
 
   private:
+    void addTemplateDirectory( const QString &path );
     void scanDirectory( const QString &path );
 
     QFileSystemWatcher mFileSystemWatcher;

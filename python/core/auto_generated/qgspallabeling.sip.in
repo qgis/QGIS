@@ -20,7 +20,7 @@ class QgsLabelPosition
   public:
 
     QgsLabelPosition( QgsFeatureId id, double r, const QVector< QgsPointXY > &corners, const QgsRectangle &rect, double w, double h, const QString &layer, const QString &labeltext, const QFont &labelfont, bool upside_down, bool diagram = false, bool pinned = false, const QString &providerId = QString(),
-                      const QgsGeometry &labelGeometry = QgsGeometry() );
+                      const QgsGeometry &labelGeometry = QgsGeometry(), bool isUnplaced = false );
 %Docstring
 Constructor for QgsLabelPosition.
 
@@ -38,6 +38,7 @@ Constructor for QgsLabelPosition.
 :param pinned: ``True`` if label has pinned placement
 :param providerId: ID of associated label provider
 :param labelGeometry: polygon geometry of label boundary
+:param isUnplaced: set to ``True`` if label was unplaced (e.g. due to collisions with other labels)
 %End
 
     QgsLabelPosition();
@@ -71,6 +72,8 @@ Constructor for QgsLabelPosition
     bool isPinned;
 
     QString providerID;
+
+    bool isUnplaced;
 };
 
 
@@ -198,6 +201,7 @@ class QgsPalLayerSettings
       AutoWrapLength,
       MultiLineHeight,
       MultiLineAlignment,
+      TextOrientation,
       DirSymbDraw,
       DirSymbLeft,
       DirSymbRight,
@@ -216,6 +220,13 @@ class QgsPalLayerSettings
       BufferOpacity,
       BufferJoinStyle,
       BufferBlendMode,
+
+      // mask buffer
+      MaskEnabled,
+      MaskBufferSize,
+      MaskBufferUnit,
+      MaskOpacity,
+      MaskJoinStyle,
 
       // background
       ShapeDraw,
@@ -275,6 +286,8 @@ class QgsPalLayerSettings
       Priority,
       PredefinedPositionOrder,
       LinePlacementOptions,
+      OverrunDistance,
+      LabelAllParts,
 
       // rendering
       ScaleVisibility,
@@ -402,6 +415,12 @@ Returns the QgsExpression for this label settings. May be ``None`` if isExpressi
 
     QgsMapUnitScale repeatDistanceMapUnitScale;
 
+    double overrunDistance;
+
+    QgsUnitTypes::RenderUnit overrunDistanceUnit;
+
+    QgsMapUnitScale overrunDistanceMapUnitScale;
+
     QuadrantPosition quadOffset;
 
     double xOffset;
@@ -465,10 +484,12 @@ Returns the QgsExpression for this label settings. May be ``None`` if isExpressi
 
     QgsWkbTypes::GeometryType layerType;
 
-    void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = 0, QgsRenderContext *context = 0 );
+    void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = 0, QgsRenderContext *context = 0, double *rotatedLabelX /Out/ = 0, double *rotatedLabelY /Out/ = 0 );
 %Docstring
 Calculates the space required to render the provided ``text`` in map units.
 Results will be written to ``labelX`` and ``labelY``.
+If the text orientation is set to rotation-based, the spaced taken to render
+vertically oriented text will be written to ``rotatedLabelX`` and ``rotatedLabelY`` .
 %End
 
     void registerFeature( const QgsFeature &f, QgsRenderContext &context  );
@@ -481,7 +502,7 @@ Register a feature for labeling.
                 must have already had the feature and fields sets prior to calling this method.
 :param labelFeature: if using :py:class:`QgsLabelingEngine`, this will receive the label feature. Not available
                      in Python bindings.
-:param symbol: feature symbol to label (ownership is transferred to the label feature)
+:param symbol: feature symbol to label (ownership is not transferred, and ``symbol`` must exist until the labeling is complete)
 %End
 
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context );

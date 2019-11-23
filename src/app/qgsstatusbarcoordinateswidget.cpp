@@ -227,7 +227,7 @@ void QgsStatusBarCoordinatesWidget::world()
   {
     return;
   }
-  QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.shp" );
+  QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.gpkg|layername=countries" );
   QFileInfo fileInfo = QFileInfo( fileName );
   const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
   QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(),
@@ -280,7 +280,7 @@ void QgsStatusBarCoordinatesWidget::refreshMapCanvas()
 
   //stop any current rendering
   mMapCanvas->stopRendering();
-  mMapCanvas->refreshAllLayers();
+  mMapCanvas->redrawAllLayers();
 }
 
 void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPointXY &p )

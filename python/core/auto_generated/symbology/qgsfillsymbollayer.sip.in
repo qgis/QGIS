@@ -28,6 +28,11 @@ class QgsSimpleFillSymbolLayer : QgsFillSymbolLayer
 
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+%Docstring
+Creates a new QgsSimpleFillSymbolLayer using the specified ``properties`` map containing symbol properties (see properties()).
+
+Caller takes ownership of the returned symbol layer.
+%End
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
 
 
@@ -193,6 +198,11 @@ class QgsGradientFillSymbolLayer : QgsFillSymbolLayer
 
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+%Docstring
+Creates a new QgsGradientFillSymbolLayer using the specified ``properties`` map containing symbol properties (see properties()).
+
+Caller takes ownership of the returned symbol layer.
+%End
 
 
     virtual QString layerType() const;
@@ -348,6 +358,11 @@ class QgsShapeburstFillSymbolLayer : QgsFillSymbolLayer
 
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+%Docstring
+Creates a new QgsShapeburstFillSymbolLayer using the specified ``properties`` map containing symbol properties (see properties()).
+
+Caller takes ownership of the returned symbol layer.
+%End
 
 
     virtual QString layerType() const;
@@ -515,11 +530,11 @@ or by simply specificing a start and end color.
 .. versionadded:: 2.3
 %End
 
-    void setColorRamp( QgsColorRamp *ramp );
+    void setColorRamp( QgsColorRamp *ramp /Transfer/ );
 %Docstring
-Sets the color ramp used to draw the shapeburst fill. Color ramps are only used if setColorType is set ShapeburstColorType.ColorRamp.
+Sets the color ``ramp`` used to draw the shapeburst fill. Color ramps are only used if setColorType is set ShapeburstColorType.ColorRamp.
 
-:param ramp: color ramp to use for shapeburst fill
+Ownership of ``ramp`` is transferred to the fill.
 
 .. seealso:: :py:func:`setColorType`
 
@@ -1588,6 +1603,11 @@ class QgsPointPatternFillSymbolLayer: QgsImageFillSymbolLayer
     ~QgsPointPatternFillSymbolLayer();
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+%Docstring
+Creates a new QgsPointPatternFillSymbolLayer using the specified ``properties`` map containing symbol properties (see properties()).
+
+Caller takes ownership of the returned symbol layer.
+%End
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
 
     virtual QString layerType() const;
@@ -1891,6 +1911,206 @@ Returns the unit scale for the vertical offset between rows in the pattern.
     QgsPointPatternFillSymbolLayer( const QgsPointPatternFillSymbolLayer &other );
 };
 
+class QgsRandomMarkerFillSymbolLayer : QgsFillSymbolLayer
+{
+%Docstring
+
+A fill symbol layer which places markers at random locations within polygons.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsfillsymbollayer.h"
+%End
+  public:
+
+    enum CountMethod
+    {
+      AbsoluteCount,
+      DensityBasedCount,
+    };
+
+    QgsRandomMarkerFillSymbolLayer( int pointCount = 10, CountMethod method = AbsoluteCount, double densityArea = 250.0, unsigned long seed = 0 );
+%Docstring
+Constructor for QgsRandomMarkerFillSymbolLayer, with the specified ``pointCount``.
+
+Optionally a specific random number ``seed`` can be used when generating points. A ``seed`` of 0 indicates that
+a truly random sequence will be used on every rendering, causing points to appear in different locations with every map refresh.
+%End
+
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+%Docstring
+Creates a new QgsRandomMarkerFillSymbolLayer using the specified ``properties`` map containing symbol properties (see properties()).
+
+Caller takes ownership of the returned symbol layer.
+%End
+
+    virtual QString layerType() const;
+
+    virtual void startRender( QgsSymbolRenderContext &context );
+
+    virtual void stopRender( QgsSymbolRenderContext &context );
+
+    virtual void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
+
+    virtual QgsStringMap properties() const;
+
+    virtual QgsRandomMarkerFillSymbolLayer *clone() const /Factory/;
+
+
+    virtual void setColor( const QColor &color );
+
+    virtual QColor color() const;
+
+
+    virtual QgsSymbol *subSymbol();
+
+    virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
+
+
+    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+
+    virtual QgsUnitTypes::RenderUnit outputUnit() const;
+
+
+    virtual void setMapUnitScale( const QgsMapUnitScale &scale );
+
+    virtual QgsMapUnitScale mapUnitScale() const;
+
+
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
+    virtual bool hasDataDefinedProperties() const;
+
+
+    int pointCount() const;
+%Docstring
+Returns the count of random points to render in the fill.
+
+.. seealso:: :py:func:`setPointCount`
+%End
+
+    void setPointCount( int count );
+%Docstring
+Sets the ``count`` of random points to render in the fill.
+
+.. seealso:: :py:func:`pointCount`
+%End
+
+    unsigned long seed() const;
+%Docstring
+Returns the random number seed to use when generating points, or 0 if
+a truly random sequence will be used (causing points to appear in different locations with every map refresh).
+
+.. seealso:: :py:func:`setSeed`
+%End
+
+    void setSeed( unsigned long seed );
+%Docstring
+Sets the random number ``seed`` to use when generating points, or 0 if
+a truly random sequence will be used on every rendering (causing points to appear
+in different locations with every map refresh).
+
+.. seealso:: :py:func:`seed`
+%End
+
+    bool clipPoints() const;
+%Docstring
+Returns ``True`` if point markers should be clipped to the polygon boundary.
+
+.. seealso:: :py:func:`setClipPoints`
+%End
+
+    void setClipPoints( bool clipped );
+%Docstring
+Sets whether point markers should be ``clipped`` to the polygon boundary.
+
+.. seealso:: :py:func:`clipPoints`
+%End
+
+    CountMethod countMethod() const;
+%Docstring
+Returns the count method used to randomly fill the polygon.
+
+.. seealso:: :py:func:`setCountMethod`
+%End
+
+    void setCountMethod( CountMethod method );
+%Docstring
+Sets the count ``method`` used to randomly fill the polygon.
+
+.. seealso:: :py:func:`countMethod`
+%End
+
+    double densityArea() const;
+%Docstring
+Returns the density area used to count the number of points to randomly fill the polygon.
+
+Only used when the count method is set to QgsRandomMarkerFillSymbolLayer.DensityBasedCount.
+
+Units are specified by setDensityAreaUnit().
+
+.. seealso:: :py:func:`setDensityArea`
+%End
+
+    void setDensityArea( double area );
+%Docstring
+Sets the density ``area`` used to count the number of points to randomly fill the polygon.
+
+.. seealso:: :py:func:`densityArea`
+%End
+
+    void setDensityAreaUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the units for the density area.
+
+:param unit: width units
+
+.. seealso:: :py:func:`densityAreaUnit`
+%End
+
+    QgsUnitTypes::RenderUnit densityAreaUnit() const;
+%Docstring
+Returns the units for the density area.
+
+.. seealso:: :py:func:`setDensityAreaUnit`
+%End
+
+    void setDensityAreaUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map scale for the density area.
+
+:param scale: density area map unit scale
+
+.. seealso:: :py:func:`densityAreaUnitScale`
+
+.. seealso:: :py:func:`setDensityArea`
+
+.. seealso:: :py:func:`setDensityAreaUnit`
+%End
+
+    const QgsMapUnitScale &densityAreaUnitScale() const;
+%Docstring
+Returns the map scale for the density area.
+
+.. seealso:: :py:func:`setDensityAreaUnitScale`
+
+.. seealso:: :py:func:`densityArea`
+
+.. seealso:: :py:func:`densityAreaUnit`
+%End
+
+    virtual void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+
+    virtual void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+
+
+  private:
+    QgsRandomMarkerFillSymbolLayer( const QgsRandomMarkerFillSymbolLayer &other );
+};
+
+
 class QgsCentroidFillSymbolLayer : QgsFillSymbolLayer
 {
 
@@ -1902,6 +2122,11 @@ class QgsCentroidFillSymbolLayer : QgsFillSymbolLayer
 
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+%Docstring
+Creates a new QgsCentroidFillSymbolLayer using the specified ``properties`` map containing symbol properties (see properties()).
+
+Caller takes ownership of the returned symbol layer.
+%End
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
 
 

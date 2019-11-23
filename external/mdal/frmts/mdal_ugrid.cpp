@@ -45,8 +45,21 @@ std::string MDAL::DriverUgrid::findMeshName( int dimension, bool optional ) cons
 
 std::string MDAL::DriverUgrid::nodeZVariableName() const
 {
-  // looks like mesh attributes does not have node_z array name
-  // reference
+  const std::vector<std::string> variables = mNcFile.readArrNames();
+  for ( const std::string &varName : variables )
+  {
+    const std::string stdName = mNcFile.getAttrStr( varName, "standard_name" );
+    const std::string meshName = mNcFile.getAttrStr( varName, "mesh" );
+    const std::string location = mNcFile.getAttrStr( varName, "location" );
+
+    if ( stdName == "altitude" && meshName == mMesh2dName && location == "node" )
+    {
+      return varName;
+    }
+  }
+
+  // not found, the file in non UGRID standard conforming,
+  // but lets try the common name
   return mMesh2dName + "_node_z";
 }
 
@@ -61,33 +74,91 @@ MDAL::CFDimensions MDAL::DriverUgrid::populateDimensions( )
 
   // 2D Mesh
 
-  // node_dimension is usually something like nMesh2D_node
-  // number of nodes/vertices in the mesh
-  const std::string mesh2dNode = mNcFile.getAttrStr( mMesh2dName, "node_dimension" );
-  mNcFile.getDimension( mesh2dNode, &count, &ncid );
-  dims.setDimension( CFDimensions::Vertex2D, count, ncid );
+  //node dimension location is retrieved from the node variable
 
-  // face_dimension is usually something like nMesh2D_face
-  // number of faces in the mesh
-  const std::string mesh2dFace = mNcFile.getAttrStr( mMesh2dName, "face_dimension" );
-  mNcFile.getDimension( mesh2dFace, &count, &ncid );
-  dims.setDimension( CFDimensions::Face2D, count, ncid );
+  std::vector<std::string> nodeVariablesName = MDAL::split( mNcFile.getAttrStr( mMesh2dName, "node_coordinates" ), ' ' );
+  if ( nodeVariablesName.size() < 2 )
+    throw MDAL_Status::Err_UnknownFormat;
 
-  // edge_dimension is usually something like nMesh2D_edge
-  // number of edges in the mesh
+  std::vector<size_t> nodeDimension;
+  std::vector<int> nodeDimensionId;
+  mNcFile.getDimensions( nodeVariablesName.at( 0 ), nodeDimension, nodeDimensionId );
+  if ( nodeDimension.size() != 1 )
+    throw MDAL_Status::Err_UnknownFormat;
+
+  dims.setDimension( CFDimensions::Vertex2D, nodeDimension.at( 0 ), nodeDimensionId.at( 0 ) );
+
+
+  //face dimension location is retrieved from the face_node_connectivity variable
+  //if face_dimension is defined as attribute, the dimension at this location help to desambiguate vertex per faces and number of faces
+
+  std::string faceConnectivityVariablesName = mNcFile.getAttrStr( mMesh2dName, "face_node_connectivity" );
+  std::string faceDimensionLocation = mNcFile.getAttrStr( mMesh2dName, "face_dimension" );
+  if ( faceConnectivityVariablesName == "" )
+    throw MDAL_Status::Err_UnknownFormat;
+
+  size_t facesCount;
+  size_t maxVerticesPerFace;
+
+  std::vector<size_t> faceDimension;
+  std::vector<int> faceDimensionId;
+  int facesIndexDimensionId;
+  int maxVerticesPerFaceDimensionId;
+  mNcFile.getDimensions( faceConnectivityVariablesName, faceDimension, faceDimensionId );
+  if ( faceDimension.size() != 2 )
+    throw MDAL_Status::Err_UnknownFormat;
+
+  if ( faceDimensionLocation != "" )
+  {
+    mNcFile.getDimension( faceDimensionLocation, &facesCount, &ncid );
+    if ( facesCount == faceDimension.at( 0 ) )
+    {
+      facesIndexDimensionId = faceDimensionId.at( 0 );
+      maxVerticesPerFaceDimensionId = faceDimensionId.at( 1 );
+      maxVerticesPerFace = faceDimension.at( 1 );
+    }
+    else
+    {
+      facesIndexDimensionId = faceDimensionId.at( 1 );
+      maxVerticesPerFaceDimensionId = faceDimensionId.at( 0 );
+      maxVerticesPerFace = faceDimension.at( 0 );
+    }
+  }
+  else
+  {
+    facesIndexDimensionId = faceDimensionId.at( 0 );
+    facesCount = faceDimension.at( 0 );
+    maxVerticesPerFaceDimensionId = faceDimensionId.at( 1 );
+    maxVerticesPerFace = faceDimension.at( 1 );
+  }
+
+  dims.setDimension( CFDimensions::Face2D, facesCount, facesIndexDimensionId );
+  dims.setDimension( CFDimensions::MaxVerticesInFace, maxVerticesPerFace, maxVerticesPerFaceDimensionId );
+
+
+
+  // number of edges in the mesh, not required for UGRID format
   const std::string mesh2dEdge = mNcFile.getAttrStr( mMesh2dName, "edge_dimension" );
-  mNcFile.getDimension( mesh2dEdge, &count, &ncid );
-  dims.setDimension( CFDimensions::Face2DEdge, count, ncid );
+  if ( mNcFile.hasDimension( mesh2dEdge ) )
+  {
+    mNcFile.getDimension( mesh2dEdge, &count, &ncid );
+    dims.setDimension( CFDimensions::Face2DEdge, count, ncid );
+  }
+  else
+  {
+    dims.setDimension( CFDimensions::Face2DEdge, 0, -1 );
+  }
 
-  // max_face_nodes_dimension is usually something like max_nMesh2D_face_nodes
-  // maximum number of vertices in faces
-  const std::string mesh2dMaxNodesInFace = mNcFile.getAttrStr( mMesh2dName, "max_face_nodes_dimension" );
-  mNcFile.getDimension( mesh2dMaxNodesInFace, &count, &ncid );
-  dims.setDimension( CFDimensions::MaxVerticesInFace, count, ncid );
-
-  // Time
-  mNcFile.getDimension( "time", &count, &ncid );
-  dims.setDimension( CFDimensions::Time, count, ncid );
+  // Time not required for UGRID format
+  if ( mNcFile.hasDimension( "time" ) )
+  {
+    mNcFile.getDimension( "time", &count, &ncid );
+    dims.setDimension( CFDimensions::Time, count, ncid );
+  }
+  else
+  {
+    dims.setDimension( CFDimensions::Time, 0, -1 );
+  }
 
   return dims;
 }
@@ -138,7 +209,9 @@ void MDAL::DriverUgrid::populateFaces( MDAL::Faces &faces )
   const std::string mesh2dFaceNodeConnectivity = mNcFile.getAttrStr( mMesh2dName, "face_node_connectivity" );
 
   size_t verticesInFace = mDimensions.size( CFDimensions::MaxVerticesInFace );
-  int fill_val = mNcFile.getAttrInt( mesh2dFaceNodeConnectivity, "_FillValue" );
+  int fill_val = -1;
+  if ( mNcFile.hasAttrInt( mesh2dFaceNodeConnectivity, "_FillValue" ) )
+    fill_val = mNcFile.getAttrInt( mesh2dFaceNodeConnectivity, "_FillValue" );
   int start_index = mNcFile.getAttrInt( mesh2dFaceNodeConnectivity, "start_index" );
   std::vector<int> face_nodes_conn = mNcFile.readIntArr( mesh2dFaceNodeConnectivity, faceCount * verticesInFace );
 
@@ -179,10 +252,15 @@ std::string MDAL::DriverUgrid::getCoordinateSystemVariableName()
   std::string coordinate_system_variable;
 
   // first try to get the coordinate system variable from grid definition
-  if ( mNcFile.hasArr( nodeZVariableName() ) )
+  std::vector<std::string> nodeVariablesName = MDAL::split( mNcFile.getAttrStr( mMesh2dName, "node_coordinates" ), ' ' );
+  if ( nodeVariablesName.size() > 1 )
   {
-    coordinate_system_variable = mNcFile.getAttrStr( nodeZVariableName(), "grid_mapping" );
+    if ( mNcFile.hasArr( nodeVariablesName[0] ) )
+    {
+      coordinate_system_variable = mNcFile.getAttrStr( nodeVariablesName[0], "grid_mapping" );
+    }
   }
+
 
   // if automatic discovery fails, try to check some hardcoded common variables that store projection
   if ( coordinate_system_variable.empty() )
@@ -281,16 +359,18 @@ void MDAL::DriverUgrid::parseNetCDFVariableMetadata( int varid, const std::strin
   }
   else
   {
-    if ( MDAL::contains( long_name, ", x-component" ) )
+    if ( MDAL::contains( long_name, ", x-component" ) || MDAL::contains( long_name, "u component of " ) )
     {
       *is_vector = true;
       name = MDAL::replace( long_name, ", x-component", "" );
+      name = MDAL::replace( name, "u component of ", "" );
     }
-    else if ( MDAL::contains( long_name, ", y-component" ) )
+    else if ( MDAL::contains( long_name, ", y-component" ) || MDAL::contains( long_name, "v component of " ) )
     {
       *is_vector = true;
       *is_x = false;
       name = MDAL::replace( long_name, ", y-component", "" );
+      name = MDAL::replace( name, "v component of ", "" );
     }
     else
     {

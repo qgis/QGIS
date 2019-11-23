@@ -670,7 +670,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
   // set the point coordinates in the map event
   e->setMapPoint( point );
 
-  mSnapMatch = context.snappingUtils->snapToMap( point );
+  mSnapMatch = context.snappingUtils->snapToMap( point, nullptr, true );
 
   if ( mSnapMatch.isValid() )
   {
@@ -687,9 +687,10 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
    * but they do not take into account if when you snap on a vertex it has
    * a Z value.
    * To get the value we use the snapPoint method. However, we only apply it
-   * when the snapped point corresponds to the constrained point.
+   * when the snapped point corresponds to the constrained point or on an edge
+   * if the topological editing is activated.
    */
-  if ( mSnapMatch.hasVertex() && ( point == mSnapMatch.point() ) )
+  if ( ( mSnapMatch.hasVertex() && ( point == mSnapMatch.point() ) ) || ( mSnapMatch.hasEdge() && QgsProject::instance()->topologicalEditing() ) )
   {
     e->snapPoint();
   }
@@ -781,7 +782,7 @@ QList<QgsPointXY> QgsAdvancedDigitizingDockWidget::snapSegmentToAllLayers( const
   localConfig.setType( QgsSnappingConfig::Segment );
   snappingUtils->setConfig( localConfig );
 
-  match = snappingUtils->snapToMap( originalMapPoint );
+  match = snappingUtils->snapToMap( originalMapPoint, nullptr, true );
 
   snappingUtils->setConfig( canvasConfig );
 

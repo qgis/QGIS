@@ -142,7 +142,7 @@ void MDAL::DriverAsciiDat::loadNewFormat( std::ifstream &in,
   std::shared_ptr<DatasetGroup> group; // DAT outputs data
   std::string groupName( MDAL::baseName( mDatFile ) );
   std::string line;
-
+  std::string referenceTime;
   // see if it contains face-centered results - supported by BASEMENT
   bool faceCentered = false;
   if ( contains( groupName, "_els_" ) )
@@ -201,6 +201,7 @@ void MDAL::DriverAsciiDat::loadNewFormat( std::ifstream &in,
               );
       group->setIsScalar( !isVector );
       group->setIsOnVertices( !faceCentered );
+      group->setReferenceTime( referenceTime );
     }
     else if ( cardType == "ENDDS" )
     {
@@ -226,9 +227,24 @@ void MDAL::DriverAsciiDat::loadNewFormat( std::ifstream &in,
       if ( quoteIdx1 != std::string::npos && quoteIdx2 != std::string::npos )
         group->setName( line.substr( quoteIdx1 + 1, quoteIdx2 - quoteIdx1 - 1 ) );
     }
+    else if ( cardType == "RT_JULIAN" && items.size() >= 2 )
+    {
+      referenceTime = "JULIAN " + items[1];
+    }
+    else if ( cardType == "TIMEUNITS" && items.size() >= 2 )
+    {
+      if ( !group )
+      {
+        debug( "TIMEUNITS card for no active dataset!" );
+        EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
+      }
+
+      group->setMetadata( "TIMEUNITS", items[1] );
+    }
     else if ( cardType == "TS" && items.size() >= 3 )
     {
       double t = toDouble( items[2] );
+      t = convertTimeDataToHours( t, group->getMetadata( "TIMEUNITS" ) );
 
       if ( faceCentered )
       {
@@ -320,7 +336,7 @@ void MDAL::DriverAsciiDat::readVertexTimestep(
   size_t faceCount = mesh->facesCount();
 
   std::shared_ptr<MDAL::MemoryDataset> dataset = std::make_shared< MDAL::MemoryDataset >( group.get() );
-  dataset->setTime( t / 3600. ); // TODO read TIMEUNITS
+  dataset->setTime( t );
 
   int *active = dataset->active();
   // only for new format
@@ -392,7 +408,7 @@ void MDAL::DriverAsciiDat::readFaceTimestep(
   size_t faceCount = mesh->facesCount();
 
   std::shared_ptr<MDAL::MemoryDataset> dataset = std::make_shared< MDAL::MemoryDataset >( group.get() );
-  dataset->setTime( t / 3600. );
+  dataset->setTime( t );
   double *values = dataset->values();
   // TODO: hasStatus
   for ( size_t index = 0; index < faceCount; ++index )
@@ -426,4 +442,23 @@ void MDAL::DriverAsciiDat::readFaceTimestep(
 
   dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
   group->datasets.push_back( dataset );
+}
+
+
+double MDAL::DriverAsciiDat::convertTimeDataToHours( double time, const std::string &originalTimeDataUnit ) const
+{
+  if ( originalTimeDataUnit == "se" || originalTimeDataUnit == "2" || originalTimeDataUnit == "Seconds"
+       || originalTimeDataUnit.empty() )
+  {
+    time /= 3600.0;
+  }
+  else if ( originalTimeDataUnit == "mi" || originalTimeDataUnit == "1" || originalTimeDataUnit == "Minutes" )
+  {
+    time /= 60.0;
+  }
+  else if ( originalTimeDataUnit == "days" )
+  {
+    time *= 24;
+  }
+  return time;
 }

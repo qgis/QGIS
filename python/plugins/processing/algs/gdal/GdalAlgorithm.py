@@ -32,7 +32,8 @@ from qgis.core import (QgsApplication,
                        QgsProcessingAlgorithm,
                        QgsProcessingContext,
                        QgsProcessingFeedback,
-                       QgsProviderRegistry)
+                       QgsProviderRegistry,
+                       QgsDataSourceUri)
 
 from processing.algs.gdal.GdalAlgorithmDialog import GdalAlgorithmDialog
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -88,6 +89,7 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
                 # and extract selection if required
                 ogr_data_path = self.parameterAsCompatibleSourceLayerPath(parameters, parameter_name, context,
                                                                           QgsVectorFileWriter.supportedFormatExtensions(),
+                                                                          QgsVectorFileWriter.supportedFormatExtensions()[0],
                                                                           feedback=feedback)
                 ogr_layer_name = GdalUtils.ogrLayerName(ogr_data_path)
             else:
@@ -115,6 +117,11 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
                 #for the command line preview since it has no meaning outside of a QGIS session!
                 ogr_data_path = GdalUtils.ogrConnectionStringAndFormatFromLayer(input_layer)[0]
                 ogr_layer_name = GdalUtils.ogrLayerName(input_layer.dataProvider().dataSourceUri())
+        elif input_layer.dataProvider().name().lower() == 'wfs':
+            uri = QgsDataSourceUri(input_layer.source())
+            baseUrl = uri.param('url').split('?')[0]
+            ogr_data_path = "WFS:{}".format(baseUrl)
+            ogr_layer_name = uri.param('typename')
         else:
             # vector layer, but not OGR - get OGR compatible path
             # TODO - handle "selected features only" mode!!

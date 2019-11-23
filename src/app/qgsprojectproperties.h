@@ -185,9 +185,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     //! Signal used to inform listeners that the mouse display precision may have changed
     void displayPrecisionChanged();
 
-    //! Signal used to inform listeners that project scale list may have changed
-    void scalesChanged( const QStringList &scales = QStringList() );
-
   private:
 
     //! Formats for displaying coordinates

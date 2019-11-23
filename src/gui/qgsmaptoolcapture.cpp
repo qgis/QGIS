@@ -32,6 +32,7 @@
 #include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsproject.h"
 
 #include <QAction>
 #include <QCursor>
@@ -383,7 +384,7 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
   QgsVectorLayer *sourceLayer = match.layer();
-  if ( match.isValid() && match.hasVertex() && sourceLayer &&
+  if ( match.isValid() && ( match.hasVertex() || ( QgsProject::instance()->topologicalEditing() && match.hasEdge() ) ) && sourceLayer &&
        ( sourceLayer->crs() == vlayer->crs() ) )
   {
     QgsFeature f;
@@ -396,7 +397,20 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
       if ( !f.geometry().vertexIdFromVertexNr( match.vertexIndex(), vId ) )
         return 2;
 
-      layerPoint = f.geometry().constGet()->vertexAt( vId );
+      const QgsGeometry geom( f.geometry() );
+      if ( QgsProject::instance()->topologicalEditing() && match.hasEdge() )
+      {
+        QgsVertexId vId2;
+        if ( !f.geometry().vertexIdFromVertexNr( match.vertexIndex() + 1, vId2 ) )
+          return 2;
+        QgsLineString line( geom.constGet()->vertexAt( vId ), geom.constGet()->vertexAt( vId2 ) );
+
+        layerPoint = QgsGeometryUtils::closestPoint( line,  QgsPoint( match.point() ) );
+      }
+      else
+      {
+        layerPoint = geom.constGet()->vertexAt( vId );
+      }
 
       // ZM support depends on the target layer
       if ( !QgsWkbTypes::hasZ( vlayer->wkbType() ) )
@@ -740,14 +754,30 @@ int QgsMapToolCapture::size()
 
 QVector<QgsPointXY> QgsMapToolCapture::points() const
 {
+  QVector<QgsPointXY> pointsXY;
+  QgsGeometry::convertPointList( pointsZM(), pointsXY );
+
+  return pointsXY;
+}
+
+QgsPointSequence QgsMapToolCapture::pointsZM() const
+{
   QgsPointSequence pts;
-  QVector<QgsPointXY> points;
   mCaptureCurve.points( pts );
-  QgsGeometry::convertPointList( pts, points );
-  return points;
+  return pts;
 }
 
 void QgsMapToolCapture::setPoints( const QVector<QgsPointXY> &pointList )
+{
+  QgsLineString *line = new QgsLineString( pointList );
+  mCaptureCurve.clear();
+  mCaptureCurve.addCurve( line );
+  mSnappingMatches.clear();
+  for ( int i = 0; i < line->length(); ++i )
+    mSnappingMatches.append( QgsPointLocator::Match() );
+}
+
+void QgsMapToolCapture::setPoints( const QgsPointSequence &pointList )
 {
   QgsLineString *line = new QgsLineString( pointList );
   mCaptureCurve.clear();

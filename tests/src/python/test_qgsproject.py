@@ -33,7 +33,8 @@ from qgis.core import (QgsProject,
                        QgsRasterLayer,
                        QgsMapLayer,
                        QgsExpressionContextUtils,
-                       QgsProjectColorScheme)
+                       QgsProjectColorScheme,
+                       QgsSettings)
 from qgis.gui import (QgsLayerTreeMapCanvasBridge,
                       QgsMapCanvas)
 
@@ -1232,6 +1233,43 @@ class TestQgsProject(unittest.TestCase):
         project.setCrs(QgsCoordinateReferenceSystem('EPSG:3148'))
         self.assertFalse(project.isDirty())
 
+    def testBackgroundColor(self):
+        p = QgsProject()
+        s = QgsSettings()
+
+        red = int(s.value("qgis/default_canvas_color_red", 255))
+        green = int(s.value("qgis/default_canvas_color_green", 255))
+        blue = int(s.value("qgis/default_canvas_color_blue", 255))
+        # test default canvas background color
+        self.assertEqual(p.backgroundColor(), QColor(red, green, blue))
+        spy = QSignalSpy(p.backgroundColorChanged)
+        p.setBackgroundColor(QColor(0, 0, 0))
+        self.assertEqual(len(spy), 1)
+        # test customized canvas background color
+        self.assertEqual(p.backgroundColor(), QColor(0, 0, 0))
+        # test signal not emitted when color doesn't actually change
+        p.setBackgroundColor(QColor(0, 0, 0))
+        self.assertEqual(len(spy), 1)
+
+    def testSelectionColor(self):
+        p = QgsProject()
+        s = QgsSettings()
+
+        red = int(s.value("qgis/default_selection_color_red", 255))
+        green = int(s.value("qgis/default_selection_color_green", 255))
+        blue = int(s.value("qgis/default_selection_color_blue", 0))
+        alpha = int(s.value("qgis/default_selection_color_alpha", 255))
+        # test default feature selection color
+        self.assertEqual(p.selectionColor(), QColor(red, green, blue, alpha))
+        spy = QSignalSpy(p.selectionColorChanged)
+        p.setSelectionColor(QColor(0, 0, 0, 50))
+        self.assertEqual(len(spy), 1)
+        # test customized feature selection color
+        self.assertEqual(p.selectionColor(), QColor(0, 0, 0, 50))
+        # test signal not emitted when color doesn't actually change
+        p.setSelectionColor(QColor(0, 0, 0, 50))
+        self.assertEqual(len(spy), 1)
+
     def testColorScheme(self):
         p = QgsProject.instance()
         spy = QSignalSpy(p.projectColorsChanged)
@@ -1260,6 +1298,59 @@ class TestQgsProject(unittest.TestCase):
         ctx.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857), 1234, 1235)
         p.setTransformContext(ctx)
         self.assertEqual(len(spy), 1)
+
+    def testGpkgDirtyingWhenRemovedFromStorage(self):
+        """Test that when a GPKG stored project is removed from the storage it is marked dirty"""
+
+        with TemporaryDirectory() as d:
+            path = os.path.join(d, 'relative_paths_gh30387.gpkg')
+            copyfile(os.path.join(TEST_DATA_DIR, 'projects', 'relative_paths_gh30387.gpkg'), path)
+            project = QgsProject.instance()
+            # Project URI
+            uri = 'geopackage://{}?projectName=relative_project'.format(path)
+            project.setFileName(uri)
+            self.assertTrue(project.write())
+            # Verify
+            self.assertTrue(project.read(uri))
+            self.assertFalse(project.isDirty())
+            # Remove from storage
+            storage = QgsApplication.projectStorageRegistry().projectStorageFromUri(uri)
+            self.assertTrue(storage.removeProject(uri))
+            self.assertTrue(project.isDirty())
+            # Save it back
+            self.assertTrue(project.write())
+            self.assertFalse(project.isDirty())
+            # Reload
+            self.assertTrue(project.read(uri))
+
+    def testMapScales(self):
+        p = QgsProject()
+        self.assertFalse(p.mapScales())
+        self.assertFalse(p.useProjectScales())
+
+        spy = QSignalSpy(p.mapScalesChanged)
+        p.setMapScales([])
+        self.assertEqual(len(spy), 0)
+        p.setUseProjectScales(False)
+        self.assertEqual(len(spy), 0)
+
+        p.setMapScales([5000, 6000, 3000, 4000])
+        # scales must be sorted
+        self.assertEqual(p.mapScales(), [6000.0, 5000.0, 4000.0, 3000.0])
+        self.assertEqual(len(spy), 1)
+        p.setMapScales([5000, 6000, 3000, 4000])
+        self.assertEqual(len(spy), 1)
+        self.assertEqual(p.mapScales(), [6000.0, 5000.0, 4000.0, 3000.0])
+        p.setMapScales([5000, 6000, 3000, 4000, 1000])
+        self.assertEqual(len(spy), 2)
+        self.assertEqual(p.mapScales(), [6000.0, 5000.0, 4000.0, 3000.0, 1000.0])
+
+        p.setUseProjectScales(True)
+        self.assertEqual(len(spy), 3)
+        p.setUseProjectScales(True)
+        self.assertEqual(len(spy), 3)
+        p.setUseProjectScales(False)
+        self.assertEqual(len(spy), 4)
 
 
 if __name__ == '__main__':

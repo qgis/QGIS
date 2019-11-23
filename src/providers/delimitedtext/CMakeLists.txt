@@ -8,18 +8,10 @@ SET (DTEXT_SRCS
   qgsdelimitedtextfile.cpp
 )
 
-SET (DTEXT_MOC_HDRS
-  qgsdelimitedtextfile.h
-  qgsdelimitedtextprovider.h
-)
-
 IF (WITH_GUI)
   SET(DTEXT_SRCS ${DTEXT_SRCS}
     qgsdelimitedtextprovidergui.cpp
     qgsdelimitedtextsourceselect.cpp
-  )
-  SET(DTEXT_MOC_HDRS ${DTEXT_MOC_HDRS}
-    qgsdelimitedtextsourceselect.h
   )
 ENDIF ()
 
@@ -30,9 +22,12 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/external
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
@@ -41,9 +36,7 @@ INCLUDE_DIRECTORIES(
 INCLUDE_DIRECTORIES (SYSTEM
 )
 
-QT5_WRAP_CPP(DTEXT_MOC_SRCS ${DTEXT_MOC_HDRS})
-
-ADD_LIBRARY(delimitedtextprovider MODULE ${DTEXT_SRCS} ${DTEXT_MOC_SRCS})
+ADD_LIBRARY(delimitedtextprovider MODULE ${DTEXT_SRCS})
 
 TARGET_LINK_LIBRARIES(delimitedtextprovider
   qgis_core
@@ -53,6 +46,7 @@ IF (WITH_GUI)
   TARGET_LINK_LIBRARIES (delimitedtextprovider
     qgis_gui
   )
+  ADD_DEPENDENCIES(delimitedtextprovider ui)
 ENDIF ()
 
 TARGET_COMPILE_DEFINITIONS(delimitedtextprovider PRIVATE "-DQT_NO_FOREACH")

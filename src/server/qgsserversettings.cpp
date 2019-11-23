@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 
 #include <QSettings>
+#include <QDir>
 
 QgsServerSettings::QgsServerSettings()
 {
@@ -183,6 +184,30 @@ void QgsServerSettings::initSettings()
                               QVariant()
                             };
   mSettings[ sMaxWidth.envVar ] = sMaxWidth;
+
+  // API templates and static override directory
+  const Setting sApiResourcesDirectory = { QgsServerSettingsEnv::QGIS_SERVER_API_RESOURCES_DIRECTORY,
+                                           QgsServerSettingsEnv::DEFAULT_VALUE,
+                                           QStringLiteral( "Base directory where HTML templates and static assets (e.g. images, js and css files) are searched for" ),
+                                           QStringLiteral( "/qgis/server_api_resources_directory" ),
+                                           QVariant::String,
+                                           QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( QStringLiteral( "resources/server/api" ) ),
+                                           QString()
+                                         };
+
+  mSettings[ sApiResourcesDirectory.envVar ] = sApiResourcesDirectory;
+
+  // API WFS3 max limit
+  const Setting sApiWfs3MaxLimit = { QgsServerSettingsEnv::QGIS_SERVER_API_WFS3_MAX_LIMIT,
+                                     QgsServerSettingsEnv::DEFAULT_VALUE,
+                                     QStringLiteral( "Maximum value for \"limit\" in a features request, defaults to 10000" ),
+                                     QStringLiteral( "/qgis/server_api_wfs3_max_limit" ),
+                                     QVariant::LongLong,
+                                     QVariant( 10000 ),
+                                     QVariant()
+                                   };
+
+  mSettings[ sApiWfs3MaxLimit.envVar ] = sApiWfs3MaxLimit;
 }
 
 void QgsServerSettings::load()
@@ -382,4 +407,14 @@ int QgsServerSettings::wmsMaxHeight() const
 int QgsServerSettings::wmsMaxWidth() const
 {
   return value( QgsServerSettingsEnv::QGIS_SERVER_WMS_MAX_WIDTH ).toInt();
+}
+
+QString QgsServerSettings::apiResourcesDirectory() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_API_RESOURCES_DIRECTORY ).toString();
+}
+
+qlonglong QgsServerSettings::apiWfs3MaxLimit() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_API_WFS3_MAX_LIMIT ).toLongLong();
 }

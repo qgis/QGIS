@@ -30,6 +30,20 @@ Checks whether any of the layers attached to a map settings object contain advan
 :param mapSettings: map settings
 %End
 
+    static void worldFileParameters( const QgsMapSettings &mapSettings, double &a /Out/, double &b /Out/, double &c /Out/, double &d /Out/, double &e /Out/, double &f /Out/ );
+%Docstring
+Computes the six parameters of a world file.
+
+:param mapSettings: map settings
+:param b: the b parameter
+:param c: the c parameter
+:param d: the d parameter
+:param e: the e parameter
+:param f: the f parameter
+
+.. versionadded:: 3.10
+%End
+
     static QString worldFileContent( const QgsMapSettings &mapSettings );
 %Docstring
 Creates the content of a world file.

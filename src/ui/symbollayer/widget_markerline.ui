@@ -41,10 +41,54 @@
      <property name="bottomMargin">
       <number>0</number>
      </property>
+     <item row="5" column="1">
+      <widget class="QRadioButton" name="radVertexLast">
+       <property name="text">
+        <string>on last vertex only</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="1">
+      <widget class="QRadioButton" name="radCurvePoint">
+       <property name="text">
+        <string>on every curve point</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Fixed</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>10</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
      <item row="3" column="2">
       <widget class="QgsPropertyOverrideButton" name="mIntervalDDBtn">
        <property name="text">
         <string>…</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <widget class="QRadioButton" name="radVertexFirst">
+       <property name="text">
+        <string>on first vertex only</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QRadioButton" name="radVertex">
+       <property name="text">
+        <string>on every vertex</string>
        </property>
       </widget>
      </item>
@@ -100,20 +144,6 @@
        </item>
       </layout>
      </item>
-     <item row="5" column="1">
-      <widget class="QRadioButton" name="radVertexLast">
-       <property name="text">
-        <string>on last vertex only</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="1">
-      <widget class="QRadioButton" name="radVertexFirst">
-       <property name="text">
-        <string>on first vertex only</string>
-       </property>
-      </widget>
-     </item>
      <item row="7" column="1">
       <widget class="QRadioButton" name="radCentralPoint">
        <property name="text">
@@ -122,34 +152,11 @@
       </widget>
      </item>
      <item row="8" column="1">
-      <widget class="QRadioButton" name="radCurvePoint">
+      <widget class="QRadioButton" name="radSegmentCentralPoint">
        <property name="text">
-        <string>on every curve point</string>
+        <string>on central point of segments</string>
        </property>
       </widget>
-     </item>
-     <item row="4" column="1">
-      <widget class="QRadioButton" name="radVertex">
-       <property name="text">
-        <string>on every vertex</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="0">
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Fixed</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>10</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
      </item>
     </layout>
    </item>
@@ -403,6 +410,7 @@
   <tabstop>radVertexLast</tabstop>
   <tabstop>radVertexFirst</tabstop>
   <tabstop>radCentralPoint</tabstop>
+  <tabstop>radSegmentCentralPoint</tabstop>
   <tabstop>radCurvePoint</tabstop>
   <tabstop>mSpinOffsetAlongLine</tabstop>
   <tabstop>mOffsetAlongLineUnitWidget</tabstop>

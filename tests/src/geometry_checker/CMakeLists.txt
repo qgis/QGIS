@@ -9,13 +9,16 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/analysis/
   ${CMAKE_SOURCE_DIR}/src/analysis/vector/geometry_checker
   ${CMAKE_SOURCE_DIR}/src/test
   ${CMAKE_SOURCE_DIR}/src/plugins
+  ${CMAKE_SOURCE_DIR}/external
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
+
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/analysis
-  ${CMAKE_SOURCE_DIR}/external
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${QT_INCLUDE_DIR}
@@ -44,7 +47,6 @@ MACRO (ADD_QGIS_TEST TESTSRC)
   SET(${TESTNAME}_SRCS ${TESTSRC} ${util_SRCS})
   SET(${TESTNAME}_MOC_CPPS ${TESTSRC})
   ADD_EXECUTABLE(${TESTNAME} ${${TESTNAME}_SRCS})
-  SET_TARGET_PROPERTIES(${TESTNAME} PROPERTIES AUTOMOC TRUE)
   TARGET_LINK_LIBRARIES(${TESTNAME}
     ${Qt5Core_LIBRARIES}
     ${Qt5Test_LIBRARIES}

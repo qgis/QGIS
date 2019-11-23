@@ -39,6 +39,7 @@
 #include "qgslayoutmeasurementconverter.h"
 #include "qgsunittypes.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QMessageBox>
 #include <QInputDialog>
@@ -140,6 +141,17 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend )
   mCountToolButton->setIcon( QIcon( QgsApplication::iconPath( "mActionSum.svg" ) ) );
   mLayerExpressionButton->setIcon( QIcon( QgsApplication::iconPath( "mActionAddExpression.svg" ) ) );
 
+  mMoveDownToolButton->setIconSize( QgisApp::instance()->iconSize( true ) );
+  mMoveUpToolButton->setIconSize( QgisApp::instance()->iconSize( true ) );
+  mAddGroupToolButton->setIconSize( QgisApp::instance()->iconSize( true ) );
+  mAddToolButton->setIconSize( QgisApp::instance()->iconSize( true ) );
+  mRemoveToolButton->setIconSize( QgisApp::instance()->iconSize( true ) );
+  mEditPushButton->setIconSize( QgisApp::instance()->iconSize( true ) );
+  mCountToolButton->setIconSize( QgisApp::instance()->iconSize( true ) );
+  mFilterByMapToolButton->setIconSize( QgisApp::instance()->iconSize( true ) );
+  mExpressionFilterButton->setIconSize( QgisApp::instance()->iconSize( true ) );
+  mLayerExpressionButton->setIconSize( QgisApp::instance()->iconSize( true ) );
+
   mFontColorButton->setColorDialogTitle( tr( "Select Font Color" ) );
   mFontColorButton->setContext( QStringLiteral( "composer" ) );
 
@@ -180,6 +192,12 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend )
   connect( mGroupFontButton, &QgsFontButton::changed, this, &QgsLayoutLegendWidget::groupFontChanged );
   connect( mLayerFontButton, &QgsFontButton::changed, this, &QgsLayoutLegendWidget::layerFontChanged );
   connect( mItemFontButton, &QgsFontButton::changed, this, &QgsLayoutLegendWidget::itemFontChanged );
+}
+
+void QgsLayoutLegendWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayout )
+{
+  if ( mItemPropertiesWidget )
+    mItemPropertiesWidget->setMasterLayout( masterLayout );
 }
 
 void QgsLayoutLegendWidget::setGuiElements()
@@ -999,7 +1017,6 @@ void QgsLayoutLegendWidget::mExpressionFilterButton_toggled( bool checked )
 
 void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
 {
-
   if ( !mLegend )
   {
     return;
@@ -1026,7 +1043,36 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
     currentExpression = layerNode->labelExpression();
   QgsExpressionContext legendContext = mLegend->createExpressionContext();
   legendContext.appendScope( vl->createExpressionContextScope() );
-  QgsExpressionBuilderDialog expressiondialog( vl, currentExpression, nullptr, "generic", legendContext );
+
+  QgsExpressionContextScope *symbolLegendScope = new QgsExpressionContextScope( tr( "Symbol scope" ) );
+
+  QgsFeatureRenderer *r = vl->renderer();
+
+  QStringList highlighted;
+  if ( r )
+  {
+    const QgsLegendSymbolList legendSymbols = r->legendSymbolItems();
+
+    if ( !legendSymbols.empty() )
+    {
+      QgsSymbolLegendNode legendNode( layerNode, legendSymbols.first() );
+
+      symbolLegendScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_label" ), legendNode.symbolLabel().remove( QStringLiteral( "[%" ) ).remove( QStringLiteral( "%]" ) ), true ) );
+      symbolLegendScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_id" ), legendSymbols.first().ruleKey(), true ) );
+      highlighted << QStringLiteral( "symbol_label" ) << QStringLiteral( "symbol_id" );
+      if ( vl )
+      {
+        symbolLegendScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), QVariant::fromValue( vl->featureCount( legendSymbols.first().ruleKey() ) ), true ) );
+        highlighted << QStringLiteral( "symbol_count" );
+      }
+    }
+  }
+
+  legendContext.appendScope( symbolLegendScope );
+
+  legendContext.setHighlightedVariables( highlighted );
+
+  QgsExpressionBuilderDialog expressiondialog( vl, currentExpression, nullptr, QStringLiteral( "generic" ), legendContext );
   if ( expressiondialog.exec() )
     layerNode->setLabelExpression( expressiondialog.expressionText() );
 

@@ -38,11 +38,16 @@ QgsSingleBandPseudoColorRenderer::QgsSingleBandPseudoColorRenderer( QgsRasterInt
 
 void QgsSingleBandPseudoColorRenderer::setBand( int bandNo )
 {
-  if ( bandNo > mInput->bandCount() || bandNo <= 0 )
+  if ( !mInput )
   {
+    mBand = bandNo;
     return;
   }
-  mBand = bandNo;
+
+  if ( bandNo <= mInput->bandCount() || bandNo > 0 )
+  {
+    mBand = bandNo;
+  }
 }
 
 void QgsSingleBandPseudoColorRenderer::setClassificationMin( double min )
@@ -234,7 +239,7 @@ QgsRasterBlock *QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangl
     return outputBlock.release();
   }
 
-  QRgb myDefaultColor = NODATA_COLOR;
+  const QRgb myDefaultColor = renderColorForNodataPixel();
   QRgb *outputBlockData = outputBlock->colorData();
   const QgsRasterShaderFunction *fcn = mShader->rasterShaderFunction();
 

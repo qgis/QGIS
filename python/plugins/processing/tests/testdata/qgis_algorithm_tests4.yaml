@@ -2209,4 +2209,100 @@ tests:
             custom_overlay2_b.geojson_pc:
               precision: 7
 
+  - algorithm: native:calculatevectoroverlaps
+    name: Overlap analysis 3, reordered inputs
+    ellipsoid: GRS80
+    project_crs: EPSG:4326
+    params:
+      INPUT:
+        name: custom/overlay0.geojson
+        type: vector
+      LAYERS:
+        params:
+        - name: custom/overlay3_b.geojson
+          type: vector
+        - name: custom/overlay1_b.geojson
+          type: vector
+        - name: custom/overlay2_a.geojson
+          type: vector
+        - name: custom/overlay2_b.geojson
+          type: vector
+        - name: custom/overlay1_a.geojson
+          type: vector
+        - name: custom/overlay3_a.geojson
+          type: vector
+        type: multi
+    results:
+      OUTPUT:
+        name: expected/overlap_analysis_3.gml
+        type: vector
+        compare:
+          fields:
+            custom_overlay1_a.geojson_area:
+              precision: 8
+            custom_overlay1_a.geojson_pc:
+              precision: 3
+            custom_overlay1_b.geojson_area:
+              precision: 8
+            custom_overlay1_b.geojson_pc:
+              precision: 3
+            custom_overlay2_a.geojson_area:
+              precision: 8
+            custom_overlay2_a.geojson_pc:
+              precision: 3
+            custom_overlay2_b.geojson_area:
+              precision: 8
+            custom_overlay2_b.geojson_pc:
+              precision: 3
+            custom_overlay3_a.geojson_area:
+              precision: 8
+            custom_overlay3_a.geojson_pc:
+              precision: 3
+            custom_overlay3_b.geojson_area:
+              precision: 8
+            custom_overlay3_b.geojson_pc:
+              precision: 3
+
+  - algorithm: native:splitfeaturesbycharacter
+    name: Split features by character
+    params:
+      CHAR: B
+      FIELD: val
+      INPUT:
+        name: custom/split_points.shp|layername=split_points
+        type: vector
+      REGEX: false
+    results:
+      OUTPUT:
+        name: expected/split_by_char_a.gml
+        type: vector
+
+  - algorithm: native:splitfeaturesbycharacter
+    name: Split features by character 2
+    params:
+      CHAR: aB
+      FIELD: val
+      INPUT:
+        name: custom/split_points.shp|layername=split_points
+        type: vector
+      REGEX: false
+    results:
+      OUTPUT:
+        name: expected/split_by_char_b.gml
+        type: vector
+
+  - algorithm: native:splitfeaturesbycharacter
+    name: Split features by character regex
+    params:
+      CHAR: \d
+      FIELD: val2
+      INPUT:
+        name: custom/split_points.shp|layername=split_points
+        type: vector
+      REGEX: true
+    results:
+      OUTPUT:
+        name: expected/split_by_char_regex.gml
+        type: vector
+
 # See ../README.md for a description of the file format

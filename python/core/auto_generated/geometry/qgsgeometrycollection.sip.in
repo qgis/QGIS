@@ -97,6 +97,16 @@ Returns a geometry from within the collection.
     virtual int vertexNumberFromVertexId( QgsVertexId id ) const;
 
 
+    void reserve( int size );
+%Docstring
+Attempts to allocate memory for at least ``size`` geometries.
+
+If the number of geometries is known in advance, calling this function prior to adding geometries will prevent
+reallocations and memory fragmentation.
+
+.. versionadded:: 3.10
+%End
+
     virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
 %Docstring
 Adds a geometry and takes ownership. Returns ``True`` in case of success.

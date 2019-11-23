@@ -34,6 +34,7 @@ if not exist "%BUILDDIR%" mkdir %BUILDDIR%
 if not exist "%BUILDDIR%" (echo could not create build directory %BUILDDIR% & goto error)
 
 call msvc-env.bat %ARCH%
+call gdal-dev-env.bat
 
 set O4W_ROOT=%OSGEO4W_ROOT:\=/%
 set LIB_DIR=%O4W_ROOT%
@@ -43,6 +44,7 @@ goto cmake_x86_64
 
 :cmake_x86
 set CMAKE_COMPILER_PATH=%PF86%\Microsoft Visual Studio 14.0\VC\bin
+set DBGHLP_PATH=%PF86%\Microsoft Visual Studio 14.0\Common7\IDE\Remote Debugger\x86
 set SETUPAPI_LIBRARY=%PF86%\Windows Kits\10\Lib\10.0.14393.0\um\x86\SetupAPI.Lib
 if not exist "%SETUPAPI_LIBRARY%" set SETUPAPI_LIBRARY=%PF86%\Windows Kits\8.0\Lib\win8\um\x86\SetupAPI.Lib
 if not exist "%SETUPAPI_LIBRARY%" (echo SETUPAPI_LIBRARY not found & goto error)
@@ -55,6 +57,7 @@ goto cmake
 
 :cmake_x86_64
 set CMAKE_COMPILER_PATH=%PF86%\Microsoft Visual Studio 14.0\VC\bin\amd64
+set DBGHLP_PATH=%PF86%\Microsoft Visual Studio 14.0\Common7\IDE\Remote Debugger\x64
 set SETUPAPI_LIBRARY=%PF86%\Windows Kits\10\Lib\10.0.14393.0\um\x64\SetupAPI.Lib
 if not exist "%SETUPAPI_LIBRARY%" set SETUPAPI_LIBRARY=%PF86%\Windows Kits\8.0\Lib\win8\um\x64\SetupAPI.Lib
 if not exist "%SETUPAPI_LIBRARY%" (echo SETUPAPI_LIBRARY not found & goto error)
@@ -149,6 +152,10 @@ cmake -G "%CMAKEGEN%" ^
 	-D WITH_CUSTOM_WIDGETS=TRUE ^
 	-D CMAKE_BUILD_TYPE=%BUILDCONF% ^
 	-D CMAKE_CONFIGURATION_TYPES=%BUILDCONF% ^
+	-D PROJ_LIBRARY=%O4W_ROOT%/apps/proj-dev/lib/proj.lib ^
+	-D PROJ_INCLUDE_DIR=%O4W_ROOT%/apps/proj-dev/include ^
+	-D GDAL_LIBRARY=%O4W_ROOT%/apps/gdal-dev/lib/gdal_i.lib ^
+	-D GDAL_INCLUDE_DIR=%O4W_ROOT%/apps/gdal-dev/include ^
 	-D GEOS_LIBRARY=%O4W_ROOT%/lib/geos_c.lib ^
 	-D SQLITE3_LIBRARY=%O4W_ROOT%/lib/sqlite3_i.lib ^
 	-D SPATIALITE_LIBRARY=%O4W_ROOT%/lib/spatialite_i.lib ^
@@ -164,6 +171,7 @@ cmake -G "%CMAKEGEN%" ^
 	-D QCA_INCLUDE_DIR=%OSGEO4W_ROOT%\apps\Qt5\include\QtCrypto ^
 	-D QCA_LIBRARY=%OSGEO4W_ROOT%\apps\Qt5\lib\qca-qt5.lib ^
 	-D QSCINTILLA_LIBRARY=%OSGEO4W_ROOT%\apps\Qt5\lib\qscintilla2.lib ^
+	-D DART_TESTING_TIMEOUT=60 ^
 	%CMAKE_OPT% ^
 	%SRCDIR:\=/%
 if errorlevel 1 (echo cmake failed & goto error)
@@ -248,19 +256,21 @@ if errorlevel 1 (echo creation of designer template failed & goto error)
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' qgis.reg.tmpl >%PKGDIR%\bin\qgis.reg.tmpl
 if errorlevel 1 (echo creation of registry template & goto error)
 
-set batches=
+sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e '/^call py3_env.bat/acall gdal-dev-env.bat' qgis.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%.bat.tmpl
+if errorlevel 1 (echo creation of desktop template failed & goto error)
+
+set batches=bin/%PACKAGENAME%.bat.tmpl
 for %%g IN (%GRASS_VERSIONS%) do (
 	for /f "usebackq tokens=1" %%a in (`%%g --config version`) do set gv=%%a
 	for /F "delims=." %%i in ("!gv!") do set v=%%i
 
-	sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grasspath@/%%g/g' -e 's/@grassversion@/!gv!/g' qgis-grass.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-g!v!.bat.tmpl
+	sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grasspath@/%%g/g' -e 's/@grassversion@/!gv!/g' -e '/^call py3_env.bat/acall gdal-dev-env.bat' qgis-grass.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-g!v!.bat.tmpl
 	if errorlevel 1 (echo creation of desktop template failed & goto error)
 	set batches=!batches! bin/%PACKAGENAME%-g!v!.bat.tmpl
 )
 
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' python.bat.tmpl >%OSGEO4W_ROOT%\bin\python-%PACKAGENAME%.bat.tmpl
 if errorlevel 1 (echo creation of python wrapper template failed & goto error)
-
 
 touch exclude
 if exist ..\skipbuild (echo skip build & goto skipbuild)
@@ -283,6 +293,11 @@ if errorlevel 1 (echo move of customwidgets failed & goto error)
 if not exist %PKGDIR%\python\PyQt5\uic\widget-plugins mkdir %PKGDIR%\python\PyQt5\uic\widget-plugins
 move %PYTHONHOME%\Lib\site-packages\PyQt5\uic\widget-plugins\qgis_customwidgets.py %PKGDIR%\python\PyQt5\uic\widget-plugins
 if errorlevel 1 (echo move of customwidgets binding failed & goto error)
+
+for %%i in (dbghelp.dll symsrv.dll) do (
+	copy "%DBGHLP_PATH%\%%i" %OSGEO4W_ROOT%\apps\%PACKAGENAME%
+	if errorlevel 1 (echo %%i not found & goto error)
+)
 
 if not exist %ARCH%\release\qgis\%PACKAGENAME% mkdir %ARCH%\release\qgis\%PACKAGENAME%
 %TAR% -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^

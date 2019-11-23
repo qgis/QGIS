@@ -19,17 +19,36 @@
 #include "qgsgeometrycollection.h"
 #include "qgsfeaturepool.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerutils.h"
 #include "qgsfeedback.h"
 #include "qgsapplication.h"
+#include "qgsproject.h"
 
 #include "geos_c.h"
 
 QgsGeometryGapCheck::QgsGeometryGapCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
   : QgsGeometryCheck( context, configuration )
   ,  mGapThresholdMapUnits( configuration.value( QStringLiteral( "gapThreshold" ) ).toDouble() )
-
 {
+}
 
+void QgsGeometryGapCheck::prepare( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
+{
+  if ( configuration.value( QStringLiteral( "allowedGapsEnabled" ) ).toBool() )
+  {
+    QgsVectorLayer *layer = context->project()->mapLayer<QgsVectorLayer *>( configuration.value( "allowedGapsLayer" ).toString() );
+    if ( layer )
+    {
+      mAllowedGapsLayer = layer;
+      mAllowedGapsSource = qgis::make_unique<QgsVectorLayerFeatureSource>( layer );
+
+      mAllowedGapsBuffer = configuration.value( QStringLiteral( "allowedGapsBuffer" ) ).toDouble();
+    }
+  }
+  else
+  {
+    mAllowedGapsSource.reset();
+  }
 }
 
 void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
@@ -37,9 +56,34 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
   if ( feedback )
     feedback->setProgress( feedback->progress() + 1.0 );
 
+  std::unique_ptr<QgsAbstractGeometry> allowedGapsGeom;
+  std::unique_ptr<QgsGeometryEngine> allowedGapsGeomEngine;
+
+  if ( mAllowedGapsSource )
+  {
+    QVector<QgsGeometry> allowedGaps;
+    QgsFeatureRequest request;
+    request.setSubsetOfAttributes( QgsAttributeList() );
+    QgsFeatureIterator iterator = mAllowedGapsSource->getFeatures( request );
+    QgsFeature feature;
+
+    while ( iterator.nextFeature( feature ) )
+    {
+      QgsGeometry geom = feature.geometry();
+      QgsGeometry gg = geom.buffer( mAllowedGapsBuffer, 20 );
+      allowedGaps.append( gg );
+    }
+
+    std::unique_ptr< QgsGeometryEngine > allowedGapsEngine = QgsGeometryCheckerUtils::createGeomEngine( nullptr, mContext->tolerance );
+
+    // Create union of allowed gaps
+    QString errMsg;
+    allowedGapsGeom.reset( allowedGapsEngine->combine( allowedGaps, &errMsg ) );
+    allowedGapsGeomEngine = QgsGeometryCheckerUtils::createGeomEngine( allowedGapsGeom.get(), mContext->tolerance );
+    allowedGapsGeomEngine->prepareGeometry();
+  }
+
   QVector<QgsGeometry> geomList;
-
-
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
   const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), nullptr, mContext, true );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
@@ -59,7 +103,6 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
   }
 
   std::unique_ptr< QgsGeometryEngine > geomEngine = QgsGeometryCheckerUtils::createGeomEngine( nullptr, mContext->tolerance );
-  geomEngine->prepareGeometry();
 
   // Create union of geometry
   QString errMsg;
@@ -97,9 +140,10 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
   }
 
   // For each gap polygon which does not lie on the boundary, get neighboring polygons and add error
-  for ( int iPart = 0, nParts = diffGeom->partCount(); iPart < nParts; ++iPart )
+  QgsGeometryPartIterator parts = diffGeom->parts();
+  while ( parts.hasNext() )
   {
-    std::unique_ptr<QgsAbstractGeometry> gapGeom( QgsGeometryCheckerUtils::getGeomPart( diffGeom.get(), iPart )->clone() );
+    const QgsAbstractGeometry *gapGeom = parts.next();
     // Skip the gap between features and boundingbox
     const double spacing = context()->tolerance;
     if ( gapGeom->boundingBox().snappedToGrid( spacing ) == envelope->boundingBox().snappedToGrid( spacing ) )
@@ -121,7 +165,7 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
     for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
     {
       const QgsGeometry geom = layerFeature.geometry();
-      if ( QgsGeometryCheckerUtils::sharedEdgeLength( gapGeom.get(), geom.constGet(), mContext->reducedTolerance ) > 0 )
+      if ( QgsGeometryCheckerUtils::sharedEdgeLength( gapGeom, geom.constGet(), mContext->reducedTolerance ) > 0 )
       {
         neighboringIds[layerFeature.layer()->id()].insert( layerFeature.feature().id() );
         gapAreaBBox.combineExtentWith( layerFeature.geometry().boundingBox() );
@@ -133,9 +177,15 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
       continue;
     }
 
+    if ( allowedGapsGeomEngine && allowedGapsGeomEngine->contains( gapGeom ) )
+    {
+      continue;
+    }
+
     // Add error
     double area = gapGeom->area();
-    errors.append( new QgsGeometryGapCheckError( this, QString(), QgsGeometry( gapGeom.release() ), neighboringIds, area, gapAreaBBox ) );
+    QgsRectangle gapBbox = gapGeom->boundingBox();
+    errors.append( new QgsGeometryGapCheckError( this, QString(), QgsGeometry( gapGeom->clone() ), neighboringIds, area, gapBbox, gapAreaBBox ) );
   }
 }
 
@@ -154,7 +204,9 @@ void QgsGeometryGapCheck::fixError( const QMap<QString, QgsFeaturePool *> &featu
       case NoChange:
         error->setFixed( method );
         break;
+
       case MergeLongestEdge:
+      {
         QString errMsg;
         if ( mergeWithNeighbor( featurePools, static_cast<QgsGeometryGapCheckError *>( error ), changes, errMsg ) )
         {
@@ -165,6 +217,37 @@ void QgsGeometryGapCheck::fixError( const QMap<QString, QgsFeaturePool *> &featu
           error->setFixFailed( tr( "Failed to merge with neighbor: %1" ).arg( errMsg ) );
         }
         break;
+      }
+
+      case AddToAllowedGaps:
+      {
+        QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mAllowedGapsLayer.data() );
+        if ( layer )
+        {
+          if ( !layer->isEditable() && !layer->startEditing() )
+          {
+            error->setFixFailed( tr( "Could not start editing layer %1" ).arg( layer->name() ) );
+          }
+          else
+          {
+            QgsFeature feature = QgsVectorLayerUtils::createFeature( layer, error->geometry() );
+            QgsFeatureList features = QgsVectorLayerUtils::makeFeatureCompatible( feature, layer );
+            if ( !layer->addFeatures( features ) )
+            {
+              error->setFixFailed( tr( "Could not add feature to layer %1" ).arg( layer->name() ) );
+            }
+            else
+            {
+              error->setFixed( method );
+            }
+          }
+        }
+        else
+        {
+          error->setFixFailed( tr( "Allowed gaps layer could not be resolved" ) );
+        }
+        break;
+      }
     }
   }
 }
@@ -243,7 +326,12 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
 
 QStringList QgsGeometryGapCheck::resolutionMethods() const
 {
-  static QStringList methods = QStringList() << tr( "Add gap area to neighboring polygon with longest shared edge" ) << tr( "No action" );
+  QStringList methods = QStringList()
+                        << tr( "Add gap area to neighboring polygon with longest shared edge" )
+                        << tr( "No action" );
+  if ( mAllowedGapsSource )
+    methods << tr( "Add gap to allowed exceptions" );
+
   return methods;
 }
 
@@ -293,6 +381,11 @@ QgsGeometryCheck::CheckType QgsGeometryGapCheck::factoryCheckType()
   return QgsGeometryCheck::LayerCheck;
 }
 ///@endcond private
+
+QgsRectangle QgsGeometryGapCheckError::contextBoundingBox() const
+{
+  return mContextBoundingBox;
+}
 
 bool QgsGeometryGapCheckError::isEqual( QgsGeometryCheckError *other ) const
 {

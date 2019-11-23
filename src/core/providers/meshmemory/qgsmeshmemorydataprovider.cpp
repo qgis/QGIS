@@ -21,8 +21,8 @@
 #include "qgstriangularmesh.h"
 #include <cstring>
 
-static const QString TEXT_PROVIDER_KEY = QStringLiteral( "mesh_memory" );
-static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "Mesh memory provider" );
+#define TEXT_PROVIDER_KEY QStringLiteral( "mesh_memory" )
+#define TEXT_PROVIDER_DESCRIPTION QStringLiteral( "Mesh memory provider" )
 
 bool QgsMeshMemoryDataProvider::isValid() const
 {

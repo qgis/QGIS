@@ -25,6 +25,7 @@
 #include "qgshelp.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsvectorlayerjoininfo.h"
+#include "qgsvectorlayerserverproperties.h"
 #include "layertree/qgslayertree.h"
 #include "layertree/qgslayertreemodel.h"
 #include "layertree/qgslayertreegroup.h"
@@ -45,6 +46,9 @@ class QgsMapLayerConfigWidget;
 class QgsMetadataWidget;
 class QgsPanelWidget;
 class QgsVectorLayer3DRendererWidget;
+class QgsMapLayerComboBox;
+class QgsDoubleSpinBox;
+class QgsMaskingWidget;
 
 class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVectorLayerPropertiesBase, private QgsExpressionContextGenerator
 {
@@ -128,6 +132,11 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void mJoinTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
     void mButtonRemoveJoin_clicked();
 
+    void mButtonAddWmsDimension_clicked();
+    void mButtonEditWmsDimension_clicked();
+    void mWmsDimensionsTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
+    void mButtonRemoveWmsDimension_clicked();
+
     void mSimplifyDrawingGroupBox_toggled( bool checked );
 
   signals:
@@ -140,6 +149,9 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     //! Save the style
     void saveStyleAs();
+
+    //! Save multiple styles
+    void saveMultipleStylesAs();
 
     //! Load the style
     void loadStyle();
@@ -190,11 +202,14 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     QAction *mActionLoadStyle = nullptr;
     QAction *mActionSaveStyle = nullptr;
+    QAction *mActionSaveMultipleStyles = nullptr;
 
     //! Renderer dialog which is shown
     QgsRendererPropertiesDialog *mRendererDialog = nullptr;
     //! Labeling dialog. If apply is pressed, options are applied to vector's QgsLabel
     QgsLabelingWidget *labelingDialog = nullptr;
+    //! Masking widget
+    QgsMaskingWidget *mMaskingWidget = nullptr;
     //! Actions dialog. If apply is pressed, the actions are stored for later use
     QgsAttributeActionDialog *mActionDialog = nullptr;
     //! Diagram dialog. If apply is pressed, options are applied to vector's diagrams
@@ -219,6 +234,9 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     //! Adds a new join to mJoinTreeWidget
     void addJoinToTreeWidget( const QgsVectorLayerJoinInfo &join, int insertIndex = -1 );
+
+    //! Adds a QGIS Server WMS dimension to mWmsDimensionTreeWidget
+    void addWmsDimensionInfoToTreeWidget( const QgsVectorLayerServerProperties::WmsDimensionInfo &wmsDim, int insertIndex = -1 );
 
     void updateAuxiliaryStoragePage();
     void deleteAuxiliaryField( int index );
@@ -246,6 +264,10 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QHash<QCheckBox *, QString> mGeometryCheckFactoriesGroupBoxes;
 
     bool mRemoveDuplicateNodesManuallyActivated = false;
+
+    QgsCollapsibleGroupBox *mGapCheckAllowExceptionsActivatedCheckBox = nullptr;
+    QgsMapLayerComboBox *mGapCheckAllowExceptionsLayerComboBox = nullptr;
+    QgsDoubleSpinBox *mGapCheckAllowExceptionsBufferSpinBox = nullptr;
 
   private slots:
     void openPanel( QgsPanelWidget *panel );

@@ -27,6 +27,12 @@ QgsMeshRendererScalarSettingsWidget::QgsMeshRendererScalarSettingsWidget( QWidge
 {
   setupUi( this );
 
+  // add items to data interpolation combo box
+  mScalarInterpolationTypeComboBox->addItem( tr( "None" ), QgsMeshRendererScalarSettings::None );
+  mScalarInterpolationTypeComboBox->addItem( tr( "Neighbour Average" ), QgsMeshRendererScalarSettings::NeighbourAverage );
+  mScalarInterpolationTypeComboBox->setCurrentIndex( 0 );
+
+  // connect
   connect( mScalarRecalculateMinMaxButton, &QPushButton::clicked, this, &QgsMeshRendererScalarSettingsWidget::recalculateMinMaxButtonClicked );
   connect( mScalarMinLineEdit, &QLineEdit::textChanged, this, &QgsMeshRendererScalarSettingsWidget::minMaxChanged );
   connect( mScalarMaxLineEdit, &QLineEdit::textChanged, this, &QgsMeshRendererScalarSettingsWidget::minMaxChanged );
@@ -34,11 +40,19 @@ QgsMeshRendererScalarSettingsWidget::QgsMeshRendererScalarSettingsWidget( QWidge
   connect( mScalarMaxLineEdit, &QLineEdit::textEdited, this, &QgsMeshRendererScalarSettingsWidget::minMaxEdited );
   connect( mScalarColorRampShaderWidget, &QgsColorRampShaderWidget::widgetChanged, this, &QgsMeshRendererScalarSettingsWidget::widgetChanged );
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsMeshRendererScalarSettingsWidget::widgetChanged );
+  connect( mScalarInterpolationTypeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsMeshRendererScalarSettingsWidget::widgetChanged );
 }
 
 void QgsMeshRendererScalarSettingsWidget::setLayer( QgsMeshLayer *layer )
 {
   mMeshLayer = layer;
+  mScalarInterpolationTypeComboBox->setEnabled( dataIsDefinedOnFaces() );
+}
+
+void QgsMeshRendererScalarSettingsWidget::setActiveDatasetGroup( int groupIndex )
+{
+  mActiveDatasetGroup = groupIndex;
+  mScalarInterpolationTypeComboBox->setEnabled( dataIsDefinedOnFaces() );
 }
 
 QgsMeshRendererScalarSettings QgsMeshRendererScalarSettingsWidget::settings() const
@@ -47,6 +61,7 @@ QgsMeshRendererScalarSettings QgsMeshRendererScalarSettingsWidget::settings() co
   settings.setColorRampShader( mScalarColorRampShaderWidget->shader() );
   settings.setClassificationMinimumMaximum( lineEditValue( mScalarMinLineEdit ), lineEditValue( mScalarMaxLineEdit ) );
   settings.setOpacity( mOpacityWidget->opacity() );
+  settings.setDataInterpolationMethod( dataIntepolationMethod() );
   return settings;
 }
 
@@ -61,10 +76,15 @@ void QgsMeshRendererScalarSettingsWidget::syncToLayer( )
   const QgsMeshRendererSettings rendererSettings = mMeshLayer->rendererSettings();
   const QgsMeshRendererScalarSettings settings = rendererSettings.scalarSettings( mActiveDatasetGroup );
   const QgsColorRampShader shader = settings.colorRampShader();
-  whileBlocking( mScalarMinLineEdit )->setText( QString::number( settings.classificationMinimum() ) );
-  whileBlocking( mScalarMaxLineEdit )->setText( QString::number( settings.classificationMaximum() ) );
+  const double min = settings.classificationMinimum();
+  const double max = settings.classificationMaximum();
+  whileBlocking( mScalarMinLineEdit )->setText( QString::number( min ) );
+  whileBlocking( mScalarMaxLineEdit )->setText( QString::number( max ) );
   whileBlocking( mScalarColorRampShaderWidget )->setFromShader( shader );
+  whileBlocking( mScalarColorRampShaderWidget )->setMinimumMaximum( min, max );
   whileBlocking( mOpacityWidget )->setOpacity( settings.opacity() );
+  int index = mScalarInterpolationTypeComboBox->findData( settings.dataInterpolationMethod() );
+  whileBlocking( mScalarInterpolationTypeComboBox )->setCurrentIndex( index );
 }
 
 double QgsMeshRendererScalarSettingsWidget::lineEditValue( const QLineEdit *lineEdit ) const
@@ -100,3 +120,32 @@ void QgsMeshRendererScalarSettingsWidget::recalculateMinMaxButtonClicked()
   whileBlocking( mScalarMaxLineEdit )->setText( QString::number( max ) );
   mScalarColorRampShaderWidget->setMinimumMaximumAndClassify( min, max );
 }
+
+QgsMeshRendererScalarSettings::DataInterpolationMethod QgsMeshRendererScalarSettingsWidget::dataIntepolationMethod() const
+{
+  if ( dataIsDefinedOnFaces() )
+  {
+    const int data = mScalarInterpolationTypeComboBox->currentData().toInt();
+    const QgsMeshRendererScalarSettings::DataInterpolationMethod method = static_cast<QgsMeshRendererScalarSettings::DataInterpolationMethod>( data );
+    return method;
+  }
+  else
+  {
+    return QgsMeshRendererScalarSettings::None;
+  }
+}
+
+bool QgsMeshRendererScalarSettingsWidget::dataIsDefinedOnFaces() const
+{
+  if ( !mMeshLayer || !mMeshLayer->dataProvider() || !mMeshLayer->dataProvider()->isValid() )
+    return false;
+
+  if ( mActiveDatasetGroup < 0 )
+    return false;
+
+  QgsMeshDatasetGroupMetadata meta = mMeshLayer->dataProvider()->datasetGroupMetadata( mActiveDatasetGroup );
+  const bool onFaces = ( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnFaces );
+  return onFaces;
+}
+
+

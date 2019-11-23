@@ -33,6 +33,10 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
 {
   setupUi( this );
 
+  QFont f = teProjection->font();
+  f.setPointSize( f.pointSize() - 2 );
+  teProjection->setFont( f );
+
   leSearch->setShowSearchIcon( true );
 
   connect( lstCoordinateSystems, &QTreeWidget::itemDoubleClicked, this, &QgsProjectionSelectionTreeWidget::lstCoordinateSystems_itemDoubleClicked );
@@ -139,6 +143,9 @@ void QgsProjectionSelectionTreeWidget::resizeEvent( QResizeEvent *event )
 
 void QgsProjectionSelectionTreeWidget::showEvent( QShowEvent *event )
 {
+  if ( mInitialized )
+    return;
+
   // ensure the projection list view is actually populated
   // before we show this widget
   loadCrsList( &mCrsFilter );
@@ -158,6 +165,7 @@ void QgsProjectionSelectionTreeWidget::showEvent( QShowEvent *event )
 
   // Pass up the inheritance hierarchy
   QWidget::showEvent( event );
+  mInitialized = true;
 }
 
 QString QgsProjectionSelectionTreeWidget::ogcWmsCrsFilterAsSqlExpression( QSet<QString> *crsFilter )
@@ -317,58 +325,20 @@ QString QgsProjectionSelectionTreeWidget::selectedProj4String()
   if ( !item || item->text( QgisCrsIdColumn ).isEmpty() )
     return QString();
 
-  QString srsId = item->text( QgisCrsIdColumn );
+  long srsId = item->text( QgisCrsIdColumn ).toLong();
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromSrsId( srsId );
+  return crs.toProj4();
+}
 
-  QgsDebugMsgLevel( "srsId = " + srsId, 4 );
-  QgsDebugMsgLevel( "USER_CRS_START_ID = " + QString::number( USER_CRS_START_ID ), 4 );
-
-  //
-  // Determine if this is a user projection or a system on
-  // user projection defs all have srs_id >= 100000
-  //
-  QString databaseFileName;
-  if ( srsId.toLong() >= USER_CRS_START_ID )
-  {
-    databaseFileName = QgsApplication::qgisUserDatabaseFilePath();
-    if ( !QFileInfo::exists( databaseFileName ) ) //its unlikely that this condition will ever be reached
-      return QString();
-  }
-  else //must be a system projection then
-  {
-    databaseFileName = mSrsDatabaseFileName;
-  }
-
-  QgsDebugMsgLevel( "db = " + databaseFileName, 4 );
-
-  sqlite3 *database = nullptr;
-  int rc = sqlite3_open_v2( databaseFileName.toUtf8().constData(), &database, SQLITE_OPEN_READONLY, nullptr );
-  if ( rc )
-  {
-    showDBMissingWarning( databaseFileName );
+QString QgsProjectionSelectionTreeWidget::selectedWktString()
+{
+  QTreeWidgetItem *item = lstCoordinateSystems->currentItem();
+  if ( !item || item->text( QgisCrsIdColumn ).isEmpty() )
     return QString();
-  }
 
-  // prepare the sql statement
-  const char *tail = nullptr;
-  sqlite3_stmt *stmt = nullptr;
-  QString sql = QStringLiteral( "select parameters from tbl_srs where srs_id=%1" ).arg( srsId );
-
-  QgsDebugMsgLevel( "Selection sql: " + sql, 4 );
-
-  rc = sqlite3_prepare( database, sql.toUtf8(), sql.toUtf8().length(), &stmt, &tail );
-  // XXX Need to free memory from the error msg if one is set
-  QString projString;
-  if ( rc == SQLITE_OK && sqlite3_step( stmt ) == SQLITE_ROW )
-  {
-    projString = QString::fromUtf8( ( char * )sqlite3_column_text( stmt, 0 ) );
-  }
-
-  // close the statement
-  sqlite3_finalize( stmt );
-  // close the database
-  sqlite3_close( database );
-
-  return projString;
+  long srsId = item->text( QgisCrsIdColumn ).toLong();
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromSrsId( srsId );
+  return crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2015, true );
 }
 
 QString QgsProjectionSelectionTreeWidget::getSelectedExpression( const QString &expression ) const
@@ -404,7 +374,7 @@ QString QgsProjectionSelectionTreeWidget::getSelectedExpression( const QString &
 
   //
   // set up the database
-  // XXX We could probabaly hold the database open for the life of this object,
+  // XXX We could probably hold the database open for the life of this object,
   // assuming that it will never be used anywhere else. Given the low overhead,
   // opening it each time seems to be a reasonable approach at this time.
   sqlite3 *database = nullptr;
@@ -469,7 +439,6 @@ void QgsProjectionSelectionTreeWidget::setShowBoundsMap( bool show )
 {
   mShowMap = show;
   mAreaCanvas->setVisible( show );
-
 }
 
 bool QgsProjectionSelectionTreeWidget::showNoProjection() const
@@ -983,9 +952,17 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
                    .arg( rect.yMaximum(), 0, 'f', 2 );
   }
 
-  QString extentHtml = QStringLiteral( "<dt><b>%1</b></dt><dd>%2</dd>" ).arg( tr( "Extent" ), extentString );
-  QString proj4String = tr( "<dt><b>%1</b></dt><dd>%2</dd>" ).arg( tr( "Proj4" ), selectedProj4String() );
-  teProjection->setText( QStringLiteral( "<h3>%1</h3><dl>" ).arg( selectedName() ) + extentHtml + proj4String + QLatin1String( "</dl>" ) );
+  const QString extentHtml = QStringLiteral( "<dt><b>%1</b></dt><dd>%2</dd>" ).arg( tr( "Extent" ), extentString );
+  const QString wktString = tr( "<dt><b>%1</b></dt><dd><code>%2</code></dd>" ).arg( tr( "WKT" ), selectedWktString().replace( '\n', QStringLiteral( "<br>" ) ).replace( ' ', QStringLiteral( "&nbsp;" ) ) );
+  const QString proj4String = tr( "<dt><b>%1</b></dt><dd><code>%2</code></dd>" ).arg( tr( "Proj4" ), selectedProj4String() );
+
+#ifdef Q_OS_WIN
+  const int smallerPointSize = std::max( font().pointSize() - 1, 8 ); // bit less on windows, due to poor rendering of small point sizes
+#else
+  const int smallerPointSize = std::max( font().pointSize() - 2, 6 );
+#endif
+
+  teProjection->setText( QStringLiteral( "<div style=\"font-size: %1pt\"><h3>%2</h3><dl>" ).arg( smallerPointSize ).arg( selectedName() ) + wktString + proj4String + extentHtml + QStringLiteral( "</dl></div>" ) );
 }
 
 QStringList QgsProjectionSelectionTreeWidget::authorities()

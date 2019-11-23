@@ -40,6 +40,7 @@ QgsMapSettings::QgsMapSettings()
   , mSegmentationTolerance( M_PI_2 / 90 )
 {
   mScaleCalculator.setMapUnits( QgsUnitTypes::DistanceUnknownUnit );
+  mSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
 
   updateDerived();
 }
@@ -223,6 +224,8 @@ void QgsMapSettings::updateDerived()
   QgsDebugMsgLevel( QStringLiteral( "Recalced pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mVisibleExtent.width() / mMapUnitsPerPixel ), qgsDoubleToString( mVisibleExtent.height() / mMapUnitsPerPixel ) ), 5 );
   QgsDebugMsgLevel( QStringLiteral( "Scale (assuming meters as map units) = 1:%1" ).arg( qgsDoubleToString( mScale ) ), 5 );
   QgsDebugMsgLevel( QStringLiteral( "Rotation: %1 degrees" ).arg( mRotation ), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "Extent: %1" ).arg( mExtent.asWktCoordinates() ), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "Visible Extent: %1" ).arg( mVisibleExtent.asWktCoordinates() ), 5 );
 
   mValid = true;
 }
@@ -675,4 +678,14 @@ QgsGeometry QgsMapSettings::labelBoundaryGeometry() const
 void QgsMapSettings::setLabelBoundaryGeometry( const QgsGeometry &boundary )
 {
   mLabelBoundaryGeometry = boundary;
+}
+
+void QgsMapSettings::addRenderedFeatureHandler( QgsRenderedFeatureHandlerInterface *handler )
+{
+  mRenderedFeatureHandlers.append( handler );
+}
+
+QList<QgsRenderedFeatureHandlerInterface *> QgsMapSettings::renderedFeatureHandlers() const
+{
+  return mRenderedFeatureHandlers;
 }

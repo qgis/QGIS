@@ -62,6 +62,7 @@ namespace QgsWfs
     }
 #else
     doc = createGetCapabilitiesDocument( serverIface, project, version, request );
+    capabilitiesDocument = &doc;
 #endif
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
     response.write( capabilitiesDocument->toByteArray() );
@@ -590,7 +591,8 @@ namespace QgsWfs
       //create WGS84BoundingBox
       QgsRectangle layerExtent = layer->extent();
       //transform the layers native CRS into WGS84
-      QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
+      QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() );
+      int wgs84precision = 6;
       QgsRectangle wgs84BoundingRect;
       if ( !layerExtent.isNull() )
       {
@@ -609,11 +611,11 @@ namespace QgsWfs
       QDomElement bBoxElement = doc.createElement( QStringLiteral( "ows:WGS84BoundingBox" ) );
       bBoxElement.setAttribute( QStringLiteral( "dimensions" ), QStringLiteral( "2" ) );
       QDomElement lCornerElement = doc.createElement( QStringLiteral( "ows:LowerCorner" ) );
-      QDomText lCornerText = doc.createTextNode( QString::number( wgs84BoundingRect.xMinimum() ) + " " + QString::number( wgs84BoundingRect.yMinimum() ) );
+      QDomText lCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( wgs84BoundingRect.xMinimum(), wgs84precision ), wgs84precision ) + " " + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( wgs84BoundingRect.yMinimum(), wgs84precision ), wgs84precision ) );
       lCornerElement.appendChild( lCornerText );
       bBoxElement.appendChild( lCornerElement );
       QDomElement uCornerElement = doc.createElement( QStringLiteral( "ows:UpperCorner" ) );
-      QDomText uCornerText = doc.createTextNode( QString::number( wgs84BoundingRect.xMaximum() ) + " " + QString::number( wgs84BoundingRect.yMaximum() ) );
+      QDomText uCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( wgs84BoundingRect.xMaximum(), wgs84precision ), wgs84precision ) + " " + qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( wgs84BoundingRect.yMaximum(), wgs84precision ), wgs84precision ) );
       uCornerElement.appendChild( uCornerText );
       bBoxElement.appendChild( uCornerElement );
       layerElem.appendChild( bBoxElement );

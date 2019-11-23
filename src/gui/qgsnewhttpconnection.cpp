@@ -73,6 +73,7 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
   cmbVersion->addItem( tr( "1.0" ) );
   cmbVersion->addItem( tr( "1.1" ) );
   cmbVersion->addItem( tr( "2.0" ) );
+  cmbVersion->addItem( tr( "OGC API - Features" ) );
   connect( cmbVersion,
            static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
            this, &QgsNewHttpConnection::wfsVersionCurrentIndexChanged );
@@ -166,10 +167,11 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
 void QgsNewHttpConnection::wfsVersionCurrentIndexChanged( int index )
 {
   // For now 2019-06-06, leave paging checkable for some WFS version 1.1 servers with support
-  cbxWfsFeaturePaging->setEnabled( index == 0 || index >= 2 );
-  lblPageSize->setEnabled( cbxWfsFeaturePaging->isChecked() && ( index == 0 || index >= 2 ) );
-  txtPageSize->setEnabled( cbxWfsFeaturePaging->isChecked() && ( index == 0 || index >= 2 ) );
-  cbxWfsIgnoreAxisOrientation->setEnabled( index != 1 );
+  cbxWfsFeaturePaging->setEnabled( index == WFS_VERSION_MAX || index >= WFS_VERSION_2_0 );
+  lblPageSize->setEnabled( cbxWfsFeaturePaging->isChecked() && ( index == WFS_VERSION_MAX || index >= WFS_VERSION_1_1 ) );
+  txtPageSize->setEnabled( cbxWfsFeaturePaging->isChecked() && ( index == WFS_VERSION_MAX || index >= WFS_VERSION_1_1 ) );
+  cbxWfsIgnoreAxisOrientation->setEnabled( index != WFS_VERSION_1_0 && index != WFS_VERSION_API_FEATURES_1_0 );
+  cbxWfsInvertAxisOrientation->setEnabled( index != WFS_VERSION_API_FEATURES_1_0 );
 }
 
 void QgsNewHttpConnection::wfsFeaturePagingStateChanged( int state )
@@ -282,6 +284,7 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
   QString wmsKey = wmsSettingsKey( mBaseKey, mOriginalConnName );
 
   cbxIgnoreGetMapURI->setChecked( settings.value( wmsKey + "/ignoreGetMapURI", false ).toBool() );
+  cbxWmsIgnoreReportedLayerExtents->setChecked( settings.value( wmsKey + QStringLiteral( "/ignoreReportedLayerExtents" ), false ).toBool() );
   cbxWfsIgnoreAxisOrientation->setChecked( settings.value( wfsKey + "/ignoreAxisOrientation", false ).toBool() );
   cbxWfsInvertAxisOrientation->setChecked( settings.value( wfsKey + "/invertAxisOrientation", false ).toBool() );
   cbxWmsIgnoreAxisOrientation->setChecked( settings.value( wmsKey + "/ignoreAxisOrientation", false ).toBool() );
@@ -311,29 +314,27 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
   cmbDpiMode->setCurrentIndex( dpiIdx );
 
   QString version = settings.value( wfsKey + "/version" ).toString();
-  int versionIdx = 0; // AUTO
+  int versionIdx = WFS_VERSION_MAX; // AUTO
   if ( version == QLatin1String( "1.0.0" ) )
-    versionIdx = 1;
+    versionIdx = WFS_VERSION_1_0;
   else if ( version == QLatin1String( "1.1.0" ) )
-    versionIdx = 2;
+    versionIdx = WFS_VERSION_1_1;
   else if ( version == QLatin1String( "2.0.0" ) )
-    versionIdx = 3;
+    versionIdx = WFS_VERSION_2_0;
+  else if ( version == QLatin1String( "OGC_API_FEATURES" ) )
+    versionIdx = WFS_VERSION_API_FEATURES_1_0;
   cmbVersion->setCurrentIndex( versionIdx );
+
+  // Enable/disable these items per WFS versions
+  wfsVersionCurrentIndexChanged( versionIdx );
 
   txtReferer->setText( settings.value( wmsKey + "/referer" ).toString() );
   txtMaxNumFeatures->setText( settings.value( wfsKey + "/maxnumfeatures" ).toString() );
 
   // Only default to paging enabled if WFS 2.0.0 or higher
-  bool pagingEnabled = settings.value( wfsKey + "/pagingenabled", ( versionIdx == 0 || versionIdx >= 3 ) ).toBool();
+  bool pagingEnabled = settings.value( wfsKey + "/pagingenabled", ( versionIdx == WFS_VERSION_MAX || versionIdx >= WFS_VERSION_2_0 ) ).toBool();
   txtPageSize->setText( settings.value( wfsKey + "/pagesize" ).toString() );
   cbxWfsFeaturePaging->setChecked( pagingEnabled );
-
-  // Enable/disable these items per WFS versions
-  // For now 2019-06-06, leave paging checkable for some WFS version 1.1 servers with support
-  txtPageSize->setEnabled( pagingEnabled && ( versionIdx == 0 || versionIdx >= 2 ) );
-  lblPageSize->setEnabled( pagingEnabled && ( versionIdx == 0 || versionIdx >= 2 ) );
-  cbxWfsFeaturePaging->setEnabled( versionIdx == 0 || versionIdx >= 2 );
-  cbxWfsIgnoreAxisOrientation->setEnabled( versionIdx != 1 );
 }
 
 QUrl QgsNewHttpConnection::urlTrimmed() const
@@ -396,6 +397,7 @@ void QgsNewHttpConnection::accept()
     settings.setValue( wmsKey + "/ignoreAxisOrientation", cbxWmsIgnoreAxisOrientation->isChecked() );
     settings.setValue( wmsKey + "/invertAxisOrientation", cbxWmsInvertAxisOrientation->isChecked() );
 
+    settings.setValue( wmsKey + QStringLiteral( "/ignoreReportedLayerExtents" ), cbxWmsIgnoreReportedLayerExtents->isChecked() );
     settings.setValue( wmsKey + "/ignoreGetMapURI", cbxIgnoreGetMapURI->isChecked() );
     settings.setValue( wmsKey + "/smoothPixmapTransform", cbxSmoothPixmapTransform->isChecked() );
 
@@ -432,17 +434,20 @@ void QgsNewHttpConnection::accept()
     QString version = QStringLiteral( "auto" );
     switch ( cmbVersion->currentIndex() )
     {
-      case 0:
+      case WFS_VERSION_MAX:
         version = QStringLiteral( "auto" );
         break;
-      case 1:
+      case WFS_VERSION_1_0:
         version = QStringLiteral( "1.0.0" );
         break;
-      case 2:
+      case WFS_VERSION_1_1:
         version = QStringLiteral( "1.1.0" );
         break;
-      case 3:
+      case WFS_VERSION_2_0:
         version = QStringLiteral( "2.0.0" );
+        break;
+      case WFS_VERSION_API_FEATURES_1_0:
+        version = QStringLiteral( "OGC_API_FEATURES" );
         break;
     }
     settings.setValue( wfsKey + "/version", version );

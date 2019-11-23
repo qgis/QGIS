@@ -31,7 +31,7 @@
     <item row="0" column="3">
      <widget class="QToolButton" name="mZoomToFeatureButton">
       <property name="text">
-       <string>Zoom To Feature</string>
+       <string>Zoom To Feature(s)</string>
       </property>
       <property name="icon">
        <iconset resource="../../images/images.qrc">

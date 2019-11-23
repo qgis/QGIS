@@ -68,13 +68,17 @@ QgsPackageAlgorithm *QgsPackageAlgorithm::createInstance() const
   return new QgsPackageAlgorithm();
 }
 
-bool QgsPackageAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+bool QgsPackageAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
   for ( QgsMapLayer *layer : layers )
   {
     mLayers.emplace_back( layer->clone() );
   }
+
+  if ( mLayers.empty() )
+    feedback->reportError( QObject::tr( "No layers selected, geopackage will be empty" ), false );
+
   return true;
 }
 

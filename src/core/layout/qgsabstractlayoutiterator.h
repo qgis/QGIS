@@ -54,7 +54,7 @@ class CORE_EXPORT QgsAbstractLayoutIterator
     /**
      * Returns the number of features to iterate over.
      */
-    virtual int count() = 0;
+    virtual int count() const = 0;
 
     /**
      * Iterates to next feature, returning FALSE if no more features exist to iterate over.

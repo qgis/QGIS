@@ -2,7 +2,7 @@
 ########################################################
 # Files
 
-SET (wms_SRCS
+SET (WMS_SRCS
   qgswms.cpp
   qgswmsutils.cpp
   qgsdxfwriter.cpp
@@ -23,7 +23,7 @@ SET (wms_SRCS
   qgswmsrendercontext.cpp
 )
 
-SET (wms_MOC_HDRS
+SET (WMS_HDRS
   qgswmsparameters.h
   qgswmsserviceexception.h
 )
@@ -31,9 +31,7 @@ SET (wms_MOC_HDRS
 ########################################################
 # Build
 
-QT5_WRAP_CPP(wms_MOC_SRCS ${wms_MOC_HDRS})
-
-ADD_LIBRARY (wms MODULE ${wms_SRCS} ${wms_MOC_SRCS} ${wms_MOC_HDRS})
+ADD_LIBRARY (wms MODULE ${WMS_SRCS} ${WMS_HDRS})
 
 
 INCLUDE_DIRECTORIES(SYSTEM
@@ -42,6 +40,8 @@ INCLUDE_DIRECTORIES(SYSTEM
 )
 
 INCLUDE_DIRECTORIES(
+  ${CMAKE_SOURCE_DIR}/external
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/annotations
   ${CMAKE_SOURCE_DIR}/src/core/expression
@@ -51,14 +51,15 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/core/layout
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
-  ../..
-  ..
-  .
+  ${CMAKE_SOURCE_DIR}/src/server
+  ${CMAKE_SOURCE_DIR}/src/server/services
+  ${CMAKE_SOURCE_DIR}/src/server/services/wms
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
@@ -66,7 +67,6 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/analysis
   ${CMAKE_BINARY_DIR}/src/server
   ${CMAKE_CURRENT_BINARY_DIR}
-  ${CMAKE_SOURCE_DIR}/external
 )
 
 

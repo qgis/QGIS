@@ -59,7 +59,7 @@ QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapLaye
 {
   mRasterLayer = qobject_cast<QgsRasterLayer *>( layer );
 
-  if ( !( mRasterLayer && mRasterLayer->isValid() ) )
+  if ( !mRasterLayer )
     return;
 
   setupUi( this );
@@ -128,31 +128,28 @@ void QgsRendererRasterPropertiesWidget::rendererChanged()
 
 void QgsRendererRasterPropertiesWidget::apply()
 {
+  if ( QgsBrightnessContrastFilter *brightnessFilter = mRasterLayer->brightnessFilter() )
+  {
+    brightnessFilter->setBrightness( mSliderBrightness->value() );
+    brightnessFilter->setContrast( mSliderContrast->value() );
+  }
 
-  if ( ! mRasterLayer->isValid() )
-    return;
-
-  mRasterLayer->brightnessFilter()->setBrightness( mSliderBrightness->value() );
-  mRasterLayer->brightnessFilter()->setContrast( mSliderContrast->value() );
-
-  QgsRasterRendererWidget *rendererWidget = dynamic_cast<QgsRasterRendererWidget *>( stackedWidget->currentWidget() );
-  if ( rendererWidget )
+  if ( QgsRasterRendererWidget *rendererWidget = dynamic_cast<QgsRasterRendererWidget *>( stackedWidget->currentWidget() ) )
   {
     rendererWidget->doComputations();
 
-    QgsRasterRenderer *newRenderer = rendererWidget->renderer();
-
-    // there are transparency related data stored in renderer instances, but they
-    // are not configured in the widget, so we need to copy them over from existing renderer
-    QgsRasterRenderer *oldRenderer = mRasterLayer->renderer();
-    if ( oldRenderer )
-      newRenderer->copyCommonProperties( oldRenderer, false );
-    mRasterLayer->setRenderer( newRenderer );
+    if ( QgsRasterRenderer *newRenderer = rendererWidget->renderer() )
+    {
+      // there are transparency related data stored in renderer instances, but they
+      // are not configured in the widget, so we need to copy them over from existing renderer
+      if ( QgsRasterRenderer *oldRenderer = mRasterLayer->renderer() )
+        newRenderer->copyCommonProperties( oldRenderer, false );
+      mRasterLayer->setRenderer( newRenderer );
+    }
   }
 
   // Hue and saturation controls
-  QgsHueSaturationFilter *hueSaturationFilter = mRasterLayer->hueSaturationFilter();
-  if ( hueSaturationFilter )
+  if ( QgsHueSaturationFilter *hueSaturationFilter = mRasterLayer->hueSaturationFilter() )
   {
     hueSaturationFilter->setSaturation( sliderSaturation->value() );
     hueSaturationFilter->setGrayscaleMode( ( QgsHueSaturationFilter::GrayscaleMode ) comboGrayscale->currentIndex() );
@@ -161,8 +158,7 @@ void QgsRendererRasterPropertiesWidget::apply()
     hueSaturationFilter->setColorizeStrength( sliderColorizeStrength->value() );
   }
 
-  QgsRasterResampleFilter *resampleFilter = mRasterLayer->resampleFilter();
-  if ( resampleFilter )
+  if ( QgsRasterResampleFilter *resampleFilter = mRasterLayer->resampleFilter() )
   {
     QgsRasterResampler *zoomedInResampler = nullptr;
     QString zoomedInResamplingMethod = mZoomedInResamplingComboBox->currentText();
@@ -215,14 +211,12 @@ void QgsRendererRasterPropertiesWidget::syncToLayer( QgsRasterLayer *layer )
   cboRenderers->setCurrentIndex( -1 );
   cboRenderers->blockSignals( false );
 
-  QgsRasterRenderer *renderer = mRasterLayer->renderer();
-  if ( renderer )
+  if ( QgsRasterRenderer *renderer = mRasterLayer->renderer() )
   {
     setRendererWidget( renderer->type() );
   }
 
-  QgsBrightnessContrastFilter *brightnessFilter = mRasterLayer->brightnessFilter();
-  if ( brightnessFilter )
+  if ( QgsBrightnessContrastFilter *brightnessFilter = mRasterLayer->brightnessFilter() )
   {
     mSliderBrightness->setValue( brightnessFilter->brightness() );
     mSliderContrast->setValue( brightnessFilter->contrast() );
@@ -232,9 +226,8 @@ void QgsRendererRasterPropertiesWidget::syncToLayer( QgsRasterLayer *layer )
   btnColorizeColor->setContext( QStringLiteral( "symbology" ) );
 
   // Hue and saturation color control
-  const QgsHueSaturationFilter *hueSaturationFilter = mRasterLayer->hueSaturationFilter();
   //set hue and saturation controls to current values
-  if ( hueSaturationFilter )
+  if ( const QgsHueSaturationFilter *hueSaturationFilter = mRasterLayer->hueSaturationFilter() )
   {
     sliderSaturation->setValue( hueSaturationFilter->saturation() );
     comboGrayscale->setCurrentIndex( ( int ) hueSaturationFilter->grayscaleMode() );
@@ -252,9 +245,8 @@ void QgsRendererRasterPropertiesWidget::syncToLayer( QgsRasterLayer *layer )
   //blend mode
   mBlendModeComboBox->setBlendMode( mRasterLayer->blendMode() );
 
-  const QgsRasterResampleFilter *resampleFilter = mRasterLayer->resampleFilter();
   //set combo boxes to current resampling types
-  if ( resampleFilter )
+  if ( const QgsRasterResampleFilter *resampleFilter = mRasterLayer->resampleFilter() )
   {
     const QgsRasterResampler *zoomedInResampler = resampleFilter->zoomedInResampler();
     if ( zoomedInResampler )
@@ -329,15 +321,16 @@ void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &render
 {
   QgsDebugMsg( "rendererName = " + rendererName );
   QgsRasterRendererWidget *oldWidget = mRendererWidget;
-  QgsRasterRenderer *oldRenderer = mRasterLayer->renderer();
 
   int alphaBand = -1;
   double opacity = 1;
-  if ( oldRenderer )
+  QColor nodataColor;
+  if ( QgsRasterRenderer *oldRenderer = mRasterLayer->renderer() )
   {
     // Retain alpha band and opacity when switching renderer
     alphaBand = oldRenderer->alphaBand();
     opacity = oldRenderer->opacity();
+    nodataColor = oldRenderer->nodataColor();
   }
 
   QgsRasterRendererRegistryEntry rendererEntry;
@@ -363,6 +356,7 @@ void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &render
       }
       mRasterLayer->renderer()->setAlphaBand( alphaBand );
       mRasterLayer->renderer()->setOpacity( opacity );
+      mRasterLayer->renderer()->setNodataColor( nodataColor );
       mRendererWidget = rendererEntry.widgetCreateFunction( mRasterLayer, myExtent );
       mRendererWidget->setMapCanvas( mMapCanvas );
       connect( mRendererWidget, &QgsRasterRendererWidget::widgetChanged, this, &QgsPanelWidget::widgetChanged );

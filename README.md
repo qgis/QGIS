@@ -84,8 +84,12 @@ You can get support in the following ways:
 
 QGIS is on GitHub at https://github.com/qgis/QGIS. If you wish to contribute
 patches you can [fork the project](https://help.github.com/forking/), make your changes, commit to your
-repository, and then [create a pull request](https://help.github.com/articles/creating-a-pull-request-from-a-fork/). The development team can then
-review your contribution and commit it upstream as appropriate.
+repository, and then [create a pull request](https://help.github.com/articles/creating-a-pull-request-from-a-fork/). The development team can then review your contribution and commit it upstream as appropriate.
+
 If you commit a new feature, add [FEATURE] to your commit message AND give a clear description of the new feature. A webhook will automatically create an issue on the QGIS-Documentation repo to tell people to write documentation about it.
 
 If you are not a developer, there are many other possibilities which do not require programming skills to help QGIS to evolve. Check our [project homepage for more information](http://qgis.org/en/site/getinvolved/index.html).
+
+### Building from source
+
+The [building guide](http://htmlpreview.github.io/?https://raw.github.com/qgis/QGIS/master/doc/INSTALL.html) can be used to get started with building QGIS from source.

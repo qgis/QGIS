@@ -97,6 +97,7 @@ class GUI_EXPORT QgsRasterBandComboBox : public QComboBox
 
     bool mShowNotSet = false;
     QString mNotSetString;
+    int mPrevBand = -1;
 
     QString displayBandName( QgsRasterDataProvider *provider, int band ) const;
 

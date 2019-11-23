@@ -38,6 +38,7 @@ QgsMapToolChangeLabelProperties::QgsMapToolChangeLabelProperties( QgsMapCanvas *
   mPalProperties << QgsPalLayerSettings::Underline;
   mPalProperties << QgsPalLayerSettings::Color;
   mPalProperties << QgsPalLayerSettings::Strikeout;
+  mPalProperties << QgsPalLayerSettings::MultiLineAlignment;
   mPalProperties << QgsPalLayerSettings::BufferSize;
   mPalProperties << QgsPalLayerSettings::BufferColor;
   mPalProperties << QgsPalLayerSettings::LabelDistance;
@@ -48,6 +49,7 @@ QgsMapToolChangeLabelProperties::QgsMapToolChangeLabelProperties( QgsMapCanvas *
   mPalProperties << QgsPalLayerSettings::MaxScale;
   mPalProperties << QgsPalLayerSettings::AlwaysShow;
   mPalProperties << QgsPalLayerSettings::CalloutDraw;
+  mPalProperties << QgsPalLayerSettings::LabelAllParts;
 }
 
 void QgsMapToolChangeLabelProperties::canvasPressEvent( QgsMapMouseEvent *e )
@@ -72,7 +74,7 @@ void QgsMapToolChangeLabelProperties::canvasPressEvent( QgsMapMouseEvent *e )
   if ( !mCurrentLabel.layer->isEditable() )
   {
     QgsPalIndexes indexes;
-    bool newAuxiliaryLayer = createAuxiliaryFields( indexes );
+    bool newAuxiliaryLayer = createAuxiliaryFields( indexes, false );
 
     if ( !newAuxiliaryLayer && !mCurrentLabel.layer->auxiliaryLayer() )
     {
@@ -104,7 +106,10 @@ void QgsMapToolChangeLabelProperties::canvasReleaseEvent( QgsMapMouseEvent *e )
                               mCurrentLabel.pos.providerID,
                               mCurrentLabel.pos.featureId,
                               mCurrentLabel.pos.labelFont,
-                              labeltext, nullptr );
+                              labeltext,
+                              mCurrentLabel.pos.isPinned,
+                              mCurrentLabel.settings,
+                              nullptr );
     d.setMapCanvas( canvas() );
 
     connect( &d, &QgsLabelPropertyDialog::applied, this, &QgsMapToolChangeLabelProperties::dialogPropertiesApplied );

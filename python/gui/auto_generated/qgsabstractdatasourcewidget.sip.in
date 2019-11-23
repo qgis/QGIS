@@ -50,6 +50,17 @@ Concrete classes should implement the right behavior depending on the layer
 being added.
 %End
 
+    virtual void reset();
+%Docstring
+Called when this source select widget is being shown in a "new and clean" dialog.
+
+The data source manager recycles existing source select widgets but will call
+this method on every reopening.
+This should clear any selection that has previously been done.
+
+.. versionadded:: 3.10
+%End
+
   signals:
 
     void connectionsChanged();
@@ -106,7 +117,8 @@ Emitted when a layer needs to be replaced
 %Docstring
 Emitted when a progress dialog is shown by the provider dialog.
 
-.. deprecated:: Since QGIS 3.4 this signal is no longer used. Use QgsProxyProgressTask instead to show progress reports.
+.. deprecated:: QGIS 3.4
+   this signal is no longer used. Use QgsProxyProgressTask instead to show progress reports.
 %End
 
     void progressMessage( QString message );

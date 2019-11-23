@@ -71,6 +71,7 @@ class TestQgsMeshRenderer : public QObject
     void test_vertex_scalar_dataset_rendering();
     void test_vertex_vector_dataset_rendering();
     void test_face_scalar_dataset_rendering();
+    void test_face_scalar_dataset_interpolated_neighbour_average_rendering();
     void test_face_vector_dataset_rendering();
     void test_vertex_scalar_dataset_with_inactive_face_rendering();
     void test_face_vector_on_user_grid();
@@ -241,6 +242,23 @@ void TestQgsMeshRenderer::test_face_scalar_dataset_rendering()
 
   QVERIFY( imageCheck( "quad_and_triangle_face_scalar_dataset", mMemoryLayer ) );
 }
+
+void TestQgsMeshRenderer::test_face_scalar_dataset_interpolated_neighbour_average_rendering()
+{
+  QgsMeshDatasetIndex ds( 2, 0 );
+  const QgsMeshDatasetGroupMetadata metadata = mMemoryLayer->dataProvider()->datasetGroupMetadata( ds );
+  QVERIFY( metadata.name() == "FaceScalarDataset" );
+
+  QgsMeshRendererSettings rendererSettings = mMemoryLayer->rendererSettings();
+  rendererSettings.setActiveScalarDataset( ds );
+  auto scalarRendererSettings = rendererSettings.scalarSettings( 2 );
+  scalarRendererSettings.setDataInterpolationMethod( QgsMeshRendererScalarSettings::NeighbourAverage );
+  rendererSettings.setScalarSettings( 2, scalarRendererSettings );
+  mMemoryLayer->setRendererSettings( rendererSettings );
+
+  QVERIFY( imageCheck( "quad_and_triangle_face_scalar_interpolated_neighbour_average_dataset", mMemoryLayer ) );
+}
+
 
 void TestQgsMeshRenderer::test_face_vector_dataset_rendering()
 {

@@ -155,6 +155,16 @@ void MDAL::DatasetGroup::setStatistics( const Statistics &statistics )
   mStatistics = statistics;
 }
 
+std::string MDAL::DatasetGroup::referenceTime() const
+{
+  return mReferenceTime;
+}
+
+void MDAL::DatasetGroup::setReferenceTime( const std::string &referenceTime )
+{
+  mReferenceTime = referenceTime;
+}
+
 MDAL::Mesh *MDAL::DatasetGroup::mesh() const
 {
   return mParent;

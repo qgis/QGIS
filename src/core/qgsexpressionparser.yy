@@ -90,8 +90,6 @@ void addParserLocation(YYLTYPE* yyloc, QgsExpressionNode *node)
 %lex-param {void * scanner}
 %parse-param {expression_parser_context* parser_ctx}
 
-%name-prefix "exp_"
-
 %union
 {
   QgsExpressionNode* node;
@@ -145,7 +143,7 @@ void addParserLocation(YYLTYPE* yyloc, QgsExpressionNode *node)
 %type <namednode> named_node
 
 // debugging
-%error-verbose
+%define parse.error verbose
 
 //
 // operator precedence

@@ -353,6 +353,7 @@ std::unique_ptr< QgsPoint > QgsMssqlGeometryParser::readPoint( int iFigure )
 std::unique_ptr< QgsMultiPoint > QgsMssqlGeometryParser::readMultiPoint( int iShape )
 {
   std::unique_ptr< QgsMultiPoint > poMultiPoint = qgis::make_unique< QgsMultiPoint >();
+  poMultiPoint->reserve( mNumShapes );
   for ( int i = iShape + 1; i < mNumShapes; i++ )
   {
     if ( ParentOffset( i ) == ( unsigned int )iShape )
@@ -405,6 +406,7 @@ std::unique_ptr< QgsCircularString > QgsMssqlGeometryParser::readCircularString(
 std::unique_ptr< QgsMultiLineString > QgsMssqlGeometryParser::readMultiLineString( int iShape )
 {
   std::unique_ptr< QgsMultiLineString > poMultiLineString = qgis::make_unique< QgsMultiLineString >();
+  poMultiLineString->reserve( mNumShapes );
   for ( int i = iShape + 1; i < mNumShapes; i++ )
   {
     if ( ParentOffset( i ) == ( unsigned int )iShape )
@@ -439,6 +441,7 @@ std::unique_ptr< QgsPolygon > QgsMssqlGeometryParser::readPolygon( int iShape )
 std::unique_ptr< QgsMultiPolygon > QgsMssqlGeometryParser::readMultiPolygon( int iShape )
 {
   std::unique_ptr< QgsMultiPolygon > poMultiPolygon = qgis::make_unique< QgsMultiPolygon >();
+  poMultiPolygon->reserve( mNumShapes );
   for ( int i = iShape + 1; i < mNumShapes; i++ )
   {
     if ( ParentOffset( i ) == ( unsigned int )iShape )
@@ -552,6 +555,7 @@ std::unique_ptr< QgsCurvePolygon > QgsMssqlGeometryParser::readCurvePolygon( int
 std::unique_ptr< QgsGeometryCollection > QgsMssqlGeometryParser::readGeometryCollection( int iShape )
 {
   std::unique_ptr< QgsGeometryCollection> poGeomColl = qgis::make_unique< QgsGeometryCollection >();
+  poGeomColl->reserve( mNumShapes );
   for ( int i = iShape + 1; i < mNumShapes; i++ )
   {
     if ( ParentOffset( i ) == ( unsigned int )iShape )

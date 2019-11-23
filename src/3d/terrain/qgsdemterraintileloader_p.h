@@ -31,6 +31,7 @@
 #include <QFutureWatcher>
 #include <QElapsedTimer>
 
+#include "qgschunknode_p.h"
 #include "qgsrectangle.h"
 #include "qgsterraintileloader_p.h"
 #include "qgstilingscheme.h"
@@ -121,6 +122,7 @@ class QgsDemHeightMapGenerator : public QObject
     struct JobData
     {
       int jobId;
+      QgsChunkNodeId tileId;
       QgsRectangle extent;
       QFuture<QByteArray> future;
       QFutureWatcher<QByteArray> *fw;

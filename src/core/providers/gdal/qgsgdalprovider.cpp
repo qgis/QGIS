@@ -65,11 +65,11 @@
 #define ERRMSG(message) QGS_ERROR_MESSAGE(message,"GDAL provider")
 #define ERR(message) QgsError(message,"GDAL provider")
 
-static QString PROVIDER_KEY = QStringLiteral( "gdal" );
-static QString PROVIDER_DESCRIPTION = QStringLiteral( "GDAL provider" );
+#define PROVIDER_KEY QStringLiteral( "gdal" )
+#define PROVIDER_DESCRIPTION QStringLiteral( "GDAL data provider" )
 
 // To avoid potential races when destroying related instances ("main" and clones)
-static QMutex gGdaProviderMutex( QMutex::Recursive );
+Q_GLOBAL_STATIC_WITH_ARGS( QMutex, sGdalProviderMutex, ( QMutex::Recursive ) )
 
 QHash< QgsGdalProvider *, QVector<QgsGdalProvider::DatasetPair> > QgsGdalProvider::mgDatasetCache;
 
@@ -199,19 +199,14 @@ QgsGdalProvider::QgsGdalProvider( const QgsGdalProvider &other )
   : QgsRasterDataProvider( other.dataSourceUri(), QgsDataProvider::ProviderOptions() )
   , mUpdate( false )
 {
-  QString driverShortName;
-  if ( other.mGdalBaseDataset )
-  {
-    driverShortName = GDALGetDriverShortName( GDALGetDatasetDriver( other.mGdalBaseDataset ) );
-  }
-
+  mDriverName = other.mDriverName;
 
   // The JP2OPENJPEG driver might consume too much memory on large datasets
   // so make sure to really use a single one.
   // The PostGISRaster driver internally uses a per-thread connection cache.
   // This can lead to crashes if two datasets created by the same thread are used at the same time.
-  bool forceUseSameDataset = ( driverShortName.toUpper() == QStringLiteral( "JP2OPENJPEG" ) ||
-                               driverShortName == QStringLiteral( "PostGISRaster" ) ||
+  bool forceUseSameDataset = ( mDriverName.toUpper() == QStringLiteral( "JP2OPENJPEG" ) ||
+                               mDriverName == QStringLiteral( "PostGISRaster" ) ||
                                CSLTestBoolean( CPLGetConfigOption( "QGIS_GDAL_FORCE_USE_SAME_DATASET", "FALSE" ) ) );
 
   if ( forceUseSameDataset )
@@ -272,7 +267,7 @@ QString QgsGdalProvider::dataSourceUri( bool expandAuthConfig ) const
   {
     QString uri( QgsDataProvider::dataSourceUri() );
     // Check for authcfg
-    QRegularExpression authcfgRe( " authcfg='([^']+)'" );
+    QRegularExpression authcfgRe( R"raw(authcfg='?([^'\s]+)'?)raw" );
     QRegularExpressionMatch match;
     if ( uri.contains( authcfgRe, &match ) )
     {
@@ -340,7 +335,7 @@ bool QgsGdalProvider::getCachedGdalHandles( QgsGdalProvider *provider,
     GDALDatasetH &gdalBaseDataset,
     GDALDatasetH &gdalDataset )
 {
-  QMutexLocker locker( &gGdaProviderMutex );
+  QMutexLocker locker( sGdalProviderMutex() );
 
   auto iter = mgDatasetCache.find( provider );
   if ( iter == mgDatasetCache.end() )
@@ -363,7 +358,7 @@ bool QgsGdalProvider::cacheGdalHandlesForLaterReuse( QgsGdalProvider *provider,
     GDALDatasetH gdalBaseDataset,
     GDALDatasetH gdalDataset )
 {
-  QMutexLocker locker( &gGdaProviderMutex );
+  QMutexLocker locker( sGdalProviderMutex() );
 
   // If the cache size goes above the soft limit, try to do evict a cached
   // dataset for the provider that has the most cached entries
@@ -434,7 +429,7 @@ bool QgsGdalProvider::cacheGdalHandlesForLaterReuse( QgsGdalProvider *provider,
 
 void QgsGdalProvider::closeCachedGdalHandlesFor( QgsGdalProvider *provider )
 {
-  QMutexLocker locker( &gGdaProviderMutex );
+  QMutexLocker locker( sGdalProviderMutex() );
   auto iter = mgDatasetCache.find( provider );
   if ( iter != mgDatasetCache.end() )
   {
@@ -458,7 +453,7 @@ void QgsGdalProvider::closeCachedGdalHandlesFor( QgsGdalProvider *provider )
 
 QgsGdalProvider::~QgsGdalProvider()
 {
-  QMutexLocker locker( &gGdaProviderMutex );
+  QMutexLocker locker( sGdalProviderMutex() );
 
   int lightRefCounter = -- ( *mpLightRefCounter );
   int refCounter = -- ( *mpRefCounter );
@@ -540,13 +535,17 @@ QString QgsGdalProvider::htmlMetadata()
   if ( !initIfNeeded() )
     return QString();
 
+  GDALDriverH hDriver = GDALGetDriverByName( mDriverName.toLocal8Bit().constData() );
+  if ( !hDriver )
+    return QString();
+
   QString myMetadata;
 
   // GDAL Driver description
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "GDAL Driver Description" ) + QStringLiteral( "</td><td>" ) + QString( GDALGetDescription( GDALGetDatasetDriver( mGdalDataset ) ) ) + QStringLiteral( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "GDAL Driver Description" ) + QStringLiteral( "</td><td>" ) + mDriverName + QStringLiteral( "</td></tr>\n" );
 
   // GDAL Driver Metadata
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "GDAL Driver Metadata" ) + QStringLiteral( "</td><td>" ) + QString( GDALGetMetadataItem( GDALGetDatasetDriver( mGdalDataset ), GDAL_DMD_LONGNAME, nullptr ) ) + QStringLiteral( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "GDAL Driver Metadata" ) + QStringLiteral( "</td><td>" ) + QString( GDALGetMetadataItem( hDriver, GDAL_DMD_LONGNAME, nullptr ) ) + QStringLiteral( "</td></tr>\n" );
 
   // Dataset description
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Dataset Description" ) + QStringLiteral( "</td><td>" ) + QString::fromUtf8( GDALGetDescription( mGdalDataset ) ) + QStringLiteral( "</td></tr>\n" );
@@ -995,7 +994,7 @@ QString QgsGdalProvider::generateBandName( int bandNumber ) const
   if ( !const_cast<QgsGdalProvider *>( this )->initIfNeeded() )
     return QString();
 
-  if ( strcmp( GDALGetDriverShortName( GDALGetDatasetDriver( mGdalDataset ) ), "netCDF" ) == 0 || strcmp( GDALGetDriverShortName( GDALGetDatasetDriver( mGdalDataset ) ), "GTiff" ) == 0 )
+  if ( mDriverName == QLatin1String( "netCDF" ) || mDriverName == QLatin1String( "GTiff" ) )
   {
     char **GDALmetadata = GDALGetMetadata( mGdalDataset, nullptr );
     if ( GDALmetadata )
@@ -1230,10 +1229,7 @@ int QgsGdalProvider::capabilities() const
                    | QgsRasterDataProvider::BuildPyramids
                    | QgsRasterDataProvider::Create
                    | QgsRasterDataProvider::Remove;
-  GDALDriverH myDriver = GDALGetDatasetDriver( mGdalDataset );
-  QString name = GDALGetDriverShortName( myDriver );
-  QgsDebugMsg( "driver short name = " + name );
-  if ( name != QLatin1String( "WMS" ) )
+  if ( mDriverName != QLatin1String( "WMS" ) )
   {
     capability |= QgsRasterDataProvider::Size;
   }
@@ -1676,7 +1672,7 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> &rasterPyr
 {
   QMutexLocker locker( mpMutex );
 
-  //TODO: Consider making rasterPyramidList modifyable by this method to indicate if the pyramid exists after build attempt
+  //TODO: Consider making rasterPyramidList modifiable by this method to indicate if the pyramid exists after build attempt
   //without requiring the user to rebuild the pyramid list to get the updated information
 
   //
@@ -2147,7 +2143,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
 
   fileFiltersString.clear();
 
-  QgsDebugMsg( QStringLiteral( "GDAL driver count: %1" ).arg( GDALGetDriverCount() ) );
+  QgsDebugMsgLevel( QStringLiteral( "GDAL driver count: %1" ).arg( GDALGetDriverCount() ), 2 );
 
   for ( int i = 0; i < GDALGetDriverCount(); ++i )
   {
@@ -2288,8 +2284,8 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
   // cleanup
   if ( fileFiltersString.endsWith( QLatin1String( ";;" ) ) ) fileFiltersString.chop( 2 );
 
-  QgsDebugMsg( "Raster filter list built: " + fileFiltersString );
-  QgsDebugMsg( "Raster extension list built: " + extensions.join( " " ) );
+  QgsDebugMsgLevel( "Raster filter list built: " + fileFiltersString, 2 );
+  QgsDebugMsgLevel( "Raster extension list built: " + extensions.join( ' ' ), 2 );
 }                               // buildSupportedRasterFileFilter_()
 
 
@@ -2633,6 +2629,7 @@ bool QgsGdalProvider::initIfNeeded()
 
 void QgsGdalProvider::initBaseDataset()
 {
+  mDriverName = GDALGetDriverShortName( GDALGetDatasetDriver( mGdalBaseDataset ) );
   mHasInit = true;
   mValid = true;
 #if 0
@@ -2815,7 +2812,7 @@ void QgsGdalProvider::initBaseDataset()
     }
     // It may happen that nodata value given by GDAL is wrong and it has to be
     // disabled by user, in that case we need another value to be used for nodata
-    // (for reprojection for example) -> always internaly represent as wider type
+    // (for reprojection for example) -> always internally represent as wider type
     // with mInternalNoDataValue in reserve.
     // Not used
 #if 0
@@ -2991,7 +2988,10 @@ bool QgsGdalProvider::remove()
 
   if ( mGdalDataset )
   {
-    GDALDriverH driver = GDALGetDatasetDriver( mGdalDataset );
+    GDALDriverH driver = GDALGetDriverByName( mDriverName.toLocal8Bit().constData() );
+    if ( !driver )
+      return false;
+
     closeDataset();
 
     CPLErrorReset();

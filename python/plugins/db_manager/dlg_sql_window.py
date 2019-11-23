@@ -60,6 +60,37 @@ from .ui.ui_DlgSqlWindow import Ui_DbManagerDlgSqlWindow as Ui_Dialog
 import re
 
 
+def check_comments_in_sql(raw_sql_input):
+    lines = []
+    for line in raw_sql_input.split('\n'):
+        if not line.strip().startswith('--'):
+            if '--' in line:
+                comment_positions = []
+                comments = re.finditer(r'--', line)
+                for match in comments:
+                    comment_positions.append(match.start())
+                quote_positions = []
+                identifiers = re.finditer(r'"(?:[^"]|"")*"', line)
+                quotes = re.finditer(r"'(?:[^']|'')*'", line)
+                for match in identifiers:
+                    quote_positions.append((match.start(), match.end()))
+                for match in quotes:
+                    quote_positions.append((match.start(), match.end()))
+                unquoted_comments = comment_positions.copy()
+                for comment in comment_positions:
+                    for quote_position in quote_positions:
+                        if comment >= quote_position[0] and comment < quote_position[1]:
+                            unquoted_comments.remove(comment)
+                if len(unquoted_comments) > 0:
+                    lines.append(line[:unquoted_comments[0]])
+                else:
+                    lines.append(line)
+            else:
+                lines.append(line)
+    sql = ' '.join(lines)
+    return sql.strip()
+
+
 class DlgSqlWindow(QWidget, Ui_Dialog):
     nameChanged = pyqtSignal(str)
     QUERY_HISTORY_LIMIT = 20
@@ -237,7 +268,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         settings = QgsSettings()
         lastDir = settings.value('DB_Manager/lastDirSQLFIle', "")
 
-        query = self._getSqlQuery()
+        query = self.editSql.text()
         if query == "":
             return
 
@@ -605,13 +636,8 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
     def _getExecutableSqlQuery(self):
         sql = self._getSqlQuery()
 
-        # Clean it up!
-        lines = []
-        for line in sql.split('\n'):
-            if not line.strip().startswith('--'):
-                lines.append(line)
-        sql = ' '.join(lines)
-        return sql.strip()
+        uncommented_sql = check_comments_in_sql(sql)
+        return uncommented_sql
 
     def uniqueChanged(self):
         # when an item is (un)checked, simply trigger an update of the combobox text

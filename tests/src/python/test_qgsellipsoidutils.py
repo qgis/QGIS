@@ -129,7 +129,7 @@ class TestQgsEllipsoidUtils(unittest.TestCase):
                                'Charon2000': 'Charon2000', 'clrk66': 'Clarke 1866', 'IGNF:ELG004': 'Clarke 1866',
                                'IGNF:ELG003': 'Clarke 1880 Anglais', 'IGNF:ELG010': 'Clarke 1880 IGN',
                                'clrk80': 'Clarke 1880 mod.',
-                               'cape': 'Clarke 1880 mod.', 'CPM': 'Comm. des Poids et Mesures 1799',
+                               'cape': 'Clarke 1880 mod.', 'CPM': 'Comm. des Poids et Mesures 1799',  # spellok
                                'Cordelia2000': 'Cordelia2000',
                                'Cressida2000': 'Cressida2000', 'Deimos2000': 'Deimos2000',
                                'delmbr': 'Delambre 1810 (Belgium)',

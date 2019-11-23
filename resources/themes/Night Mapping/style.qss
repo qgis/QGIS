@@ -1,11 +1,10 @@
-QToolTip
+QWidget
 {
-    border: 1px solid #222;
-    background-color: @itemdarkbackground;
-    color: @itembackground;
+    color: @text;
+    background: transparent;
 }
 
-QWindow, QMainWindow, QWidget
+QWindow, QMainWindow, QMdiSubWindow, QDialog, QAbstractScrollArea, QFocusFrame, QWizardPage, QDockWidget, QTabWidget, QGroupBox
 {
     color: @text;
     background-color: @background;
@@ -21,6 +20,19 @@ QWidget:item:selected
 {
     background-color: @selection;
     color: @text;
+}
+
+QWebView, QTextBrowser
+{
+    color: #000000;
+    background-color: #ffffff;
+}
+
+QToolTip
+{
+    border: 1px solid #222;
+    background-color: @itemdarkbackground;
+    color: @itembackground;
 }
 
 QMenuBar {
@@ -75,6 +87,54 @@ QAbstractSpinBox::down-button {
     image: url(@theme_path/icons/arrow-down.svg);
 }
 
+QAbstractSpinBox::drop-down {
+     subcontrol-origin: border;
+     subcontrol-position: top right;
+     width: 0.8em;
+     border: 0px;
+}
+
+QAbstractSpinBox::down-arrow
+{
+    image: url(@theme_path/icons/arrow-down.svg);
+    width: 0.8em;
+    height: 1.2em;
+}
+
+/* ==================================================================================== */
+/* CALENDAR
+/* ==================================================================================== */
+
+/* header row */
+QCalendarWidget QWidget {
+    color: @itembackground;
+    alternate-background-color: @background;
+}
+
+QCalendarWidget QWidget#qt_calendar_navigationbar
+{
+    color: @text;
+    background-color: @background; 
+}
+
+QCalendarWidget QWidget#qt_calendar_navigationbar QWidget
+{
+    color: @text;
+}
+
+/* normal days */
+QCalendarWidget QAbstractItemView:enabled
+{
+    color: @text;
+    background-color: @itembackground;
+    selection-background-color: @selection;
+    selection-color: @text;
+}
+
+QCalendarWidget QAbstractItemView:disabled
+{
+    color: @background;
+}
 
 /* ==================================================================================== */
 /* MENU                                                                                 */
@@ -666,6 +726,11 @@ QAbstractItemView, QListView
   selection-background-color: @selection;
 }
 
+QAbstractItemView:disabled, QListView:disabled
+{
+    color: @itemdarkbackground;
+}
+
 QAbstractItemView::selected, QListView::selected {
     border: 0px;
     outline: none;
@@ -684,6 +749,10 @@ QTreeView {
 QTreeView::item, QTreeView::branch {
     background: transparent;
     color: @textlight;
+}
+
+QTreeView::item:disabled {
+    color: @itemdarkbackground;
 }
 
 QTreeView::item:hover, QTreeView::branch:hover {
@@ -744,6 +813,9 @@ QTableView {
     selection-color: @text;
 }
 
+QTableView:disabled {
+    color: @itemdarkbackground;
+}
 
 QTableView QTableCornerButton::section {
     background-color: @background;

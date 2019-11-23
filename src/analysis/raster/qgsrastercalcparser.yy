@@ -79,6 +79,7 @@ root: raster_exp{}
 
 raster_exp:
   FUNCTION '(' raster_exp ')'   { $$ = new QgsRasterCalcNode($1, $3, 0); joinTmpNodes($$, $3, 0);}
+  | FUNCTION '(' raster_exp ',' raster_exp ')' { $$ = new QgsRasterCalcNode($1, $3, $5); joinTmpNodes($$, $3, $5);}
   | raster_exp AND raster_exp   { $$ = new QgsRasterCalcNode( QgsRasterCalcNode::opAND, $1, $3 ); joinTmpNodes($$,$1,$3); }
   | raster_exp OR raster_exp   { $$ = new QgsRasterCalcNode( QgsRasterCalcNode::opOR, $1, $3 ); joinTmpNodes($$,$1,$3); }
   | raster_exp '=' raster_exp   { $$ = new QgsRasterCalcNode( QgsRasterCalcNode::opEQ, $1, $3 ); joinTmpNodes($$,$1,$3); }

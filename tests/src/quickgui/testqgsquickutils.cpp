@@ -185,6 +185,9 @@ void TestQgsQuickUtils::getRelativePath()
 
   QString relativePath4 = utils.getRelativePath( path2, QStringLiteral( "/dummy/path/" ) );
   QCOMPARE( QString(), relativePath4 );
+
+  QString relativePath5 = utils.getRelativePath( path2, QStringLiteral( "" ) );
+  QCOMPARE( path2, relativePath5 );
 }
 
 

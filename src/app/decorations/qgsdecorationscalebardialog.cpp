@@ -57,10 +57,18 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar 
 
   // placement
   cboPlacement->addItem( tr( "Top Left" ), QgsDecorationItem::TopLeft );
+  cboPlacement->addItem( tr( "Top Center" ), QgsDecorationItem::TopCenter );
   cboPlacement->addItem( tr( "Top Right" ), QgsDecorationItem::TopRight );
   cboPlacement->addItem( tr( "Bottom Left" ), QgsDecorationItem::BottomLeft );
+  cboPlacement->addItem( tr( "Bottom Center" ), QgsDecorationItem::BottomCenter );
   cboPlacement->addItem( tr( "Bottom Right" ), QgsDecorationItem::BottomRight );
+  connect( cboPlacement, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+  {
+    spnHorizontal->setMinimum( cboPlacement->currentData() == QgsDecorationItem::TopCenter || cboPlacement->currentData() == QgsDecorationItem::BottomCenter ? -100 : 0 );
+  } );
   cboPlacement->setCurrentIndex( cboPlacement->findData( mDeco.placement() ) );
+
+  spnHorizontal->setClearValue( 0 );
   spnHorizontal->setValue( mDeco.mMarginHorizontal );
   spnVertical->setValue( mDeco.mMarginVertical );
   wgtUnitSelection->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPercentage << QgsUnitTypes::RenderPixels );

@@ -42,7 +42,7 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
   layout->setAlignment( mCombo, Qt::AlignTop );
 
   mSelectButton = new QToolButton();
-  mSelectButton->setText( tr( "…" ) );
+  mSelectButton->setText( QStringLiteral( "…" ) );
   mSelectButton->setToolTip( tr( "Select file" ) );
   connect( mSelectButton, &QToolButton::clicked, this, &QgsProcessingMapLayerComboBox::triggerFileSelection );
   layout->addWidget( mSelectButton );
@@ -117,6 +117,8 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
   setLayout( vl );
 
   setAcceptDrops( true );
+
+  onLayerChanged( mCombo->currentLayer() );
 }
 
 QgsProcessingMapLayerComboBox::~QgsProcessingMapLayerComboBox() = default;

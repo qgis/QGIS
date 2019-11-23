@@ -135,8 +135,10 @@ void QgsFeatureListView::mousePressEvent( QMouseEvent *event )
 
     if ( QgsFeatureListViewDelegate::EditElement == mItemDelegate->positionToElement( event->pos() ) )
     {
+
       mEditSelectionDrag = true;
-      setEditSelection( mModel->mapToMaster( index ), QItemSelectionModel::ClearAndSelect );
+      if ( index.isValid() )
+        setEditSelection( mModel->mapToMaster( index ), QItemSelectionModel::ClearAndSelect );
     }
     else
     {
@@ -205,10 +207,7 @@ void QgsFeatureListView::setEditSelection( const QModelIndex &index, QItemSelect
   bool ok = true;
   emit aboutToChangeEditSelection( ok );
 
-#ifdef QGISDEBUG
-  if ( index.model() != mModel->masterModel() )
-    qWarning() << "Index from wrong model passed in";
-#endif
+  Q_ASSERT( index.model() == mModel->masterModel() || !index.isValid() );
 
   if ( ok )
     mCurrentEditSelectionModel->select( index, command );
@@ -236,7 +235,8 @@ void QgsFeatureListView::mouseMoveEvent( QMouseEvent *event )
 
   if ( mEditSelectionDrag )
   {
-    setEditSelection( mModel->mapToMaster( index ), QItemSelectionModel::ClearAndSelect );
+    if ( index.isValid() )
+      setEditSelection( mModel->mapToMaster( index ), QItemSelectionModel::ClearAndSelect );
   }
   else
   {
@@ -325,7 +325,7 @@ void QgsFeatureListView::contextMenuEvent( QContextMenuEvent *event )
 
     QgsActionMenu *menu = new QgsActionMenu( mModel->layerCache()->layer(), feature, QStringLiteral( "Feature" ), this );
 
-    emit willShowContextMenu( menu, index );
+    emit willShowContextMenu( menu, feature.id() );
 
     menu->exec( event->globalPos() );
   }
@@ -373,7 +373,7 @@ void QgsFeatureListView::ensureEditSelection( bool inSelection )
   // could fall back to
   bool validEditSelectionAvailable = false;
 
-  if ( selectedIndexes.isEmpty() || mModel->mapFromMaster( selectedIndexes.first() ).row() == -1 )
+  if ( selectedIndexes.isEmpty() || !selectedIndexes.first().isValid() || mModel->mapFromMaster( selectedIndexes.first() ).row() == -1 )
   {
     validEditSelectionAvailable = false;
   }
