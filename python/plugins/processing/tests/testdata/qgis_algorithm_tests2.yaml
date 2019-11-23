@@ -670,7 +670,7 @@ tests:
         name: expected/delete_column.gml
         type: vector
 
-  - algorithm: qgis:createpointslayerfromtable
+  - algorithm: native:createpointslayerfromtable
     name: Create points from table
     params:
       INPUT:

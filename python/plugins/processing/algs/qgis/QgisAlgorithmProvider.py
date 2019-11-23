@@ -70,7 +70,6 @@ from .PointsDisplacement import PointsDisplacement
 from .PointsFromLines import PointsFromLines
 from .PointsFromPolygons import PointsFromPolygons
 from .PointsInPolygon import PointsInPolygon
-from .PointsLayerFromTable import PointsLayerFromTable
 from .PointsToPaths import PointsToPaths
 from .PolarPlot import PolarPlot
 from .PoleOfInaccessibility import PoleOfInaccessibility
@@ -172,7 +171,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 PointsFromLines(),
                 PointsFromPolygons(),
                 PointsInPolygon(),
-                PointsLayerFromTable(),
                 PointsToPaths(),
                 PolarPlot(),
                 PoleOfInaccessibility(),
