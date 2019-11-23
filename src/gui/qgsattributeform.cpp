@@ -591,7 +591,7 @@ void QgsAttributeForm::pushSelectedFeaturesMessage()
   }
 }
 
-void QgsAttributeForm::displayWarning( QString message )
+void QgsAttributeForm::displayWarning( const QString& message )
 {
   mMessageBar->pushMessage( QString(),
                             message,

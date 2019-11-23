@@ -75,7 +75,14 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     const QgsFeature &feature() { return mFeature; }
 
-    void displayWarning( QString message );
+    /**
+     * Displays a warning message in the form message bar 
+     * \param message message string
+     * \see mode()
+     * \since QGIS 3.12
+     * 
+     */
+    void displayWarning( const QString& message );
 
     // TODO QGIS 4.0 - make private
 

@@ -44,7 +44,16 @@ class QgsAttributeForm : QWidget
 
     const QgsFeature &feature();
 
-    void displayWarning( QString message );
+    void displayWarning( const QString& message );
+%Docstring
+Displays a warning message in the form message bar 
+
+:param message: message string
+
+.. seealso:: :py:func:`mode`
+
+.. versionadded:: 3.12
+%End
 
 
     void hideButtonBox();

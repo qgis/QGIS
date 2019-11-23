@@ -74,7 +74,7 @@ class GUI_EXPORT QgsTextEditWrapper : public QgsEditorWidgetWrapper
 
   public slots:
     void setEnabled( bool enabled ) override;
-    void setFeature( const QgsFeature &feature );
+    void setFeature( const QgsFeature &feature ) override;
 
   private slots:
     void textChanged( const QString &text );

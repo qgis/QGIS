@@ -360,7 +360,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      */
     bool setFormFeatureAttribute( const QString &attributeName, const QVariant &attributeValue );
 
-  protected:
+  private:
 
     /**
     * Is called, when the value of the widget needs to be changed. Update the widget representation

@@ -203,12 +203,12 @@ void QgsTextEditWrapper::setFeature( const QgsFeature &feature )
 {
   // Do nothing if the value has not changed
   if ( mInvalidJSON )
-    mForm->displayWarning( tr( "Your JSON is invalid and will be reverted back to what was in the datastore before editing" ) );
+    mForm->displayWarning( tr( "Your JSON is invalid and will be reverted back to the last valid edit or the original data" ) );
   {
     mInvalidJSON = false;
   }
   setFormFeature( feature );
-  setValue( feature.attribute( mFieldIdx ) );
+  setValue( feature.attribute( fieldIdx() ) );
 }
 
 void QgsTextEditWrapper::updateValues( const QVariant &val, const QVariantList & )
