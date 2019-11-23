@@ -167,7 +167,7 @@ QSet<QString> QgsDiagramLayerSettings::referencedFields( const QgsExpressionCont
   return referenced;
 }
 
-void QgsDiagramSettings::readXml( const QDomElement &elem )
+void QgsDiagramSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   enabled = ( elem.attribute( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
   if ( !QgsFontUtils::setFromXmlChildNode( font, elem, QStringLiteral( "fontProperties" ) ) )
@@ -317,7 +317,7 @@ void QgsDiagramSettings::readXml( const QDomElement &elem )
   }
 }
 
-void QgsDiagramSettings::writeXml( QDomElement &rendererElem, QDomDocument &doc ) const
+void QgsDiagramSettings::writeXml( QDomElement &rendererElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement categoryElem = doc.createElement( QStringLiteral( "DiagramCategory" ) );
   categoryElem.setAttribute( QStringLiteral( "enabled" ), enabled );
@@ -583,14 +583,14 @@ void QgsSingleCategoryDiagramRenderer::readXml( const QDomElement &elem, const Q
     return;
   }
 
-  mSettings.readXml( categoryElem );
+  mSettings.readXml( categoryElem, context );
   _readXml( elem, context );
 }
 
 void QgsSingleCategoryDiagramRenderer::writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement rendererElem = doc.createElement( QStringLiteral( "SingleCategoryDiagramRenderer" ) );
-  mSettings.writeXml( rendererElem, doc );
+  mSettings.writeXml( rendererElem, doc, context );
   _writeXml( rendererElem, doc, context );
   layerElem.appendChild( rendererElem );
 }

@@ -513,11 +513,11 @@ Sets the chart's angular ``direction``.
 .. versionadded:: 3.12
 %End
 
-    void readXml( const QDomElement &elem );
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() );
 %Docstring
 Reads diagram settings from XML
 %End
-    void writeXml( QDomElement &rendererElem, QDomDocument &doc ) const;
+    void writeXml( QDomElement &rendererElem, QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
 %Docstring
 Writes diagram settings to XML
 %End
