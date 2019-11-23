@@ -662,7 +662,18 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
                       y, sizeof( double ), numPoints,
                       z, sizeof( double ), numPoints,
                       nullptr, sizeof( double ), 0 );
-  projResult = proj_errno( projData );
+  // Try to - approximatively - emulate the behavior of pj_transform()...
+  // In the case of a single point transform, and a transformation error occurs,
+  // pj_transform() would return the errno. In cases of multiple point transform,
+  // it would continue (for non-transient errors, that is pipeline definition
+  // errors) and just set the resulting x,y to infinity. This is in fact a
+  // bit more subtle than that, and I'm not completely sure the logic in
+  // pj_transform() was really sane & fully bullet proof
+  // So here just check proj_errno() for single point transform
+  if ( numPoints == 1 )
+  {
+    projResult = proj_errno( projData );
+  }
 #else
   bool sourceIsLatLong = false;
   bool destIsLatLong = false;
