@@ -65,7 +65,6 @@ from .LinesToPolygons import LinesToPolygons
 from .MeanAndStdDevPlot import MeanAndStdDevPlot
 from .MinimumBoundingGeometry import MinimumBoundingGeometry
 from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
-from .Orthogonalize import Orthogonalize
 from .PointDistance import PointDistance
 from .PointsDisplacement import PointsDisplacement
 from .PointsFromLines import PointsFromLines
@@ -168,7 +167,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 MeanAndStdDevPlot(),
                 MinimumBoundingGeometry(),
                 NearestNeighbourAnalysis(),
-                Orthogonalize(),
                 PointDistance(),
                 PointsDisplacement(),
                 PointsFromLines(),

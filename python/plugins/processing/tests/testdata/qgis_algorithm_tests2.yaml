@@ -1107,7 +1107,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:orthogonalize
+  - algorithm: native:orthogonalize
     name: Orthogonalize polys
     params:
       INPUT:
@@ -1121,7 +1121,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:orthogonalize
+  - algorithm: native:orthogonalize
     name: Orthogonalize lines
     params:
       INPUT:
