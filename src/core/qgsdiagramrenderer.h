@@ -33,6 +33,7 @@
 #include "qgsdatadefinedsizelegend.h"
 
 #include "diagram/qgsdiagram.h"
+#include "qgsreadwritecontext.h"
 
 class QgsDiagramRenderer;
 class QgsFeature;
@@ -559,9 +560,9 @@ class CORE_EXPORT QgsDiagramSettings
     void setDirection( Direction direction );
 
     //! Reads diagram settings from XML
-    void readXml( const QDomElement &elem );
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() );
     //! Writes diagram settings to XML
-    void writeXml( QDomElement &rendererElem, QDomDocument &doc ) const;
+    void writeXml( QDomElement &rendererElem, QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
 
     /**
      * Returns list of legend nodes for the diagram
