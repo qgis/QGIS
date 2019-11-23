@@ -151,6 +151,7 @@ void QgsHistogramDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCon
   if ( !feature.fields().isEmpty() )
     expressionContext.setFields( feature.fields() );
 
+  values.reserve( s.categoryAttributes.size() );
   for ( const QString &cat : qgis::as_const( s.categoryAttributes ) )
   {
     QgsExpression *expression = getExpression( cat, expressionContext );
@@ -191,11 +192,11 @@ void QgsHistogramDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCon
         break;
 
       case QgsDiagramSettings::Right:
-        p->drawRect( baseX, baseY - currentOffset, length, scaledWidth * -1 );
+        p->drawRect( baseX, baseY - currentOffset, length, scaledWidth );
         break;
 
       case QgsDiagramSettings::Left:
-        p->drawRect( baseX + scaledMaxVal, baseY - currentOffset, 0 - length, scaledWidth * -1 );
+        p->drawRect( baseX + scaledMaxVal, baseY - currentOffset, 0 - length, scaledWidth );
         break;
     }
 
