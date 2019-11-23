@@ -101,6 +101,9 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   mDiagramTypeComboBox->addItem( pix, tr( "Histogram" ), DIAGRAM_NAME_HISTOGRAM );
   mDiagramTypeComboBox->blockSignals( false );
 
+  mAxisLineStyleButton->setSymbolType( QgsSymbol::Line );
+  mAxisLineStyleButton->setDialogTitle( tr( "Axis Line Symbol" ) );
+
   mScaleRangeWidget->setMapCanvas( mMapCanvas );
   mSizeFieldExpressionWidget->registerExpressionContextGenerator( this );
 
@@ -354,6 +357,10 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
       mBarSpacingUnitComboBox->setUnit( settingList.at( 0 ).spacingUnit() );
       mBarSpacingUnitComboBox->setMapUnitScale( settingList.at( 0 ).spacingMapUnitScale() );
 
+      mShowAxisGroupBox->setChecked( settingList.at( 0 ).showAxis() );
+      if ( settingList.at( 0 ).axisLineSymbol() )
+        mAxisLineStyleButton->setSymbol( settingList.at( 0 ).axisLineSymbol()->clone() );
+
       mIncreaseSmallDiagramsCheck->setChecked( settingList.at( 0 ).minimumSize != 0 );
       mIncreaseMinimumSizeSpinBox->setEnabled( mIncreaseSmallDiagramsCheck->isChecked() );
       mIncreaseMinimumSizeLabel->setEnabled( mIncreaseSmallDiagramsCheck->isChecked() );
@@ -550,6 +557,7 @@ void QgsDiagramProperties::mDiagramTypeComboBox_currentIndexChanged( int index )
       mBarSpacingSpinBox->show();
       mBarSpacingUnitComboBox->show();
       mBarOptionsFrame->show();
+      mShowAxisGroupBox->show();
       mAttributeBasedScalingRadio->setChecked( true );
       mFixedSizeRadio->setEnabled( false );
       mDiagramSizeSpinBox->setEnabled( false );
@@ -564,6 +572,7 @@ void QgsDiagramProperties::mDiagramTypeComboBox_currentIndexChanged( int index )
       mBarSpacingLabel->hide();
       mBarSpacingSpinBox->hide();
       mBarSpacingUnitComboBox->hide();
+      mShowAxisGroupBox->hide();
       mBarOptionsFrame->hide();
       mLinearlyScalingLabel->setText( tr( "Scale linearly between 0 and the following attribute value / diagram size:" ) );
       mSizeLabel->setText( tr( "Size" ) );
@@ -816,6 +825,9 @@ void QgsDiagramProperties::apply()
   ds.diagramOrientation = static_cast<QgsDiagramSettings::DiagramOrientation>( mOrientationButtonGroup->checkedButton()->property( "direction" ).toInt() );
 
   ds.barWidth = mBarWidthSpinBox->value();
+
+  ds.setAxisLineSymbol( mAxisLineStyleButton->clonedSymbol< QgsLineSymbol >() );
+  ds.setShowAxis( mShowAxisGroupBox->isChecked() );
 
   ds.setSpacing( mBarSpacingSpinBox->value() );
   ds.setSpacingUnit( mBarSpacingUnitComboBox->unit() );

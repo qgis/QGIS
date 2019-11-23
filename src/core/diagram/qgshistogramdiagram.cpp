@@ -16,6 +16,7 @@
 #include "qgsdiagramrenderer.h"
 #include "qgsrendercontext.h"
 #include "qgsexpression.h"
+#include "qgssymbollayerutils.h"
 
 #include <QPainter>
 
@@ -83,6 +84,13 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsFeature &feature, const QgsRen
       break;
   }
 
+  if ( s.showAxis() && s.axisLineSymbol() )
+  {
+    const double maxBleed = QgsSymbolLayerUtils::estimateMaxSymbolBleed( s.axisLineSymbol(), c ) / painterUnitConversionScale;
+    size.setWidth( size.width() + 2 * maxBleed );
+    size.setHeight( size.height() + 2 * maxBleed );
+  }
+
   return size;
 }
 
@@ -145,6 +153,13 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes &attributes, const 
       break;
   }
 
+  if ( s.showAxis() && s.axisLineSymbol() )
+  {
+    const double maxBleed = QgsSymbolLayerUtils::estimateMaxSymbolBleed( s.axisLineSymbol(), c ) / painterUnitConversionScale;
+    size.setWidth( size.width() + 2 * maxBleed );
+    size.setHeight( size.height() + 2 * maxBleed );
+  }
+
   return size;
 }
 
@@ -183,6 +198,16 @@ void QgsHistogramDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCon
   double baseX = position.x();
   double baseY = position.y();
 
+  if ( s.showAxis() && s.axisLineSymbol() )
+  {
+    // if showing axis, the diagram position needs shifting from the default base x so that the axis
+    // line stroke sits within the desired label engine rect (otherwise we risk overlaps of the axis line stroke)
+    const double maxBleed = QgsSymbolLayerUtils::estimateMaxSymbolBleed( s.axisLineSymbol(), c );
+    baseX += maxBleed;
+    baseY -= maxBleed;
+  }
+
+
   mPen.setColor( s.penColor );
   setPenWidth( mPen, s, c );
   p->setPen( mPen );
@@ -216,5 +241,36 @@ void QgsHistogramDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCon
     }
 
     currentOffset += scaledWidth + spacing;
+  }
+
+  if ( s.showAxis() && s.axisLineSymbol() )
+  {
+    s.axisLineSymbol()->startRender( c );
+    QPolygonF axisPoints;
+    switch ( s.diagramOrientation )
+    {
+      case QgsDiagramSettings::Up:
+        axisPoints << QPointF( baseX, baseY - scaledMaxVal ) << QPointF( baseX, baseY ) << QPointF( baseX + scaledWidth * values.size() + spacing * std::max( 0, values.size() - 1 ), baseY );
+        break;
+
+      case QgsDiagramSettings::Down:
+        axisPoints << QPointF( baseX, baseY ) << QPointF( baseX, baseY - scaledMaxVal ) << QPointF( baseX + scaledWidth * values.size() + spacing * std::max( 0, values.size() - 1 ), baseY - scaledMaxVal );
+        break;
+
+      case QgsDiagramSettings::Right:
+        axisPoints << QPointF( baseX + scaledMaxVal, baseY - scaledWidth * values.size() - spacing * std::max( 0, values.size() - 1 ) )
+                   << QPointF( baseX, baseY - scaledWidth * values.size() - spacing * std::max( 0, values.size() - 1 ) )
+                   << QPointF( baseX, baseY );
+        break;
+
+      case QgsDiagramSettings::Left:
+        axisPoints << QPointF( baseX, baseY - scaledWidth * values.size() - spacing * std::max( 0, values.size() - 1 ) )
+                   << QPointF( baseX + scaledMaxVal, baseY - scaledWidth * values.size() - spacing * std::max( 0, values.size() - 1 ) )
+                   << QPointF( baseX + scaledMaxVal, baseY );
+        break;
+    }
+
+    s.axisLineSymbol()->renderPolyline( axisPoints, nullptr, c );
+    s.axisLineSymbol()->stopRender( c );
   }
 }

@@ -247,6 +247,61 @@ class TestQgsDiagram : public QObject
       QVERIFY( imageCheck( "histogram_spacing" ) );
     }
 
+    void testHistogramAxis()
+    {
+      QgsDiagramSettings ds;
+      QColor col1 = Qt::red;
+      QColor col2 = Qt::yellow;
+      col1.setAlphaF( 0.5 );
+      col2.setAlphaF( 0.5 );
+      ds.categoryColors = QList<QColor>() << col1 << col2;
+      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\"" ) << QStringLiteral( "\"Cabin Crew\"" );
+      ds.minimumScale = -1;
+      ds.maximumScale = -1;
+      ds.minimumSize = 0;
+      ds.penColor = Qt::green;
+      ds.penWidth = .5;
+      ds.scaleByArea = true;
+      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.size = QSizeF( 5, 5 );
+      ds.rotationOffset = 0;
+      ds.setShowAxis( true );
+
+      QgsStringMap props;
+      props.insert( QStringLiteral( "width" ), QStringLiteral( "2" ) );
+      props.insert( QStringLiteral( "color" ), QStringLiteral( "#ff00ff" ) );
+      ds.setAxisLineSymbol( QgsLineSymbol::createSimple( props ) );
+
+      QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
+      dr->setLowerValue( 0.0 );
+      dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
+      dr->setUpperValue( 10 );
+      dr->setUpperSize( QSizeF( 40, 40 ) );
+      dr->setClassificationField( QStringLiteral( "Staff" ) );
+      dr->setDiagram( new QgsHistogramDiagram() );
+      dr->setDiagramSettings( ds );
+      mPointsLayer->setDiagramRenderer( dr );
+
+      QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+      dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+      dls.setShowAllDiagrams( true );
+      mPointsLayer->setDiagramLayerSettings( dls );
+
+      QVERIFY( imageCheck( "histogram_axis_top" ) );
+
+      ds.diagramOrientation = QgsDiagramSettings::Down;
+      dr->setDiagramSettings( ds );
+      QVERIFY( imageCheck( "histogram_axis_bottom" ) );
+
+      ds.diagramOrientation = QgsDiagramSettings::Left;
+      dr->setDiagramSettings( ds );
+      QVERIFY( imageCheck( "histogram_axis_left" ) );
+
+      ds.diagramOrientation = QgsDiagramSettings::Right;
+      dr->setDiagramSettings( ds );
+      QVERIFY( imageCheck( "histogram_axis_right" ) );
+    }
+
     void testHistogramOrientation()
     {
       QgsDiagramSettings ds;
