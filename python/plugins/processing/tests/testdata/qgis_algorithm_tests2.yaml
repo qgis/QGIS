@@ -1919,7 +1919,7 @@ tests:
         type: vector
         in_place_result: true
 
-  - algorithm: qgis:createspatialindex
+  - algorithm: native:createspatialindex
     name: Create spatial index
     params:
       INPUT:
