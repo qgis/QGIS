@@ -575,13 +575,14 @@ tests:
             __all__:
               precision: 4
 
-  - algorithm: qgis:randompointsinextent
+  - algorithm: native:randompointsinextent
     name: Random point in extent, don't check result
     params:
-      TARGET_CRS: EPSG:4326
+      CRS: EPSG:4326
       EXTENT: 3.9821361058601132,4.01984877126654,0.9948015122873343,1.0305293005671075
       MIN_DISTANCE: 0.0
-      POINTS_NUMBER: 5
+      NUM_POINTS: 5
+      MAX_ATTEMPTS: 200
     results:
       OUTPUT:
         compare: false
