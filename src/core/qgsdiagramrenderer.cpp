@@ -526,6 +526,11 @@ void QgsDiagramRenderer::_readXml( const QDomElement &elem, const QgsReadWriteCo
   {
     mDiagram.reset( new QgsHistogramDiagram() );
   }
+  else
+  {
+    // unknown diagram type -- default to histograms
+    mDiagram.reset( new QgsHistogramDiagram() );
+  }
   mShowAttributeLegend = ( elem.attribute( QStringLiteral( "attributeLegend" ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
 }
 
