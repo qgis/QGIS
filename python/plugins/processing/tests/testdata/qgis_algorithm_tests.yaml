@@ -877,7 +877,7 @@ tests:
         name: expected/set_m_value.shp
         type: vector
 
-  - algorithm: qgis:setzvalue
+  - algorithm: native:setzvalue
     name: Set Z Value
     params:
       INPUT:

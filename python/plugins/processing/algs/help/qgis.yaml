@@ -453,11 +453,6 @@ qgis:setstyleforrasterlayer: >
 qgis:setstyleforvectorlayer: >
   This algorithm sets the style of a vector layer. The style must be defined in a QML file.
 
-qgis:setzvalue: >
-  This algorithm sets the Z value for geometries in a layer.
-
-  If Z values already exist in the layer, they will be overwritten with the new value. If no Z values exist, the geometry will be upgraded to include Z values and the specified value used as the initial Z value for all geometries.
-
 qgis:singlesidedbuffer: >
   This algorithm buffers lines by a specified distance on one side of the line only.
 

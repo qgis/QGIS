@@ -96,7 +96,6 @@ from .SelectByAttribute import SelectByAttribute
 from .SelectByExpression import SelectByExpression
 from .SetRasterStyle import SetRasterStyle
 from .SetVectorStyle import SetVectorStyle
-from .SetZValue import SetZValue
 from .SingleSidedBuffer import SingleSidedBuffer
 from .SnapGeometries import SnapGeometriesToLayer
 from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
@@ -196,7 +195,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 SelectByExpression(),
                 SetRasterStyle(),
                 SetVectorStyle(),
-                SetZValue(),
                 SingleSidedBuffer(),
                 SnapGeometriesToLayer(),
                 SpatialiteExecuteSQL(),
