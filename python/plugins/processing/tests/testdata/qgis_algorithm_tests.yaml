@@ -865,7 +865,7 @@ tests:
         name: expected/multiline_boundary.gml
         type: vector
 
-  - algorithm: qgis:setmvalue
+  - algorithm: native:setmvalue
     name: Set M Value
     params:
       INPUT:

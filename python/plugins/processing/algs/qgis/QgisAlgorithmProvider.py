@@ -94,7 +94,6 @@ from .RegularPoints import RegularPoints
 from .Relief import Relief
 from .SelectByAttribute import SelectByAttribute
 from .SelectByExpression import SelectByExpression
-from .SetMValue import SetMValue
 from .SetRasterStyle import SetRasterStyle
 from .SetVectorStyle import SetVectorStyle
 from .SetZValue import SetZValue
@@ -195,7 +194,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 Relief(),
                 SelectByAttribute(),
                 SelectByExpression(),
-                SetMValue(),
                 SetRasterStyle(),
                 SetVectorStyle(),
                 SetZValue(),
