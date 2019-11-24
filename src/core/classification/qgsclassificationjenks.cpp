@@ -83,8 +83,8 @@ QList<double> QgsClassificationJenks::calculateBreaks( double minimum, double ma
 
     sample.resize( std::max( mMaximumSize, values.size() / 10 ) );
 
-    QgsDebugMsg( QStringLiteral( "natural breaks (jenks) sample size: %1" ).arg( sample.size() ) );
-    QgsDebugMsg( QStringLiteral( "values:%1" ).arg( values.size() ) );
+    QgsDebugMsgLevel( QStringLiteral( "natural breaks (jenks) sample size: %1" ).arg( sample.size() ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "values:%1" ).arg( values.size() ), 2 );
 
     sample[ 0 ] = minimum;
     sample[ 1 ] = maximum;

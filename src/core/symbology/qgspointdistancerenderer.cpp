@@ -373,14 +373,14 @@ void QgsPointDistanceRenderer::printGroupInfo() const
 {
 #ifdef QGISDEBUG
   int nGroups = mClusteredGroups.size();
-  QgsDebugMsg( "number of displacement groups:" + QString::number( nGroups ) );
+  QgsDebugMsgLevel( "number of displacement groups:" + QString::number( nGroups ), 3 );
   for ( int i = 0; i < nGroups; ++i )
   {
-    QgsDebugMsg( "***************displacement group " + QString::number( i ) );
+    QgsDebugMsgLevel( "***************displacement group " + QString::number( i ), 3 );
     const auto constAt = mClusteredGroups.at( i );
     for ( const GroupedFeature &feature : constAt )
     {
-      QgsDebugMsg( FID_TO_STRING( feature.feature.id() ) );
+      QgsDebugMsgLevel( FID_TO_STRING( feature.feature.id() ), 3 );
     }
   }
 #endif

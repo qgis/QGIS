@@ -164,12 +164,12 @@ void QgsGeoNodeRequest::setProtocol( const QString &protocol )
 
 void QgsGeoNodeRequest::replyFinished()
 {
-  QgsDebugMsg( QStringLiteral( "Reply finished" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Reply finished" ), 2 );
   if ( !mIsAborted && mGeoNodeReply )
   {
     if ( mGeoNodeReply->error() == QNetworkReply::NoError )
     {
-      QgsDebugMsg( QStringLiteral( "reply OK" ) );
+      QgsDebugMsgLevel( QStringLiteral( "reply OK" ), 2 );
       QVariant redirect = mGeoNodeReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
       if ( !redirect.isNull() )
       {
@@ -218,7 +218,7 @@ void QgsGeoNodeRequest::replyFinished()
           }
           cmd.setRawHeaders( hl );
 
-          QgsDebugMsg( QStringLiteral( "expirationDate:%1" ).arg( cmd.expirationDate().toString() ) );
+          QgsDebugMsgLevel( QStringLiteral( "expirationDate:%1" ).arg( cmd.expirationDate().toString() ), 2 );
           if ( cmd.expirationDate().isNull() )
           {
             QgsSettings settings;
@@ -517,7 +517,7 @@ void QgsGeoNodeRequest::request( const QString &endPoint )
   mIsAborted = false;
   // Handle case where the endpoint is full url
   QString url = endPoint.startsWith( mBaseUrl ) ? endPoint : mBaseUrl + endPoint;
-  QgsDebugMsg( "Requesting to " + url );
+  QgsDebugMsgLevel( "Requesting to " + url, 2 );
   setProtocol( url.split( QStringLiteral( "://" ) ).at( 0 ) );
   QUrl layerUrl( url );
   layerUrl.setScheme( protocol() );

@@ -56,7 +56,7 @@ static bool _initRenderer( const QString &name, QgsRendererWidgetFunc f, const Q
     m->setIcon( QgsApplication::getThemeIcon( iconName ) );
   }
 
-  QgsDebugMsg( "Set for " + name );
+  QgsDebugMsgLevel( "Set for " + name, 2 );
   return true;
 }
 
