@@ -35,7 +35,7 @@ QgsRasterMinMaxWidget::QgsRasterMinMaxWidget( QgsRasterLayer *layer, QWidget *pa
   , mLastRectangleValid( false )
   , mBandsChanged( false )
 {
-  QgsDebugMsg( QStringLiteral( "Entered." ) );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
   setupUi( this );
   connect( mUserDefinedRadioButton, &QRadioButton::toggled, this, &QgsRasterMinMaxWidget::mUserDefinedRadioButton_toggled );
   connect( mMinMaxRadioButton, &QRadioButton::toggled, this, &QgsRasterMinMaxWidget::mMinMaxRadioButton_toggled );
@@ -180,7 +180,7 @@ QgsRasterMinMaxOrigin QgsRasterMinMaxWidget::minMaxOrigin()
 
 void QgsRasterMinMaxWidget::doComputations()
 {
-  QgsDebugMsg( QStringLiteral( "Entered." ) );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
   if ( !mLayer->dataProvider() )
     return;
 

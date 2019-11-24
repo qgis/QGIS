@@ -800,7 +800,7 @@ void QgsProject::clear()
 // basically a debugging tool to dump property list values
 void dump_( const QgsProjectPropertyKey &topQgsPropertyKey )
 {
-  QgsDebugMsg( QStringLiteral( "current properties:" ) );
+  QgsDebugMsgLevel( QStringLiteral( "current properties:" ), 3 );
   topQgsPropertyKey.dump();
 }
 
@@ -1189,7 +1189,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
 
   projectFile.close();
 
-  QgsDebugMsg( "Opened document " + projectFile.fileName() );
+  QgsDebugMsgLevel( "Opened document " + projectFile.fileName(), 2 );
 
   // get project version string, if any
   QgsProjectVersion fileVersion = getVersion( *doc );
@@ -1222,7 +1222,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   // now get any properties
   _getProperties( *doc, mProperties );
 
-  QgsDebugMsg( QString::number( mProperties.count() ) + " properties read" );
+  QgsDebugMsgLevel( QString::number( mProperties.count() ) + " properties read", 2 );
 
 #if 0
   dump_( mProperties );
@@ -2070,7 +2070,7 @@ bool QgsProject::writeProjectFile( const QString &filename )
   dump_( mProperties );
 #endif
 
-  QgsDebugMsg( QStringLiteral( "there are %1 property scopes" ).arg( static_cast<int>( mProperties.count() ) ) );
+  QgsDebugMsgLevel( QStringLiteral( "there are %1 property scopes" ).arg( static_cast<int>( mProperties.count() ) ), 1 );
 
   if ( !mProperties.isEmpty() ) // only worry about properties if we
     // actually have any properties

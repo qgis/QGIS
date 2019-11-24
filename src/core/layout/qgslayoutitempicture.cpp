@@ -356,7 +356,7 @@ void QgsLayoutItemPicture::refreshPicture( const QgsExpressionContext *context )
     else if ( source.type() != QVariant::ByteArray )
     {
       source = source.toString().trimmed();
-      QgsDebugMsg( QStringLiteral( "exprVal PictureSource:%1" ).arg( source.toString() ) );
+      QgsDebugMsgLevel( QStringLiteral( "exprVal PictureSource:%1" ).arg( source.toString() ), 2 );
     }
   }
 

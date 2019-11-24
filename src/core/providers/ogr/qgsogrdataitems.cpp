@@ -291,7 +291,7 @@ static QgsOgrLayerItem *dataItemForLayer( QgsDataItem *parentItem, QString name,
   {
     // we are in a collection
     name = QString::fromUtf8( OGR_FD_GetName( hDef ) );
-    QgsDebugMsg( "OGR layer name : " + name );
+    QgsDebugMsgLevel( "OGR layer name : " + name, 2 );
     if ( !uniqueNames )
     {
       layerUri += "|layerid=" + QString::number( layerId );

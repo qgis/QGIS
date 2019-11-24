@@ -298,9 +298,7 @@ class CORE_EXPORT QgsField
         Py_BEGIN_ALLOW_THREADS
         try
         {
-          QgsDebugMsg( a0->toString() );
           sipRes = sipCpp->convertCompatible( *a0 );
-          QgsDebugMsg( a0->toString() );
         }
         catch ( ... )
         {

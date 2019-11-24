@@ -41,12 +41,12 @@ void QgsProjectPropertyValue::dump( int tabs ) const
 
     for ( const auto &string : sl )
     {
-      QgsDebugMsg( QStringLiteral( "%1[%2] " ).arg( tabString, string ) );
+      QgsDebugMsgLevel( QStringLiteral( "%1[%2] " ).arg( tabString, string ), 4 );
     }
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "%1%2" ).arg( tabString, mValue.toString() ) );
+    QgsDebugMsgLevel( QStringLiteral( "%1%2" ).arg( tabString, mValue.toString() ), 4 );
   }
 #endif
 }
@@ -299,7 +299,7 @@ void QgsProjectPropertyKey::dump( int tabs ) const
 
   tabString.fill( '\t', tabs );
 
-  QgsDebugMsg( QStringLiteral( "%1name: %2" ).arg( tabString, name() ) );
+  QgsDebugMsgLevel( QStringLiteral( "%1name: %2" ).arg( tabString, name() ), 4 );
 
   tabs++;
   tabString.fill( '\t', tabs );
@@ -315,20 +315,20 @@ void QgsProjectPropertyKey::dump( int tabs ) const
 
         if ( QVariant::StringList == propertyValue->value().type() )
         {
-          QgsDebugMsg( QStringLiteral( "%1key: <%2>  value:" ).arg( tabString, i.key() ) );
+          QgsDebugMsgLevel( QStringLiteral( "%1key: <%2>  value:" ).arg( tabString, i.key() ), 4 );
           propertyValue->dump( tabs + 1 );
         }
         else
         {
-          QgsDebugMsg( QStringLiteral( "%1key: <%2>  value: %3" ).arg( tabString, i.key(), propertyValue->value().toString() ) );
+          QgsDebugMsgLevel( QStringLiteral( "%1key: <%2>  value: %3" ).arg( tabString, i.key(), propertyValue->value().toString() ), 4 );
         }
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "%1key: <%2>  subkey: <%3>" )
-                     .arg( tabString,
-                           i.key(),
-                           static_cast<QgsProjectPropertyKey *>( i.value() )->name() ) );
+        QgsDebugMsgLevel( QStringLiteral( "%1key: <%2>  subkey: <%3>" )
+                          .arg( tabString,
+                                i.key(),
+                                static_cast<QgsProjectPropertyKey *>( i.value() )->name() ), 4 );
         i.value()->dump( tabs + 1 );
       }
 

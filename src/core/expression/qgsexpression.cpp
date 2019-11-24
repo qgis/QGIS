@@ -433,7 +433,7 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
     const int start = index;
     index = pos + match.capturedLength( 0 );
     const QString toReplace = match.captured( 1 ).trimmed();
-    QgsDebugMsg( "Found expression: " + toReplace );
+    QgsDebugMsgLevel( "Found expression: " + toReplace, 3 );
 
     QgsExpression exp( toReplace );
     if ( exp.hasParserError() )
@@ -458,7 +458,7 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
       continue;
     }
 
-    QgsDebugMsg( "Expression result is: " + result.toString() );
+    QgsDebugMsgLevel( "Expression result is: " + result.toString(), 3 );
     expr_action += action.mid( start, pos - start ) + result.toString();
   }
 

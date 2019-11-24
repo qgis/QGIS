@@ -1841,7 +1841,7 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     // TODO: very bad, we have to load twice!!! Make QgsDataProvider::timestamp() static?
     if ( stamp < mDataProvider->dataTimestamp() )
     {
-      QgsDebugMsg( QStringLiteral( "data changed, reload provider" ) );
+      QgsDebugMsgLevel( QStringLiteral( "data changed, reload provider" ), 3 );
       closeDataProvider();
       init();
       setDataProvider( mProviderKey );
@@ -2133,7 +2133,7 @@ QString QgsRasterLayer::decodedSource( const QString &source, const QString &pro
     if ( !src.contains( QLatin1String( "type=" ) ) &&
          !src.contains( QLatin1String( "crs=" ) ) && !src.contains( QLatin1String( "format=" ) ) )
     {
-      QgsDebugMsg( QStringLiteral( "Old WMS URI format detected -> converting to new format" ) );
+      QgsDebugMsgLevel( QStringLiteral( "Old WMS URI format detected -> converting to new format" ), 2 );
       QgsDataSourceUri uri;
       if ( !src.startsWith( QLatin1String( "http:" ) ) )
       {

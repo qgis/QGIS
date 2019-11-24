@@ -246,7 +246,7 @@ QgsFeatureRenderer *QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTyp
 
       if ( ruleCount > 1 )
       {
-        QgsDebugMsg( QStringLiteral( "more Rule elements found: need a RuleRenderer" ) );
+        QgsDebugMsgLevel( QStringLiteral( "more Rule elements found: need a RuleRenderer" ), 2 );
         needRuleRenderer = true;
       }
 
@@ -258,7 +258,7 @@ QgsFeatureRenderer *QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTyp
              ruleChildElem.localName() == QLatin1String( "MinScaleDenominator" ) ||
              ruleChildElem.localName() == QLatin1String( "MaxScaleDenominator" ) )
         {
-          QgsDebugMsg( QStringLiteral( "Filter or Min/MaxScaleDenominator element found: need a RuleRenderer" ) );
+          QgsDebugMsgLevel( QStringLiteral( "Filter or Min/MaxScaleDenominator element found: need a RuleRenderer" ), 2 );
           needRuleRenderer = true;
           break;
         }
@@ -280,7 +280,7 @@ QgsFeatureRenderer *QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTyp
   {
     rendererType = QStringLiteral( "singleSymbol" );
   }
-  QgsDebugMsg( QStringLiteral( "Instantiating a '%1' renderer..." ).arg( rendererType ) );
+  QgsDebugMsgLevel( QStringLiteral( "Instantiating a '%1' renderer..." ).arg( rendererType ), 2 );
 
   // create the renderer and return it
   QgsRendererAbstractMetadata *m = QgsApplication::rendererRegistry()->rendererMetadata( rendererType );

@@ -1679,8 +1679,8 @@ void QgsApplication::applyGdalSkippedDrivers()
       realDisabledDriverList << driverName;
   }
   QString myDriverList = realDisabledDriverList.join( ' ' );
-  QgsDebugMsg( QStringLiteral( "Gdal Skipped driver list set to:" ) );
-  QgsDebugMsg( myDriverList );
+  QgsDebugMsgLevel( QStringLiteral( "Gdal Skipped driver list set to:" ), 1 );
+  QgsDebugMsgLevel( myDriverList, 1 );
   CPLSetConfigOption( "GDAL_SKIP", myDriverList.toUtf8() );
   GDALAllRegister(); //to update driver list and skip missing ones
 }
@@ -1948,7 +1948,7 @@ bool QgsApplication::createDatabase( QString *errorMessage )
 
 void QgsApplication::setMaxThreads( int maxThreads )
 {
-  QgsDebugMsg( QStringLiteral( "maxThreads: %1" ).arg( maxThreads ) );
+  QgsDebugMsgLevel( QStringLiteral( "maxThreads: %1" ).arg( maxThreads ), 1 );
 
   // make sure value is between 1 and #cores, if not set to -1 (use #cores)
   // 0 could be used to disable any parallel processing
@@ -1964,7 +1964,7 @@ void QgsApplication::setMaxThreads( int maxThreads )
 
   // set max thread count in QThreadPool
   QThreadPool::globalInstance()->setMaxThreadCount( maxThreads );
-  QgsDebugMsg( QStringLiteral( "set QThreadPool max thread count to %1" ).arg( QThreadPool::globalInstance()->maxThreadCount() ) );
+  QgsDebugMsgLevel( QStringLiteral( "set QThreadPool max thread count to %1" ).arg( QThreadPool::globalInstance()->maxThreadCount() ), 1 );
 }
 
 QgsTaskManager *QgsApplication::taskManager()
