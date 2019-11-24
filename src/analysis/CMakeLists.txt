@@ -117,6 +117,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmshortestpathpointtolayer.cpp
   processing/qgsalgorithmshortestpathpointtopoint.cpp
   processing/qgsalgorithmsimplify.cpp
+  processing/qgsalgorithmsinglesidedbuffer.cpp
   processing/qgsalgorithmslope.cpp
   processing/qgsalgorithmsmooth.cpp
   processing/qgsalgorithmsnaptogrid.cpp

@@ -453,15 +453,6 @@ qgis:setstyleforrasterlayer: >
 qgis:setstyleforvectorlayer: >
   This algorithm sets the style of a vector layer. The style must be defined in a QML file.
 
-qgis:singlesidedbuffer: >
-  This algorithm buffers lines by a specified distance on one side of the line only.
-
-  The segments parameter controls the number of line segments to use to approximate a quarter circle when creating rounded buffers.
-
-  The join style parameter specifies whether round, miter or beveled joins should be used when buffering corners in a line.
-
-  The miter limit parameter is only applicable for miter join styles, and controls the maximum distance from the buffer to use when creating a mitered join.
-
 qgis:snapgeometries: >
   This algorithm snaps the geometries in a layer. Snapping can be done either to the geometries from another layer, or to geometries within the same layer.
 

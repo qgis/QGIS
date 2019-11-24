@@ -111,6 +111,7 @@
 #include "qgsalgorithmshortestpathpointtolayer.h"
 #include "qgsalgorithmshortestpathpointtopoint.h"
 #include "qgsalgorithmsimplify.h"
+#include "qgsalgorithmsinglesidedbuffer.h"
 #include "qgsalgorithmslope.h"
 #include "qgsalgorithmsmooth.h"
 #include "qgsalgorithmsnaptogrid.h"
@@ -287,6 +288,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsShortestPathPointToLayerAlgorithm() );
   addAlgorithm( new QgsShortestPathPointToPointAlgorithm() );
   addAlgorithm( new QgsSimplifyAlgorithm() );
+  addAlgorithm( new QgsSingleSidedBufferAlgorithm() );
   addAlgorithm( new QgsSlopeAlgorithm() );
   addAlgorithm( new QgsSmoothAlgorithm() );
   addAlgorithm( new QgsSnapToGridAlgorithm() );
