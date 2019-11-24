@@ -63,9 +63,9 @@ QString QgsRandomPointsExtentAlgorithm::shortHelpString() const
                       "number of random points, all of them within a given extent. "
                       "A distance factor can be specified, to avoid points being "
                       "too close to each other. If the minimum distance between points "
-                      " makes it impossible to create new points, either "
-                      " distance can be decreased or the maximum number of attempts may be "
-                      " increased."
+                      "makes it impossible to create new points, either "
+                      "distance can be decreased or the maximum number of attempts may be "
+                      "increased."
                     );
 }
 
@@ -157,7 +157,7 @@ QVariantMap QgsRandomPointsExtentAlgorithm::processAlgorithm( const QVariantMap 
         if ( distCheckIterations == mMaxAttempts )
         {
           throw QgsProcessingException( QObject::tr( "%1 of %2 points have been successfully created, but no more random points could be found "
-                                        " due to the given minimum distance between points. Either choose a larger extent, "
+                                        "due to the given minimum distance between points. Either choose a larger extent, "
                                         "lower the minimum distance between points or try increasing the number "
                                         "of attempts for searching new points." ).arg( i ).arg( mNumPoints ) );
         }
