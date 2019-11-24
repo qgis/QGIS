@@ -83,11 +83,11 @@ QgsRandomPointsExtentAlgorithm *QgsRandomPointsExtentAlgorithm::createInstance()
 
 bool QgsRandomPointsExtentAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  QgsCoordinateReferenceSystem extent_crs = parameterAsExtentCrs( parameters, QStringLiteral( "EXTENT" ), context);
+  QgsCoordinateReferenceSystem extent_crs = parameterAsExtentCrs( parameters, QStringLiteral( "EXTENT" ), context );
   QgsCoordinateReferenceSystem user_crs = parameterAsCrs( parameters, QStringLiteral( "TARGET_CRS" ), context );
 
   //prefer user crs over extent/project crs if defined
-  if( extent_crs != user_crs )
+  if ( extent_crs != user_crs )
     mCrs = user_crs;
   else
     mCrs = extent_crs;
@@ -140,7 +140,7 @@ QVariantMap QgsRandomPointsExtentAlgorithm::processAlgorithm( const QVariantMap 
   }
   else
   {
-    std::unique_ptr<QgsSpatialIndex> index( new QgsSpatialIndex() );
+    QgsSpatialIndex index = QgsSpatialIndex();
     int distCheckIterations = 0;
 
     int i = 0;
@@ -155,13 +155,13 @@ QVariantMap QgsRandomPointsExtentAlgorithm::processAlgorithm( const QVariantMap 
       QgsGeometry randomPointGeom = QgsGeometry( new QgsPoint( rx, ry ) );
 
       //check if new random point is inside searching distance to existing points
-      QList<QgsFeatureId> neighbors = index->nearestNeighbor( randomPointGeom, 1, mDistance );
-      if ( neighbors.size() == 0 )
+      QList<QgsFeatureId> neighbors = index.nearestNeighbor( randomPointGeom, 1, mDistance );
+      if ( neighbors.empty() )
       {
         QgsFeature f = QgsFeature( i );
         f.setAttributes( QgsAttributes() << i );
         f.setGeometry( randomPointGeom );
-        index->addFeature( f );
+        index.addFeature( f );
         sink->addFeature( f, QgsFeatureSink::FastInsert );
         i++;
         distCheckIterations = 0; //reset distCheckIterations if a point is added
