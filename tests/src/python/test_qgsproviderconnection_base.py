@@ -47,6 +47,10 @@ class TestPyQgsProviderConnectionBase():
         QCoreApplication.setOrganizationDomain(cls.__name__)
         QCoreApplication.setApplicationName(cls.__name__)
         start_app()
+        try:
+            os.unlink(QgsSettings().fileName())
+        except:
+            pass
 
     def setUp(self):
         QgsSettings().clear()

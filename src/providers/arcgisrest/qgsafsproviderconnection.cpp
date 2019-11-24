@@ -51,6 +51,8 @@ QgsAfsProviderConnection::QgsAfsProviderConnection( const QString &name )
   dsUri.setParam( QStringLiteral( "referer" ), settings.value( QStringLiteral( "referer" ) ).toString() );
 
   setUri( dsUri.uri( ) );
+
+  setDefaultCapabilities();
 }
 
 QgsAfsProviderConnection::QgsAfsProviderConnection( const QString &uri, const QVariantMap &configuration )
@@ -58,20 +60,29 @@ QgsAfsProviderConnection::QgsAfsProviderConnection( const QString &uri, const QV
 {
   mServiceName = QStringLiteral( "arcgisfeatureserver" );
   // TODO: Fix/clear URI strip away unneded parts if URI comes from a layer uri (if possible)
+
+  setDefaultCapabilities();
+}
+
+QString QgsAfsProviderConnection::layerUri( const QString &layerName ) const
+{
+  // TODO
+  return QString();
+}
+
+QList<QgsAbstractWebServiceProviderConnection::LayerProperty> QgsAfsProviderConnection::layers( const QgsAbstractWebServiceProviderConnection::LayerFlags &flags ) const
+{
+  QList<QgsAbstractWebServiceProviderConnection::LayerProperty> result;
+  // TODO
+  return result;
+}
+
+void QgsAfsProviderConnection::setDefaultCapabilities()
+{
   mCapabilities =
   {
     Capability::Layers,
     Capability::LayerExists,
     Capability::Spatial
   };
-}
-
-QString QgsAfsProviderConnection::layerUri( const QString &layerName ) const
-{
-  // TODO
-}
-
-QList<QgsAbstractWebServiceProviderConnection::LayerProperty> QgsAfsProviderConnection::layers( const QgsAbstractWebServiceProviderConnection::LayerFlags &flags ) const
-{
-  // TODO
 }

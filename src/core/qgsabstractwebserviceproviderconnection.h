@@ -27,6 +27,9 @@
  * The QgsAbstractWebServiceProviderConnection class provides common functionality
  * for web service based connections (OGC, ESRI etc.).
  *
+ * Web services typically have nested groups of layers, layers can be retrieved
+ * as a flat list or as a tree-like structure (TODO).
+ *
  * The class methods will throw exceptions in case the requested operation
  * is not supported or cannot be performed without errors.
  *
@@ -51,6 +54,7 @@ class CORE_EXPORT QgsAbstractWebServiceProviderConnection : public QgsAbstractPr
       Aspatial = 1 << 1,          //!< Aspatial layer (it does not contain any geometry column)
       Vector = 1 << 2,            //!< Vector layer (it does contain one geometry column)
       Raster = 1 << 3,            //!< Raster layer
+      Group =  1 << 4,            //!< A group of layers
     };
 
     Q_ENUMS( LayerFlag )
@@ -201,7 +205,7 @@ class CORE_EXPORT QgsAbstractWebServiceProviderConnection : public QgsAbstractPr
     virtual QString layerUri( const QString &layerName ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Returns information on the layers
+     * Returns information on the layers as a flat list of layer properties.
      * Raises a QgsProviderConnectionException if any errors are encountered.
      * \param flags filter layers by flags, this option completely overrides search options stored in the connection
      * \throws QgsProviderConnectionException

@@ -219,6 +219,14 @@ class QgsAmsProviderMetadata: public QgsProviderMetadata
     QList<QgsDataItemProvider *> dataItemProviders() const override;
     QgsAmsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
     QVariantMap decodeUri( const QString &uri ) override;
+
+    // Connections API
+    QMap<QString, QgsAbstractProviderConnection *> connections( bool cached = true ) override;
+    QgsAbstractProviderConnection *createConnection( const QString &name ) override;
+    QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration ) override;
+    void deleteConnection( const QString &name ) override;
+    void saveConnection( const QgsAbstractProviderConnection *createConnection, const QString &name ) override;
+
 };
 
 #endif // QGSMAPSERVERPROVIDER_H

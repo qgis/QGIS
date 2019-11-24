@@ -84,6 +84,7 @@ SET (AMS_SRCS
   qgsarcgisrestutils.cpp
   qgsamsdataitems.cpp
   qgsamsprovider.cpp
+  qgsamsproviderconnection.cpp
 )
 
 IF (WITH_GUI)

@@ -31,6 +31,8 @@ class QgsAfsProviderConnection : public QgsAbstractWebServiceProviderConnection
     QString layerUri( const QString &layerName ) const override;
     QList<QgsAbstractWebServiceProviderConnection::LayerProperty> layers( const QgsAbstractWebServiceProviderConnection::LayerFlags &flags ) const override;
 
+  private:
+    void setDefaultCapabilities();
 };
 
 #endif // QGSAFSPROVIDERCONNECTION_H

@@ -31,6 +31,8 @@
 #include "qgsauthmanager.h"
 #include "qgstilecache.h"
 #include "qgsstringutils.h"
+#include "qgsamsproviderconnection.h"
+#include "qgsowsconnection.h"
 
 #include <cstring>
 #include <QFontMetrics>
@@ -1259,6 +1261,31 @@ QVariantMap QgsAmsProviderMetadata::decodeUri( const QString &uri )
   QVariantMap components;
   components.insert( QStringLiteral( "url" ), dsUri.param( QStringLiteral( "url" ) ) );
   return components;
+}
+
+QMap<QString, QgsAbstractProviderConnection *> QgsAmsProviderMetadata::connections( bool cached )
+{
+  return connectionsProtectedService<QgsAmsProviderConnection, QgsOwsConnection>( QStringLiteral( "arcgismapserver" ), cached );
+}
+
+QgsAbstractProviderConnection *QgsAmsProviderMetadata::createConnection( const QString &name )
+{
+  return new QgsAmsProviderConnection( name );
+}
+
+QgsAbstractProviderConnection *QgsAmsProviderMetadata::createConnection( const QString &uri, const QVariantMap &configuration )
+{
+  return new QgsAmsProviderConnection( uri, configuration );
+}
+
+void QgsAmsProviderMetadata::deleteConnection( const QString &name )
+{
+  deleteConnectionProtected<QgsAmsProviderConnection>( name );
+}
+
+void QgsAmsProviderMetadata::saveConnection( const QgsAbstractProviderConnection *createConnection, const QString &name )
+{
+  saveConnectionProtected( createConnection, name );
 }
 
 
