@@ -447,11 +447,6 @@ qgis:selectbyexpression: >
 
   For more information about expressions see the <a href ="{qgisdocs}/user_manual/working_with_vector/expression.html">user manual</a>
 
-qgis:setmvalue: >
-  This algorithm sets the M value for geometries in a layer.
-
-  If M values already exist in the layer, they will be overwritten with the new value. If no M values exist, the geometry will be upgraded to include M values and the specified value used as the initial M value for all geometries.
-
 qgis:setstyleforrasterlayer: >
   This algorithm sets the style of a raster layer. The style must be defined in a QML file.
 
