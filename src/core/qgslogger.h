@@ -31,7 +31,7 @@ class QFile;
 
 #ifdef QGISDEBUG
 #define QgsDebugMsg(str) QgsLogger::debug(QString(str), 1, __FILE__, __FUNCTION__, __LINE__)
-#define QgsDebugMsgLevel(str, level) QgsLogger::debug(QString(str), (level), __FILE__, __FUNCTION__, __LINE__)
+#define QgsDebugMsgLevel(str, level) if ( level <= QgsLogger::debugLevel() ) { QgsLogger::debug(QString(str), (level), __FILE__, __FUNCTION__, __LINE__); }(void)(0)
 #define QgsDebugCall QgsScopeLogger _qgsScopeLogger(__FILE__, __FUNCTION__, __LINE__)
 #else
 #define QgsDebugCall
@@ -102,7 +102,12 @@ class CORE_EXPORT QgsLogger
     /**
      * Reads the environment variable QGIS_DEBUG and converts it to int. If QGIS_DEBUG is not set,
      the function returns 1 if QGISDEBUG is defined and 0 if not*/
-    static int debugLevel() { init(); return sDebugLevel; }
+    static int debugLevel()
+    {
+      if ( sDebugLevel == -999 )
+        init();
+      return sDebugLevel;
+    }
 
     //! Logs the message passed in to the logfile defined in QGIS_LOG_FILE if any. *
     static void logMessageToFile( const QString &message );
