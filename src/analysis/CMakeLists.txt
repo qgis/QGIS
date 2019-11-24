@@ -112,6 +112,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmserviceareafromlayer.cpp
   processing/qgsalgorithmserviceareafrompoint.cpp
   processing/qgsalgorithmsetmvalue.cpp
+  processing/qgsalgorithmsetzvalue.cpp
   processing/qgsalgorithmshortestpathlayertopoint.cpp
   processing/qgsalgorithmshortestpathpointtolayer.cpp
   processing/qgsalgorithmshortestpathpointtopoint.cpp

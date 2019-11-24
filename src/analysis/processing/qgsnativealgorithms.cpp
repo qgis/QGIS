@@ -106,6 +106,7 @@
 #include "qgsalgorithmserviceareafromlayer.h"
 #include "qgsalgorithmserviceareafrompoint.h"
 #include "qgsalgorithmsetmvalue.h"
+#include "qgsalgorithmsetzvalue.h"
 #include "qgsalgorithmshortestpathlayertopoint.h"
 #include "qgsalgorithmshortestpathpointtolayer.h"
 #include "qgsalgorithmshortestpathpointtopoint.h"
@@ -281,6 +282,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsServiceAreaFromLayerAlgorithm() );
   addAlgorithm( new QgsServiceAreaFromPointAlgorithm() );
   addAlgorithm( new QgsSetMValueAlgorithm() );
+  addAlgorithm( new QgsSetZValueAlgorithm() );
   addAlgorithm( new QgsShortestPathLayerToPointAlgorithm() );
   addAlgorithm( new QgsShortestPathPointToLayerAlgorithm() );
   addAlgorithm( new QgsShortestPathPointToPointAlgorithm() );
