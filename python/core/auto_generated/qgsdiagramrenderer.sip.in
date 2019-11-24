@@ -376,6 +376,7 @@ QgsDiagramLayerSettings stores settings which control how ALL diagrams within a 
 %Docstring
 Constructor for QgsDiagramSettings
 %End
+    ~QgsDiagramSettings();
 
     QgsDiagramSettings( const QgsDiagramSettings &other );
 %Docstring
@@ -581,6 +582,26 @@ Sets whether the diagram axis should be shown.
 .. seealso:: :py:func:`showAxis`
 
 .. seealso:: :py:func:`setAxisLineSymbol`
+
+.. versionadded:: 3.12
+%End
+
+    QgsPaintEffect *paintEffect() const;
+%Docstring
+Returns the paint effect to use while rendering diagrams.
+
+.. seealso:: :py:func:`setPaintEffect`
+
+.. versionadded:: 3.12
+%End
+
+    void setPaintEffect( QgsPaintEffect *effect /Transfer/ );
+%Docstring
+Sets the paint ``effect`` to use while rendering diagrams.
+
+Ownership of ``effect`` is transferred to the settings.
+
+.. seealso:: :py:func:`paintEffect`
 
 .. versionadded:: 3.12
 %End

@@ -44,6 +44,7 @@
 #include "qgsauxiliarystorage.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgspropertytransformer.h"
+#include "qgspainteffectregistry.h"
 
 #include <QList>
 #include <QMessageBox>
@@ -238,6 +239,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
     newItem->setFlags( newItem->flags() & ~Qt::ItemIsDropEnabled );
   }
 
+  mPaintEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+
   const QgsDiagramRenderer *dr = layer->diagramRenderer();
   if ( !dr ) //no diagram renderer yet, insert reasonable default
   {
@@ -284,6 +287,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
     mBackgroundColorButton->setColor( QColor( 255, 255, 255, 255 ) );
     //force a refresh of widget status to match diagram type
     mDiagramTypeComboBox_currentIndexChanged( mDiagramTypeComboBox->currentIndex() );
+
   }
   else // already a diagram renderer present
   {
@@ -328,6 +332,9 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
       {
         mLabelPlacementComboBox->setCurrentIndex( 1 );
       }
+
+      if ( settingList.at( 0 ).paintEffect() )
+        mPaintEffect.reset( settingList.at( 0 ).paintEffect()->clone() );
 
       mAngleOffsetComboBox->setCurrentIndex( mAngleOffsetComboBox->findData( settingList.at( 0 ).rotationOffset ) );
       mAngleDirectionComboBox->setCurrentIndex( mAngleDirectionComboBox->findData( settingList.at( 0 ).direction() ) );
@@ -483,6 +490,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
       }
     }
   }
+  mPaintEffectWidget->setPaintEffect( mPaintEffect.get() );
 
   connect( mAddAttributeExpression, &QPushButton::clicked, this, &QgsDiagramProperties::showAddAttributeExpressionDialog );
   registerDataDefinedButton( mBackgroundColorDDBtn, QgsDiagramLayerSettings::BackgroundColor );
@@ -840,6 +848,11 @@ void QgsDiagramProperties::apply()
   ds.setSpacing( mBarSpacingSpinBox->value() );
   ds.setSpacingUnit( mBarSpacingUnitComboBox->unit() );
   ds.setSpacingMapUnitScale( mBarSpacingUnitComboBox->getMapUnitScale() );
+
+  if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect.get() ) )
+    ds.setPaintEffect( mPaintEffect->clone() );
+  else
+    ds.setPaintEffect( nullptr );
 
   QgsDiagramRenderer *renderer = nullptr;
   if ( mFixedSizeRadio->isChecked() )
