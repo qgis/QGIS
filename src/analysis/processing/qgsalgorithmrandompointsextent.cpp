@@ -49,11 +49,18 @@ QString QgsRandomPointsExtentAlgorithm::groupId() const
 
 void QgsRandomPointsExtentAlgorithm::initAlgorithm( const QVariantMap & )
 {
+
   addParameter( new QgsProcessingParameterExtent( QStringLiteral( "EXTENT" ), QObject::tr( "Input extent" ) ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "NUM_POINTS" ), QStringLiteral( "Number of points" ), QgsProcessingParameterNumber::Integer, 1, false, 1 ) );
-  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Target CRS" ), QStringLiteral( "ProjectCrs" ) ) );
-  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "MIN_DISTANCE" ), QObject::tr( "Minimum distance between points" ), 0, QStringLiteral( "CRS" ), true, 0 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MAX_ATTEMPTS" ), QStringLiteral( "Maximum number of attempts given the minimum distance" ), QgsProcessingParameterNumber::Integer, 200, true, 1 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "POINTS_NUMBER" ), QObject::tr( "Number of points" ), QgsProcessingParameterNumber::Integer, 1, false, 1 ) );
+  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "MIN_DISTANCE" ), QObject::tr( "Minimum distance between points" ), 0, QStringLiteral( "TARGET_CRS" ), true, 0 ) );
+
+  std::unique_ptr< QgsProcessingParameterCrs > crs_param = qgis::make_unique< QgsProcessingParameterCrs >( QStringLiteral( "TARGET_CRS" ), QObject::tr( "Target CRS" ), QStringLiteral( "ProjectCrs" ), true ) ;
+  crs_param->setFlags( crs_param->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  addParameter( crs_param.release() );
+  std::unique_ptr< QgsProcessingParameterNumber > maxAttempts_param = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MAX_ATTEMPTS" ), QObject::tr( "Maximum number of search attempts given the minimum distance" ), QgsProcessingParameterNumber::Integer, 200, true, 1 );
+  maxAttempts_param->setFlags( maxAttempts_param->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  addParameter( maxAttempts_param.release() );
+
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Random points" ), QgsProcessing::TypeVectorPoint ) );
 }
 
@@ -76,9 +83,17 @@ QgsRandomPointsExtentAlgorithm *QgsRandomPointsExtentAlgorithm::createInstance()
 
 bool QgsRandomPointsExtentAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mCrs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
+  QgsCoordinateReferenceSystem extent_crs = parameterAsExtentCrs( parameters, QStringLiteral( "EXTENT" ), context);
+  QgsCoordinateReferenceSystem user_crs = parameterAsCrs( parameters, QStringLiteral( "TARGET_CRS" ), context );
+
+  //prefer user crs over extent/project crs if defined
+  if( extent_crs != user_crs )
+    mCrs = user_crs;
+  else
+    mCrs = extent_crs;
+
   mExtent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, mCrs );
-  mNumPoints = parameterAsInt( parameters, QStringLiteral( "NUM_POINTS" ), context );
+  mNumPoints = parameterAsInt( parameters, QStringLiteral( "POINTS_NUMBER" ), context );
   mDistance = parameterAsDouble( parameters, QStringLiteral( "MIN_DISTANCE" ), context );
   mMaxAttempts = parameterAsInt( parameters, QStringLiteral( "MAX_ATTEMPTS" ), context );
 
