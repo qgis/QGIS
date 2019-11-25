@@ -14,11 +14,13 @@ cpp = open(sys.argv[1], "w", encoding="utf-8")
 cpp.write(
     "#include \"qgsexpression.h\"\n"
     "#include \"qgsexpression_p.h\"\n"
+    "#include <mutex>\n"
     "\n"
     "void QgsExpression::initFunctionHelp()\n"
     "{\n"
-    "  if( functionHelpTexts().isEmpty() )\n"
-    "    return;"
+    "  static std::once_flag initialized;\n"
+    "  std::call_once( initialized, []\n"
+    "  {"
 )
 
 
@@ -76,52 +78,52 @@ for f in sorted(glob.glob('resources/function_help/json/*')):
             if len(list(v['arguments'])) < 1 or len(list(v['arguments'])) > 2:
                 raise BaseException("%s: 1 or 2 arguments expected for operator")
 
-    cpp.write("\n\n  functionHelpTexts().insert( {0},\n    Help( {0}, tr( \"{1}\" ), tr( \"{2}\" ),\n      QList<HelpVariant>()".format(
+    cpp.write("\n\n    functionHelpTexts().insert( QStringLiteral( {0} ),\n      Help( QStringLiteral( {0} ), tr( \"{1}\" ), tr( \"{2}\" ),\n        QList<HelpVariant>()".format(
         name, json_params['type'], json_params['description'])
     )
 
     for v in json_params['variants']:
         cpp.write(
-            "\n        << HelpVariant( tr( \"{0}\" ), tr( \"{1}\" ),\n          QList<HelpArg>()".format(v['variant'], v['variant_description']))
+            "\n          << HelpVariant( tr( \"{0}\" ), tr( \"{1}\" ),\n            QList<HelpArg>()".format(v['variant'], v['variant_description']))
 
         if 'arguments' in v:
             for a in v['arguments']:
-                cpp.write("\n              << HelpArg( \"{0}\", tr( \"{1}\" ), {2}, {3}, {4}, \"{5}\" )".format(
+                cpp.write("\n                << HelpArg( QStringLiteral( \"{0}\" ), tr( \"{1}\" ), {2}, {3}, {4}, {5} )".format(
                     a['arg'],
                     a.get('description', ''),
                     "true" if a.get('descOnly', False) else "false",
                     "true" if a.get('syntaxOnly', False) else "false",
                     "true" if a.get('optional', False) else "false",
-                    a.get('default', '')
+                    'QStringLiteral( "{}" )'.format(a.get('default', '')) if a.get('default', '') else "QString()"
                 )
                 )
 
-        cpp.write(",\n          /* variableLenArguments */ {0}".format(
+        cpp.write(",\n            /* variableLenArguments */ {0}".format(
             "true" if v.get('variableLenArguments', False) else "false"))
-        cpp.write(",\n          QList<HelpExample>()")
+        cpp.write(",\n            QList<HelpExample>()")
 
         if 'examples' in v:
             for e in v['examples']:
-                cpp.write("\n            << HelpExample( tr( \"{0}\" ), tr( \"{1}\" ), tr( \"{2}\" ) )".format(
+                cpp.write("\n              << HelpExample( tr( \"{0}\" ), tr( \"{1}\" ), tr( \"{2}\" ) )".format(
                     e['expression'],
                     e['returns'],
                     e.get('note', ''))
                 )
 
         if 'notes' in v:
-            cpp.write(",\n      tr( \"{0}\" )".format(v['notes']))
+            cpp.write(",\n        tr( \"{0}\" )".format(v['notes']))
 
-        cpp.write("\n       )")
+        cpp.write("\n         )")
 
-    cpp.write("\n      )")
-    cpp.write("\n    );")
+    cpp.write("\n        )")
+    cpp.write("\n      );")
 
 for f in sorted(glob.glob('resources/function_help/text/*')):
     n = os.path.basename(f)
 
     with open(f) as content:
-        cpp.write("\n\n  functionHelpTexts().insert( \"{0}\",\n    Help( tr( \"{0}\" ), tr( \"group\" ), tr( \"{1}\" ), QList<HelpVariant>() ) );\n".format(
+        cpp.write("\n\n    functionHelpTexts().insert( \"{0}\",\n    Help( tr( \"{0}\" ), tr( \"group\" ), tr( \"{1}\" ), QList<HelpVariant>() ) );\n".format(
             n, content.read().replace("\\", "&#92;").replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n')))
 
-cpp.write("\n}\n")
+cpp.write("\n  } );\n}\n")
 cpp.close()
