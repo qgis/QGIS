@@ -79,8 +79,12 @@ QgsOrthogonalizeAlgorithm *QgsOrthogonalizeAlgorithm::createInstance() const
 
 void QgsOrthogonalizeAlgorithm::initParameters( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "ANGLE_TOLERANCE" ), QObject::tr( "Maximum angle tolerance (degrees)" ),
-                QgsProcessingParameterNumber::Double, 15.0, false, 0.0, 45.0 ) );
+  auto angleToleranceParam = qgis::make_unique < QgsProcessingParameterNumber >( QStringLiteral( "ANGLE_TOLERANCE" ), QObject::tr( "Maximum angle tolerance (degrees)" ),
+                             QgsProcessingParameterNumber::Double, 15.0, false, 0.0, 45.0 );
+  angleToleranceParam->setIsDynamic( true );
+  angleToleranceParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Angle tolerance" ), QObject::tr( "Maximum angle tolerance (degrees)" ), QgsPropertyDefinition::Double ) );
+  angleToleranceParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  addParameter( angleToleranceParam.release() );
 
   std::unique_ptr< QgsProcessingParameterNumber> maxIterations = qgis::make_unique< QgsProcessingParameterNumber >(
         QStringLiteral( "MAX_ITERATIONS" ),
@@ -94,18 +98,26 @@ void QgsOrthogonalizeAlgorithm::initParameters( const QVariantMap & )
 bool QgsOrthogonalizeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   mAngleTolerance = parameterAsDouble( parameters, QStringLiteral( "ANGLE_TOLERANCE" ), context );
+  mDynamicAngleTolerance = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "ANGLE_TOLERANCE" ) );
+  if ( mDynamicAngleTolerance )
+    mAngleToleranceProperty = parameters.value( QStringLiteral( "ANGLE_TOLERANCE" ) ).value< QgsProperty >();
+
   mMaxIterations = parameterAsDouble( parameters, QStringLiteral( "MAX_ITERATIONS" ), context );
 
   return true;
 }
 
-QgsFeatureList QgsOrthogonalizeAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
+QgsFeatureList QgsOrthogonalizeAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   QgsFeature f = feature;
 
   if ( f.hasGeometry() )
   {
-    QgsGeometry outputGeometry = f.geometry().orthogonalize( 1.0e-8, mMaxIterations, mAngleTolerance );
+    double angleTolerance = mAngleTolerance;
+    if ( mDynamicAngleTolerance )
+      angleTolerance = mAngleToleranceProperty.valueAsDouble( context.expressionContext(), angleTolerance );
+
+    QgsGeometry outputGeometry = f.geometry().orthogonalize( 1.0e-8, mMaxIterations, angleTolerance );
     if ( outputGeometry.isNull() )
       throw QgsProcessingException( QObject::tr( "Error orthogonalizing geometry" ) );
 
