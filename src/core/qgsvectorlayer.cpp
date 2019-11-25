@@ -3389,7 +3389,6 @@ void QgsVectorLayer::setRenderer( QgsFeatureRenderer *r )
     mSymbolFeatureCounted = false;
     mSymbolFeatureCountMap.clear();
     mSymbolFeatureIdMap.clear();
-
     emit rendererChanged();
     emit styleChanged();
   }
@@ -3993,6 +3992,18 @@ QVariant QgsVectorLayer::minimumOrMaximumValue( int index, bool minimum ) const
   return QVariant();
 }
 
+QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate calculation, const QString &fieldOrExpression,
+                                    const QgsAggregateCalculator::AggregateParameters &parameters, QgsExpressionContext *context,
+                                    bool *ok, QString &symbolId ) const
+{
+  if ( ! symbolId.isEmpty() && mFeatureCounter )
+  {
+    QgsFeatureIds ids = symbolFeatureIds( symbolId );
+    return aggregate( calculation, fieldOrExpression, parameters, context, ok, &ids );
+  }
+  return aggregate( calculation, fieldOrExpression, parameters, context, ok );
+}
+
 QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate, const QString &fieldOrExpression,
                                     const QgsAggregateCalculator::AggregateParameters &parameters, QgsExpressionContext *context,
                                     bool *ok, QgsFeatureIds *fids ) const
@@ -4004,7 +4015,11 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
   {
     return QVariant();
   }
-
+  bool hasFids = false;
+  if ( fids )
+  {
+    hasFids = true;
+  }
   // test if we are calculating based on a field
   int attrIndex = mFields.lookupField( fieldOrExpression );
   if ( attrIndex >= 0 )
@@ -4028,8 +4043,10 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
 
   // fallback to using aggregate calculator to determine aggregate
   QgsAggregateCalculator c( this );
-  if ( fids )
+  if ( hasFids )
+  {
     c.setFidsFilter( *fids );
+  }
   c.setParameters( parameters );
   return c.calculate( aggregate, fieldOrExpression, context, ok );
 }
