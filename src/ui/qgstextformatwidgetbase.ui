@@ -2766,6 +2766,9 @@ font-style: italic;</string>
                              <property name="text">
                               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This mask shape should then be selected as a &lt;span style=&quot; font-style:italic;&quot;&gt;mask source&lt;/span&gt; in the Masks properties of a layer in order to enable masking.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                              </property>
+                             <property name="wordWrap">
+                              <bool>true</bool>
+                             </property>
                             </widget>
                            </item>
                           </layout>
