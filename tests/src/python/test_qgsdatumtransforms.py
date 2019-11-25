@@ -152,6 +152,21 @@ class TestPyQgsDatumTransform(unittest.TestCase):
         self.assertTrue(ops[op3_index].grids[0].directDownload)
         self.assertTrue(ops[op3_index].grids[0].openLicense)
 
+    @unittest.skipIf(QgsProjUtils.projVersionMajor() < 6, 'Not a proj6 build')
+    def testNoLasLos(self):
+        """
+        Test that operations which rely on an las/los grid shift file (which are unsupported by Proj6) are not returned
+        """
+        ops = QgsDatumTransform.operations(QgsCoordinateReferenceSystem('EPSG:3035'),
+                                           QgsCoordinateReferenceSystem('EPSG:5514'))
+        self.assertEqual(len(ops), 3)
+        self.assertTrue(ops[0].name)
+        self.assertTrue(ops[0].proj)
+        self.assertTrue(ops[1].name)
+        self.assertTrue(ops[1].proj)
+        self.assertTrue(ops[2].name)
+        self.assertTrue(ops[2].proj)
+
 
 if __name__ == '__main__':
     unittest.main()
