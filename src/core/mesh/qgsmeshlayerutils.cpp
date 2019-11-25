@@ -112,6 +112,15 @@ double QgsMeshLayerUtils::interpolateFromVerticesData( const QgsPointXY &p1, con
   return lam1 * val3 + lam2 * val2 + lam3 * val1;
 }
 
+QgsVector QgsMeshLayerUtils::interpolateVectorFromVerticesData( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3, QgsVector vect1, QgsVector vect2, QgsVector vect3, const QgsPointXY &pt )
+{
+  double lam1, lam2, lam3;
+  if ( !E3T_physicalToBarycentric( p1, p2, p3, pt, lam1, lam2, lam3 ) )
+    return QgsVector( std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN() );
+
+  return vect3 * lam1 + vect2 * lam2 + vect1 * lam3;
+}
+
 double QgsMeshLayerUtils::interpolateFromFacesData( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3,
     double val, const QgsPointXY &pt )
 {
@@ -122,12 +131,24 @@ double QgsMeshLayerUtils::interpolateFromFacesData( const QgsPointXY &p1, const 
   return val;
 }
 
+QgsVector QgsMeshLayerUtils::interpolateVectorFromFacesData( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3,
+    QgsVector vect, const QgsPointXY &pt )
+{
+  double lam1, lam2, lam3;
+  if ( !E3T_physicalToBarycentric( p1, p2, p3, pt, lam1, lam2, lam3 ) )
+    return QgsVector( std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN() );
+
+  return vect;
+}
+
+
 QVector<double> QgsMeshLayerUtils::interpolateFromFacesData( QVector<double> valuesOnFaces, QgsMesh *nativeMesh,
     QgsTriangularMesh *triangularMesh,
     QgsMeshDataBlock *active,
     QgsMeshRendererScalarSettings::DataInterpolationMethod method )
 {
   Q_UNUSED( triangularMesh )
+  Q_UNUSED( method )
 
   assert( nativeMesh );
   assert( active );

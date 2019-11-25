@@ -31,6 +31,7 @@
 #include "qgsmeshlayerinterpolator.h"
 #include "qgsmeshlayerutils.h"
 #include "qgsmeshvectorrenderer.h"
+#include "qgsmeshtracerenderer.h"
 #include "qgsfillsymbollayer.h"
 #include "qgssettings.h"
 #include "qgsstyle.h"
@@ -49,6 +50,7 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer( QgsMeshLayer *layer, QgsRenderContex
 
   mNativeMesh = *( layer->nativeMesh() );
   mTriangularMesh = *( layer->triangularMesh() );
+  mLayerExtent = layer->extent();
 
   copyScalarDatasetValues( layer );
   copyVectorDatasetValues( layer );
@@ -186,7 +188,6 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
         count = mNativeMesh.vertices.count();
       else
         count = mNativeMesh.faces.count();
-
 
       mVectorDatasetValues = layer->dataProvider()->datasetValues(
                                datasetIndex,
@@ -348,15 +349,19 @@ void QgsMeshLayerRenderer::renderVectorDataset()
   if ( std::isnan( mVectorDatasetMagMinimum ) || std::isnan( mVectorDatasetMagMaximum ) )
     return; // only NODATA values
 
-  QgsMeshVectorRenderer renderer( mTriangularMesh,
-                                  mVectorDatasetValues,
-                                  mVectorDatasetValuesMag,
-                                  mVectorDatasetMagMinimum,
-                                  mVectorDatasetMagMaximum,
-                                  mVectorDataOnVertices,
-                                  mRendererSettings.vectorSettings( index.group() ),
-                                  *renderContext(),
-                                  mOutputSize );
+  std::unique_ptr<QgsMeshVectorRenderer> renderer( QgsMeshVectorRenderer::makeVectorRenderer(
+        mTriangularMesh,
+        mVectorDatasetValues,
+        mScalarActiveFaceFlagValues,
+        mVectorDatasetValuesMag,
+        mVectorDatasetMagMaximum,
+        mVectorDatasetMagMinimum,
+        mVectorDataOnVertices,
+        mRendererSettings.vectorSettings( index.group() ),
+        *renderContext(),
+        mLayerExtent,
+        mOutputSize ) );
 
-  renderer.draw();
+  renderer->draw();
 }
+

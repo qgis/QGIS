@@ -20,6 +20,7 @@
 #include "qgis_app.h"
 #include "qgsmeshrenderersettings.h"
 #include "qgsmeshdataprovider.h"
+#include "qgsmeshdatasetgrouptreeview.h"
 
 #include <memory>
 #include <QWidget>
@@ -58,6 +59,10 @@ class APP_EXPORT QgsMeshRendererVectorSettingsWidget : public QWidget, private U
   signals:
     //! Mesh rendering settings changed
     void widgetChanged();
+
+  private slots:
+    void onSymbologyChanged( int currentIndex );
+    void onStreamLineSeedingMethodChanged( int currentIndex );
 
   private:
 

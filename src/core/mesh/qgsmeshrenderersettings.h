@@ -26,7 +26,6 @@
 #include "qgscolorrampshader.h"
 #include "qgsmeshdataprovider.h"
 
-
 /**
  * \ingroup core
  *
@@ -143,13 +142,13 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
 /**
  * \ingroup core
  *
- * Represents a mesh renderer settings for vector datasets
+ * Represents a mesh renderer settings for vector datasets displayed with arrows
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
  * \since QGIS 3.2
  */
-class CORE_EXPORT QgsMeshRendererVectorSettings
+class CORE_EXPORT QgsMeshRendererVectorArrowSettings
 {
   public:
 
@@ -173,46 +172,8 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
       Fixed
     };
 
-    //! Returns line width of the arrow (in millimeters)
-    double lineWidth() const;
-    //! Sets line width of the arrow in pixels (in millimeters)
-    void setLineWidth( double lineWidth );
-
-    //! Returns color used for drawing arrows
-    QColor color() const;
-    //! Sets color used for drawing arrows
-    void setColor( const QColor &color );
-
-    /**
-     * Returns filter value for vector magnitudes.
-     *
-     * If magnitude of the vector is lower than this value, the vector is not
-     * drawn. -1 represents that filtering is not active.
-     */
-    double filterMin() const;
-
-    /**
-     * Sets filter value for vector magnitudes.
-     * \see filterMin()
-     */
-    void setFilterMin( double filterMin );
-
-    /**
-     * Returns filter value for vector magnitudes.
-     *
-     * If magnitude of the vector is higher than this value, the vector is not
-     * drawn. -1 represents that filtering is not active.
-     */
-    double filterMax() const;
-
-    /**
-     * Sets filter value for vector magnitudes.
-     * \see filterMax()
-     */
-    void setFilterMax( double filterMax );
-
     //! Returns method used for drawing arrows
-    QgsMeshRendererVectorSettings::ArrowScalingMethod shaftLengthMethod() const;
+    QgsMeshRendererVectorArrowSettings::ArrowScalingMethod shaftLengthMethod() const;
     //! Sets method used for drawing arrows
     void setShaftLengthMethod( ArrowScalingMethod shaftLengthMethod );
 
@@ -282,6 +243,127 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
     //! Sets ratio of the head length of the arrow (range 0-1)
     void setArrowHeadLengthRatio( double arrowHeadLengthRatio );
 
+    //! Writes configuration to a new DOM element
+    QDomElement writeXml( QDomDocument &doc ) const;
+    //! Reads configuration from the given DOM element
+    void readXml( const QDomElement &elem );
+
+  private:
+    QgsMeshRendererVectorArrowSettings::ArrowScalingMethod mShaftLengthMethod = QgsMeshRendererVectorArrowSettings::ArrowScalingMethod::MinMax;
+    double mMinShaftLength = 0.8; //in millimeters
+    double mMaxShaftLength = 10; //in millimeters
+    double mScaleFactor = 10;
+    double mFixedShaftLength = 20; //in millimeters
+    double mArrowHeadWidthRatio = 0.15;
+    double mArrowHeadLengthRatio = 0.40;
+};
+
+/**
+ * \ingroup core
+ *
+ * Represents a streamline renderer settings for vector datasets displayed by streamlines
+ *
+ * \note The API is considered EXPERIMENTAL and can be changed without a notice
+ *
+ * \since QGIS 3.12
+ */
+class CORE_EXPORT QgsMeshRendererVectorStreamlineSettings
+{
+  public:
+    //! Method used to define start points that are used to draw streamlines
+    enum SeedingStartPointsMethod
+    {
+
+      /**
+       * Seeds start points on the vertices mesh or user regular grid
+       */
+      MeshGridded = 0,
+
+      /**
+       * Seeds start points randomly on the mesh
+       */
+      Random,
+    };
+
+    //! Returns the method used for seeding start points of strealines
+    SeedingStartPointsMethod seedingMethod() const;
+    //! Sets the method used for seeding start points of strealines
+    void setSeedingMethod( const SeedingStartPointsMethod &seedingMethod );
+    //! Returns the density used for seeding start points
+    double seedingDensity() const;
+    //! Sets the density used for seeding start points
+    void setSeedingDensity( double seedingDensity );
+    //! Reads configuration from the given DOM element
+    void readXml( const QDomElement &elem );
+    //! Writes configuration to a new DOM element
+    QDomElement writeXml( QDomDocument &doc ) const;
+
+  private:
+
+    QgsMeshRendererVectorStreamlineSettings::SeedingStartPointsMethod mSeedingMethod = MeshGridded;
+    double mSeedingDensity = 0.15;
+};
+
+/**
+ * \ingroup core
+ *
+ * Represents a streamline renderer settings for vector datasets
+ *
+ * \note The API is considered EXPERIMENTAL and can be changed without a notice
+ *
+ * \since QGIS 3.12
+ */
+class CORE_EXPORT QgsMeshRendererVectorSettings
+{
+  public:
+    //! enumaraton used to define the symbology of vector rendering
+    enum Symbology
+    {
+      //!Displying vctor dataset with arrows
+      Arrows = 0,
+      //!Displying vctor dataset with streamlines
+      Streamlines
+    };
+
+
+    //! Returns line width of the arrow (in millimeters)
+    double lineWidth() const;
+    //! Sets line width of the arrow in pixels (in millimeters)
+    void setLineWidth( double lineWidth );
+
+    //! Returns color used for drawing arrows
+    QColor color() const;
+    //! Sets color used for drawing arrows
+    void setColor( const QColor &color );
+
+    /**
+     * Returns filter value for vector magnitudes.
+     *
+     * If magnitude of the vector is lower than this value, the vector is not
+     * drawn. -1 represents that filtering is not active.
+     */
+    double filterMin() const;
+
+    /**
+     * Sets filter value for vector magnitudes.
+     * \see filterMin()
+     */
+    void setFilterMin( double filterMin );
+
+    /**
+     * Returns filter value for vector magnitudes.
+     *
+     * If magnitude of the vector is higher than this value, the vector is not
+     * drawn. -1 represents that filtering is not active.
+     */
+    double filterMax() const;
+
+    /**
+     * Sets filter value for vector magnitudes.
+     * \see filterMax()
+     */
+    void setFilterMax( double filterMax );
+
     //! Returns whether vectors are drawn on user-defined grid
     bool isOnUserDefinedGrid() const;
     //! Toggles drawing of vectors on user defined grid
@@ -295,28 +377,43 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
     //! Sets height of user grid cell (in pixels)
     void setUserGridCellHeight( int height );
 
+    //! Returns the displaying method used to render vector datasets
+    Symbology symbology() const;
+    //! Sets the displaying method used to render vector datasets
+    void setSymbology( const Symbology &symbology );
+
+    //! Returns settings for vector rendered with arrows
+    QgsMeshRendererVectorArrowSettings arrowSettings() const;
+    //! Sets settings for vector rendered with arrows
+    void setArrowsSettings( const QgsMeshRendererVectorArrowSettings &arrowSettings );
+
+    //! Returns settings for vector rednered with streamlines
+    QgsMeshRendererVectorStreamlineSettings streamLinesSettings() const;
+    //! Sets settings for vector rednered with streamlines
+    void setStreamLinesSettings( const QgsMeshRendererVectorStreamlineSettings &streamLinesSettings );
+
+
     //! Writes configuration to a new DOM element
     QDomElement writeXml( QDomDocument &doc ) const;
     //! Reads configuration from the given DOM element
     void readXml( const QDomElement &elem );
 
+
   private:
+
+    Symbology mDisplayingMethod = Arrows;
+
     double mLineWidth = DEFAULT_LINE_WIDTH; //in millimeters
     QColor mColor = Qt::black;
     double mFilterMin = -1; //disabled
     double mFilterMax = -1; //disabled
-    QgsMeshRendererVectorSettings::ArrowScalingMethod mShaftLengthMethod = QgsMeshRendererVectorSettings::ArrowScalingMethod::MinMax;
-    double mMinShaftLength = 0.8; //in millimeters
-    double mMaxShaftLength = 10; //in millimeters
-    double mScaleFactor = 10;
-    double mFixedShaftLength = 20; //in millimeters
-    double mArrowHeadWidthRatio = 0.15;
-    double mArrowHeadLengthRatio = 0.40;
-    bool mOnUserDefinedGrid = false;
     int mUserGridCellWidth = 10; // in pixels
     int mUserGridCellHeight = 10; // in pixels
-};
+    bool mOnUserDefinedGrid = false;
 
+    QgsMeshRendererVectorArrowSettings mArrowsSettings;
+    QgsMeshRendererVectorStreamlineSettings mStreamLinesSettings;
+};
 
 /**
  * \ingroup core
@@ -330,7 +427,6 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
 class CORE_EXPORT QgsMeshRendererSettings
 {
   public:
-
     //! Returns renderer settings
     QgsMeshRendererMeshSettings nativeMeshSettings() const { return mRendererNativeMeshSettings; }
     //! Sets new renderer settings, triggers repaint
