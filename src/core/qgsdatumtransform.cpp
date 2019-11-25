@@ -61,7 +61,10 @@ QList<QgsDatumTransform::TransformDetails> QgsDatumTransform::operations( const 
       if ( !op )
         continue;
 
-      res.push_back( transformDetailsFromPj( op.get() ) );
+      QgsDatumTransform::TransformDetails details = transformDetailsFromPj( op.get() );
+      if ( !details.proj.isEmpty() )
+        res.push_back( details );
+
     }
     proj_list_destroy( ops );
   }
@@ -326,6 +329,10 @@ QgsDatumTransform::TransformDetails QgsDatumTransform::transformDetailsFromPj( P
 
   if ( details.proj.isEmpty() )
     details.proj = QString( proj_as_proj_string( pjContext, op, PJ_PROJ_5, nullptr ) );
+
+  if ( details.proj.isEmpty() )
+    return details;
+
   details.name = QString( proj_get_name( op ) );
   details.accuracy = proj_coordoperation_get_accuracy( pjContext, op );
   details.isAvailable = proj_coordoperation_is_instantiable( pjContext, op );
