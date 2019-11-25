@@ -6,7 +6,7 @@
     {"arg":"point","description":"start point"},
     {"arg":"distance","description":"distance to project"},
     {"arg":"azimuth","description":"azimuth in radians clockwise, where 0 corresponds to north"},
-    {"arg":"elevation","description":"angle of inclination in radians"}
+    {"arg":"elevation","description":"angle of inclination in radians", "optional":true}
   ],
   "examples": [
 	{ "expression":"project(make_point(1, 2), 3, radians(270))", "returns":"Point(-2, 2)"}
