@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmspatialraster.cpp
+                         qgsalgorithmspatialindex.cpp
                          ---------------------
     begin                : November 2019
     copyright            : (C) 2019 by Alexander Bruy

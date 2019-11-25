@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #ifndef QGSALGORITHMRUGGEDNESS_H
-#define QGSALGORITHMRUGGENDESS_H
+#define QGSALGORITHMRUGGEDNESS_H
 
 #define SIP_NO_FILE
 
