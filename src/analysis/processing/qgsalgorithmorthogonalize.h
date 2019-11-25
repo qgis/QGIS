@@ -52,8 +52,10 @@ class QgsOrthogonalizeAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 
   private:
 
-    double mMaxIterations = 0;
-    double mAngleTolerance = 0;
+    double mMaxIterations = 0.0;
+    double mAngleTolerance = 0.0;
+    bool mDynamicAngleTolerance = false;
+    QgsProperty mAngleToleranceProperty;
 
 };
 
