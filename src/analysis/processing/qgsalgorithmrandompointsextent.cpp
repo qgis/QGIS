@@ -152,14 +152,13 @@ QVariantMap QgsRandomPointsExtentAlgorithm::processAlgorithm( const QVariantMap 
       double rx = x_distribution( random_device );
       double ry = y_distribution( random_device );
 
-      QgsGeometry randomPointGeom = QgsGeometry( new QgsPoint( rx, ry ) );
-
       //check if new random point is inside searching distance to existing points
-      QList<QgsFeatureId> neighbors = index.nearestNeighbor( randomPointGeom, 1, mDistance );
+      QList<QgsFeatureId> neighbors = index.nearestNeighbor( QgsPointXY( rx, ry ), 1, mDistance );
       if ( neighbors.empty() )
       {
         QgsFeature f = QgsFeature( i );
         f.setAttributes( QgsAttributes() << i );
+        QgsGeometry randomPointGeom = QgsGeometry( new QgsPoint( rx, ry ) );
         f.setGeometry( randomPointGeom );
         index.addFeature( f );
         sink->addFeature( f, QgsFeatureSink::FastInsert );
