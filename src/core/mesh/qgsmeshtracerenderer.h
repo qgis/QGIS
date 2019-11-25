@@ -85,7 +85,7 @@ class QgsMeshVectorValueInterpolator
  * \note not available in Python bindings
  * \since QGIS 3.12
  */
-class  QgsMeshVectorValueInterpolatorFromVertex: public QgsMeshVectorValueInterpolator //CORE_EXPORT needed to no have v-table error ????
+class QgsMeshVectorValueInterpolatorFromVertex: public QgsMeshVectorValueInterpolator
 {
   public:
     //! Constructor
@@ -109,7 +109,7 @@ class  QgsMeshVectorValueInterpolatorFromVertex: public QgsMeshVectorValueInterp
  * \note not available in Python bindings
  * \since QGIS 3.12
  */
-class  QgsMeshVectorValueInterpolatorFromFace: public QgsMeshVectorValueInterpolator //CORE_EXPORT needed to no have v-table error ????
+class QgsMeshVectorValueInterpolatorFromFace: public QgsMeshVectorValueInterpolator
 {
   public:
     //! Constructor
@@ -195,7 +195,7 @@ class QgsMeshStreamField
     //! Sets the resolution of the field
     void setResolution( int width );
 
-    //!Return the width of particle
+    //! Returns the width of particle
     int resolution() const;
 
     //! Returns the size of the image that represents the trace field
@@ -232,7 +232,6 @@ class QgsMeshStreamField
 
     bool filterMag( double value ) const;
 
-//attribute
     QSize mFieldSize;
     QRect mLayerPixelExtent;
     int mFieldResolution = 1;

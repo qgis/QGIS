@@ -95,6 +95,8 @@ class CORE_EXPORT QgsMeshLayerUtils
     * \param vect3 value on p3 of the triangle
     * \param pt point where to calculate value
     * \returns vector on the point pt or NaN in case the point is outside the triangle
+    *
+    * \since QGIS 3.12
     */
     static QgsVector interpolateVectorFromVerticesData(
       const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3,
@@ -122,6 +124,8 @@ class CORE_EXPORT QgsMeshLayerUtils
     * \param vect face vector
     * \param pt point where to calculate value
     * \returns vector on the point pt or NaN in case the point is outside the triangle
+    *
+    * \since QGIS 3.12
     */
     static QgsVector interpolateVectorFromFacesData(
       const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3,

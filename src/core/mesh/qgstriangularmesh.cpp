@@ -254,19 +254,16 @@ QList<int> QgsMeshUtils::nativeFacesFromTriangles( const QList<int> &triangleInd
   return nativeFaces.toList();
 }
 
-bool QgsMeshUtils::isInTriangle2D( const QgsPoint &p, const QVector<QgsMeshVertex> &triangle )
-{
-  if ( triangle.count() != 3 )
-    return false;
-
-  return ( ( IsLeft2D( triangle[2], triangle[0], p ) * IsLeft2D( triangle[2], triangle[0], triangle[1] ) >= 0 )
-           && ( IsLeft2D( triangle[0], triangle[1], p ) * IsLeft2D( triangle[0], triangle[1], triangle[2] ) >= 0 )
-           && ( IsLeft2D( triangle[2], triangle[1], p ) * IsLeft2D( triangle[2], triangle[1], triangle[0] ) >= 0 ) );
-}
-
-double QgsMeshUtils::IsLeft2D( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p )
+static double _isLeft2D( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p )
 {
   return ( p2.x() - p1.x() ) * ( p.y() - p1.y() ) - ( p.x() - p1.x() ) * ( p2.y() - p1.y() );
+}
+
+static bool _isInTriangle2D( const QgsPoint &p, const QVector<QgsMeshVertex> &triangle )
+{
+  return ( ( _isLeft2D( triangle[2], triangle[0], p ) * _isLeft2D( triangle[2], triangle[0], triangle[1] ) >= 0 )
+           && ( _isLeft2D( triangle[0], triangle[1], p ) * _isLeft2D( triangle[0], triangle[1], triangle[2] ) >= 0 )
+           && ( _isLeft2D( triangle[2], triangle[1], p ) * _isLeft2D( triangle[2], triangle[1], triangle[0] ) >= 0 ) );
 }
 
 bool QgsMeshUtils::isInTriangleFace( const QgsPointXY point, const QgsMeshFace &face, const QVector<QgsMeshVertex> &vertices )
@@ -282,7 +279,7 @@ bool QgsMeshUtils::isInTriangleFace( const QgsPointXY point, const QgsMeshFace &
     triangle[i] = vertices[face[i]];
   }
 
-  QgsPoint p( point.x(), point.y() );
+  const QgsPoint p( point.x(), point.y() );
 
-  return isInTriangle2D( p, triangle );
+  return _isInTriangle2D( p, triangle );
 }
