@@ -465,15 +465,21 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
         // multiple operations available. Can we use the best one?
         QgsDatumTransform::TransformDetails preferred;
         bool missingPreferred = false;
+        bool stillLookingForPreferred = true;
         for ( int i = 0; i < count; ++ i )
         {
           transform.reset( proj_list_get( context, ops, i ) );
           const bool isInstantiable = transform && proj_coordoperation_is_instantiable( context, transform.get() );
-          if ( i == 0 && transform && !isInstantiable )
+          if ( stillLookingForPreferred && transform && !isInstantiable )
           {
             // uh oh :( something is missing blocking us from the preferred operation!
-            missingPreferred = true;
-            preferred = QgsDatumTransform::transformDetailsFromPj( transform.get() );
+            QgsDatumTransform::TransformDetails candidate = QgsDatumTransform::transformDetailsFromPj( transform.get() );
+            if ( !candidate.proj.isEmpty() )
+            {
+              preferred = candidate;
+              missingPreferred = true;
+              stillLookingForPreferred = false;
+            }
           }
           if ( transform && isInstantiable )
           {
