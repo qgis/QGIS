@@ -11,5 +11,8 @@ jobs:
         run: docker build -t mingw-buildenv ms-windows/mingw
       - name: build application
         run: docker run -v $PWD:/workspace mingw-buildenv ms-windows/mingw/build.sh x86_64 nodebug 4
-
+      - uses: actions/upload-artifact@v1
+        with:
+          name: qgis-mingw
+          path: build_mingw64/dist/usr/x86_64-w64-mingw32/sys-root/mingw
 
