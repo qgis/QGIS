@@ -186,6 +186,8 @@ class RasterCalculator(QgisAlgorithm):
         res = calc.processCalculation(feedback)
         if res == QgsRasterCalculator.ParserError:
             raise QgsProcessingException(self.tr("Error parsing formula"))
+        elif res == QgsRasterCalculator.CalculationError:
+            raise QgsProcessingException(self.tr("An error occurred while performing the calculation"))
 
         return {self.OUTPUT: output}
 
