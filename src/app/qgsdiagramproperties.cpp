@@ -240,6 +240,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   }
 
   mPaintEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+  mPaintEffect->setEnabled( false );
 
   const QgsDiagramRenderer *dr = layer->diagramRenderer();
   if ( !dr ) //no diagram renderer yet, insert reasonable default
