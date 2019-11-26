@@ -688,7 +688,7 @@ QString QgsProcessingUtils::tempFolder()
   static QString sFolder;
   static QMutex sMutex;
   sMutex.lock();
-  if ( sFolder.isEmpty() )
+  if ( sFolder.isEmpty() || !sFolder.startsWith( QgsSettings().value( QStringLiteral( "Processing/Configuration/TEMP_PATH" ), QDir::tempPath() ).toString() ) )
   {
     QString subPath = QUuid::createUuid().toString().remove( '-' ).remove( '{' ).remove( '}' );
     sFolder = QgsSettings().value( QStringLiteral( "Processing/Configuration/TEMP_PATH" ), QDir::tempPath() ).toString() + QStringLiteral( "/processing_" ) + subPath;
