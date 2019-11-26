@@ -28,7 +28,8 @@ from qgis.core import (NULL,
                        QgsApplication,
                        QgsSettings,
                        QgsVectorFileWriter,
-                       QgsRasterFileWriter)
+                       QgsRasterFileWriter,
+                       QgsProcessingUtils)
 from processing.tools.system import defaultOutputFolder
 import processing.tools.dataobjects
 from multiprocessing import cpu_count
@@ -60,6 +61,7 @@ class ProcessingConfig:
     MAX_THREADS = 'MAX_THREADS'
     DEFAULT_OUTPUT_RASTER_LAYER_EXT = 'DefaultOutputRasterLayerExt'
     DEFAULT_OUTPUT_VECTOR_LAYER_EXT = 'DefaultOutputVectorLayerExt'
+    TEMP_PATH = 'TEMP_PATH'
 
     settings = {}
     settingIcons = {}
@@ -164,6 +166,12 @@ class ProcessingConfig:
             'tif',
             valuetype=Setting.SELECTION,
             options=extensions))
+
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.TEMP_PATH,
+            ProcessingConfig.tr('Temporary output folder path'), QgsProcessingUtils.tempFolder(),
+            valuetype=Setting.FOLDER))
 
     @staticmethod
     def setGroupIcon(group, icon):
