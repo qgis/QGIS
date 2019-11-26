@@ -82,7 +82,7 @@ class QgsLayoutLegendWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayo
     void mEditPushButton_clicked();
     void mCountToolButton_clicked( bool checked );
     void mExpressionFilterButton_toggled( bool checked );
-    void mFilterByMapToolButton_toggled( bool checked );
+    void mFilterByMapCheckBox_toggled( bool checked );
     void resetLayerNodeToDefaults();
     void mUpdateAllPushButton_clicked();
     void mAddGroupToolButton_clicked();

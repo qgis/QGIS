@@ -107,7 +107,7 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend )
   connect( mCountToolButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mCountToolButton_clicked );
   connect( mExpressionFilterButton, &QgsLegendFilterButton::toggled, this, &QgsLayoutLegendWidget::mExpressionFilterButton_toggled );
   connect( mLayerExpressionButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mLayerExpressionButton_clicked );
-  connect( mFilterByMapToolButton, &QToolButton::toggled, this, &QgsLayoutLegendWidget::mFilterByMapToolButton_toggled );
+  connect( mFilterByMapCheckBox, &QCheckBox::toggled, this, &QgsLayoutLegendWidget::mFilterByMapCheckBox_toggled );
   connect( mUpdateAllPushButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mUpdateAllPushButton_clicked );
   connect( mAddGroupToolButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mAddGroupToolButton_clicked );
   connect( mFilterLegendByAtlasCheckBox, &QCheckBox::toggled, this, &QgsLayoutLegendWidget::mFilterLegendByAtlasCheckBox_toggled );
@@ -148,7 +148,6 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend )
   mRemoveToolButton->setIconSize( QgisApp::instance()->iconSize( true ) );
   mEditPushButton->setIconSize( QgisApp::instance()->iconSize( true ) );
   mCountToolButton->setIconSize( QgisApp::instance()->iconSize( true ) );
-  mFilterByMapToolButton->setIconSize( QgisApp::instance()->iconSize( true ) );
   mExpressionFilterButton->setIconSize( QgisApp::instance()->iconSize( true ) );
   mLayerExpressionButton->setIconSize( QgisApp::instance()->iconSize( true ) );
 
@@ -214,7 +213,7 @@ void QgsLayoutLegendWidget::setGuiElements()
   whileBlocking( mSubgroupAlignCombo )->setCurrentAlignment( mLegend->style( QgsLegendStyle::Subgroup ).alignment() );
   whileBlocking( mItemAlignCombo )->setCurrentAlignment( mLegend->style( QgsLegendStyle::SymbolLabel ).alignment() );
   whileBlocking( mArrangementCombo )->setCurrentAlignment( mLegend->symbolAlignment() );
-  mFilterByMapToolButton->setChecked( mLegend->legendFilterByMapEnabled() );
+  mFilterByMapCheckBox->setChecked( mLegend->legendFilterByMapEnabled() );
   mColumnCountSpinBox->setValue( mLegend->columnCount() );
   mSplitLayerCheckBox->setChecked( mLegend->splitLayer() );
   mEqualColumnWidthCheckBox->setChecked( mLegend->equalColumnWidth() );
@@ -978,7 +977,7 @@ void QgsLayoutLegendWidget::mCountToolButton_clicked( bool checked )
   mLegend->endCommand();
 }
 
-void QgsLayoutLegendWidget::mFilterByMapToolButton_toggled( bool checked )
+void QgsLayoutLegendWidget::mFilterByMapCheckBox_toggled( bool checked )
 {
   mLegend->beginCommand( tr( "Update Legend" ) );
   mLegend->setLegendFilterByMapEnabled( checked );
@@ -1160,7 +1159,7 @@ void QgsLayoutLegendWidget::blockAllSignals( bool b )
   mItemTreeView->blockSignals( b );
   mCheckBoxAutoUpdate->blockSignals( b );
   mMapComboBox->blockSignals( b );
-  mFilterByMapToolButton->blockSignals( b );
+  mFilterByMapCheckBox->blockSignals( b );
   mColumnCountSpinBox->blockSignals( b );
   mSplitLayerCheckBox->blockSignals( b );
   mEqualColumnWidthCheckBox->blockSignals( b );
