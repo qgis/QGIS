@@ -6082,6 +6082,12 @@ void QgisApp::showRasterCalculator()
                                           tr( "Invalid band number for input layer." ),
                                           Qgis::Critical );
         break;
+
+      case QgsRasterCalculator::CalculationError:
+        visibleMessageBar()->pushMessage( tr( "Raster calculator" ),
+                                          tr( "An error occurred while performing the calculation." ),
+                                          Qgis::Critical );
+        break;
     }
     p.hide();
   }
