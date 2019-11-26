@@ -238,6 +238,9 @@ Ownership of the layer remain with the overview item.
 .. versionadded:: 3.6
 %End
 
+    virtual QgsMapLayer *mapLayer();
+
+
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
 

@@ -1599,7 +1599,7 @@ bool QgsLayoutExporter::georeferenceOutputPrivate( const QString &file, QgsLayou
   return true;
 }
 
-QString nameForLayerWithItems( const QList< QGraphicsItem * > items, unsigned int layerId )
+QString nameForLayerWithItems( const QList< QGraphicsItem * > &items, unsigned int layerId )
 {
   if ( items.count() == 1 )
   {
