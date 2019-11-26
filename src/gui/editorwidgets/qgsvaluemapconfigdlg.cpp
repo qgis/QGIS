@@ -158,7 +158,7 @@ void QgsValueMapConfigDlg::updateMap( const QMap<QString, QVariant> &map, bool i
   updateMap( orderedMap, insertNull );
 }
 
-void QgsValueMapConfigDlg::updateMap( const QList<QPair<QString, QVariant> > &map, bool insertNull )
+void QgsValueMapConfigDlg::updateMap( const QList<QPair<QString, QVariant>> &list, bool insertNull )
 {
   tableWidget->clearContents();
   for ( int i = tableWidget->rowCount() - 1; i > 0; i-- )
@@ -173,7 +173,7 @@ void QgsValueMapConfigDlg::updateMap( const QList<QPair<QString, QVariant> > &ma
     ++row;
   }
 
-  for ( const auto &pair : map )
+  for ( const auto &pair : list )
   {
     if ( pair.second.isNull() )
       setRow( row, pair.first, QString() );
