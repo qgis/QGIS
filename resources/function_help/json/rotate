@@ -1,0 +1,10 @@
+{
+  "name": "rotate",
+  "type": "function",
+  "description": "Returns a rotated version of a geometry. Calculations are in the Spatial Reference System of this geometry.",
+  "arguments": [ {"arg":"geom","description":"a geometry"},
+                 {"arg":"rotation","description":"clockwise rotation in degrees"},
+                 {"arg":"point","description":"rotation center"}
+               ],
+  "examples": [ { "expression":"translate($geometry, 45, centroid($geometry))", "returns":"a geometry of the same type like the original one"}]
+}
