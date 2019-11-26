@@ -10,6 +10,6 @@ jobs:
       - name: build mingw-buildenv
         run: docker build -t mingw-buildenv ms-windows/mingw
       - name: build application
-        run: docker run -v $PWD:/workspace mingw-buildenv ms-windows/mingw/build.sh
+        run: docker run -v $PWD:/workspace mingw-buildenv ms-windows/mingw/build.sh x86_64 nodebug 4
 
 
