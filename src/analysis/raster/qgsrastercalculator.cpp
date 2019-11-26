@@ -238,6 +238,12 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
           QgsDebugMsg( QStringLiteral( "RasterIO error!" ) );
         }
       }
+      else
+      {
+        //delete the dataset without closing (because it is faster)
+        gdal::fast_delete_and_close( outputDataset, outputDriver, mOutputFile );
+        return CalculationError;
+      }
     }
 
     if ( feedback )
@@ -316,6 +322,13 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
         }
 
         delete[] calcData;
+      }
+      else
+      {
+        qDeleteAll( inputBlocks );
+        inputBlocks.clear();
+        gdal::fast_delete_and_close( outputDataset, outputDriver, mOutputFile );
+        return CalculationError;
       }
 
     }

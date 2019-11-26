@@ -2002,8 +2002,8 @@ QList<QgsVectorLayerRef> QgisApp::findBrokenWidgetDependencies( QgsVectorLayer *
       for ( const QgsVectorLayerRef &dependency : constDependencies )
       {
         const QgsVectorLayer *depVl { QgsVectorLayerRef( dependency ).resolveWeakly(
-            QgsProject::instance(),
-            QgsVectorLayerRef::MatchType::Name ) };
+                                        QgsProject::instance(),
+                                        QgsVectorLayerRef::MatchType::Name ) };
         if ( ! depVl || ! depVl->isValid() )
         {
           brokenDependencies.append( dependency );
@@ -2094,8 +2094,8 @@ void QgisApp::checkVectorLayerDependencies( QgsVectorLayer *vl )
       if ( ! loaded )
       {
         const QString msg { tr( "layer '%1' requires layer '%2' to be loaded but '%2' could not be found, please load it manually if possible." )
-          .arg( vl->name() )
-          .arg( dependency.name ) };
+                            .arg( vl->name() )
+                            .arg( dependency.name ) };
         messageBar()->pushWarning( tr( "Missing layer form dependency" ), msg );
       }
       else
@@ -6245,6 +6245,12 @@ void QgisApp::showRasterCalculator()
       case QgsRasterCalculator::BandError:
         visibleMessageBar()->pushMessage( tr( "Raster calculator" ),
                                           tr( "Invalid band number for input layer." ),
+                                          Qgis::Critical );
+        break;
+
+      case QgsRasterCalculator::CalculationError:
+        visibleMessageBar()->pushMessage( tr( "Raster calculator" ),
+                                          tr( "An error occurred while performing the calculation." ),
                                           Qgis::Critical );
         break;
     }
