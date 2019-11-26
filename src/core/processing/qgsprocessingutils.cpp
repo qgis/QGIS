@@ -691,7 +691,7 @@ QString QgsProcessingUtils::tempFolder()
   if ( sFolder.isEmpty() )
   {
     QString subPath = QUuid::createUuid().toString().remove( '-' ).remove( '{' ).remove( '}' );
-    sFolder = QDir::tempPath() + QStringLiteral( "/processing_" ) + subPath;
+    sFolder = QgsSettings().value( QStringLiteral( "Processing/Configuration/TEMP_PATH" ), QDir::tempPath() ).toString() + QStringLiteral( "/processing_" ) + subPath;
     if ( !QDir( sFolder ).exists() )
       QDir().mkpath( sFolder );
   }
