@@ -1059,10 +1059,14 @@ bool QgsLayoutItemMap::nextExportPart()
       FALLTHROUGH
 
     case Grid:
-      if ( mOverviewStack->hasEnabledItems() )
+      for ( int i = 0; i < mOverviewStack->size(); ++i )
       {
-        mCurrentExportPart = OverviewMapExtent;
-        return true;
+        QgsLayoutItemMapItem *item = mOverviewStack->item( i );
+        if ( item->enabled() && item->stackingPosition() == QgsLayoutItemMapItem::StackAboveMapLabels )
+        {
+          mCurrentExportPart = OverviewMapExtent;
+          return true;
+        }
       }
       FALLTHROUGH
 
@@ -1131,6 +1135,25 @@ QgsLayoutItem::ExportLayerDetail QgsLayoutItemMap::exportLayerDetails() const
                 detail.name = QStringLiteral( "%1 (%2): %3" ).arg( displayName(), detail.mapTheme, layer->name() );
               else
                 detail.name = QStringLiteral( "%1: %2" ).arg( displayName(), layer->name() );
+            }
+            else
+            {
+              // might be an item based layer
+              const QList<QgsLayoutItemMapOverview *> res = mOverviewStack->asList();
+              for ( QgsLayoutItemMapOverview  *item : res )
+              {
+                if ( !item || !item->enabled() || item->stackingPosition() == QgsLayoutItemMapItem::StackAboveMapLabels )
+                  continue;
+
+                if ( item->mapLayer() && detail.mapLayerId == item->mapLayer()->id() )
+                {
+                  if ( !detail.mapTheme.isEmpty() )
+                    detail.name = QStringLiteral( "%1 (%2): %3" ).arg( displayName(), detail.mapTheme, item->mapLayer()->name() );
+                  else
+                    detail.name = QStringLiteral( "%1: %2" ).arg( displayName(), item->mapLayer()->name() );
+                  break;
+                }
+              }
             }
             return detail;
           }
@@ -2493,8 +2516,10 @@ QgsRectangle QgsLayoutItemMap::computeAtlasRectangle()
 
 void QgsLayoutItemMap::createStagedRenderJob( const QgsRectangle &extent, const QSizeF size, double dpi )
 {
-  // TODO - overview?
-  mStagedRendererJob = qgis::make_unique< QgsMapRendererStagedRenderJob >( mapSettings( extent, size, dpi, true ),
+  QgsMapSettings settings = mapSettings( extent, size, dpi, true );
+  settings.setLayers( mOverviewStack->modifyMapLayerList( settings.layers() ) );
+
+  mStagedRendererJob = qgis::make_unique< QgsMapRendererStagedRenderJob >( settings,
                        mLayout && mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagRenderLabelsByMapLayer
                        ? QgsMapRendererStagedRenderJob::RenderLabelsByMapLayer
                        : QgsMapRendererStagedRenderJob::Flags( nullptr ) );

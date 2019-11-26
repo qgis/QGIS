@@ -134,6 +134,11 @@ bool QgsLayoutItemMapItem::accept( QgsStyleEntityVisitorInterface * ) const
   return true;
 }
 
+QgsMapLayer *QgsLayoutItemMapItem::mapLayer()
+{
+  return nullptr;
+}
+
 //
 // QgsLayoutItemMapItemStack
 //
