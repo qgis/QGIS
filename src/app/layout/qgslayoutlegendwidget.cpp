@@ -139,7 +139,7 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend )
   mMoveUpToolButton->setIcon( QIcon( QgsApplication::iconPath( "mActionArrowUp.svg" ) ) );
   mMoveDownToolButton->setIcon( QIcon( QgsApplication::iconPath( "mActionArrowDown.svg" ) ) );
   mCountToolButton->setIcon( QIcon( QgsApplication::iconPath( "mActionSum.svg" ) ) );
-  mLayerExpressionButton->setIcon( QIcon( QgsApplication::iconPath( "mActionAddExpression.svg" ) ) );
+  mLayerExpressionButton->setIcon( QIcon( QgsApplication::iconPath( "mIconExpression.svg" ) ) );
 
   mMoveDownToolButton->setIconSize( QgisApp::instance()->iconSize( true ) );
   mMoveUpToolButton->setIconSize( QgisApp::instance()->iconSize( true ) );
