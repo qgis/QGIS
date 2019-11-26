@@ -206,7 +206,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
       for ( auto &layerRef : inputBlocks )
       {
         QgsRasterCalculatorEntry ref = uniqueRasterEntries[layerRef.first];
-        if ( uniqueRasterEntries[layerRef.first].raster->crs() != mOutputCrs )
+        if ( ref.raster->crs() != mOutputCrs )
         {
           QgsRasterProjector proj;
           proj.setCrs( ref.raster->crs(), mOutputCrs, mTransformContext );
@@ -216,7 +216,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
         }
         else
         {
-          inputBlocks[layerRef.first].reset( ref.raster->dataProvider()->block( ref.bandNumber, rect, mNumOutputColumns, 1 ) );
+          layerRef.second.reset( ref.raster->dataProvider()->block( ref.bandNumber, rect, mNumOutputColumns, 1 ) );
         }
       }
 
@@ -226,7 +226,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
       _rasterData.clear();
       for ( const auto &layerRef : inputBlocks )
       {
-        _rasterData.insert( layerRef.first, inputBlocks[layerRef.first].get() );
+        _rasterData.insert( layerRef.first, layerRef.second.get() );
       }
 
       if ( calcNode->calculate( _rasterData, resultMatrix, 0 ) )
