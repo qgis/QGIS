@@ -163,13 +163,14 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
     // Map of raster names -> blocks
     std::map<QString, std::unique_ptr<QgsRasterBlock>> inputBlocks;
     std::map<QString, QgsRasterCalculatorEntry> uniqueRasterEntries;
-    for ( const auto &r : calcNode->findNodes( QgsRasterCalcNode::Type::tRasterRef ) )
+    const QList<const QgsRasterCalcNode *> rasterRefNodes = calcNode->findNodes( QgsRasterCalcNode::Type::tRasterRef );
+    for ( const QgsRasterCalcNode *r : rasterRefNodes )
     {
       QString layerRef( r->toString().remove( 0, 1 ) );
       layerRef.chop( 1 );
       if ( ! inputBlocks.count( layerRef ) )
       {
-        for ( const auto &ref : mRasterEntries )
+        for ( const QgsRasterCalculatorEntry &ref : qgis::as_const( mRasterEntries ) )
         {
           if ( ref.ref == layerRef )
           {
