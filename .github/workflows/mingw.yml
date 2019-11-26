@@ -1,0 +1,15 @@
+name: MinGW Build
+on: [push]
+
+jobs:
+  build:
+    name: MinGW build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: build mingw-buildenv
+        run: docker build -t mingw-buildenv ms-windows/mingw
+      - name: build application
+        run: docker run -v $PWD:/workspace mingw-buildenv ms-windows/mingw/build.sh
+
+
