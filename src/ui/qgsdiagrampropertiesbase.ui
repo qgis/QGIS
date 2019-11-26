@@ -39,39 +39,17 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QComboBox" name="mDiagramTypeComboBox"/>
+       <widget class="QComboBox" name="mDiagramTypeComboBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
       </item>
       <item>
-       <spacer name="horizontalSpacer_7">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Fixed</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>0</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_8">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>12</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="mEngineSettingsButton">
+       <widget class="QToolButton" name="mEngineSettingsButton">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -81,12 +59,6 @@
         <property name="icon">
          <iconset resource="../../images/images.qrc">
           <normaloff>:/images/themes/default/mIconAutoPlacementSettings.svg</normaloff>:/images/themes/default/mIconAutoPlacementSettings.svg</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>24</width>
-          <height>16</height>
-         </size>
         </property>
        </widget>
       </item>
