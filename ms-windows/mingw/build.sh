@@ -1,4 +1,6 @@
 #!/bin/sh
+# This script does the actual build inside the Docker container
+# Note: This script is written to be used with the Fedora mingw environment
 
 arch=${1:-x86_64}
 debug=false
@@ -28,7 +30,6 @@ else
     }
 fi
 
-# Note: This script is written to be used with the Fedora mingw environment
 MINGWROOT=/usr/$arch-w64-mingw32/sys-root/mingw
 
 if $debug; then
@@ -48,7 +49,7 @@ export MINGW32_CXXFLAGS="$optflags"
 export MINGW64_CFLAGS="$optflags"
 export MINGW64_CXXFLAGS="$optflags"
 
-srcdir="$(readlink -f "$(dirname "$(readlink -f "$0")")/..")"
+srcdir="$(readlink -f "$(dirname "$(readlink -f "$0")")/../..")"
 if $debug; then
   builddir="$srcdir/build_mingw${bits}_debug"
 else
