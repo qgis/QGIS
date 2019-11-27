@@ -3748,6 +3748,7 @@ QgsWmsTiledImageDownloadHandler::QgsWmsTiledImageDownloadHandler( const QString 
     QNetworkRequest request( r.url );
     QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsWmsTiledImageDownloadHandler" ) );
     auth.setAuthorization( request );
+    request.setRawHeader( "Accept", "*/*" );
     request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
     request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
     request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ), mTileReqNo );
@@ -3847,6 +3848,7 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
       QNetworkRequest request( redirect.toUrl() );
       QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsWmsTiledImageDownloadHandler" ) );
       mAuth.setAuthorization( request );
+      request.setRawHeader( "Accept", "*/*" );
       request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
       request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
       request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ), tileReqNo );
