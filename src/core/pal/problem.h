@@ -90,7 +90,7 @@ namespace pal
 
       /////////////////
       // problem inspection functions
-      int getNumFeatures() { return nbft; }
+      int getNumFeatures() { return mFeatureCount; }
       // features counted 0...n-1
       int getFeatureCandidateCount( int i ) { return featNbLp[i]; }
       // both features and candidates counted 0..n-1
@@ -140,9 +140,9 @@ namespace pal
     private:
 
       /**
-       * How many layers are labelled ?
+       * Total number of layers containing labels
        */
-      int nbLabelledLayers = 0;
+      int mLayerCount = 0;
 
       /**
        * Names of the labelled layers
@@ -150,9 +150,9 @@ namespace pal
       QStringList labelledLayersName;
 
       /**
-       * # active candidates (remaining after reduce())
+       * Total number of active candidates (remaining after reduce())
        */
-      int nblp = 0;
+      int mTotalCandidates = 0;
 
       /**
        * # candidates (all, including)
@@ -160,10 +160,9 @@ namespace pal
       int all_nblp = 0;
 
       /**
-       * # feature to label
+       * Total number of features to label.
        */
-      int nbft = 0;
-
+      int mFeatureCount = 0;
 
       /**
        * if TRUE, special value -1 is prohibited
@@ -190,13 +189,16 @@ namespace pal
       class Sol
       {
         public:
-          std::vector< int > s;
-          double cost;
+
+          //! Placeholder list for active labels. Will contain label id for active labels, or -1 for empty positions in list
+          std::vector< int > activeLabelIds;
+
+          double totalCost = 0;
 
           void init( int featureCount )
           {
-            s.resize( featureCount, -1 );
-            cost = featureCount;
+            activeLabelIds.resize( featureCount, -1 );
+            totalCost = 0;
           }
       };
 

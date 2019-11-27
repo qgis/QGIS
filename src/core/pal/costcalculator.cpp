@@ -177,11 +177,11 @@ void CostCalculator::setCandidateCostFromPolygon( LabelPosition *lp, RTree <Feat
 int CostCalculator::finalizeCandidatesCosts( Feats *feat, int max_p, RTree <FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] )
 {
   // If candidates list is smaller than expected
-  if ( max_p > feat->lPos.count() )
-    max_p = feat->lPos.count();
+  if ( max_p > feat->candidates.count() )
+    max_p = feat->candidates.count();
   //
   // sort candidates list, best label to worst
-  std::sort( feat->lPos.begin(), feat->lPos.end(), candidateSortGrow );
+  std::sort( feat->candidates.begin(), feat->candidates.end(), candidateSortGrow );
 
   // try to exclude all conflitual labels (good ones have cost < 1 by pruning)
   double discrim = 0.0;
@@ -189,16 +189,16 @@ int CostCalculator::finalizeCandidatesCosts( Feats *feat, int max_p, RTree <Feat
   do
   {
     discrim += 1.0;
-    for ( stop = 0; stop < feat->lPos.count() && feat->lPos.at( stop )->cost() < discrim; stop++ )
+    for ( stop = 0; stop < feat->candidates.count() && feat->candidates.at( stop )->cost() < discrim; stop++ )
       ;
   }
-  while ( stop == 0 && discrim < feat->lPos.last()->cost() + 2.0 );
+  while ( stop == 0 && discrim < feat->candidates.last()->cost() + 2.0 );
 
   if ( discrim > 1.5 )
   {
     int k;
     for ( k = 0; k < stop; k++ )
-      feat->lPos.at( k )->setCost( 0.0021 );
+      feat->candidates.at( k )->setCost( 0.0021 );
   }
 
   if ( max_p > stop )
@@ -210,11 +210,11 @@ int CostCalculator::finalizeCandidatesCosts( Feats *feat, int max_p, RTree <Feat
   {
     int arrangement = feat->feature->layer()->arrangement();
     if ( arrangement == QgsPalLayerSettings::Free || arrangement == QgsPalLayerSettings::Horizontal )
-      setPolygonCandidatesCost( stop, feat->lPos, obstacles, bbx, bby );
+      setPolygonCandidatesCost( stop, feat->candidates, obstacles, bbx, bby );
   }
 
   // add size penalty (small lines/polygons get higher cost)
-  feat->feature->addSizePenalty( max_p, feat->lPos, bbx, bby );
+  feat->feature->addSizePenalty( max_p, feat->candidates, bbx, bby );
 
   return max_p;
 }
