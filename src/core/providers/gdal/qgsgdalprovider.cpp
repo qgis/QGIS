@@ -293,6 +293,7 @@ QgsGdalProvider *QgsGdalProvider::clone() const
   return new QgsGdalProvider( *this );
 }
 
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,0,0)
 bool QgsGdalProvider::crsFromWkt( const char *wkt )
 {
 
@@ -330,6 +331,7 @@ bool QgsGdalProvider::crsFromWkt( const char *wkt )
 
   return mCrs.isValid();
 }
+#endif
 
 bool QgsGdalProvider::getCachedGdalHandles( QgsGdalProvider *provider,
     GDALDatasetH &gdalBaseDataset,
@@ -2716,10 +2718,30 @@ void QgsGdalProvider::initBaseDataset()
   // Get the layer's projection info and set up the
   // QgsCoordinateTransform for this layer
   // NOTE: we must do this before metadata is called
-
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,0,0)
+  QString crsWkt;
+  if ( OGRSpatialReferenceH spatialRefSys = GDALGetSpatialRef( mGdalDataset ) )
+  {
+    crsWkt = QgsOgrUtils::OGRSpatialReferenceToWkt( spatialRefSys );
+  }
+  if ( crsWkt.isEmpty() )
+  {
+    if ( OGRSpatialReferenceH spatialRefSys = GDALGetGCPSpatialRef( mGdalDataset ) )
+    {
+      crsWkt = QgsOgrUtils::OGRSpatialReferenceToWkt( spatialRefSys );
+    }
+  }
+  if ( !crsWkt.isEmpty() )
+  {
+    mCrs = QgsCoordinateReferenceSystem::fromWkt( crsWkt );
+  }
+  else
+  {
+#else
   if ( !crsFromWkt( GDALGetProjectionRef( mGdalDataset ) ) &&
        !crsFromWkt( GDALGetGCPProjection( mGdalDataset ) ) )
   {
+#endif
     if ( mGdalBaseDataset != mGdalDataset &&
          GDALGetMetadata( mGdalBaseDataset, "RPC" ) )
     {
