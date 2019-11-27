@@ -3698,20 +3698,9 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs() const
   // add towgs84 parameter
   QgsCoordinateReferenceSystem::setupESRIWktFix();
 
-  OGRSpatialReferenceH mySpatialRefSys = mOgrLayer->GetSpatialRef();
-  if ( mySpatialRefSys )
+  if ( OGRSpatialReferenceH spatialRefSys = mOgrLayer->GetSpatialRef() )
   {
-    // get the proj4 text
-    char *pszProj4 = nullptr;
-    OSRExportToProj4( mySpatialRefSys, &pszProj4 );
-    QgsDebugMsgLevel( pszProj4, 4 );
-    CPLFree( pszProj4 );
-
-    char *pszWkt = nullptr;
-    OSRExportToWkt( mySpatialRefSys, &pszWkt );
-
-    srs = QgsCoordinateReferenceSystem::fromWkt( pszWkt );
-    CPLFree( pszWkt );
+    srs = QgsOgrUtils::OGRSpatialReferenceToCrs( spatialRefSys );
   }
   else
   {
