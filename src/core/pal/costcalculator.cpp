@@ -25,12 +25,12 @@
 
 using namespace pal;
 
-bool CostCalculator::candidateSortGrow( const LabelPosition *c1, const LabelPosition *c2 )
+bool CostCalculator::candidateSortGrow( const std::unique_ptr< LabelPosition > &c1, const std::unique_ptr< LabelPosition > &c2 )
 {
   return c1->cost() < c2->cost();
 }
 
-bool CostCalculator::candidateSortShrink( const LabelPosition *c1, const LabelPosition *c2 )
+bool CostCalculator::candidateSortShrink( const std::unique_ptr< LabelPosition > &c1, const std::unique_ptr< LabelPosition > &c2 )
 {
   return c1->cost() > c2->cost();
 }
@@ -93,31 +93,21 @@ void CostCalculator::addObstacleCostPenalty( LabelPosition *lp, FeaturePart *obs
   lp->setCost( lp->cost() + obstacleCost );
 }
 
-void CostCalculator::setPolygonCandidatesCost( int nblp, QList< LabelPosition * > &lPos, RTree<FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] )
+void CostCalculator::setPolygonCandidatesCost( std::size_t nblp, std::vector< std::unique_ptr< LabelPosition > > &lPos, RTree<FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] )
 {
   double normalizer;
   // compute raw cost
-  for ( int i = 0; i < nblp; ++i )
-    setCandidateCostFromPolygon( lPos.at( i ), obstacles, bbx, bby );
+  for ( std::size_t i = 0; i < nblp; ++i )
+    setCandidateCostFromPolygon( lPos[ i ].get(), obstacles, bbx, bby );
 
   // lPos with big values came first (value = min distance from label to Polygon's Perimeter)
   // IMPORTANT - only want to sort first nblp positions. The rest have not had the cost
   // calculated so will have nonsense values
-  QList< LabelPosition * > toSort;
-  toSort.reserve( nblp );
-  for ( int i = 0; i < nblp; ++i )
-  {
-    toSort << lPos.at( i );
-  }
-  std::sort( toSort.begin(), toSort.end(), candidateSortShrink );
-  for ( int i = 0; i < nblp; ++i )
-  {
-    lPos[i] = toSort.at( i );
-  }
+  std::sort( lPos.begin(), lPos.begin() + nblp, candidateSortShrink );
 
   // define the value's range
-  double cost_max = lPos.at( 0 )->cost();
-  double cost_min = lPos.at( nblp - 1 )->cost();
+  double cost_max = lPos.front()->cost();
+  double cost_min = lPos.back()->cost();
 
   cost_max -= cost_min;
 
@@ -132,17 +122,18 @@ void CostCalculator::setPolygonCandidatesCost( int nblp, QList< LabelPosition * 
 
   // adjust cost => the best is 0.0001, the worst is 0.0021
   // others are set proportionally between best and worst
-  for ( int i = 0; i < nblp; ++i )
+  for ( std::size_t i = 0; i < nblp; ++i )
   {
+    LabelPosition *pos = lPos[ i ].get();
     //if (cost_max - cost_min < EPSILON)
     if ( cost_max > EPSILON )
     {
-      lPos.at( i )->setCost( 0.0021 - ( lPos.at( i )->cost() - cost_min ) * normalizer );
+      pos->setCost( 0.0021 - ( pos->cost() - cost_min ) * normalizer );
     }
     else
     {
-      //lPos[i]->cost = 0.0001 + (lPos[i]->cost - cost_min) * normalizer;
-      lPos.at( i )->setCost( 0.0001 );
+      //pos->cost = 0.0001 + (pos->cost - cost_min) * normalizer;
+      pos->setCost( 0.0001 );
     }
   }
 }
@@ -174,31 +165,30 @@ void CostCalculator::setCandidateCostFromPolygon( LabelPosition *lp, RTree <Feat
   delete pCost;
 }
 
-int CostCalculator::finalizeCandidatesCosts( Feats *feat, int max_p, RTree <FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] )
+std::size_t CostCalculator::finalizeCandidatesCosts( Feats *feat, std::size_t max_p, RTree <FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] )
 {
   // If candidates list is smaller than expected
-  if ( max_p > feat->candidates.count() )
-    max_p = feat->candidates.count();
+  if ( max_p > feat->candidates.size() )
+    max_p = feat->candidates.size();
   //
   // sort candidates list, best label to worst
   std::sort( feat->candidates.begin(), feat->candidates.end(), candidateSortGrow );
 
   // try to exclude all conflitual labels (good ones have cost < 1 by pruning)
   double discrim = 0.0;
-  int stop;
+  std::size_t stop = 0;
   do
   {
     discrim += 1.0;
-    for ( stop = 0; stop < feat->candidates.count() && feat->candidates.at( stop )->cost() < discrim; stop++ )
+    for ( stop = 0; stop < feat->candidates.size() && feat->candidates[ stop ]->cost() < discrim; stop++ )
       ;
   }
-  while ( stop == 0 && discrim < feat->candidates.last()->cost() + 2.0 );
+  while ( stop == 0 && discrim < feat->candidates.back()->cost() + 2.0 );
 
   if ( discrim > 1.5 )
   {
-    int k;
-    for ( k = 0; k < stop; k++ )
-      feat->candidates.at( k )->setCost( 0.0021 );
+    for ( std::size_t k = 0; k < stop; k++ )
+      feat->candidates[ k ]->setCost( 0.0021 );
   }
 
   if ( max_p > stop )

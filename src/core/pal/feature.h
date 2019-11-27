@@ -130,7 +130,7 @@ namespace pal
       /**
        * Generates a list of candidate positions for labels for this feature.
        */
-      QList<LabelPosition *> createCandidates();
+      std::vector<std::unique_ptr<LabelPosition> > createCandidates();
 
       /**
        * Generate candidates for point feature, located around a specified point.
@@ -140,7 +140,7 @@ namespace pal
        * \param angle orientation of the label
        * \returns the number of generated candidates
        */
-      int createCandidatesAroundPoint( double x, double y, QList<LabelPosition *> &lPos, double angle );
+      std::size_t createCandidatesAroundPoint( double x, double y, std::vector<std::unique_ptr<LabelPosition> > &lPos, double angle );
 
       /**
        * Generate one candidate over or offset the specified point.
@@ -150,7 +150,7 @@ namespace pal
        * \param angle orientation of the label
        * \returns the number of generated candidates (always 1)
        */
-      int createCandidatesOverPoint( double x, double y, QList<LabelPosition *> &lPos, double angle );
+      std::size_t createCandidatesOverPoint( double x, double y, std::vector<std::unique_ptr<LabelPosition> > &lPos, double angle );
 
       /**
        * Creates a single candidate using the "point on sruface" algorithm.
@@ -168,7 +168,7 @@ namespace pal
        * \param angle orientation of the label
        * \returns the number of generated candidates
        */
-      int createCandidatesAtOrderedPositionsOverPoint( double x, double y, QList<LabelPosition *> &lPos, double angle );
+      std::size_t createCandidatesAtOrderedPositionsOverPoint( double x, double y, std::vector<std::unique_ptr<LabelPosition> > &lPos, double angle );
 
       /**
        * Generate candidates for line feature.
@@ -177,7 +177,7 @@ namespace pal
        * \param allowOverrun set to TRUE to allow labels to overrun features
        * \returns the number of generated candidates
        */
-      int createCandidatesAlongLine( QList<LabelPosition *> &lPos, PointSet *mapShape, bool allowOverrun = false );
+      std::size_t createCandidatesAlongLine( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape, bool allowOverrun = false );
 
       /**
        * Generate candidates for line feature, by trying to place candidates towards the middle of the longest
@@ -186,7 +186,7 @@ namespace pal
        * \param mapShape a pointer to the line
        * \returns the number of generated candidates
        */
-      int createCandidatesAlongLineNearStraightSegments( QList<LabelPosition *> &lPos, PointSet *mapShape );
+      std::size_t createCandidatesAlongLineNearStraightSegments( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape );
 
       /**
        * Generate candidates for line feature, by trying to place candidates as close as possible to the line's midpoint.
@@ -197,7 +197,7 @@ namespace pal
        * by a preset amount.
        * \returns the number of generated candidates
        */
-      int createCandidatesAlongLineNearMidpoint( QList<LabelPosition *> &lPos, PointSet *mapShape, double initialCost = 0.0 );
+      std::size_t createCandidatesAlongLineNearMidpoint( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape, double initialCost = 0.0 );
 
       /**
        * Returns the label position for a curved label at a specific offset along a path.
@@ -219,7 +219,7 @@ namespace pal
        * \param allowOverrun set to TRUE to allow labels to overrun features
        * \returns the number of generated candidates
        */
-      int createCurvedCandidatesAlongLine( QList<LabelPosition *> &lPos, PointSet *mapShape, bool allowOverrun = false );
+      std::size_t createCurvedCandidatesAlongLine( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape, bool allowOverrun = false );
 
       /**
        * Generate candidates for polygon features.
@@ -227,7 +227,7 @@ namespace pal
        * \param mapShape a pointer to the polygon
        * \returns the number of generated candidates
        */
-      int createCandidatesForPolygon( QList<LabelPosition *> &lPos, PointSet *mapShape );
+      std::size_t createCandidatesForPolygon( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape );
 
       /**
        * Tests whether this feature part belongs to the same QgsLabelFeature as another
@@ -304,7 +304,7 @@ namespace pal
        * Returns TRUE on success, FALSE if the feature wasn't modified */
       bool mergeWithFeaturePart( FeaturePart *other );
 
-      void addSizePenalty( int nbp, QList<LabelPosition *> &lPos, double bbx[4], double bby[4] );
+      void addSizePenalty( std::size_t nbp, std::vector<std::unique_ptr<LabelPosition> > &lPos, double bbx[4], double bby[4] );
 
       /**
        * Calculates the priority for the feature. This will be the feature's priority if set,
