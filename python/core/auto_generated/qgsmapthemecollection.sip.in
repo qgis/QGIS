@@ -110,11 +110,22 @@ and thus whether expandedGroupNodes() and expandedLegendItems + expandedLayerNod
 .. versionadded:: 3.2
 %End
 
+        bool hasCheckedStateInfo() const;
+%Docstring
+Returns whether information about checked/unchecked state of groups has been recorded
+and thus whether checkedGroupNodes() is valid.
+%End
+
         void setHasExpandedStateInfo( bool hasInfo );
 %Docstring
 Sets whether the map theme contains valid expanded/collapsed state of nodes
 
 .. versionadded:: 3.2
+%End
+
+        void setHasCheckedStateInfo( bool hasInfo );
+%Docstring
+Sets whether the map theme contains valid checked/unchecked state of group nodes
 %End
 
         QSet<QString> expandedGroupNodes() const;
@@ -127,11 +138,24 @@ and a forward slash, e.g. "level1/level2"
 .. versionadded:: 3.2
 %End
 
+        QSet<QString> checkedGroupNodes() const;
+%Docstring
+Returns a set of group identifiers for group nodes that should have checked state (other group nodes should be unchecked).
+The returned value is valid only when hasCheckedStateInfo() returns ``True``.
+Group identifiers are built using group names, a sub-group name is prepended by parent group's identifier
+and a forward slash, e.g. "level1/level2"
+%End
+
         void setExpandedGroupNodes( const QSet<QString> &expandedGroupNodes );
 %Docstring
 Sets a set of group identifiers for group nodes that should have expanded state. See expandedGroupNodes().
 
 .. versionadded:: 3.2
+%End
+
+        void setCheckedGroupNodes( const QSet<QString> &checkedGroupNodes );
+%Docstring
+Sets a set of group identifiers for group nodes that should have checked state. See checkedGroupNodes().
 %End
 
     };

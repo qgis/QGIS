@@ -34,6 +34,7 @@ class TestQgsMapThemeCollection : public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
 
     void expandedState();
+    void checkedState();
 
   private:
     QgsVectorLayer *mPointsLayer = nullptr;
@@ -204,6 +205,85 @@ void TestQgsMapThemeCollection::expandedState()
   QgsMapThemeCollection::MapThemeLayerRecord recExpandedPoints2 = _recordForLayer( mPointsLayer, recExpanded2 );
   QCOMPARE( recExpandedPoints2.expandedLayerNode, true );
   QCOMPARE( recExpandedPoints2.expandedLegendItems.count(), 4 );
+}
+
+void TestQgsMapThemeCollection::checkedState()
+{
+  QgsMapThemeCollection themes( mProject );
+
+  QStringList pointLayerRootLegendNodes;
+  const QList<QgsLayerTreeModelLegendNode *> legendNodes = mLayerTreeModel->layerLegendNodes( mNodeLayerPoints, true );
+  for ( QgsLayerTreeModelLegendNode *legendNode : legendNodes )
+  {
+    QString key = legendNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString();
+    pointLayerRootLegendNodes << key;
+  }
+  QCOMPARE( pointLayerRootLegendNodes.count(), 4 );
+
+  // make two themes: 1. all checked, 2. all collapsed
+  // keep a layer checked inside group3 to check behavior
+
+  mNodeGroup1->setItemVisibilityChecked( false );
+  mNodeGroup2->setItemVisibilityChecked( false );
+  mNodeGroup3->setItemVisibilityChecked( false );
+  mNodeLayerLines->setItemVisibilityChecked( false );
+  mNodeLayerPolys->setItemVisibilityChecked( true );
+
+  themes.insert( "all-unchecked", QgsMapThemeCollection::createThemeFromCurrentState( mLayerTree, mLayerTreeModel ) );
+
+  mNodeGroup1->setItemVisibilityChecked( true );
+  mNodeGroup2->setItemVisibilityChecked( true );
+  mNodeGroup3->setItemVisibilityChecked( true );
+  // keep a layer checked inside a group to check behavior
+  mNodeLayerPolys->setItemVisibilityChecked( true );
+
+  themes.insert( "all-checked", QgsMapThemeCollection::createThemeFromCurrentState( mLayerTree, mLayerTreeModel ) );
+
+  // check theme data
+
+  QgsMapThemeCollection::MapThemeRecord recUnchecked = themes.mapThemeState( "all-unchecked" );
+  QVERIFY( recUnchecked.hasCheckedStateInfo() );
+  QCOMPARE( recUnchecked.checkedGroupNodes().count(), 0 );
+  QCOMPARE( mNodeLayerLines->itemVisibilityChecked(), false );
+  QCOMPARE( mNodeLayerPolys->itemVisibilityChecked(), true );
+
+  QgsMapThemeCollection::MapThemeRecord recChecked = themes.mapThemeState( "all-checked" );
+  QVERIFY( recChecked.hasCheckedStateInfo() );
+  QCOMPARE( recChecked.checkedGroupNodes().count(), 3 );
+  QCOMPARE( mNodeLayerLines->itemVisibilityChecked(), false );
+  QCOMPARE( mNodeLayerPolys->itemVisibilityChecked(), true );
+
+  // switch themes
+
+  themes.applyTheme( "all-unchecked", mLayerTree, mLayerTreeModel );
+  QCOMPARE( mNodeGroup1->itemVisibilityChecked(), false );
+  QCOMPARE( mNodeGroup3->itemVisibilityChecked(), false );
+  QCOMPARE( mNodeLayerLines->itemVisibilityChecked(), false );
+  QCOMPARE( mNodeLayerPolys->itemVisibilityChecked(), true );
+
+  themes.applyTheme( "all-checked", mLayerTree, mLayerTreeModel );
+  QCOMPARE( mNodeGroup1->itemVisibilityChecked(), true );
+  QCOMPARE( mNodeGroup3->itemVisibilityChecked(), true );
+  QCOMPARE( mNodeLayerLines->itemVisibilityChecked(), false );
+  QCOMPARE( mNodeLayerPolys->itemVisibilityChecked(), true );
+
+  // test read+write
+
+  QDomDocument doc;
+  QDomElement elemRoot = doc.createElement( "qgis" );
+  doc.appendChild( elemRoot );
+  themes.writeXml( doc );
+
+  QgsMapThemeCollection themes2( mProject );
+  themes2.readXml( doc );
+
+  QgsMapThemeCollection::MapThemeRecord recUnchecked2 = themes2.mapThemeState( "all-unchecked" );
+  QVERIFY( recUnchecked2.hasCheckedStateInfo() );
+  QCOMPARE( recUnchecked2.checkedGroupNodes().count(), 0 );
+
+  QgsMapThemeCollection::MapThemeRecord recChecked2 = themes2.mapThemeState( "all-checked" );
+  QVERIFY( recChecked2.hasCheckedStateInfo() );
+  QCOMPARE( recChecked2.checkedGroupNodes().count(), 3 );
 }
 
 QGSTEST_MAIN( TestQgsMapThemeCollection )
