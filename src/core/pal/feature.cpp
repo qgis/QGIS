@@ -1618,8 +1618,7 @@ int FeaturePart::createCandidatesForPolygon( QList< LabelPosition *> &lPos, Poin
   return nbp;
 }
 
-QList<LabelPosition *> FeaturePart::createCandidates( const GEOSPreparedGeometry *mapBoundary,
-    PointSet *mapShape, RTree<LabelPosition *, double, 2, double> *candidates )
+QList<LabelPosition *> FeaturePart::createCandidates()
 {
   QList<LabelPosition *> lPos;
   double angle = mLF->hasFixedAngle() ? mLF->fixedAngle() : 0.0;
@@ -1642,9 +1641,9 @@ QList<LabelPosition *> FeaturePart::createCandidates( const GEOSPreparedGeometry
         break;
       case GEOS_LINESTRING:
         if ( mLF->layer()->isCurved() )
-          createCurvedCandidatesAlongLine( lPos, mapShape, true );
+          createCurvedCandidatesAlongLine( lPos, this, true );
         else
-          createCandidatesAlongLine( lPos, mapShape, true );
+          createCandidatesAlongLine( lPos, this, true );
         break;
 
       case GEOS_POLYGON:
@@ -1653,49 +1652,25 @@ QList<LabelPosition *> FeaturePart::createCandidates( const GEOSPreparedGeometry
           case QgsPalLayerSettings::AroundPoint:
           case QgsPalLayerSettings::OverPoint:
             double cx, cy;
-            mapShape->getCentroid( cx, cy, mLF->layer()->centroidInside() );
+            getCentroid( cx, cy, mLF->layer()->centroidInside() );
             if ( mLF->layer()->arrangement() == QgsPalLayerSettings::OverPoint )
               createCandidatesOverPoint( cx, cy, lPos, angle );
             else
               createCandidatesAroundPoint( cx, cy, lPos, angle );
             break;
           case QgsPalLayerSettings::Line:
-            createCandidatesAlongLine( lPos, mapShape );
+            createCandidatesAlongLine( lPos, this );
             break;
           case QgsPalLayerSettings::PerimeterCurved:
-            createCurvedCandidatesAlongLine( lPos, mapShape );
+            createCurvedCandidatesAlongLine( lPos, this );
             break;
           default:
-            createCandidatesForPolygon( lPos, mapShape );
+            createCandidatesForPolygon( lPos, this );
             break;
         }
     }
   }
 
-  // purge candidates that are outside the bbox
-
-  QMutableListIterator< LabelPosition *> i( lPos );
-  while ( i.hasNext() )
-  {
-    LabelPosition *pos = i.next();
-    bool outside = false;
-
-    if ( mLF->layer()->pal->getShowPartial() )
-      outside = !pos->intersects( mapBoundary );
-    else
-      outside = !pos->within( mapBoundary );
-    if ( outside )
-    {
-      i.remove();
-      delete pos;
-    }
-    else   // this one is OK
-    {
-      pos->insertIntoIndex( candidates );
-    }
-  }
-
-  std::sort( lPos.begin(), lPos.end(), CostCalculator::candidateSortGrow );
   return lPos;
 }
 

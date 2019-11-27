@@ -128,13 +128,9 @@ namespace pal
       QgsFeatureId featureId() const;
 
       /**
-       * Generic method to generate label candidates for the feature.
-       * \param mapBoundary map boundary geometry
-       * \param mapShape generate candidates for this spatial entity
-       * \param candidates index for candidates
-       * \returns a list of generated candidates positions
+       * Generates a list of candidate positions for labels for this feature.
        */
-      QList<LabelPosition *> createCandidates( const GEOSPreparedGeometry *mapBoundary, PointSet *mapShape, RTree<LabelPosition *, double, 2, double> *candidates );
+      QList<LabelPosition *> createCandidates();
 
       /**
        * Generate candidates for point feature, located around a specified point.
