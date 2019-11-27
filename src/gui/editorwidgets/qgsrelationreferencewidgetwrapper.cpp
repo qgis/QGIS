@@ -67,6 +67,12 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
 
   const QVariant relationName = config( QStringLiteral( "Relation" ) );
 
+  // Store relation data source and provider key
+  mWidget->setReferencedLayerDataSource( config( QStringLiteral( "ReferencedLayerDataSource" ) ).toString() );
+  mWidget->setReferencedLayerProviderKey( config( QStringLiteral( "ReferencedLayerProviderKey" ) ).toString() );
+  mWidget->setReferencedLayerId( config( QStringLiteral( "ReferencedLayerId" ) ).toString() );
+  mWidget->setReferencedLayerName( config( QStringLiteral( "ReferencedLayerName" ) ).toString() );
+
   QgsRelation relation; // invalid relation by default
   if ( relationName.isValid() )
     relation = QgsProject::instance()->relationManager()->relation( relationName.toString() );
@@ -174,6 +180,21 @@ QStringList QgsRelationReferenceWidgetWrapper::additionalFields() const
     fields << fieldPairs.at( i ).referencingField();
   }
   return fields;
+}
+
+QList<QgsVectorLayerRef> QgsRelationReferenceWidgetWrapper::layerDependencies() const
+{
+  QList<QgsVectorLayerRef> result;
+  if ( mWidget )
+  {
+    result.append(
+      QgsVectorLayerRef(
+        mWidget->referencedLayerId(),
+        mWidget->referencedLayerName(),
+        mWidget->referencedLayerDataSource(),
+        mWidget->referencedLayerProviderKey() ) );
+  }
+  return result;
 }
 
 void QgsRelationReferenceWidgetWrapper::updateValues( const QVariant &val, const QVariantList &additionalValues )
