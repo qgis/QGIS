@@ -53,6 +53,8 @@ void QgsLabelingEngineSettings::readSettingsFromProject( QgsProject *prj )
     mDefaultTextRenderFormat = static_cast< QgsRenderContext::TextRenderFormat >( projectTextFormat );
 
   mUnplacedLabelColor = QgsSymbolLayerUtils::decodeColor( prj->readEntry( QStringLiteral( "PAL" ), QStringLiteral( "/UnplacedColor" ), QStringLiteral( "#ff0000" ) ) );
+
+  mPlacementVersion = static_cast< PlacementEngineVersion >( prj->readNumEntry( QStringLiteral( "PAL" ), QStringLiteral( "/PlacementEngineVersion" ), static_cast< int >( PlacementEngineVersion1 ) ) );
 }
 
 void QgsLabelingEngineSettings::writeSettingsToProject( QgsProject *project )
@@ -71,6 +73,8 @@ void QgsLabelingEngineSettings::writeSettingsToProject( QgsProject *project )
   project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/TextFormat" ), static_cast< int >( mDefaultTextRenderFormat ) );
 
   project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/UnplacedColor" ), QgsSymbolLayerUtils::encodeColor( mUnplacedLabelColor ) );
+
+  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/PlacementEngineVersion" ), mPlacementVersion );
 }
 
 QColor QgsLabelingEngineSettings::unplacedLabelColor() const
@@ -81,6 +85,16 @@ QColor QgsLabelingEngineSettings::unplacedLabelColor() const
 void QgsLabelingEngineSettings::setUnplacedLabelColor( const QColor &unplacedLabelColor )
 {
   mUnplacedLabelColor = unplacedLabelColor;
+}
+
+QgsLabelingEngineSettings::PlacementEngineVersion QgsLabelingEngineSettings::placementVersion() const
+{
+  return mPlacementVersion;
+}
+
+void QgsLabelingEngineSettings::setPlacementVersion( PlacementEngineVersion placementVersion )
+{
+  mPlacementVersion = placementVersion;
 }
 
 
