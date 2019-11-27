@@ -514,6 +514,16 @@ int Pal::getPolyP()
   return poly_p;
 }
 
+QgsLabelingEngineSettings::PlacementEngineVersion Pal::getPlacementVersion() const
+{
+  return mPlacementVersion;
+}
+
+void Pal::setPlacementVersion( QgsLabelingEngineSettings::PlacementEngineVersion placementVersion )
+{
+  mPlacementVersion = placementVersion;
+}
+
 int Pal::getMinIt()
 {
   return tabuMaxIt;

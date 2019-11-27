@@ -43,6 +43,12 @@ Stores global configuration for labeling engine
       Falp
     };
 
+    enum PlacementEngineVersion
+    {
+      PlacementEngineVersion1,
+      PlacementEngineVersion2,
+    };
+
     QgsLabelingEngineSettings();
 
     void clear();
@@ -136,6 +142,24 @@ Sets the ``color`` to use when rendering unplaced labels.
 .. seealso:: :py:func:`unplacedLabelColor`
 
 .. versionadded:: 3.10
+%End
+
+    PlacementEngineVersion placementVersion() const;
+%Docstring
+Returns the placement engine version, which dictates how the label placement problem is solved.
+
+.. seealso:: :py:func:`setPlacementVersion`
+
+.. versionadded:: 3.10.2
+%End
+
+    void setPlacementVersion( PlacementEngineVersion version );
+%Docstring
+Sets the placement engine ``version``, which dictates how the label placement problem is solved.
+
+.. seealso:: :py:func:`placementVersion`
+
+.. versionadded:: 3.10.2
 %End
 
 };

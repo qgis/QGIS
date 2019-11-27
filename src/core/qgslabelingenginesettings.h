@@ -58,6 +58,17 @@ class CORE_EXPORT QgsLabelingEngineSettings
       Falp
     };
 
+    /**
+     * Placement engine version.
+     *
+     * \since QGIS 3.10.2
+     */
+    enum PlacementEngineVersion
+    {
+      PlacementEngineVersion1, //!< Version 1, matches placement from QGIS <= 3.10.1
+      PlacementEngineVersion2, //!< Version 2, default for new projects created since 3.10.2
+    };
+
     QgsLabelingEngineSettings();
 
     //! Returns the configuration to the defaults
@@ -136,6 +147,22 @@ class CORE_EXPORT QgsLabelingEngineSettings
      */
     void setUnplacedLabelColor( const QColor &color );
 
+    /**
+     * Returns the placement engine version, which dictates how the label placement problem is solved.
+     *
+     * \see setPlacementVersion()
+     * \since QGIS 3.10.2
+     */
+    PlacementEngineVersion placementVersion() const;
+
+    /**
+     * Sets the placement engine \a version, which dictates how the label placement problem is solved.
+     *
+     * \see placementVersion()
+     * \since QGIS 3.10.2
+     */
+    void setPlacementVersion( PlacementEngineVersion version );
+
   private:
     //! Flags
     Flags mFlags;
@@ -145,6 +172,8 @@ class CORE_EXPORT QgsLabelingEngineSettings
     int mCandPoint = 16, mCandLine = 50, mCandPolygon = 30;
 
     QColor mUnplacedLabelColor = QColor( 255, 0, 0 );
+
+    PlacementEngineVersion mPlacementVersion = PlacementEngineVersion2;
 
     QgsRenderContext::TextRenderFormat mDefaultTextRenderFormat = QgsRenderContext::TextFormatAlwaysOutlines;
 

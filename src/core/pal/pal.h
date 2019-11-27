@@ -37,6 +37,7 @@
 #include "qgsgeometry.h"
 #include "qgsgeos.h"
 #include "qgspallabeling.h"
+#include "qgslabelingenginesettings.h"
 #include <QList>
 #include <iostream>
 #include <ctime>
@@ -208,6 +209,20 @@ namespace pal
        */
       int getPolyP();
 
+      /**
+       * Returns the placement engine version, which dictates how the label placement problem is solved.
+       *
+       * \see setPlacementVersion()
+       */
+      QgsLabelingEngineSettings::PlacementEngineVersion getPlacementVersion() const;
+
+      /**
+       * Sets the placement engine \a version, which dictates how the label placement problem is solved.
+       *
+       * \see placementVersion()
+       */
+      void setPlacementVersion( QgsLabelingEngineSettings::PlacementEngineVersion placementVersion );
+
     private:
 
       QHash< QgsAbstractLabelProvider *, Layer * > mLayers;
@@ -245,6 +260,8 @@ namespace pal
        * \brief show partial labels (cut-off by the map canvas) or not
        */
       bool showPartial = true;
+
+      QgsLabelingEngineSettings::PlacementEngineVersion mPlacementVersion = QgsLabelingEngineSettings::PlacementEngineVersion2;
 
       //! Callback that may be called from PAL to check whether the job has not been canceled in meanwhile
       FnIsCanceled fnIsCanceled = nullptr;
