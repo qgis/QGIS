@@ -30,6 +30,7 @@ from qgis.core import (QgsLabelingEngineSettings,
 from utilities import getTempfilePath, renderMapToImage, mapSettingsString
 
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
+from qgis.testing import unittest
 
 
 # noinspection PyPep8Naming
@@ -181,6 +182,449 @@ class TestPointPlacement(TestPlacementBase):
         self.checkTest()
         self.removeMapLayer(self.layer)
         self.removeMapLayer(polyLayer)
+        self.layer = None
+
+    def test_point_offset_center_placement(self):
+        # Test point offset from point, center placement
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.OverPoint
+        self.lyr.quadOffset = QgsPalLayerSettings.QuadrantOver
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_point_offset_below_left_placement(self):
+        # Test point offset from point, below left placement
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.OverPoint
+        self.lyr.quadOffset = QgsPalLayerSettings.QuadrantBelowLeft
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_point_point_obstacle_obstacle_factor_greater_equal(self):
+        # Test point label but obstacle exists with a greater than or equal to obstacle factor vs label priority => NO LABEL
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point')
+        obstacleLayer = TestQgsPalLabeling.loadFeatureLayer('point_ordered_obstacle1')
+
+        for label_priority in range(0, 10):
+            for obstacle_weight in range(label_priority, 11):
+                obstacle_label_settings = QgsPalLayerSettings()
+                obstacle_label_settings.obstacle = True
+                obstacle_label_settings.drawLabels = False
+                obstacle_label_settings.obstacleFactor = obstacle_weight
+                obstacleLayer.setLabeling(QgsVectorLayerSimpleLabeling(obstacle_label_settings))
+                obstacleLayer.setLabelsEnabled(True)
+
+                self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+                self.lyr.placement = QgsPalLayerSettings.OverPoint
+                self.lyr.quadOffset = QgsPalLayerSettings.QuadrantAboveRight
+                self.lyr.priority = label_priority
+                self.checkTest()
+        self.removeMapLayer(obstacleLayer)
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    @unittest.skip('Needs engine change')
+    def test_point_point_obstacle_obstacle_factor_less(self):
+        # Test point label but obstacle exists with a lower obstacle factor vs label priority => LABEL
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point')
+        obstacleLayer = TestQgsPalLabeling.loadFeatureLayer('point_ordered_obstacle1')
+
+        for label_priority in range(0, 11):
+            for obstacle_weight in range(0, label_priority):
+                obstacle_label_settings = QgsPalLayerSettings()
+                obstacle_label_settings.obstacle = True
+                obstacle_label_settings.drawLabels = False
+                obstacle_label_settings.obstacleFactor = obstacle_weight
+                obstacleLayer.setLabeling(QgsVectorLayerSimpleLabeling(obstacle_label_settings))
+                obstacleLayer.setLabelsEnabled(True)
+
+                self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+                self.lyr.placement = QgsPalLayerSettings.OverPoint
+                self.lyr.quadOffset = QgsPalLayerSettings.QuadrantAboveRight
+                self.lyr.priority = label_priority
+                self.checkTest()
+        self.removeMapLayer(obstacleLayer)
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_point_line_obstacle_obstacle_factor_greater_equal(self):
+        # Test point label but line obstacle exists with a greater than or equal to obstacle factor vs label priority => NO LABEL
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point')
+        obstacleLayer = TestQgsPalLabeling.loadFeatureLayer('line')
+
+        for label_priority in range(0, 10):
+            for obstacle_weight in range(label_priority, 11):
+                obstacle_label_settings = QgsPalLayerSettings()
+                obstacle_label_settings.obstacle = True
+                obstacle_label_settings.drawLabels = False
+                obstacle_label_settings.obstacleFactor = obstacle_weight
+                obstacleLayer.setLabeling(QgsVectorLayerSimpleLabeling(obstacle_label_settings))
+                obstacleLayer.setLabelsEnabled(True)
+
+                self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+                self.lyr.placement = QgsPalLayerSettings.OverPoint
+                self.lyr.quadOffset = QgsPalLayerSettings.QuadrantAboveLeft
+                self.lyr.priority = label_priority
+                self.checkTest()
+        self.removeMapLayer(obstacleLayer)
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    @unittest.skip('Needs engine change')
+    def test_point_line_obstacle_obstacle_factor_less(self):
+        # Test point label but line obstacle exists with a lower obstacle factor vs label priority => LABEL
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point')
+        obstacleLayer = TestQgsPalLabeling.loadFeatureLayer('line')
+
+        for label_priority in range(0, 11):
+            for obstacle_weight in range(0, label_priority):
+                obstacle_label_settings = QgsPalLayerSettings()
+                obstacle_label_settings.obstacle = True
+                obstacle_label_settings.drawLabels = False
+                obstacle_label_settings.obstacleFactor = obstacle_weight
+                obstacleLayer.setLabeling(QgsVectorLayerSimpleLabeling(obstacle_label_settings))
+                obstacleLayer.setLabelsEnabled(True)
+
+                self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+                self.lyr.placement = QgsPalLayerSettings.OverPoint
+                self.lyr.quadOffset = QgsPalLayerSettings.QuadrantAboveLeft
+                self.lyr.priority = label_priority
+                self.checkTest()
+        self.removeMapLayer(obstacleLayer)
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_point_polygon_obstacle_obstacle_factor_greater_equal(self):
+        # Test point label but polygon obstacle exists with a greater than or equal to obstacle factor vs label priority => NO LABEL
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point')
+        obstacleLayer = TestQgsPalLabeling.loadFeatureLayer('narrow_polygon')
+
+        for label_priority in range(0, 10):
+            for obstacle_weight in range(label_priority, 11):
+                obstacle_label_settings = QgsPalLayerSettings()
+                obstacle_label_settings.obstacle = True
+                obstacle_label_settings.drawLabels = False
+                obstacle_label_settings.obstacleFactor = obstacle_weight
+                obstacleLayer.setLabeling(QgsVectorLayerSimpleLabeling(obstacle_label_settings))
+                obstacleLayer.setLabelsEnabled(True)
+
+                self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+                self.lyr.placement = QgsPalLayerSettings.OverPoint
+                self.lyr.quadOffset = QgsPalLayerSettings.QuadrantBelowRight
+                self.lyr.priority = label_priority
+                self.checkTest()
+        self.removeMapLayer(obstacleLayer)
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    @unittest.skip('Needs engine change')
+    def test_point_polygon_obstacle_obstacle_factor_less(self):
+        # Test point label but polygon obstacle exists with a lower obstacle factor vs label priority => LABEL
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point')
+        obstacleLayer = TestQgsPalLabeling.loadFeatureLayer('narrow_polygon')
+
+        for label_priority in range(0, 11):
+            for obstacle_weight in range(0, label_priority):
+                obstacle_label_settings = QgsPalLayerSettings()
+                obstacle_label_settings.obstacle = True
+                obstacle_label_settings.drawLabels = False
+                obstacle_label_settings.obstacleFactor = obstacle_weight
+                obstacleLayer.setLabeling(QgsVectorLayerSimpleLabeling(obstacle_label_settings))
+                obstacleLayer.setLabelsEnabled(True)
+
+                self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+                self.lyr.placement = QgsPalLayerSettings.OverPoint
+                self.lyr.quadOffset = QgsPalLayerSettings.QuadrantBelowRight
+                self.lyr.priority = label_priority
+                self.checkTest()
+        self.removeMapLayer(obstacleLayer)
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_line_point_obstacle_obstacle_factor_greater_equal(self):
+        # Test line label but obstacle exists with a greater than or equal to obstacle factor vs label priority => NO LABEL
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('line_short')
+        self.layer.setLabelsEnabled(True)
+        obstacleLayer = TestQgsPalLabeling.loadFeatureLayer('point')
+
+        for label_priority in range(0, 10):
+            for obstacle_weight in range(label_priority, 11):
+                obstacle_label_settings = QgsPalLayerSettings()
+                obstacle_label_settings.obstacle = True
+                obstacle_label_settings.drawLabels = False
+                obstacle_label_settings.obstacleFactor = obstacle_weight
+                obstacleLayer.setLabeling(QgsVectorLayerSimpleLabeling(obstacle_label_settings))
+                obstacleLayer.setLabelsEnabled(True)
+
+                self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+                self.lyr.placement = QgsPalLayerSettings.Line
+                self.lyr.priority = label_priority
+                self.checkTest()
+        self.removeMapLayer(obstacleLayer)
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    @unittest.skip('Needs engine change')
+    def test_line_point_obstacle_obstacle_factor_less(self):
+        # Test line label but obstacle exists with a lower obstacle factor vs label priority => LABEL
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('line_short')
+        self.layer.setLabelsEnabled(True)
+        obstacleLayer = TestQgsPalLabeling.loadFeatureLayer('point')
+
+        for label_priority in range(0, 11):
+            for obstacle_weight in range(0, label_priority):
+                obstacle_label_settings = QgsPalLayerSettings()
+                obstacle_label_settings.obstacle = True
+                obstacle_label_settings.drawLabels = False
+                obstacle_label_settings.obstacleFactor = obstacle_weight
+                obstacleLayer.setLabeling(QgsVectorLayerSimpleLabeling(obstacle_label_settings))
+                obstacleLayer.setLabelsEnabled(True)
+
+                self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+                self.lyr.placement = QgsPalLayerSettings.Line
+                self.lyr.priority = label_priority
+                self.checkTest()
+        self.removeMapLayer(obstacleLayer)
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_line_line_obstacle_obstacle_factor_greater_equal(self):
+        # Test line label but obstacle exists with a greater than or equal to obstacle factor vs label priority => NO LABEL
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('line_short')
+        self.layer.setLabelsEnabled(True)
+        obstacleLayer = TestQgsPalLabeling.loadFeatureLayer('line')
+
+        for label_priority in range(0, 10):
+            for obstacle_weight in range(label_priority, 11):
+                obstacle_label_settings = QgsPalLayerSettings()
+                obstacle_label_settings.obstacle = True
+                obstacle_label_settings.drawLabels = False
+                obstacle_label_settings.obstacleFactor = obstacle_weight
+                obstacleLayer.setLabeling(QgsVectorLayerSimpleLabeling(obstacle_label_settings))
+                obstacleLayer.setLabelsEnabled(True)
+
+                self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+                self.lyr.placement = QgsPalLayerSettings.Line
+                self.lyr.priority = label_priority
+                self.checkTest()
+        self.removeMapLayer(obstacleLayer)
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    @unittest.skip('Needs engine change')
+    def test_line_line_obstacle_obstacle_factor_less(self):
+        # Test line label but obstacle exists with a lower obstacle factor vs label priority => LABEL
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('line_short')
+        self.layer.setLabelsEnabled(True)
+        obstacleLayer = TestQgsPalLabeling.loadFeatureLayer('line')
+
+        for label_priority in range(0, 11):
+            for obstacle_weight in range(0, label_priority):
+                obstacle_label_settings = QgsPalLayerSettings()
+                obstacle_label_settings.obstacle = True
+                obstacle_label_settings.drawLabels = False
+                obstacle_label_settings.obstacleFactor = obstacle_weight
+                obstacleLayer.setLabeling(QgsVectorLayerSimpleLabeling(obstacle_label_settings))
+                obstacleLayer.setLabelsEnabled(True)
+
+                self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+                self.lyr.placement = QgsPalLayerSettings.Line
+                self.lyr.priority = label_priority
+                self.checkTest()
+        self.removeMapLayer(obstacleLayer)
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_line_polygon_obstacle_obstacle_factor_greater_equal(self):
+        # Test line label but obstacle exists with a greater than or equal to obstacle factor vs label priority => NO LABEL
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('line_short')
+        self.layer.setLabelsEnabled(True)
+        obstacleLayer = TestQgsPalLabeling.loadFeatureLayer('polygon_center')
+
+        for label_priority in range(0, 10):
+            for obstacle_weight in range(label_priority, 11):
+                obstacle_label_settings = QgsPalLayerSettings()
+                obstacle_label_settings.obstacle = True
+                obstacle_label_settings.drawLabels = False
+                obstacle_label_settings.obstacleFactor = obstacle_weight
+                obstacleLayer.setLabeling(QgsVectorLayerSimpleLabeling(obstacle_label_settings))
+                obstacleLayer.setLabelsEnabled(True)
+
+                self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+                self.lyr.placement = QgsPalLayerSettings.Line
+                self.lyr.priority = label_priority
+                self.checkTest()
+        self.removeMapLayer(obstacleLayer)
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    @unittest.skip('Needs engine change')
+    def test_line_polygon_obstacle_obstacle_factor_less(self):
+        # Test line label but obstacle exists with a lower obstacle factor vs label priority => LABEL
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('line_short')
+        self.layer.setLabelsEnabled(True)
+        obstacleLayer = TestQgsPalLabeling.loadFeatureLayer('polygon_center')
+
+        for label_priority in range(0, 11):
+            for obstacle_weight in range(0, label_priority):
+                obstacle_label_settings = QgsPalLayerSettings()
+                obstacle_label_settings.obstacle = True
+                obstacle_label_settings.drawLabels = False
+                obstacle_label_settings.obstacleFactor = obstacle_weight
+                obstacleLayer.setLabeling(QgsVectorLayerSimpleLabeling(obstacle_label_settings))
+                obstacleLayer.setLabelsEnabled(True)
+
+                self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+                self.lyr.placement = QgsPalLayerSettings.Line
+                self.lyr.priority = label_priority
+                self.checkTest()
+        self.removeMapLayer(obstacleLayer)
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_polygon_point_obstacle_obstacle_factor_greater_equal(self):
+        # Test polygon label but obstacle exists with a greater than or equal to obstacle factor vs label priority => NO LABEL
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_center')
+        self.layer.setLabelsEnabled(True)
+        obstacleLayer = TestQgsPalLabeling.loadFeatureLayer('point')
+
+        for label_priority in range(0, 10):
+            for obstacle_weight in range(label_priority, 11):
+                obstacle_label_settings = QgsPalLayerSettings()
+                obstacle_label_settings.obstacle = True
+                obstacle_label_settings.drawLabels = False
+                obstacle_label_settings.obstacleFactor = obstacle_weight
+                obstacleLayer.setLabeling(QgsVectorLayerSimpleLabeling(obstacle_label_settings))
+                obstacleLayer.setLabelsEnabled(True)
+
+                self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+                self.lyr.placement = QgsPalLayerSettings.OverPoint
+                self.lyr.priority = label_priority
+                self.checkTest()
+        self.removeMapLayer(obstacleLayer)
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    @unittest.skip('Needs engine change')
+    def test_polygon_point_obstacle_obstacle_factor_less(self):
+        # Test line label but obstacle exists with a lower obstacle factor vs label priority => LABEL
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_center')
+        self.layer.setLabelsEnabled(True)
+        obstacleLayer = TestQgsPalLabeling.loadFeatureLayer('point')
+
+        for label_priority in range(0, 11):
+            for obstacle_weight in range(0, label_priority):
+                obstacle_label_settings = QgsPalLayerSettings()
+                obstacle_label_settings.obstacle = True
+                obstacle_label_settings.drawLabels = False
+                obstacle_label_settings.obstacleFactor = obstacle_weight
+                obstacleLayer.setLabeling(QgsVectorLayerSimpleLabeling(obstacle_label_settings))
+                obstacleLayer.setLabelsEnabled(True)
+
+                self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+                self.lyr.placement = QgsPalLayerSettings.OverPoint
+                self.lyr.priority = label_priority
+                self.checkTest()
+        self.removeMapLayer(obstacleLayer)
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_polygon_line_obstacle_obstacle_factor_greater_equal(self):
+        # Test polygon label but obstacle exists with a greater than or equal to obstacle factor vs label priority => NO LABEL
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_center')
+        self.layer.setLabelsEnabled(True)
+        obstacleLayer = TestQgsPalLabeling.loadFeatureLayer('line_placement_4')
+
+        for label_priority in range(0, 10):
+            for obstacle_weight in range(label_priority, 11):
+                obstacle_label_settings = QgsPalLayerSettings()
+                obstacle_label_settings.obstacle = True
+                obstacle_label_settings.drawLabels = False
+                obstacle_label_settings.obstacleFactor = obstacle_weight
+                obstacleLayer.setLabeling(QgsVectorLayerSimpleLabeling(obstacle_label_settings))
+                obstacleLayer.setLabelsEnabled(True)
+
+                self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+                self.lyr.placement = QgsPalLayerSettings.OverPoint
+                self.lyr.priority = label_priority
+                self.checkTest()
+        self.removeMapLayer(obstacleLayer)
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    @unittest.skip('Needs engine change')
+    def test_polygon_line_obstacle_obstacle_factor_less(self):
+        # Test line label but obstacle exists with a lower obstacle factor vs label priority => LABEL
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_center')
+        self.layer.setLabelsEnabled(True)
+        obstacleLayer = TestQgsPalLabeling.loadFeatureLayer('line_placement_4')
+
+        for label_priority in range(0, 11):
+            for obstacle_weight in range(0, label_priority):
+                obstacle_label_settings = QgsPalLayerSettings()
+                obstacle_label_settings.obstacle = True
+                obstacle_label_settings.drawLabels = False
+                obstacle_label_settings.obstacleFactor = obstacle_weight
+                obstacleLayer.setLabeling(QgsVectorLayerSimpleLabeling(obstacle_label_settings))
+                obstacleLayer.setLabelsEnabled(True)
+
+                self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+                self.lyr.placement = QgsPalLayerSettings.OverPoint
+                self.lyr.priority = label_priority
+                self.checkTest()
+        self.removeMapLayer(obstacleLayer)
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_polygon_polygon_obstacle_obstacle_factor_greater_equal(self):
+        # Test polygon label but obstacle exists with a greater than or equal to obstacle factor vs label priority => NO LABEL
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_center')
+        self.layer.setLabelsEnabled(True)
+        obstacleLayer = TestQgsPalLabeling.loadFeatureLayer('polygon_small')
+
+        for label_priority in range(0, 10):
+            for obstacle_weight in range(label_priority, 11):
+                obstacle_label_settings = QgsPalLayerSettings()
+                obstacle_label_settings.obstacle = True
+                obstacle_label_settings.drawLabels = False
+                obstacle_label_settings.obstacleFactor = obstacle_weight
+                obstacleLayer.setLabeling(QgsVectorLayerSimpleLabeling(obstacle_label_settings))
+                obstacleLayer.setLabelsEnabled(True)
+
+                self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+                self.lyr.placement = QgsPalLayerSettings.OverPoint
+                self.lyr.priority = label_priority
+                self.checkTest()
+        self.removeMapLayer(obstacleLayer)
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    @unittest.skip('Needs engine change')
+    def test_polygon_polygon_obstacle_obstacle_factor_less(self):
+        # Test line label but obstacle exists with a lower obstacle factor vs label priority => LABEL
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_center')
+        self.layer.setLabelsEnabled(True)
+        obstacleLayer = TestQgsPalLabeling.loadFeatureLayer('polygon_small')
+
+        for label_priority in range(0, 11):
+            for obstacle_weight in range(0, label_priority):
+                obstacle_label_settings = QgsPalLayerSettings()
+                obstacle_label_settings.obstacle = True
+                obstacle_label_settings.drawLabels = False
+                obstacle_label_settings.obstacleFactor = obstacle_weight
+                obstacleLayer.setLabeling(QgsVectorLayerSimpleLabeling(obstacle_label_settings))
+                obstacleLayer.setLabelsEnabled(True)
+
+                self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+                self.lyr.placement = QgsPalLayerSettings.OverPoint
+                self.lyr.priority = label_priority
+                self.checkTest()
+        self.removeMapLayer(obstacleLayer)
+        self.removeMapLayer(self.layer)
         self.layer = None
 
     def test_point_ordered_placement1(self):
