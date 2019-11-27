@@ -541,8 +541,7 @@ tests:
         name: expected/extract_by_location_touches.gml
         type: vector
 
-
-  - algorithm: qgis:addfieldtoattributestable
+  - algorithm: native:addfieldtoattributestable
     name: add float field
     params:
       FIELD_LENGTH: 10

@@ -28,7 +28,6 @@ from qgis.core import (QgsApplication,
 
 from PyQt5.QtCore import QCoreApplication
 
-from .AddTableField import AddTableField
 from .Aggregate import Aggregate
 from .BarPlot import BarPlot
 from .BasicStatistics import BasicStatisticsForField
@@ -124,8 +123,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
         self.externalAlgs = []
 
     def getAlgs(self):
-        algs = [AddTableField(),
-                Aggregate(),
+        algs = [Aggregate(),
                 BarPlot(),
                 BasicStatisticsForField(),
                 BoxPlot(),

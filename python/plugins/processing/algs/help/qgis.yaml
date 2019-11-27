@@ -1,15 +1,3 @@
-qgis:addfieldtoattributestable: >
-  This algorithm adds a new attribute to a vector layer.
-
-  The name and characteristics of the attribute are defined as parameters.
-
-  The new attribute is not added to the input layer but a new layer is generated instead.
-
-qgis:adduniquevalueindexfield: >
-  This algorithm takes a vector layer and an attribute and adds a new numeric field. Values in this field correspond to values in the specified attribute, so features with the same value for the attribute will have the same value in the new numeric field. This creates a numeric equivalent of the specified attribute, which defines the same classes.
-
-  The new attribute is not added to the input layer but a new layer is generated instead.
-
 qgis:advancedpythonfieldcalculator: >
   This algorithm adds a new attribute to a vector layer, with values resulting from applying an expression to each feature. The expression is defined as a Python function.
 
