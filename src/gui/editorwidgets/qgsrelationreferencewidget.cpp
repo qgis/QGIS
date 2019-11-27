@@ -213,7 +213,7 @@ void QgsRelationReferenceWidget::setRelation( const QgsRelation &relation, bool 
   {
     mReferencedLayerId = relation.referencedLayerId();
     mReferencedLayerName = relation.referencedLayer()->name();
-    mReferencedLayerDataSource = relation.referencedLayer()->publicSource();
+    setReferencedLayerDataSource( relation.referencedLayer()->publicSource() );
     mReferencedLayerProviderKey = relation.referencedLayer()->providerType();
     mInvalidLabel->hide();
 
@@ -1127,7 +1127,8 @@ QString QgsRelationReferenceWidget::referencedLayerDataSource() const
 
 void QgsRelationReferenceWidget::setReferencedLayerDataSource( const QString &relationDataSource )
 {
-  mReferencedLayerDataSource = relationDataSource;
+  const QgsPathResolver resolver { QgsProject::instance()->pathResolver() };
+  mReferencedLayerDataSource = resolver.writePath( relationDataSource );
 }
 
 void QgsRelationReferenceWidget::setFormFeature( const QgsFeature &formFeature )
