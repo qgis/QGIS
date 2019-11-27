@@ -134,16 +134,16 @@ void TestQgsLabelingEngine::testEngineSettings()
   // getters/setters
   QgsLabelingEngineSettings settings;
 
-  // default for new projects should be placement engine v2
-  QCOMPARE( settings.placementVersion(), QgsLabelingEngineSettings::PlacementEngineVersion2 );
+  // default for new projects should be placement engine v1 (for now!)
+  QCOMPARE( settings.placementVersion(), QgsLabelingEngineSettings::PlacementEngineVersion1 );
 
   settings.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
   QCOMPARE( settings.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
   settings.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysOutlines );
   QCOMPARE( settings.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
 
-  settings.setPlacementVersion( QgsLabelingEngineSettings::PlacementEngineVersion1 );
-  QCOMPARE( settings.placementVersion(), QgsLabelingEngineSettings::PlacementEngineVersion1 );
+  settings.setPlacementVersion( QgsLabelingEngineSettings::PlacementEngineVersion2 );
+  QCOMPARE( settings.placementVersion(), QgsLabelingEngineSettings::PlacementEngineVersion2 );
 
   settings.setFlag( QgsLabelingEngineSettings::DrawUnplacedLabels, true );
   QVERIFY( settings.testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) );
