@@ -514,7 +514,7 @@ int Pal::getPolyP()
   return poly_p;
 }
 
-QgsLabelingEngineSettings::PlacementEngineVersion Pal::getPlacementVersion() const
+QgsLabelingEngineSettings::PlacementEngineVersion Pal::placementVersion() const
 {
   return mPlacementVersion;
 }

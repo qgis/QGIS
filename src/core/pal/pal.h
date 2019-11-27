@@ -214,7 +214,7 @@ namespace pal
        *
        * \see setPlacementVersion()
        */
-      QgsLabelingEngineSettings::PlacementEngineVersion getPlacementVersion() const;
+      QgsLabelingEngineSettings::PlacementEngineVersion placementVersion() const;
 
       /**
        * Sets the placement engine \a version, which dictates how the label placement problem is solved.
