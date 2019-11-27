@@ -173,7 +173,7 @@ void QgsValueMapConfigDlg::updateMap( const QList<QPair<QString, QVariant>> &lis
     ++row;
   }
 
-  for ( const auto &pair : list )
+  for ( const auto &pair : qgis::as_const( list ) )
   {
     if ( pair.second.isNull() )
       setRow( row, pair.first, QString() );
