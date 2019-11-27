@@ -99,6 +99,7 @@ typedef struct _featCbackCtx
   RTree<LabelPosition *, double, 2, double> *candidates;
   QList<LabelPosition *> *positionsWithNoCandidates;
   const GEOSPreparedGeometry *mapBoundary = nullptr;
+  Pal *pal = nullptr;
 } FeatCallBackCtx;
 
 
@@ -108,39 +109,65 @@ typedef struct _featCbackCtx
  *
  * Extract a specific shape from indexes
  */
-bool extractFeatCallback( FeaturePart *ft_ptr, void *ctx )
+bool extractFeatCallback( FeaturePart *featurePart, void *ctx )
 {
   double amin[2], amax[2];
   FeatCallBackCtx *context = reinterpret_cast< FeatCallBackCtx * >( ctx );
 
   // Holes of the feature are obstacles
-  for ( int i = 0; i < ft_ptr->getNumSelfObstacles(); i++ )
+  for ( int i = 0; i < featurePart->getNumSelfObstacles(); i++ )
   {
-    ft_ptr->getSelfObstacle( i )->getBoundingBox( amin, amax );
-    context->obstacles->Insert( amin, amax, ft_ptr->getSelfObstacle( i ) );
+    featurePart->getSelfObstacle( i )->getBoundingBox( amin, amax );
+    context->obstacles->Insert( amin, amax, featurePart->getSelfObstacle( i ) );
 
-    if ( !ft_ptr->getSelfObstacle( i )->getHoleOf() )
+    if ( !featurePart->getSelfObstacle( i )->getHoleOf() )
     {
       //ERROR: SHOULD HAVE A PARENT!!!!!
     }
   }
 
   // generate candidates for the feature part
-  const QList< LabelPosition * > lPos = ft_ptr->createCandidates( context->mapBoundary, ft_ptr, context->candidates );
-  if ( !lPos.empty() )
+  QList< LabelPosition * > candidates = featurePart->createCandidates();
+
+  // purge candidates that are outside the bbox
+
+  QMutableListIterator< LabelPosition *> i( candidates );
+  while ( i.hasNext() )
   {
+    LabelPosition *pos = i.next();
+    bool outside = false;
+
+    if ( context->pal->getShowPartial() )
+      outside = !pos->intersects( context->mapBoundary );
+    else
+      outside = !pos->within( context->mapBoundary );
+    if ( outside )
+    {
+      i.remove();
+      delete pos;
+    }
+    else   // this one is OK
+    {
+      pos->insertIntoIndex( context->candidates );
+    }
+  }
+
+  if ( !candidates.empty() )
+  {
+    std::sort( candidates.begin(), candidates.end(), CostCalculator::candidateSortGrow );
+
     // valid features are added to fFeats
     Feats *ft = new Feats();
-    ft->feature = ft_ptr;
+    ft->feature = featurePart;
     ft->shape = nullptr;
-    ft->candidates = lPos;
-    ft->priority = ft_ptr->calculatePriority();
+    ft->candidates = candidates;
+    ft->priority = featurePart->calculatePriority();
     context->fFeats->append( ft );
   }
   else
   {
     // features with no candidates are recorded in the unlabeled feature list
-    std::unique_ptr< LabelPosition > unplacedPosition = ft_ptr->createCandidatePointOnSurface( ft_ptr );
+    std::unique_ptr< LabelPosition > unplacedPosition = featurePart->createCandidatePointOnSurface( featurePart );
     if ( unplacedPosition )
       context->positionsWithNoCandidates->append( unplacedPosition.release() );
   }
@@ -235,6 +262,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
   context.candidates = prob->candidates;
   context.positionsWithNoCandidates = prob->positionsWithNoCandidates();
   context.mapBoundary = mapBoundaryPrepared.get();
+  context.pal = this;
 
   ObstacleCallBackCtx obstacleContext;
   obstacleContext.obstacles = &obstacles;
