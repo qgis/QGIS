@@ -381,7 +381,6 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      */
     int mFieldIdx = -1;
 
-  private:
     QList<int> mAdditionalFieldIndexes;
 
     /**
