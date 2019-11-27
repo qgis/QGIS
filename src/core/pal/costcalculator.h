@@ -28,6 +28,7 @@
 namespace pal
 {
   class Feats;
+  class LabelPosition;
 
   /**
    * \ingroup core
@@ -38,23 +39,23 @@ namespace pal
       //! Increase candidate's cost according to its collision with passed feature
       static void addObstacleCostPenalty( LabelPosition *lp, pal::FeaturePart *obstacle );
 
-      static void setPolygonCandidatesCost( int nblp, QList< LabelPosition * > &lPos, RTree<pal::FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] );
+      static void setPolygonCandidatesCost( std::size_t nblp, std::vector<std::unique_ptr<pal::LabelPosition> > &lPos, RTree<pal::FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] );
 
       //! Sets cost to the smallest distance between lPos's centroid and a polygon stored in geoetry field
       static void setCandidateCostFromPolygon( LabelPosition *lp, RTree<pal::FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] );
 
       //! Sort candidates by costs, skip the worse ones, evaluate polygon candidates
-      static int finalizeCandidatesCosts( Feats *feat, int max_p, RTree<pal::FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] );
+      static std::size_t finalizeCandidatesCosts( Feats *feat, std::size_t max_p, RTree<pal::FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] );
 
       /**
        * Sorts label candidates in ascending order of cost
        */
-      static bool candidateSortGrow( const LabelPosition *c1, const LabelPosition *c2 );
+      static bool candidateSortGrow( const std::unique_ptr<pal::LabelPosition> &c1, const std::unique_ptr<pal::LabelPosition> &c2 );
 
       /**
        * Sorts label candidates in descending order of cost
        */
-      static bool candidateSortShrink( const LabelPosition *c1, const LabelPosition *c2 );
+      static bool candidateSortShrink( const std::unique_ptr<pal::LabelPosition> &c1, const std::unique_ptr<pal::LabelPosition> &c2 );
   };
 
   /**

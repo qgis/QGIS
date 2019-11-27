@@ -34,6 +34,8 @@
 
 
 #include <QList>
+#include <vector>
+#include <memory>
 
 namespace pal
 {
@@ -41,6 +43,7 @@ namespace pal
   class LabelPosition;
   class Layer;
   class FeaturePart;
+  class PointSet;
 
   /**
    * \ingroup core
@@ -56,7 +59,7 @@ namespace pal
       FeaturePart *feature = nullptr;
       PointSet *shape = nullptr;
       double priority = 0;
-      QList< LabelPosition *> candidates;
+      std::vector< std::unique_ptr< LabelPosition > > candidates;
   };
 
 
