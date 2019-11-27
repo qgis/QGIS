@@ -38,6 +38,7 @@
 #include "qgis.h" //const vals declared here
 #include "qgslocalec.h"
 #include "qgssettings.h"
+#include "qgsogrutils.h"
 
 #include <sqlite3.h>
 #if PROJ_VERSION_MAJOR>=6
@@ -332,7 +333,6 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString &definition )
 bool QgsCoordinateReferenceSystem::createFromUserInput( const QString &definition )
 {
   QString userWkt;
-  char *wkt = nullptr;
   OGRSpatialReferenceH crs = OSRNewSpatialReference( nullptr );
 
   // make sure towgs84 parameter is loaded if using an ESRI definition and gdal >= 1.9
@@ -343,11 +343,7 @@ bool QgsCoordinateReferenceSystem::createFromUserInput( const QString &definitio
 
   if ( OSRSetFromUserInput( crs, definition.toLocal8Bit().constData() ) == OGRERR_NONE )
   {
-    if ( OSRExportToWkt( crs, &wkt ) == OGRERR_NONE )
-    {
-      userWkt = wkt;
-      CPLFree( wkt );
-    }
+    userWkt = QgsOgrUtils::OGRSpatialReferenceToWkt( crs );
     OSRDestroySpatialReference( crs );
   }
   //QgsDebugMsg( "definition: " + definition + " wkt = " + wkt );
