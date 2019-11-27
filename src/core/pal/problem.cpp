@@ -816,11 +816,6 @@ void Problem::chain_search()
   delete[] ok;
 }
 
-bool Problem::compareLabelArea( pal::LabelPosition *l1, pal::LabelPosition *l2 )
-{
-  return l1->getWidth() * l1->getHeight() > l2->getWidth() * l2->getHeight();
-}
-
 QList<LabelPosition *> Problem::getSolution( bool returnInactive, QList<LabelPosition *> *unlabeled )
 {
   int i;
@@ -847,12 +842,6 @@ QList<LabelPosition *> Problem::getSolution( bool returnInactive, QList<LabelPos
   // unlabeled features also include those with no candidates
   if ( unlabeled )
     unlabeled->append( mPositionsWithNoCandidates );
-
-  // if features collide, order by size, so smaller ones appear on top
-  if ( returnInactive )
-  {
-    std::sort( solList.begin(), solList.end(), compareLabelArea );
-  }
 
   return solList;
 }
