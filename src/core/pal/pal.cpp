@@ -133,7 +133,7 @@ bool extractFeatCallback( FeaturePart *ft_ptr, void *ctx )
     Feats *ft = new Feats();
     ft->feature = ft_ptr;
     ft->shape = nullptr;
-    ft->lPos = lPos;
+    ft->candidates = lPos;
     ft->priority = ft_ptr->calculatePriority();
     context->fFeats->append( ft );
   }
@@ -286,14 +286,14 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
   }
   mMutex.unlock();
 
-  prob->nbLabelledLayers = layersWithFeaturesInBBox.size();
+  prob->mLayerCount = layersWithFeaturesInBBox.size();
   prob->labelledLayersName = layersWithFeaturesInBBox;
 
-  prob->nbft = fFeats.size();
-  prob->nblp = 0;
-  prob->featNbLp = new int [prob->nbft];
-  prob->featStartId = new int [prob->nbft];
-  prob->inactiveCost = new double[prob->nbft];
+  prob->mFeatureCount = fFeats.size();
+  prob->mTotalCandidates = 0;
+  prob->featNbLp = new int [prob->mFeatureCount];
+  prob->featStartId = new int [prob->mFeatureCount];
+  prob->inactiveCost = new double[prob->mFeatureCount];
 
 
   if ( !fFeats.isEmpty() )
@@ -312,8 +312,8 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
     {
       for ( Feats *feat : qgis::as_const( fFeats ) )
       {
-        qDeleteAll( feat->lPos );
-        feat->lPos.clear();
+        qDeleteAll( feat->candidates );
+        feat->candidates.clear();
       }
 
       qDeleteAll( fFeats );
@@ -321,7 +321,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
     }
 
     int idlp = 0;
-    for ( i = 0; i < prob->nbft; i++ ) /* foreach feature into prob */
+    for ( i = 0; i < prob->mFeatureCount; i++ ) /* foreach feature into prob */
     {
       feat = fFeats.takeFirst();
 
@@ -345,21 +345,21 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       max_p = CostCalculator::finalizeCandidatesCosts( feat, max_p, &obstacles, bbx, bby );
 
       // only keep the 'max_p' best candidates
-      while ( feat->lPos.count() > max_p )
+      while ( feat->candidates.count() > max_p )
       {
         // TODO remove from index
-        feat->lPos.constLast()->removeFromIndex( prob->candidates );
-        delete feat->lPos.takeLast();
+        feat->candidates.constLast()->removeFromIndex( prob->candidates );
+        delete feat->candidates.takeLast();
       }
 
       // update problem's # candidate
-      prob->featNbLp[i] = feat->lPos.count();
-      prob->nblp += feat->lPos.count();
+      prob->featNbLp[i] = feat->candidates.count();
+      prob->mTotalCandidates += feat->candidates.count();
 
       // add all candidates into a rtree (to speed up conflicts searching)
-      for ( j = 0; j < feat->lPos.count(); j++, idlp++ )
+      for ( j = 0; j < feat->candidates.count(); j++, idlp++ )
       {
-        lp = feat->lPos.at( j );
+        lp = feat->candidates.at( j );
         //lp->insertIntoIndex(prob->candidates);
         lp->setProblemIds( i, idlp ); // bugfix #1 (maxence 10/23/2008)
       }
@@ -374,8 +374,8 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       {
         for ( Feats *feat : qgis::as_const( fFeats ) )
         {
-          qDeleteAll( feat->lPos );
-          feat->lPos.clear();
+          qDeleteAll( feat->candidates );
+          feat->candidates.clear();
         }
 
         qDeleteAll( fFeats );
@@ -383,9 +383,9 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       }
 
       feat = fFeats.takeFirst();
-      while ( !feat->lPos.isEmpty() ) // foreach label candidate
+      while ( !feat->candidates.isEmpty() ) // foreach label candidate
       {
-        lp = feat->lPos.takeFirst();
+        lp = feat->candidates.takeFirst();
         lp->resetNumOverlaps();
 
         // make sure that candidate's cost is less than 1
@@ -404,7 +404,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       delete feat;
     }
     nbOverlaps /= 2;
-    prob->all_nblp = prob->nblp;
+    prob->all_nblp = prob->mTotalCandidates;
     prob->nbOverlap = nbOverlaps;
   }
 
