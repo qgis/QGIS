@@ -107,7 +107,7 @@ void Problem::reduce()
   while ( run )
   {
     run = false;
-    for ( i = 0; i < mFeatureCount; i++ )
+    for ( i = 0; i < static_cast< int >( mFeatureCount ); i++ )
     {
       // ok[i] = true;
       for ( j = 0; j < featNbLp[i]; j++ )  // foreach candidate
@@ -231,7 +231,7 @@ void Problem::init_sol_falp()
 
   LabelPosition *lp = nullptr;
 
-  for ( i = 0; i < mFeatureCount; i++ )
+  for ( i = 0; i < static_cast< int >( mFeatureCount ); i++ )
     for ( j = 0; j < featNbLp[i]; j++ )
     {
       label = featStartId[i] + j;
@@ -292,7 +292,7 @@ void Problem::init_sol_falp()
     LabelPosition *retainedLabel = nullptr;
     int p;
 
-    for ( i = 0; i < mFeatureCount; i++ ) // forearch hidden feature
+    for ( i = 0; i < static_cast< int >( mFeatureCount ); i++ ) // forearch hidden feature
     {
       if ( sol.activeLabelIds[i] == -1 )
       {
@@ -786,7 +786,7 @@ QList<LabelPosition *> Problem::getSolution( bool returnInactive, QList<LabelPos
   int i;
   QList<LabelPosition *> solList;
 
-  for ( i = 0; i < mFeatureCount; i++ )
+  for ( i = 0; i < static_cast< int >( mFeatureCount ); i++ )
   {
     if ( sol.activeLabelIds[i] != -1 )
     {
@@ -811,58 +811,6 @@ QList<LabelPosition *> Problem::getSolution( bool returnInactive, QList<LabelPos
   return solList;
 }
 
-PalStat *Problem::getStats()
-{
-  int i, j;
-
-  PalStat *stats = new PalStat();
-
-  stats->nbObjects = mFeatureCount;
-  stats->nbLabelledObjects = 0;
-
-  stats->nbLayers = mLayerCount;
-  stats->layersNbObjects = new int[stats->nbLayers];
-  stats->layersNbLabelledObjects = new int[stats->nbLayers];
-
-  for ( i = 0; i < stats->nbLayers; i++ )
-  {
-    stats->layersName << labelledLayersName[i];
-    stats->layersNbObjects[i] = 0;
-    stats->layersNbLabelledObjects[i] = 0;
-  }
-
-  QString lyrName;
-  int k;
-  for ( i = 0; i < mFeatureCount; i++ )
-  {
-    lyrName = mLabelPositions.at( featStartId[i] )->getFeaturePart()->feature()->provider()->name();
-    k = -1;
-    for ( j = 0; j < stats->nbLayers; j++ )
-    {
-      if ( lyrName == stats->layersName[j] )
-      {
-        k = j;
-        break;
-      }
-    }
-    if ( k != -1 )
-    {
-      stats->layersNbObjects[k]++;
-      if ( sol.activeLabelIds[i] >= 0 )
-      {
-        stats->layersNbLabelledObjects[k]++;
-        stats->nbLabelledObjects++;
-      }
-    }
-    else
-    {
-      // unknown layer
-    }
-  }
-
-  return stats;
-}
-
 void Problem::solution_cost()
 {
   sol.totalCost = 0.0;
@@ -881,7 +829,7 @@ void Problem::solution_cost()
 
   int nbHidden = 0;
 
-  for ( i = 0; i < mFeatureCount; i++ )
+  for ( i = 0; i < static_cast< int >( mFeatureCount ); i++ )
   {
     if ( sol.activeLabelIds[i] == -1 )
     {
