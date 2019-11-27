@@ -18,13 +18,19 @@
 #include "qgsproject.h"
 #include "pal/pal.h"
 #include "qgshelp.h"
+#include "qgsmessagebar.h"
 
 #include <QPushButton>
+#include <QMessageBox>
 
 QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QWidget *parent )
   : QDialog( parent )
 {
   setupUi( this );
+
+  mMessageBar = new QgsMessageBar();
+  mMessageBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
+  verticalLayout->insertWidget( 0,  mMessageBar );
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsLabelEngineConfigDialog::onOK );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsLabelEngineConfigDialog::showHelp );
@@ -35,6 +41,19 @@ QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QWidget *parent )
 
   mTextRenderFormatComboBox->addItem( tr( "Always Render Labels as Paths (Recommended)" ), QgsRenderContext::TextFormatAlwaysOutlines );
   mTextRenderFormatComboBox->addItem( tr( "Always Render Labels as Text" ), QgsRenderContext::TextFormatAlwaysText );
+
+  mPlacementVersionComboBox->addItem( tr( "Version 1" ), QgsLabelingEngineSettings::PlacementEngineVersion1 );
+  mPlacementVersionComboBox->addItem( tr( "Version 2 (Recommended)" ), QgsLabelingEngineSettings::PlacementEngineVersion2 );
+
+  mPreviousEngineVersion = engineSettings.placementVersion();
+  mPlacementVersionComboBox->setCurrentIndex( mPlacementVersionComboBox->findData( mPreviousEngineVersion ) );
+  connect( mPlacementVersionComboBox, &QComboBox::currentTextChanged, this, [ = ]()
+  {
+    if ( static_cast< QgsLabelingEngineSettings::PlacementEngineVersion >( mPlacementVersionComboBox->currentData().toInt() ) != mPreviousEngineVersion )
+    {
+      mMessageBar->pushMessage( QString(), tr( "Version changes will alter label placement in the project." ), Qgis::Warning, 0 );
+    }
+  } );
 
   // candidate numbers
   int candPoint, candLine, candPolygon;
@@ -72,6 +91,8 @@ void QgsLabelEngineConfigDialog::onOK()
 
   engineSettings.setUnplacedLabelColor( mUnplacedColorButton->color() );
 
+  engineSettings.setPlacementVersion( static_cast< QgsLabelingEngineSettings::PlacementEngineVersion >( mPlacementVersionComboBox->currentData().toInt() ) );
+
   QgsProject::instance()->setLabelingEngineSettings( engineSettings );
 
   accept();
@@ -87,6 +108,7 @@ void QgsLabelEngineConfigDialog::setDefaults()
   chkShowAllLabels->setChecked( false );
   chkShowPartialsLabels->setChecked( p.getShowPartial() );
   mTextRenderFormatComboBox->setCurrentIndex( mTextRenderFormatComboBox->findData( QgsRenderContext::TextFormatAlwaysOutlines ) );
+  mPlacementVersionComboBox->setCurrentIndex( mPlacementVersionComboBox->findData( QgsLabelingEngineSettings::PlacementEngineVersion2 ) );
 }
 
 void QgsLabelEngineConfigDialog::showHelp()

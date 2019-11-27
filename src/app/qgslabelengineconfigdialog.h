@@ -19,7 +19,9 @@
 
 #include "ui_qgslabelengineconfigdialog.h"
 #include "qgis_app.h"
+#include "qgslabelingenginesettings.h"
 
+class QgsMessageBar;
 
 class APP_EXPORT QgsLabelEngineConfigDialog : public QDialog, private Ui::QgsLabelEngineConfigDialog
 {
@@ -35,7 +37,10 @@ class APP_EXPORT QgsLabelEngineConfigDialog : public QDialog, private Ui::QgsLab
   private slots:
     void showHelp();
 
-  protected:
+  private:
+    QgsMessageBar *mMessageBar = nullptr;
+
+    QgsLabelingEngineSettings::PlacementEngineVersion mPreviousEngineVersion = QgsLabelingEngineSettings::PlacementEngineVersion2;
 };
 
 #endif // QGSLABELENGINECONFIGDIALOG_H
