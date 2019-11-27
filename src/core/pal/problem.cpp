@@ -67,12 +67,6 @@ Problem::Problem()
 
 Problem::~Problem()
 {
-  if ( sol )
-  {
-    delete[] sol->s;
-    delete sol;
-  }
-
   delete[] featStartId;
   delete[] featNbLp;
 
@@ -154,25 +148,6 @@ void Problem::reduce()
   delete[] ok;
 }
 
-void Problem::init_sol_empty()
-{
-  int i;
-
-  if ( sol )
-  {
-    delete[] sol->s;
-    delete sol;
-  }
-
-  sol = new Sol();
-  sol->s = new int[nbft];
-
-  for ( i = 0; i < nbft; i++ )
-    sol->s[i] = -1;
-
-  sol->cost = nbft;
-}
-
 typedef struct
 {
   PriorityQueue *list = nullptr;
@@ -243,7 +218,7 @@ void Problem::init_sol_falp()
   int label;
   PriorityQueue *list = nullptr;
 
-  init_sol_empty();
+  sol.init( nblp );
 
   list = new PriorityQueue( nblp, all_nblp, true );
 
@@ -290,7 +265,7 @@ void Problem::init_sol_falp()
     }
 
     int probFeatId = lp->getProblemFeatureId();
-    sol->s[probFeatId] = label;
+    sol.s[probFeatId] = label;
 
     for ( i = featStartId[probFeatId]; i < featStartId[probFeatId] + featNbLp[probFeatId]; i++ )
     {
@@ -319,7 +294,7 @@ void Problem::init_sol_falp()
 
     for ( i = 0; i < nbft; i++ ) // forearch hidden feature
     {
-      if ( sol->s[i] == -1 )
+      if ( sol.s[i] == -1 )
       {
         nbOverlap = std::numeric_limits<int>::max();
         start_p = featStartId[i];
@@ -339,7 +314,7 @@ void Problem::init_sol_falp()
             nbOverlap = lp->getNumOverlaps();
           }
         }
-        sol->s[i] = retainedLabel->getId();
+        sol.s[i] = retainedLabel->getId();
 
         retainedLabel->insertIntoIndex( candidates_sol );
 
@@ -436,7 +411,7 @@ inline Chain *Problem::chain( int seed )
   QLinkedList<int> *conflicts = new QLinkedList<int>;
 
   int *tmpsol = new int[nbft];
-  memcpy( tmpsol, sol->s, sizeof( int ) *nbft );
+  memcpy( tmpsol, sol.s.data(), sizeof( int ) *nbft );
 
   LabelPosition *lp = nullptr;
   double amin[2];
@@ -724,7 +699,6 @@ bool nokCallback( LabelPosition *lp, void *context )
 
 void Problem::chain_search()
 {
-
   if ( nbft == 0 )
     return;
 
@@ -780,9 +754,9 @@ void Problem::chain_search()
         fid = retainedChain->feat[i];
         lid = retainedChain->label[i];
 
-        if ( sol->s[fid] >= 0 )
+        if ( sol.s[fid] >= 0 )
         {
-          LabelPosition *old = mLabelPositions.at( sol->s[fid] );
+          LabelPosition *old = mLabelPositions.at( sol.s[fid] );
           old->removeFromIndex( candidates_sol );
 
           old->getBoundingBox( amin, amax );
@@ -791,16 +765,16 @@ void Problem::chain_search()
           candidates->Search( amin, amax, nokCallback, &context );
         }
 
-        sol->s[fid] = lid;
+        sol.s[fid] = lid;
 
-        if ( sol->s[fid] >= 0 )
+        if ( sol.s[fid] >= 0 )
         {
           mLabelPositions.at( lid )->insertIntoIndex( candidates_sol );
         }
 
         ok[fid] = false;
       }
-      sol->cost += retainedChain->delta;
+      sol.cost += retainedChain->delta;
     }
     else
     {
@@ -823,9 +797,9 @@ QList<LabelPosition *> Problem::getSolution( bool returnInactive, QList<LabelPos
 
   for ( i = 0; i < nbft; i++ )
   {
-    if ( sol->s[i] != -1 )
+    if ( sol.s[i] != -1 )
     {
-      solList.push_back( mLabelPositions.at( sol->s[i] ) ); // active labels
+      solList.push_back( mLabelPositions.at( sol.s[i] ) ); // active labels
     }
     else if ( returnInactive
               || mLabelPositions.at( featStartId[i] )->getFeaturePart()->layer()->displayAll()
@@ -883,7 +857,7 @@ PalStat *Problem::getStats()
     if ( k != -1 )
     {
       stats->layersNbObjects[k]++;
-      if ( sol->s[i] >= 0 )
+      if ( sol.s[i] >= 0 )
       {
         stats->layersNbLabelledObjects[k]++;
         stats->nbLabelledObjects++;
@@ -900,7 +874,7 @@ PalStat *Problem::getStats()
 
 void Problem::solution_cost()
 {
-  sol->cost = 0.0;
+  sol.cost = 0.0;
 
   int nbOv;
 
@@ -909,7 +883,7 @@ void Problem::solution_cost()
   LabelPosition::CountContext context;
   context.inactiveCost = inactiveCost;
   context.nbOv = &nbOv;
-  context.cost = &sol->cost;
+  context.cost = &sol.cost;
   double amin[2];
   double amax[2];
   LabelPosition *lp = nullptr;
@@ -918,22 +892,22 @@ void Problem::solution_cost()
 
   for ( i = 0; i < nbft; i++ )
   {
-    if ( sol->s[i] == -1 )
+    if ( sol.s[i] == -1 )
     {
-      sol->cost += inactiveCost[i];
+      sol.cost += inactiveCost[i];
       nbHidden++;
     }
     else
     {
       nbOv = 0;
-      lp = mLabelPositions.at( sol->s[i] );
+      lp = mLabelPositions.at( sol.s[i] );
 
       lp->getBoundingBox( amin, amax );
 
       context.lp = lp;
       candidates_sol->Search( amin, amax, LabelPosition::countFullOverlapCallback, &context );
 
-      sol->cost += lp->cost();
+      sol.cost += lp->cost();
     }
   }
 }

@@ -49,12 +49,6 @@ namespace pal
    * \ingroup core
    * \note not available in Python bindings
    */
-  class Sol
-  {
-    public:
-      int *s = nullptr;
-      double cost;
-  };
 
   typedef struct _chain
   {
@@ -130,10 +124,6 @@ namespace pal
       /* useful only for postscript post-conversion*/
       //void toFile(char *label_file);
 
-      /**
-       * \brief Basic initial solution : every feature to -1
-       */
-      void init_sol_empty();
       void init_sol_falp();
 
       /**
@@ -197,7 +187,20 @@ namespace pal
       int *featNbLp = nullptr;    // [nbft]
       double *inactiveCost = nullptr; //
 
-      Sol *sol = nullptr;         // [nbft]
+      class Sol
+      {
+        public:
+          std::vector< int > s;
+          double cost;
+
+          void init( int featureCount )
+          {
+            s.resize( featureCount, -1 );
+            cost = featureCount;
+          }
+      };
+
+      Sol sol;
       double nbOverlap = 0.0;
 
       Chain *chain( int seed );
