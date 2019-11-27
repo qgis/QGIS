@@ -26,6 +26,8 @@
 #include <cpl_error.h>
 #include <QJsonDocument>
 
+#include "ogr_srs_api.h"
+
 // Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
 // whereas previously there was only unset fields. For QGIS purposes, both
 // states (unset/null) are equivalent.
@@ -714,3 +716,31 @@ QStringList QgsOgrUtils::cStringListToQStringList( char **stringList )
   return strings;
 }
 
+QString QgsOgrUtils::OGRSpatialReferenceToWkt( OGRSpatialReferenceH srs )
+{
+  if ( !srs )
+    return QString();
+
+  char *pszWkt = nullptr;
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,0,0)
+  const QByteArray multiLineOption = QStringLiteral( "MULTILINE=NO" ).toLocal8Bit();
+  const QByteArray formatOption = QStringLiteral( "FORMAT=WKT2" ).toLocal8Bit();
+  const char *const options[] = {multiLineOption.constData(), formatOption.constData(), nullptr};
+  OSRExportToWktEx( srs, &pszWkt, options );
+#else
+  OSRExportToWkt( srs, &pszWkt );
+#endif
+
+  const QString res( pszWkt );
+  CPLFree( pszWkt );
+  return res;
+}
+
+QgsCoordinateReferenceSystem QgsOgrUtils::OGRSpatialReferenceToCrs( OGRSpatialReferenceH srs )
+{
+  const QString wkt = OGRSpatialReferenceToWkt( srs );
+  if ( wkt.isEmpty() )
+    return QgsCoordinateReferenceSystem();
+
+  return QgsCoordinateReferenceSystem::fromWkt( wkt );
+}
