@@ -136,8 +136,6 @@ namespace pal
       void init_sol_empty();
       void init_sol_falp();
 
-      static bool compareLabelArea( pal::LabelPosition *l1, pal::LabelPosition *l2 );
-
       /**
        * Returns a reference to the list of label positions which correspond to
        * features with no candidates.
