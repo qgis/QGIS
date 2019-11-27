@@ -66,7 +66,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
     enum PlacementEngineVersion
     {
       PlacementEngineVersion1, //!< Version 1, matches placement from QGIS <= 3.10.1
-      PlacementEngineVersion2, //!< Version 2, default for new projects created since 3.10.2
+      PlacementEngineVersion2, //!< Version 2 (currently experimental)
     };
 
     QgsLabelingEngineSettings();
@@ -173,7 +173,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
 
     QColor mUnplacedLabelColor = QColor( 255, 0, 0 );
 
-    PlacementEngineVersion mPlacementVersion = PlacementEngineVersion2;
+    PlacementEngineVersion mPlacementVersion = PlacementEngineVersion1;
 
     QgsRenderContext::TextRenderFormat mDefaultTextRenderFormat = QgsRenderContext::TextFormatAlwaysOutlines;
 
