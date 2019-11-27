@@ -119,8 +119,6 @@ namespace pal
        */
       QList<LabelPosition *> getSolution( bool returnInactive, QList<LabelPosition *> *unlabeled = nullptr );
 
-      PalStat *getStats();
-
       /* useful only for postscript post-conversion*/
       //void toFile(char *label_file);
 
@@ -162,7 +160,7 @@ namespace pal
       /**
        * Total number of features to label.
        */
-      int mFeatureCount = 0;
+      std::size_t mFeatureCount = 0;
 
       /**
        * if TRUE, special value -1 is prohibited

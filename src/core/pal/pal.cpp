@@ -42,6 +42,7 @@
 #include "internalexception.h"
 #include "util.h"
 #include <cfloat>
+#include <list>
 
 using namespace pal;
 
@@ -94,7 +95,9 @@ Layer *Pal::addLayer( QgsAbstractLabelProvider *provider, const QString &layerNa
 typedef struct _featCbackCtx
 {
   Layer *layer = nullptr;
-  QLinkedList<Feats *> *fFeats;
+
+  std::list< std::unique_ptr< Feats > > *fFeats = nullptr;
+
   RTree<FeaturePart *, double, 2, double> *obstacles;
   RTree<LabelPosition *, double, 2, double> *candidates;
   QList<LabelPosition *> *positionsWithNoCandidates;
@@ -157,12 +160,12 @@ bool extractFeatCallback( FeaturePart *featurePart, void *ctx )
     std::sort( candidates.begin(), candidates.end(), CostCalculator::candidateSortGrow );
 
     // valid features are added to fFeats
-    Feats *ft = new Feats();
+    std::unique_ptr< Feats > ft = qgis::make_unique< Feats >();
     ft->feature = featurePart;
     ft->shape = nullptr;
     ft->candidates = candidates;
     ft->priority = featurePart->calculatePriority();
-    context->fFeats->append( ft );
+    context->fFeats->emplace_back( std::move( ft ) );
   }
   else
   {
@@ -230,7 +233,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
   RTree<FeaturePart *, double, 2, double> obstacles;
   std::unique_ptr< Problem > prob = qgis::make_unique< Problem >();
 
-  int i, j;
+  int j;
 
   double bbx[4];
   double bby[4];
@@ -249,7 +252,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
   prob->pal = this;
 
-  QLinkedList<Feats *> fFeats;
+  std::list< std::unique_ptr< Feats > > fFeats;
 
   FeatCallBackCtx context;
 
@@ -270,7 +273,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
   // first step : extract features from layers
 
-  int previousFeatureCount = 0;
+  std::size_t previousFeatureCount = 0;
   int previousObstacleCount = 0;
 
   QStringList layersWithFeaturesInBBox;
@@ -323,11 +326,8 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
   prob->featStartId = new int [prob->mFeatureCount];
   prob->inactiveCost = new double[prob->mFeatureCount];
 
-
-  if ( !fFeats.isEmpty() )
+  if ( !fFeats.empty() )
   {
-    Feats *feat = nullptr;
-
     // Filtering label positions against obstacles
     amin[0] = amin[1] = std::numeric_limits<double>::lowest();
     amax[0] = amax[1] = std::numeric_limits<double>::max();
@@ -338,20 +338,20 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
     if ( isCanceled() )
     {
-      for ( Feats *feat : qgis::as_const( fFeats ) )
+      for ( const std::unique_ptr< Feats > &feat : qgis::as_const( fFeats ) )
       {
         qDeleteAll( feat->candidates );
         feat->candidates.clear();
       }
 
-      qDeleteAll( fFeats );
       return nullptr;
     }
 
     int idlp = 0;
-    for ( i = 0; i < prob->mFeatureCount; i++ ) /* foreach feature into prob */
+    for ( std::size_t i = 0; i < prob->mFeatureCount; i++ ) /* foreach feature into prob */
     {
-      feat = fFeats.takeFirst();
+      std::unique_ptr< Feats > feat = std::move( fFeats.front() );
+      fFeats.pop_front();
 
       prob->featStartId[i] = idlp;
       prob->inactiveCost[i] = std::pow( 2, 10 - 10 * feat->priority );
@@ -370,7 +370,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       }
 
       // sort candidates by cost, skip less interesting ones, calculate polygon costs (if using polygons)
-      max_p = CostCalculator::finalizeCandidatesCosts( feat, max_p, &obstacles, bbx, bby );
+      max_p = CostCalculator::finalizeCandidatesCosts( feat.get(), max_p, &obstacles, bbx, bby );
 
       // only keep the 'max_p' best candidates
       while ( feat->candidates.count() > max_p )
@@ -391,26 +391,27 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
         //lp->insertIntoIndex(prob->candidates);
         lp->setProblemIds( i, idlp ); // bugfix #1 (maxence 10/23/2008)
       }
-      fFeats.append( feat );
+      fFeats.emplace_back( std::move( feat ) );
     }
 
     int nbOverlaps = 0;
 
-    while ( !fFeats.isEmpty() ) // foreach feature
+    while ( !fFeats.empty() ) // foreach feature
     {
       if ( isCanceled() )
       {
-        for ( Feats *feat : qgis::as_const( fFeats ) )
+        for ( const std::unique_ptr< Feats > &feat : qgis::as_const( fFeats ) )
         {
           qDeleteAll( feat->candidates );
           feat->candidates.clear();
         }
 
-        qDeleteAll( fFeats );
         return nullptr;
       }
 
-      feat = fFeats.takeFirst();
+      std::unique_ptr< Feats > feat = std::move( fFeats.front() );
+      fFeats.pop_front();
+
       while ( !feat->candidates.isEmpty() ) // foreach label candidate
       {
         lp = feat->candidates.takeFirst();
@@ -429,7 +430,6 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
         nbOverlaps += lp->getNumOverlaps();
       }
-      delete feat;
     }
     nbOverlaps /= 2;
     prob->all_nblp = prob->mTotalCandidates;
