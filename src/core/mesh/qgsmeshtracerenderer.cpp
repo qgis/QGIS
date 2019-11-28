@@ -148,10 +148,10 @@ QgsPointXY QgsMeshStreamField::positionToMapCoordinates( const QPoint &pixelPosi
   return mapPoint;
 }
 
-QgsMeshStreamField::QgsMeshStreamField( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &dataSetVectorValues, const QgsMeshDataBlock &scalarActiveFaceFlagValues, const QgsRectangle &layerExtent, double magMax, bool dataIsOnVertices, const QgsRenderContext &rendererContext, int resolution ):
+QgsMeshStreamField::QgsMeshStreamField( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &dataSetVectorValues, const QgsMeshDataBlock &scalarActiveFaceFlagValues, const QgsRectangle &layerExtent, double magnitudeMaximum, bool dataIsOnVertices, const QgsRenderContext &rendererContext, int resolution ):
   mFieldResolution( resolution ),
   mLayerExtent( layerExtent ),
-  mMagMax( magMax ),
+  mMagMax( magnitudeMaximum ),
   mRenderContext( rendererContext )
 {
   if ( dataIsOnVertices )
@@ -368,14 +368,14 @@ void QgsMeshStreamField::addTrace( QPoint startPixel )
       break;
     }
 
-    /* nondimensional value :  Vu=2 when the particule need dt=1 to go through a pixel with the mMagMax magnitude
+    /* nondimensional value :  Vu=2 when the particle need dt=1 to go through a pixel with the mMagMax magnitude
      * The nondimensional size of the side of a pixel is 2
      */
     QgsVector vu = vector / mMagMax * 2;
-    data.mag = vector.length();
+    data.magnitude = vector.length();
     double Vx = vu.x();
     double Vy = vu.y();
-    double Vu = data.mag / mMagMax * 2; //nondimensional vector magnitude
+    double Vu = data.magnitude / mMagMax * 2; //nondimensional vector magnitude
 
     if ( qgsDoubleNear( Vu, 0 ) )
     {
@@ -387,7 +387,7 @@ void QgsMeshStreamField::addTrace( QPoint startPixel )
       break;
     }
 
-    //calculates where the particule will be after dt=1,
+    //calculates where the particle will be after dt=1,
     QgsPointXY  nextPosition = QgsPointXY( x1, y1 ) + vu;
     int incX = 0;
     int incY = 0;
@@ -404,9 +404,9 @@ void QgsMeshStreamField::addTrace( QPoint startPixel )
 
     if ( incX != 0 || incY != 0 )
     {
-      data.incX = incX;
-      data.incY = -incY;
-      //the particule leave the current pixel --> store pixels, calculates where the particules is and change the current pixel
+      data.directionX = incX;
+      data.directionY = -incY;
+      //the particule leave the current pixel --> store pixels, calculates where the particle is and change the current pixel
       if ( chunkTrace.empty() )
       {
         storeInField( QPair<QPoint, FieldData>( currentPixel, data ) );
@@ -575,23 +575,22 @@ void QgsMeshStreamlinesField::storeInField( const QPair<QPoint, FieldData> pixel
 void QgsMeshStreamField::setChunkTrace( std::list<QPair<QPoint, FieldData> > &chunkTrace )
 {
   auto p = chunkTrace.begin();
-  //p++;
   while ( p != chunkTrace.end() )
   {
     storeInField( ( *p ) );
     mPixelFillingCount++;
-    p++;
+    ++p;
   }
 }
 
-void QgsMeshStreamlinesField::drawChunkTrace( std::list<QPair<QPoint, QgsMeshStreamField::FieldData> > &chunkTrace )
+void QgsMeshStreamlinesField::drawChunkTrace( const std::list<QPair<QPoint, QgsMeshStreamField::FieldData> > &chunkTrace )
 {
   auto p1 = chunkTrace.begin();
   auto p2 = p1;
   p2++;
   while ( p2 != chunkTrace.end() )
   {
-    if ( filterMag( ( *p1 ).second.mag ) && filterMag( ( *p2 ).second.mag ) )
+    if ( filterMag( ( *p1 ).second.magnitude ) && filterMag( ( *p2 ).second.magnitude ) )
       mPainter->drawLine( fieldToDevice( ( *p1 ).first ), fieldToDevice( ( *p2 ).first ) );
     p1++;
     p2++;
@@ -621,8 +620,8 @@ void QgsMeshStreamField::simplifyChunkTrace( std::list<QPair<QPoint, FieldData> 
     {
       ( *ip1 ).second.time += ( ( *ip2 ).second.time ) / 2;
       ( *ip3 ).second.time += ( ( *ip2 ).second.time ) / 2;
-      ( *ip1 ).second.incX += ( *ip2 ).second.incX;
-      ( *ip1 ).second.incY += ( *ip2 ).second.incY;
+      ( *ip1 ).second.directionX += ( *ip2 ).second.directionX;
+      ( *ip1 ).second.directionY += ( *ip2 ).second.directionY;
       shunkTrace.erase( ip2 );
     }
     ip1 = ip3++;
@@ -656,6 +655,19 @@ bool QgsMeshStreamField::isTraceOutside( const QPoint &pixel ) const
 void QgsMeshStreamField::setMinimizeFieldSize( bool minimizeFieldSize )
 {
   mMinimizeFieldSize = minimizeFieldSize;
+}
+
+void QgsMeshStreamField::initImage()
+{
+  if ( mPainter )
+    delete mPainter;
+
+  mTraceImage = QImage( mFieldSize * mFieldResolution, QImage::Format_ARGB32 );
+  mTraceImage.fill( 0X00000000 );
+
+  mPainter = new QPainter( &mTraceImage );
+  mPainter->setRenderHint( QPainter::Antialiasing, true );
+  mPainter->setPen( mPen );
 }
 
 bool QgsMeshStreamField::filterMag( double value ) const
@@ -767,7 +779,13 @@ void QgsMeshParticleTracesField::addParticle( const QPoint &startPoint, double l
 {
   addTrace( startPoint );
   if ( time( startPoint ) > 0 )
-    mParticles.append( QgsMeshTraceParticle( {lifeTime, startPoint, std::list<QPoint>(), 0 } ) );
+  {
+    QgsMeshTraceParticle p;
+    p.lifeTime = lifeTime;
+    p.position = startPoint;
+    mParticles.append( p );
+  }
+
 }
 
 void QgsMeshParticleTracesField::addParticleXY( const QgsPointXY &startPoint, double lifeTime )
@@ -793,7 +811,7 @@ void QgsMeshParticleTracesField::moveParticles()
         if ( p.lifeTime > 0 )
         {
           p.position += dir;
-          p.tail.push_back( p.position );
+          p.tail.emplace_back( p.position );
           countAdded++;
         }
         else
@@ -861,7 +879,7 @@ void QgsMeshParticleTracesField::storeInField( const QPair<QPoint, QgsMeshStream
   if ( i >= 0 && i < mFieldSize.width() && j >= 0 && j < mFieldSize.height() )
   {
     mTimeField[j * mFieldSize.width() + i] = pixelData.second.time;
-    int d = pixelData.second.incX + 2 + ( pixelData.second.incY + 1 ) * 3;
+    int d = pixelData.second.directionX + 2 + ( pixelData.second.directionY + 1 ) * 3;
     mDirectionField[j * mFieldSize.width() + i] = static_cast<char>( d );
   }
 }

@@ -332,18 +332,19 @@ Represents a streamline renderer settings for vector datasets
 
    The API is considered EXPERIMENTAL and can be changed without a notice
 
-.. versionadded:: 3.12
+.. versionadded:: 3.2
 %End
 
 %TypeHeaderCode
 #include "qgsmeshrenderersettings.h"
 %End
   public:
+
     enum Symbology
     {
-      //!Displaying vector dataset with arrows
+      //! Displaying vector dataset with arrows
       Arrows,
-      //!Displaying vector dataset with streamlines
+      //! Displaying vector dataset with streamlines
       Streamlines
     };
 
@@ -424,28 +425,43 @@ Sets height of user grid cell (in pixels)
     Symbology symbology() const;
 %Docstring
 Returns the displaying method used to render vector datasets
+
+.. versionadded:: 3.12
 %End
+
     void setSymbology( const Symbology &symbology );
 %Docstring
 Sets the displaying method used to render vector datasets
+
+.. versionadded:: 3.12
 %End
 
     QgsMeshRendererVectorArrowSettings arrowSettings() const;
 %Docstring
 Returns settings for vector rendered with arrows
+
+.. versionadded:: 3.12
 %End
+
     void setArrowsSettings( const QgsMeshRendererVectorArrowSettings &arrowSettings );
 %Docstring
 Sets settings for vector rendered with arrows
+
+.. versionadded:: 3.12
 %End
 
     QgsMeshRendererVectorStreamlineSettings streamLinesSettings() const;
 %Docstring
 Returns settings for vector rednered with streamlines
+
+.. versionadded:: 3.12
 %End
+
     void setStreamLinesSettings( const QgsMeshRendererVectorStreamlineSettings &streamLinesSettings );
 %Docstring
 Sets settings for vector rednered with streamlines
+
+.. versionadded:: 3.12
 %End
 
 

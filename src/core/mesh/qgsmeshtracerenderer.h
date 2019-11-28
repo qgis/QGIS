@@ -86,7 +86,7 @@ class QgsMeshVectorValueInterpolator
  * \note not available in Python bindings
  * \since QGIS 3.12
  */
-class  QgsMeshVectorValueInterpolatorFromVertex: public QgsMeshVectorValueInterpolator
+class QgsMeshVectorValueInterpolatorFromVertex: public QgsMeshVectorValueInterpolator
 {
   public:
     //! Constructor
@@ -110,7 +110,7 @@ class  QgsMeshVectorValueInterpolatorFromVertex: public QgsMeshVectorValueInterp
  * \note not available in Python bindings
  * \since QGIS 3.12
  */
-class  QgsMeshVectorValueInterpolatorFromFace: public QgsMeshVectorValueInterpolator
+class QgsMeshVectorValueInterpolatorFromFace: public QgsMeshVectorValueInterpolator
 {
   public:
     //! Constructor
@@ -139,10 +139,10 @@ class QgsMeshStreamField
   public:
     struct FieldData
     {
-      double mag;
+      double magnitude;
       float time;
-      int incX;
-      int incY;
+      int directionX;
+      int directionY;
     };
 
     //! Constructor
@@ -150,7 +150,7 @@ class QgsMeshStreamField
                         const QgsMeshDataBlock &dataSetVectorValues,
                         const QgsMeshDataBlock &scalarActiveFaceFlagValues,
                         const QgsRectangle &layerExtent,
-                        double magMax, bool dataIsOnVertices, const QgsRenderContext &rendererContext,
+                        double magnitudeMaximum, bool dataIsOnVertices, const QgsRenderContext &rendererContext,
                         int resolution = 1 );
 
     //! Destructor
@@ -159,8 +159,6 @@ class QgsMeshStreamField
       if ( mPainter )
         delete mPainter;
     }
-
-    QgsMeshStreamField( const QgsMeshStreamField &other ) = default;
 
     /*
     * Updates the size of the field and the QgsMapToPixel instance to retrieve map point
@@ -206,7 +204,7 @@ class QgsMeshStreamField
     //! Sets the resolution of the field
     void setResolution( int width );
 
-    //!Returns the width of particle
+    //! Returns the width of particle
     int resolution() const;
 
     //! Returns the size of the image that represents the trace field
@@ -230,19 +228,7 @@ class QgsMeshStreamField
     void setMinimizeFieldSize( bool minimizeFieldSize );
 
   protected:
-    void initImage()
-    {
-      if ( mPainter )
-        delete mPainter;
-
-      mTraceImage = QImage( mFieldSize * mFieldResolution, QImage::Format_ARGB32 );
-      mTraceImage.fill( 0X00000000 );
-
-      mPainter = new QPainter( &mTraceImage );
-      mPainter->setRenderHint( QPainter::Antialiasing, true );
-      mPainter->setPen( mPen );
-    }
-
+    void initImage();
     QPointF fieldToDevice( const QPoint &pixel ) const;
     bool filterMag( double value ) const;
 
@@ -252,7 +238,7 @@ class QgsMeshStreamField
                                QgsMeshStreamField::FieldData &data,
                                std::list<QPair<QPoint, QgsMeshStreamField::FieldData> > &chunkTrace );
     void setChunkTrace( std::list<QPair<QPoint, FieldData>> &chunkTrace );
-    virtual void drawChunkTrace( std::list<QPair<QPoint, FieldData>> &chunkTrace ) = 0;
+    virtual void drawChunkTrace( const std::list<QPair<QPoint, FieldData>> &chunkTrace ) = 0;
     void clearChunkTrace( std::list<QPair<QPoint, FieldData>> &chunkTrace );
     virtual void storeInField( const QPair<QPoint, FieldData> pixelData ) = 0;
     virtual void initField() = 0;
@@ -311,7 +297,7 @@ class QgsMeshStreamlinesField: public QgsMeshStreamField
     void storeInField( const QPair<QPoint, FieldData> pixelData ) override;
     void initField() override;
     bool isTraceExists( const QPoint &pixel ) const override;
-    void drawChunkTrace( std::list<QPair<QPoint, FieldData>> &chunkTrace ) override;
+    void drawChunkTrace( const std::list<QPair<QPoint, FieldData> > &chunkTrace ) override;
 
     QVector<bool> mField;
 
@@ -329,10 +315,10 @@ class QgsMeshParticleTracesField;
  */
 struct QgsMeshTraceParticle
 {
-  double lifeTime;
+  double lifeTime = 0;
   QPoint position;
   std::list<QPoint> tail;
-  double remainingTime; //time remaining to spend in the current pixel at the end of the time step
+  double remainingTime = 0; //time remaining to spend in the current pixel at the end of the time step
 };
 
 /**
@@ -376,7 +362,7 @@ class QgsMeshParticleTracesField: public QgsMeshStreamField
     //! Sets the maximum life time (nondimensional) of particle generated
     void setParticlesLifeTime( double particlesLifeTime );
 
-    //! Stump particles image and leave a persistent effect
+    //! Stumps particles image and leave a persistent effect
     void stump();
 
     /**
@@ -398,7 +384,7 @@ class QgsMeshParticleTracesField: public QgsMeshStreamField
     //! Sets the tail factor
     void setTailFactor( double tailFactor );
 
-    //! Set the minimum tail length
+    //! Sets the minimum tail length
     void setMinTailLength( int minTailLength );
 
   private:
@@ -411,7 +397,7 @@ class QgsMeshParticleTracesField: public QgsMeshStreamField
     void storeInField( const QPair<QPoint, FieldData> pixelData ) override;
     void initField() override;
     bool isTraceExists( const QPoint &pixel ) const override;
-    void drawChunkTrace( std::list<QPair<QPoint, FieldData>> &chunkTrace ) override {Q_UNUSED( chunkTrace );}
+    void drawChunkTrace( const std::list<QPair<QPoint, FieldData>> &chunkTrace ) override {Q_UNUSED( chunkTrace );}
 
     /* Nondimensional time
      * This field store the time spent by the particle in the pixel
