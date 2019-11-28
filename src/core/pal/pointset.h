@@ -80,7 +80,10 @@ namespace pal
       PointSet( int nbPoints, double *x, double *y );
       virtual ~PointSet();
 
-      PointSet *extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty );
+      /**
+       * Does... something completely inscrutable.
+       */
+      std::unique_ptr< PointSet > extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty );
 
       /**
        * Returns a copy of the point set.
@@ -106,13 +109,17 @@ namespace pal
        */
       bool containsLabelCandidate( double x, double y, double width, double height, double alpha = 0 ) const;
 
-      CHullBox *compute_chull_bbox();
+      /**
+       * Computes a con???? hull. Maybe convex, maybe concave. The person who wrote this
+       * had no care for anyone else ever reading their code.
+       */
+      CHullBox compute_chull_bbox();
 
       /**
        * Split a concave shape into several convex shapes.
        */
-      static void splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
-                                 QLinkedList<PointSet *> &shapes_final,
+      static void splitPolygons( QLinkedList<PointSet *> &inputShapes,
+                                 QLinkedList<PointSet *> &outputShapes,
                                  double xrm, double yrm );
 
       /**

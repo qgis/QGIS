@@ -1404,8 +1404,6 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
 
 std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_ptr< LabelPosition > > &lPos, PointSet *mapShape )
 {
-  int j;
-
   double labelWidth = getLabelWidth();
   double labelHeight = getLabelHeight();
 
@@ -1428,23 +1426,20 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
     double px, py;
     double dx;
     double dy;
-    int bbid;
     double beta;
     double diago = std::sqrt( labelWidth * labelWidth / 4.0 + labelHeight * labelHeight / 4 );
     double rx, ry;
-    CHullBox **boxes = new CHullBox*[shapes_final.size()];
-    j = 0;
+    std::vector< CHullBox > boxes;
+    boxes.reserve( shapes_final.size() );
 
     // Compute bounding box foreach finalShape
     while ( !shapes_final.isEmpty() )
     {
       PointSet *shape = shapes_final.takeFirst();
-      boxes[j] = shape->compute_chull_bbox();
+      boxes.emplace_back( shape->compute_chull_bbox() );
 
       if ( shape->parent )
         delete shape;
-
-      j++;
     }
 
     //dx = dy = min( yrm, xrm ) / 2;
@@ -1461,11 +1456,9 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
 
     do
     {
-      for ( bbid = 0; bbid < j; bbid++ )
+      for ( CHullBox &box : boxes )
       {
-        CHullBox *box = boxes[bbid];
-
-        if ( ( box->length * box->width ) > ( xmax - xmin ) * ( ymax - ymin ) * 5 )
+        if ( ( box.length * box.width ) > ( xmax - xmin ) * ( ymax - ymin ) * 5 )
         {
           // Very Large BBOX (should never occur)
           continue;
@@ -1486,8 +1479,8 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
         if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Free )
         {
           enoughPlace = true;
-          px = ( box->x[0] + box->x[2] ) / 2 - labelWidth;
-          py = ( box->y[0] + box->y[2] ) / 2 - labelHeight;
+          px = ( box.x[0] + box.x[2] ) / 2 - labelWidth;
+          py = ( box.y[0] + box.y[2] ) / 2 - labelHeight;
           int i, j;
 
           // Virtual label: center on bbox center, label size = 2x original size
@@ -1515,24 +1508,24 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
         {
           alpha = 0.0; // HORIZ
         }
-        else if ( box->length > 1.5 * labelWidth && box->width > 1.5 * labelWidth )
+        else if ( box.length > 1.5 * labelWidth && box.width > 1.5 * labelWidth )
         {
-          if ( box->alpha <= M_PI_4 )
+          if ( box.alpha <= M_PI_4 )
           {
-            alpha = box->alpha;
+            alpha = box.alpha;
           }
           else
           {
-            alpha = box->alpha - M_PI_2;
+            alpha = box.alpha - M_PI_2;
           }
         }
-        else if ( box->length > box->width )
+        else if ( box.length > box.width )
         {
-          alpha = box->alpha - M_PI_2;
+          alpha = box.alpha - M_PI_2;
         }
         else
         {
-          alpha = box->alpha;
+          alpha = box.alpha;
         }
 
         beta  = std::atan2( labelHeight, labelWidth ) + alpha;
@@ -1546,22 +1539,22 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
 
         double px0, py0;
 
-        px0 = box->width / 2.0;
-        py0 = box->length / 2.0;
+        px0 = box.width / 2.0;
+        py0 = box.length / 2.0;
 
         px0 -= std::ceil( px0 / dx ) * dx;
         py0 -= std::ceil( py0 / dy ) * dy;
 
-        for ( px = px0; px <= box->width; px += dx )
+        for ( px = px0; px <= box.width; px += dx )
         {
-          for ( py = py0; py <= box->length; py += dy )
+          for ( py = py0; py <= box.length; py += dy )
           {
 
-            rx = std::cos( box->alpha ) * px + std::cos( box->alpha - M_PI_2 ) * py;
-            ry = std::sin( box->alpha ) * px + std::sin( box->alpha - M_PI_2 ) * py;
+            rx = std::cos( box.alpha ) * px + std::cos( box.alpha - M_PI_2 ) * py;
+            ry = std::sin( box.alpha ) * px + std::sin( box.alpha - M_PI_2 ) * py;
 
-            rx += box->x[0];
-            ry += box->y[0];
+            rx += box.x[0];
+            ry += box.y[0];
 
             bool candidateAcceptable = ( mLF->permissibleZonePrepared()
                                          ? GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), rx - dlx, ry - dly, labelWidth, labelHeight, alpha )
@@ -1587,13 +1580,6 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
     while ( nbp == 0 && numTry < maxTry );
 
     nbp = numberCandidatesGenerated;
-
-    for ( bbid = 0; bbid < j; bbid++ )
-    {
-      delete boxes[bbid];
-    }
-
-    delete[] boxes;
   }
   else
   {

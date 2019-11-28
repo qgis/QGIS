@@ -209,12 +209,11 @@ void PointSet::deleteCoords()
   y.clear();
 }
 
-PointSet *PointSet::extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty )
+std::unique_ptr<PointSet> PointSet::extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty )
 {
-
   int i, j;
 
-  PointSet *newShape = new PointSet();
+  std::unique_ptr<PointSet> newShape = qgis::make_unique< PointSet >();
   newShape->type = GEOS_POLYGON;
   newShape->nbPoints = nbPtSh;
   newShape->x.resize( newShape->nbPoints );
@@ -272,8 +271,8 @@ bool PointSet::containsLabelCandidate( double x, double y, double width, double 
   return GeomFunction::containsCandidate( preparedGeom(), x, y, width, height, alpha );
 }
 
-void PointSet::splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
-                              QLinkedList<PointSet *> &shapes_final,
+void PointSet::splitPolygons( QLinkedList<PointSet *> &inputShapes,
+                              QLinkedList<PointSet *> &outputShapes,
                               double xrm, double yrm )
 {
   int i, j;
@@ -313,9 +312,9 @@ void PointSet::splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
 
   PointSet *shape = nullptr;
 
-  while ( !shapes_toProcess.isEmpty() )
+  while ( !inputShapes.isEmpty() )
   {
-    shape = shapes_toProcess.takeFirst();
+    shape = inputShapes.takeFirst();
 
     x = shape->x;
     y = shape->y;
@@ -509,33 +508,33 @@ void PointSet::splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
       // check for useless splitting
       else if ( imax == imin || nbPtSh1 <= 2 || nbPtSh2 <= 2 || nbPtSh1 == nbp  || nbPtSh2 == nbp )
       {
-        shapes_final.append( shape );
+        outputShapes.append( shape );
       }
       else
       {
 
-        PointSet *newShape = shape->extractShape( nbPtSh1, imin, imax, fps, fpe, fptx, fpty );
+        PointSet *newShape = shape->extractShape( nbPtSh1, imin, imax, fps, fpe, fptx, fpty ).release();
 
         if ( shape->parent )
           newShape->parent = shape->parent;
         else
           newShape->parent = shape;
 
-        shapes_toProcess.append( newShape );
+        inputShapes.append( newShape );
 
         if ( imax == fps )
           imax = fpe;
         else
           imax = fps;
 
-        newShape = shape->extractShape( nbPtSh2, imax, imin, fps, fpe, fptx, fpty );
+        newShape = shape->extractShape( nbPtSh2, imax, imin, fps, fpe, fptx, fpty ).release();
 
         if ( shape->parent )
           newShape->parent = shape->parent;
         else
           newShape->parent = shape;
 
-        shapes_toProcess.append( newShape );
+        inputShapes.append( newShape );
 
         if ( shape->parent )
           delete shape;
@@ -543,7 +542,7 @@ void PointSet::splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
     }
     else
     {
-      shapes_final.append( shape );
+      outputShapes.append( shape );
     }
     delete[] pts;
   }
@@ -636,7 +635,7 @@ void PointSet::extendLineByDistance( double startDistance, double endDistance, d
   invalidateGeos();
 }
 
-CHullBox *PointSet::compute_chull_bbox()
+CHullBox PointSet::compute_chull_bbox()
 {
   int i;
   int j;
@@ -768,18 +767,18 @@ CHullBox *PointSet::compute_chull_bbox()
 
   // best bbox is defined
 
-  CHullBox *finalBb = new CHullBox();
+  CHullBox finalBb;
 
   for ( i = 0; i < 16; i = i + 4 )
   {
     GeomFunction::computeLineIntersection( best_bb[i], best_bb[i + 1], best_bb[i + 2], best_bb[i + 3],
                                            best_bb[( i + 4 ) % 16], best_bb[( i + 5 ) % 16], best_bb[( i + 6 ) % 16], best_bb[( i + 7 ) % 16],
-                                           &finalBb->x[int ( i / 4 )], &finalBb->y[int ( i / 4 )] );
+                                           &finalBb.x[int ( i / 4 )], &finalBb.y[int ( i / 4 )] );
   }
 
-  finalBb->alpha = best_alpha;
-  finalBb->width = best_width;
-  finalBb->length = best_length;
+  finalBb.alpha = best_alpha;
+  finalBb.width = best_width;
+  finalBb.length = best_length;
 
   return finalBb;
 }
