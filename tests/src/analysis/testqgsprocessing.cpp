@@ -8200,6 +8200,32 @@ void TestQgsProcessing::tempUtils()
   QString tempFile3 = QgsProcessingUtils::generateTempFilename( "mybad:file.txt" );
   QVERIFY( tempFile3.endsWith( "mybad_file.txt" ) );
   QVERIFY( tempFile3.startsWith( tempFolder ) );
+
+  // change temp folder in the settings
+  QgsSettings settings;
+  QString alternative_tempFolder1 = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/alternative_temp_test_one" );
+  settings.setValue( QStringLiteral( "Processing/Configuration/TEMP_PATH" ), alternative_tempFolder1 );
+  // check folder and if it's constant with alternative temp folder 1
+  tempFolder = QgsProcessingUtils::tempFolder();
+  QVERIFY( tempFolder.startsWith( alternative_tempFolder1 ) );
+  QCOMPARE( QgsProcessingUtils::tempFolder(), tempFolder );
+  // create file
+  QString alternativeTempFile1 = QgsProcessingUtils::generateTempFilename( "alternative_temptest.txt" );
+  QVERIFY( alternativeTempFile1.endsWith( "alternative_temptest.txt" ) );
+  QVERIFY( alternativeTempFile1.startsWith( tempFolder ) );
+  QVERIFY( alternativeTempFile1.startsWith( alternative_tempFolder1 ) );
+  // change temp folder in the settings again
+  QString alternative_tempFolder2 = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/alternative_temp_test_two" );
+  settings.setValue( QStringLiteral( "Processing/Configuration/TEMP_PATH" ), alternative_tempFolder2 );
+  // check folder and if it's constant constant with alternative temp folder 2
+  tempFolder = QgsProcessingUtils::tempFolder();
+  QVERIFY( tempFolder.startsWith( alternative_tempFolder2 ) );
+  QCOMPARE( QgsProcessingUtils::tempFolder(), tempFolder );
+  // create file
+  QString alternativeTempFile2 = QgsProcessingUtils::generateTempFilename( "alternative_temptest.txt" );
+  QVERIFY( alternativeTempFile2.endsWith( "alternative_temptest.txt" ) );
+  QVERIFY( alternativeTempFile2.startsWith( tempFolder ) );
+  QVERIFY( alternativeTempFile2.startsWith( alternative_tempFolder2 ) );
 }
 
 void TestQgsProcessing::convertCompatible()
