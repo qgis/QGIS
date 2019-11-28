@@ -293,7 +293,7 @@ tests:
         name: expected/projection_candidates.gml
         type: vector
 
-  - algorithm: qgis:polygonfromlayerextent
+  - algorithm: native:polygonfromlayerextent
     name: Standard polygon from layer extent
     params:
       BY_FEATURE: false
@@ -809,7 +809,7 @@ tests:
         name: expected/execute_sql.gml
         type: vector
 
-  - algorithm: qgis:polygonfromlayerextent
+  - algorithm: native:polygonfromlayerextent
     name: Polygon from raster extent
     params:
       INPUT:

@@ -43,7 +43,6 @@ from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
 from .EliminateSelection import EliminateSelection
 from .ExecuteSQL import ExecuteSQL
 from .ExportGeometryInfo import ExportGeometryInfo
-from .ExtentFromLayer import ExtentFromLayer
 from .ExtractSpecificVertices import ExtractSpecificVertices
 from .FieldPyculator import FieldsPyculator
 from .FieldsCalculator import FieldsCalculator
@@ -137,7 +136,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 EliminateSelection(),
                 ExecuteSQL(),
                 ExportGeometryInfo(),
-                ExtentFromLayer(),
                 ExtractSpecificVertices(),
                 FieldsCalculator(),
                 FieldsMapper(),

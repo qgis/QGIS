@@ -43,6 +43,7 @@
 #include "qgsalgorithmexplode.h"
 #include "qgsalgorithmexplodehstore.h"
 #include "qgsalgorithmextendlines.h"
+#include "qgsalgorithmextentfromlayer.h"
 #include "qgsalgorithmextenttolayer.h"
 #include "qgsalgorithmextractbinary.h"
 #include "qgsalgorithmextractbyattribute.h"
@@ -211,6 +212,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsExplodeAlgorithm() );
   addAlgorithm( new QgsExplodeHstoreAlgorithm() );
   addAlgorithm( new QgsExtendLinesAlgorithm() );
+  addAlgorithm( new QgsExtentFromLayerAlgorithm() );
   addAlgorithm( new QgsExtentToLayerAlgorithm() );
   addAlgorithm( new QgsExtractBinaryFieldAlgorithm() );
   addAlgorithm( new QgsExtractByAttributeAlgorithm() );
