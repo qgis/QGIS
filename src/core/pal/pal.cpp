@@ -266,7 +266,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
   QStringList layersWithFeaturesInBBox;
 
-  mMutex.lock();
+  QMutexLocker palLocker( &mMutex );
   for ( const auto &it : mLayers )
   {
     Layer *layer = it.second.get();
@@ -286,7 +286,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
     layer->chopFeaturesAtRepeatDistance();
 
-    layer->mMutex.lock();
+    QMutexLocker locker( &layer->mMutex );
 
     // find features within bounding box and generate candidates list
     context.layer = layer;
@@ -294,7 +294,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
     // find obstacles within bounding box
     layer->mObstacleIndex.Search( amin, amax, extractObstaclesCallback, static_cast< void * >( &obstacleContext ) );
 
-    layer->mMutex.unlock();
+    locker.unlock();
 
     if ( context.features->size() - previousFeatureCount > 0 || obstacleContext.obstacleCount > previousObstacleCount )
     {
@@ -303,7 +303,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
     previousFeatureCount = context.features->size();
     previousObstacleCount = obstacleContext.obstacleCount;
   }
-  mMutex.unlock();
+  palLocker.unlock();
 
   prob->mLayerCount = layersWithFeaturesInBBox.size();
   prob->labelledLayersName = layersWithFeaturesInBBox;
