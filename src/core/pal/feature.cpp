@@ -688,8 +688,8 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
   }
 
   // calculate lengths of segments, and work out longest straight-ish segment
-  double *segmentLengths = new double[ numberNodes - 1 ]; // segments lengths distance bw pt[i] && pt[i+1]
-  double *distanceToSegment = new double[ numberNodes ]; // absolute distance bw pt[0] and pt[i] along the line
+  std::vector< double > segmentLengths( numberNodes - 1 ); // segments lengths distance bw pt[i] && pt[i+1]
+  std::vector< double > distanceToSegment( numberNodes ); // absolute distance bw pt[0] and pt[i] along the line
   double totalLineLength = 0.0;
   QVector< double > straightSegmentLengths;
   QVector< double > straightSegmentAngles;
@@ -730,8 +730,6 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
 
   if ( totalLineLength < labelWidth )
   {
-    delete[] segmentLengths;
-    delete[] distanceToSegment;
     return 0; //createCandidatesAlongLineNearMidpoint will be more appropriate
   }
 
@@ -768,8 +766,8 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
     while ( currentDistanceAlongLine + labelWidth < distanceToEndOfSegment )
     {
       // calculate positions along linestring corresponding to start and end of current label candidate
-      line->getPointByDistance( segmentLengths, distanceToSegment, currentDistanceAlongLine, &candidateStartX, &candidateStartY );
-      line->getPointByDistance( segmentLengths, distanceToSegment, currentDistanceAlongLine + labelWidth, &candidateEndX, &candidateEndY );
+      line->getPointByDistance( segmentLengths.data(), distanceToSegment.data(), currentDistanceAlongLine, &candidateStartX, &candidateStartY );
+      line->getPointByDistance( segmentLengths.data(), distanceToSegment.data(), currentDistanceAlongLine + labelWidth, &candidateEndX, &candidateEndY );
 
       candidateLength = std::sqrt( ( candidateEndX - candidateStartX ) * ( candidateEndX - candidateStartX ) + ( candidateEndY - candidateStartY ) * ( candidateEndY - candidateStartY ) );
 
@@ -861,8 +859,6 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
     }
   }
 
-  delete[] segmentLengths;
-  delete[] distanceToSegment;
   return lPos.size();
 }
 
@@ -885,8 +881,8 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
   std::vector< double > &x = line->x;
   std::vector< double > &y = line->y;
 
-  double *segmentLengths = new double[nbPoints - 1]; // segments lengths distance bw pt[i] && pt[i+1]
-  double *distanceToSegment = new double[nbPoints]; // absolute distance bw pt[0] and pt[i] along the line
+  std::vector< double > segmentLengths( nbPoints - 1 ); // segments lengths distance bw pt[i] && pt[i+1]
+  std::vector< double >distanceToSegment( nbPoints ); // absolute distance bw pt[0] and pt[i] along the line
 
   double totalLineLength = 0.0; // line length
   for ( int i = 0; i < line->nbPoints - 1; i++ )
@@ -927,8 +923,8 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
   while ( currentDistanceAlongLine < totalLineLength - labelWidth )
   {
     // calculate positions along linestring corresponding to start and end of current label candidate
-    line->getPointByDistance( segmentLengths, distanceToSegment, currentDistanceAlongLine, &candidateStartX, &candidateStartY );
-    line->getPointByDistance( segmentLengths, distanceToSegment, currentDistanceAlongLine + labelWidth, &candidateEndX, &candidateEndY );
+    line->getPointByDistance( segmentLengths.data(), distanceToSegment.data(), currentDistanceAlongLine, &candidateStartX, &candidateStartY );
+    line->getPointByDistance( segmentLengths.data(), distanceToSegment.data(), currentDistanceAlongLine + labelWidth, &candidateEndX, &candidateEndY );
 
     if ( currentDistanceAlongLine < 0 )
     {
@@ -1016,11 +1012,6 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
     if ( lineStepDistance < 0 )
       break;
   }
-
-  //delete line;
-
-  delete[] segmentLengths;
-  delete[] distanceToSegment;
 
   return lPos.size();
 }
