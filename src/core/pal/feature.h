@@ -304,6 +304,11 @@ namespace pal
        * Returns TRUE on success, FALSE if the feature wasn't modified */
       bool mergeWithFeaturePart( FeaturePart *other );
 
+      /**
+       * Increases the cost of the label candidates for this feature, based on the size of the feature.
+       *
+       * E.g. small lines or polygons get higher cost so that larger features are more likely to be labeled.
+       */
       void addSizePenalty( std::size_t nbp, std::vector<std::unique_ptr<LabelPosition> > &lPos, double bbx[4], double bby[4] );
 
       /**

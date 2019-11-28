@@ -39,9 +39,10 @@ namespace pal
       //! Increase candidate's cost according to its collision with passed feature
       static void addObstacleCostPenalty( LabelPosition *lp, pal::FeaturePart *obstacle );
 
+      //! Calculates the costs for polygon label candidates
       static void setPolygonCandidatesCost( std::size_t nblp, std::vector<std::unique_ptr<pal::LabelPosition> > &lPos, RTree<pal::FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] );
 
-      //! Sets cost to the smallest distance between lPos's centroid and a polygon stored in geoetry field
+      //! Sets cost to the smallest distance between lPos's centroid and a polygon stored in geometry field
       static void setCandidateCostFromPolygon( LabelPosition *lp, RTree<pal::FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] );
 
       //! Sort candidates by costs, skip the worse ones, evaluate polygon candidates
