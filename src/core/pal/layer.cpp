@@ -54,9 +54,6 @@ Layer::Layer( QgsAbstractLabelProvider *provider, const QString &name, QgsPalLay
   , mMergeLines( false )
   , mUpsidedownLabels( Upright )
 {
-  mFeatureIndex = new RTree<FeaturePart *, double, 2, double>();
-  mObstacleIndex = new RTree<FeaturePart *, double, 2, double>();
-
   if ( defaultPriority < 0.0001 )
     mDefaultPriority = 0.0001;
   else if ( defaultPriority > 1.0 )
@@ -71,9 +68,6 @@ Layer::~Layer()
 
   qDeleteAll( mFeatureParts );
   qDeleteAll( mObstacleParts );
-
-  delete mFeatureIndex;
-  delete mObstacleIndex;
 
   mMutex.unlock();
 }
@@ -274,7 +268,7 @@ void Layer::addFeaturePart( FeaturePart *fpart, const QString &labelText )
   mFeatureParts << fpart;
 
   // add to r-tree for fast spatial access
-  mFeatureIndex->Insert( bmin, bmax, fpart );
+  mFeatureIndex.Insert( bmin, bmax, fpart );
 
   // add to hashtable with equally named feature parts
   if ( mMergeLines && !labelText.isEmpty() )
@@ -293,7 +287,7 @@ void Layer::addObstaclePart( FeaturePart *fpart )
   mObstacleParts.append( fpart );
 
   // add to obstacle r-tree
-  mObstacleIndex->Insert( bmin, bmax, fpart );
+  mObstacleIndex.Insert( bmin, bmax, fpart );
 }
 
 static FeaturePart *_findConnectedPart( FeaturePart *partCheck, const QVector<FeaturePart *> &otherParts )
@@ -349,12 +343,12 @@ void Layer::joinConnectedFeatures()
         if ( otherPart->mergeWithFeaturePart( partCheck ) )
         {
           // remove the parts we are joining from the index
-          mFeatureIndex->Remove( checkpartBMin, checkpartBMax, partCheck );
-          mFeatureIndex->Remove( otherPartBMin, otherPartBMax, otherPart );
+          mFeatureIndex.Remove( checkpartBMin, checkpartBMax, partCheck );
+          mFeatureIndex.Remove( otherPartBMin, otherPartBMax, otherPart );
 
           // reinsert merged line to r-tree (probably not needed)
           otherPart->getBoundingBox( otherPartBMin, otherPartBMax );
-          mFeatureIndex->Insert( otherPartBMin, otherPartBMax, otherPart );
+          mFeatureIndex.Insert( otherPartBMin, otherPartBMax, otherPart );
 
           mConnectedFeaturesIds.insert( partCheck->featureId(), connectedFeaturesId );
           mConnectedFeaturesIds.insert( otherPart->featureId(), connectedFeaturesId );
@@ -423,7 +417,7 @@ void Layer::chopFeaturesAtRepeatDistance()
     {
       double bmin[2], bmax[2];
       fpart->getBoundingBox( bmin, bmax );
-      mFeatureIndex->Remove( bmin, bmax, fpart.get() );
+      mFeatureIndex.Remove( bmin, bmax, fpart.get() );
 
       const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r( geosctxt, geom );
 
@@ -484,7 +478,7 @@ void Layer::chopFeaturesAtRepeatDistance()
           FeaturePart *newfpart = new FeaturePart( fpart->feature(), newgeom );
           newFeatureParts.append( newfpart );
           newfpart->getBoundingBox( bmin, bmax );
-          mFeatureIndex->Insert( bmin, bmax, newfpart );
+          mFeatureIndex.Insert( bmin, bmax, newfpart );
           repeatParts.push_back( newfpart );
 
           break;
@@ -509,7 +503,7 @@ void Layer::chopFeaturesAtRepeatDistance()
         FeaturePart *newfpart = new FeaturePart( fpart->feature(), newgeom );
         newFeatureParts.append( newfpart );
         newfpart->getBoundingBox( bmin, bmax );
-        mFeatureIndex->Insert( bmin, bmax, newfpart );
+        mFeatureIndex.Insert( bmin, bmax, newfpart );
         part.clear();
         part.push_back( p );
         repeatParts.push_back( newfpart );
