@@ -50,7 +50,6 @@ bool QgsLayoutImageDropHandler::handleFileDrop( QgsLayoutDesignerInterface *ifac
   std::unique_ptr< QgsLayoutItemPicture > item = qgis::make_unique< QgsLayoutItemPicture >( iface->layout() );
 
   QgsLayoutPoint layoutPoint = iface->layout()->convertFromLayoutUnits( point, iface->layout()->units() );
-  item->attemptMove( layoutPoint );
 
   item->setPicturePath( file );
 
@@ -58,6 +57,13 @@ bool QgsLayoutImageDropHandler::handleFileDrop( QgsLayoutDesignerInterface *ifac
   item->setResizeMode( QgsLayoutItemPicture::FrameToImageSize );
   // and then move back to standard freeform image sizing
   item->setResizeMode( QgsLayoutItemPicture::Zoom );
+
+  // we want the drop location to be the center of the placed item, because drag thumbnails are usually centered on the mouse cursor
+  item->setReferencePoint( QgsLayoutItem::Middle );
+  item->attemptMove( layoutPoint );
+
+  // reset to standard top-left reference point location
+  item->setReferencePoint( QgsLayoutItem::UpperLeft );
 
   // and auto select new item for convenience
   QList< QgsLayoutItem * > newSelection;
