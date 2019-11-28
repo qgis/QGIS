@@ -1066,10 +1066,6 @@ QString QgsPostgresConn::postgisVersion() const
   mTopologyAvailable = false;
   if ( mPostgisVersionMajor > 1 )
   {
-    // NOTE: CASE syntax is used to avoid an exception when
-    //       topology.topology does not exist
-    // See
-    // https://www.postgresql.org/docs/current/sql-expressions.html#SYNTAX-EXPRESS-EVAL
     QgsPostgresResult result(
       PQexec(
         QStringLiteral(
@@ -1103,8 +1099,15 @@ QString QgsPostgresConn::postgisVersion() const
   if ( mPostgresqlVersion >= 90000 )
   {
     QgsDebugMsg( QStringLiteral( "Checking for pointcloud support" ) );
-    result = PQexec( QStringLiteral( "SELECT oid FROM pg_catalog.pg_extension WHERE extname = 'pointcloud_postgis'" ), false );
-    if ( result.PQntuples() == 1 )
+    result = PQexec( QStringLiteral( R"(
+SELECT
+ has_table_privilege(c.oid, 'select')
+ AND has_table_privilege(f.oid, 'select')
+FROM pg_class c, pg_class f
+WHERE c.relname = 'pointcloud_columns'
+  AND f.relname = 'pointcloud_formats'
+    )" ), false );
+    if ( result.PQntuples() >= 1 && result.PQgetvalue( 0, 0 ) == QLatin1String( "t" ) )
     {
       mPointcloudAvailable = true;
       QgsDebugMsg( QStringLiteral( "Pointcloud support available!" ) );
