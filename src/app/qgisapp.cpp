@@ -233,6 +233,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgslayoutdesignerdialog.h"
 #include "qgslayoutmanager.h"
 #include "qgslayoutqptdrophandler.h"
+#include "qgslayoutimagedrophandler.h"
 #include "qgslayoutapputils.h"
 #include "qgslocatorwidget.h"
 #include "qgslocator.h"
@@ -1696,6 +1697,7 @@ QgisApp::~QgisApp()
   QgsApplication::setFileOpenEventReceiver( nullptr );
 
   unregisterCustomLayoutDropHandler( mLayoutQptDropHandler );
+  unregisterCustomLayoutDropHandler( mLayoutImageDropHandler );
 
 #ifdef WITH_BINDINGS
   delete mPythonUtils;
@@ -11731,6 +11733,8 @@ void QgisApp::initLayouts()
 
   mLayoutQptDropHandler = new QgsLayoutQptDropHandler( this );
   registerCustomLayoutDropHandler( mLayoutQptDropHandler );
+  mLayoutImageDropHandler = new QgsLayoutImageDropHandler( this );
+  registerCustomLayoutDropHandler( mLayoutImageDropHandler );
 }
 
 void QgisApp::new3DMapCanvas()
