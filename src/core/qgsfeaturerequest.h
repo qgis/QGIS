@@ -101,6 +101,15 @@ class CORE_EXPORT QgsFeatureRequest
     };
 
     /**
+     * Filter handling behavior
+     */
+    enum FilterCombination
+    {
+      UseLast        = 0,   //! default behavior-- setting a new filter replaces any existing filters.
+      OperatorAND    = 1    //! stack filters
+    };
+
+    /**
      * \ingroup core
      * The OrderByClause class represents an order by clause for a QgsFeatureRequest.
      *
@@ -704,6 +713,33 @@ class CORE_EXPORT QgsFeatureRequest
      */
     QgsFeatureRequest &setRequestMayBeNested( bool requestMayBeNested );
 
+    /**
+     * Sets the FilterCombination to use when handling filter.
+     *
+     * Implemented method are:
+     *  - UseLast : Return features that fit the last filter set (other than rectangle)
+     *  - OperatorAND : Return features that fit all the filters.
+     *
+     * Default behavior is UseLast.
+     *
+     * \since QGIS 3.12
+     */
+    void setFilterHandling( FilterCombination handlingMethod );
+
+    /**
+     * Returns the filter handling method
+     *
+     * \since QGIS 3.12
+     */
+    QgsFeatureRequest::FilterCombination filterHandling() const;
+
+    /**
+     * Returns TRUE if the given filter type can be used and is valid.
+     *
+     * \since QGIS 3.12
+     */
+    bool hasValidFilter( FilterType filterType ) const;
+
   protected:
     FilterType mFilter = FilterNone;
     QgsRectangle mFilterRect;
@@ -723,6 +759,7 @@ class CORE_EXPORT QgsFeatureRequest
     QgsCoordinateTransformContext mTransformContext;
     int mTimeout = -1;
     int mRequestMayBeNested = false;
+    FilterCombination mCombinationMethod = UseLast;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRequest::Flags )

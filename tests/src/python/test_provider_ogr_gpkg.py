@@ -37,6 +37,7 @@ from qgis.core import (QgsFeature,
                        QgsWkbTypes,
                        QgsDataProvider,
                        QgsVectorDataProvider,
+                       QgsAggregateCalculator,
                        NULL)
 from qgis.PyQt.QtCore import QCoreApplication, QVariant, QDate, QTime, QDateTime, Qt
 from qgis.testing import start_app, unittest
@@ -1497,6 +1498,30 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(vl.dataProvider().maximumValue(3), QDateTime(2022, 1, 1, 1, 1, 1, 0, Qt.TimeSpec(1)))
         self.assertEqual(vl.dataProvider().uniqueValues(2), {QDate(2017, 1, 1), NULL, QDate(2018, 1, 1), QDate(2019, 1, 1), QDate(2010, 1, 1)})
         self.assertEqual(vl.dataProvider().uniqueValues(3), {QDateTime(2022, 1, 1, 1, 1, 1), NULL, QDateTime(2019, 1, 1, 1, 1, 1), QDateTime(2021, 1, 1, 1, 1, 1), QDateTime(2010, 1, 1, 1, 1, 1)})
+
+    def test_iterator(self):
+        tmpfile = os.path.join(self.basetestpath, '..', 'points_gpkg.gpkg')
+        testdata_path = unitTestDataPath('provider')
+        shutil.copy(os.path.join(unitTestDataPath('provider'), '..', 'points_gpkg.gpkg'), tmpfile)
+
+        vl = QgsVectorLayer('{}|layername=points_gpkg'.format(tmpfile), 'foo', 'ogr')
+        self.assertTrue(vl.isValid())
+
+        field = "Cabin Crew"
+        qexc = vl.createExpressionContext()
+        DefaultFilter = QgsAggregateCalculator(vl)
+        StackedFilter = QgsAggregateCalculator(vl)
+        DefaultFilter.setFidsFilter([1, ])
+        StackedFilter.setFidsFilter([1, ])
+        DefaultFilter.setFilter('1')
+        StackedFilter.setFilter('1')
+
+        StackedFilter.stackFilters(True)
+
+        total1 = DefaultFilter.calculate(QgsAggregateCalculator.Sum, field, context=qexc)
+        total2 = StackedFilter.calculate(QgsAggregateCalculator.Sum, field, context=qexc)
+        if not((int(total1[0]) + int(total2[0])) == 0):
+            self.assertNotEqual(total1, total2)
 
 
 if __name__ == '__main__':

@@ -94,7 +94,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
     }
   }
 
-  if ( request.filterType() == QgsFeatureRequest::FilterFid )
+  if ( request.hasValidFilter( QgsFeatureRequest::FilterFid ) )
   {
     QgsDebugMsg( QStringLiteral( "Configuring for returning single id" ) );
     if ( mFilterRect.isNull() || mFeatureIds.contains( request.filterFid() ) )
@@ -136,7 +136,8 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
          !( mRequest.flags() & QgsFeatureRequest::NoGeometry )
          || mTestGeometry
          || ( mTestSubset && mSource->mSubsetExpression->needsGeometry() )
-         || ( request.filterType() == QgsFeatureRequest::FilterExpression && request.filterExpression()->needsGeometry() )
+         || ( request.hasValidFilter( QgsFeatureRequest::FilterExpression )
+              && request.filterExpression()->needsGeometry() )
        )
      )
   {
@@ -149,7 +150,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
   }
 
   // ensure that all attributes required for expression filter are being fetched
-  if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes && request.filterType() == QgsFeatureRequest::FilterExpression )
+  if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes && request.hasValidFilter( QgsFeatureRequest::FilterExpression ) )
   {
     QgsAttributeList attrs = request.subsetOfAttributes();
     //ensure that all fields required for filter expressions are prepared

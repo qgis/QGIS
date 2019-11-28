@@ -65,17 +65,41 @@ QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource *sour
     mFeatureIdList = mSource->mSpatialIndex->intersects( mFilterRect );
     QgsDebugMsg( "Features returned by spatial index: " + QString::number( mFeatureIdList.count() ) );
   }
-  else if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
+  if ( mRequest.hasValidFilter( QgsFeatureRequest::FilterFid ) )
   {
     mUsingFeatureIdList = true;
     QgsFeatureMap::const_iterator it = mSource->mFeatures.constFind( mRequest.filterFid() );
     if ( it != mSource->mFeatures.constEnd() )
-      mFeatureIdList.append( mRequest.filterFid() );
+    {
+      if ( !mFeatureIdList.isEmpty() )
+      {
+        if ( mFeatureIdList.contains( mRequest.filterFid() ) )
+        {
+          mFeatureIdList.clear();
+          mFeatureIdList.append( mRequest.filterFid() ) ;
+        }
+        else
+        {
+          mFeatureIdList.clear();
+        }
+      }
+      else
+      {
+        mFeatureIdList.append( mRequest.filterFid() );
+      }
+    }
   }
-  else if ( mRequest.filterType() == QgsFeatureRequest::FilterFids )
+  else if ( mRequest.hasValidFilter( QgsFeatureRequest::FilterFids ) )
   {
     mUsingFeatureIdList = true;
-    mFeatureIdList = mRequest.filterFids().toList();
+    if ( !mFeatureIdList.isEmpty() )
+    {
+      mFeatureIdList = mFeatureIdList.toSet().intersect( mRequest.filterFids() ).toList();
+    }
+    else
+    {
+      mFeatureIdList = mRequest.filterFids().toList();
+    }
   }
   else
   {

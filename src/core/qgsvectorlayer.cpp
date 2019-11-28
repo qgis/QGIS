@@ -4030,7 +4030,11 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
   // fallback to using aggregate calculator to determine aggregate
   QgsAggregateCalculator c( this );
   if ( fids )
+  {
+    bool stack = true;
     c.setFidsFilter( *fids );
+    c.stackFilters( stack );
+  }
   c.setParameters( parameters );
   return c.calculate( aggregate, fieldOrExpression, context, ok );
 }

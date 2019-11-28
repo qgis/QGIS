@@ -78,7 +78,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
     }
   }
 
-  if ( request.filterType() == QgsFeatureRequest::FilterFid )
+  if ( request.hasValidFilter( QgsFeatureRequest::FilterFid ) )
   {
     whereClause = whereClauseFid();
     if ( ! whereClause.isEmpty() )
@@ -86,7 +86,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
       whereClauses.append( whereClause );
     }
   }
-  else if ( request.filterType() == QgsFeatureRequest::FilterFids )
+  else if ( request.hasValidFilter( QgsFeatureRequest::FilterFids ) )
   {
     if ( request.filterFids().isEmpty() )
     {
@@ -98,10 +98,10 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
     }
   }
   //IMPORTANT - this MUST be the last clause added!
-  else if ( request.filterType() == QgsFeatureRequest::FilterExpression )
+  if ( request.hasValidFilter( QgsFeatureRequest::FilterExpression ) )
   {
     // ensure that all attributes required for expression filter are being fetched
-    if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes && request.filterType() == QgsFeatureRequest::FilterExpression )
+    if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
     {
       QgsAttributeList attrs = request.subsetOfAttributes();
       //ensure that all fields required for filter expressions are prepared

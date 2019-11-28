@@ -81,6 +81,12 @@ Examples:
       GeometryAbortOnInvalid,
     };
 
+    enum FilterCombination
+    {
+      UseLast,
+      OperatorAND
+    };
+
     class OrderByClause
 {
 %Docstring
@@ -738,6 +744,33 @@ For example, this should be set on requests that are issued from an
 expression function.
 
 .. versionadded:: 3.4
+%End
+
+    void setFilterHandling( FilterCombination handlingMethod );
+%Docstring
+Sets the FilterCombination to use when handling filter.
+
+Implemented method are:
+- UseLast : Return features that fit the last filter set (other than rectangle)
+- OperatorAND : Return features that fit all the filters.
+
+Default behavior is UseLast.
+
+.. versionadded:: 3.12
+%End
+
+    QgsFeatureRequest::FilterCombination filterHandling() const;
+%Docstring
+Returns the filter handling method
+
+.. versionadded:: 3.12
+%End
+
+    bool hasValidFilter( FilterType filterType ) const;
+%Docstring
+Returns ``True`` if the given filter type can be used and is valid.
+
+.. versionadded:: 3.12
 %End
 
   protected:

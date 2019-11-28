@@ -140,7 +140,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
     mRequest.setFilterRect( mFilterRect );
   }
 
-  if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
+  if ( mRequest.hasValidFilter( QgsFeatureRequest::FilterExpression ) )
   {
     mRequest.expressionContext()->setFields( mSource->mFields );
     mRequest.filterExpression()->prepare( mRequest.expressionContext() );
@@ -199,7 +199,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
     mProviderRequest.setSubsetOfAttributes( providerSubset.toList() );
   }
 
-  if ( mProviderRequest.filterType() == QgsFeatureRequest::FilterExpression )
+  if ( mProviderRequest.hasValidFilter( QgsFeatureRequest::FilterExpression ) )
   {
     const bool needsGeom = mProviderRequest.filterExpression()->needsGeometry();
     const auto constReferencedColumns = mProviderRequest.filterExpression()->referencedColumns();
@@ -242,13 +242,13 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
       // features may be deleted in buffer, so increase limit sent to provider
       providerLimit += mSource->mDeletedFeatureIds.size();
 
-      if ( mProviderRequest.filterType() == QgsFeatureRequest::FilterExpression )
+      if ( mProviderRequest.hasValidFilter( QgsFeatureRequest::FilterExpression ) )
       {
         // attribute changes may mean some features no longer match expression, so increase limit sent to provider
         providerLimit += mSource->mChangedAttributeValues.size();
       }
 
-      if ( mProviderRequest.filterType() == QgsFeatureRequest::FilterExpression || !mProviderRequest.filterRect().isNull() )
+      if ( mProviderRequest.hasValidFilter( QgsFeatureRequest::FilterExpression ) || !mProviderRequest.filterRect().isNull() )
       {
         // geometry changes may mean some features no longer match expression or rect, so increase limit sent to provider
         providerLimit += mSource->mChangedGeometries.size();
@@ -259,7 +259,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
     }
   }
 
-  if ( request.filterType() == QgsFeatureRequest::FilterFid )
+  if ( request.hasValidFilter( QgsFeatureRequest::FilterFid ) )
   {
     mFetchedFid = false;
   }
@@ -365,7 +365,7 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature &f )
     return false;
   }
 
-  if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
+  if ( mRequest.hasValidFilter( QgsFeatureRequest::FilterFid ) )
   {
     if ( mFetchedFid )
       return false;
@@ -373,7 +373,8 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature &f )
     if ( res && postProcessFeature( f ) )
     {
       mFetchedFid = true;
-      return res;
+      if ( mRequest.filterHandling() == QgsFeatureRequest::UseLast )
+        return res;
     }
     else
     {
@@ -389,7 +390,7 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature &f )
     // no more changed geometries
   }
 
-  if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
+  if ( mRequest.hasValidFilter( QgsFeatureRequest::FilterExpression ) )
   {
     if ( fetchNextChangedAttributeFeature( f ) )
       return true;
@@ -428,7 +429,7 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature &f )
     if ( mHasVirtualAttributes )
       addVirtualAttributes( f );
 
-    if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression && mProviderRequest.filterType() != QgsFeatureRequest::FilterExpression )
+    if ( mRequest.hasValidFilter( QgsFeatureRequest::FilterExpression ) && !mProviderRequest.hasValidFilter( QgsFeatureRequest::FilterExpression ) )
     {
       //filtering by expression, and couldn't do it on the provider side
       mRequest.expressionContext()->setFeature( f );
@@ -462,7 +463,7 @@ bool QgsVectorLayerFeatureIterator::rewind()
   if ( mClosed )
     return false;
 
-  if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
+  if ( mRequest.hasValidFilter( QgsFeatureRequest::FilterFid ) )
   {
     mFetchedFid = false;
   }
@@ -562,7 +563,7 @@ bool QgsVectorLayerFeatureIterator::fetchNextChangedGeomFeature( QgsFeature &f )
 
     useChangedAttributeFeature( fid, *mFetchChangedGeomIt, f );
 
-    if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
+    if ( mRequest.hasValidFilter( QgsFeatureRequest::FilterExpression ) )
     {
       mRequest.expressionContext()->setFeature( f );
       if ( !mRequest.filterExpression()->evaluate( mRequest.expressionContext() ).toBool() )
@@ -615,7 +616,7 @@ void QgsVectorLayerFeatureIterator::useChangedAttributeFeature( QgsFeatureId fid
   f.setFields( mSource->mFields );
 
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) ||
-       ( mRequest.filterType() == QgsFeatureRequest::FilterExpression && mRequest.filterExpression()->needsGeometry() ) )
+       ( mRequest.hasValidFilter( QgsFeatureRequest::FilterExpression ) && mRequest.filterExpression()->needsGeometry() ) )
   {
     f.setGeometry( geom );
   }
@@ -1202,11 +1203,11 @@ QgsFeatureIterator QgsVectorLayerSelectedFeatureSource::getFeatures( const QgsFe
   // note that we can't do this for some request types - e.g. expression based requests, so
   // in that case we just pass the request on to the provider and let QgsVectorLayerSelectedFeatureIterator
   // do ALL the filtering
-  if ( req.filterFids().isEmpty() && req.filterType() == QgsFeatureRequest::FilterNone )
+  if ( !req.hasValidFilter( QgsFeatureRequest::FilterFids ) && req.hasValidFilter( QgsFeatureRequest::FilterNone ) )
   {
     req.setFilterFids( mSelectedFeatureIds );
   }
-  else if ( !req.filterFids().isEmpty() )
+  else if ( req.hasValidFilter( QgsFeatureRequest::FilterFids ) )
   {
     QgsFeatureIds reqIds = mSelectedFeatureIds;
     reqIds.intersect( req.filterFids() );
@@ -1267,7 +1268,7 @@ QgsVectorLayerSelectedFeatureIterator::QgsVectorLayerSelectedFeatureIterator( co
   , mSelectedFeatureIds( selectedFeatureIds )
 {
   QgsFeatureRequest sourceRequest = request;
-  if ( sourceRequest.filterType() == QgsFeatureRequest::FilterExpression && sourceRequest.limit() > 0 )
+  if ( sourceRequest.hasValidFilter( QgsFeatureRequest::FilterExpression ) && sourceRequest.limit() > 0 )
   {
     // we can't pass the request limit to the provider here - otherwise the provider will
     // limit the number of returned features and may only return a bunch of matching features

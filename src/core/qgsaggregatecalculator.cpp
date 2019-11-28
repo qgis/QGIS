@@ -96,6 +96,8 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
 
   if ( !mFilterExpression.isEmpty() )
     request.setFilterExpression( mFilterExpression );
+  if ( mStackFilters )
+    request.setFilterHandling( QgsFeatureRequest().OperatorAND );
   if ( context )
     request.setExpressionContext( *context );
   //determine result type

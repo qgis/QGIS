@@ -62,11 +62,11 @@ QgsAfsFeatureIterator::QgsAfsFeatureIterator( QgsAfsFeatureSource *source, bool 
   }
 
   QgsFeatureIds requestIds;
-  if ( mRequest.filterType() == QgsFeatureRequest::FilterFids )
+  if ( mRequest.hasValidFilter( QgsFeatureRequest::FilterFids ) )
   {
     requestIds = mRequest.filterFids();
   }
-  else if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
+  else if ( mRequest.hasValidFilter( QgsFeatureRequest::FilterFid ) )
   {
     requestIds.insert( mRequest.filterFid() );
   }
@@ -161,9 +161,7 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
       return result;
     }
 
-    case QgsFeatureRequest::FilterFids:
-    case QgsFeatureRequest::FilterExpression:
-    case QgsFeatureRequest::FilterNone:
+    default:
     {
       while ( mFeatureIterator < mSource->sharedData()->featureCount() )
       {

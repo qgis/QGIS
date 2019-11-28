@@ -29,6 +29,7 @@ from qgis.core import (
     QgsFeatureRequest,
     QgsVectorDataProvider,
     QgsWkbTypes,
+    QgsAggregateCalculator,
     QgsVectorLayerExporter,
 )
 from qgis.PyQt.QtCore import QVariant
@@ -914,6 +915,24 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
                                                                          })
         self.assertTrue(QgsWkbTypes.isMultiType(multi_layer.wkbType()))
         self.assertEqual(write_result, QgsVectorLayerExporter.ErrFeatureWriteFailed, "Failed to transform a feature with ID '1' to single part. Writing stopped.")
+
+    def test_iterator(self):
+        vl = self.vl
+        field = "pk"
+        qexc = vl.createExpressionContext()
+        DefaultFR = QgsAggregateCalculator(vl)
+        StackedFR = QgsAggregateCalculator(vl)
+        DefaultFR.setFidsFilter([1, ])
+        StackedFR.setFidsFilter([1, ])
+        DefaultFR.setFilter('1')
+        StackedFR.setFilter('1')
+
+        StackedFR.stackFilters(True)
+
+        total1 = DefaultFR.calculate(QgsAggregateCalculator.Sum, field, context=qexc)
+        total2 = StackedFR.calculate(QgsAggregateCalculator.Sum, field, context=qexc)
+        self.assertNotEqual(total1, total2)
+        self.assertNotEqual(total1, total2)
 
 
 if __name__ == '__main__':

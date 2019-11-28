@@ -104,7 +104,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   if ( subsetOfAttributes )
   {
     // ensure that all attributes required for expression filter are being fetched
-    if ( request.filterType() == QgsFeatureRequest::FilterExpression )
+    if ( request.hasValidFilter( QgsFeatureRequest::FilterExpression ) )
     {
       //ensure that all fields required for filter expressions are prepared
       QSet<int> attributeIndexes = request.filterExpression()->referencedAttributeIndexes( mSource->mFields );
@@ -134,7 +134,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
 
   // get geometry col
   if ( ( !( request.flags() & QgsFeatureRequest::NoGeometry )
-         || ( request.filterType() == QgsFeatureRequest::FilterExpression && request.filterExpression()->needsGeometry() )
+         || ( request.hasValidFilter( QgsFeatureRequest::FilterExpression ) && request.filterExpression()->needsGeometry() )
        )
        && mSource->isSpatial() )
   {
@@ -184,7 +184,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   }
 
   // set fid filter
-  if ( request.filterType() == QgsFeatureRequest::FilterFid && !mSource->mFidColName.isEmpty() )
+  if ( request.hasValidFilter( QgsFeatureRequest::FilterFid ) && !mSource->mFidColName.isEmpty() )
   {
     QString fidfilter = QStringLiteral( " [%1] = %2" ).arg( mSource->mFidColName, FID_TO_STRING( request.filterFid() ) );
     // set attribute filter
@@ -196,8 +196,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
     mStatement += fidfilter;
     filterAdded = true;
   }
-  else if ( request.filterType() == QgsFeatureRequest::FilterFids && !mSource->mFidColName.isEmpty()
-            && !mRequest.filterFids().isEmpty() )
+  else if ( request.hasValidFilter( QgsFeatureRequest::FilterFids ) && !mSource->mFidColName.isEmpty() )
   {
     QString delim;
     QString inClause = QStringLiteral( "%1 IN (" ).arg( mSource->mFidColName );
@@ -230,7 +229,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   //NOTE - must be last added!
   mExpressionCompiled = false;
   mCompileStatus = NoCompilation;
-  if ( request.filterType() == QgsFeatureRequest::FilterExpression )
+  if ( request.hasValidFilter( QgsFeatureRequest::FilterExpression ) )
   {
     if ( QgsSettings().value( QStringLiteral( "qgis/compileExpressions" ), true ).toBool() )
     {

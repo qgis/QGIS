@@ -114,6 +114,22 @@ so the default check will be omitted.
 :return: ``True`` if a feature was written to f
 %End
 
+    virtual bool nextFeatureMultiFilters( QgsFeature &f );
+%Docstring
+By default, the iterator will fetch all features and check if the feature is
+compliant with all filters.
+If you have a more sophisticated metodology (SQL request for the features...)
+and you are sure, that any feature you return from fetchFeature will match
+if the request was FilterFids you can just redirect this call to fetchFeature
+so the default check will be omitted.
+
+:param f: The feature to write to
+
+:return: ``True`` if a feature was written to f
+
+.. versionadded:: 3.12
+%End
+
     void geometryToDestinationCrs( QgsFeature &feature, const QgsCoordinateTransform &transform ) const;
 %Docstring
 Transforms ``feature``'s geometry according to the specified coordinate ``transform``.

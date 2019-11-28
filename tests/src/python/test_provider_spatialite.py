@@ -31,7 +31,8 @@ from qgis.core import (QgsProviderRegistry,
                        QgsDefaultValue,
                        QgsFeatureRequest,
                        QgsRectangle,
-                       QgsWkbTypes)
+                       QgsWkbTypes,
+                       QgsAggregateCalculator)
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -1065,6 +1066,24 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         _test_db(testPath)
         testPath = "dbname=%s table='test_pg'" % dbname
         _test_db(testPath)
+
+    def test_iterator(self):
+        vl = self.vl()
+        field = "pk"
+        qexc = vl.createExpressionContext()
+        DefaultFR = QgsAggregateCalculator(vl)
+        StackedFR = QgsAggregateCalculator(vl)
+        DefaultFR.setFidsFilter([1, ])
+        StackedFR.setFidsFilter([1, ])
+        DefaultFR.setFilter('1')
+        StackedFR.setFilter('1')
+
+        StackedFR.stackFilters(True)
+
+        total1 = DefaultFR.calculate(QgsAggregateCalculator.Sum, field, context=qexc)
+        total2 = StackedFR.calculate(QgsAggregateCalculator.Sum, field, context=qexc)
+        self.assertNotEqual(total1, total2)
+        self.assertNotEqual(total1, total2)
 
 
 if __name__ == '__main__':

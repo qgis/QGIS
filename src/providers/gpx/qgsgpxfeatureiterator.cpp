@@ -92,7 +92,7 @@ bool QgsGPXFeatureIterator::fetchFeature( QgsFeature &feature )
   if ( mClosed )
     return false;
 
-  if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
+  if ( mRequest.hasValidFilter( QgsFeatureRequest::FilterFid ) )
   {
     bool res = readFid( feature );
     close();

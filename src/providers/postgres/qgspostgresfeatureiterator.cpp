@@ -29,7 +29,7 @@
 QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsPostgresFeatureSource>( source, ownSource, request )
 {
-  if ( request.filterType() == QgsFeatureRequest::FilterFids && request.filterFids().isEmpty() )
+  if ( request.hasValidFilter( QgsFeatureRequest::FilterFids ) && request.filterFids().isEmpty() )
   {
     mClosed = true;
     iteratorClosed();
@@ -88,19 +88,19 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     whereClause = QgsPostgresUtils::andWhereClauses( whereClause, '(' + mSource->mSqlWhereClause + ')' );
   }
 
-  if ( request.filterType() == QgsFeatureRequest::FilterFid )
+  if ( request.hasValidFilter( QgsFeatureRequest::FilterFid ) )
   {
     QString fidWhereClause = QgsPostgresUtils::whereClause( mRequest.filterFid(), mSource->mFields, mConn, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, mSource->mShared );
 
     whereClause = QgsPostgresUtils::andWhereClauses( whereClause, fidWhereClause );
   }
-  else if ( request.filterType() == QgsFeatureRequest::FilterFids )
+  else if ( request.hasValidFilter( QgsFeatureRequest::FilterFids ) )
   {
     QString fidsWhereClause = QgsPostgresUtils::whereClause( mRequest.filterFids(), mSource->mFields, mConn, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, mSource->mShared );
 
     whereClause = QgsPostgresUtils::andWhereClauses( whereClause, fidsWhereClause );
   }
-  else if ( request.filterType() == QgsFeatureRequest::FilterExpression )
+  if ( request.hasValidFilter( QgsFeatureRequest::FilterExpression ) )
   {
     // ensure that all attributes required for expression filter are being fetched
     if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
