@@ -16,11 +16,8 @@
 #include "qgslayoutimagedrophandler.h"
 #include "qgslayoutdesignerinterface.h"
 #include "qgslayout.h"
-#include "qgsreadwritecontext.h"
-#include "qgsproject.h"
 #include "qgslayoutview.h"
 #include "qgslayoutitempicture.h"
-#include <QMessageBox>
 #include <QImageReader>
 
 QgsLayoutImageDropHandler::QgsLayoutImageDropHandler( QObject *parent )
