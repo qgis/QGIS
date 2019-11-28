@@ -133,6 +133,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmstringconcatenation.cpp
   processing/qgsalgorithmswapxy.cpp
   processing/qgsalgorithmsubdivide.cpp
+  processing/qgsalgorithmsumlinelength.cpp
   processing/qgsalgorithmsymmetricaldifference.cpp
   processing/qgsalgorithmtaperedbuffer.cpp
   processing/qgsalgorithmtransect.cpp

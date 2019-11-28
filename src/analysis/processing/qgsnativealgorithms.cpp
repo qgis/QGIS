@@ -126,6 +126,7 @@
 #include "qgsalgorithmsplitfeaturesbyattributecharacter.h"
 #include "qgsalgorithmstringconcatenation.h"
 #include "qgsalgorithmsubdivide.h"
+#include "qgsalgorithmsumlinelength.h"
 #include "qgsalgorithmswapxy.h"
 #include "qgsalgorithmsymmetricaldifference.h"
 #include "qgsalgorithmtaperedbuffer.h"
@@ -308,6 +309,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsStringConcatenationAlgorithm() );
   addAlgorithm( new QgsStyleFromProjectAlgorithm() );
   addAlgorithm( new QgsSubdivideAlgorithm() );
+  addAlgorithm( new QgsSumLineLengthAlgorithm() );
   addAlgorithm( new QgsSwapXYAlgorithm() );
   addAlgorithm( new QgsSymmetricalDifferenceAlgorithm() );
   addAlgorithm( new QgsTaperedBufferAlgorithm() );

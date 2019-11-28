@@ -1794,7 +1794,7 @@ tests:
         name: expected/line_intersection_collection.gml
         type: vector
 
-  - algorithm: qgis:sumlinelengths
+  - algorithm: native:sumlinelengths
     name: Sum line lengths
     params:
       COUNT_FIELD: line_count

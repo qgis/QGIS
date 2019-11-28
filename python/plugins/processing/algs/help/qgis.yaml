@@ -438,11 +438,6 @@ qgis:splitvectorlayer: >
 qgis:statisticsbycategories: >
   This algorithm calculates statistics of fields depending on a parent class.
 
-qgis:sumlinelengths: >
-  This algorithm takes a polygon layer and a line layer and measures the total length of lines and the total number of them that cross each polygon.
-
-  The resulting layer has the same features as the input polygon layer, but with two additional attributes containing the length and count of the lines across each polygon. The names of these two fields can be configured in the algorithm parameters.
-
 qgis:texttofloat: >
   This algorithm modifies the type of a given attribute in a vector layer, converting a text attribute containing numeric strings into a numeric attribute.
 

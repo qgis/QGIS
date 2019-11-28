@@ -98,7 +98,6 @@ from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
 from .SpatialJoin import SpatialJoin
 from .SpatialJoinSummary import SpatialJoinSummary
 from .StatisticsByCategories import StatisticsByCategories
-from .SumLines import SumLines
 from .TextToFloat import TextToFloat
 from .TilesXYZ import TilesXYZAlgorithmDirectory, TilesXYZAlgorithmMBTiles
 from .TinInterpolation import TinInterpolation
@@ -193,7 +192,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 SpatialJoin(),
                 SpatialJoinSummary(),
                 StatisticsByCategories(),
-                SumLines(),
                 TextToFloat(),
                 TilesXYZAlgorithmDirectory(),
                 TilesXYZAlgorithmMBTiles(),
