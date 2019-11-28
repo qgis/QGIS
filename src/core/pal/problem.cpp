@@ -292,7 +292,7 @@ void Problem::init_sol_falp()
     LabelPosition *retainedLabel = nullptr;
     int p;
 
-    for ( i = 0; i < static_cast< int >( mFeatureCount ); i++ ) // forearch hidden feature
+    for ( std::size_t i = 0; i < mFeatureCount; i++ ) // forearch hidden feature
     {
       if ( mSol.activeLabelIds[i] == -1 )
       {
@@ -783,10 +783,9 @@ void Problem::chain_search()
 
 QList<LabelPosition *> Problem::getSolution( bool returnInactive, QList<LabelPosition *> *unlabeled )
 {
-  int i;
   QList<LabelPosition *> solList;
 
-  for ( i = 0; i < static_cast< int >( mFeatureCount ); i++ )
+  for ( std::size_t i = 0; i < mFeatureCount; i++ )
   {
     if ( mSol.activeLabelIds[i] != -1 )
     {
@@ -817,8 +816,6 @@ void Problem::solution_cost()
 
   int nbOv;
 
-  int i;
-
   LabelPosition::CountContext context;
   context.inactiveCost = mInactiveCost;
   context.nbOv = &nbOv;
@@ -829,7 +826,7 @@ void Problem::solution_cost()
 
   int nbHidden = 0;
 
-  for ( i = 0; i < static_cast< int >( mFeatureCount ); i++ )
+  for ( std::size_t i = 0; i < mFeatureCount; i++ )
   {
     if ( mSol.activeLabelIds[i] == -1 )
     {
