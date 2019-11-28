@@ -77,6 +77,21 @@ namespace pal
         ShowAll // show upside down for all labels, including dynamic ones
       };
 
+      /**
+       * \brief Create a new layer
+       *
+       * \param provider Associated provider
+       * \param name Name of the layer (for stats, debugging - does not need to be unique)
+       * \param arrangement Arrangement mode : how to place candidates
+       * \param defaultPriority layer's prioriry (0 is the best, 1 the worst)
+       * \param active is the layer is active (currently displayed)
+       * \param toLabel the layer will be labeled whether toLablel is TRUE
+       * \param pal pointer to the pal object
+       * \param displayAll if TRUE, all features will be labelled even though overlaps occur
+       *
+       */
+      Layer( QgsAbstractLabelProvider *provider, const QString &name, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal, bool displayAll = false );
+
       virtual ~Layer();
 
       bool displayAll() const { return mDisplayAll; }
@@ -332,32 +347,17 @@ namespace pal
       UpsideDownLabels mUpsidedownLabels;
 
       // indexes (spatial and id)
-      RTree<FeaturePart *, double, 2, double, 8, 4> *mFeatureIndex;
+      RTree<FeaturePart *, double, 2, double, 8, 4> mFeatureIndex;
       //! Lookup table of label features (owned by the label feature provider that created them)
       QHash< QgsFeatureId, QgsLabelFeature *> mHashtable;
 
       //obstacle r-tree
-      RTree<FeaturePart *, double, 2, double, 8, 4> *mObstacleIndex;
+      RTree<FeaturePart *, double, 2, double, 8, 4> mObstacleIndex;
 
       QHash< QString, QVector<FeaturePart *> > mConnectedHashtable;
       QHash< QgsFeatureId, int > mConnectedFeaturesIds;
 
       QMutex mMutex;
-
-      /**
-       * \brief Create a new layer
-       *
-       * \param provider Associated provider
-       * \param name Name of the layer (for stats, debugging - does not need to be unique)
-       * \param arrangement Arrangement mode : how to place candidates
-       * \param defaultPriority layer's prioriry (0 is the best, 1 the worst)
-       * \param active is the layer is active (currently displayed)
-       * \param toLabel the layer will be labeled whether toLablel is TRUE
-       * \param pal pointer to the pal object
-       * \param displayAll if TRUE, all features will be labelled even though overlaps occur
-       *
-       */
-      Layer( QgsAbstractLabelProvider *provider, const QString &name, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal, bool displayAll = false );
 
       //! Add newly created feature part into r tree and to the list
       void addFeaturePart( FeaturePart *fpart, const QString &labelText = QString() );

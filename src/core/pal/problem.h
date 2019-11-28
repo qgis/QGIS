@@ -85,22 +85,22 @@ namespace pal
        * \param position label candidate position. Ownership is transferred to Problem.
        * \since QGIS 2.12
        */
-      void addCandidatePosition( LabelPosition *position ) { mLabelPositions.append( position ); }
-
-      /////////////////
-      // problem inspection functions
+      void addCandidatePosition( std::unique_ptr< LabelPosition > position ) { mLabelPositions.emplace_back( std::move( position ) ); }
 
       /**
        * Returns the total number of features considered during the labeling problem.
        */
       std::size_t featureCount() const { return mFeatureCount; }
 
-      // features counted 0...n-1
-      int getFeatureCandidateCount( int i ) { return mFeatNbLp[i]; }
-      // both features and candidates counted 0..n-1
-      LabelPosition *getFeatureCandidate( int fi, int ci ) { return mLabelPositions.at( mFeatStartId[fi] + ci ); }
-      /////////////////
+      /**
+       * Returns the number of candidates generated for the \a feature at the specified index.
+       */
+      int featureCandidateCount( int feature ) const { return mFeatNbLp[feature]; }
 
+      /**
+       * Returns the candidate corresponding to the specified \a feature and \a candidate index.
+       */
+      LabelPosition *featureCandidate( int feature, int candidate ) const { return mLabelPositions[ mFeatStartId[feature] + candidate ].get(); }
 
       void reduce();
 
@@ -134,7 +134,7 @@ namespace pal
        *
        * Ownership of positions added to this list is transferred to the problem.
        */
-      QList<LabelPosition *> *positionsWithNoCandidates()
+      std::vector< std::unique_ptr< LabelPosition > > *positionsWithNoCandidates()
       {
         return &mPositionsWithNoCandidates;
       }
@@ -174,14 +174,14 @@ namespace pal
       /**
        * Map extent (xmin, ymin, xmax, ymax)
        */
-      double mMapExtentBounds[4];
+      double mMapExtentBounds[4] = {0, 0, 0, 0};
 
-      QList< LabelPosition * > mLabelPositions;
+      std::vector< std::unique_ptr< LabelPosition > > mLabelPositions;
 
-      RTree<LabelPosition *, double, 2, double> *mCandidatesIndex = nullptr; // index all candidates
-      RTree<LabelPosition *, double, 2, double> *mActiveCandidatesIndex = nullptr; // index active candidates
+      RTree<LabelPosition *, double, 2, double> mAllCandidatesIndex;
+      RTree<LabelPosition *, double, 2, double> mActiveCandidatesIndex;
 
-      QList< LabelPosition * > mPositionsWithNoCandidates;
+      std::vector< std::unique_ptr< LabelPosition > > mPositionsWithNoCandidates;
 
       //int *feat;        // [nblp]
       int *mFeatStartId = nullptr; // [nbft]

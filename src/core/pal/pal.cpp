@@ -58,20 +58,21 @@ void Pal::removeLayer( Layer *layer )
     return;
 
   mMutex.lock();
-  if ( QgsAbstractLabelProvider *key = mLayers.key( layer, nullptr ) )
+
+  for ( auto it = mLayers.begin(); it != mLayers.end(); ++it )
   {
-    mLayers.remove( key );
-    delete layer;
+    if ( it->second.get() == layer )
+    {
+      mLayers.erase( it );
+      break;
+    }
   }
   mMutex.unlock();
 }
 
 Pal::~Pal()
 {
-
   mMutex.lock();
-
-  qDeleteAll( mLayers );
   mLayers.clear();
   mMutex.unlock();
 
@@ -83,13 +84,14 @@ Layer *Pal::addLayer( QgsAbstractLabelProvider *provider, const QString &layerNa
 {
   mMutex.lock();
 
-  Q_ASSERT( !mLayers.contains( provider ) );
+  Q_ASSERT( mLayers.find( provider ) == mLayers.end() );
 
-  Layer *layer = new Layer( provider, layerName, arrangement, defaultPriority, active, toLabel, this, displayAll );
-  mLayers.insert( provider, layer );
+  std::unique_ptr< Layer > layer = qgis::make_unique< Layer >( provider, layerName, arrangement, defaultPriority, active, toLabel, this, displayAll );
+  Layer *res = layer.get();
+  mLayers.insert( { provider, std::move( layer ) } );
   mMutex.unlock();
 
-  return layer;
+  return res;
 }
 
 struct FeatCallBackCtx
@@ -99,8 +101,8 @@ struct FeatCallBackCtx
   std::list< std::unique_ptr< Feats > > *features = nullptr;
 
   RTree<FeaturePart *, double, 2, double> *obstacleIndex = nullptr;
-  RTree<LabelPosition *, double, 2, double> *candidateIndex = nullptr;
-  QList<LabelPosition *> *positionsWithNoCandidates = nullptr;
+  RTree<LabelPosition *, double, 2, double> *allCandidateIndex = nullptr;
+  std::vector< std::unique_ptr< LabelPosition > > *positionsWithNoCandidates = nullptr;
   const GEOSPreparedGeometry *mapBoundary = nullptr;
   Pal *pal = nullptr;
 };
@@ -145,7 +147,7 @@ bool extractFeatCallback( FeaturePart *featurePart, void *ctx )
   {
     for ( std::unique_ptr< LabelPosition > &candidate : candidates )
     {
-      candidate->insertIntoIndex( context->candidateIndex );
+      candidate->insertIntoIndex( *context->allCandidateIndex );
     }
 
     std::sort( candidates.begin(), candidates.end(), CostCalculator::candidateSortGrow );
@@ -163,7 +165,7 @@ bool extractFeatCallback( FeaturePart *featurePart, void *ctx )
     // features with no candidates are recorded in the unlabeled feature list
     std::unique_ptr< LabelPosition > unplacedPosition = featurePart->createCandidatePointOnSurface( featurePart );
     if ( unplacedPosition )
-      context->positionsWithNoCandidates->append( unplacedPosition.release() );
+      context->positionsWithNoCandidates->emplace_back( std::move( unplacedPosition ) );
   }
 
   return true;
@@ -194,14 +196,13 @@ bool extractObstaclesCallback( FeaturePart *ft_ptr, void *ctx )
 
 struct FilterContext
 {
-  RTree<LabelPosition *, double, 2, double> *candidateIndex = nullptr;
+  RTree<LabelPosition *, double, 2, double> *allCandidatesIndex = nullptr;
   Pal *pal = nullptr;
 };
 
 bool filteringCallback( FeaturePart *featurePart, void *ctx )
 {
-
-  RTree<LabelPosition *, double, 2, double> *cdtsIndex = ( reinterpret_cast< FilterContext * >( ctx ) )->candidateIndex;
+  RTree<LabelPosition *, double, 2, double> *allCandidatesIndex = ( reinterpret_cast< FilterContext * >( ctx ) )->allCandidatesIndex;
   Pal *pal = ( reinterpret_cast< FilterContext * >( ctx ) )->pal;
 
   if ( pal->isCanceled() )
@@ -213,7 +214,7 @@ bool filteringCallback( FeaturePart *featurePart, void *ctx )
   LabelPosition::PruneCtx pruneContext;
   pruneContext.obstacle = featurePart;
   pruneContext.pal = pal;
-  cdtsIndex->Search( amin, amax, LabelPosition::pruneCallback, static_cast< void * >( &pruneContext ) );
+  allCandidatesIndex->Search( amin, amax, LabelPosition::pruneCallback, static_cast< void * >( &pruneContext ) );
 
   return true;
 }
@@ -249,7 +250,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
   context.features = &features;
   context.obstacleIndex = &obstacles;
-  context.candidateIndex = prob->mCandidatesIndex;
+  context.allCandidateIndex = &prob->mAllCandidatesIndex;
   context.positionsWithNoCandidates = prob->positionsWithNoCandidates();
   context.mapBoundary = mapBoundaryPrepared.get();
   context.pal = this;
@@ -266,8 +267,9 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
   QStringList layersWithFeaturesInBBox;
 
   mMutex.lock();
-  for ( Layer *layer : qgis::as_const( mLayers ) )
+  for ( const auto &it : mLayers )
   {
+    Layer *layer = it.second.get();
     if ( !layer )
     {
       // invalid layer name
@@ -288,9 +290,9 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
     // find features within bounding box and generate candidates list
     context.layer = layer;
-    layer->mFeatureIndex->Search( amin, amax, extractFeatCallback, static_cast< void * >( &context ) );
+    layer->mFeatureIndex.Search( amin, amax, extractFeatCallback, static_cast< void * >( &context ) );
     // find obstacles within bounding box
-    layer->mObstacleIndex->Search( amin, amax, extractObstaclesCallback, static_cast< void * >( &obstacleContext ) );
+    layer->mObstacleIndex.Search( amin, amax, extractObstaclesCallback, static_cast< void * >( &obstacleContext ) );
 
     layer->mMutex.unlock();
 
@@ -318,7 +320,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
     amin[0] = amin[1] = std::numeric_limits<double>::lowest();
     amax[0] = amax[1] = std::numeric_limits<double>::max();
     FilterContext filterCtx;
-    filterCtx.candidateIndex = prob->mCandidatesIndex;
+    filterCtx.allCandidatesIndex = &prob->mAllCandidatesIndex;
     filterCtx.pal = this;
     obstacles.Search( amin, amax, filteringCallback, static_cast< void * >( &filterCtx ) );
 
@@ -356,7 +358,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       while ( feat->candidates.size() > max_p )
       {
         // TODO remove from index
-        feat->candidates.back()->removeFromIndex( prob->mCandidatesIndex );
+        feat->candidates.back()->removeFromIndex( prob->mAllCandidatesIndex );
         feat->candidates.pop_back();
       }
 
@@ -399,11 +401,11 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
         lp->getBoundingBox( amin, amax );
 
         // lookup for overlapping candidate
-        prob->mCandidatesIndex->Search( amin, amax, LabelPosition::countOverlapCallback, static_cast< void * >( lp.get() ) );
+        prob->mAllCandidatesIndex.Search( amin, amax, LabelPosition::countOverlapCallback, static_cast< void * >( lp.get() ) );
 
         nbOverlaps += lp->getNumOverlaps();
 
-        prob->addCandidatePosition( lp.release() );
+        prob->addCandidatePosition( std::move( lp ) );
       }
     }
     nbOverlaps /= 2;

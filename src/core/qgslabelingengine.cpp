@@ -384,9 +384,9 @@ void QgsLabelingEngine::solve( QgsRenderContext &context )
     painter->setBrush( Qt::NoBrush );
     for ( int i = 0; i < static_cast< int >( mProblem->featureCount() ); i++ )
     {
-      for ( int j = 0; j < mProblem->getFeatureCandidateCount( i ); j++ )
+      for ( int j = 0; j < mProblem->featureCandidateCount( i ); j++ )
       {
-        pal::LabelPosition *lp = mProblem->getFeatureCandidate( i, j );
+        pal::LabelPosition *lp = mProblem->featureCandidate( i, j );
 
         QgsPalLabeling::drawLabelCandidateRect( lp, painter, &xform );
       }

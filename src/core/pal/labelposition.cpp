@@ -422,20 +422,20 @@ bool LabelPosition::polygonObstacleCallback( FeaturePart *obstacle, void *ctx )
   return true;
 }
 
-void LabelPosition::removeFromIndex( RTree<LabelPosition *, double, 2, double> *index )
+void LabelPosition::removeFromIndex( RTree<LabelPosition *, double, 2, double> &index )
 {
   double amin[2];
   double amax[2];
   getBoundingBox( amin, amax );
-  index->Remove( amin, amax, this );
+  index.Remove( amin, amax, this );
 }
 
-void LabelPosition::insertIntoIndex( RTree<LabelPosition *, double, 2, double> *index )
+void LabelPosition::insertIntoIndex( RTree<LabelPosition *, double, 2, double> &index )
 {
   double amin[2];
   double amax[2];
   getBoundingBox( amin, amax );
-  index->Insert( amin, amax, this );
+  index.Insert( amin, amax, this );
 }
 
 bool LabelPosition::pruneCallback( LabelPosition *candidatePosition, void *ctx )

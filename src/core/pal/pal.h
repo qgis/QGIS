@@ -43,6 +43,7 @@
 #include <ctime>
 #include <QMutex>
 #include <QStringList>
+#include <unordered_map>
 
 // TODO ${MAJOR} ${MINOR} etc instead of 0.2
 
@@ -224,7 +225,7 @@ namespace pal
 
     private:
 
-      QHash< QgsAbstractLabelProvider *, Layer * > mLayers;
+      std::unordered_map< QgsAbstractLabelProvider *, std::unique_ptr< Layer > > mLayers;
 
       QMutex mMutex;
 

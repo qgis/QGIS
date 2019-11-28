@@ -256,8 +256,8 @@ namespace pal
       //! Returns the number of upside down characters for this label position
       int upsideDownCharCount() const { return mUpsideDownCharCount; }
 
-      void removeFromIndex( RTree<LabelPosition *, double, 2, double> *index );
-      void insertIntoIndex( RTree<LabelPosition *, double, 2, double> *index );
+      void removeFromIndex( RTree<LabelPosition *, double, 2, double> &index );
+      void insertIntoIndex( RTree<LabelPosition *, double, 2, double> &index );
 
       struct PruneCtx
       {
