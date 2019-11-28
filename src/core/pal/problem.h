@@ -197,7 +197,7 @@ namespace pal
 
           double totalCost = 0;
 
-          void init( int featureCount )
+          void init( std::size_t featureCount )
           {
             activeLabelIds.resize( featureCount, -1 );
             totalCost = 0;

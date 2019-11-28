@@ -218,7 +218,7 @@ void Problem::init_sol_falp()
   int label;
   PriorityQueue *list = nullptr;
 
-  mSol.init( mTotalCandidates );
+  mSol.init( mFeatureCount );
 
   list = new PriorityQueue( mTotalCandidates, mAllNblp, true );
 
