@@ -461,6 +461,16 @@ QList<QgsLayoutObject *> QgsCompositionConverter::addItemsFromCompositionXml( Qg
     newItems << layoutItem ;
   }
 
+  // Group
+  for ( int i = 0; i < parentElement.elementsByTagName( QStringLiteral( "ComposerItemGroup" ) ).size(); i++ )
+  {
+    QDomNode itemNode( parentElement.elementsByTagName( QStringLiteral( "ComposerItemGroup" ) ).at( i ) );
+    QgsLayoutItemGroup *layoutItem = new QgsLayoutItemGroup( layout );
+    readGroupXml( layoutItem, itemNode.toElement(), layout->project(), newItems );
+    adjustPos( layout, layoutItem, position, pasteInPlace, zOrderOffset, pasteShiftPos, pageNumber );
+    newItems << layoutItem ;
+  }
+
   return newItems;
 }
 
@@ -1556,6 +1566,30 @@ bool QgsCompositionConverter::readTableXml( QgsLayoutItemAttributeTable *layoutI
   return true;
 }
 
+bool QgsCompositionConverter::readGroupXml( QgsLayoutItemGroup *layoutItem, const QDomElement &itemElem, const QgsProject *project, const QList< QgsLayoutObject * > &items )
+{
+  Q_UNUSED( project )
+
+  restoreGeneralComposeItemProperties( layoutItem, itemElem );
+
+  QDomNodeList nodes = itemElem.elementsByTagName( "ComposerItemGroupElement" );
+  for ( int i = 0, n = nodes.size(); i < n; ++i )
+  {
+    QDomElement groupElement = nodes.at( i ).toElement();
+    QString elementUuid = groupElement.attribute( "uuid" );
+
+    for ( QgsLayoutObject *item : items )
+    {
+      if ( dynamic_cast<QgsLayoutItem *>( item ) && static_cast<QgsLayoutItem *>( item )->uuid() == elementUuid )
+      {
+        layoutItem->addItem( static_cast<QgsLayoutItem *>( item ) );
+        break;
+      }
+    }
+  }
+
+  return true;
+}
 
 template <class T, class T2>
 bool QgsCompositionConverter::readPolyXml( T *layoutItem, const QDomElement &itemElem, const QgsProject *project )
