@@ -1,8 +1,8 @@
 /***************************************************************************
-    qgslayoutcustomdrophandler.cpp
-    ------------------------------
-    begin                : December 2017
-    copyright            : (C) 2017 by nyall Dawson
+    qgslayoutimagedrophandler.h
+    -------------------------
+    begin                : November 2019
+    copyright            : (C) 2019 by nyall Dawson
     email                : nyall dot dawson at gmail dot com
  ***************************************************************************
  *                                                                         *
@@ -13,21 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef QGSLAYOUTIMAGEDROPHANDLER_H
+#define QGSLAYOUTIMAGEDROPHANDLER_H
+
 #include "qgslayoutcustomdrophandler.h"
-#include <QPointF>
 
-QgsLayoutCustomDropHandler::QgsLayoutCustomDropHandler( QObject *parent )
-  : QObject( parent )
+class QgsLayoutImageDropHandler : public QgsLayoutCustomDropHandler
 {
+    Q_OBJECT
 
-}
+  public:
 
-bool QgsLayoutCustomDropHandler::handleFileDrop( QgsLayoutDesignerInterface *, const QString & )
-{
-  return false;
-}
+    QgsLayoutImageDropHandler( QObject *parent = nullptr );
 
-bool QgsLayoutCustomDropHandler::handleFileDrop( QgsLayoutDesignerInterface *, QPointF, const QString & )
-{
-  return false;
-}
+    bool handleFileDrop( QgsLayoutDesignerInterface *iface, QPointF point, const QString &file ) override;
+};
+
+#endif // QGSLAYOUTIMAGEDROPHANDLER_H

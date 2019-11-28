@@ -202,6 +202,7 @@ SET(QGIS_APP_SRCS
   layout/qgslayoutdesignerdialog.cpp
   layout/qgslayoutguidewidget.cpp
   layout/qgslayouthtmlwidget.cpp
+  layout/qgslayoutimagedrophandler.cpp
   layout/qgslayoutimageexportoptionsdialog.cpp
   layout/qgslayoutitemslistview.cpp
   layout/qgslayoutappmenuprovider.cpp

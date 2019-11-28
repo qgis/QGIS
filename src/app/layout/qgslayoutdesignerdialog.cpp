@@ -1467,17 +1467,25 @@ void QgsLayoutDesignerDialog::dropEvent( QDropEvent *event )
     }
   }
 
-  connect( timer, &QTimer::timeout, this, [this, timer, files]
+  QPointF layoutPoint = mView->mapToScene( mView->mapFromGlobal( mapToGlobal( event->pos() ) ) );
+
+  connect( timer, &QTimer::timeout, this, [this, timer, files, layoutPoint]
   {
     for ( const QString &file : qgis::as_const( files ) )
     {
       const QVector<QPointer<QgsLayoutCustomDropHandler >> handlers = QgisApp::instance()->customLayoutDropHandlers();
       for ( QgsLayoutCustomDropHandler *handler : handlers )
       {
+        if ( handler && handler->handleFileDrop( iface(), layoutPoint, file ) )
+        {
+          break;
+        }
+        Q_NOWARN_DEPRECATED_PUSH
         if ( handler && handler->handleFileDrop( iface(), file ) )
         {
           break;
         }
+        Q_NOWARN_DEPRECATED_POP
       }
     }
 
