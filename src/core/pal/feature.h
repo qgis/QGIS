@@ -55,10 +55,10 @@ namespace pal
   class CORE_EXPORT LabelInfo
   {
     public:
-      typedef struct
+      struct CharacterInfo
       {
         double width;
-      } CharacterInfo;
+      };
 
       LabelInfo( int num, double height, double maxinangle = 20.0, double maxoutangle = -20.0 )
       {

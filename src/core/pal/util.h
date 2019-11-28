@@ -63,12 +63,12 @@ namespace pal
   };
 
 
-  typedef struct _elementary_transformation
+  struct ElemTrans
   {
     int feat;
     int  old_label;
     int  new_label;
-  } ElemTrans;
+  };
 
   struct Point
   {

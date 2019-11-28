@@ -273,11 +273,11 @@ void QgsLabelingEngine::registerLabels( QgsRenderContext &context )
   // set number of candidates generated per feature
   int candPoint, candLine, candPolygon;
   settings.numCandidatePositions( candPoint, candLine, candPolygon );
-  mPal->setPointP( candPoint );
-  mPal->setLineP( candLine );
-  mPal->setPolyP( candPolygon );
+  mPal->setMaximumNumberOfPointCandidates( candPoint );
+  mPal->setMaximumNumberOfLineCandidates( candLine );
+  mPal->setMaximumNumberOfPolygonCandidates( candPolygon );
 
-  mPal->setShowPartial( settings.testFlag( QgsLabelingEngineSettings::UsePartialCandidates ) );
+  mPal->setShowPartialLabels( settings.testFlag( QgsLabelingEngineSettings::UsePartialCandidates ) );
 
 
   // for each provider: get labels and register them in PAL
@@ -382,7 +382,7 @@ void QgsLabelingEngine::solve( QgsRenderContext &context )
   if ( settings.testFlag( QgsLabelingEngineSettings::DrawCandidates ) && mProblem )
   {
     painter->setBrush( Qt::NoBrush );
-    for ( int i = 0; i < mProblem->getNumFeatures(); i++ )
+    for ( int i = 0; i < static_cast< int >( mProblem->featureCount() ); i++ )
     {
       for ( int j = 0; j < mProblem->getFeatureCandidateCount( i ); j++ )
       {

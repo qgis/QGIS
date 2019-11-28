@@ -259,24 +259,24 @@ namespace pal
       void removeFromIndex( RTree<LabelPosition *, double, 2, double> *index );
       void insertIntoIndex( RTree<LabelPosition *, double, 2, double> *index );
 
-      typedef struct
+      struct PruneCtx
       {
         Pal *pal = nullptr;
         FeaturePart *obstacle = nullptr;
-      } PruneCtx;
+      };
 
       //! Check whether the candidate in ctx overlap with obstacle feat
       static bool pruneCallback( LabelPosition *candidatePosition, void *ctx );
 
       // for counting number of overlaps
-      typedef struct
+      struct CountContext
       {
         LabelPosition *lp = nullptr;
         int *nbOv = nullptr;
         double *cost = nullptr;
         double *inactiveCost = nullptr;
         //int *feat;
-      } CountContext;
+      };
 
       /*
        * count overlap, ctx = p_lp

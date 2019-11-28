@@ -57,28 +57,28 @@ inline void delete_chain( Chain *chain )
 
 Problem::Problem()
 {
-  bbox[0] = 0;
-  bbox[1] = 0;
-  bbox[2] = 0;
-  bbox[3] = 0;
-  candidates = new RTree<LabelPosition *, double, 2, double>();
-  candidates_sol = new RTree<LabelPosition *, double, 2, double>();
+  mMapExtentBounds[0] = 0;
+  mMapExtentBounds[1] = 0;
+  mMapExtentBounds[2] = 0;
+  mMapExtentBounds[3] = 0;
+  mCandidatesIndex = new RTree<LabelPosition *, double, 2, double>();
+  mActiveCandidatesIndex = new RTree<LabelPosition *, double, 2, double>();
 }
 
 Problem::~Problem()
 {
-  delete[] featStartId;
-  delete[] featNbLp;
+  delete[] mFeatStartId;
+  delete[] mFeatNbLp;
 
   qDeleteAll( mLabelPositions );
   mLabelPositions.clear();
 
   qDeleteAll( mPositionsWithNoCandidates );
 
-  delete[] inactiveCost;
+  delete[] mInactiveCost;
 
-  delete candidates;
-  delete candidates_sol;
+  delete mCandidatesIndex;
+  delete mActiveCandidatesIndex;
 }
 
 
@@ -110,33 +110,33 @@ void Problem::reduce()
     for ( i = 0; i < static_cast< int >( mFeatureCount ); i++ )
     {
       // ok[i] = true;
-      for ( j = 0; j < featNbLp[i]; j++ )  // foreach candidate
+      for ( j = 0; j < mFeatNbLp[i]; j++ )  // foreach candidate
       {
-        if ( !ok[featStartId[i] + j] )
+        if ( !ok[mFeatStartId[i] + j] )
         {
-          if ( mLabelPositions.at( featStartId[i] + j )->getNumOverlaps() == 0 ) // if candidate has no overlap
+          if ( mLabelPositions.at( mFeatStartId[i] + j )->getNumOverlaps() == 0 ) // if candidate has no overlap
           {
             run = true;
-            ok[featStartId[i] + j] = true;
+            ok[mFeatStartId[i] + j] = true;
             // 1) remove worse candidates from candidates
             // 2) update nb_overlaps
-            counter += featNbLp[i] - j - 1;
+            counter += mFeatNbLp[i] - j - 1;
 
-            for ( k = j + 1; k < featNbLp[i]; k++ )
+            for ( k = j + 1; k < mFeatNbLp[i]; k++ )
             {
 
-              lpid = featStartId[i] + k;
+              lpid = mFeatStartId[i] + k;
               ok[lpid] = true;
               lp2 = mLabelPositions.at( lpid );
 
               lp2->getBoundingBox( amin, amax );
 
-              nbOverlap -= lp2->getNumOverlaps();
-              candidates->Search( amin, amax, LabelPosition::removeOverlapCallback, reinterpret_cast< void * >( lp2 ) );
-              lp2->removeFromIndex( candidates );
+              mNbOverlap -= lp2->getNumOverlaps();
+              mCandidatesIndex->Search( amin, amax, LabelPosition::removeOverlapCallback, reinterpret_cast< void * >( lp2 ) );
+              lp2->removeFromIndex( mCandidatesIndex );
             }
 
-            featNbLp[i] = j + 1;
+            mFeatNbLp[i] = j + 1;
             break;
           }
         }
@@ -148,12 +148,12 @@ void Problem::reduce()
   delete[] ok;
 }
 
-typedef struct
+struct FalpContext
 {
   PriorityQueue *list = nullptr;
   LabelPosition *lp = nullptr;
   RTree <LabelPosition *, double, 2, double> *candidates;
-} FalpContext;
+} ;
 
 bool falpCallback2( LabelPosition *lp, void *ctx )
 {
@@ -218,23 +218,23 @@ void Problem::init_sol_falp()
   int label;
   PriorityQueue *list = nullptr;
 
-  sol.init( mTotalCandidates );
+  mSol.init( mTotalCandidates );
 
-  list = new PriorityQueue( mTotalCandidates, all_nblp, true );
+  list = new PriorityQueue( mTotalCandidates, mAllNblp, true );
 
   double amin[2];
   double amax[2];
 
   FalpContext *context = new FalpContext();
-  context->candidates = candidates;
+  context->candidates = mCandidatesIndex;
   context->list = list;
 
   LabelPosition *lp = nullptr;
 
   for ( i = 0; i < static_cast< int >( mFeatureCount ); i++ )
-    for ( j = 0; j < featNbLp[i]; j++ )
+    for ( j = 0; j < mFeatNbLp[i]; j++ )
     {
-      label = featStartId[i] + j;
+      label = mFeatStartId[i] + j;
       try
       {
         list->insert( label, mLabelPositions.at( label )->getNumOverlaps() );
@@ -265,19 +265,19 @@ void Problem::init_sol_falp()
     }
 
     int probFeatId = lp->getProblemFeatureId();
-    sol.activeLabelIds[probFeatId] = label;
+    mSol.activeLabelIds[probFeatId] = label;
 
-    for ( i = featStartId[probFeatId]; i < featStartId[probFeatId] + featNbLp[probFeatId]; i++ )
+    for ( i = mFeatStartId[probFeatId]; i < mFeatStartId[probFeatId] + mFeatNbLp[probFeatId]; i++ )
     {
-      ignoreLabel( mLabelPositions.at( i ), list, candidates );
+      ignoreLabel( mLabelPositions.at( i ), list, mCandidatesIndex );
     }
 
 
     lp->getBoundingBox( amin, amax );
 
     context->lp = lp;
-    candidates->Search( amin, amax, falpCallback1, reinterpret_cast< void * >( context ) );
-    candidates_sol->Insert( amin, amax, lp );
+    mCandidatesIndex->Search( amin, amax, falpCallback1, reinterpret_cast< void * >( context ) );
+    mActiveCandidatesIndex->Insert( amin, amax, lp );
   }
 
   delete context;
@@ -285,7 +285,7 @@ void Problem::init_sol_falp()
 
 
 
-  if ( displayAll )
+  if ( mDisplayAll )
   {
     int nbOverlap;
     int start_p;
@@ -294,11 +294,11 @@ void Problem::init_sol_falp()
 
     for ( i = 0; i < static_cast< int >( mFeatureCount ); i++ ) // forearch hidden feature
     {
-      if ( sol.activeLabelIds[i] == -1 )
+      if ( mSol.activeLabelIds[i] == -1 )
       {
         nbOverlap = std::numeric_limits<int>::max();
-        start_p = featStartId[i];
-        for ( p = 0; p < featNbLp[i]; p++ )
+        start_p = mFeatStartId[i];
+        for ( p = 0; p < mFeatNbLp[i]; p++ )
         {
           lp = mLabelPositions.at( start_p + p );
           lp->resetNumOverlaps();
@@ -306,7 +306,7 @@ void Problem::init_sol_falp()
           lp->getBoundingBox( amin, amax );
 
 
-          candidates_sol->Search( amin, amax, LabelPosition::countOverlapCallback, lp );
+          mActiveCandidatesIndex->Search( amin, amax, LabelPosition::countOverlapCallback, lp );
 
           if ( lp->getNumOverlaps() < nbOverlap )
           {
@@ -314,9 +314,9 @@ void Problem::init_sol_falp()
             nbOverlap = lp->getNumOverlaps();
           }
         }
-        sol.activeLabelIds[i] = retainedLabel->getId();
+        mSol.activeLabelIds[i] = retainedLabel->getId();
 
-        retainedLabel->insertIntoIndex( candidates_sol );
+        retainedLabel->insertIntoIndex( mActiveCandidatesIndex );
 
       }
     }
@@ -326,7 +326,7 @@ void Problem::init_sol_falp()
 }
 
 
-typedef struct
+struct ChainContext
 {
   LabelPosition *lp = nullptr;
   std::vector< int > *tmpsol = nullptr;
@@ -338,7 +338,7 @@ typedef struct
   double *delta_tmp = nullptr;
   double *inactiveCost = nullptr;
 
-} ChainContext;
+} ;
 
 
 bool chainCallback( LabelPosition *lp, void *context )
@@ -403,14 +403,14 @@ inline Chain *Problem::chain( int seed )
   int retainedLabel;
   Chain *retainedChain = nullptr;
 
-  int max_degree = pal->ejChainDeg;
+  int max_degree = pal->mEjChainDeg;
 
   int seedNbLp;
 
   QLinkedList<ElemTrans *> currentChain;
   QLinkedList<int> conflicts;
 
-  std::vector< int > tmpsol( sol.activeLabelIds );
+  std::vector< int > tmpsol( mSol.activeLabelIds );
 
   LabelPosition *lp = nullptr;
   double amin[2];
@@ -420,7 +420,7 @@ inline Chain *Problem::chain( int seed )
   context.featWrap = nullptr;
   context.borderSize = 0;
   context.tmpsol = &tmpsol;
-  context.inactiveCost = inactiveCost;
+  context.inactiveCost = mInactiveCost;
   context.feat = nullptr;
   context.currentChain = &currentChain;
   context.conflicts = &conflicts;
@@ -429,7 +429,7 @@ inline Chain *Problem::chain( int seed )
   delta = 0;
   while ( seed != -1 )
   {
-    seedNbLp = featNbLp[seed];
+    seedNbLp = mFeatNbLp[seed];
     delta_min = std::numeric_limits<double>::max();
 
     next_seed = -1;
@@ -437,7 +437,7 @@ inline Chain *Problem::chain( int seed )
 
     // sol[seed] is ejected
     if ( tmpsol[seed] == -1 )
-      delta -= inactiveCost[seed];
+      delta -= mInactiveCost[seed];
     else
       delta -= mLabelPositions.at( tmpsol[seed] )->cost();
 
@@ -446,11 +446,11 @@ inline Chain *Problem::chain( int seed )
       try
       {
         // Skip active label !
-        if ( !( tmpsol[seed] == -1 && i == -1 ) && i + featStartId[seed] != tmpsol[seed] )
+        if ( !( tmpsol[seed] == -1 && i == -1 ) && i + mFeatStartId[seed] != tmpsol[seed] )
         {
           if ( i != -1 ) // new_label
           {
-            lid = featStartId[seed] + i;
+            lid = mFeatStartId[seed] + i;
             delta_tmp = delta;
 
             lp = mLabelPositions.at( lid );
@@ -460,7 +460,7 @@ inline Chain *Problem::chain( int seed )
 
             context.lp = lp;
 
-            candidates_sol->Search( amin, amax, chainCallback, reinterpret_cast< void * >( &context ) );
+            mActiveCandidatesIndex->Search( amin, amax, chainCallback, reinterpret_cast< void * >( &context ) );
 
             // no conflict -> end of chain
             if ( conflicts.isEmpty() )
@@ -546,7 +546,7 @@ inline Chain *Problem::chain( int seed )
                 int ftid = conflicts.takeFirst();
                 newChain->feat[j] = ftid;
                 newChain->label[j] = -1;
-                newChain->delta += inactiveCost[ftid];
+                newChain->delta += mInactiveCost[ftid];
                 j++;
               }
 
@@ -567,7 +567,7 @@ inline Chain *Problem::chain( int seed )
           }
           else   // Current label == -1   end of chain ...
           {
-            if ( !retainedChain || delta + inactiveCost[seed] < delta_best )
+            if ( !retainedChain || delta + mInactiveCost[seed] < delta_best )
             {
               if ( retainedChain )
               {
@@ -577,7 +577,7 @@ inline Chain *Problem::chain( int seed )
               else
                 retainedChain = new Chain();
 
-              delta_best = delta + inactiveCost[seed];
+              delta_best = delta + mInactiveCost[seed];
 
               retainedChain->degree = currentChain.size() + 1;
               retainedChain->feat  = new int[retainedChain->degree];
@@ -595,7 +595,7 @@ inline Chain *Problem::chain( int seed )
               }
               retainedChain->feat[j] = seed;
               retainedChain->label[j] = -1;
-              retainedChain->delta = delta + inactiveCost[seed];
+              retainedChain->delta = delta + mInactiveCost[seed];
             }
           }
         }
@@ -626,12 +626,12 @@ inline Chain *Problem::chain( int seed )
 
       if ( et->old_label != -1 )
       {
-        mLabelPositions.at( et->old_label )->removeFromIndex( candidates_sol );
+        mLabelPositions.at( et->old_label )->removeFromIndex( mActiveCandidatesIndex );
       }
 
       if ( et->new_label != -1 )
       {
-        mLabelPositions.at( et->new_label )->insertIntoIndex( candidates_sol );
+        mLabelPositions.at( et->new_label )->insertIntoIndex( mActiveCandidatesIndex );
       }
 
 
@@ -647,24 +647,24 @@ inline Chain *Problem::chain( int seed )
 
     if ( et->new_label != -1 )
     {
-      mLabelPositions.at( et->new_label )->removeFromIndex( candidates_sol );
+      mLabelPositions.at( et->new_label )->removeFromIndex( mActiveCandidatesIndex );
     }
 
     if ( et->old_label != -1 )
     {
-      mLabelPositions.at( et->old_label )->insertIntoIndex( candidates_sol );
+      mLabelPositions.at( et->old_label )->insertIntoIndex( mActiveCandidatesIndex );
     }
   }
 
   return retainedChain;
 }
 
-typedef struct _nokContext
+struct NokContext
 {
   LabelPosition *lp = nullptr;
   bool *ok = nullptr;
   int *wrap = nullptr;
-} NokContext;
+};
 
 bool nokCallback( LabelPosition *lp, void *context )
 {
@@ -745,27 +745,27 @@ void Problem::chain_search()
         fid = retainedChain->feat[i];
         lid = retainedChain->label[i];
 
-        if ( sol.activeLabelIds[fid] >= 0 )
+        if ( mSol.activeLabelIds[fid] >= 0 )
         {
-          LabelPosition *old = mLabelPositions.at( sol.activeLabelIds[fid] );
-          old->removeFromIndex( candidates_sol );
+          LabelPosition *old = mLabelPositions.at( mSol.activeLabelIds[fid] );
+          old->removeFromIndex( mActiveCandidatesIndex );
 
           old->getBoundingBox( amin, amax );
 
           context.lp = old;
-          candidates->Search( amin, amax, nokCallback, &context );
+          mCandidatesIndex->Search( amin, amax, nokCallback, &context );
         }
 
-        sol.activeLabelIds[fid] = lid;
+        mSol.activeLabelIds[fid] = lid;
 
-        if ( sol.activeLabelIds[fid] >= 0 )
+        if ( mSol.activeLabelIds[fid] >= 0 )
         {
-          mLabelPositions.at( lid )->insertIntoIndex( candidates_sol );
+          mLabelPositions.at( lid )->insertIntoIndex( mActiveCandidatesIndex );
         }
 
         ok[fid] = false;
       }
-      sol.totalCost += retainedChain->delta;
+      mSol.totalCost += retainedChain->delta;
     }
     else
     {
@@ -788,19 +788,19 @@ QList<LabelPosition *> Problem::getSolution( bool returnInactive, QList<LabelPos
 
   for ( i = 0; i < static_cast< int >( mFeatureCount ); i++ )
   {
-    if ( sol.activeLabelIds[i] != -1 )
+    if ( mSol.activeLabelIds[i] != -1 )
     {
-      solList.push_back( mLabelPositions.at( sol.activeLabelIds[i] ) ); // active labels
+      solList.push_back( mLabelPositions.at( mSol.activeLabelIds[i] ) ); // active labels
     }
     else if ( returnInactive
-              || mLabelPositions.at( featStartId[i] )->getFeaturePart()->layer()->displayAll()
-              || mLabelPositions.at( featStartId[i] )->getFeaturePart()->alwaysShow() )
+              || mLabelPositions.at( mFeatStartId[i] )->getFeaturePart()->layer()->displayAll()
+              || mLabelPositions.at( mFeatStartId[i] )->getFeaturePart()->alwaysShow() )
     {
-      solList.push_back( mLabelPositions.at( featStartId[i] ) ); // unplaced label
+      solList.push_back( mLabelPositions.at( mFeatStartId[i] ) ); // unplaced label
     }
     else if ( unlabeled )
     {
-      unlabeled->push_back( mLabelPositions.at( featStartId[i] ) );
+      unlabeled->push_back( mLabelPositions.at( mFeatStartId[i] ) );
     }
   }
 
@@ -813,16 +813,16 @@ QList<LabelPosition *> Problem::getSolution( bool returnInactive, QList<LabelPos
 
 void Problem::solution_cost()
 {
-  sol.totalCost = 0.0;
+  mSol.totalCost = 0.0;
 
   int nbOv;
 
   int i;
 
   LabelPosition::CountContext context;
-  context.inactiveCost = inactiveCost;
+  context.inactiveCost = mInactiveCost;
   context.nbOv = &nbOv;
-  context.cost = &sol.totalCost;
+  context.cost = &mSol.totalCost;
   double amin[2];
   double amax[2];
   LabelPosition *lp = nullptr;
@@ -831,22 +831,22 @@ void Problem::solution_cost()
 
   for ( i = 0; i < static_cast< int >( mFeatureCount ); i++ )
   {
-    if ( sol.activeLabelIds[i] == -1 )
+    if ( mSol.activeLabelIds[i] == -1 )
     {
-      sol.totalCost += inactiveCost[i];
+      mSol.totalCost += mInactiveCost[i];
       nbHidden++;
     }
     else
     {
       nbOv = 0;
-      lp = mLabelPositions.at( sol.activeLabelIds[i] );
+      lp = mLabelPositions.at( mSol.activeLabelIds[i] );
 
       lp->getBoundingBox( amin, amax );
 
       context.lp = lp;
-      candidates_sol->Search( amin, amax, LabelPosition::countFullOverlapCallback, &context );
+      mActiveCandidatesIndex->Search( amin, amax, LabelPosition::countFullOverlapCallback, &context );
 
-      sol.totalCost += lp->cost();
+      mSol.totalCost += lp->cost();
     }
   }
 }
