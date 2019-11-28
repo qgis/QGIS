@@ -153,8 +153,7 @@ namespace QgsMeshUtils
    * Tests if point p is on the face defined with vertices
    * \since QGIS 3.12
   */
-  bool isInTriangleFace( const QgsPointXY point, const QgsMeshFace &face,  const QVector<QgsMeshVertex> &vertices )
-  ;
+  bool isInTriangleFace( const QgsPointXY point, const QgsMeshFace &face,  const QVector<QgsMeshVertex> &vertices );
 
 };
 

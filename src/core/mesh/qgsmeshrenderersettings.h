@@ -311,21 +311,17 @@ class CORE_EXPORT QgsMeshRendererVectorStreamlineSettings
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
- * \since QGIS 3.2
+ * \since QGIS 3.12
  */
 class CORE_EXPORT QgsMeshRendererVectorSettings
 {
   public:
-
-    /**
-     * Defines the symbology of vector rendering
-     * \since QGIS 3.12
-     */
+    //! enumaraton used to define the symbology of vector rendering
     enum Symbology
     {
-      //! Displying vector dataset with arrows
+      //!Displaying vector dataset with arrows
       Arrows = 0,
-      //! Displying vector dataset with streamlines
+      //!Displaying vector dataset with streamlines
       Streamlines
     };
 
@@ -381,40 +377,19 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
     //! Sets height of user grid cell (in pixels)
     void setUserGridCellHeight( int height );
 
-    /**
-     * Returns the displaying method used to render vector datasets
-     * \since QGIS 3.12
-     */
+    //! Returns the displaying method used to render vector datasets
     Symbology symbology() const;
-
-    /**
-     * Sets the displaying method used to render vector datasets
-     * \since QGIS 3.12
-     */
+    //! Sets the displaying method used to render vector datasets
     void setSymbology( const Symbology &symbology );
 
-    /**
-     * Returns settings for vector rendered with arrows
-     * \since QGIS 3.12
-     */
+    //! Returns settings for vector rendered with arrows
     QgsMeshRendererVectorArrowSettings arrowSettings() const;
-
-    /**
-     * Sets settings for vector rendered with arrows
-     * \since QGIS 3.12
-     */
+    //! Sets settings for vector rendered with arrows
     void setArrowsSettings( const QgsMeshRendererVectorArrowSettings &arrowSettings );
 
-    /**
-     * Returns settings for vector rednered with streamlines
-     * \since QGIS 3.12
-     */
+    //! Returns settings for vector rednered with streamlines
     QgsMeshRendererVectorStreamlineSettings streamLinesSettings() const;
-
-    /**
-     * Sets settings for vector rednered with streamlines
-     * \since QGIS 3.12
-     */
+    //! Sets settings for vector rednered with streamlines
     void setStreamLinesSettings( const QgsMeshRendererVectorStreamlineSettings &streamLinesSettings );
 
 

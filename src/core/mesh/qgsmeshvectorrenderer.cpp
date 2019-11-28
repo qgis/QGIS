@@ -470,7 +470,7 @@ QgsMeshVectorRenderer *QgsMeshVectorRenderer::makeVectorRenderer( const QgsTrian
         context, size );
       break;
     case QgsMeshRendererVectorSettings::Streamlines:
-      renderer = new QgsMeshVectorStreamLineRenderer(
+      renderer = new QgsMeshVectorStreamlineRenderer(
         m,
         datasetVectorValues,
         scalarActiveFaceFlagValues,
