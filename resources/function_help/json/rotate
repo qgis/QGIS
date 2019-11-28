@@ -6,5 +6,5 @@
                  {"arg":"rotation","description":"clockwise rotation in degrees"},
                  {"arg":"point","description":"rotation center"}
                ],
-  "examples": [ { "expression":"translate($geometry, 45, centroid($geometry))", "returns":"a geometry of the same type like the original one"}]
+  "examples": [ { "expression":"rotate($geometry, 45, centroid($geometry))", "returns":"a rotated geometry of the same type as the original one"}]
 }

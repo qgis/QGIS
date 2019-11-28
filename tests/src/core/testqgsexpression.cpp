@@ -2877,13 +2877,13 @@ class TestQgsExpression: public QObject
       QTest::newRow( "translate" ) << "translate( $geometry, 1, -2)" << geom << false << true << QgsGeometry::fromWkt( QStringLiteral( "POINT(1 -2)" ) );
 
       geom = QgsGeometry::fromPolygonXY( polygon );
-      QTest::newRow( "rotate" ) << "rotate( $geometry, 90, geomFromWKT( 'POINT(10 10)' ) )" << geom << false << true << QgsGeometry::fromWkt( QStringLiteral( "Polygon ((0 20, 10 10, 0 10, 0 0))" ) );
-      geom = QgsGeometry::fromPolygonXY( line );
-      QTest::newRow( "rotate" ) << "rotate( $geometry, -90, geomFromWKT( 'POINT(5 5)' ) )" << geom << false << true << QgsGeometry::fromWkt( QStringLiteral( "LineString (10 0, 10 10)" ) );
-      geom = QgsGeometry::fromPolygonXY( point );
+      QTest::newRow( "rotate" ) << "rotate( $geometry, 90, geomFromWKT( 'POINT(10 10)' ) )" << geom << false << true << QgsGeometry::fromWkt( QStringLiteral( "Polygon ((0 20, 10 10, 0 10, 0 20))" ) );
+      geom = QgsGeometry::fromPolylineXY( line );
+      QTest::newRow( "rotate" ) << "rotate( $geometry, -90, geomFromWKT( 'POINT(5 5)' ) )" << geom << false << true << QgsGeometry::fromWkt( QStringLiteral( "LineString (10 0, 0 10)'" ) );
+      geom = QgsGeometry::fromPointXY( point );
       QTest::newRow( "rotate" ) << "rotate( $geometry, 180, geomFromWKT( 'POINT(-5 -3)' ) )" << geom << false << true << QgsGeometry::fromWkt( QStringLiteral( "Point (-10 -6)" ) );
       QTest::newRow( "rotate" ) << "rotate( $geometry, 180, geomFromWKT( 'MULTIPOINT((-5 -3))' ) )" << geom << false << true << QgsGeometry::fromWkt( QStringLiteral( "Point (-10 -6)" ) );
-      //QTest::newRow( "rotate" ) << "rotate( $geometry, 180, geomFromWKT( 'MULTIPOINT((-5 -3, 7 7, 4 4))' ) )" << geom << false << true << QgsGeometry::fromWkt( QStringLiteral( "Point (-10 -6)" ) ); // should not work
+      //QTest::newRow( "rotate" ) << "rotate( $geometry, 180, geomFromWKT( 'MULTIPOINT((-5 -3, 7 7, 4 4))' ) )" << geom << true << true << QgsVariant();
     }
 
     void eval_geometry_method()
