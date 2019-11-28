@@ -59,6 +59,9 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
     //! Key: field name, Value: field index
     QMap<QString, int> mFieldMap;
 
+    bool mCanAddAttribute = false;
+    bool mCanChangeAttributeValue = false;
+
     //! Create a field based on the definitions
     QgsField fieldDefinition();
 
