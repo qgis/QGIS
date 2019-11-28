@@ -217,14 +217,38 @@ Registers a node item for the expression builder.
 
     void saveToRecent( const QString &collection = "generic" );
 %Docstring
-Adds the current expression to the given collection.
+Adds the current expression to the given ``collection``.
 By default it is saved to the collection "generic".
 %End
 
     void loadRecent( const QString &collection = "generic" );
 %Docstring
-Loads the recent expressions from the given collection.
+Loads the recent expressions from the given ``collection``.
 By default it is loaded from the collection "generic".
+%End
+
+    void loadStored( const QString &collection = "generic" );
+%Docstring
+Loads the stored expressions from the given ``collection``.
+By default it is loaded from the collection "generic".
+
+.. versionadded:: 3.12
+%End
+
+    void saveToStored( const QString &label, const QString expression, const QString &helpText, const QString &collection = "generic" );
+%Docstring
+Stores the ``expression`` in the given ``collection`` with given ``label`` and ``helpText``.
+By default it is saved to the collection "generic".
+
+.. versionadded:: 3.12
+%End
+
+    void removeFromStored( const QString &name, const QString &collection = "generic" );
+%Docstring
+Removes the expression ``name`` from the stored expressions in the given ``collection``.
+By default it is removed from the collection "generic".
+
+.. versionadded:: 3.12
 %End
 
     void newFunctionFile( const QString &fileName = "scratch" );
@@ -318,6 +342,21 @@ Enabled or disable auto saving. When enabled Python scripts will be auto saved
 when text changes.
 
 :param enabled: ``True`` to enable auto saving.
+%End
+
+    void storeCurrentExpression( );
+%Docstring
+Adds the current expressions to the stored expressions.
+
+.. versionadded:: 3.12
+%End
+
+    void removeSelectedExpression( );
+%Docstring
+Removes the selected expression from the stored expressions,
+the selected expression must be a stored expression.
+
+.. versionadded:: 3.12
 %End
 
   signals:

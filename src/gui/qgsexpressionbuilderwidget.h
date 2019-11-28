@@ -225,16 +225,37 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     bool isExpressionValid();
 
     /**
-     * Adds the current expression to the given collection.
+     * Adds the current expression to the given \a collection.
      * By default it is saved to the collection "generic".
      */
     void saveToRecent( const QString &collection = "generic" );
 
     /**
-     * Loads the recent expressions from the given collection.
+     * Loads the recent expressions from the given \a collection.
      * By default it is loaded from the collection "generic".
      */
     void loadRecent( const QString &collection = "generic" );
+
+    /**
+     * Loads the stored expressions from the given \a collection.
+     * By default it is loaded from the collection "generic".
+     * \since QGIS 3.12
+     */
+    void loadStored( const QString &collection = "generic" );
+
+    /**
+     * Stores the \a expression in the given \a collection with given \a label and \a helpText.
+     * By default it is saved to the collection "generic".
+     * \since QGIS 3.12
+     */
+    void saveToStored( const QString &label, const QString expression, const QString &helpText, const QString &collection = "generic" );
+
+    /**
+     * Removes the expression \a name from the stored expressions in the given \a collection.
+     * By default it is removed from the collection "generic".
+     * \since QGIS 3.12
+     */
+    void removeFromStored( const QString &name, const QString &collection = "generic" );
 
     /**
      * Create a new file in the function editor
@@ -322,6 +343,19 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      * \param enabled TRUE to enable auto saving.
      */
     void setAutoSave( bool enabled ) { mAutoSave = enabled; }
+
+    /**
+     * Adds the current expressions to the stored expressions.
+     * \since QGIS 3.12
+     */
+    void storeCurrentExpression( );
+
+    /**
+     * Removes the selected expression from the stored expressions,
+     * the selected expression must be a stored expression.
+     * \since QGIS 3.12
+     */
+    void removeSelectedExpression( );
 
   private slots:
     void indicatorClicked( int line, int index, Qt::KeyboardModifiers state );

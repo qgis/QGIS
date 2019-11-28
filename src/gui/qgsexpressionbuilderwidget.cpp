@@ -59,7 +59,8 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   connect( txtSearchEdit, &QgsFilterLineEdit::textChanged, this, &QgsExpressionBuilderWidget::txtSearchEdit_textChanged );
   connect( lblPreview, &QLabel::linkActivated, this, &QgsExpressionBuilderWidget::lblPreview_linkActivated );
   connect( mValuesListView, &QListView::doubleClicked, this, &QgsExpressionBuilderWidget::mValuesListView_doubleClicked );
-
+  connect( btnSaveExpression, &QPushButton::pressed, this, &QgsExpressionBuilderWidget::storeCurrentExpression );
+  connect( btnRemoveExpression, &QPushButton::pressed, this, &QgsExpressionBuilderWidget::removeSelectedExpression );
   txtHelpText->setOpenExternalLinks( true );
 
   mValueGroupBox->hide();
@@ -589,6 +590,65 @@ void QgsExpressionBuilderWidget::loadRecent( const QString &collection )
     this->registerItem( name, expression, expression, expression, QgsExpressionItem::ExpressionNode, false, i );
     i++;
   }
+}
+
+void QgsExpressionBuilderWidget::loadStored( const QString &collection )
+{
+  mRecentKey = collection;
+  QString groupName = tr( "Stored (%1)" ).arg( collection );
+
+  // Cleanup
+  if ( mExpressionGroups.contains( groupName ) )
+  {
+    QgsExpressionItem *node = mExpressionGroups.value( groupName );
+    node->removeRows( 0, node->rowCount() );
+  }
+
+  const QList<QStandardItem *> groupItems { mModel->findItems( groupName ) };
+  if ( ! groupItems.isEmpty() )
+  {
+    const QModelIndex idx { mModel->indexFromItem( groupItems.first() ) };
+    if ( idx.isValid() )
+    {
+      mModel->removeRow( idx.row(), idx.parent() );
+    }
+  }
+
+  QgsSettings settings;
+  QString location = QStringLiteral( "/expressions/stored/%1" ).arg( collection );
+  settings.beginGroup( location, QgsSettings::Section::Gui );
+  QString label;
+  QString helpText;
+  QString expression;
+  int i = 0;
+  for ( const auto &label : settings.childKeys() )
+  {
+    settings.beginGroup( groupName );
+    expression = settings.value( QStringLiteral( "expression" ) ).toString();
+    helpText = settings.value( QStringLiteral( "helpText" ) ).toString();
+    this->registerItem( groupName, label, expression, helpText, QgsExpressionItem::ExpressionNode, false, i++ );
+    settings.endGroup();
+  }
+}
+
+void QgsExpressionBuilderWidget::saveToStored( const QString &label, const QString expression, const QString &helpText, const QString &collection )
+{
+  QgsSettings settings;
+  QString location = QStringLiteral( "/expressions/stored/%1" ).arg( collection );
+  settings.beginGroup( location, QgsSettings::Section::Gui );
+  settings.beginGroup( label );
+  settings.setValue( QStringLiteral( "expression" ), expression );
+  settings.setValue( QStringLiteral( "helpText" ), helpText );
+  this->loadStored( collection );
+}
+
+void QgsExpressionBuilderWidget::removeFromStored( const QString &name, const QString &collection )
+{
+  QgsSettings settings;
+  QString location = QStringLiteral( "/expressions/stored/%1" ).arg( collection );
+  settings.beginGroup( location, QgsSettings::Section::Gui );
+  settings.remove( name );
+  this->loadStored( collection );
 }
 
 void QgsExpressionBuilderWidget::loadLayers()
@@ -1147,6 +1207,27 @@ void QgsExpressionBuilderWidget::autosave()
   anim->setEndValue( 0.0 );
   anim->setEasingCurve( QEasingCurve::OutQuad );
   anim->start( QAbstractAnimation::DeleteWhenStopped );
+}
+
+void QgsExpressionBuilderWidget::storeCurrentExpression()
+{
+  const QString expression { this->expressionText() };
+  saveToStored( expression, expression, expression, mRecentKey );
+}
+
+void QgsExpressionBuilderWidget::removeSelectedExpression()
+{
+  QModelIndex idx { expressionTree->currentIndex() };
+  QgsExpressionItem *item = dynamic_cast<QgsExpressionItem *>( mModel->itemFromIndex( idx ) );
+  if ( !item )
+    return;
+
+  // Don't handle the double-click if we are on a header node.
+  if ( item->getItemType() == QgsExpressionItem::Header )
+    return;
+
+  removeFromStored( item->text(), mRecentKey );
+
 }
 
 void QgsExpressionBuilderWidget::indicatorClicked( int line, int index, Qt::KeyboardModifiers state )
