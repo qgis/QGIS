@@ -2883,7 +2883,7 @@ class TestQgsExpression: public QObject
       geom = QgsGeometry::fromPointXY( point );
       QTest::newRow( "rotate" ) << "rotate( $geometry, 180, geomFromWKT( 'POINT(-5 -3)' ) )" << geom << false << true << QgsGeometry::fromWkt( QStringLiteral( "Point (-10 -6)" ) );
       QTest::newRow( "rotate" ) << "rotate( $geometry, 180, geomFromWKT( 'MULTIPOINT((-5 -3))' ) )" << geom << false << true << QgsGeometry::fromWkt( QStringLiteral( "Point (-10 -6)" ) );
-      //QTest::newRow( "rotate" ) << "rotate( $geometry, 180, geomFromWKT( 'MULTIPOINT((-5 -3, 7 7, 4 4))' ) )" << geom << true << true << QgsVariant();
+      QTest::newRow( "rotate" ) << "rotate( $geometry, 180, geomFromWKT( 'MULTIPOINT((-5 -3, 7 7, 4 4))' ) )" << geom << true << true << QgsVariant();
     }
 
     void eval_geometry_method()
