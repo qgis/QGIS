@@ -409,7 +409,10 @@ QStringList QgsPostgresConn::supportedSpatialTypes() const
                         << quotedValue( "geography" );
 
   if ( hasPointcloud() )
+  {
     supportedSpatialTypes << quotedValue( "pcpatch" );
+    supportedSpatialTypes << quotedValue( "pcpoint" );
+  }
 
   if ( hasRaster() )
     supportedSpatialTypes << quotedValue( "raster" );
@@ -785,7 +788,8 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       {
         layerProperty.geometryColType = SctTopoGeometry;
       }
-      else if ( coltype == QLatin1String( "pcpatch" ) )
+      else if ( coltype == QLatin1String( "pcpatch" ) ||
+                coltype == QLatin1String( "pcpoint" ) )
       {
         layerProperty.geometryColType = SctPcPatch;
       }
