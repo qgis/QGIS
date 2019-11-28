@@ -69,6 +69,7 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
 
   protected:
     void updateConstraintWidgetStatus() override;
+    QList<QgsVectorLayerRef> layerDependencies() const override SIP_SKIP;
 
   private:
     void updateValues( const QVariant &val, const QVariantList &additionalValues = QVariantList() ) override;
@@ -77,6 +78,9 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
     QgsMapCanvas *mCanvas = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
     bool mIndeterminateState;
+
+    friend class TestQgsRelationReferenceWidget;
+
 };
 
 #endif // QGSRELATIONREFERENCEWIDGETWRAPPER_H

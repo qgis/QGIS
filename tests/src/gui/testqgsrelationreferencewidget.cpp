@@ -53,6 +53,7 @@ class TestQgsRelationReferenceWidget : public QObject
     void testIdentifyOnMap();
     void testAddEntry();
     void testAddEntryNoGeom();
+    void testDependencies(); // Test relation datasource, id etc. config storage
 
   private:
     std::unique_ptr<QgsVectorLayer> mLayer1;
@@ -470,6 +471,56 @@ void TestQgsRelationReferenceWidget::testAddEntryNoGeom()
   QVERIFY( !w.mCurrentMapTool );
 
   QCOMPARE( w.mComboBox->identifierValues().at( 0 ).toInt(), 13 );
+}
+
+void TestQgsRelationReferenceWidget::testDependencies()
+{
+  QgsVectorLayer mLayer1( QStringLiteral( "Point?crs=epsg:3111&field=pk:int&field=fk:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( &mLayer1, false, false );
+
+  QgsVectorLayer mLayer2( QStringLiteral( "None?field=pk:int&field=material:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( &mLayer2, false, false );
+
+  // create relation
+  QgsRelation mRelation;
+  mRelation.setId( QStringLiteral( "vl1.vl2" ) );
+  mRelation.setName( QStringLiteral( "vl1.vl2" ) );
+  mRelation.setReferencingLayer( mLayer1.id() );
+  mRelation.setReferencedLayer( mLayer2.id() );
+  mRelation.addFieldPair( QStringLiteral( "fk" ), QStringLiteral( "pk" ) );
+  QVERIFY( mRelation.isValid() );
+  QgsProject::instance()->relationManager()->addRelation( mRelation );
+
+  // check that a new added entry in referenced layer populate correctly
+  // widget config
+  QgsMapCanvas canvas;
+  QgsRelationReferenceWidget w( &canvas );
+  w.setRelation( mRelation, true );
+  w.init();
+
+  QCOMPARE( w.referencedLayerId(), mLayer2.id() );
+  QCOMPARE( w.referencedLayerName(), mLayer2.name() );
+  QCOMPARE( w.referencedLayerDataSource(), mLayer2.publicSource() );
+  QCOMPARE( w.referencedLayerProviderKey(), mLayer2.providerType() );
+
+  // Test dependencies
+  QgsRelationReferenceWidget editor( new QWidget() );
+  QgsRelationReferenceWidgetWrapper ww( &mLayer1, 10, &editor, &canvas, nullptr, nullptr );
+  ww.setConfig(
+  {
+    { QStringLiteral( "ReferencedLayerDataSource" ), mLayer2.publicSource() },
+    { QStringLiteral( "ReferencedLayerProviderKey" ), mLayer2.providerType() },
+    { QStringLiteral( "ReferencedLayerId" ), mLayer2.id() },
+    { QStringLiteral( "ReferencedLayerName" ), mLayer2.name() },
+  } );
+  ww.initWidget( &editor );
+  const QList<QgsVectorLayerRef> dependencies = ww.layerDependencies();
+  QVERIFY( dependencies.count() == 1 );
+  const QgsVectorLayerRef dependency = dependencies.first();
+  QCOMPARE( dependency.layerId, mLayer2.id() );
+  QCOMPARE( dependency.name, mLayer2.name() );
+  QCOMPARE( dependency.provider, mLayer2.providerType() );
+  QCOMPARE( dependency.source, mLayer2.publicSource() );
 }
 
 QGSTEST_MAIN( TestQgsRelationReferenceWidget )
