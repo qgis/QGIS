@@ -278,7 +278,7 @@ void QgsLabelingEngine::registerLabels( QgsRenderContext &context )
   mPal->setMaximumNumberOfPolygonCandidates( candPolygon );
 
   mPal->setShowPartialLabels( settings.testFlag( QgsLabelingEngineSettings::UsePartialCandidates ) );
-
+  mPal->setPlacementVersion( settings.placementVersion() );
 
   // for each provider: get labels and register them in PAL
   for ( QgsAbstractLabelProvider *provider : qgis::as_const( mProviders ) )

@@ -370,7 +370,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       for ( std::size_t j = 0; j < feat->candidates.size(); j++, idlp++ )
       {
         //lp->insertIntoIndex(prob->candidates);
-        feat->candidates[ j ]->setProblemIds( static_cast< int >( i ), idlp ); // bugfix #1 (maxence 10/23/2008)
+        feat->candidates[ j ]->setProblemIds( static_cast< int >( i ), idlp );
       }
       features.emplace_back( std::move( feat ) );
     }
