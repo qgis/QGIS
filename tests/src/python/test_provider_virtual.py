@@ -101,7 +101,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         # cross join
         query = toPercent("SELECT * FROM france_parts,points")
         vl = QgsVectorLayer("?query=%s" % query, "tt", "virtual")
-
+        self.assertEqual(vl.getFeature(3).isValid(), True)
         self.assertEqual(vl.featureCount(), l0.featureCount() * l1.featureCount())
 
         # test with FilterFid requests
@@ -491,7 +491,6 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         query = toPercent("SELECT * FROM france_parts")
         l4 = QgsVectorLayer("?query=%s&uid=ObjectId" % query, "tt", "virtual")
         self.assertEqual(l4.isValid(), True)
-
         self.assertEqual(l4.dataProvider().wkbType(), 6)
         self.assertEqual(l4.dataProvider().crs().postgisSrid(), 4326)
 
@@ -710,6 +709,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(ml.featureCount(), vl.featureCount())
 
     def test_ProjectDependencies(self):
+        QgsProject.instance().removeAllMapLayers()
         # make a virtual layer with living references and save it to a project
         l1 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "france_parts", "ogr", QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l1.isValid(), True)
@@ -747,6 +747,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         QgsProject.instance().read()
 
         # make sure the 3 layers are loaded back
+        print(QgsProject.instance().mapLayers(), 'LINE 750')
         self.assertEqual(len(QgsProject.instance().mapLayers()), 3)
 
     def test_relative_paths(self):
@@ -1013,7 +1014,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         df.setQuery('select * from mem_no_uid')
         vl = QgsVectorLayer(df.toString(), "vl", "virtual")
         self.assertEqual(vl.isValid(), True)
-
+        self.assertEqual(vl.getFeature(5).isValid(), True)
         # make sure the returned id with a filter is the same as
         # if there is no filter
         req = QgsFeatureRequest().setFilterRect(QgsRectangle(4.5, -1, 5.5, 1))

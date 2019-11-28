@@ -87,6 +87,7 @@ QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
   mTransformErrorCallback = rh.mTransformErrorCallback;
   mTimeout = rh.mTimeout;
   mRequestMayBeNested = rh.mRequestMayBeNested;
+  mCombinationMethod = rh.mCombinationMethod;
   return *this;
 }
 
@@ -335,6 +336,16 @@ QgsFeatureRequest &QgsFeatureRequest::setRequestMayBeNested( bool requestMayBeNe
   return *this;
 }
 
+void QgsFeatureRequest::setFilterHandling( FilterCombination handlingMethod )
+{
+  mCombinationMethod = handlingMethod;
+}
+
+QgsFeatureRequest::FilterCombination QgsFeatureRequest::filterHandling() const
+{
+  return mCombinationMethod;
+}
+
 
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
@@ -525,4 +536,30 @@ QString QgsFeatureRequest::OrderBy::dump() const
   }
 
   return results.join( QStringLiteral( ", " ) );
+}
+
+bool QgsFeatureRequest::hasValidFilter( FilterType filterType ) const
+{
+  if ( mCombinationMethod != UseLast )
+  {
+    switch ( filterType )
+    {
+      case ( FilterNone ):
+        return true ;
+
+      case ( FilterFid ):
+        return filterFid() != -1 ;
+
+      case ( FilterExpression ):
+        if ( filterExpression() )
+          return filterExpression()->isValid();
+        else
+          return false;
+
+      case ( FilterFids ):
+        return !filterFids().isEmpty();
+    }
+  }
+  else
+    return mFilter == filterType;
 }

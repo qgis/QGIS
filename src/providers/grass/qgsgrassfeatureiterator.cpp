@@ -234,7 +234,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature &feature )
   // TODO: locking each feature is too expensive. What happens with map structures if lines are
   // written/rewritten/deleted? Can be read simultaneously?
   mSource->mLayer->map()->lockReadWrite(); // locks only in editing mode
-  bool filterById = mRequest.filterType() == QgsFeatureRequest::FilterFid;
+  bool filterById = mRequest.hasValidFilter( QgsFeatureRequest::FilterFid ) ;
   int cat = 0;
   int type = 0;
   int lid = 0;

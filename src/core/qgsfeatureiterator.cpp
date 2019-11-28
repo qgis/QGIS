@@ -18,6 +18,7 @@
 #include "qgssimplifymethod.h"
 #include "qgsexception.h"
 #include "qgsexpressionsorter.h"
+#include <QDebug>
 
 QgsAbstractFeatureIterator::QgsAbstractFeatureIterator( const QgsFeatureRequest &request )
   : mRequest( request )
@@ -47,10 +48,15 @@ bool QgsAbstractFeatureIterator::nextFeature( QgsFeature &f )
       mZombie = false;
     }
   }
+  else if ( mRequest.filterHandling() == QgsFeatureRequest::OperatorAND )
+  {
+    dataOk = nextFeatureMultiFilters( f );
+  }
   else
   {
     switch ( mRequest.filterType() )
     {
+
       case QgsFeatureRequest::FilterExpression:
         dataOk = nextFeatureFilterExpression( f );
         break;
@@ -88,6 +94,26 @@ bool QgsAbstractFeatureIterator::nextFeatureFilterFids( QgsFeature &f )
   {
     if ( mRequest.filterFids().contains( f.id() ) )
       return true;
+  }
+  return false;
+}
+
+bool QgsAbstractFeatureIterator::nextFeatureMultiFilters( QgsFeature &f )
+{
+  while ( fetchFeature( f ) )
+  {
+    if ( mRequest.hasValidFilter( QgsFeatureRequest::FilterFids ) )
+    {
+      if ( !mRequest.filterFids().contains( f.id() ) )
+        continue;
+    }
+    if ( mRequest.hasValidFilter( QgsFeatureRequest::FilterExpression ) )
+    {
+      mRequest.expressionContext()->setFeature( f );
+      if ( !mRequest.filterExpression()->evaluate( mRequest.expressionContext() ).toBool() )
+        continue;
+    }
+    return true;
   }
   return false;
 }

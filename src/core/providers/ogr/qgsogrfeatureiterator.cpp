@@ -126,7 +126,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   QgsAttributeList attrs = ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes ) ? mRequest.subsetOfAttributes() : mSource->mFields.allAttributesList();
 
   // ensure that all attributes required for expression filter are being fetched
-  if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes && request.filterType() == QgsFeatureRequest::FilterExpression )
+  if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes && request.hasValidFilter( QgsFeatureRequest::FilterExpression ) )
   {
     //ensure that all fields required for filter expressions are prepared
     QSet<int> attributeIndexes = request.filterExpression()->referencedAttributeIndexes( mSource->mFields );
@@ -148,7 +148,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
     mRequest.setSubsetOfAttributes( attrs );
   }
 
-  if ( request.filterType() == QgsFeatureRequest::FilterExpression && request.filterExpression()->needsGeometry() )
+  if ( request.hasValidFilter( QgsFeatureRequest::FilterExpression ) && request.filterExpression()->needsGeometry() )
   {
     mFetchGeometry = true;
   }
@@ -178,7 +178,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
       OGR_L_SetSpatialFilter( mOgrLayerOri, nullptr );
   }
 
-  if ( request.filterType() == QgsFeatureRequest::FilterExpression
+  if ( request.hasValidFilter( QgsFeatureRequest::FilterExpression )
        && QgsSettings().value( QStringLiteral( "qgis/compileExpressions" ), true ).toBool() )
   {
     QgsSqlExpressionCompiler *compiler = nullptr;
@@ -320,13 +320,13 @@ bool QgsOgrFeatureIterator::fetchFeature( QgsFeature &feature )
   if ( mClosed || !mOgrLayer )
     return false;
 
-  if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
+  if ( mRequest.hasValidFilter( QgsFeatureRequest::FilterFid ) )
   {
     bool result = fetchFeatureWithId( mRequest.filterFid(), feature );
     close(); // the feature has been read or was not found: we have finished here
     return result;
   }
-  else if ( mRequest.filterType() == QgsFeatureRequest::FilterFids )
+  else if ( mRequest.hasValidFilter( QgsFeatureRequest::FilterFids ) )
   {
     while ( mFilterFidsIt != mFilterFids.end() )
     {

@@ -83,13 +83,13 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
                      quotedColumn( mSource->mDefinition.geometryField() ),
                      mbr );
       }
-      else if ( request.filterType() == QgsFeatureRequest::FilterFid )
+      if ( request.hasValidFilter( QgsFeatureRequest::FilterFid ) )
       {
         wheres << QStringLiteral( "%1=%2" )
                .arg( quotedColumn( mSource->mDefinition.uid() ) )
                .arg( request.filterFid() );
       }
-      else if ( request.filterType() == QgsFeatureRequest::FilterFids )
+      else if ( request.hasValidFilter( QgsFeatureRequest::FilterFids ) )
       {
         QString values = quotedColumn( mSource->mDefinition.uid() ) + " IN (";
         bool first = true;
@@ -109,20 +109,25 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
     }
     else
     {
-      if ( request.filterType() == QgsFeatureRequest::FilterFid )
+      if ( !mFilterRect.isNull() &&
+           mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+      {
+        // if an exact intersection is requested, prepare the geometry to intersect
+        QgsGeometry rectGeom = QgsGeometry::fromRect( mFilterRect );
+        mRectEngine.reset( QgsGeometry::createGeometryEngine( rectGeom.constGet() ) );
+        mRectEngine->prepareGeometry();
+      }
+      if ( request.hasValidFilter( QgsFeatureRequest::FilterFid ) )
       {
         if ( request.filterFid() >= 0 )
           offset = QStringLiteral( " LIMIT 1 OFFSET %1" ).arg( request.filterFid() );
         else // never return a feature if the id is negative
           offset = QStringLiteral( " LIMIT 0" );
       }
-      else if ( !mFilterRect.isNull() &&
-                mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+      else if ( request.hasValidFilter( QgsFeatureRequest::FilterFids ) )
       {
-        // if an exact intersection is requested, prepare the geometry to intersect
-        QgsGeometry rectGeom = QgsGeometry::fromRect( mFilterRect );
-        mRectEngine.reset( QgsGeometry::createGeometryEngine( rectGeom.constGet() ) );
-        mRectEngine->prepareGeometry();
+        // it could be possible to generate row_number() and use that as an index but ordering must be done on a column beforehand
+        QgsMessageLog::logMessage( QStringLiteral( "No unique id set for the table, returning all features." ), QStringLiteral( "OGR" ), Qgis::Info );
       }
     }
 
@@ -136,7 +141,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       }
 
       // ensure that all attributes required for expression filter are being fetched
-      if ( request.filterType() == QgsFeatureRequest::FilterExpression )
+      if ( request.hasValidFilter( QgsFeatureRequest::FilterExpression ) )
       {
         const auto constReferencedColumns = request.filterExpression()->referencedColumns();
         for ( const QString &field : constReferencedColumns )
@@ -172,7 +177,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       }
       else
       {
-        if ( request.filterType() == QgsFeatureRequest::FilterFid )
+        if ( request.hasValidFilter( QgsFeatureRequest::FilterFid ) )
         {
           columns = QString::number( request.filterFid() );
         }
@@ -191,7 +196,8 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
     }
     // the last column is the geometry, if any
     if ( ( !( request.flags() & QgsFeatureRequest::NoGeometry )
-           || ( request.filterType() == QgsFeatureRequest::FilterExpression && request.filterExpression()->needsGeometry() ) )
+           || ( request.hasValidFilter( QgsFeatureRequest::FilterExpression )
+                && request.filterExpression()->needsGeometry() ) )
          && !mSource->mDefinition.geometryField().isNull() && mSource->mDefinition.geometryField() != QLatin1String( "*no*" ) )
     {
       columns += "," + quotedColumn( mSource->mDefinition.geometryField() );
@@ -207,7 +213,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
     {
       mSqlQuery += offset;
     }
-
+    qDebug() << mSqlQuery;
     mQuery.reset( new Sqlite::Query( mSource->mSqlite, mSqlQuery ) );
 
     mFid = 0;
@@ -271,7 +277,7 @@ bool QgsVirtualLayerFeatureIterator::fetchFeature( QgsFeature &feature )
     feature.setFields( mSource->mFields, /* init */ true );
 
     if ( mSource->mDefinition.uid().isNull() &&
-         mRequest.filterType() != QgsFeatureRequest::FilterFid )
+         ( ! mRequest.hasValidFilter( QgsFeatureRequest::FilterFid ) ) )
     {
       // no id column => autoincrement
       feature.setId( mFid++ );

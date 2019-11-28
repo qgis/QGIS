@@ -572,6 +572,42 @@ class FeatureSourceTestCase(object):
         for f in self.source.getFeatures():
             self.assertEqual(request.acceptFeature(f), f['pk'] in expected)
 
+    def testIteratorStacking(self):
+        """
+        Test the combination of a filter rect along with filterfids
+        """
+
+        # first get feature ids
+        ids = {f['pk']: f.id() for f in self.source.getFeatures()}
+        vl = self.source
+        field = "pk"
+        DefaultFR = QgsFeatureRequest()
+        StackedFR = QgsFeatureRequest()
+        DefaultFR.setFilterFids([ids[3], ids[4]])
+        StackedFR.setFilterFids([ids[3], ids[4]])
+        DefaultFR.setFilterExpression('1')
+        StackedFR.setFilterExpression('1')
+
+        StackedFR.setFilterHandling(QgsFeatureRequest().OperatorAND)
+        print(StackedFR.filterHandling())
+        total1 = set([f['pk'] for f in self.source.getFeatures(StackedFR)])
+        total2 = set([f['pk'] for f in self.source.getFeatures(DefaultFR)])
+        self.assertNotEqual(total1, total2)
+
+        # shouldn't matter what order this is done in
+        DefaultFR = QgsFeatureRequest()
+        StackedFR = QgsFeatureRequest()
+        DefaultFR.setFilterExpression('0')
+        StackedFR.setFilterExpression('0')
+        DefaultFR.setFilterFids([ids[3], ids[4]])
+        StackedFR.setFilterFids([ids[3], ids[4]])
+
+        StackedFR.setFilterHandling(QgsFeatureRequest().OperatorAND)
+        print(StackedFR.filterHandling())
+        total1 = set([f['pk'] for f in self.source.getFeatures(StackedFR)])
+        total2 = set([f['pk'] for f in self.source.getFeatures(DefaultFR)])
+        self.assertNotEqual(total1, total2)
+
     def testGetFeaturesDestinationCrs(self):
         request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:3785'), QgsProject.instance().transformContext())
         features = {f['pk']: f for f in self.source.getFeatures(request)}

@@ -85,7 +85,7 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   QgsAttributeList attrs = subsetOfAttributes ? mRequest.subsetOfAttributes() : mSource->mFields.allAttributesList();
 
   // ensure that all attributes required for expression filter are being fetched
-  if ( subsetOfAttributes && request.filterType() == QgsFeatureRequest::FilterExpression )
+  if ( subsetOfAttributes && ( request.hasValidFilter( QgsFeatureRequest::FilterExpression ) ) )
   {
     //ensure that all fields required for filter expressions are prepared
     QSet<int> attributeIndexes = request.filterExpression()->referencedAttributeIndexes( mSource->mFields );
@@ -108,7 +108,8 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   // get geometry col if requested and table has spatial column
   if ( (
          !( request.flags() & QgsFeatureRequest::NoGeometry )
-         || ( request.filterType() == QgsFeatureRequest::FilterExpression && request.filterExpression()->needsGeometry() )
+         || ( ( request.hasValidFilter( QgsFeatureRequest::FilterExpression ) )
+              && request.filterExpression()->needsGeometry() )
        )
        && mSource->isSpatial() )
   {
@@ -145,7 +146,8 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   }
 
   // set fid filter
-  if ( request.filterType() == QgsFeatureRequest::FilterFid && !mSource->mFidColName.isEmpty() )
+  if ( ( request.hasValidFilter( QgsFeatureRequest::FilterFid ) )
+       && !mSource->mFidColName.isEmpty() )
   {
     QString fidfilter = QStringLiteral( " %1 = %2" ).arg( mSource->mFidColName, QString::number( request.filterFid() ) );
     // set attribute filter
@@ -157,8 +159,8 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
     mStatement += fidfilter;
     filterAdded = true;
   }
-  else if ( request.filterType() == QgsFeatureRequest::FilterFids && !mSource->mFidColName.isEmpty()
-            && !mRequest.filterFids().isEmpty() )
+  else if ( ( ( request.hasValidFilter( QgsFeatureRequest::FilterFids ) ) && !mSource->mFidColName.isEmpty()
+              && !mRequest.filterFids().isEmpty() ) )
   {
     QString delim;
     QString inClause = QStringLiteral( "%1 IN (" ).arg( mSource->mFidColName );
@@ -189,7 +191,7 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
 
   mExpressionCompiled = false;
   mCompileStatus = NoCompilation;
-  if ( request.filterType() == QgsFeatureRequest::FilterExpression )
+  if ( request.hasValidFilter( QgsFeatureRequest::FilterExpression ) )
   {
     QgsDebugMsg( QStringLiteral( "compileExpressions: %1" ).arg( QgsSettings().value( "qgis/compileExpressions", true ).toString() ) );
     if ( QgsSettings().value( QStringLiteral( "qgis/compileExpressions" ), true ).toBool() )

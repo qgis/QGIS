@@ -759,6 +759,7 @@ void TestQgsLayerTree::testSymbolText()
             << QStringLiteral( "bbbb" )
             << QStringLiteral( "cccc" )
             << QStringLiteral( "7" ) );
+
   //cleanup
   delete m;
   delete root;
