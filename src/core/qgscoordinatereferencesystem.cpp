@@ -784,8 +784,15 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
 #if PROJ_VERSION_MAJOR>=6
   if ( d->mPj )
   {
-    const QString authName( proj_get_id_auth_name( d->mPj.get(), 0 ) );
-    const QString authCode( proj_get_id_code( d->mPj.get(), 0 ) );
+    QString authName( proj_get_id_auth_name( d->mPj.get(), 0 ) );
+    QString authCode( proj_get_id_code( d->mPj.get(), 0 ) );
+
+    if ( authName.isEmpty() || authCode.isEmpty() )
+    {
+      // try 2, use proj's identify method and see if there's a nice (singular) candidate we can use
+      QgsProjUtils::identifyCrs( d->mPj.get(), authName, authCode );
+    }
+
     if ( !authName.isEmpty() && !authCode.isEmpty() )
     {
       if ( loadFromAuthCode( authName, authCode ) )
@@ -939,44 +946,18 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
   if ( crs )
   {
     //crs = QgsProjUtils::crsToSingleCrs( crs.get() ) ;
-    int *confidence = nullptr;
-    if ( PJ_OBJ_LIST *crsList = proj_identify( QgsProjContext::get(), crs.get(), nullptr, nullptr, &confidence ) )
+
+    QString authName;
+    QString authCode;
+    if ( QgsProjUtils::identifyCrs( crs.get(), authName, authCode ) )
     {
-      const int count = proj_list_get_count( crsList );
-      int bestConfidence = 0;
-      QgsProjUtils::proj_pj_unique_ptr matchedCrs;
-      for ( int i = 0; i < count; ++i )
+      const QString authid = QStringLiteral( "%1:%2" ).arg( authName, authCode );
+      if ( createFromOgcWmsCrs( authid ) )
       {
-        if ( confidence[i] >= bestConfidence )
-        {
-          // prefer EPSG codes for compatibility with earlier qgis conversions
-          QgsProjUtils::proj_pj_unique_ptr candidateCrs( proj_list_get( QgsProjContext::get(), crsList, i ) );
-          candidateCrs = QgsProjUtils::crsToSingleCrs( candidateCrs.get() );
-          const QString authName( proj_get_id_auth_name( candidateCrs.get(), 0 ) );
-          if ( confidence[i] > bestConfidence || authName == QLatin1String( "EPSG" ) )
-          {
-            bestConfidence = confidence[i];
-            matchedCrs = std::move( candidateCrs );
-          }
-        }
-      }
-      proj_list_destroy( crsList );
-      proj_int_list_destroy( confidence );
-      if ( matchedCrs && bestConfidence >= 70 )
-      {
-        const QString authName( proj_get_id_auth_name( matchedCrs.get(), 0 ) );
-        const QString authCode( proj_get_id_code( matchedCrs.get(), 0 ) );
-        if ( !authName.isEmpty() && !authCode.isEmpty() )
-        {
-          const QString authid = QStringLiteral( "%1:%2" ).arg( authName, authCode );
-          if ( createFromOgcWmsCrs( authid ) )
-          {
-            locker.changeMode( QgsReadWriteLocker::Write );
-            if ( !sDisableProj4Cache )
-              sProj4Cache()->insert( proj4String, *this );
-            return true;
-          }
-        }
+        locker.changeMode( QgsReadWriteLocker::Write );
+        if ( !sDisableProj4Cache )
+          sProj4Cache()->insert( proj4String, *this );
+        return true;
       }
     }
   }

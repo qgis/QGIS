@@ -104,6 +104,14 @@ class CORE_EXPORT QgsProjUtils
     static proj_pj_unique_ptr crsToSingleCrs( const PJ *crs );
 
     /**
+     * Attempts to identify a \a crs, matching it to a known authority and code within
+     * an acceptable level of tolerance.
+     *
+     * Returns TRUE if a matching authority and code was found.
+     */
+    static bool identifyCrs( const PJ *crs, QString &authName, QString &authCode );
+
+    /**
      * Returns TRUE if a coordinate operation (specified via proj string) is available.
      */
     static bool coordinateOperationIsAvailable( const QString &projDef );
