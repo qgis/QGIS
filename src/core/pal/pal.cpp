@@ -96,11 +96,11 @@ struct FeatCallBackCtx
 {
   Layer *layer = nullptr;
 
-  std::list< std::unique_ptr< Feats > > *fFeats = nullptr;
+  std::list< std::unique_ptr< Feats > > *features = nullptr;
 
-  RTree<FeaturePart *, double, 2, double> *obstacles;
-  RTree<LabelPosition *, double, 2, double> *candidates;
-  QList<LabelPosition *> *positionsWithNoCandidates;
+  RTree<FeaturePart *, double, 2, double> *obstacleIndex = nullptr;
+  RTree<LabelPosition *, double, 2, double> *candidateIndex = nullptr;
+  QList<LabelPosition *> *positionsWithNoCandidates = nullptr;
   const GEOSPreparedGeometry *mapBoundary = nullptr;
   Pal *pal = nullptr;
 };
@@ -121,7 +121,7 @@ bool extractFeatCallback( FeaturePart *featurePart, void *ctx )
   for ( int i = 0; i < featurePart->getNumSelfObstacles(); i++ )
   {
     featurePart->getSelfObstacle( i )->getBoundingBox( amin, amax );
-    context->obstacles->Insert( amin, amax, featurePart->getSelfObstacle( i ) );
+    context->obstacleIndex->Insert( amin, amax, featurePart->getSelfObstacle( i ) );
 
     if ( !featurePart->getSelfObstacle( i )->getHoleOf() )
     {
@@ -135,7 +135,7 @@ bool extractFeatCallback( FeaturePart *featurePart, void *ctx )
   // purge candidates that are outside the bbox
   candidates.erase( std::remove_if( candidates.begin(), candidates.end(), [&context]( std::unique_ptr< LabelPosition > &candidate )
   {
-    if ( context->pal->getShowPartial() )
+    if ( context->pal->showPartialLabels() )
       return !candidate->intersects( context->mapBoundary );
     else
       return !candidate->within( context->mapBoundary );
@@ -145,7 +145,7 @@ bool extractFeatCallback( FeaturePart *featurePart, void *ctx )
   {
     for ( std::unique_ptr< LabelPosition > &candidate : candidates )
     {
-      candidate->insertIntoIndex( context->candidates );
+      candidate->insertIntoIndex( context->candidateIndex );
     }
 
     std::sort( candidates.begin(), candidates.end(), CostCalculator::candidateSortGrow );
@@ -156,7 +156,7 @@ bool extractFeatCallback( FeaturePart *featurePart, void *ctx )
     ft->shape = nullptr;
     ft->candidates = std::move( candidates );
     ft->priority = featurePart->calculatePriority();
-    context->fFeats->emplace_back( std::move( ft ) );
+    context->features->emplace_back( std::move( ft ) );
   }
   else
   {
@@ -169,11 +169,11 @@ bool extractFeatCallback( FeaturePart *featurePart, void *ctx )
   return true;
 }
 
-typedef struct _obstaclebackCtx
+struct ObstacleCallBackCtx
 {
-  RTree<FeaturePart *, double, 2, double> *obstacles;
-  int obstacleCount;
-} ObstacleCallBackCtx;
+  RTree<FeaturePart *, double, 2, double> *obstacleIndex = nullptr;
+  int obstacleCount = 0;
+};
 
 /*
  * Callback function
@@ -187,21 +187,21 @@ bool extractObstaclesCallback( FeaturePart *ft_ptr, void *ctx )
 
   // insert into obstacles
   ft_ptr->getBoundingBox( amin, amax );
-  context->obstacles->Insert( amin, amax, ft_ptr );
+  context->obstacleIndex->Insert( amin, amax, ft_ptr );
   context->obstacleCount++;
   return true;
 }
 
-typedef struct _filterContext
+struct FilterContext
 {
-  RTree<LabelPosition *, double, 2, double> *cdtsIndex;
+  RTree<LabelPosition *, double, 2, double> *candidateIndex = nullptr;
   Pal *pal = nullptr;
-} FilterContext;
+};
 
 bool filteringCallback( FeaturePart *featurePart, void *ctx )
 {
 
-  RTree<LabelPosition *, double, 2, double> *cdtsIndex = ( reinterpret_cast< FilterContext * >( ctx ) )->cdtsIndex;
+  RTree<LabelPosition *, double, 2, double> *cdtsIndex = ( reinterpret_cast< FilterContext * >( ctx ) )->candidateIndex;
   Pal *pal = ( reinterpret_cast< FilterContext * >( ctx ) )->pal;
 
   if ( pal->isCanceled() )
@@ -232,14 +232,14 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
   std::size_t max_p = 0;
 
-  bbx[0] = bbx[3] = amin[0] = prob->bbox[0] = extent.xMinimum();
-  bby[0] = bby[1] = amin[1] = prob->bbox[1] = extent.yMinimum();
-  bbx[1] = bbx[2] = amax[0] = prob->bbox[2] = extent.xMaximum();
-  bby[2] = bby[3] = amax[1] = prob->bbox[3] = extent.yMaximum();
+  bbx[0] = bbx[3] = amin[0] = prob->mMapExtentBounds[0] = extent.xMinimum();
+  bby[0] = bby[1] = amin[1] = prob->mMapExtentBounds[1] = extent.yMinimum();
+  bbx[1] = bbx[2] = amax[0] = prob->mMapExtentBounds[2] = extent.xMaximum();
+  bby[2] = bby[3] = amax[1] = prob->mMapExtentBounds[3] = extent.yMaximum();
 
   prob->pal = this;
 
-  std::list< std::unique_ptr< Feats > > fFeats;
+  std::list< std::unique_ptr< Feats > > features;
 
   FeatCallBackCtx context;
 
@@ -247,15 +247,15 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
   geos::unique_ptr mapBoundaryGeos( QgsGeos::asGeos( mapBoundary ) );
   geos::prepared_unique_ptr mapBoundaryPrepared( GEOSPrepare_r( QgsGeos::getGEOSHandler(), mapBoundaryGeos.get() ) );
 
-  context.fFeats = &fFeats;
-  context.obstacles = &obstacles;
-  context.candidates = prob->candidates;
+  context.features = &features;
+  context.obstacleIndex = &obstacles;
+  context.candidateIndex = prob->mCandidatesIndex;
   context.positionsWithNoCandidates = prob->positionsWithNoCandidates();
   context.mapBoundary = mapBoundaryPrepared.get();
   context.pal = this;
 
   ObstacleCallBackCtx obstacleContext;
-  obstacleContext.obstacles = &obstacles;
+  obstacleContext.obstacleIndex = &obstacles;
   obstacleContext.obstacleCount = 0;
 
   // first step : extract features from layers
@@ -266,8 +266,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
   QStringList layersWithFeaturesInBBox;
 
   mMutex.lock();
-  const auto constMLayers = mLayers;
-  for ( Layer *layer : constMLayers )
+  for ( Layer *layer : qgis::as_const( mLayers ) )
   {
     if ( !layer )
     {
@@ -295,11 +294,11 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
     layer->mMutex.unlock();
 
-    if ( context.fFeats->size() - previousFeatureCount > 0 || obstacleContext.obstacleCount > previousObstacleCount )
+    if ( context.features->size() - previousFeatureCount > 0 || obstacleContext.obstacleCount > previousObstacleCount )
     {
       layersWithFeaturesInBBox << layer->name();
     }
-    previousFeatureCount = context.fFeats->size();
+    previousFeatureCount = context.features->size();
     previousObstacleCount = obstacleContext.obstacleCount;
   }
   mMutex.unlock();
@@ -307,19 +306,19 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
   prob->mLayerCount = layersWithFeaturesInBBox.size();
   prob->labelledLayersName = layersWithFeaturesInBBox;
 
-  prob->mFeatureCount = fFeats.size();
+  prob->mFeatureCount = features.size();
   prob->mTotalCandidates = 0;
-  prob->featNbLp = new int [prob->mFeatureCount];
-  prob->featStartId = new int [prob->mFeatureCount];
-  prob->inactiveCost = new double[prob->mFeatureCount];
+  prob->mFeatNbLp = new int [prob->mFeatureCount];
+  prob->mFeatStartId = new int [prob->mFeatureCount];
+  prob->mInactiveCost = new double[prob->mFeatureCount];
 
-  if ( !fFeats.empty() )
+  if ( !features.empty() )
   {
     // Filtering label positions against obstacles
     amin[0] = amin[1] = std::numeric_limits<double>::lowest();
     amax[0] = amax[1] = std::numeric_limits<double>::max();
     FilterContext filterCtx;
-    filterCtx.cdtsIndex = prob->candidates;
+    filterCtx.candidateIndex = prob->mCandidatesIndex;
     filterCtx.pal = this;
     obstacles.Search( amin, amax, filteringCallback, static_cast< void * >( &filterCtx ) );
 
@@ -331,11 +330,11 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
     int idlp = 0;
     for ( std::size_t i = 0; i < prob->mFeatureCount; i++ ) /* foreach feature into prob */
     {
-      std::unique_ptr< Feats > feat = std::move( fFeats.front() );
-      fFeats.pop_front();
+      std::unique_ptr< Feats > feat = std::move( features.front() );
+      features.pop_front();
 
-      prob->featStartId[i] = idlp;
-      prob->inactiveCost[i] = std::pow( 2, 10 - 10 * feat->priority );
+      prob->mFeatStartId[i] = idlp;
+      prob->mInactiveCost[i] = std::pow( 2, 10 - 10 * feat->priority );
 
       switch ( feat->feature->getGeosType() )
       {
@@ -357,12 +356,12 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       while ( feat->candidates.size() > max_p )
       {
         // TODO remove from index
-        feat->candidates.back()->removeFromIndex( prob->candidates );
+        feat->candidates.back()->removeFromIndex( prob->mCandidatesIndex );
         feat->candidates.pop_back();
       }
 
       // update problem's # candidate
-      prob->featNbLp[i] = static_cast< int >( feat->candidates.size() );
+      prob->mFeatNbLp[i] = static_cast< int >( feat->candidates.size() );
       prob->mTotalCandidates += static_cast< int >( feat->candidates.size() );
 
       // add all candidates into a rtree (to speed up conflicts searching)
@@ -371,20 +370,20 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
         //lp->insertIntoIndex(prob->candidates);
         feat->candidates[ j ]->setProblemIds( static_cast< int >( i ), idlp ); // bugfix #1 (maxence 10/23/2008)
       }
-      fFeats.emplace_back( std::move( feat ) );
+      features.emplace_back( std::move( feat ) );
     }
 
     int nbOverlaps = 0;
 
-    while ( !fFeats.empty() ) // foreach feature
+    while ( !features.empty() ) // foreach feature
     {
       if ( isCanceled() )
       {
         return nullptr;
       }
 
-      std::unique_ptr< Feats > feat = std::move( fFeats.front() );
-      fFeats.pop_front();
+      std::unique_ptr< Feats > feat = std::move( features.front() );
+      features.pop_front();
 
       for ( std::unique_ptr< LabelPosition > &candidate : feat->candidates )
       {
@@ -400,7 +399,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
         lp->getBoundingBox( amin, amax );
 
         // lookup for overlapping candidate
-        prob->candidates->Search( amin, amax, LabelPosition::countOverlapCallback, static_cast< void * >( lp.get() ) );
+        prob->mCandidatesIndex->Search( amin, amax, LabelPosition::countOverlapCallback, static_cast< void * >( lp.get() ) );
 
         nbOverlaps += lp->getNumOverlaps();
 
@@ -408,8 +407,8 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       }
     }
     nbOverlaps /= 2;
-    prob->all_nblp = prob->mTotalCandidates;
-    prob->nbOverlap = nbOverlaps;
+    prob->mAllNblp = prob->mTotalCandidates;
+    prob->mNbOverlap = nbOverlaps;
   }
 
   return prob;
@@ -446,76 +445,76 @@ QList<LabelPosition *> Pal::solveProblem( Problem *prob, bool displayAll, QList<
 }
 
 
-void Pal::setPointP( int point_p )
+void Pal::setMaximumNumberOfPointCandidates( int candidates )
 {
-  if ( point_p > 0 )
-    this->point_p = point_p;
+  if ( candidates > 0 )
+    this->mMaxPointCandidates = candidates;
 }
 
-void Pal::setLineP( int line_p )
+void Pal::setMaximumNumberOfLineCandidates( int line_p )
 {
   if ( line_p > 0 )
-    this->line_p = line_p;
+    this->mMaxLineCandidates = line_p;
 }
 
-void Pal::setPolyP( int poly_p )
+void Pal::setMaximumNumberOfPolygonCandidates( int poly_p )
 {
   if ( poly_p > 0 )
-    this->poly_p = poly_p;
+    this->mMaxPolyCandidates = poly_p;
 }
 
 
 void Pal::setMinIt( int min_it )
 {
   if ( min_it >= 0 )
-    tabuMinIt = min_it;
+    mTabuMinIt = min_it;
 }
 
 void Pal::setMaxIt( int max_it )
 {
   if ( max_it > 0 )
-    tabuMaxIt = max_it;
+    mTabuMaxIt = max_it;
 }
 
 void Pal::setPopmusicR( int r )
 {
   if ( r > 0 )
-    popmusic_r = r;
+    mPopmusicR = r;
 }
 
 void Pal::setEjChainDeg( int degree )
 {
-  this->ejChainDeg = degree;
+  this->mEjChainDeg = degree;
 }
 
 void Pal::setTenure( int tenure )
 {
-  this->tenure = tenure;
+  this->mTenure = tenure;
 }
 
 void Pal::setCandListSize( double fact )
 {
-  this->candListSize = fact;
+  this->mCandListSize = fact;
 }
 
-void Pal::setShowPartial( bool show )
+void Pal::setShowPartialLabels( bool show )
 {
-  this->showPartial = show;
+  this->mShowPartialLabels = show;
 }
 
-int Pal::getPointP()
+int Pal::maximumNumberOfPointCandidates() const
 {
-  return point_p;
+  return mMaxPointCandidates;
 }
 
-int Pal::getLineP()
+int Pal::maximumNumberOfLineCandidates() const
 {
-  return line_p;
+  return mMaxLineCandidates;
 }
 
-int Pal::getPolyP()
+int Pal::maximumNumberOfPolygonCandidates() const
 {
-  return poly_p;
+  return mMaxPolyCandidates;
 }
 
 QgsLabelingEngineSettings::PlacementEngineVersion Pal::placementVersion() const
@@ -530,15 +529,15 @@ void Pal::setPlacementVersion( QgsLabelingEngineSettings::PlacementEngineVersion
 
 int Pal::getMinIt()
 {
-  return tabuMaxIt;
+  return mTabuMaxIt;
 }
 
 int Pal::getMaxIt()
 {
-  return tabuMinIt;
+  return mTabuMinIt;
 }
 
-bool Pal::getShowPartial()
+bool Pal::showPartialLabels() const
 {
-  return showPartial;
+  return mShowPartialLabels;
 }

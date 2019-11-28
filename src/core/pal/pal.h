@@ -159,55 +159,54 @@ namespace pal
       QList<LabelPosition *> solveProblem( Problem *prob, bool displayAll, QList<pal::LabelPosition *> *unlabeled = nullptr );
 
       /**
-       *\brief Set flag show partial label
+       * Sets whether partial labels show be allowed.
        *
-       * \param show flag value
+       * \see showPartialLabels()
        */
-      void setShowPartial( bool show );
+      void setShowPartialLabels( bool show );
 
       /**
        * Returns whether partial labels should be allowed.
+       *
+       * \see setShowPartialLabels()
        */
-      bool getShowPartial();
+      bool showPartialLabels() const;
 
       /**
-       * \brief set # candidates to generate for points features
-       * Higher the value is, longer Pal::labeller will spend time
+       * Sets the maximum number of candidates to generate for points features.
        *
-       * \param point_p # candidates for a point
+       * The larger the value, the longer the labeling solution will take to calculate.
        */
-      void setPointP( int point_p );
+      void setMaximumNumberOfPointCandidates( int candidates );
 
       /**
-       * \brief set maximum # candidates to generate for lines features
-       * Higher the value is, longer Pal::labeller will spend time
+       * Sets the maximum number of candidates to generate for line features.
        *
-       * \param line_p maximum # candidates for a line
+       * The larger the value, the longer the labeling solution will take to calculate.
        */
-      void setLineP( int line_p );
+      void setMaximumNumberOfLineCandidates( int candidates );
 
       /**
-       * \brief set maximum # candidates to generate for polygon features
-       * Higher the value is, longer Pal::labeller will spend time
+       * Sets the maximum number of candidates to generate for polygon features.
        *
-       * \param poly_p maximum # candidate for a polygon
+       * The larger the value, the longer the labeling solution will take to calculate.
        */
-      void setPolyP( int poly_p );
+      void setMaximumNumberOfPolygonCandidates( int candidates );
 
       /**
        * Returns the number of candidates to generate for point features.
        */
-      int getPointP();
+      int maximumNumberOfPointCandidates() const;
 
       /**
        * Returns the number of candidates to generate for line features.
        */
-      int getLineP();
+      int maximumNumberOfLineCandidates() const;
 
       /**
        * Returns the number of candidates to generate for polygon features.
        */
-      int getPolyP();
+      int maximumNumberOfPolygonCandidates() const;
 
       /**
        * Returns the placement engine version, which dictates how the label placement problem is solved.
@@ -230,36 +229,36 @@ namespace pal
       QMutex mMutex;
 
       /**
-       * \brief maximum # candidates for a point
+       * Maximum number of candidates for a point.
        */
-      int point_p = 16;
+      int mMaxPointCandidates = 16;
 
       /**
-       * \brief maximum # candidates for a line
+       * Maximum number of candidates for a line.
        */
-      int line_p = 50;
+      int mMaxLineCandidates = 50;
 
       /**
-       * \brief maximum # candidates for a polygon
+       * Maximum number of candidates for a polygon.
        */
-      int poly_p = 30;
+      int mMaxPolyCandidates = 30;
 
       /*
        * POPMUSIC Tuning
        */
-      int popmusic_r = 30;
+      int mPopmusicR = 30;
 
-      int tabuMaxIt = 4;
-      int tabuMinIt = 2;
+      int mTabuMaxIt = 4;
+      int mTabuMinIt = 2;
 
-      int ejChainDeg = 50;
-      int tenure = 10;
-      double candListSize = 0.2;
+      int mEjChainDeg = 50;
+      int mTenure = 10;
+      double mCandListSize = 0.2;
 
       /**
        * \brief show partial labels (cut-off by the map canvas) or not
        */
-      bool showPartial = true;
+      bool mShowPartialLabels = true;
 
       QgsLabelingEngineSettings::PlacementEngineVersion mPlacementVersion = QgsLabelingEngineSettings::PlacementEngineVersion2;
 
@@ -297,7 +296,7 @@ namespace pal
        * \brief For tabu search : how many iteration a feature will be tabu
        * \param tenure consiser a feature as tabu for tenure iteration after updating feature in solution
        */
-      void setTenure( int tenure );
+      void setTenure( int mTenure );
 
       /**
        * \brief For *CHAIN, select the max size of a transformation chain

@@ -96,15 +96,15 @@ namespace pal
         // to avoid the engine processing endlessly...
         const int size = mHashtable.size();
         if ( size > 1000 )
-          return std::min( pal->point_p, 4 );
+          return std::min( pal->mMaxPointCandidates, 4 );
         else if ( size > 500 )
-          return std::min( pal->point_p, 6 );
+          return std::min( pal->mMaxPointCandidates, 6 );
         else if ( size > 200 )
-          return std::min( pal->point_p, 8 );
+          return std::min( pal->mMaxPointCandidates, 8 );
         else if ( size > 100 )
-          return std::min( pal->point_p, 12 );
+          return std::min( pal->mMaxPointCandidates, 12 );
         else
-          return pal->point_p;
+          return pal->mMaxPointCandidates;
       }
 
       /**
@@ -117,15 +117,15 @@ namespace pal
         // to avoid the engine processing endlessly...
         const int size = mHashtable.size();
         if ( size > 1000 )
-          return std::min( pal->line_p, 5 );
+          return std::min( pal->mMaxLineCandidates, 5 );
         else if ( size > 500 )
-          return std::min( pal->line_p, 10 );
+          return std::min( pal->mMaxLineCandidates, 10 );
         else if ( size > 200 )
-          return std::min( pal->line_p, 20 );
+          return std::min( pal->mMaxLineCandidates, 20 );
         else if ( size > 100 )
-          return std::min( pal->line_p, 40 );
+          return std::min( pal->mMaxLineCandidates, 40 );
         else
-          return pal->line_p;
+          return pal->mMaxLineCandidates;
       }
 
       /**
@@ -138,15 +138,15 @@ namespace pal
         // to avoid the engine processing endlessly...
         const int size = mHashtable.size();
         if ( size > 1000 )
-          return std::min( pal->poly_p, 5 );
+          return std::min( pal->mMaxPolyCandidates, 5 );
         else if ( size > 500 )
-          return std::min( pal->poly_p, 15 );
+          return std::min( pal->mMaxPolyCandidates, 15 );
         else if ( size > 200 )
-          return std::min( pal->poly_p, 20 );
+          return std::min( pal->mMaxPolyCandidates, 20 );
         else if ( size > 100 )
-          return std::min( pal->poly_p, 25 );
+          return std::min( pal->mMaxPolyCandidates, 25 );
         else
-          return pal->poly_p;
+          return pal->mMaxPolyCandidates;
       }
 
       //! Returns pointer to the associated provider

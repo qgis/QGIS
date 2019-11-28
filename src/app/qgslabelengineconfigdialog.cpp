@@ -101,12 +101,12 @@ void QgsLabelEngineConfigDialog::onOK()
 void QgsLabelEngineConfigDialog::setDefaults()
 {
   pal::Pal p;
-  spinCandPoint->setValue( p.getPointP() );
-  spinCandLine->setValue( p.getLineP() );
-  spinCandPolygon->setValue( p.getPolyP() );
+  spinCandPoint->setValue( p.maximumNumberOfPointCandidates() );
+  spinCandLine->setValue( p.maximumNumberOfLineCandidates() );
+  spinCandPolygon->setValue( p.maximumNumberOfPolygonCandidates() );
   chkShowCandidates->setChecked( false );
   chkShowAllLabels->setChecked( false );
-  chkShowPartialsLabels->setChecked( p.getShowPartial() );
+  chkShowPartialsLabels->setChecked( p.showPartialLabels() );
   mTextRenderFormatComboBox->setCurrentIndex( mTextRenderFormatComboBox->findData( QgsRenderContext::TextFormatAlwaysOutlines ) );
   mPlacementVersionComboBox->setCurrentIndex( mPlacementVersionComboBox->findData( QgsLabelingEngineSettings::PlacementEngineVersion2 ) );
 }

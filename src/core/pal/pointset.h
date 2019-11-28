@@ -51,7 +51,7 @@ namespace pal
 
   class PointSet;
 
-  typedef struct _cHullBox
+  struct CHullBox
   {
     double x[4];
     double y[4];
@@ -60,7 +60,7 @@ namespace pal
 
     double width;
     double length;
-  } CHullBox;
+  };
 
   /**
    * \class pal::PointSet

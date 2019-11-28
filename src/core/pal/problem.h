@@ -50,13 +50,13 @@ namespace pal
    * \note not available in Python bindings
    */
 
-  typedef struct _chain
+  struct Chain
   {
     int degree;
     double delta;
     int *feat = nullptr;
     int *label = nullptr;
-  } Chain;
+  };
 
   /**
    * \ingroup core
@@ -66,7 +66,6 @@ namespace pal
    */
   class CORE_EXPORT Problem
   {
-
       friend class Pal;
 
     public:
@@ -90,11 +89,11 @@ namespace pal
 
       /////////////////
       // problem inspection functions
-      int getNumFeatures() { return mFeatureCount; }
+      std::size_t featureCount() const { return mFeatureCount; }
       // features counted 0...n-1
-      int getFeatureCandidateCount( int i ) { return featNbLp[i]; }
+      int getFeatureCandidateCount( int i ) { return mFeatNbLp[i]; }
       // both features and candidates counted 0..n-1
-      LabelPosition *getFeatureCandidate( int fi, int ci ) { return mLabelPositions.at( featStartId[fi] + ci ); }
+      LabelPosition *getFeatureCandidate( int fi, int ci ) { return mLabelPositions.at( mFeatStartId[fi] + ci ); }
       /////////////////
 
 
@@ -155,7 +154,7 @@ namespace pal
       /**
        * # candidates (all, including)
        */
-      int all_nblp = 0;
+      int mAllNblp = 0;
 
       /**
        * Total number of features to label.
@@ -165,24 +164,24 @@ namespace pal
       /**
        * if TRUE, special value -1 is prohibited
        */
-      bool displayAll = false;
+      bool mDisplayAll = false;
 
       /**
        * Map extent (xmin, ymin, xmax, ymax)
        */
-      double bbox[4];
+      double mMapExtentBounds[4];
 
       QList< LabelPosition * > mLabelPositions;
 
-      RTree<LabelPosition *, double, 2, double> *candidates = nullptr; // index all candidates
-      RTree<LabelPosition *, double, 2, double> *candidates_sol = nullptr; // index active candidates
+      RTree<LabelPosition *, double, 2, double> *mCandidatesIndex = nullptr; // index all candidates
+      RTree<LabelPosition *, double, 2, double> *mActiveCandidatesIndex = nullptr; // index active candidates
 
       QList< LabelPosition * > mPositionsWithNoCandidates;
 
       //int *feat;        // [nblp]
-      int *featStartId = nullptr; // [nbft]
-      int *featNbLp = nullptr;    // [nbft]
-      double *inactiveCost = nullptr; //
+      int *mFeatStartId = nullptr; // [nbft]
+      int *mFeatNbLp = nullptr;    // [nbft]
+      double *mInactiveCost = nullptr; //
 
       class Sol
       {
@@ -200,8 +199,8 @@ namespace pal
           }
       };
 
-      Sol sol;
-      double nbOverlap = 0.0;
+      Sol mSol;
+      double mNbOverlap = 0.0;
 
       Chain *chain( int seed );
 
