@@ -781,12 +781,13 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
 #if PROJ_VERSION_MAJOR>=6
   if ( d->mPj )
   {
+    // try 1 - maybe we can directly grab the auth name and code from the crs already?
     QString authName( proj_get_id_auth_name( d->mPj.get(), 0 ) );
     QString authCode( proj_get_id_code( d->mPj.get(), 0 ) );
 
     if ( authName.isEmpty() || authCode.isEmpty() )
     {
-      // try 2, use proj's identify method and see if there's a nice (singular) candidate we can use
+      // try 2, use proj's identify method and see if there's a nice candidate we can use
       QgsProjUtils::identifyCrs( d->mPj.get(), authName, authCode );
     }
 
@@ -815,29 +816,11 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
   }
 #endif
 
-  // always morph from esri as it doesn't hurt anything
-  // FW: Hey, that's not right!  It can screw stuff up! Disable
-  //myOgrSpatialRef.morphFromESRI();
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // WARNING - wkt to proj conversion is lossy, hence we DON'T DO THIS on proj 6
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // WARNING - wkt to proj conversion is lossy -- we should reevaluate all this logic!!
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-#if PROJ_VERSION_MAJOR>=6
-  // create the proj4 structs needed for transforming
-  if ( d->mPj )
-  {
-    const QString proj4String = getFullProjString( d->mPj.get() );
-    if ( !proj4String.isEmpty() )
-    {
-      //now that we have the proj4string, delegate to createFromProj4 so
-      // that we can try to fill in the remaining class members...
-      //create from Proj will set the isValidFlag
-      createFromProj4( proj4String );
-    }
-  }
-#else
+#if PROJ_VERSION_MAJOR<6
   // create the proj4 structs needed for transforming
   char *proj4src = nullptr;
   OSRExportToProj4( d->mCRS, &proj4src );
