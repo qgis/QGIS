@@ -126,23 +126,31 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         self.assertEqual(srids_and_types,
                          [[0, 1], [0, 2], [0, 3], [0, 7], [3857, 1], [4326, 1]])
 
-        # Check TopoGeometry layers are found in vector table names
-
+        # Check TopoGeometry and Pointcloud layers are found in vector table names
         tables = conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Vector)
         table_names = self._table_names(tables)
         self.assertTrue('TopoLayer1' in table_names)
+        self.assertTrue('PointCloudPointLayer' in table_names)
+        self.assertTrue('PointCloudPatchLayer' in table_names)
+
         self.assertTrue('geometries_table' in table_names)
 
         # Revoke select permissions on topology.topology from qgis_test_user
         conn.executeSql('REVOKE SELECT ON topology.topology FROM qgis_test_user')
 
+        # Revoke select permissions on pointcloud_format from qgis_test_user
+        conn.executeSql('REVOKE SELECT ON pointcloud_formats FROM qgis_test_user')
+
         # Re-connect as the qgis_test_role role
         newuri = self.uri + ' user=qgis_test_user password=qgis_test_user_password'
-        conn = md.createConnection(newuri, {})
+        newconn = md.createConnection(newuri, {})
 
-        tables = conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Vector)
+        # Check TopoGeometry and Pointcloud layers are not found in vector table names
+        tables = newconn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Vector)
         table_names = self._table_names(tables)
         self.assertFalse('TopoLayer1' in table_names)
+        self.assertFalse('PointCloudPointLayer' in table_names)
+        self.assertFalse('PointCloudPatchLayer' in table_names)
         self.assertTrue('geometries_table' in table_names)
 
         # TODO: only revoke select permission on topology.layer, grant
@@ -153,6 +161,13 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
 
         # TODO: only revoke select permission the actual topology
         #       schema associated with TopoLayer1
+
+        # TODO: only revoke select permission the pointcloud_columns
+        #       table
+
+        # Grant select permissions back on topology.topology to qgis_test_user
+        conn.executeSql('GRANT SELECT ON topology.topology TO qgis_test_user')
+        conn.executeSql('GRANT SELECT ON pointcloud_formats TO qgis_test_user')
 
     # error: ERROR: relation "qgis_test.raster1" does not exist
     @unittest.skipIf(gdal.VersionInfo() < '2040000', 'This test requires GDAL >= 2.4.0')
