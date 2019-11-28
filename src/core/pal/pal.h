@@ -296,7 +296,7 @@ namespace pal
        * \brief For tabu search : how many iteration a feature will be tabu
        * \param tenure consiser a feature as tabu for tenure iteration after updating feature in solution
        */
-      void setTenure( int mTenure );
+      void setTenure( int tenure );
 
       /**
        * \brief For *CHAIN, select the max size of a transformation chain
