@@ -34,8 +34,6 @@ A wrapper for QgsMeshParticuleTracesField used to render the particles. Availabl
 Constructor to use with Python binding
 %End
 
-    ~QgsMeshVectorTraceRenderer();
-
     void seedRandomParticles( int count );
 %Docstring
 seeds particles in the vector fields

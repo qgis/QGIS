@@ -491,9 +491,6 @@ class CORE_EXPORT QgsMeshVectorTraceRenderer
     //!Constructor to use with Python binding
     QgsMeshVectorTraceRenderer( QgsMeshLayer *layer, const QgsRenderContext &rendererContext );
 
-    //! Destructor
-    ~QgsMeshVectorTraceRenderer();
-
     //! seeds particles in the vector fields
     void seedRandomParticles( int count );
 

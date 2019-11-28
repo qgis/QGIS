@@ -191,7 +191,11 @@ void QgsMeshStreamField::updateSize( const QgsRenderContext &renderContext )
     layerExtent = mLayerExtent;
   }
 
-  QgsRectangle interestZoneExtent = layerExtent.intersect( mMapExtent );
+  QgsRectangle interestZoneExtent;
+  if ( mMinimizeFieldSize )
+    interestZoneExtent = layerExtent.intersect( mMapExtent );
+  else
+    interestZoneExtent = mMapExtent;
 
   if ( interestZoneExtent == QgsRectangle() )
   {
@@ -204,16 +208,10 @@ void QgsMeshStreamField::updateSize( const QgsRenderContext &renderContext )
 
   QgsPointXY interestZoneTopLeft;
   QgsPointXY interestZoneBottomRight;
-  if ( mMinimizeFieldSize )
-  {
-    interestZoneTopLeft = deviceMapToPixel.transform( QgsPointXY( interestZoneExtent.xMinimum(), interestZoneExtent.yMaximum() ) );
-    interestZoneBottomRight = deviceMapToPixel.transform( QgsPointXY( interestZoneExtent.xMaximum(), interestZoneExtent.yMinimum() ) );
-  }
-  else
-  {
-    interestZoneTopLeft = deviceMapToPixel.transform( QgsPointXY( mMapExtent.xMinimum(), mMapExtent.yMaximum() ) );
-    interestZoneBottomRight = deviceMapToPixel.transform( QgsPointXY( mMapExtent.xMaximum(), mMapExtent.yMinimum() ) );
-  }
+
+  interestZoneTopLeft = deviceMapToPixel.transform( QgsPointXY( interestZoneExtent.xMinimum(), interestZoneExtent.yMaximum() ) );
+  interestZoneBottomRight = deviceMapToPixel.transform( QgsPointXY( interestZoneExtent.xMaximum(), interestZoneExtent.yMinimum() ) );
+
 
   mFieldTopLeftInDeviceCoordinates = interestZoneTopLeft.toQPointF().toPoint();
   QPoint mFieldBottomRightInDeviceCoordinates = interestZoneBottomRight.toQPointF().toPoint();
@@ -254,7 +252,6 @@ void QgsMeshStreamField::updateSize( const QgsRenderContext &renderContext )
                                     yc,
                                     fieldWidth,
                                     fieldHeight, 0 );
-
 
   initField();
   mValid = true;
@@ -1092,16 +1089,12 @@ QgsMeshVectorTraceRenderer::QgsMeshVectorTraceRenderer( QgsMeshLayer *layer, con
       layer->extent(),
       magMax,
       vectorDataOnVertices,
-      rendererContext ) ;
+      rendererContext )  ;
 
   mParticleField->setMinimizeFieldSize( false );
   mParticleField->updateSize( mRendererContext );
 }
 
-QgsMeshVectorTraceRenderer::~QgsMeshVectorTraceRenderer()
-{
-  delete mParticleField;
-}
 
 void QgsMeshVectorTraceRenderer::seedRandomParticles( int count )
 {
