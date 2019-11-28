@@ -57,8 +57,8 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
 
     QgsVectorLayer *mVectorLayer = nullptr;
 
-    bool mCanAddAttribute;
-    bool mCanChangeAttributeValue;
+    bool mCanAddAttribute = false;
+    bool mCanChangeAttributeValue = false;
 
     //! Create a field based on the definitions
     QgsField fieldDefinition();
