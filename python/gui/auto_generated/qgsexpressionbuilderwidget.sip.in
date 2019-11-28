@@ -63,6 +63,7 @@ Gets the type of expression item, e.g., header, field, ExpressionNode.
 
     static const int CUSTOM_SORT_ROLE;
     static const int ITEM_TYPE_ROLE;
+    static const int SEARCH_TAGS_ROLE;
 
 };
 
@@ -199,7 +200,8 @@ preview result and for populating the list of available functions and variables.
                        const QString &helpText = QString(),
                        QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
                        bool highlightedItem = false, int sortOrder = 1,
-                       QIcon icon = QIcon() );
+                       QIcon icon = QIcon(),
+                       const QStringList &searchTags = QStringList() );
 %Docstring
 Registers a node item for the expression builder.
 
@@ -211,6 +213,7 @@ Registers a node item for the expression builder.
 :param highlightedItem: set to ``True`` to make the item highlighted, which inserts a bold copy of the item at the top level
 :param sortOrder: sort ranking for item
 :param icon: custom icon to show for item
+:param searchTags: tags to find function
 %End
 
     bool isExpressionValid();

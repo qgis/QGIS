@@ -506,11 +506,12 @@ void QgsExpressionBuilderWidget::registerItem( const QString &group,
     const QString &label,
     const QString &expressionText,
     const QString &helpText,
-    QgsExpressionItem::ItemType type, bool highlightedItem, int sortOrder, QIcon icon )
+    QgsExpressionItem::ItemType type, bool highlightedItem, int sortOrder, QIcon icon, const QStringList &searchTags )
 {
   QgsExpressionItem *item = new QgsExpressionItem( label, expressionText, helpText, type );
   item->setData( label, Qt::UserRole );
   item->setData( sortOrder, QgsExpressionItem::CUSTOM_SORT_ROLE );
+  item->setData( searchTags, QgsExpressionItem::SEARCH_TAGS_ROLE );
   item->setIcon( icon );
 
   // Look up the group and insert the new function.
@@ -671,7 +672,7 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
       name += '(';
     else if ( !name.startsWith( '$' ) )
       name += QLatin1String( "()" );
-    registerItemForAllGroups( func->groups(), func->name(), ' ' + name + ' ', func->helpText(), QgsExpressionItem::ExpressionNode, mExpressionContext.isHighlightedFunction( func->name() ) );
+    registerItemForAllGroups( func->groups(), func->name(), ' ' + name + ' ', func->helpText(), QgsExpressionItem::ExpressionNode, mExpressionContext.isHighlightedFunction( func->name() ), 1, func->searchTags() );
   }
 
   // load relation names
@@ -817,16 +818,16 @@ void QgsExpressionBuilderWidget::loadExpressionContext()
       continue;
     if ( func->params() != 0 )
       name += '(';
-    registerItemForAllGroups( func->groups(), func->name(), ' ' + name + ' ', func->helpText(), QgsExpressionItem::ExpressionNode, mExpressionContext.isHighlightedFunction( func->name() ) );
+    registerItemForAllGroups( func->groups(), func->name(), ' ' + name + ' ', func->helpText(), QgsExpressionItem::ExpressionNode, mExpressionContext.isHighlightedFunction( func->name() ), 1, func->searchTags() );
   }
 }
 
-void QgsExpressionBuilderWidget::registerItemForAllGroups( const QStringList &groups, const QString &label, const QString &expressionText, const QString &helpText, QgsExpressionItem::ItemType type, bool highlightedItem, int sortOrder )
+void QgsExpressionBuilderWidget::registerItemForAllGroups( const QStringList &groups, const QString &label, const QString &expressionText, const QString &helpText, QgsExpressionItem::ItemType type, bool highlightedItem, int sortOrder, const QStringList &searchTags )
 {
   const auto constGroups = groups;
   for ( const QString &group : constGroups )
   {
-    registerItem( group, label, expressionText, helpText, type, highlightedItem, sortOrder );
+    registerItem( group, label, expressionText, helpText, type, highlightedItem, sortOrder, QIcon(), searchTags );
   }
 }
 
@@ -1231,7 +1232,21 @@ bool QgsExpressionItemSearchProxy::filterAcceptsRow( int source_row, const QMode
   if ( itemType == QgsExpressionItem::Header )
     return false;
 
-  return QSortFilterProxyModel::filterAcceptsRow( source_row, source_parent );
+  // check match of item label or tags
+  if ( QSortFilterProxyModel::filterAcceptsRow( source_row, source_parent ) )
+  {
+    return true;
+  }
+  else
+  {
+    QStringList tags = sourceModel()->data( index, QgsExpressionItem::SEARCH_TAGS_ROLE ).toStringList();
+    for ( const QString &tag : tags )
+    {
+      if ( tag.contains( filterRegExp() ) )
+        return true;
+    }
+  }
+  return false;
 }
 
 bool QgsExpressionItemSearchProxy::lessThan( const QModelIndex &left, const QModelIndex &right ) const

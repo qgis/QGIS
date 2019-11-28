@@ -157,8 +157,9 @@ QgsStaticExpressionFunction::QgsStaticExpressionFunction( const QString &fnname,
     const std::function < QSet<QString>( const QgsExpressionNodeFunction *node ) > &referencedColumns,
     bool lazyEval,
     const QStringList &aliases,
-    bool handlesNull )
-  : QgsExpressionFunction( fnname, params, group, helpText, lazyEval, handlesNull )
+    bool handlesNull,
+    const QStringList &searchTags )
+  : QgsExpressionFunction( fnname, params, group, helpText, lazyEval, handlesNull, false, searchTags )
   , mFnc( fcn )
   , mAliases( aliases )
   , mUsesGeometry( false )
@@ -5977,8 +5978,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "array_reverse" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ), fcnArrayReverse, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_intersect" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array1" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "array2" ) ), fcnArrayIntersect, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_distinct" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ), fcnArrayDistinct, QStringLiteral( "Arrays" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "array_to_string" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "delimiter" ), true, "," ) << QgsExpressionFunction::Parameter( QStringLiteral( "emptyvalue" ), true, "" ), fcnArrayToString, QStringLiteral( "Arrays" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "string_to_array" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "delimiter" ), true, "," ) << QgsExpressionFunction::Parameter( QStringLiteral( "emptyvalue" ), true, "" ), fcnStringToArray, QStringLiteral( "Arrays" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "array_to_string" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "delimiter" ), true, "," ) << QgsExpressionFunction::Parameter( QStringLiteral( "emptyvalue" ), true, "" ), fcnArrayToString, QStringLiteral( "Arrays" ), QString(), false, QSet<QString>(), false, QStringList(), false, QStringList() )
+        << new QgsStaticExpressionFunction( QStringLiteral( "string_to_array" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "delimiter" ), true, "," ) << QgsExpressionFunction::Parameter( QStringLiteral( "emptyvalue" ), true, "" ), fcnStringToArray, QStringLiteral( "Arrays" ), QString(), false, QSet<QString>(), false, QStringList(), false, QStringList() << QStringLiteral( "Split" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "generate_series" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "start" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "stop" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "step" ), true, 1.0 ), fcnGenerateSeries, QStringLiteral( "Arrays" ) )
 
         //functions for maps

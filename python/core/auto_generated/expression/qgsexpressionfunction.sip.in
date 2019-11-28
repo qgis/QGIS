@@ -84,7 +84,8 @@ should not be checked while determining referenced columns for the expression.
                            const QString &helpText = QString(),
                            bool lazyEval = false,
                            bool handlesNull = false,
-                           bool isContextual = false );
+                           bool isContextual = false,
+                           const QStringList &searchTags = QStringList() );
 %Docstring
 Constructor for function which uses unnamed parameters
 %End
@@ -95,7 +96,8 @@ Constructor for function which uses unnamed parameters
                            const QString &helpText = QString(),
                            bool lazyEval = false,
                            bool handlesNull = false,
-                           bool isContextual = false );
+                           bool isContextual = false,
+                           const QStringList &searchTags = QStringList() );
 %Docstring
 Constructor for function which uses unnamed parameters and group list
 
@@ -108,7 +110,8 @@ Constructor for function which uses unnamed parameters and group list
                            const QString &helpText = QString(),
                            bool lazyEval = false,
                            bool handlesNull = false,
-                           bool isContextual = false );
+                           bool isContextual = false,
+                           const QStringList &searchTags = QStringList() );
 %Docstring
 Constructor for function which uses named parameter list.
 
@@ -121,7 +124,8 @@ Constructor for function which uses named parameter list.
                            const QString &helpText = QString(),
                            bool lazyEval = false,
                            bool handlesNull = false,
-                           bool isContextual = false );
+                           bool isContextual = false,
+                           const QStringList &searchTags = QStringList() );
 %Docstring
 Constructor for function which uses named parameter list and group list.
 
@@ -242,6 +246,11 @@ Returns a list of the groups the function belongs to.
     const QString helpText() const;
 %Docstring
 The help text for the function.
+%End
+
+    QStringList searchTags() const;
+%Docstring
+The search tags to find the function
 %End
 
     virtual QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node ) = 0;
