@@ -186,6 +186,46 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToSingleCrs( const PJ *crs )
 #endif
 }
 
+bool QgsProjUtils::identifyCrs( const PJ *crs, QString &authName, QString &authCode )
+{
+  authName.clear();
+  authCode.clear();
+
+  if ( !crs )
+    return false;
+
+  int *confidence = nullptr;
+  if ( PJ_OBJ_LIST *crsList = proj_identify( QgsProjContext::get(), crs, nullptr, nullptr, &confidence ) )
+  {
+    const int count = proj_list_get_count( crsList );
+    int bestConfidence = 0;
+    QgsProjUtils::proj_pj_unique_ptr matchedCrs;
+    for ( int i = 0; i < count; ++i )
+    {
+      if ( confidence[i] >= bestConfidence )
+      {
+        // prefer EPSG codes for compatibility with earlier qgis conversions
+        QgsProjUtils::proj_pj_unique_ptr candidateCrs( proj_list_get( QgsProjContext::get(), crsList, i ) );
+        candidateCrs = QgsProjUtils::crsToSingleCrs( candidateCrs.get() );
+        const QString authName( proj_get_id_auth_name( candidateCrs.get(), 0 ) );
+        if ( confidence[i] > bestConfidence || authName == QLatin1String( "EPSG" ) )
+        {
+          bestConfidence = confidence[i];
+          matchedCrs = std::move( candidateCrs );
+        }
+      }
+    }
+    proj_list_destroy( crsList );
+    proj_int_list_destroy( confidence );
+    if ( matchedCrs && bestConfidence >= 70 )
+    {
+      authName = QString( proj_get_id_auth_name( matchedCrs.get(), 0 ) );
+      authCode = QString( proj_get_id_code( matchedCrs.get(), 0 ) );
+    }
+  }
+  return !authName.isEmpty() && !authCode.isEmpty();
+}
+
 bool QgsProjUtils::coordinateOperationIsAvailable( const QString &projDef )
 {
   if ( projDef.isEmpty() )
