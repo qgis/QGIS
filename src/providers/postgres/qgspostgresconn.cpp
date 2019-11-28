@@ -406,8 +406,11 @@ QStringList QgsPostgresConn::supportedSpatialTypes() const
   QStringList supportedSpatialTypes;
 
   supportedSpatialTypes << quotedValue( "geometry" )
-                        << quotedValue( "geography" )
-                        << quotedValue( "pcpatch" );
+                        << quotedValue( "geography" );
+
+  if ( hasPointcloud() )
+    supportedSpatialTypes << quotedValue( "pcpatch" );
+
   if ( hasRaster() )
     supportedSpatialTypes << quotedValue( "raster" );
 
