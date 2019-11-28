@@ -183,6 +183,14 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         conn = md.createConnection(self.uri, {})
         self.assertEqual(self._table_by_name(conn.tables(), 'bikes_view').primaryKeyColumns(), ['pk', 'name'])
         self.assertEqual(self._table_by_name(conn.tables(), 'some_poly_data_view').primaryKeyColumns(), ['pk', 'geom'])
+    
+    def test_true_false(self):
+        """Test returned values from BOOL queries"""
+
+        md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
+        conn = md.createConnection(self.uri, {})
+        self.assertEqual(conn.executeSql('SELECT FALSE'), [[False]])
+        self.assertEqual(conn.executeSql('SELECT TRUE'), [[True]])
 
 
 if __name__ == '__main__':
