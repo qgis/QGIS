@@ -89,7 +89,12 @@ namespace pal
 
       /////////////////
       // problem inspection functions
+
+      /**
+       * Returns the total number of features considered during the labeling problem.
+       */
       std::size_t featureCount() const { return mFeatureCount; }
+
       // features counted 0...n-1
       int getFeatureCandidateCount( int i ) { return mFeatNbLp[i]; }
       // both features and candidates counted 0..n-1
