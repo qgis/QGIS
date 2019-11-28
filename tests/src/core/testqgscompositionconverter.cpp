@@ -39,6 +39,7 @@
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemscalebar.h"
 #include "qgslayoutitemlegend.h"
+#include "qgslayoutitemgroup.h"
 #include "qgslayoutatlas.h"
 #include "qgslayoutitemhtml.h"
 #include "qgslayoutitemattributetable.h"
@@ -121,6 +122,11 @@ class TestQgsCompositionConverter: public QObject
      * Test import scalebar from a composer template
      */
     void importComposerTemplateScaleBar();
+
+    /**
+     * Test import group from a composer template
+     */
+    void importComposerTemplateGroup();
 
     /**
      * Test import multiple elements from a composer template
@@ -541,6 +547,26 @@ void TestQgsCompositionConverter::importComposerTemplateScaleBar()
 
   qDeleteAll( items );
 
+}
+
+void TestQgsCompositionConverter::importComposerTemplateGroup()
+{
+  QDomElement composerElem( loadComposer( QStringLiteral( "2x_template_group.qpt" ) ) );
+  QVERIFY( !composerElem.isNull() );
+  QgsProject project;
+  project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_project.qgs" );
+  QDomElement docElem =  composerElem.elementsByTagName( QStringLiteral( "Composition" ) ).at( 0 ).toElement();
+
+  std::unique_ptr< QgsLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
+  QVERIFY( layout.get() );
+  QCOMPARE( layout->pageCollection()->pageCount(), 1 );
+
+  QList<QgsLayoutItemGroup *> items;
+  layout->layoutItems<QgsLayoutItemGroup>( items );
+  QCOMPARE( items.size(), 1 );
+
+  QgsLayoutItemGroup *item = items.at( 0 );
+  QVERIFY( item->isVisible() );
 }
 
 
