@@ -83,7 +83,7 @@ class TestQgisAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         ProcessingConfig.setSettingValue(ModelerUtils.MODELS_FOLDER, cls._original_models_folder)
 
     def test_definition_file(self):
-        return 'qgis_algorithm_tests.yaml'
+        return 'qgis_algorithm_tests1.yaml'
 
     def testProcessingException(self):
         """
