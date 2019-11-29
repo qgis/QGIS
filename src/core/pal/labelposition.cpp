@@ -476,7 +476,7 @@ bool LabelPosition::countFullOverlapCallback( LabelPosition *lp, void *ctx )
   LabelPosition *lp2 = context->lp;
   double *cost = context->cost;
   int *nbOv = context->nbOv;
-  double *inactiveCost = context->inactiveCost;
+  std::vector< double > &inactiveCost = *context->inactiveCost;
   if ( lp2->isInConflict( lp ) )
   {
     ( *nbOv ) ++;

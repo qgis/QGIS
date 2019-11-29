@@ -325,9 +325,9 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
   prob->mFeatureCount = features.size();
   prob->mTotalCandidates = 0;
-  prob->mFeatNbLp = new int [prob->mFeatureCount];
-  prob->mFeatStartId = new int [prob->mFeatureCount];
-  prob->mInactiveCost = new double[prob->mFeatureCount];
+  prob->mFeatNbLp.resize( prob->mFeatureCount );
+  prob->mFeatStartId.resize( prob->mFeatureCount );
+  prob->mInactiveCost.resize( prob->mFeatureCount );
 
   if ( !features.empty() )
   {
