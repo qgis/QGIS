@@ -1097,7 +1097,17 @@ void QgsDxfExport::writePolyline( const QgsCurve &curve, const QString &layer, c
     writeGroup( color );
 
     writeGroup( 90, points.size() );
-    writeGroup( 70, ( curve.isClosed() ? 1 : 0 ) | ( curve.hasCurvedSegments() ? 2 : 0 ) );
+    QgsDxfExport::DxfPolylineFlags polylineFlags;
+    if ( curve.isClosed() )
+      polylineFlags.setFlag( QgsDxfExport::DxfPolylineFlag::Closed );
+    if ( curve.hasCurvedSegments() )
+      polylineFlags.setFlag( QgsDxfExport::DxfPolylineFlag::Curve );
+
+    // Might need to conditional once this feature is implemented
+    //   https://github.com/qgis/QGIS/issues/32468
+    polylineFlags.setFlag( QgsDxfExport::DxfPolylineFlag::ContinuousPattern );
+
+    writeGroup( 70, static_cast<int>( polylineFlags ) );
     writeGroup( 43, width );
 
     for ( int i = 0; i < points.size(); i++ )
