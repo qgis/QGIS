@@ -130,7 +130,7 @@ namespace pal
       /**
        * Generates a list of candidate positions for labels for this feature.
        */
-      std::vector<std::unique_ptr<LabelPosition> > createCandidates();
+      std::vector<std::unique_ptr<LabelPosition> > createCandidates( Pal *pal );
 
       /**
        * Generate candidates for point feature, located around a specified point.
@@ -175,18 +175,20 @@ namespace pal
        * \param lPos pointer to an array of candidates, will be filled by generated candidates
        * \param mapShape a pointer to the line
        * \param allowOverrun set to TRUE to allow labels to overrun features
+       * \param pal point to pal settings object, for cancellation support
        * \returns the number of generated candidates
        */
-      std::size_t createCandidatesAlongLine( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape, bool allowOverrun = false );
+      std::size_t createCandidatesAlongLine( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape, bool allowOverrun, Pal *pal );
 
       /**
        * Generate candidates for line feature, by trying to place candidates towards the middle of the longest
        * straightish segments of the line. Segments closer to horizontal are preferred over vertical segments.
        * \param lPos pointer to an array of candidates, will be filled by generated candidates
        * \param mapShape a pointer to the line
+       * \param pal point to pal settings object, for cancellation support
        * \returns the number of generated candidates
        */
-      std::size_t createCandidatesAlongLineNearStraightSegments( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape );
+      std::size_t createCandidatesAlongLineNearStraightSegments( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape, Pal *pal );
 
       /**
        * Generate candidates for line feature, by trying to place candidates as close as possible to the line's midpoint.
@@ -197,7 +199,7 @@ namespace pal
        * by a preset amount.
        * \returns the number of generated candidates
        */
-      std::size_t createCandidatesAlongLineNearMidpoint( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape, double initialCost = 0.0 );
+      std::size_t createCandidatesAlongLineNearMidpoint( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape, double initialCost = 0.0, Pal *pal = nullptr );
 
       /**
        * Returns the label position for a curved label at a specific offset along a path.
@@ -217,17 +219,19 @@ namespace pal
        * \param lPos pointer to an array of candidates, will be filled by generated candidates
        * \param mapShape a pointer to the line
        * \param allowOverrun set to TRUE to allow labels to overrun features
+       * \param pal point to pal settings object, for cancellation support
        * \returns the number of generated candidates
        */
-      std::size_t createCurvedCandidatesAlongLine( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape, bool allowOverrun = false );
+      std::size_t createCurvedCandidatesAlongLine( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape, bool allowOverrun, Pal *pal );
 
       /**
        * Generate candidates for polygon features.
        * \param lPos pointer to an array of candidates, will be filled by generated candidates
        * \param mapShape a pointer to the polygon
+       * \param pal point to pal settings object, for cancellation support
        * \returns the number of generated candidates
        */
-      std::size_t createCandidatesForPolygon( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape );
+      std::size_t createCandidatesForPolygon( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape, Pal *pal );
 
       /**
        * Tests whether this feature part belongs to the same QgsLabelFeature as another
