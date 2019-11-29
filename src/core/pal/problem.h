@@ -183,10 +183,9 @@ namespace pal
 
       std::vector< std::unique_ptr< LabelPosition > > mPositionsWithNoCandidates;
 
-      //int *feat;        // [nblp]
-      int *mFeatStartId = nullptr; // [nbft]
-      int *mFeatNbLp = nullptr;    // [nbft]
-      double *mInactiveCost = nullptr; //
+      std::vector< int > mFeatStartId;
+      std::vector< int > mFeatNbLp;
+      std::vector< double > mInactiveCost;
 
       class Sol
       {

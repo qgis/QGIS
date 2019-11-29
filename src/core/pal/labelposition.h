@@ -281,8 +281,7 @@ namespace pal
         LabelPosition *lp = nullptr;
         int *nbOv = nullptr;
         double *cost = nullptr;
-        double *inactiveCost = nullptr;
-        //int *feat;
+        std::vector< double > *inactiveCost = nullptr;
       };
 
       /*

@@ -57,13 +57,7 @@ inline void delete_chain( Chain *chain )
 
 Problem::Problem() = default;
 
-Problem::~Problem()
-{
-  delete[] mFeatStartId;
-  delete[] mFeatNbLp;
-
-  delete[] mInactiveCost;
-}
+Problem::~Problem() = default;
 
 void Problem::reduce()
 {
@@ -302,7 +296,7 @@ struct ChainContext
   QLinkedList<ElemTrans *> *currentChain;
   QLinkedList<int> *conflicts;
   double *delta_tmp = nullptr;
-  double *inactiveCost = nullptr;
+  std::vector< double > *inactiveCost = nullptr;
 
 } ;
 
@@ -346,7 +340,7 @@ bool chainCallback( LabelPosition *lp, void *context )
     if ( !ctx->conflicts->contains( feat ) )
     {
       ctx->conflicts->append( feat );
-      *ctx->delta_tmp += lp->cost() + ctx->inactiveCost[rfeat];
+      *ctx->delta_tmp += lp->cost() + ( * ctx->inactiveCost )[rfeat];
     }
   }
   return true;
@@ -386,7 +380,7 @@ inline Chain *Problem::chain( int seed )
   context.featWrap = nullptr;
   context.borderSize = 0;
   context.tmpsol = &tmpsol;
-  context.inactiveCost = mInactiveCost;
+  context.inactiveCost = &mInactiveCost;
   context.feat = nullptr;
   context.currentChain = &currentChain;
   context.conflicts = &conflicts;
@@ -786,7 +780,7 @@ void Problem::solution_cost()
   int nbOv;
 
   LabelPosition::CountContext context;
-  context.inactiveCost = mInactiveCost;
+  context.inactiveCost = &mInactiveCost;
   context.nbOv = &nbOv;
   context.cost = &mSol.totalCost;
   double amin[2];
