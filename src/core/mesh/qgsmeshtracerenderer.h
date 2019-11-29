@@ -53,12 +53,21 @@ class QgsMeshVectorValueInterpolator
     QgsMeshVectorValueInterpolator( const QgsTriangularMesh &triangularMesh,
                                     const QgsMeshDataBlock &datasetVectorValues,
                                     const QgsMeshDataBlock &scalarActiveFaceFlagValues );
+
+    //! Copy constructor
+    QgsMeshVectorValueInterpolator( const QgsMeshVectorValueInterpolator &other );
+
+    //! Clone
+    virtual QgsMeshVectorValueInterpolator *clone() = 0;
+
     //! Destructor
     virtual ~QgsMeshVectorValueInterpolator() = default;
 
-
     //! Returns the interpolated vector
     virtual QgsVector vectorValue( const QgsPointXY &point ) const;
+
+    //! Assignment operator
+    QgsMeshVectorValueInterpolator &operator=( const QgsMeshVectorValueInterpolator &other );
 
   protected:
     void updateCacheFaceIndex( const QgsPointXY &point ) const;
@@ -98,6 +107,15 @@ class QgsMeshVectorValueInterpolatorFromVertex: public QgsMeshVectorValueInterpo
         const QgsMeshDataBlock &datasetVectorValues,
         const QgsMeshDataBlock &scalarActiveFaceFlagValues );
 
+    //! Copy constructor
+    QgsMeshVectorValueInterpolatorFromVertex( const QgsMeshVectorValueInterpolatorFromVertex &other );
+
+    //! Clone the instance
+    virtual QgsMeshVectorValueInterpolatorFromVertex *clone() override;
+
+    //! Assignment operator
+    QgsMeshVectorValueInterpolatorFromVertex &operator=( const QgsMeshVectorValueInterpolatorFromVertex &other );
+
   private:
     QgsVector interpolatedValuePrivate( int faceIndex, const QgsPointXY point ) const override;
 };
@@ -121,6 +139,15 @@ class QgsMeshVectorValueInterpolatorFromFace: public QgsMeshVectorValueInterpola
     QgsMeshVectorValueInterpolatorFromFace( const QgsTriangularMesh &triangularMesh,
                                             const QgsMeshDataBlock &datasetVectorValues,
                                             const QgsMeshDataBlock &scalarActiveFaceFlagValues );
+
+    //! Copy constructor
+    QgsMeshVectorValueInterpolatorFromFace( const QgsMeshVectorValueInterpolatorFromFace &other );
+
+    //! Clone the instance
+    virtual QgsMeshVectorValueInterpolatorFromFace *clone() override;
+
+    //! Assignment operator
+    QgsMeshVectorValueInterpolatorFromFace &operator=( const QgsMeshVectorValueInterpolatorFromFace &other );
 
   private:
     QgsVector interpolatedValuePrivate( int faceIndex, const QgsPointXY point ) const override;
@@ -153,14 +180,13 @@ class QgsMeshStreamField
                         double magnitudeMaximum, bool dataIsOnVertices, const QgsRenderContext &rendererContext,
                         int resolution = 1 );
 
-    //! Destructor
-    virtual ~QgsMeshStreamField()
-    {
-      if ( mPainter )
-        delete mPainter;
-    }
+    //! Copy constructor
+    QgsMeshStreamField( const QgsMeshStreamField &other );
 
-    /*
+    //! Destructor
+    virtual ~QgsMeshStreamField();
+
+    /**
     * Updates the size of the field and the QgsMapToPixel instance to retrieve map point
     * from pixel in the field depending on the resolution of the device
     * If the extent of renderer context and the resolution are not changed, do nothing
@@ -168,7 +194,7 @@ class QgsMeshStreamField
     */
     void updateSize( const QgsRenderContext &renderContext );
 
-    /*
+    /**
     * Updates the size of the field and the QgsMapToPixel instance to retrieve map point
     * from pixel in the field depending on the resolution of the device
     */
@@ -225,7 +251,11 @@ class QgsMeshStreamField
     //! Sets min/max filter
     void setFilter( double min, double max );
 
+    //! Sets if the size of the field has to be minimized of all the mesh is in the device
     void setMinimizeFieldSize( bool minimizeFieldSize );
+
+    //! Assignment operator
+    QgsMeshStreamField &operator=( const QgsMeshStreamField &other );
 
   protected:
     void initImage();
@@ -260,7 +290,7 @@ class QgsMeshStreamField
   private:
     int mPixelFillingCount = 0;
     int mMaxPixelFillingCount = 0;
-    std::shared_ptr<QgsMeshVectorValueInterpolator> mVectorValueInterpolator;
+    std::unique_ptr<QgsMeshVectorValueInterpolator> mVectorValueInterpolator;
     QgsRectangle mLayerExtent;
     QgsRectangle mMapExtent;
     QPoint mFieldTopLeftInDeviceCoordinates;
@@ -289,9 +319,13 @@ class QgsMeshStreamlinesField: public QgsMeshStreamField
                              const QgsMeshDataBlock &datasetVectorValues,
                              const QgsMeshDataBlock &scalarActiveFaceFlagValues,
                              const QgsRectangle &layerExtent,
-                             double magMax, bool dataIsOnVertices, QgsRenderContext &rendererContext ):
-      QgsMeshStreamField( triangularMesh, datasetVectorValues, scalarActiveFaceFlagValues, layerExtent, magMax, dataIsOnVertices, rendererContext )
-    {}
+                             double magMax, bool dataIsOnVertices, QgsRenderContext &rendererContext );
+
+    //! Copy constructor
+    QgsMeshStreamlinesField( const QgsMeshStreamlinesField &other );
+
+    //! Assignment operator
+    QgsMeshStreamlinesField &operator=( const QgsMeshStreamlinesField &other );
 
   private:
     void storeInField( const QPair<QPoint, FieldData> pixelData ) override;
@@ -341,6 +375,9 @@ class QgsMeshParticleTracesField: public QgsMeshStreamField
                                 bool dataIsOnVertices,
                                 const QgsRenderContext &rendererContext );
 
+    //! Copy constructor
+    QgsMeshParticleTracesField( const QgsMeshParticleTracesField &other );
+
     //! Adds a particle in the vector field from a start point (pixel) with a specified life time
     void addParticle( const QPoint &startPoint, double lifeTime );
 
@@ -387,6 +424,9 @@ class QgsMeshParticleTracesField: public QgsMeshStreamField
     //! Sets the minimum tail length
     void setMinTailLength( int minTailLength );
 
+    //! Assignment operator
+    QgsMeshParticleTracesField &operator=( const QgsMeshParticleTracesField &other );
+
   private:
     QPoint direction( QPoint position ) const;
 
@@ -422,9 +462,7 @@ class QgsMeshParticleTracesField: public QgsMeshStreamField
      *     d=incX + 2 + (incY+1)*3
      */
     QVector<char> mDirectionField;
-
     QList<QgsMeshTraceParticle> mParticles;
-
     QImage mStumpImage;
 
     double mTimeStep = 200;
@@ -491,6 +529,12 @@ class CORE_EXPORT QgsMeshVectorTraceRenderer
     //!Constructor to use with Python binding
     QgsMeshVectorTraceRenderer( QgsMeshLayer *layer, const QgsRenderContext &rendererContext );
 
+    //! Copy constructor
+    QgsMeshVectorTraceRenderer( const QgsMeshVectorTraceRenderer &other );
+
+    //! Destructor
+    ~QgsMeshVectorTraceRenderer();
+
     //! seeds particles in the vector fields
     void seedRandomParticles( int count );
 
@@ -521,14 +565,16 @@ class CORE_EXPORT QgsMeshVectorTraceRenderer
     //! Sets the visual persistence of the tail
     void setTailPersitence( double p );
 
+    //! Assignment operator
+    QgsMeshVectorTraceRenderer &operator=( const QgsMeshVectorTraceRenderer &other );
   private:
-    QgsMeshParticleTracesField *mParticleField;
+    std::unique_ptr<QgsMeshParticleTracesField> mParticleField;
     const QgsRenderContext &mRendererContext;
     int mFPS = 15; //frame per second of the output, used to calculate orher parameters of the field
     int mVpixMax = 2000; //is the number of pixels that are going through for 1 s
     double mParticleLifeTime = 5;
 
-    void upDateFieldParameter();
+    void updateFieldParameter();
 };
 
 #endif // QGSMESHTRACERENDERER_H
