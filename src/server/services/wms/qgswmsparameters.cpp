@@ -1480,7 +1480,7 @@ namespace QgsWms
     return filters;
   }
 
-  bool QgsWmsParameters::force2D() const
+  bool QgsWmsParameters::isForce2D() const
   {
     bool force2D = false;
     const QMap<DxfFormatOption, QString> options = dxfFormatOptions();

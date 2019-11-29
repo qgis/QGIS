@@ -1325,7 +1325,7 @@ namespace QgsWms
        *
        * \since QGIS 3.12
        */
-      bool force2D() const;
+      bool isForce2D() const;
 
     private:
       static bool isExternalLayer( const QString &name );

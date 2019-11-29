@@ -848,7 +848,7 @@ namespace QgsWms
       dxf->setSymbologyScale( mWmsParameters.dxfScale() );
     }
 
-    dxf->setForce2d( mWmsParameters.force2D() );
+    dxf->setForce2d( mWmsParameters.isForce2D() );
     QgsDxfExport::Flags flags;
     if ( mWmsParameters.noMText() )
       flags.setFlag( QgsDxfExport::Flag::FlagNoMText );
