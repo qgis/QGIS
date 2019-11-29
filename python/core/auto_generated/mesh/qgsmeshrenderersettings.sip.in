@@ -342,9 +342,9 @@ Represents a streamline renderer settings for vector datasets
 
     enum Symbology
     {
-      //! Displying vector dataset with arrows
+      //! Displaying vector dataset with arrows
       Arrows,
-      //! Displying vector dataset with streamlines
+      //! Displaying vector dataset with streamlines
       Streamlines
     };
 

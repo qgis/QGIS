@@ -1,0 +1,102 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/mesh/qgsmeshtracerenderer.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+
+
+
+class QgsMeshVectorTraceRenderer
+{
+%Docstring
+
+A wrapper for QgsMeshParticuleTracesField used to render the particles. Available for Python binding
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsmeshtracerenderer.h"
+%End
+  public:
+
+    QgsMeshVectorTraceRenderer( QgsMeshLayer *layer, const QgsRenderContext &rendererContext );
+%Docstring
+Constructor to use with Python binding
+%End
+
+    QgsMeshVectorTraceRenderer( const QgsMeshVectorTraceRenderer &other );
+%Docstring
+Copy constructor
+%End
+
+    ~QgsMeshVectorTraceRenderer();
+
+    void seedRandomParticles( int count );
+%Docstring
+seeds particles in the vector fields
+%End
+
+    QImage imageRendered();
+%Docstring
+Moves all the particles using frame per second (fps) to calculate the displacement
+%End
+
+    void setFPS( int FPS );
+%Docstring
+Sets the number of frames per seconds that will be rendered
+%End
+
+    void setMaxSpeedPixel( int max );
+%Docstring
+Sets the max number of pixels that can be go through by the particles in 1 second
+%End
+
+    void setParticlesLifeTime( double particleLifeTime );
+%Docstring
+Sets maximum life time of particles in seconds
+%End
+
+    void setParticlesColor( const QColor &c );
+%Docstring
+Sets colors of particle
+%End
+
+    void setParticlesSize( double width );
+%Docstring
+Sets particle size
+%End
+
+    void setTailFactor( double fct );
+%Docstring
+Sets the tail factor, used to adjust the length of the tail. 0 : minimum length, >1 increase the tail
+%End
+
+    void setMinimumTailLength( int l );
+%Docstring
+Sets the minimum tail length
+%End
+
+    void setTailPersitence( double p );
+%Docstring
+Sets the visual persistence of the tail
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/mesh/qgsmeshtracerenderer.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

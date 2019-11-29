@@ -323,9 +323,9 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
      */
     enum Symbology
     {
-      //! Displying vector dataset with arrows
+      //! Displaying vector dataset with arrows
       Arrows = 0,
-      //! Displying vector dataset with streamlines
+      //! Displaying vector dataset with streamlines
       Streamlines
     };
 
@@ -382,9 +382,9 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
     void setUserGridCellHeight( int height );
 
     /**
-     * Returns the displaying method used to render vector datasets
-     * \since QGIS 3.12
-     */
+    * Returns the displaying method used to render vector datasets
+    * \since QGIS 3.12
+    */
     Symbology symbology() const;
 
     /**
@@ -394,9 +394,9 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
     void setSymbology( const Symbology &symbology );
 
     /**
-     * Returns settings for vector rendered with arrows
-     * \since QGIS 3.12
-     */
+    * Returns settings for vector rendered with arrows
+    * \since QGIS 3.12
+    */
     QgsMeshRendererVectorArrowSettings arrowSettings() const;
 
     /**
