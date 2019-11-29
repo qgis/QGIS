@@ -40,7 +40,7 @@
 
 using namespace pal;
 
-LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, double alpha, double cost, FeaturePart *feature, bool isReversed, Quadrant quadrant )
+LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, double alpha, double cost, FeaturePart *feature, bool isReversed, Quadrant quadrant, double dX, double dY )
   : id( id )
   , feature( feature )
   , probFeat( 0 )
@@ -55,6 +55,8 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
   , mCost( cost )
   , mHasObstacleConflict( false )
   , mUpsideDownCharCount( 0 )
+  , mDx( dX )
+  , mDy( dY )
 {
   type = GEOS_POLYGON;
   nbPoints = 4;
@@ -160,6 +162,8 @@ LabelPosition::LabelPosition( const LabelPosition &other )
   quadrant = other.quadrant;
   mHasObstacleConflict = other.mHasObstacleConflict;
   mUpsideDownCharCount = other.mUpsideDownCharCount;
+  mDx = other.mDx;
+  mDy = other.mDy;
 }
 
 bool LabelPosition::isIn( double *bbox )
@@ -317,6 +321,16 @@ bool LabelPosition::isInConflictMultiPart( LabelPosition *lp )
     tmp1 = tmp1->nextPart;
   }
   return false; // no conflict found
+}
+
+double LabelPosition::dY() const
+{
+  return mDy;
+}
+
+double LabelPosition::dX() const
+{
+  return mDx;
 }
 
 int LabelPosition::partCount() const

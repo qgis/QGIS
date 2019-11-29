@@ -88,11 +88,14 @@ namespace pal
        * \param feature labelpos owners
        * \param isReversed label is reversed
        * \param quadrant relative position of label to feature
+       * \param dx the correction of the anchor point in x direction
+       * \param dy the correction of the anchor point in y direction
        */
       LabelPosition( int id, double x1, double y1,
                      double w, double h,
                      double alpha, double cost,
-                     FeaturePart *feature, bool isReversed = false, Quadrant quadrant = QuadrantOver );
+                     FeaturePart *feature, bool isReversed = false, Quadrant quadrant = QuadrantOver,
+                     double dX = 0.0, double dy = 0.0 );
 
       //! Copy constructor
       LabelPosition( const LabelPosition &other );
@@ -297,6 +300,20 @@ namespace pal
       // for polygon cost calculation
       static bool polygonObstacleCallback( pal::FeaturePart *obstacle, void *ctx );
 
+      /**
+       * The offset of the anchor point in x direction.
+       *
+       * \since QGIS 3.12
+       */
+      double dX() const;
+
+      /**
+       * The offset of the anchor point in y direction.
+       *
+       * \since QGIS 3.12
+       */
+      double dY() const;
+
     protected:
 
       int id;
@@ -331,6 +348,8 @@ namespace pal
       double mCost;
       bool mHasObstacleConflict;
       int mUpsideDownCharCount;
+      double mDx = 0.0;
+      double mDy = 0.0;
 
       /**
        * Calculates the total number of parts for this label position
