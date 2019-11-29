@@ -36,6 +36,7 @@
 #include "qgsapplication.h"
 #include "processing/qgsprojectstylealgorithms.h"
 #include "qgsstylemanagerdialog.h"
+#include "qgsproviderregistry.h"
 
 #include <QFileInfo>
 #include <QMenu>
@@ -355,6 +356,63 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
     return;
 
   QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item );
+
+  if ( layerItem )
+  {
+    // Check for certain file items
+    QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( layerItem->providerKey(), layerItem->uri() );
+    const QString filename = parts.value( QStringLiteral( "path" ) ).toString();
+    if ( !filename.isEmpty() )
+    {
+      QFileInfo fi( filename );
+
+      const static QList< std::pair< QString, QString > > sStandardFileTypes =
+      {
+        { QStringLiteral( "pdf" ), QObject::tr( "Document" )},
+        { QStringLiteral( "xls" ), QObject::tr( "Spreadsheet" )},
+        { QStringLiteral( "xlsx" ), QObject::tr( "Spreadsheet" )},
+        { QStringLiteral( "ods" ), QObject::tr( "Spreadsheet" )},
+        { QStringLiteral( "csv" ), QObject::tr( "CSV File" )},
+        { QStringLiteral( "txt" ), QObject::tr( "Text File" )},
+        { QStringLiteral( "png" ), QObject::tr( "PNG Image" )},
+        { QStringLiteral( "jpg" ), QObject::tr( "JPEG Image" )},
+        { QStringLiteral( "jpeg" ), QObject::tr( "JPEG Image" )},
+        { QStringLiteral( "tif" ), QObject::tr( "TIFF Image" )},
+        { QStringLiteral( "tiff" ), QObject::tr( "TIFF Image" )},
+        { QStringLiteral( "svg" ), QObject::tr( "SVG File" )}
+      };
+      for ( const auto &it : sStandardFileTypes )
+      {
+        const QString ext = it.first;
+        const QString name = it.second;
+        if ( fi.suffix().compare( ext, Qt::CaseInsensitive ) == 0 )
+        {
+          // pdf file
+          QAction *viewAction = new QAction( tr( "Open %1…" ).arg( name ), menu );
+          connect( viewAction, &QAction::triggered, this, [ = ]
+          {
+            QDesktopServices::openUrl( QUrl::fromLocalFile( filename ) );
+          } );
+
+          // we want this action to be at the top
+          QAction *beforeAction = menu->actions().value( 0 );
+          if ( beforeAction )
+          {
+            menu->insertAction( beforeAction, viewAction );
+            menu->insertSeparator( beforeAction );
+          }
+          else
+          {
+            menu->addAction( viewAction );
+            menu->addSeparator();
+          }
+          // will only find one!
+          break;
+        }
+      }
+    }
+  }
+
   if ( layerItem && ( layerItem->mapLayerType() == QgsMapLayerType::VectorLayer ||
                       layerItem->mapLayerType() == QgsMapLayerType::RasterLayer ) )
   {
