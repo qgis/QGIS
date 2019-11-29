@@ -166,7 +166,8 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
   if ( row < 0 || count < 1 )
     return false;
 
-  beginRemoveRows( parent, row, row + count - 1 );
+  if ( !mResettingModel )
+    beginRemoveRows( parent, row, row + count - 1 );
 
 #ifdef QGISDEBUG
   if ( 3 <= QgsLogger::debugLevel() )
@@ -208,12 +209,13 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
 
   Q_ASSERT( mRowIdMap.size() == mIdRowMap.size() );
 
-  endRemoveRows();
+  if ( !mResettingModel )
+    endRemoveRows();
 
   return true;
 }
 
-void QgsAttributeTableModel::featureAdded( QgsFeatureId fid, bool resettingModel )
+void QgsAttributeTableModel::featureAdded( QgsFeatureId fid )
 {
   QgsDebugMsgLevel( QStringLiteral( "(%2) fid: %1" ).arg( fid ).arg( mFeatureRequest.filterType() ), 4 );
   bool featOk = true;
@@ -244,11 +246,11 @@ void QgsAttributeTableModel::featureAdded( QgsFeatureId fid, bool resettingModel
     if ( ! mIdRowMap.contains( fid ) )
     {
       int n = mRowIdMap.size();
-      if ( !resettingModel )
+      if ( !mResettingModel )
         beginInsertRows( QModelIndex(), n, n );
       mIdRowMap.insert( fid, n );
       mRowIdMap.insert( n, fid );
-      if ( !resettingModel )
+      if ( !mResettingModel )
         endInsertRows();
       reload( index( rowCount() - 1, 0 ), index( rowCount() - 1, columnCount() ) );
     }
@@ -436,7 +438,11 @@ void QgsAttributeTableModel::loadLayer()
   // (emit of progress() signal may enter event loop and thus attribute
   // table view may be updated with inconsistent model which may assume
   // wrong number of attributes)
+
   loadAttributes();
+
+  mResettingModel = true;
+  beginResetModel();
 
   if ( rowCount() != 0 )
   {
@@ -472,6 +478,10 @@ void QgsAttributeTableModel::loadLayer()
     emit finished();
     connect( mLayerCache, &QgsVectorLayerCache::invalidated, this, &QgsAttributeTableModel::loadLayer, Qt::UniqueConnection );
   }
+
+  endResetModel();
+
+  mResettingModel = false;
 }
 
 
