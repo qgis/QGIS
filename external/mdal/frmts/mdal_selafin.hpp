@@ -62,7 +62,7 @@ namespace MDAL
       ~DriverSelafin() override;
       DriverSelafin *create() override;
 
-      bool canRead( const std::string &uri ) override;
+      bool canReadMesh( const std::string &uri ) override;
       std::unique_ptr< Mesh > load( const std::string &meshFile, MDAL_Status *status ) override;
 
     private:

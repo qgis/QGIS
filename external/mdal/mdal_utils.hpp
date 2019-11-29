@@ -110,6 +110,8 @@ namespace MDAL
   // time
   //! Returns a delimiter to get time in hours
   MDAL_TEST_EXPORT double parseTimeUnits( const std::string &units );
+  //! Returns current time stamp in YYYY-mm-ddTHH:MM:SSzoneOffset
+  std::string getCurrentTimeStamp();
 
   // statistics
   void combineStatistics( Statistics &main, const Statistics &other );
@@ -127,7 +129,7 @@ namespace MDAL
   //! Adds altitude dataset group to mesh
   void addFaceScalarDatasetGroup( MDAL::Mesh *mesh, const std::vector<double> &values, const std::string &name );
   //! Loop through all faces and activate those which has all 4 values on vertices valid
-  void activateFaces( MDAL::MemoryMesh *mesh, std::shared_ptr<MemoryDataset> dataset );
+  void activateFaces( MDAL::MemoryMesh *mesh, std::shared_ptr<MemoryDataset2D> dataset );
 
   //! function used to read all of type of value. Option to change the endianness is provided
   template<typename T>

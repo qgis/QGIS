@@ -17,7 +17,7 @@
 
 static HdfFile openHdfFile( const std::string &fileName )
 {
-  HdfFile file( fileName );
+  HdfFile file( fileName, HdfFile::ReadOnly );
   if ( !file.isValid() ) throw MDAL_Status::Err_UnknownFormat;
   return file;
 }
@@ -168,21 +168,21 @@ void MDAL::DriverHec2D::readFaceOutput( const HdfFile &hdfFile,
                                           mFileName,
                                           datasetName
                                         );
-  group->setIsOnVertices( false );
+  group->setDataLocation( MDAL_DataLocation::DataOnFaces2D );
   group->setIsScalar( true );
   group->setReferenceTime( referenceTime );
 
-  std::vector<std::shared_ptr<MDAL::MemoryDataset>> datasets;
+  std::vector<std::shared_ptr<MDAL::MemoryDataset2D>> datasets;
 
   for ( size_t tidx = 0; tidx < times.size(); ++tidx )
   {
-    std::shared_ptr<MDAL::MemoryDataset> dataset = std::make_shared< MemoryDataset >( group.get() );
+    std::shared_ptr<MDAL::MemoryDataset2D> dataset = std::make_shared< MemoryDataset2D >( group.get() );
     double time = static_cast<double>( times[tidx] );
     dataset->setTime( time );
     datasets.push_back( dataset );
   }
 
-  std::shared_ptr<MDAL::MemoryDataset> firstDataset;
+  std::shared_ptr<MDAL::MemoryDataset2D> firstDataset;
 
   for ( size_t nArea = 0; nArea < flowAreaNames.size(); ++nArea )
   {
@@ -197,7 +197,7 @@ void MDAL::DriverHec2D::readFaceOutput( const HdfFile &hdfFile,
 
     for ( size_t tidx = 0; tidx < times.size(); ++tidx )
     {
-      std::shared_ptr<MDAL::MemoryDataset> dataset = datasets[tidx];
+      std::shared_ptr<MDAL::MemoryDataset2D> dataset = datasets[tidx];
       double *values = dataset->values();
 
       for ( size_t i = 0; i < nFaces; ++i )
@@ -251,13 +251,13 @@ void MDAL::DriverHec2D::readFaceResults( const HdfFile &hdfFile,
 }
 
 
-std::shared_ptr<MDAL::MemoryDataset> MDAL::DriverHec2D::readElemOutput( const HdfGroup &rootGroup,
+std::shared_ptr<MDAL::MemoryDataset2D> MDAL::DriverHec2D::readElemOutput( const HdfGroup &rootGroup,
     const std::vector<size_t> &areaElemStartIndex,
     const std::vector<std::string> &flowAreaNames,
     const std::string rawDatasetName,
     const std::string datasetName,
     const std::vector<float> &times,
-    std::shared_ptr<MDAL::MemoryDataset> bed_elevation,
+    std::shared_ptr<MDAL::MemoryDataset2D> bed_elevation,
     const std::string &referenceTime )
 {
   double eps = std::numeric_limits<double>::min();
@@ -268,15 +268,15 @@ std::shared_ptr<MDAL::MemoryDataset> MDAL::DriverHec2D::readElemOutput( const Hd
                                           mFileName,
                                           datasetName
                                         );
-  group->setIsOnVertices( false );
+  group->setDataLocation( MDAL_DataLocation::DataOnFaces2D );
   group->setIsScalar( true );
   group->setReferenceTime( referenceTime );
 
-  std::vector<std::shared_ptr<MDAL::MemoryDataset>> datasets;
+  std::vector<std::shared_ptr<MDAL::MemoryDataset2D>> datasets;
 
   for ( size_t tidx = 0; tidx < times.size(); ++tidx )
   {
-    std::shared_ptr<MDAL::MemoryDataset> dataset = std::make_shared< MemoryDataset >( group.get() );
+    std::shared_ptr<MDAL::MemoryDataset2D> dataset = std::make_shared< MemoryDataset2D >( group.get() );
     double time = static_cast<double>( times[tidx] );
     dataset->setTime( time );
     datasets.push_back( dataset );
@@ -293,7 +293,7 @@ std::shared_ptr<MDAL::MemoryDataset> MDAL::DriverHec2D::readElemOutput( const Hd
 
     for ( size_t tidx = 0; tidx < times.size(); ++tidx )
     {
-      std::shared_ptr<MDAL::MemoryDataset> dataset = datasets[tidx];
+      std::shared_ptr<MDAL::MemoryDataset2D> dataset = datasets[tidx];
       double *values = dataset->values();
 
       for ( size_t i = 0; i < nAreaElements; ++i )
@@ -343,7 +343,7 @@ std::shared_ptr<MDAL::MemoryDataset> MDAL::DriverHec2D::readElemOutput( const Hd
   return datasets[0];
 }
 
-std::shared_ptr<MDAL::MemoryDataset> MDAL::DriverHec2D::readBedElevation(
+std::shared_ptr<MDAL::MemoryDataset2D> MDAL::DriverHec2D::readBedElevation(
   const HdfGroup &gGeom2DFlowAreas,
   const std::vector<size_t> &areaElemStartIndex,
   const std::vector<std::string> &flowAreaNames )
@@ -358,14 +358,14 @@ std::shared_ptr<MDAL::MemoryDataset> MDAL::DriverHec2D::readBedElevation(
            "Cells Minimum Elevation",
            "Bed Elevation",
            times,
-           std::shared_ptr<MDAL::MemoryDataset>(),
+           std::shared_ptr<MDAL::MemoryDataset2D>(),
            referenceTime
          );
 }
 
 void MDAL::DriverHec2D::readElemResults(
   const HdfFile &hdfFile,
-  std::shared_ptr<MDAL::MemoryDataset> bed_elevation,
+  std::shared_ptr<MDAL::MemoryDataset2D> bed_elevation,
   const std::vector<size_t> &areaElemStartIndex,
   const std::vector<std::string> &flowAreaNames )
 {
@@ -596,7 +596,7 @@ MDAL::DriverHec2D *MDAL::DriverHec2D::create()
   return new DriverHec2D();
 }
 
-bool MDAL::DriverHec2D::canRead( const std::string &uri )
+bool MDAL::DriverHec2D::canReadMesh( const std::string &uri )
 {
   try
   {
@@ -649,7 +649,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverHec2D::load( const std::string &resultsF
     setProjection( hdfFile );
 
     //Elevation
-    std::shared_ptr<MDAL::MemoryDataset> bed_elevation = readBedElevation( gGeom2DFlowAreas, areaElemStartIndex, flowAreaNames );
+    std::shared_ptr<MDAL::MemoryDataset2D> bed_elevation = readBedElevation( gGeom2DFlowAreas, areaElemStartIndex, flowAreaNames );
 
     // Element centered Values
     readElemResults( hdfFile, bed_elevation, areaElemStartIndex, flowAreaNames );

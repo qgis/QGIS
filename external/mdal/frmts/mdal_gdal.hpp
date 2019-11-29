@@ -57,7 +57,7 @@ namespace MDAL
                   const std::string &gdalDriverName );
 
       virtual ~DriverGdal() override = default;
-      bool canRead( const std::string &uri ) override;
+      bool canReadMesh( const std::string &uri ) override;
       std::unique_ptr< Mesh > load( const std::string &fileName, MDAL_Status *status ) override;
 
     protected:
@@ -88,7 +88,7 @@ namespace MDAL
       bool meshes_equals( const GdalDataset *ds1, const GdalDataset *ds2 ) const;
 
       metadata_hash parseMetadata( GDALMajorObjectH gdalBand, const char *pszDomain = nullptr );
-      void addDataToOutput( GDALRasterBandH raster_band, std::shared_ptr<MemoryDataset> tos, bool is_vector, bool is_x );
+      void addDataToOutput( GDALRasterBandH raster_band, std::shared_ptr<MemoryDataset2D> tos, bool is_vector, bool is_x );
       bool addSrcProj();
       void addDatasetGroups();
       void createMesh();

@@ -31,11 +31,11 @@ namespace MDAL
   /**
    * The MemoryDataset stores all the data in the memory
    */
-  class MemoryDataset: public Dataset
+  class MemoryDataset2D: public Dataset2D
   {
     public:
-      MemoryDataset( DatasetGroup *grp );
-      ~MemoryDataset() override;
+      MemoryDataset2D( DatasetGroup *grp );
+      ~MemoryDataset2D() override;
 
       size_t scalarData( size_t indexStart, size_t count, double *buffer ) override;
       size_t vectorData( size_t indexStart, size_t count, double *buffer ) override;
@@ -65,6 +65,7 @@ namespace MDAL
        *   - vertex count * 2 if isOnVertices & isVector
        */
       std::vector<double> mValues;
+
       /**
        * Active flag, whether the face is active or not (disabled)
        * Only make sense for dataset defined on vertices  with size == face count

@@ -313,7 +313,7 @@ void MDAL::DriverGdal::fixRasterBands()
   }
 }
 
-void MDAL::DriverGdal::addDataToOutput( GDALRasterBandH raster_band, std::shared_ptr<MemoryDataset> tos, bool is_vector, bool is_x )
+void MDAL::DriverGdal::addDataToOutput( GDALRasterBandH raster_band, std::shared_ptr<MemoryDataset2D> tos, bool is_vector, bool is_x )
 {
   assert( raster_band );
 
@@ -410,14 +410,14 @@ void MDAL::DriverGdal::addDatasetGroups()
                                             mFileName,
                                             band->first
                                           );
-    group->setIsOnVertices( true );
+    group->setDataLocation( MDAL_DataLocation::DataOnVertices2D );
     bool is_vector = ( band->second.begin()->second.size() > 1 );
     group->setIsScalar( !is_vector );
 
     for ( timestep_map::const_iterator time_step = band->second.begin(); time_step != band->second.end(); time_step++ )
     {
       std::vector<GDALRasterBandH> raster_bands = time_step->second;
-      std::shared_ptr<MDAL::MemoryDataset> dataset = std::make_shared< MDAL::MemoryDataset >( group.get() );
+      std::shared_ptr<MDAL::MemoryDataset2D> dataset = std::make_shared< MDAL::MemoryDataset2D >( group.get() );
 
       dataset->setTime( time_step->first );
       for ( std::vector<GDALRasterBandH>::size_type i = 0; i < raster_bands.size(); ++i )
@@ -528,7 +528,7 @@ MDAL::DriverGdal::DriverGdal( const std::string &name,
   mPafScanline( nullptr )
 {}
 
-bool MDAL::DriverGdal::canRead( const std::string &uri )
+bool MDAL::DriverGdal::canReadMesh( const std::string &uri )
 {
   try
   {

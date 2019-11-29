@@ -94,7 +94,7 @@ MDAL::Driver2dm *MDAL::Driver2dm::create()
 
 MDAL::Driver2dm::~Driver2dm() = default;
 
-bool MDAL::Driver2dm::canRead( const std::string &uri )
+bool MDAL::Driver2dm::canReadMesh( const std::string &uri )
 {
   std::ifstream in( uri, std::ifstream::in );
   std::string line;
