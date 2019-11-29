@@ -1,7 +1,8 @@
 FROM buildpack-deps:stretch
 
+RUN chown root:root /tmp && chmod ugo+rwXt /tmp
 RUN apt-get update
-RUN apt-get install -y --no-install-recommends autopoint bison flex gperf libtool ruby scons unzip p7zip-full intltool libtool libtool-bin nsis zip
+RUN apt-get install -y --no-install-recommends autopoint bison flex gperf libtool ruby scons unzip p7zip-full intltool libtool libtool-bin nsis lzip zip
 
 WORKDIR /mxe
 
