@@ -197,6 +197,7 @@ namespace pal
        * \param mapShape a pointer to the line
        * \param initialCost initial cost for candidates generated using this method. If set, cost can be increased
        * by a preset amount.
+       * \param pal point to pal settings object, for cancellation support
        * \returns the number of generated candidates
        */
       std::size_t createCandidatesAlongLineNearMidpoint( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape, double initialCost = 0.0, Pal *pal = nullptr );
