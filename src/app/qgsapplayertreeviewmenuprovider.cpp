@@ -649,13 +649,13 @@ QList< LegendLayerAction > QgsAppLayerTreeViewMenuProvider::legendLayerActions( 
 #ifdef QGISDEBUG
   if ( mLegendLayerActionMap.contains( type ) )
   {
-    QgsDebugMsg( QStringLiteral( "legendLayerActions for layers of type %1:" ).arg( static_cast<int>( type ) ) );
+    QgsDebugMsgLevel( QStringLiteral( "legendLayerActions for layers of type %1:" ).arg( static_cast<int>( type ) ), 2 );
 
     const auto legendLayerActions { mLegendLayerActionMap.value( type ) };
     for ( const LegendLayerAction &lyrAction : legendLayerActions )
     {
       Q_UNUSED( lyrAction )
-      QgsDebugMsg( QStringLiteral( "%1/%2 - %3 layers" ).arg( lyrAction.menu, lyrAction.action->text() ).arg( lyrAction.layers.count() ) );
+      QgsDebugMsgLevel( QStringLiteral( "%1/%2 - %3 layers" ).arg( lyrAction.menu, lyrAction.action->text() ).arg( lyrAction.layers.count() ), 2 );
     }
   }
 #endif

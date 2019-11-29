@@ -617,7 +617,7 @@ std::size_t FeaturePart::createCandidatesAroundPoint( double x, double y, std::v
   return numberCandidatesGenerated;
 }
 
-std::size_t FeaturePart::createCandidatesAlongLine( std::vector< std::unique_ptr< LabelPosition > > &lPos, PointSet *mapShape, bool allowOverrun )
+std::size_t FeaturePart::createCandidatesAlongLine( std::vector< std::unique_ptr< LabelPosition > > &lPos, PointSet *mapShape, bool allowOverrun, Pal *pal )
 {
   if ( allowOverrun )
   {
@@ -632,17 +632,17 @@ std::size_t FeaturePart::createCandidatesAlongLine( std::vector< std::unique_ptr
   }
 
   //prefer to label along straightish segments:
-  std::size_t candidates = createCandidatesAlongLineNearStraightSegments( lPos, mapShape );
+  std::size_t candidates = createCandidatesAlongLineNearStraightSegments( lPos, mapShape, pal );
 
   if ( static_cast< int >( candidates ) < mLF->layer()->maximumLineLabelCandidates() )
   {
     // but not enough candidates yet, so fallback to labeling near whole line's midpoint
-    candidates = createCandidatesAlongLineNearMidpoint( lPos, mapShape, candidates > 0 ? 0.01 : 0.0 );
+    candidates = createCandidatesAlongLineNearMidpoint( lPos, mapShape, candidates > 0 ? 0.01 : 0.0, pal );
   }
   return candidates;
 }
 
-std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vector< std::unique_ptr< LabelPosition > > &lPos, PointSet *mapShape )
+std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vector< std::unique_ptr< LabelPosition > > &lPos, PointSet *mapShape, Pal *pal )
 {
   double labelWidth = getLabelWidth();
   double labelHeight = getLabelHeight();
@@ -765,6 +765,11 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
 
     while ( currentDistanceAlongLine + labelWidth < distanceToEndOfSegment )
     {
+      if ( pal->isCanceled() )
+      {
+        return lPos.size();
+      }
+
       // calculate positions along linestring corresponding to start and end of current label candidate
       line->getPointByDistance( segmentLengths.data(), distanceToSegment.data(), currentDistanceAlongLine, &candidateStartX, &candidateStartY );
       line->getPointByDistance( segmentLengths.data(), distanceToSegment.data(), currentDistanceAlongLine + labelWidth, &candidateEndX, &candidateEndY );
@@ -862,7 +867,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
   return lPos.size();
 }
 
-std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std::unique_ptr< LabelPosition > > &lPos, PointSet *mapShape, double initialCost )
+std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std::unique_ptr< LabelPosition > > &lPos, PointSet *mapShape, double initialCost, Pal *pal )
 {
   double distanceLineToLabel = getLabelDistance();
 
@@ -922,6 +927,11 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
   int i = 0;
   while ( currentDistanceAlongLine < totalLineLength - labelWidth )
   {
+    if ( pal->isCanceled() )
+    {
+      return lPos.size();
+    }
+
     // calculate positions along linestring corresponding to start and end of current label candidate
     line->getPointByDistance( segmentLengths.data(), distanceToSegment.data(), currentDistanceAlongLine, &candidateStartX, &candidateStartY );
     line->getPointByDistance( segmentLengths.data(), distanceToSegment.data(), currentDistanceAlongLine + labelWidth, &candidateEndX, &candidateEndY );
@@ -1193,7 +1203,7 @@ static LabelPosition *_createCurvedCandidate( LabelPosition *lp, double angle, d
   return newLp;
 }
 
-std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::unique_ptr< LabelPosition > > &lPos, PointSet *mapShape, bool allowOverrun )
+std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::unique_ptr< LabelPosition > > &lPos, PointSet *mapShape, bool allowOverrun, Pal *pal )
 {
   LabelInfo *li = mLF->curvedLabelInfo();
 
@@ -1257,6 +1267,9 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
     return 0;
   }
 
+  if ( pal->isCanceled() )
+    return 0;
+
   QLinkedList<LabelPosition *> positions;
   double delta = std::max( li->label_height / 6, total_distance / mLF->layer()->maximumLineLabelCandidates() );
 
@@ -1270,6 +1283,9 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
     bool flip = false;
     // placements may need to be reversed if using map orientation and the line has right-to-left direction
     bool reversed = false;
+
+    if ( pal->isCanceled() )
+      return 0;
 
     // an orientation of 0 means try both orientations and choose the best
     int orientation = 0;
@@ -1393,7 +1409,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
  *
  */
 
-std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_ptr< LabelPosition > > &lPos, PointSet *mapShape )
+std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_ptr< LabelPosition > > &lPos, PointSet *mapShape, Pal *pal )
 {
   double labelWidth = getLabelWidth();
   double labelHeight = getLabelHeight();
@@ -1402,6 +1418,9 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
   QLinkedList<PointSet *> shapes_final;
 
   mapShape->parent = nullptr;
+
+  if ( pal->isCanceled() )
+    return 0;
 
   shapes_toProcess.append( mapShape );
 
@@ -1433,6 +1452,9 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
         delete shape;
     }
 
+    if ( pal->isCanceled() )
+      return 0;
+
     //dx = dy = min( yrm, xrm ) / 2;
     dx = labelWidth / 2.0;
     dy = labelHeight / 2.0;
@@ -1449,6 +1471,9 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
     {
       for ( CHullBox &box : boxes )
       {
+        if ( pal->isCanceled() )
+          return numberCandidatesGenerated;
+
         if ( ( box.length * box.width ) > ( xmax - xmin ) * ( ymax - ymin ) * 5 )
         {
           // Very Large BBOX (should never occur)
@@ -1538,6 +1563,9 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
 
         for ( px = px0; px <= box.width; px += dx )
         {
+          if ( pal->isCanceled() )
+            break;
+
           for ( py = py0; py <= box.length; py += dy )
           {
 
@@ -1580,7 +1608,7 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
   return nbp;
 }
 
-std::vector< std::unique_ptr< LabelPosition > > FeaturePart::createCandidates()
+std::vector< std::unique_ptr< LabelPosition > > FeaturePart::createCandidates( Pal *pal )
 {
   std::vector< std::unique_ptr< LabelPosition > > lPos;
   double angle = mLF->hasFixedAngle() ? mLF->fixedAngle() : 0.0;
@@ -1603,9 +1631,9 @@ std::vector< std::unique_ptr< LabelPosition > > FeaturePart::createCandidates()
         break;
       case GEOS_LINESTRING:
         if ( mLF->layer()->isCurved() )
-          createCurvedCandidatesAlongLine( lPos, this, true );
+          createCurvedCandidatesAlongLine( lPos, this, true, pal );
         else
-          createCandidatesAlongLine( lPos, this, true );
+          createCandidatesAlongLine( lPos, this, true, pal );
         break;
 
       case GEOS_POLYGON:
@@ -1621,13 +1649,13 @@ std::vector< std::unique_ptr< LabelPosition > > FeaturePart::createCandidates()
               createCandidatesAroundPoint( cx, cy, lPos, angle );
             break;
           case QgsPalLayerSettings::Line:
-            createCandidatesAlongLine( lPos, this );
+            createCandidatesAlongLine( lPos, this, false, pal );
             break;
           case QgsPalLayerSettings::PerimeterCurved:
-            createCurvedCandidatesAlongLine( lPos, this );
+            createCurvedCandidatesAlongLine( lPos, this, false, pal );
             break;
           default:
-            createCandidatesForPolygon( lPos, this );
+            createCandidatesForPolygon( lPos, this, pal );
             break;
         }
     }

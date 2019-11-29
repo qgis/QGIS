@@ -119,6 +119,9 @@ bool extractFeatCallback( FeaturePart *featurePart, void *ctx )
   double amin[2], amax[2];
   FeatCallBackCtx *context = reinterpret_cast< FeatCallBackCtx * >( ctx );
 
+  if ( context->pal->isCanceled() )
+    return false;
+
   // Holes of the feature are obstacles
   for ( int i = 0; i < featurePart->getNumSelfObstacles(); i++ )
   {
@@ -132,7 +135,10 @@ bool extractFeatCallback( FeaturePart *featurePart, void *ctx )
   }
 
   // generate candidates for the feature part
-  std::vector< std::unique_ptr< LabelPosition > > candidates = featurePart->createCandidates();
+  std::vector< std::unique_ptr< LabelPosition > > candidates = featurePart->createCandidates( context->pal );
+
+  if ( context->pal->isCanceled() )
+    return false;
 
   // purge candidates that are outside the bbox
   candidates.erase( std::remove_if( candidates.begin(), candidates.end(), [&context]( std::unique_ptr< LabelPosition > &candidate )
@@ -142,6 +148,9 @@ bool extractFeatCallback( FeaturePart *featurePart, void *ctx )
     else
       return !candidate->within( context->mapBoundary );
   } ), candidates.end() );
+
+  if ( context->pal->isCanceled() )
+    return false;
 
   if ( !candidates.empty() )
   {
@@ -175,6 +184,7 @@ struct ObstacleCallBackCtx
 {
   RTree<FeaturePart *, double, 2, double> *obstacleIndex = nullptr;
   int obstacleCount = 0;
+  Pal *pal = nullptr;
 };
 
 /*
@@ -186,6 +196,8 @@ bool extractObstaclesCallback( FeaturePart *ft_ptr, void *ctx )
 {
   double amin[2], amax[2];
   ObstacleCallBackCtx *context = reinterpret_cast< ObstacleCallBackCtx * >( ctx );
+  if ( context->pal->isCanceled() )
+    return false; // do not continue searching
 
   // insert into obstacles
   ft_ptr->getBoundingBox( amin, amax );
@@ -258,6 +270,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
   ObstacleCallBackCtx obstacleContext;
   obstacleContext.obstacleIndex = &obstacles;
   obstacleContext.obstacleCount = 0;
+  obstacleContext.pal = this;
 
   // first step : extract features from layers
 
@@ -284,15 +297,26 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
     if ( layer->mergeConnectedLines() )
       layer->joinConnectedFeatures();
 
+    if ( isCanceled() )
+      return nullptr;
+
     layer->chopFeaturesAtRepeatDistance();
+
+    if ( isCanceled() )
+      return nullptr;
 
     QMutexLocker locker( &layer->mMutex );
 
     // find features within bounding box and generate candidates list
     context.layer = layer;
     layer->mFeatureIndex.Search( amin, amax, extractFeatCallback, static_cast< void * >( &context ) );
+    if ( isCanceled() )
+      return nullptr;
+
     // find obstacles within bounding box
     layer->mObstacleIndex.Search( amin, amax, extractObstaclesCallback, static_cast< void * >( &obstacleContext ) );
+    if ( isCanceled() )
+      return nullptr;
 
     locker.unlock();
 
@@ -304,6 +328,9 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
     previousObstacleCount = obstacleContext.obstacleCount;
   }
   palLocker.unlock();
+
+  if ( isCanceled() )
+    return nullptr;
 
   prob->mLayerCount = layersWithFeaturesInBBox.size();
   prob->labelledLayersName = layersWithFeaturesInBBox;
@@ -354,6 +381,9 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       // sort candidates by cost, skip less interesting ones, calculate polygon costs (if using polygons)
       max_p = CostCalculator::finalizeCandidatesCosts( feat.get(), max_p, &obstacles, bbx, bby );
 
+      if ( isCanceled() )
+        return nullptr;
+
       // only keep the 'max_p' best candidates
       while ( feat->candidates.size() > max_p )
       {
@@ -361,6 +391,9 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
         feat->candidates.back()->removeFromIndex( prob->mAllCandidatesIndex );
         feat->candidates.pop_back();
       }
+
+      if ( isCanceled() )
+        return nullptr;
 
       // update problem's # candidate
       prob->mFeatNbLp[i] = static_cast< int >( feat->candidates.size() );
@@ -380,9 +413,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
     while ( !features.empty() ) // foreach feature
     {
       if ( isCanceled() )
-      {
         return nullptr;
-      }
 
       std::unique_ptr< Feats > feat = std::move( features.front() );
       features.pop_front();
@@ -406,6 +437,9 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
         nbOverlaps += lp->getNumOverlaps();
 
         prob->addCandidatePosition( std::move( lp ) );
+
+        if ( isCanceled() )
+          return nullptr;
       }
     }
     nbOverlaps /= 2;
