@@ -20,6 +20,8 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerutils.h"
+#include "qgsmessagelog.h"
+
 
 //! populate two lists (ks, vs) from map - in reverse order
 template <class Key, class T> void mapToReversedLists( const QMap< Key, T > &map, QList<Key> &ks, QList<T> &vs )
@@ -119,7 +121,10 @@ bool QgsVectorLayerEditBuffer::addFeature( QgsFeature &f )
     return false;
   }
   if ( L->mFields.count() != f.attributes().count() )
+  {
+    QgsMessageLog::logMessage( tr( "cannot add feature, wrong field count: layer: %1 feature: %2:" ).arg( L->mFields.count() ).arg( f.attributes().count() ) );
     return false;
+  }
 
   // TODO: check correct geometry type
 
