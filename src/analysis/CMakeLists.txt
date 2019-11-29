@@ -58,6 +58,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmextractlayoutmapextent.cpp
   processing/qgsalgorithmextractzmvalues.cpp
   processing/qgsalgorithmextractvertices.cpp
+  processing/qgsalgorithmextractspecificvertices.cpp
   processing/qgsalgorithmfiledownloader.cpp
   processing/qgsalgorithmfilter.cpp
   processing/qgsalgorithmfiltervertices.cpp

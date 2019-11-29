@@ -234,7 +234,7 @@ tests:
         name: expected/extend_multilines.gml
         type: vector
 
-  - algorithm: qgis:extractspecificvertices
+  - algorithm: native:extractspecificvertices
     name: Extract specific vertices lines
     params:
       INPUT:
@@ -249,7 +249,7 @@ tests:
           fields:
             fid: skip
 
-  - algorithm: qgis:extractspecificvertices
+  - algorithm: native:extractspecificvertices
     name: Extract specific vertices polygons
     params:
       INPUT:
