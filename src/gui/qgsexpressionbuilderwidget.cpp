@@ -581,11 +581,10 @@ void QgsExpressionBuilderWidget::loadRecent( const QString &collection )
   }
 
   QgsSettings settings;
-  QString location = QStringLiteral( "/expressions/recent/%1" ).arg( collection );
-  QStringList expressions = settings.value( location ).toStringList();
+  const QString location = QStringLiteral( "/expressions/recent/%1" ).arg( collection );
+  const QStringList expressions = settings.value( location ).toStringList();
   int i = 0;
-  const auto constExpressions = expressions;
-  for ( const QString &expression : constExpressions )
+  for ( const QString &expression : expressions )
   {
     this->registerItem( name, expression, expression, expression, QgsExpressionItem::ExpressionNode, false, i );
     i++;
@@ -595,7 +594,7 @@ void QgsExpressionBuilderWidget::loadRecent( const QString &collection )
 void QgsExpressionBuilderWidget::loadStored( const QString &collection )
 {
   mRecentKey = collection;
-  QString groupName = tr( "Stored (%1)" ).arg( collection );
+  const QString groupName = tr( "Stored (%1)" ).arg( collection );
 
   // Cleanup
   if ( mExpressionGroups.contains( groupName ) )
@@ -604,26 +603,16 @@ void QgsExpressionBuilderWidget::loadStored( const QString &collection )
     node->removeRows( 0, node->rowCount() );
   }
 
-  const QList<QStandardItem *> groupItems { mModel->findItems( groupName ) };
-  if ( ! groupItems.isEmpty() )
-  {
-    const QModelIndex idx { mModel->indexFromItem( groupItems.first() ) };
-    if ( idx.isValid() )
-    {
-      mModel->removeRow( idx.row(), idx.parent() );
-    }
-  }
-
   QgsSettings settings;
-  QString location = QStringLiteral( "/expressions/stored/%1" ).arg( collection );
+  const QString location = QStringLiteral( "/expressions/stored/%1" ).arg( collection );
   settings.beginGroup( location, QgsSettings::Section::Gui );
   QString label;
   QString helpText;
   QString expression;
   int i = 0;
-  for ( const auto &label : settings.childKeys() )
+  for ( const auto &label : settings.childGroups() )
   {
-    settings.beginGroup( groupName );
+    settings.beginGroup( label );
     expression = settings.value( QStringLiteral( "expression" ) ).toString();
     helpText = settings.value( QStringLiteral( "helpText" ) ).toString();
     this->registerItem( groupName, label, expression, helpText, QgsExpressionItem::ExpressionNode, false, i++ );
@@ -634,7 +623,7 @@ void QgsExpressionBuilderWidget::loadStored( const QString &collection )
 void QgsExpressionBuilderWidget::saveToStored( const QString &label, const QString expression, const QString &helpText, const QString &collection )
 {
   QgsSettings settings;
-  QString location = QStringLiteral( "/expressions/stored/%1" ).arg( collection );
+  const QString location = QStringLiteral( "/expressions/stored/%1" ).arg( collection );
   settings.beginGroup( location, QgsSettings::Section::Gui );
   settings.beginGroup( label );
   settings.setValue( QStringLiteral( "expression" ), expression );
@@ -1228,6 +1217,17 @@ void QgsExpressionBuilderWidget::removeSelectedExpression()
 
   removeFromStored( item->text(), mRecentKey );
 
+}
+
+const QList<QgsExpressionItem *> QgsExpressionBuilderWidget::findExpressions( const QString &label )
+{
+  QList<QgsExpressionItem *> result;
+  const QList<QStandardItem *> found { mModel->findItems( label, Qt::MatchFlag::MatchRecursive ) };
+  for ( const auto &item : qgis::as_const( found ) )
+  {
+    result.push_back( dynamic_cast<QgsExpressionItem *>( item ) );
+  }
+  return result;
 }
 
 void QgsExpressionBuilderWidget::indicatorClicked( int line, int index, Qt::KeyboardModifiers state )

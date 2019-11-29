@@ -359,6 +359,18 @@ the selected expression must be a stored expression.
 .. versionadded:: 3.12
 %End
 
+    const QList<QgsExpressionItem *> findExpressions( const QString &label );
+%Docstring
+Returns the list of expression items matching a ``label``.
+
+.. note::
+
+   this function is exposed for testing purposes only
+
+.. versionadded:: 3.12
+%End
+
+
   signals:
 
     void expressionParsed( bool isValid );

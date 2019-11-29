@@ -357,6 +357,14 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      */
     void removeSelectedExpression( );
 
+    /**
+     * Returns the list of expression items matching a \a label.
+     * \note this function is exposed for testing purposes only
+     * \since QGIS 3.12
+     */
+    const QList<QgsExpressionItem *> findExpressions( const QString &label );
+
+
   private slots:
     void indicatorClicked( int line, int index, Qt::KeyboardModifiers state );
     void showContextMenu( QPoint );

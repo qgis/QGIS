@@ -164,6 +164,33 @@ class TestQgsExpressionBuilderWidget(unittest.TestCase):
         items = m.findItems('Relation Number Two', Qt.MatchRecursive)
         self.assertEqual(len(items), 1)
 
+    def testStoredExpressions(self):
+        """Check that expressions can be stored and retrieved"""
+
+        w = QgsExpressionBuilderWidget()
+
+        w.saveToStored('Stored Expression Number One', '"field_one" = 123', "An humble expression", "my_custom_collection")
+        items = w.findExpressions('Stored Expression Number One')
+        self.assertEqual(len(items), 1)
+        exp = items[0]
+        self.assertEqual(exp.getExpressionText(), '"field_one" = 123')
+
+        # Add another one with the same name (overwrite)
+        w.saveToStored('Stored Expression Number One', '"field_two" = 456', "An even more humble expression", "my_custom_collection")
+        items = w.findExpressions('Stored Expression Number One')
+        self.assertEqual(len(items), 1)
+        exp = items[0]
+        self.assertEqual(exp.getExpressionText(), '"field_two" = 456')
+
+        # Reload by creating a new widget
+        w = QgsExpressionBuilderWidget()
+        self.assertEqual(exp.getExpressionText(), '"field_two" = 456')
+
+        # Test removal
+        w.removeFromStored('Stored Expression Number One', "my_custom_collection")
+        items = w.findExpressions('Stored Expression Number One')
+        self.assertEqual(len(items), 0)
+
 
 if __name__ == '__main__':
     unittest.main()
