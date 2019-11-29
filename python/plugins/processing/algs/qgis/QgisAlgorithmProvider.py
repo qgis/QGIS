@@ -48,7 +48,6 @@ from .FieldsCalculator import FieldsCalculator
 from .FieldsMapper import FieldsMapper
 from .FindProjection import FindProjection
 from .GeometryConvert import GeometryConvert
-from .GeometryByExpression import GeometryByExpression
 from .Heatmap import Heatmap
 from .HubDistanceLines import HubDistanceLines
 from .HubDistancePoints import HubDistancePoints
@@ -139,7 +138,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 FieldsMapper(),
                 FieldsPyculator(),
                 FindProjection(),
-                GeometryByExpression(),
                 GeometryConvert(),
                 Heatmap(),
                 HubDistanceLines(),

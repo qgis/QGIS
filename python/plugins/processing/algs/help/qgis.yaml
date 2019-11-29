@@ -160,11 +160,6 @@ qgis:fixeddistancebuffer: >
 qgis:frequencyanalysis: >
   This algorithm generates a table with frequency analysis of the values of a selected attribute from an input vector layer
 
-qgis:geometrybyexpression: >
-  This algorithm updates existing geometries (or creates new geometries) for input features by use of a QGIS expression. This allows complex geometry modifications which can utilize all the flexibility of the QGIS expression engine to manipulate and create geometries for output features.
-
-  For help with QGIS expression functions, see the inbuilt help for specific functions which is available in the expression builder.
-
 qgis:generatepointspixelcentroidsalongline: >
   This algorithm generates a point vector layer from an input raster and line layer.
   The points correspond to the pixel centroids that intersect the line layer.

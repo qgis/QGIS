@@ -378,7 +378,7 @@ tests:
         hash: 71aecb383a686d78ea0e677901a8a93f822b9897d7a9e23ba4ebf24d
         type: rasterhash
 
-  - algorithm: qgis:geometrybyexpression
+  - algorithm: native:geometrybyexpression
     name: Geometry by expression (point)
     params:
       EXPRESSION: 'translate( $geometry,1,1)'
@@ -393,7 +393,7 @@ tests:
         name: expected/geometry_by_expression_point.gml
         type: vector
 
-  - algorithm: qgis:geometrybyexpression
+  - algorithm: native:geometrybyexpression
     name: Geometry by expression (polygon)
     params:
       EXPRESSION: ' translate( centroid($geometry),1,1)'
@@ -411,7 +411,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:geometrybyexpression
+  - algorithm: native:geometrybyexpression
     name: Geometry by expression (line)
     params:
       EXPRESSION: ' translate( $geometry,1,1)'

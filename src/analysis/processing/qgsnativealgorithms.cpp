@@ -60,6 +60,7 @@
 #include "qgsalgorithmfixgeometries.h"
 #include "qgsalgorithmforcerhr.h"
 #include "qgsalgorithmfuzzifyraster.h"
+#include "qgsalgorithmgeometrybyexpression.h"
 #include "qgsalgorithmgrid.h"
 #include "qgsalgorithmhillshade.h"
 #include "qgsalgorithmjoinbyattribute.h"
@@ -236,6 +237,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsFuzzifyRasterSmallMembershipAlgorithm() );
   addAlgorithm( new QgsFuzzifyRasterGaussianMembershipAlgorithm() );
   addAlgorithm( new QgsFuzzifyRasterNearMembershipAlgorithm() );
+  addAlgorithm( new QgsGeometryByExpressionAlgorithm() );
   addAlgorithm( new QgsGridAlgorithm() );
   addAlgorithm( new QgsHillshadeAlgorithm() );
   addAlgorithm( new QgsImportPhotosAlgorithm() );

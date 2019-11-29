@@ -65,6 +65,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmfixgeometries.cpp
   processing/qgsalgorithmforcerhr.cpp
   processing/qgsalgorithmfuzzifyraster.cpp
+  processing/qgsalgorithmgeometrybyexpression.cpp
   processing/qgsalgorithmgrid.cpp
   processing/qgsalgorithmhillshade.cpp
   processing/qgsalgorithmimportphotos.cpp
