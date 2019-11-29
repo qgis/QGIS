@@ -899,7 +899,7 @@ void QgsMeshVectorStreamlineRenderer::draw()
 QgsMeshParticleTracesField::QgsMeshParticleTracesField( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues, const QgsMeshDataBlock &scalarActiveFaceFlagValues, const QgsRectangle &layerExtent, double magMax, bool dataIsOnVertices, const QgsRenderContext &rendererContext ):
   QgsMeshStreamField( triangularMesh, datasetVectorValues, scalarActiveFaceFlagValues, layerExtent, magMax, dataIsOnVertices, rendererContext )
 {
-  std::srand( uint( std::time( nullptr ) ) );
+  std::srand( uint( ::time( nullptr ) ) );
   mPen.setCapStyle( Qt::RoundCap );
 }
 
