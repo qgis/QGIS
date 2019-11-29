@@ -321,7 +321,7 @@ void MDAL::DriverSelafin::parseFile( std::vector<std::string> &var_names,
      gives the numbering of boundary points for the others
   */
   std::vector<int> iPointBoundary = mReader.read_int_arr( *nPoint );
-  MDAL_UNUSED( iPointBoundary );
+  MDAL_UNUSED( iPointBoundary )
 
   /* 1 record containing table X (real array of dimension NPOIN containing the
      abscissae of the points)
@@ -459,7 +459,7 @@ void MDAL::DriverSelafin::addData( const std::vector<std::string> &var_names, co
                 mMesh->uri(),
                 var_name
               );
-      group->setIsOnVertices( true );
+      group->setDataLocation( MDAL_DataLocation::DataOnVertices2D );
       group->setIsScalar( !is_vector );
 
       mMesh->datasetGroups.push_back( group );
@@ -468,14 +468,14 @@ void MDAL::DriverSelafin::addData( const std::vector<std::string> &var_names, co
     size_t i = 0;
     for ( timestep_map::const_iterator it = data[nName].begin(); it != data[nName].end(); ++it, ++i )
     {
-      std::shared_ptr<MDAL::MemoryDataset> dataset;
+      std::shared_ptr<MDAL::MemoryDataset2D> dataset;
       if ( group->datasets.size() > i )
       {
-        dataset = std::dynamic_pointer_cast<MDAL::MemoryDataset>( group->datasets[i] );
+        dataset = std::dynamic_pointer_cast<MDAL::MemoryDataset2D>( group->datasets[i] );
       }
       else
       {
-        dataset = std::make_shared< MemoryDataset >( group.get() );
+        dataset = std::make_shared< MemoryDataset2D >( group.get() );
         dataset->setTime( it->first );
         group->datasets.push_back( dataset );
       }
@@ -512,7 +512,7 @@ void MDAL::DriverSelafin::addData( const std::vector<std::string> &var_names, co
   {
     for ( auto dataset : group->datasets )
     {
-      std::shared_ptr<MDAL::MemoryDataset> dts = std::dynamic_pointer_cast<MDAL::MemoryDataset>( dataset );
+      std::shared_ptr<MDAL::MemoryDataset2D> dts = std::dynamic_pointer_cast<MDAL::MemoryDataset2D>( dataset );
       MDAL::activateFaces( mMesh.get(), dts );
 
       MDAL::Statistics stats = MDAL::calculateStatistics( dataset );
@@ -524,7 +524,7 @@ void MDAL::DriverSelafin::addData( const std::vector<std::string> &var_names, co
   }
 }
 
-bool MDAL::DriverSelafin::canRead( const std::string &uri )
+bool MDAL::DriverSelafin::canReadMesh( const std::string &uri )
 {
   if ( !MDAL::fileExists( uri ) ) return false;
 

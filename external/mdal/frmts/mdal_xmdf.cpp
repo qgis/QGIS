@@ -17,7 +17,7 @@
 MDAL::XmdfDataset::~XmdfDataset() = default;
 
 MDAL::XmdfDataset::XmdfDataset( DatasetGroup *grp, const HdfDataset &valuesDs, const HdfDataset &activeDs, hsize_t timeIndex )
-  : Dataset( grp )
+  : Dataset2D( grp )
   , mHdf5DatasetValues( valuesDs )
   , mHdf5DatasetActive( activeDs )
   , mTimeIndex( timeIndex )
@@ -98,9 +98,9 @@ MDAL::DriverXmdf *MDAL::DriverXmdf::create()
   return new DriverXmdf();
 }
 
-bool MDAL::DriverXmdf::canRead( const std::string &uri )
+bool MDAL::DriverXmdf::canReadDatasets( const std::string &uri )
 {
-  HdfFile file( uri );
+  HdfFile file( uri, HdfFile::ReadOnly );
   if ( !file.isValid() )
   {
     return false;
@@ -121,7 +121,7 @@ void MDAL::DriverXmdf::load( const std::string &datFile,  MDAL::Mesh *mesh, MDAL
   mMesh = mesh;
   if ( status ) *status = MDAL_Status::None;
 
-  HdfFile file( mDatFile );
+  HdfFile file( mDatFile, HdfFile::ReadOnly );
   if ( !file.isValid() )
   {
     if ( status ) *status = MDAL_Status::Err_UnknownFormat;
@@ -257,7 +257,7 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverXmdf::readXmdfGroupAsDatasetGrou
             groupName
           );
   group->setIsScalar( !isVector );
-  group->setIsOnVertices( true );
+  group->setDataLocation( MDAL_DataLocation::DataOnVertices2D );
   group->setMetadata( "TIMEUNITS", timeUnit );
 
   // lazy loading of min and max of the dataset group

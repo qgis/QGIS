@@ -11,40 +11,40 @@
 #include <iterator>
 #include "mdal_utils.hpp"
 
-MDAL::MemoryDataset::MemoryDataset( MDAL::DatasetGroup *grp )
-  : Dataset( grp )
+MDAL::MemoryDataset2D::MemoryDataset2D( MDAL::DatasetGroup *grp )
+  : Dataset2D( grp )
   , mValues( group()->isScalar() ? valuesCount() : 2 * valuesCount(),
              std::numeric_limits<double>::quiet_NaN() )
 {
-  if ( group()->isOnVertices() )
+  if ( group()->dataLocation() == MDAL_DataLocation::DataOnVertices2D )
     mActive = std::vector<int>( mesh()->facesCount(), 1 );
 }
 
-MDAL::MemoryDataset::~MemoryDataset() = default;
+MDAL::MemoryDataset2D::~MemoryDataset2D() = default;
 
-int *MDAL::MemoryDataset::active()
+int *MDAL::MemoryDataset2D::active()
 {
   return mActive.data();
 }
 
-double *MDAL::MemoryDataset::values()
+double *MDAL::MemoryDataset2D::values()
 {
   return mValues.data();
 }
 
-const int *MDAL::MemoryDataset::constActive() const
+const int *MDAL::MemoryDataset2D::constActive() const
 {
   return mActive.data();
 }
 
-const double *MDAL::MemoryDataset::constValues() const
+const double *MDAL::MemoryDataset2D::constValues() const
 {
   return mValues.data();
 }
 
-size_t MDAL::MemoryDataset::activeData( size_t indexStart, size_t count, int *buffer )
+size_t MDAL::MemoryDataset2D::activeData( size_t indexStart, size_t count, int *buffer )
 {
-  if ( group()->isOnVertices() )
+  if ( group()->dataLocation() == MDAL_DataLocation::DataOnVertices2D )
   {
     size_t nValues = mActive.size();
 
@@ -63,7 +63,7 @@ size_t MDAL::MemoryDataset::activeData( size_t indexStart, size_t count, int *bu
   return count;
 }
 
-size_t MDAL::MemoryDataset::scalarData( size_t indexStart, size_t count, double *buffer )
+size_t MDAL::MemoryDataset2D::scalarData( size_t indexStart, size_t count, double *buffer )
 {
   assert( group()->isScalar() ); //checked in C API interface
   size_t nValues = valuesCount();
@@ -77,7 +77,7 @@ size_t MDAL::MemoryDataset::scalarData( size_t indexStart, size_t count, double 
   return copyValues;
 }
 
-size_t MDAL::MemoryDataset::vectorData( size_t indexStart, size_t count, double *buffer )
+size_t MDAL::MemoryDataset2D::vectorData( size_t indexStart, size_t count, double *buffer )
 {
   assert( !group()->isScalar() ); //checked in C API interface
   size_t nValues = valuesCount();

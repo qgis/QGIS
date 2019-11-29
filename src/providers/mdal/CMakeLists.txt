@@ -90,6 +90,7 @@ IF (WITH_INTERNAL_MDAL)
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_netcdf.cpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_sww.cpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ugrid.cpp
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_tuflowfv.cpp
     )
     SET(MDAL_LIB_HDRS ${MDAL_LIB_HDRS}
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_cf.hpp
@@ -97,6 +98,7 @@ IF (WITH_INTERNAL_MDAL)
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_netcdf.hpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_sww.hpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ugrid.hpp
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_tuflowfv.hpp
     )
     SET (HAVE_NETCDF TRUE)
   ENDIF(NETCDF_FOUND)

@@ -55,7 +55,7 @@ namespace MDAL
    *   </DataItem>
    * </Attribute>
    */
-  class XdmfDataset: public Dataset
+  class XdmfDataset: public Dataset2D
   {
     public:
       XdmfDataset( DatasetGroup *grp,
@@ -99,7 +99,7 @@ namespace MDAL
    *   </DataItem>
    * </Attribute>
    */
-  class XdmfFunctionDataset: public Dataset
+  class XdmfFunctionDataset: public Dataset2D
   {
     public:
       enum FunctionType
@@ -159,7 +159,7 @@ namespace MDAL
       ~DriverXdmf( ) override;
       DriverXdmf *create() override;
 
-      bool canRead( const std::string &uri ) override;
+      bool canReadDatasets( const std::string &uri ) override;
       void load( const std::string &datFile, Mesh *mesh, MDAL_Status *status ) override;
 
     private:

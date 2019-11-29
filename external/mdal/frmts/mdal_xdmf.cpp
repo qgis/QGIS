@@ -21,7 +21,7 @@
 #include "mdal_xml.hpp"
 
 MDAL::XdmfDataset::XdmfDataset( MDAL::DatasetGroup *grp, const MDAL::HyperSlab &slab, const HdfDataset &valuesDs, double time )
-  : MDAL::Dataset( grp )
+  : MDAL::Dataset2D( grp )
   , mHdf5DatasetValues( valuesDs )
   , mHyperSlab( slab )
 {
@@ -103,7 +103,7 @@ size_t MDAL::XdmfDataset::vectorData( size_t indexStart, size_t count, double *b
 
 size_t MDAL::XdmfDataset::activeData( size_t indexStart, size_t count, int *buffer )
 {
-  MDAL_UNUSED( indexStart );
+  MDAL_UNUSED( indexStart )
   memset( buffer, 1, count * sizeof( int ) );
   return count;
 }
@@ -117,13 +117,13 @@ MDAL::XdmfFunctionDataset::XdmfFunctionDataset(
   MDAL::DatasetGroup *grp,
   MDAL::XdmfFunctionDataset::FunctionType type,
   double time )
-  : MDAL::Dataset( grp )
+  : MDAL::Dataset2D( grp )
   , mType( type )
   , mBaseReferenceGroup( "XDMF", grp->mesh(), grp->uri() )
 {
   setTime( time );
   mBaseReferenceGroup.setIsScalar( true );
-  mBaseReferenceGroup.setIsOnVertices( grp->isOnVertices() );
+  mBaseReferenceGroup.setDataLocation( grp->dataLocation() );
   mBaseReferenceGroup.setName( "Base group for reference datasets" );
 }
 
@@ -171,7 +171,7 @@ size_t MDAL::XdmfFunctionDataset::vectorData( size_t indexStart, size_t count, d
 
 size_t MDAL::XdmfFunctionDataset::activeData( size_t indexStart, size_t count, int *buffer )
 {
-  MDAL_UNUSED( indexStart );
+  MDAL_UNUSED( indexStart )
   memset( buffer, 1, count * sizeof( int ) );
   return count;
 }
@@ -341,7 +341,7 @@ HdfDataset MDAL::DriverXdmf::parseHdf5Node( const XMLFile &xmfFile, xmlNodePtr n
   std::shared_ptr<HdfFile> hdfFile;
   if ( mHdfFiles.count( hdf5Name ) == 0 )
   {
-    hdfFile = std::make_shared<HdfFile>( hdf5Name );
+    hdfFile = std::make_shared<HdfFile>( hdf5Name, HdfFile::ReadOnly );
     mHdfFiles[hdf5Name] = hdfFile;
   }
   else
@@ -595,7 +595,7 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverXdmf::findGroup( std::map<std::s
               groupName
             );
     group->setIsScalar( isScalar );
-    group->setIsOnVertices( false ); //only center-based implemented
+    group->setDataLocation( MDAL_DataLocation::DataOnFaces2D ); //only center-based implemented
     groups[groupName] = group;
   }
   else
@@ -626,7 +626,7 @@ MDAL::DriverXdmf *MDAL::DriverXdmf::create()
   return new DriverXdmf();
 }
 
-bool MDAL::DriverXdmf::canRead( const std::string &uri )
+bool MDAL::DriverXdmf::canReadDatasets( const std::string &uri )
 {
   XMLFile xmfFile;
   try
