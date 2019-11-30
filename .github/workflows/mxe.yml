@@ -16,6 +16,6 @@ jobs:
     - name: Upload build
       uses: actions/upload-artifact@v1
       with:
-        name: Store artifact
+        name: QGIS for Windows 64bit
         path: qgis-mxe-release.zip
       
