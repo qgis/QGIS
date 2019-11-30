@@ -901,16 +901,20 @@ bool QgsMapCanvas::setReferencedExtent( const QgsReferencedRectangle &extent )
 
 void QgsMapCanvas::setCenter( const QgsPointXY &center )
 {
-  QgsRectangle r = mapSettings().extent();
-  double x = center.x();
-  double y = center.y();
-  setExtent(
-    QgsRectangle(
-      x - r.width() / 2.0, y - r.height() / 2.0,
-      x + r.width() / 2.0, y + r.height() / 2.0
-    ),
-    true
+  const QgsRectangle r = mapSettings().extent();
+  const double x = center.x();
+  const double y = center.y();
+  const QgsRectangle rect(
+    x - r.width() / 2.0, y - r.height() / 2.0,
+    x + r.width() / 2.0, y + r.height() / 2.0
   );
+  if ( ! rect.isEmpty() )
+  {
+    setExtent(
+      rect,
+      true
+    );
+  }
 } // setCenter
 
 QgsPointXY QgsMapCanvas::center() const
