@@ -28,6 +28,7 @@ if "%PACKAGENAME%"=="" goto usage
 if "%ARCH%"=="" goto usage
 if not "%SHA%"=="" set SHA=-%SHA%
 if "%SITE%"=="" set SITE=qgis.org
+if "%TARGET%"=="" set TARGET=Nightly
 
 set BUILDDIR=%CD%\build-%PACKAGENAME%-%ARCH%
 if not exist "%BUILDDIR%" mkdir %BUILDDIR%
@@ -39,45 +40,21 @@ call gdal-dev-env.bat
 set O4W_ROOT=%OSGEO4W_ROOT:\=/%
 set LIB_DIR=%O4W_ROOT%
 
-if "%ARCH%"=="x86" goto cmake_x86
-goto cmake_x86_64
+if "%ARCH%"=="x86" (
+	set CMAKE_OPT=^
+		-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex-32.lib
+) else (
+	set CMAKE_OPT=^
+		-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex-64.lib ^
+		-D CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS=TRUE
+)
 
-:cmake_x86
-set CMAKE_COMPILER_PATH=%PF86%\Microsoft Visual Studio 14.0\VC\bin
-set DBGHLP_PATH=%PF86%\Microsoft Visual Studio 14.0\Common7\IDE\Remote Debugger\x86
-set SETUPAPI_LIBRARY=%PF86%\Windows Kits\10\Lib\10.0.14393.0\um\x86\SetupAPI.Lib
-if not exist "%SETUPAPI_LIBRARY%" set SETUPAPI_LIBRARY=%PF86%\Windows Kits\8.0\Lib\win8\um\x86\SetupAPI.Lib
-if not exist "%SETUPAPI_LIBRARY%" (echo SETUPAPI_LIBRARY not found & goto error)
-
-set CMAKE_OPT=^
-	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO="/MD /ZI /MP /Od /D NDEBUG" ^
-	-D CMAKE_PDB_OUTPUT_DIRECTORY_RELWITHDEBINFO=%BUILDDIR%\apps\%PACKAGENAME%\pdb ^
-	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex-32.lib
-goto cmake
-
-:cmake_x86_64
-set CMAKE_COMPILER_PATH=%PF86%\Microsoft Visual Studio 14.0\VC\bin\amd64
-set DBGHLP_PATH=%PF86%\Microsoft Visual Studio 14.0\Common7\IDE\Remote Debugger\x64
-set SETUPAPI_LIBRARY=%PF86%\Windows Kits\10\Lib\10.0.14393.0\um\x64\SetupAPI.Lib
-if not exist "%SETUPAPI_LIBRARY%" set SETUPAPI_LIBRARY=%PF86%\Windows Kits\8.0\Lib\win8\um\x64\SetupAPI.Lib
-if not exist "%SETUPAPI_LIBRARY%" (echo SETUPAPI_LIBRARY not found & goto error)
-
-set CMAKE_OPT=^
-	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex-64.lib ^
-	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO="/MD /Zi /MP /Od /D NDEBUG" ^
-	-D CMAKE_PDB_OUTPUT_DIRECTORY_RELWITHDEBINFO=%BUILDDIR%\apps\%PACKAGENAME%\pdb ^
-	-D SETUPAPI_LIBRARY="%SETUPAPI_LIBRARY%" ^
-	-D CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS=TRUE
-
-:cmake
 for %%i in ("%GRASS_PREFIX%") do set GRASS7_VERSION=%%~nxi
 set GRASS_VERSIONS=%GRASS7_VERSION%
 
 set TAR=tar.exe
 if exist "c:\cygwin\bin\tar.exe" set TAR=c:\cygwin\bin\tar.exe
 if exist "c:\cygwin64\bin\tar.exe" set TAR=c:\cygwin64\bin\tar.exe
-
-PROMPT qgis%VERSION%$g
 
 set BUILDCONF=RelWithDebInfo
 
@@ -127,17 +104,19 @@ if exist CMakeCache.txt if exist skipcmake goto skipcmake
 touch %SRCDIR%\CMakeLists.txt
 
 echo CMAKE: %DATE% %TIME%
-if errorlevel 1 goto error
 
 if "%CMAKEGEN%"=="" set CMAKEGEN=Ninja
+if "%OSGEO4W_CXXFLAGS%"=="" set OSGEO4W_CXXFLAGS=/MD /Z7 /MP /Od /D NDEBUG
 
 for %%i in (%PYTHONHOME%) do set PYVER=%%~ni
 
 cmake -G "%CMAKEGEN%" ^
-	-D CMAKE_CXX_COMPILER="%CMAKE_COMPILER_PATH:\=/%/cl.exe" ^
-	-D CMAKE_C_COMPILER="%CMAKE_COMPILER_PATH:\=/%/cl.exe" ^
+	-D CMAKE_CXX_COMPILER="%CXX:\=/%" ^
+	-D CMAKE_C_COMPILER="%CC:\=/%" ^
 	-D CMAKE_LINKER="%CMAKE_COMPILER_PATH:\=/%/link.exe" ^
-	-D BUILDNAME="%PACKAGENAME%-%VERSION%%SHA%-Nightly-VC14-%ARCH%" ^
+	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO="%OSGEO4W_CXXFLAGS%" ^
+	-D CMAKE_PDB_OUTPUT_DIRECTORY_RELWITHDEBINFO=%BUILDDIR%\apps\%PACKAGENAME%\pdb ^
+	-D BUILDNAME="%PACKAGENAME%-%VERSION%%SHA%-%TARGET%-VC14-%ARCH%" ^
 	-D SITE="%SITE%" ^
 	-D PEDANTIC=TRUE ^
 	-D WITH_QSPATIALITE=TRUE ^
@@ -152,6 +131,7 @@ cmake -G "%CMAKEGEN%" ^
 	-D WITH_CUSTOM_WIDGETS=TRUE ^
 	-D CMAKE_BUILD_TYPE=%BUILDCONF% ^
 	-D CMAKE_CONFIGURATION_TYPES=%BUILDCONF% ^
+	-D SETUPAPI_LIBRARY="%SETUPAPI_LIBRARY%" ^
 	-D PROJ_LIBRARY=%O4W_ROOT%/apps/proj-dev/lib/proj.lib ^
 	-D PROJ_INCLUDE_DIR=%O4W_ROOT%/apps/proj-dev/include ^
 	-D GDAL_LIBRARY=%O4W_ROOT%/apps/gdal-dev/lib/gdal_i.lib ^
@@ -187,12 +167,13 @@ if errorlevel 1 (echo clean failed & goto error)
 :skipclean
 if exist ..\skipbuild (echo skip build & goto skipbuild)
 echo ALL_BUILD: %DATE% %TIME%
-cmake --build %BUILDDIR% --target NightlyBuild --config %BUILDCONF%
-if errorlevel 1 cmake --build %BUILDDIR% --target NightlyBuild --config %BUILDCONF%
-if errorlevel 1 (
-	cmake --build %BUILDDIR% --target NightlySubmit --config %BUILDCONF%
+cmake --build %BUILDDIR% --target %TARGET%Build --config %BUILDCONF%
+set /P tag=<%BUILDDIR%\Testing\TAG
+findstr "<Error>" %BUILDDIR%\Testing\%tag%\Build.xml >nul
+if not errorlevel 1 (
+	cmake --build %BUILDDIR% --target %TARGET%Submit --config %BUILDCONF%
 	if errorlevel 1 echo SUBMITTING BUILD ERRORS WAS NOT SUCCESSFUL.
-	echo build failed twice
+	echo build failed
 	goto error
 )
 
@@ -219,17 +200,18 @@ for %%g IN (%GRASS_VERSIONS%) do (
 PATH %path%;%BUILDDIR%\output\plugins
 set QT_PLUGIN_PATH=%BUILDDIR%\output\plugins;%OSGEO4W_ROOT%\apps\qt5\plugins
 
-cmake --build %BUILDDIR% --target NightlyTest --config %BUILDCONF%
+cmake --build %BUILDDIR% --target %TARGET%Test --config %BUILDCONF%
 if errorlevel 1 echo TESTS WERE NOT SUCCESSFUL.
-
-:skiptests
 
 set TEMP=%oldtemp%
 set TMP=%oldtmp%
 PATH %oldpath%
 
-cmake --build %BUILDDIR% --target NightlySubmit --config %BUILDCONF%
+cmake --build %BUILDDIR% --target %TARGET%Submit --config %BUILDCONF%
 if errorlevel 1 echo TEST SUBMISSION WAS NOT SUCCESSFUL.
+
+:skiptests
+if exist ..\skippackage goto end
 
 if exist "%PKGDIR%" (
 	echo REMOVE: %DATE% %TIME%
