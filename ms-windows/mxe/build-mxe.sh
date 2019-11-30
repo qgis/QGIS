@@ -44,9 +44,8 @@ RELEASE_DIR=${PWD}/qgis-mxe-release
 
 # End configuration
 
-# Original target (does not support posix threads)
-# TARGET=${TARGET}
-TARGET=i686-w64-mingw32.shared.posix
+# Windows 64 bit with posix threads
+TARGET=x86_64-w64-mingw32.shared.posix
 
 # Set base path for all tools
 export PATH=${PATH}:/mxe/usr/bin
