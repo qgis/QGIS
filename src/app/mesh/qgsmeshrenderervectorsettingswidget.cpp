@@ -71,6 +71,9 @@ QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidge
 
   connect( mTracesMaxLengthSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
+
+  connect( mTracesParticlesCountSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ),
+           this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
 }
 
 void QgsMeshRendererVectorSettingsWidget::setLayer( QgsMeshLayer *layer )
