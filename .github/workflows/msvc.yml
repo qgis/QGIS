@@ -1,0 +1,177 @@
+name: Windows build with Visual C++
+
+on:
+  push:
+    branches:
+    - master
+    - release-3_4
+    - release-3_10
+    - workflows-msvc
+
+jobs:
+  build:
+    name: OSGeo4W
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        OSGEO4W_ARCH: [x86, x86_64]
+
+        include:
+        - OSGEO4W_ARCH: x86
+          OSGEO4W_ROOT: C:\OSGeo4W
+          CLCACHE_DIR: c:\clcache-x86
+          PLATFORM: x86
+
+        - OSGEO4W_ARCH: x86_64
+          OSGEO4W_ROOT: C:\OSGeo4W64
+          CLCACHE_DIR: c:\clcache-x86_64
+          PLATFORM: x64
+
+    env:
+      LTR: release-3_4
+      LR: release-3_10
+      CTEST_CUSTOM_TESTS_IGNORE: "ProcessingGdalAlgorithmsRasterTest;ProcessingGdalAlgorithmsVectorTest;ProcessingGrass7AlgorithmsImageryTest;ProcessingGrass7AlgorithmsRasterTest;ProcessingGrass7AlgorithmsVectorTest;ProcessingGuiTest;ProcessingOtbAlgorithmsTest;ProcessingQgisAlgorithmsTest;ProcessingQgisAlgorithmsTestPt2;ProcessingQgisAlgorithmsTestPt3;ProcessingQgisAlgorithmsTestPt4;ProcessingScriptUtilsTest;PyQgsAnnotation;PyQgsAppStartup;PyQgsAuthManagerOAuth2OWSTest;PyQgsAuthManagerPKIOWSTest;PyQgsAuthManagerPasswordOWSTest;PyQgsAuthManagerProxy;PyQgsAuthSettingsWidget;PyQgsAuxiliaryStorage;PyQgsBlockingNetworkRequest;PyQgsExifTools;PyQgsFileDownloader;PyQgsFileUtils;PyQgsGeometryTest;PyQgsImageCache;PyQgsImportIntoPostGIS;PyQgsLayoutAtlas;PyQgsLayoutLegend;PyQgsLayoutMap;PyQgsLayoutMapGrid;PyQgsMapLayer;PyQgsOGRProvider;PyQgsOGRProviderGpkg;PyQgsOGRProviderSqlite;PyQgsOfflineEditingWFS;PyQgsPalLabelingCanvas;PyQgsPalLabelingLayout;PyQgsPalLabelingPlacement;PyQgsPointDisplacementRenderer;PyQgsProject;PyQgsProviderConnectionGpkg;PyQgsProviderConnectionPostgres;PyQgsPythonProvider;PyQgsRasterFileWriter;PyQgsRasterLayer;PyQgsSelectiveMasking;PyQgsServerAccessControlWMSGetlegendgraphic;PyQgsServerApi;PyQgsServerCacheManager;PyQgsServerLocaleOverride;PyQgsServerSecurity;PyQgsServerSettings;PyQgsServerWMS;PyQgsServerWMSDimension;PyQgsServerWMSGetFeatureInfo;PyQgsServerWMSGetLegendGraphic;PyQgsServerWMSGetMap;PyQgsServerWMSGetPrint;PyQgsServerWMTS;PyQgsSettings;PyQgsShapefileProvider;PyQgsSpatialiteProvider;PyQgsSvgCache;PyQgsSymbolLayer;PyQgsTaskManager;PyQgsTextRenderer;PyQgsVectorFileWriter;PyQgsVectorLayer;PyQgsVectorLayerUtils;PyQgsVirtualLayerProvider;PyQgsWFSProviderGUI;PyQgsZipUtils;qgis_3drenderingtest;qgis_alignrastertest;qgis_banned_keywords;qgis_browsermodeltest;qgis_callouttest;qgis_compositionconvertertest;qgis_datadefinedsizelegendtest;qgis_diagramtest;qgis_doxygen_order;qgis_dxfexporttest;qgis_expressiontest;qgis_filedownloader;qgis_geometrycheckstest;qgis_geometrytest;qgis_geonodeconnectiontest;qgis_grassprovidertest7;qgis_labelingenginetest;qgis_layout3dmaptest;qgis_layouthtmltest;qgis_layoutlabeltest;qgis_layoutmapgridtest;qgis_layoutmaptest;qgis_layoutpicturetest;qgis_layoutscalebartest;qgis_layouttabletest;qgis_legendrenderertest;qgis_licenses;qgis_maprendererjobtest;qgis_maprotationtest;qgis_mapsettingsutilstest;qgis_mimedatautilstest;qgis_networkaccessmanagertest;qgis_openclutilstest;qgis_painteffecttest;qgis_pallabelingtest;qgis_processingtest;qgis_projecttest;qgis_qgisappclipboard;qgis_rasterlayersaveasdialog;qgis_shellcheck;qgis_sip_include;qgis_sip_uptodate;qgis_sipify;qgis_spelling;qgis_styletest;qgis_svgcachetest;qgis_taskmanagertest;qgis_valuerelationwidgetwrapper;qgis_vectorfilewritertest;qgis_wcsprovidertest;qgis_ziplayertest;qgis_arcgisrestutilstest;qgis_coordinatereferencesystemtest;qgis_imagecachetest;qgis_invertedpolygonrenderertest"
+      OSGEO4W_ARCH: ${{ matrix.OSGEO4W_ARCH }}
+      OSGEO4W_ROOT: ${{ matrix.OSGEO4W_ROOT }}
+      CLCACHE_DIR: ${{ matrix.CLCACHE_DIR }}
+      PLATFORM: ${{ matrix.PLATFORM }}
+      CC: ${{ matrix.OSGEO4W_ROOT }}\bin\clcache.bat
+      CXX: ${{ matrix.OSGEO4W_ROOT }}\bin\clcache.bat
+      TARGET: Experimental
+
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        fetch-depth: 1
+
+    - name : 'Generate package name from branch'
+      shell: bash
+      run: |
+        echo "OSGEO4W_ARCH: ${OSGEO4W_ARCH}"
+        echo "OSGEO4W_ROOT: ${OSGEO4W_ROOT}"
+        echo "CLCACHE_DIR: ${CLCACHE_DIR}"
+        echo "PLATFORM: ${PLATFORM}"
+        echo
+        echo "GITHUB_REF: ${GITHUB_REF}"
+        echo "LR: ${LR}"
+        echo "LTR: ${LTR}"
+        case "${GITHUB_REF}" in
+        */${LR})
+          echo "set OSGEO4W_PKG=qgis-ltr-dev"
+          echo "set OSGEO4W_DEPS=qgis-ltr-dev-deps"
+          ;;
+        */${LTR})
+          echo "set OSGEO4W_PKG=qgis-rel-dev"
+          echo "set OSGEO4W_DEPS=qgis-rel-dev-deps"
+          ;;
+        *)
+          echo "set OSGEO4W_PKG=qgis-dev"
+          echo "set OSGEO4W_DEPS=qgis-dev-deps"
+          ;;
+        esac >$GITHUB_WORKSPACE/pkgname.cmd
+        cat $GITHUB_WORKSPACE/pkgname.cmd
+
+    # Caching?
+
+#    - name: 'Explore build env (before)'
+#      shell: cmd
+#      run: dir /s /b "%ProgramFiles(x86)%\*.bat" "%ProgramFiles(x86)%\kernel32.lib" "%ProgramFiles(x86)%\setupapi.lib" "%ProgramFiles(x86)%\cl.exe" "%ProgramFiles(x86)%\vcvarsall.bat" "%ProgramFiles(x86)%\dbghelp.dll"  "%ProgramFiles(x86)%\symsrv.dll"
+
+    - name: Clean WDF
+      shell: cmd
+      run: |
+        rmdir /s /q "%ProgramFiles(x86)%\Windows Kits\10\lib\wdf"
+        rmdir /s /q "%ProgramFiles(x86)%\Windows Kits\10\include\wdf"
+        rmdir /s /q "%ProgramFiles(x86)%\Windows Kits\10\redist\wdf"
+        rmdir /s /q "%ProgramFiles(x86)%\Windows Kits\10\Tools"
+
+    - name: 'Download Build tools'
+      shell: cmd
+      run: curl --output c:\visualcppbuildtools_full.exe http://download.microsoft.com/download/5/F/7/5F7ACAEB-8363-451F-9425-68A90F98B238/visualcppbuildtools_full.exe
+
+    - name: 'Installing Build Tools'
+      shell: cmd
+      run: |
+        cd %GITHUB_WORKSPACE%
+        powershell .\ms-windows\osgeo4w\runasadmin.ps1 c:\visualcppbuildtools_full.exe /Full /Quiet /NoRestart /L c:\visualcppbuildtools_full.log
+
+    - name: 'Download SDK'
+      shell: cmd
+      run: curl --output c:\sdksetup.exe http://download.microsoft.com/download/C/D/8/CD8533F8-5324-4D30-824C-B834C5AD51F9/standalonesdk/sdksetup.exe
+
+    - name: 'Install SDK'
+      shell: cmd
+      run: |
+        cd %GITHUB_WORKSPACE%
+        powershell .\ms-windows\osgeo4w\runasadmin.ps1 c:\sdksetup.exe /features OptionId.WindowsSoftwareDevelopmentKit /norestart /quiet /ceip off /L C:\sdksetup.log
+
+#    - name: 'Explore build env (after)'
+#      shell: cmd
+#      run: dir /s /b "%ProgramFiles(x86)%\*.bat" "%ProgramFiles(x86)%\kernel32.lib" "%ProgramFiles(x86)%\setupapi.lib" "%ProgramFiles(x86)%\cl.exe" "%ProgramFiles(x86)%\vcvarsall.bat" "%ProgramFiles(x86)%\dbghelp.dll"  "%ProgramFiles(x86)%\symsrv.dll"
+
+    - name: 'Download OSGeo4W Installer'
+      shell: cmd
+      run: curl --output c:\osgeo4w-setup.exe https://download.osgeo.org/osgeo4w/osgeo4w-setup-%OSGEO4W_ARCH%.exe
+
+    - name: 'Installing OSGeo4W'
+      shell: cmd
+      run: |
+        cd %GITHUB_WORKSPACE%
+        call pkgname.cmd
+        powershell .\ms-windows\osgeo4w\runasadmin.ps1 c:\osgeo4w-setup.exe --autoaccept --advanced --arch $env:OSGEO4W_ARCH --quiet-mode --upgrade-also --root $env:OSGEO4W_ROOT --only-site -s http://download.osgeo.org/osgeo4w -l c:\temp\osgeo4w -P $env:OSGEO4W_DEPS -P python3-clcache
+
+    - name: 'Download cygwin Installer'
+      shell: cmd
+      run: curl --output c:\setup-x86.exe https://cygwin.com/setup-x86.exe
+
+    - name: 'Installing cygwin'
+      shell: cmd
+      run: c:\setup-x86.exe -qnNdO -R C:/cygwin -s http://cygwin.mirror.constant.com -l C:/temp/cygwin -P "bison,flex,poppler,doxygen,git,unzip"
+
+    - name: 'Download Ninja'
+      shell: cmd
+      run: curl --location-trusted --output c:\ninja.zip https://github.com/ninja-build/ninja/releases/download/v1.9.0/ninja-win.zip
+
+    - name: 'Extracting Ninja'
+      shell: cmd
+      run: c:\cygwin\bin\unzip -o c:\ninja.zip -d %OSGEO4W_ROOT%\bin
+
+    - name: 'Clear package caches'
+      shell: cmd
+      run: |
+        rmdir /s /q c:\temp\cygwin
+        rmdir /s /q c:\temp\osgeo4w
+
+    - name: 'Display tool versions'
+      shell: cmd
+      run: |
+        PATH %OSGEO4W_ROOT%\bin;%ProgramFiles%\CMake\bin;%PATH%
+        cmake --version
+        ctest --version
+        ninja --version
+
+    - name: 'Download LATEST.sha'
+      shell: cmd
+      run: |
+         call %GITHUB_WORKSPACE%\pkgname.cmd
+         curl --location-trusted --output c:\LATEST.sha https://download.osgeo.org/osgeo4w/%OSGEO4W_ARCH%/release/qgis/%OSGEO4W_PKG%/LATEST.sha
+
+    - name: 'Building QGIS'
+      shell: cmd
+      run: |
+        echo on
+        cd %GITHUB_WORKSPACE%
+        PATH c:\cygwin\bin;%OSGEO4W_ROOT%\bin;%PATH%
+        sed -ne 's/^SET(CPACK_PACKAGE_VERSION_MAJOR "\([0-9]*\)")\s*$/set major=\1/p' CMakeLists.txt >version.cmd
+        sed -ne 's/^SET(CPACK_PACKAGE_VERSION_MINOR "\([0-9]*\)")\s*$/set minor=\1/p' CMakeLists.txt >>version.cmd
+        sed -ne 's/^SET(CPACK_PACKAGE_VERSION_PATCH "\([0-9]*\)")\s*$/set patch=\1/p' CMakeLists.txt >>version.cmd
+        sed -ne 's/^\([0-9]*\):.*$/set binary=\1/p' c:\latest.sha >>version.cmd
+        call version.cmd
+        del version.cmd
+        set /A binary=%binary%+1
+        cd ms-windows\osgeo4w
+        touch skippackage
+        call %GITHUB_WORKSPACE%\pkgname.cmd
+        set OSGEO4W_CXXFLAGS=/MD /MP /Od /D NDEBUG
+        package-nightly.cmd %major%.%minor%.%patch% %binary% %OSGEO4W_PKG% %OSGEO4W_ARCH% %GITHUB_SHA:~0,10% gh-workflow-msvc
