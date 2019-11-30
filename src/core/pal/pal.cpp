@@ -46,11 +46,9 @@
 
 using namespace pal;
 
-Pal::Pal()
-{
-  // do not init and exit GEOS - we do it inside QGIS
-  //initGEOS( geosNotice, geosError );
-}
+Pal::Pal() = default;
+
+Pal::~Pal() = default;
 
 void Pal::removeLayer( Layer *layer )
 {
@@ -68,16 +66,6 @@ void Pal::removeLayer( Layer *layer )
     }
   }
   mMutex.unlock();
-}
-
-Pal::~Pal()
-{
-  mMutex.lock();
-  mLayers.clear();
-  mMutex.unlock();
-
-  // do not init and exit GEOS - we do it inside QGIS
-  //finishGEOS();
 }
 
 Layer *Pal::addLayer( QgsAbstractLabelProvider *provider, const QString &layerName, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, bool displayAll )
