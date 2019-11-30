@@ -280,7 +280,7 @@ class QgsMeshStreamField
   protected:
 
     QSize mFieldSize;
-    QPainter *mPainter = nullptr;
+    std::unique_ptr<QPainter> mPainter = std::unique_ptr<QPainter>( nullptr );
     int mFieldResolution = 1;
     QPen mPen;
     QImage mTraceImage;
@@ -295,7 +295,7 @@ class QgsMeshStreamField
     QgsRectangle mMapExtent;
     QPoint mFieldTopLeftInDeviceCoordinates;
     bool mValid = false;
-    double mMagMax = 0;
+    double mMaximumMagnitude = 0;
     double mPixelFillingDensity;
     double mMinMagFilter = -1;
     double mMaxMagFilter = -1;
@@ -473,6 +473,7 @@ class QgsMeshParticleTracesField: public QgsMeshStreamField
     QColor mParticleColor = Qt::white;
     double mParticleSize = 2.5;
     int mStumpFactor = 50;
+    bool mStumpParticleWithLifeTime = false;
 };
 
 /**
@@ -503,6 +504,36 @@ class QgsMeshVectorStreamlineRenderer: public QgsMeshVectorRenderer
     QgsRenderContext &mRendererContext;
 };
 
+
+/**
+ * \ingroup core
+ *
+ * A class derived from QgsMeshVectorRenderer used to render the particles traces
+ *
+ * \note not available in Python bindings
+ * \since QGIS 3.12
+ */
+class QgsMeshVectorTraceRenderer: public QgsMeshVectorRenderer
+{
+  public:
+    //!Constructor
+    QgsMeshVectorTraceRenderer( const QgsTriangularMesh &triangularMesh,
+                                const QgsMeshDataBlock &dataSetVectorValues,
+                                const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+                                bool dataIsOnVertices,
+                                const QgsMeshRendererVectorSettings &settings,
+                                QgsRenderContext &rendererContext,
+                                const QgsRectangle &layerExtent,
+                                double magMax );
+
+    void draw() override;
+
+  private:
+    std::unique_ptr<QgsMeshParticleTracesField> mParticleField;
+    QgsRenderContext &mRendererContext;
+};
+
+
 #endif //SIP_RUN
 
 ///@endcond
@@ -514,31 +545,31 @@ class QgsMeshVectorStreamlineRenderer: public QgsMeshVectorRenderer
  *
  * \since QGIS 3.12
  */
-class CORE_EXPORT QgsMeshVectorTraceRenderer
+class CORE_EXPORT QgsMeshVectorTraceAnimationGenerator
 {
   public:
     //!Constructor to use from QgsMeshVectorRenderer
-    QgsMeshVectorTraceRenderer( const QgsTriangularMesh &triangularMesh,
-                                const QgsMeshDataBlock &dataSetVectorValues,
-                                const QgsMeshDataBlock &scalarActiveFaceFlagValues,
-                                bool dataIsOnVertices,
-                                const QgsRenderContext &rendererContext,
-                                const QgsRectangle &layerExtent,
-                                double magMax ) SIP_SKIP;
+    QgsMeshVectorTraceAnimationGenerator( const QgsTriangularMesh &triangularMesh,
+                                          const QgsMeshDataBlock &dataSetVectorValues,
+                                          const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+                                          bool dataIsOnVertices,
+                                          const QgsRenderContext &rendererContext,
+                                          const QgsRectangle &layerExtent,
+                                          double magMax ) SIP_SKIP;
 
     //!Constructor to use with Python binding
-    QgsMeshVectorTraceRenderer( QgsMeshLayer *layer, const QgsRenderContext &rendererContext );
+    QgsMeshVectorTraceAnimationGenerator( QgsMeshLayer *layer, const QgsRenderContext &rendererContext );
 
     //! Copy constructor
-    QgsMeshVectorTraceRenderer( const QgsMeshVectorTraceRenderer &other );
+    QgsMeshVectorTraceAnimationGenerator( const QgsMeshVectorTraceAnimationGenerator &other );
 
     //! Destructor
-    ~QgsMeshVectorTraceRenderer();
+    ~QgsMeshVectorTraceAnimationGenerator() = default;
 
     //! seeds particles in the vector fields
     void seedRandomParticles( int count );
 
-    //! Moves all the particles using frame per second (fps) to calculate the displacement
+    //! Moves all the particles using frame per second (fps) to calculate the displacement and return the rendered frame
     QImage imageRendered();
 
     //! Sets the number of frames per seconds that will be rendered
@@ -566,7 +597,7 @@ class CORE_EXPORT QgsMeshVectorTraceRenderer
     void setTailPersitence( double p );
 
     //! Assignment operator
-    QgsMeshVectorTraceRenderer &operator=( const QgsMeshVectorTraceRenderer &other );
+    QgsMeshVectorTraceAnimationGenerator &operator=( const QgsMeshVectorTraceAnimationGenerator &other );
   private:
     std::unique_ptr<QgsMeshParticleTracesField> mParticleField;
     const QgsRenderContext &mRendererContext;

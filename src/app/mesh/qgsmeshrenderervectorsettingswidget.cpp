@@ -21,7 +21,6 @@
 
 QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidget *parent )
   : QWidget( parent )
-
 {
   setupUi( this );
 
@@ -68,6 +67,9 @@ QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidge
            this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
 
   connect( mStreamlinesDensitySpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+           this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
+
+  connect( mTracesMaxLengthSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
 }
 
@@ -136,6 +138,12 @@ QgsMeshRendererVectorSettings QgsMeshRendererVectorSettingsWidget::settings() co
 
   settings.setStreamLinesSettings( streamlineSettings );
 
+  //Traces setting
+  QgsMeshRendererVectorTracesSettings tracesSettings;
+  tracesSettings.setMaximumTailLength( mTracesMaxLengthSpinBox->value() );
+  tracesSettings.setParticlesCount( mTracesParticlesCountSpinBox->value() );
+  settings.setTracesSettings( tracesSettings );
+
   return settings;
 }
 
@@ -187,21 +195,32 @@ void QgsMeshRendererVectorSettingsWidget::syncToLayer( )
   mShaftLengthLineEdit->setText( QString::number( arrowSettings.fixedShaftLength() ) );
 
   //Streamlines settings
-  const QgsMeshRendererVectorStreamlineSettings streamlinesSettings = settings.streamLinesSettings();;
+  const QgsMeshRendererVectorStreamlineSettings streamlinesSettings = settings.streamLinesSettings();
 
   mStreamlinesSeedingMethodComboBox->setCurrentIndex( streamlinesSettings.seedingMethod() );
   mStreamlinesDensitySpinBox->setValue( streamlinesSettings.seedingDensity() * 100 );
+
+  //Traces settings
+  const QgsMeshRendererVectorTracesSettings tracesSettings = settings.tracesSettings();
+
+  mTracesMaxLengthSpinBox->setValue( tracesSettings.maximumTailLength() );
+  mTracesParticlesCountSpinBox->setValue( tracesSettings.particlesCount() );
+
 }
 
 void QgsMeshRendererVectorSettingsWidget::onSymbologyChanged( int currentIndex )
 {
   mStreamlineWidget->setVisible( currentIndex == QgsMeshRendererVectorSettings::Streamlines );
   mArrowWidget->setVisible( currentIndex == QgsMeshRendererVectorSettings::Arrows );
+  mTracesGroupBox->setVisible( currentIndex == QgsMeshRendererVectorSettings::Traces );
+
+  mDisplayVectorsOnGridGroupBox->setVisible( currentIndex != QgsMeshRendererVectorSettings::Traces );
+  mFilterByMagGroupBox->setVisible( currentIndex != QgsMeshRendererVectorSettings::Traces );
 
   mDisplayVectorsOnGridGroupBox->setEnabled(
     currentIndex == QgsMeshRendererVectorSettings::Arrows ||
     ( currentIndex == QgsMeshRendererVectorSettings::Streamlines &&
-      mStreamlinesSeedingMethodComboBox->currentIndex() == QgsMeshRendererVectorStreamlineSettings::MeshGridded ) );
+      mStreamlinesSeedingMethodComboBox->currentIndex() == QgsMeshRendererVectorStreamlineSettings::MeshGridded ) ) ;
 }
 
 void QgsMeshRendererVectorSettingsWidget::onStreamLineSeedingMethodChanged( int currentIndex )

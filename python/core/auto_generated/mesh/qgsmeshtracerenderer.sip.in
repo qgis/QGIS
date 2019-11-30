@@ -15,7 +15,7 @@
 
 
 
-class QgsMeshVectorTraceRenderer
+class QgsMeshVectorTraceAnimationGenerator
 {
 %Docstring
 
@@ -29,17 +29,17 @@ A wrapper for QgsMeshParticuleTracesField used to render the particles. Availabl
 %End
   public:
 
-    QgsMeshVectorTraceRenderer( QgsMeshLayer *layer, const QgsRenderContext &rendererContext );
+    QgsMeshVectorTraceAnimationGenerator( QgsMeshLayer *layer, const QgsRenderContext &rendererContext );
 %Docstring
 Constructor to use with Python binding
 %End
 
-    QgsMeshVectorTraceRenderer( const QgsMeshVectorTraceRenderer &other );
+    QgsMeshVectorTraceAnimationGenerator( const QgsMeshVectorTraceAnimationGenerator &other );
 %Docstring
 Copy constructor
 %End
 
-    ~QgsMeshVectorTraceRenderer();
+    ~QgsMeshVectorTraceAnimationGenerator();
 
     void seedRandomParticles( int count );
 %Docstring
@@ -48,7 +48,7 @@ seeds particles in the vector fields
 
     QImage imageRendered();
 %Docstring
-Moves all the particles using frame per second (fps) to calculate the displacement
+Moves all the particles using frame per second (fps) to calculate the displacement and return the rendered frame
 %End
 
     void setFPS( int FPS );

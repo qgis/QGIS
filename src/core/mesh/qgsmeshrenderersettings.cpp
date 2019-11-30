@@ -510,6 +510,7 @@ QDomElement QgsMeshRendererVectorSettings::writeXml( QDomDocument &doc ) const
 
   elem.appendChild( mArrowsSettings.writeXml( doc ) );
   elem.appendChild( mStreamLinesSettings.writeXml( doc ) );
+  elem.appendChild( mTracesSettings.writeXml( doc ) );
 
   return elem;
 }
@@ -535,4 +536,53 @@ void QgsMeshRendererVectorSettings::readXml( const QDomElement &elem )
   QDomElement elemStreamLine = elem.firstChildElement( QStringLiteral( "vector-streamline-settings" ) );
   if ( ! elemStreamLine.isNull() )
     mStreamLinesSettings.readXml( elemStreamLine );
+
+  QDomElement elemTraces = elem.firstChildElement( QStringLiteral( "vector-traces-settings" ) );
+  if ( ! elemTraces.isNull() )
+    mTracesSettings.readXml( elemTraces );
+}
+
+QgsMeshRendererVectorTracesSettings QgsMeshRendererVectorSettings::tracesSettings() const
+{
+  return mTracesSettings;
+}
+
+void QgsMeshRendererVectorSettings::setTracesSettings( const QgsMeshRendererVectorTracesSettings &tracesSettings )
+{
+  mTracesSettings = tracesSettings;
+}
+
+void QgsMeshRendererVectorTracesSettings::readXml( const QDomElement &elem )
+{
+  mMaximumTailLength = elem.attribute( QStringLiteral( "maximum-tail-length" ) ).toInt();
+  mParticlesCount = elem.attribute( QStringLiteral( "particles-count" ) ).toInt();
+}
+
+QDomElement QgsMeshRendererVectorTracesSettings::writeXml( QDomDocument &doc ) const
+{
+  QDomElement elem = doc.createElement( QStringLiteral( "vector-traces-settings" ) );
+  elem.setAttribute( QStringLiteral( "maximum-tail-length" ), mMaximumTailLength );
+  elem.setAttribute( QStringLiteral( "particles-count" ), mParticlesCount );
+
+  return elem;
+}
+
+int QgsMeshRendererVectorTracesSettings::maximumTailLength() const
+{
+  return mMaximumTailLength;
+}
+
+void QgsMeshRendererVectorTracesSettings::setMaximumTailLength( int maximumTailLength )
+{
+  mMaximumTailLength = maximumTailLength;
+}
+
+int QgsMeshRendererVectorTracesSettings::particlesCount() const
+{
+  return mParticlesCount;
+}
+
+void QgsMeshRendererVectorTracesSettings::setParticlesCount( int value )
+{
+  mParticlesCount = value;
 }
