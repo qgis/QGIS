@@ -1,0 +1,237 @@
+variables:
+  LR: release-3_10
+  LTR: release-3_4
+  CTEST_CUSTOM_TESTS_IGNORE: "ProcessingGdalAlgorithmsRasterTest;ProcessingGdalAlgorithmsVectorTest;ProcessingGrass7AlgorithmsImageryTest;ProcessingGrass7AlgorithmsRasterTest;ProcessingGrass7AlgorithmsVectorTest;ProcessingGuiTest;ProcessingOtbAlgorithmsTest;ProcessingQgisAlgorithmsTest;ProcessingQgisAlgorithmsTestPt2;ProcessingQgisAlgorithmsTestPt3;ProcessingQgisAlgorithmsTestPt4;ProcessingScriptUtilsTest;PyQgsAnnotation;PyQgsAppStartup;PyQgsAuthManagerOAuth2OWSTest;PyQgsAuthManagerPKIOWSTest;PyQgsAuthManagerPasswordOWSTest;PyQgsAuthManagerProxy;PyQgsAuthSettingsWidget;PyQgsAuxiliaryStorage;PyQgsBlockingNetworkRequest;PyQgsExifTools;PyQgsFileDownloader;PyQgsFileUtils;PyQgsGeometryTest;PyQgsImageCache;PyQgsImportIntoPostGIS;PyQgsLayoutAtlas;PyQgsLayoutLegend;PyQgsLayoutMap;PyQgsLayoutMapGrid;PyQgsMapLayer;PyQgsOGRProvider;PyQgsOGRProviderGpkg;PyQgsOGRProviderSqlite;PyQgsOfflineEditingWFS;PyQgsPalLabelingCanvas;PyQgsPalLabelingLayout;PyQgsPalLabelingPlacement;PyQgsPointDisplacementRenderer;PyQgsProject;PyQgsProviderConnectionGpkg;PyQgsProviderConnectionPostgres;PyQgsPythonProvider;PyQgsRasterFileWriter;PyQgsRasterLayer;PyQgsSelectiveMasking;PyQgsServerAccessControlWMSGetlegendgraphic;PyQgsServerApi;PyQgsServerCacheManager;PyQgsServerLocaleOverride;PyQgsServerSecurity;PyQgsServerSettings;PyQgsServerWMS;PyQgsServerWMSDimension;PyQgsServerWMSGetFeatureInfo;PyQgsServerWMSGetLegendGraphic;PyQgsServerWMSGetMap;PyQgsServerWMSGetPrint;PyQgsServerWMTS;PyQgsSettings;PyQgsShapefileProvider;PyQgsSpatialiteProvider;PyQgsSvgCache;PyQgsSymbolLayer;PyQgsTaskManager;PyQgsTextRenderer;PyQgsVectorFileWriter;PyQgsVectorLayer;PyQgsVectorLayerUtils;PyQgsVirtualLayerProvider;PyQgsWFSProviderGUI;PyQgsZipUtils;qgis_3drenderingtest;qgis_alignrastertest;qgis_banned_keywords;qgis_browsermodeltest;qgis_callouttest;qgis_compositionconvertertest;qgis_datadefinedsizelegendtest;qgis_diagramtest;qgis_doxygen_order;qgis_dxfexporttest;qgis_expressiontest;qgis_filedownloader;qgis_geometrycheckstest;qgis_geometrytest;qgis_geonodeconnectiontest;qgis_grassprovidertest7;qgis_labelingenginetest;qgis_layout3dmaptest;qgis_layouthtmltest;qgis_layoutlabeltest;qgis_layoutmapgridtest;qgis_layoutmaptest;qgis_layoutpicturetest;qgis_layoutscalebartest;qgis_layouttabletest;qgis_legendrenderertest;qgis_licenses;qgis_maprendererjobtest;qgis_maprotationtest;qgis_mapsettingsutilstest;qgis_mimedatautilstest;qgis_networkaccessmanagertest;qgis_openclutilstest;qgis_painteffecttest;qgis_pallabelingtest;qgis_processingtest;qgis_projecttest;qgis_qgisappclipboard;qgis_rasterlayersaveasdialog;qgis_shellcheck;qgis_sip_include;qgis_sip_uptodate;qgis_sipify;qgis_spelling;qgis_styletest;qgis_svgcachetest;qgis_taskmanagertest;qgis_valuerelationwidgetwrapper;qgis_vectorfilewritertest;qgis_wcsprovidertest;qgis_ziplayertest;qgis_arcgisrestutilstest;qgis_coordinatereferencesystemtest;qgis_imagecachetest;qgis_invertedpolygonrenderertest"
+  Agent.Source.Git.ShallowFetchDepth: 1
+
+trigger:
+  branches:
+    include:
+    - master
+    - $(LR)
+    - $(LTR)
+    - azure-pipelines
+
+pr:
+- master
+- $(LR)
+- $(LTR)
+
+jobs:
+- job: OSGeo4W
+  pool:
+    vmImage: vs2015-win2012r2
+  timeoutInMinutes: 360
+  continueOnError: true
+  strategy:
+    maxParallel: 4
+    matrix:
+      x86:
+         OSGEO4W_ROOT: C:\OSGeo4W
+         OSGEO4W_ARCH: x86
+         CLCACHE_DIR: c:\clcache-x86
+         PLATFORM: x86
+         CC: C:\OSGeo4W\bin\clcache.bat
+         CXX: C:\OSGeo4W\bin\clcache.bat
+
+      x86_64:
+         OSGEO4W_ROOT: C:\OSGeo4W64
+         OSGEO4W_ARCH: x86_64
+         CLCACHE_DIR: c:\clcache-x86_64
+         PLATFORM: x64
+         CC: C:\OSGeo4W64\bin\clcache.bat
+         CXX: C:\OSGeo4W64\bin\clcache.bat
+
+  steps:
+  - bash: |
+      echo "BUILD_SOURCEBRANCHNAME: ${BUILD_SOURCEBRANCHNAME}"
+      echo "LR: ${LR}"
+      echo "LTR: ${LTR}"
+      case "${BUILD_SOURCEBRANCHNAME}" in
+      "${LR}")
+        echo "##vso[task.setvariable variable=OSGEO4W_PKG]qgis-ltr-dev"
+        echo "##vso[task.setvariable variable=OSGEO4W_DEPS]qgis-ltr-dev-deps"
+        ;;
+      "${LTR}")
+        echo "##vso[task.setvariable variable=OSGEO4W_PKG]qgis-rel-dev"
+        echo "##vso[task.setvariable variable=OSGEO4W_DEPS]qgis-rel-dev-deps"
+        ;;
+      *)
+        echo "##vso[task.setvariable variable=OSGEO4W_PKG]qgis-dev"
+        echo "##vso[task.setvariable variable=OSGEO4W_DEPS]qgis-dev-deps"
+        ;;
+      esac
+    displayName: 'Get package name from branch'
+
+  - script: curl --output c:\setup-x86.exe https://cygwin.com/setup-x86.exe
+    env:
+      OSGEO4W_ARCH: $(OSGEO4W_ARCH)
+    displayName: 'Download cygwin Installer'
+
+  - script: curl --output c:\osgeo4w-setup.exe https://download.osgeo.org/osgeo4w/osgeo4w-setup-%OSGEO4W_ARCH%.exe
+    env:
+      OSGEO4W_ARCH: $(OSGEO4W_ARCH)
+    displayName: 'Download OSGeo4W Installer'
+
+  - script: curl --location-trusted --output c:\cmake.msi https://github.com/Kitware/CMake/releases/download/v3.15.5/cmake-3.15.5-win64-x64.msi
+    displayName: 'Download CMake Installer'
+
+  - script: curl --location-trusted --output c:\ninja.zip https://github.com/ninja-build/ninja/releases/download/v1.9.0/ninja-win.zip
+    displayName: 'Download Ninja'
+
+#  - script: curl --location-trusted --output c:\depends.zip http://www.dependencywalker.com/depends22_%PLATFORM%.zip
+#    displayName: 'Download Dependency walker'
+#    env:
+#      PLATFORM: $(PLATFORM)
+
+# Too large…
+#  - task: Cache@2
+#    inputs:
+#      key: 'cygwin | $(Date:yyyyMMdd)'
+#      path: 'c:\cygwin'
+#      restoreKeys: |
+#        cygwin | $(Date:yyyyMM)
+#        cygwin | $(Date:yyyy)
+#        cygwin
+#    displayName: Cache cygwin
+
+  - powershell: ms-windows/osgeo4w/runasadmin.ps1 c:\setup-x86.exe -qnNdO -R C:/cygwin -s http://cygwin.mirror.constant.com -l C:/temp/cygwin -P "bison,flex,poppler,doxygen,git,unzip"
+    displayName: 'Installing cygwin'
+
+# Too large…
+#  - task: Cache@2
+#    inputs:
+#      key: 'osgeo4w | $(OSGEO4W_ARCH) | $(Date:yyyyMMdd)'
+#      path: '$(OSGEO4W_ROOT)'
+#      restoreKeys: |
+#        osgeo4w | $(OSGEO4W_ARCH) | $(Date:yyyyMMdd)
+#        osgeo4w | $(OSGEO4W_ARCH) | $(Date:yyyyMM)
+#        osgeo4w | $(OSGEO4W_ARCH) | $(Date:yyyy)
+#        osgeo4w | $(OSGEO4W_ARCH)
+#    displayName: Cache OSGeo4W
+
+  - powershell: ms-windows/osgeo4w/runasadmin.ps1 c:\osgeo4w-setup.exe --autoaccept --advanced --arch $env:OSGEO4W_ARCH --quiet-mode --upgrade-also --root $env:OSGEO4W_ROOT --only-site -s http://download.osgeo.org/osgeo4w -l c:\temp\osgeo4w -P $env:OSGEO4W_DEPS -P python3-clcache
+    env:
+      OSGEO4W_ARCH: $(OSGEO4W_ARCH)
+      OSGEO4W_ROOT: $(OSGEO4W_ROOT)
+      OSGEO4W_DEPS: $(OSGEO4W_DEPS)
+    displayName: 'Installing OSGeo4W'
+
+  - script: |
+      rmdir /s /q c:\temp\cygwin
+      rmdir /s /q c:\temp\osgeo4w
+    env:
+      OSGEO4W_ROOT: $(OSGEO4W_ROOT)
+    displayName: 'Clear package caches'
+
+  - powershell: ms-windows/osgeo4w/runasadmin.ps1 msiexec.exe /X C:\Windows\Installer\146218.msi /qn /norestart /l*v c:\cmake-uninstall.log
+    displayName: 'Uninstalling old CMake'
+
+  - powershell: ms-windows/osgeo4w/runasadmin.ps1 msiexec.exe /I c:\cmake.msi /qn /norestart /l*v c:\cmake-install.log
+    displayName: 'Installing CMake'
+
+  - script: c:\cygwin\bin\unzip -o c:\ninja.zip -d %OSGEO4W_ROOT%\bin
+    displayName: 'Extracting Ninja'
+    env:
+      OSGEO4W_ROOT: $(OSGEO4W_ROOT)
+
+#  - script: c:\cygwin\bin\unzip -o c:\depends.zip -d %OSGEO4W_ROOT%\bin
+#    displayName: 'Extracting Dependency Walker'
+#    env:
+#      OSGEO4W_ROOT: $(OSGEO4W_ROOT)
+
+  - script: |
+      PATH %OSGEO4W_ROOT%\bin;%ProgramFiles%\CMake\bin;%PATH%
+      cmake --version
+      ctest --version
+      ninja --version
+    displayName: 'Display tool versions'
+    env:
+      OSGEO4W_ROOT: $(OSGEO4W_ROOT)
+
+  - script: curl --location-trusted --output c:\LATEST.sha https://download.osgeo.org/osgeo4w/$(OSGEO4W_ARCH)/release/qgis/$(OSGEO4W_PKG)/LATEST.sha
+    displayName: 'Download LATEST.sha'
+    env:
+      OSGEO4W_ARCH: $(OSGEO4W_ARCH)
+      OSGEO4W_PKG: $(OSGEO4W_PKG)
+
+# Too large…
+#  - task: Cache@2
+#    inputs:
+#      key: 'clcache | $(OSGEO4W_ARCH) | $(OSGEO4W_PKG) | $(Date:yyyyMMdd) | $(Hours)'
+#      path: '$(CLCACHE_DIR)'
+#      restoreKeys: |
+#        clcache | $(OSGEO4W_ARCH) | $(OSGEO4W_PKG) | $(Date:yyyyMMdd) | $(Hours)
+#        clcache | $(OSGEO4W_ARCH) | $(OSGEO4W_PKG) | $(Date:yyyyMMdd)
+#        clcache | $(OSGEO4W_ARCH) | $(OSGEO4W_PKG) | $(Date:yyyyMM)
+#        clcache | $(OSGEO4W_ARCH) | $(OSGEO4W_PKG) | $(Date:yyyy)
+#        clcache | $(OSGEO4W_ARCH) | $(OSGEO4W_PKG)
+#    displayName: Cache clcache
+
+  - script: |
+      echo on
+      PATH c:\cygwin\bin;%OSGEO4W_ROOT%\bin;%PATH%
+      sed -ne 's/^SET(CPACK_PACKAGE_VERSION_MAJOR "\([0-9]*\)")\s*$/set major=\1/p' CMakeLists.txt >version.cmd
+      sed -ne 's/^SET(CPACK_PACKAGE_VERSION_MINOR "\([0-9]*\)")\s*$/set minor=\1/p' CMakeLists.txt >>version.cmd
+      sed -ne 's/^SET(CPACK_PACKAGE_VERSION_PATCH "\([0-9]*\)")\s*$/set patch=\1/p' CMakeLists.txt >>version.cmd
+      sed -ne 's/^\([0-9]*\):.*$/set binary=\1/p' c:\latest.sha >>version.cmd
+      call version.cmd
+      del version.cmd
+      set /A binary=%binary%+1
+      cd ms-windows\osgeo4w
+      touch skippackage
+      set OSGEO4W_CXXFLAGS=/MD /MP /Od /D NDEBUG
+      package-nightly.cmd %major%.%minor%.%patch% %binary% %OSGEO4W_PKG% %OSGEO4W_ARCH% %REPO_COMMIT:~0,10% azure-pipelines
+    env:
+      OSGEO4W_ROOT: $(OSGEO4W_ROOT)
+      OSGEO4W_ARCH: $(OSGEO4W_ARCH)
+      OSGEO4W_PKG: $(OSGEO4W_PKG)
+      BUILD_NUMBER: $(Build.BuildId)
+      CTEST_CUSTOM_TESTS_IGNORE: $(CTEST_CUSTOM_TESTS_IGNORE)
+      REPO_COMMIT: $(Build.SourceVersion)
+      CLCACHE_DIR: $(CLCACHE_DIR)
+      TARGET: Experimental
+      CC: $(CC)
+      CXX: $(CXX)
+    displayName: 'Building QGIS'
+
+#  - script: |
+#      echo on
+#      PATH %OSGEO4W_ROOT%\bin;%PATH%
+#      cd ms-windows\osgeo4w\build-%OSGEO4W_PKG%-%OSGEO4W_ARCH%
+#      set /P tag=<Testing\TAG
+#      dir /s /b Testing\*.log
+#      echo ##vso[task.uploadfile]%CD%\Testing\Temporary\LastBuild_%tag%.log
+#      call %OSGEO4W_ROOT%\bin\o4w_env.bat
+#      call %OSGEO4W_ROOT%\bin\qt5_env.bat
+#      call %OSGEO4W_ROOT%\bin\py3_env.bat
+#      depends /c /f:1 /ot:c:\crssync.log output\bin\crssync.exe
+#      echo ##vso[task.uploadfile]c:\crssync.log
+#    env:
+#      OSGEO4W_ROOT: $(OSGEO4W_ROOT)
+#      OSGEO4W_PKG: $(OSGEO4W_PKG)
+#      OSGEO4W_ARCH: $(OSGEO4W_ARCH)
+#    displayName: 'Upload build log'
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: 'cTest'
+      testResultsFiles: 'ms-windows/osgeo4w/build-$(OSGEO4W_PKG)-$(OSGEO4W_ARCH)/Testing/*/Test.xml'
+    displayName: 'Publishing tests'
+
+#  - script: |
+#      PATH c:\cygwin\bin;%PATH%
+#      pwd
+#      du -sc c:\cygwin
+#      du -sc %OSGEO4W_ROOT%
+#      du -sc %CLCACHE_DIR%
+#      du -sc .
+#      rmdir /s /q ms-windows\osgeo4w\build-$(OSGEO4W_PKG)-$(OSGEO4W_ARCH)
+#    displayName: Clean before creating the caches
+#    env:
+#      OSGEO4W_ROOT: $(OSGEO4W_ROOT)
+#      OSGEO4W_ARCH: $(OSGEO4W_ARCH)
+#      OSGEO4W_PKG: $(OSGEO4W_PKG)
+#      CLCACHE_DIR: $(CLCACHE_DIR)
+
+# vim: set nowrap :
