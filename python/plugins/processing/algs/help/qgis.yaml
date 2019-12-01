@@ -236,12 +236,6 @@ qgis:minimumboundinggeometry: >
 qgis:multiparttosingleparts: >
   This algorithm takes a vector layer with multipart geometries and generates a new one in which all geometries contain a single part. Features with multipart geometries are divided in as many different features as parts the geometry contain, and the same attributes are used for each of them.
 
-qgis:nearestneighbouranalysis: >
-  This algorithm performs nearest neighbor analysis for a point layer.
-
-  Output is generated as an html file with the computed statistical values.
-
-
 qgis:numberofuniquevaluesinclasses: >
   This algorithm counts the different values that appear in a specified attributes for features of the same class.
 

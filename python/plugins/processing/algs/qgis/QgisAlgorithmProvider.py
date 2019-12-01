@@ -60,7 +60,6 @@ from .KNearestConcaveHull import KNearestConcaveHull
 from .LinesToPolygons import LinesToPolygons
 from .MeanAndStdDevPlot import MeanAndStdDevPlot
 from .MinimumBoundingGeometry import MinimumBoundingGeometry
-from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
 from .PointDistance import PointDistance
 from .PointsDisplacement import PointsDisplacement
 from .PointsFromLines import PointsFromLines
@@ -151,7 +150,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 LinesToPolygons(),
                 MeanAndStdDevPlot(),
                 MinimumBoundingGeometry(),
-                NearestNeighbourAnalysis(),
                 PointDistance(),
                 PointsDisplacement(),
                 PointsFromLines(),
