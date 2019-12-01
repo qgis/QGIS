@@ -34,45 +34,26 @@ if not exist "%BUILDDIR%" mkdir %BUILDDIR%
 if not exist "%BUILDDIR%" (echo could not create build directory %BUILDDIR% & goto error)
 
 call msvc-env.bat %ARCH%
+call gdal2-env.bat
 
 set O4W_ROOT=%OSGEO4W_ROOT:\=/%
 set LIB_DIR=%O4W_ROOT%
 
-if "%ARCH%"=="x86" goto cmake_x86
-goto cmake_x86_64
+if "%ARCH%"=="x86" (
+	set CMAKE_OPT=^
+		-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex-32.lib
+) else (
+	set CMAKE_OPT=^
+		-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex-64.lib ^
+		-D CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS=TRUE
+)
 
-:cmake_x86
-set CMAKE_COMPILER_PATH=%PF86%\Microsoft Visual Studio 14.0\VC\bin
-set DBGHLP_PATH=%PF86%\Microsoft Visual Studio 14.0\Common7\IDE\Remote Debugger\x86
-set SETUPAPI_LIBRARY=%PF86%\Windows Kits\10\Lib\10.0.14393.0\um\x86\SetupAPI.Lib
-if not exist "%SETUPAPI_LIBRARY%" set SETUPAPI_LIBRARY=%PF86%\Windows Kits\8.0\Lib\win8\um\x86\SetupAPI.Lib
-if not exist "%SETUPAPI_LIBRARY%" (echo SETUPAPI_LIBRARY not found & goto error)
-
-set CMAKE_OPT=^
-	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex-32.lib
-goto cmake
-
-:cmake_x86_64
-set CMAKE_COMPILER_PATH=%PF86%\Microsoft Visual Studio 14.0\VC\bin\amd64
-set DBGHLP_PATH=%PF86%\Microsoft Visual Studio 14.0\Common7\IDE\Remote Debugger\x64
-set SETUPAPI_LIBRARY=%PF86%\Windows Kits\10\Lib\10.0.14393.0\um\x64\SetupAPI.Lib
-if not exist "%SETUPAPI_LIBRARY%" set SETUPAPI_LIBRARY=%PF86%\Windows Kits\8.0\Lib\win8\um\x64\SetupAPI.Lib
-if not exist "%SETUPAPI_LIBRARY%" (echo SETUPAPI_LIBRARY not found & goto error)
-
-set CMAKE_OPT=^
-	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex-64.lib ^
-	-D SETUPAPI_LIBRARY="%SETUPAPI_LIBRARY%" ^
-	-D CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS=TRUE
-
-:cmake
 for %%i in ("%GRASS_PREFIX%") do set GRASS7_VERSION=%%~nxi
 set GRASS_VERSIONS=%GRASS7_VERSION%
 
 set TAR=tar.exe
 if exist "c:\cygwin\bin\tar.exe" set TAR=c:\cygwin\bin\tar.exe
 if exist "c:\cygwin64\bin\tar.exe" set TAR=c:\cygwin64\bin\tar.exe
-
-PROMPT qgis%VERSION%$g
 
 set BUILDCONF=Release
 
@@ -125,13 +106,21 @@ echo CMAKE: %DATE% %TIME%
 if errorlevel 1 goto error
 
 if "%CMAKEGEN%"=="" set CMAKEGEN=Ninja
+if "%CC%"=="" set CC=%CMAKE_COMPILER_PATH:\=/%/cl.exe
+if "%CXX%"=="" set CXX=%CMAKE_COMPILER_PATH:\=/%/cl.exe
+if "%OSGEO4W_CXXFLAGS%"=="" set OSGEO4W_CXXFLAGS=/MD /Z7 /MP /O2 /Ob2 /D NDEBUG /D ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
 
 for %%i in (%PYTHONHOME%) do set PYVER=%%~ni
 
 cmake -G "%CMAKEGEN%" ^
-	-D CMAKE_CXX_COMPILER="%CMAKE_COMPILER_PATH:\=/%/cl.exe" ^
-	-D CMAKE_C_COMPILER="%CMAKE_COMPILER_PATH:\=/%/cl.exe" ^
+	-D CMAKE_CXX_COMPILER="%CXX:\=/%" ^
+	-D CMAKE_C_COMPILER="%CC:\=/%" ^
 	-D CMAKE_LINKER="%CMAKE_COMPILER_PATH:\=/%/link.exe" ^
+	-D CMAKE_CXX_FLAGS_RELEASE="%OSGEO4W_CXXFLAGS%" ^
+	-D CMAKE_C_FLAGS_RELEASE="%OSGEO4W_CXXFLAGS%" ^
+	-D CMAKE_PDB_OUTPUT_DIRECTORY_RELEASE=%BUILDDIR%\apps\%PACKAGENAME%\pdb ^
+	-D CMAKE_SHARED_LINKER_FLAGS_RELEASE="/INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF" ^
+	-D CMAKE_MODULE_LINKER_FLAGS_RELEASE="/INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF" ^
 	-D BUILDNAME="%PACKAGENAME%-%VERSION%%SHA%-Release-VC14-%ARCH%" ^
 	-D SITE="%SITE%" ^
 	-D PEDANTIC=TRUE ^
@@ -145,13 +134,13 @@ cmake -G "%CMAKEGEN%" ^
 	-D WITH_GLOBE=FALSE ^
 	-D WITH_ORACLE=TRUE ^
 	-D WITH_CUSTOM_WIDGETS=TRUE ^
-	-D CMAKE_CXX_FLAGS_RELEASE="/MD /Zi /MP /O2 /Ob2 /D NDEBUG /D ACCEPT_USE_OF_DEPRECATED_PROJ_API_H" ^
-	-D CMAKE_C_FLAGS_RELEASE="/MD /Zi /MP /O2 /Ob2 /D NDEBUG /D ACCEPT_USE_OF_DEPRECATED_PROJ_API_H" ^
-	-D CMAKE_SHARED_LINKER_FLAGS_RELEASE="/INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF" ^
-	-D CMAKE_MODULE_LINKER_FLAGS_RELEASE="/INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF" ^
-	-D CMAKE_PDB_OUTPUT_DIRECTORY_RELEASE=%BUILDDIR%\apps\%PACKAGENAME%\pdb ^
 	-D CMAKE_BUILD_TYPE=%BUILDCONF% ^
 	-D CMAKE_CONFIGURATION_TYPES=%BUILDCONF% ^
+	-D SETUPAPI_LIBRARY="%SETUPAPI_LIBRARY%" ^
+	-D PROJ_LIBRARY=%O4W_ROOT%/apps/proj5/lib/proj_5_2.lib ^
+	-D PROJ_INCLUDE_DIR=%O4W_ROOT%/apps/proj5/include ^
+	-D GDAL_LIBRARY=%O4W_ROOT%/apps/gdal2/lib/gdal_i.lib ^
+	-D GDAL_INCLUDE_DIR=%O4W_ROOT%/apps/gdal2/include ^
 	-D GEOS_LIBRARY=%O4W_ROOT%/lib/geos_c.lib ^
 	-D SQLITE3_LIBRARY=%O4W_ROOT%/lib/sqlite3_i.lib ^
 	-D SPATIALITE_LIBRARY=%O4W_ROOT%/lib/spatialite_i.lib ^
@@ -184,8 +173,7 @@ if errorlevel 1 (echo clean failed & goto error)
 if exist ..\skipbuild (echo skip build & goto skipbuild)
 echo ALL_BUILD: %DATE% %TIME%
 cmake --build %BUILDDIR% --config %BUILDCONF%
-if errorlevel 1 cmake --build %BUILDDIR% --config %BUILDCONF%
-if errorlevel 1 (echo build failed twice & goto error)
+if errorlevel 1 (echo build failed & goto error)
 
 :skipbuild
 if exist ..\skiptests goto skiptests
@@ -218,6 +206,7 @@ set TMP=%oldtmp%
 PATH %oldpath%
 
 :skiptests
+if exist ..\skippackage goto end
 
 if exist "%PKGDIR%" (
 	echo REMOVE: %DATE% %TIME%

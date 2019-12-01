@@ -62,12 +62,11 @@ INCLUDE_DIRECTORIES (
   ${CMAKE_BINARY_DIR}/src/ui
 )
 INCLUDE_DIRECTORIES(SYSTEM
+  ${GDAL_INCLUDE_DIR} # needed by qgsvectorfilewriter.h
   ${EXPAT_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
-  ${GDAL_INCLUDE_DIR} # needed by qgsvectorfilewriter.h
   ${SQLITE3_INCLUDE_DIR}
-  ${GDAL_INCLUDE_DIR}
 )
 
 IF (WITH_GUI)
