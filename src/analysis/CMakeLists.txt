@@ -191,7 +191,6 @@ SET(QGIS_ANALYSIS_SRCS
   vector/geometry_checker/qgsgeometrychecker.cpp
   vector/geometry_checker/qgsgeometrycheckerror.cpp
   vector/geometry_checker/qgsgeometrycheckerutils.cpp
-  vector/geometry_checker/qgsgeometrycheckfactory.cpp
   vector/geometry_checker/qgsgeometrycheckregistry.cpp
   vector/geometry_checker/qgsgeometrycontainedcheck.cpp
   vector/geometry_checker/qgsgeometrydanglecheck.cpp
