@@ -88,14 +88,14 @@ namespace pal
        * \param feature labelpos owners
        * \param isReversed label is reversed
        * \param quadrant relative position of label to feature
-       * \param dx the correction of the anchor point in x direction
-       * \param dy the correction of the anchor point in y direction
+       * \param dX the correction of the anchor point in x direction
+       * \param dY the correction of the anchor point in y direction
        */
       LabelPosition( int id, double x1, double y1,
                      double w, double h,
                      double alpha, double cost,
                      FeaturePart *feature, bool isReversed = false, Quadrant quadrant = QuadrantOver,
-                     double dX = 0.0, double dy = 0.0 );
+                     double dX = 0.0, double dY = 0.0 );
 
       //! Copy constructor
       LabelPosition( const LabelPosition &other );
