@@ -143,6 +143,11 @@ class CORE_EXPORT QgsDxfExport
       Undefined = 9999 //!< Undefined
     };
 
+    /**
+     * Flags for polylines
+     *
+     * \since QGIS 3.12
+     */
     enum class DxfPolylineFlag : int
     {
       Closed = 1, //!< This is a closed polyline (or a polygon mesh closed in the M direction)
