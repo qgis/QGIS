@@ -742,7 +742,8 @@ void TestQgsDxfExport::testCurveExport()
   QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
 
-  QVERIFY( fileContainsText( file, dxfText ) );
+  QString debugInfo;
+  QVERIFY2( fileContainsText( file, dxfText, &debugInfo ), debugInfo.toUtf8().constData() );
 }
 
 void TestQgsDxfExport::testCurveExport_data()
@@ -775,7 +776,7 @@ void TestQgsDxfExport::testCurveExport_data()
                          " 90\n"
                          "     2\n"
                          " 70\n"
-                         "     2\n"
+                         "   130\n"
                          " 43\n"
                          "-1.0\n"
                          " 10\n"
@@ -815,7 +816,7 @@ void TestQgsDxfExport::testCurveExport_data()
                          " 90\n"
                          "     5\n"
                          " 70\n"
-                         "     3\n"
+                         "   131\n"
                          " 43\n"
                          "-1.0\n"
                          " 10\n"
@@ -934,7 +935,7 @@ void TestQgsDxfExport::testDashedLine()
                               " 90\n"
                               "     6\n"
                               " 70\n"
-                              "     0\n"
+                              "   128\n"
                               " 43\n"
                               "0.11\n"
                               " 10\n"
