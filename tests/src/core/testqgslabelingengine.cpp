@@ -205,7 +205,7 @@ void TestQgsLabelingEngine::setDefaultLabelParams( QgsPalLayerSettings &settings
 QgsLabelingEngineSettings TestQgsLabelingEngine::createLabelEngineSettings()
 {
   QgsLabelingEngineSettings settings;
-  settings.setPlacementVersion( QgsLabelingEngineSettings::PlacementEngineVersion1 );
+  settings.setPlacementVersion( QgsLabelingEngineSettings::PlacementEngineVersion2 );
   return settings;
 }
 
