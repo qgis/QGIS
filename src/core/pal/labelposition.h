@@ -217,6 +217,22 @@ namespace pal
        */
       bool conflictsWithObstacle() const { return mHasObstacleConflict; }
 
+      /**
+       * Sets whether the position is marked as having a hard conflict with an obstacle feature.
+       * A hard conflict means that the placement should (usually) not be considered, because the candidate
+       * conflicts with a obstacle of sufficient weight.
+       * \see hasHardObstacleConflict()
+       */
+      void setHasHardObstacleConflict( bool conflicts );
+
+      /**
+       * Returns whether the position is marked as having a hard conflict with an obstacle feature.
+       * A hard conflict means that the placement should (usually) not be considered, because the candidate
+       * conflicts with a obstacle of sufficient weight.
+       * \see setHasHardObstacleConflict()
+       */
+      bool hasHardObstacleConflict() const { return mHasHardConflict; }
+
       //! Make sure the cost is less than 1
       void validateCost();
 
@@ -329,6 +345,7 @@ namespace pal
     private:
       double mCost;
       bool mHasObstacleConflict;
+      bool mHasHardConflict = false;
       int mUpsideDownCharCount;
 
       /**
