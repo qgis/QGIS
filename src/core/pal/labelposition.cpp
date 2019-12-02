@@ -407,6 +407,13 @@ void LabelPosition::setConflictsWithObstacle( bool conflicts )
     nextPart->setConflictsWithObstacle( conflicts );
 }
 
+void LabelPosition::setHasHardObstacleConflict( bool conflicts )
+{
+  mHasHardConflict = conflicts;
+  if ( nextPart )
+    nextPart->setHasHardObstacleConflict( conflicts );
+}
+
 bool LabelPosition::polygonObstacleCallback( FeaturePart *obstacle, void *ctx )
 {
   PolygonCostCalculator *pCost = reinterpret_cast< PolygonCostCalculator * >( ctx );
@@ -453,7 +460,7 @@ bool LabelPosition::pruneCallback( LabelPosition *candidatePosition, void *ctx )
     return true;
   }
 
-  CostCalculator::addObstacleCostPenalty( candidatePosition, obstaclePart );
+  CostCalculator::addObstacleCostPenalty( candidatePosition, obstaclePart, ( reinterpret_cast< PruneCtx * >( ctx ) )->pal );
 
   return true;
 }

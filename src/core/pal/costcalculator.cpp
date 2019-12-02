@@ -35,7 +35,7 @@ bool CostCalculator::candidateSortShrink( const std::unique_ptr< LabelPosition >
   return c1->cost() > c2->cost();
 }
 
-void CostCalculator::addObstacleCostPenalty( LabelPosition *lp, FeaturePart *obstacle )
+void CostCalculator::addObstacleCostPenalty( LabelPosition *lp, FeaturePart *obstacle, Pal *pal )
 {
   int n = 0;
   double dist;
@@ -83,11 +83,30 @@ void CostCalculator::addObstacleCostPenalty( LabelPosition *lp, FeaturePart *obs
       break;
   }
 
+  //scale cost by obstacle's factor
+  double obstacleCost = obstacle->obstacleFactor() * double( n );
   if ( n > 0 )
     lp->setConflictsWithObstacle( true );
 
-  //scale cost by obstacle's factor
-  double obstacleCost = obstacle->obstacleFactor() * double( n );
+  switch ( pal->placementVersion() )
+  {
+    case QgsLabelingEngineSettings::PlacementEngineVersion1:
+      break;
+
+    case QgsLabelingEngineSettings::PlacementEngineVersion2:
+    {
+      // obstacle factor is from 0 -> 2, label priority is from 1 -> 0. argh!
+      const double priority = 2 * ( 1 - lp->feature->calculatePriority() );
+      const double obstaclePriority = obstacle->obstacleFactor();
+
+      // if feature priority is < obstaclePriorty, there's a hard conflict...
+      if ( n > 0 && ( priority < obstaclePriority && !qgsDoubleNear( priority, obstaclePriority, 0.001 ) ) )
+      {
+        lp->setHasHardObstacleConflict( true );
+      }
+      break;
+    }
+  }
 
   // label cost is penalized
   lp->setCost( lp->cost() + obstacleCost );
@@ -185,6 +204,7 @@ std::size_t CostCalculator::finalizeCandidatesCosts( Feats *feat, std::size_t ma
   }
   while ( stop == 0 && discrim < feat->candidates.back()->cost() + 2.0 );
 
+  // THIS LOOKS SUSPICIOUS -- it clamps all costs to a fixed value??
   if ( discrim > 1.5 )
   {
     for ( std::size_t k = 0; k < stop; k++ )

@@ -380,6 +380,27 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
         feat->candidates.pop_back();
       }
 
+      switch ( mPlacementVersion )
+      {
+        case QgsLabelingEngineSettings::PlacementEngineVersion1:
+          break;
+
+        case QgsLabelingEngineSettings::PlacementEngineVersion2:
+        {
+          // v2 placement rips out candidates where the candidate cost is too high when compared to
+          // their inactive cost
+          feat->candidates.erase( std::remove_if( feat->candidates.begin(), feat->candidates.end(), [ & ]( std::unique_ptr< LabelPosition > &candidate )
+          {
+            if ( candidate->hasHardObstacleConflict() )
+            {
+              feat->candidates.back()->removeFromIndex( prob->mAllCandidatesIndex );
+              return true;
+            }
+            return false;
+          } ), feat->candidates.end() );
+        }
+      }
+
       if ( isCanceled() )
         return nullptr;
 
