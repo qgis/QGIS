@@ -1707,6 +1707,7 @@ void TestQgsLabelingEngine::drawUnplaced()
   settings.isExpression = true;
   settings.placement = QgsPalLayerSettings::OverPoint;
   settings.priority = 3;
+  settings.obstacleFactor = 0;
 
   std::unique_ptr< QgsVectorLayer> vl1( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl1->setRenderer( new QgsNullSymbolRenderer() );
@@ -1724,6 +1725,7 @@ void TestQgsLabelingEngine::drawUnplaced()
   settings.isExpression = true;
   settings.placement = QgsPalLayerSettings::OverPoint;
   settings.priority = 5; // higher priority - YY should be placed, not XX
+  settings.obstacleFactor = 0;
   format.setSize( 90 );
   settings.setFormat( format );
 
