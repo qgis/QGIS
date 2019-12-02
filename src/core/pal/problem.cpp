@@ -752,14 +752,16 @@ QList<LabelPosition *> Problem::getSolution( bool returnInactive, QList<LabelPos
       solList.push_back( mLabelPositions[ mSol.activeLabelIds[i] ].get() ); // active labels
     }
     else if ( returnInactive
-              || mLabelPositions.at( mFeatStartId[i] )->getFeaturePart()->layer()->displayAll()
-              || mLabelPositions.at( mFeatStartId[i] )->getFeaturePart()->alwaysShow() )
+              || ( mFeatStartId[i] < static_cast< int >( mLabelPositions.size() ) &&
+                   ( mLabelPositions.at( mFeatStartId[i] )->getFeaturePart()->layer()->displayAll()
+                     || mLabelPositions.at( mFeatStartId[i] )->getFeaturePart()->alwaysShow() ) ) )
     {
       solList.push_back( mLabelPositions[ mFeatStartId[i] ].get() ); // unplaced label
     }
     else if ( unlabeled )
     {
-      unlabeled->push_back( mLabelPositions[ mFeatStartId[i] ].get() );
+      if ( mFeatStartId[i] < static_cast< int >( mLabelPositions.size() ) )
+        unlabeled->push_back( mLabelPositions[ mFeatStartId[i] ].get() );
     }
   }
 

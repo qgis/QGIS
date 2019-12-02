@@ -389,15 +389,26 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
         {
           // v2 placement rips out candidates where the candidate cost is too high when compared to
           // their inactive cost
-          feat->candidates.erase( std::remove_if( feat->candidates.begin(), feat->candidates.end(), [ & ]( std::unique_ptr< LabelPosition > &candidate )
+
+          // note, we start this at the SECOND candidate (you'll see why after this loop)
+          feat->candidates.erase( std::remove_if( feat->candidates.begin() + 1, feat->candidates.end(), [ & ]( std::unique_ptr< LabelPosition > &candidate )
           {
             if ( candidate->hasHardObstacleConflict() )
             {
-              feat->candidates.back()->removeFromIndex( prob->mAllCandidatesIndex );
+              candidate->removeFromIndex( prob->mAllCandidatesIndex );
               return true;
             }
             return false;
           } ), feat->candidates.end() );
+
+          if ( feat->candidates.size() == 1 && feat->candidates[ 0 ]->hasHardObstacleConflict() )
+          {
+            // we've ended up removing ALL candidates for this label. Oh well, that's allowed. We just need to
+            // make sure we move this last candidate to the unplaced labels list
+            feat->candidates.front()->removeFromIndex( prob->mAllCandidatesIndex );
+            prob->positionsWithNoCandidates()->emplace_back( std::move( feat->candidates.front() ) );
+            feat->candidates.clear();
+          }
         }
       }
 
