@@ -429,6 +429,9 @@ class QgsMeshParticleTracesField: public QgsMeshStreamField
     //! Assignment operator
     QgsMeshParticleTracesField &operator=( const QgsMeshParticleTracesField &other );
 
+    //! Sets if the particle has to be stumped dependiong on liketime
+    void setStumpParticleWithLifeTime( bool stumpParticleWithLifeTime );
+
   private:
     QPoint direction( QPoint position ) const;
 
@@ -475,7 +478,7 @@ class QgsMeshParticleTracesField: public QgsMeshStreamField
     QColor mParticleColor = Qt::white;
     double mParticleSize = 2.5;
     int mStumpFactor = 50;
-    bool mStumpParticleWithLifeTime = false;
+    bool mStumpParticleWithLifeTime = true;
 };
 
 /**

@@ -1051,6 +1051,11 @@ bool QgsMeshParticleTracesField::isTraceExists( const QPoint &pixel ) const
   return false;
 }
 
+void QgsMeshParticleTracesField::setStumpParticleWithLifeTime( bool stumpParticleWithLifeTime )
+{
+  mStumpParticleWithLifeTime = stumpParticleWithLifeTime;
+}
+
 void QgsMeshParticleTracesField::setMinTailLength( int minTailLength )
 {
   mMinTailLength = minTailLength;
@@ -1379,6 +1384,7 @@ QgsMeshVectorTraceRenderer::QgsMeshVectorTraceRenderer( const QgsTriangularMesh 
                                      settings.lineWidth(), QgsUnitTypes::RenderUnit::RenderMillimeters ) );
   mParticleField->setParticlesCount( settings.tracesSettings().particlesCount() );
   mParticleField->setTailFactor( 1 );
+  mParticleField->setStumpParticleWithLifeTime( false );
   mParticleField->setTimeStep( rendererContext.convertToPainterUnits( settings.tracesSettings().maximumTailLength(),
                                settings.tracesSettings().maximumTailLengthUnit() ) ); //as the particles go through 1 pix for dt=1 and Vmax
   mParticleField->addRandomParticles();
