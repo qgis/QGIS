@@ -288,7 +288,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
 
   mPrioritySlider->setValue( mSettings.priority );
   mChkNoObstacle->setChecked( mSettings.obstacle );
-  mObstacleFactorSlider->setValue( mSettings.obstacleFactor * 50 );
+  mObstacleFactorSlider->setValue( mSettings.obstacleFactor * 5 );
   mObstacleTypeComboBox->setCurrentIndex( mObstacleTypeComboBox->findData( mSettings.obstacleType ) );
   mPolygonObstacleTypeFrame->setEnabled( mSettings.obstacle );
   mObstaclePriorityFrame->setEnabled( mSettings.obstacle );
@@ -489,7 +489,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 
   lyr.priority = mPrioritySlider->value();
   lyr.obstacle = mChkNoObstacle->isChecked() || mMode == ObstaclesOnly;
-  lyr.obstacleFactor = mObstacleFactorSlider->value() / 50.0;
+  lyr.obstacleFactor = mObstacleFactorSlider->value() / 5.0;
   lyr.obstacleType = ( QgsPalLayerSettings::ObstacleType )mObstacleTypeComboBox->currentData().toInt();
   lyr.labelPerPart = chkLabelPerFeaturePart->isChecked();
   lyr.displayAll = mPalShowAllLabelsForLayerChkBx->isChecked();

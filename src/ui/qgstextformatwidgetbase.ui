@@ -6706,10 +6706,10 @@ font-style: italic;</string>
                                <number>0</number>
                               </property>
                               <property name="maximum">
-                               <number>100</number>
+                               <number>10</number>
                               </property>
                               <property name="value">
-                               <number>50</number>
+                               <number>5</number>
                               </property>
                               <property name="orientation">
                                <enum>Qt::Horizontal</enum>
@@ -6718,7 +6718,7 @@ font-style: italic;</string>
                                <enum>QSlider::TicksBelow</enum>
                               </property>
                               <property name="tickInterval">
-                               <number>10</number>
+                               <number>1</number>
                               </property>
                              </widget>
                             </item>
