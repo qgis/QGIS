@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>342</width>
-    <height>811</height>
+    <width>365</width>
+    <height>749</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -444,28 +444,28 @@
         <item>
          <widget class="QLabel" name="label_3">
           <property name="text">
-           <string>Maximum Tail Length</string>
+           <string>Max Tail Length</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="mTracesMaxLengthSpinBox">
-          <property name="suffix">
-           <string> px</string>
-          </property>
+         <widget class="QDoubleSpinBox" name="mTracesMaxLengthSpinBox">
           <property name="minimum">
-           <number>1</number>
+           <double>1.000000000000000</double>
           </property>
           <property name="maximum">
-           <number>999999999</number>
+           <double>99999999999999.000000000000000</double>
           </property>
           <property name="singleStep">
-           <number>10</number>
+           <double>10.000000000000000</double>
           </property>
           <property name="value">
-           <number>100</number>
+           <double>10.000000000000000</double>
           </property>
          </widget>
+        </item>
+        <item>
+         <widget class="QgsUnitSelectionWidget" name="mTracesTailLengthMapUnitWidget"/>
         </item>
        </layout>
       </item>
@@ -503,6 +503,11 @@
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QComboBox</extends>
+   <header>qgsunitselectionwidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -177,7 +177,9 @@ class QgsMeshStreamField
                         const QgsMeshDataBlock &dataSetVectorValues,
                         const QgsMeshDataBlock &scalarActiveFaceFlagValues,
                         const QgsRectangle &layerExtent,
-                        double magnitudeMaximum, bool dataIsOnVertices, const QgsRenderContext &rendererContext,
+                        double magnitudeMaximum,
+                        bool dataIsOnVertices,
+                        const QgsRenderContext &rendererContext,
                         int resolution = 1 );
 
     //! Copy constructor
@@ -245,7 +247,7 @@ class QgsMeshStreamField
     //! Sets  color of the streamlines
     void setColor( QColor color );
 
-    //! Sets line width of the streamlines
+    //! Sets line width of the streamlines (in px)
     void setLineWidth( double width );
 
     //! Sets min/max filter
@@ -415,7 +417,7 @@ class QgsMeshParticleTracesField: public QgsMeshStreamField
     //! Sets tihe color of the particles
     void setParticleColor( const QColor &particleColor );
 
-    //! Sets particles size
+    //! Sets particles size (in px)
     void setParticleSize( double particleSize );
 
     //! Sets the tail factor
@@ -500,7 +502,7 @@ class QgsMeshVectorStreamlineRenderer: public QgsMeshVectorRenderer
     void draw() override;
 
   private:
-    std::unique_ptr<QgsMeshStreamField> mStreamLineField;
+    std::unique_ptr<QgsMeshStreamField> mStreamlineField;
     QgsRenderContext &mRendererContext;
 };
 
@@ -584,7 +586,7 @@ class CORE_EXPORT QgsMeshVectorTraceAnimationGenerator
     //! Sets colors of particle
     void setParticlesColor( const QColor &c );
 
-    //! Sets particle size
+    //! Sets particle size in px
     void setParticlesSize( double width );
 
     //! Sets the tail factor, used to adjust the length of the tail. 0 : minimum length, >1 increase the tail

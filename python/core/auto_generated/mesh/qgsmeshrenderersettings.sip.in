@@ -340,11 +340,11 @@ Represents a trace renderer settings for vector datasets displayed by particle t
 %End
   public:
 
-    int maximumTailLength() const;
+    double maximumTailLength() const;
 %Docstring
 Returns the maximum tail length
 %End
-    void setMaximumTailLength( int maximumTailLength );
+    void setMaximumTailLength( double maximumTailLength );
 %Docstring
 Sets the maximums tail length
 %End
@@ -356,6 +356,14 @@ Returns particles count
 %Docstring
 Sets particles count
 %End
+    QgsUnitTypes::RenderUnit maximumTailLengthUnit() const;
+%Docstring
+Returns the maximum tail length unit
+%End
+    void setMaximumTailLengthUnit( const QgsUnitTypes::RenderUnit &maximumTailLengthUnit );
+%Docstring
+Sets the maximum tail length unit
+%End
 
     void readXml( const QDomElement &elem );
 %Docstring
@@ -365,6 +373,8 @@ Reads configuration from the given DOM element
 %Docstring
 Writes configuration to a new DOM element
 %End
+
+
 
 };
 

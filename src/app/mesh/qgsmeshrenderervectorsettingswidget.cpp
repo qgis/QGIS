@@ -69,10 +69,19 @@ QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidge
   connect( mStreamlinesDensitySpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
 
-  connect( mTracesMaxLengthSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ),
+  connect( mTracesMaxLengthSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
 
   connect( mTracesParticlesCountSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ),
+           this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
+
+  mTracesTailLengthMapUnitWidget->setUnits( QgsUnitTypes::RenderUnitList()
+      << QgsUnitTypes::RenderMillimeters
+      << QgsUnitTypes::RenderMetersInMapUnits
+      << QgsUnitTypes::RenderPixels
+      << QgsUnitTypes::RenderPoints );
+
+  connect( mTracesTailLengthMapUnitWidget, &QgsUnitSelectionWidget::changed,
            this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
 }
 
@@ -144,6 +153,7 @@ QgsMeshRendererVectorSettings QgsMeshRendererVectorSettingsWidget::settings() co
   //Traces setting
   QgsMeshRendererVectorTracesSettings tracesSettings;
   tracesSettings.setMaximumTailLength( mTracesMaxLengthSpinBox->value() );
+  tracesSettings.setMaximumTailLengthUnit( mTracesTailLengthMapUnitWidget->unit() );
   tracesSettings.setParticlesCount( mTracesParticlesCountSpinBox->value() );
   settings.setTracesSettings( tracesSettings );
 
@@ -207,6 +217,7 @@ void QgsMeshRendererVectorSettingsWidget::syncToLayer( )
   const QgsMeshRendererVectorTracesSettings tracesSettings = settings.tracesSettings();
 
   mTracesMaxLengthSpinBox->setValue( tracesSettings.maximumTailLength() );
+  mTracesTailLengthMapUnitWidget->setUnit( tracesSettings.maximumTailLengthUnit() );
   mTracesParticlesCountSpinBox->setValue( tracesSettings.particlesCount() );
 
 }

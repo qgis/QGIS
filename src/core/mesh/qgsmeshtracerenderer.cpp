@@ -621,7 +621,13 @@ void QgsMeshStreamlinesField::initField()
   initImage();
 }
 
-QgsMeshStreamlinesField::QgsMeshStreamlinesField( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues, const QgsMeshDataBlock &scalarActiveFaceFlagValues, const QgsRectangle &layerExtent, double magMax, bool dataIsOnVertices, QgsRenderContext &rendererContext ):
+QgsMeshStreamlinesField::QgsMeshStreamlinesField( const QgsTriangularMesh &triangularMesh,
+    const QgsMeshDataBlock &datasetVectorValues,
+    const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+    const QgsRectangle &layerExtent,
+    double magMax,
+    bool dataIsOnVertices,
+    QgsRenderContext &rendererContext ):
   QgsMeshStreamField( triangularMesh, datasetVectorValues, scalarActiveFaceFlagValues, layerExtent, magMax, dataIsOnVertices, rendererContext )
 {}
 
@@ -846,31 +852,30 @@ QgsVector QgsMeshVectorValueInterpolatorFromFace::interpolatedValuePrivate( int 
 QgsMeshVectorStreamlineRenderer::QgsMeshVectorStreamlineRenderer( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &dataSetVectorValues, const QgsMeshDataBlock &scalarActiveFaceFlagValues, bool dataIsOnVertices, const QgsMeshRendererVectorSettings &settings, QgsRenderContext &rendererContext, const QgsRectangle &layerExtent, double magMax ):
   mRendererContext( rendererContext )
 {
-  mStreamLineField.reset( new QgsMeshStreamlinesField( triangularMesh,
+  mStreamlineField.reset( new QgsMeshStreamlinesField( triangularMesh,
                           dataSetVectorValues,
                           scalarActiveFaceFlagValues,
                           layerExtent,
                           magMax, dataIsOnVertices, rendererContext ) );
 
-  mStreamLineField->updateSize( rendererContext );
-  mStreamLineField->setPixelFillingDensity( settings.streamLinesSettings().seedingDensity() );
-  mStreamLineField->setLineWidth(
-    rendererContext.convertToPainterUnits( settings.lineWidth(), QgsUnitTypes::RenderUnit::RenderMillimeters ) );
-
-  mStreamLineField->setColor( settings.color() );
-  mStreamLineField->setFilter( settings.filterMin(), settings.filterMax() );
+  mStreamlineField->updateSize( rendererContext );
+  mStreamlineField->setPixelFillingDensity( settings.streamLinesSettings().seedingDensity() );
+  mStreamlineField->setLineWidth( rendererContext.convertToPainterUnits( settings.lineWidth(),
+                                  QgsUnitTypes::RenderUnit::RenderMillimeters ) ) ;
+  mStreamlineField->setColor( settings.color() );
+  mStreamlineField->setFilter( settings.filterMin(), settings.filterMax() );
 
 
   switch ( settings.streamLinesSettings().seedingMethod() )
   {
     case QgsMeshRendererVectorStreamlineSettings::MeshGridded:
       if ( settings.isOnUserDefinedGrid() )
-        mStreamLineField->addGriddedTraces( settings.userGridCellWidth(), settings.userGridCellHeight() );
+        mStreamlineField->addGriddedTraces( settings.userGridCellWidth(), settings.userGridCellHeight() );
       else
-        mStreamLineField->addTracesOnMesh( triangularMesh, rendererContext.mapExtent() );
+        mStreamlineField->addTracesOnMesh( triangularMesh, rendererContext.mapExtent() );
       break;
     case QgsMeshRendererVectorStreamlineSettings::Random:
-      mStreamLineField->addRandomTraces();
+      mStreamlineField->addRandomTraces();
       break;
   }
 }
@@ -879,10 +884,16 @@ void QgsMeshVectorStreamlineRenderer::draw()
 {
   if ( mRendererContext.renderingStopped() )
     return;
-  mRendererContext.painter()->drawImage( mStreamLineField->topLeft(), mStreamLineField->image() );
+  mRendererContext.painter()->drawImage( mStreamlineField->topLeft(), mStreamlineField->image() );
 }
 
-QgsMeshParticleTracesField::QgsMeshParticleTracesField( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues, const QgsMeshDataBlock &scalarActiveFaceFlagValues, const QgsRectangle &layerExtent, double magMax, bool dataIsOnVertices, const QgsRenderContext &rendererContext ):
+QgsMeshParticleTracesField::QgsMeshParticleTracesField( const QgsTriangularMesh &triangularMesh,
+    const QgsMeshDataBlock &datasetVectorValues,
+    const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+    const QgsRectangle &layerExtent,
+    double magMax,
+    bool dataIsOnVertices,
+    const QgsRenderContext &rendererContext ):
   QgsMeshStreamField( triangularMesh, datasetVectorValues, scalarActiveFaceFlagValues, layerExtent, magMax, dataIsOnVertices, rendererContext )
 {
   std::srand( uint( ::time( nullptr ) ) );
@@ -1364,10 +1375,12 @@ QgsMeshVectorTraceRenderer::QgsMeshVectorTraceRenderer( const QgsTriangularMesh 
   mParticleField->updateSize( rendererContext ) ;
 
   mParticleField->setParticleColor( settings.color() );
-  mParticleField->setParticleSize( settings.lineWidth() );
+  mParticleField->setParticleSize( rendererContext.convertToPainterUnits(
+                                     settings.lineWidth(), QgsUnitTypes::RenderUnit::RenderMillimeters ) );
   mParticleField->setParticlesCount( settings.tracesSettings().particlesCount() );
   mParticleField->setTailFactor( 1 );
-  mParticleField->setTimeStep( settings.tracesSettings().maximumTailLength() ); //as the particles go through 1 pix for dt=1 and Vmax
+  mParticleField->setTimeStep( rendererContext.convertToPainterUnits( settings.tracesSettings().maximumTailLength(),
+                               settings.tracesSettings().maximumTailLengthUnit() ) ); //as the particles go through 1 pix for dt=1 and Vmax
   mParticleField->addRandomParticles();
   mParticleField->moveParticles();
 }

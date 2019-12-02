@@ -318,22 +318,30 @@ class CORE_EXPORT QgsMeshRendererVectorTracesSettings
   public:
 
     //! Returns the maximum tail length
-    int maximumTailLength() const;
+    double maximumTailLength() const;
     //! Sets the maximums tail length
-    void setMaximumTailLength( int maximumTailLength );
+    void setMaximumTailLength( double maximumTailLength );
     //! Returns particles count
     int particlesCount() const;
     //! Sets particles count
     void setParticlesCount( int value );
+    //! Returns the maximum tail length unit
+    QgsUnitTypes::RenderUnit maximumTailLengthUnit() const;
+    //! Sets the maximum tail length unit
+    void setMaximumTailLengthUnit( const QgsUnitTypes::RenderUnit &maximumTailLengthUnit );
 
     //! Reads configuration from the given DOM element
     void readXml( const QDomElement &elem );
     //! Writes configuration to a new DOM element
     QDomElement writeXml( QDomDocument &doc ) const;
 
+
+
   private:
     int mParticlesCount = 1000;
-    int mMaximumTailLength = 100;
+    double mMaximumTailLength = 100;
+    QgsUnitTypes::RenderUnit mMaximumTailLengthUnit = QgsUnitTypes::RenderMillimeters;
+
 };
 
 /**

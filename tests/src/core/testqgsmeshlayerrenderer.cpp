@@ -382,11 +382,13 @@ void TestQgsMeshRenderer::test_vertex_vector_traces()
   settings.setOnUserDefinedGrid( true );
   settings.setUserGridCellWidth( 60 );
   settings.setUserGridCellHeight( 40 );
-  settings.setLineWidth( 5 );
+  settings.setLineWidth( 1 );
+
   settings.setSymbology( QgsMeshRendererVectorSettings::Traces );
   QgsMeshRendererVectorTracesSettings tracesSetting = settings.tracesSettings();
   tracesSetting.setParticlesCount( -1 );
   tracesSetting.setMaximumTailLength( 40 );
+  tracesSetting.setMaximumTailLengthUnit( QgsUnitTypes::RenderPixels );
   settings.setTracesSettings( tracesSetting );
   rendererSettings.setVectorSettings( ds.group(), settings );
   rendererSettings.setActiveVectorDataset( ds );

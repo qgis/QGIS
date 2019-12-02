@@ -555,6 +555,8 @@ void QgsMeshRendererVectorSettings::setTracesSettings( const QgsMeshRendererVect
 void QgsMeshRendererVectorTracesSettings::readXml( const QDomElement &elem )
 {
   mMaximumTailLength = elem.attribute( QStringLiteral( "maximum-tail-length" ) ).toInt();
+  mMaximumTailLengthUnit = static_cast<QgsUnitTypes::RenderUnit>(
+                             elem.attribute( QStringLiteral( "maximum-tail-length-unit" ) ).toInt() );
   mParticlesCount = elem.attribute( QStringLiteral( "particles-count" ) ).toInt();
 }
 
@@ -562,17 +564,28 @@ QDomElement QgsMeshRendererVectorTracesSettings::writeXml( QDomDocument &doc ) c
 {
   QDomElement elem = doc.createElement( QStringLiteral( "vector-traces-settings" ) );
   elem.setAttribute( QStringLiteral( "maximum-tail-length" ), mMaximumTailLength );
+  elem.setAttribute( QStringLiteral( "maximum-tail-length-unit" ), mMaximumTailLengthUnit );
   elem.setAttribute( QStringLiteral( "particles-count" ), mParticlesCount );
 
   return elem;
 }
 
-int QgsMeshRendererVectorTracesSettings::maximumTailLength() const
+QgsUnitTypes::RenderUnit QgsMeshRendererVectorTracesSettings::maximumTailLengthUnit() const
+{
+  return mMaximumTailLengthUnit;
+}
+
+void QgsMeshRendererVectorTracesSettings::setMaximumTailLengthUnit( const QgsUnitTypes::RenderUnit &maximumTailLengthUnit )
+{
+  mMaximumTailLengthUnit = maximumTailLengthUnit;
+}
+
+double QgsMeshRendererVectorTracesSettings::maximumTailLength() const
 {
   return mMaximumTailLength;
 }
 
-void QgsMeshRendererVectorTracesSettings::setMaximumTailLength( int maximumTailLength )
+void QgsMeshRendererVectorTracesSettings::setMaximumTailLength( double maximumTailLength )
 {
   mMaximumTailLength = maximumTailLength;
 }

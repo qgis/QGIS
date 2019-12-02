@@ -73,7 +73,7 @@ Sets colors of particle
 
     void setParticlesSize( double width );
 %Docstring
-Sets particle size
+Sets particle size in px
 %End
 
     void setTailFactor( double fct );
