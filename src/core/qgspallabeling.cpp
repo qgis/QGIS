@@ -2624,6 +2624,26 @@ void QgsPalLayerSettings::registerObstacleFeature( const QgsFeature &f, QgsRende
   *obstacleFeature = new QgsLabelFeature( f.id(), std::move( geos_geom_clone ), QSizeF( 0, 0 ) );
   ( *obstacleFeature )->setIsObstacle( true );
   ( *obstacleFeature )->setFeature( f );
+
+  double featObstacleFactor = obstacleFactor;
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::ObstacleFactor ) )
+  {
+    context.expressionContext().setOriginalValueVariable( featObstacleFactor );
+    QVariant exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::ObstacleFactor, context.expressionContext() );
+    if ( exprVal.isValid() )
+    {
+      bool ok;
+      double factorD = exprVal.toDouble( &ok );
+      if ( ok )
+      {
+        factorD = qBound( 0.0, factorD, 10.0 );
+        factorD = factorD / 5.0 + 0.0001; // convert 0 -> 10 to 0.0001 -> 2.0
+        featObstacleFactor = factorD;
+      }
+    }
+  }
+  ( *obstacleFeature )->setObstacleFactor( featObstacleFactor );
+
   mFeatsRegPal++;
 }
 
