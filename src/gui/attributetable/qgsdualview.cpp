@@ -298,7 +298,7 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
   {
     mMasterModel->setRequest( r );
     whileBlocking( mLayerCache )->setCacheGeometry( needsGeometry );
-    mMasterModel->loadLayer();
+    mMasterModel->loadLayerPart();
   }
 
   //update filter model
@@ -342,7 +342,7 @@ void QgsDualView::initModels( QgsMapCanvas *mapCanvas, const QgsFeatureRequest &
   connect( mConditionalFormatWidget, &QgsFieldConditionalFormatWidget::rulesUpdated, mMasterModel, &QgsAttributeTableModel::fieldConditionalStyleChanged );
 
   if ( loadFeatures )
-    mMasterModel->loadLayer();
+    mMasterModel->loadLayerPart();
 
   mFilterModel = new QgsAttributeTableFilterModel( mapCanvas, mMasterModel, mMasterModel );
 
@@ -983,7 +983,7 @@ void QgsDualView::updateSelectedFeatures()
 
   r.setFilterFids( masterModel()->layer()->selectedFeatureIds() );
   mMasterModel->setRequest( r );
-  mMasterModel->loadLayer();
+  mMasterModel->loadLayerPart();
   emit filterChanged();
 }
 
@@ -995,7 +995,7 @@ void QgsDualView::extentChanged()
     QgsRectangle rect = mFilterModel->mapCanvas()->mapSettings().mapToLayerCoordinates( mLayer, mFilterModel->mapCanvas()->extent() );
     r.setFilterRect( rect );
     mMasterModel->setRequest( r );
-    mMasterModel->loadLayer();
+    mMasterModel->loadLayerPart();
   }
   emit filterChanged();
 }

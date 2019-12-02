@@ -556,3 +556,8 @@ Qt::ItemFlags QgsAttributeTableFilterModel::flags( const QModelIndex &index ) co
   QModelIndex source_index = mapToSource( index );
   return masterModel()->flags( source_index );
 }
+
+void QgsAttributeTableFilterModel::sliderCheck( int posit )
+{
+  masterModel()->sliderCheck( posit );
+}

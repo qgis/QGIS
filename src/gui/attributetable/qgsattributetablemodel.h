@@ -29,6 +29,7 @@
 #include "qgsattributeeditorcontext.h"
 #include "qgsvectorlayercache.h"
 #include "qgis_gui.h"
+#include "qgssettings.h"
 
 class QgsMapCanvas;
 class QgsMapLayerAction;
@@ -125,9 +126,9 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     /**
      * Resets the model
      *
-     * Alias to loadLayer()
+     * Alias to loadLayerPart()
      */
-    inline void resetModel() { loadLayer(); }
+    inline void resetModel() { loadLayerPart(); }
 
     /**
      * Maps feature id to table row
@@ -258,11 +259,18 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
   public slots:
 
+
     /**
      * Loads the layer into the model
      * Preferably to be called, before using this model as source for any other proxy model
      */
-    virtual void loadLayer();
+    virtual void loadFullLayer();
+
+    /**
+     * Loads partially/incrementally the layer into the model
+     * Preferably to be called, before using this model as source for any other proxy model
+     */
+    virtual void loadLayerPart();
 
     /**
      * Handles updating the model when the conditional style for a field changes.
@@ -270,6 +278,13 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * \since QGIS 2.12
      */
     void fieldConditionalStyleChanged( const QString &fieldName );
+
+    /**
+     * Obtains the position of the scroll bar and check if more features need to be loaded.
+     *
+     * \since QGIS 3.10
+     */
+    virtual void sliderCheck( int position ) SIP_SKIP;
 
   signals:
 
@@ -339,6 +354,10 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     QVector<QgsFieldFormatter *> mFieldFormatters;
     QVector<QVariant> mAttributeWidgetCaches;
     QVector<QVariantMap> mWidgetConfigs;
+    QgsFeatureIterator mFeatureIterator;
+    int mBatchIdx = 0;
+    int mBatchSize = QgsSettings().value( QStringLiteral( "qgis/attributeTableRowSize" ) ).toInt();
+    bool notFinished = true;
 
     QHash<QgsFeatureId, int> mIdRowMap;
     QHash<int, QgsFeatureId> mRowIdMap;

@@ -116,7 +116,7 @@ Remove rows
 %Docstring
 Resets the model
 
-Alias to loadLayer()
+Alias to loadLayerPart()
 %End
 
     int idToRow( QgsFeatureId id ) const;
@@ -251,9 +251,16 @@ Any extra columns need to be implemented by proxy models in front of this model.
 
   public slots:
 
-    virtual void loadLayer();
+
+    virtual void loadFullLayer();
 %Docstring
 Loads the layer into the model
+Preferably to be called, before using this model as source for any other proxy model
+%End
+
+    virtual void loadLayerPart();
+%Docstring
+Loads partially/incrementally the layer into the model
 Preferably to be called, before using this model as source for any other proxy model
 %End
 
@@ -265,6 +272,7 @@ Handles updating the model when the conditional style for a field changes.
 
 .. versionadded:: 2.12
 %End
+
 
   signals:
 

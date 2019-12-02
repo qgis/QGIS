@@ -313,6 +313,7 @@ void QgsFeatureListView::editOtherFeature( QgsFeatureListView::PositionInList po
     setEditSelection( newIndex, QItemSelectionModel::ClearAndSelect );
     scrollTo( newLocalIndex );
   }
+  mModel->sliderCheck( newLocalIndex.row() );
 }
 
 void QgsFeatureListView::contextMenuEvent( QContextMenuEvent *event )

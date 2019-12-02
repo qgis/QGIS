@@ -36,68 +36,46 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="0">
-    <widget class="QFrame" name="mUpdateExpressionBox">
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
-      <property name="spacing">
-       <number>3</number>
-      </property>
-      <property name="leftMargin">
-       <number>3</number>
-      </property>
-      <property name="topMargin">
-       <number>1</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>3</number>
-      </property>
-      <item>
-       <widget class="QgsFieldComboBox" name="mFieldCombo"/>
-      </item>
-      <item>
-       <widget class="QLabel" name="label">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>=</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QgsFieldExpressionWidget" name="mUpdateExpressionText" native="true">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="focusPolicy">
-         <enum>Qt::StrongFocus</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QToolButton" name="mRunFieldCalc">
-        <property name="text">
-         <string>Update All</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QToolButton" name="mRunFieldCalcSelected">
-        <property name="text">
-         <string>Update Selected</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+   <item row="4" column="0">
+    <widget class="QToolBar" name="mToolbar">
+     <property name="iconSize">
+      <size>
+       <width>18</width>
+       <height>18</height>
+      </size>
+     </property>
+     <property name="floatable">
+      <bool>false</bool>
+     </property>
+     <addaction name="mActionToggleEditing"/>
+     <addaction name="mActionToggleMultiEdit"/>
+     <addaction name="mActionSaveEdits"/>
+     <addaction name="mActionReload"/>
+     <addaction name="separator"/>
+     <addaction name="mActionAddFeature"/>
+     <addaction name="mActionDeleteSelected"/>
+     <addaction name="mActionCutSelectedRows"/>
+     <addaction name="mActionCopySelectedRows"/>
+     <addaction name="mActionPasteFeatures"/>
+     <addaction name="separator"/>
+     <addaction name="mActionExpressionSelect"/>
+     <addaction name="mActionSelectAll"/>
+     <addaction name="mActionInvertSelection"/>
+     <addaction name="mActionRemoveSelection"/>
+     <addaction name="mActionSearchForm"/>
+     <addaction name="mActionSelectedToTop"/>
+     <addaction name="mActionPanMapToSelectedRows"/>
+     <addaction name="mActionZoomMapToSelectedRows"/>
+     <addaction name="separator"/>
+     <addaction name="mActionAddAttribute"/>
+     <addaction name="mActionRemoveAttribute"/>
+     <addaction name="mActionOpenFieldCalculator"/>
+     <addaction name="separator"/>
+     <addaction name="mActionSetStyles"/>
+     <addaction name="separator"/>
+     <addaction name="mActionDockUndock"/>
+     <addaction name="separator"/>
+     <addaction name="mActionLoadTable"/>
     </widget>
    </item>
    <item row="8" column="0">
@@ -242,44 +220,68 @@
      </item>
     </layout>
    </item>
-   <item row="4" column="0">
-    <widget class="QToolBar" name="mToolbar">
-     <property name="iconSize">
-      <size>
-       <width>18</width>
-       <height>18</height>
-      </size>
-     </property>
-     <property name="floatable">
-      <bool>false</bool>
-     </property>
-     <addaction name="mActionToggleEditing"/>
-     <addaction name="mActionToggleMultiEdit"/>
-     <addaction name="mActionSaveEdits"/>
-     <addaction name="mActionReload"/>
-     <addaction name="separator"/>
-     <addaction name="mActionAddFeature"/>
-     <addaction name="mActionDeleteSelected"/>
-     <addaction name="mActionCutSelectedRows"/>
-     <addaction name="mActionCopySelectedRows"/>
-     <addaction name="mActionPasteFeatures"/>
-     <addaction name="separator"/>
-     <addaction name="mActionExpressionSelect"/>
-     <addaction name="mActionSelectAll"/>
-     <addaction name="mActionInvertSelection"/>
-     <addaction name="mActionRemoveSelection"/>
-     <addaction name="mActionSearchForm"/>
-     <addaction name="mActionSelectedToTop"/>
-     <addaction name="mActionPanMapToSelectedRows"/>
-     <addaction name="mActionZoomMapToSelectedRows"/>
-     <addaction name="separator"/>
-     <addaction name="mActionAddAttribute"/>
-     <addaction name="mActionRemoveAttribute"/>
-     <addaction name="mActionOpenFieldCalculator"/>
-     <addaction name="separator"/>
-     <addaction name="mActionSetStyles"/>
-     <addaction name="separator"/>
-     <addaction name="mActionDockUndock"/>
+   <item row="5" column="0">
+    <widget class="QFrame" name="mUpdateExpressionBox">
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <property name="spacing">
+       <number>3</number>
+      </property>
+      <property name="leftMargin">
+       <number>3</number>
+      </property>
+      <property name="topMargin">
+       <number>1</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>3</number>
+      </property>
+      <item>
+       <widget class="QgsFieldComboBox" name="mFieldCombo"/>
+      </item>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>=</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QgsFieldExpressionWidget" name="mUpdateExpressionText">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="mRunFieldCalc">
+        <property name="text">
+         <string>Update All</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="mRunFieldCalcSelected">
+        <property name="text">
+         <string>Update Selected</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
@@ -713,8 +715,25 @@
     <string>Edit the stored expression (change name or content)</string>
    </property>
   </action>
+  <action name="mActionLoadTable">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionLoadTable.svg</normaloff>:/images/themes/default/mActionLoadTable.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Load Entire Table</string>
+   </property>
+   <property name="toolTip">
+    <string>Loads the full table</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsFieldComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsfieldcombobox.h</header>
+  </customwidget>
   <customwidget>
    <class>QgsFieldExpressionWidget</class>
    <extends>QWidget</extends>
@@ -731,11 +750,6 @@
    <extends>QStackedWidget</extends>
    <header>qgsdualview.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsFieldComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsfieldcombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

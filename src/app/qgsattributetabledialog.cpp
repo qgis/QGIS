@@ -115,6 +115,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   connect( mActionAddFeature, &QAction::triggered, this, &QgsAttributeTableDialog::mActionAddFeature_triggered );
   connect( mActionExpressionSelect, &QAction::triggered, this, &QgsAttributeTableDialog::mActionExpressionSelect_triggered );
   connect( mMainView, &QgsDualView::showContextMenuExternally, this, &QgsAttributeTableDialog::showContextMenu );
+  connect( mActionLoadTable, &QAction::triggered, this, &QgsAttributeTableDialog::loadFullTable );
 
   const QgsFields fields = mLayer->fields();
   for ( const QgsField &field : fields )
@@ -320,6 +321,8 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   mMainViewButtonGroup->setId( mTableViewButton, QgsDualView::AttributeTable );
   mMainViewButtonGroup->setId( mAttributeViewButton, QgsDualView::AttributeEditor );
 
+  mActionLoadTable->setEnabled( QgsSettings().value( QStringLiteral( "qgis/attributeTableRowSize" ) ).toInt() > 0 );
+
   switch ( initialMode )
   {
     case QgsAttributeTableFilterModel::ShowVisible:
@@ -514,7 +517,7 @@ void QgsAttributeTableDialog::storeExpressionButtonInit()
   {
     mActionHandleStoreFilterExpression->setToolTip( tr( "Delete stored expression" ) );
     mActionHandleStoreFilterExpression->setText( tr( "Delete Stored Expression" ) );
-    mActionHandleStoreFilterExpression->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionHandleStoreFilterExpressionChecked.svg" ) ) );
+    mActionHandleStoreFilterExpression->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionHandleStoreFilterExpressionChecked.svg" ) ) );
     mStoreFilterExpressionButton->removeAction( mActionSaveAsStoredFilterExpression );
     mStoreFilterExpressionButton->addAction( mActionEditStoredFilterExpression );
   }
@@ -522,7 +525,7 @@ void QgsAttributeTableDialog::storeExpressionButtonInit()
   {
     mActionHandleStoreFilterExpression->setToolTip( tr( "Save expression with the text as name" ) );
     mActionHandleStoreFilterExpression->setText( tr( "Save Expression" ) );
-    mActionHandleStoreFilterExpression->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionHandleStoreFilterExpressionUnchecked.svg" ) ) );
+    mActionHandleStoreFilterExpression->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionHandleStoreFilterExpressionUnchecked.svg" ) ) );
     mStoreFilterExpressionButton->addAction( mActionSaveAsStoredFilterExpression );
     mStoreFilterExpressionButton->removeAction( mActionEditStoredFilterExpression );
   }
@@ -1329,6 +1332,12 @@ void QgsAttributeTableDialog::showContextMenu( QgsActionMenu *menu, const QgsFea
     connect( qAction, &QAction::triggered, this, [this, fid]() { deleteFeature( fid ); } );
   }
 }
+
+void QgsAttributeTableDialog::loadFullTable()
+{
+  mMainView->masterModel()->loadFullLayer();
+}
+
 
 void QgsAttributeTableDialog::toggleDockMode( bool docked )
 {

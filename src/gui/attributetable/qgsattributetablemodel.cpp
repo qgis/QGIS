@@ -41,7 +41,7 @@
 #include "qgstexteditwidgetfactory.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsvectorlayerutils.h"
-
+#include "qgssettings.h"
 #include <QVariant>
 
 #include <limits>
@@ -219,7 +219,6 @@ void QgsAttributeTableModel::featureAdded( QgsFeatureId fid )
 {
   QgsDebugMsgLevel( QStringLiteral( "(%2) fid: %1" ).arg( fid ).arg( mFeatureRequest.filterType() ), 4 );
   bool featOk = true;
-
   if ( mFeat.id() != fid )
     featOk = loadFeatureAtId( fid );
 
@@ -432,7 +431,7 @@ void QgsAttributeTableModel::loadAttributes()
   }
 }
 
-void QgsAttributeTableModel::loadLayer()
+void QgsAttributeTableModel::loadFullLayer()
 {
   // make sure attributes are properly updated before caching the data
   // (emit of progress() signal may enter event loop and thus attribute
@@ -444,7 +443,7 @@ void QgsAttributeTableModel::loadLayer()
   mResettingModel = true;
   beginResetModel();
 
-  if ( rowCount() != 0 )
+  if ( rowCount() != 0 && mBatchIdx == 0 )
   {
     removeRows( 0, rowCount() );
   }
@@ -452,14 +451,14 @@ void QgsAttributeTableModel::loadLayer()
   // Layer might have been deleted and cache set to nullptr!
   if ( mLayerCache )
   {
-    QgsFeatureIterator features = mLayerCache->getFeatures( mFeatureRequest );
+    mFeatureIterator = mLayerCache->getFeatures( mFeatureRequest );
 
     int i = 0;
 
     QTime t;
     t.start();
 
-    while ( features.nextFeature( mFeat ) )
+    while ( mFeatureIterator.nextFeature( mFeat ) )
     {
       ++i;
 
@@ -476,7 +475,7 @@ void QgsAttributeTableModel::loadLayer()
     }
 
     emit finished();
-    connect( mLayerCache, &QgsVectorLayerCache::invalidated, this, &QgsAttributeTableModel::loadLayer, Qt::UniqueConnection );
+    connect( mLayerCache, &QgsVectorLayerCache::invalidated, this, &QgsAttributeTableModel::loadFullLayer, Qt::UniqueConnection );
   }
 
   endResetModel();
@@ -484,6 +483,47 @@ void QgsAttributeTableModel::loadLayer()
   mResettingModel = false;
 }
 
+void QgsAttributeTableModel::loadLayerPart()
+{
+  // make sure attributes are properly updated before caching the data
+  // (emit of progress() signal may enter event loop and thus attribute
+  // table view may be updated with inconsistent model which may assume
+  // wrong number of attributes)
+  if ( mBatchSize < 100 )
+  {
+    loadFullLayer();
+    return;
+  }
+
+  mBatchIdx += 1;
+  beginResetModel();
+
+  // Layer might have been deleted and cache set to nullptr!
+  if ( mLayerCache )
+  {
+    if ( mBatchIdx == 1 )
+    {
+      mFeatureIterator = mLayerCache->getFeatures( mFeatureRequest );
+    }
+
+    int i = 0;
+    while ( notFinished && i <= mBatchSize )
+    {
+      notFinished = mFeatureIterator.nextFeature( mFeat );
+      if ( notFinished )
+      {
+        ++i;
+        featureAdded( mFeat.id() );
+      }
+    }
+    if ( !notFinished )
+    {
+      emit finished();
+      connect( mLayerCache, &QgsVectorLayerCache::invalidated, this, &QgsAttributeTableModel::loadLayerPart, Qt::UniqueConnection );
+    }
+  }
+  endResetModel();
+}
 
 void QgsAttributeTableModel::fieldConditionalStyleChanged( const QString &fieldName )
 {
@@ -972,4 +1012,14 @@ void QgsAttributeTableModel::setRequest( const QgsFeatureRequest &request )
 const QgsFeatureRequest &QgsAttributeTableModel::request() const
 {
   return mFeatureRequest;
+}
+
+
+void QgsAttributeTableModel::sliderCheck( int position )
+{
+  if ( mBatchSize != 0 && notFinished )
+  {
+    if ( position >= ( ( mRowIdMap.size() ) - 65 ) )
+      loadLayerPart();
+  }
 }

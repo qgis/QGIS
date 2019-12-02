@@ -18,6 +18,7 @@
 #include <QMenu>
 #include <QToolButton>
 #include <QHBoxLayout>
+#include <QScrollBar>
 
 #include "qgssettings.h"
 #include "qgsactionmanager.h"
@@ -162,6 +163,7 @@ void QgsAttributeTableView::setModel( QgsAttributeTableFilterModel *filterModel 
     connect( mFilterModel->layer(), &QgsVectorLayer::editingStarted, this, &QgsAttributeTableView::recreateActionWidgets );
     connect( mFilterModel->layer(), &QgsVectorLayer::editingStopped, this, &QgsAttributeTableView::recreateActionWidgets );
     connect( mFilterModel->layer(), &QgsVectorLayer::readOnlyChanged, this, &QgsAttributeTableView::recreateActionWidgets );
+    connect( verticalScrollBar(), &QScrollBar::valueChanged, this, &QgsAttributeTableView::sliderCheck );
   }
 }
 
@@ -481,4 +483,9 @@ void QgsAttributeTableView::recreateActionWidgets()
     setIndexWidget( it.key(), nullptr );
   }
   mActionWidgets.clear();
+}
+
+void QgsAttributeTableView::sliderCheck( int posit )
+{
+  mFilterModel->sliderCheck( posit );
 }

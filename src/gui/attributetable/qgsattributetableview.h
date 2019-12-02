@@ -172,6 +172,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     void columnSizeChanged( int index, int oldWidth, int newWidth );
     void onActionColumnItemPainted( const QModelIndex &index );
     void recreateActionWidgets();
+    void sliderCheck( int posit );
 
   private:
     void updateActionImage( QWidget *widget );

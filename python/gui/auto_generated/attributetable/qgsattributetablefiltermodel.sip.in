@@ -240,6 +240,7 @@ Is called upon every change of the visible extents on the map canvas.
 When a change is signalled, the filter is updated and invalidated if needed.
 %End
 
+
 };
 
 /************************************************************************

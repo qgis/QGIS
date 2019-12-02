@@ -260,6 +260,13 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      */
     void extentsChanged();
 
+    /**
+     * Obtains the position of the scroll bar and check if more features need to be loaded.
+     *
+     * \since QGIS 3.10
+     */
+    void sliderCheck( int posit ) SIP_SKIP;
+
   private slots:
     void selectionChanged();
     void onColumnsChanged();

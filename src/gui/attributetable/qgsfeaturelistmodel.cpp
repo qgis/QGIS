@@ -415,3 +415,8 @@ QModelIndexList QgsFeatureListModel::fidToIndexList( QgsFeatureId fid )
 {
   return QModelIndexList() << fidToIndex( fid );
 }
+
+void QgsFeatureListModel::sliderCheck( int position )
+{
+  mFilterModel->sliderCheck( position );
+}

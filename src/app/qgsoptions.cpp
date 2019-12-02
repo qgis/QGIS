@@ -419,6 +419,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   spinBoxAttrTableRowCache->setValue( mSettings->value( QStringLiteral( "/qgis/attributeTableRowCache" ), 10000 ).toInt() );
   spinBoxAttrTableRowCache->setSpecialValueText( tr( "All" ) );
 
+  spinBoxAttrTableRowSize->setValue( mSettings->value( QStringLiteral( "/qgis/attributeTableRowSize" ), 0 ).toInt() );
+  spinBoxAttrTableRowSize->setSpecialValueText( tr( "All" ) );
   // set the prompt for raster sublayers
   // 0 = Always -> always ask (if there are existing sublayers)
   // 1 = If needed -> ask if layer has no bands, but has sublayers
@@ -1471,6 +1473,7 @@ void QgsOptions::saveOptions()
   mSettings->setEnumValue( QStringLiteral( "/qgis/attributeTableBehavior" ), ( QgsAttributeTableFilterModel::FilterMode )cmbAttrTableBehavior->currentData().toInt() );
   mSettings->setValue( QStringLiteral( "/qgis/attributeTableView" ), mAttrTableViewComboBox->currentData() );
   mSettings->setValue( QStringLiteral( "/qgis/attributeTableRowCache" ), spinBoxAttrTableRowCache->value() );
+  mSettings->setValue( QStringLiteral( "/qgis/attributeTableRowSize" ), spinBoxAttrTableRowSize->value() );
   mSettings->setValue( QStringLiteral( "/qgis/promptForRasterSublayers" ), cmbPromptRasterSublayers->currentIndex() );
   mSettings->setValue( QStringLiteral( "/qgis/scanItemsInBrowser2" ),
                        cmbScanItemsInBrowser->currentData().toString() );

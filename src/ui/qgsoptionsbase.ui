@@ -332,7 +332,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>3</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -361,8 +361,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>848</width>
-                <height>943</height>
+                <width>856</width>
+                <height>831</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -1078,8 +1078,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>545</width>
-                <height>1114</height>
+                <width>429</width>
+                <height>1009</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1614,8 +1614,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>857</width>
-                <height>827</height>
+                <width>441</width>
+                <height>442</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -1827,8 +1827,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>533</width>
-                <height>678</height>
+                <width>856</width>
+                <height>831</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1838,58 +1838,26 @@
                   <string>Feature attributes and table</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_19">
-                  <item row="0" column="0" colspan="2">
-                   <widget class="QCheckBox" name="cbxAttributeTableDocked">
-                    <property name="text">
-                     <string>Open new attribute tables as docked windows</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="1">
-                   <widget class="QComboBox" name="cmbAttrTableBehavior">
-                    <item>
-                     <property name="text">
-                      <string/>
-                     </property>
-                    </item>
-                   </widget>
-                  </item>
-                  <item row="3" column="0">
-                   <widget class="QLabel" name="textLabel1_7">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>Attribute table behavior</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="6" column="0">
-                   <widget class="QLabel" name="label_14">
-                    <property name="text">
-                     <string>Representation for NULL values</string>
-                    </property>
-                   </widget>
-                  </item>
+                  <property name="leftMargin">
+                   <number>9</number>
+                  </property>
+                  <property name="horizontalSpacing">
+                   <number>12</number>
+                  </property>
                   <item row="4" column="1">
                    <widget class="QComboBox" name="mAttrTableViewComboBox"/>
                   </item>
-                  <item row="6" column="1">
-                   <widget class="QLineEdit" name="leNullValue"/>
-                  </item>
-                  <item row="5" column="0">
-                   <widget class="QLabel" name="textLabel1_12">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="label_48">
                     <property name="text">
-                     <string>Attribute table row cache</string>
+                     <string>Copy features as</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="7" column="0">
+                   <widget class="QLabel" name="label_14">
+                    <property name="text">
+                     <string>Representation for NULL values</string>
                     </property>
                    </widget>
                   </item>
@@ -1926,9 +1894,6 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="2" column="1">
-                   <widget class="QComboBox" name="mComboCopyFeatureFormat"/>
-                  </item>
                   <item row="4" column="0">
                    <widget class="QLabel" name="label_46">
                     <property name="text">
@@ -1936,10 +1901,112 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="label_48">
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="textLabel1_7">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
                     <property name="text">
-                     <string>Copy features as</string>
+                     <string>Attribute table behavior</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="0">
+                   <widget class="QLabel" name="textLabel1_12">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>Attribute table row cache</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0" colspan="2">
+                   <widget class="QCheckBox" name="cbxAttributeTableDocked">
+                    <property name="text">
+                     <string>Open new attribute tables as docked windows</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="1">
+                   <widget class="QComboBox" name="cmbAttrTableBehavior">
+                    <item>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </item>
+                   </widget>
+                  </item>
+                  <item row="7" column="1">
+                   <widget class="QLineEdit" name="leNullValue"/>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QComboBox" name="mComboCopyFeatureFormat"/>
+                  </item>
+                  <item row="6" column="1">
+                   <layout class="QHBoxLayout" name="horizontalLayout_3">
+                    <property name="spacing">
+                     <number>6</number>
+                    </property>
+                    <item>
+                     <widget class="QSpinBox" name="spinBoxAttrTableRowSize">
+                      <property name="enabled">
+                       <bool>true</bool>
+                      </property>
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>75</width>
+                        <height>0</height>
+                       </size>
+                      </property>
+                      <property name="baseSize">
+                       <size>
+                        <width>75</width>
+                        <height>0</height>
+                       </size>
+                      </property>
+                      <property name="toolTip">
+                       <string extracomment="Set the number of rows to display at first and the number to load when scrolling down. 0(default) loads the full table. Values are rounded to the nearest 100. "/>
+                      </property>
+                      <property name="maximum">
+                       <number>999999</number>
+                      </property>
+                      <property name="singleStep">
+                       <number>100</number>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_10">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </item>
+                  <item row="6" column="0">
+                   <widget class="QLabel" name="label_67">
+                    <property name="text">
+                     <string>Rows to load initially</string>
                     </property>
                    </widget>
                   </item>
@@ -1952,13 +2019,24 @@
                   <string>Data source handling</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_23" columnstretch="0,2,1,0">
-                  <item row="0" column="2">
-                   <widget class="QComboBox" name="cmbScanItemsInBrowser"/>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_30">
+                    <property name="text">
+                     <string>Scan for valid items in the browser dock</string>
+                    </property>
+                   </widget>
                   </item>
                   <item row="1" column="0">
                    <widget class="QLabel" name="label_29">
                     <property name="text">
                      <string>Scan for contents of compressed files (.zip) in browser dock</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="2">
+                   <widget class="QComboBox" name="cmbScanZipInBrowser">
+                    <property name="currentIndex">
+                     <number>-1</number>
                     </property>
                    </widget>
                   </item>
@@ -1973,6 +2051,18 @@
                     <property name="text">
                      <string>Prompt for raster sublayers when opening</string>
                     </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="2">
+                   <widget class="QComboBox" name="cmbScanItemsInBrowser"/>
+                  </item>
+                  <item row="2" column="2">
+                   <widget class="QComboBox" name="cmbPromptRasterSublayers">
+                    <item>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </item>
                    </widget>
                   </item>
                   <item row="6" column="0" colspan="4">
@@ -1992,13 +2082,6 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="2">
-                   <widget class="QComboBox" name="cmbScanZipInBrowser">
-                    <property name="currentIndex">
-                     <number>-1</number>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="7" column="0" colspan="4">
                    <widget class="QCheckBox" name="cbxEvaluateDefaultValues">
                     <property name="toolTip">
@@ -2006,22 +2089,6 @@
                     </property>
                     <property name="text">
                      <string>Evaluate default values</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="2">
-                   <widget class="QComboBox" name="cmbPromptRasterSublayers">
-                    <item>
-                     <property name="text">
-                      <string/>
-                     </property>
-                    </item>
-                   </widget>
-                  </item>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label_30">
-                    <property name="text">
-                     <string>Scan for valid items in the browser dock</string>
                     </property>
                    </widget>
                   </item>
@@ -2143,8 +2210,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>702</width>
-                <height>1139</height>
+                <width>541</width>
+                <height>909</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_22">
@@ -2929,8 +2996,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>532</width>
-                <height>309</height>
+                <width>856</width>
+                <height>831</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3240,8 +3307,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>611</width>
-                <height>652</height>
+                <width>510</width>
+                <height>518</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3684,8 +3751,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>181</width>
-                <height>318</height>
+                <width>138</width>
+                <height>247</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -3852,8 +3919,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>574</width>
-                <height>827</height>
+                <width>856</width>
+                <height>831</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4461,8 +4528,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>472</width>
-                <height>572</height>
+                <width>399</width>
+                <height>490</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -4730,8 +4797,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>509</width>
-                <height>367</height>
+                <width>856</width>
+                <height>831</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -4899,8 +4966,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>640</width>
-                <height>753</height>
+                <width>856</width>
+                <height>831</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -5401,7 +5468,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.SF NS Text'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Noto Sans'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>

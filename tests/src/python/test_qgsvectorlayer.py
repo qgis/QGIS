@@ -1675,11 +1675,11 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         # joined layer
         cache = QgsVectorLayerCache(layer, 100)
         am = QgsAttributeTableModel(cache)
-        am.loadLayer()
+        am.loadFullLayer()
 
         join_cache = QgsVectorLayerCache(join_layer, 100)
         join_am = QgsAttributeTableModel(join_cache)
-        join_am.loadLayer()
+        join_am.loadFullLayer()
 
         # check feature value of a joined field from the attribute model
         model_index = am.idToIndex(fid)
@@ -1704,7 +1704,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         # a new attribute table
         cache = QgsVectorLayerCache(layer, 100)
         am = QgsAttributeTableModel(cache)
-        am.loadLayer()
+        am.loadFullLayer()
 
         # test that the model is up to date with the joined layer
         model_index = am.idToIndex(fid)

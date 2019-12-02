@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+  <defs/>
+  <path fill="#e6e6e6" stroke="#6e97c4" d="M2.5 7.5h19v14h-19z"/>
+  <path fill="#bad9ec" stroke="#6e97c4" d="M2.5 2.5h19v5h-19z"/>
+  <path fill="none" stroke="#6e97c4" stroke-width="2" d="M5 5h4" overflow="visible"/>
+  <path fill="none" stroke="#6e97c4" stroke-width="2" d="M11 5h8"/>
+  <path fill="none" stroke="#6e97c4" d="M5 9.5h4" overflow="visible"/>
+  <path fill="none" stroke="#6e97c4" d="M11 9.5h8"/>
+  <path fill="none" stroke="#6e97c4" d="M5 12.5h4" overflow="visible"/>
+  <path fill="none" stroke="#6e97c4" d="M11 12.5h8"/>
+  <path fill="none" stroke="#6e97c4" d="M5 15.5h4" overflow="visible"/>
+  <path fill="none" stroke="#6e97c4" d="M11 15.5h8"/>
+  <path fill="none" stroke="#6e97c4" d="M5 18.5h4" overflow="visible"/>
+  <path fill="none" stroke="#6e97c4" d="M11 18.5h8"/>
+  <path fill="#6d97c4" fill-rule="evenodd" stroke="#415a75" stroke-linejoin="round" stroke-width=".61" d="M19.157 22.644l4.669-7.305-3.066-.05.046-4.92-3.066-.05-.046 4.92-3.067-.05z"/>
+</svg>

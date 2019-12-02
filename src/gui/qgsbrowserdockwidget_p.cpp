@@ -278,7 +278,7 @@ void QgsBrowserLayerProperties::loadAttributeTable()
   tableModel->setParent( mAttributeTableFilterModel );
 
   mAttributeTable->setModel( mAttributeTableFilterModel );
-  tableModel->loadLayer();
+  tableModel->loadLayerPart();
   QFont font = mAttributeTable->font();
   int fontSize = font.pointSize();
 #ifdef Q_OS_WIN

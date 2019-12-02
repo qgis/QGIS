@@ -185,6 +185,13 @@ class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsF
      */
     Q_DECL_DEPRECATED void onEndInsertRows( const QModelIndex &parent, int first, int last );
 
+    /**
+     * Obtains the position of the scroll bar and check if more features need to be loaded.
+     *
+     * \since QGIS 3.10
+     */
+    virtual void sliderCheck( int position ) SIP_SKIP;
+
   private slots:
 
     void conditionalStylesChanged();

@@ -307,6 +307,7 @@
         <file>themes/default/mActionKeyboardShortcuts.svg</file>
         <file>themes/default/mActionLabel.svg</file>
         <file>themes/default/mActionLabeling.svg</file>
+        <file>themes/default/mActionLoadTable.svg</file>
         <file>themes/default/mActionLocalCumulativeCutStretch.svg</file>
         <file>themes/default/mActionLocalHistogramStretch.svg</file>
         <file>themes/default/mActionLockItems.svg</file>
