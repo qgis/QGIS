@@ -45,7 +45,6 @@ Layer::Layer( QgsAbstractLabelProvider *provider, const QString &name, QgsPalLay
   : mProvider( provider )
   , mName( name )
   , pal( pal )
-  , mObstacleType( QgsPalLayerSettings::PolygonInterior )
   , mActive( active )
   , mLabelLayer( toLabel )
   , mDisplayAll( displayAll )

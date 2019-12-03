@@ -142,7 +142,7 @@ class CORE_EXPORT QgsAbstractLabelProvider
     double priority() const { return mPriority; }
 
     //! How the feature geometries will work as obstacles
-    QgsPalLayerSettings::ObstacleType obstacleType() const { return mObstacleType; }
+    QgsLabelObstacleSettings::ObstacleType obstacleType() const { return mObstacleType; }
 
     //! How to handle labels that would be upside down
     QgsPalLayerSettings::UpsideDownLabels upsidedownLabels() const { return mUpsidedownLabels; }
@@ -166,7 +166,7 @@ class CORE_EXPORT QgsAbstractLabelProvider
     //! Default priority of labels
     double mPriority;
     //! Type of the obstacle of feature geometries
-    QgsPalLayerSettings::ObstacleType mObstacleType;
+    QgsLabelObstacleSettings::ObstacleType mObstacleType = QgsLabelObstacleSettings::PolygonBoundary;
     //! How to handle labels that would be upside down
     QgsPalLayerSettings::UpsideDownLabels mUpsidedownLabels;
 };

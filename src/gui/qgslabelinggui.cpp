@@ -287,11 +287,11 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mOverrunDistanceUnitWidget->setMapUnitScale( mSettings.overrunDistanceMapUnitScale );
 
   mPrioritySlider->setValue( mSettings.priority );
-  mChkNoObstacle->setChecked( mSettings.obstacle );
-  mObstacleFactorSlider->setValue( mSettings.obstacleFactor * 5 );
-  mObstacleTypeComboBox->setCurrentIndex( mObstacleTypeComboBox->findData( mSettings.obstacleType ) );
-  mPolygonObstacleTypeFrame->setEnabled( mSettings.obstacle );
-  mObstaclePriorityFrame->setEnabled( mSettings.obstacle );
+  mChkNoObstacle->setChecked( mSettings.obstacleSettings().isObstacle() );
+  mObstacleFactorSlider->setValue( mSettings.obstacleSettings().factor() * 5 );
+  mObstacleTypeComboBox->setCurrentIndex( mObstacleTypeComboBox->findData( mSettings.obstacleSettings().type() ) );
+  mPolygonObstacleTypeFrame->setEnabled( mSettings.obstacleSettings().isObstacle() );
+  mObstaclePriorityFrame->setEnabled( mSettings.obstacleSettings().isObstacle() );
   chkLabelPerFeaturePart->setChecked( mSettings.labelPerPart );
   mPalShowAllLabelsForLayerChkBx->setChecked( mSettings.displayAll );
   chkMergeLines->setChecked( mSettings.mergeLines );
@@ -488,9 +488,9 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.overrunDistanceMapUnitScale = mOverrunDistanceUnitWidget->getMapUnitScale();
 
   lyr.priority = mPrioritySlider->value();
-  lyr.obstacle = mChkNoObstacle->isChecked() || mMode == ObstaclesOnly;
-  lyr.obstacleFactor = mObstacleFactorSlider->value() / 5.0;
-  lyr.obstacleType = ( QgsPalLayerSettings::ObstacleType )mObstacleTypeComboBox->currentData().toInt();
+  lyr.obstacleSettings().setIsObstacle( mChkNoObstacle->isChecked() || mMode == ObstaclesOnly );
+  lyr.obstacleSettings().setFactor( mObstacleFactorSlider->value() / 5.0 );
+  lyr.obstacleSettings().setType( static_cast< QgsLabelObstacleSettings::ObstacleType >( mObstacleTypeComboBox->currentData().toInt() ) );
   lyr.labelPerPart = chkLabelPerFeaturePart->isChecked();
   lyr.displayAll = mPalShowAllLabelsForLayerChkBx->isChecked();
   lyr.mergeLines = chkMergeLines->isChecked();

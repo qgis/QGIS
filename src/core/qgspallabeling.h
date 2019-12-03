@@ -42,6 +42,7 @@
 #include "qgssymbol.h"
 #include "qgstextrenderer.h"
 #include "qgspropertycollection.h"
+#include "qgslabelobstaclesettings.h"
 
 namespace pal SIP_SKIP
 {
@@ -193,7 +194,6 @@ class CORE_EXPORT QgsLabelPosition
     bool isUnplaced = false;
 };
 
-
 /**
  * \ingroup core
  * \class QgsPalLayerSettings
@@ -311,7 +311,7 @@ class CORE_EXPORT QgsPalLayerSettings
                                will be drawn with right alignment*/
     };
 
-    //TODO QGIS 4.0 - Move to QgsLabelingEngine
+    //TODO QGIS 4.0 - Remove -- moved to QgsLabelEngineObstacleSettings
 
     /**
      * Valid obstacle types, which affect how features within the layer will act as obstacles
@@ -885,27 +885,23 @@ class CORE_EXPORT QgsPalLayerSettings
      */
     double minFeatureSize = 0;
 
-    /**
-     * TRUE if features for layer are obstacles to labels of other layers.
-     * \see obstacleFactor
-     * \see obstacleType
-     */
-    bool obstacle = true;
+    // TODO QGIS 4.0 - remove this junk
 
-    /**
-     * Obstacle factor, where 1.0 = default, < 1.0 more likely to be covered by labels,
-     * > 1.0 less likely to be covered
-     * \see obstacle
-     * \see obstacleType
-     */
-    double obstacleFactor = 1.0;
+#ifdef SIP_RUN
+    SIP_PROPERTY( name = obstacle, get = _getIsObstacle, set = _setIsObstacle )
+    SIP_PROPERTY( name = obstacleFactor, get = _getObstacleFactor, set = _setObstacleFactor )
+    SIP_PROPERTY( name = obstacleType, get = _getObstacleType, set = _setObstacleType )
+#endif
 
-    /**
-     * Controls how features act as obstacles for labels.
-     * \see obstacle
-     * \see obstacleFactor
-     */
-    ObstacleType obstacleType = PolygonBoundary;
+    ///@cond PRIVATE
+    bool _getIsObstacle() const { return mObstacleSettings.isObstacle(); }
+    void _setIsObstacle( bool obstacle ) { mObstacleSettings.setIsObstacle( obstacle ); }
+    double _getObstacleFactor() const { return mObstacleSettings.factor(); }
+    void _setObstacleFactor( double factor ) { mObstacleSettings.setFactor( factor ); }
+    ObstacleType _getObstacleType() const { return static_cast< ObstacleType>( mObstacleSettings.type() ); }
+    void _setObstacleType( ObstacleType type ) { mObstacleSettings.setType( static_cast< QgsLabelObstacleSettings::ObstacleType>( type ) ); }
+
+    ///@endcond
 
     //! Z-Index of label, where labels with a higher z-index are rendered on top of labels with a lower z-index
     double zIndex = 0;
@@ -1024,6 +1020,28 @@ class CORE_EXPORT QgsPalLayerSettings
     void setCallout( QgsCallout *callout SIP_TRANSFER );
 
     /**
+     * Returns the label obstacle settings.
+     * \see setObstacleSettings()
+     * \note Not available in Python bindings
+     * \since QGIS 3.10.2
+     */
+    const QgsLabelObstacleSettings &obstacleSettings() const { return mObstacleSettings; } SIP_SKIP
+
+    /**
+     * Returns the label obstacle settings.
+     * \see setObstacleSettings()
+     * \since QGIS 3.10.2
+     */
+    QgsLabelObstacleSettings &obstacleSettings() { return mObstacleSettings; }
+
+    /**
+     * Sets the label obstacle \a settings.
+     * \see obstacleSettings()
+     * \since QGIS 3.10.2
+     */
+    void setObstacleSettings( const QgsLabelObstacleSettings &settings ) { mObstacleSettings = settings; }
+
+    /**
     * Returns a pixmap preview for label \a settings.
     * \param settings label settings
     * \param size target pixmap size
@@ -1125,6 +1143,8 @@ class CORE_EXPORT QgsPalLayerSettings
     QgsTextFormat mFormat;
 
     std::unique_ptr< QgsCallout > mCallout;
+
+    QgsLabelObstacleSettings mObstacleSettings;
 
     QgsExpression mGeometryGeneratorExpression;
 
@@ -1292,5 +1312,6 @@ class CORE_EXPORT QgsPalLabeling
 
     friend class QgsPalLayerSettings;
 };
+
 
 #endif // QGSPALLABELING_H
