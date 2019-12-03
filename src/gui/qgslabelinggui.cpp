@@ -336,8 +336,6 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
 
   mObstacleSettings = mSettings.obstacleSettings();
 
-  mPolygonObstacleTypeFrame->setEnabled( mSettings.obstacleSettings().isObstacle() );
-  mObstaclePriorityFrame->setEnabled( mSettings.obstacleSettings().isObstacle() );
   chkLabelPerFeaturePart->setChecked( mSettings.labelPerPart );
   mPalShowAllLabelsForLayerChkBx->setChecked( mSettings.displayAll );
   chkMergeLines->setChecked( mSettings.mergeLines );
@@ -770,7 +768,6 @@ void QgsLabelingGui::updateGeometryTypeBasedWidgets()
   chkMergeLines->setVisible( geometryType == QgsWkbTypes::LineGeometry );
   mDirectSymbolsFrame->setVisible( geometryType == QgsWkbTypes::LineGeometry );
   mMinSizeFrame->setVisible( geometryType != QgsWkbTypes::PointGeometry );
-  mPolygonObstacleTypeFrame->setVisible( geometryType == QgsWkbTypes::PolygonGeometry );
   mPolygonFeatureOptionsFrame->setVisible( geometryType == QgsWkbTypes::PolygonGeometry );
 
 

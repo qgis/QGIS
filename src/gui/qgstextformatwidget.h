@@ -288,7 +288,6 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     void mPreviewBackgroundBtn_colorChanged( const QColor &color );
     void mDirectSymbLeftToolBtn_clicked();
     void mDirectSymbRightToolBtn_clicked();
-    void mChkNoObstacle_toggled( bool active );
     void chkLineOrientationDependent_toggled( bool active );
     void mToolButtonConfigureSubstitutes_clicked();
     void collapseSample( bool collapse );
