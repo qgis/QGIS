@@ -135,16 +135,16 @@ void TestQgsLabelingEngine::testEngineSettings()
   // getters/setters
   QgsLabelingEngineSettings settings;
 
-  // default for new projects should be placement engine v1 (for now!)
-  QCOMPARE( settings.placementVersion(), QgsLabelingEngineSettings::PlacementEngineVersion1 );
+  // default for new projects should be placement engine v2
+  QCOMPARE( settings.placementVersion(), QgsLabelingEngineSettings::PlacementEngineVersion2 );
 
   settings.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
   QCOMPARE( settings.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
   settings.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysOutlines );
   QCOMPARE( settings.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
 
-  settings.setPlacementVersion( QgsLabelingEngineSettings::PlacementEngineVersion2 );
-  QCOMPARE( settings.placementVersion(), QgsLabelingEngineSettings::PlacementEngineVersion2 );
+  settings.setPlacementVersion( QgsLabelingEngineSettings::PlacementEngineVersion1 );
+  QCOMPARE( settings.placementVersion(), QgsLabelingEngineSettings::PlacementEngineVersion1 );
 
   settings.setFlag( QgsLabelingEngineSettings::DrawUnplacedLabels, true );
   QVERIFY( settings.testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) );
@@ -159,7 +159,7 @@ void TestQgsLabelingEngine::testEngineSettings()
   settings.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
   settings.setFlag( QgsLabelingEngineSettings::DrawUnplacedLabels, true );
   settings.setUnplacedLabelColor( QColor( 0, 255, 0 ) );
-  settings.setPlacementVersion( QgsLabelingEngineSettings::PlacementEngineVersion2 );
+  settings.setPlacementVersion( QgsLabelingEngineSettings::PlacementEngineVersion1 );
   settings.writeSettingsToProject( &p );
   QgsLabelingEngineSettings settings2;
   settings2.readSettingsFromProject( &p );
@@ -173,7 +173,7 @@ void TestQgsLabelingEngine::testEngineSettings()
   settings2.readSettingsFromProject( &p );
   QCOMPARE( settings2.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
   QVERIFY( !settings2.testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) );
-  QCOMPARE( settings2.placementVersion(), QgsLabelingEngineSettings::PlacementEngineVersion2 );
+  QCOMPARE( settings2.placementVersion(), QgsLabelingEngineSettings::PlacementEngineVersion1 );
 
   // test that older setting is still respected as a fallback
   QgsProject p2;
