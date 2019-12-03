@@ -1,0 +1,53 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsemfrenderer.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsEmfRenderer
+{
+%Docstring
+
+Utility class for rendering EMF picture content to QPainter devices.
+
+.. versionadded:: 3.10.2
+%End
+
+%TypeHeaderCode
+#include "qgsemfrenderer.h"
+%End
+  public:
+
+    QgsEmfRenderer( const QString &filename );
+%Docstring
+Constructor for QgsEmfRenderer, using the EMF file with the specified ``filename``.
+%End
+
+    QgsEmfRenderer( const QByteArray &contents );
+%Docstring
+Constructor for QgsEmfRenderer, using the EMF content from a byte array.
+%End
+
+    bool render( QPainter *painter, QSizeF size, bool keepAspectRatio = false );
+%Docstring
+Renders the EMF content to the specified ``painter``.
+
+Returns ``True`` if the rendering was successful.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsemfrenderer.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

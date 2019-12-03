@@ -51,6 +51,7 @@
 %Include auto_generated/qgseditformconfig.sip
 %Include auto_generated/qgseditorwidgetsetup.sip
 %Include auto_generated/qgsellipsoidutils.sip
+%Include auto_generated/qgsemfrenderer.sip
 %Include auto_generated/qgserror.sip
 %Include auto_generated/qgsexpressioncontext.sip
 %Include auto_generated/qgsexpressioncontextgenerator.sip

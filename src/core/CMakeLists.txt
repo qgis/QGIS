@@ -17,6 +17,16 @@ SET(QGIS_CORE_SRCS
   ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/sweep_context.cc
   ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/sweep.cc
 
+  ${CMAKE_SOURCE_DIR}/external/libqemf/src/Bitmap.cpp
+  ${CMAKE_SOURCE_DIR}/external/libqemf/src/BitmapHeader.cpp
+  ${CMAKE_SOURCE_DIR}/external/libqemf/src/EmfHeader.cpp
+  ${CMAKE_SOURCE_DIR}/external/libqemf/src/EmfLogger.cpp
+  ${CMAKE_SOURCE_DIR}/external/libqemf/src/EmfObjects.cpp
+  ${CMAKE_SOURCE_DIR}/external/libqemf/src/EmfOutput.cpp
+  ${CMAKE_SOURCE_DIR}/external/libqemf/src/EmfParser.cpp
+  ${CMAKE_SOURCE_DIR}/external/libqemf/src/EmfRecords.cpp
+  ${CMAKE_SOURCE_DIR}/external/libqemf/src/QEmfRenderer.cpp
+
   callouts/qgscallout.cpp
   callouts/qgscalloutsregistry.cpp
 
@@ -230,6 +240,7 @@ SET(QGIS_CORE_SRCS
   qgsdistancearea.cpp
   qgseditformconfig.cpp
   qgsellipsoidutils.cpp
+  qgsemfrenderer.cpp
   qgserror.cpp
   qgseventtracing.cpp
   qgsexpressioncontext.cpp
@@ -711,6 +722,7 @@ SET(QGIS_CORE_HDRS
   qgseditformconfig.h
   qgseditorwidgetsetup.h
   qgsellipsoidutils.h
+  qgsemfrenderer.h
   qgserror.h
   qgseventtracing.h
   qgsexception.h
@@ -1325,6 +1337,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/external/kdbush/include
   ${CMAKE_SOURCE_DIR}/external/nmea
   ${CMAKE_SOURCE_DIR}/external/poly2tri
+  ${CMAKE_SOURCE_DIR}/external/libqemf/src
 )
 
 INCLUDE_DIRECTORIES(SYSTEM

@@ -1,0 +1,28 @@
+libqemf
+------------------------
+2017-06-06 - Release 0.6: 
+- Fixed rendering of the cap and join style for pens.
+- Fixed rendering of pens with incorrect input width (larger than INT_MAX).
+- Improved EmfViewer demo application: added support for zooming in/out using Ctrl-key + mouse wheel.
+------------------------
+2016-09-05 - Release 0.5:
+Improved EmfViewer demo application: 
+- Added drag and drop support
+- Added support for converting metafiles to EPS, PDF and SVG vector formats and to QPictures (*.pic)
+- Added a context menu
+------------------------
+2016-06-02 - Release 0.4:
+- Fixed rendering of pen width.
+- Highly improved viewer demo application.
+------------------------
+2016-05-22 - Release 0.3:
+- Added support for EMR_ALPHABLEND records.
+------------------------
+2015-11-14 - Release 0.2:
+- On Windows systems the viewer test application also opens WMF files.
+- Fixed bug in text rendering.
+- Improved support for Unicode texts.
+- Fixed drawing of images having a transparency mask.
+- Fixed building process on Windows.
+------------------------
+2015-09-18 - Release 0.1: Initial release.
