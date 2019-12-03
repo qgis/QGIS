@@ -66,15 +66,15 @@ void CostCalculator::addObstacleCostPenalty( LabelPosition *lp, FeaturePart *obs
       // behavior depends on obstacle avoid type
       switch ( obstacle->layer()->obstacleType() )
       {
-        case QgsPalLayerSettings::PolygonInterior:
+        case QgsLabelObstacleSettings::PolygonInterior:
           // n ranges from 0 -> 12
           n = lp->polygonIntersectionCost( obstacle );
           break;
-        case QgsPalLayerSettings::PolygonBoundary:
+        case QgsLabelObstacleSettings::PolygonBoundary:
           // penalty may need tweaking, given that interior mode ranges up to 12
           n = ( lp->crossesBoundary( obstacle ) ? 6 : 0 );
           break;
-        case QgsPalLayerSettings::PolygonWhole:
+        case QgsLabelObstacleSettings::PolygonWhole:
           // n is either 0 or 12
           n = ( lp->intersectsWithPolygon( obstacle ) ? 12 : 0 );
           break;
