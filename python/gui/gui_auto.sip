@@ -96,6 +96,7 @@
 %Include auto_generated/qgshistogramwidget.sip
 %Include auto_generated/qgsidentifymenu.sip
 %Include auto_generated/qgskeyvaluewidget.sip
+%Include auto_generated/qgslabelsettingswidgetbase.sip
 %Include auto_generated/qgslegendfilterbutton.sip
 %Include auto_generated/qgslimitedrandomcolorrampdialog.sip
 %Include auto_generated/qgslistwidget.sip
