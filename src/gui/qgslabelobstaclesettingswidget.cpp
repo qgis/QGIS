@@ -22,6 +22,8 @@ QgsLabelObstacleSettingsWidget::QgsLabelObstacleSettingsWidget( QWidget *parent,
 {
   setupUi( this );
 
+  setPanelTitle( tr( "Obstacle Settings" ) );
+
   mObstacleTypeComboBox->addItem( tr( "Over the Feature's Interior" ), QgsLabelObstacleSettings::PolygonInterior );
   mObstacleTypeComboBox->addItem( tr( "Over the Feature's Boundary" ), QgsLabelObstacleSettings::PolygonBoundary );
 
@@ -35,6 +37,9 @@ QgsLabelObstacleSettingsWidget::QgsLabelObstacleSettingsWidget( QWidget *parent,
     if ( !mBlockSignals )
       emit changed();
   } );
+
+  registerDataDefinedButton( mObstacleFactorDDBtn, QgsPalLayerSettings::ObstacleFactor );
+
 }
 
 void QgsLabelObstacleSettingsWidget::setObstacleSettings( const QgsLabelObstacleSettings &settings )
@@ -55,6 +60,6 @@ QgsLabelObstacleSettings QgsLabelObstacleSettingsWidget::settings() const
 
 void QgsLabelObstacleSettingsWidget::setGeometryType( QgsWkbTypes::GeometryType type )
 {
-  mObstacleTypeComboBox->setVisible( type == QgsWkbTypes::PolygonGeometry );
-  mObstacleTypeComboBox->setVisible( type == QgsWkbTypes::PolygonGeometry );
+  mObstacleTypeComboBox->setVisible( type == QgsWkbTypes::PolygonGeometry || type == QgsWkbTypes::UnknownGeometry );
+  mObstacleTypeLabel->setVisible( type == QgsWkbTypes::PolygonGeometry || type == QgsWkbTypes::UnknownGeometry );
 }

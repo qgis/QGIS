@@ -91,12 +91,15 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
     QgsFeature mPreviewFeature;
     QgsMapCanvas *mCanvas = nullptr;
 
+    QgsLabelObstacleSettings mObstacleSettings;
+
     QgsExpressionContext createExpressionContext() const override;
 
   private slots:
 
     void initCalloutWidgets();
     void updateCalloutWidget( QgsCallout *callout );
+    void showObstacleSettings();
 
 };
 

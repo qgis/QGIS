@@ -24,6 +24,8 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
+#include <QDialog>
+
 class QgsPropertyOverrideButton;
 
 /**
@@ -108,6 +110,28 @@ class GUI_EXPORT QgsLabelSettingsWidgetBase : public QgsPanelWidget, protected Q
     QgsSymbolWidgetContext mContext;
 
     QgsPropertyCollection mDataDefinedProperties;
+
+};
+
+/**
+ * \ingroup gui
+ * \class QgsLabelSettingsDialog
+ * A blocking dialog containing a QgsLabelSettingsWidgetBase.
+ * \since QGIS 3.12
+ */
+class GUI_EXPORT QgsLabelSettingsWidgetDialog : public QDialog
+{
+    Q_OBJECT
+
+  public:
+
+
+    /**
+     * Constructor for QgsLabelSettingsWidgetDialog.
+     * \param widget label settings widget to embed in the dialog. Ownership is transferred to the dialog.
+     * \param parent parent widget
+     */
+    QgsLabelSettingsWidgetDialog( QgsLabelSettingsWidgetBase *widget SIP_TRANSFER, QWidget *parent = nullptr );
 
 };
 

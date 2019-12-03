@@ -30,6 +30,7 @@
 #include "qgsapplication.h"
 #include "qgscalloutsregistry.h"
 #include "callouts/qgscalloutwidget.h"
+#include "qgslabelobstaclesettingswidget.h"
 #include <mutex>
 
 #include <QButtonGroup>
@@ -125,6 +126,49 @@ void QgsLabelingGui::updateCalloutWidget( QgsCallout *callout )
   mCalloutStackedWidget->setCurrentWidget( pageDummy );
 }
 
+void QgsLabelingGui::showObstacleSettings()
+{
+  QgsExpressionContext context = createExpressionContext();
+
+  QgsSymbolWidgetContext symbolContext;
+  symbolContext.setExpressionContext( &context );
+  symbolContext.setMapCanvas( mMapCanvas );
+
+  QgsLabelObstacleSettingsWidget *widget = new QgsLabelObstacleSettingsWidget( nullptr, mLayer );
+  widget->setDataDefinedProperties( mDataDefinedProperties );
+  widget->setObstacleSettings( mObstacleSettings );
+  widget->setGeometryType( mLayer ? mLayer->geometryType() : QgsWkbTypes::UnknownGeometry );
+  widget->setContext( symbolContext );
+
+  auto applySettings = [ = ]
+  {
+    mObstacleSettings = widget->settings();
+    const QgsPropertyCollection obstacleDataDefinedProperties = widget->dataDefinedProperties();
+    mDataDefinedProperties.setProperty( QgsPalLayerSettings::ObstacleFactor, obstacleDataDefinedProperties.property( QgsPalLayerSettings::ObstacleFactor ) );
+    emit widgetChanged();
+  };
+
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel && panel->dockMode() )
+  {
+    connect( widget, &QgsLabelSettingsWidgetBase::changed, this, [ = ]
+    {
+      applySettings();
+    } );
+    panel->openPanel( widget );
+  }
+  else
+  {
+    QgsLabelSettingsWidgetDialog dialog( widget, this );
+    if ( dialog.exec() )
+    {
+      applySettings();
+    }
+    // reactivate button's window
+    activateWindow();
+  }
+}
+
 QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsPalLayerSettings &layerSettings, QWidget *parent, QgsWkbTypes::GeometryType geomType )
   : QgsTextFormatWidget( mapCanvas, parent, QgsTextFormatWidget::Labeling, layer )
   , mGeomType( geomType )
@@ -153,6 +197,7 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
   connect( mGeometryGeneratorGroupBox, &QGroupBox::toggled, this, &QgsLabelingGui::validateGeometryGeneratorExpression );
   connect( mGeometryGenerator, &QgsCodeEditorExpression::textChanged, this, &QgsLabelingGui::validateGeometryGeneratorExpression );
   connect( mGeometryGeneratorType, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsLabelingGui::validateGeometryGeneratorExpression );
+  connect( mObstacleSettingsButton, &QAbstractButton::clicked, this, &QgsLabelingGui::showObstacleSettings );
 
   mFieldExpressionWidget->registerExpressionContextGenerator( this );
 
@@ -288,8 +333,9 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
 
   mPrioritySlider->setValue( mSettings.priority );
   mChkNoObstacle->setChecked( mSettings.obstacleSettings().isObstacle() );
-  mObstacleFactorSlider->setValue( mSettings.obstacleSettings().factor() * 5 );
-  mObstacleTypeComboBox->setCurrentIndex( mObstacleTypeComboBox->findData( mSettings.obstacleSettings().type() ) );
+
+  mObstacleSettings = mSettings.obstacleSettings();
+
   mPolygonObstacleTypeFrame->setEnabled( mSettings.obstacleSettings().isObstacle() );
   mObstaclePriorityFrame->setEnabled( mSettings.obstacleSettings().isObstacle() );
   chkLabelPerFeaturePart->setChecked( mSettings.labelPerPart );
@@ -488,9 +534,10 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.overrunDistanceMapUnitScale = mOverrunDistanceUnitWidget->getMapUnitScale();
 
   lyr.priority = mPrioritySlider->value();
-  lyr.obstacleSettings().setIsObstacle( mChkNoObstacle->isChecked() || mMode == ObstaclesOnly );
-  lyr.obstacleSettings().setFactor( mObstacleFactorSlider->value() / 5.0 );
-  lyr.obstacleSettings().setType( static_cast< QgsLabelObstacleSettings::ObstacleType >( mObstacleTypeComboBox->currentData().toInt() ) );
+
+  mObstacleSettings.setIsObstacle( mChkNoObstacle->isChecked() || mMode == ObstaclesOnly );
+  lyr.setObstacleSettings( mObstacleSettings );
+
   lyr.labelPerPart = chkLabelPerFeaturePart->isChecked();
   lyr.displayAll = mPalShowAllLabelsForLayerChkBx->isChecked();
   lyr.mergeLines = chkMergeLines->isChecked();

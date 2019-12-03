@@ -9,6 +9,7 @@
 
 
 
+
 class QgsLabelSettingsWidgetBase : QgsPanelWidget, protected QgsExpressionContextGenerator
 {
 %Docstring
@@ -80,6 +81,30 @@ Emitted when any of the settings described by the widget are changed.
 Registers a data defined override ``button``. Handles setting up connections
 for the button and initializing the button to show the correct descriptions
 and help text for the associated property.
+%End
+
+};
+
+class QgsLabelSettingsWidgetDialog : QDialog
+{
+%Docstring
+A blocking dialog containing a QgsLabelSettingsWidgetBase.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgslabelsettingswidgetbase.h"
+%End
+  public:
+
+
+    QgsLabelSettingsWidgetDialog( QgsLabelSettingsWidgetBase *widget /Transfer/, QWidget *parent = 0 );
+%Docstring
+Constructor for QgsLabelSettingsWidgetDialog.
+
+:param widget: label settings widget to embed in the dialog. Ownership is transferred to the dialog.
+:param parent: parent widget
 %End
 
 };
