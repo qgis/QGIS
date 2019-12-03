@@ -20,6 +20,7 @@
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgspropertyoverridebutton.h"
 #include "qgsauxiliarystorage.h"
+#include "qgsgui.h"
 
 
 QgsLabelSettingsWidgetBase::QgsLabelSettingsWidgetBase( QWidget *parent, QgsVectorLayer *vl )
@@ -141,4 +142,25 @@ void QgsLabelSettingsWidgetBase::registerDataDefinedButton( QgsPropertyOverrideB
   connect( button, &QgsPropertyOverrideButton::createAuxiliaryField, this, &QgsLabelSettingsWidgetBase::createAuxiliaryField );
 
   button->registerExpressionContextGenerator( this );
+}
+
+
+//
+// QgsLabelSettingsWidgetDialog
+//
+
+QgsLabelSettingsWidgetDialog::QgsLabelSettingsWidgetDialog( QgsLabelSettingsWidgetBase *widget, QWidget *parent )
+  : QDialog( parent )
+{
+  setWindowTitle( widget->windowTitle() );
+  QVBoxLayout *vLayout = new QVBoxLayout();
+  vLayout->addWidget( widget );
+  QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal );
+  connect( bbox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( bbox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  vLayout->addWidget( bbox );
+  setLayout( vLayout );
+
+  setObjectName( QStringLiteral( "QgsLabelSettingsWidgetDialog" ) );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
 }
