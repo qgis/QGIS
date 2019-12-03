@@ -256,69 +256,10 @@ void QgsPalLayerSettings::initPropertyDefinitions()
 
 Q_NOWARN_DEPRECATED_PUSH // because of deprecated members
 QgsPalLayerSettings::QgsPalLayerSettings()
+  : predefinedPositionOrder( *DEFAULT_PLACEMENT_ORDER() )
+  , mCallout( QgsApplication::calloutRegistry()->defaultCallout() )
 {
   initPropertyDefinitions();
-
-  drawLabels = true;
-  isExpression = false;
-  fieldIndex = 0;
-
-  useSubstitutions = false;
-
-  // text formatting
-  multilineAlign = MultiFollowPlacement;
-  addDirectionSymbol = false;
-  leftDirectionSymbol = QStringLiteral( "<" );
-  rightDirectionSymbol = QStringLiteral( ">" );
-  reverseDirectionSymbol = false;
-  placeDirectionSymbol = SymbolLeftRight;
-  formatNumbers = false;
-  decimals = 3;
-  plusSign = false;
-
-  // placement
-  placement = AroundPoint;
-  placementFlags = AboveLine | MapOrientation;
-  centroidWhole = false;
-  centroidInside = false;
-  predefinedPositionOrder = *DEFAULT_PLACEMENT_ORDER();
-  fitInPolygonOnly = false;
-  quadOffset = QuadrantOver;
-  xOffset = 0;
-  yOffset = 0;
-  offsetUnits = QgsUnitTypes::RenderMillimeters;
-  dist = 0;
-  distUnits = QgsUnitTypes::RenderMillimeters;
-  offsetType = FromPoint;
-  angleOffset = 0;
-  preserveRotation = true;
-  maxCurvedCharAngleIn = 25.0;
-  maxCurvedCharAngleOut = -25.0;
-  priority = 5;
-  repeatDistance = 0;
-  repeatDistanceUnit = QgsUnitTypes::RenderMillimeters;
-
-  // rendering
-  scaleVisibility = false;
-  maximumScale = 0.0;
-  minimumScale = 0.0;
-  fontLimitPixelSize = false;
-  fontMinPixelSize = 0; //trigger to turn it on by default for map unit labels
-  fontMaxPixelSize = 10000;
-  displayAll = false;
-  upsidedownLabels = Upright;
-
-  labelPerPart = false;
-  mergeLines = false;
-  minFeatureSize = 0.0;
-  limitNumLabels = false;
-  maxNumLabels = 2000;
-  obstacle = true;
-  obstacleFactor = 1.0;
-  obstacleType = PolygonInterior;
-  zIndex = 0.0;
-
-  mCallout.reset( QgsApplication::calloutRegistry()->defaultCallout() );
 }
 Q_NOWARN_DEPRECATED_POP
 

@@ -392,6 +392,7 @@ Returns the QgsExpression for this label settings. May be ``None`` if isExpressi
 
 
     Placement placement;
+
     unsigned int placementFlags;
 
     bool centroidWhole;
