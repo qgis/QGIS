@@ -261,8 +261,8 @@ class CORE_EXPORT QgsMesh3dDataBlock
     //! Constructs a new block for count faces
     QgsMesh3dDataBlock( int count, int maximumVerticalLevels, bool isVector );
 
-    //! Sets block as valid
-    void setIsValid();
+    //! Sets block validity
+    void setIsValid( bool valid );
 
     //! Whether the block is valid
     bool isValid() const;
@@ -593,7 +593,7 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
      * to check if the returned value is vector or scalar
      *
      * Returns invalid block for DataOnVolumes. Use QgsMeshLayerUtils::datasetValues() if you
-     * need block for any type of data typ
+     * need block for any type of data type
      *
      * \since QGIS 3.6
      */

@@ -208,22 +208,6 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     void setRendererSettings( const QgsMeshRendererSettings &settings );
 
     /**
-     * Returns averaging method.
-     *
-     * Averaging method is used to convert 3D stacked mesh datasets to 2D datasets
-     *
-     * \since QGIS 3.12
-     */
-    QgsMesh3dAveragingMethod *averagingMethod() const SIP_SKIP;
-
-    /**
-     * Sets averaging method for layer, takes ownership
-     *
-     * \since QGIS 3.12
-     */
-    void setAveragingMethod( QgsMesh3dAveragingMethod *method ) SIP_SKIP;
-
-    /**
      * Returns time format settings
      *
      * \since QGIS 3.8
@@ -339,9 +323,6 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
     //! Time format configuration
     QgsMeshTimeSettings mTimeSettings;
-
-    //! Averaging method to get 2D datasets from 3D stacked mesh datasets
-    std::unique_ptr<QgsMesh3dAveragingMethod> mAveragingMethod;
 };
 
 #endif //QGSMESHLAYER_H

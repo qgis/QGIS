@@ -340,6 +340,23 @@ void QgsMeshRendererVectorArrowSettings::readXml( const QDomElement &elem )
 
 // ---------------------------------------------------------------------
 
+QgsMeshRendererSettings::QgsMeshRendererSettings()
+  : mAveragingMethod( new QgsMeshSingleLevelAveragingMethod() )
+{
+}
+
+QgsMeshRendererSettings::~QgsMeshRendererSettings() = default;
+
+QgsMesh3dAveragingMethod *QgsMeshRendererSettings::averagingMethod() const
+{
+  return mAveragingMethod.get();
+}
+
+void QgsMeshRendererSettings::setAveragingMethod( QgsMesh3dAveragingMethod *method )
+{
+  mAveragingMethod.reset( method );
+}
+
 QDomElement QgsMeshRendererSettings::writeXml( QDomDocument &doc ) const
 {
   QDomElement elem = doc.createElement( QStringLiteral( "mesh-renderer-settings" ) );
@@ -375,6 +392,14 @@ QDomElement QgsMeshRendererSettings::writeXml( QDomDocument &doc ) const
   elemTriangularMesh.setTagName( QStringLiteral( "mesh-settings-triangular" ) );
   elem.appendChild( elemTriangularMesh );
 
+  if ( mAveragingMethod )
+  {
+    QDomElement elemAveraging = doc.createElement( QStringLiteral( "averaging-3d" ) );
+    elemAveraging.setAttribute( QStringLiteral( "method" ), QStringLiteral( "%1" ).arg( mAveragingMethod->method() ) ) ;
+    QDomElement elemAveragingParams = mAveragingMethod->writeXml( doc );
+    elem.appendChild( elemAveraging );
+  }
+
   return elem;
 }
 
@@ -382,6 +407,7 @@ void QgsMeshRendererSettings::readXml( const QDomElement &elem )
 {
   mRendererScalarSettings.clear();
   mRendererVectorSettings.clear();
+  mAveragingMethod.reset();
 
   QDomElement elemActiveDataset = elem.firstChildElement( QStringLiteral( "active-dataset" ) );
   if ( elemActiveDataset.hasAttribute( QStringLiteral( "scalar" ) ) )
@@ -424,6 +450,19 @@ void QgsMeshRendererSettings::readXml( const QDomElement &elem )
 
   QDomElement elemTriangularMesh = elem.firstChildElement( QStringLiteral( "mesh-settings-triangular" ) );
   mRendererTriangularMeshSettings.readXml( elemTriangularMesh );
+
+  QDomElement elemAveraging = elem.firstChildElement( QStringLiteral( "averaging-3d" ) );
+  if ( !elemAveraging.isNull() )
+  {
+    QgsMesh3dAveragingMethod::Method method = static_cast<QgsMesh3dAveragingMethod::Method>(
+          elem.attribute( QStringLiteral( "method" ) ).toInt() );
+    switch ( method )
+    {
+      case QgsMesh3dAveragingMethod::SingleLevelAverageMethod:
+        mAveragingMethod.reset( new QgsMeshSingleLevelAveragingMethod() );
+        mAveragingMethod->readXml( elem );
+    }
+  }
 }
 
 QgsMeshRendererVectorStreamlineSettings::SeedingStartPointsMethod QgsMeshRendererVectorStreamlineSettings::seedingMethod() const
@@ -537,64 +576,3 @@ void QgsMeshRendererVectorSettings::readXml( const QDomElement &elem )
     mStreamLinesSettings.readXml( elemStreamLine );
 }
 
-QgsMeshRendererAveragingSingleVerticalLayerSettings QgsMeshRenderer3dAveragingSettings::singleVerticalLayerSettings() const
-{
-  return mSingleVerticalLayerSettings;
-}
-
-void QgsMeshRenderer3dAveragingSettings::setSingleVerticalLayerSettings( const QgsMeshRendererAveragingSingleVerticalLayerSettings &singleVerticalLayerSettings )
-{
-  mSingleVerticalLayerSettings = singleVerticalLayerSettings;
-}
-
-QDomElement QgsMeshRenderer3dAveragingSettings::writeXml( QDomDocument &doc ) const
-{
-  QDomElement elem = doc.createElement( QStringLiteral( "averaging-settings" ) );
-  elem.setAttribute( QStringLiteral( "method" ), mAveragingMethod );
-
-  elem.appendChild( mSingleVerticalLayerSettings.writeXml( doc ) );
-
-  return elem;
-}
-
-void QgsMeshRenderer3dAveragingSettings::readXml( const QDomElement &elem )
-{
-  mAveragingMethod = static_cast<QgsMeshRenderer3dAveragingSettings::Method>(
-                       elem.attribute( QStringLiteral( "method" ) ).toInt() );
-
-  QDomElement elemSingleLayer = elem.firstChildElement( QStringLiteral( "single-vertical-layer-settings" ) );
-  if ( ! elemSingleLayer.isNull() )
-    mSingleVerticalLayerSettings.readXml( elemSingleLayer );
-}
-
-QgsMeshRenderer3dAveragingSettings::Method QgsMeshRenderer3dAveragingSettings::averagingMethod() const
-{
-  return mAveragingMethod;
-}
-
-void QgsMeshRenderer3dAveragingSettings::setAveragingMethod( const Method &averagingMethod )
-{
-  mAveragingMethod = averagingMethod;
-}
-
-int QgsMeshRendererAveragingSingleVerticalLayerSettings::verticalLayer() const
-{
-  return mVerticalLayer;
-}
-
-void QgsMeshRendererAveragingSingleVerticalLayerSettings::setVerticalLayer( int verticalLayer )
-{
-  mVerticalLayer = verticalLayer;
-}
-
-QDomElement QgsMeshRendererAveragingSingleVerticalLayerSettings::writeXml( QDomDocument &doc ) const
-{
-  QDomElement elem = doc.createElement( QStringLiteral( "single-vertical-layer-settings" ) );
-  elem.setAttribute( QStringLiteral( "layer-index" ), mVerticalLayer );
-  return elem;
-}
-
-void QgsMeshRendererAveragingSingleVerticalLayerSettings::readXml( const QDomElement &elem )
-{
-  mVerticalLayer = elem.attribute( QStringLiteral( "layer-index" ) ).toInt();
-}

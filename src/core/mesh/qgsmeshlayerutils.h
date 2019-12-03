@@ -36,7 +36,7 @@ class QgsTriangularMesh;
 class QgsMeshDataBlock;
 class QgsMesh3dAveragingMethod;
 class QgsMeshDatasetValue;
-class QgsMeshDataProvider;
+class QgsMeshLayer;
 
 /**
  * \ingroup core
@@ -48,13 +48,6 @@ class QgsMeshDataProvider;
 class CORE_EXPORT QgsMeshLayerUtils
 {
   public:
-
-    /**
-     * \brief Creates 3D averaging method from its renderer settings.
-     *
-     * \since QGIS 3.12
-     */
-    static QgsMesh3dAveragingMethod *createAveragingMethod( const QgsMeshRenderer3dAveragingSettings &settings );
 
     /**
      * \brief Returns N vector/scalar values from the index from the dataset
@@ -69,11 +62,10 @@ class CORE_EXPORT QgsMeshLayerUtils
      * \since QGIS 3.12
      */
     static QgsMeshDataBlock datasetValues(
-      const QgsMeshDataProvider *dataProvider,
+      const QgsMeshLayer *meshLayer,
       QgsMeshDatasetIndex index,
       int valueIndex,
-      int count,
-      const QgsMesh3dAveragingMethod *averagingMethod );
+      int count );
 
     /**
      * Calculates magnitude values from the given QgsMeshDataBlock.

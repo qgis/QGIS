@@ -109,8 +109,8 @@ void QgsRendererMeshPropertiesWidget::apply()
   //set the blend mode for the layer
   mMeshLayer->setBlendMode( mBlendModeComboBox->blendMode() );
   //set the averaging method for the layer
-  QgsMeshRenderer3dAveragingSettings averagingSettings = m3dAveragingSettingsWidget->settings();
-  mMeshLayer->setAveragingMethod( QgsMeshLayerUtils::createAveragingMethod( averagingSettings ) );
+  std::unique_ptr<QgsMesh3dAveragingMethod> averagingMethod( m3dAveragingSettingsWidget->averagingMethod() );
+  settings.setAveragingMethod( averagingMethod.release() );
   mMeshLayer->setRendererSettings( settings );
   mMeshLayer->triggerRepaint();
 }

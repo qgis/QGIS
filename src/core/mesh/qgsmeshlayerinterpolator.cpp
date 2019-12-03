@@ -192,11 +192,10 @@ QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
   bool scalarDataOnVertices = metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
   const int count = scalarDataOnVertices ? nativeMesh->vertices.count() : nativeMesh->faces.count();
   QgsMeshDataBlock vals = QgsMeshLayerUtils::datasetValues(
-                            layer.dataProvider(),
+                            &layer,
                             datasetIndex,
                             0,
-                            count,
-                            layer.averagingMethod() );
+                            count );
 
   QVector<double> datasetValues = QgsMeshLayerUtils::calculateMagnitudes( vals );
   QgsMeshDataBlock activeFaceFlagValues = layer.dataProvider()->areFacesActive(

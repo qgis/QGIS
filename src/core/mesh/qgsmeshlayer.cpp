@@ -54,7 +54,6 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
 
   setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
   setDefaultRendererSettings();
-  setAveragingMethod( QgsMesh3dAveragingMethod::create( mRendererSettings.averagingSettings() ) );
 }
 
 
@@ -155,22 +154,6 @@ void QgsMeshLayer::setRendererSettings( const QgsMeshRendererSettings &settings 
   triggerRepaint();
 }
 
-QgsMesh3dAveragingMethod *QgsMeshLayer::averagingMethod() const
-{
-  return mAveragingMethod.get();
-}
-
-void QgsMeshLayer::setAveragingMethod( QgsMesh3dAveragingMethod *method )
-{
-  bool needsRepaint = QgsMesh3dAveragingMethod::equals( method, mAveragingMethod.get() );
-  if ( needsRepaint )
-  {
-    mAveragingMethod.reset( method );
-    emit rendererChanged();
-    triggerRepaint();
-  }
-}
-
 QgsMeshTimeSettings QgsMeshLayer::timeSettings() const
 {
   return mTimeSettings;
@@ -225,7 +208,7 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index
           }
           break;
         case QgsMeshDatasetGroupMetadata::DataOnVolumes:
-          QgsMesh3dAveragingMethod *avgMethod = averagingMethod();
+          const QgsMesh3dAveragingMethod *avgMethod = mRendererSettings.averagingMethod();
           if ( avgMethod )
           {
             const QgsMesh3dDataBlock block3d = dataProvider()->dataset3dValues( index, nativeFaceIndex, 1 );

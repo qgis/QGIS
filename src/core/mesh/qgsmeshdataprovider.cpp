@@ -436,7 +436,7 @@ const void *QgsMesh3dDataBlock::constBuffer( QgsMesh3dDataBlock::DataType type )
   }
 }
 
-void QgsMesh3dDataBlock::setIsValid()
+void QgsMesh3dDataBlock::setIsValid( bool valid )
 {
-  mIsValid = true;
+  mIsValid = valid;
 }

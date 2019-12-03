@@ -1,0 +1,140 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/mesh/qgsmesh3daveraging.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsMesh3dAveragingMethod
+{
+%Docstring
+Abstract class to interpolate 3d stacked mesh data to 2d data
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsmesh3daveraging.h"
+%End
+%ConvertToSubClassCode
+    QgsMesh3dAveragingMethod *averagingMethod = dynamic_cast<QgsMesh3dAveragingMethod *>( sipCpp );
+
+    sipType = 0;
+
+    if ( averagingMethod )
+    {
+      switch ( averagingMethod->method() )
+      {
+        case QgsMesh3dAveragingMethod::SingleLevelAverageMethod:
+          sipType = sipType_QgsMeshSingleLevelAveragingMethod;
+          break;
+        default:
+          sipType = nullptr;
+          break;
+      }
+    }
+%End
+  public:
+    enum Method
+    {
+      //! Method to pick single layer
+      SingleLevelAverageMethod
+    };
+
+    QgsMesh3dAveragingMethod( Method method );
+%Docstring
+Ctor
+%End
+
+    virtual ~QgsMesh3dAveragingMethod();
+
+    virtual QgsMeshDataBlock calculate( const QgsMesh3dDataBlock &block3d, QgsFeedback *feedback = 0 ) const = 0;
+%Docstring
+Calculated 2d block values from 3d stacked mesh values
+%End
+
+    virtual QDomElement writeXml( QDomDocument &doc ) const = 0;
+%Docstring
+Writes configuration to a new DOM element
+%End
+    virtual void readXml( const QDomElement &elem ) = 0;
+%Docstring
+Reads configuration from the given DOM element
+%End
+
+    static bool equals( const QgsMesh3dAveragingMethod *a, const QgsMesh3dAveragingMethod *b );
+%Docstring
+Returns whether two methods equal
+%End
+
+    virtual bool equals( const QgsMesh3dAveragingMethod *other ) const = 0;
+%Docstring
+Returns whether method equals to other
+%End
+
+    virtual QgsMesh3dAveragingMethod *clone() const = 0 /Factory/;
+%Docstring
+Clone the instance
+%End
+
+    Method method() const;
+%Docstring
+Returns type of averaging method
+%End
+
+};
+
+class QgsMeshSingleLevelAveragingMethod: QgsMesh3dAveragingMethod
+{
+%Docstring
+
+No averaging, takes values from one vertical level only
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsmesh3daveraging.h"
+%End
+  public:
+    QgsMeshSingleLevelAveragingMethod();
+%Docstring
+Ctor
+%End
+    QgsMeshSingleLevelAveragingMethod( int verticalLevel );
+%Docstring
+Ctor
+%End
+    ~QgsMeshSingleLevelAveragingMethod();
+
+    virtual QgsMeshDataBlock calculate( const QgsMesh3dDataBlock &block3d, QgsFeedback *feedback = 0 ) const;
+
+    virtual QDomElement writeXml( QDomDocument &doc ) const;
+
+    virtual void readXml( const QDomElement &elem );
+
+    virtual bool equals( const QgsMesh3dAveragingMethod *other ) const;
+
+    virtual QgsMesh3dAveragingMethod *clone() const /Factory/;
+
+
+    int verticalLevel() const;
+%Docstring
+Returns vertical level. Numbered from 0
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/mesh/qgsmesh3daveraging.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

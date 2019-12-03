@@ -13,12 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <memory>
+
 #include "qgsmeshrenderer3daveragingwidget.h"
 
 #include "qgis.h"
 #include "qgsmeshlayer.h"
 #include "qgsmessagelog.h"
 #include "qgsmeshrenderersettings.h"
+#include "qgsmesh3daveraging.h"
 
 QgsMeshRenderer3dAveragingWidget::QgsMeshRenderer3dAveragingWidget( QWidget *parent )
   : QWidget( parent )
@@ -27,8 +30,8 @@ QgsMeshRenderer3dAveragingWidget::QgsMeshRenderer3dAveragingWidget( QWidget *par
   setupUi( this );
   connect( mAveragingMethodComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::onAveragingMethodChanged );
-  QVector<QLineEdit *> widgets;
-  connect( mVerticalLayerIndexSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ), this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
+  connect( mVerticalLayerIndexSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ),
+           this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
 }
 
 void QgsMeshRenderer3dAveragingWidget::setLayer( QgsMeshLayer *layer )
@@ -36,17 +39,22 @@ void QgsMeshRenderer3dAveragingWidget::setLayer( QgsMeshLayer *layer )
   mMeshLayer = layer;
 }
 
-QgsMeshRenderer3dAveragingSettings QgsMeshRenderer3dAveragingWidget::settings() const
+QgsMesh3dAveragingMethod *QgsMeshRenderer3dAveragingWidget::averagingMethod() const
 {
-  QgsMeshRenderer3dAveragingSettings  settings;
-  settings.setAveragingMethod( static_cast<QgsMeshRenderer3dAveragingSettings::Method>( mAveragingMethodComboBox->currentIndex() ) );
+  std::unique_ptr<QgsMesh3dAveragingMethod> averaging;
 
-  // Single Vertical Layer settings
-  QgsMeshRendererAveragingSingleVerticalLayerSettings singleLayerSettings;
-  singleLayerSettings.setVerticalLayer( mVerticalLayerIndexSpinBox->value() );
-  settings.setSingleVerticalLayerSettings( singleLayerSettings );
+  QgsMesh3dAveragingMethod::Method method = static_cast<QgsMesh3dAveragingMethod::Method>( mAveragingMethodComboBox->currentIndex() );
 
-  return settings;
+  switch ( method )
+  {
+    case QgsMesh3dAveragingMethod::SingleLevelAverageMethod:
+    {
+      const int verticalLevel = mVerticalLayerIndexSpinBox->value();
+      averaging.reset( new QgsMeshSingleLevelAveragingMethod( verticalLevel ) );
+    }
+  }
+
+  return averaging.release();
 }
 
 void QgsMeshRenderer3dAveragingWidget::syncToLayer( )
@@ -55,13 +63,22 @@ void QgsMeshRenderer3dAveragingWidget::syncToLayer( )
     return;
 
   const QgsMeshRendererSettings rendererSettings = mMeshLayer->rendererSettings();
-  const QgsMeshRenderer3dAveragingSettings settings = rendererSettings.averagingSettings( );
+  const QgsMesh3dAveragingMethod *method = rendererSettings.averagingMethod();
+  if ( method )
+  {
+    const QgsMesh3dAveragingMethod::Method type = method->method();
+    whileBlocking( mAveragingMethodComboBox )->setCurrentIndex( type );
 
-  whileBlocking( mAveragingMethodComboBox )->setCurrentIndex( settings.averagingMethod() );
+    switch ( type )
+    {
+      case QgsMesh3dAveragingMethod::SingleLevelAverageMethod:
+        // Single Vertical Layer settings
+        const QgsMeshSingleLevelAveragingMethod *singleAveragingMethod = static_cast<const QgsMeshSingleLevelAveragingMethod *>( method );
+        whileBlocking( mVerticalLayerIndexSpinBox )->setValue( singleAveragingMethod->verticalLevel() );
+        break;
+    }
 
-  // Single Vertical Layer settings
-  const QgsMeshRendererAveragingSingleVerticalLayerSettings singleLayerSettings = settings.singleVerticalLayerSettings();
-  whileBlocking( mVerticalLayerIndexSpinBox )->setValue( singleLayerSettings.verticalLayer() );
+  }
 }
 
 void QgsMeshRenderer3dAveragingWidget::onAveragingMethodChanged( int methodIndex )

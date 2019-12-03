@@ -24,36 +24,36 @@
 #include "qgstriangularmesh.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmesh3daveraging.h"
+#include "qgsmeshlayer.h"
 
 
 ///@cond PRIVATE
 
-QgsMesh3dAveragingMethod *QgsMeshLayerUtils::createAveragingMethod( const QgsMeshRenderer3dAveragingSettings &settings )
-{
-  return QgsMesh3dAveragingMethod::create( settings );
-}
-
 QgsMeshDataBlock QgsMeshLayerUtils::datasetValues(
-  const QgsMeshDataProvider *dataProvider,
+  const QgsMeshLayer *meshLayer,
   QgsMeshDatasetIndex index,
   int valueIndex,
-  int count,
-  const QgsMesh3dAveragingMethod *averagingMethod )
+  int count )
 {
   QgsMeshDataBlock block;
-  if ( !dataProvider )
+  if ( !meshLayer )
+    return block;
+
+  const QgsMeshDataProvider *provider = meshLayer->dataProvider();
+  if ( !provider )
     return block;
 
   // try to get directly 2D dataset block
-  block = dataProvider->datasetValues( index, valueIndex, count );
+  block = provider->datasetValues( index, valueIndex, count );
   if ( block.isValid() )
     return block;
 
+  const QgsMesh3dAveragingMethod *averagingMethod = meshLayer->rendererSettings().averagingMethod();
   // try to get 2D block
   if ( !averagingMethod )
     return block;
 
-  QgsMesh3dDataBlock block3d = dataProvider->dataset3dValues( index, valueIndex, count );
+  QgsMesh3dDataBlock block3d = provider->dataset3dValues( index, valueIndex, count );
   if ( !block3d.isValid() )
     return block;
 

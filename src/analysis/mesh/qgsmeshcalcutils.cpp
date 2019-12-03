@@ -57,7 +57,7 @@ std::shared_ptr<QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::create( const QStri
         ds->time = dsMeta.time();
         ds->valid = dsMeta.isValid();
 
-        const QgsMeshDataBlock block = QgsMeshLayerUtils::datasetValues( dp, index, 0, count, mMeshLayer->averagingMethod() );
+        const QgsMeshDataBlock block = QgsMeshLayerUtils::datasetValues( mMeshLayer, index, 0, count );
         Q_ASSERT( block.count() == count );
         for ( int value_i = 0; value_i < count; ++value_i )
           ds->values[value_i] = block.value( value_i );
