@@ -622,6 +622,7 @@ class TestPointPlacement(TestPlacementBase):
                 obstacle_label_settings.obstacle = True
                 obstacle_label_settings.drawLabels = False
                 obstacle_label_settings.obstacleFactor = obstacle_weight * 0.2
+                obstacle_label_settings.obstacleSettings().setType(QgsLabelObstacleSettings.PolygonInterior)
                 obstacleLayer.setLabeling(QgsVectorLayerSimpleLabeling(obstacle_label_settings))
                 obstacleLayer.setLabelsEnabled(True)
 
@@ -645,6 +646,7 @@ class TestPointPlacement(TestPlacementBase):
                 obstacle_label_settings.obstacle = True
                 obstacle_label_settings.drawLabels = False
                 obstacle_label_settings.obstacleFactor = obstacle_weight * 0.2
+                obstacle_label_settings.obstacleSettings().setType(QgsLabelObstacleSettings.PolygonInterior)
                 obstacleLayer.setLabeling(QgsVectorLayerSimpleLabeling(obstacle_label_settings))
                 obstacleLayer.setLabelsEnabled(True)
 
