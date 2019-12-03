@@ -400,8 +400,8 @@ static QVariant fcnRndF( const QVariantList &values, const QgsExpressionContext 
 }
 static QVariant fcnRnd( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  quint32 min = QgsExpressionUtils::getIntValue( values.at( 0 ), parent );
-  quint32 max = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
+  qlonglong min = QgsExpressionUtils::getIntValue( values.at( 0 ), parent );
+  qlonglong max = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
   if ( max < min )
     return QVariant();
 
@@ -429,7 +429,7 @@ static QVariant fcnRnd( const QVariantList &values, const QgsExpressionContext *
   }
 
   // Return a random integer in the range [min, max] (inclusive)
-  return QVariant( generator->bounded( min, max + 1 ) );
+  return QVariant( min + static_cast< qlonglong >(generator->bounded( static_cast< quint32 >(max - min + 1) ) ) );
 }
 
 static QVariant fcnLinearScale( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
