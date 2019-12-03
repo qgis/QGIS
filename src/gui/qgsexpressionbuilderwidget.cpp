@@ -1239,7 +1239,7 @@ bool QgsExpressionItemSearchProxy::filterAcceptsRow( int source_row, const QMode
   }
   else
   {
-    QStringList tags = sourceModel()->data( index, QgsExpressionItem::SEARCH_TAGS_ROLE ).toStringList();
+    const QStringList tags = sourceModel()->data( index, QgsExpressionItem::SEARCH_TAGS_ROLE ).toStringList();
     for ( const QString &tag : tags )
     {
       if ( tag.contains( filterRegExp() ) )
