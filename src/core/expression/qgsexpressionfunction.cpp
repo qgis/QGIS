@@ -13,6 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
+
+#include <random>
+
 #include "qgscoordinateformatter.h"
 #include "qgsexpressionfunction.h"
 #include "qgsexpressionutils.h"
@@ -366,18 +369,16 @@ static QVariant fcnLog( const QVariantList &values, const QgsExpressionContext *
 }
 static QVariant fcnRndF( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  double min = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  double max = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
-
+  double min = QgsExpressionUtils::getIntValue( values.at( 0 ), parent );
+  double max = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
   if ( max < min )
     return QVariant();
 
-  QRandomGenerator *generator;
-  if ( QgsExpressionUtils::isNull( values.at( 2 ) ) )
-  {
-    generator = QRandomGenerator::global();
-  }
-  else
+  std::random_device rd;
+  std::mt19937_64 generator(rd());
+  std::uniform_real_distribution<double> dist(min, max);
+
+  if ( !QgsExpressionUtils::isNull( values.at( 2 ) ) )
   {
     quint32 seed;
     if ( QgsExpressionUtils::isIntSafe( values.at( 2 ) ) )
@@ -392,11 +393,11 @@ static QVariant fcnRndF( const QVariantList &values, const QgsExpressionContext 
       std::hash<std::string> hasher;
       seed = hasher( seedStr.toStdString() );
     }
-    generator = &QRandomGenerator::QRandomGenerator( seed );
+    generator.seed( seed );
   }
 
-  // Return a random double in the range [min, max] (inclusive)
-  return QVariant( min + generator->generateDouble() * ( max - min ) );
+  // Return a random integer in the range [min, max] (inclusive)
+  return QVariant( dist(generator) );
 }
 static QVariant fcnRnd( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
@@ -405,12 +406,11 @@ static QVariant fcnRnd( const QVariantList &values, const QgsExpressionContext *
   if ( max < min )
     return QVariant();
 
-  QRandomGenerator *generator;
-  if ( QgsExpressionUtils::isNull( values.at( 2 ) ) )
-  {
-    generator = QRandomGenerator::global();
-  }
-  else
+  std::random_device rd;
+  std::mt19937_64 generator(rd());
+  std::uniform_int_distribution<qlonglong> dist(min, max);
+
+  if ( !QgsExpressionUtils::isNull( values.at( 2 ) ) )
   {
     quint32 seed;
     if ( QgsExpressionUtils::isIntSafe( values.at( 2 ) ) )
@@ -425,11 +425,11 @@ static QVariant fcnRnd( const QVariantList &values, const QgsExpressionContext *
       std::hash<std::string> hasher;
       seed = hasher( seedStr.toStdString() );
     }
-    generator = &QRandomGenerator::QRandomGenerator( seed );
+    generator.seed( seed );
   }
 
   // Return a random integer in the range [min, max] (inclusive)
-  return QVariant( min + static_cast< qlonglong >(generator->bounded( static_cast< quint32 >(max - min + 1) ) ) );
+  return QVariant( dist(generator) );
 }
 
 static QVariant fcnLinearScale( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
