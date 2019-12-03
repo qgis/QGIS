@@ -315,6 +315,7 @@ SET(QGIS_GUI_SRCS
   qgsidentifymenu.cpp
   qgskeyvaluewidget.cpp
   qgslabelinggui.cpp
+  qgslabelobstaclesettingswidget.cpp
   qgslabelsettingswidgetbase.cpp
   qgslistwidget.cpp
   qgslegendfilterbutton.cpp
@@ -517,6 +518,7 @@ SET(QGIS_GUI_HDRS
   qgsidentifymenu.h
   qgskeyvaluewidget.h
   qgslabelinggui.h
+  qgslabelobstaclesettingswidget.h
   qgslabelsettingswidgetbase.h
   qgslegendfilterbutton.h
   qgslimitedrandomcolorrampdialog.h
