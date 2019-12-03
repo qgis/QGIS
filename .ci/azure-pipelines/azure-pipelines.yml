@@ -48,11 +48,11 @@ jobs:
       echo "LR: ${LR}"
       echo "LTR: ${LTR}"
       case "${BUILD_SOURCEBRANCHNAME}" in
-      "${LR}")
+      "${LTR}")
         echo "##vso[task.setvariable variable=OSGEO4W_PKG]qgis-ltr-dev"
         echo "##vso[task.setvariable variable=OSGEO4W_DEPS]qgis-ltr-dev-deps"
         ;;
-      "${LTR}")
+      "${LR}")
         echo "##vso[task.setvariable variable=OSGEO4W_PKG]qgis-rel-dev"
         echo "##vso[task.setvariable variable=OSGEO4W_DEPS]qgis-rel-dev-deps"
         ;;
