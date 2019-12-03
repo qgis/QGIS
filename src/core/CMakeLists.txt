@@ -754,6 +754,7 @@ SET(QGIS_CORE_HDRS
   qgslabelfeature.h
   qgslabelingengine.h
   qgslabelingenginesettings.h
+  qgslabelobstaclesettings.h
   qgslabelsearchtree.h
   qgslayerdefinition.h
   qgslegendrenderer.h

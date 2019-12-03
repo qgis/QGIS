@@ -1,0 +1,108 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgslabelobstaclesettings.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsLabelObstacleSettings
+{
+%Docstring
+
+Contains settings related to how the label engine treats features as obstacles
+
+.. versionadded:: 3.10.2
+%End
+
+%TypeHeaderCode
+#include "qgslabelobstaclesettings.h"
+%End
+  public:
+
+    enum ObstacleType
+    {
+      PolygonInterior,
+      PolygonBoundary,
+      PolygonWhole
+    };
+
+    bool isObstacle() const;
+%Docstring
+Returns ``True`` if the features are obstacles to labels of other layers.
+
+.. seealso:: :py:func:`setIsObstacle`
+
+.. seealso:: :py:func:`factor`
+
+.. seealso:: :py:func:`type`
+%End
+
+    void setIsObstacle( bool isObstacle );
+%Docstring
+Sets whether features are obstacles to labels of other layers.
+
+.. seealso:: :py:func:`isObstacle`
+
+.. seealso:: :py:func:`factor`
+
+.. seealso:: :py:func:`type`
+%End
+
+    double factor() const;
+%Docstring
+Returns the obstacle factor, where 1.0 = default, < 1.0 more likely to be covered by labels,
+> 1.0 less likely to be covered
+
+.. seealso:: :py:func:`setFactor`
+
+.. seealso:: :py:func:`isObstacle`
+
+.. seealso:: :py:func:`type`
+%End
+
+    void setFactor( double factor );
+%Docstring
+Sets the obstacle ``factor``, where 1.0 = default, < 1.0 more likely to be covered by labels,
+> 1.0 less likely to be covered
+
+.. seealso:: :py:func:`factor`
+
+.. seealso:: :py:func:`isObstacle`
+
+.. seealso:: :py:func:`type`
+%End
+
+    ObstacleType type() const;
+%Docstring
+Returns how features act as obstacles for labels.
+
+.. seealso:: :py:func:`setType`
+
+.. seealso:: :py:func:`isObstacle`
+
+.. seealso:: :py:func:`factor`
+%End
+
+    void setType( ObstacleType type );
+%Docstring
+Controls how features act as obstacles for labels.
+
+.. seealso:: :py:func:`type`
+
+.. seealso:: :py:func:`isObstacle`
+
+.. seealso:: :py:func:`factor`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgslabelobstaclesettings.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

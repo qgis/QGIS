@@ -228,7 +228,7 @@ namespace pal
        * act as obstacles for labels.
        * \see setObstacleType
        */
-      QgsPalLayerSettings::ObstacleType obstacleType() const { return mObstacleType; }
+      QgsLabelObstacleSettings::ObstacleType obstacleType() const { return mObstacleType; }
 
       /**
        * Sets the obstacle type, which controls how features within the layer
@@ -236,7 +236,7 @@ namespace pal
        * \param obstacleType new obstacle type
        * \see obstacleType
        */
-      void setObstacleType( QgsPalLayerSettings::ObstacleType obstacleType ) { mObstacleType = obstacleType; }
+      void setObstacleType( QgsLabelObstacleSettings::ObstacleType obstacleType ) { mObstacleType = obstacleType; }
 
       /**
        * Sets the layer's priority.
@@ -333,7 +333,7 @@ namespace pal
 
       double mDefaultPriority;
 
-      QgsPalLayerSettings::ObstacleType mObstacleType;
+      QgsLabelObstacleSettings::ObstacleType mObstacleType = QgsLabelObstacleSettings::PolygonBoundary;
       bool mActive;
       bool mLabelLayer;
       bool mDisplayAll;

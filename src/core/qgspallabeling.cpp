@@ -347,15 +347,14 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   minFeatureSize = s.minFeatureSize;
   limitNumLabels = s.limitNumLabels;
   maxNumLabels = s.maxNumLabels;
-  obstacle = s.obstacle;
-  obstacleFactor = s.obstacleFactor;
-  obstacleType = s.obstacleType;
   zIndex = s.zIndex;
 
   mFormat = s.mFormat;
   mDataDefinedProperties = s.mDataDefinedProperties;
 
   mCallout.reset( s.mCallout ? s.mCallout->clone() : nullptr );
+
+  mObstacleSettings = s.mObstacleSettings;
 
   geometryGenerator = s.geometryGenerator;
   geometryGeneratorEnabled = s.geometryGeneratorEnabled;
@@ -395,7 +394,7 @@ bool QgsPalLayerSettings::prepare( QgsRenderContext &context, QSet<QString> &att
 
   mCurFields = fields;
 
-  if ( drawLabels || obstacle )
+  if ( drawLabels || mObstacleSettings.isObstacle() )
   {
     if ( drawLabels )
     {
@@ -812,9 +811,9 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   minFeatureSize = layer->customProperty( QStringLiteral( "labeling/minFeatureSize" ) ).toDouble();
   limitNumLabels = layer->customProperty( QStringLiteral( "labeling/limitNumLabels" ), QVariant( false ) ).toBool();
   maxNumLabels = layer->customProperty( QStringLiteral( "labeling/maxNumLabels" ), QVariant( 2000 ) ).toInt();
-  obstacle = layer->customProperty( QStringLiteral( "labeling/obstacle" ), QVariant( true ) ).toBool();
-  obstacleFactor = layer->customProperty( QStringLiteral( "labeling/obstacleFactor" ), QVariant( 1.0 ) ).toDouble();
-  obstacleType = static_cast< ObstacleType >( layer->customProperty( QStringLiteral( "labeling/obstacleType" ), QVariant( PolygonInterior ) ).toUInt() );
+  mObstacleSettings.setIsObstacle( layer->customProperty( QStringLiteral( "labeling/obstacle" ), QVariant( true ) ).toBool() );
+  mObstacleSettings.setFactor( layer->customProperty( QStringLiteral( "labeling/obstacleFactor" ), QVariant( 1.0 ) ).toDouble() );
+  mObstacleSettings.setType( static_cast< QgsLabelObstacleSettings::ObstacleType >( layer->customProperty( QStringLiteral( "labeling/obstacleType" ), QVariant( PolygonInterior ) ).toUInt() ) );
   zIndex = layer->customProperty( QStringLiteral( "labeling/zIndex" ), QVariant( 0.0 ) ).toDouble();
 
   mDataDefinedProperties.clear();
@@ -1038,9 +1037,9 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   minFeatureSize = renderingElem.attribute( QStringLiteral( "minFeatureSize" ) ).toDouble();
   limitNumLabels = renderingElem.attribute( QStringLiteral( "limitNumLabels" ), QStringLiteral( "0" ) ).toInt();
   maxNumLabels = renderingElem.attribute( QStringLiteral( "maxNumLabels" ), QStringLiteral( "2000" ) ).toInt();
-  obstacle = renderingElem.attribute( QStringLiteral( "obstacle" ), QStringLiteral( "1" ) ).toInt();
-  obstacleFactor = renderingElem.attribute( QStringLiteral( "obstacleFactor" ), QStringLiteral( "1" ) ).toDouble();
-  obstacleType = static_cast< ObstacleType >( renderingElem.attribute( QStringLiteral( "obstacleType" ), QString::number( PolygonInterior ) ).toUInt() );
+  mObstacleSettings.setIsObstacle( renderingElem.attribute( QStringLiteral( "obstacle" ), QStringLiteral( "1" ) ).toInt() );
+  mObstacleSettings.setFactor( renderingElem.attribute( QStringLiteral( "obstacleFactor" ), QStringLiteral( "1" ) ).toDouble() );
+  mObstacleSettings.setType( static_cast< QgsLabelObstacleSettings::ObstacleType >( renderingElem.attribute( QStringLiteral( "obstacleType" ), QString::number( PolygonInterior ) ).toUInt() ) );
   zIndex = renderingElem.attribute( QStringLiteral( "zIndex" ), QStringLiteral( "0.0" ) ).toDouble();
 
   QDomElement ddElem = elem.firstChildElement( QStringLiteral( "dd_properties" ) );
@@ -1185,9 +1184,9 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   renderingElem.setAttribute( QStringLiteral( "minFeatureSize" ), minFeatureSize );
   renderingElem.setAttribute( QStringLiteral( "limitNumLabels" ), limitNumLabels );
   renderingElem.setAttribute( QStringLiteral( "maxNumLabels" ), maxNumLabels );
-  renderingElem.setAttribute( QStringLiteral( "obstacle" ), obstacle );
-  renderingElem.setAttribute( QStringLiteral( "obstacleFactor" ), obstacleFactor );
-  renderingElem.setAttribute( QStringLiteral( "obstacleType" ), static_cast< unsigned int >( obstacleType ) );
+  renderingElem.setAttribute( QStringLiteral( "obstacle" ), mObstacleSettings.isObstacle() );
+  renderingElem.setAttribute( QStringLiteral( "obstacleFactor" ), mObstacleSettings.factor() );
+  renderingElem.setAttribute( QStringLiteral( "obstacleType" ), static_cast< unsigned int >( mObstacleSettings.type() ) );
   renderingElem.setAttribute( QStringLiteral( "zIndex" ), zIndex );
 
   QDomElement ddElem = doc.createElement( QStringLiteral( "dd_properties" ) );
@@ -1583,9 +1582,9 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   mCurFeat = &f;
 
   // data defined is obstacle? calculate this first, to avoid wasting time working with obstacles we don't require
-  bool isObstacle = obstacle;
+  bool isObstacle = mObstacleSettings.isObstacle();
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::IsObstacle ) )
-    isObstacle = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::IsObstacle, context.expressionContext(), obstacle ); // default to layer default
+    isObstacle = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::IsObstacle, context.expressionContext(), isObstacle ); // default to layer default
 
   if ( !drawLabels )
   {
@@ -2481,7 +2480,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
 
   ( *labelFeature )->setIsObstacle( isObstacle );
 
-  double featObstacleFactor = obstacleFactor;
+  double featObstacleFactor = mObstacleSettings.factor();
   if ( isObstacle && mDataDefinedProperties.isActive( QgsPalLayerSettings::ObstacleFactor ) )
   {
     context.expressionContext().setOriginalValueVariable( featObstacleFactor );
@@ -2566,7 +2565,7 @@ void QgsPalLayerSettings::registerObstacleFeature( const QgsFeature &f, QgsRende
   ( *obstacleFeature )->setIsObstacle( true );
   ( *obstacleFeature )->setFeature( f );
 
-  double featObstacleFactor = obstacleFactor;
+  double featObstacleFactor = mObstacleSettings.factor();
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::ObstacleFactor ) )
   {
     context.expressionContext().setOriginalValueVariable( featObstacleFactor );

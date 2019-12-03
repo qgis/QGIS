@@ -75,11 +75,11 @@ void QgsVectorLayerLabelProvider::init()
   if ( mLayerGeometryType == QgsWkbTypes::PointGeometry && mRenderer )
   {
     //override obstacle type to treat any intersection of a label with the point symbol as a high cost conflict
-    mObstacleType = QgsPalLayerSettings::PolygonWhole;
+    mObstacleType = QgsLabelObstacleSettings::PolygonWhole;
   }
   else
   {
-    mObstacleType = mSettings.obstacleType;
+    mObstacleType = mSettings.obstacleSettings().type();
   }
 
   mUpsidedownLabels = mSettings.upsidedownLabels;

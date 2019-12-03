@@ -76,7 +76,6 @@ Constructor for QgsLabelPosition
     bool isUnplaced;
 };
 
-
 class QgsPalLayerSettings
 {
 
@@ -469,11 +468,18 @@ Returns the QgsExpression for this label settings. May be ``None`` if isExpressi
 
     double minFeatureSize;
 
-    bool obstacle;
 
-    double obstacleFactor;
+%Property( name = obstacle, get = _getIsObstacle, set = _setIsObstacle )
+%Property( name = obstacleFactor, get = _getObstacleFactor, set = _setObstacleFactor )
+%Property( name = obstacleType, get = _getObstacleType, set = _setObstacleType )
 
-    ObstacleType obstacleType;
+    bool _getIsObstacle() const;
+    void _setIsObstacle( bool obstacle );
+    double _getObstacleFactor() const;
+    void _setObstacleFactor( double factor );
+    ObstacleType _getObstacleType() const;
+    void _setObstacleType( ObstacleType type );
+
 
     double zIndex;
 
@@ -583,6 +589,25 @@ Ownership of ``callout`` is transferred to the settings.
 .. seealso:: :py:func:`callout`
 
 .. versionadded:: 3.10
+%End
+
+
+    QgsLabelObstacleSettings &obstacleSettings();
+%Docstring
+Returns the label obstacle settings.
+
+.. seealso:: :py:func:`setObstacleSettings`
+
+.. versionadded:: 3.10.2
+%End
+
+    void setObstacleSettings( const QgsLabelObstacleSettings &settings );
+%Docstring
+Sets the label obstacle ``settings``.
+
+.. seealso:: :py:func:`obstacleSettings`
+
+.. versionadded:: 3.10.2
 %End
 
     static QPixmap labelSettingsPreviewPixmap( const QgsPalLayerSettings &settings, QSize size, const QString &previewText = QString(), int padding = 0 );
@@ -737,6 +762,7 @@ allowed to be split apart (e.g., Arabic and Indic based scripts)
 %End
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

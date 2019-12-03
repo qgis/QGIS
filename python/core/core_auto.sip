@@ -88,6 +88,7 @@
 %Include auto_generated/qgsinterval.sip
 %Include auto_generated/qgsjsonutils.sip
 %Include auto_generated/qgslabelingenginesettings.sip
+%Include auto_generated/qgslabelobstaclesettings.sip
 %Include auto_generated/qgslabelsearchtree.sip
 %Include auto_generated/qgslayerdefinition.sip
 %Include auto_generated/qgslegendrenderer.sip

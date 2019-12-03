@@ -620,7 +620,6 @@ QgsAbstractLabelProvider::QgsAbstractLabelProvider( QgsMapLayer *layer, const QS
   , mFlags( DrawLabels )
   , mPlacement( QgsPalLayerSettings::AroundPoint )
   , mPriority( 0.5 )
-  , mObstacleType( QgsPalLayerSettings::PolygonInterior )
   , mUpsidedownLabels( QgsPalLayerSettings::Upright )
 {
 }

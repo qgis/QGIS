@@ -321,7 +321,7 @@ void TestQgsLabelingEngine::testRuleBased()
 
   QgsPalLayerSettings s1;
   s1.fieldName = QStringLiteral( "Class" );
-  s1.obstacle = false;
+  s1.obstacleSettings().setIsObstacle( false );
   s1.dist = 2;
   QgsTextFormat format = s1.format();
   format.setColor( QColor( 200, 0, 200 ) );
@@ -336,7 +336,7 @@ void TestQgsLabelingEngine::testRuleBased()
 
   QgsPalLayerSettings s2;
   s2.fieldName = QStringLiteral( "Class" );
-  s2.obstacle = false;
+  s2.obstacleSettings().setIsObstacle( false );
   s2.dist = 2;
   format = s2.format();
   format.setColor( Qt::red );
@@ -1707,7 +1707,7 @@ void TestQgsLabelingEngine::drawUnplaced()
   settings.isExpression = true;
   settings.placement = QgsPalLayerSettings::OverPoint;
   settings.priority = 3;
-  settings.obstacleFactor = 0;
+  settings.obstacleSettings().setFactor( 0 );
 
   std::unique_ptr< QgsVectorLayer> vl1( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl1->setRenderer( new QgsNullSymbolRenderer() );
@@ -1725,7 +1725,7 @@ void TestQgsLabelingEngine::drawUnplaced()
   settings.isExpression = true;
   settings.placement = QgsPalLayerSettings::OverPoint;
   settings.priority = 5; // higher priority - YY should be placed, not XX
-  settings.obstacleFactor = 0;
+  settings.obstacleSettings().setFactor( 0 );
   format.setSize( 90 );
   settings.setFormat( format );
 
