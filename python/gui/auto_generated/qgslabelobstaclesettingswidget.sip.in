@@ -1,0 +1,57 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgslabelobstaclesettingswidget.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsLabelObstacleSettingsWidget : QgsLabelSettingsWidgetBase
+{
+%Docstring
+A widget for customising label obstacle settings.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgslabelobstaclesettingswidget.h"
+%End
+  public:
+
+    QgsLabelObstacleSettingsWidget( QWidget *parent /TransferThis/ = 0, QgsVectorLayer *vl = 0 );
+%Docstring
+Constructor for QgsLabelObstacleSettingsWidget.
+
+:param parent: parent widget
+:param vl: associated vector layer
+%End
+
+    void setObstacleSettings( const QgsLabelObstacleSettings &settings );
+%Docstring
+Sets the obstacle ``settings`` to show in the widget.
+
+.. seealso:: :py:func:`settings`
+%End
+
+    QgsLabelObstacleSettings settings() const;
+%Docstring
+Returns the obstacle settings defined by the widget.
+
+.. seealso:: :py:func:`setSettings`
+%End
+
+    virtual void setGeometryType( QgsWkbTypes::GeometryType type );
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgslabelobstaclesettingswidget.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
