@@ -362,6 +362,7 @@ void QgsMeshLayerRenderer::renderVectorDataset()
         mLayerExtent,
         mOutputSize ) );
 
-  renderer->draw();
+  if ( renderer )
+    renderer->draw();
 }
 
