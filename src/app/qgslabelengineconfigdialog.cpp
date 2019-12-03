@@ -43,7 +43,7 @@ QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QWidget *parent )
   mTextRenderFormatComboBox->addItem( tr( "Always Render Labels as Text" ), QgsRenderContext::TextFormatAlwaysText );
 
   mPlacementVersionComboBox->addItem( tr( "Version 1" ), QgsLabelingEngineSettings::PlacementEngineVersion1 );
-  mPlacementVersionComboBox->addItem( tr( "Version 2 (Experimental)" ), QgsLabelingEngineSettings::PlacementEngineVersion2 );
+  mPlacementVersionComboBox->addItem( tr( "Version 2 (Recommended)" ), QgsLabelingEngineSettings::PlacementEngineVersion2 );
 
   mPreviousEngineVersion = engineSettings.placementVersion();
   mPlacementVersionComboBox->setCurrentIndex( mPlacementVersionComboBox->findData( mPreviousEngineVersion ) );
