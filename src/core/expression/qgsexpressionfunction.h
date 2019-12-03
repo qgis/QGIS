@@ -110,8 +110,7 @@ class CORE_EXPORT QgsExpressionFunction
                            const QString &helpText = QString(),
                            bool lazyEval = false,
                            bool handlesNull = false,
-                           bool isContextual = false,
-                           const QStringList &searchTags = QStringList() )
+                           bool isContextual = false )
       : mName( fnname )
       , mParams( params )
       , mGroups( group.isEmpty() ? QStringList() : QStringList() << group )
@@ -119,7 +118,6 @@ class CORE_EXPORT QgsExpressionFunction
       , mLazyEval( lazyEval )
       , mHandlesNull( handlesNull )
       , mIsContextual( isContextual )
-      , mSearchTags( searchTags )
     {
     }
 
@@ -133,8 +131,7 @@ class CORE_EXPORT QgsExpressionFunction
                            const QString &helpText = QString(),
                            bool lazyEval = false,
                            bool handlesNull = false,
-                           bool isContextual = false,
-                           const QStringList &searchTags = QStringList() )
+                           bool isContextual = false )
       : mName( fnname )
       , mParams( params )
       , mGroups( groups )
@@ -142,7 +139,6 @@ class CORE_EXPORT QgsExpressionFunction
       , mLazyEval( lazyEval )
       , mHandlesNull( handlesNull )
       , mIsContextual( isContextual )
-      , mSearchTags( searchTags )
     {
     }
 
@@ -156,8 +152,7 @@ class CORE_EXPORT QgsExpressionFunction
                            const QString &helpText = QString(),
                            bool lazyEval = false,
                            bool handlesNull = false,
-                           bool isContextual = false,
-                           const QStringList &searchTags = QStringList() )
+                           bool isContextual = false )
       : mName( fnname )
       , mParams( 0 )
       , mParameterList( params )
@@ -166,7 +161,6 @@ class CORE_EXPORT QgsExpressionFunction
       , mLazyEval( lazyEval )
       , mHandlesNull( handlesNull )
       , mIsContextual( isContextual )
-      , mSearchTags( searchTags )
     {}
 
     /**
@@ -179,8 +173,7 @@ class CORE_EXPORT QgsExpressionFunction
                            const QString &helpText = QString(),
                            bool lazyEval = false,
                            bool handlesNull = false,
-                           bool isContextual = false,
-                           const QStringList &searchTags = QStringList() )
+                           bool isContextual = false )
       : mName( fnname )
       , mParams( 0 )
       , mParameterList( params )
@@ -189,7 +182,6 @@ class CORE_EXPORT QgsExpressionFunction
       , mLazyEval( lazyEval )
       , mHandlesNull( handlesNull )
       , mIsContextual( isContextual )
-      , mSearchTags( searchTags )
     {}
 
     virtual ~QgsExpressionFunction() = default;
@@ -300,9 +292,6 @@ class CORE_EXPORT QgsExpressionFunction
     //! The help text for the function.
     const QString helpText() const;
 
-    //! The search tags to find the function
-    QStringList searchTags() const { return mSearchTags; }
-
     /**
      * Returns result of evaluating the function.
      * \param values list of values passed to the function
@@ -349,7 +338,6 @@ class CORE_EXPORT QgsExpressionFunction
     bool mLazyEval;
     bool mHandlesNull;
     bool mIsContextual; //if true function is only available through an expression context
-    QStringList mSearchTags;
 };
 
 /**
@@ -374,9 +362,8 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
                                  const QSet<QString> &referencedColumns = QSet<QString>(),
                                  bool lazyEval = false,
                                  const QStringList &aliases = QStringList(),
-                                 bool handlesNull = false,
-                                 const QStringList &searchTags = QStringList() )
-      : QgsExpressionFunction( fnname, params, group, helpText, lazyEval, handlesNull, false, searchTags )
+                                 bool handlesNull = false )
+      : QgsExpressionFunction( fnname, params, group, helpText, lazyEval, handlesNull, false )
       , mFnc( fcn )
       , mAliases( aliases )
       , mUsesGeometry( usesGeometry )
@@ -396,9 +383,8 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
                                  const QSet<QString> &referencedColumns = QSet<QString>(),
                                  bool lazyEval = false,
                                  const QStringList &aliases = QStringList(),
-                                 bool handlesNull = false,
-                                 const QStringList &searchTags = QStringList() )
-      : QgsExpressionFunction( fnname, params, group, helpText, lazyEval, handlesNull, false, searchTags )
+                                 bool handlesNull = false )
+      : QgsExpressionFunction( fnname, params, group, helpText, lazyEval, handlesNull, false )
       , mFnc( fcn )
       , mAliases( aliases )
       , mUsesGeometry( usesGeometry )
@@ -425,8 +411,7 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
                                  const std::function< QSet<QString>( const QgsExpressionNodeFunction *node )> &referencedColumns,
                                  bool lazyEval = false,
                                  const QStringList &aliases = QStringList(),
-                                 bool handlesNull = false,
-                                 const QStringList &searchTags = QStringList() );
+                                 bool handlesNull = false );
 
     /**
      * Static function for evaluation against a QgsExpressionContext, using a named list of parameter values and list
@@ -441,9 +426,8 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
                                  const QSet<QString> &referencedColumns = QSet<QString>(),
                                  bool lazyEval = false,
                                  const QStringList &aliases = QStringList(),
-                                 bool handlesNull = false,
-                                 const QStringList &searchTags = QStringList() )
-      : QgsExpressionFunction( fnname, params, groups, helpText, lazyEval, handlesNull, false, searchTags )
+                                 bool handlesNull = false )
+      : QgsExpressionFunction( fnname, params, groups, helpText, lazyEval, handlesNull, false )
       , mFnc( fcn )
       , mAliases( aliases )
       , mUsesGeometry( usesGeometry )

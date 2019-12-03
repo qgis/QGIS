@@ -408,7 +408,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void registerItemForAllGroups( const QStringList &groups, const QString &label, const QString &expressionText,
                                    const QString &helpText = QString(),
                                    QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
-                                   bool highlightedItem = false, int sortOrder = 1, const QStringList &searchTags = QStringList() );
+                                   bool highlightedItem = false, int sortOrder = 1, const QStringList &tags = QStringList() );
 
     /**
      * Returns a HTML formatted string for use as a \a relation item help.

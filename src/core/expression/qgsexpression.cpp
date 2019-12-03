@@ -652,6 +652,25 @@ QString QgsExpression::helpText( QString name )
   return helpContents;
 }
 
+QStringList QgsExpression::tags( QString name )
+{
+  QStringList tags = QStringList();
+
+  QgsExpression::initFunctionHelp();
+
+  if ( sFunctionHelpTexts()->contains( name ) )
+  {
+    const Help &f = ( *sFunctionHelpTexts() )[ name ];
+
+    for ( const HelpVariant &v : qgis::as_const( f.mVariants ) )
+    {
+      tags << v.mTags;
+    }
+  }
+
+  return tags;
+}
+
 void QgsExpression::initVariableHelp()
 {
   if ( !sVariableHelpTexts()->isEmpty() )

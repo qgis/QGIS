@@ -672,7 +672,7 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
       name += '(';
     else if ( !name.startsWith( '$' ) )
       name += QLatin1String( "()" );
-    registerItemForAllGroups( func->groups(), func->name(), ' ' + name + ' ', func->helpText(), QgsExpressionItem::ExpressionNode, mExpressionContext.isHighlightedFunction( func->name() ), 1, func->searchTags() );
+    registerItemForAllGroups( func->groups(), func->name(), ' ' + name + ' ', func->helpText(), QgsExpressionItem::ExpressionNode, mExpressionContext.isHighlightedFunction( func->name() ), 1, QgsExpression::tags( func->name() ) );
   }
 
   // load relation names
@@ -818,16 +818,16 @@ void QgsExpressionBuilderWidget::loadExpressionContext()
       continue;
     if ( func->params() != 0 )
       name += '(';
-    registerItemForAllGroups( func->groups(), func->name(), ' ' + name + ' ', func->helpText(), QgsExpressionItem::ExpressionNode, mExpressionContext.isHighlightedFunction( func->name() ), 1, func->searchTags() );
+    registerItemForAllGroups( func->groups(), func->name(), ' ' + name + ' ', func->helpText(), QgsExpressionItem::ExpressionNode, mExpressionContext.isHighlightedFunction( func->name() ), 1, QgsExpression::tags( func->name() ) );
   }
 }
 
-void QgsExpressionBuilderWidget::registerItemForAllGroups( const QStringList &groups, const QString &label, const QString &expressionText, const QString &helpText, QgsExpressionItem::ItemType type, bool highlightedItem, int sortOrder, const QStringList &searchTags )
+void QgsExpressionBuilderWidget::registerItemForAllGroups( const QStringList &groups, const QString &label, const QString &expressionText, const QString &helpText, QgsExpressionItem::ItemType type, bool highlightedItem, int sortOrder, const QStringList &tags )
 {
   const auto constGroups = groups;
   for ( const QString &group : constGroups )
   {
-    registerItem( group, label, expressionText, helpText, type, highlightedItem, sortOrder, QIcon(), searchTags );
+    registerItem( group, label, expressionText, helpText, type, highlightedItem, sortOrder, QIcon(), tags );
   }
 }
 
