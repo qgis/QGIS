@@ -548,97 +548,6 @@ Reads configuration from the given DOM element
 
 };
 
-class QgsMeshRendererAveragingSingleVerticalLayerSettings
-{
-%Docstring
-
-Represents mesh renderer settings for averaging method :py:class:`QgsMeshSingleLevelAverageMethod`
-
-.. note::
-
-   The API is considered EXPERIMENTAL and can be changed without a notice
-
-.. versionadded:: 3.12
-%End
-
-%TypeHeaderCode
-#include "qgsmeshrenderersettings.h"
-%End
-  public:
-
-    int verticalLayer() const;
-%Docstring
-Returns index of vertical layer to show (indexed from 0, from top layer)
-%End
-    void setVerticalLayer( int verticalLayer );
-%Docstring
-Sets index of vertical layer to show (indexed from 0, from top layer)
-%End
-
-    QDomElement writeXml( QDomDocument &doc ) const;
-%Docstring
-Writes configuration to a new DOM element
-%End
-    void readXml( const QDomElement &elem );
-%Docstring
-Reads configuration from the given DOM element
-%End
-};
-
-class QgsMeshRenderer3dAveragingSettings
-{
-%Docstring
-
-Represents mesh renderer settings for averaging method
-
-.. note::
-
-   The API is considered EXPERIMENTAL and can be changed without a notice
-
-.. versionadded:: 3.12
-%End
-
-%TypeHeaderCode
-#include "qgsmeshrenderersettings.h"
-%End
-  public:
-
-    enum Method
-    {
-      SingleVerticalLayer,
-    };
-
-    Method averagingMethod() const;
-%Docstring
-Returns averaging method
-%End
-
-    void setAveragingMethod( const Method &averagingMethod );
-%Docstring
-Sets averaging method
-%End
-
-    QgsMeshRendererAveragingSingleVerticalLayerSettings singleVerticalLayerSettings() const;
-%Docstring
-Returns settings for :py:class:`QgsMeshSingleLevelAverageMethod`
-%End
-
-    void setSingleVerticalLayerSettings( const QgsMeshRendererAveragingSingleVerticalLayerSettings &singleVerticalLayerSettings );
-%Docstring
-Sets settings for :py:class:`QgsMeshSingleLevelAverageMethod`
-%End
-
-    QDomElement writeXml( QDomDocument &doc ) const;
-%Docstring
-Writes configuration to a new DOM element
-%End
-    void readXml( const QDomElement &elem );
-%Docstring
-Reads configuration from the given DOM element
-%End
-
-};
-
 class QgsMeshRendererSettings
 {
 %Docstring
@@ -656,6 +565,13 @@ Represents all mesh renderer settings
 #include "qgsmeshrenderersettings.h"
 %End
   public:
+
+    QgsMeshRendererSettings();
+%Docstring
+Constructs renderer with default single layer averaging method
+%End
+    ~QgsMeshRendererSettings();
+
     QgsMeshRendererMeshSettings nativeMeshSettings() const;
 %Docstring
 Returns renderer settings
@@ -692,13 +608,17 @@ Returns renderer settings
 Sets new renderer settings
 %End
 
-    QgsMeshRenderer3dAveragingSettings averagingSettings( ) const;
+    QgsMesh3dAveragingMethod *averagingMethod() const;
 %Docstring
-Returns renderer settings
+Returns averaging method for conversion of 3d stacked mesh data to 2d data
+Caller does not own the resulting pointer
 %End
-    void setAveragingSettings( const QgsMeshRenderer3dAveragingSettings &settings );
+
+    void setAveragingMethod( QgsMesh3dAveragingMethod *method );
 %Docstring
-Sets new renderer settings
+Sets averaging method for conversion of 3d stacked mesh data to 2d data
+
+Ownership of the method is transferred to the renderer settings
 %End
 
     QgsMeshDatasetIndex activeScalarDataset() const;

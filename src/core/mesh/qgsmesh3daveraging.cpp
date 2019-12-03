@@ -21,8 +21,6 @@
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshrenderersettings.h"
 
-///@cond PRIVATE
-
 QgsMesh3dAveragingMethod::QgsMesh3dAveragingMethod( Method method )
   : mMethod( method )
 {
@@ -33,46 +31,43 @@ QgsMesh3dAveragingMethod::Method QgsMesh3dAveragingMethod::method() const
   return mMethod;
 }
 
-QgsMesh3dAveragingMethod *QgsMesh3dAveragingMethod::create( const QgsMeshRenderer3dAveragingSettings &settings )
+bool QgsMesh3dAveragingMethod::equals( const QgsMesh3dAveragingMethod *a, const QgsMesh3dAveragingMethod *b )
 {
-  std::unique_ptr<QgsMesh3dAveragingMethod> ret;
-  switch ( settings.averagingMethod() )
-  {
-    case QgsMeshRenderer3dAveragingSettings::SingleVerticalLayer:
-      ret.reset( new QgsMeshSingleLevelAverageMethod( settings.singleVerticalLayerSettings().verticalLayer() ) );
-      break;
-  }
-  return ret.release();
+  if ( a )
+    return a->equals( b );
+  else
+    return !b;
 }
 
-bool QgsMesh3dAveragingMethod::equals( QgsMesh3dAveragingMethod *a, QgsMesh3dAveragingMethod *b )
+QgsMeshSingleLevelAveragingMethod::QgsMeshSingleLevelAveragingMethod()
+  : QgsMesh3dAveragingMethod( QgsMesh3dAveragingMethod::SingleLevelAverageMethod )
 {
-  if ( !a )
-    return bool( b );
-
-  if ( !b )
-    return true;
-
-  if ( a->method() != b->method() )
-    return false;
-
-  switch ( a->method() )
-  {
-    case QgsMesh3dAveragingMethod::SingleLevelAverageMethod:
-      return *dynamic_cast<QgsMeshSingleLevelAverageMethod *>( a ) == *dynamic_cast<QgsMeshSingleLevelAverageMethod *>( b );
-  }
-  return false;
 }
 
-QgsMeshSingleLevelAverageMethod::QgsMeshSingleLevelAverageMethod( int verticalLevel )
+QgsMeshSingleLevelAveragingMethod::QgsMeshSingleLevelAveragingMethod( int verticalLevel )
   : QgsMesh3dAveragingMethod( QgsMesh3dAveragingMethod::SingleLevelAverageMethod )
   , mVerticalLevel( verticalLevel )
 {
 }
 
-QgsMeshSingleLevelAverageMethod::~QgsMeshSingleLevelAverageMethod() = default;
+QgsMeshSingleLevelAveragingMethod::~QgsMeshSingleLevelAveragingMethod() = default;
 
-QgsMeshDataBlock QgsMeshSingleLevelAverageMethod::calculate( const QgsMesh3dDataBlock &block3d, QgsFeedback *feedback ) const
+bool QgsMeshSingleLevelAveragingMethod::equals( const QgsMesh3dAveragingMethod *other ) const
+{
+  if ( !other || other->method() != method() )
+    return false;
+
+  const QgsMeshSingleLevelAveragingMethod *otherMethod = static_cast<const QgsMeshSingleLevelAveragingMethod *>( other );
+
+  return otherMethod->verticalLevel() == verticalLevel();
+}
+
+QgsMesh3dAveragingMethod *QgsMeshSingleLevelAveragingMethod::clone() const
+{
+  return new QgsMeshSingleLevelAveragingMethod( verticalLevel() );
+}
+
+QgsMeshDataBlock QgsMeshSingleLevelAveragingMethod::calculate( const QgsMesh3dDataBlock &block3d, QgsFeedback *feedback ) const
 {
   if ( !block3d.isValid() )
     return QgsMeshDataBlock();
@@ -94,9 +89,9 @@ QgsMeshDataBlock QgsMeshSingleLevelAverageMethod::calculate( const QgsMesh3dData
     int verticalLevels = verticalLevelsCount[i];
     if ( isVector )
     {
-      if ( mVerticalLevel <= verticalLevels )
+      if ( mVerticalLevel < verticalLevels )
       {
-        const size_t index = volumeIndex + mVerticalLevel;
+        const int index = volumeIndex + mVerticalLevel;
         buffer[ 2 * i ] = values[ 2 * index ];
         buffer[ 2 * i + 1 ] = values[ 2 * index + 1 ];
       }
@@ -110,7 +105,7 @@ QgsMeshDataBlock QgsMeshSingleLevelAverageMethod::calculate( const QgsMesh3dData
     {
       if ( mVerticalLevel <= verticalLevels )
       {
-        const size_t index = volumeIndex + mVerticalLevel;
+        const int index = volumeIndex + mVerticalLevel;
         buffer[i] = values[index];
       }
       else
@@ -123,14 +118,19 @@ QgsMeshDataBlock QgsMeshSingleLevelAverageMethod::calculate( const QgsMesh3dData
   return result;
 }
 
-bool QgsMeshSingleLevelAverageMethod::operator==( const QgsMeshSingleLevelAverageMethod &rhs ) const
+QDomElement QgsMeshSingleLevelAveragingMethod::writeXml( QDomDocument &doc ) const
 {
-  return mVerticalLevel == rhs.verticalLevel();
+  QDomElement elem = doc.createElement( QStringLiteral( "single-vertical-layer-settings" ) );
+  elem.setAttribute( QStringLiteral( "layer-index" ), verticalLevel() );
+  return elem;
 }
 
-int QgsMeshSingleLevelAverageMethod::verticalLevel() const
+void QgsMeshSingleLevelAveragingMethod::readXml( const QDomElement &elem )
+{
+  mVerticalLevel = elem.attribute( QStringLiteral( "layer-index" ) ).toInt();
+}
+
+int QgsMeshSingleLevelAveragingMethod::verticalLevel() const
 {
   return mVerticalLevel;
 }
-
-///@endcond

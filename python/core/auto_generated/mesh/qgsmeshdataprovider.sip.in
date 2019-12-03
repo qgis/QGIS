@@ -256,9 +256,9 @@ Constructs an invalid block
 Constructs a new block for count faces
 %End
 
-    void setIsValid();
+    void setIsValid( bool valid );
 %Docstring
-Sets block as valid
+Sets block validity
 %End
 
     bool isValid() const;
@@ -581,7 +581,7 @@ See QgsMeshDatasetMetadata.isVector() or :py:func:`QgsMeshDataBlock.type()`
 to check if the returned value is vector or scalar
 
 Returns invalid block for DataOnVolumes. Use QgsMeshLayerUtils.datasetValues() if you
-need block for any type of data typ
+need block for any type of data type
 
 .. versionadded:: 3.6
 %End

@@ -362,11 +362,10 @@ void QgsMeshContours::populateCache( const QgsMeshDatasetIndex &index, QgsMeshRe
 
     // populate scalar values
     QgsMeshDataBlock vals = QgsMeshLayerUtils::datasetValues(
-                              mMeshLayer->dataProvider(),
+                              mMeshLayer,
                               index,
                               0,
-                              count,
-                              mMeshLayer->averagingMethod() );
+                              count );
 
     // vals could be scalar or vectors, for contour rendering we want always magnitude
     mDatasetValues = QgsMeshLayerUtils::calculateMagnitudes( vals );

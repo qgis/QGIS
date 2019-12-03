@@ -380,6 +380,7 @@
 %Include auto_generated/locator/qgslocatorfilter.sip
 %Include auto_generated/locator/qgslocatormodel.sip
 %Include auto_generated/locator/qgslocatormodelbridge.sip
+%Include auto_generated/mesh/qgsmesh3daveraging.sip
 %Include auto_generated/mesh/qgsmeshdataprovider.sip
 %Include auto_generated/mesh/qgsmeshlayer.sip
 %Include auto_generated/mesh/qgsmeshlayerinterpolator.sip

@@ -19,12 +19,14 @@
 #define QGSMESHRENDERERSETTINGS_H
 
 #include <QColor>
+#include <QDomElement>
 #include <limits>
 
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgscolorrampshader.h"
 #include "qgsmeshdataprovider.h"
+#include "qgsmesh3daveraging.h"
 
 /**
  * \ingroup core
@@ -497,75 +499,6 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
 /**
  * \ingroup core
  *
- * Represents mesh renderer settings for averaging method QgsMeshSingleLevelAverageMethod
- *
- * \note The API is considered EXPERIMENTAL and can be changed without a notice
- *
- * \since QGIS 3.12
- */
-class CORE_EXPORT QgsMeshRendererAveragingSingleVerticalLayerSettings
-{
-  public:
-
-    //! Returns index of vertical layer to show (indexed from 0, from top layer)
-    int verticalLayer() const;
-    //! Sets index of vertical layer to show (indexed from 0, from top layer)
-    void setVerticalLayer( int verticalLayer );
-
-    //! Writes configuration to a new DOM element
-    QDomElement writeXml( QDomDocument &doc ) const;
-    //! Reads configuration from the given DOM element
-    void readXml( const QDomElement &elem );
-  private:
-    int mVerticalLayer = 0;
-};
-
-/**
- * \ingroup core
- *
- * Represents mesh renderer settings for averaging method
- *
- * \note The API is considered EXPERIMENTAL and can be changed without a notice
- *
- * \since QGIS 3.12
- */
-class CORE_EXPORT QgsMeshRenderer3dAveragingSettings
-{
-  public:
-
-    /**
-     * Defines the method of averaging
-     */
-    enum Method
-    {
-      SingleVerticalLayer = 0, //!< QgsMeshSingleLevelAverageMethod
-    };
-
-    //! Returns averaging method
-    Method averagingMethod() const;
-
-    //! Sets averaging method
-    void setAveragingMethod( const Method &averagingMethod );
-
-    //! Returns settings for QgsMeshSingleLevelAverageMethod
-    QgsMeshRendererAveragingSingleVerticalLayerSettings singleVerticalLayerSettings() const;
-
-    //! Sets settings for QgsMeshSingleLevelAverageMethod
-    void setSingleVerticalLayerSettings( const QgsMeshRendererAveragingSingleVerticalLayerSettings &singleVerticalLayerSettings );
-
-    //! Writes configuration to a new DOM element
-    QDomElement writeXml( QDomDocument &doc ) const;
-    //! Reads configuration from the given DOM element
-    void readXml( const QDomElement &elem );
-
-  private:
-    Method mAveragingMethod = SingleVerticalLayer;
-    QgsMeshRendererAveragingSingleVerticalLayerSettings mSingleVerticalLayerSettings;
-};
-
-/**
- * \ingroup core
- *
  * Represents all mesh renderer settings
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
@@ -575,6 +508,14 @@ class CORE_EXPORT QgsMeshRenderer3dAveragingSettings
 class CORE_EXPORT QgsMeshRendererSettings
 {
   public:
+
+    /**
+     * Constructs renderer with default single layer averaging method
+     */
+    QgsMeshRendererSettings();
+    //! Destructor
+    ~QgsMeshRendererSettings();
+
     //! Returns renderer settings
     QgsMeshRendererMeshSettings nativeMeshSettings() const { return mRendererNativeMeshSettings; }
     //! Sets new renderer settings, triggers repaint
@@ -595,10 +536,18 @@ class CORE_EXPORT QgsMeshRendererSettings
     //! Sets new renderer settings
     void setVectorSettings( int groupIndex, const QgsMeshRendererVectorSettings &settings ) { mRendererVectorSettings[groupIndex] = settings; }
 
-    //! Returns renderer settings
-    QgsMeshRenderer3dAveragingSettings averagingSettings( ) const { return mRendererAveragingSettings; }
-    //! Sets new renderer settings
-    void setAveragingSettings( const QgsMeshRenderer3dAveragingSettings &settings ) { mRendererAveragingSettings = settings; }
+    /**
+     * Returns averaging method for conversion of 3d stacked mesh data to 2d data
+     * Caller does not own the resulting pointer
+     */
+    QgsMesh3dAveragingMethod *averagingMethod() const;
+
+    /**
+     * Sets averaging method for conversion of 3d stacked mesh data to 2d data
+     *
+     * Ownership of the method is transferred to the renderer settings
+     */
+    void setAveragingMethod( QgsMesh3dAveragingMethod *method );
 
     //! Returns active scalar dataset
     QgsMeshDatasetIndex activeScalarDataset() const { return mActiveScalarDataset; }
@@ -618,7 +567,6 @@ class CORE_EXPORT QgsMeshRendererSettings
   private:
     QgsMeshRendererMeshSettings mRendererNativeMeshSettings;
     QgsMeshRendererMeshSettings mRendererTriangularMeshSettings;
-    QgsMeshRenderer3dAveragingSettings mRendererAveragingSettings;
 
     QHash<int, QgsMeshRendererScalarSettings> mRendererScalarSettings;  //!< Per-group scalar settings
     QHash<int, QgsMeshRendererVectorSettings> mRendererVectorSettings;  //!< Per-group vector settings
@@ -628,6 +576,9 @@ class CORE_EXPORT QgsMeshRendererSettings
 
     //! index of active vector dataset
     QgsMeshDatasetIndex mActiveVectorDataset;
+
+    //! Averaging method to get 2D datasets from 3D stacked mesh datasets
+    std::shared_ptr<QgsMesh3dAveragingMethod> mAveragingMethod;
 };
 
 #endif //QGSMESHRENDERERSETTINGS_H

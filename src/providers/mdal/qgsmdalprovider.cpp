@@ -607,7 +607,7 @@ QgsMesh3dDataBlock QgsMdalProvider::dataset3dValues( QgsMeshDatasetIndex index, 
   if ( valRead != nVolumes )
     return QgsMesh3dDataBlock();
 
-  ret.setIsValid();
+  ret.setIsValid( true );
   return ret;
 }
 

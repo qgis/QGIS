@@ -25,6 +25,7 @@
 #include <QWidget>
 
 class QgsMeshLayer;
+class QgsMesh3dAveragingMethod;
 
 /**
  * A widget for setup of the averaging method from 3d to 2d datasets on 3d stacked mesh.
@@ -45,8 +46,12 @@ class APP_EXPORT QgsMeshRenderer3dAveragingWidget : public QWidget, private Ui::
     //! Associates mesh layer with the widget
     void setLayer( QgsMeshLayer *layer );
 
-    //! Returns vector settings
-    QgsMeshRenderer3dAveragingSettings settings() const;
+    /**
+     * Returns selected averaging method
+     *
+     * Caller takes ownership
+     */
+    QgsMesh3dAveragingMethod *averagingMethod() const;
 
     //! Synchronizes widgets state with associated mesh layer
     void syncToLayer();
