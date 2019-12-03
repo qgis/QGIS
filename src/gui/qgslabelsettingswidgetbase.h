@@ -62,6 +62,20 @@ class GUI_EXPORT QgsLabelSettingsWidgetBase : public QgsPanelWidget, protected Q
      */
     virtual void setGeometryType( QgsWkbTypes::GeometryType type );
 
+    /**
+     * Returns the current data defined properties state as specified in the widget.
+     *
+     * \see setDataDefinedProperties()
+     */
+    QgsPropertyCollection dataDefinedProperties() const;
+
+    /**
+     * Sets the current data defined properties to show in the widget.
+     *
+     * \see dataDefinedProperties()
+     */
+    void setDataDefinedProperties( const QgsPropertyCollection &dataDefinedProperties );
+
   signals:
 
     /**

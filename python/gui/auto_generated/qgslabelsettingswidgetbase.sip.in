@@ -49,6 +49,20 @@ Returns the context in which the symbol widget is shown, e.g., the associated ma
 Sets the geometry ``type`` of the features to customize the widget accordingly.
 %End
 
+    QgsPropertyCollection dataDefinedProperties() const;
+%Docstring
+Returns the current data defined properties state as specified in the widget.
+
+.. seealso:: :py:func:`setDataDefinedProperties`
+%End
+
+    void setDataDefinedProperties( const QgsPropertyCollection &dataDefinedProperties );
+%Docstring
+Sets the current data defined properties to show in the widget.
+
+.. seealso:: :py:func:`dataDefinedProperties`
+%End
+
   signals:
 
     void changed();
