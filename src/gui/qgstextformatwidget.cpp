@@ -169,11 +169,11 @@ void QgsTextFormatWidget::initWidget()
   mZIndexSpinBox->setClearValue( 0.0 );
   mLineDistanceSpnBx->setClearValue( 0.0 );
 
-  mObstacleTypeComboBox->addItem( tr( "Over the feature's interior" ), QgsPalLayerSettings::PolygonInterior );
-  mObstacleTypeComboBox->addItem( tr( "Over the feature's boundary" ), QgsPalLayerSettings::PolygonBoundary );
+  mObstacleTypeComboBox->addItem( tr( "Over the Feature's Interior" ), QgsPalLayerSettings::PolygonInterior );
+  mObstacleTypeComboBox->addItem( tr( "Over the Feature's Boundary" ), QgsPalLayerSettings::PolygonBoundary );
 
-  mOffsetTypeComboBox->addItem( tr( "From point" ), QgsPalLayerSettings::FromPoint );
-  mOffsetTypeComboBox->addItem( tr( "From symbol bounds" ), QgsPalLayerSettings::FromSymbolBounds );
+  mOffsetTypeComboBox->addItem( tr( "From Point" ), QgsPalLayerSettings::FromPoint );
+  mOffsetTypeComboBox->addItem( tr( "From Symbol Bounds" ), QgsPalLayerSettings::FromSymbolBounds );
 
   mShapeTypeCmbBx->addItem( tr( "Rectangle" ), QgsTextBackgroundSettings::ShapeRectangle );
   mShapeTypeCmbBx->addItem( tr( "Square" ), QgsTextBackgroundSettings::ShapeSquare );
