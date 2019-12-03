@@ -117,6 +117,23 @@ void QgsLabelSettingsWidgetBase::updateDataDefinedProperty()
   emit changed();
 }
 
+QgsPropertyCollection QgsLabelSettingsWidgetBase::dataDefinedProperties() const
+{
+  return mDataDefinedProperties;
+}
+
+void QgsLabelSettingsWidgetBase::setDataDefinedProperties( const QgsPropertyCollection &dataDefinedProperties )
+{
+  mDataDefinedProperties = dataDefinedProperties;
+
+  const auto overrideButtons = findChildren<QgsPropertyOverrideButton *>();
+  for ( QgsPropertyOverrideButton *button : overrideButtons )
+  {
+    QgsPalLayerSettings::Property key = static_cast<  QgsPalLayerSettings::Property >( button->propertyKey() );
+    button->setToProperty( mDataDefinedProperties.property( key ) );
+  }
+}
+
 void QgsLabelSettingsWidgetBase::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsPalLayerSettings::Property key )
 {
   button->init( key, mDataDefinedProperties, QgsPalLayerSettings::propertyDefinitions(), mVectorLayer, true );
