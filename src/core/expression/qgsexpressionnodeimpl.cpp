@@ -298,14 +298,22 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
 
     case boAnd:
     {
-      QgsExpressionUtils::TVL tvlL = QgsExpressionUtils::getTVLValue( vL, parent ), tvlR = QgsExpressionUtils::getTVLValue( vR, parent );
+      QgsExpressionUtils::TVL tvlL = QgsExpressionUtils::getTVLValue( vL, parent );
+      ENSURE_NO_EVAL_ERROR;
+      if ( tvlL == QgsExpressionUtils::False )
+        return TVL_False;  // shortcut -- no need to evaluate right-hand side
+      QgsExpressionUtils::TVL tvlR = QgsExpressionUtils::getTVLValue( vR, parent );
       ENSURE_NO_EVAL_ERROR;
       return  QgsExpressionUtils::tvl2variant( QgsExpressionUtils::AND[tvlL][tvlR] );
     }
 
     case boOr:
     {
-      QgsExpressionUtils::TVL tvlL = QgsExpressionUtils::getTVLValue( vL, parent ), tvlR = QgsExpressionUtils::getTVLValue( vR, parent );
+      QgsExpressionUtils::TVL tvlL = QgsExpressionUtils::getTVLValue( vL, parent );
+      ENSURE_NO_EVAL_ERROR;
+      if ( tvlL == QgsExpressionUtils::True )
+        return TVL_True;  // shortcut -- no need to evaluate right-hand side
+      QgsExpressionUtils::TVL tvlR = QgsExpressionUtils::getTVLValue( vR, parent );
       ENSURE_NO_EVAL_ERROR;
       return  QgsExpressionUtils::tvl2variant( QgsExpressionUtils::OR[tvlL][tvlR] );
     }
