@@ -730,7 +730,7 @@ tests:
         name: expected/displaced_points.gml
         type: vector
 
-  - algorithm: qgis:generatepointspixelcentroidsinsidepolygons
+  - algorithm: native:generatepointspixelcentroidsinsidepolygons
     name: Pixel centroids inside polygon
     params:
       INPUT_RASTER:

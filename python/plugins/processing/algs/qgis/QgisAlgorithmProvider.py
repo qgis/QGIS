@@ -63,7 +63,6 @@ from .MinimumBoundingGeometry import MinimumBoundingGeometry
 from .PointDistance import PointDistance
 from .PointsDisplacement import PointsDisplacement
 from .PointsFromLines import PointsFromLines
-from .PointsFromPolygons import PointsFromPolygons
 from .PointsToPaths import PointsToPaths
 from .PolarPlot import PolarPlot
 from .PoleOfInaccessibility import PoleOfInaccessibility
@@ -153,7 +152,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 PointDistance(),
                 PointsDisplacement(),
                 PointsFromLines(),
-                PointsFromPolygons(),
                 PointsToPaths(),
                 PolarPlot(),
                 PoleOfInaccessibility(),

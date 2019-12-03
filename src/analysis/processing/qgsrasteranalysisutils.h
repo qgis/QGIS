@@ -57,6 +57,12 @@ namespace QgsRasterAnalysisUtils
   //! Tests whether a pixel's value should be included in the result
   bool validPixel( double value );
 
+  //! Converts real-world map coordinates to raster row/col coordinates
+  void mapToPixel( const double x, const double y, const QgsRectangle bounds, const double unitsPerPixelX, const double unitsPerPixelY, int &px, int &py );
+
+  //! Converts raster row-col coordinates to real-world map coordinates
+  void pixelToMap( const int px, const int py, const QgsRectangle bounds, const double unitsPerPixelX, const double unitsPerPixelY, double &x, double &y );
+
   /**
    * Returns a new processing enum parameter for choice of raster data types.
    * \see rasterTypeChoiceToDataType()

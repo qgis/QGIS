@@ -85,6 +85,7 @@
 #include "qgsalgorithmorientedminimumboundingbox.h"
 #include "qgsalgorithmorthogonalize.h"
 #include "qgsalgorithmpackage.h"
+#include "qgsalgorithmpixelcentroidsfrompolygons.h"
 #include "qgsalgorithmarrayoffsetlines.h"
 #include "qgsalgorithmpointsinpolygon.h"
 #include "qgsalgorithmpointonsurface.h"
@@ -265,6 +266,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsOrientedMinimumBoundingBoxAlgorithm() );
   addAlgorithm( new QgsOrthogonalizeAlgorithm() );
   addAlgorithm( new QgsPackageAlgorithm() );
+  addAlgorithm( new QgsPixelCentroidsFromPolygonsAlgorithm() );
   addAlgorithm( new QgsCreateArrayOffsetLinesAlgorithm() );
   addAlgorithm( new QgsPointsInPolygonAlgorithm() );
   addAlgorithm( new QgsPointOnSurfaceAlgorithm() );

@@ -90,6 +90,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmorientedminimumboundingbox.cpp
   processing/qgsalgorithmorthogonalize.cpp
   processing/qgsalgorithmpackage.cpp
+  processing/qgsalgorithmpixelcentroidsfrompolygons.cpp
   processing/qgsalgorithmarrayoffsetlines.cpp
   processing/qgsalgorithmpolygonstolines.cpp
   processing/qgsalgorithmpointonsurface.cpp
