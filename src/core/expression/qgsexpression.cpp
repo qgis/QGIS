@@ -652,7 +652,7 @@ QString QgsExpression::helpText( QString name )
   return helpContents;
 }
 
-QStringList QgsExpression::tags( QString name )
+QStringList QgsExpression::tags( const QString &name )
 {
   QStringList tags = QStringList();
 

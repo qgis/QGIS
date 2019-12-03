@@ -537,7 +537,7 @@ Returns the help text for a specified function.
 .. seealso:: :py:func:`formatVariableHelp`
 %End
 
-    static QStringList tags( QString name );
+    static QStringList tags( const QString &name );
 %Docstring
 Returns a string list of search tags for a specified function.
 

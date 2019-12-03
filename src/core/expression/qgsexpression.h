@@ -572,7 +572,7 @@ class CORE_EXPORT QgsExpression
      * \param name function name
      * \since QGIS 3.12
      */
-    static QStringList tags( QString name );
+    static QStringList tags( const QString &name );
 
     /**
      * Returns the help text for a specified variable.
