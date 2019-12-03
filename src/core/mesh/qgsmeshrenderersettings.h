@@ -307,6 +307,46 @@ class CORE_EXPORT QgsMeshRendererVectorStreamlineSettings
 /**
  * \ingroup core
  *
+ * Represents a trace renderer settings for vector datasets displayed by particle traces
+ *
+ * \note The API is considered EXPERIMENTAL and can be changed without a notice
+ *
+ * \since QGIS 3.12
+ */
+class CORE_EXPORT QgsMeshRendererVectorTracesSettings
+{
+  public:
+
+    //! Returns the maximum tail length
+    double maximumTailLength() const;
+    //! Sets the maximums tail length
+    void setMaximumTailLength( double maximumTailLength );
+    //! Returns particles count
+    int particlesCount() const;
+    //! Sets particles count
+    void setParticlesCount( int value );
+    //! Returns the maximum tail length unit
+    QgsUnitTypes::RenderUnit maximumTailLengthUnit() const;
+    //! Sets the maximum tail length unit
+    void setMaximumTailLengthUnit( const QgsUnitTypes::RenderUnit &maximumTailLengthUnit );
+
+    //! Reads configuration from the given DOM element
+    void readXml( const QDomElement &elem );
+    //! Writes configuration to a new DOM element
+    QDomElement writeXml( QDomDocument &doc ) const;
+
+
+
+  private:
+    int mParticlesCount = 1000;
+    double mMaximumTailLength = 100;
+    QgsUnitTypes::RenderUnit mMaximumTailLengthUnit = QgsUnitTypes::RenderMillimeters;
+
+};
+
+/**
+ * \ingroup core
+ *
  * Represents a streamline renderer settings for vector datasets
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
@@ -326,7 +366,9 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
       //! Displaying vector dataset with arrows
       Arrows = 0,
       //! Displaying vector dataset with streamlines
-      Streamlines
+      Streamlines,
+      //! Displaying vector dataset with streamlines
+      Traces
     };
 
 
@@ -406,17 +448,28 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
     void setArrowsSettings( const QgsMeshRendererVectorArrowSettings &arrowSettings );
 
     /**
-     * Returns settings for vector rednered with streamlines
+     * Returns settings for vector rendered with streamlines
      * \since QGIS 3.12
      */
     QgsMeshRendererVectorStreamlineSettings streamLinesSettings() const;
 
     /**
-     * Sets settings for vector rednered with streamlines
+     * Sets settings for vector rendered with streamlines
      * \since QGIS 3.12
      */
     void setStreamLinesSettings( const QgsMeshRendererVectorStreamlineSettings &streamLinesSettings );
 
+    /**
+     * Returns settings for vector rendered with traces
+     * \since QGIS 3.12
+     */
+    QgsMeshRendererVectorTracesSettings tracesSettings() const;
+
+    /**
+     * Sets settings for vector rendered with traces
+     * \since QGIS 3.12
+     */
+    void setTracesSettings( const QgsMeshRendererVectorTracesSettings &tracesSettings );
 
     //! Writes configuration to a new DOM element
     QDomElement writeXml( QDomDocument &doc ) const;
@@ -438,6 +491,7 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
 
     QgsMeshRendererVectorArrowSettings mArrowsSettings;
     QgsMeshRendererVectorStreamlineSettings mStreamLinesSettings;
+    QgsMeshRendererVectorTracesSettings mTracesSettings;
 };
 
 /**

@@ -322,6 +322,62 @@ Writes configuration to a new DOM element
 
 };
 
+class QgsMeshRendererVectorTracesSettings
+{
+%Docstring
+
+Represents a trace renderer settings for vector datasets displayed by particle traces
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsmeshrenderersettings.h"
+%End
+  public:
+
+    double maximumTailLength() const;
+%Docstring
+Returns the maximum tail length
+%End
+    void setMaximumTailLength( double maximumTailLength );
+%Docstring
+Sets the maximums tail length
+%End
+    int particlesCount() const;
+%Docstring
+Returns particles count
+%End
+    void setParticlesCount( int value );
+%Docstring
+Sets particles count
+%End
+    QgsUnitTypes::RenderUnit maximumTailLengthUnit() const;
+%Docstring
+Returns the maximum tail length unit
+%End
+    void setMaximumTailLengthUnit( const QgsUnitTypes::RenderUnit &maximumTailLengthUnit );
+%Docstring
+Sets the maximum tail length unit
+%End
+
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads configuration from the given DOM element
+%End
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Writes configuration to a new DOM element
+%End
+
+
+
+};
+
 class QgsMeshRendererVectorSettings
 {
 %Docstring
@@ -345,7 +401,9 @@ Represents a streamline renderer settings for vector datasets
       //! Displaying vector dataset with arrows
       Arrows,
       //! Displaying vector dataset with streamlines
-      Streamlines
+      Streamlines,
+      //! Displaying vector dataset with streamlines
+      Traces
     };
 
 
@@ -452,18 +510,31 @@ Sets settings for vector rendered with arrows
 
     QgsMeshRendererVectorStreamlineSettings streamLinesSettings() const;
 %Docstring
-Returns settings for vector rednered with streamlines
+Returns settings for vector rendered with streamlines
 
 .. versionadded:: 3.12
 %End
 
     void setStreamLinesSettings( const QgsMeshRendererVectorStreamlineSettings &streamLinesSettings );
 %Docstring
-Sets settings for vector rednered with streamlines
+Sets settings for vector rendered with streamlines
 
 .. versionadded:: 3.12
 %End
 
+    QgsMeshRendererVectorTracesSettings tracesSettings() const;
+%Docstring
+Returns settings for vector rendered with traces
+
+.. versionadded:: 3.12
+%End
+
+    void setTracesSettings( const QgsMeshRendererVectorTracesSettings &tracesSettings );
+%Docstring
+Sets settings for vector rendered with traces
+
+.. versionadded:: 3.12
+%End
 
     QDomElement writeXml( QDomDocument &doc ) const;
 %Docstring
