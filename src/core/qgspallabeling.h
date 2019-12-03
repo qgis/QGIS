@@ -905,7 +905,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * \see obstacle
      * \see obstacleFactor
      */
-    ObstacleType obstacleType = PolygonInterior;
+    ObstacleType obstacleType = PolygonBoundary;
 
     //! Z-Index of label, where labels with a higher z-index are rendered on top of labels with a lower z-index
     double zIndex = 0;
