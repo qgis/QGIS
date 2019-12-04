@@ -63,3 +63,8 @@ void QgsLabelObstacleSettingsWidget::setGeometryType( QgsWkbTypes::GeometryType 
   mObstacleTypeComboBox->setVisible( type == QgsWkbTypes::PolygonGeometry || type == QgsWkbTypes::UnknownGeometry );
   mObstacleTypeLabel->setVisible( type == QgsWkbTypes::PolygonGeometry || type == QgsWkbTypes::UnknownGeometry );
 }
+
+void QgsLabelObstacleSettingsWidget::updateDataDefinedProperties( QgsPropertyCollection &properties )
+{
+  properties.setProperty( QgsPalLayerSettings::ObstacleFactor, mDataDefinedProperties.property( QgsPalLayerSettings::ObstacleFactor ) );
+}

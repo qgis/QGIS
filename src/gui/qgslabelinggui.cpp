@@ -144,7 +144,7 @@ void QgsLabelingGui::showObstacleSettings()
   {
     mObstacleSettings = widget->settings();
     const QgsPropertyCollection obstacleDataDefinedProperties = widget->dataDefinedProperties();
-    mDataDefinedProperties.setProperty( QgsPalLayerSettings::ObstacleFactor, obstacleDataDefinedProperties.property( QgsPalLayerSettings::ObstacleFactor ) );
+    widget->updateDataDefinedProperties( mDataDefinedProperties );
     emit widgetChanged();
   };
 

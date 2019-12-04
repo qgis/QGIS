@@ -118,7 +118,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     void widgetChanged();
 
     /**
-     * Emitted when an auxiliary field is creatd in the widget.
+     * Emitted when an auxiliary field is created in the widget.
      * \since QGIS 3.10
      */
     void auxiliaryFieldCreated();

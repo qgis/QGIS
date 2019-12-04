@@ -57,6 +57,8 @@ class GUI_EXPORT QgsLabelObstacleSettingsWidget : public QgsLabelSettingsWidgetB
 
     void setGeometryType( QgsWkbTypes::GeometryType type ) override;
 
+    void updateDataDefinedProperties( QgsPropertyCollection &properties ) override;
+
   private:
 
     bool mBlockSignals = false;

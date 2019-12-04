@@ -107,6 +107,8 @@ void QgsLabelSettingsWidgetBase::createAuxiliaryField()
 
   mDataDefinedProperties.setProperty( key, button->toProperty() );
 
+  emit auxiliaryFieldCreated();
+
   emit changed();
 }
 
@@ -133,6 +135,11 @@ void QgsLabelSettingsWidgetBase::setDataDefinedProperties( const QgsPropertyColl
     QgsPalLayerSettings::Property key = static_cast<  QgsPalLayerSettings::Property >( button->propertyKey() );
     button->setToProperty( mDataDefinedProperties.property( key ) );
   }
+}
+
+void QgsLabelSettingsWidgetBase::updateDataDefinedProperties( QgsPropertyCollection & )
+{
+
 }
 
 void QgsLabelSettingsWidgetBase::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsPalLayerSettings::Property key )

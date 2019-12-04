@@ -108,7 +108,7 @@ Emitted when the text format defined by the widget changes
 
     void auxiliaryFieldCreated();
 %Docstring
-Emitted when an auxiliary field is creatd in the widget.
+Emitted when an auxiliary field is created in the widget.
 
 .. versionadded:: 3.10
 %End

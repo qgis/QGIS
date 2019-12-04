@@ -67,6 +67,7 @@ class GUI_EXPORT QgsLabelSettingsWidgetBase : public QgsPanelWidget, protected Q
     /**
      * Returns the current data defined properties state as specified in the widget.
      *
+     * \see updateDataDefinedProperties()
      * \see setDataDefinedProperties()
      */
     QgsPropertyCollection dataDefinedProperties() const;
@@ -78,12 +79,26 @@ class GUI_EXPORT QgsLabelSettingsWidgetBase : public QgsPanelWidget, protected Q
      */
     void setDataDefinedProperties( const QgsPropertyCollection &dataDefinedProperties );
 
+    /**
+     * Updates a data defined \a properties collection, correctly setting the values
+     * for any properties related to this widget.
+     *
+     * \see setDataDefinedProperties()
+     * \see dataDefinedProperties()
+     */
+    virtual void updateDataDefinedProperties( QgsPropertyCollection &properties );
+
   signals:
 
     /**
      * Emitted when any of the settings described by the widget are changed.
      */
     void changed();
+
+    /**
+     * Emitted when an auxiliary field is created in the widget.
+     */
+    void auxiliaryFieldCreated();
 
   protected:
 
@@ -95,6 +110,11 @@ class GUI_EXPORT QgsLabelSettingsWidgetBase : public QgsPanelWidget, protected Q
      * and help text for the associated property.
      */
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsPalLayerSettings::Property key );
+
+    /**
+     * Contains the data defined properties defined by the widget.
+     */
+    QgsPropertyCollection mDataDefinedProperties;
 
   private slots:
 
@@ -109,7 +129,6 @@ class GUI_EXPORT QgsLabelSettingsWidgetBase : public QgsPanelWidget, protected Q
 
     QgsSymbolWidgetContext mContext;
 
-    QgsPropertyCollection mDataDefinedProperties;
 
 };
 
