@@ -155,7 +155,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
          * Returns whether information about checked/unchecked state of groups has been recorded
          * and thus whether checkedGroupNodes() is valid.
          */
-        bool hasCheckedStateInfo() const { return mHasCheckedStateInfo; }
+        bool hasCheckedStateInfo() const { return mHasCheckedStateInfo; } const SIP_SKIP;
 
         /**
          * Sets whether the map theme contains valid expanded/collapsed state of nodes
@@ -166,7 +166,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
         /**
          * Sets whether the map theme contains valid checked/unchecked state of group nodes
          */
-        void setHasCheckedStateInfo( bool hasInfo ) { mHasCheckedStateInfo = hasInfo; }
+        void setHasCheckedStateInfo( bool hasInfo ) { mHasCheckedStateInfo = hasInfo; } const SIP_SKIP;
 
         /**
          * Returns a set of group identifiers for group nodes that should have expanded state (other group nodes should be collapsed).
@@ -182,6 +182,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
          * The returned value is valid only when hasCheckedStateInfo() returns TRUE.
          * Group identifiers are built using group names, a sub-group name is prepended by parent group's identifier
          * and a forward slash, e.g. "level1/level2"
+         * \since QGIS 3.10.1
          */
         QSet<QString> checkedGroupNodes() const { return mCheckedGroupNodes; }
 
@@ -193,6 +194,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
         /**
          * Sets a set of group identifiers for group nodes that should have checked state. See checkedGroupNodes().
+         * \since QGIS 3.10.1
          */
         void setCheckedGroupNodes( const QSet<QString> &checkedGroupNodes ) { mCheckedGroupNodes = checkedGroupNodes; }
 
