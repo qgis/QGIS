@@ -551,8 +551,8 @@ bool LabelPosition::crossesBoundary( PointSet *polygon ) const
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   try
   {
-    if ( GEOSPreparedOverlaps_r( geosctxt, polygon->preparedGeom(), mGeos ) == 1
-         || GEOSPreparedTouches_r( geosctxt, polygon->preparedGeom(), mGeos ) == 1 )
+    if ( GEOSPreparedIntersects_r( geosctxt, polygon->preparedGeom(), mGeos ) == 1
+         && GEOSPreparedContains_r( geosctxt, polygon->preparedGeom(), mGeos ) != 1 )
     {
       return true;
     }
