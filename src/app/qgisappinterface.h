@@ -71,7 +71,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QgsRasterLayer *addRasterLayer( const QString &url, const QString &baseName, const QString &providerKey ) override;
     QgsMeshLayer *addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) override;
     bool addProject( const QString &projectName ) override;
-    void newProject( bool promptToSaveFlag = false ) override;
+    bool newProject( bool promptToSaveFlag = false ) override;
     void reloadConnections( ) override;
     QgsMapLayer *activeLayer() override;
     bool setActiveLayer( QgsMapLayer *layer ) override;
