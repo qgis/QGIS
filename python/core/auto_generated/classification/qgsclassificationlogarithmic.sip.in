@@ -32,6 +32,8 @@ Implementation of a logarithmic scale method
 
     virtual QString labelForRange( double lowerValue, double upperValue, ClassPosition position ) const;
 
+    virtual bool valuesRequired() const;
+
 
 };
 

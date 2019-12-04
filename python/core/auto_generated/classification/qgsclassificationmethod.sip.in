@@ -155,12 +155,13 @@ Writes extra information about the method
 Reads extra information to apply it to the method
 %End
 
-
-    bool valuesRequired() const;
+    virtual bool valuesRequired() const;
 %Docstring
 Returns if the method requires values to calculate the classes
 If not, bounds are sufficient
 %End
+
+
 
     int codeComplexity() const;
 %Docstring
@@ -289,6 +290,27 @@ Does not put a break on the symmetryPoint. This is done before.
 Returns the label for a range
 %End
 
+    const QgsProcessingParameterDefinition *parameterDefinition( const QString &parameterName ) const;
+%Docstring
+Get parameter from its id
+
+.. versionadded:: 3.12
+%End
+
+    const QgsProcessingParameterDefinitions parameterDefinitions() const;
+%Docstring
+List of parameters
+
+.. versionadded:: 3.12
+%End
+
+    void setParameterValues( const QVariantMap &values );
+%Docstring
+Set values of the additional parameters
+
+.. versionadded:: 3.12
+%End
+
 
 
     static const int MAX_PRECISION;
@@ -304,6 +326,22 @@ Copy the parameters (shall be used in clone implementation)
     QString formatNumber( double value ) const;
 %Docstring
 Format the number according to label properties
+%End
+
+    void addParameter( QgsProcessingParameterDefinition *definition );
+%Docstring
+Add parameter
+
+.. versionadded:: 3.12
+%End
+
+    QVariant parameterValue( const QString &name ) const;
+%Docstring
+Get the parameter value
+
+.. seealso:: :py:func:`setParameterValues`
+
+.. versionadded:: 3.12
 %End
 
 };
