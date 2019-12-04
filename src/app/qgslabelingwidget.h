@@ -67,7 +67,16 @@ class QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui::QgsLabelin
     void labelModeChanged( int index );
     void showEngineConfigDialog();
 
-  protected:
+  private:
+
+    enum Mode
+    {
+      ModeNone,
+      ModeSingle,
+      ModeRuleBased,
+      ModeBlocking
+    };
+
     QgsVectorLayer *mLayer = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
