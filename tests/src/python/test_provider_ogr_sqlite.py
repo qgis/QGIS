@@ -496,8 +496,8 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
         StackedFR = QgsAggregateCalculator(vl)
         DefaultFR.setFidsFilter([1, ])
         StackedFR.setFidsFilter([1, ])
-        DefaultFR.setFilter('1')
-        StackedFR.setFilter('1')
+        DefaultFR.setFilter('True')
+        StackedFR.setFilter('True')
 
         StackedFR.stackFilters(True)
 

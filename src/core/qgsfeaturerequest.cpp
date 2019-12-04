@@ -39,7 +39,7 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureIds &fids )
   , mFilterFids( fids )
   , mFlags( nullptr )
 {
-
+  fidsTrigger = true;
 }
 
 QgsFeatureRequest::QgsFeatureRequest( const QgsRectangle &rect )
@@ -68,6 +68,7 @@ QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
   mFilterRect = rh.mFilterRect;
   mFilterFid = rh.mFilterFid;
   mFilterFids = rh.mFilterFids;
+  fidsTrigger = rh.fidsTrigger;
   if ( rh.mFilterExpression )
   {
     mFilterExpression.reset( new QgsExpression( *rh.mFilterExpression ) );
@@ -106,6 +107,7 @@ QgsFeatureRequest &QgsFeatureRequest::setFilterFid( QgsFeatureId fid )
 
 QgsFeatureRequest &QgsFeatureRequest::setFilterFids( const QgsFeatureIds &fids )
 {
+  fidsTrigger = true;
   mFilter = FilterFids;
   mFilterFids = fids;
   return *this;
@@ -557,7 +559,7 @@ bool QgsFeatureRequest::hasValidFilter( FilterType filterType ) const
           return false;
 
       case ( FilterFids ):
-        return !filterFids().isEmpty();
+        return fidsTrigger;
     }
   }
   else
