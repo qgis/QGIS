@@ -319,6 +319,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
 
 bool QgsRasterizeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  Q_UNUSED( feedback )
   // Retrieve and clone layers
   const QString mapTheme { parameterAsString( parameters, QStringLiteral( "MAP_THEME" ), context ) };
   const QList<QgsMapLayer *> mapLayers { parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context ) };
