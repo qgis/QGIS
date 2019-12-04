@@ -375,8 +375,8 @@ static QVariant fcnRndF( const QVariantList &values, const QgsExpressionContext 
     return QVariant();
 
   std::random_device rd;
-  std::mt19937_64 generator(rd());
-  std::uniform_real_distribution<double> dist(min, max);
+  std::mt19937_64 generator( rd() );
+  std::uniform_real_distribution<double> dist( min, max );
 
   if ( !QgsExpressionUtils::isNull( values.at( 2 ) ) )
   {
@@ -397,7 +397,7 @@ static QVariant fcnRndF( const QVariantList &values, const QgsExpressionContext 
   }
 
   // Return a random integer in the range [min, max] (inclusive)
-  return QVariant( dist(generator) );
+  return QVariant( dist( generator ) );
 }
 static QVariant fcnRnd( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
@@ -407,8 +407,8 @@ static QVariant fcnRnd( const QVariantList &values, const QgsExpressionContext *
     return QVariant();
 
   std::random_device rd;
-  std::mt19937_64 generator(rd());
-  std::uniform_int_distribution<qlonglong> dist(min, max);
+  std::mt19937_64 generator( rd() );
+  std::uniform_int_distribution<qlonglong> dist( min, max );
 
   if ( !QgsExpressionUtils::isNull( values.at( 2 ) ) )
   {
@@ -429,7 +429,7 @@ static QVariant fcnRnd( const QVariantList &values, const QgsExpressionContext *
   }
 
   // Return a random integer in the range [min, max] (inclusive)
-  return QVariant( dist(generator) );
+  return QVariant( dist( generator ) );
 }
 
 static QVariant fcnLinearScale( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )

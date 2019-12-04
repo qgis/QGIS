@@ -2209,16 +2209,16 @@ class TestQgsExpression: public QObject
       // Supports multiple type of seeds
       QgsExpression exp4( QStringLiteral( "randf(1,100,123)" ) );
       QVariant v4 = exp4.evaluate();
-      QCOMPARE( v4.type(), QVariant::Float );
+      QCOMPARE( v4.type(), QVariant::Double );
       QgsExpression exp5( QStringLiteral( "randf(1,100,1.23)" ) );
       QVariant v5 = exp5.evaluate();
-      QCOMPARE( v5.type(), QVariant::Float );
+      QCOMPARE( v5.type(), QVariant::Double );
       QgsExpression exp6( QStringLiteral( "randf(1,100,'123')" ) );
       QVariant v6 = exp6.evaluate();
-      QCOMPARE( v6.type(), QVariant::Float );
+      QCOMPARE( v6.type(), QVariant::Double );
       QgsExpression exp7( QStringLiteral( "randf(1,100,'abc')" ) );
       QVariant v7 = exp7.evaluate();
-      QCOMPARE( v7.type(), QVariant::Float );
+      QCOMPARE( v7.type(), QVariant::Double );
 
       // Two calls with the same seed return the same numer
       QgsExpression exp8( QStringLiteral( "randf(seed:=1)" ) );
