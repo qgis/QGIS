@@ -136,7 +136,7 @@ void QgsLabelingGui::showObstacleSettings()
 
   QgsLabelObstacleSettingsWidget *widget = new QgsLabelObstacleSettingsWidget( nullptr, mLayer );
   widget->setDataDefinedProperties( mDataDefinedProperties );
-  widget->setObstacleSettings( mObstacleSettings );
+  widget->setSettings( mObstacleSettings );
   widget->setGeometryType( mLayer ? mLayer->geometryType() : QgsWkbTypes::UnknownGeometry );
   widget->setContext( symbolContext );
 

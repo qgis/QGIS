@@ -13,7 +13,7 @@
 class QgsLabelSettingsWidgetBase : QgsPanelWidget, protected QgsExpressionContextGenerator
 {
 %Docstring
-Base class for widgets which allow customisation of label engine properties, such as label placement settings.
+Base class for widgets which allow customization of label engine properties, such as label placement settings.
 
 .. versionadded:: 3.12
 %End
