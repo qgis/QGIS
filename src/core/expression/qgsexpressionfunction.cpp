@@ -369,8 +369,8 @@ static QVariant fcnLog( const QVariantList &values, const QgsExpressionContext *
 }
 static QVariant fcnRndF( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  double min = QgsExpressionUtils::getIntValue( values.at( 0 ), parent );
-  double max = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
+  double min = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
+  double max = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
   if ( max < min )
     return QVariant();
 
