@@ -46,6 +46,14 @@
 #include "qgsclassificationmethodregistry.h"
 #include "qgsclassificationequalinterval.h"
 #include "qgsclassificationstandarddeviation.h"
+#include "qgsgui.h"
+#include "qgsprocessinggui.h"
+#include "qgsprocessingguiregistry.h"
+#include "qgsprocessingcontext.h"
+#include "qgsprocessingwidgetwrapper.h"
+
+
+
 
 // ------------------------------ Model ------------------------------------
 
@@ -556,6 +564,8 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   connect( cbxLinkBoundaries, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::toggleBoundariesLink );
   connect( mSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsGraduatedSymbolRendererWidget::mSizeUnitWidget_changed );
 
+  connect( cboGraduatedMode, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsGraduatedSymbolRendererWidget::updateMethodParameters );
+
   connectUpdateHandlers();
 
   // initialize from previously set renderer
@@ -598,6 +608,7 @@ void QgsGraduatedSymbolRendererWidget::mSizeUnitWidget_changed()
 QgsGraduatedSymbolRendererWidget::~QgsGraduatedSymbolRendererWidget()
 {
   delete mModel;
+  qDeleteAll( mParameterWidgetWrappers );
 }
 
 QgsFeatureRenderer *QgsGraduatedSymbolRendererWidget::renderer()
@@ -631,6 +642,11 @@ void QgsGraduatedSymbolRendererWidget::connectUpdateHandlers()
   connect( cbxAstride, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   connect( cboSymmetryPoint, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   connect( cboSymmetryPoint->lineEdit(), &QLineEdit::editingFinished, this, &QgsGraduatedSymbolRendererWidget::symmetryPointEditingFinished );
+
+  for ( const auto *ppww : qgis::as_const( mParameterWidgetWrappers ) )
+  {
+    connect( ppww, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+  }
 }
 
 // Connect/disconnect event handlers which trigger updating renderer
@@ -652,6 +668,11 @@ void QgsGraduatedSymbolRendererWidget::disconnectUpdateHandlers()
   disconnect( cbxAstride, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   disconnect( cboSymmetryPoint, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   disconnect( cboSymmetryPoint->lineEdit(), &QLineEdit::editingFinished, this, &QgsGraduatedSymbolRendererWidget::symmetryPointEditingFinished );
+
+  for ( const auto *ppww : qgis::as_const( mParameterWidgetWrappers ) )
+  {
+    disconnect( ppww, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+  }
 }
 
 void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
@@ -795,6 +816,30 @@ void QgsGraduatedSymbolRendererWidget::methodComboBox_currentIndexChanged( int )
       reapplySizes();
       break;
     }
+  }
+}
+
+void QgsGraduatedSymbolRendererWidget::updateMethodParameters()
+{
+  while ( mParametersLayout->rowCount() )
+    mParametersLayout->removeRow( 0 );
+  qDeleteAll( mParameterWidgetWrappers );
+
+  const QString methodId = cboGraduatedMode->currentData().toString();
+  QgsClassificationMethod *method = QgsApplication::classificationMethodRegistry()->method( methodId );
+  Q_ASSERT( method );
+
+  // todo need more?
+  QgsProcessingContext context;
+
+  for ( const auto *def : method->parameterDefinitions() )
+  {
+    QgsAbstractProcessingParameterWidgetWrapper *ppww = QgsGui::processingGuiRegistry()->createParameterWidgetWrapper( def, QgsProcessingGui::Standard );
+    mParametersLayout->addRow( ppww->createWrappedLabel(), ppww->createWrappedWidget( context ) );
+
+    connect( ppww, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+
+    mParameterWidgetWrappers.append( ppww );
   }
 }
 
@@ -945,6 +990,11 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
     bool astride = cbxAstride->isChecked();
     method->setSymmetricMode( true, symmetryPoint, astride );
   }
+
+  QVariantMap parameterValues;
+  for ( const auto *ppww : qgis::as_const( mParameterWidgetWrappers ) )
+    parameterValues.insert( ppww->parameterDefinition()->name(), ppww->parameterValue() );
+  method->setParameterValues( parameterValues );
 
   // set method to renderer
   mRenderer->setClassificationMethod( method );
