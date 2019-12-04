@@ -745,6 +745,7 @@ class CORE_EXPORT QgsFeatureRequest
     QgsRectangle mFilterRect;
     QgsFeatureId mFilterFid = -1;
     QgsFeatureIds mFilterFids;
+    bool fidsTrigger = false;
     std::unique_ptr< QgsExpression > mFilterExpression;
     QgsExpressionContext mExpressionContext;
     Flags mFlags;
