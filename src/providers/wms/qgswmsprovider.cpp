@@ -303,6 +303,31 @@ QString QgsWmsProvider::getLegendGraphicUrl() const
     url = mCaps.mCapabilities.capability.request.getLegendGraphic.dcpType.front().http.get.onlineResource.xlinkHref;
   }
 
+  if ( url.isEmpty() )
+  {
+    for ( const QgsWmtsTileLayer &l : mCaps.mTileLayersSupported )
+    {
+      if ( l.identifier != mSettings.mActiveSubLayers[0] )
+        continue;
+
+      QHash<QString, QgsWmtsStyle>::const_iterator it = l.styles.constFind( mSettings.mActiveSubStyles[0] );
+      if ( it == l.styles.constEnd() )
+        if ( it == l.styles.end() )
+          continue;
+
+      for ( const QgsWmtsLegendURL &u : it.value().legendURLs )
+      {
+        if ( u.format == mSettings.mImageMimeType )
+          url = u.href;
+      }
+      if ( url.isEmpty() && !it.value().legendURLs.isEmpty() )
+        url = it.value().legendURLs.front().href;
+
+      if ( !url.isEmpty() )
+        break;
+    }
+  }
+
   return url.isEmpty() ? url : prepareUri( url );
 }
 
@@ -3381,6 +3406,12 @@ QUrl QgsWmsProvider::getLegendGraphicFullURL( double scale, const QgsRectangle &
   QgsDebugMsg( QStringLiteral( "visibleExtent is %1" ).arg( visibleExtent.toString() ) );
 
   QUrl url( lurl );
+
+  if ( dataSourceUri().contains( "SERVICE=WMTS" ) || dataSourceUri().contains( "/WMTSCapabilities.xml" ) )
+  {
+    QgsDebugMsg( QString( "getlegendgraphicrequest: %1" ).arg( url.toString() ) );
+    return url;
+  }
 
   // query names are NOT case-sensitive, so make an uppercase list for proper comparison
   QStringList qnames = QStringList();

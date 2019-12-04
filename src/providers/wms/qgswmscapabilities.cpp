@@ -1569,6 +1569,20 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
 
         style.legendURLs << legendURL;
       }
+      QDomElement thirdChildElement = secondChildElement.firstChildElement( QStringLiteral( "LegendURL" ) );
+      if ( !thirdChildElement.isNull() )
+      {
+        QgsWmtsLegendURL legendURL;
+
+        legendURL.format   = thirdChildElement.attribute( QStringLiteral( "format" ) );
+        legendURL.minScale = thirdChildElement.attribute( QStringLiteral( "minScaleDenominator" ) ).toDouble();
+        legendURL.maxScale = thirdChildElement.attribute( QStringLiteral( "maxScaleDenominator" ) ).toDouble();
+        legendURL.href     = thirdChildElement.attribute( QStringLiteral( "xlink:href" ) );
+        legendURL.width    = thirdChildElement.attribute( QStringLiteral( "width" ) ).toInt();
+        legendURL.height   = thirdChildElement.attribute( QStringLiteral( "height" ) ).toInt();
+
+        style.legendURLs << legendURL;
+      }
 
       style.isDefault = secondChildElement.attribute( QStringLiteral( "isDefault" ) ) == QLatin1String( "true" );
 
