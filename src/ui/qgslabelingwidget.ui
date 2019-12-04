@@ -27,42 +27,6 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <item>
-        <property name="text">
-         <string>No labels</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../../images/images.qrc">
-          <normaloff>:/images/themes/default/labelingNone.svg</normaloff>:/images/themes/default/labelingNone.svg</iconset>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Single labels</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../../images/images.qrc">
-          <normaloff>:/images/themes/default/labelingSingle.svg</normaloff>:/images/themes/default/labelingSingle.svg</iconset>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Rule-based labeling</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../../images/images.qrc">
-          <normaloff>:/images/themes/default/labelingRuleBased.svg</normaloff>:/images/themes/default/labelingRuleBased.svg</iconset>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Blocking</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../../images/images.qrc">
-          <normaloff>:/images/themes/default/labelingObstacle.svg</normaloff>:/images/themes/default/labelingObstacle.svg</iconset>
-        </property>
-       </item>
       </widget>
      </item>
      <item>
