@@ -145,9 +145,7 @@ QgsRasterizeAlgorithm *QgsRasterizeAlgorithm::createInstance() const
 
 QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-
-  const QString mapTheme { parameterAsString( parameters, QStringLiteral( "MAP_THEME" ), context ) };
-  const QList<QgsMapLayer *> mapLayers { parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context ) };
+  // Note: MAP_THEME and LAYERS are handled and cloned in prepareAlgorithm
   const QgsRectangle extent { parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, context.project()->crs() ) };
   const int tileSize { parameterAsInt( parameters, QStringLiteral( "TILE_SIZE" ), context ) };
   const bool transparent { parameterAsBool( parameters, QStringLiteral( "MAKE_BACKGROUND_TRANSPARENT" ), context ) };
@@ -213,22 +211,14 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
   mapSettings.setExtentBuffer( extentBuffer );
   mapSettings.setBackgroundColor( bgColor );
 
-  // Now get layers
-  if ( ! mapTheme.isEmpty() && context.project()->mapThemeCollection()->hasMapTheme( mapTheme ) )
+  // Set layers cloned in prepareAlgorithm
+  QList<QgsMapLayer *> layers;
+  for ( const auto &lptr : mMapLayers )
   {
-    mapSettings.setLayers( context.project()->mapThemeCollection()->mapThemeVisibleLayers( mapTheme ) );
-    mapSettings.setLayerStyleOverrides( context.project()->mapThemeCollection( )->mapThemeStyleOverrides( mapTheme ) );
+    layers.push_back( lptr.get() );
   }
-  else if ( ! mapLayers.isEmpty() )
-  {
-    mapSettings.setLayers( mapLayers );
-  }
-
-  // Still no layers? Get them all from the project
-  if ( mapSettings.layers().isEmpty() )
-  {
-    mapSettings.setLayers( context.project()->mapLayers().values() );
-  }
+  mapSettings.setLayers( layers );
+  mapSettings.setLayerStyleOverrides( mMapThemeStyleOverrides );
 
   // Start rendering
   const double extentRatio { mapUnitsPerPixel * tileSize };
@@ -325,5 +315,40 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
 
   return { { QStringLiteral( "OUTPUT" ), outputLayerFileName } };
 }
+
+
+bool QgsRasterizeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  // Retrieve and clone layers
+  const QString mapTheme { parameterAsString( parameters, QStringLiteral( "MAP_THEME" ), context ) };
+  const QList<QgsMapLayer *> mapLayers { parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context ) };
+  if ( ! mapTheme.isEmpty() && context.project()->mapThemeCollection()->hasMapTheme( mapTheme ) )
+  {
+    const auto constLayers { context.project()->mapThemeCollection()->mapThemeVisibleLayers( mapTheme ) };
+    for ( const QgsMapLayer *ml : constLayers )
+    {
+      mMapLayers.push_back( std::unique_ptr<QgsMapLayer>( ml->clone( ) ) );
+    }
+    mMapThemeStyleOverrides = context.project()->mapThemeCollection( )->mapThemeStyleOverrides( mapTheme );
+  }
+  else if ( ! mapLayers.isEmpty() )
+  {
+    for ( const QgsMapLayer *ml : qgis::as_const( mapLayers ) )
+    {
+      mMapLayers.push_back( std::unique_ptr<QgsMapLayer>( ml->clone( ) ) );
+    }
+  }
+  // Still no layers? Get them all from the project
+  if ( mMapLayers.size() == 0 )
+  {
+    const auto constLayers { context.project()->mapLayers().values() };
+    for ( const QgsMapLayer *ml : constLayers )
+    {
+      mMapLayers.push_back( std::unique_ptr<QgsMapLayer>( ml->clone( ) ) );
+    }
+  }
+  return mMapLayers.size() > 0;
+}
+
 
 ///@endcond
