@@ -388,7 +388,7 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
         if ( fi.suffix().compare( ext, Qt::CaseInsensitive ) == 0 )
         {
           // pdf file
-          QAction *viewAction = new QAction( tr( "Open %1…" ).arg( name ), menu );
+          QAction *viewAction = new QAction( tr( "Open %1 Externally…" ).arg( name ), menu );
           connect( viewAction, &QAction::triggered, this, [ = ]
           {
             QDesktopServices::openUrl( QUrl::fromLocalFile( filename ) );
