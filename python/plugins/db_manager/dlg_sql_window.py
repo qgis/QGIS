@@ -95,27 +95,68 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
     nameChanged = pyqtSignal(str)
     QUERY_HISTORY_LIMIT = 20
 
-    def __init__(self, iface, db, parent=None):
-        QWidget.__init__(self, parent)
-        self.mainWindow = parent
-        self.iface = iface
+    def set_connection(self, db):
+
+        # 'db' is a Database class as defined in db_plugins/plugin.py
+        #
+        # We need to hook on the reconnectAction of the Database class
+        # to invoke connectToUri again against the plugin, which is
+        # not yet known how to access from Database itself
+
+        # db parameter is <class 'db_manager.db_plugins.postgis.plugin.PGDatabase'>
+        print("XXX db parameter is " + str(type(db)))
+        print("XXX db uri is " + str(db.uri()))
+        # db_plugins/plugin.py:    def connectToUri(self, uri):
+
+        # db uri is <qgis._core.QgsDataSourceUri object at 0x7f003ac30e58>
+        self.uri = db.uri()
+
         self.db = db
+
         self.dbType = db.connection().typeNameString()
         self.connectionName = db.connection().connectionName()
-        self.filter = ""
-        self.modelAsync = None
         self.allowMultiColumnPk = isinstance(db, PGDatabase)  # at the moment only PostgreSQL allows a primary key to span multiple columns, SpatiaLite doesn't
         self.aliasSubQuery = isinstance(db, PGDatabase)       # only PostgreSQL requires subqueries to be aliases
-        self.setupUi(self)
         self.setWindowTitle(
             self.tr(u"{0} - {1} [{2}]").format(self.windowTitle(), self.connectionName, self.dbType))
 
-        self.defaultLayerName = self.tr('QueryLayer')
+        settings = QgsSettings()
 
+        self.history = settings.value('DB_Manager/queryHistory/' + self.dbType, {self.connectionName: []})
+        if self.connectionName not in self.history:
+            self.history[self.connectionName] = []
         if self.allowMultiColumnPk:
             self.uniqueColumnCheck.setText(self.tr("Column(s) with unique values"))
         else:
             self.uniqueColumnCheck.setText(self.tr("Column with unique values"))
+
+        # hide the load query as layer if feature is not supported
+        self._loadAsLayerAvailable = self.db.connector.hasCustomQuerySupport()
+        self.loadAsLayerGroup.setVisible(self._loadAsLayerAvailable)
+        if self._loadAsLayerAvailable:
+            self.layerTypeWidget.hide()  # show if load as raster is supported
+            self.loadLayerBtn.clicked.connect(self.loadSqlLayer)
+            self.getColumnsBtn.clicked.connect(self.fillColumnCombos)
+            self.loadAsLayerGroup.toggled.connect(self.loadAsLayerToggled)
+            self.loadAsLayerToggled(False)
+
+        self._createViewAvailable = self.db.connector.hasCreateSpatialViewSupport()
+        self.btnCreateView.setVisible(self._createViewAvailable)
+        if self._createViewAvailable:
+            self.btnCreateView.clicked.connect(self.createView)
+
+    def __init__(self, iface, db, parent=None):
+        QWidget.__init__(self, parent)
+        self.mainWindow = parent
+        self.iface = iface
+
+        self.setupUi(self)
+
+        self.set_connection(db)
+        self.filter = ""
+        self.modelAsync = None
+
+        self.defaultLayerName = self.tr('QueryLayer')
 
         self.editSql.setFocus()
         self.editSql.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
@@ -123,9 +164,6 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.initCompleter()
 
         settings = QgsSettings()
-        self.history = settings.value('DB_Manager/queryHistory/' + self.dbType, {self.connectionName: []})
-        if self.connectionName not in self.history:
-            self.history[self.connectionName] = []
 
         self.queryHistoryWidget.setVisible(False)
         self.queryHistoryTableWidget.verticalHeader().hide()
@@ -173,21 +211,6 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             self.uniqueCombo.setItemDelegate(QStyledItemDelegate())
             self.uniqueModel.itemChanged.connect(self.uniqueChanged)                 # react to the (un)checking of an item
             self.uniqueCombo.lineEdit().textChanged.connect(self.uniqueTextChanged)  # there are other events that change the displayed text and some of them can not be caught directly
-
-        # hide the load query as layer if feature is not supported
-        self._loadAsLayerAvailable = self.db.connector.hasCustomQuerySupport()
-        self.loadAsLayerGroup.setVisible(self._loadAsLayerAvailable)
-        if self._loadAsLayerAvailable:
-            self.layerTypeWidget.hide()  # show if load as raster is supported
-            self.loadLayerBtn.clicked.connect(self.loadSqlLayer)
-            self.getColumnsBtn.clicked.connect(self.fillColumnCombos)
-            self.loadAsLayerGroup.toggled.connect(self.loadAsLayerToggled)
-            self.loadAsLayerToggled(False)
-
-        self._createViewAvailable = self.db.connector.hasCreateSpatialViewSupport()
-        self.btnCreateView.setVisible(self._createViewAvailable)
-        if self._createViewAvailable:
-            self.btnCreateView.clicked.connect(self.createView)
 
         self.queryBuilderFirst = True
         self.queryBuilderBtn.setIcon(QIcon(":/db_manager/icons/sql.gif"))
@@ -399,11 +422,15 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             old_model.deleteLater()
 
         try:
+            print("XXX db is still " + str(type(self.db)))
+            print("XXX db uri still " + str(self.db.uri()))
             self.modelAsync = self.db.sqlResultModelAsync(sql, self)
+            print("XXX db.sqlResultModelAsync returned")
             self.modelAsync.done.connect(self.executeSqlCompleted)
             self.updateUiWhileSqlExecution(True)
             QgsApplication.taskManager().addTask(self.modelAsync.task)
         except Exception as e:
+            print("XXX sqlResultModelAsync or subsequent calls threw ", e)
             DlgDbError.showError(e, self)
             self.uniqueModel.clear()
             self.geomCombo.clear()
