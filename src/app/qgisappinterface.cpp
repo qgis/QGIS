@@ -167,9 +167,9 @@ bool QgisAppInterface::addProject( const QString &projectName )
   return qgis->addProject( projectName );
 }
 
-void QgisAppInterface::newProject( bool promptToSaveFlag )
+bool QgisAppInterface::newProject( bool promptToSaveFlag )
 {
-  qgis->fileNew( promptToSaveFlag );
+  return qgis->fileNew( promptToSaveFlag );
 }
 
 void QgisAppInterface::reloadConnections()
