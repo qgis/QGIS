@@ -2175,12 +2175,13 @@ class TestQgsExpression: public QObject
       QVariant v7 = exp7.evaluate();
       QCOMPARE( v7.type(), QVariant::Int );
 
-      // Two calls with the same seed return the same numer
-      QgsExpression exp8( QStringLiteral( "rand(1,100000000000,1)" ) );
+      // Two calls with the same seed return the same number
+      QgsExpression exp8( QStringLiteral( "rand(1,1000000000,1)" ) );
       QVariant v8 = exp8.evaluate();
-      QgsExpression exp9( QStringLiteral( "rand(1,100000000000,1)" ) );
+      QCOMPARE( v8.toInt() == 546311529, true );
+      QgsExpression exp9( QStringLiteral( "rand(1,1000000000,1)" ) );
       QVariant v9 = exp9.evaluate();
-      QCOMPARE( v8.toInt() == v9.toInt(), true );
+      QCOMPARE( v9.toInt() == 546311529, true );
 
       // Two calls with a different seed return a different number
       QgsExpression exp10( QStringLiteral( "rand(1,100000000000,1)" ) );
@@ -2220,12 +2221,13 @@ class TestQgsExpression: public QObject
       QVariant v7 = exp7.evaluate();
       QCOMPARE( v7.type(), QVariant::LongLong );
 
-      // Two calls with the same seed return the same numer
+      // Two calls with the same seed return the same number
       QgsExpression exp8( QStringLiteral( "randf(seed:=1)" ) );
       QVariant v8 = exp8.evaluate();
+      QCOMPARE( v8.toFloat() == 0.13387664401253274, true );
       QgsExpression exp9( QStringLiteral( "randf(seed:=1)" ) );
       QVariant v9 = exp9.evaluate();
-      QCOMPARE( v8.toFloat() == v9.toFloat(), true );
+      QCOMPARE( v9.toFloat() == 0.13387664401253274, true );
 
       // Two calls with a different seed return a different number
       QgsExpression exp10( QStringLiteral( "randf(seed:=1)" ) );
