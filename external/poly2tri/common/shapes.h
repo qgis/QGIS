@@ -1,6 +1,6 @@
 /*
- * Poly2Tri Copyright (c) 2009-2010, Poly2Tri Contributors
- * http://code.google.com/p/poly2tri/
+ * Poly2Tri Copyright (c) 2009-2018, Poly2Tri Contributors
+ * https://github.com/jhasse/poly2tri
  *
  * All rights reserved.
  *
@@ -33,10 +33,10 @@
 #ifndef SHAPES_H
 #define SHAPES_H
 
-#include <vector>
-#include <cstddef>
-#include <assert.h>
 #include <cmath>
+#include <cstddef>
+#include <stdexcept>
+#include <vector>
 
 namespace p2t {
 
@@ -119,6 +119,8 @@ struct Point {
 
 };
 
+std::ostream& operator<<(std::ostream&, const Point&);
+
 // Represents a simple polygon's edge
 struct Edge {
 
@@ -130,13 +132,13 @@ struct Edge {
     if (p1.y > p2.y) {
       q = &p1;
       p = &p2;
-    } else if (p1.y == p2.y) {
+    } else if (std::abs(p1.y - p2.y) < 1e-10) {
       if (p1.x > p2.x) {
         q = &p1;
         p = &p2;
-      } else if (p1.x == p2.x) {
+      } else if (std::abs(p1.x - p2.x) < 1e-10) {
         // Repeat points
-        assert(false);
+        throw std::runtime_error("Edge::Edge: p1 == p2");
       }
     }
 
@@ -205,7 +207,11 @@ Triangle& NeighborAcross(const Point& opoint);
 
 void DebugPrint();
 
+bool CircumcicleContains(const Point&) const;
+
 private:
+
+bool IsCounterClockwise() const;
 
 /// Triangle points
 Point* points_[3];
@@ -317,6 +323,9 @@ inline void Triangle::IsInterior(bool b)
 {
   interior_ = b;
 }
+
+/// Is this set a valid delaunay triangulation?
+bool IsDelaunay(const std::vector<p2t::Triangle*>&);
 
 }
 
