@@ -42,7 +42,7 @@ QgsLabelObstacleSettingsWidget::QgsLabelObstacleSettingsWidget( QWidget *parent,
 
 }
 
-void QgsLabelObstacleSettingsWidget::setObstacleSettings( const QgsLabelObstacleSettings &settings )
+void QgsLabelObstacleSettingsWidget::setSettings( const QgsLabelObstacleSettings &settings )
 {
   mBlockSignals = true;
   mObstacleFactorSlider->setValue( static_cast< int >( std::round( settings.factor() * 5 ) ) );

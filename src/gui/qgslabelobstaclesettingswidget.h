@@ -46,7 +46,7 @@ class GUI_EXPORT QgsLabelObstacleSettingsWidget : public QgsLabelSettingsWidgetB
      *
      * \see settings()
      */
-    void setObstacleSettings( const QgsLabelObstacleSettings &settings );
+    void setSettings( const QgsLabelObstacleSettings &settings );
 
     /**
      * Returns the obstacle settings defined by the widget.
