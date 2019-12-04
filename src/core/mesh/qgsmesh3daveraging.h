@@ -81,6 +81,10 @@ class CORE_EXPORT QgsMesh3dAveragingMethod
      * Writes configuration to a new DOM element
      */
     virtual QDomElement writeXml( QDomDocument &doc ) const = 0;
+
+    //! Creates the instance from XML by calling readXml of derived classes
+    static QgsMesh3dAveragingMethod *createFromXml( const QDomElement &elem ) SIP_FACTORY;
+
     //! Reads configuration from the given DOM element
     virtual void readXml( const QDomElement &elem ) = 0;
 

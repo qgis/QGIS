@@ -262,7 +262,7 @@ class CORE_EXPORT QgsMesh3dDataBlock
     QgsMesh3dDataBlock( int count, int maximumVerticalLevels, bool isVector );
 
     //! Sets block validity
-    void setIsValid( bool valid );
+    void setValid( bool valid );
 
     //! Whether the block is valid
     bool isValid() const;

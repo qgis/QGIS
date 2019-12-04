@@ -354,7 +354,10 @@ QgsMesh3dAveragingMethod *QgsMeshRendererSettings::averagingMethod() const
 
 void QgsMeshRendererSettings::setAveragingMethod( QgsMesh3dAveragingMethod *method )
 {
-  mAveragingMethod.reset( method );
+  if ( method )
+    mAveragingMethod.reset( method->clone() );
+  else
+    mAveragingMethod.reset();
 }
 
 QDomElement QgsMeshRendererSettings::writeXml( QDomDocument &doc ) const
@@ -454,14 +457,7 @@ void QgsMeshRendererSettings::readXml( const QDomElement &elem )
   QDomElement elemAveraging = elem.firstChildElement( QStringLiteral( "averaging-3d" ) );
   if ( !elemAveraging.isNull() )
   {
-    QgsMesh3dAveragingMethod::Method method = static_cast<QgsMesh3dAveragingMethod::Method>(
-          elem.attribute( QStringLiteral( "method" ) ).toInt() );
-    switch ( method )
-    {
-      case QgsMesh3dAveragingMethod::SingleLevelAverageMethod:
-        mAveragingMethod.reset( new QgsMeshSingleLevelAveragingMethod() );
-        mAveragingMethod->readXml( elem );
-    }
+    mAveragingMethod.reset( QgsMesh3dAveragingMethod::createFromXml( elem ) );
   }
 }
 

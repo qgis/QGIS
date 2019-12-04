@@ -39,7 +39,7 @@ void QgsMeshRenderer3dAveragingWidget::setLayer( QgsMeshLayer *layer )
   mMeshLayer = layer;
 }
 
-QgsMesh3dAveragingMethod *QgsMeshRenderer3dAveragingWidget::averagingMethod() const
+std::unique_ptr<QgsMesh3dAveragingMethod> QgsMeshRenderer3dAveragingWidget::averagingMethod() const
 {
   std::unique_ptr<QgsMesh3dAveragingMethod> averaging;
 
@@ -53,8 +53,7 @@ QgsMesh3dAveragingMethod *QgsMeshRenderer3dAveragingWidget::averagingMethod() co
       averaging.reset( new QgsMeshSingleLevelAveragingMethod( verticalLevel ) );
     }
   }
-
-  return averaging.release();
+  return averaging;
 }
 
 void QgsMeshRenderer3dAveragingWidget::syncToLayer( )

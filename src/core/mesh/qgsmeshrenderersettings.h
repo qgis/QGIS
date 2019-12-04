@@ -484,6 +484,7 @@ class CORE_EXPORT QgsMeshRendererSettings
 
     /**
      * Returns averaging method for conversion of 3d stacked mesh data to 2d data
+     *
      * Caller does not own the resulting pointer
      */
     QgsMesh3dAveragingMethod *averagingMethod() const;
@@ -491,7 +492,7 @@ class CORE_EXPORT QgsMeshRendererSettings
     /**
      * Sets averaging method for conversion of 3d stacked mesh data to 2d data
      *
-     * Ownership of the method is transferred to the renderer settings
+     * Ownership of the method is not transferred.
      */
     void setAveragingMethod( QgsMesh3dAveragingMethod *method );
 

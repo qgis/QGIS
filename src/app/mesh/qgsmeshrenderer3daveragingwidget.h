@@ -51,7 +51,7 @@ class APP_EXPORT QgsMeshRenderer3dAveragingWidget : public QWidget, private Ui::
      *
      * Caller takes ownership
      */
-    QgsMesh3dAveragingMethod *averagingMethod() const;
+    std::unique_ptr<QgsMesh3dAveragingMethod> averagingMethod() const;
 
     //! Synchronizes widgets state with associated mesh layer
     void syncToLayer();
