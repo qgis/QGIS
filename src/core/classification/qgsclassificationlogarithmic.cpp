@@ -48,17 +48,14 @@ QIcon QgsClassificationLogarithmic::icon() const
 
 QList<double> QgsClassificationLogarithmic::calculateBreaks( double minimum, double maximum, const QList<double> &values, int nclasses )
 {
-  Q_UNUSED( values );
+  Q_UNUSED( values )
 
   // get the min/max in log10 scale
-  int lmin = std::floor( std::log10( minimum ) );
-  int lmax = std::ceil( std::log10( maximum ) );
-
-  // do not create too many classes
-  nclasses = std::min( lmax - lmin + 1, nclasses );
+  double log_min = std::floor( std::log10( minimum ) );
+  double log_max = std::ceil( std::log10( maximum ) );
 
   // calculate pretty breaks
-  QList<double> breaks = QgsSymbolLayerUtils::prettyBreaks( lmin, lmax, nclasses );
+  QList<double> breaks = QgsSymbolLayerUtils::prettyBreaks( log_min, log_max, nclasses );
 
   // create the value
   for ( int i = 0; i < breaks.count(); i++ )
