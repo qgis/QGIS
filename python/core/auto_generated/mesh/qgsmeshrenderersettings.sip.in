@@ -611,6 +611,7 @@ Sets new renderer settings
     QgsMesh3dAveragingMethod *averagingMethod() const;
 %Docstring
 Returns averaging method for conversion of 3d stacked mesh data to 2d data
+
 Caller does not own the resulting pointer
 %End
 
@@ -618,7 +619,7 @@ Caller does not own the resulting pointer
 %Docstring
 Sets averaging method for conversion of 3d stacked mesh data to 2d data
 
-Ownership of the method is transferred to the renderer settings
+Ownership of the method is not transferred.
 %End
 
     QgsMeshDatasetIndex activeScalarDataset() const;

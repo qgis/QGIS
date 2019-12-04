@@ -26,6 +26,22 @@ QgsMesh3dAveragingMethod::QgsMesh3dAveragingMethod( Method method )
 {
 }
 
+QgsMesh3dAveragingMethod *QgsMesh3dAveragingMethod::createFromXml( const QDomElement &elem )
+{
+  std::unique_ptr<QgsMesh3dAveragingMethod> ret;
+
+  QgsMesh3dAveragingMethod::Method method = static_cast<QgsMesh3dAveragingMethod::Method>(
+        elem.attribute( QStringLiteral( "method" ) ).toInt() );
+  switch ( method )
+  {
+    case QgsMesh3dAveragingMethod::SingleLevelAverageMethod:
+      ret.reset( new QgsMeshSingleLevelAveragingMethod() );
+      ret->readXml( elem );
+  }
+
+  return ret.release();
+}
+
 QgsMesh3dAveragingMethod::Method QgsMesh3dAveragingMethod::method() const
 {
   return mMethod;

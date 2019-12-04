@@ -256,7 +256,7 @@ Constructs an invalid block
 Constructs a new block for count faces
 %End
 
-    void setIsValid( bool valid );
+    void setValid( bool valid );
 %Docstring
 Sets block validity
 %End

@@ -63,6 +63,12 @@ Calculated 2d block values from 3d stacked mesh values
 %Docstring
 Writes configuration to a new DOM element
 %End
+
+    static QgsMesh3dAveragingMethod *createFromXml( const QDomElement &elem ) /Factory/;
+%Docstring
+Creates the instance from XML by calling readXml of derived classes
+%End
+
     virtual void readXml( const QDomElement &elem ) = 0;
 %Docstring
 Reads configuration from the given DOM element
