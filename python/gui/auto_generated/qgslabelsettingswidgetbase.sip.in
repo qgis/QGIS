@@ -54,6 +54,8 @@ Sets the geometry ``type`` of the features to customize the widget accordingly.
 %Docstring
 Returns the current data defined properties state as specified in the widget.
 
+.. seealso:: :py:func:`updateDataDefinedProperties`
+
 .. seealso:: :py:func:`setDataDefinedProperties`
 %End
 
@@ -64,11 +66,26 @@ Sets the current data defined properties to show in the widget.
 .. seealso:: :py:func:`dataDefinedProperties`
 %End
 
+    virtual void updateDataDefinedProperties( QgsPropertyCollection &properties );
+%Docstring
+Updates a data defined ``properties`` collection, correctly setting the values
+for any properties related to this widget.
+
+.. seealso:: :py:func:`setDataDefinedProperties`
+
+.. seealso:: :py:func:`dataDefinedProperties`
+%End
+
   signals:
 
     void changed();
 %Docstring
 Emitted when any of the settings described by the widget are changed.
+%End
+
+    void auxiliaryFieldCreated();
+%Docstring
+Emitted when an auxiliary field is created in the widget.
 %End
 
   protected:
@@ -82,6 +99,7 @@ Registers a data defined override ``button``. Handles setting up connections
 for the button and initializing the button to show the correct descriptions
 and help text for the associated property.
 %End
+
 
 };
 

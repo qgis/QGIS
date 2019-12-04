@@ -46,6 +46,9 @@ Returns the obstacle settings defined by the widget.
     virtual void setGeometryType( QgsWkbTypes::GeometryType type );
 
 
+    virtual void updateDataDefinedProperties( QgsPropertyCollection &properties );
+
+
 };
 
 /************************************************************************

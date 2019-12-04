@@ -26,6 +26,7 @@
 #include "qgsvectorlayerlabeling.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
+#include "qgslabelobstaclesettingswidget.h"
 
 QgsLabelingWidget::QgsLabelingWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent, QgsMessageBar *messageBar )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -130,13 +131,21 @@ void QgsLabelingWidget::writeSettingsToLayer()
       mLayer->setLabelsEnabled( true );
       break;
     }
+
     case ModeSingle:
-    case ModeBlocking:
     {
       mLayer->setLabeling( new QgsVectorLayerSimpleLabeling( qobject_cast<QgsLabelingGui *>( mWidget )->layerSettings() ) );
       mLayer->setLabelsEnabled( true );
       break;
     }
+
+    case ModeBlocking:
+    {
+      mLayer->setLabeling( new QgsVectorLayerSimpleLabeling( *mSimpleSettings ) );
+      mLayer->setLabelsEnabled( true );
+      break;
+    }
+
     case ModeNone:
     {
       mLayer->setLabelsEnabled( false );
@@ -209,23 +218,55 @@ void QgsLabelingWidget::labelModeChanged( int index )
       if ( mSimpleSettings->fieldName.isEmpty() )
         mSimpleSettings->fieldName = mLayer->displayField();
 
-      QgsLabelingGui *simpleWidget = new QgsLabelingGui( mLayer, mCanvas, *mSimpleSettings, this );
-
       QgsSymbolWidgetContext context;
       context.setMapCanvas( mMapCanvas );
       context.setMessageBar( mMessageBar );
-      simpleWidget->setContext( context );
 
-      simpleWidget->setDockMode( dockMode() );
-      connect( simpleWidget, &QgsTextFormatWidget::widgetChanged, this, &QgsLabelingWidget::widgetChanged );
-      connect( simpleWidget, &QgsLabelingGui::auxiliaryFieldCreated, this, &QgsLabelingWidget::auxiliaryFieldCreated );
+      switch ( mode )
+      {
+        case ModeSingle:
+        {
+          QgsLabelingGui *simpleWidget = new QgsLabelingGui( mLayer, mCanvas, *mSimpleSettings, this );
+          simpleWidget->setContext( context );
 
-      if ( index == 3 )
-        simpleWidget->setLabelMode( QgsLabelingGui::ObstaclesOnly );
-      else
-        simpleWidget->setLabelMode( static_cast< QgsLabelingGui::LabelMode >( index ) );
+          simpleWidget->setDockMode( dockMode() );
+          connect( simpleWidget, &QgsTextFormatWidget::widgetChanged, this, &QgsLabelingWidget::widgetChanged );
+          connect( simpleWidget, &QgsLabelingGui::auxiliaryFieldCreated, this, &QgsLabelingWidget::auxiliaryFieldCreated );
 
-      mWidget = simpleWidget;
+          simpleWidget->setLabelMode( QgsLabelingGui::Labels );
+
+          mWidget = simpleWidget;
+          break;
+        }
+        case ModeBlocking:
+        {
+          QgsLabelObstacleSettingsWidget *obstacleWidget = new QgsLabelObstacleSettingsWidget( this, mLayer );
+          obstacleWidget->setContext( context );
+          obstacleWidget->setGeometryType( mLayer ? mLayer->geometryType() : QgsWkbTypes::UnknownGeometry );
+          obstacleWidget->setDockMode( dockMode() );
+          obstacleWidget->setSettings( mSimpleSettings->obstacleSettings() );
+          obstacleWidget->setDataDefinedProperties( mSimpleSettings->dataDefinedProperties() );
+
+          mSimpleSettings->obstacleSettings().setIsObstacle( true );
+          mSimpleSettings->drawLabels = false;
+
+          connect( obstacleWidget, &QgsLabelSettingsWidgetBase::changed, this, [ = ]
+          {
+            mSimpleSettings->setObstacleSettings( obstacleWidget->settings() );
+            obstacleWidget->updateDataDefinedProperties( mSimpleSettings->dataDefinedProperties() );
+            emit widgetChanged();
+          } );
+          connect( obstacleWidget, &QgsLabelSettingsWidgetBase::auxiliaryFieldCreated, this, &QgsLabelingWidget::auxiliaryFieldCreated );
+
+          mWidget = obstacleWidget;
+          break;
+        }
+
+        case ModeRuleBased:
+        case ModeNone:
+          break;
+      }
+
       mStackedWidget->addWidget( mWidget );
       mStackedWidget->setCurrentWidget( mWidget );
       break;

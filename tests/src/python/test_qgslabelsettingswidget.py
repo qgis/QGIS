@@ -46,18 +46,28 @@ class TestQgsLabelSettingsWidget(unittest.TestCase):
         settings.setFactor(0.4)
         settings.setType(QgsLabelObstacleSettings.PolygonBoundary)
         spy = QSignalSpy(w.changed)
-        w.setObstacleSettings(settings)
+        w.setSettings(settings)
         self.assertEqual(len(spy), 0)
         settings = w.settings()
         self.assertEqual(settings.factor(), 0.4)
         self.assertEqual(settings.type(), QgsLabelObstacleSettings.PolygonBoundary)
         settings.setFactor(1.2)
         settings.setType(QgsLabelObstacleSettings.PolygonInterior)
-        w.setObstacleSettings(settings)
+        w.setSettings(settings)
         self.assertEqual(len(spy), 0)
         settings = w.settings()
         self.assertEqual(settings.factor(), 1.2)
         self.assertEqual(settings.type(), QgsLabelObstacleSettings.PolygonInterior)
+
+        props = QgsPropertyCollection()
+        props.setProperty(QgsPalLayerSettings.ObstacleFactor, QgsProperty.fromValue(5))
+        w.setDataDefinedProperties(props)
+
+        props = QgsPropertyCollection()
+        self.assertFalse(props.isActive(QgsPalLayerSettings.ObstacleFactor))
+        w.updateDataDefinedProperties(props)
+        self.assertTrue(props.isActive(QgsPalLayerSettings.ObstacleFactor))
+        self.assertEqual(w.dataDefinedProperties().property(QgsPalLayerSettings.ObstacleFactor).asExpression(), '5')
 
 
 if __name__ == '__main__':
