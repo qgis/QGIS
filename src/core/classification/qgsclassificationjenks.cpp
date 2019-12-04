@@ -46,7 +46,7 @@ QIcon QgsClassificationJenks::icon() const
 }
 
 
-QList<double> QgsClassificationJenks::calculateBreaks( double minimum, double maximum,
+QList<double> QgsClassificationJenks::calculateBreaks( double &minimum, double &maximum,
     const QList<double> &values, int nclasses )
 {
   // Jenks Optimal (Natural Breaks) algorithm
