@@ -1029,3 +1029,15 @@ QHash<QString, QSet<QgsSymbolLayerId>> QgsVectorLayerUtils::symbolLayerMasks( co
   layer->renderer()->accept( &visitor );
   return visitor.masks;
 }
+
+QString QgsVectorLayerUtils::getFeatureDisplayString( const QgsVectorLayer *layer, const QgsFeature &feature )
+{
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+
+  QgsExpression exp( layer->displayExpression() );
+  context.setFeature( feature );
+  exp.prepare( &context );
+  QString displayString = exp.evaluate( &context ).toString();
+
+  return displayString;
+}

@@ -287,6 +287,14 @@ The following operations will be performed to convert the input features:
 %End
 
 
+
+    static QString getFeatureDisplayString( const QgsVectorLayer *layer, const QgsFeature &feature );
+%Docstring
+
+:return: the ``layer`` ``feature`` display string
+
+.. versionadded:: 3.12
+%End
 };
 
 
