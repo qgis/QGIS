@@ -238,11 +238,20 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         return vl
 
     @classmethod
+    def copyTestShapefile(self, n):
+        shutil.copy(os.path.join(unitTestDataPath(), n + '.shp'), self.tmpDir)
+        shutil.copy(os.path.join(unitTestDataPath(), n + '.dbf'), self.tmpDir)
+        shutil.copy(os.path.join(unitTestDataPath(), n + '.shx'), self.tmpDir)
+        shutil.copy(os.path.join(unitTestDataPath(), n + '.prj'), self.tmpDir)
+        shutil.copy(os.path.join(unitTestDataPath(), n + '.qpj'), self.tmpDir)
+
+    @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         QgsGui.editorWidgetRegistry().initEditors()
         # Create test layer for FeatureSourceTestCase
         cls.source = cls.getSource()
+        cls.tmpDir = tempfile.mkdtemp('', 'test_qgsvectorlayer-QgsVectorLayer-')
 
     def testGetFeaturesSubsetAttributes2(self):
         """ Override and skip this QgsFeatureSource test. We are using a memory provider, and it's actually more efficient for the memory provider to return
@@ -1664,8 +1673,15 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         join_attr_idx = 1
         new_value = 33.0
 
+        # Copy project and related files to temporary dir, as we're
+        # going to edit the layer
+        shutil.copy(os.path.join(unitTestDataPath(), 'joins.qgs'), self.tmpDir)
+        self.copyTestShapefile('polys_overlapping_with_id')
+        self.copyTestShapefile('polys_with_id')
+
         # read project and get layers
-        myPath = os.path.join(unitTestDataPath(), 'joins.qgs')
+
+        myPath = os.path.join(self.tmpDir, 'joins.qgs')
         rc = QgsProject.instance().read(myPath)
 
         layer = QgsProject.instance().mapLayersByName("polys_with_id")[0]
@@ -3056,6 +3072,7 @@ class TestQgsVectorLayerSourceAddedFeaturesInBuffer(unittest.TestCase, FeatureSo
         """Run before all tests"""
         # Create test layer for FeatureSourceTestCase
         cls.source = cls.getSource()
+        cls.tmpDir = tempfile.mkdtemp('', 'test_qgsvectorlayer-QgsVectorLayerSourceAddedFeaturesInBuffer-')
 
     def testGetFeaturesSubsetAttributes2(self):
         """ Override and skip this QgsFeatureSource test. We are using a memory provider, and it's actually more efficient for the memory provider to return
