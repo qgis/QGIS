@@ -32,6 +32,8 @@ QgsGpsBearingItem::QgsGpsBearingItem( QgsMapCanvas *mapCanvas )
   mSymbol->setColor( QColor( 255, 0, 0 ) );
   mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
 
+  setZValue( 199 );
+
   connect( mMapCanvas, &QgsMapCanvas::rotationChanged, this, &QgsGpsBearingItem::updateLine );
   connect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgsGpsBearingItem::updateLine );
 }

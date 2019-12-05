@@ -27,7 +27,7 @@ class QgsLineSymbol;
  * \ingroup app
  * A canvas item for showing the bearing of the GPS device
  */
-class QgsGpsBearingItem : public QObject, QgsMapCanvasLineSymbolItem
+class QgsGpsBearingItem : public QObject, public QgsMapCanvasLineSymbolItem
 {
     Q_OBJECT
 
