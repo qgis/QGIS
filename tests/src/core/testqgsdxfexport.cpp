@@ -56,6 +56,8 @@ class TestQgsDxfExport : public QObject
     void testTextAngle();
     void testTextAlign();
     void testTextAlign_data();
+    void testTextQuadrant();
+    void testTextQuadrant_data();
     void testGeometryGeneratorExport();
     void testCurveExport();
     void testCurveExport_data();
@@ -685,6 +687,166 @@ void TestQgsDxfExport::testTextAlign_data()
       << QgsDxfExport::VAlign::VMiddle
       << QStringLiteral( "Center" )
       << QStringLiteral( "Half" );
+}
+
+void TestQgsDxfExport::testTextQuadrant()
+{
+  QFETCH( int, offsetQuad );
+  QFETCH( QgsDxfExport::HAlign, dxfHali );
+  QFETCH( QgsDxfExport::VAlign, dxfVali );
+  QFETCH( double, angle );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "text" );
+
+  QgsPropertyCollection props = settings.dataDefinedProperties();
+  QgsProperty offsetQuadProp = QgsProperty();
+  offsetQuadProp.setStaticValue( offsetQuad );
+  props.setProperty( QgsPalLayerSettings::OffsetQuad, offsetQuadProp );
+  props.setProperty( QgsPalLayerSettings::Property::LabelRotation, angle );
+  settings.setDataDefinedProperties( props );
+
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 200, 0, 200 ) );
+  settings.setFormat( format );
+
+  std::unique_ptr< QgsVectorLayer > vl = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Point?crs=epsg:2056&field=text:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QgsGeometry g = QgsGeometry::fromWkt( "Point(2685025.687 1292145.297)" );
+  QgsFeature f( vl->fields() );
+  f.setGeometry( g );
+  f.setAttribute( 0, QStringLiteral( "182" ) );
+
+  vl->dataProvider()->addFeatures( QgsFeatureList() << f );
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  vl->setLabelsEnabled( true );
+
+  QgsMapSettings mapSettings;
+  QSize size( 640, 480 );
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( QgsRectangle( 2685025.687, 1292045.297, 2685125.687, 1292145.297 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl.get() );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setDestinationCrs( vl->crs() );
+
+  QgsDxfExport d;
+  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( vl.get() ) );
+  d.setMapSettings( mapSettings );
+  d.setSymbologyScale( 1000 );
+  d.setSymbologyExport( QgsDxfExport::FeatureSymbology );
+  d.setFlags( QgsDxfExport::FlagNoMText );
+  d.setExtent( mapSettings.extent() );
+
+  static int testNumber = 0;
+  ++testNumber;
+  QString file = getTempFileName( QStringLiteral( "text_dxf_offset_quad_%1_%2" ).arg( offsetQuad ).arg( angle ) );
+  QFile dxfFile( file );
+  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
+  dxfFile.close();
+  QString debugInfo;
+  QVERIFY2( fileContainsText( file, QStringLiteral( "TEXT\n"
+                              "  5\n"
+                              "**no check**\n"
+                              "100\n"
+                              "AcDbEntity\n"
+                              "100\n"
+                              "AcDbText\n"
+                              "  8\n"
+                              "vl\n"
+                              "420\n"
+                              "**no check**\n"
+                              " 10\n"
+                              "REGEX ^2685025\\.68\\d*\n"
+                              " 20\n"
+                              "REGEX ^1292145\\.29\\d*\n"
+                              " 11\n"
+                              "REGEX ^2685025\\.68\\d*\n"
+                              " 21\n"
+                              "REGEX ^1292145\\.29\\d*\n"
+                              " 40\n"
+                              "**no check**\n"
+                              "  1\n"
+                              "182\n"
+                              " 50\n"
+                              "%1\n"
+                              " 72\n"
+                              "     %2\n"
+                              "  7\n"
+                              "STANDARD\n"
+                              "100\n"
+                              "AcDbText\n"
+                              " 73\n"
+                              "     %3" ).arg( QString::number( fmod( 360 - angle, 360 ), 'f', 1 ) ).arg( QString::number( static_cast<int>( dxfHali ) ), QString::number( static_cast<int>( dxfVali ) ) ), &debugInfo ), debugInfo.toUtf8().constData() );
+}
+
+void TestQgsDxfExport::testTextQuadrant_data()
+{
+  QTest::addColumn<int>( "offsetQuad" );
+  QTest::addColumn<QgsDxfExport::HAlign>( "dxfHali" );
+  QTest::addColumn<QgsDxfExport::VAlign>( "dxfVali" );
+  QTest::addColumn<double>( "angle" );
+
+  QTest::newRow( "Above Left, no rotation" )
+      << 0
+      << QgsDxfExport::HAlign::HRight
+      << QgsDxfExport::VAlign::VBottom
+      << 0.0;
+
+  QTest::newRow( "Above, no rotation" )
+      << 1
+      << QgsDxfExport::HAlign::HCenter
+      << QgsDxfExport::VAlign::VBottom
+      << 0.0;
+
+  QTest::newRow( "Above Right, no rotation" )
+      << 2
+      << QgsDxfExport::HAlign::HLeft
+      << QgsDxfExport::VAlign::VBottom
+      << 0.0;
+
+  QTest::newRow( "Left, no rotation" )
+      << 3
+      << QgsDxfExport::HAlign::HRight
+      << QgsDxfExport::VAlign::VMiddle
+      << 0.0;
+
+  QTest::newRow( "Over, no rotation" )
+      << 4
+      << QgsDxfExport::HAlign::HCenter
+      << QgsDxfExport::VAlign::VMiddle
+      << 0.0;
+
+  QTest::newRow( "Right, no rotation" )
+      << 5
+      << QgsDxfExport::HAlign::HLeft
+      << QgsDxfExport::VAlign::VMiddle
+      << 0.0;
+
+  QTest::newRow( "Below Left, no rotation" )
+      << 6
+      << QgsDxfExport::HAlign::HRight
+      << QgsDxfExport::VAlign::VTop
+      << 0.0;
+
+  QTest::newRow( "Below, no rotation" )
+      << 7
+      << QgsDxfExport::HAlign::HCenter
+      << QgsDxfExport::VAlign::VTop
+      << 0.0;
+
+  QTest::newRow( "Below Right, no rotation" )
+      << 8
+      << QgsDxfExport::HAlign::HLeft
+      << QgsDxfExport::VAlign::VTop
+      << 0.0;
+
+  QTest::newRow( "Below, 20°" )
+      << 7
+      << QgsDxfExport::HAlign::HCenter
+      << QgsDxfExport::VAlign::VTop
+      << 20.0;
 }
 
 void TestQgsDxfExport::testGeometryGeneratorExport()
