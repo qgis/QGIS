@@ -42,12 +42,12 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   uri.setEncodedUri( uriString );
 
   // Setup authentication
-  mAuth.mUserName = uri.param( QStringLiteral( "username" ) );
-  mAuth.mPassword = uri.param( QStringLiteral( "password" ) );
+  mAuth.mUserName = uri.username();
+  mAuth.mPassword = uri.password();
 
-  if ( uri.hasParam( QStringLiteral( "authcfg" ) ) )
+  if ( !uri.authConfigId().isEmpty() )
   {
-    mAuth.mAuthCfg = uri.param( QStringLiteral( "authcfg" ) );
+    mAuth.mAuthCfg = uri.authConfigId();
   }
 
   mAuth.mReferer = uri.param( QStringLiteral( "referer" ) );
