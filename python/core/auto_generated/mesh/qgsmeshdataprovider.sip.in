@@ -45,8 +45,8 @@ Returns a dataset index within group()
 %Docstring
 Returns whether index is valid, ie at least groups is set
 %End
-    bool operator == ( const QgsMeshDatasetIndex &other ) const;
-    bool operator != ( const QgsMeshDatasetIndex &other ) const;
+    bool operator == ( QgsMeshDatasetIndex other ) const;
+    bool operator != ( QgsMeshDatasetIndex other ) const;
 };
 
 typedef QgsPoint QgsMeshVertex;
@@ -142,7 +142,7 @@ Returns x value
 Returns y value
 %End
 
-    bool operator==( const QgsMeshDatasetValue &other ) const;
+    bool operator==( QgsMeshDatasetValue other ) const;
 
 };
 

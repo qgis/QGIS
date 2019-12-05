@@ -40,7 +40,7 @@ bool QgsMeshDatasetIndex::isValid() const
   return ( group() > -1 ) && ( dataset() > -1 );
 }
 
-bool QgsMeshDatasetIndex::operator ==( const QgsMeshDatasetIndex &other ) const
+bool QgsMeshDatasetIndex::operator ==( QgsMeshDatasetIndex other ) const
 {
   if ( isValid() && other.isValid() )
     return other.group() == group() && other.dataset() == dataset();
@@ -48,7 +48,7 @@ bool QgsMeshDatasetIndex::operator ==( const QgsMeshDatasetIndex &other ) const
     return isValid() == other.isValid();
 }
 
-bool QgsMeshDatasetIndex::operator !=( const QgsMeshDatasetIndex &other ) const
+bool QgsMeshDatasetIndex::operator !=( QgsMeshDatasetIndex other ) const
 {
   return !( operator==( other ) );
 }
@@ -107,7 +107,7 @@ double QgsMeshDatasetValue::y() const
   return mY;
 }
 
-bool QgsMeshDatasetValue::operator==( const QgsMeshDatasetValue &other ) const
+bool QgsMeshDatasetValue::operator==( const QgsMeshDatasetValue other ) const
 {
   bool equal = std::isnan( mX ) == std::isnan( other.x() );
   equal &= std::isnan( mY ) == std::isnan( other.y() );
@@ -415,6 +415,7 @@ void *QgsMesh3dDataBlock::buffer( QgsMesh3dDataBlock::DataType type )
     case FaceToVolumeIndex:
       return mFaceToVolumeIndex.data();
   }
+  return nullptr;
 }
 
 const void *QgsMesh3dDataBlock::constBuffer( QgsMesh3dDataBlock::DataType type ) const
@@ -434,6 +435,7 @@ const void *QgsMesh3dDataBlock::constBuffer( QgsMesh3dDataBlock::DataType type )
     case FaceToVolumeIndex:
       return mFaceToVolumeIndex.constData();
   }
+  return nullptr;
 }
 
 void QgsMesh3dDataBlock::setValid( bool valid )
