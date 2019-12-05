@@ -647,7 +647,7 @@ tests:
         hash: f09384c64f56286ec4146a7b9a679cea7c6711ec4c7d77eec054e364
         type: rasterhash
 
-  - algorithm: qgis:rasterlayerstatistics
+  - algorithm: native:rasterlayerstatistics
     name: Raster layer statistics
     params:
       INPUT:
@@ -659,13 +659,13 @@ tests:
         name: raster_statistics.html
         type: regex
         rules:
-          - 'Minimum value: 85.0'
-          - 'Maximum value: 243.0'
-          - 'Range: 158.0'
-          - 'Sum: 19213301.982429504'
-          - 'Mean value: 147.17197994967066'
+          - 'Minimum value: 85'
+          - 'Maximum value: 243'
+          - 'Range: 158'
+          - 'Sum: 19213301.9824295'
+          - 'Mean value: 147.1719799496707'
           - 'Standard deviation: 43.9618116337985'
-          - 'Sum of the squares: 252304334.52061242'
+          - 'Sum of the squares: 252304334.5206124'
 
   - algorithm: qgis:rasterlayeruniquevaluesreport
     name: Raster layer unique values report

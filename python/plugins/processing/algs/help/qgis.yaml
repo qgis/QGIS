@@ -346,9 +346,6 @@ qgis:rasterlayerhistogram: >
 
   The raster layer must have a single band.
 
-qgis:rasterlayerstatistics: >
-  This algorithm computes basic statistics from the values in a given band of the raster layer.
-
 qgis:rastersampling: >
   This algorithm creates a new vector layer with the same attributes of the input layer and the raster values corresponding on the point location.
 

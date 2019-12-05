@@ -77,7 +77,6 @@ from .RandomSelection import RandomSelection
 from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
 from .RasterCalculator import RasterCalculator
 from .RasterLayerHistogram import RasterLayerHistogram
-from .RasterLayerStatistics import RasterLayerStatistics
 from .RasterSampling import RasterSampling
 from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
 from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
@@ -165,7 +164,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 RandomSelectionWithinSubsets(),
                 RasterCalculator(),
                 RasterLayerHistogram(),
-                RasterLayerStatistics(),
                 RasterSampling(),
                 RectanglesOvalsDiamondsFixed(),
                 RectanglesOvalsDiamondsVariable(),
