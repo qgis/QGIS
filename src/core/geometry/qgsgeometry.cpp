@@ -1230,6 +1230,10 @@ bool QgsGeometry::equals( const QgsGeometry &geometry ) const
   if ( d == geometry.d )
     return true;
 
+  // fast check - distinct geometry types?
+  if ( type() != geometry.type() )
+    return false;
+
   // slower check - actually test the geometries
   return *d->geometry == *geometry.d->geometry;
 }
@@ -2603,6 +2607,10 @@ bool QgsGeometry::isGeosEqual( const QgsGeometry &g ) const
   // fast check - are they shared copies of the same underlying geometry?
   if ( d == g.d )
     return true;
+
+  // fast check - distinct geometry types?
+  if ( type() != g.type() )
+    return false;
 
   // avoid calling geos for trivial point case
   if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::Point
