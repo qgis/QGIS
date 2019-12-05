@@ -821,9 +821,7 @@ void QgsGraduatedSymbolRendererWidget::methodComboBox_currentIndexChanged( int )
 
 void QgsGraduatedSymbolRendererWidget::updateMethodParameters()
 {
-  while ( mParametersLayout->rowCount() )
-    mParametersLayout->removeRow( 0 );
-  mParameterWidgetWrappers.clear();
+  clearParameterWidgets();
 
   const QString methodId = cboGraduatedMode->currentData().toString();
   QgsClassificationMethod *method = QgsApplication::classificationMethodRegistry()->method( methodId );
@@ -871,6 +869,22 @@ void QgsGraduatedSymbolRendererWidget::toggleMethodWidgets( MethodMode mode )
       break;
     }
   }
+}
+
+void QgsGraduatedSymbolRendererWidget::clearParameterWidgets()
+{
+  while ( mParametersLayout->rowCount() )
+  {
+    QFormLayout::TakeRowResult row = mParametersLayout->takeRow( 0 );
+    for ( QLayoutItem *item : QList<QLayoutItem *>( {row.labelItem, row.fieldItem} ) )
+      if ( item )
+      {
+        if ( item->widget() )
+          item->widget()->deleteLater();
+        delete item;
+      }
+  }
+  mParameterWidgetWrappers.clear();
 }
 
 void QgsGraduatedSymbolRendererWidget::refreshRanges( bool reset )

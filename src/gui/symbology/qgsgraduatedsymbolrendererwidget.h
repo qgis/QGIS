@@ -175,6 +175,8 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
     QgsExpressionContext createExpressionContext() const override;
     void toggleMethodWidgets( MethodMode mode );
 
+    void clearParameterWidgets();
+
     std::unique_ptr< QgsGraduatedSymbolRenderer > mRenderer;
 
     std::unique_ptr< QgsSymbol > mGraduatedSymbol;
