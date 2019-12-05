@@ -108,12 +108,12 @@ void QgsNmeaConnection::processStringBuffer()
           mStatus = GPSDataReceived;
           QgsDebugMsgLevel( QStringLiteral( "*******************GPS data received****************" ), 2 );
         }
-        else if ( substring.startsWith( QLatin1String( "$GPGSV" ) ) )
+        else if ( substring.startsWith( QLatin1String( "$GPGSV" ) ) || substring.startsWith( QLatin1String( "$GNGSV" ) ) )
         {
-          QgsDebugMsg( substring );
+          QgsDebugMsgLevel( substring, 2 );
           processGsvSentence( ba.data(), ba.length() );
           mStatus = GPSDataReceived;
-          QgsDebugMsg( QStringLiteral( "*******************GPS data received****************" ) );
+          QgsDebugMsgLevel( QStringLiteral( "*******************GPS data received****************" ), 2 );
         }
         else if ( substring.startsWith( QLatin1String( "$GPVTG" ) ) )
         {
