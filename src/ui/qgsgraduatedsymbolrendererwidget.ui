@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>477</width>
-    <height>701</height>
+    <width>668</width>
+    <height>720</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout">
@@ -307,92 +307,20 @@ Negative rounds to powers of 10</string>
          </layout>
         </widget>
        </item>
-       <item row="4" column="0" colspan="2">
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <item>
-          <widget class="QPushButton" name="btnGraduatedClassify">
-           <property name="text">
-            <string>Classify</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btnGraduatedAdd">
-           <property name="toolTip">
-            <string>Add class</string>
-           </property>
-           <property name="icon">
-            <iconset resource="../../images/images.qrc">
-             <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btnGraduatedDelete">
-           <property name="toolTip">
-            <string>Delete</string>
-           </property>
-           <property name="icon">
-            <iconset resource="../../images/images.qrc">
-             <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btnDeleteAllClasses">
-           <property name="text">
-            <string>Delete All</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>0</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btnAdvanced">
-           <property name="text">
-            <string>Advanced</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+       <item row="2" column="1">
+        <spacer name="horizontalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
        </item>
-       <item row="0" column="0" colspan="2">
-        <widget class="QTreeView" name="viewGraduated">
-         <property name="contextMenuPolicy">
-          <enum>Qt::CustomContextMenu</enum>
-         </property>
-         <property name="showDropIndicator" stdset="0">
-          <bool>true</bool>
-         </property>
-         <property name="dragDropMode">
-          <enum>QAbstractItemView::InternalMove</enum>
-         </property>
-         <property name="selectionMode">
-          <enum>QAbstractItemView::ExtendedSelection</enum>
-         </property>
-         <property name="rootIsDecorated">
-          <bool>false</bool>
-         </property>
-         <property name="itemsExpandable">
-          <bool>false</bool>
-         </property>
-         <property name="sortingEnabled">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0" colspan="2">
+       <item row="1" column="0" colspan="3">
         <layout class="QHBoxLayout" name="horizontalLayout_5">
          <item>
           <widget class="QLabel" name="label_8">
@@ -458,7 +386,92 @@ Negative rounds to powers of 10</string>
          </item>
         </layout>
        </item>
-       <item row="5" column="0" colspan="2">
+       <item row="0" column="0" colspan="3">
+        <widget class="QTreeView" name="viewGraduated">
+         <property name="contextMenuPolicy">
+          <enum>Qt::CustomContextMenu</enum>
+         </property>
+         <property name="showDropIndicator" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="dragDropMode">
+          <enum>QAbstractItemView::InternalMove</enum>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::ExtendedSelection</enum>
+         </property>
+         <property name="rootIsDecorated">
+          <bool>false</bool>
+         </property>
+         <property name="itemsExpandable">
+          <bool>false</bool>
+         </property>
+         <property name="sortingEnabled">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0" colspan="3">
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QPushButton" name="btnGraduatedClassify">
+           <property name="text">
+            <string>Classify</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnGraduatedAdd">
+           <property name="toolTip">
+            <string>Add class</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../../images/images.qrc">
+             <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnGraduatedDelete">
+           <property name="toolTip">
+            <string>Delete</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../../images/images.qrc">
+             <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnDeleteAllClasses">
+           <property name="text">
+            <string>Delete All</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>0</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnAdvanced">
+           <property name="text">
+            <string>Advanced</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="5" column="0" colspan="3">
         <layout class="QHBoxLayout" name="_2">
          <item>
           <widget class="QCheckBox" name="cbxLinkBoundaries">
@@ -471,19 +484,6 @@ Negative rounds to powers of 10</string>
           </widget>
          </item>
         </layout>
-       </item>
-       <item row="2" column="1">
-        <spacer name="horizontalSpacer_3">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </widget>
