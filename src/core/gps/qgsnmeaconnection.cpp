@@ -223,7 +223,8 @@ void QgsNmeaConnection::processRmcSentence( const char *data, int len )
     mLastGPSInformation.longitude = nmea_ndeg2degree( longitude );
     mLastGPSInformation.latitude = nmea_ndeg2degree( latitude );
     mLastGPSInformation.speed = KNOTS_TO_KMH * result.speed;
-    mLastGPSInformation.direction = result.direction;
+    if ( !std::isnan( result.direction ) )
+      mLastGPSInformation.direction = result.direction;
     mLastGPSInformation.status = result.status;  // A,V
 
     //date and time
