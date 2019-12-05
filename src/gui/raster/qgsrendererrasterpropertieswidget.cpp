@@ -319,7 +319,7 @@ void QgsRendererRasterPropertiesWidget::toggleColorizeControls( bool colorizeEna
 
 void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &rendererName )
 {
-  QgsDebugMsg( "rendererName = " + rendererName );
+  QgsDebugMsgLevel( "rendererName = " + rendererName, 3 );
   QgsRasterRendererWidget *oldWidget = mRendererWidget;
 
   int alphaBand = -1;
