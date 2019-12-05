@@ -116,6 +116,18 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
     virtual bool canBeActivated() const { return true; }
 
     /**
+     * Returns an optional warning message to show users when running algorithms from this provider.
+     *
+     * This can be used to return a translated warning message which should be shown to users
+     * of this provider. It's intended for use in cases such as a provider which relies on a 3rd-party
+     * backend, where the version of the backend software is not officially supported, or for
+     * alerting users to providers in a "beta" or "untrustworthy" state.
+     *
+     * \since QGIS 3.10.1
+     */
+    virtual QString warningMessage() const { return QString(); }
+
+    /**
      * Returns TRUE if the provider is active and able to run algorithms.
      */
     virtual bool isActive() const { return true; }
