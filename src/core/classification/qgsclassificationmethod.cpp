@@ -188,11 +188,11 @@ const QgsProcessingParameterDefinition *QgsClassificationMethod::parameterDefini
 void QgsClassificationMethod::setParameterValues( const QVariantMap &values )
 {
   mParameterValues = values;
-  for ( const QString &paramName : mParameterValues.keys() ) // todo is this ok?
+  for ( auto it = mParameterValues.begin(); it != mParameterValues.end(); ++it  )
   {
-    if ( !parameterDefinition( paramName ) )
+    if ( !parameterDefinition( it.key() ) )
     {
-      QgsMessageLog::logMessage( name(), QObject::tr( "Parameter %1 does not exist in the method" ).arg( paramName ) );
+      QgsMessageLog::logMessage( name(), QObject::tr( "Parameter %1 does not exist in the method" ).arg( it.key() ) );
     }
   }
 }

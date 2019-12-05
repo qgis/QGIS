@@ -22,7 +22,7 @@
 QgsClassificationLogarithmic::QgsClassificationLogarithmic()
   : QgsClassificationMethod( NoFlag, 0 )
 {
-  QgsProcessingParameterBoolean *param = new QgsProcessingParameterBoolean( QStringLiteral( "FILTER_ZERO_NEG_VALUES" ), QObject::tr( "Filter values <= 0" ), false );
+  QgsProcessingParameterBoolean *param = new QgsProcessingParameterBoolean( QStringLiteral( "FILTER_ZERO_NEG_VALUES" ), QObject::tr( "Filter values ≤ 0" ), false );
   addParameter( param );
 }
 

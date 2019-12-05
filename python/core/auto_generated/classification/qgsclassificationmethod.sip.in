@@ -297,7 +297,7 @@ Get parameter from its id
 .. versionadded:: 3.12
 %End
 
-    const QgsProcessingParameterDefinitions parameterDefinitions() const;
+    QgsProcessingParameterDefinitions parameterDefinitions() const;
 %Docstring
 List of parameters
 
@@ -328,9 +328,15 @@ Copy the parameters (shall be used in clone implementation)
 Format the number according to label properties
 %End
 
-    void addParameter( QgsProcessingParameterDefinition *definition );
+    void addParameter( QgsProcessingParameterDefinition *definition /Transfer/ );
 %Docstring
-Add parameter
+Add a parameter to the method.
+The paramaeter is a processing parameter which will allow its configuration in the GUI.
+
+.. note::
+
+   Only parameters having their widget implementation in C++ are supported. i.e. pure
+   Python parameters are not supported.
 
 .. versionadded:: 3.12
 %End

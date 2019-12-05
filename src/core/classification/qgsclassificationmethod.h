@@ -281,7 +281,7 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
      * List of parameters
      * \since QGIS 3.12
      */
-    const QgsProcessingParameterDefinitions parameterDefinitions() const {return mParameters;}
+    QgsProcessingParameterDefinitions parameterDefinitions() const {return mParameters;}
 
     /**
      * Set values of the additional parameters
@@ -303,10 +303,13 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
     QString formatNumber( double value ) const;
 
     /**
-     * Add parameter
+     * Add a parameter to the method.
+     * The paramaeter is a processing parameter which will allow its configuration in the GUI.
+     * \note Only parameters having their widget implementation in C++ are supported. i.e. pure
+     * Python parameters are not supported.
      * \since QGIS 3.12
      */
-    void addParameter( QgsProcessingParameterDefinition *definition );
+    void addParameter( QgsProcessingParameterDefinition *definition SIP_TRANSFER );
 
     /**
      * Get the parameter value

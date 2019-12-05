@@ -832,7 +832,7 @@ void QgsGraduatedSymbolRendererWidget::updateMethodParameters()
   // todo need more?
   QgsProcessingContext context;
 
-  for ( const auto *def : method->parameterDefinitions() )
+  for ( const QgsProcessingParameterDefinition *def : method->parameterDefinitions() )
   {
     QgsAbstractProcessingParameterWidgetWrapper *ppww = QgsGui::processingGuiRegistry()->createParameterWidgetWrapper( def, QgsProcessingGui::Standard );
     mParametersLayout->addRow( ppww->createWrappedLabel(), ppww->createWrappedWidget( context ) );
