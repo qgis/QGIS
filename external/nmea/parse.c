@@ -350,12 +350,15 @@ int nmea_parse_GPGSV( const char *buff, int buff_sz, nmeaGPGSV *pack )
 
   nmea_trace_buff( buff, buff_sz );
 
+  char type;
+
   nsen = nmea_scanf( buff, buff_sz,
-                     "$GPGSV,%d,%d,%d,"
+                     "$G%CGSV,%d,%d,%d,"
                      "%d,%d,%d,%d,"
                      "%d,%d,%d,%d,"
                      "%d,%d,%d,%d,"
                      "%d,%d,%d,%d*",
+                     &( type ),
                      &( pack->pack_count ), &( pack->pack_index ), &( pack->sat_count ),
                      &( pack->sat_data[0].id ), &( pack->sat_data[0].elv ), &( pack->sat_data[0].azimuth ), &( pack->sat_data[0].sig ),
                      &( pack->sat_data[1].id ), &( pack->sat_data[1].elv ), &( pack->sat_data[1].azimuth ), &( pack->sat_data[1].sig ),
@@ -366,9 +369,15 @@ int nmea_parse_GPGSV( const char *buff, int buff_sz, nmeaGPGSV *pack )
   nsat = ( nsat + NMEA_SATINPACK > pack->sat_count ) ? pack->sat_count - nsat : NMEA_SATINPACK;
   nsat = nsat * 4 + 3 /* first three sentence`s */;
 
-  if ( nsen < nsat || nsen > ( NMEA_SATINPACK * 4 + 3 ) )
+  if ( nsen - 1 < nsat || nsen - 1 > ( NMEA_SATINPACK * 4 + 3 ) )
   {
-    nmea_error( "GPGSV parse error!" );
+    nmea_error( "G?GSV parse error!" );
+    return 0;
+  }
+
+  if ( type != 'P' && type != 'N' )
+  {
+    nmea_error( "G?GSV invalid type " );
     return 0;
   }
 
@@ -404,7 +413,7 @@ int nmea_parse_GPRMC( const char *buff, int buff_sz, nmeaGPRMC *pack )
 
   if ( nsen != 14 && nsen != 15 )
   {
-    nmea_error( "GPRMC parse error!" );
+    nmea_error( "G?RMC parse error!" );
     return 0;
   }
 
