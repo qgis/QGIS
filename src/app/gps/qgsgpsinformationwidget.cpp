@@ -40,6 +40,7 @@
 #include "gmath.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
+#include "qgsbearingutils.h"
 
 // QWT Charting widget
 
@@ -252,6 +253,7 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   {
     radRecenterWhenNeeded->setChecked( true );
   }
+  mRotateMapCheckBox->setChecked( mySettings.value( QStringLiteral( "gps/rotateMap" ), false ).toBool() );
 
   mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
 
@@ -417,7 +419,7 @@ QgsGpsInformationWidget::~QgsGpsInformationWidget()
   {
     mySettings.setValue( QStringLiteral( "gps/panMode" ), "none" );
   }
-
+  mySettings.setValue( QStringLiteral( "gps/rotateMap" ), mRotateMapCheckBox->isChecked() );
 }
 
 void QgsGpsInformationWidget::mSpinTrackWidth_valueChanged( int value )
@@ -863,6 +865,19 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
       addVertex();
     }
   } // mLastGpsPosition != myNewCenter
+
+  if ( mRotateMapCheckBox->isChecked() && !std::isnan( info.direction ) )
+  {
+    try
+    {
+      const double trueNorth = QgsBearingUtils::bearingTrueNorth( mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext(), mMapCanvas->mapSettings().visibleExtent().center() );
+      mMapCanvas->setRotation( trueNorth - info.direction );
+    }
+    catch ( QgsException & )
+    {
+      mMapCanvas->setRotation( - info.direction );
+    }
+  }
 
   // new marker position after recentering
   if ( mGroupShowMarker->isChecked() ) // show marker

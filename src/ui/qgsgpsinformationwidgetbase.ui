@@ -956,6 +956,16 @@ gray = no data
                 </property>
                </widget>
               </item>
+              <item row="0" column="0">
+               <widget class="QRadioButton" name="radRecenterMap">
+                <property name="text">
+                 <string>Always</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
               <item row="2" column="0">
                <layout class="QHBoxLayout" name="horizontalLayout">
                 <property name="leftMargin">
@@ -998,13 +1008,10 @@ gray = no data
                 </property>
                </widget>
               </item>
-              <item row="0" column="0">
-               <widget class="QRadioButton" name="radRecenterMap">
+              <item row="4" column="0">
+               <widget class="QCheckBox" name="mRotateMapCheckBox">
                 <property name="text">
-                 <string>Always</string>
-                </property>
-                <property name="checked">
-                 <bool>true</bool>
+                 <string>Rotate map to match GPS direction</string>
                 </property>
                </widget>
               </item>
@@ -1412,6 +1419,7 @@ gray = no data
   <tabstop>radRecenterWhenNeeded</tabstop>
   <tabstop>mSpinMapExtentMultiplier</tabstop>
   <tabstop>radNeverRecenter</tabstop>
+  <tabstop>mRotateMapCheckBox</tabstop>
   <tabstop>mLogFileGroupBox</tabstop>
   <tabstop>mTxtLogFile</tabstop>
   <tabstop>mBtnLogFile</tabstop>
@@ -1433,6 +1441,11 @@ gray = no data
   <tabstop>mTxtQuality</tabstop>
   <tabstop>mTxtStatus</tabstop>
   <tabstop>mTxtSatellitesUsed</tabstop>
+  <tabstop>mCboTimestampField</tabstop>
+  <tabstop>mCboTimestampFormat</tabstop>
+  <tabstop>mCboTimeZones</tabstop>
+  <tabstop>mLeapSeconds</tabstop>
+  <tabstop>mCbxLeapSeconds</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
