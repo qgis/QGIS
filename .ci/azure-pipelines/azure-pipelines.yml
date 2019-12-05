@@ -131,7 +131,7 @@ jobs:
 #        cygwin
 #    displayName: Cache cygwin
 
-  - powershell: ms-windows/osgeo4w/runasadmin.ps1 c:\setup-x86.exe -qnNdO -R C:/cygwin -s http://cygwin.mirror.constant.com -l C:/temp/cygwin -P "bison,flex,git,unzip"
+  - powershell: ms-windows/osgeo4w/runasadmin.ps1 c:\setup-x86.exe -qnNdO -R C:/cygwin -s http://cygwin.mirror.constant.com -l C:/temp/cygwin -P "bison,flex,git,poppler,doxygen,unzip"
     displayName: 'Installing cygwin'
 
 # Too large…
