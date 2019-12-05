@@ -217,14 +217,14 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
       * \param highlightedItem set to TRUE to make the item highlighted, which inserts a bold copy of the item at the top level
       * \param sortOrder sort ranking for item
       * \param icon custom icon to show for item
-      * \param searchTags tags to find function
+      * \param tags tags to find function
       */
     void registerItem( const QString &group, const QString &label, const QString &expressionText,
                        const QString &helpText = QString(),
                        QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
                        bool highlightedItem = false, int sortOrder = 1,
                        QIcon icon = QIcon(),
-                       const QStringList &searchTags = QStringList() );
+                       const QStringList &tags = QStringList() );
 
     bool isExpressionValid();
 
@@ -403,7 +403,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
       * \param type The type of the expression item.
       * \param highlightedItem set to TRUE to make the item highlighted, which inserts a bold copy of the item at the top level
       * \param sortOrder sort ranking for item
-      * \param searchTags tags to find function
+      * \param tags tags to find function
       */
     void registerItemForAllGroups( const QStringList &groups, const QString &label, const QString &expressionText,
                                    const QString &helpText = QString(),

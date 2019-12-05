@@ -506,12 +506,12 @@ void QgsExpressionBuilderWidget::registerItem( const QString &group,
     const QString &label,
     const QString &expressionText,
     const QString &helpText,
-    QgsExpressionItem::ItemType type, bool highlightedItem, int sortOrder, QIcon icon, const QStringList &searchTags )
+    QgsExpressionItem::ItemType type, bool highlightedItem, int sortOrder, QIcon icon, const QStringList &tags )
 {
   QgsExpressionItem *item = new QgsExpressionItem( label, expressionText, helpText, type );
   item->setData( label, Qt::UserRole );
   item->setData( sortOrder, QgsExpressionItem::CUSTOM_SORT_ROLE );
-  item->setData( searchTags, QgsExpressionItem::SEARCH_TAGS_ROLE );
+  item->setData( tags, QgsExpressionItem::SEARCH_TAGS_ROLE );
   item->setIcon( icon );
 
   // Look up the group and insert the new function.
