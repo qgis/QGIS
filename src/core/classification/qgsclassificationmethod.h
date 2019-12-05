@@ -272,19 +272,19 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
     QString labelForRange( const QgsRendererRange &range, ClassPosition position = Inner ) const;
 
     /**
-     * Get parameter from its id
+     * Returns the parameter from its name
      * \since QGIS 3.12
      */
     const QgsProcessingParameterDefinition *parameterDefinition( const QString &parameterName ) const;
 
     /**
-     * List of parameters
+     * Returns the list of parameters
      * \since QGIS 3.12
      */
     QgsProcessingParameterDefinitions parameterDefinitions() const {return mParameters;}
 
     /**
-     * Set values of the additional parameters
+     * Defines the values of the additional parameters
      * \since QGIS 3.12
      */
     void setParameterValues( const QVariantMap &values );
@@ -312,7 +312,7 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
     void addParameter( QgsProcessingParameterDefinition *definition SIP_TRANSFER );
 
     /**
-     * Return the values of the processing parameters.
+     * Returns the values of the processing parameters.
      * One could use QgsProcessingParameters::parameterAsXxxx to retrieve the actual value of a parameter.
      */
     QVariantMap parameterValues() const {return mParameterValues;}

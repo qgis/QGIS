@@ -839,7 +839,7 @@ void QgsGraduatedSymbolRendererWidget::updateMethodParameters()
 
     connect( ppww, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
 
-    mParameterWidgetWrappers.push_back( std::unique_ptr<QgsAbstractProcessingParameterWidgetWrapper>(ppww) );
+    mParameterWidgetWrappers.push_back( std::unique_ptr<QgsAbstractProcessingParameterWidgetWrapper>( ppww ) );
   }
 }
 
