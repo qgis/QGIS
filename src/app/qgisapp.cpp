@@ -1165,6 +1165,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   // create the GPS tool on starting QGIS - this is like the browser
   mpGpsWidget = new QgsGpsInformationWidget( mMapCanvas );
+  QgsPanelWidgetStack *gpsStack = new QgsPanelWidgetStack();
+  gpsStack->setMainPanel( mpGpsWidget );
+  mpGpsWidget->setDockMode( true );
   //create the dock widget
   mpGpsDock = new QgsDockWidget( tr( "GPS Information" ), this );
 
@@ -1178,7 +1181,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   addDockWidget( Qt::LeftDockWidgetArea, mpGpsDock );
   // add to the Panel submenu
   // now add our widget to the dock - ownership of the widget is passed to the dock
-  mpGpsDock->setWidget( mpGpsWidget );
+  mpGpsDock->setWidget( gpsStack );
   mpGpsDock->hide();
 
   mLastMapToolMessage = nullptr;

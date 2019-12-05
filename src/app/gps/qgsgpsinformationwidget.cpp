@@ -71,8 +71,8 @@ const int MAXACQUISITIONINTERVAL = 3000; // max gps information acquisition susp
 const int MAXDISTANCETHRESHOLD = 200; // max gps distance threshold (in meters)
 
 
-QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidget *parent, Qt::WindowFlags f )
-  : QWidget( parent, f )
+QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidget *parent )
+  : QgsPanelWidget( parent )
   , mMapCanvas( mapCanvas )
 {
   Q_ASSERT( mMapCanvas ); // precondition
