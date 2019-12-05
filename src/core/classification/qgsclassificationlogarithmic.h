@@ -34,10 +34,13 @@ class CORE_EXPORT QgsClassificationLogarithmic : public QgsClassificationMethod
     QString id() const override;
     QIcon icon() const override;
     QString labelForRange( double lowerValue, double upperValue, ClassPosition position ) const override;
+    bool valuesRequired() const override;
 
   private:
-    QList<double> calculateBreaks( double minimum, double maximum, const QList<double> &values, int nclasses ) override;
+    QList<double> calculateBreaks( double &minimum, double &maximum, const QList<double> &values, int nclasses ) override;
     QString valueToLabel( double value ) const override;
+
+
 };
 
 #endif // QGSCLASSIFICATIONLOGARITHMIC_H

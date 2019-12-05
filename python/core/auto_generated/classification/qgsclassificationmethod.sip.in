@@ -155,12 +155,13 @@ Writes extra information about the method
 Reads extra information to apply it to the method
 %End
 
-
-    bool valuesRequired() const;
+    virtual bool valuesRequired() const;
 %Docstring
 Returns if the method requires values to calculate the classes
 If not, bounds are sufficient
 %End
+
+
 
     int codeComplexity() const;
 %Docstring
@@ -289,6 +290,27 @@ Does not put a break on the symmetryPoint. This is done before.
 Returns the label for a range
 %End
 
+    const QgsProcessingParameterDefinition *parameterDefinition( const QString &parameterName ) const;
+%Docstring
+Returns the parameter from its name
+
+.. versionadded:: 3.12
+%End
+
+    QgsProcessingParameterDefinitions parameterDefinitions() const;
+%Docstring
+Returns the list of parameters
+
+.. versionadded:: 3.12
+%End
+
+    void setParameterValues( const QVariantMap &values );
+%Docstring
+Defines the values of the additional parameters
+
+.. versionadded:: 3.12
+%End
+
 
 
     static const int MAX_PRECISION;
@@ -304,6 +326,25 @@ Copy the parameters (shall be used in clone implementation)
     QString formatNumber( double value ) const;
 %Docstring
 Format the number according to label properties
+%End
+
+    void addParameter( QgsProcessingParameterDefinition *definition /Transfer/ );
+%Docstring
+Add a parameter to the method.
+The paramaeter is a processing parameter which will allow its configuration in the GUI.
+
+.. note::
+
+   Only parameters having their widget implementation in C++ are supported. i.e. pure
+   Python parameters are not supported.
+
+.. versionadded:: 3.12
+%End
+
+    QVariantMap parameterValues() const;
+%Docstring
+Returns the values of the processing parameters.
+One could use QgsProcessingParameters.parameterAsXxxx to retrieve the actual value of a parameter.
 %End
 
 };

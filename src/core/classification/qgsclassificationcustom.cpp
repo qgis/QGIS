@@ -19,7 +19,7 @@ const QString QgsClassificationCustom::METHOD_ID = QStringLiteral( "Custom" );
 
 
 QgsClassificationCustom::QgsClassificationCustom()
-  : QgsClassificationMethod( ValuesNotRequired,
+  : QgsClassificationMethod( NoFlag,
                              0 /*codeComplexity*/ )
 {
 }
@@ -42,7 +42,7 @@ QString QgsClassificationCustom::id() const
   return METHOD_ID;
 }
 
-QList<double> QgsClassificationCustom::calculateBreaks( double minimum, double maximum,
+QList<double> QgsClassificationCustom::calculateBreaks( double &minimum, double &maximum,
     const QList<double> &values, int nclasses )
 {
   Q_UNUSED( minimum )

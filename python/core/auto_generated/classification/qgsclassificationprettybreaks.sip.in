@@ -32,6 +32,8 @@ for pretty breaks
     virtual QIcon icon() const;
 
 
+    virtual bool valuesRequired() const;
+
 };
 
 /************************************************************************

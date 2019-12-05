@@ -39,7 +39,7 @@ QList<double> QgsClassificationMethod::rangesToBreaks( const QList<QgsClassifica
 QgsClassificationMethod::QgsClassificationMethod( MethodProperties properties, int codeComplexity )
   : mFlags( properties )
   , mCodeComplexity( codeComplexity )
-  , mLabelFormat( QStringLiteral( "%1 - %2 " ) )
+  , mLabelFormat( QStringLiteral( "%1 - %2" ) )
 {
 }
 
@@ -161,6 +161,33 @@ QString QgsClassificationMethod::formatNumber( double value ) const
   }
 }
 
+void QgsClassificationMethod::addParameter( QgsProcessingParameterDefinition *definition )
+{
+  mParameters.append( definition );
+}
+
+const QgsProcessingParameterDefinition *QgsClassificationMethod::parameterDefinition( const QString &parameterName ) const
+{
+  for ( const QgsProcessingParameterDefinition *def : mParameters )
+  {
+    if ( def->name() == parameterName )
+      return def;
+  }
+  return nullptr;
+}
+
+void QgsClassificationMethod::setParameterValues( const QVariantMap &values )
+{
+  mParameterValues = values;
+  for ( auto it = mParameterValues.begin(); it != mParameterValues.end(); ++it )
+  {
+    if ( !parameterDefinition( it.key() ) )
+    {
+      QgsMessageLog::logMessage( name(), QObject::tr( "Parameter %1 does not exist in the method" ).arg( it.key() ) );
+    }
+  }
+}
+
 QList<QgsClassificationRange> QgsClassificationMethod::classes( const QgsVectorLayer *layer, const QString &expression, int nclasses )
 {
   if ( expression.isEmpty() )
@@ -172,6 +199,7 @@ QList<QgsClassificationRange> QgsClassificationMethod::classes( const QgsVectorL
   QList<double> values;
   double minimum;
   double maximum;
+
 
   int fieldIndex = layer->fields().indexFromName( expression );
 
@@ -192,7 +220,7 @@ QList<QgsClassificationRange> QgsClassificationMethod::classes( const QgsVectorL
     maximum = layer->maximumValue( fieldIndex ).toDouble();
   }
 
-  // get the breaks
+  // get the breaks, minimum and maximum might be updated by implementation
   QList<double> breaks = calculateBreaks( minimum, maximum, values, nclasses );
   breaks.insert( 0, minimum );
   // create classes

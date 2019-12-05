@@ -13,14 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QObject>
+
 #include "qgsclassificationlogarithmic.h"
 #include "qgssymbollayerutils.h"
 #include "qgsapplication.h"
+#include "qgsprocessingcontext.h"
+
 
 QgsClassificationLogarithmic::QgsClassificationLogarithmic()
-  : QgsClassificationMethod( ValuesNotRequired, 0 )
+  : QgsClassificationMethod( NoFlag, 0 )
 {
-
+  QgsProcessingParameterBoolean *param = new QgsProcessingParameterBoolean( QStringLiteral( "FILTER_ZERO_NEG_VALUES" ), QObject::tr( "Filter values ≤ 0" ), false );
+  addParameter( param );
 }
 
 
@@ -46,9 +51,27 @@ QIcon QgsClassificationLogarithmic::icon() const
   return QgsApplication::getThemeIcon( "classification_methods/mClassificationLogarithmic.svg" );
 }
 
-QList<double> QgsClassificationLogarithmic::calculateBreaks( double minimum, double maximum, const QList<double> &values, int nclasses )
+QList<double> QgsClassificationLogarithmic::calculateBreaks( double &minimum, double &maximum, const QList<double> &values, int nclasses )
 {
-  Q_UNUSED( values )
+  // not possible if only negative values
+  if ( maximum <= 0 )
+    return QList<double>();
+
+  QgsProcessingContext context;
+  bool filterZeroNeg = QgsProcessingParameters::parameterAsBool( parameterDefinition( QStringLiteral( "FILTER_ZERO_NEG_VALUES" ) ), parameterValues(), context );
+
+  if ( filterZeroNeg && minimum <= 0 )
+  {
+    Q_ASSERT( values.count() );
+    minimum = std::numeric_limits<double>::max();
+    for ( int i = 0; i < values.count(); i++ )
+    {
+      if ( values.at( i ) > 0 )
+        minimum = std::min( minimum, values.at( i ) );
+    }
+    if ( minimum == std::numeric_limits<double>::max() )
+      return QList<double>();
+  }
 
   // get the min/max in log10 scale
   double log_min = std::floor( std::log10( minimum ) );
@@ -89,3 +112,8 @@ QString QgsClassificationLogarithmic::labelForRange( double lowerValue, double u
   return labelFormat().arg( lowerLabel ).arg( upperLabel );
 }
 
+bool QgsClassificationLogarithmic::valuesRequired() const
+{
+  QgsProcessingContext context;
+  return QgsProcessingParameters::parameterAsBool( parameterDefinition( QStringLiteral( "FILTER_ZERO_NEG_VALUES" ) ), parameterValues(), context );
+}

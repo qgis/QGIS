@@ -16,14 +16,19 @@
 #ifndef QGSGRADUATEDSYMBOLRENDERERWIDGET_H
 #define QGSGRADUATEDSYMBOLRENDERERWIDGET_H
 
+#include <QStandardItem>
+
+
 #include "qgsgraduatedsymbolrenderer.h"
 #include "qgis_sip.h"
 #include "qgsrendererwidget.h"
 #include "qgsproxystyle.h"
-#include <QStandardItem>
+#include "qgsprocessingwidgetwrapper.h"
 
 #include "ui_qgsgraduatedsymbolrendererwidget.h"
+
 #include "qgis_gui.h"
+
 
 #ifndef SIP_RUN
 /// @cond PRIVATE
@@ -125,6 +130,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
   private slots:
     void mSizeUnitWidget_changed();
     void methodComboBox_currentIndexChanged( int );
+    void updateMethodParameters();
     void cleanUpSymbolSelector( QgsPanelWidget *container );
     void updateSymbolsFromWidget();
     void dataDefinedSizeLegend();
@@ -169,6 +175,8 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
     QgsExpressionContext createExpressionContext() const override;
     void toggleMethodWidgets( MethodMode mode );
 
+    void clearParameterWidgets();
+
     std::unique_ptr< QgsGraduatedSymbolRenderer > mRenderer;
 
     std::unique_ptr< QgsSymbol > mGraduatedSymbol;
@@ -180,6 +188,8 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
     QgsRangeList mCopyBuffer;
 
     QDoubleValidator *mSymmetryPointValidator;
+
+    std::vector< std::unique_ptr< QgsAbstractProcessingParameterWidgetWrapper >> mParameterWidgetWrappers;
 };
 
 
