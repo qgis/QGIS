@@ -23,12 +23,12 @@
 #include "qgis_sip.h"
 #include "qgsrendererwidget.h"
 #include "qgsproxystyle.h"
+#include "qgsprocessingwidgetwrapper.h"
 
 #include "ui_qgsgraduatedsymbolrendererwidget.h"
 
 #include "qgis_gui.h"
 
-class QgsAbstractProcessingParameterWidgetWrapper;
 
 #ifndef SIP_RUN
 /// @cond PRIVATE
@@ -187,7 +187,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
 
     QDoubleValidator *mSymmetryPointValidator;
 
-    QList< QgsAbstractProcessingParameterWidgetWrapper * > mParameterWidgetWrappers;
+    std::vector< std::unique_ptr< QgsAbstractProcessingParameterWidgetWrapper >> mParameterWidgetWrappers;
 };
 
 

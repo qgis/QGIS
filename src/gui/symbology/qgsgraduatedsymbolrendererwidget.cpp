@@ -608,7 +608,7 @@ void QgsGraduatedSymbolRendererWidget::mSizeUnitWidget_changed()
 QgsGraduatedSymbolRendererWidget::~QgsGraduatedSymbolRendererWidget()
 {
   delete mModel;
-  qDeleteAll( mParameterWidgetWrappers );
+  mParameterWidgetWrappers.clear();
 }
 
 QgsFeatureRenderer *QgsGraduatedSymbolRendererWidget::renderer()
@@ -643,9 +643,9 @@ void QgsGraduatedSymbolRendererWidget::connectUpdateHandlers()
   connect( cboSymmetryPoint, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   connect( cboSymmetryPoint->lineEdit(), &QLineEdit::editingFinished, this, &QgsGraduatedSymbolRendererWidget::symmetryPointEditingFinished );
 
-  for ( const auto *ppww : qgis::as_const( mParameterWidgetWrappers ) )
+  for ( const auto &ppww : qgis::as_const( mParameterWidgetWrappers ) )
   {
-    connect( ppww, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+    connect( ppww.get(), &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   }
 }
 
@@ -669,9 +669,9 @@ void QgsGraduatedSymbolRendererWidget::disconnectUpdateHandlers()
   disconnect( cboSymmetryPoint, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   disconnect( cboSymmetryPoint->lineEdit(), &QLineEdit::editingFinished, this, &QgsGraduatedSymbolRendererWidget::symmetryPointEditingFinished );
 
-  for ( const auto *ppww : qgis::as_const( mParameterWidgetWrappers ) )
+  for ( const auto &ppww : qgis::as_const( mParameterWidgetWrappers ) )
   {
-    disconnect( ppww, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+    disconnect( ppww.get(), &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   }
 }
 
@@ -823,7 +823,7 @@ void QgsGraduatedSymbolRendererWidget::updateMethodParameters()
 {
   while ( mParametersLayout->rowCount() )
     mParametersLayout->removeRow( 0 );
-  qDeleteAll( mParameterWidgetWrappers );
+  mParameterWidgetWrappers.clear();
 
   const QString methodId = cboGraduatedMode->currentData().toString();
   QgsClassificationMethod *method = QgsApplication::classificationMethodRegistry()->method( methodId );
@@ -839,7 +839,7 @@ void QgsGraduatedSymbolRendererWidget::updateMethodParameters()
 
     connect( ppww, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
 
-    mParameterWidgetWrappers.append( ppww );
+    mParameterWidgetWrappers.push_back( std::unique_ptr<QgsAbstractProcessingParameterWidgetWrapper>(ppww) );
   }
 }
 
@@ -992,7 +992,7 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
   }
 
   QVariantMap parameterValues;
-  for ( const auto *ppww : qgis::as_const( mParameterWidgetWrappers ) )
+  for ( const auto &ppww : qgis::as_const( mParameterWidgetWrappers ) )
     parameterValues.insert( ppww->parameterDefinition()->name(), ppww->parameterValue() );
   method->setParameterValues( parameterValues );
 
