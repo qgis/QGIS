@@ -25,10 +25,17 @@
 #include "qgsmeshmemorydataprovider.h"
 #include "qgis.h"
 
-QgsMeshCalculator::QgsMeshCalculator( const QString &formulaString, const QString &outputFile,
-                                      const QgsRectangle &outputExtent, double startTime, double endTime,
+QgsMeshCalculator::QgsMeshCalculator( const QString &formulaString,
+                                      const QString &outputDriver,
+                                      const QString &outputGroupName,
+                                      const QString &outputFile,
+                                      const QgsRectangle &outputExtent,
+                                      double startTime,
+                                      double endTime,
                                       QgsMeshLayer *layer )
   : mFormulaString( formulaString )
+  , mOutputDriver( outputDriver )
+  , mOutputGroupName( outputGroupName )
   , mOutputFile( outputFile )
   , mOutputExtent( outputExtent )
   , mUseMask( false )
@@ -39,12 +46,16 @@ QgsMeshCalculator::QgsMeshCalculator( const QString &formulaString, const QStrin
 }
 
 QgsMeshCalculator::QgsMeshCalculator( const QString &formulaString,
+                                      const QString &outputDriver,
+                                      const QString &outputGroupName,
                                       const QString &outputFile,
                                       const QgsGeometry &outputMask,
                                       double startTime,
                                       double endTime,
                                       QgsMeshLayer *layer )
   : mFormulaString( formulaString )
+  , mOutputDriver( outputDriver )
+  , mOutputGroupName( outputGroupName )
   , mOutputFile( outputFile )
   , mOutputMask( outputMask )
   , mUseMask( true )
@@ -54,31 +65,37 @@ QgsMeshCalculator::QgsMeshCalculator( const QString &formulaString,
 {
 }
 
-QgsMeshCalculator::Result QgsMeshCalculator::expression_valid( const QString &formulaString,
-    QgsMeshLayer *layer )
+QgsMeshCalculator::Result QgsMeshCalculator::expression_valid(
+  const QString &formulaString,
+  QgsMeshLayer *layer )
+{
+  QgsMeshDriverMetadata::MeshDriverCapability cap;
+  return QgsMeshCalculator::expressionIsValid( formulaString, layer, cap );
+}
+
+QgsMeshCalculator::Result QgsMeshCalculator::expressionIsValid(
+  const QString &formulaString,
+  QgsMeshLayer *layer,
+  QgsMeshDriverMetadata::MeshDriverCapability &requiredCapability )
 {
   QString errorString;
   std::unique_ptr< QgsMeshCalcNode > calcNode( QgsMeshCalcNode::parseMeshCalcString( formulaString, errorString ) );
   if ( !calcNode )
-  {
     return ParserError;
-  }
 
-  double startTime = -std::numeric_limits<double>::max();
-  double endTime = std::numeric_limits<double>::max();
-  QgsMeshCalcUtils dsu( layer, calcNode->usedDatasetGroupNames(), startTime, endTime );
-  if ( !dsu.isValid() )
-  {
-    return InvalidDatasets;
-  }
+  if ( !layer || !layer->dataProvider() )
+    return InputLayerError;
+
+  QgsMeshDatasetGroupMetadata::DataType dataType = QgsMeshCalcUtils::determineResultDataType( layer, calcNode->usedDatasetGroupNames() );
+
+  requiredCapability = dataType == QgsMeshDatasetGroupMetadata::DataOnFaces ? QgsMeshDriverMetadata::MeshDriverCapability::CanWriteFaceDatasets :
+                       QgsMeshDriverMetadata::MeshDriverCapability::CanWriteVertexDatasets;
 
   return Success;
 }
 
 QgsMeshCalculator::Result QgsMeshCalculator::processCalculation( QgsFeedback *feedback )
 {
-  Q_UNUSED( feedback )
-
   // check input
   if ( mOutputFile.isEmpty() )
   {
@@ -108,7 +125,7 @@ QgsMeshCalculator::Result QgsMeshCalculator::processCalculation( QgsFeedback *fe
   }
 
   //open output dataset
-  std::unique_ptr<QgsMeshMemoryDatasetGroup> outputGroup = qgis::make_unique<QgsMeshMemoryDatasetGroup> ( mOutputFile );
+  std::unique_ptr<QgsMeshMemoryDatasetGroup> outputGroup = qgis::make_unique<QgsMeshMemoryDatasetGroup> ( mOutputFile, dsu.outputType() );
 
   // calculate
   bool ok = calcNode->calculate( dsu, *outputGroup );
@@ -136,7 +153,7 @@ QgsMeshCalculator::Result QgsMeshCalculator::processCalculation( QgsFeedback *fe
     dsu.filter( *outputGroup, mOutputExtent );
   }
   outputGroup->isScalar = true;
-  outputGroup->name = QFileInfo( mOutputFile ).baseName();
+  outputGroup->name = mOutputGroupName;
 
   // before storing the file, find out if the process is not already canceled
   if ( feedback && feedback->isCanceled() )
@@ -179,7 +196,7 @@ QgsMeshCalculator::Result QgsMeshCalculator::processCalculation( QgsFeedback *fe
 
   const QgsMeshDatasetGroupMetadata meta = outputGroup->groupMetadata();
   bool err = mMeshLayer->dataProvider()->persistDatasetGroup(
-               mOutputFile,
+               mOutputDriver + ':' + mOutputFile,
                meta,
                datasetValues,
                datasetActive,

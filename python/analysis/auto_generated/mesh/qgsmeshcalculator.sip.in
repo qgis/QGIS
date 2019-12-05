@@ -22,8 +22,7 @@ Resulting dataset group is added to the mesh layer.
 Result can be filtered by extent or a vector layer mask
 spatially and by selection of times.
 
-Note: only dataset groups defined on vertices are
-implemented and supported
+Resulting dataset is always scalar
 
 .. versionadded:: 3.6
 %End
@@ -46,6 +45,8 @@ implemented and supported
     };
 
     QgsMeshCalculator( const QString &formulaString,
+                       const QString &outputDriver,
+                       const QString &outputGroupName,
                        const QString &outputFile,
                        const QgsRectangle &outputExtent,
                        double startTime,
@@ -55,6 +56,8 @@ implemented and supported
 Creates calculator with bounding box (rectangular) mask
 
 :param formulaString: formula/expression to evaluate. Consists of dataset group names, operators and numbers
+:param outputDriver: output driver name
+:param outputGroupName: output group name
 :param outputFile: file to store the resulting dataset group data
 :param outputExtent: spatial filter defined by rectangle
 :param startTime: time filter defining the starting dataset
@@ -63,6 +66,8 @@ Creates calculator with bounding box (rectangular) mask
 %End
 
     QgsMeshCalculator( const QString &formulaString,
+                       const QString &outputDriver,
+                       const QString &outputGroupName,
                        const QString &outputFile,
                        const QgsGeometry &outputMask,
                        double startTime,
@@ -72,6 +77,8 @@ Creates calculator with bounding box (rectangular) mask
 Creates calculator with geometry mask
 
 :param formulaString: formula/expression to evaluate. Consists of dataset group names, operators and numbers
+:param outputDriver: output driver name
+:param outputGroupName: output group name
 :param outputFile: file to store the resulting dataset group data
 :param outputMask: spatial filter defined by geometry
 :param startTime: time filter defining the starting dataset
@@ -88,7 +95,8 @@ Starts the calculation, writes new dataset group to file and adds it to the mesh
 :return: QgsMeshCalculator.Success in case of success
 %End
 
-    static Result expression_valid( const QString &formulaString, QgsMeshLayer *layer );
+ static Result expression_valid( const QString &formulaString,
+        QgsMeshLayer *layer ) /Deprecated/;
 %Docstring
 Returns whether formula is valid for particular mesh layer
 
@@ -96,6 +104,24 @@ Returns whether formula is valid for particular mesh layer
 :param layer: mesh layer with dataset groups references in formulaString
 
 :return: QgsMeshCalculator.Success in case of success
+
+.. deprecated::
+   QGIS 3.12 - use expressionIsValid
+%End
+
+    static Result expressionIsValid( const QString &formulaString,
+                                     QgsMeshLayer *layer,
+                                     QgsMeshDriverMetadata::MeshDriverCapability &requiredCapability );
+%Docstring
+Returns whether formula is valid for particular mesh layer
+
+:param formulaString: formula/expression to evaluate. Consists of dataset group names, operators and numbers
+:param layer: mesh layer with dataset groups references in formulaString
+:param requiredCapability: returns required capability of driver to store results of the calculation
+
+:return: QgsMeshCalculator.Success in case of success
+
+.. versionadded:: 3.12
 %End
 
 };

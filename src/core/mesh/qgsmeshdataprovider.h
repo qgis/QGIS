@@ -211,6 +211,11 @@ class CORE_EXPORT QgsMeshDataBlock
     void *buffer() SIP_SKIP;
 
     /**
+     * Returns buffer to the array with values
+     */
+    QVector<double> values() const;
+
+    /**
      * Returns internal buffer to the array for fast
      * values reading
      *
@@ -637,7 +642,7 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
      *
      * On success, the mesh's dataset group count is changed
      *
-     * \param path destination path of the stored file
+     * \param path destination path of the stored file in form DRIVER_NAME:path
      * \param meta new group's metadata
      * \param datasetValues scalar/vector values for all datasets and all faces/vertices in the group
      * \param datasetActive active flag values for all datasets in the group. Empty array represents can be used

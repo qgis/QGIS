@@ -214,6 +214,11 @@ For scalar and vector 2d the behavior is undefined
 %End
 
 
+    QVector<double> values() const;
+%Docstring
+Returns buffer to the array with values
+%End
+
 
 };
 
@@ -630,7 +635,7 @@ persists it into a destination path
 
 On success, the mesh's dataset group count is changed
 
-:param path: destination path of the stored file
+:param path: destination path of the stored file in form DRIVER_NAME:path
 :param meta: new group's metadata
 :param datasetValues: scalar/vector values for all datasets and all faces/vertices in the group
 :param datasetActive: active flag values for all datasets in the group. Empty array represents can be used

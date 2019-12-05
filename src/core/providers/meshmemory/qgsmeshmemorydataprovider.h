@@ -46,6 +46,7 @@ struct CORE_EXPORT QgsMeshMemoryDataset
 
 struct CORE_EXPORT QgsMeshMemoryDatasetGroup
 {
+  QgsMeshMemoryDatasetGroup( const QString &nm, QgsMeshDatasetGroupMetadata::DataType dataType );
   QgsMeshMemoryDatasetGroup( const QString &nm );
   QgsMeshMemoryDatasetGroup();
   QgsMeshDatasetGroupMetadata groupMetadata() const;

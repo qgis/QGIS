@@ -309,6 +309,11 @@ void *QgsMeshDataBlock::buffer()
   }
 }
 
+QVector<double> QgsMeshDataBlock::values() const
+{
+  return mDoubleBuffer;
+}
+
 const void *QgsMeshDataBlock::constBuffer() const
 {
   if ( ActiveFlagInteger == mType )

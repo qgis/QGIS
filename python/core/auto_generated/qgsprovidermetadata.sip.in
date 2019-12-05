@@ -13,6 +13,66 @@
 
 
 
+class QgsMeshDriverMetadata
+{
+%Docstring
+Holds metadata about mesh driver
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsprovidermetadata.h"
+%End
+  public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+
+    enum MeshDriverCapability
+    {
+      CanWriteFaceDatasets,
+      CanWriteVertexDatasets,
+    };
+
+    typedef QFlags<QgsMeshDriverMetadata::MeshDriverCapability> MeshDriverCapabilities;
+
+
+    QgsMeshDriverMetadata();
+%Docstring
+Constructs default metadata without any capabilities
+%End
+
+    QgsMeshDriverMetadata( const QString &name,
+                           const QString &description,
+                           const MeshDriverCapabilities &capabilities );
+%Docstring
+Constructs driver metadata with selected capabilities
+
+:param name: name/key of the driver
+:param description: short description of the driver
+:param capabilities: driver's capabilities
+%End
+
+    MeshDriverCapabilities capabilities() const;
+%Docstring
+Returns the capabilities for this driver.
+%End
+
+    QString name() const;
+%Docstring
+Returns the name (key) for this driver.
+%End
+
+    QString description() const;
+%Docstring
+Returns the description for this driver.
+%End
+
+};
+
+QFlags<QgsMeshDriverMetadata::MeshDriverCapability> operator|(QgsMeshDriverMetadata::MeshDriverCapability f1, QFlags<QgsMeshDriverMetadata::MeshDriverCapability> f2);
+
 
 class QgsProviderMetadata
 {
@@ -24,10 +84,10 @@ which are native providers that are included in the core QGIS installation
 and accessed through function pointers.
 
 For library based providers, the metadata class is used in a lazy load
-implementation in QgsProviderRegistry.  To save memory, data providers
+implementation in :py:class:`QgsProviderRegistry`.  To save memory, data providers
 are only actually loaded via QLibrary calls if they're to be used.  (Though they're all
 iteratively loaded once to get their metadata information, and then
-unloaded when the QgsProviderRegistry is created.)  QgsProviderMetadata
+unloaded when the QgsProviderRegistry is created.)  :py:class:`QgsProviderMetadata`
 supplies enough information to be able to later load the associated shared
 library object.
 %End
@@ -104,6 +164,13 @@ Builds the list of file filter strings (supported formats)
 Suitable for use in a QFileDialog.getOpenFileNames() call.
 
 .. versionadded:: 3.10
+%End
+
+    virtual QList<QgsMeshDriverMetadata> meshDriversMetadata();
+%Docstring
+Builds the list of available mesh drivers metadata
+
+.. versionadded:: 3.12
 %End
 
     virtual QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) /Factory/;
