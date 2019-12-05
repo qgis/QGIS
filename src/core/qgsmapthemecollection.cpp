@@ -87,11 +87,13 @@ void QgsMapThemeCollection::createThemeFromCurrentState( QgsLayerTreeGroup *pare
       createThemeFromCurrentState( QgsLayerTree::toGroup( node ), model, rec );
       if ( node->isExpanded() )
         rec.mExpandedGroupNodes.insert( _groupId( node ) );
+      if ( node->itemVisibilityChecked() != Qt::Unchecked )
+        rec.mCheckedGroupNodes.insert( _groupId( node ) );
     }
     else if ( QgsLayerTree::isLayer( node ) )
     {
       QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
-      if ( nodeLayer->isVisible() )
+      if ( node->itemVisibilityChecked() != Qt::Unchecked )
         rec.mLayerRecords << createThemeLayerRecord( nodeLayer, model );
     }
   }
@@ -101,6 +103,7 @@ QgsMapThemeCollection::MapThemeRecord QgsMapThemeCollection::createThemeFromCurr
 {
   QgsMapThemeCollection::MapThemeRecord rec;
   rec.setHasExpandedStateInfo( true );  // all newly created theme records have expanded state info
+  rec.setHasCheckedStateInfo( true );  // all newly created theme records have checked state info
   createThemeFromCurrentState( root, model, rec );
   return rec;
 }
@@ -182,6 +185,8 @@ void QgsMapThemeCollection::applyThemeToGroup( QgsLayerTreeGroup *parent, QgsLay
       applyThemeToGroup( QgsLayerTree::toGroup( node ), model, rec );
       if ( rec.hasExpandedStateInfo() )
         node->setExpanded( rec.expandedGroupNodes().contains( _groupId( node ) ) );
+      if ( rec.hasCheckedStateInfo() )
+        node->setItemVisibilityChecked( rec.checkedGroupNodes().contains( _groupId( node ) ) );
     }
     else if ( QgsLayerTree::isLayer( node ) )
       applyThemeToLayer( QgsLayerTree::toLayer( node ), model, rec );
@@ -431,6 +436,10 @@ void QgsMapThemeCollection::readXml( const QDomDocument &doc )
     if ( visPresetElem.hasAttribute( QStringLiteral( "has-expanded-info" ) ) )
       expandedStateInfo = visPresetElem.attribute( QStringLiteral( "has-expanded-info" ) ).toInt();
 
+    bool checkedStateInfo = false;
+    if ( visPresetElem.hasAttribute( QStringLiteral( "has-checked-group-info" ) ) )
+      checkedStateInfo = visPresetElem.attribute( QStringLiteral( "has-checked-group-info" ) ).toInt();
+
     QString presetName = visPresetElem.attribute( QStringLiteral( "name" ) );
     QDomElement visPresetLayerElem = visPresetElem.firstChildElement( QStringLiteral( "layer" ) );
     while ( !visPresetLayerElem.isNull() )
@@ -510,10 +519,28 @@ void QgsMapThemeCollection::readXml( const QDomDocument &doc )
       }
     }
 
+    QSet<QString> checkedGroupNodes;
+    if ( checkedStateInfo )
+    {
+      // expanded state of legend nodes
+      QDomElement checkedGroupNodesElem = visPresetElem.firstChildElement( QStringLiteral( "checked-group-nodes" ) );
+      if ( !checkedGroupNodesElem.isNull() )
+      {
+        QDomElement checkedGroupNodeElem = checkedGroupNodesElem.firstChildElement( QStringLiteral( "checked-group-node" ) );
+        while ( !checkedGroupNodeElem.isNull() )
+        {
+          checkedGroupNodes << checkedGroupNodeElem.attribute( QStringLiteral( "id" ) );
+          checkedGroupNodeElem = checkedGroupNodeElem.nextSiblingElement( QStringLiteral( "checked-group-node" ) );
+        }
+      }
+    }
+
     MapThemeRecord rec;
     rec.setLayerRecords( layerRecords.values() );
     rec.setHasExpandedStateInfo( expandedStateInfo );
     rec.setExpandedGroupNodes( expandedGroupNodes );
+    rec.setHasCheckedStateInfo( checkedStateInfo );
+    rec.setCheckedGroupNodes( checkedGroupNodes );
     mMapThemes.insert( presetName, rec );
     emit mapThemeChanged( presetName );
 
@@ -539,6 +566,8 @@ void QgsMapThemeCollection::writeXml( QDomDocument &doc )
     visPresetElem.setAttribute( QStringLiteral( "name" ), grpName );
     if ( rec.hasExpandedStateInfo() )
       visPresetElem.setAttribute( QStringLiteral( "has-expanded-info" ), QStringLiteral( "1" ) );
+    if ( rec.hasCheckedStateInfo() )
+      visPresetElem.setAttribute( QStringLiteral( "has-checked-group-info" ), QStringLiteral( "1" ) );
     for ( const MapThemeLayerRecord &layerRec : qgis::as_const( rec.mLayerRecords ) )
     {
       if ( !layerRec.layer() )
@@ -577,6 +606,19 @@ void QgsMapThemeCollection::writeXml( QDomDocument &doc )
         }
         visPresetElem.appendChild( expandedLegendNodesElem );
       }
+    }
+
+    if ( rec.hasCheckedStateInfo() )
+    {
+      QDomElement checkedGroupElems = doc.createElement( QStringLiteral( "checked-group-nodes" ) );
+      const QSet<QString> checkedGroupNodes = rec.checkedGroupNodes();
+      for ( const QString &groupId : checkedGroupNodes )
+      {
+        QDomElement checkedGroupElem = doc.createElement( QStringLiteral( "checked-group-node" ) );
+        checkedGroupElem.setAttribute( QStringLiteral( "id" ), groupId );
+        checkedGroupElems.appendChild( checkedGroupElem );
+      }
+      visPresetElem.appendChild( checkedGroupElems );
     }
 
     if ( rec.hasExpandedStateInfo() )
