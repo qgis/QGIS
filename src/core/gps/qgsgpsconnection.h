@@ -55,13 +55,26 @@ struct CORE_EXPORT QgsGpsInformation
   double longitude = 0;
   double elevation = 0;
   double speed = 0; //in km/h
-  double direction = 0;
+#ifndef SIP_RUN
+  double direction = std::numeric_limits< double >::quiet_NaN();
+#else
+  double direction;
+#endif
   QList<QgsSatelliteInfo> satellitesInView;
   double pdop = 0;
   double hdop = 0;
   double vdop = 0;
-  double hacc = -1; //horizontal accuracy in meters
-  double vacc = -1; //vertical accuracy in meters
+#ifndef SIP_RUN
+  //! Horizontal accuracy in meters
+  double hacc = std::numeric_limits< double >::quiet_NaN();
+  //! Vertical accuracy in meters
+  double vacc = std::numeric_limits< double >::quiet_NaN();
+#else
+  //! Horizontal accuracy in meters
+  double hacc;
+  //! Vertical accuracy in meters
+  double vacc;
+#endif
   QDateTime utcDateTime;
   QChar fixMode;
   int fixType = 0; // valid values: 1,2,3

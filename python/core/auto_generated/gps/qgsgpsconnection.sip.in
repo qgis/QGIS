@@ -40,7 +40,9 @@ struct QgsGpsInformation
   double pdop;
   double hdop;
   double vdop;
+  //! Horizontal accuracy in meters
   double hacc;
+  //! Vertical accuracy in meters
   double vacc;
   QDateTime utcDateTime;
   QChar fixMode;
