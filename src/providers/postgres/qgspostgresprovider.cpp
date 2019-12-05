@@ -4138,7 +4138,7 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
 
     bool exists = result.PQntuples() > 0;
 
-    if ( exists && overwrite )
+    if ( overwrite && exists )
     {
       // delete the table if exists, then re-create it
       QString sql = QString( "SELECT DropGeometryTable(%1,%2)"
@@ -4152,65 +4152,68 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
       if ( result.PQresultStatus() != PGRES_TUPLES_OK )
         throw PGException( result );
     }
-
-    sql = QStringLiteral( "CREATE TABLE %1(" ) .arg( schemaTableName );
-    QString pk;
-    for ( int i = 0; i < pkList.size(); ++i )
+    
+    if ( !exists )
     {
-      QString col = pkList[i];
-      const QString &type = pkType[i];
-
-      if ( options && options->value( QStringLiteral( "lowercaseFieldNames" ), false ).toBool() )
+      sql = QStringLiteral( "CREATE TABLE %1(" ) .arg( schemaTableName );
+      QString pk;
+      for ( int i = 0; i < pkList.size(); ++i )
       {
-        col = col.toLower();
+        QString col = pkList[i];
+        const QString &type = pkType[i];
+
+        if ( options && options->value( QStringLiteral( "lowercaseFieldNames" ), false ).toBool() )
+        {
+          col = col.toLower();
+        }
+        else
+        {
+          col = quotedIdentifier( col ); // no need to quote lowercase field
+        }
+
+        if ( i )
+        {
+          pk  += QLatin1String( "," );
+          sql += QLatin1String( "," );
+        }
+
+        pk += col;
+        sql += col + " " + type;
+      }
+      sql += QStringLiteral( ", PRIMARY KEY (%1) )" ) .arg( pk );
+
+      result = conn->PQexec( sql );
+      if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+        throw PGException( result );
+
+      // get geometry type, dim and srid
+      int dim = 2;
+      long srid = srs.postgisSrid();
+
+      postgisGeometryType( wkbType, geometryType, dim );
+
+      // create geometry column
+      if ( !geometryType.isEmpty() )
+      {
+        sql = QStringLiteral( "SELECT AddGeometryColumn(%1,%2,%3,%4,%5,%6)" )
+              .arg( quotedValue( schemaName ),
+                    quotedValue( tableName ),
+                    quotedValue( geometryColumn ) )
+              .arg( srid )
+              .arg( quotedValue( geometryType ) )
+              .arg( dim );
+
+        result = conn->PQexec( sql );
+        if ( result.PQresultStatus() != PGRES_TUPLES_OK )
+          throw PGException( result );
       }
       else
       {
-        col = quotedIdentifier( col ); // no need to quote lowercase field
+        geometryColumn.clear();
       }
 
-      if ( i )
-      {
-        pk  += QLatin1String( "," );
-        sql += QLatin1String( "," );
-      }
-
-      pk += col;
-      sql += col + " " + type;
-    }
-    sql += QStringLiteral( ", PRIMARY KEY (%1) )" ) .arg( pk );
-
-    result = conn->PQexec( sql );
-    if ( result.PQresultStatus() != PGRES_COMMAND_OK )
-      throw PGException( result );
-
-    // get geometry type, dim and srid
-    int dim = 2;
-    long srid = srs.postgisSrid();
-
-    postgisGeometryType( wkbType, geometryType, dim );
-
-    // create geometry column
-    if ( !geometryType.isEmpty() )
-    {
-      sql = QStringLiteral( "SELECT AddGeometryColumn(%1,%2,%3,%4,%5,%6)" )
-            .arg( quotedValue( schemaName ),
-                  quotedValue( tableName ),
-                  quotedValue( geometryColumn ) )
-            .arg( srid )
-            .arg( quotedValue( geometryType ) )
-            .arg( dim );
-
-      result = conn->PQexec( sql );
-      if ( result.PQresultStatus() != PGRES_TUPLES_OK )
-        throw PGException( result );
-    }
-    else
-    {
-      geometryColumn.clear();
-    }
-
-    conn->PQexecNR( QStringLiteral( "COMMIT" ) );
+      conn->PQexecNR( QStringLiteral( "COMMIT" ) );
+    }  
   }
   catch ( PGException &e )
   {
