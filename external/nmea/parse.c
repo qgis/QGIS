@@ -437,6 +437,40 @@ int nmea_parse_GPRMC( const char *buff, int buff_sz, nmeaGPRMC *pack )
 }
 
 /**
+ * \brief Parse HDT packet from buffer.
+ * @param buff a constant character pointer of packet buffer.
+ * @param buff_sz buffer size.
+ * @param pack a pointer of packet which will filled by function.
+ * @return 1 (true) - if parsed successfully or 0 (false) - if fail.
+ */
+int nmea_parse_GPHDT( const char *buff, int buff_sz, nmeaGPHDT *pack )
+{
+  NMEA_ASSERT( buff && pack );
+
+  memset( pack, 0, sizeof( nmeaGPHDT ) );
+
+  nmea_trace_buff( buff, buff_sz );
+
+  char type;
+
+  if ( 2 != nmea_scanf( buff, buff_sz,
+                        "$GPHDT,%f,%C*",
+                        &( pack->heading ), &( type ) ) )
+  {
+    nmea_error( "GPHDT parse error!" );
+    return 0;
+  }
+
+  if ( type != 'T' )
+  {
+    nmea_error( "GPHDT invalid type " );
+    return 0;
+  }
+
+  return 1;
+}
+
+/**
  * \brief Parse VTG packet from buffer.
  * @param buff a constant character pointer of packet buffer.
  * @param buff_sz buffer size.

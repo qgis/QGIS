@@ -58,7 +58,8 @@ class CORE_EXPORT QgsNmeaConnection: public QgsGpsConnection
     void processGsaSentence( const char *data, int len );
     //! process GST sentence
     void processGstSentence( const char *data, int len );
-
+    //! process HDT sentence
+    void processHdtSentence( const char *data, int len );
 };
 
 #endif // QGSNMEACONNECTION_H
