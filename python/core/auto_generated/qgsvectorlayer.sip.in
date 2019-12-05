@@ -2014,6 +2014,8 @@ Returns the layer's relations, where the foreign key is on this layer.
 :return: A list of relations
 %End
 
+
+
     QgsVectorLayerEditBuffer *editBuffer();
 %Docstring
 Buffer with uncommitted editing operations. Only valid after editing has been turned on.

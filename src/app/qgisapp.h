@@ -2025,15 +2025,25 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsMessageBar *visibleMessageBar();
 
     /**
-     * Searches for layer widget dependencies
-     * \return a list of weak references to broken widget layer dependencies
+     * Searches for layer dependencies by querying widgets and the layer itself for broken relations
+     * \return a list of weak references to broken layer dependencies
      */
-    QList< QgsVectorLayerRef > findBrokenWidgetDependencies( QgsVectorLayer *vectorLayer );
+    const QList< QgsVectorLayerRef > findBrokenLayerDependencies( QgsVectorLayer *vectorLayer ) const;
 
     /**
-     * Scans the \a vectorLayer for broken dependencies and warns the user
+     * Scans the \a vectorLayer for broken dependencies and automatically
+     * try to load the missing layer and warns the user about the operation
+     * result.
      */
     void checkVectorLayerDependencies( QgsVectorLayer *vectorLayer );
+
+    /**
+     * Scans the \a vectorLayer for broken relations and automatically
+     * try to create the missing relation and warns the user about the operation
+     * result.
+     */
+    void checkVectorLayerRelations( QgsVectorLayer *vectorLayer );
+
 
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
 

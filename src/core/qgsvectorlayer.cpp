@@ -67,6 +67,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsrectangle.h"
 #include "qgsrelationmanager.h"
+#include "qgsweakrelation.h"
 #include "qgsrendercontext.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayereditbuffer.h"
@@ -2026,6 +2027,80 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
     updateFields();
   }
 
+  if ( categories.testFlag( Relations ) )
+  {
+
+    const QgsPathResolver resolver { QgsProject::instance()->pathResolver() };
+
+    // Restore referenced layers: relations where "this" is the child layer (the referencing part, that holds the FK)
+    QDomNodeList referencedLayersNodeList = layerNode.toElement().elementsByTagName( QStringLiteral( "referencedLayers" ) );
+    if ( referencedLayersNodeList.size() > 0 )
+    {
+      const QDomNodeList relationNodes { referencedLayersNodeList.at( 0 ).childNodes() };
+      for ( int i = 0; i < relationNodes.length(); ++i )
+      {
+        const QDomElement relationElement = relationNodes.at( i ).toElement();
+        QList<QgsRelation::FieldPair> fieldPairs;
+        const QDomNodeList fieldPairNodes { relationElement.elementsByTagName( QStringLiteral( "fieldPair" ) ) };
+        for ( int j = 0; j < fieldPairNodes.length(); ++j )
+        {
+          const QDomElement fieldPairElement = fieldPairNodes.at( i ).toElement();
+          fieldPairs.push_back( { fieldPairElement.attribute( QStringLiteral( "referencing" ) ),
+                                  fieldPairElement.attribute( QStringLiteral( "referenced" ) ) } );
+        }
+        mWeakRelations.push_back( QgsWeakRelation { relationElement.attribute( QStringLiteral( "id" ) ),
+                                  relationElement.attribute( QStringLiteral( "name" ) ),
+                                  static_cast<QgsRelation::RelationStrength>( relationElement.attribute( QStringLiteral( "strength" ) ).toInt() ),
+                                  // Referencing
+                                  id(),
+                                  name(),
+                                  resolver.writePath( publicSource() ),
+                                  providerType(),
+                                  // Referenced
+                                  relationElement.attribute( QStringLiteral( "layerId" ) ),
+                                  relationElement.attribute( QStringLiteral( "layerName" ) ),
+                                  relationElement.attribute( QStringLiteral( "dataSource" ) ),
+                                  relationElement.attribute( QStringLiteral( "providerKey" ) ),
+                                  fieldPairs
+                                                  } );
+      }
+    }
+
+    // Restore referencing layers: relations where "this" is the parent layer (the referenced part where the FK points to)
+    QDomNodeList referencingLayersNodeList = layerNode.toElement().elementsByTagName( QStringLiteral( "referencingLayers" ) );
+    if ( referencingLayersNodeList.size() > 0 )
+    {
+      const QDomNodeList relationNodes { referencingLayersNodeList.at( 0 ).childNodes() };
+      for ( int i = 0; i < relationNodes.length(); ++i )
+      {
+        const QDomElement relationElement = relationNodes.at( i ).toElement();
+        QList<QgsRelation::FieldPair> fieldPairs;
+        const QDomNodeList fieldPairNodes { relationElement.elementsByTagName( QStringLiteral( "fieldPair" ) ) };
+        for ( int j = 0; j < fieldPairNodes.length(); ++j )
+        {
+          const QDomElement fieldPairElement = fieldPairNodes.at( i ).toElement();
+          fieldPairs.push_back( { fieldPairElement.attribute( QStringLiteral( "referencing" ) ),
+                                  fieldPairElement.attribute( QStringLiteral( "referenced" ) ) } );
+        }
+        mWeakRelations.push_back( QgsWeakRelation { relationElement.attribute( QStringLiteral( "id" ) ),
+                                  relationElement.attribute( QStringLiteral( "name" ) ),
+                                  static_cast<QgsRelation::RelationStrength>( relationElement.attribute( QStringLiteral( "strength" ) ).toInt() ),
+                                  // Referencing
+                                  relationElement.attribute( QStringLiteral( "layerId" ) ),
+                                  relationElement.attribute( QStringLiteral( "layerName" ) ),
+                                  relationElement.attribute( QStringLiteral( "dataSource" ) ),
+                                  relationElement.attribute( QStringLiteral( "providerKey" ) ),
+                                  // Referenced
+                                  id(),
+                                  name(),
+                                  resolver.writePath( publicSource() ),
+                                  providerType(),
+                                  fieldPairs
+                                                  } );
+      }
+    }
+  }
+
   QDomElement layerElement = layerNode.toElement();
 
   readCommonStyle( layerElement, context, categories );
@@ -2444,6 +2519,74 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
 
   if ( categories.testFlag( GeometryOptions ) )
     mGeometryOptions->writeXml( node );
+
+
+  // Relation information for both referenced and referencing sides
+  if ( categories.testFlag( Relations ) )
+  {
+
+    const QgsPathResolver resolver { QgsProject::instance()->pathResolver() };
+
+    // Store referenced layers: relations where "this" is the child layer (the referencing part, that holds the FK)
+    QDomElement referencedLayersElement = doc.createElement( QStringLiteral( "referencedLayers" ) );
+    node.appendChild( referencedLayersElement );
+
+    const auto constReferencingRelations { QgsProject::instance()->relationManager()->referencingRelations( this ) };
+    for ( const auto &rel : constReferencingRelations )
+    {
+
+      QDomElement relationElement = doc.createElement( QStringLiteral( "relation" ) );
+      referencedLayersElement.appendChild( relationElement );
+
+      relationElement.setAttribute( QStringLiteral( "id" ), rel.id() );
+      relationElement.setAttribute( QStringLiteral( "name" ), rel.name() );
+      relationElement.setAttribute( QStringLiteral( "strength" ), rel.strength() );
+      relationElement.setAttribute( QStringLiteral( "layerId" ), rel.referencedLayer()->id() );
+      relationElement.setAttribute( QStringLiteral( "layerName" ), rel.referencedLayer()->name() );
+      relationElement.setAttribute( QStringLiteral( "dataSource" ), resolver.writePath( rel.referencedLayer()->publicSource() ) );
+      relationElement.setAttribute( QStringLiteral( "providerKey" ), rel.referencedLayer()->providerType() );
+
+      const QList<QgsRelation::FieldPair> constFieldPairs { rel.fieldPairs() };
+      for ( const QgsRelation::FieldPair &fp : constFieldPairs )
+      {
+        QDomElement fieldPair = doc.createElement( QStringLiteral( "fieldPair" ) );
+        relationElement.appendChild( fieldPair );
+        fieldPair.setAttribute( QStringLiteral( "referenced" ), fp.referencedField() );
+        fieldPair.setAttribute( QStringLiteral( "referencing" ), fp.referencingField() );
+      }
+
+    }
+
+    // Store referencing layers: relations where "this" is the parent layer (the referenced part where the FK points to)
+    QDomElement referencingLayersElement = doc.createElement( QStringLiteral( "referencingLayers" ) );
+    node.appendChild( referencingLayersElement );
+
+    const auto constReferencedRelations { QgsProject::instance()->relationManager()->referencedRelations( this ) };
+    for ( const auto &rel : constReferencedRelations )
+    {
+
+      QDomElement relationElement = doc.createElement( QStringLiteral( "relation" ) );
+      referencingLayersElement.appendChild( relationElement );
+
+      relationElement.setAttribute( QStringLiteral( "id" ), rel.id() );
+      relationElement.setAttribute( QStringLiteral( "name" ), rel.name() );
+      relationElement.setAttribute( QStringLiteral( "strength" ), rel.strength() );
+      relationElement.setAttribute( QStringLiteral( "layerId" ), rel.referencingLayer()->id() );
+      relationElement.setAttribute( QStringLiteral( "layerName" ), rel.referencingLayer()->name() );
+      relationElement.setAttribute( QStringLiteral( "dataSource" ), resolver.writePath( rel.referencingLayer()->publicSource() ) );
+      relationElement.setAttribute( QStringLiteral( "providerKey" ), rel.referencingLayer()->providerType() );
+
+      const QList<QgsRelation::FieldPair> constFieldPairs { rel.fieldPairs() };
+      for ( const QgsRelation::FieldPair &fp : constFieldPairs )
+      {
+        QDomElement fieldPair = doc.createElement( QStringLiteral( "fieldPair" ) );
+        relationElement.appendChild( fieldPair );
+        fieldPair.setAttribute( QStringLiteral( "referenced" ), fp.referencedField() );
+        fieldPair.setAttribute( QStringLiteral( "referencing" ), fp.referencingField() );
+      }
+
+    }
+  }
 
   if ( categories.testFlag( Fields ) )
   {
@@ -4764,6 +4907,11 @@ void QgsVectorLayer::onSymbolsCounted()
 QList<QgsRelation> QgsVectorLayer::referencingRelations( int idx ) const
 {
   return QgsProject::instance()->relationManager()->referencingRelations( this, idx );
+}
+
+QList<QgsWeakRelation> QgsVectorLayer::weakRelations() const
+{
+  return mWeakRelations;
 }
 
 int QgsVectorLayer::listStylesInDatabase( QStringList &ids, QStringList &names, QStringList &descriptions, QString &msgError )
