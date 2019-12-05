@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>QgsGpsInformationWidgetBase</class>
- <widget class="QWidget" name="QgsGpsInformationWidgetBase">
+ <widget class="QgsPanelWidget" name="QgsGpsInformationWidgetBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -1414,14 +1414,14 @@ gray = no data
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsFieldComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsfieldcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPanelWidget</class>
+   <extends>QWidget</extends>
+   <header>qgspanelwidget.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
