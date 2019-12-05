@@ -12,6 +12,7 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import qgis  # NOQA
 
+from qgis.PyQt.QtCore import QLocale
 from qgis.testing import unittest, start_app
 from qgis.core import QgsClassificationMethod, QgsClassificationLogarithmic, QgsFeature, QgsVectorLayer, QgsPointXY, \
     QgsGeometry
@@ -62,7 +63,7 @@ class TestQgsClassificationMethods(unittest.TestCase):
         r = m.classes(vl, 'value', 8)
 
         self.assertEqual(len(r), 6)
-        self.assertEqual(r[0].label(), '2746.71 - 10^4')
+        self.assertEqual(r[0].label(), '{} - 10^4'.format(QLocale().toString(2746.71)))
         self.assertEqual(QgsClassificationMethod.rangesToBreaks(r),
                          [10000.0, 100000.0, 1000000.0, 10000000.0, 100000000.0, 1000000000.0])
 
