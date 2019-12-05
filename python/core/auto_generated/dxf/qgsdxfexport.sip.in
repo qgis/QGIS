@@ -13,6 +13,7 @@
 
 
 
+
 class QgsDxfExport
 {
 
@@ -90,6 +91,21 @@ unique value.
       HFit,
       Undefined
     };
+
+    enum class DxfPolylineFlag
+    {
+      Closed,
+      Curve,
+      Spline,
+      Is3DPolyline,
+      Is3DPolygonMesh,
+      PolygonMesh,
+      PolyfaceMesh,
+      ContinuousPattern,
+    };
+
+    typedef QFlags<QgsDxfExport::DxfPolylineFlag> DxfPolylineFlags;
+
 
     QgsDxfExport();
 %Docstring
