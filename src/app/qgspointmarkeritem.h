@@ -102,11 +102,11 @@ class APP_EXPORT QgsMapCanvasSymbolItem: public QgsMapCanvasItem
  * \class QgsPointMarkerItem
  * \brief An item that shows a point marker symbol centered on a map location.
  */
-class APP_EXPORT QgsPointMarkerItem: public QgsMapCanvasSymbolItem
+class APP_EXPORT QgsMapCanvasMarkerSymbolItem: public QgsMapCanvasSymbolItem
 {
   public:
 
-    QgsPointMarkerItem( QgsMapCanvas *canvas = nullptr );
+    QgsMapCanvasMarkerSymbolItem( QgsMapCanvas *canvas = nullptr );
 
     /**
      * Sets the center point of the marker symbol (in map coordinates)
@@ -127,6 +127,33 @@ class APP_EXPORT QgsPointMarkerItem: public QgsMapCanvasSymbolItem
     QPointF mLocation;
 
     QgsMarkerSymbol *markerSymbol();
+};
+
+/**
+ * \ingroup app
+ * \class QgsLineMarkerItem
+ * \brief An item that shows a line symbol over the map.
+ */
+class APP_EXPORT QgsMapCanvasLineSymbolItem: public QgsMapCanvasSymbolItem
+{
+  public:
+
+    QgsMapCanvasLineSymbolItem( QgsMapCanvas *canvas = nullptr );
+
+    /**
+     * Sets the line to draw (in map coordinates)
+    */
+    void setLine( const QLineF &line );
+
+    QRectF boundingRect() const override;
+
+    void renderSymbol( QgsRenderContext &context, const QgsFeature &feature ) override;
+
+  private:
+
+    QLineF mLine;
+
+    QgsLineSymbol *lineSymbol();
 };
 
 #endif // QGSPOINTMARKERITEM_H
