@@ -117,18 +117,19 @@ double QgsMapCanvasSymbolItem::opacity() const
 // QgsPointMarkerItem
 //
 
-QgsPointMarkerItem::QgsPointMarkerItem( QgsMapCanvas *canvas )
+QgsMapCanvasMarkerSymbolItem::QgsMapCanvasMarkerSymbolItem( QgsMapCanvas *canvas )
   : QgsMapCanvasSymbolItem( canvas )
 {
+  setSymbol( qgis::make_unique< QgsMarkerSymbol >() );
 }
 
 
-void QgsPointMarkerItem::setPointLocation( const QgsPointXY &p )
+void QgsMapCanvasMarkerSymbolItem::setPointLocation( const QgsPointXY &p )
 {
   mLocation = toCanvasCoordinates( p );
 }
 
-void QgsPointMarkerItem::updateSize()
+void QgsMapCanvasMarkerSymbolItem::updateSize()
 {
   QgsRenderContext rc = renderContext( nullptr );
   markerSymbol()->startRender( rc, mFeature.fields() );
@@ -141,15 +142,53 @@ void QgsPointMarkerItem::updateSize()
   setRect( r );
 }
 
-void QgsPointMarkerItem::renderSymbol( QgsRenderContext &context, const QgsFeature &feature )
+void QgsMapCanvasMarkerSymbolItem::renderSymbol( QgsRenderContext &context, const QgsFeature &feature )
 {
   markerSymbol()->renderPoint( mLocation - pos(), &feature, context );
 }
 
-QgsMarkerSymbol *QgsPointMarkerItem::markerSymbol()
+QgsMarkerSymbol *QgsMapCanvasMarkerSymbolItem::markerSymbol()
 {
   QgsMarkerSymbol *marker = dynamic_cast< QgsMarkerSymbol * >( mSymbol.get() );
   Q_ASSERT( marker );
   return marker;
 }
+
+
+
+//
+// QgsLineMarkerItem
+//
+
+QgsMapCanvasLineSymbolItem::QgsMapCanvasLineSymbolItem( QgsMapCanvas *canvas )
+  : QgsMapCanvasSymbolItem( canvas )
+{
+  setSymbol( qgis::make_unique< QgsLineSymbol >() );
+}
+
+void QgsMapCanvasLineSymbolItem::setLine( const QLineF &line )
+{
+  mLine = line;
+  update();
+}
+
+QRectF QgsMapCanvasLineSymbolItem::boundingRect() const
+{
+  return mMapCanvas->rect();
+}
+
+void QgsMapCanvasLineSymbolItem::renderSymbol( QgsRenderContext &context, const QgsFeature &feature )
+{
+  QPolygonF points;
+  points << mLine.p1() << mLine.p2();
+  lineSymbol()->renderPolyline( points, &feature, context );
+}
+
+QgsLineSymbol *QgsMapCanvasLineSymbolItem::lineSymbol()
+{
+  QgsLineSymbol *symbol = dynamic_cast< QgsLineSymbol * >( mSymbol.get() );
+  Q_ASSERT( symbol );
+  return symbol;
+}
+
 
