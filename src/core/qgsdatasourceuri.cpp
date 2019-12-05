@@ -591,19 +591,40 @@ QByteArray QgsDataSourceUri::encodedUri() const
   {
     url.addQueryItem( it.key(), it.value() );
   }
+
+  if ( !mUsername.isEmpty() )
+    url.addQueryItem( QStringLiteral( "username" ), mUsername );
+
+  if ( !mPassword.isEmpty() )
+    url.addQueryItem( QStringLiteral( "password" ), mPassword );
+
+  if ( !mAuthConfigId.isEmpty() )
+    url.addQueryItem( QStringLiteral( "authcfg" ), mAuthConfigId );
+
   return url.encodedQuery();
 }
 
 void QgsDataSourceUri::setEncodedUri( const QByteArray &uri )
 {
   mParams.clear();
+  mUsername.clear();
+  mPassword.clear();
+  mAuthConfigId.clear();
+
   QUrl url;
   url.setEncodedQuery( uri );
 
   const auto constQueryItems = url.queryItems();
   for ( const QPair<QString, QString> &item : constQueryItems )
   {
-    mParams.insertMulti( item.first, item.second );
+    if ( item.first == QLatin1String( "username" ) )
+      mUsername = item.second;
+    else if ( item.first == QLatin1String( "password" ) )
+      mPassword = item.second;
+    else if ( item.first == QLatin1String( "authcfg" ) )
+      mAuthConfigId = item.second;
+    else
+      mParams.insertMulti( item.first, item.second );
   }
 }
 
@@ -732,35 +753,84 @@ QString QgsDataSourceUri::encodeSslMode( QgsDataSourceUri::SslMode sslMode )
 
 void QgsDataSourceUri::setParam( const QString &key, const QString &value )
 {
-  // may be multiple
-  mParams.insertMulti( key, value );
+  // maintain old API
+  if ( key == QLatin1String( "username" ) )
+    mUsername = value;
+  else if ( key == QLatin1String( "password" ) )
+    mPassword = value;
+  else if ( key == QLatin1String( "authcfg" ) )
+    mAuthConfigId = value;
+  else
+  {
+    // may be multiple
+    mParams.insertMulti( key, value );
+  }
 }
 
 void QgsDataSourceUri::setParam( const QString &key, const QStringList &value )
 {
-  const auto constValue = value;
-  for ( const QString &val : constValue )
+  for ( const QString &val : value )
   {
-    mParams.insertMulti( key, val );
+    setParam( key, val );
   }
 }
 
 int QgsDataSourceUri::removeParam( const QString &key )
 {
+  if ( key == QLatin1String( "username" ) && !mUsername.isEmpty() )
+  {
+    mUsername.clear();
+    return 1;
+  }
+  else if ( key == QLatin1String( "password" ) && !mPassword.isEmpty() )
+  {
+    mPassword.clear();
+    return 1;
+  }
+  else if ( key == QLatin1String( "authcfg" ) && !mAuthConfigId.isEmpty() )
+  {
+    mAuthConfigId.clear();
+    return 1;
+  }
+
   return mParams.remove( key );
 }
 
 QString QgsDataSourceUri::param( const QString &key ) const
 {
+  // maintain old api
+  if ( key == QLatin1String( "username" ) && !mUsername.isEmpty() )
+    return mUsername;
+  else if ( key == QLatin1String( "password" ) && !mPassword.isEmpty() )
+    return mPassword;
+  else if ( key == QLatin1String( "authcfg" ) && !mAuthConfigId.isEmpty() )
+    return mAuthConfigId;
+
   return mParams.value( key );
 }
 
 QStringList QgsDataSourceUri::params( const QString &key ) const
 {
+  // maintain old api
+  if ( key == QLatin1String( "username" ) && !mUsername.isEmpty() )
+    return QStringList() << mUsername;
+  else if ( key == QLatin1String( "password" ) && !mPassword.isEmpty() )
+    return QStringList() << mPassword;
+  else if ( key == QLatin1String( "authcfg" ) && !mAuthConfigId.isEmpty() )
+    return QStringList() << mAuthConfigId;
+
   return mParams.values( key );
 }
 
 bool QgsDataSourceUri::hasParam( const QString &key ) const
 {
+  // maintain old api
+  if ( key == QLatin1String( "username" ) && !mUsername.isEmpty() )
+    return true;
+  else if ( key == QLatin1String( "password" ) && !mPassword.isEmpty() )
+    return true;
+  else if ( key == QLatin1String( "authcfg" ) && !mAuthConfigId.isEmpty() )
+    return true;
+
   return mParams.contains( key );
 }
