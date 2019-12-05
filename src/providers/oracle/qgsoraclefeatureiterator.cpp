@@ -68,7 +68,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
     mAttributeList = mRequest.subsetOfAttributes();
 
     // ensure that all attributes required for expression filter are being fetched
-    if ( mRequest..hasValidFilter( QgsFeatureRequest::FilterExpression ) )
+    if ( mRequest.hasValidFilter( QgsFeatureRequest::FilterExpression ) )
     {
       const auto constReferencedColumns = mRequest.filterExpression()->referencedColumns();
       for ( const QString &field : constReferencedColumns )
@@ -160,7 +160,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
   }
 
 
-  if ( mRequest.hasValidFilter( QgsFeatureRequest::filterExpression ) )
+  if ( mRequest.hasValidFilter( QgsFeatureRequest::FilterExpression ) )
   {
     QString fidsWhereClause = QgsOracleUtils::whereClause( mRequest.filterFids(), mSource->mFields, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, mSource->mShared, args );
     whereClause = QgsOracleUtils::andWhereClauses( whereClause, fidsWhereClause );
