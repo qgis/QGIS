@@ -231,14 +231,23 @@ int nmea_parse_GPGGA( const char *buff, int buff_sz, nmeaGPGGA *pack )
 
   nmea_trace_buff( buff, buff_sz );
 
-  if ( 14 != nmea_scanf( buff, buff_sz,
-                         "$GPGGA,%s,%f,%C,%f,%C,%d,%d,%f,%f,%C,%f,%C,%f,%d*",
+  char type;
+
+  if ( 15 != nmea_scanf( buff, buff_sz,
+                         "$G%CGGA,%s,%f,%C,%f,%C,%d,%d,%f,%f,%C,%f,%C,%f,%d*",
+                         &( type ),
                          &( time_buff[0] ),
                          &( pack->lat ), &( pack->ns ), &( pack->lon ), &( pack->ew ),
                          &( pack->sig ), &( pack->satinuse ), &( pack->HDOP ), &( pack->elv ), &( pack->elv_units ),
                          &( pack->diff ), &( pack->diff_units ), &( pack->dgps_age ), &( pack->dgps_sid ) ) )
   {
-    nmea_error( "GPGGA parse error!" );
+    nmea_error( "G?GGA parse error!" );
+    return 0;
+  }
+
+  if ( type != 'P' && type != 'N' )
+  {
+    nmea_error( "G?GGA invalid type " );
     return 0;
   }
 
