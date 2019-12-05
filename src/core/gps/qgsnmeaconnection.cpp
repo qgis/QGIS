@@ -136,6 +136,17 @@ void QgsNmeaConnection::processStringBuffer()
           mStatus = GPSDataReceived;
           QgsDebugMsgLevel( QStringLiteral( "*******************GPS data received****************" ), 2 );
         }
+        else if ( substring.startsWith( QLatin1String( "$GPHDT" ) ) )
+        {
+          QgsDebugMsgLevel( substring, 2 );
+          processHdtSentence( ba.data(), ba.length() );
+          mStatus = GPSDataReceived;
+          QgsDebugMsgLevel( QStringLiteral( "*******************GPS data received****************" ), 2 );
+        }
+        else
+        {
+          QgsDebugMsgLevel( QStringLiteral( "unknown nmea sentence: %1" ).arg( substring ), 2 );
+        }
         emit nmeaSentenceReceived( substring );  // added to be able to save raw data
       }
     }
@@ -182,6 +193,15 @@ void QgsNmeaConnection::processGstSentence( const char *data, int len )
     mLastGPSInformation.hacc = sqrt( ( pow( sig_lat, 2 ) + pow( sig_lon, 2 ) ) / 2.0 );
     // Vertical RMS
     mLastGPSInformation.vacc = sig_alt;
+  }
+}
+
+void QgsNmeaConnection::processHdtSentence( const char *data, int len )
+{
+  nmeaGPHDT result;
+  if ( nmea_parse_GPHDT( data, len, &result ) )
+  {
+    mLastGPSInformation.direction = result.heading;
   }
 }
 

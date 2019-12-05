@@ -133,6 +133,17 @@ typedef struct _nmeaGPVTG
 
 } nmeaGPVTG;
 
+/**
+ * HDT packet information structure (Heading from True North)
+ */
+typedef struct _nmeaGPHDT
+{
+  double  heading;    //!< Heading in degrees
+  char    dir_t;      //!< Fixed text 'T' indicates that heading is relative to true north
+
+} nmeaGPHDT;
+
+
 void nmea_zero_GPGGA( nmeaGPGGA *pack );
 void nmea_zero_GPGST( nmeaGPGST *pack );
 void nmea_zero_GPGSA( nmeaGPGSA *pack );
