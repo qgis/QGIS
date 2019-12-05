@@ -2162,18 +2162,22 @@ class TestQgsExpression: public QObject
       QCOMPARE( v3.type(),  QVariant::Invalid );
 
       // Supports multiple type of seeds
-      QgsExpression exp4( QStringLiteral( "rand(1,100,123)" ) );
+      QgsExpression exp4( QStringLiteral( "rand(1,10,123)" ) );
       QVariant v4 = exp4.evaluate();
-      QCOMPARE( v4.type(), QVariant::Int );
-      QgsExpression exp5( QStringLiteral( "rand(1,100,1.23)" ) );
+      QCOMPARE( v4.toInt() <= 10, true );
+      QCOMPARE( v4.toInt() >= 1, true );
+      QgsExpression exp5( QStringLiteral( "rand(1,10,1.23)" ) );
       QVariant v5 = exp5.evaluate();
-      QCOMPARE( v5.type(), QVariant::Int );
-      QgsExpression exp6( QStringLiteral( "rand(1,100,'123')" ) );
+      QCOMPARE( v5.toInt() <= 10, true );
+      QCOMPARE( v5.toInt() >= 1, true );
+      QgsExpression exp6( QStringLiteral( "rand(1,10,'123')" ) );
       QVariant v6 = exp6.evaluate();
-      QCOMPARE( v6.type(), QVariant::Int );
-      QgsExpression exp7( QStringLiteral( "rand(1,100,'abc')" ) );
+      QCOMPARE( v6.toInt() <= 10, true );
+      QCOMPARE( v6.toInt() >= 1, true );
+      QgsExpression exp7( QStringLiteral( "rand(1,10,'abc')" ) );
       QVariant v7 = exp7.evaluate();
-      QCOMPARE( v7.type(), QVariant::Int );
+      QCOMPARE( v7.toInt() <= 10, true );
+      QCOMPARE( v7.toInt() >= 1, true );
 
       // Two calls with the same seed return the same number
       QgsExpression exp8( QStringLiteral( "rand(1,1000000000,1)" ) );
@@ -2208,18 +2212,22 @@ class TestQgsExpression: public QObject
       QCOMPARE( v3.type(),  QVariant::Invalid );
 
       // Supports multiple type of seeds
-      QgsExpression exp4( QStringLiteral( "randf(1,100,123)" ) );
+      QgsExpression exp4( QStringLiteral( "randf(1.5,9.5,123)" ) );
       QVariant v4 = exp4.evaluate();
-      QCOMPARE( v4.type(), QVariant::LongLong );
-      QgsExpression exp5( QStringLiteral( "randf(1,100,1.23)" ) );
+      QCOMPARE( v4.toDouble() <= 9.5, true );
+      QCOMPARE( v4.toDouble() >= 1.5, true );
+      QgsExpression exp5( QStringLiteral( "randf(1.5,9.5,1.23)" ) );
       QVariant v5 = exp5.evaluate();
-      QCOMPARE( v5.type(), QVariant::LongLong );
-      QgsExpression exp6( QStringLiteral( "randf(1,100,'123')" ) );
+      QCOMPARE( v5.toDouble() <= 9.5, true );
+      QCOMPARE( v5.toDouble() >= 1.5, true );
+      QgsExpression exp6( QStringLiteral( "randf(1.5,9.5,'123')" ) );
       QVariant v6 = exp6.evaluate();
-      QCOMPARE( v6.type(), QVariant::LongLong );
-      QgsExpression exp7( QStringLiteral( "randf(1,100,'abc')" ) );
+      QCOMPARE( v6.toDouble() <= 9.5, true );
+      QCOMPARE( v6.toDouble() >= 1.5, true );
+      QgsExpression exp7( QStringLiteral( "randf(1.5,9.5,'abc')" ) );
       QVariant v7 = exp7.evaluate();
-      QCOMPARE( v7.type(), QVariant::LongLong );
+      QCOMPARE( v7.toDouble() <= 9.5, true );
+      QCOMPARE( v7.toDouble() >= 1.5, true );
 
       // Two calls with the same seed return the same number
       QgsExpression exp8( QStringLiteral( "randf(seed:=1)" ) );
