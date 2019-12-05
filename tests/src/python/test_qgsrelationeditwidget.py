@@ -312,6 +312,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
 
         # Mock vector layer tool to just set default value on created feature
         class DummyVlTools(QgsVectorLayerTools):
+
             def addFeature(self, layer, defaultValues, defaultGeometry):
                 f = QgsFeature(layer.fields())
                 for idx, value in defaultValues.items():
