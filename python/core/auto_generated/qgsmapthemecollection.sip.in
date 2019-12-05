@@ -110,14 +110,12 @@ and thus whether expandedGroupNodes() and expandedLegendItems + expandedLayerNod
 .. versionadded:: 3.2
 %End
 
-
         void setHasExpandedStateInfo( bool hasInfo );
 %Docstring
 Sets whether the map theme contains valid expanded/collapsed state of nodes
 
 .. versionadded:: 3.2
 %End
-
 
         QSet<QString> expandedGroupNodes() const;
 %Docstring
