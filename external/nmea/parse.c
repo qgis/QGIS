@@ -311,14 +311,22 @@ int nmea_parse_GPGSA( const char *buff, int buff_sz, nmeaGPGSA *pack )
 
   nmea_trace_buff( buff, buff_sz );
 
-  if ( 17 != nmea_scanf( buff, buff_sz,
-                         "$GPGSA,%C,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%f,%f,%f*",
-                         &( pack->fix_mode ), &( pack->fix_type ),
+  char type;
+
+  if ( 18 != nmea_scanf( buff, buff_sz,
+                         "$G%CGSA,%C,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%f,%f,%f*",
+                         &( type ), &( pack->fix_mode ), &( pack->fix_type ),
                          &( pack->sat_prn[0] ), &( pack->sat_prn[1] ), &( pack->sat_prn[2] ), &( pack->sat_prn[3] ), &( pack->sat_prn[4] ), &( pack->sat_prn[5] ),
                          &( pack->sat_prn[6] ), &( pack->sat_prn[7] ), &( pack->sat_prn[8] ), &( pack->sat_prn[9] ), &( pack->sat_prn[10] ), &( pack->sat_prn[11] ),
                          &( pack->PDOP ), &( pack->HDOP ), &( pack->VDOP ) ) )
   {
-    nmea_error( "GPGSA parse error!" );
+    nmea_error( "G?GSA parse error!" );
+    return 0;
+  }
+
+  if ( type != 'P' && type != 'N' )
+  {
+    nmea_error( "G?GSA invalid type " );
     return 0;
   }
 
