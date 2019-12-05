@@ -94,7 +94,7 @@ void QgsNmeaConnection::processStringBuffer()
       {
         QString substring = mStringBuffer.mid( dollarIndex, endSentenceIndex );
         QByteArray ba = substring.toLocal8Bit();
-        if ( substring.startsWith( QLatin1String( "$GPGGA" ) ) )
+        if ( substring.startsWith( QLatin1String( "$GPGGA" ) ) || substring.startsWith( QLatin1String( "$GNGGA" ) ) )
         {
           QgsDebugMsg( substring );
           processGgaSentence( ba.data(), ba.length() );
