@@ -37,6 +37,7 @@ class QgsGpsTrackerThread;
 struct QgsGpsInformation;
 class QgsMapCanvas;
 class QgsFeature;
+class QgsGpsBearingItem;
 
 class QFile;
 class QColor;
@@ -102,6 +103,8 @@ class APP_EXPORT QgsGpsInformationWidget: public QWidget, private Ui::QgsGpsInfo
     QgsGpsConnection *mNmea = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsGpsMarker *mMapMarker = nullptr;
+    QgsGpsBearingItem *mMapBearingItem = nullptr;
+
     QwtPlot *mPlot = nullptr;
     QwtPlotCurve *mCurve = nullptr;
 #ifdef WITH_QWTPOLAR

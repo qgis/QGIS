@@ -30,6 +30,7 @@ QgsGpsMarker::QgsGpsMarker( QgsMapCanvas *mapCanvas )
   mSize = 16;
   mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
   mSvg.load( QStringLiteral( ":/images/north_arrows/gpsarrow2.svg" ) );
+  setZValue( 200 );
 }
 
 void QgsGpsMarker::setSize( int size )
