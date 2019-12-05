@@ -63,7 +63,10 @@ process GSA sentence
 %Docstring
 process GST sentence
 %End
-
+    void processHdtSentence( const char *data, int len );
+%Docstring
+process HDT sentence
+%End
 };
 
 /************************************************************************
