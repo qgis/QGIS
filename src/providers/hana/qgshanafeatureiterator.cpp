@@ -32,19 +32,14 @@
 
 using namespace odbc;
 
-namespace
+static QString andWhereClauses( const QString &c1, const QString &c2 )
 {
-
-  QString andWhereClauses( const QString &c1, const QString &c2 )
-  {
     if ( c1.isEmpty() )
       return c2;
     if ( c2.isEmpty() )
       return c1;
 
     return QStringLiteral( "(%1) AND (%2)" ).arg( c1, c2 );
-  }
-
 }
 
 QgsHanaFeatureIterator::QgsHanaFeatureIterator(
@@ -81,7 +76,9 @@ QgsHanaFeatureIterator::QgsHanaFeatureIterator(
 
   try
   {
-    buildStatement( request );
+    QString sql = buildSQLStatement( request );
+    PreparedStatementRef stmt = mConnRef->getNativeRef()->prepareStatement( sql.toStdString().c_str() );
+    mStatement = sql;
     mClosed = false;
     rewind();
   }
@@ -102,16 +99,9 @@ bool QgsHanaFeatureIterator::rewind()
   if ( mClosed )
     return false;
 
-  try
-  {
-    mResultSet.reset();
-    mResultSet = mStatement->executeQuery();
-  }
-  catch ( const Exception &ex )
-  {
-    throw QgsHanaException( ex.what() );
-  }
-
+  mResultSet.reset();
+  PreparedStatementRef stmt = mConnRef->getNativeRef()->prepareStatement( mStatement.toStdString().c_str() );
+  mResultSet = QgsHanaResultSet::create(stmt);
   return true;
 }
 
@@ -139,13 +129,16 @@ bool QgsHanaFeatureIterator::fetchFeature( QgsFeature &feature )
     if ( !mResultSet->next() )
       return false;
 
+    feature.initAttributes( mSource->mFields.count() );
     unsigned short paramIndex = 1;
 
     // Read feature id
     if ( mHasFidColumn )
     {
-      feature.setId( *mResultSet->getLong( paramIndex ) );
-      ++paramIndex;
+        QVariant id = mResultSet->getValue(paramIndex);
+        feature.setId( id.toLongLong() );
+        feature.setAttribute( 0, id );
+        ++paramIndex;
     }
     else
     {
@@ -153,12 +146,11 @@ bool QgsHanaFeatureIterator::fetchFeature( QgsFeature &feature )
     }
 
     // Read attributes
-    feature.initAttributes( mSource->mFields.count() );
     if ( mHasAttributes )
     {
-      Q_FOREACH ( int idx, mAttributesToFetch )
+      for(int i = 0; i < mAttributesToFetch.size(); ++i )
       {
-        fetchFeatureAttribute( idx, paramIndex, feature );
+        feature.setAttribute( paramIndex - 1, mResultSet->getValue(paramIndex ));
         ++paramIndex;
       }
     }
@@ -166,7 +158,9 @@ bool QgsHanaFeatureIterator::fetchFeature( QgsFeature &feature )
     // Read geometry
     if ( mHasGeometryColumn )
     {
-      fetchFeatureGeometry( paramIndex, feature );
+      QgsGeometry geom = mResultSet->getGeometry(paramIndex);
+      if (!geom.isNull())
+         feature.setGeometry( geom );
       ++paramIndex;
     }
     else
@@ -184,114 +178,6 @@ bool QgsHanaFeatureIterator::fetchFeature( QgsFeature &feature )
   }
 
   return true;
-}
-
-void QgsHanaFeatureIterator::fetchFeatureAttribute(
-  int attrIndex,
-  unsigned short paramIndex,
-  QgsFeature &feature )
-{
-  QgsField field = mSource->mFields.at( attrIndex );
-  FieldInfo fieldInfo = mSource->mFieldInfos.at( attrIndex );
-  switch ( fieldInfo.type )
-  {
-    case SQLDataTypes::Boolean:
-      feature.setAttribute( attrIndex, QgsHanaUtils::toVariant( mResultSet->getBoolean( paramIndex ), QVariant::Bool ) );
-      break;
-    case SQLDataTypes::Char:
-      feature.setAttribute( attrIndex, QgsHanaUtils::toVariant( mResultSet->getByte( paramIndex ) ) );
-      break;
-    case SQLDataTypes::WChar:
-      feature.setAttribute( attrIndex, QgsHanaUtils::toVariant( mResultSet->getUByte( paramIndex ) ) );
-      break;
-    case SQLDataTypes::SmallInt:
-      if ( field.type() == QVariant::Int )
-        feature.setAttribute( attrIndex, QgsHanaUtils::toVariant( mResultSet->getShort( paramIndex ) ) );
-      else
-        feature.setAttribute( attrIndex, QgsHanaUtils::toVariant( mResultSet->getUShort( paramIndex ) ) );
-      break;
-    case SQLDataTypes::Integer:
-      if ( field.type() == QVariant::Int )
-        feature.setAttribute( attrIndex, QgsHanaUtils::toVariant( mResultSet->getInt( paramIndex ), QVariant::Int ) );
-      else
-        feature.setAttribute( attrIndex, QgsHanaUtils::toVariant( mResultSet->getUInt( paramIndex ), QVariant::UInt ) );
-      break;
-    case SQLDataTypes::BigInt:
-      if ( field.type() == QVariant::LongLong )
-        feature.setAttribute( attrIndex, QgsHanaUtils::toVariant( mResultSet->getLong( paramIndex ) ) );
-      else
-        feature.setAttribute( attrIndex, QgsHanaUtils::toVariant( mResultSet->getULong( paramIndex ) ) );
-      break;
-    case SQLDataTypes::Double:
-      feature.setAttribute( attrIndex, QgsHanaUtils::toVariant( mResultSet->getDouble( paramIndex ), QVariant::Double ) );
-      break;
-    case SQLDataTypes::Decimal:
-      feature.setAttribute( attrIndex, QgsHanaUtils::toVariant( mResultSet->getDouble( paramIndex ), QVariant::Double ) );
-      break;
-    case SQLDataTypes::Numeric:
-      feature.setAttribute( attrIndex, QgsHanaUtils::toVariant( mResultSet->getDouble( paramIndex ), QVariant::Double ) );
-      break;
-    case SQLDataTypes::Date:
-      feature.setAttribute( attrIndex, QgsHanaUtils::toVariant( mResultSet->getDate( paramIndex ) ) );
-      break;
-    case SQLDataTypes::Time:
-      feature.setAttribute( attrIndex, QgsHanaUtils::toVariant( mResultSet->getTime( paramIndex ) ) );
-      break;
-    case SQLDataTypes::Timestamp:
-      feature.setAttribute( attrIndex, QgsHanaUtils::toVariant( mResultSet->getTimestamp( paramIndex ) ) );
-      break;
-    case SQLDataTypes::VarChar:
-    case SQLDataTypes::LongVarChar:
-      feature.setAttribute( attrIndex, QgsHanaUtils::toVariant( mResultSet->getString( paramIndex ) ) );
-      break;
-    case SQLDataTypes::WVarChar:
-    case SQLDataTypes::WLongVarChar:
-      feature.setAttribute( attrIndex, QgsHanaUtils::toVariant( mResultSet->getNString( paramIndex ) ) );
-      break;
-    case SQLDataTypes::Binary:
-    case SQLDataTypes::VarBinary:
-    case SQLDataTypes::LongVarBinary:
-      feature.setAttribute( attrIndex, QgsHanaUtils::toVariant( mResultSet->getBinary( paramIndex ) ) );
-      break;
-    default:
-      break;
-  }
-}
-
-void QgsHanaFeatureIterator::fetchFeatureGeometry( unsigned short paramIndex, QgsFeature &feature )
-{
-  size_t bufLength = mResultSet->getBinaryLength( paramIndex );
-  unsigned char *bufPtr = nullptr;
-
-  if ( bufLength == ResultSet::UNKNOWN_LENGTH )
-  {
-    Binary wkb = mResultSet->getBinary( paramIndex );
-    if ( wkb.isNull() || wkb->size() == 0 )
-      bufLength = 0;
-    else
-      bufPtr = ( unsigned char * )wkb->data();
-  }
-  else if ( bufLength != 0 && bufLength != odbc::ResultSet::NULL_DATA )
-  {
-    ensureBufferCapacity( bufLength );
-    mResultSet->getBinaryData( paramIndex, mBuffer.data(), bufLength );
-
-    bufPtr = mBuffer.data();
-  }
-
-  if ( bufLength == 0 || bufPtr == nullptr )
-  {
-    QgsDebugMsg( QStringLiteral( "Geometry is empty" ) );
-    feature.clearGeometry();
-  }
-  else
-  {
-    unsigned char *wkbGeom = new unsigned char[bufLength];
-    memcpy( wkbGeom, bufPtr, bufLength );
-    QgsGeometry geom;
-    geom.fromWkb( wkbGeom, static_cast<int>( bufLength ) );
-    feature.setGeometry( geom );
-  }
 }
 
 bool QgsHanaFeatureIterator::nextFeatureFilterExpression( QgsFeature &feature )
@@ -320,7 +206,7 @@ QString QgsHanaFeatureIterator::getBBOXFilter( const QgsRectangle &bbox,
                  QString::number( mSource->mSrid ) );
 }
 
-void QgsHanaFeatureIterator::buildStatement( const QgsFeatureRequest &request )
+QString QgsHanaFeatureIterator::buildSQLStatement( const QgsFeatureRequest &request )
 {
   QgsRectangle filterRect = mFilterRect;
   if ( !mSrsExtent.isEmpty() )
@@ -468,16 +354,7 @@ void QgsHanaFeatureIterator::buildStatement( const QgsFeatureRequest &request )
     sql += QStringLiteral( " LIMIT %1" ).arg( mRequest.limit() );
 
   QgsDebugMsg( sql );
-
-  mStatement = mConnRef->getNativeRef()->prepareStatement( sql.toStdString().c_str() );
-}
-
-void QgsHanaFeatureIterator::ensureBufferCapacity( size_t capacity )
-{
-  if ( capacity > mBuffer.size() )
-  {
-    mBuffer.reserve( capacity );
-  }
+  return sql;
 }
 
 QgsHanaFeatureSource::QgsHanaFeatureSource( const QgsHanaProvider *p )

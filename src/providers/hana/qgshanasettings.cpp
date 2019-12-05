@@ -17,12 +17,12 @@
 #include "qgshanasettings.h"
 #include "qgssettings.h"
 
-bool QgsHanaIdentifierType::isValid( uint8_t i ) noexcept
+bool QgsHanaIdentifierType::isValid( uint i ) noexcept
 {
-  return ( QgsHanaIdentifierType::fromInt( i ) >= INSTANCE_NUMBER ) && ( QgsHanaIdentifierType::fromInt( i ) <= PORT_NUMBER );
+  return ( i >= INSTANCE_NUMBER ) && ( i <= PORT_NUMBER );
 }
 
-QgsHanaIdentifierType::Value QgsHanaIdentifierType::fromInt( uint8_t i )
+QgsHanaIdentifierType::Value QgsHanaIdentifierType::fromInt( uint i )
 {
   Q_ASSERT( isValid( i ) );
   return static_cast<Value>( i );

@@ -12,6 +12,7 @@ SET (HANA_SRCS
   qgshanaexpressioncompiler.cpp
   qgshanafeatureiterator.cpp
   qgshanaprovider.cpp
+  qgshanaresultset.cpp
   qgshanasettings.cpp
   qgshanatablemodel.cpp
   qgshanautils.cpp

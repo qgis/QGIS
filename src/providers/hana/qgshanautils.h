@@ -43,13 +43,16 @@ class QgsHanaUtils
     static QVariant toVariant( const odbc::UByte &value );
     static QVariant toVariant( const odbc::Short &value );
     static QVariant toVariant( const odbc::UShort &value );
+    static QVariant toVariant( const odbc::Int &value );
+    static QVariant toVariant( const odbc::UInt &value );
     static QVariant toVariant( const odbc::Long &value );
     static QVariant toVariant( const odbc::ULong &value );
+    static QVariant toVariant( const odbc::Double &value );
     static QVariant toVariant( const odbc::Date &value );
     static QVariant toVariant( const odbc::Time &value );
     static QVariant toVariant( const odbc::Timestamp &value );
     static QVariant toVariant( const odbc::String &value );
-    static QVariant toVariant( const odbc::String &value, int type );
+    static QVariant toVariant( const odbc::String &value, int type, bool isSigned );
     static QVariant toVariant( const odbc::NString &value );
     static QVariant toVariant( const odbc::Binary &value );
     template<typename T>

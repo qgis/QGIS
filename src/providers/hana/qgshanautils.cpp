@@ -155,6 +155,22 @@ QVariant QgsHanaUtils::toVariant( const UShort &value )
     return QVariant( static_cast<uint>( *value ) );
 }
 
+QVariant QgsHanaUtils::toVariant( const Int &value )
+{
+  if ( value.isNull() )
+    return QVariant( QVariant::Int );
+  else
+    return QVariant( static_cast<int>( *value ) );
+}
+
+QVariant QgsHanaUtils::toVariant( const UInt &value )
+{
+  if ( value.isNull() )
+    return QVariant( QVariant::UInt );
+  else
+    return QVariant( static_cast<uint>( *value ) );
+}
+
 QVariant QgsHanaUtils::toVariant( const Long &value )
 {
   if ( value.isNull() )
@@ -169,6 +185,14 @@ QVariant QgsHanaUtils::toVariant( const ULong &value )
     return QVariant( QVariant::ULongLong );
   else
     return QVariant( static_cast<qulonglong>( *value ) );
+}
+
+QVariant QgsHanaUtils::toVariant( const Double &value )
+{
+  if ( value.isNull() )
+    return QVariant( QVariant::Double );
+  else
+    return QVariant( static_cast<double>( *value ) );
 }
 
 QVariant QgsHanaUtils::toVariant( const Date &value )
@@ -204,7 +228,7 @@ QVariant QgsHanaUtils::toVariant( const String &value )
     return QVariant( QString::fromStdString( *value ) );
 }
 
-QVariant QgsHanaUtils::toVariant( const String &value, int type )
+QVariant QgsHanaUtils::toVariant( const String &value, int type, bool isSigned )
 {
   bool isNull = value.isNull();
   switch ( type )
@@ -214,23 +238,20 @@ QVariant QgsHanaUtils::toVariant( const String &value, int type )
         return QVariant( QVariant::Bool );
       else
         return QVariant( ( *value == "true" || *value == "1" ) ? true : false );
+    case SQLDataTypes::Integer:
     case SQLDataTypes::TinyInt:
       if ( isNull )
-        return QVariant( QVariant::Int );
+        return QVariant( isSigned ? QVariant::Int : QVariant::UInt );
       else
         return QVariant( atoi( value->c_str() ) );
     case SQLDataTypes::BigInt:
       if ( isNull )
-        return QVariant( QVariant::LongLong );
+        return QVariant( isSigned ? QVariant::LongLong : QVariant::ULongLong );
       else
-        return QVariant( ( qlonglong )atoll( value->c_str() ) );
+        return QVariant( static_cast< qlonglong >(atoll( value->c_str() ) ));
     case SQLDataTypes::Numeric:
-    case SQLDataTypes::Decimal:
-      if ( isNull )
-        return QVariant( QVariant::Double );
-      else
-        return QVariant( value->c_str() );
     case SQLDataTypes::Double:
+    case SQLDataTypes::Decimal:
       if ( isNull )
         return QVariant( QVariant::Double );
       else
@@ -257,7 +278,7 @@ QVariant QgsHanaUtils::toVariant( const String &value, int type )
         return QVariant( value->c_str() );
     case SQLDataTypes::Binary:
     case SQLDataTypes::VarBinary:
-      return QVariant( QByteArray( value->c_str(), ( int )value->length() ) );
+      return QVariant( QByteArray( value->c_str(), static_cast< int >(value->length() )) );
     case SQLDataTypes::Date:
     case SQLDataTypes::TypeDate:
       return QVariant( QDate::fromString( QString( value->c_str() ) ) );

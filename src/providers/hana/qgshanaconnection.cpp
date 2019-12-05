@@ -41,14 +41,11 @@
 using namespace odbc;
 using namespace std;
 
-namespace
+static const uint8_t CREDENTIALS_INPUT_MAX_ATTEMPTS = 5;
+
+static void addNewLayer( QVector<QgsHanaLayerProperty> &list,
+                const QgsHanaLayerProperty &layerProperty, bool checkDuplicates = false )
 {
-
-  static const uint8_t CREDENTIALS_INPUT_MAX_ATTEMPTS = 5;
-
-  void addNewLayer( QVector<QgsHanaLayerProperty> &list,
-                    const QgsHanaLayerProperty &layerProperty, bool checkDuplicates = false )
-  {
     if ( checkDuplicates )
     {
       auto res = std::find_if( list.begin(), list.end(),
@@ -60,8 +57,6 @@ namespace
     }
 
     list << layerProperty;
-  }
-
 }
 
 bool QgsHanaConnection::sConnectionAttemptCanceled = false;
@@ -134,8 +129,9 @@ QgsHanaConnection *QgsHanaConnection::createConnection( const QgsDataSourceUri &
   }
   catch ( const exception &ex )
   {
-    QgsMessageLog::logMessage(
-      QObject::tr( "Connection to database failed" ) + '\n' + QgsHanaUtils::formatErrorMessage( ex.what() ), tr( "HANA" ) );
+    QString msg = QObject::tr( "Connection to database failed" ) + '\n' + QgsHanaUtils::formatErrorMessage( ex.what() );
+    QgsDebugMsg( msg );
+    QgsMessageLog::logMessage( msg, tr( "HANA" ) );
   }
 
   return conn;
@@ -155,6 +151,7 @@ bool QgsHanaConnection::connect(
   catch ( const Exception &ex )
   {
     errorMessage = QgsHanaUtils::formatErrorMessage( ex.what() );
+    QgsDebugMsg( errorMessage );
   }
 
   return conn->connected();

@@ -28,8 +28,8 @@ struct QgsHanaIdentifierType
     PORT_NUMBER = 1
   };
 
-  static bool isValid( uint8_t ) noexcept;
-  static Value fromInt( uint8_t );
+  static bool isValid( uint ) noexcept;
+  static Value fromInt( uint );
 };
 
 class QgsHanaSettings
@@ -46,7 +46,7 @@ class QgsHanaSettings
     void setHost( const QString &host ) { mHost = host; }
 
     uint getIdentifierType() const { return mIdentifierType; }
-    void setIdentifierType( int identifierType ) { mIdentifierType = identifierType; }
+    void setIdentifierType( uint identifierType ) { mIdentifierType = identifierType; }
 
     const QString &getIdentifier() const { return mIdentifier; }
     void setIdentifier( const QString &identifier ) { mIdentifier = identifier; }

@@ -20,6 +20,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgshanaconnection.h"
 #include "qgshanaprovider.h"
+#include "qgshanaresultset.h"
 
 #include "odbc/Forwards.h"
 
@@ -67,24 +68,20 @@ class QgsHanaFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsHa
 
   protected:
     bool fetchFeature( QgsFeature &feature ) override;
-    void fetchFeatureAttribute( int attrIndex, unsigned short paramIndex, QgsFeature &feature );
-    void fetchFeatureGeometry( unsigned short paramIndex, QgsFeature &feature );
     bool nextFeatureFilterExpression( QgsFeature &feature ) override;
 
   private:
-    void buildStatement( const QgsFeatureRequest &request );
-    void ensureBufferCapacity( std::size_t capacity );
+    QString buildSQLStatement( const QgsFeatureRequest &request );
     QString getBBOXFilter( const QgsRectangle &bbox, const QVersionNumber &dbVersion ) const;
 
   private:
     QgsHanaConnectionRef mConnRef;
-    odbc::PreparedStatementRef mStatement;
-    odbc::ResultSetRef mResultSet;
+    QgsHanaResultSetRef mResultSet;
+    QString mStatement;
     QgsCoordinateTransform mTransform;
     QgsRectangle mFilterRect;
     QgsRectangle mSrsExtent;
     QgsAttributeList mAttributesToFetch;
-    std::vector<unsigned char> mBuffer;
     bool mHasFidColumn;
     bool mHasAttributes;
     bool mHasGeometryColumn;

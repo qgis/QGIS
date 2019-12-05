@@ -25,6 +25,7 @@
 #include "qgshanadriver.h"
 #include "qgshanafeatureiterator.h"
 #include "qgshanaprovider.h"
+#include "qgshanaresultset.h"
 #include "qgshanautils.h"
 #ifdef HAVE_GUI
 #include "qgshanadataitems.h"
@@ -50,39 +51,54 @@
 using namespace odbc;
 using namespace std;
 
-namespace
+static QString buildQuery(const QString& query, const QString& whereClause)
 {
+  if ( whereClause.trimmed().isEmpty() )
+      return query;
+  return query + QStringLiteral( " WHERE " ) + whereClause;
+}
 
-  bool executeQuery( ConnectionRef &conn, const QString &sql, QString *errorMessage )
-  {
-    try
-    {
-      StatementRef stmt = conn->createStatement();
-      stmt->execute( sql.toStdString().c_str() );
-      conn->commit();
-      return true;
-    }
-    catch ( const Exception &ex )
-    {
-      if ( errorMessage )
-        *errorMessage = QgsHanaUtils::formatErrorMessage( ex.what() );
-    }
+static QVariant executeScalar( ConnectionRef &conn, const QString &sql )
+{
+  QVariant res;
+  StatementRef stmt = conn->createStatement();
+  QgsHanaResultSetRef resultSet = QgsHanaResultSet::create(stmt, sql);
+  if ( resultSet->next() )
+      res = resultSet->getValue(1);
+  resultSet->close();
+  return  res;
+}
 
-    return false;
-  }
+static bool executeQuery( ConnectionRef &conn, const QString &sql, QString *errorMessage )
+{
+try
+{
+  StatementRef stmt = conn->createStatement();
+  stmt->execute( sql.toStdString().c_str() );
+  conn->commit();
+  return true;
+}
+catch ( const Exception &ex )
+{
+  if ( errorMessage )
+    *errorMessage = QgsHanaUtils::formatErrorMessage( ex.what() );
+}
 
-  size_t executeCountQuery( ConnectionRef &conn, const QString &sql )
-  {
+return false;
+}
+
+static size_t executeCountQuery( ConnectionRef &conn, const QString &sql )
+{
     StatementRef stmt = conn->createStatement();
     ResultSetRef rs = stmt->executeQuery( sql.toStdString().c_str() );
     rs->next();
     size_t ret = static_cast<size_t>( *rs->getLong( 1 ) );
     rs->close();
     return ret;
-  }
+}
 
-  void createCoordinateSystem( ConnectionRef &conn, const QgsCoordinateReferenceSystem &srs )
-  {
+static void createCoordinateSystem( ConnectionRef &conn, const QgsCoordinateReferenceSystem &srs )
+{
     OGRSpatialReferenceH hCRS = nullptr;
     hCRS = OSRNewSpatialReference( nullptr );
     int errcode = OSRImportFromProj4( hCRS, srs.toProj4().toUtf8() );
@@ -122,15 +138,15 @@ namespace
     StatementRef stmt = conn->createStatement();
     stmt->execute( sql.toStdString().c_str() );
     conn->commit();
-  }
+}
 
-  void setStatementValue(
-    PreparedStatementRef &stmt,
-    unsigned short paramIndex,
-    const QgsField &field,
-    const FieldInfo &fieldInfo,
-    const QVariant &value )
-  {
+static void setStatementValue(
+PreparedStatementRef &stmt,
+unsigned short paramIndex,
+const QgsField &field,
+const FieldInfo &fieldInfo,
+const QVariant &value )
+{
     bool isNull = ( value.isNull() || !value.isValid() );
 
     switch ( fieldInfo.type )
@@ -227,7 +243,6 @@ namespace
         }
         break;
     }
-  }
 }
 
 static const size_t MAX_BATCH_SIZE = 1024;
@@ -266,8 +281,6 @@ QgsHanaProvider::QgsHanaProvider(
     if ( !mTableName.isEmpty() )
       mQuery += QgsHanaUtils::quotedIdentifier( mTableName );
     mQuery = QStringLiteral( "SELECT * FROM " ) + mQuery;
-    if ( !mQueryWhereClause.isEmpty() )
-      mQuery += QStringLiteral( " WHERE " ) + mQueryWhereClause;
   }
 
   QgsHanaConnectionRef connRef( mUri );
@@ -372,6 +385,57 @@ long QgsHanaProvider::featureCount() const
 QgsFields QgsHanaProvider::fields() const
 {
   return mAttributeFields;
+}
+
+// Returns the minimum value of an attribute
+QVariant QgsHanaProvider::minimumValue( int index ) const
+{
+    if ( index < 0 || index >= mAttributeFields.count() )
+      return QVariant();
+
+    QgsField fld = mAttributeFields[ index ];
+    QString sql = QStringLiteral( "SELECT MIN(%1) FROM (%2)" )
+                  .arg( QgsHanaUtils::quotedIdentifier( fld.name() ), buildQuery( mQuery, mQueryWhereClause) );
+    QgsHanaConnectionRef connRef( mUri );
+    return executeScalar(connRef->getNativeRef(), sql);
+}
+
+// Returns the maximum value of an attribute
+QVariant QgsHanaProvider::maximumValue(int index) const
+{
+    if ( index < 0 || index >= mAttributeFields.count() )
+      return QVariant();
+
+    QgsField fld = mAttributeFields[ index ];
+    QString sql = QStringLiteral( "SELECT MAX(%1) FROM (%2)" )
+                  .arg( QgsHanaUtils::quotedIdentifier( fld.name() ), buildQuery( mQuery, mQueryWhereClause) );
+    QgsHanaConnectionRef connRef( mUri );
+    return executeScalar(connRef->getNativeRef(), sql);
+}
+
+// Returns the list of unique values of an attribute
+QSet<QVariant> QgsHanaProvider::uniqueValues( int index, int limit ) const
+{
+    QSet<QVariant> uniqueValues;
+    if ( index < 0 || index >= mAttributeFields.count() )
+      return uniqueValues;
+
+    QString fieldName = mAttributeFields[ index ].name();
+    QString sql = QStringLiteral( "SELECT * FROM (SELECT DISTINCT %1 FROM (%2)) ORDER BY %1" )
+                  .arg( QgsHanaUtils::quotedIdentifier( fieldName ), buildQuery( mQuery, mQueryWhereClause) );
+    if ( limit >= 0 )
+      sql += QStringLiteral( " LIMIT %1" ).arg( limit );
+
+    QgsHanaConnectionRef connRef( mUri );
+    StatementRef stmt = connRef->getNativeRef()->createStatement();
+    QgsHanaResultSetRef resultSet = QgsHanaResultSet::create(stmt, sql );
+    while ( resultSet->next() )
+    {
+       uniqueValues.insert( resultSet->getValue( 1) );
+    }
+    resultSet->close();
+
+    return uniqueValues;
 }
 
 QString QgsHanaProvider::subsetString() const
@@ -561,7 +625,7 @@ bool QgsHanaProvider::deleteFeatures( const QgsFeatureIds &id )
   ConnectionRef &conn = connRef->getNativeRef();
   QString featureIds;
 
-  for ( int featId : id )
+  for ( auto featId : id )
   {
     if ( featureIds.isEmpty() )
       featureIds = FID_TO_STRING( featId );
@@ -1010,20 +1074,19 @@ QgsRectangle QgsHanaProvider::estimateExtent() const
   ConnectionRef &conn = connRef->getNativeRef();
   StatementRef stmt = conn->createStatement();
   bool isRoundEarth = isSrsRoundEarth( mSrid );
-
   QString sql;
   if ( isRoundEarth )
   {
     QString geomColumn = !mHasSrsPlanarEquivalent ? QgsHanaUtils::quotedIdentifier( mGeometryColumn ) :
-                         QStringLiteral( "%1.ST_SRID(%2)" ).arg( QgsHanaUtils::quotedIdentifier( mGeometryColumn ), QString::number( QgsHanaUtils::toPlanarSRID( mSrid ) ) );
+        QStringLiteral( "%1.ST_SRID(%2)" ).arg( QgsHanaUtils::quotedIdentifier( mGeometryColumn ), QString::number( QgsHanaUtils::toPlanarSRID( mSrid ) ) );
     sql = QStringLiteral( "SELECT MIN(%1.ST_XMin()), MIN(%1.ST_YMin()), MAX(%1.ST_XMax()), MAX(%1.ST_YMax()) FROM (%2)" )
-          .arg( geomColumn, mQuery );
+          .arg( geomColumn, buildQuery( mQuery, mQueryWhereClause) );
   }
   else
   {
     sql = QStringLiteral( "SELECT \"ext\".ST_XMin(),\"ext\".ST_YMin(),\"ext\".ST_XMax(),"
                           "\"ext\".ST_YMax() FROM (SELECT ST_EnvelopeAggr(%1) AS \"ext\" FROM (%2))" )
-          .arg( QgsHanaUtils::quotedIdentifier( mGeometryColumn ), mQuery );
+          .arg( QgsHanaUtils::quotedIdentifier( mGeometryColumn ), buildQuery( mQuery, mQueryWhereClause) );
   }
   ResultSetRef rsExtent = stmt->executeQuery( sql.toStdString().c_str() );
 
@@ -1081,7 +1144,7 @@ int QgsHanaProvider::readSrid()
   int ret = -1;
   while ( rs->next() )
   {
-    ret = *rs->getLong( 1 );
+    ret = *rs->getInt( 1 );
     break;
   }
   rs->close();
@@ -1140,7 +1203,7 @@ void QgsHanaProvider::readAttributeFields()
   for ( unsigned short i = 1; i <= rsmd->getColumnCount(); ++i )
   {
     const QString fieldName( rsmd->getColumnName( i ).c_str() );
-    if ( fieldName == mFidColumn || fieldName == mGeometryColumn )
+    if ( fieldName == mGeometryColumn )
       continue;
 
     QVariant::Type fieldType = QVariant::Invalid;
@@ -1226,13 +1289,14 @@ void QgsHanaProvider::readAttributeFields()
       mAttributeFields.append( newField );
       mFieldInfos.append( { sqlType, isAutoIncrement, isNullable, isSigned } );
 
-      std::string schemaName = rsmd->getSchemaName( i );
-      if ( schemaName.empty() )
-        schemaName = mSchemaName.toStdString();
-      ResultSetRef rsColumns = dmd->getColumns( nullptr, schemaName.c_str(),
+      QString schemaName(rsmd->getSchemaName( i ).c_str());
+      if ( schemaName.isEmpty() )
+        schemaName = mSchemaName;
+      ResultSetRef rsColumns = dmd->getColumns( nullptr, schemaName.toStdString().c_str(),
                                rsmd->getTableName( i ).c_str(), fieldName.toStdString().c_str() );
       if ( rsColumns->next() )
-        mDefaultValues.insert( mAttributeFields.size() - 1, QgsHanaUtils::toVariant( rsColumns->getString( 13/*COLUMN_DEF*/ ), sqlType ) );
+        mDefaultValues.insert( mAttributeFields.size() - 1,
+                               QgsHanaUtils::toVariant( rsColumns->getString( 13/*COLUMN_DEF*/ ), sqlType, isSigned ) );
       rsColumns->close();
     }
   }
@@ -1242,9 +1306,7 @@ void QgsHanaProvider::readAttributeFields()
 long QgsHanaProvider::getFeatureCount( const QString &whereClause ) const
 {
   QgsHanaConnectionRef connRef( mUri );
-  QString sql = QStringLiteral( "SELECT COUNT(*) FROM (%1)" ).arg( mQuery );
-  if ( !whereClause.isEmpty() )
-    sql += QStringLiteral( " WHERE " ) + whereClause;
+  QString sql = QStringLiteral( "SELECT COUNT(*) FROM (%1)" ).arg( buildQuery( mQuery, whereClause ) );
   size_t count = executeCountQuery( connRef->getNativeRef(), sql );
   return static_cast<long>( count );
 }
