@@ -27,19 +27,86 @@
 
 class QgsMarkerSymbol;
 
+
+/**
+ * \ingroup app
+ * \class QgsMapCanvasSymbolItem
+ * \brief Base class for map canvas items which are rendered using a QgsSymbol.
+ */
+class APP_EXPORT QgsMapCanvasSymbolItem: public QgsMapCanvasItem
+{
+  public:
+
+    QgsMapCanvasSymbolItem( QgsMapCanvas *canvas = nullptr );
+
+    void paint( QPainter *painter ) override;
+
+    /**
+     * Sets the symbol to use for rendering the item.
+     * \see symbol()
+     */
+    void setSymbol( std::unique_ptr< QgsSymbol > symbol );
+
+    /**
+     * Returns the symbol used for rendering the item.
+     * \see setSymbol()
+     */
+    const QgsSymbol *symbol() const;
+
+    /**
+     * Sets the feature used for rendering the symbol. The feature's attributes
+     * may affect the rendered symbol if data defined overrides are in place.
+     * \param feature feature for symbol
+     * \see feature()
+     */
+    void setFeature( const QgsFeature &feature );
+
+    /**
+     * Returns the feature used for rendering the symbol.
+     * \see setFeature()
+     */
+    QgsFeature feature() const { return mFeature; }
+
+    /**
+     * Sets the \a opacity for the item.
+     * \param opacity double between 0 and 1 inclusive, where 0 is fully transparent
+     * and 1 is fully opaque
+     * \see opacity()
+     */
+    void setOpacity( double opacity );
+
+    /**
+     * Returns the opacity for the item.
+     * \returns opacity value between 0 and 1 inclusive, where 0 is fully transparent
+     * and 1 is fully opaque
+     * \see setOpacity()
+     */
+    double opacity() const;
+
+  protected:
+
+    virtual void renderSymbol( QgsRenderContext &context, const QgsFeature &feature ) = 0;
+
+    QgsRenderContext renderContext( QPainter *painter );
+    std::unique_ptr< QgsSymbol > mSymbol;
+    QgsFeature mFeature;
+
+  private:
+
+    std::unique_ptr< QgsDrawSourceEffect > mOpacityEffect;
+
+};
+
 /**
  * \ingroup app
  * \class QgsPointMarkerItem
  * \brief An item that shows a point marker symbol centered on a map location.
  */
-
-class APP_EXPORT QgsPointMarkerItem: public QgsMapCanvasItem
+class APP_EXPORT QgsPointMarkerItem: public QgsMapCanvasSymbolItem
 {
   public:
 
     QgsPointMarkerItem( QgsMapCanvas *canvas = nullptr );
-
-    void paint( QPainter *painter ) override;
 
     /**
      * Sets the center point of the marker symbol (in map coordinates)
@@ -48,65 +115,18 @@ class APP_EXPORT QgsPointMarkerItem: public QgsMapCanvasItem
     void setPointLocation( const QgsPointXY &p );
 
     /**
-     * Sets the marker symbol to use for rendering the point. Note - you may need to call
-     * updateSize() after setting the symbol.
-     * \param symbol marker symbol. Ownership is transferred to item.
-     * \see symbol()
-     * \see updateSize()
-     */
-    void setSymbol( QgsMarkerSymbol *symbol );
-
-    /**
-     * Returns the marker symbol used for rendering the point.
-     * \see setSymbol()
-     */
-    QgsMarkerSymbol *symbol();
-
-    /**
-     * Sets the feature used for rendering the marker symbol. The feature's attributes
-     * may affect the rendered symbol if data defined overrides are in place.
-     * \param feature feature for symbol
-     * \see feature()
-     * \see updateSize()
-     */
-    void setFeature( const QgsFeature &feature );
-
-    /**
-     * Returns the feature used for rendering the marker symbol.
-     * \see setFeature()
-     */
-    QgsFeature feature() const { return mFeature; }
-
-    /**
      * Must be called after setting the symbol or feature and when the symbol's size may
      * have changed.
      */
     void updateSize();
 
-    /**
-     * Sets the \a opacity for the marker.
-     * \param opacity double between 0 and 1 inclusive, where 0 is fully transparent
-     * and 1 is fully opaque
-     * \see opacity()
-     */
-    void setOpacity( double opacity );
-
-    /**
-     * Returns the opacity for the marker.
-     * \returns opacity value between 0 and 1 inclusive, where 0 is fully transparent
-     * and 1 is fully opaque
-     * \see setOpacity()
-     */
-    double opacity() const;
+    void renderSymbol( QgsRenderContext &context, const QgsFeature &feature ) override;
 
   private:
 
-    QgsFeature mFeature;
-    std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
     QPointF mLocation;
-    std::unique_ptr< QgsDrawSourceEffect > mOpacityEffect;
 
-    QgsRenderContext renderContext( QPainter *painter );
+    QgsMarkerSymbol *markerSymbol();
 };
 
 #endif // QGSPOINTMARKERITEM_H
