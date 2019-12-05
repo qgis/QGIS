@@ -166,15 +166,6 @@ void QgsClassificationMethod::addParameter( QgsProcessingParameterDefinition *de
   mParameters.append( definition );
 }
 
-QVariant QgsClassificationMethod::parameterValue( const QString &name ) const
-{
-  const QgsProcessingParameterDefinition *def = parameterDefinition( name );
-  if ( def )
-    return mParameterValues.value( name, def->defaultValue() );
-  else
-    return mParameterValues.value( name );
-}
-
 const QgsProcessingParameterDefinition *QgsClassificationMethod::parameterDefinition( const QString &parameterName ) const
 {
   for ( const QgsProcessingParameterDefinition *def : mParameters )
@@ -188,7 +179,7 @@ const QgsProcessingParameterDefinition *QgsClassificationMethod::parameterDefini
 void QgsClassificationMethod::setParameterValues( const QVariantMap &values )
 {
   mParameterValues = values;
-  for ( auto it = mParameterValues.begin(); it != mParameterValues.end(); ++it  )
+  for ( auto it = mParameterValues.begin(); it != mParameterValues.end(); ++it )
   {
     if ( !parameterDefinition( it.key() ) )
     {

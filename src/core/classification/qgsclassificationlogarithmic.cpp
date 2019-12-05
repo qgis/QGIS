@@ -18,6 +18,8 @@
 #include "qgsclassificationlogarithmic.h"
 #include "qgssymbollayerutils.h"
 #include "qgsapplication.h"
+#include "qgsprocessingcontext.h"
+
 
 QgsClassificationLogarithmic::QgsClassificationLogarithmic()
   : QgsClassificationMethod( NoFlag, 0 )
@@ -55,7 +57,10 @@ QList<double> QgsClassificationLogarithmic::calculateBreaks( double &minimum, do
   if ( maximum <= 0 )
     return QList<double>();
 
-  if ( parameterValue( QStringLiteral( "FILTER_ZERO_NEG_VALUES" ) ).toBool() && minimum <= 0 )
+  QgsProcessingContext context;
+  bool filterZeroNeg = QgsProcessingParameters::parameterAsBool( parameterDefinition( QStringLiteral( "FILTER_ZERO_NEG_VALUES" ) ), parameterValues(), context );
+
+  if ( filterZeroNeg && minimum <= 0 )
   {
     Q_ASSERT( values.count() );
     minimum = std::numeric_limits<double>::max();
@@ -109,5 +114,6 @@ QString QgsClassificationLogarithmic::labelForRange( double lowerValue, double u
 
 bool QgsClassificationLogarithmic::valuesRequired() const
 {
-  return parameterValue( QStringLiteral( "FILTER_ZERO_NEG_VALUES" ) ).toBool();
+  QgsProcessingContext context;
+  return QgsProcessingParameters::parameterAsBool( parameterDefinition( QStringLiteral( "FILTER_ZERO_NEG_VALUES" ) ), parameterValues(), context );
 }

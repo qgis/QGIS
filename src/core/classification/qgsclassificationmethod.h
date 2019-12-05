@@ -312,11 +312,10 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
     void addParameter( QgsProcessingParameterDefinition *definition SIP_TRANSFER );
 
     /**
-     * Get the parameter value
-     * \see setParameterValues
-     * \since QGIS 3.12
+     * Return the values of the processing parameters.
+     * One could use QgsProcessingParameters::parameterAsXxxx to retrieve the actual value of a parameter.
      */
-    QVariant parameterValue( const QString &name ) const;
+    QVariantMap parameterValues() const {return mParameterValues;}
 
   private:
 
