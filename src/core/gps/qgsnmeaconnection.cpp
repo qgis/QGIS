@@ -122,7 +122,7 @@ void QgsNmeaConnection::processStringBuffer()
           mStatus = GPSDataReceived;
           QgsDebugMsg( QStringLiteral( "*******************GPS data received****************" ) );
         }
-        else if ( substring.startsWith( QLatin1String( "$GPGSA" ) ) )
+        else if ( substring.startsWith( QLatin1String( "$GPGSA" ) ) || substring.startsWith( QLatin1String( "$GNGSA" ) ) )
         {
           QgsDebugMsg( substring );
           processGsaSentence( ba.data(), ba.length() );
