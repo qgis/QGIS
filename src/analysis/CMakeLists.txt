@@ -98,6 +98,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmpointtolayer.cpp
   processing/qgsalgorithmpointsalonggeometry.cpp
   processing/qgsalgorithmpointslayerfromtable.cpp
+  processing/qgsalgorithmpoleofinaccessibility.cpp
   processing/qgsalgorithmprojectpointcartesian.cpp
   processing/qgsalgorithmpromotetomultipart.cpp
   processing/qgsalgorithmrandompointsextent.cpp

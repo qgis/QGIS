@@ -535,7 +535,7 @@ tests:
         name: expected/snap_geometries.gml
         type: vector
 
-  - algorithm: qgis:poleofinaccessibility
+  - algorithm: native:poleofinaccessibility
     name: Pole of inaccessibility (polygons)
     params:
       INPUT:

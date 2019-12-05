@@ -65,7 +65,6 @@ from .PointsDisplacement import PointsDisplacement
 from .PointsFromLines import PointsFromLines
 from .PointsToPaths import PointsToPaths
 from .PolarPlot import PolarPlot
-from .PoleOfInaccessibility import PoleOfInaccessibility
 from .Polygonize import Polygonize
 from .PostGISExecuteSQL import PostGISExecuteSQL
 from .PostGISExecuteAndLoadSQL import PostGISExecuteAndLoadSQL
@@ -154,7 +153,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 PointsFromLines(),
                 PointsToPaths(),
                 PolarPlot(),
-                PoleOfInaccessibility(),
                 Polygonize(),
                 PostGISExecuteSQL(),
                 PostGISExecuteAndLoadSQL(),

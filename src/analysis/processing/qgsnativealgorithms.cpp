@@ -92,6 +92,7 @@
 #include "qgsalgorithmpointtolayer.h"
 #include "qgsalgorithmpointsalonggeometry.h"
 #include "qgsalgorithmpointslayerfromtable.h"
+#include "qgsalgorithmpoleofinaccessibility.h"
 #include "qgsalgorithmprojectpointcartesian.h"
 #include "qgsalgorithmpromotetomultipart.h"
 #include "qgsalgorithmrandompointsextent.h"
@@ -273,6 +274,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsPointToLayerAlgorithm() );
   addAlgorithm( new QgsPointsAlongGeometryAlgorithm() );
   addAlgorithm( new QgsPointsLayerFromTableAlgorithm() );
+  addAlgorithm( new QgsPoleOfInaccessibilityAlgorithm() );
   addAlgorithm( new QgsProjectPointCartesianAlgorithm() );
   addAlgorithm( new QgsPromoteToMultipartAlgorithm() );
   addAlgorithm( new QgsRandomPointsExtentAlgorithm() );
