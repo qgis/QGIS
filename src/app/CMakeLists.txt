@@ -232,6 +232,7 @@ SET(QGIS_APP_SRCS
   locator/qgsinbuiltlocatorfilters.cpp
   locator/qgslocatoroptionswidget.cpp
 
+  gps/qgsgpsbearingitem.cpp
   gps/qgsgpsinformationwidget.cpp
   gps/qgsgpsmarker.cpp
 
