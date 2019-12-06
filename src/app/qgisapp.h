@@ -158,6 +158,7 @@ class QgsNetworkRequestParameters;
 #include "qgsoptionswidgetfactory.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsmasterlayoutinterface.h"
+#include "qgsmaptoolselect.h"
 #include "ogr/qgsvectorlayersaveasdialog.h"
 #include "ui_qgisapp.h"
 #include "qgis_app.h"
@@ -1529,6 +1530,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void showRotation();
 
     void showPanMessage( double distance, QgsUnitTypes::DistanceUnit unit, double bearing );
+
+    void selectionModeChanged( QgsMapToolSelect::Mode mode );
 
     void displayMapToolMessage( const QString &message, Qgis::MessageLevel level = Qgis::Info );
     void displayMessage( const QString &title, const QString &message, Qgis::MessageLevel level );

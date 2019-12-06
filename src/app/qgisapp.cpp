@@ -4023,15 +4023,19 @@ void QgisApp::createCanvasTools()
   mMapTools.mSelectFeatures = new QgsMapToolSelect( mMapCanvas );
   mMapTools.mSelectFeatures->setAction( mActionSelectFeatures );
   mMapTools.mSelectFeatures->setSelectionMode( QgsMapToolSelectionHandler::SelectSimple );
+  connect( mMapTools.mSelectFeatures, &QgsMapToolSelect::modeChanged, this, &QgisApp::selectionModeChanged );
   mMapTools.mSelectPolygon = new QgsMapToolSelect( mMapCanvas );
   mMapTools.mSelectPolygon->setAction( mActionSelectPolygon );
   mMapTools.mSelectPolygon->setSelectionMode( QgsMapToolSelectionHandler::SelectPolygon );
+  connect( mMapTools.mSelectPolygon, &QgsMapToolSelect::modeChanged, this, &QgisApp::selectionModeChanged );
   mMapTools.mSelectFreehand = new QgsMapToolSelect( mMapCanvas );
   mMapTools.mSelectFreehand->setAction( mActionSelectFreehand );
   mMapTools.mSelectFreehand->setSelectionMode( QgsMapToolSelectionHandler::SelectFreehand );
+  connect( mMapTools.mSelectFreehand, &QgsMapToolSelect::modeChanged, this, &QgisApp::selectionModeChanged );
   mMapTools.mSelectRadius = new QgsMapToolSelect( mMapCanvas );
   mMapTools.mSelectRadius->setAction( mActionSelectRadius );
   mMapTools.mSelectRadius->setSelectionMode( QgsMapToolSelectionHandler::SelectRadius );
+  connect( mMapTools.mSelectRadius, &QgsMapToolSelect::modeChanged, this, &QgisApp::selectionModeChanged );
   mMapTools.mAddRing = new QgsMapToolAddRing( mMapCanvas );
   mMapTools.mAddRing->setAction( mActionAddRing );
   mMapTools.mFillRing = new QgsMapToolFillRing( mMapCanvas );
@@ -12809,6 +12813,43 @@ void QgisApp::showPanMessage( double distance, QgsUnitTypes::DistanceUnit unit, 
                            QgsCoordinateFormatter::formatX( bearing, QgsCoordinateFormatter::FormatDecimalDegrees, 1, QgsCoordinateFormatter::FlagDegreesUseStringSuffix ) ), 2000 );
 }
 
+void QgisApp::selectionModeChanged( QgsMapToolSelect::Mode mode )
+{
+  switch ( mode )
+  {
+    case QgsMapToolSelect::GeometryIntersectsSetSelection:
+      mStatusBar->showMessage( QString() );
+      break;
+    case QgsMapToolSelect::GeometryIntersectsAddToSelection:
+      mStatusBar->showMessage( tr( "Add to the current selection" ) );
+      break;
+
+    case QgsMapToolSelect::GeometryIntersectsSubtractFromSelection:
+      mStatusBar->showMessage( tr( "Subtract from the current selection" ) );
+      break;
+
+    case QgsMapToolSelect::GeometryIntersectsIntersectWithSelection:
+      mStatusBar->showMessage( tr( "Intersect with the current selection" ) );
+      break;
+
+    case QgsMapToolSelect::GeometryWithinSetSelection:
+      mStatusBar->showMessage( tr( "Select features completely within" ) );
+      break;
+
+    case QgsMapToolSelect::GeometryWithinAddToSelection:
+      mStatusBar->showMessage( tr( "Add features completely within to the current selection" ) );
+      break;
+
+    case QgsMapToolSelect::GeometryWithinSubtractFromSelection:
+      mStatusBar->showMessage( tr( "Subtract features completely within from the current selection" ) );
+      break;
+
+    case QgsMapToolSelect::GeometryWithinIntersectWithSelection:
+      mStatusBar->showMessage( tr( "Intersect features completely within with the current selection" ) );
+      break;
+
+  }
+}
 
 void QgisApp::updateMouseCoordinatePrecision()
 {
