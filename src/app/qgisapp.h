@@ -2025,24 +2025,30 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsMessageBar *visibleMessageBar();
 
     /**
-     * Searches for layer dependencies by querying widgets and the layer itself for broken relations
+     * Searches for layer dependencies by querying the form widgets and the
+     * \a vectorLayer itself for broken relations. Style \a categories can be
+     * used to exclude one of the currently implemented search categories
+     * ("Forms" for the form widgets and "Relations" for layer weak relations).
      * \return a list of weak references to broken layer dependencies
      */
-    const QList< QgsVectorLayerRef > findBrokenLayerDependencies( QgsVectorLayer *vectorLayer ) const;
+    const QList< QgsVectorLayerRef > findBrokenLayerDependencies( QgsVectorLayer *vectorLayer,
+        QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const;
 
     /**
      * Scans the \a vectorLayer for broken dependencies and automatically
-     * try to load the missing layer and warns the user about the operation
-     * result.
+     * try to load the missing layers, users are notified about the operation
+     * result. Style \a categories can be
+     * used to exclude one of the currently implemented search categories
+     * ("Forms" for the form widgets and "Relations" for layer weak relations).
      */
-    void checkVectorLayerDependencies( QgsVectorLayer *vectorLayer );
+    void resolveVectorLayerDependencies( QgsVectorLayer *vectorLayer,
+                                         QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
 
     /**
-     * Scans the \a vectorLayer for broken relations and automatically
-     * try to create the missing relation and warns the user about the operation
-     * result.
+     * Scans the \a vectorLayer for weak relations and automatically
+     * try to resolve and create the broken relations.
      */
-    void checkVectorLayerRelations( QgsVectorLayer *vectorLayer );
+    void resolveVectorLayerWeakRelations( QgsVectorLayer *vectorLayer );
 
 
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;

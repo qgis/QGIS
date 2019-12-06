@@ -678,13 +678,13 @@ void QgisApp::vectorLayerStyleLoaded( QgsMapLayer::StyleCategories categories )
     // Check broken dependencies in forms
     if ( categories.testFlag( QgsMapLayer::StyleCategory::Forms ) )
     {
-      checkVectorLayerDependencies( vl );
+      resolveVectorLayerDependencies( vl );
     }
 
     // Check broken relations and try to restore them
     if ( categories.testFlag( QgsMapLayer::StyleCategory::Relations ) )
     {
-      checkVectorLayerRelations( vl );
+      resolveVectorLayerWeakRelations( vl );
     }
 
   }
@@ -2008,73 +2008,78 @@ QgsMessageBar *QgisApp::visibleMessageBar()
   }
 }
 
-const QList<QgsVectorLayerRef> QgisApp::findBrokenLayerDependencies( QgsVectorLayer *vl ) const
+const QList<QgsVectorLayerRef> QgisApp::findBrokenLayerDependencies( QgsVectorLayer *vl, QgsMapLayer::StyleCategories categories ) const
 {
   QList<QgsVectorLayerRef> brokenDependencies;
 
-  // Check for missing layer widget dependencies
-  for ( int i = 0; i < vl->fields().count(); i++ )
+  if ( categories.testFlag( QgsMapLayer::StyleCategory::Forms ) )
   {
-    const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( vl, vl->fields().field( i ).name() );
-    QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
-    if ( fieldFormatter )
+    for ( int i = 0; i < vl->fields().count(); i++ )
     {
-      const QList<QgsVectorLayerRef> constDependencies { fieldFormatter->layerDependencies( setup.config() ) };
-      for ( const QgsVectorLayerRef &dependency : constDependencies )
+      const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( vl, vl->fields().field( i ).name() );
+      QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+      if ( fieldFormatter )
       {
-        const QgsVectorLayer *depVl { QgsVectorLayerRef( dependency ).resolveWeakly(
-                                        QgsProject::instance(),
-                                        QgsVectorLayerRef::MatchType::Name ) };
-        if ( ! depVl || ! depVl->isValid() )
+        const QList<QgsVectorLayerRef> constDependencies { fieldFormatter->layerDependencies( setup.config() ) };
+        for ( const QgsVectorLayerRef &dependency : constDependencies )
         {
-          brokenDependencies.append( dependency );
+          const QgsVectorLayer *depVl { QgsVectorLayerRef( dependency ).resolveWeakly(
+                                          QgsProject::instance(),
+                                          QgsVectorLayerRef::MatchType::Name ) };
+          if ( ! depVl || ! depVl->isValid() )
+          {
+            brokenDependencies.append( dependency );
+          }
         }
       }
     }
   }
 
-  // Check for layer weak relations
-  const QList<QgsWeakRelation> constWeakRelations { vl->weakRelations() };
-  for ( const QgsWeakRelation &rel : constWeakRelations )
+  if ( categories.testFlag( QgsMapLayer::StyleCategory::Relations ) )
   {
-    QgsRelation relation { rel.resolvedRelation( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name ) };
-    QgsVectorLayerRef dependency;
-    bool found = false;
-    if ( ! relation.isValid() )
+    // Check for layer weak relations
+    const QList<QgsWeakRelation> constWeakRelations { vl->weakRelations() };
+    for ( const QgsWeakRelation &rel : constWeakRelations )
     {
-      // We need just the other side of the relation
-      if ( relation.referencedLayer() == vl )
+      QgsRelation relation { rel.resolvedRelation( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name ) };
+      QgsVectorLayerRef dependency;
+      bool found = false;
+      if ( ! relation.isValid() )
       {
-        dependency = rel.referencingLayer();
-        found = true;
-      }
-      else if ( relation.referencingLayer() == vl )
-      {
-        dependency = rel.referencedLayer();
-        found = true;
-      }
-      else
-      {
-        // Something wrong is going on here, maybe this relation
-        // does not really apply to this layer?
-        QgsMessageLog::logMessage( tr( "None of the layers in the relation stored in the style match the current layer, skipping relation id: %1." ).arg( relation.id() ) );
-      }
-
-      if ( found )
-      {
-        // Make sure we don't add it twice
-        bool refFound = false;
-        for ( const QgsVectorLayerRef &otherRef : qgis::as_const( brokenDependencies ) )
+        // We need just the other side of the relation
+        if ( relation.referencedLayer() == vl )
         {
-          if ( dependency.layerId == otherRef.layerId || ( dependency.source == otherRef.source && dependency.provider == otherRef.provider ) )
-          {
-            refFound = true;
-            break;
-          }
+          dependency = rel.referencingLayer();
+          found = true;
         }
-        if ( ! refFound )
+        else if ( relation.referencingLayer() == vl )
         {
-          brokenDependencies.append( dependency );
+          dependency = rel.referencedLayer();
+          found = true;
+        }
+        else
+        {
+          // Something wrong is going on here, maybe this relation
+          // does not really apply to this layer?
+          QgsMessageLog::logMessage( tr( "None of the layers in the relation stored in the style match the current layer, skipping relation id: %1." ).arg( relation.id() ) );
+        }
+
+        if ( found )
+        {
+          // Make sure we don't add it twice
+          bool refFound = false;
+          for ( const QgsVectorLayerRef &otherRef : qgis::as_const( brokenDependencies ) )
+          {
+            if ( dependency.layerId == otherRef.layerId || ( dependency.source == otherRef.source && dependency.provider == otherRef.provider ) )
+            {
+              refFound = true;
+              break;
+            }
+          }
+          if ( ! refFound )
+          {
+            brokenDependencies.append( dependency );
+          }
         }
       }
     }
@@ -2082,11 +2087,11 @@ const QList<QgsVectorLayerRef> QgisApp::findBrokenLayerDependencies( QgsVectorLa
   return brokenDependencies;
 }
 
-void QgisApp::checkVectorLayerDependencies( QgsVectorLayer *vl )
+void QgisApp::resolveVectorLayerDependencies( QgsVectorLayer *vl, QgsMapLayer::StyleCategories categories )
 {
   if ( vl && vl->isValid() )
   {
-    const auto constDependencies { findBrokenLayerDependencies( vl ) };
+    const auto constDependencies { findBrokenLayerDependencies( vl, categories ) };
     for ( const QgsVectorLayerRef &dependency : constDependencies )
     {
       // try to aggressively resolve the broken dependencies
@@ -2176,7 +2181,7 @@ void QgisApp::checkVectorLayerDependencies( QgsVectorLayer *vl )
   }
 }
 
-void QgisApp::checkVectorLayerRelations( QgsVectorLayer *vectorLayer )
+void QgisApp::resolveVectorLayerWeakRelations( QgsVectorLayer *vectorLayer )
 {
   if ( vectorLayer && vectorLayer->isValid() )
   {
@@ -6592,7 +6597,7 @@ bool QgisApp::addProject( const QString &projectFile )
     {
       if ( vl->isValid() )
       {
-        checkVectorLayerDependencies( vl );
+        resolveVectorLayerDependencies( vl );
       }
     }
 
