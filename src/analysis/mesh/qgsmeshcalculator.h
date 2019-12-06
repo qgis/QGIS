@@ -68,8 +68,6 @@ class ANALYSIS_EXPORT QgsMeshCalculator
     /**
      * Creates calculator with bounding box (rectangular) mask
      * \param formulaString formula/expression to evaluate. Consists of dataset group names, operators and numbers
-     * \param outputDriver output driver name
-     * \param outputGroupName output group name
      * \param outputFile file to store the resulting dataset group data
      * \param outputExtent spatial filter defined by rectangle
      * \param startTime time filter defining the starting dataset
@@ -88,8 +86,6 @@ class ANALYSIS_EXPORT QgsMeshCalculator
     /**
      * Creates calculator with geometry mask
      * \param formulaString formula/expression to evaluate. Consists of dataset group names, operators and numbers
-     * \param outputDriver output driver name
-     * \param outputGroupName output group name
      * \param outputFile file to store the resulting dataset group data
      * \param outputMask spatial filter defined by geometry
      * \param startTime time filter defining the starting dataset

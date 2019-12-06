@@ -237,7 +237,7 @@ void TestQgsMeshCalculator::calcWithVertexLayers()
   int newGroupCount = mpMeshLayer->dataProvider()->datasetGroupCount();
   QCOMPARE( newGroupCount, groupCount + 1 );
   const QgsMeshDatasetValue val = mpMeshLayer->dataProvider()->datasetValue( QgsMeshDatasetIndex( newGroupCount - 1, 0 ), 0 );
-  QCOMPARE( val.scalar(), 3 );
+  QCOMPARE( val.scalar(), 3.0 );
 }
 
 void TestQgsMeshCalculator::calcWithFaceLayers()
@@ -263,7 +263,7 @@ void TestQgsMeshCalculator::calcWithFaceLayers()
   int newGroupCount = mpMeshLayer->dataProvider()->datasetGroupCount();
   QCOMPARE( newGroupCount, groupCount + 1 );
   const QgsMeshDatasetValue val = mpMeshLayer->dataProvider()->datasetValue( QgsMeshDatasetIndex( newGroupCount - 1, 0 ), 0 );
-  QCOMPARE( val.scalar(), 3 );
+  QCOMPARE( val.scalar(), 3.0 );
 }
 
 void TestQgsMeshCalculator::calcWithMixedLayers()
@@ -289,7 +289,7 @@ void TestQgsMeshCalculator::calcWithMixedLayers()
   int newGroupCount = mpMeshLayer->dataProvider()->datasetGroupCount();
   QCOMPARE( newGroupCount, groupCount + 1 );
   const QgsMeshDatasetValue val = mpMeshLayer->dataProvider()->datasetValue( QgsMeshDatasetIndex( newGroupCount - 1, 0 ), 0 );
-  QCOMPARE( val.scalar(), 2 );
+  QCOMPARE( val.scalar(), 2.0 );
 }
 
 QGSTEST_MAIN( TestQgsMeshCalculator )
