@@ -43,6 +43,67 @@ class QgsTransaction;
 
 class QgsRasterDataProvider;
 
+/**
+ * \ingroup core
+ * Holds metadata about mesh driver
+ *
+ * \since QGIS 3.12
+ */
+class CORE_EXPORT QgsMeshDriverMetadata
+{
+    Q_GADGET
+
+  public:
+
+    /**
+     * Flags for the capabilities of the driver
+     */
+    enum MeshDriverCapability
+    {
+      CanWriteFaceDatasets = 1 << 0, //!< If the driver can persist datasets defined on faces
+      CanWriteVertexDatasets = 1 << 1, //!< If the driver can persist datasets defined on vertices
+    };
+
+    Q_ENUM( MeshDriverCapability )
+    Q_DECLARE_FLAGS( MeshDriverCapabilities, MeshDriverCapability )
+    Q_FLAG( MeshDriverCapabilities )
+
+    //! Constructs default metadata without any capabilities
+    QgsMeshDriverMetadata();
+
+    /**
+     * Constructs driver metadata with selected capabilities
+     *
+     * \param name name/key of the driver
+     * \param description short description of the driver
+     * \param capabilities driver's capabilities
+     */
+    QgsMeshDriverMetadata( const QString &name,
+                           const QString &description,
+                           const MeshDriverCapabilities &capabilities );
+
+    /**
+     * Returns the capabilities for this driver.
+     */
+    MeshDriverCapabilities capabilities() const;
+
+    /**
+     * Returns the name (key) for this driver.
+     */
+    QString name() const;
+
+    /**
+     * Returns the description for this driver.
+     */
+    QString description() const;
+
+  private:
+    QString mName;
+    QString mDescription;
+    MeshDriverCapabilities mCapabilities;
+};
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMeshDriverMetadata::MeshDriverCapabilities )
 
 /**
  * \ingroup core
@@ -154,6 +215,13 @@ class CORE_EXPORT QgsProviderMetadata
      * \since QGIS 3.10
      */
     virtual QString filters( FilterType type );
+
+    /**
+     * Builds the list of available mesh drivers metadata
+     *
+     * \since QGIS 3.12
+     */
+    virtual QList<QgsMeshDriverMetadata> meshDriversMetadata();
 
     /**
      * Class factory to return a pointer to a newly created QgsDataProvider object

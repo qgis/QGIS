@@ -190,7 +190,21 @@ bool QgsMdalProvider::persistDatasetGroup( const QString &path,
       return true;
   }
 
-  const QString driverName( "BINARY_DAT" ); //nothing else is implemented in MDAL
+  if ( path.isEmpty() )
+    return true;
+
+  // Form DRIVER:filename
+  QString filename = path;
+  // ASCII dat supports both face and vertex datasets
+  QString driverName = QStringLiteral( "DAT" );
+  QStringList parts = path.split( ':' );
+  if ( parts.size() > 1 )
+  {
+    driverName = parts[0];
+    parts.removeFirst();
+    filename = parts.join( QString() );
+  }
+
   DriverH driver = MDAL_driverFromName( driverName.toStdString().c_str() );
   if ( !driver )
     return true;
@@ -681,6 +695,37 @@ QString QgsMdalProviderMetadata::filters( FilterType type )
     default:
       return QString();
   }
+}
+
+QList<QgsMeshDriverMetadata> QgsMdalProviderMetadata::meshDriversMetadata()
+{
+  DriverH mdalDriver;
+  QList<QgsMeshDriverMetadata> ret;
+
+  int driverCount = MDAL_driverCount();
+  for ( int i = 0; i < driverCount; ++i )
+  {
+    mdalDriver = MDAL_driverFromIndex( i );
+    if ( !mdalDriver )
+    {
+      QgsLogger::warning( "unable to get driver " + QString::number( i ) );
+      continue;
+    }
+
+    QString name = MDAL_DR_name( mdalDriver );
+    QString longName = MDAL_DR_longName( mdalDriver );
+
+    QgsMeshDriverMetadata::MeshDriverCapabilities capabilities;
+    bool hasSaveFaceDatasetsCapability = MDAL_DR_writeDatasetsCapability( mdalDriver, MDAL_DataLocation::DataOnFaces2D );
+    if ( hasSaveFaceDatasetsCapability )
+      capabilities |= QgsMeshDriverMetadata::CanWriteFaceDatasets;
+    bool hasSaveVertexDatasetsCapability = MDAL_DR_writeDatasetsCapability( mdalDriver, MDAL_DataLocation::DataOnVertices2D );
+    if ( hasSaveVertexDatasetsCapability )
+      capabilities |= QgsMeshDriverMetadata::CanWriteVertexDatasets;
+    const QgsMeshDriverMetadata meta( name, longName, capabilities );
+    ret.push_back( meta );
+  }
+  return ret;
 }
 
 QgsMdalProviderMetadata::QgsMdalProviderMetadata()

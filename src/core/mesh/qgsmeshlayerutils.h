@@ -159,8 +159,8 @@ class CORE_EXPORT QgsMeshLayerUtils
     */
     static QVector<double> interpolateFromFacesData(
       QVector<double> valuesOnFaces,
-      QgsMesh *nativeMesh,
-      QgsTriangularMesh *triangularMesh,
+      const QgsMesh *nativeMesh,
+      const QgsTriangularMesh *triangularMesh,
       QgsMeshDataBlock *active,
       QgsMeshRendererScalarSettings::DataInterpolationMethod method
     );

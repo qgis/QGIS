@@ -75,6 +75,11 @@ QString QgsProviderMetadata::filters( FilterType )
   return QString();
 }
 
+QList<QgsMeshDriverMetadata> QgsProviderMetadata::meshDriversMetadata()
+{
+  return QList<QgsMeshDriverMetadata>();
+}
+
 QgsDataProvider *QgsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {
   if ( mCreateFunction )
@@ -209,8 +214,8 @@ void QgsProviderMetadata::deleteConnection( const QString &name )
 
 void QgsProviderMetadata::saveConnection( const QgsAbstractProviderConnection *connection, const QString &name )
 {
-  Q_UNUSED( connection );
-  Q_UNUSED( name );
+  Q_UNUSED( connection )
+  Q_UNUSED( name )
   throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "saveConnection" ) ) );
 }
 
@@ -239,6 +244,24 @@ QMap<QString, T *> QgsProviderMetadata::connections( bool cached )
   return result;
 }
 
+QgsMeshDriverMetadata::QgsMeshDriverMetadata() = default;
 
+QgsMeshDriverMetadata::QgsMeshDriverMetadata( const QString &name, const QString &description, const MeshDriverCapabilities &capabilities )
+  : mName( name ), mDescription( description ), mCapabilities( capabilities )
+{
+}
 
+QgsMeshDriverMetadata::MeshDriverCapabilities QgsMeshDriverMetadata::capabilities() const
+{
+  return mCapabilities;
+}
 
+QString QgsMeshDriverMetadata::name() const
+{
+  return mName;
+}
+
+QString QgsMeshDriverMetadata::description() const
+{
+  return mDescription;
+}

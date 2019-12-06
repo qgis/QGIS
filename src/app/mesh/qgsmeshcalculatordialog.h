@@ -20,6 +20,7 @@
 
 #include "ui_qgsmeshcalculatordialogbase.h"
 #include "qgsmeshcalculator.h"
+#include "qgsprovidermetadata.h"
 #include "qgshelp.h"
 #include "qgis_app.h"
 
@@ -30,7 +31,7 @@ class APP_EXPORT QgsMeshCalculatorDialog: public QDialog, private Ui::QgsMeshCal
   public:
 
     /**
-     * Constructor for raster calculator dialog
+     * Constructor for mesh calculator dialog
      * \param meshLayer main mesh layer, will be used for default extent and projection
      * \param parent widget
      * \param f window flags
@@ -45,8 +46,8 @@ class APP_EXPORT QgsMeshCalculatorDialog: public QDialog, private Ui::QgsMeshCal
     void mDatasetsListWidget_doubleClicked( QListWidgetItem *item );
     void mCurrentLayerExtentButton_clicked();
     void mAllTimesButton_clicked();
-    void mExpressionTextEdit_textChanged();
     void toggleExtendMask( int state );
+    void updateInfoMessage();
 
     //calculator buttons
     void mPlusPushButton_clicked();
@@ -82,6 +83,8 @@ class APP_EXPORT QgsMeshCalculatorDialog: public QDialog, private Ui::QgsMeshCal
     QString outputFile() const;
     QgsRectangle outputExtent() const;
     QgsGeometry maskGeometry() const;
+    QString driver() const;
+    QString groupName() const;
 
     double startTime() const;
     double endTime() const;
@@ -104,25 +107,24 @@ class APP_EXPORT QgsMeshCalculatorDialog: public QDialog, private Ui::QgsMeshCal
     //! Sets available times from layer
     void repopulateTimeCombos();
 
-    //! Enables OK button if calculator expression is valid and output file path exists
-    void setAcceptButtonState();
-
     //! Quotes the dataset group name for calculator
     QString quoteDatasetGroupEntry( const QString group );
 
     //! Gets all datasets groups from layer and populated list
     void getDatasetGroupNames();
 
-    //! Returns true if mesh calculator expression has valid syntax
-    bool expressionValid() const;
-
-    //! Returns true if file path is valid and writable
-    bool filePathValid() const;
-
     //! Add file suffix if not present
     QString addSuffix( const QString fileName ) const;
 
+    //! Gets all mesh drivers that can persist datasets
+    void getMeshDrivers();
+
+    //! Populates the combo box with output formats
+    void populateDriversComboBox( );
+
     QgsMeshLayer *mLayer;
+    QHash<QString, QgsMeshDriverMetadata> mMeshDrivers;
+
     friend class TestQgsMeshCalculatorDialog;
 };
 
