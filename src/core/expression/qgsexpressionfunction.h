@@ -363,7 +363,7 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
                                  bool lazyEval = false,
                                  const QStringList &aliases = QStringList(),
                                  bool handlesNull = false )
-      : QgsExpressionFunction( fnname, params, group, helpText, lazyEval, handlesNull, false )
+      : QgsExpressionFunction( fnname, params, group, helpText, lazyEval, handlesNull )
       , mFnc( fcn )
       , mAliases( aliases )
       , mUsesGeometry( usesGeometry )
@@ -384,7 +384,7 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
                                  bool lazyEval = false,
                                  const QStringList &aliases = QStringList(),
                                  bool handlesNull = false )
-      : QgsExpressionFunction( fnname, params, group, helpText, lazyEval, handlesNull, false )
+      : QgsExpressionFunction( fnname, params, group, helpText, lazyEval, handlesNull )
       , mFnc( fcn )
       , mAliases( aliases )
       , mUsesGeometry( usesGeometry )
@@ -427,7 +427,7 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
                                  bool lazyEval = false,
                                  const QStringList &aliases = QStringList(),
                                  bool handlesNull = false )
-      : QgsExpressionFunction( fnname, params, groups, helpText, lazyEval, handlesNull, false )
+      : QgsExpressionFunction( fnname, params, groups, helpText, lazyEval, handlesNull )
       , mFnc( fcn )
       , mAliases( aliases )
       , mUsesGeometry( usesGeometry )
