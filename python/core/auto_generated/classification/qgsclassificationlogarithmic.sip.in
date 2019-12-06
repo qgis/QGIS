@@ -22,7 +22,7 @@ Implementation of a logarithmic scale method
 %End
   public:
 
-    enum class NegativeValueHandling
+    enum NegativeValueHandling
     {
       NoHandling,
       Discard,

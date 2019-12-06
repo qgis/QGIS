@@ -29,7 +29,11 @@ class CORE_EXPORT QgsClassificationLogarithmic : public QgsClassificationMethod
 {
   public:
 
-    enum class NegativeValueHandling : int
+    /**
+       * Handling of negative and 0 values in the method
+       * \since QGIS 3.12
+       */
+    enum NegativeValueHandling
     {
       NoHandling = 0, //!< No handling
       Discard,        //!< Negative values are discarded - this will require all values

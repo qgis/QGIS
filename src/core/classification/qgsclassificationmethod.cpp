@@ -185,7 +185,7 @@ const QgsProcessingParameterDefinition *QgsClassificationMethod::parameterDefini
     if ( def->name() == parameterName )
       return def;
   }
-  QgsMessageLog::logMessage( QStringLiteral( "No parameter defintion found for %1 in %2 method." ).arg( parameterName ).arg( name() ) );
+  QgsMessageLog::logMessage( QStringLiteral( "No parameter definition found for %1 in %2 method." ).arg( parameterName ).arg( name() ) );
   return nullptr;
 }
 
