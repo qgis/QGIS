@@ -564,7 +564,7 @@ class CORE_EXPORT QgsUnitTypes
      *
      * \since QGIS 3.8
      */
-    Q_INVOKABLE static QString toAbbreviatedString( QgsUnitTypes::RenderUnit unit );
+    static QString toAbbreviatedString( QgsUnitTypes::RenderUnit unit );
 
 
     // LAYOUT UNITS
