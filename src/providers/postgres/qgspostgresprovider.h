@@ -240,6 +240,14 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     void setListening( bool isListening ) override;
 
+    /**
+     * Effect a reload including resetting the feature count
+     * and setting the layer extent to minimal
+     *
+     * \since QGIS 3.12
+    */
+    void forceReload() override;
+
   private:
     Relkind relkind() const;
 
