@@ -353,7 +353,7 @@ QgsFeatureRequest QgsBackgroundCachedFeatureIterator::buildRequestCache( int gen
       // are stored as milliseconds since UTC epoch in the Spatialite DB.
       bool hasDateTimeFieldInExpr = false;
       const auto setColumns = mRequest.filterExpression()->referencedColumns();
-      for ( const auto columnName : setColumns )
+      for ( const auto &columnName : setColumns )
       {
         int idx = fields.indexOf( columnName );
         if ( idx >= 0 && fields[idx].type() == QVariant::DateTime )
@@ -410,12 +410,16 @@ QgsFeatureRequest QgsBackgroundCachedFeatureIterator::buildRequestCache( int gen
       const auto referencedColumns = mRequest.filterExpression()->referencedColumns();
       for ( const QString &field : referencedColumns )
       {
-        int idx = dataProviderFields.indexFromName( mShared->getSpatialiteFieldNameFromUserVisibleName( field ) );
-        if ( idx >= 0 && !cacheSubSet.contains( idx ) )
-          cacheSubSet.append( idx );
-        idx = fields.indexFromName( field );
-        if ( idx >= 0  && !mSubSetAttributes.contains( idx ) )
-          mSubSetAttributes.append( idx );
+        int wfsFieldIdx = fields.lookupField( field );
+        if ( wfsFieldIdx != -1 )
+        {
+          int cacheFieldIdx = dataProviderFields.indexFromName( mShared->getSpatialiteFieldNameFromUserVisibleName( fields.at( wfsFieldIdx ).name() ) );
+          if ( cacheFieldIdx >= 0 && !cacheSubSet.contains( cacheFieldIdx ) )
+            cacheSubSet.append( cacheFieldIdx );
+
+          if ( wfsFieldIdx >= 0  && !mSubSetAttributes.contains( wfsFieldIdx ) )
+            mSubSetAttributes.append( wfsFieldIdx );
+        }
       }
     }
 
