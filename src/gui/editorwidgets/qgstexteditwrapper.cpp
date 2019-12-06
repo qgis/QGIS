@@ -90,7 +90,12 @@ QVariant QgsTextEditWrapper::value() const
     else
       // return null value if json is invalid
     {
-      mInvalidJSON = true;
+      if ( field().length() > 0 )
+      {
+        mInvalidJSON = true;
+      } else {
+        mInvalidJSON = false;
+      }
       return QVariant();
     }
   }
@@ -203,7 +208,7 @@ void QgsTextEditWrapper::setFeature( const QgsFeature &feature )
 {
   // Do nothing if the value has not changed
   if ( mInvalidJSON )
-    mForm->displayWarning( tr( "Your JSON is invalid and will be reverted back to the last valid edit or the original data" ) );
+    mForm->displayWarning( tr( "Your JSON was invalid and has been reverted back to the last valid edit or the original data" ) );
   {
     mInvalidJSON = false;
   }
