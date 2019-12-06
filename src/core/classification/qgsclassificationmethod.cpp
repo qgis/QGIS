@@ -22,6 +22,7 @@
 #include "qgsgraduatedsymbolrenderer.h"
 #include "qgsapplication.h"
 #include "qgsclassificationmethodregistry.h"
+#include "qgsxmlutils.h"
 
 const int QgsClassificationMethod::MAX_PRECISION = 15;
 const int QgsClassificationMethod::MIN_PRECISION = -6;
@@ -49,6 +50,7 @@ void QgsClassificationMethod::copyBase( QgsClassificationMethod *c ) const
   c->setLabelFormat( mLabelFormat );
   c->setLabelPrecision( mLabelPrecision );
   c->setLabelTrimTrailingZeroes( mLabelTrimTrailingZeroes );
+  c->setParameterValues( mParameterValues );
 }
 
 QgsClassificationMethod *QgsClassificationMethod::create( const QDomElement &element, const QgsReadWriteContext &context )
@@ -78,6 +80,11 @@ QgsClassificationMethod *QgsClassificationMethod::create( const QDomElement &ele
     method->setLabelTrimTrailingZeroes( trimTrailingZeroes );
   }
 
+  // parameters (processing parameters)
+  QDomElement parametersElem = element.firstChildElement( QStringLiteral( "parameters" ) );
+  const QVariantMap parameterValues = QgsXmlUtils::readVariant( parametersElem.firstChildElement() ).toMap();
+  method->setParameterValues( parameterValues );
+
   // Read specific properties from the implementation
   QDomElement extraElem = element.firstChildElement( QStringLiteral( "extraInformation" ) );
   if ( !extraElem.isNull() )
@@ -105,6 +112,11 @@ QDomElement QgsClassificationMethod::save( QDomDocument &doc, const QgsReadWrite
   labelFormatElem.setAttribute( QStringLiteral( "labelprecision" ), labelPrecision() );
   labelFormatElem.setAttribute( QStringLiteral( "trimtrailingzeroes" ), labelTrimTrailingZeroes() ? 1 : 0 );
   methodElem.appendChild( labelFormatElem );
+
+  // parameters (processing parameters)
+  QDomElement parametersElem = doc.createElement( QStringLiteral( "parameters" ) );
+  parametersElem.appendChild( QgsXmlUtils::writeVariant( mParameterValues, doc ) );
+  methodElem.appendChild( parametersElem );
 
   // extra information
   QDomElement extraElem = doc.createElement( QStringLiteral( "extraInformation" ) );
@@ -173,13 +185,14 @@ const QgsProcessingParameterDefinition *QgsClassificationMethod::parameterDefini
     if ( def->name() == parameterName )
       return def;
   }
+  QgsMessageLog::logMessage( QStringLiteral( "No parameter defintion found for %1 in %2 method." ).arg( parameterName ).arg( name() ) );
   return nullptr;
 }
 
 void QgsClassificationMethod::setParameterValues( const QVariantMap &values )
 {
   mParameterValues = values;
-  for ( auto it = mParameterValues.begin(); it != mParameterValues.end(); ++it )
+  for ( auto it = mParameterValues.constBegin(); it != mParameterValues.constEnd(); ++it )
   {
     if ( !parameterDefinition( it.key() ) )
     {
