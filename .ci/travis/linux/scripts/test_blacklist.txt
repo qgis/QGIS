@@ -18,3 +18,6 @@ PyQgsDbManagerPostgis
 # Needs an OpenCL device, the library is not enough
 qgis_openclutilstest
 
+# Relies on a broken/unreliable 3rd party service
+qgis_layerdefinition
+
