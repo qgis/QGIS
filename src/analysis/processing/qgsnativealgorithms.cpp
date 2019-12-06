@@ -141,6 +141,7 @@
 #include "qgsalgorithmtransect.h"
 #include "qgsalgorithmtransform.h"
 #include "qgsalgorithmtranslate.h"
+#include "qgsalgorithmtruncatetable.h"
 #include "qgsalgorithmunion.h"
 #include "qgsalgorithmuniquevalueindex.h"
 #include "qgsalgorithmvectorize.h"
@@ -332,6 +333,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsTransectAlgorithm() );
   addAlgorithm( new QgsTransformAlgorithm() );
   addAlgorithm( new QgsTranslateAlgorithm() );
+  addAlgorithm( new QgsTruncateTableAlgorithm() );
   addAlgorithm( new QgsUnionAlgorithm() );
   addAlgorithm( new QgsVariableWidthBufferByMAlgorithm() );
   addAlgorithm( new QgsWedgeBuffersAlgorithm() );

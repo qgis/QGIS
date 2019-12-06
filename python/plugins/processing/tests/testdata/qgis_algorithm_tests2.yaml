@@ -1932,7 +1932,7 @@ tests:
         type: vector
         in_place_result: true
 
-  - algorithm: qgis:truncatetable
+  - algorithm: native:truncatetable
     name: Truncate table
     params:
       INPUT:

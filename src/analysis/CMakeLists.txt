@@ -147,6 +147,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmtransect.cpp
   processing/qgsalgorithmtransform.cpp
   processing/qgsalgorithmtranslate.cpp
+  processing/qgsalgorithmtruncatetable.cpp
   processing/qgsalgorithmunion.cpp
   processing/qgsalgorithmuniquevalueindex.cpp
   processing/qgsalgorithmvectorize.cpp

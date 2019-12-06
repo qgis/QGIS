@@ -432,14 +432,6 @@ qgis:topologicalcoloring: >
 
   A minimum number of colors can be specified if desired. The color index is saved to a new attribute named color_id.
 
-qgis:translate: >
-  This algorithm moves the geometries within a layer, by offsetting them with a specified x and y displacement.
-
-qgis:truncatetable: >
-  This algorithm truncates a layer, by deleting all features from within the layer.
-
-  Warning - this algorithm modifies the layer in place, and deleted features cannot be restored!
-
 qgis:variabledistancebuffer: >
   This algorithm computes a buffer area for all the features in an input layer. The size of the buffer for a given feature is defined by an attribute, so it allows different features to have different buffer sizes.
 

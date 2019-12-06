@@ -95,7 +95,6 @@ from .TextToFloat import TextToFloat
 from .TilesXYZ import TilesXYZAlgorithmDirectory, TilesXYZAlgorithmMBTiles
 from .TinInterpolation import TinInterpolation
 from .TopoColors import TopoColor
-from .TruncateTable import TruncateTable
 from .UniqueValues import UniqueValues
 from .VariableDistanceBuffer import VariableDistanceBuffer
 from .VectorLayerHistogram import VectorLayerHistogram
@@ -183,7 +182,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 TilesXYZAlgorithmMBTiles(),
                 TinInterpolation(),
                 TopoColor(),
-                TruncateTable(),
                 UniqueValues(),
                 VariableDistanceBuffer(),
                 VectorLayerHistogram(),
