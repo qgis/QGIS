@@ -75,6 +75,48 @@ class ANALYSIS_EXPORT QgsMeshCalculator
      * \param startTime time filter defining the starting dataset
      * \param endTime time filter defining the ending dataset
      * \param layer mesh layer with dataset groups references in formulaString
+     *
+     * \deprecated QGIS 3.12
+     */
+    Q_DECL_DEPRECATED QgsMeshCalculator( const QString &formulaString,
+                                         const QString &outputFile,
+                                         const QgsRectangle &outputExtent,
+                                         double startTime,
+                                         double endTime,
+                                         QgsMeshLayer *layer ) SIP_DEPRECATED;
+
+    /**
+     * Creates calculator with geometry mask
+     * \param formulaString formula/expression to evaluate. Consists of dataset group names, operators and numbers
+     * \param outputDriver output driver name
+     * \param outputGroupName output group name
+     * \param outputFile file to store the resulting dataset group data
+     * \param outputMask spatial filter defined by geometry
+     * \param startTime time filter defining the starting dataset
+     * \param endTime time filter defining the ending dataset
+     * \param layer mesh layer with dataset groups references in formulaString
+     *
+     * \deprecated QGIS 3.12
+     */
+    Q_DECL_DEPRECATED QgsMeshCalculator( const QString &formulaString,
+                                         const QString &outputFile,
+                                         const QgsGeometry &outputMask,
+                                         double startTime,
+                                         double endTime,
+                                         QgsMeshLayer *layer ) SIP_DEPRECATED;
+
+    /**
+     * Creates calculator with bounding box (rectangular) mask
+     * \param formulaString formula/expression to evaluate. Consists of dataset group names, operators and numbers
+     * \param outputDriver output driver name
+     * \param outputGroupName output group name
+     * \param outputFile file to store the resulting dataset group data
+     * \param outputExtent spatial filter defined by rectangle
+     * \param startTime time filter defining the starting dataset
+     * \param endTime time filter defining the ending dataset
+     * \param layer mesh layer with dataset groups references in formulaString
+     *
+     * \since QGIS 3.12
      */
     QgsMeshCalculator( const QString &formulaString,
                        const QString &outputDriver,
@@ -95,6 +137,8 @@ class ANALYSIS_EXPORT QgsMeshCalculator
      * \param startTime time filter defining the starting dataset
      * \param endTime time filter defining the ending dataset
      * \param layer mesh layer with dataset groups references in formulaString
+     *
+     * \since QGIS 3.12
      */
     QgsMeshCalculator( const QString &formulaString,
                        const QString &outputDriver,

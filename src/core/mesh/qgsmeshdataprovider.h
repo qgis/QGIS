@@ -212,6 +212,8 @@ class CORE_EXPORT QgsMeshDataBlock
 
     /**
      * Returns buffer to the array with values
+     *
+     * \since QGIS 3.12
      */
     QVector<double> values() const;
 

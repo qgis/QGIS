@@ -217,6 +217,8 @@ For scalar and vector 2d the behavior is undefined
     QVector<double> values() const;
 %Docstring
 Returns buffer to the array with values
+
+.. versionadded:: 3.12
 %End
 
 

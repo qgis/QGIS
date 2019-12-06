@@ -44,6 +44,50 @@ Resulting dataset is always scalar
       MemoryError,
     };
 
+ QgsMeshCalculator( const QString &formulaString,
+                                         const QString &outputFile,
+                                         const QgsRectangle &outputExtent,
+                                         double startTime,
+                                         double endTime,
+                                         QgsMeshLayer *layer ) /Deprecated/;
+%Docstring
+Creates calculator with bounding box (rectangular) mask
+
+:param formulaString: formula/expression to evaluate. Consists of dataset group names, operators and numbers
+:param outputDriver: output driver name
+:param outputGroupName: output group name
+:param outputFile: file to store the resulting dataset group data
+:param outputExtent: spatial filter defined by rectangle
+:param startTime: time filter defining the starting dataset
+:param endTime: time filter defining the ending dataset
+:param layer: mesh layer with dataset groups references in formulaString
+
+.. deprecated::
+   QGIS 3.12
+%End
+
+ QgsMeshCalculator( const QString &formulaString,
+                                         const QString &outputFile,
+                                         const QgsGeometry &outputMask,
+                                         double startTime,
+                                         double endTime,
+                                         QgsMeshLayer *layer ) /Deprecated/;
+%Docstring
+Creates calculator with geometry mask
+
+:param formulaString: formula/expression to evaluate. Consists of dataset group names, operators and numbers
+:param outputDriver: output driver name
+:param outputGroupName: output group name
+:param outputFile: file to store the resulting dataset group data
+:param outputMask: spatial filter defined by geometry
+:param startTime: time filter defining the starting dataset
+:param endTime: time filter defining the ending dataset
+:param layer: mesh layer with dataset groups references in formulaString
+
+.. deprecated::
+   QGIS 3.12
+%End
+
     QgsMeshCalculator( const QString &formulaString,
                        const QString &outputDriver,
                        const QString &outputGroupName,
@@ -63,6 +107,8 @@ Creates calculator with bounding box (rectangular) mask
 :param startTime: time filter defining the starting dataset
 :param endTime: time filter defining the ending dataset
 :param layer: mesh layer with dataset groups references in formulaString
+
+.. versionadded:: 3.12
 %End
 
     QgsMeshCalculator( const QString &formulaString,
@@ -84,6 +130,8 @@ Creates calculator with geometry mask
 :param startTime: time filter defining the starting dataset
 :param endTime: time filter defining the ending dataset
 :param layer: mesh layer with dataset groups references in formulaString
+
+.. versionadded:: 3.12
 %End
 
     Result processCalculation( QgsFeedback *feedback = 0 );

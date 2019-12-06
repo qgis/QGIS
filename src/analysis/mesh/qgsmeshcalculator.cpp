@@ -26,6 +26,45 @@
 #include "qgis.h"
 
 QgsMeshCalculator::QgsMeshCalculator( const QString &formulaString,
+                                      const QString &outputFile,
+                                      const QgsRectangle &outputExtent,
+                                      double startTime,
+                                      double endTime,
+                                      QgsMeshLayer *layer )
+  : mFormulaString( formulaString )
+  , mOutputDriver( QStringLiteral( "DAT" ) )
+  , mOutputFile( outputFile )
+  , mOutputExtent( outputExtent )
+  , mUseMask( false )
+  , mStartTime( startTime )
+  , mEndTime( endTime )
+  , mMeshLayer( layer )
+{
+  if ( !mOutputFile.isEmpty() )
+    mOutputGroupName = QFileInfo( mOutputFile ).baseName();
+}
+
+QgsMeshCalculator::QgsMeshCalculator( const QString &formulaString,
+                                      const QString &outputFile,
+                                      const QgsGeometry &outputMask,
+                                      double startTime,
+                                      double endTime,
+                                      QgsMeshLayer *layer )
+  : mFormulaString( formulaString )
+  , mOutputDriver( QStringLiteral( "DAT" ) )
+  , mOutputFile( outputFile )
+  , mOutputMask( outputMask )
+  , mUseMask( true )
+  , mStartTime( startTime )
+  , mEndTime( endTime )
+  , mMeshLayer( layer )
+{
+  if ( !mOutputFile.isEmpty() )
+    mOutputGroupName = QFileInfo( mOutputFile ).baseName();
+}
+
+
+QgsMeshCalculator::QgsMeshCalculator( const QString &formulaString,
                                       const QString &outputDriver,
                                       const QString &outputGroupName,
                                       const QString &outputFile,
