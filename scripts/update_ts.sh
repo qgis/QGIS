@@ -120,7 +120,7 @@ files="$files $(find python -name "*.ts")"
 
 if [ $action = push ]; then
 	echo Pulling source from transifex...
-	tx pull -s -l none --parallel $TX_FLAGS
+	tx pull -s -l none $TX_FLAGS
 	if ! [ -f "i18n/qgis_en.ts" ]; then
 		echo Download of source translation failed
 		exit 1
@@ -139,7 +139,7 @@ elif [ $action = pull ]; then
 
 	fail=1
 	for i in $(seq 10); do
-		tx pull $o -s --minimum-perc=35 --parallel $TX_FLAGS && fail=0 && break
+		tx pull $o -s --minimum-perc=35 $TX_FLAGS && fail=0 && break
 		echo Retrying...
 		sleep 10
 	done
