@@ -71,16 +71,19 @@ class TestQgsClassificationMethods(unittest.TestCase):
 
     def testQgsClassificationLogarithmic_FilterZeroNeg(self):
         values = [-2, 0, 1, 7, 66, 555, 4444]
-
         vl = createMemoryLayer(values)
-
         m = QgsClassificationLogarithmic()
-        m.setParameterValues({'FILTER_ZERO_NEG_VALUES': True})
-        r = m.classes(vl, 'value', 4)
 
+        m.setParameterValues({'ZERO_NEG_VALUES_HANDLE': int(QgsClassificationLogarithmic.NegativeValueHandling.Discard)})
+        r = m.classes(vl, 'value', 4)
         self.assertEqual(len(r), 4)
         self.assertEqual(r[0].label(), '1 - 10^1')
         self.assertEqual(QgsClassificationMethod.rangesToBreaks(r), [10.0, 100.0, 1000.0, 10000.0])
+
+        m.setParameterValues({'ZERO_NEG_VALUES_HANDLE': int(QgsClassificationLogarithmic.NegativeValueHandling.PrependBreak)})
+        r = m.classes(vl, 'value', 4)
+        self.assertEqual(r[0].label(), '-2 - 10^0')
+        self.assertEqual(QgsClassificationMethod.rangesToBreaks(r), [1.0, 10.0, 100.0, 1000.0, 10000.0])
 
 
 if __name__ == "__main__":
