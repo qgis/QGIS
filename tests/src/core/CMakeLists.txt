@@ -241,6 +241,7 @@ SET(TESTS
  testqobjectuniqueptr.cpp
  testqgspostgresstringutils.cpp
  testqgsstoredexpressionmanager.cpp
+ testqgsweakrelation.cpp
 )
 
 IF(WITH_QTWEBKIT)
