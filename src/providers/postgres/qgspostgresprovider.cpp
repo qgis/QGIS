@@ -4152,7 +4152,7 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
       if ( result.PQresultStatus() != PGRES_TUPLES_OK )
         throw PGException( result );
     }
-    
+
     if ( !exists )
     {
       sql = QStringLiteral( "CREATE TABLE %1(" ) .arg( schemaTableName );
@@ -4213,7 +4213,7 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
       }
 
       conn->PQexecNR( QStringLiteral( "COMMIT" ) );
-    }  
+    }
   }
   catch ( PGException &e )
   {
