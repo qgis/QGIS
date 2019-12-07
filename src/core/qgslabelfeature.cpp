@@ -111,3 +111,13 @@ void QgsLabelFeature::setOverrunSmoothDistance( double overrunSmoothDistance )
 {
   mOverrunSmoothDistance = overrunSmoothDistance;
 }
+
+const QgsLabelObstacleSettings &QgsLabelFeature::obstacleSettings() const
+{
+  return mObstacleSettings;
+}
+
+void QgsLabelFeature::setObstacleSettings( const QgsLabelObstacleSettings &settings )
+{
+  mObstacleSettings = settings;
+}

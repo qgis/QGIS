@@ -2478,7 +2478,8 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
     }
   }
 
-  ( *labelFeature )->setIsObstacle( isObstacle );
+  QgsLabelObstacleSettings os = mObstacleSettings;
+  os.setIsObstacle( isObstacle );
 
   double featObstacleFactor = mObstacleSettings.factor();
   if ( isObstacle && mDataDefinedProperties.isActive( QgsPalLayerSettings::ObstacleFactor ) )
@@ -2497,7 +2498,8 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
       }
     }
   }
-  ( *labelFeature )->setObstacleFactor( featObstacleFactor );
+  os.setFactor( featObstacleFactor );
+  lf->setObstacleSettings( os );
 
   QVector< QgsPalLayerSettings::PredefinedPointPosition > positionOrder = predefinedPositionOrder;
   if ( positionOrder.isEmpty() )
@@ -2562,8 +2564,10 @@ void QgsPalLayerSettings::registerObstacleFeature( const QgsFeature &f, QgsRende
 
   //  feature to the layer
   *obstacleFeature = new QgsLabelFeature( f.id(), std::move( geos_geom_clone ), QSizeF( 0, 0 ) );
-  ( *obstacleFeature )->setIsObstacle( true );
   ( *obstacleFeature )->setFeature( f );
+
+  QgsLabelObstacleSettings os = mObstacleSettings;
+  os.setIsObstacle( true );
 
   double featObstacleFactor = mObstacleSettings.factor();
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::ObstacleFactor ) )
@@ -2582,7 +2586,9 @@ void QgsPalLayerSettings::registerObstacleFeature( const QgsFeature &f, QgsRende
       }
     }
   }
-  ( *obstacleFeature )->setObstacleFactor( featObstacleFactor );
+  os.setFactor( featObstacleFactor );
+
+  ( *obstacleFeature )->setObstacleSettings( os );
 
   mFeatsRegPal++;
 }
