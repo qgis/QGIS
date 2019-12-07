@@ -2480,25 +2480,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
 
   QgsLabelObstacleSettings os = mObstacleSettings;
   os.setIsObstacle( isObstacle );
-
-  double featObstacleFactor = mObstacleSettings.factor();
-  if ( isObstacle && mDataDefinedProperties.isActive( QgsPalLayerSettings::ObstacleFactor ) )
-  {
-    context.expressionContext().setOriginalValueVariable( featObstacleFactor );
-    exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::ObstacleFactor, context.expressionContext() );
-    if ( exprVal.isValid() )
-    {
-      bool ok;
-      double factorD = exprVal.toDouble( &ok );
-      if ( ok )
-      {
-        factorD = qBound( 0.0, factorD, 10.0 );
-        factorD = factorD / 5.0 + 0.0001; // convert 0 -> 10 to 0.0001 -> 2.0
-        featObstacleFactor = factorD;
-      }
-    }
-  }
-  os.setFactor( featObstacleFactor );
+  os.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
   lf->setObstacleSettings( os );
 
   QVector< QgsPalLayerSettings::PredefinedPointPosition > positionOrder = predefinedPositionOrder;
@@ -2568,26 +2550,7 @@ void QgsPalLayerSettings::registerObstacleFeature( const QgsFeature &f, QgsRende
 
   QgsLabelObstacleSettings os = mObstacleSettings;
   os.setIsObstacle( true );
-
-  double featObstacleFactor = mObstacleSettings.factor();
-  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::ObstacleFactor ) )
-  {
-    context.expressionContext().setOriginalValueVariable( featObstacleFactor );
-    QVariant exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::ObstacleFactor, context.expressionContext() );
-    if ( exprVal.isValid() )
-    {
-      bool ok;
-      double factorD = exprVal.toDouble( &ok );
-      if ( ok )
-      {
-        factorD = qBound( 0.0, factorD, 10.0 );
-        factorD = factorD / 5.0 + 0.0001; // convert 0 -> 10 to 0.0001 -> 2.0
-        featObstacleFactor = factorD;
-      }
-    }
-  }
-  os.setFactor( featObstacleFactor );
-
+  os.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
   ( *obstacleFeature )->setObstacleSettings( os );
 
   mFeatsRegPal++;

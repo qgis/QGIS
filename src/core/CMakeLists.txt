@@ -266,6 +266,7 @@ SET(QGIS_CORE_SRCS
   qgslabelfeature.cpp
   qgslabelingengine.cpp
   qgslabelingenginesettings.cpp
+  qgslabelobstaclesettings.cpp
   qgslabelsearchtree.cpp
   qgslayerdefinition.cpp
   qgslegendrenderer.cpp

@@ -109,40 +109,6 @@ class TestPointPlacement(TestPlacementBase):
         TestPlacementBase.setUpClass()
         cls.layer = None
 
-    def test_obstacle_settings(self):
-        """
-        Test obstacle settings
-        """
-
-        settings = QgsLabelObstacleSettings()
-        settings.setIsObstacle(True)
-        self.assertTrue(settings.isObstacle())
-        settings.setIsObstacle(False)
-        self.assertFalse(settings.isObstacle())
-
-        settings.setFactor(0.1)
-        self.assertEqual(settings.factor(), 0.1)
-
-        settings.setType(QgsLabelObstacleSettings.PolygonWhole)
-        self.assertEqual(settings.type(), QgsLabelObstacleSettings.PolygonWhole)
-
-        # check that compatibility code works
-        pal_settings = QgsPalLayerSettings()
-        pal_settings.obstacle = True
-        self.assertTrue(pal_settings.obstacle)
-        self.assertTrue(pal_settings.obstacleSettings().isObstacle())
-        pal_settings.obstacle = False
-        self.assertFalse(pal_settings.obstacle)
-        self.assertFalse(pal_settings.obstacleSettings().isObstacle())
-
-        pal_settings.obstacleFactor = 0.2
-        self.assertEqual(pal_settings.obstacleFactor, 0.2)
-        self.assertEqual(pal_settings.obstacleSettings().factor(), 0.2)
-
-        pal_settings.obstacleType = QgsPalLayerSettings.PolygonWhole
-        self.assertEqual(pal_settings.obstacleType, QgsPalLayerSettings.PolygonWhole)
-        self.assertEqual(pal_settings.obstacleSettings().type(), QgsLabelObstacleSettings.PolygonWhole)
-
     def test_point_placement_around(self):
         # Default point label placement
         self.layer = TestQgsPalLabeling.loadFeatureLayer('point')

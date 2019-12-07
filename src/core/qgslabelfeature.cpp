@@ -31,8 +31,6 @@ QgsLabelFeature::QgsLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QS
   , mOffsetType( QgsPalLayerSettings::FromPoint )
   , mRepeatDistance( 0 )
   , mAlwaysShow( false )
-  , mIsObstacle( false )
-  , mObstacleFactor( 1 )
 {
 }
 

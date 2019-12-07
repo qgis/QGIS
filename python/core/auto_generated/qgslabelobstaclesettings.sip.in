@@ -8,6 +8,7 @@
 
 
 
+
 class QgsLabelObstacleSettings
 {
 %Docstring
@@ -95,6 +96,12 @@ Controls how features act as obstacles for labels.
 .. seealso:: :py:func:`isObstacle`
 
 .. seealso:: :py:func:`factor`
+%End
+
+    void updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context );
+%Docstring
+Updates the obstacle settings to respect any data defined properties
+set within the specified ``properties`` collection.
 %End
 
 };
