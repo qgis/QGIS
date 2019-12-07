@@ -799,7 +799,9 @@ bool QgsLayoutItemAttributeTable::readPropertiesFromElement( const QDomElement &
   mVectorLayer.resolveWeakly( mLayout->project() );
 
   //connect to new layer
-  connect( sourceLayer(), &QgsVectorLayer::layerModified, this, &QgsLayoutTable::refreshAttributes );
+  QgsVectorLayer *newLayer = sourceLayer();
+  if ( newLayer )
+    connect( sourceLayer(), &QgsVectorLayer::layerModified, this, &QgsLayoutTable::refreshAttributes );
 
   refreshAttributes();
 
