@@ -429,7 +429,7 @@ class CORE_EXPORT QgsLabelFeature
     /**
      * Sets the label's obstacle \a settings.
      *
-     * \see pbstacleSettings()
+     * \see obstacleSettings()
      * \since QGIS 3.12
      */
     void setObstacleSettings( const QgsLabelObstacleSettings &settings );
