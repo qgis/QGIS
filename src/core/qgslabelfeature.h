@@ -305,15 +305,6 @@ class CORE_EXPORT QgsLabelFeature
     //! Sets whether label should be always shown (sets very high label priority)
     void setAlwaysShow( bool enabled ) { mAlwaysShow = enabled; }
 
-
-
-    /**
-     * Returns whether the feature will act as an obstacle for labels.
-     * \returns TRUE if feature is an obstacle
-     * \see setIsObstacle
-     */
-    bool isObstacle() const { return mIsObstacle; }
-
     /**
      * Returns the feature's arrangement flags.
      * \see setArrangementFlags

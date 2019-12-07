@@ -295,7 +295,9 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &fea
   lf->setHasFixedAngle( true );
   lf->setFixedAngle( 0 );
   lf->setAlwaysShow( alwaysShow );
-  lf->setIsObstacle( isObstacle );
+  QgsLabelObstacleSettings os;
+  os.setIsObstacle( isObstacle );
+  lf->setObstacleSettings( os );
   if ( geosObstacleGeomClone )
   {
     lf->setObstacleGeometry( std::move( geosObstacleGeomClone ) );

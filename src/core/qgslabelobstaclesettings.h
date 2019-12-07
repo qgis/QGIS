@@ -19,6 +19,9 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
+class QgsPropertyCollection;
+class QgsExpressionContext;
+
 /**
  * \ingroup core
  * \class QgsLabelObstacleSettings
@@ -116,6 +119,12 @@ class CORE_EXPORT QgsLabelObstacleSettings
     {
       mObstacleType = type;
     }
+
+    /**
+     * Updates the obstacle settings to respect any data defined properties
+     * set within the specified \a properties collection.
+     */
+    void updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context );
 
   private:
 
