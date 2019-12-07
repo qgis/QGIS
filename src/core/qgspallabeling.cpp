@@ -2003,13 +2003,6 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
     }
   }
 
-  geos::unique_ptr geosObstacleGeomClone;
-  if ( isObstacle && !obstacleGeometry.isNull() )
-  {
-    geosObstacleGeomClone = QgsGeos::asGeos( obstacleGeometry );
-  }
-
-
   //data defined position / alignment / rotation?
   bool dataDefinedPosition = false;
   bool layerDefinedRotation = false;
@@ -2359,16 +2352,11 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   ( *labelFeature )->setOverrunDistance( overrunDistanceEval );
   ( *labelFeature )->setOverrunSmoothDistance( overrunSmoothDist );
   ( *labelFeature )->setLabelAllParts( labelAll );
-  if ( geosObstacleGeomClone )
+  if ( geom.type() == QgsWkbTypes::PointGeometry && isObstacle && !obstacleGeometry.isNull() )
   {
-    ( *labelFeature )->setObstacleGeometry( std::move( geosObstacleGeomClone ) );
-
-    if ( geom.type() == QgsWkbTypes::PointGeometry )
-    {
-      //register symbol size
-      ( *labelFeature )->setSymbolSize( QSizeF( obstacleGeometry.boundingBox().width(),
-                                        obstacleGeometry.boundingBox().height() ) );
-    }
+    //register symbol size
+    ( *labelFeature )->setSymbolSize( QSizeF( obstacleGeometry.boundingBox().width(),
+                                      obstacleGeometry.boundingBox().height() ) );
   }
 
   //set label's visual margin so that top visual margin is the leading, and bottom margin is the font's descent
@@ -2478,26 +2466,11 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
     }
   }
 
-  ( *labelFeature )->setIsObstacle( isObstacle );
-
-  double featObstacleFactor = mObstacleSettings.factor();
-  if ( isObstacle && mDataDefinedProperties.isActive( QgsPalLayerSettings::ObstacleFactor ) )
-  {
-    context.expressionContext().setOriginalValueVariable( featObstacleFactor );
-    exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::ObstacleFactor, context.expressionContext() );
-    if ( exprVal.isValid() )
-    {
-      bool ok;
-      double factorD = exprVal.toDouble( &ok );
-      if ( ok )
-      {
-        factorD = qBound( 0.0, factorD, 10.0 );
-        factorD = factorD / 5.0 + 0.0001; // convert 0 -> 10 to 0.0001 -> 2.0
-        featObstacleFactor = factorD;
-      }
-    }
-  }
-  ( *labelFeature )->setObstacleFactor( featObstacleFactor );
+  QgsLabelObstacleSettings os = mObstacleSettings;
+  os.setIsObstacle( isObstacle );
+  os.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
+  os.setObstacleGeometry( obstacleGeometry );
+  lf->setObstacleSettings( os );
 
   QVector< QgsPalLayerSettings::PredefinedPointPosition > positionOrder = predefinedPositionOrder;
   if ( positionOrder.isEmpty() )
@@ -2562,27 +2535,12 @@ void QgsPalLayerSettings::registerObstacleFeature( const QgsFeature &f, QgsRende
 
   //  feature to the layer
   *obstacleFeature = new QgsLabelFeature( f.id(), std::move( geos_geom_clone ), QSizeF( 0, 0 ) );
-  ( *obstacleFeature )->setIsObstacle( true );
   ( *obstacleFeature )->setFeature( f );
 
-  double featObstacleFactor = mObstacleSettings.factor();
-  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::ObstacleFactor ) )
-  {
-    context.expressionContext().setOriginalValueVariable( featObstacleFactor );
-    QVariant exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::ObstacleFactor, context.expressionContext() );
-    if ( exprVal.isValid() )
-    {
-      bool ok;
-      double factorD = exprVal.toDouble( &ok );
-      if ( ok )
-      {
-        factorD = qBound( 0.0, factorD, 10.0 );
-        factorD = factorD / 5.0 + 0.0001; // convert 0 -> 10 to 0.0001 -> 2.0
-        featObstacleFactor = factorD;
-      }
-    }
-  }
-  ( *obstacleFeature )->setObstacleFactor( featObstacleFactor );
+  QgsLabelObstacleSettings os = mObstacleSettings;
+  os.setIsObstacle( true );
+  os.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
+  ( *obstacleFeature )->setObstacleSettings( os );
 
   mFeatsRegPal++;
 }

@@ -45,8 +45,8 @@ Returns a dataset index within group()
 %Docstring
 Returns whether index is valid, ie at least groups is set
 %End
-    bool operator == ( const QgsMeshDatasetIndex &other ) const;
-    bool operator != ( const QgsMeshDatasetIndex &other ) const;
+    bool operator == ( QgsMeshDatasetIndex other ) const;
+    bool operator != ( QgsMeshDatasetIndex other ) const;
 };
 
 typedef QgsPoint QgsMeshVertex;
@@ -142,7 +142,7 @@ Returns x value
 Returns y value
 %End
 
-    bool operator==( const QgsMeshDatasetValue &other ) const;
+    bool operator==( QgsMeshDatasetValue other ) const;
 
 };
 
@@ -213,6 +213,13 @@ Returns a value for active flag by the index
 For scalar and vector 2d the behavior is undefined
 %End
 
+
+    QVector<double> values() const;
+%Docstring
+Returns buffer to the array with values
+
+.. versionadded:: 3.12
+%End
 
 
 };
@@ -630,7 +637,7 @@ persists it into a destination path
 
 On success, the mesh's dataset group count is changed
 
-:param path: destination path of the stored file
+:param path: destination path of the stored file in form DRIVER_NAME:path
 :param meta: new group's metadata
 :param datasetValues: scalar/vector values for all datasets and all faces/vertices in the group
 :param datasetActive: active flag values for all datasets in the group. Empty array represents can be used

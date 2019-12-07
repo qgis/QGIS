@@ -37,8 +37,11 @@ class TestQgsLabelSettingsWidget(unittest.TestCase):
         props.setProperty(QgsPalLayerSettings.IsObstacle, QgsProperty.fromValue(True))
         w.setDataDefinedProperties(props)
         self.assertEqual(len(spy), 0)
-        self.assertEqual(w.dataDefinedProperties().property(QgsPalLayerSettings.ObstacleFactor).asExpression(), '5')
-        self.assertEqual(w.dataDefinedProperties().property(QgsPalLayerSettings.IsObstacle).asExpression(), 'TRUE')
+        dd_props = w.dataDefinedProperties()
+        prop = dd_props.property(QgsPalLayerSettings.ObstacleFactor)
+        self.assertEqual(prop.asExpression(), '5')
+        prop = dd_props.property(QgsPalLayerSettings.IsObstacle)
+        self.assertEqual(prop.asExpression(), 'TRUE')
 
     def testObstacles(self):
         w = QgsLabelObstacleSettingsWidget()
@@ -67,7 +70,9 @@ class TestQgsLabelSettingsWidget(unittest.TestCase):
         self.assertFalse(props.isActive(QgsPalLayerSettings.ObstacleFactor))
         w.updateDataDefinedProperties(props)
         self.assertTrue(props.isActive(QgsPalLayerSettings.ObstacleFactor))
-        self.assertEqual(w.dataDefinedProperties().property(QgsPalLayerSettings.ObstacleFactor).asExpression(), '5')
+        props = w.dataDefinedProperties()
+        prop = props.property(QgsPalLayerSettings.ObstacleFactor)
+        self.assertEqual(prop.asExpression(), '5')
 
 
 if __name__ == '__main__':

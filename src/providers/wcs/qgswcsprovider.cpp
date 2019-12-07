@@ -426,15 +426,15 @@ bool QgsWcsProvider::parseUri( const QString &uriString )
   mIgnoreAxisOrientation = uri.hasParam( QStringLiteral( "IgnoreAxisOrientation" ) ); // must be before parsing!
   mInvertAxisOrientation = uri.hasParam( QStringLiteral( "InvertAxisOrientation" ) ); // must be before parsing!
 
-  mAuth.mUserName = uri.param( QStringLiteral( "username" ) );
+  mAuth.mUserName = uri.username();
   QgsDebugMsg( "set username to " + mAuth.mUserName );
 
-  mAuth.mPassword = uri.param( QStringLiteral( "password" ) );
+  mAuth.mPassword = uri.password();
   QgsDebugMsg( "set password to " + mAuth.mPassword );
 
-  if ( uri.hasParam( QStringLiteral( "authcfg" ) ) )
+  if ( !uri.authConfigId().isEmpty() )
   {
-    mAuth.mAuthCfg = uri.param( QStringLiteral( "authcfg" ) );
+    mAuth.mAuthCfg = uri.authConfigId();
   }
   QgsDebugMsg( "set authcfg to " + mAuth.mAuthCfg );
 

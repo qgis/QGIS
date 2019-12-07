@@ -2144,11 +2144,11 @@ QString QgsRasterLayer::decodedSource( const QString &source, const QString &pro
           QString item = iter.next();
           if ( item.startsWith( QLatin1String( "username=" ) ) )
           {
-            uri.setParam( QStringLiteral( "username" ), item.mid( 9 ) );
+            uri.setUsername( item.mid( 9 ) );
           }
           else if ( item.startsWith( QLatin1String( "password=" ) ) )
           {
-            uri.setParam( QStringLiteral( "password" ), item.mid( 9 ) );
+            uri.setPassword( item.mid( 9 ) );
           }
           else if ( item.startsWith( QLatin1String( "tiled=" ) ) )
           {

@@ -31,8 +31,6 @@ QgsLabelFeature::QgsLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QS
   , mOffsetType( QgsPalLayerSettings::FromPoint )
   , mRepeatDistance( 0 )
   , mAlwaysShow( false )
-  , mIsObstacle( false )
-  , mObstacleFactor( 1 )
 {
 }
 
@@ -45,11 +43,6 @@ QgsLabelFeature::~QgsLabelFeature()
   }
 
   delete mInfo;
-}
-
-void QgsLabelFeature::setObstacleGeometry( geos::unique_ptr obstacleGeom )
-{
-  mObstacleGeometry = std::move( obstacleGeom );
 }
 
 void QgsLabelFeature::setPermissibleZone( const QgsGeometry &geometry )
@@ -110,4 +103,14 @@ double QgsLabelFeature::overrunSmoothDistance() const
 void QgsLabelFeature::setOverrunSmoothDistance( double overrunSmoothDistance )
 {
   mOverrunSmoothDistance = overrunSmoothDistance;
+}
+
+const QgsLabelObstacleSettings &QgsLabelFeature::obstacleSettings() const
+{
+  return mObstacleSettings;
+}
+
+void QgsLabelFeature::setObstacleSettings( const QgsLabelObstacleSettings &settings )
+{
+  mObstacleSettings = settings;
 }

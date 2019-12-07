@@ -114,7 +114,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
 
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
 
-  bool featureGeomIsObstacleGeom = !lf->obstacleGeometry();
+  bool featureGeomIsObstacleGeom = lf->obstacleSettings().obstacleGeometry().isNull();
 
   while ( !simpleGeometries->isEmpty() )
   {
@@ -151,7 +151,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
     // is the feature well defined?  TODO Check epsilon
     bool labelWellDefined = ( lf->size().width() > 0.0000001 && lf->size().height() > 0.0000001 );
 
-    if ( lf->isObstacle() && featureGeomIsObstacleGeom )
+    if ( lf->obstacleSettings().isObstacle() && featureGeomIsObstacleGeom )
     {
       //if we are not labeling the layer, only insert it into the obstacle list and avoid an
       //unnecessary copy
@@ -192,33 +192,28 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
     addedFeature = true;
   }
 
-  if ( lf->isObstacle() && !featureGeomIsObstacleGeom )
+  if ( lf->obstacleSettings().isObstacle() && !featureGeomIsObstacleGeom )
   {
     //do the same for the obstacle geometry
-    simpleGeometries.reset( Util::unmulti( lf->obstacleGeometry() ) );
-    if ( !simpleGeometries ) // unmulti() failed?
+    const QgsGeometry obstacleGeometry = lf->obstacleSettings().obstacleGeometry();
+    for ( auto it = obstacleGeometry.const_parts_begin(); it != obstacleGeometry.const_parts_end(); ++it )
     {
-      throw InternalException::UnknownGeometry();
-    }
-
-    while ( !simpleGeometries->isEmpty() )
-    {
-      const GEOSGeometry *geom = simpleGeometries->takeFirst();
+      geos::unique_ptr geom = QgsGeos::asGeos( *it );
 
       // ignore invalid geometries (e.g. polygons with self-intersecting rings)
-      if ( GEOSisValid_r( geosctxt, geom ) != 1 ) // 0=invalid, 1=valid, 2=exception
+      if ( GEOSisValid_r( geosctxt, geom.get() ) != 1 ) // 0=invalid, 1=valid, 2=exception
       {
         continue;
       }
 
-      int type = GEOSGeomTypeId_r( geosctxt, geom );
+      int type = GEOSGeomTypeId_r( geosctxt, geom.get() );
 
       if ( type != GEOS_POINT && type != GEOS_LINESTRING && type != GEOS_POLYGON )
       {
         throw InternalException::UnknownGeometry();
       }
 
-      std::unique_ptr<FeaturePart> fpart = qgis::make_unique<FeaturePart>( lf, geom );
+      std::unique_ptr<FeaturePart> fpart = qgis::make_unique<FeaturePart>( lf, geom.get() );
 
       // ignore invalid geometries
       if ( ( type == GEOS_LINESTRING && fpart->nbPoints < 2 ) ||
@@ -232,6 +227,8 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
       {
         continue;
       }
+
+      mGeosObstacleGeometries.emplace_back( std::move( geom ) );
 
       // feature part is ready!
       addObstaclePart( fpart.release() );
@@ -448,7 +445,7 @@ void Layer::chopFeaturesAtRepeatDistance()
       // Walk along line
       unsigned int cur = 0;
       double lambda = 0;
-      QVector<Point> part;
+      std::vector<Point> part;
 
       QList<FeaturePart *> repeatParts;
       repeatParts.reserve( possibleSegments );
@@ -463,8 +460,8 @@ void Layer::chopFeaturesAtRepeatDistance()
         if ( cur >= n )
         {
           // Create final part
-          GEOSCoordSequence *cooSeq = GEOSCoordSeq_create_r( geosctxt, part.size(), 2 );
-          for ( int i = 0; i < part.size(); ++i )
+          GEOSCoordSequence *cooSeq = GEOSCoordSeq_create_r( geosctxt, static_cast< unsigned int >( part.size() ), 2 );
+          for ( unsigned int i = 0; i < part.size(); ++i )
           {
 #if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
             GEOSCoordSeq_setXY_r( geosctxt, cooSeq, i, part[i].x, part[i].y );
@@ -487,14 +484,14 @@ void Layer::chopFeaturesAtRepeatDistance()
         p.x = points[cur - 1].x + c * ( points[cur].x - points[cur - 1].x );
         p.y = points[cur - 1].y + c * ( points[cur].y - points[cur - 1].y );
         part.push_back( p );
-        GEOSCoordSequence *cooSeq = GEOSCoordSeq_create_r( geosctxt, part.size(), 2 );
-        for ( int i = 0; i < part.size(); ++i )
+        GEOSCoordSequence *cooSeq = GEOSCoordSeq_create_r( geosctxt, static_cast< unsigned int >( part.size() ), 2 );
+        for ( std::size_t i = 0; i < part.size(); ++i )
         {
 #if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
           GEOSCoordSeq_setXY_r( geosctxt, cooSeq, i, part[i].x, part[i].y );
 #else
-          GEOSCoordSeq_setX_r( geosctxt, cooSeq, i, part[i].x );
-          GEOSCoordSeq_setY_r( geosctxt, cooSeq, i, part[i].y );
+          GEOSCoordSeq_setX_r( geosctxt, cooSeq, static_cast< unsigned int >( i ), part[i].x );
+          GEOSCoordSeq_setY_r( geosctxt, cooSeq, static_cast< unsigned int >( i ), part[i].y );
 #endif
         }
 

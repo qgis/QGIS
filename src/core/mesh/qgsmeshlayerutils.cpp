@@ -178,16 +178,17 @@ QgsVector QgsMeshLayerUtils::interpolateVectorFromFacesData( const QgsPointXY &p
 }
 
 
-QVector<double> QgsMeshLayerUtils::interpolateFromFacesData( QVector<double> valuesOnFaces, QgsMesh *nativeMesh,
-    QgsTriangularMesh *triangularMesh,
-    QgsMeshDataBlock *active,
-    QgsMeshRendererScalarSettings::DataInterpolationMethod method )
+QVector<double> QgsMeshLayerUtils::interpolateFromFacesData(
+  QVector<double> valuesOnFaces,
+  const QgsMesh *nativeMesh,
+  const QgsTriangularMesh *triangularMesh,
+  QgsMeshDataBlock *active,
+  QgsMeshRendererScalarSettings::DataInterpolationMethod method )
 {
   Q_UNUSED( triangularMesh )
   Q_UNUSED( method )
 
   assert( nativeMesh );
-  assert( active );
   assert( method == QgsMeshRendererScalarSettings::NeighbourAverage );
 
   // assuming that native vertex count = triangular vertex count
@@ -200,7 +201,7 @@ QVector<double> QgsMeshLayerUtils::interpolateFromFacesData( QVector<double> val
 
   for ( int i = 0; i < nativeMesh->faces.size(); ++i )
   {
-    if ( active->active( i ) )
+    if ( !active || active->active( i ) )
     {
       double val = valuesOnFaces[ i ];
       if ( !std::isnan( val ) )

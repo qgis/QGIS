@@ -51,9 +51,9 @@ class CORE_EXPORT QgsMeshDatasetIndex
     //! Returns whether index is valid, ie at least groups is set
     bool isValid() const;
     //! Equality operator
-    bool operator == ( const QgsMeshDatasetIndex &other ) const;
+    bool operator == ( QgsMeshDatasetIndex other ) const;
     //! Inequality operator
-    bool operator != ( const QgsMeshDatasetIndex &other ) const;
+    bool operator != ( QgsMeshDatasetIndex other ) const;
   private:
     int mGroupIndex = -1;
     int mDatasetIndex = -1;
@@ -135,11 +135,11 @@ class CORE_EXPORT QgsMeshDatasetValue
     //! Returns y value
     double y() const;
 
-    bool operator==( const QgsMeshDatasetValue &other ) const;
+    bool operator==( QgsMeshDatasetValue other ) const;
 
   private:
-    double mX  = std::numeric_limits<double>::quiet_NaN();
-    double mY  = std::numeric_limits<double>::quiet_NaN();
+    double mX = std::numeric_limits<double>::quiet_NaN();
+    double mY = std::numeric_limits<double>::quiet_NaN();
 };
 
 /**
@@ -209,6 +209,13 @@ class CORE_EXPORT QgsMeshDataBlock
      * data to the block by data provider.
      */
     void *buffer() SIP_SKIP;
+
+    /**
+     * Returns buffer to the array with values
+     *
+     * \since QGIS 3.12
+     */
+    QVector<double> values() const;
 
     /**
      * Returns internal buffer to the array for fast
@@ -637,7 +644,7 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
      *
      * On success, the mesh's dataset group count is changed
      *
-     * \param path destination path of the stored file
+     * \param path destination path of the stored file in form DRIVER_NAME:path
      * \param meta new group's metadata
      * \param datasetValues scalar/vector values for all datasets and all faces/vertices in the group
      * \param datasetActive active flag values for all datasets in the group. Empty array represents can be used

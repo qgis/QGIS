@@ -625,6 +625,11 @@ QgsRectangle QgsMeshMemoryDataProvider::calculateExtent() const
   return rec;
 }
 
+QgsMeshMemoryDatasetGroup::QgsMeshMemoryDatasetGroup( const QString &nm, QgsMeshDatasetGroupMetadata::DataType dataType ):
+  name( nm ), type( dataType )
+{
+}
+
 
 QgsMeshMemoryDatasetGroup::QgsMeshMemoryDatasetGroup( const QString &nm ):
   name( nm )

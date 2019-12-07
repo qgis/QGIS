@@ -1239,3 +1239,57 @@ void QgsBookmarksItemGuiProvider::importBookmarksToManager( QgsBookmarkManager *
   }
   settings.setValue( QStringLiteral( "Windows/Bookmarks/LastUsedDirectory" ), QFileInfo( fileName ).path() );
 }
+
+//
+// QgsHtmlDataItemProvider
+//
+
+QString QgsHtmlDataItemProvider::name()
+{
+  return QStringLiteral( "html" );
+}
+
+int QgsHtmlDataItemProvider::capabilities() const
+{
+  return QgsDataProvider::File;
+}
+
+QgsDataItem *QgsHtmlDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
+{
+  QFileInfo fileInfo( path );
+
+  if ( fileInfo.suffix().compare( QLatin1String( "htm" ), Qt::CaseInsensitive ) == 0
+       || fileInfo.suffix().compare( QLatin1String( "html" ), Qt::CaseInsensitive ) == 0 )
+  {
+    return new QgsHtmlDataItem( parentItem, fileInfo.fileName(), path );
+  }
+  return nullptr;
+}
+
+//
+// QgsHtmlDataItemProvider
+//
+
+QgsHtmlDataItem::QgsHtmlDataItem( QgsDataItem *parent, const QString &name, const QString &path )
+  : QgsDataItem( QgsDataItem::Custom, parent, name, path )
+{
+  setState( QgsDataItem::Populated ); // no children
+  setIconName( QStringLiteral( "/mIconHtml.svg" ) );
+  setToolTip( QDir::toNativeSeparators( path ) );
+}
+
+bool QgsHtmlDataItem::handleDoubleClick()
+{
+  QDesktopServices::openUrl( QUrl::fromLocalFile( path() ) );
+  return true;
+}
+
+QList<QAction *> QgsHtmlDataItem::actions( QWidget *parent )
+{
+  QAction *openAction = new QAction( tr( "&Open File…" ), parent );
+  connect( openAction, &QAction::triggered, this, [ = ]
+  {
+    QDesktopServices::openUrl( QUrl::fromLocalFile( path() ) );
+  } );
+  return QList<QAction *>() << openAction;
+}
