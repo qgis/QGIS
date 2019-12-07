@@ -114,7 +114,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
 
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
 
-  bool featureGeomIsObstacleGeom = !lf->obstacleGeometry();
+  bool featureGeomIsObstacleGeom = lf->obstacleSettings().obstacleGeometry().isNull();
 
   while ( !simpleGeometries->isEmpty() )
   {
@@ -195,11 +195,14 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
   if ( lf->obstacleSettings().isObstacle() && !featureGeomIsObstacleGeom )
   {
     //do the same for the obstacle geometry
-    simpleGeometries.reset( Util::unmulti( lf->obstacleGeometry() ) );
+    geos::unique_ptr obstacleGeom( QgsGeos::asGeos( lf->obstacleSettings().obstacleGeometry() ) );
+    simpleGeometries.reset( Util::unmulti( obstacleGeom.get() ) );
     if ( !simpleGeometries ) // unmulti() failed?
     {
       throw InternalException::UnknownGeometry();
     }
+
+    mGeosObstacleGeometries.emplace_back( std::move( obstacleGeom ) );
 
     while ( !simpleGeometries->isEmpty() )
     {
@@ -448,7 +451,7 @@ void Layer::chopFeaturesAtRepeatDistance()
       // Walk along line
       unsigned int cur = 0;
       double lambda = 0;
-      QVector<Point> part;
+      std::vector<Point> part;
 
       QList<FeaturePart *> repeatParts;
       repeatParts.reserve( possibleSegments );
@@ -463,8 +466,8 @@ void Layer::chopFeaturesAtRepeatDistance()
         if ( cur >= n )
         {
           // Create final part
-          GEOSCoordSequence *cooSeq = GEOSCoordSeq_create_r( geosctxt, part.size(), 2 );
-          for ( int i = 0; i < part.size(); ++i )
+          GEOSCoordSequence *cooSeq = GEOSCoordSeq_create_r( geosctxt, static_cast< unsigned int >( part.size() ), 2 );
+          for ( unsigned int i = 0; i < part.size(); ++i )
           {
 #if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
             GEOSCoordSeq_setXY_r( geosctxt, cooSeq, i, part[i].x, part[i].y );
@@ -487,14 +490,14 @@ void Layer::chopFeaturesAtRepeatDistance()
         p.x = points[cur - 1].x + c * ( points[cur].x - points[cur - 1].x );
         p.y = points[cur - 1].y + c * ( points[cur].y - points[cur - 1].y );
         part.push_back( p );
-        GEOSCoordSequence *cooSeq = GEOSCoordSeq_create_r( geosctxt, part.size(), 2 );
-        for ( int i = 0; i < part.size(); ++i )
+        GEOSCoordSequence *cooSeq = GEOSCoordSeq_create_r( geosctxt, static_cast< unsigned int >( part.size() ), 2 );
+        for ( std::size_t i = 0; i < part.size(); ++i )
         {
 #if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
           GEOSCoordSeq_setXY_r( geosctxt, cooSeq, i, part[i].x, part[i].y );
 #else
-          GEOSCoordSeq_setX_r( geosctxt, cooSeq, i, part[i].x );
-          GEOSCoordSeq_setY_r( geosctxt, cooSeq, i, part[i].y );
+          GEOSCoordSeq_setX_r( geosctxt, cooSeq, static_cast< unsigned int >( i ), part[i].x );
+          GEOSCoordSeq_setY_r( geosctxt, cooSeq, static_cast< unsigned int >( i ), part[i].y );
 #endif
         }
 
