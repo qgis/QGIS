@@ -445,6 +445,3 @@ qgis:vectorlayerscatterplot: >
 
 qgis:voronoipolygons: >
   This algorithm takes a points layer and generates a polygon layer containing the voronoi polygons corresponding to those input points.
-
-qgis:zonalstatistics: >
-  This algorithm calculates statistics of a raster layer for each feature of an overlapping polygon vector layer.

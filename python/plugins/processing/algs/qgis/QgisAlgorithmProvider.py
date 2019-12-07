@@ -102,7 +102,6 @@ from .VectorLayerScatterplot import VectorLayerScatterplot
 from .VectorLayerScatterplot3D import VectorLayerScatterplot3D
 from .VectorSplit import VectorSplit
 from .VoronoiPolygons import VoronoiPolygons
-from .ZonalStatistics import ZonalStatistics
 
 
 class QgisAlgorithmProvider(QgsProcessingProvider):
@@ -189,7 +188,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 VectorLayerScatterplot3D(),
                 VectorSplit(),
                 VoronoiPolygons(),
-                ZonalStatistics()
                 ]
 
         return algs

@@ -153,6 +153,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmvectorize.cpp
   processing/qgsalgorithmwedgebuffers.cpp
   processing/qgsalgorithmzonalhistogram.cpp
+  processing/qgsalgorithmzonalstatistics.cpp
   processing/qgsbookmarkalgorithms.cpp
   processing/qgsprojectstylealgorithms.cpp
   processing/qgsstylealgorithms.cpp

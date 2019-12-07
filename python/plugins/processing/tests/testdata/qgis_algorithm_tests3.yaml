@@ -89,8 +89,8 @@ tests:
           fields:
             fid: skip
 
-  - algorithm: qgis:zonalstatistics
-    name: simple zonal statistics
+  - algorithm: native:zonalstatistics
+    name: Zonal statistics
     params:
       COLUMN_PREFIX: _
       INPUT_RASTER:
@@ -115,7 +115,7 @@ tests:
             precision: 5
 
   - algorithm: qgis:zonalhistogram
-    name: zonal histogram
+    name: Zonal histogram
     params:
       COLUMN_PREFIX: HISTO_
       INPUT_RASTER:

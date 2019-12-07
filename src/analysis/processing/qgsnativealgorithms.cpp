@@ -147,6 +147,7 @@
 #include "qgsalgorithmvectorize.h"
 #include "qgsalgorithmwedgebuffers.h"
 #include "qgsalgorithmzonalhistogram.h"
+#include "qgsalgorithmzonalstatistics.h"
 #include "qgsalgorithmpolygonstolines.h"
 #include "qgsbookmarkalgorithms.h"
 #include "qgsprojectstylealgorithms.h"
@@ -338,6 +339,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsVariableWidthBufferByMAlgorithm() );
   addAlgorithm( new QgsWedgeBuffersAlgorithm() );
   addAlgorithm( new QgsZonalHistogramAlgorithm() );
+  addAlgorithm( new QgsZonalStatisticsAlgorithm() );
   addAlgorithm( new QgsPolygonsToLinesAlgorithm() );
   addAlgorithm( new QgsDensifyGeometriesByIntervalAlgorithm() );
   addAlgorithm( new QgsDensifyGeometriesByCountAlgorithm() );
