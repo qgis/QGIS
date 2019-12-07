@@ -195,33 +195,25 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
   if ( lf->obstacleSettings().isObstacle() && !featureGeomIsObstacleGeom )
   {
     //do the same for the obstacle geometry
-    geos::unique_ptr obstacleGeom( QgsGeos::asGeos( lf->obstacleSettings().obstacleGeometry() ) );
-    simpleGeometries.reset( Util::unmulti( obstacleGeom.get() ) );
-    if ( !simpleGeometries ) // unmulti() failed?
+    const QgsGeometry obstacleGeometry = lf->obstacleSettings().obstacleGeometry();
+    for ( auto it = obstacleGeometry.const_parts_begin(); it != obstacleGeometry.const_parts_end(); ++it )
     {
-      throw InternalException::UnknownGeometry();
-    }
-
-    mGeosObstacleGeometries.emplace_back( std::move( obstacleGeom ) );
-
-    while ( !simpleGeometries->isEmpty() )
-    {
-      const GEOSGeometry *geom = simpleGeometries->takeFirst();
+      geos::unique_ptr geom = QgsGeos::asGeos( *it );
 
       // ignore invalid geometries (e.g. polygons with self-intersecting rings)
-      if ( GEOSisValid_r( geosctxt, geom ) != 1 ) // 0=invalid, 1=valid, 2=exception
+      if ( GEOSisValid_r( geosctxt, geom.get() ) != 1 ) // 0=invalid, 1=valid, 2=exception
       {
         continue;
       }
 
-      int type = GEOSGeomTypeId_r( geosctxt, geom );
+      int type = GEOSGeomTypeId_r( geosctxt, geom.get() );
 
       if ( type != GEOS_POINT && type != GEOS_LINESTRING && type != GEOS_POLYGON )
       {
         throw InternalException::UnknownGeometry();
       }
 
-      std::unique_ptr<FeaturePart> fpart = qgis::make_unique<FeaturePart>( lf, geom );
+      std::unique_ptr<FeaturePart> fpart = qgis::make_unique<FeaturePart>( lf, geom.get() );
 
       // ignore invalid geometries
       if ( ( type == GEOS_LINESTRING && fpart->nbPoints < 2 ) ||
@@ -235,6 +227,8 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
       {
         continue;
       }
+
+      mGeosObstacleGeometries.emplace_back( std::move( geom ) );
 
       // feature part is ready!
       addObstaclePart( fpart.release() );
