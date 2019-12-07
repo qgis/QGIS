@@ -27,7 +27,7 @@
  * unresolved layers or unmatched fields.
  *
  * This class is used to store relation information attached to a
- * layer style, a method to attempt to relation resolution is also
+ * layer style, a method to attempt relation resolution is also
  * implemented and can be used to create a QgsRelation after the
  * dependent layers are loaded and available.
  *
@@ -78,7 +78,6 @@ class CORE_EXPORT QgsWeakRelation
 
     /**
      * Returns the list of field pairs
-     * @return
      */
     QList<QgsRelation::FieldPair> fieldPairs() const;
 
@@ -90,6 +89,8 @@ class CORE_EXPORT QgsWeakRelation
     QString mRelationName;
     QgsRelation::RelationStrength mStrength;
     QList<QgsRelation::FieldPair> mFieldPairs;
+
+    friend class TestQgsWeakRelation;
 
 };
 
