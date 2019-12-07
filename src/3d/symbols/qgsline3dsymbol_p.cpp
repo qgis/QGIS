@@ -19,6 +19,7 @@
 #include "qgslinematerial_p.h"
 #include "qgslinevertexdata_p.h"
 #include "qgstessellatedpolygongeometry.h"
+#include "qgstessellator.h"
 #include "qgs3dmapsettings.h"
 //#include "qgsterraingenerator.h"
 #include "qgs3dutils.h"
@@ -67,9 +68,12 @@ class QgsBufferedLine3DSymbolHandler : public QgsFeature3DHandler
     //! temporary data we will pass to the tessellator
     struct LineData
     {
-      QList<QgsPolygon *> polygons;
-      QList<QgsFeatureId> fids;
+      std::unique_ptr<QgsTessellator> tessellator;
+      QVector<QgsFeatureId> triangleIndexFids;
+      QVector<uint> triangleIndexStartingIndices;
     };
+
+    void processPolygon( QgsPolygon *polyBuffered, QgsFeatureId fid, float height, float extrusionHeight, const Qgs3DRenderContext &context, LineData &out );
 
     void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, LineData &out, bool selected );
 
@@ -87,8 +91,11 @@ class QgsBufferedLine3DSymbolHandler : public QgsFeature3DHandler
 
 bool QgsBufferedLine3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames )
 {
-  Q_UNUSED( context )
   Q_UNUSED( attributeNames )
+
+  outNormal.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true ) );
+  outSelected.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true ) );
+
   return true;
 }
 
@@ -119,9 +126,7 @@ void QgsBufferedLine3DSymbolHandler::processFeature( QgsFeature &f, const Qgs3DR
   if ( QgsWkbTypes::flatType( buffered->wkbType() ) == QgsWkbTypes::Polygon )
   {
     QgsPolygon *polyBuffered = static_cast<QgsPolygon *>( buffered );
-    Qgs3DUtils::clampAltitudes( polyBuffered, mSymbol.altitudeClamping(), mSymbol.altitudeBinding(), mSymbol.height(), context.map() );
-    out.polygons.append( polyBuffered );
-    out.fids.append( f.id() );
+    processPolygon( polyBuffered, f.id(), mSymbol.height(), mSymbol.extrusionHeight(), context, out );
   }
   else if ( QgsWkbTypes::flatType( buffered->wkbType() ) == QgsWkbTypes::MultiPolygon )
   {
@@ -131,14 +136,23 @@ void QgsBufferedLine3DSymbolHandler::processFeature( QgsFeature &f, const Qgs3DR
       QgsAbstractGeometry *partBuffered = mpolyBuffered->geometryN( i );
       Q_ASSERT( QgsWkbTypes::flatType( partBuffered->wkbType() ) == QgsWkbTypes::Polygon );
       QgsPolygon *polyBuffered = static_cast<QgsPolygon *>( partBuffered )->clone(); // need to clone individual geometry parts
-      Qgs3DUtils::clampAltitudes( polyBuffered, mSymbol.altitudeClamping(), mSymbol.altitudeBinding(), mSymbol.height(), context.map() );
-      out.polygons.append( polyBuffered );
-      out.fids.append( f.id() );
+      processPolygon( polyBuffered, f.id(), mSymbol.height(), mSymbol.extrusionHeight(), context, out );
     }
     delete buffered;
   }
 }
 
+void QgsBufferedLine3DSymbolHandler::processPolygon( QgsPolygon *polyBuffered, QgsFeatureId fid, float height, float extrusionHeight, const Qgs3DRenderContext &context, LineData &out )
+{
+  Qgs3DUtils::clampAltitudes( polyBuffered, mSymbol.altitudeClamping(), mSymbol.altitudeBinding(), height, context.map() );
+
+  Q_ASSERT( out.tessellator->dataVerticesCount() % 3 == 0 );
+  uint startingTriangleIndex = static_cast<uint>( out.tessellator->dataVerticesCount() / 3 );
+  out.triangleIndexStartingIndices.append( startingTriangleIndex );
+  out.triangleIndexFids.append( fid );
+  out.tessellator->addPolygon( *polyBuffered, extrusionHeight );
+  delete polyBuffered;
+}
 
 void QgsBufferedLine3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context )
 {
@@ -150,7 +164,7 @@ void QgsBufferedLine3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const 
 
 void QgsBufferedLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, LineData &out, bool selected )
 {
-  if ( out.polygons.isEmpty() )
+  if ( !out.tessellator->dataVerticesCount() )
     return;  // nothing to show - no need to create the entity
 
   Qt3DExtras::QPhongMaterial *mat = _material( mSymbol );
@@ -161,9 +175,12 @@ void QgsBufferedLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, cons
     mat->setAmbient( context.map().selectionColor().darker() );
   }
 
-  QgsPointXY origin( context.map().origin().x(), context.map().origin().y() );
+  // extract vertex buffer data from tessellator
+  QByteArray data( ( const char * )out.tessellator->data().constData(), out.tessellator->data().count() * sizeof( float ) );
+  int nVerts = data.count() / out.tessellator->stride();
+
   QgsTessellatedPolygonGeometry *geometry = new QgsTessellatedPolygonGeometry;
-  geometry->setPolygons( out.polygons, out.fids, origin, mSymbol.extrusionHeight() );
+  geometry->setData( data, nVerts, out.triangleIndexFids, out.triangleIndexStartingIndices );
 
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
   renderer->setGeometry( geometry );

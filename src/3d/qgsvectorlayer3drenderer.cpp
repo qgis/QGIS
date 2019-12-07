@@ -15,12 +15,11 @@
 
 #include "qgsvectorlayer3drenderer.h"
 
+#include "qgschunkedentity_p.h"
 #include "qgsline3dsymbol.h"
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
-#include "qgsline3dsymbol_p.h"
-#include "qgspoint3dsymbol_p.h"
-#include "qgspolygon3dsymbol_p.h"
+#include "qgsvectorlayerchunkloader_p.h"
 
 #include "qgsvectorlayer.h"
 #include "qgsxmlutils.h"
@@ -81,14 +80,7 @@ Qt3DCore::QEntity *QgsVectorLayer3DRenderer::createEntity( const Qgs3DMapSetting
   if ( !mSymbol || !vl )
     return nullptr;
 
-  if ( mSymbol->type() == QLatin1String( "polygon" ) )
-    return Qgs3DSymbolImpl::entityForPolygon3DSymbol( map, vl, *static_cast<QgsPolygon3DSymbol *>( mSymbol.get() ) );
-  else if ( mSymbol->type() == QLatin1String( "point" ) )
-    return Qgs3DSymbolImpl::entityForPoint3DSymbol( map, vl, *static_cast<QgsPoint3DSymbol *>( mSymbol.get() ) );
-  else if ( mSymbol->type() == QLatin1String( "line" ) )
-    return Qgs3DSymbolImpl::entityForLine3DSymbol( map, vl, *static_cast<QgsLine3DSymbol *>( mSymbol.get() ) );
-  else
-    return nullptr;
+  return new QgsVectorLayerChunkedEntity( vl, mSymbol.get(), map );
 }
 
 void QgsVectorLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const

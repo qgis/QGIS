@@ -131,6 +131,11 @@ class _3D_EXPORT Qgs3DUtils
     //! Converts 3D world coordinates to map coordinates (applies offset and turns (x,y,z) into (x,-z,y))
     static QgsVector3D worldToMapCoordinates( const QgsVector3D &worldCoords, const QgsVector3D &origin );
 
+    //! Converts layer extent to axis aligned bounding box in 3D world coordinates
+    static QgsAABB mapToWorldExtent( const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs, const QgsVector3D &mapOrigin, const QgsCoordinateReferenceSystem &mapCrs );
+    //! Converts axis aligned bounding box in 3D world coordinates to extent in map coordinates
+    static QgsRectangle worldToMapExtent( const QgsAABB &bbox, const QgsCoordinateReferenceSystem &crs, const QgsVector3D &mapOrigin, const QgsCoordinateReferenceSystem &mapCrs );
+
     //! Transforms a world point from (origin1, crs1) to (origin2, crs2)
     static QgsVector3D transformWorldCoordinates( const QgsVector3D &worldPoint1, const QgsVector3D &origin1, const QgsCoordinateReferenceSystem &crs1, const QgsVector3D &origin2, const QgsCoordinateReferenceSystem &crs2,
         const QgsCoordinateTransformContext &context );

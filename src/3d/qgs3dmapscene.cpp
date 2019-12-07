@@ -439,7 +439,7 @@ void Qgs3DMapScene::onLayerEntityPickEvent( Qt3DRender::QPickEvent *event )
   for ( Qgs3DMapScenePickHandler *pickHandler : qgis::as_const( mPickHandlers ) )
   {
     // go figure out feature ID from the triangle index
-    QgsFeatureId fid = -1;
+    QgsFeatureId fid = FID_NULL;
     for ( Qt3DRender::QGeometryRenderer *geomRenderer : entity->findChildren<Qt3DRender::QGeometryRenderer *>() )
     {
       // unfortunately we can't access which sub-entity triggered the pick event
@@ -450,11 +450,17 @@ void Qgs3DMapScene::onLayerEntityPickEvent( Qt3DRender::QPickEvent *event )
 
       if ( QgsTessellatedPolygonGeometry *g = qobject_cast<QgsTessellatedPolygonGeometry *>( geomRenderer->geometry() ) )
       {
+        // because we have a single picker for all chunks of an entity and QPickEvent
+        // does not give better information than triangle index and world/local intersection point.
+        // TODO: the code below basically does not work with more than single sub-entity
+        // TODO: maybe have a separate picker for each chunk?
         fid = g->triangleIndexToFeatureId( triangleEvent->triangleIndex() );
-        break;
+        if ( !FID_IS_NULL( fid ) )
+          break;
       }
     }
-    pickHandler->handlePickOnVectorLayer( vlayer, fid, event->worldIntersection(), event );
+    if ( !FID_IS_NULL( fid ) )
+      pickHandler->handlePickOnVectorLayer( vlayer, fid, event->worldIntersection(), event );
   }
 
 }
@@ -557,6 +563,7 @@ void Qgs3DMapScene::onLayersChanged()
 
 void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
 {
+  bool needsSceneUpdate = false;
   QgsAbstract3DRenderer *renderer = layer->renderer3D();
   if ( renderer )
   {
@@ -592,8 +599,22 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
       }
 
       finalizeNewEntity( newEntity );
+
+      if ( QgsChunkedEntity *chunkedNewEntity = qobject_cast<QgsChunkedEntity *>( newEntity ) )
+      {
+        mChunkEntities.append( chunkedNewEntity );
+        needsSceneUpdate = true;
+
+        connect( chunkedNewEntity, &QgsChunkedEntity::newEntityCreated, this, [this]( Qt3DCore::QEntity * entity )
+        {
+          finalizeNewEntity( entity );
+        } );
+      }
     }
   }
+
+  if ( needsSceneUpdate )
+    onCameraChanged();   // needed for chunked entities
 
   connect( layer, &QgsMapLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
 
@@ -607,6 +628,12 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
 void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
 {
   Qt3DCore::QEntity *entity = mLayerEntities.take( layer );
+
+  if ( QgsChunkedEntity *chunkedEntity = qobject_cast<QgsChunkedEntity *>( entity ) )
+  {
+    mChunkEntities.removeOne( chunkedEntity );
+  }
+
   if ( entity )
     entity->deleteLater();
 

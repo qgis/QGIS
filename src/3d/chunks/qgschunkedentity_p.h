@@ -108,6 +108,9 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
     //! Emitted when the number of pending jobs changes (some jobs have finished or some jobs have been just created)
     void pendingJobsCountChanged();
 
+    //! Emitted when a new 3D entity has been created. Other components can use that to do extra work
+    void newEntityCreated( Qt3DCore::QEntity *entity );
+
   protected:
     //! root node of the quadtree hierarchy
     QgsChunkNode *mRootNode = nullptr;

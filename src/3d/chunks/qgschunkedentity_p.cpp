@@ -244,9 +244,9 @@ void QgsChunkedEntity::update( QgsChunkNode *node, const SceneState &state )
     return;
   }
 
-  //qDebug() << node->x << "|" << node->y << "|" << node->z << "  " << tau << "  " << screenSpaceError(node, state);
+  //qDebug() << node->tileX() << "|" << node->tileY() << "|" << node->tileZ() << "  " << mTau << "  " << screenSpaceError(node, state);
 
-  if ( screenSpaceError( node, state ) <= mTau )
+  if ( mTau > 0 && screenSpaceError( node, state ) <= mTau )
   {
     // acceptable error for the current chunk - let's render it
 
@@ -343,6 +343,8 @@ void QgsChunkedEntity::onActiveJobFinished()
       node->setLoaded( entity );
 
       mReplacementQueue->insertFirst( node->replacementQueueEntry() );
+
+      emit newEntityCreated( entity );
     }
     else
     {

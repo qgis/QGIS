@@ -20,6 +20,7 @@ SET(QGIS_3D_SRCS
   qgstessellatedpolygongeometry.cpp
   qgstilingscheme.cpp
   qgsvectorlayer3drenderer.cpp
+  qgsvectorlayerchunkloader_p.cpp
   qgsmeshlayer3drenderer.cpp
   qgswindow3dengine.cpp
 
@@ -100,6 +101,7 @@ SET(QGIS_3D_HDRS
 )
 
 SET(QGIS_3D_PRIVATE_HDRS
+  qgsvectorlayerchunkloader_p.h
   chunks/qgschunkboundsentity_p.h
   chunks/qgschunkedentity_p.h
   chunks/qgschunklist_p.h

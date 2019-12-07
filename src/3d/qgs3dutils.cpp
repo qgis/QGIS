@@ -442,6 +442,28 @@ QgsVector3D Qgs3DUtils::worldToMapCoordinates( const QgsVector3D &worldCoords, c
                       worldCoords.y() + origin.z() );
 }
 
+QgsAABB Qgs3DUtils::mapToWorldExtent( const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs, const QgsVector3D &mapOrigin, const QgsCoordinateReferenceSystem &mapCrs )
+{
+  // TODO: transform to map coords
+  QgsVector3D extentMin3D( extent.xMinimum(), extent.yMinimum(), 0 );  // TODO: is it OK to have zero min/max elevation?
+  QgsVector3D extentMax3D( extent.xMaximum(), extent.yMaximum(), 500 );
+  QgsVector3D worldExtentMin3D = mapToWorldCoordinates( extentMin3D, mapOrigin );
+  QgsVector3D worldExtentMax3D = mapToWorldCoordinates( extentMax3D, mapOrigin );
+  QgsAABB rootBbox( worldExtentMin3D.x(), worldExtentMin3D.y(), worldExtentMin3D.z(),
+                    worldExtentMax3D.x(), worldExtentMax3D.y(), worldExtentMax3D.z() );
+  return rootBbox;
+}
+
+QgsRectangle Qgs3DUtils::worldToMapExtent( const QgsAABB &bbox, const QgsCoordinateReferenceSystem &crs, const QgsVector3D &mapOrigin, const QgsCoordinateReferenceSystem &mapCrs )
+{
+  QgsVector3D worldExtentMin3D = Qgs3DUtils::worldToMapCoordinates( QgsVector3D( bbox.xMin, bbox.yMin, bbox.zMin ), mapOrigin );
+  QgsVector3D worldExtentMax3D = Qgs3DUtils::worldToMapCoordinates( QgsVector3D( bbox.xMax, bbox.yMax, bbox.zMax ), mapOrigin );
+  // TODO: reproject to layer CRS
+  QgsRectangle rect( worldExtentMin3D.x(), worldExtentMin3D.y(), worldExtentMax3D.x(), worldExtentMax3D.y() );
+  return rect;
+}
+
+
 QgsVector3D Qgs3DUtils::transformWorldCoordinates( const QgsVector3D &worldPoint1, const QgsVector3D &origin1, const QgsCoordinateReferenceSystem &crs1, const QgsVector3D &origin2, const QgsCoordinateReferenceSystem &crs2, const QgsCoordinateTransformContext &context )
 {
   QgsVector3D mapPoint1 = worldToMapCoordinates( worldPoint1, origin1 );
