@@ -22,6 +22,7 @@
 #include "geos_c.h"
 #include "qgsgeos.h"
 #include "qgsmargins.h"
+#include "qgslabelobstaclesettings.h"
 #include "pal.h"
 
 namespace pal
@@ -304,36 +305,14 @@ class CORE_EXPORT QgsLabelFeature
     //! Sets whether label should be always shown (sets very high label priority)
     void setAlwaysShow( bool enabled ) { mAlwaysShow = enabled; }
 
+
+
     /**
      * Returns whether the feature will act as an obstacle for labels.
      * \returns TRUE if feature is an obstacle
      * \see setIsObstacle
      */
     bool isObstacle() const { return mIsObstacle; }
-
-    /**
-     * Sets whether the feature will act as an obstacle for labels.
-     * \param enabled whether feature will act as an obstacle
-     * \see isObstacle
-     */
-    void setIsObstacle( bool enabled ) { mIsObstacle = enabled; }
-
-    /**
-     * Returns the obstacle factor for the feature. The factor controls the penalty
-     * for labels overlapping this feature.
-     * \see setObstacleFactor
-     */
-    double obstacleFactor() const { return mObstacleFactor; }
-
-    /**
-     * Sets the obstacle factor for the feature. The factor controls the penalty
-     * for labels overlapping this feature.
-     * \param factor larger factors ( > 1.0 ) will result in labels
-     * which are less likely to cover this feature, smaller factors ( < 1.0 ) mean labels
-     * are more likely to cover this feature (where required)
-     * \see obstacleFactor
-     */
-    void setObstacleFactor( double factor ) { mObstacleFactor = factor; }
 
     /**
      * Returns the feature's arrangement flags.
@@ -466,6 +445,22 @@ class CORE_EXPORT QgsLabelFeature
      */
     void setRotatedSize( QSizeF size ) { mRotatedSize = size; }
 
+    /**
+     * Returns the label's obstacle settings.
+     *
+     * \see setObstacleSettings()
+     * \since QGIS 3.12
+     */
+    const QgsLabelObstacleSettings &obstacleSettings() const;
+
+    /**
+     * Sets the label's obstacle \a settings.
+     *
+     * \see pbstacleSettings()
+     * \since QGIS 3.12
+     */
+    void setObstacleSettings( const QgsLabelObstacleSettings &settings );
+
   protected:
     //! Pointer to PAL layer (assigned when registered to PAL)
     pal::Layer *mLayer = nullptr;
@@ -514,10 +509,6 @@ class CORE_EXPORT QgsLabelFeature
     double mRepeatDistance;
     //! whether to always show label - even in case of collisions
     bool mAlwaysShow;
-    //! whether the feature geometry acts as an obstacle for labels
-    bool mIsObstacle;
-    //! how strong is the geometry acting as obstacle
-    double mObstacleFactor;
     //! text of the label
     QString mLabelText;
     //! extra information for curved labels (may be NULLPTR)
@@ -543,6 +534,8 @@ class CORE_EXPORT QgsLabelFeature
     const QgsSymbol *mSymbol = nullptr;
 
     bool mLabelAllParts = false;
+
+    QgsLabelObstacleSettings mObstacleSettings;
 
 };
 

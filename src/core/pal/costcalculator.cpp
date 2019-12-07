@@ -84,7 +84,7 @@ void CostCalculator::addObstacleCostPenalty( LabelPosition *lp, FeaturePart *obs
   }
 
   //scale cost by obstacle's factor
-  double obstacleCost = obstacle->obstacleFactor() * double( n );
+  double obstacleCost = obstacle->obstacleSettings().factor() * double( n );
   if ( n > 0 )
     lp->setConflictsWithObstacle( true );
 
@@ -97,7 +97,7 @@ void CostCalculator::addObstacleCostPenalty( LabelPosition *lp, FeaturePart *obs
     {
       // obstacle factor is from 0 -> 2, label priority is from 1 -> 0. argh!
       const double priority = 2 * ( 1 - lp->feature->calculatePriority() );
-      const double obstaclePriority = obstacle->obstacleFactor();
+      const double obstaclePriority = obstacle->obstacleSettings().factor();
 
       // if feature priority is < obstaclePriorty, there's a hard conflict...
       if ( n > 0 && ( priority < obstaclePriority && !qgsDoubleNear( priority, obstaclePriority, 0.001 ) ) )

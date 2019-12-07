@@ -151,7 +151,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
     // is the feature well defined?  TODO Check epsilon
     bool labelWellDefined = ( lf->size().width() > 0.0000001 && lf->size().height() > 0.0000001 );
 
-    if ( lf->isObstacle() && featureGeomIsObstacleGeom )
+    if ( lf->obstacleSettings().isObstacle() && featureGeomIsObstacleGeom )
     {
       //if we are not labeling the layer, only insert it into the obstacle list and avoid an
       //unnecessary copy
@@ -192,7 +192,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
     addedFeature = true;
   }
 
-  if ( lf->isObstacle() && !featureGeomIsObstacleGeom )
+  if ( lf->obstacleSettings().isObstacle() && !featureGeomIsObstacleGeom )
   {
     //do the same for the obstacle geometry
     simpleGeometries.reset( Util::unmulti( lf->obstacleGeometry() ) );
