@@ -17,9 +17,12 @@ from qgis.core import (QgsProperty,
                        QgsPalLayerSettings,
                        QgsLabelObstacleSettings,
                        QgsExpressionContext,
-                       QgsExpressionContextScope)
+                       QgsExpressionContextScope,
+                       QgsGeometry)
 
-from qgis.testing import unittest
+from qgis.testing import unittest, start_app
+
+start_app()
 
 
 class TestQgsLabelObstacleSettings(unittest.TestCase):
@@ -67,8 +70,15 @@ class TestQgsLabelObstacleSettings(unittest.TestCase):
         context = QgsExpressionContext()
         scope = QgsExpressionContextScope()
         scope.setVariable('factor', 9)
-        props.updateDataDefinedProperties(props, context)
-        self.assertEqual(settings.factor(), 0.1)
+        context.appendScope(scope)
+        settings.updateDataDefinedProperties(props, context)
+        self.assertAlmostEqual(settings.factor(), 1.8, 3)
+
+    def testObstacleGeom(self):
+        settings = QgsLabelObstacleSettings()
+        self.assertTrue(settings.obstacleGeometry().isNull())
+        settings.setObstacleGeometry(QgsGeometry.fromWkt('LineString( 0 0, 1 1)'))
+        self.assertEqual(settings.obstacleGeometry().asWkt(), 'LineString (0 0, 1 1)')
 
 
 if __name__ == '__main__':

@@ -18,6 +18,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsgeos.h"
 
 class QgsPropertyCollection;
 class QgsExpressionContext;
@@ -121,6 +122,22 @@ class CORE_EXPORT QgsLabelObstacleSettings
     }
 
     /**
+     * Sets the label's obstacle geometry, if different to the feature geometry.
+     * This can be used to override the shape of the feature for obstacle detection, e.g., to
+     * buffer around a point geometry to prevent labels being placed too close to the
+     * point itself. It not set, the feature's geometry is used for obstacle detection.
+     *
+     * \see obstacleGeometry()
+     */
+    void setObstacleGeometry( const QgsGeometry &obstacleGeom );
+
+    /**
+     * Returns the label's obstacle geometry, if different to the feature geometry.
+     * \see setObstacleGeometry()
+     */
+    QgsGeometry obstacleGeometry() const;
+
+    /**
      * Updates the obstacle settings to respect any data defined properties
      * set within the specified \a properties collection.
      */
@@ -131,6 +148,9 @@ class CORE_EXPORT QgsLabelObstacleSettings
     bool mIsObstacle = true;
     double mObstacleFactor = 1.0;
     ObstacleType mObstacleType = PolygonBoundary;
+
+    //! Optional geometry to use for label obstacles
+    QgsGeometry mObstacleGeometry;
 
 };
 

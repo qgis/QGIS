@@ -45,11 +45,6 @@ QgsLabelFeature::~QgsLabelFeature()
   delete mInfo;
 }
 
-void QgsLabelFeature::setObstacleGeometry( geos::unique_ptr obstacleGeom )
-{
-  mObstacleGeometry = std::move( obstacleGeom );
-}
-
 void QgsLabelFeature::setPermissibleZone( const QgsGeometry &geometry )
 {
   mPermissibleZone = geometry;

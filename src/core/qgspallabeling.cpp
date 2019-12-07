@@ -2003,13 +2003,6 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
     }
   }
 
-  geos::unique_ptr geosObstacleGeomClone;
-  if ( isObstacle && !obstacleGeometry.isNull() )
-  {
-    geosObstacleGeomClone = QgsGeos::asGeos( obstacleGeometry );
-  }
-
-
   //data defined position / alignment / rotation?
   bool dataDefinedPosition = false;
   bool layerDefinedRotation = false;
@@ -2359,16 +2352,11 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   ( *labelFeature )->setOverrunDistance( overrunDistanceEval );
   ( *labelFeature )->setOverrunSmoothDistance( overrunSmoothDist );
   ( *labelFeature )->setLabelAllParts( labelAll );
-  if ( geosObstacleGeomClone )
+  if ( geom.type() == QgsWkbTypes::PointGeometry && isObstacle && !obstacleGeometry.isNull() )
   {
-    ( *labelFeature )->setObstacleGeometry( std::move( geosObstacleGeomClone ) );
-
-    if ( geom.type() == QgsWkbTypes::PointGeometry )
-    {
-      //register symbol size
-      ( *labelFeature )->setSymbolSize( QSizeF( obstacleGeometry.boundingBox().width(),
-                                        obstacleGeometry.boundingBox().height() ) );
-    }
+    //register symbol size
+    ( *labelFeature )->setSymbolSize( QSizeF( obstacleGeometry.boundingBox().width(),
+                                      obstacleGeometry.boundingBox().height() ) );
   }
 
   //set label's visual margin so that top visual margin is the leading, and bottom margin is the font's descent
@@ -2481,6 +2469,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   QgsLabelObstacleSettings os = mObstacleSettings;
   os.setIsObstacle( isObstacle );
   os.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
+  os.setObstacleGeometry( obstacleGeometry );
   lf->setObstacleSettings( os );
 
   QVector< QgsPalLayerSettings::PredefinedPointPosition > positionOrder = predefinedPositionOrder;

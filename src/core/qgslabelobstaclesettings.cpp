@@ -18,6 +18,16 @@
 #include "qgsexpressioncontext.h"
 #include "qgspallabeling.h"
 
+void QgsLabelObstacleSettings::setObstacleGeometry( const QgsGeometry &obstacleGeom )
+{
+  mObstacleGeometry = obstacleGeom;
+}
+
+QgsGeometry QgsLabelObstacleSettings::obstacleGeometry() const
+{
+  return mObstacleGeometry;
+}
+
 void QgsLabelObstacleSettings::updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context )
 {
   if ( properties.isActive( QgsPalLayerSettings::ObstacleFactor ) )

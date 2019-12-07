@@ -36,6 +36,7 @@
 #include "qgis_core.h"
 #include "pal.h" // for LineArrangementFlags enum
 #include "rtree.hpp"
+#include "qgsgeos.h"
 #include <QMutex>
 #include <QLinkedList>
 #include <QHash>
@@ -328,6 +329,8 @@ namespace pal
 
       //! List of obstacle parts
       QList<FeaturePart *> mObstacleParts;
+
+      std::vector< geos::unique_ptr > mGeosObstacleGeometries;
 
       Pal *pal = nullptr;
 
