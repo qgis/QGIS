@@ -106,7 +106,7 @@ QVariantMap QgsRasterStatisticsAlgorithm::processAlgorithm( const QVariantMap &p
       out << QStringLiteral( "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/></head><body>\n" );
       out << QObject::tr( "<p>Analyzed file: %1 (band %1)</p>\n" ).arg( layer->source() ).arg( band );
       out << QObject::tr( "<p>Minimum value: %1</p>\n" ).arg( stat.minimumValue, 0, 'g', 16 );
-      out << QObject::tr( "<p>Maxumum value: %1</p>\n" ).arg( stat.maximumValue, 0, 'g', 16 );
+      out << QObject::tr( "<p>Maximum value: %1</p>\n" ).arg( stat.maximumValue, 0, 'g', 16 );
       out << QObject::tr( "<p>Range: %1</p>\n" ).arg( stat.range, 0, 'g', 16 );
       out << QObject::tr( "<p>Sum: %1</p>\n" ).arg( stat.sum, 0, 'g', 16 );
       out << QObject::tr( "<p>Mean value: %1</p>\n" ).arg( stat.mean, 0, 'g', 16 );

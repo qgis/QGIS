@@ -588,7 +588,7 @@ tests:
         type: vector
         name: randompointsinextent.gml
 
-  - algorithm: qgis:randomextract
+  - algorithm: native:randomextract
     name: Random extract by number
     params:
       INPUT:
@@ -602,7 +602,7 @@ tests:
         name: points_weighted.gml
         compare: false
 
-  - algorithm: qgis:randomextract
+  - algorithm: native:randomextract
     name: Random extract by percentage
     params:
       INPUT:

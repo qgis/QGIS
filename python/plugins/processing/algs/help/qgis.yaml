@@ -288,11 +288,6 @@ qgis:postgisexecutesql: >
 qgis:postgisexecuteandloadsql: >
   This algorithm performs a SQL database query on a PostGIS database connected to QGIS and loads the query results as a new layer.
 
-qgis:randomextract: >
-  This algorithm takes a vector layer and generates a new one that contains only a subset of the features in the input layer.
-
-  The subset is defined randomly, using a percentage or count value to define the total number of features in the subset.
-
 qgis:randomextractwithinsubsets: >
   This algorithm takes a vector layer and generates a new one that contains only a subset of the features in the input layer.
 
