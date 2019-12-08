@@ -1270,7 +1270,8 @@ QVariant QgsExpressionNodeColumnRef::evalNode( QgsExpression *parent, const QgsE
         return feature.attribute( mName );
     }
   }
-  return QVariant( '[' + mName + ']' );
+  parent->setEvalErrorString( QStringLiteral( "Column '%1' not found" ).arg( mName ) );
+  return QVariant();
 }
 
 QgsExpressionNode::NodeType QgsExpressionNodeColumnRef::nodeType() const
