@@ -648,15 +648,17 @@ void QgsSimpleMarkerSymbolLayerBase::calculateOffsetAndRotation( QgsSymbolRender
   //angle
   bool ok = true;
   angle = mAngle + mLineAngle;
-  bool usingDataDefinedRotation = false;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyAngle ) )
   {
     context.setOriginalValueVariable( angle );
     angle = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyAngle, context.renderContext().expressionContext(), mAngle, &ok ) + mLineAngle;
-    usingDataDefinedRotation = ok;
+
+    // If the expression evaluation was not successful, fallback to static value
+    if ( !ok )
+      angle = mAngle + mLineAngle;
   }
 
-  hasDataDefinedRotation = context.renderHints() & QgsSymbol::DynamicRotation || usingDataDefinedRotation;
+  hasDataDefinedRotation = context.renderHints() & QgsSymbol::DynamicRotation;
   if ( hasDataDefinedRotation )
   {
     // For non-point markers, "dataDefinedRotation" means following the
@@ -3083,15 +3085,17 @@ void QgsFontMarkerSymbolLayer::calculateOffsetAndRotation( QgsSymbolRenderContex
   //angle
   bool ok = true;
   angle = mAngle + mLineAngle;
-  bool usingDataDefinedRotation = false;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyAngle ) )
   {
     context.setOriginalValueVariable( angle );
     angle = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyAngle, context.renderContext().expressionContext(), mAngle, &ok ) + mLineAngle;
-    usingDataDefinedRotation = ok;
+
+    // If the expression evaluation was not successful, fallback to static value
+    if ( !ok )
+      angle = mAngle + mLineAngle;
   }
 
-  hasDataDefinedRotation = context.renderHints() & QgsSymbol::DynamicRotation || usingDataDefinedRotation;
+  hasDataDefinedRotation = context.renderHints() & QgsSymbol::DynamicRotation;
   if ( hasDataDefinedRotation )
   {
     // For non-point markers, "dataDefinedRotation" means following the
