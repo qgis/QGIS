@@ -591,6 +591,8 @@
         <file>themes/default/propertyicons/system.svg</file>
         <file>themes/default/propertyicons/transparency.svg</file>
         <file>themes/default/propertyicons/spacer.svg</file>
+        <file>themes/default/propertyicons/relations.svg</file>
+        <file>themes/default/rendererCategorizedSymbol.svg</file>
         <file>themes/default/rendererCategorizedSymbol.svg</file>
         <file>themes/default/rendererGraduatedSymbol.svg</file>
         <file>themes/default/rendererNullSymbol.svg</file>
