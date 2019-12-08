@@ -3514,7 +3514,7 @@ class TestQgsExpression: public QObject
       QCOMPARE( e.evaluate( &context ).toString(), QStringLiteral( "[3]" ) );
       e = QgsExpression( QStringLiteral( "'a[3]'" ) );
       QCOMPARE( e.evaluate( &context ).toString(), QStringLiteral( "a[3]" ) );
-      e = QgsExpression( QStringLiteral( "\"a[3]\"" ) );
+      e = QgsExpression( QStringLiteral( "try(\"a[3]\", '[a[3]]')" ) );
       QCOMPARE( e.evaluate( &context ).toString(), QStringLiteral( "[a[3]]" ) );
       e = QgsExpression( QStringLiteral( "(1+2)[0]" ) );
       QVERIFY( !e.evaluate( &context ).isValid() );
