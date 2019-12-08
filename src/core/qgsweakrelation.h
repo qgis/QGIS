@@ -32,6 +32,7 @@
  * dependent layers are loaded and available.
  *
  * \note not available in Python bindings
+ * \ingroup core
  * \since QGIS 3.12
  */
 class CORE_EXPORT QgsWeakRelation
