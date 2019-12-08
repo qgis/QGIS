@@ -22,6 +22,7 @@
 #include "qgslogger.h"
 #include "qgsfeaturesource.h"
 #include "qgsfeedback.h"
+#include "qgsspatialindexutils.h"
 
 #include <spatialindex/SpatialIndex.h>
 #include <QMutex>
@@ -355,20 +356,13 @@ QgsSpatialIndex &QgsSpatialIndex::operator=( const QgsSpatialIndex &other )
   return *this;
 }
 
-SpatialIndex::Region QgsSpatialIndex::rectToRegion( const QgsRectangle &rect )
-{
-  double pt1[2] = { rect.xMinimum(), rect.yMinimum() },
-                  pt2[2] = { rect.xMaximum(), rect.yMaximum() };
-  return SpatialIndex::Region( pt1, pt2, 2 );
-}
-
 bool QgsSpatialIndex::featureInfo( const QgsFeature &f, SpatialIndex::Region &r, QgsFeatureId &id )
 {
   QgsRectangle rect;
   if ( !featureInfo( f, rect, id ) )
     return false;
 
-  r = rectToRegion( rect );
+  r = QgsSpatialIndexUtils::rectangleToRegion( rect );
   return true;
 }
 
@@ -429,7 +423,7 @@ bool QgsSpatialIndex::insertFeature( QgsFeatureId id, const QgsRectangle &bounds
 
 bool QgsSpatialIndex::addFeature( QgsFeatureId id, const QgsRectangle &bounds )
 {
-  SpatialIndex::Region r( rectToRegion( bounds ) );
+  SpatialIndex::Region r( QgsSpatialIndexUtils::rectangleToRegion( bounds ) );
 
   QMutexLocker locker( &d->mMutex );
 
@@ -476,7 +470,7 @@ QList<QgsFeatureId> QgsSpatialIndex::intersects( const QgsRectangle &rect ) cons
   QList<QgsFeatureId> list;
   QgisVisitor visitor( list );
 
-  SpatialIndex::Region r = rectToRegion( rect );
+  SpatialIndex::Region r = QgsSpatialIndexUtils::rectangleToRegion( rect );
 
   QMutexLocker locker( &d->mMutex );
   d->mRTree->intersectsWithQuery( r, visitor );
@@ -515,7 +509,7 @@ QList<QgsFeatureId> QgsSpatialIndex::nearestNeighbor( const QgsGeometry &geometr
   QList<QgsFeatureId> list;
   QgisVisitor visitor( list );
 
-  SpatialIndex::Region r = rectToRegion( geometry.boundingBox() );
+  SpatialIndex::Region r = QgsSpatialIndexUtils::rectangleToRegion( geometry.boundingBox() );
 
   QMutexLocker locker( &d->mMutex );
   QgsNearestNeighborComparator nnc( d->mFlags & QgsSpatialIndex::FlagStoreFeatureGeometries ? &d->mGeometries : nullptr,
