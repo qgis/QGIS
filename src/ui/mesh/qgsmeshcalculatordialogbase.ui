@@ -354,7 +354,6 @@
        <zorder>horizontalWidget</zorder>
        <zorder>mOutputFormatLabel_2</zorder>
        <zorder>mOutputGroupNameLineEdit</zorder>
-       <zorder></zorder>
       </widget>
      </widget>
      <widget class="QWidget" name="verticalLayoutWidget">
