@@ -2046,11 +2046,18 @@ const QList<QgsVectorLayerRef> QgisApp::findBrokenLayerDependencies( QgsVectorLa
       bool found = false;
       if ( ! relation.isValid() )
       {
-        // We need just the other side of the relation
+        // This is the big question: do we really
+        // want to automatically load the referencing layer(s) too?
+        // This could potentially lead to a cascaded load of a
+        // long list of layers.
+        // The code is in place but let's leave it disabled for now.
         if ( relation.referencedLayer() == vl )
         {
+          // Do nothing because vl is the referenced layer
+#if 0
           dependency = rel.referencingLayer();
           found = true;
+#endif
         }
         else if ( relation.referencingLayer() == vl )
         {
