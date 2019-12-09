@@ -17,7 +17,8 @@
 
 #include "qgsgeometrycollection.h"
 #include "qgsgeometryengine.h"
-#include "qgsoverlayutils.h"
+#include "intersectiontool.h"
+//#include "qgsoverlayutils.h"
 
 ///@cond PRIVATE
 
@@ -87,8 +88,6 @@ QVariantMap QgsIntersectionAlgorithm::processAlgorithm( const QVariantMap &param
   if ( !sourceB )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "OVERLAY" ) ) );
 
-  QgsWkbTypes::Type geomType = QgsWkbTypes::multiType( sourceA->wkbType() );
-
   const QStringList fieldsA = parameterAsFields( parameters, QStringLiteral( "INPUT_FIELDS" ), context );
   const QStringList fieldsB = parameterAsFields( parameters, QStringLiteral( "OVERLAY_FIELDS" ), context );
 
@@ -102,17 +101,68 @@ QVariantMap QgsIntersectionAlgorithm::processAlgorithm( const QVariantMap &param
                              overlayFieldsPrefix );
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outputFields, geomType, sourceA->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outputFields, sourceA->wkbType(), sourceA->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
 
-  int count = 0;
-  int total = sourceA->featureCount();
+  Vectoranalysis::IntersectionTool tool( sourceA.get(), sourceB.get(), fieldIndicesA, fieldIndicesB, sink.get(), sourceA->wkbType() );
 
-  QgsOverlayUtils::intersection( *sourceA, *sourceB, *sink, context, feedback, count, total, fieldIndicesA, fieldIndicesB );
+  QFutureWatcher<void> fWatcher;
+  QEventLoop evLoop;
+  QObject::connect( feedback, SIGNAL( canceled() ), &fWatcher, SLOT( cancel() ) );
+  QObject::connect( &fWatcher, SIGNAL( finished() ), &evLoop, SLOT( quit() ) );
+  QObject::connect( &fWatcher, &QFutureWatcher<void>::progressValueChanged, [&fWatcher, feedback]( int progressValue )
+  {
+    double progress = progressValue - fWatcher.progressMinimum();
+    double progressRange = fWatcher.progressMaximum() - fWatcher.progressMinimum();
+    feedback->setProgress( progress / progressRange * 100.0 );
+  } );
+  fWatcher.setFuture( tool.init() );
+  evLoop.exec();
+
+  int nTasks = tool.getTaskCount();
+  for ( int i = 0; i < nTasks; ++i )
+  {
+    if ( fWatcher.isCanceled() )
+    {
+      break;
+    }
+
+    fWatcher.setFuture( tool.execute( i ) );
+    evLoop.exec();
+  }
+
+  tool.finalizeOutput();
+
+  if ( tool.errorsOccurred() )
+  {
+    const QList<Vectoranalysis::AbstractTool::Error> &fErrorList = tool.getFeatureErrorList();
+    for ( const Vectoranalysis::AbstractTool::Error &e : fErrorList )
+    {
+      feedback->reportError( e.errorMsg );
+    }
+
+    const QList<Vectoranalysis::AbstractTool::Error> &gErrorList = tool.getGeometryErrorList();
+    for ( const Vectoranalysis::AbstractTool::Error &e : gErrorList )
+    {
+      feedback->reportError( e.errorMsg );
+    }
+
+    const QList<QString> &wErrorList = tool.getWriteErrors();
+    for ( const QString &e : wErrorList )
+    {
+      feedback->reportError( e );
+    }
+
+    const QList<QString> &exceptionList = tool.getExceptions();
+    for ( const QString &e : exceptionList )
+    {
+      feedback->reportError( e );
+    }
+  }
 
   return outputs;
 }

@@ -197,6 +197,8 @@ SET(QGIS_ANALYSIS_SRCS
   network/qgsvectorlayerdirector.cpp
   network/qgsgraphanalyzer.cpp
 
+  vector/abstracttool.cpp
+  vector/intersectiontool.cpp
   vector/geometry_checker/qgsfeaturepool.cpp
   vector/geometry_checker/qgsgeometryanglecheck.cpp
   vector/geometry_checker/qgsgeometryareacheck.cpp
@@ -393,6 +395,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/analysis
   interpolation
   network
+  vector
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${SPATIALINDEX_INCLUDE_DIR} # before GEOS for case-insensitive filesystems
