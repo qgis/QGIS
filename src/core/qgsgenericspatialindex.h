@@ -42,7 +42,11 @@ class CORE_EXPORT QgsGenericSpatialIndex
 {
   public:
 
+    /**
+     * Constructor for QgsGenericSpatialIndex.
+     */
     QgsGenericSpatialIndex();
+
     ~QgsGenericSpatialIndex();
 
     /**
