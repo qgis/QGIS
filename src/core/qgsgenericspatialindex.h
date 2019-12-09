@@ -49,7 +49,6 @@ class CORE_EXPORT QgsGenericSpatialIndex
      * Constructor for QgsGenericSpatialIndex.
      */
     QgsGenericSpatialIndex()
-      : mMutex( QMutex::Recursive )
     {
       mStorageManager.reset( SpatialIndex::StorageManager::createNewMemoryStorageManager() );
       mRTree = createSpatialIndex( *mStorageManager );
