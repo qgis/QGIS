@@ -131,7 +131,7 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
       */
     explicit QgsClassificationMethod( MethodProperties properties = NoFlag, int codeComplexity = 1 );
 
-    virtual ~QgsClassificationMethod() = default;
+    virtual ~QgsClassificationMethod();
 
     /**
      * Returns a clone of the method.

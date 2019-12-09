@@ -43,6 +43,11 @@ QgsClassificationMethod::QgsClassificationMethod( MethodProperties properties, i
 {
 }
 
+QgsClassificationMethod::~QgsClassificationMethod()
+{
+  qDeleteAll( mParameters );
+}
+
 void QgsClassificationMethod::copyBase( QgsClassificationMethod *c ) const
 {
   c->setSymmetricMode( mSymmetricEnabled, mSymmetryPoint, mSymmetryAstride );
