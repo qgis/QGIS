@@ -146,10 +146,8 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
     QMutexLocker locker( &layer->mMutex );
 
     // find features within bounding box and generate candidates list
-    layer->mFeatureIndex.intersects( QgsRectangle( amin[ 0], amin[1], amax[0], amax[1] ), [&features, &obstacles, &prob, &mapBoundaryPrepared, this]( const  FeaturePart * constFeaturePart )->bool
+    layer->mFeatureIndex.intersects( QgsRectangle( amin[ 0], amin[1], amax[0], amax[1] ), [&features, &obstacles, &prob, &mapBoundaryPrepared, this]( FeaturePart * featurePart )->bool
     {
-      FeaturePart *featurePart = const_cast< FeaturePart * >( constFeaturePart );
-
       if ( isCanceled() )
         return false;
 
@@ -213,7 +211,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       return nullptr;
 
     // find obstacles within bounding box
-    layer->mObstacleIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&obstacles, &obstacleCount, this]( const FeaturePart * featurePart )->bool
+    layer->mObstacleIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&obstacles, &obstacleCount, this]( FeaturePart * featurePart )->bool
     {
       if ( isCanceled() )
         return false; // do not continue searching
@@ -254,14 +252,13 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
     // Filtering label positions against obstacles
     amin[0] = amin[1] = std::numeric_limits<double>::lowest();
     amax[0] = amax[1] = std::numeric_limits<double>::max();
-    obstacles.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&prob, this]( const FeaturePart * part )->bool
+    obstacles.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&prob, this]( FeaturePart * obstaclePart )->bool
     {
       if ( isCanceled() )
         return false; // do not continue searching
 
-      prob->allCandidatesIndex().intersects( part->boundingBox(), [part, this]( const LabelPosition * candidatePosition ) -> bool{
-        FeaturePart *obstaclePart = const_cast< FeaturePart * >( part );
-
+      prob->allCandidatesIndex().intersects( obstaclePart->boundingBox(), [obstaclePart, this]( const LabelPosition * candidatePosition ) -> bool
+      {
         // test whether we should ignore this obstacle for the candidate. We do this if:
         // 1. it's not a hole, and the obstacle belongs to the same label feature as the candidate (e.g.,
         // features aren't obstacles for their own labels)
