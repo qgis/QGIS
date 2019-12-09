@@ -35,7 +35,6 @@
 
 #include "qgis_core.h"
 #include "pointset.h"
-#include "rtree.hpp"
 #include "qgsgenericspatialindex.h"
 #include <fstream>
 

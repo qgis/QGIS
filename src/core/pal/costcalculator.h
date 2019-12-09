@@ -18,7 +18,6 @@
 #define SIP_NO_FILE
 
 #include <QList>
-#include "rtree.hpp"
 
 /**
  * \class pal::CostCalculator
