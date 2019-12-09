@@ -103,7 +103,7 @@ class CORE_EXPORT QgsWeakRelation
     QgsVectorLayerRef mReferencedLayer;
     QString mRelationId;
     QString mRelationName;
-    QgsRelation::RelationStrength mStrength;
+    QgsRelation::RelationStrength mStrength = QgsRelation::RelationStrength::Association;
     QList<QgsRelation::FieldPair> mFieldPairs;
 
     friend class TestQgsWeakRelation;
