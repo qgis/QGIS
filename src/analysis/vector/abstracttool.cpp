@@ -87,57 +87,6 @@ namespace Vectoranalysis
     }
   }
 
-#if 0
-  void AbstractTool::createOutputFileWriter( const QString &fileName, const QgsVectorLayer *layerA, const QgsVectorLayer *layerB, OutputFields outputFields, OutputCrs outputCrs, const QString &outputDriverName )
-  {
-    mOutWkbType = layerA->wkbType();
-
-    QgsFields fields;
-    switch ( outputFields )
-    {
-      case FieldsA:
-        fields = layerA->fields();
-        break;
-      case FieldsB:
-        fields = layerB->fields();
-        break;
-      case FieldsAandB:
-        fields = layerA->fields();
-
-        QList<QString> names;
-        for ( const QgsField &field : fields.toList() )
-        {
-          names.append( field.name() );
-        }
-
-        for ( const QgsField &field : layerB->fields().toList() )
-        {
-          QString name = field.name();
-          for ( int count = 0; names.contains( name ); ++count )
-          {
-            name = QString( "%1_%2" ).arg( field.name() ).arg( count );
-          }
-          fields.append( QgsField( name, field.type() ) );
-        }
-        break;
-    }
-
-    QgsCoordinateReferenceSystem crs;
-    switch ( outputCrs )
-    {
-      case CrsLayerA:
-        crs = layerA->crs();
-        break;
-      case CrsLayerB:
-        crs = layerB->crs();
-        break;
-    }
-
-    mNumOutFields = fields.size();
-    //mOutputWriter = new QgsVectorFileWriter( fileName, layerA->dataProvider()->encoding(), fields, layerA->wkbType(), crs, outputDriverName );
-  }
-#endif //0
-
   bool AbstractTool::getFeatureAtId( QgsFeature &feature, QgsFeatureId id, QgsFeatureSource *layer, const QgsAttributeList &attIdx )
   {
     QgsFeatureRequest request( id );
@@ -197,7 +146,7 @@ namespace Vectoranalysis
           f.setAttributes( feature->attributes() );
           if ( !mOutput->addFeature( f ) )
           {
-            //mWriteErrors.append( mOutput->errorMessage() );
+            mWriteErrors.append( QObject::tr( "Failed to write feature to datasource" ) );
           }
         }
       }
@@ -205,7 +154,7 @@ namespace Vectoranalysis
       {
         if ( !mOutput->addFeature( *feature ) )
         {
-          //mWriteErrors.append( mOutput->errorMessage() );
+          mWriteErrors.append( QObject::tr( "Failed to write feature to datasource" ) );
         }
       }
     }

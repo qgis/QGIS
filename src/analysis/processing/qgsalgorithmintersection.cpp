@@ -152,10 +152,7 @@ QVariantMap QgsIntersectionAlgorithm::processAlgorithm( const QVariantMap &param
     }
 
     const QList<QString> &wErrorList = tool.getWriteErrors();
-    for ( const QString &e : wErrorList )
-    {
-      feedback->reportError( e );
-    }
+    feedback->reportError( QString( "%1 features could not be written" ).arg( wErrorList.size() ) );
 
     const QList<QString> &exceptionList = tool.getExceptions();
     for ( const QString &e : exceptionList )
