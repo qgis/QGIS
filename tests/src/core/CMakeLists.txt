@@ -119,6 +119,7 @@ SET(TESTS
  testqgsgdalutils.cpp
  testqgsvectorfilewriter.cpp
  testqgsfontmarker.cpp
+ testqgsgenericspatialindex.cpp
  testqgsgeopdfexport.cpp
  testqgsgeometryimport.cpp
  testqgsgeometry.cpp
