@@ -256,15 +256,11 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
 
 void Layer::addFeaturePart( FeaturePart *fpart, const QString &labelText )
 {
-  double bmin[2];
-  double bmax[2];
-  fpart->getBoundingBox( bmin, bmax );
-
   // add to list of layer's feature parts
   mFeatureParts << fpart;
 
   // add to r-tree for fast spatial access
-  mFeatureIndex.insertData( fpart, QgsRectangle( bmin[0], bmin[1], bmax[0], bmax[1] ) );
+  mFeatureIndex.insertData( fpart, fpart->boundingBox() );
 
   // add to hashtable with equally named feature parts
   if ( mMergeLines && !labelText.isEmpty() )
@@ -275,15 +271,11 @@ void Layer::addFeaturePart( FeaturePart *fpart, const QString &labelText )
 
 void Layer::addObstaclePart( FeaturePart *fpart )
 {
-  double bmin[2];
-  double bmax[2];
-  fpart->getBoundingBox( bmin, bmax );
-
   // add to list of layer's feature parts
   mObstacleParts.append( fpart );
 
   // add to obstacle r-tree
-  mObstacleIndex.insertData( fpart, QgsRectangle( bmin[0], bmin[1], bmax[0], bmax[1] ) );
+  mObstacleIndex.insertData( fpart, fpart->boundingBox() );
 }
 
 static FeaturePart *_findConnectedPart( FeaturePart *partCheck, const QVector<FeaturePart *> &otherParts )
@@ -329,22 +321,18 @@ void Layer::joinConnectedFeatures()
       if ( otherPart )
       {
         // remove partCheck from r-tree
-        double checkpartBMin[2], checkpartBMax[2];
-        partCheck->getBoundingBox( checkpartBMin, checkpartBMax );
-
-        double otherPartBMin[2], otherPartBMax[2];
-        otherPart->getBoundingBox( otherPartBMin, otherPartBMax );
+        const QgsRectangle checkPartBoundsBefore = partCheck->boundingBox();
+        const QgsRectangle otherPartBoundsBefore = otherPart->boundingBox();
 
         // merge points from partCheck to p->item
         if ( otherPart->mergeWithFeaturePart( partCheck ) )
         {
           // remove the parts we are joining from the index
-          mFeatureIndex.deleteData( partCheck, QgsRectangle( checkpartBMin[0], checkpartBMin[1], checkpartBMax[0], checkpartBMax[1] ) );
-          mFeatureIndex.deleteData( otherPart, QgsRectangle( otherPartBMin[0], otherPartBMin[1], otherPartBMax[0], otherPartBMax[1] ) ) ;
+          mFeatureIndex.deleteData( partCheck, checkPartBoundsBefore );
+          mFeatureIndex.deleteData( otherPart, otherPartBoundsBefore ) ;
 
           // reinsert merged line to r-tree (probably not needed)
-          otherPart->getBoundingBox( otherPartBMin, otherPartBMax );
-          mFeatureIndex.insertData( otherPart, QgsRectangle( otherPartBMin[0], otherPartBMin[1], otherPartBMax[0], otherPartBMax[1] ) );
+          mFeatureIndex.insertData( otherPart, otherPart->boundingBox() );
 
           mConnectedFeaturesIds.insert( partCheck->featureId(), connectedFeaturesId );
           mConnectedFeaturesIds.insert( otherPart->featureId(), connectedFeaturesId );
@@ -411,9 +399,7 @@ void Layer::chopFeaturesAtRepeatDistance()
 
     if ( shouldChop )
     {
-      double bmin[2], bmax[2];
-      fpart->getBoundingBox( bmin, bmax );
-      mFeatureIndex.deleteData( fpart.get(), QgsRectangle( bmin[0], bmin[1], bmax[0], bmax[1] ) );
+      mFeatureIndex.deleteData( fpart.get(), fpart->boundingBox() );
 
       const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r( geosctxt, geom );
 
@@ -473,8 +459,7 @@ void Layer::chopFeaturesAtRepeatDistance()
           GEOSGeometry *newgeom = GEOSGeom_createLineString_r( geosctxt, cooSeq );
           FeaturePart *newfpart = new FeaturePart( fpart->feature(), newgeom );
           newFeatureParts.append( newfpart );
-          newfpart->getBoundingBox( bmin, bmax );
-          mFeatureIndex.insertData( newfpart, QgsRectangle( bmin[0], bmin[1], bmax[0], bmax[1] ) );
+          mFeatureIndex.insertData( newfpart, newfpart->boundingBox() );
           repeatParts.push_back( newfpart );
 
           break;
@@ -498,8 +483,7 @@ void Layer::chopFeaturesAtRepeatDistance()
         GEOSGeometry *newgeom = GEOSGeom_createLineString_r( geosctxt, cooSeq );
         FeaturePart *newfpart = new FeaturePart( fpart->feature(), newgeom );
         newFeatureParts.append( newfpart );
-        newfpart->getBoundingBox( bmin, bmax );
-        mFeatureIndex.insertData( newfpart, QgsRectangle( bmin[0], bmin[1], bmax[0], bmax[1] ) );
+        mFeatureIndex.insertData( newfpart, newfpart->boundingBox() );
         part.clear();
         part.push_back( p );
         repeatParts.push_back( newfpart );

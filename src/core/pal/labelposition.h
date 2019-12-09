@@ -36,6 +36,7 @@
 #include "qgis_core.h"
 #include "pointset.h"
 #include "rtree.hpp"
+#include "qgsgenericspatialindex.h"
 #include <fstream>
 
 namespace pal
@@ -139,7 +140,7 @@ namespace pal
        * \param ls other labelposition
        * \returns TRUE or FALSE
        */
-      bool isInConflict( LabelPosition *ls );
+      bool isInConflict( const LabelPosition *ls ) const;
 
       //! Returns bounding box - amin: xmin,ymin - amax: xmax,ymax
       void getBoundingBox( double amin[2], double amax[2] ) const;
@@ -176,10 +177,20 @@ namespace pal
       /**
        * Returns the feature corresponding to this labelposition
        */
-      FeaturePart *getFeaturePart();
+      FeaturePart *getFeaturePart() const;
 
       int getNumOverlaps() const { return nbOverlap; }
       void resetNumOverlaps() { nbOverlap = 0; } // called from problem.cpp, pal.cpp
+
+      /**
+       * Increases the number of overlaps recorded against this position by 1.
+       */
+      void incrementNumOverlaps() { nbOverlap++; }
+
+      /**
+       * Decreases the number of overlaps recorded against this position by 1.
+       */
+      void decrementNumOverlaps() { nbOverlap++; }
 
       int getProblemFeatureId() const { return probFeat; }
 
@@ -278,12 +289,12 @@ namespace pal
       /**
        * Removes the label position from the specified \a index.
        */
-      void removeFromIndex( RTree<LabelPosition *, double, 2, double> &index );
+      void removeFromIndex( QgsGenericSpatialIndex<LabelPosition> &index );
 
       /**
        * Inserts the label position into the specified \a index.
        */
-      void insertIntoIndex( RTree<LabelPosition *, double, 2, double> &index );
+      void insertIntoIndex( QgsGenericSpatialIndex<LabelPosition> &index );
 
       struct PruneCtx
       {
@@ -356,8 +367,8 @@ namespace pal
 
       LabelPosition::Quadrant quadrant;
 
-      bool isInConflictSinglePart( LabelPosition *lp );
-      bool isInConflictMultiPart( LabelPosition *lp );
+      bool isInConflictSinglePart( const LabelPosition *lp ) const;
+      bool isInConflictMultiPart( const LabelPosition *lp ) const;
 
     private:
       double mCost;

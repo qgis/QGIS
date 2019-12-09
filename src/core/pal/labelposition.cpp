@@ -265,7 +265,7 @@ bool LabelPosition::isInside( double *bbox )
     return true;
 }
 
-bool LabelPosition::isInConflict( LabelPosition *lp )
+bool LabelPosition::isInConflict( const LabelPosition *lp ) const
 {
   if ( this->probFeat == lp->probFeat ) // bugfix #1
     return false; // always overlaping itself !
@@ -276,7 +276,7 @@ bool LabelPosition::isInConflict( LabelPosition *lp )
     return isInConflictMultiPart( lp );
 }
 
-bool LabelPosition::isInConflictSinglePart( LabelPosition *lp )
+bool LabelPosition::isInConflictSinglePart( const LabelPosition *lp ) const
 {
   if ( qgsDoubleNear( alpha, 0 ) && qgsDoubleNear( lp->alpha, 0 ) )
   {
@@ -303,14 +303,14 @@ bool LabelPosition::isInConflictSinglePart( LabelPosition *lp )
   }
 }
 
-bool LabelPosition::isInConflictMultiPart( LabelPosition *lp )
+bool LabelPosition::isInConflictMultiPart( const LabelPosition *lp ) const
 {
   // check all parts against all parts of other one
-  LabelPosition *tmp1 = this;
+  const LabelPosition *tmp1 = this;
   while ( tmp1 )
   {
     // check tmp1 against parts of other label
-    LabelPosition *tmp2 = lp;
+    const LabelPosition *tmp2 = lp;
     while ( tmp2 )
     {
       if ( tmp1->isInConflictSinglePart( tmp2 ) )
@@ -383,7 +383,7 @@ void LabelPosition::validateCost()
   }
 }
 
-FeaturePart *LabelPosition::getFeaturePart()
+FeaturePart *LabelPosition::getFeaturePart() const
 {
   return feature;
 }
@@ -428,81 +428,20 @@ void LabelPosition::setHasHardObstacleConflict( bool conflicts )
     nextPart->setHasHardObstacleConflict( conflicts );
 }
 
-void LabelPosition::removeFromIndex( RTree<LabelPosition *, double, 2, double> &index )
+void LabelPosition::removeFromIndex( QgsGenericSpatialIndex<LabelPosition> &index )
 {
   double amin[2];
   double amax[2];
   getBoundingBox( amin, amax );
-  index.Remove( amin, amax, this );
+  index.deleteData( this, QgsRectangle( amin[0], amin[1], amax[0], amax[1] ) );
 }
 
-void LabelPosition::insertIntoIndex( RTree<LabelPosition *, double, 2, double> &index )
+void LabelPosition::insertIntoIndex( QgsGenericSpatialIndex<LabelPosition> &index )
 {
   double amin[2];
   double amax[2];
   getBoundingBox( amin, amax );
-  index.Insert( amin, amax, this );
-}
-
-bool LabelPosition::pruneCallback( LabelPosition *candidatePosition, void *ctx )
-{
-  FeaturePart *obstaclePart = ( reinterpret_cast< PruneCtx * >( ctx ) )->obstacle;
-
-  // test whether we should ignore this obstacle for the candidate. We do this if:
-  // 1. it's not a hole, and the obstacle belongs to the same label feature as the candidate (e.g.,
-  // features aren't obstacles for their own labels)
-  // 2. it IS a hole, and the hole belongs to a different label feature to the candidate (e.g., holes
-  // are ONLY obstacles for the labels of the feature they belong to)
-  if ( ( !obstaclePart->getHoleOf() && candidatePosition->feature->hasSameLabelFeatureAs( obstaclePart ) )
-       || ( obstaclePart->getHoleOf() && !candidatePosition->feature->hasSameLabelFeatureAs( dynamic_cast< FeaturePart * >( obstaclePart->getHoleOf() ) ) ) )
-  {
-    return true;
-  }
-
-  CostCalculator::addObstacleCostPenalty( candidatePosition, obstaclePart, ( reinterpret_cast< PruneCtx * >( ctx ) )->pal );
-
-  return true;
-}
-
-bool LabelPosition::countOverlapCallback( LabelPosition *lp, void *ctx )
-{
-  LabelPosition *lp2 = reinterpret_cast< LabelPosition * >( ctx );
-
-  if ( lp2->isInConflict( lp ) )
-  {
-    lp2->nbOverlap++;
-  }
-
-  return true;
-}
-
-bool LabelPosition::countFullOverlapCallback( LabelPosition *lp, void *ctx )
-{
-  CountContext *context = reinterpret_cast< CountContext * >( ctx );
-  LabelPosition *lp2 = context->lp;
-  double *cost = context->cost;
-  int *nbOv = context->nbOv;
-  std::vector< double > &inactiveCost = *context->inactiveCost;
-  if ( lp2->isInConflict( lp ) )
-  {
-    ( *nbOv ) ++;
-    *cost += inactiveCost[lp->probFeat] + lp->cost();
-  }
-
-  return true;
-}
-
-bool LabelPosition::removeOverlapCallback( LabelPosition *lp, void *ctx )
-{
-  LabelPosition *lp2 = reinterpret_cast< LabelPosition * >( ctx );
-
-  if ( lp2->isInConflict( lp ) )
-  {
-    lp->nbOverlap--;
-    lp2->nbOverlap--;
-  }
-
-  return true;
+  index.insertData( this, QgsRectangle( amin[0], amin[1], amax[0], amax[1] ) );
 }
 
 double LabelPosition::getDistanceToPoint( double xp, double yp ) const

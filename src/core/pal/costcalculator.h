@@ -38,7 +38,7 @@ namespace pal
   {
     public:
       //! Increase candidate's cost according to its collision with passed feature
-      static void addObstacleCostPenalty( LabelPosition *lp, pal::FeaturePart *obstacle, Pal *pal );
+      static void addObstacleCostPenalty( pal::LabelPosition *lp, pal::FeaturePart *obstacle, Pal *pal );
 
       //! Calculates the costs for polygon label candidates
       static void setPolygonCandidatesCost( std::size_t nblp, std::vector<std::unique_ptr<pal::LabelPosition> > &lPos, QgsGenericSpatialIndex< FeaturePart > *obstacles, double bbx[4], double bby[4] );

@@ -89,7 +89,7 @@ struct FeatCallBackCtx
   std::list< std::unique_ptr< Feats > > *features = nullptr;
 
   QgsGenericSpatialIndex< FeaturePart > *obstacleIndex = nullptr;
-  RTree<LabelPosition *, double, 2, double> *allCandidateIndex = nullptr;
+  QgsGenericSpatialIndex<LabelPosition> *allCandidateIndex = nullptr;
   std::vector< std::unique_ptr< LabelPosition > > *positionsWithNoCandidates = nullptr;
   const GEOSPreparedGeometry *mapBoundary = nullptr;
   Pal *pal = nullptr;
@@ -105,7 +105,7 @@ struct ObstacleCallBackCtx
 
 struct FilterContext
 {
-  RTree<LabelPosition *, double, 2, double> *allCandidatesIndex = nullptr;
+  QgsGenericSpatialIndex<LabelPosition> *allCandidatesIndex = nullptr;
   Pal *pal = nullptr;
 };
 
@@ -189,7 +189,6 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
     context.layer = layer;
     layer->mFeatureIndex.intersects( QgsRectangle( amin[ 0], amin[1], amax[0], amax[1] ), [&context]( const  FeaturePart * constFeaturePart )->bool
     {
-      double amin[2], amax[2];
       FeaturePart *featurePart = const_cast< FeaturePart * >( constFeaturePart );
 
       if ( context.pal->isCanceled() )
@@ -198,8 +197,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       // Holes of the feature are obstacles
       for ( int i = 0; i < featurePart->getNumSelfObstacles(); i++ )
       {
-        featurePart->getSelfObstacle( i )->getBoundingBox( amin, amax );
-        context.obstacleIndex->insertData( featurePart->getSelfObstacle( i ), QgsRectangle( amin[0], amin[1], amax[0], amax[1] ) );
+        context.obstacleIndex->insertData( featurePart->getSelfObstacle( i ), featurePart->getSelfObstacle( i )->boundingBox() );
 
         if ( !featurePart->getSelfObstacle( i )->getHoleOf() )
         {
@@ -305,13 +303,27 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       if ( filterCtx.pal->isCanceled() )
         return false; // do not continue searching
 
-      double amin[2], amax[2];
-      part->getBoundingBox( amin, amax );
-
       LabelPosition::PruneCtx pruneContext;
       pruneContext.obstacle = const_cast< FeaturePart * >( part );
       pruneContext.pal = filterCtx.pal;
-      filterCtx.allCandidatesIndex->Search( amin, amax, LabelPosition::pruneCallback, static_cast< void * >( &pruneContext ) );
+      filterCtx.allCandidatesIndex->intersects( part->boundingBox(), [&pruneContext]( const LabelPosition * candidatePosition ) -> bool{
+        FeaturePart *obstaclePart = pruneContext.obstacle;
+
+        // test whether we should ignore this obstacle for the candidate. We do this if:
+        // 1. it's not a hole, and the obstacle belongs to the same label feature as the candidate (e.g.,
+        // features aren't obstacles for their own labels)
+        // 2. it IS a hole, and the hole belongs to a different label feature to the candidate (e.g., holes
+        // are ONLY obstacles for the labels of the feature they belong to)
+        if ( ( !obstaclePart->getHoleOf() && candidatePosition->getFeaturePart()->hasSameLabelFeatureAs( obstaclePart ) )
+             || ( obstaclePart->getHoleOf() && !candidatePosition->getFeaturePart()->hasSameLabelFeatureAs( dynamic_cast< FeaturePart * >( obstaclePart->getHoleOf() ) ) ) )
+        {
+          return true;
+        }
+
+        CostCalculator::addObstacleCostPenalty( const_cast< LabelPosition * >( candidatePosition ), obstaclePart, pruneContext.pal );
+
+        return true;
+      } );
 
       return true;
     } );
@@ -407,6 +419,8 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
     int nbOverlaps = 0;
 
+    double amin[2];
+    double amax[2];
     while ( !features.empty() ) // foreach feature
     {
       if ( isCanceled() )
@@ -426,10 +440,18 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
         //prob->feat[idlp] = j;
 
-        lp->getBoundingBox( amin, amax );
-
         // lookup for overlapping candidate
-        prob->mAllCandidatesIndex.Search( amin, amax, LabelPosition::countOverlapCallback, static_cast< void * >( lp.get() ) );
+        lp->getBoundingBox( amin, amax );
+        prob->mAllCandidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&lp]( const LabelPosition * lp2 )->bool
+        {
+          if ( lp->isInConflict( lp2 ) )
+          {
+            lp->incrementNumOverlaps();
+          }
+
+          return true;
+
+        } );
 
         nbOverlaps += lp->getNumOverlaps();
 
