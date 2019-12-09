@@ -40,14 +40,14 @@ class CORE_EXPORT QgsGenericSpatialIndex
     bool insertData( const T *data, const QgsRectangle &bounds );
     bool deleteData( const T *data, const QgsRectangle &bounds );
 
-    bool intersects( const QgsRectangle &rectangle, const std::function< bool( const T *data )> &callback );
+    bool intersects( const QgsRectangle &rectangle, const std::function< bool( const T *data )> &callback ) const;
 
   private:
 
     std::unique_ptr< SpatialIndex::IStorageManager > mStorageManager;
     std::unique_ptr< SpatialIndex::ISpatialIndex > mRTree;
 
-    QMutex mMutex;
+    mutable QMutex mMutex;
 
     qint64 mNextId = 1;
     QHash< qint64, const T * > mIdToData;

@@ -15,30 +15,20 @@
 #include "qgslabelsearchtree.h"
 #include "labelposition.h"
 
-bool searchCallback( QgsLabelPosition *pos, void *context )
-{
-  QList<QgsLabelPosition *> *list = static_cast< QList<QgsLabelPosition *>* >( context );
-  list->push_back( pos );
-  return true;
-}
+QgsLabelSearchTree::QgsLabelSearchTree() = default;
 
-QgsLabelSearchTree::~QgsLabelSearchTree()
-{
-  clear();
-}
+QgsLabelSearchTree::~QgsLabelSearchTree() = default;
 
 void QgsLabelSearchTree::label( const QgsPointXY &point, QList<QgsLabelPosition *> &posList ) const
 {
   QgsPointXY p( point );
-  double c_min[2];
-  c_min[0] = p.x() - 0.1;
-  c_min[1] = p.y() - 0.1;
-  double c_max[2];
-  c_max[0] = p.x() + 0.1;
-  c_max[1] = p.y() + 0.1;
 
   QList<QgsLabelPosition *> searchResults;
-  mSpatialIndex.Search( c_min, c_max, searchCallback, &searchResults );
+  mSpatialIndex.intersects( QgsRectangle( p.x() - 0.1, p.y() - 0.1, p.x() + 0.1, p.y() + 0.1 ), [&searchResults]( const QgsLabelPosition * pos ) -> bool
+  {
+    searchResults.push_back( const_cast< QgsLabelPosition * >( pos ) );
+    return true;
+  } );
 
   //tolerance +-0.1 could be high in case of degree crs, so check if p is really contained in the results
   posList.clear();
@@ -54,15 +44,12 @@ void QgsLabelSearchTree::label( const QgsPointXY &point, QList<QgsLabelPosition 
 
 void QgsLabelSearchTree::labelsInRect( const QgsRectangle &r, QList<QgsLabelPosition *> &posList ) const
 {
-  double c_min[2];
-  c_min[0] = r.xMinimum();
-  c_min[1] = r.yMinimum();
-  double c_max[2];
-  c_max[0] = r.xMaximum();
-  c_max[1] = r.yMaximum();
-
   QList<QgsLabelPosition *> searchResults;
-  mSpatialIndex.Search( c_min, c_max, searchCallback, &searchResults );
+  mSpatialIndex.intersects( r, [&searchResults]( const QgsLabelPosition * pos )->bool
+  {
+    searchResults.push_back( const_cast< QgsLabelPosition * >( pos ) );
+    return true;
+  } );
 
   posList.clear();
   QList<QgsLabelPosition *>::const_iterator resultIt = searchResults.constBegin();
@@ -98,17 +85,12 @@ bool QgsLabelSearchTree::insertLabel( pal::LabelPosition *labelPos, QgsFeatureId
     yMin = std::min( yMin, res.y() );
     yMax = std::max( yMax, res.y() );
   }
-  double c_min[2];
-  double c_max[2];
-  c_min[0] = xMin;
-  c_min[1] = yMin;
-  c_max[0] = xMax;
-  c_max[1] = yMax;
 
+  const QgsRectangle bounds( xMin, yMin, xMax, yMax );
   QgsGeometry labelGeometry( QgsGeometry::fromPolygonXY( QVector<QgsPolylineXY>() << cornerPoints ) );
-  std::unique_ptr< QgsLabelPosition > newEntry = qgis::make_unique< QgsLabelPosition >( featureId, labelPos->getAlpha() + mMapSettings.rotation(), cornerPoints, QgsRectangle( c_min[0], c_min[1], c_max[0], c_max[1] ),
+  std::unique_ptr< QgsLabelPosition > newEntry = qgis::make_unique< QgsLabelPosition >( featureId, labelPos->getAlpha() + mMapSettings.rotation(), cornerPoints, bounds,
       labelPos->getWidth(), labelPos->getHeight(), layerName, labeltext, labelfont, labelPos->getUpsideDown(), diagram, pinned, providerId, labelGeometry, isUnplaced );
-  mSpatialIndex.Insert( c_min, c_max, newEntry.get() );
+  mSpatialIndex.insertData( newEntry.get(), bounds );
   mOwnedPositions.emplace_back( std::move( newEntry ) );
 
   if ( pal::LabelPosition *next = labelPos->getNextPart() )
@@ -136,10 +118,8 @@ void QgsLabelSearchTree::setMapSettings( const QgsMapSettings &settings )
   }
 }
 
+
 void QgsLabelSearchTree::clear()
 {
-  mSpatialIndex.RemoveAll();
 
-  //PAL rtree iterator is buggy and doesn't iterate over all items, so we can't iterate through the tree to delete positions
-  mOwnedPositions.clear();
 }
