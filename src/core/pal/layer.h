@@ -37,6 +37,7 @@
 #include "pal.h" // for LineArrangementFlags enum
 #include "rtree.hpp"
 #include "qgsgeos.h"
+#include "qgsgenericspatialindex.h"
 #include <QMutex>
 #include <QLinkedList>
 #include <QHash>
@@ -52,6 +53,7 @@ namespace pal
   /// @endcond
 
   class FeaturePart;
+
   class Pal;
   class LabelInfo;
 
@@ -350,7 +352,8 @@ namespace pal
       UpsideDownLabels mUpsidedownLabels;
 
       // indexes (spatial and id)
-      RTree<FeaturePart *, double, 2, double, 8, 4> mFeatureIndex;
+      QgsGenericSpatialIndex< FeaturePart > mFeatureIndex;
+
       //! Lookup table of label features (owned by the label feature provider that created them)
       QHash< QgsFeatureId, QgsLabelFeature *> mHashtable;
 
@@ -371,5 +374,6 @@ namespace pal
   };
 
 } // end namespace pal
+
 
 #endif
