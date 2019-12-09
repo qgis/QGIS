@@ -428,21 +428,6 @@ void LabelPosition::setHasHardObstacleConflict( bool conflicts )
     nextPart->setHasHardObstacleConflict( conflicts );
 }
 
-bool LabelPosition::polygonObstacleCallback( FeaturePart *obstacle, void *ctx )
-{
-  PolygonCostCalculator *pCost = reinterpret_cast< PolygonCostCalculator * >( ctx );
-
-  LabelPosition *lp = pCost->getLabel();
-  if ( ( obstacle == lp->feature ) || ( obstacle->getHoleOf() && obstacle->getHoleOf() != lp->feature ) )
-  {
-    return true;
-  }
-
-  pCost->update( obstacle );
-
-  return true;
-}
-
 void LabelPosition::removeFromIndex( RTree<LabelPosition *, double, 2, double> &index )
 {
   double amin[2];

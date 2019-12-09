@@ -283,7 +283,7 @@ void Layer::addObstaclePart( FeaturePart *fpart )
   mObstacleParts.append( fpart );
 
   // add to obstacle r-tree
-  mObstacleIndex.Insert( bmin, bmax, fpart );
+  mObstacleIndex.insertData( fpart, QgsRectangle( bmin[0], bmin[1], bmax[0], bmax[1] ) );
 }
 
 static FeaturePart *_findConnectedPart( FeaturePart *partCheck, const QVector<FeaturePart *> &otherParts )

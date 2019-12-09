@@ -88,7 +88,7 @@ struct FeatCallBackCtx
 
   std::list< std::unique_ptr< Feats > > *features = nullptr;
 
-  RTree<FeaturePart *, double, 2, double> *obstacleIndex = nullptr;
+  QgsGenericSpatialIndex< FeaturePart > *obstacleIndex = nullptr;
   RTree<LabelPosition *, double, 2, double> *allCandidateIndex = nullptr;
   std::vector< std::unique_ptr< LabelPosition > > *positionsWithNoCandidates = nullptr;
   const GEOSPreparedGeometry *mapBoundary = nullptr;
@@ -98,29 +98,10 @@ struct FeatCallBackCtx
 
 struct ObstacleCallBackCtx
 {
-  RTree<FeaturePart *, double, 2, double> *obstacleIndex = nullptr;
+  QgsGenericSpatialIndex< FeaturePart > *obstacleIndex = nullptr;
   int obstacleCount = 0;
   Pal *pal = nullptr;
 };
-
-/*
- * Callback function
- *
- * Extract obstacles from indexes
- */
-bool extractObstaclesCallback( FeaturePart *ft_ptr, void *ctx )
-{
-  double amin[2], amax[2];
-  ObstacleCallBackCtx *context = reinterpret_cast< ObstacleCallBackCtx * >( ctx );
-  if ( context->pal->isCanceled() )
-    return false; // do not continue searching
-
-  // insert into obstacles
-  ft_ptr->getBoundingBox( amin, amax );
-  context->obstacleIndex->Insert( amin, amax, ft_ptr );
-  context->obstacleCount++;
-  return true;
-}
 
 struct FilterContext
 {
@@ -128,29 +109,10 @@ struct FilterContext
   Pal *pal = nullptr;
 };
 
-bool filteringCallback( FeaturePart *featurePart, void *ctx )
-{
-  RTree<LabelPosition *, double, 2, double> *allCandidatesIndex = ( reinterpret_cast< FilterContext * >( ctx ) )->allCandidatesIndex;
-  Pal *pal = ( reinterpret_cast< FilterContext * >( ctx ) )->pal;
-
-  if ( pal->isCanceled() )
-    return false; // do not continue searching
-
-  double amin[2], amax[2];
-  featurePart->getBoundingBox( amin, amax );
-
-  LabelPosition::PruneCtx pruneContext;
-  pruneContext.obstacle = featurePart;
-  pruneContext.pal = pal;
-  allCandidatesIndex->Search( amin, amax, LabelPosition::pruneCallback, static_cast< void * >( &pruneContext ) );
-
-  return true;
-}
-
 std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeometry &mapBoundary )
 {
   // to store obstacles
-  RTree<FeaturePart *, double, 2, double> obstacles;
+  QgsGenericSpatialIndex< FeaturePart > obstacles;
   std::unique_ptr< Problem > prob = qgis::make_unique< Problem >();
 
   double bbx[4];
@@ -237,7 +199,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       for ( int i = 0; i < featurePart->getNumSelfObstacles(); i++ )
       {
         featurePart->getSelfObstacle( i )->getBoundingBox( amin, amax );
-        context.obstacleIndex->Insert( amin, amax, featurePart->getSelfObstacle( i ) );
+        context.obstacleIndex->insertData( featurePart->getSelfObstacle( i ), QgsRectangle( amin[0], amin[1], amax[0], amax[1] ) );
 
         if ( !featurePart->getSelfObstacle( i )->getHoleOf() )
         {
@@ -294,7 +256,16 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       return nullptr;
 
     // find obstacles within bounding box
-    layer->mObstacleIndex.Search( amin, amax, extractObstaclesCallback, static_cast< void * >( &obstacleContext ) );
+    layer->mObstacleIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&obstacleContext]( const FeaturePart * featurePart )->bool
+    {
+      if ( obstacleContext.pal->isCanceled() )
+        return false; // do not continue searching
+
+      // insert into obstacles
+      obstacleContext.obstacleIndex->insertData( featurePart, featurePart->boundingBox() );
+      obstacleContext.obstacleCount++;
+      return true;
+    } );
     if ( isCanceled() )
       return nullptr;
 
@@ -329,7 +300,21 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
     FilterContext filterCtx;
     filterCtx.allCandidatesIndex = &prob->mAllCandidatesIndex;
     filterCtx.pal = this;
-    obstacles.Search( amin, amax, filteringCallback, static_cast< void * >( &filterCtx ) );
+    obstacles.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&filterCtx]( const FeaturePart * part )->bool
+    {
+      if ( filterCtx.pal->isCanceled() )
+        return false; // do not continue searching
+
+      double amin[2], amax[2];
+      part->getBoundingBox( amin, amax );
+
+      LabelPosition::PruneCtx pruneContext;
+      pruneContext.obstacle = const_cast< FeaturePart * >( part );
+      pruneContext.pal = filterCtx.pal;
+      filterCtx.allCandidatesIndex->Search( amin, amax, LabelPosition::pruneCallback, static_cast< void * >( &pruneContext ) );
+
+      return true;
+    } );
 
     if ( isCanceled() )
     {

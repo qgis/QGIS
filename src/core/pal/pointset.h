@@ -41,6 +41,7 @@
 #include <vector>
 
 #include "qgis_core.h"
+#include "qgsrectangle.h"
 
 namespace pal
 {
@@ -156,13 +157,21 @@ namespace pal
       }
 
       /**
+       * Returns the point set bounding box.
+       */
+      QgsRectangle boundingBox() const
+      {
+        return QgsRectangle( xmin, ymin, xmax, ymax );
+      }
+
+      /**
        * Returns TRUE if the bounding box of this pointset intersects the bounding box
        * of another pointset.
        */
       bool boundingBoxIntersects( const PointSet *other ) const;
 
       //! Returns NULLPTR if this isn't a hole. Otherwise returns pointer to parent pointset.
-      PointSet *getHoleOf() { return holeOf; }
+      PointSet *getHoleOf() const { return holeOf; }
 
       int getNumPoints() const { return nbPoints; }
 
