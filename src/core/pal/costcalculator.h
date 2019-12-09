@@ -75,6 +75,9 @@ namespace pal
     public:
       explicit PolygonCostCalculator( LabelPosition *lp );
 
+      /**
+       * Updates cost.
+       */
       void update( const pal::PointSet *pset );
 
       double getCost();

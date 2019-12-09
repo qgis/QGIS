@@ -336,9 +336,6 @@ namespace pal
 
       LabelPosition::Quadrant quadrant;
 
-      bool isInConflictSinglePart( const LabelPosition *lp ) const;
-      bool isInConflictMultiPart( const LabelPosition *lp ) const;
-
     private:
       double mCost;
       bool mHasObstacleConflict;
@@ -357,6 +354,9 @@ namespace pal
        * \returns double between 0 - 12
        */
       double polygonIntersectionCostForParts( PointSet *polygon ) const;
+
+      bool isInConflictSinglePart( const LabelPosition *lp ) const;
+      bool isInConflictMultiPart( const LabelPosition *lp ) const;
 
   };
 
