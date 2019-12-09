@@ -112,7 +112,7 @@ void CostCalculator::addObstacleCostPenalty( LabelPosition *lp, FeaturePart *obs
   lp->setCost( lp->cost() + obstacleCost );
 }
 
-void CostCalculator::setPolygonCandidatesCost( std::size_t nblp, std::vector< std::unique_ptr< LabelPosition > > &lPos, RTree<FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] )
+void CostCalculator::setPolygonCandidatesCost( std::size_t nblp, std::vector< std::unique_ptr< LabelPosition > > &lPos, QgsGenericSpatialIndex<FeaturePart> *obstacles, double bbx[4], double bby[4] )
 {
   double normalizer;
   // compute raw cost
@@ -157,11 +157,8 @@ void CostCalculator::setPolygonCandidatesCost( std::size_t nblp, std::vector< st
   }
 }
 
-void CostCalculator::setCandidateCostFromPolygon( LabelPosition *lp, RTree <FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] )
+void CostCalculator::setCandidateCostFromPolygon( LabelPosition *lp, QgsGenericSpatialIndex<FeaturePart> *obstacles, double bbx[4], double bby[4] )
 {
-  double amin[2];
-  double amax[2];
-
   PolygonCostCalculator *pCost = new PolygonCostCalculator( lp );
 
   // center
@@ -175,16 +172,25 @@ void CostCalculator::setCandidateCostFromPolygon( LabelPosition *lp, RTree <Feat
 
   delete extent;
 
-  lp->feature->getBoundingBox( amin, amax );
+  obstacles->intersects( lp->feature->boundingBox(), [&pCost]( const FeaturePart * obstacle )->bool
+  {
+    LabelPosition *lp = pCost->getLabel();
+    if ( ( obstacle == lp->feature ) || ( obstacle->getHoleOf() && obstacle->getHoleOf() != lp->feature ) )
+    {
+      return true;
+    }
 
-  obstacles->Search( amin, amax, LabelPosition::polygonObstacleCallback, pCost );
+    pCost->update( obstacle );
+
+    return true;
+  } );
 
   lp->setCost( pCost->getCost() );
 
   delete pCost;
 }
 
-std::size_t CostCalculator::finalizeCandidatesCosts( Feats *feat, std::size_t max_p, RTree <FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] )
+std::size_t CostCalculator::finalizeCandidatesCosts( Feats *feat, std::size_t max_p, QgsGenericSpatialIndex<FeaturePart> *obstacles, double bbx[4], double bby[4] )
 {
   // If candidates list is smaller than expected
   if ( max_p > feat->candidates.size() )
@@ -238,7 +244,7 @@ PolygonCostCalculator::PolygonCostCalculator( LabelPosition *lp ) : lp( lp )
   ok = false;
 }
 
-void PolygonCostCalculator::update( PointSet *pset )
+void PolygonCostCalculator::update( const pal::PointSet *pset )
 {
   double d = pset->minDistanceToPoint( px, py );
   if ( d < dist )

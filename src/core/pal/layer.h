@@ -357,8 +357,7 @@ namespace pal
       //! Lookup table of label features (owned by the label feature provider that created them)
       QHash< QgsFeatureId, QgsLabelFeature *> mHashtable;
 
-      //obstacle r-tree
-      RTree<FeaturePart *, double, 2, double, 8, 4> mObstacleIndex;
+      QgsGenericSpatialIndex< FeaturePart > mObstacleIndex;
 
       QHash< QString, QVector<FeaturePart *> > mConnectedHashtable;
       QHash< QgsFeatureId, int > mConnectedFeaturesIds;
