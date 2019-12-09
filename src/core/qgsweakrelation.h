@@ -41,18 +41,6 @@ class CORE_EXPORT QgsWeakRelation
 
     /**
      * Creates a QgsWeakRelation
-     * \param relationId relation ID
-     * \param relationName relation name
-     * \param strength relation strength
-     * \param referencingLayerId ID of the referencing layer
-     * \param referencingLayerName name of the referencing layer
-     * \param referencingLayerSource source of the referencing layer
-     * \param referencingLayerProviderKey provider name of the referencing layer
-     * \param referencedLayerId ID of the referenced layer
-     * \param referencedLayerName name of the referenced layer
-     * \param referencedLayerSource name of the referenced layer
-     * \param referencedLayerProviderKey provider name of the referenced layer
-     * \param fieldPairs list of the relation field pairs
      */
     QgsWeakRelation( const QString &relationId,
                      const QString &relationName,
