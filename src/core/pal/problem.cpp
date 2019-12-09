@@ -210,14 +210,21 @@ void Problem::init_sol_falp()
 
     lp->getBoundingBox( amin, amax );
 
-    mAllCandidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&list, lp, this]( const LabelPosition * lp2 ) ->bool
+    std::vector< const LabelPosition * > conflictingPositions;
+    mAllCandidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [lp, &conflictingPositions]( const LabelPosition * lp2 ) ->bool
     {
       if ( lp->isInConflict( lp2 ) )
       {
-        ignoreLabel( lp2, list, mAllCandidatesIndex );
+        conflictingPositions.emplace_back( lp2 );
       }
       return true;
     } );
+
+    for ( const LabelPosition *conflict : conflictingPositions )
+    {
+      ignoreLabel( conflict, list, mAllCandidatesIndex );
+    }
+
     mActiveCandidatesIndex.insert( lp, QgsRectangle( amin[0], amin[1], amax[0], amax[1] ) );
   }
 
