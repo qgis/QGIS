@@ -24,7 +24,7 @@
 #include <QList>
 #include <QVector>
 #include "qgspallabeling.h"
-#include "rtree.hpp"
+#include "qgsgenericspatialindex.h"
 #include "qgsmapsettings.h"
 
 class QgsPointXY;
@@ -49,7 +49,7 @@ class CORE_EXPORT QgsLabelSearchTree
     /**
      * Constructor for QgsLabelSearchTree.
      */
-    QgsLabelSearchTree() = default;
+    QgsLabelSearchTree();
     ~QgsLabelSearchTree();
 
     //! QgsLabelSearchTree cannot be copied.
@@ -57,8 +57,11 @@ class CORE_EXPORT QgsLabelSearchTree
     //! QgsLabelSearchTree cannot be copied.
     QgsLabelSearchTree &operator=( const QgsLabelSearchTree &rh ) = delete;
 
-    //! Removes and deletes all the entries
-    void clear();
+    /**
+     * Removes and deletes all the entries.
+     * \deprecated has no effect since QGIS 3.12
+     */
+    Q_DECL_DEPRECATED void clear() SIP_DEPRECATED;
 
     /**
      * Returns label position(s) at a given point. QgsLabelSearchTree keeps ownership, don't delete the LabelPositions
@@ -88,8 +91,7 @@ class CORE_EXPORT QgsLabelSearchTree
     void setMapSettings( const QgsMapSettings &settings );
 
   private:
-    // set as mutable because RTree template is not const-correct
-    mutable pal::RTree<QgsLabelPosition *, double, 2, double> mSpatialIndex;
+    QgsGenericSpatialIndex< QgsLabelPosition > mSpatialIndex;
     std::vector< std::unique_ptr< QgsLabelPosition > > mOwnedPositions;
     QgsMapSettings mMapSettings;
     QTransform mTransform;

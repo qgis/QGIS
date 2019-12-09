@@ -30,9 +30,12 @@ Constructor for QgsLabelSearchTree.
     ~QgsLabelSearchTree();
 
 
-    void clear();
+ void clear() /Deprecated/;
 %Docstring
-Removes and deletes all the entries
+Removes and deletes all the entries.
+
+.. deprecated::
+   has no effect since QGIS 3.12
 %End
 
 

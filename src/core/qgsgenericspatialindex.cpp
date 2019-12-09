@@ -130,7 +130,7 @@ bool QgsGenericSpatialIndex<T>::deleteData( const T *data, const QgsRectangle &b
 }
 
 template<typename T>
-bool QgsGenericSpatialIndex<T>::intersects( const QgsRectangle &rectangle, const std::function<bool ( const T * )> &callback )
+bool QgsGenericSpatialIndex<T>::intersects( const QgsRectangle &rectangle, const std::function<bool ( const T * )> &callback ) const
 {
   GenericIndexVisitor<T> visitor( callback, mIdToData );
   SpatialIndex::Region r = QgsSpatialIndexUtils::rectangleToRegion( rectangle );
@@ -148,3 +148,6 @@ namespace pal
 
 template class QgsGenericSpatialIndex<pal::FeaturePart>;
 template class QgsGenericSpatialIndex<pal::LabelPosition>;
+
+class QgsLabelPosition;
+template class QgsGenericSpatialIndex<QgsLabelPosition>;
