@@ -35,6 +35,7 @@
 #include "qgsmaplayeractionregistry.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgui.h"
+#include "qgsdualview.h"
 
 QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
   : QTableView( parent )
@@ -298,6 +299,14 @@ void QgsAttributeTableView::mouseMoveEvent( QMouseEvent *event )
   setSelectionMode( QAbstractItemView::NoSelection );
   QTableView::mouseMoveEvent( event );
   setSelectionMode( QAbstractItemView::ExtendedSelection );
+}
+
+void QgsAttributeTableView::mouseDoubleClickEvent( QMouseEvent *event )
+{
+  setSelectionMode( QAbstractItemView::NoSelection );
+  QTableView::mouseDoubleClickEvent( event );
+  setSelectionMode( QAbstractItemView::ExtendedSelection );
+  QgsDualView::zoomToCurrentFeature();
 }
 
 void QgsAttributeTableView::keyPressEvent( QKeyEvent *event )

@@ -26,6 +26,7 @@
 class QgsAttributeTableDelegate;
 class QgsAttributeTableFilterModel;
 class QgsAttributeTableModel;
+class QgsDualView;
 class QgsFeatureSelectionModel;
 class QgsIFeatureSelectionManager;
 class QgsMapCanvas;
@@ -113,6 +114,14 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      * \param event The mouse event
      */
     void mouseMoveEvent( QMouseEvent *event ) override;
+
+    /**
+     * Called for mouse double click events on a table cell.
+     * Disables selection change for these events.
+     *
+     * \param event The mouse event
+     */
+    void mouseDoubleClickEvent( QMouseEvent *event ) override;
 
     /**
      * Called for key press events
