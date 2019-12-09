@@ -19,6 +19,7 @@ import os
 from qgis.PyQt.QtCore import (
     QSize,
     QRectF,
+    QDir
 )
 from qgis.PyQt.QtGui import (
     QColor,
@@ -95,6 +96,8 @@ class TestSelectiveMasking(unittest.TestCase):
         self.checker = QgsRenderChecker()
         self.checker.setControlPathPrefix("selective_masking")
 
+        self.report = "<h1>Python Selective Masking Tests</h1>\n"
+
         self.map_settings = QgsMapSettings()
         crs = QgsCoordinateReferenceSystem()
         crs.createFromSrid(4326)
@@ -139,6 +142,11 @@ class TestSelectiveMasking(unittest.TestCase):
         # order layers for rendering
         self.map_settings.setLayers([self.points_layer, self.lines_layer, self.polys_layer])
 
+    def tearDown(self):
+        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        with open(report_file_path, 'a') as report_file:
+            report_file.write(self.report)
+
     def check_renderings(self, map_settings, control_name):
         """Test a rendering with different configurations:
         - parallel rendering, no cache
@@ -163,7 +171,9 @@ class TestSelectiveMasking(unittest.TestCase):
                 self.checker.setControlName(control_name)
                 self.checker.setRenderedImage(tmp)
                 suffix = "_parallel" if do_parallel else "_sequential"
-                self.assertTrue(self.checker.compareImages(control_name + suffix))
+                res = self.checker.compareImages(control_name + suffix)
+                self.report += self.checker.report()
+                self.assertTrue(res)
 
                 print("=== Rendering took {}s".format(float(t) / 1000.0))
 
@@ -336,6 +346,7 @@ class TestSelectiveMasking(unittest.TestCase):
             if child.description() == 'Tadam':
                 break
         label_settings = child.settings()
+        label_settings.priority = 3
         fmt = label_settings.format()
         # enable a mask
         fmt.mask().setEnabled(True)
@@ -674,7 +685,9 @@ class TestSelectiveMasking(unittest.TestCase):
         control_name = "layout_export"
         self.checker.setControlName(control_name)
         self.checker.setRenderedImage(tmp)
-        self.assertTrue(self.checker.compareImages(control_name))
+        res = self.checker.compareImages(control_name)
+        self.report += self.checker.report()
+        self.assertTrue(res)
 
 
 if __name__ == '__main__':
