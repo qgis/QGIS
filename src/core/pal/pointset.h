@@ -148,14 +148,6 @@ namespace pal
 
       int getGeosType() const { return type; }
 
-      void getBoundingBox( double min[2], double max[2] ) const
-      {
-        min[0] = xmin;
-        min[1] = ymin;
-        max[0] = xmax;
-        max[1] = ymax;
-      }
-
       /**
        * Returns the point set bounding box.
        */

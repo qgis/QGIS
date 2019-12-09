@@ -36,7 +36,7 @@
 #include "qgis_core.h"
 #include <list>
 #include <QList>
-#include "rtree.hpp"
+#include "qgsgenericspatialindex.h"
 
 namespace pal
 {
@@ -178,8 +178,8 @@ namespace pal
 
       std::vector< std::unique_ptr< LabelPosition > > mLabelPositions;
 
-      RTree<LabelPosition *, double, 2, double> mAllCandidatesIndex;
-      RTree<LabelPosition *, double, 2, double> mActiveCandidatesIndex;
+      QgsGenericSpatialIndex<LabelPosition> mAllCandidatesIndex;
+      QgsGenericSpatialIndex<LabelPosition> mActiveCandidatesIndex;
 
       std::vector< std::unique_ptr< LabelPosition > > mPositionsWithNoCandidates;
 

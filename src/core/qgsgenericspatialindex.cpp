@@ -69,6 +69,7 @@ class GenericIndexVisitor : public SpatialIndex::IVisitor
 
 template <class T>
 QgsGenericSpatialIndex< T >::QgsGenericSpatialIndex()
+  : mMutex( QMutex::Recursive )
 {
   mStorageManager.reset( SpatialIndex::StorageManager::createNewMemoryStorageManager() );
   mRTree = createSpatialIndex( *mStorageManager );
@@ -142,6 +143,8 @@ bool QgsGenericSpatialIndex<T>::intersects( const QgsRectangle &rectangle, const
 namespace pal
 {
   class FeaturePart;
+  class LabelPosition;
 }
 
 template class QgsGenericSpatialIndex<pal::FeaturePart>;
+template class QgsGenericSpatialIndex<pal::LabelPosition>;
