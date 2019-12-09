@@ -295,12 +295,6 @@ namespace pal
        */
       void insertIntoIndex( QgsGenericSpatialIndex<LabelPosition> &index );
 
-      struct PruneCtx
-      {
-        Pal *pal = nullptr;
-        FeaturePart *obstacle = nullptr;
-      };
-
       //! Check whether the candidate in ctx overlap with obstacle feat
       static bool pruneCallback( LabelPosition *candidatePosition, void *ctx );
 

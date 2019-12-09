@@ -132,36 +132,20 @@ void Problem::reduce()
   delete[] ok;
 }
 
-struct FalpContext
-{
-  PriorityQueue *list = nullptr;
-  const LabelPosition *lp = nullptr;
-  QgsGenericSpatialIndex< LabelPosition > *candidatesIndex = nullptr;
-};
-
-
 void ignoreLabel( const LabelPosition *lp, PriorityQueue &list, QgsGenericSpatialIndex< LabelPosition > &candidatesIndex )
 {
-  FalpContext context;
-  context.candidatesIndex = nullptr;
-  context.list = &list;
-
   if ( list.isIn( lp->getId() ) )
   {
     list.remove( lp->getId() );
 
-    context.lp = lp;
     double amin[2];
     double amax[2];
     lp->getBoundingBox( amin, amax );
-    candidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&context]( const LabelPosition * lp )->bool
+    candidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [lp, &list]( const LabelPosition * lp2 )->bool
     {
-      const LabelPosition *lp2 = context.lp;
-      PriorityQueue *list = context.list;
-
-      if ( lp->getId() != lp2->getId() && list->isIn( lp->getId() ) && lp->isInConflict( lp2 ) )
+      if ( lp2->getId() != lp->getId() && list.isIn( lp2->getId() ) && lp2->isInConflict( lp ) )
       {
-        list->decreaseKey( lp->getId() );
+        list.decreaseKey( lp2->getId() );
       }
       return true;
     } );
@@ -182,10 +166,6 @@ void Problem::init_sol_falp()
 
   double amin[2];
   double amax[2];
-
-  FalpContext context;
-  context.candidatesIndex = &mAllCandidatesIndex;
-  context.list = &list;
 
   LabelPosition *lp = nullptr;
 
@@ -230,15 +210,11 @@ void Problem::init_sol_falp()
 
     lp->getBoundingBox( amin, amax );
 
-    context.lp = lp;
-    mAllCandidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&context]( const LabelPosition * lp ) ->bool
+    mAllCandidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&list, lp, this]( const LabelPosition * lp2 ) ->bool
     {
-      const LabelPosition *lp2 = context.lp;
-      PriorityQueue *list = context.list;
-
-      if ( lp2->isInConflict( lp ) )
+      if ( lp->isInConflict( lp2 ) )
       {
-        ignoreLabel( lp, *list, *context.candidatesIndex );
+        ignoreLabel( lp2, list, mAllCandidatesIndex );
       }
       return true;
     } );
@@ -620,12 +596,6 @@ inline Chain *Problem::chain( int seed )
   return retainedChain;
 }
 
-struct NokContext
-{
-  LabelPosition *lp = nullptr;
-  bool *ok = nullptr;
-  int *wrap = nullptr;
-};
 
 void Problem::chain_search()
 {
@@ -638,10 +608,6 @@ void Problem::chain_search()
   int fid;
   int lid;
   int popit = 0;
-
-  NokContext context;
-  context.ok = ok;
-  context.wrap = nullptr;
 
   Chain *retainedChain = nullptr;
 
@@ -689,24 +655,12 @@ void Problem::chain_search()
         {
           LabelPosition *old = mLabelPositions[ mSol.activeLabelIds[fid] ].get();
           old->removeFromIndex( mActiveCandidatesIndex );
-          context.lp = old;
           old->getBoundingBox( amin, amax );
-          mAllCandidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&context]( const LabelPosition * lp ) ->bool
+          mAllCandidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&ok, old]( const LabelPosition * lp ) ->bool
           {
-            LabelPosition *lp2 = context.lp;
-            bool *ok = context.ok;
-            int *wrap = context.wrap;
-
-            if ( lp2->isInConflict( lp ) )
+            if ( old->isInConflict( lp ) )
             {
-              if ( wrap )
-              {
-                ok[wrap[lp->getProblemFeatureId()]] = false;
-              }
-              else
-              {
-                ok[lp->getProblemFeatureId()] = false;
-              }
+              ok[lp->getProblemFeatureId()] = false;
             }
 
             return true;

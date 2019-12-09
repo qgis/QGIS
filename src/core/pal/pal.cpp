@@ -102,11 +102,6 @@ struct ObstacleCallBackCtx
   Pal *pal = nullptr;
 };
 
-struct FilterContext
-{
-  QgsGenericSpatialIndex<LabelPosition> *allCandidatesIndex = nullptr;
-  Pal *pal = nullptr;
-};
 
 std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeometry &mapBoundary )
 {
@@ -294,19 +289,13 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
     // Filtering label positions against obstacles
     amin[0] = amin[1] = std::numeric_limits<double>::lowest();
     amax[0] = amax[1] = std::numeric_limits<double>::max();
-    FilterContext filterCtx;
-    filterCtx.allCandidatesIndex = &prob->mAllCandidatesIndex;
-    filterCtx.pal = this;
-    obstacles.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&filterCtx]( const FeaturePart * part )->bool
+    obstacles.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&prob, this]( const FeaturePart * part )->bool
     {
-      if ( filterCtx.pal->isCanceled() )
+      if ( isCanceled() )
         return false; // do not continue searching
 
-      LabelPosition::PruneCtx pruneContext;
-      pruneContext.obstacle = const_cast< FeaturePart * >( part );
-      pruneContext.pal = filterCtx.pal;
-      filterCtx.allCandidatesIndex->intersects( part->boundingBox(), [&pruneContext]( const LabelPosition * candidatePosition ) -> bool{
-        FeaturePart *obstaclePart = pruneContext.obstacle;
+      prob->allCandidatesIndex().intersects( part->boundingBox(), [part, this]( const LabelPosition * candidatePosition ) -> bool{
+        FeaturePart *obstaclePart = const_cast< FeaturePart * >( part );
 
         // test whether we should ignore this obstacle for the candidate. We do this if:
         // 1. it's not a hole, and the obstacle belongs to the same label feature as the candidate (e.g.,
@@ -319,7 +308,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
           return true;
         }
 
-        CostCalculator::addObstacleCostPenalty( const_cast< LabelPosition * >( candidatePosition ), obstaclePart, pruneContext.pal );
+        CostCalculator::addObstacleCostPenalty( const_cast< LabelPosition * >( candidatePosition ), obstaclePart, this );
 
         return true;
       } );
