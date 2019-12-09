@@ -2032,7 +2032,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \return a list of weak references to broken layer dependencies
      */
     const QList< QgsVectorLayerRef > findBrokenLayerDependencies( QgsVectorLayer *vectorLayer,
-        QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const;
+        QgsMapLayer::StyleCategories categories = QgsMapLayer::StyleCategory::AllStyleCategories ) const;
 
     /**
      * Scans the \a vectorLayer for broken dependencies and automatically
