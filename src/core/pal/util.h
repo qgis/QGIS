@@ -86,14 +86,6 @@ namespace pal
   {
     public:
 
-      /**
-       * \brief Sort an array of pointers
-       * \param items arays of pointers to sort
-       * \param N number of items
-       * \param greater function to compare two items
-       **/
-      static void sort( void **items, int N, bool ( *greater )( void *l, void *r ) );
-
       static QLinkedList<const GEOSGeometry *> *unmulti( const GEOSGeometry *the_geom );
   };
 
