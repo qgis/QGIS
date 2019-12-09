@@ -156,7 +156,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       // Holes of the feature are obstacles
       for ( int i = 0; i < featurePart->getNumSelfObstacles(); i++ )
       {
-        obstacles.insertData( featurePart->getSelfObstacle( i ), featurePart->getSelfObstacle( i )->boundingBox() );
+        obstacles.insert( featurePart->getSelfObstacle( i ), featurePart->getSelfObstacle( i )->boundingBox() );
 
         if ( !featurePart->getSelfObstacle( i )->getHoleOf() )
         {
@@ -219,7 +219,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
         return false; // do not continue searching
 
       // insert into obstacles
-      obstacles.insertData( featurePart, featurePart->boundingBox() );
+      obstacles.insert( featurePart, featurePart->boundingBox() );
       obstacleCount++;
       return true;
     } );

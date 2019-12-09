@@ -433,7 +433,7 @@ void LabelPosition::removeFromIndex( QgsGenericSpatialIndex<LabelPosition> &inde
   double amin[2];
   double amax[2];
   getBoundingBox( amin, amax );
-  index.deleteData( this, QgsRectangle( amin[0], amin[1], amax[0], amax[1] ) );
+  index.remove( this, QgsRectangle( amin[0], amin[1], amax[0], amax[1] ) );
 }
 
 void LabelPosition::insertIntoIndex( QgsGenericSpatialIndex<LabelPosition> &index )
@@ -441,7 +441,7 @@ void LabelPosition::insertIntoIndex( QgsGenericSpatialIndex<LabelPosition> &inde
   double amin[2];
   double amax[2];
   getBoundingBox( amin, amax );
-  index.insertData( this, QgsRectangle( amin[0], amin[1], amax[0], amax[1] ) );
+  index.insert( this, QgsRectangle( amin[0], amin[1], amax[0], amax[1] ) );
 }
 
 double LabelPosition::getDistanceToPoint( double xp, double yp ) const

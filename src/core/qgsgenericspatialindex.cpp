@@ -79,7 +79,7 @@ template<typename T>
 QgsGenericSpatialIndex<T>::~QgsGenericSpatialIndex() = default;
 
 template<typename T>
-bool QgsGenericSpatialIndex<T>::insertData( const T *data, const QgsRectangle &bounds )
+bool QgsGenericSpatialIndex<T>::insert( const T *data, const QgsRectangle &bounds )
 {
   SpatialIndex::Region r( QgsSpatialIndexUtils::rectangleToRegion( bounds ) );
 
@@ -112,7 +112,7 @@ bool QgsGenericSpatialIndex<T>::insertData( const T *data, const QgsRectangle &b
 }
 
 template<typename T>
-bool QgsGenericSpatialIndex<T>::deleteData( const T *data, const QgsRectangle &bounds )
+bool QgsGenericSpatialIndex<T>::remove( const T *data, const QgsRectangle &bounds )
 {
   SpatialIndex::Region r = QgsSpatialIndexUtils::rectangleToRegion( bounds );
 
@@ -130,10 +130,10 @@ bool QgsGenericSpatialIndex<T>::deleteData( const T *data, const QgsRectangle &b
 }
 
 template<typename T>
-bool QgsGenericSpatialIndex<T>::intersects( const QgsRectangle &rectangle, const std::function<bool ( const T * )> &callback ) const
+bool QgsGenericSpatialIndex<T>::intersects( const QgsRectangle &bounds, const std::function<bool ( const T * )> &callback ) const
 {
   GenericIndexVisitor<T> visitor( callback, mIdToData );
-  SpatialIndex::Region r = QgsSpatialIndexUtils::rectangleToRegion( rectangle );
+  SpatialIndex::Region r = QgsSpatialIndexUtils::rectangleToRegion( bounds );
 
   QMutexLocker locker( &mMutex );
   mRTree->intersectsWithQuery( r, visitor );

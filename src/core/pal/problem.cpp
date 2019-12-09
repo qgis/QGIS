@@ -218,7 +218,7 @@ void Problem::init_sol_falp()
       }
       return true;
     } );
-    mActiveCandidatesIndex.insertData( lp, QgsRectangle( amin[0], amin[1], amax[0], amax[1] ) );
+    mActiveCandidatesIndex.insert( lp, QgsRectangle( amin[0], amin[1], amax[0], amax[1] ) );
   }
 
   if ( mDisplayAll )

@@ -90,7 +90,7 @@ bool QgsLabelSearchTree::insertLabel( pal::LabelPosition *labelPos, QgsFeatureId
   QgsGeometry labelGeometry( QgsGeometry::fromPolygonXY( QVector<QgsPolylineXY>() << cornerPoints ) );
   std::unique_ptr< QgsLabelPosition > newEntry = qgis::make_unique< QgsLabelPosition >( featureId, labelPos->getAlpha() + mMapSettings.rotation(), cornerPoints, bounds,
       labelPos->getWidth(), labelPos->getHeight(), layerName, labeltext, labelfont, labelPos->getUpsideDown(), diagram, pinned, providerId, labelGeometry, isUnplaced );
-  mSpatialIndex.insertData( newEntry.get(), bounds );
+  mSpatialIndex.insert( newEntry.get(), bounds );
   mOwnedPositions.emplace_back( std::move( newEntry ) );
 
   if ( pal::LabelPosition *next = labelPos->getNextPart() )

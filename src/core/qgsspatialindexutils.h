@@ -39,7 +39,7 @@ namespace SpatialIndex
 
 /**
  * \ingroup core
- * \class QgsSpatialIndex
+ * \class QgsSpatialIndexUtils
  *
  * Contains utility functions for working with spatial indexes.
  *
