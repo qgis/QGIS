@@ -936,7 +936,10 @@ class MapLayerWidgetWrapper(WidgetWrapper):
             self.context = dataobjects.createContext()
 
             try:
-                self.combo.setLayer(iface.activeLayer())
+                if self.parameterDefinition().flags() & QgsProcessingParameterDefinition.FlagOptional:
+                    self.combo.setLayer(self.parameterDefinition().defaultValue())
+                else:
+                    self.combo.setLayer(iface.activeLayer())
             except:
                 pass
 
