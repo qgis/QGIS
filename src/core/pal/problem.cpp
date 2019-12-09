@@ -776,15 +776,7 @@ void Problem::solution_cost()
 {
   mSol.totalCost = 0.0;
 
-  int nbOv;
-
-  LabelPosition::CountContext context;
-  context.inactiveCost = &mInactiveCost;
-  context.nbOv = &nbOv;
-  context.cost = &mSol.totalCost;
   LabelPosition *lp = nullptr;
-
-  int nbHidden = 0;
 
   double amin[2];
   double amax[2];
@@ -794,25 +786,17 @@ void Problem::solution_cost()
     if ( mSol.activeLabelIds[i] == -1 )
     {
       mSol.totalCost += mInactiveCost[i];
-      nbHidden++;
     }
     else
     {
-      nbOv = 0;
       lp = mLabelPositions[ mSol.activeLabelIds[i] ].get();
 
-      context.lp = lp;
       lp->getBoundingBox( amin, amax );
-      mActiveCandidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&context]( const LabelPosition * lp )->bool
+      mActiveCandidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&lp, this]( const LabelPosition * lp2 )->bool
       {
-        LabelPosition *lp2 = context.lp;
-        double *cost = context.cost;
-        int *nbOv = context.nbOv;
-        std::vector< double > &inactiveCost = *context.inactiveCost;
-        if ( lp2->isInConflict( lp ) )
+        if ( lp->isInConflict( lp2 ) )
         {
-          ( *nbOv ) ++;
-          *cost += inactiveCost[lp->getProblemFeatureId()] + lp->cost();
+          mSol.totalCost += mInactiveCost[lp2->getProblemFeatureId()] + lp2->cost();
         }
 
         return true;

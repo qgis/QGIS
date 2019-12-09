@@ -304,15 +304,6 @@ namespace pal
       //! Check whether the candidate in ctx overlap with obstacle feat
       static bool pruneCallback( LabelPosition *candidatePosition, void *ctx );
 
-      // for counting number of overlaps
-      struct CountContext
-      {
-        LabelPosition *lp = nullptr;
-        int *nbOv = nullptr;
-        double *cost = nullptr;
-        std::vector< double > *inactiveCost = nullptr;
-      };
-
       /*
        * count overlap, ctx = p_lp
        */
