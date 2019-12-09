@@ -295,21 +295,6 @@ namespace pal
        */
       void insertIntoIndex( QgsGenericSpatialIndex<LabelPosition> &index );
 
-      //! Check whether the candidate in ctx overlap with obstacle feat
-      static bool pruneCallback( LabelPosition *candidatePosition, void *ctx );
-
-      /*
-       * count overlap, ctx = p_lp
-       */
-      static bool countOverlapCallback( LabelPosition *lp, void *ctx );
-
-      static bool countFullOverlapCallback( LabelPosition *lp, void *ctx );
-
-      static bool removeOverlapCallback( LabelPosition *lp, void *ctx );
-
-      // for polygon cost calculation
-      static bool polygonObstacleCallback( pal::FeaturePart *obstacle, void *ctx );
-
       /**
        * The offset of the anchor point in x direction.
        *
