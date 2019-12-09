@@ -51,7 +51,7 @@ class CORE_EXPORT QgsGenericSpatialIndex
      * Ownership of \a data is not transferred, and it is the caller's responsibility to ensure that
      * it exists for the lifetime of the spatial index.
      */
-    bool insert( const T *data, const QgsRectangle &bounds );
+    bool insert( T *data, const QgsRectangle &bounds );
 
     /**
      * Removes existing \a data from the spatial index, with the specified \a bounds.
@@ -59,14 +59,14 @@ class CORE_EXPORT QgsGenericSpatialIndex
      * \a data is not deleted, and it is the caller's responsibility to ensure that
      * it is appropriately cleaned up.
      */
-    bool remove( const T *data, const QgsRectangle &bounds );
+    bool remove( T *data, const QgsRectangle &bounds );
 
     /**
      * Performs an intersection check against the index, for data intersecting the specified \a bounds.
      *
      * The \a callback function will be called once for each matching data object encountered.
      */
-    bool intersects( const QgsRectangle &bounds, const std::function< bool( const T *data )> &callback ) const;
+    bool intersects( const QgsRectangle &bounds, const std::function< bool( T *data )> &callback ) const;
 
   private:
 
@@ -76,8 +76,8 @@ class CORE_EXPORT QgsGenericSpatialIndex
     mutable QMutex mMutex;
 
     qint64 mNextId = 1;
-    QHash< qint64, const T * > mIdToData;
-    QHash< const T *, qint64 > mDataToId;
+    QHash< qint64, T * > mIdToData;
+    QHash< T *, qint64 > mDataToId;
 
 };
 

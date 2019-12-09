@@ -41,7 +41,7 @@ template <typename T>
 class GenericIndexVisitor : public SpatialIndex::IVisitor
 {
   public:
-    explicit GenericIndexVisitor( const std::function< bool( const T *data )> &callback, const QHash< qint64, const T * > &data )
+    explicit GenericIndexVisitor( const std::function< bool( T *data )> &callback, const QHash< qint64, T * > &data )
       : mCallback( callback )
       , mData( data )
     {}
@@ -52,7 +52,7 @@ class GenericIndexVisitor : public SpatialIndex::IVisitor
     void visitData( const SpatialIndex::IData &d ) override
     {
       qint64 id = d.getIdentifier();
-      const T *data = mData.value( id );
+      T *data = mData.value( id );
       mCallback( data );
     }
 
@@ -60,8 +60,8 @@ class GenericIndexVisitor : public SpatialIndex::IVisitor
     { Q_UNUSED( v ) }
 
   private:
-    const std::function< bool( const T *data )> &mCallback;
-    QHash< qint64, const T * > mData;
+    const std::function< bool( T *data )> &mCallback;
+    QHash< qint64, T * > mData;
 };
 
 ///@endcond
@@ -79,7 +79,7 @@ template<typename T>
 QgsGenericSpatialIndex<T>::~QgsGenericSpatialIndex() = default;
 
 template<typename T>
-bool QgsGenericSpatialIndex<T>::insert( const T *data, const QgsRectangle &bounds )
+bool QgsGenericSpatialIndex<T>::insert( T *data, const QgsRectangle &bounds )
 {
   SpatialIndex::Region r( QgsSpatialIndexUtils::rectangleToRegion( bounds ) );
 
@@ -112,7 +112,7 @@ bool QgsGenericSpatialIndex<T>::insert( const T *data, const QgsRectangle &bound
 }
 
 template<typename T>
-bool QgsGenericSpatialIndex<T>::remove( const T *data, const QgsRectangle &bounds )
+bool QgsGenericSpatialIndex<T>::remove( T *data, const QgsRectangle &bounds )
 {
   SpatialIndex::Region r = QgsSpatialIndexUtils::rectangleToRegion( bounds );
 
@@ -130,7 +130,7 @@ bool QgsGenericSpatialIndex<T>::remove( const T *data, const QgsRectangle &bound
 }
 
 template<typename T>
-bool QgsGenericSpatialIndex<T>::intersects( const QgsRectangle &bounds, const std::function<bool ( const T * )> &callback ) const
+bool QgsGenericSpatialIndex<T>::intersects( const QgsRectangle &bounds, const std::function<bool ( T * )> &callback ) const
 {
   GenericIndexVisitor<T> visitor( callback, mIdToData );
   SpatialIndex::Region r = QgsSpatialIndexUtils::rectangleToRegion( bounds );
