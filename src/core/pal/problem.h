@@ -139,6 +139,11 @@ namespace pal
         return &mPositionsWithNoCandidates;
       }
 
+      /**
+       * Returns the index containing all label candidates.
+       */
+      QgsGenericSpatialIndex<LabelPosition> &allCandidatesIndex() { return mAllCandidatesIndex; }
+
     private:
 
       /**
