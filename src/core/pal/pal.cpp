@@ -32,7 +32,6 @@
 #include "layer.h"
 #include "palexception.h"
 #include "palstat.h"
-#include "rtree.hpp"
 #include "costcalculator.h"
 #include "feature.h"
 #include "geomfunction.h"

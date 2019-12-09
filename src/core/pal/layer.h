@@ -35,7 +35,6 @@
 
 #include "qgis_core.h"
 #include "pal.h" // for LineArrangementFlags enum
-#include "rtree.hpp"
 #include "qgsgeos.h"
 #include "qgsgenericspatialindex.h"
 #include <QMutex>

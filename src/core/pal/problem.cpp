@@ -30,7 +30,6 @@
 #include "pal.h"
 #include "palstat.h"
 #include "layer.h"
-#include "rtree.hpp"
 #include "feature.h"
 #include "geomfunction.h"
 #include "labelposition.h"

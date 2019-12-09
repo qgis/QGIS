@@ -37,7 +37,6 @@
 #include "pointset.h"
 #include "labelposition.h" // for LabelPosition enum
 #include "qgslabelfeature.h"
-#include "rtree.hpp"
 #include <iostream>
 #include <fstream>
 #include <cmath>
