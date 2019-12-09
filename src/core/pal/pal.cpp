@@ -81,28 +81,6 @@ Layer *Pal::addLayer( QgsAbstractLabelProvider *provider, const QString &layerNa
   return res;
 }
 
-struct FeatCallBackCtx
-{
-  Layer *layer = nullptr;
-
-  std::list< std::unique_ptr< Feats > > *features = nullptr;
-
-  QgsGenericSpatialIndex< FeaturePart > *obstacleIndex = nullptr;
-  QgsGenericSpatialIndex<LabelPosition> *allCandidateIndex = nullptr;
-  std::vector< std::unique_ptr< LabelPosition > > *positionsWithNoCandidates = nullptr;
-  const GEOSPreparedGeometry *mapBoundary = nullptr;
-  Pal *pal = nullptr;
-};
-
-
-struct ObstacleCallBackCtx
-{
-  QgsGenericSpatialIndex< FeaturePart > *obstacleIndex = nullptr;
-  int obstacleCount = 0;
-  Pal *pal = nullptr;
-};
-
-
 std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeometry &mapBoundary )
 {
   // to store obstacles
@@ -126,23 +104,11 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
   std::list< std::unique_ptr< Feats > > features;
 
-  FeatCallBackCtx context;
-
   // prepare map boundary
   geos::unique_ptr mapBoundaryGeos( QgsGeos::asGeos( mapBoundary ) );
   geos::prepared_unique_ptr mapBoundaryPrepared( GEOSPrepare_r( QgsGeos::getGEOSHandler(), mapBoundaryGeos.get() ) );
 
-  context.features = &features;
-  context.obstacleIndex = &obstacles;
-  context.allCandidateIndex = &prob->mAllCandidatesIndex;
-  context.positionsWithNoCandidates = prob->positionsWithNoCandidates();
-  context.mapBoundary = mapBoundaryPrepared.get();
-  context.pal = this;
-
-  ObstacleCallBackCtx obstacleContext;
-  obstacleContext.obstacleIndex = &obstacles;
-  obstacleContext.obstacleCount = 0;
-  obstacleContext.pal = this;
+  int obstacleCount = 0;
 
   // first step : extract features from layers
 
@@ -180,18 +146,17 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
     QMutexLocker locker( &layer->mMutex );
 
     // find features within bounding box and generate candidates list
-    context.layer = layer;
-    layer->mFeatureIndex.intersects( QgsRectangle( amin[ 0], amin[1], amax[0], amax[1] ), [&context]( const  FeaturePart * constFeaturePart )->bool
+    layer->mFeatureIndex.intersects( QgsRectangle( amin[ 0], amin[1], amax[0], amax[1] ), [&features, &obstacles, &prob, &mapBoundaryPrepared, this]( const  FeaturePart * constFeaturePart )->bool
     {
       FeaturePart *featurePart = const_cast< FeaturePart * >( constFeaturePart );
 
-      if ( context.pal->isCanceled() )
+      if ( isCanceled() )
         return false;
 
       // Holes of the feature are obstacles
       for ( int i = 0; i < featurePart->getNumSelfObstacles(); i++ )
       {
-        context.obstacleIndex->insertData( featurePart->getSelfObstacle( i ), featurePart->getSelfObstacle( i )->boundingBox() );
+        obstacles.insertData( featurePart->getSelfObstacle( i ), featurePart->getSelfObstacle( i )->boundingBox() );
 
         if ( !featurePart->getSelfObstacle( i )->getHoleOf() )
         {
@@ -200,28 +165,28 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       }
 
       // generate candidates for the feature part
-      std::vector< std::unique_ptr< LabelPosition > > candidates = featurePart->createCandidates( context.pal );
+      std::vector< std::unique_ptr< LabelPosition > > candidates = featurePart->createCandidates( this );
 
-      if ( context.pal->isCanceled() )
+      if ( isCanceled() )
         return false;
 
       // purge candidates that are outside the bbox
-      candidates.erase( std::remove_if( candidates.begin(), candidates.end(), [&context]( std::unique_ptr< LabelPosition > &candidate )
+      candidates.erase( std::remove_if( candidates.begin(), candidates.end(), [&mapBoundaryPrepared, this]( std::unique_ptr< LabelPosition > &candidate )
       {
-        if ( context.pal->showPartialLabels() )
-          return !candidate->intersects( context.mapBoundary );
+        if ( showPartialLabels() )
+          return !candidate->intersects( mapBoundaryPrepared.get() );
         else
-          return !candidate->within( context.mapBoundary );
+          return !candidate->within( mapBoundaryPrepared.get() );
       } ), candidates.end() );
 
-      if ( context.pal->isCanceled() )
+      if ( isCanceled() )
         return false;
 
       if ( !candidates.empty() )
       {
         for ( std::unique_ptr< LabelPosition > &candidate : candidates )
         {
-          candidate->insertIntoIndex( *context.allCandidateIndex );
+          candidate->insertIntoIndex( prob->allCandidatesIndex() );
         }
 
         std::sort( candidates.begin(), candidates.end(), CostCalculator::candidateSortGrow );
@@ -232,14 +197,14 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
         ft->shape = nullptr;
         ft->candidates = std::move( candidates );
         ft->priority = featurePart->calculatePriority();
-        context.features->emplace_back( std::move( ft ) );
+        features.emplace_back( std::move( ft ) );
       }
       else
       {
         // features with no candidates are recorded in the unlabeled feature list
         std::unique_ptr< LabelPosition > unplacedPosition = featurePart->createCandidatePointOnSurface( featurePart );
         if ( unplacedPosition )
-          context.positionsWithNoCandidates->emplace_back( std::move( unplacedPosition ) );
+          prob->positionsWithNoCandidates()->emplace_back( std::move( unplacedPosition ) );
       }
 
       return true;
@@ -248,14 +213,14 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       return nullptr;
 
     // find obstacles within bounding box
-    layer->mObstacleIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&obstacleContext]( const FeaturePart * featurePart )->bool
+    layer->mObstacleIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&obstacles, &obstacleCount, this]( const FeaturePart * featurePart )->bool
     {
-      if ( obstacleContext.pal->isCanceled() )
+      if ( isCanceled() )
         return false; // do not continue searching
 
       // insert into obstacles
-      obstacleContext.obstacleIndex->insertData( featurePart, featurePart->boundingBox() );
-      obstacleContext.obstacleCount++;
+      obstacles.insertData( featurePart, featurePart->boundingBox() );
+      obstacleCount++;
       return true;
     } );
     if ( isCanceled() )
@@ -263,12 +228,12 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
     locker.unlock();
 
-    if ( context.features->size() - previousFeatureCount > 0 || obstacleContext.obstacleCount > previousObstacleCount )
+    if ( features.size() - previousFeatureCount > 0 || obstacleCount > previousObstacleCount )
     {
       layersWithFeaturesInBBox << layer->name();
     }
-    previousFeatureCount = context.features->size();
-    previousObstacleCount = obstacleContext.obstacleCount;
+    previousFeatureCount = features.size();
+    previousObstacleCount = obstacleCount;
   }
   palLocker.unlock();
 
