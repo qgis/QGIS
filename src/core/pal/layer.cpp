@@ -264,7 +264,7 @@ void Layer::addFeaturePart( FeaturePart *fpart, const QString &labelText )
   mFeatureParts << fpart;
 
   // add to r-tree for fast spatial access
-  mFeatureIndex.Insert( bmin, bmax, fpart );
+  mFeatureIndex.insertData( fpart, QgsRectangle( bmin[0], bmin[1], bmax[0], bmax[1] ) );
 
   // add to hashtable with equally named feature parts
   if ( mMergeLines && !labelText.isEmpty() )
@@ -339,12 +339,12 @@ void Layer::joinConnectedFeatures()
         if ( otherPart->mergeWithFeaturePart( partCheck ) )
         {
           // remove the parts we are joining from the index
-          mFeatureIndex.Remove( checkpartBMin, checkpartBMax, partCheck );
-          mFeatureIndex.Remove( otherPartBMin, otherPartBMax, otherPart );
+          mFeatureIndex.deleteData( partCheck, QgsRectangle( checkpartBMin[0], checkpartBMin[1], checkpartBMax[0], checkpartBMax[1] ) );
+          mFeatureIndex.deleteData( otherPart, QgsRectangle( otherPartBMin[0], otherPartBMin[1], otherPartBMax[0], otherPartBMax[1] ) ) ;
 
           // reinsert merged line to r-tree (probably not needed)
           otherPart->getBoundingBox( otherPartBMin, otherPartBMax );
-          mFeatureIndex.Insert( otherPartBMin, otherPartBMax, otherPart );
+          mFeatureIndex.insertData( otherPart, QgsRectangle( otherPartBMin[0], otherPartBMin[1], otherPartBMax[0], otherPartBMax[1] ) );
 
           mConnectedFeaturesIds.insert( partCheck->featureId(), connectedFeaturesId );
           mConnectedFeaturesIds.insert( otherPart->featureId(), connectedFeaturesId );
@@ -413,7 +413,7 @@ void Layer::chopFeaturesAtRepeatDistance()
     {
       double bmin[2], bmax[2];
       fpart->getBoundingBox( bmin, bmax );
-      mFeatureIndex.Remove( bmin, bmax, fpart.get() );
+      mFeatureIndex.deleteData( fpart.get(), QgsRectangle( bmin[0], bmin[1], bmax[0], bmax[1] ) );
 
       const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r( geosctxt, geom );
 
@@ -474,7 +474,7 @@ void Layer::chopFeaturesAtRepeatDistance()
           FeaturePart *newfpart = new FeaturePart( fpart->feature(), newgeom );
           newFeatureParts.append( newfpart );
           newfpart->getBoundingBox( bmin, bmax );
-          mFeatureIndex.Insert( bmin, bmax, newfpart );
+          mFeatureIndex.insertData( newfpart, QgsRectangle( bmin[0], bmin[1], bmax[0], bmax[1] ) );
           repeatParts.push_back( newfpart );
 
           break;
@@ -499,7 +499,7 @@ void Layer::chopFeaturesAtRepeatDistance()
         FeaturePart *newfpart = new FeaturePart( fpart->feature(), newgeom );
         newFeatureParts.append( newfpart );
         newfpart->getBoundingBox( bmin, bmax );
-        mFeatureIndex.Insert( bmin, bmax, newfpart );
+        mFeatureIndex.insertData( newfpart, QgsRectangle( bmin[0], bmin[1], bmax[0], bmax[1] ) );
         part.clear();
         part.push_back( p );
         repeatParts.push_back( newfpart );
@@ -516,3 +516,6 @@ void Layer::chopFeaturesAtRepeatDistance()
 
   mFeatureParts = newFeatureParts;
 }
+
+
+template class QgsGenericSpatialIndex<pal::FeaturePart>;

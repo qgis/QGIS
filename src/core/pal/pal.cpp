@@ -96,78 +96,6 @@ struct FeatCallBackCtx
 };
 
 
-
-/*
- * Callback function
- *
- * Extract a specific shape from indexes
- */
-bool extractFeatCallback( FeaturePart *featurePart, void *ctx )
-{
-  double amin[2], amax[2];
-  FeatCallBackCtx *context = reinterpret_cast< FeatCallBackCtx * >( ctx );
-
-  if ( context->pal->isCanceled() )
-    return false;
-
-  // Holes of the feature are obstacles
-  for ( int i = 0; i < featurePart->getNumSelfObstacles(); i++ )
-  {
-    featurePart->getSelfObstacle( i )->getBoundingBox( amin, amax );
-    context->obstacleIndex->Insert( amin, amax, featurePart->getSelfObstacle( i ) );
-
-    if ( !featurePart->getSelfObstacle( i )->getHoleOf() )
-    {
-      //ERROR: SHOULD HAVE A PARENT!!!!!
-    }
-  }
-
-  // generate candidates for the feature part
-  std::vector< std::unique_ptr< LabelPosition > > candidates = featurePart->createCandidates( context->pal );
-
-  if ( context->pal->isCanceled() )
-    return false;
-
-  // purge candidates that are outside the bbox
-  candidates.erase( std::remove_if( candidates.begin(), candidates.end(), [&context]( std::unique_ptr< LabelPosition > &candidate )
-  {
-    if ( context->pal->showPartialLabels() )
-      return !candidate->intersects( context->mapBoundary );
-    else
-      return !candidate->within( context->mapBoundary );
-  } ), candidates.end() );
-
-  if ( context->pal->isCanceled() )
-    return false;
-
-  if ( !candidates.empty() )
-  {
-    for ( std::unique_ptr< LabelPosition > &candidate : candidates )
-    {
-      candidate->insertIntoIndex( *context->allCandidateIndex );
-    }
-
-    std::sort( candidates.begin(), candidates.end(), CostCalculator::candidateSortGrow );
-
-    // valid features are added to fFeats
-    std::unique_ptr< Feats > ft = qgis::make_unique< Feats >();
-    ft->feature = featurePart;
-    ft->shape = nullptr;
-    ft->candidates = std::move( candidates );
-    ft->priority = featurePart->calculatePriority();
-    context->features->emplace_back( std::move( ft ) );
-  }
-  else
-  {
-    // features with no candidates are recorded in the unlabeled feature list
-    std::unique_ptr< LabelPosition > unplacedPosition = featurePart->createCandidatePointOnSurface( featurePart );
-    if ( unplacedPosition )
-      context->positionsWithNoCandidates->emplace_back( std::move( unplacedPosition ) );
-  }
-
-  return true;
-}
-
 struct ObstacleCallBackCtx
 {
   RTree<FeaturePart *, double, 2, double> *obstacleIndex = nullptr;
@@ -297,7 +225,71 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
     // find features within bounding box and generate candidates list
     context.layer = layer;
-    layer->mFeatureIndex.Search( amin, amax, extractFeatCallback, static_cast< void * >( &context ) );
+    layer->mFeatureIndex.intersects( QgsRectangle( amin[ 0], amin[1], amax[0], amax[1] ), [&context]( const  FeaturePart * constFeaturePart )->bool
+    {
+      double amin[2], amax[2];
+      FeaturePart *featurePart = const_cast< FeaturePart * >( constFeaturePart );
+
+      if ( context.pal->isCanceled() )
+        return false;
+
+      // Holes of the feature are obstacles
+      for ( int i = 0; i < featurePart->getNumSelfObstacles(); i++ )
+      {
+        featurePart->getSelfObstacle( i )->getBoundingBox( amin, amax );
+        context.obstacleIndex->Insert( amin, amax, featurePart->getSelfObstacle( i ) );
+
+        if ( !featurePart->getSelfObstacle( i )->getHoleOf() )
+        {
+          //ERROR: SHOULD HAVE A PARENT!!!!!
+        }
+      }
+
+      // generate candidates for the feature part
+      std::vector< std::unique_ptr< LabelPosition > > candidates = featurePart->createCandidates( context.pal );
+
+      if ( context.pal->isCanceled() )
+        return false;
+
+      // purge candidates that are outside the bbox
+      candidates.erase( std::remove_if( candidates.begin(), candidates.end(), [&context]( std::unique_ptr< LabelPosition > &candidate )
+      {
+        if ( context.pal->showPartialLabels() )
+          return !candidate->intersects( context.mapBoundary );
+        else
+          return !candidate->within( context.mapBoundary );
+      } ), candidates.end() );
+
+      if ( context.pal->isCanceled() )
+        return false;
+
+      if ( !candidates.empty() )
+      {
+        for ( std::unique_ptr< LabelPosition > &candidate : candidates )
+        {
+          candidate->insertIntoIndex( *context.allCandidateIndex );
+        }
+
+        std::sort( candidates.begin(), candidates.end(), CostCalculator::candidateSortGrow );
+
+        // valid features are added to fFeats
+        std::unique_ptr< Feats > ft = qgis::make_unique< Feats >();
+        ft->feature = featurePart;
+        ft->shape = nullptr;
+        ft->candidates = std::move( candidates );
+        ft->priority = featurePart->calculatePriority();
+        context.features->emplace_back( std::move( ft ) );
+      }
+      else
+      {
+        // features with no candidates are recorded in the unlabeled feature list
+        std::unique_ptr< LabelPosition > unplacedPosition = featurePart->createCandidatePointOnSurface( featurePart );
+        if ( unplacedPosition )
+          context.positionsWithNoCandidates->emplace_back( std::move( unplacedPosition ) );
+      }
+
+      return true;
+    } );
     if ( isCanceled() )
       return nullptr;
 
