@@ -4389,11 +4389,10 @@ static void jumpSpace( const QString &txt, int &i )
 QString QgsPostgresProvider::getNextString( const QString &txt, int &i, const QString &sep )
 {
   jumpSpace( txt, i );
-  QString cur = txt.mid( i );
-  if ( cur.startsWith( '"' ) )
+  if ( i < txt.length() && txt.at( i ) == '"' )
   {
     QRegExp stringRe( "^\"((?:\\\\.|[^\"\\\\])*)\".*" );
-    if ( !stringRe.exactMatch( cur ) )
+    if ( !stringRe.exactMatch( txt.mid( i ) ) )
     {
       QgsMessageLog::logMessage( tr( "Cannot find end of double quoted string: %1" ).arg( txt ), tr( "PostGIS" ) );
       return QString();
@@ -4410,14 +4409,17 @@ QString QgsPostgresProvider::getNextString( const QString &txt, int &i, const QS
   }
   else
   {
-    int sepPos = cur.indexOf( sep );
-    if ( sepPos < 0 )
+    int start = i;
+    for ( ; i < txt.length(); i++ )
     {
-      i += cur.length();
-      return cur.trimmed();
+      if ( txt.midRef( i ).startsWith( sep ) )
+      {
+        QStringRef r( txt.midRef( start, i - start ) );
+        i += sep.length();
+        return r.trimmed().toString();
+      }
     }
-    i += sepPos + sep.length();
-    return cur.left( sepPos ).trimmed();
+    return txt.midRef( start, i - start ).trimmed().toString();
   }
 }
 
