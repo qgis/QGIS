@@ -266,24 +266,8 @@ void Problem::init_sol_falp()
   }
 }
 
-
-struct ChainContext
-{
-  LabelPosition *lp = nullptr;
-  std::vector< int > *tmpsol = nullptr;
-  int *featWrap = nullptr;
-  int *feat = nullptr;
-  int borderSize;
-  QLinkedList<ElemTrans *> *currentChain;
-  QLinkedList<int> *conflicts;
-  double *delta_tmp = nullptr;
-  std::vector< double > *inactiveCost = nullptr;
-
-} ;
-
 inline Chain *Problem::chain( int seed )
 {
-
   int i;
   int j;
 
@@ -308,16 +292,6 @@ inline Chain *Problem::chain( int seed )
   std::vector< int > tmpsol( mSol.activeLabelIds );
 
   LabelPosition *lp = nullptr;
-
-  ChainContext context;
-  context.featWrap = nullptr;
-  context.borderSize = 0;
-  context.tmpsol = &tmpsol;
-  context.inactiveCost = &mInactiveCost;
-  context.feat = nullptr;
-  context.currentChain = &currentChain;
-  context.conflicts = &conflicts;
-  context.delta_tmp = &delta_tmp;
 
   double amin[2];
   double amax[2];
@@ -353,36 +327,16 @@ inline Chain *Problem::chain( int seed )
 
             // evaluate conflicts graph in solution after moving seed's label
 
-            context.lp = lp;
-
             lp->getBoundingBox( amin, amax );
-            mActiveCandidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&context]( const LabelPosition * lp ) -> bool
+            mActiveCandidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [lp, &delta_tmp, &conflicts, &currentChain, this]( const LabelPosition * lp2 ) -> bool
             {
-              if ( lp->isInConflict( context.lp ) )
+              if ( lp2->isInConflict( lp ) )
               {
-                int feat, rfeat;
-                bool sub = nullptr != context.featWrap;
-
-                feat = lp->getProblemFeatureId();
-                if ( sub )
-                {
-                  rfeat = feat;
-                  feat = context.featWrap[feat];
-                }
-                else
-                  rfeat = feat;
-
-                if ( feat >= 0 && ( *context.tmpsol )[feat] == lp->getId() )
-                {
-                  if ( sub && feat < context.borderSize )
-                  {
-                    throw - 2;
-                  }
-                }
+                const int feat = lp2->getProblemFeatureId();
 
                 // is there any cycles ?
                 QLinkedList< ElemTrans * >::iterator cur;
-                for ( cur = context.currentChain->begin(); cur != context.currentChain->end(); ++cur )
+                for ( cur = currentChain.begin(); cur != currentChain.end(); ++cur )
                 {
                   if ( ( *cur )->feat == feat )
                   {
@@ -390,10 +344,10 @@ inline Chain *Problem::chain( int seed )
                   }
                 }
 
-                if ( !context.conflicts->contains( feat ) )
+                if ( !conflicts.contains( feat ) )
                 {
-                  context.conflicts->append( feat );
-                  *context.delta_tmp += lp->cost() + ( * context.inactiveCost )[rfeat];
+                  conflicts.append( feat );
+                  delta_tmp += lp2->cost() + mInactiveCost[feat];
                 }
               }
               return true;
