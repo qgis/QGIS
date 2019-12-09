@@ -73,7 +73,7 @@ void TestQgsGenericSpatialIndex::testIndex()
 
   QVERIFY( found.isEmpty() );
 
-  // remove non-existant feature
+  // remove feature not in index
   QgsLabelPosition p1;
   QVERIFY( ! index.remove( &p1, QgsRectangle() ) );
 
