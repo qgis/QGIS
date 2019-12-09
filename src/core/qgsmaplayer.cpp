@@ -267,12 +267,6 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
 
   QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Layer" ), mne.text() );
 
-  // overwrite CRS with what we read from project file before the raster/vector
-  // file reading functions changed it. They will if projections is specified in the file.
-  // FIXME: is this necessary?
-  QgsCoordinateReferenceSystem::setCustomCrsValidation( savedValidation );
-  mCRS = savedCRS;
-
   // the internal name is just the data source basename
   //QFileInfo dataSourceFileInfo( mDataSource );
   //internalName = dataSourceFileInfo.baseName();
@@ -302,6 +296,12 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
 
   // now let the children grab what they need from the Dom node.
   layerError = !readXml( layerElement, context );
+
+  // overwrite CRS with what we read from project file before the raster/vector
+  // file reading functions changed it. They will if projections is specified in the file.
+  // FIXME: is this necessary? Yes, it is (autumn 2019)
+  QgsCoordinateReferenceSystem::setCustomCrsValidation( savedValidation );
+  mCRS = savedCRS;
 
   //short name
   QDomElement shortNameElem = layerElement.firstChildElement( QStringLiteral( "shortname" ) );
