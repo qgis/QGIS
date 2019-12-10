@@ -4120,7 +4120,7 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
         // rule has a renderer symbolizer, not a text symbolizer
         else if ( ruleChildElem.localName() == QLatin1String( "TextSymbolizer" ) )
         {
-          QgsDebugMsg( QStringLiteral( "TextSymbolizer element found" ) );
+          QgsDebugMsgLevel( QStringLiteral( "Info: TextSymbolizer element found" ), 4 );
           hasTextSymbolizer = true;
         }
 
@@ -4136,7 +4136,7 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
 
         if ( hasRuleBased )
         {
-          QgsDebugMsg( QStringLiteral( "Filter or Min/MaxScaleDenominator element found: need a RuleBasedLabeling" ) );
+          QgsDebugMsgLevel( QStringLiteral( "Info: Filter or Min/MaxScaleDenominator element found: need a RuleBasedLabeling" ), 4 );
           needRuleBasedLabeling = true;
         }
       }
@@ -4144,7 +4144,7 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
       // more rules present, use the RuleRenderer
       if ( ruleCount > 1 )
       {
-        QgsDebugMsg( QStringLiteral( "more Rule elements found: need a RuleBasedLabeling" ) );
+        QgsDebugMsgLevel( QStringLiteral( "Info: More Rule elements found: need a RuleBasedLabeling" ), 4 );
         needRuleBasedLabeling = true;
       }
 
@@ -4169,7 +4169,7 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
 
   if ( needRuleBasedLabeling )
   {
-    QgsDebugMsg( QStringLiteral( "Info: rule based labeling" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Info: rule based labeling" ), 4 );
     QgsRuleBasedLabeling::Rule *rootRule = new QgsRuleBasedLabeling::Rule( nullptr );
     while ( !ruleElem.isNull() )
     {
@@ -4221,7 +4221,7 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
           {
             if ( filter->hasParserError() )
             {
-              QgsDebugMsg( "parser error: " + filter->parserErrorString() );
+              QgsDebugMsgLevel( QStringLiteral( "SLD Filter parsing error: %1" ).arg( filter->parserErrorString() ), 3 );
             }
             else
             {
@@ -4263,7 +4263,7 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Info: simple labeling" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Info: simple labeling" ), 4 );
     // retrieve the TextSymbolizer element child node
     QDomElement textSymbolizerElem = ruleElem.firstChildElement( QStringLiteral( "TextSymbolizer" ) );
     QgsPalLayerSettings s;
@@ -4279,7 +4279,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
 {
   if ( node.localName() != QLatin1String( "TextSymbolizer" ) )
   {
-    QgsDebugMsg( QStringLiteral( "Not a TextSymbolizer element: %1" ).arg( node.localName() ) );
+    QgsDebugMsgLevel( QStringLiteral( "Not a TextSymbolizer element: %1" ).arg( node.localName() ), 3 );
     return false;
   }
   QDomElement textSymbolizerElem = node.toElement();
@@ -4309,21 +4309,18 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
         else
         {
           QgsDebugMsgLevel( QStringLiteral( "SLD label attribute error: %1" ).arg( exp.evalErrorString() ), 3 );
-          QgsDebugMsg( QStringLiteral( "SLD label attribute error: %1" ).arg( exp.evalErrorString() ) );
         }
       }
     }
     else
     {
       QgsDebugMsgLevel( QStringLiteral( "Info: PropertyName element not found." ), 4 );
-      QgsDebugMsg( QStringLiteral( "Info: PropertyName element not found." ) );
       return false;
     }
   }
   else
   {
     QgsDebugMsgLevel( QStringLiteral( "Info: Label element not found." ), 4 );
-    QgsDebugMsg( QStringLiteral( "Info: Label element not found." ) );
     return false;
   }
 
@@ -4340,7 +4337,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
     QgsStringMap fontSvgParams = QgsSymbolLayerUtils::getSvgParameterList( fontElem );
     for ( QgsStringMap::iterator it = fontSvgParams.begin(); it != fontSvgParams.end(); ++it )
     {
-      QgsDebugMsg( QStringLiteral( "found fontSvgParams %1: %2" ).arg( it.key(), it.value() ) );
+      QgsDebugMsgLevel( QStringLiteral( "found fontSvgParams %1: %2" ).arg( it.key(), it.value() ), 4 );
 
       if ( it.key() == QLatin1String( "font-family" ) )
       {
@@ -4382,7 +4379,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
   QgsSymbolLayerUtils::fillFromSld( fillElem, textBrush, textColor );
   if ( textColor.isValid() )
   {
-    QgsDebugMsg( QStringLiteral( "Info: textColor %1." ).arg( QVariant( textColor ).toString() ) );
+    QgsDebugMsgLevel( QStringLiteral( "Info: textColor %1." ).arg( QVariant( textColor ).toString() ), 4 );
     format.setColor( textColor );
   }
 
@@ -4412,7 +4409,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
     QgsSymbolLayerUtils::fillFromSld( haloFillElem, bufferBrush, bufferColor );
     if ( bufferColor.isValid() )
     {
-      QgsDebugMsg( QStringLiteral( "Info: bufferColor %1." ).arg( QVariant( bufferColor ).toString() ) );
+      QgsDebugMsgLevel( QStringLiteral( "Info: bufferColor %1." ).arg( QVariant( bufferColor ).toString() ), 4 );
       bufferSettings.setColor( bufferColor );
     }
   }
