@@ -86,7 +86,7 @@ QVariantMap QgsNearestNeighbourAnalysisAlgorithm::processAlgorithm( const QVaria
 
   QString outputFile = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT_HTML_FILE" ), context );
 
-  QgsSpatialIndex spatialIndex( *source, feedback );
+  QgsSpatialIndex spatialIndex( *source, feedback, QgsSpatialIndex::FlagStoreFeatureGeometries );
   QgsDistanceArea da;
   da.setSourceCrs( source->sourceCrs(), context.transformContext() );
   da.setEllipsoid( context.project()->ellipsoid() );
@@ -109,9 +109,7 @@ QVariantMap QgsNearestNeighbourAnalysisAlgorithm::processAlgorithm( const QVaria
     }
 
     QgsFeatureId neighbourId = spatialIndex.nearestNeighbor( f.geometry().asPoint(), 2 ).at( 1 );
-    request.setFilterFid( neighbourId ).setSubsetOfAttributes( QList< int >() );
-    source->getFeatures( request ).nextFeature( neighbour );
-    sumDist += da.measureLine( neighbour.geometry().asPoint(), f.geometry().asPoint() );
+    sumDist += da.measureLine( spatialIndex.geometry( neighbourId ).asPoint(), f.geometry().asPoint() );
 
     i++;
     feedback->setProgress( i * step );
