@@ -705,6 +705,14 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
     txtLegendFormat->setText( method->labelFormat() );
     spinPrecision->setValue( method->labelPrecision() );
     cbxTrimTrailingZeroes->setChecked( method->labelTrimTrailingZeroes() );
+
+    QgsProcessingContext context;
+    for ( const auto &ppww : qgis::as_const( mParameterWidgetWrappers ) )
+    {
+      const QgsProcessingParameterDefinition *def = ppww->parameterDefinition();
+      QVariant value = method->parameterValues().value( def->name(), def->defaultValue() );
+      ppww->setParameterValue( value, context );
+    }
   }
 
   // Only update class count if different - otherwise typing value gets very messy
@@ -827,13 +835,16 @@ void QgsGraduatedSymbolRendererWidget::updateMethodParameters()
   QgsClassificationMethod *method = QgsApplication::classificationMethodRegistry()->method( methodId );
   Q_ASSERT( method );
 
-  // todo need more?
+  // need more context?
   QgsProcessingContext context;
 
   for ( const QgsProcessingParameterDefinition *def : method->parameterDefinitions() )
   {
     QgsAbstractProcessingParameterWidgetWrapper *ppww = QgsGui::processingGuiRegistry()->createParameterWidgetWrapper( def, QgsProcessingGui::Standard );
     mParametersLayout->addRow( ppww->createWrappedLabel(), ppww->createWrappedWidget( context ) );
+
+    QVariant value = method->parameterValues().value( def->name(), def->defaultValue() );
+    ppww->setParameterValue( value, context );
 
     connect( ppww, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
 

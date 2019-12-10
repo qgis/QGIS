@@ -28,6 +28,18 @@
 class CORE_EXPORT QgsClassificationLogarithmic : public QgsClassificationMethod
 {
   public:
+
+    /**
+       * Handling of negative and 0 values in the method
+       * \since QGIS 3.12
+       */
+    enum NegativeValueHandling
+    {
+      NoHandling = 0, //!< No handling
+      Discard,        //!< Negative values are discarded - this will require all values
+      PrependBreak    //!< Prepend an extra break to include negative values - this will require all values
+    };
+
     QgsClassificationLogarithmic();
     QgsClassificationMethod *clone() const override;
     QString name() const override;

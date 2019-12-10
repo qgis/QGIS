@@ -24,7 +24,7 @@
 QgsClassificationLogarithmic::QgsClassificationLogarithmic()
   : QgsClassificationMethod( NoFlag, 0 )
 {
-  QgsProcessingParameterBoolean *param = new QgsProcessingParameterBoolean( QStringLiteral( "FILTER_ZERO_NEG_VALUES" ), QObject::tr( "Filter values ≤ 0" ), false );
+  QgsProcessingParameterEnum *param = new QgsProcessingParameterEnum( QStringLiteral( "ZERO_NEG_VALUES_HANDLE" ), QObject::tr( "Handling of 0 or negative values" ), QStringList() << QObject::tr( "no handling (faster)" ) << QObject::tr( "discard (slower)" ) << QObject::tr( "prepend range (slower)" ), false, 0 );
   addParameter( param );
 }
 
@@ -53,32 +53,52 @@ QIcon QgsClassificationLogarithmic::icon() const
 
 QList<double> QgsClassificationLogarithmic::calculateBreaks( double &minimum, double &maximum, const QList<double> &values, int nclasses )
 {
-  // not possible if only negative values
-  if ( maximum <= 0 )
-    return QList<double>();
-
   QgsProcessingContext context;
-  bool filterZeroNeg = QgsProcessingParameters::parameterAsBool( parameterDefinition( QStringLiteral( "FILTER_ZERO_NEG_VALUES" ) ), parameterValues(), context );
+  const QgsProcessingParameterDefinition *def = parameterDefinition( QStringLiteral( "ZERO_NEG_VALUES_HANDLE" ) );
+  NegativeValueHandling nvh = static_cast< NegativeValueHandling >( QgsProcessingParameters::parameterAsEnum( def, parameterValues(), context ) );
 
-  if ( filterZeroNeg && minimum <= 0 )
+  double positiveMinimum = std::numeric_limits<double>::max();
+  if ( nvh != NegativeValueHandling::NoHandling && minimum <= 0 )
   {
     Q_ASSERT( values.count() );
-    minimum = std::numeric_limits<double>::max();
-    for ( int i = 0; i < values.count(); i++ )
+    if ( maximum > 0 )
     {
-      if ( values.at( i ) > 0 )
-        minimum = std::min( minimum, values.at( i ) );
+      for ( int i = 0; i < values.count(); i++ )
+      {
+        if ( values.at( i ) > 0 )
+          positiveMinimum = std::min( positiveMinimum, values.at( i ) );
+      }
     }
-    if ( minimum == std::numeric_limits<double>::max() )
-      return QList<double>();
+    if ( positiveMinimum == std::numeric_limits<double>::max() )
+    {
+      // there is no usable values
+      if ( nvh == NegativeValueHandling::PrependBreak )
+        return QList<double>( {0} );
+      else
+        return QList<double>();
+    }
+  }
+
+  QList<double> breaks;
+
+  if ( positiveMinimum != std::numeric_limits<double>::max() )
+  {
+    if ( nvh == NegativeValueHandling::PrependBreak )
+      breaks << std::floor( std::log10( positiveMinimum ) );
+    else if ( nvh == NegativeValueHandling::Discard )
+      minimum = positiveMinimum; // the minimum gets updated
+  }
+  else
+  {
+    positiveMinimum = minimum;
   }
 
   // get the min/max in log10 scale
-  double log_min = std::floor( std::log10( minimum ) );
-  double log_max = std::ceil( std::log10( maximum ) );
+  double logMin = std::floor( std::log10( positiveMinimum ) );
+  double logMax = std::ceil( std::log10( maximum ) );
 
   // calculate pretty breaks
-  QList<double> breaks = QgsSymbolLayerUtils::prettyBreaks( log_min, log_max, nclasses );
+  breaks.append( QgsSymbolLayerUtils::prettyBreaks( logMin, logMax, nclasses ) );
 
   // create the value
   for ( int i = 0; i < breaks.count(); i++ )
@@ -89,8 +109,10 @@ QList<double> QgsClassificationLogarithmic::calculateBreaks( double &minimum, do
 
 QString QgsClassificationLogarithmic::valueToLabel( double value ) const
 {
-  QString label = QString( QStringLiteral( "10^%1" ) ).arg( std::log10( value ) );
-  return label;
+  if ( value <= 0 )
+    return QString( QStringLiteral( "%1" ) ).arg( value );
+  else
+    return QString( QStringLiteral( "10^%1" ) ).arg( std::log10( value ) );
 }
 
 QString QgsClassificationLogarithmic::labelForRange( double lowerValue, double upperValue, QgsClassificationMethod::ClassPosition position ) const
@@ -115,5 +137,8 @@ QString QgsClassificationLogarithmic::labelForRange( double lowerValue, double u
 bool QgsClassificationLogarithmic::valuesRequired() const
 {
   QgsProcessingContext context;
-  return QgsProcessingParameters::parameterAsBool( parameterDefinition( QStringLiteral( "FILTER_ZERO_NEG_VALUES" ) ), parameterValues(), context );
+  const QgsProcessingParameterDefinition *def = parameterDefinition( QStringLiteral( "ZERO_NEG_VALUES_HANDLE" ) );
+  NegativeValueHandling nvh = static_cast< NegativeValueHandling >( QgsProcessingParameters::parameterAsEnum( def, parameterValues(), context ) );
+
+  return nvh != NegativeValueHandling::NoHandling;
 }

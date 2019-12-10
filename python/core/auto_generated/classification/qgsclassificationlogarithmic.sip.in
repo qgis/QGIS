@@ -21,6 +21,14 @@ Implementation of a logarithmic scale method
 #include "qgsclassificationlogarithmic.h"
 %End
   public:
+
+    enum NegativeValueHandling
+    {
+      NoHandling,
+      Discard,
+      PrependBreak
+    };
+
     QgsClassificationLogarithmic();
     virtual QgsClassificationMethod *clone() const;
 

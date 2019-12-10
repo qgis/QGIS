@@ -289,7 +289,12 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
      */
     void setParameterValues( const QVariantMap &values );
 
-
+    /**
+     * Returns the values of the processing parameters.
+     * One could use QgsProcessingParameters::parameterAsXxxx to retrieve the actual value of a parameter.
+     * \since QGIS 3.12
+     */
+    QVariantMap parameterValues() const {return mParameterValues;}
 
     static const int MAX_PRECISION;
     static const int MIN_PRECISION;
@@ -310,12 +315,6 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
      * \since QGIS 3.12
      */
     void addParameter( QgsProcessingParameterDefinition *definition SIP_TRANSFER );
-
-    /**
-     * Returns the values of the processing parameters.
-     * One could use QgsProcessingParameters::parameterAsXxxx to retrieve the actual value of a parameter.
-     */
-    QVariantMap parameterValues() const {return mParameterValues;}
 
   private:
 
