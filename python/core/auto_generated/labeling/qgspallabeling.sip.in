@@ -462,17 +462,20 @@ Returns the QgsExpression for this label settings. May be ``None`` if isExpressi
 
     bool mergeLines;
 
-    bool limitNumLabels;
 
-    int maxNumLabels;
-
-    double minFeatureSize;
-
-
+%Property( name = limitNumLabels, get = _limitNumLabels, set = _setLimitNumLabels )
+%Property( name = maxNumLabels, get = _maxNumLabels, set = _setMaxNumLabels )
+%Property( name = minFeatureSize, get = _minFeatureSize, set = _setMinFeatureSize )
 %Property( name = obstacle, get = _getIsObstacle, set = _setIsObstacle )
 %Property( name = obstacleFactor, get = _getObstacleFactor, set = _setObstacleFactor )
 %Property( name = obstacleType, get = _getObstacleType, set = _setObstacleType )
 
+    bool _limitNumLabels() const;
+    void _setLimitNumLabels( bool limit );
+    int _maxNumLabels() const;
+    void _setMaxNumLabels( int max );
+    double _minFeatureSize() const;
+    void _setMinFeatureSize( double size );
     bool _getIsObstacle() const;
     void _setIsObstacle( bool obstacle );
     double _getObstacleFactor() const;
@@ -608,6 +611,25 @@ Sets the label obstacle ``settings``.
 .. seealso:: :py:func:`obstacleSettings`
 
 .. versionadded:: 3.10.2
+%End
+
+
+    QgsLabelThinningSettings &thinningSettings();
+%Docstring
+Returns the label thinning settings.
+
+.. seealso:: :py:func:`setThinningSettings`
+
+.. versionadded:: 3.12
+%End
+
+    void setThinningSettings( const QgsLabelThinningSettings &settings );
+%Docstring
+Sets the label thinning ``settings``.
+
+.. seealso:: :py:func:`thinningSettings`
+
+.. versionadded:: 3.12
 %End
 
     static QPixmap labelSettingsPreviewPixmap( const QgsPalLayerSettings &settings, QSize size, const QString &previewText = QString(), int padding = 0 );

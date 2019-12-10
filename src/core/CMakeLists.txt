@@ -538,6 +538,7 @@ SET(QGIS_CORE_SRCS
   labeling/qgslabelingenginesettings.cpp
   labeling/qgslabelobstaclesettings.cpp
   labeling/qgslabelsearchtree.cpp
+  labeling/qgslabelthinningsettings.cpp
   labeling/qgspallabeling.cpp
   labeling/qgsrulebasedlabeling.cpp
   labeling/qgstextlabelfeature.cpp
@@ -1021,6 +1022,7 @@ SET(QGIS_CORE_HDRS
   labeling/qgslabelingenginesettings.h
   labeling/qgslabelobstaclesettings.h
   labeling/qgslabelsearchtree.h
+  labeling/qgslabelthinningsettings.h
   labeling/qgspallabeling.h
   labeling/qgsrulebasedlabeling.h
   labeling/qgstextlabelfeature.h

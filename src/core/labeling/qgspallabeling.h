@@ -43,6 +43,7 @@
 #include "qgstextrenderer.h"
 #include "qgspropertycollection.h"
 #include "qgslabelobstaclesettings.h"
+#include "qgslabelthinningsettings.h"
 
 namespace pal SIP_SKIP
 {
@@ -867,33 +868,24 @@ class CORE_EXPORT QgsPalLayerSettings
      */
     bool mergeLines = false;
 
-    /**
-     * TRUE if the number of labels drawn should be limited.
-     * \see maxNumLabels
-     */
-    bool limitNumLabels = false;
-
-    /**
-     * The maximum number of labels which should be drawn for this layer.
-     * This only has an effect if limitNumLabels is TRUE.
-     * \see limitNumLabels
-     */
-    int maxNumLabels = 2000;
-
-    /**
-     * Minimum feature size (in millimeters) for a feature to be labelled.
-     */
-    double minFeatureSize = 0;
-
     // TODO QGIS 4.0 - remove this junk
 
 #ifdef SIP_RUN
+    SIP_PROPERTY( name = limitNumLabels, get = _limitNumLabels, set = _setLimitNumLabels )
+    SIP_PROPERTY( name = maxNumLabels, get = _maxNumLabels, set = _setMaxNumLabels )
+    SIP_PROPERTY( name = minFeatureSize, get = _minFeatureSize, set = _setMinFeatureSize )
     SIP_PROPERTY( name = obstacle, get = _getIsObstacle, set = _setIsObstacle )
     SIP_PROPERTY( name = obstacleFactor, get = _getObstacleFactor, set = _setObstacleFactor )
     SIP_PROPERTY( name = obstacleType, get = _getObstacleType, set = _setObstacleType )
 #endif
 
     ///@cond PRIVATE
+    bool _limitNumLabels() const { return mThinningSettings.limitNumberOfLabelsEnabled(); }
+    void _setLimitNumLabels( bool limit ) { mThinningSettings.setLimitNumberLabelsEnabled( limit ); }
+    int _maxNumLabels() const { return mThinningSettings.maximumNumberLabels(); }
+    void _setMaxNumLabels( int max ) { mThinningSettings.setMaximumNumberLabels( max ); }
+    double _minFeatureSize() const { return mThinningSettings.minimumFeatureSize(); }
+    void _setMinFeatureSize( double size ) { mThinningSettings.setMinimumFeatureSize( size ); }
     bool _getIsObstacle() const { return mObstacleSettings.isObstacle(); }
     void _setIsObstacle( bool obstacle ) { mObstacleSettings.setIsObstacle( obstacle ); }
     double _getObstacleFactor() const { return mObstacleSettings.factor(); }
@@ -1042,6 +1034,28 @@ class CORE_EXPORT QgsPalLayerSettings
     void setObstacleSettings( const QgsLabelObstacleSettings &settings ) { mObstacleSettings = settings; }
 
     /**
+     * Returns the label thinning settings.
+     * \see setThinningSettings()
+     * \note Not available in Python bindings
+     * \since QGIS 3.12
+     */
+    const QgsLabelThinningSettings &thinningSettings() const { return mThinningSettings; } SIP_SKIP
+
+    /**
+     * Returns the label thinning settings.
+     * \see setThinningSettings()
+     * \since QGIS 3.12
+     */
+    QgsLabelThinningSettings &thinningSettings() { return mThinningSettings; }
+
+    /**
+     * Sets the label thinning \a settings.
+     * \see thinningSettings()
+     * \since QGIS 3.12
+     */
+    void setThinningSettings( const QgsLabelThinningSettings &settings ) { mThinningSettings = settings; }
+
+    /**
     * Returns a pixmap preview for label \a settings.
     * \param settings label settings
     * \param size target pixmap size
@@ -1145,6 +1159,7 @@ class CORE_EXPORT QgsPalLayerSettings
     std::unique_ptr< QgsCallout > mCallout;
 
     QgsLabelObstacleSettings mObstacleSettings;
+    QgsLabelThinningSettings mThinningSettings;
 
     QgsExpression mGeometryGeneratorExpression;
 
