@@ -127,6 +127,12 @@ bool QgsSumLineLengthAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
   if ( mLinesSource->hasSpatialIndex() == QgsFeatureSource::SpatialIndexNotPresent )
     feedback->reportError( QObject::tr( "No spatial index exists for lines layer, performance will be severely degraded" ) );
 
+  if ( context.project() )
+  {
+    mDa.setEllipsoid( context.project()->ellipsoid() );
+  }
+  mDa.setSourceCrs( mCrs, context.transformContext() );
+
   return true;
 }
 
@@ -170,10 +176,6 @@ QgsFeatureList QgsSumLineLengthAlgorithm::processFeature( const QgsFeature &feat
     std::unique_ptr< QgsGeometryEngine > engine( QgsGeometry::createGeometryEngine( polyGeom.constGet() ) );
     engine->prepareGeometry();
 
-    QgsDistanceArea da;
-    da.setSourceCrs( mCrs, context.transformContext() );
-    da.setEllipsoid( context.project()->ellipsoid() );
-
     QgsFeatureRequest req = QgsFeatureRequest().setFilterRect( polyGeom.boundingBox() ).setDestinationCrs( mCrs, context.transformContext() );
     req.setSubsetOfAttributes( QList< int >() );
     QgsFeatureIterator it = mLinesSource->getFeatures( req );
@@ -190,7 +192,7 @@ QgsFeatureList QgsSumLineLengthAlgorithm::processFeature( const QgsFeature &feat
       if ( engine->intersects( lineFeature.geometry().constGet() ) )
       {
         QgsGeometry outGeom = polyGeom.intersection( lineFeature.geometry() );
-        length += da.measureLength( outGeom );
+        length += mDa.measureLength( outGeom );
         count++;
       }
     }

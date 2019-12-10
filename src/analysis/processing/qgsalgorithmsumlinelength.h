@@ -65,6 +65,7 @@ class QgsSumLineLengthAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     mutable int mCountFieldIndex = -1;
     mutable QgsFields mFields;
     mutable QgsCoordinateReferenceSystem mCrs;
+    mutable QgsDistanceArea mDa;
     std::unique_ptr< QgsProcessingFeatureSource > mLinesSource;
 };
 
