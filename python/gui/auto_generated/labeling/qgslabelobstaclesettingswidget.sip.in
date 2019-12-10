@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgslabelobstaclesettingswidget.h                             *
+ * src/gui/labeling/qgslabelobstaclesettingswidget.h                    *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -54,7 +54,7 @@ Returns the obstacle settings defined by the widget.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgslabelobstaclesettingswidget.h                             *
+ * src/gui/labeling/qgslabelobstaclesettingswidget.h                    *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

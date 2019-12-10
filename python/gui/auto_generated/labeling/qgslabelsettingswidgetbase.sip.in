@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgslabelsettingswidgetbase.h                                 *
+ * src/gui/labeling/qgslabelsettingswidgetbase.h                        *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -130,7 +130,7 @@ Constructor for QgsLabelSettingsWidgetDialog.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgslabelsettingswidgetbase.h                                 *
+ * src/gui/labeling/qgslabelsettingswidgetbase.h                        *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
