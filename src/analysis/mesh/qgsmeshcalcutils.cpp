@@ -24,6 +24,7 @@
 #include "qgstriangularmesh.h"
 #include "qgsmapsettings.h"
 #include "qgsmeshlayerutils.h"
+#include "qgsmeshlayerrenderer.h"
 
 const double D_TRUE = 1.0;
 const double D_FALSE = 0.0;
@@ -696,6 +697,9 @@ void QgsMeshCalcUtils::updateMesh() const
 {
   if ( ! mMeshLayer->nativeMesh() )
   {
+    // THIS code is very confusing -- someone please add some explanation as to why a map renderer is created here! (Or better,
+    // add explicit members to do whatever it is that's actually wanted here, instead of creating the map renderer)
+
     // we do not care about triangles,
     // we just want transformed coordinates
     // of the native mesh. So create
@@ -705,7 +709,8 @@ void QgsMeshCalcUtils::updateMesh() const
     mapSettings.setDestinationCrs( mMeshLayer->crs() );
     mapSettings.setOutputDpi( 96 );
     QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
-    mMeshLayer->createMapRenderer( context );
+
+    delete mMeshLayer->createMapRenderer( context );
   }
 }
 
