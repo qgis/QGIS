@@ -144,7 +144,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
     QMutexLocker locker( &layer->mMutex );
 
     // generate candidates for all features
-    for ( FeaturePart* featurePart : qgis::as_const( layer->mFeatureParts ) )
+    for ( FeaturePart *featurePart : qgis::as_const( layer->mFeatureParts ) )
     {
       if ( isCanceled() )
         break;
@@ -152,7 +152,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       // Holes of the feature are obstacles
       for ( int i = 0; i < featurePart->getNumSelfObstacles(); i++ )
       {
-        FeaturePart* selfObstacle=  featurePart->getSelfObstacle( i );
+        FeaturePart *selfObstacle =  featurePart->getSelfObstacle( i );
         obstacles->insert( selfObstacle, selfObstacle->boundingBox() );
         allObstacleParts.emplace_back( selfObstacle );
 
@@ -209,7 +209,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       return nullptr;
 
     // collate all layer obstacles
-    for ( FeaturePart* obstaclePart : qgis::as_const( layer->mObstacleParts ) )
+    for ( FeaturePart *obstaclePart : qgis::as_const( layer->mObstacleParts ) )
     {
       if ( isCanceled() )
         break; // do not continue searching
@@ -249,7 +249,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
   if ( !features.empty() )
   {
     // Filtering label positions against obstacles
-    for ( FeaturePart* obstaclePart : allObstacleParts )
+    for ( FeaturePart *obstaclePart : allObstacleParts )
     {
       if ( isCanceled() )
         break; // do not continue searching
