@@ -142,7 +142,7 @@ QgsError QgsUserProfileManager::createUserProfile( const QString &name )
   QDir folder( mRootProfilePath + QDir::separator() + name );
   if ( !folder.exists() )
   {
-    QDir().mkdir( folder.absolutePath() );
+    QDir().mkpath( folder.absolutePath() );
   }
 
   QFile qgisPrivateDbFile( folder.absolutePath() + QDir::separator() + "qgis.db" );
