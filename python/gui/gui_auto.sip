@@ -96,8 +96,6 @@
 %Include auto_generated/qgshistogramwidget.sip
 %Include auto_generated/qgsidentifymenu.sip
 %Include auto_generated/qgskeyvaluewidget.sip
-%Include auto_generated/qgslabelobstaclesettingswidget.sip
-%Include auto_generated/qgslabelsettingswidgetbase.sip
 %Include auto_generated/qgslegendfilterbutton.sip
 %Include auto_generated/qgslimitedrandomcolorrampdialog.sip
 %Include auto_generated/qgslistwidget.sip
@@ -261,6 +259,8 @@
 %Include auto_generated/effects/qgseffectstackpropertieswidget.sip
 %Include auto_generated/effects/qgspainteffectpropertieswidget.sip
 %Include auto_generated/effects/qgspainteffectwidget.sip
+%Include auto_generated/labeling/qgslabelobstaclesettingswidget.sip
+%Include auto_generated/labeling/qgslabelsettingswidgetbase.sip
 %Include auto_generated/layertree/qgscustomlayerorderwidget.sip
 %Include auto_generated/layertree/qgslayertreeembeddedconfigwidget.sip
 %Include auto_generated/layertree/qgslayertreeembeddedwidgetregistry.sip

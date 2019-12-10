@@ -159,6 +159,10 @@ SET(QGIS_GUI_SRCS
   editorwidgets/qgsvaluerelationsearchwidgetwrapper.cpp
   editorwidgets/qgsvaluerelationwidgetfactory.cpp
 
+  labeling/qgslabelinggui.cpp
+  labeling/qgslabelobstaclesettingswidget.cpp
+  labeling/qgslabelsettingswidgetbase.cpp
+
   layertree/qgscustomlayerorderwidget.cpp
   layertree/qgslayertreeembeddedconfigwidget.cpp
   layertree/qgslayertreeembeddedwidgetregistry.cpp
@@ -314,9 +318,6 @@ SET(QGIS_GUI_SRCS
   qgshelp.cpp
   qgsidentifymenu.cpp
   qgskeyvaluewidget.cpp
-  qgslabelinggui.cpp
-  qgslabelobstaclesettingswidget.cpp
-  qgslabelsettingswidgetbase.cpp
   qgslistwidget.cpp
   qgslegendfilterbutton.cpp
   qgslimitedrandomcolorrampdialog.cpp
@@ -517,9 +518,6 @@ SET(QGIS_GUI_HDRS
   qgshistogramwidget.h
   qgsidentifymenu.h
   qgskeyvaluewidget.h
-  qgslabelinggui.h
-  qgslabelobstaclesettingswidget.h
-  qgslabelsettingswidgetbase.h
   qgslegendfilterbutton.h
   qgslimitedrandomcolorrampdialog.h
   qgslistwidget.h
@@ -741,6 +739,10 @@ SET(QGIS_GUI_HDRS
   effects/qgspainteffectpropertieswidget.h
   effects/qgspainteffectwidget.h
 
+  labeling/qgslabelinggui.h
+  labeling/qgslabelobstaclesettingswidget.h
+  labeling/qgslabelsettingswidgetbase.h
+
   layertree/qgscustomlayerorderwidget.h
   layertree/qgslayertreeembeddedconfigwidget.h
   layertree/qgslayertreeembeddedwidgetregistry.h
@@ -944,6 +946,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
   ${CMAKE_SOURCE_DIR}/src/gui/effects
+  ${CMAKE_SOURCE_DIR}/src/gui/labeling
   ${CMAKE_SOURCE_DIR}/src/gui/layertree
   ${CMAKE_SOURCE_DIR}/src/gui/layout
   ${CMAKE_SOURCE_DIR}/src/gui/ogr
