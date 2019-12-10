@@ -386,6 +386,7 @@ QgsMeshDatasetGroupMetadata QgsMeshMemoryDatasetGroup::groupMetadata() const
            type,
            minimum,
            maximum,
+           0,
            metadata
          );
 }
@@ -476,8 +477,7 @@ QgsMesh3dDataBlock QgsMeshMemoryDataProvider::dataset3dValues( QgsMeshDatasetInd
 QgsMeshDataBlock QgsMeshMemoryDataset::datasetValues( bool isScalar, int valueIndex, int count ) const
 {
   QgsMeshDataBlock ret( isScalar ? QgsMeshDataBlock::ScalarDouble : QgsMeshDataBlock::Vector2DDouble, count );
-  double *buf = static_cast<double *>( ret.buffer() );
-
+  QVector<double> buf( isScalar ? count : 2 * count );
   for ( int i = 0; i < count; ++i )
   {
     int idx = valueIndex + i;
@@ -493,6 +493,7 @@ QgsMeshDataBlock QgsMeshMemoryDataset::datasetValues( bool isScalar, int valueIn
       buf[2 * i + 1] = val.y();
     }
   }
+  ret.setValues( buf );
   return ret;
 }
 
@@ -531,12 +532,9 @@ QgsMeshDataBlock QgsMeshMemoryDataset::areFacesActive( int faceIndex, int count 
        ( faceIndex < 0 ) ||
        ( faceIndex + count > active.size() )
      )
-    memset( ret.buffer(), 1, static_cast<size_t>( count ) * sizeof( int ) );
+    ret.setValid( true );
   else
-    memcpy( ret.buffer(),
-            active.data() + faceIndex,
-            static_cast<size_t>( count ) * sizeof( int ) );
-
+    ret.setActive( active );
   return ret;
 }
 
