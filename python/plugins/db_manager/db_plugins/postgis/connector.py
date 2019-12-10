@@ -52,16 +52,23 @@ def classFactory():
 
 
 class CursorProxy():
-    def __init__(self, connection, sql):
+    def __init__(self, connection, sql=None):
         self.connection = connection
         self.sql = sql
         self.result = None
         self.closed = False
         self.description = None
-        self._execute()
+        print ("XXX CursorProxy initialized with sql " + sql)
+        if (self.sql != None):
+            self._execute()
 
-    def _execute(self):
-        if self.result != None:
+    def _execute(self, sql=None):
+        if self.sql == sql and self.result != None:
+            print ("XXX CursorProxy execute called with sql " + sql)
+            return
+        if (sql != None):
+            self.sql = sql
+        if (self.sql == None):
             return
         self.result = self.connection._executeSql(self.sql)
         self.description = []
@@ -79,7 +86,9 @@ class CursorProxy():
 
     def fetchone(self):
         self._execute()
-        return self.result[0]
+        if len(self.result):
+            return self.result[0]
+        return None
 
     def fetchall(self):
         self._execute()
@@ -768,19 +777,15 @@ class PostGisDBConnector(DBConnector):
         if new_table == tablename:
             return
 
-        c = self._get_cursor()
-
         sql = u"ALTER TABLE %s RENAME  TO %s" % (self.quoteId(table), self.quoteId(new_table))
-        self._execute(c, sql)
+        self._executeSql(sql)
 
         # update geometry_columns if PostGIS is enabled
         if self.has_geometry_columns and not self.is_geometry_columns_view:
             schema_where = u" AND f_table_schema=%s " % self.quoteString(schema) if schema is not None else ""
             sql = u"UPDATE geometry_columns SET f_table_name=%s WHERE f_table_name=%s %s" % (
                 self.quoteString(new_table), self.quoteString(tablename), schema_where)
-            self._execute(c, sql)
-
-        self._commit()
+            self._executeSql(sql)
 
     def commentTable(self, schema, tablename, comment=None):
         if comment is None:
@@ -1056,9 +1061,8 @@ class PostGisDBConnector(DBConnector):
     def _executeSql(self, sql):
         return self.core_connection.executeSql(sql)
 
-    # moved into the parent class: DbConnector._get_cursor()
-    # def _get_cursor(self, name=None):
-    #       pass
+    def _get_cursor(self, name=None):
+        return CursorProxy(self)
 
     def _commit(self):
         pass
