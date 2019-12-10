@@ -84,21 +84,19 @@ Layer *Pal::addLayer( QgsAbstractLabelProvider *provider, const QString &layerNa
 std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeometry &mapBoundary )
 {
   // to store obstacles
-  QgsGenericSpatialIndex< FeaturePart > obstacles;
+  std::unique_ptr< QgsGenericSpatialIndex< FeaturePart > > obstacles = qgis::make_unique< QgsGenericSpatialIndex< FeaturePart > >();
+  std::vector< FeaturePart * > allObstacleParts;
   std::unique_ptr< Problem > prob = qgis::make_unique< Problem >();
 
   double bbx[4];
   double bby[4];
 
-  double amin[2];
-  double amax[2];
-
   std::size_t max_p = 0;
 
-  bbx[0] = bbx[3] = amin[0] = prob->mMapExtentBounds[0] = extent.xMinimum();
-  bby[0] = bby[1] = amin[1] = prob->mMapExtentBounds[1] = extent.yMinimum();
-  bbx[1] = bbx[2] = amax[0] = prob->mMapExtentBounds[2] = extent.xMaximum();
-  bby[2] = bby[3] = amax[1] = prob->mMapExtentBounds[3] = extent.yMaximum();
+  bbx[0] = bbx[3] = prob->mMapExtentBounds[0] = extent.xMinimum();
+  bby[0] = bby[1] = prob->mMapExtentBounds[1] = extent.yMinimum();
+  bbx[1] = bbx[2] = prob->mMapExtentBounds[2] = extent.xMaximum();
+  bby[2] = bby[3] = prob->mMapExtentBounds[3] = extent.yMaximum();
 
   prob->pal = this;
 
@@ -145,16 +143,18 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
     QMutexLocker locker( &layer->mMutex );
 
-    // find features within bounding box and generate candidates list
-    layer->mFeatureIndex.intersects( QgsRectangle( amin[ 0], amin[1], amax[0], amax[1] ), [&features, &obstacles, &prob, &mapBoundaryPrepared, this]( FeaturePart * featurePart )->bool
+    // generate candidates for all features
+    for ( FeaturePart* featurePart : qgis::as_const( layer->mFeatureParts ) )
     {
       if ( isCanceled() )
-        return false;
+        break;
 
       // Holes of the feature are obstacles
       for ( int i = 0; i < featurePart->getNumSelfObstacles(); i++ )
       {
-        obstacles.insert( featurePart->getSelfObstacle( i ), featurePart->getSelfObstacle( i )->boundingBox() );
+        FeaturePart* selfObstacle=  featurePart->getSelfObstacle( i );
+        obstacles->insert( selfObstacle, selfObstacle->boundingBox() );
+        allObstacleParts.emplace_back( selfObstacle );
 
         if ( !featurePart->getSelfObstacle( i )->getHoleOf() )
         {
@@ -166,7 +166,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       std::vector< std::unique_ptr< LabelPosition > > candidates = featurePart->createCandidates( this );
 
       if ( isCanceled() )
-        return false;
+        break;
 
       // purge candidates that are outside the bbox
       candidates.erase( std::remove_if( candidates.begin(), candidates.end(), [&mapBoundaryPrepared, this]( std::unique_ptr< LabelPosition > &candidate )
@@ -178,7 +178,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       } ), candidates.end() );
 
       if ( isCanceled() )
-        return false;
+        break;
 
       if ( !candidates.empty() )
       {
@@ -204,23 +204,22 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
         if ( unplacedPosition )
           prob->positionsWithNoCandidates()->emplace_back( std::move( unplacedPosition ) );
       }
-
-      return true;
-    } );
+    }
     if ( isCanceled() )
       return nullptr;
 
-    // find obstacles within bounding box
-    layer->mObstacleIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&obstacles, &obstacleCount, this]( FeaturePart * featurePart )->bool
+    // collate all layer obstacles
+    for ( FeaturePart* obstaclePart : qgis::as_const( layer->mObstacleParts ) )
     {
       if ( isCanceled() )
-        return false; // do not continue searching
+        break; // do not continue searching
 
       // insert into obstacles
-      obstacles.insert( featurePart, featurePart->boundingBox() );
+      obstacles->insert( obstaclePart, obstaclePart->boundingBox() );
+      allObstacleParts.emplace_back( obstaclePart );
       obstacleCount++;
-      return true;
-    } );
+    }
+
     if ( isCanceled() )
       return nullptr;
 
@@ -250,12 +249,10 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
   if ( !features.empty() )
   {
     // Filtering label positions against obstacles
-    amin[0] = amin[1] = std::numeric_limits<double>::lowest();
-    amax[0] = amax[1] = std::numeric_limits<double>::max();
-    obstacles.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&prob, this]( FeaturePart * obstaclePart )->bool
+    for ( FeaturePart* obstaclePart : allObstacleParts )
     {
       if ( isCanceled() )
-        return false; // do not continue searching
+        break; // do not continue searching
 
       prob->allCandidatesIndex().intersects( obstaclePart->boundingBox(), [obstaclePart, this]( const LabelPosition * candidatePosition ) -> bool
       {
@@ -274,9 +271,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
         return true;
       } );
-
-      return true;
-    } );
+    }
 
     if ( isCanceled() )
     {
@@ -306,7 +301,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       }
 
       // sort candidates by cost, skip less interesting ones, calculate polygon costs (if using polygons)
-      max_p = CostCalculator::finalizeCandidatesCosts( feat.get(), max_p, &obstacles, bbx, bby );
+      max_p = CostCalculator::finalizeCandidatesCosts( feat.get(), max_p, obstacles.get(), bbx, bby );
 
       if ( isCanceled() )
         return nullptr;
@@ -415,6 +410,8 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
     prob->mAllNblp = prob->mTotalCandidates;
     prob->mNbOverlap = nbOverlaps;
   }
+
+  obstacles.reset();
 
   return prob;
 }

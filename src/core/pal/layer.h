@@ -350,13 +350,8 @@ namespace pal
 
       UpsideDownLabels mUpsidedownLabels;
 
-      // indexes (spatial and id)
-      QgsGenericSpatialIndex< FeaturePart > mFeatureIndex;
-
       //! Lookup table of label features (owned by the label feature provider that created them)
       QHash< QgsFeatureId, QgsLabelFeature *> mHashtable;
-
-      QgsGenericSpatialIndex< FeaturePart > mObstacleIndex;
 
       QHash< QString, QVector<FeaturePart *> > mConnectedHashtable;
       QHash< QgsFeatureId, int > mConnectedFeaturesIds;
