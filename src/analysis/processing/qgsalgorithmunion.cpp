@@ -14,9 +14,8 @@
  ***************************************************************************/
 
 #include "qgsalgorithmunion.h"
-
 #include "qgsoverlayutils.h"
-
+#include "uniontool.h"
 ///@cond PRIVATE
 
 
@@ -79,13 +78,11 @@ QVariantMap QgsUnionAlgorithm::processAlgorithm( const QVariantMap &parameters, 
   if ( parameters.value( QStringLiteral( "OVERLAY" ) ).isValid() && !sourceB )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "OVERLAY" ) ) );
 
-  QgsWkbTypes::Type geomType = QgsWkbTypes::multiType( sourceA->wkbType() );
-
   QString overlayFieldsPrefix = parameterAsString( parameters, QStringLiteral( "OVERLAY_FIELDS_PREFIX" ), context );
   QgsFields fields = sourceB ? QgsProcessingUtils::combineFields( sourceA->fields(), sourceB->fields(), overlayFieldsPrefix ) : sourceA->fields();
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, geomType, sourceA->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, sourceA->wkbType(), sourceA->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
@@ -99,17 +96,8 @@ QVariantMap QgsUnionAlgorithm::processAlgorithm( const QVariantMap &parameters, 
     return outputs;
   }
 
-  QList<int> fieldIndicesA = QgsProcessingUtils::fieldNamesToIndices( QStringList(), sourceA->fields() );
-  QList<int> fieldIndicesB = QgsProcessingUtils::fieldNamesToIndices( QStringList(), sourceB->fields() );
-
-  int count = 0;
-  int total = sourceA->featureCount() * 2 + sourceB->featureCount();
-
-  QgsOverlayUtils::intersection( *sourceA, *sourceB, *sink, context, feedback, count, total, fieldIndicesA, fieldIndicesB );
-
-  QgsOverlayUtils::difference( *sourceA, *sourceB, *sink, context, feedback, count, total, QgsOverlayUtils::OutputAB );
-
-  QgsOverlayUtils::difference( *sourceB, *sourceA, *sink, context, feedback, count, total, QgsOverlayUtils::OutputBA );
+  Vectoranalysis::UnionTool tool( sourceA.get(), sourceB.get(), sink.get(), sourceA->wkbType() );
+  QgsOverlayUtils::runVectorAnalysisTool( tool, feedback );
 
   return outputs;
 }
