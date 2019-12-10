@@ -183,6 +183,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
 
   private:
     void updateActionImage( QWidget *widget );
+    void zoomToCurrentFeature();
     QWidget *createActionWidget( QgsFeatureId fid );
 
     void selectRow( int row, bool anchor );

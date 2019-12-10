@@ -310,7 +310,7 @@ void QgsAttributeTableView::mouseDoubleClickEvent( QMouseEvent *event )
 
 void QgsAttributeTableView::zoomToCurrentFeature()
 {
-  QModelIndex currentIndex = currentIndex();
+  QModelIndex currentIndex = selectionModel()->currentIndex();
   if ( !currentIndex.isValid() )
   {
     return;
@@ -321,7 +321,7 @@ void QgsAttributeTableView::zoomToCurrentFeature()
   QgsMapCanvas *canvas = mFilterModel->mapCanvas();
   if ( canvas )
   {
-    canvas->zoomToFeatureIds( mLayer, ids );
+    canvas->zoomToFeatureIds( mFilterModel->layer(), ids );
   }
 }
 
