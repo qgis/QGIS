@@ -61,7 +61,7 @@ void QgsApplyLayerStyleAlgorithm::initAlgorithm( const QVariantMap & )
   addOutput( new QgsProcessingOutputMapLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Styled" ) ) );
 }
 
-bool QgsApplyLayerStyleAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+bool QgsApplyLayerStyleAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   mLayer.reset( parameterAsLayer( parameters, QStringLiteral( "INPUT" ), context ) );
   QString style = parameterAsFile( parameters, QStringLiteral( "STYLE" ), context );
@@ -82,6 +82,9 @@ bool QgsApplyLayerStyleAlgorithm::prepareAlgorithm( const QVariantMap &parameter
 
 QVariantMap QgsApplyLayerStyleAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  Q_UNUSED( parameters );
+  Q_UNUSED( context );
+
   QVariantMap results;
   results.insert( QStringLiteral( "OUTPUT" ), mLayer->id() );
   return results;
