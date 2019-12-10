@@ -1689,12 +1689,13 @@ bool QgsApplication::createDatabase( QString *errorMessage )
     }
 
     char *errmsg = nullptr;
-    int res = sqlite3_exec( database.get(), "SELECT epsg FROM tbl_srs LIMIT 0", nullptr, nullptr, &errmsg );
-    if ( res == SQLITE_OK )
+    int res = sqlite3_exec( database.get(), "SELECT srs_id FROM tbl_srs LIMIT 0", nullptr, nullptr, &errmsg );
+    if ( res != SQLITE_OK )
     {
-      // epsg column exists => need migration
+      sqlite3_free( errmsg );
+
+      // qgis.db is missing tbl_srs, create it
       if ( sqlite3_exec( database.get(),
-                         "ALTER TABLE tbl_srs RENAME TO tbl_srs_bak;"
                          "CREATE TABLE tbl_srs ("
                          "srs_id INTEGER PRIMARY KEY,"
                          "description text NOT NULL,"
@@ -1706,14 +1707,11 @@ bool QgsApplication::createDatabase( QString *errorMessage )
                          "auth_id varchar,"
                          "is_geo integer NOT NULL,"
                          "deprecated boolean);"
-                         "CREATE INDEX idx_srsauthid on tbl_srs(auth_name,auth_id);"
-                         "INSERT INTO tbl_srs(srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated) SELECT srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,'','',is_geo,0 FROM tbl_srs_bak;"
-                         "DROP TABLE tbl_srs_bak", nullptr, nullptr, &errmsg ) != SQLITE_OK
-         )
+                         "CREATE INDEX idx_srsauthid on tbl_srs(auth_name,auth_id);", nullptr, nullptr, &errmsg ) != SQLITE_OK )
       {
         if ( errorMessage )
         {
-          *errorMessage = tr( "Migration of private qgis.db failed.\n%1" ).arg( QString::fromUtf8( errmsg ) );
+          *errorMessage = tr( "Creation of missing tbl_srs in the private qgis.db failed.\n%1" ).arg( QString::fromUtf8( errmsg ) );
         }
         sqlite3_free( errmsg );
         return false;
@@ -1721,7 +1719,39 @@ bool QgsApplication::createDatabase( QString *errorMessage )
     }
     else
     {
-      sqlite3_free( errmsg );
+      int res = sqlite3_exec( database.get(), "SELECT epsg FROM tbl_srs LIMIT 0", nullptr, nullptr, &errmsg );
+      if ( res == SQLITE_OK )
+      {
+        // epsg column exists => need migration
+        if ( sqlite3_exec( database.get(),
+                           "ALTER TABLE tbl_srs RENAME TO tbl_srs_bak;"
+                           "CREATE TABLE tbl_srs ("
+                           "srs_id INTEGER PRIMARY KEY,"
+                           "description text NOT NULL,"
+                           "projection_acronym text NOT NULL,"
+                           "ellipsoid_acronym NOT NULL,"
+                           "parameters text NOT NULL,"
+                           "srid integer,"
+                           "auth_name varchar,"
+                           "auth_id varchar,"
+                           "is_geo integer NOT NULL,"
+                           "deprecated boolean);"
+                           "CREATE INDEX idx_srsauthid on tbl_srs(auth_name,auth_id);"
+                           "INSERT INTO tbl_srs(srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated) SELECT srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,'','',is_geo,0 FROM tbl_srs_bak;"
+                           "DROP TABLE tbl_srs_bak", nullptr, nullptr, &errmsg ) != SQLITE_OK )
+        {
+          if ( errorMessage )
+          {
+            *errorMessage = tr( "Migration of private qgis.db failed.\n%1" ).arg( QString::fromUtf8( errmsg ) );
+          }
+          sqlite3_free( errmsg );
+          return false;
+        }
+      }
+      else
+      {
+        sqlite3_free( errmsg );
+      }
     }
 
     if ( sqlite3_exec( database.get(), "DROP VIEW vw_srs", nullptr, nullptr, &errmsg ) != SQLITE_OK )
@@ -1742,8 +1772,7 @@ bool QgsApplication::createDatabase( QString *errorMessage )
                        ",a.deprecated AS deprecated"
                        " FROM tbl_srs a"
                        " LEFT OUTER JOIN tbl_projection b ON a.projection_acronym=b.acronym"
-                       " ORDER BY coalesce(b.name,a.projection_acronym),a.description", nullptr, nullptr, &errmsg ) != SQLITE_OK
-       )
+                       " ORDER BY coalesce(b.name,a.projection_acronym),a.description", nullptr, nullptr, &errmsg ) != SQLITE_OK )
     {
       if ( errorMessage )
       {
