@@ -49,11 +49,6 @@ QString QgsApplyLayerStyleAlgorithm::shortHelpString() const
   return QObject::tr( "Applies the style to a layer. The style must be defined as QML file." );
 }
 
-QgsProcessingAlgorithm::Flags QgsApplyLayerStyleAlgorithm::flags() const
-{
-  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagNoThreading;
-}
-
 QgsApplyLayerStyleAlgorithm *QgsApplyLayerStyleAlgorithm::createInstance() const
 {
   return new QgsApplyLayerStyleAlgorithm();
@@ -66,24 +61,29 @@ void QgsApplyLayerStyleAlgorithm::initAlgorithm( const QVariantMap & )
   addOutput( new QgsProcessingOutputMapLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Styled" ) ) );
 }
 
-QVariantMap QgsApplyLayerStyleAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+bool QgsApplyLayerStyleAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QgsMapLayer *layer = parameterAsLayer( parameters, QStringLiteral( "INPUT" ), context );
+  mLayer.reset( parameterAsLayer( parameters, QStringLiteral( "INPUT" ), context ) );
   QString style = parameterAsFile( parameters, QStringLiteral( "STYLE" ), context );
 
-  if ( !layer )
+  if ( !mLayer )
     throw QgsProcessingException( QObject::tr( "Invalid input layer" ) );
 
   bool ok = false;
-  QString msg = layer->loadNamedStyle( style, ok );
+  QString msg = mLayer->loadNamedStyle( style, ok );
   if ( !ok )
   {
     throw QgsProcessingException( QObject::tr( "Failed to apply style. Error: %1" ).arg( msg ) );
   }
-  layer->triggerRepaint();
+  mLayer->triggerRepaint();
 
+  return true;
+}
+
+QVariantMap QgsApplyLayerStyleAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
   QVariantMap results;
-  results.insert( QStringLiteral( "OUTPUT" ), layer->id() );
+  results.insert( QStringLiteral( "OUTPUT" ), mLayer->id() );
   return results;
 }
 

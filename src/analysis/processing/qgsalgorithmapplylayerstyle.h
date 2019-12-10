@@ -32,7 +32,6 @@ class QgsApplyLayerStyleAlgorithm : public QgsProcessingAlgorithm
 {
   public:
     QgsApplyLayerStyleAlgorithm() = default;
-    Flags flags() const override;
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -44,9 +43,13 @@ class QgsApplyLayerStyleAlgorithm : public QgsProcessingAlgorithm
 
   protected:
 
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback * ) override;
 
+  private:
+
+    std::unique_ptr< QgsMapLayer > mLayer;
 };
 
 ///@endcond PRIVATE
