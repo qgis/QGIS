@@ -94,11 +94,11 @@ QList<double> QgsClassificationLogarithmic::calculateBreaks( double &minimum, do
   }
 
   // get the min/max in log10 scale
-  double log_min = std::floor( std::log10( positiveMinimum ) );
-  double log_max = std::ceil( std::log10( maximum ) );
+  double logMin = std::floor( std::log10( positiveMinimum ) );
+  double logMax = std::ceil( std::log10( maximum ) );
 
   // calculate pretty breaks
-  breaks.append( QgsSymbolLayerUtils::prettyBreaks( log_min, log_max, nclasses ) );
+  breaks.append( QgsSymbolLayerUtils::prettyBreaks( logMin, logMax, nclasses ) );
 
   // create the value
   for ( int i = 0; i < breaks.count(); i++ )
