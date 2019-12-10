@@ -87,9 +87,6 @@
 %Include auto_generated/qgsimagecache.sip
 %Include auto_generated/qgsinterval.sip
 %Include auto_generated/qgsjsonutils.sip
-%Include auto_generated/qgslabelingenginesettings.sip
-%Include auto_generated/qgslabelobstaclesettings.sip
-%Include auto_generated/qgslabelsearchtree.sip
 %Include auto_generated/qgslayerdefinition.sip
 %Include auto_generated/qgslegendrenderer.sip
 %Include auto_generated/qgslegendsettings.sip
@@ -139,7 +136,6 @@
 %Include auto_generated/qgsowsconnection.sip
 %Include auto_generated/qgspaintenginehack.sip
 %Include auto_generated/qgspainting.sip
-%Include auto_generated/qgspallabeling.sip
 %Include auto_generated/qgspathresolver.sip
 %Include auto_generated/qgspluginlayer.sip
 %Include auto_generated/qgspluginlayerregistry.sip
@@ -171,7 +167,6 @@
 %Include auto_generated/qgsrenderchecker.sip
 %Include auto_generated/qgsrendercontext.sip
 %Include auto_generated/qgsrenderedfeaturehandlerinterface.sip
-%Include auto_generated/qgsrulebasedlabeling.sip
 %Include auto_generated/qgsrunprocess.sip
 %Include auto_generated/qgsruntimeprofiler.sip
 %Include auto_generated/qgsscalecalculator.sip
@@ -216,7 +211,6 @@
 %Include auto_generated/qgsvectorlayerfeatureiterator.sip
 %Include auto_generated/qgsvectorlayerjoinbuffer.sip
 %Include auto_generated/qgsvectorlayerjoininfo.sip
-%Include auto_generated/qgsvectorlayerlabeling.sip
 %Include auto_generated/qgsvectorlayerserverproperties.sip
 %Include auto_generated/qgsvectorlayertools.sip
 %Include auto_generated/qgsvectorlayerundocommand.sip
@@ -314,6 +308,12 @@
 %Include auto_generated/gps/qgsgpsdconnection.sip
 %Include auto_generated/gps/qgsgpsdetector.sip
 %Include auto_generated/gps/qgsnmeaconnection.sip
+%Include auto_generated/labeling/qgslabelingenginesettings.sip
+%Include auto_generated/labeling/qgslabelobstaclesettings.sip
+%Include auto_generated/labeling/qgslabelsearchtree.sip
+%Include auto_generated/labeling/qgspallabeling.sip
+%Include auto_generated/labeling/qgsrulebasedlabeling.sip
+%Include auto_generated/labeling/qgsvectorlayerlabeling.sip
 %Include auto_generated/layertree/qgslayertree.sip
 %Include auto_generated/layertree/qgslayertreegroup.sip
 %Include auto_generated/layertree/qgslayertreelayer.sip

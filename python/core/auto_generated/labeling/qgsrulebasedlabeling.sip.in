@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsrulebasedlabeling.h                                      *
+ * src/core/labeling/qgsrulebasedlabeling.h                             *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -322,7 +322,7 @@ Set pal settings for a specific provider (takes ownership).
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsrulebasedlabeling.h                                      *
+ * src/core/labeling/qgsrulebasedlabeling.h                             *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

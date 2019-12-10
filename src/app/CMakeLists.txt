@@ -438,6 +438,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/mesh
+  ${CMAKE_SOURCE_DIR}/src/core/labeling
   ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/core/locator
   ${CMAKE_SOURCE_DIR}/src/core/pal

@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgslabelobstaclesettings.h                                  *
+ * src/core/labeling/qgslabelobstaclesettings.h                         *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -126,7 +126,7 @@ set within the specified ``properties`` collection.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgslabelobstaclesettings.h                                  *
+ * src/core/labeling/qgslabelobstaclesettings.h                         *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

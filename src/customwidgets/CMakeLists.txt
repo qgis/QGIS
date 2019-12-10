@@ -91,6 +91,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/labeling
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/effects
