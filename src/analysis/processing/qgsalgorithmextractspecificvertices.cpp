@@ -110,9 +110,9 @@ QVariantMap QgsExtractSpecificVerticesAlgorithm::processAlgorithm( const QVarian
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   QString verticesString = parameterAsString( parameters, QStringLiteral( "VERTICES" ), context );
-  QStringList verticesList = verticesString.split( ',', QString::SkipEmptyParts );
+  const QStringList verticesList = verticesString.split( ',', QString::SkipEmptyParts );
   QList< int > indices;
-  for ( QString &vertex : verticesList )
+  for ( const QString &vertex : verticesList )
   {
     bool ok = false;
     int i = vertex.toInt( &ok );
