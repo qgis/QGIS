@@ -130,7 +130,7 @@ class CORE_EXPORT QgsMeshSingleLevelAveragingMethod: public QgsMesh3dAveragingMe
     int verticalLevel() const;
 
   private:
-    int mVerticalLevel;
+    int mVerticalLevel = 0;
 };
 
 #endif // QGSMESH3DAVERAGING_H

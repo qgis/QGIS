@@ -132,6 +132,7 @@ QgsMeshDatasetGroupMetadata::QgsMeshDatasetGroupMetadata( const QString &name,
     DataType dataType,
     double minimum,
     double maximum,
+    int maximumVerticalLevels,
     const QMap<QString, QString> &extraOptions )
   : mName( name )
   , mIsScalar( isScalar )
@@ -139,6 +140,7 @@ QgsMeshDatasetGroupMetadata::QgsMeshDatasetGroupMetadata( const QString &name,
   , mMinimumValue( minimum )
   , mMaximumValue( maximum )
   , mExtraOptions( extraOptions )
+  , mMaximumVerticalLevelsCount( maximumVerticalLevels )
 {
 }
 
@@ -177,6 +179,11 @@ double QgsMeshDatasetGroupMetadata::maximum() const
   return mMaximumValue;
 }
 
+int QgsMeshDatasetGroupMetadata::maximumVerticalLevelsCount() const
+{
+  return mMaximumVerticalLevelsCount;
+}
+
 int QgsMeshDatasetSourceInterface::datasetCount( QgsMeshDatasetIndex index ) const
 {
   return datasetCount( index.group() );
@@ -192,12 +199,12 @@ QgsMeshDatasetMetadata::QgsMeshDatasetMetadata(
   bool isValid,
   double minimum,
   double maximum,
-  int maximumVerticalLevelsCount )
+  int maximumVerticalLevels )
   : mTime( time )
   , mIsValid( isValid )
   , mMinimumValue( minimum )
   , mMaximumValue( maximum )
-  , mMaximumVerticalLevelsCount( maximumVerticalLevelsCount )
+  , mMaximumVerticalLevelsCount( maximumVerticalLevels )
 {
 }
 
@@ -232,20 +239,9 @@ QgsMeshDataBlock::QgsMeshDataBlock()
 }
 
 QgsMeshDataBlock::QgsMeshDataBlock( QgsMeshDataBlock::DataType type, int count )
-  : mType( type )
+  : mType( type ),
+    mSize( count )
 {
-  switch ( type )
-  {
-    case ActiveFlagInteger:
-      mIntegerBuffer.resize( count );
-      break;
-    case ScalarDouble:
-      mDoubleBuffer.resize( count );
-      break;
-    case Vector2DDouble:
-      mDoubleBuffer.resize( 2 * count );
-      break;
-  }
 }
 
 QgsMeshDataBlock::DataType QgsMeshDataBlock::type() const
@@ -255,75 +251,77 @@ QgsMeshDataBlock::DataType QgsMeshDataBlock::type() const
 
 int QgsMeshDataBlock::count() const
 {
-  switch ( mType )
-  {
-    case ActiveFlagInteger:
-      return mIntegerBuffer.size();
-    case ScalarDouble:
-      return mDoubleBuffer.size();
-    case Vector2DDouble:
-      return static_cast<int>( mDoubleBuffer.size() / 2.0 );
-  }
-  return 0; // no warnings
+  return mSize;
 }
 
 bool QgsMeshDataBlock::isValid() const
 {
-  return count() > 0;
+  return ( count() > 0 ) && ( mIsValid );
 }
 
 QgsMeshDatasetValue QgsMeshDataBlock::value( int index ) const
 {
-  switch ( mType )
-  {
-    case ActiveFlagInteger:
-      return QgsMeshDatasetValue();
-    case ScalarDouble:
-      return QgsMeshDatasetValue( mDoubleBuffer[index] );
-    case Vector2DDouble:
-      return QgsMeshDatasetValue(
-               mDoubleBuffer[2 * index],
-               mDoubleBuffer[2 * index + 1]
-             );
-  }
-  return QgsMeshDatasetValue(); // no warnings
+  if ( !isValid() )
+    return QgsMeshDatasetValue();
+
+  Q_ASSERT( mType != ActiveFlagInteger );
+
+  if ( mType == ScalarDouble )
+    return QgsMeshDatasetValue( mDoubleBuffer[index] );
+
+  return QgsMeshDatasetValue(
+           mDoubleBuffer[2 * index],
+           mDoubleBuffer[2 * index + 1]
+         );
 }
 
 bool QgsMeshDataBlock::active( int index ) const
 {
-  if ( ActiveFlagInteger == mType )
-    return bool( mIntegerBuffer[index] );
-  else
+  if ( !isValid() )
     return false;
+
+  Q_ASSERT( mType == ActiveFlagInteger );
+
+  if ( mIntegerBuffer.empty() )
+    return true;
+  else
+    return bool( mIntegerBuffer[index] );
 }
 
-void *QgsMeshDataBlock::buffer()
+void QgsMeshDataBlock::setActive( const QVector<int> &vals )
 {
-  if ( ActiveFlagInteger == mType )
-  {
-    return mIntegerBuffer.data();
-  }
-  else
-  {
-    return mDoubleBuffer.data();
-  }
+  Q_ASSERT( mType == ActiveFlagInteger );
+  Q_ASSERT( vals.size() == count() );
+
+  mIntegerBuffer = vals;
+  setValid( true );
+}
+
+QVector<int> QgsMeshDataBlock::active() const
+{
+  Q_ASSERT( mType == ActiveFlagInteger );
+  return mIntegerBuffer;
 }
 
 QVector<double> QgsMeshDataBlock::values() const
 {
+  Q_ASSERT( mType != ActiveFlagInteger );
+
   return mDoubleBuffer;
 }
 
-const void *QgsMeshDataBlock::constBuffer() const
+void QgsMeshDataBlock::setValues( const QVector<double> &vals )
 {
-  if ( ActiveFlagInteger == mType )
-  {
-    return mIntegerBuffer.constData();
-  }
-  else
-  {
-    return mDoubleBuffer.constData();
-  }
+  Q_ASSERT( mType != ActiveFlagInteger );
+  Q_ASSERT( mType == ScalarDouble ? vals.size() == count() : vals.size() == 2 * count() );
+
+  mDoubleBuffer = vals;
+  setValid( true );
+}
+
+void QgsMeshDataBlock::setValid( bool valid )
+{
+  mIsValid = valid;
 }
 
 QgsMeshVertex QgsMesh::vertex( int index ) const
@@ -354,22 +352,10 @@ QgsMesh3dDataBlock::QgsMesh3dDataBlock() = default;
 
 QgsMesh3dDataBlock::~QgsMesh3dDataBlock() {};
 
-QgsMesh3dDataBlock::QgsMesh3dDataBlock( int count, int maximumVerticalLevels, bool isVector )
-  : mIsVector( isVector )
-  , mMaximumVerticalLevels( maximumVerticalLevels )
+QgsMesh3dDataBlock::QgsMesh3dDataBlock( int count, bool isVector )
+  : mSize( count )
+  , mIsVector( isVector )
 {
-  if ( mMaximumVerticalLevels > 0 )
-  {
-    mVerticalLevelsCount.resize( count );
-    mVerticalLevels.resize( count * mMaximumVerticalLevels );
-    mFaceToVolumeIndex.resize( count );
-    mIntegerBuffer.resize( count * mMaximumVerticalLevels );
-
-    int doubleBufSize = count * mMaximumVerticalLevels;
-    if ( isVector )
-      doubleBufSize *= 2;
-    mDoubleBuffer.resize( doubleBufSize );
-  }
 }
 
 bool QgsMesh3dDataBlock::isValid() const
@@ -384,7 +370,7 @@ bool QgsMesh3dDataBlock::isVector() const
 
 int QgsMesh3dDataBlock::count() const
 {
-  return mVerticalLevelsCount.size();
+  return mSize;
 }
 
 int QgsMesh3dDataBlock::firstVolumeIndex() const
@@ -403,44 +389,57 @@ int QgsMesh3dDataBlock::lastVolumeIndex() const
   return lastVolumeStartIndex + volumesCountInLastRow;
 }
 
-void *QgsMesh3dDataBlock::buffer( QgsMesh3dDataBlock::DataType type )
+int QgsMesh3dDataBlock::volumesCount() const
 {
-  switch ( type )
-  {
-    case ScalarDouble:
-      return mDoubleBuffer.data();
-    case VectorDouble:
-      return mDoubleBuffer.data();
-    case ActiveFlagInteger:
-      return mIntegerBuffer.data();
-    case VerticalLevels:
-      return mVerticalLevels.data();
-    case VerticalLevelsCount:
-      return mVerticalLevelsCount.data();
-    case FaceToVolumeIndex:
-      return mFaceToVolumeIndex.data();
-  }
-  return nullptr;
+  return lastVolumeIndex() - firstVolumeIndex();
 }
 
-const void *QgsMesh3dDataBlock::constBuffer( QgsMesh3dDataBlock::DataType type ) const
+QVector<int> QgsMesh3dDataBlock::verticalLevelsCount() const
 {
-  switch ( type )
-  {
-    case ScalarDouble:
-      return mDoubleBuffer.constData();
-    case VectorDouble:
-      return mDoubleBuffer.constData();
-    case ActiveFlagInteger:
-      return mIntegerBuffer.constData();
-    case VerticalLevels:
-      return mVerticalLevels.constData();
-    case VerticalLevelsCount:
-      return mVerticalLevelsCount.constData();
-    case FaceToVolumeIndex:
-      return mFaceToVolumeIndex.constData();
-  }
-  return nullptr;
+  Q_ASSERT( isValid() );
+  return mVerticalLevelsCount;
+}
+
+void QgsMesh3dDataBlock::setFaceToVolumeIndex( const QVector<int> &faceToVolumeIndex )
+{
+  Q_ASSERT( faceToVolumeIndex.size() == count() );
+  mFaceToVolumeIndex = faceToVolumeIndex;
+}
+
+void QgsMesh3dDataBlock::setVerticalLevelsCount( const QVector<int> &verticalLevelsCount )
+{
+  Q_ASSERT( verticalLevelsCount.size() == count() );
+  mVerticalLevelsCount = verticalLevelsCount;
+}
+
+QVector<double> QgsMesh3dDataBlock::verticalLevels() const
+{
+  Q_ASSERT( isValid() );
+  return mVerticalLevels;
+}
+
+void QgsMesh3dDataBlock::setVerticalLevels( const QVector<double> &verticalLevels )
+{
+  Q_ASSERT( verticalLevels.size() == volumesCount() + count() );
+  mVerticalLevels = verticalLevels;
+}
+
+QVector<int> QgsMesh3dDataBlock::faceToVolumeIndex() const
+{
+  Q_ASSERT( isValid() );
+  return mFaceToVolumeIndex;
+}
+
+QVector<double> QgsMesh3dDataBlock::values() const
+{
+  Q_ASSERT( isValid() );
+  return mDoubleBuffer;
+}
+
+void QgsMesh3dDataBlock::setValues( const QVector<double> &doubleBuffer )
+{
+  Q_ASSERT( doubleBuffer.size() == isVector() ? 2 * volumesCount() : volumesCount() );
+  mDoubleBuffer = doubleBuffer;
 }
 
 void QgsMesh3dDataBlock::setValid( bool valid )

@@ -154,7 +154,7 @@ class CORE_EXPORT QgsMeshDatasetValue
  * data are implicitly shared, so the class can be quickly copied
  * std::numeric_limits<double>::quiet_NaN() represents NODATA value
  *
- * Data can be accessed all at once with buffer() (faster) or
+ * Data can be accessed all at once with values() (faster) or
  * value by value (slower) with active() or value()
  *
  * \since QGIS 3.6
@@ -198,17 +198,32 @@ class CORE_EXPORT QgsMeshDataBlock
     bool active( int index ) const;
 
     /**
-     * Returns internal buffer to the array
+     * Sets active flag values.
      *
-     * The buffer is already allocated with size:
-     * count() * sizeof(int) for ActiveFlagInteger
-     * count() * sizeof(double) for ScalarDouble
-     * count() * 2 * sizeof(double) for Vector2DDouble
+     * If the data provider/datasets does not have active
+     * flag capability (== all values are valid), just
+     * set block validity by setValid( true )
      *
-     * Primary usage of the function is to write/populate
-     * data to the block by data provider.
+     * \param vals value vector with size count()
+     *
+     * For scalar and vector 2d the behavior is undefined
+     *
+     * \since QGIS 3.12
      */
-    void *buffer() SIP_SKIP;
+    void setActive( const QVector<int> &vals );
+
+    /**
+     * Returns active flag array
+     *
+     * Even for active flag valid dataset, the returned array could be empty.
+     * This means that the data provider/dataset does not support active flag
+     * capability, so all faces are active by default.
+     *
+     * For scalar and vector 2d the behavior is undefined
+     *
+     * \since QGIS 3.12
+     */
+    QVector<int> active() const;
 
     /**
      * Returns buffer to the array with values
@@ -218,20 +233,25 @@ class CORE_EXPORT QgsMeshDataBlock
     QVector<double> values() const;
 
     /**
-     * Returns internal buffer to the array for fast
-     * values reading
+     * Sets values
      *
-     * The buffer is allocated with size:
-     * count() * sizeof(int) for ActiveFlagInteger
-     * count() * sizeof(double) for ScalarDouble
-     * count() * 2 * sizeof(double) for Vector2DDouble
+     * For scalar datasets, it must have size count()
+     * For vector datasets, it must have size 2 * count()
+     * For active flag the behavior is undefined
+     *
+     * \since QGIS 3.12
      */
-    const void *constBuffer() const SIP_SKIP;
+    void setValues( const QVector<double> &vals );
+
+    //! Sets block validity
+    void setValid( bool valid );
 
   private:
     QVector<double> mDoubleBuffer;
     QVector<int> mIntegerBuffer;
     DataType mType;
+    int mSize = 0;
+    bool mIsValid = false;
 };
 
 /**
@@ -243,22 +263,13 @@ class CORE_EXPORT QgsMeshDataBlock
  * data are implicitly shared, so the class can be quickly copied
  * std::numeric_limits<double>::quiet_NaN() represents NODATA value
  *
+ * \note The API is considered EXPERIMENTAL and can be changed without a notice
+ *
  * \since QGIS 3.12
  */
 class CORE_EXPORT QgsMesh3dDataBlock
 {
   public:
-    //! Type of data stored in the block
-    enum DataType
-    {
-      ActiveFlagInteger, //!< Integer boolean flag whether volume is active
-      ScalarDouble, //!< Scalar double values
-      VectorDouble, //!< Vector double pairs (x1, y1, x2, y2, ... )
-      VerticalLevelsCount, //! Integer number of vertical levels above face
-      VerticalLevels, //! Double - size + 1
-      FaceToVolumeIndex //! Integer
-    };
-
     //! Constructs an invalid block
     QgsMesh3dDataBlock();
 
@@ -266,7 +277,7 @@ class CORE_EXPORT QgsMesh3dDataBlock
     ~QgsMesh3dDataBlock();
 
     //! Constructs a new block for count faces
-    QgsMesh3dDataBlock( int count, int maximumVerticalLevels, bool isVector );
+    QgsMesh3dDataBlock( int count, bool isVector );
 
     //! Sets block validity
     void setValid( bool valid );
@@ -277,7 +288,7 @@ class CORE_EXPORT QgsMesh3dDataBlock
     //! Whether we store vector values
     bool isVector() const;
 
-    //! Number of items stored in the block
+    //! Number of 2d faces for which the volume data is stored in the block
     int count() const;
 
     //! Index of the first volume stored in the buffer
@@ -286,39 +297,61 @@ class CORE_EXPORT QgsMesh3dDataBlock
     //! Index of the last volume stored in the buffer
     int lastVolumeIndex() const;
 
-    /**
-     * Returns internal buffer to the array
-     *
-     * The buffer is already allocated with size:
-     * count() * sizeof(int) for ActiveFlagInteger
-     * count() * sizeof(double) for ScalarDouble
-     * count() * 2 * sizeof(double) for VectorDouble
-     * count() * sizeof(int) for VerticalLevelsCount
-     * count() * sizeof(int) for FaceToVolumeIndex
-     * count() * mMaximumVerticalLevels * sizeof(double) for VerticalLevels
-     *
-     * Primary usage of the function is to write/populate
-     * data to the block by data provider.
-     */
-    void *buffer( DataType type ) SIP_SKIP;
+    //! Returns number of volumes stored in the buffer
+    int volumesCount() const;
 
     /**
-     * Returns internal buffer to the array for fast
-     * values reading
-     *
-     * for sizes and type of buffer, \see buffer
+     * Returns number of vertical level above 2d faces
      */
-    const void *constBuffer( DataType type ) const SIP_SKIP;
+    QVector<int> verticalLevelsCount() const;
+
+    /**
+     * Sets the vertical level counts
+     */
+    void setVerticalLevelsCount( const QVector<int> &verticalLevelsCount );
+
+    /**
+     * Returns the vertical levels height
+     */
+    QVector<double> verticalLevels() const;
+
+    /**
+     * Sets the vertical levels height
+     */
+    void setVerticalLevels( const QVector<double> &verticalLevels );
+
+    /**
+     * Returns the indexing between faces and volumes
+     */
+    QVector<int> faceToVolumeIndex() const;
+
+    /**
+     * Sets the indexing between faces and volumes
+     */
+    void setFaceToVolumeIndex( const QVector<int> &faceToVolumeIndex );
+
+    /**
+     * Returns the values at volume centers
+     *
+     * For vector datasets the number of values is doubled (x1, y1, x2, y2, ... )
+     */
+    QVector<double> values() const;
+
+    /**
+     * Sets the values at volume centers
+     *
+     * For vector datasets the number of values is doubled (x1, y1, x2, y2, ... )
+     */
+    void setValues( const QVector<double> &doubleBuffer );
 
   private:
+    int mSize = 0;
     bool mIsValid = false;
     bool mIsVector = false;
-    int mMaximumVerticalLevels = 0;
     QVector<int> mVerticalLevelsCount;
     QVector<double> mVerticalLevels;
     QVector<int> mFaceToVolumeIndex;
     QVector<double> mDoubleBuffer; // for scalar/vector values
-    QVector<int> mIntegerBuffer; // for active flags
 };
 
 /**
@@ -354,6 +387,7 @@ class CORE_EXPORT QgsMeshDatasetGroupMetadata
      * \param dataType where the data are defined on (vertices, faces or volumes)
      * \param minimum minimum value (magnitude for vectors) present among all group's dataset values
      * \param maximum maximum value (magnitude for vectors) present among all group's dataset values
+     * \param maximumVerticalLevels maximum number of vertical levels for 3d stacked meshes, 0 for 2d meshes
      * \param extraOptions dataset's extra options stored by the provider. Usually contains the name, time value, time units, data file vendor, ...
      */
     QgsMeshDatasetGroupMetadata( const QString &name,
@@ -361,6 +395,7 @@ class CORE_EXPORT QgsMeshDatasetGroupMetadata
                                  DataType dataType,
                                  double minimum,
                                  double maximum,
+                                 int maximumVerticalLevels,
                                  const QMap<QString, QString> &extraOptions );
 
     /**
@@ -400,6 +435,13 @@ class CORE_EXPORT QgsMeshDatasetGroupMetadata
      */
     double maximum() const;
 
+    /**
+     * Returns maximum number of vertical levels for 3d stacked meshes
+     *
+     * \since QGIS 3.12
+     */
+    int maximumVerticalLevelsCount() const;
+
   private:
     QString mName;
     bool mIsScalar = false;
@@ -407,6 +449,7 @@ class CORE_EXPORT QgsMeshDatasetGroupMetadata
     double mMinimumValue = std::numeric_limits<double>::quiet_NaN();
     double mMaximumValue = std::numeric_limits<double>::quiet_NaN();
     QMap<QString, QString> mExtraOptions;
+    int mMaximumVerticalLevelsCount = 0; // for 3d stacked meshes
 };
 
 /**
@@ -432,13 +475,13 @@ class CORE_EXPORT QgsMeshDatasetMetadata
      * \param isValid dataset is loadad and valid for fetching the data
      * \param minimum minimum value (magnitude for vectors) present among dataset values
      * \param maximum maximum value (magnitude for vectors) present among dataset values
-     * \param maximumVerticalLevelsCount maximum number of vertical levels for 3d stacked meshes, 0 for 2d meshes
+     * \param maximumVerticalLevels maximum number of vertical levels for 3d stacked meshes, 0 for 2d meshes
      */
     QgsMeshDatasetMetadata( double time,
                             bool isValid,
                             double minimum,
                             double maximum,
-                            int maximumVerticalLevelsCount
+                            int maximumVerticalLevels
                           );
 
     /**

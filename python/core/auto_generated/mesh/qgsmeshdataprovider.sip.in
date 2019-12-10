@@ -159,7 +159,7 @@ vectors (e.g. vector dataset doubles x,y values)
 data are implicitly shared, so the class can be quickly copied
 std.numeric_limits<double>.quiet_NaN() represents NODATA value
 
-Data can be accessed all at once with buffer() (faster) or
+Data can be accessed all at once with values() (faster) or
 value by value (slower) with active() or value()
 
 .. versionadded:: 3.6
@@ -213,6 +213,33 @@ Returns a value for active flag by the index
 For scalar and vector 2d the behavior is undefined
 %End
 
+    void setActive( const QVector<int> &vals );
+%Docstring
+Sets active flag values.
+
+If the data provider/datasets does not have active
+flag capability (== all values are valid), just
+set block validity by setValid( true )
+
+:param vals: value vector with size count()
+
+For scalar and vector 2d the behavior is undefined
+
+.. versionadded:: 3.12
+%End
+
+    QVector<int> active() const;
+%Docstring
+Returns active flag array
+
+Even for active flag valid dataset, the returned array could be empty.
+This means that the data provider/dataset does not support active flag
+capability, so all faces are active by default.
+
+For scalar and vector 2d the behavior is undefined
+
+.. versionadded:: 3.12
+%End
 
     QVector<double> values() const;
 %Docstring
@@ -221,6 +248,21 @@ Returns buffer to the array with values
 .. versionadded:: 3.12
 %End
 
+    void setValues( const QVector<double> &vals );
+%Docstring
+Sets values
+
+For scalar datasets, it must have size count()
+For vector datasets, it must have size 2 * count()
+For active flag the behavior is undefined
+
+.. versionadded:: 3.12
+%End
+
+    void setValid( bool valid );
+%Docstring
+Sets block validity
+%End
 
 };
 
@@ -234,6 +276,10 @@ faces defined on base mesh frame.
 data are implicitly shared, so the class can be quickly copied
 std.numeric_limits<double>.quiet_NaN() represents NODATA value
 
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
 .. versionadded:: 3.12
 %End
 
@@ -241,16 +287,6 @@ std.numeric_limits<double>.quiet_NaN() represents NODATA value
 #include "qgsmeshdataprovider.h"
 %End
   public:
-    enum DataType
-    {
-      ActiveFlagInteger,
-      ScalarDouble,
-      VectorDouble,
-      VerticalLevelsCount,
-      VerticalLevels,
-      FaceToVolumeIndex
-    };
-
     QgsMesh3dDataBlock();
 %Docstring
 Constructs an invalid block
@@ -258,7 +294,7 @@ Constructs an invalid block
 
     ~QgsMesh3dDataBlock();
 
-    QgsMesh3dDataBlock( int count, int maximumVerticalLevels, bool isVector );
+    QgsMesh3dDataBlock( int count, bool isVector );
 %Docstring
 Constructs a new block for count faces
 %End
@@ -280,7 +316,7 @@ Whether we store vector values
 
     int count() const;
 %Docstring
-Number of items stored in the block
+Number of 2d faces for which the volume data is stored in the block
 %End
 
     int firstVolumeIndex() const;
@@ -293,7 +329,54 @@ Index of the first volume stored in the buffer
 Index of the last volume stored in the buffer
 %End
 
+    int volumesCount() const;
+%Docstring
+Returns number of volumes stored in the buffer
+%End
 
+    QVector<int> verticalLevelsCount() const;
+%Docstring
+Returns number of vertical level above 2d faces
+%End
+
+    void setVerticalLevelsCount( const QVector<int> &verticalLevelsCount );
+%Docstring
+Sets the vertical level counts
+%End
+
+    QVector<double> verticalLevels() const;
+%Docstring
+Returns the vertical levels height
+%End
+
+    void setVerticalLevels( const QVector<double> &verticalLevels );
+%Docstring
+Sets the vertical levels height
+%End
+
+    QVector<int> faceToVolumeIndex() const;
+%Docstring
+Returns the indexing between faces and volumes
+%End
+
+    void setFaceToVolumeIndex( const QVector<int> &faceToVolumeIndex );
+%Docstring
+Sets the indexing between faces and volumes
+%End
+
+    QVector<double> values() const;
+%Docstring
+Returns the values at volume centers
+
+For vector datasets the number of values is doubled (x1, y1, x2, y2, ... )
+%End
+
+    void setValues( const QVector<double> &doubleBuffer );
+%Docstring
+Sets the values at volume centers
+
+For vector datasets the number of values is doubled (x1, y1, x2, y2, ... )
+%End
 
 };
 
@@ -333,6 +416,7 @@ Constructs an empty metadata object
                                  DataType dataType,
                                  double minimum,
                                  double maximum,
+                                 int maximumVerticalLevels,
                                  const QMap<QString, QString> &extraOptions );
 %Docstring
 Constructs a valid metadata object
@@ -342,6 +426,7 @@ Constructs a valid metadata object
 :param dataType: where the data are defined on (vertices, faces or volumes)
 :param minimum: minimum value (magnitude for vectors) present among all group's dataset values
 :param maximum: maximum value (magnitude for vectors) present among all group's dataset values
+:param maximumVerticalLevels: maximum number of vertical levels for 3d stacked meshes, 0 for 2d meshes
 :param extraOptions: dataset's extra options stored by the provider. Usually contains the name, time value, time units, data file vendor, ...
 %End
 
@@ -382,6 +467,13 @@ Returns minimum scalar value/vector magnitude present for whole dataset group
 Returns maximum scalar value/vector magnitude present for whole dataset group
 %End
 
+    int maximumVerticalLevelsCount() const;
+%Docstring
+Returns maximum number of vertical levels for 3d stacked meshes
+
+.. versionadded:: 3.12
+%End
+
 };
 
 class QgsMeshDatasetMetadata
@@ -411,7 +503,7 @@ Constructs an empty metadata object
                             bool isValid,
                             double minimum,
                             double maximum,
-                            int maximumVerticalLevelsCount
+                            int maximumVerticalLevels
                           );
 %Docstring
 Constructs a valid metadata object
@@ -420,7 +512,7 @@ Constructs a valid metadata object
 :param isValid: dataset is loadad and valid for fetching the data
 :param minimum: minimum value (magnitude for vectors) present among dataset values
 :param maximum: maximum value (magnitude for vectors) present among dataset values
-:param maximumVerticalLevelsCount: maximum number of vertical levels for 3d stacked meshes, 0 for 2d meshes
+:param maximumVerticalLevels: maximum number of vertical levels for 3d stacked meshes, 0 for 2d meshes
 %End
 
     double time() const;

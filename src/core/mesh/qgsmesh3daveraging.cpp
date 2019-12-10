@@ -91,46 +91,47 @@ QgsMeshDataBlock QgsMeshSingleLevelAveragingMethod::calculate( const QgsMesh3dDa
   bool isVector = block3d.isVector();
   int count = block3d.count();
   QgsMeshDataBlock result( isVector ? QgsMeshDataBlock::Vector2DDouble : QgsMeshDataBlock::ScalarDouble, count );
-  double *buffer = static_cast<double *>( result.buffer() );
-  const int *verticalLevelsCount = static_cast<const int *>( block3d.constBuffer( QgsMesh3dDataBlock::VerticalLevelsCount ) );
-  const double *values = static_cast<const double *>( block3d.constBuffer( isVector ? QgsMesh3dDataBlock::VectorDouble : QgsMesh3dDataBlock::ScalarDouble ) );
+  QVector<double> valuesFaces( isVector ? 2 * count : count );
+  const QVector<int> verticalLevelsCount = block3d.verticalLevelsCount();
+  const QVector<double> volumeValues = block3d.values();
 
-  int volumeIndex = 0;
-  for ( int i = 0; i < count; ++i )
+  int startVolumeIndex = 0;
+  for ( int faceIndex = 0; faceIndex < count; ++faceIndex )
   {
     if ( feedback && feedback->isCanceled() )
     {
       return QgsMeshDataBlock();
     }
-    int verticalLevels = verticalLevelsCount[i];
+    int volumesBelowFaceCount = verticalLevelsCount[faceIndex];
     if ( isVector )
     {
-      if ( mVerticalLevel < verticalLevels )
+      if ( mVerticalLevel < volumesBelowFaceCount )
       {
-        const int index = volumeIndex + mVerticalLevel;
-        buffer[ 2 * i ] = values[ 2 * index ];
-        buffer[ 2 * i + 1 ] = values[ 2 * index + 1 ];
+        const int volumeIndex = startVolumeIndex + mVerticalLevel;
+        valuesFaces[ 2 * faceIndex ] = volumeValues[ 2 * volumeIndex ];
+        valuesFaces[ 2 * faceIndex + 1 ] = volumeValues[ 2 * volumeIndex + 1 ];
       }
       else
       {
-        buffer[ 2 * i ] = std::numeric_limits<double>::quiet_NaN();
-        buffer[ 2 * i + 1 ] = std::numeric_limits<double>::quiet_NaN();
+        valuesFaces[ 2 * faceIndex ] = std::numeric_limits<double>::quiet_NaN();
+        valuesFaces[ 2 * faceIndex + 1 ] = std::numeric_limits<double>::quiet_NaN();
       }
     }
     else
     {
-      if ( mVerticalLevel <= verticalLevels )
+      if ( mVerticalLevel < volumesBelowFaceCount )
       {
-        const int index = volumeIndex + mVerticalLevel;
-        buffer[i] = values[index];
+        const int volumeIndex = startVolumeIndex + mVerticalLevel;
+        valuesFaces[faceIndex] = volumeValues[volumeIndex];
       }
       else
       {
-        buffer[i] = std::numeric_limits<double>::quiet_NaN();
+        valuesFaces[faceIndex] = std::numeric_limits<double>::quiet_NaN();
       }
     }
-    volumeIndex += verticalLevels;
+    startVolumeIndex += volumesBelowFaceCount;
   }
+  result.setValues( valuesFaces );
   return result;
 }
 

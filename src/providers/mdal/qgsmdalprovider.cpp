@@ -243,10 +243,15 @@ bool QgsMdalProvider::persistDatasetGroup( const QString &path,
 
   for ( int i = 0; i < datasetValues.size(); ++i )
   {
+    const QVector<double> values = datasetValues.at( i ).values();
+    QVector<int> active;
+    if ( !datasetActive.isEmpty() )
+      active = datasetActive.at( i ).active();
+
     MDAL_G_addDataset( g,
                        times.at( i ),
-                       static_cast<const double *>( datasetValues.at( i ).constBuffer() ),
-                       datasetActive.isEmpty() ? nullptr : static_cast<const int *>( datasetActive.at( i ).constBuffer() )
+                       values.constData(),
+                       active.isEmpty() ? nullptr : active.constData()
                      );
   }
 
@@ -477,6 +482,8 @@ QgsMeshDatasetGroupMetadata QgsMdalProvider::datasetGroupMetadata( int groupInde
   double min, max;
   MDAL_G_minimumMaximum( group, &min, &max );
 
+  int maximumVerticalLevels = MDAL_G_maximumVerticalLevelCount( group );
+
   QMap<QString, QString> metadata;
   int n = MDAL_G_metadataCount( group );
   for ( int i = 0; i < n; ++i )
@@ -492,6 +499,7 @@ QgsMeshDatasetGroupMetadata QgsMdalProvider::datasetGroupMetadata( int groupInde
     type,
     min,
     max,
+    maximumVerticalLevels,
     metadata
   );
 
@@ -545,14 +553,16 @@ QgsMeshDataBlock QgsMdalProvider::datasetValues( QgsMeshDatasetIndex index, int 
   bool isScalar = MDAL_G_hasScalarData( group );
 
   QgsMeshDataBlock ret( isScalar ? QgsMeshDataBlock::ScalarDouble : QgsMeshDataBlock::Vector2DDouble, count );
+  QVector<double> buffer( isScalar ? count : 2 * count );
   int valRead = MDAL_D_data( dataset,
                              valueIndex,
                              count,
                              isScalar ? MDAL_DataType::SCALAR_DOUBLE : MDAL_DataType::VECTOR_2D_DOUBLE,
-                             ret.buffer() );
+                             buffer.data() );
   if ( valRead != count )
     return QgsMeshDataBlock();
 
+  ret.setValues( buffer );
   return ret;
 }
 
@@ -570,24 +580,32 @@ QgsMesh3dDataBlock QgsMdalProvider::dataset3dValues( QgsMeshDatasetIndex index, 
     return QgsMesh3dDataBlock();
 
   bool isScalar = MDAL_G_hasScalarData( group );
-  int maxLevels = MDAL_D_maximumVerticalLevelCount( dataset );
 
-  QgsMesh3dDataBlock ret( count, maxLevels, !isScalar );
-  int valRead = MDAL_D_data( dataset,
-                             faceIndex,
-                             count,
-                             MDAL_DataType::FACE_INDEX_TO_VOLUME_INDEX_INTEGER,
-                             ret.buffer( QgsMesh3dDataBlock::FaceToVolumeIndex ) );
-  if ( valRead != count )
-    return QgsMesh3dDataBlock();
+  QgsMesh3dDataBlock ret( count, !isScalar );
+  {
+    QVector<int> faceToVolumeIndexBuffer( count );
+    int valRead = MDAL_D_data( dataset,
+                               faceIndex,
+                               count,
+                               MDAL_DataType::FACE_INDEX_TO_VOLUME_INDEX_INTEGER,
+                               faceToVolumeIndexBuffer.data() );
+    if ( valRead != count )
+      return QgsMesh3dDataBlock();
+    ret.setFaceToVolumeIndex( faceToVolumeIndexBuffer );
+  }
 
-  valRead = MDAL_D_data( dataset,
-                         faceIndex,
-                         count,
-                         MDAL_DataType::VERTICAL_LEVEL_COUNT_INTEGER,
-                         ret.buffer( QgsMesh3dDataBlock::VerticalLevelsCount ) );
-  if ( valRead != count )
-    return QgsMesh3dDataBlock();
+  {
+    QVector<int> verticalLevelCountBuffer( count );
+    int valRead = MDAL_D_data( dataset,
+                               faceIndex,
+                               count,
+                               MDAL_DataType::VERTICAL_LEVEL_COUNT_INTEGER,
+                               verticalLevelCountBuffer.data() );
+    if ( valRead != count )
+      return QgsMesh3dDataBlock();
+
+    ret.setVerticalLevelsCount( verticalLevelCountBuffer );
+  }
 
   const int firstVolumeIndex = ret.firstVolumeIndex();
   const int lastVolumeIndex = ret.lastVolumeIndex();
@@ -597,29 +615,30 @@ QgsMesh3dDataBlock QgsMdalProvider::dataset3dValues( QgsMeshDatasetIndex index, 
 
   const int nVerticalLevelFaces = nVolumes + count; // all volumes top face + bottom face
   const int startIndexVerticalFaces = firstVolumeIndex + faceIndex;
-  valRead = MDAL_D_data( dataset,
-                         startIndexVerticalFaces,
-                         nVerticalLevelFaces,
-                         MDAL_DataType::VERTICAL_LEVEL_DOUBLE,
-                         ret.buffer( QgsMesh3dDataBlock::VerticalLevels ) );
-  if ( valRead != nVerticalLevelFaces )
-    return QgsMesh3dDataBlock();
 
-  valRead = MDAL_D_data( dataset,
-                         firstVolumeIndex,
-                         nVolumes,
-                         MDAL_DataType::ACTIVE_VOLUMES_INTEGER,
-                         ret.buffer( QgsMesh3dDataBlock::ActiveFlagInteger ) );
-  if ( valRead != nVolumes )
-    return QgsMesh3dDataBlock();
+  {
+    QVector<double> verticalLevels( nVerticalLevelFaces );
+    int valRead = MDAL_D_data( dataset,
+                               startIndexVerticalFaces,
+                               nVerticalLevelFaces,
+                               MDAL_DataType::VERTICAL_LEVEL_DOUBLE,
+                               verticalLevels.data() );
+    if ( valRead != nVerticalLevelFaces )
+      return QgsMesh3dDataBlock();
+    ret.setVerticalLevels( verticalLevels );
+  }
 
-  valRead = MDAL_D_data( dataset,
-                         firstVolumeIndex,
-                         nVolumes,
-                         isScalar ? MDAL_DataType::SCALAR_VOLUMES_DOUBLE : MDAL_DataType::VECTOR_2D_VOLUMES_DOUBLE,
-                         ret.buffer( isScalar ? QgsMesh3dDataBlock::ScalarDouble : QgsMesh3dDataBlock::VectorDouble ) );
-  if ( valRead != nVolumes )
-    return QgsMesh3dDataBlock();
+  {
+    QVector<double> values( isScalar ? nVolumes :  2 * nVolumes );
+    int valRead = MDAL_D_data( dataset,
+                               firstVolumeIndex,
+                               nVolumes,
+                               isScalar ? MDAL_DataType::SCALAR_VOLUMES_DOUBLE : MDAL_DataType::VECTOR_2D_VOLUMES_DOUBLE,
+                               values.data() );
+    if ( valRead != nVolumes )
+      return QgsMesh3dDataBlock();
+    ret.setValues( values );
+  }
 
   ret.setValid( true );
   return ret;
@@ -643,19 +662,17 @@ QgsMeshDataBlock QgsMdalProvider::areFacesActive( QgsMeshDatasetIndex index, int
 
   QgsMeshDataBlock ret( QgsMeshDataBlock::ActiveFlagInteger, count );
 
-  //TODO refactor
-  int maxLevels = MDAL_D_maximumVerticalLevelCount( dataset );
-  if ( maxLevels > 0 )
+  if ( MDAL_D_hasActiveFlagCapability( dataset ) )
   {
-    int *buf = static_cast<int *>( ret.buffer() );
-    for ( int i = 0; i < count; ++i )
-      buf[i] = 1;
+    QVector<int> buf( count );
+    int valRead = MDAL_D_data( dataset, faceIndex, count, MDAL_DataType::ACTIVE_INTEGER, buf.data() );
+    if ( valRead != count )
+      return QgsMeshDataBlock();
+    ret.setActive( buf );
   }
   else
   {
-    int valRead = MDAL_D_data( dataset, faceIndex, count, MDAL_DataType::ACTIVE_INTEGER, ret.buffer() );
-    if ( valRead != count )
-      return ret;
+    ret.setValid( true );
   }
   return ret;
 }
