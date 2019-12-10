@@ -44,10 +44,10 @@ def load(db, mainwindow):
     sql = u"""SELECT count(*)
                 FROM pg_class AS cls JOIN pg_namespace AS nsp ON nsp.oid = cls.relnamespace
                 WHERE cls.relname = 'topology' AND nsp.nspname = 'topology'"""
-    c = db.connector._get_cursor()
-    db.connector._execute(c, sql)
-    res = db.connector._fetchone(c)
-    if res is None or int(res[0]) <= 0:
+    #c = db.connector._get_cursor()
+    #db.connector._execute(c, sql)
+    res = db.executeSql(sql)
+    if res is None or len(res) < 1 or int(res[0][0]) <= 0:
         return
 
     # add the action to the DBManager menu

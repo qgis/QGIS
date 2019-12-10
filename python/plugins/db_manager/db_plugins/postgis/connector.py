@@ -27,7 +27,14 @@ from builtins import range
 from functools import cmp_to_key
 
 from qgis.PyQt.QtCore import QRegExp, QFile, QCoreApplication
-from qgis.core import Qgis, QgsCredentials, QgsDataSourceUri, QgsCoordinateReferenceSystem
+from qgis.core import (
+    Qgis,
+    QgsCredentials,
+    QgsDataSourceUri,
+    QgsProviderRegistry,
+    QgsAbstractDatabaseProviderConnection,
+    QgsProviderConnectionException,
+)
 
 from ..connector import DBConnector
 from ..plugin import ConnectionError, DbError, Table
@@ -44,60 +51,69 @@ def classFactory():
     return PostGisDBConnector
 
 
+class CursorProxy():
+    def __init__(self, connection, sql):
+        self.connection = connection
+        self.sql = sql
+        self.result = None
+        self.closed = False
+        self.description = None
+        self._execute()
+
+    def _execute(self):
+        if self.result != None:
+            return
+        self.result = self.connection._executeSql(self.sql)
+        self.description = []
+        if len(self.result):
+            for i in range(len(self.result)):
+                self.description.append([
+                    'column' + str(i),                         # name
+                    str,                                      # type_code
+                    10,                                       # display_size
+                    10,                                       # internal_size
+                    0,                                        # precision
+                    None,                                     # scale
+                    True                                      # null_ok
+                ])
+
+    def fetchone(self):
+        self._execute()
+        return self.result[0]
+
+    def fetchall(self):
+        self._execute()
+        return self.result
+
+    def close(self):
+        self.result = None
+        self.closed = True
+
+
 class PostGisDBConnector(DBConnector):
 
-    def __init__(self, uri):
+    def __init__(self, uri, dbplugin):
+        """Creates a new PostgreSQL connector
+
+        :param uri: data source URI
+        :type uri: QgsDataSourceUri
+        :param dbplugin: the PostGisDBPlugin parent instance
+        :type dbplugin: PostGisDbPlugin
+        """
         DBConnector.__init__(self, uri)
 
-        self.host = uri.host() or os.environ.get('PGHOST')
-        self.port = uri.port() or os.environ.get('PGPORT')
+        self.dbname = uri.database()
 
-        username = uri.username() or os.environ.get('PGUSER')
-        password = uri.password() or os.environ.get('PGPASSWORD')
+        #self.connName = connName
+        #self.user = uri.username() or os.environ.get('USER')
+        #self.passwd = uri.password()
+        self.host = uri.host()
 
-        # Do not get db and user names from the env if service is used
-        if not uri.service():
-            if username is None:
-                username = os.environ.get('USER')
-            self.dbname = uri.database() or os.environ.get('PGDATABASE') or username
-            uri.setDatabase(self.dbname)
-
-        expandedConnInfo = self._connectionInfo()
-        try:
-            self.connection = psycopg2.connect(expandedConnInfo)
-        except self.connection_error_types() as e:
-            # get credentials if cached or asking to the user no more than 3 times
-            err = str(e)
-            uri = self.uri()
-            conninfo = uri.connectionInfo(False)
-
-            for i in range(3):
-                (ok, username, password) = QgsCredentials.instance().get(conninfo, username, password, err)
-                if not ok:
-                    raise ConnectionError(QCoreApplication.translate('db_manager', 'Could not connect to database as user {user}').format(user=username))
-
-                if username:
-                    uri.setUsername(username)
-
-                if password:
-                    uri.setPassword(password)
-
-                newExpandedConnInfo = uri.connectionInfo(True)
-                try:
-                    self.connection = psycopg2.connect(newExpandedConnInfo)
-                    QgsCredentials.instance().put(conninfo, username, password)
-                except self.connection_error_types() as e:
-                    if i == 2:
-                        raise ConnectionError(e)
-                    err = str(e)
-                finally:
-                    # clear certs for each time trying to connect
-                    self._clearSslTempCertsIfAny(newExpandedConnInfo)
-        finally:
-            # clear certs of the first connection try
-            self._clearSslTempCertsIfAny(expandedConnInfo)
-
-        self.connection.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
+        self.dbplugin = dbplugin
+        md = QgsProviderRegistry.instance().providerMetadata(dbplugin.providerName())
+        self.core_connection = md.findConnection(dbplugin.connectionName())
+        if self.core_connection is None:
+            self.core_connection = md.createConnection(dbplugin.connectionName(), uri.database())
 
         c = self._execute(None, u"SELECT current_user,current_database()")
         self.user, self.dbname = self._fetchone(c)
@@ -1034,33 +1050,22 @@ class PostGisDBConnector(DBConnector):
     def connection_error_types(self):
         return psycopg2.InterfaceError, psycopg2.OperationalError
 
-    # moved into the parent class: DbConnector._execute()
-    # def _execute(self, cursor, sql):
-    #       pass
+    def _execute(self, cursor, sql):
+        return CursorProxy(self, sql)
 
-    # moved into the parent class: DbConnector._execute_and_commit()
-    # def _execute_and_commit(self, sql):
-    #       pass
+    def _executeSql(self, sql):
+        return self.core_connection.executeSql(sql)
 
     # moved into the parent class: DbConnector._get_cursor()
     # def _get_cursor(self, name=None):
     #       pass
 
-    # moved into the parent class: DbConnector._fetchall()
-    # def _fetchall(self, c):
-    #       pass
-
-    # moved into the parent class: DbConnector._fetchone()
-    # def _fetchone(self, c):
-    #       pass
-
-    # moved into the parent class: DbConnector._commit()
-    # def _commit(self):
-    #       pass
+    def _commit(self):
+        pass
 
     # moved into the parent class: DbConnector._rollback()
-    # def _rollback(self):
-    #       pass
+    def _rollback(self):
+        pass
 
     # moved into the parent class: DbConnector._get_cursor_columns()
     # def _get_cursor_columns(self, c):
