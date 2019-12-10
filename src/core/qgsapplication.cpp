@@ -1907,41 +1907,62 @@ bool QgsApplication::createDatabase( QString *errorMessage )
         return false;
       }
     }
+
+    res = sqlite3_exec( database.get(), "SELECT acronym FROM tbl_projection LIMIT 0", nullptr, nullptr, &errmsg );
+    if ( res != SQLITE_OK )
+    {
+      sqlite3_free( errmsg );
+
+      // qgis.db is missing tbl_projection, create it
+      if ( sqlite3_exec( database.get(),
+                         "CREATE TABLE tbl_projection ("
+                         "acronym varchar(20) NOT NULL PRIMARY KEY,"
+                         "name varchar(255) NOT NULL default '',"
+                         "notes varchar(255) NOT NULL default '',"
+                         "parameters varchar(255) NOT NULL default ''"
+                         ")", nullptr, nullptr, &errmsg ) != SQLITE_OK )
+      {
+        if ( errorMessage )
+        {
+          *errorMessage = tr( "Creation of missing tbl_projection in the private qgis.db failed.\n%1" ).arg( QString::fromUtf8( errmsg ) );
+        }
+        sqlite3_free( errmsg );
+        return false;
+      }
+    }
+
+    res = sqlite3_exec( database.get(), "SELECT epsg FROM tbl_srs LIMIT 0", nullptr, nullptr, &errmsg );
+    if ( res == SQLITE_OK )
+    {
+      // epsg column exists => need migration
+      if ( sqlite3_exec( database.get(),
+                         "ALTER TABLE tbl_srs RENAME TO tbl_srs_bak;"
+                         "CREATE TABLE tbl_srs ("
+                         "srs_id INTEGER PRIMARY KEY,"
+                         "description text NOT NULL,"
+                         "projection_acronym text NOT NULL,"
+                         "ellipsoid_acronym NOT NULL,"
+                         "parameters text NOT NULL,"
+                         "srid integer,"
+                         "auth_name varchar,"
+                         "auth_id varchar,"
+                         "is_geo integer NOT NULL,"
+                         "deprecated boolean);"
+                         "CREATE INDEX idx_srsauthid on tbl_srs(auth_name,auth_id);"
+                         "INSERT INTO tbl_srs(srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated) SELECT srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,'','',is_geo,0 FROM tbl_srs_bak;"
+                         "DROP TABLE tbl_srs_bak", nullptr, nullptr, &errmsg ) != SQLITE_OK )
+      {
+        if ( errorMessage )
+        {
+          *errorMessage = tr( "Migration of private qgis.db failed.\n%1" ).arg( QString::fromUtf8( errmsg ) );
+        }
+        sqlite3_free( errmsg );
+        return false;
+      }
+    }
     else
     {
-      int res = sqlite3_exec( database.get(), "SELECT epsg FROM tbl_srs LIMIT 0", nullptr, nullptr, &errmsg );
-      if ( res == SQLITE_OK )
-      {
-        // epsg column exists => need migration
-        if ( sqlite3_exec( database.get(),
-                           "ALTER TABLE tbl_srs RENAME TO tbl_srs_bak;"
-                           "CREATE TABLE tbl_srs ("
-                           "srs_id INTEGER PRIMARY KEY,"
-                           "description text NOT NULL,"
-                           "projection_acronym text NOT NULL,"
-                           "ellipsoid_acronym NOT NULL,"
-                           "parameters text NOT NULL,"
-                           "srid integer,"
-                           "auth_name varchar,"
-                           "auth_id varchar,"
-                           "is_geo integer NOT NULL,"
-                           "deprecated boolean);"
-                           "CREATE INDEX idx_srsauthid on tbl_srs(auth_name,auth_id);"
-                           "INSERT INTO tbl_srs(srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated) SELECT srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,'','',is_geo,0 FROM tbl_srs_bak;"
-                           "DROP TABLE tbl_srs_bak", nullptr, nullptr, &errmsg ) != SQLITE_OK )
-        {
-          if ( errorMessage )
-          {
-            *errorMessage = tr( "Migration of private qgis.db failed.\n%1" ).arg( QString::fromUtf8( errmsg ) );
-          }
-          sqlite3_free( errmsg );
-          return false;
-        }
-      }
-      else
-      {
-        sqlite3_free( errmsg );
-      }
+      sqlite3_free( errmsg );
     }
 
     if ( sqlite3_exec( database.get(), "DROP VIEW vw_srs", nullptr, nullptr, &errmsg ) != SQLITE_OK )
