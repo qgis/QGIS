@@ -249,11 +249,19 @@ void QgsMeshCalculatorDialog::updateInfoMessage()
 
   // selected driver is appropriate
   bool driverValid = false;
-  const QString driverKey = driver();
-  if ( mMeshDrivers.contains( driverKey ) )
+  if ( expressionValid )
   {
-    const QgsMeshDriverMetadata meta = mMeshDrivers[driverKey];
-    driverValid = meta.capabilities().testFlag( requiredCapability );
+    const QString driverKey = driver();
+    if ( mMeshDrivers.contains( driverKey ) )
+    {
+      const QgsMeshDriverMetadata meta = mMeshDrivers[driverKey];
+      driverValid = meta.capabilities().testFlag( requiredCapability );
+    }
+  }
+  else
+  {
+    // can't determine if driver is valid when expression is invalid
+    driverValid = true;
   }
 
   // output path is selected
