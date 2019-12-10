@@ -45,11 +45,11 @@ defaultMenuEntries = {}
 vectorMenu = QApplication.translate('MainWindow', 'Vect&or')
 analysisToolsMenu = vectorMenu + "/" + Processing.tr('&Analysis Tools')
 defaultMenuEntries.update({'qgis:distancematrix': analysisToolsMenu,
-                           'qgis:sumlinelengths': analysisToolsMenu,
+                           'native:sumlinelengths': analysisToolsMenu,
                            'native:countpointsinpolygon': analysisToolsMenu,
                            'qgis:listuniquevalues': analysisToolsMenu,
                            'qgis:basicstatisticsforfields': analysisToolsMenu,
-                           'qgis:nearestneighbouranalysis': analysisToolsMenu,
+                           'native:nearestneighbouranalysis': analysisToolsMenu,
                            'native:meancoordinates': analysisToolsMenu,
                            'native:lineintersections': analysisToolsMenu})
 researchToolsMenu = vectorMenu + "/" + Processing.tr('&Research Tools')
@@ -61,7 +61,7 @@ defaultMenuEntries.update({'native:creategrid': researchToolsMenu,
                            'qgis:randompointsinsidepolygons': researchToolsMenu,
                            'qgis:regularpoints': researchToolsMenu,
                            'native:selectbylocation': researchToolsMenu,
-                           'qgis:polygonfromlayerextent': researchToolsMenu})
+                           'native:polygonfromlayerextent': researchToolsMenu})
 
 geoprocessingToolsMenu = vectorMenu + "/" + Processing.tr('&Geoprocessing Tools')
 defaultMenuEntries.update({'native:buffer': geoprocessingToolsMenu,
