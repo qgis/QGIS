@@ -48,7 +48,7 @@ QString QgsNearestNeighbourAnalysisAlgorithm::groupId() const
 QString QgsNearestNeighbourAnalysisAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm performs nearest neighbor analysis for a point layer.\n\n"
-                      "Output is generated as an html file with the computed statistical values." );
+                      "Output is generated as an HTML file with the computed statistical values." );
 }
 
 QString QgsNearestNeighbourAnalysisAlgorithm::svgIconPath() const

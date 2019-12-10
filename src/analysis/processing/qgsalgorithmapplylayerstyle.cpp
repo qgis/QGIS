@@ -46,7 +46,7 @@ QString QgsApplyLayerStyleAlgorithm::groupId() const
 
 QString QgsApplyLayerStyleAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm renames a layer." );
+  return QObject::tr( "Applies the style to a layer. The style must be defined as QML file." );
 }
 
 QgsProcessingAlgorithm::Flags QgsApplyLayerStyleAlgorithm::flags() const

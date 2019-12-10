@@ -38,12 +38,12 @@ QStringList QgsExtentFromLayerAlgorithm::tags() const
 
 QString QgsExtentFromLayerAlgorithm::group() const
 {
-  return QObject::tr( "Raster terrain analysis" );
+  return QObject::tr( "Layer tools" );
 }
 
 QString QgsExtentFromLayerAlgorithm::groupId() const
 {
-  return QStringLiteral( "rasterterrainanalysis" );
+  return QStringLiteral( "layertools" );
 }
 
 QString QgsExtentFromLayerAlgorithm::shortHelpString() const
