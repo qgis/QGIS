@@ -344,9 +344,6 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
 
   labelPerPart = s.labelPerPart;
   mergeLines = s.mergeLines && !s.addDirectionSymbol;
-  minFeatureSize = s.minFeatureSize;
-  limitNumLabels = s.limitNumLabels;
-  maxNumLabels = s.maxNumLabels;
   zIndex = s.zIndex;
 
   mFormat = s.mFormat;
@@ -355,6 +352,7 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   mCallout.reset( s.mCallout ? s.mCallout->clone() : nullptr );
 
   mObstacleSettings = s.mObstacleSettings;
+  mThinningSettings = s.mThinningSettings;
 
   geometryGenerator = s.geometryGenerator;
   geometryGeneratorEnabled = s.geometryGeneratorEnabled;
@@ -808,9 +806,9 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
 
   labelPerPart = layer->customProperty( QStringLiteral( "labeling/labelPerPart" ) ).toBool();
   mergeLines = layer->customProperty( QStringLiteral( "labeling/mergeLines" ) ).toBool();
-  minFeatureSize = layer->customProperty( QStringLiteral( "labeling/minFeatureSize" ) ).toDouble();
-  limitNumLabels = layer->customProperty( QStringLiteral( "labeling/limitNumLabels" ), QVariant( false ) ).toBool();
-  maxNumLabels = layer->customProperty( QStringLiteral( "labeling/maxNumLabels" ), QVariant( 2000 ) ).toInt();
+  mThinningSettings.setMinimumFeatureSize( layer->customProperty( QStringLiteral( "labeling/minFeatureSize" ) ).toDouble() );
+  mThinningSettings.setLimitNumberLabelsEnabled( layer->customProperty( QStringLiteral( "labeling/limitNumLabels" ), QVariant( false ) ).toBool() );
+  mThinningSettings.setMaximumNumberLabels( layer->customProperty( QStringLiteral( "labeling/maxNumLabels" ), QVariant( 2000 ) ).toInt() );
   mObstacleSettings.setIsObstacle( layer->customProperty( QStringLiteral( "labeling/obstacle" ), QVariant( true ) ).toBool() );
   mObstacleSettings.setFactor( layer->customProperty( QStringLiteral( "labeling/obstacleFactor" ), QVariant( 1.0 ) ).toDouble() );
   mObstacleSettings.setType( static_cast< QgsLabelObstacleSettings::ObstacleType >( layer->customProperty( QStringLiteral( "labeling/obstacleType" ), QVariant( PolygonInterior ) ).toUInt() ) );
@@ -1034,9 +1032,9 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
 
   labelPerPart = renderingElem.attribute( QStringLiteral( "labelPerPart" ) ).toInt();
   mergeLines = renderingElem.attribute( QStringLiteral( "mergeLines" ) ).toInt();
-  minFeatureSize = renderingElem.attribute( QStringLiteral( "minFeatureSize" ) ).toDouble();
-  limitNumLabels = renderingElem.attribute( QStringLiteral( "limitNumLabels" ), QStringLiteral( "0" ) ).toInt();
-  maxNumLabels = renderingElem.attribute( QStringLiteral( "maxNumLabels" ), QStringLiteral( "2000" ) ).toInt();
+  mThinningSettings.setMinimumFeatureSize( renderingElem.attribute( QStringLiteral( "minFeatureSize" ) ).toDouble() );
+  mThinningSettings.setLimitNumberLabelsEnabled( renderingElem.attribute( QStringLiteral( "limitNumLabels" ), QStringLiteral( "0" ) ).toInt() );
+  mThinningSettings.setMaximumNumberLabels( renderingElem.attribute( QStringLiteral( "maxNumLabels" ), QStringLiteral( "2000" ) ).toInt() );
   mObstacleSettings.setIsObstacle( renderingElem.attribute( QStringLiteral( "obstacle" ), QStringLiteral( "1" ) ).toInt() );
   mObstacleSettings.setFactor( renderingElem.attribute( QStringLiteral( "obstacleFactor" ), QStringLiteral( "1" ) ).toDouble() );
   mObstacleSettings.setType( static_cast< QgsLabelObstacleSettings::ObstacleType >( renderingElem.attribute( QStringLiteral( "obstacleType" ), QString::number( PolygonInterior ) ).toUInt() ) );
@@ -1181,9 +1179,9 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
 
   renderingElem.setAttribute( QStringLiteral( "labelPerPart" ), labelPerPart );
   renderingElem.setAttribute( QStringLiteral( "mergeLines" ), mergeLines );
-  renderingElem.setAttribute( QStringLiteral( "minFeatureSize" ), minFeatureSize );
-  renderingElem.setAttribute( QStringLiteral( "limitNumLabels" ), limitNumLabels );
-  renderingElem.setAttribute( QStringLiteral( "maxNumLabels" ), maxNumLabels );
+  renderingElem.setAttribute( QStringLiteral( "minFeatureSize" ), mThinningSettings.minimumFeatureSize() );
+  renderingElem.setAttribute( QStringLiteral( "limitNumLabels" ), mThinningSettings.limitNumberOfLabelsEnabled() );
+  renderingElem.setAttribute( QStringLiteral( "maxNumLabels" ), mThinningSettings.maximumNumberLabels() );
   renderingElem.setAttribute( QStringLiteral( "obstacle" ), mObstacleSettings.isObstacle() );
   renderingElem.setAttribute( QStringLiteral( "obstacleFactor" ), mObstacleSettings.factor() );
   renderingElem.setAttribute( QStringLiteral( "obstacleType" ), static_cast< unsigned int >( mObstacleSettings.type() ) );
@@ -1972,7 +1970,10 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
     }
   }
 
-  if ( minFeatureSize > 0 && !checkMinimumSizeMM( context, geom, minFeatureSize ) )
+  QgsLabelThinningSettings featureThinningSettings = mThinningSettings;
+  featureThinningSettings.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
+
+  if ( featureThinningSettings.minimumFeatureSize() > 0 && !checkMinimumSizeMM( context, geom, featureThinningSettings.minimumFeatureSize() ) )
     return;
 
   if ( !geos_geom_clone )
@@ -1981,18 +1982,18 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   // likelihood exists label will be registered with PAL and may be drawn
   // check if max number of features to label (already registered with PAL) has been reached
   // Debug output at end of QgsPalLabeling::drawLabeling(), when deleting temp geometries
-  if ( limitNumLabels )
+  if ( featureThinningSettings.limitNumberOfLabelsEnabled() )
   {
-    if ( !maxNumLabels )
+    if ( !featureThinningSettings.maximumNumberLabels() )
     {
       return;
     }
-    if ( mFeatsRegPal >= maxNumLabels )
+    if ( mFeatsRegPal >= featureThinningSettings.maximumNumberLabels() )
     {
       return;
     }
 
-    int divNum = static_cast< int >( ( static_cast< double >( mFeaturesToLabel ) / maxNumLabels ) + 0.5 ); // NOLINT
+    int divNum = static_cast< int >( ( static_cast< double >( mFeaturesToLabel ) / featureThinningSettings.maximumNumberLabels() ) + 0.5 ); // NOLINT
     if ( divNum && ( mFeatsRegPal == static_cast< int >( mFeatsSendingToPal / divNum ) ) )
     {
       mFeatsSendingToPal += 1;

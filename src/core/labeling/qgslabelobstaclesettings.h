@@ -18,7 +18,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsgeos.h"
+#include "qgsgeometry.h"
 
 class QgsPropertyCollection;
 class QgsExpressionContext;

@@ -339,9 +339,9 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   chkLabelPerFeaturePart->setChecked( mSettings.labelPerPart );
   mPalShowAllLabelsForLayerChkBx->setChecked( mSettings.displayAll );
   chkMergeLines->setChecked( mSettings.mergeLines );
-  mMinSizeSpinBox->setValue( mSettings.minFeatureSize );
-  mLimitLabelChkBox->setChecked( mSettings.limitNumLabels );
-  mLimitLabelSpinBox->setValue( mSettings.maxNumLabels );
+  mMinSizeSpinBox->setValue( mSettings.thinningSettings().minimumFeatureSize() );
+  mLimitLabelChkBox->setChecked( mSettings.thinningSettings().limitNumberOfLabelsEnabled() );
+  mLimitLabelSpinBox->setValue( mSettings.thinningSettings().maximumNumberLabels() );
 
   // direction symbol(s)
   mDirectSymbChkBx->setChecked( mSettings.addDirectionSymbol );
@@ -572,9 +572,9 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.maxCurvedCharAngleOut = -mMaxCharAngleOutDSpinBox->value();
 
 
-  lyr.minFeatureSize = mMinSizeSpinBox->value();
-  lyr.limitNumLabels = mLimitLabelChkBox->isChecked();
-  lyr.maxNumLabels = mLimitLabelSpinBox->value();
+  lyr.thinningSettings().setMinimumFeatureSize( mMinSizeSpinBox->value() );
+  lyr.thinningSettings().setLimitNumberLabelsEnabled( mLimitLabelChkBox->isChecked() );
+  lyr.thinningSettings().setMaximumNumberLabels( mLimitLabelSpinBox->value() );
   lyr.fontLimitPixelSize = mFontLimitPixelChkBox->isChecked();
   lyr.fontMinPixelSize = mFontMinPixelSpinBox->value();
   lyr.fontMaxPixelSize = mFontMaxPixelSpinBox->value();
