@@ -18,6 +18,7 @@
 
 #include <QList>
 #include "qgswkbtypes.h"
+#include "abstracttool.h"
 
 #define SIP_NO_FILE
 
@@ -58,6 +59,9 @@ namespace QgsOverlayUtils
    * As a result, for all pairs of features in the output, a pair either has no common interior or their interior is the same.
    */
   void resolveOverlaps( const QgsFeatureSource &source, QgsFeatureSink &sink, QgsProcessingFeedback *feedback );
+
+  //! Runs multithreaded analysis tool, using feedback for cancel, progress and error report
+  void runVectorAnalysisTool( Vectoranalysis::AbstractTool &tool, QgsProcessingFeedback *feedback );
 }
 
 ///@endcond PRIVATE

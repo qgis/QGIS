@@ -14,10 +14,9 @@
  ***************************************************************************/
 
 #include "qgsalgorithmdifference.h"
-
 #include "qgsoverlayutils.h"
 #include "qgsvectorlayer.h"
-
+#include "differencetool.h"
 ///@cond PRIVATE
 
 
@@ -101,10 +100,8 @@ QVariantMap QgsDifferenceAlgorithm::processAlgorithm( const QVariantMap &paramet
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
 
-  int count = 0;
-  int total = sourceA->featureCount();
-  QgsOverlayUtils::difference( *sourceA, *sourceB, *sink, context, feedback, count, total, QgsOverlayUtils::OutputA );
-
+  Vectoranalysis::DifferenceTool tool( sourceA.get(), sourceB.get(), sink.get(), sourceA->wkbType() );
+  QgsOverlayUtils::runVectorAnalysisTool( tool, feedback );
   return outputs;
 }
 

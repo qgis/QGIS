@@ -198,6 +198,7 @@ SET(QGIS_ANALYSIS_SRCS
   network/qgsgraphanalyzer.cpp
 
   vector/abstracttool.cpp
+  vector/differencetool.cpp
   vector/intersectiontool.cpp
   vector/geometry_checker/qgsfeaturepool.cpp
   vector/geometry_checker/qgsgeometryanglecheck.cpp

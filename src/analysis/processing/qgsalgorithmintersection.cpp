@@ -18,7 +18,7 @@
 #include "qgsgeometrycollection.h"
 #include "qgsgeometryengine.h"
 #include "intersectiontool.h"
-//#include "qgsoverlayutils.h"
+#include "qgsoverlayutils.h"
 
 ///@cond PRIVATE
 
@@ -109,57 +109,7 @@ QVariantMap QgsIntersectionAlgorithm::processAlgorithm( const QVariantMap &param
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
 
   Vectoranalysis::IntersectionTool tool( sourceA.get(), sourceB.get(), fieldIndicesA, fieldIndicesB, sink.get(), sourceA->wkbType() );
-
-  QFutureWatcher<void> fWatcher;
-  QEventLoop evLoop;
-  QObject::connect( feedback, SIGNAL( canceled() ), &fWatcher, SLOT( cancel() ) );
-  QObject::connect( &fWatcher, SIGNAL( finished() ), &evLoop, SLOT( quit() ) );
-  QObject::connect( &fWatcher, &QFutureWatcher<void>::progressValueChanged, [&fWatcher, feedback]( int progressValue )
-  {
-    double progress = progressValue - fWatcher.progressMinimum();
-    double progressRange = fWatcher.progressMaximum() - fWatcher.progressMinimum();
-    feedback->setProgress( progress / progressRange * 100.0 );
-  } );
-  fWatcher.setFuture( tool.init() );
-  evLoop.exec();
-
-  int nTasks = tool.getTaskCount();
-  for ( int i = 0; i < nTasks; ++i )
-  {
-    if ( fWatcher.isCanceled() )
-    {
-      break;
-    }
-
-    fWatcher.setFuture( tool.execute( i ) );
-    evLoop.exec();
-  }
-
-  tool.finalizeOutput();
-
-  if ( tool.errorsOccurred() )
-  {
-    const QList<Vectoranalysis::AbstractTool::Error> &fErrorList = tool.getFeatureErrorList();
-    for ( const Vectoranalysis::AbstractTool::Error &e : fErrorList )
-    {
-      feedback->reportError( e.errorMsg );
-    }
-
-    const QList<Vectoranalysis::AbstractTool::Error> &gErrorList = tool.getGeometryErrorList();
-    for ( const Vectoranalysis::AbstractTool::Error &e : gErrorList )
-    {
-      feedback->reportError( e.errorMsg );
-    }
-
-    const QList<QString> &wErrorList = tool.getWriteErrors();
-    feedback->reportError( QString( "%1 features could not be written" ).arg( wErrorList.size() ) );
-
-    const QList<QString> &exceptionList = tool.getExceptions();
-    for ( const QString &e : exceptionList )
-    {
-      feedback->reportError( e );
-    }
-  }
+  QgsOverlayUtils::runVectorAnalysisTool( tool, feedback );
 
   return outputs;
 }
