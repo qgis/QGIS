@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsvectorlayerlabeling.h                                    *
+ * src/core/labeling/qgsvectorlayerlabeling.h                           *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -176,7 +176,7 @@ Create the instance from a DOM element with saved configuration
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsvectorlayerlabeling.h                                    *
+ * src/core/labeling/qgsvectorlayerlabeling.h                           *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

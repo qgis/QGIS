@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgslabelsearchtree.h                                        *
+ * src/core/labeling/qgslabelsearchtree.h                               *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -58,7 +58,7 @@ Sets the map ``settings`` associated with the labeling run.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgslabelsearchtree.h                                        *
+ * src/core/labeling/qgslabelsearchtree.h                               *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
