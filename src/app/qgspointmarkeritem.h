@@ -99,7 +99,7 @@ class APP_EXPORT QgsMapCanvasSymbolItem: public QgsMapCanvasItem
 
 /**
  * \ingroup app
- * \class QgsPointMarkerItem
+ * \class QgsMapCanvasMarkerSymbolItem
  * \brief An item that shows a point marker symbol centered on a map location.
  */
 class APP_EXPORT QgsMapCanvasMarkerSymbolItem: public QgsMapCanvasSymbolItem
@@ -131,7 +131,7 @@ class APP_EXPORT QgsMapCanvasMarkerSymbolItem: public QgsMapCanvasSymbolItem
 
 /**
  * \ingroup app
- * \class QgsLineMarkerItem
+ * \class QgsMapCanvasLineSymbolItem
  * \brief An item that shows a line symbol over the map.
  */
 class APP_EXPORT QgsMapCanvasLineSymbolItem: public QgsMapCanvasSymbolItem
