@@ -528,6 +528,7 @@ tests:
         - 00f909594106bf0aca7b909841b30532a816ddc8f53f4c0d30481710
         - 4d950df3d3f092409194f0c928aab1cedd81d82524d0fad0feb07348
         - 9c1b3f3ee94c6360b7b04bc00ed5e08faefea4e0968c1eb644d689b9
+        - d5e9f74a5f2490d39d735e94f8c08498df83ec1acbb252a50a9e62d4
         type: rasterhash
 
   - algorithm: grass7:i.eb.hsebal01.coords
