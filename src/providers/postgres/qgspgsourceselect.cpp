@@ -541,6 +541,10 @@ void QgsPgSourceSelect::addButtonClicked()
     {
       accept();
     }
+
+    // Clear selection after layers have been added
+    mTablesTreeView->selectionModel()->clearSelection();
+
   }
 }
 
