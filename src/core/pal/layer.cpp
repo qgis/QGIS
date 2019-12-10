@@ -314,10 +314,6 @@ void Layer::joinConnectedFeatures()
       FeaturePart *otherPart = _findConnectedPart( partCheck, parts );
       if ( otherPart )
       {
-        // remove partCheck from r-tree
-        const QgsRectangle checkPartBoundsBefore = partCheck->boundingBox();
-        const QgsRectangle otherPartBoundsBefore = otherPart->boundingBox();
-
         // merge points from partCheck to p->item
         if ( otherPart->mergeWithFeaturePart( partCheck ) )
         {
