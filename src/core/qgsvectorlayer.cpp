@@ -4252,7 +4252,7 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
         childElem = childElem.nextSiblingElement();
       }
 
-      QgsRuleBasedLabeling::Rule *ruleLabeling = new QgsRuleBasedLabeling::Rule( &settings, scaleMinDenom, scaleMaxDenom, filterExp, label );
+      QgsRuleBasedLabeling::Rule *ruleLabeling = new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings( settings ), scaleMinDenom, scaleMaxDenom, filterExp, label );
       rootRule->appendChild( ruleLabeling );
 
       ruleElem = ruleElem.nextSiblingElement();
