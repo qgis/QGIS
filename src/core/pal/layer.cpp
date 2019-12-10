@@ -259,9 +259,6 @@ void Layer::addFeaturePart( FeaturePart *fpart, const QString &labelText )
   // add to list of layer's feature parts
   mFeatureParts << fpart;
 
-  // add to r-tree for fast spatial access
-  mFeatureIndex.insert( fpart, fpart->boundingBox() );
-
   // add to hashtable with equally named feature parts
   if ( mMergeLines && !labelText.isEmpty() )
   {
@@ -273,9 +270,6 @@ void Layer::addObstaclePart( FeaturePart *fpart )
 {
   // add to list of layer's feature parts
   mObstacleParts.append( fpart );
-
-  // add to obstacle r-tree
-  mObstacleIndex.insert( fpart, fpart->boundingBox() );
 }
 
 static FeaturePart *_findConnectedPart( FeaturePart *partCheck, const QVector<FeaturePart *> &otherParts )
@@ -327,13 +321,6 @@ void Layer::joinConnectedFeatures()
         // merge points from partCheck to p->item
         if ( otherPart->mergeWithFeaturePart( partCheck ) )
         {
-          // remove the parts we are joining from the index
-          mFeatureIndex.remove( partCheck, checkPartBoundsBefore );
-          mFeatureIndex.remove( otherPart, otherPartBoundsBefore ) ;
-
-          // reinsert merged line to r-tree (probably not needed)
-          mFeatureIndex.insert( otherPart, otherPart->boundingBox() );
-
           mConnectedFeaturesIds.insert( partCheck->featureId(), connectedFeaturesId );
           mConnectedFeaturesIds.insert( otherPart->featureId(), connectedFeaturesId );
 
@@ -399,8 +386,6 @@ void Layer::chopFeaturesAtRepeatDistance()
 
     if ( shouldChop )
     {
-      mFeatureIndex.remove( fpart.get(), fpart->boundingBox() );
-
       const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r( geosctxt, geom );
 
       // get number of points
@@ -459,7 +444,6 @@ void Layer::chopFeaturesAtRepeatDistance()
           GEOSGeometry *newgeom = GEOSGeom_createLineString_r( geosctxt, cooSeq );
           FeaturePart *newfpart = new FeaturePart( fpart->feature(), newgeom );
           newFeatureParts.append( newfpart );
-          mFeatureIndex.insert( newfpart, newfpart->boundingBox() );
           repeatParts.push_back( newfpart );
 
           break;
@@ -483,7 +467,6 @@ void Layer::chopFeaturesAtRepeatDistance()
         GEOSGeometry *newgeom = GEOSGeom_createLineString_r( geosctxt, cooSeq );
         FeaturePart *newfpart = new FeaturePart( fpart->feature(), newgeom );
         newFeatureParts.append( newfpart );
-        mFeatureIndex.insert( newfpart, newfpart->boundingBox() );
         part.clear();
         part.push_back( p );
         repeatParts.push_back( newfpart );
