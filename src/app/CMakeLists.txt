@@ -54,9 +54,6 @@ SET(QGIS_APP_SRCS
   qgsidentifyresultsdialog.cpp
   qgsinstallgridshiftdialog.cpp
   qgsfeatureaction.cpp
-  qgslabelpropertydialog.cpp
-  qgslabelengineconfigdialog.cpp
-  qgslabelingwidget.cpp
   qgslayercapabilitiesmodel.cpp
   qgslayertreeviewindicatorprovider.cpp
   qgslayertreeviewembeddedindicator.cpp
@@ -74,7 +71,6 @@ SET(QGIS_APP_SRCS
   qgsprojectlistitemdelegate.cpp
   qgspuzzlewidget.cpp
   qgsversionmigration.cpp
-  qgsrulebasedlabelingwidget.cpp
   qgssnappinglayertreemodel.cpp
   qgssnappingwidget.cpp
   qgsstatusbarcoordinateswidget.cpp
@@ -92,27 +88,21 @@ SET(QGIS_APP_SRCS
   qgsmaptooladdring.cpp
   qgsmaptoolfillring.cpp
   qgsmaptoolannotation.cpp
-  qgsmaptoolchangelabelproperties.cpp
   qgsmaptooldeletering.cpp
   qgsmaptooldeletepart.cpp
   qgsmaptooltrimextendfeature.cpp
   qgsmaptoolfeatureaction.cpp
   qgsmaptoolformannotation.cpp
   qgsmaptoolhtmlannotation.cpp
-  qgsmaptoolpinlabels.cpp
-  qgsmaptoolshowhidelabels.cpp
   qgsmaptoolidentifyaction.cpp
-  qgsmaptoollabel.cpp
   qgsmaptoolmeasureangle.cpp
   qgsmaptoolmovefeature.cpp
-  qgsmaptoolmovelabel.cpp
   qgsmaptooloffsetcurve.cpp
   qgsmaptooloffsetpointsymbol.cpp
   qgsmaptoolpointsymbol.cpp
   qgsmaptoolreshape.cpp
   qgsmaptoolreverseline.cpp
   qgsmaptoolrotatefeature.cpp
-  qgsmaptoolrotatelabel.cpp
   qgsmaptoolrotatepointsymbols.cpp
   qgsmaptoolselect.cpp
   qgsmaptoolselectionhandler.cpp
@@ -192,6 +182,17 @@ SET(QGIS_APP_SRCS
   qgsmaptoolregularpolygoncentercorner.cpp
 
   browser/qgsinbuiltdataitemproviders.cpp
+
+  labeling/qgslabelpropertydialog.cpp
+  labeling/qgslabelengineconfigdialog.cpp
+  labeling/qgslabelingwidget.cpp
+  labeling/qgsmaptoolchangelabelproperties.cpp
+  labeling/qgsmaptoolpinlabels.cpp
+  labeling/qgsmaptoolshowhidelabels.cpp
+  labeling/qgsmaptoollabel.cpp
+  labeling/qgsmaptoolmovelabel.cpp
+  labeling/qgsmaptoolrotatelabel.cpp
+  labeling/qgsrulebasedlabelingwidget.cpp
 
   layout/qgsgeopdflayertreemodel.cpp
   layout/qgslayoutaddpagesdialog.cpp
@@ -419,6 +420,7 @@ INCLUDE_DIRECTORIES(
 
   ${CMAKE_SOURCE_DIR}/src/app
   ${CMAKE_SOURCE_DIR}/src/app/decorations
+  ${CMAKE_SOURCE_DIR}/src/app/labeling
   ${CMAKE_SOURCE_DIR}/src/app/layout
   ${CMAKE_SOURCE_DIR}/src/app/pluginmanager
   ${CMAKE_SOURCE_DIR}/src/app/gps
