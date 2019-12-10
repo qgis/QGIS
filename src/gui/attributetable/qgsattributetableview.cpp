@@ -35,7 +35,6 @@
 #include "qgsmaplayeractionregistry.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgui.h"
-#include "qgsdualview.h"
 
 QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
   : QTableView( parent )
@@ -306,7 +305,24 @@ void QgsAttributeTableView::mouseDoubleClickEvent( QMouseEvent *event )
   setSelectionMode( QAbstractItemView::NoSelection );
   QTableView::mouseDoubleClickEvent( event );
   setSelectionMode( QAbstractItemView::ExtendedSelection );
-  QgsDualView::zoomToCurrentFeature();
+  zoomToCurrentFeature();
+}
+
+void QgsAttributeTableView::zoomToCurrentFeature()
+{
+  QModelIndex currentIndex = currentIndex();
+  if ( !currentIndex.isValid() )
+  {
+    return;
+  }
+
+  QgsFeatureIds ids;
+  ids.insert( mFilterModel->rowToId( currentIndex ) );
+  QgsMapCanvas *canvas = mFilterModel->mapCanvas();
+  if ( canvas )
+  {
+    canvas->zoomToFeatureIds( mLayer, ids );
+  }
 }
 
 void QgsAttributeTableView::keyPressEvent( QKeyEvent *event )

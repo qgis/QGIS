@@ -26,7 +26,6 @@
 class QgsAttributeTableDelegate;
 class QgsAttributeTableFilterModel;
 class QgsAttributeTableModel;
-class QgsDualView;
 class QgsFeatureSelectionModel;
 class QgsIFeatureSelectionManager;
 class QgsMapCanvas;
