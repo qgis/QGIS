@@ -804,6 +804,11 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
         return true;
       }
     }
+    else
+    {
+      // Still a valid CRS, just not a known one
+      d->mIsValid = true;
+    }
   }
 #else
   if ( OSRAutoIdentifyEPSG( d->mCRS ) == OGRERR_NONE )
@@ -846,12 +851,9 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
   }
 #endif
 
-  //TODO: createFromProj4 used to save to the user database any new CRS
-  // this behavior was changed in order to separate creation and saving.
-  // Not sure if it necessary to save it here, should be checked by someone
-  // familiar with the code (should also give a more descriptive name to the generated CRS)
   if ( d->mSrsId == 0 )
   {
+    // TODO -- we should allow WKT based storage of custom CRS
     QString myName = QStringLiteral( " * %1 (%2)" )
                      .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
                            toProj4() );
