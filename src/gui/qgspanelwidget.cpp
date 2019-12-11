@@ -105,6 +105,10 @@ void QgsPanelWidget::keyPressEvent( QKeyEvent *event )
   {
     acceptPanel();
   }
+  else
+  {
+    QWidget::keyPressEvent( event );
+  }
 }
 
 QgsPanelWidgetWrapper::QgsPanelWidgetWrapper( QWidget *widget, QWidget *parent )
