@@ -233,7 +233,7 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms, con
 
     QString name = transform.name;
     if ( !transform.authority.isEmpty() && !transform.code.isEmpty() )
-      name += QStringLiteral( " — %1:%2" ).arg( transform.authority, transform.code );
+      name += QStringLiteral( " %1 %2:%3" ).arg( QString( QChar( 0x2013 ) ), transform.authority, transform.code );
     item->setText( name );
 
     if ( row == 0 ) // highlight first (preferred) operation
