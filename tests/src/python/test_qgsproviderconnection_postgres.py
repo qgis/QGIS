@@ -200,6 +200,15 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         self.assertEqual(conn.executeSql('SELECT FALSE'), [[False]])
         self.assertEqual(conn.executeSql('SELECT TRUE'), [[True]])
 
+    def test_nulls(self):
+        """Test returned values from typed NULL queries"""
+
+        md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
+        conn = md.createConnection(self.uri, {})
+        self.assertEqual(conn.executeSql('SELECT NULL::bool'), [[None]])
+        self.assertEqual(conn.executeSql('SELECT NULL::text'), [[None]])
+        self.assertEqual(conn.executeSql('SELECT NULL::bytea'), [[None]])
+
 
 if __name__ == '__main__':
     unittest.main()
