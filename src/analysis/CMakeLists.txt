@@ -201,6 +201,7 @@ SET(QGIS_ANALYSIS_SRCS
   vector/differencetool.cpp
   vector/intersectiontool.cpp
   vector/uniontool.cpp
+  vector/symdifferencetool.cpp
   vector/geometry_checker/qgsfeaturepool.cpp
   vector/geometry_checker/qgsgeometryanglecheck.cpp
   vector/geometry_checker/qgsgeometryareacheck.cpp

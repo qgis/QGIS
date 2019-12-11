@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmsymmetricaldifference.h"
-
+#include "symdifferencetool.h"
 #include "qgsoverlayutils.h"
 
 ///@cond PRIVATE
@@ -74,26 +74,19 @@ QVariantMap QgsSymmetricalDifferenceAlgorithm::processAlgorithm( const QVariantM
   if ( !sourceB )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "OVERLAY" ) ) );
 
-  QgsWkbTypes::Type geomType = QgsWkbTypes::multiType( sourceA->wkbType() );
-
   QString overlayFieldsPrefix = parameterAsString( parameters, QStringLiteral( "OVERLAY_FIELDS_PREFIX" ), context );
   QgsFields fields = QgsProcessingUtils::combineFields( sourceA->fields(), sourceB->fields(), overlayFieldsPrefix );
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, geomType, sourceA->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, sourceA->wkbType(), sourceA->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
 
-  int count = 0;
-  int total = sourceA->featureCount() + sourceB->featureCount();
-
-  QgsOverlayUtils::difference( *sourceA, *sourceB, *sink, context, feedback, count, total, QgsOverlayUtils::OutputAB );
-
-  QgsOverlayUtils::difference( *sourceB, *sourceA, *sink, context, feedback, count, total, QgsOverlayUtils::OutputBA );
-
+  Vectoranalysis::SymDifferenceTool tool( sourceA.get(), sourceB.get(), sink.get(), sourceA->wkbType() );
+  QgsOverlayUtils::runVectorAnalysisTool( tool, feedback );
   return outputs;
 }
 
