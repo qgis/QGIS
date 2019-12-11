@@ -16,7 +16,7 @@ class QgsLabelThinningSettings
 Contains settings related to how the label engine removes candidate label positions and reduces the number
 of displayed labels.
 
-.. versionadded:: 3.10.2
+.. versionadded:: 3.12
 %End
 
 %TypeHeaderCode
@@ -35,7 +35,7 @@ Returns ``True`` if the number of labels drawn for the layer should be limited.
 
     void setLimitNumberLabelsEnabled( bool enabled );
 %Docstring
-Sets wheter the the number of labels drawn for the layer should be limited.
+Sets whether the the number of labels drawn for the layer should be limited.
 
 .. seealso:: :py:func:`setMaximumNumberLabels`
 
