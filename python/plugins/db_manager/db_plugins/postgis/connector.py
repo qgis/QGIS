@@ -63,7 +63,6 @@ class CursorProxy():
         self.result = None
         self.closed = False
         self.description = None
-        print ("XXX CursorProxy initialized with sql " + sql)
         if (self.sql != None):
             self._execute()
 
@@ -78,6 +77,8 @@ class CursorProxy():
                     #print("XXX qvariant type of " + str(col)+ " is " + str(col.type))
                     if (str(col) == 'NULL'):
                         col = None
+                    else:
+                        col = str(col) # force to string
                 newrec.append(col)
             newres.append(newrec)
         return newres
