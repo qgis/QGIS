@@ -22,7 +22,7 @@ class NetCDFFile
     void openFile( const std::string &fileName );
 
     std::vector<int> readIntArr( const std::string &name, size_t dim ) const;
-    /** Reads hyperslap from double variable with 2 dimensions*/
+    /** Reads hyperslap from double variable - 2D array */
     std::vector<int> readIntArr( int arr_id,
                                  size_t start_dim1,
                                  size_t start_dim2,
@@ -30,7 +30,7 @@ class NetCDFFile
                                  size_t count_dim2
                                ) const;
 
-    /** Reads hyperslap from double variable with 1 dimension */
+    /** Reads hyperslap from double variable - 1D array */
     std::vector<int> readIntArr( int arr_id,
                                  size_t start_dim,
                                  size_t count_dim
@@ -38,12 +38,18 @@ class NetCDFFile
 
     std::vector<double> readDoubleArr( const std::string &name, size_t dim ) const;
 
-    /** Reads hyperslap from double variable */
+    /** Reads hyperslap from double variable - 2D array */
     std::vector<double> readDoubleArr( int arr_id,
                                        size_t start_dim1,
                                        size_t start_dim2,
                                        size_t count_dim1,
                                        size_t count_dim2
+                                     ) const;
+
+    /** Reads hyperslap from double variable - 1D array */
+    std::vector<double> readDoubleArr( int arr_id,
+                                       size_t start_dim,
+                                       size_t count_dim
                                      ) const;
 
     bool hasArr( const std::string &name ) const;

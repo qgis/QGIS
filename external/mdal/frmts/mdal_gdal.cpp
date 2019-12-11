@@ -342,8 +342,6 @@ void MDAL::DriverGdal::addDataToOutput( GDALRasterBandH raster_band, std::shared
   unsigned int mXSize = meshGDALDataset()->mXSize;
   unsigned int mYSize = meshGDALDataset()->mYSize;
 
-  double *values = tos->values();
-
   for ( unsigned int y = 0; y < mYSize; ++y )
   {
     // buffering per-line
@@ -380,16 +378,16 @@ void MDAL::DriverGdal::addDataToOutput( GDALRasterBandH raster_band, std::shared
         {
           if ( is_x )
           {
-            values[2 * idx] = val;
+            tos->setValueX( idx, val );
           }
           else
           {
-            values[2 * idx + 1] = val;
+            tos->setValueY( idx, val );
           }
         }
         else
         {
-          values[idx] = val;
+          tos->setScalarValue( idx, val );
         }
       }
     }
@@ -417,14 +415,14 @@ void MDAL::DriverGdal::addDatasetGroups()
     for ( timestep_map::const_iterator time_step = band->second.begin(); time_step != band->second.end(); time_step++ )
     {
       std::vector<GDALRasterBandH> raster_bands = time_step->second;
-      std::shared_ptr<MDAL::MemoryDataset2D> dataset = std::make_shared< MDAL::MemoryDataset2D >( group.get() );
+      std::shared_ptr<MDAL::MemoryDataset2D> dataset = std::make_shared< MDAL::MemoryDataset2D >( group.get(), true );
 
       dataset->setTime( time_step->first );
       for ( std::vector<GDALRasterBandH>::size_type i = 0; i < raster_bands.size(); ++i )
       {
         addDataToOutput( raster_bands[i], dataset, is_vector, i == 0 );
       }
-      MDAL::activateFaces( mMesh.get(), dataset );
+      dataset->activateFaces( mMesh.get() );
       dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
       group->datasets.push_back( dataset );
     }

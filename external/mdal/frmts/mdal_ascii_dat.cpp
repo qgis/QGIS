@@ -338,10 +338,9 @@ void MDAL::DriverAsciiDat::readVertexTimestep(
   size_t faceCount = mesh->facesCount();
   size_t vertexCount = mesh->verticesCount();
 
-  std::shared_ptr<MDAL::MemoryDataset2D> dataset = std::make_shared< MDAL::MemoryDataset2D >( group.get() );
+  std::shared_ptr<MDAL::MemoryDataset2D> dataset = std::make_shared< MDAL::MemoryDataset2D >( group.get(), hasStatus );
   dataset->setTime( t );
 
-  int *active = dataset->active();
   // only for new format
   for ( size_t i = 0; i < faceCount; ++i )
   {
@@ -349,14 +348,12 @@ void MDAL::DriverAsciiDat::readVertexTimestep(
     {
       std::string line;
       std::getline( stream, line );
-      active[i] = toBool( line );
+      dataset->setActive( i, toBool( line ) );
     }
   }
 
   const Mesh2dm *m2dm = dynamic_cast<const Mesh2dm *>( mesh );
-  double *values = dataset->values();
   size_t meshIdCount = maximumId( mesh ) + 1; // these are native format indexes (IDs). For formats without gaps it equals vertex array index
-
 
   for ( size_t id = 0; id < meshIdCount; ++id )
   {
@@ -376,8 +373,7 @@ void MDAL::DriverAsciiDat::readVertexTimestep(
     {
       if ( tsItems.size() >= 2 ) // BASEMENT files with vectors have 3 columns
       {
-        values[2 * index] = toDouble( tsItems[0] );
-        values[2 * index + 1] = toDouble( tsItems[1] );
+        dataset->setVectorValue( index, toDouble( tsItems[0] ), toDouble( tsItems[1] ) );
       }
       else
       {
@@ -387,7 +383,7 @@ void MDAL::DriverAsciiDat::readVertexTimestep(
     else
     {
       if ( tsItems.size() >= 1 )
-        values[index] = toDouble( tsItems[0] );
+        dataset->setScalarValue( index, toDouble( tsItems[0] ) );
       else
       {
         debug( "invalid timestep line" );
@@ -412,8 +408,6 @@ void MDAL::DriverAsciiDat::readFaceTimestep(
 
   std::shared_ptr<MDAL::MemoryDataset2D> dataset = std::make_shared< MDAL::MemoryDataset2D >( group.get() );
   dataset->setTime( t );
-  double *values = dataset->values();
-  // TODO: hasStatus
   for ( size_t index = 0; index < faceCount; ++index )
   {
     std::string line;
@@ -424,8 +418,7 @@ void MDAL::DriverAsciiDat::readFaceTimestep(
     {
       if ( tsItems.size() >= 2 ) // BASEMENT files with vectors have 3 columns
       {
-        values[2 * index] = toDouble( tsItems[0] );
-        values[2 * index + 1] = toDouble( tsItems[1] );
+        dataset->setVectorValue( index, toDouble( tsItems[0] ), toDouble( tsItems[1] ) );
       }
       else
       {
@@ -435,7 +428,7 @@ void MDAL::DriverAsciiDat::readFaceTimestep(
     else
     {
       if ( tsItems.size() >= 1 )
-        values[index] = toDouble( tsItems[0] );
+        dataset->setScalarValue( index, toDouble( tsItems[0] ) ) ;
       else
       {
         debug( "invalid timestep line" );
@@ -504,7 +497,7 @@ bool MDAL::DriverAsciiDat::persist( MDAL::DatasetGroup *group )
     const std::shared_ptr<MDAL::MemoryDataset2D> dataset
       = std::dynamic_pointer_cast<MDAL::MemoryDataset2D>( group->datasets[time_index] );
 
-    bool hasActiveStatus = isOnVertices && dataset->active();
+    bool hasActiveStatus = isOnVertices && dataset->supportsActiveFlag();
     out << "TS " << hasActiveStatus << " " << std::to_string( dataset->time() ) << "\n";
 
     if ( hasActiveStatus )
@@ -512,7 +505,7 @@ bool MDAL::DriverAsciiDat::persist( MDAL::DatasetGroup *group )
       // Fill the active data
       for ( size_t i = 0; i < elemCount; ++i )
       {
-        int active = dataset->active()[i];
+        int active = dataset->active( i );
         out << ( active == 1 ? true : false ) << "\n";
       }
     }
@@ -523,10 +516,10 @@ bool MDAL::DriverAsciiDat::persist( MDAL::DatasetGroup *group )
     {
       // Read values flags
       if ( isScalar )
-        out << dataset->values()[i] << "\n";
+        out << dataset->scalarValue( i ) << "\n";
       else
       {
-        out << dataset->values()[2 * i] << " " << dataset->values()[2 * i + 1 ]  << "\n";
+        out << dataset->valueX( i ) << " " << dataset->valueY( i )  << "\n";
       }
     }
   }

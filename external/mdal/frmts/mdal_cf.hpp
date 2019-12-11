@@ -53,10 +53,16 @@ namespace MDAL
 
   struct CFDatasetGroupInfo
   {
+    enum TimeLocation
+    {
+      NoTimeDimension = 0, //!< Dataset does not have time dimension at all, e.g. float TEMP(Cell)
+      TimeDimensionFirst, //!< Time dimension is first, e.g. float TEMP(Time, Cells)
+      TimeDimensionLast, //!< Time dimension is last, e.g. float TEMP(Cells, Time)
+    };
     std::string name; //!< Dataset group name
     CFDimensions::Type outputType;
     bool is_vector;
-    bool time_first_dim;
+    TimeLocation timeLocation;
     size_t nTimesteps;
     size_t nValues;
     int ncid_x; //!< NetCDF variable id
@@ -72,7 +78,7 @@ namespace MDAL
                    double fill_val_y,
                    int ncid_x,
                    int ncid_y,
-                   bool time_first_dim,
+                   CFDatasetGroupInfo::TimeLocation timeLocation,
                    size_t timesteps,
                    size_t values,
                    size_t ts,
@@ -82,13 +88,13 @@ namespace MDAL
 
       virtual size_t scalarData( size_t indexStart, size_t count, double *buffer ) override;
       virtual size_t vectorData( size_t indexStart, size_t count, double *buffer ) override;
-      virtual size_t activeData( size_t indexStart, size_t count, int *buffer ) override;
-    private:
+
+    protected:
       double mFillValX;
       double mFillValY;
       int mNcidX; //!< NetCDF variable id
       int mNcidY; //!< NetCDF variable id
-      bool mTimeFirstDim;
+      CFDatasetGroupInfo::TimeLocation mTimeLocation;
       size_t mTimesteps;
       size_t mValues;
       size_t mTs;

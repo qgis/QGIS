@@ -22,6 +22,7 @@ MDAL::XmdfDataset::XmdfDataset( DatasetGroup *grp, const HdfDataset &valuesDs, c
   , mHdf5DatasetActive( activeDs )
   , mTimeIndex( timeIndex )
 {
+  setSupportsActiveFlag( true );
 }
 
 const HdfDataset &MDAL::XmdfDataset::dsValues() const

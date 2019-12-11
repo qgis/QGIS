@@ -84,7 +84,8 @@ void MDAL::Driver::createDatasetGroup( MDAL::Mesh *mesh, const std::string &grou
 
 void MDAL::Driver::createDataset( MDAL::DatasetGroup *group, double time, const double *values, const int *active )
 {
-  std::shared_ptr<MDAL::MemoryDataset2D> dataset = std::make_shared< MemoryDataset2D >( group );
+  bool supportsActiveFlag = ( active != nullptr );
+  std::shared_ptr<MDAL::MemoryDataset2D> dataset = std::make_shared< MemoryDataset2D >( group, supportsActiveFlag );
   dataset->setTime( time );
   size_t count = dataset->valuesCount();
 
@@ -92,8 +93,8 @@ void MDAL::Driver::createDataset( MDAL::DatasetGroup *group, double time, const 
     count *= 2;
 
   memcpy( dataset->values(), values, sizeof( double ) * count );
-  if ( active && dataset->active() )
-    memcpy( dataset->active(), active, sizeof( int ) * dataset->mesh()->facesCount() );
+  if ( dataset->supportsActiveFlag() )
+    dataset->setActive( active );
   dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
   group->datasets.push_back( dataset );
 }

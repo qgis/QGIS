@@ -30,6 +30,12 @@ size_t MDAL::Dataset::valuesCount() const
   }
 }
 
+size_t MDAL::Dataset::activeData( size_t, size_t, int * )
+{
+  assert( !supportsActiveFlag() );
+  return 0;
+}
+
 MDAL::Statistics MDAL::Dataset::statistics() const
 {
   return mStatistics;
@@ -60,6 +66,16 @@ void MDAL::Dataset::setTime( double time )
   mTime = time;
 }
 
+bool MDAL::Dataset::supportsActiveFlag() const
+{
+  return mSupportsActiveFlag;
+}
+
+void MDAL::Dataset::setSupportsActiveFlag( bool value )
+{
+  mSupportsActiveFlag = value;
+}
+
 bool MDAL::Dataset::isValid() const
 {
   return mIsValid;
@@ -87,8 +103,6 @@ size_t MDAL::Dataset2D::scalarVolumesData( size_t, size_t, double * ) { return 0
 
 size_t MDAL::Dataset2D::vectorVolumesData( size_t, size_t, double * ) { return 0; }
 
-size_t MDAL::Dataset2D::activeVolumesData( size_t, size_t, int * ) { return 0; }
-
 MDAL::Dataset3D::Dataset3D( MDAL::DatasetGroup *parent, size_t volumes, size_t maxVerticalLevelCount )
   : Dataset( parent )
   , mVolumesCount( volumes )
@@ -111,8 +125,6 @@ size_t MDAL::Dataset3D::maximumVerticalLevelsCount() const
 size_t MDAL::Dataset3D::scalarData( size_t, size_t, double * ) { return 0; }
 
 size_t MDAL::Dataset3D::vectorData( size_t, size_t, double * ) { return 0; }
-
-size_t MDAL::Dataset3D::activeData( size_t, size_t, int * ) { return 0; }
 
 MDAL::DatasetGroup::DatasetGroup( const std::string &driverName,
                                   MDAL::Mesh *parent,
@@ -210,6 +222,18 @@ MDAL::Mesh *MDAL::DatasetGroup::mesh() const
   return mParent;
 }
 
+size_t MDAL::DatasetGroup::maximumVerticalLevelsCount() const
+{
+  size_t maxLevels = 0;
+  for ( const std::shared_ptr<Dataset> &ds : datasets )
+  {
+    const size_t maxDsLevels = ds->maximumVerticalLevelsCount();
+    if ( maxDsLevels > maxLevels )
+      return maxLevels = maxDsLevels;
+  }
+  return maxLevels;
+}
+
 bool MDAL::DatasetGroup::isInEditMode() const
 {
   return mInEditMode;
@@ -297,6 +321,12 @@ void MDAL::Mesh::setSourceCrsFromWKT( const std::string &wkt )
 void MDAL::Mesh::setSourceCrsFromEPSG( int code )
 {
   setSourceCrs( std::string( "EPSG:" ) + std::to_string( code ) );
+}
+
+void MDAL::Mesh::setSourceCrsFromPrjFile( const std::string &filename )
+{
+  const std::string proj = MDAL::readFileToString( filename );
+  setSourceCrs( proj );
 }
 
 size_t MDAL::Mesh::verticesCount() const

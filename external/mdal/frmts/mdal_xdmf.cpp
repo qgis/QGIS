@@ -101,13 +101,6 @@ size_t MDAL::XdmfDataset::vectorData( size_t indexStart, size_t count, double *b
   return copyValues;
 }
 
-size_t MDAL::XdmfDataset::activeData( size_t indexStart, size_t count, int *buffer )
-{
-  MDAL_UNUSED( indexStart )
-  memset( buffer, 1, count * sizeof( int ) );
-  return count;
-}
-
 // //////////////////////////////////////////////////////////////////////////////
 // //////////////////////////////////////////////////////////////////////////////
 // //////////////////////////////////////////////////////////////////////////////
@@ -167,13 +160,6 @@ size_t MDAL::XdmfFunctionDataset::vectorData( size_t indexStart, size_t count, d
   assert( mType == FunctionType::Join );
 
   return joinFunction( indexStart, count, buffer );
-}
-
-size_t MDAL::XdmfFunctionDataset::activeData( size_t indexStart, size_t count, int *buffer )
-{
-  MDAL_UNUSED( indexStart )
-  memset( buffer, 1, count * sizeof( int ) );
-  return count;
 }
 
 size_t MDAL::XdmfFunctionDataset::subtractFunction( size_t indexStart, size_t count, double *buffer )

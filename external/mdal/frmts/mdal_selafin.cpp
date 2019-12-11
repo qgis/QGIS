@@ -475,12 +475,10 @@ void MDAL::DriverSelafin::addData( const std::vector<std::string> &var_names, co
       }
       else
       {
-        dataset = std::make_shared< MemoryDataset2D >( group.get() );
+        dataset = std::make_shared< MemoryDataset2D >( group.get(), true );
         dataset->setTime( it->first );
         group->datasets.push_back( dataset );
       }
-      double *values = dataset->values();
-
       for ( size_t nP = 0; nP < nPoints; nP++ )
       {
         double val = it->second.at( nP );
@@ -492,16 +490,16 @@ void MDAL::DriverSelafin::addData( const std::vector<std::string> &var_names, co
         {
           if ( is_x )
           {
-            values[2 * nP] = val;
+            dataset->setValueX( nP, val );
           }
           else
           {
-            values[2 * nP + 1] = val;
+            dataset->setValueY( nP, val );
           }
         }
         else
         {
-          values[nP] = val;
+          dataset->setScalarValue( nP, val );
         }
       }
     }
@@ -513,7 +511,8 @@ void MDAL::DriverSelafin::addData( const std::vector<std::string> &var_names, co
     for ( auto dataset : group->datasets )
     {
       std::shared_ptr<MDAL::MemoryDataset2D> dts = std::dynamic_pointer_cast<MDAL::MemoryDataset2D>( dataset );
-      MDAL::activateFaces( mMesh.get(), dts );
+      if ( dts )
+        dts->activateFaces( mMesh.get() );
 
       MDAL::Statistics stats = MDAL::calculateStatistics( dataset );
       dataset->setStatistics( stats );

@@ -50,8 +50,8 @@ namespace MDAL
       virtual size_t scalarData( size_t indexStart, size_t count, double *buffer ) = 0;
       //! For DataOnVertices2D or DataOnFaces2D
       virtual size_t vectorData( size_t indexStart, size_t count, double *buffer ) = 0;
-      //! For DataOnVertices2D or DataOnFaces2D
-      virtual size_t activeData( size_t indexStart, size_t count, int *buffer ) = 0;
+      //! For drivers that supports it, see supportsActiveFlag()
+      virtual size_t activeData( size_t indexStart, size_t count, int *buffer );
 
       //! For DataOnVolumes3D
       virtual size_t verticalLevelCountData( size_t indexStart, size_t count, int *buffer ) = 0;
@@ -63,8 +63,6 @@ namespace MDAL
       virtual size_t scalarVolumesData( size_t indexStart, size_t count, double *buffer ) = 0;
       //! For DataOnVolumes3D
       virtual size_t vectorVolumesData( size_t indexStart, size_t count, double *buffer ) = 0;
-      //! For DataOnVolumes3D
-      virtual size_t activeVolumesData( size_t indexStart, size_t count, int *buffer ) = 0;
 
       virtual size_t volumesCount() const = 0;
       virtual size_t maximumVerticalLevelsCount() const = 0;
@@ -80,9 +78,13 @@ namespace MDAL
       double time() const;
       void setTime( double time );
 
+      bool supportsActiveFlag() const;
+      void setSupportsActiveFlag( bool value );
+
     private:
       double mTime = std::numeric_limits<double>::quiet_NaN();
       bool mIsValid = true;
+      bool mSupportsActiveFlag = false;
       DatasetGroup *mParent = nullptr;
       Statistics mStatistics;
   };
@@ -98,7 +100,6 @@ namespace MDAL
       size_t faceToVolumeData( size_t indexStart, size_t count, int *buffer ) override;
       size_t scalarVolumesData( size_t indexStart, size_t count, double *buffer ) override;
       size_t vectorVolumesData( size_t indexStart, size_t count, double *buffer ) override;
-      size_t activeVolumesData( size_t indexStart, size_t count, int *buffer ) override;
 
       size_t volumesCount() const override;
       size_t maximumVerticalLevelsCount() const override;
@@ -116,7 +117,7 @@ namespace MDAL
 
       virtual size_t scalarData( size_t indexStart, size_t count, double *buffer ) override;
       virtual size_t vectorData( size_t indexStart, size_t count, double *buffer ) override;
-      virtual size_t activeData( size_t indexStart, size_t count, int *buffer ) override;
+
       size_t volumesCount() const override;
       size_t maximumVerticalLevelsCount() const override;
 
@@ -169,6 +170,8 @@ namespace MDAL
       void setReferenceTime( const std::string &referenceTime );
 
       Mesh *mesh() const;
+
+      size_t maximumVerticalLevelsCount() const;
 
       bool isInEditMode() const;
       void startEditing();
@@ -225,6 +228,7 @@ namespace MDAL
       void setSourceCrs( const std::string &str );
       void setSourceCrsFromWKT( const std::string &wkt );
       void setSourceCrsFromEPSG( int code );
+      void setSourceCrsFromPrjFile( const std::string &filename );
 
       virtual std::unique_ptr<MDAL::MeshVertexIterator> readVertices() = 0;
       virtual std::unique_ptr<MDAL::MeshFaceIterator> readFaces() = 0;

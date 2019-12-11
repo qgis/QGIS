@@ -253,17 +253,15 @@ void MDAL::DriverFlo2D::parseTIMDEPFile( const std::string &datFileName, const s
       if ( face_idx == nVertexs ) throw MDAL_Status::Err_IncompatibleMesh;
 
       // this is magnitude: getDouble(lineParts[2]);
-      flowDataset->values()[2 * face_idx] = getDouble( lineParts[3] );
-      flowDataset->values()[2 * face_idx + 1] = getDouble( lineParts[4] );
+      flowDataset->setVectorValue( face_idx, getDouble( lineParts[3] ),  getDouble( lineParts[4] ) );
 
       double depth = getDouble( lineParts[1] );
-      depthDataset->values()[face_idx] = depth;
+      depthDataset->setScalarValue( face_idx, depth );
 
       if ( !std::isnan( depth ) ) depth += elevations[face_idx];
-      waterLevelDataset->values()[face_idx] = depth;
+      waterLevelDataset->setScalarValue( face_idx, depth );
 
       face_idx ++;
-
     }
     else
     {
@@ -582,8 +580,7 @@ bool MDAL::DriverFlo2D::parseHDF5Datasets( MemoryMesh *mesh, const std::string &
           size_t idx = 2 * ( ts * nFaces + i );
           double x = getDouble( static_cast<double>( values[idx] ) );
           double y = getDouble( static_cast<double>( values[idx + 1] ) );
-          output->values()[2 * i] = x;
-          output->values()[2 * i + 1] = y;
+          output->setVectorValue( i, x, y );
         }
       }
       else
@@ -593,7 +590,7 @@ bool MDAL::DriverFlo2D::parseHDF5Datasets( MemoryMesh *mesh, const std::string &
         {
           size_t idx = ts * nFaces + i;
           double val = getDouble( static_cast<double>( values[idx] ) );
-          output->values()[i] = val;
+          output->setScalarValue( i, val );
         }
       }
       addDatasetToGroup( ds, output );

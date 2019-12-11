@@ -67,7 +67,6 @@ namespace MDAL
 
       size_t scalarData( size_t indexStart, size_t count, double *buffer ) override;
       size_t vectorData( size_t indexStart, size_t count, double *buffer ) override;
-      size_t activeData( size_t indexStart, size_t count, int *buffer ) override;
 
     private:
       std::vector<hsize_t> offsets( size_t indexStart );
@@ -123,7 +122,6 @@ namespace MDAL
 
       size_t scalarData( size_t indexStart, size_t count, double *buffer ) override;
       size_t vectorData( size_t indexStart, size_t count, double *buffer ) override;
-      size_t activeData( size_t indexStart, size_t count, int *buffer ) override;
 
     private:
       size_t subtractFunction( size_t indexStart, size_t count, double *buffer );

@@ -44,6 +44,7 @@ namespace MDAL
   std::string baseName( const std::string &filename );
   std::string dirName( const std::string &filename );
   std::string pathJoin( const std::string &path1, const std::string &path2 );
+  std::string readFileToString( const std::string &filename );
 
   // strings
   enum ContainsBehaviour
@@ -128,8 +129,6 @@ namespace MDAL
   void addBedElevationDatasetGroup( MDAL::Mesh *mesh, const Vertices &vertices );
   //! Adds altitude dataset group to mesh
   void addFaceScalarDatasetGroup( MDAL::Mesh *mesh, const std::vector<double> &values, const std::string &name );
-  //! Loop through all faces and activate those which has all 4 values on vertices valid
-  void activateFaces( MDAL::MemoryMesh *mesh, std::shared_ptr<MemoryDataset2D> dataset );
 
   //! function used to read all of type of value. Option to change the endianness is provided
   template<typename T>

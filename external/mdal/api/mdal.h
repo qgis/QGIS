@@ -324,6 +324,9 @@ MDAL_EXPORT bool MDAL_G_hasScalarData( DatasetGroupH group );
 //! Whether dataset is on vertices
 MDAL_EXPORT MDAL_DataLocation MDAL_G_dataLocation( DatasetGroupH group );
 
+//! Returns maximum number of vertical levels (for 3D meshes)
+MDAL_EXPORT int MDAL_G_maximumVerticalLevelCount( DatasetGroupH group );
+
 /**
  * Returns the minimum and maximum values of the group
  * Returns NaN on error
@@ -339,13 +342,15 @@ MDAL_EXPORT void MDAL_G_minimumMaximum( DatasetGroupH group, double *min, double
  *
  * Minimum and maximum dataset values are automatically calculated
  *
+ * Only for 2D datasets
+ *
  * \param group parent group handle
  * \param time time for dataset
  * \param values For scalar data on vertices, the size must be vertex count
  * For scalar data on faces, the size must be faces count
  * For vector data on vertices, the size must be vertex count * 2 (x1, y1, x2, y2, ..., xN, yN)
  * For vector data on faces, the size must be faces count * 2 (x1, y1, x2, y2, ..., xN, yN)
- * \param active if null pointer, all faces are active. Otherwise size must be equal to face count.
+ * \param active if null pointer, MDAL_D_hasActiveFlagCapability returns false. Otherwise size must be equal to face count.
  * \returns empty pointer if not possible to create dataset (e.g. group opened in read mode), otherwise handle to new dataset
  */
 MDAL_EXPORT DatasetH MDAL_G_addDataset( DatasetGroupH group,
@@ -399,18 +404,20 @@ MDAL_EXPORT int MDAL_D_valueCount( DatasetH dataset );
 //! Returns whether dataset is valid
 MDAL_EXPORT bool MDAL_D_isValid( DatasetH dataset );
 
+//! Returns whether dataset supports active flag for dataset faces
+MDAL_EXPORT bool MDAL_D_hasActiveFlagCapability( DatasetH dataset );
+
 //! Data type to be returned by MDAL_D_data
 enum MDAL_DataType
 {
   SCALAR_DOUBLE = 0, //!< Double value for scalar datasets (DataOnVertices2D or DataOnFaces2D)
   VECTOR_2D_DOUBLE, //!< Double, double value for vector datasets (DataOnVertices2D or DataOnFaces2D)
-  ACTIVE_INTEGER, //!< Integer, active flag for dataset faces. Some formats support switching off the element for particular timestep (DataOnVertices2D or DataOnFaces2D)
+  ACTIVE_INTEGER, //!< Integer, active flag for dataset faces. Some formats support switching off the element for particular timestep (see MDAL_D_hasActiveFlagCapability)
   VERTICAL_LEVEL_COUNT_INTEGER, //!< Number of vertical level for particular mesh's face in 3D Stacked Meshes (DataOnVolumes3D)
   VERTICAL_LEVEL_DOUBLE, //!< Vertical level extrusion for particular mesh's face in 3D Stacked Meshes (DataOnVolumes3D)
   FACE_INDEX_TO_VOLUME_INDEX_INTEGER, //!< The first index of 3D volume for particular mesh's face in 3D Stacked Meshes (DataOnVolumes3D)
   SCALAR_VOLUMES_DOUBLE, //!< Double scalar values for volumes in 3D Stacked Meshes (DataOnVolumes3D)
   VECTOR_2D_VOLUMES_DOUBLE, //!< Double, double value for volumes in 3D Stacked Meshes (DataOnVolumes3D)
-  ACTIVE_VOLUMES_INTEGER //!< Integer, active flag for dataset volumes. Some formats support switching off the element for particular timestep (DataOnVolumes3D)
 };
 
 /**
@@ -431,7 +438,6 @@ enum MDAL_DataType
  * For FACE_INDEX_TO_VOLUME_INDEX_INTEGER, the minimum size must be faceCount * size_of(int)
  * For SCALAR_VOLUMES_DOUBLE, the minimum size must be volumesCount * size_of(double)
  * For VECTOR_2D_VOLUMES_DOUBLE, the minimum size must be 2 * volumesCount * size_of(double)
- * For ACTIVE_VOLUMES_INTEGER, , the minimum size must be volumesCount * size_of(int)
  * \returns number of values written to buffer. If return value != count requested, see MDAL_LastStatus() for error type
  */
 MDAL_EXPORT int MDAL_D_data( DatasetH dataset, int indexStart, int count, MDAL_DataType dataType, void *buffer );
