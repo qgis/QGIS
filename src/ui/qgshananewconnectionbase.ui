@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>404</width>
-    <height>621</height>
+    <width>464</width>
+    <height>725</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -372,7 +372,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>108</width>
+             <width>151</width>
              <height>20</height>
             </rect>
            </property>
@@ -390,7 +390,7 @@
           <widget class="QLineEdit" name="txtIdentifier">
            <property name="geometry">
             <rect>
-             <x>120</x>
+             <x>160</x>
              <y>0</y>
              <width>41</width>
              <height>20</height>
@@ -641,7 +641,7 @@
   </connection>
  </connections>
  <buttongroups>
-  <buttongroup name="buttonGroup"/>
   <buttongroup name="buttonGroup_2"/>
+  <buttongroup name="buttonGroup"/>
  </buttongroups>
 </ui>
