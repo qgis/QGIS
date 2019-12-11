@@ -1405,7 +1405,7 @@ bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt )
   }
 #endif
 
-  QgsReadWriteLocker locker( sProj4CacheLock, QgsReadWriteLocker::Read );
+  QgsReadWriteLocker locker( sProj4CacheLock, QgsReadWriteLocker::Unlocked );
   if ( !res )
   {
     locker.changeMode( QgsReadWriteLocker::Write );
