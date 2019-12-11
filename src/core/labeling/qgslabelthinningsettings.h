@@ -29,7 +29,7 @@ class QgsExpressionContext;
  * Contains settings related to how the label engine removes candidate label positions and reduces the number
  * of displayed labels.
  *
- * \since QGIS 3.10.2
+ * \since QGIS 3.12
  */
 class CORE_EXPORT QgsLabelThinningSettings
 {
@@ -43,7 +43,7 @@ class CORE_EXPORT QgsLabelThinningSettings
     bool limitNumberOfLabelsEnabled() const { return mLimitNumLabels; }
 
     /**
-     * Sets wheter the the number of labels drawn for the layer should be limited.
+     * Sets whether the the number of labels drawn for the layer should be limited.
      * \see setMaximumNumberLabels()
      * \see limitNumberOfLabelsEnabled()
      */
