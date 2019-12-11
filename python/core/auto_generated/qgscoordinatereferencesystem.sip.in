@@ -696,10 +696,9 @@ Update proj.4 parameters in our database from proj.4
    This is used internally and should not be necessary to call in client code
 %End
 
-
     long saveAsUserCrs( const QString &name );
 %Docstring
-Save the proj4-string as a custom CRS.
+Saves the CRS as a custom ("USER") CRS.
 
 Returns the new CRS srsid(), or -1 if the CRS could not be saved.
 %End
