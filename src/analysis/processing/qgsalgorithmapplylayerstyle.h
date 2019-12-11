@@ -49,7 +49,7 @@ class QgsApplyLayerStyleAlgorithm : public QgsProcessingAlgorithm
 
   private:
 
-    std::unique_ptr< QgsMapLayer > mLayer;
+    QString mLayerId;
 };
 
 ///@endcond PRIVATE

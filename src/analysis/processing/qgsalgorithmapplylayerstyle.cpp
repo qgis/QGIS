@@ -63,19 +63,21 @@ void QgsApplyLayerStyleAlgorithm::initAlgorithm( const QVariantMap & )
 
 bool QgsApplyLayerStyleAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mLayer.reset( parameterAsLayer( parameters, QStringLiteral( "INPUT" ), context ) );
+  QgsMapLayer *layer = parameterAsLayer( parameters, QStringLiteral( "INPUT" ), context );
   QString style = parameterAsFile( parameters, QStringLiteral( "STYLE" ), context );
 
-  if ( !mLayer )
+  if ( !layer )
     throw QgsProcessingException( QObject::tr( "Invalid input layer" ) );
 
+  mLayerId = layer->id();
+
   bool ok = false;
-  QString msg = mLayer->loadNamedStyle( style, ok );
+  QString msg = layer->loadNamedStyle( style, ok );
   if ( !ok )
   {
     throw QgsProcessingException( QObject::tr( "Failed to apply style. Error: %1" ).arg( msg ) );
   }
-  mLayer->triggerRepaint();
+  layer->triggerRepaint();
 
   return true;
 }
@@ -86,7 +88,7 @@ QVariantMap QgsApplyLayerStyleAlgorithm::processAlgorithm( const QVariantMap &pa
   Q_UNUSED( context );
 
   QVariantMap results;
-  results.insert( QStringLiteral( "OUTPUT" ), mLayer->id() );
+  results.insert( QStringLiteral( "OUTPUT" ), mLayerId );
   return results;
 }
 
