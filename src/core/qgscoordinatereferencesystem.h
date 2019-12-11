@@ -654,9 +654,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     static int syncDatabase();
 
-
     /**
-     * Save the proj4-string as a custom CRS.
+     * Saves the CRS as a custom ("USER") CRS.
      *
      * Returns the new CRS srsid(), or -1 if the CRS could not be saved.
      */
@@ -763,6 +762,11 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * +proj=longlat +datum=WGS84 +no_defs
      */
     void setProj4String( const QString &proj4String );
+
+    /**
+     * Set the WKT string
+     */
+    bool setWktString( const QString &wkt );
 
     /**
      * Set this Geographic? flag
