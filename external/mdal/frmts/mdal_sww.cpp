@@ -1,5 +1,5 @@
 /*
- MDAL - mMesh Data Abstraction Library (MIT License)
+ MDAL - Mesh Data Abstraction Library (MIT License)
  Copyright (C) 2016 Lutra Consulting
  Copyright (C) 2018 Peter Petrik (zilolv at gmail dot com)
 */
@@ -300,11 +300,10 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverSWW::readScalarGroup(
       // TIME INDEPENDENT
       std::shared_ptr<MDAL::MemoryDataset2D> o = std::make_shared<MDAL::MemoryDataset2D>( mds.get() );
       o->setTime( 0.0 );
-      double *values = o->values();
       std::vector<double> valuesX = ncFile.readDoubleArr( arrName, nPoints );
       for ( size_t i = 0; i < nPoints; ++i )
       {
-        values[i] = valuesX[i];
+        o->setScalarValue( i, valuesX[i] );
       }
       o->setStatistics( MDAL::calculateStatistics( o ) );
       mds->datasets.push_back( o );
@@ -378,13 +377,11 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverSWW::readVectorGroup(
       // TIME INDEPENDENT
       std::shared_ptr<MDAL::MemoryDataset2D> o = std::make_shared<MDAL::MemoryDataset2D>( mds.get() );
       o->setTime( 0.0 );
-      double *values = o->values();
       std::vector<double> valuesX = ncFile.readDoubleArr( arrXName, nPoints );
       std::vector<double> valuesY = ncFile.readDoubleArr( arrYName, nPoints );
       for ( size_t i = 0; i < nPoints; ++i )
       {
-        values[2 * i] = valuesX[i];
-        values[2 * i + 1] = valuesY[i];
+        o->setVectorValue( i, valuesX[i], valuesY[i] );
       }
       o->setStatistics( MDAL::calculateStatistics( o ) );
       mds->datasets.push_back( o );
@@ -396,7 +393,6 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverSWW::readVectorGroup(
       {
         std::shared_ptr<MDAL::MemoryDataset2D> mto = std::make_shared<MDAL::MemoryDataset2D>( mds.get() );
         mto->setTime( static_cast<double>( times[t] ) / 3600. );
-        double *values = mto->values();
 
         // fetching data for one timestep
         size_t start[2], count[2];
@@ -410,8 +406,7 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverSWW::readVectorGroup(
 
         for ( size_t i = 0; i < nPoints; ++i )
         {
-          values[2 * i] = static_cast<double>( valuesX[i] );
-          values[2 * i + 1] = static_cast<double>( valuesY[i] );
+          mto->setVectorValue( i, static_cast<double>( valuesX[i] ),  static_cast<double>( valuesY[i] ) );
         }
 
         mto->setStatistics( MDAL::calculateStatistics( mto ) );

@@ -311,13 +311,14 @@ void MDAL::DriverBinaryDat::load( const std::string &datFile, MDAL::Mesh *mesh, 
   }
 }
 
-bool MDAL::DriverBinaryDat::readVertexTimestep( const MDAL::Mesh *mesh,
-    std::shared_ptr<DatasetGroup> group,
-    std::shared_ptr<DatasetGroup> groupMax,
-    double time,
-    bool hasStatus,
-    int sflg,
-    std::ifstream &in )
+bool MDAL::DriverBinaryDat::readVertexTimestep(
+  const MDAL::Mesh *mesh,
+  std::shared_ptr<DatasetGroup> group,
+  std::shared_ptr<DatasetGroup> groupMax,
+  double time,
+  bool hasStatus,
+  int sflg,
+  std::ifstream &in )
 {
   assert( group && groupMax && ( group->isScalar() == groupMax->isScalar() ) );
   bool isScalar = group->isScalar();
@@ -325,9 +326,8 @@ bool MDAL::DriverBinaryDat::readVertexTimestep( const MDAL::Mesh *mesh,
   size_t vertexCount = mesh->verticesCount();
   size_t faceCount = mesh->facesCount();
 
-  std::shared_ptr<MDAL::MemoryDataset2D> dataset = std::make_shared< MDAL::MemoryDataset2D >( group.get() );
+  std::shared_ptr<MDAL::MemoryDataset2D> dataset = std::make_shared< MDAL::MemoryDataset2D >( group.get(), hasStatus );
 
-  int *activeFlags = dataset->active();
   bool active = true;
   for ( size_t i = 0; i < faceCount; ++i )
   {
@@ -337,10 +337,9 @@ bool MDAL::DriverBinaryDat::readVertexTimestep( const MDAL::Mesh *mesh,
         return true; //error
 
     }
-    activeFlags[i] = active;
+    dataset->setActive( i, active );
   }
 
-  double *values = dataset->values();
   for ( size_t i = 0; i < vertexCount; ++i )
   {
     if ( !isScalar )
@@ -352,8 +351,7 @@ bool MDAL::DriverBinaryDat::readVertexTimestep( const MDAL::Mesh *mesh,
       if ( read( in, reinterpret_cast< char * >( &y ), 4 ) )
         return true; //error
 
-      values[2 * i] = static_cast< double >( x );
-      values[2 * i + 1] = static_cast< double >( y );
+      dataset->setVectorValue( i, static_cast< double >( x ), static_cast< double >( y ) );
     }
     else
     {
@@ -362,7 +360,7 @@ bool MDAL::DriverBinaryDat::readVertexTimestep( const MDAL::Mesh *mesh,
       if ( read( in, reinterpret_cast< char * >( &scalar ), 4 ) )
         return true; //error
 
-      values[i] = static_cast< double >( scalar );
+      dataset->setScalarValue( i, static_cast< double >( scalar ) );
     }
   }
 
@@ -468,7 +466,7 @@ bool MDAL::DriverBinaryDat::persist( MDAL::DatasetGroup *group )
       // Write status flags
       for ( size_t i = 0; i < elemCount; i++ )
       {
-        bool active = static_cast<bool>( dataset->active()[i] );
+        bool active = static_cast<bool>( dataset->active( i ) );
         writeRawData( out, reinterpret_cast< const char * >( &active ), 1 );
       }
     }
@@ -478,14 +476,14 @@ bool MDAL::DriverBinaryDat::persist( MDAL::DatasetGroup *group )
       // Read values flags
       if ( !group->isScalar() )
       {
-        float x = static_cast<float>( dataset->values()[2 * i] );
-        float y = static_cast<float>( dataset->values()[2 * i + 1 ] );
+        float x = static_cast<float>( dataset->valueX( i ) );
+        float y = static_cast<float>( dataset->valueY( i ) );
         writeRawData( out, reinterpret_cast< const char * >( &x ), 4 );
         writeRawData( out, reinterpret_cast< const char * >( &y ), 4 );
       }
       else
       {
-        float val = static_cast<float>( dataset->values()[i] );
+        float val = static_cast<float>( dataset->scalarValue( i ) );
         writeRawData( out, reinterpret_cast< const char * >( &val ), 4 );
       }
     }

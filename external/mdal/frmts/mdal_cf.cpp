@@ -64,31 +64,34 @@ MDAL::cfdataset_info_map MDAL::DriverCF::parseDatasetGroupInfo()
 
       int dimid;
       size_t nTimesteps;
-      bool time_is_first_dimension = true;
+      CFDatasetGroupInfo::TimeLocation timeLocation;
 
       if ( ndims == 1 )
       {
         nTimesteps = 1;
         dimid = dimids[0];
+        timeLocation = CFDatasetGroupInfo::NoTimeDimension;
       }
       else
       {
-        /*UGRID convention says "The order of dimensions on a data variable is arbitrary",
-        *So time dimension is not necessary the first dimension, event if the convention recommands it.
-        *And prevent that any of the the two dimensions is not time dimension
-        */
+        /*
+         * UGRID convention says "The order of dimensions on a data variable is arbitrary",
+         * So time dimension is not necessary the first dimension, event if the convention recommands it.
+         * And prevent that any of the the two dimensions is not time dimension
+         */
         if ( mDimensions.type( dimids[0] ) == CFDimensions::Time )
         {
-          time_is_first_dimension = true;
+          timeLocation = CFDatasetGroupInfo::TimeDimensionFirst;
           dimid = dimids[1];
         }
         else if ( mDimensions.type( dimids[1] ) == CFDimensions::Time )
         {
-          time_is_first_dimension = false;
+          timeLocation = CFDatasetGroupInfo::TimeDimensionLast;
           dimid = dimids[0];
         }
         else
         {
+          // unknown array
           continue;
         }
 
@@ -134,7 +137,7 @@ MDAL::cfdataset_info_map MDAL::DriverCF::parseDatasetGroupInfo()
         dsInfo.outputType = mDimensions.type( dimid );
         dsInfo.name = name;
         dsInfo.nValues = mDimensions.size( mDimensions.type( dimid ) );
-        dsInfo.time_first_dim = time_is_first_dimension;
+        dsInfo.timeLocation = timeLocation;
         dsinfo_map[name] = dsInfo;
       }
     }
@@ -263,7 +266,7 @@ std::shared_ptr<MDAL::Dataset> MDAL::DriverCF::create2DDataset( std::shared_ptr<
         fill_val_y,
         dsi.ncid_x,
         dsi.ncid_y,
-        dsi.time_first_dim,
+        dsi.timeLocation,
         dsi.nTimesteps,
         dsi.nValues,
         ts,
@@ -310,10 +313,23 @@ bool MDAL::DriverCF::canReadMesh( const std::string &uri )
 void MDAL::DriverCF::setProjection( MDAL::Mesh *mesh )
 {
   std::string coordinate_system_variable = getCoordinateSystemVariableName();
+  // not present
+  if ( coordinate_system_variable.empty() )
+  {
+    return;
+  }
 
+  // in file
+  if ( MDAL::startsWith( coordinate_system_variable, "file://" ) )
+  {
+    const std::string filename = MDAL::replace( coordinate_system_variable, "file://", "" );
+    mesh->setSourceCrsFromPrjFile( filename );
+    return;
+  }
+
+  // in NetCDF attribute
   try
   {
-
     if ( !coordinate_system_variable.empty() )
     {
       std::string wkt = mNcFile->getAttrStr( coordinate_system_variable, "wkt" );
@@ -332,7 +348,6 @@ void MDAL::DriverCF::setProjection( MDAL::Mesh *mesh )
         {
           mesh->setSourceCrs( epsg_code );
         }
-
       }
       else
       {
@@ -445,14 +460,14 @@ bool MDAL::CFDimensions::isDatasetType( MDAL::CFDimensions::Type type ) const
 //////////////////////////////////////////////////////////////////////////////////////
 MDAL::CFDataset2D::CFDataset2D( MDAL::DatasetGroup *parent,
                                 double fill_val_x, double fill_val_y,
-                                int ncid_x, int ncid_y, bool time_first_dim,
+                                int ncid_x, int ncid_y, CFDatasetGroupInfo::TimeLocation timeLocation,
                                 size_t timesteps, size_t values, size_t ts, std::shared_ptr<NetCDFFile> ncFile )
   : Dataset2D( parent )
   , mFillValX( fill_val_x )
   , mFillValY( fill_val_y )
   , mNcidX( ncid_x )
   , mNcidY( ncid_y )
-  , mTimeFirstDim( time_first_dim )
+  , mTimeLocation( timeLocation )
   , mTimesteps( timesteps )
   , mValues( values )
   , mTs( ts )
@@ -471,19 +486,32 @@ size_t MDAL::CFDataset2D::scalarData( size_t indexStart, size_t count, double *b
     return 0;
 
   size_t copyValues = std::min( mValues - indexStart, count );
+  std::vector<double> values_x;
 
-  size_t start_dim1 = mTimeFirstDim ?  mTs : indexStart;
-  size_t start_dim2 = mTimeFirstDim ?  indexStart : mTs;
-  size_t count_dim1 = mTimeFirstDim ?  1 : copyValues;
-  size_t count_dim2 = mTimeFirstDim ?  copyValues : 1;
+  if ( mTimeLocation == CFDatasetGroupInfo::NoTimeDimension )
+  {
+    values_x = mNcFile->readDoubleArr(
+                 mNcidX,
+                 indexStart,
+                 copyValues
+               );
+  }
+  else
+  {
+    bool timeFirstDim = mTimeLocation == CFDatasetGroupInfo::TimeDimensionFirst;
+    size_t start_dim1 = timeFirstDim ?  mTs : indexStart;
+    size_t start_dim2 = timeFirstDim ?  indexStart : mTs;
+    size_t count_dim1 = timeFirstDim ?  1 : copyValues;
+    size_t count_dim2 = timeFirstDim ?  copyValues : 1;
 
-  std::vector<double> values_x = mNcFile->readDoubleArr(
-                                   mNcidX,
-                                   start_dim1,
-                                   start_dim2,
-                                   count_dim1,
-                                   count_dim2
-                                 );
+    values_x = mNcFile->readDoubleArr(
+                 mNcidX,
+                 start_dim1,
+                 start_dim2,
+                 count_dim1,
+                 count_dim2
+               );
+  }
 
   for ( size_t i = 0; i < copyValues; ++i )
   {
@@ -510,25 +538,46 @@ size_t MDAL::CFDataset2D::vectorData( size_t indexStart, size_t count, double *b
 
   size_t copyValues = std::min( mValues - indexStart, count );
 
-  size_t start_dim1 = mTimeFirstDim ?  mTs : indexStart;
-  size_t start_dim2 = mTimeFirstDim ?  indexStart : mTs;
-  size_t count_dim1 = mTimeFirstDim ?  1 : copyValues;
-  size_t count_dim2 = mTimeFirstDim ?  copyValues : 1;
+  std::vector<double> values_x;
+  std::vector<double> values_y;
 
-  std::vector<double> values_x = mNcFile->readDoubleArr(
-                                   mNcidX,
-                                   start_dim1,
-                                   start_dim2,
-                                   count_dim1,
-                                   count_dim2
-                                 );
-  std::vector<double> values_y = mNcFile->readDoubleArr(
-                                   mNcidY,
-                                   start_dim1,
-                                   start_dim2,
-                                   count_dim1,
-                                   count_dim2
-                                 );
+  if ( mTimeLocation == CFDatasetGroupInfo::NoTimeDimension )
+  {
+    values_x = mNcFile->readDoubleArr(
+                 mNcidX,
+                 indexStart,
+                 copyValues
+               );
+
+    values_y = mNcFile->readDoubleArr(
+                 mNcidX,
+                 indexStart,
+                 copyValues
+               );
+  }
+  else
+  {
+    bool timeFirstDim = mTimeLocation == CFDatasetGroupInfo::TimeDimensionFirst;
+    size_t start_dim1 = timeFirstDim ?  mTs : indexStart;
+    size_t start_dim2 = timeFirstDim ?  indexStart : mTs;
+    size_t count_dim1 = timeFirstDim ?  1 : copyValues;
+    size_t count_dim2 = timeFirstDim ?  copyValues : 1;
+
+    values_x = mNcFile->readDoubleArr(
+                 mNcidX,
+                 start_dim1,
+                 start_dim2,
+                 count_dim1,
+                 count_dim2
+               );
+    values_y = mNcFile->readDoubleArr(
+                 mNcidY,
+                 start_dim1,
+                 start_dim2,
+                 count_dim1,
+                 count_dim2
+               );
+  }
 
   for ( size_t i = 0; i < copyValues; ++i )
   {
@@ -543,11 +592,4 @@ size_t MDAL::CFDataset2D::vectorData( size_t indexStart, size_t count, double *b
   }
 
   return copyValues;
-}
-
-size_t MDAL::CFDataset2D::activeData( size_t indexStart, size_t count, int *buffer )
-{
-  MDAL_UNUSED( indexStart )
-  memset( buffer, 1, count * sizeof( int ) );
-  return count;
 }

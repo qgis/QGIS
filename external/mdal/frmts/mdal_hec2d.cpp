@@ -317,10 +317,10 @@ std::shared_ptr<MDAL::MemoryDataset2D> MDAL::DriverHec2D::readElemOutput( const 
                 values[eInx] = val;
               }
             }
-            else     //Water surface
+            else //Water surface
             {
               assert( bed_elevation );
-              double bed_elev = bed_elevation->values()[eInx];
+              double bed_elev = bed_elevation->scalarValue( eInx );
               if ( std::isnan( bed_elev ) || fabs( bed_elev - val ) > eps ) // change from bed elevation
               {
                 values[eInx] = val;

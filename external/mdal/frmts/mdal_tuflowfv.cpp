@@ -11,26 +11,110 @@
 #include <assert.h>
 #include <cstring>
 
-MDAL::TuflowFVDataset3D::TuflowFVDataset3D(
-  MDAL::DatasetGroup *parent,
-  int ncid_x,
-  int ncid_y,
-  size_t timesteps,
-  size_t volumesCount,
+
+size_t MDAL::TuflowFVActiveFlag::activeData(
+  std::shared_ptr<NetCDFFile> ncFile,
+  size_t timestep,
+  size_t timestepsCount,
   size_t facesCount,
-  size_t levelFacesCount,
+  int ncidActive,
+  size_t indexStart,
+  size_t count,
+  int *buffer )
+{
+  if ( ( count < 1 ) || ( indexStart >= facesCount ) )
+    return 0;
+  if ( timestep >= timestepsCount )
+    return 0;
+  if ( ncidActive < 0 )
+    return 0;
+
+  size_t copyValues = std::min( facesCount - indexStart, count );
+  std::vector<int> values = ncFile->readIntArr(
+                              ncidActive,
+                              timestep,
+                              indexStart,
+                              1,
+                              copyValues
+                            );
+
+  for ( size_t i = 0; i < copyValues; ++i )
+  {
+    // 0 means inactive in raw data file == false (0)
+    // -1 means active in raw data file == true (1)
+    int val = values[i] == 0 ? 0 : 1;
+    buffer[i] = val;
+  }
+  return copyValues;
+}
+
+MDAL::TuflowFVDataset2D::TuflowFVDataset2D(
+  DatasetGroup *parent,
+  double fillValX,
+  double fillValY,
+  int ncidX,
+  int ncidY,
+  int ncidActive,
+  CFDatasetGroupInfo::TimeLocation timeLocation,
+  size_t timesteps,
+  size_t values,
   size_t ts,
-  size_t maximumLevelsCount,
-  std::shared_ptr<NetCDFFile> ncFile )
+  std::shared_ptr<NetCDFFile> ncFile
+)
+  : CFDataset2D(
+      parent,
+      fillValX,
+      fillValY,
+      ncidX,
+      ncidY,
+      timeLocation,
+      timesteps,
+      values,
+      ts,
+      ncFile
+    )
+  , mNcidActive( ncidActive )
+{
+  setSupportsActiveFlag( true );
+}
+
+size_t MDAL::TuflowFVDataset2D::activeData( size_t indexStart, size_t count, int *buffer )
+{
+  return MDAL::TuflowFVActiveFlag::activeData(
+           mNcFile,
+           mTs,
+           mTimesteps,
+           group()->mesh()->facesCount(),
+           mNcidActive,
+           indexStart,
+           count,
+           buffer );
+}
+
+MDAL::TuflowFVDataset3D::TuflowFVDataset3D( MDAL::DatasetGroup *parent,
+    int ncidX,
+    int ncidY,
+    int ncidActive, CFDatasetGroupInfo::TimeLocation timeLocation,
+    size_t timesteps,
+    size_t volumesCount,
+    size_t facesCount,
+    size_t levelFacesCount,
+    size_t ts,
+    size_t maximumLevelsCount,
+    std::shared_ptr<NetCDFFile> ncFile )
   : MDAL::Dataset3D( parent, volumesCount, maximumLevelsCount )
-  , mNcidX( ncid_x )
-  , mNcidY( ncid_y )
+  , mNcidX( ncidX )
+  , mNcidY( ncidY )
+  , mNcidActive( ncidActive )
   , mTimesteps( timesteps )
   , mFacesCount( facesCount )
   , mLevelFacesCount( levelFacesCount )
+  , mTimeLocation( timeLocation )
   , mTs( ts )
   , mNcFile( ncFile )
 {
+  setSupportsActiveFlag( true );
+
   if ( ncFile )
   {
     mNcidVerticalLevels = ncFile->arrId( "NL" );
@@ -111,13 +195,27 @@ size_t MDAL::TuflowFVDataset3D::scalarVolumesData( size_t indexStart, size_t cou
     return 0;
 
   size_t copyValues = std::min( volumesCount() - indexStart, count );
-  std::vector<double> vals = mNcFile->readDoubleArr(
-                               mNcidX,
-                               mTs,
-                               indexStart,
-                               1,
-                               copyValues
-                             );
+  std::vector<double> vals;
+
+  assert( mTimeLocation != CFDatasetGroupInfo::TimeDimensionLast );
+  if ( mTimeLocation == CFDatasetGroupInfo::TimeDimensionFirst )
+  {
+    vals = mNcFile->readDoubleArr(
+             mNcidX,
+             mTs,
+             indexStart,
+             1,
+             copyValues
+           );
+  }
+  else     //NoTimeDimension
+  {
+    vals = mNcFile->readDoubleArr(
+             mNcidX,
+             indexStart,
+             copyValues
+           );
+  }
   memcpy( buffer, vals.data(), copyValues * sizeof( double ) );
   return copyValues;
 }
@@ -130,20 +228,42 @@ size_t MDAL::TuflowFVDataset3D::vectorVolumesData( size_t indexStart, size_t cou
     return 0;
 
   size_t copyValues = std::min( volumesCount() - indexStart, count );
-  std::vector<double> vals_x = mNcFile->readDoubleArr(
-                                 mNcidX,
-                                 mTs,
-                                 indexStart,
-                                 1,
-                                 copyValues
-                               );
-  std::vector<double> vals_y = mNcFile->readDoubleArr(
-                                 mNcidY,
-                                 mTs,
-                                 indexStart,
-                                 1,
-                                 copyValues
-                               );
+  std::vector<double> vals_x;
+  std::vector<double> vals_y;
+
+  assert( mTimeLocation != CFDatasetGroupInfo::TimeDimensionLast );
+  if ( mTimeLocation == CFDatasetGroupInfo::TimeDimensionFirst )
+  {
+    vals_x = mNcFile->readDoubleArr(
+               mNcidX,
+               mTs,
+               indexStart,
+               1,
+               copyValues
+             );
+    vals_y = mNcFile->readDoubleArr(
+               mNcidY,
+               mTs,
+               indexStart,
+               1,
+               copyValues
+             );
+
+  }
+  else
+  {
+    vals_x = mNcFile->readDoubleArr(
+               mNcidX,
+               indexStart,
+               copyValues
+             );
+    vals_y = mNcFile->readDoubleArr(
+               mNcidY,
+               indexStart,
+               copyValues
+             );
+  }
+
 
   for ( size_t i = 0; i < copyValues; ++i )
   {
@@ -153,12 +273,18 @@ size_t MDAL::TuflowFVDataset3D::vectorVolumesData( size_t indexStart, size_t cou
   return copyValues;
 }
 
-size_t MDAL::TuflowFVDataset3D::activeVolumesData( size_t indexStart, size_t count, int *buffer )
+
+size_t MDAL::TuflowFVDataset3D::activeData( size_t indexStart, size_t count, int *buffer )
 {
-  // TODO
-  MDAL_UNUSED( indexStart )
-  memset( buffer, 1, count * sizeof( int ) );
-  return count;
+  return MDAL::TuflowFVActiveFlag::activeData(
+           mNcFile,
+           mTs,
+           mTimesteps,
+           group()->mesh()->facesCount(),
+           mNcidActive,
+           indexStart,
+           count,
+           buffer );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -298,7 +424,8 @@ void MDAL::DriverTuflowFV::addBedElevation( MDAL::MemoryMesh *mesh )
 
 std::string MDAL::DriverTuflowFV::getCoordinateSystemVariableName()
 {
-  return "";
+  const std::string projFile = MDAL::replace( mFileName, ".nc", ".prj" );
+  return "file://" + projFile;
 }
 
 std::set<std::string> MDAL::DriverTuflowFV::ignoreNetCDFVariables()
@@ -371,16 +498,42 @@ std::string MDAL::DriverTuflowFV::getTimeVariableName() const
   return "ResTime";
 }
 
+std::shared_ptr<MDAL::Dataset> MDAL::DriverTuflowFV::create2DDataset(
+  std::shared_ptr<MDAL::DatasetGroup> group,
+  size_t ts,
+  const MDAL::CFDatasetGroupInfo &dsi,
+  double fill_val_x, double fill_val_y )
+{
+  std::shared_ptr<MDAL::TuflowFVDataset2D> dataset = std::make_shared<MDAL::TuflowFVDataset2D>(
+        group.get(),
+        fill_val_x,
+        fill_val_y,
+        dsi.ncid_x,
+        dsi.ncid_y,
+        mNcFile->arrId( "stat" ),
+        dsi.timeLocation,
+        dsi.nTimesteps,
+        dsi.nValues,
+        ts,
+        mNcFile
+      );
+  dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
+  return std::move( dataset );
+}
+
 std::shared_ptr<MDAL::Dataset> MDAL::DriverTuflowFV::create3DDataset( std::shared_ptr<MDAL::DatasetGroup> group, size_t ts,
     const MDAL::CFDatasetGroupInfo &dsi,
     double, double )
 {
   calculateMaximumLevelCount();
 
+  assert( dsi.timeLocation != CFDatasetGroupInfo::TimeDimensionLast );
   std::shared_ptr<MDAL::TuflowFVDataset3D> dataset = std::make_shared<MDAL::TuflowFVDataset3D>(
         group.get(),
         dsi.ncid_x,
         dsi.ncid_y,
+        mNcFile->arrId( "stat" ),
+        dsi.timeLocation,
         dsi.nTimesteps,
         mDimensions.size( CFDimensions::Type::Volume3D ),
         mDimensions.size( CFDimensions::Type::Face2D ),
@@ -390,8 +543,6 @@ std::shared_ptr<MDAL::Dataset> MDAL::DriverTuflowFV::create3DDataset( std::share
         mNcFile
       );
 
-  // TODO use "Maximums" from file
   dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
   return std::move( dataset );
 }
-

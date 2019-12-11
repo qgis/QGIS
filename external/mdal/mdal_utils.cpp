@@ -22,6 +22,17 @@ bool MDAL::fileExists( const std::string &filename )
   return in.good();
 }
 
+std::string MDAL::readFileToString( const std::string &filename )
+{
+  if ( MDAL::fileExists( filename ) )
+  {
+    std::ifstream t( filename );
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+    return buffer.str();
+  }
+  return "";
+}
 
 bool MDAL::startsWith( const std::string &str, const std::string &substr, ContainsBehaviour behaviour )
 {
@@ -273,18 +284,27 @@ std::string MDAL::replace( const std::string &str, const std::string &substr, co
 // http://www.cplusplus.com/faq/sequences/strings/trim/
 std::string MDAL::trim( const std::string &s, const std::string &delimiters )
 {
+  if ( s.empty() )
+    return s;
+
   return ltrim( rtrim( s, delimiters ), delimiters );
 }
 
 // http://www.cplusplus.com/faq/sequences/strings/trim/
 std::string MDAL::ltrim( const std::string &s, const std::string &delimiters )
 {
+  if ( s.empty() )
+    return s;
+
   return s.substr( s.find_first_not_of( delimiters ) );
 }
 
 // http://www.cplusplus.com/faq/sequences/strings/trim/
 std::string MDAL::rtrim( const std::string &s, const std::string &delimiters )
 {
+  if ( s.empty() )
+    return s;
+
   return s.substr( 0, s.find_last_not_of( delimiters ) + 1 );
 }
 
@@ -530,10 +550,9 @@ void MDAL::addBedElevationDatasetGroup( MDAL::Mesh *mesh, const Vertices &vertic
 
   std::shared_ptr<MDAL::MemoryDataset2D> dataset = std::make_shared< MemoryDataset2D >( group.get() );
   dataset->setTime( 0.0 );
-  double *vals = dataset->values();
   for ( size_t i = 0; i < vertices.size(); ++i )
   {
-    vals[i] = vertices[i].z;
+    dataset->setScalarValue( i, vertices[i].z );
   }
   dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
   group->datasets.push_back( dataset );
@@ -572,48 +591,6 @@ void MDAL::addFaceScalarDatasetGroup( MDAL::Mesh *mesh,
   group->datasets.push_back( dataset );
   group->setStatistics( MDAL::calculateStatistics( group ) );
   mesh->datasetGroups.push_back( group );
-}
-
-void MDAL::activateFaces( MDAL::MemoryMesh *mesh, std::shared_ptr<MemoryDataset2D> dataset )
-{
-  // only for data on vertices
-  if ( !( dataset->group()->dataLocation() == MDAL_DataLocation::DataOnVertices2D ) )
-    return;
-
-  bool isScalar = dataset->group()->isScalar();
-
-  // Activate only Faces that do all Vertex's outputs with some data
-  int *active = dataset->active();
-  const double *values = dataset->constValues();
-  const size_t nFaces = mesh->facesCount();
-
-  for ( unsigned int idx = 0; idx < nFaces; ++idx )
-  {
-    Face elem = mesh->faces.at( idx );
-    for ( size_t i = 0; i < elem.size(); ++i )
-    {
-      const size_t vertexIndex = elem[i];
-      if ( isScalar )
-      {
-        double val = values[vertexIndex];
-        if ( std::isnan( val ) )
-        {
-          active[idx] = 0; //NOT ACTIVE
-          break;
-        }
-      }
-      else
-      {
-        double x = values[2 * vertexIndex];
-        double y = values[2 * vertexIndex + 1];
-        if ( std::isnan( x ) || std::isnan( y ) )
-        {
-          active[idx] = 0; //NOT ACTIVE
-          break;
-        }
-      }
-    }
-  }
 }
 
 bool MDAL::isNativeLittleEndian()
