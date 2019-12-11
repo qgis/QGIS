@@ -112,7 +112,7 @@ class PGDatabase(Database):
         Database.__init__(self, connection, uri)
 
     def connectorsFactory(self, uri):
-        return PostGisDBConnector(uri, self.connection())
+        return PostGisDBConnector(uri)
 
     def dataTablesFactory(self, row, db, schema=None):
         return PGTable(row, db, schema)

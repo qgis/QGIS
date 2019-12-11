@@ -161,7 +161,7 @@ class CursorAdapter():
 
 class PostGisDBConnector(DBConnector):
 
-    def __init__(self, uri, dbplugin):
+    def __init__(self, uri):
         """Creates a new PostgreSQL connector
 
         :param uri: data source URI
@@ -178,11 +178,8 @@ class PostGisDBConnector(DBConnector):
         #self.passwd = uri.password()
         self.host = uri.host()
 
-        self.dbplugin = dbplugin
-        md = QgsProviderRegistry.instance().providerMetadata(dbplugin.providerName())
-        self.core_connection = md.findConnection(dbplugin.connectionName())
-        if self.core_connection is None:
-            self.core_connection = md.createConnection(dbplugin.connectionName(), uri.database())
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        self.core_connection = md.createConnection(uri.database())
 
         c = self._execute(None, u"SELECT current_user,current_database()")
         self.user, self.dbname = self._fetchone(c)
