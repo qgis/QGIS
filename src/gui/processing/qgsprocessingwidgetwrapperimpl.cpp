@@ -1659,7 +1659,7 @@ QgsProcessingEnumPanelWidget::QgsProcessingEnumPanelWidget( QWidget *parent, con
   hl->addWidget( mLineEdit, 1 );
 
   mToolButton = new QToolButton();
-  mToolButton->setText( QStringLiteral( "…" ) );
+  mToolButton->setText( QString( QChar( 0x2026 ) ) );
   hl->addWidget( mToolButton );
 
   setLayout( hl );
@@ -2371,7 +2371,7 @@ QgsProcessingPointPanel::QgsProcessingPointPanel( QWidget *parent )
   mLineEdit->setShowClearButton( false );
   l->addWidget( mLineEdit, 1 );
   mButton = new QToolButton();
-  mButton->setText( QStringLiteral( "…" ) );
+  mButton->setText( QString( QChar( 0x2026 ) ) );
   l->addWidget( mButton );
   setLayout( l );
 

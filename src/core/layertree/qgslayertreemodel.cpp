@@ -333,7 +333,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         QString source( layer->publicSource() );
         if ( source.size() > 1024 )
         {
-          source = source.left( 1023 ) + QStringLiteral( "…" );
+          source = source.left( 1023 ) + QString( QChar( 0x2026 ) );
         }
 
         parts << "<i>" + source.toHtmlEscaped() + "</i>";

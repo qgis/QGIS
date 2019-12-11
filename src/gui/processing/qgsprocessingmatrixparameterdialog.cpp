@@ -146,7 +146,7 @@ QgsProcessingMatrixParameterPanel::QgsProcessingMatrixParameterPanel( QWidget *p
   hl->addWidget( mLineEdit, 1 );
 
   mToolButton = new QToolButton();
-  mToolButton->setText( QStringLiteral( "…" ) );
+  mToolButton->setText( QString( QChar( 0x2026 ) ) );
   hl->addWidget( mToolButton );
 
   setLayout( hl );
