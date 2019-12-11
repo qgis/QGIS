@@ -369,7 +369,7 @@ void TestQgsCoordinateReferenceSystem::createFromWktUnknown()
   // When used with proj < 6, a lossy conversion to proj string is used
   QCOMPARE( crs.toWkt(), wkt );
 #endif
-  QCOMPARE( crs.srsid(), USER_CRS_START_ID + 1 );
+  QCOMPARE( crs.srsid(), static_cast< long >( USER_CRS_START_ID + 1 ) );
   QCOMPARE( crs.authid(), QStringLiteral( "USER:100001" ) );
   QCOMPARE( crs.mapUnits(), QgsUnitTypes::DistanceMeters );
 
