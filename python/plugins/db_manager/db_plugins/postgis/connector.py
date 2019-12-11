@@ -56,10 +56,10 @@ def classFactory():
     return PostGisDBConnector
 
 
-class CursorProxy():
+class CursorAdapter():
 
     def _debug(self, msg):
-        print("XXX CursorProxy[" + hex(id(self)) + "]: " + msg)
+        print("XXX CursorAdapter[" + hex(id(self)) + "]: " + msg)
 
     def __init__(self, connection, sql=None):
         self._debug("Created with sql: " + str(sql))
@@ -1119,7 +1119,7 @@ class PostGisDBConnector(DBConnector):
         if cursor != None:
             cursor._execute(sql)
             return cursor
-        return CursorProxy(self, sql)
+        return CursorAdapter(self, sql)
 
     def _executeSql(self, sql):
         return self.core_connection.executeSql(sql)
@@ -1127,7 +1127,7 @@ class PostGisDBConnector(DBConnector):
     def _get_cursor(self, name=None):
         if name is not None:
             print("XXX _get_cursor called with a Name: " + name)
-        return CursorProxy(self, name)
+        return CursorAdapter(self, name)
 
     def _commit(self):
         pass
