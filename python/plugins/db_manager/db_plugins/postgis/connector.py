@@ -57,10 +57,16 @@ def classFactory():
 
 
 class CursorProxy():
+
+    def _debug(self, msg):
+        print("XXX CursorProxy[" + hex(id(self)) + "]: " + msg)
+
     def __init__(self, connection, sql=None):
+        self._debug("Created with sql: " + str(sql))
         self.connection = connection
         self.sql = sql
         self.result = None
+        self.cursor = 0
         self.closed = False
         self.description = None
         if (self.sql != None):
@@ -85,16 +91,18 @@ class CursorProxy():
 
     def _execute(self, sql=None):
         if self.sql == sql and self.result != None:
-            print ("XXX CursorProxy execute called with sql " + sql)
             return
         if (sql != None):
             self.sql = sql
         if (self.sql == None):
             return
+        self._debug("execute called with sql " + self.sql)
         self.result = self._toStrResultSet(self.connection._executeSql(self.sql))
+        self._debug("execute returned " + str(len(self.result)) + " rows")
+        self.cursor = 0
         self.description = []
         if len(self.result):
-            for i in range(len(self.result)):
+            for i in range(len(self.result[0])):
                 self.description.append([
                     'column' + str(i),                         # name
                     str,                                      # type_code
@@ -104,16 +112,47 @@ class CursorProxy():
                     None,                                     # scale
                     True                                      # null_ok
                 ])
+        self._debug("execute returned " + str(len(self.description)) + " cols")
 
     def fetchone(self):
         self._execute()
-        if len(self.result):
-            return self.result[0]
+        if len(self.result) - self.cursor:
+            res = self.result[self.cursor]
+            ++self.cursor
+            return res
         return None
+
+    def fetchmany(self, size):
+        self._execute()
+        if self.result is None:
+            self._debug("fetchmany: none result after _execute (self.sql is " + str(self.sql) + ", returning []")
+            return []
+        leftover = len(self.result) - self.cursor
+        self._debug("fetchmany: cursor: " + str(self.cursor) + " leftover: " + str(leftover) + " requested: " + str(size))
+        if leftover < 1:
+            return []
+        if size > leftover:
+            size = leftover
+        stop = self.cursor + size
+        res = self.result[self.cursor:stop]
+        self.cursor = stop
+        self._debug("fetchmany: new cursor: " + str(self.cursor) + " reslen: " + str(len(self.result)))
+        return res
 
     def fetchall(self):
         self._execute()
-        return self.result
+        res = self.result[self.cursor:]
+        self.cursor = len(self.result)
+        return res
+
+    def scroll(self, pos, mode='relative'):
+        self._execute()
+        if pos < 0:
+            self._debug("scroll pos is negative: " + str(pos))
+        if mode == 'relative':
+            self.cursor = self.cursor + pos
+        elif mode == 'absolute':
+            self.cursor = pos
 
     def close(self):
         self.result = None
@@ -1077,13 +1116,18 @@ class PostGisDBConnector(DBConnector):
         return psycopg2.InterfaceError, psycopg2.OperationalError
 
     def _execute(self, cursor, sql):
+        if cursor != None:
+            cursor._execute(sql)
+            return cursor
         return CursorProxy(self, sql)
 
     def _executeSql(self, sql):
         return self.core_connection.executeSql(sql)
 
     def _get_cursor(self, name=None):
-        return CursorProxy(self)
+        if name is not None:
+            print("XXX _get_cursor called with a Name: " + name)
+        return CursorProxy(self, name)
 
     def _commit(self):
         pass
