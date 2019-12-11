@@ -369,7 +369,42 @@ void TestQgsCoordinateReferenceSystem::createFromWktUnknown()
   // When used with proj < 6, a lossy conversion to proj string is used
   QCOMPARE( crs.toWkt(), wkt );
 #endif
-  QVERIFY( crs.authid().startsWith( QStringLiteral( "USER" ) ) || crs.authid().isEmpty() );
+  QCOMPARE( crs.srsid(), USER_CRS_START_ID + 1 );
+  QCOMPARE( crs.authid(), QStringLiteral( "USER:100001" ) );
+  QCOMPARE( crs.mapUnits(), QgsUnitTypes::DistanceMeters );
+
+  // try creating new ones with same def
+  QgsCoordinateReferenceSystem crs2( QStringLiteral( "USER:100001" ) );
+  QVERIFY( crs2.isValid() );
+#if PROJ_VERSION_MAJOR>=6
+  QCOMPARE( crs2.toWkt(), wkt );
+#endif
+  QCOMPARE( crs2.mapUnits(), QgsUnitTypes::DistanceMeters );
+
+  QgsCoordinateReferenceSystem crs3;
+  crs3.createFromWkt( wkt );
+  QVERIFY( crs3.isValid() );
+#if PROJ_VERSION_MAJOR>=6
+  QCOMPARE( crs3.toWkt(), wkt );
+#endif
+  QCOMPARE( crs3.mapUnits(), QgsUnitTypes::DistanceMeters );
+
+  // force reads from database
+  QgsCoordinateReferenceSystem::invalidateCache();
+  QgsCoordinateReferenceSystem crs4( QStringLiteral( "USER:100001" ) );
+  QVERIFY( crs4.isValid() );
+#if PROJ_VERSION_MAJOR>=6
+  QCOMPARE( crs4.toWkt(), wkt );
+#endif
+  QCOMPARE( crs4.mapUnits(), QgsUnitTypes::DistanceMeters );
+
+  QgsCoordinateReferenceSystem crs5;
+  crs5.createFromWkt( wkt );
+  QVERIFY( crs5.isValid() );
+#if PROJ_VERSION_MAJOR>=6
+  QCOMPARE( crs5.toWkt(), wkt );
+#endif
+  QCOMPARE( crs5.mapUnits(), QgsUnitTypes::DistanceMeters );
 }
 
 void TestQgsCoordinateReferenceSystem::fromWkt()

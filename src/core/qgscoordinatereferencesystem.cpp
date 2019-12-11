@@ -624,7 +624,7 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
   */
 
   QString mySql = "select srs_id,description,projection_acronym,"
-                  "ellipsoid_acronym,parameters,srid,auth_name||':'||auth_id,is_geo "
+                  "ellipsoid_acronym,parameters,srid,auth_name||':'||auth_id,is_geo,wkt "
                   "from tbl_srs where " + expression + '=' + QgsSqliteUtils::quotedString( value ) + " order by deprecated";
   statement = database.prepare( mySql, myResult );
   // XXX Need to free memory from the error msg if one is set
@@ -638,6 +638,7 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
     d->mSRID = statement.columnAsText( 5 ).toLong();
     d->mAuthId = statement.columnAsText( 6 );
     d->mIsGeographic = statement.columnAsText( 7 ).toInt() != 0;
+    d->mWkt = statement.columnAsText( 8 );
     d->mAxisInvertedDirty = true;
 
     if ( d->mSrsId >= USER_CRS_START_ID && d->mAuthId.isEmpty() )
@@ -667,7 +668,10 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
 
     if ( !d->mIsValid )
     {
-      setProj4String( d->mProj4 );
+      if ( !d->mWkt.isEmpty() )
+        setWktString( d->mWkt );
+      else
+        setProj4String( d->mProj4 );
     }
   }
   else
@@ -734,135 +738,27 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
     return d->mIsValid;
   }
 
-  bool res = false;
-#if PROJ_VERSION_MAJOR>=6
-  PROJ_STRING_LIST warnings = nullptr;
-  PROJ_STRING_LIST grammerErrors = nullptr;
-
+  // try to match against user crs
+  QgsCoordinateReferenceSystem::RecordMap record = getRecord( "select * from tbl_srs where parameters=" + QgsSqliteUtils::quotedString( wkt ) + " order by deprecated" );
+  if ( !record.empty() )
   {
-    QgsProjUtils::proj_pj_unique_ptr crs( proj_create_from_wkt( QgsProjContext::get(), wkt.toLatin1().constData(), nullptr, &warnings, &grammerErrors ) );
-    d->mPj = QgsProjUtils::crsToSingleCrs( crs.get() );
-  }
-
-  res = static_cast< bool >( d->mPj );
-  if ( !res )
-  {
-    QgsDebugMsg( QStringLiteral( "\n---------------------------------------------------------------" ) );
-    QgsDebugMsg( QStringLiteral( "This CRS could *** NOT *** be set from the supplied Wkt " ) );
-    QgsDebugMsg( "INPUT: " + wkt );
-    for ( auto iter = warnings; iter && *iter; ++iter )
-      QgsDebugMsg( *iter );
-    for ( auto iter = grammerErrors; iter && *iter; ++iter )
-      QgsDebugMsg( *iter );
-    QgsDebugMsg( QStringLiteral( "---------------------------------------------------------------\n" ) );
-  }
-  proj_string_list_destroy( warnings );
-  proj_string_list_destroy( grammerErrors );
-#else
-  QByteArray ba = wkt.toLatin1();
-  const char *pWkt = ba.data();
-
-  OGRErr myInputResult = OSRImportFromWkt( d->mCRS, const_cast< char ** >( & pWkt ) );
-  res = myInputResult == OGRERR_NONE;
-  if ( !res )
-  {
-    QgsDebugMsg( QStringLiteral( "\n---------------------------------------------------------------" ) );
-    QgsDebugMsg( QStringLiteral( "This CRS could *** NOT *** be set from the supplied Wkt " ) );
-    QgsDebugMsg( "INPUT: " + wkt );
-    QgsDebugMsg( QStringLiteral( "UNUSED WKT: %1" ).arg( pWkt ) );
-    QgsDebugMsg( QStringLiteral( "---------------------------------------------------------------\n" ) );
-  }
-#endif
-  if ( !res )
-  {
-    locker.changeMode( QgsReadWriteLocker::Write );
-    if ( !sDisableWktCache )
-      sWktCache()->insert( wkt, *this );
-    return d->mIsValid;
-  }
-
-#if PROJ_VERSION_MAJOR>=6
-  if ( d->mPj )
-  {
-    // try 1 - maybe we can directly grab the auth name and code from the crs already?
-    QString authName( proj_get_id_auth_name( d->mPj.get(), 0 ) );
-    QString authCode( proj_get_id_code( d->mPj.get(), 0 ) );
-
-    if ( authName.isEmpty() || authCode.isEmpty() )
+    long srsId = record[QStringLiteral( "srs_id" )].toLong();
+    if ( srsId > 0 )
     {
-      // try 2, use proj's identify method and see if there's a nice candidate we can use
-      QgsProjUtils::identifyCrs( d->mPj.get(), authName, authCode );
-    }
-
-    if ( !authName.isEmpty() && !authCode.isEmpty() )
-    {
-      if ( loadFromAuthCode( authName, authCode ) )
-      {
-        locker.changeMode( QgsReadWriteLocker::Write );
-        if ( !sDisableWktCache )
-          sWktCache()->insert( wkt, *this );
-        return true;
-      }
-    }
-    else
-    {
-      // Still a valid CRS, just not a known one
-      d->mIsValid = true;
+      createFromSrsId( srsId );
     }
   }
-#else
-  if ( OSRAutoIdentifyEPSG( d->mCRS ) == OGRERR_NONE )
+  else
   {
-    QString authid = QStringLiteral( "%1:%2" )
-                     .arg( OSRGetAuthorityName( d->mCRS, nullptr ),
-                           OSRGetAuthorityCode( d->mCRS, nullptr ) );
-    bool result = createFromOgcWmsCrs( authid );
-    locker.changeMode( QgsReadWriteLocker::Write );
-    if ( !sDisableWktCache )
-      sWktCache()->insert( wkt, *this );
-    return result;
+    setWktString( wkt );
+    if ( d->mSrsId == 0 )
+    {
+      QString myName = QStringLiteral( " * %1 (%2...)" )
+                       .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
+                             wkt.left( 50 ) );
+      saveAsUserCrs( myName );
+    }
   }
-#endif
-
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // WARNING - wkt to proj conversion is lossy, hence we DON'T DO THIS on proj 6
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-#if PROJ_VERSION_MAJOR<6
-  // create the proj4 structs needed for transforming
-  char *proj4src = nullptr;
-  OSRExportToProj4( d->mCRS, &proj4src );
-
-  //now that we have the proj4string, delegate to createFromProj4 so
-  // that we can try to fill in the remaining class members...
-  //create from Proj will set the isValidFlag
-  if ( !createFromProj4( proj4src ) )
-  {
-    CPLFree( proj4src );
-
-#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,5,0)
-    // try fixed up version
-    OSRFixup( d->mCRS );
-#endif
-
-    OSRExportToProj4( d->mCRS, &proj4src );
-
-    createFromProj4( proj4src );
-  }
-#endif
-
-  if ( d->mSrsId == 0 )
-  {
-    // TODO -- we should allow WKT based storage of custom CRS
-    QString myName = QStringLiteral( " * %1 (%2)" )
-                     .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
-                           toProj4() );
-    saveAsUserCrs( myName );
-  }
-
-#if PROJ_VERSION_MAJOR<6
-  CPLFree( proj4src );
-#endif
 
   locker.changeMode( QgsReadWriteLocker::Write );
   if ( !sDisableWktCache )
@@ -1469,6 +1365,132 @@ void QgsCoordinateReferenceSystem::setProj4String( const QString &proj4String )
   setMapUnits();
 }
 
+bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt )
+{
+  bool res = false;
+  d->mIsValid = false;
+
+#if PROJ_VERSION_MAJOR>=6
+  PROJ_STRING_LIST warnings = nullptr;
+  PROJ_STRING_LIST grammerErrors = nullptr;
+  {
+    QgsProjUtils::proj_pj_unique_ptr crs( proj_create_from_wkt( QgsProjContext::get(), wkt.toLatin1().constData(), nullptr, &warnings, &grammerErrors ) );
+    d->mPj = QgsProjUtils::crsToSingleCrs( crs.get() );
+  }
+
+  res = static_cast< bool >( d->mPj );
+  if ( !res )
+  {
+    QgsDebugMsg( QStringLiteral( "\n---------------------------------------------------------------" ) );
+    QgsDebugMsg( QStringLiteral( "This CRS could *** NOT *** be set from the supplied Wkt " ) );
+    QgsDebugMsg( "INPUT: " + wkt );
+    for ( auto iter = warnings; iter && *iter; ++iter )
+      QgsDebugMsg( *iter );
+    for ( auto iter = grammerErrors; iter && *iter; ++iter )
+      QgsDebugMsg( *iter );
+    QgsDebugMsg( QStringLiteral( "---------------------------------------------------------------\n" ) );
+  }
+  proj_string_list_destroy( warnings );
+  proj_string_list_destroy( grammerErrors );
+#else
+  QByteArray ba = wkt.toLatin1();
+  const char *pWkt = ba.data();
+
+  OGRErr myInputResult = OSRImportFromWkt( d->mCRS, const_cast< char ** >( & pWkt ) );
+  res = myInputResult == OGRERR_NONE;
+  if ( !res )
+  {
+    QgsDebugMsg( QStringLiteral( "\n---------------------------------------------------------------" ) );
+    QgsDebugMsg( QStringLiteral( "This CRS could *** NOT *** be set from the supplied Wkt " ) );
+    QgsDebugMsg( "INPUT: " + wkt );
+    QgsDebugMsg( QStringLiteral( "UNUSED WKT: %1" ).arg( pWkt ) );
+    QgsDebugMsg( QStringLiteral( "---------------------------------------------------------------\n" ) );
+  }
+#endif
+
+  QgsReadWriteLocker locker( *sProj4CacheLock(), QgsReadWriteLocker::Read );
+  if ( !res )
+  {
+    locker.changeMode( QgsReadWriteLocker::Write );
+    if ( !sDisableWktCache )
+      sWktCache()->insert( wkt, *this );
+    return d->mIsValid;
+  }
+
+#if PROJ_VERSION_MAJOR>=6
+  if ( d->mPj )
+  {
+    // try 1 - maybe we can directly grab the auth name and code from the crs already?
+    QString authName( proj_get_id_auth_name( d->mPj.get(), 0 ) );
+    QString authCode( proj_get_id_code( d->mPj.get(), 0 ) );
+
+    if ( authName.isEmpty() || authCode.isEmpty() )
+    {
+      // try 2, use proj's identify method and see if there's a nice candidate we can use
+      QgsProjUtils::identifyCrs( d->mPj.get(), authName, authCode );
+    }
+
+    if ( !authName.isEmpty() && !authCode.isEmpty() )
+    {
+      if ( loadFromAuthCode( authName, authCode ) )
+      {
+        locker.changeMode( QgsReadWriteLocker::Write );
+        if ( !sDisableWktCache )
+          sWktCache()->insert( wkt, *this );
+        return true;
+      }
+    }
+    else
+    {
+      // Still a valid CRS, just not a known one
+      d->mIsValid = true;
+    }
+    setMapUnits();
+  }
+#else
+  if ( OSRAutoIdentifyEPSG( d->mCRS ) == OGRERR_NONE )
+  {
+    QString authid = QStringLiteral( "%1:%2" )
+                     .arg( OSRGetAuthorityName( d->mCRS, nullptr ),
+                           OSRGetAuthorityCode( d->mCRS, nullptr ) );
+    bool result = createFromOgcWmsCrs( authid );
+    locker.changeMode( QgsReadWriteLocker::Write );
+    if ( !sDisableWktCache )
+      sWktCache()->insert( wkt, *this );
+    return result;
+  }
+#endif
+
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // WARNING - wkt to proj conversion is lossy, hence we DON'T DO THIS on proj 6
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+#if PROJ_VERSION_MAJOR<6
+  // create the proj4 structs needed for transforming
+  char *proj4src = nullptr;
+  OSRExportToProj4( d->mCRS, &proj4src );
+
+  //now that we have the proj4string, delegate to createFromProj4 so
+  // that we can try to fill in the remaining class members...
+  //create from Proj will set the isValidFlag
+  if ( !createFromProj4( proj4src ) )
+  {
+    CPLFree( proj4src );
+
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,5,0)
+    // try fixed up version
+    OSRFixup( d->mCRS );
+#endif
+
+    OSRExportToProj4( d->mCRS, &proj4src );
+
+    createFromProj4( proj4src );
+  }
+  CPLFree( proj4src );
+#endif
+  return d->mIsValid;
+}
+
 void QgsCoordinateReferenceSystem::setGeographicFlag( bool geoFlag )
 {
   d.detach();
@@ -2056,10 +2078,15 @@ long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
   {
     proj4String = toProj4();
   }
+  QString wktString = d->mWkt;
+  if ( wktString.isEmpty() )
+  {
+    wktString = toWkt();
+  }
 
-  // ellipsoid acroynym column is incorrect marked as not null in many crs database instances,
+  // ellipsoid acroynym column is incorrectly marked as not null in many crs database instances,
   // hack around this by using an empty string instead
-  const QString quotedEllipsoidString = ellipsoidAcronym().isNull() ? "''" : QgsSqliteUtils::quotedString( ellipsoidAcronym() );
+  const QString quotedEllipsoidString = ellipsoidAcronym().isNull() ? QStringLiteral( "''" ) : QgsSqliteUtils::quotedString( ellipsoidAcronym() );
 
   //if this is the first record we need to ensure that its srs_id is 10000. For
   //any rec after that sqlite3 will take care of the autonumbering
@@ -2067,28 +2094,31 @@ long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
   //the autoinc related system tables.
   if ( getRecordCount() == 0 )
   {
-    mySql = "insert into tbl_srs (srs_id,description,projection_acronym,ellipsoid_acronym,parameters,is_geo) values ("
+    mySql = "insert into tbl_srs (srs_id,description,projection_acronym,ellipsoid_acronym,parameters,is_geo,wkt) values ("
             + QString::number( USER_CRS_START_ID )
             + ',' + QgsSqliteUtils::quotedString( name )
-            + ',' + QgsSqliteUtils::quotedString( projectionAcronym() )
+            + ',' + ( !d->mProjectionAcronym.isEmpty() ? QgsSqliteUtils::quotedString( d->mProjectionAcronym ) : QStringLiteral( "''" ) )
             + ',' + quotedEllipsoidString
             + ',' + QgsSqliteUtils::quotedString( toProj4() )
-            + ",0)"; // <-- is_geo shamelessly hard coded for now
+            + ",0,"  // <-- is_geo shamelessly hard coded for now
+            + QgsSqliteUtils::quotedString( wktString )
+            + ')';
   }
   else
   {
-    mySql = "insert into tbl_srs (description,projection_acronym,ellipsoid_acronym,parameters,is_geo) values ("
+    mySql = "insert into tbl_srs (description,projection_acronym,ellipsoid_acronym,parameters,is_geo,wkt) values ("
             + QgsSqliteUtils::quotedString( name )
-            + ',' + QgsSqliteUtils::quotedString( projectionAcronym() )
+            + ',' + ( !d->mProjectionAcronym.isEmpty() ? QgsSqliteUtils::quotedString( d->mProjectionAcronym ) : QStringLiteral( "''" ) )
             + ',' + quotedEllipsoidString
             + ',' + QgsSqliteUtils::quotedString( toProj4() )
-            + ",0)"; // <-- is_geo shamelessly hard coded for now
+            + ",0,"  // <-- is_geo shamelessly hard coded for now
+            + QgsSqliteUtils::quotedString( wktString )
+            + ')';
   }
   sqlite3_database_unique_ptr database;
   sqlite3_statement_unique_ptr statement;
-  int           myResult;
   //check the db is available
-  myResult = database.open( QgsApplication::qgisUserDatabaseFilePath() );
+  int myResult = database.open( QgsApplication::qgisUserDatabaseFilePath() );
   if ( myResult != SQLITE_OK )
   {
     QgsDebugMsg( QStringLiteral( "Can't open or create database %1: %2" )
@@ -2098,7 +2128,7 @@ long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
   }
   statement = database.prepare( mySql, myResult );
 
-  qint64 returnId;
+  qint64 returnId = -1;
   if ( myResult == SQLITE_OK && statement.step() == SQLITE_DONE )
   {
     QgsMessageLog::logMessage( QObject::tr( "Saved user CRS [%1]" ).arg( toProj4() ), QObject::tr( "CRS" ) );
@@ -2120,10 +2150,7 @@ long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
     projectionsAuthId.append( authid() );
     settings.setValue( QStringLiteral( "UI/recentProjectionsProj4" ), projectionsProj4 );
     settings.setValue( QStringLiteral( "UI/recentProjectionsAuthId" ), projectionsAuthId );
-
   }
-  else
-    returnId = -1;
 
   invalidateCache();
   return returnId;
