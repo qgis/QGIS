@@ -47,12 +47,11 @@ void QgsHanaTableModel::addTableEntry( const QgsHanaLayerProperty &layerProperty
     wkbType = QgsWkbTypes::NoGeometry;
 
   QString tip;
-
   if ( wkbType == QgsWkbTypes::Unknown )
     tip = tr( "Specify a geometry type in the '%1' column" ).arg( tr( "Data Type" ) );
   else if ( wkbType != QgsWkbTypes::NoGeometry && srid == std::numeric_limits<int>::min() )
     tip = tr( "Enter a SRID into the '%1' column" ).arg( tr( "SRID" ) );
-  else if ( !layerProperty.pkCols.isEmpty() )
+  else if ( layerProperty.pkCols.size() > 1 )
     tip = tr( "Select columns in the '%1' column that uniquely identify features of this layer" ).arg( tr( "Feature ID" ) );
 
   QStandardItem *schemaNameItem = new QStandardItem( layerProperty.schemaName );
@@ -74,17 +73,26 @@ void QgsHanaTableModel::addTableEntry( const QgsHanaLayerProperty &layerProperty
     sridItem->setFlags( sridItem->flags() | Qt::ItemIsEditable );
   }
 
-  QStandardItem *pkItem = new QStandardItem( QLatin1String( "" ) );
-  if ( !layerProperty.pkCols.isEmpty() )
+  QString pkText;
+  QString pkCol;
+  switch ( layerProperty.pkCols.size() )
   {
-    pkItem->setText( tr( "Select…" ) );
-    pkItem->setFlags( pkItem->flags() | Qt::ItemIsEditable );
+    case 0:
+      break;
+    case 1:
+      pkText = layerProperty.pkCols[0];
+      pkCol = pkText;
+      break;
+    default:
+      pkText = tr( "Select…" );
+      break;
   }
-  else
-    pkItem->setFlags( pkItem->flags() & ~Qt::ItemIsEditable );
 
+  QStandardItem *pkItem = new QStandardItem( pkText );
+  if ( layerProperty.pkCols.size() > 1 )
+    pkItem->setFlags( pkItem->flags() | Qt::ItemIsEditable );
   pkItem->setData( layerProperty.pkCols, Qt::UserRole + 1 );
-  pkItem->setData( "", Qt::UserRole + 2 );
+  pkItem->setData( pkCol, Qt::UserRole + 2 );
 
   QStandardItem *selItem = new QStandardItem( QLatin1String( "" ) );
   selItem->setFlags( selItem->flags() | Qt::ItemIsUserCheckable );
@@ -223,7 +231,7 @@ bool QgsHanaTableModel::setData( const QModelIndex &idx, const QVariant &value, 
 
   if ( idx.column() == DbtmGeomType || idx.column() == DbtmSrid || idx.column() == DbtmPkCol )
   {
-    QgsWkbTypes::Type wkbType = ( QgsWkbTypes::Type ) idx.sibling( idx.row(), DbtmGeomType ).data( Qt::UserRole + 2 ).toInt();
+    QgsWkbTypes::Type wkbType = static_cast<QgsWkbTypes::Type>( idx.sibling( idx.row(), DbtmGeomType ).data( Qt::UserRole + 2 ).toInt() );
 
     QString tip;
     if ( wkbType == QgsWkbTypes::Unknown )
@@ -285,7 +293,7 @@ QString QgsHanaTableModel::layerURI( const QModelIndex &index, const QString &co
   if ( !index.isValid() )
     return QString();
 
-  QgsWkbTypes::Type wkbType = ( QgsWkbTypes::Type ) itemFromIndex( index.sibling( index.row(), DbtmGeomType ) )->data( Qt::UserRole + 2 ).toInt();
+  QgsWkbTypes::Type wkbType = static_cast<QgsWkbTypes::Type>( itemFromIndex( index.sibling( index.row(), DbtmGeomType ) )->data( Qt::UserRole + 2 ).toInt() );
   if ( wkbType == QgsWkbTypes::Unknown )
     // no geometry type selected
     return QString();
