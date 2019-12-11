@@ -26,7 +26,12 @@ from builtins import range
 
 from functools import cmp_to_key
 
-from qgis.PyQt.QtCore import QRegExp, QFile, QCoreApplication
+from qgis.PyQt.QtCore import (
+    QRegExp,
+    QFile,
+    QCoreApplication,
+    QVariant
+)
 from qgis.core import (
     Qgis,
     QgsCredentials,
@@ -62,6 +67,21 @@ class CursorProxy():
         if (self.sql != None):
             self._execute()
 
+    def _toStrResultSet(self, res):
+        #print("XXX type of QVariant(None) is " + str(type(QVariant(None))))
+        newres = []
+        for rec in res:
+            newrec = []
+            for col in rec:
+                #print("XXX col of rec of resultset valued " + str(col)+ " is typed " + str(type(col)))
+                if type(col) == type(QVariant(None)):
+                    #print("XXX qvariant type of " + str(col)+ " is " + str(col.type))
+                    if (str(col) == 'NULL'):
+                        col = None
+                newrec.append(col)
+            newres.append(newrec)
+        return newres
+
     def _execute(self, sql=None):
         if self.sql == sql and self.result != None:
             print ("XXX CursorProxy execute called with sql " + sql)
@@ -70,7 +90,7 @@ class CursorProxy():
             self.sql = sql
         if (self.sql == None):
             return
-        self.result = self.connection._executeSql(self.sql)
+        self.result = self._toStrResultSet(self.connection._executeSql(self.sql))
         self.description = []
         if len(self.result):
             for i in range(len(self.result)):
