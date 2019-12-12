@@ -159,35 +159,31 @@ void CostCalculator::setPolygonCandidatesCost( std::size_t nblp, std::vector< st
 
 void CostCalculator::setCandidateCostFromPolygon( LabelPosition *lp, PalRtree<FeaturePart> *obstacles, double bbx[4], double bby[4] )
 {
-  PolygonCostCalculator *pCost = new PolygonCostCalculator( lp );
+  PolygonCostCalculator pCost( lp );
 
   // center
   //cost = feat->getDistInside((this->x[0] + this->x[2])/2.0, (this->y[0] + this->y[2])/2.0 );
 
-  pCost->update( lp->feature );
+  pCost.update( lp->feature );
 
-  PointSet *extent = new PointSet( 4, bbx, bby );
-
-  pCost->update( extent );
-
-  delete extent;
+  // costs candidates closer to outside of map higher than those closer to inside
+  PointSet extent( 4, bbx, bby );
+  pCost.update( &extent );
 
   obstacles->intersects( lp->feature->boundingBox(), [&pCost]( const FeaturePart * obstacle )->bool
   {
-    LabelPosition *lp = pCost->getLabel();
+    LabelPosition *lp = pCost.getLabel();
     if ( ( obstacle == lp->feature ) || ( obstacle->getHoleOf() && obstacle->getHoleOf() != lp->feature ) )
     {
       return true;
     }
 
-    pCost->update( obstacle );
+    pCost.update( obstacle );
 
     return true;
   } );
 
-  lp->setCost( pCost->getCost() );
-
-  delete pCost;
+  lp->setCost( pCost.getCost() );
 }
 
 std::size_t CostCalculator::finalizeCandidatesCosts( Feats *feat, std::size_t max_p, PalRtree<FeaturePart> *obstacles, double bbx[4], double bby[4] )
