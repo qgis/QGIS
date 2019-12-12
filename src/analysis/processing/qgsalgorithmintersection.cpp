@@ -88,6 +88,8 @@ QVariantMap QgsIntersectionAlgorithm::processAlgorithm( const QVariantMap &param
   if ( !sourceB )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "OVERLAY" ) ) );
 
+  QgsWkbTypes::Type geomType = QgsWkbTypes::multiType( sourceA->wkbType() );
+
   const QStringList fieldsA = parameterAsFields( parameters, QStringLiteral( "INPUT_FIELDS" ), context );
   const QStringList fieldsB = parameterAsFields( parameters, QStringLiteral( "OVERLAY_FIELDS" ), context );
 
@@ -101,14 +103,14 @@ QVariantMap QgsIntersectionAlgorithm::processAlgorithm( const QVariantMap &param
                              overlayFieldsPrefix );
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outputFields, sourceA->wkbType(), sourceA->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outputFields, geomType, sourceA->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
 
-  Vectoranalysis::IntersectionTool tool( sourceA.get(), sourceB.get(), fieldIndicesA, fieldIndicesB, sink.get(), sourceA->wkbType() );
+  Vectoranalysis::IntersectionTool tool( sourceA.get(), sourceB.get(), fieldIndicesA, fieldIndicesB, sink.get(), geomType );
   QgsOverlayUtils::runVectorAnalysisTool( tool, feedback );
 
   return outputs;

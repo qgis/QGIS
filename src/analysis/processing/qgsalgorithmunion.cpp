@@ -81,8 +81,10 @@ QVariantMap QgsUnionAlgorithm::processAlgorithm( const QVariantMap &parameters, 
   QString overlayFieldsPrefix = parameterAsString( parameters, QStringLiteral( "OVERLAY_FIELDS_PREFIX" ), context );
   QgsFields fields = sourceB ? QgsProcessingUtils::combineFields( sourceA->fields(), sourceB->fields(), overlayFieldsPrefix ) : sourceA->fields();
 
+  QgsWkbTypes::Type geomType = QgsWkbTypes::multiType( sourceA->wkbType() );
+
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, sourceA->wkbType(), sourceA->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, geomType, sourceA->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
@@ -96,7 +98,7 @@ QVariantMap QgsUnionAlgorithm::processAlgorithm( const QVariantMap &parameters, 
     return outputs;
   }
 
-  Vectoranalysis::UnionTool tool( sourceA.get(), sourceB.get(), sink.get(), sourceA->wkbType() );
+  Vectoranalysis::UnionTool tool( sourceA.get(), sourceB.get(), sink.get(), geomType );
   QgsOverlayUtils::runVectorAnalysisTool( tool, feedback );
 
   return outputs;

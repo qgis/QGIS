@@ -129,34 +129,48 @@ namespace Vectoranalysis
     QMutexLocker locker( &mWriteMutex );
     for ( QgsFeature *feature : outFeatures )
     {
-      feature->geometry().convertGeometryCollectionToSubclass( QgsWkbTypes::geometryType( mOutWkbType ) );
+      QgsGeometry fGeom = feature->geometry();
+      fGeom.convertGeometryCollectionToSubclass( QgsWkbTypes::geometryType( mOutWkbType ) );
+
       // Skip incompatible geometries
-      if ( QgsWkbTypes::singleType( feature->geometry().wkbType() ) != QgsWkbTypes::singleType( mOutWkbType ) )
+      if ( QgsWkbTypes::singleType( fGeom.wkbType() ) != QgsWkbTypes::singleType( mOutWkbType ) )
       {
-        QgsDebugMsg( QString( "Skipping incompatible geometry: %1 %2" ).arg( feature->geometry().wkbType() ).arg( mOutWkbType ) );
+        QgsDebugMsg( QString( "Skipping incompatible geometry: %1 %2" ).arg( fGeom.wkbType() ).arg( mOutWkbType ) );
         continue;
       }
+
       // If output type is a singleType, create features for each single geometry
-      else if ( mOutWkbType == QgsWkbTypes::singleType( mOutWkbType ) )
+      if ( mOutWkbType == QgsWkbTypes::singleType( mOutWkbType ) )
       {
-        for ( QgsGeometry geometry : feature->geometry().asGeometryCollection() )
+        for ( QgsGeometry geometry : fGeom.asGeometryCollection() )
         {
-          QgsFeature f;
-          f.setGeometry( geometry );
-          f.setAttributes( feature->attributes() );
-          if ( !mOutput->addFeature( f ) )
-          {
-            mWriteErrors.append( QObject::tr( "Failed to write feature to datasource" ) );
-          }
+          writeFeature( geometry, feature->attributes() );
         }
       }
       else
       {
-        if ( !mOutput->addFeature( *feature ) )
+        if ( QgsWkbTypes::singleType( mOutWkbType ) == fGeom.wkbType() )
         {
-          mWriteErrors.append( QObject::tr( "Failed to write feature to datasource" ) );
+          fGeom.convertToMultiType();
         }
+        writeFeature( fGeom, feature->attributes() );
       }
+    }
+  }
+
+  void AbstractTool::writeFeature( const QgsGeometry &geom, const QgsAttributes &att )
+  {
+    if ( !mOutput || geom.isEmpty() )
+    {
+      return;
+    }
+
+    QgsFeature f;
+    f.setGeometry( geom );
+    f.setAttributes( att );
+    if ( !mOutput->addFeature( f ) )
+    {
+      mWriteErrors.append( QObject::tr( "Failed to write feature to datasource" ) );
     }
   }
 

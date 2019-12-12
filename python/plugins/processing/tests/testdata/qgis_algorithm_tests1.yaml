@@ -340,6 +340,12 @@ tests:
       OUTPUT:
         name: expected/intersection_collection_fallback.shp
         type: vector
+        compare:
+          unordered: true
+          fields:
+            fid: skip
+          geometry:
+            topo_equal_check: true
 
   - name: Densify geometries
     algorithm: native:densifygeometries

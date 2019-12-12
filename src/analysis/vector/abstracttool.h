@@ -92,6 +92,7 @@ namespace Vectoranalysis
       bool getFeatureAtId( QgsFeature &feature, QgsFeatureId id, QgsFeatureSource *layer, const QgsAttributeList &attIdx );
       QVector<QgsFeature *> getIntersects( const QgsRectangle &rect, QgsSpatialIndex &index, QgsFeatureSource *layer, const QgsAttributeList &attIdx );
       void writeFeatures( const QVector<QgsFeature *> &outFeatures );
+      void writeFeature( const QgsGeometry &geom, const QgsAttributes &att );
 
       void reportInvalidFeatureError( QgsFeatureSource *layer, const QgsFeatureId &id, const QString &errorMessage )
       {

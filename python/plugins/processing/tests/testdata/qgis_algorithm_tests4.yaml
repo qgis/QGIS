@@ -364,8 +364,11 @@ tests:
         type: vector
         pk: id_a
         compare:
+          unordered: true
           fields:
             fid: skip
+          geometry:
+            topo_equal_check: true
 
   - algorithm: native:difference
     name: Test Difference B - A (basic)
@@ -382,8 +385,11 @@ tests:
         type: vector
         pk: id_b
         compare:
+          unordered: true
           fields:
             fid: skip
+          geometry:
+            topo_equal_check: true
 
   - algorithm: native:symmetricaldifference
     name: Test Symmetrical Difference A - B (basic)
@@ -400,8 +406,11 @@ tests:
         type: vector
         pk: [id_a, id_b]
         compare:
+          unordered: true
           fields:
             fid: skip
+          geometry:
+            topo_equal_check: true
 
   - algorithm: native:symmetricaldifference
     name: Test Symmetrical Difference B - A (basic)
@@ -418,8 +427,11 @@ tests:
         type: vector
         pk: [id_a, id_b]
         compare:
+          unordered: true
           fields:
             fid: skip
+          geometry:
+            topo_equal_check: true
 
   - algorithm: native:symmetricaldifference
     name: Test Symmetrical Difference B - A (custom prefix)
@@ -437,8 +449,11 @@ tests:
         type: vector
         pk: [pre_id_a, id_b]
         compare:
+          unordered: true
           fields:
             fid: skip
+          geometry:
+            topo_equal_check: true
 
   - algorithm: native:union
     name: Test Union of single layer
@@ -454,6 +469,8 @@ tests:
           unordered: true
           fields:
             fid: skip
+          geometry:
+            topo_equal_check: true
 
   - algorithm: native:union
     name: Test Union (basic)
@@ -470,8 +487,11 @@ tests:
         type: vector
         pk: [id_a, id_b]
         compare:
+          unordered: true
           fields:
             fid: skip
+          geometry:
+            topo_equal_check: true
 
   - algorithm: native:union
     name: Test Union (custom prefix)
@@ -489,8 +509,11 @@ tests:
         type: vector
         pk: [id_a, pre_id_b]
         compare:
+          unordered: true
           fields:
             fid: skip
+          geometry:
+            topo_equal_check: true
 
   - algorithm: native:union
     name: Test Union (geom types)
@@ -507,8 +530,11 @@ tests:
         type: vector
         pk: [id_a, id_b]
         compare:
+          unordered: true
           fields:
             fid: skip
+          geometry:
+            topo_equal_check: true
 
   - algorithm: native:taperedbuffer
     name: Tapered buffers (lines)
