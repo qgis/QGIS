@@ -1447,6 +1447,7 @@ QList<double> QgsProcessingParameters::parameterAsRange( const QgsProcessingPara
 
   QStringList resultStringList;
   QVariant val = value;
+
   if ( val.canConvert<QgsProperty>() )
     resultStringList << val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
   else if ( val.type() == QVariant::List )
@@ -1478,9 +1479,23 @@ QList<double> QgsProcessingParameters::parameterAsRange( const QgsProcessingPara
   }
 
   if ( resultStringList.size() < 2 )
-    return QList< double >() << 0.0 << 0.0;
+    return QList< double >() << NAN << NAN;
 
-  return QList< double >() << resultStringList.at( 0 ).toDouble() << resultStringList.at( 1 ).toDouble();
+  QList< double > result;
+  bool ok = false;
+  double n = resultStringList.at( 0 ).toDouble( &ok );
+  if ( ok )
+    result << n;
+  else
+    result << NAN;
+  ok = false;
+  n = resultStringList.at( 1 ).toDouble( &ok );
+  if ( ok )
+    result << n;
+  else
+    result << NAN;
+
+  return result;
 }
 
 QStringList QgsProcessingParameters::parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
@@ -3127,7 +3142,8 @@ bool QgsProcessingParameterRange::fromVariantMap( const QVariantMap &map )
 
 QgsProcessingParameterRange *QgsProcessingParameterRange::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
-  return new QgsProcessingParameterRange( name, description, QgsProcessingParameterNumber::Double, definition.isEmpty() ? QVariant() : definition, isOptional );
+  return new QgsProcessingParameterRange( name, description, QgsProcessingParameterNumber::Double, definition.isEmpty() ? QVariant()
+                                          : ( definition.toLower().trimmed() == QStringLiteral( "none" ) ? QVariant() : definition ), isOptional );
 }
 
 QgsProcessingParameterRasterLayer::QgsProcessingParameterRasterLayer( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
