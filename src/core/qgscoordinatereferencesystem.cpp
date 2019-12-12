@@ -1371,6 +1371,9 @@ bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt, bool allowP
   d->mIsValid = false;
 
 #if PROJ_VERSION_MAJOR>=6
+  // TODO - remove allowProj4Fallback when we require proj 6+ to build
+  ( void )allowProj4Fallback;
+
   PROJ_STRING_LIST warnings = nullptr;
   PROJ_STRING_LIST grammerErrors = nullptr;
   {
