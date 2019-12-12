@@ -995,6 +995,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QWT_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
   ${QSCINTILLA_INCLUDE_DIR}
+  ${SPATIALINDEX_INCLUDE_DIR}
 )
 
 # disable deprecation warnings for classes re-exporting deprecated methods
