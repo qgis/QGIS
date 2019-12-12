@@ -170,8 +170,13 @@ class PostGisDBConnector(DBConnector):
         DBConnector.__init__(self, uri)
 
         username = uri.username() or os.environ.get('PGUSER')
-        self.dbname = uri.database() or os.environ.get('PGDATABASE') or username
-        uri.setDatabase(self.dbname)
+
+        # Do not get db and user names from the env if service is used
+        if not uri.service():
+            if username is None:
+                username = os.environ.get('USER')
+            self.dbname = uri.database() or os.environ.get('PGDATABASE') or username
+            uri.setDatabase(self.dbname)
 
         #self.connName = connName
         #self.user = uri.username() or os.environ.get('USER')
