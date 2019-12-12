@@ -86,6 +86,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
   // to store obstacles
   QgsGenericSpatialIndex< FeaturePart > obstacles;
   std::vector< FeaturePart * > allObstacleParts;
+  QgsGenericSpatialIndex< LabelPosition > allCandidatesIndex;
   std::unique_ptr< Problem > prob = qgis::make_unique< Problem >();
 
   double bbx[4];
@@ -184,7 +185,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       {
         for ( std::unique_ptr< LabelPosition > &candidate : candidates )
         {
-          candidate->insertIntoIndex( prob->allCandidatesIndex() );
+          candidate->insertIntoIndex( allCandidatesIndex );
         }
 
         std::sort( candidates.begin(), candidates.end(), CostCalculator::candidateSortGrow );
@@ -254,7 +255,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       if ( isCanceled() )
         break; // do not continue searching
 
-      prob->allCandidatesIndex().intersects( obstaclePart->boundingBox(), [obstaclePart, this]( const LabelPosition * candidatePosition ) -> bool
+      allCandidatesIndex.intersects( obstaclePart->boundingBox(), [obstaclePart, this]( const LabelPosition * candidatePosition ) -> bool
       {
         // test whether we should ignore this obstacle for the candidate. We do this if:
         // 1. it's not a hole, and the obstacle belongs to the same label feature as the candidate (e.g.,
@@ -321,7 +322,6 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
           {
             if ( candidate->hasHardObstacleConflict() )
             {
-              candidate->removeFromIndex( prob->mAllCandidatesIndex );
               return true;
             }
             return false;
@@ -331,7 +331,6 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
           {
             // we've ended up removing ALL candidates for this label. Oh well, that's allowed. We just need to
             // make sure we move this last candidate to the unplaced labels list
-            feat->candidates.front()->removeFromIndex( prob->mAllCandidatesIndex );
             prob->positionsWithNoCandidates()->emplace_back( std::move( feat->candidates.front() ) );
             feat->candidates.clear();
           }
@@ -351,11 +350,12 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       prob->mFeatNbLp[i] = static_cast< int >( feat->candidates.size() );
       prob->mTotalCandidates += static_cast< int >( feat->candidates.size() );
 
-      // add all candidates into a rtree (to speed up conflicts searching)
-      for ( std::size_t j = 0; j < feat->candidates.size(); j++, idlp++ )
+      // add all remaining candidates into a rtree (to speed up conflicts searching)
+      for ( const auto &candidate : feat->candidates )
       {
-        //lp->insertIntoIndex(prob->candidates);
-        feat->candidates[ j ]->setProblemIds( static_cast< int >( i ), idlp );
+        candidate->insertIntoIndex( prob->allCandidatesIndex() );
+        candidate->setProblemIds( static_cast< int >( i ), idlp );
+        idlp++;
       }
       features.emplace_back( std::move( feat ) );
     }
@@ -385,7 +385,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
         // lookup for overlapping candidate
         lp->getBoundingBox( amin, amax );
-        prob->mAllCandidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&lp]( const LabelPosition * lp2 )->bool
+        prob->allCandidatesIndex().intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&lp]( const LabelPosition * lp2 )->bool
         {
           if ( lp->isInConflict( lp2 ) )
           {
