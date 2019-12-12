@@ -1,15 +1,3 @@
-qgis:addfieldtoattributestable: >
-  This algorithm adds a new attribute to a vector layer.
-
-  The name and characteristics of the attribute are defined as parameters.
-
-  The new attribute is not added to the input layer but a new layer is generated instead.
-
-qgis:adduniquevalueindexfield: >
-  This algorithm takes a vector layer and an attribute and adds a new numeric field. Values in this field correspond to values in the specified attribute, so features with the same value for the attribute will have the same value in the new numeric field. This creates a numeric equivalent of the specified attribute, which defines the same classes.
-
-  The new attribute is not added to the input layer but a new layer is generated instead.
-
 qgis:advancedpythonfieldcalculator: >
   This algorithm adds a new attribute to a vector layer, with values resulting from applying an expression to each feature. The expression is defined as a Python function.
 
@@ -148,13 +136,6 @@ qgis:extractbyexpression: >
 
   For more information about expressions see the <a href ="{qgisdocs}/user_manual/working_with_vector/expression.html">user manual</a>
 
-qgis:extractspecificvertices: >
-  This algorithm takes a line or polygon layer and generates a point layer with points representing specific vertices in the input lines or polygons. For instance, this algorithm can be used to extract the first or last vertices in the geometry. The attributes associated to each point are the same ones associated to the line or polygon that the point belongs to.
-
-  The vertex indices parameter accepts a comma separated string specifying the indices of the vertices to extract. The first vertex corresponds to an index of 0, the second vertex has an index of 1, etc. Negative indices can be used to find vertices at the end of the geometry, e.g., an index of -1 corresponds to the last vertex, -2 corresponds to the second last vertex, etc.
-
-  Additional fields are added to the points indicating the specific vertex position (e.g., 0, -1, etc), the original vertex index, the vertex’s part and its index within the part (as well as its ring for polygons), distance along the original geometry and bisector angle of vertex for the original geometry.
-
 qgis:fieldcalculator: >
   This algorithm computes a new vector layer with the same features of the input layer, but with an additional attribute. The values of this new attribute are computed from each feature using a mathematical formula, based on the properties and attributes of the feature.
 
@@ -178,11 +159,6 @@ qgis:fixeddistancebuffer: >
 
 qgis:frequencyanalysis: >
   This algorithm generates a table with frequency analysis of the values of a selected attribute from an input vector layer
-
-qgis:geometrybyexpression: >
-  This algorithm updates existing geometries (or creates new geometries) for input features by use of a QGIS expression. This allows complex geometry modifications which can utilize all the flexibility of the QGIS expression engine to manipulate and create geometries for output features.
-
-  For help with QGIS expression functions, see the inbuilt help for specific functions which is available in the expression builder.
 
 qgis:generatepointspixelcentroidsalongline: >
   This algorithm generates a point vector layer from an input raster and line layer.
@@ -260,12 +236,6 @@ qgis:minimumboundinggeometry: >
 qgis:multiparttosingleparts: >
   This algorithm takes a vector layer with multipart geometries and generates a new one in which all geometries contain a single part. Features with multipart geometries are divided in as many different features as parts the geometry contain, and the same attributes are used for each of them.
 
-qgis:nearestneighbouranalysis: >
-  This algorithm performs nearest neighbor analysis for a point layer.
-
-  Output is generated as an html file with the computed statistical values.
-
-
 qgis:numberofuniquevaluesinclasses: >
   This algorithm counts the different values that appear in a specified attributes for features of the same class.
 
@@ -296,20 +266,12 @@ qgis:polarplot: >
 
   Two fields must be entered as parameters: one that define the category (to group features) and another one with the variable to plot (this has to be a numeric one)
 
-qgis:poleofinaccessibility: >
-  This algorithm calculates the pole of inaccessibility for a polygon layer, which is the most distant internal point from the boundary of the surface. This algorithm uses the 'polylabel' algorithm (Vladimir Agafonkin, 2016), which is an iterative approach guaranteed to find the true pole of inaccessibility within a specified tolerance (in layer units). More precise tolerances require more iterations and will take longer to calculate.
-
-  The distance from the calculated pole to the polygon boundary will be stored as a new attribute in the output layer.
-
 qgis:polygoncentroids: >
   This algorithm creates a new point layer, with points representing the centroid of polygons of an input layer.
 
   The attributes associated to each point in the output layer are the same ones associated to the original polygon.
 
   NOTE: This algorithm is deprecated and the generic "centroids" algorithm (which works for line and multi geometry layers) should be used instead.
-
-qgis:polygonfromlayerextent: >
-  This algorithm takes a map layer and generates a new vector layer with the minimum bounding box (rectangle polygon with N-S orientation) that covers the input layer. Optionally, the extent can be enlarged to a rounded value.
 
 qgis:polygonize:  >
   This algorithm takes a lines layer and creates a polygon layer, with polygons generated from the lines in the input layer.
@@ -325,11 +287,6 @@ qgis:postgisexecutesql: >
 
 qgis:postgisexecuteandloadsql: >
   This algorithm performs a SQL database query on a PostGIS database connected to QGIS and loads the query results as a new layer.
-
-qgis:randomextract: >
-  This algorithm takes a vector layer and generates a new one that contains only a subset of the features in the input layer.
-
-  The subset is defined randomly, using a percentage or count value to define the total number of features in the subset.
 
 qgis:randomextractwithinsubsets: >
   This algorithm takes a vector layer and generates a new one that contains only a subset of the features in the input layer.
@@ -383,9 +340,6 @@ qgis:rasterlayerhistogram: >
   This algorithm generates a histogram with the values of a raster layer.
 
   The raster layer must have a single band.
-
-qgis:rasterlayerstatistics: >
-  This algorithm computes basic statistics from the values in a given band of the raster layer.
 
 qgis:rastersampling: >
   This algorithm creates a new vector layer with the same attributes of the input layer and the raster values corresponding on the point location.
@@ -450,11 +404,6 @@ qgis:splitvectorlayer: >
 qgis:statisticsbycategories: >
   This algorithm calculates statistics of fields depending on a parent class.
 
-qgis:sumlinelengths: >
-  This algorithm takes a polygon layer and a line layer and measures the total length of lines and the total number of them that cross each polygon.
-
-  The resulting layer has the same features as the input polygon layer, but with two additional attributes containing the length and count of the lines across each polygon. The names of these two fields can be configured in the algorithm parameters.
-
 qgis:texttofloat: >
   This algorithm modifies the type of a given attribute in a vector layer, converting a text attribute containing numeric strings into a numeric attribute.
 
@@ -478,14 +427,6 @@ qgis:topologicalcoloring: >
 
   A minimum number of colors can be specified if desired. The color index is saved to a new attribute named color_id.
 
-qgis:translate: >
-  This algorithm moves the geometries within a layer, by offsetting them with a specified x and y displacement.
-
-qgis:truncatetable: >
-  This algorithm truncates a layer, by deleting all features from within the layer.
-
-  Warning - this algorithm modifies the layer in place, and deleted features cannot be restored!
-
 qgis:variabledistancebuffer: >
   This algorithm computes a buffer area for all the features in an input layer. The size of the buffer for a given feature is defined by an attribute, so it allows different features to have different buffer sizes.
 
@@ -499,6 +440,3 @@ qgis:vectorlayerscatterplot: >
 
 qgis:voronoipolygons: >
   This algorithm takes a points layer and generates a polygon layer containing the voronoi polygons corresponding to those input points.
-
-qgis:zonalstatistics: >
-  This algorithm calculates statistics of a raster layer for each feature of an overlapping polygon vector layer.

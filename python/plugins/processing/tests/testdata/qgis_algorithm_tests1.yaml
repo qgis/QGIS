@@ -1794,7 +1794,7 @@ tests:
         name: expected/line_intersection_collection.gml
         type: vector
 
-  - algorithm: qgis:sumlinelengths
+  - algorithm: native:sumlinelengths
     name: Sum line lengths
     params:
       COUNT_FIELD: line_count
@@ -1821,7 +1821,7 @@ tests:
         name: expected/multipoint_delaunay.gml
         type: vector
 
-  - algorithm: qgis:polygonfromlayerextent
+  - algorithm: native:polygonfromlayerextent
     name: Polygon from layer extent rounded to 0
     params:
       BY_FEATURE: false
@@ -1834,7 +1834,7 @@ tests:
         name: expected/polygon_from_extent.gml
         type: vector
 
-  - algorithm: qgis:polygonfromlayerextent
+  - algorithm: native:polygonfromlayerextent
     name: Polygon from layer extent rounded to 2
     params:
       BY_FEATURE: false
