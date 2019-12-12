@@ -28,7 +28,7 @@
 /**
  * Native pole of inaccessibility algorithm.
  */
-class QgsPoleOfInaccessibilityAlgorithm : public QgsProcessingAlgorithm
+class QgsPoleOfInaccessibilityAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
 
   public:
@@ -42,13 +42,25 @@ class QgsPoleOfInaccessibilityAlgorithm : public QgsProcessingAlgorithm
     QString shortHelpString() const override;
     QString svgIconPath() const override;
     QIcon icon() const override;
-    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QList<int> inputLayerTypes() const override;
+    void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
     QgsPoleOfInaccessibilityAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
 
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QString outputName() const override;
+    QgsFields outputFields( const QgsFields &inputFields ) const override;
+    QgsProcessing::SourceType outputLayerType() const override;
+    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override;
+
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+    double mTolerance = 0.0;
+    bool mDynamicTolerance = false;
+    QgsProperty mToleranceProperty;
+
 };
 
 ///@endcond PRIVATE

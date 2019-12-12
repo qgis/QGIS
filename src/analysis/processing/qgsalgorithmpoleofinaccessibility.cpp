@@ -67,93 +67,88 @@ QIcon QgsPoleOfInaccessibilityAlgorithm::icon() const
   return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCentroids.svg" ) );
 }
 
+QString QgsPoleOfInaccessibilityAlgorithm::outputName() const
+{
+  return QObject::tr( "Point" );
+}
+
+QList<int> QgsPoleOfInaccessibilityAlgorithm::inputLayerTypes() const
+{
+  return QList<int>() << QgsProcessing::TypeVectorPolygon;
+}
+
+QgsProcessing::SourceType QgsPoleOfInaccessibilityAlgorithm::outputLayerType() const
+{
+  return QgsProcessing::TypeVectorPoint;
+}
+
+QgsWkbTypes::Type QgsPoleOfInaccessibilityAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
+{
+  Q_UNUSED( inputWkbType );
+
+  return QgsWkbTypes::Point;
+}
+
+QgsFields QgsPoleOfInaccessibilityAlgorithm::outputFields( const QgsFields &inputFields ) const
+{
+  QgsFields outputFields = inputFields;
+  outputFields.append( QgsField( QStringLiteral( "dist_pole" ), QVariant::Double ) );
+
+  return outputFields;
+}
+
 QgsPoleOfInaccessibilityAlgorithm *QgsPoleOfInaccessibilityAlgorithm::createInstance() const
 {
   return new QgsPoleOfInaccessibilityAlgorithm();
 }
 
-void QgsPoleOfInaccessibilityAlgorithm::initAlgorithm( const QVariantMap & )
+void QgsPoleOfInaccessibilityAlgorithm::initParameters( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList< int >() << QgsProcessing::TypeVectorPolygon ) );
-
   auto toleranceParam = qgis::make_unique < QgsProcessingParameterDistance >( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), 1.0, QStringLiteral( "INPUT" ), 0.0 );
   toleranceParam->setIsDynamic( true );
   toleranceParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Tolerance" ), QObject::tr( "Tolerance" ), QgsPropertyDefinition::Double ) );
   toleranceParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( toleranceParam.release() );
-
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Point" ), QgsProcessing::TypeVectorPoint ) );
 }
 
-QVariantMap QgsPoleOfInaccessibilityAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+bool QgsPoleOfInaccessibilityAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
-  if ( !source )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+  mTolerance = parameterAsDouble( parameters, QStringLiteral( "TOLERANCE" ), context );
+  mDynamicTolerance = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "TOLERANCE" ) );
+  if ( mDynamicTolerance )
+    mToleranceProperty = parameters.value( QStringLiteral( "TOLERANCE" ) ).value< QgsProperty >();
 
-  double toleranceValue = parameterAsDouble( parameters, QStringLiteral( "TOLERANCE" ), context );
-  bool dynamicTolerance = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "TOLERANCE" ) );
-  QgsExpressionContext expressionContext = createExpressionContext( parameters, context, source.get() );
-  QgsProperty toleranceProperty;
-  if ( dynamicTolerance )
-    toleranceProperty = parameters.value( QStringLiteral( "TOLERANCE" ) ).value< QgsProperty >();
+  return true;
+}
 
-  QgsFields fields = source->fields();
-  fields.append( QgsField( QStringLiteral( "dist_pole" ), QVariant::Double ) );
-
-  QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, QgsWkbTypes::Point, source->sourceCrs() ) );
-  if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
-
-  double step = source->featureCount() > 0 ? 100.0 / source->featureCount() : 1;
-
-  int i = 0;
-  QgsFeature f;
-  QgsFeatureIterator it = source->getFeatures();
-  while ( it.nextFeature( f ) )
+QgsFeatureList QgsPoleOfInaccessibilityAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  QgsFeature outFeature = feature;
+  if ( outFeature.hasGeometry() )
   {
-    if ( feedback->isCanceled() )
-    {
-      break;
-    }
+    double tolerance = mTolerance;
+    if ( mDynamicTolerance )
+      tolerance = mToleranceProperty.valueAsDouble( context.expressionContext(), tolerance );
 
-    QgsFeature outFeature = f;
-    if ( f.hasGeometry() )
+    double distance;
+    QgsGeometry outputGeom = outFeature.geometry().poleOfInaccessibility( tolerance, &distance );
+    if ( outputGeom.isNull() )
     {
-      double tolerance = toleranceValue;
-      if ( dynamicTolerance )
-      {
-        expressionContext.setFeature( f );
-        tolerance = toleranceProperty.valueAsDouble( expressionContext, toleranceValue );
-      }
-
-      double distance;
-      QgsGeometry outputGeom = f.geometry().poleOfInaccessibility( tolerance, &distance );
-      if ( outputGeom.isNull() )
-      {
-        throw QgsProcessingException( QObject::tr( "Error calculating pole of inaccessibility" ) );
-      }
-      QgsAttributes attrs = f.attributes();
-      attrs.append( distance );
-      outFeature.setAttributes( attrs );
-      outFeature.setGeometry( outputGeom );
+      throw QgsProcessingException( QObject::tr( "Error calculating pole of inaccessibility" ) );
     }
-    else
-    {
-      QgsAttributes attrs = f.attributes();
-      attrs.append( QVariant() );
-      outFeature.setAttributes( attrs );
-    }
-
-    sink->addFeature( outFeature, QgsFeatureSink::FastInsert );
-    feedback->setProgress( i * step );
-    i++;
+    QgsAttributes attrs = outFeature.attributes();
+    attrs.append( distance );
+    outFeature.setAttributes( attrs );
+    outFeature.setGeometry( outputGeom );
+  }
+  else
+  {
+    QgsAttributes attrs = outFeature.attributes();
+    attrs.append( QVariant() );
+    outFeature.setAttributes( attrs );
   }
 
-  QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
-  return outputs;
+  return QgsFeatureList() << outFeature;
 }
 
 ///@endcond
