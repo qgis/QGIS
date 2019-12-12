@@ -295,7 +295,7 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
             const QVariant::Type vType { typeMap.value( colIdx, QVariant::Type::String ) };
             QVariant val { res.PQgetvalue( rowIdx, colIdx ) };
             // Special case for bools: 'f' and 't'
-            if ( vType == QVariant::Bool )
+            if ( vType == QVariant::Bool && ! val.isNull() )
             {
               val = val.toString() == 't';
             }
