@@ -666,7 +666,7 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
     if ( !d->mIsValid )
     {
       if ( !d->mWkt.isEmpty() )
-        setWktString( d->mWkt );
+        setWktString( d->mWkt, false );
       else
         setProj4String( d->mProj4 );
     }
@@ -1362,7 +1362,7 @@ void QgsCoordinateReferenceSystem::setProj4String( const QString &proj4String )
   setMapUnits();
 }
 
-bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt )
+bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt, bool allowProj4Fallback )
 {
   bool res = false;
   d->mIsValid = false;
@@ -1402,6 +1402,10 @@ bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt )
     QgsDebugMsg( "INPUT: " + wkt );
     QgsDebugMsg( QStringLiteral( "UNUSED WKT: %1" ).arg( pWkt ) );
     QgsDebugMsg( QStringLiteral( "---------------------------------------------------------------\n" ) );
+  }
+  else
+  {
+    d->mIsValid = true;
   }
 #endif
 
@@ -1463,27 +1467,35 @@ bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt )
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 #if PROJ_VERSION_MAJOR<6
-  // create the proj4 structs needed for transforming
-  char *proj4src = nullptr;
-  OSRExportToProj4( d->mCRS, &proj4src );
-
-  //now that we have the proj4string, delegate to createFromProj4 so
-  // that we can try to fill in the remaining class members...
-  //create from Proj will set the isValidFlag
-  if ( !createFromProj4( proj4src ) )
+  if ( allowProj4Fallback )
   {
-    CPLFree( proj4src );
-
-#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,5,0)
-    // try fixed up version
-    OSRFixup( d->mCRS );
-#endif
-
+    d->mIsValid = false;
+    // create the proj4 structs needed for transforming
+    char *proj4src = nullptr;
     OSRExportToProj4( d->mCRS, &proj4src );
 
-    createFromProj4( proj4src );
+    //now that we have the proj4string, delegate to createFromProj4 so
+    // that we can try to fill in the remaining class members...
+    //create from Proj will set the isValidFlag
+    if ( !createFromProj4( proj4src ) )
+    {
+      CPLFree( proj4src );
+
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,5,0)
+      // try fixed up version
+      OSRFixup( d->mCRS );
+#endif
+
+      OSRExportToProj4( d->mCRS, &proj4src );
+
+      createFromProj4( proj4src );
+    }
+    CPLFree( proj4src );
   }
-  CPLFree( proj4src );
+  else if ( d->mIsValid )
+  {
+    setMapUnits();
+  }
 #endif
   return d->mIsValid;
 }
