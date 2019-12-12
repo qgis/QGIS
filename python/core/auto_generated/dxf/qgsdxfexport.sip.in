@@ -92,7 +92,7 @@ unique value.
       Undefined
     };
 
-    enum class DxfPolylineFlag
+    enum DxfPolylineFlag
     {
       Closed,
       Curve,
@@ -506,6 +506,8 @@ Register name of layer for feature
 };
 
 QFlags<QgsDxfExport::Flag> operator|(QgsDxfExport::Flag f1, QFlags<QgsDxfExport::Flag> f2);
+
+QFlags<QgsDxfExport::DxfPolylineFlag> operator|(QgsDxfExport::DxfPolylineFlag f1, QFlags<QgsDxfExport::DxfPolylineFlag> f2);
 
 
 /************************************************************************
