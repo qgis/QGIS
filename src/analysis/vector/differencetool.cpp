@@ -33,16 +33,6 @@ namespace Vectoranalysis
   {
   }
 
-  bool DifferenceTool::validateInputs( QgsVectorLayer *layerA, QgsVectorLayer *layerB, QString &errorMsgs )
-  {
-    if ( layerA->geometryType() != QgsWkbTypes::PolygonGeometry || layerB->geometryType() != QgsWkbTypes::PolygonGeometry )
-    {
-      errorMsgs = QApplication::translate( "differencetool", "Input and operator layers must both be polygon layers." );
-      return false;
-    }
-    return true;
-  }
-
   void DifferenceTool::prepare()
   {
     appendToJobQueue( mLayerA );

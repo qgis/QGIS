@@ -36,8 +36,6 @@ namespace Vectoranalysis
                         QgsWkbTypes::Type outWkbType,
                         double precision = 1E-7 );
 
-      static bool validateInputs( QgsVectorLayer *layerA, QgsVectorLayer *layerB, QString &errorMsgs );
-
     private:
       QgsSpatialIndex mSpatialIndex;
       QgsFeatureSource *mLayerA;

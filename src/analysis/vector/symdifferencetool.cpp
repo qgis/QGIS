@@ -34,16 +34,6 @@ namespace Vectoranalysis
   {
   }
 
-  bool SymDifferenceTool::validateInputs( QgsVectorLayer *layerA, QgsVectorLayer *layerB, QString &errorMsgs )
-  {
-    if ( layerA->geometryType() != QgsWkbTypes::PolygonGeometry || layerB->geometryType() != QgsWkbTypes::PolygonGeometry )
-    {
-      errorMsgs = QApplication::translate( "SymDifferenceTool", "Input and operator layers must both be polygon layers." );
-      return false;
-    }
-    return true;
-  }
-
   void SymDifferenceTool::prepare()
   {
     appendToJobQueue( mLayerA, ProcessLayerAFeature );

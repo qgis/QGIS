@@ -37,16 +37,6 @@ namespace Vectoranalysis
   {
   }
 
-  bool IntersectionTool::validateInputs( QgsVectorLayer *layerA, QgsVectorLayer *layerB, QString &errorMsgs )
-  {
-    if ( layerA->geometryType() > layerB->geometryType() )
-    {
-      errorMsgs = QApplication::translate( "IntersectionTool", "Dimensionality of the input layer must be less or equal the dimensionality of the operator layer." );
-      return false;
-    }
-    return true;
-  }
-
   void IntersectionTool::prepare()
   {
     appendToJobQueue( mLayerA );
