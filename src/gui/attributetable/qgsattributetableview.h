@@ -115,14 +115,6 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     void mouseMoveEvent( QMouseEvent *event ) override;
 
     /**
-     * Called for mouse double-click events on a table cell.
-     * Disables selection change for these events.
-     *
-     * \param event The mouse event
-     */
-    void mouseDoubleClickEvent( QMouseEvent *event ) override;
-
-    /**
      * Called for key press events
      * Disables selection change by only pressing an arrow key
      *

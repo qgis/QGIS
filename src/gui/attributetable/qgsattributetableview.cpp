@@ -78,6 +78,10 @@ bool QgsAttributeTableView::eventFilter( QObject *object, QEvent *event )
         mFeatureSelectionModel->enableSync( true );
         break;
 
+      case QEvent::MouseButtonDblClick:
+        zoomToCurrentFeature();
+        break;
+
       default:
         break;
     }
@@ -298,14 +302,6 @@ void QgsAttributeTableView::mouseMoveEvent( QMouseEvent *event )
   setSelectionMode( QAbstractItemView::NoSelection );
   QTableView::mouseMoveEvent( event );
   setSelectionMode( QAbstractItemView::ExtendedSelection );
-}
-
-void QgsAttributeTableView::mouseDoubleClickEvent( QMouseEvent *event )
-{
-  setSelectionMode( QAbstractItemView::NoSelection );
-  QTableView::mouseDoubleClickEvent( event );
-  setSelectionMode( QAbstractItemView::ExtendedSelection );
-  zoomToCurrentFeature();
 }
 
 void QgsAttributeTableView::zoomToCurrentFeature()
