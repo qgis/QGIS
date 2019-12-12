@@ -362,13 +362,19 @@ void TestQgsCoordinateReferenceSystem::createFromWktUnknown()
   // try creating a crs from a non-standard WKT string (in this case, the invalid WKT definition of EPSG:31370 used by
   // some ArcGIS versions: see https://github.com/OSGeo/PROJ/issues/1781
   const QString wkt = QStringLiteral( R"""(PROJCS["Belge 1972 / Belgian Lambert 72",GEOGCS["Belge 1972",DATUM["Reseau_National_Belge_1972",SPHEROID["International 1924",6378388,297],AUTHORITY["EPSG","6313"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Lambert_Conformal_Conic_2SP"],PARAMETER["latitude_of_origin",90],PARAMETER["central_meridian",4.36748666666667],PARAMETER["standard_parallel_1",49.8333339],PARAMETER["standard_parallel_2",51.1666672333333],PARAMETER["false_easting",150000.01256],PARAMETER["false_northing",5400088.4378],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]])""" );
+
+#if PROJ_VERSION_MAJOR>=6
+  const QString expectedWkt = wkt;
+#else
+  // When used with proj < 6, a lossy conversion to proj string is used
+  const QString expectedWkt = QStringLiteral( R"""(PROJCS["unnamed",GEOGCS["International 1909 (Hayford)",DATUM["unknown",SPHEROID["intl",6378388,297],TOWGS84[-106.8686,52.2978,-103.7239,0.3366,-0.457,1.8422,-1.2747]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433]],PROJECTION["Lambert_Conformal_Conic_2SP"],PARAMETER["standard_parallel_1",49.8333339],PARAMETER["standard_parallel_2",51.1666672333333],PARAMETER["latitude_of_origin",90],PARAMETER["central_meridian",4.36748666666667],PARAMETER["false_easting",150000.01256],PARAMETER["false_northing",5400088.4378],UNIT["Meter",1]])""" );
+#endif
+  QgsDebugMsg( expectedWkt );
+
   crs.createFromWkt( wkt );
   QVERIFY( crs.isValid() );
   QgsDebugMsg( crs.toWkt() );
-#if PROJ_VERSION_MAJOR>=6
-  // When used with proj < 6, a lossy conversion to proj string is used
-  QCOMPARE( crs.toWkt(), wkt );
-#endif
+  QCOMPARE( crs.toWkt(), expectedWkt );
   QCOMPARE( crs.srsid(), static_cast< long >( USER_CRS_START_ID + 1 ) );
   QCOMPARE( crs.authid(), QStringLiteral( "USER:100001" ) );
   QCOMPARE( crs.mapUnits(), QgsUnitTypes::DistanceMeters );
@@ -376,34 +382,26 @@ void TestQgsCoordinateReferenceSystem::createFromWktUnknown()
   // try creating new ones with same def
   QgsCoordinateReferenceSystem crs2( QStringLiteral( "USER:100001" ) );
   QVERIFY( crs2.isValid() );
-#if PROJ_VERSION_MAJOR>=6
-  QCOMPARE( crs2.toWkt(), wkt );
-#endif
+  QCOMPARE( crs2.toWkt(), expectedWkt );
   QCOMPARE( crs2.mapUnits(), QgsUnitTypes::DistanceMeters );
 
   QgsCoordinateReferenceSystem crs3;
   crs3.createFromWkt( wkt );
   QVERIFY( crs3.isValid() );
-#if PROJ_VERSION_MAJOR>=6
-  QCOMPARE( crs3.toWkt(), wkt );
-#endif
+  QCOMPARE( crs3.toWkt(), expectedWkt );
   QCOMPARE( crs3.mapUnits(), QgsUnitTypes::DistanceMeters );
 
   // force reads from database
   QgsCoordinateReferenceSystem::invalidateCache();
   QgsCoordinateReferenceSystem crs4( QStringLiteral( "USER:100001" ) );
   QVERIFY( crs4.isValid() );
-#if PROJ_VERSION_MAJOR>=6
-  QCOMPARE( crs4.toWkt(), wkt );
-#endif
+  QCOMPARE( crs4.toWkt(), expectedWkt );
   QCOMPARE( crs4.mapUnits(), QgsUnitTypes::DistanceMeters );
 
   QgsCoordinateReferenceSystem crs5;
   crs5.createFromWkt( wkt );
   QVERIFY( crs5.isValid() );
-#if PROJ_VERSION_MAJOR>=6
-  QCOMPARE( crs5.toWkt(), wkt );
-#endif
+  QCOMPARE( crs5.toWkt(), expectedWkt );
   QCOMPARE( crs5.mapUnits(), QgsUnitTypes::DistanceMeters );
 }
 

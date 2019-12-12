@@ -766,7 +766,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /**
      * Set the WKT string
      */
-    bool setWktString( const QString &wkt );
+    bool setWktString( const QString &wkt, bool allowProj4Fallback = true );
 
     /**
      * Set this Geographic? flag
