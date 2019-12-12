@@ -98,6 +98,15 @@ Disables selection change for these events.
 :param event: The mouse event
 %End
 
+    virtual void mouseDoubleClickEvent( QMouseEvent *event );
+
+%Docstring
+Called for mouse double-click events on a table cell.
+Disables selection change for these events.
+
+:param event: The mouse event
+%End
+
     virtual void keyPressEvent( QKeyEvent *event );
 
 %Docstring
