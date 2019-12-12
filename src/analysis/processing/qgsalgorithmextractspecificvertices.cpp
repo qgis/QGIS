@@ -64,29 +64,28 @@ QString QgsExtractSpecificVerticesAlgorithm::shortHelpString() const
                       "polygons), distance along the original geometry and bisector angle of vertex for the original geometry." );
 }
 
+QString QgsExtractSpecificVerticesAlgorithm::outputName() const
+{
+  return QObject::tr( "Vertices" );
+}
+
 QgsExtractSpecificVerticesAlgorithm *QgsExtractSpecificVerticesAlgorithm::createInstance() const
 {
   return new QgsExtractSpecificVerticesAlgorithm();
 }
 
-void QgsExtractSpecificVerticesAlgorithm::initAlgorithm( const QVariantMap & )
+QgsProcessing::SourceType QgsExtractSpecificVerticesAlgorithm::outputLayerType() const
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList< int >() << QgsProcessing::TypeVectorAnyGeometry ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "VERTICES" ), QObject::tr( "Vertex indices" ), QStringLiteral( "0" ) ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Vertices" ), QgsProcessing::TypeVectorPoint ) );
+  return QgsProcessing::TypeVectorPoint;
 }
 
-QVariantMap QgsExtractSpecificVerticesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QgsFields QgsExtractSpecificVerticesAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
-  std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
-  if ( !source )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
-
-  QgsFields outputFields = source->fields();
+  QgsFields outputFields = inputFields;
   outputFields.append( QgsField( QStringLiteral( "vertex_pos" ), QVariant::Int ) );
   outputFields.append( QgsField( QStringLiteral( "vertex_index" ), QVariant::Int ) );
   outputFields.append( QgsField( QStringLiteral( "vertex_part" ), QVariant::Int ) );
-  if ( QgsWkbTypes::geometryType( source->wkbType() ) == QgsWkbTypes::PolygonGeometry )
+  if ( mGeometryType == QgsWkbTypes::PolygonGeometry )
   {
     outputFields.append( QgsField( QStringLiteral( "vertex_part_ring" ), QVariant::Int ) );
   }
@@ -94,31 +93,43 @@ QVariantMap QgsExtractSpecificVerticesAlgorithm::processAlgorithm( const QVarian
   outputFields.append( QgsField( QStringLiteral( "distance" ), QVariant::Double ) );
   outputFields.append( QgsField( QStringLiteral( "angle" ), QVariant::Double ) );
 
+  return outputFields;
+}
+
+QgsWkbTypes::Type QgsExtractSpecificVerticesAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
+{
   QgsWkbTypes::Type outputWkbType = QgsWkbTypes::Point;
-  if ( QgsWkbTypes::hasM( source->wkbType() ) )
+  if ( QgsWkbTypes::hasM( inputWkbType ) )
   {
     outputWkbType = QgsWkbTypes::addM( outputWkbType );
   }
-  if ( QgsWkbTypes::hasZ( source->wkbType() ) )
+  if ( QgsWkbTypes::hasZ( inputWkbType ) )
   {
     outputWkbType = QgsWkbTypes::addZ( outputWkbType );
   }
 
-  QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outputFields, outputWkbType, source->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
-  if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+  return outputWkbType;
+}
+
+void QgsExtractSpecificVerticesAlgorithm::initParameters( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterString( QStringLiteral( "VERTICES" ), QObject::tr( "Vertex indices" ), QStringLiteral( "0" ) ) );
+}
+
+bool QgsExtractSpecificVerticesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  mGeometryType = QgsWkbTypes::geometryType( source->wkbType() );
 
   QString verticesString = parameterAsString( parameters, QStringLiteral( "VERTICES" ), context );
   const QStringList verticesList = verticesString.split( ',', QString::SkipEmptyParts );
-  QList< int > indices;
   for ( const QString &vertex : verticesList )
   {
     bool ok = false;
     int i = vertex.toInt( &ok );
     if ( ok )
     {
-      indices << i;
+      mIndices << i;
     }
     else
     {
@@ -126,72 +137,64 @@ QVariantMap QgsExtractSpecificVerticesAlgorithm::processAlgorithm( const QVarian
     }
   }
 
-  double step = source->featureCount() > 0 ? 100.0 / source->featureCount() : 1;
-  QgsFeatureIterator fi = source->getFeatures( QgsFeatureRequest(), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
-  QgsFeature f;
-  int i = 0;
-  while ( fi.nextFeature( f ) )
+  return true;
+}
+
+QgsFeatureList QgsExtractSpecificVerticesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
+{
+  QgsFeatureList outputFeatures;
+
+  QgsFeature f = feature;
+  QgsGeometry inputGeom = f.geometry();
+  if ( inputGeom.isNull() )
   {
-    if ( feedback->isCanceled() )
+    outputFeatures << f;
+  }
+  else
+  {
+    int vertexIndex;
+    int totalVertices = inputGeom.constGet()->nCoordinates();
+    for ( int vertex : mIndices )
     {
-      break;
-    }
-
-    QgsGeometry inputGeom = f.geometry();
-    if ( inputGeom.isNull() )
-    {
-      sink->addFeature( f, QgsFeatureSink::FastInsert );
-    }
-    else
-    {
-      int vertexIndex;
-      int totalVertices = inputGeom.constGet()->nCoordinates();
-      for ( int vertex : indices )
+      if ( vertex < 0 )
       {
-        if ( vertex < 0 )
-        {
-          vertexIndex = totalVertices + vertex;
-        }
-        else
-        {
-          vertexIndex = vertex;
-        }
-
-        if ( vertexIndex < 0 || vertexIndex >= totalVertices )
-          continue;
-
-        QgsVertexId vertexId;
-        inputGeom.vertexIdFromVertexNr( vertexIndex, vertexId );
-
-        double distance = inputGeom.distanceToVertex( vertexIndex );
-        double angle = inputGeom.angleAtVertex( vertexIndex ) * 180 / M_PI;
-
-        QgsFeature outputFeature = QgsFeature();
-        QgsAttributes attrs = f.attributes();
-        attrs << vertex
-              << vertexIndex
-              << vertexId.part;
-        if ( QgsWkbTypes::geometryType( source->wkbType() ) == QgsWkbTypes::PolygonGeometry )
-        {
-          attrs << vertexId.ring;
-        }
-        attrs << vertexId.vertex
-              << distance
-              << angle;
-
-        outputFeature.setAttributes( attrs );
-        QgsPoint point = inputGeom.vertexAt( vertexIndex );
-        outputFeature.setGeometry( QgsGeometry( point.clone() ) );
-        sink->addFeature( outputFeature, QgsFeatureSink::FastInsert );
+        vertexIndex = totalVertices + vertex;
       }
+      else
+      {
+        vertexIndex = vertex;
+      }
+
+      if ( vertexIndex < 0 || vertexIndex >= totalVertices )
+        continue;
+
+      QgsVertexId vertexId;
+      inputGeom.vertexIdFromVertexNr( vertexIndex, vertexId );
+
+      double distance = inputGeom.distanceToVertex( vertexIndex );
+      double angle = inputGeom.angleAtVertex( vertexIndex ) * 180 / M_PI;
+
+      QgsFeature outFeature = QgsFeature();
+      QgsAttributes attrs = f.attributes();
+      attrs << vertex
+            << vertexIndex
+            << vertexId.part;
+      if ( mGeometryType == QgsWkbTypes::PolygonGeometry )
+      {
+        attrs << vertexId.ring;
+      }
+      attrs << vertexId.vertex
+            << distance
+            << angle;
+
+      outFeature.setAttributes( attrs );
+      QgsPoint point = inputGeom.vertexAt( vertexIndex );
+      outFeature.setGeometry( QgsGeometry( point.clone() ) );
+      outputFeatures << outFeature;
     }
-    feedback->setProgress( i * step );
-    i++;
   }
 
-  QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
-  return outputs;
+  return outputFeatures;
 }
 
 ///@endcond
