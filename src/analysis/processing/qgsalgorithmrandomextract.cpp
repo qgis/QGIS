@@ -110,10 +110,7 @@ QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &para
   QVector< QgsFeatureId > fids( number );
   std::generate( fids.begin(), fids.end(), bind( fidsDistribution, mersenneTwister ) );
 
-  double step = number > 0 ? 100.0 / number : 1;
-  int i = 0;
-
-  QgsFeature f;
+  QHash< QgsFeatureId, int > idsCount;
   for ( QgsFeatureId id : fids )
   {
     if ( feedback->isCanceled() )
@@ -121,11 +118,40 @@ QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &para
       break;
     }
 
-    source->getFeatures( QgsFeatureRequest( id ), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks ).nextFeature( f );
+    if ( idsCount.contains( id ) )
+    {
+      idsCount.insert( id, idsCount.value( id ) + 1 );
+    }
+    else
+    {
+      idsCount.insert( id, 1 );
+    }
+  }
 
-    sink->addFeature( f, QgsFeatureSink::FastInsert );
-    feedback->setProgress( i * step );
-    i++;
+  QgsFeatureIds ids = QSet< QgsFeatureId >::fromList( idsCount.keys() );
+  QgsFeatureIterator fit = source->getFeatures( QgsFeatureRequest().setFilterFids( ids ), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+  sink->addFeatures( fit, QgsFeatureSink::FastInsert );
+
+  // add duplicated features if any
+  if ( ids.size() != number )
+  {
+    QgsFeature f;
+    for ( auto it = idsCount.constBegin(); it != idsCount.constEnd(); ++it )
+    {
+      if ( feedback->isCanceled() )
+      {
+        break;
+      }
+
+      if ( it.value() > 1 )
+      {
+        source->getFeatures( QgsFeatureRequest( it.key() ), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks ).nextFeature( f );
+        for ( int j = 1; j < it.value(); j++ )
+        {
+          sink->addFeature( f, QgsFeatureSink::FastInsert );
+        }
+      }
+    }
   }
 
   QVariantMap outputs;
