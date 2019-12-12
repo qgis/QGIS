@@ -522,7 +522,7 @@ void QgsGdalProvider::closeDataset()
   closeCachedGdalHandlesFor( this );
 }
 
-void QgsGdalProvider::reloadData()
+void QgsGdalProvider::reloadProviderData()
 {
   QMutexLocker locker( mpMutex );
   closeDataset();

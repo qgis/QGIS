@@ -3915,11 +3915,6 @@ QByteArray QgsOgrProvider::quotedIdentifier( const QByteArray &field ) const
   return QgsOgrProviderUtils::quotedIdentifier( field, mGDALDriverName );
 }
 
-void QgsOgrProvider::forceReload()
-{
-  QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ), mShareSameDatasetAmongLayers ) );
-}
-
 QString QgsOgrProviderUtils::connectionPoolId( const QString &dataSourceURI, bool shareSameDatasetAmongLayers )
 {
   if ( shareSameDatasetAmongLayers )
@@ -4594,11 +4589,11 @@ void QgsOgrProvider::close()
   invalidateCachedExtent( false );
 }
 
-void QgsOgrProvider::reloadData()
+void QgsOgrProvider::reloadProviderData()
 {
   mFeaturesCounted = QgsVectorDataProvider::Uncounted;
   bool wasValid = mValid;
-  forceReload();
+  QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ), mShareSameDatasetAmongLayers ) );
   close();
   open( OpenModeSameAsCurrent );
   if ( !mValid && wasValid )

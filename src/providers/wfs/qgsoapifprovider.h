@@ -87,10 +87,6 @@ class QgsOapifProvider : public QgsVectorDataProvider
     //! For QgsWFSSourceSelect::buildQuery()
     const QString &clientSideFilterExpression() const;
 
-  public slots:
-
-    void reloadData() override;
-
   private slots:
 
     void pushErrorSlot( const QString &errorMsg );
@@ -112,6 +108,11 @@ class QgsOapifProvider : public QgsVectorDataProvider
 
     //! Initial requests
     bool init();
+
+    /**
+     * Invalidates cache of shared object
+    */
+    void reloadProviderData() override;
 };
 
 class QgsOapifProviderMetadata: public QgsProviderMetadata

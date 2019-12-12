@@ -24,6 +24,12 @@ QgsDataProvider::QgsDataProvider( const QString &uri, const QgsDataProvider::Pro
 {
 }
 
+void QgsDataProvider::reloadData()
+{
+  reloadProviderData();
+  emit dataChanged();
+}
+
 void QgsDataProvider::setProviderProperty( QgsDataProvider::ProviderProperty property, const QVariant &value )
 {
   mProviderProperties.insert( property, value );

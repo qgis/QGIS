@@ -83,8 +83,6 @@ class QgsMdalProvider : public QgsMeshDataProvider
                               const QVector<double> &times
                             ) override;
 
-    void reloadData() override;
-
     /**
      * Returns file filters for meshes and datasets to be used in Open File Dialogs
      * \param fileMeshFiltersString file mesh filters
@@ -114,6 +112,11 @@ class QgsMdalProvider : public QgsMeshDataProvider
     MeshH mMeshH;
     QStringList mExtraDatasetUris;
     QgsCoordinateReferenceSystem mCrs;
+
+    /**
+     * Closes and reloads dataset
+    */
+    void reloadProviderData() override;
 };
 
 class QgsMdalProviderMetadata: public QgsProviderMetadata

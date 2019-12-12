@@ -546,13 +546,16 @@ providers will return ``None``.
 Returns the transaction this data provider is included in, if any.
 %End
 
-    virtual void forceReload();
+ virtual void forceReload();
 %Docstring
 Forces a reload of the underlying datasource if the provider implements this
 method.
 In particular on the OGR provider, a pooled connection will be invalidated.
 This forces QGIS to reopen a file or connection.
 This can be required if the underlying file is replaced.
+
+.. deprecated::
+   Will be removed in QGIS 4.0
 %End
 
     virtual QSet<QgsMapLayerDependency> dependencies() const;

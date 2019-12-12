@@ -232,10 +232,9 @@ QgsRectangle QgsOapifProvider::extent() const
   return mShared->consolidatedExtent();
 }
 
-void QgsOapifProvider::reloadData()
+void QgsOapifProvider::reloadProviderData()
 {
   mShared->invalidateCache();
-  QgsVectorDataProvider::reloadData();
 }
 
 bool QgsOapifProvider::isValid() const

@@ -817,7 +817,7 @@ void QgsAttributeTableDialog::mActionSaveEdits_triggered()
 
 void QgsAttributeTableDialog::mActionReload_triggered()
 {
-  mMainView->masterModel()->layer()->dataProvider()->forceReload();
+  mMainView->masterModel()->layer()->dataProvider()->reloadData();
 }
 
 void QgsAttributeTableDialog::mActionAddFeature_triggered()

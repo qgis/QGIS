@@ -356,10 +356,12 @@ class CORE_EXPORT QgsDataProvider : public QObject
     }
 
     /**
-     * Reloads the data from the source. Needs to be implemented by providers with data caches to
-     * synchronize with changes in the data source
+     * Reloads the data from the source by calling reloadProviderData() implemented
+     * by providers with data caches to synchronize, changes in the data source, feature
+     * counts and other specific actions and it calls the dataChanged signal
+     * \see reloadProviderData
      */
-    virtual void reloadData() {}
+    virtual void reloadData();
 
     //! Time stamp of data source in the moment when data/metadata were loaded by provider
     virtual QDateTime timestamp() const { return mTimestamp; }
@@ -614,6 +616,10 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     mutable QMutex mOptionsMutex;
 
+    /**
+     * Reloads the data according to the provider
+    */
+    virtual void reloadProviderData() {}
 };
 
 

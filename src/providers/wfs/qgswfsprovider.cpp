@@ -773,10 +773,9 @@ QgsAbstractFeatureSource *QgsWFSProvider::featureSource() const
   return fs;
 }
 
-void QgsWFSProvider::reloadData()
+void QgsWFSProvider::reloadProviderData()
 {
   mShared->invalidateCache();
-  QgsVectorDataProvider::reloadData();
 }
 
 QgsWkbTypes::Type QgsWFSProvider::wkbType() const

@@ -343,12 +343,10 @@ void QgsPostgresProvider::setListening( bool isListening )
   }
 }
 
-void QgsPostgresProvider::forceReload()
+void QgsPostgresProvider::reloadProviderData()
 {
   mShared->setFeaturesCounted( -1 );
   mLayerExtent.setMinimal();
-
-  QgsVectorDataProvider::forceReload();
 }
 
 
@@ -3332,12 +3330,12 @@ bool QgsPostgresProvider::setSubsetString( const QString &theSQL, bool updateFea
 
   if ( updateFeatureCount )
   {
-    forceReload();
+    reloadData();
   }
   else
   {
     mLayerExtent.setMinimal();
-    QgsVectorDataProvider::forceReload();
+    emit dataChanged();
   }
 
   return true;
