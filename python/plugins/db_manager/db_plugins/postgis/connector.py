@@ -166,12 +166,12 @@ class PostGisDBConnector(DBConnector):
 
         :param uri: data source URI
         :type uri: QgsDataSourceUri
-        :param dbplugin: the PostGisDBPlugin parent instance
-        :type dbplugin: PostGisDbPlugin
         """
         DBConnector.__init__(self, uri)
 
-        self.dbname = uri.database()
+        username = uri.username() or os.environ.get('PGUSER')
+        self.dbname = uri.database() or os.environ.get('PGDATABASE') or username
+        uri.setDatabase(self.dbname)
 
         #self.connName = connName
         #self.user = uri.username() or os.environ.get('USER')
