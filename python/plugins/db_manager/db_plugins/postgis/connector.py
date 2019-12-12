@@ -58,7 +58,8 @@ def classFactory():
 class CursorAdapter():
 
     def _debug(self, msg):
-        #print("XXX CursorAdapter[" + hex(id(self)) + "]: " + msg)
+        pass
+        print("XXX CursorAdapter[" + hex(id(self)) + "]: " + msg)
 
     def __init__(self, connection, sql=None):
         self._debug("Created with sql: " + str(sql))
