@@ -306,14 +306,6 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       if ( isCanceled() )
         return nullptr;
 
-      // only keep the 'max_p' best candidates
-      while ( feat->candidates.size() > max_p )
-      {
-        // TODO remove from index
-        feat->candidates.back()->removeFromIndex( prob->mAllCandidatesIndex );
-        feat->candidates.pop_back();
-      }
-
       switch ( mPlacementVersion )
       {
         case QgsLabelingEngineSettings::PlacementEngineVersion1:
@@ -344,6 +336,12 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
             feat->candidates.clear();
           }
         }
+      }
+
+      // only keep the 'max_p' best candidates
+      while ( feat->candidates.size() > max_p )
+      {
+        feat->candidates.pop_back();
       }
 
       if ( isCanceled() )
