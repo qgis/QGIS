@@ -37,7 +37,6 @@ from qgis.core import (
     QgsCredentials,
     QgsDataSourceUri,
     QgsProviderRegistry,
-    QgsAbstractDatabaseProviderConnection,
     QgsProviderConnectionException,
 )
 
@@ -59,7 +58,7 @@ def classFactory():
 class CursorAdapter():
 
     def _debug(self, msg):
-        print("XXX CursorAdapter[" + hex(id(self)) + "]: " + msg)
+        #print("XXX CursorAdapter[" + hex(id(self)) + "]: " + msg)
 
     def __init__(self, connection, sql=None):
         self._debug("Created with sql: " + str(sql))
@@ -1127,8 +1126,8 @@ class PostGisDBConnector(DBConnector):
         return self.core_connection.executeSql(sql)
 
     def _get_cursor(self, name=None):
-        if name is not None:
-            print("XXX _get_cursor called with a Name: " + name)
+        #if name is not None:
+        #   print("XXX _get_cursor called with a Name: " + name)
         return CursorAdapter(self, name)
 
     def _commit(self):
