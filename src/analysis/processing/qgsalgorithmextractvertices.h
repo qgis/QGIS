@@ -29,7 +29,7 @@
 /**
  * Native extract nodes algorithm.
  */
-class QgsExtractVerticesAlgorithm : public QgsProcessingAlgorithm
+class QgsExtractVerticesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
 
   public:
@@ -37,7 +37,6 @@ class QgsExtractVerticesAlgorithm : public QgsProcessingAlgorithm
     QgsExtractVerticesAlgorithm() = default;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmExtractVertices.svg" ) ); }
     QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmExtractVertices.svg" ) ); }
-    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -47,13 +46,19 @@ class QgsExtractVerticesAlgorithm : public QgsProcessingAlgorithm
     QgsExtractVerticesAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
+    QString outputName() const override;
+    QgsFields outputFields( const QgsFields &inputFields ) const override;
+    QgsProcessing::SourceType outputLayerType() const override;
+    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override;
+
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+    QgsWkbTypes::GeometryType mGeometryType;
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMEXTRACTVERTICES_H
-
-
