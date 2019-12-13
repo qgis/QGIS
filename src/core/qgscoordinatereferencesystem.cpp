@@ -1307,8 +1307,7 @@ void QgsCoordinateReferenceSystem::setProj4String( const QString &proj4String )
   PJ_CONTEXT *ctx = QgsProjContext::get();
 
   {
-    QgsProjUtils::proj_pj_unique_ptr crs( proj_create( ctx, trimmed.toLatin1().constData() ) );
-    d->mPj = QgsProjUtils::crsToSingleCrs( crs.get() );
+    d->mPj.reset( proj_create( ctx, trimmed.toLatin1().constData() ) );
   }
 
   if ( !d->mPj )
@@ -1370,8 +1369,7 @@ bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt, bool allowP
   PROJ_STRING_LIST warnings = nullptr;
   PROJ_STRING_LIST grammerErrors = nullptr;
   {
-    QgsProjUtils::proj_pj_unique_ptr crs( proj_create_from_wkt( QgsProjContext::get(), wkt.toLatin1().constData(), nullptr, &warnings, &grammerErrors ) );
-    d->mPj = QgsProjUtils::crsToSingleCrs( crs.get() );
+    d->mPj.reset( proj_create_from_wkt( QgsProjContext::get(), wkt.toLatin1().constData(), nullptr, &warnings, &grammerErrors ) );
   }
 
   res = static_cast< bool >( d->mPj );
