@@ -45,6 +45,7 @@ class TestQgsCoordinateTransform: public QObject
     void transformContextNormalize();
     void transformErrorMultiplePoints();
     void transformErrorOnePoint();
+    void testDeprecated4240to4326();
 };
 
 
@@ -531,6 +532,81 @@ void TestQgsCoordinateTransform::transformErrorOnePoint()
   catch ( QgsCsException & )
   {
   }
+}
+
+#include <proj.h>
+
+void TestQgsCoordinateTransform::testDeprecated4240to4326()
+{
+#if PROJ_VERSION_MAJOR >= 6
+  // test creating a coordinate transform between EPSG 4240 and EPSG 4326 using a deprecated coordinate operation
+  // see https://github.com/qgis/QGIS/issues/33121
+
+  QgsCoordinateTransformContext context;
+  QgsCoordinateReferenceSystem src( QStringLiteral( "EPSG:4240" ) );
+  QgsCoordinateReferenceSystem dest( QStringLiteral( "EPSG:4326" ) );
+
+  // first use default transform
+  QgsCoordinateTransform defaultTransform( src, dest, context );
+  QCOMPARE( defaultTransform.coordinateOperation(), QString() );
+  QCOMPARE( defaultTransform.instantiatedCoordinateOperationDetails().proj, QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=push +v_3 +step +proj=cart +ellps=evrst30 +step +proj=helmert +x=293 +y=836 +z=318 +rx=0.5 +ry=1.6 +rz=-2.8 +s=2.1 +convention=position_vector +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=unitconvert +xy_in=rad +xy_out=deg" ) );
+  QVERIFY( defaultTransform.isValid() );
+
+  const QgsPointXY p( 102.5, 7.5 );
+  QgsPointXY p2 = defaultTransform.transform( p );
+  QGSCOMPARENEAR( p2.x(), 102.494938, 0.000001 );
+  QGSCOMPARENEAR( p2.y(), 7.502624, 0.000001 );
+
+  QgsPointXY p3 = defaultTransform.transform( p2, QgsCoordinateTransform::ReverseTransform );
+  QGSCOMPARENEAR( p3.x(), 102.5, 0.000001 );
+  QGSCOMPARENEAR( p3.y(), 7.5, 0.000001 );
+
+  // and in reverse
+  QgsCoordinateTransform defaultTransformRev( dest, src, context );
+  QVERIFY( defaultTransformRev.isValid() );
+  QCOMPARE( defaultTransformRev.coordinateOperation(), QString() );
+  QgsDebugMsg( defaultTransformRev.instantiatedCoordinateOperationDetails().proj );
+  QCOMPARE( defaultTransformRev.instantiatedCoordinateOperationDetails().proj, QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=push +v_3 +step +proj=cart +ellps=WGS84 +step +inv +proj=helmert +x=293 +y=836 +z=318 +rx=0.5 +ry=1.6 +rz=-2.8 +s=2.1 +convention=position_vector +step +inv +proj=cart +ellps=evrst30 +step +proj=pop +v_3 +step +proj=unitconvert +xy_in=rad +xy_out=deg" ) );
+
+  p2 = defaultTransformRev.transform( QgsPointXY( 102.494938, 7.502624 ) );
+  QGSCOMPARENEAR( p2.x(), 102.5, 0.000001 );
+  QGSCOMPARENEAR( p2.y(), 7.5, 0.000001 );
+
+  p3 = defaultTransformRev.transform( p2, QgsCoordinateTransform::ReverseTransform );
+  QGSCOMPARENEAR( p3.x(), 102.494938, 0.000001 );
+  QGSCOMPARENEAR( p3.y(), 7.502624, 0.000001 );
+
+  // now force use of deprecated transform
+  const QString deprecatedProj = QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=push +v_3 +step +proj=cart +ellps=evrst30 +step +proj=helmert +x=209 +y=818 +z=290 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=unitconvert +xy_in=rad +xy_out=deg" );
+  context.addCoordinateOperation( src, dest, deprecatedProj );
+
+  QgsCoordinateTransform deprecatedTransform( src, dest, context );
+  QVERIFY( deprecatedTransform.isValid() );
+  QCOMPARE( deprecatedTransform.coordinateOperation(), deprecatedProj );
+  QCOMPARE( deprecatedTransform.instantiatedCoordinateOperationDetails().proj, deprecatedProj );
+
+  p2 = deprecatedTransform.transform( p );
+  QGSCOMPARENEAR( p2.x(), 102.496547, 0.000001 );
+  QGSCOMPARENEAR( p2.y(), 7.502139, 0.000001 );
+
+  p3 = deprecatedTransform.transform( p2, QgsCoordinateTransform::ReverseTransform );
+  QGSCOMPARENEAR( p3.x(), 102.5, 0.000001 );
+  QGSCOMPARENEAR( p3.y(), 7.5, 0.000001 );
+
+  // and in reverse
+  QgsCoordinateTransform deprecatedTransformRev( dest, src, context );
+  QVERIFY( deprecatedTransformRev.isValid() );
+  QCOMPARE( deprecatedTransformRev.coordinateOperation(), deprecatedProj );
+  QCOMPARE( deprecatedTransformRev.instantiatedCoordinateOperationDetails().proj, deprecatedProj );
+
+  p2 = deprecatedTransformRev.transform( QgsPointXY( 102.496547, 7.502139 ) );
+  QGSCOMPARENEAR( p2.x(), 102.5, 0.000001 );
+  QGSCOMPARENEAR( p2.y(), 7.5, 0.000001 );
+
+  p3 = deprecatedTransformRev.transform( p2, QgsCoordinateTransform::ReverseTransform );
+  QGSCOMPARENEAR( p3.x(), 102.496547, 0.000001 );
+  QGSCOMPARENEAR( p3.y(), 7.502139, 0.000001 );
+#endif
 }
 
 QGSTEST_MAIN( TestQgsCoordinateTransform )
