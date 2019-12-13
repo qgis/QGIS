@@ -1296,6 +1296,7 @@ class TestQgsProject(unittest.TestCase):
         spy = QSignalSpy(p.transformContextChanged)
         ctx = QgsCoordinateTransformContext()
         ctx.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857), 1234, 1235)
+        ctx.addCoordinateOperation(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857), 'x')
         p.setTransformContext(ctx)
         self.assertEqual(len(spy), 1)
 
