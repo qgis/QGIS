@@ -1625,6 +1625,7 @@ tests:
         hash:
         - 762865ee485a6736d188402aa10e6fd38a812a9e45a7dd2d4885a63a
         - f6a8e64647ae93a94f2a4945add8986526a7a07bc85849f3690d15b2
+        - 519c30edd91031d5ddbf2d5041e7728955a1fc590f0dfca434913286
         type: rasterhash
 
   - algorithm: qgis:slope
@@ -1639,6 +1640,7 @@ tests:
         hash:
         - 151ea76a21b286c16567eb6b4b692925a84145b65561a0017effb1a1
         - 177475642c57428b395bc0a1e7e86fc1cfd4d86ffc19f31ff8bc964d
+        - 7a3f086c3ee314709717368856ad9c7abbb6a478361a171ec324d6e7
         type: rasterhash
 
   - algorithm: qgis:ruggednessindex
@@ -1669,6 +1671,7 @@ tests:
         - 75cca4c1a870a1e21185a2d85b33b6d9958a69fc6ebb04e4d6ceb8a3
         - c05cd8dbfb00200a3803dcdc74ad177588eb8379867c4046463f73f1
         - 8f59f545b5df01f213b7a2233eb364d05b5801676d1f4285ad1225a1
+        - 360a66711d38a77e79c69aa1a42d620090024011582c4518cfd24178
         type: rasterhash
 
   - algorithm: qgis:relief
