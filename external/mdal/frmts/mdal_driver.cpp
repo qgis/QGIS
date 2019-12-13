@@ -82,7 +82,7 @@ void MDAL::Driver::createDatasetGroup( MDAL::Mesh *mesh, const std::string &grou
   mesh->datasetGroups.push_back( grp );
 }
 
-void MDAL::Driver::createDataset( MDAL::DatasetGroup *group, double time, const double *values, const int *active )
+void MDAL::Driver::createDataset( MDAL::DatasetGroup *group, MDAL::RelativeTimestamp time, const double *values, const int *active )
 {
   bool supportsActiveFlag = ( active != nullptr );
   std::shared_ptr<MDAL::MemoryDataset2D> dataset = std::make_shared< MemoryDataset2D >( group, supportsActiveFlag );

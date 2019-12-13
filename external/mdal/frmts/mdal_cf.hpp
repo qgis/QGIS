@@ -138,10 +138,10 @@ namespace MDAL
 
       void setProjection( MDAL::Mesh *m );
       cfdataset_info_map parseDatasetGroupInfo();
-      void parseTime( std::vector<double> &times );
+      DateTime parseTime( std::vector<RelativeTimestamp> &times ); //Return the reference time
       void addDatasetGroups( Mesh *mesh,
-                             const std::vector<double> &times,
-                             const cfdataset_info_map &dsinfo_map );
+                             const std::vector<RelativeTimestamp> &times,
+                             const cfdataset_info_map &dsinfo_map, const DateTime &referenceTime );
 
       std::string mFileName;
       std::shared_ptr<NetCDFFile> mNcFile;

@@ -637,3 +637,138 @@ std::string MDAL::doubleToString( double value, int precision )
   oss << value;
   return oss.str();
 }
+
+std::string MDAL::prependZero( const std::string &str, size_t length )
+{
+  if ( length <= str.size() )
+    return  str;
+
+  return std::string( length - str.size(), '0' ).append( str );
+}
+
+MDAL::RelativeTimestamp::Unit MDAL::parseDurationTimeUnit( const std::string &timeUnit )
+{
+  MDAL::RelativeTimestamp::Unit unit = MDAL::RelativeTimestamp::hours; //default unit
+
+  if ( timeUnit == "millisec" ||
+       timeUnit == "msec" ||
+       timeUnit == "millisecs" ||
+       timeUnit == "msecs"
+     )
+  {
+    unit = MDAL::RelativeTimestamp::milliseconds;
+  }
+  else if ( timeUnit == "second" ||
+            timeUnit == "seconds" ||
+            timeUnit == "Seconds" ||
+            timeUnit == "sec" ||
+            timeUnit == "secs" ||
+            timeUnit == "s" ||
+            timeUnit == "se" || // ascii_dat format
+            timeUnit == "2" )  // ascii_dat format
+  {
+    unit = MDAL::RelativeTimestamp::seconds;
+  }
+  else if ( timeUnit == "minute" ||
+            timeUnit == "minutes" ||
+            timeUnit == "Minutes" ||
+            timeUnit == "min" ||
+            timeUnit == "mins" ||
+            timeUnit == "mi" || // ascii_dat format
+            timeUnit == "1" ) // ascii_dat format
+  {
+    unit = MDAL::RelativeTimestamp::minutes;
+  }
+  else if ( timeUnit == "day" ||
+            timeUnit == "days" ||
+            timeUnit == "Days" )
+  {
+    unit = MDAL::RelativeTimestamp::days;
+  }
+  else if ( timeUnit == "week" ||
+            timeUnit == "weeks" )
+  {
+    unit = MDAL::RelativeTimestamp::weeks;
+  }
+
+
+  return unit;
+}
+
+MDAL::RelativeTimestamp::Unit MDAL::parseCFTimeUnit( std::string timeInformation )
+{
+  auto strings = MDAL::split( timeInformation, ' ' );
+  if ( strings.size() < 3 )
+    return MDAL::RelativeTimestamp::hours; //default value
+
+  if ( strings[1] == "since" )
+  {
+    std::string timeUnit = strings[0];
+    if ( timeUnit == "month" ||
+         timeUnit == "months" ||
+         timeUnit == "mon" ||
+         timeUnit == "mons" )
+    {
+      return MDAL::RelativeTimestamp::months_CF;
+    }
+    else if ( timeUnit == "year" ||
+              timeUnit == "years" ||
+              timeUnit == "yr" ||
+              timeUnit == "yrs" )
+    {
+      return MDAL::RelativeTimestamp::exact_years;
+    }
+
+    return MDAL::parseDurationTimeUnit( strings[0] );
+  }
+
+  return MDAL::RelativeTimestamp::hours;//default value
+}
+
+MDAL::DateTime MDAL::parseCFReferenceTime( const std::string &timeInformation, const std::string &calendarString )
+{
+  auto strings = MDAL::split( timeInformation, ' ' );
+  if ( strings.size() < 3 )
+    return MDAL::DateTime();
+
+  if ( strings[1] != "since" )
+    return MDAL::DateTime();
+
+  std::string dateString = strings[2];
+
+  auto dateStringValues = MDAL::split( dateString, '-' );
+  if ( dateStringValues.size() != 3 )
+    return MDAL::DateTime();
+
+  int year = MDAL::toInt( dateStringValues[0] );
+  int month = MDAL::toInt( dateStringValues[1] );
+  int day = MDAL::toInt( dateStringValues[2] );
+
+  int hours = 0;
+  int minutes = 0;
+  double seconds = 0;
+
+  if ( strings.size() > 3 )
+  {
+    std::string timeString = strings[3];
+    auto timeStringsValue = MDAL::split( timeString, ":" );
+    if ( timeStringsValue.size() == 3 )
+    {
+      hours = MDAL::toInt( timeStringsValue[0] );
+      minutes = MDAL::toInt( timeStringsValue[1] );
+      seconds = MDAL::toDouble( timeStringsValue[2] );
+    }
+  }
+
+  MDAL::DateTime::Calendar calendar;
+  if ( calendarString == "gregorian" || calendarString == "standard" || calendarString.empty() )
+    calendar = MDAL::DateTime::Gregorian;
+  else if ( calendarString == "proleptic_gregorian" )
+    calendar = MDAL::DateTime::ProlepticGregorian;
+  else if ( calendarString == "julian" )
+    calendar = MDAL::DateTime::Julian;
+  else
+    return MDAL::DateTime();
+
+  return MDAL::DateTime( year, month, day, hours, minutes, seconds, calendar );
+}

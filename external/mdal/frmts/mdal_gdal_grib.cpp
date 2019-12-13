@@ -15,7 +15,7 @@ MDAL::DriverGdalGrib::DriverGdalGrib( )
       "GDAL Grib",
       "*.grb;;*.grb2;;*.bin;;*.grib;;*.grib1;;*.grib2"
   , "GRIB" ),
-    mRefTime( std::numeric_limits<double>::min() )
+    mRefTime( DateTime() )
 {}
 
 MDAL::DriverGdalGrib *MDAL::DriverGdalGrib::create()
@@ -27,7 +27,7 @@ MDAL::DriverGdalGrib::~DriverGdalGrib() = default;
 
 bool MDAL::DriverGdalGrib::parseBandInfo( const MDAL::GdalDataset *cfGDALDataset,
     const metadata_hash &metadata, std::string &band_name,
-    double *time, bool *is_vector, bool *is_x
+    MDAL::RelativeTimestamp *time, bool *is_vector, bool *is_x
                                         )
 {
   MDAL_UNUSED( cfGDALDataset );
@@ -39,21 +39,26 @@ bool MDAL::DriverGdalGrib::parseBandInfo( const MDAL::GdalDataset *cfGDALDataset
   if ( iter == metadata.end() ) return true; //FAILURE
   band_name = iter->second;
 
-  if ( MDAL::equals( mRefTime, std::numeric_limits<double>::min() ) )
+  if ( !mRefTime.isValid() )
   {
     iter = metadata.find( "grib_ref_time" );
     if ( iter == metadata.end() ) return true; //FAILURE
-    mRefTime = parseMetadataTime( iter->second );
+    mRefTime = DateTime( parseMetadataTime( iter->second ), DateTime::Unix );
   }
 
   // TIME
   iter = metadata.find( "grib_valid_time" );
   if ( iter == metadata.end() ) return true; //FAILURE
-  double valid_time = parseMetadataTime( iter->second );
-  *time = ( valid_time - mRefTime ) / 3600.0; // input times are always in seconds UTC, we need them back in hours
+  DateTime valid_time = DateTime( parseMetadataTime( iter->second ), DateTime::Unix );
+  *time = ( valid_time - mRefTime );
 
   // Parse X, Y components if present
   parseBandIsVector( band_name, is_vector, is_x );
 
   return false; // success
+}
+
+MDAL::DateTime MDAL::DriverGdalGrib::referenceTime() const
+{
+  return mRefTime;
 }

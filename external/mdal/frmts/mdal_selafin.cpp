@@ -232,7 +232,8 @@ void MDAL::DriverSelafin::parseFile( std::vector<std::string> &var_names,
                                      std::vector<size_t> &ikle,
                                      std::vector<double> &x,
                                      std::vector<double> &y,
-                                     std::vector<timestep_map> &data )
+                                     std::vector<timestep_map> &data,
+                                     DateTime &referenceTime )
 {
 
   /* 1 record containing the title of the study (72 characters) and a 8 characters
@@ -293,7 +294,7 @@ void MDAL::DriverSelafin::parseFile( std::vector<std::string> &var_names,
   if ( params[9] == 1 )
   {
     std::vector<int> datetime = mReader.read_int_arr( 6 );
-    MDAL_UNUSED( datetime )
+    referenceTime = DateTime( datetime[0], datetime[1], datetime[2], datetime[3], datetime[4], double( datetime[5] ) );
   }
 
   /* 1 record containing the integers NELEM,NPOIN,NDP,1 (number of
@@ -411,7 +412,10 @@ void MDAL::DriverSelafin::createMesh(
   mMesh->vertices = nodes;
 }
 
-void MDAL::DriverSelafin::addData( const std::vector<std::string> &var_names, const std::vector<timestep_map> &data, size_t nPoints )
+void MDAL::DriverSelafin::addData( const std::vector<std::string> &var_names,
+                                   const std::vector<timestep_map> &data,
+                                   size_t nPoints,
+                                   const DateTime &referenceTime )
 {
   for ( size_t nName = 0; nName < var_names.size(); ++nName )
   {
@@ -465,6 +469,8 @@ void MDAL::DriverSelafin::addData( const std::vector<std::string> &var_names, co
       mMesh->datasetGroups.push_back( group );
     }
 
+    group->setReferenceTime( referenceTime );
+
     size_t i = 0;
     for ( timestep_map::const_iterator it = data[nName].begin(); it != data[nName].end(); ++it, ++i )
     {
@@ -476,7 +482,8 @@ void MDAL::DriverSelafin::addData( const std::vector<std::string> &var_names, co
       else
       {
         dataset = std::make_shared< MemoryDataset2D >( group.get(), true );
-        dataset->setTime( it->first );
+        // see https://github.com/lutraconsulting/MDAL/issues/185
+        dataset->setTime( it->first, RelativeTimestamp::seconds );
         group->datasets.push_back( dataset );
       }
       for ( size_t nP = 0; nP < nPoints; nP++ )
@@ -567,6 +574,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverSelafin::load( const std::string &meshFi
   std::vector<double> x;
   std::vector<double> y;
   std::vector<timestep_map> data;
+  DateTime referenceTime;
 
   try
   {
@@ -579,7 +587,8 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverSelafin::load( const std::string &meshFi
                ikle,
                x,
                y,
-               data );
+               data,
+               referenceTime );
 
     createMesh( xOrigin,
                 yOrigin,
@@ -590,7 +599,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverSelafin::load( const std::string &meshFi
                 x,
                 y );
 
-    addData( var_names, data, nPoints );
+    addData( var_names, data, nPoints, referenceTime );
   }
   catch ( MDAL_Status error )
   {

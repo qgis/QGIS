@@ -49,6 +49,9 @@ namespace MDAL
       std::unique_ptr< MDAL::MemoryMesh > mMesh;
       std::string mFileName;
 
+      std::vector<MDAL::RelativeTimestamp> mTimes ;
+      DateTime mReferenceTime;
+
       // Pre 5.0.5 format
       bool canReadOldFormat( const std::string &fileType ) const;
       std::vector<std::string> read2DFlowAreasNamesOld( HdfGroup gGeom2DFlowAreas ) const;
@@ -64,8 +67,8 @@ namespace MDAL
                            const std::vector<std::string> &flowAreaNames,
                            const std::string rawDatasetName,
                            const std::string datasetName,
-                           const std::vector<float> &times,
-                           const std::string &referenceTime );
+                           const std::vector<MDAL::RelativeTimestamp> &times,
+                           const DateTime &referenceTime );
 
       void readFaceResults( const HdfFile &hdfFile,
                             const std::vector<size_t> &areaElemStartIndex,
@@ -77,9 +80,9 @@ namespace MDAL
         const std::vector<std::string> &flowAreaNames,
         const std::string rawDatasetName,
         const std::string datasetName,
-        const std::vector<float> &times,
+        const std::vector<MDAL::RelativeTimestamp> &times,
         std::shared_ptr<MDAL::MemoryDataset2D> bed_elevation,
-        const std::string &referenceTime );
+        const DateTime &referenceTime );
 
       std::shared_ptr<MDAL::MemoryDataset2D> readBedElevation(
         const HdfGroup &gGeom2DFlowAreas,

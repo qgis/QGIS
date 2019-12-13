@@ -6,10 +6,6 @@
 #ifndef MDAL_UTILS_HPP
 #define MDAL_UTILS_HPP
 
-// Macro for exporting symbols
-// for unit tests (on windows)
-#define MDAL_TEST_EXPORT MDAL_EXPORT
-
 #include <string>
 #include <vector>
 #include <stddef.h>
@@ -20,6 +16,7 @@
 
 #include "mdal_data_model.hpp"
 #include "mdal_memory_data_model.hpp"
+#include "mdal_datetime.hpp"
 
 // avoid unused variable warnings
 #define MDAL_UNUSED(x) (void)x;
@@ -83,10 +80,10 @@ namespace MDAL
    * Splits by deliminer and skips empty parts.
    * Faster than version with std::string
    */
-  MDAL_TEST_EXPORT std::vector<std::string> split( const std::string &str, const char delimiter );
+  std::vector<std::string> split( const std::string &str, const char delimiter );
 
   //! Splits by deliminer and skips empty parts
-  MDAL_TEST_EXPORT std::vector<std::string> split( const std::string &str, const std::string &delimiter );
+  std::vector<std::string> split( const std::string &str, const std::string &delimiter );
 
   std::string join( const std::vector<std::string> parts, const std::string &delimiter );
 
@@ -110,7 +107,7 @@ namespace MDAL
 
   // time
   //! Returns a delimiter to get time in hours
-  MDAL_TEST_EXPORT double parseTimeUnits( const std::string &units );
+  double parseTimeUnits( const std::string &units );
   //! Returns current time stamp in YYYY-mm-ddTHH:MM:SSzoneOffset
   std::string getCurrentTimeStamp();
 
@@ -144,6 +141,19 @@ namespace MDAL
 
     return true;
   }
+
+  //! Prepend 0 to string to have n char
+  std::string prependZero( const std::string &str, size_t length );
+
+  RelativeTimestamp::Unit parseDurationTimeUnit( const std::string &timeUnit );
+
+  //! parse the time unit in the CF convention string format "XXXX since 2019-01-01 00:00:00"
+  //! https://www.unidata.ucar.edu/software/netcdf-java/current/CDM/CalendarDateTime.html
+  RelativeTimestamp::Unit parseCFTimeUnit( std::string timeInformation );
+
+  //! parse the reference time in the CF convention string format "XXXX since 2019-01-01 00:00:00"
+  //! https://www.unidata.ucar.edu/software/netcdf-java/current/CDM/CalendarDateTime.html
+  MDAL::DateTime parseCFReferenceTime( const std::string &timeInformation, const std::string &calendarString );
 
 } // namespace MDAL
 #endif //MDAL_UTILS_HPP

@@ -164,7 +164,7 @@ static void populate_vals( bool is_vector, double *vals, size_t i,
   }
 }
 
-void MDAL::DriverCF::addDatasetGroups( MDAL::Mesh *mesh, const std::vector<double> &times, const MDAL::cfdataset_info_map &dsinfo_map )
+void MDAL::DriverCF::addDatasetGroups( MDAL::Mesh *mesh, const std::vector<RelativeTimestamp> &times, const MDAL::cfdataset_info_map &dsinfo_map, const MDAL::DateTime &referenceTime )
 {
   /* PHASE 2 - add dataset groups */
   for ( const auto &it : dsinfo_map )
@@ -206,7 +206,6 @@ void MDAL::DriverCF::addDatasetGroups( MDAL::Mesh *mesh, const std::vector<doubl
     for ( size_t ts = 0; ts < dsi.nTimesteps; ++ts )
     {
       std::shared_ptr<MDAL::Dataset> dataset;
-      double time = times[ts];
       if ( dsi.outputType == CFDimensions::Volume3D )
       {
         dataset = create3DDataset(
@@ -223,7 +222,7 @@ void MDAL::DriverCF::addDatasetGroups( MDAL::Mesh *mesh, const std::vector<doubl
 
       if ( dataset )
       {
-        dataset->setTime( time );
+        dataset->setTime( times[ts] );
         group->datasets.push_back( dataset );
       }
     }
@@ -232,12 +231,13 @@ void MDAL::DriverCF::addDatasetGroups( MDAL::Mesh *mesh, const std::vector<doubl
     if ( !group->datasets.empty() )
     {
       group->setStatistics( MDAL::calculateStatistics( group ) );
+      group->setReferenceTime( referenceTime );
       mesh->datasetGroups.push_back( group );
     }
   }
 }
 
-void MDAL::DriverCF::parseTime( std::vector<double> &times )
+MDAL::DateTime MDAL::DriverCF::parseTime( std::vector<RelativeTimestamp> &times )
 {
 
   size_t nTimesteps = mDimensions.size( CFDimensions::Time );
@@ -245,17 +245,24 @@ void MDAL::DriverCF::parseTime( std::vector<double> &times )
   {
     //if no time dimension is present creates only one time step to store the potential time-independent variable
     nTimesteps = 1;
-    times = std::vector<double>( 1, 0 );
-    return;
+    times = std::vector<RelativeTimestamp>( 1, RelativeTimestamp() );
+    return MDAL::DateTime();
   }
   const std::string timeArrName = getTimeVariableName();
-  times = mNcFile->readDoubleArr( timeArrName, nTimesteps );
-  std::string units = mNcFile->getAttrStr( timeArrName, "units" );
-  double div_by = MDAL::parseTimeUnits( units );
+  std::vector<double> rawTimes = mNcFile->readDoubleArr( timeArrName, nTimesteps );
+
+  std::string timeUnitInformation = mNcFile->getAttrStr( timeArrName, "units" );
+  std::string calendar = mNcFile->getAttrStr( timeArrName, "calendar" );
+  MDAL::DateTime referenceTime = parseCFReferenceTime( timeUnitInformation, calendar );
+  MDAL::RelativeTimestamp::Unit unit = parseCFTimeUnit( timeUnitInformation );
+
+  times = std::vector<RelativeTimestamp>( nTimesteps );
   for ( size_t i = 0; i < nTimesteps; ++i )
   {
-    times[i] /= div_by;
+    times[i] = RelativeTimestamp( rawTimes[i], unit );
   }
+
+  return referenceTime;
 }
 
 std::shared_ptr<MDAL::Dataset> MDAL::DriverCF::create2DDataset( std::shared_ptr<MDAL::DatasetGroup> group, size_t ts, const MDAL::CFDatasetGroupInfo &dsi, double fill_val_x, double fill_val_y )
@@ -371,7 +378,7 @@ std::unique_ptr< MDAL::Mesh > MDAL::DriverCF::load( const std::string &fileName,
   if ( status ) *status = MDAL_Status::None;
 
   //Dimensions dims;
-  std::vector<double> times;
+  std::vector<MDAL::RelativeTimestamp> times;
 
   try
   {
@@ -401,13 +408,13 @@ std::unique_ptr< MDAL::Mesh > MDAL::DriverCF::load( const std::string &fileName,
     setProjection( mesh.get() );
 
     // Parse time array
-    parseTime( times );
+    MDAL::DateTime referenceTime = parseTime( times );
 
     // Parse dataset info
     cfdataset_info_map dsinfo_map = parseDatasetGroupInfo();
 
     // Create datasets
-    addDatasetGroups( mesh.get(), times, dsinfo_map );
+    addDatasetGroups( mesh.get(), times, dsinfo_map, referenceTime );
 
     return std::unique_ptr<Mesh>( mesh.release() );
   }
