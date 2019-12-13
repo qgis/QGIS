@@ -799,6 +799,16 @@ QString QgsCoordinateTransform::coordinateOperation() const
   return d->mProjCoordinateOperation;
 }
 
+QgsDatumTransform::TransformDetails QgsCoordinateTransform::instantiatedCoordinateOperationDetails() const
+{
+#if PROJ_VERSION_MAJOR>=6
+  ProjData projData = d->threadLocalProjData();
+  return QgsDatumTransform::transformDetailsFromPj( projData );
+#else
+  return QgsDatumTransform::TransformDetails();
+#endif
+}
+
 void QgsCoordinateTransform::setCoordinateOperation( const QString &operation ) const
 {
   d.detach();
