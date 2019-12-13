@@ -111,6 +111,16 @@ QgsWkbTypes::Type QgsExtractSpecificVerticesAlgorithm::outputWkbType( QgsWkbType
   return outputWkbType;
 }
 
+QgsProcessingFeatureSource::Flag QgsExtractSpecificVerticesAlgorithm::sourceFlags() const
+{
+  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+}
+
+QgsFeatureSink::SinkFlags QgsExtractSpecificVerticesAlgorithm::sinkFlags() const
+{
+  return QgsFeatureSink::RegeneratePrimaryKey;
+}
+
 void QgsExtractSpecificVerticesAlgorithm::initParameters( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterString( QStringLiteral( "VERTICES" ), QObject::tr( "Vertex indices" ), QStringLiteral( "0" ) ) );
@@ -148,6 +158,19 @@ QgsFeatureList QgsExtractSpecificVerticesAlgorithm::processFeature( const QgsFea
   QgsGeometry inputGeom = f.geometry();
   if ( inputGeom.isNull() )
   {
+    QgsAttributes attrs = f.attributes();
+    attrs << QVariant()
+          << QVariant()
+          << QVariant();
+    if ( mGeometryType == QgsWkbTypes::PolygonGeometry )
+    {
+      attrs << QVariant();
+    }
+    attrs << QVariant()
+          << QVariant()
+          << QVariant();
+
+    f.setAttributes( attrs );
     outputFeatures << f;
   }
   else

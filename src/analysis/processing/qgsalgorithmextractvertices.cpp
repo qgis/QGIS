@@ -72,16 +72,15 @@ QgsProcessing::SourceType QgsExtractVerticesAlgorithm::outputLayerType() const
 QgsFields QgsExtractVerticesAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
   QgsFields outputFields = inputFields;
-  outputFields.append( QgsField( QStringLiteral( "vertex_pos" ), QVariant::Int ) );
-  outputFields.append( QgsField( QStringLiteral( "vertex_index" ), QVariant::Int ) );
-  outputFields.append( QgsField( QStringLiteral( "vertex_part" ), QVariant::Int ) );
+  outputFields.append( QgsField( QStringLiteral( "vertex_index" ), QVariant::Int, QString(), 10, 0 ) );
+  outputFields.append( QgsField( QStringLiteral( "vertex_part" ), QVariant::Int, QString(), 10, 0 ) );
   if ( mGeometryType == QgsWkbTypes::PolygonGeometry )
   {
-    outputFields.append( QgsField( QStringLiteral( "vertex_part_ring" ), QVariant::Int ) );
+    outputFields.append( QgsField( QStringLiteral( "vertex_part_ring" ), QVariant::Int, QString(), 10, 0 ) );
   }
-  outputFields.append( QgsField( QStringLiteral( "vertex_part_index" ), QVariant::Int ) );
-  outputFields.append( QgsField( QStringLiteral( "distance" ), QVariant::Double ) );
-  outputFields.append( QgsField( QStringLiteral( "angle" ), QVariant::Double ) );
+  outputFields.append( QgsField( QStringLiteral( "vertex_part_index" ), QVariant::Int, QString(), 10, 0 ) );
+  outputFields.append( QgsField( QStringLiteral( "distance" ), QVariant::Double, QString(), 20, 14 ) );
+  outputFields.append( QgsField( QStringLiteral( "angle" ), QVariant::Double, QString(), 20, 14 ) );
 
   return outputFields;
 }
@@ -101,6 +100,16 @@ QgsWkbTypes::Type QgsExtractVerticesAlgorithm::outputWkbType( QgsWkbTypes::Type 
   return outputWkbType;
 }
 
+QgsProcessingFeatureSource::Flag QgsExtractVerticesAlgorithm::sourceFlags() const
+{
+  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+}
+
+QgsFeatureSink::SinkFlags QgsExtractVerticesAlgorithm::sinkFlags() const
+{
+  return QgsFeatureSink::RegeneratePrimaryKey;
+}
+
 bool QgsExtractVerticesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
@@ -116,6 +125,18 @@ QgsFeatureList QgsExtractVerticesAlgorithm::processFeature( const QgsFeature &fe
   QgsGeometry inputGeom = f.geometry();
   if ( inputGeom.isNull() )
   {
+    QgsAttributes attrs = f.attributes();
+    attrs << QVariant()
+          << QVariant();
+    if ( mGeometryType == QgsWkbTypes::PolygonGeometry )
+    {
+      attrs << QVariant();
+    }
+    attrs << QVariant()
+          << QVariant()
+          << QVariant();
+
+    f.setAttributes( attrs );
     outputFeatures << f;
   }
   else
@@ -137,6 +158,7 @@ QgsFeatureList QgsExtractVerticesAlgorithm::processFeature( const QgsFeature &fe
       attrs << vertexId.vertex
             << cumulativeDistance
             << angle;
+
       QgsFeature outputFeature = QgsFeature();
       outputFeature.setAttributes( attrs );
       outputFeature.setGeometry( QgsGeometry( ( *vi ).clone() ) );

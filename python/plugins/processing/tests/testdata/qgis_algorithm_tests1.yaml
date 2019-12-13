@@ -638,7 +638,7 @@ tests:
             floatval: skip
 
   - algorithm: qgis:rectanglesovalsdiamondsfixed
-    name: Create fixed distance rectange buffers around points
+    name: Create fixed distance rectangle buffers around points
     params:
       HEIGHT: 0.25
       INPUT:
@@ -1386,7 +1386,7 @@ tests:
         name: expected/single_sided_buffer_multiline_bevel.gml
         type: vector
 
-  - algorithm: qgis:extractvertices
+  - algorithm: native:extractvertices
     name: Extract vertices from multipolygons
     params:
       INPUT:
@@ -1403,7 +1403,7 @@ tests:
             angle:
               precision: 7
 
-  - algorithm: qgis:extractvertices
+  - algorithm: native:extractvertices
     name: Extract vertices from polygons
     params:
       INPUT:
@@ -1420,7 +1420,7 @@ tests:
             angle:
               precision: 7
 
-  - algorithm: qgis:extractvertices
+  - algorithm: native:extractvertices
     name: Extract vertices from multilines
     params:
       INPUT:
@@ -1437,7 +1437,7 @@ tests:
             angle:
               precision: 7
 
-  - algorithm: qgis:extractvertices
+  - algorithm: native:extractvertices
     name: Extract vertices from lines
     params:
       INPUT:

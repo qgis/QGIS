@@ -78,7 +78,7 @@ QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &para
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(),
-                                          source->wkbType(), source->sourceCrs() ) );
+                                          source->wkbType(), source->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
@@ -118,39 +118,24 @@ QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &para
       break;
     }
 
-    if ( idsCount.contains( id ) )
-    {
-      idsCount.insert( id, idsCount.value( id ) + 1 );
-    }
-    else
-    {
-      idsCount.insert( id, 1 );
-    }
+    idsCount[ id ] += 1;
   }
 
   QgsFeatureIds ids = QSet< QgsFeatureId >::fromList( idsCount.keys() );
   QgsFeatureIterator fit = source->getFeatures( QgsFeatureRequest().setFilterFids( ids ), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
-  sink->addFeatures( fit, QgsFeatureSink::FastInsert );
 
-  // add duplicated features if any
-  if ( ids.size() != number )
+  QgsFeature f;
+  while ( fit.nextFeature( f ) )
   {
-    QgsFeature f;
-    for ( auto it = idsCount.constBegin(); it != idsCount.constEnd(); ++it )
+    if ( feedback->isCanceled() )
     {
-      if ( feedback->isCanceled() )
-      {
-        break;
-      }
+      break;
+    }
 
-      if ( it.value() > 1 )
-      {
-        source->getFeatures( QgsFeatureRequest( it.key() ), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks ).nextFeature( f );
-        for ( int j = 1; j < it.value(); j++ )
-        {
-          sink->addFeature( f, QgsFeatureSink::FastInsert );
-        }
-      }
+    const int count = idsCount.value( f.id() );
+    for ( int i = 0; i < count; ++i )
+    {
+      sink->addFeature( f, QgsFeatureSink::FastInsert );
     }
   }
 

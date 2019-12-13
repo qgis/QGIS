@@ -51,6 +51,8 @@ class QgsExtractVerticesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QgsFields outputFields( const QgsFields &inputFields ) const override;
     QgsProcessing::SourceType outputLayerType() const override;
     QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override;
+    QgsProcessingFeatureSource::Flag sourceFlags() const override;
+    QgsFeatureSink::SinkFlags sinkFlags() const override;
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
