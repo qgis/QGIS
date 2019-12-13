@@ -422,6 +422,8 @@ QVector<QgsDataItem *> QgsXyzTileRootItem::createChildren()
 QgsXyzLayerItem::QgsXyzLayerItem( QgsDataItem *parent, QString name, QString path, const QString &encodedUri )
   : QgsLayerItem( parent, name, path, encodedUri, QgsLayerItem::Raster, QStringLiteral( "wms" ) )
 {
+
+  mIconName = QStringLiteral( "mIconWms.svg" );
   setState( Populated );
 }
 
