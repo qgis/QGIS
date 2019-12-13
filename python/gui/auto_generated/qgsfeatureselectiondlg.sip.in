@@ -53,13 +53,12 @@ Set the selected features
     virtual void keyPressEvent( QKeyEvent *evt );
 
 
-  protected:
-
     virtual void showEvent( QShowEvent *event );
 
 %Docstring
 Make sure the dialog does not grow too much
 %End
+
 };
 
 /************************************************************************
