@@ -22,6 +22,7 @@
 #include <QObject>
 #include "qgstest.h"
 #include "qgsexception.h"
+#include "qgslogger.h"
 
 class TestQgsCoordinateTransform: public QObject
 {
