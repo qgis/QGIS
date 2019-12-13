@@ -78,7 +78,7 @@ QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &para
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(),
-                                          source->wkbType(), source->sourceCrs() ) );
+                                          source->wkbType(), source->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
@@ -110,10 +110,7 @@ QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &para
   QVector< QgsFeatureId > fids( number );
   std::generate( fids.begin(), fids.end(), bind( fidsDistribution, mersenneTwister ) );
 
-  double step = number > 0 ? 100.0 / number : 1;
-  int i = 0;
-
-  QgsFeature f;
+  QHash< QgsFeatureId, int > idsCount;
   for ( QgsFeatureId id : fids )
   {
     if ( feedback->isCanceled() )
@@ -121,11 +118,25 @@ QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &para
       break;
     }
 
-    source->getFeatures( QgsFeatureRequest( id ), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks ).nextFeature( f );
+    idsCount[ id ] += 1;
+  }
 
-    sink->addFeature( f, QgsFeatureSink::FastInsert );
-    feedback->setProgress( i * step );
-    i++;
+  QgsFeatureIds ids = QSet< QgsFeatureId >::fromList( idsCount.keys() );
+  QgsFeatureIterator fit = source->getFeatures( QgsFeatureRequest().setFilterFids( ids ), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+
+  QgsFeature f;
+  while ( fit.nextFeature( f ) )
+  {
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+
+    const int count = idsCount.value( f.id() );
+    for ( int i = 0; i < count; ++i )
+    {
+      sink->addFeature( f, QgsFeatureSink::FastInsert );
+    }
   }
 
   QVariantMap outputs;

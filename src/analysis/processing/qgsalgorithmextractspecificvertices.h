@@ -29,7 +29,7 @@
 /**
  * Native extract specific vertices algorithm.
  */
-class QgsExtractSpecificVerticesAlgorithm : public QgsProcessingAlgorithm
+class QgsExtractSpecificVerticesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
 
   public:
@@ -41,14 +41,24 @@ class QgsExtractSpecificVerticesAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
-    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
     QgsExtractSpecificVerticesAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
 
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QString outputName() const override;
+    QgsFields outputFields( const QgsFields &inputFields ) const override;
+    QgsProcessing::SourceType outputLayerType() const override;
+    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override;
+    QgsProcessingFeatureSource::Flag sourceFlags() const override;
+    QgsFeatureSink::SinkFlags sinkFlags() const override;
 
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+    QgsWkbTypes::GeometryType mGeometryType;
+    QList< int > mIndices;
 };
 
 ///@endcond PRIVATE
