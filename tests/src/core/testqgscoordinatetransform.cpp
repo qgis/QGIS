@@ -534,8 +534,6 @@ void TestQgsCoordinateTransform::transformErrorOnePoint()
   }
 }
 
-#include <proj.h>
-
 void TestQgsCoordinateTransform::testDeprecated4240to4326()
 {
 #if PROJ_VERSION_MAJOR >= 6
