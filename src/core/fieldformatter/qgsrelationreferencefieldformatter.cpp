@@ -160,3 +160,17 @@ QVariant QgsRelationReferenceFieldFormatter::createCache( QgsVectorLayer *layer,
 
   return QVariant::fromValue<QMap<QVariant, QString>>( cache );
 }
+
+
+QList<QgsVectorLayerRef> QgsRelationReferenceFieldFormatter::layerDependencies( const QVariantMap &config ) const
+{
+
+  const QList<QgsVectorLayerRef> result {{
+      QgsVectorLayerRef(
+        config.value( QStringLiteral( "ReferencedLayerId" ) ).toString(),
+        config.value( QStringLiteral( "ReferencedLayerName" ) ).toString(),
+        config.value( QStringLiteral( "ReferencedLayerDataSource" ) ).toString(),
+        config.value( QStringLiteral( "ReferencedLayerProviderKey" ) ).toString() )
+    }};
+  return result;
+}

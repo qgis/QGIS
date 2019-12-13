@@ -19,6 +19,7 @@
 #include "qgseditorwidgetwrapper.h"
 #include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgsvectorlayerref.h"
 
 class QgsRelationReferenceWidget;
 class QgsMapCanvas;
@@ -69,7 +70,6 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
 
   protected:
     void updateConstraintWidgetStatus() override;
-    QList<QgsVectorLayerRef> layerDependencies() const override SIP_SKIP;
 
   private:
     void updateValues( const QVariant &val, const QVariantList &additionalValues = QVariantList() ) override;
