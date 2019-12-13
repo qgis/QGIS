@@ -530,6 +530,7 @@ void QgsRelationEditorWidget::linkFeature()
     layer = mRelation.referencingLayer();
 
   QgsFeatureSelectionDlg *selectionDlg = new QgsFeatureSelectionDlg( layer, mEditorContext, this );
+  selectionDlg->setAttribute( Qt::WA_DeleteOnClose );
 
   const QString displayString = QgsVectorLayerUtils::getFeatureDisplayString( mRelation.referencedLayer(), mFeature );
   selectionDlg->setWindowTitle( tr( "Link existing child features for parent %1 \"%2\"" ).arg( mRelation.referencedLayer()->name(), displayString ) );
