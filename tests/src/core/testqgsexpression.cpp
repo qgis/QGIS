@@ -2229,14 +2229,14 @@ class TestQgsExpression: public QObject
       // Two calls with the same seed always return the same number
       QgsExpression exp8( QStringLiteral( "randf(seed:=1)" ) );
       QVariant v8 = exp8.evaluate();
-      QCOMPARE( v8.toFloat() == 0.13387664401253274, true );
+      QCOMPARE( v8.toDouble() == 0.13387664401253274, true );
 
       // Two calls with a different seed return a different number
       QgsExpression exp9( QStringLiteral( "randf(seed:=1)" ) );
       QVariant v9 = exp9.evaluate();
       QgsExpression exp10( QStringLiteral( "randf(seed:=2)" ) );
       QVariant v10 = exp10.evaluate();
-      QCOMPARE( v9.toFloat() != v10.toFloat(), true );
+      QCOMPARE( v9.toDouble() != v10.toDouble(), true );
     }
 
     void referenced_columns()
