@@ -2447,23 +2447,33 @@ void QgsProjectProperties::projectionSelectorInitialized()
   QgsDebugMsgLevel( QStringLiteral( "Setting up ellipsoid" ), 4 );
 
   // Reading ellipsoid from settings
-  QStringList mySplitEllipsoid = QgsProject::instance()->ellipsoid().split( ':' );
+  const QString currentEllipsoid = QgsProject::instance()->ellipsoid();
 
   int index = 0;
-  for ( int i = 0; i < mEllipsoidList.length(); i++ )
+  if ( currentEllipsoid.startsWith( QLatin1String( "PARAMETER" ) ) )
   {
-    if ( mEllipsoidList.at( i ).acronym.startsWith( mySplitEllipsoid[ 0 ] ) )
+    // Update parameters if present.
+    const QStringList mySplitEllipsoid = QgsProject::instance()->ellipsoid().split( ':' );
+    for ( int i = 0; i < mEllipsoidList.length(); i++ )
     {
-      index = i;
-      break;
+      if ( mEllipsoidList.at( i ).acronym.startsWith( QLatin1String( "PARAMETER" ), Qt::CaseInsensitive ) )
+      {
+        index = i;
+        mEllipsoidList[ index ].semiMajor = mySplitEllipsoid[ 1 ].toDouble();
+        mEllipsoidList[ index ].semiMinor = mySplitEllipsoid[ 2 ].toDouble();
+      }
     }
   }
-
-  // Update parameters if present.
-  if ( mySplitEllipsoid.length() >= 3 )
+  else
   {
-    mEllipsoidList[ index ].semiMajor = mySplitEllipsoid[ 1 ].toDouble();
-    mEllipsoidList[ index ].semiMinor = mySplitEllipsoid[ 2 ].toDouble();
+    for ( int i = 0; i < mEllipsoidList.length(); i++ )
+    {
+      if ( mEllipsoidList.at( i ).acronym.compare( currentEllipsoid, Qt::CaseInsensitive ) == 0 )
+      {
+        index = i;
+        break;
+      }
+    }
   }
 
   updateEllipsoidUI( index );
