@@ -128,8 +128,6 @@ Returns the (possibly NULL) layer from the widget's ``config`` and ``project``
 .. versionadded:: 3.8
 %End
 
-    virtual QList<QgsVectorLayerRef> layerDependencies( const QVariantMap &config ) const;
-
 };
 
 

@@ -201,6 +201,7 @@ SET(TESTS
  testqgsrasterlayer.cpp
  testqgsrastersublayer.cpp
  testqgsrectangle.cpp
+ testqgsrelationreferencefieldformatter.cpp
  testqgsrenderers.cpp
  testqgsrulebasedrenderer.cpp
  testqgssettings.cpp

@@ -19,7 +19,6 @@
 #include "qgseditorwidgetwrapper.h"
 #include "qgis_sip.h"
 #include "qgis_gui.h"
-#include "qgsvectorlayerref.h"
 
 class QgsRelationReferenceWidget;
 class QgsMapCanvas;
@@ -78,8 +77,6 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
     QgsMapCanvas *mCanvas = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
     bool mIndeterminateState;
-
-    friend class TestQgsRelationReferenceWidget;
 
 };
 

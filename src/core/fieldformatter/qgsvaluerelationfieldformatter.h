@@ -125,7 +125,7 @@ class CORE_EXPORT QgsValueRelationFieldFormatter : public QgsFieldFormatter
      */
     static QgsVectorLayer *resolveLayer( const QVariantMap &config, const QgsProject *project );
 
-    QList<QgsVectorLayerRef> layerDependencies( const QVariantMap &config ) const override;
+    QList<QgsVectorLayerRef> layerDependencies( const QVariantMap &config ) const override SIP_SKIP;
 };
 
 Q_DECLARE_METATYPE( QgsValueRelationFieldFormatter::ValueRelationCache )
