@@ -1,5 +1,6 @@
 set (ENABLE_MSSQLTEST FALSE CACHE BOOL "Enable MsSQL provider tests")
 set (ENABLE_ORACLETEST FALSE CACHE BOOL "Enable Oracle provider tests")
+SET (ENABLE_HANATEST FALSE CACHE BOOL "Enable HANA provider tests")
 
 include(UsePythonTest)
 # Run one of the two server tests at the beginning so they don't run in
@@ -378,7 +379,15 @@ if (ENABLE_ORACLETEST)
   ADD_PYTHON_TEST(PyQgsOracleProvider test_provider_oracle.py)
 endif()
 
+<<<<<<< HEAD
 if (WITH_SERVER)
+=======
+IF (ENABLE_HANATEST)
+  ADD_PYTHON_TEST(PyQgsHanaProvider test_provider_hana.py)
+ENDIF (ENABLE_HANATEST)
+
+IF (WITH_SERVER)
+>>>>>>> Add tests for HANA provider
   ADD_PYTHON_TEST(PyQgsServer test_qgsserver.py)
   ADD_PYTHON_TEST(PyQgsServerLogger test_qgsserverlogger.py)
   ADD_PYTHON_TEST(PyQgsServerPlugins test_qgsserver_plugins.py)
