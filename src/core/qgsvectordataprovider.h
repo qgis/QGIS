@@ -549,13 +549,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     virtual QgsTransaction *transaction() const;
 
     /**
-     * Forces a reload of the underlying datasource if the provider implements this
-     * method.
-     * In particular on the OGR provider, a pooled connection will be invalidated.
-     * This forces QGIS to reopen a file or connection.
-     * This can be required if the underlying file is replaced.
      * \deprecated QGIS 3.12 - will be removed in QGIS 4.0 - use reloadData instead
-    */
+     */
     Q_DECL_DEPRECATED virtual void forceReload() SIP_DEPRECATED { reloadData(); }
 
     /**

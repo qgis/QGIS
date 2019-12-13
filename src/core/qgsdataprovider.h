@@ -358,7 +358,8 @@ class CORE_EXPORT QgsDataProvider : public QObject
     /**
      * Reloads the data from the source by calling reloadProviderData() implemented
      * by providers with data caches to synchronize, changes in the data source, feature
-     * counts and other specific actions and it calls the dataChanged signal
+     * counts and other specific actions.
+     * Emits the `dataChanged` signal
      * \see reloadProviderData()
      */
     virtual void reloadData();
@@ -618,6 +619,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
     /**
      * Reloads the data according to the provider
+     * \since QGIS 3.12
     */
     virtual void reloadProviderData() {}
 };
