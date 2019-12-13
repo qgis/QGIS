@@ -411,7 +411,7 @@
     <string>Zoom map to the selected rows</string>
    </property>
    <property name="toolTip">
-    <string>Zoom map to the selected rows (Ctrl+J)</string>
+    <string>Zoom map to the selected rows (Ctrl+J) or double-click the row header</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+J</string>

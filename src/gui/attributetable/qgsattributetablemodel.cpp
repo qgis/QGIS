@@ -619,7 +619,7 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
     if ( orientation == Qt::Vertical )
     {
       // TODO show DisplayExpression
-      return tr( "Feature ID: %1" ).arg( rowToId( section ) );
+      return tr( "Feature ID: %1 (double-click here to zoom to this feature)" ).arg( rowToId( section ) );
     }
     else
     {
