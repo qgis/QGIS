@@ -554,9 +554,9 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * In particular on the OGR provider, a pooled connection will be invalidated.
      * This forces QGIS to reopen a file or connection.
      * This can be required if the underlying file is replaced.
-     * \deprecated Will be removed in QGIS 4.0
+     * \deprecated QGIS 3.12 - will be removed in QGIS 4.0 - use reloadData instead
     */
-    Q_DECL_DEPRECATED virtual void forceReload() { reloadData(); }
+    Q_DECL_DEPRECATED virtual void forceReload() SIP_DEPRECATED { reloadData(); }
 
     /**
      * Gets the list of layer ids on which this layer depends. This in particular determines the order of layer loading.
