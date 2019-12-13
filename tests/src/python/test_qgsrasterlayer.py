@@ -1212,6 +1212,7 @@ class TestQgsRasterLayerTransformContext(unittest.TestCase):
         super(TestQgsRasterLayerTransformContext, self).setUp()
         self.ctx = QgsCoordinateTransformContext()
         self.ctx.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857), 1234, 1235)
+        self.ctx.addCoordinateOperation(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857), 'test')
         self.rpath = os.path.join(unitTestDataPath(), 'landsat.tif')
 
     def testTransformContextIsSetInCtor(self):
