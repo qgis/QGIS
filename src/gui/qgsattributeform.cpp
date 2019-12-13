@@ -244,20 +244,23 @@ void QgsAttributeForm::changeAttribute( const QString &field, const QVariant &va
   for ( QgsWidgetWrapper *ww : constMWidgets )
   {
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
-    if ( eww && eww->field().name() == field )
+    if ( eww )
     {
-      eww->setValues( value, QVariantList() );
-      eww->setHint( hintText );
-    }
-    // see if the field is present in additional fields of the editor widget
-    int index = eww->additionalFields().indexOf( field );
-    if ( index >= 0 )
-    {
-      QVariant mainValue = eww->value();
-      QVariantList additionalFieldValues = eww->additionalFieldValues();
-      additionalFieldValues[index] = value;
-      eww->setValues( mainValue, additionalFieldValues );
-      eww->setHint( hintText );
+      if ( eww->field().name() == field )
+      {
+        eww->setValues( value, QVariantList() );
+        eww->setHint( hintText );
+      }
+      // see if the field is present in additional fields of the editor widget
+      int index = eww->additionalFields().indexOf( field );
+      if ( index >= 0 )
+      {
+        QVariant mainValue = eww->value();
+        QVariantList additionalFieldValues = eww->additionalFieldValues();
+        additionalFieldValues[index] = value;
+        eww->setValues( mainValue, additionalFieldValues );
+        eww->setHint( hintText );
+      }
     }
   }
 }
