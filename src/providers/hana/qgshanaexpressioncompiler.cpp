@@ -20,7 +20,7 @@
 #include "qgssqlexpressioncompiler.h"
 
 QgsHanaExpressionCompiler::QgsHanaExpressionCompiler( QgsHanaFeatureSource *source )
-  : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger )
+  : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger | QgsSqlExpressionCompiler::NoNullInBooleanLogic)
   , mGeometryColumn( source->mGeometryColumn )
 {
 }
@@ -33,46 +33,38 @@ QString QgsHanaExpressionCompiler::quotedIdentifier( const QString &identifier )
 QString QgsHanaExpressionCompiler::quotedValue( const QVariant &value, bool &ok )
 {
   ok = true;
-  switch ( value.type() )
-  {
-    case QVariant::Bool:
-      return value.toBool() ? "(1=1)" : "(1=0)";
-
-    default:
-      return QgsHanaUtils::quotedValue( value );
-  }
+  return QgsHanaUtils::quotedValue( value );
 }
 
 static const QMap<QString, QString> FUNCTION_NAMES_SQL_FUNCTIONS_MAP
 {
   // mathematical functions
-  { "sign", "sign" },
-  { "abs", "abs" },
-  { "round", "round" },
+  { "sqrt", "SQRT" },
+  { "sign", "SIGN" },
+  { "abs", "ABS" },
+  { "cos", "COS" },
+  { "sin", "SIN" },
+  { "tan", "TAN" },
+  { "acos", "ACOS" },
+  { "asin", "ASIN" },
+  { "atan", "ATAN" },
+  { "atan2", "ATAN2" },
+  { "exp", "EXP" },
+  { "ln", "LN" },
+  { "log", "LOG" },
+  { "round", "ROUND" },
+  { "floor", "FLOOR" },
+  { "ceil", "CEIL" },
+  { "pi", "pi" },
   // geometry functions
-  { "x", "ST_X" },
-  { "y", "ST_Y" },
-  { "x_min", "ST_XMin" },
-  { "y_min", "ST_YMin" },
-  { "x_max", "ST_XMax" },
-  { "y_max", "ST_YMax" },
-  { "area", "ST_Area" },
-  { "length", "ST_Length" },
-  { "perimeter", "ST_Perimeter" },
-  { "intersects", "ST_Intersects" },
-  { "crosses", "ST_Crosses" },
-  { "contains", "ST_Contains" },
-  { "overlaps", "ST_Overlaps" },
-  { "within", "ST_Within" },
-  { "translate", "ST_Translate" },
-  { "buffer", "ST_Buffer" },
-  { "centroid", "ST_Centroid" },
-  { "point_on_surface", "ST_PointOnSurface" },
-  { "distance", "ST_Distance" },
   { "geom_from_wkt", "ST_GeomFromWKT" },
-  { "lower", "lower" },
-  { "trim", "trim" },
-  { "upper", "upper" },
+  // string functions
+  { "char", "CHAR" },
+  { "lower", "LOWER" },
+  { "upper", "UPPER" },
+  { "trim", "TRIM" },
+  // other helper functions
+  { "coalesce", "COALESCE" }
 };
 
 QString QgsHanaExpressionCompiler::sqlFunctionFromFunctionName( const QString &fnName ) const
@@ -102,18 +94,114 @@ QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
   {
     case QgsExpressionNode::ntFunction:
     {
-      const QgsExpressionNodeFunction *n = static_cast<const QgsExpressionNodeFunction *>( node );
+      const QgsExpressionNodeFunction *nodeFunc = static_cast<const QgsExpressionNodeFunction *>( node );
+      QgsExpressionFunction *fd = QgsExpression::Functions()[nodeFunc->fnIndex()];
 
-      QgsExpressionFunction *fd = QgsExpression::Functions()[n->fnIndex()];
-      if ( fd->name() == QLatin1String( "$geometry" ) )
+      QString funcName = fd->name();
+      if ( funcName.isEmpty() )
+          break;
+
+      if ( funcName == QLatin1String( "$geometry" ) )
       {
         result = quotedIdentifier( mGeometryColumn );
         return Complete;
       }
-
-      FALLTHROUGH;
+      else if ( funcName.toLower() == QLatin1String( "log10" ) )
+      {
+          return Fail;
+      }
+      else if ( funcName.toLower() == QLatin1String( "pi" ) )
+      {
+          result = "3.141592653589793238";
+          return Complete;
+      }
     }
-    default:
+    break;
+    case QgsExpressionNode::ntLiteral:
+    {
+      const QgsExpressionNodeLiteral *n = static_cast<const QgsExpressionNodeLiteral *>( node );
+
+      switch( n->value().type() )
+      {
+      case QVariant::Bool:
+          result = n->value().toBool() ? "(1=1)" : "(1=0)";
+          return Complete;
+      default:
+          break;
+      }
+    }
+    break;
+    case QgsExpressionNode::ntBinaryOperator:
+    {
+      const QgsExpressionNodeBinaryOperator *binOp( static_cast<const QgsExpressionNodeBinaryOperator *>( node ) );
+
+      QString opLeft, opRight;
+      Result resLeft = compileNode( binOp->opLeft(), opLeft );
+      Result resRight = compileNode( binOp->opRight(), opRight );
+      Result compileResult;
+      QgsDebugMsg( "left: '" + opLeft + "'; right: '" + opRight +
+                   QString( "'; op: %1; lr: %2; rr: %3" ).arg( binOp->op() ).arg( resLeft ).arg( resRight ) );
+      if ( resLeft == Fail || resRight == Fail )
+        return Fail;
+
+      switch ( binOp->op() )
+      {
+        case QgsExpressionNodeBinaryOperator::boMod:
+            result = QStringLiteral( "MOD(%1,%2)" ).arg( opLeft, opRight );
+            compileResult = ( resLeft == Partial || resRight == Partial ) ? Partial : Complete;
+            QgsDebugMsg( QStringLiteral( "MOD compile status:  %1" ).arg( compileResult ) + "; " + result );
+            return compileResult;
+
+        case QgsExpressionNodeBinaryOperator::boPow:
+          result = QStringLiteral( "POWER(%1,%2)" ).arg( opLeft, opRight );
+          compileResult = ( resLeft == Partial || resRight == Partial ) ? Partial : Complete;
+          QgsDebugMsg( QStringLiteral( "POWER compile status:  %1" ).arg( compileResult ) + "; " + result );
+          return compileResult;
+
+        case QgsExpressionNodeBinaryOperator::boRegexp:
+          result = QStringLiteral( "%1 LIKE_REGEXPR %2" ).arg( opLeft, opRight );
+          compileResult = ( resLeft == Partial || resRight == Partial ) ? Partial : Complete;
+          QgsDebugMsg( QStringLiteral( "LIKE_REGEXPR compile status:  %1" ).arg( compileResult ) + "; " + result );
+          return compileResult;
+
+        // We only support IS NULL and IS NOT NULL if the operand on the left is a column
+        case QgsExpressionNodeBinaryOperator::boIs:
+        case QgsExpressionNodeBinaryOperator::boIsNot:
+          if ( "NULL" == opRight.toUpper() )
+          {
+            if ( binOp->opLeft()->nodeType() != QgsExpressionNode::ntColumnRef )
+            {
+              QgsDebugMsg( "Failing IS NULL/IS NOT NULL with non-column on left: " + opLeft );
+              return Fail;
+            }
+          }
+          break;
+
+        case QgsExpressionNodeBinaryOperator::boILike:
+        case QgsExpressionNodeBinaryOperator::boNotILike:
+        {
+          if ( resLeft != Complete || resRight != Complete )
+            return Fail;
+
+          switch ( binOp->op() )
+          {
+            case QgsExpressionNodeBinaryOperator::boILike:
+              result = QStringLiteral( "LOWER(%1) LIKE LOWER(%2)" ).arg( opLeft, opRight );
+              return Complete;
+            case QgsExpressionNodeBinaryOperator::boNotILike:
+              result = QStringLiteral( "NOT LOWER(%1) LIKE LOWER(%2)" ).arg( opLeft, opRight );
+              return Complete;
+            default:
+              break;
+          }
+        }
+        break;
+      default:
+        break;
+       }
+     }
+     break;
+   default:
       break;
   }
 
