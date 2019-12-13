@@ -89,7 +89,7 @@ void MDAL::DriverFlo2D::addStaticDataset(
 
   std::shared_ptr<MDAL::MemoryDataset2D> dataset = std::make_shared< MemoryDataset2D >( group.get() );
   assert( vals.size() == dataset->valuesCount() );
-  dataset->setTime( 0.0 );
+  dataset->setTime( MDAL::RelativeTimestamp() );
   double *values = dataset->values();
   memcpy( values, vals.data(), vals.size() * sizeof( double ) );
   dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
@@ -187,7 +187,7 @@ void MDAL::DriverFlo2D::parseTIMDEPFile( const std::string &datFileName, const s
   size_t nVertexs = mMesh->verticesCount();
   size_t ntimes = 0;
 
-  double time = 0.0;
+  RelativeTimestamp time = RelativeTimestamp();
   size_t face_idx = 0;
 
   std::shared_ptr<DatasetGroup> depthDsGroup = std::make_shared< DatasetGroup >(
@@ -228,7 +228,7 @@ void MDAL::DriverFlo2D::parseTIMDEPFile( const std::string &datFileName, const s
     std::vector<std::string> lineParts = MDAL::split( line, ' ' );
     if ( lineParts.size() == 1 )
     {
-      time = MDAL::toDouble( line );
+      time = RelativeTimestamp( MDAL::toDouble( line ), RelativeTimestamp::hours );
       ntimes++;
 
       if ( depthDataset ) addDatasetToGroup( depthDsGroup, depthDataset );
@@ -531,6 +531,9 @@ bool MDAL::DriverFlo2D::parseHDF5Datasets( MemoryMesh *mesh, const std::string &
     HdfAttribute groupType = grp.attribute( "Grouptype" );
     if ( !groupType.isValid() ) return true;
 
+    HdfAttribute timeUnitAttribute = grp.attribute( "TimeUnits" );
+    std::string timeUnitString = timeUnitAttribute.readString();
+
     /* Min and Max arrays in TIMDEP.HDF5 files have dimensions 1xntimesteps .
         HdfDataset minDs = grp.dataset("Mins");
         if (!minDs.isValid()) return true;
@@ -570,7 +573,7 @@ bool MDAL::DriverFlo2D::parseHDF5Datasets( MemoryMesh *mesh, const std::string &
     for ( size_t ts = 0; ts < timesteps; ++ts )
     {
       std::shared_ptr< MemoryDataset2D > output = std::make_shared< MemoryDataset2D >( ds.get() );
-      output->setTime( times[ts] );
+      output->setTime( times[ts], parseDurationTimeUnit( timeUnitString ) );
 
       if ( isVector )
       {
@@ -819,7 +822,7 @@ bool MDAL::DriverFlo2D::appendGroup( HdfFile &file, MDAL::DatasetGroup *dsGroup,
     const Statistics st = dataset->statistics();
     maximums[i] = static_cast<float>( st.maximum );
     minimums[i] = static_cast<float>( st.minimum );
-    times.push_back( dataset->time() );
+    times.push_back( dataset->time( RelativeTimestamp::hours ) );
   }
 
   // store data

@@ -531,25 +531,27 @@ void MDAL::DriverUgrid::writeVariables( MDAL::Mesh *mesh )
   std::vector<double> verticesCoordinates( verticesCoordCount );
   std::unique_ptr<MDAL::MeshVertexIterator> vertexIterator = mesh->readVertices();
 
-  size_t vertexIndex = 0;
-  size_t vertexFileIndex = 0;
-  while ( vertexIndex < mesh->verticesCount() )
   {
-    size_t verticesRead = vertexIterator->next( bufferSize, verticesCoordinates.data() );
-    if ( verticesRead == 0 )
-      break;
-
-    for ( size_t i = 0; i < verticesRead; i++ )
+    size_t vertexIndex = 0;
+    size_t vertexFileIndex = 0;
+    while ( vertexIndex < mesh->verticesCount() )
     {
-      mNcFile->putDataDouble( mesh2dNodeXId, vertexFileIndex, verticesCoordinates[3 * i] );
-      mNcFile->putDataDouble( mesh2dNodeYId, vertexFileIndex, verticesCoordinates[3 * i + 1] );
-      if ( std::isnan( verticesCoordinates[3 * i + 2] ) )
-        mNcFile->putDataDouble( mesh2dNodeZId, vertexFileIndex, fillNodeZCoodVal );
-      else
-        mNcFile->putDataDouble( mesh2dNodeZId, vertexFileIndex, verticesCoordinates[3 * i + 2] );
-      vertexFileIndex++;
+      size_t verticesRead = vertexIterator->next( bufferSize, verticesCoordinates.data() );
+      if ( verticesRead == 0 )
+        break;
+
+      for ( size_t i = 0; i < verticesRead; i++ )
+      {
+        mNcFile->putDataDouble( mesh2dNodeXId, vertexFileIndex, verticesCoordinates[3 * i] );
+        mNcFile->putDataDouble( mesh2dNodeYId, vertexFileIndex, verticesCoordinates[3 * i + 1] );
+        if ( std::isnan( verticesCoordinates[3 * i + 2] ) )
+          mNcFile->putDataDouble( mesh2dNodeZId, vertexFileIndex, fillNodeZCoodVal );
+        else
+          mNcFile->putDataDouble( mesh2dNodeZId, vertexFileIndex, verticesCoordinates[3 * i + 2] );
+        vertexFileIndex++;
+      }
+      vertexIndex += verticesRead;
     }
-    vertexIndex += verticesRead;
   }
 
   // Write faces

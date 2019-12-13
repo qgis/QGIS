@@ -13,6 +13,7 @@
 #include <string>
 #include <limits>
 #include "mdal.h"
+#include "mdal_datetime.hpp"
 
 namespace MDAL
 {
@@ -75,14 +76,15 @@ namespace MDAL
       DatasetGroup *group() const;
       Mesh *mesh() const;
 
-      double time() const;
-      void setTime( double time );
+      double time( RelativeTimestamp::Unit unit ) const;
+      void setTime( double time, RelativeTimestamp::Unit unit = RelativeTimestamp::hours );
+      void setTime( const RelativeTimestamp &time );
 
       bool supportsActiveFlag() const;
       void setSupportsActiveFlag( bool value );
 
     private:
-      double mTime = std::numeric_limits<double>::quiet_NaN();
+      RelativeTimestamp mTime;
       bool mIsValid = true;
       bool mSupportsActiveFlag = false;
       DatasetGroup *mParent = nullptr;
@@ -166,8 +168,8 @@ namespace MDAL
       Statistics statistics() const;
       void setStatistics( const Statistics &statistics );
 
-      std::string referenceTime() const;
-      void setReferenceTime( const std::string &referenceTime );
+      DateTime referenceTime() const;
+      void setReferenceTime( const DateTime &referenceTime );
 
       Mesh *mesh() const;
 
@@ -186,7 +188,7 @@ namespace MDAL
       MDAL_DataLocation mDataLocation = MDAL_DataLocation::DataOnVertices2D;
       std::string mUri; // file/uri from where it came
       Statistics mStatistics;
-      std::string mReferenceTime;
+      DateTime mReferenceTime;
   };
 
   typedef std::vector<std::shared_ptr<DatasetGroup>> DatasetGroups;

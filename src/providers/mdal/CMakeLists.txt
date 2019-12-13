@@ -30,6 +30,7 @@ IF (WITH_INTERNAL_MDAL)
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_utils.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_data_model.cpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/mdal_datetime.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_memory_data_model.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_driver_manager.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_driver.cpp
@@ -44,6 +45,7 @@ IF (WITH_INTERNAL_MDAL)
     ${CMAKE_SOURCE_DIR}/external/mdal/api/mdal.h
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_utils.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_data_model.hpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/mdal_datetime.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_memory_data_model.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_driver_manager.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_driver.hpp

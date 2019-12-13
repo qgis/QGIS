@@ -251,7 +251,7 @@ void MDAL::DriverBinaryDat::load( const std::string &datFile, MDAL::Mesh *mesh, 
           return exit_with_error( status, MDAL_Status::Err_UnknownFormat, "unable to read reference time" );
 
         referenceTime = static_cast<double>( time );
-        group->setReferenceTime( "JULIAN " + std::to_string( referenceTime ) );
+        group->setReferenceTime( DateTime( referenceTime, DateTime::JulianDay ) );
         break;
 
       case CT_TIMEUNITS:
@@ -288,8 +288,8 @@ void MDAL::DriverBinaryDat::load( const std::string &datFile, MDAL::Mesh *mesh, 
         if ( read( in, reinterpret_cast< char * >( &time ), 4 ) )
           return exit_with_error( status, MDAL_Status::Err_UnknownFormat, "Invalid time step" );
 
-        double t = static_cast<double>( time );
-        t = convertTimeDataToHours( t, timeUnit );
+        double rawTime = static_cast<double>( time );
+        MDAL::RelativeTimestamp t( rawTime, MDAL::parseDurationTimeUnit( timeUnitStr ) );
 
         if ( readVertexTimestep( mesh, group, groupMax, t, istat, sflg, in ) )
           return exit_with_error( status, MDAL_Status::Err_UnknownFormat, "Unable to read vertex timestep" );
@@ -315,7 +315,7 @@ bool MDAL::DriverBinaryDat::readVertexTimestep(
   const MDAL::Mesh *mesh,
   std::shared_ptr<DatasetGroup> group,
   std::shared_ptr<DatasetGroup> groupMax,
-  double time,
+  MDAL::RelativeTimestamp time,
   bool hasStatus,
   int sflg,
   std::ifstream &in )
@@ -364,7 +364,7 @@ bool MDAL::DriverBinaryDat::readVertexTimestep(
     }
   }
 
-  if ( MDAL::equals( time, 99999.0 ) ) // Special TUFLOW dataset with maximus
+  if ( MDAL::equals( time.value( MDAL::RelativeTimestamp::hours ), 99999.0 ) ) // Special TUFLOW dataset with maximus
   {
     dataset->setTime( time );
     dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
@@ -372,7 +372,7 @@ bool MDAL::DriverBinaryDat::readVertexTimestep(
   }
   else
   {
-    dataset->setTime( time ); // TODO read TIMEUNITS
+    dataset->setTime( time );
     dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
     group->datasets.push_back( dataset );
   }
@@ -458,7 +458,7 @@ bool MDAL::DriverBinaryDat::persist( MDAL::DatasetGroup *group )
 
     writeRawData( out, reinterpret_cast< const char * >( &CT_TS ), 4 );
     writeRawData( out, reinterpret_cast< const char * >( &istat ), 1 );
-    float ftime = static_cast<float>( dataset->time() );
+    float ftime = static_cast<float>( dataset->time( RelativeTimestamp::hours ) );
     writeRawData( out, reinterpret_cast< const char * >( &ftime ), 4 );
 
     if ( istat )
@@ -492,24 +492,4 @@ bool MDAL::DriverBinaryDat::persist( MDAL::DatasetGroup *group )
   if ( writeRawData( out, reinterpret_cast< const char * >( &CT_ENDDS ), 4 ) ) return true;
 
   return false;
-}
-
-double MDAL::DriverBinaryDat::convertTimeDataToHours( double time, int originalTimeDataUnit )
-{
-  switch ( originalTimeDataUnit )
-  {
-    case 1:
-      time /= 60.0;
-      break;
-    case 2:
-      time /= 3600.0;
-      break;
-    case 4:
-      time *= 24;
-      break;
-    case 0:
-    default:
-      break;
-  }
-  return time;
 }

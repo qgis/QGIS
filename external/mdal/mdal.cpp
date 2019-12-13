@@ -22,7 +22,7 @@ static MDAL_Status sLastStatus;
 
 const char *MDAL_Version()
 {
-  return "0.4.92";
+  return "0.4.93";
 }
 
 MDAL_Status MDAL_LastStatus()
@@ -697,8 +697,9 @@ DatasetH MDAL_G_addDataset( DatasetGroupH group, double time, const double *valu
   }
 
   const size_t index = g->datasets.size();
+  MDAL::RelativeTimestamp t( time, MDAL::RelativeTimestamp::hours );
   dr->createDataset( g,
-                     time,
+                     t,
                      values,
                      active
                    );
@@ -765,7 +766,7 @@ const char *MDAL_G_referenceTime( DatasetGroupH group )
     return EMPTY_STR;
   }
   MDAL::DatasetGroup *g = static_cast< MDAL::DatasetGroup * >( group );
-  return _return_str( g->referenceTime() );
+  return _return_str( g->referenceTime().toStandartCalendarISO8601() );
 }
 
 void MDAL_G_setMetadata( DatasetGroupH group, const char *key, const char *val )
@@ -827,8 +828,7 @@ double MDAL_D_time( DatasetH dataset )
     return NODATA;
   }
   MDAL::Dataset *d = static_cast< MDAL::Dataset * >( dataset );
-  return d->time();
-
+  return d->time( MDAL::RelativeTimestamp::hours );
 }
 
 int MDAL_D_volumesCount( DatasetH dataset )
@@ -1064,3 +1064,4 @@ bool MDAL_D_hasActiveFlagCapability( DatasetH dataset )
   MDAL::Dataset *ds = static_cast< MDAL::Dataset * >( dataset );
   return ds->supportsActiveFlag();
 }
+

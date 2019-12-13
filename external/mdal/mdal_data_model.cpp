@@ -56,12 +56,17 @@ MDAL::Mesh *MDAL::Dataset::mesh() const
   return mParent->mesh();
 }
 
-double MDAL::Dataset::time() const
+double MDAL::Dataset::time( RelativeTimestamp::Unit unit ) const
 {
-  return mTime;
+  return mTime.value( unit );
 }
 
-void MDAL::Dataset::setTime( double time )
+void MDAL::Dataset::setTime( double time, RelativeTimestamp::Unit unit )
+{
+  mTime = RelativeTimestamp( time, unit );
+}
+
+void MDAL::Dataset::setTime( const MDAL::RelativeTimestamp &time )
 {
   mTime = time;
 }
@@ -87,7 +92,6 @@ MDAL::Dataset2D::Dataset2D( MDAL::DatasetGroup *parent )
 }
 
 MDAL::Dataset2D::~Dataset2D() = default;
-
 
 size_t MDAL::Dataset2D::volumesCount() const { return 0; }
 
@@ -207,12 +211,12 @@ void MDAL::DatasetGroup::setStatistics( const Statistics &statistics )
   mStatistics = statistics;
 }
 
-std::string MDAL::DatasetGroup::referenceTime() const
+MDAL::DateTime MDAL::DatasetGroup::referenceTime() const
 {
   return mReferenceTime;
 }
 
-void MDAL::DatasetGroup::setReferenceTime( const std::string &referenceTime )
+void MDAL::DatasetGroup::setReferenceTime( const DateTime &referenceTime )
 {
   mReferenceTime = referenceTime;
 }
