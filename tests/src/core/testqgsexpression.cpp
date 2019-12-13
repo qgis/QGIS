@@ -2179,20 +2179,17 @@ class TestQgsExpression: public QObject
       QCOMPARE( v7.toInt() <= 10, true );
       QCOMPARE( v7.toInt() >= 1, true );
 
-      // Two calls with the same seed return the same number
+      // Two calls with the same seed always return the same number
       QgsExpression exp8( QStringLiteral( "rand(1,1000000000,1)" ) );
       QVariant v8 = exp8.evaluate();
       QCOMPARE( v8.toInt() == 546311529, true );
-      QgsExpression exp9( QStringLiteral( "rand(1,1000000000,1)" ) );
-      QVariant v9 = exp9.evaluate();
-      QCOMPARE( v9.toInt() == 546311529, true );
 
       // Two calls with a different seed return a different number
-      QgsExpression exp10( QStringLiteral( "rand(1,100000000000,1)" ) );
+      QgsExpression exp9( QStringLiteral( "rand(1,100000000000,1)" ) );
+      QVariant v9 = exp9.evaluate();
+      QgsExpression exp10( QStringLiteral( "rand(1,100000000000,2)" ) );
       QVariant v10 = exp10.evaluate();
-      QgsExpression exp11( QStringLiteral( "rand(1,100000000000,2)" ) );
-      QVariant v11 = exp11.evaluate();
-      QCOMPARE( v10.toInt() != v11.toInt(), true );
+      QCOMPARE( v9.toInt() != v10.toInt(), true );
     }
 
     void eval_randf()
@@ -2229,20 +2226,17 @@ class TestQgsExpression: public QObject
       QCOMPARE( v7.toDouble() <= 9.5, true );
       QCOMPARE( v7.toDouble() >= 1.5, true );
 
-      // Two calls with the same seed return the same number
+      // Two calls with the same seed always return the same number
       QgsExpression exp8( QStringLiteral( "randf(seed:=1)" ) );
       QVariant v8 = exp8.evaluate();
       QCOMPARE( v8.toFloat() == 0.13387664401253274, true );
-      QgsExpression exp9( QStringLiteral( "randf(seed:=1)" ) );
-      QVariant v9 = exp9.evaluate();
-      QCOMPARE( v9.toFloat() == 0.13387664401253274, true );
 
       // Two calls with a different seed return a different number
-      QgsExpression exp10( QStringLiteral( "randf(seed:=1)" ) );
+      QgsExpression exp9( QStringLiteral( "randf(seed:=1)" ) );
+      QVariant v9 = exp9.evaluate();
+      QgsExpression exp10( QStringLiteral( "randf(seed:=2)" ) );
       QVariant v10 = exp10.evaluate();
-      QgsExpression exp11( QStringLiteral( "randf(seed:=2)" ) );
-      QVariant v11 = exp11.evaluate();
-      QCOMPARE( v10.toFloat() != v11.toFloat(), true );
+      QCOMPARE( v9.toFloat() != v10.toFloat(), true );
     }
 
     void referenced_columns()
