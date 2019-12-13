@@ -326,6 +326,7 @@ QgsWMTSLayerItem::QgsWMTSLayerItem( QgsDataItem *parent,
   , mTitle( title )
 {
   mUri = createUri();
+  mIconName = QStringLiteral( "mIconWms.svg" );
   setState( Populated );
 }
 
