@@ -71,13 +71,15 @@ class QgsHanaFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsHa
     bool nextFeatureFilterExpression( QgsFeature &feature ) override;
 
   private:
+    bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
+
     QString buildSQLStatement( const QgsFeatureRequest &request );
     QString getBBOXFilter( const QgsRectangle &bbox, const QVersionNumber &dbVersion ) const;
 
   private:
     QgsHanaConnectionRef mConnRef;
     QgsHanaResultSetRef mResultSet;
-    QString mStatement;
+    QString mSqlStatement;
     QgsCoordinateTransform mTransform;
     QgsRectangle mFilterRect;
     QgsRectangle mSrsExtent;
@@ -86,6 +88,7 @@ class QgsHanaFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsHa
     bool mHasAttributes;
     bool mHasGeometryColumn;
     bool mExpressionCompiled = false;
+    bool mOrderByCompiled = false;
 };
 
 #endif // QGSHANAFEATUREITERATOR_H
