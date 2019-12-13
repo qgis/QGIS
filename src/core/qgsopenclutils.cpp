@@ -675,7 +675,6 @@ cl::Program QgsOpenClUtils::buildProgram( const QString &source, QgsOpenClUtils:
     QString err = QObject::tr( "Error building OpenCL program: %1" )
                   .arg( build_log );
     QgsMessageLog::logMessage( err, LOGMESSAGE_TAG, Qgis::Critical );
-    qDebug() << source;
     if ( exceptionBehavior == Throw )
       throw e;
   }
