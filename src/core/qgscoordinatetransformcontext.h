@@ -140,6 +140,11 @@ class CORE_EXPORT QgsCoordinateTransformContext
      * string. If \a coordinateOperationProjString is empty, then the default Proj operation
      * will be used when transforming between the coordinate reference systems.
      *
+     * \warning coordinateOperationProjString MUST be a proj string which has been normalized for
+     * visualization, and must be constructed so that coordinates are always input and output
+     * with x/y coordinate ordering. (Proj strings output by utilities such as projinfo will NOT
+     * automatically normalize the axis order!).
+     *
      * Returns TRUE if the new coordinate operation was added successfully.
      *
      * \see coordinateOperations()
