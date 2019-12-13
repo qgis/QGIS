@@ -1750,15 +1750,24 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
     tr( "Title" ) %
     QStringLiteral( "</td>"
                     "<td>" ) %
-    layer.title %
-    QStringLiteral( "</td></tr>"
+    layer.title;
 
-                    // Layer Metadata URL
-                    "<tr><td>" ) %
-    tr( "Metadata URL" ) %
-    QStringLiteral( "</td>"
-                    "<td>" ) %
-    layer.metadataUrl.onlineResource.xlinkHref;
+    // Metadata URLs
+    if ( !layer.metadataUrl.isEmpty() )
+    {
+      metadata += QStringLiteral("</td></tr>" );
+      metadata += QStringLiteral( "<tr><th>" ) %
+                  tr( "MetadataURLs" ) %
+                  QStringLiteral( "</th>"
+                                  "<td><table class=\"tabular-view\">"
+                                  "<tr><th>Format</th><th>URL</th></tr>" );
+      for ( int k = 0; k < layer.metadataUrl.size(); k++ )
+      {
+        const QgsWmsMetadataUrlProperty &l = layer.metadataUrl[k];
+        metadata += QStringLiteral( "<tr><td>" ) % l.format % QStringLiteral( "</td><td>" ) % l.onlineResource.xlinkHref % QStringLiteral( "</td></tr>" );
+      }
+      metadata += QStringLiteral( "</table>" );
+    }
 
   QStringLiteral( "</td></tr>"
 
