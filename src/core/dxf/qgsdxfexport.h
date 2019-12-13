@@ -148,7 +148,7 @@ class CORE_EXPORT QgsDxfExport
      *
      * \since QGIS 3.12
      */
-    enum class DxfPolylineFlag : int
+    enum DxfPolylineFlag
     {
       Closed = 1, //!< This is a closed polyline (or a polygon mesh closed in the M direction)
       Curve = 2, //!< Curve-fit vertices have been added
@@ -626,5 +626,6 @@ class CORE_EXPORT QgsDxfExport
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDxfExport::Flags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDxfExport::DxfPolylineFlags )
 
 #endif // QGSDXFEXPORT_H
