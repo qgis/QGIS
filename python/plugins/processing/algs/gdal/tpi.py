@@ -68,7 +68,7 @@ class tpi(GdalAlgorithm):
                 'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
         self.addParameter(options_param)
 
-        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Terrain Ruggedness Index')))
+        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Topographic Position')))
 
     def name(self):
         return 'tpitopographicpositionindex'
