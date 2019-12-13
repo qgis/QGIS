@@ -89,6 +89,7 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void geoCcsDescription();
     void geographicCrsAuthId();
     void noProj();
+    void customProjString();
 
   private:
     void debugPrint( QgsCoordinateReferenceSystem &crs );
@@ -1121,7 +1122,7 @@ void TestQgsCoordinateReferenceSystem::noProj()
 {
 #if PROJ_VERSION_MAJOR>=6
   // test a crs which cannot be represented by a proj string
-  QgsCoordinateReferenceSystem crs( "EPSG:2218" );
+  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:2218" ) );
   QCOMPARE( crs.authid(), QStringLiteral( "EPSG:2218" ) );
   QVERIFY( crs.isValid() );
   QCOMPARE( crs.toWkt(), QStringLiteral( "PROJCS[\"Scoresbysund 1952 / Greenland zone 5 east\",GEOGCS[\"Scoresbysund 1952\",DATUM[\"Scoresbysund_1952\",SPHEROID[\"International 1924\",6378388,297,AUTHORITY[\"EPSG\",\"7022\"]],AUTHORITY[\"EPSG\",\"6195\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4195\"]],PROJECTION[\"Lambert_Conic_Conformal_(West_Orientated)\"],PARAMETER[\"Latitude of natural origin\",70.5],PARAMETER[\"Longitude of natural origin\",-24],PARAMETER[\"Scale factor at natural origin\",1],PARAMETER[\"False easting\",0],PARAMETER[\"False northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AUTHORITY[\"EPSG\",\"2218\"]]" ) );
@@ -1136,5 +1137,16 @@ void TestQgsCoordinateReferenceSystem::noProj()
 #endif
 
 }
+
+void TestQgsCoordinateReferenceSystem::customProjString()
+{
+#if PROJ_VERSION_MAJOR>=6
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromProj4( QStringLiteral( "+proj=sterea +lat_0=47.4860018439082 +lon_0=19.0491441390302 +k=1 +x_0=500000 +y_0=500000 +ellps=bessel +towgs84=595.75,121.09,515.50,8.2270,-1.5193,5.5971,-2.6729 +units=m +vunits=m +no_defs" ) );
+  QVERIFY( crs.isValid() );
+  QCOMPARE( crs.toProj4(), QStringLiteral( "+proj=sterea +lat_0=47.4860018439082 +lon_0=19.0491441390302 +k=1 +x_0=500000 +y_0=500000 +ellps=bessel +towgs84=595.75,121.09,515.50,8.2270,-1.5193,5.5971,-2.6729 +units=m +vunits=m +no_defs" ) );
+  QCOMPARE( crs.toWkt(), QStringLiteral( R"""(COMPD_CS["unknown",PROJCS["unknown",GEOGCS["unknown",DATUM["Unknown_based_on_Bessel_1841_ellipsoid",SPHEROID["Bessel 1841",6377397.155,299.1528128],TOWGS84[595.75,121.09,515.5,8.227,-1.5193,5.5971,-2.6729]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]]],PROJECTION["Oblique_Stereographic"],PARAMETER["latitude_of_origin",47.4860018439082],PARAMETER["central_meridian",19.0491441390302],PARAMETER["scale_factor",1],PARAMETER["false_easting",500000],PARAMETER["false_northing",500000],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]],VERT_CS["unknown",VERT_DATUM["unknown",2005],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Gravity-related height",UP]]])""" ) );
+#endif
+}
+
 QGSTEST_MAIN( TestQgsCoordinateReferenceSystem )
 #include "testqgscoordinatereferencesystem.moc"
