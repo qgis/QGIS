@@ -1750,7 +1750,16 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
     tr( "Title" ) %
     QStringLiteral( "</td>"
                     "<td>" ) %
-    layer.title;
+    layer.title %
+    QStringLiteral( "</td></tr>"
+
+                    // Layer Metadata URL
+                    "<tr><td>" ) %
+    tr( "Metadata URL" ) %
+    QStringLiteral( "</td>"
+                    "<td>" ) %
+    layer.metadataUrl.onlineResource.xlinkHref;
+
   QStringLiteral( "</td></tr>"
 
                   // Layer Abstract
