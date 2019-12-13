@@ -3077,6 +3077,15 @@ static QVariant fcnIsEmpty( const QVariantList &values, const QgsExpressionConte
   return QVariant::fromValue( fGeom.isEmpty() );
 }
 
+static QVariant fcnIsEmptyOrNull( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  if ( values.at( 0 ).isNull() )
+    return QVariant::fromValue( true );
+
+  QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  return QVariant::fromValue( fGeom.isNull() || fGeom.isEmpty() );
+}
+
 static QVariant fcnRelate( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   if ( values.length() < 2 || values.length() > 3 )
@@ -5606,6 +5615,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "bounds_height" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geom" ) ), fcnBoundsHeight, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "is_closed" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geom" ) ), fcnIsClosed, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "is_empty" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geom" ) ), fcnIsEmpty, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "is_empty_or_null" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geom" ) ), fcnIsEmptyOrNull, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList(), true )
         << new QgsStaticExpressionFunction( QStringLiteral( "convex_hull" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnConvexHull, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "convexHull" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "oriented_bbox" ), QgsExpressionFunction::ParameterList()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
