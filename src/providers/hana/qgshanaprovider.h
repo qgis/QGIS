@@ -118,6 +118,7 @@ class QgsHanaProvider : public QgsVectorDataProvider
     int readSrid();
     void readSrsInformation();
     void readAttributeFields();
+    void readGeometryType();
     long getFeatureCount( const QString &whereClause ) const;
 
   private:
@@ -140,7 +141,8 @@ class QgsHanaProvider : public QgsVectorDataProvider
     // Name of the geometry column
     QString mGeometryColumn;
     // Spatial type
-    QgsWkbTypes::Type mGeometryType = QgsWkbTypes::Unknown;
+    QgsWkbTypes::Type mRequestedGeometryType = QgsWkbTypes::Unknown;
+    QgsWkbTypes::Type mDetectedGeometryType = QgsWkbTypes::Unknown;
     // Layer extent
     mutable QgsRectangle mLayerExtent;
     // Full sql query

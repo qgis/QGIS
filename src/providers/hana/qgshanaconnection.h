@@ -44,6 +44,7 @@ class QgsHanaConnection : public QObject
       bool userTablesOnly = true );
     void readLayerInfo( QgsHanaLayerProperty &layerProperty );
     QVector<QgsHanaSchemaProperty> getSchemas( const QString &ownerName );
+    QgsWkbTypes::Type getLayerGeometryType( const QgsHanaLayerProperty &layerProperty );
 
     odbc::ConnectionRef &getNativeRef() { return mConnection; }
 
@@ -60,7 +61,6 @@ class QgsHanaConnection : public QObject
   private:
     explicit QgsHanaConnection( const QgsDataSourceUri &uri );
 
-    QgsWkbTypes::Type getLayerGeometryType( const QgsHanaLayerProperty &layerProperty );
     int getLayerSRID( const QgsHanaLayerProperty &layerProperty );
     QStringList getLayerPrimaryeKeys( const QgsHanaLayerProperty &layerProperty );
 

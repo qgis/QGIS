@@ -156,21 +156,21 @@ const QVariant &value )
         break;
       case SQLDataTypes::TinyInt:
         if ( fieldInfo.isSigned )
-          stmt->setByte( paramIndex, isNull ? Byte() : Byte( value.toInt() ) );
+          stmt->setByte( paramIndex, isNull ? Byte() : Byte( static_cast<int8_t>( value.toInt() ) ) );
         else
-          stmt->setUByte( paramIndex, isNull ? UByte() : UByte( value.toInt() ) );
+          stmt->setUByte( paramIndex, isNull ? UByte() : UByte( static_cast<uint8_t>( value.toUInt() )) );
         break;
       case SQLDataTypes::SmallInt:
         if ( fieldInfo.isSigned )
-          stmt->setShort( paramIndex, isNull ? Short() : Short( value.toInt() ) );
+          stmt->setShort( paramIndex, isNull ? Short() : Short( static_cast<int16_t>( value.toInt() ) ) );
         else
-          stmt->setUShort( paramIndex, isNull ? UShort() : UShort( value.toInt() ) );
+          stmt->setUShort( paramIndex, isNull ? UShort() : UShort( static_cast<uint16_t>( value.toUInt() )) );
         break;
       case SQLDataTypes::Integer:
         if ( fieldInfo.isSigned )
           stmt->setInt( paramIndex, isNull ? Int() : Int( value.toInt() ) );
         else
-          stmt->setUInt( paramIndex, isNull ? UInt() : UInt( value.toInt() ) );
+          stmt->setUInt( paramIndex, isNull ? UInt() : UInt( value.toUInt() ) );
         break;
       case SQLDataTypes::BigInt:
         if ( fieldInfo.isSigned )
@@ -262,7 +262,7 @@ QgsHanaProvider::QgsHanaProvider(
   mFidColumn = mUri.keyColumn();
   mGeometryColumn = mUri.geometryColumn();
   mQueryWhereClause = mUri.sql();
-  mGeometryType = mUri.wkbType();
+  mRequestedGeometryType = mUri.wkbType();
   mSrid = ( !mUri.srid().isEmpty() ) ? mUri.srid().toInt() : -1;
   mSelectAtIdDisabled = mUri.selectAtIdDisabled();
   mHasSrsPlanarEquivalent = false;
@@ -297,6 +297,7 @@ QgsHanaProvider::QgsHanaProvider(
     mSrid = readSrid();
 
   mDatabaseVersion = QgsHanaUtils::toHANAVersion( connRef->getDatabaseVersion() );
+  readGeometryType();
   readAttributeFields();
   readSrsInformation();
 
@@ -331,7 +332,6 @@ QgsHanaProvider::QgsHanaProvider(
   QgsDebugMsg( QStringLiteral( "Table name is: %1" ).arg( mTableName ) );
   QgsDebugMsg( QStringLiteral( "Geometry column is: %1" ).arg( mGeometryColumn ) );
   QgsDebugMsg( QStringLiteral( "Query is: %1" ).arg( mQuery ) );
-  QgsDebugMsg( QStringLiteral( "Where clause is: %1" ).arg( mQuery ) );
 }
 
 QgsHanaProvider::~QgsHanaProvider()
@@ -363,7 +363,7 @@ QgsRectangle QgsHanaProvider::extent() const
 
 QgsWkbTypes::Type QgsHanaProvider::wkbType() const
 {
-  return mGeometryType;
+  return mRequestedGeometryType != QgsWkbTypes::Unknown ? mRequestedGeometryType : mDetectedGeometryType;
 }
 
 long QgsHanaProvider::featureCount() const
@@ -493,7 +493,7 @@ QgsFeatureIterator QgsHanaProvider::getFeatures( const QgsFeatureRequest &reques
   return QgsFeatureIterator( new QgsHanaFeatureIterator( new QgsHanaFeatureSource( this ), true, request ) );
 }
 
-bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags )
+bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 {
   if ( flist.isEmpty() )
     return true;
@@ -517,17 +517,16 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags )
     first = false;
   }
 
+  QList<int> fieldIds;
   QgsAttributes attrs = flist[0].attributes();
 
-  for ( int i = 0; i < attrs.count(); ++i )
+  for ( int idx = 0; idx < attrs.count(); ++idx )
   {
-    if ( i >= mAttributeFields.count() )
+    if ( idx >= mAttributeFields.count() )
       continue;
 
-    const QgsField &field = mAttributeFields.at( i );
-    const FieldInfo &fieldInfo = mFieldInfos.at( i );
-
-    if ( field.name().isEmpty() || field.name() == mGeometryColumn || fieldInfo.isAutoIncrement )
+    const QgsField &field = mAttributeFields.at( idx );
+    if ( field.name().isEmpty() || field.name() == mGeometryColumn )
       continue;
 
     if ( !first )
@@ -539,6 +538,8 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags )
     columnNames += QgsHanaUtils::quotedIdentifier( field.name() );
     values += QStringLiteral( "?" );
     first = false;
+
+    fieldIds.append( idx );
   }
 
   QString sql = QStringLiteral( "INSERT INTO %1.%2(%3) VALUES (%4)" ).arg(
@@ -546,54 +547,92 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags )
                   columnNames, values );
 
   ConnectionRef &conn = connRef->getNativeRef();
+  size_t batchSize = 0;
 
   try
   {
-    PreparedStatementRef stmt = conn->prepareStatement( sql.toStdString().c_str() );
-    size_t batchSize = 0;
+    PreparedStatementRef stmtInsert = conn->prepareStatement( sql.toStdString().c_str() );
+    PreparedStatementRef stmtIdentityValue;
+    if ( !( flags & QgsFeatureSink::FastInsert ) )
+    {
+        QString q = QStringLiteral("SELECT CURRENT_IDENTITY_VALUE() \"current identity value\" FROM %1.%2").arg(QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ));
+        stmtIdentityValue = conn->prepareStatement( q.toStdString().c_str() );
+    }
 
-    for ( const auto &feature : flist )
+    for ( auto &feature : flist )
     {
       unsigned short paramIndex = 1;
 
       if ( !mGeometryColumn.isEmpty() )
       {
-        QByteArray wkb = feature.geometry().asWkb();
-
-        if ( wkb.size() == 0 )
-          stmt->setBinary( paramIndex, Binary() );
+        if ( feature.hasGeometry() )
+        {
+            const QgsGeometry& geom = feature.geometry();
+            if ( geom.wkbType() != wkbType() )
+            {
+               pushError( tr( "Could not add feature with geometry type %1 to layer of type %2" ).arg(
+                                 QgsWkbTypes::displayString( geom.wkbType() ), QgsWkbTypes::displayString( wkbType() ) ) );
+               conn->rollback();
+               return false;
+            }
+            else
+            {
+               QByteArray wkb = geom.asWkb();
+               stmtInsert->setBinary( paramIndex, makeNullable<vector<char>>( wkb.begin(), wkb.end() ));
+                          QgsDebugMsg( "NOT NULL GEOMETRY" );
+            }
+        }
         else
-          stmt->setBinary( paramIndex, makeNullable<vector<char>>( wkb.begin(), wkb.end() ) );
+        {
+            stmtInsert->setBinary( paramIndex, Binary() );
+        }
+
         ++paramIndex;
       }
 
       QgsAttributes attrs = feature.attributes();
-      for ( int i = 0; i < attrs.count(); ++i )
+      for ( int i = 0; i < fieldIds.size(); i++ )
       {
-        if ( i >= mAttributeFields.count() )
-          break;
-
-        const QgsField &field = mAttributeFields.at( i );
-        const FieldInfo &fieldInfo = mFieldInfos.at( i );
-        if ( field.name().isEmpty() || field.name() == mGeometryColumn || fieldInfo.isAutoIncrement )
-          continue;
-
-        setStatementValue( stmt, paramIndex, field, fieldInfo, attrs.at( i ) );
+        int idx = fieldIds[i];
+        const QgsField &field = mAttributeFields.at( idx );
+        const FieldInfo &fieldInfo = mFieldInfos.at( idx );
+        QVariant attrValue = idx < attrs.length() ? attrs.at( idx ) : QVariant( QVariant::Int );
+        setStatementValue( stmtInsert, paramIndex, field, fieldInfo, attrValue );
         ++paramIndex;
       }
 
-      stmt->addBatch();
-      ++batchSize;
-
-      if ( batchSize >= MAX_BATCH_SIZE )
+      if ( ( flags & QgsFeatureSink::FastInsert ) )
       {
-        stmt->executeBatch();
-        batchSize = 0;
+          stmtInsert->addBatch();
+          ++batchSize;
+
+          if ( batchSize >= MAX_BATCH_SIZE )
+          {
+            stmtInsert->executeBatch();
+            batchSize = 0;
+          }
+      }
+      else
+      {
+        stmtInsert->executeUpdate();
+        stmtInsert->clearParameters();
+
+        ResultSetRef rsIdentity = stmtIdentityValue->executeQuery();
+        if (rsIdentity->next())
+        {
+            odbc::Long id = rsIdentity->getLong(1);
+            if (!id.isNull())
+                feature.setId(static_cast<QgsFeatureId>(*id));
+        }
+        rsIdentity->close();
       }
     }
 
-    if ( batchSize > 0 )
-      stmt->executeBatch();
+    if ( ( flags & QgsFeatureSink::FastInsert ) )
+    {
+        if ( batchSize > 0 )
+          stmtInsert->executeBatch();
+    }
 
     conn->commit();
   }
@@ -1301,6 +1340,21 @@ void QgsHanaProvider::readAttributeFields()
     }
   }
   rsAttributes->close();
+}
+
+void QgsHanaProvider::readGeometryType()
+{
+    if ( mGeometryColumn.isNull() || mGeometryColumn.isEmpty() )
+    {
+      mDetectedGeometryType = QgsWkbTypes::NoGeometry;
+    }
+
+    QgsHanaLayerProperty layerProperty;
+    layerProperty.tableName = mTableName;
+    layerProperty.schemaName = mSchemaName;
+    layerProperty.geometryColName = mGeometryColumn;
+    QgsHanaConnectionRef connRef( mUri );
+    mDetectedGeometryType = connRef->getLayerGeometryType(layerProperty);
 }
 
 long QgsHanaProvider::getFeatureCount( const QString &whereClause ) const
