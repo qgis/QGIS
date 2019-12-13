@@ -395,7 +395,7 @@ static QVariant fcnRndF( const QVariantList &values, const QgsExpressionContext 
     generator.seed( seed );
   }
 
-  // Return a random integer in the range [min, max] (inclusive)
+  // Return a random double in the range [min, max] (inclusive)
   double f = static_cast< double >( generator() ) / generator.max();
   return QVariant( min + f * ( max - min ) );
 }
