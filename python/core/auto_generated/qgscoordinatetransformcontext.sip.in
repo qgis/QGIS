@@ -221,7 +221,22 @@ be used.
    an empty string, and the deprecated calculateDatumTransforms() method should be used instead.
 
 
+.. warning::
+
+   Always check the result of mustReverseCoordinateOperation() in order to determine if the
+   proj coordinate operation string returned by this method corresponds to the reverse operation, and
+   must be manually flipped when calculating coordinate transforms.
+
+
 .. versionadded:: 3.8
+%End
+
+    bool mustReverseCoordinateOperation( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const;
+%Docstring
+Returns ``True`` if the coordinate operation returned by calculateCoordinateOperation() for the ``source`` to ``destination`` pair
+must be inverted.
+
+.. versionadded:: 3.10.2
 %End
 
 
