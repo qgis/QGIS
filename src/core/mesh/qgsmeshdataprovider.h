@@ -227,6 +227,7 @@ class CORE_EXPORT QgsMeshDataBlock
 
     /**
      * Returns buffer to the array with values
+     * For vector it is pairs (x1, y1, x2, y2, ... )
      *
      * \since QGIS 3.12
      */
@@ -291,10 +292,10 @@ class CORE_EXPORT QgsMesh3dDataBlock
     //! Number of 2d faces for which the volume data is stored in the block
     int count() const;
 
-    //! Index of the first volume stored in the buffer
+    //! Index of the first volume stored in the buffer (absolute)
     int firstVolumeIndex() const;
 
-    //! Index of the last volume stored in the buffer
+    //! Index of the last volume stored in the buffer (absolute)
     int lastVolumeIndex() const;
 
     //! Returns number of volumes stored in the buffer
@@ -336,6 +337,14 @@ class CORE_EXPORT QgsMesh3dDataBlock
      * For vector datasets the number of values is doubled (x1, y1, x2, y2, ... )
      */
     QVector<double> values() const;
+
+    /**
+     * Returns the value at volume centers
+     *
+     * \param volumeIndex volume index relative to firstVolumeIndex()
+     * \returns value (scalar or vector)
+     */
+    QgsMeshDatasetValue value( int volumeIndex ) const;
 
     /**
      * Sets the values at volume centers

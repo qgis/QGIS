@@ -436,6 +436,20 @@ QVector<double> QgsMesh3dDataBlock::values() const
   return mDoubleBuffer;
 }
 
+QgsMeshDatasetValue QgsMesh3dDataBlock::value( int volumeIndex ) const
+{
+  if ( !isValid() )
+    return QgsMeshDatasetValue();
+
+  if ( !mIsVector )
+    return QgsMeshDatasetValue( mDoubleBuffer[volumeIndex] );
+
+  return QgsMeshDatasetValue(
+           mDoubleBuffer[2 * volumeIndex],
+           mDoubleBuffer[2 * volumeIndex + 1]
+         );
+}
+
 void QgsMesh3dDataBlock::setValues( const QVector<double> &doubleBuffer )
 {
   Q_ASSERT( doubleBuffer.size() == isVector() ? 2 * volumesCount() : volumesCount() );
