@@ -38,6 +38,7 @@ class TestQgsProjectProperties : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void testProjectPropertiesDirty();
+    void testEllipsoidChange();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -80,6 +81,49 @@ void TestQgsProjectProperties::testProjectPropertiesDirty()
   pp->apply();
   delete pp;
   QCOMPARE( QgsProject::instance()->isDirty(), false );
+}
+
+void TestQgsProjectProperties::testEllipsoidChange()
+{
+  QgsProject::instance()->clear();
+  QgsProject::instance()->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "NONE" ) );
+
+  std::unique_ptr< QgsProjectProperties > pp = qgis::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  pp->apply();
+  pp.reset();
+  QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "NONE" ) );
+
+  QgsProject::instance()->setEllipsoid( QStringLiteral( "bessel" ) );
+  pp = qgis::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  pp->apply();
+  pp.reset();
+  QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "bessel" ) );
+
+  QgsProject::instance()->setEllipsoid( QStringLiteral( "IGNF:ELG052" ) );
+  pp = qgis::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  pp->apply();
+  pp.reset();
+  QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "IGNF:ELG052" ) );
+
+  QgsProject::instance()->setEllipsoid( QStringLiteral( "IGNF:ELG037" ) );
+  pp = qgis::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  pp->apply();
+  pp.reset();
+  QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "IGNF:ELG037" ) );
+
+  QgsProject::instance()->setEllipsoid( QStringLiteral( "NONE" ) );
+  pp = qgis::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  pp->apply();
+  pp.reset();
+  QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "NONE" ) );
+
+  QgsProject::instance()->setEllipsoid( QStringLiteral( "PARAMETER:55:66" ) );
+  pp = qgis::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  pp->apply();
+  pp.reset();
+  QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "PARAMETER:55:66" ) );
+
 }
 
 QGSTEST_MAIN( TestQgsProjectProperties )
