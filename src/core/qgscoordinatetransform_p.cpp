@@ -106,6 +106,8 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
   , mSourceDatumTransform( other.mSourceDatumTransform )
   , mDestinationDatumTransform( other.mDestinationDatumTransform )
   , mProjCoordinateOperation( other.mProjCoordinateOperation )
+  , mShouldReverseCoordinateOperation( other.mShouldReverseCoordinateOperation )
+  , mIsReversed( other.mIsReversed )
 {
 #if PROJ_VERSION_MAJOR < 6
   //must reinitialize to setup mSourceProjection and mDestinationProjection
@@ -260,6 +262,7 @@ void QgsCoordinateTransformPrivate::calculateTransforms( const QgsCoordinateTran
   // recalculate datum transforms from context
 #if PROJ_VERSION_MAJOR >= 6
   mProjCoordinateOperation = context.calculateCoordinateOperation( mSourceCRS, mDestCRS );
+  mShouldReverseCoordinateOperation = context.mustReverseCoordinateOperation( mSourceCRS, mDestCRS );
 #else
   Q_NOWARN_DEPRECATED_PUSH
   QgsDatumTransform::TransformPair transforms = context.calculateDatumTransforms( mSourceCRS, mDestCRS );
@@ -331,6 +334,8 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
   QStringList projErrors;
   proj_log_func( context, &projErrors, proj_collecting_logger );
 
+  mIsReversed = false;
+
   QgsProjUtils::proj_pj_unique_ptr transform;
   if ( !mProjCoordinateOperation.isEmpty() )
   {
@@ -354,6 +359,10 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
       }
 
       transform.reset();
+    }
+    else
+    {
+      mIsReversed = mShouldReverseCoordinateOperation;
     }
   }
 
