@@ -2096,10 +2096,10 @@ Acts on all layers.</string>
      <normaloff>:/images/themes/default/mActionAddWfsLayer.svg</normaloff>:/images/themes/default/mActionAddWfsLayer.svg</iconset>
    </property>
    <property name="text">
-    <string>Add WFS Layer…</string>
+    <string>Add WFS / OGC API - Features Layer…</string>
    </property>
    <property name="toolTip">
-    <string>Add WFS Layer</string>
+    <string>Add WFS / OGC API - Features Layer</string>
    </property>
   </action>
   <action name="mActionFeatureAction">

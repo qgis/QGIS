@@ -398,7 +398,7 @@ void QgsWFSSourceSelect::addEntryToServerList()
 {
   auto nc = new QgsWFSNewConnection( this );
   nc->setAttribute( Qt::WA_DeleteOnClose );
-  nc->setWindowTitle( tr( "Create a New WFS Connection" ) );
+  nc->setWindowTitle( tr( "Create a New WFS / OGC API - Features Connection" ) );
 
   // For testability, do not use exec()
   if ( !property( "hideDialogs" ).toBool() )
@@ -411,7 +411,7 @@ void QgsWFSSourceSelect::modifyEntryOfServerList()
 {
   auto nc = new QgsWFSNewConnection( this, cmbConnections->currentText() );
   nc->setAttribute( Qt::WA_DeleteOnClose );
-  nc->setWindowTitle( tr( "Modify WFS Connection" ) );
+  nc->setWindowTitle( tr( "Modify WFS / OGC API - Features Connection" ) );
 
   // For testability, do not use exec()
   if ( !property( "hideDialogs" ).toBool() )

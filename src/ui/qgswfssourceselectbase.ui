@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Add WFS Layer from a Server</string>
+   <string>Add WFS / OGC API - Features Layer from a Server</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="2" column="0">
