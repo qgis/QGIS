@@ -305,10 +305,6 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString &definition )
       if ( match.captured( 1 ).compare( QLatin1String( "proj4" ), Qt::CaseInsensitive ) == 0 )
       {
         result = createFromProj4( match.captured( 2 ) );
-        //TODO: createFromProj4 used to save to the user database any new CRS
-        // this behavior was changed in order to separate creation and saving.
-        // Not sure if it necessary to save it here, should be checked by someone
-        // familiar with the code (should also give a more descriptive name to the generated CRS)
         if ( srsid() == 0 )
         {
           QString myName = QStringLiteral( " * %1 (%2)" )
@@ -1798,7 +1794,7 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
 {
   d.detach();
   bool result = true;
-  QDomNode srsNode  = node.namedItem( QStringLiteral( "spatialrefsys" ) );
+  QDomNode srsNode = node.namedItem( QStringLiteral( "spatialrefsys" ) );
 
   if ( ! srsNode.isNull() )
   {
@@ -1807,14 +1803,14 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
     bool ok = false;
     long srsid = srsNode.namedItem( QStringLiteral( "srsid" ) ).toElement().text().toLong( &ok );
 
-    QDomNode myNode;
+    QDomNode node;
 
     if ( ok && srsid > 0 && srsid < USER_CRS_START_ID )
     {
-      myNode = srsNode.namedItem( QStringLiteral( "authid" ) );
-      if ( !myNode.isNull() )
+      node = srsNode.namedItem( QStringLiteral( "authid" ) );
+      if ( !node.isNull() )
       {
-        operator=( QgsCoordinateReferenceSystem::fromOgcWmsCrs( myNode.toElement().text() ) );
+        createFromOgcWmsCrs( node.toElement().text() );
         if ( isValid() )
         {
           initialized = true;
@@ -1823,10 +1819,10 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
 
       if ( !initialized )
       {
-        myNode = srsNode.namedItem( QStringLiteral( "epsg" ) );
-        if ( !myNode.isNull() )
+        node = srsNode.namedItem( QStringLiteral( "epsg" ) );
+        if ( !node.isNull() )
         {
-          operator=( QgsCoordinateReferenceSystem::fromEpsgId( myNode.toElement().text().toLong() ) );
+          operator=( QgsCoordinateReferenceSystem::fromEpsgId( node.toElement().text().toLong() ) );
           if ( isValid() )
           {
             initialized = true;
@@ -1835,60 +1831,66 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
       }
     }
 
+    // if wkt is present, prefer that since it's lossless (unlike proj4 strings)
     if ( !initialized )
     {
-      myNode = srsNode.namedItem( QStringLiteral( "proj4" ) );
-      const QString proj4 = myNode.toElement().text();
+      const QString wkt = srsNode.namedItem( QStringLiteral( "wkt" ) ).toElement().text();
+      initialized = createFromWkt( wkt );
+    }
 
-      if ( !createFromProj4( proj4 ) )
+    if ( !initialized )
+    {
+      node = srsNode.namedItem( QStringLiteral( "proj4" ) );
+      const QString proj4 = node.toElement().text();
+      initialized = createFromProj4( proj4 );
+    }
+
+    if ( !initialized )
+    {
+      // Setting from elements one by one
+      node = srsNode.namedItem( QStringLiteral( "proj4" ) );
+      const QString proj4 = node.toElement().text();
+      if ( !proj4.trimmed().isEmpty() )
+        setProj4String( node.toElement().text() );
+
+      node = srsNode.namedItem( QStringLiteral( "srsid" ) );
+      setInternalId( node.toElement().text().toLong() );
+
+      node = srsNode.namedItem( QStringLiteral( "srid" ) );
+      setSrid( node.toElement().text().toLong() );
+
+      node = srsNode.namedItem( QStringLiteral( "authid" ) );
+      setAuthId( node.toElement().text() );
+
+      node = srsNode.namedItem( QStringLiteral( "description" ) );
+      setDescription( node.toElement().text() );
+
+      node = srsNode.namedItem( QStringLiteral( "projectionacronym" ) );
+      setProjectionAcronym( node.toElement().text() );
+
+      node = srsNode.namedItem( QStringLiteral( "ellipsoidacronym" ) );
+      setEllipsoidAcronym( node.toElement().text() );
+
+      node = srsNode.namedItem( QStringLiteral( "geographicflag" ) );
+      if ( node.toElement().text().compare( QLatin1String( "true" ) ) )
       {
-        // Setting from elements one by one
-        if ( !proj4.trimmed().isEmpty() )
-          setProj4String( myNode.toElement().text() );
-
-        myNode = srsNode.namedItem( QStringLiteral( "srsid" ) );
-        setInternalId( myNode.toElement().text().toLong() );
-
-        myNode = srsNode.namedItem( QStringLiteral( "srid" ) );
-        setSrid( myNode.toElement().text().toLong() );
-
-        myNode = srsNode.namedItem( QStringLiteral( "authid" ) );
-        setAuthId( myNode.toElement().text() );
-
-        myNode = srsNode.namedItem( QStringLiteral( "description" ) );
-        setDescription( myNode.toElement().text() );
-
-        myNode = srsNode.namedItem( QStringLiteral( "projectionacronym" ) );
-        setProjectionAcronym( myNode.toElement().text() );
-
-        myNode = srsNode.namedItem( QStringLiteral( "ellipsoidacronym" ) );
-        setEllipsoidAcronym( myNode.toElement().text() );
-
-        myNode = srsNode.namedItem( QStringLiteral( "geographicflag" ) );
-        if ( myNode.toElement().text().compare( QLatin1String( "true" ) ) )
-        {
-          setGeographicFlag( true );
-        }
-        else
-        {
-          setGeographicFlag( false );
-        }
-
-        //make sure the map units have been set
-        setMapUnits();
+        setGeographicFlag( true );
       }
-      //TODO: createFromProj4 used to save to the user database any new CRS
-      // this behavior was changed in order to separate creation and saving.
-      // Not sure if it necessary to save it here, should be checked by someone
-      // familiar with the code (should also give a more descriptive name to the generated CRS)
-      if ( isValid() && d->mSrsId == 0 )
+      else
       {
-        QString myName = QStringLiteral( " * %1 (%2)" )
-                         .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
-                               toProj4() );
-        saveAsUserCrs( myName );
+        setGeographicFlag( false );
       }
 
+      //make sure the map units have been set
+      setMapUnits();
+    }
+
+    if ( isValid() && d->mSrsId == 0 )
+    {
+      QString myName = QStringLiteral( " * %1 (%2)" )
+                       .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
+                             toProj4() );
+      saveAsUserCrs( myName );
     }
   }
   else
@@ -1902,54 +1904,55 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
 
 bool QgsCoordinateReferenceSystem::writeXml( QDomNode &node, QDomDocument &doc ) const
 {
+  QDomElement layerNode = node.toElement();
+  QDomElement srsElement = doc.createElement( QStringLiteral( "spatialrefsys" ) );
 
-  QDomElement myLayerNode = node.toElement();
-  QDomElement mySrsElement  = doc.createElement( QStringLiteral( "spatialrefsys" ) );
+  QDomElement wktElement = doc.createElement( QStringLiteral( "wkt" ) );
+  wktElement.appendChild( doc.createTextNode( toWkt() ) );
+  srsElement.appendChild( wktElement );
 
-  QDomElement myProj4Element  = doc.createElement( QStringLiteral( "proj4" ) );
-  myProj4Element.appendChild( doc.createTextNode( toProj4() ) );
-  mySrsElement.appendChild( myProj4Element );
+  QDomElement proj4Element = doc.createElement( QStringLiteral( "proj4" ) );
+  proj4Element.appendChild( doc.createTextNode( toProj4() ) );
+  srsElement.appendChild( proj4Element );
 
-  QDomElement mySrsIdElement  = doc.createElement( QStringLiteral( "srsid" ) );
-  mySrsIdElement.appendChild( doc.createTextNode( QString::number( srsid() ) ) );
-  mySrsElement.appendChild( mySrsIdElement );
+  QDomElement srsIdElement = doc.createElement( QStringLiteral( "srsid" ) );
+  srsIdElement.appendChild( doc.createTextNode( QString::number( srsid() ) ) );
+  srsElement.appendChild( srsIdElement );
 
-  QDomElement mySridElement  = doc.createElement( QStringLiteral( "srid" ) );
-  mySridElement.appendChild( doc.createTextNode( QString::number( postgisSrid() ) ) );
-  mySrsElement.appendChild( mySridElement );
+  QDomElement sridElement = doc.createElement( QStringLiteral( "srid" ) );
+  sridElement.appendChild( doc.createTextNode( QString::number( postgisSrid() ) ) );
+  srsElement.appendChild( sridElement );
 
-  QDomElement myEpsgElement  = doc.createElement( QStringLiteral( "authid" ) );
-  myEpsgElement.appendChild( doc.createTextNode( authid() ) );
-  mySrsElement.appendChild( myEpsgElement );
+  QDomElement authidElement = doc.createElement( QStringLiteral( "authid" ) );
+  authidElement.appendChild( doc.createTextNode( authid() ) );
+  srsElement.appendChild( authidElement );
 
-  QDomElement myDescriptionElement  = doc.createElement( QStringLiteral( "description" ) );
-  myDescriptionElement.appendChild( doc.createTextNode( description() ) );
-  mySrsElement.appendChild( myDescriptionElement );
+  QDomElement descriptionElement = doc.createElement( QStringLiteral( "description" ) );
+  descriptionElement.appendChild( doc.createTextNode( description() ) );
+  srsElement.appendChild( descriptionElement );
 
-  QDomElement myProjectionAcronymElement  = doc.createElement( QStringLiteral( "projectionacronym" ) );
-  myProjectionAcronymElement.appendChild( doc.createTextNode( projectionAcronym() ) );
-  mySrsElement.appendChild( myProjectionAcronymElement );
+  QDomElement projectionAcronymElement = doc.createElement( QStringLiteral( "projectionacronym" ) );
+  projectionAcronymElement.appendChild( doc.createTextNode( projectionAcronym() ) );
+  srsElement.appendChild( projectionAcronymElement );
 
-  QDomElement myEllipsoidAcronymElement  = doc.createElement( QStringLiteral( "ellipsoidacronym" ) );
-  myEllipsoidAcronymElement.appendChild( doc.createTextNode( ellipsoidAcronym() ) );
-  mySrsElement.appendChild( myEllipsoidAcronymElement );
+  QDomElement ellipsoidAcronymElement = doc.createElement( QStringLiteral( "ellipsoidacronym" ) );
+  ellipsoidAcronymElement.appendChild( doc.createTextNode( ellipsoidAcronym() ) );
+  srsElement.appendChild( ellipsoidAcronymElement );
 
-  QDomElement myGeographicFlagElement  = doc.createElement( QStringLiteral( "geographicflag" ) );
-  QString myGeoFlagText = QStringLiteral( "false" );
+  QDomElement geographicFlagElement = doc.createElement( QStringLiteral( "geographicflag" ) );
+  QString geoFlagText = QStringLiteral( "false" );
   if ( isGeographic() )
   {
-    myGeoFlagText = QStringLiteral( "true" );
+    geoFlagText = QStringLiteral( "true" );
   }
 
-  myGeographicFlagElement.appendChild( doc.createTextNode( myGeoFlagText ) );
-  mySrsElement.appendChild( myGeographicFlagElement );
+  geographicFlagElement.appendChild( doc.createTextNode( geoFlagText ) );
+  srsElement.appendChild( geographicFlagElement );
 
-  myLayerNode.appendChild( mySrsElement );
+  layerNode.appendChild( srsElement );
 
   return true;
 }
-
-
 
 //
 // Static helper methods below this point only please!
