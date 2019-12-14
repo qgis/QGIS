@@ -38,6 +38,9 @@ Default constructor of field formatter for a relation reference field.
 
     virtual QVariant createCache( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const;
 
+
+
+
 };
 
 /************************************************************************

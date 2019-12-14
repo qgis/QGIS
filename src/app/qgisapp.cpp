@@ -2001,13 +2001,11 @@ QList<QgsVectorLayerRef> QgisApp::findBrokenWidgetDependencies( QgsVectorLayer *
   // Check for missing layer widget dependencies
   for ( int i = 0; i < vl->fields().count(); i++ )
   {
-    std::unique_ptr<QgsEditorWidgetWrapper> ww;
-    ww.reset( QgsGui::editorWidgetRegistry()->create( vl, i, nullptr, nullptr ) );
-    // ww should never be null in real life, but it is in QgisApp tests because
-    // QgsEditorWidgetRegistry widget factories is empty
-    if ( ww )
+    const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( vl, vl->fields().field( i ).name() );
+    QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+    if ( fieldFormatter )
     {
-      const auto constDependencies { ww->layerDependencies() };
+      const auto constDependencies { fieldFormatter->layerDependencies( setup.config() ) };
       for ( const QgsVectorLayerRef &dependency : constDependencies )
       {
         const QgsVectorLayer *depVl { QgsVectorLayerRef( dependency ).resolveWeakly(

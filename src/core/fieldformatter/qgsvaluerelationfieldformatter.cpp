@@ -168,6 +168,21 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
   return cache;
 }
 
+
+QList<QgsVectorLayerRef> QgsValueRelationFieldFormatter::layerDependencies( const QVariantMap &config ) const
+{
+  QList<QgsVectorLayerRef> result;
+  const QString layerId { config.value( QStringLiteral( "Layer" ) ).toString() };
+  const QString layerName { config.value( QStringLiteral( "LayerName" ) ).toString() };
+  const QString providerName { config.value( QStringLiteral( "LayerProviderName" ) ).toString() };
+  const QString layerSource { config.value( QStringLiteral( "LayerSource" ) ).toString() };
+  if ( ! layerId.isEmpty() && ! layerName.isEmpty() && ! providerName.isEmpty() && ! layerSource.isEmpty() )
+  {
+    result.append( QgsVectorLayerRef( layerId, layerName, layerSource, providerName ) );
+  }
+  return result;
+}
+
 QStringList QgsValueRelationFieldFormatter::valueToStringList( const QVariant &value )
 {
   QStringList checkList;
@@ -291,4 +306,3 @@ QgsVectorLayer *QgsValueRelationFieldFormatter::resolveLayer( const QVariantMap 
                           config.value( QStringLiteral( "LayerProviderName" ) ).toString() };
   return ref.resolveByIdOrNameOnly( project );
 }
-
