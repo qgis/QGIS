@@ -112,7 +112,7 @@ void CostCalculator::addObstacleCostPenalty( LabelPosition *lp, FeaturePart *obs
   lp->setCost( lp->cost() + obstacleCost );
 }
 
-void CostCalculator::setPolygonCandidatesCost( std::size_t nblp, std::vector< std::unique_ptr< LabelPosition > > &lPos, QgsGenericSpatialIndex<FeaturePart> *obstacles, double bbx[4], double bby[4] )
+void CostCalculator::setPolygonCandidatesCost( std::size_t nblp, std::vector< std::unique_ptr< LabelPosition > > &lPos, PalRtree<FeaturePart> *obstacles, double bbx[4], double bby[4] )
 {
   double normalizer;
   // compute raw cost
@@ -157,7 +157,7 @@ void CostCalculator::setPolygonCandidatesCost( std::size_t nblp, std::vector< st
   }
 }
 
-void CostCalculator::setCandidateCostFromPolygon( LabelPosition *lp, QgsGenericSpatialIndex<FeaturePart> *obstacles, double bbx[4], double bby[4] )
+void CostCalculator::setCandidateCostFromPolygon( LabelPosition *lp, PalRtree<FeaturePart> *obstacles, double bbx[4], double bby[4] )
 {
   PolygonCostCalculator *pCost = new PolygonCostCalculator( lp );
 
@@ -190,7 +190,7 @@ void CostCalculator::setCandidateCostFromPolygon( LabelPosition *lp, QgsGenericS
   delete pCost;
 }
 
-std::size_t CostCalculator::finalizeCandidatesCosts( Feats *feat, std::size_t max_p, QgsGenericSpatialIndex<FeaturePart> *obstacles, double bbx[4], double bby[4] )
+std::size_t CostCalculator::finalizeCandidatesCosts( Feats *feat, std::size_t max_p, PalRtree<FeaturePart> *obstacles, double bbx[4], double bby[4] )
 {
   // If candidates list is smaller than expected
   if ( max_p > feat->candidates.size() )

@@ -132,7 +132,7 @@ void Problem::reduce()
   delete[] ok;
 }
 
-void ignoreLabel( const LabelPosition *lp, PriorityQueue &list, QgsGenericSpatialIndex< LabelPosition > &candidatesIndex )
+void ignoreLabel( const LabelPosition *lp, PriorityQueue &list, PalRtree< LabelPosition > &candidatesIndex )
 {
   if ( list.isIn( lp->getId() ) )
   {

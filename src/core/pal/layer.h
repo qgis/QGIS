@@ -47,10 +47,6 @@ class QgsLabelFeature;
 namespace pal
 {
 
-  /// @cond PRIVATE
-  template<class DATATYPE, class ELEMTYPE, int NUMDIMS, class ELEMTYPEREAL, int TMAXNODES, int TMINNODES> class RTree;
-  /// @endcond
-
   class FeaturePart;
 
   class Pal;

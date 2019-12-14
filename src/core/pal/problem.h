@@ -36,7 +36,9 @@
 #include "qgis_core.h"
 #include <list>
 #include <QList>
-#include "qgsgenericspatialindex.h"
+#include "palrtree.h"
+#include <memory>
+#include <vector>
 
 namespace pal
 {
@@ -142,7 +144,7 @@ namespace pal
       /**
        * Returns the index containing all label candidates.
        */
-      QgsGenericSpatialIndex<LabelPosition> &allCandidatesIndex() { return mAllCandidatesIndex; }
+      PalRtree< LabelPosition > &allCandidatesIndex() { return mAllCandidatesIndex; }
 
     private:
 
@@ -183,8 +185,8 @@ namespace pal
 
       std::vector< std::unique_ptr< LabelPosition > > mLabelPositions;
 
-      QgsGenericSpatialIndex<LabelPosition> mAllCandidatesIndex;
-      QgsGenericSpatialIndex<LabelPosition> mActiveCandidatesIndex;
+      PalRtree<LabelPosition> mAllCandidatesIndex;
+      PalRtree<LabelPosition> mActiveCandidatesIndex;
 
       std::vector< std::unique_ptr< LabelPosition > > mPositionsWithNoCandidates;
 

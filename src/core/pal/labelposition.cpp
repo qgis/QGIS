@@ -428,7 +428,7 @@ void LabelPosition::setHasHardObstacleConflict( bool conflicts )
     nextPart->setHasHardObstacleConflict( conflicts );
 }
 
-void LabelPosition::removeFromIndex( QgsGenericSpatialIndex<LabelPosition> &index )
+void LabelPosition::removeFromIndex( PalRtree<LabelPosition> &index )
 {
   double amin[2];
   double amax[2];
@@ -436,7 +436,7 @@ void LabelPosition::removeFromIndex( QgsGenericSpatialIndex<LabelPosition> &inde
   index.remove( this, QgsRectangle( amin[0], amin[1], amax[0], amax[1] ) );
 }
 
-void LabelPosition::insertIntoIndex( QgsGenericSpatialIndex<LabelPosition> &index )
+void LabelPosition::insertIntoIndex( PalRtree<LabelPosition> &index )
 {
   double amin[2];
   double amax[2];

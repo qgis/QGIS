@@ -35,7 +35,7 @@
 
 #include "qgis_core.h"
 #include "pointset.h"
-#include "qgsgenericspatialindex.h"
+#include "palrtree.h"
 #include <fstream>
 
 namespace pal
@@ -288,12 +288,12 @@ namespace pal
       /**
        * Removes the label position from the specified \a index.
        */
-      void removeFromIndex( QgsGenericSpatialIndex<LabelPosition> &index );
+      void removeFromIndex( PalRtree<LabelPosition> &index );
 
       /**
        * Inserts the label position into the specified \a index.
        */
-      void insertIntoIndex( QgsGenericSpatialIndex<LabelPosition> &index );
+      void insertIntoIndex( PalRtree<LabelPosition> &index );
 
       /**
        * The offset of the anchor point in x direction.
