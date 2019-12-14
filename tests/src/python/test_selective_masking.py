@@ -564,7 +564,9 @@ class TestSelectiveMasking(unittest.TestCase):
             render_function()
             self.checker.setControlName(control_name)
             self.checker.setRenderedImage(tmp)
-            self.assertTrue(self.checker.compareImages(control_name))
+            res = self.checker.compareImages(control_name, 90)
+            self.report += self.checker.report()
+            self.assertTrue(res)
 
     def test_mask_with_effect(self):
         p = QgsMarkerSymbol.createSimple({'color': '#fdbf6f', 'size': "7"})
