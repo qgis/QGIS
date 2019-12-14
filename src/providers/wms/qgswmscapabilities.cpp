@@ -783,6 +783,34 @@ void QgsWmsCapabilities::parseLegendUrl( QDomElement const &e, QgsWmsLegendUrlPr
   QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
+void QgsWmsCapabilities::parseMetadataUrl( QDomElement const &e, QgsWmsMetadataUrlProperty &metadataUrlProperty )
+{
+
+  QDomNode n1 = e.firstChild();
+  while ( !n1.isNull() )
+  {
+    QDomElement e1 = n1.toElement(); // try to convert the node to an element.
+    if ( !e1.isNull() )
+    {
+      QString tagName = e1.tagName();
+      if ( tagName.startsWith( QLatin1String( "wms:" ) ) )
+        tagName = tagName.mid( 4 );
+
+      if ( tagName == QLatin1String( "Format" ) )
+      {
+        metadataUrlProperty.format = e1.text();
+      }
+      else if ( tagName == QLatin1String( "OnlineResource" ) )
+      {
+        parseOnlineResource( e1, metadataUrlProperty.onlineResource );
+      }
+    }
+    n1 = n1.nextSibling();
+  }
+
+  QgsDebugMsg( QStringLiteral( "exiting." ) );
+}
+
 void QgsWmsCapabilities::parseLayer( QDomElement const &e, QgsWmsLayerProperty &layerProperty,
                                      QgsWmsLayerProperty *parentProperty )
 {
@@ -972,7 +1000,8 @@ void QgsWmsCapabilities::parseLayer( QDomElement const &e, QgsWmsLayerProperty &
       }
       else if ( tagName == QLatin1String( "MetadataURL" ) )
       {
-        // TODO
+        layerProperty.metadataUrl << QgsWmsMetadataUrlProperty();
+        parseMetadataUrl( e1, layerProperty.metadataUrl.last() );
       }
       else if ( tagName == QLatin1String( "DataURL" ) )
       {

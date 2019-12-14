@@ -692,6 +692,7 @@ class QgsWmsCapabilities
     void parseCapability( QDomElement const &e, QgsWmsCapabilityProperty &capabilityProperty );
     void parseRequest( QDomElement const &e, QgsWmsRequestProperty &requestProperty );
     void parseLegendUrl( QDomElement const &e, QgsWmsLegendUrlProperty &legendUrlProperty );
+    void parseMetadataUrl( QDomElement const &e, QgsWmsMetadataUrlProperty &metadataUrlProperty );
     void parseLayer( QDomElement const &e, QgsWmsLayerProperty &layerProperty, QgsWmsLayerProperty *parentProperty = nullptr );
     void parseStyle( QDomElement const &e, QgsWmsStyleProperty &styleProperty );
 

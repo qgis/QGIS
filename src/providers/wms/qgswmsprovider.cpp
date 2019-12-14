@@ -1751,24 +1751,6 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
     QStringLiteral( "</td>"
                     "<td>" ) %
     layer.title;
-
-    // Metadata URLs
-    if ( !layer.metadataUrl.isEmpty() )
-    {
-      metadata += QStringLiteral("</td></tr>" );
-      metadata += QStringLiteral( "<tr><th>" ) %
-                  tr( "MetadataURLs" ) %
-                  QStringLiteral( "</th>"
-                                  "<td><table class=\"tabular-view\">"
-                                  "<tr><th>Format</th><th>URL</th></tr>" );
-      for ( int k = 0; k < layer.metadataUrl.size(); k++ )
-      {
-        const QgsWmsMetadataUrlProperty &l = layer.metadataUrl[k];
-        metadata += QStringLiteral( "<tr><td>" ) % l.format % QStringLiteral( "</td><td>" ) % l.onlineResource.xlinkHref % QStringLiteral( "</td></tr>" );
-      }
-      metadata += QStringLiteral( "</table>" );
-    }
-
   QStringLiteral( "</td></tr>"
 
                   // Layer Abstract
@@ -1826,6 +1808,23 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
                   "<td>" ) %
   QString::number( layer.fixedHeight ) %
   QStringLiteral( "</td></tr>" );
+
+  // Metadata URLs
+  if ( !layer.metadataUrl.isEmpty() )
+  {
+    metadata += QStringLiteral( "<tr><th>" ) %
+                tr( "MetadataURLs" ) %
+                QStringLiteral( "</th>"
+                                "<td><table class=\"tabular-view\">"
+                                "<tr><th>Format</th><th>URL</th></tr>" );
+    for ( int k = 0; k < layer.metadataUrl.size(); k++ )
+    {
+      const QgsWmsMetadataUrlProperty &l = layer.metadataUrl[k];
+      metadata += QStringLiteral( "<tr><td>" ) % l.format % QStringLiteral( "</td><td>" ) % l.onlineResource.xlinkHref % QStringLiteral( "</td></tr>" );
+    }
+    metadata += QStringLiteral( "</table>"
+                                "</td></tr>"  );
+  }
 
   // Layer Coordinate Reference Systems
   for ( int j = 0; j < std::min( layer.crs.size(), 10 ); j++ )
