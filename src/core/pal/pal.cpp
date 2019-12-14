@@ -40,6 +40,7 @@
 #include "pointset.h"
 #include "internalexception.h"
 #include "util.h"
+#include "palrtree.h"
 #include <cfloat>
 #include <list>
 
@@ -84,7 +85,7 @@ Layer *Pal::addLayer( QgsAbstractLabelProvider *provider, const QString &layerNa
 std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeometry &mapBoundary )
 {
   // to store obstacles
-  std::unique_ptr< QgsGenericSpatialIndex< FeaturePart > > obstacles = qgis::make_unique< QgsGenericSpatialIndex< FeaturePart > >();
+  PalRtree< FeaturePart > obstacles;
   std::vector< FeaturePart * > allObstacleParts;
   std::unique_ptr< Problem > prob = qgis::make_unique< Problem >();
 
@@ -153,7 +154,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       for ( int i = 0; i < featurePart->getNumSelfObstacles(); i++ )
       {
         FeaturePart *selfObstacle =  featurePart->getSelfObstacle( i );
-        obstacles->insert( selfObstacle, selfObstacle->boundingBox() );
+        obstacles.insert( selfObstacle, selfObstacle->boundingBox() );
         allObstacleParts.emplace_back( selfObstacle );
 
         if ( !featurePart->getSelfObstacle( i )->getHoleOf() )
@@ -215,7 +216,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
         break; // do not continue searching
 
       // insert into obstacles
-      obstacles->insert( obstaclePart, obstaclePart->boundingBox() );
+      obstacles.insert( obstaclePart, obstaclePart->boundingBox() );
       allObstacleParts.emplace_back( obstaclePart );
       obstacleCount++;
     }
@@ -301,7 +302,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       }
 
       // sort candidates by cost, skip less interesting ones, calculate polygon costs (if using polygons)
-      max_p = CostCalculator::finalizeCandidatesCosts( feat.get(), max_p, obstacles.get(), bbx, bby );
+      max_p = CostCalculator::finalizeCandidatesCosts( feat.get(), max_p, &obstacles, bbx, bby );
 
       if ( isCanceled() )
         return nullptr;
@@ -410,8 +411,6 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
     prob->mAllNblp = prob->mTotalCandidates;
     prob->mNbOverlap = nbOverlaps;
   }
-
-  obstacles.reset();
 
   return prob;
 }

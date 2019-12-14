@@ -1337,6 +1337,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/external/kdbush/include
   ${CMAKE_SOURCE_DIR}/external/nmea
   ${CMAKE_SOURCE_DIR}/external/poly2tri
+  ${CMAKE_SOURCE_DIR}/external/rtree/include
 )
 
 INCLUDE_DIRECTORIES(SYSTEM
