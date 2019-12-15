@@ -1411,7 +1411,7 @@ bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt, bool allowP
   {
     locker.changeMode( QgsReadWriteLocker::Write );
     if ( !sDisableWktCache )
-      sWktCache->insert( wkt, *this );
+      sWktCache.insert( wkt, *this );
     return d->mIsValid;
   }
 
@@ -1434,7 +1434,7 @@ bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt, bool allowP
       {
         locker.changeMode( QgsReadWriteLocker::Write );
         if ( !sDisableWktCache )
-          sWktCache->insert( wkt, *this );
+          sWktCache.insert( wkt, *this );
         return true;
       }
     }
@@ -1454,7 +1454,7 @@ bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt, bool allowP
     bool result = createFromOgcWmsCrs( authid );
     locker.changeMode( QgsReadWriteLocker::Write );
     if ( !sDisableWktCache )
-      sWktCache->insert( wkt, *this );
+      sWktCache.insert( wkt, *this );
     return result;
   }
 #endif
