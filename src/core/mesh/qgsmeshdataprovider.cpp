@@ -133,6 +133,7 @@ QgsMeshDatasetGroupMetadata::QgsMeshDatasetGroupMetadata( const QString &name,
     double minimum,
     double maximum,
     int maximumVerticalLevels,
+    const QDateTime &referenceTime,
     const QMap<QString, QString> &extraOptions )
   : mName( name )
   , mIsScalar( isScalar )
@@ -141,6 +142,7 @@ QgsMeshDatasetGroupMetadata::QgsMeshDatasetGroupMetadata( const QString &name,
   , mMaximumValue( maximum )
   , mExtraOptions( extraOptions )
   , mMaximumVerticalLevelsCount( maximumVerticalLevels )
+  , mReferenceTime( referenceTime )
 {
 }
 
@@ -182,6 +184,11 @@ double QgsMeshDatasetGroupMetadata::maximum() const
 int QgsMeshDatasetGroupMetadata::maximumVerticalLevelsCount() const
 {
   return mMaximumVerticalLevelsCount;
+}
+
+QDateTime QgsMeshDatasetGroupMetadata::referenceTime() const
+{
+  return mReferenceTime;
 }
 
 int QgsMeshDatasetSourceInterface::datasetCount( QgsMeshDatasetIndex index ) const

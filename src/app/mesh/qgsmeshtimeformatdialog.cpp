@@ -30,13 +30,17 @@ QgsMeshTimeFormatDialog::QgsMeshTimeFormatDialog( QgsMeshLayer *meshLayer, QWidg
 
   loadSettings();
 
+  mReloadReferenceTimeButton->setEnabled( layerHasReferenceTime() );
+
   connect( mUseTimeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsMeshTimeFormatDialog::saveSettings );
-  connect( mReferenceDateTimeEdit, &QDateTimeEdit::timeChanged, this, &QgsMeshTimeFormatDialog::saveSettings );
+  connect( mReferenceDateTimeEdit, &QDateTimeEdit::dateTimeChanged, this, &QgsMeshTimeFormatDialog::saveSettings );
   connect( mAbsoluteTimeFormatComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsMeshTimeFormatDialog::saveSettings );
   connect( mUseTimeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsMeshTimeFormatDialog::saveSettings );
   connect( mRelativeTimeFormatComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsMeshTimeFormatDialog::saveSettings );
   connect( mOffsetHoursSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsMeshTimeFormatDialog::saveSettings );
   connect( mPlaybackIntervalSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsMeshTimeFormatDialog::saveSettings );
+
+  connect( mReloadReferenceTimeButton, &QPushButton::clicked, this, &QgsMeshTimeFormatDialog::reloadLayerReferenceTime );
 
 }
 
@@ -54,7 +58,11 @@ void QgsMeshTimeFormatDialog::loadSettings()
     mUseTimeComboBox->setCurrentIndex( 1 );
   }
 
-  mReferenceDateTimeEdit->setDateTime( settings.absoluteTimeReferenceTime() );
+  if ( settings.absoluteTimeReferenceTime().isValid() ) //set the reference time, if not valid, set the current date + time 00:00:00
+    mReferenceDateTimeEdit->setDateTime( settings.absoluteTimeReferenceTime() );
+  else
+    mReferenceDateTimeEdit->setDateTime( QDateTime( QDate::currentDate(), QTime( 00, 00, 00 ) ) );
+
   mReferenceDateTimeEdit->setDisplayFormat( settings.absoluteTimeFormat() );
 
   int index = mAbsoluteTimeFormatComboBox->findText( settings.absoluteTimeFormat() );
@@ -94,6 +102,24 @@ void QgsMeshTimeFormatDialog::enableGroups( bool useAbsoluteTime )
 {
   mAbsoluteTimeGroupBox->setEnabled( useAbsoluteTime );
   mRelativeTimeGroupBox->setEnabled( ! useAbsoluteTime );
+}
+
+bool QgsMeshTimeFormatDialog::layerHasReferenceTime() const
+{
+  if ( !mLayer )
+    return false;
+  int groupCount = mLayer->dataProvider()->datasetGroupCount();
+  bool found = false;
+  int i = 0;
+  while ( !found && i < groupCount )
+  {
+    QgsMeshDatasetGroupMetadata meta = mLayer->dataProvider()->datasetGroupMetadata( i );
+    found = meta.referenceTime().isValid();
+    ++i;
+  }
+
+  return found;
+
 }
 
 QgsMeshTimeFormatDialog::~QgsMeshTimeFormatDialog() = default;

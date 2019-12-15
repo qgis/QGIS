@@ -120,6 +120,7 @@ void QgsMeshRendererActiveDatasetWidget::setTimeRange()
 
   // update combobox
   mTimeComboBox->blockSignals( true );
+  int currentIndex = mTimeComboBox->currentIndex();
   mTimeComboBox->clear();
   if ( groupWithMaximumDatasets > -1 )
   {
@@ -131,6 +132,7 @@ void QgsMeshRendererActiveDatasetWidget::setTimeRange()
       mTimeComboBox->addItem( mMeshLayer->formatTime( time ), time );
     }
   }
+  mTimeComboBox->setCurrentIndex( currentIndex );
   mTimeComboBox->blockSignals( false );
 
   // enable/disable time controls depending on whether the data set is time varying

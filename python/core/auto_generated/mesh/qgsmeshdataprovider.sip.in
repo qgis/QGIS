@@ -417,6 +417,7 @@ Constructs an empty metadata object
                                  double minimum,
                                  double maximum,
                                  int maximumVerticalLevels,
+                                 const QDateTime &referenceTime,
                                  const QMap<QString, QString> &extraOptions );
 %Docstring
 Constructs a valid metadata object
@@ -427,6 +428,7 @@ Constructs a valid metadata object
 :param minimum: minimum value (magnitude for vectors) present among all group's dataset values
 :param maximum: maximum value (magnitude for vectors) present among all group's dataset values
 :param maximumVerticalLevels: maximum number of vertical levels for 3d stacked meshes, 0 for 2d meshes
+:param referenceTime: reference time of the dataset group
 :param extraOptions: dataset's extra options stored by the provider. Usually contains the name, time value, time units, data file vendor, ...
 %End
 
@@ -470,6 +472,13 @@ Returns maximum scalar value/vector magnitude present for whole dataset group
     int maximumVerticalLevelsCount() const;
 %Docstring
 Returns maximum number of vertical levels for 3d stacked meshes
+
+.. versionadded:: 3.12
+%End
+
+    QDateTime referenceTime() const;
+%Docstring
+Returns the reference time
 
 .. versionadded:: 3.12
 %End

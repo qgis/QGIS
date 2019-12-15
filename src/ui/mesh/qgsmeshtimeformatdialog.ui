@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Time Display Options</string>
   </property>
+  <property name="toolTip">
+   <string>Reload from layer</string>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout_4">
    <item>
     <widget class="QComboBox" name="mUseTimeComboBox">
@@ -57,21 +60,45 @@
        </widget>
       </item>
       <item>
-       <widget class="QDateTimeEdit" name="mReferenceDateTimeEdit">
-        <property name="dateTime">
-         <datetime>
-          <hour>0</hour>
-          <minute>0</minute>
-          <second>0</second>
-          <year>2019</year>
-          <month>1</month>
-          <day>1</day>
-         </datetime>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <property name="topMargin">
+         <number>0</number>
         </property>
-        <property name="calendarPopup">
-         <bool>true</bool>
-        </property>
-       </widget>
+        <item>
+         <widget class="QDateTimeEdit" name="mReferenceDateTimeEdit">
+          <property name="dateTime">
+           <datetime>
+            <hour>0</hour>
+            <minute>0</minute>
+            <second>0</second>
+            <year>2019</year>
+            <month>1</month>
+            <day>1</day>
+           </datetime>
+          </property>
+          <property name="calendarPopup">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="mReloadReferenceTimeButton">
+          <property name="maximumSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="../../../images/images.qrc">
+            <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item>
        <widget class="QLabel" name="label">
@@ -286,7 +313,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../../images/images.qrc"/>
+ </resources>
  <connections/>
  <slots>
   <slot>shaftLengthMethodChanged()</slot>

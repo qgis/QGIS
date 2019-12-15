@@ -493,6 +493,9 @@ QgsMeshDatasetGroupMetadata QgsMdalProvider::datasetGroupMetadata( int groupInde
     metadata[key] = value;
   }
 
+  QString referenceTimeString( MDAL_G_referenceTime( group ) );
+  QDateTime referenceTime = QDateTime::fromString( referenceTimeString, Qt::ISODate );
+
   QgsMeshDatasetGroupMetadata meta(
     name,
     isScalar,
@@ -500,6 +503,7 @@ QgsMeshDatasetGroupMetadata QgsMdalProvider::datasetGroupMetadata( int groupInde
     min,
     max,
     maximumVerticalLevels,
+    referenceTime,
     metadata
   );
 

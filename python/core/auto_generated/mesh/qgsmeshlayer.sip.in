@@ -171,6 +171,20 @@ Sets time format settings
 .. versionadded:: 3.8
 %End
 
+    void setDefaultTimeSettings();
+%Docstring
+Sets time default format settings
+
+.. versionadded:: 3.12
+%End
+
+    void loadReferenceTime();
+%Docstring
+Loads the first valid reference time of the dataset groups.
+
+.. versionadded:: 3.12
+%End
+
     QString formatTime( double hours );
 %Docstring
 Returns (date) time in hours formatted to human readable form
