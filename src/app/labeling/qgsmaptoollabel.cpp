@@ -132,6 +132,14 @@ void QgsMapToolLabel::createRubberBands()
       QgsGeometry geom = f.geometry();
       if ( !geom.isNull() )
       {
+        if ( geom.type() == QgsWkbTypes::PolygonGeometry )
+        {
+          // for polygons, we don't want to fill the whole polygon itself with the rubber band
+          // as that obscures too much of the map and prevents users from getting a good view of
+          // the underlying map
+          // instead, just use the boundary of the polygon for the rubber band
+          geom = QgsGeometry( geom.constGet()->boundary() );
+        }
         QgsSettings settings;
         int r = settings.value( QStringLiteral( "qgis/digitizing/line_color_red" ), 255 ).toInt();
         int g = settings.value( QStringLiteral( "qgis/digitizing/line_color_green" ), 0 ).toInt();
