@@ -105,6 +105,20 @@ QString getFullProjString( PJ *obj )
 
   return QString( proj_as_proj_string( QgsProjContext::get(), obj, PJ_PROJ_4, nullptr ) );
 }
+
+QString getFullWktString( PJ *obj, PJ_WKT_TYPE type, const char *const options[] )
+{
+  QgsProjUtils::proj_pj_unique_ptr boundCrs( proj_crs_create_bound_crs_to_WGS84( QgsProjContext::get(), obj, nullptr ) );
+  if ( boundCrs )
+  {
+    if ( const char *wkt =  proj_as_wkt( QgsProjContext::get(), boundCrs.get(), type, options ) )
+    {
+      return QString( wkt );
+    }
+  }
+
+  return QString( proj_as_wkt( QgsProjContext::get(), obj, type, options ) );
+}
 #endif
 //--------------------------
 
@@ -1774,7 +1788,7 @@ QString QgsCoordinateReferenceSystem::toWkt( WktVariant variant, bool multiline,
       const QByteArray multiLineOption = QStringLiteral( "MULTILINE=%1" ).arg( multiline ? QStringLiteral( "YES" ) : QStringLiteral( "NO" ) ).toLocal8Bit();
       const QByteArray indentatationWidthOption = QStringLiteral( "INDENTATION_WIDTH=%1" ).arg( multiline ? QString::number( indentationWidth ) : QStringLiteral( "0" ) ).toLocal8Bit();
       const char *const options[] = {multiLineOption.constData(), indentatationWidthOption.constData(), nullptr};
-      d->mWkt = QString( proj_as_wkt( QgsProjContext::get(), d->mPj.get(), type, options ) );
+      d->mWkt = getFullWktString( d->mPj.get(), type, options );
     }
 #else
     Q_UNUSED( variant )
