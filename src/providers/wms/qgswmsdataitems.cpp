@@ -115,7 +115,17 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
     for ( const QgsWmtsTileLayer &l : constTileLayers )
     {
       QString title = l.title.isEmpty() ? l.identifier : l.title;
-      QgsDataItem *layerItem = l.styles.size() == 1 ? this : new QgsDataCollectionItem( this, title, mPath + '/' + l.identifier );
+      QgsDataItem *layerItem;
+
+      if ( l.styles.size() == 1 )
+      {
+        layerItem = this;
+      }
+      else
+      {
+        layerItem = new QgsWMTSRootItem( this, title, mPath + '/' + l.identifier );
+      }
+
       if ( layerItem != this )
       {
         layerItem->setCapabilities( layerItem->capabilities2() & ~QgsDataItem::Fertile );
@@ -139,7 +149,18 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
         }
         styleIdentifiers.push_back( stylePathIdentifier );
 
-        QgsDataItem *styleItem = l.setLinks.size() == 1 ? layerItem : new QgsDataCollectionItem( layerItem, styleName, layerItem->path() + '/' + stylePathIdentifier );
+        QgsDataItem *styleItem;
+
+        // Using if condition, ternary operator leads to type casting issue
+        if ( l.setLinks.size() == 1 )
+        {
+          styleItem = layerItem;
+        }
+        else
+        {
+          styleItem = new QgsWMTSRootItem( layerItem, styleName, layerItem->path() + '/' + stylePathIdentifier );
+        }
+
         if ( styleItem != layerItem )
         {
           styleItem->setCapabilities( styleItem->capabilities2() & ~QgsDataItem::Fertile );
@@ -171,7 +192,18 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
           linkIdentifiers.push_back( linkPathIdentifier );
 
 
-          QgsDataItem *linkItem = l.formats.size() == 1 ? styleItem : new QgsDataCollectionItem( styleItem, linkName, styleItem->path() + '/' + linkPathIdentifier );
+          QgsDataItem *linkItem;
+
+          // Using if condition, ternary operator leads to type casting issue
+          if ( l.formats.size() == 1 )
+          {
+            linkItem = styleItem;
+          }
+          else
+          {
+            linkItem = new QgsWMTSRootItem( styleItem, linkName, styleItem->path() + '/' + linkPathIdentifier );
+          }
+
           if ( linkItem != styleItem )
           {
             linkItem->setCapabilities( linkItem->capabilities2() & ~QgsDataItem::Fertile );
@@ -326,7 +358,6 @@ QgsWMTSLayerItem::QgsWMTSLayerItem( QgsDataItem *parent,
   , mTitle( title )
 {
   mUri = createUri();
-  mIconName = QStringLiteral( "mIconWms.svg" );
   setState( Populated );
 }
 
@@ -367,6 +398,16 @@ QVector<QgsDataItem *> QgsWMSRootItem::createChildren()
   return connections;
 }
 
+// ---------------------------------------------------------------------------
+
+QgsWMTSRootItem::QgsWMTSRootItem( QgsDataItem *parent, QString name, QString path )
+  : QgsDataCollectionItem( parent, name, path )
+{
+  mCapabilities |= Fast;
+  mIconName = QStringLiteral( "mIconDbSchema.svg" );
+  populate();
+
+}
 // ---------------------------------------------------------------------------
 
 
@@ -423,8 +464,6 @@ QVector<QgsDataItem *> QgsXyzTileRootItem::createChildren()
 QgsXyzLayerItem::QgsXyzLayerItem( QgsDataItem *parent, QString name, QString path, const QString &encodedUri )
   : QgsLayerItem( parent, name, path, encodedUri, QgsLayerItem::Raster, QStringLiteral( "wms" ) )
 {
-
-  mIconName = QStringLiteral( "mIconWms.svg" );
   setState( Populated );
 }
 
