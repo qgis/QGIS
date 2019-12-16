@@ -75,7 +75,11 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
 
   mCheckBoxNoProjection->setHidden( true );
   mCheckBoxNoProjection->setEnabled( false );
-  connect( mCheckBoxNoProjection, &QCheckBox::toggled, this, &QgsProjectionSelectionTreeWidget::crsSelected );
+  connect( mCheckBoxNoProjection, &QCheckBox::toggled, this, [ = ]
+  {
+    if ( !mBlockSignals )
+      emit crsSelected();
+  } );
   connect( mCheckBoxNoProjection, &QCheckBox::toggled, this, [ = ]( bool checked )
   {
     if ( mCheckBoxNoProjection->isEnabled() )
@@ -159,7 +163,9 @@ void QgsProjectionSelectionTreeWidget::showEvent( QShowEvent *event )
   }
 
   // apply deferred selection
+  mBlockSignals = true; // we've already emitted the signal, when the deferred crs was first set
   applySelection();
+  mBlockSignals = false;
 
   emit initialized();
 
@@ -297,8 +303,20 @@ void QgsProjectionSelectionTreeWidget::setCrs( const QgsCoordinateReferenceSyste
   }
   else
   {
+    bool changed = false;
+    if ( !mInitialized )
+    {
+      changed = mDeferredLoadCrs != crs;
+      mDeferredLoadCrs = crs;
+    }
+    mBlockSignals = true;
     mCheckBoxNoProjection->setChecked( false );
+    mBlockSignals = false;
     applySelection( AuthidColumn, crs.authid() );
+    if ( changed )
+    {
+      emit crsSelected();
+    }
   }
 }
 
@@ -418,6 +436,9 @@ QgsCoordinateReferenceSystem QgsProjectionSelectionTreeWidget::crs() const
   if ( mCheckBoxNoProjection->isEnabled() && mCheckBoxNoProjection->isChecked() )
     return QgsCoordinateReferenceSystem();
 
+  if ( !mInitialized && mDeferredLoadCrs.isValid() )
+    return mDeferredLoadCrs;
+
   int srid = getSelectedExpression( QStringLiteral( "srs_id" ) ).toLong();
   if ( srid >= USER_CRS_START_ID )
     return QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "USER:%1" ).arg( srid ) );
@@ -455,6 +476,8 @@ bool QgsProjectionSelectionTreeWidget::hasValidSelection() const
 {
   QTreeWidgetItem *item = lstCoordinateSystems->currentItem();
   if ( mCheckBoxNoProjection->isChecked() )
+    return true;
+  else if ( !mInitialized && mDeferredLoadCrs.isValid() )
     return true;
   else
     return item && !item->text( QgisCrsIdColumn ).isEmpty();
@@ -718,7 +741,8 @@ void QgsProjectionSelectionTreeWidget::lstCoordinateSystems_currentItemChanged( 
   if ( current->childCount() == 0 )
   {
     // Found a real CRS
-    emit crsSelected();
+    if ( !mBlockSignals )
+      emit crsSelected();
 
     updateBoundsPreview();
 
