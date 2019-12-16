@@ -291,7 +291,8 @@ The following operations will be performed to convert the input features:
     static QString getFeatureDisplayString( const QgsVectorLayer *layer, const QgsFeature &feature );
 %Docstring
 
-:return: the ``layer`` ``feature`` display string
+:return: a descriptive string for a ``feature``, suitable for displaying to the user.
+         The definition is taken from the ``displayExpression`` property of ``layer``.
 
 .. versionadded:: 3.12
 %End
