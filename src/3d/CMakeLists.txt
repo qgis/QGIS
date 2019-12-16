@@ -17,6 +17,7 @@ SET(QGIS_3D_SRCS
   qgspointlightsettings.cpp
   qgsraycastingutils_p.cpp
   qgsrulebased3drenderer.cpp
+  qgsrulebasedchunkloader_p.cpp
   qgstessellatedpolygongeometry.cpp
   qgstilingscheme.cpp
   qgsvectorlayer3drenderer.cpp
@@ -101,6 +102,7 @@ SET(QGIS_3D_HDRS
 )
 
 SET(QGIS_3D_PRIVATE_HDRS
+  qgsrulebasedchunkloader_p.h
   qgsvectorlayerchunkloader_p.h
   chunks/qgschunkboundsentity_p.h
   chunks/qgschunkedentity_p.h

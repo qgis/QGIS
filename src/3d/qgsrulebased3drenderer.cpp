@@ -27,6 +27,8 @@
 #include "qgspoint3dsymbol_p.h"
 #include "qgspolygon3dsymbol_p.h"
 
+#include "qgsrulebasedchunkloader_p.h"
+
 QgsRuleBased3DRendererMetadata::QgsRuleBased3DRendererMetadata()
   : Qgs3DRendererAbstractMetadata( QStringLiteral( "rulebased" ) )
 {
@@ -414,38 +416,7 @@ Qt3DCore::QEntity *QgsRuleBased3DRenderer::createEntity( const Qgs3DMapSettings 
   if ( !vl )
     return nullptr;
 
-  Qgs3DRenderContext context( map );
-
-  QgsExpressionContext exprContext( Qgs3DUtils::globalProjectLayerExpressionContext( vl ) );
-  exprContext.setFields( vl->fields() );
-  context.setExpressionContext( exprContext );
-
-  RuleToHandlerMap handlers;
-  mRootRule->createHandlers( vl, handlers );
-
-  QSet<QString> attributeNames;
-  mRootRule->prepare( context, attributeNames, handlers );
-
-  QgsFeatureRequest req;
-  req.setDestinationCrs( map.crs(), map.transformContext() );
-  req.setSubsetOfAttributes( attributeNames, vl->fields() );
-
-  QgsFeature f;
-  QgsFeatureIterator fi = vl->getFeatures( req );
-  while ( fi.nextFeature( f ) )
-  {
-    context.expressionContext().setFeature( f );
-    mRootRule->registerFeature( f, context, handlers );
-  }
-
-  Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
-  for ( QgsFeature3DHandler *handler : handlers.values() )
-    handler->finalize( entity, context );
-
-  qDeleteAll( handlers );
-
-  return entity;
-
+  return new QgsRuleBasedChunkedEntity( vl, mRootRule, map );
 }
 
 void QgsRuleBased3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
