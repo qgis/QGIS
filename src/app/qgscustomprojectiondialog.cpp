@@ -405,6 +405,19 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
     CRS.createFromProj4( mCustomCRSparameters[i] );
     if ( !CRS.isValid() )
     {
+      // auto select the invalid CRS row
+      for ( int row = 0; row < leNameList->model()->rowCount(); ++row )
+      {
+        if ( leNameList->model()->data( leNameList->model()->index( row, QgisCrsNameColumn ) ).toString() == mCustomCRSnames[i]
+             && leNameList->model()->data( leNameList->model()->index( row, QgisCrsParametersColumn ) ).toString() == mCustomCRSparameters[i] )
+        {
+          //leNameList_currentItemChanged( leNameList->invisibleRootItem()->child( row ), leNameList->currentItem() );
+          leNameList->setCurrentItem( leNameList->invisibleRootItem()->child( row ) );
+          //leNameList->selectionModel()->select( leNameList->model()->index( row, 0 ), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
+          break;
+        }
+      }
+
       QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
                             tr( "The proj4 definition of '%1' is not valid." ).arg( mCustomCRSnames[i] ) );
       return;
