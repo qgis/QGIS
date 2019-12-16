@@ -523,7 +523,7 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
   // We must check the prj def is valid!
 #if PROJ_VERSION_MAJOR>=6
   PJ_CONTEXT *pContext = QgsProjContext::get();
-  const QString projDef = teParameters->toPlainText();
+  QString projDef = teParameters->toPlainText();
   QgsDebugMsgLevel( QStringLiteral( "Proj: %1" ).arg( projDef ), 3 );
 #else
   projCtx pContext = pj_ctx_alloc();
@@ -544,8 +544,8 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
 #endif
   // Get the WGS84 coordinates
   bool okN, okE;
-  double northing = northWGS84->text().toDouble( &okN );
-  double easting = eastWGS84->text().toDouble( &okE );
+  double latitude = northWGS84->text().toDouble( &okN );
+  double longitude = eastWGS84->text().toDouble( &okE );
 
 #if PROJ_VERSION_MAJOR<6
   northing *= DEG_TO_RAD;
@@ -581,6 +581,8 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
 #endif
 
 #if PROJ_VERSION_MAJOR>=6
+
+  projDef = projDef + ( projDef.contains( QStringLiteral( "+type=crs" ) ) ? QString() : QStringLiteral( " +type=crs" ) );
   QgsProjUtils::proj_pj_unique_ptr res( proj_create_crs_to_crs( pContext, "EPSG:4326", projDef.toUtf8(), nullptr ) );
   if ( !res )
   {
@@ -591,9 +593,10 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
     return;
   }
 
+  // careful -- proj 6 respects CRS axis, so we've got latitude/longitude flowing in, and ....?? coming out?
   proj_trans_generic( res.get(), PJ_FWD,
-                      &easting, sizeof( double ), 1,
-                      &northing, sizeof( double ), 1,
+                      &latitude, sizeof( double ), 1,
+                      &longitude, sizeof( double ), 1,
                       nullptr, sizeof( double ), 0,
                       nullptr, sizeof( double ), 0 );
   int projResult = proj_errno( res.get() );
@@ -633,10 +636,17 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
       precision = 7;
     }
 
-    tmp = QLocale().toString( northing, 'f', precision );
+#if PROJ_VERSION_MAJOR>= 6
+    tmp = QLocale().toString( longitude, 'f', precision );
     projectedX->setText( tmp );
-    tmp = QLocale().toString( easting, 'f', precision );
+    tmp = QLocale().toString( latitude, 'f', precision );
     projectedY->setText( tmp );
+#else
+    tmp = QLocale().toString( latitude, 'f', precision );
+    projectedX->setText( tmp );
+    tmp = QLocale().toString( longitude, 'f', precision );
+    projectedY->setText( tmp );
+#endif
   }
 
 #if PROJ_VERSION_MAJOR<6
