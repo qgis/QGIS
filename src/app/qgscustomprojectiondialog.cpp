@@ -243,10 +243,11 @@ bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem parameters
   {
     sql = "update tbl_srs set description="
           + QgsSqliteUtils::quotedString( name )
-          + ",projection_acronym=" + QgsSqliteUtils::quotedString( projectionAcronym )
-          + ",ellipsoid_acronym=" + QgsSqliteUtils::quotedString( ellipsoidAcronym )
+          + ",projection_acronym=" + ( !projectionAcronym.isEmpty() ? QgsSqliteUtils::quotedString( projectionAcronym ) : QStringLiteral( "''" ) )
+          + ",ellipsoid_acronym=" + ( !ellipsoidAcronym.isEmpty() ? QgsSqliteUtils::quotedString( ellipsoidAcronym ) : QStringLiteral( "''" ) )
           + ",parameters=" + QgsSqliteUtils::quotedString( parameters.toProj4() )
           + ",is_geo=0" // <--shamelessly hard coded for now
+          + ",wkt=" + QgsSqliteUtils::quotedString( parameters.toWkt() )
           + " where srs_id=" + QgsSqliteUtils::quotedString( id )
           ;
     QgsDebugMsgLevel( sql, 4 );
