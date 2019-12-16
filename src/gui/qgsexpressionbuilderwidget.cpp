@@ -484,8 +484,12 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int 
   // if it's a request for the values of the referenced layer
   if ( cbxRelatedLayerValues->isChecked() && setup.config().contains( QStringLiteral( "Relation" ) ) )
   {
-    layer = mProject->relationManager()->relation( setup.config()[QStringLiteral( "Relation" )].toString() ).referencedLayer();
-    layerFieldIndex =  mProject->relationManager()->relation( setup.config()[QStringLiteral( "Relation" )].toString() ).referencedFields().first();
+    QgsVectorLayer *referencedLayer = mProject->relationManager()->relation( setup.config()[QStringLiteral( "Relation" )].toString() ).referencedLayer();
+    if ( referencedLayer )
+    {
+      layer = referencedLayer;
+      layerFieldIndex =  mProject->relationManager()->relation( setup.config()[QStringLiteral( "Relation" )].toString() ).referencedFields().first();
+    }
   }
 
   QList<QVariant> values = layer->uniqueValues( layerFieldIndex, countLimit ).toList();
