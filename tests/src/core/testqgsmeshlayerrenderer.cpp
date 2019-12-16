@@ -34,6 +34,7 @@
 #include "qgsproject.h"
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsmeshmemorydataprovider.h"
+#include "qgsmesh3daveraging.h"
 
 //qgis test includes
 #include "qgsrenderchecker.h"
@@ -53,6 +54,7 @@ class TestQgsMeshRenderer : public QObject
     QString mDataDir;
     QgsMeshLayer *mMemoryLayer = nullptr;
     QgsMeshLayer *mMdalLayer = nullptr;
+    QgsMeshLayer *mMdal3DLayer = nullptr;
     QgsMapSettings *mMapSettings = nullptr;
     QString mReport;
 
@@ -79,6 +81,7 @@ class TestQgsMeshRenderer : public QObject
     void test_vertex_vector_on_user_grid();
     void test_vertex_vector_on_user_grid_streamlines();
     void test_vertex_vector_traces();
+    void test_stacked_3d_mesh_single_level_averaging();
 
     void test_signals();
 };
@@ -90,6 +93,7 @@ void TestQgsMeshRenderer::init()
   rendererSettings.setActiveVectorDataset();
   rendererSettings.setNativeMeshSettings( QgsMeshRendererMeshSettings() );
   rendererSettings.setTriangularMeshSettings( QgsMeshRendererMeshSettings() );
+  rendererSettings.setAveragingMethod( nullptr );
   mMemoryLayer->setRendererSettings( rendererSettings );
 
   rendererSettings = mMdalLayer->rendererSettings();
@@ -97,7 +101,16 @@ void TestQgsMeshRenderer::init()
   rendererSettings.setActiveVectorDataset();
   rendererSettings.setNativeMeshSettings( QgsMeshRendererMeshSettings() );
   rendererSettings.setTriangularMeshSettings( QgsMeshRendererMeshSettings() );
+  rendererSettings.setAveragingMethod( nullptr );
   mMdalLayer->setRendererSettings( rendererSettings );
+
+  rendererSettings = mMdal3DLayer->rendererSettings();
+  rendererSettings.setActiveScalarDataset();
+  rendererSettings.setActiveVectorDataset();
+  rendererSettings.setNativeMeshSettings( QgsMeshRendererMeshSettings() );
+  rendererSettings.setTriangularMeshSettings( QgsMeshRendererMeshSettings() );
+  rendererSettings.setAveragingMethod( nullptr );
+  mMdal3DLayer->setRendererSettings( rendererSettings );
 }
 
 void TestQgsMeshRenderer::initTestCase()
@@ -126,11 +139,15 @@ void TestQgsMeshRenderer::initTestCase()
   mMemoryLayer->dataProvider()->addDataset( readFile( "/quad_and_triangle_face_vector.txt" ) );
   QVERIFY( mMemoryLayer->isValid() );
 
+  // Mdal 3D layer
+  mMdal3DLayer = new QgsMeshLayer( mDataDir + "/trap_steady_05_3D.nc", "Stacked 3D Mdal", "mdal" );
+  QVERIFY( mMdal3DLayer->isValid() );
+
   // Add layers
   QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mMemoryLayer << mMdalLayer );
+    QList<QgsMapLayer *>() << mMemoryLayer << mMdalLayer << mMdal3DLayer );
   mMapSettings->setLayers(
-    QList<QgsMapLayer *>() << mMemoryLayer << mMdalLayer );
+    QList<QgsMapLayer *>() << mMemoryLayer << mMdalLayer << mMdal3DLayer );
 
   // here we check that datasets automatically get our default color ramp applied ("Plasma")
   QgsMeshDatasetIndex ds( 0, 0 );
@@ -410,6 +427,41 @@ void TestQgsMeshRenderer::test_signals()
   QCOMPARE( spy1.count(), 1 );
   QCOMPARE( spy2.count(), 1 );
   QCOMPARE( spy3.count(), 1 );
+}
+
+void TestQgsMeshRenderer::test_stacked_3d_mesh_single_level_averaging()
+{
+  QgsMeshRendererSettings rendererSettings = mMdal3DLayer->rendererSettings();
+  // we want to set active scalar dataset one defined on 3d mesh
+  QgsMeshDatasetIndex ds( 1, 3 );
+  QgsMeshDatasetGroupMetadata metadata = mMdal3DLayer->dataProvider()->datasetGroupMetadata( ds );
+  QVERIFY( metadata.name() == "temperature" );
+  QVERIFY( metadata.maximumVerticalLevelsCount() == 10 );
+  rendererSettings.setActiveScalarDataset( ds );
+  // want to set active vector dataset one defined on 3d mesh
+  ds = QgsMeshDatasetIndex( 6, 3 );
+  metadata = mMdal3DLayer->dataProvider()->datasetGroupMetadata( ds );
+  QVERIFY( metadata.name() == "velocity" );
+  QVERIFY( metadata.maximumVerticalLevelsCount() == 10 );
+  QgsMeshRendererVectorSettings vectorSettings = rendererSettings.vectorSettings( ds.group() );
+  QgsMeshRendererVectorArrowSettings arrowSettings = vectorSettings.arrowSettings();
+  arrowSettings.setShaftLengthMethod( QgsMeshRendererVectorArrowSettings::ArrowScalingMethod::Scaled );
+  vectorSettings.setOnUserDefinedGrid( true );
+  vectorSettings.setUserGridCellWidth( 60 );
+  vectorSettings.setUserGridCellHeight( 10 );
+  arrowSettings.setScaleFactor( 35 );
+  vectorSettings.setLineWidth( 1 );
+  vectorSettings.setArrowsSettings( arrowSettings );
+  rendererSettings.setVectorSettings( ds.group(), vectorSettings );
+  rendererSettings.setActiveVectorDataset( ds );
+  // switch off mesh renderings
+  rendererSettings.setNativeMeshSettings( QgsMeshRendererMeshSettings() );
+  rendererSettings.setTriangularMeshSettings( QgsMeshRendererMeshSettings() );
+  std::unique_ptr<QgsMeshSingleLevelAveragingMethod> method( new QgsMeshSingleLevelAveragingMethod( 1 ) );
+  rendererSettings.setAveragingMethod( method.get() );
+  mMdal3DLayer->setRendererSettings( rendererSettings );
+
+  QVERIFY( imageCheck( "stacked_3d_mesh_single_level_averaging", mMdal3DLayer ) );
 }
 
 QGSTEST_MAIN( TestQgsMeshRenderer )

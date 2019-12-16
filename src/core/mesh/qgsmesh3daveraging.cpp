@@ -88,6 +88,9 @@ QgsMeshDataBlock QgsMeshSingleLevelAveragingMethod::calculate( const QgsMesh3dDa
   if ( !block3d.isValid() )
     return QgsMeshDataBlock();
 
+  if ( mVerticalLevel < 0 )
+    return QgsMeshDataBlock();
+
   bool isVector = block3d.isVector();
   int count = block3d.count();
   QgsMeshDataBlock result( isVector ? QgsMeshDataBlock::Vector2DDouble : QgsMeshDataBlock::ScalarDouble, count );
