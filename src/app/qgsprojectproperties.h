@@ -57,6 +57,11 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     QString title() const;
     void title( QString const &title );
 
+    /**
+     * Sets the \a crs shown as selected within the dialog.
+     */
+    void setSelectedCrs( const QgsCoordinateReferenceSystem &crs );
+
   public slots:
 
     /**
@@ -162,17 +167,9 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
      */
     void cbxWCSPubliedStateChanged( int aIdx );
 
-    /**
-      * If user changes the CRS, set the corresponding map units
-      */
-    void srIdUpdated();
-
     /* Update ComboBox accorindg to the selected new index
      * Also sets the new selected Ellipsoid. */
     void updateEllipsoidUI( int newIndex );
-
-    //! sets the right ellipsoid for measuring (from settings)
-    void projectionSelectorInitialized();
 
     void mButtonAddColor_clicked();
 
@@ -181,6 +178,11 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void displayPrecisionChanged();
 
   private:
+
+    /**
+      * Called when the user sets a CRS for the project.
+      */
+    void crsChanged( const QgsCoordinateReferenceSystem &crs );
 
     //! Formats for displaying coordinates
     enum CoordinateFormat
@@ -222,6 +224,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     };
     QList<EllipsoidDefs> mEllipsoidList;
     int mEllipsoidIndex;
+    bool mBlockCrsUpdates = false;
 
     //! populate WMTS tree
     void populateWmtsTree( const QgsLayerTreeGroup *treeGroup, QgsTreeWidgetItem *treeItem );
@@ -232,6 +235,8 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
     //! Populates list with ellipsoids from Sqlite3 db
     void populateEllipsoidList();
+
+    void setCurrentEllipsoid( const QString &ellipsoidAcronym );
 
     //! Create a new scale item and add it to the list of scales
     QListWidgetItem *addScaleToScaleList( const QString &newScale );
@@ -244,4 +249,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void updateGuiForMapUnits();
 
     void showHelp();
+
+    friend class TestQgsProjectProperties;
 };
