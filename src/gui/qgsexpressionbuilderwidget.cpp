@@ -481,7 +481,7 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int 
   const QgsVectorLayer *layer = mLayer;
   int layerFieldIndex = fieldIndex;
 
-  // if it's a request for the values of the referenced layer
+  // request for values of the referenced layer on a relation reference widget field
   if ( cbxRelatedLayerValues->isChecked() && setup.config().contains( QStringLiteral( "Relation" ) ) )
   {
     QgsVectorLayer *referencedLayer = mProject->relationManager()->relation( setup.config()[QStringLiteral( "Relation" )].toString() ).referencedLayer();

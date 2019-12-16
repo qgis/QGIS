@@ -581,7 +581,7 @@
                   <item row="2" column="0" colspan="2">
                    <widget class="QCheckBox" name="cbxRelatedLayerValues">
                     <property name="text">
-                     <string>Show all values of referenced layer</string>
+                     <string>Show values of referenced layer</string>
                     </property>
                    </widget>
                   </item>
