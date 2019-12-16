@@ -14,6 +14,10 @@
  ***************************************************************************/
 
 #include <memory>
+#include <QSvgRenderer>
+#include <QPainter>
+#include <QScreen>
+#include <QPixmap>
 
 #include "qgsmeshrenderer3daveragingwidget.h"
 
@@ -22,6 +26,33 @@
 #include "qgsmessagelog.h"
 #include "qgsmeshrenderersettings.h"
 #include "qgsmesh3daveraging.h"
+#include "qgsapplication.h"
+
+static void _setSvg( QLabel *imageLabel,
+                     const QString &imgName )
+{
+  qreal ratio = QgsApplication::instance()->primaryScreen()->devicePixelRatio();
+  int desiredWidthInMM = 500;
+  int desiredWidth = static_cast<int>( desiredWidthInMM * ratio );
+
+  QSvgRenderer renderer( QStringLiteral( ":/images/themes/default/mesh/%1" ).arg( imgName ) );
+  if ( renderer.isValid() )
+  {
+    const QSize defaultSvgSize = renderer.defaultSize();
+    int desiredHeight = defaultSvgSize.height() * desiredWidth / defaultSvgSize.width();
+
+    QPixmap pixmap( QSize( desiredWidthInMM, desiredHeight ) );
+    pixmap.fill( Qt::transparent );
+    QPainter painter;
+
+    painter.begin( &pixmap );
+    renderer.render( &painter );
+    painter.end();
+    pixmap.setDevicePixelRatio( ratio );
+
+    imageLabel->setPixmap( pixmap );
+  }
+}
 
 QgsMeshRenderer3dAveragingWidget::QgsMeshRenderer3dAveragingWidget( QWidget *parent )
   : QWidget( parent )
@@ -30,8 +61,75 @@ QgsMeshRenderer3dAveragingWidget::QgsMeshRenderer3dAveragingWidget( QWidget *par
   setupUi( this );
   connect( mAveragingMethodComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::onAveragingMethodChanged );
-  connect( mVerticalLayerIndexSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ),
+
+  // Single Level Average Method (top)
+  connect( mSingleVerticalLayerIndexTopSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
+  _setSvg( mSingleTopPngLabel,
+           QStringLiteral( "SingleTop.svg" )
+         );
+  mSingleTopGroup->adjustSize();
+
+  // Single Level Average Method (bottom)
+  connect( mSingleVerticalLayerIndexBottomSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ),
+           this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
+  _setSvg( mSingleBottomPngLabel,
+           QStringLiteral( "SingleBottom.svg" )
+         );
+
+  // Multi Levels Averaging Method (top)
+  connect( mMultiTopVerticalLayerStartIndexSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ),
+           this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
+  connect( mMultiTopVerticalLayerEndIndexSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ),
+           this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
+  _setSvg( mMultiTopPngLabel,
+           QStringLiteral( "MultiTop.svg" )
+         );
+
+  // MultiLevels Averaging Method (bottom)
+  connect( mMultiBottomVerticalLayerStartIndexSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ),
+           this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
+  connect( mMultiBottomVerticalLayerEndIndexSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ),
+           this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
+  _setSvg( mMultiBottomPngLabel,
+           QStringLiteral( "MultiBottom.svg" )
+         );
+
+  // Sigma Averaging Method
+  connect( mSigmaStartFractionSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+           this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
+  connect( mSigmaEndFractionSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+           this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
+  _setSvg( mSigmaPngLabel,
+           QStringLiteral( "Sigma.svg" )
+         );
+
+  // Depth Averaging Method
+  connect( mDepthStartSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+           this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
+  connect( mDepthEndSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+           this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
+  _setSvg( mDepthPngLabel,
+           QStringLiteral( "Depth.svg" )
+         );
+
+  // Height Averaging Method
+  connect( mHeightStartSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+           this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
+  connect( mHeightEndSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+           this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
+  _setSvg( mHeightPngLabel,
+           QStringLiteral( "Height.svg" )
+         );
+
+  // Elevation Averaging Method
+  connect( mElevationStartSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+           this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
+  connect( mElevationEndSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+           this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
+  _setSvg( mElevationPngLabel,
+           QStringLiteral( "Elevation.svg" )
+         );
 }
 
 void QgsMeshRenderer3dAveragingWidget::setLayer( QgsMeshLayer *layer )
@@ -43,14 +141,61 @@ std::unique_ptr<QgsMesh3dAveragingMethod> QgsMeshRenderer3dAveragingWidget::aver
 {
   std::unique_ptr<QgsMesh3dAveragingMethod> averaging;
 
-  QgsMesh3dAveragingMethod::Method method = static_cast<QgsMesh3dAveragingMethod::Method>( mAveragingMethodComboBox->currentIndex() );
-
-  switch ( method )
+  switch ( mAveragingMethodComboBox->currentIndex() )
   {
-    case QgsMesh3dAveragingMethod::SingleLevelAverageMethod:
+    case 0: // single level from top
     {
-      const int verticalLevel = mVerticalLayerIndexSpinBox->value();
-      averaging.reset( new QgsMeshSingleLevelAveragingMethod( verticalLevel ) );
+      const int verticalLevel = mSingleVerticalLayerIndexTopSpinBox->value();
+      averaging.reset( new QgsMeshMultiLevelsAveragingMethod( verticalLevel, true ) );
+      break;
+    }
+    case 1: // single level from bottom
+    {
+      const int verticalLevel = mSingleVerticalLayerIndexBottomSpinBox->value();
+      averaging.reset( new QgsMeshMultiLevelsAveragingMethod( verticalLevel, false ) );
+      break;
+    }
+    case 2: // multi level from top
+    {
+      const int startVerticalLevel = mMultiTopVerticalLayerStartIndexSpinBox->value();
+      const int endVerticalLevel = mMultiTopVerticalLayerEndIndexSpinBox->value();
+      averaging.reset( new QgsMeshMultiLevelsAveragingMethod( startVerticalLevel, endVerticalLevel, true ) );
+      break;
+    }
+    case 3: // multi level from bottom
+    {
+      const int startVerticalLevel = mMultiBottomVerticalLayerStartIndexSpinBox->value();
+      const int endVerticalLevel = mMultiBottomVerticalLayerEndIndexSpinBox->value();
+      averaging.reset( new QgsMeshMultiLevelsAveragingMethod( startVerticalLevel, endVerticalLevel, false ) );
+      break;
+    }
+    case 4: // sigma
+    {
+      const double startFraction = mSigmaStartFractionSpinBox->value();
+      const double endFraction = mSigmaEndFractionSpinBox->value();
+      averaging.reset( new QgsMeshSigmaAveragingMethod( startFraction, endFraction ) );
+      break;
+    }
+    case 5: // depth (from sufrace)
+    {
+      const double startDepth = mDepthStartSpinBox->value();
+      const double endDepth = mDepthEndSpinBox->value();
+      averaging.reset( new QgsMeshRelativeLengthAveragingMethod( startDepth, endDepth, true ) );
+      break;
+    }
+    case 6: // height (from bed elevation)
+    {
+      const double startHeight = mHeightStartSpinBox->value();
+      const double endHeight = mHeightEndSpinBox->value();
+      averaging.reset( new QgsMeshRelativeLengthAveragingMethod( startHeight, endHeight, false ) );
+      break;
+    }
+    case 7: // elevation
+    {
+      const double startVerticalLevel = mElevationStartSpinBox->value();
+      const double endVerticalLevel = mElevationEndSpinBox->value();
+      averaging.reset( new QgsMeshElevationAveragingMethod( startVerticalLevel, endVerticalLevel ) );
+      break;
     }
   }
   return averaging;
@@ -66,17 +211,82 @@ void QgsMeshRenderer3dAveragingWidget::syncToLayer( )
   if ( method )
   {
     const QgsMesh3dAveragingMethod::Method type = method->method();
-    whileBlocking( mAveragingMethodComboBox )->setCurrentIndex( type );
+    int pageIndex;
 
     switch ( type )
     {
-      case QgsMesh3dAveragingMethod::SingleLevelAverageMethod:
-        // Single Vertical Layer settings
-        const QgsMeshSingleLevelAveragingMethod *singleAveragingMethod = static_cast<const QgsMeshSingleLevelAveragingMethod *>( method );
-        whileBlocking( mVerticalLayerIndexSpinBox )->setValue( singleAveragingMethod->verticalLevel() );
+      case QgsMesh3dAveragingMethod::MultiLevelsAveragingMethod:
+      {
+        const QgsMeshMultiLevelsAveragingMethod *averagingMethod = static_cast<const QgsMeshMultiLevelsAveragingMethod *>( method );
+        if ( averagingMethod->isSingleLevel() )
+        {
+          if ( averagingMethod->countedFromTop() )
+          {
+            // Single Vertical Layer settings from top
+            whileBlocking( mSingleVerticalLayerIndexTopSpinBox )->setValue( averagingMethod->startVerticalLevel() );
+            pageIndex = 0;
+          }
+          else
+          {
+            // Single Vertical Layer settings from bottom
+            whileBlocking( mSingleVerticalLayerIndexBottomSpinBox )->setValue( averagingMethod->startVerticalLevel() );
+            pageIndex = 1;
+          }
+        }
+        else
+        {
+          if ( averagingMethod->countedFromTop() )
+          {
+            // Multi Vertical Layer settings from top
+            whileBlocking( mMultiTopVerticalLayerStartIndexSpinBox )->setValue( averagingMethod->startVerticalLevel() );
+            whileBlocking( mMultiTopVerticalLayerEndIndexSpinBox )->setValue( averagingMethod->endVerticalLevel() );
+            pageIndex = 2;
+          }
+          else
+          {
+            // Multi Vertical Layer settings from bottom
+            whileBlocking( mMultiBottomVerticalLayerStartIndexSpinBox )->setValue( averagingMethod->startVerticalLevel() );
+            whileBlocking( mMultiBottomVerticalLayerEndIndexSpinBox )->setValue( averagingMethod->endVerticalLevel() );
+            pageIndex = 3;
+          }
+        }
         break;
+      }
+      case QgsMesh3dAveragingMethod::SigmaAveragingMethod:
+      {
+        const QgsMeshSigmaAveragingMethod *sigmaAveragingMethod = static_cast<const QgsMeshSigmaAveragingMethod *>( method );
+        whileBlocking( mSigmaStartFractionSpinBox )->setValue( sigmaAveragingMethod->startFraction() );
+        whileBlocking( mSigmaEndFractionSpinBox )->setValue( sigmaAveragingMethod->endFraction() );
+        pageIndex = 4;
+        break;
+      }
+      case QgsMesh3dAveragingMethod::RelativeLengthAveragingMethod:
+      {
+        const QgsMeshRelativeLengthAveragingMethod *averagingMethod = static_cast<const QgsMeshRelativeLengthAveragingMethod *>( method );
+        if ( averagingMethod->countedFromTop() )
+        {
+          whileBlocking( mDepthStartSpinBox )->setValue( averagingMethod->startLength() );
+          whileBlocking( mDepthEndSpinBox )->setValue( averagingMethod->endLength() );
+          pageIndex = 5;
+        }
+        else
+        {
+          whileBlocking( mHeightStartSpinBox )->setValue( averagingMethod->startLength() );
+          whileBlocking( mHeightEndSpinBox )->setValue( averagingMethod->endLength() );
+          pageIndex = 6;
+        }
+        break;
+      }
+      case QgsMesh3dAveragingMethod::ElevationAveragingMethod:
+      {
+        const QgsMeshElevationAveragingMethod *elevationAveragingMethod = static_cast<const QgsMeshElevationAveragingMethod *>( method );
+        whileBlocking( mElevationStartSpinBox )->setValue( elevationAveragingMethod->startElevation() );
+        whileBlocking( mElevationEndSpinBox )->setValue( elevationAveragingMethod->endElevation() );
+        pageIndex = 7;
+        break;
+      }
     }
-
+    whileBlocking( mAveragingMethodComboBox )->setCurrentIndex( pageIndex );
   }
 }
 

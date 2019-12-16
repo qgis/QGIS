@@ -457,7 +457,7 @@ void TestQgsMeshRenderer::test_stacked_3d_mesh_single_level_averaging()
   // switch off mesh renderings
   rendererSettings.setNativeMeshSettings( QgsMeshRendererMeshSettings() );
   rendererSettings.setTriangularMeshSettings( QgsMeshRendererMeshSettings() );
-  std::unique_ptr<QgsMeshSingleLevelAveragingMethod> method( new QgsMeshSingleLevelAveragingMethod( 1 ) );
+  std::unique_ptr<QgsMeshMultiLevelsAveragingMethod> method( new QgsMeshMultiLevelsAveragingMethod( 1, true ) );
   rendererSettings.setAveragingMethod( method.get() );
   mMdal3DLayer->setRendererSettings( rendererSettings );
 
