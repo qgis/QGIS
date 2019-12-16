@@ -112,6 +112,14 @@ class CORE_EXPORT QgsFieldFormatter
      */
     virtual QList< QgsVectorLayerRef > layerDependencies( const QVariantMap &config ) const SIP_SKIP;
 
+    /**
+     * Returns a list of the values that would be possible to select with this widget type
+     * On a RelationReference that would be the parents ids or on ValueMap all the configured keys
+     * according to the settings in the \a config
+     * \since QGIS 3.12
+     */
+    virtual QList<QVariant> availableValues( const QVariantMap &config, int countLimit ) const;
+
 
 };
 

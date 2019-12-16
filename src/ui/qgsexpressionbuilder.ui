@@ -579,9 +579,12 @@
                    </widget>
                   </item>
                   <item row="2" column="0" colspan="2">
-                   <widget class="QCheckBox" name="cbxRelatedLayerValues">
+                   <widget class="QCheckBox" name="cbxValuesInUse">
+                    <property name="toolTip">
+                     <string>Only show values used in this layer and not all the possible values you could choose.</string>
+                    </property>
                     <property name="text">
-                     <string>Show values of referenced layer</string>
+                     <string>Only show values in use</string>
                     </property>
                    </widget>
                   </item>

@@ -174,3 +174,16 @@ QList<QgsVectorLayerRef> QgsRelationReferenceFieldFormatter::layerDependencies( 
     }};
   return result;
 }
+
+QList<QVariant> QgsRelationReferenceFieldFormatter::availableValues( const QVariantMap &config, int countLimit ) const
+{
+  QList<QVariant> values;
+
+  QgsVectorLayer *referencedLayer = QgsProject::instance()->relationManager()->relation( config[QStringLiteral( "Relation" )].toString() ).referencedLayer();
+  if ( referencedLayer )
+  {
+    int layerFieldIndex =  QgsProject::instance()->relationManager()->relation( config[QStringLiteral( "Relation" )].toString() ).referencedFields().first();
+    values = referencedLayer->uniqueValues( layerFieldIndex, countLimit ).toList();
+  }
+  return values;
+}

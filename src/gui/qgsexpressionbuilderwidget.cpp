@@ -248,8 +248,8 @@ void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const
     if ( fieldIndex != -1 )
     {
       const QgsEditorWidgetSetup setup = fields.at( fieldIndex ).editorWidgetSetup();
-      cbxRelatedLayerValues->setVisible( setup.config().contains( QStringLiteral( "Relation" ) ) );
-      cbxRelatedLayerValues->setChecked( true );
+      cbxValuesInUse->setVisible( setup.config().contains( QStringLiteral( "Relation" ) ) );
+      cbxValuesInUse->setChecked( false );
     }
   }
   mValueGroupBox->setVisible( isField );
@@ -478,21 +478,15 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int 
   const QgsEditorWidgetSetup setup = fields.at( fieldIndex ).editorWidgetSetup();
   const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
 
-  const QgsVectorLayer *layer = mLayer;
-  int layerFieldIndex = fieldIndex;
-
-  // request for values of the referenced layer on a relation reference widget field
-  if ( cbxRelatedLayerValues->isChecked() && setup.config().contains( QStringLiteral( "Relation" ) ) )
+  QList<QVariant> values;
+  if ( cbxValuesInUse->isVisible() && !cbxValuesInUse->isChecked() )
   {
-    QgsVectorLayer *referencedLayer = mProject->relationManager()->relation( setup.config()[QStringLiteral( "Relation" )].toString() ).referencedLayer();
-    if ( referencedLayer )
-    {
-      layer = referencedLayer;
-      layerFieldIndex =  mProject->relationManager()->relation( setup.config()[QStringLiteral( "Relation" )].toString() ).referencedFields().first();
-    }
+    values = formatter->availableValues( setup.config(), countLimit );
   }
-
-  QList<QVariant> values = layer->uniqueValues( layerFieldIndex, countLimit ).toList();
+  else
+  {
+    values = mLayer->uniqueValues( fieldIndex, countLimit ).toList();
+  }
   std::sort( values.begin(), values.end() );
 
   mValuesModel->clear();
