@@ -177,20 +177,37 @@ void TestQgsProjectProperties::testEllipsoidCrsSync()
   QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "NONE" ) );
 
   // but if ellipsoid is initially set, then changing the project CRS should update the ellipsoid to match
+#if PROJ_VERSION_MAJOR>=6
   QgsProject::instance()->setEllipsoid( QStringLiteral( "EPSG:7021" ) );
+#else
+  QgsProject::instance()->setEllipsoid( QStringLiteral( "evrst69" ) );
+#endif
   pp = qgis::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
   pp->setSelectedCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) );
   pp->apply();
   pp.reset();
   // ellipsoid should be updated to match CRS ellipsoid
+#if PROJ_VERSION_MAJOR>=6
   QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "EPSG:7019" ) );
+#else
+  QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "GRS80" ) );
+#endif
 
   pp = qgis::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+#if PROJ_VERSION_MAJOR>=6
   pp->setSelectedCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4240" ) ) );
+#else
+  pp->setSelectedCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3907" ) ) );
+#endif
   pp->apply();
   pp.reset();
+#if PROJ_VERSION_MAJOR>=6
   QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "EPSG:7015" ) );
+#else
+  QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "bessel" ) );
+#endif
 
+#if PROJ_VERSION_MAJOR>=6
   // try creating a crs from a non-standard WKT string (in this case, the invalid WKT definition of EPSG:31370 used by
   // some ArcGIS versions: see https://github.com/OSGeo/PROJ/issues/1781
   const QString wkt = QStringLiteral( R"""(PROJCS["Belge 1972 / Belgian Lambert 72",GEOGCS["Belge 1972",DATUM["Reseau_National_Belge_1972",SPHEROID["International 1924",6378388,297],AUTHORITY["EPSG","6313"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Lambert_Conformal_Conic_2SP"],PARAMETER["latitude_of_origin",90],PARAMETER["central_meridian",4.36748666666667],PARAMETER["standard_parallel_1",49.8333339],PARAMETER["standard_parallel_2",51.1666672333333],PARAMETER["false_easting",150000.01256],PARAMETER["false_northing",5400088.4378],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]])""" );
@@ -200,6 +217,7 @@ void TestQgsProjectProperties::testEllipsoidCrsSync()
   pp->apply();
   pp.reset();
   QCOMPARE( QgsProject::instance()->ellipsoid().left( 30 ), QStringLiteral( "PARAMETER:6378388:6356911.9461" ) );
+#endif
 
   // ok. Next bit of logic -- if the project is initially set to NO projection and NO ellipsoid, then first setting the project CRS should set an ellipsoid to match
   QgsProject::instance()->setCrs( QgsCoordinateReferenceSystem() );
@@ -210,7 +228,11 @@ void TestQgsProjectProperties::testEllipsoidCrsSync()
   pp->apply();
   pp.reset();
   // ellipsoid should be updated to match CRS ellipsoid
+#if PROJ_VERSION_MAJOR>=6
   QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "EPSG:7019" ) );
+#else
+  QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "GRS80" ) );
+#endif
 }
 
 QGSTEST_MAIN( TestQgsProjectProperties )
