@@ -68,6 +68,7 @@ SET(QGIS_GUI_SRCS
   attributetable/qgsgenericfeatureselectionmanager.cpp
   attributetable/qgsvectorlayerselectionmanager.cpp
   attributetable/qgsorganizetablecolumnsdialog.cpp
+  attributetable/qgsfeaturefilterwidget.cpp
 
   auth/qgsauthauthoritieseditor.cpp
   auth/qgsauthcertificateinfo.cpp
@@ -867,6 +868,7 @@ SET(QGIS_GUI_HDRS
 SET(QGIS_GUI_PRIVATE_HDRS
   qgsbrowserdockwidget_p.cpp
   qgswidgetstatehelper_p.h
+  attributetable/qgsfeaturefilterwidget_p.h
 )
 
 FIND_PACKAGE(Qt5Qml REQUIRED)
@@ -919,6 +921,7 @@ SET(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionbuilderdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionbuilder.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionselectiondialogbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsfeaturefilterwidget.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsgenericprojectionselectorbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessagelogviewer.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessageviewer.h

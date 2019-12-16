@@ -529,80 +529,88 @@ void QgsRelationEditorWidget::linkFeature()
   else
     layer = mRelation.referencingLayer();
 
-  QgsFeatureSelectionDlg selectionDlg( layer, mEditorContext, this );
+  QgsFeatureSelectionDlg *selectionDlg = new QgsFeatureSelectionDlg( layer, mEditorContext, this );
+  selectionDlg->setAttribute( Qt::WA_DeleteOnClose );
 
-  if ( selectionDlg.exec() )
+  const QString displayString = QgsVectorLayerUtils::getFeatureDisplayString( mRelation.referencedLayer(), mFeature );
+  selectionDlg->setWindowTitle( tr( "Link existing child features for parent %1 \"%2\"" ).arg( mRelation.referencedLayer()->name(), displayString ) );
+
+  connect( selectionDlg, &QDialog::accepted, this, &QgsRelationEditorWidget::onLinkFeatureDlgAccepted );
+  selectionDlg->show();
+}
+
+void QgsRelationEditorWidget::onLinkFeatureDlgAccepted()
+{
+  QgsFeatureSelectionDlg *selectionDlg = qobject_cast<QgsFeatureSelectionDlg *>( sender() );
+  if ( mNmRelation.isValid() )
   {
-    if ( mNmRelation.isValid() )
+    QgsFeatureIterator it = mNmRelation.referencedLayer()->getFeatures(
+                              QgsFeatureRequest()
+                              .setFilterFids( selectionDlg->selectedFeatures() )
+                              .setSubsetOfAttributes( mNmRelation.referencedFields() ) );
+
+    QgsFeature relatedFeature;
+
+    QgsFeatureList newFeatures;
+
+    // Fields of the linking table
+    const QgsFields fields = mRelation.referencingLayer()->fields();
+
+    // Expression context for the linking table
+    QgsExpressionContext context = mRelation.referencingLayer()->createExpressionContext();
+
+    QgsAttributeMap linkAttributes;
+    const auto constFieldPairs = mRelation.fieldPairs();
+    for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
     {
-      QgsFeatureIterator it = mNmRelation.referencedLayer()->getFeatures(
-                                QgsFeatureRequest()
-                                .setFilterFids( selectionDlg.selectedFeatures() )
-                                .setSubsetOfAttributes( mNmRelation.referencedFields() ) );
+      int index = fields.indexOf( fieldPair.first );
+      linkAttributes.insert( index,  mFeature.attribute( fieldPair.second ) );
+    }
 
-      QgsFeature relatedFeature;
-
-      QgsFeatureList newFeatures;
-
-      // Fields of the linking table
-      const QgsFields fields = mRelation.referencingLayer()->fields();
-
-      // Expression context for the linking table
-      QgsExpressionContext context = mRelation.referencingLayer()->createExpressionContext();
-
-      QgsAttributeMap linkAttributes;
-      const auto constFieldPairs = mRelation.fieldPairs();
+    while ( it.nextFeature( relatedFeature ) )
+    {
+      const auto constFieldPairs = mNmRelation.fieldPairs();
       for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
       {
         int index = fields.indexOf( fieldPair.first );
-        linkAttributes.insert( index,  mFeature.attribute( fieldPair.second ) );
+        linkAttributes.insert( index, relatedFeature.attribute( fieldPair.second ) );
       }
+      const QgsFeature linkFeature = QgsVectorLayerUtils::createFeature( mRelation.referencingLayer(), QgsGeometry(), linkAttributes, &context );
 
-      while ( it.nextFeature( relatedFeature ) )
-      {
-        const auto constFieldPairs = mNmRelation.fieldPairs();
-        for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
-        {
-          int index = fields.indexOf( fieldPair.first );
-          linkAttributes.insert( index, relatedFeature.attribute( fieldPair.second ) );
-        }
-        const QgsFeature linkFeature = QgsVectorLayerUtils::createFeature( mRelation.referencingLayer(), QgsGeometry(), linkAttributes, &context );
-
-        newFeatures << linkFeature;
-      }
-
-      mRelation.referencingLayer()->addFeatures( newFeatures );
-      QgsFeatureIds ids;
-      const auto constNewFeatures = newFeatures;
-      for ( const QgsFeature &f : constNewFeatures )
-        ids << f.id();
-      mRelation.referencingLayer()->selectByIds( ids );
-    }
-    else
-    {
-      QMap<int, QVariant> keys;
-      const auto constFieldPairs = mRelation.fieldPairs();
-      for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
-      {
-        int idx = mRelation.referencingLayer()->fields().lookupField( fieldPair.referencingField() );
-        QVariant val = mFeature.attribute( fieldPair.referencedField() );
-        keys.insert( idx, val );
-      }
-
-      const auto constSelectedFeatures = selectionDlg.selectedFeatures();
-      for ( QgsFeatureId fid : constSelectedFeatures )
-      {
-        QMapIterator<int, QVariant> it( keys );
-        while ( it.hasNext() )
-        {
-          it.next();
-          mRelation.referencingLayer()->changeAttributeValue( fid, it.key(), it.value() );
-        }
-      }
+      newFeatures << linkFeature;
     }
 
-    updateUi();
+    mRelation.referencingLayer()->addFeatures( newFeatures );
+    QgsFeatureIds ids;
+    const auto constNewFeatures = newFeatures;
+    for ( const QgsFeature &f : constNewFeatures )
+      ids << f.id();
+    mRelation.referencingLayer()->selectByIds( ids );
   }
+  else
+  {
+    QMap<int, QVariant> keys;
+    const auto constFieldPairs = mRelation.fieldPairs();
+    for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
+    {
+      int idx = mRelation.referencingLayer()->fields().lookupField( fieldPair.referencingField() );
+      QVariant val = mFeature.attribute( fieldPair.referencedField() );
+      keys.insert( idx, val );
+    }
+
+    const auto constSelectedFeatures = selectionDlg->selectedFeatures();
+    for ( QgsFeatureId fid : constSelectedFeatures )
+    {
+      QMapIterator<int, QVariant> it( keys );
+      while ( it.hasNext() )
+      {
+        it.next();
+        mRelation.referencingLayer()->changeAttributeValue( fid, it.key(), it.value() );
+      }
+    }
+  }
+
+  updateUi();
 }
 
 void QgsRelationEditorWidget::duplicateFeature()
