@@ -117,6 +117,7 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
       QString title = l.title.isEmpty() ? l.identifier : l.title;
       QgsDataItem *layerItem;
 
+      // Using if condition, ternary operator leads to type casting issue
       if ( l.styles.size() == 1 )
       {
         layerItem = this;
@@ -404,7 +405,7 @@ QgsWMTSRootItem::QgsWMTSRootItem( QgsDataItem *parent, QString name, QString pat
   : QgsDataCollectionItem( parent, name, path )
 {
   mCapabilities |= Fast;
-  mIconName = QStringLiteral( "mIconDbSchema.svg" );
+  mIconName = QStringLiteral( "mIconWms.svg" );
   populate();
 
 }
