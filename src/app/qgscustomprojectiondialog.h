@@ -45,6 +45,7 @@ class APP_EXPORT QgsCustomProjectionDialog : public QDialog, private Ui::QgsCust
   private slots:
 
     void updateListFromCurrentItem();
+    void validateCurrent();
 
   private:
 

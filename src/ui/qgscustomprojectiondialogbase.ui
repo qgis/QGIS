@@ -55,7 +55,7 @@
          <property name="title">
           <string>Define</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_3">
+         <layout class="QGridLayout" name="gridLayout_3" rowstretch="0,3,0,1">
           <item row="3" column="0">
            <widget class="QLabel" name="label_4">
             <property name="text">
@@ -147,24 +147,18 @@
            </layout>
           </item>
           <item row="3" column="1">
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <item>
-             <widget class="QPlainTextEdit" name="teParameters">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
+           <layout class="QGridLayout" name="gridLayout_4">
+            <item row="0" column="2">
+             <widget class="QPushButton" name="mButtonValidate">
+              <property name="toolTip">
+               <string>Validate the current CRS definition and test whether it is an acceptable projection definition</string>
               </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>70</height>
-               </size>
+              <property name="text">
+               <string>&amp;Validate</string>
               </property>
              </widget>
             </item>
-            <item>
+            <item row="0" column="1">
              <widget class="QPushButton" name="pbnCopyCRS">
               <property name="toolTip">
                <string>Copy parameters from existing CRS</string>
@@ -177,6 +171,22 @@
                 <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
               </property>
              </widget>
+            </item>
+            <item row="1" column="2">
+             <spacer name="verticalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="0" column="0" rowspan="2">
+             <widget class="QPlainTextEdit" name="teParameters"/>
             </item>
            </layout>
           </item>
@@ -208,7 +218,7 @@
          <property name="title">
           <string>Test</string>
          </property>
-         <property name="collapsed">
+         <property name="collapsed" stdset="0">
           <bool>true</bool>
          </property>
          <layout class="QGridLayout">
@@ -333,6 +343,7 @@
   <tabstop>leName</tabstop>
   <tabstop>teParameters</tabstop>
   <tabstop>pbnCopyCRS</tabstop>
+  <tabstop>mButtonValidate</tabstop>
   <tabstop>northWGS84</tabstop>
   <tabstop>eastWGS84</tabstop>
   <tabstop>pbnCalculate</tabstop>
