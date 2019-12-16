@@ -985,6 +985,18 @@ class TestQgsExpression: public QObject
       QTest::newRow( "is_closed multiline" ) << "is_closed(geom_from_wkt('MultiLineString ((6501338.13976828 4850981.51459331, 6501343.09036573 4850984.01453377, 6501338.13976828 4850988.96491092, 6501335.63971657 4850984.01453377, 6501338.13976828 4850981.51459331))'))" << false << QVariant( true );
       QTest::newRow( "is_closed multiline" ) << "is_closed(geom_from_wkt('MultiLineString ((6501338.13976828 4850981.51459331, 6501343.09036573 4850984.01453377, 6501338.13976828 4850988.96491092, 6501335.63971657 4850984.01453377, 6501438.13976828 4850981.51459331))'))" << false << QVariant( false );
       QTest::newRow( "is_closed multiline" ) << "is_closed(geom_from_wkt('MultiLineString EMPTY'))" << false << QVariant();
+      QTest::newRow( "is_empty not geom" ) << "is_empty('g')" << true << QVariant();
+      QTest::newRow( "is_empty null" ) << "is_empty(NULL)" << false << QVariant();
+      QTest::newRow( "is_empty point" ) << "is_empty(geom_from_wkt('POINT(1 2)'))" << false << QVariant( false );
+      QTest::newRow( "is_empty empty point" ) << "is_empty(geom_from_wkt('POINT EMPTY'))" << false << QVariant( true );
+      QTest::newRow( "is_empty polygon" ) << "is_empty(geom_from_wkt('POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))'))" << false << QVariant( false );
+      QTest::newRow( "is_empty empty polygon" ) << "is_empty(geom_from_wkt('POLYGON EMPTY'))" << false << QVariant( true );
+      QTest::newRow( "is_empty_or_null not geom" ) << "is_empty_or_null('g')" << true << QVariant();
+      QTest::newRow( "is_empty_or_null null" ) << "is_empty_or_null(NULL)" << false << QVariant( true );
+      QTest::newRow( "is_empty_or_null point" ) << "is_empty_or_null(geom_from_wkt('POINT(1 2)'))" << false << QVariant( false );
+      QTest::newRow( "is_empty_or_null empty point" ) << "is_empty_or_null(geom_from_wkt('POINT EMPTY'))" << false << QVariant( true );
+      QTest::newRow( "is_empty_or_null polygon" ) << "is_empty_or_null(geom_from_wkt('POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))'))" << false << QVariant( false );
+      QTest::newRow( "is_empty_or_null empty polygon" ) << "is_empty_or_null(geom_from_wkt('POLYGON EMPTY'))" << false << QVariant( true );
       QTest::newRow( "collect_geometries none" ) << "geom_to_wkt(collect_geometries())" << false << QVariant( "" );
       QTest::newRow( "collect_geometries not" ) << "geom_to_wkt(collect_geometries(45))" << true << QVariant();
       QTest::newRow( "collect_geometries one" ) << "geom_to_wkt(collect_geometries(make_point(4,5)))" << false << QVariant( "MultiPoint ((4 5))" );
