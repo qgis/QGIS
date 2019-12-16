@@ -404,8 +404,8 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
     CRS.createFromProj4( mCustomCRSparameters[i] );
     if ( !CRS.isValid() )
     {
-      QMessageBox::information( this, tr( "QGIS Custom Projection" ),
-                                tr( "The proj4 definition of '%1' is not valid." ).arg( mCustomCRSnames[i] ) );
+      QMessageBox::warning( this, tr( "QGIS Custom Projection" ),
+                            tr( "The proj4 definition of '%1' is not valid." ).arg( mCustomCRSnames[i] ) );
       return;
     }
   }
@@ -476,8 +476,8 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
 
   if ( !proj )
   {
-    QMessageBox::information( this, tr( "QGIS Custom Projection" ),
-                              tr( "This proj projection definition is not valid." ) );
+    QMessageBox::warning( this, tr( "QGIS Custom Projection" ),
+                          tr( "This proj projection definition is not valid." ) );
     projectedX->clear();
     projectedY->clear();
     pj_free( proj );
@@ -498,8 +498,8 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
 
   if ( !okN || !okE )
   {
-    QMessageBox::information( this, tr( "QGIS Custom Projection" ),
-                              tr( "Northing and Easting must be in decimal form." ) );
+    QMessageBox::warning( this, tr( "QGIS Custom Projection" ),
+                          tr( "Northing and Easting must be in decimal form." ) );
     projectedX->clear();
     projectedY->clear();
 #if PROJ_VERSION_MAJOR<6
@@ -514,8 +514,8 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
 
   if ( !wgs84Proj )
   {
-    QMessageBox::information( this, tr( "QGIS Custom Projection" ),
-                              tr( "Internal Error (source projection invalid?)" ) );
+    QMessageBox::critical( this, tr( "QGIS Custom Projection" ),
+                           tr( "Internal Error (source projection invalid?)" ) );
     projectedX->clear();
     projectedY->clear();
     pj_free( wgs84Proj );
@@ -528,8 +528,8 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
   QgsProjUtils::proj_pj_unique_ptr res( proj_create_crs_to_crs( pContext, "EPSG:4326", projDef.toUtf8(), nullptr ) );
   if ( !res )
   {
-    QMessageBox::information( this, tr( "QGIS Custom Projection" ),
-                              tr( "This proj projection definition is not valid." ) );
+    QMessageBox::warning( this, tr( "QGIS Custom Projection" ),
+                          tr( "This proj projection definition is not valid." ) );
     projectedX->clear();
     projectedY->clear();
     return;
