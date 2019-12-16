@@ -79,13 +79,13 @@ void QgsJoinByAttributeAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Joined layer" ), QgsProcessing::TypeVectorAnyGeometry, QVariant(), true, true ) );
 
   std::unique_ptr< QgsProcessingParameterFeatureSink > nonMatchingSink = qgis::make_unique< QgsProcessingParameterFeatureSink >(
-        QStringLiteral( "NON_MATCHING" ), QObject::tr( "Unjoinable features from first layer" ), QgsProcessing::TypeVectorAnyGeometry, QVariant(), true, false );
+        QStringLiteral( "NON_MATCHING" ), QObject::tr( "Unjoinable features from input layer" ), QgsProcessing::TypeVectorAnyGeometry, QVariant(), true, false );
   // TODO GUI doesn't support advanced outputs yet
   //nonMatchingSink->setFlags(nonMatchingSink->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( nonMatchingSink.release() );
 
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "JOINED_COUNT" ), QObject::tr( "Number of joined features from input table" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "UNJOINABLE_COUNT" ), QObject::tr( "Number of unjoinable features from input table" ) ) );
+  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "JOINED_COUNT" ), QObject::tr( "Number of joined features from input layer" ) ) );
+  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "UNJOINABLE_COUNT" ), QObject::tr( "Number of unjoinable features from input layer" ) ) );
 }
 
 QString QgsJoinByAttributeAlgorithm::shortHelpString() const
