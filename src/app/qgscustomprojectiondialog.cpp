@@ -549,8 +549,8 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
   double longitude = eastWGS84->text().toDouble( &okE );
 
 #if PROJ_VERSION_MAJOR<6
-  northing *= DEG_TO_RAD;
-  easting *= DEG_TO_RAD;
+  latitude *= DEG_TO_RAD;
+  longitude *= DEG_TO_RAD;
 #endif
 
   if ( !okN || !okE )
@@ -603,7 +603,7 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
   int projResult = proj_errno( res.get() );
 #else
   double z = 0.0;
-  int projResult = pj_transform( wgs84Proj, proj, 1, 0, &easting, &northing, &z );
+  int projResult = pj_transform( wgs84Proj, proj, 1, 0, &longitude, &latitude, &z );
 #endif
   if ( projResult != 0 )
   {
@@ -628,8 +628,8 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
     isLatLong = pj_is_latlong( proj );
     if ( isLatLong )
     {
-      northing *= RAD_TO_DEG;
-      easting *= RAD_TO_DEG;
+      latitude *= RAD_TO_DEG;
+      longitude *= RAD_TO_DEG;
     }
 #endif
     if ( isLatLong )
