@@ -49,13 +49,15 @@ class CORE_EXPORT QgsValueMapFieldFormatter : public QgsFieldFormatter
     /**
       * Default constructor of field formatter for a value map field.
       */
-    QgsValueMapFieldFormatter() = default;
+    QgsValueMapFieldFormatter();
 
     QString id() const override;
 
     QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const override;
 
     QVariant sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const override;
+
+    QList<QVariant> availableValues( const QVariantMap &config, int countLimit ) const override;
 };
 
 #endif // QGSVALUEMAPFIELDKIT_H
