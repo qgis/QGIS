@@ -290,6 +290,8 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     bool mShowMap = true;
 
     bool mInitialized = false;
+    QgsCoordinateReferenceSystem mDeferredLoadCrs;
+    bool mBlockSignals = false;
 
   private slots:
     //! Gets list of authorities
