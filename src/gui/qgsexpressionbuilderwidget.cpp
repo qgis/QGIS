@@ -468,7 +468,7 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int 
   const QgsEditorWidgetSetup setup = fields.at( fieldIndex ).editorWidgetSetup();
   const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
 
-  const QgsVectorLayer * layer = mLayer;
+  const QgsVectorLayer *layer = mLayer;
   int layerFieldIndex = fieldIndex;
 
   // if it's a request for the values of the referenced layer
@@ -481,6 +481,7 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int 
   QList<QVariant> values = layer->uniqueValues( layerFieldIndex, countLimit ).toList();
   std::sort( values.begin(), values.end() );
 
+  mValuesModel->clear();
   for ( const QVariant &value : qgis::as_const( values ) )
   {
     QString strValue;
