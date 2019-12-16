@@ -58,6 +58,7 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
   connect( leNameList, &QTreeWidget::currentItemChanged, this, &QgsCustomProjectionDialog::leNameList_currentItemChanged );
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsCustomProjectionDialog::buttonBox_accepted );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsCustomProjectionDialog::showHelp );
+  connect( mButtonValidate, &QPushButton::clicked, this, &QgsCustomProjectionDialog::validateCurrent );
 
   leNameList->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
@@ -460,6 +461,48 @@ void QgsCustomProjectionDialog::updateListFromCurrentItem()
   mCustomCRSparameters[currentIndex] = teParameters->toPlainText();
   item->setText( QgisCrsNameColumn, leName->text() );
   item->setText( QgisCrsParametersColumn, teParameters->toPlainText() );
+}
+
+#if PROJ_VERSION_MAJOR>=6
+static void proj_collecting_logger( void *user_data, int /*level*/, const char *message )
+{
+  QStringList *dest = reinterpret_cast< QStringList * >( user_data );
+  QString messageString( message );
+  messageString.replace( QStringLiteral( "internal_proj_create: " ), QString() );
+  dest->append( messageString );
+}
+
+#endif
+
+void QgsCustomProjectionDialog::validateCurrent()
+{
+  const QString projDef = teParameters->toPlainText();
+
+#if PROJ_VERSION_MAJOR>=6
+  PJ_CONTEXT *context = proj_context_create();
+
+  QStringList projErrors;
+  proj_log_func( context, &projErrors, proj_collecting_logger );
+
+  const QString projCrsString = projDef + ( projDef.contains( QStringLiteral( "+type=crs" ) ) ? QString() : QStringLiteral( " +type=crs" ) );
+  QgsProjUtils::proj_pj_unique_ptr crs( proj_create( context, projCrsString.toLatin1().constData() ) );
+  if ( crs )
+  {
+    QMessageBox::information( this, tr( "Custom Coordinate Reference System" ),
+                              tr( "This proj projection definition is valid." ) );
+  }
+  else
+  {
+    QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
+                          tr( "This proj projection definition is not valid:" ) + QStringLiteral( "\n\n" ) + projErrors.join( '\n' ) );
+  }
+
+  // reset logger to terminal output
+  proj_log_func( context, nullptr, nullptr );
+  proj_context_destroy( context );
+  context = nullptr;
+
+#endif
 }
 
 void QgsCustomProjectionDialog::pbnCalculate_clicked()
