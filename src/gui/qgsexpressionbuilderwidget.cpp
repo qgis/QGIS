@@ -243,16 +243,8 @@ void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const
   {
     loadFieldValues( mFieldValues.value( item->text() ) );
 
-    const QgsFields fields = mLayer->fields();
-    int fieldIndex = fields.lookupField( item->text() );
-    if ( fieldIndex != -1 )
-    {
-      const QgsEditorWidgetSetup setup = fields.at( fieldIndex ).editorWidgetSetup();
-      const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
-
-      cbxValuesInUse->setVisible( formatter->flags() & QgsFieldFormatter::CanProvideAvailableValues );
-      cbxValuesInUse->setChecked( false );
-    }
+    cbxValuesInUse->setVisible( formatterCanProvideAvailableValues( item->text() ) );
+    cbxValuesInUse->setChecked( false );
   }
   mValueGroupBox->setVisible( isField );
 
@@ -510,6 +502,20 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int 
     item->setData( strValue );
     mValuesModel->appendRow( item );
   }
+}
+
+bool QgsExpressionBuilderWidget::formatterCanProvideAvailableValues( const QString &fieldName )
+{
+  const QgsFields fields = mLayer->fields();
+  int fieldIndex = fields.lookupField( fieldName );
+  if ( fieldIndex != -1 )
+  {
+    const QgsEditorWidgetSetup setup = fields.at( fieldIndex ).editorWidgetSetup();
+    const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+
+    return ( formatter->flags() & QgsFieldFormatter::CanProvideAvailableValues );
+  }
+  return false;
 }
 
 QString QgsExpressionBuilderWidget::getFunctionHelp( QgsExpressionFunction *function )
@@ -1108,18 +1114,11 @@ void QgsExpressionBuilderWidget::showContextMenu( QPoint pt )
     QMenu *menu = new QMenu( this );
     menu->addAction( tr( "Load First 10 Unique Values" ), this, SLOT( loadSampleValues() ) );
     menu->addAction( tr( "Load All Unique Values" ), this, SLOT( loadAllValues() ) );
-    const QgsFields fields = mLayer->fields();
-    int fieldIndex = fields.lookupField( item->text() );
-    if ( fieldIndex != -1 )
-    {
-      const QgsEditorWidgetSetup setup = fields.at( fieldIndex ).editorWidgetSetup();
-      const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
 
-      if ( formatter->flags() & QgsFieldFormatter::CanProvideAvailableValues )
-      {
-        menu->addAction( tr( "Load First 10 Unique Used Values" ), this, SLOT( loadSampleUsedValues() ) );
-        menu->addAction( tr( "Load All Unique Used Values" ), this, SLOT( loadAllUsedValues() ) );
-      }
+    if ( formatterCanProvideAvailableValues( item->text() ) )
+    {
+      menu->addAction( tr( "Load First 10 Unique Used Values" ), this, SLOT( loadSampleUsedValues() ) );
+      menu->addAction( tr( "Load All Unique Used Values" ), this, SLOT( loadAllUsedValues() ) );
     }
     menu->popup( expressionTree->mapToGlobal( pt ) );
   }
