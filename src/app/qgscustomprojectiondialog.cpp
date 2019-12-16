@@ -515,7 +515,23 @@ void QgsCustomProjectionDialog::validateCurrent()
   proj_log_func( context, nullptr, nullptr );
   proj_context_destroy( context );
   context = nullptr;
+#else
+  projCtx pContext = pj_ctx_alloc();
+  projPJ proj = pj_init_plus_ctx( pContext, projDef.toLocal8Bit().data() );
 
+  if ( proj )
+  {
+    QMessageBox::information( this, tr( "Custom Coordinate Reference System" ),
+                              tr( "This proj projection definition is valid." ) );
+  }
+  else
+  {
+    QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
+                          tr( "This proj projection definition is not valid" ) );
+  }
+
+  pj_free( proj );
+  pj_ctx_free( pContext );
 #endif
 }
 
