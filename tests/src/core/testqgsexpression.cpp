@@ -2182,7 +2182,7 @@ class TestQgsExpression: public QObject
       // Two calls with the same seed always return the same number
       QgsExpression exp8( QStringLiteral( "rand(1,1000000000,1)" ) );
       QVariant v8 = exp8.evaluate();
-      QCOMPARE( v8.toInt() == 546311529, true );
+      QCOMPARE( v8.toInt(), 546311529 );
 
       // Two calls with a different seed return a different number
       QgsExpression exp9( QStringLiteral( "rand(1,100000000000,1)" ) );
@@ -2229,7 +2229,7 @@ class TestQgsExpression: public QObject
       // Two calls with the same seed always return the same number
       QgsExpression exp8( QStringLiteral( "randf(seed:=1)" ) );
       QVariant v8 = exp8.evaluate();
-      QCOMPARE( v8.toDouble() == 0.13387664401253274, true );
+      QVERIFY( qgsDoubleNear( v8.toDouble(), 0.13387664401253274 ) );
 
       // Two calls with a different seed return a different number
       QgsExpression exp9( QStringLiteral( "randf(seed:=1)" ) );
