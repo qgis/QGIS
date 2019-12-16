@@ -242,8 +242,18 @@ void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const
   if ( isField )
   {
     loadFieldValues( mFieldValues.value( item->text() ) );
+
+    const QgsFields fields = mLayer->fields();
+    int fieldIndex = fields.lookupField( item->text() );
+    if ( fieldIndex != -1 )
+    {
+      const QgsEditorWidgetSetup setup = fields.at( fieldIndex ).editorWidgetSetup();
+      cbxRelatedLayerValues->setVisible( setup.config().contains( QStringLiteral( "Relation" ) ) );
+      cbxRelatedLayerValues->setChecked( true );
+    }
   }
   mValueGroupBox->setVisible( isField );
+
   mShowHelpButton->setText( isField ? tr( "Show Values" ) : tr( "Show Help" ) );
 
   // Show the help for the current item.
@@ -472,7 +482,7 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int 
   int layerFieldIndex = fieldIndex;
 
   // if it's a request for the values of the referenced layer
-  if ( setup.config().contains( QStringLiteral( "Relation" ) ) )
+  if ( cbxRelatedLayerValues->isChecked() && setup.config().contains( QStringLiteral( "Relation" ) ) )
   {
     layer = mProject->relationManager()->relation( setup.config()[QStringLiteral( "Relation" )].toString() ).referencedLayer();
     layerFieldIndex =  mProject->relationManager()->relation( setup.config()[QStringLiteral( "Relation" )].toString() ).referencedFields().first();

@@ -543,21 +543,7 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="1">
-                   <widget class="QgsFilterLineEdit" name="txtSearchEditValues">
-                    <property name="enabled">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0" colspan="2">
-                   <widget class="QListView" name="mValuesListView">
-                    <property name="editTriggers">
-                     <set>QAbstractItemView::NoEditTriggers</set>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
+                  <item row="1" column="0" colspan="2">
                    <layout class="QHBoxLayout" name="horizontalLayout_8">
                     <property name="topMargin">
                      <number>0</number>
@@ -577,6 +563,27 @@
                      </widget>
                     </item>
                    </layout>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QgsFilterLineEdit" name="txtSearchEditValues">
+                    <property name="enabled">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0" colspan="2">
+                   <widget class="QListView" name="mValuesListView">
+                    <property name="editTriggers">
+                     <set>QAbstractItemView::NoEditTriggers</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0" colspan="2">
+                   <widget class="QCheckBox" name="cbxRelatedLayerValues">
+                    <property name="text">
+                     <string>Show all values of referenced layer</string>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -677,7 +684,7 @@ Change the name of the script and save to allow QGIS to auto load on startup.</s
                 <string/>
                </property>
                <property name="icon">
-                <iconset resource="../../images/images.qrc">
+                <iconset>
                  <normaloff>:/images/themes/default/console/iconNewTabEditorConsole.svg</normaloff>:/images/themes/default/console/iconNewTabEditorConsole.svg</iconset>
                </property>
                <property name="iconSize">
@@ -769,7 +776,7 @@ Saved scripts are auto loaded on QGIS startup.</string>
                 <string>Save and Load Functions</string>
                </property>
                <property name="icon">
-                <iconset resource="../../images/images.qrc">
+                <iconset>
                  <normaloff>:/images/themes/default/mActionStart.svg</normaloff>:/images/themes/default/mActionStart.svg</iconset>
                </property>
               </widget>
@@ -835,8 +842,6 @@ Saved scripts are auto loaded on QGIS startup.</string>
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../../images/images.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
