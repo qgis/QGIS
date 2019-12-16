@@ -626,7 +626,11 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
     d->mSrsId = statement.columnAsText( 0 ).toLong();
     d->mDescription = statement.columnAsText( 1 );
     d->mProjectionAcronym = statement.columnAsText( 2 );
+#if PROJ_VERSION_MAJOR>=6
+    d->mEllipsoidAcronym.clear();
+#else
     d->mEllipsoidAcronym = statement.columnAsText( 3 );
+#endif
     d->mProj4 = statement.columnAsText( 4 );
     d->mSRID = statement.columnAsText( 5 ).toLong();
     d->mAuthId = statement.columnAsText( 6 );
@@ -856,6 +860,9 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
 
   d->mProjectionAcronym = myProjRegExp.cap( 1 );
 
+#if PROJ_VERSION_MAJOR>=6
+  d->mEllipsoidAcronym.clear();
+#else
   QRegExp myEllipseRegExp( "\\+ellps=(\\S+)" );
   myStart = myEllipseRegExp.indexIn( myProj4String );
   if ( myStart == -1 )
@@ -866,6 +873,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
   {
     d->mEllipsoidAcronym = myEllipseRegExp.cap( 1 );
   }
+#endif
 
   QRegExp myAxisRegExp( "\\+a=(\\S+)" );
   myStart = myAxisRegExp.indexIn( myProj4String );
@@ -1161,7 +1169,37 @@ QString QgsCoordinateReferenceSystem::ellipsoidAcronym() const
 {
   if ( d->mEllipsoidAcronym.isNull() )
   {
+#if PROJ_VERSION_MAJOR>=6
+    if ( d->mPj )
+    {
+      QgsProjUtils::proj_pj_unique_ptr ellipsoid( proj_get_ellipsoid( QgsProjContext::get(), d->mPj.get() ) );
+      if ( ellipsoid )
+      {
+        const QString ellipsoidAuthName( proj_get_id_auth_name( ellipsoid.get(), 0 ) );
+        const QString ellipsoidAuthCode( proj_get_id_code( ellipsoid.get(), 0 ) );
+        if ( !ellipsoidAuthName.isEmpty() && !ellipsoidAuthCode.isEmpty() )
+          d->mEllipsoidAcronym = QStringLiteral( "%1:%2" ).arg( ellipsoidAuthName, ellipsoidAuthCode );
+        else
+        {
+          double semiMajor, semiMinor, invFlattening;
+          int semiMinorComputed = 0;
+          if ( proj_ellipsoid_get_parameters( QgsProjContext::get(), ellipsoid.get(), &semiMajor, &semiMinor, &semiMinorComputed, &invFlattening ) )
+          {
+            d->mEllipsoidAcronym = QStringLiteral( "PARAMETER:%1:%2" ).arg( qgsDoubleToString( semiMajor ),
+                                   qgsDoubleToString( semiMinor ) );
+          }
+          else
+          {
+            d->mEllipsoidAcronym.clear();
+          }
+        }
+      }
+    }
+    return d->mEllipsoidAcronym;
+#else
     return QString();
+
+#endif
   }
   else
   {
@@ -2298,7 +2336,7 @@ bool QgsCoordinateReferenceSystem::loadFromAuthCode( const QString &auth, const 
   QString ellipsoid;
   getOperationAndEllipsoidFromProjString( proj4, operation, ellipsoid );
   d->mProjectionAcronym = operation;
-  d->mEllipsoidAcronym = ellipsoid;
+  d->mEllipsoidAcronym.clear();
   d->mPj = std::move( crs );
 
   const QString dbVals = sAuthIdToQgisSrsIdMap.value( QStringLiteral( "%1:%2" ).arg( auth, code ).toUpper() );
