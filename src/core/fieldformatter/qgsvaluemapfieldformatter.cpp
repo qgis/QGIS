@@ -71,7 +71,7 @@ QVariant QgsValueMapFieldFormatter::sortValue( QgsVectorLayer *layer, int fieldI
 QList<QVariant> QgsValueMapFieldFormatter::availableValues( const QVariantMap &config, int countLimit ) const
 {
   QList<QVariant> values;
-  QList<QVariant> valueList = config.value( QStringLiteral( "map" ) ).toList();
+  const QList<QVariant> valueList = config.value( QStringLiteral( "map" ) ).toList();
   for ( const QVariant &item : valueList )
   {
     values.append( item.toMap().constBegin().value() );

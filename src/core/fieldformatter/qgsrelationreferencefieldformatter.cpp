@@ -184,11 +184,11 @@ QList<QVariant> QgsRelationReferenceFieldFormatter::availableValues( const QVari
 {
   QList<QVariant> values;
 
-  QgsVectorLayer *referencedLayer = QgsProject::instance()->relationManager()->relation( config[QStringLiteral( "Relation" )].toString() ).referencedLayer();
+  const QgsVectorLayer *referencedLayer = QgsProject::instance()->relationManager()->relation( config[QStringLiteral( "Relation" )].toString() ).referencedLayer();
   if ( referencedLayer )
   {
-    int layerFieldIndex =  QgsProject::instance()->relationManager()->relation( config[QStringLiteral( "Relation" )].toString() ).referencedFields().first();
-    values = referencedLayer->uniqueValues( layerFieldIndex, countLimit ).toList();
+    int fieldIndex =  QgsProject::instance()->relationManager()->relation( config[QStringLiteral( "Relation" )].toString() ).referencedFields().first();
+    values = referencedLayer->uniqueValues( fieldIndex, countLimit ).toList();
   }
   return values;
 }
