@@ -51,16 +51,11 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
     void setCurrentPage( const QString & );
 
-    ~QgsProjectProperties() override;
-
     /**
        Every project has a title
      */
     QString title() const;
     void title( QString const &title );
-
-    //! Returns the projection as a WKT string
-    QString projectionWkt();
 
   public slots:
 
@@ -211,16 +206,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
     void populateStyles();
     void editSymbol( QComboBox *cbo );
-
-    /**
-     * Function to save non-base dialog states
-     */
-    void saveState();
-
-    /**
-     * Function to restore non-base dialog states
-     */
-    void restoreState();
 
     /**
      * Reset the Python macros

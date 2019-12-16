@@ -948,16 +948,10 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   projectionSelectorInitialized();
   restoreOptionsBaseUi();
-  restoreState();
 
 #ifdef QGISDEBUG
   checkPageWidgetNameMap();
 #endif
-}
-
-QgsProjectProperties::~QgsProjectProperties()
-{
-  saveState();
 }
 
 QString QgsProjectProperties::title() const
@@ -1702,14 +1696,6 @@ void QgsProjectProperties::srIdUpdated()
     cmbEllipsoid->setCurrentIndex( 0 );
     cmbEllipsoid->setEnabled( false );
   }
-}
-
-void QgsProjectProperties::saveState()
-{
-}
-
-void QgsProjectProperties::restoreState()
-{
 }
 
 void QgsProjectProperties::pbnWMSExtCanvas_clicked()
