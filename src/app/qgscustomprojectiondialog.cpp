@@ -404,7 +404,7 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
     CRS.createFromProj4( mCustomCRSparameters[i] );
     if ( !CRS.isValid() )
     {
-      QMessageBox::warning( this, tr( "QGIS Custom Projection" ),
+      QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
                             tr( "The proj4 definition of '%1' is not valid." ).arg( mCustomCRSnames[i] ) );
       return;
     }
@@ -476,7 +476,7 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
 
   if ( !proj )
   {
-    QMessageBox::warning( this, tr( "QGIS Custom Projection" ),
+    QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
                           tr( "This proj projection definition is not valid." ) );
     projectedX->clear();
     projectedY->clear();
@@ -498,7 +498,7 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
 
   if ( !okN || !okE )
   {
-    QMessageBox::warning( this, tr( "QGIS Custom Projection" ),
+    QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
                           tr( "Northing and Easting must be in decimal form." ) );
     projectedX->clear();
     projectedY->clear();
@@ -514,7 +514,7 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
 
   if ( !wgs84Proj )
   {
-    QMessageBox::critical( this, tr( "QGIS Custom Projection" ),
+    QMessageBox::critical( this, tr( "Custom Coordinate Reference System" ),
                            tr( "Internal Error (source projection invalid?)" ) );
     projectedX->clear();
     projectedY->clear();
@@ -528,7 +528,7 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
   QgsProjUtils::proj_pj_unique_ptr res( proj_create_crs_to_crs( pContext, "EPSG:4326", projDef.toUtf8(), nullptr ) );
   if ( !res )
   {
-    QMessageBox::warning( this, tr( "QGIS Custom Projection" ),
+    QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
                           tr( "This proj projection definition is not valid." ) );
     projectedX->clear();
     projectedY->clear();
