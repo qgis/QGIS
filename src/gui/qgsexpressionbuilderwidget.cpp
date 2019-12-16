@@ -248,7 +248,9 @@ void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const
     if ( fieldIndex != -1 )
     {
       const QgsEditorWidgetSetup setup = fields.at( fieldIndex ).editorWidgetSetup();
-      cbxValuesInUse->setVisible( setup.config().contains( QStringLiteral( "Relation" ) ) );
+      const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+
+      cbxValuesInUse->setVisible( formatter->flags() & QgsFieldFormatter::CanProvideAvailableValues );
       cbxValuesInUse->setChecked( false );
     }
   }

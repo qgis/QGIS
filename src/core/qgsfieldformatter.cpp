@@ -76,3 +76,8 @@ QList<QVariant> QgsFieldFormatter::availableValues( const QVariantMap &config, i
 
   return QList<QVariant>();
 }
+
+void QgsFieldFormatter::setFlags( const Flags &flags )
+{
+  mFlags = flags;
+}

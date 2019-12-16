@@ -37,6 +37,13 @@ Default constructor
 
     virtual ~QgsFieldFormatter();
 
+    enum Flag
+    {
+      CanProvideAvailableValues
+    };
+    typedef QFlags<QgsFieldFormatter::Flag> Flags;
+
+
     virtual QString id() const = 0;
 %Docstring
 Returns a unique id for this field formatter.
@@ -96,6 +103,15 @@ according to the settings in the ``config``
 .. versionadded:: 3.12
 %End
 
+    Flags flags() const;
+%Docstring
+Returns the flags
+%End
+
+    void setFlags( const Flags &flags );
+%Docstring
+Sets the ``flags``
+%End
 
 };
 

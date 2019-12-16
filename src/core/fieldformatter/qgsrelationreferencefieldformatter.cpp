@@ -23,6 +23,11 @@
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
 
+QgsRelationReferenceFieldFormatter::QgsRelationReferenceFieldFormatter()
+{
+  setFlags( flags() | QgsFieldFormatter::CanProvideAvailableValues );
+}
+
 QString QgsRelationReferenceFieldFormatter::id() const
 {
   return QStringLiteral( "RelationReference" );

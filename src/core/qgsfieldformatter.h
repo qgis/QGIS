@@ -49,6 +49,12 @@ class CORE_EXPORT QgsFieldFormatter
 
     virtual ~QgsFieldFormatter() = default;
 
+    enum Flag
+    {
+      CanProvideAvailableValues =  1   //!< Can provide possible values
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+
     /**
      * Returns a unique id for this field formatter.
      * This id will later be used to identify this field formatter in the registry with QgsFieldFormatterRegistry::fieldFormatter().
@@ -120,7 +126,18 @@ class CORE_EXPORT QgsFieldFormatter
      */
     virtual QList<QVariant> availableValues( const QVariantMap &config, int countLimit ) const;
 
+    /**
+     * Returns the flags
+     */
+    Flags flags() const { return mFlags; }
 
+    /**
+     * Sets the \a flags
+     */
+    void setFlags( const Flags &flags );
+
+  private:
+    Flags mFlags;
 };
 
 #endif // QGSFIELDKIT_H

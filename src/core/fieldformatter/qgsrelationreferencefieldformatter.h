@@ -34,7 +34,7 @@ class CORE_EXPORT QgsRelationReferenceFieldFormatter : public QgsFieldFormatter
     /**
       * Default constructor of field formatter for a relation reference field.
       */
-    QgsRelationReferenceFieldFormatter() = default;
+    QgsRelationReferenceFieldFormatter();
 
     QString id() const override;
 
