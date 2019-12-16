@@ -59,6 +59,7 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsCustomProjectionDialog::buttonBox_accepted );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsCustomProjectionDialog::showHelp );
 
+  leNameList->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
   // user database is created at QGIS startup in QgisApp::createDB
   // we just check whether there is our database [MD]
@@ -305,19 +306,39 @@ void QgsCustomProjectionDialog::pbnAdd_clicked()
 
 void QgsCustomProjectionDialog::pbnRemove_clicked()
 {
-  int i = leNameList->currentIndex().row();
-  if ( i == -1 )
-  {
+  const QModelIndexList selection = leNameList->selectionModel()->selectedRows();
+  if ( selection.empty() )
     return;
-  }
-  delete leNameList->takeTopLevelItem( i );
-  if ( !mCustomCRSids[i].isEmpty() )
+
+  // make sure the user really wants to delete these definitions
+  if ( QMessageBox::No == QMessageBox::question( this, tr( "Delete Projections" ),
+       tr( "Are you sure you want to delete %n projections(s)?", "number of rows", selection.size() ),
+       QMessageBox::Yes | QMessageBox::No ) )
+    return;
+
+  std::vector< int > selectedRows;
+  selectedRows.reserve( selection.size() );
+  for ( const QModelIndex &index : selection )
+    selectedRows.emplace_back( index.row() );
+
+  //sort rows in reverse order
+  std::sort( selectedRows.begin(), selectedRows.end(), std::greater< int >() );
+  for ( const int row : selectedRows )
   {
-    mDeletedCRSs.push_back( mCustomCRSids[i] );
+    if ( row < 0 )
+    {
+      // shouldn't happen?
+      continue;
+    }
+    delete leNameList->takeTopLevelItem( row );
+    if ( !mCustomCRSids[row].isEmpty() )
+    {
+      mDeletedCRSs.push_back( mCustomCRSids[row] );
+    }
+    mCustomCRSids.erase( mCustomCRSids.begin() + row );
+    mCustomCRSnames.erase( mCustomCRSnames.begin() + row );
+    mCustomCRSparameters.erase( mCustomCRSparameters.begin() + row );
   }
-  mCustomCRSids.erase( mCustomCRSids.begin() + i );
-  mCustomCRSnames.erase( mCustomCRSnames.begin() + i );
-  mCustomCRSparameters.erase( mCustomCRSparameters.begin() + i );
 }
 
 void QgsCustomProjectionDialog::leNameList_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
