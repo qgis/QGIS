@@ -1,0 +1,60 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsexpressionstoredialog.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsExpressionStoreDialog : QDialog
+{
+%Docstring
+A generic dialog for editing expression text, label and help text.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsexpressionstoredialog.h"
+%End
+  public:
+
+    QgsExpressionStoreDialog( const QString &label,
+                              const QString &expression,
+                              const QString &helpText,
+                              const QStringList &existingLabels,
+                              QWidget *parent = 0 );
+%Docstring
+Creates a QgsExpressionStoreDialog with given ``label``, ``expression`` and ``helpText``.
+
+:param existingLabels: list of existing labels for unique label validation
+:param parent: optional parent widget
+%End
+
+    QString expression( );
+%Docstring
+Returns the expression text
+%End
+
+    QString label();
+%Docstring
+Returns the label text
+%End
+
+    QString helpText();
+%Docstring
+Returns the help text
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsexpressionstoredialog.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

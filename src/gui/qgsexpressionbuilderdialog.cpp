@@ -33,6 +33,7 @@ QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer *layer, c
   builder->setExpressionText( startText );
   builder->loadFieldNames();
   builder->loadRecent( mRecentKey );
+  builder->loadStored( mRecentKey );
 
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsExpressionBuilderDialog::showHelp );
 }

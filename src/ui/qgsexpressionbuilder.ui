@@ -325,9 +325,25 @@
                     <number>0</number>
                    </property>
                    <item>
-                    <widget class="QToolButton" name="btnSaveExpression">
+                    <widget class="QToolButton" name="btnClearEditor">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
                      <property name="toolTip">
-                      <string>Add the selected expression to the stored expressions</string>
+                      <string>Clear the expression editor</string>
+                     </property>
+                     <property name="text">
+                      <string>Clear</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QToolButton" name="btnSaveExpression">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                     <property name="toolTip">
+                      <string>Add current expression to stored expressions</string>
                      </property>
                      <property name="text">
                       <string>Save</string>
@@ -336,6 +352,9 @@
                    </item>
                    <item>
                     <widget class="QToolButton" name="btnRemoveExpression">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
                      <property name="toolTip">
                       <string>Removes selected expression from the stored expressions</string>
                      </property>

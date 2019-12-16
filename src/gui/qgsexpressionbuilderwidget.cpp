@@ -32,6 +32,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsfieldformatterregistry.h"
 #include "qgsfieldformatter.h"
+#include "qgsexpressionstoredialog.h"
 
 #include <QMenu>
 #include <QFile>
@@ -41,7 +42,7 @@
 #include <QComboBox>
 #include <QGraphicsOpacityEffect>
 #include <QPropertyAnimation>
-
+#include <QMessageBox>
 
 QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   : QWidget( parent )
@@ -61,6 +62,8 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   connect( mValuesListView, &QListView::doubleClicked, this, &QgsExpressionBuilderWidget::mValuesListView_doubleClicked );
   connect( btnSaveExpression, &QPushButton::pressed, this, &QgsExpressionBuilderWidget::storeCurrentExpression );
   connect( btnRemoveExpression, &QPushButton::pressed, this, &QgsExpressionBuilderWidget::removeSelectedExpression );
+  connect( btnClearEditor, &QPushButton::pressed, txtExpressionString, &QgsCodeEditorExpression::clear );
+
   txtHelpText->setOpenExternalLinks( true );
 
   mValueGroupBox->hide();
@@ -73,6 +76,13 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   expressionTree->setModel( mProxyModel.get() );
   expressionTree->setSortingEnabled( true );
   expressionTree->sortByColumn( 0, Qt::AscendingOrder );
+
+  expressionTree->setSelectionMode( QAbstractItemView::SelectionMode::SingleSelection );
+
+  // Set icons for tool buttons
+  btnSaveExpression->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileSave.svg" ) ) );
+  btnRemoveExpression->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionDeleteSelected.svg" ) ) );
+  btnClearEditor->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileNew.svg" ) ) );
 
   expressionTree->setContextMenuPolicy( Qt::CustomContextMenu );
   connect( this, &QgsExpressionBuilderWidget::expressionParsed, this, &QgsExpressionBuilderWidget::setExpressionState );
@@ -250,6 +260,10 @@ void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const
   // Show the help for the current item.
   QString help = loadFunctionHelp( item );
   txtHelpText->setText( help );
+
+  btnRemoveExpression->setEnabled( item->parent() &&
+                                   item->parent()->text() == mStoredGroupName );
+
 }
 
 void QgsExpressionBuilderWidget::btnRun_pressed()
@@ -594,12 +608,12 @@ void QgsExpressionBuilderWidget::loadRecent( const QString &collection )
 void QgsExpressionBuilderWidget::loadStored( const QString &collection )
 {
   mRecentKey = collection;
-  const QString groupName = tr( "Stored (%1)" ).arg( collection );
+  mStoredGroupName = tr( "Stored (%1)" ).arg( collection );
 
   // Cleanup
-  if ( mExpressionGroups.contains( groupName ) )
+  if ( mExpressionGroups.contains( mStoredGroupName ) )
   {
-    QgsExpressionItem *node = mExpressionGroups.value( groupName );
+    QgsExpressionItem *node = mExpressionGroups.value( mStoredGroupName );
     node->removeRows( 0, node->rowCount() );
   }
 
@@ -610,12 +624,13 @@ void QgsExpressionBuilderWidget::loadStored( const QString &collection )
   QString helpText;
   QString expression;
   int i = 0;
-  for ( const auto &label : settings.childGroups() )
+  mStoredLabels = settings.childGroups();
+  for ( const auto &label : qgis::as_const( mStoredLabels ) )
   {
     settings.beginGroup( label );
     expression = settings.value( QStringLiteral( "expression" ) ).toString();
     helpText = settings.value( QStringLiteral( "helpText" ) ).toString();
-    this->registerItem( groupName, label, expression, helpText, QgsExpressionItem::ExpressionNode, false, i++ );
+    this->registerItem( mStoredGroupName, label, expression, helpText, QgsExpressionItem::ExpressionNode, false, i++ );
     settings.endGroup();
   }
 }
@@ -629,6 +644,14 @@ void QgsExpressionBuilderWidget::saveToStored( const QString &label, const QStri
   settings.setValue( QStringLiteral( "expression" ), expression );
   settings.setValue( QStringLiteral( "helpText" ), helpText );
   this->loadStored( collection );
+  // Scroll
+  const QModelIndexList idxs { expressionTree->model()->match( expressionTree->model()->index( 0, 0 ),
+                               Qt::DisplayRole, label, 1,
+                               Qt::MatchFlag::MatchRecursive ) };
+  if ( ! idxs.isEmpty() )
+  {
+    expressionTree->scrollTo( idxs.first() );
+  }
 }
 
 void QgsExpressionBuilderWidget::removeFromStored( const QString &name, const QString &collection )
@@ -771,6 +794,9 @@ void QgsExpressionBuilderWidget::txtExpressionString_textChanged()
   QString text = expressionText();
   clearErrors();
 
+  btnClearEditor->setEnabled( ! txtExpressionString->text().isEmpty() );
+  btnSaveExpression->setEnabled( false );
+
   // If the string is empty the expression will still "fail" although
   // we don't show the user an error as it will be confusing.
   if ( text.isEmpty() )
@@ -838,6 +864,7 @@ void QgsExpressionBuilderWidget::txtExpressionString_textChanged()
     setParserError( false );
     setEvalError( false );
     createMarkers( exp.rootNode() );
+    btnSaveExpression->setEnabled( true );
   }
 
 }
@@ -1201,21 +1228,34 @@ void QgsExpressionBuilderWidget::autosave()
 void QgsExpressionBuilderWidget::storeCurrentExpression()
 {
   const QString expression { this->expressionText() };
-  saveToStored( expression, expression, expression, mRecentKey );
+  QgsExpressionStoreDialog dlg { expression, expression, QString( ), mStoredLabels };
+  if ( dlg.exec() == QDialog::DialogCode::Accepted )
+  {
+    saveToStored( dlg.label(), dlg.expression(), dlg.helpText(), mRecentKey );
+  }
 }
 
 void QgsExpressionBuilderWidget::removeSelectedExpression()
 {
-  QModelIndex idx { expressionTree->currentIndex() };
+
+// Get the item
+  QModelIndex idx = mProxyModel->mapToSource( expressionTree->currentIndex() );
   QgsExpressionItem *item = dynamic_cast<QgsExpressionItem *>( mModel->itemFromIndex( idx ) );
   if ( !item )
     return;
 
-  // Don't handle the double-click if we are on a header node.
-  if ( item->getItemType() == QgsExpressionItem::Header )
+  // Don't handle remove if we are on a header node or the parent
+  // is not the stored group
+  if ( item->getItemType() == QgsExpressionItem::Header ||
+       ( item->parent() && item->parent()->text() != mStoredGroupName ) )
     return;
 
-  removeFromStored( item->text(), mRecentKey );
+  if ( QMessageBox::Yes == QMessageBox::question( this, tr( "Remove Stored Expression" ),
+       tr( "Do you really want to remove stored expressions '%1'?" ).arg( item->text() ),
+       QMessageBox::Yes | QMessageBox::No ) )
+  {
+    removeFromStored( item->text(), mRecentKey );
+  }
 
 }
 
@@ -1280,10 +1320,6 @@ QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem *express
 
   return "<head><style>" + helpStylesheet() + "</style></head><body>" + helpContents + "</body>";
 }
-
-
-
-
 
 QgsExpressionItemSearchProxy::QgsExpressionItemSearchProxy()
 {

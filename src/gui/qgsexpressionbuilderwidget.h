@@ -497,6 +497,8 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QPointer< QgsProject > mProject;
     bool mEvalError = true;
     bool mParserError = true;
+    QString mStoredGroupName;
+    QStringList mStoredLabels;
 };
 
 // clazy:excludeall=qstring-allocations
