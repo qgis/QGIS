@@ -714,6 +714,8 @@ QString QgsWFSProvider::subsetString() const
 
 bool QgsWFSProvider::setSubsetString( const QString &theSQL, bool updateFeatureCount )
 {
+  Q_UNUSED( updateFeatureCount )
+
   QgsDebugMsgLevel( QStringLiteral( "theSql = '%1'" ).arg( theSQL ), 4 );
 
   if ( theSQL == mSubsetString )
@@ -756,12 +758,7 @@ bool QgsWFSProvider::setSubsetString( const QString &theSQL, bool updateFeatureC
   if ( !mShared->computeFilter( errorMsg ) )
     QgsMessageLog::logMessage( errorMsg, tr( "WFS" ) );
 
-
-  mShared->invalidateCache();
-  if ( updateFeatureCount )
-    featureCount();
-
-  emit dataChanged();
+  reloadData();
 
   return true;
 }
