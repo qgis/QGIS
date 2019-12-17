@@ -720,14 +720,6 @@ void TestQgsCoordinateReferenceSystem::fromProj()
   QCOMPARE( myCrs.srsid(), GEOCRS_ID );
   myCrs = QgsCoordinateReferenceSystem::fromProj( QString() );
   QVERIFY( !myCrs.isValid() );
-
-
-  myCrs = QgsCoordinateReferenceSystem::fromProj( QStringLiteral( "+proj=utm +zone=36 +south +a=6378249.145 +b=6356514.966398753 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" ) );
-  QCOMPARE( myCrs.authid(), QStringLiteral( "EPSG:20936" ) );
-
-#if PROJ_VERSION_MAJOR>=6
-  QCOMPARE( myCrs.ellipsoidAcronym(), QStringLiteral( "EPSG:7013" ) );
-#endif
 }
 
 void TestQgsCoordinateReferenceSystem::proj4Cache()
@@ -924,7 +916,7 @@ void TestQgsCoordinateReferenceSystem::readWriteXml()
   QVERIFY( myCrs7.readXml( node ) );
   QCOMPARE( myCrs7.authid(), QStringLiteral( "EPSG:3111" ) );
 #if PROJ_VERSION_MAJOR>=6
-  QCOMPARE( myCrs7.toProj(), QStringLiteral( "+proj=lcc +lat_0=-37 +lon_0=145 +lat_1=-36 +lat_2=-38 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs" ) );
+  QCOMPARE( myCrs7.toProj(), QStringLiteral( "+proj=lcc +lat_0=-37 +lon_0=145 +lat_1=-36 +lat_2=-38 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +units=m +no_defs" ) );
   QCOMPARE( myCrs7.toWkt(), QStringLiteral( R"""(PROJCS["GDA94 / Vicgrid",GEOGCS["GDA94",DATUM["Geocentric_Datum_of_Australia_1994",SPHEROID["GRS 1980",6378137,298.257222101,AUTHORITY["EPSG","7019"]],AUTHORITY["EPSG","6283"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4283"]],PROJECTION["Lambert_Conformal_Conic_2SP"],PARAMETER["latitude_of_origin",-37],PARAMETER["central_meridian",145],PARAMETER["standard_parallel_1",-36],PARAMETER["standard_parallel_2",-38],PARAMETER["false_easting",2500000],PARAMETER["false_northing",2500000],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH],AUTHORITY["EPSG","3111"]])""" ) );
 #else
   QCOMPARE( myCrs7.toProj(), QStringLiteral( "+proj=lcc +lat_1=-36 +lat_2=-38 +lat_0=-37 +lon_0=145 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs" ) );
@@ -1046,7 +1038,7 @@ void TestQgsCoordinateReferenceSystem::readWriteXml()
   QVERIFY( myCrs17.readXml( node ) );
   QCOMPARE( myCrs17.authid(), QStringLiteral( "EPSG:3111" ) );
 #if PROJ_VERSION_MAJOR>=6
-  QCOMPARE( myCrs17.toProj(), QStringLiteral( "+proj=lcc +lat_0=-37 +lon_0=145 +lat_1=-36 +lat_2=-38 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs" ) );
+  QCOMPARE( myCrs17.toProj(), QStringLiteral( "+proj=lcc +lat_0=-37 +lon_0=145 +lat_1=-36 +lat_2=-38 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +units=m +no_defs" ) );
   QCOMPARE( myCrs17.toWkt(), QStringLiteral( R"""(PROJCS["GDA94 / Vicgrid",GEOGCS["GDA94",DATUM["Geocentric_Datum_of_Australia_1994",SPHEROID["GRS 1980",6378137,298.257222101,AUTHORITY["EPSG","7019"]],AUTHORITY["EPSG","6283"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4283"]],PROJECTION["Lambert_Conformal_Conic_2SP"],PARAMETER["latitude_of_origin",-37],PARAMETER["central_meridian",145],PARAMETER["standard_parallel_1",-36],PARAMETER["standard_parallel_2",-38],PARAMETER["false_easting",2500000],PARAMETER["false_northing",2500000],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH],AUTHORITY["EPSG","3111"]])""" ) );
 #else
   QCOMPARE( myCrs17.toProj(), QStringLiteral( "+proj=lcc +lat_1=-36 +lat_2=-38 +lat_0=-37 +lon_0=145 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs" ) );
@@ -1067,7 +1059,7 @@ void TestQgsCoordinateReferenceSystem::readWriteXml()
   QVERIFY( myCrs19.readXml( node ) );
   QCOMPARE( myCrs19.authid(), QStringLiteral( "EPSG:3111" ) );
 #if PROJ_VERSION_MAJOR>=6
-  QCOMPARE( myCrs19.toProj(), QStringLiteral( "+proj=lcc +lat_0=-37 +lon_0=145 +lat_1=-36 +lat_2=-38 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs" ) );
+  QCOMPARE( myCrs19.toProj(), QStringLiteral( "+proj=lcc +lat_0=-37 +lon_0=145 +lat_1=-36 +lat_2=-38 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +units=m +no_defs" ) );
   QCOMPARE( myCrs19.toWkt(), QStringLiteral( R"""(PROJCS["GDA94 / Vicgrid",GEOGCS["GDA94",DATUM["Geocentric_Datum_of_Australia_1994",SPHEROID["GRS 1980",6378137,298.257222101,AUTHORITY["EPSG","7019"]],AUTHORITY["EPSG","6283"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4283"]],PROJECTION["Lambert_Conformal_Conic_2SP"],PARAMETER["latitude_of_origin",-37],PARAMETER["central_meridian",145],PARAMETER["standard_parallel_1",-36],PARAMETER["standard_parallel_2",-38],PARAMETER["false_easting",2500000],PARAMETER["false_northing",2500000],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH],AUTHORITY["EPSG","3111"]])""" ) );
 #else
   QCOMPARE( myCrs19.toProj(), QStringLiteral( "+proj=lcc +lat_1=-36 +lat_2=-38 +lat_0=-37 +lon_0=145 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs" ) );
