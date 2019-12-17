@@ -49,6 +49,7 @@ class CORE_EXPORT QgsFieldFormatter
 
     virtual ~QgsFieldFormatter() = default;
 
+    //! Abilities of the formatter
     enum Flag
     {
       CanProvideAvailableValues =  1   //!< Can provide possible values
