@@ -2409,10 +2409,10 @@ QOCISpatialCols::CurveParts QOCISpatialCols::getCurveParts( int &iElem, const QV
     // CompoundCurve
     baseType = WKBCompoundCurve;
     int compoundParts = n;
-    iElem += 3;
     CurveParts parts;
-    for ( int k = 0; k < compoundParts; k += 1, iElem += 3 )
+    for ( int k = 0; k < compoundParts; k += 1 )
     {
+      iElem += 3;
       if ( !getElemInfoElem( iElem, vElems, nOrds, startOffset, endOffset, etype, n ) )
       {
         qWarning() << "could not fetch element info" << iElem;
@@ -2960,11 +2960,11 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
         isCurved = true;
         isCompoundCurve = true;
         int compoundParts = n;
-        i += 3;
         currentPartWkbType = ( nDims == 2 ? WKBCurvePolygon : WKBCurvePolygonZ );
         CurveParts parts;
-        for ( int k = 0; k < compoundParts; k += 1, i += 3 )
+        for ( int k = 0; k < compoundParts; k += 1 )
         {
+          i += 3;
           if ( !getElemInfoElem( i, elems, nOrds, startOffset, endOffset, etype, n ) )
           {
             qWarning() << "could not fetch element info" << i;
