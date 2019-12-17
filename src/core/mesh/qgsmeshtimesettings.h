@@ -35,7 +35,11 @@
 class CORE_EXPORT QgsMeshTimeSettings
 {
   public:
-    //! Time units used to display time
+
+    /**
+     *  Time units used to display time
+     *  \since QGIS 3.12
+    */
     enum TimeUnit
     {
       //! second unit
@@ -96,9 +100,16 @@ class CORE_EXPORT QgsMeshTimeSettings
     //! Sets format used for absolute time
     void setAbsoluteTimeFormat( const QString &absoluteTimeFormat );
 
-    //! Returns the provider time unit
+    /**
+     * Returns the provider time unit
+     * \since QGIS 3.12
+     */
     TimeUnit providerTimeUnit() const;
-    //! Sets the provider time unit
+
+    /**
+    * Sets the provider time unit
+    * \since QGIS 3.12
+    */
     void setProviderTimeUnit( const TimeUnit &providerTimeUnit );
 
   private:

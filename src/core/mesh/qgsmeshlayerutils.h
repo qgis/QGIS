@@ -183,7 +183,7 @@ class CORE_EXPORT QgsMeshLayerUtils
       * Searches and returns the first valid reference time in layer's dataset group
       * \param meshLayer mesh layer to parse
       *
-      * * \since QGIS 3.12
+      * \since QGIS 3.12
       */
     static QDateTime firstReferenceTime( QgsMeshLayer *meshLayer );
 

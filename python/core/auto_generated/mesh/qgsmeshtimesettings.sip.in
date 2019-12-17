@@ -23,6 +23,7 @@ Represents a mesh time settings for mesh datasets
 #include "qgsmeshtimesettings.h"
 %End
   public:
+
     enum TimeUnit
     {
       //! second unit
@@ -102,10 +103,15 @@ Sets format used for absolute time
     TimeUnit providerTimeUnit() const;
 %Docstring
 Returns the provider time unit
+
+.. versionadded:: 3.12
 %End
+
     void setProviderTimeUnit( const TimeUnit &providerTimeUnit );
 %Docstring
 Sets the provider time unit
+
+.. versionadded:: 3.12
 %End
 
 };
