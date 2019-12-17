@@ -45,6 +45,9 @@
 #include <proj_api.h>
 #endif
 
+#include "qgsogrutils.h"
+#include <ogr_srs_api.h>
+
 QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
 {
@@ -615,22 +618,50 @@ void QgsCustomProjectionDialog::validateCurrent()
   proj_context_destroy( context );
   context = nullptr;
 #else
-  projCtx pContext = pj_ctx_alloc();
-  projPJ proj = pj_init_plus_ctx( pContext, projDef.toLocal8Bit().data() );
-
-  if ( proj )
+  switch ( static_cast< Format >( mFormatComboBox->currentData().toInt() ) )
   {
-    QMessageBox::information( this, tr( "Custom Coordinate Reference System" ),
-                              tr( "This proj projection definition is valid." ) );
-  }
-  else
-  {
-    QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
-                          tr( "This proj projection definition is not valid" ) );
+    case Format::Wkt:
+    {
+      QByteArray ba = projDef.toLatin1();
+      const char *pWkt = ba.data();
+      OGRSpatialReferenceH crs = OSRNewSpatialReference( nullptr );
+
+      OGRErr myInputResult = OSRImportFromWkt( crs, const_cast< char ** >( & pWkt ) );
+      if ( myInputResult == OGRERR_NONE )
+      {
+        QMessageBox::information( this, tr( "Custom Coordinate Reference System" ),
+                                  tr( "This WKT projection definition is valid." ) );
+      }
+      else
+      {
+        QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
+                              tr( "This WKT projection definition is not valid." ) );
+      }
+
+      OSRDestroySpatialReference( crs );
+      break;
+    }
+    case Format::Proj:
+    {
+      projCtx pContext = pj_ctx_alloc();
+      projPJ proj = pj_init_plus_ctx( pContext, projDef.toLocal8Bit().data() );
+
+      if ( proj )
+      {
+        QMessageBox::information( this, tr( "Custom Coordinate Reference System" ),
+                                  tr( "This proj projection definition is valid." ) );
+      }
+      else
+      {
+        QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
+                              tr( "This proj projection definition is not valid" ) );
+      }
+      pj_free( proj );
+      pj_ctx_free( pContext );
+      break;
+    }
   }
 
-  pj_free( proj );
-  pj_ctx_free( pContext );
 #endif
 }
 
@@ -668,6 +699,14 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
   QString projDef = teParameters->toPlainText();
   QgsDebugMsgLevel( QStringLiteral( "Proj: %1" ).arg( projDef ), 3 );
 #else
+  if ( static_cast< Format >( mFormatComboBox->currentData().toInt() ) == Format::Wkt )
+  {
+    // it's not trivial to implement, and we've gotta draw the line somewhere...
+    QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
+                          tr( "Testing WKT based CRS definitions requires Proj version 6 or later." ) );
+    return;
+  }
+
   projCtx pContext = pj_ctx_alloc();
   projPJ proj = pj_init_plus_ctx( pContext, teParameters->toPlainText().toLocal8Bit().data() );
   QgsDebugMsgLevel( QStringLiteral( "Proj: %1" ).arg( teParameters->toPlainText() ), 3 );
