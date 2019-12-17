@@ -1,9 +1,10 @@
+// LICENSE HEADER TODO
 #ifndef QGSGEOMETRYCHECKFIX_H
 #define QGSGEOMETRYCHECKFIX_H
 
 #include <QString>
 
-class QgsGeometryCheckFix
+class ANALYSIS_EXPORT QgsGeometryCheckFix
 {
   public:
     QgsGeometryCheckFix( int id, const QString &name, const QString &description, bool isStable = true );
