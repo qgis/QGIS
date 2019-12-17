@@ -1274,15 +1274,21 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
     {
       QString projCrsString = readEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSProj4String" ) );
       long currentCRS = readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSID" ), -1 );
+      const QString authid = readEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCrs" ) );
+
+      // authid should be prioritised over all
+      bool isUserAuthId = authid.startsWith( QLatin1String( "USER:" ), Qt::CaseInsensitive );
+      if ( !authid.isEmpty() && !isUserAuthId )
+        projectCrs = QgsCoordinateReferenceSystem( authid );
 
       // try the CRS
-      if ( currentCRS >= 0 )
+      if ( !projectCrs.isValid() && currentCRS >= 0 )
       {
         projectCrs = QgsCoordinateReferenceSystem::fromSrsId( currentCRS );
       }
 
       // if that didn't produce a match, try the proj.4 string
-      if ( !projCrsString.isEmpty() && ( !projectCrs.isValid() || projectCrs.toProj() != projCrsString ) )
+      if ( !projCrsString.isEmpty() && ( authid.isEmpty() || isUserAuthId ) && ( !projectCrs.isValid() || projectCrs.toProj() != projCrsString ) )
       {
         projectCrs = QgsCoordinateReferenceSystem::fromProj( projCrsString );
       }
