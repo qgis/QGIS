@@ -931,6 +931,20 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
 #if PROJ_VERSION_MAJOR>=6
     bool loadFromAuthCode( const QString &auth, const QString &code );
+
+    /**
+     * Returns a list of all users SRS IDs present in the CRS database.
+     */
+    static QList< long > userSrsIds();
+
+    /**
+     * Tries to match the current definition of the CRS to user CRSes.
+     *
+     * Uses proj's equivalent testing API so that matches are tolerant to differences in
+     * parameter order and naming for proj or WKT strings (internally, uses the PJ_COMP_EQUIVALENT
+     * criteria).
+     */
+    long matchToUserCrs() const;
 #endif
 
     /**
