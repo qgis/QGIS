@@ -227,25 +227,25 @@ Loads the recent expressions from the given ``collection``.
 By default it is loaded from the collection "generic".
 %End
 
-    void loadStored( const QString &collection =  QStringLiteral( "generic" ) );
+    void loadUserExpressions( const QString &collection =  QStringLiteral( "generic" ) );
 %Docstring
-Loads the stored expressions from the given ``collection``.
+Loads the user expressions from the given ``collection``.
 By default it is loaded from the collection "generic".
 
 .. versionadded:: 3.12
 %End
 
-    void saveToStored( const QString &label, const QString expression, const QString &helpText, const QString &collection =  QStringLiteral( "generic" ) );
+    void saveToUserExpressions( const QString &label, const QString expression, const QString &helpText, const QString &collection =  QStringLiteral( "generic" ) );
 %Docstring
-Stores the ``expression`` in the given ``collection`` with given ``label`` and ``helpText``.
+Stores the user ``expression`` in the given ``collection`` with given ``label`` and ``helpText``.
 By default it is saved to the collection "generic".
 
 .. versionadded:: 3.12
 %End
 
-    void removeFromStored( const QString &name, const QString &collection =  QStringLiteral( "generic" ) );
+    void removeFromUserExpressions( const QString &name, const QString &collection =  QStringLiteral( "generic" ) );
 %Docstring
-Removes the expression ``name`` from the stored expressions in the given ``collection``.
+Removes the expression ``name`` from the user stored expressions in the given ``collection``.
 By default it is removed from the collection "generic".
 
 .. versionadded:: 3.12
@@ -344,17 +344,17 @@ when text changes.
 :param enabled: ``True`` to enable auto saving.
 %End
 
-    void storeCurrentExpression( );
+    void storeCurrentUserExpression( );
 %Docstring
-Adds the current expressions to the stored expressions.
+Adds the current expressions to the stored user expressions.
 
 .. versionadded:: 3.12
 %End
 
-    void removeSelectedExpression( );
+    void removeSelectedUserExpression( );
 %Docstring
-Removes the selected expression from the stored expressions,
-the selected expression must be a stored expression.
+Removes the selected expression from the stored user expressions,
+the selected expression must be a user stored expression.
 
 .. versionadded:: 3.12
 %End
@@ -362,10 +362,6 @@ the selected expression must be a stored expression.
     const QList<QgsExpressionItem *> findExpressions( const QString &label );
 %Docstring
 Returns the list of expression items matching a ``label``.
-
-.. note::
-
-   this function is exposed for testing purposes only
 
 .. versionadded:: 3.12
 %End

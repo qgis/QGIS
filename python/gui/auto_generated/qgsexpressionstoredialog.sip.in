@@ -30,9 +30,8 @@ A generic dialog for editing expression text, label and help text.
                               QWidget *parent = 0 );
 %Docstring
 Creates a QgsExpressionStoreDialog with given ``label``, ``expression`` and ``helpText``.
-
-:param existingLabels: list of existing labels for unique label validation
-:param parent: optional parent widget
+``existingLabels`` is an optional list of existing labels for unique label validation,
+``parent`` is the optional parent widget.
 %End
 
     QString expression( );

@@ -33,8 +33,8 @@ class GUI_EXPORT QgsExpressionStoreDialog : public QDialog, private Ui::QgsExpre
 
     /**
      * Creates a QgsExpressionStoreDialog with given \a label, \a expression and \a helpText.
-     * \param existingLabels list of existing labels for unique label validation
-     * \param parent optional parent widget
+     * \a existingLabels is an optional list of existing labels for unique label validation,
+     * \a parent is the optional parent widget.
      */
     QgsExpressionStoreDialog( const QString &label,
                               const QString &expression,

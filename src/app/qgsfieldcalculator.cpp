@@ -153,7 +153,7 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
   mOnlyUpdateSelectedCheckBox->setText( tr( "Only update %1 selected features" ).arg( vl->selectedFeatureCount() ) );
 
   builder->loadRecent( QStringLiteral( "fieldcalc" ) );
-  builder->loadStored( QStringLiteral( "fieldcalc" ) );
+  builder->loadUserExpressions( QStringLiteral( "fieldcalc" ) );
 
   mInfoIcon->setPixmap( style()->standardPixmap( QStyle::SP_MessageBoxInformation ) );
 
