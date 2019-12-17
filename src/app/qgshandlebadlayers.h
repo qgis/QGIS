@@ -43,7 +43,6 @@ class APP_EXPORT QgsHandleBadLayersHandler
 
 };
 
-
 class QPushButton;
 
 class APP_EXPORT QgsHandleBadLayers
@@ -93,6 +92,7 @@ class APP_EXPORT QgsHandleBadLayers
      * \since QGIS 3.12
      */
     QString checkBasepath( const QString &layerId, const QString &newPath, const QString &fileName );
+
 
 };
 
