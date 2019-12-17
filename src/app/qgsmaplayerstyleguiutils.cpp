@@ -62,11 +62,12 @@ QList<QAction *> QgsMapLayerStyleGuiUtils::actionsUseStyle( QgsMapLayer *layer, 
   bool onlyOneStyle = mgr->styles().count() == 1;
 
   QList<QAction *> actions;
+  QActionGroup *styleGroup = new QActionGroup( parent );
   const auto constStyles = mgr->styles();
   for ( const QString &name : constStyles )
   {
     bool active = name == mgr->currentStyle();
-    QAction *actionUse = new QAction( name, parent );
+    QAction *actionUse = new QAction( name, styleGroup );
     connect( actionUse, &QAction::triggered, this, &QgsMapLayerStyleGuiUtils::useStyle );
     actionUse->setCheckable( true );
     actionUse->setChecked( active );
