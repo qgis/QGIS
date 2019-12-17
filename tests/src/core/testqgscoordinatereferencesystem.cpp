@@ -51,7 +51,6 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void createFromSrid();
     void sridCache();
     void createFromWkt();
-    void createFromWktWithIdentify();
     void createFromWktUnknown();
     void fromWkt();
     void wktCache();
@@ -92,6 +91,8 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void customProjString();
     void recentProjections();
     void displayIdentifier();
+    void createFromWktWithIdentify();
+    void fromProj4EPSG20936();
 
   private:
     void debugPrint( QgsCoordinateReferenceSystem &crs );
@@ -407,11 +408,38 @@ void TestQgsCoordinateReferenceSystem::createFromWktWithIdentify()
 #if PROJ_VERSION_MAJOR>=6
   QgsCoordinateReferenceSystem crs;
   // see https://github.com/qgis/QGIS/issues/33007, WKT string from a MapInfo tabfile in GDA2020 projection
+
+  // currently GDAL gives this BoundCRS WKT, but that's an issue in GDAL -- see https://github.com/OSGeo/PROJ/issues/1752
   crs.createFromWkt( QStringLiteral( "BOUNDCRS[SOURCECRS[PROJCRS[\"unnamed\",BASEGEOGCRS[\"unnamed\",DATUM[\"Geocentric Datum of Australia 2020\",ELLIPSOID[\"GRS 80\",6378137,298.257222101,LENGTHUNIT[\"metre\",1,ID[\"EPSG\",9001]]]],PRIMEM[\"Greenwich\",0,ANGLEUNIT[\"degree\",0.0174532925199433,ID[\"EPSG\",9122]]]],CONVERSION[\"UTM zone 55S\",METHOD[\"Transverse Mercator\",ID[\"EPSG\",9807]],PARAMETER[\"Latitude of natural origin\",0,ANGLEUNIT[\"degree\",0.0174532925199433],ID[\"EPSG\",8801]],PARAMETER[\"Longitude of natural origin\",147,ANGLEUNIT[\"degree\",0.0174532925199433],ID[\"EPSG\",8802]],PARAMETER[\"Scale factor at natural origin\",0.9996,SCALEUNIT[\"unity\",1],ID[\"EPSG\",8805]],PARAMETER[\"False easting\",500000,LENGTHUNIT[\"metre\",1],ID[\"EPSG\",8806]],PARAMETER[\"False northing\",10000000,LENGTHUNIT[\"metre\",1],ID[\"EPSG\",8807]],ID[\"EPSG\",17055]],CS[Cartesian,2],AXIS[\"easting\",east,ORDER[1],LENGTHUNIT[\"metre\",1,ID[\"EPSG\",9001]]],AXIS[\"northing\",north,ORDER[2],LENGTHUNIT[\"metre\",1,ID[\"EPSG\",9001]]]]],TARGETCRS[GEOGCRS[\"WGS 84\",DATUM[\"World Geodetic System 1984\",ELLIPSOID[\"WGS 84\",6378137,298.257223563,LENGTHUNIT[\"metre\",1]]],PRIMEM[\"Greenwich\",0,ANGLEUNIT[\"degree\",0.0174532925199433]],CS[ellipsoidal,2],AXIS[\"geodetic latitude (Lat)\",north,ORDER[1],ANGLEUNIT[\"degree\",0.0174532925199433]],AXIS[\"geodetic longitude (Lon)\",east,ORDER[2],ANGLEUNIT[\"degree\",0.0174532925199433]],USAGE[SCOPE[\"unknown\"],AREA[\"World\"],BBOX[-90,-180,90,180]],ID[\"EPSG\",4326]]],ABRIDGEDTRANSFORMATION[\"Transformation to WGS84\",METHOD[\"Position Vector transformation (geog2D domain)\",ID[\"EPSG\",9606]],PARAMETER[\"X-axis translation\",-0.06155,ID[\"EPSG\",8605]],PARAMETER[\"Y-axis translation\",0.01087,ID[\"EPSG\",8606]],PARAMETER[\"Z-axis translation\",0.04019,ID[\"EPSG\",8607]],PARAMETER[\"X-axis rotation\",-0.0394924,ID[\"EPSG\",8608]],PARAMETER[\"Y-axis rotation\",-0.0327221,ID[\"EPSG\",8609]],PARAMETER[\"Z-axis rotation\",-0.0328979,ID[\"EPSG\",8610]],PARAMETER[\"Scale difference\",1.000000009994,ID[\"EPSG\",8611]]]]" ) );
+  QVERIFY( crs.isValid() );
+  // this must be a user CRS -- it's a boundcrs of EPSG:7855, not EPSG:7855 itself
+  QCOMPARE( crs.authid(), QStringLiteral( "USER:100010" ) );
+  QCOMPARE( crs.ellipsoidAcronym(), QStringLiteral( "PARAMETER:6378137:6356752.31414035614579916" ) );
+
+  // here's the correct (desirable) WKT we should get from GDAL
+  crs.createFromWkt( QStringLiteral( "PROJCS[\"unnamed\",GEOGCS[\"unnamed\",DATUM[\"Geocentric_Datum_of_Australia_2020\",SPHEROID[\"GRS 80\",6378137,298.257222101]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",147],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",10000000],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]" ) );
   QVERIFY( crs.isValid() );
   QCOMPARE( crs.authid(), QStringLiteral( "EPSG:7855" ) );
 
   QCOMPARE( crs.ellipsoidAcronym(), QStringLiteral( "EPSG:7019" ) );
+#endif
+}
+
+void TestQgsCoordinateReferenceSystem::fromProj4EPSG20936()
+{
+#if PROJ_VERSION_MAJOR>=6
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromProj4( QStringLiteral( "+proj=utm +zone=36 +south +a=6378249.145 +b=6356514.966398753 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" ) );
+  QVERIFY( crs.isValid() );
+  QCOMPARE( crs.toWkt(), QStringLiteral( R"""(PROJCS["unknown",GEOGCS["unknown",DATUM["unknown",SPHEROID["unknown",6378249.145,293.466307699995],TOWGS84[-143,-90,-294,0,0,0,0]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",33],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",10000000],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]])""" ) );
+  QCOMPARE( crs.toProj4(), QStringLiteral( "+proj=utm +zone=36 +south +a=6378249.145 +b=6356514.966398753 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" ) );
+
+  // should ideally be EPSG:20936, but see https://github.com/OSGeo/PROJ/issues/1805
+  // so instead we get a BoundCRS of EPSG:20936 created from the proj string, which must be a user CRS (not EPSG:20936 itself!)
+#if 0
+  QCOMPARE( crs.authid(), QStringLiteral( "EPSG:20936" ) );
+#endif
+
+  QCOMPARE( crs.ellipsoidAcronym(), QStringLiteral( "EPSG:7013" ) );
 #endif
 }
 
