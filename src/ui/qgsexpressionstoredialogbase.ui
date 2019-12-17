@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>395</width>
-    <height>211</height>
+    <height>212</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Store expression</string>
+   <string>Store Expression</string>
   </property>
   <layout class="QFormLayout" name="formLayout">
    <item row="0" column="0">
