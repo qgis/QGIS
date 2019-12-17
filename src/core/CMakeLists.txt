@@ -884,6 +884,7 @@ SET(QGIS_CORE_HDRS
   qgsvectorfilewriter.h
   qgsvectorfilewritertask.h
   qgsvectorlayer.h
+  qgsvectorlayerref.h
   qgsvectorlayercache.h
   qgsvectorlayerdiagramprovider.h
   qgsvectorlayereditbuffer.h
