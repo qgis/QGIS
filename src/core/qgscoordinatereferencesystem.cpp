@@ -89,18 +89,7 @@ bool QgsCoordinateReferenceSystem::sDisableStringCache = false;
 #if PROJ_VERSION_MAJOR>=6
 QString getFullProjString( PJ *obj )
 {
-  // see https://lists.osgeo.org/pipermail/proj/2019-May/008565.html, it's not sufficient to just
-  // use proj_as_proj_string
-  QgsProjUtils::proj_pj_unique_ptr boundCrs( proj_crs_create_bound_crs_to_WGS84( QgsProjContext::get(), obj, nullptr ) );
-  if ( boundCrs )
-  {
-    if ( const char *proj4src = proj_as_proj_string( QgsProjContext::get(), boundCrs.get(), PJ_PROJ_4, nullptr ) )
-    {
-      return QString( proj4src );
-    }
-  }
-
-  return QString( proj_as_proj_string( QgsProjContext::get(), obj, PJ_PROJ_4, nullptr ) );
+  return QString( proj_as_proj_string( QgsProjContext::get(), obj, PJ_PROJ_5, nullptr ) );
 }
 #endif
 //--------------------------
