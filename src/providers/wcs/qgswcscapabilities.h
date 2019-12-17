@@ -34,6 +34,13 @@
 class QNetworkAccessManager;
 class QNetworkReply;
 
+//! Metadata Link Property structure
+struct QgsWcsMetadataLinkProperty
+{
+  QString metadataType;
+  QString xlinkHref;
+};
+
 //! CoverageSummary structure
 struct QgsWcsCoverageSummary
 {
@@ -48,6 +55,8 @@ struct QgsWcsCoverageSummary
   QList<double> nullValues;
   QgsRectangle  wgs84BoundingBox; // almost useless, we need the native
   QString       nativeCrs;
+  //Optional metadataLink
+  QgsWcsMetadataLinkProperty metadataLink;
   // Map of bounding boxes, key is CRS name (srsName), e.g. EPSG:4326
   QMap<QString, QgsRectangle> boundingBoxes;
   QgsRectangle  nativeBoundingBox;
@@ -113,6 +122,9 @@ class QgsWcsCapabilities : public QObject
      * \brief   Returns a map for the hierarchy of layers
      */
     void coverageParents( QMap<int, int> &parents, QMap<int, QStringList> &parentNames ) const;
+
+    // Parse metadata element from the document
+    void parseMetadataLink( QDomElement const &e, QgsWcsMetadataLinkProperty &metadataLink );
 
     //! Gets coverage summary for identifier
     QgsWcsCoverageSummary coverage( QString const &identifier );
@@ -211,6 +223,9 @@ class QgsWcsCapabilities : public QObject
 
     //! Gets sub elements texts by path
     static QStringList domElementsTexts( const QDomElement &element, const QString &path );
+
+    //! Gets given element link tag value
+    static QString elementLink( QDomElement const &e );
 
   signals:
     //! \brief emit a signal to notify of a progress event

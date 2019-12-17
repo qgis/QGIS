@@ -1244,6 +1244,14 @@ QString QgsWcsProvider::coverageMetadata( const QgsWcsCoverageSummary &coverage 
   metadata += htmlRow( tr( "Name (identifier)" ), coverage.identifier );
   metadata += htmlRow( tr( "Title" ), coverage.title );
   metadata += htmlRow( tr( "Abstract" ), coverage.abstract );
+
+  if ( !coverage.metadataLink.metadataType.isNull()  &&
+       !coverage.metadataLink.xlinkHref.isNull() )
+  {
+    metadata += htmlRow( tr( "Metadata Type" ), coverage.metadataLink.metadataType );
+    metadata += htmlRow( tr( "Metadata Link" ), coverage.metadataLink.xlinkHref );
+  }
+
 #if 0
   // We don't have size, nativeCrs, nativeBoundingBox etc. until describe coverage which would be heavy for all coverages
   metadata += htmlRow( tr( "Fixed Width" ), QString::number( coverage.width ) );

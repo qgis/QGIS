@@ -736,6 +736,8 @@ void QgsWcsCapabilities::parseCoverageOfferingBrief( QDomElement const &e, QgsWc
   coverageSummary.title = firstChildText( e, QStringLiteral( "label" ) );
   coverageSummary.abstract = firstChildText( e, QStringLiteral( "description" ) );
 
+  parseMetadataLink( e, coverageSummary.metadataLink );
+
   QList<QDomElement> posElements = domElements( e, QStringLiteral( "lonLatEnvelope.pos" ) );
   if ( posElements.size() != 2 )
   {
@@ -763,6 +765,28 @@ void QgsWcsCapabilities::parseCoverageOfferingBrief( QDomElement const &e, QgsWc
     mCoverageParentIdentifiers[ coverageSummary.orderId ] = QStringList() << coverageSummary.identifier << coverageSummary.title << coverageSummary.abstract;
   }
   QgsDebugMsg( QStringLiteral( "coverage orderId = %1 identifier = %2" ).arg( coverageSummary.orderId ).arg( coverageSummary.identifier ) );
+}
+
+void QgsWcsCapabilities::parseMetadataLink( QDomElement const &e, QgsWcsMetadataLinkProperty &metadataLink )
+{
+  QDomElement metadataElement = firstChild( e, QStringLiteral( "metadataLink" ) );
+
+  if ( !metadataElement.isNull() )
+  {
+    metadataLink.metadataType = metadataElement.attribute( QStringLiteral( "metadataType" ) );
+    metadataLink.xlinkHref = elementLink( metadataElement );
+  }
+
+}
+
+QString QgsWcsCapabilities::elementLink( QDomElement const &e )
+{
+  if ( !e.isNull() )
+  {
+    return QUrl::fromEncoded( e.attribute( QStringLiteral( "xlink:href" ) ).toUtf8() ).toString();
+  }
+
+  return QString();
 }
 
 bool QgsWcsCapabilities::convertToDom( QByteArray const &xml )
