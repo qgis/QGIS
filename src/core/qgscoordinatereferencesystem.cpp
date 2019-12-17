@@ -816,24 +816,15 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString )
   myProj4String.remove( QStringLiteral( "+type=crs" ) );
   myProj4String = myProj4String.trimmed();
 
-  // hack!
-#if PROJ_VERSION_MAJOR>=6
-  myProj4String.remove( QStringLiteral( "+towgs84=0,0,0,0,0,0,0" ) );
-  myProj4String = myProj4String.trimmed();
-#endif
-
   d->mIsValid = false;
   d->mWkt.clear();
 
-  // broken on proj <= 6.1.0
 #if PROJ_VERSION_MAJOR>=6
   // first, try to use proj to do this for us...
   const QString projCrsString = myProj4String + ( myProj4String.contains( QStringLiteral( "+type=crs" ) ) ? QString() : QStringLiteral( " +type=crs" ) );
   QgsProjUtils::proj_pj_unique_ptr crs( proj_create( QgsProjContext::get(), projCrsString.toLatin1().constData() ) );
   if ( crs )
   {
-    //crs = QgsProjUtils::crsToSingleCrs( crs.get() ) ;
-
     QString authName;
     QString authCode;
     if ( QgsProjUtils::identifyCrs( crs.get(), authName, authCode ) )
