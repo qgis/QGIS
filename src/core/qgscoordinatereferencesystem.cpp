@@ -828,14 +828,25 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString )
       }
     }
   }
-#endif
 
-#if PROJ_VERSION_MAJOR>=6
-  // try to match against known user crses
+  // try a direct match against user crses
   QgsCoordinateReferenceSystem::RecordMap myRecord = getRecord( "select * from tbl_srs where parameters=" + QgsSqliteUtils::quotedString( myProj4String ) + " order by deprecated" );
+  long id = 0;
   if ( !myRecord.empty() )
   {
-    long id = myRecord[QStringLiteral( "srs_id" )].toLong();
+    id = myRecord[QStringLiteral( "srs_id" )].toLong();
+    if ( id >= USER_CRS_START_ID )
+    {
+      createFromSrsId( id );
+    }
+  }
+  if ( id < USER_CRS_START_ID )
+  {
+    // no direct matches, so go ahead and create a new proj object based on the proj string alone.
+    setProj4String( myProj4String );
+
+    // lastly, try a tolerant match of the created proj object against all user CRSes (allowing differences in parameter order during the comparison)
+    id = matchToUserCrs();
     if ( id >= USER_CRS_START_ID )
     {
       createFromSrsId( id );
@@ -1003,7 +1014,6 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString )
       d->mIsValid = false;
     }
   }
-#endif
 
   // if we failed to look up the projection in database, don't worry. we can still use it :)
   if ( !d->mIsValid )
@@ -1012,6 +1022,7 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString )
     //setProj4String will set mIsValidFlag to true if there is no issue
     setProjString( myProj4String );
   }
+#endif
 
   locker.changeMode( QgsReadWriteLocker::Write );
   if ( !sDisableProj4Cache )
@@ -2344,6 +2355,74 @@ bool QgsCoordinateReferenceSystem::loadFromAuthCode( const QString &auth, const 
   setMapUnits();
 
   return true;
+}
+
+QList<long> QgsCoordinateReferenceSystem::userSrsIds()
+{
+  QList<long> results;
+  // check user defined projection database
+  const QString db = QgsApplication::qgisUserDatabaseFilePath();
+
+  QFileInfo myInfo( db );
+  if ( !myInfo.exists() )
+  {
+    QgsDebugMsg( "failed : " + db + " does not exist!" );
+    return results;
+  }
+
+  sqlite3_database_unique_ptr database;
+  sqlite3_statement_unique_ptr statement;
+
+  //check the db is available
+  int result = openDatabase( db, database );
+  if ( result != SQLITE_OK )
+  {
+    QgsDebugMsg( "failed : " + db + " could not be opened!" );
+    return results;
+  }
+
+  QString sql = QStringLiteral( "select srs_id from tbl_srs where srs_id >= %1" ).arg( USER_CRS_START_ID );
+  int rc;
+  statement = database.prepare( sql, rc );
+  while ( true )
+  {
+    int ret = statement.step();
+
+    if ( ret == SQLITE_DONE )
+    {
+      // there are no more rows to fetch - we can stop looping
+      break;
+    }
+
+    if ( ret == SQLITE_ROW )
+    {
+      results.append( statement.columnAsInt64( 0 ) );
+    }
+    else
+    {
+      QgsMessageLog::logMessage( QObject::tr( "SQLite error: %2\nSQL: %1" ).arg( sql, sqlite3_errmsg( database.get() ) ), QObject::tr( "SpatiaLite" ) );
+      break;
+    }
+  }
+
+  return results;
+}
+
+long QgsCoordinateReferenceSystem::matchToUserCrs() const
+{
+  if ( !d->mPj )
+    return 0;
+
+  const QList< long > ids = userSrsIds();
+  for ( long id : ids )
+  {
+    QgsCoordinateReferenceSystem candidate = QgsCoordinateReferenceSystem::fromSrsId( id );
+    if ( candidate.projObject() && proj_is_equivalent_to( d->mPj.get(), candidate.projObject(), PJ_COMP_EQUIVALENT ) )
+    {
+      return id;
+    }
+  }
+  return 0;
 }
 #endif
 
