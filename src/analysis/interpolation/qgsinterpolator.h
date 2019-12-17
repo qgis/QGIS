@@ -18,7 +18,9 @@
 #ifndef QGSINTERPOLATOR_H
 #define QGSINTERPOLATOR_H
 
+#include <QList>
 #include <QVector>
+
 #include "qgis_sip.h"
 #include "qgis_analysis.h"
 
