@@ -286,6 +286,7 @@ void QgsExpressionBuilderWidget::runPythonCode( const QString &code )
   updateFunctionTree();
   loadFieldNames();
   loadRecent( mRecentKey );
+  loadStored( mRecentKey );
 }
 
 void QgsExpressionBuilderWidget::saveFunctionFile( QString fileName )
@@ -581,7 +582,7 @@ void QgsExpressionBuilderWidget::saveToRecent( const QString &collection )
   }
 
   settings.setValue( location, expressions );
-  this->loadRecent( collection );
+  loadRecent( collection );
 }
 
 void QgsExpressionBuilderWidget::loadRecent( const QString &collection )
