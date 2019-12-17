@@ -24,6 +24,7 @@ __copyright__ = '(C) 2019 by Lutra Consulting Limited'
 import os
 import math
 import re
+import urllib.parse
 from uuid import uuid4
 
 import sqlite3
@@ -575,7 +576,7 @@ class TilesXYZAlgorithmDirectory(TilesXYZAlgorithmBase):
         results = {'OUTPUT_DIRECTORY': output_dir}
 
         if output_html:
-            output_dir_safe = output_dir.replace('\\', '/')
+            output_dir_safe = urllib.parse.quote(output_dir.replace('\\', '/'))
             html_code = LEAFLET_TEMPLATE.format(
                 tilesetname="Leaflet Preview",
                 centerx=self.wgs_extent[0] + (self.wgs_extent[2] - self.wgs_extent[0]) / 2,
