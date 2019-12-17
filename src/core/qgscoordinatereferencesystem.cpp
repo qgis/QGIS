@@ -830,12 +830,19 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString )
   }
 #endif
 
-  // IDEALLY!!
-  // don't do any of this for proj 6 -- responsibility for all this rests in the proj library.
-  // Woohoo! we can be free of this legacy cruft FOREVER!
-  // (and if any of this has value, take it up with the proj project. That's where it belongs)
-  // I ***think*** this is safe to disable for proj 6.1.1 and above
-#if 1
+#if PROJ_VERSION_MAJOR>=6
+  // try to match against known user crses
+  QgsCoordinateReferenceSystem::RecordMap myRecord = getRecord( "select * from tbl_srs where parameters=" + QgsSqliteUtils::quotedString( myProj4String ) + " order by deprecated" );
+  if ( !myRecord.empty() )
+  {
+    long id = myRecord[QStringLiteral( "srs_id" )].toLong();
+    if ( id >= USER_CRS_START_ID )
+    {
+      createFromSrsId( id );
+    }
+  }
+
+#else
   QRegExp myProjRegExp( "\\+proj=(\\S+)" );
   int myStart = myProjRegExp.indexIn( myProj4String );
   if ( myStart == -1 )
@@ -849,9 +856,6 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString )
 
   d->mProjectionAcronym = myProjRegExp.cap( 1 );
 
-#if PROJ_VERSION_MAJOR>=6
-  d->mEllipsoidAcronym.clear();
-#else
   QRegExp myEllipseRegExp( "\\+ellps=(\\S+)" );
   myStart = myEllipseRegExp.indexIn( myProj4String );
   if ( myStart == -1 )
@@ -862,7 +866,6 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString )
   {
     d->mEllipsoidAcronym = myEllipseRegExp.cap( 1 );
   }
-#endif
 
   QRegExp myAxisRegExp( "\\+a=(\\S+)" );
   myStart = myAxisRegExp.indexIn( myProj4String );
@@ -988,7 +991,6 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString )
   {
     // Last ditch attempt to piece together what we know of the projection to find a match...
     setProjString( myProj4String );
-#if PROJ_VERSION_MAJOR<6
     Q_NOWARN_DEPRECATED_PUSH
     mySrsId = findMatchingProj();
     Q_NOWARN_DEPRECATED_POP
@@ -1000,7 +1002,6 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString )
     {
       d->mIsValid = false;
     }
-#endif
   }
 #endif
 
