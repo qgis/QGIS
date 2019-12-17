@@ -49,6 +49,7 @@ QVariant QgsHanaResultSet::getValue(unsigned short columnIndex)
 {
     switch (mMetadata->getColumnType( columnIndex ))
     {
+      case SQLDataTypes::Bit:
       case SQLDataTypes::Boolean:
         return QgsHanaUtils::toVariant( mResultSet->getBoolean( columnIndex ), QVariant::Bool );
       case SQLDataTypes::Char:
@@ -75,10 +76,13 @@ QVariant QgsHanaResultSet::getValue(unsigned short columnIndex)
       case SQLDataTypes::Numeric:
         return QgsHanaUtils::toVariant( mResultSet->getDouble( columnIndex ) );
       case SQLDataTypes::Date:
+      case SQLDataTypes::TypeDate:
         return QgsHanaUtils::toVariant( mResultSet->getDate( columnIndex ) );
       case SQLDataTypes::Time:
+      case SQLDataTypes::TypeTime:
         return QgsHanaUtils::toVariant( mResultSet->getTime( columnIndex ) );
       case SQLDataTypes::Timestamp:
+      case SQLDataTypes::TypeTimestamp:
         return QgsHanaUtils::toVariant( mResultSet->getTimestamp( columnIndex ) );
       case SQLDataTypes::VarChar:
       case SQLDataTypes::LongVarChar:

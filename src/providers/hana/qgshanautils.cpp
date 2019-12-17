@@ -233,6 +233,7 @@ QVariant QgsHanaUtils::toVariant( const String &value, int type, bool isSigned )
   bool isNull = value.isNull();
   switch ( type )
   {
+    case SQLDataTypes::Bit:
     case SQLDataTypes::Boolean:
       if ( isNull )
         return QVariant( QVariant::Bool );
@@ -304,7 +305,7 @@ QVariant QgsHanaUtils::toVariant( const NString &value )
 QVariant QgsHanaUtils::toVariant( const Binary &value )
 {
   if ( value.isNull() )
-    return QVariant( QVariant::BitArray );
+    return QVariant( QVariant::ByteArray );
   else
     return QVariant( toQByteArray( value ) );
 }
@@ -428,7 +429,7 @@ bool QgsHanaUtils::convertField( QgsField &field )
           fieldType = QStringLiteral( "DECIMAL" );
       }
       break;
-    case QVariant::BitArray:
+    case QVariant::ByteArray:
       if ( fieldSize > 0 )
         fieldType = QStringLiteral( "BLOB(%1)" ).arg( QString::number( fieldSize ) );
       else
