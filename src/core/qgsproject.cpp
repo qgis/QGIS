@@ -1276,7 +1276,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
       long currentCRS = readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSID" ), -1 );
       const QString authid = readEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCrs" ) );
 
-      // authid should be prioritised over all
+      // authid should be prioritized over all
       bool isUserAuthId = authid.startsWith( QLatin1String( "USER:" ), Qt::CaseInsensitive );
       if ( !authid.isEmpty() && !isUserAuthId )
         projectCrs = QgsCoordinateReferenceSystem( authid );
