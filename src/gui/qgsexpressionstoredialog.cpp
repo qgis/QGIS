@@ -17,9 +17,19 @@ QgsExpressionStoreDialog::QgsExpressionStoreDialog( const QString &label, const 
   saveBtn->setEnabled( false );
   connect( mLabel, &QLineEdit::textChanged, this, [ = ]( const QString & text )
   {
+    QString errorMessage;
     if ( mExistingLabels.contains( text ) )
     {
+      errorMessage = tr( "A stored expression with this name already exists" );
+    }
+    else if ( text.contains( '/' ) || text.contains( '\\' ) )
+    {
+      errorMessage = tr( "Labels cannot contain slashes (/ or \\)" );
+    }
+    if ( ! errorMessage.isEmpty() )
+    {
       mValidationError->show();
+      mValidationError->setText( errorMessage );
       saveBtn->setEnabled( false );
     }
     else
@@ -28,6 +38,9 @@ QgsExpressionStoreDialog::QgsExpressionStoreDialog( const QString &label, const 
       saveBtn->setEnabled( true );
     }
   } );
-  mLabel->setText( label );
+  // No slashes in labels!
+  QString labelFixed { label };
+  labelFixed.remove( '/' ).remove( '\\' );
+  mLabel->setText( labelFixed );
 }
 
