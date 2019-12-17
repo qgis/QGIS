@@ -108,8 +108,8 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        cls.dbconn = 'driver=\'/usr/sap/hdbclient/libodbcHDB.so\' host=10.18.25.248 port=30115 dbname=\'\' ' \
-                     'user=\'SYSTEM\' password=\'manager\' '
+        cls.dbconn = 'driver=\'/usr/sap/hdbclient/libodbcHDB.so\' host=localhost port=30015 dbname=\'\' ' \
+                     'user=\'SYSTEM\' password=\'mypassword\' '
         if 'QGIS_HANA_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_HANA_DB']
         uri = QgsDataSourceUri(cls.dbconn)
