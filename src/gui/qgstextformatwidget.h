@@ -189,6 +189,9 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
 
     //! Associated vector layer
     QgsVectorLayer *mLayer = nullptr;
+
+    QgsSymbolLayerReferenceList mMaskedSymbolLayers;
+
   protected slots:
 
     //! Updates line placement options to reflect current state of widget
