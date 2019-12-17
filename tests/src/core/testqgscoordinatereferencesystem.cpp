@@ -1410,6 +1410,14 @@ void TestQgsCoordinateReferenceSystem::customProjString()
   QCOMPARE( crs.toWkt(), QStringLiteral( R"""(COMPD_CS["unknown",PROJCS["unknown",GEOGCS["unknown",DATUM["Unknown_based_on_Bessel_1841_ellipsoid",SPHEROID["Bessel 1841",6377397.155,299.1528128],TOWGS84[595.75,121.09,515.5,8.227,-1.5193,5.5971,-2.6729]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]]],PROJECTION["Oblique_Stereographic"],PARAMETER["latitude_of_origin",47.4860018439082],PARAMETER["central_meridian",19.0491441390302],PARAMETER["scale_factor",1],PARAMETER["false_easting",500000],PARAMETER["false_northing",500000],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]],VERT_CS["unknown",VERT_DATUM["unknown",2005],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Gravity-related height",UP]]])""" ) );
   QCOMPARE( crs.authid(), QStringLiteral( "USER:%1" ).arg( id ) );
 
+  // make sure it matches to user crs when parameter order is different
+  QgsCoordinateReferenceSystem::invalidateCache();
+  crs = QgsCoordinateReferenceSystem::fromProj4( QStringLiteral( "+proj=sterea +lon_0=19.0491441390302 +lat_0=47.4860018439082 +k=1 +y_0=500000 +ellps=bessel +x_0=500000 +towgs84=595.75,121.09,515.50,8.2270,-1.5193,5.5971,-2.6729 +units=m +vunits=m +no_defs" ) );
+  QVERIFY( crs.isValid() );
+  QCOMPARE( crs.authid(), QStringLiteral( "USER:%1" ).arg( id ) );
+  QCOMPARE( crs.toProj4(), QStringLiteral( "+proj=sterea +lat_0=47.4860018439082 +lon_0=19.0491441390302 +k=1 +x_0=500000 +y_0=500000 +ellps=bessel +towgs84=595.75,121.09,515.50,8.2270,-1.5193,5.5971,-2.6729 +units=m +vunits=m +no_defs" ) );
+  QCOMPARE( crs.toWkt(), QStringLiteral( R"""(COMPD_CS["unknown",PROJCS["unknown",GEOGCS["unknown",DATUM["Unknown_based_on_Bessel_1841_ellipsoid",SPHEROID["Bessel 1841",6377397.155,299.1528128],TOWGS84[595.75,121.09,515.5,8.227,-1.5193,5.5971,-2.6729]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]]],PROJECTION["Oblique_Stereographic"],PARAMETER["latitude_of_origin",47.4860018439082],PARAMETER["central_meridian",19.0491441390302],PARAMETER["scale_factor",1],PARAMETER["false_easting",500000],PARAMETER["false_northing",500000],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]],VERT_CS["unknown",VERT_DATUM["unknown",2005],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Gravity-related height",UP]]])""" ) );
+
 #endif
 }
 
