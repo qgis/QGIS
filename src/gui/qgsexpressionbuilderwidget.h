@@ -234,28 +234,28 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      * Loads the recent expressions from the given \a collection.
      * By default it is loaded from the collection "generic".
      */
-    void loadRecent( const QString &collection = "generic" );
+    void loadRecent( const QString &collection = QStringLiteral( "generic" ) );
 
     /**
      * Loads the stored expressions from the given \a collection.
      * By default it is loaded from the collection "generic".
      * \since QGIS 3.12
      */
-    void loadStored( const QString &collection = "generic" );
+    void loadStored( const QString &collection =  QStringLiteral( "generic" ) );
 
     /**
      * Stores the \a expression in the given \a collection with given \a label and \a helpText.
      * By default it is saved to the collection "generic".
      * \since QGIS 3.12
      */
-    void saveToStored( const QString &label, const QString expression, const QString &helpText, const QString &collection = "generic" );
+    void saveToStored( const QString &label, const QString expression, const QString &helpText, const QString &collection =  QStringLiteral( "generic" ) );
 
     /**
      * Removes the expression \a name from the stored expressions in the given \a collection.
      * By default it is removed from the collection "generic".
      * \since QGIS 3.12
      */
-    void removeFromStored( const QString &name, const QString &collection = "generic" );
+    void removeFromStored( const QString &name, const QString &collection =  QStringLiteral( "generic" ) );
 
     /**
      * Create a new file in the function editor
