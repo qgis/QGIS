@@ -204,11 +204,22 @@ bool QgsProjUtils::identifyCrs( const PJ *crs, QString &authName, QString &authC
     {
       if ( confidence[i] >= bestConfidence )
       {
-        // prefer EPSG codes for compatibility with earlier qgis conversions
         QgsProjUtils::proj_pj_unique_ptr candidateCrs( proj_list_get( QgsProjContext::get(), crsList, i ) );
+        switch ( proj_get_type( candidateCrs.get() ) )
+        {
+          case PJ_TYPE_BOUND_CRS:
+            // proj_identify also matches bound CRSes to the source CRS. But they are not the same as the source CRS, so we don't
+            // consider them a candidate for a match here
+            continue;
+
+          default:
+            break;
+        }
+
         candidateCrs = QgsProjUtils::crsToSingleCrs( candidateCrs.get() );
         const QString authName( proj_get_id_auth_name( candidateCrs.get(), 0 ) );
-        if ( confidence[i] > bestConfidence || authName == QLatin1String( "EPSG" ) )
+        // if a match is identical confidence, we prefer EPSG codes for compatibility with earlier qgis conversions
+        if ( confidence[i] > bestConfidence || ( confidence[i] == bestConfidence && authName == QLatin1String( "EPSG" ) ) )
         {
           bestConfidence = confidence[i];
           matchedCrs = std::move( candidateCrs );
