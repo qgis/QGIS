@@ -257,7 +257,7 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(
             compareWkt(features[7].geometry().asWkt(), 'MultiCurve (CircularString (1 2, 5 4, 7 2.2, 10 0.1, 13 4),CircularString (-11 -3, 5 7, 10 -1))', 0.00001), features[7].geometry().asWkt())
         self.assertTrue(
-            compareWkt(features[8].geometry().asWkt(), 'MultiCurve (CompoundCurve ((-1 -5, 1 2),CircularString (1 2, 5 4, 7 2.2, 10 0.1, 13 4),(13 4, 17 -6)),CompoundCurve (CircularString (1 2, 5 4, 7 2.2, 10 0.1, 13 4)),CompoundCurve ((-11 -3, 5 7, 10 -1)))', 0.00001), features[8].geometry().asWkt())
+            compareWkt(features[8].geometry().asWkt(), 'MultiCurve (CompoundCurve ((-1 -5, 1 2),CircularString (1 2, 5 4, 7 2.2, 10 0.1, 13 4),(13 4, 17 -6)),CompoundCurve (CircularString (1 3, 5 5, 7 3.2, 10 1.1, 13 5)),CompoundCurve ((-11 -3, 5 7, 10 -1)))', 0.00001), features[8].geometry().asWkt())
 
     def check_geom(self, layer, pk, wkt, wkt_ref=None, check_valid=True):
         """
@@ -404,6 +404,8 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
             compareWkt(features[13].geometry().asWkt(), 'CurvePolygonZ(CompoundCurveZ (CircularStringZ (-1 -5 1, 5 -7 2, 17 -6 3), (17 -6 3, 13 4 4), CircularStringZ (13 4 4, 10 0.1 5, 7 2.20 6, 5 4 7, 1 2 8),(1 2 8, -1 -5 1)))', 0.00001), features[13].geometry().asWkt())
         self.assertTrue(
             compareWkt(features[14].geometry().asWkt(), 'MultiPolygon (((22 22, 28 22, 28 26, 22 26, 22 22)))', 0.00001), features[14].geometry().asWkt())
+        self.assertTrue(
+            compareWkt(features[15].geometry().asWkt(), 'MultiSurface (CurvePolygon(CompoundCurve (CircularString (-1 -5, 5 -7, 17 -6), (17 -6, -1 -5))), CurvePolygon (CircularString (1 3, 7 3, 4 7, 3 5, 1 3)))', 0.00001), features[15].geometry().asWkt())
 
     def testEditSurfaces(self):
 
