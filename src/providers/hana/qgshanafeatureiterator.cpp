@@ -49,7 +49,7 @@ QgsHanaFeatureIterator::QgsHanaFeatureIterator(
   : QgsAbstractFeatureIteratorFromSource<QgsHanaFeatureSource>( source, ownSource, request )
   , mConnRef( source->mUri )
   , mSrsExtent( source->mSrsExtent )
-  , mHasFidColumn( false )
+  , mFidColumn( source->mFidColumn )
   , mHasAttributes( false )
   , mHasGeometryColumn( false )
 {
@@ -82,8 +82,9 @@ QgsHanaFeatureIterator::QgsHanaFeatureIterator(
     mClosed = false;
     rewind();
   }
-  catch ( const odbc::Exception& )
+  catch ( const odbc::Exception& ex)
   {
+    QgsDebugMsg( ex.what() );
     iteratorClosed();
   }
 }
@@ -133,7 +134,7 @@ bool QgsHanaFeatureIterator::fetchFeature( QgsFeature &feature )
     unsigned short paramIndex = 1;
 
     // Read feature id
-    if ( mHasFidColumn )
+    if ( !mFidColumn.isEmpty() )
     {
         QVariant id = mResultSet->getValue(paramIndex);
         feature.setId( id.toLongLong() );
@@ -263,64 +264,46 @@ QString QgsHanaFeatureIterator::buildSQLStatement( const QgsFeatureRequest &requ
   if ( !mOrderByCompiled )
     limitAtProvider = false;
 
- /* if ( request.filterType() == QgsFeatureRequest::FilterFid )
-  {
-    //QString fidWhereClause = QgsPostgresUtils::whereClause( mRequest.filterFid(), mSource->mFields, mConn, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, mSource->mShared );
+  bool subsetOfAttributes = mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes;
+  QgsAttributeList attrs = ( subsetOfAttributes ) ?
+                           request.subsetOfAttributes() : mSource->mFields.allAttributesList();
 
-    //whereClause = QgsPostgresUtils::andWhereClauses( whereClause, fidWhereClause );
-  }
-  else if ( request.filterType() == QgsFeatureRequest::FilterFids )
+  if (subsetOfAttributes)
   {
-    //QString fidsWhereClause = QgsPostgresUtils::whereClause( mRequest.filterFids(), mSource->mFields, mConn, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, mSource->mShared );
-
-    //whereClause = QgsPostgresUtils::andWhereClauses( whereClause, fidsWhereClause );
-  }
-  else *///if ( request.filterType() == QgsFeatureRequest::FilterExpression )
-  {
-      bool subsetOfAttributes = mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes;
-      QgsAttributeList attrs = ( subsetOfAttributes ) ?
-                               request.subsetOfAttributes() : mSource->mFields.allAttributesList();
-
-      if (subsetOfAttributes)
+      // Ensure that all attributes required for expression filter are fetched
+      if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
       {
-          // Ensure that all attributes required for expression filter are fetched
-          if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
-          {
-            //ensure that all fields required for filter expressions are prepared
-            QSet<int> attributeIndexes = request.filterExpression()->referencedAttributeIndexes( mSource->mFields );
-            attributeIndexes += attrs.toSet();
-            attrs = attributeIndexes.toList();
-          }
-
-          if ( !mRequest.orderBy().isEmpty() )
-          {
-              // Ensure that all attributes required for order by are fetched
-              const auto usedAttributeIndices = mRequest.orderBy().usedAttributeIndices( mSource->mFields );
-              for ( int attrIndex : usedAttributeIndices )
-              {
-                if ( !attrs.contains( attrIndex ) )
-                  attrs << attrIndex;
-              }
-          }
+        //ensure that all fields required for filter expressions are prepared
+        QSet<int> attributeIndexes = request.filterExpression()->referencedAttributeIndexes( mSource->mFields );
+        attributeIndexes += attrs.toSet();
+        attrs = attributeIndexes.toList();
       }
 
-      Q_FOREACH ( int i, attrs )
+      if ( !mRequest.orderBy().isEmpty() )
       {
-        QString fieldname = mSource->mFields.at( i ).name();
-        if ( mSource->mFidColumn == fieldname )
-          continue;
-        mAttributesToFetch.append( i );
+          // Ensure that all attributes required for order by are fetched
+          const auto usedAttributeIndices = mRequest.orderBy().usedAttributeIndices( mSource->mFields );
+          for ( int attrIndex : usedAttributeIndices )
+          {
+            if ( !attrs.contains( attrIndex ) )
+              attrs << attrIndex;
+          }
       }
+  }
+
+  Q_FOREACH ( int i, attrs )
+  {
+    QString fieldname = mSource->mFields.at( i ).name();
+    if ( mFidColumn == fieldname )
+      continue;
+    mAttributesToFetch.append( i );
   }
 
   QString sqlFields = "";
 
   // Add feature id column
-  if ( !mSource->mFidColumn.isEmpty() )
-  {
-    sqlFields += QgsHanaUtils::quotedIdentifier( mSource->mFidColumn ) + ",";
-    mHasFidColumn = true;
-  }
+  if ( !mFidColumn.isEmpty() )
+    sqlFields += QgsHanaUtils::quotedIdentifier( mFidColumn ) + ",";
 
   Q_FOREACH ( int i, mAttributesToFetch )
   {
@@ -339,7 +322,9 @@ QString QgsHanaFeatureIterator::buildSQLStatement( const QgsFeatureRequest &requ
   }
 
   if ( sqlFields.isEmpty() )
-    sqlFields = "*";
+  {
+      sqlFields = "*";
+  }
   else
   {
       if ( sqlFields.endsWith( ',' ) )
@@ -353,30 +338,31 @@ QString QgsHanaFeatureIterator::buildSQLStatement( const QgsFeatureRequest &requ
 
   QString sqlFilter;
   // Set spatial filter
-  if ( !filterRect.isNull() && mSource->isSpatial() && !filterRect.isEmpty() && mHasGeometryColumn )
+  if ( !( filterRect.isNull() || filterRect.isEmpty() ) && mSource->isSpatial() && mHasGeometryColumn )
     sqlFilter = getBBOXFilter( filterRect, QgsHanaUtils::toHANAVersion( mConnRef->getDatabaseVersion() ) );
 
   // Set fid filter
-  if ( request.filterType() == QgsFeatureRequest::FilterFid && !mSource->mFidColumn.isEmpty() )
+  if (!mFidColumn.isEmpty())
   {
-    QString inClause = QStringLiteral( " %1 = %2" ).arg(
-                         QgsHanaUtils::quotedIdentifier( mSource->mFidColumn ),
-                         FID_TO_STRING( request.filterFid() ) );
-    sqlFilter = andWhereClauses( sqlFilter, inClause );
-  }
-  else if ( request.filterType() == QgsFeatureRequest::FilterFids && !mSource->mFidColumn.isEmpty()
-            && !mRequest.filterFids().isEmpty() )
-  {
-    QString delim;
-    QString inClause = QStringLiteral( "%1 IN (" ).arg( QgsHanaUtils::quotedIdentifier( mSource->mFidColumn ) );
-    Q_FOREACH ( QgsFeatureId featureId, mRequest.filterFids() )
-    {
-      inClause += delim + FID_TO_STRING( featureId );
-      delim = ',';
-    }
-    inClause.append( ')' );
+      if ( request.filterType() == QgsFeatureRequest::FilterFid )
+      {
+        QString inClause = QStringLiteral( " %1 = %2" ).arg(
+                    QgsHanaUtils::quotedIdentifier( mFidColumn ), FID_TO_STRING( request.filterFid() ) );
+        sqlFilter = andWhereClauses( sqlFilter, inClause );
+      }
+      else if ( request.filterType() == QgsFeatureRequest::FilterFids && !mRequest.filterFids().isEmpty() )
+      {
+        QString delim;
+        QString inClause = QStringLiteral( "%1 IN (" ).arg( QgsHanaUtils::quotedIdentifier( mFidColumn ) );
+        Q_FOREACH ( QgsFeatureId featureId, mRequest.filterFids() )
+        {
+          inClause += delim + FID_TO_STRING( featureId );
+          delim = ',';
+        }
+        inClause.append( ')' );
 
-    sqlFilter = andWhereClauses( sqlFilter, inClause );
+        sqlFilter = andWhereClauses( sqlFilter, inClause );
+      }
   }
 
   //IMPORTANT - this MUST be the last clause added

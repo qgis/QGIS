@@ -33,7 +33,7 @@ class QgsHanaFeatureSource : public QgsAbstractFeatureSource
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   private:
-    bool isSpatial() const { return !mGeometryColumn.isEmpty() || mGeometryType != QgsWkbTypes::Unknown; }
+    bool isSpatial() const { return !mGeometryColumn.isEmpty() && mGeometryType != QgsWkbTypes::Unknown; }
 
   private:
     QgsDataSourceUri mUri;
@@ -84,9 +84,9 @@ class QgsHanaFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsHa
     QgsRectangle mFilterRect;
     QgsRectangle mSrsExtent;
     QgsAttributeList mAttributesToFetch;
-    bool mHasFidColumn;
+    QString mFidColumn;
     bool mHasAttributes;
-    bool mHasGeometryColumn;
+    bool mHasGeometryColumn = false;
     bool mExpressionCompiled = false;
     bool mOrderByCompiled = false;
 };
