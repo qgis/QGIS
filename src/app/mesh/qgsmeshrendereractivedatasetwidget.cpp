@@ -134,7 +134,7 @@ void QgsMeshRendererActiveDatasetWidget::setTimeRange()
   }
   mTimeComboBox->setCurrentIndex( currentIndex );
   mTimeComboBox->blockSignals( false );
-
+  updateMetadata();
   // enable/disable time controls depending on whether the data set is time varying
   enableTimeControls();
 }

@@ -165,33 +165,6 @@ void QgsMeshLayer::setTimeSettings( const QgsMeshTimeSettings &settings )
   emit timeSettingsChanged();
 }
 
-void QgsMeshLayer::setDefaultTimeSettings()
-{
-  mTimeSettings.setRelativeTimeOffsetHours( 0 );
-
-  //search for the first valid reference time in the dataset groups
-  loadReferenceTime();
-  // If the reference  time is valid, set using absolute time
-  mTimeSettings.setUseAbsoluteTime( mTimeSettings.absoluteTimeReferenceTime().isValid() );
-}
-
-void QgsMeshLayer::loadReferenceTime()
-{
-  //search for the first valid reference time in the dataset groups
-  int groupCount = dataProvider()->datasetGroupCount();
-  int i = 0;
-  QDateTime referenceTime;
-  while ( !referenceTime.isValid() && i < groupCount )
-  {
-    QgsMeshDatasetGroupMetadata meta = dataProvider()->datasetGroupMetadata( i );
-    if ( meta.referenceTime().isValid() )
-      referenceTime = meta.referenceTime();
-    ++i;
-  }
-
-  mTimeSettings.setAbsoluteTimeReferenceTime( referenceTime );
-}
-
 QString QgsMeshLayer::formatTime( double hours )
 {
   return QgsMeshLayerUtils::formatTime( hours, mTimeSettings );
@@ -558,7 +531,12 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
     mDataSource = mDataSource + QStringLiteral( "&uid=%1" ).arg( QUuid::createUuid().toString() );
   }
 
-  setDefaultTimeSettings();
+  QDateTime referenceTime = QgsMeshLayerUtils::firstReferenceTime( this );
+  if ( referenceTime.isValid() )
+  {
+    mTimeSettings.setAbsoluteTimeReferenceTime( referenceTime );
+    mTimeSettings.setUseAbsoluteTime( true );
+  }
 
   for ( int i = 0; i < mDataProvider->datasetGroupCount(); ++i )
     assignDefaultStyleToDatasetGroup( i );

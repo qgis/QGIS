@@ -39,11 +39,7 @@ class APP_EXPORT QgsMeshTimeFormatDialog: public QDialog, private Ui::QgsMeshTim
     ~QgsMeshTimeFormatDialog();
 
   private slots:
-    void reloadLayerReferenceTime()
-    {
-      mLayer->loadReferenceTime();
-      mReferenceDateTimeEdit->setDateTime( mLayer->timeSettings().absoluteTimeReferenceTime() );
-    }
+    void loadProviderReferenceTime();
   private:
     void loadSettings();
     void saveSettings();

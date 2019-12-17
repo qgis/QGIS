@@ -222,20 +222,6 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     void setTimeSettings( const QgsMeshTimeSettings &settings );
 
     /**
-     * Sets time default format settings
-     *
-     * \since QGIS 3.12
-     */
-    void setDefaultTimeSettings();
-
-    /**
-     * Loads the first valid reference time of the dataset groups.
-     *
-     * \since QGIS 3.12
-     */
-    void loadReferenceTime();
-
-    /**
      * Returns (date) time in hours formatted to human readable form
      * \param hours time in double in hours
      * \returns formatted time string

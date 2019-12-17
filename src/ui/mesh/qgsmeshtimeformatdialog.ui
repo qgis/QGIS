@@ -89,6 +89,9 @@
             <height>24</height>
            </size>
           </property>
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+          </property>
           <property name="text">
            <string/>
           </property>
@@ -306,6 +309,46 @@
           </widget>
          </item>
         </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Provider time settings</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout">
+      <item row="0" column="1">
+       <widget class="QComboBox" name="mProviderTimeUnitComboBox">
+        <item>
+         <property name="text">
+          <string>seconds</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>minutes</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>hours</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>days</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Time unit</string>
+        </property>
        </widget>
       </item>
      </layout>

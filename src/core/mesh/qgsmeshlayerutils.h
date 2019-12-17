@@ -178,6 +178,15 @@ class CORE_EXPORT QgsMeshLayerUtils
      * Formats hours in human readable string based on settings
      */
     static QString formatTime( double hours, const QgsMeshTimeSettings &settings );
+
+    /**
+      * Searches and returns the first valid reference time in layer's dataset group
+      * \param meshLayer mesh layer to parse
+      *
+      * * \since QGIS 3.12
+      */
+    static QDateTime firstReferenceTime( QgsMeshLayer *meshLayer );
+
 };
 
 ///@endcond

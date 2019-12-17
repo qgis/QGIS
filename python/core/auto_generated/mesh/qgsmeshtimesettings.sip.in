@@ -23,10 +23,19 @@ Represents a mesh time settings for mesh datasets
 #include "qgsmeshtimesettings.h"
 %End
   public:
+    enum TimeUnit
+    {
+      //! second unit
+      seconds,
+      //! minute unit
+      minutes,
+      //! hour unit
+      hours,
+      //! day unit
+      days
+    };
+
     QgsMeshTimeSettings();
-%Docstring
-Default constructor for relative time format and 0 offset
-%End
     QgsMeshTimeSettings( double relativeTimeOffsetHours, const QString &relativeTimeFormat );
 %Docstring
 Constructs relative time format settings with defined offset in hours
@@ -88,6 +97,15 @@ Returns format used for absolute time
     void setAbsoluteTimeFormat( const QString &absoluteTimeFormat );
 %Docstring
 Sets format used for absolute time
+%End
+
+    TimeUnit providerTimeUnit() const;
+%Docstring
+Returns the provider time unit
+%End
+    void setProviderTimeUnit( const TimeUnit &providerTimeUnit );
+%Docstring
+Sets the provider time unit
 %End
 
 };

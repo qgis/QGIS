@@ -35,7 +35,19 @@
 class CORE_EXPORT QgsMeshTimeSettings
 {
   public:
-    //! Default constructor for relative time format and 0 offset
+    //! Time units used to display time
+    enum TimeUnit
+    {
+      //! second unit
+      seconds = 0,
+      //! minute unit
+      minutes,
+      //! hour unit
+      hours,
+      //! day unit
+      days
+    };
+
     QgsMeshTimeSettings();
     //! Constructs relative time format settings with defined offset in hours
     QgsMeshTimeSettings( double relativeTimeOffsetHours, const QString &relativeTimeFormat );
@@ -84,6 +96,11 @@ class CORE_EXPORT QgsMeshTimeSettings
     //! Sets format used for absolute time
     void setAbsoluteTimeFormat( const QString &absoluteTimeFormat );
 
+    //! Returns the provider time unit
+    TimeUnit providerTimeUnit() const;
+    //! Sets the provider time unit
+    void setProviderTimeUnit( const TimeUnit &providerTimeUnit );
+
   private:
     bool mUseAbsoluteTime = false;
 
@@ -93,6 +110,8 @@ class CORE_EXPORT QgsMeshTimeSettings
 
     QDateTime mAbsoluteTimeReferenceTime;
     QString mAbsoluteTimeFormat = QStringLiteral( "dd.MM.yyyy hh:mm:ss" );
+
+    TimeUnit mProviderTimeUnit = TimeUnit::hours;
 };
 
 Q_DECLARE_METATYPE( QgsMeshTimeSettings );
