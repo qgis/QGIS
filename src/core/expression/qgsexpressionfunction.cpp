@@ -13,6 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
+
+#include <random>
+
 #include "qgscoordinateformatter.h"
 #include "qgsexpressionfunction.h"
 #include "qgsexpressionutils.h"
@@ -371,8 +374,29 @@ static QVariant fcnRndF( const QVariantList &values, const QgsExpressionContext 
   if ( max < min )
     return QVariant();
 
+  std::random_device rd;
+  std::mt19937_64 generator( rd() );
+
+  if ( !QgsExpressionUtils::isNull( values.at( 2 ) ) )
+  {
+    quint32 seed;
+    if ( QgsExpressionUtils::isIntSafe( values.at( 2 ) ) )
+    {
+      // if seed can be converted to int, we use as is
+      seed = QgsExpressionUtils::getIntValue( values.at( 2 ), parent );
+    }
+    else
+    {
+      // if not, we hash string representation to int
+      QString seedStr = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
+      std::hash<std::string> hasher;
+      seed = hasher( seedStr.toStdString() );
+    }
+    generator.seed( seed );
+  }
+
   // Return a random double in the range [min, max] (inclusive)
-  double f = static_cast< double >( qrand() ) / RAND_MAX;
+  double f = static_cast< double >( generator() ) / generator.max();
   return QVariant( min + f * ( max - min ) );
 }
 static QVariant fcnRnd( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -382,8 +406,29 @@ static QVariant fcnRnd( const QVariantList &values, const QgsExpressionContext *
   if ( max < min )
     return QVariant();
 
+  std::random_device rd;
+  std::mt19937_64 generator( rd() );
+
+  if ( !QgsExpressionUtils::isNull( values.at( 2 ) ) )
+  {
+    quint32 seed;
+    if ( QgsExpressionUtils::isIntSafe( values.at( 2 ) ) )
+    {
+      // if seed can be converted to int, we use as is
+      seed = QgsExpressionUtils::getIntValue( values.at( 2 ), parent );
+    }
+    else
+    {
+      // if not, we hash string representation to int
+      QString seedStr = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
+      std::hash<std::string> hasher;
+      seed = hasher( seedStr.toStdString() );
+    }
+    generator.seed( seed );
+  }
+
   // Return a random integer in the range [min, max] (inclusive)
-  return QVariant( min + ( qrand() % static_cast< qlonglong >( max - min + 1 ) ) );
+  return QVariant( min + ( generator() % ( max - min + 1 ) ) );
 }
 
 static QVariant fcnLinearScale( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -5234,11 +5279,11 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "log" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "base" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnLog, QStringLiteral( "Math" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "round" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "places" ), true, 0 ), fcnRound, QStringLiteral( "Math" ) );
 
-    QgsStaticExpressionFunction *randFunc = new QgsStaticExpressionFunction( QStringLiteral( "rand" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "min" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "max" ) ), fcnRnd, QStringLiteral( "Math" ) );
+    QgsStaticExpressionFunction *randFunc = new QgsStaticExpressionFunction( QStringLiteral( "rand" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "min" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "max" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "seed" ), true ), fcnRnd, QStringLiteral( "Math" ) );
     randFunc->setIsStatic( false );
     functions << randFunc;
 
-    QgsStaticExpressionFunction *randfFunc = new QgsStaticExpressionFunction( QStringLiteral( "randf" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "min" ), true, 0.0 ) << QgsExpressionFunction::Parameter( QStringLiteral( "max" ), true, 1.0 ), fcnRndF, QStringLiteral( "Math" ) );
+    QgsStaticExpressionFunction *randfFunc = new QgsStaticExpressionFunction( QStringLiteral( "randf" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "min" ), true, 0.0 ) << QgsExpressionFunction::Parameter( QStringLiteral( "max" ), true, 1.0 ) << QgsExpressionFunction::Parameter( QStringLiteral( "seed" ), true ), fcnRndF, QStringLiteral( "Math" ) );
     randfFunc->setIsStatic( false );
     functions << randfFunc;
 
