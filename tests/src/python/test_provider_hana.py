@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-"""QGIS Unit tests for the HANA provider.
-
-Note: to prepare the DB, you need to run the sql files specified in
-tests/testdata/provider/testdata_pg.sh
+"""QGIS Unit tests for the SAP HANA provider.
 
 Read tests/README.md about writing/launching tests with HANA.
 
