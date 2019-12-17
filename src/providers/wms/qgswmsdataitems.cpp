@@ -115,17 +115,8 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
     for ( const QgsWmtsTileLayer &l : constTileLayers )
     {
       QString title = l.title.isEmpty() ? l.identifier : l.title;
-      QgsDataItem *layerItem;
 
-      // Using if condition, ternary operator leads to type casting issue
-      if ( l.styles.size() == 1 )
-      {
-        layerItem = this;
-      }
-      else
-      {
-        layerItem = new QgsWMTSRootItem( this, title, mPath + '/' + l.identifier );
-      }
+      QgsDataItem *layerItem = l.styles.size() == 1 ? static_cast<  QgsDataItem * >( this ) : static_cast<  QgsDataItem * >( new QgsWMTSRootItem( this, title, mPath + '/' + l.identifier ) );
 
       if ( layerItem != this )
       {
@@ -150,17 +141,7 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
         }
         styleIdentifiers.push_back( stylePathIdentifier );
 
-        QgsDataItem *styleItem;
-
-        // Using if condition, ternary operator leads to type casting issue
-        if ( l.setLinks.size() == 1 )
-        {
-          styleItem = layerItem;
-        }
-        else
-        {
-          styleItem = new QgsWMTSRootItem( layerItem, styleName, layerItem->path() + '/' + stylePathIdentifier );
-        }
+        QgsDataItem *styleItem = l.setLinks.size() == 1 ? static_cast<  QgsDataItem * >( layerItem ) : static_cast<  QgsDataItem * >( new QgsWMTSRootItem( layerItem, styleName, layerItem->path() + '/' + stylePathIdentifier ) );
 
         if ( styleItem != layerItem )
         {
@@ -192,18 +173,7 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
           }
           linkIdentifiers.push_back( linkPathIdentifier );
 
-
-          QgsDataItem *linkItem;
-
-          // Using if condition, ternary operator leads to type casting issue
-          if ( l.formats.size() == 1 )
-          {
-            linkItem = styleItem;
-          }
-          else
-          {
-            linkItem = new QgsWMTSRootItem( styleItem, linkName, styleItem->path() + '/' + linkPathIdentifier );
-          }
+          QgsDataItem *linkItem = l.formats.size() == 1 ? static_cast<  QgsDataItem * >( styleItem ) : static_cast<  QgsDataItem * >( new QgsWMTSRootItem( styleItem, linkName, styleItem->path() + '/' + linkPathIdentifier ) );
 
           if ( linkItem != styleItem )
           {
