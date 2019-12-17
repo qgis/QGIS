@@ -843,6 +843,7 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
   mBufferEffectWidget->setPaintEffect( mBufferEffect.get() );
 
   // mask
+  mMaskedSymbolLayers = mask.maskedSymbolLayers();
   mEnableMaskChkBx->setChecked( mask.enabled() );
   mMaskBufferSizeSpinBox->setValue( mask.size() );
   mMaskBufferUnitWidget->setUnit( mask.sizeUnit() );
@@ -1021,6 +1022,7 @@ QgsTextFormat QgsTextFormatWidget::format( bool includeDataDefinedProperties ) c
     mask.setPaintEffect( mMaskEffect->clone() );
   else
     mask.setPaintEffect( nullptr );
+  mask.setMaskedSymbolLayers( mMaskedSymbolLayers );
   format.setMask( mask );
 
   // shape background
