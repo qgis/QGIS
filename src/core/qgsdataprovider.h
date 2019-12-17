@@ -360,7 +360,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * by providers with data caches to synchronize, changes in the data source, feature
      * counts and other specific actions.
      * Emits the `dataChanged` signal
-     * \see reloadProviderData()
      */
     virtual void reloadData();
 

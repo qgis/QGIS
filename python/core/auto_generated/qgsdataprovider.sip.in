@@ -269,8 +269,6 @@ Reloads the data from the source by calling reloadProviderData() implemented
 by providers with data caches to synchronize, changes in the data source, feature
 counts and other specific actions.
 Emits the `dataChanged` signal
-
-.. seealso:: :py:func:`reloadProviderData`
 %End
 
     virtual QDateTime timestamp() const;

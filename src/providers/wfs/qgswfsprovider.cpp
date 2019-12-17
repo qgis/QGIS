@@ -755,7 +755,9 @@ bool QgsWFSProvider::setSubsetString( const QString &theSQL, bool updateFeatureC
   QString errorMsg;
   if ( !mShared->computeFilter( errorMsg ) )
     QgsMessageLog::logMessage( errorMsg, tr( "WFS" ) );
-  reloadData();
+
+
+  mShared->invalidateCache();
   if ( updateFeatureCount )
     featureCount();
 
