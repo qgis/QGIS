@@ -736,7 +736,7 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
   }
 
   // try to match against user crs
-  QgsCoordinateReferenceSystem::RecordMap record = getRecord( "select * from tbl_srs where parameters=" + QgsSqliteUtils::quotedString( wkt ) + " order by deprecated" );
+  QgsCoordinateReferenceSystem::RecordMap record = getRecord( "select * from tbl_srs where wkt=" + QgsSqliteUtils::quotedString( wkt ) + " order by deprecated" );
   if ( !record.empty() )
   {
     long srsId = record[QStringLiteral( "srs_id" )].toLong();
@@ -748,6 +748,17 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
   else
   {
     setWktString( wkt );
+    if ( d->mSrsId == 0 )
+    {
+#if PROJ_VERSION_MAJOR>=6
+      // lastly, try a tolerant match of the created proj object against all user CRSes (allowing differences in parameter order during the comparison)
+      long id = matchToUserCrs();
+      if ( id >= USER_CRS_START_ID )
+      {
+        createFromSrsId( id );
+      }
+#endif
+    }
   }
 
   locker.changeMode( QgsReadWriteLocker::Write );
