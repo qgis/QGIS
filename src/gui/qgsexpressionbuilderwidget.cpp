@@ -644,7 +644,7 @@ void QgsExpressionBuilderWidget::saveToStored( const QString &label, const QStri
   settings.beginGroup( label );
   settings.setValue( QStringLiteral( "expression" ), expression );
   settings.setValue( QStringLiteral( "helpText" ), helpText );
-  this->loadStored( collection );
+  loadStored( collection );
   // Scroll
   const QModelIndexList idxs { expressionTree->model()->match( expressionTree->model()->index( 0, 0 ),
                                Qt::DisplayRole, label, 1,
