@@ -1090,7 +1090,7 @@ bool QgsProcessingFeatureSink::addFeatures( QgsFeatureList &features, QgsFeature
 
 bool QgsProcessingFeatureSink::addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags )
 {
-  bool result = !QgsProxyFeatureSink::addFeatures( iterator, flags );
+  bool result = QgsProxyFeatureSink::addFeatures( iterator, flags );
   if ( !result )
     mContext.feedback()->reportError( QObject::tr( "Features could not be written to %1" ).arg( mSinkName ) );
   return result;

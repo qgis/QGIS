@@ -3,7 +3,8 @@ DROP TABLE IF EXISTS qgis_test.books_authors;
 DROP TABLE IF EXISTS qgis_test.books;
 DROP TABLE IF EXISTS qgis_test.authors;
 DROP TABLE IF EXISTS qgis_test.editors;
-
+DROP TABLE IF EXISTS qgis_test.pipes;
+DROP TABLE IF EXISTS qgis_test.leaks;
 
 -- Table: qgis_test.authors
 
@@ -83,3 +84,35 @@ INSERT INTO qgis_test.books_authors(fk_book, fk_author)
               (1, 2),
               (1, 3),
               (1, 4);
+
+-- Table: qgis_test.pipes
+
+CREATE EXTENSION IF NOT EXISTS postgis;
+
+CREATE TABLE qgis_test.pipes
+(
+  id serial PRIMARY KEY,
+  name text,
+  geom geometry('LINESTRING',4326),
+  CONSTRAINT pipes_name_key UNIQUE (name)
+);
+
+INSERT INTO qgis_test.pipes(name, geom)
+VALUES ('pipe 1', ST_GeometryFromText('LINESTRING(0 0,0 1)',4326)),
+       ('pipe 2', ST_GeometryFromText('LINESTRING(0 0,1 0)',4326));
+
+-- Table: qgis_test.leaks
+
+CREATE TABLE qgis_test.leaks
+(
+  id serial PRIMARY KEY,
+  name text,
+  pipe integer references qgis_test.pipes(id),
+  geom geometry('POINT',4326),
+  CONSTRAINT leaks_name_key UNIQUE (name)
+);
+
+INSERT INTO qgis_test.leaks(name, pipe, geom)
+VALUES ('leak 1', 1, ST_GeometryFromText('POINT(0 0.5)',4326)),
+       ('leak 2', 2, ST_GeometryFromText('POINT(0.25 0)',4326)),
+       ('leak 3', 2, ST_GeometryFromText('POINT(0.75 0)',4326));

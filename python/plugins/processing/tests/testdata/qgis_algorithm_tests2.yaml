@@ -234,7 +234,7 @@ tests:
         name: expected/extend_multilines.gml
         type: vector
 
-  - algorithm: qgis:extractspecificvertices
+  - algorithm: native:extractspecificvertices
     name: Extract specific vertices lines
     params:
       INPUT:
@@ -249,7 +249,7 @@ tests:
           fields:
             fid: skip
 
-  - algorithm: qgis:extractspecificvertices
+  - algorithm: native:extractspecificvertices
     name: Extract specific vertices polygons
     params:
       INPUT:
@@ -378,7 +378,7 @@ tests:
         hash: 71aecb383a686d78ea0e677901a8a93f822b9897d7a9e23ba4ebf24d
         type: rasterhash
 
-  - algorithm: qgis:geometrybyexpression
+  - algorithm: native:geometrybyexpression
     name: Geometry by expression (point)
     params:
       EXPRESSION: 'translate( $geometry,1,1)'
@@ -393,7 +393,7 @@ tests:
         name: expected/geometry_by_expression_point.gml
         type: vector
 
-  - algorithm: qgis:geometrybyexpression
+  - algorithm: native:geometrybyexpression
     name: Geometry by expression (polygon)
     params:
       EXPRESSION: ' translate( centroid($geometry),1,1)'
@@ -411,7 +411,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:geometrybyexpression
+  - algorithm: native:geometrybyexpression
     name: Geometry by expression (line)
     params:
       EXPRESSION: ' translate( $geometry,1,1)'
@@ -535,7 +535,7 @@ tests:
         name: expected/snap_geometries.gml
         type: vector
 
-  - algorithm: qgis:poleofinaccessibility
+  - algorithm: native:poleofinaccessibility
     name: Pole of inaccessibility (polygons)
     params:
       INPUT:
@@ -1932,7 +1932,7 @@ tests:
         type: vector
         in_place_result: true
 
-  - algorithm: qgis:truncatetable
+  - algorithm: native:truncatetable
     name: Truncate table
     params:
       INPUT:

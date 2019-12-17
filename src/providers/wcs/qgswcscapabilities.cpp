@@ -1234,23 +1234,23 @@ QString QgsWcsCapabilities::lastErrorFormat()
 
 bool QgsWcsCapabilities::setAuthorization( QNetworkRequest &request ) const
 {
-  if ( mUri.hasParam( QStringLiteral( "authcfg" ) ) && !mUri.param( QStringLiteral( "authcfg" ) ).isEmpty() )
+  if ( !mUri.authConfigId().isEmpty() )
   {
-    return QgsApplication::authManager()->updateNetworkRequest( request, mUri.param( QStringLiteral( "authcfg" ) ) );
+    return QgsApplication::authManager()->updateNetworkRequest( request, mUri.authConfigId() );
   }
-  else if ( mUri.hasParam( QStringLiteral( "username" ) ) && mUri.hasParam( QStringLiteral( "password" ) ) )
+  else if ( !mUri.username().isEmpty() && !mUri.password().isEmpty() )
   {
-    QgsDebugMsg( "setAuthorization " + mUri.param( "username" ) );
-    request.setRawHeader( "Authorization", "Basic " + QStringLiteral( "%1:%2" ).arg( mUri.param( QStringLiteral( "username" ) ), mUri.param( QStringLiteral( "password" ) ) ).toLatin1().toBase64() );
+    QgsDebugMsg( "setAuthorization " + mUri.username() );
+    request.setRawHeader( "Authorization", "Basic " + QStringLiteral( "%1:%2" ).arg( mUri.username(), mUri.password() ).toLatin1().toBase64() );
   }
   return true;
 }
 
 bool QgsWcsCapabilities::setAuthorizationReply( QNetworkReply *reply ) const
 {
-  if ( mUri.hasParam( QStringLiteral( "authcfg" ) ) && !mUri.param( QStringLiteral( "authcfg" ) ).isEmpty() )
+  if ( !mUri.authConfigId().isEmpty() )
   {
-    return QgsApplication::authManager()->updateNetworkReply( reply, mUri.param( QStringLiteral( "authcfg" ) ) );
+    return QgsApplication::authManager()->updateNetworkReply( reply, mUri.authConfigId() );
   }
   return true;
 }

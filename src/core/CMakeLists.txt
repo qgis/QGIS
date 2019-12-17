@@ -263,10 +263,6 @@ SET(QGIS_CORE_SRCS
   qgsimagecache.cpp
   qgsinterval.cpp
   qgsjsonutils.cpp
-  qgslabelfeature.cpp
-  qgslabelingengine.cpp
-  qgslabelingenginesettings.cpp
-  qgslabelsearchtree.cpp
   qgslayerdefinition.cpp
   qgslegendrenderer.cpp
   qgslegendsettings.cpp
@@ -317,7 +313,6 @@ SET(QGIS_CORE_SRCS
   qgsowsconnection.cpp
   qgspaintenginehack.cpp
   qgspainting.cpp
-  qgspallabeling.cpp
   qgspathresolver.cpp
   qgspluginlayer.cpp
   qgspluginlayerregistry.cpp
@@ -347,7 +342,6 @@ SET(QGIS_CORE_SRCS
   qgsrelationmanager.cpp
   qgsrenderchecker.cpp
   qgsrendercontext.cpp
-  qgsrulebasedlabeling.cpp
   qgsrunprocess.cpp
   qgsruntimeprofiler.cpp
   qgsscalecalculator.cpp
@@ -356,6 +350,7 @@ SET(QGIS_CORE_SRCS
   qgssnappingutils.cpp
   qgsspatialindex.cpp
   qgsspatialindexkdbush.cpp
+  qgsspatialindexutils.cpp
   qgssqlexpressioncompiler.cpp
   qgssqliteexpressioncompiler.cpp
   qgssqlstatement.cpp
@@ -367,7 +362,6 @@ SET(QGIS_CORE_SRCS
   qgsstringutils.cpp
   qgstaskmanager.cpp
   qgstessellator.cpp
-  qgstextlabelfeature.cpp
   qgstextrenderer.cpp
   qgstilecache.cpp
   qgstolerance.cpp
@@ -394,8 +388,6 @@ SET(QGIS_CORE_SRCS
   qgsvectorlayerexporter.cpp
   qgsvectorlayerjoinbuffer.cpp
   qgsvectorlayerjoininfo.cpp
-  qgsvectorlayerlabeling.cpp
-  qgsvectorlayerlabelprovider.cpp
   qgsvectorlayerrenderer.cpp
   qgsvectorlayertools.cpp
   qgsvectorlayerundocommand.cpp
@@ -528,6 +520,7 @@ SET(QGIS_CORE_SRCS
   raster/qgssinglebandpseudocolorrenderer.cpp
   raster/qgshillshaderenderer.cpp
 
+  mesh/qgsmesh3daveraging.cpp
   mesh/qgsmeshdataprovider.cpp
   mesh/qgsmeshlayer.cpp
   mesh/qgsmeshlayerinterpolator.cpp
@@ -539,6 +532,18 @@ SET(QGIS_CORE_SRCS
   mesh/qgstriangularmesh.cpp
   mesh/qgsmeshtimesettings.cpp
   mesh/qgsmeshtracerenderer.cpp
+
+  labeling/qgslabelfeature.cpp
+  labeling/qgslabelingengine.cpp
+  labeling/qgslabelingenginesettings.cpp
+  labeling/qgslabelobstaclesettings.cpp
+  labeling/qgslabelsearchtree.cpp
+  labeling/qgslabelthinningsettings.cpp
+  labeling/qgspallabeling.cpp
+  labeling/qgsrulebasedlabeling.cpp
+  labeling/qgstextlabelfeature.cpp
+  labeling/qgsvectorlayerlabeling.cpp
+  labeling/qgsvectorlayerlabelprovider.cpp
 
   geometry/qgsabstractgeometry.cpp
   geometry/qgsbox3d.cpp
@@ -739,6 +744,7 @@ SET(QGIS_CORE_HDRS
   qgsfileutils.h
   qgsfontutils.h
   qgsgdalutils.h
+  qgsgenericspatialindex.h
   qgsgeometryoptions.h
   qgsgeometrysimplifier.h
   qgsgeometryvalidator.h
@@ -751,10 +757,6 @@ SET(QGIS_CORE_HDRS
   qgsindexedfeature.h
   qgsinterval.h
   qgsjsonutils.h
-  qgslabelfeature.h
-  qgslabelingengine.h
-  qgslabelingenginesettings.h
-  qgslabelsearchtree.h
   qgslayerdefinition.h
   qgslegendrenderer.h
   qgslegendsettings.h
@@ -810,7 +812,6 @@ SET(QGIS_CORE_HDRS
   qgsowsconnection.h
   qgspaintenginehack.h
   qgspainting.h
-  qgspallabeling.h
   qgspathresolver.h
   qgspluginlayer.h
   qgspluginlayerregistry.h
@@ -843,7 +844,6 @@ SET(QGIS_CORE_HDRS
   qgsrenderchecker.h
   qgsrendercontext.h
   qgsrenderedfeaturehandlerinterface.h
-  qgsrulebasedlabeling.h
   qgsrunprocess.h
   qgsruntimeprofiler.h
   qgsscalecalculator.h
@@ -855,6 +855,7 @@ SET(QGIS_CORE_HDRS
   qgsspatialindex.h
   qgsspatialindexkdbush.h
   qgsspatialindexkdbushdata.h
+  qgsspatialindexutils.h
   qgsspatialiteutils.h
   qgssqlexpressioncompiler.h
   qgssqliteutils.h
@@ -866,7 +867,6 @@ SET(QGIS_CORE_HDRS
   qgstaskmanager.h
   qgstessellator.h
   qgstestutils.h
-  qgstextlabelfeature.h
   qgstextrenderer.h
   qgsthreadingutils.h
   qgstilecache.h
@@ -884,6 +884,7 @@ SET(QGIS_CORE_HDRS
   qgsvectorfilewriter.h
   qgsvectorfilewritertask.h
   qgsvectorlayer.h
+  qgsvectorlayerref.h
   qgsvectorlayercache.h
   qgsvectorlayerdiagramprovider.h
   qgsvectorlayereditbuffer.h
@@ -894,8 +895,6 @@ SET(QGIS_CORE_HDRS
   qgsvectorlayerfeatureiterator.h
   qgsvectorlayerjoinbuffer.h
   qgsvectorlayerjoininfo.h
-  qgsvectorlayerlabeling.h
-  qgsvectorlayerlabelprovider.h
   qgsvectorlayerrenderer.h
   qgsvectorlayerserverproperties.h
   qgsvectorlayertools.h
@@ -1019,6 +1018,18 @@ SET(QGIS_CORE_HDRS
   gps/qgsgpsdetector.h
   gps/qgsnmeaconnection.h
 
+  labeling/qgslabelfeature.h
+  labeling/qgslabelingengine.h
+  labeling/qgslabelingenginesettings.h
+  labeling/qgslabelobstaclesettings.h
+  labeling/qgslabelsearchtree.h
+  labeling/qgslabelthinningsettings.h
+  labeling/qgspallabeling.h
+  labeling/qgsrulebasedlabeling.h
+  labeling/qgstextlabelfeature.h
+  labeling/qgsvectorlayerlabeling.h
+  labeling/qgsvectorlayerlabelprovider.h
+
   layertree/qgslayertree.h
   layertree/qgslayertreegroup.h
   layertree/qgslayertreelayer.h
@@ -1092,6 +1103,7 @@ SET(QGIS_CORE_HDRS
   locator/qgslocatormodel.h
   locator/qgslocatormodelbridge.h
 
+  mesh/qgsmesh3daveraging.h
   mesh/qgsmeshdataprovider.h
   mesh/qgsmeshlayer.h
   mesh/qgsmeshlayerinterpolator.h
@@ -1301,6 +1313,7 @@ INCLUDE_DIRECTORIES(
   geometry
   geocms
   geocms/geonode
+  labeling
   layertree
   layout
   locator
@@ -1325,6 +1338,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/external/kdbush/include
   ${CMAKE_SOURCE_DIR}/external/nmea
   ${CMAKE_SOURCE_DIR}/external/poly2tri
+  ${CMAKE_SOURCE_DIR}/external/rtree/include
 )
 
 INCLUDE_DIRECTORIES(SYSTEM

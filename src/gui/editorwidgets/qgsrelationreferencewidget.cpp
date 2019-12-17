@@ -44,6 +44,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeaturefiltermodel.h"
 #include "qgsidentifymenu.h"
+#include "qgsvectorlayerutils.h"
 
 
 bool qVariantListIsNull( const QVariantList &list )
@@ -999,15 +1000,7 @@ void QgsRelationReferenceWidget::addEntry()
   {
     QString title = tr( "Relation %1 for %2." ).arg( mRelation.name(), mReferencingLayer->name() );
 
-    QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mReferencingLayer ) );
-    if ( mCanvas )
-      context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mCanvas->mapSettings() ) );
-
-    QgsExpression exp( mReferencingLayer->displayExpression() );
-    context.setFeature( mFormFeature );
-    exp.prepare( &context );
-    QString displayString = exp.evaluate( &context ).toString();
-
+    QString displayString = QgsVectorLayerUtils::getFeatureDisplayString( mReferencingLayer, mFormFeature );
     QString msg = tr( "Link feature to %1 \"%2\" : Digitize the geometry for the new feature on layer %3. Press &lt;ESC&gt; to cancel." )
                   .arg( mReferencingLayer->name(), displayString, mReferencedLayer->name() );
     mMessageBarItem = QgsMessageBar::createMessage( title, msg, this );

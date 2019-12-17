@@ -37,7 +37,6 @@
 #include "pointset.h"
 #include "labelposition.h" // for LabelPosition enum
 #include "qgslabelfeature.h"
-#include "rtree.hpp"
 #include <iostream>
 #include <fstream>
 #include <cmath>
@@ -284,14 +283,10 @@ namespace pal
        */
       bool alwaysShow() const { return mLF->alwaysShow(); }
 
-      //! Returns TRUE if the feature should act as an obstacle to labels
-      bool isObstacle() const { return mLF->isObstacle(); }
-
       /**
-       * Returns the feature's obstacle factor, which represents the penalty
-       * incurred for a label to overlap the feature
+       * Returns the feature's obstacle settings.
        */
-      double obstacleFactor() const { return mLF->obstacleFactor(); }
+      const QgsLabelObstacleSettings &obstacleSettings() const { return mLF->obstacleSettings(); }
 
       //! Returns the distance between repeating labels for this feature
       double repeatDistance() const { return mLF->repeatDistance(); }

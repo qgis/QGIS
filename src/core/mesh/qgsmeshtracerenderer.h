@@ -177,7 +177,9 @@ class QgsMeshStreamField
                         const QgsMeshDataBlock &dataSetVectorValues,
                         const QgsMeshDataBlock &scalarActiveFaceFlagValues,
                         const QgsRectangle &layerExtent,
-                        double magnitudeMaximum, bool dataIsOnVertices, const QgsRenderContext &rendererContext,
+                        double magnitudeMaximum,
+                        bool dataIsOnVertices,
+                        const QgsRenderContext &rendererContext,
                         int resolution = 1 );
 
     //! Copy constructor
@@ -245,7 +247,7 @@ class QgsMeshStreamField
     //! Sets  color of the streamlines
     void setColor( QColor color );
 
-    //! Sets line width of the streamlines
+    //! Sets line width of the streamlines (in px)
     void setLineWidth( double width );
 
     //! Sets min/max filter
@@ -280,7 +282,7 @@ class QgsMeshStreamField
   protected:
 
     QSize mFieldSize;
-    QPainter *mPainter = nullptr;
+    std::unique_ptr<QPainter> mPainter = std::unique_ptr<QPainter>( nullptr );
     int mFieldResolution = 1;
     QPen mPen;
     QImage mTraceImage;
@@ -295,7 +297,7 @@ class QgsMeshStreamField
     QgsRectangle mMapExtent;
     QPoint mFieldTopLeftInDeviceCoordinates;
     bool mValid = false;
-    double mMagMax = 0;
+    double mMaximumMagnitude = 0;
     double mPixelFillingDensity;
     double mMinMagFilter = -1;
     double mMaxMagFilter = -1;
@@ -415,7 +417,7 @@ class QgsMeshParticleTracesField: public QgsMeshStreamField
     //! Sets tihe color of the particles
     void setParticleColor( const QColor &particleColor );
 
-    //! Sets particles size
+    //! Sets particles size (in px)
     void setParticleSize( double particleSize );
 
     //! Sets the tail factor
@@ -426,6 +428,9 @@ class QgsMeshParticleTracesField: public QgsMeshStreamField
 
     //! Assignment operator
     QgsMeshParticleTracesField &operator=( const QgsMeshParticleTracesField &other );
+
+    //! Sets if the particle has to be stumped dependiong on liketime
+    void setStumpParticleWithLifeTime( bool stumpParticleWithLifeTime );
 
   private:
     QPoint direction( QPoint position ) const;
@@ -473,6 +478,7 @@ class QgsMeshParticleTracesField: public QgsMeshStreamField
     QColor mParticleColor = Qt::white;
     double mParticleSize = 2.5;
     int mStumpFactor = 50;
+    bool mStumpParticleWithLifeTime = true;
 };
 
 /**
@@ -499,9 +505,39 @@ class QgsMeshVectorStreamlineRenderer: public QgsMeshVectorRenderer
     void draw() override;
 
   private:
-    std::unique_ptr<QgsMeshStreamField> mStreamLineField;
+    std::unique_ptr<QgsMeshStreamField> mStreamlineField;
     QgsRenderContext &mRendererContext;
 };
+
+
+/**
+ * \ingroup core
+ *
+ * A class derived from QgsMeshVectorRenderer used to render the particles traces
+ *
+ * \note not available in Python bindings
+ * \since QGIS 3.12
+ */
+class QgsMeshVectorTraceRenderer: public QgsMeshVectorRenderer
+{
+  public:
+    //!Constructor
+    QgsMeshVectorTraceRenderer( const QgsTriangularMesh &triangularMesh,
+                                const QgsMeshDataBlock &dataSetVectorValues,
+                                const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+                                bool dataIsOnVertices,
+                                const QgsMeshRendererVectorSettings &settings,
+                                QgsRenderContext &rendererContext,
+                                const QgsRectangle &layerExtent,
+                                double magMax );
+
+    void draw() override;
+
+  private:
+    std::unique_ptr<QgsMeshParticleTracesField> mParticleField;
+    QgsRenderContext &mRendererContext;
+};
+
 
 #endif //SIP_RUN
 
@@ -514,31 +550,31 @@ class QgsMeshVectorStreamlineRenderer: public QgsMeshVectorRenderer
  *
  * \since QGIS 3.12
  */
-class CORE_EXPORT QgsMeshVectorTraceRenderer
+class CORE_EXPORT QgsMeshVectorTraceAnimationGenerator
 {
   public:
     //!Constructor to use from QgsMeshVectorRenderer
-    QgsMeshVectorTraceRenderer( const QgsTriangularMesh &triangularMesh,
-                                const QgsMeshDataBlock &dataSetVectorValues,
-                                const QgsMeshDataBlock &scalarActiveFaceFlagValues,
-                                bool dataIsOnVertices,
-                                const QgsRenderContext &rendererContext,
-                                const QgsRectangle &layerExtent,
-                                double magMax ) SIP_SKIP;
+    QgsMeshVectorTraceAnimationGenerator( const QgsTriangularMesh &triangularMesh,
+                                          const QgsMeshDataBlock &dataSetVectorValues,
+                                          const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+                                          bool dataIsOnVertices,
+                                          const QgsRenderContext &rendererContext,
+                                          const QgsRectangle &layerExtent,
+                                          double magMax ) SIP_SKIP;
 
     //!Constructor to use with Python binding
-    QgsMeshVectorTraceRenderer( QgsMeshLayer *layer, const QgsRenderContext &rendererContext );
+    QgsMeshVectorTraceAnimationGenerator( QgsMeshLayer *layer, const QgsRenderContext &rendererContext );
 
     //! Copy constructor
-    QgsMeshVectorTraceRenderer( const QgsMeshVectorTraceRenderer &other );
+    QgsMeshVectorTraceAnimationGenerator( const QgsMeshVectorTraceAnimationGenerator &other );
 
     //! Destructor
-    ~QgsMeshVectorTraceRenderer();
+    ~QgsMeshVectorTraceAnimationGenerator() = default;
 
     //! seeds particles in the vector fields
     void seedRandomParticles( int count );
 
-    //! Moves all the particles using frame per second (fps) to calculate the displacement
+    //! Moves all the particles using frame per second (fps) to calculate the displacement and return the rendered frame
     QImage imageRendered();
 
     //! Sets the number of frames per seconds that will be rendered
@@ -553,7 +589,7 @@ class CORE_EXPORT QgsMeshVectorTraceRenderer
     //! Sets colors of particle
     void setParticlesColor( const QColor &c );
 
-    //! Sets particle size
+    //! Sets particle size in px
     void setParticlesSize( double width );
 
     //! Sets the tail factor, used to adjust the length of the tail. 0 : minimum length, >1 increase the tail
@@ -566,7 +602,7 @@ class CORE_EXPORT QgsMeshVectorTraceRenderer
     void setTailPersitence( double p );
 
     //! Assignment operator
-    QgsMeshVectorTraceRenderer &operator=( const QgsMeshVectorTraceRenderer &other );
+    QgsMeshVectorTraceAnimationGenerator &operator=( const QgsMeshVectorTraceAnimationGenerator &other );
   private:
     std::unique_ptr<QgsMeshParticleTracesField> mParticleField;
     const QgsRenderContext &mRendererContext;

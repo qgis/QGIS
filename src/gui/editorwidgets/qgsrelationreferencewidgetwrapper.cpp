@@ -182,21 +182,6 @@ QStringList QgsRelationReferenceWidgetWrapper::additionalFields() const
   return fields;
 }
 
-QList<QgsVectorLayerRef> QgsRelationReferenceWidgetWrapper::layerDependencies() const
-{
-  QList<QgsVectorLayerRef> result;
-  if ( mWidget )
-  {
-    result.append(
-      QgsVectorLayerRef(
-        mWidget->referencedLayerId(),
-        mWidget->referencedLayerName(),
-        mWidget->referencedLayerDataSource(),
-        mWidget->referencedLayerProviderKey() ) );
-  }
-  return result;
-}
-
 void QgsRelationReferenceWidgetWrapper::updateValues( const QVariant &val, const QVariantList &additionalValues )
 {
   if ( !mWidget || ( !mIndeterminateState && val == value() && val.isNull() == value().isNull() ) )

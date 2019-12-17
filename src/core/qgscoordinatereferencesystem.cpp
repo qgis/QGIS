@@ -308,10 +308,6 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString &definition )
       if ( match.captured( 1 ).compare( QLatin1String( "proj4" ), Qt::CaseInsensitive ) == 0 )
       {
         result = createFromProj4( match.captured( 2 ) );
-        //TODO: createFromProj4 used to save to the user database any new CRS
-        // this behavior was changed in order to separate creation and saving.
-        // Not sure if it necessary to save it here, should be checked by someone
-        // familiar with the code (should also give a more descriptive name to the generated CRS)
         if ( srsid() == 0 )
         {
           QString myName = QStringLiteral( " * %1 (%2)" )
@@ -624,7 +620,7 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
   */
 
   QString mySql = "select srs_id,description,projection_acronym,"
-                  "ellipsoid_acronym,parameters,srid,auth_name||':'||auth_id,is_geo "
+                  "ellipsoid_acronym,parameters,srid,auth_name||':'||auth_id,is_geo,wkt "
                   "from tbl_srs where " + expression + '=' + QgsSqliteUtils::quotedString( value ) + " order by deprecated";
   statement = database.prepare( mySql, myResult );
   // XXX Need to free memory from the error msg if one is set
@@ -633,11 +629,16 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
     d->mSrsId = statement.columnAsText( 0 ).toLong();
     d->mDescription = statement.columnAsText( 1 );
     d->mProjectionAcronym = statement.columnAsText( 2 );
+#if PROJ_VERSION_MAJOR>=6
+    d->mEllipsoidAcronym.clear();
+#else
     d->mEllipsoidAcronym = statement.columnAsText( 3 );
+#endif
     d->mProj4 = statement.columnAsText( 4 );
     d->mSRID = statement.columnAsText( 5 ).toLong();
     d->mAuthId = statement.columnAsText( 6 );
     d->mIsGeographic = statement.columnAsText( 7 ).toInt() != 0;
+    d->mWkt = statement.columnAsText( 8 );
     d->mAxisInvertedDirty = true;
 
     if ( d->mSrsId >= USER_CRS_START_ID && d->mAuthId.isEmpty() )
@@ -667,7 +668,10 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
 
     if ( !d->mIsValid )
     {
-      setProj4String( d->mProj4 );
+      if ( !d->mWkt.isEmpty() )
+        setWktString( d->mWkt, false );
+      else
+        setProj4String( d->mProj4 );
     }
   }
   else
@@ -734,133 +738,27 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
     return d->mIsValid;
   }
 
-  bool res = false;
-#if PROJ_VERSION_MAJOR>=6
-  PROJ_STRING_LIST warnings = nullptr;
-  PROJ_STRING_LIST grammerErrors = nullptr;
-
+  // try to match against user crs
+  QgsCoordinateReferenceSystem::RecordMap record = getRecord( "select * from tbl_srs where parameters=" + QgsSqliteUtils::quotedString( wkt ) + " order by deprecated" );
+  if ( !record.empty() )
   {
-    QgsProjUtils::proj_pj_unique_ptr crs( proj_create_from_wkt( QgsProjContext::get(), wkt.toLatin1().constData(), nullptr, &warnings, &grammerErrors ) );
-    d->mPj = QgsProjUtils::crsToSingleCrs( crs.get() );
-  }
-
-  res = static_cast< bool >( d->mPj );
-  if ( !res )
-  {
-    QgsDebugMsg( QStringLiteral( "\n---------------------------------------------------------------" ) );
-    QgsDebugMsg( QStringLiteral( "This CRS could *** NOT *** be set from the supplied Wkt " ) );
-    QgsDebugMsg( "INPUT: " + wkt );
-    for ( auto iter = warnings; iter && *iter; ++iter )
-      QgsDebugMsg( *iter );
-    for ( auto iter = grammerErrors; iter && *iter; ++iter )
-      QgsDebugMsg( *iter );
-    QgsDebugMsg( QStringLiteral( "---------------------------------------------------------------\n" ) );
-  }
-  proj_string_list_destroy( warnings );
-  proj_string_list_destroy( grammerErrors );
-#else
-  QByteArray ba = wkt.toLatin1();
-  const char *pWkt = ba.data();
-
-  OGRErr myInputResult = OSRImportFromWkt( d->mCRS, const_cast< char ** >( & pWkt ) );
-  res = myInputResult == OGRERR_NONE;
-  if ( !res )
-  {
-    QgsDebugMsg( QStringLiteral( "\n---------------------------------------------------------------" ) );
-    QgsDebugMsg( QStringLiteral( "This CRS could *** NOT *** be set from the supplied Wkt " ) );
-    QgsDebugMsg( "INPUT: " + wkt );
-    QgsDebugMsg( QStringLiteral( "UNUSED WKT: %1" ).arg( pWkt ) );
-    QgsDebugMsg( QStringLiteral( "---------------------------------------------------------------\n" ) );
-  }
-#endif
-  if ( !res )
-  {
-    locker.changeMode( QgsReadWriteLocker::Write );
-    if ( !sDisableWktCache )
-      sWktCache()->insert( wkt, *this );
-    return d->mIsValid;
-  }
-
-#if PROJ_VERSION_MAJOR>=6
-  if ( d->mPj )
-  {
-    // try 1 - maybe we can directly grab the auth name and code from the crs already?
-    QString authName( proj_get_id_auth_name( d->mPj.get(), 0 ) );
-    QString authCode( proj_get_id_code( d->mPj.get(), 0 ) );
-
-    if ( authName.isEmpty() || authCode.isEmpty() )
+    long srsId = record[QStringLiteral( "srs_id" )].toLong();
+    if ( srsId > 0 )
     {
-      // try 2, use proj's identify method and see if there's a nice candidate we can use
-      QgsProjUtils::identifyCrs( d->mPj.get(), authName, authCode );
-    }
-
-    if ( !authName.isEmpty() && !authCode.isEmpty() )
-    {
-      if ( loadFromAuthCode( authName, authCode ) )
-      {
-        locker.changeMode( QgsReadWriteLocker::Write );
-        if ( !sDisableWktCache )
-          sWktCache()->insert( wkt, *this );
-        return true;
-      }
+      createFromSrsId( srsId );
     }
   }
-#else
-  if ( OSRAutoIdentifyEPSG( d->mCRS ) == OGRERR_NONE )
+  else
   {
-    QString authid = QStringLiteral( "%1:%2" )
-                     .arg( OSRGetAuthorityName( d->mCRS, nullptr ),
-                           OSRGetAuthorityCode( d->mCRS, nullptr ) );
-    bool result = createFromOgcWmsCrs( authid );
-    locker.changeMode( QgsReadWriteLocker::Write );
-    if ( !sDisableWktCache )
-      sWktCache()->insert( wkt, *this );
-    return result;
+    setWktString( wkt );
+    if ( d->mSrsId == 0 )
+    {
+      QString myName = QStringLiteral( " * %1 (%2...)" )
+                       .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
+                             wkt.left( 50 ) );
+      saveAsUserCrs( myName );
+    }
   }
-#endif
-
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // WARNING - wkt to proj conversion is lossy, hence we DON'T DO THIS on proj 6
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-#if PROJ_VERSION_MAJOR<6
-  // create the proj4 structs needed for transforming
-  char *proj4src = nullptr;
-  OSRExportToProj4( d->mCRS, &proj4src );
-
-  //now that we have the proj4string, delegate to createFromProj4 so
-  // that we can try to fill in the remaining class members...
-  //create from Proj will set the isValidFlag
-  if ( !createFromProj4( proj4src ) )
-  {
-    CPLFree( proj4src );
-
-#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,5,0)
-    // try fixed up version
-    OSRFixup( d->mCRS );
-#endif
-
-    OSRExportToProj4( d->mCRS, &proj4src );
-
-    createFromProj4( proj4src );
-  }
-#endif
-
-  //TODO: createFromProj4 used to save to the user database any new CRS
-  // this behavior was changed in order to separate creation and saving.
-  // Not sure if it necessary to save it here, should be checked by someone
-  // familiar with the code (should also give a more descriptive name to the generated CRS)
-  if ( d->mSrsId == 0 )
-  {
-    QString myName = QStringLiteral( " * %1 (%2)" )
-                     .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
-                           toProj4() );
-    saveAsUserCrs( myName );
-  }
-
-#if PROJ_VERSION_MAJOR<6
-  CPLFree( proj4src );
-#endif
 
   locker.changeMode( QgsReadWriteLocker::Write );
   if ( !sDisableWktCache )
@@ -965,6 +863,9 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
 
   d->mProjectionAcronym = myProjRegExp.cap( 1 );
 
+#if PROJ_VERSION_MAJOR>=6
+  d->mEllipsoidAcronym.clear();
+#else
   QRegExp myEllipseRegExp( "\\+ellps=(\\S+)" );
   myStart = myEllipseRegExp.indexIn( myProj4String );
   if ( myStart == -1 )
@@ -975,6 +876,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
   {
     d->mEllipsoidAcronym = myEllipseRegExp.cap( 1 );
   }
+#endif
 
   QRegExp myAxisRegExp( "\\+a=(\\S+)" );
   myStart = myAxisRegExp.indexIn( myProj4String );
@@ -1270,7 +1172,37 @@ QString QgsCoordinateReferenceSystem::ellipsoidAcronym() const
 {
   if ( d->mEllipsoidAcronym.isNull() )
   {
+#if PROJ_VERSION_MAJOR>=6
+    if ( d->mPj )
+    {
+      QgsProjUtils::proj_pj_unique_ptr ellipsoid( proj_get_ellipsoid( QgsProjContext::get(), d->mPj.get() ) );
+      if ( ellipsoid )
+      {
+        const QString ellipsoidAuthName( proj_get_id_auth_name( ellipsoid.get(), 0 ) );
+        const QString ellipsoidAuthCode( proj_get_id_code( ellipsoid.get(), 0 ) );
+        if ( !ellipsoidAuthName.isEmpty() && !ellipsoidAuthCode.isEmpty() )
+          d->mEllipsoidAcronym = QStringLiteral( "%1:%2" ).arg( ellipsoidAuthName, ellipsoidAuthCode );
+        else
+        {
+          double semiMajor, semiMinor, invFlattening;
+          int semiMinorComputed = 0;
+          if ( proj_ellipsoid_get_parameters( QgsProjContext::get(), ellipsoid.get(), &semiMajor, &semiMinor, &semiMinorComputed, &invFlattening ) )
+          {
+            d->mEllipsoidAcronym = QStringLiteral( "PARAMETER:%1:%2" ).arg( qgsDoubleToString( semiMajor ),
+                                   qgsDoubleToString( semiMinor ) );
+          }
+          else
+          {
+            d->mEllipsoidAcronym.clear();
+          }
+        }
+      }
+    }
+    return d->mEllipsoidAcronym;
+#else
     return QString();
+
+#endif
   }
   else
   {
@@ -1416,8 +1348,7 @@ void QgsCoordinateReferenceSystem::setProj4String( const QString &proj4String )
   PJ_CONTEXT *ctx = QgsProjContext::get();
 
   {
-    QgsProjUtils::proj_pj_unique_ptr crs( proj_create( ctx, trimmed.toLatin1().constData() ) );
-    d->mPj = QgsProjUtils::crsToSingleCrs( crs.get() );
+    d->mPj.reset( proj_create( ctx, trimmed.toLatin1().constData() ) );
   }
 
   if ( !d->mPj )
@@ -1465,6 +1396,146 @@ void QgsCoordinateReferenceSystem::setProj4String( const QString &proj4String )
 
   d->mWkt.clear();
   setMapUnits();
+}
+
+bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt, bool allowProj4Fallback )
+{
+  bool res = false;
+  d->mIsValid = false;
+
+#if PROJ_VERSION_MAJOR>=6
+  // TODO - remove allowProj4Fallback when we require proj 6+ to build
+  ( void )allowProj4Fallback;
+
+  PROJ_STRING_LIST warnings = nullptr;
+  PROJ_STRING_LIST grammerErrors = nullptr;
+  {
+    d->mPj.reset( proj_create_from_wkt( QgsProjContext::get(), wkt.toLatin1().constData(), nullptr, &warnings, &grammerErrors ) );
+  }
+
+  res = static_cast< bool >( d->mPj );
+  if ( !res )
+  {
+    QgsDebugMsg( QStringLiteral( "\n---------------------------------------------------------------" ) );
+    QgsDebugMsg( QStringLiteral( "This CRS could *** NOT *** be set from the supplied Wkt " ) );
+    QgsDebugMsg( "INPUT: " + wkt );
+    for ( auto iter = warnings; iter && *iter; ++iter )
+      QgsDebugMsg( *iter );
+    for ( auto iter = grammerErrors; iter && *iter; ++iter )
+      QgsDebugMsg( *iter );
+    QgsDebugMsg( QStringLiteral( "---------------------------------------------------------------\n" ) );
+  }
+  proj_string_list_destroy( warnings );
+  proj_string_list_destroy( grammerErrors );
+#else
+  QByteArray ba = wkt.toLatin1();
+  const char *pWkt = ba.data();
+
+  OGRErr myInputResult = OSRImportFromWkt( d->mCRS, const_cast< char ** >( & pWkt ) );
+  res = myInputResult == OGRERR_NONE;
+  if ( !res )
+  {
+    QgsDebugMsg( QStringLiteral( "\n---------------------------------------------------------------" ) );
+    QgsDebugMsg( QStringLiteral( "This CRS could *** NOT *** be set from the supplied Wkt " ) );
+    QgsDebugMsg( "INPUT: " + wkt );
+    QgsDebugMsg( QStringLiteral( "UNUSED WKT: %1" ).arg( pWkt ) );
+    QgsDebugMsg( QStringLiteral( "---------------------------------------------------------------\n" ) );
+  }
+  else
+  {
+    d->mIsValid = true;
+  }
+#endif
+
+  QgsReadWriteLocker locker( *sProj4CacheLock(), QgsReadWriteLocker::Unlocked );
+  if ( !res )
+  {
+    locker.changeMode( QgsReadWriteLocker::Write );
+    if ( !sDisableWktCache )
+      sWktCache()->insert( wkt, *this );
+    return d->mIsValid;
+  }
+
+#if PROJ_VERSION_MAJOR>=6
+  if ( d->mPj )
+  {
+    // try 1 - maybe we can directly grab the auth name and code from the crs already?
+    QString authName( proj_get_id_auth_name( d->mPj.get(), 0 ) );
+    QString authCode( proj_get_id_code( d->mPj.get(), 0 ) );
+
+    if ( authName.isEmpty() || authCode.isEmpty() )
+    {
+      // try 2, use proj's identify method and see if there's a nice candidate we can use
+      QgsProjUtils::identifyCrs( d->mPj.get(), authName, authCode );
+    }
+
+    if ( !authName.isEmpty() && !authCode.isEmpty() )
+    {
+      if ( loadFromAuthCode( authName, authCode ) )
+      {
+        locker.changeMode( QgsReadWriteLocker::Write );
+        if ( !sDisableWktCache )
+          sWktCache()->insert( wkt, *this );
+        return true;
+      }
+    }
+    else
+    {
+      // Still a valid CRS, just not a known one
+      d->mIsValid = true;
+    }
+    setMapUnits();
+  }
+#else
+  if ( OSRAutoIdentifyEPSG( d->mCRS ) == OGRERR_NONE )
+  {
+    QString authid = QStringLiteral( "%1:%2" )
+                     .arg( OSRGetAuthorityName( d->mCRS, nullptr ),
+                           OSRGetAuthorityCode( d->mCRS, nullptr ) );
+    bool result = createFromOgcWmsCrs( authid );
+    locker.changeMode( QgsReadWriteLocker::Write );
+    if ( !sDisableWktCache )
+      sWktCache()->insert( wkt, *this );
+    return result;
+  }
+#endif
+
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // WARNING - wkt to proj conversion is lossy, hence we DON'T DO THIS on proj 6
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+#if PROJ_VERSION_MAJOR<6
+  if ( allowProj4Fallback )
+  {
+    d->mIsValid = false;
+    // create the proj4 structs needed for transforming
+    char *proj4src = nullptr;
+    OSRExportToProj4( d->mCRS, &proj4src );
+
+    //now that we have the proj4string, delegate to createFromProj4 so
+    // that we can try to fill in the remaining class members...
+    //create from Proj will set the isValidFlag
+    if ( !createFromProj4( proj4src ) )
+    {
+      CPLFree( proj4src );
+
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,5,0)
+      // try fixed up version
+      OSRFixup( d->mCRS );
+#endif
+
+      OSRExportToProj4( d->mCRS, &proj4src );
+
+      createFromProj4( proj4src );
+    }
+    CPLFree( proj4src );
+  }
+  else if ( d->mIsValid )
+  {
+    setMapUnits();
+  }
+#endif
+  return d->mIsValid;
 }
 
 void QgsCoordinateReferenceSystem::setGeographicFlag( bool geoFlag )
@@ -1762,7 +1833,7 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
 {
   d.detach();
   bool result = true;
-  QDomNode srsNode  = node.namedItem( QStringLiteral( "spatialrefsys" ) );
+  QDomNode srsNode = node.namedItem( QStringLiteral( "spatialrefsys" ) );
 
   if ( ! srsNode.isNull() )
   {
@@ -1771,14 +1842,14 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
     bool ok = false;
     long srsid = srsNode.namedItem( QStringLiteral( "srsid" ) ).toElement().text().toLong( &ok );
 
-    QDomNode myNode;
+    QDomNode node;
 
     if ( ok && srsid > 0 && srsid < USER_CRS_START_ID )
     {
-      myNode = srsNode.namedItem( QStringLiteral( "authid" ) );
-      if ( !myNode.isNull() )
+      node = srsNode.namedItem( QStringLiteral( "authid" ) );
+      if ( !node.isNull() )
       {
-        operator=( QgsCoordinateReferenceSystem::fromOgcWmsCrs( myNode.toElement().text() ) );
+        createFromOgcWmsCrs( node.toElement().text() );
         if ( isValid() )
         {
           initialized = true;
@@ -1787,10 +1858,10 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
 
       if ( !initialized )
       {
-        myNode = srsNode.namedItem( QStringLiteral( "epsg" ) );
-        if ( !myNode.isNull() )
+        node = srsNode.namedItem( QStringLiteral( "epsg" ) );
+        if ( !node.isNull() )
         {
-          operator=( QgsCoordinateReferenceSystem::fromEpsgId( myNode.toElement().text().toLong() ) );
+          operator=( QgsCoordinateReferenceSystem::fromEpsgId( node.toElement().text().toLong() ) );
           if ( isValid() )
           {
             initialized = true;
@@ -1799,60 +1870,66 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
       }
     }
 
+    // if wkt is present, prefer that since it's lossless (unlike proj4 strings)
     if ( !initialized )
     {
-      myNode = srsNode.namedItem( QStringLiteral( "proj4" ) );
-      const QString proj4 = myNode.toElement().text();
+      const QString wkt = srsNode.namedItem( QStringLiteral( "wkt" ) ).toElement().text();
+      initialized = createFromWkt( wkt );
+    }
 
-      if ( !createFromProj4( proj4 ) )
+    if ( !initialized )
+    {
+      node = srsNode.namedItem( QStringLiteral( "proj4" ) );
+      const QString proj4 = node.toElement().text();
+      initialized = createFromProj4( proj4 );
+    }
+
+    if ( !initialized )
+    {
+      // Setting from elements one by one
+      node = srsNode.namedItem( QStringLiteral( "proj4" ) );
+      const QString proj4 = node.toElement().text();
+      if ( !proj4.trimmed().isEmpty() )
+        setProj4String( node.toElement().text() );
+
+      node = srsNode.namedItem( QStringLiteral( "srsid" ) );
+      setInternalId( node.toElement().text().toLong() );
+
+      node = srsNode.namedItem( QStringLiteral( "srid" ) );
+      setSrid( node.toElement().text().toLong() );
+
+      node = srsNode.namedItem( QStringLiteral( "authid" ) );
+      setAuthId( node.toElement().text() );
+
+      node = srsNode.namedItem( QStringLiteral( "description" ) );
+      setDescription( node.toElement().text() );
+
+      node = srsNode.namedItem( QStringLiteral( "projectionacronym" ) );
+      setProjectionAcronym( node.toElement().text() );
+
+      node = srsNode.namedItem( QStringLiteral( "ellipsoidacronym" ) );
+      setEllipsoidAcronym( node.toElement().text() );
+
+      node = srsNode.namedItem( QStringLiteral( "geographicflag" ) );
+      if ( node.toElement().text().compare( QLatin1String( "true" ) ) )
       {
-        // Setting from elements one by one
-        if ( !proj4.trimmed().isEmpty() )
-          setProj4String( myNode.toElement().text() );
-
-        myNode = srsNode.namedItem( QStringLiteral( "srsid" ) );
-        setInternalId( myNode.toElement().text().toLong() );
-
-        myNode = srsNode.namedItem( QStringLiteral( "srid" ) );
-        setSrid( myNode.toElement().text().toLong() );
-
-        myNode = srsNode.namedItem( QStringLiteral( "authid" ) );
-        setAuthId( myNode.toElement().text() );
-
-        myNode = srsNode.namedItem( QStringLiteral( "description" ) );
-        setDescription( myNode.toElement().text() );
-
-        myNode = srsNode.namedItem( QStringLiteral( "projectionacronym" ) );
-        setProjectionAcronym( myNode.toElement().text() );
-
-        myNode = srsNode.namedItem( QStringLiteral( "ellipsoidacronym" ) );
-        setEllipsoidAcronym( myNode.toElement().text() );
-
-        myNode = srsNode.namedItem( QStringLiteral( "geographicflag" ) );
-        if ( myNode.toElement().text().compare( QLatin1String( "true" ) ) )
-        {
-          setGeographicFlag( true );
-        }
-        else
-        {
-          setGeographicFlag( false );
-        }
-
-        //make sure the map units have been set
-        setMapUnits();
+        setGeographicFlag( true );
       }
-      //TODO: createFromProj4 used to save to the user database any new CRS
-      // this behavior was changed in order to separate creation and saving.
-      // Not sure if it necessary to save it here, should be checked by someone
-      // familiar with the code (should also give a more descriptive name to the generated CRS)
-      if ( isValid() && d->mSrsId == 0 )
+      else
       {
-        QString myName = QStringLiteral( " * %1 (%2)" )
-                         .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
-                               toProj4() );
-        saveAsUserCrs( myName );
+        setGeographicFlag( false );
       }
 
+      //make sure the map units have been set
+      setMapUnits();
+    }
+
+    if ( isValid() && d->mSrsId == 0 )
+    {
+      QString myName = QStringLiteral( " * %1 (%2)" )
+                       .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
+                             toProj4() );
+      saveAsUserCrs( myName );
     }
   }
   else
@@ -1866,54 +1943,55 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
 
 bool QgsCoordinateReferenceSystem::writeXml( QDomNode &node, QDomDocument &doc ) const
 {
+  QDomElement layerNode = node.toElement();
+  QDomElement srsElement = doc.createElement( QStringLiteral( "spatialrefsys" ) );
 
-  QDomElement myLayerNode = node.toElement();
-  QDomElement mySrsElement  = doc.createElement( QStringLiteral( "spatialrefsys" ) );
+  QDomElement wktElement = doc.createElement( QStringLiteral( "wkt" ) );
+  wktElement.appendChild( doc.createTextNode( toWkt() ) );
+  srsElement.appendChild( wktElement );
 
-  QDomElement myProj4Element  = doc.createElement( QStringLiteral( "proj4" ) );
-  myProj4Element.appendChild( doc.createTextNode( toProj4() ) );
-  mySrsElement.appendChild( myProj4Element );
+  QDomElement proj4Element = doc.createElement( QStringLiteral( "proj4" ) );
+  proj4Element.appendChild( doc.createTextNode( toProj4() ) );
+  srsElement.appendChild( proj4Element );
 
-  QDomElement mySrsIdElement  = doc.createElement( QStringLiteral( "srsid" ) );
-  mySrsIdElement.appendChild( doc.createTextNode( QString::number( srsid() ) ) );
-  mySrsElement.appendChild( mySrsIdElement );
+  QDomElement srsIdElement = doc.createElement( QStringLiteral( "srsid" ) );
+  srsIdElement.appendChild( doc.createTextNode( QString::number( srsid() ) ) );
+  srsElement.appendChild( srsIdElement );
 
-  QDomElement mySridElement  = doc.createElement( QStringLiteral( "srid" ) );
-  mySridElement.appendChild( doc.createTextNode( QString::number( postgisSrid() ) ) );
-  mySrsElement.appendChild( mySridElement );
+  QDomElement sridElement = doc.createElement( QStringLiteral( "srid" ) );
+  sridElement.appendChild( doc.createTextNode( QString::number( postgisSrid() ) ) );
+  srsElement.appendChild( sridElement );
 
-  QDomElement myEpsgElement  = doc.createElement( QStringLiteral( "authid" ) );
-  myEpsgElement.appendChild( doc.createTextNode( authid() ) );
-  mySrsElement.appendChild( myEpsgElement );
+  QDomElement authidElement = doc.createElement( QStringLiteral( "authid" ) );
+  authidElement.appendChild( doc.createTextNode( authid() ) );
+  srsElement.appendChild( authidElement );
 
-  QDomElement myDescriptionElement  = doc.createElement( QStringLiteral( "description" ) );
-  myDescriptionElement.appendChild( doc.createTextNode( description() ) );
-  mySrsElement.appendChild( myDescriptionElement );
+  QDomElement descriptionElement = doc.createElement( QStringLiteral( "description" ) );
+  descriptionElement.appendChild( doc.createTextNode( description() ) );
+  srsElement.appendChild( descriptionElement );
 
-  QDomElement myProjectionAcronymElement  = doc.createElement( QStringLiteral( "projectionacronym" ) );
-  myProjectionAcronymElement.appendChild( doc.createTextNode( projectionAcronym() ) );
-  mySrsElement.appendChild( myProjectionAcronymElement );
+  QDomElement projectionAcronymElement = doc.createElement( QStringLiteral( "projectionacronym" ) );
+  projectionAcronymElement.appendChild( doc.createTextNode( projectionAcronym() ) );
+  srsElement.appendChild( projectionAcronymElement );
 
-  QDomElement myEllipsoidAcronymElement  = doc.createElement( QStringLiteral( "ellipsoidacronym" ) );
-  myEllipsoidAcronymElement.appendChild( doc.createTextNode( ellipsoidAcronym() ) );
-  mySrsElement.appendChild( myEllipsoidAcronymElement );
+  QDomElement ellipsoidAcronymElement = doc.createElement( QStringLiteral( "ellipsoidacronym" ) );
+  ellipsoidAcronymElement.appendChild( doc.createTextNode( ellipsoidAcronym() ) );
+  srsElement.appendChild( ellipsoidAcronymElement );
 
-  QDomElement myGeographicFlagElement  = doc.createElement( QStringLiteral( "geographicflag" ) );
-  QString myGeoFlagText = QStringLiteral( "false" );
+  QDomElement geographicFlagElement = doc.createElement( QStringLiteral( "geographicflag" ) );
+  QString geoFlagText = QStringLiteral( "false" );
   if ( isGeographic() )
   {
-    myGeoFlagText = QStringLiteral( "true" );
+    geoFlagText = QStringLiteral( "true" );
   }
 
-  myGeographicFlagElement.appendChild( doc.createTextNode( myGeoFlagText ) );
-  mySrsElement.appendChild( myGeographicFlagElement );
+  geographicFlagElement.appendChild( doc.createTextNode( geoFlagText ) );
+  srsElement.appendChild( geographicFlagElement );
 
-  myLayerNode.appendChild( mySrsElement );
+  layerNode.appendChild( srsElement );
 
   return true;
 }
-
-
 
 //
 // Static helper methods below this point only please!
@@ -2054,10 +2132,15 @@ long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
   {
     proj4String = toProj4();
   }
+  QString wktString = d->mWkt;
+  if ( wktString.isEmpty() )
+  {
+    wktString = toWkt();
+  }
 
-  // ellipsoid acroynym column is incorrect marked as not null in many crs database instances,
+  // ellipsoid acroynym column is incorrectly marked as not null in many crs database instances,
   // hack around this by using an empty string instead
-  const QString quotedEllipsoidString = ellipsoidAcronym().isNull() ? "''" : QgsSqliteUtils::quotedString( ellipsoidAcronym() );
+  const QString quotedEllipsoidString = ellipsoidAcronym().isNull() ? QStringLiteral( "''" ) : QgsSqliteUtils::quotedString( ellipsoidAcronym() );
 
   //if this is the first record we need to ensure that its srs_id is 10000. For
   //any rec after that sqlite3 will take care of the autonumbering
@@ -2065,28 +2148,31 @@ long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
   //the autoinc related system tables.
   if ( getRecordCount() == 0 )
   {
-    mySql = "insert into tbl_srs (srs_id,description,projection_acronym,ellipsoid_acronym,parameters,is_geo) values ("
+    mySql = "insert into tbl_srs (srs_id,description,projection_acronym,ellipsoid_acronym,parameters,is_geo,wkt) values ("
             + QString::number( USER_CRS_START_ID )
             + ',' + QgsSqliteUtils::quotedString( name )
-            + ',' + QgsSqliteUtils::quotedString( projectionAcronym() )
+            + ',' + ( !d->mProjectionAcronym.isEmpty() ? QgsSqliteUtils::quotedString( d->mProjectionAcronym ) : QStringLiteral( "''" ) )
             + ',' + quotedEllipsoidString
             + ',' + QgsSqliteUtils::quotedString( toProj4() )
-            + ",0)"; // <-- is_geo shamelessly hard coded for now
+            + ",0,"  // <-- is_geo shamelessly hard coded for now
+            + QgsSqliteUtils::quotedString( wktString )
+            + ')';
   }
   else
   {
-    mySql = "insert into tbl_srs (description,projection_acronym,ellipsoid_acronym,parameters,is_geo) values ("
+    mySql = "insert into tbl_srs (description,projection_acronym,ellipsoid_acronym,parameters,is_geo,wkt) values ("
             + QgsSqliteUtils::quotedString( name )
-            + ',' + QgsSqliteUtils::quotedString( projectionAcronym() )
+            + ',' + ( !d->mProjectionAcronym.isEmpty() ? QgsSqliteUtils::quotedString( d->mProjectionAcronym ) : QStringLiteral( "''" ) )
             + ',' + quotedEllipsoidString
             + ',' + QgsSqliteUtils::quotedString( toProj4() )
-            + ",0)"; // <-- is_geo shamelessly hard coded for now
+            + ",0,"  // <-- is_geo shamelessly hard coded for now
+            + QgsSqliteUtils::quotedString( wktString )
+            + ')';
   }
   sqlite3_database_unique_ptr database;
   sqlite3_statement_unique_ptr statement;
-  int           myResult;
   //check the db is available
-  myResult = database.open( QgsApplication::qgisUserDatabaseFilePath() );
+  int myResult = database.open( QgsApplication::qgisUserDatabaseFilePath() );
   if ( myResult != SQLITE_OK )
   {
     QgsDebugMsg( QStringLiteral( "Can't open or create database %1: %2" )
@@ -2096,7 +2182,7 @@ long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
   }
   statement = database.prepare( mySql, myResult );
 
-  qint64 returnId;
+  qint64 returnId = -1;
   if ( myResult == SQLITE_OK && statement.step() == SQLITE_DONE )
   {
     QgsMessageLog::logMessage( QObject::tr( "Saved user CRS [%1]" ).arg( toProj4() ), QObject::tr( "CRS" ) );
@@ -2118,10 +2204,7 @@ long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
     projectionsAuthId.append( authid() );
     settings.setValue( QStringLiteral( "UI/recentProjectionsProj4" ), projectionsProj4 );
     settings.setValue( QStringLiteral( "UI/recentProjectionsAuthId" ), projectionsAuthId );
-
   }
-  else
-    returnId = -1;
 
   invalidateCache();
   return returnId;
@@ -2256,7 +2339,7 @@ bool QgsCoordinateReferenceSystem::loadFromAuthCode( const QString &auth, const 
   QString ellipsoid;
   getOperationAndEllipsoidFromProjString( proj4, operation, ellipsoid );
   d->mProjectionAcronym = operation;
-  d->mEllipsoidAcronym = ellipsoid;
+  d->mEllipsoidAcronym.clear();
   d->mPj = std::move( crs );
 
   const QString dbVals = sAuthIdToQgisSrsIdMap.value( QStringLiteral( "%1:%2" ).arg( auth, code ).toUpper() );

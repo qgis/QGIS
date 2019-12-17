@@ -86,7 +86,9 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
   QgsMeshLayerRendererCache *cache = layer->rendererCache();
   if ( ( cache->mDatasetGroupsCount == datasetGroupCount ) &&
        ( cache->mActiveScalarDatasetIndex == datasetIndex ) &&
-       ( cache->mDataInterpolationMethod ==  method ) )
+       ( cache->mDataInterpolationMethod ==  method ) &&
+       ( QgsMesh3dAveragingMethod::equals( cache->mScalarAveragingMethod.get(), mRendererSettings.averagingMethod() ) )
+     )
   {
     mScalarDatasetValues = cache->mScalarDatasetValues;
     mScalarActiveFaceFlagValues = cache->mScalarActiveFaceFlagValues;
@@ -103,10 +105,12 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
     mScalarDataOnVertices = metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
 
     // populate scalar values
-    QgsMeshDataBlock vals = layer->dataProvider()->datasetValues(
+    const int count = mScalarDataOnVertices ? mNativeMesh.vertices.count() : mNativeMesh.faces.count();
+    QgsMeshDataBlock vals = QgsMeshLayerUtils::datasetValues(
+                              layer,
                               datasetIndex,
                               0,
-                              mScalarDataOnVertices ? mNativeMesh.vertices.count() : mNativeMesh.faces.count() );
+                              count );
 
     // vals could be scalar or vectors, for contour rendering we want always magnitude
     mScalarDatasetValues = QgsMeshLayerUtils::calculateMagnitudes( vals );
@@ -144,6 +148,7 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
   cache->mScalarDataOnVertices = mScalarDataOnVertices;
   cache->mScalarDatasetMinimum = mScalarDatasetMinimum;
   cache->mScalarDatasetMaximum = mScalarDatasetMaximum;
+  cache->mScalarAveragingMethod.reset( mRendererSettings.averagingMethod() ? mRendererSettings.averagingMethod()->clone() : nullptr );
 }
 
 void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
@@ -154,7 +159,9 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
   const int datasetGroupCount = layer->dataProvider()->datasetGroupCount();
   QgsMeshLayerRendererCache *cache = layer->rendererCache();
   if ( ( cache->mDatasetGroupsCount == datasetGroupCount ) &&
-       ( cache->mActiveVectorDatasetIndex == datasetIndex ) )
+       ( cache->mActiveVectorDatasetIndex == datasetIndex ) &&
+       ( QgsMesh3dAveragingMethod::equals( cache->mVectorAveragingMethod.get(), mRendererSettings.averagingMethod() ) )
+     )
   {
     mVectorDatasetValues = cache->mVectorDatasetValues;
     mVectorDatasetValuesMag = cache->mVectorDatasetValuesMag;
@@ -165,7 +172,6 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
     mVectorDataOnVertices = cache->mVectorDataOnVertices;
     return;
   }
-
 
   // Cache is not up-to-date, gather data
   if ( datasetIndex.isValid() )
@@ -189,7 +195,8 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
       else
         count = mNativeMesh.faces.count();
 
-      mVectorDatasetValues = layer->dataProvider()->datasetValues(
+      mVectorDatasetValues = QgsMeshLayerUtils::datasetValues(
+                               layer,
                                datasetIndex,
                                0,
                                count );
@@ -212,6 +219,7 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
   cache->mVectorDatasetGroupMagMinimum = mVectorDatasetMagMinimum;
   cache->mVectorDatasetGroupMagMaximum = mVectorDatasetMagMaximum;
   cache->mVectorDataOnVertices = mVectorDataOnVertices;
+  cache->mVectorAveragingMethod.reset( mRendererSettings.averagingMethod() ? mRendererSettings.averagingMethod()->clone() : nullptr );
 }
 
 bool QgsMeshLayerRenderer::render()
@@ -362,6 +370,7 @@ void QgsMeshLayerRenderer::renderVectorDataset()
         mLayerExtent,
         mOutputSize ) );
 
-  renderer->draw();
+  if ( renderer )
+    renderer->draw();
 }
 

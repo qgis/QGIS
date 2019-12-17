@@ -1,0 +1,176 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/labeling/qgslabelingenginesettings.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsLabelingEngineSettings
+{
+%Docstring
+Stores global configuration for labeling engine
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgslabelingenginesettings.h"
+%End
+  public:
+    enum Flag
+    {
+      UseAllLabels,
+      UsePartialCandidates,
+      // TODO QGIS 4.0: remove
+      RenderOutlineLabels,
+      DrawLabelRectOnly,
+      DrawCandidates,
+      DrawUnplacedLabels,
+    };
+    typedef QFlags<QgsLabelingEngineSettings::Flag> Flags;
+
+
+
+    enum Search
+    {
+      Chain,
+      Popmusic_Tabu,
+      Popmusic_Chain,
+      Popmusic_Tabu_Chain,
+      Falp
+    };
+
+    enum PlacementEngineVersion
+    {
+      PlacementEngineVersion1,
+      PlacementEngineVersion2,
+    };
+
+    QgsLabelingEngineSettings();
+
+    void clear();
+%Docstring
+Returns the configuration to the defaults
+%End
+
+    void setFlags( Flags flags );
+%Docstring
+Sets flags of the labeling engine
+%End
+    Flags flags() const;
+%Docstring
+Gets flags of the labeling engine
+%End
+    bool testFlag( Flag f ) const;
+%Docstring
+Test whether a particular flag is enabled
+%End
+    void setFlag( Flag f, bool enabled = true );
+%Docstring
+Sets whether a particual flag is enabled
+%End
+
+    void numCandidatePositions( int &candPoint, int &candLine, int &candPolygon ) const;
+%Docstring
+Gets number of candidate positions that will be generated for each label feature (default to 8)
+%End
+    void setNumCandidatePositions( int candPoint, int candLine, int candPolygon );
+%Docstring
+Sets number of candidate positions that will be generated for each label feature
+%End
+
+ void setSearchMethod( Search s ) /Deprecated/;
+%Docstring
+Used to set which search method to use for removal collisions between labels
+
+.. deprecated:: QGIS 3.10
+   - Chain is always used.
+%End
+
+ Search searchMethod() const /Deprecated/;
+%Docstring
+Which search method to use for removal collisions between labels
+
+.. deprecated:: QGIS 3.10
+   - Chain is always used.
+%End
+
+    void readSettingsFromProject( QgsProject *project );
+%Docstring
+Read configuration of the labeling engine from a project
+%End
+    void writeSettingsToProject( QgsProject *project );
+%Docstring
+Write configuration of the labeling engine to a project
+%End
+
+
+    QgsRenderContext::TextRenderFormat defaultTextRenderFormat() const;
+%Docstring
+Returns the default text rendering format for the labels.
+
+.. seealso:: :py:func:`setDefaultTextRenderFormat`
+
+.. versionadded:: 3.4.3
+%End
+
+    void setDefaultTextRenderFormat( QgsRenderContext::TextRenderFormat format );
+%Docstring
+Sets the default text rendering ``format`` for the labels.
+
+.. seealso:: :py:func:`defaultTextRenderFormat`
+
+.. versionadded:: 3.4.3
+%End
+
+    QColor unplacedLabelColor() const;
+%Docstring
+Returns the color to use when rendering unplaced labels.
+
+.. seealso:: :py:func:`setUnplacedLabelColor`
+
+.. versionadded:: 3.10
+%End
+
+    void setUnplacedLabelColor( const QColor &color );
+%Docstring
+Sets the ``color`` to use when rendering unplaced labels.
+
+.. seealso:: :py:func:`unplacedLabelColor`
+
+.. versionadded:: 3.10
+%End
+
+    PlacementEngineVersion placementVersion() const;
+%Docstring
+Returns the placement engine version, which dictates how the label placement problem is solved.
+
+.. seealso:: :py:func:`setPlacementVersion`
+
+.. versionadded:: 3.10.2
+%End
+
+    void setPlacementVersion( PlacementEngineVersion version );
+%Docstring
+Sets the placement engine ``version``, which dictates how the label placement problem is solved.
+
+.. seealso:: :py:func:`placementVersion`
+
+.. versionadded:: 3.10.2
+%End
+
+};
+
+QFlags<QgsLabelingEngineSettings::Flag> operator|(QgsLabelingEngineSettings::Flag f1, QFlags<QgsLabelingEngineSettings::Flag> f2);
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/labeling/qgslabelingenginesettings.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

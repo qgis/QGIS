@@ -32,6 +32,7 @@ class QgsSymbol;
 class QgsTriangularMesh;
 class QgsRenderContext;
 struct QgsMesh;
+class QgsMesh3dAveragingMethod;
 
 /**
  * \ingroup core
@@ -322,7 +323,6 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
     //! Time format configuration
     QgsMeshTimeSettings mTimeSettings;
-
 };
 
 #endif //QGSMESHLAYER_H

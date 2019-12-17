@@ -32,7 +32,6 @@
 #include "layer.h"
 #include "palexception.h"
 #include "palstat.h"
-#include "rtree.hpp"
 #include "costcalculator.h"
 #include "feature.h"
 #include "geomfunction.h"
@@ -41,6 +40,7 @@
 #include "pointset.h"
 #include "internalexception.h"
 #include "util.h"
+#include "palrtree.h"
 #include <cfloat>
 #include <list>
 
@@ -82,183 +82,33 @@ Layer *Pal::addLayer( QgsAbstractLabelProvider *provider, const QString &layerNa
   return res;
 }
 
-struct FeatCallBackCtx
-{
-  Layer *layer = nullptr;
-
-  std::list< std::unique_ptr< Feats > > *features = nullptr;
-
-  RTree<FeaturePart *, double, 2, double> *obstacleIndex = nullptr;
-  RTree<LabelPosition *, double, 2, double> *allCandidateIndex = nullptr;
-  std::vector< std::unique_ptr< LabelPosition > > *positionsWithNoCandidates = nullptr;
-  const GEOSPreparedGeometry *mapBoundary = nullptr;
-  Pal *pal = nullptr;
-};
-
-
-
-/*
- * Callback function
- *
- * Extract a specific shape from indexes
- */
-bool extractFeatCallback( FeaturePart *featurePart, void *ctx )
-{
-  double amin[2], amax[2];
-  FeatCallBackCtx *context = reinterpret_cast< FeatCallBackCtx * >( ctx );
-
-  if ( context->pal->isCanceled() )
-    return false;
-
-  // Holes of the feature are obstacles
-  for ( int i = 0; i < featurePart->getNumSelfObstacles(); i++ )
-  {
-    featurePart->getSelfObstacle( i )->getBoundingBox( amin, amax );
-    context->obstacleIndex->Insert( amin, amax, featurePart->getSelfObstacle( i ) );
-
-    if ( !featurePart->getSelfObstacle( i )->getHoleOf() )
-    {
-      //ERROR: SHOULD HAVE A PARENT!!!!!
-    }
-  }
-
-  // generate candidates for the feature part
-  std::vector< std::unique_ptr< LabelPosition > > candidates = featurePart->createCandidates( context->pal );
-
-  if ( context->pal->isCanceled() )
-    return false;
-
-  // purge candidates that are outside the bbox
-  candidates.erase( std::remove_if( candidates.begin(), candidates.end(), [&context]( std::unique_ptr< LabelPosition > &candidate )
-  {
-    if ( context->pal->showPartialLabels() )
-      return !candidate->intersects( context->mapBoundary );
-    else
-      return !candidate->within( context->mapBoundary );
-  } ), candidates.end() );
-
-  if ( context->pal->isCanceled() )
-    return false;
-
-  if ( !candidates.empty() )
-  {
-    for ( std::unique_ptr< LabelPosition > &candidate : candidates )
-    {
-      candidate->insertIntoIndex( *context->allCandidateIndex );
-    }
-
-    std::sort( candidates.begin(), candidates.end(), CostCalculator::candidateSortGrow );
-
-    // valid features are added to fFeats
-    std::unique_ptr< Feats > ft = qgis::make_unique< Feats >();
-    ft->feature = featurePart;
-    ft->shape = nullptr;
-    ft->candidates = std::move( candidates );
-    ft->priority = featurePart->calculatePriority();
-    context->features->emplace_back( std::move( ft ) );
-  }
-  else
-  {
-    // features with no candidates are recorded in the unlabeled feature list
-    std::unique_ptr< LabelPosition > unplacedPosition = featurePart->createCandidatePointOnSurface( featurePart );
-    if ( unplacedPosition )
-      context->positionsWithNoCandidates->emplace_back( std::move( unplacedPosition ) );
-  }
-
-  return true;
-}
-
-struct ObstacleCallBackCtx
-{
-  RTree<FeaturePart *, double, 2, double> *obstacleIndex = nullptr;
-  int obstacleCount = 0;
-  Pal *pal = nullptr;
-};
-
-/*
- * Callback function
- *
- * Extract obstacles from indexes
- */
-bool extractObstaclesCallback( FeaturePart *ft_ptr, void *ctx )
-{
-  double amin[2], amax[2];
-  ObstacleCallBackCtx *context = reinterpret_cast< ObstacleCallBackCtx * >( ctx );
-  if ( context->pal->isCanceled() )
-    return false; // do not continue searching
-
-  // insert into obstacles
-  ft_ptr->getBoundingBox( amin, amax );
-  context->obstacleIndex->Insert( amin, amax, ft_ptr );
-  context->obstacleCount++;
-  return true;
-}
-
-struct FilterContext
-{
-  RTree<LabelPosition *, double, 2, double> *allCandidatesIndex = nullptr;
-  Pal *pal = nullptr;
-};
-
-bool filteringCallback( FeaturePart *featurePart, void *ctx )
-{
-  RTree<LabelPosition *, double, 2, double> *allCandidatesIndex = ( reinterpret_cast< FilterContext * >( ctx ) )->allCandidatesIndex;
-  Pal *pal = ( reinterpret_cast< FilterContext * >( ctx ) )->pal;
-
-  if ( pal->isCanceled() )
-    return false; // do not continue searching
-
-  double amin[2], amax[2];
-  featurePart->getBoundingBox( amin, amax );
-
-  LabelPosition::PruneCtx pruneContext;
-  pruneContext.obstacle = featurePart;
-  pruneContext.pal = pal;
-  allCandidatesIndex->Search( amin, amax, LabelPosition::pruneCallback, static_cast< void * >( &pruneContext ) );
-
-  return true;
-}
-
 std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeometry &mapBoundary )
 {
   // to store obstacles
-  RTree<FeaturePart *, double, 2, double> obstacles;
+  PalRtree< FeaturePart > obstacles;
+  PalRtree< LabelPosition > allCandidatesFirstRound;
+  std::vector< FeaturePart * > allObstacleParts;
   std::unique_ptr< Problem > prob = qgis::make_unique< Problem >();
 
   double bbx[4];
   double bby[4];
 
-  double amin[2];
-  double amax[2];
-
   std::size_t max_p = 0;
 
-  bbx[0] = bbx[3] = amin[0] = prob->mMapExtentBounds[0] = extent.xMinimum();
-  bby[0] = bby[1] = amin[1] = prob->mMapExtentBounds[1] = extent.yMinimum();
-  bbx[1] = bbx[2] = amax[0] = prob->mMapExtentBounds[2] = extent.xMaximum();
-  bby[2] = bby[3] = amax[1] = prob->mMapExtentBounds[3] = extent.yMaximum();
+  bbx[0] = bbx[3] = prob->mMapExtentBounds[0] = extent.xMinimum();
+  bby[0] = bby[1] = prob->mMapExtentBounds[1] = extent.yMinimum();
+  bbx[1] = bbx[2] = prob->mMapExtentBounds[2] = extent.xMaximum();
+  bby[2] = bby[3] = prob->mMapExtentBounds[3] = extent.yMaximum();
 
   prob->pal = this;
 
   std::list< std::unique_ptr< Feats > > features;
 
-  FeatCallBackCtx context;
-
   // prepare map boundary
   geos::unique_ptr mapBoundaryGeos( QgsGeos::asGeos( mapBoundary ) );
   geos::prepared_unique_ptr mapBoundaryPrepared( GEOSPrepare_r( QgsGeos::getGEOSHandler(), mapBoundaryGeos.get() ) );
 
-  context.features = &features;
-  context.obstacleIndex = &obstacles;
-  context.allCandidateIndex = &prob->mAllCandidatesIndex;
-  context.positionsWithNoCandidates = prob->positionsWithNoCandidates();
-  context.mapBoundary = mapBoundaryPrepared.get();
-  context.pal = this;
-
-  ObstacleCallBackCtx obstacleContext;
-  obstacleContext.obstacleIndex = &obstacles;
-  obstacleContext.obstacleCount = 0;
-  obstacleContext.pal = this;
+  int obstacleCount = 0;
 
   // first step : extract features from layers
 
@@ -295,25 +145,94 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
     QMutexLocker locker( &layer->mMutex );
 
-    // find features within bounding box and generate candidates list
-    context.layer = layer;
-    layer->mFeatureIndex.Search( amin, amax, extractFeatCallback, static_cast< void * >( &context ) );
+    // generate candidates for all features
+    for ( FeaturePart *featurePart : qgis::as_const( layer->mFeatureParts ) )
+    {
+      if ( isCanceled() )
+        break;
+
+      // Holes of the feature are obstacles
+      for ( int i = 0; i < featurePart->getNumSelfObstacles(); i++ )
+      {
+        FeaturePart *selfObstacle =  featurePart->getSelfObstacle( i );
+        obstacles.insert( selfObstacle, selfObstacle->boundingBox() );
+        allObstacleParts.emplace_back( selfObstacle );
+
+        if ( !featurePart->getSelfObstacle( i )->getHoleOf() )
+        {
+          //ERROR: SHOULD HAVE A PARENT!!!!!
+        }
+      }
+
+      // generate candidates for the feature part
+      std::vector< std::unique_ptr< LabelPosition > > candidates = featurePart->createCandidates( this );
+
+      if ( isCanceled() )
+        break;
+
+      // purge candidates that are outside the bbox
+      candidates.erase( std::remove_if( candidates.begin(), candidates.end(), [&mapBoundaryPrepared, this]( std::unique_ptr< LabelPosition > &candidate )
+      {
+        if ( showPartialLabels() )
+          return !candidate->intersects( mapBoundaryPrepared.get() );
+        else
+          return !candidate->within( mapBoundaryPrepared.get() );
+      } ), candidates.end() );
+
+      if ( isCanceled() )
+        break;
+
+      if ( !candidates.empty() )
+      {
+        for ( std::unique_ptr< LabelPosition > &candidate : candidates )
+        {
+          candidate->insertIntoIndex( allCandidatesFirstRound );
+        }
+
+        std::sort( candidates.begin(), candidates.end(), CostCalculator::candidateSortGrow );
+
+        // valid features are added to fFeats
+        std::unique_ptr< Feats > ft = qgis::make_unique< Feats >();
+        ft->feature = featurePart;
+        ft->shape = nullptr;
+        ft->candidates = std::move( candidates );
+        ft->priority = featurePart->calculatePriority();
+        features.emplace_back( std::move( ft ) );
+      }
+      else
+      {
+        // features with no candidates are recorded in the unlabeled feature list
+        std::unique_ptr< LabelPosition > unplacedPosition = featurePart->createCandidatePointOnSurface( featurePart );
+        if ( unplacedPosition )
+          prob->positionsWithNoCandidates()->emplace_back( std::move( unplacedPosition ) );
+      }
+    }
     if ( isCanceled() )
       return nullptr;
 
-    // find obstacles within bounding box
-    layer->mObstacleIndex.Search( amin, amax, extractObstaclesCallback, static_cast< void * >( &obstacleContext ) );
+    // collate all layer obstacles
+    for ( FeaturePart *obstaclePart : qgis::as_const( layer->mObstacleParts ) )
+    {
+      if ( isCanceled() )
+        break; // do not continue searching
+
+      // insert into obstacles
+      obstacles.insert( obstaclePart, obstaclePart->boundingBox() );
+      allObstacleParts.emplace_back( obstaclePart );
+      obstacleCount++;
+    }
+
     if ( isCanceled() )
       return nullptr;
 
     locker.unlock();
 
-    if ( context.features->size() - previousFeatureCount > 0 || obstacleContext.obstacleCount > previousObstacleCount )
+    if ( features.size() - previousFeatureCount > 0 || obstacleCount > previousObstacleCount )
     {
       layersWithFeaturesInBBox << layer->name();
     }
-    previousFeatureCount = context.features->size();
-    previousObstacleCount = obstacleContext.obstacleCount;
+    previousFeatureCount = features.size();
+    previousObstacleCount = obstacleCount;
   }
   palLocker.unlock();
 
@@ -325,19 +244,36 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
   prob->mFeatureCount = features.size();
   prob->mTotalCandidates = 0;
-  prob->mFeatNbLp = new int [prob->mFeatureCount];
-  prob->mFeatStartId = new int [prob->mFeatureCount];
-  prob->mInactiveCost = new double[prob->mFeatureCount];
+  prob->mFeatNbLp.resize( prob->mFeatureCount );
+  prob->mFeatStartId.resize( prob->mFeatureCount );
+  prob->mInactiveCost.resize( prob->mFeatureCount );
 
   if ( !features.empty() )
   {
     // Filtering label positions against obstacles
-    amin[0] = amin[1] = std::numeric_limits<double>::lowest();
-    amax[0] = amax[1] = std::numeric_limits<double>::max();
-    FilterContext filterCtx;
-    filterCtx.allCandidatesIndex = &prob->mAllCandidatesIndex;
-    filterCtx.pal = this;
-    obstacles.Search( amin, amax, filteringCallback, static_cast< void * >( &filterCtx ) );
+    for ( FeaturePart *obstaclePart : allObstacleParts )
+    {
+      if ( isCanceled() )
+        break; // do not continue searching
+
+      allCandidatesFirstRound.intersects( obstaclePart->boundingBox(), [obstaclePart, this]( const LabelPosition * candidatePosition ) -> bool
+      {
+        // test whether we should ignore this obstacle for the candidate. We do this if:
+        // 1. it's not a hole, and the obstacle belongs to the same label feature as the candidate (e.g.,
+        // features aren't obstacles for their own labels)
+        // 2. it IS a hole, and the hole belongs to a different label feature to the candidate (e.g., holes
+        // are ONLY obstacles for the labels of the feature they belong to)
+        if ( ( !obstaclePart->getHoleOf() && candidatePosition->getFeaturePart()->hasSameLabelFeatureAs( obstaclePart ) )
+             || ( obstaclePart->getHoleOf() && !candidatePosition->getFeaturePart()->hasSameLabelFeatureAs( dynamic_cast< FeaturePart * >( obstaclePart->getHoleOf() ) ) ) )
+        {
+          return true;
+        }
+
+        CostCalculator::addObstacleCostPenalty( const_cast< LabelPosition * >( candidatePosition ), obstaclePart, this );
+
+        return true;
+      } );
+    }
 
     if ( isCanceled() )
     {
@@ -372,11 +308,39 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       if ( isCanceled() )
         return nullptr;
 
+      switch ( mPlacementVersion )
+      {
+        case QgsLabelingEngineSettings::PlacementEngineVersion1:
+          break;
+
+        case QgsLabelingEngineSettings::PlacementEngineVersion2:
+        {
+          // v2 placement rips out candidates where the candidate cost is too high when compared to
+          // their inactive cost
+
+          // note, we start this at the SECOND candidate (you'll see why after this loop)
+          feat->candidates.erase( std::remove_if( feat->candidates.begin() + 1, feat->candidates.end(), [ & ]( std::unique_ptr< LabelPosition > &candidate )
+          {
+            if ( candidate->hasHardObstacleConflict() )
+            {
+              return true;
+            }
+            return false;
+          } ), feat->candidates.end() );
+
+          if ( feat->candidates.size() == 1 && feat->candidates[ 0 ]->hasHardObstacleConflict() )
+          {
+            // we've ended up removing ALL candidates for this label. Oh well, that's allowed. We just need to
+            // make sure we move this last candidate to the unplaced labels list
+            prob->positionsWithNoCandidates()->emplace_back( std::move( feat->candidates.front() ) );
+            feat->candidates.clear();
+          }
+        }
+      }
+
       // only keep the 'max_p' best candidates
       while ( feat->candidates.size() > max_p )
       {
-        // TODO remove from index
-        feat->candidates.back()->removeFromIndex( prob->mAllCandidatesIndex );
         feat->candidates.pop_back();
       }
 
@@ -390,7 +354,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       // add all candidates into a rtree (to speed up conflicts searching)
       for ( std::size_t j = 0; j < feat->candidates.size(); j++, idlp++ )
       {
-        //lp->insertIntoIndex(prob->candidates);
+        feat->candidates[ j ]->insertIntoIndex( prob->allCandidatesIndex() );
         feat->candidates[ j ]->setProblemIds( static_cast< int >( i ), idlp );
       }
       features.emplace_back( std::move( feat ) );
@@ -398,6 +362,8 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
     int nbOverlaps = 0;
 
+    double amin[2];
+    double amax[2];
     while ( !features.empty() ) // foreach feature
     {
       if ( isCanceled() )
@@ -417,10 +383,18 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
         //prob->feat[idlp] = j;
 
-        lp->getBoundingBox( amin, amax );
-
         // lookup for overlapping candidate
-        prob->mAllCandidatesIndex.Search( amin, amax, LabelPosition::countOverlapCallback, static_cast< void * >( lp.get() ) );
+        lp->getBoundingBox( amin, amax );
+        prob->allCandidatesIndex().intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&lp]( const LabelPosition * lp2 )->bool
+        {
+          if ( lp->isInConflict( lp2 ) )
+          {
+            lp->incrementNumOverlaps();
+          }
+
+          return true;
+
+        } );
 
         nbOverlaps += lp->getNumOverlaps();
 

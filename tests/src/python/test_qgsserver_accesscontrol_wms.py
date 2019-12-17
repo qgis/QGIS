@@ -916,6 +916,7 @@ class TestQgsServerAccessControlWMS(TestQgsServerAccessControl):
         """Test access control security issue GH 32475"""
 
         class Filter(QgsAccessControlFilter):
+
             def layerFilterSubsetString(self, layer):
                 handler = iface.requestHandler()
                 if handler.parameter("LAYER_PERM") == "yes":

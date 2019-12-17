@@ -155,6 +155,12 @@ void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *alg
   {
     mButtonBox->removeButton( mButtonBox->button( QDialogButtonBox::Help ) );
   }
+
+  const QString warning = algorithm->provider()->warningMessage();
+  if ( !warning.isEmpty() )
+  {
+    mMessageBar->pushMessage( warning, Qgis::Warning, 0 );
+  }
 }
 
 QgsProcessingAlgorithm *QgsProcessingAlgorithmDialogBase::algorithm()

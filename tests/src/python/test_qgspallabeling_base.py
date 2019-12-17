@@ -127,7 +127,9 @@ class TestQgsPalLabeling(unittest.TestCase):
     @classmethod
     def setDefaultEngineSettings(cls):
         """Restore default settings for pal labeling"""
-        cls._MapSettings.setLabelingEngineSettings(QgsLabelingEngineSettings())
+        settings = QgsLabelingEngineSettings()
+        settings.setPlacementVersion(QgsLabelingEngineSettings.PlacementEngineVersion2)
+        cls._MapSettings.setLabelingEngineSettings(settings)
 
     @classmethod
     def removeAllLayers(cls):

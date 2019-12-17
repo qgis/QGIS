@@ -95,6 +95,8 @@ class TestQgsProcessingAlgs: public QObject
     void bookmarksToLayer();
     void layerToBookmarks();
 
+    void repairShapefile();
+
   private:
 
     QString mPointLayerPath;
@@ -516,7 +518,7 @@ void TestQgsProcessingAlgs::transformAlg()
   parameters.insert( QStringLiteral( "TARGET_CRS" ), QStringLiteral( "EPSG:2163" ) );
   bool ok = false;
   QVariantMap results = alg->run( parameters, *context, &feedback, &ok );
-  Q_UNUSED( results );
+  Q_UNUSED( results )
   QVERIFY( ok );
 }
 
@@ -1613,6 +1615,43 @@ void TestQgsProcessingAlgs::layerToBookmarks()
   QCOMPARE( QgsApplication::bookmarkManager()->bookmarks().at( 1 ).group(), QString() );
   QCOMPARE( QgsApplication::bookmarkManager()->bookmarks().at( 1 ).extent().crs().authid(), QStringLiteral( "EPSG:4326" ) );
   QCOMPARE( QgsApplication::bookmarkManager()->bookmarks().at( 1 ).extent().toString( 0 ), QStringLiteral( "146,-22 : 147,-21" ) );
+}
+
+void TestQgsProcessingAlgs::repairShapefile()
+{
+  QTemporaryDir tmpPath;
+
+  QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  QFile::copy( dataDir + "/points.shp", tmpPath.filePath( QStringLiteral( "points.shp" ) ) );
+  QFile::copy( dataDir + "/points.shp", tmpPath.filePath( QStringLiteral( "points.prj" ) ) );
+  QFile::copy( dataDir + "/points.shp", tmpPath.filePath( QStringLiteral( "points.dbf" ) ) );
+  // no shx!!
+
+  std::unique_ptr< QgsVectorLayer > layer = qgis::make_unique< QgsVectorLayer >( tmpPath.filePath( QStringLiteral( "points.shp" ) ) );
+  QVERIFY( !layer->isValid() );
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:repairshapefile" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QStringLiteral( "not a file" ) );
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( !ok );
+
+  parameters.insert( QStringLiteral( "INPUT" ), tmpPath.filePath( QStringLiteral( "points.shp" ) ) );
+  ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QCOMPARE( results.value( QStringLiteral( "OUTPUT" ) ).toString(), tmpPath.filePath( QStringLiteral( "points.shp" ) ) );
+
+  layer = qgis::make_unique< QgsVectorLayer >( tmpPath.filePath( QStringLiteral( "points.shp" ) ) );
+  QVERIFY( layer->isValid() );
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgs )

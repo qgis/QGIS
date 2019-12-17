@@ -62,3 +62,9 @@ QVariant QgsFieldFormatter::createCache( QgsVectorLayer *layer, int fieldIndex, 
 
   return QVariant();
 }
+
+QList<QgsVectorLayerRef> QgsFieldFormatter::layerDependencies( const QVariantMap &config ) const
+{
+  Q_UNUSED( config )
+  return QList<QgsVectorLayerRef>();
+}

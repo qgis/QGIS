@@ -503,24 +503,6 @@ void TestQgsRelationReferenceWidget::testDependencies()
   QCOMPARE( w.referencedLayerDataSource(), mLayer2.publicSource() );
   QCOMPARE( w.referencedLayerProviderKey(), mLayer2.providerType() );
 
-  // Test dependencies
-  QgsRelationReferenceWidget editor( new QWidget() );
-  QgsRelationReferenceWidgetWrapper ww( &mLayer1, 10, &editor, &canvas, nullptr, nullptr );
-  ww.setConfig(
-  {
-    { QStringLiteral( "ReferencedLayerDataSource" ), mLayer2.publicSource() },
-    { QStringLiteral( "ReferencedLayerProviderKey" ), mLayer2.providerType() },
-    { QStringLiteral( "ReferencedLayerId" ), mLayer2.id() },
-    { QStringLiteral( "ReferencedLayerName" ), mLayer2.name() },
-  } );
-  ww.initWidget( &editor );
-  const QList<QgsVectorLayerRef> dependencies = ww.layerDependencies();
-  QVERIFY( dependencies.count() == 1 );
-  const QgsVectorLayerRef dependency = dependencies.first();
-  QCOMPARE( dependency.layerId, mLayer2.id() );
-  QCOMPARE( dependency.name, mLayer2.name() );
-  QCOMPARE( dependency.provider, mLayer2.providerType() );
-  QCOMPARE( dependency.source, mLayer2.publicSource() );
 }
 
 QGSTEST_MAIN( TestQgsRelationReferenceWidget )

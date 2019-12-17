@@ -22,7 +22,9 @@ SET(QGIS_ANALYSIS_SRCS
   interpolation/Vector3D.cpp
 
   processing/qgsalgorithmaddincrementalfield.cpp
+  processing/qgsalgorithmaddtablefield.cpp
   processing/qgsalgorithmaddxyfields.cpp
+  processing/qgsalgorithmapplylayerstyle.cpp
   processing/qgsalgorithmarraytranslatedfeatures.cpp
   processing/qgsalgorithmaspect.cpp
   processing/qgsalgorithmassignprojection.cpp
@@ -47,6 +49,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmexplode.cpp
   processing/qgsalgorithmexplodehstore.cpp
   processing/qgsalgorithmextendlines.cpp
+  processing/qgsalgorithmextentfromlayer.cpp
   processing/qgsalgorithmextenttolayer.cpp
   processing/qgsalgorithmextractbinary.cpp
   processing/qgsalgorithmextractbyattribute.cpp
@@ -56,12 +59,14 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmextractlayoutmapextent.cpp
   processing/qgsalgorithmextractzmvalues.cpp
   processing/qgsalgorithmextractvertices.cpp
+  processing/qgsalgorithmextractspecificvertices.cpp
   processing/qgsalgorithmfiledownloader.cpp
   processing/qgsalgorithmfilter.cpp
   processing/qgsalgorithmfiltervertices.cpp
   processing/qgsalgorithmfixgeometries.cpp
   processing/qgsalgorithmforcerhr.cpp
   processing/qgsalgorithmfuzzifyraster.cpp
+  processing/qgsalgorithmgeometrybyexpression.cpp
   processing/qgsalgorithmgrid.cpp
   processing/qgsalgorithmhillshade.cpp
   processing/qgsalgorithmimportphotos.cpp
@@ -80,11 +85,13 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmminimumenclosingcircle.cpp
   processing/qgsalgorithmmultiparttosinglepart.cpp
   processing/qgsalgorithmmultiringconstantbuffer.cpp
+  processing/qgsalgorithmnearestneighbouranalysis.cpp
   processing/qgsalgorithmoffsetlines.cpp
   processing/qgsalgorithmorderbyexpression.cpp
   processing/qgsalgorithmorientedminimumboundingbox.cpp
   processing/qgsalgorithmorthogonalize.cpp
   processing/qgsalgorithmpackage.cpp
+  processing/qgsalgorithmpixelcentroidsfrompolygons.cpp
   processing/qgsalgorithmarrayoffsetlines.cpp
   processing/qgsalgorithmpolygonstolines.cpp
   processing/qgsalgorithmpointonsurface.cpp
@@ -92,12 +99,15 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmpointtolayer.cpp
   processing/qgsalgorithmpointsalonggeometry.cpp
   processing/qgsalgorithmpointslayerfromtable.cpp
+  processing/qgsalgorithmpoleofinaccessibility.cpp
   processing/qgsalgorithmprojectpointcartesian.cpp
   processing/qgsalgorithmpromotetomultipart.cpp
+  processing/qgsalgorithmrandomextract.cpp
   processing/qgsalgorithmrandompointsextent.cpp
   processing/qgsalgorithmrasterlayeruniquevalues.cpp
   processing/qgsalgorithmrasterlogicalop.cpp
   processing/qgsalgorithmrasterize.cpp
+  processing/qgsalgorithmrasterstatistics.cpp
   processing/qgsalgorithmrastersurfacevolume.cpp
   processing/qgsalgorithmrasterzonalstats.cpp
   processing/qgsalgorithmreclassifybylayer.cpp
@@ -106,6 +116,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmremoveholes.cpp
   processing/qgsalgorithmremovenullgeometry.cpp
   processing/qgsalgorithmrenamelayer.cpp
+  processing/qgsalgorithmrepairshapefile.cpp
   processing/qgsalgorithmreverselinedirection.cpp
   processing/qgsalgorithmrotate.cpp
   processing/qgsalgorithmruggedness.cpp
@@ -131,16 +142,19 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmstringconcatenation.cpp
   processing/qgsalgorithmswapxy.cpp
   processing/qgsalgorithmsubdivide.cpp
+  processing/qgsalgorithmsumlinelength.cpp
   processing/qgsalgorithmsymmetricaldifference.cpp
   processing/qgsalgorithmtaperedbuffer.cpp
   processing/qgsalgorithmtransect.cpp
   processing/qgsalgorithmtransform.cpp
   processing/qgsalgorithmtranslate.cpp
+  processing/qgsalgorithmtruncatetable.cpp
   processing/qgsalgorithmunion.cpp
   processing/qgsalgorithmuniquevalueindex.cpp
   processing/qgsalgorithmvectorize.cpp
   processing/qgsalgorithmwedgebuffers.cpp
   processing/qgsalgorithmzonalhistogram.cpp
+  processing/qgsalgorithmzonalstatistics.cpp
   processing/qgsbookmarkalgorithms.cpp
   processing/qgsprojectstylealgorithms.cpp
   processing/qgsstylealgorithms.cpp
@@ -318,6 +332,7 @@ SET(QGIS_ANALYSIS_HDRS
 FIND_PACKAGE(EXIV2 REQUIRED)
 
 INCLUDE_DIRECTORIES(SYSTEM ${SPATIALITE_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(SYSTEM ${SPATIALINDEX_INCLUDE_DIR})
 INCLUDE_DIRECTORIES(SYSTEM ${SQLITE3_INCLUDE_DIR})
 INCLUDE_DIRECTORIES(BEFORE raster)
 INCLUDE_DIRECTORIES(BEFORE mesh)
@@ -361,6 +376,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/
   ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/labeling
   ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/mesh

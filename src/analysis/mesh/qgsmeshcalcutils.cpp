@@ -23,6 +23,8 @@
 #include "qgsmeshmemorydataprovider.h"
 #include "qgstriangularmesh.h"
 #include "qgsmapsettings.h"
+#include "qgsmeshlayerutils.h"
+#include "qgsmeshlayerrenderer.h"
 
 const double D_TRUE = 1.0;
 const double D_FALSE = 0.0;
@@ -32,23 +34,30 @@ std::shared_ptr<QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::create( const QStri
 {
   const auto dp = mMeshLayer->dataProvider();
   std::shared_ptr<QgsMeshMemoryDatasetGroup> grp;
-  for ( int group_i = 0; group_i < dp->datasetGroupCount(); ++group_i )
+  for ( int groupIndex = 0; groupIndex < dp->datasetGroupCount(); ++groupIndex )
   {
-    const auto meta = dp->datasetGroupMetadata( group_i );
+    const auto meta = dp->datasetGroupMetadata( groupIndex );
     const QString name = meta.name();
     if ( name == datasetGroupName )
     {
+      // we need to convert the native type to the requested type
+      // only possibility that cannot happen is to convert vertex dataset to
+      // face dataset. This would suggest bug in determineResultDataType()
+      Q_ASSERT( !( ( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices ) && ( mOutputType == QgsMeshDatasetGroupMetadata::DataOnFaces ) ) );
+
       grp = std::make_shared<QgsMeshMemoryDatasetGroup>();
       grp->isScalar = meta.isScalar();
-      grp->type = meta.dataType();
+      grp->type = mOutputType;
       grp->maximum = meta.maximum();
       grp->minimum = meta.minimum();
       grp->name = meta.name();
 
-      int count = ( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnFaces ) ? dp->faceCount() : dp->vertexCount();
-      for ( int dataset_i = 0; dataset_i < dp->datasetCount( group_i ); ++dataset_i )
+      int nativeCount = ( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices ) ? dp->vertexCount() : dp->faceCount();
+      int resultCount = ( mOutputType == QgsMeshDatasetGroupMetadata::DataOnVertices ) ? dp->vertexCount() : dp->faceCount();
+
+      for ( int datasetIndex = 0; datasetIndex < dp->datasetCount( groupIndex ); ++datasetIndex )
       {
-        const QgsMeshDatasetIndex index( group_i, dataset_i );
+        const QgsMeshDatasetIndex index( groupIndex, datasetIndex );
         const auto dsMeta = dp->datasetMetadata( index );
         std::shared_ptr<QgsMeshMemoryDataset> ds = create( grp->type );
         ds->maximum = dsMeta.maximum();
@@ -56,10 +65,70 @@ std::shared_ptr<QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::create( const QStri
         ds->time = dsMeta.time();
         ds->valid = dsMeta.isValid();
 
-        const QgsMeshDataBlock block = dp->datasetValues( index, 0, count );
-        Q_ASSERT( block.count() == count );
-        for ( int value_i = 0; value_i < count; ++value_i )
-          ds->values[value_i] = block.value( value_i );
+        // the function already averages volume datasets to face dataset values
+        QgsMeshDataBlock block = QgsMeshLayerUtils::datasetValues( mMeshLayer, index, 0, nativeCount );
+        Q_ASSERT( block.count() == nativeCount );
+
+        // for data on faces, there could be request to interpolate the data to vertices
+        if ( ( meta.dataType() != QgsMeshDatasetGroupMetadata::DataOnVertices ) && ( mOutputType == QgsMeshDatasetGroupMetadata::DataOnVertices ) )
+        {
+
+          if ( grp->isScalar )
+          {
+            QVector<double> data =
+              QgsMeshLayerUtils::interpolateFromFacesData(
+                block.values(),
+                nativeMesh(),
+                triangularMesh(),
+                nullptr,
+                QgsMeshRendererScalarSettings::NeighbourAverage
+              );
+            Q_ASSERT( data.size() == resultCount );
+            for ( int valueIndex = 0; valueIndex < resultCount; ++valueIndex )
+              ds->values[valueIndex] = QgsMeshDatasetValue( data[valueIndex] );
+          }
+          else
+          {
+            QVector<double> buf = block.values();
+            QVector<double> x( nativeCount );
+            QVector<double> y( nativeCount );
+            for ( int value_i = 0; value_i < nativeCount; ++value_i )
+            {
+              x[value_i] = buf[2 * value_i];
+              y[value_i] = buf[2 * value_i + 1];
+            }
+
+            QVector<double> dataX =
+              QgsMeshLayerUtils::interpolateFromFacesData(
+                x,
+                mMeshLayer->nativeMesh(),
+                mMeshLayer->triangularMesh(),
+                nullptr,
+                mMeshLayer->rendererSettings().scalarSettings( groupIndex ).dataInterpolationMethod()
+              );
+            Q_ASSERT( dataX.size() == resultCount );
+            QVector<double> dataY =
+              QgsMeshLayerUtils::interpolateFromFacesData(
+                y,
+                mMeshLayer->nativeMesh(),
+                mMeshLayer->triangularMesh(),
+                nullptr,
+                mMeshLayer->rendererSettings().scalarSettings( groupIndex ).dataInterpolationMethod()
+              );
+
+            Q_ASSERT( dataY.size() == resultCount );
+
+            for ( int value_i = 0; value_i < resultCount; ++value_i )
+            {
+              ds->values[value_i] = QgsMeshDatasetValue( dataX[value_i], dataY[value_i] );
+            }
+          }
+        }
+        else
+        {
+          for ( int value_i = 0; value_i < resultCount; ++value_i )
+            ds->values[value_i] = block.value( value_i );
+        }
 
         if ( grp->type == QgsMeshDatasetGroupMetadata::DataOnVertices )
         {
@@ -84,9 +153,10 @@ std::shared_ptr<QgsMeshMemoryDataset> QgsMeshCalcUtils::create( const QgsMeshMem
 
 std::shared_ptr<QgsMeshMemoryDataset> QgsMeshCalcUtils::create( const QgsMeshDatasetGroupMetadata::DataType type ) const
 {
+  Q_ASSERT( type != QgsMeshDatasetGroupMetadata::DataOnVolumes );
+
   std::shared_ptr<QgsMeshMemoryDataset> ds = std::make_shared<QgsMeshMemoryDataset>();
-  bool onVertices = type == QgsMeshDatasetGroupMetadata::DataOnVertices;
-  if ( onVertices )
+  if ( type == QgsMeshDatasetGroupMetadata::DataOnVertices )
   {
     ds->values.resize( mMeshLayer->dataProvider()->vertexCount() );
     ds->active.resize( mMeshLayer->dataProvider()->faceCount() );
@@ -106,8 +176,10 @@ QgsMeshCalcUtils:: QgsMeshCalcUtils( QgsMeshLayer *layer,
                                      double endTime )
   : mMeshLayer( layer )
   , mIsValid( false )
-  , mOutputType( QgsMeshDatasetGroupMetadata::DataType::DataOnVertices )
 {
+  // Resolve output type of the calculation
+  mOutputType = determineResultDataType( layer, usedGroupNames );
+
   // First populate group's names map and see if we have all groups present
   // And basically fetch all data from any mesh provider to memory
   for ( const QString &groupName : usedGroupNames )
@@ -210,6 +282,8 @@ std::shared_ptr<const QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::group( const 
 
 void QgsMeshCalcUtils::populateSpatialFilter( QgsMeshMemoryDatasetGroup &filter, const QgsRectangle &extent ) const
 {
+  Q_ASSERT( mOutputType != QgsMeshDatasetGroupMetadata::DataOnVolumes );
+
   filter.clearDatasets();
 
   std::shared_ptr<QgsMeshMemoryDataset> output = create( filter );
@@ -244,6 +318,8 @@ void QgsMeshCalcUtils::populateSpatialFilter( QgsMeshMemoryDatasetGroup &filter,
 
 void QgsMeshCalcUtils::populateMaskFilter( QgsMeshMemoryDatasetGroup &filter, const QgsGeometry &mask ) const
 {
+  Q_ASSERT( mOutputType != QgsMeshDatasetGroupMetadata::DataOnVolumes );
+
   filter.clearDatasets();
   std::shared_ptr<QgsMeshMemoryDataset> output = create( filter );
   output->time = mTimes[0];
@@ -621,6 +697,9 @@ void QgsMeshCalcUtils::updateMesh() const
 {
   if ( ! mMeshLayer->nativeMesh() )
   {
+    // THIS code is very confusing -- someone please add some explanation as to why a map renderer is created here! (Or better,
+    // add explicit members to do whatever it is that's actually wanted here, instead of creating the map renderer)
+
     // we do not care about triangles,
     // we just want transformed coordinates
     // of the native mesh. So create
@@ -630,8 +709,14 @@ void QgsMeshCalcUtils::updateMesh() const
     mapSettings.setDestinationCrs( mMeshLayer->crs() );
     mapSettings.setOutputDpi( 96 );
     QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
-    mMeshLayer->createMapRenderer( context );
+
+    delete mMeshLayer->createMapRenderer( context );
   }
+}
+
+QgsMeshDatasetGroupMetadata::DataType QgsMeshCalcUtils::outputType() const
+{
+  return mOutputType;
 }
 
 void QgsMeshCalcUtils::addIf( QgsMeshMemoryDatasetGroup &trueGroup,
@@ -701,7 +786,7 @@ void QgsMeshCalcUtils::activate(
   Q_ASSERT( isValid() );
   Q_ASSERT( dataset );
 
-  // Activate only faces that ha some data and all vertices
+  // Activate only faces that has some data and all vertices
   for ( int idx = 0; idx < mMeshLayer->dataProvider()->faceCount(); ++idx )
   {
     if ( refDataset && !refDataset->active.isEmpty() && ( !refDataset->active[idx] ) )
@@ -1078,16 +1163,41 @@ void QgsMeshCalcUtils::maximum( QgsMeshMemoryDatasetGroup &group1, const QgsMesh
   return func2( group1, group2, std::bind( & QgsMeshCalcUtils::fmax, this, std::placeholders::_1, std::placeholders::_2 ) );
 }
 
+QgsMeshDatasetGroupMetadata::DataType QgsMeshCalcUtils::determineResultDataType( QgsMeshLayer *layer, const QStringList &usedGroupNames )
+{
+  QHash<QString, int> names;
+  const QgsMeshDataProvider *dp = layer->dataProvider();
+  for ( int groupId = 0; groupId < dp->datasetGroupCount(); ++groupId )
+  {
+    const auto meta = dp->datasetGroupMetadata( groupId );
+    const QString name = meta.name();
+    names[ name ] = groupId;
+  }
+  for ( const auto &datasetGroupName : usedGroupNames )
+  {
+    if ( names.contains( datasetGroupName ) )
+    {
+      int groupId = names.value( datasetGroupName );
+      const auto meta = dp->datasetGroupMetadata( groupId );
+      if ( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices )
+      {
+        return QgsMeshDatasetGroupMetadata::DataOnVertices;
+      }
+    }
+  }
+  return QgsMeshDatasetGroupMetadata::DataOnFaces;
+}
+
 void QgsMeshCalcUtils::filter( QgsMeshMemoryDatasetGroup &group1, const QgsRectangle &extent ) const
 {
-  QgsMeshMemoryDatasetGroup filter( "filter" );
+  QgsMeshMemoryDatasetGroup filter( "filter", outputType() );
   populateSpatialFilter( filter, extent );
   return func2( group1, filter, std::bind( & QgsMeshCalcUtils::ffilter, this, std::placeholders::_1, std::placeholders::_2 ) );
 }
 
 void QgsMeshCalcUtils::filter( QgsMeshMemoryDatasetGroup &group1, const QgsGeometry &mask ) const
 {
-  QgsMeshMemoryDatasetGroup filter( "filter" );
+  QgsMeshMemoryDatasetGroup filter( "filter", outputType() );
   populateMaskFilter( filter, mask );
   return func2( group1, filter, std::bind( & QgsMeshCalcUtils::ffilter, this, std::placeholders::_1, std::placeholders::_2 ) );
 }

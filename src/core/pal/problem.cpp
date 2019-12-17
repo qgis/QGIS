@@ -30,7 +30,6 @@
 #include "pal.h"
 #include "palstat.h"
 #include "layer.h"
-#include "rtree.hpp"
 #include "feature.h"
 #include "geomfunction.h"
 #include "labelposition.h"
@@ -57,13 +56,7 @@ inline void delete_chain( Chain *chain )
 
 Problem::Problem() = default;
 
-Problem::~Problem()
-{
-  delete[] mFeatStartId;
-  delete[] mFeatNbLp;
-
-  delete[] mInactiveCost;
-}
+Problem::~Problem() = default;
 
 void Problem::reduce()
 {
@@ -114,7 +107,16 @@ void Problem::reduce()
               lp2->getBoundingBox( amin, amax );
 
               mNbOverlap -= lp2->getNumOverlaps();
-              mAllCandidatesIndex.Search( amin, amax, LabelPosition::removeOverlapCallback, reinterpret_cast< void * >( lp2 ) );
+              mAllCandidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&lp2]( const LabelPosition * lp ) -> bool
+              {
+                if ( lp2->isInConflict( lp ) )
+                {
+                  const_cast< LabelPosition * >( lp )->decrementNumOverlaps();
+                  lp2->decrementNumOverlaps();
+                }
+
+                return true;
+              } );
               lp2->removeFromIndex( mAllCandidatesIndex );
             }
 
@@ -130,61 +132,25 @@ void Problem::reduce()
   delete[] ok;
 }
 
-struct FalpContext
+void ignoreLabel( const LabelPosition *lp, PriorityQueue &list, PalRtree< LabelPosition > &candidatesIndex )
 {
-  PriorityQueue *list = nullptr;
-  LabelPosition *lp = nullptr;
-  RTree <LabelPosition *, double, 2, double> *candidatesIndex = nullptr;
-};
-
-bool falpCallback2( LabelPosition *lp, void *ctx )
-{
-  FalpContext *context = reinterpret_cast< FalpContext * >( ctx );
-  LabelPosition *lp2 = context->lp;
-  PriorityQueue *list = context->list;
-
-  if ( lp->getId() != lp2->getId() && list->isIn( lp->getId() ) && lp->isInConflict( lp2 ) )
-  {
-    list->decreaseKey( lp->getId() );
-  }
-  return true;
-}
-
-
-void ignoreLabel( LabelPosition *lp, PriorityQueue &list, RTree <LabelPosition *, double, 2, double> &candidatesIndex )
-{
-  FalpContext context;
-  context.candidatesIndex = nullptr;
-  context.list = &list;
-  double amin[2];
-  double amax[2];
-
   if ( list.isIn( lp->getId() ) )
   {
     list.remove( lp->getId() );
 
+    double amin[2];
+    double amax[2];
     lp->getBoundingBox( amin, amax );
-
-    context.lp = lp;
-    candidatesIndex.Search( amin, amax, falpCallback2, &context );
+    candidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [lp, &list]( const LabelPosition * lp2 )->bool
+    {
+      if ( lp2->getId() != lp->getId() && list.isIn( lp2->getId() ) && lp2->isInConflict( lp ) )
+      {
+        list.decreaseKey( lp2->getId() );
+      }
+      return true;
+    } );
   }
 }
-
-
-bool falpCallback1( LabelPosition *lp, void *ctx )
-{
-  FalpContext *context = reinterpret_cast< FalpContext * >( ctx );
-  LabelPosition *lp2 = context->lp;
-  PriorityQueue *list = context->list;
-
-  if ( lp2->isInConflict( lp ) )
-  {
-    ignoreLabel( lp, *list, *context->candidatesIndex );
-  }
-  return true;
-}
-
-
 
 /* Better initial solution
  * Step one FALP (Yamamoto, Camara, Lorena 2005)
@@ -200,10 +166,6 @@ void Problem::init_sol_falp()
 
   double amin[2];
   double amax[2];
-
-  FalpContext context;
-  context.candidatesIndex = &mAllCandidatesIndex;
-  context.list = &list;
 
   LabelPosition *lp = nullptr;
 
@@ -248,9 +210,22 @@ void Problem::init_sol_falp()
 
     lp->getBoundingBox( amin, amax );
 
-    context.lp = lp;
-    mAllCandidatesIndex.Search( amin, amax, falpCallback1, reinterpret_cast< void * >( &context ) );
-    mActiveCandidatesIndex.Insert( amin, amax, lp );
+    std::vector< const LabelPosition * > conflictingPositions;
+    mAllCandidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [lp, &conflictingPositions]( const LabelPosition * lp2 ) ->bool
+    {
+      if ( lp->isInConflict( lp2 ) )
+      {
+        conflictingPositions.emplace_back( lp2 );
+      }
+      return true;
+    } );
+
+    for ( const LabelPosition *conflict : conflictingPositions )
+    {
+      ignoreLabel( conflict, list, mAllCandidatesIndex );
+    }
+
+    mActiveCandidatesIndex.insert( lp, QgsRectangle( amin[0], amin[1], amax[0], amax[1] ) );
   }
 
   if ( mDisplayAll )
@@ -274,7 +249,14 @@ void Problem::init_sol_falp()
           lp->getBoundingBox( amin, amax );
 
 
-          mActiveCandidatesIndex.Search( amin, amax, LabelPosition::countOverlapCallback, lp );
+          mActiveCandidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&lp]( const LabelPosition * lp2 )->bool
+          {
+            if ( lp->isInConflict( lp2 ) )
+            {
+              lp->incrementNumOverlaps();
+            }
+            return true;
+          } );
 
           if ( lp->getNumOverlaps() < nbOverlap )
           {
@@ -291,70 +273,8 @@ void Problem::init_sol_falp()
   }
 }
 
-
-struct ChainContext
-{
-  LabelPosition *lp = nullptr;
-  std::vector< int > *tmpsol = nullptr;
-  int *featWrap = nullptr;
-  int *feat = nullptr;
-  int borderSize;
-  QLinkedList<ElemTrans *> *currentChain;
-  QLinkedList<int> *conflicts;
-  double *delta_tmp = nullptr;
-  double *inactiveCost = nullptr;
-
-} ;
-
-
-bool chainCallback( LabelPosition *lp, void *context )
-{
-  ChainContext *ctx = reinterpret_cast< ChainContext * >( context );
-
-  if ( lp->isInConflict( ctx->lp ) )
-  {
-    int feat, rfeat;
-    bool sub = nullptr != ctx->featWrap;
-
-    feat = lp->getProblemFeatureId();
-    if ( sub )
-    {
-      rfeat = feat;
-      feat = ctx->featWrap[feat];
-    }
-    else
-      rfeat = feat;
-
-    if ( feat >= 0 && ( *ctx->tmpsol )[feat] == lp->getId() )
-    {
-      if ( sub && feat < ctx->borderSize )
-      {
-        throw - 2;
-      }
-    }
-
-    // is there any cycles ?
-    QLinkedList< ElemTrans * >::iterator cur;
-    for ( cur = ctx->currentChain->begin(); cur != ctx->currentChain->end(); ++cur )
-    {
-      if ( ( *cur )->feat == feat )
-      {
-        throw - 1;
-      }
-    }
-
-    if ( !ctx->conflicts->contains( feat ) )
-    {
-      ctx->conflicts->append( feat );
-      *ctx->delta_tmp += lp->cost() + ctx->inactiveCost[rfeat];
-    }
-  }
-  return true;
-}
-
 inline Chain *Problem::chain( int seed )
 {
-
   int i;
   int j;
 
@@ -379,18 +299,9 @@ inline Chain *Problem::chain( int seed )
   std::vector< int > tmpsol( mSol.activeLabelIds );
 
   LabelPosition *lp = nullptr;
+
   double amin[2];
   double amax[2];
-
-  ChainContext context;
-  context.featWrap = nullptr;
-  context.borderSize = 0;
-  context.tmpsol = &tmpsol;
-  context.inactiveCost = mInactiveCost;
-  context.feat = nullptr;
-  context.currentChain = &currentChain;
-  context.conflicts = &conflicts;
-  context.delta_tmp = &delta_tmp;
 
   delta = 0;
   while ( seed != -1 )
@@ -422,11 +333,32 @@ inline Chain *Problem::chain( int seed )
             lp = mLabelPositions[ lid ].get();
 
             // evaluate conflicts graph in solution after moving seed's label
+
             lp->getBoundingBox( amin, amax );
+            mActiveCandidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [lp, &delta_tmp, &conflicts, &currentChain, this]( const LabelPosition * lp2 ) -> bool
+            {
+              if ( lp2->isInConflict( lp ) )
+              {
+                const int feat = lp2->getProblemFeatureId();
 
-            context.lp = lp;
+                // is there any cycles ?
+                QLinkedList< ElemTrans * >::iterator cur;
+                for ( cur = currentChain.begin(); cur != currentChain.end(); ++cur )
+                {
+                  if ( ( *cur )->feat == feat )
+                  {
+                    throw - 1;
+                  }
+                }
 
-            mActiveCandidatesIndex.Search( amin, amax, chainCallback, reinterpret_cast< void * >( &context ) );
+                if ( !conflicts.contains( feat ) )
+                {
+                  conflicts.append( feat );
+                  delta_tmp += lp2->cost() + mInactiveCost[feat];
+                }
+              }
+              return true;
+            } );
 
             // no conflict -> end of chain
             if ( conflicts.isEmpty() )
@@ -625,34 +557,6 @@ inline Chain *Problem::chain( int seed )
   return retainedChain;
 }
 
-struct NokContext
-{
-  LabelPosition *lp = nullptr;
-  bool *ok = nullptr;
-  int *wrap = nullptr;
-};
-
-bool nokCallback( LabelPosition *lp, void *context )
-{
-  NokContext *ctx = reinterpret_cast< NokContext *>( context );
-  LabelPosition *lp2 = ctx->lp;
-  bool *ok = ctx->ok;
-  int *wrap = ctx->wrap;
-
-  if ( lp2->isInConflict( lp ) )
-  {
-    if ( wrap )
-    {
-      ok[wrap[lp->getProblemFeatureId()]] = false;
-    }
-    else
-    {
-      ok[lp->getProblemFeatureId()] = false;
-    }
-  }
-
-  return true;
-}
 
 void Problem::chain_search()
 {
@@ -665,12 +569,6 @@ void Problem::chain_search()
   int fid;
   int lid;
   int popit = 0;
-  double amin[2];
-  double amax[2];
-
-  NokContext context;
-  context.ok = ok;
-  context.wrap = nullptr;
 
   Chain *retainedChain = nullptr;
 
@@ -683,6 +581,9 @@ void Problem::chain_search()
   solution_cost();
 
   int iter = 0;
+
+  double amin[2];
+  double amax[2];
 
   while ( true )
   {
@@ -715,11 +616,16 @@ void Problem::chain_search()
         {
           LabelPosition *old = mLabelPositions[ mSol.activeLabelIds[fid] ].get();
           old->removeFromIndex( mActiveCandidatesIndex );
-
           old->getBoundingBox( amin, amax );
+          mAllCandidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&ok, old]( const LabelPosition * lp ) ->bool
+          {
+            if ( old->isInConflict( lp ) )
+            {
+              ok[lp->getProblemFeatureId()] = false;
+            }
 
-          context.lp = old;
-          mAllCandidatesIndex.Search( amin, amax, nokCallback, &context );
+            return true;
+          } );
         }
 
         mSol.activeLabelIds[fid] = lid;
@@ -758,14 +664,16 @@ QList<LabelPosition *> Problem::getSolution( bool returnInactive, QList<LabelPos
       solList.push_back( mLabelPositions[ mSol.activeLabelIds[i] ].get() ); // active labels
     }
     else if ( returnInactive
-              || mLabelPositions.at( mFeatStartId[i] )->getFeaturePart()->layer()->displayAll()
-              || mLabelPositions.at( mFeatStartId[i] )->getFeaturePart()->alwaysShow() )
+              || ( mFeatStartId[i] < static_cast< int >( mLabelPositions.size() ) &&
+                   ( mLabelPositions.at( mFeatStartId[i] )->getFeaturePart()->layer()->displayAll()
+                     || mLabelPositions.at( mFeatStartId[i] )->getFeaturePart()->alwaysShow() ) ) )
     {
       solList.push_back( mLabelPositions[ mFeatStartId[i] ].get() ); // unplaced label
     }
     else if ( unlabeled )
     {
-      unlabeled->push_back( mLabelPositions[ mFeatStartId[i] ].get() );
+      if ( mFeatStartId[i] < static_cast< int >( mLabelPositions.size() ) )
+        unlabeled->push_back( mLabelPositions[ mFeatStartId[i] ].get() );
     }
   }
 
@@ -783,34 +691,31 @@ void Problem::solution_cost()
 {
   mSol.totalCost = 0.0;
 
-  int nbOv;
-
-  LabelPosition::CountContext context;
-  context.inactiveCost = mInactiveCost;
-  context.nbOv = &nbOv;
-  context.cost = &mSol.totalCost;
-  double amin[2];
-  double amax[2];
   LabelPosition *lp = nullptr;
 
-  int nbHidden = 0;
+  double amin[2];
+  double amax[2];
 
   for ( std::size_t i = 0; i < mFeatureCount; i++ )
   {
     if ( mSol.activeLabelIds[i] == -1 )
     {
       mSol.totalCost += mInactiveCost[i];
-      nbHidden++;
     }
     else
     {
-      nbOv = 0;
       lp = mLabelPositions[ mSol.activeLabelIds[i] ].get();
 
       lp->getBoundingBox( amin, amax );
+      mActiveCandidatesIndex.intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&lp, this]( const LabelPosition * lp2 )->bool
+      {
+        if ( lp->isInConflict( lp2 ) )
+        {
+          mSol.totalCost += mInactiveCost[lp2->getProblemFeatureId()] + lp2->cost();
+        }
 
-      context.lp = lp;
-      mActiveCandidatesIndex.Search( amin, amax, LabelPosition::countFullOverlapCallback, &context );
+        return true;
+      } );
 
       mSol.totalCost += lp->cost();
     }

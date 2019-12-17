@@ -27,7 +27,7 @@ class QgsField;
 #include "qgswidgetwrapper.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgsvectorlayerref.h"
+
 
 /**
  * \ingroup gui
@@ -192,19 +192,6 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * \since QGIS 3.0
      */
     bool isBlockingCommit() const;
-
-    /**
-     * Returns a list of weak layer references to other layers required by this widget.
-     * The default implementation returns an empty list.
-     *
-     * This method should be reimplemented by widgets that handle relations with other layers,
-     * (e.g. ValueRelation) and can be used by client code to warn the user about
-     * missing required dependencies or to add some resolution logic in order
-     * to load the missing dependency.
-     * \note not available in Python bindings
-     * \since QGIS 3.12
-     */
-    virtual QList< QgsVectorLayerRef > layerDependencies() const SIP_SKIP;
 
     /**
      * Returns the reason why a constraint check has failed (or an empty string

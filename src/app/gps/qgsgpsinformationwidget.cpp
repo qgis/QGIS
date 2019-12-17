@@ -40,6 +40,9 @@
 #include "gmath.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
+#include "qgsbearingutils.h"
+#include "qgsgpsbearingitem.h"
+#include "qgssymbollayerutils.h"
 
 // QWT Charting widget
 
@@ -68,8 +71,8 @@ const int MAXACQUISITIONINTERVAL = 3000; // max gps information acquisition susp
 const int MAXDISTANCETHRESHOLD = 200; // max gps distance threshold (in meters)
 
 
-QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidget *parent, Qt::WindowFlags f )
-  : QWidget( parent, f )
+QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidget *parent )
+  : QgsPanelWidget( parent )
   , mMapCanvas( mapCanvas )
 {
   Q_ASSERT( mMapCanvas ); // precondition
@@ -92,8 +95,6 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   mLastNmeaPosition.lat = nmea_degree2radian( 0.0 );
   mLastNmeaPosition.lon = nmea_degree2radian( 0.0 );
 
-  mMapMarker = nullptr;
-  mRubberBand = nullptr;
   populateDevices();
   QWidget *mpHistogramWidget = mStackedWidget->widget( 1 );
 #ifndef WITH_QWTPOLAR
@@ -190,8 +191,31 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
 
   mBtnTrackColor->setAllowOpacity( true );
   mBtnTrackColor->setColorDialogTitle( tr( "Track Color" ) );
-  // Restore state
+
+  mBearingLineStyleButton->setSymbolType( QgsSymbol::Line );
+
   QgsSettings mySettings;
+
+  QDomDocument doc;
+  QDomElement elem;
+  QString symbolXml = mySettings.value( QStringLiteral( "gps/bearingLineSymbol" ) ).toString();
+  if ( !symbolXml.isEmpty() )
+  {
+    doc.setContent( symbolXml );
+    elem = doc.documentElement();
+    std::unique_ptr< QgsLineSymbol > bearingSymbol( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( elem, QgsReadWriteContext() ) );
+    if ( bearingSymbol )
+      mBearingLineStyleButton->setSymbol( bearingSymbol.release() );
+  }
+
+  connect( mBearingLineStyleButton, &QgsSymbolButton::changed, this, [ = ]
+  {
+    if ( mMapBearingItem )
+      mMapBearingItem->setSymbol( std::unique_ptr< QgsSymbol >( mBearingLineStyleButton->clonedSymbol< QgsLineSymbol >() ) );
+  } );
+
+  // Restore state
+
   mGroupShowMarker->setChecked( mySettings.value( QStringLiteral( "gps/showMarker" ), "true" ).toBool() );
   mSliderMarkerSize->setValue( mySettings.value( QStringLiteral( "gps/markerSize" ), "12" ).toInt() );
   mSpinTrackWidth->setValue( mySettings.value( QStringLiteral( "gps/trackWidth" ), "2" ).toInt() );
@@ -252,6 +276,8 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   {
     radRecenterWhenNeeded->setChecked( true );
   }
+  mRotateMapCheckBox->setChecked( mySettings.value( QStringLiteral( "gps/rotateMap" ), false ).toBool() );
+  mShowBearingLineCheck->setChecked( mySettings.value( QStringLiteral( "gps/showBearingLine" ), false ).toBool() );
 
   mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
 
@@ -361,6 +387,7 @@ QgsGpsInformationWidget::~QgsGpsInformationWidget()
   }
 
   delete mMapMarker;
+  delete mMapBearingItem;
   delete mRubberBand;
 
 #ifdef WITH_QWTPOLAR
@@ -417,7 +444,13 @@ QgsGpsInformationWidget::~QgsGpsInformationWidget()
   {
     mySettings.setValue( QStringLiteral( "gps/panMode" ), "none" );
   }
+  mySettings.setValue( QStringLiteral( "gps/rotateMap" ), mRotateMapCheckBox->isChecked() );
+  mySettings.setValue( QStringLiteral( "gps/showBearingLine" ), mShowBearingLineCheck->isChecked() );
 
+  QDomDocument doc;
+  QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "Symbol" ), mBearingLineStyleButton->symbol(), doc, QgsReadWriteContext() );
+  doc.appendChild( elem );
+  mySettings.setValue( QStringLiteral( "gps/bearingLineSymbol" ), doc.toString() );
 }
 
 void QgsGpsInformationWidget::mSpinTrackWidth_valueChanged( int value )
@@ -600,6 +633,11 @@ void QgsGpsInformationWidget::disconnectGps()
   {
     delete mMapMarker;
     mMapMarker = nullptr;
+  }
+  if ( mMapBearingItem )
+  {
+    delete mMapBearingItem;
+    mMapBearingItem = nullptr;
   }
   mGPSPlainTextEdit->appendPlainText( tr( "Disconnected…" ) );
   mConnectButton->setChecked( false );
@@ -863,6 +901,46 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
       addVertex();
     }
   } // mLastGpsPosition != myNewCenter
+
+  if ( !std::isnan( info.direction ) )
+  {
+    double trueNorth = 0;
+    try
+    {
+      trueNorth = QgsBearingUtils::bearingTrueNorth( mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext(), mMapCanvas->mapSettings().visibleExtent().center() );
+    }
+    catch ( QgsException & )
+    {
+
+    }
+
+    if ( mRotateMapCheckBox->isChecked() )
+    {
+      mMapCanvas->setRotation( trueNorth - info.direction );
+    }
+
+    if ( mShowBearingLineCheck )
+    {
+      if ( ! mMapBearingItem )
+      {
+        mMapBearingItem = new QgsGpsBearingItem( mMapCanvas );
+        mMapBearingItem->setSymbol( std::unique_ptr< QgsSymbol >( mBearingLineStyleButton->clonedSymbol< QgsLineSymbol >() ) );
+      }
+
+      mMapBearingItem->setGpsPosition( myNewCenter );
+      mMapBearingItem->setGpsBearing( info.direction - trueNorth );
+    }
+    else if ( mMapBearingItem )
+    {
+      delete mMapBearingItem;
+      mMapBearingItem = nullptr;
+    }
+  }
+  else if ( mMapBearingItem )
+  {
+    delete mMapBearingItem;
+    mMapBearingItem = nullptr;
+  }
 
   // new marker position after recentering
   if ( mGroupShowMarker->isChecked() ) // show marker
@@ -1367,9 +1445,8 @@ void QgsGpsInformationWidget::cboDistanceThresholdEdited()
   setDistanceThreshold( mCboDistanceThreshold->currentText().toUInt() );
 }
 
-void QgsGpsInformationWidget::timestampFormatChanged( int index )
+void QgsGpsInformationWidget::timestampFormatChanged( int )
 {
-  Q_UNUSED( index );
   QgsSettings().setValue( QStringLiteral( "gps/timestampFormat" ), mCboTimestampFormat->currentData( ).toInt() );
   const bool enabled { static_cast<Qt::TimeSpec>( mCboTimestampFormat->currentData( ).toInt() ) == Qt::TimeSpec::TimeZone };
   mCboTimeZones->setEnabled( enabled );

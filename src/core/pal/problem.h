@@ -36,7 +36,9 @@
 #include "qgis_core.h"
 #include <list>
 #include <QList>
-#include "rtree.hpp"
+#include "palrtree.h"
+#include <memory>
+#include <vector>
 
 namespace pal
 {
@@ -139,6 +141,11 @@ namespace pal
         return &mPositionsWithNoCandidates;
       }
 
+      /**
+       * Returns the index containing all label candidates.
+       */
+      PalRtree< LabelPosition > &allCandidatesIndex() { return mAllCandidatesIndex; }
+
     private:
 
       /**
@@ -178,15 +185,14 @@ namespace pal
 
       std::vector< std::unique_ptr< LabelPosition > > mLabelPositions;
 
-      RTree<LabelPosition *, double, 2, double> mAllCandidatesIndex;
-      RTree<LabelPosition *, double, 2, double> mActiveCandidatesIndex;
+      PalRtree<LabelPosition> mAllCandidatesIndex;
+      PalRtree<LabelPosition> mActiveCandidatesIndex;
 
       std::vector< std::unique_ptr< LabelPosition > > mPositionsWithNoCandidates;
 
-      //int *feat;        // [nblp]
-      int *mFeatStartId = nullptr; // [nbft]
-      int *mFeatNbLp = nullptr;    // [nbft]
-      double *mInactiveCost = nullptr; //
+      std::vector< int > mFeatStartId;
+      std::vector< int > mFeatNbLp;
+      std::vector< double > mInactiveCost;
 
       class Sol
       {

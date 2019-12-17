@@ -657,7 +657,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
   int projResult = 0;
 #if PROJ_VERSION_MAJOR>=6
   proj_errno_reset( projData );
-  proj_trans_generic( projData, direction == ForwardTransform ? PJ_FWD : PJ_INV,
+  proj_trans_generic( projData, ( direction == ForwardTransform && !d->mIsReversed ) || ( direction == ReverseTransform && d->mIsReversed ) ? PJ_FWD : PJ_INV,
                       x, sizeof( double ), numPoints,
                       y, sizeof( double ), numPoints,
                       z, sizeof( double ), numPoints,
@@ -799,10 +799,21 @@ QString QgsCoordinateTransform::coordinateOperation() const
   return d->mProjCoordinateOperation;
 }
 
+QgsDatumTransform::TransformDetails QgsCoordinateTransform::instantiatedCoordinateOperationDetails() const
+{
+#if PROJ_VERSION_MAJOR>=6
+  ProjData projData = d->threadLocalProjData();
+  return QgsDatumTransform::transformDetailsFromPj( projData );
+#else
+  return QgsDatumTransform::TransformDetails();
+#endif
+}
+
 void QgsCoordinateTransform::setCoordinateOperation( const QString &operation ) const
 {
   d.detach();
   d->mProjCoordinateOperation = operation;
+  d->mShouldReverseCoordinateOperation = false;
 }
 
 const char *finder( const char *name )

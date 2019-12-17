@@ -340,6 +340,26 @@ void QgsMeshRendererVectorArrowSettings::readXml( const QDomElement &elem )
 
 // ---------------------------------------------------------------------
 
+QgsMeshRendererSettings::QgsMeshRendererSettings()
+  : mAveragingMethod( new QgsMeshSingleLevelAveragingMethod() )
+{
+}
+
+QgsMeshRendererSettings::~QgsMeshRendererSettings() = default;
+
+QgsMesh3dAveragingMethod *QgsMeshRendererSettings::averagingMethod() const
+{
+  return mAveragingMethod.get();
+}
+
+void QgsMeshRendererSettings::setAveragingMethod( QgsMesh3dAveragingMethod *method )
+{
+  if ( method )
+    mAveragingMethod.reset( method->clone() );
+  else
+    mAveragingMethod.reset();
+}
+
 QDomElement QgsMeshRendererSettings::writeXml( QDomDocument &doc ) const
 {
   QDomElement elem = doc.createElement( QStringLiteral( "mesh-renderer-settings" ) );
@@ -375,6 +395,14 @@ QDomElement QgsMeshRendererSettings::writeXml( QDomDocument &doc ) const
   elemTriangularMesh.setTagName( QStringLiteral( "mesh-settings-triangular" ) );
   elem.appendChild( elemTriangularMesh );
 
+  if ( mAveragingMethod )
+  {
+    QDomElement elemAveraging = doc.createElement( QStringLiteral( "averaging-3d" ) );
+    elemAveraging.setAttribute( QStringLiteral( "method" ), QStringLiteral( "%1" ).arg( mAveragingMethod->method() ) ) ;
+    QDomElement elemAveragingParams = mAveragingMethod->writeXml( doc );
+    elem.appendChild( elemAveraging );
+  }
+
   return elem;
 }
 
@@ -382,6 +410,7 @@ void QgsMeshRendererSettings::readXml( const QDomElement &elem )
 {
   mRendererScalarSettings.clear();
   mRendererVectorSettings.clear();
+  mAveragingMethod.reset();
 
   QDomElement elemActiveDataset = elem.firstChildElement( QStringLiteral( "active-dataset" ) );
   if ( elemActiveDataset.hasAttribute( QStringLiteral( "scalar" ) ) )
@@ -424,6 +453,12 @@ void QgsMeshRendererSettings::readXml( const QDomElement &elem )
 
   QDomElement elemTriangularMesh = elem.firstChildElement( QStringLiteral( "mesh-settings-triangular" ) );
   mRendererTriangularMeshSettings.readXml( elemTriangularMesh );
+
+  QDomElement elemAveraging = elem.firstChildElement( QStringLiteral( "averaging-3d" ) );
+  if ( !elemAveraging.isNull() )
+  {
+    mAveragingMethod.reset( QgsMesh3dAveragingMethod::createFromXml( elem ) );
+  }
 }
 
 QgsMeshRendererVectorStreamlineSettings::SeedingStartPointsMethod QgsMeshRendererVectorStreamlineSettings::seedingMethod() const
@@ -510,6 +545,7 @@ QDomElement QgsMeshRendererVectorSettings::writeXml( QDomDocument &doc ) const
 
   elem.appendChild( mArrowsSettings.writeXml( doc ) );
   elem.appendChild( mStreamLinesSettings.writeXml( doc ) );
+  elem.appendChild( mTracesSettings.writeXml( doc ) );
 
   return elem;
 }
@@ -535,4 +571,67 @@ void QgsMeshRendererVectorSettings::readXml( const QDomElement &elem )
   QDomElement elemStreamLine = elem.firstChildElement( QStringLiteral( "vector-streamline-settings" ) );
   if ( ! elemStreamLine.isNull() )
     mStreamLinesSettings.readXml( elemStreamLine );
+
+  QDomElement elemTraces = elem.firstChildElement( QStringLiteral( "vector-traces-settings" ) );
+  if ( ! elemTraces.isNull() )
+    mTracesSettings.readXml( elemTraces );
 }
+
+QgsMeshRendererVectorTracesSettings QgsMeshRendererVectorSettings::tracesSettings() const
+{
+  return mTracesSettings;
+}
+
+void QgsMeshRendererVectorSettings::setTracesSettings( const QgsMeshRendererVectorTracesSettings &tracesSettings )
+{
+  mTracesSettings = tracesSettings;
+}
+
+void QgsMeshRendererVectorTracesSettings::readXml( const QDomElement &elem )
+{
+  mMaximumTailLength = elem.attribute( QStringLiteral( "maximum-tail-length" ) ).toInt();
+  mMaximumTailLengthUnit = static_cast<QgsUnitTypes::RenderUnit>(
+                             elem.attribute( QStringLiteral( "maximum-tail-length-unit" ) ).toInt() );
+  mParticlesCount = elem.attribute( QStringLiteral( "particles-count" ) ).toInt();
+}
+
+QDomElement QgsMeshRendererVectorTracesSettings::writeXml( QDomDocument &doc ) const
+{
+  QDomElement elem = doc.createElement( QStringLiteral( "vector-traces-settings" ) );
+  elem.setAttribute( QStringLiteral( "maximum-tail-length" ), mMaximumTailLength );
+  elem.setAttribute( QStringLiteral( "maximum-tail-length-unit" ), mMaximumTailLengthUnit );
+  elem.setAttribute( QStringLiteral( "particles-count" ), mParticlesCount );
+
+  return elem;
+}
+
+QgsUnitTypes::RenderUnit QgsMeshRendererVectorTracesSettings::maximumTailLengthUnit() const
+{
+  return mMaximumTailLengthUnit;
+}
+
+void QgsMeshRendererVectorTracesSettings::setMaximumTailLengthUnit( const QgsUnitTypes::RenderUnit &maximumTailLengthUnit )
+{
+  mMaximumTailLengthUnit = maximumTailLengthUnit;
+}
+
+double QgsMeshRendererVectorTracesSettings::maximumTailLength() const
+{
+  return mMaximumTailLength;
+}
+
+void QgsMeshRendererVectorTracesSettings::setMaximumTailLength( double maximumTailLength )
+{
+  mMaximumTailLength = maximumTailLength;
+}
+
+int QgsMeshRendererVectorTracesSettings::particlesCount() const
+{
+  return mParticlesCount;
+}
+
+void QgsMeshRendererVectorTracesSettings::setParticlesCount( int value )
+{
+  mParticlesCount = value;
+}
+

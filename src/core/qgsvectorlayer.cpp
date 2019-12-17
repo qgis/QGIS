@@ -85,6 +85,7 @@
 #include "qgsdiagramrenderer.h"
 #include "qgsstyle.h"
 #include "qgspallabeling.h"
+#include "qgsrulebasedlabeling.h"
 #include "qgssimplifymethod.h"
 #include "qgsstoredexpressionmanager.h"
 #include "qgsexpressioncontext.h"
@@ -4081,31 +4082,207 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
     return;
   }
 
-  QDomElement featureTypeStyleElem = userStyleElem.firstChildElement( QStringLiteral( "FeatureTypeStyle" ) );
-  if ( featureTypeStyleElem.isNull() )
+  QDomElement featTypeStyleElem = userStyleElem.firstChildElement( QStringLiteral( "FeatureTypeStyle" ) );
+  if ( featTypeStyleElem.isNull() )
   {
     QgsDebugMsgLevel( QStringLiteral( "Info: FeatureTypeStyle element not found." ), 4 );
     return;
   }
 
-  // use last rule
-  QDomElement ruleElem = featureTypeStyleElem.lastChildElement( QStringLiteral( "Rule" ) );
-  if ( ruleElem.isNull() )
+  // create empty FeatureTypeStyle element to merge TextSymbolizer's Rule's from all FeatureTypeStyle's
+  QDomElement mergedFeatTypeStyle = featTypeStyleElem.cloneNode( false ).toElement();
+
+  // use the RuleRenderer when more rules are present or the rule
+  // has filters or min/max scale denominators set,
+  // otherwise use the Simple labeling
+  bool needRuleBasedLabeling = false;
+  int ruleCount = 0;
+
+  while ( !featTypeStyleElem.isNull() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Info: Rule element not found." ), 4 );
+    QDomElement ruleElem = featTypeStyleElem.firstChildElement( QStringLiteral( "Rule" ) );
+    while ( !ruleElem.isNull() )
+    {
+      // test rule children element to check if we need to create RuleRenderer
+      // and if the rule has a symbolizer
+      bool hasTextSymbolizer = false;
+      bool hasRuleBased = false;
+      QDomElement ruleChildElem = ruleElem.firstChildElement();
+      while ( !ruleChildElem.isNull() )
+      {
+        // rule has filter or min/max scale denominator, use the RuleRenderer
+        if ( ruleChildElem.localName() == QLatin1String( "Filter" ) ||
+             ruleChildElem.localName() == QLatin1String( "MinScaleDenominator" ) ||
+             ruleChildElem.localName() == QLatin1String( "MaxScaleDenominator" ) )
+        {
+          hasRuleBased = true;
+        }
+        // rule has a renderer symbolizer, not a text symbolizer
+        else if ( ruleChildElem.localName() == QLatin1String( "TextSymbolizer" ) )
+        {
+          QgsDebugMsgLevel( QStringLiteral( "Info: TextSymbolizer element found" ), 4 );
+          hasTextSymbolizer = true;
+        }
+
+        ruleChildElem = ruleChildElem.nextSiblingElement();
+      }
+
+      if ( hasTextSymbolizer )
+      {
+        ruleCount++;
+
+        // append a clone of all Rules to the merged FeatureTypeStyle element
+        mergedFeatTypeStyle.appendChild( ruleElem.cloneNode().toElement() );
+
+        if ( hasRuleBased )
+        {
+          QgsDebugMsgLevel( QStringLiteral( "Info: Filter or Min/MaxScaleDenominator element found: need a RuleBasedLabeling" ), 4 );
+          needRuleBasedLabeling = true;
+        }
+      }
+
+      // more rules present, use the RuleRenderer
+      if ( ruleCount > 1 )
+      {
+        QgsDebugMsgLevel( QStringLiteral( "Info: More Rule elements found: need a RuleBasedLabeling" ), 4 );
+        needRuleBasedLabeling = true;
+      }
+
+      // not use the rule based labeling if no rules with textSymbolizer
+      if ( ruleCount == 0 )
+      {
+        needRuleBasedLabeling = false;
+      }
+
+      ruleElem = ruleElem.nextSiblingElement( QStringLiteral( "Rule" ) );
+    }
+    featTypeStyleElem = featTypeStyleElem.nextSiblingElement( QStringLiteral( "FeatureTypeStyle" ) );
+  }
+
+  if ( ruleCount == 0 )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Info: No TextSymbolizer element." ), 4 );
     return;
   }
 
-  // use last text symbolizer
-  QDomElement textSymbolizerElem = ruleElem.lastChildElement( QStringLiteral( "TextSymbolizer" ) );
-  if ( textSymbolizerElem.isNull() )
+  QDomElement ruleElem = mergedFeatTypeStyle.firstChildElement( QStringLiteral( "Rule" ) );
+
+  if ( needRuleBasedLabeling )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Info: TextSymbolizer element not found." ), 4 );
-    return;
+    QgsDebugMsgLevel( QStringLiteral( "Info: rule based labeling" ), 4 );
+    QgsRuleBasedLabeling::Rule *rootRule = new QgsRuleBasedLabeling::Rule( nullptr );
+    while ( !ruleElem.isNull() )
+    {
+
+      QString label, description, filterExp;
+      int scaleMinDenom = 0, scaleMaxDenom = 0;
+      QgsPalLayerSettings settings;
+
+      // retrieve the Rule element child nodes
+      QDomElement childElem = ruleElem.firstChildElement();
+      while ( !childElem.isNull() )
+      {
+        if ( childElem.localName() == QLatin1String( "Name" ) )
+        {
+          // <se:Name> tag contains the rule identifier,
+          // so prefer title tag for the label property value
+          if ( label.isEmpty() )
+            label = childElem.firstChild().nodeValue();
+        }
+        else if ( childElem.localName() == QLatin1String( "Description" ) )
+        {
+          // <se:Description> can contains a title and an abstract
+          QDomElement titleElem = childElem.firstChildElement( QStringLiteral( "Title" ) );
+          if ( !titleElem.isNull() )
+          {
+            label = titleElem.firstChild().nodeValue();
+          }
+
+          QDomElement abstractElem = childElem.firstChildElement( QStringLiteral( "Abstract" ) );
+          if ( !abstractElem.isNull() )
+          {
+            description = abstractElem.firstChild().nodeValue();
+          }
+        }
+        else if ( childElem.localName() == QLatin1String( "Abstract" ) )
+        {
+          // <sld:Abstract> (v1.0)
+          description = childElem.firstChild().nodeValue();
+        }
+        else if ( childElem.localName() == QLatin1String( "Title" ) )
+        {
+          // <sld:Title> (v1.0)
+          label = childElem.firstChild().nodeValue();
+        }
+        else if ( childElem.localName() == QLatin1String( "Filter" ) )
+        {
+          QgsExpression *filter = QgsOgcUtils::expressionFromOgcFilter( childElem );
+          if ( filter )
+          {
+            if ( filter->hasParserError() )
+            {
+              QgsDebugMsgLevel( QStringLiteral( "SLD Filter parsing error: %1" ).arg( filter->parserErrorString() ), 3 );
+            }
+            else
+            {
+              filterExp = filter->expression();
+            }
+            delete filter;
+          }
+        }
+        else if ( childElem.localName() == QLatin1String( "MinScaleDenominator" ) )
+        {
+          bool ok;
+          int v = childElem.firstChild().nodeValue().toInt( &ok );
+          if ( ok )
+            scaleMinDenom = v;
+        }
+        else if ( childElem.localName() == QLatin1String( "MaxScaleDenominator" ) )
+        {
+          bool ok;
+          int v = childElem.firstChild().nodeValue().toInt( &ok );
+          if ( ok )
+            scaleMaxDenom = v;
+        }
+        else if ( childElem.localName() == QLatin1String( "TextSymbolizer" ) )
+        {
+          readSldTextSymbolizer( childElem, settings );
+        }
+
+        childElem = childElem.nextSiblingElement();
+      }
+
+      QgsRuleBasedLabeling::Rule *ruleLabeling = new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings( settings ), scaleMinDenom, scaleMaxDenom, filterExp, label );
+      rootRule->appendChild( ruleLabeling );
+
+      ruleElem = ruleElem.nextSiblingElement();
+    }
+
+    setLabeling( new QgsRuleBasedLabeling( rootRule ) );
+    setLabelsEnabled( true );
   }
+  else
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Info: simple labeling" ), 4 );
+    // retrieve the TextSymbolizer element child node
+    QDomElement textSymbolizerElem = ruleElem.firstChildElement( QStringLiteral( "TextSymbolizer" ) );
+    QgsPalLayerSettings s;
+    if ( readSldTextSymbolizer( textSymbolizerElem, s ) )
+    {
+      setLabeling( new QgsVectorLayerSimpleLabeling( s ) );
+      setLabelsEnabled( true );
+    }
+  }
+}
 
-  QgsPalLayerSettings settings;
-
+bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSettings &settings ) const
+{
+  if ( node.localName() != QLatin1String( "TextSymbolizer" ) )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Not a TextSymbolizer element: %1" ).arg( node.localName() ), 3 );
+    return false;
+  }
+  QDomElement textSymbolizerElem = node.toElement();
   // Label
   QDomElement labelElem = textSymbolizerElem.firstChildElement( QStringLiteral( "Label" ) );
   if ( !labelElem.isNull() )
@@ -4138,13 +4315,13 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
     else
     {
       QgsDebugMsgLevel( QStringLiteral( "Info: PropertyName element not found." ), 4 );
-      return;
+      return false;
     }
   }
   else
   {
     QgsDebugMsgLevel( QStringLiteral( "Info: Label element not found." ), 4 );
-    return;
+    return false;
   }
 
   QString fontFamily = QStringLiteral( "Sans-Serif" );
@@ -4157,44 +4334,35 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
   QDomElement fontElem = textSymbolizerElem.firstChildElement( QStringLiteral( "Font" ) );
   if ( !fontElem.isNull() )
   {
-    QString cssName;
-    QString elemText;
-    QDomElement cssElem = fontElem.firstChildElement( QStringLiteral( "CssParameter" ) );
-    while ( !cssElem.isNull() )
+    QgsStringMap fontSvgParams = QgsSymbolLayerUtils::getSvgParameterList( fontElem );
+    for ( QgsStringMap::iterator it = fontSvgParams.begin(); it != fontSvgParams.end(); ++it )
     {
-      cssName = cssElem.attribute( QStringLiteral( "name" ), QStringLiteral( "not_found" ) );
-      if ( cssName != QLatin1String( "not_found" ) )
-      {
-        elemText = cssElem.text();
-        if ( cssName == QLatin1String( "font-family" ) )
-        {
-          fontFamily = elemText;
-        }
-        else if ( cssName == QLatin1String( "font-style" ) )
-        {
-          fontItalic = ( elemText == QLatin1String( "italic" ) ) || ( elemText == QLatin1String( "Italic" ) );
-        }
-        else if ( cssName == QLatin1String( "font-size" ) )
-        {
-          bool ok;
-          int fontSize = elemText.toInt( &ok );
-          if ( ok )
-          {
-            fontPointSize = fontSize;
-          }
-        }
-        else if ( cssName == QLatin1String( "font-weight" ) )
-        {
-          if ( ( elemText == QLatin1String( "bold" ) ) || ( elemText == QLatin1String( "Bold" ) ) )
-            fontWeight = QFont::Bold;
-        }
-        else if ( cssName == QLatin1String( "font-underline" ) )
-        {
-          fontUnderline = ( elemText == QLatin1String( "underline" ) ) || ( elemText == QLatin1String( "Underline" ) );
-        }
-      }
+      QgsDebugMsgLevel( QStringLiteral( "found fontSvgParams %1: %2" ).arg( it.key(), it.value() ), 4 );
 
-      cssElem = cssElem.nextSiblingElement( QStringLiteral( "CssParameter" ) );
+      if ( it.key() == QLatin1String( "font-family" ) )
+      {
+        fontFamily = it.value();
+      }
+      else if ( it.key() == QLatin1String( "font-style" ) )
+      {
+        fontItalic = ( it.value() == QLatin1String( "italic" ) ) || ( it.value() == QLatin1String( "Italic" ) );
+      }
+      else if ( it.key() == QLatin1String( "font-size" ) )
+      {
+        bool ok;
+        int fontSize = it.value().toInt( &ok );
+        if ( ok )
+          fontPointSize = fontSize;
+      }
+      else if ( it.key() == QLatin1String( "font-weight" ) )
+      {
+        if ( ( it.value() == QLatin1String( "bold" ) ) || ( it.value() == QLatin1String( "Bold" ) ) )
+          fontWeight = QFont::Bold;
+      }
+      else if ( it.key() == QLatin1String( "font-underline" ) )
+      {
+        fontUnderline = ( it.value() == QLatin1String( "underline" ) ) || ( it.value() == QLatin1String( "Underline" ) );
+      }
     }
   }
 
@@ -4205,9 +4373,13 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
   format.setSize( fontPointSize );
 
   // Fill
-  QColor textColor = QgsOgcUtils::colorFromOgcFill( textSymbolizerElem.firstChildElement( QStringLiteral( "Fill" ) ) );
+  QDomElement fillElem = textSymbolizerElem.firstChildElement( QStringLiteral( "Fill" ) );
+  QColor textColor;
+  Qt::BrushStyle textBrush = Qt::SolidPattern;
+  QgsSymbolLayerUtils::fillFromSld( fillElem, textBrush, textColor );
   if ( textColor.isValid() )
   {
+    QgsDebugMsgLevel( QStringLiteral( "Info: textColor %1." ).arg( QVariant( textColor ).toString() ), 4 );
     format.setColor( textColor );
   }
 
@@ -4231,9 +4403,13 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
       }
     }
 
-    QColor bufferColor = QgsOgcUtils::colorFromOgcFill( haloElem.firstChildElement( QStringLiteral( "Fill" ) ) );
+    QDomElement haloFillElem = haloElem.firstChildElement( QStringLiteral( "Fill" ) );
+    QColor bufferColor;
+    Qt::BrushStyle bufferBrush = Qt::SolidPattern;
+    QgsSymbolLayerUtils::fillFromSld( haloFillElem, bufferBrush, bufferColor );
     if ( bufferColor.isValid() )
     {
+      QgsDebugMsgLevel( QStringLiteral( "Info: bufferColor %1." ).arg( QVariant( bufferColor ).toString() ), 4 );
       bufferSettings.setColor( bufferColor );
     }
   }
@@ -4272,6 +4448,30 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
           }
         }
       }
+      QDomElement anchorPointElem = pointPlacementElem.firstChildElement( QStringLiteral( "AnchorPoint" ) );
+      if ( !anchorPointElem.isNull() )
+      {
+        QDomElement anchorPointXElem = anchorPointElem.firstChildElement( QStringLiteral( "AnchorPointX" ) );
+        if ( !anchorPointXElem.isNull() )
+        {
+          bool ok;
+          double xOffset = anchorPointXElem.text().toDouble( &ok );
+          if ( ok )
+          {
+            settings.xOffset = xOffset;
+          }
+        }
+        QDomElement anchorPointYElem = anchorPointElem.firstChildElement( QStringLiteral( "AnchorPointY" ) );
+        if ( !anchorPointYElem.isNull() )
+        {
+          bool ok;
+          double yOffset = anchorPointYElem.text().toDouble( &ok );
+          if ( ok )
+          {
+            settings.yOffset = yOffset;
+          }
+        }
+      }
 
       QDomElement rotationElem = pointPlacementElem.firstChildElement( QStringLiteral( "Rotation" ) );
       if ( !rotationElem.isNull() )
@@ -4288,8 +4488,7 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
 
   format.setBuffer( bufferSettings );
   settings.setFormat( format );
-  setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
-  setLabelsEnabled( true );
+  return true;
 }
 
 QgsEditFormConfig QgsVectorLayer::editFormConfig() const

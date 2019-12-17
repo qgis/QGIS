@@ -45,7 +45,6 @@ Layer::Layer( QgsAbstractLabelProvider *provider, const QString &name, QgsPalLay
   : mProvider( provider )
   , mName( name )
   , pal( pal )
-  , mObstacleType( QgsPalLayerSettings::PolygonInterior )
   , mActive( active )
   , mLabelLayer( toLabel )
   , mDisplayAll( displayAll )
@@ -115,7 +114,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
 
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
 
-  bool featureGeomIsObstacleGeom = !lf->obstacleGeometry();
+  bool featureGeomIsObstacleGeom = lf->obstacleSettings().obstacleGeometry().isNull();
 
   while ( !simpleGeometries->isEmpty() )
   {
@@ -152,7 +151,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
     // is the feature well defined?  TODO Check epsilon
     bool labelWellDefined = ( lf->size().width() > 0.0000001 && lf->size().height() > 0.0000001 );
 
-    if ( lf->isObstacle() && featureGeomIsObstacleGeom )
+    if ( lf->obstacleSettings().isObstacle() && featureGeomIsObstacleGeom )
     {
       //if we are not labeling the layer, only insert it into the obstacle list and avoid an
       //unnecessary copy
@@ -193,33 +192,28 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
     addedFeature = true;
   }
 
-  if ( lf->isObstacle() && !featureGeomIsObstacleGeom )
+  if ( lf->obstacleSettings().isObstacle() && !featureGeomIsObstacleGeom )
   {
     //do the same for the obstacle geometry
-    simpleGeometries.reset( Util::unmulti( lf->obstacleGeometry() ) );
-    if ( !simpleGeometries ) // unmulti() failed?
+    const QgsGeometry obstacleGeometry = lf->obstacleSettings().obstacleGeometry();
+    for ( auto it = obstacleGeometry.const_parts_begin(); it != obstacleGeometry.const_parts_end(); ++it )
     {
-      throw InternalException::UnknownGeometry();
-    }
-
-    while ( !simpleGeometries->isEmpty() )
-    {
-      const GEOSGeometry *geom = simpleGeometries->takeFirst();
+      geos::unique_ptr geom = QgsGeos::asGeos( *it );
 
       // ignore invalid geometries (e.g. polygons with self-intersecting rings)
-      if ( GEOSisValid_r( geosctxt, geom ) != 1 ) // 0=invalid, 1=valid, 2=exception
+      if ( GEOSisValid_r( geosctxt, geom.get() ) != 1 ) // 0=invalid, 1=valid, 2=exception
       {
         continue;
       }
 
-      int type = GEOSGeomTypeId_r( geosctxt, geom );
+      int type = GEOSGeomTypeId_r( geosctxt, geom.get() );
 
       if ( type != GEOS_POINT && type != GEOS_LINESTRING && type != GEOS_POLYGON )
       {
         throw InternalException::UnknownGeometry();
       }
 
-      std::unique_ptr<FeaturePart> fpart = qgis::make_unique<FeaturePart>( lf, geom );
+      std::unique_ptr<FeaturePart> fpart = qgis::make_unique<FeaturePart>( lf, geom.get() );
 
       // ignore invalid geometries
       if ( ( type == GEOS_LINESTRING && fpart->nbPoints < 2 ) ||
@@ -233,6 +227,8 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
       {
         continue;
       }
+
+      mGeosObstacleGeometries.emplace_back( std::move( geom ) );
 
       // feature part is ready!
       addObstaclePart( fpart.release() );
@@ -260,15 +256,8 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
 
 void Layer::addFeaturePart( FeaturePart *fpart, const QString &labelText )
 {
-  double bmin[2];
-  double bmax[2];
-  fpart->getBoundingBox( bmin, bmax );
-
   // add to list of layer's feature parts
   mFeatureParts << fpart;
-
-  // add to r-tree for fast spatial access
-  mFeatureIndex.Insert( bmin, bmax, fpart );
 
   // add to hashtable with equally named feature parts
   if ( mMergeLines && !labelText.isEmpty() )
@@ -279,15 +268,8 @@ void Layer::addFeaturePart( FeaturePart *fpart, const QString &labelText )
 
 void Layer::addObstaclePart( FeaturePart *fpart )
 {
-  double bmin[2];
-  double bmax[2];
-  fpart->getBoundingBox( bmin, bmax );
-
   // add to list of layer's feature parts
   mObstacleParts.append( fpart );
-
-  // add to obstacle r-tree
-  mObstacleIndex.Insert( bmin, bmax, fpart );
 }
 
 static FeaturePart *_findConnectedPart( FeaturePart *partCheck, const QVector<FeaturePart *> &otherParts )
@@ -332,24 +314,9 @@ void Layer::joinConnectedFeatures()
       FeaturePart *otherPart = _findConnectedPart( partCheck, parts );
       if ( otherPart )
       {
-        // remove partCheck from r-tree
-        double checkpartBMin[2], checkpartBMax[2];
-        partCheck->getBoundingBox( checkpartBMin, checkpartBMax );
-
-        double otherPartBMin[2], otherPartBMax[2];
-        otherPart->getBoundingBox( otherPartBMin, otherPartBMax );
-
         // merge points from partCheck to p->item
         if ( otherPart->mergeWithFeaturePart( partCheck ) )
         {
-          // remove the parts we are joining from the index
-          mFeatureIndex.Remove( checkpartBMin, checkpartBMax, partCheck );
-          mFeatureIndex.Remove( otherPartBMin, otherPartBMax, otherPart );
-
-          // reinsert merged line to r-tree (probably not needed)
-          otherPart->getBoundingBox( otherPartBMin, otherPartBMax );
-          mFeatureIndex.Insert( otherPartBMin, otherPartBMax, otherPart );
-
           mConnectedFeaturesIds.insert( partCheck->featureId(), connectedFeaturesId );
           mConnectedFeaturesIds.insert( otherPart->featureId(), connectedFeaturesId );
 
@@ -415,10 +382,6 @@ void Layer::chopFeaturesAtRepeatDistance()
 
     if ( shouldChop )
     {
-      double bmin[2], bmax[2];
-      fpart->getBoundingBox( bmin, bmax );
-      mFeatureIndex.Remove( bmin, bmax, fpart.get() );
-
       const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r( geosctxt, geom );
 
       // get number of points
@@ -449,7 +412,7 @@ void Layer::chopFeaturesAtRepeatDistance()
       // Walk along line
       unsigned int cur = 0;
       double lambda = 0;
-      QVector<Point> part;
+      std::vector<Point> part;
 
       QList<FeaturePart *> repeatParts;
       repeatParts.reserve( possibleSegments );
@@ -464,8 +427,8 @@ void Layer::chopFeaturesAtRepeatDistance()
         if ( cur >= n )
         {
           // Create final part
-          GEOSCoordSequence *cooSeq = GEOSCoordSeq_create_r( geosctxt, part.size(), 2 );
-          for ( int i = 0; i < part.size(); ++i )
+          GEOSCoordSequence *cooSeq = GEOSCoordSeq_create_r( geosctxt, static_cast< unsigned int >( part.size() ), 2 );
+          for ( unsigned int i = 0; i < part.size(); ++i )
           {
 #if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
             GEOSCoordSeq_setXY_r( geosctxt, cooSeq, i, part[i].x, part[i].y );
@@ -477,8 +440,6 @@ void Layer::chopFeaturesAtRepeatDistance()
           GEOSGeometry *newgeom = GEOSGeom_createLineString_r( geosctxt, cooSeq );
           FeaturePart *newfpart = new FeaturePart( fpart->feature(), newgeom );
           newFeatureParts.append( newfpart );
-          newfpart->getBoundingBox( bmin, bmax );
-          mFeatureIndex.Insert( bmin, bmax, newfpart );
           repeatParts.push_back( newfpart );
 
           break;
@@ -488,22 +449,20 @@ void Layer::chopFeaturesAtRepeatDistance()
         p.x = points[cur - 1].x + c * ( points[cur].x - points[cur - 1].x );
         p.y = points[cur - 1].y + c * ( points[cur].y - points[cur - 1].y );
         part.push_back( p );
-        GEOSCoordSequence *cooSeq = GEOSCoordSeq_create_r( geosctxt, part.size(), 2 );
-        for ( int i = 0; i < part.size(); ++i )
+        GEOSCoordSequence *cooSeq = GEOSCoordSeq_create_r( geosctxt, static_cast< unsigned int >( part.size() ), 2 );
+        for ( std::size_t i = 0; i < part.size(); ++i )
         {
 #if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
           GEOSCoordSeq_setXY_r( geosctxt, cooSeq, i, part[i].x, part[i].y );
 #else
-          GEOSCoordSeq_setX_r( geosctxt, cooSeq, i, part[i].x );
-          GEOSCoordSeq_setY_r( geosctxt, cooSeq, i, part[i].y );
+          GEOSCoordSeq_setX_r( geosctxt, cooSeq, static_cast< unsigned int >( i ), part[i].x );
+          GEOSCoordSeq_setY_r( geosctxt, cooSeq, static_cast< unsigned int >( i ), part[i].y );
 #endif
         }
 
         GEOSGeometry *newgeom = GEOSGeom_createLineString_r( geosctxt, cooSeq );
         FeaturePart *newfpart = new FeaturePart( fpart->feature(), newgeom );
         newFeatureParts.append( newfpart );
-        newfpart->getBoundingBox( bmin, bmax );
-        mFeatureIndex.Insert( bmin, bmax, newfpart );
         part.clear();
         part.push_back( p );
         repeatParts.push_back( newfpart );
@@ -520,3 +479,6 @@ void Layer::chopFeaturesAtRepeatDistance()
 
   mFeatureParts = newFeatureParts;
 }
+
+
+template class QgsGenericSpatialIndex<pal::FeaturePart>;

@@ -118,7 +118,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     void widgetChanged();
 
     /**
-     * Emitted when an auxiliary field is creatd in the widget.
+     * Emitted when an auxiliary field is created in the widget.
      * \since QGIS 3.10
      */
     void auxiliaryFieldCreated();
@@ -189,6 +189,9 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
 
     //! Associated vector layer
     QgsVectorLayer *mLayer = nullptr;
+
+    QgsSymbolLayerReferenceList mMaskedSymbolLayers;
+
   protected slots:
 
     //! Updates line placement options to reflect current state of widget
@@ -288,7 +291,6 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     void mPreviewBackgroundBtn_colorChanged( const QColor &color );
     void mDirectSymbLeftToolBtn_clicked();
     void mDirectSymbRightToolBtn_clicked();
-    void mChkNoObstacle_toggled( bool active );
     void chkLineOrientationDependent_toggled( bool active );
     void mToolButtonConfigureSubstitutes_clicked();
     void collapseSample( bool collapse );

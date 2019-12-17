@@ -28,7 +28,7 @@ MDAL::DriverAsciiDat::DriverAsciiDat( ):
   Driver( "ASCII_DAT",
           "DAT",
           "*.dat",
-          Capability::ReadDatasets
+          Capability::ReadDatasets | Capability::WriteDatasetsOnFaces2D | Capability::WriteDatasetsOnVertices2D
         )
 {
 }
@@ -40,7 +40,7 @@ MDAL::DriverAsciiDat *MDAL::DriverAsciiDat::create()
 
 MDAL::DriverAsciiDat::~DriverAsciiDat( ) = default;
 
-bool MDAL::DriverAsciiDat::canRead( const std::string &uri )
+bool MDAL::DriverAsciiDat::canReadDatasets( const std::string &uri )
 {
   std::ifstream in( uri, std::ifstream::in );
   std::string line;
@@ -84,7 +84,7 @@ void MDAL::DriverAsciiDat::loadOldFormat( std::ifstream &in,
             groupName
           );
   group->setIsScalar( !isVector );
-  group->setIsOnVertices( true );
+  group->setDataLocation( MDAL_DataLocation::DataOnVertices2D );
 
   do
   {
@@ -106,7 +106,9 @@ void MDAL::DriverAsciiDat::loadOldFormat( std::ifstream &in,
       size_t fileNodeCount = toSizeT( items[1] );
       size_t meshIdCount = maximumId( mesh ) + 1;
       if ( meshIdCount != fileNodeCount )
-        EXIT_WITH_ERROR( MDAL_Status::Err_IncompatibleMesh );
+      {
+        EXIT_WITH_ERROR( MDAL_Status::Err_IncompatibleMesh )
+      }
     }
     else if ( cardType == "SCALAR" || cardType == "VECTOR" )
     {
@@ -114,7 +116,8 @@ void MDAL::DriverAsciiDat::loadOldFormat( std::ifstream &in,
     }
     else if ( cardType == "TS" && items.size() >=  2 )
     {
-      double t = toDouble( items[ 1 ] );
+      double rawTime = toDouble( items[ 1 ] );
+      MDAL::RelativeTimestamp t( rawTime, MDAL::RelativeTimestamp::hours );
       readVertexTimestep( mesh, group, t, isVector, false, in );
     }
     else
@@ -127,29 +130,29 @@ void MDAL::DriverAsciiDat::loadOldFormat( std::ifstream &in,
   while ( std::getline( in, line ) );
 
   if ( !group || group->datasets.size() == 0 )
-    EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
+  {
+    EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat )
+  }
 
   group->setStatistics( MDAL::calculateStatistics( group ) );
   mesh->datasetGroups.push_back( group );
   group.reset();
 }
 
-void MDAL::DriverAsciiDat::loadNewFormat( std::ifstream &in,
-    Mesh *mesh,
-    MDAL_Status *status ) const
+void MDAL::DriverAsciiDat::loadNewFormat(
+  std::ifstream &in,
+  Mesh *mesh,
+  MDAL_Status *status ) const
 {
   bool isVector = false;
   std::shared_ptr<DatasetGroup> group; // DAT outputs data
   std::string groupName( MDAL::baseName( mDatFile ) );
   std::string line;
-  std::string referenceTime;
+  MDAL::DateTime referenceTime;
   // see if it contains face-centered results - supported by BASEMENT
   bool faceCentered = false;
-  if ( contains( groupName, "_els_" ) )
+  if ( contains( groupName, "_els" ) )
     faceCentered = true;
-
-  if ( group )
-    group->setIsOnVertices( !faceCentered );
 
   while ( std::getline( in, line ) )
   {
@@ -171,25 +174,25 @@ void MDAL::DriverAsciiDat::loadNewFormat( std::ifstream &in,
       size_t fileNodeCount = toSizeT( items[1] );
       size_t meshIdCount = maximumId( mesh ) + 1;
       if ( meshIdCount != fileNodeCount )
-        EXIT_WITH_ERROR( MDAL_Status::Err_IncompatibleMesh );
-    }
+        EXIT_WITH_ERROR( MDAL_Status::Err_IncompatibleMesh )
+      }
     else if ( cardType == "NC" && items.size() >= 2 )
     {
       size_t fileElemCount = toSizeT( items[1] );
       if ( mesh->facesCount() != fileElemCount )
-        EXIT_WITH_ERROR( MDAL_Status::Err_IncompatibleMesh );
-    }
+        EXIT_WITH_ERROR( MDAL_Status::Err_IncompatibleMesh )
+      }
     else if ( cardType == "OBJTYPE" )
     {
       if ( items[1] != "mesh2d" && items[1] != "\"mesh2d\"" )
-        EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
-    }
+        EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat )
+      }
     else if ( cardType == "BEGSCL" || cardType == "BEGVEC" )
     {
       if ( group )
       {
         debug( "New dataset while previous one is still active!" );
-        EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
+        EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat )
       }
       isVector = cardType == "BEGVEC";
 
@@ -200,7 +203,7 @@ void MDAL::DriverAsciiDat::loadNewFormat( std::ifstream &in,
                 groupName
               );
       group->setIsScalar( !isVector );
-      group->setIsOnVertices( !faceCentered );
+      group->setDataLocation( faceCentered ? MDAL_DataLocation::DataOnFaces2D : MDAL_DataLocation::DataOnVertices2D );
       group->setReferenceTime( referenceTime );
     }
     else if ( cardType == "ENDDS" )
@@ -208,7 +211,7 @@ void MDAL::DriverAsciiDat::loadNewFormat( std::ifstream &in,
       if ( !group )
       {
         debug( "ENDDS card for no active dataset!" );
-        EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
+        EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat )
       }
       group->setStatistics( MDAL::calculateStatistics( group ) );
       mesh->datasetGroups.push_back( group );
@@ -219,7 +222,7 @@ void MDAL::DriverAsciiDat::loadNewFormat( std::ifstream &in,
       if ( !group )
       {
         debug( "NAME card for no active dataset!" );
-        EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
+        EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat )
       }
 
       size_t quoteIdx1 = line.find( '\"' );
@@ -229,22 +232,22 @@ void MDAL::DriverAsciiDat::loadNewFormat( std::ifstream &in,
     }
     else if ( cardType == "RT_JULIAN" && items.size() >= 2 )
     {
-      referenceTime = "JULIAN " + items[1];
+      referenceTime = DateTime( MDAL::toDouble( items[1] ), DateTime::JulianDay );
     }
     else if ( cardType == "TIMEUNITS" && items.size() >= 2 )
     {
       if ( !group )
       {
         debug( "TIMEUNITS card for no active dataset!" );
-        EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
+        EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat )
       }
 
       group->setMetadata( "TIMEUNITS", items[1] );
     }
     else if ( cardType == "TS" && items.size() >= 3 )
     {
-      double t = toDouble( items[2] );
-      t = convertTimeDataToHours( t, group->getMetadata( "TIMEUNITS" ) );
+      double rawTime = toDouble( items[2] );
+      MDAL::RelativeTimestamp t( rawTime, MDAL::parseDurationTimeUnit( group->getMetadata( "TIMEUNITS" ) ) );
 
       if ( faceCentered )
       {
@@ -327,18 +330,18 @@ void MDAL::DriverAsciiDat::load( const std::string &datFile, MDAL::Mesh *mesh, M
 void MDAL::DriverAsciiDat::readVertexTimestep(
   const MDAL::Mesh *mesh,
   std::shared_ptr<DatasetGroup> group,
-  double t,
+  MDAL::RelativeTimestamp t,
   bool isVector,
   bool hasStatus,
   std::ifstream &stream ) const
 {
   assert( group );
   size_t faceCount = mesh->facesCount();
+  size_t vertexCount = mesh->verticesCount();
 
-  std::shared_ptr<MDAL::MemoryDataset> dataset = std::make_shared< MDAL::MemoryDataset >( group.get() );
+  std::shared_ptr<MDAL::MemoryDataset2D> dataset = std::make_shared< MDAL::MemoryDataset2D >( group.get(), hasStatus );
   dataset->setTime( t );
 
-  int *active = dataset->active();
   // only for new format
   for ( size_t i = 0; i < faceCount; ++i )
   {
@@ -346,14 +349,12 @@ void MDAL::DriverAsciiDat::readVertexTimestep(
     {
       std::string line;
       std::getline( stream, line );
-      active[i] = toBool( line );
+      dataset->setActive( i, toBool( line ) );
     }
   }
 
   const Mesh2dm *m2dm = dynamic_cast<const Mesh2dm *>( mesh );
-  double *values = dataset->values();
   size_t meshIdCount = maximumId( mesh ) + 1; // these are native format indexes (IDs). For formats without gaps it equals vertex array index
-  size_t vertexCount = mesh->verticesCount();
 
   for ( size_t id = 0; id < meshIdCount; ++id )
   {
@@ -373,8 +374,7 @@ void MDAL::DriverAsciiDat::readVertexTimestep(
     {
       if ( tsItems.size() >= 2 ) // BASEMENT files with vectors have 3 columns
       {
-        values[2 * index] = toDouble( tsItems[0] );
-        values[2 * index + 1] = toDouble( tsItems[1] );
+        dataset->setVectorValue( index, toDouble( tsItems[0] ), toDouble( tsItems[1] ) );
       }
       else
       {
@@ -384,7 +384,7 @@ void MDAL::DriverAsciiDat::readVertexTimestep(
     else
     {
       if ( tsItems.size() >= 1 )
-        values[index] = toDouble( tsItems[0] );
+        dataset->setScalarValue( index, toDouble( tsItems[0] ) );
       else
       {
         debug( "invalid timestep line" );
@@ -399,7 +399,7 @@ void MDAL::DriverAsciiDat::readVertexTimestep(
 void MDAL::DriverAsciiDat::readFaceTimestep(
   const MDAL::Mesh *mesh,
   std::shared_ptr<DatasetGroup> group,
-  double t,
+  MDAL::RelativeTimestamp t,
   bool isVector,
   std::ifstream &stream ) const
 {
@@ -407,10 +407,8 @@ void MDAL::DriverAsciiDat::readFaceTimestep(
 
   size_t faceCount = mesh->facesCount();
 
-  std::shared_ptr<MDAL::MemoryDataset> dataset = std::make_shared< MDAL::MemoryDataset >( group.get() );
+  std::shared_ptr<MDAL::MemoryDataset2D> dataset = std::make_shared< MDAL::MemoryDataset2D >( group.get() );
   dataset->setTime( t );
-  double *values = dataset->values();
-  // TODO: hasStatus
   for ( size_t index = 0; index < faceCount; ++index )
   {
     std::string line;
@@ -421,8 +419,7 @@ void MDAL::DriverAsciiDat::readFaceTimestep(
     {
       if ( tsItems.size() >= 2 ) // BASEMENT files with vectors have 3 columns
       {
-        values[2 * index] = toDouble( tsItems[0] );
-        values[2 * index + 1] = toDouble( tsItems[1] );
+        dataset->setVectorValue( index, toDouble( tsItems[0] ), toDouble( tsItems[1] ) );
       }
       else
       {
@@ -432,7 +429,7 @@ void MDAL::DriverAsciiDat::readFaceTimestep(
     else
     {
       if ( tsItems.size() >= 1 )
-        values[index] = toDouble( tsItems[0] );
+        dataset->setScalarValue( index, toDouble( tsItems[0] ) ) ;
       else
       {
         debug( "invalid timestep line" );
@@ -444,21 +441,85 @@ void MDAL::DriverAsciiDat::readFaceTimestep(
   group->datasets.push_back( dataset );
 }
 
-
-double MDAL::DriverAsciiDat::convertTimeDataToHours( double time, const std::string &originalTimeDataUnit ) const
+bool MDAL::DriverAsciiDat::persist( MDAL::DatasetGroup *group )
 {
-  if ( originalTimeDataUnit == "se" || originalTimeDataUnit == "2" || originalTimeDataUnit == "Seconds"
-       || originalTimeDataUnit.empty() )
+  assert( ( group->dataLocation() == MDAL_DataLocation::DataOnFaces2D ) ||
+          ( group->dataLocation() == MDAL_DataLocation::DataOnVertices2D ) );
+
+  const bool isScalar = group->isScalar();
+  const bool isOnVertices = group->dataLocation() == MDAL_DataLocation::DataOnVertices2D;
+  std::string uri = group->uri();
+
+  if ( !MDAL::contains( uri, "_els" ) && isOnVertices == false )
   {
-    time /= 3600.0;
+    // Should contain _els in name but it does not
+    uri.insert( uri.size() - 4, "_els" );
   }
-  else if ( originalTimeDataUnit == "mi" || originalTimeDataUnit == "1" || originalTimeDataUnit == "Minutes" )
+
+  std::ofstream out( uri, std::ofstream::out );
+
+  // implementation based on information from:
+  // https://www.xmswiki.com/wiki/SMS:ASCII_Dataset_Files_*.dat
+  if ( !out )
+    return true; // Couldn't open the file
+
+  const Mesh *mesh = group->mesh();
+  size_t nodeCount = mesh->verticesCount();
+  size_t elemCount = mesh->facesCount();
+
+  out << "DATASET\n";
+  out << "OBJTYPE \"mesh2d\"\n";
+
+  if ( isScalar )
+    out << "BEGSCL\n";
+  else
+    out << "BEGVEC\n";
+
+  out << "ND " << nodeCount << "\n";
+  out << "NC " << elemCount << "\n";
+  out << "NAME " "\"" << group->name() << "\"" "\n";
+  std::string referenceTimeStr = group->referenceTime().toJulianDayString();
+
+  if ( !referenceTimeStr.empty() )
   {
-    time /= 60.0;
+    out << "RT_JULIAN " << referenceTimeStr << "\n";
   }
-  else if ( originalTimeDataUnit == "days" )
+
+  out << "TIMEUNITS " << 0 << "\n";
+
+  for ( size_t time_index = 0; time_index < group->datasets.size(); ++ time_index )
   {
-    time *= 24;
+    const std::shared_ptr<MDAL::MemoryDataset2D> dataset
+      = std::dynamic_pointer_cast<MDAL::MemoryDataset2D>( group->datasets[time_index] );
+
+    bool hasActiveStatus = isOnVertices && dataset->supportsActiveFlag();
+    out << "TS " << hasActiveStatus << " " << std::to_string( dataset->time( RelativeTimestamp::hours ) ) << "\n";
+
+    if ( hasActiveStatus )
+    {
+      // Fill the active data
+      for ( size_t i = 0; i < elemCount; ++i )
+      {
+        int active = dataset->active( i );
+        out << ( active == 1 ? true : false ) << "\n";
+      }
+    }
+
+    size_t valuesToWrite = isOnVertices ? nodeCount : elemCount;
+
+    for ( size_t i = 0; i < valuesToWrite; ++i )
+    {
+      // Read values flags
+      if ( isScalar )
+        out << dataset->scalarValue( i ) << "\n";
+      else
+      {
+        out << dataset->valueX( i ) << " " << dataset->valueY( i )  << "\n";
+      }
+    }
   }
-  return time;
+
+  out << "ENDDS";
+
+  return false;
 }

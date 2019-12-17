@@ -259,6 +259,8 @@
 %Include auto_generated/effects/qgseffectstackpropertieswidget.sip
 %Include auto_generated/effects/qgspainteffectpropertieswidget.sip
 %Include auto_generated/effects/qgspainteffectwidget.sip
+%Include auto_generated/labeling/qgslabelobstaclesettingswidget.sip
+%Include auto_generated/labeling/qgslabelsettingswidgetbase.sip
 %Include auto_generated/layertree/qgscustomlayerorderwidget.sip
 %Include auto_generated/layertree/qgslayertreeembeddedconfigwidget.sip
 %Include auto_generated/layertree/qgslayertreeembeddedwidgetregistry.sip

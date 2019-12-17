@@ -42,6 +42,8 @@ QgsColorDialog::QgsColorDialog( QWidget *parent, Qt::WindowFlags fl, const QColo
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsColorDialog::mButtonBox_rejected );
   connect( mButtonBox, &QDialogButtonBox::clicked, this, &QgsColorDialog::mButtonBox_clicked );
 
+  connect( mColorWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );
+
   if ( mPreviousColor.isValid() )
   {
     QPushButton *resetButton = new QPushButton( tr( "Reset" ) );

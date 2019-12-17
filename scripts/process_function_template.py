@@ -111,7 +111,15 @@ for f in sorted(glob.glob('resources/function_help/json/*')):
                 )
 
         if 'notes' in v:
-            cpp.write(",\n        tr( \"{0}\" )".format(v['notes']))
+            cpp.write(",\n            tr( \"{0}\" )".format(v['notes']))
+        else:
+            cpp.write(",\n            QString()")
+
+        if 'tags' in v:
+            cpp.write(",\n            QStringList()")
+
+            for t in v['tags']:
+                cpp.write("\n              << QStringLiteral( \"{0}\" ) << tr( \"{0}\" )".format(t))
 
         cpp.write("\n         )")
 

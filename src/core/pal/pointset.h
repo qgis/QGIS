@@ -41,6 +41,7 @@
 #include <vector>
 
 #include "qgis_core.h"
+#include "qgsrectangle.h"
 
 namespace pal
 {
@@ -147,12 +148,12 @@ namespace pal
 
       int getGeosType() const { return type; }
 
-      void getBoundingBox( double min[2], double max[2] ) const
+      /**
+       * Returns the point set bounding box.
+       */
+      QgsRectangle boundingBox() const
       {
-        min[0] = xmin;
-        min[1] = ymin;
-        max[0] = xmax;
-        max[1] = ymax;
+        return QgsRectangle( xmin, ymin, xmax, ymax );
       }
 
       /**
@@ -162,7 +163,7 @@ namespace pal
       bool boundingBoxIntersects( const PointSet *other ) const;
 
       //! Returns NULLPTR if this isn't a hole. Otherwise returns pointer to parent pointset.
-      PointSet *getHoleOf() { return holeOf; }
+      PointSet *getHoleOf() const { return holeOf; }
 
       int getNumPoints() const { return nbPoints; }
 

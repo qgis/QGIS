@@ -530,6 +530,10 @@ while ($LINE_IDX < $LINE_COUNT){
         write_output("SF1", "%Feature $1$2\n");
         next;
     }
+    if ($LINE =~ m/^\s*SIP_PROPERTY\((.*)\)$/){
+        write_output("SF1", "%Property($1)\n");
+        next;
+    }
     if ($LINE =~ m/^\s*SIP_IF_FEATURE\( (\!?\w+) \)(.*)$/){
         write_output("SF2", "%If ($1)$2\n");
         next;

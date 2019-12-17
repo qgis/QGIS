@@ -37,17 +37,17 @@ static QString DEFAULT_LATLON_CRS = QStringLiteral( "CRS:84" );
 
 bool QgsWmsSettings::parseUri( const QString &uriString )
 {
-  QgsDebugMsg( "uriString = " + uriString );
+  QgsDebugMsgLevel( "uriString = " + uriString, 2 );
   QgsDataSourceUri uri;
   uri.setEncodedUri( uriString );
 
   // Setup authentication
-  mAuth.mUserName = uri.param( QStringLiteral( "username" ) );
-  mAuth.mPassword = uri.param( QStringLiteral( "password" ) );
+  mAuth.mUserName = uri.username();
+  mAuth.mPassword = uri.password();
 
-  if ( uri.hasParam( QStringLiteral( "authcfg" ) ) )
+  if ( !uri.authConfigId().isEmpty() )
   {
-    mAuth.mAuthCfg = uri.param( QStringLiteral( "authcfg" ) );
+    mAuth.mAuthCfg = uri.authConfigId();
   }
 
   mAuth.mReferer = uri.param( QStringLiteral( "referer" ) );

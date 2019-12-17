@@ -687,9 +687,17 @@ Adds a mesh layer to the current project.
 %Docstring
 Adds (opens) a project
 %End
-    virtual void newProject( bool promptToSaveFlag = false ) = 0;
+
+    virtual bool newProject( bool promptToSaveFlag = false ) = 0;
 %Docstring
-Starts a new blank project
+Starts a new blank project.
+
+If ``promptToSaveFlag`` is ``True`` then users will be prompted to save any currently open
+project (if that project has changes). If the flag is ``False``, then the current project will
+be closed without prompting to save (possibly resulting in data loss).
+
+Since QGIS 3.10.1, returns ``True`` if a new project was created, or ``False`` if the operation was not successful (e.g.
+the user opted to cancel when prompted to save the current project).
 %End
 
     virtual void reloadConnections( ) = 0;

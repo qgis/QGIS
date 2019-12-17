@@ -35,7 +35,7 @@ bool CostCalculator::candidateSortShrink( const std::unique_ptr< LabelPosition >
   return c1->cost() > c2->cost();
 }
 
-void CostCalculator::addObstacleCostPenalty( LabelPosition *lp, FeaturePart *obstacle )
+void CostCalculator::addObstacleCostPenalty( LabelPosition *lp, FeaturePart *obstacle, Pal *pal )
 {
   int n = 0;
   double dist;
@@ -66,15 +66,15 @@ void CostCalculator::addObstacleCostPenalty( LabelPosition *lp, FeaturePart *obs
       // behavior depends on obstacle avoid type
       switch ( obstacle->layer()->obstacleType() )
       {
-        case QgsPalLayerSettings::PolygonInterior:
+        case QgsLabelObstacleSettings::PolygonInterior:
           // n ranges from 0 -> 12
           n = lp->polygonIntersectionCost( obstacle );
           break;
-        case QgsPalLayerSettings::PolygonBoundary:
+        case QgsLabelObstacleSettings::PolygonBoundary:
           // penalty may need tweaking, given that interior mode ranges up to 12
           n = ( lp->crossesBoundary( obstacle ) ? 6 : 0 );
           break;
-        case QgsPalLayerSettings::PolygonWhole:
+        case QgsLabelObstacleSettings::PolygonWhole:
           // n is either 0 or 12
           n = ( lp->intersectsWithPolygon( obstacle ) ? 12 : 0 );
           break;
@@ -83,17 +83,36 @@ void CostCalculator::addObstacleCostPenalty( LabelPosition *lp, FeaturePart *obs
       break;
   }
 
+  //scale cost by obstacle's factor
+  double obstacleCost = obstacle->obstacleSettings().factor() * double( n );
   if ( n > 0 )
     lp->setConflictsWithObstacle( true );
 
-  //scale cost by obstacle's factor
-  double obstacleCost = obstacle->obstacleFactor() * double( n );
+  switch ( pal->placementVersion() )
+  {
+    case QgsLabelingEngineSettings::PlacementEngineVersion1:
+      break;
+
+    case QgsLabelingEngineSettings::PlacementEngineVersion2:
+    {
+      // obstacle factor is from 0 -> 2, label priority is from 1 -> 0. argh!
+      const double priority = 2 * ( 1 - lp->feature->calculatePriority() );
+      const double obstaclePriority = obstacle->obstacleSettings().factor();
+
+      // if feature priority is < obstaclePriorty, there's a hard conflict...
+      if ( n > 0 && ( priority < obstaclePriority && !qgsDoubleNear( priority, obstaclePriority, 0.001 ) ) )
+      {
+        lp->setHasHardObstacleConflict( true );
+      }
+      break;
+    }
+  }
 
   // label cost is penalized
   lp->setCost( lp->cost() + obstacleCost );
 }
 
-void CostCalculator::setPolygonCandidatesCost( std::size_t nblp, std::vector< std::unique_ptr< LabelPosition > > &lPos, RTree<FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] )
+void CostCalculator::setPolygonCandidatesCost( std::size_t nblp, std::vector< std::unique_ptr< LabelPosition > > &lPos, PalRtree<FeaturePart> *obstacles, double bbx[4], double bby[4] )
 {
   double normalizer;
   // compute raw cost
@@ -138,34 +157,36 @@ void CostCalculator::setPolygonCandidatesCost( std::size_t nblp, std::vector< st
   }
 }
 
-void CostCalculator::setCandidateCostFromPolygon( LabelPosition *lp, RTree <FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] )
+void CostCalculator::setCandidateCostFromPolygon( LabelPosition *lp, PalRtree<FeaturePart> *obstacles, double bbx[4], double bby[4] )
 {
-  double amin[2];
-  double amax[2];
-
-  PolygonCostCalculator *pCost = new PolygonCostCalculator( lp );
+  PolygonCostCalculator pCost( lp );
 
   // center
   //cost = feat->getDistInside((this->x[0] + this->x[2])/2.0, (this->y[0] + this->y[2])/2.0 );
 
-  pCost->update( lp->feature );
+  pCost.update( lp->feature );
 
-  PointSet *extent = new PointSet( 4, bbx, bby );
+  // costs candidates closer to outside of map higher than those closer to inside
+  PointSet extent( 4, bbx, bby );
+  pCost.update( &extent );
 
-  pCost->update( extent );
+  obstacles->intersects( lp->feature->boundingBox(), [&pCost]( const FeaturePart * obstacle )->bool
+  {
+    LabelPosition *lp = pCost.getLabel();
+    if ( ( obstacle == lp->feature ) || ( obstacle->getHoleOf() && obstacle->getHoleOf() != lp->feature ) )
+    {
+      return true;
+    }
 
-  delete extent;
+    pCost.update( obstacle );
 
-  lp->feature->getBoundingBox( amin, amax );
+    return true;
+  } );
 
-  obstacles->Search( amin, amax, LabelPosition::polygonObstacleCallback, pCost );
-
-  lp->setCost( pCost->getCost() );
-
-  delete pCost;
+  lp->setCost( pCost.getCost() );
 }
 
-std::size_t CostCalculator::finalizeCandidatesCosts( Feats *feat, std::size_t max_p, RTree <FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] )
+std::size_t CostCalculator::finalizeCandidatesCosts( Feats *feat, std::size_t max_p, PalRtree<FeaturePart> *obstacles, double bbx[4], double bby[4] )
 {
   // If candidates list is smaller than expected
   if ( max_p > feat->candidates.size() )
@@ -185,6 +206,7 @@ std::size_t CostCalculator::finalizeCandidatesCosts( Feats *feat, std::size_t ma
   }
   while ( stop == 0 && discrim < feat->candidates.back()->cost() + 2.0 );
 
+  // THIS LOOKS SUSPICIOUS -- it clamps all costs to a fixed value??
   if ( discrim > 1.5 )
   {
     for ( std::size_t k = 0; k < stop; k++ )
@@ -218,7 +240,7 @@ PolygonCostCalculator::PolygonCostCalculator( LabelPosition *lp ) : lp( lp )
   ok = false;
 }
 
-void PolygonCostCalculator::update( PointSet *pset )
+void PolygonCostCalculator::update( const pal::PointSet *pset )
 {
   double d = pset->minDistanceToPoint( px, py );
   if ( d < dist )

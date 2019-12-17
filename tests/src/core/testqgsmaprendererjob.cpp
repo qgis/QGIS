@@ -767,6 +767,7 @@ void TestQgsMapRendererJob::stagedRendererWithStagedLabeling()
   settings.fieldName = QStringLiteral( "Name" );
   settings.placement = QgsPalLayerSettings::OverPoint;
   settings.zIndex = 2;
+  settings.obstacleSettings().setType( QgsLabelObstacleSettings::PolygonInterior );
   polygonsLayer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   polygonsLayer->setLabelsEnabled( true );
 

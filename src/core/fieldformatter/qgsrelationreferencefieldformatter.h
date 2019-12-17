@@ -43,6 +43,11 @@ class CORE_EXPORT QgsRelationReferenceFieldFormatter : public QgsFieldFormatter
     QVariant sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const override;
 
     QVariant createCache( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const override;
+
+    QList<QgsVectorLayerRef> layerDependencies( const QVariantMap &config ) const override SIP_SKIP;
+
+    //friend class TestQgsRelationReferenceFieldFormatter;
+
 };
 
 #endif // QGSRELATIONREFERENCEFIELDKIT_H

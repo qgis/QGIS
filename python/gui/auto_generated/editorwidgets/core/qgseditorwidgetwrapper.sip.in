@@ -10,6 +10,7 @@
 
 
 
+
 class QgsEditorWidgetWrapper : QgsWidgetWrapper
 {
 %Docstring
@@ -186,7 +187,6 @@ of attribute values failing enforced field constraints.
 
 .. versionadded:: 3.0
 %End
-
 
     QString constraintFailureReason() const;
 %Docstring

@@ -48,6 +48,7 @@ namespace MDAL
       void populateFacesAndVertices( Vertices &vertices, Faces &faces ) override;
       void addBedElevation( MemoryMesh *mesh ) override;
       std::string getCoordinateSystemVariableName() override;
+      std::string getTimeVariableName() const override;
       std::set<std::string> ignoreNetCDFVariables() override;
       void parseNetCDFVariableMetadata( int varid, const std::string &variableName,
                                         std::string &name, bool *is_vector, bool *is_x ) override;

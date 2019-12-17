@@ -228,10 +228,10 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
     if ( !( field().type() == QVariant::Int || field().type() == QVariant::Double || field().type() == QVariant::LongLong || field().type() == QVariant::Date ) )
       v = QgsApplication::nullRepresentation();
   }
+  else if ( val.type() == QVariant::Double && std::isnan( val.toDouble() ) )
+    v = QgsApplication::nullRepresentation();
   else
-  {
     v = field().displayString( val );
-  }
 
   // For numbers, remove the group separator that might cause validation errors
   // when the user is editing the field value.

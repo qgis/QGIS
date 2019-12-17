@@ -34,10 +34,13 @@
 class QgsMeshTimeSettings;
 class QgsTriangularMesh;
 class QgsMeshDataBlock;
+class QgsMesh3dAveragingMethod;
+class QgsMeshDatasetValue;
+class QgsMeshLayer;
 
 /**
  * \ingroup core
- * Misc utility functions used for mesh layer support
+ * Misc utility functions used for mesh layer/data provider support
  *
  * \note not available in Python bindings
  * \since QGIS 3.4
@@ -45,6 +48,24 @@ class QgsMeshDataBlock;
 class CORE_EXPORT QgsMeshLayerUtils
 {
   public:
+
+    /**
+     * \brief Returns N vector/scalar values from the index from the dataset
+     *
+     * caller is responsible to set correct value index value:
+     * for DataOnFaces -> native face index
+     * for DataOnVertices -> native vertex index
+     * for DataOnVolumes -> native face index
+     *
+     * See QgsMeshDatasetGroupMetadata::isVector() to check if the returned value is vector or scalar
+     *
+     * \since QGIS 3.12
+     */
+    static QgsMeshDataBlock datasetValues(
+      const QgsMeshLayer *meshLayer,
+      QgsMeshDatasetIndex index,
+      int valueIndex,
+      int count );
 
     /**
      * Calculates magnitude values from the given QgsMeshDataBlock.
@@ -138,8 +159,8 @@ class CORE_EXPORT QgsMeshLayerUtils
     */
     static QVector<double> interpolateFromFacesData(
       QVector<double> valuesOnFaces,
-      QgsMesh *nativeMesh,
-      QgsTriangularMesh *triangularMesh,
+      const QgsMesh *nativeMesh,
+      const QgsTriangularMesh *triangularMesh,
       QgsMeshDataBlock *active,
       QgsMeshRendererScalarSettings::DataInterpolationMethod method
     );
@@ -157,6 +178,15 @@ class CORE_EXPORT QgsMeshLayerUtils
      * Formats hours in human readable string based on settings
      */
     static QString formatTime( double hours, const QgsMeshTimeSettings &settings );
+
+    /**
+      * Searches and returns the first valid reference time in layer's dataset group
+      * \param meshLayer mesh layer to parse
+      *
+      * \since QGIS 3.12
+      */
+    static QDateTime firstReferenceTime( QgsMeshLayer *meshLayer );
+
 };
 
 ///@endcond

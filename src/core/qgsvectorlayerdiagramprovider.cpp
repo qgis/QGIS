@@ -232,16 +232,14 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &fea
   if ( !geomCopy )
     return nullptr; // invalid geometry
 
-  geos::unique_ptr geosObstacleGeomClone;
-  std::unique_ptr<QgsGeometry> scopedObstacleGeom;
+  QgsGeometry preparedObstacleGeom;
   if ( isObstacle && !obstacleGeometry.isNull() && QgsPalLabeling::geometryRequiresPreparation( obstacleGeometry, context, mSettings.coordinateTransform(), extentGeom ) )
   {
-    QgsGeometry preparedObstacleGeom = QgsPalLabeling::prepareGeometry( obstacleGeometry, context, mSettings.coordinateTransform(), extentGeom );
-    geosObstacleGeomClone = QgsGeos::asGeos( preparedObstacleGeom );
+    preparedObstacleGeom = QgsPalLabeling::prepareGeometry( obstacleGeometry, context, mSettings.coordinateTransform(), extentGeom );
   }
   else if ( mSettings.isObstacle() && !obstacleGeometry.isNull() )
   {
-    geosObstacleGeomClone = QgsGeos::asGeos( obstacleGeometry );
+    preparedObstacleGeom = obstacleGeometry;
   }
 
   double diagramWidth = 0;
@@ -295,11 +293,10 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &fea
   lf->setHasFixedAngle( true );
   lf->setFixedAngle( 0 );
   lf->setAlwaysShow( alwaysShow );
-  lf->setIsObstacle( isObstacle );
-  if ( geosObstacleGeomClone )
-  {
-    lf->setObstacleGeometry( std::move( geosObstacleGeomClone ) );
-  }
+  QgsLabelObstacleSettings os;
+  os.setIsObstacle( isObstacle );
+  os.setObstacleGeometry( preparedObstacleGeom );
+  lf->setObstacleSettings( os );
 
   if ( dr )
   {

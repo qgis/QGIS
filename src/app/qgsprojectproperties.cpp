@@ -154,8 +154,13 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsProjectProperties::apply );
   connect( this, &QDialog::accepted, this, &QgsProjectProperties::apply );
-  connect( projectionSelector, &QgsProjectionSelectionTreeWidget::crsSelected, this, &QgsProjectProperties::srIdUpdated );
-  connect( projectionSelector, &QgsProjectionSelectionTreeWidget::initialized, this, &QgsProjectProperties::projectionSelectorInitialized );
+  connect( projectionSelector, &QgsProjectionSelectionTreeWidget::crsSelected, this, [ = ]
+  {
+    if ( mBlockCrsUpdates || !projectionSelector->hasValidSelection() )
+      return;
+
+    crsChanged( projectionSelector->crs() );
+  } );
 
   connect( cmbEllipsoid, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsProjectProperties::updateEllipsoidUI );
 
@@ -172,7 +177,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   mCrs = QgsProject::instance()->crs();
   updateGuiForMapUnits();
-  projectionSelector->setCrs( QgsProject::instance()->crs() );
+  setSelectedCrs( QgsProject::instance()->crs() );
 
   // Datum transforms
   QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();
@@ -946,18 +951,14 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   connect( generateTsFileButton, &QPushButton::clicked, this, &QgsProjectProperties::onGenerateTsFileButton );
 
-  projectionSelectorInitialized();
+  // Reading ellipsoid from settings
+  setCurrentEllipsoid( QgsProject::instance()->ellipsoid() );
+
   restoreOptionsBaseUi();
-  restoreState();
 
 #ifdef QGISDEBUG
   checkPageWidgetNameMap();
 #endif
-}
-
-QgsProjectProperties::~QgsProjectProperties()
-{
-  saveState();
 }
 
 QString QgsProjectProperties::title() const
@@ -969,9 +970,16 @@ void QgsProjectProperties::title( QString const &title )
 {
   titleEdit->setText( title );
   QgsProject::instance()->setTitle( title );
-} // QgsProjectProperties::title( QString const & title )
+}
 
-//when user clicks apply button
+void QgsProjectProperties::setSelectedCrs( const QgsCoordinateReferenceSystem &crs )
+{
+  mBlockCrsUpdates = true;
+  projectionSelector->setCrs( crs );
+  mBlockCrsUpdates = false;
+  crsChanged( projectionSelector->crs() );
+}
+
 void QgsProjectProperties::apply()
 {
   mMapCanvas->enableMapTileRendering( mMapTileRenderingCheckBox->isChecked() );
@@ -1670,31 +1678,21 @@ void QgsProjectProperties::updateGuiForMapUnits()
   }
 }
 
-void QgsProjectProperties::srIdUpdated()
+void QgsProjectProperties::crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
-  if ( !projectionSelector->hasValidSelection() )
-    return;
+  const bool prevWasValid = mCrs.isValid();
+  mCrs = crs;
 
-  mCrs = projectionSelector->crs();
   updateGuiForMapUnits();
 
   if ( mCrs.isValid() )
   {
     cmbEllipsoid->setEnabled( true );
-    if ( cmbEllipsoid->currentIndex() != 0 )
+    // don't automatically change a "NONE" ellipsoid when the crs changes, UNLESS
+    // the project has gone from no CRS to a valid CRS
+    if ( !prevWasValid || cmbEllipsoid->currentIndex() != 0 )
     {
-      // attempt to reset the projection ellipsoid according to the srs
-      int index = 0;
-      for ( int i = 0; i < mEllipsoidList.length(); i++ )
-      {
-        // TODO - use parameters instead of acronym
-        if ( mEllipsoidList[ i ].acronym == mCrs.ellipsoidAcronym() )
-        {
-          index = i;
-          break;
-        }
-      }
-      updateEllipsoidUI( index );
+      setCurrentEllipsoid( mCrs.ellipsoidAcronym() );
     }
   }
   else
@@ -1702,14 +1700,6 @@ void QgsProjectProperties::srIdUpdated()
     cmbEllipsoid->setCurrentIndex( 0 );
     cmbEllipsoid->setEnabled( false );
   }
-}
-
-void QgsProjectProperties::saveState()
-{
-}
-
-void QgsProjectProperties::restoreState()
-{
 }
 
 void QgsProjectProperties::pbnWMSExtCanvas_clicked()
@@ -2442,28 +2432,33 @@ void QgsProjectProperties::updateEllipsoidUI( int newIndex )
     cmbEllipsoid->setCurrentIndex( mEllipsoidIndex ); // Not always necessary
 }
 
-void QgsProjectProperties::projectionSelectorInitialized()
+void QgsProjectProperties::setCurrentEllipsoid( const QString &ellipsoidAcronym )
 {
-  QgsDebugMsgLevel( QStringLiteral( "Setting up ellipsoid" ), 4 );
-
-  // Reading ellipsoid from settings
-  QStringList mySplitEllipsoid = QgsProject::instance()->ellipsoid().split( ':' );
-
   int index = 0;
-  for ( int i = 0; i < mEllipsoidList.length(); i++ )
+  if ( ellipsoidAcronym.startsWith( QLatin1String( "PARAMETER" ) ) )
   {
-    if ( mEllipsoidList.at( i ).acronym.startsWith( mySplitEllipsoid[ 0 ] ) )
+    // Update parameters if present.
+    const QStringList mySplitEllipsoid = ellipsoidAcronym.split( ':' );
+    for ( int i = 0; i < mEllipsoidList.length(); i++ )
     {
-      index = i;
-      break;
+      if ( mEllipsoidList.at( i ).acronym.startsWith( QLatin1String( "PARAMETER" ), Qt::CaseInsensitive ) )
+      {
+        index = i;
+        mEllipsoidList[ index ].semiMajor = mySplitEllipsoid[ 1 ].toDouble();
+        mEllipsoidList[ index ].semiMinor = mySplitEllipsoid[ 2 ].toDouble();
+      }
     }
   }
-
-  // Update parameters if present.
-  if ( mySplitEllipsoid.length() >= 3 )
+  else
   {
-    mEllipsoidList[ index ].semiMajor = mySplitEllipsoid[ 1 ].toDouble();
-    mEllipsoidList[ index ].semiMinor = mySplitEllipsoid[ 2 ].toDouble();
+    for ( int i = 0; i < mEllipsoidList.length(); i++ )
+    {
+      if ( mEllipsoidList.at( i ).acronym.compare( ellipsoidAcronym, Qt::CaseInsensitive ) == 0 )
+      {
+        index = i;
+        break;
+      }
+    }
   }
 
   updateEllipsoidUI( index );

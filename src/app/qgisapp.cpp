@@ -349,6 +349,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsvaliditycheckregistry.h"
 #include "qgsappcoordinateoperationhandlers.h"
 #include "qgsprojectviewsettings.h"
+#include "qgscoordinateformatter.h"
 
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
@@ -1164,6 +1165,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   // create the GPS tool on starting QGIS - this is like the browser
   mpGpsWidget = new QgsGpsInformationWidget( mMapCanvas );
+  QgsPanelWidgetStack *gpsStack = new QgsPanelWidgetStack();
+  gpsStack->setMainPanel( mpGpsWidget );
+  mpGpsWidget->setDockMode( true );
   //create the dock widget
   mpGpsDock = new QgsDockWidget( tr( "GPS Information" ), this );
 
@@ -1177,7 +1181,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   addDockWidget( Qt::LeftDockWidgetArea, mpGpsDock );
   // add to the Panel submenu
   // now add our widget to the dock - ownership of the widget is passed to the dock
-  mpGpsDock->setWidget( mpGpsWidget );
+  mpGpsDock->setWidget( gpsStack );
   mpGpsDock->hide();
 
   mLastMapToolMessage = nullptr;
@@ -1262,6 +1266,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   registerCustomDropHandler( new QgsQptDropHandler() );
   QgsApplication::dataItemProviderRegistry()->addProvider( new QgsStyleXmlDataItemProvider() );
   registerCustomDropHandler( new QgsStyleXmlDropHandler() );
+  QgsApplication::dataItemProviderRegistry()->addProvider( new QgsHtmlDataItemProvider() );
 
   // set handler for missing layers (will be owned by QgsProject)
   mAppBadLayersHandler = new QgsHandleBadLayersHandler();
@@ -1566,6 +1571,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   };
   connect( QgsProject::instance(), &QgsProject::isDirtyChanged, mActionRevertProject, toggleRevert );
   connect( QgsProject::instance(), &QgsProject::fileNameChanged, mActionRevertProject, toggleRevert );
+
+  connect( mMapCanvas, &QgsMapCanvas::panDistanceBearingChanged, this, &QgisApp::showPanMessage );
 
   // the most important part of the initialization: make sure that people can play puzzle if they need
   QgsPuzzleWidget *puzzleWidget = new QgsPuzzleWidget( mMapCanvas );
@@ -1994,13 +2001,11 @@ QList<QgsVectorLayerRef> QgisApp::findBrokenWidgetDependencies( QgsVectorLayer *
   // Check for missing layer widget dependencies
   for ( int i = 0; i < vl->fields().count(); i++ )
   {
-    std::unique_ptr<QgsEditorWidgetWrapper> ww;
-    ww.reset( QgsGui::editorWidgetRegistry()->create( vl, i, nullptr, nullptr ) );
-    // ww should never be null in real life, but it is in QgisApp tests because
-    // QgsEditorWidgetRegistry widget factories is empty
-    if ( ww )
+    const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( vl, vl->fields().field( i ).name() );
+    QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+    if ( fieldFormatter )
     {
-      const auto constDependencies { ww->layerDependencies() };
+      const auto constDependencies { fieldFormatter->layerDependencies( setup.config() ) };
       for ( const QgsVectorLayerRef &dependency : constDependencies )
       {
         const QgsVectorLayer *depVl { QgsVectorLayerRef( dependency ).resolveWeakly(
@@ -3939,6 +3944,7 @@ void QgisApp::createCanvasTools()
   mMapTools.mZoomOut = new QgsMapToolZoom( mMapCanvas, true /* zoomOut */ );
   mMapTools.mZoomOut->setAction( mActionZoomOut );
   mMapTools.mPan = new QgsMapToolPan( mMapCanvas );
+  connect( static_cast< QgsMapToolPan * >( mMapTools.mPan ), &QgsMapToolPan::panDistanceBearingChanged, this, &QgisApp::showPanMessage );
   mMapTools.mPan->setAction( mActionPan );
   mMapTools.mIdentify = new QgsMapToolIdentifyAction( mMapCanvas );
   mMapTools.mIdentify->setAction( mActionIdentify );
@@ -4019,15 +4025,19 @@ void QgisApp::createCanvasTools()
   mMapTools.mSelectFeatures = new QgsMapToolSelect( mMapCanvas );
   mMapTools.mSelectFeatures->setAction( mActionSelectFeatures );
   mMapTools.mSelectFeatures->setSelectionMode( QgsMapToolSelectionHandler::SelectSimple );
+  connect( mMapTools.mSelectFeatures, &QgsMapToolSelect::modeChanged, this, &QgisApp::selectionModeChanged );
   mMapTools.mSelectPolygon = new QgsMapToolSelect( mMapCanvas );
   mMapTools.mSelectPolygon->setAction( mActionSelectPolygon );
   mMapTools.mSelectPolygon->setSelectionMode( QgsMapToolSelectionHandler::SelectPolygon );
+  connect( mMapTools.mSelectPolygon, &QgsMapToolSelect::modeChanged, this, &QgisApp::selectionModeChanged );
   mMapTools.mSelectFreehand = new QgsMapToolSelect( mMapCanvas );
   mMapTools.mSelectFreehand->setAction( mActionSelectFreehand );
   mMapTools.mSelectFreehand->setSelectionMode( QgsMapToolSelectionHandler::SelectFreehand );
+  connect( mMapTools.mSelectFreehand, &QgsMapToolSelect::modeChanged, this, &QgisApp::selectionModeChanged );
   mMapTools.mSelectRadius = new QgsMapToolSelect( mMapCanvas );
   mMapTools.mSelectRadius->setAction( mActionSelectRadius );
   mMapTools.mSelectRadius->setSelectionMode( QgsMapToolSelectionHandler::SelectRadius );
+  connect( mMapTools.mSelectRadius, &QgsMapToolSelect::modeChanged, this, &QgisApp::selectionModeChanged );
   mMapTools.mAddRing = new QgsMapToolAddRing( mMapCanvas );
   mMapTools.mAddRing->setAction( mActionAddRing );
   mMapTools.mFillRing = new QgsMapToolFillRing( mMapCanvas );
@@ -12797,8 +12807,51 @@ void QgisApp::showRotation()
   // update the statusbar with the current rotation.
   double myrotation = mMapCanvas->rotation();
   mRotationEdit->setValue( myrotation );
-} // QgisApp::showRotation
+}
 
+void QgisApp::showPanMessage( double distance, QgsUnitTypes::DistanceUnit unit, double bearing )
+{
+  mStatusBar->showMessage( tr( "Pan distance %1 (%2)" ).arg( QgsDistanceArea::formatDistance( distance, 1, unit ),
+                           QgsCoordinateFormatter::formatX( bearing, QgsCoordinateFormatter::FormatDecimalDegrees, 1, QgsCoordinateFormatter::FlagDegreesUseStringSuffix ) ), 2000 );
+}
+
+void QgisApp::selectionModeChanged( QgsMapToolSelect::Mode mode )
+{
+  switch ( mode )
+  {
+    case QgsMapToolSelect::GeometryIntersectsSetSelection:
+      mStatusBar->showMessage( QString() );
+      break;
+    case QgsMapToolSelect::GeometryIntersectsAddToSelection:
+      mStatusBar->showMessage( tr( "Add to the current selection" ) );
+      break;
+
+    case QgsMapToolSelect::GeometryIntersectsSubtractFromSelection:
+      mStatusBar->showMessage( tr( "Subtract from the current selection" ) );
+      break;
+
+    case QgsMapToolSelect::GeometryIntersectsIntersectWithSelection:
+      mStatusBar->showMessage( tr( "Intersect with the current selection" ) );
+      break;
+
+    case QgsMapToolSelect::GeometryWithinSetSelection:
+      mStatusBar->showMessage( tr( "Select features completely within" ) );
+      break;
+
+    case QgsMapToolSelect::GeometryWithinAddToSelection:
+      mStatusBar->showMessage( tr( "Add features completely within to the current selection" ) );
+      break;
+
+    case QgsMapToolSelect::GeometryWithinSubtractFromSelection:
+      mStatusBar->showMessage( tr( "Subtract features completely within from the current selection" ) );
+      break;
+
+    case QgsMapToolSelect::GeometryWithinIntersectWithSelection:
+      mStatusBar->showMessage( tr( "Intersect features completely within with the current selection" ) );
+      break;
+
+  }
+}
 
 void QgisApp::updateMouseCoordinatePrecision()
 {
@@ -13350,7 +13403,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
         mActionAddFeature->setText( addFeatureText );
         mActionAddFeature->setToolTip( addFeatureText );
         QgsGui::shortcutsManager()->unregisterAction( mActionAddFeature );
-        QgsGui::shortcutsManager()->registerAction( mActionAddFeature, mActionAddFeature->shortcut() );
+        if ( !mActionAddFeature->text().isEmpty() ) // The text will be empty on unknown geometry type -> in this case do not create a shortcut
+          QgsGui::shortcutsManager()->registerAction( mActionAddFeature, mActionAddFeature->shortcut() );
       }
       else
       {

@@ -1,5 +1,5 @@
 /*
- MDAL - mMesh Data Abstraction Library (MIT License)
+ MDAL - Mesh Data Abstraction Library (MIT License)
  Copyright (C) 2016 Lutra Consulting
  Copyright (C) 2018 Peter Petrik (zilolv at gmail dot com)
 */
@@ -35,7 +35,7 @@ size_t MDAL::DriverSWW::getVertexCount( const NetCDFFile &ncFile ) const
 }
 
 
-bool MDAL::DriverSWW::canRead( const std::string &uri )
+bool MDAL::DriverSWW::canReadMesh( const std::string &uri )
 {
   NetCDFFile ncFile;
 
@@ -288,7 +288,7 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverSWW::readScalarGroup(
             mesh,
             mFileName,
             groupName );
-    mds->setIsOnVertices( true );
+    mds->setDataLocation( MDAL_DataLocation::DataOnVertices2D );
     mds->setIsScalar( true );
 
     int zDimsX = 0;
@@ -298,13 +298,12 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverSWW::readScalarGroup(
     if ( zDimsX == 1 )
     {
       // TIME INDEPENDENT
-      std::shared_ptr<MDAL::MemoryDataset> o = std::make_shared<MDAL::MemoryDataset>( mds.get() );
-      o->setTime( 0.0 );
-      double *values = o->values();
+      std::shared_ptr<MDAL::MemoryDataset2D> o = std::make_shared<MDAL::MemoryDataset2D>( mds.get() );
+      o->setTime( RelativeTimestamp() );
       std::vector<double> valuesX = ncFile.readDoubleArr( arrName, nPoints );
       for ( size_t i = 0; i < nPoints; ++i )
       {
-        values[i] = valuesX[i];
+        o->setScalarValue( i, valuesX[i] );
       }
       o->setStatistics( MDAL::calculateStatistics( o ) );
       mds->datasets.push_back( o );
@@ -314,8 +313,8 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverSWW::readScalarGroup(
       // TIME DEPENDENT
       for ( size_t t = 0; t < times.size(); ++t )
       {
-        std::shared_ptr<MDAL::MemoryDataset> mto = std::make_shared<MDAL::MemoryDataset>( mds.get() );
-        mto->setTime( static_cast<double>( times[t] ) / 3600. );
+        std::shared_ptr<MDAL::MemoryDataset2D> mto = std::make_shared<MDAL::MemoryDataset2D>( mds.get() );
+        mto->setTime( static_cast<double>( times[t] ), RelativeTimestamp::seconds ); // Time is always in seconds
         double *values = mto->values();
 
         // fetching data for one timestep
@@ -357,7 +356,7 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverSWW::readVectorGroup(
             mesh,
             mFileName,
             groupName );
-    mds->setIsOnVertices( true );
+    mds->setDataLocation( MDAL_DataLocation::DataOnVertices2D );
     mds->setIsScalar( false );
 
     int zDimsX = 0;
@@ -371,32 +370,28 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverSWW::readVectorGroup(
     if ( zDimsX != zDimsY )
       throw MDAL_Status::Err_UnknownFormat;
 
-    std::vector<double> valuesX( nPoints ), valuesY( nPoints );
-
     if ( zDimsX == 1 )
     {
       // TIME INDEPENDENT
-      std::shared_ptr<MDAL::MemoryDataset> o = std::make_shared<MDAL::MemoryDataset>( mds.get() );
+      std::shared_ptr<MDAL::MemoryDataset2D> o = std::make_shared<MDAL::MemoryDataset2D>( mds.get() );
       o->setTime( 0.0 );
-      double *values = o->values();
       std::vector<double> valuesX = ncFile.readDoubleArr( arrXName, nPoints );
       std::vector<double> valuesY = ncFile.readDoubleArr( arrYName, nPoints );
       for ( size_t i = 0; i < nPoints; ++i )
       {
-        values[2 * i] = valuesX[i];
-        values[2 * i + 1] = valuesY[i];
+        o->setVectorValue( i, valuesX[i], valuesY[i] );
       }
       o->setStatistics( MDAL::calculateStatistics( o ) );
       mds->datasets.push_back( o );
     }
     else
     {
+      std::vector<double> valuesX( nPoints ), valuesY( nPoints );
       // TIME DEPENDENT
       for ( size_t t = 0; t < times.size(); ++t )
       {
-        std::shared_ptr<MDAL::MemoryDataset> mto = std::make_shared<MDAL::MemoryDataset>( mds.get() );
+        std::shared_ptr<MDAL::MemoryDataset2D> mto = std::make_shared<MDAL::MemoryDataset2D>( mds.get() );
         mto->setTime( static_cast<double>( times[t] ) / 3600. );
-        double *values = mto->values();
 
         // fetching data for one timestep
         size_t start[2], count[2];
@@ -410,8 +405,7 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverSWW::readVectorGroup(
 
         for ( size_t i = 0; i < nPoints; ++i )
         {
-          values[2 * i] = static_cast<double>( valuesX[i] );
-          values[2 * i + 1] = static_cast<double>( valuesY[i] );
+          mto->setVectorValue( i, static_cast<double>( valuesX[i] ),  static_cast<double>( valuesY[i] ) );
         }
 
         mto->setStatistics( MDAL::calculateStatistics( mto ) );

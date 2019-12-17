@@ -261,7 +261,7 @@ namespace pal
        */
       bool mShowPartialLabels = true;
 
-      QgsLabelingEngineSettings::PlacementEngineVersion mPlacementVersion = QgsLabelingEngineSettings::PlacementEngineVersion1;
+      QgsLabelingEngineSettings::PlacementEngineVersion mPlacementVersion = QgsLabelingEngineSettings::PlacementEngineVersion2;
 
       //! Callback that may be called from PAL to check whether the job has not been canceled in meanwhile
       FnIsCanceled fnIsCanceled = nullptr;

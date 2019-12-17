@@ -147,6 +147,9 @@ class TestQgsCoordinateTransformContext(unittest.TestCase):
         proj_string = '+proj=pipeline +step +inv +proj=lcc +lat_0=-37 +lon_0=145 +lat_1=-36 +lat_2=-38 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +step +proj=unitconvert +xy_in=rad +xy_out=deg +step +proj=axisswap +order=2,1'
         self.assertFalse(
             context.hasTransform(QgsCoordinateReferenceSystem('EPSG:3111'), QgsCoordinateReferenceSystem('EPSG:4283')))
+        self.assertFalse(context.mustReverseCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:3111'), QgsCoordinateReferenceSystem('EPSG:4283')))
+        self.assertFalse(context.mustReverseCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:4283'),
+                                                                QgsCoordinateReferenceSystem('EPSG:3111')))
         self.assertTrue(context.addCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:3111'),
                                                        QgsCoordinateReferenceSystem('EPSG:4283'), proj_string))
         self.assertTrue(
@@ -156,6 +159,31 @@ class TestQgsCoordinateTransformContext(unittest.TestCase):
         self.assertFalse(
             context.hasTransform(QgsCoordinateReferenceSystem('EPSG:3113'), QgsCoordinateReferenceSystem('EPSG:4283')))
         self.assertEqual(context.coordinateOperations(), {('EPSG:3111', 'EPSG:4283'): proj_string})
+        self.assertTrue(context.mustReverseCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:4283'),
+                                                               QgsCoordinateReferenceSystem('EPSG:3111')))
+
+        self.assertTrue(
+            context.hasTransform(QgsCoordinateReferenceSystem('EPSG:4283'), QgsCoordinateReferenceSystem('EPSG:3111')))
+
+        self.assertEqual(context.calculateCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:3111'),
+                                                              QgsCoordinateReferenceSystem('EPSG:4283')), proj_string)
+        self.assertFalse(context.mustReverseCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:3111'),
+                                                                QgsCoordinateReferenceSystem('EPSG:4283')))
+        # ideally not equal, but for now it's all we can do, and return True for mustReverseCoordinateOperation here
+        self.assertEqual(context.calculateCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:4283'),
+                                                              QgsCoordinateReferenceSystem('EPSG:3111')), proj_string)
+        self.assertTrue(context.mustReverseCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:4283'),
+                                                               QgsCoordinateReferenceSystem('EPSG:3111')))
+        proj_string_2 = 'dummy'
+        self.assertTrue(context.addCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:4283'),
+                                                       QgsCoordinateReferenceSystem('EPSG:3111'), proj_string_2))
+        self.assertEqual(context.calculateCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:4283'),
+                                                              QgsCoordinateReferenceSystem('EPSG:3111')), proj_string_2)
+        self.assertFalse(context.mustReverseCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:4283'),
+                                                                QgsCoordinateReferenceSystem('EPSG:3111')))
+        context.removeCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:4283'),
+                                          QgsCoordinateReferenceSystem('EPSG:3111'))
+
         proj_string_2 = '+proj=pipeline +step +inv +proj=utm +zone=56 +south +ellps=GRS80 +step +proj=unitconvert +xy_in=rad +xy_out=deg +step +proj=axisswap +order=2,1'
         self.assertTrue(context.addCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:28356'),
                                                        QgsCoordinateReferenceSystem(4283), proj_string_2))

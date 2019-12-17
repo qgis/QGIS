@@ -480,6 +480,17 @@ QgsMeshVectorRenderer *QgsMeshVectorRenderer::makeVectorRenderer( const QgsTrian
         layerExtent,
         datasetMagMaximumValue );
       break;
+    case QgsMeshRendererVectorSettings::Traces:
+      renderer = new QgsMeshVectorTraceRenderer(
+        m,
+        datasetVectorValues,
+        scalarActiveFaceFlagValues,
+        dataIsOnVertices,
+        settings,
+        context,
+        layerExtent,
+        datasetMagMaximumValue );
+      break;
   }
 
   return renderer;

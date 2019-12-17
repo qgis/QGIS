@@ -107,6 +107,18 @@ missing external dependencies).
 .. seealso:: :py:func:`isActive`
 %End
 
+    virtual QString warningMessage() const;
+%Docstring
+Returns an optional warning message to show users when running algorithms from this provider.
+
+This can be used to return a translated warning message which should be shown to users
+of this provider. It's intended for use in cases such as a provider which relies on a 3rd-party
+backend, where the version of the backend software is not officially supported, or for
+alerting users to providers in a "beta" or "untrustworthy" state.
+
+.. versionadded:: 3.10.1
+%End
+
     virtual bool isActive() const;
 %Docstring
 Returns ``True`` if the provider is active and able to run algorithms.

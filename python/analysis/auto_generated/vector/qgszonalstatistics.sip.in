@@ -102,6 +102,24 @@ Starts the calculation
 :return: 0 in case of success
 %End
 
+    static QString displayName( QgsZonalStatistics::Statistic statistic );
+%Docstring
+Returns the friendly display name for a ``statistic``.
+
+.. seealso:: :py:func:`shortName`
+
+.. versionadded:: 3.12
+%End
+
+    static QString shortName( QgsZonalStatistics::Statistic statistic );
+%Docstring
+Returns a short, friendly display name for a ``statistic``, suitable for use in a field name.
+
+.. seealso:: :py:func:`displayName`
+
+.. versionadded:: 3.12
+%End
+
       public:
 };
 

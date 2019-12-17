@@ -18,7 +18,7 @@
 #define SIP_NO_FILE
 
 #include <QList>
-#include "rtree.hpp"
+#include "palrtree.h"
 
 /**
  * \class pal::CostCalculator
@@ -29,6 +29,7 @@ namespace pal
 {
   class Feats;
   class LabelPosition;
+  class Pal;
 
   /**
    * \ingroup core
@@ -37,16 +38,16 @@ namespace pal
   {
     public:
       //! Increase candidate's cost according to its collision with passed feature
-      static void addObstacleCostPenalty( LabelPosition *lp, pal::FeaturePart *obstacle );
+      static void addObstacleCostPenalty( pal::LabelPosition *lp, pal::FeaturePart *obstacle, Pal *pal );
 
       //! Calculates the costs for polygon label candidates
-      static void setPolygonCandidatesCost( std::size_t nblp, std::vector<std::unique_ptr<pal::LabelPosition> > &lPos, RTree<pal::FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] );
+      static void setPolygonCandidatesCost( std::size_t nblp, std::vector<std::unique_ptr<pal::LabelPosition> > &lPos, PalRtree< FeaturePart > *obstacles, double bbx[4], double bby[4] );
 
       //! Sets cost to the smallest distance between lPos's centroid and a polygon stored in geometry field
-      static void setCandidateCostFromPolygon( LabelPosition *lp, RTree<pal::FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] );
+      static void setCandidateCostFromPolygon( LabelPosition *lp, PalRtree< FeaturePart > *obstacles, double bbx[4], double bby[4] );
 
       //! Sort candidates by costs, skip the worse ones, evaluate polygon candidates
-      static std::size_t finalizeCandidatesCosts( Feats *feat, std::size_t max_p, RTree<pal::FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] );
+      static std::size_t finalizeCandidatesCosts( Feats *feat, std::size_t max_p, PalRtree< FeaturePart > *obstacles, double bbx[4], double bby[4] );
 
       /**
        * Sorts label candidates in ascending order of cost
@@ -75,7 +76,10 @@ namespace pal
     public:
       explicit PolygonCostCalculator( LabelPosition *lp );
 
-      void update( pal::PointSet *pset );
+      /**
+       * Updates cost.
+       */
+      void update( const pal::PointSet *pset );
 
       double getCost();
 

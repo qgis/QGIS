@@ -28,7 +28,6 @@ from qgis.core import (QgsApplication,
 
 from PyQt5.QtCore import QCoreApplication
 
-from .AddTableField import AddTableField
 from .Aggregate import Aggregate
 from .BarPlot import BarPlot
 from .BasicStatistics import BasicStatisticsForField
@@ -44,14 +43,11 @@ from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
 from .EliminateSelection import EliminateSelection
 from .ExecuteSQL import ExecuteSQL
 from .ExportGeometryInfo import ExportGeometryInfo
-from .ExtentFromLayer import ExtentFromLayer
-from .ExtractSpecificVertices import ExtractSpecificVertices
 from .FieldPyculator import FieldsPyculator
 from .FieldsCalculator import FieldsCalculator
 from .FieldsMapper import FieldsMapper
 from .FindProjection import FindProjection
 from .GeometryConvert import GeometryConvert
-from .GeometryByExpression import GeometryByExpression
 from .Heatmap import Heatmap
 from .HubDistanceLines import HubDistanceLines
 from .HubDistancePoints import HubDistancePoints
@@ -64,18 +60,14 @@ from .KNearestConcaveHull import KNearestConcaveHull
 from .LinesToPolygons import LinesToPolygons
 from .MeanAndStdDevPlot import MeanAndStdDevPlot
 from .MinimumBoundingGeometry import MinimumBoundingGeometry
-from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
 from .PointDistance import PointDistance
 from .PointsDisplacement import PointsDisplacement
 from .PointsFromLines import PointsFromLines
-from .PointsFromPolygons import PointsFromPolygons
 from .PointsToPaths import PointsToPaths
 from .PolarPlot import PolarPlot
-from .PoleOfInaccessibility import PoleOfInaccessibility
 from .Polygonize import Polygonize
 from .PostGISExecuteSQL import PostGISExecuteSQL
 from .PostGISExecuteAndLoadSQL import PostGISExecuteAndLoadSQL
-from .RandomExtract import RandomExtract
 from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 from .RandomPointsAlongLines import RandomPointsAlongLines
 from .RandomPointsLayer import RandomPointsLayer
@@ -84,7 +76,6 @@ from .RandomSelection import RandomSelection
 from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
 from .RasterCalculator import RasterCalculator
 from .RasterLayerHistogram import RasterLayerHistogram
-from .RasterLayerStatistics import RasterLayerStatistics
 from .RasterSampling import RasterSampling
 from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
 from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
@@ -99,12 +90,10 @@ from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
 from .SpatialJoin import SpatialJoin
 from .SpatialJoinSummary import SpatialJoinSummary
 from .StatisticsByCategories import StatisticsByCategories
-from .SumLines import SumLines
 from .TextToFloat import TextToFloat
 from .TilesXYZ import TilesXYZAlgorithmDirectory, TilesXYZAlgorithmMBTiles
 from .TinInterpolation import TinInterpolation
 from .TopoColors import TopoColor
-from .TruncateTable import TruncateTable
 from .UniqueValues import UniqueValues
 from .VariableDistanceBuffer import VariableDistanceBuffer
 from .VectorLayerHistogram import VectorLayerHistogram
@@ -112,7 +101,6 @@ from .VectorLayerScatterplot import VectorLayerScatterplot
 from .VectorLayerScatterplot3D import VectorLayerScatterplot3D
 from .VectorSplit import VectorSplit
 from .VoronoiPolygons import VoronoiPolygons
-from .ZonalStatistics import ZonalStatistics
 
 
 class QgisAlgorithmProvider(QgsProcessingProvider):
@@ -124,8 +112,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
         self.externalAlgs = []
 
     def getAlgs(self):
-        algs = [AddTableField(),
-                Aggregate(),
+        algs = [Aggregate(),
                 BarPlot(),
                 BasicStatisticsForField(),
                 BoxPlot(),
@@ -140,13 +127,10 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 EliminateSelection(),
                 ExecuteSQL(),
                 ExportGeometryInfo(),
-                ExtentFromLayer(),
-                ExtractSpecificVertices(),
                 FieldsCalculator(),
                 FieldsMapper(),
                 FieldsPyculator(),
                 FindProjection(),
-                GeometryByExpression(),
                 GeometryConvert(),
                 Heatmap(),
                 HubDistanceLines(),
@@ -160,18 +144,14 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 LinesToPolygons(),
                 MeanAndStdDevPlot(),
                 MinimumBoundingGeometry(),
-                NearestNeighbourAnalysis(),
                 PointDistance(),
                 PointsDisplacement(),
                 PointsFromLines(),
-                PointsFromPolygons(),
                 PointsToPaths(),
                 PolarPlot(),
-                PoleOfInaccessibility(),
                 Polygonize(),
                 PostGISExecuteSQL(),
                 PostGISExecuteAndLoadSQL(),
-                RandomExtract(),
                 RandomExtractWithinSubsets(),
                 RandomPointsAlongLines(),
                 RandomPointsLayer(),
@@ -180,7 +160,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 RandomSelectionWithinSubsets(),
                 RasterCalculator(),
                 RasterLayerHistogram(),
-                RasterLayerStatistics(),
                 RasterSampling(),
                 RectanglesOvalsDiamondsFixed(),
                 RectanglesOvalsDiamondsVariable(),
@@ -195,13 +174,11 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 SpatialJoin(),
                 SpatialJoinSummary(),
                 StatisticsByCategories(),
-                SumLines(),
                 TextToFloat(),
                 TilesXYZAlgorithmDirectory(),
                 TilesXYZAlgorithmMBTiles(),
                 TinInterpolation(),
                 TopoColor(),
-                TruncateTable(),
                 UniqueValues(),
                 VariableDistanceBuffer(),
                 VectorLayerHistogram(),
@@ -209,7 +186,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 VectorLayerScatterplot3D(),
                 VectorSplit(),
                 VoronoiPolygons(),
-                ZonalStatistics()
                 ]
 
         return algs

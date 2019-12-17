@@ -35,7 +35,8 @@
 
 #include "qgis_core.h"
 #include "pal.h" // for LineArrangementFlags enum
-#include "rtree.hpp"
+#include "qgsgeos.h"
+#include "qgsgenericspatialindex.h"
 #include <QMutex>
 #include <QLinkedList>
 #include <QHash>
@@ -46,11 +47,8 @@ class QgsLabelFeature;
 namespace pal
 {
 
-  /// @cond PRIVATE
-  template<class DATATYPE, class ELEMTYPE, int NUMDIMS, class ELEMTYPEREAL, int TMAXNODES, int TMINNODES> class RTree;
-  /// @endcond
-
   class FeaturePart;
+
   class Pal;
   class LabelInfo;
 
@@ -228,7 +226,7 @@ namespace pal
        * act as obstacles for labels.
        * \see setObstacleType
        */
-      QgsPalLayerSettings::ObstacleType obstacleType() const { return mObstacleType; }
+      QgsLabelObstacleSettings::ObstacleType obstacleType() const { return mObstacleType; }
 
       /**
        * Sets the obstacle type, which controls how features within the layer
@@ -236,7 +234,7 @@ namespace pal
        * \param obstacleType new obstacle type
        * \see obstacleType
        */
-      void setObstacleType( QgsPalLayerSettings::ObstacleType obstacleType ) { mObstacleType = obstacleType; }
+      void setObstacleType( QgsLabelObstacleSettings::ObstacleType obstacleType ) { mObstacleType = obstacleType; }
 
       /**
        * Sets the layer's priority.
@@ -329,11 +327,13 @@ namespace pal
       //! List of obstacle parts
       QList<FeaturePart *> mObstacleParts;
 
+      std::vector< geos::unique_ptr > mGeosObstacleGeometries;
+
       Pal *pal = nullptr;
 
       double mDefaultPriority;
 
-      QgsPalLayerSettings::ObstacleType mObstacleType;
+      QgsLabelObstacleSettings::ObstacleType mObstacleType = QgsLabelObstacleSettings::PolygonBoundary;
       bool mActive;
       bool mLabelLayer;
       bool mDisplayAll;
@@ -346,13 +346,8 @@ namespace pal
 
       UpsideDownLabels mUpsidedownLabels;
 
-      // indexes (spatial and id)
-      RTree<FeaturePart *, double, 2, double, 8, 4> mFeatureIndex;
       //! Lookup table of label features (owned by the label feature provider that created them)
       QHash< QgsFeatureId, QgsLabelFeature *> mHashtable;
-
-      //obstacle r-tree
-      RTree<FeaturePart *, double, 2, double, 8, 4> mObstacleIndex;
 
       QHash< QString, QVector<FeaturePart *> > mConnectedHashtable;
       QHash< QgsFeatureId, int > mConnectedFeaturesIds;
@@ -368,5 +363,6 @@ namespace pal
   };
 
 } // end namespace pal
+
 
 #endif

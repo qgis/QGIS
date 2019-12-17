@@ -21,7 +21,7 @@
 
 
 QgsClassificationPrettyBreaks::QgsClassificationPrettyBreaks()
-  : QgsClassificationMethod( ValuesNotRequired | SymmetricModeAvailable )
+  : QgsClassificationMethod( SymmetricModeAvailable )
 {
 
 }
@@ -36,7 +36,7 @@ QString QgsClassificationPrettyBreaks::id() const
   return QStringLiteral( "Pretty" );
 }
 
-QList<double> QgsClassificationPrettyBreaks::calculateBreaks( double minimum, double maximum, const QList<double> &values, int nclasses )
+QList<double> QgsClassificationPrettyBreaks::calculateBreaks( double &minimum, double &maximum, const QList<double> &values, int nclasses )
 {
   Q_UNUSED( values );
   QList<double> breaks = QgsSymbolLayerUtils::prettyBreaks( minimum, maximum, nclasses );
