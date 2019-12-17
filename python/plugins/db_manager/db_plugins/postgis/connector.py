@@ -73,14 +73,11 @@ class CursorAdapter():
             self._execute()
 
     def _toStrResultSet(self, res):
-        #print("XXX type of QVariant(None) is " + str(type(QVariant(None))))
         newres = []
         for rec in res:
             newrec = []
             for col in rec:
-                #print("XXX col of rec of resultset valued " + str(col)+ " is typed " + str(type(col)))
                 if type(col) == type(QVariant(None)):
-                    #print("XXX qvariant type of " + str(col)+ " is " + str(col.type))
                     if (str(col) == 'NULL'):
                         col = None
                     else:
@@ -97,7 +94,7 @@ class CursorAdapter():
         if (self.sql == None):
             return
         self._debug("execute called with sql " + self.sql)
-        self.result = self._toStrResultSet(self.connection._executeSql(self.sql))
+        self.result = self._toStrResultSet(self.connection.executeSql(self.sql))
         self._debug("execute returned " + str(len(self.result)) + " rows")
         self.cursor = 0
         self.description = []
@@ -1121,7 +1118,7 @@ class PostGisDBConnector(DBConnector):
         if cursor != None:
             cursor._execute(sql)
             return cursor
-        return CursorAdapter(self, sql)
+        return CursorAdapter(self.core_connection, sql)
 
     def _executeSql(self, sql):
         return self.core_connection.executeSql(sql)
@@ -1129,7 +1126,7 @@ class PostGisDBConnector(DBConnector):
     def _get_cursor(self, name=None):
         #if name is not None:
         #   print("XXX _get_cursor called with a Name: " + name)
-        return CursorAdapter(self, name)
+        return CursorAdapter(self.core_connection, name)
 
     def _commit(self):
         pass
