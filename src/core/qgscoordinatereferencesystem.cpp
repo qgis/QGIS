@@ -2117,7 +2117,7 @@ QString QgsCoordinateReferenceSystem::validationHint()
 /// Copied from QgsCustomProjectionDialog ///
 /// Please refactor into SQL handler !!!  ///
 
-long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
+long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name, bool storeWkt )
 {
   if ( !d->mIsValid )
   {
@@ -2153,9 +2153,9 @@ long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
             + ',' + QgsSqliteUtils::quotedString( name )
             + ',' + ( !d->mProjectionAcronym.isEmpty() ? QgsSqliteUtils::quotedString( d->mProjectionAcronym ) : QStringLiteral( "''" ) )
             + ',' + quotedEllipsoidString
-            + ',' + QgsSqliteUtils::quotedString( toProj4() )
+            + ',' + ( !proj4String.isEmpty() ? QgsSqliteUtils::quotedString( proj4String ) : QStringLiteral( "''" ) )
             + ",0,"  // <-- is_geo shamelessly hard coded for now
-            + QgsSqliteUtils::quotedString( wktString )
+            + ( storeWkt ? QgsSqliteUtils::quotedString( wktString ) : QStringLiteral( "''" ) )
             + ')';
   }
   else
@@ -2164,9 +2164,9 @@ long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
             + QgsSqliteUtils::quotedString( name )
             + ',' + ( !d->mProjectionAcronym.isEmpty() ? QgsSqliteUtils::quotedString( d->mProjectionAcronym ) : QStringLiteral( "''" ) )
             + ',' + quotedEllipsoidString
-            + ',' + QgsSqliteUtils::quotedString( toProj4() )
+            + ',' + ( !proj4String.isEmpty() ? QgsSqliteUtils::quotedString( proj4String ) : QStringLiteral( "''" ) )
             + ",0,"  // <-- is_geo shamelessly hard coded for now
-            + QgsSqliteUtils::quotedString( wktString )
+            + ( storeWkt ? QgsSqliteUtils::quotedString( wktString ) : QStringLiteral( "''" ) )
             + ')';
   }
   sqlite3_database_unique_ptr database;

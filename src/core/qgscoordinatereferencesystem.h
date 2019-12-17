@@ -658,8 +658,11 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Saves the CRS as a custom ("USER") CRS.
      *
      * Returns the new CRS srsid(), or -1 if the CRS could not be saved.
+     *
+     * If \a storeWkt is TRUE then the WKT representation of the CRS will be stored in the database.
+     * If it is FALSE, then only the lossy PROJ string representation of the CRS will be stored (not recommended).
      */
-    long saveAsUserCrs( const QString &name );
+    long saveAsUserCrs( const QString &name, bool storeWkt = true );
 
     //! Returns auth id of related geographic CRS
     QString geographicCrsAuthId() const;
