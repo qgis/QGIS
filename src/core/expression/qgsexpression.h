@@ -568,6 +568,13 @@ class CORE_EXPORT QgsExpression
     static QString helpText( QString name );
 
     /**
+     * Returns a string list of search tags for a specified function.
+     * \param name function name
+     * \since QGIS 3.12
+     */
+    static QStringList tags( const QString &name );
+
+    /**
      * Returns the help text for a specified variable.
      * \param variableName name of variable
      * \see helpText()

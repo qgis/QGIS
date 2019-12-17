@@ -161,7 +161,7 @@ QgsStaticExpressionFunction::QgsStaticExpressionFunction( const QString &fnname,
     bool lazyEval,
     const QStringList &aliases,
     bool handlesNull )
-  : QgsExpressionFunction( fnname, params, group, helpText, lazyEval, handlesNull )
+  : QgsExpressionFunction( fnname, params, group, helpText, lazyEval, handlesNull, false )
   , mFnc( fcn )
   , mAliases( aliases )
   , mUsesGeometry( false )
