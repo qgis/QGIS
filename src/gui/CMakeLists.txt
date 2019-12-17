@@ -292,6 +292,7 @@ SET(QGIS_GUI_SRCS
   qgsexpressionhighlighter.cpp
   qgsexpressionlineedit.cpp
   qgsexpressionselectiondialog.cpp
+  qgsexpressionstoredialog.cpp
   qgsextentgroupbox.cpp
   qgsexternalresourcewidget.cpp
   qgsfeatureselectiondlg.cpp
@@ -487,6 +488,7 @@ SET(QGIS_GUI_HDRS
   qgsencodingfiledialog.h
   qgserrordialog.h
   qgsexpressionbuilderdialog.h
+  qgsexpressionstoredialog.h
   qgsexpressionbuilderwidget.h
   qgsexpressionhighlighter.h
   qgsexpressionlineedit.h
@@ -919,6 +921,7 @@ SET(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscredentialdialog.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsdetaileditemwidgetbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionbuilderdialogbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionstoredialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionbuilder.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionselectiondialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsfeaturefilterwidget.h

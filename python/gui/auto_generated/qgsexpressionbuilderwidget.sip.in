@@ -220,14 +220,38 @@ Registers a node item for the expression builder.
 
     void saveToRecent( const QString &collection = "generic" );
 %Docstring
-Adds the current expression to the given collection.
+Adds the current expression to the given ``collection``.
 By default it is saved to the collection "generic".
 %End
 
-    void loadRecent( const QString &collection = "generic" );
+    void loadRecent( const QString &collection = QStringLiteral( "generic" ) );
 %Docstring
-Loads the recent expressions from the given collection.
+Loads the recent expressions from the given ``collection``.
 By default it is loaded from the collection "generic".
+%End
+
+    void loadUserExpressions( const QString &collection =  QStringLiteral( "generic" ) );
+%Docstring
+Loads the user expressions from the given ``collection``.
+By default it is loaded from the collection "generic".
+
+.. versionadded:: 3.12
+%End
+
+    void saveToUserExpressions( const QString &label, const QString expression, const QString &helpText, const QString &collection =  QStringLiteral( "generic" ) );
+%Docstring
+Stores the user ``expression`` in the given ``collection`` with given ``label`` and ``helpText``.
+By default it is saved to the collection "generic".
+
+.. versionadded:: 3.12
+%End
+
+    void removeFromUserExpressions( const QString &name, const QString &collection =  QStringLiteral( "generic" ) );
+%Docstring
+Removes the expression ``name`` from the user stored expressions in the given ``collection``.
+By default it is removed from the collection "generic".
+
+.. versionadded:: 3.12
 %End
 
     void newFunctionFile( const QString &fileName = "scratch" );
@@ -322,6 +346,29 @@ when text changes.
 
 :param enabled: ``True`` to enable auto saving.
 %End
+
+    void storeCurrentUserExpression( );
+%Docstring
+Adds the current expressions to the stored user expressions.
+
+.. versionadded:: 3.12
+%End
+
+    void removeSelectedUserExpression( );
+%Docstring
+Removes the selected expression from the stored user expressions,
+the selected expression must be a user stored expression.
+
+.. versionadded:: 3.12
+%End
+
+    const QList<QgsExpressionItem *> findExpressions( const QString &label );
+%Docstring
+Returns the list of expression items matching a ``label``.
+
+.. versionadded:: 3.12
+%End
+
 
   signals:
 

@@ -229,16 +229,37 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     bool isExpressionValid();
 
     /**
-     * Adds the current expression to the given collection.
+     * Adds the current expression to the given \a collection.
      * By default it is saved to the collection "generic".
      */
     void saveToRecent( const QString &collection = "generic" );
 
     /**
-     * Loads the recent expressions from the given collection.
+     * Loads the recent expressions from the given \a collection.
      * By default it is loaded from the collection "generic".
      */
-    void loadRecent( const QString &collection = "generic" );
+    void loadRecent( const QString &collection = QStringLiteral( "generic" ) );
+
+    /**
+     * Loads the user expressions from the given \a collection.
+     * By default it is loaded from the collection "generic".
+     * \since QGIS 3.12
+     */
+    void loadUserExpressions( const QString &collection =  QStringLiteral( "generic" ) );
+
+    /**
+     * Stores the user \a expression in the given \a collection with given \a label and \a helpText.
+     * By default it is saved to the collection "generic".
+     * \since QGIS 3.12
+     */
+    void saveToUserExpressions( const QString &label, const QString expression, const QString &helpText, const QString &collection =  QStringLiteral( "generic" ) );
+
+    /**
+     * Removes the expression \a name from the user stored expressions in the given \a collection.
+     * By default it is removed from the collection "generic".
+     * \since QGIS 3.12
+     */
+    void removeFromUserExpressions( const QString &name, const QString &collection =  QStringLiteral( "generic" ) );
 
     /**
      * Create a new file in the function editor
@@ -326,6 +347,26 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      * \param enabled TRUE to enable auto saving.
      */
     void setAutoSave( bool enabled ) { mAutoSave = enabled; }
+
+    /**
+     * Adds the current expressions to the stored user expressions.
+     * \since QGIS 3.12
+     */
+    void storeCurrentUserExpression( );
+
+    /**
+     * Removes the selected expression from the stored user expressions,
+     * the selected expression must be a user stored expression.
+     * \since QGIS 3.12
+     */
+    void removeSelectedUserExpression( );
+
+    /**
+     * Returns the list of expression items matching a \a label.
+     * \since QGIS 3.12
+     */
+    const QList<QgsExpressionItem *> findExpressions( const QString &label );
+
 
   private slots:
     void indicatorClicked( int line, int index, Qt::KeyboardModifiers state );
@@ -460,6 +501,8 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QPointer< QgsProject > mProject;
     bool mEvalError = true;
     bool mParserError = true;
+    QString mUserExpressionsGroupName;
+    QStringList mUserExpressionLabels;
 };
 
 // clazy:excludeall=qstring-allocations

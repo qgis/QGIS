@@ -59,6 +59,7 @@ QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer *laye
   mExpressionBuilder->setExpressionText( startText );
   mExpressionBuilder->loadFieldNames();
   mExpressionBuilder->loadRecent( QStringLiteral( "Selection" ) );
+  mExpressionBuilder->loadUserExpressions( QStringLiteral( "Selection" ) );
 
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
   mExpressionBuilder->setExpressionContext( context );
