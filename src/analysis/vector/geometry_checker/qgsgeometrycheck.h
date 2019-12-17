@@ -24,8 +24,9 @@
 #include "qgis_analysis.h"
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
-#include "geometry/qgsgeometry.h"
+#include "qgsgeometry.h"
 #include "qgsgeometrycheckerutils.h"
+#include "qgsgeometrycheckfix.h"
 #include "qgssettings.h"
 
 class QgsGeometryCheckError;
@@ -310,6 +311,8 @@ class ANALYSIS_EXPORT QgsGeometryCheck
      * \since QGIS 3.4
      */
     virtual void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes SIP_INOUT ) const SIP_SKIP;
+
+    virtual QList<QgsGeometryCheckFix> availableResolutionMethods() const;
 
     /**
      * Returns a list of descriptions for available resolutions for errors. The index will be passed as ``method`` to \see fixError().

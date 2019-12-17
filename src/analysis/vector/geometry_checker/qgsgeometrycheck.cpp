@@ -56,6 +56,20 @@ void QgsGeometryCheck::fixError( const QMap<QString, QgsFeaturePool *> &featureP
   Q_UNUSED( changes )
 }
 
+QList<QgsGeometryCheckFix> QgsGeometryCheck::availableResolutionMethods() const
+{
+  QList<QgsGeometryCheckFix> fixes;
+  const QStringList methods = resolutionMethods();
+
+  int i = 0;
+  for ( const QString &method : methods )
+  {
+    fixes.append( QgsGeometryCheckFix( i, method, QString(), false ) );
+  }
+
+  return fixes;
+}
+
 QMap<QString, QgsFeatureIds> QgsGeometryCheck::allLayerFeatureIds( const QMap<QString, QgsFeaturePool *> &featurePools ) const
 {
   QMap<QString, QgsFeatureIds> featureIds;

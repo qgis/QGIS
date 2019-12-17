@@ -23,6 +23,7 @@
 #include "qgsfeedback.h"
 #include "qgsapplication.h"
 #include "qgsproject.h"
+#include "qgsexpressioncontextutils.h"
 
 #include "geos_c.h"
 
@@ -208,7 +209,7 @@ void QgsGeometryGapCheck::fixError( const QMap<QString, QgsFeaturePool *> &featu
       case MergeLongestEdge:
       {
         QString errMsg;
-        if ( mergeWithNeighbor( featurePools, static_cast<QgsGeometryGapCheckError *>( error ), changes, errMsg ) )
+        if ( mergeWithNeighbor( featurePools, static_cast<QgsGeometryGapCheckError *>( error ), changes, errMsg, LongestSharedEdge ) )
         {
           error->setFixed( method );
         }
@@ -248,13 +249,50 @@ void QgsGeometryGapCheck::fixError( const QMap<QString, QgsFeaturePool *> &featu
         }
         break;
       }
+
+      case CreateNewFeature:
+      {
+        QgsProject *project = QgsProject::instance();
+        QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( project->mapLayer( error->layerId() ) );
+        if ( layer )
+        {
+          const QgsGeometry geometry = error->geometry();
+          QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+          QgsFeature feature = QgsVectorLayerUtils::createFeature( layer, geometry, QgsAttributeMap(), &context );
+          if ( !layer->addFeature( feature ) )
+          {
+            error->setFixFailed( tr( "Could not add feature" ) );
+          }
+          else
+          {
+            error->setFixed( method );
+          }
+        }
+        else
+        {
+          error->setFixFailed( tr( "Could not resolve target layer %1 to add feature" ).arg( error->layerId() ) );
+        }
+        break;
+      }
+
+      case MergeLargestArea:
+      {
+        QString errMsg;
+        if ( mergeWithNeighbor( featurePools, static_cast<QgsGeometryGapCheckError *>( error ), changes, errMsg, LargestArea ) )
+        {
+          error->setFixed( method );
+        }
+        else
+        {
+          error->setFixFailed( tr( "Failed to merge with neighbor: %1" ).arg( errMsg ) );
+        }
+        break;
+      }
     }
   }
 }
 
-bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool *> &featurePools,
-    QgsGeometryGapCheckError *err,
-    Changes &changes, QString &errMsg ) const
+bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryGapCheckError *err, Changes &changes, QString &errMsg, Condition condition ) const
 {
   double maxVal = 0.;
   QString mergeLayerId;
@@ -286,10 +324,21 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
       const QgsAbstractGeometry *testGeom = featureGeom.constGet();
       for ( int iPart = 0, nParts = testGeom->partCount(); iPart < nParts; ++iPart )
       {
-        double len = QgsGeometryCheckerUtils::sharedEdgeLength( errLayerGeom.get(), QgsGeometryCheckerUtils::getGeomPart( testGeom, iPart ), mContext->reducedTolerance );
-        if ( len > maxVal )
+        double val;
+        switch ( condition )
         {
-          maxVal = len;
+          case LongestSharedEdge:
+            val = QgsGeometryCheckerUtils::sharedEdgeLength( errLayerGeom.get(), QgsGeometryCheckerUtils::getGeomPart( testGeom, iPart ), mContext->reducedTolerance );
+            break;
+
+          case LargestArea:
+            val = QgsGeometryCheckerUtils::getGeomPart( testGeom, iPart )->area();
+            break;
+        }
+
+        if ( val > maxVal )
+        {
+          maxVal = val;
           mergeFeature = testFeature;
           mergePartIdx = iPart;
           mergeLayerId = layerId;
@@ -328,7 +377,9 @@ QStringList QgsGeometryGapCheck::resolutionMethods() const
 {
   QStringList methods = QStringList()
                         << tr( "Add gap area to neighboring polygon with longest shared edge" )
-                        << tr( "No action" );
+                        << tr( "No action" )
+                        << tr( "TODO" )
+                        << tr( "TODO" );
   if ( mAllowedGapsSource )
     methods << tr( "Add gap to allowed exceptions" );
 

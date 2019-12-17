@@ -213,6 +213,8 @@ Progress should be reported to ``feedback``. Only features and layers listed in 
 %End
 
 
+    virtual QList<QgsGeometryCheckFix> availableResolutionMethods() const;
+
     virtual QStringList resolutionMethods() const = 0;
 %Docstring
 Returns a list of descriptions for available resolutions for errors. The index will be passed as ``method`` to :py:func:`fixError`.
