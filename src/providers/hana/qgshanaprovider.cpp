@@ -151,6 +151,7 @@ const QVariant &value )
 
     switch ( fieldInfo.type )
     {
+      case SQLDataTypes::Bit:
       case SQLDataTypes::Boolean:
         stmt->setBoolean( paramIndex, isNull ? Boolean() : Boolean( value.toBool() ) );
         break;
@@ -300,6 +301,7 @@ QgsHanaProvider::QgsHanaProvider(
   readGeometryType();
   readAttributeFields();
   readSrsInformation();
+  readMetadata();
 
   //fill type names into sets
   setNativeTypes( QList< NativeType >()
@@ -361,9 +363,24 @@ QgsRectangle QgsHanaProvider::extent() const
   return mLayerExtent;
 }
 
+void QgsHanaProvider::updateExtents()
+{
+  mLayerExtent.setMinimal();
+}
+
 QgsWkbTypes::Type QgsHanaProvider::wkbType() const
 {
   return mRequestedGeometryType != QgsWkbTypes::Unknown ? mRequestedGeometryType : mDetectedGeometryType;
+}
+
+QgsLayerMetadata QgsHanaProvider::layerMetadata() const
+{
+  return mLayerMetadata;
+}
+
+QString QgsHanaProvider::dataComment() const
+{
+    return mLayerMetadata.abstract();
 }
 
 long QgsHanaProvider::featureCount() const
@@ -519,6 +536,7 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
   QList<int> fieldIds;
   QgsAttributes attrs = flist[0].attributes();
+  int idFieldIndex = -1;
 
   for ( int idx = 0; idx < attrs.count(); ++idx )
   {
@@ -528,6 +546,9 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     const QgsField &field = mAttributeFields.at( idx );
     if ( field.name().isEmpty() || field.name() == mGeometryColumn )
       continue;
+
+    if (field.name() == mFidColumn )
+        idFieldIndex = idx;
 
     if ( !first )
     {
@@ -590,6 +611,7 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         ++paramIndex;
       }
 
+      bool hasIdField = false;
       QgsAttributes attrs = feature.attributes();
       for ( int i = 0; i < fieldIds.size(); i++ )
       {
@@ -597,6 +619,8 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         const QgsField &field = mAttributeFields.at( idx );
         const FieldInfo &fieldInfo = mFieldInfos.at( idx );
         QVariant attrValue = idx < attrs.length() ? attrs.at( idx ) : QVariant( QVariant::Int );
+        if (idx == idFieldIndex)
+            hasIdField = !attrValue.isNull();
         setStatementValue( stmtInsert, paramIndex, field, fieldInfo, attrValue );
         ++paramIndex;
       }
@@ -617,14 +641,21 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         stmtInsert->executeUpdate();
         stmtInsert->clearParameters();
 
-        ResultSetRef rsIdentity = stmtIdentityValue->executeQuery();
-        if (rsIdentity->next())
+        if ( hasIdField )
         {
-            odbc::Long id = rsIdentity->getLong(1);
-            if (!id.isNull())
-                feature.setId(static_cast<QgsFeatureId>(*id));
+            feature.setId( static_cast<QgsFeatureId> ( attrs.at(idFieldIndex).toLongLong() ) );
         }
-        rsIdentity->close();
+        else
+        {
+            ResultSetRef rsIdentity = stmtIdentityValue->executeQuery();
+            if (rsIdentity->next())
+            {
+                odbc::Long id = rsIdentity->getLong(1);
+                if (!id.isNull())
+                    feature.setId(static_cast<QgsFeatureId>(*id));
+            }
+            rsIdentity->close();
+        }
       }
     }
 
@@ -651,11 +682,17 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
 bool QgsHanaProvider::deleteFeatures( const QgsFeatureIds &id )
 {
+  if ( mFidColumn.isEmpty() )
+    return false;
+
   if ( mIsQuery )
   {
     QgsDebugMsg( QStringLiteral( "Cannot delete features (is a query)" ) );
     return false;
   }
+
+  if ( id.empty() )
+    return true; // for consistency providers return true to an empty list
 
   QgsHanaConnectionRef connRef( mUri );
   if ( connRef.isNull() )
@@ -924,6 +961,9 @@ bool QgsHanaProvider::changeFeatures( const QgsChangedAttributesMap &attrMap,
 
 bool QgsHanaProvider::changeAttributeValues( const QgsChangedAttributesMap &attrMap )
 {
+  if ( mIsQuery || mFidColumn.isEmpty() )
+    return false;
+
   if ( attrMap.isEmpty() )
     return true;
 
@@ -971,8 +1011,10 @@ bool QgsHanaProvider::changeAttributeValues( const QgsChangedAttributesMap &attr
       if ( first )
         return true;
 
-      sql += QStringLiteral( " WHERE %1=%2" ).arg( QgsHanaUtils::quotedIdentifier( mFidColumn ), FID_TO_STRING( fid ) );
+      if ( !mFidColumn.isEmpty() )
+        sql += QStringLiteral( " WHERE %1=%2" ).arg( QgsHanaUtils::quotedIdentifier( mFidColumn ), FID_TO_STRING( fid ) );
 
+      QgsDebugMsg( QStringLiteral("Change attributes: ") + sql);
       PreparedStatementRef stmt = conn->prepareStatement( sql.toStdString().c_str() );
 
       unsigned short paramIndex = 1;
@@ -1190,42 +1232,6 @@ int QgsHanaProvider::readSrid()
   return ret;
 }
 
-void QgsHanaProvider::readSrsInformation()
-{
-  if ( mGeometryColumn.isEmpty() )
-    return;
-
-  QgsHanaConnectionRef connRef( mUri );
-  ConnectionRef &conn = connRef->getNativeRef();
-  StatementRef stmt = conn->createStatement();
-
-  QgsRectangle ext;
-  bool isRoundEarth = false;
-  QString sql = QStringLiteral( "SELECT MIN_X, MIN_Y, MAX_X, MAX_Y, ROUND_EARTH FROM SYS.ST_SPATIAL_REFERENCE_SYSTEMS "
-                                "WHERE SRS_ID = %1" ).arg( QString::number( mSrid ) );
-  ResultSetRef rs = stmt->executeQuery( sql.toStdString().c_str() );
-  if ( rs->next() )
-  {
-    ext.setXMinimum( *rs->getDouble( 1 ) );
-    ext.setYMinimum( *rs->getDouble( 2 ) );
-    ext.setXMaximum( *rs->getDouble( 3 ) );
-    ext.setYMaximum( *rs->getDouble( 4 ) );
-
-    isRoundEarth = ( *rs->getString( 5 ) == "TRUE" );
-  }
-  rs->close();
-  mSrsExtent = ext;
-
-  if ( isRoundEarth )
-  {
-    int srid = QgsHanaUtils::toPlanarSRID( mSrid );
-
-    sql = QStringLiteral( "SELECT COUNT(*) FROM SYS.ST_SPATIAL_REFERENCE_SYSTEMS "
-                          "WHERE SRS_ID = %1" ).arg( QString::number( srid ) );
-    mHasSrsPlanarEquivalent = executeCountQuery( conn, sql ) > 0;
-  }
-}
-
 void QgsHanaProvider::readAttributeFields()
 {
   mAttributeFields.clear();
@@ -1254,6 +1260,7 @@ void QgsHanaProvider::readAttributeFields()
 
     switch ( sqlType )
     {
+      case SQLDataTypes::Bit:
       case SQLDataTypes::Boolean:
         fieldType = QVariant::Bool;
         break;
@@ -1291,7 +1298,7 @@ void QgsHanaProvider::readAttributeFields()
         break;
       case SQLDataTypes::Binary:
       case SQLDataTypes::VarBinary:
-        fieldType = QVariant::BitArray;
+        fieldType = QVariant::ByteArray;
         break;
       case SQLDataTypes::Date:
       case SQLDataTypes::TypeDate:
@@ -1355,6 +1362,61 @@ void QgsHanaProvider::readGeometryType()
     layerProperty.geometryColName = mGeometryColumn;
     QgsHanaConnectionRef connRef( mUri );
     mDetectedGeometryType = connRef->getLayerGeometryType(layerProperty);
+}
+
+void QgsHanaProvider::readMetadata()
+{
+    QgsHanaConnectionRef connRef( mUri );
+    ConnectionRef &conn = connRef->getNativeRef();
+    StatementRef stmt = conn->createStatement();
+    QString sql = QStringLiteral( "SELECT COMMENTS FROM TABLES WHERE SCHEMA_NAME = '%1' AND TABLE_NAME='%2'" ).arg( mSchemaName, mTableName );
+    ResultSetRef rs = stmt->executeQuery( sql.toStdString().c_str() );
+    if ( rs->next() )
+    {
+        NString comment = rs->getNString(1);
+        if (!comment.isNull())
+            mLayerMetadata.setAbstract( QString::fromUtf16(comment->c_str()) );
+    }
+    rs->close();
+
+    mLayerMetadata.setType( QStringLiteral( "dataset" ) );
+    mLayerMetadata.setCrs( crs() );
+}
+
+void QgsHanaProvider::readSrsInformation()
+{
+  if ( mGeometryColumn.isEmpty() )
+    return;
+
+  QgsHanaConnectionRef connRef( mUri );
+  ConnectionRef &conn = connRef->getNativeRef();
+  StatementRef stmt = conn->createStatement();
+
+  QgsRectangle ext;
+  bool isRoundEarth = false;
+  QString sql = QStringLiteral( "SELECT MIN_X, MIN_Y, MAX_X, MAX_Y, ROUND_EARTH FROM SYS.ST_SPATIAL_REFERENCE_SYSTEMS "
+                                "WHERE SRS_ID = %1" ).arg( QString::number( mSrid ) );
+  ResultSetRef rs = stmt->executeQuery( sql.toStdString().c_str() );
+  if ( rs->next() )
+  {
+    ext.setXMinimum( *rs->getDouble( 1 ) );
+    ext.setYMinimum( *rs->getDouble( 2 ) );
+    ext.setXMaximum( *rs->getDouble( 3 ) );
+    ext.setYMaximum( *rs->getDouble( 4 ) );
+
+    isRoundEarth = ( *rs->getString( 5 ) == "TRUE" );
+  }
+  rs->close();
+  mSrsExtent = ext;
+
+  if ( isRoundEarth )
+  {
+    int srid = QgsHanaUtils::toPlanarSRID( mSrid );
+
+    sql = QStringLiteral( "SELECT COUNT(*) FROM SYS.ST_SPATIAL_REFERENCE_SYSTEMS "
+                          "WHERE SRS_ID = %1" ).arg( QString::number( srid ) );
+    mHasSrsPlanarEquivalent = executeCountQuery( conn, sql ) > 0;
+  }
 }
 
 long QgsHanaProvider::getFeatureCount( const QString &whereClause ) const

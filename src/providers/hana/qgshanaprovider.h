@@ -64,6 +64,8 @@ class QgsHanaProvider : public QgsVectorDataProvider
     QString storageType() const override;
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
     QgsWkbTypes::Type wkbType() const override;
+    QgsLayerMetadata layerMetadata() const override;
+    QString dataComment() const override;
     long featureCount() const override;
     QgsFields fields() const override;
     //QString dataComment() const override;
@@ -94,6 +96,7 @@ class QgsHanaProvider : public QgsVectorDataProvider
     /* Functions inherited from QgsDataProvider */
 
     QgsRectangle extent() const override;
+    void updateExtents() override;
     bool isValid() const override;
     QString name() const override;
     QString description() const override;
@@ -116,9 +119,10 @@ class QgsHanaProvider : public QgsVectorDataProvider
     QgsRectangle estimateExtent() const;
     bool isSrsRoundEarth( int srsID ) const;
     int readSrid();
-    void readSrsInformation();
     void readAttributeFields();
     void readGeometryType();
+    void readMetadata();
+    void readSrsInformation();
     long getFeatureCount( const QString &whereClause ) const;
 
   private:
@@ -165,6 +169,7 @@ class QgsHanaProvider : public QgsVectorDataProvider
     QMap<int, QVariant> mDefaultValues;
     // Number of features in the layer
     mutable long mFeaturesCount = 0;
+    QgsLayerMetadata mLayerMetadata;
 
     friend class QgsHanaFeatureSource;
 };
