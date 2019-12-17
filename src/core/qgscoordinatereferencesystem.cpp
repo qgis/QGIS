@@ -1011,6 +1011,7 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString )
   {
     // Last ditch attempt to piece together what we know of the projection to find a match...
     setProjString( myProj4String );
+#if PROJ_VERSION_MAJOR<6
     Q_NOWARN_DEPRECATED_PUSH
     mySrsId = findMatchingProj();
     Q_NOWARN_DEPRECATED_POP
@@ -1022,6 +1023,7 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString )
     {
       d->mIsValid = false;
     }
+#endif
   }
 #endif
 
