@@ -260,6 +260,22 @@ QgsRectangle QgsMeshLayerUtils::triangleBoundingBox( const QgsPointXY &p1, const
 QString QgsMeshLayerUtils::formatTime( double hours, const QgsMeshTimeSettings &settings )
 {
   QString ret;
+
+  switch ( settings.providerTimeUnit() )
+  {
+    case QgsMeshTimeSettings::seconds:
+      hours = hours / 3600.0;
+      break;
+    case QgsMeshTimeSettings::minutes:
+      hours = hours / 60.0;
+      break;
+    case QgsMeshTimeSettings::hours:
+      break;
+    case QgsMeshTimeSettings::days:
+      hours = hours * 24.0;
+      break;
+  }
+
   if ( settings.useAbsoluteTime() )
   {
     QString format( settings.absoluteTimeFormat() );
@@ -344,6 +360,27 @@ QString QgsMeshLayerUtils::formatTime( double hours, const QgsMeshTimeSettings &
     }
   }
   return ret;
+}
+
+QDateTime QgsMeshLayerUtils::firstReferenceTime( QgsMeshLayer *meshLayer )
+{
+  if ( !meshLayer )
+    return QDateTime();
+
+  QgsMeshDataProvider *provider = meshLayer->dataProvider();
+
+  if ( !provider )
+    return QDateTime();
+
+  // Searches for the first valid reference time in the dataset groups
+  for ( int i = 0; i < provider->datasetGroupCount(); ++i )
+  {
+    QgsMeshDatasetGroupMetadata meta = provider->datasetGroupMetadata( i );
+    if ( meta.referenceTime().isValid() )
+      return meta.referenceTime();
+  }
+
+  return QDateTime();
 }
 
 ///@endcond

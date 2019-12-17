@@ -387,6 +387,7 @@ QgsMeshDatasetGroupMetadata QgsMeshMemoryDatasetGroup::groupMetadata() const
            minimum,
            maximum,
            0,
+           QDateTime(),
            metadata
          );
 }

@@ -17,6 +17,7 @@
 #include "qgsmeshtimeformatdialog.h"
 #include "qgsgui.h"
 #include "qgsmeshtimesettings.h"
+#include "qgsmeshlayerutils.h"
 
 QgsMeshTimeFormatDialog::QgsMeshTimeFormatDialog( QgsMeshLayer *meshLayer, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f ),
@@ -30,14 +31,24 @@ QgsMeshTimeFormatDialog::QgsMeshTimeFormatDialog( QgsMeshLayer *meshLayer, QWidg
 
   loadSettings();
 
+  mReloadReferenceTimeButton->setEnabled( layerHasReferenceTime() );
+
   connect( mUseTimeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsMeshTimeFormatDialog::saveSettings );
-  connect( mReferenceDateTimeEdit, &QDateTimeEdit::timeChanged, this, &QgsMeshTimeFormatDialog::saveSettings );
+  connect( mReferenceDateTimeEdit, &QDateTimeEdit::dateTimeChanged, this, &QgsMeshTimeFormatDialog::saveSettings );
   connect( mAbsoluteTimeFormatComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsMeshTimeFormatDialog::saveSettings );
   connect( mUseTimeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsMeshTimeFormatDialog::saveSettings );
   connect( mRelativeTimeFormatComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsMeshTimeFormatDialog::saveSettings );
   connect( mOffsetHoursSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsMeshTimeFormatDialog::saveSettings );
   connect( mPlaybackIntervalSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsMeshTimeFormatDialog::saveSettings );
+  connect( mProviderTimeUnitComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsMeshTimeFormatDialog::saveSettings );
 
+  connect( mReloadReferenceTimeButton, &QPushButton::clicked, this, &QgsMeshTimeFormatDialog::loadProviderReferenceTime );
+
+}
+
+void QgsMeshTimeFormatDialog::loadProviderReferenceTime()
+{
+  mReferenceDateTimeEdit->setDateTime( QgsMeshLayerUtils::firstReferenceTime( mLayer ) );
 }
 
 void QgsMeshTimeFormatDialog::loadSettings()
@@ -54,7 +65,12 @@ void QgsMeshTimeFormatDialog::loadSettings()
     mUseTimeComboBox->setCurrentIndex( 1 );
   }
 
-  mReferenceDateTimeEdit->setDateTime( settings.absoluteTimeReferenceTime() );
+  // Sets the reference time, if not valid, sets the current date + time 00:00:00
+  if ( settings.absoluteTimeReferenceTime().isValid() )
+    mReferenceDateTimeEdit->setDateTime( settings.absoluteTimeReferenceTime() );
+  else
+    mReferenceDateTimeEdit->setDateTime( QDateTime( QDate::currentDate(), QTime( 00, 00, 00 ) ) );
+
   mReferenceDateTimeEdit->setDisplayFormat( settings.absoluteTimeFormat() );
 
   int index = mAbsoluteTimeFormatComboBox->findText( settings.absoluteTimeFormat() );
@@ -75,6 +91,8 @@ void QgsMeshTimeFormatDialog::loadSettings()
 
   mOffsetHoursSpinBox->setValue( settings.relativeTimeOffsetHours() );
   mPlaybackIntervalSpinBox->setValue( settings.datasetPlaybackInterval() );
+
+  mProviderTimeUnitComboBox->setCurrentIndex( settings.providerTimeUnit() );
 }
 
 void QgsMeshTimeFormatDialog::saveSettings()
@@ -86,6 +104,7 @@ void QgsMeshTimeFormatDialog::saveSettings()
   settings.setRelativeTimeOffsetHours( mOffsetHoursSpinBox->value() );
   settings.setRelativeTimeFormat( mRelativeTimeFormatComboBox->currentText() );
   settings.setDatasetPlaybackInterval( mPlaybackIntervalSpinBox->value() );
+  settings.setProviderTimeUnit( static_cast<QgsMeshTimeSettings::TimeUnit>( mProviderTimeUnitComboBox->currentIndex() ) );
   enableGroups( settings.useAbsoluteTime() ) ;
   mLayer->setTimeSettings( settings );
 }
@@ -94,6 +113,11 @@ void QgsMeshTimeFormatDialog::enableGroups( bool useAbsoluteTime )
 {
   mAbsoluteTimeGroupBox->setEnabled( useAbsoluteTime );
   mRelativeTimeGroupBox->setEnabled( ! useAbsoluteTime );
+}
+
+bool QgsMeshTimeFormatDialog::layerHasReferenceTime() const
+{
+  return QgsMeshLayerUtils::firstReferenceTime( mLayer ).isValid();
 }
 
 QgsMeshTimeFormatDialog::~QgsMeshTimeFormatDialog() = default;

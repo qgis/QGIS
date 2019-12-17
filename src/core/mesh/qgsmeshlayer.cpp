@@ -531,6 +531,13 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
     mDataSource = mDataSource + QStringLiteral( "&uid=%1" ).arg( QUuid::createUuid().toString() );
   }
 
+  QDateTime referenceTime = QgsMeshLayerUtils::firstReferenceTime( this );
+  if ( referenceTime.isValid() )
+  {
+    mTimeSettings.setAbsoluteTimeReferenceTime( referenceTime );
+    mTimeSettings.setUseAbsoluteTime( true );
+  }
+
   for ( int i = 0; i < mDataProvider->datasetGroupCount(); ++i )
     assignDefaultStyleToDatasetGroup( i );
 
