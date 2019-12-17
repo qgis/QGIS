@@ -439,7 +439,7 @@ void TestQgsCoordinateReferenceSystem::fromProj4EPSG20936()
   QCOMPARE( crs.authid(), QStringLiteral( "EPSG:20936" ) );
 #endif
 
-  QCOMPARE( crs.ellipsoidAcronym(), QStringLiteral( "EPSG:7013" ) );
+  QCOMPARE( crs.ellipsoidAcronym(), QStringLiteral( "PARAMETER:6378249.14499999955296516:6356514.96639875322580338" ) );
 #endif
 }
 

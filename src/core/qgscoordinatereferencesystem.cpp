@@ -1396,14 +1396,7 @@ void QgsCoordinateReferenceSystem::setProjString( const QString &proj4String )
   }
   else
   {
-    QgsProjUtils::proj_pj_unique_ptr ellipsoid( proj_get_ellipsoid( ctx, d->mPj.get() ) );
-    if ( ellipsoid )
-    {
-      const QString ellipsoidAuthName( proj_get_id_auth_name( ellipsoid.get(), 0 ) );
-      const QString ellipsoidAuthCode( proj_get_id_code( ellipsoid.get(), 0 ) );
-      d->mEllipsoidAcronym = QStringLiteral( "%1:%2" ).arg( ellipsoidAuthName, ellipsoidAuthCode );
-    }
-
+    d->mEllipsoidAcronym.clear();
     d->mIsValid = true;
   }
 #else
