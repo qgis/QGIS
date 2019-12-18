@@ -181,16 +181,14 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index
     {
       int nativeFaceIndex = mTriangularMesh->trianglesToNativeFaces().at( faceIndex );
       const QgsMeshDatasetGroupMetadata::DataType dataType = dataProvider()->datasetGroupMetadata( index ).dataType();
-      switch ( dataType )
+      if ( dataProvider()->isFaceActive( index, nativeFaceIndex ) )
       {
-        case QgsMeshDatasetGroupMetadata::DataOnFaces:
-          if ( dataProvider()->isFaceActive( index, nativeFaceIndex ) )
-          {
+        switch ( dataType )
+        {
+          case QgsMeshDatasetGroupMetadata::DataOnFaces:
             value = dataProvider()->datasetValue( index, nativeFaceIndex );
-          }
-          break;
-        case QgsMeshDatasetGroupMetadata::DataOnVertices:
-          if ( dataProvider()->isFaceActive( index, nativeFaceIndex ) )
+            break;
+          case QgsMeshDatasetGroupMetadata::DataOnVertices:
           {
             const QgsMeshFace &face = mTriangularMesh->triangles()[faceIndex];
             const int v1 = face[0], v2 = face[1], v3 = face[2];
@@ -207,23 +205,44 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index
             value = QgsMeshDatasetValue( x, y );
           }
           break;
-        case QgsMeshDatasetGroupMetadata::DataOnVolumes:
-          const QgsMesh3dAveragingMethod *avgMethod = mRendererSettings.averagingMethod();
-          if ( avgMethod )
-          {
-            const QgsMesh3dDataBlock block3d = dataProvider()->dataset3dValues( index, nativeFaceIndex, 1 );
-            const QgsMeshDataBlock block2d = avgMethod->calculate( block3d );
-            if ( block2d.active( 0 ) )
+          case QgsMeshDatasetGroupMetadata::DataOnVolumes:
+            const QgsMesh3dAveragingMethod *avgMethod = mRendererSettings.averagingMethod();
+            if ( avgMethod )
             {
-              value = block2d.value( 0 );
+              const QgsMesh3dDataBlock block3d = dataProvider()->dataset3dValues( index, nativeFaceIndex, 1 );
+              const QgsMeshDataBlock block2d = avgMethod->calculate( block3d );
+              if ( block2d.isValid() )
+              {
+                value = block2d.value( 0 );
+              }
             }
-          }
-          break;
+            break;
+        }
       }
     }
   }
 
   return value;
+}
+
+QgsMesh3dDataBlock QgsMeshLayer::dataset3dValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const
+{
+  QgsMesh3dDataBlock block3d;
+
+  if ( mTriangularMesh && dataProvider() && dataProvider()->isValid() && index.isValid() )
+  {
+    const QgsMeshDatasetGroupMetadata::DataType dataType = dataProvider()->datasetGroupMetadata( index ).dataType();
+    if ( dataType == QgsMeshDatasetGroupMetadata::DataOnVolumes )
+    {
+      int faceIndex = mTriangularMesh->faceIndexForPoint( point ) ;
+      if ( faceIndex >= 0 )
+      {
+        int nativeFaceIndex = mTriangularMesh->trianglesToNativeFaces().at( faceIndex );
+        block3d = dataProvider()->dataset3dValues( index, nativeFaceIndex, 1 );
+      }
+    }
+  }
+  return block3d;
 }
 
 void QgsMeshLayer::setTransformContext( const QgsCoordinateTransformContext &transformContext )
