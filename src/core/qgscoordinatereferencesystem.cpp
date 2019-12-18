@@ -841,7 +841,7 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString )
   {
     QString authName;
     QString authCode;
-    if ( QgsProjUtils::identifyCrs( crs.get(), authName, authCode ) )
+    if ( QgsProjUtils::identifyCrs( crs.get(), authName, authCode, QgsProjUtils::FlagMatchBoundCrsToUnderlyingSourceCrs ) )
     {
       const QString authid = QStringLiteral( "%1:%2" ).arg( authName, authCode );
       if ( createFromOgcWmsCrs( authid ) )

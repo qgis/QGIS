@@ -186,7 +186,7 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToSingleCrs( const PJ *crs )
 #endif
 }
 
-bool QgsProjUtils::identifyCrs( const PJ *crs, QString &authName, QString &authCode )
+bool QgsProjUtils::identifyCrs( const PJ *crs, QString &authName, QString &authCode, IdentifyFlags flags )
 {
   authName.clear();
   authCode.clear();
@@ -209,8 +209,11 @@ bool QgsProjUtils::identifyCrs( const PJ *crs, QString &authName, QString &authC
         {
           case PJ_TYPE_BOUND_CRS:
             // proj_identify also matches bound CRSes to the source CRS. But they are not the same as the source CRS, so we don't
-            // consider them a candidate for a match here
-            continue;
+            // consider them a candidate for a match here (depending on the identify flags, that is!)
+            if ( flags & FlagMatchBoundCrsToUnderlyingSourceCrs )
+              break;
+            else
+              continue;
 
           default:
             break;
