@@ -65,7 +65,6 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   connect( btnClearEditor, &QPushButton::pressed, txtExpressionString, &QgsCodeEditorExpression::clear );
 
   txtHelpText->setOpenExternalLinks( true );
-
   mValueGroupBox->hide();
 //  highlighter = new QgsExpressionHighlighter( txtExpressionString->document() );
 
@@ -78,6 +77,9 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   expressionTree->sortByColumn( 0, Qt::AscendingOrder );
 
   expressionTree->setSelectionMode( QAbstractItemView::SelectionMode::SingleSelection );
+
+  // Note: must be in sync with the json help file for UserGroup
+  mUserExpressionsGroupName = tr( "User" );
 
   // Set icons for tool buttons
   btnSaveExpression->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileSave.svg" ) ) );
@@ -152,7 +154,6 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
 
   txtExpressionString->setWrapMode( QsciScintilla::WrapWord );
   lblAutoSave->clear();
-
 
   // Note: If you add a indicator here you should add it to clearErrors method if you need to clear it on text parse.
   txtExpressionString->indicatorDefine( QgsCodeEditor::SquiggleIndicator, QgsExpression::ParserError::FunctionUnknown );
@@ -286,7 +287,7 @@ void QgsExpressionBuilderWidget::runPythonCode( const QString &code )
   updateFunctionTree();
   loadFieldNames();
   loadRecent( mRecentKey );
-  loadUserExpressions( mRecentKey );
+  loadUserExpressions( );
 }
 
 void QgsExpressionBuilderWidget::saveFunctionFile( QString fileName )
@@ -602,26 +603,23 @@ void QgsExpressionBuilderWidget::loadRecent( const QString &collection )
   int i = 0;
   for ( const QString &expression : expressions )
   {
-    this->registerItem( name, expression, expression, expression, QgsExpressionItem::ExpressionNode, false, i );
+    registerItem( name, expression, expression, expression, QgsExpressionItem::ExpressionNode, false, i );
     i++;
   }
 }
 
-void QgsExpressionBuilderWidget::loadUserExpressions( const QString &collection )
+void QgsExpressionBuilderWidget::loadUserExpressions( )
 {
-  mRecentKey = collection;
-  mUserExpressionsGroupName = tr( "User expressions (%1)" ).arg( collection );
-
   // Cleanup
-  if ( mExpressionGroups.contains( mUserExpressionsGroupName ) )
+  if ( mExpressionGroups.contains( QStringLiteral( "UserGroup" ) ) )
   {
-    QgsExpressionItem *node = mExpressionGroups.value( mUserExpressionsGroupName );
+    QgsExpressionItem *node = mExpressionGroups.value( QStringLiteral( "UserGroup" ) );
     node->removeRows( 0, node->rowCount() );
   }
 
   QgsSettings settings;
-  const QString location = QStringLiteral( "/expressions/stored/%1" ).arg( collection );
-  settings.beginGroup( location, QgsSettings::Section::Gui );
+  const QString location = QStringLiteral( "user" );
+  settings.beginGroup( location, QgsSettings::Section::Expressions );
   QString label;
   QString helpText;
   QString expression;
@@ -632,20 +630,20 @@ void QgsExpressionBuilderWidget::loadUserExpressions( const QString &collection 
     settings.beginGroup( label );
     expression = settings.value( QStringLiteral( "expression" ) ).toString();
     helpText = settings.value( QStringLiteral( "helpText" ) ).toString();
-    this->registerItem( mUserExpressionsGroupName, label, expression, helpText, QgsExpressionItem::ExpressionNode, false, i++ );
+    registerItem( QStringLiteral( "UserGroup" ), label, expression, helpText, QgsExpressionItem::ExpressionNode, false, i++ );
     settings.endGroup();
   }
 }
 
-void QgsExpressionBuilderWidget::saveToUserExpressions( const QString &label, const QString expression, const QString &helpText, const QString &collection )
+void QgsExpressionBuilderWidget::saveToUserExpressions( const QString &label, const QString expression, const QString &helpText )
 {
   QgsSettings settings;
-  const QString location = QStringLiteral( "/expressions/stored/%1" ).arg( collection );
-  settings.beginGroup( location, QgsSettings::Section::Gui );
+  const QString location = QStringLiteral( "user" );
+  settings.beginGroup( location, QgsSettings::Section::Expressions );
   settings.beginGroup( label );
   settings.setValue( QStringLiteral( "expression" ), expression );
   settings.setValue( QStringLiteral( "helpText" ), helpText );
-  loadUserExpressions( collection );
+  loadUserExpressions( );
   // Scroll
   const QModelIndexList idxs { expressionTree->model()->match( expressionTree->model()->index( 0, 0 ),
                                Qt::DisplayRole, label, 1,
@@ -656,13 +654,11 @@ void QgsExpressionBuilderWidget::saveToUserExpressions( const QString &label, co
   }
 }
 
-void QgsExpressionBuilderWidget::removeFromUserExpressions( const QString &name, const QString &collection )
+void QgsExpressionBuilderWidget::removeFromUserExpressions( const QString &label )
 {
   QgsSettings settings;
-  QString location = QStringLiteral( "/expressions/stored/%1" ).arg( collection );
-  settings.beginGroup( location, QgsSettings::Section::Gui );
-  settings.remove( name );
-  this->loadUserExpressions( collection );
+  settings.remove( QStringLiteral( "user/%1" ).arg( label ), QgsSettings::Section::Expressions );
+  loadUserExpressions( );
 }
 
 void QgsExpressionBuilderWidget::loadLayers()
@@ -789,6 +785,7 @@ void QgsExpressionBuilderWidget::setExpressionContext( const QgsExpressionContex
   updateFunctionTree();
   loadFieldNames();
   loadRecent( mRecentKey );
+  loadUserExpressions( );
 }
 
 void QgsExpressionBuilderWidget::txtExpressionString_textChanged()
@@ -1233,7 +1230,7 @@ void QgsExpressionBuilderWidget::storeCurrentUserExpression()
   QgsExpressionStoreDialog dlg { expression, expression, QString( ), mUserExpressionLabels };
   if ( dlg.exec() == QDialog::DialogCode::Accepted )
   {
-    saveToUserExpressions( dlg.label(), dlg.expression(), dlg.helpText(), mRecentKey );
+    saveToUserExpressions( dlg.label(), dlg.expression(), dlg.helpText() );
   }
 }
 
@@ -1247,7 +1244,7 @@ void QgsExpressionBuilderWidget::removeSelectedUserExpression()
     return;
 
   // Don't handle remove if we are on a header node or the parent
-  // is not the stored group
+  // is not the user group
   if ( item->getItemType() == QgsExpressionItem::Header ||
        ( item->parent() && item->parent()->text() != mUserExpressionsGroupName ) )
     return;
@@ -1256,7 +1253,7 @@ void QgsExpressionBuilderWidget::removeSelectedUserExpression()
        tr( "Do you really want to remove stored expressions '%1'?" ).arg( item->text() ),
        QMessageBox::Yes | QMessageBox::No ) )
   {
-    removeFromUserExpressions( item->text(), mRecentKey );
+    removeFromUserExpressions( item->text() );
   }
 
 }

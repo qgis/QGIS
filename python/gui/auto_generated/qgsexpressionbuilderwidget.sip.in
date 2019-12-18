@@ -230,53 +230,50 @@ Loads the recent expressions from the given ``collection``.
 By default it is loaded from the collection "generic".
 %End
 
-    void loadUserExpressions( const QString &collection =  QStringLiteral( "generic" ) );
+    void loadUserExpressions( );
 %Docstring
-Loads the user expressions from the given ``collection``.
-By default it is loaded from the collection "generic".
+Loads the user expressions.
 
 .. versionadded:: 3.12
 %End
 
-    void saveToUserExpressions( const QString &label, const QString expression, const QString &helpText, const QString &collection =  QStringLiteral( "generic" ) );
+    void saveToUserExpressions( const QString &label, const QString expression, const QString &helpText );
 %Docstring
-Stores the user ``expression`` in the given ``collection`` with given ``label`` and ``helpText``.
-By default it is saved to the collection "generic".
+Stores the user ``expression`` with given ``label`` and ``helpText``.
 
 .. versionadded:: 3.12
 %End
 
-    void removeFromUserExpressions( const QString &name, const QString &collection =  QStringLiteral( "generic" ) );
+    void removeFromUserExpressions( const QString &label );
 %Docstring
-Removes the expression ``name`` from the user stored expressions in the given ``collection``.
-By default it is removed from the collection "generic".
+Removes the expression ``label`` from the user stored expressions.
 
 .. versionadded:: 3.12
 %End
 
     void newFunctionFile( const QString &fileName = "scratch" );
 %Docstring
-Create a new file in the function editor
+Creates a new file in the function editor
 %End
 
     void saveFunctionFile( QString fileName );
 %Docstring
-Save the current function editor text to the given file.
+Saves the current function editor text to the given file.
 %End
 
     void loadCodeFromFile( QString path );
 %Docstring
-Load code from the given file into the function editor
+Loads code from the given file into the function editor
 %End
 
     void loadFunctionCode( const QString &code );
 %Docstring
-Load code into the function editor
+Loads code into the function editor
 %End
 
     void updateFunctionFileList( const QString &path );
 %Docstring
-Update the list of function files found at the given path
+Updates the list of function files found at the given path
 %End
 
     QStandardItemModel *model();

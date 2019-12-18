@@ -71,6 +71,7 @@ class CORE_EXPORT QgsSettings : public QObject
       Auth,
       App,
       Providers,
+      Expressions,
       Misc
     };
 

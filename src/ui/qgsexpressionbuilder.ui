@@ -343,7 +343,7 @@
                       <bool>false</bool>
                      </property>
                      <property name="toolTip">
-                      <string>Add current expression to stored expressions</string>
+                      <string>Add current expression to user expressions</string>
                      </property>
                      <property name="text">
                       <string>Save</string>
@@ -356,7 +356,7 @@
                       <bool>false</bool>
                      </property>
                      <property name="toolTip">
-                      <string>Removes selected expression from the stored expressions</string>
+                      <string>Remove selected expression from user expressions</string>
                      </property>
                      <property name="text">
                       <string>Remove</string>
