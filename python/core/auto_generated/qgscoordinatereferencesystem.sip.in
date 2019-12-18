@@ -827,13 +827,28 @@ Returns auth id of related geographic CRS
 %End
 
 
-    static QStringList recentProjections();
+ static QStringList recentProjections() /Deprecated/;
 %Docstring
 Returns a list of recently used projections
 
 :return: list of srsid for recently used projections
 
-.. versionadded:: 2.7
+.. deprecated::
+   use recentCoordinateReferenceSystems() instead.
+%End
+
+    static QList< QgsCoordinateReferenceSystem > recentCoordinateReferenceSystems();
+%Docstring
+Returns a list of recently used CRS.
+
+.. versionadded:: 3.10.3
+%End
+
+    static void pushRecentCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Pushes a recently used CRS to the top of the recent CRS list.
+
+.. versionadded:: 3.10.3
 %End
 
 

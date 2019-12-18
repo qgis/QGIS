@@ -81,7 +81,8 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
 
   int crsid = s.value( QStringLiteral( "/DwgImport/lastCrs" ), QString::number( QgsProject::instance()->crs().srsid() ) ).toInt();
 
-  QgsCoordinateReferenceSystem crs( crsid, QgsCoordinateReferenceSystem::InternalCrsId );
+  QgsCoordinateReferenceSystem crs;
+  crs.createFromSrsId( crsid );
   mCrsSelector->setCrs( crs );
   mCrsSelector->setLayerCrs( crs );
   mCrsSelector->setMessage( tr( "Select the coordinate reference system for the dxf file. "
@@ -162,7 +163,8 @@ void QgsDwgImportDialog::pbLoadDatabase_clicked()
     {
       leDrawing->setText( f.attribute( idxPath ).toString() );
 
-      QgsCoordinateReferenceSystem crs( f.attribute( idxCrs ).toInt(), QgsCoordinateReferenceSystem::InternalCrsId );
+      QgsCoordinateReferenceSystem crs;
+      crs.createFromSrsId( f.attribute( idxCrs ).toInt() );
       mCrsSelector->setCrs( crs );
       mCrsSelector->setLayerCrs( crs );
 

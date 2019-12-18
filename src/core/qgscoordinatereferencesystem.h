@@ -770,9 +770,21 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /**
      * Returns a list of recently used projections
      * \returns list of srsid for recently used projections
-     * \since QGIS 2.7
+     * \deprecated use recentCoordinateReferenceSystems() instead.
      */
-    static QStringList recentProjections();
+    Q_DECL_DEPRECATED static QStringList recentProjections() SIP_DEPRECATED;
+
+    /**
+     * Returns a list of recently used CRS.
+     * \since QGIS 3.10.3
+    */
+    static QList< QgsCoordinateReferenceSystem > recentCoordinateReferenceSystems();
+
+    /**
+     * Pushes a recently used CRS to the top of the recent CRS list.
+     * \since QGIS 3.10.3
+     */
+    static void pushRecentCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &crs );
 
 #ifndef SIP_RUN
 
