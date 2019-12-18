@@ -48,7 +48,7 @@ QgsDistanceArea::QgsDistanceArea()
   mSemiMinor = -1.0;
   mInvFlattening = -1.0;
   QgsCoordinateTransformContext context; // this is ok - by default we have a source/dest of WGS84, so no reprojection takes place
-  setSourceCrs( QgsCoordinateReferenceSystem::fromSrsId( GEOCRS_ID ), context ); // WGS 84
+  setSourceCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), context ); // WGS 84
   setEllipsoid( GEO_NONE );
 }
 

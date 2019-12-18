@@ -101,7 +101,7 @@ void TestQgsLayoutMapGrid::cleanup()
 
 void TestQgsLayoutMapGrid::grid()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -145,7 +145,7 @@ void TestQgsLayoutMapGrid::grid()
 
 void TestQgsLayoutMapGrid::reprojected()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -164,7 +164,7 @@ void TestQgsLayoutMapGrid::reprojected()
   l.addLayoutItem( map );
 
   map->setExtent( QgsRectangle( -243577.565, 2939084.773, 1215622.435, 3668684.773 ) );
-  QgsCoordinateReferenceSystem geographic = QgsCoordinateReferenceSystem( 4326 );
+  QgsCoordinateReferenceSystem geographic = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
   map->grid()->setCrs( geographic );
   map->grid()->setEnabled( true );
   map->grid()->setIntervalX( 1 );
@@ -188,7 +188,7 @@ void TestQgsLayoutMapGrid::reprojected()
 
 void TestQgsLayoutMapGrid::crossGrid()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -226,7 +226,7 @@ void TestQgsLayoutMapGrid::crossGrid()
 
 void TestQgsLayoutMapGrid::markerGrid()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -263,7 +263,7 @@ void TestQgsLayoutMapGrid::markerGrid()
 
 void TestQgsLayoutMapGrid::frameOnly()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -304,7 +304,7 @@ void TestQgsLayoutMapGrid::frameOnly()
 
 void TestQgsLayoutMapGrid::zebraStyle()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -344,7 +344,7 @@ void TestQgsLayoutMapGrid::zebraStyle()
 
 void TestQgsLayoutMapGrid::zebraStyleSides()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -406,7 +406,7 @@ void TestQgsLayoutMapGrid::zebraStyleSides()
 
 void TestQgsLayoutMapGrid::zebraStyleMargin()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -447,7 +447,7 @@ void TestQgsLayoutMapGrid::zebraStyleMargin()
 
 void TestQgsLayoutMapGrid::zebraStyleNautical()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -488,7 +488,7 @@ void TestQgsLayoutMapGrid::zebraStyleNautical()
 
 void TestQgsLayoutMapGrid::frameDivisions()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -552,7 +552,7 @@ void TestQgsLayoutMapGrid::frameDivisions()
 
 void TestQgsLayoutMapGrid::annotationFilter()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -613,7 +613,7 @@ void TestQgsLayoutMapGrid::annotationFilter()
 
 void TestQgsLayoutMapGrid::interiorTicks()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -651,7 +651,7 @@ void TestQgsLayoutMapGrid::interiorTicks()
 
 void TestQgsLayoutMapGrid::interiorTicksMargin()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -690,7 +690,7 @@ void TestQgsLayoutMapGrid::interiorTicksMargin()
 
 void TestQgsLayoutMapGrid::interiorTicksAnnotated()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -746,7 +746,7 @@ void TestQgsLayoutMapGrid::interiorTicksAnnotated()
 
 void TestQgsLayoutMapGrid::exteriorTicks()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -784,7 +784,7 @@ void TestQgsLayoutMapGrid::exteriorTicks()
 
 void TestQgsLayoutMapGrid::exteriorTicksMargin()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -823,7 +823,7 @@ void TestQgsLayoutMapGrid::exteriorTicksMargin()
 
 void TestQgsLayoutMapGrid::exteriorTicksAnnotated()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -879,7 +879,7 @@ void TestQgsLayoutMapGrid::exteriorTicksAnnotated()
 
 void TestQgsLayoutMapGrid::interiorExteriorTicks()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -917,7 +917,7 @@ void TestQgsLayoutMapGrid::interiorExteriorTicks()
 
 void TestQgsLayoutMapGrid::interiorExteriorTicksMargin()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -956,7 +956,7 @@ void TestQgsLayoutMapGrid::interiorExteriorTicksMargin()
 
 void TestQgsLayoutMapGrid::interiorExteriorTicksAnnotated()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -1012,7 +1012,7 @@ void TestQgsLayoutMapGrid::interiorExteriorTicksAnnotated()
 
 void TestQgsLayoutMapGrid::lineBorder()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -1050,7 +1050,7 @@ void TestQgsLayoutMapGrid::lineBorder()
 
 void TestQgsLayoutMapGrid::lineBorderMargin()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -1089,7 +1089,7 @@ void TestQgsLayoutMapGrid::lineBorderMargin()
 
 void TestQgsLayoutMapGrid::lineBorderNautical()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -1128,7 +1128,7 @@ void TestQgsLayoutMapGrid::lineBorderNautical()
 
 void TestQgsLayoutMapGrid::lineBorderAnnotated()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -1184,7 +1184,7 @@ void TestQgsLayoutMapGrid::lineBorderAnnotated()
 
 void TestQgsLayoutMapGrid::annotationFormats()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -1248,7 +1248,7 @@ void TestQgsLayoutMapGrid::annotationFormats()
 
 void TestQgsLayoutMapGrid::descendingAnnotations()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();

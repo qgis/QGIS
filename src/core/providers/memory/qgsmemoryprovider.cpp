@@ -253,15 +253,7 @@ QString QgsMemoryProvider::dataSourceUri( bool expandAuthConfig ) const
     }
     else
     {
-      int srid = mCrs.postgisSrid();
-      if ( srid )
-      {
-        crsDef = QStringLiteral( "postgis:%1" ).arg( srid );
-      }
-      else
-      {
-        crsDef = QStringLiteral( "wkt:%1" ).arg( mCrs.toWkt() );
-      }
+      crsDef = QStringLiteral( "wkt:%1" ).arg( mCrs.toWkt() );
     }
     uri.addQueryItem( QStringLiteral( "crs" ), crsDef );
   }

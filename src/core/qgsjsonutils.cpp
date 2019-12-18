@@ -40,7 +40,7 @@ QgsJsonExporter::QgsJsonExporter( QgsVectorLayer *vectorLayer, int precision )
     mCrs = vectorLayer->crs();
     mTransform.setSourceCrs( mCrs );
   }
-  mTransform.setDestinationCrs( QgsCoordinateReferenceSystem( 4326, QgsCoordinateReferenceSystem::EpsgCrsId ) );
+  mTransform.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
 }
 
 void QgsJsonExporter::setVectorLayer( QgsVectorLayer *vectorLayer )

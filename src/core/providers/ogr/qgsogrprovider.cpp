@@ -3690,7 +3690,11 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs() const
   }
 
   // add towgs84 parameter
+#if PROJ_VERSION_MAJOR<6
+  Q_NOWARN_DEPRECATED_PUSH
   QgsCoordinateReferenceSystem::setupESRIWktFix();
+  Q_NOWARN_DEPRECATED_POP
+#endif
 
   if ( OGRSpatialReferenceH spatialRefSys = mOgrLayer->GetSpatialRef() )
   {
