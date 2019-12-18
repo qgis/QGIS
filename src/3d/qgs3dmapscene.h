@@ -25,6 +25,7 @@ namespace Qt3DRender
   class QRenderSettings;
   class QCamera;
   class QPickEvent;
+  class QObjectPicker;
 }
 
 namespace Qt3DLogic
@@ -45,6 +46,9 @@ class Qgs3DMapScenePickHandler;
 class Qgs3DMapSettings;
 class QgsTerrainEntity;
 class QgsChunkedEntity;
+
+#include "qgsfeatureid.h"
+
 
 /**
  * \ingroup 3d
@@ -106,7 +110,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void onLayersChanged();
     void createTerrainDeferred();
     void onBackgroundColorChanged();
-    void onLayerEntityPickEvent( Qt3DRender::QPickEvent *event );
+    void onLayerEntityPickedObject( Qt3DRender::QPickEvent *pickEvent, QgsFeatureId fid );
     void updateLights();
     void updateCameraLens();
     void onRenderersChanged();

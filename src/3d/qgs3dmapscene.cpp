@@ -184,9 +184,8 @@ void Qgs3DMapScene::registerPickHandler( Qgs3DMapScenePickHandler *pickHandler )
     // we need to add object pickers
     for ( Qt3DCore::QEntity *entity : mLayerEntities.values() )
     {
-      Qt3DRender::QObjectPicker *picker = new Qt3DRender::QObjectPicker( entity );
-      entity->addComponent( picker );
-      connect( picker, &Qt3DRender::QObjectPicker::clicked, this, &Qgs3DMapScene::onLayerEntityPickEvent );
+      if ( QgsChunkedEntity *chunkedEntity = qobject_cast<QgsChunkedEntity *>( entity ) )
+        chunkedEntity->setPickingEnabled( true );
     }
   }
 
@@ -202,11 +201,28 @@ void Qgs3DMapScene::unregisterPickHandler( Qgs3DMapScenePickHandler *pickHandler
     // we need to remove pickers
     for ( Qt3DCore::QEntity *entity : mLayerEntities.values() )
     {
-      Qt3DRender::QObjectPicker *picker = entity->findChild<Qt3DRender::QObjectPicker *>();
-      picker->deleteLater();
+      if ( QgsChunkedEntity *chunkedEntity = qobject_cast<QgsChunkedEntity *>( entity ) )
+        chunkedEntity->setPickingEnabled( false );
     }
   }
 }
+
+void Qgs3DMapScene::onLayerEntityPickedObject( Qt3DRender::QPickEvent *pickEvent, QgsFeatureId fid )
+{
+  QgsMapLayer *layer = mLayerEntities.key( qobject_cast<QgsChunkedEntity *>( sender() ) );
+  if ( !layer )
+    return;
+
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  if ( !vlayer )
+    return;
+
+  for ( Qgs3DMapScenePickHandler *pickHandler : qgis::as_const( mPickHandlers ) )
+  {
+    pickHandler->handlePickOnVectorLayer( vlayer, fid, pickEvent->worldIntersection(), pickEvent );
+  }
+}
+
 
 float Qgs3DMapScene::worldSpaceError( float epsilon, float distance )
 {
@@ -414,56 +430,6 @@ void Qgs3DMapScene::onBackgroundColorChanged()
   mEngine->setClearColor( mMap.backgroundColor() );
 }
 
-void Qgs3DMapScene::onLayerEntityPickEvent( Qt3DRender::QPickEvent *event )
-{
-  Qt3DRender::QPickTriangleEvent *triangleEvent = qobject_cast<Qt3DRender::QPickTriangleEvent *>( event );
-  if ( !triangleEvent )
-    return;
-
-  Qt3DRender::QObjectPicker *picker = qobject_cast<Qt3DRender::QObjectPicker *>( sender() );
-  if ( !picker )
-    return;
-
-  Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>( picker->parent() );
-  if ( !entity )
-    return;
-
-  QgsMapLayer *layer = mLayerEntities.key( entity );
-  if ( !layer )
-    return;
-
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  if ( !vlayer )
-    return;
-
-  for ( Qgs3DMapScenePickHandler *pickHandler : qgis::as_const( mPickHandlers ) )
-  {
-    // go figure out feature ID from the triangle index
-    QgsFeatureId fid = FID_NULL;
-    for ( Qt3DRender::QGeometryRenderer *geomRenderer : entity->findChildren<Qt3DRender::QGeometryRenderer *>() )
-    {
-      // unfortunately we can't access which sub-entity triggered the pick event
-      // so as a temporary workaround let's just ignore the entity with selection
-      // and hope the event was the main entity (QTBUG-58206)
-      if ( geomRenderer->objectName() != QLatin1String( "main" ) )
-        continue;
-
-      if ( QgsTessellatedPolygonGeometry *g = qobject_cast<QgsTessellatedPolygonGeometry *>( geomRenderer->geometry() ) )
-      {
-        // because we have a single picker for all chunks of an entity and QPickEvent
-        // does not give better information than triangle index and world/local intersection point.
-        // TODO: the code below basically does not work with more than single sub-entity
-        // TODO: maybe have a separate picker for each chunk?
-        fid = g->triangleIndexToFeatureId( triangleEvent->triangleIndex() );
-        if ( !FID_IS_NULL( fid ) )
-          break;
-      }
-    }
-    if ( !FID_IS_NULL( fid ) )
-      pickHandler->handlePickOnVectorLayer( vlayer, fid, event->worldIntersection(), event );
-  }
-
-}
 
 void Qgs3DMapScene::updateLights()
 {
@@ -591,19 +557,15 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
       newEntity->setParent( this );
       mLayerEntities.insert( layer, newEntity );
 
-      if ( !mPickHandlers.isEmpty() )
-      {
-        Qt3DRender::QObjectPicker *picker = new Qt3DRender::QObjectPicker( newEntity );
-        newEntity->addComponent( picker );
-        connect( picker, &Qt3DRender::QObjectPicker::pressed, this, &Qgs3DMapScene::onLayerEntityPickEvent );
-      }
-
       finalizeNewEntity( newEntity );
 
       if ( QgsChunkedEntity *chunkedNewEntity = qobject_cast<QgsChunkedEntity *>( newEntity ) )
       {
         mChunkEntities.append( chunkedNewEntity );
         needsSceneUpdate = true;
+
+        chunkedNewEntity->setPickingEnabled( !mPickHandlers.isEmpty() );
+        connect( chunkedNewEntity, &QgsChunkedEntity::pickedObject, this, &Qgs3DMapScene::onLayerEntityPickedObject );
 
         connect( chunkedNewEntity, &QgsChunkedEntity::newEntityCreated, this, [this]( Qt3DCore::QEntity * entity )
         {
