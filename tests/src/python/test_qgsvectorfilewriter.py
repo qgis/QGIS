@@ -102,8 +102,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         provider.addFeatures([feat])
 
         filename = os.path.join(str(QDir.tempPath()), 'with_longlong_field')
-        crs = QgsCoordinateReferenceSystem()
-        crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+        crs = QgsCoordinateReferenceSystem('EPSG:4326')
         rc, errmsg = QgsVectorFileWriter.writeAsVectorFormat(ml, filename, 'utf-8', crs, 'GPKG')
 
         # open the resulting geopackage
@@ -133,8 +132,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertEqual(fields.at(fields.indexFromName('fld1')).type(), QVariant.Bool)
 
         # write a gpkg package with a bool field
-        crs = QgsCoordinateReferenceSystem()
-        crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+        crs = QgsCoordinateReferenceSystem('EPSG:4326')
         filename = os.path.join(str(QDir.tempPath()), 'with_bool_field')
         rc, errmsg = QgsVectorFileWriter.writeAsVectorFormat(vl,
                                                              filename,
@@ -180,8 +178,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertTrue(features)
 
         dest_file_name = os.path.join(str(QDir.tempPath()), 'datetime.shp')
-        crs = QgsCoordinateReferenceSystem()
-        crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+        crs = QgsCoordinateReferenceSystem('EPSG:4326')
         write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
             ml,
             dest_file_name,
@@ -285,8 +282,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertTrue(features)
 
         dest_file_name = os.path.join(str(QDir.tempPath()), 'datetime.tab')
-        crs = QgsCoordinateReferenceSystem()
-        crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+        crs = QgsCoordinateReferenceSystem('EPSG:4326')
         write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
             ml,
             dest_file_name,
@@ -339,8 +335,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         # check with both a standard PointZ and 25d style Point25D type
         for t in [QgsWkbTypes.PointZ, QgsWkbTypes.Point25D]:
             dest_file_name = os.path.join(str(QDir.tempPath()), 'point_{}.shp'.format(QgsWkbTypes.displayString(t)))
-            crs = QgsCoordinateReferenceSystem()
-            crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+            crs = QgsCoordinateReferenceSystem('EPSG:4326')
             write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
                 ml,
                 dest_file_name,
@@ -364,8 +359,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
             # will stay retain the z values
             dest_file_name = os.path.join(str(QDir.tempPath()),
                                           'point_{}_copy.shp'.format(QgsWkbTypes.displayString(t)))
-            crs = QgsCoordinateReferenceSystem()
-            crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+            crs = QgsCoordinateReferenceSystem('EPSG:4326')
             write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
                 created_layer,
                 dest_file_name,
@@ -402,8 +396,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertTrue(features)
 
         dest_file_name = os.path.join(str(QDir.tempPath()), 'to_multi.shp')
-        crs = QgsCoordinateReferenceSystem()
-        crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+        crs = QgsCoordinateReferenceSystem('EPSG:4326')
         write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
             ml,
             dest_file_name,
@@ -444,8 +437,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
 
         # first write out with all attributes
         dest_file_name = os.path.join(str(QDir.tempPath()), 'all_attributes.shp')
-        crs = QgsCoordinateReferenceSystem()
-        crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+        crs = QgsCoordinateReferenceSystem('EPSG:4326')
         write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
             ml,
             dest_file_name,
@@ -566,8 +558,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertTrue(features)
 
         dest_file_name = os.path.join(str(QDir.tempPath()), 'integer64.tab')
-        crs = QgsCoordinateReferenceSystem()
-        crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+        crs = QgsCoordinateReferenceSystem('EPSG:4326')
         write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
             ml,
             dest_file_name,
@@ -952,8 +943,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         provider.addFeatures([feat])
 
         filename = os.path.join(str(QDir.tempPath()), 'testCreateDGN.dgn')
-        crs = QgsCoordinateReferenceSystem()
-        crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+        crs = QgsCoordinateReferenceSystem('EPSG:4326')
         rc, errmsg = QgsVectorFileWriter.writeAsVectorFormat(ml, filename, 'utf-8', crs, 'DGN')
 
         # open the resulting file
