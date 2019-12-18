@@ -861,7 +861,7 @@ void QgsDualView::modifySort()
   expressionBuilder->setLayer( mLayer );
   expressionBuilder->loadFieldNames();
   expressionBuilder->loadRecent( QStringLiteral( "generic" ) );
-  expressionBuilder->loadUserExpressions( QStringLiteral( "generic" ) );
+  expressionBuilder->loadUserExpressions( );
   expressionBuilder->setExpressionText( sortExpression().isEmpty() ? mLayer->displayExpression() : sortExpression() );
 
   sortingGroupBox->layout()->addWidget( expressionBuilder );

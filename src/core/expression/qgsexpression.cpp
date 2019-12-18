@@ -875,6 +875,7 @@ QString QgsExpression::group( const QString &name )
     sGroups()->insert( QStringLiteral( "String" ), tr( "String" ) );
     sGroups()->insert( QStringLiteral( "Variables" ), tr( "Variables" ) );
     sGroups()->insert( QStringLiteral( "Recent (%1)" ), tr( "Recent (%1)" ) );
+    sGroups()->insert( QStringLiteral( "UserGroup" ), tr( "User" ) );
   }
 
   //return the translated name for this group. If group does not
