@@ -251,8 +251,11 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * and proj strings are a lossy format.
      * \param id The ID valid for the chosen CRS ID type
      * \param type One of the types described in CrsType
+     * \deprecated We encourage you to use EPSG codes or WKT to describe CRSes in your code
+     * wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile,
+     * and Proj strings are a lossy format.
      */
-    explicit QgsCoordinateReferenceSystem( long id, CrsType type = PostgisCrsId );
+    Q_DECL_DEPRECATED explicit QgsCoordinateReferenceSystem( long id, CrsType type = PostgisCrsId ) SIP_DEPRECATED;
 
     //! Copy constructor
     QgsCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &srs );
@@ -338,11 +341,11 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /**
      * Sets this CRS by lookup of the given ID in the CRS database.
      * \returns TRUE on success else FALSE
-     * \note We encourage you to use EPSG code or WKT to describe CRSes in your code
+     * \deprecated We encourage you to use EPSG code or WKT to describe CRSes in your code
      * wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile,
      * and Proj strings are a lossy format.
      */
-    bool createFromId( long id, CrsType type = PostgisCrsId );
+    Q_DECL_DEPRECATED bool createFromId( long id, CrsType type = PostgisCrsId ) SIP_DEPRECATED;
 
     // TODO QGIS 4: remove "QGIS" and "CUSTOM", only support "USER" (also returned by authid())
 
@@ -394,6 +397,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \returns TRUE on success else FALSE
      * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
      * \see fromSrsId()
+     * \warning This method is highly discouraged, and CRS objects should instead be constructed
+     * using auth:id codes or WKT strings
      */
     bool createFromSrsId( long srsId );
 
@@ -492,8 +497,9 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \note This function sets CPL config option GDAL_FIX_ESRI_WKT to a proper value,
      * unless it has been set by the user through the commandline or an environment variable.
      * For more details refer to OGRSpatialReference::morphFromESRI() .
+     * \deprecated Not used on builds based on Proj version 6 or later
      */
-    static void setupESRIWktFix();
+    Q_DECL_DEPRECATED static void setupESRIWktFix() SIP_DEPRECATED;
 
     //! Returns whether this CRS is correctly initialized and usable
     bool isValid() const;

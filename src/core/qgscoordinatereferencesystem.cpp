@@ -122,7 +122,9 @@ QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( const QString &defin
 QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( const long id, CrsType type )
 {
   d = new QgsCoordinateReferenceSystemPrivate();
+  Q_NOWARN_DEPRECATED_PUSH
   createFromId( id, type );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &srs )  //NOLINT
@@ -301,7 +303,9 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString &definition )
     else
     {
       const long id = match.captured( 2 ).toLong();
+      Q_NOWARN_DEPRECATED_PUSH
       result = createFromId( id, InternalCrsId );
+      Q_NOWARN_DEPRECATED_POP
     }
   }
   else
@@ -339,11 +343,15 @@ bool QgsCoordinateReferenceSystem::createFromUserInput( const QString &definitio
   QString userWkt;
   OGRSpatialReferenceH crs = OSRNewSpatialReference( nullptr );
 
+#if PROJ_VERSION_MAJOR<6
   // make sure towgs84 parameter is loaded if using an ESRI definition and gdal >= 1.9
   if ( definition.startsWith( QLatin1String( "ESRI::" ) ) )
   {
+    Q_NOWARN_DEPRECATED_PUSH
     setupESRIWktFix();
+    Q_NOWARN_DEPRECATED_POP
   }
+#endif
 
   if ( OSRSetFromUserInput( crs, definition.toLocal8Bit().constData() ) == OGRERR_NONE )
   {
