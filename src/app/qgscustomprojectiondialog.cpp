@@ -618,9 +618,9 @@ void QgsCustomProjectionDialog::validateCurrent()
   proj_context_destroy( context );
   context = nullptr;
 #else
-  switch ( static_cast< Format >( mFormatComboBox->currentData().toInt() ) )
+  switch ( static_cast< QgsCoordinateReferenceSystem::Format >( mFormatComboBox->currentData().toInt() ) )
   {
-    case Format::Wkt:
+    case QgsCoordinateReferenceSystem::FormatWkt:
     {
       QByteArray ba = projDef.toLatin1();
       const char *pWkt = ba.data();
@@ -641,7 +641,7 @@ void QgsCustomProjectionDialog::validateCurrent()
       OSRDestroySpatialReference( crs );
       break;
     }
-    case Format::Proj:
+    case QgsCoordinateReferenceSystem::FormatProj:
     {
       projCtx pContext = pj_ctx_alloc();
       projPJ proj = pj_init_plus_ctx( pContext, projDef.toLocal8Bit().data() );
@@ -699,7 +699,7 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
   QString projDef = teParameters->toPlainText();
   QgsDebugMsgLevel( QStringLiteral( "Proj: %1" ).arg( projDef ), 3 );
 #else
-  if ( static_cast< Format >( mFormatComboBox->currentData().toInt() ) == Format::Wkt )
+  if ( static_cast< QgsCoordinateReferenceSystem::Format >( mFormatComboBox->currentData().toInt() ) == QgsCoordinateReferenceSystem::FormatWkt )
   {
     // it's not trivial to implement, and we've gotta draw the line somewhere...
     QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
