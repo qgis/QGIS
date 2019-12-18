@@ -51,8 +51,8 @@ QgsTemplateProjectsModel::QgsTemplateProjectsModel( QObject *parent )
   QStandardItem *emptyProjectItem = new QStandardItem();
 
   emptyProjectItem->setData( tr( "New Empty Project" ), QgsProjectListItemDelegate::TitleRole );
-  connect( QgsProject::instance(), &QgsProject::crsChanged, this, [emptyProjectItem]() { emptyProjectItem->setData( QgsProject::instance()->crs().description(), QgsProjectListItemDelegate::CrsRole ); } );
-  emptyProjectItem->setData( QgsProject::instance()->crs().description(), QgsProjectListItemDelegate::CrsRole );
+  connect( QgsProject::instance(), &QgsProject::crsChanged, this, [emptyProjectItem]() { emptyProjectItem->setData( QgsProject::instance()->crs().userFriendlyIdentifier(), QgsProjectListItemDelegate::CrsRole ); } );
+  emptyProjectItem->setData( QgsProject::instance()->crs().userFriendlyIdentifier(), QgsProjectListItemDelegate::CrsRole );
   emptyProjectItem->setFlags( Qt::ItemFlag::ItemIsSelectable | Qt::ItemFlag::ItemIsEnabled ) ;
   QSize previewSize( 250, 177 );
   QImage image( previewSize, QImage::Format_ARGB32 );

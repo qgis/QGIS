@@ -2951,7 +2951,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
           // for results -> verify CRS and reprojects if necessary
           QMap<QgsFeatureId, QgsFeature * > features = gml.featuresMap();
           QgsCoordinateReferenceSystem featuresCrs = gml.crs();
-          QgsDebugMsg( QStringLiteral( "%1 features read, crs: %2 %3" ).arg( features.size() ).arg( featuresCrs.authid(), featuresCrs.description() ) );
+          QgsDebugMsg( QStringLiteral( "%1 features read, crs: %2" ).arg( features.size() ).arg( featuresCrs.userFriendlyIdentifier() ) );
           QgsCoordinateTransform coordinateTransform;
           if ( featuresCrs.isValid() && featuresCrs != crs() )
           {
