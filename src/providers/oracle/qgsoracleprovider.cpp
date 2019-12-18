@@ -2008,53 +2008,75 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
 
       case QgsWkbTypes::CircularStringZ:
       case QgsWkbTypes::CompoundCurveZ:
+      case QgsWkbTypes::MultiCurveZ:
         dim = 3;
         FALLTHROUGH
 
       case QgsWkbTypes::CircularString:
       case QgsWkbTypes::CompoundCurve:
+      case QgsWkbTypes::MultiCurve:
       {
         g.gtype = SDO_GTYPE( dim, GtLine );
-        int nLines = 1;
-        QgsWkbTypes::Type lineType = type;
-        if ( type == QgsWkbTypes::CompoundCurve || type == QgsWkbTypes::CompoundCurveZ )
+        int nCurves = 1;
+        QgsWkbTypes::Type curveType = type;
+        if ( type == QgsWkbTypes::MultiCurve || type == QgsWkbTypes::MultiCurveZ )
         {
           g.gtype = SDO_GTYPE( dim, GtMultiLine );
-          nLines = *ptr.iPtr++;
+          nCurves = *ptr.iPtr++;
 
-          g.eleminfo << iOrdinate << 4 << nLines;
-
-          ptr.ucPtr++; // Skip endianness of first linestring
-          lineType = ( QgsWkbTypes::Type ) * ptr.iPtr++; // type of first linestring
+          ptr.ucPtr++; // Skip endianness of first curve
+          curveType = ( QgsWkbTypes::Type ) * ptr.iPtr++; // type of first curve
         }
 
-        for ( int iLine = 0; iLine < nLines; iLine++ )
+        for ( int iCurve = 0; iCurve < nCurves; iCurve++ )
         {
-          bool circularString = lineType == QgsWkbTypes::CircularString || lineType == QgsWkbTypes::CircularStringZ;
-
-          g.eleminfo << iOrdinate << 2 << ( circularString ? 2 : 1 );
-
-          for ( int i = 0, n = *ptr.iPtr++; i < n; i++ )
+          int nLines = 1;
+          QgsWkbTypes::Type lineType = curveType;
+          if ( curveType == QgsWkbTypes::CompoundCurve || curveType == QgsWkbTypes::CompoundCurveZ )
           {
-            // Inside a compound curve, two consecutives lines share start/end points
-            // We don't repeat this point in ordinates, so we skip the last point (except for last line)
-            if ( ( type == QgsWkbTypes::CompoundCurve || type == QgsWkbTypes::CompoundCurveZ )
-                 && i == n - 1 && iLine < nLines - 1 )
+            g.gtype = SDO_GTYPE( dim, GtMultiLine );
+            nLines = *ptr.iPtr++;
+
+            // Oracle don't store compound curve with only one line
+            if ( nLines > 1 )
             {
-              ptr.dPtr += dim;
-              continue;
+              g.eleminfo << iOrdinate << 4 << nLines;
             }
 
-            g.ordinates << *ptr.dPtr++;
-            g.ordinates << *ptr.dPtr++;
-            if ( dim == 3 )
-              g.ordinates << *ptr.dPtr++;
-
-            iOrdinate  += dim;
+            ptr.ucPtr++; // Skip endianness of first linestring
+            lineType = ( QgsWkbTypes::Type ) * ptr.iPtr++; // type of first linestring
           }
 
-          ptr.ucPtr++; // Skip endianness of next linestring
-          lineType = ( QgsWkbTypes::Type ) * ptr.iPtr++; // type of next linestring
+          for ( int iLine = 0; iLine < nLines; iLine++ )
+          {
+            bool circularString = lineType == QgsWkbTypes::CircularString || lineType == QgsWkbTypes::CircularStringZ;
+
+            g.eleminfo << iOrdinate << 2 << ( circularString ? 2 : 1 );
+
+            for ( int i = 0, n = *ptr.iPtr++; i < n; i++ )
+            {
+              // Inside a compound curve, two consecutives lines share start/end points
+              // We don't repeat this point in ordinates, so we skip the last point (except for last line)
+              if ( ( curveType == QgsWkbTypes::CompoundCurve || curveType == QgsWkbTypes::CompoundCurveZ )
+                   && i == n - 1 && iLine < nLines - 1 )
+              {
+                ptr.dPtr += dim;
+                continue;
+              }
+
+              g.ordinates << *ptr.dPtr++;
+              g.ordinates << *ptr.dPtr++;
+              if ( dim == 3 )
+                g.ordinates << *ptr.dPtr++;
+
+              iOrdinate  += dim;
+            }
+
+            ptr.ucPtr++; // Skip endianness of next linestring
+            lineType = ( QgsWkbTypes::Type ) * ptr.iPtr++; // type of next linestring
+          }
+
+          curveType = lineType; // type of next curve
         }
       }
       break;
@@ -2065,10 +2087,6 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       case QgsWkbTypes::CurvePolygonZ:
       case QgsWkbTypes::CurvePolygonM:
       case QgsWkbTypes::CurvePolygonZM:
-      case QgsWkbTypes::MultiCurve:
-      case QgsWkbTypes::MultiCurveZ:
-      case QgsWkbTypes::MultiCurveM:
-      case QgsWkbTypes::MultiCurveZM:
       case QgsWkbTypes::MultiSurface:
       case QgsWkbTypes::MultiSurfaceZ:
       case QgsWkbTypes::MultiSurfaceM:
@@ -2091,6 +2109,8 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       case QgsWkbTypes::CircularStringZM:
       case QgsWkbTypes::CompoundCurveM:
       case QgsWkbTypes::CompoundCurveZM:
+      case QgsWkbTypes::MultiCurveM:
+      case QgsWkbTypes::MultiCurveZM:
 
       // other unsupported or missing geometry types
       case QgsWkbTypes::GeometryCollection:

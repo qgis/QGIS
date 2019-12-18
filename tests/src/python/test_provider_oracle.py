@@ -260,7 +260,7 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
 
     def testEditCurves(self):
 
-        def test_geom(layer, pk, wkt):
+        def test_geom(layer, pk, wkt, wkt_ref=None):
             # insert geom in layer
             self.assertTrue(layer.startEditing())
             feature = QgsFeature(layer.fields())
@@ -270,8 +270,9 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
             self.assertTrue(layer.addFeature(feature))
             self.assertTrue(layer.commitChanges())
 
+            expected_wkt = wkt if wkt_ref is None else wkt_ref
             res_wkt = layer.getFeature(pk).geometry().asWkt()
-            self.assertTrue(compareWkt(res_wkt, wkt, 0.00001), "\nactual   = {}\nexpected = {}".format(res_wkt, wkt))
+            self.assertTrue(compareWkt(res_wkt, expected_wkt, 0.00001), "\nactual   = {}\nexpected = {}".format(res_wkt, expected_wkt))
 
         self.execSQLCommand('DROP TABLE "QGIS"."EDIT_CURVE_DATA"', ignore_errors=True)
         self.execSQLCommand("""CREATE TABLE QGIS.EDIT_CURVE_DATA ("pk" INTEGER PRIMARY KEY, GEOM SDO_GEOMETRY)""")
@@ -309,6 +310,32 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
 
         test_geom(multi_lines_z, 9, 'MultiLineStringZ ((1 2 11, 3 4 -11),(5 6 9, 7 8 1, 9 10 -3))')
         test_geom(multi_lines_z, 10, 'MultiLineStringZ ((1 2 1, 3 4 2),(5 6 3, 7 8 4, 9 10 5), (11 12 6, 13 14 7))')
+
+        multi_curves = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable key=\'pk\' srid=3857 type=MultiCurve table="QGIS"."EDIT_CURVE_DATA" (GEOM) sql=',
+            'test_multicurves', 'oracle')
+        self.assertTrue(multi_curves.isValid())
+
+        # There is no way to represent a compound curve with only one LineString or CircularString in Oracle database
+        # if SDO_ETYPE = 4, n must be greater than 1 : https://docs.oracle.com/database/121/SPATL/sdo_geometry-object-type.htm#GUID-270AE39D-7B83-46D0-9DD6-E5D99C045021__BGHDGCCE
+        # So, this two different WKTs inputs generate the same data in Oracle database, and so the same WKT
+        # output representation (with CompoundCurve() around each MultiCurve parts)
+        test_geom(multi_curves, 11,
+                  'MultiCurve (CompoundCurve ((-1 -5, 1 2),CircularString (1 2, 5 4, 7 2.2, 10 0.1, 13 4),(13 4, 17 -6)),CompoundCurve (CircularString (1 3, 5 5, 7 3.2, 10 1.1, 13 5)),CompoundCurve ((-11 -3, 5 7, 10 -1)))')
+        test_geom(multi_curves, 12,
+                  'MultiCurve (CompoundCurve ((-1 -5, 1 2),CircularString (1 2, 5 4, 7 2.2, 10 0.1, 13 4),(13 4, 17 -6)),CompoundCurve (CircularString (1 3, 5 5, 7 3.2, 10 1.1, 13 5)),(-11 -3, 5 7, 10 -1))',
+                  'MultiCurve (CompoundCurve ((-1 -5, 1 2),CircularString (1 2, 5 4, 7 2.2, 10 0.1, 13 4),(13 4, 17 -6)),CompoundCurve (CircularString (1 3, 5 5, 7 3.2, 10 1.1, 13 5)),CompoundCurve ((-11 -3, 5 7, 10 -1)))')
+
+        multi_curves_z = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable key=\'pk\' srid=3857 type=MultiCurveZ table="QGIS"."EDIT_CURVE_DATA" (GEOM) sql=',
+            'test_multicurves_z', 'oracle')
+        self.assertTrue(multi_curves_z.isValid())
+
+        test_geom(multi_curves_z, 13,
+                  'MultiCurveZ (CompoundCurveZ ((-1 -5 3, 1 2 4),CircularStringZ (1 2 4, 5 4 5, 7 2.2 6, 10 0.1 7, 13 4 8),(13 4 8, 17 -6 9)),CompoundCurveZ (CircularStringZ (1 3 2, 5 5 3, 7 3.2 4, 10 1.1 5, 13 5 6)),CompoundCurveZ ((-11 -3 1, 5 7 2, 10 -1 3)))')
+        test_geom(multi_curves_z, 14,
+                  'MultiCurveZ (CompoundCurveZ ((-1 -5 3, 1 2 4),CircularStringZ (1 2 4, 5 4 5, 7 2.2 6, 10 0.1 7, 13 4 8),(13 4 8, 17 -6 9)),CompoundCurveZ (CircularStringZ (1 3 2, 5 5 3, 7 3.2 4, 10 1.1 5, 13 5 6)),(-11 -3 1, 5 7 2, 10 -1 3))',
+                  'MultiCurveZ (CompoundCurveZ ((-1 -5 3, 1 2 4),CircularStringZ (1 2 4, 5 4 5, 7 2.2 6, 10 0.1 7, 13 4 8),(13 4 8, 17 -6 9)),CompoundCurveZ (CircularStringZ (1 3 2, 5 5 3, 7 3.2 4, 10 1.1 5, 13 5 6)),CompoundCurveZ ((-11 -3 1, 5 7 2, 10 -1 3)))')
 
     def testSurfaces(self):
         vl = QgsVectorLayer('%s table="QGIS"."POLY_DATA" (GEOM) srid=4326 type=POLYGON sql=' %
