@@ -64,9 +64,9 @@ QgsRectangle QgsServerApiUtils::parseBbox( const QString &bbox )
 json QgsServerApiUtils::layerExtent( const QgsVectorLayer *layer )
 {
   auto extent { layer->extent() };
-  if ( layer->crs().postgisSrid() != 4326 )
+  if ( layer->crs().authid() != QLatin1String( "EPSG:4326" ) )
   {
-    static const QgsCoordinateReferenceSystem targetCrs { 4326 };
+    static const QgsCoordinateReferenceSystem targetCrs( QStringLiteral( "EPSG:4326" ) );
     const QgsCoordinateTransform ct( layer->crs(), targetCrs, layer->transformContext() );
     extent = ct.transform( extent );
   }
