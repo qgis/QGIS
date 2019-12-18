@@ -174,13 +174,6 @@ namespace pal
       bool showPartialLabels() const;
 
       /**
-       * Sets the maximum number of candidates to generate for points features.
-       *
-       * The larger the value, the longer the labeling solution will take to calculate.
-       */
-      void setMaximumNumberOfPointCandidates( int candidates );
-
-      /**
        * Sets the maximum number of candidates to generate for line features.
        *
        * The larger the value, the longer the labeling solution will take to calculate.
@@ -193,11 +186,6 @@ namespace pal
        * The larger the value, the longer the labeling solution will take to calculate.
        */
       void setMaximumNumberOfPolygonCandidates( int candidates );
-
-      /**
-       * Returns the number of candidates to generate for point features.
-       */
-      int maximumNumberOfPointCandidates() const;
 
       /**
        * Returns the number of candidates to generate for line features.
@@ -228,11 +216,6 @@ namespace pal
       std::unordered_map< QgsAbstractLabelProvider *, std::unique_ptr< Layer > > mLayers;
 
       QMutex mMutex;
-
-      /**
-       * Maximum number of candidates for a point.
-       */
-      int mMaxPointCandidates = 16;
 
       /**
        * Maximum number of candidates for a line.

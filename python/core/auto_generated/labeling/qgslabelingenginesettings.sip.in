@@ -75,12 +75,20 @@ Sets whether a particual flag is enabled
 
     void numCandidatePositions( int &candPoint, int &candLine, int &candPolygon ) const;
 %Docstring
-Gets number of candidate positions that will be generated for each label feature (default to 8)
+Gets number of candidate positions that will be generated for each label feature.
+
+.. deprecated:: QGIS 3.12
+   the ``candPoint`` argument is ignored.
 %End
+
     void setNumCandidatePositions( int candPoint, int candLine, int candPolygon );
 %Docstring
-Sets number of candidate positions that will be generated for each label feature
+Sets the number of candidate positions that will be generated for each label feature.
+
+.. deprecated:: QGIS 3.12
+   the ``candPoint`` argument is ignored.
 %End
+
 
  void setSearchMethod( Search s ) /Deprecated/;
 %Docstring

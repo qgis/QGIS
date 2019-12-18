@@ -343,7 +343,7 @@ std::unique_ptr<LabelPosition> FeaturePart::createCandidatePointOnSurface( Point
 
 std::size_t FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, double y, std::vector< std::unique_ptr< LabelPosition > > &lPos, double angle )
 {
-  QVector< QgsPalLayerSettings::PredefinedPointPosition > positions = mLF->predefinedPositionOrder();
+  const QVector< QgsPalLayerSettings::PredefinedPointPosition > positions = mLF->predefinedPositionOrder();
   double labelWidth = getLabelWidth( angle );
   double labelHeight = getLabelHeight( angle );
   double distanceToLabel = getLabelDistance();
@@ -354,10 +354,9 @@ std::size_t FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, 
 
   double cost = 0.0001;
   int i = 0;
-  const auto constPositions = positions;
 
   const std::size_t maxNumberCandidates = mLF->layer()->maximumPointLabelCandidates();
-  for ( QgsPalLayerSettings::PredefinedPointPosition position : constPositions )
+  for ( QgsPalLayerSettings::PredefinedPointPosition position : positions )
   {
     double alpha = 0.0;
     double deltaX = 0;
@@ -462,7 +461,7 @@ std::size_t FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, 
       lPos.emplace_back( qgis::make_unique< LabelPosition >( i, labelX, labelY, labelWidth, labelHeight, angle, cost, this, false, quadrant ) );
       //TODO - tweak
       cost += 0.001;
-      if ( lPos.size() >= maxNumberCandidates )
+      if ( maxNumberCandidates > 0 && lPos.size() >= maxNumberCandidates )
         break;
     }
     ++i;
@@ -477,7 +476,9 @@ std::size_t FeaturePart::createCandidatesAroundPoint( double x, double y, std::v
   double labelHeight = getLabelHeight( angle );
   double distanceToLabel = getLabelDistance();
 
-  const std::size_t maxNumberCandidates = mLF->layer()->maximumPointLabelCandidates();
+  std::size_t maxNumberCandidates = mLF->layer()->maximumPointLabelCandidates();
+  if ( maxNumberCandidates == 0 )
+    maxNumberCandidates = 16;
 
   int icost = 0;
   int inc = 2;

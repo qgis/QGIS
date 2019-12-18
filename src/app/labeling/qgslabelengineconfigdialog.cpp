@@ -58,7 +58,6 @@ QgsLabelEngineConfigWidget::QgsLabelEngineConfigWidget( QWidget *parent )
   // candidate numbers
   int candPoint, candLine, candPolygon;
   engineSettings.numCandidatePositions( candPoint, candLine, candPolygon );
-  spinCandPoint->setValue( candPoint );
   spinCandLine->setValue( candLine );
   spinCandPolygon->setValue( candPolygon );
 
@@ -109,7 +108,7 @@ void QgsLabelEngineConfigWidget::apply()
   QgsLabelingEngineSettings engineSettings;
 
   // save
-  engineSettings.setNumCandidatePositions( spinCandPoint->value(), spinCandLine->value(), spinCandPolygon->value() );
+  engineSettings.setNumCandidatePositions( 0, spinCandLine->value(), spinCandPolygon->value() );
 
   engineSettings.setFlag( QgsLabelingEngineSettings::DrawCandidates, chkShowCandidates->isChecked() );
   engineSettings.setFlag( QgsLabelingEngineSettings::UseAllLabels, chkShowAllLabels->isChecked() );
@@ -129,7 +128,6 @@ void QgsLabelEngineConfigWidget::apply()
 void QgsLabelEngineConfigWidget::setDefaults()
 {
   pal::Pal p;
-  spinCandPoint->setValue( p.maximumNumberOfPointCandidates() );
   spinCandLine->setValue( p.maximumNumberOfLineCandidates() );
   spinCandPolygon->setValue( p.maximumNumberOfPolygonCandidates() );
   chkShowCandidates->setChecked( false );

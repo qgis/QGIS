@@ -189,7 +189,7 @@ void CostCalculator::setCandidateCostFromPolygon( LabelPosition *lp, PalRtree<Fe
 std::size_t CostCalculator::finalizeCandidatesCosts( Feats *feat, std::size_t max_p, PalRtree<FeaturePart> *obstacles, double bbx[4], double bby[4] )
 {
   // If candidates list is smaller than expected
-  if ( max_p > feat->candidates.size() )
+  if ( max_p == 0 || max_p > feat->candidates.size() )
     max_p = feat->candidates.size();
   //
   // sort candidates list, best label to worst

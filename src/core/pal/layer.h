@@ -109,15 +109,15 @@ namespace pal
         // to avoid the engine processing endlessly...
         const int size = mHashtable.size();
         if ( size > 1000 )
-          return std::min( pal->mMaxPointCandidates, 4 );
+          return 4;
         else if ( size > 500 )
-          return std::min( pal->mMaxPointCandidates, 6 );
+          return 6;
         else if ( size > 200 )
-          return std::min( pal->mMaxPointCandidates, 8 );
+          return 8;
         else if ( size > 100 )
-          return std::min( pal->mMaxPointCandidates, 12 );
+          return 12;
         else
-          return pal->mMaxPointCandidates;
+          return 0;
       }
 
       /**
