@@ -1479,8 +1479,13 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
   double labelWidth = getLabelWidth();
   double labelHeight = getLabelHeight();
 
+  const std::size_t maxPolygonCandidates = mLF->layer()->maximumPolygonLabelCandidates();
+  const std::size_t targetPolygonCandidates = maxPolygonCandidates > 0 ? std::min( maxPolygonCandidates,  static_cast< std::size_t>( std::ceil( mLF->layer()->mPal->maximumPolygonCandidatesPerMapUnitSquared() * area() ) ) )
+      : 0;
+
   QLinkedList<PointSet *> shapes_toProcess;
   QLinkedList<PointSet *> shapes_final;
+  const double totalArea = area();
 
   mapShape->parent = nullptr;
 
@@ -1499,8 +1504,7 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
     double dlx, dly; // delta from label center and bottom-left corner
     double alpha = 0.0; // rotation for the label
     double px, py;
-    double dx;
-    double dy;
+
     double beta;
     double diago = std::sqrt( labelWidth * labelWidth / 4.0 + labelHeight * labelHeight / 4 );
     double rx, ry;
@@ -1520,10 +1524,8 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
     if ( pal->isCanceled() )
       return 0;
 
-    //dx = dy = min( yrm, xrm ) / 2;
-    dx = labelWidth / 2.0;
-    dy = labelHeight / 2.0;
-
+    double densityX = 1.0 / std::sqrt( mLF->layer()->mPal->maximumPolygonCandidatesPerMapUnitSquared() );
+    double densityY = densityX;
     int numTry = 0;
 
     //fit in polygon only mode slows down calculation a lot, so if it's enabled
@@ -1536,6 +1538,26 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
     {
       for ( CHullBox &box : boxes )
       {
+        // there is two possibilities here:
+        // 1. no maximum candidates for polygon setting is in effect (i.e. maxPolygonCandidates == 0). In that case,
+        // we base our dx/dy on the current maximumPolygonCandidatesPerMapUnitSquared value. That should give us the desired
+        // density of candidates straight up. Easy!
+        // 2. a maximum candidate setting IS in effect. In that case, we want to generate a good initial estimate for dx/dy
+        // which gives us a good spatial coverage of the polygon while roughly matching the desired maximum number of candidates.
+        // If dx/dy is too small, then too many candidates will be generated, which is both slow AND results in poor coverage of the
+        // polygon (after culling candidates to the max number, only those clustered around the polygon's pole of inaccessibility
+        // will remain).
+        double dx = densityX;
+        double dy = densityY;
+        if ( numTry == 0 && maxPolygonCandidates > 0 )
+        {
+          // scale maxPolygonCandidates for just this convex hull
+          const double boxArea = box.width * box.length;
+          double maxThisBox = targetPolygonCandidates * boxArea / totalArea;
+          dx = std::max( dx, std::sqrt( boxArea / maxThisBox ) * 0.8 );
+          dy = dx;
+        }
+
         if ( pal->isCanceled() )
           return numberCandidatesGenerated;
 
@@ -1618,10 +1640,8 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
         dlx = std::cos( beta ) * diago;
         dly = std::sin( beta ) * diago;
 
-        double px0, py0;
-
-        px0 = box.width / 2.0;
-        py0 = box.length / 2.0;
+        double px0 = box.width / 2.0;
+        double py0 = box.length / 2.0;
 
         px0 -= std::ceil( px0 / dx ) * dx;
         py0 -= std::ceil( py0 / dy ) * dy;
@@ -1640,28 +1660,46 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
             rx += box.x[0];
             ry += box.y[0];
 
-            bool candidateAcceptable = ( mLF->permissibleZonePrepared()
-                                         ? GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), rx - dlx, ry - dly, labelWidth, labelHeight, alpha )
-                                         : mapShape->containsPoint( rx, ry ) );
-            if ( candidateAcceptable )
+            if ( mLF->permissibleZonePrepared() )
             {
-              // cost is set to minimal value, evaluated later
-              lPos.emplace_back( qgis::make_unique< LabelPosition >( id++, rx - dlx, ry - dly, labelWidth, labelHeight, alpha, 0.0001, this ) ); // Polygon
-              numberCandidatesGenerated++;
+              if ( GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), rx - dlx, ry - dly, labelWidth, labelHeight, alpha ) )
+              {
+                // cost is set to minimal value, evaluated later
+                lPos.emplace_back( qgis::make_unique< LabelPosition >( id++, rx - dlx, ry - dly, labelWidth, labelHeight, alpha, 0.0001, this ) );
+                numberCandidatesGenerated++;
+              }
+            }
+            else
+            {
+              // TODO - this should be an intersection test, not just a contains test of the candidate centroid
+              // because in some cases we would want to allow candidates which mostly overlap the polygon even though
+              // their centroid doesn't overlap (e.g. a "U" shaped polygon)
+              // but the bugs noted in CostCalculator currently prevent this
+              if ( mapShape->containsPoint( rx, ry ) )
+              {
+                std::unique_ptr< LabelPosition > potentialCandidate = qgis::make_unique< LabelPosition >( id++, rx - dlx, ry - dly, labelWidth, labelHeight, alpha, 0.0001, this );
+                // cost is set to minimal value, evaluated later
+                lPos.emplace_back( std::move( potentialCandidate ) );
+                numberCandidatesGenerated++;
+              }
             }
           }
         }
       } // forall box
 
       nbp = numberCandidatesGenerated;
-      if ( nbp == 0 )
+      if ( maxPolygonCandidates > 0 && nbp < targetPolygonCandidates )
       {
-        dx /= 2;
-        dy /= 2;
+        densityX /= 2;
+        densityY /= 2;
         numTry++;
       }
+      else
+      {
+        break;
+      }
     }
-    while ( nbp == 0 && numTry < maxTry );
+    while ( numTry < maxTry );
 
     nbp = numberCandidatesGenerated;
   }
