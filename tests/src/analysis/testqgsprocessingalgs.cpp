@@ -1008,7 +1008,7 @@ void TestQgsProcessingAlgs::rasterLogicOp()
 
   QgsRectangle extent = QgsRectangle( 0, 0, nRows, nCols );
   QgsRectangle badExtent = QgsRectangle( -100, -100, 90, 90 );
-  QgsCoordinateReferenceSystem crs( 3857 );
+  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:3857" ) );
   double tform[] =
   {
     extent.xMinimum(), extent.width() / nCols, 0.0,

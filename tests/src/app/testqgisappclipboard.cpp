@@ -167,7 +167,7 @@ void TestQgisAppClipboard::copyToText()
 
   // test CRS is transformed correctly for GeoJSON
 
-  QgsCoordinateReferenceSystem crs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
+  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:3111" ) );
   feats = QgsFeatureStore();
   feats.setCrs( crs );
   feat.setGeometry( QgsGeometry( new QgsPoint( 2502577, 2403869 ) ) );
