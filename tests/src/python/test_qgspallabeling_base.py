@@ -195,10 +195,8 @@ class TestQgsPalLabeling(unittest.TestCase):
         :rtype: QgsMapSettings
         """
         ms = QgsMapSettings()
-        crs = QgsCoordinateReferenceSystem()
-        """:type: QgsCoordinateReferenceSystem"""
         # default for labeling test data: WGS 84 / UTM zone 13N
-        crs.createFromSrid(32613)
+        crs = QgsCoordinateReferenceSystem('epsg:32613')
         ms.setBackgroundColor(QColor(152, 219, 249))
         ms.setOutputSize(QSize(420, 280))
         ms.setOutputDpi(72)

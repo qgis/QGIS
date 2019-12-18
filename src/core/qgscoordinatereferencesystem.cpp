@@ -249,7 +249,7 @@ bool QgsCoordinateReferenceSystem::createFromId( const long id, CrsType type )
       result = createFromSrsId( id );
       break;
     case PostgisCrsId:
-      result = createFromSrid( id );
+      result = createFromPostgisSrid( id );
       break;
     case EpsgCrsId:
       result = createFromOgcWmsCrs( QStringLiteral( "EPSG:%1" ).arg( id ) );
@@ -289,7 +289,7 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString &definition )
     else if ( authName == QLatin1String( "postgis" ) )
     {
       const long id = match.captured( 2 ).toLong();
-      result = createFromId( id, PostgisCrsId );
+      result = createFromPostgisSrid( id );
     }
     else if ( authName == QLatin1String( "esri" ) || authName == QLatin1String( "osgeo" ) || authName == QLatin1String( "ignf" ) || authName == QLatin1String( "zangi" ) || authName == QLatin1String( "iau2000" ) )
     {
@@ -495,6 +495,11 @@ void QgsCoordinateReferenceSystem::validate()
 }
 
 bool QgsCoordinateReferenceSystem::createFromSrid( const long id )
+{
+  return createFromPostgisSrid( id );
+}
+
+bool QgsCoordinateReferenceSystem::createFromPostgisSrid( const long id )
 {
   QgsReadWriteLocker locker( sSrIdCacheLock, QgsReadWriteLocker::Read );
   if ( !sDisableSrIdCache )
@@ -3292,7 +3297,7 @@ QStringList QgsCoordinateReferenceSystem::recentProjections()
       if ( ! crs.isValid() )
       {
         // Couldn't create from EPSG, try the Proj4 string instead
-        if ( i >= projectionsProj4.size() || !crs.createFromProj4( projectionsProj4.at( i ) ) )
+        if ( i >= projectionsProj4.size() || !crs.createFromProj( projectionsProj4.at( i ) ) )
         {
           // No? Skip this entry
           continue;
