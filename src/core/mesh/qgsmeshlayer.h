@@ -255,7 +255,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
       *
       * \param index dataset index specifying group and dataset to extract value from
       * \param point point to query in map coordinates
-      * \returns all 3d stacked values that belongs to face defined by given point. Returns invalid block
+      * \returns all 3d stacked values that belong to face defined by given point. Returns invalid block
       * for point outside the mesh layer or in case triangular mesh was not
       * previously used for rendering or for datasets that do not have type DataOnVolumes
       *
