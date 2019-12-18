@@ -304,7 +304,7 @@ void QgsMetadataWidget::crsChanged()
 {
   if ( ( mCrs.isValid() ) && ( mLayer ) )
   {
-    lblCurrentCrs->setText( tr( "CRS: %1 - %2" ).arg( mCrs.authid(), mCrs.description() ) );
+    lblCurrentCrs->setText( tr( "CRS: %1" ).arg( mCrs.userFriendlyIdentifier() ) );
     spatialExtentSelector->setEnabled( true );
     spatialExtentSelector->setOutputCrs( mCrs );
 
