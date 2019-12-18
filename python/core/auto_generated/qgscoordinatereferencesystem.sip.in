@@ -267,8 +267,6 @@ Creates a CRS from a given EPSG ID.
 %Docstring
 Creates a CRS from a proj style formatted string.
 
-:param proj: proj format string
-
 :return: matching CRS, or an invalid CRS if string could not be matched
 
 .. seealso:: :py:func:`createFromProj`
