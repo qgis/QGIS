@@ -429,17 +429,16 @@ void TestQgsCoordinateReferenceSystem::fromProj4EPSG20936()
 {
 #if PROJ_VERSION_MAJOR>=6
   QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromProj( QStringLiteral( "+proj=utm +zone=36 +south +a=6378249.145 +b=6356514.966398753 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" ) );
+
+  // For consistency with GDAL, we treat BoundCRS defined from a proj string as equivalent to their underlying CRS (ie. in this case EPSG:20936)
+
   QVERIFY( crs.isValid() );
-  QCOMPARE( crs.toWkt(), QStringLiteral( R"""(PROJCS["unknown",GEOGCS["unknown",DATUM["unknown",SPHEROID["unknown",6378249.145,293.466307699995],TOWGS84[-143,-90,-294,0,0,0,0]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",33],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",10000000],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]])""" ) );
-  QCOMPARE( crs.toProj(), QStringLiteral( "+proj=utm +zone=36 +south +a=6378249.145 +b=6356514.966398753 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" ) );
-
-  // should ideally be EPSG:20936, but see https://github.com/OSGeo/PROJ/issues/1805
-  // so instead we get a BoundCRS of EPSG:20936 created from the proj string, which must be a user CRS (not EPSG:20936 itself!)
-#if 0
   QCOMPARE( crs.authid(), QStringLiteral( "EPSG:20936" ) );
-#endif
+  // must NOT be a BoundCRS!
+  QCOMPARE( crs.toWkt(), QStringLiteral( R"""(PROJCS["Arc 1950 / UTM zone 36S",GEOGCS["Arc 1950",DATUM["Arc_1950",SPHEROID["Clarke 1880 (Arc)",6378249.145,293.4663077,AUTHORITY["EPSG","7013"]],AUTHORITY["EPSG","6209"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4209"]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",33],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",10000000],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH],AUTHORITY["EPSG","20936"]])""" ) );
+  QCOMPARE( crs.toProj(), QStringLiteral( "+proj=utm +zone=36 +south +a=6378249.145 +rf=293.4663077 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" ) );
 
-  QCOMPARE( crs.ellipsoidAcronym(), QStringLiteral( "PARAMETER:6378249.14499999955296516:6356514.96639875322580338" ) );
+  QCOMPARE( crs.ellipsoidAcronym(), QStringLiteral( "EPSG:7013" ) );
 #endif
 }
 
