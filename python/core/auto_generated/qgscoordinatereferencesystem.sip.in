@@ -216,9 +216,7 @@ Constructor a CRS object using a PostGIS SRID, an EPSG code or an internal QGIS 
 :param type: One of the types described in CrsType
 
 .. deprecated::
-   We encourage you to use EPSG codes or WKT to describe CRSes in your code
-wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile,
-and Proj strings are a lossy format.
+   We encourage you to use EPSG codes or WKT to describe CRSes in your code wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile, and Proj strings are a lossy format.
 %End
 
     QgsCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &srs );
@@ -329,9 +327,7 @@ Sets this CRS by lookup of the given ID in the CRS database.
 :return: ``True`` on success else ``False``
 
 .. deprecated::
-   We encourage you to use EPSG code or WKT to describe CRSes in your code
-wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile,
-and Proj strings are a lossy format.
+   We encourage you to use EPSG code or WKT to describe CRSes in your code wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile, and Proj strings are a lossy format.
 %End
 
 
@@ -362,9 +358,7 @@ Sets this CRS by lookup of the given PostGIS SRID in the CRS database.
 :return: ``True`` on success else ``False``
 
 .. deprecated::
-   Use alternative methods for SRS construction instead -- this
-method was specifically created for use by the postgres provider alone,
-and using it elsewhere will lead to subtle bugs.
+   Use alternative methods for SRS construction instead -- this method was specifically created for use by the postgres provider alone, and using it elsewhere will lead to subtle bugs.
 %End
 
     bool createFromWkt( const QString &wkt );
