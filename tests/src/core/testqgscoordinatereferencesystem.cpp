@@ -200,7 +200,7 @@ void TestQgsCoordinateReferenceSystem::copyCtor()
   QCOMPARE( myCrs2.authid(), QStringLiteral( "EPSG:4326" ) );
 
   //test implicit sharing detachment - modify original
-  myCrs.createFromId( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
+  myCrs.createFromString( QStringLiteral( "EPSG:3111" ) ) );
   QVERIFY( myCrs.isValid() );
   QCOMPARE( myCrs.authid(), QStringLiteral( "EPSG:3111" ) );
   QVERIFY( myCrs2.isValid() );
@@ -217,7 +217,7 @@ void TestQgsCoordinateReferenceSystem::assignmentCtor()
   QCOMPARE( myCrs2.authid(), QStringLiteral( "EPSG:4326" ) );
 
   //test implicit sharing detachment - modify original
-  myCrs.createFromId( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
+  myCrs.createFromString( QStringLiteral( "EPSG:3111" ) );
   QVERIFY( myCrs.isValid() );
   QCOMPARE( myCrs.authid(), QStringLiteral( "EPSG:3111" ) );
   QVERIFY( myCrs2.isValid() );
@@ -1092,8 +1092,7 @@ void TestQgsCoordinateReferenceSystem::isGeographic()
   QgsCoordinateReferenceSystem geographic( QStringLiteral( "EPSG:4326" ) );
   QVERIFY( geographic.isGeographic() );
 
-  QgsCoordinateReferenceSystem nonGeographic;
-  nonGeographic.createFromId( 3857, QgsCoordinateReferenceSystem::EpsgCrsId );
+  QgsCoordinateReferenceSystem nonGeographic( QStringLiteral( "EPSG:3857" ) );
   QVERIFY( !nonGeographic.isGeographic() );
 }
 void TestQgsCoordinateReferenceSystem::mapUnits()

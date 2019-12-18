@@ -202,7 +202,7 @@ If no prefix is specified, WKT definition is assumed.
 %End
 
 
-    explicit QgsCoordinateReferenceSystem( long id, CrsType type = PostgisCrsId );
+ explicit QgsCoordinateReferenceSystem( long id, CrsType type = PostgisCrsId ) /Deprecated/;
 %Docstring
 Constructor a CRS object using a PostGIS SRID, an EPSG code or an internal QGIS CRS ID.
 
@@ -214,6 +214,11 @@ Constructor a CRS object using a PostGIS SRID, an EPSG code or an internal QGIS 
 
 :param id: The ID valid for the chosen CRS ID type
 :param type: One of the types described in CrsType
+
+.. deprecated::
+   We encourage you to use EPSG codes or WKT to describe CRSes in your code
+wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile,
+and Proj strings are a lossy format.
 %End
 
     QgsCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &srs );
@@ -317,17 +322,16 @@ Creates a CRS from a specified QGIS SRS ID.
 
 
 
-    bool createFromId( long id, CrsType type = PostgisCrsId );
+ bool createFromId( long id, CrsType type = PostgisCrsId ) /Deprecated/;
 %Docstring
 Sets this CRS by lookup of the given ID in the CRS database.
 
 :return: ``True`` on success else ``False``
 
-.. note::
-
+.. deprecated::
    We encourage you to use EPSG code or WKT to describe CRSes in your code
-   wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile,
-   and Proj strings are a lossy format.
+wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile,
+and Proj strings are a lossy format.
 %End
 
 
@@ -401,6 +405,11 @@ user's local CRS database from home directory is used.
    this method uses an internal cache. Call invalidateCache() to clear the cache.
 
 .. seealso:: :py:func:`fromSrsId`
+
+.. warning::
+
+   This method is highly discouraged, and CRS objects should instead be constructed
+   using auth:id codes or WKT strings
 %End
 
  bool createFromProj4( const QString &projString ) /Deprecated/;
@@ -517,7 +526,7 @@ For more details on supported formats see OGRSpatialReference.SetFromUserInput()
    /    // TODO QGIS3: rename to createFromStringOGR so it is clear it's similar to createFromString, just different backend
 %End
 
-    static void setupESRIWktFix();
+ static void setupESRIWktFix() /Deprecated/;
 %Docstring
 Make sure that ESRI WKT import is done properly.
 This is required for proper shapefile CRS import when using gdal>= 1.9.
@@ -532,6 +541,9 @@ This is required for proper shapefile CRS import when using gdal>= 1.9.
    This function sets CPL config option GDAL_FIX_ESRI_WKT to a proper value,
    unless it has been set by the user through the commandline or an environment variable.
    For more details refer to OGRSpatialReference.morphFromESRI() .
+
+.. deprecated::
+   Not used on builds based on Proj version 6 or later
 %End
 
     bool isValid() const;

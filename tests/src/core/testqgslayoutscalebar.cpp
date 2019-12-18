@@ -71,8 +71,7 @@ void TestQgsLayoutScaleBar::initTestCase()
   QLocale::setDefault( QLocale::c() );
 
   //reproject to WGS84
-  QgsCoordinateReferenceSystem destCRS;
-  destCRS.createFromId( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
+  QgsCoordinateReferenceSystem destCRS( QStringLiteral( "EPSG:4326" ) );
   QgsProject::instance()->setCrs( destCRS );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
 

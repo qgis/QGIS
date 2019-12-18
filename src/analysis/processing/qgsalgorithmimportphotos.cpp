@@ -270,7 +270,7 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
   outFields.append( QgsField( QStringLiteral( "timestamp" ), QVariant::DateTime ) );
   QString outputDest;
   std::unique_ptr< QgsFeatureSink > outputSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, outputDest, outFields,
-      QgsWkbTypes::PointZ, QgsCoordinateReferenceSystem( 4326 ) ) );
+      QgsWkbTypes::PointZ, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) ) );
 
   QgsFields invalidFields;
   invalidFields.append( QgsField( QStringLiteral( "photo" ), QVariant::String ) );

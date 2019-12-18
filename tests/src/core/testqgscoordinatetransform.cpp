@@ -68,10 +68,8 @@ void TestQgsCoordinateTransform::copy()
   QgsCoordinateTransform uninitializedCopy( uninitialized );
   QVERIFY( !uninitializedCopy.isValid() );
 
-  QgsCoordinateReferenceSystem source;
-  source.createFromId( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
-  QgsCoordinateReferenceSystem destination;
-  destination.createFromId( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
+  QgsCoordinateReferenceSystem source( QStringLiteral( "EPSG:3111" ) );
+  QgsCoordinateReferenceSystem destination( QStringLiteral( "EPSG:4326" ) );
 
   QgsCoordinateTransform original( source, destination, QgsProject::instance() );
   QVERIFY( original.isValid() );
@@ -82,8 +80,7 @@ void TestQgsCoordinateTransform::copy()
   QCOMPARE( copy.destinationCrs().authid(), original.destinationCrs().authid() );
 
   // force detachement of copy
-  QgsCoordinateReferenceSystem newDest;
-  newDest.createFromId( 3857, QgsCoordinateReferenceSystem::EpsgCrsId );
+  QgsCoordinateReferenceSystem newDest( QStringLiteral( "EPSG:3857" ) );
   copy.setDestinationCrs( newDest );
   QVERIFY( copy.isValid() );
   QCOMPARE( copy.destinationCrs().authid(), QString( "EPSG:3857" ) );
@@ -97,10 +94,8 @@ void TestQgsCoordinateTransform::assignment()
   uninitializedCopy = uninitialized;
   QVERIFY( !uninitializedCopy.isValid() );
 
-  QgsCoordinateReferenceSystem source;
-  source.createFromId( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
-  QgsCoordinateReferenceSystem destination;
-  destination.createFromId( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
+  QgsCoordinateReferenceSystem source( QStringLiteral( "EPSG:3111" ) );
+  QgsCoordinateReferenceSystem destination( QStringLiteral( "EPSG:4326" ) );
 
   QgsCoordinateTransform original( source, destination, QgsProject::instance() );
   QVERIFY( original.isValid() );
@@ -112,12 +107,11 @@ void TestQgsCoordinateTransform::assignment()
   QCOMPARE( copy.destinationCrs().authid(), original.destinationCrs().authid() );
 
   // force detachement of copy
-  QgsCoordinateReferenceSystem newDest;
-  newDest.createFromId( 3857, QgsCoordinateReferenceSystem::EpsgCrsId );
+  QgsCoordinateReferenceSystem newDest( QStringLiteral( "EPSG:3857" ) );
   copy.setDestinationCrs( newDest );
   QVERIFY( copy.isValid() );
-  QCOMPARE( copy.destinationCrs().authid(), QString( "EPSG:3857" ) );
-  QCOMPARE( original.destinationCrs().authid(), QString( "EPSG:4326" ) );
+  QCOMPARE( copy.destinationCrs().authid(), QStringLiteral( "EPSG:3857" ) );
+  QCOMPARE( original.destinationCrs().authid(), QStringLiteral( "EPSG:4326" ) );
 
   // test assigning back to invalid
   copy = uninitialized;
@@ -190,7 +184,7 @@ void TestQgsCoordinateTransform::contextShared()
   //test implicit sharing of QgsCoordinateTransformContext
 #if PROJ_VERSION_MAJOR >= 6
   QgsCoordinateTransformContext original;
-  original.addCoordinateOperation( QgsCoordinateReferenceSystem( 3111 ), QgsCoordinateReferenceSystem( 3113 ), QStringLiteral( "proj" ) );
+  original.addCoordinateOperation( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3113" ) ), QStringLiteral( "proj" ) );
 
   QgsCoordinateTransformContext copy( original );
   QMap< QPair< QString, QString >, QString > expected;
@@ -199,7 +193,7 @@ void TestQgsCoordinateTransform::contextShared()
   QCOMPARE( copy.coordinateOperations(), expected );
 
   // trigger detach
-  copy.addCoordinateOperation( QgsCoordinateReferenceSystem( 3111 ), QgsCoordinateReferenceSystem( 3113 ), QStringLiteral( "proj2" ) );
+  copy.addCoordinateOperation( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3113" ) ), QStringLiteral( "proj2" ) );
   QCOMPARE( original.coordinateOperations(), expected );
 
   expected.insert( qMakePair( QStringLiteral( "EPSG:3111" ), QStringLiteral( "EPSG:3113" ) ), QStringLiteral( "proj2" ) );
@@ -212,14 +206,14 @@ void TestQgsCoordinateTransform::contextShared()
   QCOMPARE( original.coordinateOperations(), expected );
   QCOMPARE( copy2.coordinateOperations(), expected );
 
-  copy2.addCoordinateOperation( QgsCoordinateReferenceSystem( 3111 ), QgsCoordinateReferenceSystem( 3113 ), QStringLiteral( "proj2" ) );
+  copy2.addCoordinateOperation( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3113" ) ), QStringLiteral( "proj2" ) );
   QCOMPARE( original.coordinateOperations(), expected );
   expected.insert( qMakePair( QStringLiteral( "EPSG:3111" ), QStringLiteral( "EPSG:3113" ) ), QStringLiteral( "proj2" ) );
   QCOMPARE( copy2.coordinateOperations(), expected );
 #else
   QgsCoordinateTransformContext original;
   Q_NOWARN_DEPRECATED_PUSH
-  original.addSourceDestinationDatumTransform( QgsCoordinateReferenceSystem( 3111 ), QgsCoordinateReferenceSystem( 3113 ), 1, 2 );
+  original.addSourceDestinationDatumTransform( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3113" ) ), 1, 2 );
 
   QgsCoordinateTransformContext copy( original );
   QMap< QPair< QString, QString >, QgsDatumTransform::TransformPair > expected;
@@ -228,7 +222,7 @@ void TestQgsCoordinateTransform::contextShared()
   QCOMPARE( copy.sourceDestinationDatumTransforms(), expected );
 
   // trigger detach
-  copy.addSourceDestinationDatumTransform( QgsCoordinateReferenceSystem( 3111 ), QgsCoordinateReferenceSystem( 3113 ), 3, 4 );
+  copy.addSourceDestinationDatumTransform( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3113" ) ), 3, 4 );
   QCOMPARE( original.sourceDestinationDatumTransforms(), expected );
 
   expected.insert( qMakePair( QStringLiteral( "EPSG:3111" ), QStringLiteral( "EPSG:3113" ) ), QgsDatumTransform::TransformPair( 3, 4 ) );
@@ -241,7 +235,7 @@ void TestQgsCoordinateTransform::contextShared()
   QCOMPARE( original.sourceDestinationDatumTransforms(), expected );
   QCOMPARE( copy2.sourceDestinationDatumTransforms(), expected );
 
-  copy2.addSourceDestinationDatumTransform( QgsCoordinateReferenceSystem( 3111 ), QgsCoordinateReferenceSystem( 3113 ), 3, 4 );
+  copy2.addSourceDestinationDatumTransform( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3113" ) ), 3, 4 );
   QCOMPARE( original.sourceDestinationDatumTransforms(), expected );
   expected.insert( qMakePair( QStringLiteral( "EPSG:3111" ), QStringLiteral( "EPSG:3113" ) ), QgsDatumTransform::TransformPair( 3, 4 ) );
   QCOMPARE( copy2.sourceDestinationDatumTransforms(), expected );
@@ -419,7 +413,7 @@ void TestQgsCoordinateTransform::transformBoundingBox()
   QGSCOMPARENEAR( resultRect.yMaximum(), expectedRect.yMaximum(), 0.001 );
 
   // test transforming a bounding box, resulting in an invalid transform - exception must be thrown
-  tr = QgsCoordinateTransform( QgsCoordinateReferenceSystem( 4326 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ), QgsProject::instance() );
+  tr = QgsCoordinateTransform( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ), QgsProject::instance() );
   QgsRectangle rect( -99999999999, 99999999999, -99999999998, 99999999998 );
   bool errorObtained = false;
   try

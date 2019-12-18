@@ -77,7 +77,7 @@ void TestQgsDistanceArea::basic()
   QCOMPARE( resultA, 5.0 );
 
   // Now, on an ellipsoid. Always less?
-  daA.setSourceCrs( QgsCoordinateReferenceSystem::fromSrsId( 3006 ), QgsProject::instance()->transformContext() );
+  daA.setSourceCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32442" ) ), QgsProject::instance()->transformContext() );
   daA.setEllipsoid( QStringLiteral( "WGS84" ) );
   resultA = daA.measureLine( p1, p2 );
   QVERIFY( resultA < 5.0 );
@@ -228,7 +228,7 @@ void TestQgsDistanceArea::regression13601()
   //test regression #13601
   QgsDistanceArea calc;
   calc.setEllipsoid( QStringLiteral( "NONE" ) );
-  calc.setSourceCrs( QgsCoordinateReferenceSystem::fromSrsId( 1108L ), QgsProject::instance()->transformContext() );
+  calc.setSourceCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3148" ) ), QgsProject::instance()->transformContext() );
   QgsGeometry geom( QgsGeometryFactory::geomFromWkt( QStringLiteral( "Polygon ((252000 1389000, 265000 1389000, 265000 1385000, 252000 1385000, 252000 1389000))" ) ).release() );
   QGSCOMPARENEAR( calc.measureArea( geom ), 52000000, 0.0001 );
 }
@@ -269,7 +269,7 @@ void TestQgsDistanceArea::measureUnits()
   //test regression #13610
   QgsDistanceArea calc;
   calc.setEllipsoid( QStringLiteral( "NONE" ) );
-  calc.setSourceCrs( QgsCoordinateReferenceSystem::fromSrsId( 254L ), QgsProject::instance()->transformContext() );
+  calc.setSourceCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:2272" ) ), QgsProject::instance()->transformContext() );
   QgsUnitTypes::DistanceUnit units;
   QgsPointXY p1( 1341683.9854275715, 408256.9562717728 );
   QgsPointXY p2( 1349321.7807031618, 408256.9562717728 );
@@ -291,10 +291,8 @@ void TestQgsDistanceArea::measureUnits()
 void TestQgsDistanceArea::measureAreaAndUnits()
 {
   QgsDistanceArea da;
-  da.setSourceCrs( QgsCoordinateReferenceSystem::fromSrsId( 3452 ), QgsProject::instance()->transformContext() );
+  da.setSourceCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsProject::instance()->transformContext() );
   da.setEllipsoid( QStringLiteral( "NONE" ) );
-  QgsCoordinateReferenceSystem daCRS;
-  daCRS.createFromSrsId( da.sourceCrs().srsid() );
   QgsPolylineXY ring;
   ring << QgsPointXY( 0, 0 )
        << QgsPointXY( 1, 0 )
@@ -343,7 +341,7 @@ void TestQgsDistanceArea::measureAreaAndUnits()
   poly << ring;
   polygon = QgsGeometry::fromPolygonXY( poly );
 
-  da.setSourceCrs( QgsCoordinateReferenceSystem::fromSrsId( 27469 ), QgsProject::instance()->transformContext() );
+  da.setSourceCrs( QgsCoordinateReferenceSystem( QStringLiteral( "ESRI:102635" ) ), QgsProject::instance()->transformContext() );
   da.setEllipsoid( QStringLiteral( "NONE" ) );
   // measurement should be in square feet
   area = da.measureArea( polygon );
@@ -373,7 +371,7 @@ void TestQgsDistanceArea::measureAreaAndUnits()
 void TestQgsDistanceArea::emptyPolygon()
 {
   QgsDistanceArea da;
-  da.setSourceCrs( QgsCoordinateReferenceSystem::fromSrsId( 3452 ), QgsProject::instance()->transformContext() );
+  da.setSourceCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsProject::instance()->transformContext() );
   da.setEllipsoid( QStringLiteral( "WGS84" ) );
 
   //test that measuring an empty polygon doesn't crash
@@ -385,7 +383,7 @@ void TestQgsDistanceArea::regression14675()
   //test regression #14675
   QgsDistanceArea calc;
   calc.setEllipsoid( QStringLiteral( "GRS80" ) );
-  calc.setSourceCrs( QgsCoordinateReferenceSystem::fromSrsId( 145L ), QgsProject::instance()->transformContext() );
+  calc.setSourceCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:2154" ) ), QgsProject::instance()->transformContext() );
   QgsGeometry geom( QgsGeometryFactory::geomFromWkt( QStringLiteral( "Polygon ((917593.5791854317067191 6833700.00807378999888897, 917596.43389983859378844 6833700.67099479306489229, 917599.53056440979707986 6833700.78673478215932846, 917593.5791854317067191 6833700.00807378999888897))" ) ).release() );
   //lots of tolerance here - the formulas get quite unstable with small areas due to division by very small floats
   QGSCOMPARENEAR( calc.measureArea( geom ), 0.833010, 0.03 );

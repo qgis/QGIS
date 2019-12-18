@@ -122,7 +122,7 @@ namespace QgsWfs
     QgsCoordinateReferenceSystem requestCrs;
     int requestPrecision = 6;
     if ( !onlyOneLayer )
-      requestCrs = QgsCoordinateReferenceSystem( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
+      requestCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
 
     QList<getFeatureQuery>::iterator qIt = aRequest.queries.begin();
     for ( ; qIt != aRequest.queries.end(); ++qIt )
@@ -1091,7 +1091,7 @@ namespace QgsWfs
           QgsGeometry exportGeom = QgsGeometry::fromRect( *rect );
           QgsCoordinateTransform transform;
           transform.setSourceCrs( crs );
-          transform.setDestinationCrs( QgsCoordinateReferenceSystem( 4326, QgsCoordinateReferenceSystem::EpsgCrsId ) );
+          transform.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
           try
           {
             if ( exportGeom.transform( transform ) == 0 )

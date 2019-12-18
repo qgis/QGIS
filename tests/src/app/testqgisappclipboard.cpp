@@ -399,8 +399,7 @@ void TestQgisAppClipboard::clipboardLogic()
   feats.addFeature( feat );
   feats.addFeature( feat2 );
   feats.setFields( fields );
-  QgsCoordinateReferenceSystem crs;
-  crs.createFromSrsId( 3452 );
+  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:4326" ) );
   feats.setCrs( crs );
   mQgisApp->clipboard()->replaceWithCopyOf( feats );
 
