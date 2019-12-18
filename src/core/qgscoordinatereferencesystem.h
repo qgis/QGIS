@@ -297,7 +297,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /**
      * Creates a CRS from a proj style formatted string.
-     * \param proj proj format string
      * \returns matching CRS, or an invalid CRS if string could not be matched
      * \see createFromProj()
      * \deprecated Use fromProj() instead.
