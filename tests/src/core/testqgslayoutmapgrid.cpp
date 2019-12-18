@@ -1203,10 +1203,8 @@ void TestQgsLayoutMapGrid::annotationFormats()
   l.addLayoutItem( map );
 
   //create grids in geographic and projected coordinates
-  QgsCoordinateReferenceSystem projectedCrs;
-  projectedCrs.createFromSrid( 3994 );
-  QgsCoordinateReferenceSystem geographicCrs;
-  geographicCrs.createFromSrid( 4326 );
+  QgsCoordinateReferenceSystem projectedCrs( QStringLiteral( "EPSG:3994" ) );
+  QgsCoordinateReferenceSystem geographicCrs( QStringLiteral( "EPSG:4326" ) );
 
   QgsLayoutItemMapGrid gridGeographic( QStringLiteral( "geographic grid" ), map );
   gridGeographic.setCrs( geographicCrs );

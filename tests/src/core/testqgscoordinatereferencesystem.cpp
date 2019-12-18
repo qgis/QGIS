@@ -337,7 +337,7 @@ void TestQgsCoordinateReferenceSystem::ogcWmsCrsCache()
 void TestQgsCoordinateReferenceSystem::createFromSrid()
 {
   QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrid( GEOSRID );
+  myCrs.createFromPostgisSrid( GEOSRID );
   debugPrint( myCrs );
   QVERIFY( myCrs.isValid() );
   QCOMPARE( myCrs.srsid(), GEOCRS_ID );
@@ -353,24 +353,24 @@ void TestQgsCoordinateReferenceSystem::sridCache()
 {
   // test that crs can be retrieved correctly from cache
   QgsCoordinateReferenceSystem crs;
-  crs.createFromSrid( 3112 );
+  crs.createFromPostgisSrid( 3112 );
   QVERIFY( crs.isValid() );
   QCOMPARE( crs.authid(), QStringLiteral( "EPSG:3112" ) );
   QVERIFY( QgsCoordinateReferenceSystem::srIdCache().contains( 3112 ) );
   // a second time, so crs is fetched from cache
   QgsCoordinateReferenceSystem crs2;
-  crs2.createFromSrid( 3112 );
+  crs2.createFromPostgisSrid( 3112 );
   QVERIFY( crs2.isValid() );
   QCOMPARE( crs2.authid(), QStringLiteral( "EPSG:3112" ) );
 
   // invalid
   QgsCoordinateReferenceSystem crs3;
-  crs3.createFromSrid( -3141 );
+  crs3.createFromPostgisSrid( -3141 );
   QVERIFY( !crs3.isValid() );
   QVERIFY( QgsCoordinateReferenceSystem::srIdCache().contains( -3141 ) );
   // a second time, so invalid crs is fetched from cache
   QgsCoordinateReferenceSystem crs4;
-  crs4.createFromSrid( -3141 );
+  crs4.createFromPostgisSrid( -3141 );
   QVERIFY( !crs4.isValid() );
 
   QgsCoordinateReferenceSystem::invalidateCache();
@@ -611,8 +611,7 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
 void TestQgsCoordinateReferenceSystem::createFromSrId()
 {
   QgsCoordinateReferenceSystem myCrs;
-  QVERIFY( myCrs.createFromSrid( GEOSRID ) );
-  debugPrint( myCrs );
+  QVERIFY( myCrs.createFromPostgisSrid( GEOSRID ) );
   QVERIFY( myCrs.isValid() );
   QCOMPARE( myCrs.srsid(), GEOCRS_ID );
 }
@@ -778,10 +777,10 @@ void TestQgsCoordinateReferenceSystem::fromStringCache()
 
 void TestQgsCoordinateReferenceSystem::isValid()
 {
-  QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrid( GEOSRID );
-  QVERIFY( myCrs.isValid() );
-  debugPrint( myCrs );
+  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:4326" ) );
+  QVERIFY( crs.isValid() );
+  crs = QgsCoordinateReferenceSystem( QStringLiteral( "xxxxxxxxxxxxxxx" ) );
+  QVERIFY( !crs.isValid() );
 }
 
 void TestQgsCoordinateReferenceSystem::validate()
@@ -815,20 +814,14 @@ void TestQgsCoordinateReferenceSystem::validate()
 
 void TestQgsCoordinateReferenceSystem::equality()
 {
-  QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrid( GEOSRID );
-  QgsCoordinateReferenceSystem myCrs2;
-  myCrs2.createFromSrsId( GEOCRS_ID );
-  debugPrint( myCrs );
+  QgsCoordinateReferenceSystem myCrs( QStringLiteral( "EPSG:4326" ) );
+  QgsCoordinateReferenceSystem myCrs2( QStringLiteral( "EPSG:4326" ) );
   QVERIFY( myCrs == myCrs2 );
 }
 void TestQgsCoordinateReferenceSystem::noEquality()
 {
-  QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrid( GEOSRID );
-  QgsCoordinateReferenceSystem myCrs2;
-  myCrs2.createFromSrsId( 4327 );
-  debugPrint( myCrs );
+  QgsCoordinateReferenceSystem myCrs( QStringLiteral( "EPSG:4326" ) );
+  QgsCoordinateReferenceSystem myCrs2( QStringLiteral( "EPSG:4327" ) );
   QVERIFY( myCrs != myCrs2 );
 }
 
@@ -840,8 +833,7 @@ void TestQgsCoordinateReferenceSystem::equalityInvalid()
 }
 void TestQgsCoordinateReferenceSystem::readWriteXml()
 {
-  QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrid( GEOSRID );
+  QgsCoordinateReferenceSystem myCrs( QStringLiteral( "EPSG:4326" ) );
   QVERIFY( myCrs.isValid() );
   QDomDocument document( QStringLiteral( "test" ) );
   QDomElement node = document.createElement( QStringLiteral( "crs" ) );
@@ -1056,15 +1048,13 @@ void TestQgsCoordinateReferenceSystem::customSrsValidation()
 void TestQgsCoordinateReferenceSystem::postgisSrid()
 {
   QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrid( GEOSRID );
+  myCrs.createFromPostgisSrid( GEOSRID );
   QVERIFY( myCrs.postgisSrid() == GEOSRID );
   debugPrint( myCrs );
 }
 void TestQgsCoordinateReferenceSystem::ellipsoidAcronym()
 {
-  QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrid( GEOSRID );
-  debugPrint( myCrs );
+  QgsCoordinateReferenceSystem myCrs( QStringLiteral( "EPSG:4326" ) );
 #if PROJ_VERSION_MAJOR>=6
   QCOMPARE( myCrs.ellipsoidAcronym(), QStringLiteral( "EPSG:7030" ) );
 #else
@@ -1081,35 +1071,26 @@ void TestQgsCoordinateReferenceSystem::ellipsoidAcronym()
 }
 void TestQgsCoordinateReferenceSystem::toWkt()
 {
-  QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrid( GEOSRID );
+  QgsCoordinateReferenceSystem myCrs( QStringLiteral( "EPSG:4326" ) );
   QString myWkt = myCrs.toWkt();
-  debugPrint( myCrs );
-  //Note: this is not the same as geoWkt() as OGR strips off the TOWGS clause...
   QString myStrippedWkt( "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID"
                          "[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],"
                          "AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY"
                          "[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY"
                          "[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]]" );
-  qDebug() << "wkt:      " << myWkt;
-  qDebug() << "stripped: " << myStrippedWkt;
-  QVERIFY( myWkt == myStrippedWkt );
+  QCOMPARE( myWkt, myStrippedWkt );
 }
 void TestQgsCoordinateReferenceSystem::toProj()
 {
-  QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrid( GEOSRID );
-  debugPrint( myCrs );
+  QgsCoordinateReferenceSystem myCrs( QStringLiteral( "EPSG:4326" ) );
   //first proj string produced by gdal 1.8-1.9
   //second by gdal 1.7
   QCOMPARE( myCrs.toProj(), geoProj4() );
 }
 void TestQgsCoordinateReferenceSystem::isGeographic()
 {
-  QgsCoordinateReferenceSystem geographic;
-  geographic.createFromSrid( GEOSRID );
+  QgsCoordinateReferenceSystem geographic( QStringLiteral( "EPSG:4326" ) );
   QVERIFY( geographic.isGeographic() );
-  debugPrint( geographic );
 
   QgsCoordinateReferenceSystem nonGeographic;
   nonGeographic.createFromId( 3857, QgsCoordinateReferenceSystem::EpsgCrsId );
@@ -1211,8 +1192,7 @@ void TestQgsCoordinateReferenceSystem::validSrsIds()
 
 void TestQgsCoordinateReferenceSystem::asVariant()
 {
-  QgsCoordinateReferenceSystem original;
-  original.createFromSrid( 3112 );
+  QgsCoordinateReferenceSystem original( QStringLiteral( "EPSG:3112" ) );
 
   //convert to and from a QVariant
   QVariant var = QVariant::fromValue( original );
