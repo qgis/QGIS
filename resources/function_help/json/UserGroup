@@ -1,5 +1,5 @@
 {
   "name": "UserGroup",
   "type": "group",
-  "description": "This group contains custom functions and snippets stored in the user profile."
+  "description": "This group contains expressions stored in the user profile."
 }
