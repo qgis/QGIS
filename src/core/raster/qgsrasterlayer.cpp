@@ -323,8 +323,7 @@ QString QgsRasterLayer::htmlMetadata() const
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "CRS" ) + QStringLiteral( "</td><td>" );
   if ( crs().isValid() )
   {
-    myMetadata += crs().authid() % QStringLiteral( " - " ) %
-                  crs().description() + QStringLiteral( " - " );
+    myMetadata += crs().userFriendlyIdentifier() % QStringLiteral( " - " );
     if ( crs().isGeographic() )
       myMetadata += tr( "Geographic" );
     else
