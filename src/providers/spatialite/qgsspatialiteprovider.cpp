@@ -3611,28 +3611,14 @@ QgsCoordinateReferenceSystem QgsSpatiaLiteProvider::crs() const
   if ( !srs.isValid() )
   {
     srs = QgsCoordinateReferenceSystem::fromProj( mProj4text );
-    //TODO: createFromProj4 used to save to the user database any new CRS
-    // this behavior was changed in order to separate creation and saving.
-    // Not sure if it necessary to save it here, should be checked by someone
-    // familiar with the code (should also give a more descriptive name to the generated CRS)
-    if ( srs.srsid() == 0 )
-    {
-      QString myName = QStringLiteral( " * %1 (%2)" )
-                       .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
-                             srs.toProj() );
-      srs.saveAsUserCrs( myName );
-    }
-
   }
   return srs;
 }
-
 
 bool QgsSpatiaLiteProvider::isValid() const
 {
   return mValid;
 }
-
 
 QString QgsSpatiaLiteProvider::name() const
 {

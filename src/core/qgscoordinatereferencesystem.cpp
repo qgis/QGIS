@@ -317,13 +317,6 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString &definition )
       if ( match.captured( 1 ).compare( QLatin1String( "proj4" ), Qt::CaseInsensitive ) == 0 )
       {
         result = createFromProj( match.captured( 2 ) );
-        if ( srsid() == 0 )
-        {
-          QString myName = QStringLiteral( " * %1 (%2)" )
-                           .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
-                                 toProj() );
-          saveAsUserCrs( myName );
-        }
       }
       else
       {
@@ -769,13 +762,6 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
   else
   {
     setWktString( wkt );
-    if ( d->mSrsId == 0 )
-    {
-      QString myName = QStringLiteral( " * %1 (%2...)" )
-                       .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
-                             wkt.left( 50 ) );
-      saveAsUserCrs( myName );
-    }
   }
 
   locker.changeMode( QgsReadWriteLocker::Write );
@@ -1952,14 +1938,6 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
 
       //make sure the map units have been set
       setMapUnits();
-    }
-
-    if ( isValid() && d->mSrsId == 0 )
-    {
-      QString myName = QStringLiteral( " * %1 (%2)" )
-                       .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
-                             toProj() );
-      saveAsUserCrs( myName );
     }
   }
   else
