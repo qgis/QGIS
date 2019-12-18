@@ -1173,7 +1173,7 @@ void QgsGeorefPluginGui::addRaster( const QString &file )
   {
     QString authid = mLayer->crs().authid();
     mEPSG->setText( authid );
-    mEPSG->setToolTip( mLayer->crs().toProj4() );
+    mEPSG->setToolTip( mLayer->crs().toProj() );
   }
   else
   {
@@ -1905,7 +1905,7 @@ QString QgsGeorefPluginGui::generateGDALwarpCommand( const QString &resampling, 
   }
   else
   {
-    gdalCommand << QStringLiteral( "-t_srs \"%1\"" ).arg( mProjection.toProj4().simplified() );
+    gdalCommand << QStringLiteral( "-t_srs \"%1\"" ).arg( mProjection.toProj().simplified() );
   }
 
   gdalCommand << QStringLiteral( "\"%1\"" ).arg( mTranslatedRasterFileName ) << QStringLiteral( "\"%1\"" ).arg( mModifiedRasterFileName );

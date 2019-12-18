@@ -436,4 +436,4 @@ class GdalUtils:
             return crs.authid()
 
         # fallback to proj4 string, stripping out newline characters
-        return crs.toProj4().replace('\n', ' ').replace('\r', ' ')
+        return crs.toProj().replace('\n', ' ').replace('\r', ' ')

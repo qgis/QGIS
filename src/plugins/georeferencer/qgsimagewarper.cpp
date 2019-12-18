@@ -97,7 +97,7 @@ bool QgsImageWarper::createDestinationDataset( const QString &outputName, GDALDa
   if ( crs.isValid() )
   {
     OGRSpatialReference oTargetSRS;
-    oTargetSRS.importFromProj4( crs.toProj4().toLatin1().data() );
+    oTargetSRS.importFromProj4( crs.toProj().toLatin1().data() );
 
     char *wkt = nullptr;
     OGRErr err = oTargetSRS.exportToWkt( &wkt );

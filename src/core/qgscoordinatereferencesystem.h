@@ -77,12 +77,12 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  *    typically using meters or feet as units. Common projected coordinate systems are Universal
  *    Transverse Mercator or Albers Equal Area.
  *
- * Internally QGIS uses proj4 library for all the math behind coordinate transformations, so in case
+ * Internally QGIS uses proj library for all the math behind coordinate transformations, so in case
  * of any troubles with projections it is best to examine the PROJ representation within the object,
  * as that is the representation that will be ultimately used.
  *
  * Methods that allow inspection of CRS instances include isValid(), authid(), description(),
- * toWkt(), toProj4(), mapUnits() and others.
+ * toWkt(), toProj(), mapUnits() and others.
  * Creation of CRS instances is further described in \ref crs_construct_and_copy section below.
  * Transformations between coordinate reference systems are done using QgsCoordinateTransform class.
  *
@@ -92,7 +92,7 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  * crs = QgsCoordinateReferenceSystem("EPSG:27700")
  * if crs.isValid():
  *     print("CRS Description: {}".format(crs.description()))
- *     print("CRS PROJ text: {}".format(crs.toProj4()))
+ *     print("CRS PROJ text: {}".format(crs.toProj()))
  * else:
  *     print("Invalid CRS!")
  * \endcode
@@ -126,11 +126,11 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  *
  * 2. **PROJ string.** This is a string consisting of a series of key/value pairs in the following
  *    format: `+param1=value1 +param2=value2 [...]`. This is the format natively used by the
- *    underlying proj4 library. For example, the definition of WGS84 looks like this:
+ *    underlying proj library. For example, the definition of WGS84 looks like this:
  *
  *        +proj=longlat +datum=WGS84 +no_defs
  *
- *    See toProj4() and createFromProj4() methods.
+ *    See toProj() and createFromProj() methods.
  *
  * 3. **Well-known text (WKT).** Defined by Open Geospatial Consortium (OGC), this is another common
  *    format to define CRS. For WGS84 the OGC WKT definition is the following:
@@ -212,6 +212,13 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
       EpsgCrsId       //!< EPSG code
     };
 
+    //! Projection definition formats
+    enum Format
+    {
+      FormatWkt = 0, //!< WKT format (always recommended over proj string format)
+      FormatProj, //!< Proj string format
+    };
+
     //! Constructs an invalid CRS object
     QgsCoordinateReferenceSystem();
 
@@ -226,7 +233,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * - "EPSG:<code>" - handled with createFromOgcWms()
      * - "POSTGIS:<srid>" - handled with createFromSrid()
      * - "INTERNAL:<srsid>" - handled with createFromSrsId()
-     * - "PROJ4:<proj4>" - handled with createFromProj4()
+     * - "PROJ4:<proj4>" - handled with createFromProj()
      * - "WKT:<wkt>" - handled with createFromWkt()
      *
      * If no prefix is specified, WKT definition is assumed.
@@ -239,8 +246,9 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /**
      * Constructor a CRS object using a PostGIS SRID, an EPSG code or an internal QGIS CRS ID.
-     * \note We encourage you to use EPSG code, WKT or Proj4 to describe CRS's in your code
-     * wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile.
+     * \note We encourage you to use EPSG code or WKT to describe CRSes in your code
+     * wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile,
+     * and proj strings are a lossy format.
      * \param id The ID valid for the chosen CRS ID type
      * \param type One of the types described in CrsType
      */
@@ -287,13 +295,22 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     Q_INVOKABLE static QgsCoordinateReferenceSystem fromEpsgId( long epsg );
 
     /**
-     * Creates a CRS from a proj4 style formatted string.
-     * \param proj4 proj4 format string
+     * Creates a CRS from a proj style formatted string.
+     * \param proj proj format string
      * \returns matching CRS, or an invalid CRS if string could not be matched
-     * \see createFromProj4()
-     * \since QGIS 3.0
+     * \see createFromProj()
+     * \deprecated Use fromProj() instead.
     */
-    static QgsCoordinateReferenceSystem fromProj4( const QString &proj4 );
+    Q_DECL_DEPRECATED static QgsCoordinateReferenceSystem fromProj4( const QString &proj4 ) SIP_DEPRECATED;
+
+    /**
+     * Creates a CRS from a proj style formatted string.
+     * \param proj proj format string
+     * \returns matching CRS, or an invalid CRS if string could not be matched
+     * \see createFromProj()
+     * \since QGIS 3.10.3
+    */
+    static QgsCoordinateReferenceSystem fromProj( const QString &proj );
 
     /**
      * Creates a CRS from a WKT spatial ref sys definition string.
@@ -321,8 +338,9 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /**
      * Sets this CRS by lookup of the given ID in the CRS database.
      * \returns TRUE on success else FALSE
-     * \note We encourage you to use EPSG code, WKT or Proj4 to describe CRS's in your code
-     * wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile.
+     * \note We encourage you to use EPSG code or WKT to describe CRSes in your code
+     * wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile,
+     * and Proj strings are a lossy format.
      */
     bool createFromId( long id, CrsType type = PostgisCrsId );
 
@@ -354,8 +372,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * If EPSG code of the WKT definition can be determined, it is extracted
      * and createFromOgcWmsCrs() is used to initialize the object.
-     * Otherwise the WKT will be converted to a proj4 string and createFromProj4()
-     * set up the object.
+     *
      * \param wkt The WKT for the desired spatial reference system.
      * \returns TRUE on success else FALSE
      * \note Some members may be left blank if no match can be found in CRS database.
@@ -380,26 +397,55 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Sets this CRS by passing it a PROJ style formatted string.
      *
      * The string will be parsed and the projection and ellipsoid
-     * members set and the remainder of the proj4 string will be stored
+     * members set and the remainder of the Proj string will be stored
      * in the parameters member. The reason for this is so that we
      * can easily present the user with 'natural language' representation
      * of the projection and ellipsoid by looking them up in the srs.db sqlite
      * database.
      *
-     * We try to match the proj4 string to internal QGIS CRS ID using the following logic:
+     * We try to match the Proj string to internal QGIS CRS ID using the following logic:
      *
-     * - perform a whole text search on proj4 string (if not null)
-     * - if not match is found, split proj4 into individual parameters and try to find
-     *   a match where the parameters are in a different order
-     * - if none of the above match, use findMatchingProj()
+     * - ask the Proj library to identify the CRS to a standard registered CRS (e.g. EPSG codes)
+     * - if no match is found, compare the CRS to all user CRSes, using the Proj library
+     * to determine CRS equivalence (hence making the match parameter order insensitive)
+     * - if none of the above match, use the Proj string to create the CRS and do not
+     * associated an internal CRS ID to it.
      *
-     * \param projString A proj4 format string
+     * \param projString A Proj format string
      * \returns TRUE on success else FALSE
      * \note Some members may be left blank if no match can be found in CRS database.
      * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
-     * \see fromProj4()
+     * \see fromProj()
+     * \deprecated Use createFromProj() instead
      */
-    bool createFromProj4( const QString &projString );
+    Q_DECL_DEPRECATED bool createFromProj4( const QString &projString ) SIP_DEPRECATED;
+
+    /**
+     * Sets this CRS by passing it a PROJ style formatted string.
+     *
+     * The string will be parsed and the projection and ellipsoid
+     * members set and the remainder of the Proj string will be stored
+     * in the parameters member. The reason for this is so that we
+     * can easily present the user with 'natural language' representation
+     * of the projection and ellipsoid by looking them up in the srs.db sqlite
+     * database.
+     *
+     * We try to match the Proj string to internal QGIS CRS ID using the following logic:
+     *
+     * - ask the Proj library to identify the CRS to a standard registered CRS (e.g. EPSG codes)
+     * - if no match is found, compare the CRS to all user CRSes, using the Proj library
+     * to determine CRS equivalence (hence making the match parameter order insensitive)
+     * - if none of the above match, use the Proj string to create the CRS and do not
+     * associated an internal CRS ID to it.
+     *
+     * \param projString A Proj format string
+     * \returns TRUE on success else FALSE
+     * \note Some members may be left blank if no match can be found in CRS database.
+     * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
+     * \see fromProj()
+     * \since QGIS 3.10.3
+     */
+    bool createFromProj( const QString &projString );
 
     /**
      * Set up this CRS from a string definition.
@@ -408,7 +454,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * - "EPSG:<code>" - handled with createFromOgcWms()
      * - "POSTGIS:<srid>" - handled with createFromSrid()
      * - "INTERNAL:<srsid>" - handled with createFromSrsId()
-     * - "PROJ4:<proj4>" - handled with createFromProj4()
+     * - "PROJ4:<proj4>" - handled with createFromProj()
      * - "WKT:<wkt>" - handled with createFromWkt()
      *
      * If no prefix is specified, WKT definition is assumed.
@@ -467,10 +513,11 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Walks the CRS databases (both system and user database) trying to match
      *  stored PROJ string to a database entry in order to fill in further
      *  pieces of information about CRS.
-     *  \note The ellipsoid and projection acronyms must be set as well as the proj4string!
+     *  \note The ellipsoid and projection acronyms must be set as well as the proj string!
      *  \returns long the SrsId of the matched CRS, zero if no match was found
+     * \deprecated Not used in Proj >= 6 based builds
      */
-    long findMatchingProj();
+    Q_DECL_DEPRECATED long findMatchingProj() SIP_DEPRECATED;
 
     /**
      * Overloaded == operator used to compare to CRS's.
@@ -557,7 +604,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /**
      * Returns the projection acronym for the projection used by the CRS.
-     * \returns the official proj4 acronym for the projection family
+     * \returns the official Proj acronym for the projection family
      * \note an empty string will be returned if the projectionAcronym is not available for the CRS
      * \see ellipsoidAcronym()
      */
@@ -565,7 +612,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /**
      * Returns the ellipsoid acronym for the ellipsoid used by the CRS.
-     * \returns the official proj4 acronym for the ellipoid
+     * \returns the official authority:code identifier for the ellipoid, or PARAMETER:MAJOR:MINOR for custom ellipsoids
      * \note an empty string will be returned if the ellipsoidAcronym is not available for the CRS
      * \see projectionAcronym()
      */
@@ -591,21 +638,37 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * If \a multiline is TRUE then a formatted multiline string will be returned, using the specified \a indentationWidth.
      * This is only used on builds based on Proj >= 6.
      *
-     * \see toProj4()
+     * \see toProj()
      */
     QString toWkt( WktVariant variant = WKT1_GDAL, bool multiline = false, int indentationWidth = 4 ) const;
 
     /**
-     * Returns a Proj4 string representation of this CRS.
+     * Returns a Proj string representation of this CRS.
      *
      * If proj and ellps keys are found in the parameters,
      * they will be stripped out and the projection and ellipsoid acronyms will be
      * overridden with these.
-     * \returns Proj4 format string that defines this CRS.
-     * \note an empty string will be returned if the CRS could not be represented by a Proj4 string
+     * \returns Proj format string that defines this CRS.
+     * \warning Not all CRS definitions can be represented by Proj strings. An empty
+     * string will be returned if the CRS could not be represented by a Proj string.
      * \see toWkt()
+     * \deprecated use toProj() instead.
      */
-    QString toProj4() const;
+    Q_DECL_DEPRECATED QString toProj4() const SIP_DEPRECATED;
+
+    /**
+     * Returns a Proj string representation of this CRS.
+     *
+     * If proj and ellps keys are found in the parameters,
+     * they will be stripped out and the projection and ellipsoid acronyms will be
+     * overridden with these.
+     * \returns Proj format string that defines this CRS.
+     * \warning Not all CRS definitions can be represented by Proj strings. An empty
+     * string will be returned if the CRS could not be represented by a Proj string.
+     * \see toWkt()
+     * \since QGIS 3.10.3
+     */
+    QString toProj() const;
 
     /**
      * Returns whether the CRS is a geographic CRS (using lat/lon coordinates)
@@ -659,10 +722,13 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * Returns the new CRS srsid(), or -1 if the CRS could not be saved.
      *
-     * If \a storeWkt is TRUE then the WKT representation of the CRS will be stored in the database.
-     * If it is FALSE, then only the lossy PROJ string representation of the CRS will be stored (not recommended).
+     * The \a nativeFormat argument specifies the format to use when saving the CRS
+     * definition. FormatWkt is recommended as it is a lossless format.
+     *
+     * \warning Not all CRS definitions can be represented as a Proj string, so
+     * take care when using the FormatProj option.
      */
-    long saveAsUserCrs( const QString &name, bool storeWkt = true );
+    long saveAsUserCrs( const QString &name, Format nativeFormat = FormatWkt );
 
     //! Returns auth id of related geographic CRS
     QString geographicCrsAuthId() const;
@@ -729,11 +795,11 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
   private:
 
     /**
-     * A static helper function to find out the proj4 string for a srsid
+     * A static helper function to find out the proj string for a srsid
      * \param srsId The srsid used for the lookup
-     * \returns QString The proj4 string
+     * \returns QString The proj string
      */
-    static QString proj4FromSrsId( int srsId );
+    static QString projFromSrsId( int srsId );
 
     /**
      * Set the QGIS SrsId
@@ -754,22 +820,16 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     void setDescription( const QString &description );
 
     /**
-     * Set the Proj Proj4String.
-     * \param proj4String Proj4 format specifies
+     * Set the Proj string.
+     * \param projString Proj format specifies
      * (excluding proj and ellips) that define this CRS.
-     * \note some content of the PROJ4 string may be stripped off by this
-     * method due to the parsing of the string by OSRNewSpatialReference .
-     * For example input:
-     * +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs
-     * Gets stored in the CRS as:
-     * +proj=longlat +datum=WGS84 +no_defs
      */
-    void setProj4String( const QString &proj4String );
+    void setProjString( const QString &projString );
 
     /**
      * Set the WKT string
      */
-    bool setWktString( const QString &wkt, bool allowProj4Fallback = true );
+    bool setWktString( const QString &wkt, bool allowProjFallback = true );
 
     /**
      * Set this Geographic? flag
@@ -779,7 +839,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /**
      * Set the EpsgCrsId identifier for this CRS
-     * \param epsg the ESPG identifier for this CRS (defaults to 0)
+     * \param epsg the EPSG identifier for this CRS (defaults to 0)
      */
     void setEpsg( long epsg );
 
@@ -791,13 +851,14 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /**
      * Set the projection acronym
-     * \param projectionAcronym the acronym (must be a valid proj4 projection acronym)
+     * \param projectionAcronym the acronym (must be a valid Proj projection acronym)
      */
     void setProjectionAcronym( const QString &projectionAcronym );
 
     /**
      * Set the ellipsoid acronym
-     * \param ellipsoidAcronym the acronym (must be a valid proj4 ellipsoid acronym)
+     * \param ellipsoidAcronym the acronym (must be a valid Proj ellipsoid acronym or
+     * authority:code identifier on Proj version 6+ builds)
      */
     void setEllipsoidAcronym( const QString &ellipsoidAcronym );
 
@@ -919,10 +980,10 @@ inline std::ostream &operator << ( std::ostream &os, const QgsCoordinateReferenc
     mySummary += QLatin1String( "Undefined" );
   }
 
-  mySummary += QLatin1String( "\n\t\tProj4String  : " );
-  if ( !r.toProj4().isNull() )
+  mySummary += QLatin1String( "\n\t\tProjString  : " );
+  if ( !r.toProj().isNull() )
   {
-    mySummary += r.toProj4();
+    mySummary += r.toProj();
   }
   else
   {
