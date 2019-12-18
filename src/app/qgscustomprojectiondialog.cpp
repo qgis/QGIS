@@ -79,13 +79,18 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
   }
 
   populateList();
-  if ( !mDefinitions.empty() )
+  if ( mDefinitions.empty() )
   {
-    whileBlocking( leName )->setText( mDefinitions[0].name );
-    whileBlocking( teParameters )->setPlainText( mDefinitions[0].wkt.isEmpty() ? mDefinitions[0].proj : mDefinitions[0].wkt );
-    mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( static_cast< int >( mDefinitions[0].wkt.isEmpty() ? QgsCoordinateReferenceSystem::FormatProj : QgsCoordinateReferenceSystem::FormatWkt ) ) );
-    leNameList->setCurrentItem( leNameList->topLevelItem( 0 ) );
+    // create an empty definition which corresponds to the initial state of the dialog
+    mDefinitions << Definition();
+    QTreeWidgetItem *newItem = new QTreeWidgetItem( leNameList, QStringList() );
+    newItem->setText( QgisCrsNameColumn, QString() );
+    newItem->setText( QgisCrsParametersColumn, QString() );
   }
+  whileBlocking( leName )->setText( mDefinitions[0].name );
+  whileBlocking( teParameters )->setPlainText( mDefinitions[0].wkt.isEmpty() ? mDefinitions[0].proj : mDefinitions[0].wkt );
+  mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( static_cast< int >( mDefinitions[0].wkt.isEmpty() ? QgsCoordinateReferenceSystem::FormatProj : QgsCoordinateReferenceSystem::FormatWkt ) ) );
+  leNameList->setCurrentItem( leNameList->topLevelItem( 0 ) );
 
   leNameList->hideColumn( QgisCrsIdColumn );
 
@@ -466,8 +471,16 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
         }
       }
 
-      QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
-                            tr( "Cannot save '%1' — the definition is identical to %2." ).arg( def.name, crs.authid() ) );
+      if ( def.wkt.isEmpty() )
+      {
+        QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
+                              tr( "Cannot save '%1' — this Proj string definition is identical to %2.\n\nTry changing the CRS definition to a WKT format instead." ).arg( def.name, crs.authid() ) );
+      }
+      else
+      {
+        QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
+                              tr( "Cannot save '%1' — the definition is identical to %2." ).arg( def.name, crs.authid() ) );
+      }
       return;
     }
   }
@@ -681,9 +694,25 @@ void QgsCustomProjectionDialog::formatChanged()
 
     case QgsCoordinateReferenceSystem::FormatWkt:
     {
+#if PROJ_VERSION_MAJOR>=6
+      {
+        PJ_CONTEXT *pjContext = QgsProjContext::get();
+        QString proj = teParameters->toPlainText();
+        proj.replace( QStringLiteral( "+type=crs" ), QString() );
+        proj += QStringLiteral( " +type=crs" );
+        QgsProjUtils::proj_pj_unique_ptr crs( proj_create( QgsProjContext::get(), proj.toLatin1().constData() ) );
+        if ( crs )
+        {
+          const QByteArray multiLineOption = QStringLiteral( "MULTILINE=NO" ).toLocal8Bit();
+          const char *const options[] = {multiLineOption.constData(), nullptr};
+          newFormatString = QString( proj_as_wkt( pjContext, crs.get(), PJ_WKT2_2018, options ) );
+        }
+      }
+#else
       crs.createFromProj( teParameters->toPlainText() );
       if ( crs.isValid() )
         newFormatString = crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018, false );
+#endif
       break;
     }
   }
