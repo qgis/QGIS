@@ -603,14 +603,30 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     QString authid() const;
 
     /**
-     * Returns the descriptive name of the CRS, e.g., "WGS 84" or "GDA 94 / Vicgrid94". In most
-     * cases this is the best method to use when showing a friendly identifier for the CRS to a
-     * user.
-     * \returns descriptive name of the CRS
+     * Returns the descriptive name of the CRS, e.g., "WGS 84" or "GDA 94 / Vicgrid94".
+
      * \note an empty string will be returned if the description is not available for the CRS
      * \see authid()
+     * \see userFriendlyIdentifier()
      */
     QString description() const;
+
+    /**
+     * Returns a user friendly identifier for the CRS.
+     *
+     * Depending on the format of the CRS, this may reflect the CRSes registered name, or for
+     * CRSes not saved in the database it may reflect the underlying WKT or Proj string definition
+     * of the CRS.
+     *
+     * In most cases this is the best method to use when showing a friendly identifier for the CRS to a
+     * user.
+     *
+     * If \a shortString is TRUE than an abbreviated identifier will be returned.
+     *
+     * \see description()
+     * \since QGIS 3.10.3
+     */
+    QString userFriendlyIdentifier( bool shortString = false ) const;
 
     /**
      * Returns the projection acronym for the projection used by the CRS.

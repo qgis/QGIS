@@ -739,7 +739,7 @@ void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
     {
       srs.createFromOgcWmsCrs( QgsSettings().value( QStringLiteral( "Projections/layerDefaultCrs" ), geoEpsgCrsAuthId() ).toString() );
       sAuthId = srs.authid();
-      visibleMessageBar()->pushMessage( tr( "CRS was undefined" ), tr( "defaulting to CRS %1 - %2" ).arg( sAuthId, srs.description() ), Qgis::Warning, messageTimeout() );
+      visibleMessageBar()->pushMessage( tr( "CRS was undefined" ), tr( "defaulting to CRS %1" ).arg( srs.userFriendlyIdentifier() ), Qgis::Warning, messageTimeout() );
       break;
     }
 
@@ -778,7 +778,7 @@ void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
       srs = QgsProject::instance()->crs();
       sAuthId = srs.authid();
       QgsDebugMsg( "Layer srs set from project: " + sAuthId );
-      visibleMessageBar()->pushMessage( tr( "CRS was undefined" ), tr( "defaulting to project CRS %1 - %2" ).arg( sAuthId, srs.description() ), Qgis::Warning, messageTimeout() );
+      visibleMessageBar()->pushMessage( tr( "CRS was undefined" ), tr( "defaulting to project CRS %1" ).arg( srs.userFriendlyIdentifier() ), Qgis::Warning, messageTimeout() );
       break;
     }
   }
@@ -12783,7 +12783,7 @@ void QgisApp::updateCrsStatusBar()
     mOnTheFlyProjectionStatusButton->setText( QgsProject::instance()->crs().authid() );
 
     mOnTheFlyProjectionStatusButton->setToolTip(
-      tr( "Current CRS: %1" ).arg( QgsProject::instance()->crs().description() ) );
+      tr( "Current CRS: %1" ).arg( QgsProject::instance()->crs().userFriendlyIdentifier() ) );
     mOnTheFlyProjectionStatusButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconProjectionEnabled.svg" ) ) );
   }
   else

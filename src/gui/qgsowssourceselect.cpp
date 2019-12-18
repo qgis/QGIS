@@ -600,8 +600,8 @@ QString QgsOWSSourceSelect::descriptionForAuthId( const QString &authId )
     return mCrsNames[ authId ];
 
   QgsCoordinateReferenceSystem qgisSrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( authId );
-  mCrsNames.insert( authId, qgisSrs.description() );
-  return qgisSrs.description();
+  mCrsNames.insert( authId, qgisSrs.userFriendlyIdentifier() );
+  return qgisSrs.userFriendlyIdentifier();
 }
 
 void QgsOWSSourceSelect::addDefaultServers()
