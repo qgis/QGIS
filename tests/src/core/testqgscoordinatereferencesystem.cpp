@@ -91,6 +91,7 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void noProj();
     void customProjString();
     void recentProjections();
+    void displayIdentifier();
 
   private:
     void debugPrint( QgsCoordinateReferenceSystem &crs );
@@ -1434,6 +1435,25 @@ void TestQgsCoordinateReferenceSystem::recentProjections()
   QCOMPARE( recent.at( 7 ).authid(), QStringLiteral( "EPSG:32542" ) );
   QCOMPARE( recent.at( 8 ).authid(), QStringLiteral( "EPSG:32541" ) );
   QCOMPARE( recent.at( 9 ).authid(), QStringLiteral( "EPSG:32540" ) );
+}
+
+void TestQgsCoordinateReferenceSystem::displayIdentifier()
+{
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem();
+  QCOMPARE( crs.userFriendlyIdentifier(), QString() );
+  crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+  QCOMPARE( crs.userFriendlyIdentifier(), QStringLiteral( "EPSG:4326 - WGS 84" ) );
+  crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) );
+  QCOMPARE( crs.userFriendlyIdentifier(), QStringLiteral( "EPSG:3111 - GDA94 / Vicgrid" ) );
+  crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+  QCOMPARE( crs.userFriendlyIdentifier( true ), QStringLiteral( "EPSG:4326" ) );
+
+  // non registered custom CRS
+  crs = QgsCoordinateReferenceSystem::fromProj( QStringLiteral( "+proj=sterea +lat_0=47.4860018439082 +lon_0=19.0491441390302 +k=1 +x_0=500000 +y_0=500000 +ellps=bessel +towgs84=595.75,121.09,515.50,8.2270,-1.5193,5.5971,-2.6729 +units=m +vunits=m +no_defs" ) );
+  QCOMPARE( crs.userFriendlyIdentifier(), QStringLiteral( "Unknown CRS: COMPD_CS[\"unknown\",PROJCS[\"unknown\",GEOGCS[\"unknow%1" ).arg( QString( QChar( 0x2026 ) ) ) );
+  QCOMPARE( crs.userFriendlyIdentifier( true ), QStringLiteral( "Unknown CRS" ) );
+  crs.saveAsUserCrs( QStringLiteral( "my test" ) );
+  QCOMPARE( crs.userFriendlyIdentifier(), QStringLiteral( "USER:100010 - my test" ) );
 }
 
 QGSTEST_MAIN( TestQgsCoordinateReferenceSystem )

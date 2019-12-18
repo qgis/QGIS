@@ -1177,10 +1177,12 @@ QString QgsCoordinateReferenceSystem::userFriendlyIdentifier( bool shortString )
   }
   else if ( !description().isEmpty() )
     return description();
+  else if ( shortString )
+    return QObject::tr( "Unknown CRS" );
   else if ( !toWkt().isEmpty() )
-    return toWkt().left( 30 ) + QChar( 0x2026 );
+    return QObject::tr( "Unknown CRS: %1" ).arg( toWkt().left( 50 ) + QString( QChar( 0x2026 ) ) );
   else if ( !toProj().isEmpty() )
-    return toProj().left( 30 ) + QChar( 0x2026 );
+    return QObject::tr( "Unknown CRS: %1" ).arg( toProj().left( 50 ) + QString( QChar( 0x2026 ) ) );
   else
     return QString();
 }

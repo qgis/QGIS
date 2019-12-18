@@ -273,7 +273,7 @@ void TestQgsMapToolReshape::reshapeWithBindingLine()
   QList<QgsMapLayer *> layers;
   layers.append( vl.get() );
 
-  QgsCoordinateReferenceSystem srs( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
+  QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:4326" ) );
   mQgisApp->mapCanvas()->setDestinationCrs( srs );
   mQgisApp->mapCanvas()->setLayers( layers );
   mQgisApp->mapCanvas()->setCurrentLayer( vl.get() );

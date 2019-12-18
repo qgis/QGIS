@@ -98,7 +98,7 @@ void TestQgsAttributeTable::testFieldCalculation()
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
   // set project CRS and ellipsoid
-  QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
+  QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3111" ) );
   QgsProject::instance()->setCrs( srs );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceMeters );
@@ -148,7 +148,7 @@ void TestQgsAttributeTable::testFieldCalculationArea()
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
   // set project CRS and ellipsoid
-  QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
+  QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3111" ) );
   QgsProject::instance()->setCrs( srs );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
   QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMeters );

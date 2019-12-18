@@ -153,6 +153,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
     bool crsIsShown( long srsid ) const;
 
     int firstRecentCrsIndex() const;
+    void updateTooltip();
 
   private slots:
 
