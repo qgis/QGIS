@@ -319,12 +319,10 @@ QString QgsProjectionSelectionWidget::crsOptionText( const QgsCoordinateReferenc
 
 void QgsProjectionSelectionWidget::addRecentCrs()
 {
-  QStringList recentProjections = QgsCoordinateReferenceSystem::recentProjections();
-  int i = 0;
-  const auto constRecentProjections = recentProjections;
-  for ( const QString &projection : constRecentProjections )
+  const QList< QgsCoordinateReferenceSystem> recentProjections = QgsCoordinateReferenceSystem::recentCoordinateReferenceSystems();
+  for ( const QgsCoordinateReferenceSystem &crs : recentProjections )
   {
-    long srsid = projection.toLong();
+    long srsid = crs.srsid();
 
     //check if already shown
     if ( crsIsShown( srsid ) )
@@ -332,17 +330,10 @@ void QgsProjectionSelectionWidget::addRecentCrs()
       continue;
     }
 
-    i++;
-    QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromSrsId( srsid );
     if ( crs.isValid() )
     {
       mCrsComboBox->addItem( tr( "%1 - %2" ).arg( crs.authid(), crs.description() ), QgsProjectionSelectionWidget::RecentCrs );
       mCrsComboBox->setItemData( mCrsComboBox->count() - 1, QVariant( ( long long )srsid ), Qt::UserRole + 1 );
-    }
-    if ( i >= 4 )
-    {
-      //limit to 4 recent projections to avoid clutter
-      break;
     }
   }
 }

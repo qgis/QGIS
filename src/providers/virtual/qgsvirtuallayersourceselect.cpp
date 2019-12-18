@@ -128,7 +128,9 @@ void QgsVirtualLayerSourceSelect::layerComboChanged( int idx )
   {
     mGeometryRadio->setChecked( true );
     mSrid = def.geometrySrid();
+    Q_NOWARN_DEPRECATED_PUSH
     QgsCoordinateReferenceSystem crs( def.geometrySrid() );
+    Q_NOWARN_DEPRECATED_POP
     mCRS->setText( crs.authid() );
     mGeometryType->setCurrentIndex( static_cast<long>( def.geometryWkbType() ) - 1 );
     mGeometryField->setText( def.geometryField() );
@@ -150,7 +152,9 @@ void QgsVirtualLayerSourceSelect::layerComboChanged( int idx )
 void QgsVirtualLayerSourceSelect::browseCRS()
 {
   QgsProjectionSelectionDialog crsSelector( this );
+  Q_NOWARN_DEPRECATED_PUSH
   QgsCoordinateReferenceSystem crs( mSrid );
+  Q_NOWARN_DEPRECATED_POP
   crsSelector.setCrs( crs );
   crsSelector.setMessage( QString() );
   if ( crsSelector.exec() )
