@@ -349,13 +349,18 @@ and refer to QGIS internal CRS IDs.
 %End
 
 
-    bool createFromSrid( long srid );
+ bool createFromSrid( long srid ) /Deprecated/;
 %Docstring
 Sets this CRS by lookup of the given PostGIS SRID in the CRS database.
 
 :param srid: The PostGIS SRID for the desired spatial reference system.
 
 :return: ``True`` on success else ``False``
+
+.. deprecated::
+   Use alternative methods for SRS construction instead -- this
+method was specifically created for use by the postgres provider alone,
+and using it elsewhere will lead to subtle bugs.
 %End
 
     bool createFromWkt( const QString &wkt );

@@ -197,14 +197,14 @@ void TestQgsCoordinateReferenceSystem::copyCtor()
   QgsCoordinateReferenceSystem myCrs2( myCrs );
   debugPrint( myCrs2 );
   QVERIFY( myCrs2.isValid() );
-  QCOMPARE( myCrs2.authid(), QString( "EPSG:4326" ) );
+  QCOMPARE( myCrs2.authid(), QStringLiteral( "EPSG:4326" ) );
 
   //test implicit sharing detachment - modify original
   myCrs.createFromId( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
   QVERIFY( myCrs.isValid() );
-  QCOMPARE( myCrs.authid(), QString( "EPSG:3111" ) );
+  QCOMPARE( myCrs.authid(), QStringLiteral( "EPSG:3111" ) );
   QVERIFY( myCrs2.isValid() );
-  QCOMPARE( myCrs2.authid(), QString( "EPSG:4326" ) );
+  QCOMPARE( myCrs2.authid(), QStringLiteral( "EPSG:4326" ) );
 }
 
 void TestQgsCoordinateReferenceSystem::assignmentCtor()
@@ -214,14 +214,14 @@ void TestQgsCoordinateReferenceSystem::assignmentCtor()
   QgsCoordinateReferenceSystem myCrs2 = myCrs;
   debugPrint( myCrs2 );
   QVERIFY( myCrs2.isValid() );
-  QCOMPARE( myCrs2.authid(), QString( "EPSG:4326" ) );
+  QCOMPARE( myCrs2.authid(), QStringLiteral( "EPSG:4326" ) );
 
   //test implicit sharing detachment - modify original
   myCrs.createFromId( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
   QVERIFY( myCrs.isValid() );
-  QCOMPARE( myCrs.authid(), QString( "EPSG:3111" ) );
+  QCOMPARE( myCrs.authid(), QStringLiteral( "EPSG:3111" ) );
   QVERIFY( myCrs2.isValid() );
-  QCOMPARE( myCrs2.authid(), QString( "EPSG:4326" ) );
+  QCOMPARE( myCrs2.authid(), QStringLiteral( "EPSG:4326" ) );
 }
 
 void TestQgsCoordinateReferenceSystem::createFromId()
@@ -267,15 +267,15 @@ void TestQgsCoordinateReferenceSystem::createFromOgcWmsCrs()
 
   myCrs.createFromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
   QVERIFY( myCrs.isValid() );
-  QCOMPARE( myCrs.authid(), QString( "EPSG:4326" ) );
+  QCOMPARE( myCrs.authid(), QStringLiteral( "EPSG:4326" ) );
 
   myCrs.createFromOgcWmsCrs( QStringLiteral( "http://www.opengis.net/def/crs/EPSG/0/4326" ) );
   QVERIFY( myCrs.isValid() );
-  QCOMPARE( myCrs.authid(), QString( "EPSG:4326" ) );
+  QCOMPARE( myCrs.authid(), QStringLiteral( "EPSG:4326" ) );
 
   myCrs.createFromOgcWmsCrs( QStringLiteral( "urn:ogc:def:crs:EPSG::4326" ) );
   QVERIFY( myCrs.isValid() );
-  QCOMPARE( myCrs.authid(), QString( "EPSG:4326" ) );
+  QCOMPARE( myCrs.authid(), QStringLiteral( "EPSG:4326" ) );
 
   myCrs.createFromOgcWmsCrs( QStringLiteral( "i am not a CRS" ) );
   QVERIFY( !myCrs.isValid() );
@@ -284,7 +284,7 @@ void TestQgsCoordinateReferenceSystem::createFromOgcWmsCrs()
   QVERIFY( myCrs.isValid() );
   QVERIFY( !myCrs.hasAxisInverted() );
 #if PROJ_VERSION_MAJOR>=6
-  QCOMPARE( myCrs.authid(), QString( "OGC:CRS84" ) );
+  QCOMPARE( myCrs.authid(), QStringLiteral( "OGC:CRS84" ) );
 #endif
 
 #if PROJ_VERSION_MAJOR>=6
@@ -298,7 +298,7 @@ void TestQgsCoordinateReferenceSystem::fromOgcWmsCrs()
 {
   QgsCoordinateReferenceSystem myCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
   QVERIFY( myCrs.isValid() );
-  QCOMPARE( myCrs.authid(), QString( "EPSG:4326" ) );
+  QCOMPARE( myCrs.authid(), QStringLiteral( "EPSG:4326" ) );
 
 #if PROJ_VERSION_MAJOR>=6
   QCOMPARE( myCrs.ellipsoidAcronym(), QStringLiteral( "EPSG:7030" ) );
@@ -315,29 +315,29 @@ void TestQgsCoordinateReferenceSystem::ogcWmsCrsCache()
   // test that crs can be retrieved correctly from cache
   QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
   QVERIFY( crs.isValid() );
-  QCOMPARE( crs.authid(), QString( "EPSG:4326" ) );
-  QVERIFY( QgsCoordinateReferenceSystem::sOgcCache.contains( "EPSG:4326" ) );
+  QCOMPARE( crs.authid(), QStringLiteral( "EPSG:4326" ) );
+  QVERIFY( QgsCoordinateReferenceSystem::sOgcCache.contains( QStringLiteral( "EPSG:4326" ) ) );
   // a second time, so crs is fetched from cache
   QgsCoordinateReferenceSystem crs2 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
   QVERIFY( crs2.isValid() );
-  QCOMPARE( crs2.authid(), QString( "EPSG:4326" ) );
+  QCOMPARE( crs2.authid(), QStringLiteral( "EPSG:4326" ) );
 
   // invalid
   QgsCoordinateReferenceSystem crs3 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "not a CRS" ) );
   QVERIFY( !crs3.isValid() );
-  QVERIFY( QgsCoordinateReferenceSystem::sOgcCache.contains( "not a CRS" ) );
+  QVERIFY( QgsCoordinateReferenceSystem::sOgcCache.contains( QStringLiteral( "not a CRS" ) ) );
   // a second time, so invalid crs is fetched from cache
   QgsCoordinateReferenceSystem crs4 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "not a CRS" ) );
   QVERIFY( !crs4.isValid() );
 
   QgsCoordinateReferenceSystem::invalidateCache();
-  QVERIFY( !QgsCoordinateReferenceSystem::sOgcCache.contains( "EPSG:4326" ) );
+  QVERIFY( !QgsCoordinateReferenceSystem::sOgcCache.contains(  QStringLiteral( "EPSG:4326" ) ) );
 }
 
 void TestQgsCoordinateReferenceSystem::createFromSrid()
 {
   QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrid( GEOSRID );
+  myCrs.createFromPostgisSrid( GEOSRID );
   debugPrint( myCrs );
   QVERIFY( myCrs.isValid() );
   QCOMPARE( myCrs.srsid(), GEOCRS_ID );
@@ -353,24 +353,24 @@ void TestQgsCoordinateReferenceSystem::sridCache()
 {
   // test that crs can be retrieved correctly from cache
   QgsCoordinateReferenceSystem crs;
-  crs.createFromSrid( 3112 );
+  crs.createFromPostgisSrid( 3112 );
   QVERIFY( crs.isValid() );
-  QCOMPARE( crs.authid(), QString( "EPSG:3112" ) );
+  QCOMPARE( crs.authid(), QStringLiteral( "EPSG:3112" ) );
   QVERIFY( QgsCoordinateReferenceSystem::sSrIdCache.contains( 3112 ) );
   // a second time, so crs is fetched from cache
   QgsCoordinateReferenceSystem crs2;
-  crs2.createFromSrid( 3112 );
+  crs2.createFromPostgisSrid( 3112 );
   QVERIFY( crs2.isValid() );
-  QCOMPARE( crs2.authid(), QString( "EPSG:3112" ) );
+  QCOMPARE( crs2.authid(), QStringLiteral( "EPSG:3112" ) );
 
   // invalid
   QgsCoordinateReferenceSystem crs3;
-  crs3.createFromSrid( -3141 );
+  crs3.createFromPostgisSrid( -3141 );
   QVERIFY( !crs3.isValid() );
   QVERIFY( QgsCoordinateReferenceSystem::sSrIdCache.contains( -3141 ) );
   // a second time, so invalid crs is fetched from cache
   QgsCoordinateReferenceSystem crs4;
-  crs4.createFromSrid( -3141 );
+  crs4.createFromPostgisSrid( -3141 );
   QVERIFY( !crs4.isValid() );
 
   QgsCoordinateReferenceSystem::invalidateCache();
@@ -487,7 +487,7 @@ void TestQgsCoordinateReferenceSystem::wktCache()
   QgsCoordinateReferenceSystem crs3;
   crs3.createFromWkt( QStringLiteral( "bad wkt" ) );
   QVERIFY( !crs3.isValid() );
-  QVERIFY( QgsCoordinateReferenceSystem::sWktCache.contains( "bad wkt" ) );
+  QVERIFY( QgsCoordinateReferenceSystem::sWktCache.contains( QStringLiteral( "bad wkt" ) ) );
   // a second time, so invalid crs is fetched from cache
   QgsCoordinateReferenceSystem crs4;
   crs4.createFromWkt( QStringLiteral( "bad wkt" ) );
@@ -611,8 +611,7 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
 void TestQgsCoordinateReferenceSystem::createFromSrId()
 {
   QgsCoordinateReferenceSystem myCrs;
-  QVERIFY( myCrs.createFromSrid( GEOSRID ) );
-  debugPrint( myCrs );
+  QVERIFY( myCrs.createFromPostgisSrid( GEOSRID ) );
   QVERIFY( myCrs.isValid() );
   QCOMPARE( myCrs.srsid(), GEOCRS_ID );
 }
@@ -710,7 +709,7 @@ void TestQgsCoordinateReferenceSystem::proj4Cache()
   QgsCoordinateReferenceSystem crs3;
   crs3.createFromProj( QStringLiteral( "bad proj4" ) );
   QVERIFY( !crs3.isValid() );
-  QVERIFY( QgsCoordinateReferenceSystem::sProj4Cache.contains( "bad proj4" ) );
+  QVERIFY( QgsCoordinateReferenceSystem::sProj4Cache.contains( QStringLiteral( "bad proj4" ) ) );
   // a second time, so invalid crs is fetched from cache
   QgsCoordinateReferenceSystem crs4;
   crs4.createFromProj( QStringLiteral( "bad proj4" ) );
@@ -755,7 +754,7 @@ void TestQgsCoordinateReferenceSystem::fromStringCache()
   crs.createFromString( QStringLiteral( "EPSG:3113" ) );
   QVERIFY( crs.isValid() );
   QCOMPARE( crs.authid(), QStringLiteral( "EPSG:3113" ) );
-  QVERIFY( QgsCoordinateReferenceSystem::sStringCache.contains( "EPSG:3113" ) );
+  QVERIFY( QgsCoordinateReferenceSystem::sStringCache.contains( QStringLiteral( "EPSG:3113" ) ) );
   // a second time, so crs is fetched from cache
   QgsCoordinateReferenceSystem crs2;
   crs2.createFromString( QStringLiteral( "EPSG:3113" ) );
@@ -766,22 +765,22 @@ void TestQgsCoordinateReferenceSystem::fromStringCache()
   QgsCoordinateReferenceSystem crs3;
   crs3.createFromString( QStringLiteral( "bad string" ) );
   QVERIFY( !crs3.isValid() );
-  QVERIFY( QgsCoordinateReferenceSystem::sStringCache.contains( "bad string" ) );
+  QVERIFY( QgsCoordinateReferenceSystem::sStringCache.contains( QStringLiteral( "bad string" ) ) );
   // a second time, so invalid crs is fetched from cache
   QgsCoordinateReferenceSystem crs4;
   crs4.createFromString( QStringLiteral( "bad string" ) );
   QVERIFY( !crs4.isValid() );
 
   QgsCoordinateReferenceSystem::invalidateCache();
-  QVERIFY( !QgsCoordinateReferenceSystem::sStringCache.contains( "EPSG:3113" ) );
+  QVERIFY( !QgsCoordinateReferenceSystem::sStringCache.contains( QStringLiteral( "EPSG:3113" ) ) );
 }
 
 void TestQgsCoordinateReferenceSystem::isValid()
 {
-  QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrid( GEOSRID );
-  QVERIFY( myCrs.isValid() );
-  debugPrint( myCrs );
+  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:4326" ) );
+  QVERIFY( crs.isValid() );
+  crs = QgsCoordinateReferenceSystem( QStringLiteral( "xxxxxxxxxxxxxxx" ) );
+  QVERIFY( !crs.isValid() );
 }
 
 void TestQgsCoordinateReferenceSystem::validate()
@@ -815,20 +814,14 @@ void TestQgsCoordinateReferenceSystem::validate()
 
 void TestQgsCoordinateReferenceSystem::equality()
 {
-  QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrid( GEOSRID );
-  QgsCoordinateReferenceSystem myCrs2;
-  myCrs2.createFromSrsId( GEOCRS_ID );
-  debugPrint( myCrs );
+  QgsCoordinateReferenceSystem myCrs( QStringLiteral( "EPSG:4326" ) );
+  QgsCoordinateReferenceSystem myCrs2( QStringLiteral( "EPSG:4326" ) );
   QVERIFY( myCrs == myCrs2 );
 }
 void TestQgsCoordinateReferenceSystem::noEquality()
 {
-  QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrid( GEOSRID );
-  QgsCoordinateReferenceSystem myCrs2;
-  myCrs2.createFromSrsId( 4327 );
-  debugPrint( myCrs );
+  QgsCoordinateReferenceSystem myCrs( QStringLiteral( "EPSG:4326" ) );
+  QgsCoordinateReferenceSystem myCrs2( QStringLiteral( "EPSG:4327" ) );
   QVERIFY( myCrs != myCrs2 );
 }
 
@@ -840,8 +833,7 @@ void TestQgsCoordinateReferenceSystem::equalityInvalid()
 }
 void TestQgsCoordinateReferenceSystem::readWriteXml()
 {
-  QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrid( GEOSRID );
+  QgsCoordinateReferenceSystem myCrs( QStringLiteral( "EPSG:4326" ) );
   QVERIFY( myCrs.isValid() );
   QDomDocument document( QStringLiteral( "test" ) );
   QDomElement node = document.createElement( QStringLiteral( "crs" ) );
@@ -1056,15 +1048,13 @@ void TestQgsCoordinateReferenceSystem::customSrsValidation()
 void TestQgsCoordinateReferenceSystem::postgisSrid()
 {
   QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrid( GEOSRID );
+  myCrs.createFromPostgisSrid( GEOSRID );
   QVERIFY( myCrs.postgisSrid() == GEOSRID );
   debugPrint( myCrs );
 }
 void TestQgsCoordinateReferenceSystem::ellipsoidAcronym()
 {
-  QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrid( GEOSRID );
-  debugPrint( myCrs );
+  QgsCoordinateReferenceSystem myCrs( QStringLiteral( "EPSG:4326" ) );
 #if PROJ_VERSION_MAJOR>=6
   QCOMPARE( myCrs.ellipsoidAcronym(), QStringLiteral( "EPSG:7030" ) );
 #else
@@ -1081,35 +1071,26 @@ void TestQgsCoordinateReferenceSystem::ellipsoidAcronym()
 }
 void TestQgsCoordinateReferenceSystem::toWkt()
 {
-  QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrid( GEOSRID );
+  QgsCoordinateReferenceSystem myCrs( QStringLiteral( "EPSG:4326" ) );
   QString myWkt = myCrs.toWkt();
-  debugPrint( myCrs );
-  //Note: this is not the same as GEOWKT as OGR strips off the TOWGS clause...
   QString myStrippedWkt( "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID"
                          "[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],"
                          "AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY"
                          "[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY"
                          "[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]]" );
-  qDebug() << "wkt:      " << myWkt;
-  qDebug() << "stripped: " << myStrippedWkt;
-  QVERIFY( myWkt == myStrippedWkt );
+  QCOMPARE( myWkt, myStrippedWkt );
 }
 void TestQgsCoordinateReferenceSystem::toProj()
 {
-  QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrid( GEOSRID );
-  debugPrint( myCrs );
+  QgsCoordinateReferenceSystem myCrs( QStringLiteral( "EPSG:4326" ) );
   //first proj string produced by gdal 1.8-1.9
   //second by gdal 1.7
   QCOMPARE( myCrs.toProj(), GEOPROJ4 );
 }
 void TestQgsCoordinateReferenceSystem::isGeographic()
 {
-  QgsCoordinateReferenceSystem geographic;
-  geographic.createFromSrid( GEOSRID );
+  QgsCoordinateReferenceSystem geographic( QStringLiteral( "EPSG:4326" ) );
   QVERIFY( geographic.isGeographic() );
-  debugPrint( geographic );
 
   QgsCoordinateReferenceSystem nonGeographic;
   nonGeographic.createFromId( 3857, QgsCoordinateReferenceSystem::EpsgCrsId );
@@ -1211,8 +1192,7 @@ void TestQgsCoordinateReferenceSystem::validSrsIds()
 
 void TestQgsCoordinateReferenceSystem::asVariant()
 {
-  QgsCoordinateReferenceSystem original;
-  original.createFromSrid( 3112 );
+  QgsCoordinateReferenceSystem original( QStringLiteral( "EPSG:3112" ) );
 
   //convert to and from a QVariant
   QVariant var = QVariant::fromValue( original );

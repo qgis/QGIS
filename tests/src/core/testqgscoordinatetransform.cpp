@@ -130,10 +130,8 @@ void TestQgsCoordinateTransform::isValid()
   QgsCoordinateTransform tr;
   QVERIFY( !tr.isValid() );
 
-  QgsCoordinateReferenceSystem srs1;
-  srs1.createFromSrid( 3994 );
-  QgsCoordinateReferenceSystem srs2;
-  srs2.createFromSrid( 4326 );
+  QgsCoordinateReferenceSystem srs1( QStringLiteral( "EPSG:3994" ) );
+  QgsCoordinateReferenceSystem srs2( QStringLiteral( "EPSG:4326" ) );
 
   // valid source, invalid destination
   QgsCoordinateTransform tr2( srs1, QgsCoordinateReferenceSystem(), QgsProject::instance() );
@@ -163,10 +161,8 @@ void TestQgsCoordinateTransform::isShortCircuited()
   //invalid transform shortcircuits
   QVERIFY( tr.isShortCircuited() );
 
-  QgsCoordinateReferenceSystem srs1;
-  srs1.createFromSrid( 3994 );
-  QgsCoordinateReferenceSystem srs2;
-  srs2.createFromSrid( 4326 );
+  QgsCoordinateReferenceSystem srs1( QStringLiteral( "EPSG:3994" ) );
+  QgsCoordinateReferenceSystem srs2( QStringLiteral( "EPSG:4326" ) );
 
   // valid source, invalid destination
   QgsCoordinateTransform tr2( srs1, QgsCoordinateReferenceSystem(), QgsProject::instance() );
@@ -400,10 +396,8 @@ void TestQgsCoordinateTransform::transform()
 void TestQgsCoordinateTransform::transformBoundingBox()
 {
   //test transforming a bounding box which crosses the 180 degree longitude line
-  QgsCoordinateReferenceSystem sourceSrs;
-  sourceSrs.createFromSrid( 3994 );
-  QgsCoordinateReferenceSystem destSrs;
-  destSrs.createFromSrid( 4326 );
+  QgsCoordinateReferenceSystem sourceSrs( QStringLiteral( "EPSG:3994" ) );
+  QgsCoordinateReferenceSystem destSrs( QStringLiteral( "EPSG:4326" ) );
 
   QgsCoordinateTransform tr( sourceSrs, destSrs, QgsProject::instance() );
   QgsRectangle crossingRect( 6374985, -3626584, 7021195, -3272435 );

@@ -208,7 +208,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     enum CrsType
     {
       InternalCrsId,  //!< Internal ID used by QGIS in the local SQLite database
-      PostgisCrsId,   //!< SRID used in PostGIS
+      PostgisCrsId,   //!< SRID used in PostGIS. DEPRECATED -- DO NOT USE
       EpsgCrsId       //!< EPSG code
     };
 
@@ -364,8 +364,12 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Sets this CRS by lookup of the given PostGIS SRID in the CRS database.
      * \param srid The PostGIS SRID for the desired spatial reference system.
      * \returns TRUE on success else FALSE
+     *
+     * \deprecated Use alternative methods for SRS construction instead -- this
+     * method was specifically created for use by the postgres provider alone,
+     * and using it elsewhere will lead to subtle bugs.
      */
-    bool createFromSrid( long srid );
+    Q_DECL_DEPRECATED bool createFromSrid( long srid ) SIP_DEPRECATED;
 
     /**
      * Sets this CRS using a WKT definition.
@@ -942,6 +946,9 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     static bool sDisableStringCache;
 
     friend class TestQgsCoordinateReferenceSystem;
+    friend class QgsPostgresProvider;
+
+    bool createFromPostgisSrid( const long id );
 };
 
 Q_DECLARE_METATYPE( QgsCoordinateReferenceSystem )
