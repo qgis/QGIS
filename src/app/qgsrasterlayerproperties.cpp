@@ -268,7 +268,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   metadataFrame->setLayout( layout );
 
   QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().toWkt() );
-  QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().authid() + " - " + mRasterLayer->crs().description() );
+  QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().userFriendlyIdentifier() );
   mCrsSelector->setCrs( mRasterLayer->crs() );
 
   // Set text for pyramid info box
