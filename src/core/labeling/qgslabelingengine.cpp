@@ -273,7 +273,6 @@ void QgsLabelingEngine::registerLabels( QgsRenderContext &context )
   // set number of candidates generated per feature
   int candPoint, candLine, candPolygon;
   settings.numCandidatePositions( candPoint, candLine, candPolygon );
-  mPal->setMaximumNumberOfPointCandidates( candPoint );
   mPal->setMaximumNumberOfLineCandidates( candLine );
   mPal->setMaximumNumberOfPolygonCandidates( candPolygon );
 

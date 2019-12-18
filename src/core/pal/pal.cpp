@@ -93,8 +93,6 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
   double bbx[4];
   double bby[4];
 
-  std::size_t max_p = 0;
-
   bbx[0] = bbx[3] = prob->mMapExtentBounds[0] = extent.xMinimum();
   bby[0] = bby[1] = prob->mMapExtentBounds[1] = extent.yMinimum();
   bbx[1] = bbx[2] = prob->mMapExtentBounds[2] = extent.xMaximum();
@@ -289,14 +287,17 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       prob->mFeatStartId[i] = idlp;
       prob->mInactiveCost[i] = std::pow( 2, 10 - 10 * feat->priority );
 
+      std::size_t max_p = 0;
       switch ( feat->feature->getGeosType() )
       {
         case GEOS_POINT:
-          max_p = feat->feature->layer()->maximumPointLabelCandidates();
+          // no max at this stage, use all the candidates generated
           break;
+
         case GEOS_LINESTRING:
           max_p = feat->feature->layer()->maximumLineLabelCandidates();
           break;
+
         case GEOS_POLYGON:
           max_p = feat->feature->layer()->maximumPolygonLabelCandidates();
           break;
@@ -442,13 +443,6 @@ QList<LabelPosition *> Pal::solveProblem( Problem *prob, bool displayAll, QList<
   return prob->getSolution( displayAll, unlabeled );
 }
 
-
-void Pal::setMaximumNumberOfPointCandidates( int candidates )
-{
-  if ( candidates > 0 )
-    this->mMaxPointCandidates = candidates;
-}
-
 void Pal::setMaximumNumberOfLineCandidates( int line_p )
 {
   if ( line_p > 0 )
@@ -498,11 +492,6 @@ void Pal::setCandListSize( double fact )
 void Pal::setShowPartialLabels( bool show )
 {
   this->mShowPartialLabels = show;
-}
-
-int Pal::maximumNumberOfPointCandidates() const
-{
-  return mMaxPointCandidates;
 }
 
 int Pal::maximumNumberOfLineCandidates() const

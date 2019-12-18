@@ -83,10 +83,28 @@ class CORE_EXPORT QgsLabelingEngineSettings
     //! Sets whether a particual flag is enabled
     void setFlag( Flag f, bool enabled = true ) { if ( enabled ) mFlags |= f; else mFlags &= ~f; }
 
-    //! Gets number of candidate positions that will be generated for each label feature (default to 8)
-    void numCandidatePositions( int &candPoint, int &candLine, int &candPolygon ) const { candPoint = mCandPoint; candLine = mCandLine; candPolygon = mCandPolygon; }
-    //! Sets number of candidate positions that will be generated for each label feature
-    void setNumCandidatePositions( int candPoint, int candLine, int candPolygon ) { mCandPoint = candPoint; mCandLine = candLine; mCandPolygon = candPolygon; }
+    /**
+     * Gets number of candidate positions that will be generated for each label feature.
+     * \deprecated Since QGIS 3.12 the \a candPoint argument is ignored.
+     */
+    void numCandidatePositions( int &candPoint, int &candLine, int &candPolygon ) const
+    {
+      Q_UNUSED( candPoint )
+      candLine = mCandLine;
+      candPolygon = mCandPolygon;
+    }
+
+    /**
+     * Sets the number of candidate positions that will be generated for each label feature.
+     * \deprecated Since QGIS 3.12 the \a candPoint argument is ignored.
+     */
+    void setNumCandidatePositions( int candPoint, int candLine, int candPolygon )
+    {
+      Q_UNUSED( candPoint )
+      mCandLine = candLine;
+      mCandPolygon = candPolygon;
+    }
+
 
     /**
      * Used to set which search method to use for removal collisions between labels
@@ -169,7 +187,9 @@ class CORE_EXPORT QgsLabelingEngineSettings
     //! search method to use for removal collisions between labels
     Search mSearchMethod = Chain;
     //! Number of candedate positions that will be generated for features
-    int mCandPoint = 16, mCandLine = 50, mCandPolygon = 30;
+    int mCandLine = 50, mCandPolygon = 30;
+
+
 
     QColor mUnplacedLabelColor = QColor( 255, 0, 0 );
 
