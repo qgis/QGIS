@@ -1539,7 +1539,7 @@ bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt, bool allowP
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 #if PROJ_VERSION_MAJOR<6
-  if ( allowProj4Fallback )
+  if ( allowProjFallback )
   {
     d->mIsValid = false;
     // create the proj4 structs needed for transforming
