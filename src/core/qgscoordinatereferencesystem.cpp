@@ -854,7 +854,7 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString )
   if ( id < USER_CRS_START_ID )
   {
     // no direct matches, so go ahead and create a new proj object based on the proj string alone.
-    setProj4String( myProj4String );
+    setProjString( myProj4String );
 
     // lastly, try a tolerant match of the created proj object against all user CRSes (allowing differences in parameter order during the comparison)
     id = matchToUserCrs();
