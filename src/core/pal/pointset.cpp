@@ -965,6 +965,29 @@ double PointSet::length() const
   }
 }
 
+double PointSet::area() const
+{
+  if ( !mGeos )
+    createGeosGeom();
+
+  if ( !mGeos )
+    return -1;
+
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
+
+  try
+  {
+    double area = 0;
+    ( void )GEOSArea_r( geosctxt, mGeos, &area );
+    return area;
+  }
+  catch ( GEOSException &e )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+    return -1;
+  }
+}
+
 bool PointSet::isClosed() const
 {
   return qgsDoubleNear( x[0], x[nbPoints - 1] ) && qgsDoubleNear( y[0], y[nbPoints - 1] );

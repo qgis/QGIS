@@ -188,6 +188,11 @@ namespace pal
       double length() const;
 
       /**
+       * Returns area of polygon geometry.
+       */
+      double area() const;
+
+      /**
        * Returns TRUE if pointset is closed.
        */
       bool isClosed() const;
