@@ -251,9 +251,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * and proj strings are a lossy format.
      * \param id The ID valid for the chosen CRS ID type
      * \param type One of the types described in CrsType
-     * \deprecated We encourage you to use EPSG codes or WKT to describe CRSes in your code
-     * wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile,
-     * and Proj strings are a lossy format.
+     * \deprecated We encourage you to use EPSG codes or WKT to describe CRSes in your code wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile, and Proj strings are a lossy format.
      */
     Q_DECL_DEPRECATED explicit QgsCoordinateReferenceSystem( long id, CrsType type = PostgisCrsId ) SIP_DEPRECATED;
 
@@ -341,9 +339,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /**
      * Sets this CRS by lookup of the given ID in the CRS database.
      * \returns TRUE on success else FALSE
-     * \deprecated We encourage you to use EPSG code or WKT to describe CRSes in your code
-     * wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile,
-     * and Proj strings are a lossy format.
+     * \deprecated We encourage you to use EPSG code or WKT to describe CRSes in your code wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile, and Proj strings are a lossy format.
      */
     Q_DECL_DEPRECATED bool createFromId( long id, CrsType type = PostgisCrsId ) SIP_DEPRECATED;
 
@@ -368,9 +364,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \param srid The PostGIS SRID for the desired spatial reference system.
      * \returns TRUE on success else FALSE
      *
-     * \deprecated Use alternative methods for SRS construction instead -- this
-     * method was specifically created for use by the postgres provider alone,
-     * and using it elsewhere will lead to subtle bugs.
+     * \deprecated Use alternative methods for SRS construction instead -- this method was specifically created for use by the postgres provider alone, and using it elsewhere will lead to subtle bugs.
      */
     Q_DECL_DEPRECATED bool createFromSrid( long srid ) SIP_DEPRECATED;
 
