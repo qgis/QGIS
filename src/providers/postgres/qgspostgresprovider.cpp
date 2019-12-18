@@ -4328,7 +4328,9 @@ QgsCoordinateReferenceSystem QgsPostgresProvider::crs() const
 {
   QgsCoordinateReferenceSystem srs;
   int srid = mRequestedSrid.isEmpty() ? mDetectedSrid.toInt() : mRequestedSrid.toInt();
-  srs.createFromSrid( srid );
+
+  // TODO QGIS 4 - move the logic from createFromSridInternal to sit within the postgres provider alone
+  srs.createFromPostgisSrid( srid );
   if ( !srs.isValid() )
   {
     static QMutex sMutex;

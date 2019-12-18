@@ -890,8 +890,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
         project = QgsProject()
         project.addMapLayers([layer])
         # select epsg:2154
-        crs = QgsCoordinateReferenceSystem()
-        crs.createFromSrid(2154)
+        crs = QgsCoordinateReferenceSystem('epsg:2154')
         project.setCrs(crs)
 
         layout = QgsPrintLayout(project)
