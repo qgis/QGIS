@@ -207,28 +207,29 @@ void QgsProjectionSelectionWidget::comboIndexChanged( int idx )
   {
     case QgsProjectionSelectionWidget::LayerCrs:
       emit crsChanged( mLayerCrs );
-      return;
+      break;
     case QgsProjectionSelectionWidget::ProjectCrs:
       emit crsChanged( mProjectCrs );
-      return;
+      break;
     case QgsProjectionSelectionWidget::CurrentCrs:
       emit crsChanged( mCrs );
-      return;
+      break;
     case QgsProjectionSelectionWidget::DefaultCrs:
       emit crsChanged( mDefaultCrs );
-      return;
+      break;
     case QgsProjectionSelectionWidget::RecentCrs:
     {
       long srsid = mCrsComboBox->itemData( idx, Qt::UserRole + 1 ).toLongLong();
       QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromSrsId( srsid );
       emit crsChanged( crs );
-      return;
+      break;
     }
     case QgsProjectionSelectionWidget::CrsNotSet:
       emit cleared();
       emit crsChanged( QgsCoordinateReferenceSystem() );
-      return;
+      break;
   }
+  updateTooltip();
 }
 
 void QgsProjectionSelectionWidget::setCrs( const QgsCoordinateReferenceSystem &crs )
@@ -263,6 +264,7 @@ void QgsProjectionSelectionWidget::setCrs( const QgsCoordinateReferenceSystem &c
     mCrs = crs;
     emit crsChanged( crs );
   }
+  updateTooltip();
 }
 
 void QgsProjectionSelectionWidget::setLayerCrs( const QgsCoordinateReferenceSystem &crs )
@@ -353,4 +355,13 @@ int QgsProjectionSelectionWidget::firstRecentCrsIndex() const
     }
   }
   return -1;
+}
+
+void QgsProjectionSelectionWidget::updateTooltip()
+{
+  QgsCoordinateReferenceSystem c = crs();
+  if ( c.isValid() )
+    setToolTip( c.toWkt( QgsCoordinateReferenceSystem::WKT2_2018, true ) );
+  else
+    setToolTip( QString() );
 }
