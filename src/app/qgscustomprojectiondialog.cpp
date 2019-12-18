@@ -65,9 +65,9 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
 
   leNameList->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
-  mFormatComboBox->addItem( tr( "WKT (Recommended)" ), static_cast< int >( Format::Wkt ) );
-  mFormatComboBox->addItem( tr( "Proj String" ), static_cast< int >( Format::Proj ) );
-  mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( static_cast< int >( Format::Wkt ) ) );
+  mFormatComboBox->addItem( tr( "WKT (Recommended)" ), static_cast< int >( QgsCoordinateReferenceSystem::FormatWkt ) );
+  mFormatComboBox->addItem( tr( "Proj String" ), static_cast< int >( QgsCoordinateReferenceSystem::FormatProj ) );
+  mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( static_cast< int >( QgsCoordinateReferenceSystem::FormatWkt ) ) );
 
   // user database is created at QGIS startup in QgisApp::createDB
   // we just check whether there is our database [MD]
@@ -83,7 +83,7 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
   {
     whileBlocking( leName )->setText( mDefinitions[0].name );
     whileBlocking( teParameters )->setPlainText( mDefinitions[0].wkt.isEmpty() ? mDefinitions[0].proj : mDefinitions[0].wkt );
-    mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( static_cast< int >( mDefinitions[0].wkt.isEmpty() ? Format::Proj : Format::Wkt ) ) );
+    mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( static_cast< int >( mDefinitions[0].wkt.isEmpty() ? QgsCoordinateReferenceSystem::FormatProj : QgsCoordinateReferenceSystem::FormatWkt ) ) );
     leNameList->setCurrentItem( leNameList->topLevelItem( 0 ) );
   }
 
@@ -124,11 +124,11 @@ void QgsCustomProjectionDialog::populateList()
       if ( !wkt.isEmpty() )
         crs.createFromWkt( wkt );
       else
-        crs.createFromProj4( parameters );
+        crs.createFromProj( parameters );
 
       mExistingCRSnames[id] = name;
       const QString actualWkt = crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018, false );
-      const QString actualProj = crs.toProj4();
+      const QString actualProj = crs.toProj();
       mExistingCRSwkt[id] = wkt.isEmpty() ? QString() : actualWkt;
       mExistingCRSproj[id] = wkt.isEmpty() ? actualProj : QString();
 
@@ -243,7 +243,7 @@ void  QgsCustomProjectionDialog::insertProjection( const QString &projectionAcro
   }
 }
 
-bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem crs, const QString &name, const QString &existingId, bool newEntry, Format format )
+bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem crs, const QString &name, const QString &existingId, bool newEntry, QgsCoordinateReferenceSystem::Format format )
 {
   QString id = existingId;
   QString sql;
@@ -252,7 +252,7 @@ bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem crs, const
   QString ellipsoidAcronym = crs.ellipsoidAcronym();
   if ( newEntry )
   {
-    returnId = crs.saveAsUserCrs( name, format == Format::Wkt );
+    returnId = crs.saveAsUserCrs( name, format );
     if ( returnId == -1 )
       return false;
     else
@@ -264,9 +264,9 @@ bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem crs, const
           + QgsSqliteUtils::quotedString( name )
           + ",projection_acronym=" + ( !projectionAcronym.isEmpty() ? QgsSqliteUtils::quotedString( projectionAcronym ) : QStringLiteral( "''" ) )
           + ",ellipsoid_acronym=" + ( !ellipsoidAcronym.isEmpty() ? QgsSqliteUtils::quotedString( ellipsoidAcronym ) : QStringLiteral( "''" ) )
-          + ",parameters=" + ( !crs.toProj4().isEmpty() ? QgsSqliteUtils::quotedString( crs.toProj4() ) : QStringLiteral( "''" ) )
+          + ",parameters=" + ( !crs.toProj().isEmpty() ? QgsSqliteUtils::quotedString( crs.toProj() ) : QStringLiteral( "''" ) )
           + ",is_geo=0" // <--shamelessly hard coded for now
-          + ",wkt=" + ( format == Format::Wkt ? QgsSqliteUtils::quotedString( crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018, false ) ) : QStringLiteral( "''" ) )
+          + ",wkt=" + ( format == QgsCoordinateReferenceSystem::FormatWkt ? QgsSqliteUtils::quotedString( crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018, false ) ) : QStringLiteral( "''" ) )
           + " where srs_id=" + QgsSqliteUtils::quotedString( id )
           ;
     QgsDebugMsgLevel( sql, 4 );
@@ -291,8 +291,8 @@ bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem crs, const
     if ( result != SQLITE_OK )
       return false;
   }
-  mExistingCRSwkt[id] = format == Format::Wkt ? crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018, false ) : QString();
-  mExistingCRSproj[id] = format == Format::Proj ? crs.toProj4() : QString();
+  mExistingCRSwkt[id] = format == QgsCoordinateReferenceSystem::FormatWkt ? crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018, false ) : QString();
+  mExistingCRSproj[id] = format == QgsCoordinateReferenceSystem::FormatProj ? crs.toProj() : QString();
   mExistingCRSnames[id] = name;
 
   QgsCoordinateReferenceSystem::invalidateCache();
@@ -369,14 +369,14 @@ void QgsCustomProjectionDialog::leNameList_currentItemChanged( QTreeWidgetItem *
     previousIndex = leNameList->indexOfTopLevelItem( previous );
 
     mDefinitions[previousIndex].name = leName->text();
-    switch ( static_cast< Format >( mFormatComboBox->currentData().toInt() ) )
+    switch ( static_cast< QgsCoordinateReferenceSystem::Format >( mFormatComboBox->currentData().toInt() ) )
     {
-      case Format::Wkt:
+      case QgsCoordinateReferenceSystem::FormatWkt:
         mDefinitions[previousIndex].wkt = teParameters->toPlainText();
         mDefinitions[previousIndex].proj.clear();
         break;
 
-      case Format::Proj:
+      case QgsCoordinateReferenceSystem::FormatProj:
         mDefinitions[previousIndex].proj = teParameters->toPlainText();
         mDefinitions[previousIndex].wkt.clear();
         break;
@@ -391,14 +391,14 @@ void QgsCustomProjectionDialog::leNameList_currentItemChanged( QTreeWidgetItem *
     currentIndex = leNameList->indexOfTopLevelItem( current );
     whileBlocking( leName )->setText( mDefinitions[currentIndex].name );
     whileBlocking( teParameters )->setPlainText( !mDefinitions[currentIndex].wkt.isEmpty() ? mDefinitions[currentIndex].wkt : mDefinitions[currentIndex].proj );
-    whileBlocking( mFormatComboBox )->setCurrentIndex( mFormatComboBox->findData( static_cast< int >( mDefinitions[currentIndex].wkt.isEmpty() ? Format::Proj : Format::Wkt ) ) );
+    whileBlocking( mFormatComboBox )->setCurrentIndex( mFormatComboBox->findData( static_cast< int >( mDefinitions[currentIndex].wkt.isEmpty() ? QgsCoordinateReferenceSystem::FormatProj : QgsCoordinateReferenceSystem::FormatWkt ) ) );
   }
   else
   {
     //Can happen that current is null, for example if we just deleted the last element
     leName->clear();
     teParameters->clear();
-    whileBlocking( mFormatComboBox )->setCurrentIndex( mFormatComboBox->findData( static_cast< int >( Format::Wkt ) ) );
+    whileBlocking( mFormatComboBox )->setCurrentIndex( mFormatComboBox->findData( static_cast< int >( QgsCoordinateReferenceSystem::FormatWkt ) ) );
     return;
   }
 }
@@ -414,7 +414,7 @@ void QgsCustomProjectionDialog::pbnCopyCRS_clicked()
       pbnAdd_clicked();
     }
 
-    whileBlocking( mFormatComboBox )->setCurrentIndex( mFormatComboBox->findData( static_cast< int >( Format::Wkt ) ) );
+    whileBlocking( mFormatComboBox )->setCurrentIndex( mFormatComboBox->findData( static_cast< int >( QgsCoordinateReferenceSystem::FormatWkt ) ) );
     teParameters->setPlainText( srs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018, true ) );
     mDefinitions[leNameList->currentIndex().row()].wkt = srs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018, false );
     mDefinitions[leNameList->currentIndex().row()].proj.clear();
@@ -436,7 +436,7 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
     if ( !def.wkt.isEmpty() )
       crs.createFromWkt( def.wkt );
     else
-      crs.createFromProj4( def.proj );
+      crs.createFromProj( def.proj );
 
     if ( !crs.isValid() )
     {
@@ -479,12 +479,12 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
     if ( !def.wkt.isEmpty() )
       crs.createFromWkt( def.wkt );
     else
-      crs.createFromProj4( def.proj );
+      crs.createFromProj( def.proj );
 
     //Test if we just added this CRS (if it has no existing ID)
     if ( def.id.isEmpty() )
     {
-      saveSuccess &= saveCrs( crs, def.name, QString(), true, !def.wkt.isEmpty() ? Format::Wkt : Format::Proj );
+      saveSuccess &= saveCrs( crs, def.name, QString(), true, !def.wkt.isEmpty() ? QgsCoordinateReferenceSystem::FormatWkt : QgsCoordinateReferenceSystem::FormatProj );
     }
     else
     {
@@ -493,7 +493,7 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
            || ( !def.proj.isEmpty() && mExistingCRSproj[def.id] != def.proj )
          )
       {
-        saveSuccess &= saveCrs( crs, def.name, def.id, false, !def.wkt.isEmpty() ? Format::Wkt : Format::Proj );
+        saveSuccess &= saveCrs( crs, def.name, def.id, false, !def.wkt.isEmpty() ? QgsCoordinateReferenceSystem::FormatWkt : QgsCoordinateReferenceSystem::FormatProj );
       }
     }
     if ( ! saveSuccess )
@@ -527,14 +527,14 @@ void QgsCustomProjectionDialog::updateListFromCurrentItem()
     return;
 
   mDefinitions[currentIndex].name = leName->text();
-  switch ( static_cast< Format >( mFormatComboBox->currentData().toInt() ) )
+  switch ( static_cast< QgsCoordinateReferenceSystem::Format >( mFormatComboBox->currentData().toInt() ) )
   {
-    case Format::Wkt:
+    case QgsCoordinateReferenceSystem::FormatWkt:
       mDefinitions[currentIndex].wkt = teParameters->toPlainText();
       mDefinitions[currentIndex].proj.clear();
       break;
 
-    case Format::Proj:
+    case QgsCoordinateReferenceSystem::FormatProj:
       mDefinitions[currentIndex].proj = teParameters->toPlainText();
       mDefinitions[currentIndex].wkt.clear();
       break;
@@ -566,9 +566,9 @@ void QgsCustomProjectionDialog::validateCurrent()
   proj_log_func( context, &projErrors, proj_collecting_logger );
   QgsProjUtils::proj_pj_unique_ptr crs;
 
-  switch ( static_cast< Format >( mFormatComboBox->currentData().toInt() ) )
+  switch ( static_cast< QgsCoordinateReferenceSystem::Format >( mFormatComboBox->currentData().toInt() ) )
   {
-    case Format::Wkt:
+    case QgsCoordinateReferenceSystem::FormatWkt:
     {
       PROJ_STRING_LIST warnings = nullptr;
       PROJ_STRING_LIST grammerErrors = nullptr;
@@ -595,7 +595,7 @@ void QgsCustomProjectionDialog::validateCurrent()
       break;
     }
 
-    case Format::Proj:
+    case QgsCoordinateReferenceSystem::FormatProj:
     {
       const QString projCrsString = projDef + ( projDef.contains( QStringLiteral( "+type=crs" ) ) ? QString() : QStringLiteral( " +type=crs" ) );
       crs.reset( proj_create( context, projCrsString.toLatin1().constData() ) );
@@ -669,19 +669,19 @@ void QgsCustomProjectionDialog::formatChanged()
 {
   QgsCoordinateReferenceSystem crs;
   QString newFormatString;
-  switch ( static_cast< Format >( mFormatComboBox->currentData().toInt() ) )
+  switch ( static_cast< QgsCoordinateReferenceSystem::Format >( mFormatComboBox->currentData().toInt() ) )
   {
-    case Format::Proj:
+    case QgsCoordinateReferenceSystem::FormatProj:
     {
       crs.createFromWkt( teParameters->toPlainText() );
       if ( crs.isValid() )
-        newFormatString = crs.toProj4();
+        newFormatString = crs.toProj();
       break;
     }
 
-    case Format::Wkt:
+    case QgsCoordinateReferenceSystem::FormatWkt:
     {
-      crs.createFromProj4( teParameters->toPlainText() );
+      crs.createFromProj( teParameters->toPlainText() );
       if ( crs.isValid() )
         newFormatString = crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018, false );
       break;
@@ -762,7 +762,7 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
 #endif
 
 #if PROJ_VERSION_MAJOR>=6
-  if ( static_cast< Format >( mFormatComboBox->currentData().toInt() ) == Format::Proj )
+  if ( static_cast< QgsCoordinateReferenceSystem::Format >( mFormatComboBox->currentData().toInt() ) == QgsCoordinateReferenceSystem::FormatProj )
     projDef = projDef + ( projDef.contains( QStringLiteral( "+type=crs" ) ) ? QString() : QStringLiteral( " +type=crs" ) );
   QgsProjUtils::proj_pj_unique_ptr res( proj_create_crs_to_crs( pContext, "EPSG:4326", projDef.toUtf8(), nullptr ) );
   if ( !res )

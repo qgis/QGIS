@@ -996,7 +996,7 @@ void QgsProjectProperties::apply()
     {
       QgsDebugMsgLevel( QStringLiteral( "Selected CRS " ) + srs.description(), 4 );
       // write the currently selected projections _proj string_ to project settings
-      QgsDebugMsgLevel( QStringLiteral( "SpatialRefSys/ProjectCRSProj4String: %1" ).arg( srs.toProj4() ), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "SpatialRefSys/ProjectCRSProj4String: %1" ).arg( srs.toProj() ), 4 );
     }
     else
     {

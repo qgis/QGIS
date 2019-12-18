@@ -3610,7 +3610,7 @@ QgsCoordinateReferenceSystem QgsSpatiaLiteProvider::crs() const
   QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mAuthId );
   if ( !srs.isValid() )
   {
-    srs = QgsCoordinateReferenceSystem::fromProj4( mProj4text );
+    srs = QgsCoordinateReferenceSystem::fromProj( mProj4text );
     //TODO: createFromProj4 used to save to the user database any new CRS
     // this behavior was changed in order to separate creation and saving.
     // Not sure if it necessary to save it here, should be checked by someone
@@ -3619,7 +3619,7 @@ QgsCoordinateReferenceSystem QgsSpatiaLiteProvider::crs() const
     {
       QString myName = QStringLiteral( " * %1 (%2)" )
                        .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
-                             srs.toProj4() );
+                             srs.toProj() );
       srs.saveAsUserCrs( myName );
     }
 

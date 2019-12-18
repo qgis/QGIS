@@ -613,7 +613,7 @@ void TestQgsCoordinateTransform::testCustomProjTransform()
 #if PROJ_VERSION_MAJOR >= 6
   // test custom proj string
   // refs https://github.com/qgis/QGIS/issues/32928
-  QgsCoordinateReferenceSystem ss( QgsCoordinateReferenceSystem::fromProj4( QStringLiteral( "+proj=sterea +lat_0=47.4860018439082 +lon_0=19.0491441390302 +k=1 +x_0=500000 +y_0=500000 +ellps=bessel +towgs84=595.75,121.09,515.50,8.2270,-1.5193,5.5971,-2.6729 +units=m +vunits=m +no_defs" ) ) );
+  QgsCoordinateReferenceSystem ss( QgsCoordinateReferenceSystem::fromProj( QStringLiteral( "+proj=sterea +lat_0=47.4860018439082 +lon_0=19.0491441390302 +k=1 +x_0=500000 +y_0=500000 +ellps=bessel +towgs84=595.75,121.09,515.50,8.2270,-1.5193,5.5971,-2.6729 +units=m +vunits=m +no_defs" ) ) );
   QgsCoordinateReferenceSystem dd( QStringLiteral( "EPSG:23700" ) );
   QgsCoordinateTransform ct( ss, dd, QgsCoordinateTransformContext() );
   QVERIFY( ct.isValid() );

@@ -407,7 +407,7 @@ void QgsGrassNewMapset::setGrassProjection()
 {
   setError( mProjErrorLabel );
 
-  QString proj4 = mProjectionSelector->crs().toProj4();
+  QString proj4 = mProjectionSelector->crs().toProj();
 
   // Not defined
   if ( mNoProjRadioButton->isChecked() )

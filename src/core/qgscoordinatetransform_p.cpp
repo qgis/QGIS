@@ -171,7 +171,7 @@ bool QgsCoordinateTransformPrivate::initialize()
   int destDatumTransform = mDestinationDatumTransform;
   bool useDefaultDatumTransform = ( sourceDatumTransform == - 1 && destDatumTransform == -1 );
 
-  mSourceProjString = mSourceCRS.toProj4();
+  mSourceProjString = mSourceCRS.toProj();
   if ( !useDefaultDatumTransform )
   {
     mSourceProjString = stripDatumTransform( mSourceProjString );
@@ -181,7 +181,7 @@ bool QgsCoordinateTransformPrivate::initialize()
     mSourceProjString += ( ' ' + QgsDatumTransform::datumTransformToProj( sourceDatumTransform ) );
   }
 
-  mDestProjString = mDestCRS.toProj4();
+  mDestProjString = mDestCRS.toProj();
   if ( !useDefaultDatumTransform )
   {
     mDestProjString = stripDatumTransform( mDestProjString );
@@ -202,8 +202,8 @@ bool QgsCoordinateTransformPrivate::initialize()
   ProjData res = threadLocalProjData();
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
-  QgsDebugMsg( "From proj : " + mSourceCRS.toProj4() );
-  QgsDebugMsg( "To proj   : " + mDestCRS.toProj4() );
+  QgsDebugMsg( "From proj : " + mSourceCRS.toProj() );
+  QgsDebugMsg( "To proj   : " + mDestCRS.toProj() );
 #endif
 
 #if PROJ_VERSION_MAJOR>=6
@@ -240,7 +240,7 @@ bool QgsCoordinateTransformPrivate::initialize()
 
   //XXX todo overload == operator for QgsCoordinateReferenceSystem
   //at the moment srs.parameters contains the whole proj def...soon it won't...
-  //if (mSourceCRS->toProj4() == mDestCRS->toProj4())
+  //if (mSourceCRS->toProj() == mDestCRS->toProj())
   if ( mSourceCRS == mDestCRS )
   {
     // If the source and destination projection are the same, set the short
