@@ -662,7 +662,7 @@ class PostGisDBConnector(DBConnector):
             return QgsCoordinateReferenceSystem()
 
         proj4text = res[0]
-        crs = QgsCoordinateReferenceSystem.fromProj4(proj4text)
+        crs = QgsCoordinateReferenceSystem.fromProj(proj4text)
         return crs
 
     def getSpatialRefInfo(self, srid):

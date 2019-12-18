@@ -127,7 +127,7 @@ QgsProjectionSelectionTreeWidget::~QgsProjectionSelectionTreeWidget()
       // No? Skip this entry
       continue;
     }
-    projectionsProj4 << crs.toProj4();
+    projectionsProj4 << crs.toProj();
     projectionsAuthId << crs.authid();
   }
   settings.setValue( QStringLiteral( "/UI/recentProjectionsProj4" ), projectionsProj4 );
@@ -345,7 +345,7 @@ QString QgsProjectionSelectionTreeWidget::selectedProj4String()
 
   long srsId = item->text( QgisCrsIdColumn ).toLong();
   QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromSrsId( srsId );
-  return crs.toProj4();
+  return crs.toProj();
 }
 
 QString QgsProjectionSelectionTreeWidget::selectedWktString()

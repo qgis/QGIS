@@ -310,14 +310,14 @@ class TestGdalAlgorithms(unittest.TestCase):
             'proj4: +proj=utm +zone=36 +south +a=6378249.145 +b=6356514.966398753 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')),
             'EPSG:20936')
         crs = QgsCoordinateReferenceSystem()
-        crs.createFromProj4(
+        crs.createFromProj(
             '+proj=utm +zone=36 +south +a=600000 +b=70000 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')
         self.assertTrue(crs.isValid())
         self.assertEqual(GdalUtils.gdal_crs_string(crs),
                          '+proj=utm +zone=36 +south +a=600000 +b=70000 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')
         # check that newlines are stripped
         crs = QgsCoordinateReferenceSystem()
-        crs.createFromProj4(
+        crs.createFromProj(
             '+proj=utm +zone=36 +south\n     +a=600000 +b=70000 \r\n    +towgs84=-143,-90,-294,0,0,0,0 +units=m\n+no_defs')
         self.assertTrue(crs.isValid())
         self.assertEqual(GdalUtils.gdal_crs_string(crs),
