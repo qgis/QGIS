@@ -447,7 +447,7 @@ void TestQgsRasterCalculator::calcWithLayers()
   QVector<QgsRasterCalculatorEntry> entries;
   entries << entry1 << entry2;
 
-  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:323633" ) );
+  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:32633" ) );
   QgsRectangle extent( 783235, 3348110, 783350, 3347960 );
 
   QTemporaryFile tmpFile;
@@ -514,7 +514,7 @@ void TestQgsRasterCalculator::calcWithReprojectedLayers()
   QVector<QgsRasterCalculatorEntry> entries;
   entries << entry1 << entry2;
 
-  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:323633" ) );
+  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:32633" ) );
   QgsRectangle extent( 783235, 3348110, 783350, 3347960 );
 
   QTemporaryFile tmpFile;
@@ -635,7 +635,7 @@ void TestQgsRasterCalculator::errors( )
   QVector<QgsRasterCalculatorEntry> entries;
   entries << entry1;
 
-  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:323633" ) );
+  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:32633" ) );
   QgsRectangle extent( 783235, 3348110, 783350, 3347960 );
 
   QTemporaryFile tmpFile;
@@ -760,7 +760,7 @@ void TestQgsRasterCalculator::calcFormulasWithReprojectedLayers()
   QVector<QgsRasterCalculatorEntry> entries;
   entries << entry1 << entry2;
 
-  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:323633" ) );
+  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:32633" ) );
   QgsRectangle extent( 783235, 3348110, 783350, 3347960 );
 
 
