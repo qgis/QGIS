@@ -42,6 +42,7 @@
 #include "qgsvectorlayerlabeling.h"
 #include "qgsfontutils.h"
 #include "qgsrasterlayer.h"
+#include "qgssinglesymbolrenderer.h"
 
 //qgs unit test utility class
 #include "qgsrenderchecker.h"
@@ -83,6 +84,8 @@ class TestQgsMapRendererJob : public QObject
     void testRenderedFeatureHandlers();
     void stagedRenderer();
     void stagedRendererWithStagedLabeling();
+
+    void vectorLayerBoundsWithReprojection();
 
   private:
     bool imageCheck( const QString &type, const QImage &image, int mismatchCount = 0 );
@@ -854,6 +857,34 @@ void TestQgsMapRendererJob::stagedRendererWithStagedLabeling()
   QVERIFY( !job->renderCurrentPart( &painter ) );
   // double check...
   QVERIFY( !job->renderCurrentPart( &painter ) );
+}
+
+void TestQgsMapRendererJob::vectorLayerBoundsWithReprojection()
+{
+  std::unique_ptr< QgsVectorLayer > gridLayer = qgis::make_unique< QgsVectorLayer >( TEST_DATA_DIR + QStringLiteral( "/grid_4326.geojson" ),
+      QStringLiteral( "grid" ), QStringLiteral( "ogr" ) );
+  QVERIFY( gridLayer->isValid() );
+
+  std::unique_ptr< QgsLineSymbol > symbol = qgis::make_unique< QgsLineSymbol >();
+  symbol->setColor( QColor( 255, 0, 255 ) );
+  symbol->setWidth( 2 );
+  std::unique_ptr< QgsSingleSymbolRenderer > renderer = qgis::make_unique< QgsSingleSymbolRenderer >( symbol.release() );
+  gridLayer->setRenderer( renderer.release() );
+
+  QgsMapSettings mapSettings;
+
+  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+  mapSettings.setExtent( QgsRectangle( -37000835.1, -20182273.7, 37000835.1, 20182273.7 ) );
+  mapSettings.setOutputSize( QSize( 512, 512 ) );
+  mapSettings.setFlag( QgsMapSettings::DrawLabeling, false );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setLayers( QList< QgsMapLayer * >() << gridLayer.get() );
+
+  QgsMapRendererSequentialJob renderJob( mapSettings );
+  renderJob.start();
+  renderJob.waitForFinished();
+  QImage img = renderJob.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "vector_layer_bounds_with_reprojection" ), img ) );
 }
 
 bool TestQgsMapRendererJob::imageCheck( const QString &testName, const QImage &image, int mismatchCount )
