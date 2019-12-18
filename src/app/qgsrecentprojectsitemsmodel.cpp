@@ -66,7 +66,7 @@ QVariant QgsRecentProjectItemsModel::data( const QModelIndex &index, int role ) 
       if ( !mRecentProjects.at( index.row() ).crs.isEmpty() )
       {
         QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mRecentProjects.at( index.row() ).crs );
-        return  QStringLiteral( "%1 (%2)" ).arg( mRecentProjects.at( index.row() ).crs, crs.description() );
+        return  QStringLiteral( "%1 (%2)" ).arg( mRecentProjects.at( index.row() ).crs, crs.userFriendlyIdentifier() );
       }
       else
       {
