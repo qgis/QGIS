@@ -1011,7 +1011,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         """
         if not Grass7Utils.projectionSet and iface:
             self.destination_crs = iface.mapCanvas().mapSettings().destinationCrs()
-            proj4 = iface.mapCanvas().mapSettings().destinationCrs().toProj4()
+            proj4 = iface.mapCanvas().mapSettings().destinationCrs().toProj()
             command = 'g.proj -c proj4="{}"'.format(proj4)
             self.commands.append(command)
             Grass7Utils.projectionSet = True
@@ -1022,7 +1022,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         We creates a PROJ4 definition which is transmitted to Grass
         """
         if not Grass7Utils.projectionSet:
-            proj4 = str(layer.crs().toProj4())
+            proj4 = str(layer.crs().toProj())
             self.destination_crs = layer.crs()
             command = 'g.proj -c proj4="{}"'.format(proj4)
             self.commands.append(command)

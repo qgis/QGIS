@@ -318,8 +318,8 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
 
   // get spatial ref system for ellipsoid
   QString proj4 = "+proj=longlat +ellps=" + ellipsoid + " +no_defs";
-  QgsCoordinateReferenceSystem destCRS = QgsCoordinateReferenceSystem::fromProj4( proj4 );
-  //TODO: createFromProj4 used to save to the user database any new CRS
+  QgsCoordinateReferenceSystem destCRS = QgsCoordinateReferenceSystem::fromProj( proj4 );
+  //TODO: createFromProj used to save to the user database any new CRS
   // this behavior was changed in order to separate creation and saving.
   // Not sure if it necessary to save it here, should be checked by someone
   // familiar with the code (should also give a more descriptive name to the generated CRS)
@@ -327,7 +327,7 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
   {
     QString name = QStringLiteral( " * %1 (%2)" )
                    .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
-                         destCRS.toProj4() );
+                         destCRS.toProj() );
     destCRS.saveAsUserCrs( name );
   }
   //
@@ -398,11 +398,11 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
               def.parameters.semiMinor = semiMinor;
               def.parameters.inverseFlattening = invFlattening;
               if ( !semiMinorComputed )
-                def.parameters.crs = QgsCoordinateReferenceSystem::fromProj4( QStringLiteral( "+proj=longlat +a=%1 +b=%2 +no_defs +type=crs" ).arg( def.parameters.semiMajor, 0, 'g', 17 ).arg( def.parameters.semiMinor, 0, 'g', 17 ) );
+                def.parameters.crs = QgsCoordinateReferenceSystem::fromProj( QStringLiteral( "+proj=longlat +a=%1 +b=%2 +no_defs +type=crs" ).arg( def.parameters.semiMajor, 0, 'g', 17 ).arg( def.parameters.semiMinor, 0, 'g', 17 ) );
               else if ( !qgsDoubleNear( def.parameters.inverseFlattening, 0.0 ) )
-                def.parameters.crs = QgsCoordinateReferenceSystem::fromProj4( QStringLiteral( "+proj=longlat +a=%1 +rf=%2 +no_defs +type=crs" ).arg( def.parameters.semiMajor, 0, 'g', 17 ).arg( def.parameters.inverseFlattening, 0, 'g', 17 ) );
+                def.parameters.crs = QgsCoordinateReferenceSystem::fromProj( QStringLiteral( "+proj=longlat +a=%1 +rf=%2 +no_defs +type=crs" ).arg( def.parameters.semiMajor, 0, 'g', 17 ).arg( def.parameters.inverseFlattening, 0, 'g', 17 ) );
               else
-                def.parameters.crs = QgsCoordinateReferenceSystem::fromProj4( QStringLiteral( "+proj=longlat +a=%1 +no_defs +type=crs" ).arg( def.parameters.semiMajor, 0, 'g', 17 ) );
+                def.parameters.crs = QgsCoordinateReferenceSystem::fromProj( QStringLiteral( "+proj=longlat +a=%1 +no_defs +type=crs" ).arg( def.parameters.semiMajor, 0, 'g', 17 ) );
             }
             else
             {
@@ -480,8 +480,9 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
 QStringList QgsEllipsoidUtils::acronyms()
 {
   QStringList result;
-  const auto constDefinitions = definitions();
-  for ( const QgsEllipsoidUtils::EllipsoidDefinition &def : constDefinitions )
+  const QList<QgsEllipsoidUtils::EllipsoidDefinition> defs = definitions();
+  result.reserve( defs.size() );
+  for ( const QgsEllipsoidUtils::EllipsoidDefinition &def : defs )
   {
     result << def.acronym;
   }

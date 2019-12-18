@@ -627,13 +627,13 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
   {
     QgsMessageLog::logMessage( QObject::tr( "The source spatial reference system (CRS) is not valid. "
                                             "The coordinates can not be reprojected. The CRS is: %1" )
-                               .arg( d->mSourceCRS.toProj4() ), QObject::tr( "CRS" ) );
+                               .arg( d->mSourceCRS.toProj() ), QObject::tr( "CRS" ) );
     return;
   }
   if ( !d->mDestCRS.isValid() )
   {
     QgsMessageLog::logMessage( QObject::tr( "The destination spatial reference system (CRS) is not valid. "
-                                            "The coordinates can not be reprojected. The CRS is: %1" ).arg( d->mDestCRS.toProj4() ), QObject::tr( "CRS" ) );
+                                            "The coordinates can not be reprojected. The CRS is: %1" ).arg( d->mDestCRS.toProj() ), QObject::tr( "CRS" ) );
     return;
   }
 

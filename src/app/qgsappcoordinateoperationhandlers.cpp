@@ -75,8 +75,8 @@ QString displayIdentifierForCrs( const QgsCoordinateReferenceSystem &crs, bool s
   }
   else if ( !crs.description().isEmpty() )
     return crs.description();
-  else if ( !crs.toProj4().isEmpty() )
-    return crs.toProj4();
+  else if ( !crs.toProj().isEmpty() )
+    return crs.toProj();
   else
     return crs.toWkt();
 }

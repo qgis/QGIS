@@ -206,11 +206,11 @@ int GRASS_LIB_EXPORT QgsGrassGisLib::G__gisinit( const char *version, const char
 
   if ( !crsStr.isEmpty() )
   {
-    if ( !mCrs.createFromProj4( crsStr ) )
+    if ( !mCrs.createFromProj( crsStr ) )
     {
       fatal( "Cannot create CRS from QGIS_GRASS_CRS: " + crsStr );
     }
-    //TODO: createFromProj4 used to save to the user database any new CRS
+    //TODO: createFromProj used to save to the user database any new CRS
     // this behavior was changed in order to separate creation and saving.
     // Not sure if it necessary to save it here, should be checked by someone
     // familiar with the code (should also give a more descriptive name to the generated CRS)
@@ -218,7 +218,7 @@ int GRASS_LIB_EXPORT QgsGrassGisLib::G__gisinit( const char *version, const char
     {
       QString myName = QString( " * %1 (%2)" )
                        .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ) )
-                       .arg( mCrs.toProj4() );
+                       .arg( mCrs.toProj() );
       mCrs.saveAsUserCRS( myName );
     }
   }
@@ -512,8 +512,8 @@ QgsGrassGisLib::Raster QgsGrassGisLib::raster( QString name )
       fatal( "Band out of range" );
     }
 
-    QgsDebugMsg( QString( "mCrs valid = %1 = %2" ).arg( mCrs.isValid() ).arg( mCrs.toProj4() ) );
-    QgsDebugMsg( QString( "crs valid = %1 = %2" ).arg( raster.provider->crs().isValid() ).arg( raster.provider->crs().toProj4() ) );
+    QgsDebugMsg( QString( "mCrs valid = %1 = %2" ).arg( mCrs.isValid() ).arg( mCrs.toProj() ) );
+    QgsDebugMsg( QString( "crs valid = %1 = %2" ).arg( raster.provider->crs().isValid() ).arg( raster.provider->crs().toProj() ) );
     if ( mCrs.isValid() )
     {
       // GDAL provider loads data without CRS as EPSG:4326!!! Verify, it should give
