@@ -645,17 +645,33 @@ internal QGIS CRS ID with "QGIS" authority, for example "QGIS:100005"
 
     QString description() const;
 %Docstring
-Returns the descriptive name of the CRS, e.g., "WGS 84" or "GDA 94 / Vicgrid94". In most
-cases this is the best method to use when showing a friendly identifier for the CRS to a
-user.
-
-:return: descriptive name of the CRS
+Returns the descriptive name of the CRS, e.g., "WGS 84" or "GDA 94 / Vicgrid94".
 
 .. note::
 
    an empty string will be returned if the description is not available for the CRS
 
 .. seealso:: :py:func:`authid`
+
+.. seealso:: :py:func:`userFriendlyIdentifier`
+%End
+
+    QString userFriendlyIdentifier( bool shortString = false ) const;
+%Docstring
+Returns a user friendly identifier for the CRS.
+
+Depending on the format of the CRS, this may reflect the CRSes registered name, or for
+CRSes not saved in the database it may reflect the underlying WKT or Proj string definition
+of the CRS.
+
+In most cases this is the best method to use when showing a friendly identifier for the CRS to a
+user.
+
+If ``shortString`` is ``True`` than an abbreviated identifier will be returned.
+
+.. seealso:: :py:func:`description`
+
+.. versionadded:: 3.10.3
 %End
 
     QString projectionAcronym() const;

@@ -1167,6 +1167,24 @@ QString QgsCoordinateReferenceSystem::description() const
   }
 }
 
+QString QgsCoordinateReferenceSystem::userFriendlyIdentifier( bool shortString ) const
+{
+  if ( !authid().isEmpty() )
+  {
+    if ( !shortString && !description().isEmpty() )
+      return QStringLiteral( "%1 - %2" ).arg( authid(), description() );
+    return authid();
+  }
+  else if ( !description().isEmpty() )
+    return description();
+  else if ( !toWkt().isEmpty() )
+    return toWkt().left( 30 ) + QChar( 0x2026 );
+  else if ( !toProj().isEmpty() )
+    return toProj().left( 30 ) + QChar( 0x2026 );
+  else
+    return QString();
+}
+
 QString QgsCoordinateReferenceSystem::projectionAcronym() const
 {
   if ( d->mProjectionAcronym.isNull() )

@@ -65,29 +65,13 @@ QgsAppMissingGridHandler::QgsAppMissingGridHandler( QObject *parent )
 
 }
 
-QString displayIdentifierForCrs( const QgsCoordinateReferenceSystem &crs, bool shortString = false )
-{
-  if ( !crs.authid().isEmpty() )
-  {
-    if ( !shortString && !crs.description().isEmpty() )
-      return QStringLiteral( "%1 [%2]" ).arg( crs.authid(), crs.description() );
-    return crs.authid();
-  }
-  else if ( !crs.description().isEmpty() )
-    return crs.description();
-  else if ( !crs.toProj().isEmpty() )
-    return crs.toProj();
-  else
-    return crs.toWkt();
-}
-
 void QgsAppMissingGridHandler::onMissingRequiredGrid( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::GridDetails &grid )
 {
   if ( !shouldWarnAboutPair( sourceCrs, destinationCrs ) )
     return;
 
-  const QString shortMessage = tr( "No transform available between %1 and %2" ).arg( displayIdentifierForCrs( sourceCrs, true ),
-                               displayIdentifierForCrs( destinationCrs, true ) );
+  const QString shortMessage = tr( "No transform available between %1 and %2" ).arg( sourceCrs.userFriendlyIdentifier( true ),
+                               destinationCrs.userFriendlyIdentifier( true ) );
 
   QString downloadMessage;
   const QString gridName = grid.shortName;
@@ -104,8 +88,8 @@ void QgsAppMissingGridHandler::onMissingRequiredGrid( const QgsCoordinateReferen
   }
 
   const QString longMessage = tr( "<p>No transform is available between <i>%1</i> and <i>%2</i>.</p>"
-                                  "<p>This transformation requires the grid file “%3”, which is not available for use on the system.</p>" ).arg( displayIdentifierForCrs( sourceCrs ),
-                                      displayIdentifierForCrs( destinationCrs ),
+                                  "<p>This transformation requires the grid file “%3”, which is not available for use on the system.</p>" ).arg( sourceCrs.userFriendlyIdentifier(),
+                                      destinationCrs.userFriendlyIdentifier(),
                                       grid.shortName );
 
   QgsMessageBar *bar = QgisApp::instance()->messageBar();
@@ -133,8 +117,8 @@ void QgsAppMissingGridHandler::onMissingPreferredGrid( const QgsCoordinateRefere
   if ( !shouldWarnAboutPair( sourceCrs, destinationCrs ) )
     return;
 
-  const QString shortMessage = tr( "Cannot use preferred transform between %1 and %2" ).arg( displayIdentifierForCrs( sourceCrs, true ),
-                               displayIdentifierForCrs( destinationCrs, true ) );
+  const QString shortMessage = tr( "Cannot use preferred transform between %1 and %2" ).arg( sourceCrs.userFriendlyIdentifier( true ),
+                               destinationCrs.userFriendlyIdentifier( true ) );
 
   QString gridMessage;
   QString downloadMessage;
@@ -172,8 +156,8 @@ void QgsAppMissingGridHandler::onMissingPreferredGrid( const QgsCoordinateRefere
     accuracyMessage = tr( "<p>Current transform “<i>%1</i>” has an unknown accuracy, while the preferred transformation “<i>%2</i>” has accuracy %3 meters.</p>" ).arg( availableOperation.name )
                       .arg( preferredOperation.name ).arg( preferredOperation.accuracy );
 
-  const QString longMessage = tr( "<p>The preferred transform between <i>%1</i> and <i>%2</i> is not available for use on the system.</p>" ).arg( displayIdentifierForCrs( sourceCrs ),
-                              displayIdentifierForCrs( destinationCrs ) )
+  const QString longMessage = tr( "<p>The preferred transform between <i>%1</i> and <i>%2</i> is not available for use on the system.</p>" ).arg( sourceCrs.userFriendlyIdentifier(),
+                              destinationCrs.userFriendlyIdentifier() )
                               + gridMessage + accuracyMessage;
 
   QgsMessageBar *bar = QgisApp::instance()->messageBar();
@@ -201,8 +185,8 @@ void QgsAppMissingGridHandler::onCoordinateOperationCreationError( const QgsCoor
   if ( !shouldWarnAboutPairForCurrentProject( sourceCrs, destinationCrs ) )
     return;
 
-  const QString shortMessage = tr( "No transform available between %1 and %2" ).arg( displayIdentifierForCrs( sourceCrs, true ), displayIdentifierForCrs( destinationCrs, true ) );
-  const QString longMessage = tr( "<p>No transform is available between <i>%1</i> and <i>%2</i>.</p><p style=\"color: red\">%3</p>" ).arg( displayIdentifierForCrs( sourceCrs ), displayIdentifierForCrs( destinationCrs ), error );
+  const QString shortMessage = tr( "No transform available between %1 and %2" ).arg( sourceCrs.userFriendlyIdentifier( true ), destinationCrs.userFriendlyIdentifier( true ) );
+  const QString longMessage = tr( "<p>No transform is available between <i>%1</i> and <i>%2</i>.</p><p style=\"color: red\">%3</p>" ).arg( sourceCrs.userFriendlyIdentifier(), destinationCrs.userFriendlyIdentifier(), error );
 
   QgsMessageBar *bar = QgisApp::instance()->messageBar();
   QgsMessageBarItem *widget = bar->createMessage( QString(), shortMessage );
@@ -225,8 +209,8 @@ void QgsAppMissingGridHandler::onMissingGridUsedByContextHandler( const QgsCoord
   if ( !shouldWarnAboutPairForCurrentProject( sourceCrs, destinationCrs ) )
     return;
 
-  const QString shortMessage = tr( "Cannot use project transform between %1 and %2" ).arg( displayIdentifierForCrs( sourceCrs, true ),
-                               displayIdentifierForCrs( destinationCrs, true ) );
+  const QString shortMessage = tr( "Cannot use project transform between %1 and %2" ).arg( sourceCrs.userFriendlyIdentifier( true ),
+                               destinationCrs.userFriendlyIdentifier( true ) );
 
   QString gridMessage;
   QString downloadMessage;
@@ -256,8 +240,8 @@ void QgsAppMissingGridHandler::onMissingGridUsedByContextHandler( const QgsCoord
     gridMessage = "<ul>" + gridMessage + "</ul>";
   }
 
-  const QString longMessage = tr( "<p>This project specifies a preset transform between <i>%1</i> and <i>%2</i>, which is not available for use on the system.</p>" ).arg( displayIdentifierForCrs( sourceCrs ),
-                              displayIdentifierForCrs( destinationCrs ) )
+  const QString longMessage = tr( "<p>This project specifies a preset transform between <i>%1</i> and <i>%2</i>, which is not available for use on the system.</p>" ).arg( sourceCrs.userFriendlyIdentifier(),
+                              destinationCrs.userFriendlyIdentifier() )
                               + gridMessage
                               + tr( "<p>The operation specified for use in the project is:</p><p><code>%1</code></p>" ).arg( desired.proj ) ;
 
