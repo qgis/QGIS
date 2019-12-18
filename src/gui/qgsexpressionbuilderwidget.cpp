@@ -785,6 +785,7 @@ void QgsExpressionBuilderWidget::setExpressionContext( const QgsExpressionContex
   updateFunctionTree();
   loadFieldNames();
   loadRecent( mRecentKey );
+  loadUserExpressions( );
 }
 
 void QgsExpressionBuilderWidget::txtExpressionString_textChanged()
