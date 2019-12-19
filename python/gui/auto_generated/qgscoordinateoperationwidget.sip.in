@@ -129,6 +129,11 @@ Sets the details of the ``operation`` currently selected within the widget.
 Emitted when the operation selected in the dialog is changed.
 %End
 
+    void operationDoubleClicked();
+%Docstring
+Emitted when an operation is double-clicked in the widget.
+%End
+
 };
 
 /************************************************************************

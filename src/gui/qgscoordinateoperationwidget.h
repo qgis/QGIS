@@ -140,6 +140,11 @@ class GUI_EXPORT QgsCoordinateOperationWidget : public QWidget, private Ui::QgsC
      */
     void operationChanged();
 
+    /**
+     * Emitted when an operation is double-clicked in the widget.
+     */
+    void operationDoubleClicked();
+
   private slots:
 
     void tableCurrentItemChanged( QTableWidgetItem *, QTableWidgetItem * );

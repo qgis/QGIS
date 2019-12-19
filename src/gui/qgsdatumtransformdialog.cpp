@@ -142,6 +142,19 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
   deets.sourceTransformId = selectedDatumTransforms.first;
   deets.destinationTransformId = selectedDatumTransforms.second;
   mCoordinateOperationsWidget->setSelectedOperation( deets );
+
+  connect( mCoordinateOperationsWidget, &QgsCoordinateOperationWidget::operationDoubleClicked, this, [ = ]
+  {
+
+#if PROJ_VERSION_MAJOR>=6
+    if ( mCoordinateOperationsWidget->sourceCrs().isValid() && mCoordinateOperationsWidget->destinationCrs().isValid()
+         && mCoordinateOperationsWidget->selectedOperation().isAvailable )
+      accept();
+#else
+    if ( mCoordinateOperationsWidget->sourceCrs().isValid() && mCoordinateOperationsWidget->destinationCrs().isValid() && mCoordinateOperationsWidget->hasSelection() )
+      accept();
+#endif
+  } );
 }
 
 void QgsDatumTransformDialog::setOKButtonEnabled()

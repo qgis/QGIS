@@ -79,6 +79,7 @@ QgsCoordinateOperationWidget::QgsCoordinateOperationWidget( QWidget *parent )
   connect( mHideDeprecatedCheckBox, &QCheckBox::stateChanged, this, [ = ] { loadAvailableOperations(); } );
   connect( mShowSupersededCheckBox, &QCheckBox::toggled, this, &QgsCoordinateOperationWidget::showSupersededToggled );
   connect( mCoordinateOperationTableWidget, &QTableWidget::currentItemChanged, this, &QgsCoordinateOperationWidget::tableCurrentItemChanged );
+  connect( mCoordinateOperationTableWidget, &QTableWidget::itemDoubleClicked, this, &QgsCoordinateOperationWidget::operationDoubleClicked );
 
   mLabelSrcDescription->clear();
   mLabelDstDescription->clear();
