@@ -1678,4 +1678,56 @@ class CORE_EXPORT QgsProcessingParameterTypeColor : public QgsProcessingParamete
 
 
 };
+
+/**
+ * A coordinate operation parameter for Processing algorithms.
+ *
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('coordinateoperation')
+ * \since QGIS 3.12
+ */
+class CORE_EXPORT QgsProcessingParameterTypeCoordinateOperation : public QgsProcessingParameterType
+{
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterCoordinateOperation( name );
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A coordinate operation parameter." );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Coordinate Operation" );
+    }
+
+    QString id() const override
+    {
+      return QStringLiteral( "coordinateoperation" );
+    }
+
+    QString pythonImportString() const override
+    {
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterCoordinateOperation" );
+    }
+
+    QString className() const override
+    {
+      return QStringLiteral( "QgsProcessingParameterCoordinateOperation" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "str: string representation of a Proj coordinate operation" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "String representation of Proj coordinate operation" );
+    }
+
+
+};
 #endif // QGSPROCESSINGPARAMETERTYPEIMPL_H
