@@ -337,6 +337,7 @@ SET(QGIS_CORE_SRCS
   qgsreadwritecontext.cpp
   qgsreadwritelocker.cpp
   qgsrelation.cpp
+  qgsrelationcontext.cpp
   qgsrelationmanager.cpp
   qgsrenderchecker.cpp
   qgsrendercontext.cpp
@@ -717,6 +718,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsprojectviewsettings.h
   qgsproxyprogresstask.h
   qgsrelationmanager.h
+  qgsrelationcontext.h
   qgsrelation.h
   qgsrunprocess.h
   qgssnappingconfig.h

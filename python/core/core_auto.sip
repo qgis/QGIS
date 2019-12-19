@@ -393,6 +393,7 @@
 %Include auto_generated/qgsprojectviewsettings.sip
 %Include auto_generated/qgsproxyprogresstask.sip
 %Include auto_generated/qgsrelationmanager.sip
+%Include auto_generated/qgsrelationcontext.sip
 %Include auto_generated/qgsrelation.sip
 %Include auto_generated/qgsrunprocess.sip
 %Include auto_generated/qgssnappingconfig.sip
