@@ -579,13 +579,21 @@ void QgsCoordinateOperationWidget::setSelectedOperation( const QgsCoordinateOper
     }
 #else
     QTableWidgetItem *destItem = mCoordinateOperationTableWidget->item( row, 1 );
-    if ( !srcItem || !destItem )
-      continue;
 
-    if ( ( operation.sourceTransformId == srcItem->data( TransformIdRole ).toInt() &&
-           operation.destinationTransformId == destItem->data( TransformIdRole ).toInt() ) ||
-         ( operation.destinationTransformId == srcItem->data( TransformIdRole ).toInt() &&
-           operation.sourceTransformId == destItem->data( TransformIdRole ).toInt() ) )
+    // eww, gross logic. Ah well, it's of extremely limited lifespan anyway... it'll be ripped out as soon as we can drop proj < 6 support
+    if ( ( srcItem && destItem && operation.sourceTransformId == srcItem->data( TransformIdRole ).toInt() &&
+           operation.destinationTransformId == destItem->data( TransformIdRole ).toInt() )
+         || ( srcItem && destItem && operation.destinationTransformId == srcItem->data( TransformIdRole ).toInt() &&
+              operation.sourceTransformId == destItem->data( TransformIdRole ).toInt() )
+         || ( srcItem && !destItem && operation.sourceTransformId == srcItem->data( TransformIdRole ).toInt() &&
+              operation.destinationTransformId == -1 )
+         || ( !srcItem && destItem && operation.destinationTransformId == destItem->data( TransformIdRole ).toInt() &&
+              operation.sourceTransformId == -1 )
+         || ( srcItem && !destItem && operation.destinationTransformId == srcItem->data( TransformIdRole ).toInt() &&
+              operation.sourceTransformId == -1 )
+         || ( !srcItem && destItem && operation.sourceTransformId == destItem->data( TransformIdRole ).toInt() &&
+              operation.destinationTransformId == -1 )
+       )
     {
       mCoordinateOperationTableWidget->selectRow( row );
       break;
