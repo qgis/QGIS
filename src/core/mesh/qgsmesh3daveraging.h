@@ -55,8 +55,8 @@ class CORE_EXPORT QgsMesh3dAveragingMethod SIP_ABSTRACT
         case QgsMesh3dAveragingMethod::SigmaAveragingMethod:
           sipType = sipType_QgsMeshSigmaAveragingMethod;
           break;
-        case QgsMesh3dAveragingMethod::RelativeLengthAveragingMethod:
-          sipType = sipType_QgsMeshRelativeLengthAveragingMethod;
+        case QgsMesh3dAveragingMethod::RelativeHeightAveragingMethod:
+          sipType = sipType_QgsMeshRelativeHeightAveragingMethod;
           break;
         case QgsMesh3dAveragingMethod::ElevationAveragingMethod:
           sipType = sipType_QgsMeshElevationAveragingMethod;
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsMesh3dAveragingMethod SIP_ABSTRACT
       //! Method to average values between 0 (bed level) and 1 (surface)
       SigmaAveragingMethod,
       //! Method to average values defined by range of relative length units to the surface or bed level
-      RelativeLengthAveragingMethod,
+      RelativeHeightAveragingMethod,
       //! Method to average values defined by range of absolute length units to the model's datum
       ElevationAveragingMethod
     };
@@ -268,36 +268,36 @@ class CORE_EXPORT QgsMeshSigmaAveragingMethod: public QgsMesh3dAveragingMethod
 /**
  * \ingroup core
  *
- * Relative length averaging method averages the values based on range defined relative to bed elevation or surface (when countedFromTop())
+ * Relative height averaging method averages the values based on range defined relative to bed elevation or surface (when countedFromTop())
  * The range is defined in the same length units as defined by model (e.g. meters)
  *
- * if countedFromTop(), the relative length method represents averaging based on depth below surface.
+ * if countedFromTop(), the method represents averaging based on depth below surface.
  * For example one can pull out results for between 6 to 12 meters below the water surface - depth from 6m to 12m.
  * The depth will be truncated at the bed level.
  *
- * if not countedFromTop(), the relative length method represents averaging based on height above bed level.
+ * if not countedFromTop(), the method represents averaging based on height above bed level.
  * For example one can pull out results for between 6 to 12 meters above the bed - height from 6m to 12m.
  * The height will be truncated at the bed level.
  *
  * \since QGIS 3.12
  */
-class CORE_EXPORT QgsMeshRelativeLengthAveragingMethod: public QgsMesh3dAveragingMethod
+class CORE_EXPORT QgsMeshRelativeHeightAveragingMethod: public QgsMesh3dAveragingMethod
 {
   public:
 
     //! Constructs default depth averaging method
-    QgsMeshRelativeLengthAveragingMethod();
+    QgsMeshRelativeHeightAveragingMethod();
 
     /**
      * Constructs the depth/height averaging method
-     * \param startLength starting depth/height, higher or equal than 0
-     * \param endLength ending depth/height, higher or equal than startDepth
+     * \param startHeight starting depth/height, higher or equal than 0
+     * \param endHeight ending depth/height, higher or equal than startDepth
      * \param countedFromTop if true, the startLength and endLength is relative to surface (0 is surface level).
      *                       if false, the startLength and endLength is relative to bed (0 is bed level).
      */
-    QgsMeshRelativeLengthAveragingMethod( double startLength, double endLength, bool countedFromTop );
+    QgsMeshRelativeHeightAveragingMethod( double startHeight, double endHeight, bool countedFromTop );
 
-    ~QgsMeshRelativeLengthAveragingMethod() override;
+    ~QgsMeshRelativeHeightAveragingMethod() override;
     QDomElement writeXml( QDomDocument &doc ) const override;
     void readXml( const QDomElement &elem ) override;
     bool equals( const QgsMesh3dAveragingMethod *other ) const override;
@@ -308,14 +308,14 @@ class CORE_EXPORT QgsMeshRelativeLengthAveragingMethod: public QgsMesh3dAveragin
      *
      * Always lower or equal than endLength()
      */
-    double startLength() const;
+    double startHeight() const;
 
     /**
      * Returns ending depth/height.
      *
      * Always higher or equal than startLength()
      */
-    double endLength() const;
+    double endHeight() const;
 
     /**
      * Returns whether the start and end vertical levels are relative to top (surface) or bottom (bed) level
@@ -327,8 +327,8 @@ class CORE_EXPORT QgsMeshRelativeLengthAveragingMethod: public QgsMesh3dAveragin
     void volumeRangeForFace( double &startVerticalLevel,
                              double &endVerticalLevel,
                              const QVector<double> &verticalLevels ) const override;
-    double mStartDepth = 0;
-    double mEndDepth = 0;
+    double mStartHeight = 0;
+    double mEndHeight = 0;
     bool mCountedFromTop = true;
 };
 

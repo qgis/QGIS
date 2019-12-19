@@ -178,14 +178,14 @@ std::unique_ptr<QgsMesh3dAveragingMethod> QgsMeshRenderer3dAveragingWidget::aver
     {
       const double startDepth = mDepthStartSpinBox->value();
       const double endDepth = mDepthEndSpinBox->value();
-      averaging.reset( new QgsMeshRelativeLengthAveragingMethod( startDepth, endDepth, true ) );
+      averaging.reset( new QgsMeshRelativeHeightAveragingMethod( startDepth, endDepth, true ) );
       break;
     }
     case 6: // height (from bed elevation)
     {
       const double startHeight = mHeightStartSpinBox->value();
       const double endHeight = mHeightEndSpinBox->value();
-      averaging.reset( new QgsMeshRelativeLengthAveragingMethod( startHeight, endHeight, false ) );
+      averaging.reset( new QgsMeshRelativeHeightAveragingMethod( startHeight, endHeight, false ) );
       break;
     }
     case 7: // elevation
@@ -258,19 +258,19 @@ void QgsMeshRenderer3dAveragingWidget::syncToLayer( )
         pageIndex = 4;
         break;
       }
-      case QgsMesh3dAveragingMethod::RelativeLengthAveragingMethod:
+      case QgsMesh3dAveragingMethod::RelativeHeightAveragingMethod:
       {
-        const QgsMeshRelativeLengthAveragingMethod *averagingMethod = static_cast<const QgsMeshRelativeLengthAveragingMethod *>( method );
+        const QgsMeshRelativeHeightAveragingMethod *averagingMethod = static_cast<const QgsMeshRelativeHeightAveragingMethod *>( method );
         if ( averagingMethod->countedFromTop() )
         {
-          whileBlocking( mDepthStartSpinBox )->setValue( averagingMethod->startLength() );
-          whileBlocking( mDepthEndSpinBox )->setValue( averagingMethod->endLength() );
+          whileBlocking( mDepthStartSpinBox )->setValue( averagingMethod->startHeight() );
+          whileBlocking( mDepthEndSpinBox )->setValue( averagingMethod->endHeight() );
           pageIndex = 5;
         }
         else
         {
-          whileBlocking( mHeightStartSpinBox )->setValue( averagingMethod->startLength() );
-          whileBlocking( mHeightEndSpinBox )->setValue( averagingMethod->endLength() );
+          whileBlocking( mHeightStartSpinBox )->setValue( averagingMethod->startHeight() );
+          whileBlocking( mHeightEndSpinBox )->setValue( averagingMethod->endHeight() );
           pageIndex = 6;
         }
         break;

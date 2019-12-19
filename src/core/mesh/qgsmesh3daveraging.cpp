@@ -43,8 +43,8 @@ QgsMesh3dAveragingMethod *QgsMesh3dAveragingMethod::createFromXml( const QDomEle
     case QgsMesh3dAveragingMethod::SigmaAveragingMethod:
       ret.reset( new QgsMeshSigmaAveragingMethod() );
       break;
-    case QgsMesh3dAveragingMethod::RelativeLengthAveragingMethod:
-      ret.reset( new QgsMeshRelativeLengthAveragingMethod() );
+    case QgsMesh3dAveragingMethod::RelativeHeightAveragingMethod:
+      ret.reset( new QgsMeshRelativeHeightAveragingMethod() );
       break;
     case QgsMesh3dAveragingMethod::ElevationAveragingMethod:
       ret.reset( new QgsMeshElevationAveragingMethod() );
@@ -418,76 +418,76 @@ bool QgsMeshMultiLevelsAveragingMethod::isSingleLevel() const
 }
 
 
-QgsMeshRelativeLengthAveragingMethod::QgsMeshRelativeLengthAveragingMethod()
-  : QgsMesh3dAveragingMethod( QgsMesh3dAveragingMethod::RelativeLengthAveragingMethod )
+QgsMeshRelativeHeightAveragingMethod::QgsMeshRelativeHeightAveragingMethod()
+  : QgsMesh3dAveragingMethod( QgsMesh3dAveragingMethod::RelativeHeightAveragingMethod )
 {
 }
 
-QgsMeshRelativeLengthAveragingMethod::QgsMeshRelativeLengthAveragingMethod( double startDepth, double endDepth, bool countedFromTop )
-  : QgsMesh3dAveragingMethod( QgsMesh3dAveragingMethod::RelativeLengthAveragingMethod )
-  , mStartDepth( startDepth )
-  , mEndDepth( endDepth )
+QgsMeshRelativeHeightAveragingMethod::QgsMeshRelativeHeightAveragingMethod( double startDepth, double endDepth, bool countedFromTop )
+  : QgsMesh3dAveragingMethod( QgsMesh3dAveragingMethod::RelativeHeightAveragingMethod )
+  , mStartHeight( startDepth )
+  , mEndHeight( endDepth )
   , mCountedFromTop( countedFromTop )
 {
-  if ( mStartDepth > mEndDepth )
+  if ( mStartHeight > mEndHeight )
   {
-    std::swap( mStartDepth, mEndDepth );
+    std::swap( mStartHeight, mEndHeight );
   }
 }
 
-QgsMeshRelativeLengthAveragingMethod::~QgsMeshRelativeLengthAveragingMethod() = default;
+QgsMeshRelativeHeightAveragingMethod::~QgsMeshRelativeHeightAveragingMethod() = default;
 
-QDomElement QgsMeshRelativeLengthAveragingMethod::writeXml( QDomDocument &doc ) const
+QDomElement QgsMeshRelativeHeightAveragingMethod::writeXml( QDomDocument &doc ) const
 {
-  QDomElement elem = doc.createElement( QStringLiteral( "depth-settings" ) );
-  elem.setAttribute( QStringLiteral( "start-depth" ), startLength() );
-  elem.setAttribute( QStringLiteral( "end-depth" ), endLength() );
+  QDomElement elem = doc.createElement( QStringLiteral( "relative-height-settings" ) );
+  elem.setAttribute( QStringLiteral( "start-height" ), startHeight() );
+  elem.setAttribute( QStringLiteral( "end-height" ), endHeight() );
   return elem;
 }
 
-void QgsMeshRelativeLengthAveragingMethod::readXml( const QDomElement &elem )
+void QgsMeshRelativeHeightAveragingMethod::readXml( const QDomElement &elem )
 {
-  mStartDepth = elem.attribute( QStringLiteral( "start-depth" ) ).toInt();
-  mEndDepth = elem.attribute( QStringLiteral( "end-depth" ) ).toInt();
-  if ( mStartDepth > mEndDepth )
+  mStartHeight = elem.attribute( QStringLiteral( "start-height" ) ).toInt();
+  mEndHeight = elem.attribute( QStringLiteral( "end-height" ) ).toInt();
+  if ( mStartHeight > mEndHeight )
   {
-    std::swap( mStartDepth, mEndDepth );
+    std::swap( mStartHeight, mEndHeight );
   }
 }
 
-bool QgsMeshRelativeLengthAveragingMethod::equals( const QgsMesh3dAveragingMethod *other ) const
+bool QgsMeshRelativeHeightAveragingMethod::equals( const QgsMesh3dAveragingMethod *other ) const
 {
   if ( !other || other->method() != method() )
     return false;
 
-  const QgsMeshRelativeLengthAveragingMethod *otherMethod = static_cast<const QgsMeshRelativeLengthAveragingMethod *>( other );
+  const QgsMeshRelativeHeightAveragingMethod *otherMethod = static_cast<const QgsMeshRelativeHeightAveragingMethod *>( other );
 
-  return qgsDoubleNear( otherMethod->startLength(), startLength() ) &&
-         qgsDoubleNear( otherMethod->endLength(), endLength() ) &&
+  return qgsDoubleNear( otherMethod->startHeight(), startHeight() ) &&
+         qgsDoubleNear( otherMethod->endHeight(), endHeight() ) &&
          otherMethod->countedFromTop() == countedFromTop();
 }
 
-QgsMesh3dAveragingMethod *QgsMeshRelativeLengthAveragingMethod::clone() const
+QgsMesh3dAveragingMethod *QgsMeshRelativeHeightAveragingMethod::clone() const
 {
-  return new QgsMeshRelativeLengthAveragingMethod( startLength(), endLength(), countedFromTop() );
+  return new QgsMeshRelativeHeightAveragingMethod( startHeight(), endHeight(), countedFromTop() );
 }
 
-double QgsMeshRelativeLengthAveragingMethod::startLength() const
+double QgsMeshRelativeHeightAveragingMethod::startHeight() const
 {
-  return mStartDepth;
+  return mStartHeight;
 }
 
-double QgsMeshRelativeLengthAveragingMethod::endLength() const
+double QgsMeshRelativeHeightAveragingMethod::endHeight() const
 {
-  return mEndDepth;
+  return mEndHeight;
 }
 
-bool QgsMeshRelativeLengthAveragingMethod::hasValidInputs() const
+bool QgsMeshRelativeHeightAveragingMethod::hasValidInputs() const
 {
-  return mStartDepth >= 0 && mEndDepth >= mStartDepth;
+  return mStartHeight >= 0 && mEndHeight >= mStartHeight;
 }
 
-void QgsMeshRelativeLengthAveragingMethod::volumeRangeForFace(
+void QgsMeshRelativeHeightAveragingMethod::volumeRangeForFace(
   double &startVerticalLevel,
   double &endVerticalLevel,
   const QVector<double> &verticalLevels ) const
@@ -495,18 +495,18 @@ void QgsMeshRelativeLengthAveragingMethod::volumeRangeForFace(
   if ( countedFromTop() )
   {
     const double top = verticalLevels[ 0 ];
-    startVerticalLevel = top - mStartDepth;
-    endVerticalLevel = top - mEndDepth;
+    startVerticalLevel = top - mStartHeight;
+    endVerticalLevel = top - mEndHeight;
   }
   else
   {
     const double bot = verticalLevels[verticalLevels.size() - 1];
-    startVerticalLevel = bot + mStartDepth;
-    endVerticalLevel = bot + mEndDepth;
+    startVerticalLevel = bot + mStartHeight;
+    endVerticalLevel = bot + mEndHeight;
   }
 }
 
-bool QgsMeshRelativeLengthAveragingMethod::countedFromTop() const
+bool QgsMeshRelativeHeightAveragingMethod::countedFromTop() const
 {
   return mCountedFromTop;
 }

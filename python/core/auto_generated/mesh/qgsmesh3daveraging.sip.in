@@ -37,8 +37,8 @@ Abstract class to interpolate 3d stacked mesh data to 2d data
         case QgsMesh3dAveragingMethod::SigmaAveragingMethod:
           sipType = sipType_QgsMeshSigmaAveragingMethod;
           break;
-        case QgsMesh3dAveragingMethod::RelativeLengthAveragingMethod:
-          sipType = sipType_QgsMeshRelativeLengthAveragingMethod;
+        case QgsMesh3dAveragingMethod::RelativeHeightAveragingMethod:
+          sipType = sipType_QgsMeshRelativeHeightAveragingMethod;
           break;
         case QgsMesh3dAveragingMethod::ElevationAveragingMethod:
           sipType = sipType_QgsMeshElevationAveragingMethod;
@@ -57,7 +57,7 @@ Abstract class to interpolate 3d stacked mesh data to 2d data
       //! Method to average values between 0 (bed level) and 1 (surface)
       SigmaAveragingMethod,
       //! Method to average values defined by range of relative length units to the surface or bed level
-      RelativeLengthAveragingMethod,
+      RelativeHeightAveragingMethod,
       //! Method to average values defined by range of absolute length units to the model's datum
       ElevationAveragingMethod
     };
@@ -250,18 +250,18 @@ Always higher or equal than startFraction()
 
 };
 
-class QgsMeshRelativeLengthAveragingMethod: QgsMesh3dAveragingMethod
+class QgsMeshRelativeHeightAveragingMethod: QgsMesh3dAveragingMethod
 {
 %Docstring
 
-Relative length averaging method averages the values based on range defined relative to bed elevation or surface (when countedFromTop())
+Relative height averaging method averages the values based on range defined relative to bed elevation or surface (when countedFromTop())
 The range is defined in the same length units as defined by model (e.g. meters)
 
-if countedFromTop(), the relative length method represents averaging based on depth below surface.
+if countedFromTop(), the method represents averaging based on depth below surface.
 For example one can pull out results for between 6 to 12 meters below the water surface - depth from 6m to 12m.
 The depth will be truncated at the bed level.
 
-if not countedFromTop(), the relative length method represents averaging based on height above bed level.
+if not countedFromTop(), the method represents averaging based on height above bed level.
 For example one can pull out results for between 6 to 12 meters above the bed - height from 6m to 12m.
 The height will be truncated at the bed level.
 
@@ -273,22 +273,22 @@ The height will be truncated at the bed level.
 %End
   public:
 
-    QgsMeshRelativeLengthAveragingMethod();
+    QgsMeshRelativeHeightAveragingMethod();
 %Docstring
 Constructs default depth averaging method
 %End
 
-    QgsMeshRelativeLengthAveragingMethod( double startLength, double endLength, bool countedFromTop );
+    QgsMeshRelativeHeightAveragingMethod( double startHeight, double endHeight, bool countedFromTop );
 %Docstring
 Constructs the depth/height averaging method
 
-:param startLength: starting depth/height, higher or equal than 0
-:param endLength: ending depth/height, higher or equal than startDepth
+:param startHeight: starting depth/height, higher or equal than 0
+:param endHeight: ending depth/height, higher or equal than startDepth
 :param countedFromTop: if true, the startLength and endLength is relative to surface (0 is surface level).
                        if false, the startLength and endLength is relative to bed (0 is bed level).
 %End
 
-    ~QgsMeshRelativeLengthAveragingMethod();
+    ~QgsMeshRelativeHeightAveragingMethod();
     virtual QDomElement writeXml( QDomDocument &doc ) const;
 
     virtual void readXml( const QDomElement &elem );
@@ -298,14 +298,14 @@ Constructs the depth/height averaging method
     virtual QgsMesh3dAveragingMethod *clone() const /Factory/;
 
 
-    double startLength() const;
+    double startHeight() const;
 %Docstring
 Returns starting depth/height.
 
 Always lower or equal than endLength()
 %End
 
-    double endLength() const;
+    double endHeight() const;
 %Docstring
 Returns ending depth/height.
 

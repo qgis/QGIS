@@ -280,7 +280,7 @@ void TestQgsMesh3dAveraging::testMeshDepthAveragingMethod()
   QFETCH( double, endParam );
   QFETCH( double, expected );
 
-  QgsMeshRelativeLengthAveragingMethod method( startParam, endParam, true );
+  QgsMeshRelativeHeightAveragingMethod method( startParam, endParam, true );
   compare( &method, expected, startParam >= 0 );
 }
 
@@ -302,7 +302,7 @@ void TestQgsMesh3dAveraging::testMeshHeightAveragingMethod()
   QFETCH( double, endParam );
   QFETCH( double, expected );
 
-  QgsMeshRelativeLengthAveragingMethod method( startParam, endParam, false );
+  QgsMeshRelativeHeightAveragingMethod method( startParam, endParam, false );
   compare( &method, expected, startParam >= 0 );
 }
 
