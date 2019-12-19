@@ -1813,13 +1813,17 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
   if ( !layer.metadataUrl.isEmpty() )
   {
     metadata += QStringLiteral( "<tr><th>" ) %
-                tr( "MetadataURLs" ) %
+                tr( "Metadata URLs" ) %
                 QStringLiteral( "</th>"
                                 "<td><table class=\"tabular-view\">"
-                                "<tr><th>Format</th><th>URL</th></tr>" );
-    for ( int k = 0; k < layer.metadataUrl.size(); k++ )
+                                "<tr><th>" ) %
+                tr( "Format" ) %
+                QStringLiteral("</th><th>") %
+                tr( "URL" ) %
+                QStringLiteral("</th></tr>" );
+
+    for ( const QgsWmsMetadataUrlProperty &l : qgis::as_const( layer.metadataUrl ) )
     {
-      const QgsWmsMetadataUrlProperty &l = layer.metadataUrl[k];
       metadata += QStringLiteral( "<tr><td>" ) % l.format % QStringLiteral( "</td><td>" ) % l.onlineResource.xlinkHref % QStringLiteral( "</td></tr>" );
     }
     metadata += QStringLiteral( "</table>"

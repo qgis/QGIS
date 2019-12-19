@@ -789,7 +789,7 @@ void QgsWmsCapabilities::parseMetadataUrl( QDomElement const &e, QgsWmsMetadataU
   QDomNode n1 = e.firstChild();
   while ( !n1.isNull() )
   {
-    QDomElement e1 = n1.toElement(); // try to convert the node to an element.
+    QDomElement e1 = n1.toElement();
     if ( !e1.isNull() )
     {
       QString tagName = e1.tagName();
@@ -807,8 +807,6 @@ void QgsWmsCapabilities::parseMetadataUrl( QDomElement const &e, QgsWmsMetadataU
     }
     n1 = n1.nextSibling();
   }
-
-  QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
 void QgsWmsCapabilities::parseLayer( QDomElement const &e, QgsWmsLayerProperty &layerProperty,

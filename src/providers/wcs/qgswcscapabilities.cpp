@@ -767,9 +767,9 @@ void QgsWcsCapabilities::parseCoverageOfferingBrief( QDomElement const &e, QgsWc
   QgsDebugMsg( QStringLiteral( "coverage orderId = %1 identifier = %2" ).arg( coverageSummary.orderId ).arg( coverageSummary.identifier ) );
 }
 
-void QgsWcsCapabilities::parseMetadataLink( QDomElement const &e, QgsWcsMetadataLinkProperty &metadataLink )
+void QgsWcsCapabilities::parseMetadataLink(  const QDomElement &element, QgsWcsMetadataLinkProperty &metadataLink )
 {
-  QDomElement metadataElement = firstChild( e, QStringLiteral( "metadataLink" ) );
+  QDomElement metadataElement = firstChild( element, QStringLiteral( "metadataLink" ) );
 
   if ( !metadataElement.isNull() )
   {

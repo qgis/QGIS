@@ -34,7 +34,7 @@
 class QNetworkAccessManager;
 class QNetworkReply;
 
-//! Metadata Link Property structure
+//! Metadata link property structure
 struct QgsWcsMetadataLinkProperty
 {
   QString metadataType;
@@ -55,12 +55,14 @@ struct QgsWcsCoverageSummary
   QList<double> nullValues;
   QgsRectangle  wgs84BoundingBox; // almost useless, we need the native
   QString       nativeCrs;
-  //Optional metadataLink
+  //! Optional metadataLink
   QgsWcsMetadataLinkProperty metadataLink;
-  // Map of bounding boxes, key is CRS name (srsName), e.g. EPSG:4326
+
+  //! Map of bounding boxes, key is CRS name (srsName), e.g. EPSG:4326
   QMap<QString, QgsRectangle> boundingBoxes;
   QgsRectangle  nativeBoundingBox;
-  // timePosition or timePeriod (beginPosition/endPosition[/timeResolution] - used in KVP request)
+
+  //! timePosition or timePeriod (beginPosition/endPosition[/timeResolution] - used in KVP request)
   QStringList times;
   QVector<QgsWcsCoverageSummary> coverageSummary;
   // non reflecting Capabilities structure:
@@ -123,7 +125,7 @@ class QgsWcsCapabilities : public QObject
      */
     void coverageParents( QMap<int, int> &parents, QMap<int, QStringList> &parentNames ) const;
 
-    // Parse metadata element from the document
+    //! Parse metadata element from the document
     void parseMetadataLink( QDomElement const &e, QgsWcsMetadataLinkProperty &metadataLink );
 
     //! Gets coverage summary for identifier
