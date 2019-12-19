@@ -270,7 +270,7 @@ bool QgsManageConnectionsDialog::populateConnections()
         settings.beginGroup( QStringLiteral( "/DB2/connections" ) );
         break;
       case HANA:
-        settings.beginGroup(QStringLiteral("/HANA/connections"));
+        settings.beginGroup( QStringLiteral( "/HANA/connections" ) );
         break;
       case GeoNode:
         settings.beginGroup( QStringLiteral( "/qgis/connections-geonode" ) );
@@ -391,10 +391,10 @@ bool QgsManageConnectionsDialog::populateConnections()
         }
         break;
       case HANA:
-        if (root.tagName() != QLatin1String("qgsHanaConnections"))
+        if ( root.tagName() != QLatin1String( "qgsHanaConnections" ) )
         {
-          QMessageBox::information(this, tr("Loading Connections"),
-            tr("The file is not a HANA connections exchange file."));
+          QMessageBox::information( this, tr( "Loading Connections" ),
+                                    tr( "The file is not a HANA connections exchange file." ) );
           return false;
         }
         break;
@@ -688,50 +688,50 @@ QDomDocument QgsManageConnectionsDialog::saveDb2Connections( const QStringList &
   return doc;
 }
 
-QDomDocument QgsManageConnectionsDialog::saveHanaConnections(const QStringList &connections)
+QDomDocument QgsManageConnectionsDialog::saveHanaConnections( const QStringList &connections )
 {
-  QDomDocument doc(QStringLiteral("connections"));
-  QDomElement root = doc.createElement(QStringLiteral("qgsHanaConnections"));
-  root.setAttribute(QStringLiteral("version"), QStringLiteral("1.0"));
-  doc.appendChild(root);
+  QDomDocument doc( QStringLiteral( "connections" ) );
+  QDomElement root = doc.createElement( QStringLiteral( "qgsHanaConnections" ) );
+  root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
+  doc.appendChild( root );
 
   QgsSettings settings;
   QString path;
-  for (int i = 0; i < connections.count(); ++i)
+  for ( int i = 0; i < connections.count(); ++i )
   {
     path = "/HANA/connections/" + connections[i];
-    QDomElement el = doc.createElement(QStringLiteral("hana"));
-    el.setAttribute(QStringLiteral("name"), connections[i]);
-    el.setAttribute(QStringLiteral("driver"), settings.value(path + "/driver", "").toString());
-    el.setAttribute(QStringLiteral("host"), settings.value(path + "/host", "").toString());
-    el.setAttribute(QStringLiteral("port"), settings.value(path + "/port", "").toString());
-    el.setAttribute(QStringLiteral("database"), settings.value(path + "/database", "").toString());
-    el.setAttribute(QStringLiteral("schema"), settings.value(path + "/schema", QString()).toString());
-    el.setAttribute(QStringLiteral("geometryColumnsOnly"), settings.value(path + "/geometryColumnsOnly", "0").toString());
-    el.setAttribute(QStringLiteral("allowGeometrylessTables"), settings.value(path + "/allowGeometrylessTables", "0").toString());
+    QDomElement el = doc.createElement( QStringLiteral( "hana" ) );
+    el.setAttribute( QStringLiteral( "name" ), connections[i] );
+    el.setAttribute( QStringLiteral( "driver" ), settings.value( path + "/driver", "" ).toString() );
+    el.setAttribute( QStringLiteral( "host" ), settings.value( path + "/host", "" ).toString() );
+    el.setAttribute( QStringLiteral( "port" ), settings.value( path + "/port", "" ).toString() );
+    el.setAttribute( QStringLiteral( "database" ), settings.value( path + "/database", "" ).toString() );
+    el.setAttribute( QStringLiteral( "schema" ), settings.value( path + "/schema", QString() ).toString() );
+    el.setAttribute( QStringLiteral( "geometryColumnsOnly" ), settings.value( path + "/geometryColumnsOnly", "0" ).toString() );
+    el.setAttribute( QStringLiteral( "allowGeometrylessTables" ), settings.value( path + "/allowGeometrylessTables", "0" ).toString() );
 
-    el.setAttribute(QStringLiteral("saveUsername"), settings.value(path + "/saveUsername", "false").toString());
+    el.setAttribute( QStringLiteral( "saveUsername" ), settings.value( path + "/saveUsername", "false" ).toString() );
 
-    if (settings.value(path + "/saveUsername", "false").toString() == QLatin1String("true"))
+    if ( settings.value( path + "/saveUsername", "false" ).toString() == QLatin1String( "true" ) )
     {
-      el.setAttribute(QStringLiteral("username"), settings.value(path + "/username", "").toString());
+      el.setAttribute( QStringLiteral( "username" ), settings.value( path + "/username", "" ).toString() );
     }
 
-    el.setAttribute(QStringLiteral("savePassword"), settings.value(path + "/savePassword", "false").toString());
+    el.setAttribute( QStringLiteral( "savePassword" ), settings.value( path + "/savePassword", "false" ).toString() );
 
-    if (settings.value(path + "/savePassword", "false").toString() == QLatin1String("true"))
+    if ( settings.value( path + "/savePassword", "false" ).toString() == QLatin1String( "true" ) )
     {
-      el.setAttribute(QStringLiteral("password"), settings.value(path + "/password", "").toString());
+      el.setAttribute( QStringLiteral( "password" ), settings.value( path + "/password", "" ).toString() );
     }
 
-    el.setAttribute(QStringLiteral("sslEnabled"), settings.value(path + "/sslEnabled", "false").toString());
-    el.setAttribute(QStringLiteral("sslCryptoProvider"), settings.value(path + "/sslCryptoProvider", "openssl").toString());
-    el.setAttribute(QStringLiteral("sslKeyStore"), settings.value(path + "/sslKeyStore", "").toString());
-    el.setAttribute(QStringLiteral("sslTrustStore"), settings.value(path + "/sslTrustStore", "").toString());
-    el.setAttribute(QStringLiteral("sslValidateCertificate"), settings.value(path + "/sslValidateCertificate", "false").toString());
-    el.setAttribute(QStringLiteral("sslHostNameInCertificate"), settings.value(path + "/sslHostNameInCertificate", "").toString());
+    el.setAttribute( QStringLiteral( "sslEnabled" ), settings.value( path + "/sslEnabled", "false" ).toString() );
+    el.setAttribute( QStringLiteral( "sslCryptoProvider" ), settings.value( path + "/sslCryptoProvider", "openssl" ).toString() );
+    el.setAttribute( QStringLiteral( "sslKeyStore" ), settings.value( path + "/sslKeyStore", "" ).toString() );
+    el.setAttribute( QStringLiteral( "sslTrustStore" ), settings.value( path + "/sslTrustStore", "" ).toString() );
+    el.setAttribute( QStringLiteral( "sslValidateCertificate" ), settings.value( path + "/sslValidateCertificate", "false" ).toString() );
+    el.setAttribute( QStringLiteral( "sslHostNameInCertificate" ), settings.value( path + "/sslHostNameInCertificate", "" ).toString() );
 
-    root.appendChild(el);
+    root.appendChild( el );
   }
 
   return doc;
@@ -1381,92 +1381,92 @@ void QgsManageConnectionsDialog::loadDb2Connections( const QDomDocument &doc, co
   }
 }
 
-void QgsManageConnectionsDialog::loadHanaConnections(const QDomDocument &doc, const QStringList &items)
+void QgsManageConnectionsDialog::loadHanaConnections( const QDomDocument &doc, const QStringList &items )
 {
   QDomElement root = doc.documentElement();
-  if (root.tagName() != QLatin1String("qgsHanaConnections"))
+  if ( root.tagName() != QLatin1String( "qgsHanaConnections" ) )
   {
-    QMessageBox::information(this,
-      tr("Loading Connections"),
-      tr("The file is not a HANA connections exchange file."));
+    QMessageBox::information( this,
+                              tr( "Loading Connections" ),
+                              tr( "The file is not a HANA connections exchange file." ) );
     return;
   }
 
   QString connectionName;
   QgsSettings settings;
-  settings.beginGroup(QStringLiteral("/HANA/connections"));
+  settings.beginGroup( QStringLiteral( "/HANA/connections" ) );
   QStringList keys = settings.childGroups();
   settings.endGroup();
   QDomElement child = root.firstChildElement();
   bool prompt = true;
   bool overwrite = true;
 
-  while (!child.isNull())
+  while ( !child.isNull() )
   {
-    connectionName = child.attribute(QStringLiteral("name"));
-    if (!items.contains(connectionName))
+    connectionName = child.attribute( QStringLiteral( "name" ) );
+    if ( !items.contains( connectionName ) )
     {
       child = child.nextSiblingElement();
       continue;
     }
 
     // check for duplicates
-    if (keys.contains(connectionName) && prompt)
+    if ( keys.contains( connectionName ) && prompt )
     {
-      int res = QMessageBox::warning(this,
-        tr("Loading Connections"),
-        tr("Connection with name '%1' already exists. Overwrite?")
-        .arg(connectionName),
-        QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel);
-      switch (res)
+      int res = QMessageBox::warning( this,
+                                      tr( "Loading Connections" ),
+                                      tr( "Connection with name '%1' already exists. Overwrite?" )
+                                      .arg( connectionName ),
+                                      QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      switch ( res )
       {
-      case QMessageBox::Cancel:
-        return;
-      case QMessageBox::No:
-        child = child.nextSiblingElement();
-        continue;
-      case QMessageBox::Yes:
-        overwrite = true;
-        break;
-      case QMessageBox::YesToAll:
-        prompt = false;
-        overwrite = true;
-        break;
-      case QMessageBox::NoToAll:
-        prompt = false;
-        overwrite = false;
-        break;
+        case QMessageBox::Cancel:
+          return;
+        case QMessageBox::No:
+          child = child.nextSiblingElement();
+          continue;
+        case QMessageBox::Yes:
+          overwrite = true;
+          break;
+        case QMessageBox::YesToAll:
+          prompt = false;
+          overwrite = true;
+          break;
+        case QMessageBox::NoToAll:
+          prompt = false;
+          overwrite = false;
+          break;
       }
     }
 
-    if (keys.contains(connectionName) && !overwrite)
+    if ( keys.contains( connectionName ) && !overwrite )
     {
       child = child.nextSiblingElement();
       continue;
     }
 
     //no dups detected or overwrite is allowed
-    settings.beginGroup("/HANA/connections/" + connectionName);
+    settings.beginGroup( "/HANA/connections/" + connectionName );
 
-    settings.setValue(QStringLiteral("/driver"), child.attribute(QStringLiteral("driver")));
-    settings.setValue(QStringLiteral("/host"), child.attribute(QStringLiteral("host")));
-    settings.setValue(QStringLiteral("/port"), child.attribute(QStringLiteral("port")));
-    settings.setValue(QStringLiteral("/database"), child.attribute(QStringLiteral("database")));
-    settings.setValue(QStringLiteral("/schema"), child.attribute(QStringLiteral("schema")));
-    settings.setValue(QStringLiteral("/sslmode"), child.attribute(QStringLiteral("sslmode")));
-    settings.setValue(QStringLiteral("/geometryColumnsOnly"), child.attribute(QStringLiteral("geometryColumnsOnly")));
-    settings.setValue(QStringLiteral("/allowGeometrylessTables"), child.attribute(QStringLiteral("allowGeometrylessTables")));
-    settings.setValue(QStringLiteral("/saveUsername"), child.attribute(QStringLiteral("saveUsername")));
-    settings.setValue(QStringLiteral("/username"), child.attribute(QStringLiteral("username")));
-    settings.setValue(QStringLiteral("/savePassword"), child.attribute(QStringLiteral("savePassword")));
-    settings.setValue(QStringLiteral("/password"), child.attribute(QStringLiteral("password")));
+    settings.setValue( QStringLiteral( "/driver" ), child.attribute( QStringLiteral( "driver" ) ) );
+    settings.setValue( QStringLiteral( "/host" ), child.attribute( QStringLiteral( "host" ) ) );
+    settings.setValue( QStringLiteral( "/port" ), child.attribute( QStringLiteral( "port" ) ) );
+    settings.setValue( QStringLiteral( "/database" ), child.attribute( QStringLiteral( "database" ) ) );
+    settings.setValue( QStringLiteral( "/schema" ), child.attribute( QStringLiteral( "schema" ) ) );
+    settings.setValue( QStringLiteral( "/sslmode" ), child.attribute( QStringLiteral( "sslmode" ) ) );
+    settings.setValue( QStringLiteral( "/geometryColumnsOnly" ), child.attribute( QStringLiteral( "geometryColumnsOnly" ) ) );
+    settings.setValue( QStringLiteral( "/allowGeometrylessTables" ), child.attribute( QStringLiteral( "allowGeometrylessTables" ) ) );
+    settings.setValue( QStringLiteral( "/saveUsername" ), child.attribute( QStringLiteral( "saveUsername" ) ) );
+    settings.setValue( QStringLiteral( "/username" ), child.attribute( QStringLiteral( "username" ) ) );
+    settings.setValue( QStringLiteral( "/savePassword" ), child.attribute( QStringLiteral( "savePassword" ) ) );
+    settings.setValue( QStringLiteral( "/password" ), child.attribute( QStringLiteral( "password" ) ) );
 
-    settings.setValue(QStringLiteral("/sslEnabled"), child.attribute(QStringLiteral("sslEnabled")));
-    settings.setValue(QStringLiteral("/sslCryptoProvider"), child.attribute(QStringLiteral("sslCryptoProvider")));
-    settings.setValue(QStringLiteral("/sslKeyStore"), child.attribute(QStringLiteral("sslKeyStore")));
-    settings.setValue(QStringLiteral("/sslTrustStore"), child.attribute(QStringLiteral("sslTrustStore")));
-    settings.setValue(QStringLiteral("/sslValidateCertificate"), child.attribute(QStringLiteral("sslValidateCertificate")));
-    settings.setValue(QStringLiteral("/sslHostNameInCertificate"), child.attribute(QStringLiteral("sslHostNameInCertificate")));
+    settings.setValue( QStringLiteral( "/sslEnabled" ), child.attribute( QStringLiteral( "sslEnabled" ) ) );
+    settings.setValue( QStringLiteral( "/sslCryptoProvider" ), child.attribute( QStringLiteral( "sslCryptoProvider" ) ) );
+    settings.setValue( QStringLiteral( "/sslKeyStore" ), child.attribute( QStringLiteral( "sslKeyStore" ) ) );
+    settings.setValue( QStringLiteral( "/sslTrustStore" ), child.attribute( QStringLiteral( "sslTrustStore" ) ) );
+    settings.setValue( QStringLiteral( "/sslValidateCertificate" ), child.attribute( QStringLiteral( "sslValidateCertificate" ) ) );
+    settings.setValue( QStringLiteral( "/sslHostNameInCertificate" ), child.attribute( QStringLiteral( "sslHostNameInCertificate" ) ) );
 
     settings.endGroup();
 
