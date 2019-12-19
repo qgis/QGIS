@@ -30,6 +30,8 @@ a source and destination coordinate reference system.
       int destinationTransformId;
 
       QString proj;
+
+      bool isAvailable;
     };
 
     QgsCoordinateOperationWidget( QWidget *parent = 0 );
@@ -84,6 +86,21 @@ the current canvas state.
     void setShowMakeDefault( bool show );
 %Docstring
 Sets whether the "make default" checkbox should be shown.
+%End
+
+    bool makeDefaultSelected() const;
+%Docstring
+Returns ``True`` if the "make default" option is selected.
+%End
+
+    bool hasSelection() const;
+%Docstring
+Returns ``True`` if there is a valid selection in the widget.
+%End
+
+    QList< QgsCoordinateOperationWidget::OperationDetails > availableOperations() const;
+%Docstring
+Returns a list of the available operations shown in the widget.
 %End
 
     QgsCoordinateOperationWidget::OperationDetails defaultOperation() const;
