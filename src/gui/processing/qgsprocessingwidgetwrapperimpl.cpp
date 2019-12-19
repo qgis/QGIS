@@ -2988,7 +2988,7 @@ void QgsProcessingCoordinateOperationWidgetWrapper::setWidgetValue( const QVaria
 QVariant QgsProcessingCoordinateOperationWidgetWrapper::widgetValue() const
 {
   if ( mOperationWidget )
-    return mOperationWidget->selectedOperation().isAvailable ? mOperationWidget->selectedOperation().proj : QString();
+    return mOperationWidget->selectedOperation().proj;
   else if ( mLineEdit )
     return mLineEdit->text();
   else
