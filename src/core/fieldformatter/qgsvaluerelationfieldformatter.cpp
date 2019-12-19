@@ -188,15 +188,18 @@ QList<QgsVectorLayerRef> QgsValueRelationFieldFormatter::layerDependencies( cons
   return result;
 }
 
-QVariantList QgsValueRelationFieldFormatter::availableValues( const QVariantMap &config, int countLimit ) const
+QVariantList QgsValueRelationFieldFormatter::availableValues( const QVariantMap &config, int countLimit, const QgsFieldFormatterContext *context ) const
 {
   QVariantList values;
 
-  const QgsVectorLayer *referencedLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( config[QStringLiteral( "Layer" )].toString() ) );
-  if ( referencedLayer )
+  if ( context->project() )
   {
-    int fieldIndex = referencedLayer->fields().indexOf( config.value( QStringLiteral( "Key" ) ).toString() );
-    values = referencedLayer->uniqueValues( fieldIndex, countLimit ).toList();
+    const QgsVectorLayer *referencedLayer = qobject_cast<QgsVectorLayer *>( context->project()->mapLayer( config[QStringLiteral( "Layer" )].toString() ) );
+    if ( referencedLayer )
+    {
+      int fieldIndex = referencedLayer->fields().indexOf( config.value( QStringLiteral( "Key" ) ).toString() );
+      values = referencedLayer->uniqueValues( fieldIndex, countLimit ).toList();
+    }
   }
   return values;
 }

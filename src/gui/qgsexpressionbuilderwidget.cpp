@@ -42,7 +42,6 @@
 #include <QGraphicsOpacityEffect>
 #include <QPropertyAnimation>
 
-
 QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   : QWidget( parent )
   , mProject( QgsProject::instance() )
@@ -475,7 +474,9 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int 
   QVariantList values;
   if ( cbxValuesInUse->isVisible() && !cbxValuesInUse->isChecked() && !forceUsedValues )
   {
-    values = formatter->availableValues( setup.config(), countLimit );
+    QgsFieldFormatterContext fieldFormatterContext;
+    fieldFormatterContext.setProject( mProject );
+    values = formatter->availableValues( setup.config(), countLimit, &fieldFormatterContext );
   }
   else
   {

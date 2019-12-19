@@ -26,6 +26,37 @@ class QgsVectorLayer;
 
 /**
  * \ingroup core
+ * A context for field formatter containing information like the project
+ *
+ * \since QGIS 3.12
+ */
+class CORE_EXPORT QgsFieldFormatterContext
+{
+  public:
+
+    /**
+     * Constructor
+     */
+    QgsFieldFormatterContext() = default;
+
+    /**
+     * Returns the project used in field formatter
+     * \see setProject()
+     */
+    QgsProject *project() const { return mProject; }
+
+    /**
+     * Sets the \a project used in field formatter
+     * \see project()
+     */
+    void setProject( QgsProject *project ) { mProject = project; }
+
+  private:
+    QgsProject *mProject = nullptr;
+};
+
+/**
+ * \ingroup core
  * A field formatter helps to handle and display values for a field.
  *
  * It allows for using a shared configuration with the editor widgets
@@ -125,7 +156,7 @@ class CORE_EXPORT QgsFieldFormatter
      * according to the settings in the \a config
      * \since QGIS 3.12
      */
-    virtual QVariantList availableValues( const QVariantMap &config, int countLimit ) const;
+    virtual QVariantList availableValues( const QVariantMap &config, int countLimit, const QgsFieldFormatterContext *context ) const;
 
     /**
      * Returns the flags

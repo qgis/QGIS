@@ -47,7 +47,7 @@ Default constructor of field formatter for a value map field.
     virtual QVariant sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
 
 
-    virtual QVariantList availableValues( const QVariantMap &config, int countLimit ) const;
+    virtual QVariantList availableValues( const QVariantMap &config, int countLimit, const QgsFieldFormatterContext *context ) const;
 
 };
 
