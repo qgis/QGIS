@@ -3498,7 +3498,7 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
     mySpatialRefSys.validate();
   }
 
-  QString myWkt = mySpatialRefSys.toWkt();
+  QString myWkt = mySpatialRefSys.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 );
 
   if ( !myWkt.isNull()  &&  myWkt.length() != 0 )
   {
