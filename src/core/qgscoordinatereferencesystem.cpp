@@ -1195,8 +1195,8 @@ QString QgsCoordinateReferenceSystem::userFriendlyIdentifier( bool shortString )
     return description();
   else if ( shortString )
     return QObject::tr( "Unknown CRS" );
-  else if ( !toWkt().isEmpty() )
-    return QObject::tr( "Unknown CRS: %1" ).arg( toWkt().left( 50 ) + QString( QChar( 0x2026 ) ) );
+  else if ( !toWkt( WKT2_2018 ).isEmpty() )
+    return QObject::tr( "Unknown CRS: %1" ).arg( toWkt( WKT2_2018 ).left( 50 ) + QString( QChar( 0x2026 ) ) );
   else if ( !toProj().isEmpty() )
     return QObject::tr( "Unknown CRS: %1" ).arg( toProj().left( 50 ) + QString( QChar( 0x2026 ) ) );
   else
@@ -1826,7 +1826,7 @@ bool QgsCoordinateReferenceSystem::operator!=( const QgsCoordinateReferenceSyste
 
 QString QgsCoordinateReferenceSystem::toWkt( WktVariant variant, bool multiline, int indentationWidth ) const
 {
-  if ( d->mWkt.isEmpty() )
+  if ( d->mWkt.isEmpty() || variant != WKT1_GDAL )
   {
 #if PROJ_VERSION_MAJOR>=6
     if ( d->mPj )
@@ -1857,7 +1857,11 @@ QString QgsCoordinateReferenceSystem::toWkt( WktVariant variant, bool multiline,
       const QByteArray multiLineOption = QStringLiteral( "MULTILINE=%1" ).arg( multiline ? QStringLiteral( "YES" ) : QStringLiteral( "NO" ) ).toLocal8Bit();
       const QByteArray indentatationWidthOption = QStringLiteral( "INDENTATION_WIDTH=%1" ).arg( multiline ? QString::number( indentationWidth ) : QStringLiteral( "0" ) ).toLocal8Bit();
       const char *const options[] = {multiLineOption.constData(), indentatationWidthOption.constData(), nullptr};
-      d->mWkt = QString( proj_as_wkt( QgsProjContext::get(), d->mPj.get(), type, options ) );
+      const QString res = QString( proj_as_wkt( QgsProjContext::get(), d->mPj.get(), type, options ) );
+      if ( variant == WKT1_GDAL )
+        d->mWkt = res;
+
+      return res;
     }
 #else
     Q_UNUSED( variant )
@@ -1869,9 +1873,9 @@ QString QgsCoordinateReferenceSystem::toWkt( WktVariant variant, bool multiline,
       d->mWkt = wkt;
       CPLFree( wkt );
     }
+    return d->mWkt;
 #endif
   }
-  return d->mWkt;
 }
 
 bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
@@ -1984,7 +1988,7 @@ bool QgsCoordinateReferenceSystem::writeXml( QDomNode &node, QDomDocument &doc )
   QDomElement srsElement = doc.createElement( QStringLiteral( "spatialrefsys" ) );
 
   QDomElement wktElement = doc.createElement( QStringLiteral( "wkt" ) );
-  wktElement.appendChild( doc.createTextNode( toWkt() ) );
+  wktElement.appendChild( doc.createTextNode( toWkt( WKT2_2018 ) ) );
   srsElement.appendChild( wktElement );
 
   QDomElement proj4Element = doc.createElement( QStringLiteral( "proj4" ) );
@@ -2124,7 +2128,7 @@ void QgsCoordinateReferenceSystem::debugPrint()
   QgsDebugMsg( "* Valid : " + ( d->mIsValid ? QString( "true" ) : QString( "false" ) ) );
   QgsDebugMsg( "* SrsId : " + QString::number( d->mSrsId ) );
   QgsDebugMsg( "* Proj4 : " + toProj() );
-  QgsDebugMsg( "* WKT   : " + toWkt() );
+  QgsDebugMsg( "* WKT   : " + toWkt( WKT2_2018 ) );
   QgsDebugMsg( "* Desc. : " + d->mDescription );
   if ( mapUnits() == QgsUnitTypes::DistanceMeters )
   {
@@ -2169,11 +2173,7 @@ long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name, Format na
   {
     proj4String = toProj();
   }
-  QString wktString = d->mWkt;
-  if ( wktString.isEmpty() )
-  {
-    wktString = toWkt();
-  }
+  QString wktString = toWkt( WKT2_2018 );
 
   // ellipsoid acroynym column is incorrectly marked as not null in many crs database instances,
   // hack around this by using an empty string instead
@@ -3441,7 +3441,7 @@ void QgsCoordinateReferenceSystem::pushRecentCoordinateReferenceSystem( const Qg
   {
     authids << c.authid();
     proj << c.toProj();
-    wkt << c.toWkt();
+    wkt << c.toWkt( WKT2_2018 );
   }
 
   QgsSettings settings;

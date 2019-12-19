@@ -388,7 +388,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
   QgsCoordinateReferenceSystem srs = mCrsSelector->crs();
   if ( wkbType != wkbNone && srs.isValid() )
   {
-    QString srsWkt = srs.toWkt();
+    QString srsWkt = srs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 );
     hSRS = OSRNewSpatialReference( srsWkt.toLocal8Bit().data() );
   }
 
