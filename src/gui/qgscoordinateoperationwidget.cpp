@@ -668,7 +668,17 @@ void QgsCoordinateOperationWidget::tableCurrentItemChanged( QTableWidgetItem *, 
     QTableWidgetItem *destItem = mCoordinateOperationTableWidget->item( row, 1 );
     mLabelDstDescription->setText( destItem ? destItem->toolTip() : QString() );
   }
-  emit operationChanged();
+  OperationDetails newOp = selectedOperation();
+#if PROJ_VERSION_MAJOR>=6
+  if ( newOp.proj != mPreviousOp.proj )
+    emit operationChanged();
+#else
+  if ( newOp.sourceTransformId != mPreviousOp.sourceTransformId ||
+       newOp.destinationTransformId != mPreviousOp.destinationTransformId ||
+     )
+    emit operationChanged();
+#endif
+  mPreviousOp = newOp;
 }
 
 void QgsCoordinateOperationWidget::setSourceCrs( const QgsCoordinateReferenceSystem &sourceCrs )
