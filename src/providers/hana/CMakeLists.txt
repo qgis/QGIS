@@ -18,16 +18,6 @@ SET (HANA_SRCS
   qgshanautils.cpp
 )
 
-SET (HANA_MOC_HDRS
-  qgshanacolumntypethread.h
-  qgshanaconnection.h
-  qgshanaconnectionpool.h
-  qgshanadataitems.h
-  qgshanaprovider.h
-  qgshanaresultset.h
-  qgshanatablemodel.h
-)
-
 IF (WITH_GUI)
   SET(HANA_SRCS ${HANA_SRCS}
     qgshanadataitems.cpp
@@ -36,17 +26,13 @@ IF (WITH_GUI)
     qgshanaprovidergui.cpp
     qgshanasourceselect.cpp
   )
-  SET(HANA_MOC_HDRS ${HANA_MOC_HDRS}
-    qgshananewconnection.h
-    qgshanadataitemguiprovider.h
-    qgshanasourceselect.h
-  )
 ENDIF ()
 
 SET(HANA_HDRS
+  qgshanadriver.h
   qgshanaexception.h
   qgshanaexpressioncompiler.h
-  qgshanadriver.h
+  qgshanaresultset.h
 )
 
 ########################################################
@@ -57,12 +43,14 @@ QT5_WRAP_CPP(HANA_MOC_SRCS ${HANA_MOC_HDRS})
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/auth
+  ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/metadata
-  ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/auth
   ${CMAKE_SOURCE_DIR}/external
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
