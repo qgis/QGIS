@@ -267,7 +267,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   layout->addWidget( mMetadataWidget );
   metadataFrame->setLayout( layout );
 
-  QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().toWkt() );
+  QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) );
   QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().userFriendlyIdentifier() );
   mCrsSelector->setCrs( mRasterLayer->crs() );
 
