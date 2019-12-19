@@ -40,34 +40,38 @@ QString QgsRelationReferenceFieldFormatter::representValue( QgsVectorLayer *laye
     return cache.value<QMap<QVariant, QString>>().value( value );
   }
 
+  const QString fieldName = fieldIndex < layer->fields().size() ? layer->fields().at( fieldIndex ).name() : QObject::tr( "<unknown>" );
+
   // Some sanity checks
   if ( !config.contains( QStringLiteral( "Relation" ) ) )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Missing Relation in configuration" ) );
+    QgsMessageLog::logMessage( QObject::tr( "Layer %1, field %2: Missing Relation in configuration" ).arg( layer->name(), fieldName ) );
     return value.toString();
   }
-  QgsRelation relation = QgsProject::instance()->relationManager()->relation( config[QStringLiteral( "Relation" )].toString() );
+
+  const QString relationName = config[QStringLiteral( "Relation" )].toString();
+  QgsRelation relation = QgsProject::instance()->relationManager()->relation( relationName );
   if ( !relation.isValid() )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Invalid relation" ) );
+    QgsMessageLog::logMessage( QObject::tr( "Layer %1, field %2: Invalid relation %3" ).arg( layer->name(), fieldName, relationName ) );
     return value.toString();
   }
   QgsVectorLayer *referencingLayer = relation.referencingLayer();
   if ( layer != referencingLayer )
   {
-    QgsMessageLog::logMessage( QObject::tr( "representValue() with inconsistent layer parameter w.r.t relation referencingLayer" ) );
+    QgsMessageLog::logMessage( QObject::tr( "Layer %1, field %2: representValue() with inconsistent layer parameter w.r.t relation referencingLayer" ).arg( layer->name(), fieldName ) );
     return value.toString();
   }
   int referencingFieldIdx = referencingLayer->fields().lookupField( relation.fieldPairs().at( 0 ).first );
   if ( referencingFieldIdx != fieldIndex )
   {
-    QgsMessageLog::logMessage( QObject::tr( "representValue() with inconsistent fieldIndex parameter w.r.t relation referencingFieldIdx" ) );
+    QgsMessageLog::logMessage( QObject::tr( "Layer %1, field %2: representValue() with inconsistent fieldIndex parameter w.r.t relation referencingFieldIdx" ).arg( layer->name(), fieldName ) );
     return value.toString();
   }
   QgsVectorLayer *referencedLayer = relation.referencedLayer();
   if ( !referencedLayer )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Cannot find referenced layer" ) );
+    QgsMessageLog::logMessage( QObject::tr( "Layer %1, field %2: Cannot find referenced layer" ).arg( layer->name(), fieldName ) );
     return value.toString();
   }
 
@@ -104,34 +108,37 @@ QVariant QgsRelationReferenceFieldFormatter::createCache( QgsVectorLayer *layer,
   Q_UNUSED( fieldIndex )
   QMap<QVariant, QString> cache;
 
+  const QString fieldName = fieldIndex < layer->fields().size() ? layer->fields().at( fieldIndex ).name() : QObject::tr( "<unknown>" );
+
   // Some sanity checks
   if ( !config.contains( QStringLiteral( "Relation" ) ) )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Missing Relation in configuration" ) );
+    QgsMessageLog::logMessage( QObject::tr( "Layer %1, field %2: Missing Relation in configuration" ).arg( layer->name(), fieldName ) );
     return QVariant();
   }
+  const QString relationName = config[QStringLiteral( "Relation" )].toString();
   QgsRelation relation = QgsProject::instance()->relationManager()->relation( config[QStringLiteral( "Relation" )].toString() );
   if ( !relation.isValid() )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Invalid relation" ) );
+    QgsMessageLog::logMessage( QObject::tr( "Layer %1, field %2: Invalid relation %3" ).arg( layer->name(), fieldName, relationName ) );
     return QVariant();
   }
   QgsVectorLayer *referencingLayer = relation.referencingLayer();
   if ( layer != referencingLayer )
   {
-    QgsMessageLog::logMessage( QObject::tr( "representValue() with inconsistent layer parameter w.r.t relation referencingLayer" ) );
+    QgsMessageLog::logMessage( QObject::tr( "Layer %1, field %2: representValue() with inconsistent layer parameter w.r.t relation referencingLayer" ).arg( layer->name(), fieldName ) );
     return QVariant();
   }
   QgsVectorLayer *referencedLayer = relation.referencedLayer();
   if ( !referencedLayer )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Cannot find referenced layer" ) );
+    QgsMessageLog::logMessage( QObject::tr( "Layer %1, field %2: Cannot find referenced layer" ).arg( layer->name(), fieldName ) );
     return QVariant();
   }
   int referencedFieldIdx = referencedLayer->fields().lookupField( relation.fieldPairs().at( 0 ).second );
   if ( referencedFieldIdx == -1 )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Invalid referenced field (%1) configured in relation %2" ).arg( relation.fieldPairs().at( 0 ).second, relation.name() ) );
+    QgsMessageLog::logMessage( QObject::tr( "Layer %1, field %2: Invalid referenced field (%3) configured in relation %4" ).arg( layer->name(), fieldName, relation.fieldPairs().at( 0 ).second, relation.name() ) );
     return QVariant();
   }
 

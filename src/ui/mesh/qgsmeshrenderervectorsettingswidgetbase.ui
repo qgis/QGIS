@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>365</width>
-    <height>749</height>
+    <width>340</width>
+    <height>773</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -409,6 +409,9 @@
       <string>Traces</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_6">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetDefaultConstraint</enum>
+      </property>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_6">
         <property name="topMargin">
@@ -450,6 +453,24 @@
         </item>
         <item>
          <widget class="QDoubleSpinBox" name="mTracesMaxLengthSpinBox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16777215</height>
+           </size>
+          </property>
           <property name="minimum">
            <double>1.000000000000000</double>
           </property>

@@ -169,6 +169,71 @@ class TestQgsProjectionSelectionWidgets(unittest.TestCase):
         w.setCrs(QgsCoordinateReferenceSystem())
         self.assertFalse(w.crs().isValid())
 
+    def testTreeWidgetDeferredLoad(self):
+        """
+        Test that crs setting made before widget is initialized is respected
+        """
+        w = QgsProjectionSelectionTreeWidget()
+        spy = QSignalSpy(w.crsSelected)
+        self.assertFalse(w.hasValidSelection())
+        w.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertEqual(len(spy), 1)
+        self.assertTrue(w.hasValidSelection())
+        self.assertEqual(w.crs().authid(), 'EPSG:3111')
+        self.assertEqual(len(spy), 1)
+
+        w = QgsProjectionSelectionTreeWidget()
+        spy = QSignalSpy(w.crsSelected)
+        self.assertFalse(w.hasValidSelection())
+        w.setCrs(QgsCoordinateReferenceSystem())
+        self.assertEqual(len(spy), 1)
+        self.assertTrue(w.hasValidSelection())
+        self.assertFalse(w.crs().isValid())
+        self.assertEqual(len(spy), 1)
+        w.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        self.assertEqual(len(spy), 2)
+
+        # expect same behavior if we show
+        w = QgsProjectionSelectionTreeWidget()
+        spy = QSignalSpy(w.crsSelected)
+        self.assertFalse(w.hasValidSelection())
+        w.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertEqual(len(spy), 1)
+        w.show()
+        self.assertTrue(w.hasValidSelection())
+        self.assertEqual(w.crs().authid(), 'EPSG:3111')
+        self.assertEqual(len(spy), 1)
+
+        w = QgsProjectionSelectionTreeWidget()
+        spy = QSignalSpy(w.crsSelected)
+        self.assertFalse(w.hasValidSelection())
+        w.setCrs(QgsCoordinateReferenceSystem())
+        self.assertEqual(len(spy), 1)
+        w.show()
+        self.assertTrue(w.hasValidSelection())
+        self.assertFalse(w.crs().isValid())
+        self.assertEqual(len(spy), 1)
+
+        # no double signals if same crs set
+        w = QgsProjectionSelectionTreeWidget()
+        spy = QSignalSpy(w.crsSelected)
+        self.assertFalse(w.hasValidSelection())
+        w.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        w.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertEqual(len(spy), 1)
+
+        # no double signals if same crs set
+        w = QgsProjectionSelectionTreeWidget()
+        spy = QSignalSpy(w.crsSelected)
+        self.assertFalse(w.hasValidSelection())
+        w.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        w.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        w.show()
+        w.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertEqual(len(spy), 1)
+        w.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        self.assertEqual(len(spy), 2)
+
 
 if __name__ == '__main__':
     unittest.main()

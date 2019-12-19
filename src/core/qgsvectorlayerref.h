@@ -15,6 +15,8 @@
 #ifndef QGSVECTORLAYERREF_H
 #define QGSVECTORLAYERREF_H
 
+#define SIP_NO_FILE
+
 #include "qgsmaplayerref.h"
 #include "qgsvectorlayer.h"
 

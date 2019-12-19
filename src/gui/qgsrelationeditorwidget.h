@@ -196,6 +196,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     void mapToolDeactivated();
     void onKeyPressed( QKeyEvent *e );
     void onDigitizingCompleted( const QgsFeature &feature );
+    void onLinkFeatureDlgAccepted();
 
   private:
     void updateUi();

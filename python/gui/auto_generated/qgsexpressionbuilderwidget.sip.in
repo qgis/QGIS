@@ -63,6 +63,7 @@ Gets the type of expression item, e.g., header, field, ExpressionNode.
 
     static const int CUSTOM_SORT_ROLE;
     static const int ITEM_TYPE_ROLE;
+    static const int SEARCH_TAGS_ROLE;
 
 };
 
@@ -199,7 +200,8 @@ preview result and for populating the list of available functions and variables.
                        const QString &helpText = QString(),
                        QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
                        bool highlightedItem = false, int sortOrder = 1,
-                       QIcon icon = QIcon() );
+                       QIcon icon = QIcon(),
+                       const QStringList &tags = QStringList() );
 %Docstring
 Registers a node item for the expression builder.
 
@@ -211,45 +213,67 @@ Registers a node item for the expression builder.
 :param highlightedItem: set to ``True`` to make the item highlighted, which inserts a bold copy of the item at the top level
 :param sortOrder: sort ranking for item
 :param icon: custom icon to show for item
+:param tags: tags to find function
 %End
 
     bool isExpressionValid();
 
     void saveToRecent( const QString &collection = "generic" );
 %Docstring
-Adds the current expression to the given collection.
+Adds the current expression to the given ``collection``.
 By default it is saved to the collection "generic".
 %End
 
-    void loadRecent( const QString &collection = "generic" );
+    void loadRecent( const QString &collection = QStringLiteral( "generic" ) );
 %Docstring
-Loads the recent expressions from the given collection.
+Loads the recent expressions from the given ``collection``.
 By default it is loaded from the collection "generic".
+%End
+
+    void loadUserExpressions( );
+%Docstring
+Loads the user expressions.
+
+.. versionadded:: 3.12
+%End
+
+    void saveToUserExpressions( const QString &label, const QString expression, const QString &helpText );
+%Docstring
+Stores the user ``expression`` with given ``label`` and ``helpText``.
+
+.. versionadded:: 3.12
+%End
+
+    void removeFromUserExpressions( const QString &label );
+%Docstring
+Removes the expression ``label`` from the user stored expressions.
+
+.. versionadded:: 3.12
 %End
 
     void newFunctionFile( const QString &fileName = "scratch" );
 %Docstring
-Create a new file in the function editor
+Creates a new file in the function editor
 %End
 
     void saveFunctionFile( QString fileName );
 %Docstring
-Save the current function editor text to the given file.
+Saves the current function editor text to the given file.
 %End
 
     void loadCodeFromFile( QString path );
 %Docstring
-Load code from the given file into the function editor
+Loads code from the given file into the function editor
 %End
 
     void loadFunctionCode( const QString &code );
 %Docstring
-Load code into the function editor
+Loads code into the function editor
 %End
 
     void updateFunctionFileList( const QString &path );
 %Docstring
-Update the list of function files found at the given path
+Updates the list of function files found at the given path
 %End
 
     QStandardItemModel *model();
@@ -337,6 +361,29 @@ when text changes.
 
 :param enabled: ``True`` to enable auto saving.
 %End
+
+    void storeCurrentUserExpression( );
+%Docstring
+Adds the current expressions to the stored user expressions.
+
+.. versionadded:: 3.12
+%End
+
+    void removeSelectedUserExpression( );
+%Docstring
+Removes the selected expression from the stored user expressions,
+the selected expression must be a user stored expression.
+
+.. versionadded:: 3.12
+%End
+
+    const QList<QgsExpressionItem *> findExpressions( const QString &label );
+%Docstring
+Returns the list of expression items matching a ``label``.
+
+.. versionadded:: 3.12
+%End
+
 
   signals:
 

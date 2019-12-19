@@ -526,7 +526,12 @@ void TestQgsMapSettings::testExpressionContext()
 
   e = QgsExpression( QStringLiteral( "@map_crs_ellipsoid" ) );
   r = e.evaluate( &c );
+
+#if PROJ_VERSION_MAJOR>=6
+  QCOMPARE( r.toString(), QStringLiteral( "EPSG:7030" ) );
+#else
   QCOMPARE( r.toString(), QStringLiteral( "WGS84" ) );
+#endif
 }
 
 void TestQgsMapSettings::testRenderedFeatureHandlers()

@@ -51,7 +51,7 @@ class GUI_EXPORT QgsFeatureSelectionDlg : public QDialog, private Ui::QgsFeature
   public:
 
     //! Constructor for QgsFeatureSelectionDlg
-    explicit QgsFeatureSelectionDlg( QgsVectorLayer *vl, QgsAttributeEditorContext &context, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    explicit QgsFeatureSelectionDlg( QgsVectorLayer *vl, const QgsAttributeEditorContext &context, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Gets the selected features
@@ -66,15 +66,50 @@ class GUI_EXPORT QgsFeatureSelectionDlg : public QDialog, private Ui::QgsFeature
      */
     void setSelectedFeatures( const QgsFeatureIds &ids );
 
-  private:
-    QgsVectorLayerSelectionManager *mFeatureSelection = nullptr;
-    QgsVectorLayer *mVectorLayer = nullptr;
-
-    // QWidget interface
   protected:
+
+    void keyPressEvent( QKeyEvent *evt ) override;
 
     //! Make sure the dialog does not grow too much
     void showEvent( QShowEvent *event ) override;
+
+  private slots:
+
+    /**
+     * Inverts selection
+     */
+    void mActionInvertSelection_triggered();
+
+    /**
+     * Clears selection
+     */
+    void mActionRemoveSelection_triggered();
+
+    /**
+     * Select all
+     */
+    void mActionSelectAll_triggered();
+
+    /**
+     * Zooms to selected features
+     */
+    void mActionZoomMapToSelectedRows_triggered();
+
+    /**
+     * Pans to selected features
+     */
+    void mActionPanMapToSelectedRows_triggered();
+
+    /**
+     * Select feature using an expression
+     */
+    void mActionExpressionSelect_triggered();
+
+  private:
+
+    QgsVectorLayerSelectionManager *mFeatureSelection = nullptr;
+    QgsVectorLayer *mVectorLayer = nullptr;
+    QgsAttributeEditorContext mContext;
 };
 
 #endif // QGSFEATURESELECTIONDLG_H

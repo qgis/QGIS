@@ -227,6 +227,7 @@ class CORE_EXPORT QgsMeshDataBlock
 
     /**
      * Returns buffer to the array with values
+     * For vector it is pairs (x1, y1, x2, y2, ... )
      *
      * \since QGIS 3.12
      */
@@ -291,10 +292,10 @@ class CORE_EXPORT QgsMesh3dDataBlock
     //! Number of 2d faces for which the volume data is stored in the block
     int count() const;
 
-    //! Index of the first volume stored in the buffer
+    //! Index of the first volume stored in the buffer (absolute)
     int firstVolumeIndex() const;
 
-    //! Index of the last volume stored in the buffer
+    //! Index of the last volume stored in the buffer (absolute)
     int lastVolumeIndex() const;
 
     //! Returns number of volumes stored in the buffer
@@ -336,6 +337,14 @@ class CORE_EXPORT QgsMesh3dDataBlock
      * For vector datasets the number of values is doubled (x1, y1, x2, y2, ... )
      */
     QVector<double> values() const;
+
+    /**
+     * Returns the value at volume centers
+     *
+     * \param volumeIndex volume index relative to firstVolumeIndex()
+     * \returns value (scalar or vector)
+     */
+    QgsMeshDatasetValue value( int volumeIndex ) const;
 
     /**
      * Sets the values at volume centers
@@ -388,6 +397,7 @@ class CORE_EXPORT QgsMeshDatasetGroupMetadata
      * \param minimum minimum value (magnitude for vectors) present among all group's dataset values
      * \param maximum maximum value (magnitude for vectors) present among all group's dataset values
      * \param maximumVerticalLevels maximum number of vertical levels for 3d stacked meshes, 0 for 2d meshes
+     * \param referenceTime reference time of the dataset group
      * \param extraOptions dataset's extra options stored by the provider. Usually contains the name, time value, time units, data file vendor, ...
      */
     QgsMeshDatasetGroupMetadata( const QString &name,
@@ -396,6 +406,7 @@ class CORE_EXPORT QgsMeshDatasetGroupMetadata
                                  double minimum,
                                  double maximum,
                                  int maximumVerticalLevels,
+                                 const QDateTime &referenceTime,
                                  const QMap<QString, QString> &extraOptions );
 
     /**
@@ -442,6 +453,13 @@ class CORE_EXPORT QgsMeshDatasetGroupMetadata
      */
     int maximumVerticalLevelsCount() const;
 
+    /**
+     * Returns the reference time
+     *
+     * \since QGIS 3.12
+     */
+    QDateTime referenceTime() const;
+
   private:
     QString mName;
     bool mIsScalar = false;
@@ -450,6 +468,7 @@ class CORE_EXPORT QgsMeshDatasetGroupMetadata
     double mMaximumValue = std::numeric_limits<double>::quiet_NaN();
     QMap<QString, QString> mExtraOptions;
     int mMaximumVerticalLevelsCount = 0; // for 3d stacked meshes
+    QDateTime mReferenceTime;
 };
 
 /**

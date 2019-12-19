@@ -2161,8 +2161,8 @@ class TestQgsExpression: public QObject
     {
       QgsExpression exp1( QStringLiteral( "rand(1,10)" ) );
       QVariant v1 = exp1.evaluate();
-      QCOMPARE( v1.toInt() <= 10, true );
-      QCOMPARE( v1.toInt() >= 1, true );
+      QVERIFY2( v1.toInt() <= 10, QString( "Calculated: %1 Expected <= %2" ).arg( QString::number( v1.toInt() ), QString::number( 10 ) ).toUtf8().constData() );
+      QVERIFY2( v1.toInt() >= 1, QString( "Calculated: %1 Expected >= %2" ).arg( QString::number( v1.toInt() ), QString::number( 1 ) ).toUtf8().constData() );
 
       QgsExpression exp2( QStringLiteral( "rand(min:=-5,max:=-5)" ) );
       QVariant v2 = exp2.evaluate();
@@ -2172,23 +2172,83 @@ class TestQgsExpression: public QObject
       QgsExpression exp3( QStringLiteral( "rand(10,1)" ) );
       QVariant v3 = exp3.evaluate();
       QCOMPARE( v3.type(),  QVariant::Invalid );
+
+      // Supports multiple type of seeds
+      QgsExpression exp4( QStringLiteral( "rand(1,10,123)" ) );
+      QVariant v4 = exp4.evaluate();
+      QVERIFY2( v4.toInt() <= 10, QString( "Calculated: %1 > Expected %2" ).arg( QString::number( v4.toInt() ), QString::number( 10 ) ).toUtf8().constData() );
+      QVERIFY2( v4.toInt() >= 1, QString( "Calculated: %1 < Expected %2" ).arg( QString::number( v4.toInt() ), QString::number( 1 ) ).toUtf8().constData() );
+      QgsExpression exp5( QStringLiteral( "rand(1,10,1.23)" ) );
+      QVariant v5 = exp5.evaluate();
+      QVERIFY2( v5.toInt() <= 10, QString( "Calculated: %1 > Expected %2" ).arg( QString::number( v5.toInt() ), QString::number( 10 ) ).toUtf8().constData() );
+      QVERIFY2( v5.toInt() >= 1, QString( "Calculated: %1 < Expected %2" ).arg( QString::number( v5.toInt() ), QString::number( 1 ) ).toUtf8().constData() );
+      QgsExpression exp6( QStringLiteral( "rand(1,10,'123')" ) );
+      QVariant v6 = exp6.evaluate();
+      QVERIFY2( v6.toInt() <= 10, QString( "Calculated: %1 > Expected %2" ).arg( QString::number( v6.toInt() ), QString::number( 10 ) ).toUtf8().constData() );
+      QVERIFY2( v6.toInt() >= 1, QString( "Calculated: %1 < Expected %2" ).arg( QString::number( v6.toInt() ), QString::number( 1 ) ).toUtf8().constData() );
+      QgsExpression exp7( QStringLiteral( "rand(1,10,'abc')" ) );
+      QVariant v7 = exp7.evaluate();
+      QVERIFY2( v7.toInt() <= 10, QString( "Calculated: %1 > Expected %2" ).arg( QString::number( v7.toInt() ), QString::number( 10 ) ).toUtf8().constData() );
+      QVERIFY2( v7.toInt() >= 1, QString( "Calculated: %1 < Expected %2" ).arg( QString::number( v7.toInt() ), QString::number( 1 ) ).toUtf8().constData() );
+
+      // Two calls with the same seed always return the same number
+      QgsExpression exp8( QStringLiteral( "rand(1,1000000000,1)" ) );
+      QVariant v8 = exp8.evaluate();
+      QCOMPARE( v8.toInt(), 546311529 );
+
+      // Two calls with a different seed return a different number
+      QgsExpression exp9( QStringLiteral( "rand(1,100000000000,1)" ) );
+      QVariant v9 = exp9.evaluate();
+      QgsExpression exp10( QStringLiteral( "rand(1,100000000000,2)" ) );
+      QVariant v10 = exp10.evaluate();
+      QVERIFY2( v9.toInt() != v10.toInt(), QStringLiteral( "Calculated: %1 Expected != %2" ).arg( QString::number( v9.toInt() ), QString::number( v10.toInt() ) ).toUtf8().constData() );
     }
 
     void eval_randf()
     {
       QgsExpression exp1( QStringLiteral( "randf(1.5,9.5)" ) );
       QVariant v1 = exp1.evaluate();
-      QCOMPARE( v1.toDouble() <= 9.5, true );
-      QCOMPARE( v1.toDouble() >= 1.5, true );
+      QVERIFY2( v1.toDouble() <= 9.5, QStringLiteral( "Calculated: %1 Expected <= %2" ).arg( QString::number( v1.toDouble() ), QString::number( 9.5 ) ).toUtf8().constData() );
+      QVERIFY2( v1.toDouble() >= 1.5, QStringLiteral( "Calculated: %1 Expected >= %2" ).arg( QString::number( v1.toDouble() ), QString::number( 1.5 ) ).toUtf8().constData() );
 
       QgsExpression exp2( QStringLiteral( "randf(min:=-0.0005,max:=-0.0005)" ) );
       QVariant v2 = exp2.evaluate();
-      QCOMPARE( v2.toDouble(), -0.0005 );
+      QVERIFY2( qgsDoubleNear( v2.toDouble(), -0.0005 ), QStringLiteral( "Calculated: %1 != Expected %2" ).arg( QString::number( v2.toDouble() ), QString::number( -0.0005 ) ).toUtf8().constData() );
 
       // Invalid expression since max<min
       QgsExpression exp3( QStringLiteral( "randf(9.3333,1.784)" ) );
       QVariant v3 = exp3.evaluate();
       QCOMPARE( v3.type(),  QVariant::Invalid );
+
+      // Supports multiple type of seeds
+      QgsExpression exp4( QStringLiteral( "randf(1.5,9.5,123)" ) );
+      QVariant v4 = exp4.evaluate();
+      QVERIFY2( v4.toDouble() <= 9.5, QStringLiteral( "Calculated: %1 > Expected %2" ).arg( QString::number( v4.toDouble() ), QString::number( 9.5 ) ).toUtf8().constData() );
+      QVERIFY2( v4.toDouble() >= 1.5, QStringLiteral( "Calculated: %1 < Expected %2" ).arg( QString::number( v4.toDouble() ), QString::number( 1.5 ) ).toUtf8().constData() );
+      QgsExpression exp5( QStringLiteral( "randf(1.5,9.5,1.23)" ) );
+      QVariant v5 = exp5.evaluate();
+      QVERIFY2( v5.toDouble() <= 9.5, QStringLiteral( "Calculated: %1 > Expected %2" ).arg( QString::number( v5.toDouble() ), QString::number( 9.5 ) ).toUtf8().constData() );
+      QVERIFY2( v5.toDouble() >= 1.5, QStringLiteral( "Calculated: %1 < Expected %2" ).arg( QString::number( v5.toDouble() ), QString::number( 1.5 ) ).toUtf8().constData() );
+      QgsExpression exp6( QStringLiteral( "randf(1.5,9.5,'123')" ) );
+      QVariant v6 = exp6.evaluate();
+      QVERIFY2( v6.toDouble() <= 9.5, QStringLiteral( "Calculated: %1 > Expected %2" ).arg( QString::number( v6.toDouble() ), QString::number( 9.5 ) ).toUtf8().constData() );
+      QVERIFY2( v6.toDouble() >= 1.5, QStringLiteral( "Calculated: %1 < Expected %2" ).arg( QString::number( v6.toDouble() ), QString::number( 1.5 ) ).toUtf8().constData() );
+      QgsExpression exp7( QStringLiteral( "randf(1.5,9.5,'abc')" ) );
+      QVariant v7 = exp7.evaluate();
+      QVERIFY2( v7.toDouble() <= 9.5, QStringLiteral( "Calculated: %1 > Expected %2" ).arg( QString::number( v7.toDouble() ), QString::number( 9.5 ) ).toUtf8().constData() );
+      QVERIFY2( v7.toDouble() >= 1.5, QStringLiteral( "Calculated: %1 < Expected %2" ).arg( QString::number( v7.toDouble() ), QString::number( 1.5 ) ).toUtf8().constData() );
+
+      // Two calls with the same seed always return the same number
+      QgsExpression exp8( QStringLiteral( "randf(seed:=1)" ) );
+      QVariant v8 = exp8.evaluate();
+      QVERIFY2( qgsDoubleNear( v8.toDouble(), 0.13387664401253274 ), QStringLiteral( "Calculated: %1 != Expected %2" ).arg( QString::number( v8.toDouble() ), QString::number( 0.13387664401253274 ) ).toUtf8().constData() );
+
+      // Two calls with a different seed return a different number
+      QgsExpression exp9( QStringLiteral( "randf(seed:=1)" ) );
+      QVariant v9 = exp9.evaluate();
+      QgsExpression exp10( QStringLiteral( "randf(seed:=2)" ) );
+      QVariant v10 = exp10.evaluate();
+      QVERIFY2( ! qgsDoubleNear( v9.toDouble(), v10.toDouble() ), QStringLiteral( "Calculated: %1 == Expected %2" ).arg( QString::number( v9.toDouble() ), QString::number( v10.toDouble() ) ).toUtf8().constData() );
     }
 
     void referenced_columns()

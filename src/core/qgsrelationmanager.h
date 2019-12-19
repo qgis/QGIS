@@ -121,7 +121,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
      *
      * \returns A list of relations where the specified layer is the referenced part.
      */
-    QList<QgsRelation> referencedRelations( QgsVectorLayer *layer = nullptr ) const;
+    QList<QgsRelation> referencedRelations( const QgsVectorLayer *layer = nullptr ) const;
 
     /**
      * Discover all the relations available from the current layers.

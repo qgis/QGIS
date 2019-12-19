@@ -39,7 +39,7 @@ from qgis.PyQt.QtWidgets import (
     QMessageBox,
     QDialogButtonBox,
     QTableView,
-    QApplication
+    QDialog
 )
 from qgis.testing import start_app, unittest
 
@@ -176,22 +176,14 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         f.setAttributes([self.vl_books.dataProvider().defaultValueClause(0), 'The Hitchhiker\'s Guide to the Galaxy', 'Sputnik Editions', 1961])
         self.vl_books.addFeature(f)
 
-        def choose_linked_feature():
-            dlg = QApplication.activeModalWidget()
-            dlg.setSelectedFeatures([f.id()])
-            dlg.accept()
-
         btn = self.widget.findChild(QToolButton, 'mLinkFeatureButton')
-
-        timer = QTimer()
-        timer.setSingleShot(True)
-        timer.setInterval(0)  # will run in the event loop as soon as it's processed when the dialog is opened
-        timer.timeout.connect(choose_linked_feature)
-        timer.start()
-
         btn.click()
-        # magically the above code selects the feature here...
 
+        dlg = self.widget.findChild(QDialog)
+        dlg.setSelectedFeatures([f.id()])
+        dlg.accept()
+
+        # magically the above code selects the feature here...
         link_feature = next(self.vl_link_books_authors.getFeatures(QgsFeatureRequest().setFilterExpression('"fk_book"={}'.format(f[0]))))
         self.assertIsNotNone(link_feature[0])
 

@@ -65,6 +65,7 @@
 %Include auto_generated/qgsencodingfiledialog.sip
 %Include auto_generated/qgserrordialog.sip
 %Include auto_generated/qgsexpressionbuilderdialog.sip
+%Include auto_generated/qgsexpressionstoredialog.sip
 %Include auto_generated/qgsexpressionbuilderwidget.sip
 %Include auto_generated/qgsexpressionhighlighter.sip
 %Include auto_generated/qgsexpressionlineedit.sip

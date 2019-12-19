@@ -198,12 +198,12 @@ void TestQgsAttributeTable::testNoGeom()
   QVERIFY( !( dlg->mMainView->masterModel()->request().flags() & QgsFeatureRequest::NoGeometry ) );
 
   // try changing existing dialog to no geometry mode
-  dlg->filterShowAll();
+  dlg->mFeatureFilterWidget->filterShowAll();
   QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
   QVERIFY( dlg->mMainView->masterModel()->request().flags() & QgsFeatureRequest::NoGeometry );
 
   // and back to a geometry mode
-  dlg->filterVisible();
+  dlg->mFeatureFilterWidget->filterVisible();
   QVERIFY( dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
   QVERIFY( !( dlg->mMainView->masterModel()->request().flags() & QgsFeatureRequest::NoGeometry ) );
 

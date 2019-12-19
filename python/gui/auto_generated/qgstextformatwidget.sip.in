@@ -159,6 +159,8 @@ Controls whether data defined alignment buttons are enabled.
 
 
 
+
+
   protected slots:
 
     void updateLinePlacementOptions();

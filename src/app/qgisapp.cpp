@@ -75,9 +75,11 @@
 
 #include "qgssettings.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsrelationmanager.h"
 #include "qgsapplication.h"
 #include "qgslayerstylingwidget.h"
 #include "qgstaskmanager.h"
+#include "qgsweakrelation.h"
 #include "qgsziputils.h"
 #include "qgsbrowserguimodel.h"
 #include "qgsvectorlayerjoinbuffer.h"
@@ -667,13 +669,24 @@ void QgisApp::onActiveLayerChanged( QgsMapLayer *layer )
 
 void QgisApp::vectorLayerStyleLoaded( QgsMapLayer::StyleCategories categories )
 {
-  if ( categories.testFlag( QgsMapLayer::StyleCategory::Forms ) )
+
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( sender() );
+
+  if ( vl && vl->isValid( ) )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( sender() );
-    if ( vl && vl->isValid( ) )
+
+    // Check broken dependencies in forms
+    if ( categories.testFlag( QgsMapLayer::StyleCategory::Forms ) )
     {
-      checkVectorLayerDependencies( vl );
+      resolveVectorLayerDependencies( vl );
     }
+
+    // Check broken relations and try to restore them
+    if ( categories.testFlag( QgsMapLayer::StyleCategory::Relations ) )
+    {
+      resolveVectorLayerWeakRelations( vl );
+    }
+
   }
 }
 
@@ -1995,25 +2008,85 @@ QgsMessageBar *QgisApp::visibleMessageBar()
   }
 }
 
-QList<QgsVectorLayerRef> QgisApp::findBrokenWidgetDependencies( QgsVectorLayer *vl )
+const QList<QgsVectorLayerRef> QgisApp::findBrokenLayerDependencies( QgsVectorLayer *vl, QgsMapLayer::StyleCategories categories ) const
 {
   QList<QgsVectorLayerRef> brokenDependencies;
-  // Check for missing layer widget dependencies
-  for ( int i = 0; i < vl->fields().count(); i++ )
+
+  if ( categories.testFlag( QgsMapLayer::StyleCategory::Forms ) )
   {
-    const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( vl, vl->fields().field( i ).name() );
-    QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
-    if ( fieldFormatter )
+    for ( int i = 0; i < vl->fields().count(); i++ )
     {
-      const auto constDependencies { fieldFormatter->layerDependencies( setup.config() ) };
-      for ( const QgsVectorLayerRef &dependency : constDependencies )
+      const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( vl, vl->fields().field( i ).name() );
+      QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+      if ( fieldFormatter )
       {
-        const QgsVectorLayer *depVl { QgsVectorLayerRef( dependency ).resolveWeakly(
-                                        QgsProject::instance(),
-                                        QgsVectorLayerRef::MatchType::Name ) };
-        if ( ! depVl || ! depVl->isValid() )
+        const QList<QgsVectorLayerRef> constDependencies { fieldFormatter->layerDependencies( setup.config() ) };
+        for ( const QgsVectorLayerRef &dependency : constDependencies )
         {
-          brokenDependencies.append( dependency );
+          const QgsVectorLayer *depVl { QgsVectorLayerRef( dependency ).resolveWeakly(
+                                          QgsProject::instance(),
+                                          QgsVectorLayerRef::MatchType::Name ) };
+          if ( ! depVl || ! depVl->isValid() )
+          {
+            brokenDependencies.append( dependency );
+          }
+        }
+      }
+    }
+  }
+
+  if ( categories.testFlag( QgsMapLayer::StyleCategory::Relations ) )
+  {
+    // Check for layer weak relations
+    const QList<QgsWeakRelation> constWeakRelations { vl->weakRelations() };
+    for ( const QgsWeakRelation &rel : constWeakRelations )
+    {
+      QgsRelation relation { rel.resolvedRelation( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name ) };
+      QgsVectorLayerRef dependency;
+      bool found = false;
+      if ( ! relation.isValid() )
+      {
+        // This is the big question: do we really
+        // want to automatically load the referencing layer(s) too?
+        // This could potentially lead to a cascaded load of a
+        // long list of layers.
+        // The code is in place but let's leave it disabled for now.
+        if ( relation.referencedLayer() == vl )
+        {
+          // Do nothing because vl is the referenced layer
+#if 0
+          dependency = rel.referencingLayer();
+          found = true;
+#endif
+        }
+        else if ( relation.referencingLayer() == vl )
+        {
+          dependency = rel.referencedLayer();
+          found = true;
+        }
+        else
+        {
+          // Something wrong is going on here, maybe this relation
+          // does not really apply to this layer?
+          QgsMessageLog::logMessage( tr( "None of the layers in the relation stored in the style match the current layer, skipping relation id: %1." ).arg( relation.id() ) );
+        }
+
+        if ( found )
+        {
+          // Make sure we don't add it twice
+          bool refFound = false;
+          for ( const QgsVectorLayerRef &otherRef : qgis::as_const( brokenDependencies ) )
+          {
+            if ( dependency.layerId == otherRef.layerId || ( dependency.source == otherRef.source && dependency.provider == otherRef.provider ) )
+            {
+              refFound = true;
+              break;
+            }
+          }
+          if ( ! refFound )
+          {
+            brokenDependencies.append( dependency );
+          }
         }
       }
     }
@@ -2021,11 +2094,11 @@ QList<QgsVectorLayerRef> QgisApp::findBrokenWidgetDependencies( QgsVectorLayer *
   return brokenDependencies;
 }
 
-void QgisApp::checkVectorLayerDependencies( QgsVectorLayer *vl )
+void QgisApp::resolveVectorLayerDependencies( QgsVectorLayer *vl, QgsMapLayer::StyleCategories categories )
 {
   if ( vl && vl->isValid() )
   {
-    const auto constDependencies { findBrokenWidgetDependencies( vl ) };
+    const auto constDependencies { findBrokenLayerDependencies( vl, categories ) };
     for ( const QgsVectorLayerRef &dependency : constDependencies )
     {
       // try to aggressively resolve the broken dependencies
@@ -2110,6 +2183,31 @@ void QgisApp::checkVectorLayerDependencies( QgsVectorLayer *vl )
         messageBar()->pushSuccess( tr( "Missing layer form dependency" ), tr( "Layer dependency '%2' required by '%1' was automatically loaded." )
                                    .arg( vl->name() )
                                    .arg( dependency.name ) );
+      }
+    }
+  }
+}
+
+void QgisApp::resolveVectorLayerWeakRelations( QgsVectorLayer *vectorLayer )
+{
+  if ( vectorLayer && vectorLayer->isValid() )
+  {
+    const QList<QgsWeakRelation> constWeakRelations { vectorLayer->weakRelations( ) };
+    for ( const QgsWeakRelation &rel : constWeakRelations )
+    {
+      QgsRelation relation { rel.resolvedRelation( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name ) };
+      if ( relation.isValid() )
+      {
+        // Avoid duplicates
+        const QList<QgsRelation> constRelations { QgsProject::instance()->relationManager()->relations().values() };
+        for ( const QgsRelation &other : constRelations )
+        {
+          if ( relation.hasEqualDefinition( other ) )
+          {
+            continue;
+          }
+        }
+        QgsProject::instance()->relationManager()->addRelation( relation );
       }
     }
   }
@@ -6506,7 +6604,7 @@ bool QgisApp::addProject( const QString &projectFile )
     {
       if ( vl->isValid() )
       {
-        checkVectorLayerDependencies( vl );
+        resolveVectorLayerDependencies( vl );
       }
     }
 

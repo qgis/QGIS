@@ -652,6 +652,25 @@ QString QgsExpression::helpText( QString name )
   return helpContents;
 }
 
+QStringList QgsExpression::tags( const QString &name )
+{
+  QStringList tags = QStringList();
+
+  QgsExpression::initFunctionHelp();
+
+  if ( sFunctionHelpTexts()->contains( name ) )
+  {
+    const Help &f = ( *sFunctionHelpTexts() )[ name ];
+
+    for ( const HelpVariant &v : qgis::as_const( f.mVariants ) )
+    {
+      tags << v.mTags;
+    }
+  }
+
+  return tags;
+}
+
 void QgsExpression::initVariableHelp()
 {
   if ( !sVariableHelpTexts()->isEmpty() )
@@ -856,6 +875,7 @@ QString QgsExpression::group( const QString &name )
     sGroups()->insert( QStringLiteral( "String" ), tr( "String" ) );
     sGroups()->insert( QStringLiteral( "Variables" ), tr( "Variables" ) );
     sGroups()->insert( QStringLiteral( "Recent (%1)" ), tr( "Recent (%1)" ) );
+    sGroups()->insert( QStringLiteral( "UserGroup" ), tr( "User expressions" ) );
   }
 
   //return the translated name for this group. If group does not

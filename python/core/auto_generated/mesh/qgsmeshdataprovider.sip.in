@@ -244,6 +244,7 @@ For scalar and vector 2d the behavior is undefined
     QVector<double> values() const;
 %Docstring
 Returns buffer to the array with values
+For vector it is pairs (x1, y1, x2, y2, ... )
 
 .. versionadded:: 3.12
 %End
@@ -321,12 +322,12 @@ Number of 2d faces for which the volume data is stored in the block
 
     int firstVolumeIndex() const;
 %Docstring
-Index of the first volume stored in the buffer
+Index of the first volume stored in the buffer (absolute)
 %End
 
     int lastVolumeIndex() const;
 %Docstring
-Index of the last volume stored in the buffer
+Index of the last volume stored in the buffer (absolute)
 %End
 
     int volumesCount() const;
@@ -369,6 +370,15 @@ Sets the indexing between faces and volumes
 Returns the values at volume centers
 
 For vector datasets the number of values is doubled (x1, y1, x2, y2, ... )
+%End
+
+    QgsMeshDatasetValue value( int volumeIndex ) const;
+%Docstring
+Returns the value at volume centers
+
+:param volumeIndex: volume index relative to firstVolumeIndex()
+
+:return: value (scalar or vector)
 %End
 
     void setValues( const QVector<double> &doubleBuffer );
@@ -417,6 +427,7 @@ Constructs an empty metadata object
                                  double minimum,
                                  double maximum,
                                  int maximumVerticalLevels,
+                                 const QDateTime &referenceTime,
                                  const QMap<QString, QString> &extraOptions );
 %Docstring
 Constructs a valid metadata object
@@ -427,6 +438,7 @@ Constructs a valid metadata object
 :param minimum: minimum value (magnitude for vectors) present among all group's dataset values
 :param maximum: maximum value (magnitude for vectors) present among all group's dataset values
 :param maximumVerticalLevels: maximum number of vertical levels for 3d stacked meshes, 0 for 2d meshes
+:param referenceTime: reference time of the dataset group
 :param extraOptions: dataset's extra options stored by the provider. Usually contains the name, time value, time units, data file vendor, ...
 %End
 
@@ -470,6 +482,13 @@ Returns maximum scalar value/vector magnitude present for whole dataset group
     int maximumVerticalLevelsCount() const;
 %Docstring
 Returns maximum number of vertical levels for 3d stacked meshes
+
+.. versionadded:: 3.12
+%End
+
+    QDateTime referenceTime() const;
+%Docstring
+Returns the reference time
 
 .. versionadded:: 3.12
 %End

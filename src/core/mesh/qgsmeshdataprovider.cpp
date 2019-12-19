@@ -133,6 +133,7 @@ QgsMeshDatasetGroupMetadata::QgsMeshDatasetGroupMetadata( const QString &name,
     double minimum,
     double maximum,
     int maximumVerticalLevels,
+    const QDateTime &referenceTime,
     const QMap<QString, QString> &extraOptions )
   : mName( name )
   , mIsScalar( isScalar )
@@ -141,6 +142,7 @@ QgsMeshDatasetGroupMetadata::QgsMeshDatasetGroupMetadata( const QString &name,
   , mMaximumValue( maximum )
   , mExtraOptions( extraOptions )
   , mMaximumVerticalLevelsCount( maximumVerticalLevels )
+  , mReferenceTime( referenceTime )
 {
 }
 
@@ -182,6 +184,11 @@ double QgsMeshDatasetGroupMetadata::maximum() const
 int QgsMeshDatasetGroupMetadata::maximumVerticalLevelsCount() const
 {
   return mMaximumVerticalLevelsCount;
+}
+
+QDateTime QgsMeshDatasetGroupMetadata::referenceTime() const
+{
+  return mReferenceTime;
 }
 
 int QgsMeshDatasetSourceInterface::datasetCount( QgsMeshDatasetIndex index ) const
@@ -434,6 +441,20 @@ QVector<double> QgsMesh3dDataBlock::values() const
 {
   Q_ASSERT( isValid() );
   return mDoubleBuffer;
+}
+
+QgsMeshDatasetValue QgsMesh3dDataBlock::value( int volumeIndex ) const
+{
+  if ( !isValid() )
+    return QgsMeshDatasetValue();
+
+  if ( !mIsVector )
+    return QgsMeshDatasetValue( mDoubleBuffer[volumeIndex] );
+
+  return QgsMeshDatasetValue(
+           mDoubleBuffer[2 * volumeIndex],
+           mDoubleBuffer[2 * volumeIndex + 1]
+         );
 }
 
 void QgsMesh3dDataBlock::setValues( const QVector<double> &doubleBuffer )

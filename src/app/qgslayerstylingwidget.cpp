@@ -200,7 +200,7 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
       transparencyItem->setData( Qt::UserRole, RasterTransparency );
       mOptionsListWidget->addItem( transparencyItem );
 
-      if ( static_cast<QgsRasterLayer *>( layer )->dataProvider()->capabilities() & QgsRasterDataProvider::Size )
+      if ( static_cast<QgsRasterLayer *>( layer )->dataProvider() && static_cast<QgsRasterLayer *>( layer )->dataProvider()->capabilities() & QgsRasterDataProvider::Size )
       {
         QListWidgetItem *histogramItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/histogram.svg" ) ), QString() );
         histogramItem->setData( Qt::UserRole, RasterHistogram );
