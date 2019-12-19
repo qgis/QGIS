@@ -1,0 +1,81 @@
+/***************************************************************************
+                         qgsalgorithmjoinbylocation.h
+                         ---------------------
+    begin                : January 2020
+    copyright            : (C) 2020 by
+    email                :
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef QGSALGORITHMJOINBYLOCATION_H
+#define QGSALGORITHMJOINBYLOCATION_H
+
+#define SIP_NO_FILE
+
+#include "qgis.h"
+#include "qgsprocessingalgorithm.h"
+#include "qgsfeature.h"
+
+
+///@cond PRIVATE
+
+/**
+ * Native join by location algorithm
+ *
+ * \ since QGIS 3.12
+ */
+class QgsJoinByLocationAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+
+    QgsJoinByLocationAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QString name() const override;
+    QString displayName() const override;
+    QStringList tags() const override;
+    QString group() const override;
+    QString groupId() const override;
+    QString shortHelpString() const override;
+    QString shortDescription() const override;
+    QgsJoinByLocationAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    bool processFeatures( QgsFeature &joinFeature, QgsProcessingFeedback *feedback );
+    bool featureFilter( const QgsFeature &feature, QgsGeometryEngine *engine ) const;
+
+  private:
+    std::unique_ptr< QgsProcessingFeatureSource > mBaseSource;
+    std::unique_ptr< QgsProcessingFeatureSource > mJoinSource;
+    QgsFeatureIds mDonefids;
+    QgsFields mOutFields2;
+    QgsAttributeList mFields2Indices;
+    QStringList mFieldNames;
+    bool mDiscardNonMatching;
+    mutable QgsFields mFields;
+    mutable QgsCoordinateReferenceSystem mCrs;
+    std::unique_ptr< QgsFeatureSink > mJoinedFeatures;
+    std::unique_ptr< QgsFeatureSink > mUnjoinedFeatures;
+    QString mUnjoinedFeaturesId;
+    QString mJoinedFeaturesId;
+    int mJoinMethod;
+    QList<int> mPredicates;
+    QgsAttributes mEmptyAttrs;
+    QgsFeatureIds mUnjoinedIds;
+
+};
+
+///@endcond PRIVATE
+
+#endif // QGSALGORITHMJOINBYLOCATION_H
+
+

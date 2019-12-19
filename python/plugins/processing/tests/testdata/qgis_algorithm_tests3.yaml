@@ -1176,7 +1176,7 @@ tests:
           fields:
             fid: skip
 
-  - algorithm: qgis:joinattributesbylocation
+  - algorithm: native:joinattributesbylocation
     name: Join by location (intersects)
     params:
       DISCARD_NONMATCHING: false
@@ -1202,7 +1202,7 @@ tests:
             fid: skip
             fid_2: skip
 
-  - algorithm: qgis:joinattributesbylocation
+  - algorithm: native:joinattributesbylocation
     name: Join by location with prefix
     params:
       DISCARD_NONMATCHING: false
@@ -1229,7 +1229,7 @@ tests:
             fid: skip
             j_fid: skip
 
-  - algorithm: qgis:joinattributesbylocation
+  - algorithm: native:joinattributesbylocation
     name: Join by location (intersects), discard no match
     params:
       DISCARD_NONMATCHING: true
@@ -1255,7 +1255,7 @@ tests:
             fid: skip
             fid_2: skip
 
-  - algorithm: qgis:joinattributesbylocation
+  - algorithm: native:joinattributesbylocation
     name: Join by location (intersects), first match only
     params:
       DISCARD_NONMATCHING: false
@@ -1281,7 +1281,7 @@ tests:
             id: skip # can't check these - order of match is not predictable
             id2: skip
 
-  - algorithm: qgis:joinattributesbylocation
+  - algorithm: native:joinattributesbylocation
     name: Join by location (intersects), first match only, discard no match
     params:
       DISCARD_NONMATCHING: true
@@ -1307,7 +1307,7 @@ tests:
             id: skip # can't check these - order of match is not predictable
             id2: skip
 
-  - algorithm: qgis:joinattributesbylocation
+  - algorithm: native:joinattributesbylocation
     name: Join by location (intersects), subset of fields
     params:
       DISCARD_NONMATCHING: false
@@ -1334,7 +1334,7 @@ tests:
             fid: skip
             fid_2: skip
 
-  - algorithm: qgis:joinattributesbylocation
+  - algorithm: native:joinattributesbylocation
     name: Join by location (touches)
     params:
       DISCARD_NONMATCHING: true
@@ -1360,7 +1360,7 @@ tests:
             fid: skip
             fid_2: skip
 
-  - algorithm: qgis:joinattributesbylocation
+  - algorithm: native:joinattributesbylocation
     name: Join by location, unjoinable
     params:
       DISCARD_NONMATCHING: false
@@ -1379,7 +1379,7 @@ tests:
         name: expected/join_by_location_unjoinable.gml
         type: vector
 
-  - algorithm: qgis:joinattributesbylocation
+  - algorithm: native:joinattributesbylocation
     name: Join by location (equals)
     params:
       DISCARD_NONMATCHING: true
