@@ -59,7 +59,7 @@ bool QgsGdalLayerItem::setCrs( const QgsCoordinateReferenceSystem &crs )
   if ( !hDS )
     return false;
 
-  QString wkt = crs.toWkt();
+  QString wkt = crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 );
   if ( GDALSetProjection( hDS.get(), wkt.toLocal8Bit().data() ) != CE_None )
   {
     QgsDebugMsg( QStringLiteral( "Could not set CRS" ) );

@@ -253,7 +253,7 @@ QString QgsMemoryProvider::dataSourceUri( bool expandAuthConfig ) const
     }
     else
     {
-      crsDef = QStringLiteral( "wkt:%1" ).arg( mCrs.toWkt() );
+      crsDef = QStringLiteral( "wkt:%1" ).arg( mCrs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) );
     }
     uri.addQueryItem( QStringLiteral( "crs" ), crsDef );
   }

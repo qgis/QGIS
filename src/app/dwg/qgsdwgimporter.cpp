@@ -77,7 +77,7 @@ QgsDwgImporter::QgsDwgImporter( const QString &database, const QgsCoordinateRefe
 {
   QgsDebugCall;
 
-  QString crswkt( crs.toWkt() );
+  QString crswkt( crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) );
   mCrsH = OSRNewSpatialReference( crswkt.toLocal8Bit().constData() );
   QgsDebugMsg( QStringLiteral( "CRS %1[%2]: %3" ).arg( mCrs ).arg( ( qint64 ) mCrsH, 0, 16 ).arg( crswkt ) );
 }
