@@ -155,6 +155,7 @@ class GUI_EXPORT QgsCoordinateOperationWidget : public QWidget, private Ui::QgsC
 #endif
     QgsCoordinateReferenceSystem mSourceCrs;
     QgsCoordinateReferenceSystem mDestinationCrs;
+    OperationDetails mPreviousOp;
 };
 
 #endif // QGSCOORDINATEOPERATIONWIDGET_H
