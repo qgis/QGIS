@@ -23,6 +23,7 @@ Email                : sherman at mrcc dot com
 #include "qgis.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
+#include "qgsprojutils.h"
 #if PROJ_VERSION_MAJOR > 4
 #include <proj.h>
 #else
@@ -447,13 +448,13 @@ void TestQgsCoordinateReferenceSystem::createFromWktUnknown()
   QgsCoordinateReferenceSystem crs;
   // try creating a crs from a non-standard WKT string (in this case, the invalid WKT definition of EPSG:31370 used by
   // some ArcGIS versions: see https://github.com/OSGeo/PROJ/issues/1781
-  const QString wkt = QStringLiteral( R"""(PROJCS["Belge 1972 / Belgian Lambert 72",GEOGCS["Belge 1972",DATUM["Reseau_National_Belge_1972",SPHEROID["International 1924",6378388,297],AUTHORITY["EPSG","6313"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Lambert_Conformal_Conic_2SP"],PARAMETER["latitude_of_origin",90],PARAMETER["central_meridian",4.36748666666667],PARAMETER["standard_parallel_1",49.8333339],PARAMETER["standard_parallel_2",51.1666672333333],PARAMETER["false_easting",150000.01256],PARAMETER["false_northing",5400088.4378],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]])""" );
+  const QString wkt = QStringLiteral( R"""(PROJCS["Belge 1972 / Belgian Lambert 72",GEOGCS["Belge 1972",DATUM["Reseau_National_Belge_1972",SPHEROID["International 1924",6378388,297],AUTHORITY["EPSG","6313"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Lambert_Conformal_Conic_2SP"],PARAMETER["latitude_of_origin",90],PARAMETER["central_meridian",4.36798666666667],PARAMETER["standard_parallel_1",49.8333339],PARAMETER["standard_parallel_2",51.1666672333333],PARAMETER["false_easting",150000.01256],PARAMETER["false_northing",5400088.4378],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]])""" );
 
 #if PROJ_VERSION_MAJOR>=6
-  const QString expectedWkt = QStringLiteral( R"""(PROJCRS["Belge 1972 / Belgian Lambert 72",BASEGEOGCRS["Belge 1972",DATUM["Reseau National Belge 1972",ELLIPSOID["International 1924",6378388,297,LENGTHUNIT["metre",1]],ID["EPSG",6313]],PRIMEM["Greenwich",0,ANGLEUNIT["Degree",0.0174532925199433]]],CONVERSION["unnamed",METHOD["Lambert Conic Conformal (2SP)",ID["EPSG",9802]],PARAMETER["Latitude of false origin",90,ANGLEUNIT["Degree",0.0174532925199433],ID["EPSG",8821]],PARAMETER["Longitude of false origin",4.36748666666667,ANGLEUNIT["Degree",0.0174532925199433],ID["EPSG",8822]],PARAMETER["Latitude of 1st standard parallel",49.8333339,ANGLEUNIT["Degree",0.0174532925199433],ID["EPSG",8823]],PARAMETER["Latitude of 2nd standard parallel",51.1666672333333,ANGLEUNIT["Degree",0.0174532925199433],ID["EPSG",8824]],PARAMETER["Easting at false origin",150000.01256,LENGTHUNIT["metre",1],ID["EPSG",8826]],PARAMETER["Northing at false origin",5400088.4378,LENGTHUNIT["metre",1],ID["EPSG",8827]]],CS[Cartesian,2],AXIS["easting",east,ORDER[1],LENGTHUNIT["metre",1,ID["EPSG",9001]]],AXIS["northing",north,ORDER[2],LENGTHUNIT["metre",1,ID["EPSG",9001]]]])""" );
+  const QString expectedWkt = QStringLiteral( R"""(PROJCRS["Belge 1972 / Belgian Lambert 72",BASEGEOGCRS["Belge 1972",DATUM["Reseau National Belge 1972",ELLIPSOID["International 1924",6378388,297,LENGTHUNIT["metre",1]],ID["EPSG",6313]],PRIMEM["Greenwich",0,ANGLEUNIT["Degree",0.0174532925199433]]],CONVERSION["unnamed",METHOD["Lambert Conic Conformal (2SP)",ID["EPSG",9802]],PARAMETER["Latitude of false origin",90,ANGLEUNIT["Degree",0.0174532925199433],ID["EPSG",8821]],PARAMETER["Longitude of false origin",4.36798666666667,ANGLEUNIT["Degree",0.0174532925199433],ID["EPSG",8822]],PARAMETER["Latitude of 1st standard parallel",49.8333339,ANGLEUNIT["Degree",0.0174532925199433],ID["EPSG",8823]],PARAMETER["Latitude of 2nd standard parallel",51.1666672333333,ANGLEUNIT["Degree",0.0174532925199433],ID["EPSG",8824]],PARAMETER["Easting at false origin",150000.01256,LENGTHUNIT["metre",1],ID["EPSG",8826]],PARAMETER["Northing at false origin",5400088.4378,LENGTHUNIT["metre",1],ID["EPSG",8827]]],CS[Cartesian,2],AXIS["easting",east,ORDER[1],LENGTHUNIT["metre",1,ID["EPSG",9001]]],AXIS["northing",north,ORDER[2],LENGTHUNIT["metre",1,ID["EPSG",9001]]]])""" );
 #else
   // When used with proj < 6, a lossy conversion to proj string is used
-  const QString expectedWkt = QStringLiteral( R"""(PROJCS["unnamed",GEOGCS["International 1909 (Hayford)",DATUM["unknown",SPHEROID["intl",6378388,297],TOWGS84[-106.8686,52.2978,-103.7239,0.3366,-0.457,1.8422,-1.2747]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433]],PROJECTION["Lambert_Conformal_Conic_2SP"],PARAMETER["standard_parallel_1",49.8333339],PARAMETER["standard_parallel_2",51.1666672333333],PARAMETER["latitude_of_origin",90],PARAMETER["central_meridian",4.36748666666667],PARAMETER["false_easting",150000.01256],PARAMETER["false_northing",5400088.4378],UNIT["Meter",1]])""" );
+  const QString expectedWkt = QStringLiteral( R"""(PROJCS["unnamed",GEOGCS["International 1909 (Hayford)",DATUM["unknown",SPHEROID["intl",6378388,297],TOWGS84[-106.8686,52.2978,-103.7239,0.3366,-0.457,1.8422,-1.2747]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433]],PROJECTION["Lambert_Conformal_Conic_2SP"],PARAMETER["standard_parallel_1",49.8333339],PARAMETER["standard_parallel_2",51.1666672333333],PARAMETER["latitude_of_origin",90],PARAMETER["central_meridian",4.36798666666667],PARAMETER["false_easting",150000.01256],PARAMETER["false_northing",5400088.4378],UNIT["Meter",1]])""" );
 #endif
   QgsDebugMsg( expectedWkt );
 
@@ -502,9 +503,9 @@ void TestQgsCoordinateReferenceSystem::createFromWktUnknown()
   // try creating with a different parameter order, should still be matched to existing user crs
   QgsCoordinateReferenceSystem crs6;
 #if PROJ_VERSION_MAJOR>=6
-  crs6.createFromWkt( QStringLiteral( R"""(PROJCRS["Belge 1972 / Belgian Lambert 72",BASEGEOGCRS["Belge 1972",DATUM["Reseau National Belge 1972",ELLIPSOID["International 1924",6378388,297,LENGTHUNIT["metre",1]],ID["EPSG",6313]],PRIMEM["Greenwich",0,ANGLEUNIT["Degree",0.0174532925199433]]],CONVERSION["unnamed",METHOD["Lambert Conic Conformal (2SP)",ID["EPSG",9802]],PARAMETER["Latitude of false origin",90,ANGLEUNIT["Degree",0.0174532925199433],ID["EPSG",8821]],PARAMETER["Latitude of 1st standard parallel",49.8333339,ANGLEUNIT["Degree",0.0174532925199433],ID["EPSG",8823]],PARAMETER["Longitude of false origin",4.36748666666667,ANGLEUNIT["Degree",0.0174532925199433],ID["EPSG",8822]],PARAMETER["Latitude of 2nd standard parallel",51.1666672333333,ANGLEUNIT["Degree",0.0174532925199433],ID["EPSG",8824]],PARAMETER["Easting at false origin",150000.01256,LENGTHUNIT["metre",1],ID["EPSG",8826]],PARAMETER["Northing at false origin",5400088.4378,LENGTHUNIT["metre",1],ID["EPSG",8827]]],CS[Cartesian,2],AXIS["easting",east,ORDER[1],LENGTHUNIT["metre",1,ID["EPSG",9001]]],AXIS["northing",north,ORDER[2],LENGTHUNIT["metre",1,ID["EPSG",9001]]]])""" ) );
+  crs6.createFromWkt( QStringLiteral( R"""(PROJCRS["Belge 1972 / Belgian Lambert 72",BASEGEOGCRS["Belge 1972",DATUM["Reseau National Belge 1972",ELLIPSOID["International 1924",6378388,297,LENGTHUNIT["metre",1]],ID["EPSG",6313]],PRIMEM["Greenwich",0,ANGLEUNIT["Degree",0.0174532925199433]]],CONVERSION["unnamed",METHOD["Lambert Conic Conformal (2SP)",ID["EPSG",9802]],PARAMETER["Latitude of false origin",90,ANGLEUNIT["Degree",0.0174532925199433],ID["EPSG",8821]],PARAMETER["Latitude of 1st standard parallel",49.8333339,ANGLEUNIT["Degree",0.0174532925199433],ID["EPSG",8823]],PARAMETER["Longitude of false origin",4.36798666666667,ANGLEUNIT["Degree",0.0174532925199433],ID["EPSG",8822]],PARAMETER["Latitude of 2nd standard parallel",51.1666672333333,ANGLEUNIT["Degree",0.0174532925199433],ID["EPSG",8824]],PARAMETER["Easting at false origin",150000.01256,LENGTHUNIT["metre",1],ID["EPSG",8826]],PARAMETER["Northing at false origin",5400088.4378,LENGTHUNIT["metre",1],ID["EPSG",8827]]],CS[Cartesian,2],AXIS["easting",east,ORDER[1],LENGTHUNIT["metre",1,ID["EPSG",9001]]],AXIS["northing",north,ORDER[2],LENGTHUNIT["metre",1,ID["EPSG",9001]]]])""" ) );
 #else
-  crs6.createFromWkt( QStringLiteral( R"""(PROJCS["Belge 1972 / Belgian Lambert 72",GEOGCS["Belge 1972",DATUM["Reseau_National_Belge_1972",AUTHORITY["EPSG","6313"],SPHEROID["International 1924",6378388,297]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Lambert_Conformal_Conic_2SP"],PARAMETER["latitude_of_origin",90],PARAMETER["central_meridian",4.36748666666667],PARAMETER["standard_parallel_1",49.8333339],PARAMETER["standard_parallel_2",51.1666672333333],PARAMETER["false_easting",150000.01256],PARAMETER["false_northing",5400088.4378],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]])""" ) );
+  crs6.createFromWkt( QStringLiteral( R"""(PROJCS["Belge 1972 / Belgian Lambert 72",GEOGCS["Belge 1972",DATUM["Reseau_National_Belge_1972",AUTHORITY["EPSG","6313"],SPHEROID["International 1924",6378388,297]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Lambert_Conformal_Conic_2SP"],PARAMETER["latitude_of_origin",90],PARAMETER["central_meridian",4.36798666666667],PARAMETER["standard_parallel_1",49.8333339],PARAMETER["standard_parallel_2",51.1666672333333],PARAMETER["false_easting",150000.01256],PARAMETER["false_northing",5400088.4378],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]])""" ) );
 #endif
   QVERIFY( crs6.isValid() );
   QCOMPARE( crs6.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ), expectedWkt );
@@ -1236,6 +1237,23 @@ void TestQgsCoordinateReferenceSystem::validSrsIds()
       validCount++;
     else
       qDebug() << QStringLiteral( "QgsCoordinateReferenceSystem::fromSrsId( %1 ) is not valid (%2 of %3 IDs returned by QgsCoordinateReferenceSystem::validSrsIds())." ).arg( id ).arg( ids.indexOf( id ) ).arg( ids.length() );
+
+#if PROJ_VERSION_MAJOR>=6
+    // round trip via WKT strings
+    QgsProjUtils::proj_pj_unique_ptr crs( proj_create_from_database( QgsProjContext::get(), c.authid().split( ':' ).at( 0 ).toLatin1(), c.authid().split( ':' ).at( 1 ).toLatin1(), PJ_CATEGORY_CRS, false, nullptr ) );
+    if ( !crs || proj_get_type( crs.get() ) == PJ_TYPE_COMPOUND_CRS )
+      continue;
+
+    QgsCoordinateReferenceSystem viaWkt = QgsCoordinateReferenceSystem::fromWkt( c.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) );
+    QCOMPARE( viaWkt.authid(), c.authid() );
+#if 0 // NOT POSSIBLE -- too lossy to test for all CRSes !
+    // round trip via proj strings
+    QgsCoordinateReferenceSystem viaProj = QgsCoordinateReferenceSystem::fromProj( c.toProj() );
+    QCOMPARE( viaProj.authid(), c.authid() );
+    QCOMPARE( viaProj.toProj(), c.toProj() );
+#endif
+#endif
+
   }
 
   QVERIFY( validCount > ids.size() - 100 );
