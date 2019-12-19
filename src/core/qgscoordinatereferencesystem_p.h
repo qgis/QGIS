@@ -70,7 +70,6 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
       , mCRS( nullptr )
 #endif
       , mValidationHint( other.mValidationHint )
-      , mWkt( other.mWkt )
       , mProj4( other.mProj4 )
       , mAxisInvertedDirty( other.mAxisInvertedDirty )
       , mAxisInverted( other.mAxisInverted )
@@ -131,7 +130,6 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
 #endif
 
     QString mValidationHint;
-    mutable QString mWkt;
     mutable QString mProj4;
 
     //! True if presence of an inverted axis needs to be recalculated
