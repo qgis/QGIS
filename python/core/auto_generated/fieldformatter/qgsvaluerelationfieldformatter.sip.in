@@ -129,7 +129,7 @@ Returns the (possibly NULL) layer from the widget's ``config`` and ``project``
 %End
 
 
-    virtual QList<QVariant> availableValues( const QVariantMap &config, int countLimit ) const;
+    virtual QVariantList availableValues( const QVariantMap &config, int countLimit ) const;
 
 };
 

@@ -180,9 +180,9 @@ QList<QgsVectorLayerRef> QgsRelationReferenceFieldFormatter::layerDependencies( 
   return result;
 }
 
-QList<QVariant> QgsRelationReferenceFieldFormatter::availableValues( const QVariantMap &config, int countLimit ) const
+QVariantList QgsRelationReferenceFieldFormatter::availableValues( const QVariantMap &config, int countLimit ) const
 {
-  QList<QVariant> values;
+  QVariantList values;
 
   const QgsVectorLayer *referencedLayer = QgsProject::instance()->relationManager()->relation( config[QStringLiteral( "Relation" )].toString() ).referencedLayer();
   if ( referencedLayer )

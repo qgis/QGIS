@@ -46,7 +46,7 @@ class CORE_EXPORT QgsRelationReferenceFieldFormatter : public QgsFieldFormatter
 
     QList<QgsVectorLayerRef> layerDependencies( const QVariantMap &config ) const override SIP_SKIP;
 
-    QList<QVariant> availableValues( const QVariantMap &config, int countLimit ) const override;
+    QVariantList availableValues( const QVariantMap &config, int countLimit ) const override;
 
     //friend class TestQgsRelationReferenceFieldFormatter;
 

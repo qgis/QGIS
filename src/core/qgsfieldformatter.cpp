@@ -69,12 +69,12 @@ QList<QgsVectorLayerRef> QgsFieldFormatter::layerDependencies( const QVariantMap
   return QList<QgsVectorLayerRef>();
 }
 
-QList<QVariant> QgsFieldFormatter::availableValues( const QVariantMap &config, int countLimit ) const
+QVariantList QgsFieldFormatter::availableValues( const QVariantMap &config, int countLimit ) const
 {
   Q_UNUSED( config )
   Q_UNUSED( countLimit )
 
-  return QList<QVariant>();
+  return QVariantList();
 }
 
 void QgsFieldFormatter::setFlags( const Flags &flags )

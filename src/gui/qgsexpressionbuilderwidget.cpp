@@ -472,7 +472,7 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int 
   const QgsEditorWidgetSetup setup = fields.at( fieldIndex ).editorWidgetSetup();
   const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
 
-  QList<QVariant> values;
+  QVariantList values;
   if ( cbxValuesInUse->isVisible() && !cbxValuesInUse->isChecked() && !forceUsedValues )
   {
     values = formatter->availableValues( setup.config(), countLimit );

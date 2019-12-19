@@ -188,9 +188,9 @@ QList<QgsVectorLayerRef> QgsValueRelationFieldFormatter::layerDependencies( cons
   return result;
 }
 
-QList<QVariant> QgsValueRelationFieldFormatter::availableValues( const QVariantMap &config, int countLimit ) const
+QVariantList QgsValueRelationFieldFormatter::availableValues( const QVariantMap &config, int countLimit ) const
 {
-  QList<QVariant> values;
+  QVariantList values;
 
   const QgsVectorLayer *referencedLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( config[QStringLiteral( "Layer" )].toString() ) );
   if ( referencedLayer )

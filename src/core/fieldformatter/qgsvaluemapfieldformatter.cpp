@@ -68,9 +68,9 @@ QVariant QgsValueMapFieldFormatter::sortValue( QgsVectorLayer *layer, int fieldI
   return representValue( layer, fieldIndex, config, cache, value );
 }
 
-QList<QVariant> QgsValueMapFieldFormatter::availableValues( const QVariantMap &config, int countLimit ) const
+QVariantList QgsValueMapFieldFormatter::availableValues( const QVariantMap &config, int countLimit ) const
 {
-  QList<QVariant> values;
+  QVariantList values;
   const QList<QVariant> valueList = config.value( QStringLiteral( "map" ) ).toList();
   for ( const QVariant &item : valueList )
   {
