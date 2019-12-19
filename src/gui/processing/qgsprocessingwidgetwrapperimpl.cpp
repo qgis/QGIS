@@ -109,7 +109,7 @@ QWidget *QgsProcessingBooleanWidgetWrapper::createWidget()
         emit widgetValueHasChanged( this );
       } );
       return mCheckBox;
-    };
+    }
 
     case QgsProcessingGui::Batch:
     case QgsProcessingGui::Modeler:
@@ -255,7 +255,7 @@ QWidget *QgsProcessingCrsWidgetWrapper::createWidget()
     case QgsProcessingGui::Batch:
     {
       return mProjectionSelectionWidget;
-    };
+    }
 
     case QgsProcessingGui::Modeler:
     {
@@ -427,7 +427,7 @@ QWidget *QgsProcessingStringWidgetWrapper::createWidget()
         } );
         return mLineEdit;
       }
-    };
+    }
 
     case QgsProcessingGui::Batch:
     {
@@ -531,7 +531,7 @@ QWidget *QgsProcessingAuthConfigWidgetWrapper::createWidget()
         emit widgetValueHasChanged( this );
       } );
       return mAuthConfigSelect;
-    };
+    }
   }
   return nullptr;
 }
@@ -718,7 +718,7 @@ QWidget *QgsProcessingNumericWidgetWrapper::createWidget()
         connect( mSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ), this, [ = ] { emit widgetValueHasChanged( this ); } );
 
       return spinBox;
-    };
+    }
   }
   return nullptr;
 }
@@ -1134,7 +1134,7 @@ QWidget *QgsProcessingRangeWidgetWrapper::createWidget()
       } );
 
       return w;
-    };
+    }
   }
   return nullptr;
 }
@@ -1221,7 +1221,7 @@ QWidget *QgsProcessingMatrixWidgetWrapper::createWidget()
     case QgsProcessingGui::Modeler:
     {
       return mMatrixWidget;
-    };
+    }
   }
   return nullptr;
 }
@@ -1393,7 +1393,7 @@ QWidget *QgsProcessingFileWidgetWrapper::createWidget()
         emit widgetValueHasChanged( this );
       } );
       return mFileWidget;
-    };
+    }
   }
   return nullptr;
 }
@@ -1500,7 +1500,7 @@ QWidget *QgsProcessingExpressionWidgetWrapper::createWidget()
         } );
         return mFieldExpWidget;
       }
-    };
+    }
   }
   return nullptr;
 }
@@ -1892,7 +1892,7 @@ QWidget *QgsProcessingEnumWidgetWrapper::createWidget()
         } );
         return mComboBox;
       }
-    };
+    }
   }
   return nullptr;
 }
@@ -2409,8 +2409,8 @@ void QgsProcessingPointPanel::clear()
 void QgsProcessingPointPanel::setValue( const QgsPointXY &point, const QgsCoordinateReferenceSystem &crs )
 {
   QString newText = QStringLiteral( "%1,%2" )
-                    .arg( QString::number( point.x(), 'f' ) )
-                    .arg( QString::number( point.y(), 'f' ) );
+                    .arg( QString::number( point.x(), 'f' ),
+                          QString::number( point.y(), 'f' ) );
 
   mCrs = crs;
   if ( mCrs.isValid() )
