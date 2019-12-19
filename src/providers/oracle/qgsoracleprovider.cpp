@@ -1949,7 +1949,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       {
         g.gtype = SDO_GTYPE( dim, GtPolygon );
         int nPolygons = 1;
-        if ( type == QgsWkbTypes::MultiPolygon25D || type == QgsWkbTypes::MultiPolygon )
+        if ( QgsWkbTypes::flatType( type ) == QgsWkbTypes::MultiPolygon )
         {
           g.gtype = SDO_GTYPE( dim, GtMultiPolygon );
           nPolygons = *ptr.iPtr++;
@@ -2082,15 +2082,86 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       break;
 
 
+      case QgsWkbTypes::CurvePolygonZ:
+      case QgsWkbTypes::MultiSurfaceZ:
+        dim = 3;
+        FALLTHROUGH
 
       case QgsWkbTypes::CurvePolygon:
-      case QgsWkbTypes::CurvePolygonZ:
-      case QgsWkbTypes::CurvePolygonM:
-      case QgsWkbTypes::CurvePolygonZM:
       case QgsWkbTypes::MultiSurface:
-      case QgsWkbTypes::MultiSurfaceZ:
-      case QgsWkbTypes::MultiSurfaceM:
-      case QgsWkbTypes::MultiSurfaceZM:
+      {
+        g.gtype = SDO_GTYPE( dim, GtPolygon );
+        int nSurfaces = 1;
+        QgsWkbTypes::Type surfaceType = type;
+        if ( type == QgsWkbTypes::MultiSurface || type == QgsWkbTypes::MultiSurfaceZ )
+        {
+          g.gtype = SDO_GTYPE( dim, GtMultiPolygon );
+          nSurfaces = *ptr.iPtr++;
+
+          ptr.ucPtr++; // Skip endianness of first surface
+          surfaceType = ( QgsWkbTypes::Type ) * ptr.iPtr++; // type of first surface
+        }
+
+        for ( int iSurface = 0; iSurface < nSurfaces; iSurface++ )
+        {
+          int nRings = nRings = *ptr.iPtr++;
+
+          ptr.ucPtr++; // Skip endianness of first ring
+          QgsWkbTypes::Type ringType = ( QgsWkbTypes::Type ) * ptr.iPtr++; // type of first ring
+
+          QgsWkbTypes::Type lineType;
+          for ( int iRing = 0; iRing < nRings; iRing++ )
+          {
+            int nLines = 1;
+            lineType = ringType;
+            if ( QgsWkbTypes::flatType( ringType ) == QgsWkbTypes::CompoundCurve )
+            {
+              nLines = *ptr.iPtr++;
+
+              ptr.ucPtr++; // Skip endianness of first linestring
+              lineType = ( QgsWkbTypes::Type ) * ptr.iPtr++; // type of first linestring
+            }
+
+            // Oracle don't store compound curve with only one line
+            g.eleminfo << iOrdinate
+                       << ( iRing == 0 ? 1000 : 2000 ) + ( nLines > 1 ? 5 : 3 )
+                       << ( nLines > 1 ? nLines : ( QgsWkbTypes::flatType( ringType ) == QgsWkbTypes::CircularString ? 2 : 1 ) );
+
+            for ( int iLine = 0; iLine < nLines; iLine++ )
+            {
+              if ( nLines > 1 )
+                g.eleminfo << iOrdinate << 2 << ( QgsWkbTypes::flatType( lineType ) == QgsWkbTypes::CircularString ? 2 : 1 );
+
+              for ( int i = 0, n = *ptr.iPtr++; i < n; i++ )
+              {
+                // Inside a compound polygon, two consecutives lines share start/end points
+                // We don't repeat this point in ordinates, so we skip the last point (except for last line)
+                if ( QgsWkbTypes::flatType( ringType ) == QgsWkbTypes::CompoundCurve
+                     && i == n - 1 && iLine < nLines - 1 )
+                {
+                  ptr.dPtr += dim;
+                  continue;
+                }
+
+                g.ordinates << *ptr.dPtr++;
+                g.ordinates << *ptr.dPtr++;
+                if ( dim == 3 )
+                  g.ordinates << *ptr.dPtr++;
+
+                iOrdinate  += dim;
+              }
+
+              ptr.ucPtr++; // Skip endianness of next linestring
+              lineType = ( QgsWkbTypes::Type ) * ptr.iPtr++; // type of next linestring
+            }
+
+            ringType = lineType; // type of next curve
+          }
+
+          surfaceType = lineType;
+        }
+      }
+      break;
 
       // unsupported M values
       case QgsWkbTypes::PointM:
@@ -2111,6 +2182,10 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       case QgsWkbTypes::CompoundCurveZM:
       case QgsWkbTypes::MultiCurveM:
       case QgsWkbTypes::MultiCurveZM:
+      case QgsWkbTypes::CurvePolygonM:
+      case QgsWkbTypes::CurvePolygonZM:
+      case QgsWkbTypes::MultiSurfaceM:
+      case QgsWkbTypes::MultiSurfaceZM:
 
       // other unsupported or missing geometry types
       case QgsWkbTypes::GeometryCollection:
