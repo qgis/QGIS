@@ -44,7 +44,7 @@ QgsHanaNewConnection::QgsHanaNewConnection(
 
   cmbIdentifierType_changed( cmbIdentifierType->currentIndex() );
 
-  connect( cmbIdentifierType, QOverload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsHanaNewConnection::cmbIdentifierType_changed );
+  connect( cmbIdentifierType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsHanaNewConnection::cmbIdentifierType_changed );
   connect( rbtnSingleContainer, &QRadioButton::clicked, this, &QgsHanaNewConnection::rbtnSingleContainer_clicked );
   connect( rbtnMultipleContainers, &QRadioButton::clicked, this, &QgsHanaNewConnection::rbtnMultipleContainers_clicked );
   connect( rbtnTenantDatabase, &QRadioButton::clicked, this, &QgsHanaNewConnection::rbtnTenantDatabase_clicked );
@@ -147,9 +147,9 @@ void QgsHanaNewConnection::accept()
 
   readSettingsFromControls( settings );
   if ( !mAuthSettings->storeUsernameIsChecked() )
-    settings.setUserName( QLatin1String( "" ) );
+    settings.setUserName( QString( "" ) );
   if ( !( mAuthSettings->storePasswordIsChecked() && !hasAuthConfigID ) )
-    settings.setPassword( QLatin1String( "" ) );
+    settings.setPassword( QString( "" ) );
   settings.setSaveUserName( mAuthSettings->storeUsernameIsChecked() );
   settings.setSavePassword( mAuthSettings->storePasswordIsChecked() && !hasAuthConfigID );
 
@@ -165,7 +165,7 @@ void QgsHanaNewConnection::btnConnect_clicked()
 
 void QgsHanaNewConnection::cmbIdentifierType_changed( int index )
 {
-  if ( QgsHanaIdentifierType::fromInt( index ) == QgsHanaIdentifierType::INSTANCE_NUMBER )
+  if ( QgsHanaIdentifierType::fromInt( static_cast<uint>( index ) ) == QgsHanaIdentifierType::INSTANCE_NUMBER )
   {
     txtIdentifier->setMaxLength( 2 );
     txtIdentifier->setValidator( new QIntValidator( 0, 99, this ) );
@@ -224,7 +224,7 @@ void QgsHanaNewConnection::readSettingsFromControls( QgsHanaSettings &settings )
 {
   settings.setDriver( txtDriver->text() );
   settings.setHost( txtHost->text() );
-  settings.setIdentifierType( cmbIdentifierType->currentIndex() );
+  settings.setIdentifierType( static_cast<uint>( cmbIdentifierType->currentIndex() ) );
   settings.setIdentifier( txtIdentifier->text() );
   settings.setDatabase( getDatabaseName() );
   settings.setMultitenant( rbtnMultipleContainers->isChecked() );
@@ -249,7 +249,7 @@ void QgsHanaNewConnection::updateControlsFromSettings( const QgsHanaSettings &se
   txtDriver->setText( settings.getDriver() );
   txtHost->setText( settings.getHost() );
   cmbIdentifierType->setCurrentIndex( QgsHanaIdentifierType::INSTANCE_NUMBER );
-  cmbIdentifierType->setCurrentIndex( settings.getIdentifierType() );
+  cmbIdentifierType->setCurrentIndex( static_cast<int>( settings.getIdentifierType() ) );
   txtIdentifier->setText( settings.getIdentifier() );
   if ( !settings.getMultitenant() )
   {
@@ -313,7 +313,7 @@ void QgsHanaNewConnection::testConnection()
     warningMsg = QStringLiteral( "Identifier has not been specified." );
   else
   {
-    auto id = QgsHanaIdentifierType::fromInt( cmbIdentifierType->currentIndex() );
+    auto id = QgsHanaIdentifierType::fromInt( static_cast<uint>( cmbIdentifierType->currentIndex() ) );
     int len = txtIdentifier->text().length();
     if ( ( id == QgsHanaIdentifierType::INSTANCE_NUMBER && len != 2 ) ||
          ( id == QgsHanaIdentifierType::PORT_NUMBER && len != 5 ) )
@@ -349,7 +349,7 @@ QString QgsHanaNewConnection::getDatabaseName() const
       return QStringLiteral( "SYSTEMDB" );
   }
   else
-    return QStringLiteral( "" );
+    return QString( "" );
 }
 
 void QgsHanaNewConnection::showHelp()

@@ -20,7 +20,8 @@
 #include "qgssqlexpressioncompiler.h"
 
 QgsHanaExpressionCompiler::QgsHanaExpressionCompiler( QgsHanaFeatureSource *source )
-  : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger | QgsSqlExpressionCompiler::NoNullInBooleanLogic)
+  : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger |
+                              QgsSqlExpressionCompiler::NoNullInBooleanLogic )
   , mGeometryColumn( source->mGeometryColumn )
 {
 }
@@ -99,7 +100,7 @@ QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
 
       QString funcName = fd->name();
       if ( funcName.isEmpty() )
-          break;
+        break;
 
       if ( funcName == QLatin1String( "$geometry" ) )
       {
@@ -108,12 +109,12 @@ QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
       }
       else if ( funcName.toLower() == QLatin1String( "log10" ) )
       {
-          return Fail;
+        return Fail;
       }
       else if ( funcName.toLower() == QLatin1String( "pi" ) )
       {
-          result = "3.141592653589793238";
-          return Complete;
+        result = "3.141592653589793238";
+        return Complete;
       }
     }
     break;
@@ -121,12 +122,12 @@ QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
     {
       const QgsExpressionNodeLiteral *n = static_cast<const QgsExpressionNodeLiteral *>( node );
 
-      switch( n->value().type() )
+      switch ( n->value().type() )
       {
-      case QVariant::Bool:
+        case QVariant::Bool:
           result = n->value().toBool() ? "(1=1)" : "(1=0)";
           return Complete;
-      default:
+        default:
           break;
       }
     }
@@ -147,10 +148,10 @@ QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
       switch ( binOp->op() )
       {
         case QgsExpressionNodeBinaryOperator::boMod:
-            result = QStringLiteral( "MOD(%1,%2)" ).arg( opLeft, opRight );
-            compileResult = ( resLeft == Partial || resRight == Partial ) ? Partial : Complete;
-            QgsDebugMsg( QStringLiteral( "MOD compile status:  %1" ).arg( compileResult ) + "; " + result );
-            return compileResult;
+          result = QStringLiteral( "MOD(%1,%2)" ).arg( opLeft, opRight );
+          compileResult = ( resLeft == Partial || resRight == Partial ) ? Partial : Complete;
+          QgsDebugMsg( QStringLiteral( "MOD compile status:  %1" ).arg( compileResult ) + "; " + result );
+          return compileResult;
 
         case QgsExpressionNodeBinaryOperator::boPow:
           result = QStringLiteral( "POWER(%1,%2)" ).arg( opLeft, opRight );
@@ -196,12 +197,12 @@ QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
           }
         }
         break;
-      default:
-        break;
-       }
-     }
-     break;
-   default:
+        default:
+          break;
+      }
+    }
+    break;
+    default:
       break;
   }
 

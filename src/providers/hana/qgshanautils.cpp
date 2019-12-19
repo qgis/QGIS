@@ -249,7 +249,7 @@ QVariant QgsHanaUtils::toVariant( const String &value, int type, bool isSigned )
       if ( isNull )
         return QVariant( isSigned ? QVariant::LongLong : QVariant::ULongLong );
       else
-        return QVariant( static_cast< qlonglong >(atoll( value->c_str() ) ));
+        return QVariant( static_cast< qlonglong >( atoll( value->c_str() ) ) );
     case SQLDataTypes::Numeric:
     case SQLDataTypes::Double:
     case SQLDataTypes::Decimal:
@@ -279,7 +279,7 @@ QVariant QgsHanaUtils::toVariant( const String &value, int type, bool isSigned )
         return QVariant( value->c_str() );
     case SQLDataTypes::Binary:
     case SQLDataTypes::VarBinary:
-      return QVariant( QByteArray( value->c_str(), static_cast< int >(value->length() )) );
+      return QVariant( QByteArray( value->c_str(), static_cast< int >( value->length() ) ) );
     case SQLDataTypes::Date:
     case SQLDataTypes::TypeDate:
       return QVariant( QDate::fromString( QString( value->c_str() ) ) );

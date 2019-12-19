@@ -68,13 +68,9 @@ class QgsHanaProvider : public QgsVectorDataProvider
     QString dataComment() const override;
     long featureCount() const override;
     QgsFields fields() const override;
-    //QString dataComment() const override;
     QVariant minimumValue( int index ) const override;
     QVariant maximumValue( int index ) const override;
     QSet< QVariant > uniqueValues( int index, int limit = -1 ) const override;
-    //QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
-    //                                   QgsFeedback *feedback = nullptr ) const override;
-    //void enumValues( int index, QStringList &enumList ) const override;
     QString subsetString() const override;
     bool setSubsetString( const QString &subset, bool updateFeatureCount = true ) override;
     bool supportsSubsetString() const override { return true; }

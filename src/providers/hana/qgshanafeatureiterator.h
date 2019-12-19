@@ -79,13 +79,13 @@ class QgsHanaFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsHa
   private:
     QgsHanaConnectionRef mConnRef;
     QgsHanaResultSetRef mResultSet;
-    QString mSqlStatement;
-    QgsCoordinateTransform mTransform;
+    QString mSqlStatement = QString( "" );
     QgsRectangle mFilterRect;
     QgsRectangle mSrsExtent;
     QgsAttributeList mAttributesToFetch;
     QString mFidColumn;
-    bool mHasAttributes;
+    QgsCoordinateTransform mTransform;
+    bool mHasAttributes = false;
     bool mHasGeometryColumn = false;
     bool mExpressionCompiled = false;
     bool mOrderByCompiled = false;

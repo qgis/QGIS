@@ -24,6 +24,7 @@ SET (HANA_MOC_HDRS
   qgshanaconnectionpool.h
   qgshanadataitems.h
   qgshanaprovider.h
+  qgshanaresultset.h
   qgshanatablemodel.h
 )
 

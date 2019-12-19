@@ -94,7 +94,7 @@ void QgsHanaTableModel::addTableEntry( const QgsHanaLayerProperty &layerProperty
   pkItem->setData( layerProperty.pkCols, Qt::UserRole + 1 );
   pkItem->setData( pkCol, Qt::UserRole + 2 );
 
-  QStandardItem *selItem = new QStandardItem( QLatin1String( "" ) );
+  QStandardItem *selItem = new QStandardItem( QString( "" ) );
   selItem->setFlags( selItem->flags() | Qt::ItemIsUserCheckable );
   selItem->setCheckState( Qt::Checked );
   selItem->setToolTip( tr( "Disable 'Fast Access to Features at ID' capability to force keeping "
@@ -119,7 +119,7 @@ void QgsHanaTableModel::addTableEntry( const QgsHanaLayerProperty &layerProperty
     if ( tip.isEmpty() )
     {
       item->setFlags( item->flags() | Qt::ItemIsSelectable );
-      item->setToolTip( QLatin1String( "" ) );
+      item->setToolTip( QString( "" ) );
     }
     else
     {
@@ -267,7 +267,7 @@ bool QgsHanaTableModel::setData( const QModelIndex &idx, const QVariant &value, 
         }
 
         item->setFlags( item->flags() | Qt::ItemIsSelectable );
-        item->setToolTip( QLatin1String( "" ) );
+        item->setToolTip( QString( "" ) );
       }
       else
       {

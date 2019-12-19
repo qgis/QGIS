@@ -114,9 +114,9 @@ void QgsHanaSettings::save()
   settings.setValue( key + "/schema", mSchema );
   settings.setValue( key + "/authcfg", mAuthcfg );
   settings.setValue( key + "/saveUsername", mSaveUserName );
-  settings.setValue( key + "/username", mSaveUserName ? mUserName : QLatin1String( "" ) );
+  settings.setValue( key + "/username", mSaveUserName ? mUserName : QString( "" ) );
   settings.setValue( key + "/savePassword", mSavePassword );
-  settings.setValue( key + "/password", mSavePassword ? mPassword : QLatin1String( "" ) );
+  settings.setValue( key + "/password", mSavePassword ? mPassword : QString( "" ) );
   settings.setValue( key + "/userTablesOnly", mUserTablesOnly );
   settings.setValue( key + "/allowGeometrylessTables", mAllowGeometrylessTables );
   settings.setValue( key + "/sslEnabled", mSslEnabled );

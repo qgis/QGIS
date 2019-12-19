@@ -34,12 +34,12 @@ using namespace odbc;
 
 static QString andWhereClauses( const QString &c1, const QString &c2 )
 {
-    if ( c1.isEmpty() )
-      return c2;
-    if ( c2.isEmpty() )
-      return c1;
+  if ( c1.isEmpty() )
+    return c2;
+  if ( c2.isEmpty() )
+    return c1;
 
-    return QStringLiteral( "(%1) AND (%2)" ).arg( c1, c2 );
+  return QStringLiteral( "(%1) AND (%2)" ).arg( c1, c2 );
 }
 
 QgsHanaFeatureIterator::QgsHanaFeatureIterator(
@@ -50,8 +50,6 @@ QgsHanaFeatureIterator::QgsHanaFeatureIterator(
   , mConnRef( source->mUri )
   , mSrsExtent( source->mSrsExtent )
   , mFidColumn( source->mFidColumn )
-  , mHasAttributes( false )
-  , mHasGeometryColumn( false )
 {
   mClosed = true;
 
@@ -82,7 +80,7 @@ QgsHanaFeatureIterator::QgsHanaFeatureIterator(
     mClosed = false;
     rewind();
   }
-  catch ( const odbc::Exception& ex)
+  catch ( const odbc::Exception &ex )
   {
     QgsDebugMsg( ex.what() );
     iteratorClosed();
@@ -102,7 +100,7 @@ bool QgsHanaFeatureIterator::rewind()
 
   mResultSet.reset();
   PreparedStatementRef stmt = mConnRef->getNativeRef()->prepareStatement( mSqlStatement.toStdString().c_str() );
-  mResultSet = QgsHanaResultSet::create(stmt);
+  mResultSet = QgsHanaResultSet::create( stmt );
   return true;
 }
 
@@ -136,10 +134,10 @@ bool QgsHanaFeatureIterator::fetchFeature( QgsFeature &feature )
     // Read feature id
     if ( !mFidColumn.isEmpty() )
     {
-        QVariant id = mResultSet->getValue(paramIndex);
-        feature.setId( id.toLongLong() );
-        feature.setAttribute( 0, id );
-        ++paramIndex;
+      QVariant id = mResultSet->getValue( paramIndex );
+      feature.setId( id.toLongLong() );
+      feature.setAttribute( 0, id );
+      ++paramIndex;
     }
     else
     {
@@ -149,9 +147,9 @@ bool QgsHanaFeatureIterator::fetchFeature( QgsFeature &feature )
     // Read attributes
     if ( mHasAttributes )
     {
-      Q_FOREACH(int idx, mAttributesToFetch)
+      Q_FOREACH ( int idx, mAttributesToFetch )
       {
-        feature.setAttribute( idx, mResultSet->getValue(paramIndex ));
+        feature.setAttribute( idx, mResultSet->getValue( paramIndex ) );
         ++paramIndex;
       }
     }
@@ -159,11 +157,11 @@ bool QgsHanaFeatureIterator::fetchFeature( QgsFeature &feature )
     // Read geometry
     if ( mHasGeometryColumn )
     {
-      QgsGeometry geom = mResultSet->getGeometry(paramIndex);
-      if (!geom.isNull())
-         feature.setGeometry( geom );
+      QgsGeometry geom = mResultSet->getGeometry( paramIndex );
+      if ( !geom.isNull() )
+        feature.setGeometry( geom );
       else
-         feature.clearGeometry();
+        feature.clearGeometry();
     }
     else
     {
@@ -229,7 +227,7 @@ QString QgsHanaFeatureIterator::buildSQLStatement( const QgsFeatureRequest &requ
 #if 0
   mOrderByCompiled = true;
 
-  if (QgsSettings().value( QStringLiteral( "qgis/compileExpressions" ), true ).toBool() )
+  if ( QgsSettings().value( QStringLiteral( "qgis/compileExpressions" ), true ).toBool() )
   {
     const auto constOrderBy = request.orderBy();
     for ( const QgsFeatureRequest::OrderByClause &clause : constOrderBy )
@@ -268,27 +266,27 @@ QString QgsHanaFeatureIterator::buildSQLStatement( const QgsFeatureRequest &requ
   QgsAttributeList attrs = ( subsetOfAttributes ) ?
                            request.subsetOfAttributes() : mSource->mFields.allAttributesList();
 
-  if (subsetOfAttributes)
+  if ( subsetOfAttributes )
   {
-      // Ensure that all attributes required for expression filter are fetched
-      if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
-      {
-        //ensure that all fields required for filter expressions are prepared
-        QSet<int> attributeIndexes = request.filterExpression()->referencedAttributeIndexes( mSource->mFields );
-        attributeIndexes += attrs.toSet();
-        attrs = attributeIndexes.toList();
-      }
+    // Ensure that all attributes required for expression filter are fetched
+    if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
+    {
+      //ensure that all fields required for filter expressions are prepared
+      QSet<int> attributeIndexes = request.filterExpression()->referencedAttributeIndexes( mSource->mFields );
+      attributeIndexes += attrs.toSet();
+      attrs = attributeIndexes.toList();
+    }
 
-      if ( !mRequest.orderBy().isEmpty() )
+    if ( !mRequest.orderBy().isEmpty() )
+    {
+      // Ensure that all attributes required for order by are fetched
+      const auto usedAttributeIndices = mRequest.orderBy().usedAttributeIndices( mSource->mFields );
+      for ( int attrIndex : usedAttributeIndices )
       {
-          // Ensure that all attributes required for order by are fetched
-          const auto usedAttributeIndices = mRequest.orderBy().usedAttributeIndices( mSource->mFields );
-          for ( int attrIndex : usedAttributeIndices )
-          {
-            if ( !attrs.contains( attrIndex ) )
-              attrs << attrIndex;
-          }
+        if ( !attrs.contains( attrIndex ) )
+          attrs << attrIndex;
       }
+    }
   }
 
   Q_FOREACH ( int i, attrs )
@@ -323,12 +321,12 @@ QString QgsHanaFeatureIterator::buildSQLStatement( const QgsFeatureRequest &requ
 
   if ( sqlFields.isEmpty() )
   {
-      sqlFields = "*";
+    sqlFields = "*";
   }
   else
   {
-      if ( sqlFields.endsWith( ',' ) )
-        sqlFields.truncate( sqlFields.length() - 1 );
+    if ( sqlFields.endsWith( ',' ) )
+      sqlFields.truncate( sqlFields.length() - 1 );
   }
 
   QString sql = QStringLiteral( "SELECT %1 FROM %2.%3" ).arg(
@@ -339,30 +337,32 @@ QString QgsHanaFeatureIterator::buildSQLStatement( const QgsFeatureRequest &requ
   QString sqlFilter;
   // Set spatial filter
   if ( !( filterRect.isNull() || filterRect.isEmpty() ) && mSource->isSpatial() && mHasGeometryColumn )
+  {
     sqlFilter = getBBOXFilter( filterRect, QgsHanaUtils::toHANAVersion( mConnRef->getDatabaseVersion() ) );
+  }
 
   // Set fid filter
-  if (!mFidColumn.isEmpty())
+  if ( !mFidColumn.isEmpty() )
   {
-      if ( request.filterType() == QgsFeatureRequest::FilterFid )
+    if ( request.filterType() == QgsFeatureRequest::FilterFid )
+    {
+      QString inClause = QStringLiteral( " %1 = %2" ).arg(
+                           QgsHanaUtils::quotedIdentifier( mFidColumn ), FID_TO_STRING( request.filterFid() ) );
+      sqlFilter = andWhereClauses( sqlFilter, inClause );
+    }
+    else if ( request.filterType() == QgsFeatureRequest::FilterFids && !mRequest.filterFids().isEmpty() )
+    {
+      QString delim;
+      QString inClause = QStringLiteral( "%1 IN (" ).arg( QgsHanaUtils::quotedIdentifier( mFidColumn ) );
+      Q_FOREACH ( QgsFeatureId featureId, mRequest.filterFids() )
       {
-        QString inClause = QStringLiteral( " %1 = %2" ).arg(
-                    QgsHanaUtils::quotedIdentifier( mFidColumn ), FID_TO_STRING( request.filterFid() ) );
-        sqlFilter = andWhereClauses( sqlFilter, inClause );
+        inClause += delim + FID_TO_STRING( featureId );
+        delim = ',';
       }
-      else if ( request.filterType() == QgsFeatureRequest::FilterFids && !mRequest.filterFids().isEmpty() )
-      {
-        QString delim;
-        QString inClause = QStringLiteral( "%1 IN (" ).arg( QgsHanaUtils::quotedIdentifier( mFidColumn ) );
-        Q_FOREACH ( QgsFeatureId featureId, mRequest.filterFids() )
-        {
-          inClause += delim + FID_TO_STRING( featureId );
-          delim = ',';
-        }
-        inClause.append( ')' );
+      inClause.append( ')' );
 
-        sqlFilter = andWhereClauses( sqlFilter, inClause );
-      }
+      sqlFilter = andWhereClauses( sqlFilter, inClause );
+    }
   }
 
   //IMPORTANT - this MUST be the last clause added
