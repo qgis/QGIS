@@ -68,7 +68,7 @@ QVariant QgsValueMapFieldFormatter::sortValue( QgsVectorLayer *layer, int fieldI
   return representValue( layer, fieldIndex, config, cache, value );
 }
 
-QVariantList QgsValueMapFieldFormatter::availableValues( const QVariantMap &config, int countLimit, const QgsFieldFormatterContext *context ) const
+QVariantList QgsValueMapFieldFormatter::availableValues( const QVariantMap &config, int countLimit, const QgsFieldFormatterContext &context ) const
 {
   Q_UNUSED( context )
 

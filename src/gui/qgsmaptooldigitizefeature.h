@@ -3,7 +3,7 @@
 
  ---------------------
  begin                : 7.12.2017
- copyright            : (C) 2017 by by David Signer
+ copyright            : (C) 2017 by David Signer
  email                : david at opengis dot ch
  ***************************************************************************
  *                                                                         *

@@ -156,7 +156,7 @@ class CORE_EXPORT QgsFieldFormatter
      * according to the settings in the \a config
      * \since QGIS 3.12
      */
-    virtual QVariantList availableValues( const QVariantMap &config, int countLimit, const QgsFieldFormatterContext *context ) const;
+    virtual QVariantList availableValues( const QVariantMap &config, int countLimit, const QgsFieldFormatterContext &context ) const;
 
     /**
      * Returns the flags

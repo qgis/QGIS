@@ -128,7 +128,7 @@ make use of a cache if present.
 %End
 
 
-    virtual QVariantList availableValues( const QVariantMap &config, int countLimit, const QgsFieldFormatterContext *context ) const;
+    virtual QVariantList availableValues( const QVariantMap &config, int countLimit, const QgsFieldFormatterContext &context ) const;
 %Docstring
 Returns a list of the values that would be possible to select with this widget type
 On a RelationReference that would be the parents ids or on ValueMap all the configured keys

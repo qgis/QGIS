@@ -494,7 +494,7 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int 
   {
     QgsFieldFormatterContext fieldFormatterContext;
     fieldFormatterContext.setProject( mProject );
-    values = formatter->availableValues( setup.config(), countLimit, &fieldFormatterContext );
+    values = formatter->availableValues( setup.config(), countLimit, fieldFormatterContext );
   }
   else
   {

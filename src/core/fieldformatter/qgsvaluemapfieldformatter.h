@@ -57,7 +57,7 @@ class CORE_EXPORT QgsValueMapFieldFormatter : public QgsFieldFormatter
 
     QVariant sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const override;
 
-    QVariantList availableValues( const QVariantMap &config, int countLimit, const QgsFieldFormatterContext *context ) const override;
+    QVariantList availableValues( const QVariantMap &config, int countLimit, const QgsFieldFormatterContext &context ) const override;
 };
 
 #endif // QGSVALUEMAPFIELDKIT_H
