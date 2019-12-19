@@ -23,7 +23,9 @@ Email                : sherman at mrcc dot com
 #include "qgis.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
+#if PROJ_VERSION_MAJOR>=6
 #include "qgsprojutils.h"
+#endif
 #if PROJ_VERSION_MAJOR > 4
 #include <proj.h>
 #else
