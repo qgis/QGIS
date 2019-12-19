@@ -341,7 +341,11 @@ void TestQgsDistanceArea::measureAreaAndUnits()
   poly << ring;
   polygon = QgsGeometry::fromPolygonXY( poly );
 
+#if PROJ_VERSION_MAJOR>=6
+  da.setSourceCrs( QgsCoordinateReferenceSystem( QStringLiteral( "ESRI:102635" ) ), QgsProject::instance()->transformContext() );
+#else
   da.setSourceCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:102635" ) ), QgsProject::instance()->transformContext() );
+#endif
   da.setEllipsoid( QStringLiteral( "NONE" ) );
   // measurement should be in square feet
   area = da.measureArea( polygon );
