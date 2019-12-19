@@ -122,6 +122,42 @@ void QgsCoordinateOperationWidget::setShowMakeDefault( bool show )
   mMakeDefaultCheckBox->setVisible( show );
 }
 
+bool QgsCoordinateOperationWidget::makeDefaultSelected() const
+{
+  return mMakeDefaultCheckBox->isChecked();
+}
+
+bool QgsCoordinateOperationWidget::hasSelection() const
+{
+  return !mCoordinateOperationTableWidget->selectedItems().isEmpty();
+}
+
+QList<QgsCoordinateOperationWidget::OperationDetails> QgsCoordinateOperationWidget::availableOperations() const
+{
+  QList<QgsCoordinateOperationWidget::OperationDetails> res;
+  res.reserve( mDatumTransforms.size() );
+#if PROJ_VERSION_MAJOR>=6
+  for ( const QgsDatumTransform::TransformDetails &details : mDatumTransforms )
+  {
+    OperationDetails op;
+    op.proj = details.proj;
+    op.sourceTransformId = -1;
+    op.destinationTransformId = -1;
+    op.isAvailable = details.isAvailable;
+    res << op;
+  }
+#else
+  for ( const QgsDatumTransform::TransformPair &details : mDatumTransforms )
+  {
+    OperationDetails op;
+    op.sourceTransformId = details.sourceTransformId;
+    op.destinationTransformId = details.destinationTransformId;
+    res << op;
+  }
+#endif
+  return res;
+}
+
 void QgsCoordinateOperationWidget::loadAvailableOperations()
 {
   mCoordinateOperationTableWidget->setRowCount( 0 );
@@ -442,6 +478,7 @@ QgsCoordinateOperationWidget::OperationDetails QgsCoordinateOperationWidget::def
     if ( transform.isAvailable )
     {
       preferred.proj = transform.proj;
+      preferred.isAvailable = transform.isAvailable;
       break;
     }
   }
@@ -532,6 +569,7 @@ QgsCoordinateOperationWidget::OperationDetails QgsCoordinateOperationWidget::sel
     QTableWidgetItem *destItem = mCoordinateOperationTableWidget->item( row, 1 );
     op.destinationTransformId = destItem ? destItem->data( TransformIdRole ).toInt() : -1;
     op.proj = srcItem ? srcItem->data( ProjRole ).toString() : QString();
+    op.isAvailable = srcItem ? srcItem->data( AvailableRole ).toBool() : true;
   }
   else
   {

@@ -46,6 +46,9 @@ class GUI_EXPORT QgsCoordinateOperationWidget : public QWidget, private Ui::QgsC
 
       //! Proj coordinate operation description, for Proj >= 6.0 builds only
       QString proj;
+
+      //! TRUE if operation is available
+      bool isAvailable = true;
     };
 
     /**
@@ -97,6 +100,21 @@ class GUI_EXPORT QgsCoordinateOperationWidget : public QWidget, private Ui::QgsC
      * Sets whether the "make default" checkbox should be shown.
      */
     void setShowMakeDefault( bool show );
+
+    /**
+     * Returns TRUE if the "make default" option is selected.
+     */
+    bool makeDefaultSelected() const;
+
+    /**
+     * Returns TRUE if there is a valid selection in the widget.
+     */
+    bool hasSelection() const;
+
+    /**
+     * Returns a list of the available operations shown in the widget.
+     */
+    QList< QgsCoordinateOperationWidget::OperationDetails > availableOperations() const;
 
     /**
      * Returns the details of the default operation suggested by the widget.
