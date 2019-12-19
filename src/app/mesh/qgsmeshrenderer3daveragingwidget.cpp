@@ -18,6 +18,7 @@
 #include <QPainter>
 #include <QScreen>
 #include <QPixmap>
+#include <QDesktopWidget>
 
 #include "qgsmeshrenderer3daveragingwidget.h"
 
@@ -31,9 +32,8 @@
 static void _setSvg( QLabel *imageLabel,
                      const QString &imgName )
 {
-  qreal ratio = QgsApplication::instance()->primaryScreen()->devicePixelRatio();
-  int desiredWidthInMM = 500;
-  int desiredWidth = static_cast<int>( desiredWidthInMM * ratio );
+  qreal dpi = QgsApplication::instance()->desktop()->logicalDpiX();
+  int desiredWidth = static_cast<int>( 100 * dpi / 25.4 );
 
   QSvgRenderer renderer( QStringLiteral( ":/images/themes/default/mesh/%1" ).arg( imgName ) );
   if ( renderer.isValid() )
@@ -41,15 +41,13 @@ static void _setSvg( QLabel *imageLabel,
     const QSize defaultSvgSize = renderer.defaultSize();
     int desiredHeight = defaultSvgSize.height() * desiredWidth / defaultSvgSize.width();
 
-    QPixmap pixmap( QSize( desiredWidthInMM, desiredHeight ) );
+    QPixmap pixmap( QSize( desiredWidth, desiredHeight ) );
     pixmap.fill( Qt::transparent );
     QPainter painter;
 
     painter.begin( &pixmap );
     renderer.render( &painter );
     painter.end();
-    pixmap.setDevicePixelRatio( ratio );
-
     imageLabel->setPixmap( pixmap );
   }
 }
