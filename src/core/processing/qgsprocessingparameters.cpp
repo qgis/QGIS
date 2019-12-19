@@ -782,63 +782,7 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsCrs( const QgsP
   if ( !definition )
     return QgsCoordinateReferenceSystem();
 
-  QVariant val = value;
-
-  if ( val.canConvert<QgsCoordinateReferenceSystem>() )
-  {
-    // input is a QgsCoordinateReferenceSystem - done!
-    return val.value< QgsCoordinateReferenceSystem >();
-  }
-  else if ( val.canConvert<QgsProcessingFeatureSourceDefinition>() )
-  {
-    // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
-    QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
-    val = fromVar.source;
-  }
-  else if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )
-  {
-    // input is a QgsProcessingOutputLayerDefinition - get extra properties from it
-    QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( val );
-    val = fromVar.sink;
-  }
-
-  if ( val.canConvert<QgsProperty>() && val.value< QgsProperty >().propertyType() == QgsProperty::StaticProperty )
-  {
-    val = val.value< QgsProperty >().staticValue();
-  }
-
-  // maybe a map layer
-  if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( val ) ) )
-    return layer->crs();
-
-  if ( val.canConvert<QgsProperty>() )
-    val = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
-
-  if ( !val.isValid() )
-  {
-    // fall back to default
-    val = definition->defaultValue();
-  }
-
-  QString crsText = val.toString();
-  if ( crsText.isEmpty() )
-    crsText = definition->defaultValue().toString();
-
-  if ( crsText.isEmpty() )
-    return QgsCoordinateReferenceSystem();
-
-  // maybe special string
-  if ( context.project() && crsText.compare( QLatin1String( "ProjectCrs" ), Qt::CaseInsensitive ) == 0 )
-    return context.project()->crs();
-
-  // maybe a map layer reference
-  if ( QgsMapLayer *layer = QgsProcessingUtils::mapLayerFromString( crsText, context ) )
-    return layer->crs();
-
-  // else CRS from string
-  QgsCoordinateReferenceSystem crs;
-  crs.createFromString( crsText );
-  return crs;
+  return QgsProcessingUtils::variantToCrs( value, context, definition->defaultValue() );
 }
 
 QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context,
