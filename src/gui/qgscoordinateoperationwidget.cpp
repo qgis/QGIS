@@ -351,8 +351,6 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
     row++;
   }
 #else
-  Q_UNUSED( selectedProj )
-
   Q_NOWARN_DEPRECATED_PUSH
   for ( const QgsDatumTransform::TransformPair &transform : qgis::as_const( mDatumTransforms ) )
   {
@@ -435,15 +433,6 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
         mCoordinateOperationTableWidget->setItem( row, i, item.release() );
       }
     }
-
-    if ( ( transform.sourceTransformId == selectedDatumTransforms.first &&
-           transform.destinationTransformId == selectedDatumTransforms.second ) ||
-         ( transform.sourceTransformId == selectedDatumTransforms.second &&
-           transform.destinationTransformId == selectedDatumTransforms.first ) )
-    {
-      mCoordinateOperationTableWidget->selectRow( row );
-    }
-
     row++;
   }
   Q_NOWARN_DEPRECATED_POP
@@ -489,12 +478,8 @@ QgsCoordinateOperationWidget::OperationDetails QgsCoordinateOperationWidget::def
   bool foundPreferredNonDeprecated = false;
   bool foundPreferred  = false;
   OperationDetails nonDeprecated;
-  nonDeprecated.sourceCrs = mSourceCrs;
-  nonDeprecated.destinationCrs = mDestinationCrs;
   bool foundNonDeprecated = false;
   OperationDetails fallback;
-  fallback.sourceCrs = mSourceCrs;
-  fallback.destinationCrs = mDestinationCrs;
   bool foundFallback = false;
 
   Q_NOWARN_DEPRECATED_PUSH
@@ -713,8 +698,7 @@ void QgsCoordinateOperationWidget::tableCurrentItemChanged( QTableWidgetItem *, 
     emit operationChanged();
 #else
   if ( newOp.sourceTransformId != mPreviousOp.sourceTransformId ||
-       newOp.destinationTransformId != mPreviousOp.destinationTransformId ||
-     )
+       newOp.destinationTransformId != mPreviousOp.destinationTransformId )
     emit operationChanged();
 #endif
   mPreviousOp = newOp;
