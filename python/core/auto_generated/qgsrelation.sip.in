@@ -11,7 +11,6 @@
 
 
 
-
 class QgsRelation
 {
 
@@ -37,6 +36,11 @@ Default constructor. Creates an invalid relation.
 %End
     ~QgsRelation();
 
+    QgsRelation( const QgsRelationContext &context );
+%Docstring
+Constructor with context. Creates an invalid relation.
+%End
+
     QgsRelation( const QgsRelation &other );
 %Docstring
 Copies a relation.
@@ -45,12 +49,13 @@ changed.
 %End
 
 
-    static QgsRelation createFromXml( const QDomNode &node, QgsReadWriteContext &context );
+    static QgsRelation createFromXml( const QDomNode &node, QgsReadWriteContext &context, const QgsRelationContext &relcontext = QgsRelationContext() );
 %Docstring
 Creates a relation from an XML structure. Used for reading .qgs projects.
 
 :param node: The dom node containing the relation information
 :param context: to pass project translator
+:param context: a relation context
 
 :return: A relation
 %End

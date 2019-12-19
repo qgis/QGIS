@@ -28,6 +28,11 @@ Constructor for QgsRelationManager.
 :param project: associated project (used to notify project of changes)
 %End
 
+    QgsRelationContext context() const;
+%Docstring
+Gets the relation context
+%End
+
     void setRelations( const QList<QgsRelation> &relations );
 %Docstring
 Will set the specified relations and remove any relation currently set.
