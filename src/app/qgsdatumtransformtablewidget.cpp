@@ -302,11 +302,18 @@ void QgsDatumTransformTableWidget::editDatumTransform()
       {
         const QgsDatumTransformDialog::TransformInfo dt = dlg.selectedDatumTransform();
         QgsCoordinateTransformContext context = mModel->transformContext();
+        if ( sourceCrs != dt.sourceCrs || destinationCrs != dt.destinationCrs )
+        {
+          context.removeCoordinateOperation( sourceCrs, destinationCrs );
+          Q_NOWARN_DEPRECATED_PUSH
+          context.removeSourceDestinationDatumTransform( sourceCrs, destinationCrs );
+          Q_NOWARN_DEPRECATED_POP
+        }
         // QMap::insert takes care of replacing existing value
         Q_NOWARN_DEPRECATED_PUSH
-        context.addSourceDestinationDatumTransform( sourceCrs, destinationCrs, dt.sourceTransformId, dt.destinationTransformId );
+        context.addSourceDestinationDatumTransform( dt.sourceCrs, dt.destinationCrs, dt.sourceTransformId, dt.destinationTransformId );
         Q_NOWARN_DEPRECATED_POP
-        context.addCoordinateOperation( sourceCrs, destinationCrs, dt.proj );
+        context.addCoordinateOperation( dt.sourceCrs, dt.destinationCrs, dt.proj );
         mModel->setTransformContext( context );
       }
     }
