@@ -221,9 +221,21 @@ QgsDatumTransformTableWidget::QgsDatumTransformTableWidget( QWidget *parent )
   mTableView->setAlternatingRowColors( true );
   connect( mAddButton, &QToolButton::clicked, this, &QgsDatumTransformTableWidget::addDatumTransform );
   connect( mRemoveButton, &QToolButton::clicked, this, &QgsDatumTransformTableWidget::removeDatumTransform );
-  connect( mEditButton, &QToolButton::clicked, this, &QgsDatumTransformTableWidget::editDatumTransform );
+  connect( mEditButton, &QToolButton::clicked, this, [ = ]
+  {
+    QModelIndexList selectedIndexes = mTableView->selectionModel()->selectedIndexes();
+    if ( selectedIndexes.count() > 0 )
+    {
+      editDatumTransform( selectedIndexes.at( 0 ) );
+    }
+  } );
 
   connect( mTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsDatumTransformTableWidget::selectionChanged );
+
+  connect( mTableView, &QTableView::doubleClicked, this, [ = ]( const QModelIndex & index )
+  {
+    editDatumTransform( index );
+  } );
   mEditButton->setEnabled( false );
 }
 
@@ -253,69 +265,47 @@ void QgsDatumTransformTableWidget::removeDatumTransform()
   }
 }
 
-void QgsDatumTransformTableWidget::editDatumTransform()
+void QgsDatumTransformTableWidget::editDatumTransform( const QModelIndex &index )
 {
-  QModelIndexList selectedIndexes = mTableView->selectionModel()->selectedIndexes();
-  if ( selectedIndexes.count() > 0 )
-  {
-    QgsCoordinateReferenceSystem sourceCrs;
-    QgsCoordinateReferenceSystem destinationCrs;
-    QString proj;
-    int sourceTransform = -1;
-    int destinationTransform = -1;
-    for ( QModelIndexList::const_iterator it = selectedIndexes.constBegin(); it != selectedIndexes.constEnd(); it ++ )
-    {
-      switch ( it->column() )
-      {
-        case QgsDatumTransformTableModel::SourceCrsColumn:
-          sourceCrs = QgsCoordinateReferenceSystem( mModel->data( *it, Qt::DisplayRole ).toString() );
-          break;
-        case QgsDatumTransformTableModel::DestinationCrsColumn:
-          destinationCrs = QgsCoordinateReferenceSystem( mModel->data( *it, Qt::DisplayRole ).toString() );
-          break;
-#if PROJ_VERSION_MAJOR>=6
-        case QgsDatumTransformTableModel::ProjDefinitionColumn:
-          proj = mModel->data( *it, Qt::UserRole ).toString();
-          break;
-#else
-        case QgsDatumTransformTableModel::SourceTransformColumn:
-          sourceTransform = mModel->data( *it, Qt::UserRole ).toInt();
-          break;
-        case QgsDatumTransformTableModel::DestinationTransformColumn:
-          destinationTransform = mModel->data( *it, Qt::UserRole ).toInt();
-          break;
-#endif
-        default:
-          break;
-      }
-    }
+  QString proj;
+  int sourceTransform = -1;
+  int destinationTransform = -1;
+
+  QgsCoordinateReferenceSystem sourceCrs = QgsCoordinateReferenceSystem( mModel->data( mModel->index( index.row(), QgsDatumTransformTableModel::SourceCrsColumn ), Qt::DisplayRole ).toString() );
+  QgsCoordinateReferenceSystem destinationCrs = QgsCoordinateReferenceSystem( mModel->data( mModel->index( index.row(), QgsDatumTransformTableModel::DestinationCrsColumn ), Qt::DisplayRole ).toString() );
 
 #if PROJ_VERSION_MAJOR>=6
-    if ( sourceCrs.isValid() && destinationCrs.isValid() && !proj.isEmpty() )
+  proj = mModel->data( mModel->index( index.row(), QgsDatumTransformTableModel::ProjDefinitionColumn ), Qt::UserRole ).toString();
 #else
-    if ( sourceCrs.isValid() && destinationCrs.isValid() &&
-         ( sourceTransform != -1 || destinationTransform != -1 ) )
+  sourceTransform = mModel->data( mModel->index( index.row(), QgsDatumTransformTableModel::SourceTransformColumn ), Qt::UserRole ).toInt();
+  destinationTransform = mModel->data( mModel->index( index.row(), QgsDatumTransformTableModel::DestinationTransformColumn ), Qt::UserRole ).toInt();
 #endif
+
+#if PROJ_VERSION_MAJOR>=6
+  if ( sourceCrs.isValid() && destinationCrs.isValid() && !proj.isEmpty() )
+#else
+  if ( sourceCrs.isValid() && destinationCrs.isValid() &&
+       ( sourceTransform != -1 || destinationTransform != -1 ) )
+#endif
+  {
+    QgsDatumTransformDialog dlg( sourceCrs, destinationCrs, true, false, false, qMakePair( sourceTransform, destinationTransform ), nullptr, nullptr, proj, QgisApp::instance()->mapCanvas() );
+    if ( dlg.exec() )
     {
-      QgsDatumTransformDialog dlg( sourceCrs, destinationCrs, true, false, false, qMakePair( sourceTransform, destinationTransform ), nullptr, nullptr, proj, QgisApp::instance()->mapCanvas() );
-      if ( dlg.exec() )
+      const QgsDatumTransformDialog::TransformInfo dt = dlg.selectedDatumTransform();
+      QgsCoordinateTransformContext context = mModel->transformContext();
+      if ( sourceCrs != dt.sourceCrs || destinationCrs != dt.destinationCrs )
       {
-        const QgsDatumTransformDialog::TransformInfo dt = dlg.selectedDatumTransform();
-        QgsCoordinateTransformContext context = mModel->transformContext();
-        if ( sourceCrs != dt.sourceCrs || destinationCrs != dt.destinationCrs )
-        {
-          context.removeCoordinateOperation( sourceCrs, destinationCrs );
-          Q_NOWARN_DEPRECATED_PUSH
-          context.removeSourceDestinationDatumTransform( sourceCrs, destinationCrs );
-          Q_NOWARN_DEPRECATED_POP
-        }
-        // QMap::insert takes care of replacing existing value
+        context.removeCoordinateOperation( sourceCrs, destinationCrs );
         Q_NOWARN_DEPRECATED_PUSH
-        context.addSourceDestinationDatumTransform( dt.sourceCrs, dt.destinationCrs, dt.sourceTransformId, dt.destinationTransformId );
+        context.removeSourceDestinationDatumTransform( sourceCrs, destinationCrs );
         Q_NOWARN_DEPRECATED_POP
-        context.addCoordinateOperation( dt.sourceCrs, dt.destinationCrs, dt.proj );
-        mModel->setTransformContext( context );
       }
+      // QMap::insert takes care of replacing existing value
+      Q_NOWARN_DEPRECATED_PUSH
+      context.addSourceDestinationDatumTransform( dt.sourceCrs, dt.destinationCrs, dt.sourceTransformId, dt.destinationTransformId );
+      Q_NOWARN_DEPRECATED_POP
+      context.addCoordinateOperation( dt.sourceCrs, dt.destinationCrs, dt.proj );
+      mModel->setTransformContext( context );
     }
   }
 }
