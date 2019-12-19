@@ -191,6 +191,8 @@ their acceptable ranges, defaults, etc.
       sipType = sipType_QgsProcessingParameterLayoutItem;
     else if ( sipCpp->type() == QgsProcessingParameterColor::typeName() )
       sipType = sipType_QgsProcessingParameterColor;
+    else if ( sipCpp->type() == QgsProcessingParameterCoordinateOperation::typeName() )
+      sipType = sipType_QgsProcessingParameterCoordinateOperation;
     else
       sipType = nullptr;
 %End
@@ -3208,6 +3210,128 @@ Creates a new parameter using the definition from a script code.
 %End
 
 };
+
+
+class QgsProcessingParameterCoordinateOperation : QgsProcessingParameterDefinition
+{
+%Docstring
+A coordinate operation parameter for processing algorithms, for selection between available
+coordinate operations to use when projecting between a source and destination coordinate reference system.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterCoordinateOperation( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+        const QString &sourceCrsParameterName = QString(), const QString &destinationCrsParameterName = QString(),
+        const QVariant &staticSourceCrs = QVariant(), const QVariant &staticDestinationCrs = QVariant(),
+        bool optional = false );
+%Docstring
+Constructor for QgsProcessingParameterCoordinateOperation.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
+    virtual QString type() const;
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QString asScriptCode() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+
+    static QgsProcessingParameterCoordinateOperation *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+%Docstring
+Creates a new parameter using the definition from a script code.
+%End
+
+    QString sourceCrsParameterName() const;
+%Docstring
+Returns the name of the source CRS parameter, or an empty string if this is not set.
+
+.. seealso:: :py:func:`setSourceCrsParameterName`
+
+.. seealso:: :py:func:`destinationCrsParameterName`
+%End
+
+    void setSourceCrsParameterName( const QString &name );
+%Docstring
+Sets the ``name`` of the source CRS parameter. Use an empty string if this is not required.
+
+.. seealso:: :py:func:`sourceCrsParameterName`
+
+.. seealso:: :py:func:`setDestinationCrsParameterName`
+%End
+
+    QString destinationCrsParameterName() const;
+%Docstring
+Returns the name of the destination CRS parameter, or an empty string if this is not set.
+
+.. seealso:: :py:func:`setDestinationCrsParameterName`
+
+.. seealso:: :py:func:`sourceCrsParameterName`
+%End
+
+    void setDestinationCrsParameterName( const QString &name );
+%Docstring
+Sets the ``name`` of the destination CRS parameter. Use an empty string if this is not required.
+
+.. seealso:: :py:func:`destinationCrsParameterName`
+
+.. seealso:: :py:func:`setSourceCrsParameterName`
+%End
+
+    QVariant sourceCrs() const;
+%Docstring
+Returns the static source CRS, or an invalid value if this is not set.
+
+.. seealso:: :py:func:`setSourceCrs`
+
+.. seealso:: :py:func:`destinationCrs`
+%End
+
+    void setSourceCrs( const QVariant &crs );
+%Docstring
+Sets the static source ``crs``.
+
+.. seealso:: :py:func:`sourceCrs`
+
+.. seealso:: :py:func:`setDestinationCrs`
+%End
+
+    QVariant destinationCrs() const;
+%Docstring
+Returns the static destination CRS, or an invalid value if this is not set.
+
+.. seealso:: :py:func:`setDestinationCrs`
+
+.. seealso:: :py:func:`sourceCrs`
+%End
+
+    void setDestinationCrs( const QVariant &crs );
+%Docstring
+Sets the static destination ``crs``.
+
+.. seealso:: :py:func:`destinationCrs`
+
+.. seealso:: :py:func:`setSourceCrs`
+%End
+
+};
+
 
 
 
