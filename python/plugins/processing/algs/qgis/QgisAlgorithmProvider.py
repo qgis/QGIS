@@ -87,7 +87,6 @@ from .SetRasterStyle import SetRasterStyle
 from .SetVectorStyle import SetVectorStyle
 from .SnapGeometries import SnapGeometriesToLayer
 from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
-from .SpatialJoin import SpatialJoin
 from .SpatialJoinSummary import SpatialJoinSummary
 from .StatisticsByCategories import StatisticsByCategories
 from .TextToFloat import TextToFloat
@@ -171,7 +170,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 SetVectorStyle(),
                 SnapGeometriesToLayer(),
                 SpatialiteExecuteSQL(),
-                SpatialJoin(),
                 SpatialJoinSummary(),
                 StatisticsByCategories(),
                 TextToFloat(),

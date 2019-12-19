@@ -179,11 +179,6 @@ qgis:importintopostgis: >
 
   Prior to this a connection between QGIS and the PostgreSQL database has to be created (for example with the DB Manager).
 
-qgis:joinattributesbylocation: >
-  This algorithm takes an input vector layer and creates a new vector layer that is an extended version of the input one, with additional attributes in its attribute table.
-
-  The additional attributes and their values are taken from a second vector layer. A spatial criteria is applied to select the values from the second layer that are added to each feature from the first layer in the resulting one.
-
 qgis:joinbylocationsummary: >
   This algorithm takes an input vector layer and creates a new vector layer that is an extended version of the input one, with additional attributes in its attribute table.
 
