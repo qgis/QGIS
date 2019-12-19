@@ -599,7 +599,6 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
 
   QgsDebugMsgLevel( "load CRS from " + db + " where " + expression + " is " + value, 3 );
   d->mIsValid = false;
-  d->mWkt.clear();
 
   QFileInfo myInfo( db );
   if ( !myInfo.exists() )
@@ -634,6 +633,7 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
                   "ellipsoid_acronym,parameters,srid,auth_name||':'||auth_id,is_geo,wkt "
                   "from tbl_srs where " + expression + '=' + QgsSqliteUtils::quotedString( value ) + " order by deprecated";
   statement = database.prepare( mySql, myResult );
+  QString wkt;
   // XXX Need to free memory from the error msg if one is set
   if ( myResult == SQLITE_OK && statement.step() == SQLITE_ROW )
   {
@@ -649,7 +649,7 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
     d->mSRID = statement.columnAsText( 5 ).toLong();
     d->mAuthId = statement.columnAsText( 6 );
     d->mIsGeographic = statement.columnAsText( 7 ).toInt() != 0;
-    d->mWkt = statement.columnAsText( 8 );
+    wkt = statement.columnAsText( 8 );
     d->mAxisInvertedDirty = true;
 
     if ( d->mSrsId >= USER_CRS_START_ID && d->mAuthId.isEmpty() )
@@ -679,8 +679,8 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
 
     if ( !d->mIsValid )
     {
-      if ( !d->mWkt.isEmpty() )
-        setWktString( d->mWkt, false );
+      if ( !wkt.isEmpty() )
+        setWktString( wkt, false );
       else
         setProjString( d->mProj4 );
     }
@@ -741,7 +741,6 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
   locker.unlock();
 
   d->mIsValid = false;
-  d->mWkt.clear();
   d->mProj4.clear();
   if ( wkt.isEmpty() )
   {
@@ -800,7 +799,6 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString )
   if ( projString.trimmed().isEmpty() )
   {
     d->mIsValid = false;
-    d->mWkt.clear();
     d->mProj4.clear();
     return false;
   }
@@ -831,8 +829,6 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString )
   myProj4String = myProj4String.trimmed();
 
   d->mIsValid = false;
-  d->mWkt.clear();
-
 #if PROJ_VERSION_MAJOR>=6
   // first, try to use proj to do this for us...
   const QString projCrsString = myProj4String + ( myProj4String.contains( QStringLiteral( "+type=crs" ) ) ? QString() : QStringLiteral( " +type=crs" ) );
@@ -1439,7 +1435,6 @@ void QgsCoordinateReferenceSystem::setProjString( const QString &proj4String )
   pj_ctx_free( pContext );
 #endif
 
-  d->mWkt.clear();
   setMapUnits();
 }
 
@@ -1826,56 +1821,51 @@ bool QgsCoordinateReferenceSystem::operator!=( const QgsCoordinateReferenceSyste
 
 QString QgsCoordinateReferenceSystem::toWkt( WktVariant variant, bool multiline, int indentationWidth ) const
 {
-  if ( d->mWkt.isEmpty() || variant != WKT1_GDAL )
-  {
 #if PROJ_VERSION_MAJOR>=6
-    if ( d->mPj )
+  if ( d->mPj )
+  {
+    PJ_WKT_TYPE type = PJ_WKT1_GDAL;
+    switch ( variant )
     {
-      PJ_WKT_TYPE type = PJ_WKT1_GDAL;
-      switch ( variant )
-      {
-        case WKT1_GDAL:
-          type = PJ_WKT1_GDAL;
-          break;
-        case WKT1_ESRI:
-          type = PJ_WKT1_ESRI;
-          break;
-        case WKT2_2015:
-          type = PJ_WKT2_2015;
-          break;
-        case WKT2_2015_SIMPLIFIED:
-          type = PJ_WKT2_2015_SIMPLIFIED;
-          break;
-        case WKT2_2018:
-          type = PJ_WKT2_2018;
-          break;
-        case WKT2_2018_SIMPLIFIED:
-          type = PJ_WKT2_2018_SIMPLIFIED;
-          break;
-      }
-
-      const QByteArray multiLineOption = QStringLiteral( "MULTILINE=%1" ).arg( multiline ? QStringLiteral( "YES" ) : QStringLiteral( "NO" ) ).toLocal8Bit();
-      const QByteArray indentatationWidthOption = QStringLiteral( "INDENTATION_WIDTH=%1" ).arg( multiline ? QString::number( indentationWidth ) : QStringLiteral( "0" ) ).toLocal8Bit();
-      const char *const options[] = {multiLineOption.constData(), indentatationWidthOption.constData(), nullptr};
-      const QString res = QString( proj_as_wkt( QgsProjContext::get(), d->mPj.get(), type, options ) );
-      if ( variant == WKT1_GDAL )
-        d->mWkt = res;
-
-      return res;
+      case WKT1_GDAL:
+        type = PJ_WKT1_GDAL;
+        break;
+      case WKT1_ESRI:
+        type = PJ_WKT1_ESRI;
+        break;
+      case WKT2_2015:
+        type = PJ_WKT2_2015;
+        break;
+      case WKT2_2015_SIMPLIFIED:
+        type = PJ_WKT2_2015_SIMPLIFIED;
+        break;
+      case WKT2_2018:
+        type = PJ_WKT2_2018;
+        break;
+      case WKT2_2018_SIMPLIFIED:
+        type = PJ_WKT2_2018_SIMPLIFIED;
+        break;
     }
-#else
-    Q_UNUSED( variant )
-    Q_UNUSED( multiline )
-    Q_UNUSED( indentationWidth )
-    char *wkt = nullptr;
-    if ( OSRExportToWkt( d->mCRS, &wkt ) == OGRERR_NONE )
-    {
-      d->mWkt = wkt;
-      CPLFree( wkt );
-    }
-    return d->mWkt;
-#endif
+
+    const QByteArray multiLineOption = QStringLiteral( "MULTILINE=%1" ).arg( multiline ? QStringLiteral( "YES" ) : QStringLiteral( "NO" ) ).toLocal8Bit();
+    const QByteArray indentatationWidthOption = QStringLiteral( "INDENTATION_WIDTH=%1" ).arg( multiline ? QString::number( indentationWidth ) : QStringLiteral( "0" ) ).toLocal8Bit();
+    const char *const options[] = {multiLineOption.constData(), indentatationWidthOption.constData(), nullptr};
+    return QString( proj_as_wkt( QgsProjContext::get(), d->mPj.get(), type, options ) );
   }
+  return QString();
+#else
+  Q_UNUSED( variant )
+  Q_UNUSED( multiline )
+  Q_UNUSED( indentationWidth )
+  char *wkt = nullptr;
+  QString stringWkt;
+  if ( OSRExportToWkt( d->mCRS, &wkt ) == OGRERR_NONE )
+  {
+    stringWkt = wkt;
+    CPLFree( wkt );
+  }
+  return stringWkt;
+#endif
 }
 
 bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
@@ -2330,7 +2320,6 @@ bool QgsCoordinateReferenceSystem::loadFromAuthCode( const QString &auth, const 
 {
   d.detach();
   d->mIsValid = false;
-  d->mWkt.clear();
 
   PJ_CONTEXT *pjContext = QgsProjContext::get();
   QgsProjUtils::proj_pj_unique_ptr crs( proj_create_from_database( pjContext, auth.toUtf8().constData(), code.toUtf8().constData(), PJ_CATEGORY_CRS, false, nullptr ) );
