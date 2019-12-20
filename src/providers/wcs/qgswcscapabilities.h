@@ -37,7 +37,7 @@ class QNetworkReply;
 /**
  * \brief Metadata link property structure.
  *
- *  Gets the optional medatadaLink element
+ *  Contains the optional medatadaLink element
  */
 struct QgsWcsMetadataLinkProperty
 {
