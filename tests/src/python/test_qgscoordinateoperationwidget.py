@@ -96,7 +96,7 @@ class TestQgsCoordinateOperationWidget(unittest.TestCase):
                          '+proj=pipeline +step +inv +proj=utm +zone=55 +south +ellps=GRS80 +step +proj=hgridshift +grids=GDA94_GDA2020_conformal_and_distortion.gsb +step +proj=utm +zone=55 +south +ellps=GRS80')
         self.assertEqual(len(spy), 6)
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Depends on local environment and grid presence')
+    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true' or QgsProjUtils.projVersionMajor() >= 6, 'Depends on local environment and grid presence')
     def testOperationsCruftyProj(self):
         w = QgsCoordinateOperationWidget()
         self.assertFalse(w.hasSelection())
