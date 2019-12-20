@@ -177,6 +177,7 @@ SET(TESTS
  testqgsmaptopixelgeometrysimplifier.cpp
  testqgsmaptopixel.cpp
  testqgsmarkerlinesymbol.cpp
+ testqgsmesh3daveraging.cpp
  testqgsmeshlayer.cpp
  testqgsmeshlayerinterpolator.cpp
  testqgsmeshlayerrenderer.cpp

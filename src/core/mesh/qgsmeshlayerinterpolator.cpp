@@ -196,6 +196,8 @@ QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
                             datasetIndex,
                             0,
                             count );
+  if ( !vals.isValid() )
+    return nullptr;
 
   QVector<double> datasetValues = QgsMeshLayerUtils::calculateMagnitudes( vals );
   QgsMeshDataBlock activeFaceFlagValues = layer.dataProvider()->areFacesActive(
