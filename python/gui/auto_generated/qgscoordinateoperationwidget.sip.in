@@ -122,6 +122,14 @@ Sets the details of the ``operation`` currently selected within the widget.
 .. seealso:: :py:func:`selectedOperation`
 %End
 
+    void setSelectedOperationUsingContext( const QgsCoordinateTransformContext &context );
+%Docstring
+Automatically sets the selected operation using the settings encapsulated in a transform ``context``.
+
+If no matching operations are found within the context then the defaultOperation() will be
+selected.
+%End
+
   signals:
 
     void operationChanged();

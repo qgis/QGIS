@@ -17,10 +17,7 @@ from qgis.core import (
     QgsProjUtils,
     QgsDatumTransform,
     QgsCoordinateReferenceSystem,
-    QgsVectorLayer,
-    QgsProject,
-    QgsFeature,
-    QgsGeometry)
+    QgsCoordinateTransformContext)
 from qgis.gui import QgsCoordinateOperationWidget
 
 from qgis.PyQt.QtTest import QSignalSpy
@@ -82,6 +79,22 @@ class TestQgsCoordinateOperationWidget(unittest.TestCase):
         self.assertEqual(w.selectedOperation().proj,
                          '+proj=pipeline +step +inv +proj=utm +zone=55 +south +ellps=GRS80 +step +proj=push +v_3 +step +proj=cart +ellps=GRS80 +step +proj=helmert +x=0.06155 +y=-0.01087 +z=-0.04019 +rx=-0.0394924 +ry=-0.0327221 +rz=-0.0328979 +s=-0.009994 +convention=coordinate_frame +step +inv +proj=cart +ellps=GRS80 +step +proj=pop +v_3 +step +proj=utm +zone=55 +south +ellps=GRS80')
         self.assertEqual(len(spy), 3)
+
+        context = QgsCoordinateTransformContext()
+        op.proj = '+proj=pipeline +step +inv +proj=utm +zone=55 +south +ellps=GRS80 +step +proj=hgridshift +grids=GDA94_GDA2020_conformal_and_distortion.gsb +step +proj=utm +zone=55 +south +ellps=GRS80'
+        w.setSelectedOperation(op)
+        w.setSelectedOperationUsingContext(context)
+        # should go to default, because there's nothing in the context matching these crs
+        self.assertEqual(w.selectedOperation().proj,
+                         '+proj=pipeline +step +inv +proj=utm +zone=55 +south +ellps=GRS80 +step +proj=push +v_3 +step +proj=cart +ellps=GRS80 +step +proj=helmert +x=0.06155 +y=-0.01087 +z=-0.04019 +rx=-0.0394924 +ry=-0.0327221 +rz=-0.0328979 +s=-0.009994 +convention=coordinate_frame +step +inv +proj=cart +ellps=GRS80 +step +proj=pop +v_3 +step +proj=utm +zone=55 +south +ellps=GRS80')
+        self.assertEqual(len(spy), 5)
+
+        # put something in the context
+        context.addCoordinateOperation(w.sourceCrs(), w.destinationCrs(), '+proj=pipeline +step +inv +proj=utm +zone=55 +south +ellps=GRS80 +step +proj=hgridshift +grids=GDA94_GDA2020_conformal_and_distortion.gsb +step +proj=utm +zone=55 +south +ellps=GRS80')
+        w.setSelectedOperationUsingContext(context)
+        self.assertEqual(w.selectedOperation().proj,
+                         '+proj=pipeline +step +inv +proj=utm +zone=55 +south +ellps=GRS80 +step +proj=hgridshift +grids=GDA94_GDA2020_conformal_and_distortion.gsb +step +proj=utm +zone=55 +south +ellps=GRS80')
+        self.assertEqual(len(spy), 6)
 
     @unittest.skipIf(QgsProjUtils.projVersionMajor() >= 6, 'Not a crufty proj build')
     def testOperationsCruftyProj(self):

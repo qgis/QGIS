@@ -133,6 +133,14 @@ class GUI_EXPORT QgsCoordinateOperationWidget : public QWidget, private Ui::QgsC
      */
     void setSelectedOperation( const QgsCoordinateOperationWidget::OperationDetails &operation ) const;
 
+    /**
+     * Automatically sets the selected operation using the settings encapsulated in a transform \a context.
+     *
+     * If no matching operations are found within the context then the defaultOperation() will be
+     * selected.
+     */
+    void setSelectedOperationUsingContext( const QgsCoordinateTransformContext &context );
+
   signals:
 
     /**

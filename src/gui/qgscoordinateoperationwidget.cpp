@@ -602,6 +602,39 @@ void QgsCoordinateOperationWidget::setSelectedOperation( const QgsCoordinateOper
   }
 }
 
+void QgsCoordinateOperationWidget::setSelectedOperationUsingContext( const QgsCoordinateTransformContext &context )
+{
+#if PROJ_VERSION_MAJOR>=6
+  const QString op = context.calculateCoordinateOperation( mSourceCrs, mDestinationCrs );
+  if ( !op.isEmpty() )
+  {
+    OperationDetails deets;
+    deets.proj = op;
+    setSelectedOperation( deets );
+  }
+  else
+  {
+    setSelectedOperation( defaultOperation() );
+  }
+
+#else
+  if ( context.hasTransform( mSourceCrs, mDestinationCrs ) )
+  {
+    Q_NOWARN_DEPRECATED_PUSH
+    const QgsDatumTransform::TransformPair op = context.calculateDatumTransforms( mSourceCrs, mDestinationCrs );
+    Q_NOWARN_DEPRECATED_POP
+    OperationDetails deets;
+    deets.sourceTransformId = op.sourceTransformId;
+    deets.destinationTransformId = op.destinationTransformId;
+    setSelectedOperation( deets );
+  }
+  else
+  {
+    setSelectedOperation( defaultOperation() );
+  }
+#endif
+}
+
 bool QgsCoordinateOperationWidget::gridShiftTransformation( const QString &itemText ) const
 {
   return !itemText.isEmpty() && !itemText.contains( QLatin1String( "towgs84" ), Qt::CaseInsensitive );
