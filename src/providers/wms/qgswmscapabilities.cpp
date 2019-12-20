@@ -310,7 +310,7 @@ bool QgsWmsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapa
 
   while ( !n.isNull() )
   {
-    QDomElement e = n.toElement(); // try to convert the node to an element.
+    QDomElement e = n.toElement();
     if ( !e.isNull() )
     {
       QgsDebugMsg( e.tagName() ); // the node really is an element.
@@ -334,8 +334,6 @@ bool QgsWmsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapa
     n = n.nextSibling();
   }
 
-  QgsDebugMsg( QStringLiteral( "exiting." ) );
-
   return true;
 }
 
@@ -346,7 +344,7 @@ void QgsWmsCapabilities::parseService( QDomElement const &e, QgsWmsServiceProper
   QDomNode n1 = e.firstChild();
   while ( !n1.isNull() )
   {
-    QDomElement e1 = n1.toElement(); // try to convert the node to an element.
+    QDomElement e1 = n1.toElement();
     if ( !e1.isNull() )
     {
       // QgsDebugMsg( "  "  + e1.tagName() ); // the node really is an element.
@@ -399,8 +397,6 @@ void QgsWmsCapabilities::parseService( QDomElement const &e, QgsWmsServiceProper
     }
     n1 = n1.nextSibling();
   }
-
-  QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
 
@@ -419,7 +415,7 @@ void QgsWmsCapabilities::parseKeywordList( QDomElement  const &e, QStringList &k
   QDomNode n1 = e.firstChild();
   while ( !n1.isNull() )
   {
-    QDomElement e1 = n1.toElement(); // try to convert the node to an element.
+    QDomElement e1 = n1.toElement();
     if ( !e1.isNull() )
     {
       QString tagName = e1.tagName();
@@ -436,8 +432,6 @@ void QgsWmsCapabilities::parseKeywordList( QDomElement  const &e, QStringList &k
     }
     n1 = n1.nextSibling();
   }
-
-  QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
 void QgsWmsCapabilities::parseContactInformation( QDomElement const &e, QgsWmsContactInformationProperty &contactInformationProperty )
@@ -446,7 +440,7 @@ void QgsWmsCapabilities::parseContactInformation( QDomElement const &e, QgsWmsCo
   QDomNode n1 = e.firstChild();
   while ( !n1.isNull() )
   {
-    QDomElement e1 = n1.toElement(); // try to convert the node to an element.
+    QDomElement e1 = n1.toElement();
     if ( !e1.isNull() )
     {
       QString tagName = e1.tagName();
@@ -512,8 +506,7 @@ void QgsWmsCapabilities::parseContactPersonPrimary( QDomElement const &e, QgsWms
   QDomNode n1 = e.firstChild();
   while ( !n1.isNull() )
   {
-    QDomElement e1 = n1.toElement(); // try to convert the node to an element.
-    if ( !e1.isNull() )
+    QDomElement e1 = n1.toElement();
     {
       QString tagName = e1.tagName();
       if ( tagName.startsWith( QLatin1String( "wms:" ) ) )
@@ -530,8 +523,6 @@ void QgsWmsCapabilities::parseContactPersonPrimary( QDomElement const &e, QgsWms
     }
     n1 = n1.nextSibling();
   }
-
-  QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
 
@@ -541,7 +532,7 @@ void QgsWmsCapabilities::parseContactAddress( QDomElement const &e, QgsWmsContac
   QDomNode n1 = e.firstChild();
   while ( !n1.isNull() )
   {
-    QDomElement e1 = n1.toElement(); // try to convert the node to an element.
+    QDomElement e1 = n1.toElement();
     if ( !e1.isNull() )
     {
       QString tagName = e1.tagName();
@@ -575,8 +566,6 @@ void QgsWmsCapabilities::parseContactAddress( QDomElement const &e, QgsWmsContac
     }
     n1 = n1.nextSibling();
   }
-
-  QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
 
@@ -585,7 +574,7 @@ void QgsWmsCapabilities::parseCapability( QDomElement const &e, QgsWmsCapability
 
   for ( QDomNode n1 = e.firstChild(); !n1.isNull(); n1 = n1.nextSibling() )
   {
-    QDomElement e1 = n1.toElement(); // try to convert the node to an element.
+    QDomElement e1 = n1.toElement();
     if ( e1.isNull() )
       continue;
 
@@ -708,8 +697,6 @@ void QgsWmsCapabilities::parseCapability( QDomElement const &e, QgsWmsCapability
       }
     }
   }
-
-  QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
 
@@ -719,8 +706,7 @@ void QgsWmsCapabilities::parseRequest( QDomElement const &e, QgsWmsRequestProper
   QDomNode n1 = e.firstChild();
   while ( !n1.isNull() )
   {
-    QDomElement e1 = n1.toElement(); // try to convert the node to an element.
-    if ( !e1.isNull() )
+    QDomElement e1 = n1.toElement();
     {
       QString operation = e1.tagName();
       if ( operation == QLatin1String( "Operation" ) )
@@ -746,8 +732,6 @@ void QgsWmsCapabilities::parseRequest( QDomElement const &e, QgsWmsRequestProper
     }
     n1 = n1.nextSibling();
   }
-
-  QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
 
@@ -761,7 +745,7 @@ void QgsWmsCapabilities::parseLegendUrl( QDomElement const &e, QgsWmsLegendUrlPr
   QDomNode n1 = e.firstChild();
   while ( !n1.isNull() )
   {
-    QDomElement e1 = n1.toElement(); // try to convert the node to an element.
+    QDomElement e1 = n1.toElement();
     if ( !e1.isNull() )
     {
       QString tagName = e1.tagName();
@@ -833,7 +817,7 @@ void QgsWmsCapabilities::parseLayer( QDomElement const &e, QgsWmsLayerProperty &
   QDomNode n1 = e.firstChild();
   while ( !n1.isNull() )
   {
-    QDomElement e1 = n1.toElement(); // try to convert the node to an element.
+    QDomElement e1 = n1.toElement();
     if ( !e1.isNull() )
     {
       //QgsDebugMsg( "    "  + e1.tagName() ); // the node really is an element.
@@ -1069,8 +1053,6 @@ void QgsWmsCapabilities::parseLayer( QDomElement const &e, QgsWmsLayerProperty &
   {
     mLayerParentNames[ layerProperty.orderId ] = QStringList() << layerProperty.name << layerProperty.title << layerProperty.abstract;
   }
-
-  //QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
 
@@ -1080,7 +1062,7 @@ void QgsWmsCapabilities::parseStyle( QDomElement const &e, QgsWmsStyleProperty &
   QDomNode n1 = e.firstChild();
   while ( !n1.isNull() )
   {
-    QDomElement e1 = n1.toElement(); // try to convert the node to an element.
+    QDomElement e1 = n1.toElement();
     if ( !e1.isNull() )
     {
       QString tagName = e1.tagName();
@@ -1115,8 +1097,6 @@ void QgsWmsCapabilities::parseStyle( QDomElement const &e, QgsWmsStyleProperty &
     }
     n1 = n1.nextSibling();
   }
-
-  QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
 
@@ -1126,7 +1106,7 @@ void QgsWmsCapabilities::parseOperationType( QDomElement const &e, QgsWmsOperati
   QDomNode n1 = e.firstChild();
   while ( !n1.isNull() )
   {
-    QDomElement e1 = n1.toElement(); // try to convert the node to an element.
+    QDomElement e1 = n1.toElement();
     if ( !e1.isNull() )
     {
       QString tagName = e1.tagName();
@@ -1159,7 +1139,7 @@ void QgsWmsCapabilities::parseDcpType( QDomElement const &e, QgsWmsDcpTypeProper
   QDomNode n1 = e.firstChild();
   while ( !n1.isNull() )
   {
-    QDomElement e1 = n1.toElement(); // try to convert the node to an element.
+    QDomElement e1 = n1.toElement();
     if ( !e1.isNull() )
     {
       if ( e1.tagName() == QLatin1String( "HTTP" ) )
@@ -1170,8 +1150,6 @@ void QgsWmsCapabilities::parseDcpType( QDomElement const &e, QgsWmsDcpTypeProper
     }
     n1 = n1.nextSibling();
   }
-
-  QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
 void QgsWmsCapabilities::parseHttp( QDomElement const &e, QgsWmsHttpProperty &httpProperty )
@@ -1180,7 +1158,7 @@ void QgsWmsCapabilities::parseHttp( QDomElement const &e, QgsWmsHttpProperty &ht
   QDomNode n1 = e.firstChild();
   while ( !n1.isNull() )
   {
-    QDomElement e1 = n1.toElement(); // try to convert the node to an element.
+    QDomElement e1 = n1.toElement();
     if ( !e1.isNull() )
     {
       QString tagName = e1.tagName();
@@ -1200,8 +1178,6 @@ void QgsWmsCapabilities::parseHttp( QDomElement const &e, QgsWmsHttpProperty &ht
     }
     n1 = n1.nextSibling();
   }
-
-  QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
 void QgsWmsCapabilities::parseGet( QDomElement const &e, QgsWmsGetProperty &getProperty )
@@ -1210,7 +1186,7 @@ void QgsWmsCapabilities::parseGet( QDomElement const &e, QgsWmsGetProperty &getP
   QDomNode n1 = e.firstChild();
   while ( !n1.isNull() )
   {
-    QDomElement e1 = n1.toElement(); // try to convert the node to an element.
+    QDomElement e1 = n1.toElement();
     if ( !e1.isNull() )
     {
       QString tagName = e1.tagName();
@@ -1225,8 +1201,6 @@ void QgsWmsCapabilities::parseGet( QDomElement const &e, QgsWmsGetProperty &getP
     }
     n1 = n1.nextSibling();
   }
-
-  QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
 void QgsWmsCapabilities::parsePost( QDomElement const &e, QgsWmsPostProperty &postProperty )
@@ -1235,7 +1209,7 @@ void QgsWmsCapabilities::parsePost( QDomElement const &e, QgsWmsPostProperty &po
   QDomNode n1 = e.firstChild();
   while ( !n1.isNull() )
   {
-    QDomElement e1 = n1.toElement(); // try to convert the node to an element.
+    QDomElement e1 = n1.toElement();
     if ( !e1.isNull() )
     {
       QString tagName = e1.tagName();
@@ -1250,8 +1224,6 @@ void QgsWmsCapabilities::parsePost( QDomElement const &e, QgsWmsPostProperty &po
     }
     n1 = n1.nextSibling();
   }
-
-  QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
 void QgsWmsCapabilities::parseTileSetProfile( QDomElement const &e )
@@ -1267,8 +1239,7 @@ void QgsWmsCapabilities::parseTileSetProfile( QDomElement const &e )
   QDomNode n1 = e.firstChild();
   while ( !n1.isNull() )
   {
-    QDomElement e1 = n1.toElement(); // try to convert the node to an element.
-    if ( !e1.isNull() )
+    QDomElement e1 = n1.toElement();
     {
       QgsDebugMsg( "    "  + e1.tagName() ); // the node really is an element.
 
