@@ -235,7 +235,14 @@ QString QgsField::displayString( const QVariant &v ) const
     {
       if ( d->precision > 0 )
       {
-        return QLocale().toString( v.toDouble(), 'f', d->precision );
+        if ( -1 < v.toDouble() && v.toDouble() < 1 )
+        {
+          return QLocale().toString( v.toDouble(), 'g', d->precision );
+        }
+        else
+        {
+          return QLocale().toString( v.toDouble(), 'f', d->precision );
+        }
       }
       else
       {
