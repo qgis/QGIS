@@ -340,6 +340,8 @@ provide them (eg. RelationReference).
 Load used sample values into the sample value area.
 Only the used ones. Without available values, even if the
 formatter can provide them (eg. RelationReference).
+
+.. versionadded:: 3.12
 %End
 
     void loadAllUsedValues();
@@ -347,6 +349,8 @@ formatter can provide them (eg. RelationReference).
 Load all unique values from the set layer into the sample area.
 Only the used ones. Without available values, even if the
 formatter can provide them (eg. RelationReference).
+
+.. versionadded:: 3.12
 %End
 
     void autosave();

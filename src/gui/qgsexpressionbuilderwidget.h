@@ -341,6 +341,8 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      * Load used sample values into the sample value area.
      * Only the used ones. Without available values, even if the
      * formatter can provide them (eg. RelationReference).
+     *
+     * \since QGIS 3.12
      */
     void loadSampleUsedValues();
 
@@ -348,6 +350,8 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      * Load all unique values from the set layer into the sample area.
      * Only the used ones. Without available values, even if the
      * formatter can provide them (eg. RelationReference).
+     *
+     * \since QGIS 3.12
      */
     void loadAllUsedValues();
 

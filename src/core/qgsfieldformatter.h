@@ -80,7 +80,11 @@ class CORE_EXPORT QgsFieldFormatter
 
     virtual ~QgsFieldFormatter() = default;
 
-    //! Abilities of the formatter
+    /**
+     * Flags for the abilities of the formatter
+     *
+     * \since QGIS 3.12
+     */
     enum Flag
     {
       CanProvideAvailableValues =  1   //!< Can provide possible values
@@ -160,11 +164,15 @@ class CORE_EXPORT QgsFieldFormatter
 
     /**
      * Returns the flags
+     *
+     * \since QGIS 3.12
      */
     Flags flags() const { return mFlags; }
 
     /**
      * Sets the \a flags
+     *
+     * \since QGIS 3.12
      */
     void setFlags( const Flags &flags );
 
