@@ -214,8 +214,7 @@ void TestQgsMeshCalculator::singleOp()
 
 void TestQgsMeshCalculator::calcWithLayers()
 {
-  QgsCoordinateReferenceSystem crs;
-  crs.createFromId( 32633, QgsCoordinateReferenceSystem::EpsgCrsId );
+  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:32633" ) );
   QgsRectangle extent( 783235, 3348110, 783350, 3347960 );
 
   QTemporaryFile tmpFile;
