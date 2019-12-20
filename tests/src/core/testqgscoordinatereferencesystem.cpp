@@ -345,7 +345,7 @@ void TestQgsCoordinateReferenceSystem::ogcWmsCrsCache()
   QVERIFY( !crs4.isValid() );
 
   QgsCoordinateReferenceSystem::invalidateCache();
-  QVERIFY( !QgsCoordinateReferenceSystem::sOgcCache.contains(  QStringLiteral( "EPSG:4326" ) ) );
+  QVERIFY( !QgsCoordinateReferenceSystem::sOgcCache.contains( QStringLiteral( "EPSG:4326" ) ) );
 }
 
 void TestQgsCoordinateReferenceSystem::createFromSrid()
@@ -1464,7 +1464,7 @@ void TestQgsCoordinateReferenceSystem::recentProjections()
   QCOMPARE( recent.size(), 1 );
   QCOMPARE( recent.at( 0 ).authid(), QStringLiteral( "EPSG:3111" ) );
 
-  QgsCoordinateReferenceSystem::pushRecentCoordinateReferenceSystem( QgsCoordinateReferenceSystem::fromProj( geoProj4() ) );
+  QgsCoordinateReferenceSystem::pushRecentCoordinateReferenceSystem( QgsCoordinateReferenceSystem::fromProj( GEOPROJ4 ) );
   recent = QgsCoordinateReferenceSystem::recentCoordinateReferenceSystems();
   QCOMPARE( recent.size(), 2 );
   QCOMPARE( recent.at( 0 ).authid(), QStringLiteral( "EPSG:4326" ) );
