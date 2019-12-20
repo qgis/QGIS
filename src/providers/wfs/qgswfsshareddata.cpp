@@ -39,7 +39,6 @@
 
 QgsWFSSharedData::QgsWFSSharedData( const QString &uri )
   : mURI( uri )
-  , mSourceCRS( 0 )
   , mMaxFeatures( 0 )
   , mPageSize( 0 )
   , mRequestLimit( 0 )
