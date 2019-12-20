@@ -767,29 +767,29 @@ void QgsWmsCapabilities::parseLegendUrl( QDomElement const &e, QgsWmsLegendUrlPr
   QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
-void QgsWmsCapabilities::parseMetadataUrl( QDomElement const &e, QgsWmsMetadataUrlProperty &metadataUrlProperty )
+void QgsWmsCapabilities::parseMetadataUrl( const QDomElement &element, QgsWmsMetadataUrlProperty &metadataUrlProperty )
 {
 
-  QDomNode n1 = e.firstChild();
-  while ( !n1.isNull() )
+  QDomNode node = element.firstChild();
+  while ( !node.isNull() )
   {
-    QDomElement e1 = n1.toElement();
-    if ( !e1.isNull() )
+    QDomElement nodeElement = node.toElement();
+    if ( !nodeElement.isNull() )
     {
-      QString tagName = e1.tagName();
+      QString tagName = nodeElement.tagName();
       if ( tagName.startsWith( QLatin1String( "wms:" ) ) )
         tagName = tagName.mid( 4 );
 
       if ( tagName == QLatin1String( "Format" ) )
       {
-        metadataUrlProperty.format = e1.text();
+        metadataUrlProperty.format = nodeElement.text();
       }
       else if ( tagName == QLatin1String( "OnlineResource" ) )
       {
-        parseOnlineResource( e1, metadataUrlProperty.onlineResource );
+        parseOnlineResource( nodeElement, metadataUrlProperty.onlineResource );
       }
     }
-    n1 = n1.nextSibling();
+    node = node.nextSibling();
   }
 }
 
