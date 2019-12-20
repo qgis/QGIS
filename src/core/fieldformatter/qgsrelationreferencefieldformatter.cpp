@@ -23,6 +23,11 @@
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
 
+QgsRelationReferenceFieldFormatter::QgsRelationReferenceFieldFormatter()
+{
+  setFlags( flags() | QgsFieldFormatter::CanProvideAvailableValues );
+}
+
 QString QgsRelationReferenceFieldFormatter::id() const
 {
   return QStringLiteral( "RelationReference" );
@@ -180,4 +185,19 @@ QList<QgsVectorLayerRef> QgsRelationReferenceFieldFormatter::layerDependencies( 
         config.value( QStringLiteral( "ReferencedLayerProviderKey" ) ).toString() )
     }};
   return result;
+}
+
+QVariantList QgsRelationReferenceFieldFormatter::availableValues( const QVariantMap &config, int countLimit, const QgsFieldFormatterContext &context ) const
+{
+  QVariantList values;
+  if ( context.project() )
+  {
+    const QgsVectorLayer *referencedLayer = context.project()->relationManager()->relation( config[QStringLiteral( "Relation" )].toString() ).referencedLayer();
+    if ( referencedLayer )
+    {
+      int fieldIndex =  context.project()->relationManager()->relation( config[QStringLiteral( "Relation" )].toString() ).referencedFields().first();
+      values = referencedLayer->uniqueValues( fieldIndex, countLimit ).toList();
+    }
+  }
+  return values;
 }

@@ -254,8 +254,12 @@ void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const
   if ( isField )
   {
     loadFieldValues( mFieldValues.value( item->text() ) );
+
+    cbxValuesInUse->setVisible( formatterCanProvideAvailableValues( item->text() ) );
+    cbxValuesInUse->setChecked( false );
   }
   mValueGroupBox->setVisible( isField );
+
   mShowHelpButton->setText( isField ? tr( "Show Values" ) : tr( "Show Help" ) );
 
   // Show the help for the current item.
@@ -467,7 +471,7 @@ void QgsExpressionBuilderWidget::loadFieldsAndValues( const QMap<QString, QVaria
   mFieldValues = fieldValues;
 }
 
-void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int countLimit )
+void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int countLimit, bool forceUsedValues )
 {
   // TODO We should really return a error the user of the widget that
   // the there is no layer set.
@@ -485,9 +489,20 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int 
   const QgsEditorWidgetSetup setup = fields.at( fieldIndex ).editorWidgetSetup();
   const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
 
-  QList<QVariant> values = mLayer->uniqueValues( fieldIndex, countLimit ).toList();
+  QVariantList values;
+  if ( cbxValuesInUse->isVisible() && !cbxValuesInUse->isChecked() && !forceUsedValues )
+  {
+    QgsFieldFormatterContext fieldFormatterContext;
+    fieldFormatterContext.setProject( mProject );
+    values = formatter->availableValues( setup.config(), countLimit, fieldFormatterContext );
+  }
+  else
+  {
+    values = mLayer->uniqueValues( fieldIndex, countLimit ).toList();
+  }
   std::sort( values.begin(), values.end() );
 
+  mValuesModel->clear();
   for ( const QVariant &value : qgis::as_const( values ) )
   {
     QString strValue;
@@ -506,6 +521,20 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int 
     item->setData( strValue );
     mValuesModel->appendRow( item );
   }
+}
+
+bool QgsExpressionBuilderWidget::formatterCanProvideAvailableValues( const QString &fieldName )
+{
+  const QgsFields fields = mLayer->fields();
+  int fieldIndex = fields.lookupField( fieldName );
+  if ( fieldIndex != -1 )
+  {
+    const QgsEditorWidgetSetup setup = fields.at( fieldIndex ).editorWidgetSetup();
+    const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+
+    return ( formatter->flags() & QgsFieldFormatter::CanProvideAvailableValues );
+  }
+  return false;
 }
 
 QString QgsExpressionBuilderWidget::getFunctionHelp( QgsExpressionFunction *function )
@@ -1162,6 +1191,12 @@ void QgsExpressionBuilderWidget::showContextMenu( QPoint pt )
     QMenu *menu = new QMenu( this );
     menu->addAction( tr( "Load First 10 Unique Values" ), this, SLOT( loadSampleValues() ) );
     menu->addAction( tr( "Load All Unique Values" ), this, SLOT( loadAllValues() ) );
+
+    if ( formatterCanProvideAvailableValues( item->text() ) )
+    {
+      menu->addAction( tr( "Load First 10 Unique Used Values" ), this, SLOT( loadSampleUsedValues() ) );
+      menu->addAction( tr( "Load All Unique Used Values" ), this, SLOT( loadAllUsedValues() ) );
+    }
     menu->popup( expressionTree->mapToGlobal( pt ) );
   }
 }
@@ -1190,6 +1225,32 @@ void QgsExpressionBuilderWidget::loadAllValues()
 
   mValueGroupBox->show();
   fillFieldValues( item->text(), -1 );
+}
+
+void QgsExpressionBuilderWidget::loadSampleUsedValues()
+{
+  QModelIndex idx = mProxyModel->mapToSource( expressionTree->currentIndex() );
+  QgsExpressionItem *item = dynamic_cast<QgsExpressionItem *>( mModel->itemFromIndex( idx ) );
+  // TODO We should really return a error the user of the widget that
+  // the there is no layer set.
+  if ( !mLayer || !item )
+    return;
+
+  mValueGroupBox->show();
+  fillFieldValues( item->text(), 10, true );
+}
+
+void QgsExpressionBuilderWidget::loadAllUsedValues()
+{
+  QModelIndex idx = mProxyModel->mapToSource( expressionTree->currentIndex() );
+  QgsExpressionItem *item = dynamic_cast<QgsExpressionItem *>( mModel->itemFromIndex( idx ) );
+  // TODO We should really return a error the user of the widget that
+  // the there is no layer set.
+  if ( !mLayer || !item )
+    return;
+
+  mValueGroupBox->show();
+  fillFieldValues( item->text(), -1, true );
 }
 
 void QgsExpressionBuilderWidget::txtPython_textChanged()

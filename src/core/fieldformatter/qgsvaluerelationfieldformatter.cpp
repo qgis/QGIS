@@ -40,6 +40,11 @@ bool orderByValueLessThan( const QgsValueRelationFieldFormatter::ValueRelationIt
   return qgsVariantLessThan( p1.value, p2.value );
 }
 
+QgsValueRelationFieldFormatter::QgsValueRelationFieldFormatter()
+{
+  setFlags( flags() | QgsFieldFormatter::CanProvideAvailableValues );
+}
+
 QString QgsValueRelationFieldFormatter::id() const
 {
   return QStringLiteral( "ValueRelation" );
@@ -181,6 +186,22 @@ QList<QgsVectorLayerRef> QgsValueRelationFieldFormatter::layerDependencies( cons
     result.append( QgsVectorLayerRef( layerId, layerName, layerSource, providerName ) );
   }
   return result;
+}
+
+QVariantList QgsValueRelationFieldFormatter::availableValues( const QVariantMap &config, int countLimit, const QgsFieldFormatterContext &context ) const
+{
+  QVariantList values;
+
+  if ( context.project() )
+  {
+    const QgsVectorLayer *referencedLayer = qobject_cast<QgsVectorLayer *>( context.project()->mapLayer( config[QStringLiteral( "Layer" )].toString() ) );
+    if ( referencedLayer )
+    {
+      int fieldIndex = referencedLayer->fields().indexOf( config.value( QStringLiteral( "Key" ) ).toString() );
+      values = referencedLayer->uniqueValues( fieldIndex, countLimit ).toList();
+    }
+  }
+  return values;
 }
 
 QStringList QgsValueRelationFieldFormatter::valueToStringList( const QVariant &value )
