@@ -3020,16 +3020,36 @@ QString QgsProcessingCoordinateOperationWidgetWrapper::modelerExpressionFormatSt
 
 void QgsProcessingCoordinateOperationWidgetWrapper::setSourceCrsParameterValue( const QVariant &value )
 {
-  QgsProcessingContext c;
-  mSourceCrs = QgsProcessingUtils::variantToCrs( value, c );
+  QgsProcessingContext *context = nullptr;
+  std::unique_ptr< QgsProcessingContext > tmpContext;
+  if ( mProcessingContextGenerator )
+    context = mProcessingContextGenerator->processingContext();
+
+  if ( !context )
+  {
+    tmpContext = qgis::make_unique< QgsProcessingContext >();
+    context = tmpContext.get();
+  }
+
+  mSourceCrs = QgsProcessingUtils::variantToCrs( value, *context );
   if ( mOperationWidget )
     mOperationWidget->setSourceCrs( mSourceCrs );
 }
 
 void QgsProcessingCoordinateOperationWidgetWrapper::setDestinationCrsParameterValue( const QVariant &value )
 {
-  QgsProcessingContext c;
-  mDestCrs = QgsProcessingUtils::variantToCrs( value, c );
+  QgsProcessingContext *context = nullptr;
+  std::unique_ptr< QgsProcessingContext > tmpContext;
+  if ( mProcessingContextGenerator )
+    context = mProcessingContextGenerator->processingContext();
+
+  if ( !context )
+  {
+    tmpContext = qgis::make_unique< QgsProcessingContext >();
+    context = tmpContext.get();
+  }
+
+  mDestCrs = QgsProcessingUtils::variantToCrs( value, *context );
   if ( mOperationWidget )
     mOperationWidget->setDestinationCrs( mDestCrs );
 }
