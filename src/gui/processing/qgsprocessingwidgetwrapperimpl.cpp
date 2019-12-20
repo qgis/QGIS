@@ -3033,7 +3033,10 @@ void QgsProcessingCoordinateOperationWidgetWrapper::setSourceCrsParameterValue( 
 
   mSourceCrs = QgsProcessingUtils::variantToCrs( value, *context );
   if ( mOperationWidget )
+  {
     mOperationWidget->setSourceCrs( mSourceCrs );
+    mOperationWidget->setSelectedOperationUsingContext( context->transformContext() );
+  }
 }
 
 void QgsProcessingCoordinateOperationWidgetWrapper::setDestinationCrsParameterValue( const QVariant &value )
@@ -3051,7 +3054,10 @@ void QgsProcessingCoordinateOperationWidgetWrapper::setDestinationCrsParameterVa
 
   mDestCrs = QgsProcessingUtils::variantToCrs( value, *context );
   if ( mOperationWidget )
+  {
     mOperationWidget->setDestinationCrs( mDestCrs );
+    mOperationWidget->setSelectedOperationUsingContext( context->transformContext() );
+  }
 }
 
 QString QgsProcessingCoordinateOperationWidgetWrapper::parameterType() const
