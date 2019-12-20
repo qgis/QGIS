@@ -27,6 +27,7 @@
 #include "qgis_gui.h"
 
 class QgsProjectionSelectionDialog;
+class QgsHighlightableComboBox;
 
 /**
  * \class QgsProjectionSelectionWidget
@@ -132,13 +133,19 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
      */
     void selectCrs();
 
+  protected:
+
+    void dragEnterEvent( QDragEnterEvent *event ) override;
+    void dragLeaveEvent( QDragLeaveEvent *event ) override;
+    void dropEvent( QDropEvent *event ) override;
+
   private:
 
     QgsCoordinateReferenceSystem mCrs;
     QgsCoordinateReferenceSystem mLayerCrs;
     QgsCoordinateReferenceSystem mProjectCrs;
     QgsCoordinateReferenceSystem mDefaultCrs;
-    QComboBox *mCrsComboBox = nullptr;
+    QgsHighlightableComboBox *mCrsComboBox = nullptr;
     QToolButton *mButton = nullptr;
     QgsProjectionSelectionDialog *mDialog = nullptr;
     QString mNotSetText;
@@ -154,6 +161,8 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
 
     int firstRecentCrsIndex() const;
     void updateTooltip();
+
+    QgsMapLayer *mapLayerFromMimeData( const QMimeData *data ) const;
 
   private slots:
 

@@ -20,18 +20,17 @@
 #include "qgsprojectionselectiondialog.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
+#include "qgshighlightablecombobox.h"
 
 QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
   : QWidget( parent )
 {
-
-
   QHBoxLayout *layout = new QHBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->setSpacing( 6 );
   setLayout( layout );
 
-  mCrsComboBox = new QComboBox( this );
+  mCrsComboBox = new QgsHighlightableComboBox( this );
   mCrsComboBox->addItem( tr( "invalid projection" ), QgsProjectionSelectionWidget::CurrentCrs );
   mCrsComboBox->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Preferred );
 
@@ -58,6 +57,7 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
 
   setFocusPolicy( Qt::StrongFocus );
   setFocusProxy( mButton );
+  setAcceptDrops( true );
 
   connect( mButton, &QToolButton::clicked, this, &QgsProjectionSelectionWidget::selectCrs );
   connect( mCrsComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsProjectionSelectionWidget::comboIndexChanged );
@@ -65,7 +65,7 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
 
 QgsCoordinateReferenceSystem QgsProjectionSelectionWidget::crs() const
 {
-  switch ( ( CrsOption )mCrsComboBox->currentData().toInt() )
+  switch ( static_cast< CrsOption >( mCrsComboBox->currentData().toInt() ) )
   {
     case QgsProjectionSelectionWidget::LayerCrs:
       return mLayerCrs;
@@ -194,6 +194,68 @@ void QgsProjectionSelectionWidget::selectCrs()
   }
 }
 
+void QgsProjectionSelectionWidget::dragEnterEvent( QDragEnterEvent *event )
+{
+  if ( !( event->possibleActions() & Qt::CopyAction ) )
+  {
+    event->ignore();
+    return;
+  }
+
+  if ( mapLayerFromMimeData( event->mimeData() ) )
+  {
+    // dragged an acceptable layer, phew
+    event->setDropAction( Qt::CopyAction );
+    event->accept();
+    mCrsComboBox->setHighlighted( true );
+    update();
+  }
+  else
+  {
+    event->ignore();
+  }
+}
+
+void QgsProjectionSelectionWidget::dragLeaveEvent( QDragLeaveEvent *event )
+{
+  if ( mCrsComboBox->isHighlighted() )
+  {
+    event->accept();
+    mCrsComboBox->setHighlighted( false );
+    update();
+  }
+  else
+  {
+    event->ignore();
+  }
+}
+
+void QgsProjectionSelectionWidget::dropEvent( QDropEvent *event )
+{
+  if ( !( event->possibleActions() & Qt::CopyAction ) )
+  {
+    event->ignore();
+    return;
+  }
+
+  if ( QgsMapLayer *layer = mapLayerFromMimeData( event->mimeData() ) )
+  {
+    // dropped a map layer
+    setFocus( Qt::MouseFocusReason );
+    event->setDropAction( Qt::CopyAction );
+    event->accept();
+
+    if ( layer->crs().isValid() )
+      setCrs( layer->crs() );
+  }
+  else
+  {
+    event->ignore();
+  }
+  mCrsComboBox->setHighlighted( false );
+  update();
+}
+
 void QgsProjectionSelectionWidget::addNotSetOption()
 {
   mCrsComboBox->insertItem( 0, mNotSetText, QgsProjectionSelectionWidget::CrsNotSet );
@@ -203,7 +265,7 @@ void QgsProjectionSelectionWidget::addNotSetOption()
 
 void QgsProjectionSelectionWidget::comboIndexChanged( int idx )
 {
-  switch ( ( CrsOption )mCrsComboBox->itemData( idx ).toInt() )
+  switch ( static_cast< CrsOption >( mCrsComboBox->itemData( idx ).toInt() ) )
   {
     case QgsProjectionSelectionWidget::LayerCrs:
       emit crsChanged( mLayerCrs );
@@ -349,7 +411,7 @@ int QgsProjectionSelectionWidget::firstRecentCrsIndex() const
 {
   for ( int i = 0; i < mCrsComboBox->count(); ++i )
   {
-    if ( ( CrsOption )mCrsComboBox->itemData( i ).toInt() == RecentCrs )
+    if ( static_cast< CrsOption >( mCrsComboBox->itemData( i ).toInt() ) == RecentCrs )
     {
       return i;
     }
@@ -364,4 +426,18 @@ void QgsProjectionSelectionWidget::updateTooltip()
     setToolTip( c.toWkt( QgsCoordinateReferenceSystem::WKT2_2018, true ) );
   else
     setToolTip( QString() );
+}
+
+QgsMapLayer *QgsProjectionSelectionWidget::mapLayerFromMimeData( const QMimeData *data ) const
+{
+  const QgsMimeDataUtils::UriList uriList = QgsMimeDataUtils::decodeUriList( data );
+  for ( const QgsMimeDataUtils::Uri &u : uriList )
+  {
+    // is this uri from the current project?
+    if ( QgsMapLayer *layer = u.mapLayer() )
+    {
+      return layer;
+    }
+  }
+  return nullptr;
 }

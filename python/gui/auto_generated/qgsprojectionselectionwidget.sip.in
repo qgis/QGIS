@@ -119,6 +119,15 @@ to the preset CRSes shown in the widget.
 Opens the dialog for selecting a new CRS
 %End
 
+  protected:
+
+    virtual void dragEnterEvent( QDragEnterEvent *event );
+
+    virtual void dragLeaveEvent( QDragLeaveEvent *event );
+
+    virtual void dropEvent( QDropEvent *event );
+
+
 };
 
 /************************************************************************
