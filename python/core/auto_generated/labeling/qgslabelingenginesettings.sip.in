@@ -73,22 +73,59 @@ Test whether a particular flag is enabled
 Sets whether a particual flag is enabled
 %End
 
-    void numCandidatePositions( int &candPoint, int &candLine, int &candPolygon ) const;
+    double maximumLineCandidatesPerCm() const;
+%Docstring
+Returns the maximum number of line label candidate positions per centimeter.
+
+.. seealso:: :py:func:`setMaximumLineCandidatesPerCm`
+
+.. versionadded:: 3.12
+%End
+
+    void setMaximumLineCandidatesPerCm( double candidates );
+%Docstring
+Sets the maximum number of line label ``candidates`` per centimeter.
+
+.. seealso:: :py:func:`maximumLineCandidatesPerCm`
+
+.. versionadded:: 3.12
+%End
+
+    double maximumPolygonCandidatesPerCmSquared() const;
+%Docstring
+Returns the maximum number of polygon label candidate positions per centimeter squared.
+
+.. seealso:: :py:func:`setMaximumPolygonCandidatesPerCmSquared`
+
+.. versionadded:: 3.12
+%End
+
+    void setMaximumPolygonCandidatesPerCmSquared( double candidates );
+%Docstring
+Sets the maximum number of polygon label ``candidates`` per centimeter squared.
+
+.. seealso:: :py:func:`maximumPolygonCandidatesPerCmSquared`
+
+.. versionadded:: 3.12
+%End
+
+ void numCandidatePositions( int &candPoint, int &candLine, int &candPolygon ) const /Deprecated/;
 %Docstring
 Gets number of candidate positions that will be generated for each label feature.
 
 .. deprecated:: QGIS 3.12
-   the ``candPoint`` argument is ignored.
+   use maximumPolygonCandidatesPerCmSquared() and
+maximumLineCandidatesPerCm() instead.
 %End
 
-    void setNumCandidatePositions( int candPoint, int candLine, int candPolygon );
+ void setNumCandidatePositions( int candPoint, int candLine, int candPolygon ) /Deprecated/;
 %Docstring
 Sets the number of candidate positions that will be generated for each label feature.
 
 .. deprecated:: QGIS 3.12
-   the ``candPoint`` argument is ignored.
+   use setMaximumPolygonCandidatesPerCmSquared() and
+setMaximumLineCandidatesPerCm() instead.
 %End
-
 
  void setSearchMethod( Search s ) /Deprecated/;
 %Docstring

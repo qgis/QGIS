@@ -174,28 +174,32 @@ namespace pal
       bool showPartialLabels() const;
 
       /**
-       * Sets the maximum number of candidates to generate for line features.
+       * Returns the maximum number of line label candidate positions per map unit.
        *
-       * The larger the value, the longer the labeling solution will take to calculate.
+       * \see setMaximumLineCandidatesPerCm()
        */
-      void setMaximumNumberOfLineCandidates( int candidates );
+      double maximumLineCandidatesPerMapUnit() const { return mMaxLineCandidatesPerMapUnit; }
 
       /**
-       * Sets the maximum number of candidates to generate for polygon features.
+       * Sets the maximum number of line label \a candidates per map unit.
        *
-       * The larger the value, the longer the labeling solution will take to calculate.
+       * \see maximumLineCandidatesPerMapUnit()
        */
-      void setMaximumNumberOfPolygonCandidates( int candidates );
+      void setMaximumLineCandidatesPerMapUnit( double candidates ) { mMaxLineCandidatesPerMapUnit = candidates; }
 
       /**
-       * Returns the number of candidates to generate for line features.
+       * Returns the maximum number of polygon label candidate positions per map unit squared.
+       *
+       * \see setMaximumPolygonCandidatesPerMapUnitSquared()
        */
-      int maximumNumberOfLineCandidates() const;
+      double maximumPolygonCandidatesPerMapUnitSquared() const { return mMaxPolygonCandidatesPerMapUnitSquared; }
 
       /**
-       * Returns the number of candidates to generate for polygon features.
+       * Sets the maximum number of polygon label \a candidates per map unit squared.
+       *
+       * \see maximumPolygonCandidatesPerMapUnitSquared()
        */
-      int maximumNumberOfPolygonCandidates() const;
+      void setMaximumPolygonCandidatesPerMapUnitSquared( double candidates ) { mMaxPolygonCandidatesPerMapUnitSquared = candidates; }
 
       /**
        * Returns the placement engine version, which dictates how the label placement problem is solved.
@@ -217,16 +221,6 @@ namespace pal
 
       QMutex mMutex;
 
-      /**
-       * Maximum number of candidates for a line.
-       */
-      int mMaxLineCandidates = 50;
-
-      /**
-       * Maximum number of candidates for a polygon.
-       */
-      int mMaxPolyCandidates = 30;
-
       /*
        * POPMUSIC Tuning
        */
@@ -243,6 +237,9 @@ namespace pal
        * \brief show partial labels (cut-off by the map canvas) or not
        */
       bool mShowPartialLabels = true;
+
+      double mMaxLineCandidatesPerMapUnit = 0;
+      double mMaxPolygonCandidatesPerMapUnitSquared = 0;
 
       QgsLabelingEngineSettings::PlacementEngineVersion mPlacementVersion = QgsLabelingEngineSettings::PlacementEngineVersion2;
 

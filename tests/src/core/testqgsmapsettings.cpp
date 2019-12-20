@@ -122,13 +122,11 @@ void TestQgsMapSettings::testLabelingEngineSettings()
   // test that setting labeling engine settings for QgsMapSettings works
   QgsMapSettings ms;
   QgsLabelingEngineSettings les;
-  les.setNumCandidatePositions( 4, 8, 15 ); // 23, 42... ;)
+  les.setMaximumLineCandidatesPerCm( 4 );
+  les.setMaximumPolygonCandidatesPerCmSquared( 8.0 );
   ms.setLabelingEngineSettings( les );
-  int c1, c2, c3;
-  ms.labelingEngineSettings().numCandidatePositions( c1, c2, c3 );
-  QCOMPARE( c1, 4 );
-  QCOMPARE( c2, 8 );
-  QCOMPARE( c3, 15 );
+  QCOMPARE( ms.labelingEngineSettings().maximumLineCandidatesPerCm(), 4.0 );
+  QCOMPARE( ms.labelingEngineSettings().maximumPolygonCandidatesPerCmSquared(), 8.0 );
 
   // ensure that setting labeling engine settings also sets text format
   les.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
