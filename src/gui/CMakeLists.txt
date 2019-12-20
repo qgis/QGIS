@@ -316,6 +316,7 @@ SET(QGIS_GUI_SRCS
   qgsgui.cpp
   qgsguiutils.cpp
   qgshighlight.cpp
+  qgshighlightablecombobox.cpp
   qgshistogramwidget.cpp
   qgshelp.cpp
   qgsidentifymenu.cpp
@@ -518,6 +519,7 @@ SET(QGIS_GUI_HDRS
   qgsguiutils.h
   qgshelp.h
   qgshighlight.h
+  qgshighlightablecombobox.h
   qgshistogramwidget.h
   qgsidentifymenu.h
   qgskeyvaluewidget.h
