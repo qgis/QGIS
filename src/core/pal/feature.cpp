@@ -157,6 +157,60 @@ QgsFeatureId FeaturePart::featureId() const
   return mLF->id();
 }
 
+std::size_t FeaturePart::maximumLineCandidates() const
+{
+  if ( mCachedMaxLineCandidates > 0 )
+    return mCachedMaxLineCandidates;
+
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
+  try
+  {
+    double length = 0;
+    if ( GEOSLength_r( geosctxt, geos(), &length ) == 1 )
+    {
+      const std::size_t candidatesForLineLength = static_cast< std::size_t >( std::ceil( mLF->layer()->pal->maximumLineCandidatesPerMapUnit() * length ) );
+      const std::size_t maxForLayer = mLF->layer()->maximumLineLabelCandidates();
+      if ( maxForLayer == 0 )
+        mCachedMaxLineCandidates = candidatesForLineLength;
+      else
+        mCachedMaxLineCandidates = std::min( candidatesForLineLength, maxForLayer );
+      return mCachedMaxLineCandidates;
+    }
+  }
+  catch ( GEOSException & )
+  {
+  }
+  mCachedMaxLineCandidates = 1;
+  return mCachedMaxLineCandidates;
+}
+
+std::size_t FeaturePart::maximumPolygonCandidates() const
+{
+  if ( mCachedMaxPolygonCandidates > 0 )
+    return mCachedMaxPolygonCandidates;
+
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
+  try
+  {
+    double area = 0;
+    if ( GEOSArea_r( geosctxt, geos(), &area ) == 1 )
+    {
+      const std::size_t candidatesForArea = static_cast< std::size_t >( std::ceil( mLF->layer()->pal->maximumPolygonCandidatesPerMapUnitSquared() * area ) );
+      const std::size_t maxForLayer = mLF->layer()->maximumPolygonLabelCandidates();
+      if ( maxForLayer == 0 )
+        mCachedMaxPolygonCandidates = candidatesForArea;
+      else
+        mCachedMaxPolygonCandidates = std::min( candidatesForArea, maxForLayer );
+      return mCachedMaxPolygonCandidates;
+    }
+  }
+  catch ( GEOSException & )
+  {
+  }
+  mCachedMaxPolygonCandidates = 1;
+  return mCachedMaxPolygonCandidates;
+}
+
 bool FeaturePart::hasSameLabelFeatureAs( FeaturePart *part ) const
 {
   if ( !part )
@@ -635,7 +689,8 @@ std::size_t FeaturePart::createCandidatesAlongLine( std::vector< std::unique_ptr
   //prefer to label along straightish segments:
   std::size_t candidates = createCandidatesAlongLineNearStraightSegments( lPos, mapShape, pal );
 
-  if ( static_cast< int >( candidates ) < mLF->layer()->maximumLineLabelCandidates() )
+  const std::size_t candidateTargetCount = maximumLineCandidates();
+  if ( candidates < candidateTargetCount )
   {
     // but not enough candidates yet, so fallback to labeling near whole line's midpoint
     candidates = createCandidatesAlongLineNearMidpoint( lPos, mapShape, candidates > 0 ? 0.01 : 0.0, pal );
@@ -734,8 +789,9 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
     return 0; //createCandidatesAlongLineNearMidpoint will be more appropriate
   }
 
+  const std::size_t candidateTargetCount = maximumLineCandidates();
   double lineStepDistance = ( totalLineLength - labelWidth ); // distance to move along line with each candidate
-  lineStepDistance = std::min( std::min( labelHeight, labelWidth ), lineStepDistance / mLF->layer()->maximumLineLabelCandidates() );
+  lineStepDistance = std::min( std::min( labelHeight, labelWidth ), lineStepDistance / candidateTargetCount );
 
   double distanceToEndOfSegment = 0.0;
   int lastNodeInSegment = 0;
@@ -906,9 +962,11 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
   double lineStepDistance = ( totalLineLength - labelWidth ); // distance to move along line with each candidate
   double currentDistanceAlongLine = 0;
 
+  const std::size_t candidateTargetCount = maximumLineCandidates();
+
   if ( totalLineLength > labelWidth )
   {
-    lineStepDistance = std::min( std::min( labelHeight, labelWidth ), lineStepDistance / mLF->layer()->maximumLineLabelCandidates() );
+    lineStepDistance = std::min( std::min( labelHeight, labelWidth ), lineStepDistance / candidateTargetCount );
   }
   else if ( !line->isClosed() ) // line length < label width => centering label position
   {
@@ -1272,7 +1330,8 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
     return 0;
 
   QLinkedList<LabelPosition *> positions;
-  double delta = std::max( li->label_height / 6, total_distance / mLF->layer()->maximumLineLabelCandidates() );
+  const std::size_t candidateTargetCount = maximumLineCandidates();
+  double delta = std::max( li->label_height / 6, total_distance / candidateTargetCount );
 
   pal::LineArrangementFlags flags = mLF->arrangementFlags();
   if ( flags == 0 )

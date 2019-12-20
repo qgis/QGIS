@@ -295,11 +295,11 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
           break;
 
         case GEOS_LINESTRING:
-          max_p = feat->feature->layer()->maximumLineLabelCandidates();
+          max_p = feat->feature->maximumLineCandidates();
           break;
 
         case GEOS_POLYGON:
-          max_p = feat->feature->layer()->maximumPolygonLabelCandidates();
+          max_p = feat->feature->maximumPolygonCandidates();
           break;
       }
 
@@ -443,19 +443,6 @@ QList<LabelPosition *> Pal::solveProblem( Problem *prob, bool displayAll, QList<
   return prob->getSolution( displayAll, unlabeled );
 }
 
-void Pal::setMaximumNumberOfLineCandidates( int line_p )
-{
-  if ( line_p > 0 )
-    this->mMaxLineCandidates = line_p;
-}
-
-void Pal::setMaximumNumberOfPolygonCandidates( int poly_p )
-{
-  if ( poly_p > 0 )
-    this->mMaxPolyCandidates = poly_p;
-}
-
-
 void Pal::setMinIt( int min_it )
 {
   if ( min_it >= 0 )
@@ -492,16 +479,6 @@ void Pal::setCandListSize( double fact )
 void Pal::setShowPartialLabels( bool show )
 {
   this->mShowPartialLabels = show;
-}
-
-int Pal::maximumNumberOfLineCandidates() const
-{
-  return mMaxLineCandidates;
-}
-
-int Pal::maximumNumberOfPolygonCandidates() const
-{
-  return mMaxPolyCandidates;
 }
 
 QgsLabelingEngineSettings::PlacementEngineVersion Pal::placementVersion() const
