@@ -176,7 +176,7 @@ namespace pal
       /**
        * Returns the maximum number of line label candidate positions per map unit.
        *
-       * \see setMaximumLineCandidatesPerCm()
+       * \see setMaximumLineCandidatesPerMapUnit()
        */
       double maximumLineCandidatesPerMapUnit() const { return mMaxLineCandidatesPerMapUnit; }
 
