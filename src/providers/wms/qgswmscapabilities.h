@@ -680,34 +680,34 @@ class QgsWmsCapabilities
     int identifyCapabilities() const;
 
   protected:
-    bool parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapabilitiesProperty &capabilitiesProperty );
+    bool parseCapabilitiesDom( const QByteArray &xml, QgsWmsCapabilitiesProperty &capabilitiesProperty );
 
-    void parseService( QDomElement const &e, QgsWmsServiceProperty &serviceProperty );
-    void parseOnlineResource( QDomElement const &e, QgsWmsOnlineResourceAttribute &onlineResourceAttribute );
-    void parseKeywordList( QDomElement  const &e, QStringList &keywordListProperty );
-    void parseContactInformation( QDomElement const &e, QgsWmsContactInformationProperty &contactInformationProperty );
-    void parseContactPersonPrimary( QDomElement const &e, QgsWmsContactPersonPrimaryProperty &contactPersonPrimaryProperty );
-    void parseContactAddress( QDomElement const &e, QgsWmsContactAddressProperty &contactAddressProperty );
+    void parseService( const QDomElement &element, QgsWmsServiceProperty &serviceProperty );
+    void parseOnlineResource( const QDomElement &element, QgsWmsOnlineResourceAttribute &onlineResourceAttribute );
+    void parseKeywordList( const QDomElement &element, QStringList &keywordListProperty );
+    void parseContactInformation( const QDomElement &element, QgsWmsContactInformationProperty &contactInformationProperty );
+    void parseContactPersonPrimary( const QDomElement &element, QgsWmsContactPersonPrimaryProperty &contactPersonPrimaryProperty );
+    void parseContactAddress( const QDomElement &element, QgsWmsContactAddressProperty &contactAddressProperty );
 
-    void parseCapability( QDomElement const &e, QgsWmsCapabilityProperty &capabilityProperty );
-    void parseRequest( QDomElement const &e, QgsWmsRequestProperty &requestProperty );
-    void parseLegendUrl( QDomElement const &e, QgsWmsLegendUrlProperty &legendUrlProperty );
-    void parseMetadataUrl( QDomElement const &e, QgsWmsMetadataUrlProperty &metadataUrlProperty );
-    void parseLayer( QDomElement const &e, QgsWmsLayerProperty &layerProperty, QgsWmsLayerProperty *parentProperty = nullptr );
-    void parseStyle( QDomElement const &e, QgsWmsStyleProperty &styleProperty );
+    void parseCapability( const QDomElement &element, QgsWmsCapabilityProperty &capabilityProperty );
+    void parseRequest( const QDomElement &element, QgsWmsRequestProperty &requestProperty );
+    void parseLegendUrl( const QDomElement &element, QgsWmsLegendUrlProperty &legendUrlProperty );
+    void parseMetadataUrl( const QDomElement &element, QgsWmsMetadataUrlProperty &metadataUrlProperty );
+    void parseLayer( const QDomElement &element, QgsWmsLayerProperty &layerProperty, QgsWmsLayerProperty *parentProperty = nullptr );
+    void parseStyle( const QDomElement &element, QgsWmsStyleProperty &styleProperty );
 
-    void parseOperationType( QDomElement const &e, QgsWmsOperationType &operationType );
-    void parseDcpType( QDomElement const &e, QgsWmsDcpTypeProperty &dcpType );
-    void parseHttp( QDomElement const &e, QgsWmsHttpProperty &httpProperty );
-    void parseGet( QDomElement const &e, QgsWmsGetProperty &getProperty );
-    void parsePost( QDomElement const &e, QgsWmsPostProperty &postProperty );
+    void parseOperationType( const QDomElement &element, QgsWmsOperationType &operationType );
+    void parseDcpType( const QDomElement &element, QgsWmsDcpTypeProperty &dcpType );
+    void parseHttp( const QDomElement &element, QgsWmsHttpProperty &httpProperty );
+    void parseGet( const QDomElement &element, QgsWmsGetProperty &getProperty );
+    void parsePost( const QDomElement &element, QgsWmsPostProperty &postProperty );
 
-    void parseTileSetProfile( QDomElement const &e );
-    void parseWMTSContents( QDomElement const &e );
+    void parseTileSetProfile( const QDomElement &element );
+    void parseWMTSContents( const QDomElement &element );
     void parseKeywords( const QDomNode &e, QStringList &keywords );
     void parseTheme( const QDomElement &e, QgsWmtsTheme &t );
 
-    QString nodeAttribute( const QDomElement &e, const QString &name, const QString &defValue = QString() );
+    QString nodeAttribute( const QDomElement &element, const QString &name, const QString &defValue = QString() );
 
     /**
      * In case no bounding box is present in WMTS capabilities, try to estimate it from tile matrix sets.
