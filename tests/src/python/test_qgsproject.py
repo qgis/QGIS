@@ -1125,7 +1125,7 @@ class TestQgsProject(unittest.TestCase):
         tmpFile = "{}/project.qgs".format(tmpDir.path())
 
         s0 = QgsLabelingEngineSettings()
-        s0.setNumCandidatePositions(3, 33, 333)
+        s0.setMaximumLineCandidatesPerCm(33)
 
         p0 = QgsProject()
         p0.setFileName(tmpFile)
@@ -1136,11 +1136,7 @@ class TestQgsProject(unittest.TestCase):
         p1.read(tmpFile)
 
         s1 = p1.labelingEngineSettings()
-        candidates = s1.numCandidatePositions()
-
-        self.assertEqual(candidates[0], 3)
-        self.assertEqual(candidates[1], 33)
-        self.assertEqual(candidates[2], 333)
+        self.assertEqual(s1.maximumLineCandidatesPerCm(), 33)
 
     def testLayerChangeDirtiesProject(self):
         """
