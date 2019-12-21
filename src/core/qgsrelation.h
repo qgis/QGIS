@@ -120,11 +120,11 @@ class CORE_EXPORT QgsRelation
      *
      * \param node The dom node containing the relation information
      * \param context to pass project translator
-     * \param context a relation context
+     * \param relationContext a relation context
      *
      * \returns A relation
      */
-    static QgsRelation createFromXml( const QDomNode &node, QgsReadWriteContext &context, const QgsRelationContext &relcontext = QgsRelationContext() );
+    static QgsRelation createFromXml( const QDomNode &node, QgsReadWriteContext &context, const QgsRelationContext &relationContext = QgsRelationContext() );
 
     /**
      * Writes a relation to an XML structure. Used for saving .qgs projects
