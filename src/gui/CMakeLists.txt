@@ -272,6 +272,7 @@ SET(QGIS_GUI_SRCS
   qgscompoundcolorwidget.cpp
   qgsconfigureshortcutsdialog.cpp
   qgscoordinateboundspreviewmapwidget.cpp
+  qgscoordinateoperationwidget.cpp
   qgscredentialdialog.cpp
   qgscustomdrophandler.cpp
   qgscurveeditorwidget.cpp
@@ -471,6 +472,7 @@ SET(QGIS_GUI_HDRS
   qgscompoundcolorwidget.h
   qgsconfigureshortcutsdialog.h
   qgscoordinateboundspreviewmapwidget.h
+  qgscoordinateoperationwidget.h
   qgscredentialdialog.h
   qgscurveeditorwidget.h
   qgscustomdrophandler.h

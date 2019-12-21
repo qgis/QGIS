@@ -99,8 +99,7 @@ class TestSelectiveMasking(unittest.TestCase):
         self.report = "<h1>Python Selective Masking Tests</h1>\n"
 
         self.map_settings = QgsMapSettings()
-        crs = QgsCoordinateReferenceSystem()
-        crs.createFromSrid(4326)
+        crs = QgsCoordinateReferenceSystem('epsg:4326')
         extent = QgsRectangle(-123.0, 22.7, -76.4, 46.9)
         self.map_settings.setBackgroundColor(QColor(152, 219, 249))
         self.map_settings.setOutputSize(QSize(420, 280))

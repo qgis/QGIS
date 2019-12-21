@@ -591,6 +591,7 @@
         <file>themes/default/propertyicons/system.svg</file>
         <file>themes/default/propertyicons/transparency.svg</file>
         <file>themes/default/propertyicons/spacer.svg</file>
+        <file>themes/default/propertyicons/relations.svg</file>
         <file>themes/default/rendererCategorizedSymbol.svg</file>
         <file>themes/default/rendererGraduatedSymbol.svg</file>
         <file>themes/default/rendererNullSymbol.svg</file>
@@ -697,6 +698,14 @@
         <file>themes/default/processingAlgorithm.svg</file>
         <file>themes/default/processingResult.svg</file>
         <file>themes/default/search.svg</file>
+        <file>themes/default/mesh/Depth.svg</file>
+        <file>themes/default/mesh/Elevation.svg</file>
+        <file>themes/default/mesh/Height.svg</file>
+        <file>themes/default/mesh/MultiBottom.svg</file>
+        <file>themes/default/mesh/MultiTop.svg</file>
+        <file>themes/default/mesh/Sigma.svg</file>
+        <file>themes/default/mesh/SingleTop.svg</file>
+        <file>themes/default/mesh/SingleBottom.svg</file>
         <file>themes/default/mActionNew3DMap.svg</file>
         <file>themes/default/mActionNewMap.svg</file>
         <file>themes/default/mActionNext.svg</file>

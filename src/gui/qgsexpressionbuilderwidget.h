@@ -241,48 +241,45 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void loadRecent( const QString &collection = QStringLiteral( "generic" ) );
 
     /**
-     * Loads the user expressions from the given \a collection.
-     * By default it is loaded from the collection "generic".
+     * Loads the user expressions.
      * \since QGIS 3.12
      */
-    void loadUserExpressions( const QString &collection =  QStringLiteral( "generic" ) );
+    void loadUserExpressions( );
 
     /**
-     * Stores the user \a expression in the given \a collection with given \a label and \a helpText.
-     * By default it is saved to the collection "generic".
+     * Stores the user \a expression with given \a label and \a helpText.
      * \since QGIS 3.12
      */
-    void saveToUserExpressions( const QString &label, const QString expression, const QString &helpText, const QString &collection =  QStringLiteral( "generic" ) );
+    void saveToUserExpressions( const QString &label, const QString expression, const QString &helpText );
 
     /**
-     * Removes the expression \a name from the user stored expressions in the given \a collection.
-     * By default it is removed from the collection "generic".
+     * Removes the expression \a label from the user stored expressions.
      * \since QGIS 3.12
      */
-    void removeFromUserExpressions( const QString &name, const QString &collection =  QStringLiteral( "generic" ) );
+    void removeFromUserExpressions( const QString &label );
 
     /**
-     * Create a new file in the function editor
+     * Creates a new file in the function editor
      */
     void newFunctionFile( const QString &fileName = "scratch" );
 
     /**
-     * Save the current function editor text to the given file.
+     * Saves the current function editor text to the given file.
      */
     void saveFunctionFile( QString fileName );
 
     /**
-     * Load code from the given file into the function editor
+     * Loads code from the given file into the function editor
      */
     void loadCodeFromFile( QString path );
 
     /**
-     * Load code into the function editor
+     * Loads code into the function editor
      */
     void loadFunctionCode( const QString &code );
 
     /**
-     * Update the list of function files found at the given path
+     * Updates the list of function files found at the given path
      */
     void updateFunctionFileList( const QString &path );
 
@@ -327,14 +324,36 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
   public slots:
 
     /**
-     * Load sample values into the sample value area
+     * Load sample values into the sample value area.
+     * Including available values, in case the formatter can
+     * provide them (eg. RelationReference).
      */
     void loadSampleValues();
 
     /**
-     * Load all unique values from the set layer into the sample area
+     * Load all unique values from the set layer into the sample area.
+     * Including all available values, in case the formatter can
+     * provide them (eg. RelationReference).
      */
     void loadAllValues();
+
+    /**
+     * Load used sample values into the sample value area.
+     * Only the used ones. Without available values, even if the
+     * formatter can provide them (eg. RelationReference).
+     *
+     * \since QGIS 3.12
+     */
+    void loadSampleUsedValues();
+
+    /**
+     * Load all unique values from the set layer into the sample area.
+     * Only the used ones. Without available values, even if the
+     * formatter can provide them (eg. RelationReference).
+     *
+     * \since QGIS 3.12
+     */
+    void loadAllUsedValues();
 
     /**
      * Auto save the current Python function code.
@@ -422,7 +441,8 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void clearErrors();
     void runPythonCode( const QString &code );
     void updateFunctionTree();
-    void fillFieldValues( const QString &fieldName, int countLimit );
+    void fillFieldValues( const QString &fieldName, int countLimit, bool forceUsedValues = false );
+    bool formatterCanProvideAvailableValues( const QString &fieldName );
     QString getFunctionHelp( QgsExpressionFunction *function );
     QString loadFunctionHelp( QgsExpressionItem *functionName );
     QString helpStylesheet() const;
@@ -501,6 +521,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QPointer< QgsProject > mProject;
     bool mEvalError = true;
     bool mParserError = true;
+    // Translated name of the user expressions group
     QString mUserExpressionsGroupName;
     QStringList mUserExpressionLabels;
 };

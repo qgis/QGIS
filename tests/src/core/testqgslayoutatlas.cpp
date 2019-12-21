@@ -122,9 +122,7 @@ void TestQgsLayoutAtlas::init()
 {
   //create composition with composer map
 
-  // select epsg:2154
-  QgsCoordinateReferenceSystem crs;
-  crs.createFromSrid( 2154 );
+  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:2154" ) );
   QgsProject::instance()->setCrs( crs );
   mLayout = new QgsPrintLayout( QgsProject::instance() );
   mLayout->initializeDefaults();

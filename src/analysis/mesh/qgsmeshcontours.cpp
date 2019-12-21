@@ -366,9 +366,15 @@ void QgsMeshContours::populateCache( const QgsMeshDatasetIndex &index, QgsMeshRe
                               index,
                               0,
                               count );
-
-    // vals could be scalar or vectors, for contour rendering we want always magnitude
-    mDatasetValues = QgsMeshLayerUtils::calculateMagnitudes( vals );
+    if ( vals.isValid() )
+    {
+      // vals could be scalar or vectors, for contour rendering we want always magnitude
+      mDatasetValues = QgsMeshLayerUtils::calculateMagnitudes( vals );
+    }
+    else
+    {
+      mDatasetValues = QVector<double>( count, std::numeric_limits<double>::quiet_NaN() );
+    }
 
     // populate face active flag, always defined on faces
     mScalarActiveFaceFlagValues = mMeshLayer->dataProvider()->areFacesActive(

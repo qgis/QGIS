@@ -268,6 +268,8 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterLayoutItem;
     else if ( sipCpp->type() == QgsProcessingParameterColor::typeName() )
       sipType = sipType_QgsProcessingParameterColor;
+    else if ( sipCpp->type() == QgsProcessingParameterCoordinateOperation::typeName() )
+      sipType = sipType_QgsProcessingParameterCoordinateOperation;
     else
       sipType = nullptr;
     SIP_END
@@ -3000,6 +3002,110 @@ class CORE_EXPORT QgsProcessingParameterColor : public QgsProcessingParameterDef
     bool mAllowOpacity = true;
 
 };
+
+
+/**
+ * \class QgsProcessingParameterCoordinateOperation
+ * \ingroup core
+ * A coordinate operation parameter for processing algorithms, for selection between available
+ * coordinate operations to use when projecting between a source and destination coordinate reference system.
+  * \since QGIS 3.12
+ */
+class CORE_EXPORT QgsProcessingParameterCoordinateOperation : public QgsProcessingParameterDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterCoordinateOperation.
+     */
+    QgsProcessingParameterCoordinateOperation( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+        const QString &sourceCrsParameterName = QString(), const QString &destinationCrsParameterName = QString(),
+        const QVariant &staticSourceCrs = QVariant(), const QVariant &staticDestinationCrs = QVariant(),
+        bool optional = false );
+
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "coordinateoperation" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
+    QString type() const override { return typeName(); }
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString asScriptCode() const override;
+    QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
+
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterCoordinateOperation *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
+    /**
+     * Returns the name of the source CRS parameter, or an empty string if this is not set.
+     * \see setSourceCrsParameterName()
+     * \see destinationCrsParameterName()
+     */
+    QString sourceCrsParameterName() const { return mSourceParameterName; }
+
+    /**
+     * Sets the \a name of the source CRS parameter. Use an empty string if this is not required.
+     * \see sourceCrsParameterName()
+     * \see setDestinationCrsParameterName()
+     */
+    void setSourceCrsParameterName( const QString &name ) { mSourceParameterName = name; }
+
+    /**
+     * Returns the name of the destination CRS parameter, or an empty string if this is not set.
+     * \see setDestinationCrsParameterName()
+     * \see sourceCrsParameterName()
+     */
+    QString destinationCrsParameterName() const { return mDestParameterName; }
+
+    /**
+     * Sets the \a name of the destination CRS parameter. Use an empty string if this is not required.
+     * \see destinationCrsParameterName()
+     * \see setSourceCrsParameterName()
+     */
+    void setDestinationCrsParameterName( const QString &name ) { mDestParameterName = name; }
+
+    /**
+     * Returns the static source CRS, or an invalid value if this is not set.
+     * \see setSourceCrs()
+     * \see destinationCrs()
+     */
+    QVariant sourceCrs() const { return mSourceCrs; }
+
+    /**
+     * Sets the static source \a crs.
+     * \see sourceCrs()
+     * \see setDestinationCrs()
+     */
+    void setSourceCrs( const QVariant &crs ) { mSourceCrs = crs; }
+
+    /**
+     * Returns the static destination CRS, or an invalid value if this is not set.
+     * \see setDestinationCrs()
+     * \see sourceCrs()
+     */
+    QVariant destinationCrs() const { return mDestCrs; }
+
+    /**
+     * Sets the static destination \a crs.
+     * \see destinationCrs()
+     * \see setSourceCrs()
+     */
+    void setDestinationCrs( const QVariant &crs ) { mDestCrs = crs; }
+
+  private:
+
+    QString mSourceParameterName;
+    QString mDestParameterName;
+    QVariant mSourceCrs;
+    QVariant mDestCrs;
+
+};
+
 
 // clazy:excludeall=qstring-allocations
 

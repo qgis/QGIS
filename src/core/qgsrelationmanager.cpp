@@ -27,8 +27,11 @@ QgsRelationManager::QgsRelationManager( QgsProject *project )
 {
   if ( mProject )
   {
+    // TODO: QGIS 4 remove: relations are now stored with the layer style
     connect( project, &QgsProject::readProjectWithContext, this, &QgsRelationManager::readProject );
+    // TODO: QGIS 4 remove: relations are now stored with the layer style
     connect( project, &QgsProject::writeProject, this, &QgsRelationManager::writeProject );
+
     connect( project, &QgsProject::layersRemoved, this, &QgsRelationManager::layersRemoved );
   }
 }
@@ -148,7 +151,7 @@ QList<QgsRelation> QgsRelationManager::referencingRelations( const QgsVectorLaye
   return relations;
 }
 
-QList<QgsRelation> QgsRelationManager::referencedRelations( QgsVectorLayer *layer ) const
+QList<QgsRelation> QgsRelationManager::referencedRelations( const QgsVectorLayer *layer ) const
 {
   if ( !layer )
   {

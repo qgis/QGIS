@@ -343,7 +343,7 @@
                       <bool>false</bool>
                      </property>
                      <property name="toolTip">
-                      <string>Add current expression to stored expressions</string>
+                      <string>Add current expression to user expressions</string>
                      </property>
                      <property name="text">
                       <string>Save</string>
@@ -356,7 +356,7 @@
                       <bool>false</bool>
                      </property>
                      <property name="toolTip">
-                      <string>Removes selected expression from the stored expressions</string>
+                      <string>Remove selected expression from user expressions</string>
                      </property>
                      <property name="text">
                       <string>Remove</string>
@@ -639,21 +639,7 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="1">
-                   <widget class="QgsFilterLineEdit" name="txtSearchEditValues">
-                    <property name="enabled">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0" colspan="2">
-                   <widget class="QListView" name="mValuesListView">
-                    <property name="editTriggers">
-                     <set>QAbstractItemView::NoEditTriggers</set>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
+                  <item row="1" column="0" colspan="2">
                    <layout class="QHBoxLayout" name="horizontalLayout_8">
                     <property name="topMargin">
                      <number>0</number>
@@ -673,6 +659,30 @@
                      </widget>
                     </item>
                    </layout>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QgsFilterLineEdit" name="txtSearchEditValues">
+                    <property name="enabled">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0" colspan="2">
+                   <widget class="QListView" name="mValuesListView">
+                    <property name="editTriggers">
+                     <set>QAbstractItemView::NoEditTriggers</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0" colspan="2">
+                   <widget class="QCheckBox" name="cbxValuesInUse">
+                    <property name="toolTip">
+                     <string>Only show values used in this layer and not all the possible values you could choose.</string>
+                    </property>
+                    <property name="text">
+                     <string>Only show values in use</string>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>

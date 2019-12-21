@@ -81,7 +81,7 @@ QString QgsCoordinateUtils::formatCoordinateForProject( QgsProject *project, con
     if ( destCrs.isValid() && !destCrs.isGeographic() )
     {
       // need to transform to geographic coordinates
-      QgsCoordinateTransform ct( destCrs, QgsCoordinateReferenceSystem( GEOSRID ), project );
+      QgsCoordinateTransform ct( destCrs, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), project );
       try
       {
         geo = ct.transform( point );

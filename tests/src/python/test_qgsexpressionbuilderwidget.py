@@ -169,14 +169,14 @@ class TestQgsExpressionBuilderWidget(unittest.TestCase):
 
         w = QgsExpressionBuilderWidget()
 
-        w.saveToUserExpressions('Stored Expression Number One', '"field_one" = 123', "An humble expression", "my_custom_collection")
+        w.saveToUserExpressions('Stored Expression Number One', '"field_one" = 123', "An humble expression")
         items = w.findExpressions('Stored Expression Number One')
         self.assertEqual(len(items), 1)
         exp = items[0]
         self.assertEqual(exp.getExpressionText(), '"field_one" = 123')
 
         # Add another one with the same name (overwrite)
-        w.saveToUserExpressions('Stored Expression Number One', '"field_two" = 456', "An even more humble expression", "my_custom_collection")
+        w.saveToUserExpressions('Stored Expression Number One', '"field_two" = 456', "An even more humble expression")
         items = w.findExpressions('Stored Expression Number One')
         self.assertEqual(len(items), 1)
         exp = items[0]
@@ -187,7 +187,7 @@ class TestQgsExpressionBuilderWidget(unittest.TestCase):
         self.assertEqual(exp.getExpressionText(), '"field_two" = 456')
 
         # Test removal
-        w.removeFromUserExpressions('Stored Expression Number One', "my_custom_collection")
+        w.removeFromUserExpressions('Stored Expression Number One')
         items = w.findExpressions('Stored Expression Number One')
         self.assertEqual(len(items), 0)
 
