@@ -49,13 +49,13 @@ changed.
 %End
 
 
-    static QgsRelation createFromXml( const QDomNode &node, QgsReadWriteContext &context, const QgsRelationContext &relcontext = QgsRelationContext() );
+    static QgsRelation createFromXml( const QDomNode &node, QgsReadWriteContext &context, const QgsRelationContext &relationContext = QgsRelationContext() );
 %Docstring
 Creates a relation from an XML structure. Used for reading .qgs projects.
 
 :param node: The dom node containing the relation information
 :param context: to pass project translator
-:param context: a relation context
+:param relationContext: a relation context
 
 :return: A relation
 %End
