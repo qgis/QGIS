@@ -117,8 +117,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
 
     /**
      * Gets number of candidate positions that will be generated for each label feature.
-     * \deprecated Since QGIS 3.12 use maximumPolygonCandidatesPerCmSquared() and
-     * maximumLineCandidatesPerCm() instead.
+     * \deprecated since QGIS 3.12 use maximumPolygonCandidatesPerCmSquared() and maximumLineCandidatesPerCm() instead.
      */
     Q_DECL_DEPRECATED void numCandidatePositions( int &candPoint, int &candLine, int &candPolygon ) const SIP_DEPRECATED
     {
@@ -129,8 +128,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
 
     /**
      * Sets the number of candidate positions that will be generated for each label feature.
-     * \deprecated Since QGIS 3.12 use setMaximumPolygonCandidatesPerCmSquared() and
-     * setMaximumLineCandidatesPerCm() instead.
+     * \deprecated since QGIS 3.12 use setMaximumPolygonCandidatesPerCmSquared() and setMaximumLineCandidatesPerCm() instead.
      */
     Q_DECL_DEPRECATED void setNumCandidatePositions( int candPoint, int candLine, int candPolygon ) SIP_DEPRECATED
     {

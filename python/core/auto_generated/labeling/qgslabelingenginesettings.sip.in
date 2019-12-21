@@ -114,8 +114,7 @@ Sets the maximum number of polygon label ``candidates`` per centimeter squared.
 Gets number of candidate positions that will be generated for each label feature.
 
 .. deprecated:: QGIS 3.12
-   use maximumPolygonCandidatesPerCmSquared() and
-maximumLineCandidatesPerCm() instead.
+   use maximumPolygonCandidatesPerCmSquared() and maximumLineCandidatesPerCm() instead.
 %End
 
  void setNumCandidatePositions( int candPoint, int candLine, int candPolygon ) /Deprecated/;
@@ -123,8 +122,7 @@ maximumLineCandidatesPerCm() instead.
 Sets the number of candidate positions that will be generated for each label feature.
 
 .. deprecated:: QGIS 3.12
-   use setMaximumPolygonCandidatesPerCmSquared() and
-setMaximumLineCandidatesPerCm() instead.
+   use setMaximumPolygonCandidatesPerCmSquared() and setMaximumLineCandidatesPerCm() instead.
 %End
 
  void setSearchMethod( Search s ) /Deprecated/;
