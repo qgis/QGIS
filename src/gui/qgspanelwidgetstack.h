@@ -130,6 +130,7 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
 
   private:
     void updateBreadcrumb();
+    void updateMenuButton();
     QStack<QString> mTitles;
 };
 

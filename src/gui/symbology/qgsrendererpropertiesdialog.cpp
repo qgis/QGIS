@@ -316,15 +316,12 @@ void QgsRendererPropertiesDialog::onOK()
 
 void QgsRendererPropertiesDialog::openPanel( QgsPanelWidget *panel )
 {
-  QgsDebugMsg( QStringLiteral( "Open panel!!!" ) );
   if ( mDockMode )
   {
-    QgsDebugMsg( QStringLiteral( "DOCK MODE" ) );
     emit showPanel( panel );
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "DIALOG MODE" ) );
     // Show the dialog version if no one is connected
     QDialog *dlg = new QDialog();
     QString key = QStringLiteral( "/UI/paneldialog/%1" ).arg( panel->panelTitle() );

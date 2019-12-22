@@ -7,6 +7,7 @@
  ************************************************************************/
 
 
+
 class QgsPanelWidget : QWidget
 {
 %Docstring
@@ -104,6 +105,23 @@ widget.
 :return: parent panel widget if found, otherwise ``None``
 
 .. versionadded:: 3.0
+%End
+
+    virtual QString menuButtonTooltip() const;
+%Docstring
+Returns the (translated) tooltip text to use for the menu button for this panel.
+
+This is only used when the panel returns a menuButtonMenu().
+
+.. versionadded:: 3.12
+%End
+
+    virtual QMenu *menuButtonMenu();
+%Docstring
+Returns the menu to use for the menu button for this panel, or ``None`` if
+no menu button is required.
+
+.. versionadded:: 3.12
 %End
 
   signals:
