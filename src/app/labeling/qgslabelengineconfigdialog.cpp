@@ -22,6 +22,7 @@
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
 #include "qgsgui.h"
+#include "qgsapplication.h"
 #include <QPushButton>
 #include <QMessageBox>
 
@@ -83,6 +84,24 @@ QgsLabelEngineConfigWidget::QgsLabelEngineConfigWidget( QWidget *parent )
   connect( mTextRenderFormatComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsLabelEngineConfigWidget::widgetChanged );
   connect( mUnplacedColorButton, &QgsColorButton::colorChanged, this, &QgsLabelEngineConfigWidget::widgetChanged );
   connect( mPlacementVersionComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsLabelEngineConfigWidget::widgetChanged );
+
+  mWidgetMenu = new QMenu( this );
+  QAction *resetAction = new QAction( tr( "Restore Defaults" ), this );
+  mWidgetMenu->addAction( resetAction );
+  connect( resetAction, &QAction::triggered, this, &QgsLabelEngineConfigWidget::setDefaults );
+  QAction *helpAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionHelpContents.svg" ) ), tr( "Help…" ), this );
+  mWidgetMenu->addAction( helpAction );
+  connect( helpAction, &QAction::triggered, this, &QgsLabelEngineConfigWidget::showHelp );
+}
+
+QMenu *QgsLabelEngineConfigWidget::menuButtonMenu()
+{
+  return mWidgetMenu;
+}
+
+QString QgsLabelEngineConfigWidget::menuButtonTooltip() const
+{
+  return tr( "Additional Options" );
 }
 
 void QgsLabelEngineConfigWidget::apply()
