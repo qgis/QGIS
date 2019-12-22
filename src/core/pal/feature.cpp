@@ -157,6 +157,11 @@ QgsFeatureId FeaturePart::featureId() const
   return mLF->id();
 }
 
+std::size_t FeaturePart::maximumPointCandidates() const
+{
+  return mLF->layer()->maximumPointLabelCandidates();
+}
+
 std::size_t FeaturePart::maximumLineCandidates() const
 {
   if ( mCachedMaxLineCandidates > 0 )
@@ -168,7 +173,7 @@ std::size_t FeaturePart::maximumLineCandidates() const
     double length = 0;
     if ( GEOSLength_r( geosctxt, geos(), &length ) == 1 )
     {
-      const std::size_t candidatesForLineLength = static_cast< std::size_t >( std::ceil( mLF->layer()->pal->maximumLineCandidatesPerMapUnit() * length ) );
+      const std::size_t candidatesForLineLength = static_cast< std::size_t >( std::ceil( mLF->layer()->mPal->maximumLineCandidatesPerMapUnit() * length ) );
       const std::size_t maxForLayer = mLF->layer()->maximumLineLabelCandidates();
       if ( maxForLayer == 0 )
         mCachedMaxLineCandidates = candidatesForLineLength;
@@ -195,7 +200,7 @@ std::size_t FeaturePart::maximumPolygonCandidates() const
     double area = 0;
     if ( GEOSArea_r( geosctxt, geos(), &area ) == 1 )
     {
-      const std::size_t candidatesForArea = static_cast< std::size_t >( std::ceil( mLF->layer()->pal->maximumPolygonCandidatesPerMapUnitSquared() * area ) );
+      const std::size_t candidatesForArea = static_cast< std::size_t >( std::ceil( mLF->layer()->mPal->maximumPolygonCandidatesPerMapUnitSquared() * area ) );
       const std::size_t maxForLayer = mLF->layer()->maximumPolygonLabelCandidates();
       if ( maxForLayer == 0 )
         mCachedMaxPolygonCandidates = candidatesForArea;

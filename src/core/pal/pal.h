@@ -215,6 +215,42 @@ namespace pal
        */
       void setPlacementVersion( QgsLabelingEngineSettings::PlacementEngineVersion placementVersion );
 
+      /**
+       * Returns the global candidates limit for point features, or 0 if no global limit is in effect.
+       *
+       * This is an installation-wide setting which applies to all projects, and is set via QSettings. It can
+       * be used to place global limits on the number of candidates generated for point features in order
+       * to optimise map rendering speeds.
+       *
+       * \see globalCandidatesLimitLine()
+       * \see globalCandidatesLimitPolygon()
+       */
+      int globalCandidatesLimitPoint() const { return mGlobalCandidatesLimitPoint; }
+
+      /**
+       * Returns the global candidates limit for line features, or 0 if no global limit is in effect.
+       *
+       * This is an installation-wide setting which applies to all projects, and is set via QSettings. It can
+       * be used to place global limits on the number of candidates generated for line features in order
+       * to optimise map rendering speeds.
+       *
+       * \see globalCandidatesLimitPolygon()
+       * \see globalCandidatesLimitPoint()
+       */
+      int globalCandidatesLimitLine() const { return mGlobalCandidatesLimitLine; }
+
+      /**
+       * Returns the global candidates limit for polygon features, or 0 if no global limit is in effect.
+       *
+       * This is an installation-wide setting which applies to all projects, and is set via QSettings. It can
+       * be used to place global limits on the number of candidates generated for polygon features in order
+       * to optimise map rendering speeds.
+       *
+       * \see globalCandidatesLimitLine()
+       * \see globalCandidatesLimitPoint()
+       */
+      int globalCandidatesLimitPolygon() const { return mGlobalCandidatesLimitPolygon; }
+
     private:
 
       std::unordered_map< QgsAbstractLabelProvider *, std::unique_ptr< Layer > > mLayers;
@@ -240,6 +276,10 @@ namespace pal
 
       double mMaxLineCandidatesPerMapUnit = 0;
       double mMaxPolygonCandidatesPerMapUnitSquared = 0;
+
+      int mGlobalCandidatesLimitPoint = 0;
+      int mGlobalCandidatesLimitLine = 0;
+      int mGlobalCandidatesLimitPolygon = 0;
 
       QgsLabelingEngineSettings::PlacementEngineVersion mPlacementVersion = QgsLabelingEngineSettings::PlacementEngineVersion2;
 

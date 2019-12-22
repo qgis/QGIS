@@ -88,7 +88,7 @@ namespace pal
        * \param displayAll if TRUE, all features will be labelled even though overlaps occur
        *
        */
-      Layer( QgsAbstractLabelProvider *provider, const QString &name, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal, bool displayAll = false );
+      Layer( QgsAbstractLabelProvider *provider, const QString &name, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, Pal *mPal, bool displayAll = false );
 
       virtual ~Layer();
 
@@ -109,15 +109,15 @@ namespace pal
         // to avoid the engine processing endlessly...
         const int size = mHashtable.size();
         if ( size > 1000 )
-          return 4;
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitPoint() > 0 ? std::min( mPal->globalCandidatesLimitPoint(), 4 ) : 4 );
         else if ( size > 500 )
-          return 6;
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitPoint() > 0 ? std::min( mPal->globalCandidatesLimitPoint(), 6 ) : 6 );
         else if ( size > 200 )
-          return 8;
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitPoint() > 0 ? std::min( mPal->globalCandidatesLimitPoint(), 8 ) : 8 );
         else if ( size > 100 )
-          return 12;
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitPoint() > 0 ? std::min( mPal->globalCandidatesLimitPoint(), 12 ) : 12 );
         else
-          return 0;
+          return static_cast< std::size_t >( std::max( mPal->globalCandidatesLimitPoint(), 0 ) );
       }
 
       /**
@@ -130,15 +130,15 @@ namespace pal
         // to avoid the engine processing endlessly...
         const int size = mHashtable.size();
         if ( size > 1000 )
-          return static_cast< std::size_t >( 5 );
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitLine() > 0 ? std::min( mPal->globalCandidatesLimitLine(), 5 ) : 5 );
         else if ( size > 500 )
-          return static_cast< std::size_t >( 10 );
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitLine() > 0 ? std::min( mPal->globalCandidatesLimitLine(), 10 ) : 10 );
         else if ( size > 200 )
-          return static_cast< std::size_t >( 20 );
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitLine() > 0 ? std::min( mPal->globalCandidatesLimitLine(), 20 ) : 20 );
         else if ( size > 100 )
-          return static_cast< std::size_t >( 40 );
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitLine() > 0 ? std::min( mPal->globalCandidatesLimitLine(), 40 ) : 40 );
         else
-          return static_cast< std::size_t >( 0 );
+          return static_cast< std::size_t >( std::max( mPal->globalCandidatesLimitLine(), 0 ) );
       }
 
       /**
@@ -151,15 +151,15 @@ namespace pal
         // to avoid the engine processing endlessly...
         const int size = mHashtable.size();
         if ( size > 1000 )
-          return static_cast< std::size_t >( 5 );
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitPolygon() > 0 ? std::min( mPal->globalCandidatesLimitPolygon(), 5 ) : 5 );
         else if ( size > 500 )
-          return static_cast< std::size_t >( 15 );
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitPolygon() > 0 ? std::min( mPal->globalCandidatesLimitPolygon(), 15 ) : 15 );
         else if ( size > 200 )
-          return static_cast< std::size_t >( 20 );
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitPolygon() > 0 ? std::min( mPal->globalCandidatesLimitPolygon(), 20 ) : 20 );
         else if ( size > 100 )
-          return static_cast< std::size_t >( 25 );
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitPolygon() > 0 ? std::min( mPal->globalCandidatesLimitPolygon(), 25 ) : 25 );
         else
-          return static_cast< std::size_t >( 0 );
+          return static_cast< std::size_t >( std::max( mPal->globalCandidatesLimitPolygon(), 0 ) );
       }
 
       //! Returns pointer to the associated provider
@@ -329,7 +329,7 @@ namespace pal
 
       std::vector< geos::unique_ptr > mGeosObstacleGeometries;
 
-      Pal *pal = nullptr;
+      Pal *mPal = nullptr;
 
       double mDefaultPriority;
 
