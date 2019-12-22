@@ -23,7 +23,7 @@
 
 class QgsMessageBar;
 
-class APP_EXPORT QgsLabelEngineConfigWidget : public QgsPanelWidget, private Ui::QgsLabelEngineConfigDialog
+class APP_EXPORT QgsLabelEngineConfigWidget : public QgsPanelWidget, private Ui::QgsLabelEngineConfigWidgetBase
 {
     Q_OBJECT
   public:
