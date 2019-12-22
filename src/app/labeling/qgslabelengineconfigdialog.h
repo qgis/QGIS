@@ -23,24 +23,35 @@
 
 class QgsMessageBar;
 
-class APP_EXPORT QgsLabelEngineConfigDialog : public QDialog, private Ui::QgsLabelEngineConfigDialog
+class APP_EXPORT QgsLabelEngineConfigWidget : public QgsPanelWidget, private Ui::QgsLabelEngineConfigDialog
 {
     Q_OBJECT
   public:
-    QgsLabelEngineConfigDialog( QWidget *parent = nullptr );
+    QgsLabelEngineConfigWidget( QWidget *parent = nullptr );
 
   public slots:
-    void onOK();
+    void apply();
     void setDefaults();
-
-
-  private slots:
     void showHelp();
 
   private:
     QgsMessageBar *mMessageBar = nullptr;
 
     QgsLabelingEngineSettings::PlacementEngineVersion mPreviousEngineVersion = QgsLabelingEngineSettings::PlacementEngineVersion2;
+};
+
+class APP_EXPORT QgsLabelEngineConfigDialog : public QDialog
+{
+    Q_OBJECT
+
+  public:
+
+    QgsLabelEngineConfigDialog( QWidget *parent = nullptr );
+
+    void accept() override;
+  private:
+    QgsLabelEngineConfigWidget *mWidget = nullptr;
+
 };
 
 #endif // QGSLABELENGINECONFIGDIALOG_H
