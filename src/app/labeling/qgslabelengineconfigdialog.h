@@ -29,6 +29,9 @@ class APP_EXPORT QgsLabelEngineConfigWidget : public QgsPanelWidget, private Ui:
   public:
     QgsLabelEngineConfigWidget( QWidget *parent = nullptr );
 
+    QMenu *menuButtonMenu() override;
+    QString menuButtonTooltip() const override;
+
   public slots:
     void apply();
     void setDefaults();
@@ -36,6 +39,7 @@ class APP_EXPORT QgsLabelEngineConfigWidget : public QgsPanelWidget, private Ui:
 
   private:
     QgsMessageBar *mMessageBar = nullptr;
+    QMenu *mWidgetMenu = nullptr;
 
     QgsLabelingEngineSettings::PlacementEngineVersion mPreviousEngineVersion = QgsLabelingEngineSettings::PlacementEngineVersion2;
 };
