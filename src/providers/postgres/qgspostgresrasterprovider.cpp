@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <cstring>
 #include "qgspostgresrasterprovider.h"
 #include "qgspostgrestransaction.h"
 #include "qgsmessagelog.h"
@@ -32,14 +33,11 @@ QgsPostgresRasterProvider::QgsPostgresRasterProvider( const QString &uri, const 
   mSchemaName = mUri.schema();
   mTableName = mUri.table();
 
-  /* deduced
   mRasterColumn = mUri.geometryColumn();
   if ( mRasterColumn.isEmpty() )
   {
     mRasterColumn = QStringLiteral( "rast" );
   }
-  */
-
   mSqlWhereClause = mUri.sql();
   mRequestedSrid = mUri.srid();
 
@@ -108,9 +106,26 @@ QgsPostgresRasterProvider::QgsPostgresRasterProvider( const QgsPostgresRasterPro
   : QgsRasterDataProvider( other.dataSourceUri(), providerOptions )
   , mValid( other.mValid )
   , mCrs( other.mCrs )
+  , mUri( other.mUri )
+  , mIsQuery( other.mIsQuery )
+  , mTableName( other.mTableName )
+  , mQuery( other.mQuery )
+  , mRasterColumn( other.mRasterColumn )
+  , mSchemaName( other.mSchemaName )
+  , mSqlWhereClause( other.mSqlWhereClause )
   , mExtent( other.mExtent )
+  , mUseEstimatedMetadata( other.mUseEstimatedMetadata )
+  , mDataTypes( other.mDataTypes )
+  , mDataSizes( other.mDataSizes )
+  , mNoDataValues( other.mNoDataValues )
+  , mBandCount( other.mBandCount )
+  , mIsTiled( other.mIsTiled )
+  , mIsOutOfDb( other.mIsOutOfDb )
+  , mWidth( other.mWidth )
+  , mHeight( other.mHeight )
+  , mConnectionRO( other.mConnectionRO )
+  , mConnectionRW( other.mConnectionRW )
 {
-
 }
 
 QgsPostgresRasterProvider::~QgsPostgresRasterProvider()
@@ -177,8 +192,149 @@ QString QgsPostgresRasterProvider::description() const
   return QgsPostgresRasterProvider::PG_RASTER_PROVIDER_DESCRIPTION;
 }
 
-bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback )
+bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback * )
 {
+  if ( bandNo > mBandCount )
+  {
+    // TODO: log
+    return false;
+  }
+  // Fetch data from backend
+  QString sql;
+  const bool isSingleValue {  width == 1 && height == 1 };
+  if ( isSingleValue )
+  {
+    sql = QStringLiteral( "SELECT ST_Value( ST_Union( %1, %2), ST_GeomFromText( %3, %4 ), FALSE ) FROM %5" )
+          .arg( quotedIdentifier( mRasterColumn ) )
+          .arg( bandNo )
+          .arg( quotedValue( viewExtent.center().asWkt() ) )
+          .arg( mCrs.postgisSrid() )
+          .arg( mQuery );
+  }
+  else
+  {
+    // TODO: resample if width and height are different from x/y size
+    sql = QStringLiteral( "SELECT ST_AsBinary( ST_Resize( ST_Clip ( ST_Union( %1, %2 ), %2, ST_GeomFromText( %4, %5 ), %6 ), %8, %9 ) ) FROM %3 "
+                          "WHERE ST_Intersects( %1,  ST_GeomFromText( %4, %5 ) )" )
+          .arg( quotedIdentifier( mRasterColumn ) )
+          .arg( bandNo )
+          .arg( mQuery )
+          .arg( quotedValue( viewExtent.asWktPolygon() ) )
+          .arg( mCrs.postgisSrid() )
+          .arg( mNoDataValues[ static_cast<unsigned long>( bandNo - 1 ) ] )
+          .arg( width )
+          .arg( height );
+  }
+  QgsDebugMsg( QStringLiteral( "Reading raster block: %1" ).arg( sql ) );
+  QgsPostgresResult result( connectionRO()->PQexec( sql ) );
+  if ( result.PQresultStatus() != PGRES_TUPLES_OK )
+  {
+    QgsMessageLog::logMessage( tr( "Unable to access the %1 relation.\nThe error message from the database was:\n%2.\nSQL: %3" )
+                               .arg( mQuery,
+                                     result.PQresultErrorMessage(),
+                                     sql ), tr( "PostGIS" ) );
+    return false;
+  }
+
+  if ( isSingleValue )
+  {
+    bool ok;
+    const QString val { result.PQgetvalue( 0, 0 ) };
+    const Qgis::DataType dataType { mDataTypes[ bandNo - 1 ] };
+    {
+      if ( dataType == Qgis::DataType::Byte )
+      {
+        const unsigned short byte { val.toUShort( &ok ) };
+        if ( ! ok )
+        {
+          // TODO: log
+          return false;
+        }
+        std::memcpy( data, &byte, sizeof( unsigned short ) );
+      }
+      else if ( dataType == Qgis::DataType::UInt16 )
+      {
+        const unsigned int uint { val.toUInt( &ok ) };
+        if ( ! ok )
+        {
+          // TODO: log
+          return false;
+        }
+        std::memcpy( data, &uint, sizeof( unsigned int ) );
+      }
+      else if ( dataType == Qgis::DataType::UInt32 )
+      {
+        const unsigned long ulong { val.toULong( &ok ) };
+        if ( ! ok )
+        {
+          // TODO: log
+          return false;
+        }
+        std::memcpy( data, &ulong, sizeof( unsigned long ) );
+      }
+      else if ( dataType == Qgis::DataType::Int16 )
+      {
+        const int _int { val.toInt( &ok ) };
+        if ( ! ok )
+        {
+          // TODO: log
+          return false;
+        }
+        std::memcpy( data, &_int, sizeof( int ) );
+      }
+      else if ( dataType == Qgis::DataType::Int32 )
+      {
+        const long _long { val.toInt( &ok ) };
+        if ( ! ok )
+        {
+          // TODO: log
+          return false;
+        }
+        std::memcpy( data, &_long, sizeof( long ) );
+      }
+      else if ( dataType == Qgis::DataType::Float32 )
+      {
+        const float _float { val.toFloat( &ok ) };
+        if ( ! ok )
+        {
+          // TODO: log
+          return false;
+        }
+        std::memcpy( data, &_float, sizeof( float ) );
+      }
+      else if ( dataType == Qgis::DataType::Float64 )
+      {
+        const double _double { val.toDouble( &ok ) };
+        if ( ! ok )
+        {
+          // TODO: log
+          return false;
+        }
+        std::memcpy( data, &_double, sizeof( double ) );
+      }
+      else
+      {
+        QgsMessageLog::logMessage( QStringLiteral( "Unknown data type" ), QStringLiteral( "PostGIS" ), Qgis::Warning );
+        return false;
+      }
+    }
+  }
+  else
+  {
+    const QByteArray bits { result.PQgetvalue( 0, 0 ).toAscii() };
+    const size_t dataSizeBytes { static_cast<size_t>( width *height *mDataSizes[ static_cast<unsigned long>( bandNo - 1 ) ] ) };
+    // header length is 132, plus \x
+    if ( bits.length() != 2 + 132 + dataSizeBytes * 2 )
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "Wrong data size: expected = %1, actual = %2" )
+                                 .arg( 2 + 132 + dataSizeBytes * 2 )
+                                 .arg( bits.length() ), QStringLiteral( "PostGIS" ), Qgis::Warning );
+      return false;
+    }
+    // Decode
+    const QByteArray bin { QByteArray::fromHex( bits.mid( 2 + 132 ) ) };
+    std::memcpy( data, bin.constData(), dataSizeBytes );
+  }
   return true;
 }
 
@@ -227,7 +383,8 @@ Qgis::DataType QgsPostgresRasterProvider::dataType( int bandNo ) const
     // TODO: raise or at least log!
     return Qgis::DataType::UnknownDataType;
   }
-  return mDataTypes[ bandNo ];
+  // Band is 1-based
+  return mDataTypes[ bandNo - 1 ];
 }
 
 int QgsPostgresRasterProvider::bandCount() const
@@ -305,8 +462,8 @@ bool QgsPostgresRasterProvider::getDetails()
   if ( mUseEstimatedMetadata )
   {
     QString sql { QStringLiteral( "SELECT r_raster_column, srid,"
-                                  "num_bands, pixel_types, nodata_values, extent, out_db,"
-                                  "scale_x, scale_y, blocksize_x, blocksize_y, same_alignment,"
+                                  "num_bands, pixel_types, nodata_values, ST_AsBinary(extent), blocksize_x, blocksize_y,"
+                                  "out_db, scale_x, scale_y, same_alignment,"
                                   "regular_blocking,"
                                   "spatial_index FROM raster_columns WHERE "
                                   "r_table_name = %1 AND r_table_schema = %2 AND r_table_catalog = %3" )
@@ -391,6 +548,7 @@ bool QgsPostgresRasterProvider::getDetails()
           // TODO: log
         }
         mDataTypes.push_back( type );
+        mDataSizes.push_back( QgsRasterBlock::typeSize( type ) );
         mNoDataValues.push_back( noDataValues.at( i++ ).toDouble( &ok ) );
         if ( ! ok )
         {
@@ -400,9 +558,8 @@ bool QgsPostgresRasterProvider::getDetails()
       }
       // Extent
       QgsPolygon p;
-      const QByteArray hexAscii { result.PQgetvalue( 0, 5 ).toAscii() };
-      qDebug() << hexAscii;
-      qDebug() << QByteArray::fromHex( hexAscii );
+      // Strip \x
+      const QByteArray hexAscii { result.PQgetvalue( 0, 5 ).toAscii().mid( 2 ) };
       QgsConstWkbPtr ptr { QByteArray::fromHex( hexAscii ) };
       if ( ! p.fromWkb( ptr ) )
       {
@@ -410,6 +567,19 @@ bool QgsPostgresRasterProvider::getDetails()
         return false;
       }
       mExtent = p.boundingBox();
+      // Size
+      mWidth = result.PQgetvalue( 0, 6 ).toInt( &ok );
+      if ( ! ok )
+      {
+        // TODO: log
+        return false;
+      }
+      mHeight = result.PQgetvalue( 0, 7 ).toInt( &ok );
+      if ( ! ok )
+      {
+        // TODO: log
+        return false;
+      }
       return true;
     }
     else
@@ -424,6 +594,15 @@ bool QgsPostgresRasterProvider::getDetails()
   }
 }
 
+int QgsPostgresRasterProvider::xSize() const
+{
+  return mWidth;
+}
+
+int QgsPostgresRasterProvider::ySize() const
+{
+  return mHeight;
+}
 
 Qgis::DataType QgsPostgresRasterProvider::sourceDataType( int bandNo ) const
 {

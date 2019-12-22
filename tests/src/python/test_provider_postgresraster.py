@@ -62,10 +62,35 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         extent = self.rl.extent()
         self.assertEqual(extent, QgsRectangle(4080050, 2430625, 4080200, 2430750))
 
+    def testSize(self):
+        self.assertEqual(self.source.xSize(), 6)
+        self.assertEqual(self.source.ySize(), 5)
+
+    def testCrs(self):
+        self.assertEqual(self.source.crs().authid(), 'EPSG:3035')
+
     def testGetData(self):
         identify = self.source.identify(QgsPointXY(4080137.9, 2430687.9), QgsRaster.IdentifyFormatValue)
         expected = 192.51044
-        self.assertEqual(identify.results()[1], expected)
+        self.assertAlmostEqual(identify.results()[1], expected, 4)
+
+    def testBlock(self):
+        expected = b"6a610843880b0e431cc2194306342543b7633c43861858436e0a1143bbad194359612743a12b334317be4343dece59432b621b43f0e42843132b3843ac824043e6cf48436e465a435c4d2d430fa63d43f87a4843b5494a4349454e4374f35b43906e41433ab54c43b056504358575243b1ec574322615f43"
+        block = self.source.block(1, self.rl.extent(), 6, 5)
+        actual = block.data().toHex()
+        self.assertEqual(len(actual), len(expected))
+        self.assertEqual(actual, expected)
+
+        from IPython import embed
+        embed()
+        print(self.rl.publicSource())
+
+        extent = QgsRectangle.fromWkt('POLYGON((4080090 2430646, 4080161 2430646, 4080161 2430685, 4080090 2430685, 4080090 2430646))')
+        block = self.source.block(1, extent, 2, 1)
+        expected = b'f0e42843e6cf4843'
+        actual = block.data().toHex()
+        self.assertEqual(len(actual), len(expected))
+        self.assertEqual(actual, expected)
 
 
 if __name__ == '__main__':

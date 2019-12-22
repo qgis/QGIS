@@ -86,14 +86,19 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     QString mErrorTitle;
     //! Data type for each band
     std::vector<Qgis::DataType> mDataTypes;
+    //! Data size in bytes for each band
+    std::vector<int> mDataSizes;
     //! Nodata values for each band
     std::vector<double> mNoDataValues;
     //! Band count
     int mBandCount = 0;
     //! If is tiled
-    bool isTiled = false;
+    bool mIsTiled = false;
     //! If is out of DB
-    bool isOutOfDb = false;
+    bool mIsOutOfDb = false;
+    // size
+    int mWidth = 0;
+    int mHeight = 0;
 
     QString mDetectedSrid;            //!< Spatial reference detected in the database
     QString mRequestedSrid;           //!< Spatial reference requested in the uri
@@ -112,6 +117,11 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     static QString quotedJsonValue( const QVariant &value ) { return QgsPostgresConn::quotedJsonValue( value ); }
     static QString quotedByteaValue( const QVariant &value );
 
+
+    // QgsRasterInterface interface
+  public:
+    int xSize() const override;
+    int ySize() const override;
 };
 
 
