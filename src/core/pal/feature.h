@@ -127,6 +127,11 @@ namespace pal
       QgsFeatureId featureId() const;
 
       /**
+       * Returns the maximum number of point candidates to generate for this feature.
+       */
+      std::size_t maximumPointCandidates() const;
+
+      /**
        * Returns the maximum number of line candidates to generate for this feature.
        */
       std::size_t maximumLineCandidates() const;

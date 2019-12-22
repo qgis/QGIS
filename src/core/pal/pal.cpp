@@ -41,12 +41,19 @@
 #include "internalexception.h"
 #include "util.h"
 #include "palrtree.h"
+#include "qgssettings.h"
 #include <cfloat>
 #include <list>
 
 using namespace pal;
 
-Pal::Pal() = default;
+Pal::Pal()
+{
+  QgsSettings settings;
+  mGlobalCandidatesLimitPoint = settings.value( QStringLiteral( "rendering/label_candidates_limit_points" ), 0, QgsSettings::Core ).toInt();
+  mGlobalCandidatesLimitLine = settings.value( QStringLiteral( "rendering/label_candidates_limit_lines" ), 0, QgsSettings::Core ).toInt();
+  mGlobalCandidatesLimitPolygon = settings.value( QStringLiteral( "rendering/label_candidates_limit_polygons" ), 0, QgsSettings::Core ).toInt();
+}
 
 Pal::~Pal() = default;
 
@@ -291,7 +298,8 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       switch ( feat->feature->getGeosType() )
       {
         case GEOS_POINT:
-          // no max at this stage, use all the candidates generated
+          // this is usually 0, i.e. no maximum
+          max_p = feat->feature->maximumPointCandidates();
           break;
 
         case GEOS_LINESTRING:
