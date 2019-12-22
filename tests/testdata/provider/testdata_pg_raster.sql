@@ -24,3 +24,9 @@ INSERT INTO qgis_test."Raster1" (name, "Rast") SELECT
     ST_MakeEmptyRaster(16, 32, 7, -5, 0.2, -0.7, 0, 0, 0),
     1, '8BUI', 0.0, NULL
   );
+
+
+SET
+SET
+BEGIN
+ROLLBACK

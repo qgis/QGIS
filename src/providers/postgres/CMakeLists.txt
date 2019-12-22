@@ -41,6 +41,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/auth
   ${CMAKE_SOURCE_DIR}/external
@@ -91,17 +92,49 @@ IF (WITH_GUI)
   ADD_DEPENDENCIES(postgresprovider_gui_a ui)
 ENDIF (WITH_GUI)
 
+#################################################################
+# Postgres Raster
+
+SET(PGRASTER_SRCS
+  qgspostgresrasterprovider.cpp
+  qgspostgresconn.cpp
+  qgspostgresconnpool.cpp
+)
+
+# static library
+ADD_LIBRARY (postgresrasterprovider_a STATIC ${PGRASTER_SRCS} ${PG_HDRS})
+TARGET_LINK_LIBRARIES (postgresrasterprovider_a
+    ${POSTGRES_LIBRARY}
+    ${Qt5Xml_LIBRARIES}
+    ${Qt5Core_LIBRARIES}
+    ${Qt5Svg_LIBRARIES}
+    ${Qt5Network_LIBRARIES}
+    ${Qt5Sql_LIBRARIES}
+    ${Qt5Concurrent_LIBRARIES}
+    ${Qt5Gui_LIBRARIES}
+    ${Qt5Widgets_LIBRARIES}
+)
+
+#################################################################
+
 IF (FORCE_STATIC_PROVIDERS)
   # for (external) mobile apps to be able to pick up provider for linking
   INSTALL (TARGETS postgresprovider_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
+  INSTALL (TARGETS postgresrasterprovider_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
   IF (WITH_GUI)
     INSTALL (TARGETS postgresprovider_gui_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
   ENDIF (WITH_GUI)
 ELSE (FORCE_STATIC_PROVIDERS)
   # dynamically loaded module
   ADD_LIBRARY(postgresprovider MODULE ${PG_SRCS} ${PG_GUI_SRCS} ${PG_HDRS})
+  ADD_LIBRARY(postgresrasterprovider MODULE ${PGRASTER_SRCS} ${PG_HDRS})
 
   TARGET_LINK_LIBRARIES(postgresprovider
+    ${POSTGRES_LIBRARY}
+    qgis_core
+  )
+
+  TARGET_LINK_LIBRARIES(postgresrasterprovider
     ${POSTGRES_LIBRARY}
     qgis_core
   )
@@ -110,8 +143,9 @@ ELSE (FORCE_STATIC_PROVIDERS)
     TARGET_LINK_LIBRARIES (postgresprovider
       qgis_gui
     )
-    ADD_DEPENDENCIES(postgresprovider ui)
+    ADD_DEPENDENCIES(postgresprovider ui)    
   ENDIF (WITH_GUI)
+
 
   # clang-tidy
   IF(CLANG_TIDY_EXE)
@@ -119,10 +153,19 @@ ELSE (FORCE_STATIC_PROVIDERS)
       postgresprovider PROPERTIES
       CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
     )
+    SET_TARGET_PROPERTIES(
+      postgresrasterprovider PROPERTIES
+      CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
+    )
   ENDIF(CLANG_TIDY_EXE)
 
   INSTALL(TARGETS postgresprovider
     RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
     LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
+
+  INSTALL(TARGETS postgresrasterprovider
+    RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
+    LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
+
 
 ENDIF (FORCE_STATIC_PROVIDERS)
