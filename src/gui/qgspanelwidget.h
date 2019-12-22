@@ -20,6 +20,8 @@
 #include <QStack>
 #include "qgis_gui.h"
 
+class QMenu;
+
 /**
  * \ingroup gui
  * \brief Base class for any widget that can be shown as a inline panel
@@ -104,6 +106,23 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      * \since QGIS 3.0
      */
     static QgsPanelWidget *findParentPanel( QWidget *widget );
+
+    /**
+     * Returns the (translated) tooltip text to use for the menu button for this panel.
+     *
+     * This is only used when the panel returns a menuButtonMenu().
+     *
+     * \since QGIS 3.12
+     */
+    virtual QString menuButtonTooltip() const;
+
+    /**
+     * Returns the menu to use for the menu button for this panel, or NULLPTR if
+     * no menu button is required.
+     *
+     * \since QGIS 3.12
+     */
+    virtual QMenu *menuButtonMenu();
 
   signals:
 

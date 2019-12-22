@@ -66,6 +66,16 @@ QgsPanelWidget *QgsPanelWidget::findParentPanel( QWidget *widget )
   return nullptr;
 }
 
+QString QgsPanelWidget::menuButtonTooltip() const
+{
+  return QString();
+}
+
+QMenu *QgsPanelWidget::menuButtonMenu()
+{
+  return nullptr;
+}
+
 void QgsPanelWidget::openPanel( QgsPanelWidget *panel )
 {
   //panel dock mode inherits from this panel
