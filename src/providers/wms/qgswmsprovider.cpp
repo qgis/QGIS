@@ -1818,16 +1818,16 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
                                 "<td><table class=\"tabular-view\">"
                                 "<tr><th>" ) %
                 tr( "Format" ) %
-                QStringLiteral("</th><th>") %
+                QStringLiteral( "</th><th>" ) %
                 tr( "URL" ) %
-                QStringLiteral("</th></tr>" );
+                QStringLiteral( "</th></tr>" );
 
     for ( const QgsWmsMetadataUrlProperty &l : qgis::as_const( layer.metadataUrl ) )
     {
       metadata += QStringLiteral( "<tr><td>" ) % l.format % QStringLiteral( "</td><td>" ) % l.onlineResource.xlinkHref % QStringLiteral( "</td></tr>" );
     }
     metadata += QStringLiteral( "</table>"
-                                "</td></tr>"  );
+                                "</td></tr>" );
   }
 
   // Layer Coordinate Reference Systems
