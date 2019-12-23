@@ -295,6 +295,7 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
     }
   }
   else if ( val.type() == QVariant::Double && std::isnan( val.toDouble() ) )
+  {
     v = QgsApplication::nullRepresentation();
   }
   else

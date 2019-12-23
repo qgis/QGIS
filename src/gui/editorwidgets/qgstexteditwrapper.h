@@ -59,6 +59,12 @@ class GUI_EXPORT QgsTextEditWrapper : public QgsEditorWidgetWrapper
   public:
     QVariant value() const override;
     void showIndeterminateState() override;
+
+
+    /**
+     * Returns whether the text edit widget contains Invalid JSON 
+     * \since QGIS 3.12
+     */
     bool isInvalidJSON();
 
     /**

@@ -154,7 +154,8 @@ QValidator::State QgsFieldValidator::validate( QString &s, int &i ) const
   {
     return QDate::fromString( s, mDateFormat ).isValid() ? Acceptable : Intermediate;
   }
-  else if ( mField.type() == QVariant::Map ) {
+  else if ( mField.type() == QVariant::Map )
+  {
     return Acceptable;
   }
   else
