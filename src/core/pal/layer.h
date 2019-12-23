@@ -88,7 +88,7 @@ namespace pal
        * \param displayAll if TRUE, all features will be labelled even though overlaps occur
        *
        */
-      Layer( QgsAbstractLabelProvider *provider, const QString &name, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, Pal *mPal, bool displayAll = false );
+      Layer( QgsAbstractLabelProvider *provider, const QString &name, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal, bool displayAll = false );
 
       virtual ~Layer();
 
