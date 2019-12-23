@@ -59,6 +59,7 @@ class GUI_EXPORT QgsTextEditWrapper : public QgsEditorWidgetWrapper
   public:
     QVariant value() const override;
     void showIndeterminateState() override;
+    bool isInvalidJSON();
 
     /**
      * Add a hint text on the widget

@@ -1221,6 +1221,15 @@ QString QgsPostgresConn::quotedJsonValue( const QVariant &value )
 {
   if ( value.isNull() || !value.isValid() )
     return QStringLiteral( "null" );
+// where json is a string literal just construct it from that rather than dump
+  if ( value.type() == QVariant::String )
+  {
+    QString valueStr = value.toString();
+    if ( valueStr.at( 0 ) == "\"" && valueStr.at( valueStr.size() - 1 ) == "\"" )
+    {
+      return quotedString( value.toString() );
+    }
+  }
   const auto j = QgsJsonUtils::jsonFromVariant( value );
   return quotedString( QString::fromStdString( j.dump() ) );
 }

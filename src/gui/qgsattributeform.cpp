@@ -42,6 +42,7 @@
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeaturerequest.h"
+#include "qgstexteditwrapper.h"
 
 #include <QDir>
 #include <QTextStream>
@@ -311,7 +312,6 @@ bool QgsAttributeForm::saveEdits()
   bool changedLayer = false;
 
   QgsFeature updatedFeature = QgsFeature( mFeature );
-
   if ( mFeature.isValid() || mMode == QgsAttributeEditorContext::AddFeatureMode )
   {
     bool doUpdate = false;
@@ -329,6 +329,12 @@ bool QgsAttributeForm::saveEdits()
       QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
       if ( eww )
       {
+        // check for invalid JSON values
+        QgsTextEditWrapper *text_edit = qobject_cast<QgsTextEditWrapper *>( eww );
+        if ( text_edit && text_edit->isInvalidJSON() )
+        {
+          return false;
+        }
         QVariantList dstVars = QVariantList() << dst.at( eww->fieldIdx() );
         QVariantList srcVars = QVariantList() << eww->value();
         QList<int> fieldIndexes = QList<int>() << eww->fieldIdx();

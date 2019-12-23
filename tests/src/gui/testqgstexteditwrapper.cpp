@@ -27,6 +27,7 @@
 #include <QTableWidget>
 #include "qgsgui.h"
 #include <nlohmann/json.hpp>
+#include "qgsjsonutils.h"
 
 class TestQgsTextEditWrapper : public QObject
 {
@@ -88,48 +89,84 @@ void TestQgsTextEditWrapper::testWithJsonInPostgres()
 
   // check text output from DB
   w_json.setFeature( vl_json->getFeature( 1 ) );
-  QCOMPARE( QString::fromUtf8( QJsonDocument::fromVariant( w_json.value() ).toJson( QJsonDocument::Compact ).data() ), QStringLiteral( "[1,2,3]" ) );
+  QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( w_json.value() ).dump() ), QStringLiteral( "[1,2,3]" ) );
   w_json.setFeature( vl_json->getFeature( 2 ) );
-  QCOMPARE( QString::fromUtf8( QJsonDocument::fromVariant( w_json.value() ).toJson( QJsonDocument::Compact ).data() ), QStringLiteral( "{\"a\":1,\"b\":2}" ) );
+  QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( w_json.value() ).dump() ), QStringLiteral( "{\"a\":1,\"b\":2}" ) );
 
   // check input into widget
   // test array
   widget->setText( QString( "[2]" ) );
   QVERIFY( w_json.value().isValid() );
   // w_json value is QListVariant
-  QCOMPARE( QString::fromUtf8( QJsonDocument::fromVariant( w_json.value() ).toJson( QJsonDocument::Compact ).data() ), QStringLiteral( "[2]" ) );
   QVERIFY( w_json.value().userType() == QMetaType::QVariantList );
+  QVERIFY( QgsJsonUtils::jsonFromVariant( w_json.value() ).is_array() );
+  QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( w_json.value() ).dump() ), QStringLiteral( "[2]" ) );
 
   //test object
   widget->setText( QString( "{\"foo\":\"bar\"}" ) );
   QVERIFY( w_json.value().isValid() );
   // w_json value is QMapVariant
-  QCOMPARE( QString::fromUtf8( QJsonDocument::fromVariant( w_json.value() ).toJson( QJsonDocument::Compact ).data() ), QStringLiteral( "{\"foo\":\"bar\"}" ) );
   QVERIFY( w_json.value().userType() == QMetaType::QVariantMap );
+  QVERIFY( QgsJsonUtils::jsonFromVariant( w_json.value() ).is_object() );
+  QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( w_json.value() ).dump() ), QStringLiteral( "{\"foo\":\"bar\"}" ) );
+
+  //test complex object
+  widget->setText( QString( "{\"foo\":\"bar\",\"baz\":[1,2,3]}" ) );
+  QVERIFY( w_json.value().isValid() );
+  QVERIFY( w_json.value().userType() == QMetaType::QVariantMap );
+  json complexJson =  QgsJsonUtils::jsonFromVariant( w_json.value() );
+  QVERIFY( complexJson.is_object() );
+  json jsonArr = complexJson.at( "baz" );
+  QCOMPARE( QString::fromStdString( jsonArr.dump() ), QStringLiteral( "[1,2,3]" ) );
 
   //test empty
   widget->setText( QString( "" ) );
   QVERIFY( !w_json.value().isValid() );
-  // w_json value is QMapVariant
-  QCOMPARE( QString::fromUtf8( QJsonDocument::fromVariant( w_json.value() ).toJson( QJsonDocument::Compact ).data() ), QStringLiteral( "" ) );
+
+  //test quoted empty
+  widget->setText( QString( "\"\"" ) );
+  QVERIFY( w_json.value().isValid() );
+  QVERIFY( QgsJsonUtils::jsonFromVariant( w_json.value() ).is_string() );
+  QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( w_json.value() ).front( ) ), QStringLiteral( "\" \"" ) );
 
   // test invalid JSON
   widget->setText( QString( "{\"body\";\"text\"}" ) );
   QVERIFY( !w_json.value().isValid() );
-  //invalid JSON will be parsed as text - it is up to the Postgres provider to reject it
-  QCOMPARE( QString::fromUtf8( QJsonDocument::fromVariant( w_json.value() ).toJson( QJsonDocument::Compact ).data() ), QStringLiteral( "" ) );
 
-  // test with bare integer (without container) which is valid JSON
+  // test with primitive integer (without container) which is valid JSON
   widget->setText( QString( "2" ) );
   QVERIFY( w_json.value().isValid() );
-  QCOMPARE( QString::fromUtf8( QJsonDocument::fromVariant( w_json.value() ).toJson( QJsonDocument::Compact ).data() ), QStringLiteral( "" ) );
   QCOMPARE( w_json.value(), QVariant( 2 ) );
   QVERIFY( w_json.value().userType() == QMetaType::Int );
+  QVERIFY( QgsJsonUtils::jsonFromVariant( w_json.value() ).is_number_integer() );
+  int n = QgsJsonUtils::jsonFromVariant( w_json.value() ).front();
+  QCOMPARE( QVariant( n ), QVariant( 2 ) );
+
+  // test with primitive boolean
+  widget->setText( QString( "true" ) );
+  QVERIFY( w_json.value().isValid() );
+  QCOMPARE( w_json.value(), QVariant( true ) );
+  QVERIFY( w_json.value().userType() == QMetaType::Bool );
+  QVERIFY( QgsJsonUtils::jsonFromVariant( w_json.value() ).is_boolean() );
+  bool x = QgsJsonUtils::jsonFromVariant( w_json.value() ).front();
+  QCOMPARE( QVariant( x ), QVariant( true ) );
+
+  // test with primitive null
+  widget->setText( QString( "null" ) );
+  QVERIFY( w_json.value().isNull() );
+  QVERIFY( QgsJsonUtils::jsonFromVariant( w_json.value() ).is_null() );
+  QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( w_json.value() ).dump() ), QStringLiteral( "null" ) );
 
   // test with bare string (not valid JSON)
   widget->setText( QString( "abc" ) );
-  QVERIFY( !w_json.value().isValid() ) ;
-  QCOMPARE( QString::fromUtf8( QJsonDocument::fromVariant( w_json.value() ).toJson( QJsonDocument::Compact ).data() ), QStringLiteral( "" ) );
+  QVERIFY( !w_json.value().isValid() );
+
+  // test with quoted string (valid JSON)
+  widget->setText( QString( "\"abc\"" ) );
+  QVERIFY( w_json.value().isValid() ) ;
+  QVERIFY( QgsJsonUtils::jsonFromVariant( w_json.value() ).is_string() );
+  // avoid dumping as strings are quoted, so would be double quoted
+  QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( w_json.value() ).front( ) ), QStringLiteral( "\"abc\"" ) );
 }
 
 void TestQgsTextEditWrapper::testWithJsonBInPostgres()
@@ -152,47 +189,85 @@ void TestQgsTextEditWrapper::testWithJsonBInPostgres()
 
   // check text output from DB
   w_json.setFeature( vl_json->getFeature( 1 ) );
-  QCOMPARE( QString::fromUtf8( QJsonDocument::fromVariant( w_json.value() ).toJson( QJsonDocument::Compact ).data() ), QStringLiteral( "[4,5,6]" ) );
+  QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( w_json.value() ).dump() ), QStringLiteral( "[4,5,6]" ) );
   w_json.setFeature( vl_json->getFeature( 2 ) );
-  QCOMPARE( QString::fromUtf8( QJsonDocument::fromVariant( w_json.value() ).toJson( QJsonDocument::Compact ).data() ), QStringLiteral( "{\"c\":4,\"d\":5}" ) );
+  QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( w_json.value() ).dump() ), QStringLiteral( "{\"c\":4,\"d\":5}" ) );
 
   // check input into widget
   // test array
   widget->setText( QString( "[2]" ) );
   QVERIFY( w_json.value().isValid() );
   // w_json value is QListVariant
-  QCOMPARE( QString::fromUtf8( QJsonDocument::fromVariant( w_json.value() ).toJson( QJsonDocument::Compact ).data() ), QStringLiteral( "[2]" ) );
   QVERIFY( w_json.value().userType() == QMetaType::QVariantList );
+  QVERIFY( QgsJsonUtils::jsonFromVariant( w_json.value() ).is_array() );
+  QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( w_json.value() ).dump() ), QStringLiteral( "[2]" ) );
 
   //test object
   widget->setText( QString( "{\"foo\":\"bar\"}" ) );
   QVERIFY( w_json.value().isValid() );
-  // w_json value is QMapVariant
-  QCOMPARE( QString::fromUtf8( QJsonDocument::fromVariant( w_json.value() ).toJson( QJsonDocument::Compact ).data() ), QStringLiteral( "{\"foo\":\"bar\"}" ) );
+  // w_json value is QMapVaJsonDocriant
+  QVERIFY( QgsJsonUtils::jsonFromVariant( w_json.value() ).is_object() );
+  QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( w_json.value() ).dump() ), QStringLiteral( "{\"foo\":\"bar\"}" ) );
+
+  //test complex object
+  widget->setText( QString( "{\"foo\":\"bar\",\"baz\":[1,2,3]}" ) );
+  QVERIFY( w_json.value().isValid() );
   QVERIFY( w_json.value().userType() == QMetaType::QVariantMap );
+  json complexJson =  QgsJsonUtils::jsonFromVariant( w_json.value() );
+  QVERIFY( complexJson.is_object() );
+  json jsonArr = complexJson.at( "baz" );
+  QCOMPARE( QString::fromStdString( jsonArr.dump() ), QStringLiteral( "[1,2,3]" ) );
+
 
   //test empty
   widget->setText( QString( "" ) );
   QVERIFY( !w_json.value().isValid() );
-  // w_json value is QMapVariant
-  QCOMPARE( QString::fromUtf8( QJsonDocument::fromVariant( w_json.value() ).toJson( QJsonDocument::Compact ).data() ), QStringLiteral( "" ) );
+
+  //test quoted empty
+  widget->setText( QString( "\"\"" ) );
+  QVERIFY( w_json.value().isValid() );
+  QVERIFY( QgsJsonUtils::jsonFromVariant( w_json.value() ).is_string() );
+  QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( w_json.value() ).front( ) ), QStringLiteral( "\" \"" ) );
 
   // test invalid JSON
   widget->setText( QString( "{\"body\";\"text\"}" ) );
   QVERIFY( !w_json.value().isValid() );
-  QCOMPARE( QString::fromUtf8( QJsonDocument::fromVariant( w_json.value() ).toJson( QJsonDocument::Compact ).data() ), QStringLiteral( "" ) );
 
-  // test with bare integer (without container) which is valid JSON
+  // test with primitive integer (without container) which is valid JSON
   widget->setText( QString( "2" ) );
   QVERIFY( w_json.value().isValid() );
-  QCOMPARE( QString::fromUtf8( QJsonDocument::fromVariant( w_json.value() ).toJson( QJsonDocument::Compact ).data() ), QStringLiteral( "" ) );
   QCOMPARE( w_json.value(), QVariant( 2 ) );
   QVERIFY( w_json.value().userType() == QMetaType::Int );
+  QVERIFY( QgsJsonUtils::jsonFromVariant( w_json.value() ).is_number_integer() );
+  int n = QgsJsonUtils::jsonFromVariant( w_json.value() ).front();
+  QCOMPARE( QVariant( n ), QVariant( 2 ) );
+
+  // test with primitive boolean
+  widget->setText( QString( "true" ) );
+  QVERIFY( w_json.value().isValid() );
+  QCOMPARE( w_json.value(), QVariant( true ) );
+  QVERIFY( w_json.value().userType() == QMetaType::Bool );
+  QVERIFY( QgsJsonUtils::jsonFromVariant( w_json.value() ).is_boolean() );
+  bool x = QgsJsonUtils::jsonFromVariant( w_json.value() ).front();
+  QCOMPARE( QVariant( x ), QVariant( true ) );
+
+  // test with primitive null
+  widget->setText( QString( "null" ) );
+  QVERIFY( w_json.value().isNull() );
+  QVERIFY( QgsJsonUtils::jsonFromVariant( w_json.value() ).is_null() );
+  QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( w_json.value() ).dump() ), QStringLiteral( "null" ) );
+
 
   // test with bare string (not valid JSON)
   widget->setText( QString( "abc" ) );
   QVERIFY( !w_json.value().isValid() );
-  QCOMPARE( QString::fromUtf8( QJsonDocument::fromVariant( w_json.value() ).toJson( QJsonDocument::Compact ).data() ), QStringLiteral( "" ) );
+
+  // test with quoted string (valid JSON)
+  widget->setText( QString( "\"abc\"" ) );
+  QVERIFY( w_json.value().isValid() ) ;
+  QVERIFY( QgsJsonUtils::jsonFromVariant( w_json.value() ).is_string() );
+  // avoid dumping as strings are quoted, so would be double quoted
+  QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( w_json.value() ).front( ) ), QStringLiteral( "\"abc\"" ) );
 }
 
 QGSTEST_MAIN( TestQgsTextEditWrapper )

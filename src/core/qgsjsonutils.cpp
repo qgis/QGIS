@@ -449,10 +449,14 @@ json QgsJsonUtils::jsonFromVariant( const QVariant &val )
 
 QVariant QgsJsonUtils::parseJson( const std::string &jsonString )
 {
+  // tracks whether entire json string is a primitive
+  bool isPrimitive = true;
+
   std::function<QVariant( json )> _parser { [ & ]( json jObj ) -> QVariant {
       QVariant result;
       if ( jObj.is_array() )
       {
+        isPrimitive = false;
         QVariantList results;
         for ( const auto &item : jObj )
         {
@@ -462,6 +466,7 @@ QVariant QgsJsonUtils::parseJson( const std::string &jsonString )
       }
       else if ( jObj.is_object() )
       {
+        isPrimitive = false;
         QVariantMap results;
         for ( const auto  &item : jObj.items() )
         {
@@ -492,7 +497,14 @@ QVariant QgsJsonUtils::parseJson( const std::string &jsonString )
         }
         else if ( jObj.is_string() )
         {
-          result = QString::fromStdString( jObj.get<std::string>() );
+          if ( isPrimitive && ( jObj.get<std::string>().length() == 0 || QString::fromStdString( jObj.get<std::string>() ).at( 0 ) != "\"" ) )
+          {
+            result = QString::fromStdString( jObj.get<std::string>() ).append( "\"" ).insert( 0, "\"" );
+          }
+          else
+          {
+            result = QString::fromStdString( jObj.get<std::string>() );
+          }
         }
         else if ( jObj.is_null() )
         {

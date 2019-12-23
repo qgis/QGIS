@@ -81,6 +81,13 @@ QVariant QgsTextEditWrapper::value() const
   }
   else if ( field().type() == QVariant::Map )
   {
+    // replace empty string (invalid) with quoted empty string
+    if ( v == "" )
+    {
+      QVariant qjson = QgsJsonUtils::parseJson( std::string( "\"\"" ) );
+      mInvalidJSON = false;
+      return qjson;
+    }
     if ( json::accept( v.toUtf8() ) )
     {
       QVariant qjson = QgsJsonUtils::parseJson( v.toStdString() );
@@ -90,10 +97,12 @@ QVariant QgsTextEditWrapper::value() const
     else
       // return null value if json is invalid
     {
-      if ( field().length() > 0 )
+      if ( v.length() > 0 )
       {
         mInvalidJSON = true;
-      } else {
+      }
+      else
+      {
         mInvalidJSON = false;
       }
       return QVariant();
@@ -189,7 +198,7 @@ void QgsTextEditWrapper::showIndeterminateState()
   if ( mLineEdit )
   {
     mLineEdit->blockSignals( true );
-    // for interdeminate state we need to clear the placeholder text - we want an empty line edit, not
+    // for indeterminate state we need to clear the placeholder text - we want an empty line edit, not
     // one showing the default value (e.g., "NULL")
     mLineEdit->setPlaceholderText( QString() );
   }
@@ -248,6 +257,11 @@ void QgsTextEditWrapper::setEnabled( bool enabled )
     }
     mLineEdit->setFrame( enabled );
   }
+}
+
+bool QgsTextEditWrapper::isInvalidJSON()
+{
+  return mInvalidJSON;
 }
 
 void QgsTextEditWrapper::textChanged( const QString & )
