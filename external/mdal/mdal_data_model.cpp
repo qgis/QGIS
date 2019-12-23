@@ -17,21 +17,23 @@ MDAL::Dataset::Dataset( MDAL::DatasetGroup *parent )
   assert( mParent );
 }
 
-std::string MDAL::Dataset::driverName() const
-{
-  return group()->driverName();
-}
-
 size_t MDAL::Dataset::valuesCount() const
 {
-  if ( group()->isOnVertices() )
+  const MDAL_DataLocation location = group()->dataLocation();
+
+  switch ( location )
   {
-    return mesh()->verticesCount();
+    case MDAL_DataLocation::DataOnVertices2D: return mesh()->verticesCount();
+    case MDAL_DataLocation::DataOnFaces2D: return mesh()->facesCount();
+    case MDAL_DataLocation::DataOnVolumes3D: return volumesCount();
+    default: return 0;
   }
-  else
-  {
-    return mesh()->facesCount();
-  }
+}
+
+size_t MDAL::Dataset::activeData( size_t, size_t, int * )
+{
+  assert( !supportsActiveFlag() );
+  return 0;
 }
 
 MDAL::Statistics MDAL::Dataset::statistics() const
@@ -54,14 +56,29 @@ MDAL::Mesh *MDAL::Dataset::mesh() const
   return mParent->mesh();
 }
 
-double MDAL::Dataset::time() const
+double MDAL::Dataset::time( RelativeTimestamp::Unit unit ) const
 {
-  return mTime;
+  return mTime.value( unit );
 }
 
-void MDAL::Dataset::setTime( double time )
+void MDAL::Dataset::setTime( double time, RelativeTimestamp::Unit unit )
+{
+  mTime = RelativeTimestamp( time, unit );
+}
+
+void MDAL::Dataset::setTime( const MDAL::RelativeTimestamp &time )
 {
   mTime = time;
+}
+
+bool MDAL::Dataset::supportsActiveFlag() const
+{
+  return mSupportsActiveFlag;
+}
+
+void MDAL::Dataset::setSupportsActiveFlag( bool value )
+{
+  mSupportsActiveFlag = value;
 }
 
 bool MDAL::Dataset::isValid() const
@@ -69,10 +86,49 @@ bool MDAL::Dataset::isValid() const
   return mIsValid;
 }
 
-void MDAL::Dataset::setIsValid( bool isValid )
+MDAL::Dataset2D::Dataset2D( MDAL::DatasetGroup *parent )
+  : Dataset( parent )
 {
-  mIsValid = isValid;
 }
+
+MDAL::Dataset2D::~Dataset2D() = default;
+
+size_t MDAL::Dataset2D::volumesCount() const { return 0; }
+
+size_t MDAL::Dataset2D::maximumVerticalLevelsCount() const { return 0; }
+
+size_t MDAL::Dataset2D::verticalLevelCountData( size_t, size_t, int * ) { return 0; }
+
+size_t MDAL::Dataset2D::verticalLevelData( size_t, size_t, double * ) { return 0; }
+
+size_t MDAL::Dataset2D::faceToVolumeData( size_t, size_t, int * ) { return 0; }
+
+size_t MDAL::Dataset2D::scalarVolumesData( size_t, size_t, double * ) { return 0; }
+
+size_t MDAL::Dataset2D::vectorVolumesData( size_t, size_t, double * ) { return 0; }
+
+MDAL::Dataset3D::Dataset3D( MDAL::DatasetGroup *parent, size_t volumes, size_t maxVerticalLevelCount )
+  : Dataset( parent )
+  , mVolumesCount( volumes )
+  , mMaximumVerticalLevelsCount( maxVerticalLevelCount )
+{
+}
+
+MDAL::Dataset3D::~Dataset3D() = default;
+
+size_t MDAL::Dataset3D::volumesCount() const
+{
+  return mVolumesCount;
+}
+
+size_t MDAL::Dataset3D::maximumVerticalLevelsCount() const
+{
+  return mMaximumVerticalLevelsCount;
+}
+
+size_t MDAL::Dataset3D::scalarData( size_t, size_t, double * ) { return 0; }
+
+size_t MDAL::Dataset3D::vectorData( size_t, size_t, double * ) { return 0; }
 
 MDAL::DatasetGroup::DatasetGroup( const std::string &driverName,
                                   MDAL::Mesh *parent,
@@ -155,12 +211,12 @@ void MDAL::DatasetGroup::setStatistics( const Statistics &statistics )
   mStatistics = statistics;
 }
 
-std::string MDAL::DatasetGroup::referenceTime() const
+MDAL::DateTime MDAL::DatasetGroup::referenceTime() const
 {
   return mReferenceTime;
 }
 
-void MDAL::DatasetGroup::setReferenceTime( const std::string &referenceTime )
+void MDAL::DatasetGroup::setReferenceTime( const DateTime &referenceTime )
 {
   mReferenceTime = referenceTime;
 }
@@ -168,6 +224,18 @@ void MDAL::DatasetGroup::setReferenceTime( const std::string &referenceTime )
 MDAL::Mesh *MDAL::DatasetGroup::mesh() const
 {
   return mParent;
+}
+
+size_t MDAL::DatasetGroup::maximumVerticalLevelsCount() const
+{
+  size_t maxLevels = 0;
+  for ( const std::shared_ptr<Dataset> &ds : datasets )
+  {
+    const size_t maxDsLevels = ds->maximumVerticalLevelsCount();
+    if ( maxDsLevels > maxLevels )
+      return maxLevels = maxDsLevels;
+  }
+  return maxLevels;
 }
 
 bool MDAL::DatasetGroup::isInEditMode() const
@@ -185,17 +253,17 @@ void MDAL::DatasetGroup::stopEditing()
   mInEditMode = false;
 }
 
-bool MDAL::DatasetGroup::isOnVertices() const
+MDAL_DataLocation MDAL::DatasetGroup::dataLocation() const
 {
-  return mIsOnVertices;
+  return mDataLocation;
 }
 
-void MDAL::DatasetGroup::setIsOnVertices( bool isOnVertices )
+void MDAL::DatasetGroup::setDataLocation( MDAL_DataLocation dataLocation )
 {
   // datasets are initialized (e.g. values array, active array) based
   // on this property. Do not allow to modify later on.
   assert( datasets.empty() );
-  mIsOnVertices = isOnVertices;
+  mDataLocation = dataLocation;
 }
 
 bool MDAL::DatasetGroup::isScalar() const
@@ -257,6 +325,12 @@ void MDAL::Mesh::setSourceCrsFromWKT( const std::string &wkt )
 void MDAL::Mesh::setSourceCrsFromEPSG( int code )
 {
   setSourceCrs( std::string( "EPSG:" ) + std::to_string( code ) );
+}
+
+void MDAL::Mesh::setSourceCrsFromPrjFile( const std::string &filename )
+{
+  const std::string proj = MDAL::readFileToString( filename );
+  setSourceCrs( proj );
 }
 
 size_t MDAL::Mesh::verticesCount() const

@@ -1480,6 +1480,32 @@ namespace QgsWms
     return filters;
   }
 
+  bool QgsWmsParameters::isForce2D() const
+  {
+    bool force2D = false;
+    const QMap<DxfFormatOption, QString> options = dxfFormatOptions();
+
+    if ( options.contains( DxfFormatOption::FORCE_2D ) )
+    {
+      force2D = QVariant( options[ DxfFormatOption::FORCE_2D ] ).toBool();
+    }
+
+    return force2D;
+  }
+
+  bool QgsWmsParameters::noMText() const
+  {
+    bool noMText = false;
+    const QMap<DxfFormatOption, QString> options = dxfFormatOptions();
+
+    if ( options.contains( DxfFormatOption::NO_MTEXT ) )
+    {
+      noMText = QVariant( options[ DxfFormatOption::NO_MTEXT ] ).toBool();
+    }
+
+    return noMText;
+  }
+
   QList<QgsWmsParametersLayer> QgsWmsParameters::layersParameters() const
   {
     const QStringList layers = allLayersNickname();

@@ -9,6 +9,40 @@
 
 
 
+class QgsFieldFormatterContext
+{
+%Docstring
+A context for field formatter containing information like the project
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsfieldformatter.h"
+%End
+  public:
+
+    QgsFieldFormatterContext();
+%Docstring
+Constructor
+%End
+
+    QgsProject *project() const;
+%Docstring
+Returns the project used in field formatter
+
+.. seealso:: :py:func:`setProject`
+%End
+
+    void setProject( QgsProject *project );
+%Docstring
+Sets the ``project`` used in field formatter
+
+.. seealso:: :py:func:`project`
+%End
+
+};
+
 class QgsFieldFormatter
 {
 %Docstring
@@ -17,7 +51,7 @@ A field formatter helps to handle and display values for a field.
 It allows for using a shared configuration with the editor widgets
 for representation of attribute values.
 Field kits normally have one single instance which is managed by the
-QgsFieldFormatterRegistry. Custom field formatters should be registered there and
+:py:class:`QgsFieldFormatterRegistry`. Custom field formatters should be registered there and
 field formatters for use within code should normally be obtained from there.
 
 This is an abstract base class and will always need to be subclassed.
@@ -36,6 +70,13 @@ Default constructor
 %End
 
     virtual ~QgsFieldFormatter();
+
+    enum Flag
+    {
+      CanProvideAvailableValues
+    };
+    typedef QFlags<QgsFieldFormatter::Flag> Flags;
+
 
     virtual QString id() const = 0;
 %Docstring
@@ -85,6 +126,31 @@ make use of a cache if present.
 
 .. versionadded:: 3.0
 %End
+
+
+    virtual QVariantList availableValues( const QVariantMap &config, int countLimit, const QgsFieldFormatterContext &context ) const;
+%Docstring
+Returns a list of the values that would be possible to select with this widget type
+On a RelationReference that would be the parents ids or on ValueMap all the configured keys
+according to the settings in the ``config``
+
+.. versionadded:: 3.12
+%End
+
+    Flags flags() const;
+%Docstring
+Returns the flags
+
+.. versionadded:: 3.12
+%End
+
+    void setFlags( const Flags &flags );
+%Docstring
+Sets the ``flags``
+
+.. versionadded:: 3.12
+%End
+
 };
 
 /************************************************************************

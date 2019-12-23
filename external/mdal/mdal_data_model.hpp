@@ -13,6 +13,7 @@
 #include <string>
 #include <limits>
 #include "mdal.h"
+#include "mdal_datetime.hpp"
 
 namespace MDAL
 {
@@ -44,31 +45,89 @@ namespace MDAL
       Dataset( DatasetGroup *parent );
       virtual ~Dataset();
 
-      std::string driverName() const;
-
       size_t valuesCount() const;
+
+      //! For DataOnVertices2D or DataOnFaces2D
       virtual size_t scalarData( size_t indexStart, size_t count, double *buffer ) = 0;
+      //! For DataOnVertices2D or DataOnFaces2D
       virtual size_t vectorData( size_t indexStart, size_t count, double *buffer ) = 0;
-      virtual size_t activeData( size_t indexStart, size_t count, int *buffer ) = 0;
+      //! For drivers that supports it, see supportsActiveFlag()
+      virtual size_t activeData( size_t indexStart, size_t count, int *buffer );
+
+      //! For DataOnVolumes3D
+      virtual size_t verticalLevelCountData( size_t indexStart, size_t count, int *buffer ) = 0;
+      //! For DataOnVolumes3D
+      virtual size_t verticalLevelData( size_t indexStart, size_t count, double *buffer ) = 0;
+      //! For DataOnVolumes3D
+      virtual size_t faceToVolumeData( size_t indexStart, size_t count, int *buffer ) = 0;
+      //! For DataOnVolumes3D
+      virtual size_t scalarVolumesData( size_t indexStart, size_t count, double *buffer ) = 0;
+      //! For DataOnVolumes3D
+      virtual size_t vectorVolumesData( size_t indexStart, size_t count, double *buffer ) = 0;
+
+      virtual size_t volumesCount() const = 0;
+      virtual size_t maximumVerticalLevelsCount() const = 0;
 
       Statistics statistics() const;
       void setStatistics( const Statistics &statistics );
 
       bool isValid() const;
-      void setIsValid( bool isValid );
 
       DatasetGroup *group() const;
       Mesh *mesh() const;
 
-      double time() const;
-      void setTime( double time );
+      double time( RelativeTimestamp::Unit unit ) const;
+      void setTime( double time, RelativeTimestamp::Unit unit = RelativeTimestamp::hours );
+      void setTime( const RelativeTimestamp &time );
+
+      bool supportsActiveFlag() const;
+      void setSupportsActiveFlag( bool value );
 
     private:
-      double mTime = std::numeric_limits<double>::quiet_NaN();
+      RelativeTimestamp mTime;
       bool mIsValid = true;
+      bool mSupportsActiveFlag = false;
       DatasetGroup *mParent = nullptr;
       Statistics mStatistics;
   };
+
+  class Dataset2D: public Dataset
+  {
+    public:
+      Dataset2D( DatasetGroup *parent );
+      virtual ~Dataset2D() override;
+
+      size_t verticalLevelCountData( size_t indexStart, size_t count, int *buffer ) override;
+      size_t verticalLevelData( size_t indexStart, size_t count, double *buffer ) override;
+      size_t faceToVolumeData( size_t indexStart, size_t count, int *buffer ) override;
+      size_t scalarVolumesData( size_t indexStart, size_t count, double *buffer ) override;
+      size_t vectorVolumesData( size_t indexStart, size_t count, double *buffer ) override;
+
+      size_t volumesCount() const override;
+      size_t maximumVerticalLevelsCount() const override;
+  };
+
+  class Dataset3D: public Dataset
+  {
+    public:
+      Dataset3D(
+        DatasetGroup *parent,
+        size_t volumes,
+        size_t maxVerticalLevelCount
+      );
+      virtual ~Dataset3D() override;
+
+      virtual size_t scalarData( size_t indexStart, size_t count, double *buffer ) override;
+      virtual size_t vectorData( size_t indexStart, size_t count, double *buffer ) override;
+
+      size_t volumesCount() const override;
+      size_t maximumVerticalLevelsCount() const override;
+
+    private:
+      size_t mVolumesCount = 0;
+      size_t mMaximumVerticalLevelsCount = 0;
+  };
+
 
   typedef std::vector<std::shared_ptr<Dataset>> Datasets;
 
@@ -101,18 +160,20 @@ namespace MDAL
       bool isScalar() const;
       void setIsScalar( bool isScalar );
 
-      bool isOnVertices() const;
-      void setIsOnVertices( bool isOnVertices );
+      MDAL_DataLocation dataLocation() const;
+      void setDataLocation( MDAL_DataLocation dataLocation );
 
       std::string uri() const;
 
       Statistics statistics() const;
       void setStatistics( const Statistics &statistics );
 
-      std::string referenceTime() const;
-      void setReferenceTime( const std::string &referenceTime );
+      DateTime referenceTime() const;
+      void setReferenceTime( const DateTime &referenceTime );
 
       Mesh *mesh() const;
+
+      size_t maximumVerticalLevelsCount() const;
 
       bool isInEditMode() const;
       void startEditing();
@@ -124,10 +185,10 @@ namespace MDAL
       const std::string mDriverName;
       Mesh *mParent = nullptr;
       bool mIsScalar = true;
-      bool mIsOnVertices = true;
+      MDAL_DataLocation mDataLocation = MDAL_DataLocation::DataOnVertices2D;
       std::string mUri; // file/uri from where it came
       Statistics mStatistics;
-      std::string mReferenceTime;
+      DateTime mReferenceTime;
   };
 
   typedef std::vector<std::shared_ptr<DatasetGroup>> DatasetGroups;
@@ -154,12 +215,14 @@ namespace MDAL
   class Mesh
   {
     public:
+      //! Constructs 2D Mesh
       Mesh( const std::string &driverName,
             size_t verticesCount,
             size_t facesCount,
             size_t faceVerticesMaximumCount,
             BBox extent,
             const std::string &uri );
+
       virtual ~Mesh();
 
       std::string driverName() const;
@@ -167,6 +230,7 @@ namespace MDAL
       void setSourceCrs( const std::string &str );
       void setSourceCrsFromWKT( const std::string &wkt );
       void setSourceCrsFromEPSG( int code );
+      void setSourceCrsFromPrjFile( const std::string &filename );
 
       virtual std::unique_ptr<MDAL::MeshVertexIterator> readVertices() = 0;
       virtual std::unique_ptr<MDAL::MeshFaceIterator> readFaces() = 0;

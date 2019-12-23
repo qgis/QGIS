@@ -135,7 +135,7 @@ QVector<QgsDataItem *> QgsAfsConnectionItem::createChildren()
 {
   const QgsOwsConnection connection( QStringLiteral( "ARCGISFEATURESERVER" ), mConnName );
   const QString url = connection.uri().param( QStringLiteral( "url" ) );
-  const QString authcfg = connection.uri().param( QStringLiteral( "authcfg" ) );
+  const QString authcfg = connection.uri().authConfigId();
   const QString referer = connection.uri().param( QStringLiteral( "referer" ) );
   QgsStringMap headers;
   if ( ! referer.isEmpty() )

@@ -176,7 +176,7 @@ class QgsWfs3CollectionsHandler: public QgsWfs3AbstractItemsHandler
     void handleRequest( const QgsServerApiContext &context ) const override;
 
     // QgsServerOgcApiHandler interface
-    QRegularExpression path() const override { return QRegularExpression( R"re(/collections(\.json|\.html)?$)re" ); }
+    QRegularExpression path() const override { return QRegularExpression( R"re(/collections(\.json|\.html|/)?$)re" ); }
     std::string operationId() const override { return "describeCollections"; }
     std::string summary() const override
     {
@@ -203,7 +203,7 @@ class QgsWfs3DescribeCollectionHandler: public QgsWfs3AbstractItemsHandler
     QgsWfs3DescribeCollectionHandler( );
     void handleRequest( const QgsServerApiContext &context ) const override;
 
-    QRegularExpression path() const override { return QRegularExpression( R"re(/collections/(?<collectionId>[^/]+?)(\.json|\.html)?$)re" ); }
+    QRegularExpression path() const override { return QRegularExpression( R"re(/collections/(?<collectionId>[^/]+?)(\.json|\.html|/)?$)re" ); }
     std::string operationId() const override { return "describeCollection"; }
     std::string summary() const override { return "Describe the feature collection with ID {collectionId}."; }
     std::string description() const override { return "Metadata about a feature collection."; }
@@ -222,7 +222,7 @@ class QgsWfs3CollectionsItemsHandler: public QgsWfs3AbstractItemsHandler
   public:
     QgsWfs3CollectionsItemsHandler( );
     void handleRequest( const QgsServerApiContext &context ) const override;
-    QRegularExpression path() const override { return QRegularExpression( R"re(/collections/(?<collectionId>[^/]+)/items(\.geojson|\.json|\.html)?$)re" ); }
+    QRegularExpression path() const override { return QRegularExpression( R"re(/collections/(?<collectionId>[^/]+)/items(\.geojson|\.json|\.html|/)?$)re" ); }
     std::string operationId() const override { return "getFeatures"; }
     std::string summary() const override { return "Retrieve features of feature collection {collectionId}."; }
     std::string description() const override
@@ -251,7 +251,7 @@ class QgsWfs3CollectionsFeatureHandler: public QgsWfs3AbstractItemsHandler
   public:
     QgsWfs3CollectionsFeatureHandler( );
     void handleRequest( const QgsServerApiContext &context ) const override;
-    QRegularExpression path() const override { return QRegularExpression( R"re(/collections/(?<collectionId>[^/]+)/items/(?<featureId>[^/]+?)(\.json|\.geojson|\.html)?$)re" ); }
+    QRegularExpression path() const override { return QRegularExpression( R"re(/collections/(?<collectionId>[^/]+)/items/(?<featureId>[^/]+?)(\.json|\.geojson|\.html|/)?$)re" ); }
     std::string operationId() const override { return "getFeature"; }
     std::string description() const override { return "Retrieve a feature with ID {featureId} from the collection with ID {collectionId}; use content negotiation or specify a file extension to request HTML (.html or GeoJSON (.json)."; }
     std::string summary() const override { return "Retrieve a single feature with ID {featureId} from the collection with ID {collectionId}."; }

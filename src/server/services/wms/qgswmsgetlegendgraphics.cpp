@@ -275,7 +275,6 @@ namespace QgsWms
 
         // layer titles - hidden or not
         QgsLegendRenderer::setNodeLegendStyle( nodeLayer, parameters.layerTitleAsBool() ? QgsLegendStyle::Subgroup : QgsLegendStyle::Hidden );
-
         // rule item titles
         if ( !parameters.ruleLabelAsBool() )
         {
@@ -285,7 +284,7 @@ namespace QgsWms
             legendNode->setUserLabel( QStringLiteral( " " ) );
           }
         }
-        else if ( !parameters.layerTitleAsBool() )
+        else if ( !parameters.layerTitleAsBool() && model->layerLegendNodes( nodeLayer, true ).count() )
         {
           for ( QgsLayerTreeModelLegendNode *legendNode : model->layerLegendNodes( nodeLayer ) )
           {

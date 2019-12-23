@@ -146,7 +146,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
     return CreateOutputError;
   }
 
-  GDALSetProjection( outputDataset.get(), mOutputCrs.toWkt().toLocal8Bit().data() );
+  GDALSetProjection( outputDataset.get(), mOutputCrs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ).toLocal8Bit().data() );
   GDALRasterBandH outputRasterBand = GDALGetRasterBand( outputDataset.get(), 1 );
 
   float outputNodataValue = -FLT_MAX;
@@ -163,13 +163,14 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
     // Map of raster names -> blocks
     std::map<QString, std::unique_ptr<QgsRasterBlock>> inputBlocks;
     std::map<QString, QgsRasterCalculatorEntry> uniqueRasterEntries;
-    for ( const auto &r : calcNode->findNodes( QgsRasterCalcNode::Type::tRasterRef ) )
+    const QList<const QgsRasterCalcNode *> rasterRefNodes = calcNode->findNodes( QgsRasterCalcNode::Type::tRasterRef );
+    for ( const QgsRasterCalcNode *r : rasterRefNodes )
     {
       QString layerRef( r->toString().remove( 0, 1 ) );
       layerRef.chop( 1 );
       if ( ! inputBlocks.count( layerRef ) )
       {
-        for ( const auto &ref : mRasterEntries )
+        for ( const QgsRasterCalculatorEntry &ref : qgis::as_const( mRasterEntries ) )
         {
           if ( ref.ref == layerRef )
           {
@@ -206,7 +207,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
       for ( auto &layerRef : inputBlocks )
       {
         QgsRasterCalculatorEntry ref = uniqueRasterEntries[layerRef.first];
-        if ( uniqueRasterEntries[layerRef.first].raster->crs() != mOutputCrs )
+        if ( ref.raster->crs() != mOutputCrs )
         {
           QgsRasterProjector proj;
           proj.setCrs( ref.raster->crs(), mOutputCrs, mTransformContext );
@@ -216,7 +217,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
         }
         else
         {
-          inputBlocks[layerRef.first].reset( ref.raster->dataProvider()->block( ref.bandNumber, rect, mNumOutputColumns, 1 ) );
+          layerRef.second.reset( ref.raster->dataProvider()->block( ref.bandNumber, rect, mNumOutputColumns, 1 ) );
         }
       }
 
@@ -226,7 +227,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
       _rasterData.clear();
       for ( const auto &layerRef : inputBlocks )
       {
-        _rasterData.insert( layerRef.first, inputBlocks[layerRef.first].get() );
+        _rasterData.insert( layerRef.first, layerRef.second.get() );
       }
 
       if ( calcNode->calculate( _rasterData, resultMatrix, 0 ) )
@@ -236,6 +237,12 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
         {
           QgsDebugMsg( QStringLiteral( "RasterIO error!" ) );
         }
+      }
+      else
+      {
+        //delete the dataset without closing (because it is faster)
+        gdal::fast_delete_and_close( outputDataset, outputDriver, mOutputFile );
+        return CalculationError;
       }
     }
 
@@ -315,6 +322,13 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
         }
 
         delete[] calcData;
+      }
+      else
+      {
+        qDeleteAll( inputBlocks );
+        inputBlocks.clear();
+        gdal::fast_delete_and_close( outputDataset, outputDriver, mOutputFile );
+        return CalculationError;
       }
 
     }
@@ -512,7 +526,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
       return CreateOutputError;
     }
 
-    GDALSetProjection( outputDataset.get(), mOutputCrs.toWkt().toLocal8Bit().data() );
+    GDALSetProjection( outputDataset.get(), mOutputCrs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ).toLocal8Bit().data() );
 
     GDALRasterBandH outputRasterBand = GDALGetRasterBand( outputDataset.get(), 1 );
     if ( !outputRasterBand )

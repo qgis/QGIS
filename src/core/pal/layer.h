@@ -35,7 +35,8 @@
 
 #include "qgis_core.h"
 #include "pal.h" // for LineArrangementFlags enum
-#include "rtree.hpp"
+#include "qgsgeos.h"
+#include "qgsgenericspatialindex.h"
 #include <QMutex>
 #include <QLinkedList>
 #include <QHash>
@@ -46,11 +47,8 @@ class QgsLabelFeature;
 namespace pal
 {
 
-  /// @cond PRIVATE
-  template<class DATATYPE, class ELEMTYPE, int NUMDIMS, class ELEMTYPEREAL, int TMAXNODES, int TMINNODES> class RTree;
-  /// @endcond
-
   class FeaturePart;
+
   class Pal;
   class LabelInfo;
 
@@ -77,6 +75,21 @@ namespace pal
         ShowAll // show upside down for all labels, including dynamic ones
       };
 
+      /**
+       * \brief Create a new layer
+       *
+       * \param provider Associated provider
+       * \param name Name of the layer (for stats, debugging - does not need to be unique)
+       * \param arrangement Arrangement mode : how to place candidates
+       * \param defaultPriority layer's prioriry (0 is the best, 1 the worst)
+       * \param active is the layer is active (currently displayed)
+       * \param toLabel the layer will be labeled whether toLablel is TRUE
+       * \param pal pointer to the pal object
+       * \param displayAll if TRUE, all features will be labelled even though overlaps occur
+       *
+       */
+      Layer( QgsAbstractLabelProvider *provider, const QString &name, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal, bool displayAll = false );
+
       virtual ~Layer();
 
       bool displayAll() const { return mDisplayAll; }
@@ -96,15 +109,15 @@ namespace pal
         // to avoid the engine processing endlessly...
         const int size = mHashtable.size();
         if ( size > 1000 )
-          return std::min( pal->point_p, 4 );
+          return std::min( pal->mMaxPointCandidates, 4 );
         else if ( size > 500 )
-          return std::min( pal->point_p, 6 );
+          return std::min( pal->mMaxPointCandidates, 6 );
         else if ( size > 200 )
-          return std::min( pal->point_p, 8 );
+          return std::min( pal->mMaxPointCandidates, 8 );
         else if ( size > 100 )
-          return std::min( pal->point_p, 12 );
+          return std::min( pal->mMaxPointCandidates, 12 );
         else
-          return pal->point_p;
+          return pal->mMaxPointCandidates;
       }
 
       /**
@@ -117,15 +130,15 @@ namespace pal
         // to avoid the engine processing endlessly...
         const int size = mHashtable.size();
         if ( size > 1000 )
-          return std::min( pal->line_p, 5 );
+          return std::min( pal->mMaxLineCandidates, 5 );
         else if ( size > 500 )
-          return std::min( pal->line_p, 10 );
+          return std::min( pal->mMaxLineCandidates, 10 );
         else if ( size > 200 )
-          return std::min( pal->line_p, 20 );
+          return std::min( pal->mMaxLineCandidates, 20 );
         else if ( size > 100 )
-          return std::min( pal->line_p, 40 );
+          return std::min( pal->mMaxLineCandidates, 40 );
         else
-          return pal->line_p;
+          return pal->mMaxLineCandidates;
       }
 
       /**
@@ -138,15 +151,15 @@ namespace pal
         // to avoid the engine processing endlessly...
         const int size = mHashtable.size();
         if ( size > 1000 )
-          return std::min( pal->poly_p, 5 );
+          return std::min( pal->mMaxPolyCandidates, 5 );
         else if ( size > 500 )
-          return std::min( pal->poly_p, 15 );
+          return std::min( pal->mMaxPolyCandidates, 15 );
         else if ( size > 200 )
-          return std::min( pal->poly_p, 20 );
+          return std::min( pal->mMaxPolyCandidates, 20 );
         else if ( size > 100 )
-          return std::min( pal->poly_p, 25 );
+          return std::min( pal->mMaxPolyCandidates, 25 );
         else
-          return pal->poly_p;
+          return pal->mMaxPolyCandidates;
       }
 
       //! Returns pointer to the associated provider
@@ -213,7 +226,7 @@ namespace pal
        * act as obstacles for labels.
        * \see setObstacleType
        */
-      QgsPalLayerSettings::ObstacleType obstacleType() const { return mObstacleType; }
+      QgsLabelObstacleSettings::ObstacleType obstacleType() const { return mObstacleType; }
 
       /**
        * Sets the obstacle type, which controls how features within the layer
@@ -221,7 +234,7 @@ namespace pal
        * \param obstacleType new obstacle type
        * \see obstacleType
        */
-      void setObstacleType( QgsPalLayerSettings::ObstacleType obstacleType ) { mObstacleType = obstacleType; }
+      void setObstacleType( QgsLabelObstacleSettings::ObstacleType obstacleType ) { mObstacleType = obstacleType; }
 
       /**
        * Sets the layer's priority.
@@ -314,11 +327,13 @@ namespace pal
       //! List of obstacle parts
       QList<FeaturePart *> mObstacleParts;
 
+      std::vector< geos::unique_ptr > mGeosObstacleGeometries;
+
       Pal *pal = nullptr;
 
       double mDefaultPriority;
 
-      QgsPalLayerSettings::ObstacleType mObstacleType;
+      QgsLabelObstacleSettings::ObstacleType mObstacleType = QgsLabelObstacleSettings::PolygonBoundary;
       bool mActive;
       bool mLabelLayer;
       bool mDisplayAll;
@@ -331,33 +346,13 @@ namespace pal
 
       UpsideDownLabels mUpsidedownLabels;
 
-      // indexes (spatial and id)
-      RTree<FeaturePart *, double, 2, double, 8, 4> *mFeatureIndex;
       //! Lookup table of label features (owned by the label feature provider that created them)
       QHash< QgsFeatureId, QgsLabelFeature *> mHashtable;
-
-      //obstacle r-tree
-      RTree<FeaturePart *, double, 2, double, 8, 4> *mObstacleIndex;
 
       QHash< QString, QVector<FeaturePart *> > mConnectedHashtable;
       QHash< QgsFeatureId, int > mConnectedFeaturesIds;
 
       QMutex mMutex;
-
-      /**
-       * \brief Create a new layer
-       *
-       * \param provider Associated provider
-       * \param name Name of the layer (for stats, debugging - does not need to be unique)
-       * \param arrangement Arrangement mode : how to place candidates
-       * \param defaultPriority layer's prioriry (0 is the best, 1 the worst)
-       * \param active is the layer is active (currently displayed)
-       * \param toLabel the layer will be labeled whether toLablel is TRUE
-       * \param pal pointer to the pal object
-       * \param displayAll if TRUE, all features will be labelled even though overlaps occur
-       *
-       */
-      Layer( QgsAbstractLabelProvider *provider, const QString &name, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal, bool displayAll = false );
 
       //! Add newly created feature part into r tree and to the list
       void addFeaturePart( FeaturePart *fpart, const QString &labelText = QString() );
@@ -368,5 +363,6 @@ namespace pal
   };
 
 } // end namespace pal
+
 
 #endif

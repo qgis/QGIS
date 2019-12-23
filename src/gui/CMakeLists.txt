@@ -68,6 +68,7 @@ SET(QGIS_GUI_SRCS
   attributetable/qgsgenericfeatureselectionmanager.cpp
   attributetable/qgsvectorlayerselectionmanager.cpp
   attributetable/qgsorganizetablecolumnsdialog.cpp
+  attributetable/qgsfeaturefilterwidget.cpp
 
   auth/qgsauthauthoritieseditor.cpp
   auth/qgsauthcertificateinfo.cpp
@@ -158,6 +159,10 @@ SET(QGIS_GUI_SRCS
   editorwidgets/qgsvaluerelationwidgetwrapper.cpp
   editorwidgets/qgsvaluerelationsearchwidgetwrapper.cpp
   editorwidgets/qgsvaluerelationwidgetfactory.cpp
+
+  labeling/qgslabelinggui.cpp
+  labeling/qgslabelobstaclesettingswidget.cpp
+  labeling/qgslabelsettingswidgetbase.cpp
 
   layertree/qgscustomlayerorderwidget.cpp
   layertree/qgslayertreeembeddedconfigwidget.cpp
@@ -267,6 +272,7 @@ SET(QGIS_GUI_SRCS
   qgscompoundcolorwidget.cpp
   qgsconfigureshortcutsdialog.cpp
   qgscoordinateboundspreviewmapwidget.cpp
+  qgscoordinateoperationwidget.cpp
   qgscredentialdialog.cpp
   qgscustomdrophandler.cpp
   qgscurveeditorwidget.cpp
@@ -287,6 +293,7 @@ SET(QGIS_GUI_SRCS
   qgsexpressionhighlighter.cpp
   qgsexpressionlineedit.cpp
   qgsexpressionselectiondialog.cpp
+  qgsexpressionstoredialog.cpp
   qgsextentgroupbox.cpp
   qgsexternalresourcewidget.cpp
   qgsfeatureselectiondlg.cpp
@@ -310,11 +317,11 @@ SET(QGIS_GUI_SRCS
   qgsgui.cpp
   qgsguiutils.cpp
   qgshighlight.cpp
+  qgshighlightablecombobox.cpp
   qgshistogramwidget.cpp
   qgshelp.cpp
   qgsidentifymenu.cpp
   qgskeyvaluewidget.cpp
-  qgslabelinggui.cpp
   qgslistwidget.cpp
   qgslegendfilterbutton.cpp
   qgslimitedrandomcolorrampdialog.cpp
@@ -466,6 +473,7 @@ SET(QGIS_GUI_HDRS
   qgscompoundcolorwidget.h
   qgsconfigureshortcutsdialog.h
   qgscoordinateboundspreviewmapwidget.h
+  qgscoordinateoperationwidget.h
   qgscredentialdialog.h
   qgscurveeditorwidget.h
   qgscustomdrophandler.h
@@ -483,6 +491,7 @@ SET(QGIS_GUI_HDRS
   qgsencodingfiledialog.h
   qgserrordialog.h
   qgsexpressionbuilderdialog.h
+  qgsexpressionstoredialog.h
   qgsexpressionbuilderwidget.h
   qgsexpressionhighlighter.h
   qgsexpressionlineedit.h
@@ -512,10 +521,10 @@ SET(QGIS_GUI_HDRS
   qgsguiutils.h
   qgshelp.h
   qgshighlight.h
+  qgshighlightablecombobox.h
   qgshistogramwidget.h
   qgsidentifymenu.h
   qgskeyvaluewidget.h
-  qgslabelinggui.h
   qgslegendfilterbutton.h
   qgslimitedrandomcolorrampdialog.h
   qgslistwidget.h
@@ -737,6 +746,10 @@ SET(QGIS_GUI_HDRS
   effects/qgspainteffectpropertieswidget.h
   effects/qgspainteffectwidget.h
 
+  labeling/qgslabelinggui.h
+  labeling/qgslabelobstaclesettingswidget.h
+  labeling/qgslabelsettingswidgetbase.h
+
   layertree/qgscustomlayerorderwidget.h
   layertree/qgslayertreeembeddedconfigwidget.h
   layertree/qgslayertreeembeddedwidgetregistry.h
@@ -861,6 +874,7 @@ SET(QGIS_GUI_HDRS
 SET(QGIS_GUI_PRIVATE_HDRS
   qgsbrowserdockwidget_p.cpp
   qgswidgetstatehelper_p.h
+  attributetable/qgsfeaturefilterwidget_p.h
 )
 
 FIND_PACKAGE(Qt5Qml REQUIRED)
@@ -911,8 +925,10 @@ SET(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscredentialdialog.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsdetaileditemwidgetbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionbuilderdialogbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionstoredialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionbuilder.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionselectiondialogbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsfeaturefilterwidget.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsgenericprojectionselectorbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessagelogviewer.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessageviewer.h
@@ -940,6 +956,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
   ${CMAKE_SOURCE_DIR}/src/gui/effects
+  ${CMAKE_SOURCE_DIR}/src/gui/labeling
   ${CMAKE_SOURCE_DIR}/src/gui/layertree
   ${CMAKE_SOURCE_DIR}/src/gui/layout
   ${CMAKE_SOURCE_DIR}/src/gui/ogr
@@ -952,6 +969,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/callouts
   ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
   ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/labeling
   ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/core/layout
   ${CMAKE_SOURCE_DIR}/src/core/locator
@@ -987,6 +1005,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QWT_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
   ${QSCINTILLA_INCLUDE_DIR}
+  ${SPATIALINDEX_INCLUDE_DIR}
 )
 
 # disable deprecation warnings for classes re-exporting deprecated methods

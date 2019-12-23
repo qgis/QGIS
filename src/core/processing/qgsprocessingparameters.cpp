@@ -782,63 +782,7 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsCrs( const QgsP
   if ( !definition )
     return QgsCoordinateReferenceSystem();
 
-  QVariant val = value;
-
-  if ( val.canConvert<QgsCoordinateReferenceSystem>() )
-  {
-    // input is a QgsCoordinateReferenceSystem - done!
-    return val.value< QgsCoordinateReferenceSystem >();
-  }
-  else if ( val.canConvert<QgsProcessingFeatureSourceDefinition>() )
-  {
-    // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
-    QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
-    val = fromVar.source;
-  }
-  else if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )
-  {
-    // input is a QgsProcessingOutputLayerDefinition - get extra properties from it
-    QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( val );
-    val = fromVar.sink;
-  }
-
-  if ( val.canConvert<QgsProperty>() && val.value< QgsProperty >().propertyType() == QgsProperty::StaticProperty )
-  {
-    val = val.value< QgsProperty >().staticValue();
-  }
-
-  // maybe a map layer
-  if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( val ) ) )
-    return layer->crs();
-
-  if ( val.canConvert<QgsProperty>() )
-    val = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
-
-  if ( !val.isValid() )
-  {
-    // fall back to default
-    val = definition->defaultValue();
-  }
-
-  QString crsText = val.toString();
-  if ( crsText.isEmpty() )
-    crsText = definition->defaultValue().toString();
-
-  if ( crsText.isEmpty() )
-    return QgsCoordinateReferenceSystem();
-
-  // maybe special string
-  if ( context.project() && crsText.compare( QLatin1String( "ProjectCrs" ), Qt::CaseInsensitive ) == 0 )
-    return context.project()->crs();
-
-  // maybe a map layer reference
-  if ( QgsMapLayer *layer = QgsProcessingUtils::mapLayerFromString( crsText, context ) )
-    return layer->crs();
-
-  // else CRS from string
-  QgsCoordinateReferenceSystem crs;
-  crs.createFromString( crsText );
-  return crs;
+  return QgsProcessingUtils::variantToCrs( value, context, definition->defaultValue() );
 }
 
 QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context,
@@ -1747,6 +1691,8 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromVariantM
     def.reset( new QgsProcessingParameterLayoutItem( name ) );
   else if ( type == QgsProcessingParameterColor::typeName() )
     def.reset( new QgsProcessingParameterColor( name ) );
+  else if ( type == QgsProcessingParameterCoordinateOperation::typeName() )
+    def.reset( new QgsProcessingParameterCoordinateOperation( name ) );
   else
   {
     QgsProcessingParameterType *paramType = QgsApplication::instance()->processingRegistry()->parameterType( type );
@@ -1841,6 +1787,8 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromScriptCo
     return QgsProcessingParameterLayoutItem::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QStringLiteral( "color" ) )
     return QgsProcessingParameterColor::fromScriptCode( name, description, isOptional, definition );
+  else if ( type == QStringLiteral( "coordinateoperation" ) )
+    return QgsProcessingParameterCoordinateOperation::fromScriptCode( name, description, isOptional, definition );
 
   return nullptr;
 }
@@ -5922,4 +5870,122 @@ QgsProcessingParameterColor *QgsProcessingParameterColor::fromScriptCode( const 
     defaultValue = QVariant();
 
   return new QgsProcessingParameterColor( name, description, defaultValue, allowOpacity, isOptional );
+}
+
+//
+// QgsProcessingParameterCoordinateOperation
+//
+QgsProcessingParameterCoordinateOperation::QgsProcessingParameterCoordinateOperation( const QString &name, const QString &description, const QVariant &defaultValue, const QString &sourceCrsParameterName, const QString &destinationCrsParameterName, const QVariant &staticSourceCrs, const QVariant &staticDestinationCrs, bool optional )
+  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+  , mSourceParameterName( sourceCrsParameterName )
+  , mDestParameterName( destinationCrsParameterName )
+  , mSourceCrs( staticSourceCrs )
+  , mDestCrs( staticDestinationCrs )
+{
+
+}
+
+QgsProcessingParameterDefinition *QgsProcessingParameterCoordinateOperation::clone() const
+{
+  return new QgsProcessingParameterCoordinateOperation( * this );
+}
+
+QString QgsProcessingParameterCoordinateOperation::valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const
+{
+  if ( !value.isValid() || value.isNull() )
+    return QStringLiteral( "None" );
+
+  if ( value.canConvert<QgsCoordinateReferenceSystem>() )
+  {
+    if ( !value.value< QgsCoordinateReferenceSystem >().isValid() )
+      return QStringLiteral( "QgsCoordinateReferenceSystem()" );
+    else
+      return QStringLiteral( "QgsCoordinateReferenceSystem('%1')" ).arg( value.value< QgsCoordinateReferenceSystem >().authid() );
+  }
+
+  if ( value.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  QVariantMap p;
+  p.insert( name(), value );
+  QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( this, p, context );
+  if ( layer )
+    return QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) );
+
+  QString s = value.toString();
+  return QgsProcessingUtils::stringToPythonLiteral( s );
+}
+
+QString QgsProcessingParameterCoordinateOperation::asScriptCode() const
+{
+  QString code = QStringLiteral( "##%1=" ).arg( mName );
+  if ( mFlags & FlagOptional )
+    code += QStringLiteral( "optional " );
+  code += QStringLiteral( "coordinateoperation " );
+
+  code += mDefault.toString();
+  return code.trimmed();
+}
+
+QString QgsProcessingParameterCoordinateOperation::asPythonString( QgsProcessing::PythonOutputType outputType ) const
+{
+  switch ( outputType )
+  {
+    case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
+    {
+      QgsProcessingContext c;
+      QString code = QStringLiteral( "QgsProcessingParameterCoordinateOperation('%1', '%2'" ).arg( name(), description() );
+      if ( mFlags & FlagOptional )
+        code += QStringLiteral( ", optional=True" );
+      if ( !mSourceParameterName.isEmpty() )
+        code += QStringLiteral( ", sourceCrsParameterName=%1" ).arg( valueAsPythonString( mSourceParameterName, c ) );
+      if ( !mDestParameterName.isEmpty() )
+        code += QStringLiteral( ", destinationCrsParameterName=%1" ).arg( valueAsPythonString( mDestParameterName, c ) );
+
+      if ( mSourceCrs.isValid() )
+        code += QStringLiteral( ", staticSourceCrs=%1" ).arg( valueAsPythonString( mSourceCrs, c ) );
+      if ( mDestCrs.isValid() )
+        code += QStringLiteral( ", staticDestinationCrs=%1" ).arg( valueAsPythonString( mDestCrs, c ) );
+
+      code += QStringLiteral( ", defaultValue=%1)" ).arg( valueAsPythonString( mDefault, c ) );
+      return code;
+    }
+  }
+  return QString();
+}
+
+QVariantMap QgsProcessingParameterCoordinateOperation::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  map.insert( QStringLiteral( "source_crs_parameter_name" ), mSourceParameterName );
+  map.insert( QStringLiteral( "dest_crs_parameter_name" ), mDestParameterName );
+  map.insert( QStringLiteral( "static_source_crs" ), mSourceCrs );
+  map.insert( QStringLiteral( "static_dest_crs" ), mDestCrs );
+  return map;
+}
+
+bool QgsProcessingParameterCoordinateOperation::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mSourceParameterName = map.value( QStringLiteral( "source_crs_parameter_name" ) ).toString();
+  mDestParameterName = map.value( QStringLiteral( "dest_crs_parameter_name" ) ).toString();
+  mSourceCrs = map.value( QStringLiteral( "static_source_crs" ) );
+  mDestCrs = map.value( QStringLiteral( "static_dest_crs" ) );
+  return true;
+}
+
+QgsProcessingParameterCoordinateOperation *QgsProcessingParameterCoordinateOperation::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+{
+  QString def = definition;
+
+  if ( def.startsWith( '"' ) || def.startsWith( '\'' ) )
+    def = def.mid( 1 );
+  if ( def.endsWith( '"' ) || def.endsWith( '\'' ) )
+    def.chop( 1 );
+
+  QVariant defaultValue = def;
+  if ( def == QStringLiteral( "None" ) )
+    defaultValue = QVariant();
+
+  return new QgsProcessingParameterCoordinateOperation( name, description, defaultValue, QString(), QString(), QVariant(), QVariant(), isOptional );
 }

@@ -82,6 +82,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
+  ${SPATIALINDEX_INCLUDE_DIR}
 )
 
 IF (WITH_GUI)
@@ -106,6 +107,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/geocms
   ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
   ${CMAKE_SOURCE_DIR}/src/core/gps
+  ${CMAKE_SOURCE_DIR}/src/core/labeling
   ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/core/layout
   ${CMAKE_SOURCE_DIR}/src/core/locator
@@ -141,6 +143,7 @@ IF (WITH_GUI)
     ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
     ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
     ${CMAKE_SOURCE_DIR}/src/gui/effects
+    ${CMAKE_SOURCE_DIR}/src/gui/labeling
     ${CMAKE_SOURCE_DIR}/src/gui/layertree
     ${CMAKE_SOURCE_DIR}/src/gui/layout
     ${CMAKE_SOURCE_DIR}/src/gui/locator

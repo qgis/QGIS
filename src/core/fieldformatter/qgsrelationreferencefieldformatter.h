@@ -34,7 +34,7 @@ class CORE_EXPORT QgsRelationReferenceFieldFormatter : public QgsFieldFormatter
     /**
       * Default constructor of field formatter for a relation reference field.
       */
-    QgsRelationReferenceFieldFormatter() = default;
+    QgsRelationReferenceFieldFormatter();
 
     QString id() const override;
 
@@ -43,6 +43,13 @@ class CORE_EXPORT QgsRelationReferenceFieldFormatter : public QgsFieldFormatter
     QVariant sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const override;
 
     QVariant createCache( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const override;
+
+    QList<QgsVectorLayerRef> layerDependencies( const QVariantMap &config ) const override SIP_SKIP;
+
+    QVariantList availableValues( const QVariantMap &config, int countLimit, const QgsFieldFormatterContext &context ) const override;
+
+    //friend class TestQgsRelationReferenceFieldFormatter;
+
 };
 
 #endif // QGSRELATIONREFERENCEFIELDKIT_H

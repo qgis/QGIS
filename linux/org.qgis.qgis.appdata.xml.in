@@ -25,6 +25,7 @@
     <release version="3.2.0" date="2018-06-22" />
   </releases>
   <launchable type="desktop-id">org.qgis.qgis.desktop</launchable>
+  <content_rating type="oars-1.1"/>
   <provides>
     <binary>qgis</binary>
   </provides>

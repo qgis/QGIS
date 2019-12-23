@@ -53,8 +53,9 @@ namespace MDAL
       ~DriverAsciiDat( ) override;
       DriverAsciiDat *create() override;
 
-      bool canRead( const std::string &uri ) override;
+      bool canReadDatasets( const std::string &uri ) override;
       void load( const std::string &datFile, Mesh *mesh, MDAL_Status *status ) override;
+      bool persist( DatasetGroup *group ) override;
 
     private:
       bool canReadOldFormat( const std::string &line ) const;
@@ -69,22 +70,18 @@ namespace MDAL
       //! maximum native index of the vertex in defined in the mesh
       size_t maximumId( const Mesh *mesh ) const;
 
-      void readVertexTimestep(
-        const Mesh *mesh,
-        std::shared_ptr<DatasetGroup> group,
-        double t,
-        bool isVector,
-        bool hasStatus,
-        std::ifstream &stream ) const;
+      void readVertexTimestep( const Mesh *mesh,
+                               std::shared_ptr<DatasetGroup> group,
+                               RelativeTimestamp t,
+                               bool isVector,
+                               bool hasStatus,
+                               std::ifstream &stream ) const;
 
-      void readFaceTimestep(
-        const Mesh *mesh,
-        std::shared_ptr<DatasetGroup> group,
-        double t,
-        bool isVector,
-        std::ifstream &stream ) const;
-
-      double convertTimeDataToHours( double time, const std::string &originalTimeDataUnit ) const;
+      void readFaceTimestep( const Mesh *mesh,
+                             std::shared_ptr<DatasetGroup> group,
+                             RelativeTimestamp t,
+                             bool isVector,
+                             std::ifstream &stream ) const;
 
       std::string mDatFile;
   };

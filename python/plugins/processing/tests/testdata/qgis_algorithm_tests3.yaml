@@ -89,8 +89,8 @@ tests:
           fields:
             fid: skip
 
-  - algorithm: qgis:zonalstatistics
-    name: simple zonal statistics
+  - algorithm: native:zonalstatistics
+    name: Zonal statistics
     params:
       COLUMN_PREFIX: _
       INPUT_RASTER:
@@ -115,7 +115,7 @@ tests:
             precision: 5
 
   - algorithm: qgis:zonalhistogram
-    name: zonal histogram
+    name: Zonal histogram
     params:
       COLUMN_PREFIX: HISTO_
       INPUT_RASTER:
@@ -293,7 +293,7 @@ tests:
         name: expected/projection_candidates.gml
         type: vector
 
-  - algorithm: qgis:polygonfromlayerextent
+  - algorithm: native:polygonfromlayerextent
     name: Standard polygon from layer extent
     params:
       BY_FEATURE: false
@@ -541,8 +541,7 @@ tests:
         name: expected/extract_by_location_touches.gml
         type: vector
 
-
-  - algorithm: qgis:addfieldtoattributestable
+  - algorithm: native:addfieldtoattributestable
     name: add float field
     params:
       FIELD_LENGTH: 10
@@ -575,20 +574,21 @@ tests:
             __all__:
               precision: 4
 
-  - algorithm: qgis:randompointsinextent
+  - algorithm: native:randompointsinextent
     name: Random point in extent, don't check result
     params:
       TARGET_CRS: EPSG:4326
       EXTENT: 3.9821361058601132,4.01984877126654,0.9948015122873343,1.0305293005671075
       MIN_DISTANCE: 0.0
       POINTS_NUMBER: 5
+      MAX_ATTEMPTS: 200
     results:
       OUTPUT:
         compare: false
         type: vector
         name: randompointsinextent.gml
 
-  - algorithm: qgis:randomextract
+  - algorithm: native:randomextract
     name: Random extract by number
     params:
       INPUT:
@@ -602,7 +602,7 @@ tests:
         name: points_weighted.gml
         compare: false
 
-  - algorithm: qgis:randomextract
+  - algorithm: native:randomextract
     name: Random extract by percentage
     params:
       INPUT:
@@ -647,7 +647,7 @@ tests:
         hash: f09384c64f56286ec4146a7b9a679cea7c6711ec4c7d77eec054e364
         type: rasterhash
 
-  - algorithm: qgis:rasterlayerstatistics
+  - algorithm: native:rasterlayerstatistics
     name: Raster layer statistics
     params:
       INPUT:
@@ -659,13 +659,13 @@ tests:
         name: raster_statistics.html
         type: regex
         rules:
-          - 'Minimum value: 85.0'
-          - 'Maximum value: 243.0'
-          - 'Range: 158.0'
-          - 'Sum: 19213301.982429504'
-          - 'Mean value: 147.17197994967066'
+          - 'Minimum value: 85'
+          - 'Maximum value: 243'
+          - 'Range: 158'
+          - 'Sum: 19213301.9824295'
+          - 'Mean value: 147.1719799496707'
           - 'Standard deviation: 43.9618116337985'
-          - 'Sum of the squares: 252304334.52061242'
+          - 'Sum of the squares: 252304334.5206124'
 
   - algorithm: qgis:rasterlayeruniquevaluesreport
     name: Raster layer unique values report
@@ -730,7 +730,7 @@ tests:
         name: expected/displaced_points.gml
         type: vector
 
-  - algorithm: qgis:generatepointspixelcentroidsinsidepolygons
+  - algorithm: native:generatepointspixelcentroidsinsidepolygons
     name: Pixel centroids inside polygon
     params:
       INPUT_RASTER:
@@ -809,7 +809,7 @@ tests:
         name: expected/execute_sql.gml
         type: vector
 
-  - algorithm: qgis:polygonfromlayerextent
+  - algorithm: native:polygonfromlayerextent
     name: Polygon from raster extent
     params:
       INPUT:

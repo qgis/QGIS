@@ -50,6 +50,7 @@
 %Include auto_generated/qgscompoundcolorwidget.sip
 %Include auto_generated/qgsconfigureshortcutsdialog.sip
 %Include auto_generated/qgscoordinateboundspreviewmapwidget.sip
+%Include auto_generated/qgscoordinateoperationwidget.sip
 %Include auto_generated/qgscredentialdialog.sip
 %Include auto_generated/qgscurveeditorwidget.sip
 %Include auto_generated/qgscustomdrophandler.sip
@@ -65,6 +66,7 @@
 %Include auto_generated/qgsencodingfiledialog.sip
 %Include auto_generated/qgserrordialog.sip
 %Include auto_generated/qgsexpressionbuilderdialog.sip
+%Include auto_generated/qgsexpressionstoredialog.sip
 %Include auto_generated/qgsexpressionbuilderwidget.sip
 %Include auto_generated/qgsexpressionhighlighter.sip
 %Include auto_generated/qgsexpressionlineedit.sip
@@ -259,6 +261,8 @@
 %Include auto_generated/effects/qgseffectstackpropertieswidget.sip
 %Include auto_generated/effects/qgspainteffectpropertieswidget.sip
 %Include auto_generated/effects/qgspainteffectwidget.sip
+%Include auto_generated/labeling/qgslabelobstaclesettingswidget.sip
+%Include auto_generated/labeling/qgslabelsettingswidgetbase.sip
 %Include auto_generated/layertree/qgscustomlayerorderwidget.sip
 %Include auto_generated/layertree/qgslayertreeembeddedconfigwidget.sip
 %Include auto_generated/layertree/qgslayertreeembeddedwidgetregistry.sip

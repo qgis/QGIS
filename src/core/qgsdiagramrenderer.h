@@ -44,6 +44,7 @@ class QgsReadWriteContext;
 class QgsVectorLayer;
 class QgsLayerTreeModelLegendNode;
 class QgsLayerTreeLayer;
+class QgsPaintEffect;
 
 namespace pal { class Layer; } SIP_SKIP
 
@@ -407,6 +408,7 @@ class CORE_EXPORT QgsDiagramSettings
 
     //! Constructor for QgsDiagramSettings
     QgsDiagramSettings();
+    ~QgsDiagramSettings();
 
     //! Copy constructor
     QgsDiagramSettings( const QgsDiagramSettings &other );
@@ -618,15 +620,36 @@ class CORE_EXPORT QgsDiagramSettings
      */
     void setShowAxis( bool showAxis );
 
+    /**
+     * Returns the paint effect to use while rendering diagrams.
+     *
+     * \see setPaintEffect()
+     *
+     * \since QGIS 3.12
+     */
+    QgsPaintEffect *paintEffect() const;
+
+    /**
+     * Sets the paint \a effect to use while rendering diagrams.
+     *
+     * Ownership of \a effect is transferred to the settings.
+     *
+     * \see paintEffect()
+     *
+     * \since QGIS 3.12
+     */
+    void setPaintEffect( QgsPaintEffect *effect SIP_TRANSFER );
+
   private:
 
     double mSpacing = 0;
-    QgsUnitTypes::RenderUnit mSpacingUnit;
+    QgsUnitTypes::RenderUnit mSpacingUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mSpacingMapUnitScale;
     Direction mDirection = Counterclockwise;
 
     bool mShowAxis = false;
     std::unique_ptr< QgsLineSymbol > mAxisLineSymbol;
+    std::unique_ptr< QgsPaintEffect > mPaintEffect;
 
 };
 

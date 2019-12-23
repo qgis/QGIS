@@ -14,6 +14,7 @@
 #include <cmath>
 #include <string.h>
 #include <stdio.h>
+#include <ctime>
 
 bool MDAL::fileExists( const std::string &filename )
 {
@@ -21,6 +22,17 @@ bool MDAL::fileExists( const std::string &filename )
   return in.good();
 }
 
+std::string MDAL::readFileToString( const std::string &filename )
+{
+  if ( MDAL::fileExists( filename ) )
+  {
+    std::ifstream t( filename );
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+    return buffer.str();
+  }
+  return "";
+}
 
 bool MDAL::startsWith( const std::string &str, const std::string &substr, ContainsBehaviour behaviour )
 {
@@ -272,18 +284,27 @@ std::string MDAL::replace( const std::string &str, const std::string &substr, co
 // http://www.cplusplus.com/faq/sequences/strings/trim/
 std::string MDAL::trim( const std::string &s, const std::string &delimiters )
 {
+  if ( s.empty() )
+    return s;
+
   return ltrim( rtrim( s, delimiters ), delimiters );
 }
 
 // http://www.cplusplus.com/faq/sequences/strings/trim/
 std::string MDAL::ltrim( const std::string &s, const std::string &delimiters )
 {
+  if ( s.empty() )
+    return s;
+
   return s.substr( s.find_first_not_of( delimiters ) );
 }
 
 // http://www.cplusplus.com/faq/sequences/strings/trim/
 std::string MDAL::rtrim( const std::string &s, const std::string &delimiters )
 {
+  if ( s.empty() )
+    return s;
+
   return s.substr( 0, s.find_last_not_of( delimiters ) + 1 );
 }
 
@@ -333,28 +354,48 @@ double MDAL::parseTimeUnits( const std::string &units )
 {
   double divBy = 1;
   // We are trying to parse strings like
+  //
   // "seconds since 2001-05-05 00:00:00"
   // "hours since 1900-01-01 00:00:0.0"
   // "days since 1961-01-01 00:00:00"
+  //
+  // or simply
+  // hours, days, seconds, ...
+
   const std::vector<std::string> units_list = MDAL::split( units, " since " );
-  if ( units_list.size() == 2 )
+  std::string unit_definition = units;
+  if ( !units_list.empty() )
   {
-    // Give me hours
-    if ( units_list[0] == "seconds" )
-    {
-      divBy = 3600.0;
-    }
-    else if ( units_list[0] == "minutes" )
-    {
-      divBy = 60.0;
-    }
-    else if ( units_list[0] == "days" )
-    {
-      divBy = 1.0 / 24.0;
-    }
+    unit_definition = units_list[0];
+  }
+
+  // Give me hours
+  if ( units_list[0] == "seconds" )
+  {
+    divBy = 3600.0;
+  }
+  else if ( units_list[0] == "minutes" )
+  {
+    divBy = 60.0;
+  }
+  else if ( units_list[0] == "days" )
+  {
+    divBy = 1.0 / 24.0;
   }
 
   return divBy;
+}
+
+std::string MDAL::getCurrentTimeStamp()
+{
+  time_t t ;
+  struct tm *tmp ;
+  char MY_TIME[50];
+  time( &t );
+  tmp = localtime( &t );
+  strftime( MY_TIME, sizeof( MY_TIME ), "%Y-%m-%dT%H:%M:%S%z", tmp );
+  std::string s = MDAL::trim( MY_TIME );
+  return s;
 }
 
 MDAL::Statistics _calculateStatistics( const std::vector<double> &values, size_t count, bool isVector )
@@ -434,6 +475,7 @@ MDAL::Statistics MDAL::calculateStatistics( std::shared_ptr<Dataset> dataset )
     return ret;
 
   bool isVector = !dataset->group()->isScalar();
+  bool is3D = dataset->group()->dataLocation() == MDAL_DataLocation::DataOnVolumes3D;
   size_t bufLen = 2000;
   std::vector<double> buffer( isVector ? bufLen * 2 : bufLen );
 
@@ -441,13 +483,27 @@ MDAL::Statistics MDAL::calculateStatistics( std::shared_ptr<Dataset> dataset )
   while ( i < dataset->valuesCount() )
   {
     size_t valsRead;
-    if ( isVector )
+    if ( is3D )
     {
-      valsRead = dataset->vectorData( i, bufLen, buffer.data() );
+      if ( isVector )
+      {
+        valsRead = dataset->vectorVolumesData( i, bufLen, buffer.data() );
+      }
+      else
+      {
+        valsRead = dataset->scalarVolumesData( i, bufLen, buffer.data() );
+      }
     }
     else
     {
-      valsRead = dataset->scalarData( i, bufLen, buffer.data() );
+      if ( isVector )
+      {
+        valsRead = dataset->vectorData( i, bufLen, buffer.data() );
+      }
+      else
+      {
+        valsRead = dataset->scalarData( i, bufLen, buffer.data() );
+      }
     }
     if ( valsRead == 0 )
       return ret;
@@ -489,15 +545,14 @@ void MDAL::addBedElevationDatasetGroup( MDAL::Mesh *mesh, const Vertices &vertic
                                           mesh->uri(),
                                           "Bed Elevation"
                                         );
-  group->setIsOnVertices( true );
+  group->setDataLocation( MDAL_DataLocation::DataOnVertices2D );
   group->setIsScalar( true );
 
-  std::shared_ptr<MDAL::MemoryDataset> dataset = std::make_shared< MemoryDataset >( group.get() );
+  std::shared_ptr<MDAL::MemoryDataset2D> dataset = std::make_shared< MemoryDataset2D >( group.get() );
   dataset->setTime( 0.0 );
-  double *vals = dataset->values();
   for ( size_t i = 0; i < vertices.size(); ++i )
   {
-    vals[i] = vertices[i].z;
+    dataset->setScalarValue( i, vertices[i].z );
   }
   dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
   group->datasets.push_back( dataset );
@@ -526,58 +581,16 @@ void MDAL::addFaceScalarDatasetGroup( MDAL::Mesh *mesh,
                                           mesh->uri(),
                                           name
                                         );
-  group->setIsOnVertices( false );
+  group->setDataLocation( MDAL_DataLocation::DataOnFaces2D );
   group->setIsScalar( true );
 
-  std::shared_ptr<MDAL::MemoryDataset> dataset = std::make_shared< MemoryDataset >( group.get() );
+  std::shared_ptr<MDAL::MemoryDataset2D> dataset = std::make_shared< MemoryDataset2D >( group.get() );
   dataset->setTime( 0.0 );
   memcpy( dataset->values(), values.data(), sizeof( double )*values.size() );
   dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
   group->datasets.push_back( dataset );
   group->setStatistics( MDAL::calculateStatistics( group ) );
   mesh->datasetGroups.push_back( group );
-}
-
-void MDAL::activateFaces( MDAL::MemoryMesh *mesh, std::shared_ptr<MemoryDataset> dataset )
-{
-  // only for data on vertices
-  if ( !dataset->group()->isOnVertices() )
-    return;
-
-  bool isScalar = dataset->group()->isScalar();
-
-  // Activate only Faces that do all Vertex's outputs with some data
-  int *active = dataset->active();
-  const double *values = dataset->constValues();
-  const size_t nFaces = mesh->facesCount();
-
-  for ( unsigned int idx = 0; idx < nFaces; ++idx )
-  {
-    Face elem = mesh->faces.at( idx );
-    for ( size_t i = 0; i < elem.size(); ++i )
-    {
-      const size_t vertexIndex = elem[i];
-      if ( isScalar )
-      {
-        double val = values[vertexIndex];
-        if ( std::isnan( val ) )
-        {
-          active[idx] = 0; //NOT ACTIVE
-          break;
-        }
-      }
-      else
-      {
-        double x = values[2 * vertexIndex];
-        double y = values[2 * vertexIndex + 1];
-        if ( std::isnan( x ) || std::isnan( y ) )
-        {
-          active[idx] = 0; //NOT ACTIVE
-          break;
-        }
-      }
-    }
-  }
 }
 
 bool MDAL::isNativeLittleEndian()
@@ -625,4 +638,137 @@ std::string MDAL::doubleToString( double value, int precision )
   return oss.str();
 }
 
+std::string MDAL::prependZero( const std::string &str, size_t length )
+{
+  if ( length <= str.size() )
+    return  str;
 
+  return std::string( length - str.size(), '0' ).append( str );
+}
+
+MDAL::RelativeTimestamp::Unit MDAL::parseDurationTimeUnit( const std::string &timeUnit )
+{
+  MDAL::RelativeTimestamp::Unit unit = MDAL::RelativeTimestamp::hours; //default unit
+
+  if ( timeUnit == "millisec" ||
+       timeUnit == "msec" ||
+       timeUnit == "millisecs" ||
+       timeUnit == "msecs"
+     )
+  {
+    unit = MDAL::RelativeTimestamp::milliseconds;
+  }
+  else if ( timeUnit == "second" ||
+            timeUnit == "seconds" ||
+            timeUnit == "Seconds" ||
+            timeUnit == "sec" ||
+            timeUnit == "secs" ||
+            timeUnit == "s" ||
+            timeUnit == "se" || // ascii_dat format
+            timeUnit == "2" )  // ascii_dat format
+  {
+    unit = MDAL::RelativeTimestamp::seconds;
+  }
+  else if ( timeUnit == "minute" ||
+            timeUnit == "minutes" ||
+            timeUnit == "Minutes" ||
+            timeUnit == "min" ||
+            timeUnit == "mins" ||
+            timeUnit == "mi" || // ascii_dat format
+            timeUnit == "1" ) // ascii_dat format
+  {
+    unit = MDAL::RelativeTimestamp::minutes;
+  }
+  else if ( timeUnit == "day" ||
+            timeUnit == "days" ||
+            timeUnit == "Days" )
+  {
+    unit = MDAL::RelativeTimestamp::days;
+  }
+  else if ( timeUnit == "week" ||
+            timeUnit == "weeks" )
+  {
+    unit = MDAL::RelativeTimestamp::weeks;
+  }
+
+
+  return unit;
+}
+
+MDAL::RelativeTimestamp::Unit MDAL::parseCFTimeUnit( std::string timeInformation )
+{
+  auto strings = MDAL::split( timeInformation, ' ' );
+  if ( strings.size() < 3 )
+    return MDAL::RelativeTimestamp::hours; //default value
+
+  if ( strings[1] == "since" )
+  {
+    std::string timeUnit = strings[0];
+    if ( timeUnit == "month" ||
+         timeUnit == "months" ||
+         timeUnit == "mon" ||
+         timeUnit == "mons" )
+    {
+      return MDAL::RelativeTimestamp::months_CF;
+    }
+    else if ( timeUnit == "year" ||
+              timeUnit == "years" ||
+              timeUnit == "yr" ||
+              timeUnit == "yrs" )
+    {
+      return MDAL::RelativeTimestamp::exact_years;
+    }
+
+    return MDAL::parseDurationTimeUnit( strings[0] );
+  }
+
+  return MDAL::RelativeTimestamp::hours;//default value
+}
+
+MDAL::DateTime MDAL::parseCFReferenceTime( const std::string &timeInformation, const std::string &calendarString )
+{
+  auto strings = MDAL::split( timeInformation, ' ' );
+  if ( strings.size() < 3 )
+    return MDAL::DateTime();
+
+  if ( strings[1] != "since" )
+    return MDAL::DateTime();
+
+  std::string dateString = strings[2];
+
+  auto dateStringValues = MDAL::split( dateString, '-' );
+  if ( dateStringValues.size() != 3 )
+    return MDAL::DateTime();
+
+  int year = MDAL::toInt( dateStringValues[0] );
+  int month = MDAL::toInt( dateStringValues[1] );
+  int day = MDAL::toInt( dateStringValues[2] );
+
+  int hours = 0;
+  int minutes = 0;
+  double seconds = 0;
+
+  if ( strings.size() > 3 )
+  {
+    std::string timeString = strings[3];
+    auto timeStringsValue = MDAL::split( timeString, ":" );
+    if ( timeStringsValue.size() == 3 )
+    {
+      hours = MDAL::toInt( timeStringsValue[0] );
+      minutes = MDAL::toInt( timeStringsValue[1] );
+      seconds = MDAL::toDouble( timeStringsValue[2] );
+    }
+  }
+
+  MDAL::DateTime::Calendar calendar;
+  if ( calendarString == "gregorian" || calendarString == "standard" || calendarString.empty() )
+    calendar = MDAL::DateTime::Gregorian;
+  else if ( calendarString == "proleptic_gregorian" )
+    calendar = MDAL::DateTime::ProlepticGregorian;
+  else if ( calendarString == "julian" )
+    calendar = MDAL::DateTime::Julian;
+  else
+    return MDAL::DateTime();
+
+  return MDAL::DateTime( year, month, day, hours, minutes, seconds, calendar );
+}

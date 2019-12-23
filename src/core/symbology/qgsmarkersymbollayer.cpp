@@ -645,18 +645,24 @@ void QgsSimpleMarkerSymbolLayerBase::calculateOffsetAndRotation( QgsSymbolRender
   markerOffset( context, scaledSize, scaledSize, offsetX, offsetY );
   offset = QPointF( offsetX, offsetY );
 
+  hasDataDefinedRotation = false;
   //angle
   bool ok = true;
   angle = mAngle + mLineAngle;
-  bool usingDataDefinedRotation = false;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyAngle ) )
   {
     context.setOriginalValueVariable( angle );
     angle = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyAngle, context.renderContext().expressionContext(), mAngle, &ok ) + mLineAngle;
-    usingDataDefinedRotation = ok;
+
+    // If the expression evaluation was not successful, fallback to static value
+    if ( !ok )
+      angle = mAngle + mLineAngle;
+
+    hasDataDefinedRotation = true;
   }
 
-  hasDataDefinedRotation = context.renderHints() & QgsSymbol::DynamicRotation || usingDataDefinedRotation;
+  hasDataDefinedRotation = context.renderHints() & QgsSymbol::DynamicRotation || hasDataDefinedRotation;
+
   if ( hasDataDefinedRotation )
   {
     // For non-point markers, "dataDefinedRotation" means following the
@@ -1166,7 +1172,7 @@ QString QgsSimpleMarkerSymbolLayer::ogrFeatureStyle( double mmScaleFactor, doubl
 
 QgsSymbolLayer *QgsSimpleMarkerSymbolLayer::createFromSld( QDomElement &element )
 {
-  QgsDebugMsg( QStringLiteral( "Entered." ) );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
   QDomElement graphicElem = element.firstChildElement( QStringLiteral( "Graphic" ) );
   if ( graphicElem.isNull() )
@@ -2317,7 +2323,7 @@ void QgsSvgMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &el
 
 QgsSymbolLayer *QgsSvgMarkerSymbolLayer::createFromSld( QDomElement &element )
 {
-  QgsDebugMsg( QStringLiteral( "Entered." ) );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
   QDomElement graphicElem = element.firstChildElement( QStringLiteral( "Graphic" ) );
   if ( graphicElem.isNull() )
@@ -3083,15 +3089,17 @@ void QgsFontMarkerSymbolLayer::calculateOffsetAndRotation( QgsSymbolRenderContex
   //angle
   bool ok = true;
   angle = mAngle + mLineAngle;
-  bool usingDataDefinedRotation = false;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyAngle ) )
   {
     context.setOriginalValueVariable( angle );
     angle = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyAngle, context.renderContext().expressionContext(), mAngle, &ok ) + mLineAngle;
-    usingDataDefinedRotation = ok;
+
+    // If the expression evaluation was not successful, fallback to static value
+    if ( !ok )
+      angle = mAngle + mLineAngle;
   }
 
-  hasDataDefinedRotation = context.renderHints() & QgsSymbol::DynamicRotation || usingDataDefinedRotation;
+  hasDataDefinedRotation = context.renderHints() & QgsSymbol::DynamicRotation;
   if ( hasDataDefinedRotation )
   {
     // For non-point markers, "dataDefinedRotation" means following the
@@ -3349,7 +3357,7 @@ QRectF QgsFontMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &
 
 QgsSymbolLayer *QgsFontMarkerSymbolLayer::createFromSld( QDomElement &element )
 {
-  QgsDebugMsg( QStringLiteral( "Entered." ) );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
   QDomElement graphicElem = element.firstChildElement( QStringLiteral( "Graphic" ) );
   if ( graphicElem.isNull() )

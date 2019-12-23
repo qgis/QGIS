@@ -77,6 +77,7 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
     QgsMapCanvas *mCanvas = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
     bool mIndeterminateState;
+
 };
 
 #endif // QGSRELATIONREFERENCEWIDGETWRAPPER_H

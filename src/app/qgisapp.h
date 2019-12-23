@@ -134,7 +134,7 @@ class QgsDataSourceManagerDialog;
 class QgsBrowserGuiModel;
 class QgsBrowserModel;
 class QgsGeoCmsProviderRegistry;
-class QgsLayoutQptDropHandler;
+class QgsLayoutCustomDropHandler;
 class QgsProxyProgressTask;
 class QgsNetworkRequestParameters;
 
@@ -158,6 +158,7 @@ class QgsNetworkRequestParameters;
 #include "qgsoptionswidgetfactory.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsmasterlayoutinterface.h"
+#include "qgsmaptoolselect.h"
 #include "ogr/qgsvectorlayersaveasdialog.h"
 #include "ui_qgisapp.h"
 #include "qgis_app.h"
@@ -1528,6 +1529,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void extentChanged();
     void showRotation();
 
+    void showPanMessage( double distance, QgsUnitTypes::DistanceUnit unit, double bearing );
+
+    void selectionModeChanged( QgsMapToolSelect::Mode mode );
+
     void displayMapToolMessage( const QString &message, Qgis::MessageLevel level = Qgis::Info );
     void displayMessage( const QString &title, const QString &message, Qgis::MessageLevel level );
     void removeMapToolMessage();
@@ -2020,15 +2025,31 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsMessageBar *visibleMessageBar();
 
     /**
-     * Searches for layer widget dependencies
-     * \return a list of weak references to broken widget layer dependencies
+     * Searches for layer dependencies by querying the form widgets and the
+     * \a vectorLayer itself for broken relations. Style \a categories can be
+     * used to limit the search to one or more of the currently implemented search
+     * categories ("Forms" for the form widgets and "Relations" for layer weak relations).
+     * \return a list of weak references to broken layer dependencies
      */
-    QList< QgsVectorLayerRef > findBrokenWidgetDependencies( QgsVectorLayer *vectorLayer );
+    const QList< QgsVectorLayerRef > findBrokenLayerDependencies( QgsVectorLayer *vectorLayer,
+        QgsMapLayer::StyleCategories categories = QgsMapLayer::StyleCategory::AllStyleCategories ) const;
 
     /**
-     * Scans the \a vectorLayer for broken dependencies and warns the user
+     * Scans the \a vectorLayer for broken dependencies and automatically
+     * try to load the missing layers, users are notified about the operation
+     * result. Style \a categories can be
+     * used to exclude one of the currently implemented search categories
+     * ("Forms" for the form widgets and "Relations" for layer weak relations).
      */
-    void checkVectorLayerDependencies( QgsVectorLayer *vectorLayer );
+    void resolveVectorLayerDependencies( QgsVectorLayer *vectorLayer,
+                                         QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
+
+    /**
+     * Scans the \a vectorLayer for weak relations and automatically
+     * try to resolve and create the broken relations.
+     */
+    void resolveVectorLayerWeakRelations( QgsVectorLayer *vectorLayer );
+
 
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
 
@@ -2323,7 +2344,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QVector<QPointer<QgsCustomDropHandler>> mCustomDropHandlers;
     QVector<QPointer<QgsLayoutCustomDropHandler>> mCustomLayoutDropHandlers;
 
-    QgsLayoutQptDropHandler *mLayoutQptDropHandler = nullptr;
+    QgsLayoutCustomDropHandler *mLayoutQptDropHandler = nullptr;
+    QgsLayoutCustomDropHandler *mLayoutImageDropHandler = nullptr;
 
     QDateTime mProjectLastModified;
 

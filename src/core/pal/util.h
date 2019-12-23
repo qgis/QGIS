@@ -34,6 +34,8 @@
 
 
 #include <QList>
+#include <vector>
+#include <memory>
 
 namespace pal
 {
@@ -41,6 +43,7 @@ namespace pal
   class LabelPosition;
   class Layer;
   class FeaturePart;
+  class PointSet;
 
   /**
    * \ingroup core
@@ -56,16 +59,16 @@ namespace pal
       FeaturePart *feature = nullptr;
       PointSet *shape = nullptr;
       double priority = 0;
-      QList< LabelPosition *> lPos;
+      std::vector< std::unique_ptr< LabelPosition > > candidates;
   };
 
 
-  typedef struct _elementary_transformation
+  struct ElemTrans
   {
     int feat;
     int  old_label;
     int  new_label;
-  } ElemTrans;
+  };
 
   struct Point
   {
@@ -82,14 +85,6 @@ namespace pal
   class Util
   {
     public:
-
-      /**
-       * \brief Sort an array of pointers
-       * \param items arays of pointers to sort
-       * \param N number of items
-       * \param greater function to compare two items
-       **/
-      static void sort( void **items, int N, bool ( *greater )( void *l, void *r ) );
 
       static QLinkedList<const GEOSGeometry *> *unmulti( const GEOSGeometry *the_geom );
   };

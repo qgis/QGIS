@@ -44,6 +44,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeaturefiltermodel.h"
 #include "qgsidentifymenu.h"
+#include "qgsvectorlayerutils.h"
 
 
 bool qVariantListIsNull( const QVariantList &list )
@@ -211,6 +212,10 @@ void QgsRelationReferenceWidget::setRelation( const QgsRelation &relation, bool 
 
   if ( relation.isValid() )
   {
+    mReferencedLayerId = relation.referencedLayerId();
+    mReferencedLayerName = relation.referencedLayer()->name();
+    setReferencedLayerDataSource( relation.referencedLayer()->publicSource() );
+    mReferencedLayerProviderKey = relation.referencedLayer()->providerType();
     mInvalidLabel->hide();
 
     mRelation = relation;
@@ -995,15 +1000,7 @@ void QgsRelationReferenceWidget::addEntry()
   {
     QString title = tr( "Relation %1 for %2." ).arg( mRelation.name(), mReferencingLayer->name() );
 
-    QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mReferencingLayer ) );
-    if ( mCanvas )
-      context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mCanvas->mapSettings() ) );
-
-    QgsExpression exp( mReferencingLayer->displayExpression() );
-    context.setFeature( mFormFeature );
-    exp.prepare( &context );
-    QString displayString = exp.evaluate( &context ).toString();
-
+    QString displayString = QgsVectorLayerUtils::getFeatureDisplayString( mReferencingLayer, mFormFeature );
     QString msg = tr( "Link feature to %1 \"%2\" : Digitize the geometry for the new feature on layer %3. Press &lt;ESC&gt; to cancel." )
                   .arg( mReferencingLayer->name(), displayString, mReferencedLayer->name() );
     mMessageBarItem = QgsMessageBar::createMessage( title, msg, this );
@@ -1084,6 +1081,47 @@ void QgsRelationReferenceWidget::emitForeignKeysChanged( const QVariantList &for
   emit foreignKeyChanged( foreignKeys.at( 0 ) );
   Q_NOWARN_DEPRECATED_POP
   emit foreignKeysChanged( foreignKeys );
+}
+
+QString QgsRelationReferenceWidget::referencedLayerName() const
+{
+  return mReferencedLayerName;
+}
+
+void QgsRelationReferenceWidget::setReferencedLayerName( const QString &relationLayerName )
+{
+  mReferencedLayerName = relationLayerName;
+}
+
+QString QgsRelationReferenceWidget::referencedLayerId() const
+{
+  return mReferencedLayerId;
+}
+
+void QgsRelationReferenceWidget::setReferencedLayerId( const QString &relationLayerId )
+{
+  mReferencedLayerId = relationLayerId;
+}
+
+QString QgsRelationReferenceWidget::referencedLayerProviderKey() const
+{
+  return mReferencedLayerProviderKey;
+}
+
+void QgsRelationReferenceWidget::setReferencedLayerProviderKey( const QString &relationProviderKey )
+{
+  mReferencedLayerProviderKey = relationProviderKey;
+}
+
+QString QgsRelationReferenceWidget::referencedLayerDataSource() const
+{
+  return mReferencedLayerDataSource;
+}
+
+void QgsRelationReferenceWidget::setReferencedLayerDataSource( const QString &relationDataSource )
+{
+  const QgsPathResolver resolver { QgsProject::instance()->pathResolver() };
+  mReferencedLayerDataSource = resolver.writePath( relationDataSource );
 }
 
 void QgsRelationReferenceWidget::setFormFeature( const QgsFeature &formFeature )

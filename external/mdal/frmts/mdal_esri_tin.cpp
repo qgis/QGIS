@@ -23,13 +23,155 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverEsriTin::load( const std::string &uri, M
   try
   {
     std::list<int> superpointIndexes;
-    Vertices vertices;
     Faces faces;
+    bool isNativeLittleEndian = MDAL::isNativeLittleEndian();
 
-    readSuperpoints( uri, superpointIndexes );
-    populateVertices( uri, vertices, superpointIndexes );
-    populateFaces( uri, faces, superpointIndexes );
+    //read the total number of vertices (including superpoints and isolated vertices)
+    int32_t totalIndexesCount32;
+    std::ifstream inDenv( denvFile( uri ), std::ifstream::in | std::ifstream::binary );
+    if ( !inDenv.is_open() )
+    {
+      inDenv.open( denv9File( uri ), std::ifstream::in | std::ifstream::binary );
+      if ( !inDenv.is_open() )
+        throw MDAL_Status::Err_UnknownFormat;
+    }
+    readValue( totalIndexesCount32, inDenv, isNativeLittleEndian );
+    size_t totalIndexesCount = static_cast<size_t>( totalIndexesCount32 );
 
+    /* Round 1 :populates faces with raw indexes from the file
+     * rawAndCorrectedIndexesMap is used to map raw indexes from the files and corrected indexes
+     * Corrected indexes take into account the unwanted vertexes (superpoints, isolated vertices)
+     * Wanted vertices are associated with the corrected index
+     * Unwanted vertices are associated with the totalIndexesCount value
+     */
+    std::vector<size_t> rawAndCorrectedIndexesMap( totalIndexesCount, totalIndexesCount );
+    std::ifstream inFaces( faceFile( uri ), std::ifstream::in | std::ifstream::binary );
+    std::ifstream inMsk( mskFile( uri ), std::ifstream::in | std::ifstream::binary );
+    std::ifstream inMsx( msxFile( uri ), std::ifstream::in | std::ifstream::binary );
+
+    if ( ! inFaces.is_open() )
+      throw MDAL_Status::Err_FileNotFound;
+    if ( ! inMsk.is_open() )
+      throw MDAL_Status::Err_FileNotFound;
+    if ( ! inMsx.is_open() )
+      throw MDAL_Status::Err_FileNotFound;
+
+    //Find the beginning of data in mskFile
+    inMsx.seekg( -4, std::ios::end );
+    int32_t mskBegin;
+    if ( ! readValue( mskBegin, inMsx, true ) )
+      throw  MDAL_Status::Err_UnknownFormat;
+
+    //read information in mskFile
+    inMsk.seekg( -mskBegin * 2, std::ios::end );
+    int32_t maskIntergerCount;
+    if ( ! readValue( maskIntergerCount, inMsk, true ) )
+      throw MDAL_Status::Err_UnknownFormat;
+    inMsk.ignore( 4 ); //unused 4 bytes
+    int32_t maskBitsCount;
+    if ( ! readValue( maskBitsCount, inMsk, true ) )
+      throw MDAL_Status::Err_UnknownFormat;
+
+    int c = 0;
+    int32_t maskInt = 0;
+    while ( true )
+    {
+      //read mask file
+      if ( c % 32 == 0 && c < maskBitsCount ) //first bit in the mask array have to be used-->read next maskInt
+        if ( ! readValue( maskInt, inMsk, true ) )
+          throw MDAL_Status::Err_UnknownFormat;
+
+      Face f;
+      for ( int i = 0; i < 3; ++i )
+      {
+        int32_t index;
+        if ( ! readValue( index, inFaces, isNativeLittleEndian ) )
+          break;
+
+        f.push_back( static_cast<size_t>( index - 1 ) );
+      }
+
+      if ( f.size() == 0 ) //that's mean this is the end of the file
+        break;
+
+      if ( f.size() < 3 ) //that's mean the face is not complete
+        throw MDAL_Status::Err_UnknownFormat;
+
+      //exclude masked face
+      if ( !( maskInt & 0x01 ) )
+      {
+        faces.push_back( f );
+        //fill raw indexes
+        for ( auto ri : f )
+        {
+          if ( ri >= totalIndexesCount )
+            throw MDAL_Status::Err_UnknownFormat;
+          rawAndCorrectedIndexesMap[ri] = 1;
+        }
+      }
+
+      c++;
+      maskInt = maskInt >> 1;
+    }
+
+    inFaces.close();
+    inMsk.close();
+    inMsx.close();
+
+    //Round 2 :count the number of wanted indexes and fill the rawIndexes value with the correctedIndex
+    size_t correctedIndexCount = 0;
+    for ( size_t i = 0; i < rawAndCorrectedIndexesMap.size(); ++i )
+    {
+      if ( rawAndCorrectedIndexesMap.at( i ) < totalIndexesCount )
+      {
+        rawAndCorrectedIndexesMap[i] = correctedIndexCount;
+        correctedIndexCount++;
+      }
+    }
+
+    //Round 3: populate vertices
+    Vertices vertices( correctedIndexCount );
+    std::ifstream inXY( xyFile( uri ), std::ifstream::in | std::ifstream::binary );
+    std::ifstream inZ( zFile( uri ), std::ifstream::in | std::ifstream::binary );
+
+    if ( ! inXY.is_open() )
+      throw MDAL_Status::Err_FileNotFound;
+
+    if ( ! inZ.is_open() )
+      throw MDAL_Status::Err_FileNotFound;
+
+    size_t rawIndex = 0;
+    while ( rawIndex < rawAndCorrectedIndexesMap.size() )
+    {
+      Vertex vert;
+
+      if ( !readValue( vert.x, inXY, isNativeLittleEndian ) )
+        break;
+
+      if ( !readValue( vert.y, inXY, isNativeLittleEndian ) )
+        throw MDAL_Status::Err_UnknownFormat;
+
+      float zValue;
+      if ( !readValue( zValue, inZ, isNativeLittleEndian ) )
+        throw MDAL_Status::Err_UnknownFormat;
+      vert.z = double( zValue );
+
+      // store the vertex only if it is a wanted index
+      if ( rawAndCorrectedIndexesMap[rawIndex] < totalIndexesCount )
+        vertices[rawAndCorrectedIndexesMap[rawIndex]] = vert ;
+
+      rawIndex++;
+    }
+
+    inXY.close();
+    inZ.close();
+
+    //Round 4 :apply correction to the face's indexes
+    for ( auto &face : faces )
+      for ( auto &fi : face )
+        fi = rawAndCorrectedIndexesMap[fi];
+
+    //create the memory mesh
     std::unique_ptr< MemoryMesh > mesh(
       new MemoryMesh(
         name(),
@@ -41,9 +183,11 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverEsriTin::load( const std::string &uri, M
       )
     );
 
+    //move the faces and the vertices in the mesh
     mesh->faces = std::move( faces );
     mesh->vertices = std::move( vertices );
 
+    //create the "Altitude" dataset
     addBedElevationDatasetGroup( mesh.get(), mesh->vertices );
     mesh->datasetGroups.back()->setName( "Altitude" );
 
@@ -60,7 +204,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverEsriTin::load( const std::string &uri, M
   }
 }
 
-bool MDAL::DriverEsriTin::canRead( const std::string &uri )
+bool MDAL::DriverEsriTin::canReadMesh( const std::string &uri )
 {
 
   std::string zFileName = zFile( uri );
@@ -115,6 +259,16 @@ std::string MDAL::DriverEsriTin::hullFile( const std::string &uri ) const
   return pathJoin( dirName( uri ), "thul.adf" );
 }
 
+std::string MDAL::DriverEsriTin::denvFile( const std::string &uri ) const
+{
+  return pathJoin( dirName( uri ), "tdenv.adf" );
+}
+
+std::string MDAL::DriverEsriTin::denv9File( const std::string &uri ) const
+{
+  return pathJoin( dirName( uri ), "tdenv9.adf" );
+}
+
 std::string MDAL::DriverEsriTin::crsFile( const std::string &uri ) const
 {
   return pathJoin( dirName( uri ), "prj.adf" );
@@ -152,114 +306,6 @@ std::string MDAL::DriverEsriTin::getTinName( const std::string &uri ) const
   return tinName;
 }
 
-void MDAL::DriverEsriTin::populateVertices( const std::string &uri, MDAL::Vertices &vertices, const std::list<int> &superpointIndexes ) const
-{
-  //first, read the (x,y) coordinates
-
-  bool isNativeLittleEndian = MDAL::isNativeLittleEndian();
-  std::ifstream inXY( xyFile( uri ), std::ifstream::in | std::ifstream::binary );
-  std::ifstream inZ( zFile( uri ), std::ifstream::in | std::ifstream::binary );
-
-  if ( ! inXY.is_open() )
-    throw MDAL_Status::Err_FileNotFound;
-
-  if ( ! inZ.is_open() )
-    throw MDAL_Status::Err_FileNotFound;
-
-  int fileIndex = 1;
-  while ( true )
-  {
-    Vertex vert;
-
-    if ( !readValue( vert.x, inXY, isNativeLittleEndian ) )
-      break;
-
-    if ( !readValue( vert.y, inXY, isNativeLittleEndian ) )
-      throw MDAL_Status::Err_UnknownFormat;
-
-    float zValue;
-    if ( !readValue( zValue, inZ, isNativeLittleEndian ) )
-      throw MDAL_Status::Err_UnknownFormat;
-    vert.z = double( zValue );
-
-    if ( correctedIndex( fileIndex, superpointIndexes ) >= 0 ) //store the vertex only if it is not a superpoint
-      vertices.push_back( vert );
-    fileIndex++;
-  }
-
-  inXY.close();
-  inZ.close();
-}
-
-void MDAL::DriverEsriTin::populateFaces( const std::string &uri, MDAL::Faces &faces, const std::list<int> &superpointIndexes ) const
-{
-  bool isNativeLittleEndian = MDAL::isNativeLittleEndian();
-  std::ifstream inFaces( faceFile( uri ), std::ifstream::in | std::ifstream::binary );
-  std::ifstream inMsk( mskFile( uri ), std::ifstream::in | std::ifstream::binary );
-  std::ifstream inMsx( msxFile( uri ), std::ifstream::in | std::ifstream::binary );
-
-  if ( ! inFaces.is_open() )
-    throw MDAL_Status::Err_FileNotFound;
-  if ( ! inMsk.is_open() )
-    throw MDAL_Status::Err_FileNotFound;
-  if ( ! inMsx.is_open() )
-    throw MDAL_Status::Err_FileNotFound;
-
-  //Find the beginning of data in mskFile
-  inMsx.seekg( -4, std::ios::end );
-  int32_t mskBegin;
-  if ( ! readValue( mskBegin, inMsx, true ) )
-    throw  MDAL_Status::Err_UnknownFormat;
-
-  //read information in mskFile
-  inMsk.seekg( -mskBegin * 2, std::ios::end );
-  int32_t maskIntergerCount;
-  if ( ! readValue( maskIntergerCount, inMsk, true ) )
-    throw MDAL_Status::Err_UnknownFormat;
-  inMsk.ignore( 4 ); //unused 4 bytes
-  int32_t maskBitsCount;
-  if ( ! readValue( maskBitsCount, inMsk, true ) )
-    throw MDAL_Status::Err_UnknownFormat;
-
-  int c = 0;
-  int32_t maskInt = 0;
-  while ( true )
-  {
-    //read mask file
-    if ( c % 32 == 0 && c < maskBitsCount ) //first bit in the mask array have to be used-->read next maskInt
-      if ( ! readValue( maskInt, inMsk, true ) )
-        throw MDAL_Status::Err_UnknownFormat;
-
-    Face f;
-    for ( int i = 0; i < 3; ++i )
-    {
-      int32_t index;
-      if ( ! readValue( index, inFaces, isNativeLittleEndian ) )
-        break;
-
-      index = correctedIndex( index, superpointIndexes );
-
-      f.push_back( static_cast<size_t>( index ) );
-    }
-
-    if ( f.size() == 0 ) //that's mean this is the end of the file
-      break;
-
-    if ( f.size() < 3 ) //that's mean the face is not complete
-      throw MDAL_Status::Err_UnknownFormat;
-
-    //exclude masked face
-    if ( !( maskInt & 0x01 ) )
-      faces.push_back( f );
-
-    c++;
-    maskInt = maskInt >> 1;
-  }
-
-  inFaces.close();
-  inMsk.close();
-  inMsx.close();
-}
 
 std::string MDAL::DriverEsriTin::getCrsWkt( const std::string &uri ) const
 {
@@ -276,25 +322,3 @@ std::string MDAL::DriverEsriTin::getCrsWkt( const std::string &uri ) const
   return crsWkt;
 }
 
-int MDAL::DriverEsriTin::correctedIndex( int i, const std::list<int> &superPointsIndexes ) const
-{
-  //usualy i is bigger than the biggest superpoint's index
-  if ( i > superPointsIndexes.back() )
-    return i - int( superPointsIndexes.size() ) - 1;
-
-  //correction of index depending of the position of the superpoints
-  int correctedIndex = i - 1;
-  for ( auto si : superPointsIndexes )
-  {
-    if ( i == si )
-      return -1; //return -1 if the index is associated with superpoint
-    else if ( i > si )
-    {
-      correctedIndex--;
-    }
-    else
-      break;
-  }
-
-  return correctedIndex;
-}

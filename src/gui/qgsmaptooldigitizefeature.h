@@ -4,7 +4,7 @@
  ---------------------
  begin                : 7.12.2017
  copyright            : (C) 2017 by David Signer
- email                : david@opengis.ch
+ email                : david at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

@@ -26,7 +26,7 @@ class QgsLayoutQptDropHandler : public QgsLayoutCustomDropHandler
 
     QgsLayoutQptDropHandler( QObject *parent = nullptr );
 
-    bool handleFileDrop( QgsLayoutDesignerInterface *iface, const QString &file ) override;
+    bool handleFileDrop( QgsLayoutDesignerInterface *iface, QPointF point, const QString &file ) override;
 };
 
 #endif // QGSLAYOUTQPTDROPHANDLER_H

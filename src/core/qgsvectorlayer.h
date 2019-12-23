@@ -62,6 +62,7 @@ class QgsMapToPixel;
 class QgsRectangle;
 class QgsRectangle;
 class QgsRelation;
+class QgsWeakRelation;
 class QgsRelationManager;
 class QgsSingleSymbolRenderer;
 class QgsStoredExpressionManager;
@@ -71,6 +72,7 @@ class QgsVectorLayerEditBuffer;
 class QgsVectorLayerJoinBuffer;
 class QgsVectorLayerFeatureCounter;
 class QgsAbstractVectorLayerLabeling;
+class QgsPalLayerSettings;
 class QgsPoint;
 class QgsFeedback;
 class QgsAuxiliaryStorage;
@@ -1871,6 +1873,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     QList<QgsRelation> referencingRelations( int idx ) const;
 
+    /**
+     * Returns the layer's weak relations as specified in the layer's style.
+     * \returns A list of weak relations
+     * \note not available in Python bindings
+     * \since QGIS 3.12
+     */
+    QList<QgsWeakRelation> weakRelations( ) const SIP_SKIP;
+
+
     //! Buffer with uncommitted editing operations. Only valid after editing has been turned on.
     Q_INVOKABLE QgsVectorLayerEditBuffer *editBuffer() { return mEditBuffer; }
 
@@ -2663,6 +2674,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Read labeling from SLD
     void readSldLabeling( const QDomNode &node );
 
+    //! Read settings from SLD TextSymbolizer element
+    bool readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSettings &settings ) const;
+
     //! Read simple labeling from layer's custom properties (QGIS 2.x projects)
     QgsAbstractVectorLayerLabeling *readLabelingFromCustomProperties();
 
@@ -2823,6 +2837,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! To avoid firing multiple time dataChanged signal on circular layer circular dependencies
     bool mDataChangedFired = false;
+
+    QList<QgsWeakRelation> mWeakRelations;
 };
 
 

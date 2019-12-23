@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "polygon_perimeter",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::32613" } },
+"features": [
+{ "type": "Feature", "properties": { "rowid": 1, "pkuid": 1, "ftype": null, "text": "Polygon" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 607622.397260273923166, 4823643.698630136437714 ], [ 611665.136986301396973, 4823643.698630136437714 ], [ 611665.136986301396973, 4826398.310502283275127 ], [ 607622.397260273923166, 4826398.310502283275127 ], [ 607622.397260273923166, 4823643.698630136437714 ] ] ] } }
+]
+}

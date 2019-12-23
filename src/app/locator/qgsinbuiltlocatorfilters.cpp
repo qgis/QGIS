@@ -178,9 +178,9 @@ void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *pare
       tooltip = match.captured( 1 );
     }
     tooltip.replace( QStringLiteral( "..." ), QString() );
-    tooltip.replace( QStringLiteral( "…" ), QString() );
+    tooltip.replace( QString( QChar( 0x2026 ) ), QString() );
     searchText.replace( QStringLiteral( "..." ), QString() );
-    searchText.replace( QStringLiteral( "…" ), QString() );
+    searchText.replace( QString( QChar( 0x2026 ) ), QString() );
     bool uniqueTooltip = searchText.trimmed().compare( tooltip.trimmed(), Qt::CaseInsensitive ) != 0;
     if ( action->isChecked() )
     {

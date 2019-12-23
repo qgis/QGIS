@@ -18,6 +18,9 @@
 
 #include "qgsmaptool.h"
 #include "qgis_gui.h"
+#include "qgspointxy.h"
+#include "qgsdistancearea.h"
+
 class QgsMapCanvas;
 
 
@@ -44,6 +47,20 @@ class GUI_EXPORT QgsMapToolPan : public QgsMapTool
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
     void canvasDoubleClickEvent( QgsMapMouseEvent *e ) override;
     bool gestureEvent( QGestureEvent *e ) override;
+
+  signals:
+
+    /**
+     * Emitted whenever the distance or bearing of an in-progress panning
+     * operation is changed.
+     *
+     * This signal will be emitted during a pan operation as the user moves the map,
+     * giving the total distance and bearing between the map position at the
+     * start of the pan and the current pan position.
+     *
+     * \since QGIS 3.12
+     */
+    void panDistanceBearingChanged( double distance, QgsUnitTypes::DistanceUnit unit, double bearing );
 
   private:
 

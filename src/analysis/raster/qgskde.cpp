@@ -13,10 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QByteArray>
+
 #include "qgskde.h"
 #include "qgsfeaturesource.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
+#include "qgsrasterfilewriter.h"
 
 #define NO_DATA -9999
 
@@ -32,8 +35,6 @@ QgsKernelDensityEstimation::QgsKernelDensityEstimation( const QgsKernelDensityEs
   , mDecay( parameters.decayRatio )
   , mOutputValues( parameters.outputValues )
   , mBufferSize( -1 )
-  , mDatasetH( nullptr )
-  , mRasterBandH( nullptr )
 {
   if ( !parameters.radiusField.isEmpty() )
     mRadiusField = mSource->fields().lookupField( parameters.radiusField );
@@ -68,14 +69,6 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::run()
 
 QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::prepare()
 {
-  GDALAllRegister();
-
-  GDALDriverH driver = GDALGetDriverByName( mOutputFormat.toUtf8() );
-  if ( !driver )
-  {
-    return DriverError;
-  }
-
   if ( !mSource )
     return InvalidParameters;
 
@@ -86,16 +79,28 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::prepare()
   int rows = std::max( std::ceil( mBounds.height() / mPixelSize ) + 1, 1.0 );
   int cols = std::max( std::ceil( mBounds.width() / mPixelSize ) + 1, 1.0 );
 
-  if ( !createEmptyLayer( driver, mBounds, rows, cols ) )
+  // create empty raster and fill it with nodata values
+  QgsRasterFileWriter writer( mOutputFile );
+  writer.setOutputProviderKey( QStringLiteral( "gdal" ) );
+  writer.setOutputFormat( mOutputFormat );
+  mProvider = writer.createOneBandRaster( Qgis::Float32, cols, rows, mBounds, mSource->sourceCrs() );
+  if ( !mProvider )
+  {
     return FileCreationError;
+  }
 
-  // open the raster in GA_Update mode
-  mDatasetH.reset( GDALOpen( mOutputFile.toUtf8().constData(), GA_Update ) );
-  if ( !mDatasetH )
+  if ( !mProvider->setNoDataValue( 1, NO_DATA ) )
+  {
     return FileCreationError;
-  mRasterBandH = GDALGetRasterBand( mDatasetH.get(), 1 );
-  if ( !mRasterBandH )
-    return FileCreationError;
+  }
+
+  QgsRasterBlock block( Qgis::Float32, cols, 1 );
+  block.setNoDataValue( NO_DATA );
+  block.setIsNoData();
+  for ( int i = 0; i < rows ; i++ )
+  {
+    mProvider->writeBlock( &block, 1, 0, i );
+  }
 
   mBufferSize = -1;
   if ( mRadiusField < 0 )
@@ -162,13 +167,13 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const
     unsigned int yPositionIO = ( ( mBounds.yMaximum() - ( *pointIt ).y() ) / mPixelSize ) - buffer;
 
 
+    // calculate buffer around pixel
+    QgsRectangle extent( ( *pointIt ).x() - radius, ( *pointIt ).y() - radius, ( *pointIt ).x() + radius, ( *pointIt ).y() + radius );
+
     // get the data
-    float *dataBuffer = ( float * ) CPLMalloc( sizeof( float ) * blockSize * blockSize );
-    if ( GDALRasterIO( mRasterBandH, GF_Read, xPosition, yPositionIO, blockSize, blockSize,
-                       dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 ) != CE_None )
-    {
-      result = RasterIoError;
-    }
+    std::unique_ptr< QgsRasterBlock > block( mProvider->block( 1, extent, blockSize, blockSize ) );
+    QByteArray blockData = block->data();
+    float *dataBuffer = ( float * ) blockData.data();
 
     for ( int xp = 0; xp < blockSize; xp++ )
     {
@@ -194,12 +199,12 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const
         dataBuffer[ pos ] += pixelValue;
       }
     }
-    if ( GDALRasterIO( mRasterBandH, GF_Write, xPosition, yPositionIO, blockSize, blockSize,
-                       dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 ) != CE_None )
+
+    block->setData( blockData );
+    if ( !mProvider->writeBlock( block.get(), 1, xPosition, yPositionIO ) )
     {
       result = RasterIoError;
     }
-    CPLFree( dataBuffer );
   }
 
   return result;
@@ -207,8 +212,9 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const
 
 QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::finalise()
 {
-  mDatasetH.reset();
-  mRasterBandH = nullptr;
+  mProvider->setEditable( false );
+  mProvider = nullptr;
+
   return Success;
 }
 
@@ -220,45 +226,6 @@ int QgsKernelDensityEstimation::radiusSizeInPixels( double radius ) const
     ++buffer;
   }
   return buffer;
-}
-
-bool QgsKernelDensityEstimation::createEmptyLayer( GDALDriverH driver, const QgsRectangle &bounds, int rows, int columns ) const
-{
-  double geoTransform[6] = { bounds.xMinimum(), mPixelSize, 0, bounds.yMaximum(), 0, -mPixelSize };
-  gdal::dataset_unique_ptr emptyDataset( GDALCreate( driver, mOutputFile.toUtf8(), columns, rows, 1, GDT_Float32, nullptr ) );
-  if ( !emptyDataset )
-    return false;
-
-  if ( GDALSetGeoTransform( emptyDataset.get(), geoTransform ) != CE_None )
-    return false;
-
-  // Set the projection on the raster destination to match the input layer
-  if ( GDALSetProjection( emptyDataset.get(), mSource->sourceCrs().toWkt().toLocal8Bit().data() ) != CE_None )
-    return false;
-
-  GDALRasterBandH poBand = GDALGetRasterBand( emptyDataset.get(), 1 );
-  if ( !poBand )
-    return false;
-
-  if ( GDALSetRasterNoDataValue( poBand, NO_DATA ) != CE_None )
-    return false;
-
-  float *line = static_cast< float * >( CPLMalloc( sizeof( float ) * columns ) );
-  for ( int i = 0; i < columns; i++ )
-  {
-    line[i] = NO_DATA;
-  }
-  // Write the empty raster
-  for ( int i = 0; i < rows ; i++ )
-  {
-    if ( GDALRasterIO( poBand, GF_Write, 0, i, columns, 1, line, columns, 1, GDT_Float32, 0, 0 ) != CE_None )
-    {
-      return false;
-    }
-  }
-
-  CPLFree( line );
-  return true;
 }
 
 double QgsKernelDensityEstimation::calculateKernelValue( const double distance, const double bandwidth, const QgsKernelDensityEstimation::KernelShape shape, const QgsKernelDensityEstimation::OutputValues outputType ) const
@@ -417,7 +384,3 @@ QgsRectangle QgsKernelDensityEstimation::calculateBounds() const
   bbox.setYMaximum( bbox.yMaximum() + radius );
   return bbox;
 }
-
-
-
-

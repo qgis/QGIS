@@ -61,7 +61,7 @@ void QgsMapSettings::setMagnificationFactor( double factor )
   mExtent = ext;
   mDpi = mDpi / ratio;
 
-  QgsDebugMsg( QStringLiteral( "Magnification factor: %1  dpi: %2  ratio: %3" ).arg( factor ).arg( mDpi ).arg( ratio ) );
+  QgsDebugMsgLevel( QStringLiteral( "Magnification factor: %1  dpi: %2  ratio: %3" ).arg( factor ).arg( mDpi ).arg( ratio ), 3 );
 
   updateDerived();
 }

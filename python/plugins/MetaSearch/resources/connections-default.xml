@@ -13,6 +13,6 @@
     <csw name="Sweden: National CSW" url="http://www.geodata.se/InspireCswProxy/csw"/>
     <csw name="UK Location Catalogue Publishing Service" url="http://csw.data.gov.uk/geonetwork/srv/en/csw"/>
     <csw name="UNEP GRID-Geneva Metadata Catalog" url="http://geonetwork.grid.unep.ch:8080/geonetwork/srv/eng/csw"/>
-    <csw name="Portugal: Sistema Nacional de Informação Geográfica (SNIG)" url="http://snig.dgterritorio.pt/geoportal/csw/discovery"/>
+    <csw name="Portugal: Sistema Nacional de Informação Geográfica (SNIG)" url="https://snig.dgterritorio.gov.pt/rndg/srv/eng/csw"/>
     <csw name="Spain: Centro Nacional de Información Geográfica (CNIG)" url="http://www.ign.es/csw-inspire/srv/spa/csw"/>
 </qgsCSWConnections>

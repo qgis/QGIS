@@ -627,13 +627,13 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
   {
     QgsMessageLog::logMessage( QObject::tr( "The source spatial reference system (CRS) is not valid. "
                                             "The coordinates can not be reprojected. The CRS is: %1" )
-                               .arg( d->mSourceCRS.toProj4() ), QObject::tr( "CRS" ) );
+                               .arg( d->mSourceCRS.toProj() ), QObject::tr( "CRS" ) );
     return;
   }
   if ( !d->mDestCRS.isValid() )
   {
     QgsMessageLog::logMessage( QObject::tr( "The destination spatial reference system (CRS) is not valid. "
-                                            "The coordinates can not be reprojected. The CRS is: %1" ).arg( d->mDestCRS.toProj4() ), QObject::tr( "CRS" ) );
+                                            "The coordinates can not be reprojected. The CRS is: %1" ).arg( d->mDestCRS.toProj() ), QObject::tr( "CRS" ) );
     return;
   }
 
@@ -657,7 +657,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
   int projResult = 0;
 #if PROJ_VERSION_MAJOR>=6
   proj_errno_reset( projData );
-  proj_trans_generic( projData, direction == ForwardTransform ? PJ_FWD : PJ_INV,
+  proj_trans_generic( projData, ( direction == ForwardTransform && !d->mIsReversed ) || ( direction == ReverseTransform && d->mIsReversed ) ? PJ_FWD : PJ_INV,
                       x, sizeof( double ), numPoints,
                       y, sizeof( double ), numPoints,
                       z, sizeof( double ), numPoints,
@@ -799,10 +799,21 @@ QString QgsCoordinateTransform::coordinateOperation() const
   return d->mProjCoordinateOperation;
 }
 
+QgsDatumTransform::TransformDetails QgsCoordinateTransform::instantiatedCoordinateOperationDetails() const
+{
+#if PROJ_VERSION_MAJOR>=6
+  ProjData projData = d->threadLocalProjData();
+  return QgsDatumTransform::transformDetailsFromPj( projData );
+#else
+  return QgsDatumTransform::TransformDetails();
+#endif
+}
+
 void QgsCoordinateTransform::setCoordinateOperation( const QString &operation ) const
 {
   d.detach();
   d->mProjCoordinateOperation = operation;
+  d->mShouldReverseCoordinateOperation = false;
 }
 
 const char *finder( const char *name )
@@ -824,9 +835,9 @@ bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &s
     return false;
 
   const QString sourceKey = src.authid().isEmpty() ?
-                            src.toWkt() : src.authid();
+                            src.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) : src.authid();
   const QString destKey = dest.authid().isEmpty() ?
-                          dest.toWkt() : dest.authid();
+                          dest.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) : dest.authid();
 
   if ( sourceKey.isEmpty() || destKey.isEmpty() )
     return false;
@@ -910,9 +921,9 @@ void QgsCoordinateTransform::addToCache()
     return;
 
   const QString sourceKey = d->mSourceCRS.authid().isEmpty() ?
-                            d->mSourceCRS.toWkt() : d->mSourceCRS.authid();
+                            d->mSourceCRS.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) : d->mSourceCRS.authid();
   const QString destKey = d->mDestCRS.authid().isEmpty() ?
-                          d->mDestCRS.toWkt() : d->mDestCRS.authid();
+                          d->mDestCRS.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) : d->mDestCRS.authid();
 
   if ( sourceKey.isEmpty() || destKey.isEmpty() )
     return;

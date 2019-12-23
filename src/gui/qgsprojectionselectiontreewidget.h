@@ -260,14 +260,13 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     long getLargestCrsIdMatch( const QString &sql );
 
     //! add recently used CRS
-    void insertRecent( long crsId );
+    void insertRecent( const QgsCoordinateReferenceSystem &crs );
 
     //! Has the Projection List been populated?
     bool mProjListDone = false;
 
     //! Has the User Projection List been populated?
     bool mUserProjListDone = false;
-
 
     //! Has the Recent Projection List been populated?
     bool mRecentProjListDone = false;
@@ -281,8 +280,8 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     //! The set of OGC WMS CRSs that want to be applied to this widget
     QSet<QString> mCrsFilter;
 
-    //! Most recently used projections (trimmed at 25 entries)
-    QStringList mRecentProjections;
+    //! Most recently used projections
+    QList< QgsCoordinateReferenceSystem > mRecentProjections;
 
     //! Hide deprecated CRSes
     void hideDeprecated( QTreeWidgetItem *item );
@@ -290,6 +289,8 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     bool mShowMap = true;
 
     bool mInitialized = false;
+    QgsCoordinateReferenceSystem mDeferredLoadCrs;
+    bool mBlockSignals = false;
 
   private slots:
     //! Gets list of authorities

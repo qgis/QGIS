@@ -28,6 +28,11 @@ Constructor for QgsRelationManager.
 :param project: associated project (used to notify project of changes)
 %End
 
+    QgsRelationContext context() const;
+%Docstring
+Gets the relation context
+%End
+
     void setRelations( const QList<QgsRelation> &relations );
 %Docstring
 Will set the specified relations and remove any relation currently set.
@@ -104,7 +109,7 @@ Gets all relations where the specified layer (and field) is the referencing part
 :return: A list of relations matching the given layer and fieldIdx.
 %End
 
-    QList<QgsRelation> referencedRelations( QgsVectorLayer *layer = 0 ) const;
+    QList<QgsRelation> referencedRelations( const QgsVectorLayer *layer = 0 ) const;
 %Docstring
 Gets all relations where this layer is the referenced part (i.e. the parent table with the primary key being referenced from another layer).
 

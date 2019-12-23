@@ -338,6 +338,67 @@ QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant 
   }
 }
 
+QgsCoordinateReferenceSystem QgsProcessingUtils::variantToCrs( const QVariant &value, QgsProcessingContext &context, const QVariant &fallbackValue )
+{
+  QVariant val = value;
+
+  if ( val.canConvert<QgsCoordinateReferenceSystem>() )
+  {
+    // input is a QgsCoordinateReferenceSystem - done!
+    return val.value< QgsCoordinateReferenceSystem >();
+  }
+  else if ( val.canConvert<QgsProcessingFeatureSourceDefinition>() )
+  {
+    // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
+    QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
+    val = fromVar.source;
+  }
+  else if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )
+  {
+    // input is a QgsProcessingOutputLayerDefinition - get extra properties from it
+    QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( val );
+    val = fromVar.sink;
+  }
+
+  if ( val.canConvert<QgsProperty>() && val.value< QgsProperty >().propertyType() == QgsProperty::StaticProperty )
+  {
+    val = val.value< QgsProperty >().staticValue();
+  }
+
+  // maybe a map layer
+  if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( val ) ) )
+    return layer->crs();
+
+  if ( val.canConvert<QgsProperty>() )
+    val = val.value< QgsProperty >().valueAsString( context.expressionContext(), fallbackValue.toString() );
+
+  if ( !val.isValid() )
+  {
+    // fall back to default
+    val = fallbackValue;
+  }
+
+  QString crsText = val.toString();
+  if ( crsText.isEmpty() )
+    crsText = fallbackValue.toString();
+
+  if ( crsText.isEmpty() )
+    return QgsCoordinateReferenceSystem();
+
+  // maybe special string
+  if ( context.project() && crsText.compare( QLatin1String( "ProjectCrs" ), Qt::CaseInsensitive ) == 0 )
+    return context.project()->crs();
+
+  // maybe a map layer reference
+  if ( QgsMapLayer *layer = QgsProcessingUtils::mapLayerFromString( crsText, context ) )
+    return layer->crs();
+
+  // else CRS from string
+  QgsCoordinateReferenceSystem crs;
+  crs.createFromString( crsText );
+  return crs;
+}
+
 bool QgsProcessingUtils::canUseLayer( const QgsMeshLayer *layer )
 {
   return layer && layer->dataProvider();
@@ -688,10 +749,10 @@ QString QgsProcessingUtils::tempFolder()
   static QString sFolder;
   static QMutex sMutex;
   sMutex.lock();
-  if ( sFolder.isEmpty() )
+  if ( sFolder.isEmpty() || !sFolder.startsWith( QgsSettings().value( QStringLiteral( "Processing/Configuration/TEMP_PATH" ), QDir::tempPath() ).toString() ) )
   {
     QString subPath = QUuid::createUuid().toString().remove( '-' ).remove( '{' ).remove( '}' );
-    sFolder = QDir::tempPath() + QStringLiteral( "/processing_" ) + subPath;
+    sFolder = QgsSettings().value( QStringLiteral( "Processing/Configuration/TEMP_PATH" ), QDir::tempPath() ).toString() + QStringLiteral( "/processing_" ) + subPath;
     if ( !QDir( sFolder ).exists() )
       QDir().mkpath( sFolder );
   }
@@ -1090,7 +1151,7 @@ bool QgsProcessingFeatureSink::addFeatures( QgsFeatureList &features, QgsFeature
 
 bool QgsProcessingFeatureSink::addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags )
 {
-  bool result = !QgsProxyFeatureSink::addFeatures( iterator, flags );
+  bool result = QgsProxyFeatureSink::addFeatures( iterator, flags );
   if ( !result )
     mContext.feedback()->reportError( QObject::tr( "Features could not be written to %1" ).arg( mSinkName ) );
   return result;

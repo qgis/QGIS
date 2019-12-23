@@ -43,6 +43,9 @@ class GUI_EXPORT QgsValueRelationConfigDlg : public QgsEditorConfigWidget, priva
   public:
     QVariantMap config() override;
     void setConfig( const QVariantMap &config ) override;
+
+  private slots:
+    void layerChanged();
 };
 
 #endif // QGSVALUERELATIONCONFIGDLG_H

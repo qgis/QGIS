@@ -32,6 +32,7 @@ class QgsSymbol;
 class QgsTriangularMesh;
 class QgsRenderContext;
 struct QgsMesh;
+class QgsMesh3dAveragingMethod;
 
 /**
  * \ingroup core
@@ -245,6 +246,23 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
       */
     QgsMeshDatasetValue datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const;
 
+    /**
+      * Returns the 3d values of stacked 3d mesh defined by the given point
+      *
+      * \note It uses previously cached and indexed triangular mesh
+      * and so if the layer has not been rendered previously
+      * (e.g. when used in a script) it returns NaN value
+      *
+      * \param index dataset index specifying group and dataset to extract value from
+      * \param point point to query in map coordinates
+      * \returns all 3d stacked values that belong to face defined by given point. Returns invalid block
+      * for point outside the mesh layer or in case triangular mesh was not
+      * previously used for rendering or for datasets that do not have type DataOnVolumes
+      *
+      * \since QGIS 3.12
+      */
+    QgsMesh3dDataBlock dataset3dValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const;
+
   public slots:
 
     /**
@@ -322,7 +340,6 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
     //! Time format configuration
     QgsMeshTimeSettings mTimeSettings;
-
 };
 
 #endif //QGSMESHLAYER_H

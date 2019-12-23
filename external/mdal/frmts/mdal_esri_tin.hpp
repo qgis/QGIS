@@ -73,7 +73,7 @@ namespace MDAL
 
       virtual std::unique_ptr< Mesh > load( const std::string &uri, MDAL_Status *status ) override;
 
-      bool canRead( const std::string &uri ) override;
+      bool canReadMesh( const std::string &uri ) override;
 
     private:
       std::string xyFile( const std::string &uri ) const;
@@ -82,18 +82,17 @@ namespace MDAL
       std::string mskFile( const std::string &uri ) const;
       std::string msxFile( const std::string &uri ) const;
       std::string hullFile( const std::string &uri ) const;
+      std::string denvFile( const std::string &uri ) const;
+      std::string denv9File( const std::string &uri ) const;
       std::string crsFile( const std::string &uri ) const;
 
+      //* can be used to read superpoints indexes, currently unused in MDAL
       void readSuperpoints( const std::string &uri, std::list<int> &superpointsIndexes ) const;
-      void populateVertices( const std::string &uri, Vertices &vertices, const std::list<int> &superpointIndexes ) const;
-      void populateFaces( const std::string &uri, Faces &faces, const std::list<int> &superpointIndexes ) const;
+
 
       std::string getCrsWkt( const std::string &uri ) const;
       std::string getTinName( const std::string &uri ) const;
 
-      // correction of vertex index because indexing in ESRI TIN files begins with 1 and to take account superpoints position
-      // return -1 if i is the index of a superpoint
-      int correctedIndex( int i, const std::list<int> &superPointsIndexes ) const;
   };
 }
 

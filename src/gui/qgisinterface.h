@@ -616,8 +616,18 @@ class GUI_EXPORT QgisInterface : public QObject
 
     //! Adds (opens) a project
     virtual bool addProject( const QString &project ) = 0;
-    //! Starts a new blank project
-    virtual void newProject( bool promptToSaveFlag = false ) = 0;
+
+    /**
+     * Starts a new blank project.
+     *
+     * If \a promptToSaveFlag is TRUE then users will be prompted to save any currently open
+     * project (if that project has changes). If the flag is FALSE, then the current project will
+     * be closed without prompting to save (possibly resulting in data loss).
+     *
+     * Since QGIS 3.10.1, returns TRUE if a new project was created, or FALSE if the operation was not successful (e.g.
+     * the user opted to cancel when prompted to save the current project).
+     */
+    virtual bool newProject( bool promptToSaveFlag = false ) = 0;
 
     /**
      * Triggered when connections have changed.

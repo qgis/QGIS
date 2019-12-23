@@ -452,21 +452,6 @@ void QgsValueRelationWidgetWrapper::setEnabled( bool enabled )
     QgsEditorWidgetWrapper::setEnabled( enabled );
 }
 
-
-QList<QgsVectorLayerRef> QgsValueRelationWidgetWrapper::layerDependencies() const
-{
-  QList<QgsVectorLayerRef> result;
-  const QString layerId { config().value( QStringLiteral( "Layer" ) ).toString() };
-  const QString layerName { config().value( QStringLiteral( "LayerName" ) ).toString() };
-  const QString providerName { config().value( QStringLiteral( "LayerProviderName" ) ).toString() };
-  const QString layerSource { config().value( QStringLiteral( "LayerSource" ) ).toString() };
-  if ( ! layerId.isEmpty() && ! layerName.isEmpty() && ! providerName.isEmpty() && ! layerSource.isEmpty() )
-  {
-    result.append( QgsVectorLayerRef( layerId, layerName, layerSource, providerName ) );
-  }
-  return result;
-}
-
 void QgsValueRelationWidgetWrapper::emitValueChangedInternal( const QString &value )
 {
   Q_NOWARN_DEPRECATED_PUSH

@@ -463,7 +463,7 @@ QString QgsWcsCapabilities::stripNS( const QString &name )
 
 bool QgsWcsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapabilitiesProperty &capabilities )
 {
-  QgsDebugMsg( QStringLiteral( "Entered." ) );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 #ifdef QGISDEBUG
   QFile file( QDir::tempPath() + "/qgis-wcs-capabilities.xml" );
   if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
@@ -767,7 +767,7 @@ void QgsWcsCapabilities::parseCoverageOfferingBrief( QDomElement const &e, QgsWc
 
 bool QgsWcsCapabilities::convertToDom( QByteArray const &xml )
 {
-  QgsDebugMsg( QStringLiteral( "Entered." ) );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
   // Convert completed document into a Dom
   QString errorMsg;
   int errorLine;
@@ -1030,7 +1030,7 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
         box = QgsRectangle( low[0], low[1], high[0], high[1] );
       }
       coverage->boundingBoxes.insert( authid, box );
-      QgsDebugMsg( "crs: " + crs.authid() + ' ' + crs.description() + QString( " axisInverted = %1" ).arg( crs.hasAxisInverted() ) );
+      QgsDebugMsg( "crs: " + crs.userFriendlyIdentifier() + QString( " axisInverted = %1" ).arg( crs.hasAxisInverted() ) );
       QgsDebugMsg( "BoundingBox: " + authid + " : " + box.toString() );
     }
   }
@@ -1234,23 +1234,23 @@ QString QgsWcsCapabilities::lastErrorFormat()
 
 bool QgsWcsCapabilities::setAuthorization( QNetworkRequest &request ) const
 {
-  if ( mUri.hasParam( QStringLiteral( "authcfg" ) ) && !mUri.param( QStringLiteral( "authcfg" ) ).isEmpty() )
+  if ( !mUri.authConfigId().isEmpty() )
   {
-    return QgsApplication::authManager()->updateNetworkRequest( request, mUri.param( QStringLiteral( "authcfg" ) ) );
+    return QgsApplication::authManager()->updateNetworkRequest( request, mUri.authConfigId() );
   }
-  else if ( mUri.hasParam( QStringLiteral( "username" ) ) && mUri.hasParam( QStringLiteral( "password" ) ) )
+  else if ( !mUri.username().isEmpty() && !mUri.password().isEmpty() )
   {
-    QgsDebugMsg( "setAuthorization " + mUri.param( "username" ) );
-    request.setRawHeader( "Authorization", "Basic " + QStringLiteral( "%1:%2" ).arg( mUri.param( QStringLiteral( "username" ) ), mUri.param( QStringLiteral( "password" ) ) ).toLatin1().toBase64() );
+    QgsDebugMsg( "setAuthorization " + mUri.username() );
+    request.setRawHeader( "Authorization", "Basic " + QStringLiteral( "%1:%2" ).arg( mUri.username(), mUri.password() ).toLatin1().toBase64() );
   }
   return true;
 }
 
 bool QgsWcsCapabilities::setAuthorizationReply( QNetworkReply *reply ) const
 {
-  if ( mUri.hasParam( QStringLiteral( "authcfg" ) ) && !mUri.param( QStringLiteral( "authcfg" ) ).isEmpty() )
+  if ( !mUri.authConfigId().isEmpty() )
   {
-    return QgsApplication::authManager()->updateNetworkReply( reply, mUri.param( QStringLiteral( "authcfg" ) ) );
+    return QgsApplication::authManager()->updateNetworkReply( reply, mUri.authConfigId() );
   }
   return true;
 }

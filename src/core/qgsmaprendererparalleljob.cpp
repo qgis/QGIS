@@ -228,6 +228,12 @@ void QgsMapRendererParallelJob::renderLayersFinished()
     }
   }
 
+  // compose final image for labeling
+  if ( mSecondPassLayerJobs.isEmpty() )
+  {
+    mFinalImage = composeImage( mSettings, mLayerJobs, mLabelJob );
+  }
+
   QgsDebugMsgLevel( QStringLiteral( "PARALLEL layers finished" ), 2 );
 
   if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) && !mLabelJob.context.renderingStopped() )
@@ -284,7 +290,19 @@ void QgsMapRendererParallelJob::renderingFinished()
   }
   else
   {
-    renderLayersSecondPassFinished();
+    QgsDebugMsgLevel( QStringLiteral( "PARALLEL finished" ), 2 );
+
+    logRenderingTime( mLayerJobs, mSecondPassLayerJobs, mLabelJob );
+
+    cleanupJobs( mLayerJobs );
+
+    cleanupLabelJob( mLabelJob );
+
+    mStatus = Idle;
+
+    mRenderingTime = mRenderingStart.elapsed();
+
+    emit finished();
   }
 }
 

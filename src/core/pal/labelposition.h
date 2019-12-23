@@ -35,7 +35,7 @@
 
 #include "qgis_core.h"
 #include "pointset.h"
-#include "rtree.hpp"
+#include "palrtree.h"
 #include <fstream>
 
 namespace pal
@@ -88,11 +88,14 @@ namespace pal
        * \param feature labelpos owners
        * \param isReversed label is reversed
        * \param quadrant relative position of label to feature
+       * \param dX the correction of the anchor point in x direction
+       * \param dY the correction of the anchor point in y direction
        */
       LabelPosition( int id, double x1, double y1,
                      double w, double h,
                      double alpha, double cost,
-                     FeaturePart *feature, bool isReversed = false, Quadrant quadrant = QuadrantOver );
+                     FeaturePart *feature, bool isReversed = false, Quadrant quadrant = QuadrantOver,
+                     double dX = 0.0, double dY = 0.0 );
 
       //! Copy constructor
       LabelPosition( const LabelPosition &other );
@@ -136,7 +139,7 @@ namespace pal
        * \param ls other labelposition
        * \returns TRUE or FALSE
        */
-      bool isInConflict( LabelPosition *ls );
+      bool isInConflict( const LabelPosition *ls ) const;
 
       //! Returns bounding box - amin: xmin,ymin - amax: xmax,ymax
       void getBoundingBox( double amin[2], double amax[2] ) const;
@@ -173,10 +176,20 @@ namespace pal
       /**
        * Returns the feature corresponding to this labelposition
        */
-      FeaturePart *getFeaturePart();
+      FeaturePart *getFeaturePart() const;
 
       int getNumOverlaps() const { return nbOverlap; }
       void resetNumOverlaps() { nbOverlap = 0; } // called from problem.cpp, pal.cpp
+
+      /**
+       * Increases the number of overlaps recorded against this position by 1.
+       */
+      void incrementNumOverlaps() { nbOverlap++; }
+
+      /**
+       * Decreases the number of overlaps recorded against this position by 1.
+       */
+      void decrementNumOverlaps() { nbOverlap++; }
 
       int getProblemFeatureId() const { return probFeat; }
 
@@ -217,6 +230,22 @@ namespace pal
        */
       bool conflictsWithObstacle() const { return mHasObstacleConflict; }
 
+      /**
+       * Sets whether the position is marked as having a hard conflict with an obstacle feature.
+       * A hard conflict means that the placement should (usually) not be considered, because the candidate
+       * conflicts with a obstacle of sufficient weight.
+       * \see hasHardObstacleConflict()
+       */
+      void setHasHardObstacleConflict( bool conflicts );
+
+      /**
+       * Returns whether the position is marked as having a hard conflict with an obstacle feature.
+       * A hard conflict means that the placement should (usually) not be considered, because the candidate
+       * conflicts with a obstacle of sufficient weight.
+       * \see setHasHardObstacleConflict()
+       */
+      bool hasHardObstacleConflict() const { return mHasHardConflict; }
+
       //! Make sure the cost is less than 1
       void validateCost();
 
@@ -256,39 +285,29 @@ namespace pal
       //! Returns the number of upside down characters for this label position
       int upsideDownCharCount() const { return mUpsideDownCharCount; }
 
-      void removeFromIndex( RTree<LabelPosition *, double, 2, double> *index );
-      void insertIntoIndex( RTree<LabelPosition *, double, 2, double> *index );
-
-      typedef struct
-      {
-        Pal *pal = nullptr;
-        FeaturePart *obstacle = nullptr;
-      } PruneCtx;
-
-      //! Check whether the candidate in ctx overlap with obstacle feat
-      static bool pruneCallback( LabelPosition *candidatePosition, void *ctx );
-
-      // for counting number of overlaps
-      typedef struct
-      {
-        LabelPosition *lp = nullptr;
-        int *nbOv = nullptr;
-        double *cost = nullptr;
-        double *inactiveCost = nullptr;
-        //int *feat;
-      } CountContext;
-
-      /*
-       * count overlap, ctx = p_lp
+      /**
+       * Removes the label position from the specified \a index.
        */
-      static bool countOverlapCallback( LabelPosition *lp, void *ctx );
+      void removeFromIndex( PalRtree<LabelPosition> &index );
 
-      static bool countFullOverlapCallback( LabelPosition *lp, void *ctx );
+      /**
+       * Inserts the label position into the specified \a index.
+       */
+      void insertIntoIndex( PalRtree<LabelPosition> &index );
 
-      static bool removeOverlapCallback( LabelPosition *lp, void *ctx );
+      /**
+       * The offset of the anchor point in x direction.
+       *
+       * \since QGIS 3.12
+       */
+      double dX() const;
 
-      // for polygon cost calculation
-      static bool polygonObstacleCallback( pal::FeaturePart *obstacle, void *ctx );
+      /**
+       * The offset of the anchor point in y direction.
+       *
+       * \since QGIS 3.12
+       */
+      double dY() const;
 
     protected:
 
@@ -317,13 +336,13 @@ namespace pal
 
       LabelPosition::Quadrant quadrant;
 
-      bool isInConflictSinglePart( LabelPosition *lp );
-      bool isInConflictMultiPart( LabelPosition *lp );
-
     private:
       double mCost;
       bool mHasObstacleConflict;
+      bool mHasHardConflict = false;
       int mUpsideDownCharCount;
+      double mDx = 0.0;
+      double mDy = 0.0;
 
       /**
        * Calculates the total number of parts for this label position
@@ -335,6 +354,9 @@ namespace pal
        * \returns double between 0 - 12
        */
       double polygonIntersectionCostForParts( PointSet *polygon ) const;
+
+      bool isInConflictSinglePart( const LabelPosition *lp ) const;
+      bool isInConflictMultiPart( const LabelPosition *lp ) const;
 
   };
 

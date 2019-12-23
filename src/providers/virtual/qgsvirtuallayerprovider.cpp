@@ -90,7 +90,9 @@ QgsVirtualLayerProvider::QgsVirtualLayerProvider( QString const &uri, const QgsD
 
   if ( mDefinition.geometrySrid() != -1 )
   {
+    Q_NOWARN_DEPRECATED_PUSH
     mCrs = QgsCoordinateReferenceSystem( mDefinition.geometrySrid() );
+    Q_NOWARN_DEPRECATED_POP
   }
 }
 

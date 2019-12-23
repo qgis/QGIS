@@ -433,7 +433,7 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
     const int start = index;
     index = pos + match.capturedLength( 0 );
     const QString toReplace = match.captured( 1 ).trimmed();
-    QgsDebugMsg( "Found expression: " + toReplace );
+    QgsDebugMsgLevel( "Found expression: " + toReplace, 3 );
 
     QgsExpression exp( toReplace );
     if ( exp.hasParserError() )
@@ -458,7 +458,7 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
       continue;
     }
 
-    QgsDebugMsg( "Expression result is: " + result.toString() );
+    QgsDebugMsgLevel( "Expression result is: " + result.toString(), 3 );
     expr_action += action.mid( start, pos - start ) + result.toString();
   }
 
@@ -650,6 +650,25 @@ QString QgsExpression::helpText( QString name )
   }
 
   return helpContents;
+}
+
+QStringList QgsExpression::tags( const QString &name )
+{
+  QStringList tags = QStringList();
+
+  QgsExpression::initFunctionHelp();
+
+  if ( sFunctionHelpTexts()->contains( name ) )
+  {
+    const Help &f = ( *sFunctionHelpTexts() )[ name ];
+
+    for ( const HelpVariant &v : qgis::as_const( f.mVariants ) )
+    {
+      tags << v.mTags;
+    }
+  }
+
+  return tags;
 }
 
 void QgsExpression::initVariableHelp()
@@ -856,6 +875,7 @@ QString QgsExpression::group( const QString &name )
     sGroups()->insert( QStringLiteral( "String" ), tr( "String" ) );
     sGroups()->insert( QStringLiteral( "Variables" ), tr( "Variables" ) );
     sGroups()->insert( QStringLiteral( "Recent (%1)" ), tr( "Recent (%1)" ) );
+    sGroups()->insert( QStringLiteral( "UserGroup" ), tr( "User expressions" ) );
   }
 
   //return the translated name for this group. If group does not

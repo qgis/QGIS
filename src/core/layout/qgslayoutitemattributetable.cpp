@@ -754,8 +754,7 @@ bool QgsLayoutItemAttributeTable::writePropertiesToElement( QDomElement &tableEl
 
 bool QgsLayoutItemAttributeTable::readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
-  QgsVectorLayer *prevLayer = sourceLayer();
-  if ( prevLayer )
+  if ( QgsVectorLayer *prevLayer = sourceLayer() )
   {
     //disconnect from previous layer
     disconnect( prevLayer, &QgsVectorLayer::layerModified, this, &QgsLayoutTable::refreshAttributes );
@@ -799,7 +798,8 @@ bool QgsLayoutItemAttributeTable::readPropertiesFromElement( const QDomElement &
   mVectorLayer.resolveWeakly( mLayout->project() );
 
   //connect to new layer
-  connect( sourceLayer(), &QgsVectorLayer::layerModified, this, &QgsLayoutTable::refreshAttributes );
+  if ( QgsVectorLayer *newLayer = sourceLayer() )
+    connect( newLayer, &QgsVectorLayer::layerModified, this, &QgsLayoutTable::refreshAttributes );
 
   refreshAttributes();
 

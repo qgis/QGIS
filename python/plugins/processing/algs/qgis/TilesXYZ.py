@@ -23,6 +23,8 @@ __copyright__ = '(C) 2019 by Lutra Consulting Limited'
 
 import os
 import math
+import re
+import urllib.parse
 from uuid import uuid4
 
 import sqlite3
@@ -178,6 +180,7 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
                                                        minValue=1,
                                                        maxValue=20,
                                                        defaultValue=4))
+        self.thread_nr_re = re.compile('[0-9]+$') # thread number regex
 
     def prepareAlgorithm(self, parameters, context, feedback):
         project = context.project()
@@ -190,10 +193,11 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
             return
             # Haven't found a better way to break than to make all the new threads return instantly
 
-        if "Dummy" in threading.current_thread().name: # single thread testing
+        if "Dummy" in threading.current_thread().name or len(self.settingsDictionary) == 1: # single thread testing
             threadSpecificSettings = list(self.settingsDictionary.values())[0]
         else:
-            threadSpecificSettings = self.settingsDictionary[threading.current_thread().name[-1]] # last number only
+            thread_nr = self.thread_nr_re.search(threading.current_thread().name)[0] # terminating number only
+            threadSpecificSettings = self.settingsDictionary[thread_nr]
 
         size = QSize(self.tile_width * metatile.rows(), self.tile_height * metatile.columns())
         extent = QgsRectangle(*metatile.extent())
@@ -305,9 +309,10 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         self.progressThreadLock = threading.Lock()
         if self.maxThreads > 1:
             feedback.pushConsoleInfo(self.tr('Using {max_threads} CPU Threads:').format(max_threads=self.maxThreads))
-            feedback.pushConsoleInfo(self.tr('Pushing all tiles at once: {meta_count} tiles.').format(meta_count=len(allMetatiles)))
-            with ThreadPoolExecutor(max_workers=self.maxThreads) as threadPool:
-                threadPool.map(self.renderSingleMetatile, allMetatiles)
+            for zoom in range(self.min_zoom, self.max_zoom + 1):
+                feedback.pushConsoleInfo(self.tr('Generating tiles for zoom level: {zoom}').format(zoom=zoom))
+                with ThreadPoolExecutor(max_workers=self.maxThreads) as threadPool:
+                    threadPool.map(self.renderSingleMetatile, metatiles_by_zoom[zoom])
         else:
             feedback.pushConsoleInfo(self.tr('Using 1 CPU Thread:'))
             for zoom in range(self.min_zoom, self.max_zoom + 1):
@@ -571,7 +576,7 @@ class TilesXYZAlgorithmDirectory(TilesXYZAlgorithmBase):
         results = {'OUTPUT_DIRECTORY': output_dir}
 
         if output_html:
-            output_dir_safe = output_dir.replace('\\', '/')
+            output_dir_safe = urllib.parse.quote(output_dir.replace('\\', '/'))
             html_code = LEAFLET_TEMPLATE.format(
                 tilesetname="Leaflet Preview",
                 centerx=self.wgs_extent[0] + (self.wgs_extent[2] - self.wgs_extent[0]) / 2,

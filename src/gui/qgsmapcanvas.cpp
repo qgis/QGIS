@@ -901,16 +901,20 @@ bool QgsMapCanvas::setReferencedExtent( const QgsReferencedRectangle &extent )
 
 void QgsMapCanvas::setCenter( const QgsPointXY &center )
 {
-  QgsRectangle r = mapSettings().extent();
-  double x = center.x();
-  double y = center.y();
-  setExtent(
-    QgsRectangle(
-      x - r.width() / 2.0, y - r.height() / 2.0,
-      x + r.width() / 2.0, y + r.height() / 2.0
-    ),
-    true
+  const QgsRectangle r = mapSettings().extent();
+  const double x = center.x();
+  const double y = center.y();
+  const QgsRectangle rect(
+    x - r.width() / 2.0, y - r.height() / 2.0,
+    x + r.width() / 2.0, y + r.height() / 2.0
   );
+  if ( ! rect.isEmpty() )
+  {
+    setExtent(
+      rect,
+      true
+    );
+  }
 } // setCenter
 
 QgsPointXY QgsMapCanvas::center() const
@@ -1336,7 +1340,7 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent *e )
         {
           QApplication::setOverrideCursor( Qt::ClosedHandCursor );
           mCanvasProperties->panSelectorDown = true;
-          mCanvasProperties->rubberStartPoint = mCanvasProperties->mouseLastXY;
+          panActionStart( mCanvasProperties->mouseLastXY );
         }
         break;
 
@@ -1471,7 +1475,7 @@ void QgsMapCanvas::mousePressEvent( QMouseEvent *e )
   if ( e->button() == Qt::MidButton )
   {
     mCanvasProperties->panSelectorDown = true;
-    mCanvasProperties->rubberStartPoint = mCanvasProperties->mouseLastXY;
+    panActionStart( mCanvasProperties->mouseLastXY );
   }
   else
   {
@@ -2025,9 +2029,22 @@ void QgsMapCanvas::panActionEnd( QPoint releasePoint )
   refresh();
 }
 
+void QgsMapCanvas::panActionStart( QPoint releasePoint )
+{
+  mCanvasProperties->rubberStartPoint = releasePoint;
+
+  mDa = QgsDistanceArea();
+  mDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  mDa.setSourceCrs( mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
+}
+
 void QgsMapCanvas::panAction( QMouseEvent *e )
 {
   Q_UNUSED( e )
+
+  QgsPointXY currentMapPoint = getCoordinateTransform()->toMapCoordinates( e->pos() );
+  QgsPointXY startMapPoint = getCoordinateTransform()->toMapCoordinates( mCanvasProperties->rubberStartPoint );
+  emit panDistanceBearingChanged( mDa.measureLine( currentMapPoint, startMapPoint ), mDa.lengthUnits(), mDa.bearing( currentMapPoint, startMapPoint ) * 180 / M_PI );
 
   // move all map canvas items
   moveCanvasContents();

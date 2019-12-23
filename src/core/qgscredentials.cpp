@@ -47,7 +47,7 @@ bool QgsCredentials::get( const QString &realm, QString &username, QString &pass
       QPair<QString, QString> credentials = mCredentialCache.take( realm );
       username = credentials.first;
       password = credentials.second;
-      QgsDebugMsg( QStringLiteral( "retrieved realm:%1 username:%2" ).arg( realm, username ) );
+      QgsDebugMsgLevel( QStringLiteral( "retrieved realm:%1 username:%2" ).arg( realm, username ), 2 );
 
       if ( !password.isNull() )
         return true;
@@ -56,7 +56,7 @@ bool QgsCredentials::get( const QString &realm, QString &username, QString &pass
 
   if ( request( realm, username, password, message ) )
   {
-    QgsDebugMsg( QStringLiteral( "requested realm:%1 username:%2" ).arg( realm, username ) );
+    QgsDebugMsgLevel( QStringLiteral( "requested realm:%1 username:%2" ).arg( realm, username ), 2 );
     return true;
   }
   else
@@ -69,7 +69,7 @@ bool QgsCredentials::get( const QString &realm, QString &username, QString &pass
 void QgsCredentials::put( const QString &realm, const QString &username, const QString &password )
 {
   QMutexLocker locker( &mCacheMutex );
-  QgsDebugMsg( QStringLiteral( "inserting realm:%1 username:%2" ).arg( realm, username ) );
+  QgsDebugMsgLevel( QStringLiteral( "inserting realm:%1 username:%2" ).arg( realm, username ), 2 );
   mCredentialCache.insert( realm, QPair<QString, QString>( username, password ) );
 }
 
@@ -77,7 +77,7 @@ bool QgsCredentials::getMasterPassword( QString &password, bool stored )
 {
   if ( requestMasterPassword( password, stored ) )
   {
-    QgsDebugMsg( QStringLiteral( "requested master password" ) );
+    QgsDebugMsgLevel( QStringLiteral( "requested master password" ), 2 );
     return true;
   }
   return false;

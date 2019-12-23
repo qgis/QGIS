@@ -59,6 +59,8 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
   if ( !vl )
     return;
 
+  mCanAddAttribute = vl->dataProvider()->capabilities() & QgsVectorDataProvider::AddAttributes;
+  mCanChangeAttributeValue = vl->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
 
   QgsExpressionContext expContext( QgsExpressionContextUtils::globalProjectLayerScopes( mVectorLayer ) );
 
@@ -91,7 +93,7 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
     mOutputFieldNameLineEdit->setMaxLength( 10 );
   }
 
-  if ( !( vl->dataProvider()->capabilities() & QgsVectorDataProvider::AddAttributes ) )
+  if ( !mCanAddAttribute )
   {
     mCreateVirtualFieldCheckbox->setChecked( true );
     mCreateVirtualFieldCheckbox->setEnabled( false );
@@ -104,7 +106,7 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
     mInfoIcon->setVisible( false );
   }
 
-  if ( !( vl->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) )
+  if ( !mCanChangeAttributeValue )
   {
     mUpdateExistingGroupBox->setEnabled( false );
     mCreateVirtualFieldCheckbox->setChecked( true );
@@ -146,11 +148,12 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
   }
 
   bool hasselection = vl->selectedFeatureCount() > 0;
-  mOnlyUpdateSelectedCheckBox->setChecked( hasselection );
-  mOnlyUpdateSelectedCheckBox->setEnabled( hasselection );
+  mOnlyUpdateSelectedCheckBox->setChecked( mCanChangeAttributeValue && hasselection );
+  mOnlyUpdateSelectedCheckBox->setEnabled( mCanChangeAttributeValue && hasselection );
   mOnlyUpdateSelectedCheckBox->setText( tr( "Only update %1 selected features" ).arg( vl->selectedFeatureCount() ) );
 
   builder->loadRecent( QStringLiteral( "fieldcalc" ) );
+  builder->loadUserExpressions( );
 
   mInfoIcon->setPixmap( style()->standardPixmap( QStyle::SP_MessageBoxInformation ) );
 
@@ -388,7 +391,7 @@ void QgsFieldCalculator::populateOutputFieldTypes()
 void QgsFieldCalculator::mNewFieldGroupBox_toggled( bool on )
 {
   mUpdateExistingGroupBox->setChecked( !on );
-  if ( on && !( mVectorLayer->dataProvider()->capabilities() & QgsVectorDataProvider::AddAttributes ) )
+  if ( on && !mCanAddAttribute )
   {
     mOnlyVirtualFieldsInfoLabel->setVisible( true );
   }

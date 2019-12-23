@@ -11,7 +11,8 @@ MDAL::Driver3Di::Driver3Di()
   : DriverCF(
       "3Di",
       "3Di Results",
-      "results_3di.nc" )
+      "results_3di.nc",
+      Capability::ReadMesh )
 {
 }
 
@@ -27,17 +28,17 @@ MDAL::CFDimensions MDAL::Driver3Di::populateDimensions( )
   int ncid;
 
   // 2D Mesh
-  mNcFile.getDimension( "nMesh2D_nodes", &count, &ncid );
+  mNcFile->getDimension( "nMesh2D_nodes", &count, &ncid );
   dims.setDimension( CFDimensions::Face2D, count, ncid );
 
-  mNcFile.getDimension( "nCorner_Nodes", &count, &ncid );
+  mNcFile->getDimension( "nCorner_Nodes", &count, &ncid );
   dims.setDimension( CFDimensions::MaxVerticesInFace, count, ncid );
 
   // Vertices count is populated later in populateFacesAndVertices
   // it is not known from the array dimensions
 
   // Time
-  mNcFile.getDimension( "time", &count, &ncid );
+  mNcFile->getDimension( "time", &count, &ncid );
   dims.setDimension( CFDimensions::Time, count, ncid );
 
   return dims;
@@ -53,16 +54,16 @@ void MDAL::Driver3Di::populateFacesAndVertices( Vertices &vertices, Faces &faces
   std::map<std::string, size_t> xyToVertex2DId;
 
   // X coordinate
-  int ncidX = mNcFile.getVarId( "Mesh2DContour_x" );
-  double fillX = mNcFile.getFillValue( ncidX );
+  int ncidX = mNcFile->getVarId( "Mesh2DContour_x" );
+  double fillX = mNcFile->getFillValue( ncidX );
   std::vector<double> faceVerticesX( arrsize );
-  if ( nc_get_var_double( mNcFile.handle(), ncidX, faceVerticesX.data() ) ) throw MDAL_Status::Err_UnknownFormat;
+  if ( nc_get_var_double( mNcFile->handle(), ncidX, faceVerticesX.data() ) ) throw MDAL_Status::Err_UnknownFormat;
 
   // Y coordinate
-  int ncidY = mNcFile.getVarId( "Mesh2DContour_y" );
-  double fillY = mNcFile.getFillValue( ncidY );
+  int ncidY = mNcFile->getVarId( "Mesh2DContour_y" );
+  double fillY = mNcFile->getFillValue( ncidY );
   std::vector<double> faceVerticesY( arrsize );
-  if ( nc_get_var_double( mNcFile.handle(), ncidY, faceVerticesY.data() ) ) throw MDAL_Status::Err_UnknownFormat;
+  if ( nc_get_var_double( mNcFile->handle(), ncidY, faceVerticesY.data() ) ) throw MDAL_Status::Err_UnknownFormat;
 
   // now populate create faces and backtrack which vertices
   // are used in multiple faces
@@ -120,10 +121,10 @@ void MDAL::Driver3Di::addBedElevation( MemoryMesh *mesh )
   size_t faceCount = mesh->facesCount();
 
   // read Z coordinate of 3di computation nodes centers
-  int ncidZ = mNcFile.getVarId( "Mesh2DFace_zcc" );
-  double fillZ = mNcFile.getFillValue( ncidZ );
+  int ncidZ = mNcFile->getVarId( "Mesh2DFace_zcc" );
+  double fillZ = mNcFile->getFillValue( ncidZ );
   std::vector<double> coordZ( faceCount );
-  if ( nc_get_var_double( mNcFile.handle(), ncidZ, coordZ.data() ) )
+  if ( nc_get_var_double( mNcFile->handle(), ncidZ, coordZ.data() ) )
     return; //error reading the array
 
 
@@ -134,15 +135,14 @@ void MDAL::Driver3Di::addBedElevation( MemoryMesh *mesh )
                                           "Bed Elevation"
                                         );
 
-  group->setIsOnVertices( false );
+  group->setDataLocation( MDAL_DataLocation::DataOnFaces2D );
   group->setIsScalar( true );
 
-  std::shared_ptr<MDAL::MemoryDataset> dataset = std::make_shared< MemoryDataset >( group.get() );
-  dataset->setTime( 0.0 );
-  double *values = dataset->values();
+  std::shared_ptr<MDAL::MemoryDataset2D> dataset = std::make_shared< MemoryDataset2D >( group.get() );
+  dataset->setTime( MDAL::RelativeTimestamp() );
   for ( size_t i = 0; i < faceCount; ++i )
   {
-    values[i] = MDAL::safeValue( coordZ[i], fillZ );
+    dataset->setScalarValue( i, MDAL::safeValue( coordZ[i], fillZ ) );
   }
   dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
   group->setStatistics( MDAL::calculateStatistics( group ) );
@@ -153,6 +153,11 @@ void MDAL::Driver3Di::addBedElevation( MemoryMesh *mesh )
 std::string MDAL::Driver3Di::getCoordinateSystemVariableName()
 {
   return "projected_coordinate_system";
+}
+
+std::string MDAL::Driver3Di::getTimeVariableName() const
+{
+  return "time";
 }
 
 std::set<std::string> MDAL::Driver3Di::ignoreNetCDFVariables()
@@ -194,10 +199,10 @@ void MDAL::Driver3Di::parseNetCDFVariableMetadata( int varid, const std::string 
   *is_vector = false;
   *is_x = true;
 
-  std::string long_name = mNcFile.getAttrStr( "long_name", varid );
+  std::string long_name = mNcFile->getAttrStr( "long_name", varid );
   if ( long_name.empty() )
   {
-    std::string standard_name = mNcFile.getAttrStr( "standard_name", varid );
+    std::string standard_name = mNcFile->getAttrStr( "standard_name", varid );
     if ( standard_name.empty() )
     {
       name = variableName;

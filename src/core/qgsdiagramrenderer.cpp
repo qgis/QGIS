@@ -19,10 +19,14 @@
 #include "diagram/qgstextdiagram.h"
 #include "diagram/qgspiediagram.h"
 #include "diagram/qgshistogramdiagram.h"
+#include "diagram/qgsstackedbardiagram.h"
 #include "qgsrendercontext.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgsfontutils.h"
 #include "qgssymbollayerutils.h"
+#include "qgspainteffectregistry.h"
+#include "qgspainteffect.h"
+#include "qgsapplication.h"
 
 #include <QDomElement>
 #include <QPainter>
@@ -300,7 +304,7 @@ void QgsDiagramSettings::readXml( const QDomElement &elem, const QgsReadWriteCon
       categoryColors.append( newColor );
       categoryAttributes.append( attrElem.attribute( QStringLiteral( "field" ) ) );
       categoryLabels.append( attrElem.attribute( QStringLiteral( "label" ) ) );
-      if ( categoryLabels.back().isEmpty() )
+      if ( categoryLabels.constLast().isEmpty() )
       {
         categoryLabels.back() = categoryAttributes.back();
       }
@@ -329,6 +333,12 @@ void QgsDiagramSettings::readXml( const QDomElement &elem, const QgsReadWriteCon
       categoryLabels.append( *catIt );
     }
   }
+
+  QDomElement effectElem = elem.firstChildElement( QStringLiteral( "effect" ) );
+  if ( !effectElem.isNull() )
+    setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ) );
+  else
+    setPaintEffect( QgsApplication::paintEffectRegistry()->defaultStack() );
 }
 
 void QgsDiagramSettings::writeXml( QDomElement &rendererElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
@@ -397,10 +407,6 @@ void QgsDiagramSettings::writeXml( QDomElement &rendererElem, QDomDocument &doc,
     case Up:
       categoryElem.setAttribute( QStringLiteral( "diagramOrientation" ), QStringLiteral( "Up" ) );
       break;
-
-    default:
-      categoryElem.setAttribute( QStringLiteral( "diagramOrientation" ), QStringLiteral( "Up" ) );
-      break;
   }
 
   categoryElem.setAttribute( QStringLiteral( "barWidth" ), QString::number( barWidth ) );
@@ -423,6 +429,9 @@ void QgsDiagramSettings::writeXml( QDomElement &rendererElem, QDomDocument &doc,
   QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QString(), mAxisLineSymbol.get(), doc, context );
   axisSymbolElem.appendChild( symbolElem );
   categoryElem.appendChild( axisSymbolElem );
+
+  if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect.get() ) )
+    mPaintEffect->saveProperties( doc, categoryElem );
 
   rendererElem.appendChild( categoryElem );
 }
@@ -471,6 +480,13 @@ void QgsDiagramRenderer::renderDiagram( const QgsFeature &feature, QgsRenderCont
     s.penWidth = properties.valueAsDouble( QgsDiagramLayerSettings::StrokeWidth, c.expressionContext(), s.penWidth );
     c.expressionContext().setOriginalValueVariable( s.rotationOffset );
     s.rotationOffset = properties.valueAsDouble( QgsDiagramLayerSettings::StartAngle, c.expressionContext(), s.rotationOffset );
+  }
+
+  QgsPaintEffect *effect = s.paintEffect();
+  std::unique_ptr< QgsEffectPainter > effectPainter;
+  if ( effect && effect->enabled() )
+  {
+    effectPainter = qgis::make_unique< QgsEffectPainter >( c, effect );
   }
 
   mDiagram->renderDiagram( feature, c, s, pos );
@@ -555,6 +571,10 @@ void QgsDiagramRenderer::_readXml( const QDomElement &elem, const QgsReadWriteCo
   else if ( diagramType == QLatin1String( "Histogram" ) )
   {
     mDiagram.reset( new QgsHistogramDiagram() );
+  }
+  else if ( diagramType == QLatin1String( "Stacked" ) )
+  {
+    mDiagram.reset( new QgsStackedBarDiagram() );
   }
   else
   {
@@ -802,10 +822,23 @@ void QgsDiagramSettings::setShowAxis( bool showAxis )
   mShowAxis = showAxis;
 }
 
+QgsPaintEffect *QgsDiagramSettings::paintEffect() const
+{
+  return mPaintEffect.get();
+}
+
+void QgsDiagramSettings::setPaintEffect( QgsPaintEffect *effect )
+{
+  if ( effect != mPaintEffect.get() )
+    mPaintEffect.reset( effect );
+}
+
 QgsDiagramSettings::QgsDiagramSettings()
   : mAxisLineSymbol( qgis::make_unique< QgsLineSymbol >() )
 {
 }
+
+QgsDiagramSettings::~QgsDiagramSettings() = default;
 
 QgsDiagramSettings::QgsDiagramSettings( const QgsDiagramSettings &other )
   : enabled( other.enabled )
@@ -837,6 +870,7 @@ QgsDiagramSettings::QgsDiagramSettings( const QgsDiagramSettings &other )
   , mDirection( other.mDirection )
   , mShowAxis( other.mShowAxis )
   , mAxisLineSymbol( other.mAxisLineSymbol ? other.mAxisLineSymbol->clone() : nullptr )
+  , mPaintEffect( other.mPaintEffect ? other.mPaintEffect->clone() : nullptr )
 {
 
 }
@@ -872,6 +906,7 @@ QgsDiagramSettings &QgsDiagramSettings::operator=( const QgsDiagramSettings &oth
   mDirection = other.mDirection;
   mAxisLineSymbol.reset( other.mAxisLineSymbol ? other.mAxisLineSymbol->clone() : nullptr );
   mShowAxis = other.mShowAxis;
+  mPaintEffect.reset( other.mPaintEffect ? other.mPaintEffect->clone() : nullptr );
   return *this;
 }
 

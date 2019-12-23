@@ -95,6 +95,15 @@ class QgsWMSRootItem : public QgsDataCollectionItem
   public slots:
 };
 
+class QgsWMTSRootItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsWMTSRootItem( QgsDataItem *parent, QString name, QString path );
+
+  public slots:
+};
+
 
 //! Provider for WMS root data item
 class QgsWmsDataItemProvider : public QgsDataItemProvider

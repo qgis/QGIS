@@ -45,30 +45,40 @@ class APP_EXPORT QgsCustomProjectionDialog : public QDialog, private Ui::QgsCust
   private slots:
 
     void updateListFromCurrentItem();
+    void validateCurrent();
+    void formatChanged();
 
   private:
 
     //helper functions
     void populateList();
     bool deleteCrs( const QString &id );
-    bool saveCrs( QgsCoordinateReferenceSystem parameters, const QString &name, const QString &id, bool newEntry );
+    bool saveCrs( QgsCoordinateReferenceSystem crs, const QString &name, const QString &id, bool newEntry, QgsCoordinateReferenceSystem::Format format );
     void insertProjection( const QString &projectionAcronym );
     void showHelp();
 
     //These two QMap store the values as they are on the database when loading
-    QMap <QString, QString> mExistingCRSparameters;
+    QMap <QString, QString> mExistingCRSproj;
+    QMap <QString, QString> mExistingCRSwkt;
     QMap <QString, QString> mExistingCRSnames;
 
-    //These three list store the value updated with the current modifications
-    QStringList mCustomCRSnames;
-    QStringList mCustomCRSids;
-    QStringList mCustomCRSparameters;
+    struct Definition
+    {
+      QString name;
+      QString id;
+      QString wkt;
+      QString proj;
+    };
+
+    QList< Definition > mDefinitions;
 
     //vector saving the CRS to be deleted
     QStringList mDeletedCRSs;
 
     //Columns in the tree widget
     enum Columns { QgisCrsNameColumn, QgisCrsIdColumn, QgisCrsParametersColumn };
+
+
 };
 
 

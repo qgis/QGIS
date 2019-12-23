@@ -5,20 +5,53 @@
 
 #include "mdal_hdf5.hpp"
 #include <cstring>
+#include <algorithm>
 
-
-HdfFile::HdfFile( const std::string &path )
-  : d( std::make_shared< Handle >( H5Fopen( path.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT ) ) )
+HdfFile::HdfFile( const std::string &path, HdfFile::Mode mode )
+  : mPath( path )
 {
+  switch ( mode )
+  {
+    case HdfFile::ReadOnly:
+      if ( H5Fis_hdf5( mPath.c_str() ) > 0 )
+        d = std::make_shared< Handle >( H5Fopen( path.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT ) );
+      break;
+    case HdfFile::ReadWrite:
+      if ( H5Fis_hdf5( mPath.c_str() ) > 0 )
+        d = std::make_shared< Handle >( H5Fopen( path.c_str(), H5F_ACC_RDWR, H5P_DEFAULT ) );
+      break;
+    case HdfFile::Create:
+      d = std::make_shared< Handle >( H5Fcreate( path.c_str(), H5F_ACC_EXCL, H5P_DEFAULT, H5P_DEFAULT ) );
+      break;
+  }
 }
 
-bool HdfFile::isValid() const { return d->id >= 0; }
+HdfFile::~HdfFile() = default;
+
+bool HdfFile::isValid() const { return d && ( d->id >= 0 ); }
 
 hid_t HdfFile::id() const { return d->id; }
 
+std::string HdfFile::filePath() const
+{
+  return mPath;
+}
+
+HdfGroup HdfGroup::create( hid_t file, const std::string &path )
+{
+  auto d = std::make_shared< Handle >( H5Gcreate2( file, path.c_str(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT ) );
+  return HdfGroup( d );
+}
+
 HdfGroup::HdfGroup( hid_t file, const std::string &path )
-  : d( std::make_shared< Handle >( H5Gopen( file, path.c_str() ) ) )
-{}
+{
+  d = std::make_shared< Handle >( H5Gopen( file, path.c_str() ) );
+}
+
+HdfGroup::HdfGroup( std::shared_ptr<Handle> handle )
+  : d( handle )
+{
+}
 
 bool HdfGroup::isValid() const { return d->id >= 0; }
 
@@ -59,9 +92,21 @@ std::vector<std::string> HdfGroup::objects( H5G_obj_t type ) const
   return lst;
 }
 
+HdfAttribute::HdfAttribute( hid_t obj_id, const std::string &attr_name, HdfDataType type )
+  : mType( type )
+{
+  std::vector<hsize_t> dimsSingle = {1};
+  HdfDataspace dsc( dimsSingle );
+  d = std::make_shared< Handle >( H5Acreate2( obj_id, attr_name.c_str(), type.id(), dsc.id(), H5P_DEFAULT, H5P_DEFAULT ) );
+}
+
 HdfAttribute::HdfAttribute( hid_t obj_id, const std::string &attr_name )
-  : d( std::make_shared< Handle >( H5Aopen( obj_id, attr_name.c_str(), H5P_DEFAULT ) ) )
-{}
+  : m_objId( obj_id ), m_name( attr_name )
+{
+  d = std::make_shared< Handle >( H5Aopen( obj_id, attr_name.c_str(), H5P_DEFAULT ) );
+}
+
+HdfAttribute::~HdfAttribute() = default;
 
 bool HdfAttribute::isValid() const { return d->id >= 0; }
 
@@ -69,26 +114,65 @@ hid_t HdfAttribute::id() const { return d->id; }
 
 std::string HdfAttribute::readString() const
 {
-  hid_t datatype = H5Aget_type( id() );
+  HdfDataType datatype( H5Aget_type( id() ) );
   char name[HDF_MAX_NAME + 1];
   std::memset( name, '\0', HDF_MAX_NAME + 1 );
-  herr_t status = H5Aread( d->id, datatype, name );
+  herr_t status = H5Aread( d->id, datatype.id(), name );
   if ( status < 0 )
   {
-    //MDAL::debug("Failed to read data!");
-    H5Tclose( datatype );
     return std::string();
   }
-
-  H5Tclose( datatype );
   std::string res( name );
   res = MDAL::trim( res );
   return res;
 }
 
+void HdfAttribute::write( const std::string &value )
+{
+  if ( !isValid() || !mType.isValid() )
+    throw MDAL_Status::Err_FailToWriteToDisk;
+
+  // make sure you do not store more than it is possible
+  std::vector<char> buf( HDF_MAX_NAME + 1, '\0' );
+  size_t size = value.size() < HDF_MAX_NAME  ? value.size() : HDF_MAX_NAME;
+  memcpy( buf.data(), value.c_str(), size );
+
+  if ( H5Awrite( d->id, mType.id(), buf.data() ) < 0 )
+    throw MDAL_Status::Err_FailToWriteToDisk;
+}
+
+void HdfAttribute::write( int value )
+{
+  if ( !isValid() || !mType.isValid() )
+    throw MDAL_Status::Err_FailToWriteToDisk;
+
+  if ( H5Awrite( d->id, mType.id(), &value ) < 0 )
+    throw MDAL_Status::Err_FailToWriteToDisk;
+}
+
+HdfDataset::HdfDataset( hid_t file, const std::string &path, HdfDataType dtype, size_t nItems )
+  : mType( dtype )
+{
+  // Crete dataspace for attribute
+  std::vector<hsize_t> dimsSingle = {nItems};
+  HdfDataspace dsc( dimsSingle );
+
+  d = std::make_shared< Handle >( H5Dcreate2( file, path.c_str(), dtype.id(), dsc.id(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT ) );
+}
+
+
+HdfDataset::HdfDataset( hid_t file, const std::string &path, HdfDataType dtype, HdfDataspace dataspace )
+  : mType( dtype )
+{
+  d = std::make_shared< Handle >( H5Dcreate2( file, path.c_str(), dtype.id(), dataspace.id(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT ) );
+}
+
 HdfDataset::HdfDataset( hid_t file, const std::string &path )
   : d( std::make_shared< Handle >( H5Dopen2( file, path.c_str(), H5P_DEFAULT ) ) )
-{}
+{
+}
+
+HdfDataset::~HdfDataset() = default;
 
 bool HdfDataset::isValid() const { return d->id >= 0; }
 
@@ -113,10 +197,13 @@ hsize_t HdfDataset::elementCount() const
 
 H5T_class_t HdfDataset::type() const
 {
-  hid_t tid = H5Dget_type( d->id );
-  H5T_class_t t_class = H5Tget_class( tid );
-  H5Tclose( tid );
-  return t_class;
+  if ( mType.isValid() )
+    return H5Tget_class( mType.id() );
+  else
+  {
+    HdfDataType dt( H5Dget_type( d->id ) );
+    return H5Tget_class( dt.id() );
+  }
 }
 
 std::vector<uchar> HdfDataset::readArrayUint8( const std::vector<hsize_t> offsets, const std::vector<hsize_t> counts ) const { return readArray<uchar>( H5T_NATIVE_UINT8, offsets, counts ); }
@@ -139,12 +226,8 @@ std::vector<std::string> HdfDataset::readArrayString() const
 {
   std::vector<std::string> ret;
 
-  hid_t datatype = H5Tcopy( H5T_C_S1 );
-  H5Tset_size( datatype, HDF_MAX_NAME );
-
-  std::vector<HdfString> arr = readArray<HdfString>( datatype );
-
-  H5Tclose( datatype );
+  HdfDataType datatype = HdfDataType::createString();
+  std::vector<HdfString> arr = readArray<HdfString>( datatype.id() );
 
   for ( const HdfString &str : arr )
   {
@@ -173,6 +256,51 @@ float HdfDataset::readFloat() const
   return value;
 }
 
+void HdfDataset::write( std::vector<float> &value )
+{
+  if ( !isValid() || !mType.isValid() )
+    throw MDAL_Status::Err_FailToWriteToDisk;
+
+  // Write float array to dataset
+  if ( H5Dwrite( d->id, mType.id(), H5S_ALL, H5S_ALL, H5P_DEFAULT, value.data() ) < 0 )
+    throw MDAL_Status::Err_FailToWriteToDisk;
+}
+
+void HdfDataset::write( float value )
+{
+  if ( !isValid() || !mType.isValid() )
+    throw MDAL_Status::Err_FailToWriteToDisk;
+
+  // Write float array to dataset
+  if ( H5Dwrite( d->id, mType.id(), H5S_ALL, H5S_ALL, H5P_DEFAULT, &value ) < 0 )
+    throw MDAL_Status::Err_FailToWriteToDisk;
+}
+
+void HdfDataset::write( std::vector<double> &value )
+{
+  if ( !isValid() || !mType.isValid() )
+    throw MDAL_Status::Err_FailToWriteToDisk;
+
+  // Write double array to dataset.
+  if ( H5Dwrite( d->id, mType.id(), H5S_ALL, H5S_ALL, H5P_DEFAULT, value.data() ) < 0 )
+    throw MDAL_Status::Err_FailToWriteToDisk;
+}
+
+void HdfDataset::write( const std::string &value )
+{
+  if ( !isValid() || !mType.isValid() )
+    throw MDAL_Status::Err_FailToWriteToDisk;
+
+  // make sure you do not store more than it is possible
+  std::vector<char> buf( HDF_MAX_NAME + 1, '\0' );
+  size_t size = value.size() < HDF_MAX_NAME  ? value.size() : HDF_MAX_NAME;
+  memcpy( buf.data(), value.c_str(), size );
+
+  // Write string to dataset.
+  if ( H5Dwrite( d->id, mType.id(), H5S_ALL, H5S_ALL, H5P_DEFAULT, buf.data() ) < 0 )
+    throw MDAL_Status::Err_FailToWriteToDisk;
+}
+
 std::string HdfDataset::readString() const
 {
   if ( elementCount() != 1 )
@@ -182,33 +310,33 @@ std::string HdfDataset::readString() const
   }
 
   char name[HDF_MAX_NAME];
-  hid_t datatype = H5Tcopy( H5T_C_S1 );
-  H5Tset_size( datatype, HDF_MAX_NAME );
-  herr_t status = H5Dread( d->id, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, name );
+  HdfDataType datatype = HdfDataType::createString();
+  herr_t status = H5Dread( d->id, datatype.id(), H5S_ALL, H5S_ALL, H5P_DEFAULT, name );
   if ( status < 0 )
   {
     MDAL::debug( "Failed to read data!" );
     return std::string();
   }
-  H5Tclose( datatype );
   return std::string( name );
 }
 
 HdfDataspace::HdfDataspace( const std::vector<hsize_t> &dims )
-  : d( std::make_shared< Handle >( H5Screate_simple(
-                                     static_cast<int>( dims.size() ),
-                                     dims.data(),
-                                     dims.data()
-                                   )
-                                 )
-     )
 {
+  d = std::make_shared< Handle >( H5Screate_simple(
+                                    static_cast<int>( dims.size() ),
+                                    dims.data(),
+                                    dims.data()
+                                  ) );
 }
 
+
 HdfDataspace::HdfDataspace( hid_t dataset )
-  : d( std::make_shared< Handle >( H5Dget_space( dataset ) ) )
 {
+  if ( dataset >= 0 )
+    d = std::make_shared< Handle >( H5Dget_space( dataset ) );
 }
+
+HdfDataspace::~HdfDataspace() = default;
 
 void HdfDataspace::selectHyperslab( hsize_t start, hsize_t count )
 {
@@ -243,3 +371,44 @@ void HdfDataspace::selectHyperslab( const std::vector<hsize_t> offsets,
 bool HdfDataspace::isValid() const { return d->id >= 0; }
 
 hid_t HdfDataspace::id() const { return d->id; }
+
+
+HdfDataType::HdfDataType() = default;
+
+HdfDataType::HdfDataType( hid_t type, bool isNativeType )
+{
+  if ( isNativeType )
+    mNativeId = type;
+  else
+    d = std::make_shared< Handle >( type );
+}
+
+HdfDataType HdfDataType::createString( int size )
+{
+  assert( size > 0 );
+  if ( size > HDF_MAX_NAME )
+    size = HDF_MAX_NAME;
+
+  hid_t atype = H5Tcopy( H5T_C_S1 );
+  H5Tset_size( atype, static_cast<size_t>( size ) );
+  H5Tset_strpad( atype, H5T_STR_NULLTERM );
+  return HdfDataType( atype, false );
+}
+
+HdfDataType::~HdfDataType() = default;
+
+bool HdfDataType::isValid() const
+{
+  if ( d )
+    return d->id >= 0;
+  else
+    return mNativeId >= 0;
+}
+
+hid_t HdfDataType::id() const
+{
+  if ( d )
+    return d->id;
+  else
+    return mNativeId;
+}

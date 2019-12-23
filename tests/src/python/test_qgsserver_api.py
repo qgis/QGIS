@@ -405,6 +405,11 @@ class QgsServerAPITest(QgsServerAPITestBase):
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, project)
         self.assertEqual(response.headers()['Content-Type'], 'text/html')
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections')
+        request.setHeader('Accept', 'text/html')
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.headers()['Content-Type'], 'text/html')
 
     def test_wfs3_collection_json(self):
         """Test WFS3 API collection"""
@@ -432,6 +437,9 @@ class QgsServerAPITest(QgsServerAPITestBase):
         project = QgsProject()
         project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
         request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer%20èé.html')
+        self.compareApi(request, project, 'test_wfs3_collection_testlayer_èé.html')
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer%20èé/')
+        request.setHeader('Accept', 'text/html')
         self.compareApi(request, project, 'test_wfs3_collection_testlayer_èé.html')
 
     def test_wfs3_collection_items(self):

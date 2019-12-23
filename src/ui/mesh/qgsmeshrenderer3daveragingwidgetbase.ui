@@ -1,0 +1,881 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsMeshRenderer3dAveragingWidgetBase</class>
+ <widget class="QWidget" name="QgsMeshRenderer3dAveragingWidgetBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>852</width>
+    <height>552</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_7">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="mAveragingMethodLabel">
+       <property name="text">
+        <string>Method</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="mAveragingMethodComboBox">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <item>
+        <property name="text">
+         <string>Single Vertical Level (from top)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Single Vertical Level (from bottom)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Multi Vertical Level (from top)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Multi Vertical Level (from bottom)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Sigma</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Depth (relative to sufrace)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Height (relative to bed level)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Elevation (absolute to model's datum)</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QStackedWidget" name="mAveragingMethodStackedWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="mAveragingMethodSingleLevelTopPage">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QWidget" name="widget" native="true">
+         <layout class="QVBoxLayout" name="verticalLayout_18">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QLabel" name="mAveragingMethodLabel_2">
+              <property name="text">
+               <string>Vertical Layer Index</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QgsSpinBox" name="mSingleVerticalLayerIndexTopSpinBox">
+              <property name="minimum">
+               <number>1</number>
+              </property>
+              <property name="maximum">
+               <number>999</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="mSingleTopGroup">
+            <property name="title">
+             <string>Example: Value of top vertical layer</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_2">
+             <item>
+              <widget class="QLabel" name="mSingleTopPngLabel">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>png</string>
+               </property>
+               <property name="scaledContents">
+                <bool>false</bool>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="mSingleTopDescLabel">
+               <property name="text">
+                <string>Display the value from a vertical layer from the top (surface). The level is be truncated to the maximum number of vertical layers for particular face.</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="mAveragingMethodSingleLevelBottomPage">
+      <layout class="QVBoxLayout" name="verticalLayout_17">
+       <item>
+        <widget class="QWidget" name="widget_8" native="true">
+         <layout class="QVBoxLayout" name="verticalLayout_19">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_15">
+            <item>
+             <widget class="QLabel" name="mAveragingMethodLabel_11">
+              <property name="text">
+               <string>Vertical Layer Index</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QgsSpinBox" name="mSingleVerticalLayerIndexBottomSpinBox">
+              <property name="minimum">
+               <number>1</number>
+              </property>
+              <property name="maximum">
+               <number>999</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="groupBox">
+            <property name="title">
+             <string>Example: Value of bottom vertical layer</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_16">
+             <item>
+              <widget class="QLabel" name="mSingleBottomPngLabel">
+               <property name="text">
+                <string>..png...</string>
+               </property>
+               <property name="scaledContents">
+                <bool>false</bool>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="mSingleBottomDescLabel">
+               <property name="text">
+                <string>Display the value from a vertical layer from the bottom (bed). The level is be truncated to the maximum number of vertical layers for particular face.</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_8">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>291</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="mAveragingMethodMultiTopPage">
+      <layout class="QVBoxLayout" name="verticalLayout_20">
+       <item>
+        <widget class="QWidget" name="widget_2" native="true">
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <item>
+             <widget class="QLabel" name="mAveragingMethodLabel_3">
+              <property name="text">
+               <string>Start Vertical Layer Index</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QgsSpinBox" name="mMultiTopVerticalLayerStartIndexSpinBox">
+              <property name="minimum">
+               <number>1</number>
+              </property>
+              <property name="maximum">
+               <number>999</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <widget class="QLabel" name="mAveragingMethodLabel_5">
+              <property name="text">
+               <string>End Vertical Layer Index</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QgsSpinBox" name="mMultiTopVerticalLayerEndIndexSpinBox">
+              <property name="minimum">
+               <number>1</number>
+              </property>
+              <property name="maximum">
+               <number>999</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>Example: first 2 vertical levels </string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="QLabel" name="mMultiTopPngLabel">
+            <property name="text">
+             <string>..png...</string>
+            </property>
+            <property name="scaledContents">
+             <bool>false</bool>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="mMultiTopDescLabel">
+            <property name="text">
+             <string>Averages values from multiple vertical layers from the top (surface). The level is be truncated to the maximum number of vertical layers for particular face.</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>258</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="mAveragingMethodMultiBottomPage">
+      <layout class="QVBoxLayout" name="verticalLayout_21">
+       <item>
+        <widget class="QWidget" name="widget_3" native="true">
+         <layout class="QVBoxLayout" name="verticalLayout_6">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QLabel" name="mAveragingMethodLabel_4">
+              <property name="text">
+               <string>Start Vertical Layer Index</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QgsSpinBox" name="mMultiBottomVerticalLayerStartIndexSpinBox">
+              <property name="minimum">
+               <number>1</number>
+              </property>
+              <property name="maximum">
+               <number>999</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <item>
+             <widget class="QLabel" name="mAveragingMethodLabel_6">
+              <property name="text">
+               <string>End Vertical Layer Index</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QgsSpinBox" name="mMultiBottomVerticalLayerEndIndexSpinBox">
+              <property name="minimum">
+               <number>1</number>
+              </property>
+              <property name="maximum">
+               <number>999</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_3">
+         <property name="title">
+          <string>Example: last 2 vertical levels</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QLabel" name="mMultiBottomPngLabel">
+            <property name="text">
+             <string>..png...</string>
+            </property>
+            <property name="scaledContents">
+             <bool>false</bool>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="mMultiBottomDescLabel">
+            <property name="text">
+             <string>Averages values from multiple vertical layers from the bottom (bed). The level is be truncated to the maximum number of vertical layers for particular face.</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="mAveragingMethodSigmaPage">
+      <layout class="QVBoxLayout" name="verticalLayout_12">
+       <item>
+        <widget class="QWidget" name="widget_4" native="true">
+         <layout class="QVBoxLayout" name="verticalLayout_22">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_7">
+            <item>
+             <widget class="QLabel" name="mAveragingMethodLabel_7">
+              <property name="text">
+               <string>Start fraction </string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QgsDoubleSpinBox" name="mSigmaStartFractionSpinBox">
+              <property name="maximum">
+               <double>1.000000000000000</double>
+              </property>
+              <property name="value">
+               <double>0.250000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_8">
+            <item>
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>End fraction</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QgsDoubleSpinBox" name="mSigmaEndFractionSpinBox">
+              <property name="maximum">
+               <double>1.000000000000000</double>
+              </property>
+              <property name="singleStep">
+               <double>0.100000000000000</double>
+              </property>
+              <property name="value">
+               <double>0.750000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="groupBox_4">
+            <property name="title">
+             <string>Example: Sigma range 0.25 - 0.75 </string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_8">
+             <item>
+              <widget class="QLabel" name="mSigmaPngLabel">
+               <property name="text">
+                <string>..png...</string>
+               </property>
+               <property name="scaledContents">
+                <bool>false</bool>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="mSigmaDescLabel">
+               <property name="text">
+                <string>Sigma averages over the values between 0 (bed level) and 1 (surface).</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="mAveragingMethodDepthPage">
+      <layout class="QVBoxLayout" name="verticalLayout_13">
+       <item>
+        <widget class="QWidget" name="widget_5" native="true">
+         <layout class="QVBoxLayout" name="verticalLayout_23">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_9">
+            <item>
+             <widget class="QLabel" name="mAveragingMethodLabel_8">
+              <property name="text">
+               <string>Start depth</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QgsDoubleSpinBox" name="mDepthStartSpinBox">
+              <property name="maximum">
+               <double>99999.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_10">
+            <item>
+             <widget class="QLabel" name="lab2">
+              <property name="text">
+               <string>End depth</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QgsDoubleSpinBox" name="mDepthEndSpinBox">
+              <property name="maximum">
+               <double>99999.000000000000000</double>
+              </property>
+              <property name="value">
+               <double>100.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="groupBox_5">
+            <property name="title">
+             <string>Example: Depth 0.5 to 1.7</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_9">
+             <item>
+              <widget class="QLabel" name="mDepthPngLabel">
+               <property name="text">
+                <string>..png...</string>
+               </property>
+               <property name="scaledContents">
+                <bool>false</bool>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="mDepthDescLabel">
+               <property name="text">
+                <string>Depth averaging method averages the values based on range defined relative to surface. The range is defined in the same length units as defined by model (e.g. meters)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="mAveragingMethodHeightPage">
+      <layout class="QVBoxLayout" name="verticalLayout_24">
+       <item>
+        <widget class="QWidget" name="widget_6" native="true">
+         <layout class="QVBoxLayout" name="verticalLayout_10">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_11">
+            <item>
+             <widget class="QLabel" name="mAveragingMethodLabel_9">
+              <property name="text">
+               <string>Start height</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QgsDoubleSpinBox" name="mHeightStartSpinBox">
+              <property name="maximum">
+               <double>99999.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_12">
+            <item>
+             <widget class="QLabel" name="labl">
+              <property name="text">
+               <string>End height</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QgsDoubleSpinBox" name="mHeightEndSpinBox">
+              <property name="maximum">
+               <double>99999.000000000000000</double>
+              </property>
+              <property name="value">
+               <double>100.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_6">
+         <property name="title">
+          <string>Example: Height 0-1.5m</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_14">
+          <item>
+           <widget class="QLabel" name="mHeightPngLabel">
+            <property name="text">
+             <string>..png...</string>
+            </property>
+            <property name="scaledContents">
+             <bool>false</bool>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="mHeightDescLabel">
+            <property name="text">
+             <string>Height averaging method averages the values based on range defined relative to bed elevation. The range is defined in the same length units as defined by model (e.g. meters)</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_6">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="mAveragingMethodElevationPage">
+      <layout class="QVBoxLayout" name="verticalLayout_15">
+       <item>
+        <widget class="QWidget" name="widget_7" native="true">
+         <layout class="QVBoxLayout" name="verticalLayout_25">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_13">
+            <item>
+             <widget class="QLabel" name="mAveragingMethodLabel_10">
+              <property name="text">
+               <string>Start elevation</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QgsDoubleSpinBox" name="mElevationStartSpinBox">
+              <property name="minimum">
+               <double>-999999.000000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>0.000000000000000</double>
+              </property>
+              <property name="singleStep">
+               <double>1.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_14">
+            <item>
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>End elevation</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QgsDoubleSpinBox" name="mElevationEndSpinBox">
+              <property name="minimum">
+               <double>-999999.000000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>0.000000000000000</double>
+              </property>
+              <property name="value">
+               <double>-100.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="groupBox_7">
+            <property name="title">
+             <string>Example: Elevation -0.5 -to -2.5</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_11">
+             <item>
+              <widget class="QLabel" name="mElevationPngLabel">
+               <property name="text">
+                <string>..png...</string>
+               </property>
+               <property name="scaledContents">
+                <bool>false</bool>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="mElevationDescLabel">
+               <property name="text">
+                <string> Elevation averaging method averages the values based on range defined absolute value to the model's datum. The range is defined in the same length units as defined by model (e.g. meters). The elevation will be truncated at the surface and bed levels.</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_7">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

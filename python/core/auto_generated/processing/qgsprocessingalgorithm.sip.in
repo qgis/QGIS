@@ -998,6 +998,24 @@ can break valid model execution - so use with extreme caution, and consider usin
     virtual void initAlgorithm( const QVariantMap &configuration = QVariantMap() );
 
 
+    virtual QString inputParameterName() const;
+%Docstring
+Returns the name of the parameter corresponding to the input layer.
+
+By default this is the standard "INPUT" parameter name.
+
+.. versionadded:: 3.12
+%End
+
+    virtual QString inputParameterDescription() const;
+%Docstring
+Returns the translated description of the parameter corresponding to the input layer.
+
+By default this is a translated "Input layer" string.
+
+.. versionadded:: 3.12
+%End
+
     virtual QString outputName() const = 0;
 %Docstring
 Returns the translated, user visible name for any layers created by this algorithm.

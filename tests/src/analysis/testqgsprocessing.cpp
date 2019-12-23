@@ -566,6 +566,7 @@ class TestQgsProcessing: public QObject
     void parameterLayout();
     void parameterLayoutItem();
     void parameterColor();
+    void parameterCoordinateOperation();
     void checkParamValues();
     void combineLayerExtent();
     void processingFeatureSource();
@@ -6532,6 +6533,135 @@ void TestQgsProcessing::parameterColor()
   QVERIFY( def->checkValueIsAcceptable( QVariant() ) ); // should be valid, falls back to valid default
 }
 
+void TestQgsProcessing::parameterCoordinateOperation()
+{
+  QgsProcessingContext context;
+
+  // not optional!
+  std::unique_ptr< QgsProcessingParameterCoordinateOperation > def( new QgsProcessingParameterCoordinateOperation( "non_optional", QString(), QString(), QString(), QString(), QVariant(), QVariant(), false ) );
+  QVERIFY( def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( def->checkValueIsAcceptable( "test" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+  def->setSourceCrsParameterName( QStringLiteral( "src" ) );
+  QCOMPARE( def->sourceCrsParameterName(), QStringLiteral( "src" ) );
+  def->setDestinationCrsParameterName( QStringLiteral( "dest" ) );
+  QCOMPARE( def->destinationCrsParameterName(), QStringLiteral( "dest" ) );
+  def->setSourceCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:7855" ) ) );
+  QCOMPARE( def->sourceCrs().value< QgsCoordinateReferenceSystem >().authid(), QStringLiteral( "EPSG:7855" ) );
+  def->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28355" ) ) );
+  QCOMPARE( def->destinationCrs().value< QgsCoordinateReferenceSystem >().authid(), QStringLiteral( "EPSG:28355" ) );
+
+  // string value
+  QVariantMap params;
+  params.insert( "non_optional", QStringLiteral( "abcdef" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsString( def.get(), params, context ), QString( "abcdef" ) );
+
+  QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
+  QCOMPARE( def->valueAsPythonString( 5, context ), QStringLiteral( "'5'" ) );
+  QCOMPARE( def->valueAsPythonString( QStringLiteral( "abc" ), context ), QStringLiteral( "'abc'" ) );
+  QCOMPARE( def->valueAsPythonString( QStringLiteral( "abc\ndef" ), context ), QStringLiteral( "'abc\\ndef'" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"a\"=1')" ) );
+  QCOMPARE( def->valueAsPythonString( "uri='complex' username=\"complex\"", context ), QStringLiteral( "'uri=\\'complex\\' username=\\\"complex\\\"'" ) );
+  QCOMPARE( def->valueAsPythonString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QStringLiteral( "'c:\\\\test\\\\new data\\\\test.dat'" ) );
+
+  QString pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterCoordinateOperation('non_optional', '', sourceCrsParameterName='src', destinationCrsParameterName='dest', staticSourceCrs=QgsCoordinateReferenceSystem('EPSG:7855'), staticDestinationCrs=QgsCoordinateReferenceSystem('EPSG:28355'), defaultValue=None)" ) );
+
+  QString code = def->asScriptCode();
+  QCOMPARE( code, QStringLiteral( "##non_optional=coordinateoperation" ) );
+  std::unique_ptr< QgsProcessingParameterCoordinateOperation > fromCode( dynamic_cast< QgsProcessingParameterCoordinateOperation * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+
+  QVariantMap map = def->toVariantMap();
+  QgsProcessingParameterCoordinateOperation fromMap( "x" );
+  QVERIFY( fromMap.fromVariantMap( map ) );
+  QCOMPARE( fromMap.name(), def->name() );
+  QCOMPARE( fromMap.description(), def->description() );
+  QCOMPARE( fromMap.flags(), def->flags() );
+  QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
+  QCOMPARE( fromMap.sourceCrsParameterName(), def->sourceCrsParameterName() );
+  QCOMPARE( fromMap.destinationCrsParameterName(), def->destinationCrsParameterName() );
+  QCOMPARE( fromMap.sourceCrs().value< QgsCoordinateReferenceSystem >().authid(), def->sourceCrs().value< QgsCoordinateReferenceSystem >().authid() );
+  QCOMPARE( fromMap.destinationCrs().value< QgsCoordinateReferenceSystem >().authid(), def->destinationCrs().value< QgsCoordinateReferenceSystem >().authid() );
+  def.reset( dynamic_cast< QgsProcessingParameterCoordinateOperation *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
+  QVERIFY( dynamic_cast< QgsProcessingParameterCoordinateOperation *>( def.get() ) );
+
+  fromCode.reset( dynamic_cast< QgsProcessingParameterCoordinateOperation * >( QgsProcessingParameters::parameterFromScriptCode( QStringLiteral( "##non_optional=coordinateoperation None" ) ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QVERIFY( !fromCode->defaultValue().isValid() );
+
+  fromCode.reset( dynamic_cast< QgsProcessingParameterCoordinateOperation * >( QgsProcessingParameters::parameterFromScriptCode( QStringLiteral( "##non_optional=coordinateoperation it's mario" ) ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue().toString(), QStringLiteral( "it's mario" ) );
+
+  def->setDefaultValue( QStringLiteral( "it's mario" ) );
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterCoordinateOperation('non_optional', '', sourceCrsParameterName='src', destinationCrsParameterName='dest', staticSourceCrs=QgsCoordinateReferenceSystem('EPSG:7855'), staticDestinationCrs=QgsCoordinateReferenceSystem('EPSG:28355'), defaultValue='it\\'s mario')" ) );
+  code = def->asScriptCode();
+  fromCode.reset( dynamic_cast< QgsProcessingParameterCoordinateOperation * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+
+  fromCode.reset( dynamic_cast< QgsProcessingParameterCoordinateOperation * >( QgsProcessingParameters::parameterFromScriptCode( QStringLiteral( "##non_optional=coordinateoperation 'my val'" ) ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue().toString(), QStringLiteral( "my val" ) );
+
+  fromCode.reset( dynamic_cast< QgsProcessingParameterCoordinateOperation * >( QgsProcessingParameters::parameterFromScriptCode( QStringLiteral( "##non_optional=coordinateoperation \"my val\"" ) ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue().toString(), QStringLiteral( "my val" ) );
+
+  // optional
+  def.reset( new QgsProcessingParameterCoordinateOperation( "optional", QString(), QString( "default" ), QString(), QString(), QVariant(), QVariant(), true ) );
+  QVERIFY( def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( def->checkValueIsAcceptable( "test" ) );
+  QVERIFY( def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
+
+  params.insert( "optional",  QVariant() );
+  QCOMPARE( QgsProcessingParameters::parameterAsString( def.get(), params, context ), QString( "default" ) );
+  params.insert( "optional",  QString() ); //empty string should not result in default value
+  QCOMPARE( QgsProcessingParameters::parameterAsString( def.get(), params, context ), QString() );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterCoordinateOperation('optional', '', optional=True, defaultValue='default')" ) );
+
+  code = def->asScriptCode();
+  QCOMPARE( code, QStringLiteral( "##optional=optional coordinateoperation default" ) );
+  fromCode.reset( dynamic_cast< QgsProcessingParameterCoordinateOperation * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+
+  // not optional, valid default!
+  def.reset( new QgsProcessingParameterCoordinateOperation( "non_optional", QString(), QString( "def" ), QString(), QString(), QVariant(), QVariant(), false ) );
+  QVERIFY( def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( def->checkValueIsAcceptable( "test" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) ); // should be valid, falls back to valid default
+}
+
 void TestQgsProcessing::checkParamValues()
 {
   DummyAlgorithm a( "asd" );
@@ -8206,6 +8336,32 @@ void TestQgsProcessing::tempUtils()
   QString tempFile3 = QgsProcessingUtils::generateTempFilename( "mybad:file.txt" );
   QVERIFY( tempFile3.endsWith( "mybad_file.txt" ) );
   QVERIFY( tempFile3.startsWith( tempFolder ) );
+
+  // change temp folder in the settings
+  QgsSettings settings;
+  QString alternative_tempFolder1 = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/alternative_temp_test_one" );
+  settings.setValue( QStringLiteral( "Processing/Configuration/TEMP_PATH" ), alternative_tempFolder1 );
+  // check folder and if it's constant with alternative temp folder 1
+  tempFolder = QgsProcessingUtils::tempFolder();
+  QVERIFY( tempFolder.startsWith( alternative_tempFolder1 ) );
+  QCOMPARE( QgsProcessingUtils::tempFolder(), tempFolder );
+  // create file
+  QString alternativeTempFile1 = QgsProcessingUtils::generateTempFilename( "alternative_temptest.txt" );
+  QVERIFY( alternativeTempFile1.endsWith( "alternative_temptest.txt" ) );
+  QVERIFY( alternativeTempFile1.startsWith( tempFolder ) );
+  QVERIFY( alternativeTempFile1.startsWith( alternative_tempFolder1 ) );
+  // change temp folder in the settings again
+  QString alternative_tempFolder2 = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/alternative_temp_test_two" );
+  settings.setValue( QStringLiteral( "Processing/Configuration/TEMP_PATH" ), alternative_tempFolder2 );
+  // check folder and if it's constant constant with alternative temp folder 2
+  tempFolder = QgsProcessingUtils::tempFolder();
+  QVERIFY( tempFolder.startsWith( alternative_tempFolder2 ) );
+  QCOMPARE( QgsProcessingUtils::tempFolder(), tempFolder );
+  // create file
+  QString alternativeTempFile2 = QgsProcessingUtils::generateTempFilename( "alternative_temptest.txt" );
+  QVERIFY( alternativeTempFile2.endsWith( "alternative_temptest.txt" ) );
+  QVERIFY( alternativeTempFile2.startsWith( tempFolder ) );
+  QVERIFY( alternativeTempFile2.startsWith( alternative_tempFolder2 ) );
 }
 
 void TestQgsProcessing::convertCompatible()

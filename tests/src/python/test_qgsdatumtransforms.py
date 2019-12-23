@@ -82,8 +82,8 @@ class TestPyQgsDatumTransform(unittest.TestCase):
         self.assertEqual(len(ops[op2_index].grids), 1)
         self.assertEqual(ops[op2_index].grids[0].shortName, 'GDA94_GDA2020_conformal_and_distortion.gsb')
         self.assertEqual(ops[op2_index].grids[0].fullName, '')
-        self.assertEqual(ops[op2_index].grids[0].packageName, 'proj-datumgrid-oceania')
-        self.assertEqual(ops[op2_index].grids[0].url, 'https://download.osgeo.org/proj/proj-datumgrid-oceania-latest.zip')
+        self.assertTrue(ops[op2_index].grids[0].packageName)
+        self.assertIn('http', ops[op2_index].grids[0].url)
         self.assertTrue(ops[op2_index].grids[0].directDownload)
         self.assertTrue(ops[op2_index].grids[0].openLicense)
 
@@ -94,8 +94,8 @@ class TestPyQgsDatumTransform(unittest.TestCase):
         self.assertEqual(len(ops[op3_index].grids), 1)
         self.assertEqual(ops[op3_index].grids[0].shortName, 'GDA94_GDA2020_conformal.gsb')
         self.assertEqual(ops[op3_index].grids[0].fullName, '')
-        self.assertEqual(ops[op3_index].grids[0].packageName, 'proj-datumgrid-oceania')
-        self.assertEqual(ops[op3_index].grids[0].url, 'https://download.osgeo.org/proj/proj-datumgrid-oceania-latest.zip')
+        self.assertTrue(ops[op3_index].grids[0].packageName)
+        self.assertIn('http', ops[op3_index].grids[0].url)
         self.assertTrue(ops[op3_index].grids[0].directDownload)
         self.assertTrue(ops[op3_index].grids[0].openLicense)
 
@@ -106,6 +106,8 @@ class TestPyQgsDatumTransform(unittest.TestCase):
         self.assertEqual(len(ops[op4_index].grids), 1)
         self.assertEqual(ops[op4_index].grids[0].shortName, 'GDA94_GDA2020_conformal_cocos_island.gsb')
         self.assertEqual(ops[op4_index].grids[0].fullName, '')
+        self.assertTrue(ops[op4_index].grids[0].packageName)
+        self.assertIn('http', ops[op4_index].grids[0].url)
 
         op5_index = [i for i in range(len(ops)) if ops[i].proj == '+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=hgridshift +grids=GDA94_GDA2020_conformal_christmas_island.gsb +step +proj=unitconvert +xy_in=rad +xy_out=deg'][0]
         self.assertTrue(ops[op5_index].name)
@@ -114,6 +116,8 @@ class TestPyQgsDatumTransform(unittest.TestCase):
         self.assertEqual(len(ops[op5_index].grids), 1)
         self.assertEqual(ops[op5_index].grids[0].shortName, 'GDA94_GDA2020_conformal_christmas_island.gsb')
         self.assertEqual(ops[op5_index].grids[0].fullName, '')
+        self.assertTrue(ops[op5_index].grids[0].packageName)
+        self.assertIn('http', ops[op5_index].grids[0].url)
 
         # uses a pivot datum (technically a proj test, but this will help me sleep at night ;)
         ops = QgsDatumTransform.operations(QgsCoordinateReferenceSystem('EPSG:3111'),
@@ -135,8 +139,8 @@ class TestPyQgsDatumTransform(unittest.TestCase):
         self.assertEqual(len(ops[op2_index].grids), 1)
         self.assertEqual(ops[op2_index].grids[0].shortName, 'GDA94_GDA2020_conformal_and_distortion.gsb')
         self.assertEqual(ops[op2_index].grids[0].fullName, '')
-        self.assertEqual(ops[op2_index].grids[0].packageName, 'proj-datumgrid-oceania')
-        self.assertEqual(ops[op2_index].grids[0].url, 'https://download.osgeo.org/proj/proj-datumgrid-oceania-latest.zip')
+        self.assertTrue(ops[op2_index].grids[0].packageName)
+        self.assertIn('http', ops[op2_index].grids[0].url)
         self.assertTrue(ops[op2_index].grids[0].directDownload)
         self.assertTrue(ops[op2_index].grids[0].openLicense)
 
@@ -147,10 +151,25 @@ class TestPyQgsDatumTransform(unittest.TestCase):
         self.assertEqual(len(ops[op3_index].grids), 1)
         self.assertEqual(ops[op3_index].grids[0].shortName, 'GDA94_GDA2020_conformal.gsb')
         self.assertEqual(ops[op3_index].grids[0].fullName, '')
-        self.assertEqual(ops[op3_index].grids[0].packageName, 'proj-datumgrid-oceania')
-        self.assertEqual(ops[op3_index].grids[0].url, 'https://download.osgeo.org/proj/proj-datumgrid-oceania-latest.zip')
+        self.assertTrue(ops[op3_index].grids[0].packageName)
+        self.assertIn('http', ops[op3_index].grids[0].url)
         self.assertTrue(ops[op3_index].grids[0].directDownload)
         self.assertTrue(ops[op3_index].grids[0].openLicense)
+
+    @unittest.skipIf(QgsProjUtils.projVersionMajor() < 6, 'Not a proj6 build')
+    def testNoLasLos(self):
+        """
+        Test that operations which rely on an las/los grid shift file (which are unsupported by Proj6) are not returned
+        """
+        ops = QgsDatumTransform.operations(QgsCoordinateReferenceSystem('EPSG:3035'),
+                                           QgsCoordinateReferenceSystem('EPSG:5514'))
+        self.assertEqual(len(ops), 3)
+        self.assertTrue(ops[0].name)
+        self.assertTrue(ops[0].proj)
+        self.assertTrue(ops[1].name)
+        self.assertTrue(ops[1].proj)
+        self.assertTrue(ops[2].name)
+        self.assertTrue(ops[2].proj)
 
 
 if __name__ == '__main__':

@@ -87,7 +87,7 @@ int QgsSvgCacheEntry::dataSize() const
 
 void QgsSvgCacheEntry::dump() const
 {
-  QgsDebugMsg( QStringLiteral( "path: %1, size %2, width scale factor %3" ).arg( path ).arg( size ).arg( widthScaleFactor ) );
+  QgsDebugMsgLevel( QStringLiteral( "path: %1, size %2, width scale factor %3" ).arg( path ).arg( size ).arg( widthScaleFactor ), 4 );
 }
 ///@endcond
 

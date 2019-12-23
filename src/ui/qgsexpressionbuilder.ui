@@ -99,178 +99,274 @@
                <height>0</height>
               </size>
              </property>
-             <layout class="QVBoxLayout" name="verticalLayout_6">
+             <layout class="QVBoxLayout" name="verticalLayout_6" stretch="0,1,1">
               <item>
-               <widget class="QFrame" name="mOperatorsGroupBox">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Maximum">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>27</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>300</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="sizeIncrement">
-                 <size>
-                  <width>20</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="baseSize">
-                 <size>
-                  <width>7</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="layoutDirection">
-                 <enum>Qt::LeftToRight</enum>
-                </property>
-                <property name="autoFillBackground">
-                 <bool>false</bool>
-                </property>
-                <layout class="QHBoxLayout" name="horizontalLayout_2">
-                 <property name="spacing">
-                  <number>2</number>
-                 </property>
-                 <property name="leftMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="rightMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="bottomMargin">
-                  <number>0</number>
-                 </property>
-                 <item>
-                  <widget class="QPushButton" name="btnEqualPushButton">
-                   <property name="toolTip">
-                    <string>Equal operator</string>
+               <layout class="QHBoxLayout" name="horizontalLayout_10" stretch="0,0,0">
+                <item>
+                 <widget class="QFrame" name="mOperatorsGroupBox">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>27</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>300</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="sizeIncrement">
+                   <size>
+                    <width>20</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="baseSize">
+                   <size>
+                    <width>7</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="layoutDirection">
+                   <enum>Qt::LeftToRight</enum>
+                  </property>
+                  <property name="autoFillBackground">
+                   <bool>false</bool>
+                  </property>
+                  <layout class="QHBoxLayout" name="horizontalLayout_2">
+                   <property name="spacing">
+                    <number>2</number>
                    </property>
-                   <property name="text">
-                    <string>=</string>
+                   <property name="leftMargin">
+                    <number>0</number>
                    </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="btnPlusPushButton">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
+                   <property name="rightMargin">
+                    <number>0</number>
                    </property>
-                   <property name="toolTip">
-                    <string>Addition operator</string>
+                   <property name="bottomMargin">
+                    <number>0</number>
                    </property>
-                   <property name="text">
-                    <string>+</string>
+                   <item>
+                    <widget class="QPushButton" name="btnEqualPushButton">
+                     <property name="toolTip">
+                      <string>Equal operator</string>
+                     </property>
+                     <property name="text">
+                      <string>=</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="btnPlusPushButton">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="toolTip">
+                      <string>Addition operator</string>
+                     </property>
+                     <property name="text">
+                      <string>+</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="btnMinusPushButton">
+                     <property name="toolTip">
+                      <string>Subtraction operator</string>
+                     </property>
+                     <property name="text">
+                      <string>-</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="btnDividePushButton">
+                     <property name="toolTip">
+                      <string>Division operator</string>
+                     </property>
+                     <property name="text">
+                      <string>/</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="btnMultiplyPushButton">
+                     <property name="toolTip">
+                      <string>Multiplication operator</string>
+                     </property>
+                     <property name="text">
+                      <string>*</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="btnExpButton">
+                     <property name="toolTip">
+                      <string>Power operator</string>
+                     </property>
+                     <property name="text">
+                      <string>^</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="btnConcatButton">
+                     <property name="toolTip">
+                      <string>String Concatenation</string>
+                     </property>
+                     <property name="text">
+                      <string>||</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="btnOpenBracketPushButton">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>0</width>
+                       <height>10</height>
+                      </size>
+                     </property>
+                     <property name="toolTip">
+                      <string>Open Bracket </string>
+                     </property>
+                     <property name="text">
+                      <string>(</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="btnCloseBracketPushButton">
+                     <property name="toolTip">
+                      <string>Close Bracket </string>
+                     </property>
+                     <property name="text">
+                      <string>)</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="btnNewLinePushButton">
+                     <property name="toolTip">
+                      <string>New Line</string>
+                     </property>
+                     <property name="text">
+                      <string>'\n'</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_3">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QFrame" name="frame_2">
+                  <property name="frameShape">
+                   <enum>QFrame::NoFrame</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Raised</enum>
+                  </property>
+                  <property name="lineWidth">
+                   <number>1</number>
+                  </property>
+                  <layout class="QHBoxLayout" name="horizontalLayout_11">
+                   <property name="spacing">
+                    <number>2</number>
                    </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="btnMinusPushButton">
-                   <property name="toolTip">
-                    <string>Subtraction operator</string>
+                   <property name="leftMargin">
+                    <number>0</number>
                    </property>
-                   <property name="text">
-                    <string>-</string>
+                   <property name="rightMargin">
+                    <number>0</number>
                    </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="btnDividePushButton">
-                   <property name="toolTip">
-                    <string>Division operator</string>
+                   <property name="bottomMargin">
+                    <number>0</number>
                    </property>
-                   <property name="text">
-                    <string>/</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="btnMultiplyPushButton">
-                   <property name="toolTip">
-                    <string>Multiplication operator</string>
-                   </property>
-                   <property name="text">
-                    <string>*</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="btnExpButton">
-                   <property name="toolTip">
-                    <string>Power operator</string>
-                   </property>
-                   <property name="text">
-                    <string>^</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="btnConcatButton">
-                   <property name="toolTip">
-                    <string>String Concatenation</string>
-                   </property>
-                   <property name="text">
-                    <string>||</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="btnOpenBracketPushButton">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>10</height>
-                    </size>
-                   </property>
-                   <property name="toolTip">
-                    <string>Open Bracket </string>
-                   </property>
-                   <property name="text">
-                    <string>(</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="btnCloseBracketPushButton">
-                   <property name="toolTip">
-                    <string>Close Bracket </string>
-                   </property>
-                   <property name="text">
-                    <string>)</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="btnNewLinePushButton">
-                   <property name="toolTip">
-                    <string>New Line</string>
-                   </property>
-                   <property name="text">
-                    <string>'\n'</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
+                   <item>
+                    <widget class="QToolButton" name="btnClearEditor">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                     <property name="toolTip">
+                      <string>Clear the expression editor</string>
+                     </property>
+                     <property name="text">
+                      <string>Clear</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QToolButton" name="btnSaveExpression">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                     <property name="toolTip">
+                      <string>Add current expression to user expressions</string>
+                     </property>
+                     <property name="text">
+                      <string>Save</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QToolButton" name="btnRemoveExpression">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                     <property name="toolTip">
+                      <string>Remove selected expression from user expressions</string>
+                     </property>
+                     <property name="text">
+                      <string>Remove</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+               </layout>
               </item>
               <item>
                <widget class="QgsCodeEditorExpression" name="txtExpressionString" native="true"/>
@@ -456,20 +552,6 @@
              </property>
              <widget class="QWidget" name="layoutWidget1">
               <layout class="QGridLayout" name="gridLayout_9">
-               <item row="0" column="0">
-                <widget class="QgsFilterLineEdit" name="txtSearchEdit">
-                 <property name="enabled">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="1">
-                <widget class="QPushButton" name="mShowHelpButton">
-                 <property name="text">
-                  <string>Show Help</string>
-                 </property>
-                </widget>
-               </item>
                <item row="1" column="0" colspan="2">
                 <widget class="QTreeView" name="expressionTree">
                  <property name="frameShape">
@@ -493,6 +575,20 @@
                  <attribute name="headerVisible">
                   <bool>false</bool>
                  </attribute>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QPushButton" name="mShowHelpButton">
+                 <property name="text">
+                  <string>Show Help</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QgsFilterLineEdit" name="txtSearchEdit">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                 </widget>
                </item>
               </layout>
@@ -543,21 +639,7 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="1">
-                   <widget class="QgsFilterLineEdit" name="txtSearchEditValues">
-                    <property name="enabled">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0" colspan="2">
-                   <widget class="QListView" name="mValuesListView">
-                    <property name="editTriggers">
-                     <set>QAbstractItemView::NoEditTriggers</set>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
+                  <item row="1" column="0" colspan="2">
                    <layout class="QHBoxLayout" name="horizontalLayout_8">
                     <property name="topMargin">
                      <number>0</number>
@@ -577,6 +659,30 @@
                      </widget>
                     </item>
                    </layout>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QgsFilterLineEdit" name="txtSearchEditValues">
+                    <property name="enabled">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0" colspan="2">
+                   <widget class="QListView" name="mValuesListView">
+                    <property name="editTriggers">
+                     <set>QAbstractItemView::NoEditTriggers</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0" colspan="2">
+                   <widget class="QCheckBox" name="cbxValuesInUse">
+                    <property name="toolTip">
+                     <string>Only show values used in this layer and not all the possible values you could choose.</string>
+                    </property>
+                    <property name="text">
+                     <string>Only show values in use</string>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -677,7 +783,7 @@ Change the name of the script and save to allow QGIS to auto load on startup.</s
                 <string/>
                </property>
                <property name="icon">
-                <iconset resource="../../images/images.qrc">
+                <iconset>
                  <normaloff>:/images/themes/default/console/iconNewTabEditorConsole.svg</normaloff>:/images/themes/default/console/iconNewTabEditorConsole.svg</iconset>
                </property>
                <property name="iconSize">
@@ -769,7 +875,7 @@ Saved scripts are auto loaded on QGIS startup.</string>
                 <string>Save and Load Functions</string>
                </property>
                <property name="icon">
-                <iconset resource="../../images/images.qrc">
+                <iconset>
                  <normaloff>:/images/themes/default/mActionStart.svg</normaloff>:/images/themes/default/mActionStart.svg</iconset>
                </property>
               </widget>
@@ -835,8 +941,6 @@ Saved scripts are auto loaded on QGIS startup.</string>
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../../images/images.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

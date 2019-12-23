@@ -46,6 +46,14 @@
 #include "qgsclassificationmethodregistry.h"
 #include "qgsclassificationequalinterval.h"
 #include "qgsclassificationstandarddeviation.h"
+#include "qgsgui.h"
+#include "qgsprocessinggui.h"
+#include "qgsprocessingguiregistry.h"
+#include "qgsprocessingcontext.h"
+#include "qgsprocessingwidgetwrapper.h"
+
+
+
 
 // ------------------------------ Model ------------------------------------
 
@@ -556,6 +564,8 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   connect( cbxLinkBoundaries, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::toggleBoundariesLink );
   connect( mSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsGraduatedSymbolRendererWidget::mSizeUnitWidget_changed );
 
+  connect( cboGraduatedMode, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsGraduatedSymbolRendererWidget::updateMethodParameters );
+
   connectUpdateHandlers();
 
   // initialize from previously set renderer
@@ -598,6 +608,7 @@ void QgsGraduatedSymbolRendererWidget::mSizeUnitWidget_changed()
 QgsGraduatedSymbolRendererWidget::~QgsGraduatedSymbolRendererWidget()
 {
   delete mModel;
+  mParameterWidgetWrappers.clear();
 }
 
 QgsFeatureRenderer *QgsGraduatedSymbolRendererWidget::renderer()
@@ -631,6 +642,11 @@ void QgsGraduatedSymbolRendererWidget::connectUpdateHandlers()
   connect( cbxAstride, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   connect( cboSymmetryPoint, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   connect( cboSymmetryPoint->lineEdit(), &QLineEdit::editingFinished, this, &QgsGraduatedSymbolRendererWidget::symmetryPointEditingFinished );
+
+  for ( const auto &ppww : qgis::as_const( mParameterWidgetWrappers ) )
+  {
+    connect( ppww.get(), &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+  }
 }
 
 // Connect/disconnect event handlers which trigger updating renderer
@@ -652,6 +668,11 @@ void QgsGraduatedSymbolRendererWidget::disconnectUpdateHandlers()
   disconnect( cbxAstride, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   disconnect( cboSymmetryPoint, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   disconnect( cboSymmetryPoint->lineEdit(), &QLineEdit::editingFinished, this, &QgsGraduatedSymbolRendererWidget::symmetryPointEditingFinished );
+
+  for ( const auto &ppww : qgis::as_const( mParameterWidgetWrappers ) )
+  {
+    disconnect( ppww.get(), &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+  }
 }
 
 void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
@@ -684,6 +705,14 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
     txtLegendFormat->setText( method->labelFormat() );
     spinPrecision->setValue( method->labelPrecision() );
     cbxTrimTrailingZeroes->setChecked( method->labelTrimTrailingZeroes() );
+
+    QgsProcessingContext context;
+    for ( const auto &ppww : qgis::as_const( mParameterWidgetWrappers ) )
+    {
+      const QgsProcessingParameterDefinition *def = ppww->parameterDefinition();
+      QVariant value = method->parameterValues().value( def->name(), def->defaultValue() );
+      ppww->setParameterValue( value, context );
+    }
   }
 
   // Only update class count if different - otherwise typing value gets very messy
@@ -798,6 +827,31 @@ void QgsGraduatedSymbolRendererWidget::methodComboBox_currentIndexChanged( int )
   }
 }
 
+void QgsGraduatedSymbolRendererWidget::updateMethodParameters()
+{
+  clearParameterWidgets();
+
+  const QString methodId = cboGraduatedMode->currentData().toString();
+  QgsClassificationMethod *method = QgsApplication::classificationMethodRegistry()->method( methodId );
+  Q_ASSERT( method );
+
+  // need more context?
+  QgsProcessingContext context;
+
+  for ( const QgsProcessingParameterDefinition *def : method->parameterDefinitions() )
+  {
+    QgsAbstractProcessingParameterWidgetWrapper *ppww = QgsGui::processingGuiRegistry()->createParameterWidgetWrapper( def, QgsProcessingGui::Standard );
+    mParametersLayout->addRow( ppww->createWrappedLabel(), ppww->createWrappedWidget( context ) );
+
+    QVariant value = method->parameterValues().value( def->name(), def->defaultValue() );
+    ppww->setParameterValue( value, context );
+
+    connect( ppww, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+
+    mParameterWidgetWrappers.push_back( std::unique_ptr<QgsAbstractProcessingParameterWidgetWrapper>( ppww ) );
+  }
+}
+
 void QgsGraduatedSymbolRendererWidget::toggleMethodWidgets( MethodMode mode )
 {
   switch ( mode )
@@ -826,6 +880,22 @@ void QgsGraduatedSymbolRendererWidget::toggleMethodWidgets( MethodMode mode )
       break;
     }
   }
+}
+
+void QgsGraduatedSymbolRendererWidget::clearParameterWidgets()
+{
+  while ( mParametersLayout->rowCount() )
+  {
+    QFormLayout::TakeRowResult row = mParametersLayout->takeRow( 0 );
+    for ( QLayoutItem *item : QList<QLayoutItem *>( {row.labelItem, row.fieldItem} ) )
+      if ( item )
+      {
+        if ( item->widget() )
+          item->widget()->deleteLater();
+        delete item;
+      }
+  }
+  mParameterWidgetWrappers.clear();
 }
 
 void QgsGraduatedSymbolRendererWidget::refreshRanges( bool reset )
@@ -945,6 +1015,11 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
     bool astride = cbxAstride->isChecked();
     method->setSymmetricMode( true, symmetryPoint, astride );
   }
+
+  QVariantMap parameterValues;
+  for ( const auto &ppww : qgis::as_const( mParameterWidgetWrappers ) )
+    parameterValues.insert( ppww->parameterDefinition()->name(), ppww->parameterValue() );
+  method->setParameterValues( parameterValues );
 
   // set method to renderer
   mRenderer->setClassificationMethod( method );

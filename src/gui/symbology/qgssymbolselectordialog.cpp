@@ -782,6 +782,8 @@ QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *s
   layout()->addWidget( mSelectorWidget );
   layout()->addWidget( mButtonBox );
 
+  connect( mSelectorWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );
+
   mSelectorWidget->setMinimumSize( 460, 560 );
   setObjectName( QStringLiteral( "SymbolSelectorDialog" ) );
   QgsGui::instance()->enableAutoGeometryRestore( this );

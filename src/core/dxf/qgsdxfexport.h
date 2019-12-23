@@ -49,6 +49,7 @@ namespace pal // SIP_SKIP
   class LabelPosition;
 }
 
+
 /**
  * \ingroup core
  * \class QgsDxfExport
@@ -141,6 +142,25 @@ class CORE_EXPORT QgsDxfExport
       HFit = 5,        //!< Fit into point = (5) (if VAlign==0)
       Undefined = 9999 //!< Undefined
     };
+
+    /**
+     * Flags for polylines
+     *
+     * \since QGIS 3.12
+     */
+    enum DxfPolylineFlag
+    {
+      Closed = 1, //!< This is a closed polyline (or a polygon mesh closed in the M direction)
+      Curve = 2, //!< Curve-fit vertices have been added
+      Spline = 4, //! < Spline-fit vertices have been added
+      Is3DPolyline = 8, //!< This is a 3D polyline
+      Is3DPolygonMesh = 16, //!< This is a 3D polygon mesh
+      PolygonMesh = 32, //!< The polygon mesh is closed in the N direction
+      PolyfaceMesh = 64, //!< The polyline is a polyface mesh
+      ContinuousPattern = 128, //!< The linetype pattern is generated continuously around the vertices of this polyline
+    };
+
+    Q_DECLARE_FLAGS( DxfPolylineFlags, DxfPolylineFlag )
 
     /**
      * Constructor for QgsDxfExport.
@@ -606,5 +626,6 @@ class CORE_EXPORT QgsDxfExport
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDxfExport::Flags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDxfExport::DxfPolylineFlags )
 
 #endif // QGSDXFEXPORT_H

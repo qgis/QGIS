@@ -89,7 +89,7 @@ void TestQgsMeasureTool::testLengthCalculationCartesian()
   s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), true );
 
   // set project CRS and ellipsoid
-  QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
+  QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3111" ) );
   mCanvas->setDestinationCrs( srs );
   QgsProject::instance()->setCrs( srs );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
@@ -132,7 +132,7 @@ void TestQgsMeasureTool::testLengthCalculationCartesian()
   QGSCOMPARENEAR( measured, expected, 0.001 );
 
   // check new CoordinateReferenceSystem, points must be reprojected to paint them successfully (issue #15182)
-  QgsCoordinateReferenceSystem srs2( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
+  QgsCoordinateReferenceSystem srs2( QStringLiteral( "EPSG:4326" ) );
 
   QgsCoordinateTransform ct( srs, srs2, QgsProject::instance() );
 
@@ -157,7 +157,7 @@ void TestQgsMeasureTool::testLengthCalculationProjected()
   s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), true );
 
   // set project CRS and ellipsoid
-  QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
+  QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3111" ) );
   mCanvas->setDestinationCrs( srs );
   QgsProject::instance()->setCrs( srs );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
@@ -199,7 +199,7 @@ void TestQgsMeasureTool::testLengthCalculationProjected()
   QGSCOMPARENEAR( measured, expected, 0.001 );
 
   // check new CoordinateReferenceSystem, points must be reprojected to paint them successfully (issue #15182)
-  QgsCoordinateReferenceSystem srs2( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
+  QgsCoordinateReferenceSystem srs2( QStringLiteral( "EPSG:4326" ) );
 
   QgsCoordinateTransform ct( srs, srs2, QgsProject::instance() );
 
@@ -252,7 +252,7 @@ void TestQgsMeasureTool::testAreaCalculationCartesian()
   s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), true );
 
   // set project CRS and ellipsoid
-  QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
+  QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3111" ) );
   mCanvas->setDestinationCrs( srs );
   QgsProject::instance()->setCrs( srs );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
@@ -306,7 +306,7 @@ void TestQgsMeasureTool::testAreaCalculationProjected()
   s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), true );
 
   // set project CRS and ellipsoid
-  QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
+  QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3111" ) );
   mCanvas->setDestinationCrs( srs );
   QgsProject::instance()->setCrs( srs );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );

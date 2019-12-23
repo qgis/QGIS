@@ -45,23 +45,23 @@ defaultMenuEntries = {}
 vectorMenu = QApplication.translate('MainWindow', 'Vect&or')
 analysisToolsMenu = vectorMenu + "/" + Processing.tr('&Analysis Tools')
 defaultMenuEntries.update({'qgis:distancematrix': analysisToolsMenu,
-                           'qgis:sumlinelengths': analysisToolsMenu,
-                           'qgis:countpointsinpolygon': analysisToolsMenu,
+                           'native:sumlinelengths': analysisToolsMenu,
+                           'native:countpointsinpolygon': analysisToolsMenu,
                            'qgis:listuniquevalues': analysisToolsMenu,
                            'qgis:basicstatisticsforfields': analysisToolsMenu,
-                           'qgis:nearestneighbouranalysis': analysisToolsMenu,
+                           'native:nearestneighbouranalysis': analysisToolsMenu,
                            'native:meancoordinates': analysisToolsMenu,
                            'native:lineintersections': analysisToolsMenu})
 researchToolsMenu = vectorMenu + "/" + Processing.tr('&Research Tools')
-defaultMenuEntries.update({'qgis:creategrid': researchToolsMenu,
+defaultMenuEntries.update({'native:creategrid': researchToolsMenu,
                            'qgis:randomselection': researchToolsMenu,
                            'qgis:randomselectionwithinsubsets': researchToolsMenu,
-                           'qgis:randompointsinextent': researchToolsMenu,
+                           'native:randompointsinextent': researchToolsMenu,
                            'qgis:randompointsinlayerbounds': researchToolsMenu,
                            'qgis:randompointsinsidepolygons': researchToolsMenu,
                            'qgis:regularpoints': researchToolsMenu,
                            'native:selectbylocation': researchToolsMenu,
-                           'qgis:polygonfromlayerextent': researchToolsMenu})
+                           'native:polygonfromlayerextent': researchToolsMenu})
 
 geoprocessingToolsMenu = vectorMenu + "/" + Processing.tr('&Geoprocessing Tools')
 defaultMenuEntries.update({'native:buffer': geoprocessingToolsMenu,
@@ -80,7 +80,7 @@ defaultMenuEntries.update({'qgis:checkvalidity': geometryToolsMenu,
                            'qgis:delaunaytriangulation': geometryToolsMenu,
                            'qgis:voronoipolygons': geometryToolsMenu,
                            'native:simplifygeometries': geometryToolsMenu,
-                           'qgis:densifygeometries': geometryToolsMenu,
+                           'native:densifygeometries': geometryToolsMenu,
                            'native:multiparttosingleparts': geometryToolsMenu,
                            'native:collect': geometryToolsMenu,
                            'native:polygonstolines': geometryToolsMenu,
@@ -91,7 +91,7 @@ defaultMenuEntries.update({'native:reprojectlayer': managementToolsMenu,
                            'qgis:joinattributesbylocation': managementToolsMenu,
                            'qgis:splitvectorlayer': managementToolsMenu,
                            'native:mergevectorlayers': managementToolsMenu,
-                           'qgis:createspatialindex': managementToolsMenu})
+                           'native:createspatialindex': managementToolsMenu})
 
 rasterMenu = QApplication.translate('MainWindow', '&Raster')
 projectionsMenu = rasterMenu + "/" + Processing.tr('Projections')

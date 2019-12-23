@@ -90,7 +90,6 @@ void QgsTextFormatWidget::initWidget()
   connect( mPreviewBackgroundBtn, &QgsColorButton::colorChanged, this, &QgsTextFormatWidget::mPreviewBackgroundBtn_colorChanged );
   connect( mDirectSymbLeftToolBtn, &QToolButton::clicked, this, &QgsTextFormatWidget::mDirectSymbLeftToolBtn_clicked );
   connect( mDirectSymbRightToolBtn, &QToolButton::clicked, this, &QgsTextFormatWidget::mDirectSymbRightToolBtn_clicked );
-  connect( mChkNoObstacle, &QCheckBox::toggled, this, &QgsTextFormatWidget::mChkNoObstacle_toggled );
   connect( chkLineOrientationDependent, &QCheckBox::toggled, this, &QgsTextFormatWidget::chkLineOrientationDependent_toggled );
   connect( mToolButtonConfigureSubstitutes, &QToolButton::clicked, this, &QgsTextFormatWidget::mToolButtonConfigureSubstitutes_clicked );
   connect( mKerningCheckBox, &QCheckBox::toggled, this, &QgsTextFormatWidget::kerningToggled );
@@ -169,11 +168,8 @@ void QgsTextFormatWidget::initWidget()
   mZIndexSpinBox->setClearValue( 0.0 );
   mLineDistanceSpnBx->setClearValue( 0.0 );
 
-  mObstacleTypeComboBox->addItem( tr( "Over the feature's interior" ), QgsPalLayerSettings::PolygonInterior );
-  mObstacleTypeComboBox->addItem( tr( "Over the feature's boundary" ), QgsPalLayerSettings::PolygonBoundary );
-
-  mOffsetTypeComboBox->addItem( tr( "From point" ), QgsPalLayerSettings::FromPoint );
-  mOffsetTypeComboBox->addItem( tr( "From symbol bounds" ), QgsPalLayerSettings::FromSymbolBounds );
+  mOffsetTypeComboBox->addItem( tr( "From Point" ), QgsPalLayerSettings::FromPoint );
+  mOffsetTypeComboBox->addItem( tr( "From Symbol Bounds" ), QgsPalLayerSettings::FromSymbolBounds );
 
   mShapeTypeCmbBx->addItem( tr( "Rectangle" ), QgsTextBackgroundSettings::ShapeRectangle );
   mShapeTypeCmbBx->addItem( tr( "Square" ), QgsTextBackgroundSettings::ShapeSquare );
@@ -388,8 +384,6 @@ void QgsTextFormatWidget::initWidget()
           << mMaxCharAngleInDSpinBox
           << mMaxCharAngleOutDSpinBox
           << mMinSizeSpinBox
-          << mObstacleFactorSlider
-          << mObstacleTypeComboBox
           << mOffsetTypeComboBox
           << mPalShowAllLabelsForLayerChkBx
           << mPointAngleSpinBox
@@ -798,7 +792,6 @@ void QgsTextFormatWidget::populateDataDefinedButtons()
   registerDataDefinedButton( mAlwaysShowDDBtn, QgsPalLayerSettings::AlwaysShow );
 
   registerDataDefinedButton( mIsObstacleDDBtn, QgsPalLayerSettings::IsObstacle );
-  registerDataDefinedButton( mObstacleFactorDDBtn, QgsPalLayerSettings::ObstacleFactor );
   registerDataDefinedButton( mZIndexDDBtn, QgsPalLayerSettings::ZIndex );
 
   registerDataDefinedButton( mCalloutDrawDDBtn, QgsPalLayerSettings::CalloutDraw );
@@ -850,6 +843,7 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
   mBufferEffectWidget->setPaintEffect( mBufferEffect.get() );
 
   // mask
+  mMaskedSymbolLayers = mask.maskedSymbolLayers();
   mEnableMaskChkBx->setChecked( mask.enabled() );
   mMaskBufferSizeSpinBox->setValue( mask.size() );
   mMaskBufferUnitWidget->setUnit( mask.sizeUnit() );
@@ -1028,6 +1022,7 @@ QgsTextFormat QgsTextFormatWidget::format( bool includeDataDefinedProperties ) c
     mask.setPaintEffect( mMaskEffect->clone() );
   else
     mask.setPaintEffect( nullptr );
+  mask.setMaskedSymbolLayers( mMaskedSymbolLayers );
   format.setMask( mask );
 
   // shape background
@@ -1872,12 +1867,6 @@ void QgsTextFormatWidget::mDirectSymbRightToolBtn_clicked()
 
   if ( !dirSymb.isNull() )
     mDirectSymbRightLineEdit->setText( QString( dirSymb ) );
-}
-
-void QgsTextFormatWidget::mChkNoObstacle_toggled( bool active )
-{
-  mPolygonObstacleTypeFrame->setEnabled( active );
-  mObstaclePriorityFrame->setEnabled( active );
 }
 
 void QgsTextFormatWidget::chkLineOrientationDependent_toggled( bool active )

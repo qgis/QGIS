@@ -32,7 +32,6 @@
 #include "layer.h"
 #include "palexception.h"
 #include "palstat.h"
-#include "rtree.hpp"
 #include "costcalculator.h"
 #include "feature.h"
 #include "geomfunction.h"
@@ -41,15 +40,15 @@
 #include "pointset.h"
 #include "internalexception.h"
 #include "util.h"
+#include "palrtree.h"
 #include <cfloat>
+#include <list>
 
 using namespace pal;
 
-Pal::Pal()
-{
-  // do not init and exit GEOS - we do it inside QGIS
-  //initGEOS( geosNotice, geosError );
-}
+Pal::Pal() = default;
+
+Pal::~Pal() = default;
 
 void Pal::removeLayer( Layer *layer )
 {
@@ -57,200 +56,71 @@ void Pal::removeLayer( Layer *layer )
     return;
 
   mMutex.lock();
-  if ( QgsAbstractLabelProvider *key = mLayers.key( layer, nullptr ) )
+
+  for ( auto it = mLayers.begin(); it != mLayers.end(); ++it )
   {
-    mLayers.remove( key );
-    delete layer;
+    if ( it->second.get() == layer )
+    {
+      mLayers.erase( it );
+      break;
+    }
   }
   mMutex.unlock();
-}
-
-Pal::~Pal()
-{
-
-  mMutex.lock();
-
-  qDeleteAll( mLayers );
-  mLayers.clear();
-  mMutex.unlock();
-
-  // do not init and exit GEOS - we do it inside QGIS
-  //finishGEOS();
 }
 
 Layer *Pal::addLayer( QgsAbstractLabelProvider *provider, const QString &layerName, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, bool displayAll )
 {
   mMutex.lock();
 
-  Q_ASSERT( !mLayers.contains( provider ) );
+  Q_ASSERT( mLayers.find( provider ) == mLayers.end() );
 
-  Layer *layer = new Layer( provider, layerName, arrangement, defaultPriority, active, toLabel, this, displayAll );
-  mLayers.insert( provider, layer );
+  std::unique_ptr< Layer > layer = qgis::make_unique< Layer >( provider, layerName, arrangement, defaultPriority, active, toLabel, this, displayAll );
+  Layer *res = layer.get();
+  mLayers.insert( std::pair<QgsAbstractLabelProvider *, std::unique_ptr< Layer >>( provider, std::move( layer ) ) );
   mMutex.unlock();
 
-  return layer;
-}
-
-typedef struct _featCbackCtx
-{
-  Layer *layer = nullptr;
-  QLinkedList<Feats *> *fFeats;
-  RTree<FeaturePart *, double, 2, double> *obstacles;
-  RTree<LabelPosition *, double, 2, double> *candidates;
-  QList<LabelPosition *> *positionsWithNoCandidates;
-  const GEOSPreparedGeometry *mapBoundary = nullptr;
-} FeatCallBackCtx;
-
-
-
-/*
- * Callback function
- *
- * Extract a specific shape from indexes
- */
-bool extractFeatCallback( FeaturePart *ft_ptr, void *ctx )
-{
-  double amin[2], amax[2];
-  FeatCallBackCtx *context = reinterpret_cast< FeatCallBackCtx * >( ctx );
-
-  // Holes of the feature are obstacles
-  for ( int i = 0; i < ft_ptr->getNumSelfObstacles(); i++ )
-  {
-    ft_ptr->getSelfObstacle( i )->getBoundingBox( amin, amax );
-    context->obstacles->Insert( amin, amax, ft_ptr->getSelfObstacle( i ) );
-
-    if ( !ft_ptr->getSelfObstacle( i )->getHoleOf() )
-    {
-      //ERROR: SHOULD HAVE A PARENT!!!!!
-    }
-  }
-
-  // generate candidates for the feature part
-  const QList< LabelPosition * > lPos = ft_ptr->createCandidates( context->mapBoundary, ft_ptr, context->candidates );
-  if ( !lPos.empty() )
-  {
-    // valid features are added to fFeats
-    Feats *ft = new Feats();
-    ft->feature = ft_ptr;
-    ft->shape = nullptr;
-    ft->lPos = lPos;
-    ft->priority = ft_ptr->calculatePriority();
-    context->fFeats->append( ft );
-  }
-  else
-  {
-    // features with no candidates are recorded in the unlabeled feature list
-    std::unique_ptr< LabelPosition > unplacedPosition = ft_ptr->createCandidatePointOnSurface( ft_ptr );
-    if ( unplacedPosition )
-      context->positionsWithNoCandidates->append( unplacedPosition.release() );
-  }
-
-  return true;
-}
-
-typedef struct _obstaclebackCtx
-{
-  RTree<FeaturePart *, double, 2, double> *obstacles;
-  int obstacleCount;
-} ObstacleCallBackCtx;
-
-/*
- * Callback function
- *
- * Extract obstacles from indexes
- */
-bool extractObstaclesCallback( FeaturePart *ft_ptr, void *ctx )
-{
-  double amin[2], amax[2];
-  ObstacleCallBackCtx *context = reinterpret_cast< ObstacleCallBackCtx * >( ctx );
-
-  // insert into obstacles
-  ft_ptr->getBoundingBox( amin, amax );
-  context->obstacles->Insert( amin, amax, ft_ptr );
-  context->obstacleCount++;
-  return true;
-}
-
-typedef struct _filterContext
-{
-  RTree<LabelPosition *, double, 2, double> *cdtsIndex;
-  Pal *pal = nullptr;
-} FilterContext;
-
-bool filteringCallback( FeaturePart *featurePart, void *ctx )
-{
-
-  RTree<LabelPosition *, double, 2, double> *cdtsIndex = ( reinterpret_cast< FilterContext * >( ctx ) )->cdtsIndex;
-  Pal *pal = ( reinterpret_cast< FilterContext * >( ctx ) )->pal;
-
-  if ( pal->isCanceled() )
-    return false; // do not continue searching
-
-  double amin[2], amax[2];
-  featurePart->getBoundingBox( amin, amax );
-
-  LabelPosition::PruneCtx pruneContext;
-  pruneContext.obstacle = featurePart;
-  pruneContext.pal = pal;
-  cdtsIndex->Search( amin, amax, LabelPosition::pruneCallback, static_cast< void * >( &pruneContext ) );
-
-  return true;
+  return res;
 }
 
 std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeometry &mapBoundary )
 {
   // to store obstacles
-  RTree<FeaturePart *, double, 2, double> obstacles;
+  PalRtree< FeaturePart > obstacles;
+  PalRtree< LabelPosition > allCandidatesFirstRound;
+  std::vector< FeaturePart * > allObstacleParts;
   std::unique_ptr< Problem > prob = qgis::make_unique< Problem >();
-
-  int i, j;
 
   double bbx[4];
   double bby[4];
 
-  double amin[2];
-  double amax[2];
+  std::size_t max_p = 0;
 
-  int max_p = 0;
-
-  LabelPosition *lp = nullptr;
-
-  bbx[0] = bbx[3] = amin[0] = prob->bbox[0] = extent.xMinimum();
-  bby[0] = bby[1] = amin[1] = prob->bbox[1] = extent.yMinimum();
-  bbx[1] = bbx[2] = amax[0] = prob->bbox[2] = extent.xMaximum();
-  bby[2] = bby[3] = amax[1] = prob->bbox[3] = extent.yMaximum();
+  bbx[0] = bbx[3] = prob->mMapExtentBounds[0] = extent.xMinimum();
+  bby[0] = bby[1] = prob->mMapExtentBounds[1] = extent.yMinimum();
+  bbx[1] = bbx[2] = prob->mMapExtentBounds[2] = extent.xMaximum();
+  bby[2] = bby[3] = prob->mMapExtentBounds[3] = extent.yMaximum();
 
   prob->pal = this;
 
-  QLinkedList<Feats *> fFeats;
-
-  FeatCallBackCtx context;
+  std::list< std::unique_ptr< Feats > > features;
 
   // prepare map boundary
   geos::unique_ptr mapBoundaryGeos( QgsGeos::asGeos( mapBoundary ) );
   geos::prepared_unique_ptr mapBoundaryPrepared( GEOSPrepare_r( QgsGeos::getGEOSHandler(), mapBoundaryGeos.get() ) );
 
-  context.fFeats = &fFeats;
-  context.obstacles = &obstacles;
-  context.candidates = prob->candidates;
-  context.positionsWithNoCandidates = prob->positionsWithNoCandidates();
-  context.mapBoundary = mapBoundaryPrepared.get();
-
-  ObstacleCallBackCtx obstacleContext;
-  obstacleContext.obstacles = &obstacles;
-  obstacleContext.obstacleCount = 0;
+  int obstacleCount = 0;
 
   // first step : extract features from layers
 
-  int previousFeatureCount = 0;
+  std::size_t previousFeatureCount = 0;
   int previousObstacleCount = 0;
 
   QStringList layersWithFeaturesInBBox;
 
-  mMutex.lock();
-  const auto constMLayers = mLayers;
-  for ( Layer *layer : constMLayers )
+  QMutexLocker palLocker( &mMutex );
+  for ( const auto &it : mLayers )
   {
+    Layer *layer = it.second.get();
     if ( !layer )
     {
       // invalid layer name
@@ -265,68 +135,159 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
     if ( layer->mergeConnectedLines() )
       layer->joinConnectedFeatures();
 
+    if ( isCanceled() )
+      return nullptr;
+
     layer->chopFeaturesAtRepeatDistance();
 
-    layer->mMutex.lock();
+    if ( isCanceled() )
+      return nullptr;
 
-    // find features within bounding box and generate candidates list
-    context.layer = layer;
-    layer->mFeatureIndex->Search( amin, amax, extractFeatCallback, static_cast< void * >( &context ) );
-    // find obstacles within bounding box
-    layer->mObstacleIndex->Search( amin, amax, extractObstaclesCallback, static_cast< void * >( &obstacleContext ) );
+    QMutexLocker locker( &layer->mMutex );
 
-    layer->mMutex.unlock();
+    // generate candidates for all features
+    for ( FeaturePart *featurePart : qgis::as_const( layer->mFeatureParts ) )
+    {
+      if ( isCanceled() )
+        break;
 
-    if ( context.fFeats->size() - previousFeatureCount > 0 || obstacleContext.obstacleCount > previousObstacleCount )
+      // Holes of the feature are obstacles
+      for ( int i = 0; i < featurePart->getNumSelfObstacles(); i++ )
+      {
+        FeaturePart *selfObstacle =  featurePart->getSelfObstacle( i );
+        obstacles.insert( selfObstacle, selfObstacle->boundingBox() );
+        allObstacleParts.emplace_back( selfObstacle );
+
+        if ( !featurePart->getSelfObstacle( i )->getHoleOf() )
+        {
+          //ERROR: SHOULD HAVE A PARENT!!!!!
+        }
+      }
+
+      // generate candidates for the feature part
+      std::vector< std::unique_ptr< LabelPosition > > candidates = featurePart->createCandidates( this );
+
+      if ( isCanceled() )
+        break;
+
+      // purge candidates that are outside the bbox
+      candidates.erase( std::remove_if( candidates.begin(), candidates.end(), [&mapBoundaryPrepared, this]( std::unique_ptr< LabelPosition > &candidate )
+      {
+        if ( showPartialLabels() )
+          return !candidate->intersects( mapBoundaryPrepared.get() );
+        else
+          return !candidate->within( mapBoundaryPrepared.get() );
+      } ), candidates.end() );
+
+      if ( isCanceled() )
+        break;
+
+      if ( !candidates.empty() )
+      {
+        for ( std::unique_ptr< LabelPosition > &candidate : candidates )
+        {
+          candidate->insertIntoIndex( allCandidatesFirstRound );
+        }
+
+        std::sort( candidates.begin(), candidates.end(), CostCalculator::candidateSortGrow );
+
+        // valid features are added to fFeats
+        std::unique_ptr< Feats > ft = qgis::make_unique< Feats >();
+        ft->feature = featurePart;
+        ft->shape = nullptr;
+        ft->candidates = std::move( candidates );
+        ft->priority = featurePart->calculatePriority();
+        features.emplace_back( std::move( ft ) );
+      }
+      else
+      {
+        // features with no candidates are recorded in the unlabeled feature list
+        std::unique_ptr< LabelPosition > unplacedPosition = featurePart->createCandidatePointOnSurface( featurePart );
+        if ( unplacedPosition )
+          prob->positionsWithNoCandidates()->emplace_back( std::move( unplacedPosition ) );
+      }
+    }
+    if ( isCanceled() )
+      return nullptr;
+
+    // collate all layer obstacles
+    for ( FeaturePart *obstaclePart : qgis::as_const( layer->mObstacleParts ) )
+    {
+      if ( isCanceled() )
+        break; // do not continue searching
+
+      // insert into obstacles
+      obstacles.insert( obstaclePart, obstaclePart->boundingBox() );
+      allObstacleParts.emplace_back( obstaclePart );
+      obstacleCount++;
+    }
+
+    if ( isCanceled() )
+      return nullptr;
+
+    locker.unlock();
+
+    if ( features.size() - previousFeatureCount > 0 || obstacleCount > previousObstacleCount )
     {
       layersWithFeaturesInBBox << layer->name();
     }
-    previousFeatureCount = context.fFeats->size();
-    previousObstacleCount = obstacleContext.obstacleCount;
+    previousFeatureCount = features.size();
+    previousObstacleCount = obstacleCount;
   }
-  mMutex.unlock();
+  palLocker.unlock();
 
-  prob->nbLabelledLayers = layersWithFeaturesInBBox.size();
+  if ( isCanceled() )
+    return nullptr;
+
+  prob->mLayerCount = layersWithFeaturesInBBox.size();
   prob->labelledLayersName = layersWithFeaturesInBBox;
 
-  prob->nbft = fFeats.size();
-  prob->nblp = 0;
-  prob->featNbLp = new int [prob->nbft];
-  prob->featStartId = new int [prob->nbft];
-  prob->inactiveCost = new double[prob->nbft];
+  prob->mFeatureCount = features.size();
+  prob->mTotalCandidates = 0;
+  prob->mFeatNbLp.resize( prob->mFeatureCount );
+  prob->mFeatStartId.resize( prob->mFeatureCount );
+  prob->mInactiveCost.resize( prob->mFeatureCount );
 
-
-  if ( !fFeats.isEmpty() )
+  if ( !features.empty() )
   {
-    Feats *feat = nullptr;
-
     // Filtering label positions against obstacles
-    amin[0] = amin[1] = std::numeric_limits<double>::lowest();
-    amax[0] = amax[1] = std::numeric_limits<double>::max();
-    FilterContext filterCtx;
-    filterCtx.cdtsIndex = prob->candidates;
-    filterCtx.pal = this;
-    obstacles.Search( amin, amax, filteringCallback, static_cast< void * >( &filterCtx ) );
+    for ( FeaturePart *obstaclePart : allObstacleParts )
+    {
+      if ( isCanceled() )
+        break; // do not continue searching
+
+      allCandidatesFirstRound.intersects( obstaclePart->boundingBox(), [obstaclePart, this]( const LabelPosition * candidatePosition ) -> bool
+      {
+        // test whether we should ignore this obstacle for the candidate. We do this if:
+        // 1. it's not a hole, and the obstacle belongs to the same label feature as the candidate (e.g.,
+        // features aren't obstacles for their own labels)
+        // 2. it IS a hole, and the hole belongs to a different label feature to the candidate (e.g., holes
+        // are ONLY obstacles for the labels of the feature they belong to)
+        if ( ( !obstaclePart->getHoleOf() && candidatePosition->getFeaturePart()->hasSameLabelFeatureAs( obstaclePart ) )
+             || ( obstaclePart->getHoleOf() && !candidatePosition->getFeaturePart()->hasSameLabelFeatureAs( dynamic_cast< FeaturePart * >( obstaclePart->getHoleOf() ) ) ) )
+        {
+          return true;
+        }
+
+        CostCalculator::addObstacleCostPenalty( const_cast< LabelPosition * >( candidatePosition ), obstaclePart, this );
+
+        return true;
+      } );
+    }
 
     if ( isCanceled() )
     {
-      for ( Feats *feat : qgis::as_const( fFeats ) )
-      {
-        qDeleteAll( feat->lPos );
-        feat->lPos.clear();
-      }
-
-      qDeleteAll( fFeats );
       return nullptr;
     }
 
     int idlp = 0;
-    for ( i = 0; i < prob->nbft; i++ ) /* foreach feature into prob */
+    for ( std::size_t i = 0; i < prob->mFeatureCount; i++ ) /* foreach feature into prob */
     {
-      feat = fFeats.takeFirst();
+      std::unique_ptr< Feats > feat = std::move( features.front() );
+      features.pop_front();
 
-      prob->featStartId[i] = idlp;
-      prob->inactiveCost[i] = std::pow( 2, 10 - 10 * feat->priority );
+      prob->mFeatStartId[i] = idlp;
+      prob->mInactiveCost[i] = std::pow( 2, 10 - 10 * feat->priority );
 
       switch ( feat->feature->getGeosType() )
       {
@@ -342,70 +303,110 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       }
 
       // sort candidates by cost, skip less interesting ones, calculate polygon costs (if using polygons)
-      max_p = CostCalculator::finalizeCandidatesCosts( feat, max_p, &obstacles, bbx, bby );
+      max_p = CostCalculator::finalizeCandidatesCosts( feat.get(), max_p, &obstacles, bbx, bby );
+
+      if ( isCanceled() )
+        return nullptr;
+
+      switch ( mPlacementVersion )
+      {
+        case QgsLabelingEngineSettings::PlacementEngineVersion1:
+          break;
+
+        case QgsLabelingEngineSettings::PlacementEngineVersion2:
+        {
+          // v2 placement rips out candidates where the candidate cost is too high when compared to
+          // their inactive cost
+
+          // note, we start this at the SECOND candidate (you'll see why after this loop)
+          feat->candidates.erase( std::remove_if( feat->candidates.begin() + 1, feat->candidates.end(), [ & ]( std::unique_ptr< LabelPosition > &candidate )
+          {
+            if ( candidate->hasHardObstacleConflict() )
+            {
+              return true;
+            }
+            return false;
+          } ), feat->candidates.end() );
+
+          if ( feat->candidates.size() == 1 && feat->candidates[ 0 ]->hasHardObstacleConflict() )
+          {
+            // we've ended up removing ALL candidates for this label. Oh well, that's allowed. We just need to
+            // make sure we move this last candidate to the unplaced labels list
+            prob->positionsWithNoCandidates()->emplace_back( std::move( feat->candidates.front() ) );
+            feat->candidates.clear();
+          }
+        }
+      }
 
       // only keep the 'max_p' best candidates
-      while ( feat->lPos.count() > max_p )
+      while ( feat->candidates.size() > max_p )
       {
-        // TODO remove from index
-        feat->lPos.constLast()->removeFromIndex( prob->candidates );
-        delete feat->lPos.takeLast();
+        feat->candidates.pop_back();
       }
+
+      if ( isCanceled() )
+        return nullptr;
 
       // update problem's # candidate
-      prob->featNbLp[i] = feat->lPos.count();
-      prob->nblp += feat->lPos.count();
+      prob->mFeatNbLp[i] = static_cast< int >( feat->candidates.size() );
+      prob->mTotalCandidates += static_cast< int >( feat->candidates.size() );
 
       // add all candidates into a rtree (to speed up conflicts searching)
-      for ( j = 0; j < feat->lPos.count(); j++, idlp++ )
+      for ( std::size_t j = 0; j < feat->candidates.size(); j++, idlp++ )
       {
-        lp = feat->lPos.at( j );
-        //lp->insertIntoIndex(prob->candidates);
-        lp->setProblemIds( i, idlp ); // bugfix #1 (maxence 10/23/2008)
+        feat->candidates[ j ]->insertIntoIndex( prob->allCandidatesIndex() );
+        feat->candidates[ j ]->setProblemIds( static_cast< int >( i ), idlp );
       }
-      fFeats.append( feat );
+      features.emplace_back( std::move( feat ) );
     }
 
     int nbOverlaps = 0;
 
-    while ( !fFeats.isEmpty() ) // foreach feature
+    double amin[2];
+    double amax[2];
+    while ( !features.empty() ) // foreach feature
     {
       if ( isCanceled() )
-      {
-        for ( Feats *feat : qgis::as_const( fFeats ) )
-        {
-          qDeleteAll( feat->lPos );
-          feat->lPos.clear();
-        }
-
-        qDeleteAll( fFeats );
         return nullptr;
-      }
 
-      feat = fFeats.takeFirst();
-      while ( !feat->lPos.isEmpty() ) // foreach label candidate
+      std::unique_ptr< Feats > feat = std::move( features.front() );
+      features.pop_front();
+
+      for ( std::unique_ptr< LabelPosition > &candidate : feat->candidates )
       {
-        lp = feat->lPos.takeFirst();
+        std::unique_ptr< LabelPosition > lp = std::move( candidate );
+
         lp->resetNumOverlaps();
 
         // make sure that candidate's cost is less than 1
         lp->validateCost();
 
-        prob->addCandidatePosition( lp );
         //prob->feat[idlp] = j;
 
-        lp->getBoundingBox( amin, amax );
-
         // lookup for overlapping candidate
-        prob->candidates->Search( amin, amax, LabelPosition::countOverlapCallback, static_cast< void * >( lp ) );
+        lp->getBoundingBox( amin, amax );
+        prob->allCandidatesIndex().intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&lp]( const LabelPosition * lp2 )->bool
+        {
+          if ( lp->isInConflict( lp2 ) )
+          {
+            lp->incrementNumOverlaps();
+          }
+
+          return true;
+
+        } );
 
         nbOverlaps += lp->getNumOverlaps();
+
+        prob->addCandidatePosition( std::move( lp ) );
+
+        if ( isCanceled() )
+          return nullptr;
       }
-      delete feat;
     }
     nbOverlaps /= 2;
-    prob->all_nblp = prob->nblp;
-    prob->nbOverlap = nbOverlaps;
+    prob->mAllNblp = prob->mTotalCandidates;
+    prob->mNbOverlap = nbOverlaps;
   }
 
   return prob;
@@ -442,89 +443,99 @@ QList<LabelPosition *> Pal::solveProblem( Problem *prob, bool displayAll, QList<
 }
 
 
-void Pal::setPointP( int point_p )
+void Pal::setMaximumNumberOfPointCandidates( int candidates )
 {
-  if ( point_p > 0 )
-    this->point_p = point_p;
+  if ( candidates > 0 )
+    this->mMaxPointCandidates = candidates;
 }
 
-void Pal::setLineP( int line_p )
+void Pal::setMaximumNumberOfLineCandidates( int line_p )
 {
   if ( line_p > 0 )
-    this->line_p = line_p;
+    this->mMaxLineCandidates = line_p;
 }
 
-void Pal::setPolyP( int poly_p )
+void Pal::setMaximumNumberOfPolygonCandidates( int poly_p )
 {
   if ( poly_p > 0 )
-    this->poly_p = poly_p;
+    this->mMaxPolyCandidates = poly_p;
 }
 
 
 void Pal::setMinIt( int min_it )
 {
   if ( min_it >= 0 )
-    tabuMinIt = min_it;
+    mTabuMinIt = min_it;
 }
 
 void Pal::setMaxIt( int max_it )
 {
   if ( max_it > 0 )
-    tabuMaxIt = max_it;
+    mTabuMaxIt = max_it;
 }
 
 void Pal::setPopmusicR( int r )
 {
   if ( r > 0 )
-    popmusic_r = r;
+    mPopmusicR = r;
 }
 
 void Pal::setEjChainDeg( int degree )
 {
-  this->ejChainDeg = degree;
+  this->mEjChainDeg = degree;
 }
 
 void Pal::setTenure( int tenure )
 {
-  this->tenure = tenure;
+  this->mTenure = tenure;
 }
 
 void Pal::setCandListSize( double fact )
 {
-  this->candListSize = fact;
+  this->mCandListSize = fact;
 }
 
-void Pal::setShowPartial( bool show )
+void Pal::setShowPartialLabels( bool show )
 {
-  this->showPartial = show;
+  this->mShowPartialLabels = show;
 }
 
-int Pal::getPointP()
+int Pal::maximumNumberOfPointCandidates() const
 {
-  return point_p;
+  return mMaxPointCandidates;
 }
 
-int Pal::getLineP()
+int Pal::maximumNumberOfLineCandidates() const
 {
-  return line_p;
+  return mMaxLineCandidates;
 }
 
-int Pal::getPolyP()
+int Pal::maximumNumberOfPolygonCandidates() const
 {
-  return poly_p;
+  return mMaxPolyCandidates;
+}
+
+QgsLabelingEngineSettings::PlacementEngineVersion Pal::placementVersion() const
+{
+  return mPlacementVersion;
+}
+
+void Pal::setPlacementVersion( QgsLabelingEngineSettings::PlacementEngineVersion placementVersion )
+{
+  mPlacementVersion = placementVersion;
 }
 
 int Pal::getMinIt()
 {
-  return tabuMaxIt;
+  return mTabuMaxIt;
 }
 
 int Pal::getMaxIt()
 {
-  return tabuMinIt;
+  return mTabuMinIt;
 }
 
-bool Pal::getShowPartial()
+bool Pal::showPartialLabels() const
 {
-  return showPartial;
+  return mShowPartialLabels;
 }

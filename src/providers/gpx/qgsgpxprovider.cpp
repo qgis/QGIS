@@ -534,7 +534,7 @@ QString QgsGPXProvider::description() const
 
 QgsCoordinateReferenceSystem QgsGPXProvider::crs() const
 {
-  return QgsCoordinateReferenceSystem( GEOSRID, QgsCoordinateReferenceSystem::PostgisCrsId ); // use WGS84
+  return QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
 }
 
 QgsDataProvider *QgsGpxProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )

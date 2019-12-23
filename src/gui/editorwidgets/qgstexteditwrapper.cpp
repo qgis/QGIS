@@ -280,11 +280,13 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
       v = field().displayString( val );
     }
   }
+  else if ( val.type() == QVariant::Double && std::isnan( val.toDouble() ) )
+    v = QgsApplication::nullRepresentation();
+  }
   else
   {
     v = field().displayString( val );
   }
-
   // For numbers, remove the group separator that might cause validation errors
   // when the user is editing the field value.
   // We are checking for editable layer because in the form field context we do not

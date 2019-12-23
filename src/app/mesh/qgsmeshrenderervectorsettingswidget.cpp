@@ -21,7 +21,6 @@
 
 QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidget *parent )
   : QWidget( parent )
-
 {
   setupUi( this );
 
@@ -52,6 +51,38 @@ QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidge
 
   connect( mXSpacingSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ), this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
   connect( mYSpacingSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ), this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
+
+  connect( mSymbologyVectorComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
+           this, &QgsMeshRendererVectorSettingsWidget::onSymbologyChanged );
+  onSymbologyChanged( 0 );
+
+  connect( mSymbologyVectorComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
+           this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
+
+  connect( mStreamlinesSeedingMethodComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
+           this, &QgsMeshRendererVectorSettingsWidget::onStreamLineSeedingMethodChanged );
+  onStreamLineSeedingMethodChanged( 0 );
+
+  connect( mStreamlinesSeedingMethodComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
+           this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
+
+  connect( mStreamlinesDensitySpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+           this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
+
+  connect( mTracesMaxLengthSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+           this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
+
+  connect( mTracesParticlesCountSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ),
+           this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
+
+  mTracesTailLengthMapUnitWidget->setUnits( QgsUnitTypes::RenderUnitList()
+      << QgsUnitTypes::RenderMillimeters
+      << QgsUnitTypes::RenderMetersInMapUnits
+      << QgsUnitTypes::RenderPixels
+      << QgsUnitTypes::RenderPoints );
+
+  connect( mTracesTailLengthMapUnitWidget, &QgsUnitSelectionWidget::changed,
+           this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
 }
 
 void QgsMeshRendererVectorSettingsWidget::setLayer( QgsMeshLayer *layer )
@@ -61,7 +92,12 @@ void QgsMeshRendererVectorSettingsWidget::setLayer( QgsMeshLayer *layer )
 
 QgsMeshRendererVectorSettings QgsMeshRendererVectorSettingsWidget::settings() const
 {
-  QgsMeshRendererVectorSettings settings;
+  QgsMeshRendererVectorSettings  settings;
+  settings.setSymbology(
+    static_cast<QgsMeshRendererVectorSettings::Symbology>( mSymbologyVectorComboBox->currentIndex() ) );
+
+  //Arrow settings
+  QgsMeshRendererVectorArrowSettings arrowSettings;
 
   // basic
   settings.setColor( mColorWidget->color() );
@@ -75,11 +111,11 @@ QgsMeshRendererVectorSettings QgsMeshRendererVectorSettingsWidget::settings() co
   settings.setFilterMax( val );
 
   // arrow head
-  val = filterValue( mHeadWidthLineEdit->text(), settings.arrowHeadWidthRatio() * 100.0 );
-  settings.setArrowHeadWidthRatio( val / 100.0 );
+  val = filterValue( mHeadWidthLineEdit->text(), arrowSettings.arrowHeadWidthRatio() * 100.0 );
+  arrowSettings.setArrowHeadWidthRatio( val / 100.0 );
 
-  val = filterValue( mHeadLengthLineEdit->text(), settings.arrowHeadLengthRatio() * 100.0 );
-  settings.setArrowHeadLengthRatio( val / 100.0 );
+  val = filterValue( mHeadLengthLineEdit->text(), arrowSettings.arrowHeadLengthRatio() * 100.0 );
+  arrowSettings.setArrowHeadLengthRatio( val / 100.0 );
 
   // user grid
   bool enabled = mDisplayVectorsOnGridGroupBox->isChecked();
@@ -88,20 +124,38 @@ QgsMeshRendererVectorSettings QgsMeshRendererVectorSettingsWidget::settings() co
   settings.setUserGridCellHeight( mYSpacingSpinBox->value() );
 
   // shaft length
-  auto method = static_cast<QgsMeshRendererVectorSettings::ArrowScalingMethod>( mShaftLengthComboBox->currentIndex() );
-  settings.setShaftLengthMethod( method );
+  auto method = static_cast<QgsMeshRendererVectorArrowSettings::ArrowScalingMethod>( mShaftLengthComboBox->currentIndex() );
+  arrowSettings.setShaftLengthMethod( method );
 
-  val = filterValue( mMinimumShaftLineEdit->text(), settings.minShaftLength() );
-  settings.setMinShaftLength( val );
+  val = filterValue( mMinimumShaftLineEdit->text(), arrowSettings.minShaftLength() );
+  arrowSettings.setMinShaftLength( val );
 
-  val = filterValue( mMaximumShaftLineEdit->text(), settings.maxShaftLength() );
-  settings.setMaxShaftLength( val );
+  val = filterValue( mMaximumShaftLineEdit->text(), arrowSettings.maxShaftLength() );
+  arrowSettings.setMaxShaftLength( val );
 
-  val = filterValue( mScaleShaftByFactorOfLineEdit->text(), settings.scaleFactor() );
-  settings.setScaleFactor( val );
+  val = filterValue( mScaleShaftByFactorOfLineEdit->text(), arrowSettings.scaleFactor() );
+  arrowSettings.setScaleFactor( val );
 
-  val = filterValue( mShaftLengthLineEdit->text(), settings.fixedShaftLength() );
-  settings.setFixedShaftLength( val );
+  val = filterValue( mShaftLengthLineEdit->text(), arrowSettings.fixedShaftLength() );
+  arrowSettings.setFixedShaftLength( val );
+
+  settings.setArrowsSettings( arrowSettings );
+
+  //Streamline setting
+  QgsMeshRendererVectorStreamlineSettings streamlineSettings;
+  streamlineSettings.setSeedingMethod(
+    static_cast<QgsMeshRendererVectorStreamlineSettings::SeedingStartPointsMethod>( mStreamlinesSeedingMethodComboBox->currentIndex() ) );
+
+  streamlineSettings.setSeedingDensity( mStreamlinesDensitySpinBox->value() / 100 );
+
+  settings.setStreamLinesSettings( streamlineSettings );
+
+  //Traces setting
+  QgsMeshRendererVectorTracesSettings tracesSettings;
+  tracesSettings.setMaximumTailLength( mTracesMaxLengthSpinBox->value() );
+  tracesSettings.setMaximumTailLengthUnit( mTracesTailLengthMapUnitWidget->unit() );
+  tracesSettings.setParticlesCount( mTracesParticlesCountSpinBox->value() );
+  settings.setTracesSettings( tracesSettings );
 
   return settings;
 }
@@ -116,6 +170,11 @@ void QgsMeshRendererVectorSettingsWidget::syncToLayer( )
 
   const QgsMeshRendererSettings rendererSettings = mMeshLayer->rendererSettings();
   const QgsMeshRendererVectorSettings settings = rendererSettings.vectorSettings( mActiveDatasetGroup );
+
+  mSymbologyVectorComboBox->setCurrentIndex( settings.symbology() );
+
+  // Arrow settings
+  const QgsMeshRendererVectorArrowSettings arrowSettings = settings.arrowSettings();
 
   // basic
   mColorWidget->setColor( settings.color() );
@@ -132,8 +191,8 @@ void QgsMeshRendererVectorSettingsWidget::syncToLayer( )
   }
 
   // arrow head
-  mHeadWidthLineEdit->setText( QString::number( settings.arrowHeadWidthRatio() * 100.0 ) );
-  mHeadLengthLineEdit->setText( QString::number( settings.arrowHeadLengthRatio() * 100.0 ) );
+  mHeadWidthLineEdit->setText( QString::number( arrowSettings.arrowHeadWidthRatio() * 100.0 ) );
+  mHeadLengthLineEdit->setText( QString::number( arrowSettings.arrowHeadLengthRatio() * 100.0 ) );
 
   // user grid
   mDisplayVectorsOnGridGroupBox->setChecked( settings.isOnUserDefinedGrid() );
@@ -141,13 +200,50 @@ void QgsMeshRendererVectorSettingsWidget::syncToLayer( )
   mYSpacingSpinBox->setValue( settings.userGridCellHeight() );
 
   // shaft length
-  mShaftLengthComboBox->setCurrentIndex( settings.shaftLengthMethod() );
+  mShaftLengthComboBox->setCurrentIndex( arrowSettings.shaftLengthMethod() );
 
-  mMinimumShaftLineEdit->setText( QString::number( settings.minShaftLength() ) );
-  mMaximumShaftLineEdit->setText( QString::number( settings.maxShaftLength() ) );
-  mScaleShaftByFactorOfLineEdit->setText( QString::number( settings.scaleFactor() ) );
-  mShaftLengthLineEdit->setText( QString::number( settings.fixedShaftLength() ) );
+  mMinimumShaftLineEdit->setText( QString::number( arrowSettings.minShaftLength() ) );
+  mMaximumShaftLineEdit->setText( QString::number( arrowSettings.maxShaftLength() ) );
+  mScaleShaftByFactorOfLineEdit->setText( QString::number( arrowSettings.scaleFactor() ) );
+  mShaftLengthLineEdit->setText( QString::number( arrowSettings.fixedShaftLength() ) );
 
+  //Streamlines settings
+  const QgsMeshRendererVectorStreamlineSettings streamlinesSettings = settings.streamLinesSettings();
+
+  mStreamlinesSeedingMethodComboBox->setCurrentIndex( streamlinesSettings.seedingMethod() );
+  mStreamlinesDensitySpinBox->setValue( streamlinesSettings.seedingDensity() * 100 );
+
+  //Traces settings
+  const QgsMeshRendererVectorTracesSettings tracesSettings = settings.tracesSettings();
+
+  mTracesMaxLengthSpinBox->setValue( tracesSettings.maximumTailLength() );
+  mTracesTailLengthMapUnitWidget->setUnit( tracesSettings.maximumTailLengthUnit() );
+  mTracesParticlesCountSpinBox->setValue( tracesSettings.particlesCount() );
+
+}
+
+void QgsMeshRendererVectorSettingsWidget::onSymbologyChanged( int currentIndex )
+{
+  mStreamlineWidget->setVisible( currentIndex == QgsMeshRendererVectorSettings::Streamlines );
+  mArrowWidget->setVisible( currentIndex == QgsMeshRendererVectorSettings::Arrows );
+  mTracesGroupBox->setVisible( currentIndex == QgsMeshRendererVectorSettings::Traces );
+
+  mDisplayVectorsOnGridGroupBox->setVisible( currentIndex != QgsMeshRendererVectorSettings::Traces );
+  mFilterByMagGroupBox->setVisible( currentIndex != QgsMeshRendererVectorSettings::Traces );
+
+  mDisplayVectorsOnGridGroupBox->setEnabled(
+    currentIndex == QgsMeshRendererVectorSettings::Arrows ||
+    ( currentIndex == QgsMeshRendererVectorSettings::Streamlines &&
+      mStreamlinesSeedingMethodComboBox->currentIndex() == QgsMeshRendererVectorStreamlineSettings::MeshGridded ) ) ;
+}
+
+void QgsMeshRendererVectorSettingsWidget::onStreamLineSeedingMethodChanged( int currentIndex )
+{
+  bool enabled = currentIndex == QgsMeshRendererVectorStreamlineSettings::Random;
+  mStreamlinesDensityLabel->setEnabled( enabled );
+  mStreamlinesDensitySpinBox->setEnabled( enabled );
+
+  mDisplayVectorsOnGridGroupBox->setEnabled( !enabled );
 }
 
 double QgsMeshRendererVectorSettingsWidget::filterValue( const QString &text, double errVal ) const

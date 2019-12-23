@@ -255,8 +255,6 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
 
   private:
 
-    static SpatialIndex::Region rectToRegion( const QgsRectangle &rect );
-
     /**
      * Calculates feature info to insert into index.
     * \param f input feature

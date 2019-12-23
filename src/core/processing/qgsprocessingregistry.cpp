@@ -52,6 +52,9 @@ QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   addParameterType( new QgsProcessingParameterTypeLayout() );
   addParameterType( new QgsProcessingParameterTypeLayoutItem() );
   addParameterType( new QgsProcessingParameterTypeColor() );
+#if PROJ_VERSION_MAJOR>=6
+  addParameterType( new QgsProcessingParameterTypeCoordinateOperation() );
+#endif
 }
 
 QgsProcessingRegistry::~QgsProcessingRegistry()

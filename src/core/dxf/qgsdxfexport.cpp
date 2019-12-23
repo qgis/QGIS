@@ -1097,7 +1097,17 @@ void QgsDxfExport::writePolyline( const QgsCurve &curve, const QString &layer, c
     writeGroup( color );
 
     writeGroup( 90, points.size() );
-    writeGroup( 70, ( curve.isClosed() ? 1 : 0 ) | ( curve.hasCurvedSegments() ? 2 : 0 ) );
+    QgsDxfExport::DxfPolylineFlags polylineFlags;
+    if ( curve.isClosed() )
+      polylineFlags.setFlag( QgsDxfExport::DxfPolylineFlag::Closed );
+    if ( curve.hasCurvedSegments() )
+      polylineFlags.setFlag( QgsDxfExport::DxfPolylineFlag::Curve );
+
+    // Might need to conditional once this feature is implemented
+    //   https://github.com/qgis/QGIS/issues/32468
+    polylineFlags.setFlag( QgsDxfExport::DxfPolylineFlag::ContinuousPattern );
+
+    writeGroup( 70, static_cast<int>( polylineFlags ) );
     writeGroup( 43, width );
 
     for ( int i = 0; i < points.size(); i++ )
@@ -1259,6 +1269,63 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
   VAlign vali = VAlign::Undefined;
 
   const QgsPropertyCollection &props = layerSettings.dataDefinedProperties();
+
+  if ( props.isActive( QgsPalLayerSettings::OffsetQuad ) )
+  {
+    const QVariant exprVal = props.value( QgsPalLayerSettings::OffsetQuad, expressionContext );
+    if ( exprVal.isValid() )
+    {
+      int offsetQuad = exprVal.toInt();
+
+      lblX -= label->dX();
+      lblY -= label->dY();
+
+      switch ( offsetQuad )
+      {
+        case 0: // Above Left
+          hali = HAlign::HRight;
+          vali = VAlign::VBottom;
+          break;
+        case 1: // Above
+          hali = HAlign::HCenter;
+          vali = VAlign::VBottom;
+          break;
+        case 2: // Above Right
+          hali = HAlign::HLeft;
+          vali = VAlign::VBottom;
+          break;
+        case 3: // Left
+          hali = HAlign::HRight;
+          vali = VAlign::VMiddle;
+          break;
+        case 4: // Over
+          hali = HAlign::HCenter;
+          vali = VAlign::VMiddle;
+          break;
+        case 5: // Right
+          hali = HAlign::HLeft;
+          vali = VAlign::VMiddle;
+          break;
+        case 6: // Below Left
+          hali = HAlign::HRight;
+          vali = VAlign::VTop;
+          break;
+        case 7: // Below
+          hali = HAlign::HCenter;
+          vali = VAlign::VTop;
+          break;
+        case 8: // Below Right
+          hali = HAlign::HLeft;
+          vali = VAlign::VTop;
+          break;
+        default: // OverHali
+          hali = HAlign::HCenter;
+          vali = VAlign::VTop;
+          break;
+      }
+    }
+  }
+
   if ( props.isActive( QgsPalLayerSettings::Hali ) )
   {
     hali = HAlign::HLeft;
@@ -1393,7 +1460,7 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, const Q
     writeGroup( 1, pt ); // Second alignment point
   writeGroup( 40, size );
   writeGroup( 1, text );
-  writeGroup( 50, angle );
+  writeGroup( 50, fmod( angle, 360 ) );
   if ( hali != HAlign::Undefined )
     writeGroup( 72, static_cast<int>( hali ) );
   writeGroup( 7, QStringLiteral( "STANDARD" ) ); // so far only support for standard font

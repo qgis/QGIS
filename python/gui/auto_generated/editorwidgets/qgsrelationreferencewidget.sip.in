@@ -171,6 +171,62 @@ Set the current form feature (from the referencing layer)
 .. versionadded:: 3.10
 %End
 
+    QString referencedLayerDataSource() const;
+%Docstring
+Returns the public data source of the referenced layer
+
+.. versionadded:: 3.12
+%End
+
+    void setReferencedLayerDataSource( const QString &referencedLayerDataSource );
+%Docstring
+Set the public data source of the referenced layer to ``referencedLayerDataSource``
+
+.. versionadded:: 3.12
+%End
+
+    QString referencedLayerProviderKey() const;
+%Docstring
+Returns the data provider key of the referenced layer
+
+.. versionadded:: 3.12
+%End
+
+    void setReferencedLayerProviderKey( const QString &referencedLayerProviderKey );
+%Docstring
+Set the data provider key of the referenced layer to ``referencedLayerProviderKey``
+
+.. versionadded:: 3.12
+%End
+
+    QString referencedLayerId() const;
+%Docstring
+Returns the id of the referenced layer
+
+.. versionadded:: 3.12
+%End
+
+    void setReferencedLayerId( const QString &referencedLayerId );
+%Docstring
+Set the id of the referenced layer to ``referencedLayerId``
+
+.. versionadded:: 3.12
+%End
+
+    QString referencedLayerName() const;
+%Docstring
+Returns the name of the referenced layer
+
+.. versionadded:: 3.12
+%End
+
+    void setReferencedLayerName( const QString &referencedLayerName );
+%Docstring
+Set the name of the referenced layer to ``referencedLayerName``
+
+.. versionadded:: 3.12
+%End
+
   public slots:
     void openForm();
 %Docstring

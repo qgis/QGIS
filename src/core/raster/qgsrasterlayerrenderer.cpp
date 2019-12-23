@@ -47,7 +47,7 @@ void QgsRasterLayerRendererFeedback::onNewData()
 
   // TODO: update only the area that got new data
 
-  QgsDebugMsg( QStringLiteral( "new raster preview! %1" ).arg( mLastPreview.msecsTo( QTime::currentTime() ) ) );
+  QgsDebugMsgLevel( QStringLiteral( "new raster preview! %1" ).arg( mLastPreview.msecsTo( QTime::currentTime() ) ), 3 );
   QTime t;
   t.start();
   QgsRasterBlockFeedback feedback;
@@ -56,7 +56,7 @@ void QgsRasterLayerRendererFeedback::onNewData()
   QgsRasterIterator iterator( mR->mPipe->last() );
   QgsRasterDrawer drawer( &iterator );
   drawer.draw( mR->renderContext()->painter(), mR->mRasterViewPort, &mR->renderContext()->mapToPixel(), &feedback );
-  QgsDebugMsg( QStringLiteral( "total raster preview time: %1 ms" ).arg( t.elapsed() ) );
+  QgsDebugMsgLevel( QStringLiteral( "total raster preview time: %1 ms" ).arg( t.elapsed() ), 3 );
   mLastPreview = QTime::currentTime();
 }
 
@@ -132,7 +132,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   QgsRectangle myRasterExtent = layer->ignoreExtents() ? myProjectedViewExtent : myProjectedViewExtent.intersect( myProjectedLayerExtent );
   if ( myRasterExtent.isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "draw request outside view extent." ) );
+    QgsDebugMsgLevel( QStringLiteral( "draw request outside view extent." ), 2 );
     // nothing to do
     return;
   }

@@ -72,7 +72,7 @@ int QgsImageCacheEntry::dataSize() const
 
 void QgsImageCacheEntry::dump() const
 {
-  QgsDebugMsg( QStringLiteral( "path: %1, size %2x%3" ).arg( path ).arg( size.width() ).arg( size.height() ) );
+  QgsDebugMsgLevel( QStringLiteral( "path: %1, size %2x%3" ).arg( path ).arg( size.width() ).arg( size.height() ), 3 );
 }
 
 ///@endcond

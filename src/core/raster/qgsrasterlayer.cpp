@@ -323,8 +323,7 @@ QString QgsRasterLayer::htmlMetadata() const
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "CRS" ) + QStringLiteral( "</td><td>" );
   if ( crs().isValid() )
   {
-    myMetadata += crs().authid() % QStringLiteral( " - " ) %
-                  crs().description() + QStringLiteral( " - " );
+    myMetadata += crs().userFriendlyIdentifier() % QStringLiteral( " - " );
     if ( crs().isGeographic() )
       myMetadata += tr( "Geographic" );
     else
@@ -644,7 +643,7 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   // Setup source CRS
   setCrs( QgsCoordinateReferenceSystem( mDataProvider->crs() ) );
 
-  QgsDebugMsgLevel( "using wkt:\n" + crs().toWkt(), 4 );
+  QgsDebugMsgLevel( "using wkt:\n" + crs().toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ), 4 );
 
   //defaults - Needs to be set after the Contrast list has been build
   //Try to read the default contrast enhancement from the config file
@@ -1841,7 +1840,7 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     // TODO: very bad, we have to load twice!!! Make QgsDataProvider::timestamp() static?
     if ( stamp < mDataProvider->dataTimestamp() )
     {
-      QgsDebugMsg( QStringLiteral( "data changed, reload provider" ) );
+      QgsDebugMsgLevel( QStringLiteral( "data changed, reload provider" ), 3 );
       closeDataProvider();
       init();
       setDataProvider( mProviderKey );
@@ -2133,7 +2132,7 @@ QString QgsRasterLayer::decodedSource( const QString &source, const QString &pro
     if ( !src.contains( QLatin1String( "type=" ) ) &&
          !src.contains( QLatin1String( "crs=" ) ) && !src.contains( QLatin1String( "format=" ) ) )
     {
-      QgsDebugMsg( QStringLiteral( "Old WMS URI format detected -> converting to new format" ) );
+      QgsDebugMsgLevel( QStringLiteral( "Old WMS URI format detected -> converting to new format" ), 2 );
       QgsDataSourceUri uri;
       if ( !src.startsWith( QLatin1String( "http:" ) ) )
       {
@@ -2144,11 +2143,11 @@ QString QgsRasterLayer::decodedSource( const QString &source, const QString &pro
           QString item = iter.next();
           if ( item.startsWith( QLatin1String( "username=" ) ) )
           {
-            uri.setParam( QStringLiteral( "username" ), item.mid( 9 ) );
+            uri.setUsername( item.mid( 9 ) );
           }
           else if ( item.startsWith( QLatin1String( "password=" ) ) )
           {
-            uri.setParam( QStringLiteral( "password" ), item.mid( 9 ) );
+            uri.setPassword( item.mid( 9 ) );
           }
           else if ( item.startsWith( QLatin1String( "tiled=" ) ) )
           {

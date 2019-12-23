@@ -63,12 +63,12 @@ Content-Type: text/xml; charset=utf-8
    <ows:Title>QGIS Server Hello World</ows:Title>
    <ows:Abstract>QGIS Server Hello World</ows:Abstract>
    <ows:WGS84BoundingBox>
-    <LowerCorner>-174.766573 -69.957839</LowerCorner>
-    <UpperCorner>177.930819 84.307877</UpperCorner>
+    <ows:LowerCorner>-174.766573 -69.957839</ows:LowerCorner>
+    <ows:UpperCorner>177.930819 84.307877</ows:UpperCorner>
    </ows:WGS84BoundingBox>
    <ows:BoundingBox crs="EPSG:3857">
-    <LowerCorner>-19454925.899 -11055006.823</LowerCorner>
-    <UpperCorner>19807168.137 19143772.794</UpperCorner>
+    <ows:LowerCorner>-19454925.899 -11055006.823</ows:LowerCorner>
+    <ows:UpperCorner>19807168.137 19143772.794</ows:UpperCorner>
    </ows:BoundingBox>
    <Style isDefault="true">
     <ows:Identifier>default</ows:Identifier>
@@ -377,12 +377,12 @@ Content-Type: text/xml; charset=utf-8
    <ows:Identifier>CountryGroup</ows:Identifier>
    <ows:Title>CountryGroup</ows:Title>
    <ows:WGS84BoundingBox>
-    <LowerCorner>-176.248495 -67.592996</LowerCorner>
-    <UpperCorner>179.412741 83.621086</UpperCorner>
+    <ows:LowerCorner>-176.248495 -67.592996</ows:LowerCorner>
+    <ows:UpperCorner>179.412741 83.621086</ows:UpperCorner>
    </ows:WGS84BoundingBox>
    <ows:BoundingBox crs="EPSG:3857">
-    <LowerCorner>-19619892.681 -10327100.343</LowerCorner>
-    <UpperCorner>19972134.919 18415866.313</UpperCorner>
+    <ows:LowerCorner>-19619892.681 -10327100.343</ows:LowerCorner>
+    <ows:UpperCorner>19972134.919 18415866.313</ows:UpperCorner>
    </ows:BoundingBox>
    <Style isDefault="true">
     <ows:Identifier>default</ows:Identifier>
@@ -695,12 +695,12 @@ Content-Type: text/xml; charset=utf-8
   <Layer>
    <ows:Identifier>Hello</ows:Identifier>
    <ows:WGS84BoundingBox>
-    <LowerCorner>-132.467819 -1.006739</LowerCorner>
-    <UpperCorner>101.888717 69.520496</UpperCorner>
+    <ows:LowerCorner>-132.467819 -1.006739</ows:LowerCorner>
+    <ows:UpperCorner>101.888717 69.520496</ows:UpperCorner>
    </ows:WGS84BoundingBox>
    <ows:BoundingBox crs="EPSG:3857">
-    <LowerCorner>-14746250.076 -112075.429</LowerCorner>
-    <UpperCorner>11342200.078 10914413.715</UpperCorner>
+    <ows:LowerCorner>-14746250.076 -112075.429</ows:LowerCorner>
+    <ows:UpperCorner>11342200.078 10914413.715</ows:UpperCorner>
    </ows:BoundingBox>
    <Style isDefault="true">
     <ows:Identifier>default</ows:Identifier>

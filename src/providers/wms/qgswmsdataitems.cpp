@@ -115,7 +115,9 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
     for ( const QgsWmtsTileLayer &l : constTileLayers )
     {
       QString title = l.title.isEmpty() ? l.identifier : l.title;
-      QgsDataItem *layerItem = l.styles.size() == 1 ? this : new QgsDataCollectionItem( this, title, mPath + '/' + l.identifier );
+
+      QgsDataItem *layerItem = l.styles.size() == 1 ? static_cast<  QgsDataItem * >( this ) : static_cast<  QgsDataItem * >( new QgsWMTSRootItem( this, title, mPath + '/' + l.identifier ) );
+
       if ( layerItem != this )
       {
         layerItem->setCapabilities( layerItem->capabilities2() & ~QgsDataItem::Fertile );
@@ -139,7 +141,8 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
         }
         styleIdentifiers.push_back( stylePathIdentifier );
 
-        QgsDataItem *styleItem = l.setLinks.size() == 1 ? layerItem : new QgsDataCollectionItem( layerItem, styleName, layerItem->path() + '/' + stylePathIdentifier );
+        QgsDataItem *styleItem = l.setLinks.size() == 1 ? static_cast<  QgsDataItem * >( layerItem ) : static_cast<  QgsDataItem * >( new QgsWMTSRootItem( layerItem, styleName, layerItem->path() + '/' + stylePathIdentifier ) );
+
         if ( styleItem != layerItem )
         {
           styleItem->setCapabilities( styleItem->capabilities2() & ~QgsDataItem::Fertile );
@@ -170,8 +173,8 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
           }
           linkIdentifiers.push_back( linkPathIdentifier );
 
+          QgsDataItem *linkItem = l.formats.size() == 1 ? static_cast<  QgsDataItem * >( styleItem ) : static_cast<  QgsDataItem * >( new QgsWMTSRootItem( styleItem, linkName, styleItem->path() + '/' + linkPathIdentifier ) );
 
-          QgsDataItem *linkItem = l.formats.size() == 1 ? styleItem : new QgsDataCollectionItem( styleItem, linkName, styleItem->path() + '/' + linkPathIdentifier );
           if ( linkItem != styleItem )
           {
             linkItem->setCapabilities( linkItem->capabilities2() & ~QgsDataItem::Fertile );
@@ -366,6 +369,16 @@ QVector<QgsDataItem *> QgsWMSRootItem::createChildren()
   return connections;
 }
 
+// ---------------------------------------------------------------------------
+
+QgsWMTSRootItem::QgsWMTSRootItem( QgsDataItem *parent, QString name, QString path )
+  : QgsDataCollectionItem( parent, name, path )
+{
+  mCapabilities |= Fast;
+  mIconName = QStringLiteral( "mIconWms.svg" );
+  populate();
+
+}
 // ---------------------------------------------------------------------------
 
 

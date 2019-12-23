@@ -178,6 +178,17 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
 {
   QVariant vL = mOpLeft->eval( parent, context );
   ENSURE_NO_EVAL_ERROR;
+
+  if ( mOp == boAnd || mOp == boOr )
+  {
+    QgsExpressionUtils::TVL tvlL = QgsExpressionUtils::getTVLValue( vL, parent );
+    ENSURE_NO_EVAL_ERROR;
+    if ( mOp == boAnd && tvlL == QgsExpressionUtils::False )
+      return TVL_False;  // shortcut -- no need to evaluate right-hand side
+    if ( mOp == boOr && tvlL == QgsExpressionUtils::True )
+      return TVL_True;  // shortcut -- no need to evaluate right-hand side
+  }
+
   QVariant vR = mOpRight->eval( parent, context );
   ENSURE_NO_EVAL_ERROR;
 
@@ -1259,7 +1270,8 @@ QVariant QgsExpressionNodeColumnRef::evalNode( QgsExpression *parent, const QgsE
         return feature.attribute( mName );
     }
   }
-  return QVariant( '[' + mName + ']' );
+  parent->setEvalErrorString( QStringLiteral( "Column '%1' not found" ).arg( mName ) );
+  return QVariant();
 }
 
 QgsExpressionNode::NodeType QgsExpressionNodeColumnRef::nodeType() const

@@ -24,21 +24,23 @@
 
 //qgis includes...
 // #include <qgisapp.h>
-#include <diagram/qgspiediagram.h>
-#include <diagram/qgstextdiagram.h>
-#include <qgsdiagramrenderer.h>
-#include <qgsmaplayer.h>
-#include <qgsvectordataprovider.h>
-#include <qgsvectorlayer.h>
-#include <qgsapplication.h>
-#include <qgsproviderregistry.h>
-#include <qgsrenderer.h>
+#include "diagram/qgspiediagram.h"
+#include "diagram/qgstextdiagram.h"
+#include "diagram/qgsstackedbardiagram.h"
+#include "diagram/qgshistogramdiagram.h"
+#include "qgsdiagramrenderer.h"
+#include "qgsmaplayer.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+#include "qgsapplication.h"
+#include "qgsproviderregistry.h"
+#include "qgsrenderer.h"
 #include "qgssinglesymbolrenderer.h"
 //qgis test includes
 #include "qgsmultirenderchecker.h"
 #include "qgspallabeling.h"
 #include "qgsproject.h"
-#include "diagram/qgshistogramdiagram.h"
+#include "qgsshadoweffect.h"
 
 /**
  * \ingroup UnitTests
@@ -169,6 +171,44 @@ class TestQgsDiagram : public QObject
       mPointsLayer->setDiagramLayerSettings( dls );
 
       QVERIFY( imageCheck( "piediagram" ) );
+    }
+
+    void testPaintEffect()
+    {
+      QgsDiagramSettings ds;
+      QColor col1 = Qt::red;
+      QColor col2 = Qt::yellow;
+      col1.setAlphaF( 0.5 );
+      col2.setAlphaF( 0.5 );
+      ds.categoryColors = QList<QColor>() << col1 << col2;
+      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\"" ) << QStringLiteral( "\"Cabin Crew\"" );
+      ds.minimumScale = -1;
+      ds.maximumScale = -1;
+      ds.minimumSize = 0;
+      ds.penColor = Qt::green;
+      ds.penWidth = .5;
+      ds.scaleByArea = true;
+      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.size = QSizeF( 5, 5 );
+      ds.rotationOffset = 0;
+      ds.setPaintEffect( new QgsDropShadowEffect() );
+
+      QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
+      dr->setLowerValue( 0.0 );
+      dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
+      dr->setUpperValue( 10 );
+      dr->setUpperSize( QSizeF( 40, 40 ) );
+      dr->setClassificationField( QStringLiteral( "Staff" ) );
+      dr->setDiagram( new QgsPieDiagram() );
+      dr->setDiagramSettings( ds );
+      mPointsLayer->setDiagramRenderer( dr );
+
+      QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+      dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+      dls.setShowAllDiagrams( true );
+      mPointsLayer->setDiagramLayerSettings( dls );
+
+      QVERIFY( imageCheck( "diagram_effects" ) );
     }
 
     void testHistogram()
@@ -346,6 +386,103 @@ class TestQgsDiagram : public QObject
       ds.diagramOrientation = QgsDiagramSettings::Down;
       dr->setDiagramSettings( ds );
       QVERIFY( imageCheck( "histogram_down" ) );
+
+    }
+
+    void testStackedFixSize()
+    {
+      QgsDiagramSettings ds;
+      QColor col1 = Qt::red;
+      QColor col2 = Qt::yellow;
+      col1.setAlphaF( 0.5 );
+      col2.setAlphaF( 0.5 );
+      ds.categoryColors = QList<QColor>() << col1 << col2;
+      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\"" ) << QStringLiteral( "\"Cabin Crew\"" );
+      ds.minimumScale = -1;
+      ds.maximumScale = -1;
+      ds.minimumSize = 0;
+      ds.penColor = Qt::green;
+      ds.penWidth = .5;
+      ds.scaleByArea = true;
+      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.size = QSizeF( 15, 15 );
+      ds.rotationOffset = 0;
+      ds.diagramOrientation = QgsDiagramSettings::Up;
+      ds.setSpacing( 3 );
+
+      QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
+      dr->setDiagram( new QgsStackedBarDiagram() );
+      dr->setDiagramSettings( ds );
+      mPointsLayer->setDiagramRenderer( dr );
+
+      QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+      dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+      dls.setShowAllDiagrams( true );
+      mPointsLayer->setDiagramLayerSettings( dls );
+      QVERIFY( imageCheck( "stacked_up" ) );
+
+      ds.diagramOrientation = QgsDiagramSettings::Right;
+      dr->setDiagramSettings( ds );
+      QVERIFY( imageCheck( "stacked_right" ) );
+
+      ds.diagramOrientation = QgsDiagramSettings::Left;
+      dr->setDiagramSettings( ds );
+      QVERIFY( imageCheck( "stacked_left" ) );
+
+      ds.diagramOrientation = QgsDiagramSettings::Down;
+      dr->setDiagramSettings( ds );
+      QVERIFY( imageCheck( "stacked_down" ) );
+
+    }
+
+    void testStackedVaryingFixSize()
+    {
+      QgsDiagramSettings ds;
+      QColor col1 = Qt::red;
+      QColor col2 = Qt::yellow;
+      col1.setAlphaF( 0.5 );
+      col2.setAlphaF( 0.5 );
+      ds.categoryColors = QList<QColor>() << col1 << col2;
+      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\"" ) << QStringLiteral( "\"Cabin Crew\"" );
+      ds.minimumScale = -1;
+      ds.maximumScale = -1;
+      ds.minimumSize = 0;
+      ds.penColor = Qt::green;
+      ds.penWidth = .5;
+      ds.scaleByArea = true;
+      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.size = QSizeF( 5, 5 );
+      ds.rotationOffset = 0;
+      ds.diagramOrientation = QgsDiagramSettings::Up;
+      ds.setSpacing( 3 );
+
+      QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
+      dr->setLowerValue( 0.0 );
+      dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
+      dr->setUpperValue( 10 );
+      dr->setUpperSize( QSizeF( 40, 40 ) );
+      dr->setClassificationField( QStringLiteral( "Staff" ) );
+      dr->setDiagram( new QgsStackedBarDiagram() );
+      dr->setDiagramSettings( ds );
+      mPointsLayer->setDiagramRenderer( dr );
+
+      QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+      dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+      dls.setShowAllDiagrams( true );
+      mPointsLayer->setDiagramLayerSettings( dls );
+      QVERIFY( imageCheck( "stacked_varying_up" ) );
+
+      ds.diagramOrientation = QgsDiagramSettings::Right;
+      dr->setDiagramSettings( ds );
+      QVERIFY( imageCheck( "stacked_varying_right" ) );
+
+      ds.diagramOrientation = QgsDiagramSettings::Left;
+      dr->setDiagramSettings( ds );
+      QVERIFY( imageCheck( "stacked_varying_left" ) );
+
+      ds.diagramOrientation = QgsDiagramSettings::Down;
+      dr->setDiagramSettings( ds );
+      QVERIFY( imageCheck( "stacked_varying_down" ) );
 
     }
 

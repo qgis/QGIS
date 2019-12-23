@@ -75,9 +75,11 @@
 
 #include "qgssettings.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsrelationmanager.h"
 #include "qgsapplication.h"
 #include "qgslayerstylingwidget.h"
 #include "qgstaskmanager.h"
+#include "qgsweakrelation.h"
 #include "qgsziputils.h"
 #include "qgsbrowserguimodel.h"
 #include "qgsvectorlayerjoinbuffer.h"
@@ -233,6 +235,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgslayoutdesignerdialog.h"
 #include "qgslayoutmanager.h"
 #include "qgslayoutqptdrophandler.h"
+#include "qgslayoutimagedrophandler.h"
 #include "qgslayoutapputils.h"
 #include "qgslocatorwidget.h"
 #include "qgslocator.h"
@@ -348,6 +351,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsvaliditycheckregistry.h"
 #include "qgsappcoordinateoperationhandlers.h"
 #include "qgsprojectviewsettings.h"
+#include "qgscoordinateformatter.h"
 
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
@@ -665,13 +669,24 @@ void QgisApp::onActiveLayerChanged( QgsMapLayer *layer )
 
 void QgisApp::vectorLayerStyleLoaded( QgsMapLayer::StyleCategories categories )
 {
-  if ( categories.testFlag( QgsMapLayer::StyleCategory::Forms ) )
+
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( sender() );
+
+  if ( vl && vl->isValid( ) )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( sender() );
-    if ( vl && vl->isValid( ) )
+
+    // Check broken dependencies in forms
+    if ( categories.testFlag( QgsMapLayer::StyleCategory::Forms ) )
     {
-      checkVectorLayerDependencies( vl );
+      resolveVectorLayerDependencies( vl );
     }
+
+    // Check broken relations and try to restore them
+    if ( categories.testFlag( QgsMapLayer::StyleCategory::Relations ) )
+    {
+      resolveVectorLayerWeakRelations( vl );
+    }
+
   }
 }
 
@@ -724,7 +739,7 @@ void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
     {
       srs.createFromOgcWmsCrs( QgsSettings().value( QStringLiteral( "Projections/layerDefaultCrs" ), geoEpsgCrsAuthId() ).toString() );
       sAuthId = srs.authid();
-      visibleMessageBar()->pushMessage( tr( "CRS was undefined" ), tr( "defaulting to CRS %1 - %2" ).arg( sAuthId, srs.description() ), Qgis::Warning, messageTimeout() );
+      visibleMessageBar()->pushMessage( tr( "CRS was undefined" ), tr( "defaulting to CRS %1" ).arg( srs.userFriendlyIdentifier() ), Qgis::Warning, messageTimeout() );
       break;
     }
 
@@ -763,7 +778,7 @@ void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
       srs = QgsProject::instance()->crs();
       sAuthId = srs.authid();
       QgsDebugMsg( "Layer srs set from project: " + sAuthId );
-      visibleMessageBar()->pushMessage( tr( "CRS was undefined" ), tr( "defaulting to project CRS %1 - %2" ).arg( sAuthId, srs.description() ), Qgis::Warning, messageTimeout() );
+      visibleMessageBar()->pushMessage( tr( "CRS was undefined" ), tr( "defaulting to project CRS %1" ).arg( srs.userFriendlyIdentifier() ), Qgis::Warning, messageTimeout() );
       break;
     }
   }
@@ -1163,6 +1178,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   // create the GPS tool on starting QGIS - this is like the browser
   mpGpsWidget = new QgsGpsInformationWidget( mMapCanvas );
+  QgsPanelWidgetStack *gpsStack = new QgsPanelWidgetStack();
+  gpsStack->setMainPanel( mpGpsWidget );
+  mpGpsWidget->setDockMode( true );
   //create the dock widget
   mpGpsDock = new QgsDockWidget( tr( "GPS Information" ), this );
 
@@ -1176,7 +1194,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   addDockWidget( Qt::LeftDockWidgetArea, mpGpsDock );
   // add to the Panel submenu
   // now add our widget to the dock - ownership of the widget is passed to the dock
-  mpGpsDock->setWidget( mpGpsWidget );
+  mpGpsDock->setWidget( gpsStack );
   mpGpsDock->hide();
 
   mLastMapToolMessage = nullptr;
@@ -1261,6 +1279,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   registerCustomDropHandler( new QgsQptDropHandler() );
   QgsApplication::dataItemProviderRegistry()->addProvider( new QgsStyleXmlDataItemProvider() );
   registerCustomDropHandler( new QgsStyleXmlDropHandler() );
+  QgsApplication::dataItemProviderRegistry()->addProvider( new QgsHtmlDataItemProvider() );
 
   // set handler for missing layers (will be owned by QgsProject)
   mAppBadLayersHandler = new QgsHandleBadLayersHandler();
@@ -1566,6 +1585,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   connect( QgsProject::instance(), &QgsProject::isDirtyChanged, mActionRevertProject, toggleRevert );
   connect( QgsProject::instance(), &QgsProject::fileNameChanged, mActionRevertProject, toggleRevert );
 
+  connect( mMapCanvas, &QgsMapCanvas::panDistanceBearingChanged, this, &QgisApp::showPanMessage );
+
   // the most important part of the initialization: make sure that people can play puzzle if they need
   QgsPuzzleWidget *puzzleWidget = new QgsPuzzleWidget( mMapCanvas );
   mCentralContainer->insertWidget( 2, puzzleWidget );
@@ -1696,6 +1717,7 @@ QgisApp::~QgisApp()
   QgsApplication::setFileOpenEventReceiver( nullptr );
 
   unregisterCustomLayoutDropHandler( mLayoutQptDropHandler );
+  unregisterCustomLayoutDropHandler( mLayoutImageDropHandler );
 
 #ifdef WITH_BINDINGS
   delete mPythonUtils;
@@ -1986,27 +2008,85 @@ QgsMessageBar *QgisApp::visibleMessageBar()
   }
 }
 
-QList<QgsVectorLayerRef> QgisApp::findBrokenWidgetDependencies( QgsVectorLayer *vl )
+const QList<QgsVectorLayerRef> QgisApp::findBrokenLayerDependencies( QgsVectorLayer *vl, QgsMapLayer::StyleCategories categories ) const
 {
   QList<QgsVectorLayerRef> brokenDependencies;
-  // Check for missing layer widget dependencies
-  for ( int i = 0; i < vl->fields().count(); i++ )
+
+  if ( categories.testFlag( QgsMapLayer::StyleCategory::Forms ) )
   {
-    std::unique_ptr<QgsEditorWidgetWrapper> ww;
-    ww.reset( QgsGui::editorWidgetRegistry()->create( vl, i, nullptr, nullptr ) );
-    // ww should never be null in real life, but it is in QgisApp tests because
-    // QgsEditorWidgetRegistry widget factories is empty
-    if ( ww )
+    for ( int i = 0; i < vl->fields().count(); i++ )
     {
-      const auto constDependencies { ww->layerDependencies() };
-      for ( const QgsVectorLayerRef &dependency : constDependencies )
+      const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( vl, vl->fields().field( i ).name() );
+      QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+      if ( fieldFormatter )
       {
-        const QgsVectorLayer *depVl { QgsVectorLayerRef( dependency ).resolveWeakly(
-                                        QgsProject::instance(),
-                                        QgsVectorLayerRef::MatchType::Name ) };
-        if ( ! depVl || ! depVl->isValid() )
+        const QList<QgsVectorLayerRef> constDependencies { fieldFormatter->layerDependencies( setup.config() ) };
+        for ( const QgsVectorLayerRef &dependency : constDependencies )
         {
-          brokenDependencies.append( dependency );
+          const QgsVectorLayer *depVl { QgsVectorLayerRef( dependency ).resolveWeakly(
+                                          QgsProject::instance(),
+                                          QgsVectorLayerRef::MatchType::Name ) };
+          if ( ! depVl || ! depVl->isValid() )
+          {
+            brokenDependencies.append( dependency );
+          }
+        }
+      }
+    }
+  }
+
+  if ( categories.testFlag( QgsMapLayer::StyleCategory::Relations ) )
+  {
+    // Check for layer weak relations
+    const QList<QgsWeakRelation> constWeakRelations { vl->weakRelations() };
+    for ( const QgsWeakRelation &rel : constWeakRelations )
+    {
+      QgsRelation relation { rel.resolvedRelation( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name ) };
+      QgsVectorLayerRef dependency;
+      bool found = false;
+      if ( ! relation.isValid() )
+      {
+        // This is the big question: do we really
+        // want to automatically load the referencing layer(s) too?
+        // This could potentially lead to a cascaded load of a
+        // long list of layers.
+        // The code is in place but let's leave it disabled for now.
+        if ( relation.referencedLayer() == vl )
+        {
+          // Do nothing because vl is the referenced layer
+#if 0
+          dependency = rel.referencingLayer();
+          found = true;
+#endif
+        }
+        else if ( relation.referencingLayer() == vl )
+        {
+          dependency = rel.referencedLayer();
+          found = true;
+        }
+        else
+        {
+          // Something wrong is going on here, maybe this relation
+          // does not really apply to this layer?
+          QgsMessageLog::logMessage( tr( "None of the layers in the relation stored in the style match the current layer, skipping relation id: %1." ).arg( relation.id() ) );
+        }
+
+        if ( found )
+        {
+          // Make sure we don't add it twice
+          bool refFound = false;
+          for ( const QgsVectorLayerRef &otherRef : qgis::as_const( brokenDependencies ) )
+          {
+            if ( dependency.layerId == otherRef.layerId || ( dependency.source == otherRef.source && dependency.provider == otherRef.provider ) )
+            {
+              refFound = true;
+              break;
+            }
+          }
+          if ( ! refFound )
+          {
+            brokenDependencies.append( dependency );
+          }
         }
       }
     }
@@ -2014,11 +2094,11 @@ QList<QgsVectorLayerRef> QgisApp::findBrokenWidgetDependencies( QgsVectorLayer *
   return brokenDependencies;
 }
 
-void QgisApp::checkVectorLayerDependencies( QgsVectorLayer *vl )
+void QgisApp::resolveVectorLayerDependencies( QgsVectorLayer *vl, QgsMapLayer::StyleCategories categories )
 {
   if ( vl && vl->isValid() )
   {
-    const auto constDependencies { findBrokenWidgetDependencies( vl ) };
+    const auto constDependencies { findBrokenLayerDependencies( vl, categories ) };
     for ( const QgsVectorLayerRef &dependency : constDependencies )
     {
       // try to aggressively resolve the broken dependencies
@@ -2103,6 +2183,31 @@ void QgisApp::checkVectorLayerDependencies( QgsVectorLayer *vl )
         messageBar()->pushSuccess( tr( "Missing layer form dependency" ), tr( "Layer dependency '%2' required by '%1' was automatically loaded." )
                                    .arg( vl->name() )
                                    .arg( dependency.name ) );
+      }
+    }
+  }
+}
+
+void QgisApp::resolveVectorLayerWeakRelations( QgsVectorLayer *vectorLayer )
+{
+  if ( vectorLayer && vectorLayer->isValid() )
+  {
+    const QList<QgsWeakRelation> constWeakRelations { vectorLayer->weakRelations( ) };
+    for ( const QgsWeakRelation &rel : constWeakRelations )
+    {
+      QgsRelation relation { rel.resolvedRelation( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name ) };
+      if ( relation.isValid() )
+      {
+        // Avoid duplicates
+        const QList<QgsRelation> constRelations { QgsProject::instance()->relationManager()->relations().values() };
+        for ( const QgsRelation &other : constRelations )
+        {
+          if ( relation.hasEqualDefinition( other ) )
+          {
+            continue;
+          }
+        }
+        QgsProject::instance()->relationManager()->addRelation( relation );
       }
     }
   }
@@ -3937,6 +4042,7 @@ void QgisApp::createCanvasTools()
   mMapTools.mZoomOut = new QgsMapToolZoom( mMapCanvas, true /* zoomOut */ );
   mMapTools.mZoomOut->setAction( mActionZoomOut );
   mMapTools.mPan = new QgsMapToolPan( mMapCanvas );
+  connect( static_cast< QgsMapToolPan * >( mMapTools.mPan ), &QgsMapToolPan::panDistanceBearingChanged, this, &QgisApp::showPanMessage );
   mMapTools.mPan->setAction( mActionPan );
   mMapTools.mIdentify = new QgsMapToolIdentifyAction( mMapCanvas );
   mMapTools.mIdentify->setAction( mActionIdentify );
@@ -4017,15 +4123,19 @@ void QgisApp::createCanvasTools()
   mMapTools.mSelectFeatures = new QgsMapToolSelect( mMapCanvas );
   mMapTools.mSelectFeatures->setAction( mActionSelectFeatures );
   mMapTools.mSelectFeatures->setSelectionMode( QgsMapToolSelectionHandler::SelectSimple );
+  connect( mMapTools.mSelectFeatures, &QgsMapToolSelect::modeChanged, this, &QgisApp::selectionModeChanged );
   mMapTools.mSelectPolygon = new QgsMapToolSelect( mMapCanvas );
   mMapTools.mSelectPolygon->setAction( mActionSelectPolygon );
   mMapTools.mSelectPolygon->setSelectionMode( QgsMapToolSelectionHandler::SelectPolygon );
+  connect( mMapTools.mSelectPolygon, &QgsMapToolSelect::modeChanged, this, &QgisApp::selectionModeChanged );
   mMapTools.mSelectFreehand = new QgsMapToolSelect( mMapCanvas );
   mMapTools.mSelectFreehand->setAction( mActionSelectFreehand );
   mMapTools.mSelectFreehand->setSelectionMode( QgsMapToolSelectionHandler::SelectFreehand );
+  connect( mMapTools.mSelectFreehand, &QgsMapToolSelect::modeChanged, this, &QgisApp::selectionModeChanged );
   mMapTools.mSelectRadius = new QgsMapToolSelect( mMapCanvas );
   mMapTools.mSelectRadius->setAction( mActionSelectRadius );
   mMapTools.mSelectRadius->setSelectionMode( QgsMapToolSelectionHandler::SelectRadius );
+  connect( mMapTools.mSelectRadius, &QgsMapToolSelect::modeChanged, this, &QgisApp::selectionModeChanged );
   mMapTools.mAddRing = new QgsMapToolAddRing( mMapCanvas );
   mMapTools.mAddRing->setAction( mActionAddRing );
   mMapTools.mFillRing = new QgsMapToolFillRing( mMapCanvas );
@@ -6247,6 +6357,12 @@ void QgisApp::showRasterCalculator()
                                           tr( "Invalid band number for input layer." ),
                                           Qgis::Critical );
         break;
+
+      case QgsRasterCalculator::CalculationError:
+        visibleMessageBar()->pushMessage( tr( "Raster calculator" ),
+                                          tr( "An error occurred while performing the calculation." ),
+                                          Qgis::Critical );
+        break;
     }
     p.hide();
   }
@@ -6458,7 +6574,7 @@ bool QgisApp::addProject( const QString &projectFile )
     }
 
     mMapCanvas->updateScale();
-    QgsDebugMsg( QStringLiteral( "Scale restored..." ) );
+    QgsDebugMsgLevel( QStringLiteral( "Scale restored..." ), 3 );
 
     mActionFilterLegend->setChecked( QgsProject::instance()->readBoolEntry( QStringLiteral( "Legend" ), QStringLiteral( "filterByMap" ) ) );
 
@@ -6488,7 +6604,7 @@ bool QgisApp::addProject( const QString &projectFile )
     {
       if ( vl->isValid() )
       {
-        checkVectorLayerDependencies( vl );
+        resolveVectorLayerDependencies( vl );
       }
     }
 
@@ -11725,6 +11841,8 @@ void QgisApp::initLayouts()
 
   mLayoutQptDropHandler = new QgsLayoutQptDropHandler( this );
   registerCustomLayoutDropHandler( mLayoutQptDropHandler );
+  mLayoutImageDropHandler = new QgsLayoutImageDropHandler( this );
+  registerCustomLayoutDropHandler( mLayoutImageDropHandler );
 }
 
 void QgisApp::new3DMapCanvas()
@@ -12665,7 +12783,7 @@ void QgisApp::updateCrsStatusBar()
     mOnTheFlyProjectionStatusButton->setText( QgsProject::instance()->crs().authid() );
 
     mOnTheFlyProjectionStatusButton->setToolTip(
-      tr( "Current CRS: %1" ).arg( QgsProject::instance()->crs().description() ) );
+      tr( "Current CRS: %1" ).arg( QgsProject::instance()->crs().userFriendlyIdentifier() ) );
     mOnTheFlyProjectionStatusButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconProjectionEnabled.svg" ) ) );
   }
   else
@@ -12787,8 +12905,51 @@ void QgisApp::showRotation()
   // update the statusbar with the current rotation.
   double myrotation = mMapCanvas->rotation();
   mRotationEdit->setValue( myrotation );
-} // QgisApp::showRotation
+}
 
+void QgisApp::showPanMessage( double distance, QgsUnitTypes::DistanceUnit unit, double bearing )
+{
+  mStatusBar->showMessage( tr( "Pan distance %1 (%2)" ).arg( QgsDistanceArea::formatDistance( distance, 1, unit ),
+                           QgsCoordinateFormatter::formatX( bearing, QgsCoordinateFormatter::FormatDecimalDegrees, 1, QgsCoordinateFormatter::FlagDegreesUseStringSuffix ) ), 2000 );
+}
+
+void QgisApp::selectionModeChanged( QgsMapToolSelect::Mode mode )
+{
+  switch ( mode )
+  {
+    case QgsMapToolSelect::GeometryIntersectsSetSelection:
+      mStatusBar->showMessage( QString() );
+      break;
+    case QgsMapToolSelect::GeometryIntersectsAddToSelection:
+      mStatusBar->showMessage( tr( "Add to the current selection" ) );
+      break;
+
+    case QgsMapToolSelect::GeometryIntersectsSubtractFromSelection:
+      mStatusBar->showMessage( tr( "Subtract from the current selection" ) );
+      break;
+
+    case QgsMapToolSelect::GeometryIntersectsIntersectWithSelection:
+      mStatusBar->showMessage( tr( "Intersect with the current selection" ) );
+      break;
+
+    case QgsMapToolSelect::GeometryWithinSetSelection:
+      mStatusBar->showMessage( tr( "Select features completely within" ) );
+      break;
+
+    case QgsMapToolSelect::GeometryWithinAddToSelection:
+      mStatusBar->showMessage( tr( "Add features completely within to the current selection" ) );
+      break;
+
+    case QgsMapToolSelect::GeometryWithinSubtractFromSelection:
+      mStatusBar->showMessage( tr( "Subtract features completely within from the current selection" ) );
+      break;
+
+    case QgsMapToolSelect::GeometryWithinIntersectWithSelection:
+      mStatusBar->showMessage( tr( "Intersect features completely within with the current selection" ) );
+      break;
+
+  }
+}
 
 void QgisApp::updateMouseCoordinatePrecision()
 {
@@ -13340,7 +13501,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
         mActionAddFeature->setText( addFeatureText );
         mActionAddFeature->setToolTip( addFeatureText );
         QgsGui::shortcutsManager()->unregisterAction( mActionAddFeature );
-        QgsGui::shortcutsManager()->registerAction( mActionAddFeature, mActionAddFeature->shortcut() );
+        if ( !mActionAddFeature->text().isEmpty() ) // The text will be empty on unknown geometry type -> in this case do not create a shortcut
+          QgsGui::shortcutsManager()->registerAction( mActionAddFeature, mActionAddFeature->shortcut() );
       }
       else
       {

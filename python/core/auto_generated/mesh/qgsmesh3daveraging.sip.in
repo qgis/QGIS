@@ -1,0 +1,381 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/mesh/qgsmesh3daveraging.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsMesh3dAveragingMethod /Abstract/
+{
+%Docstring
+Abstract class to interpolate 3d stacked mesh data to 2d data
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsmesh3daveraging.h"
+%End
+%ConvertToSubClassCode
+    QgsMesh3dAveragingMethod *averagingMethod = dynamic_cast<QgsMesh3dAveragingMethod *>( sipCpp );
+
+    sipType = 0;
+
+    if ( averagingMethod )
+    {
+      switch ( averagingMethod->method() )
+      {
+        case QgsMesh3dAveragingMethod::MultiLevelsAveragingMethod:
+          sipType = sipType_QgsMeshMultiLevelsAveragingMethod;
+          break;
+        case QgsMesh3dAveragingMethod::SigmaAveragingMethod:
+          sipType = sipType_QgsMeshSigmaAveragingMethod;
+          break;
+        case QgsMesh3dAveragingMethod::RelativeHeightAveragingMethod:
+          sipType = sipType_QgsMeshRelativeHeightAveragingMethod;
+          break;
+        case QgsMesh3dAveragingMethod::ElevationAveragingMethod:
+          sipType = sipType_QgsMeshElevationAveragingMethod;
+          break;
+        default:
+          sipType = nullptr;
+          break;
+      }
+    }
+%End
+  public:
+    enum Method
+    {
+      //! Method to average values from selected vertical layers
+      MultiLevelsAveragingMethod,
+      //! Method to average values between 0 (bed level) and 1 (surface)
+      SigmaAveragingMethod,
+      //! Method to average values defined by range of relative length units to the surface or bed level
+      RelativeHeightAveragingMethod,
+      //! Method to average values defined by range of absolute length units to the model's datum
+      ElevationAveragingMethod
+    };
+
+    QgsMesh3dAveragingMethod( Method method );
+%Docstring
+Ctor
+%End
+
+    virtual ~QgsMesh3dAveragingMethod();
+
+    QgsMeshDataBlock calculate( const QgsMesh3dDataBlock &block3d, QgsFeedback *feedback = 0 ) const;
+%Docstring
+Calculated 2d block values from 3d stacked mesh values
+%End
+
+    virtual QDomElement writeXml( QDomDocument &doc ) const = 0;
+%Docstring
+Writes configuration to a new DOM element
+%End
+
+    static QgsMesh3dAveragingMethod *createFromXml( const QDomElement &elem ) /Factory/;
+%Docstring
+Creates the instance from XML by calling readXml of derived classes
+%End
+
+    virtual void readXml( const QDomElement &elem ) = 0;
+%Docstring
+Reads configuration from the given DOM element
+%End
+
+    static bool equals( const QgsMesh3dAveragingMethod *a, const QgsMesh3dAveragingMethod *b );
+%Docstring
+Returns whether two methods equal
+%End
+
+    virtual bool equals( const QgsMesh3dAveragingMethod *other ) const = 0;
+%Docstring
+Returns whether method equals to other
+%End
+
+    virtual QgsMesh3dAveragingMethod *clone() const = 0 /Factory/;
+%Docstring
+Clone the instance
+%End
+
+    Method method() const;
+%Docstring
+Returns type of averaging method
+%End
+
+};
+
+class QgsMeshMultiLevelsAveragingMethod: QgsMesh3dAveragingMethod
+{
+%Docstring
+
+Multi level averaging method specifies limits of vertical layers from the top layer down or reversed.
+
+The limits will be truncated to the maximum number of vertical layers.
+To pick value from a single layer, specify the upper and lower limit to be the same
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsmesh3daveraging.h"
+%End
+  public:
+    QgsMeshMultiLevelsAveragingMethod();
+%Docstring
+Constructs single level averaging method for 1st (top) vertical level
+%End
+
+    QgsMeshMultiLevelsAveragingMethod( int startLevel, int endLevel, bool countedFromTop );
+%Docstring
+Constructs multi level averaging method
+
+:param startLevel: starting vertical level index numbered from 1
+:param endLevel: ending vertical level index numbered from 1 (higher or equal than startLevel)
+:param countedFromTop: if true, the startLevel index is counted from surface (index 1 is the top layer).
+                       if false, the startLevel index is counted from the bed level (index 1 is the bottom layer)
+%End
+
+    QgsMeshMultiLevelsAveragingMethod( int verticalLevel, bool countedFromTop );
+%Docstring
+Constructs single level averaging method
+
+:param verticalLevel: vertical level index numbered from 1
+:param countedFromTop: if true, the startLevel index is counted from surface (index 1 is the top layer).
+                       if false, the startLevel index is counted from the bed level (index 1 is the bottom layer)
+%End
+
+    ~QgsMeshMultiLevelsAveragingMethod();
+    virtual QDomElement writeXml( QDomDocument &doc ) const;
+
+    virtual void readXml( const QDomElement &elem );
+
+    virtual bool equals( const QgsMesh3dAveragingMethod *other ) const;
+
+    virtual QgsMesh3dAveragingMethod *clone() const /Factory/;
+
+
+    int startVerticalLevel() const;
+%Docstring
+Returns starting vertical level.
+
+Numbered from 1. If countedFromTop(), 1 represents the top (surface) level,
+otherwise 1 represents the bottom (bed) level
+
+Always lower or equal than endVerticalLevel()
+%End
+
+    int endVerticalLevel() const;
+%Docstring
+Returns ending vertical level.
+
+Numbered from 1. If countedFromTop(), 1 represents the top (surface) level,
+otherwise 1 represents the bottom (bed) level
+
+Always lower or equal than endVerticalLevel()
+%End
+
+    bool countedFromTop() const;
+%Docstring
+Returns whether the start and end vertical levels are indexed from top (surface) or bottom (bed) level
+%End
+
+    bool isSingleLevel() const;
+%Docstring
+Returns whether the averaging method selects only a single vertical level
+%End
+
+};
+
+class QgsMeshSigmaAveragingMethod: QgsMesh3dAveragingMethod
+{
+%Docstring
+
+Sigma averages over the values between 0 (bed level) and 1 (surface).
+
+The fractions will be truncated to 0-1.
+For example: the average of between a quarter and 3 quarters of the water column - Sigma from 0.25 to 0.75
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsmesh3daveraging.h"
+%End
+  public:
+    QgsMeshSigmaAveragingMethod();
+%Docstring
+Constructs the sigma method for whole value range 0-1
+%End
+
+    QgsMeshSigmaAveragingMethod( double startFraction, double endFraction );
+%Docstring
+Constructs the sigma method
+
+:param startFraction: starting fraction (0-1)
+:param endFraction: ending fraction, must be higher or equal than startFraction (0-1)
+%End
+
+    ~QgsMeshSigmaAveragingMethod();
+    virtual QDomElement writeXml( QDomDocument &doc ) const;
+
+    virtual void readXml( const QDomElement &elem );
+
+    virtual bool equals( const QgsMesh3dAveragingMethod *other ) const;
+
+    virtual QgsMesh3dAveragingMethod *clone() const /Factory/;
+
+
+    double startFraction() const;
+%Docstring
+Returns starting fraction.
+
+In range 0-1, where 1 means the surface level and 0 bed level.
+Always lower or equal than endFraction()
+%End
+
+    double endFraction() const;
+%Docstring
+Returns ending fraction.
+
+In range 0-1, where 1 means the surface level and 0 bed level.
+Always higher or equal than startFraction()
+%End
+
+};
+
+class QgsMeshRelativeHeightAveragingMethod: QgsMesh3dAveragingMethod
+{
+%Docstring
+
+Relative height averaging method averages the values based on range defined relative to bed elevation or surface (when countedFromTop())
+The range is defined in the same length units as defined by model (e.g. meters)
+
+if countedFromTop(), the method represents averaging based on depth below surface.
+For example one can pull out results for between 6 to 12 meters below the water surface - depth from 6m to 12m.
+The depth will be truncated at the bed level.
+
+if not countedFromTop(), the method represents averaging based on height above bed level.
+For example one can pull out results for between 6 to 12 meters above the bed - height from 6m to 12m.
+The height will be truncated at the bed level.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsmesh3daveraging.h"
+%End
+  public:
+
+    QgsMeshRelativeHeightAveragingMethod();
+%Docstring
+Constructs default depth averaging method
+%End
+
+    QgsMeshRelativeHeightAveragingMethod( double startHeight, double endHeight, bool countedFromTop );
+%Docstring
+Constructs the depth/height averaging method
+
+:param startHeight: starting depth/height, higher or equal than 0
+:param endHeight: ending depth/height, higher or equal than startDepth
+:param countedFromTop: if true, the startLength and endLength is relative to surface (0 is surface level).
+                       if false, the startLength and endLength is relative to bed (0 is bed level).
+%End
+
+    ~QgsMeshRelativeHeightAveragingMethod();
+    virtual QDomElement writeXml( QDomDocument &doc ) const;
+
+    virtual void readXml( const QDomElement &elem );
+
+    virtual bool equals( const QgsMesh3dAveragingMethod *other ) const;
+
+    virtual QgsMesh3dAveragingMethod *clone() const /Factory/;
+
+
+    double startHeight() const;
+%Docstring
+Returns starting depth/height.
+
+Always lower or equal than endLength()
+%End
+
+    double endHeight() const;
+%Docstring
+Returns ending depth/height.
+
+Always higher or equal than startLength()
+%End
+
+    bool countedFromTop() const;
+%Docstring
+Returns whether the start and end vertical levels are relative to top (surface) or bottom (bed) level
+%End
+
+};
+
+class QgsMeshElevationAveragingMethod: QgsMesh3dAveragingMethod
+{
+%Docstring
+
+Elevation averaging method averages the values based on range defined absolute value to the model's datum
+The range is defined in the same length units as defined by model (e.g. meters)
+
+For example one can pull out results irrespective of water level change such as between -16m and -10m.
+The elevation will be truncated at the surface and bed levels.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsmesh3daveraging.h"
+%End
+  public:
+
+    QgsMeshElevationAveragingMethod();
+%Docstring
+Ctor
+%End
+
+    QgsMeshElevationAveragingMethod( double startElevation, double endElevation );
+%Docstring
+Constructs elevation averaging method
+
+:param startElevation: start elevation (absolute to model's datum)
+:param endElevation: end elevation (absolute to model's datum)
+%End
+    ~QgsMeshElevationAveragingMethod();
+
+    virtual QDomElement writeXml( QDomDocument &doc ) const;
+
+    virtual void readXml( const QDomElement &elem );
+
+    virtual bool equals( const QgsMesh3dAveragingMethod *other ) const;
+
+    virtual QgsMesh3dAveragingMethod *clone() const /Factory/;
+
+
+    double startElevation() const;
+%Docstring
+Returns start elevation
+%End
+
+    double endElevation() const;
+%Docstring
+Returns end elevation
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/mesh/qgsmesh3daveraging.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

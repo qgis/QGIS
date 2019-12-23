@@ -18,6 +18,7 @@
 #include "diagram/qgshistogramdiagram.h"
 #include "diagram/qgspiediagram.h"
 #include "diagram/qgstextdiagram.h"
+#include "diagram/qgsstackedbardiagram.h"
 
 #include "qgsproject.h"
 #include "qgsapplication.h"
@@ -43,6 +44,7 @@
 #include "qgsauxiliarystorage.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgspropertytransformer.h"
+#include "qgspainteffectregistry.h"
 
 #include <QList>
 #include <QMessageBox>
@@ -92,13 +94,15 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
 
   mDiagramTypeComboBox->blockSignals( true );
   QPixmap pix = QgsApplication::getThemePixmap( QStringLiteral( "diagramNone" ) );
-  mDiagramTypeComboBox->addItem( pix, tr( "No diagrams" ), "None" );
+  mDiagramTypeComboBox->addItem( pix, tr( "No Diagrams" ), "None" );
   pix = QgsApplication::getThemePixmap( QStringLiteral( "pie-chart" ) );
-  mDiagramTypeComboBox->addItem( pix, tr( "Pie chart" ), DIAGRAM_NAME_PIE );
+  mDiagramTypeComboBox->addItem( pix, tr( "Pie Chart" ), DIAGRAM_NAME_PIE );
   pix = QgsApplication::getThemePixmap( QStringLiteral( "text" ) );
-  mDiagramTypeComboBox->addItem( pix, tr( "Text diagram" ), DIAGRAM_NAME_TEXT );
+  mDiagramTypeComboBox->addItem( pix, tr( "Text Diagram" ), DIAGRAM_NAME_TEXT );
   pix = QgsApplication::getThemePixmap( QStringLiteral( "histogram" ) );
   mDiagramTypeComboBox->addItem( pix, tr( "Histogram" ), DIAGRAM_NAME_HISTOGRAM );
+  pix = QgsApplication::getThemePixmap( QStringLiteral( "stacked-bar" ) );
+  mDiagramTypeComboBox->addItem( pix, tr( "Stacked Bars" ), DIAGRAM_NAME_STACKED );
   mDiagramTypeComboBox->blockSignals( false );
 
   mAxisLineStyleButton->setSymbolType( QgsSymbol::Line );
@@ -235,6 +239,9 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
     newItem->setFlags( newItem->flags() & ~Qt::ItemIsDropEnabled );
   }
 
+  mPaintEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+  mPaintEffect->setEnabled( false );
+
   const QgsDiagramRenderer *dr = layer->diagramRenderer();
   if ( !dr ) //no diagram renderer yet, insert reasonable default
   {
@@ -281,6 +288,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
     mBackgroundColorButton->setColor( QColor( 255, 255, 255, 255 ) );
     //force a refresh of widget status to match diagram type
     mDiagramTypeComboBox_currentIndexChanged( mDiagramTypeComboBox->currentIndex() );
+
   }
   else // already a diagram renderer present
   {
@@ -325,6 +333,9 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
       {
         mLabelPlacementComboBox->setCurrentIndex( 1 );
       }
+
+      if ( settingList.at( 0 ).paintEffect() )
+        mPaintEffect.reset( settingList.at( 0 ).paintEffect()->clone() );
 
       mAngleOffsetComboBox->setCurrentIndex( mAngleOffsetComboBox->findData( settingList.at( 0 ).rotationOffset ) );
       mAngleDirectionComboBox->setCurrentIndex( mAngleDirectionComboBox->findData( settingList.at( 0 ).direction() ) );
@@ -480,6 +491,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
       }
     }
   }
+  mPaintEffectWidget->setPaintEffect( mPaintEffect.get() );
 
   connect( mAddAttributeExpression, &QPushButton::clicked, this, &QgsDiagramProperties::showAddAttributeExpressionDialog );
   registerDataDefinedButton( mBackgroundColorDDBtn, QgsDiagramLayerSettings::BackgroundColor );
@@ -549,7 +561,7 @@ void QgsDiagramProperties::mDiagramTypeComboBox_currentIndexChanged( int index )
       mDiagramFontButton->hide();
     }
 
-    if ( DIAGRAM_NAME_HISTOGRAM == mDiagramType )
+    if ( DIAGRAM_NAME_HISTOGRAM == mDiagramType || DIAGRAM_NAME_STACKED == mDiagramType )
     {
       mBarWidthLabel->show();
       mBarWidthSpinBox->show();
@@ -558,9 +570,10 @@ void QgsDiagramProperties::mDiagramTypeComboBox_currentIndexChanged( int index )
       mBarSpacingUnitComboBox->show();
       mBarOptionsFrame->show();
       mShowAxisGroupBox->show();
-      mAttributeBasedScalingRadio->setChecked( true );
-      mFixedSizeRadio->setEnabled( false );
-      mDiagramSizeSpinBox->setEnabled( false );
+      if ( DIAGRAM_NAME_HISTOGRAM == mDiagramType )
+        mAttributeBasedScalingRadio->setChecked( true );
+      mFixedSizeRadio->setEnabled( DIAGRAM_NAME_STACKED == mDiagramType );
+      mDiagramSizeSpinBox->setEnabled( DIAGRAM_NAME_STACKED == mDiagramType );
       mLinearlyScalingLabel->setText( tr( "Bar length: Scale linearly, so that the following value matches the specified bar length:" ) );
       mSizeLabel->setText( tr( "Bar length" ) );
       mFrameIncreaseSize->setVisible( false );
@@ -739,8 +752,20 @@ void QgsDiagramProperties::mDiagramAttributesTreeWidget_itemDoubleClicked( QTree
 
 void QgsDiagramProperties::mEngineSettingsButton_clicked()
 {
-  QgsLabelEngineConfigDialog dlg( this );
-  dlg.exec();
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel && panel->dockMode() )
+  {
+    QgsLabelEngineConfigWidget *widget = new QgsLabelEngineConfigWidget();
+    connect( widget, &QgsLabelEngineConfigWidget::widgetChanged, widget, &QgsLabelEngineConfigWidget::apply );
+    panel->openPanel( widget );
+  }
+  else
+  {
+    QgsLabelEngineConfigDialog dialog( this );
+    dialog.exec();
+    // reactivate button's window
+    activateWindow();
+  }
 }
 
 void QgsDiagramProperties::apply()
@@ -748,7 +773,7 @@ void QgsDiagramProperties::apply()
   int index = mDiagramTypeComboBox->currentIndex();
   bool diagramsEnabled = ( index != 0 );
 
-  QgsDiagram *diagram = nullptr;
+  std::unique_ptr< QgsDiagram > diagram;
 
   if ( diagramsEnabled && 0 == mDiagramAttributesTreeWidget->topLevelItemCount() )
   {
@@ -760,15 +785,19 @@ void QgsDiagramProperties::apply()
 
   if ( mDiagramType == DIAGRAM_NAME_TEXT )
   {
-    diagram = new QgsTextDiagram();
+    diagram = qgis::make_unique< QgsTextDiagram >();
   }
   else if ( mDiagramType == DIAGRAM_NAME_PIE )
   {
-    diagram = new QgsPieDiagram();
+    diagram = qgis::make_unique< QgsPieDiagram >();
+  }
+  else if ( mDiagramType == DIAGRAM_NAME_STACKED )
+  {
+    diagram = qgis::make_unique< QgsStackedBarDiagram >();
   }
   else // if ( diagramType == DIAGRAM_NAME_HISTOGRAM )
   {
-    diagram = new QgsHistogramDiagram();
+    diagram = qgis::make_unique< QgsHistogramDiagram >();
   }
 
   QgsDiagramSettings ds;
@@ -799,7 +828,7 @@ void QgsDiagramProperties::apply()
   ds.lineSizeUnit = mDiagramLineUnitComboBox->unit();
   ds.lineSizeScale = mDiagramLineUnitComboBox->getMapUnitScale();
   ds.labelPlacementMethod = static_cast<QgsDiagramSettings::LabelPlacementMethod>( mLabelPlacementComboBox->currentData().toInt() );
-  ds.scaleByArea = mScaleDependencyComboBox->currentData().toBool();
+  ds.scaleByArea = ( mDiagramType == DIAGRAM_NAME_STACKED ) ? false : mScaleDependencyComboBox->currentData().toBool();
 
   if ( mIncreaseSmallDiagramsCheck->isChecked() )
   {
@@ -833,6 +862,11 @@ void QgsDiagramProperties::apply()
   ds.setSpacingUnit( mBarSpacingUnitComboBox->unit() );
   ds.setSpacingMapUnitScale( mBarSpacingUnitComboBox->getMapUnitScale() );
 
+  if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect.get() ) )
+    ds.setPaintEffect( mPaintEffect->clone() );
+  else
+    ds.setPaintEffect( nullptr );
+
   QgsDiagramRenderer *renderer = nullptr;
   if ( mFixedSizeRadio->isChecked() )
   {
@@ -865,7 +899,7 @@ void QgsDiagramProperties::apply()
 
     renderer = dr;
   }
-  renderer->setDiagram( diagram );
+  renderer->setDiagram( diagram.release() );
   renderer->setAttributeLegend( mCheckBoxAttributeLegend->isChecked() );
   mLayer->setDiagramRenderer( renderer );
 

@@ -388,7 +388,7 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
       }
     }
 
-    QgsDebugMsg( QStringLiteral( "native type matches" ) );
+    QgsDebugMsgLevel( QStringLiteral( "native type matches" ), 3 );
     return true;
   }
 

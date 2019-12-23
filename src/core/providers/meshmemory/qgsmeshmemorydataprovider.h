@@ -46,6 +46,7 @@ struct CORE_EXPORT QgsMeshMemoryDataset
 
 struct CORE_EXPORT QgsMeshMemoryDatasetGroup
 {
+  QgsMeshMemoryDatasetGroup( const QString &nm, QgsMeshDatasetGroupMetadata::DataType dataType );
   QgsMeshMemoryDatasetGroup( const QString &nm );
   QgsMeshMemoryDatasetGroup();
   QgsMeshDatasetGroupMetadata groupMetadata() const;
@@ -146,6 +147,8 @@ class CORE_EXPORT QgsMeshMemoryDataProvider: public QgsMeshDataProvider
     QgsMeshDatasetMetadata datasetMetadata( QgsMeshDatasetIndex index ) const override;
     QgsMeshDatasetValue datasetValue( QgsMeshDatasetIndex index, int valueIndex ) const override;
     QgsMeshDataBlock datasetValues( QgsMeshDatasetIndex index, int valueIndex, int count ) const override;
+    QgsMesh3dDataBlock dataset3dValues( QgsMeshDatasetIndex index, int faceIndex, int count ) const override;
+
     bool isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const override;
     QgsMeshDataBlock areFacesActive( QgsMeshDatasetIndex index, int faceIndex, int count ) const override;
     bool persistDatasetGroup( const QString &path,

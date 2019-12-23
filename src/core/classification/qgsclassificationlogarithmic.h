@@ -28,16 +28,31 @@
 class CORE_EXPORT QgsClassificationLogarithmic : public QgsClassificationMethod
 {
   public:
+
+    /**
+       * Handling of negative and 0 values in the method
+       * \since QGIS 3.12
+       */
+    enum NegativeValueHandling
+    {
+      NoHandling = 0, //!< No handling
+      Discard,        //!< Negative values are discarded - this will require all values
+      PrependBreak    //!< Prepend an extra break to include negative values - this will require all values
+    };
+
     QgsClassificationLogarithmic();
     QgsClassificationMethod *clone() const override;
     QString name() const override;
     QString id() const override;
     QIcon icon() const override;
     QString labelForRange( double lowerValue, double upperValue, ClassPosition position ) const override;
+    bool valuesRequired() const override;
 
   private:
-    QList<double> calculateBreaks( double minimum, double maximum, const QList<double> &values, int nclasses ) override;
+    QList<double> calculateBreaks( double &minimum, double &maximum, const QList<double> &values, int nclasses ) override;
     QString valueToLabel( double value ) const override;
+
+
 };
 
 #endif // QGSCLASSIFICATIONLOGARITHMIC_H

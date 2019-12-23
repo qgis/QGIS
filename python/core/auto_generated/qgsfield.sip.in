@@ -299,9 +299,7 @@ Converts the provided variant to a compatible format
         Py_BEGIN_ALLOW_THREADS
         try
         {
-          QgsDebugMsg( a0->toString() );
           sipRes = sipCpp->convertCompatible( *a0 );
-          QgsDebugMsg( a0->toString() );
         }
         catch ( ... )
         {

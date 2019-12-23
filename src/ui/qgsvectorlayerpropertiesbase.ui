@@ -75,9 +75,6 @@
            <height>16777215</height>
           </size>
          </property>
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If the remove duplicate nodes option is activated, duplicate vertices will automatically be removed from geometries which are edited on this layer.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
          <property name="horizontalScrollBarPolicy">
           <enum>Qt::ScrollBarAlwaysOff</enum>
          </property>
@@ -150,6 +147,9 @@
          <item>
           <property name="text">
            <string>Masks</string>
+          </property>
+          <property name="toolTip">
+           <string>Control selective masking of symbols and labels</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">

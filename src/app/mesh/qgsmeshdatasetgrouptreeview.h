@@ -118,7 +118,7 @@ class APP_NO_EXPORT QgsMeshDatasetGroupTreeModel : public QAbstractItemModel
     void syncToLayer( QgsMeshLayer *layer );
 
   private:
-    void addTreeItem( const QString &groupName, bool isVector, int groupIndex, QgsMeshDatasetGroupTreeItem *parent );
+    void addTreeItem( const QString &groupName, const QString &displayName, bool isVector, int groupIndex, QgsMeshDatasetGroupTreeItem *parent );
     QModelIndex groupIndexToModelIndex( int groupIndex );
 
     std::unique_ptr<QgsMeshDatasetGroupTreeItem> mRootItem;

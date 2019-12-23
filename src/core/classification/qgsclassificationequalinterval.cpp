@@ -21,7 +21,7 @@
 const QString QgsClassificationEqualInterval::METHOD_ID = QStringLiteral( "EqualInterval" );
 
 QgsClassificationEqualInterval::QgsClassificationEqualInterval()
-  : QgsClassificationMethod( ValuesNotRequired | SymmetricModeAvailable, 0 /*codeComplexity*/ )
+  : QgsClassificationMethod( SymmetricModeAvailable, 0 /*codeComplexity*/ )
 {
 }
 
@@ -35,7 +35,7 @@ QString QgsClassificationEqualInterval::id() const
   return METHOD_ID;
 }
 
-QList<double> QgsClassificationEqualInterval::calculateBreaks( double minimum, double maximum,
+QList<double> QgsClassificationEqualInterval::calculateBreaks( double &minimum, double &maximum,
     const QList<double> &values, int nclasses )
 {
   Q_UNUSED( values )
@@ -101,3 +101,4 @@ QIcon QgsClassificationEqualInterval::icon() const
 {
   return QgsApplication::getThemeIcon( "classification_methods/mClassificationEqualInterval.svg" );
 }
+

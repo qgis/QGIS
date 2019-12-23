@@ -110,7 +110,7 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
     enum MethodProperty
     {
       NoFlag                 = 0,       //!< No flag
-      ValuesNotRequired      = 1 << 1,  //!< Values are not required to calculate, min/max are enough
+      ValuesNotRequired      = 1 << 1,  //!< Deprecated since QGIS 3.12
       SymmetricModeAvailable = 1 << 2,  //!< This allows using symmetric classification
     };
     Q_DECLARE_FLAGS( MethodProperties, MethodProperty )
@@ -131,7 +131,7 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
       */
     explicit QgsClassificationMethod( MethodProperties properties = NoFlag, int codeComplexity = 1 );
 
-    virtual ~QgsClassificationMethod() = default;
+    virtual ~QgsClassificationMethod();
 
     /**
      * Returns a clone of the method.
@@ -159,14 +159,15 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
     //! Reads extra information to apply it to the method
     virtual void readXml( const QDomElement &element, const QgsReadWriteContext &context ) {Q_UNUSED( element ); Q_UNUSED( context )}
 
-    // *******************
-    // non-virtual methods
-
     /**
      * Returns if the method requires values to calculate the classes
      * If not, bounds are sufficient
      */
-    bool valuesRequired() const {return !mFlags.testFlag( ValuesNotRequired );}
+    virtual bool valuesRequired() const {return true;}
+
+
+    // *******************
+    // non-virtual methods
 
     //! Code complexity as the exponent in Big O notation
     int codeComplexity() const {return mCodeComplexity;}
@@ -270,7 +271,30 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
      */
     QString labelForRange( const QgsRendererRange &range, ClassPosition position = Inner ) const;
 
+    /**
+     * Returns the parameter from its name
+     * \since QGIS 3.12
+     */
+    const QgsProcessingParameterDefinition *parameterDefinition( const QString &parameterName ) const;
 
+    /**
+     * Returns the list of parameters
+     * \since QGIS 3.12
+     */
+    QgsProcessingParameterDefinitions parameterDefinitions() const {return mParameters;}
+
+    /**
+     * Defines the values of the additional parameters
+     * \since QGIS 3.12
+     */
+    void setParameterValues( const QVariantMap &values );
+
+    /**
+     * Returns the values of the processing parameters.
+     * One could use QgsProcessingParameters::parameterAsXxxx to retrieve the actual value of a parameter.
+     * \since QGIS 3.12
+     */
+    QVariantMap parameterValues() const {return mParameterValues;}
 
     static const int MAX_PRECISION;
     static const int MIN_PRECISION;
@@ -283,19 +307,27 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
     //! Format the number according to label properties
     QString formatNumber( double value ) const;
 
+    /**
+     * Add a parameter to the method.
+     * The paramaeter is a processing parameter which will allow its configuration in the GUI.
+     * \note Only parameters having their widget implementation in C++ are supported. i.e. pure
+     * Python parameters are not supported.
+     * \since QGIS 3.12
+     */
+    void addParameter( QgsProcessingParameterDefinition *definition SIP_TRANSFER );
+
   private:
 
     /**
-     * Calculate the breaks, should be reimplemented, values might be an empty list
+     * Calculate the breaks, should be reimplemented, values might be an empty list if they are not required
      * If the symmetric mode is available, the implementation is responsible of applying the symmetry
      * The maximum value is expected to be added at the end of the list, but not the minimum
      */
-    virtual QList<double> calculateBreaks( double minimum, double maximum,
+    virtual QList<double> calculateBreaks( double &minimum, double &maximum,
                                            const QList<double> &values, int nclasses ) = 0;
 
     //! This is called after calculating the breaks or restoring from XML, so it can rely on private variables
     virtual QString valueToLabel( double value ) const {return formatNumber( value );}
-
 
     //! Create a list of ranges from a list of classes
     QList<QgsClassificationRange> breaksToClasses( const QList<double> &breaks ) const;
@@ -313,10 +345,13 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
     bool mLabelTrimTrailingZeroes = true;
     QString mLabelFormat;
 
-
     // values used to manage number formatting - precision and trailing zeroes
     double mLabelNumberScale = 1.0;
     QString mLabelNumberSuffix;
+
+    //! additional parameters
+    QgsProcessingParameterDefinitions mParameters;
+    QVariantMap mParameterValues;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsClassificationMethod::MethodProperties )

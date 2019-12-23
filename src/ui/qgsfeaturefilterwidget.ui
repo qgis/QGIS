@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsFeatureFilterWidget</class>
+ <widget class="QWidget" name="QgsFeatureFilterWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1127</width>
+    <height>43</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QToolButton" name="mFilterButton">
+       <property name="toolTip">
+        <string>The filter defines which features are currently shown in the list or on the table</string>
+       </property>
+       <property name="text">
+        <string>Filter</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionFilter.svg</normaloff>:/images/themes/default/mActionFilter.svg</iconset>
+       </property>
+       <property name="popupMode">
+        <enum>QToolButton::MenuButtonPopup</enum>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextBesideIcon</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QWidget" name="mFilterContainer" native="true">
+       <layout class="QGridLayout" name="mFilterLayout">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetDefaultConstraint</enum>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QgsFilterLineEdit" name="mFilterQuery"/>
+        </item>
+        <item row="0" column="1">
+         <widget class="QToolButton" name="mStoreFilterExpressionButton">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+          <property name="popupMode">
+           <enum>QToolButton::MenuButtonPopup</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mApplyFilterButton">
+       <property name="toolTip">
+        <string>Filters the visible features according to the current filter selection and filter string.</string>
+       </property>
+       <property name="text">
+        <string>Apply</string>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextOnly</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+  <action name="mActionApplyFilter">
+   <property name="text">
+    <string>Apply</string>
+   </property>
+  </action>
+  <action name="mActionFilterColumnsMenu">
+   <property name="text">
+    <string>Field Filter</string>
+   </property>
+  </action>
+  <action name="mActionEditStoredFilterExpression">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionHandleStoreFilterExpressionChecked.svg</normaloff>:/images/themes/default/mActionHandleStoreFilterExpressionChecked.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Edit Expression</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit the stored expression (change name or content)</string>
+   </property>
+  </action>
+  <action name="mActionSaveAsStoredFilterExpression">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionHandleStoreFilterExpressionUnchecked.svg</normaloff>:/images/themes/default/mActionHandleStoreFilterExpressionUnchecked.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Save Expression as...</string>
+   </property>
+   <property name="toolTip">
+    <string>Save expression under defined name</string>
+   </property>
+  </action>
+  <action name="mActionHandleStoreFilterExpression">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionHandleStoreFilterExpressionUnchecked.svg</normaloff>:/images/themes/default/mActionHandleStoreFilterExpressionUnchecked.svg</iconset>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="toolTip">
+    <string>Handle expression (save or delete)</string>
+   </property>
+  </action>
+  <action name="mActionStoredFilterExpressions">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionHandleStoreFilterExpressionChecked.svg</normaloff>:/images/themes/default/mActionHandleStoreFilterExpressionChecked.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Stored Filter Expressions</string>
+   </property>
+   <property name="toolTip">
+    <string>Stored expressions to filter features</string>
+   </property>
+  </action>
+  <action name="mActionShowAllFilter">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFilter.svg</normaloff>:/images/themes/default/mActionFilter.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Show All Features</string>
+   </property>
+  </action>
+  <action name="mActionAdvancedFilter">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFilter.svg</normaloff>:/images/themes/default/mActionFilter.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Advanced Filter (Expression)</string>
+   </property>
+   <property name="toolTip">
+    <string>Use the Expression Builder to define the filter</string>
+   </property>
+  </action>
+  <action name="mActionSelectedFilter">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFilter.svg</normaloff>:/images/themes/default/mActionFilter.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Show Selected Features</string>
+   </property>
+  </action>
+  <action name="mActionVisibleFilter">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFilter.svg</normaloff>:/images/themes/default/mActionFilter.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Show Features Visible On Map</string>
+   </property>
+  </action>
+  <action name="mActionEditedFilter">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFilter.svg</normaloff>:/images/themes/default/mActionFilter.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Show Edited and New Features</string>
+   </property>
+   <property name="toolTip">
+    <string>Filter all the features which have been edited but not yet saved</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
+ <connections/>
+</ui>

@@ -184,76 +184,6 @@ void QgsMeshRendererVectorSettings::setFilterMax( double vectorFilterMax )
   mFilterMax = vectorFilterMax;
 }
 
-QgsMeshRendererVectorSettings::ArrowScalingMethod QgsMeshRendererVectorSettings::shaftLengthMethod() const
-{
-  return mShaftLengthMethod;
-}
-
-void QgsMeshRendererVectorSettings::setShaftLengthMethod( QgsMeshRendererVectorSettings::ArrowScalingMethod shaftLengthMethod )
-{
-  mShaftLengthMethod = shaftLengthMethod;
-}
-
-double QgsMeshRendererVectorSettings::minShaftLength() const
-{
-  return mMinShaftLength;
-}
-
-void QgsMeshRendererVectorSettings::setMinShaftLength( double minShaftLength )
-{
-  mMinShaftLength = minShaftLength;
-}
-
-double QgsMeshRendererVectorSettings::maxShaftLength() const
-{
-  return mMaxShaftLength;
-}
-
-void QgsMeshRendererVectorSettings::setMaxShaftLength( double maxShaftLength )
-{
-  mMaxShaftLength = maxShaftLength;
-}
-
-double QgsMeshRendererVectorSettings::scaleFactor() const
-{
-  return mScaleFactor;
-}
-
-void QgsMeshRendererVectorSettings::setScaleFactor( double scaleFactor )
-{
-  mScaleFactor = scaleFactor;
-}
-
-double QgsMeshRendererVectorSettings::fixedShaftLength() const
-{
-  return mFixedShaftLength;
-}
-
-void QgsMeshRendererVectorSettings::setFixedShaftLength( double fixedShaftLength )
-{
-  mFixedShaftLength = fixedShaftLength;
-}
-
-double QgsMeshRendererVectorSettings::arrowHeadWidthRatio() const
-{
-  return mArrowHeadWidthRatio;
-}
-
-void QgsMeshRendererVectorSettings::setArrowHeadWidthRatio( double vectorHeadWidthRatio )
-{
-  mArrowHeadWidthRatio = vectorHeadWidthRatio;
-}
-
-double QgsMeshRendererVectorSettings::arrowHeadLengthRatio() const
-{
-  return mArrowHeadLengthRatio;
-}
-
-void QgsMeshRendererVectorSettings::setArrowHeadLengthRatio( double vectorHeadLengthRatio )
-{
-  mArrowHeadLengthRatio = vectorHeadLengthRatio;
-}
-
 bool QgsMeshRendererVectorSettings::isOnUserDefinedGrid() const
 {
   return mOnUserDefinedGrid;
@@ -284,18 +214,81 @@ void QgsMeshRendererVectorSettings::setUserGridCellHeight( int height )
   mUserGridCellHeight = height;
 }
 
-QDomElement QgsMeshRendererVectorSettings::writeXml( QDomDocument &doc ) const
+QgsMeshRendererVectorArrowSettings::ArrowScalingMethod QgsMeshRendererVectorArrowSettings::shaftLengthMethod() const
 {
-  QDomElement elem = doc.createElement( QStringLiteral( "vector-settings" ) );
-  elem.setAttribute( QStringLiteral( "line-width" ), mLineWidth );
-  elem.setAttribute( QStringLiteral( "color" ), QgsSymbolLayerUtils::encodeColor( mColor ) );
-  elem.setAttribute( QStringLiteral( "filter-min" ), mFilterMin );
-  elem.setAttribute( QStringLiteral( "filter-max" ), mFilterMax );
+  return mShaftLengthMethod;
+}
+
+void QgsMeshRendererVectorArrowSettings::setShaftLengthMethod( QgsMeshRendererVectorArrowSettings::ArrowScalingMethod shaftLengthMethod )
+{
+  mShaftLengthMethod = shaftLengthMethod;
+}
+
+double QgsMeshRendererVectorArrowSettings::minShaftLength() const
+{
+  return mMinShaftLength;
+}
+
+void QgsMeshRendererVectorArrowSettings::setMinShaftLength( double minShaftLength )
+{
+  mMinShaftLength = minShaftLength;
+}
+
+double QgsMeshRendererVectorArrowSettings::maxShaftLength() const
+{
+  return mMaxShaftLength;
+}
+
+void QgsMeshRendererVectorArrowSettings::setMaxShaftLength( double maxShaftLength )
+{
+  mMaxShaftLength = maxShaftLength;
+}
+
+double QgsMeshRendererVectorArrowSettings::scaleFactor() const
+{
+  return mScaleFactor;
+}
+
+void QgsMeshRendererVectorArrowSettings::setScaleFactor( double scaleFactor )
+{
+  mScaleFactor = scaleFactor;
+}
+
+double QgsMeshRendererVectorArrowSettings::fixedShaftLength() const
+{
+  return mFixedShaftLength;
+}
+
+void QgsMeshRendererVectorArrowSettings::setFixedShaftLength( double fixedShaftLength )
+{
+  mFixedShaftLength = fixedShaftLength;
+}
+
+double QgsMeshRendererVectorArrowSettings::arrowHeadWidthRatio() const
+{
+  return mArrowHeadWidthRatio;
+}
+
+void QgsMeshRendererVectorArrowSettings::setArrowHeadWidthRatio( double vectorHeadWidthRatio )
+{
+  mArrowHeadWidthRatio = vectorHeadWidthRatio;
+}
+
+double QgsMeshRendererVectorArrowSettings::arrowHeadLengthRatio() const
+{
+  return mArrowHeadLengthRatio;
+}
+
+void QgsMeshRendererVectorArrowSettings::setArrowHeadLengthRatio( double vectorHeadLengthRatio )
+{
+  mArrowHeadLengthRatio = vectorHeadLengthRatio;
+}
+
+QDomElement QgsMeshRendererVectorArrowSettings::writeXml( QDomDocument &doc ) const
+{
+  QDomElement elem = doc.createElement( QStringLiteral( "vector-arrow-settings" ) );
   elem.setAttribute( QStringLiteral( "arrow-head-width-ratio" ), mArrowHeadWidthRatio );
   elem.setAttribute( QStringLiteral( "arrow-head-length-ratio" ), mArrowHeadLengthRatio );
-  elem.setAttribute( QStringLiteral( "user-grid-enabled" ), mOnUserDefinedGrid ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  elem.setAttribute( QStringLiteral( "user-grid-width" ), mUserGridCellWidth );
-  elem.setAttribute( QStringLiteral( "user-grid-height" ), mUserGridCellHeight );
 
   QDomElement elemShaft = doc.createElement( QStringLiteral( "shaft-length" ) );
   QString methodTxt;
@@ -320,17 +313,10 @@ QDomElement QgsMeshRendererVectorSettings::writeXml( QDomDocument &doc ) const
   return elem;
 }
 
-void QgsMeshRendererVectorSettings::readXml( const QDomElement &elem )
+void QgsMeshRendererVectorArrowSettings::readXml( const QDomElement &elem )
 {
-  mLineWidth = elem.attribute( QStringLiteral( "line-width" ) ).toDouble();
-  mColor = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "color" ) ) );
-  mFilterMin = elem.attribute( QStringLiteral( "filter-min" ) ).toDouble();
-  mFilterMax = elem.attribute( QStringLiteral( "filter-max" ) ).toDouble();
   mArrowHeadWidthRatio = elem.attribute( QStringLiteral( "arrow-head-width-ratio" ) ).toDouble();
   mArrowHeadLengthRatio = elem.attribute( QStringLiteral( "arrow-head-length-ratio" ) ).toDouble();
-  mOnUserDefinedGrid = elem.attribute( QStringLiteral( "user-grid-enabled" ) ).toInt(); //bool
-  mUserGridCellWidth = elem.attribute( QStringLiteral( "user-grid-width" ) ).toInt();
-  mUserGridCellHeight = elem.attribute( QStringLiteral( "user-grid-height" ) ).toInt();
 
   QDomElement elemShaft = elem.firstChildElement( QStringLiteral( "shaft-length" ) );
   QString methodTxt = elemShaft.attribute( QStringLiteral( "method" ) );
@@ -353,6 +339,26 @@ void QgsMeshRendererVectorSettings::readXml( const QDomElement &elem )
 }
 
 // ---------------------------------------------------------------------
+
+QgsMeshRendererSettings::QgsMeshRendererSettings()
+  : mAveragingMethod( new QgsMeshMultiLevelsAveragingMethod() )
+{
+}
+
+QgsMeshRendererSettings::~QgsMeshRendererSettings() = default;
+
+QgsMesh3dAveragingMethod *QgsMeshRendererSettings::averagingMethod() const
+{
+  return mAveragingMethod.get();
+}
+
+void QgsMeshRendererSettings::setAveragingMethod( QgsMesh3dAveragingMethod *method )
+{
+  if ( method )
+    mAveragingMethod.reset( method->clone() );
+  else
+    mAveragingMethod.reset();
+}
 
 QDomElement QgsMeshRendererSettings::writeXml( QDomDocument &doc ) const
 {
@@ -389,6 +395,14 @@ QDomElement QgsMeshRendererSettings::writeXml( QDomDocument &doc ) const
   elemTriangularMesh.setTagName( QStringLiteral( "mesh-settings-triangular" ) );
   elem.appendChild( elemTriangularMesh );
 
+  if ( mAveragingMethod )
+  {
+    QDomElement elemAveraging = doc.createElement( QStringLiteral( "averaging-3d" ) );
+    elemAveraging.setAttribute( QStringLiteral( "method" ), QStringLiteral( "%1" ).arg( mAveragingMethod->method() ) ) ;
+    QDomElement elemAveragingParams = mAveragingMethod->writeXml( doc );
+    elem.appendChild( elemAveraging );
+  }
+
   return elem;
 }
 
@@ -396,6 +410,7 @@ void QgsMeshRendererSettings::readXml( const QDomElement &elem )
 {
   mRendererScalarSettings.clear();
   mRendererVectorSettings.clear();
+  mAveragingMethod.reset();
 
   QDomElement elemActiveDataset = elem.firstChildElement( QStringLiteral( "active-dataset" ) );
   if ( elemActiveDataset.hasAttribute( QStringLiteral( "scalar" ) ) )
@@ -438,4 +453,185 @@ void QgsMeshRendererSettings::readXml( const QDomElement &elem )
 
   QDomElement elemTriangularMesh = elem.firstChildElement( QStringLiteral( "mesh-settings-triangular" ) );
   mRendererTriangularMeshSettings.readXml( elemTriangularMesh );
+
+  QDomElement elemAveraging = elem.firstChildElement( QStringLiteral( "averaging-3d" ) );
+  if ( !elemAveraging.isNull() )
+  {
+    mAveragingMethod.reset( QgsMesh3dAveragingMethod::createFromXml( elem ) );
+  }
 }
+
+QgsMeshRendererVectorStreamlineSettings::SeedingStartPointsMethod QgsMeshRendererVectorStreamlineSettings::seedingMethod() const
+{
+  return mSeedingMethod;
+}
+
+void QgsMeshRendererVectorStreamlineSettings::setSeedingMethod( const SeedingStartPointsMethod &seedingMethod )
+{
+  mSeedingMethod = seedingMethod;
+}
+
+double QgsMeshRendererVectorStreamlineSettings::seedingDensity() const
+{
+  return mSeedingDensity;
+}
+
+void QgsMeshRendererVectorStreamlineSettings::setSeedingDensity( double seedingDensity )
+{
+  mSeedingDensity = seedingDensity;
+}
+
+QDomElement QgsMeshRendererVectorStreamlineSettings::writeXml( QDomDocument &doc ) const
+{
+  QDomElement elem = doc.createElement( QStringLiteral( "vector-streamline-settings" ) );
+
+  elem.setAttribute( QStringLiteral( "seeding-method" ), mSeedingMethod );
+  elem.setAttribute( QStringLiteral( "seeding-density" ), mSeedingDensity );
+
+  return elem;
+}
+
+void QgsMeshRendererVectorStreamlineSettings::readXml( const QDomElement &elem )
+{
+  mSeedingMethod =
+    static_cast<QgsMeshRendererVectorStreamlineSettings::SeedingStartPointsMethod>(
+      elem.attribute( QStringLiteral( "seeding-method" ) ).toInt() );
+  mSeedingDensity = elem.attribute( QStringLiteral( "seeding-density" ) ).toDouble();
+}
+
+QgsMeshRendererVectorSettings::Symbology QgsMeshRendererVectorSettings::symbology() const
+{
+  return mDisplayingMethod;
+}
+
+void QgsMeshRendererVectorSettings::setSymbology( const Symbology &displayingMethod )
+{
+  mDisplayingMethod = displayingMethod;
+}
+
+QgsMeshRendererVectorArrowSettings QgsMeshRendererVectorSettings::arrowSettings() const
+{
+  return mArrowsSettings;
+}
+
+void QgsMeshRendererVectorSettings::setArrowsSettings( const QgsMeshRendererVectorArrowSettings &arrowSettings )
+{
+  mArrowsSettings = arrowSettings;
+}
+
+QgsMeshRendererVectorStreamlineSettings QgsMeshRendererVectorSettings::streamLinesSettings() const
+{
+  return mStreamLinesSettings;
+}
+
+void QgsMeshRendererVectorSettings::setStreamLinesSettings( const QgsMeshRendererVectorStreamlineSettings &streamLinesSettings )
+{
+  mStreamLinesSettings = streamLinesSettings;
+}
+
+QDomElement QgsMeshRendererVectorSettings::writeXml( QDomDocument &doc ) const
+{
+  QDomElement elem = doc.createElement( QStringLiteral( "vector-settings" ) );
+  elem.setAttribute( QStringLiteral( "symbology" ), mDisplayingMethod );
+
+  elem.setAttribute( QStringLiteral( "line-width" ), mLineWidth );
+  elem.setAttribute( QStringLiteral( "color" ), QgsSymbolLayerUtils::encodeColor( mColor ) );
+  elem.setAttribute( QStringLiteral( "filter-min" ), mFilterMin );
+  elem.setAttribute( QStringLiteral( "filter-max" ), mFilterMax );
+
+  elem.setAttribute( QStringLiteral( "user-grid-enabled" ), mOnUserDefinedGrid ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  elem.setAttribute( QStringLiteral( "user-grid-width" ), mUserGridCellWidth );
+  elem.setAttribute( QStringLiteral( "user-grid-height" ), mUserGridCellHeight );
+
+  elem.appendChild( mArrowsSettings.writeXml( doc ) );
+  elem.appendChild( mStreamLinesSettings.writeXml( doc ) );
+  elem.appendChild( mTracesSettings.writeXml( doc ) );
+
+  return elem;
+}
+
+void QgsMeshRendererVectorSettings::readXml( const QDomElement &elem )
+{
+  mDisplayingMethod = static_cast<QgsMeshRendererVectorSettings::Symbology>(
+                        elem.attribute( QStringLiteral( "symbology" ) ).toInt() );
+
+  mLineWidth = elem.attribute( QStringLiteral( "line-width" ) ).toDouble();
+  mColor = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "color" ) ) );
+  mFilterMin = elem.attribute( QStringLiteral( "filter-min" ) ).toDouble();
+  mFilterMax = elem.attribute( QStringLiteral( "filter-max" ) ).toDouble();
+
+  mOnUserDefinedGrid = elem.attribute( QStringLiteral( "user-grid-enabled" ) ).toInt(); //bool
+  mUserGridCellWidth = elem.attribute( QStringLiteral( "user-grid-width" ) ).toInt();
+  mUserGridCellHeight = elem.attribute( QStringLiteral( "user-grid-height" ) ).toInt();
+
+  QDomElement elemVector = elem.firstChildElement( QStringLiteral( "vector-arrow-settings" ) );
+  if ( ! elemVector.isNull() )
+    mArrowsSettings.readXml( elemVector );
+
+  QDomElement elemStreamLine = elem.firstChildElement( QStringLiteral( "vector-streamline-settings" ) );
+  if ( ! elemStreamLine.isNull() )
+    mStreamLinesSettings.readXml( elemStreamLine );
+
+  QDomElement elemTraces = elem.firstChildElement( QStringLiteral( "vector-traces-settings" ) );
+  if ( ! elemTraces.isNull() )
+    mTracesSettings.readXml( elemTraces );
+}
+
+QgsMeshRendererVectorTracesSettings QgsMeshRendererVectorSettings::tracesSettings() const
+{
+  return mTracesSettings;
+}
+
+void QgsMeshRendererVectorSettings::setTracesSettings( const QgsMeshRendererVectorTracesSettings &tracesSettings )
+{
+  mTracesSettings = tracesSettings;
+}
+
+void QgsMeshRendererVectorTracesSettings::readXml( const QDomElement &elem )
+{
+  mMaximumTailLength = elem.attribute( QStringLiteral( "maximum-tail-length" ) ).toInt();
+  mMaximumTailLengthUnit = static_cast<QgsUnitTypes::RenderUnit>(
+                             elem.attribute( QStringLiteral( "maximum-tail-length-unit" ) ).toInt() );
+  mParticlesCount = elem.attribute( QStringLiteral( "particles-count" ) ).toInt();
+}
+
+QDomElement QgsMeshRendererVectorTracesSettings::writeXml( QDomDocument &doc ) const
+{
+  QDomElement elem = doc.createElement( QStringLiteral( "vector-traces-settings" ) );
+  elem.setAttribute( QStringLiteral( "maximum-tail-length" ), mMaximumTailLength );
+  elem.setAttribute( QStringLiteral( "maximum-tail-length-unit" ), mMaximumTailLengthUnit );
+  elem.setAttribute( QStringLiteral( "particles-count" ), mParticlesCount );
+
+  return elem;
+}
+
+QgsUnitTypes::RenderUnit QgsMeshRendererVectorTracesSettings::maximumTailLengthUnit() const
+{
+  return mMaximumTailLengthUnit;
+}
+
+void QgsMeshRendererVectorTracesSettings::setMaximumTailLengthUnit( const QgsUnitTypes::RenderUnit &maximumTailLengthUnit )
+{
+  mMaximumTailLengthUnit = maximumTailLengthUnit;
+}
+
+double QgsMeshRendererVectorTracesSettings::maximumTailLength() const
+{
+  return mMaximumTailLength;
+}
+
+void QgsMeshRendererVectorTracesSettings::setMaximumTailLength( double maximumTailLength )
+{
+  mMaximumTailLength = maximumTailLength;
+}
+
+int QgsMeshRendererVectorTracesSettings::particlesCount() const
+{
+  return mParticlesCount;
+}
+
+void QgsMeshRendererVectorTracesSettings::setParticlesCount( int value )
+{
+  mParticlesCount = value;
+}
+

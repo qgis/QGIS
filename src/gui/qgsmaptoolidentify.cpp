@@ -249,7 +249,7 @@ bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyRe
   if ( ! scalarDatasetIndex.isValid() && ! vectorDatasetIndex.isValid() )
     return false;
 
-  QMap< QString, QString > scalarAttributes, vectorAttributes;
+  QMap< QString, QString > scalarAttributes, vectorAttributes, raw3dAttributes;
 
   QString scalarGroup;
   if ( scalarDatasetIndex.isValid() )

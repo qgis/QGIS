@@ -490,6 +490,16 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Ends pan action and redraws the canvas.
     void panActionEnd( QPoint releasePoint );
 
+#ifndef SIP_RUN
+
+    /**
+     * Starts a pan action.
+     * \note Not available in Python bindings
+     * \since QGIS 3.12
+     */
+    void panActionStart( QPoint releasePoint );
+#endif
+
     //! Called when mouse is moving and pan is activated
     void panAction( QMouseEvent *event );
 
@@ -880,6 +890,18 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     void renderErrorOccurred( const QString &error, QgsMapLayer *layer );
 
+    /**
+     * Emitted whenever the distance or bearing of an in-progress panning
+     * operation is changed.
+     *
+     * This signal will be emitted during a pan operation as the user moves the map,
+     * giving the total distance and bearing between the map position at the
+     * start of the pan and the current pan position.
+     *
+     * \since QGIS 3.12
+     */
+    void panDistanceBearingChanged( double distance, QgsUnitTypes::DistanceUnit unit, double bearing );
+
   protected:
 
     bool event( QEvent *e ) override;
@@ -1031,6 +1053,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QHash< QString, int > mLastLayerRenderTime;
 
     QVector<QPointer<QgsCustomDropHandler >> mDropHandlers;
+
+    QgsDistanceArea mDa;
 
     /**
      * Returns the last cursor position on the canvas in geographical coordinates

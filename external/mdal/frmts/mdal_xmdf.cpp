@@ -17,11 +17,12 @@
 MDAL::XmdfDataset::~XmdfDataset() = default;
 
 MDAL::XmdfDataset::XmdfDataset( DatasetGroup *grp, const HdfDataset &valuesDs, const HdfDataset &activeDs, hsize_t timeIndex )
-  : Dataset( grp )
+  : Dataset2D( grp )
   , mHdf5DatasetValues( valuesDs )
   , mHdf5DatasetActive( activeDs )
   , mTimeIndex( timeIndex )
 {
+  setSupportsActiveFlag( true );
 }
 
 const HdfDataset &MDAL::XmdfDataset::dsValues() const
@@ -98,9 +99,9 @@ MDAL::DriverXmdf *MDAL::DriverXmdf::create()
   return new DriverXmdf();
 }
 
-bool MDAL::DriverXmdf::canRead( const std::string &uri )
+bool MDAL::DriverXmdf::canReadDatasets( const std::string &uri )
 {
-  HdfFile file( uri );
+  HdfFile file( uri, HdfFile::ReadOnly );
   if ( !file.isValid() )
   {
     return false;
@@ -121,7 +122,7 @@ void MDAL::DriverXmdf::load( const std::string &datFile,  MDAL::Mesh *mesh, MDAL
   mMesh = mesh;
   if ( status ) *status = MDAL_Status::None;
 
-  HdfFile file( mDatFile );
+  HdfFile file( mDatFile, HdfFile::ReadOnly );
   if ( !file.isValid() )
   {
     if ( status ) *status = MDAL_Status::Err_UnknownFormat;
@@ -247,8 +248,15 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverXmdf::readXmdfGroupAsDatasetGrou
   bool isVector = dimValues.size() == 3;
 
   std::vector<double> times = dsTimes.readArrayDouble();
-  std::string timeUnit = rootGroup.attribute( "TimeUnits" ).readString();
-  convertTimeDataToHours( times, timeUnit );
+  std::string timeUnitString = rootGroup.attribute( "TimeUnits" ).readString();
+  MDAL::RelativeTimestamp::Unit timeUnit = parseDurationTimeUnit( timeUnitString );
+  HdfAttribute refTime = rootGroup.attribute( "Reftime" );
+  if ( refTime.isValid() )
+  {
+    std::string referenceTimeJulianDay = rootGroup.attribute( "Reftime" ).readString();
+    group->setReferenceTime( DateTime( MDAL::toDouble( referenceTimeJulianDay ), DateTime::JulianDay ) );
+  }
+
   // all fine, set group and return
   group = std::make_shared<MDAL::DatasetGroup>(
             name(),
@@ -257,8 +265,8 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverXmdf::readXmdfGroupAsDatasetGrou
             groupName
           );
   group->setIsScalar( !isVector );
-  group->setIsOnVertices( true );
-  group->setMetadata( "TIMEUNITS", timeUnit );
+  group->setDataLocation( MDAL_DataLocation::DataOnVertices2D );
+  group->setMetadata( "TIMEUNITS", timeUnitString );
 
   // lazy loading of min and max of the dataset group
   std::vector<float> mins = dsMins.readArray();
@@ -271,7 +279,7 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverXmdf::readXmdfGroupAsDatasetGrou
   for ( hsize_t i = 0; i < nTimeSteps; ++i )
   {
     std::shared_ptr<XmdfDataset> dataset = std::make_shared< XmdfDataset >( group.get(), dsValues, dsActive, i );
-    dataset->setTime( times[i] );
+    dataset->setTime( times[i], timeUnit );
     Statistics stats;
     stats.minimum = static_cast<double>( mins[i] );
     stats.maximum = static_cast<double>( maxs[i] );
@@ -280,17 +288,4 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverXmdf::readXmdfGroupAsDatasetGrou
   }
 
   return group;
-}
-
-void MDAL::DriverXmdf::convertTimeDataToHours( std::vector<double> &times, const std::string &originalTimeDataUnit )
-{
-  if ( originalTimeDataUnit != "Hours" )
-  {
-    for ( size_t i = 0; i < times.size(); i++ )
-    {
-      if ( originalTimeDataUnit == "Seconds" ) { times[i] /= 3600.0; }
-      else if ( originalTimeDataUnit == "Minutes" ) { times[i] /= 60.0; }
-      else if ( originalTimeDataUnit == "Days" ) { times[i] *= 24; }
-    }
-  }
 }

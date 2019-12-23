@@ -34,10 +34,13 @@
 class QgsMeshTimeSettings;
 class QgsTriangularMesh;
 class QgsMeshDataBlock;
+class QgsMesh3dAveragingMethod;
+class QgsMeshDatasetValue;
+class QgsMeshLayer;
 
 /**
  * \ingroup core
- * Misc utility functions used for mesh layer support
+ * Misc utility functions used for mesh layer/data provider support
  *
  * \note not available in Python bindings
  * \since QGIS 3.4
@@ -45,6 +48,24 @@ class QgsMeshDataBlock;
 class CORE_EXPORT QgsMeshLayerUtils
 {
   public:
+
+    /**
+     * \brief Returns N vector/scalar values from the index from the dataset
+     *
+     * caller is responsible to set correct value index value:
+     * for DataOnFaces -> native face index
+     * for DataOnVertices -> native vertex index
+     * for DataOnVolumes -> native face index
+     *
+     * See QgsMeshDatasetGroupMetadata::isVector() to check if the returned value is vector or scalar
+     *
+     * \since QGIS 3.12
+     */
+    static QgsMeshDataBlock datasetValues(
+      const QgsMeshLayer *meshLayer,
+      QgsMeshDatasetIndex index,
+      int valueIndex,
+      int count );
 
     /**
      * Calculates magnitude values from the given QgsMeshDataBlock.
@@ -86,6 +107,24 @@ class CORE_EXPORT QgsMeshLayerUtils
     );
 
     /**
+    * Interpolates vector based on known vector on the vertices of a triangle
+    * \param p1 first vertex of the triangle
+    * \param p2 second vertex of the triangle
+    * \param p3 third vertex of the triangle
+    * \param vect1 value on p1 of the triangle
+    * \param vect2 value on p2 of the triangle
+    * \param vect3 value on p3 of the triangle
+    * \param pt point where to calculate value
+    * \returns vector on the point pt or NaN in case the point is outside the triangle
+    *
+    * \since QGIS 3.12
+    */
+    static QgsVector interpolateVectorFromVerticesData(
+      const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3,
+      QgsVector vect1, QgsVector vect2, QgsVector vect3, const QgsPointXY &pt
+    );
+
+    /**
     * Interpolate value based on known value on the face of a triangle
     * \param p1 first vertex of the triangle
     * \param p2 second vertex of the triangle
@@ -99,14 +138,29 @@ class CORE_EXPORT QgsMeshLayerUtils
       double val, const QgsPointXY &pt );
 
     /**
+    * Interpolate value based on known value on the face of a triangle
+    * \param p1 first vertex of the triangle
+    * \param p2 second vertex of the triangle
+    * \param p3 third vertex of the triangle
+    * \param vect face vector
+    * \param pt point where to calculate value
+    * \returns vector on the point pt or NaN in case the point is outside the triangle
+    *
+    * \since QGIS 3.12
+    */
+    static QgsVector interpolateVectorFromFacesData(
+      const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3,
+      QgsVector vect, const QgsPointXY &pt );
+
+    /**
     * Interpolate values on vertices from values on faces
     *
     * \since QGIS 3.12
     */
     static QVector<double> interpolateFromFacesData(
       QVector<double> valuesOnFaces,
-      QgsMesh *nativeMesh,
-      QgsTriangularMesh *triangularMesh,
+      const QgsMesh *nativeMesh,
+      const QgsTriangularMesh *triangularMesh,
       QgsMeshDataBlock *active,
       QgsMeshRendererScalarSettings::DataInterpolationMethod method
     );
@@ -124,6 +178,15 @@ class CORE_EXPORT QgsMeshLayerUtils
      * Formats hours in human readable string based on settings
      */
     static QString formatTime( double hours, const QgsMeshTimeSettings &settings );
+
+    /**
+      * Searches and returns the first valid reference time in layer's dataset group
+      * \param meshLayer mesh layer to parse
+      *
+      * \since QGIS 3.12
+      */
+    static QDateTime firstReferenceTime( QgsMeshLayer *meshLayer );
+
 };
 
 ///@endcond

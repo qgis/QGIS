@@ -72,11 +72,14 @@ class CORE_EXPORT QgsAuthMethodRegistry
      */
     std::unique_ptr< QgsAuthMethod > authMethod( const QString &authMethodKey );
 
+#if 0
+
     /**
      * Returns the auth method capabilities
         \param authMethodKey identificator of the auth method
      */
     // int authMethodCapabilities( const QString& authMethodKey ) const;
+#endif
 
     /**
      * Returns the GUI edit widget associated with the auth method
