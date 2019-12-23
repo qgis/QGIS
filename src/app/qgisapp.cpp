@@ -4437,7 +4437,7 @@ void QgisApp::about()
     }
     else
     {
-      versionString += QStringLiteral( "%1</td><td><a href=\"https://github.com/qgis/QGIS/commit/%1\">%1</a></td>" ).arg( tr( "QGIS code revision" ) ).arg( Qgis::QGIS_DEV_VERSION );
+      versionString += QStringLiteral( "%1</td><td><a href=\"https://github.com/qgis/QGIS/commit/%2\">%2</a></td>" ).arg( tr( "QGIS code revision" ) ).arg( Qgis::QGIS_DEV_VERSION );
     }
 
     versionString += QLatin1String( "</tr><tr>" );
