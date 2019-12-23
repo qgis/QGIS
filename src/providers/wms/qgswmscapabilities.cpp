@@ -770,14 +770,14 @@ void QgsWmsCapabilities::parseMetadataUrl( const QDomElement &element, QgsWmsMet
     if ( !nodeElement.isNull() )
     {
       QString tagName = nodeElement.tagName();
-      if ( tagName.startsWith( QLatin1String( "wms:" ) ) )
+      if ( tagName.startsWith( QLatin1String( "wms:" ), Qt::CaseInsensitive ) )
         tagName = tagName.mid( 4 );
 
-      if ( tagName == QLatin1String( "Format" ) )
+      if ( tagName.compare( QLatin1String( "Format" ), Qt::CaseInsensitive ) == 0 )
       {
         metadataUrlProperty.format = nodeElement.text();
       }
-      else if ( tagName == QLatin1String( "OnlineResource" ) )
+      else if ( tagName.compare( QLatin1String( "OnlineResource" ), Qt::CaseInsensitive ) == 0 )
       {
         parseOnlineResource( nodeElement, metadataUrlProperty.onlineResource );
       }
