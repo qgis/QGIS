@@ -163,6 +163,7 @@
 %Include auto_generated/qgsreadwritecontext.sip
 %Include auto_generated/qgsreadwritelocker.sip
 %Include auto_generated/qgsrelation.sip
+%Include auto_generated/qgsrelationcontext.sip
 %Include auto_generated/qgsrelationmanager.sip
 %Include auto_generated/qgsrenderchecker.sip
 %Include auto_generated/qgsrendercontext.sip
