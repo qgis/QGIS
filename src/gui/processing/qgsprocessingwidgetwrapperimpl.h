@@ -23,6 +23,7 @@
 #include "qgsprocessingwidgetwrapper.h"
 #include "qgsprocessingparameterdefinitionwidget.h"
 #include "qgsmaptool.h"
+#include "qgsprocessingcontext.h"
 
 #include <QAbstractButton>
 
@@ -48,6 +49,7 @@ class QgsScaleWidget;
 class QgsSnapIndicator;
 class QgsFilterLineEdit;
 class QgsColorButton;
+class QgsCoordinateOperationWidget;
 
 ///@cond PRIVATE
 
@@ -870,6 +872,77 @@ class GUI_EXPORT QgsProcessingColorWidgetWrapper : public QgsAbstractProcessingP
     friend class TestProcessingGui;
 };
 
+
+
+class GUI_EXPORT QgsProcessingCoordinateOperationParameterDefinitionWidget : public QgsProcessingAbstractParameterDefinitionWidget
+{
+    Q_OBJECT
+  public:
+
+    QgsProcessingCoordinateOperationParameterDefinitionWidget( QgsProcessingContext &context,
+        const QgsProcessingParameterWidgetContext &widgetContext,
+        const QgsProcessingParameterDefinition *definition = nullptr,
+        const QgsProcessingAlgorithm *algorithm = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsProcessingParameterDefinition *createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const override;
+
+  private:
+
+    QLineEdit *mDefaultLineEdit = nullptr;
+
+    QComboBox *mSourceParamComboBox = nullptr;
+    QComboBox *mDestParamComboBox = nullptr;
+
+    QgsProjectionSelectionWidget *mStaticSourceWidget = nullptr;
+    QgsProjectionSelectionWidget *mStaticDestWidget = nullptr;
+
+
+};
+
+class GUI_EXPORT QgsProcessingCoordinateOperationWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
+{
+    Q_OBJECT
+
+  public:
+
+    QgsProcessingCoordinateOperationWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
+        QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
+
+    // QgsProcessingParameterWidgetFactoryInterface
+    QString parameterType() const override;
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override;
+    QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget(
+      QgsProcessingContext &context,
+      const QgsProcessingParameterWidgetContext &widgetContext,
+      const QgsProcessingParameterDefinition *definition = nullptr,
+      const QgsProcessingAlgorithm *algorithm = nullptr ) override;
+
+    // QgsProcessingParameterWidgetWrapper interface
+    QWidget *createWidget() override SIP_FACTORY;
+    void postInitialize( const QList< QgsAbstractProcessingParameterWidgetWrapper * > &wrappers ) override;
+    void setWidgetContext( const QgsProcessingParameterWidgetContext &context ) override;
+  protected:
+
+    void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
+    QVariant widgetValue() const override;
+
+    QStringList compatibleParameterTypes() const override;
+
+    QStringList compatibleOutputTypes() const override;
+
+    QList< int > compatibleDataTypes() const override;
+    QString modelerExpressionFormatString() const override;
+  private:
+
+    void setSourceCrsParameterValue( const QVariant &value );
+    void setDestinationCrsParameterValue( const QVariant &value );
+
+    QgsCoordinateOperationWidget *mOperationWidget = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
+    QLineEdit *mLineEdit = nullptr;
+    QgsCoordinateReferenceSystem mSourceCrs;
+    QgsCoordinateReferenceSystem mDestCrs;
+    friend class TestProcessingGui;
+};
 
 ///@endcond PRIVATE
 

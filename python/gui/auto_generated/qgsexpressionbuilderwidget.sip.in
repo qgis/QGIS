@@ -323,12 +323,34 @@ with the context.
 
     void loadSampleValues();
 %Docstring
-Load sample values into the sample value area
+Load sample values into the sample value area.
+Including available values, in case the formatter can
+provide them (eg. RelationReference).
 %End
 
     void loadAllValues();
 %Docstring
-Load all unique values from the set layer into the sample area
+Load all unique values from the set layer into the sample area.
+Including all available values, in case the formatter can
+provide them (eg. RelationReference).
+%End
+
+    void loadSampleUsedValues();
+%Docstring
+Load used sample values into the sample value area.
+Only the used ones. Without available values, even if the
+formatter can provide them (eg. RelationReference).
+
+.. versionadded:: 3.12
+%End
+
+    void loadAllUsedValues();
+%Docstring
+Load all unique values from the set layer into the sample area.
+Only the used ones. Without available values, even if the
+formatter can provide them (eg. RelationReference).
+
+.. versionadded:: 3.12
 %End
 
     void autosave();

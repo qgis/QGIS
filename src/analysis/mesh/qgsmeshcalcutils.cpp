@@ -67,6 +67,8 @@ std::shared_ptr<QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::create( const QStri
 
         // the function already averages volume datasets to face dataset values
         QgsMeshDataBlock block = QgsMeshLayerUtils::datasetValues( mMeshLayer, index, 0, nativeCount );
+        // it is 2D memory datasets, so it shouldn't be invalid
+        Q_ASSERT( block.isValid() );
         Q_ASSERT( block.count() == nativeCount );
 
         // for data on faces, there could be request to interpolate the data to vertices

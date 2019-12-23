@@ -21,9 +21,8 @@
 #include "ui_qgsdatumtransformdialogbase.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
+#include "qgsguiutils.h"
 #include "qgis_gui.h"
-
-class QgsTemporaryCursorRestoreOverride;
 
 #define SIP_NO_FILE
 
@@ -91,7 +90,6 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
                              Qt::WindowFlags f = nullptr,
                              const QString &selectedProj = QString(),
                              QgsMapCanvas *mapCanvas = nullptr );
-    ~QgsDatumTransformDialog() override;
 
     void accept() override;
     void reject() override;
@@ -104,10 +102,9 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
 
   private slots:
 
-    void tableCurrentItemChanged( QTableWidgetItem *, QTableWidgetItem * );
+    void operationChanged();
     void setSourceCrs( const QgsCoordinateReferenceSystem &sourceCrs );
     void setDestinationCrs( const QgsCoordinateReferenceSystem &destinationCrs );
-    void showSupersededToggled( bool toggled );
 
   private:
 
@@ -120,9 +117,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
     };
 
     bool gridShiftTransformation( const QString &itemText ) const;
-    //! Returns FALSE if the location of the grid shift files is known (PROJ_LIB) and the shift file is not there
-    bool testGridShiftFileAvailability( QTableWidgetItem *item ) const;
-    void load( QPair<int, int> selectedDatumTransforms = qMakePair( -1, -1 ), const QString &selectedProj = QString() );
+
     void setOKButtonEnabled();
 
     /**
@@ -146,18 +141,6 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
      */
     void applyDefaultTransform();
 
-    /**
-     * Cleans up a PROJ scope string, adding friendly acronym descriptions.
-     */
-    QString formatScope( const QString &scope );
-
-#if PROJ_VERSION_MAJOR>=6
-    QList< QgsDatumTransform::TransformDetails > mDatumTransforms;
-#else
-    QList< QgsDatumTransform::TransformPair > mDatumTransforms;
-#endif
-    QgsCoordinateReferenceSystem mSourceCrs;
-    QgsCoordinateReferenceSystem mDestinationCrs;
     std::unique_ptr< QgsTemporaryCursorRestoreOverride > mPreviousCursorOverride;
 
     friend class TestQgsDatumTransformDialog;

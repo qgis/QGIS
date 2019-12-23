@@ -3504,7 +3504,7 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
     mySpatialRefSys.validate();
   }
 
-  QString myWkt = mySpatialRefSys.toWkt();
+  QString myWkt = mySpatialRefSys.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 );
 
   if ( !myWkt.isNull()  &&  myWkt.length() != 0 )
   {
@@ -3696,7 +3696,11 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs() const
   }
 
   // add towgs84 parameter
+#if PROJ_VERSION_MAJOR<6
+  Q_NOWARN_DEPRECATED_PUSH
   QgsCoordinateReferenceSystem::setupESRIWktFix();
+  Q_NOWARN_DEPRECATED_POP
+#endif
 
   if ( OGRSpatialReferenceH spatialRefSys = mOgrLayer->GetSpatialRef() )
   {

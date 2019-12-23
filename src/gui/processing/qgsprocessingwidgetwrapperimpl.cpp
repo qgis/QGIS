@@ -42,6 +42,8 @@
 #include "qgsfilterlineedit.h"
 #include "qgsmapcanvas.h"
 #include "qgscolorbutton.h"
+#include "qgscoordinateoperationwidget.h"
+#include "qgsdatumtransformdialog.h"
 #include <QToolButton>
 #include <QLabel>
 #include <QHBoxLayout>
@@ -109,7 +111,7 @@ QWidget *QgsProcessingBooleanWidgetWrapper::createWidget()
         emit widgetValueHasChanged( this );
       } );
       return mCheckBox;
-    };
+    }
 
     case QgsProcessingGui::Batch:
     case QgsProcessingGui::Modeler:
@@ -255,7 +257,7 @@ QWidget *QgsProcessingCrsWidgetWrapper::createWidget()
     case QgsProcessingGui::Batch:
     {
       return mProjectionSelectionWidget;
-    };
+    }
 
     case QgsProcessingGui::Modeler:
     {
@@ -427,7 +429,7 @@ QWidget *QgsProcessingStringWidgetWrapper::createWidget()
         } );
         return mLineEdit;
       }
-    };
+    }
 
     case QgsProcessingGui::Batch:
     {
@@ -473,7 +475,8 @@ QStringList QgsProcessingStringWidgetWrapper::compatibleParameterTypes() const
          << QgsProcessingParameterScale::typeName()
          << QgsProcessingParameterFile::typeName()
          << QgsProcessingParameterField::typeName()
-         << QgsProcessingParameterExpression::typeName();
+         << QgsProcessingParameterExpression::typeName()
+         << QgsProcessingParameterCoordinateOperation::typeName();
 }
 
 QStringList QgsProcessingStringWidgetWrapper::compatibleOutputTypes() const
@@ -531,7 +534,7 @@ QWidget *QgsProcessingAuthConfigWidgetWrapper::createWidget()
         emit widgetValueHasChanged( this );
       } );
       return mAuthConfigSelect;
-    };
+    }
   }
   return nullptr;
 }
@@ -718,7 +721,7 @@ QWidget *QgsProcessingNumericWidgetWrapper::createWidget()
         connect( mSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ), this, [ = ] { emit widgetValueHasChanged( this ); } );
 
       return spinBox;
-    };
+    }
   }
   return nullptr;
 }
@@ -1134,7 +1137,7 @@ QWidget *QgsProcessingRangeWidgetWrapper::createWidget()
       } );
 
       return w;
-    };
+    }
   }
   return nullptr;
 }
@@ -1221,7 +1224,7 @@ QWidget *QgsProcessingMatrixWidgetWrapper::createWidget()
     case QgsProcessingGui::Modeler:
     {
       return mMatrixWidget;
-    };
+    }
   }
   return nullptr;
 }
@@ -1393,7 +1396,7 @@ QWidget *QgsProcessingFileWidgetWrapper::createWidget()
         emit widgetValueHasChanged( this );
       } );
       return mFileWidget;
-    };
+    }
   }
   return nullptr;
 }
@@ -1500,7 +1503,7 @@ QWidget *QgsProcessingExpressionWidgetWrapper::createWidget()
         } );
         return mFieldExpWidget;
       }
-    };
+    }
   }
   return nullptr;
 }
@@ -1892,7 +1895,7 @@ QWidget *QgsProcessingEnumWidgetWrapper::createWidget()
         } );
         return mComboBox;
       }
-    };
+    }
   }
   return nullptr;
 }
@@ -2409,8 +2412,8 @@ void QgsProcessingPointPanel::clear()
 void QgsProcessingPointPanel::setValue( const QgsPointXY &point, const QgsCoordinateReferenceSystem &crs )
 {
   QString newText = QStringLiteral( "%1,%2" )
-                    .arg( QString::number( point.x(), 'f' ) )
-                    .arg( QString::number( point.y(), 'f' ) );
+                    .arg( QString::number( point.x(), 'f' ),
+                          QString::number( point.y(), 'f' ) );
 
   mCrs = crs;
   if ( mCrs.isValid() )
@@ -2743,6 +2746,333 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingColorWidgetWrapper::cr
 QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingColorWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
 {
   return new QgsProcessingColorParameterDefinitionWidget( context, widgetContext, definition, algorithm );
+}
+
+
+//
+// QgsProcessingCoordinateOperationWidgetWrapper
+//
+
+QgsProcessingCoordinateOperationParameterDefinitionWidget::QgsProcessingCoordinateOperationParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
+
+  mDefaultLineEdit = new QLineEdit();
+  if ( const QgsProcessingParameterCoordinateOperation *coordParam = dynamic_cast<const QgsProcessingParameterCoordinateOperation *>( definition ) )
+    mDefaultLineEdit->setText( QgsProcessingParameters::parameterAsString( coordParam, coordParam->defaultValue(), context ) );
+  vlayout->addWidget( mDefaultLineEdit );
+
+  mSourceParamComboBox = new QComboBox();
+  mDestParamComboBox = new QComboBox();
+  QString initialSource;
+  QString initialDest;
+  QgsCoordinateReferenceSystem sourceCrs;
+  QgsCoordinateReferenceSystem destCrs;
+  if ( const QgsProcessingParameterCoordinateOperation *itemParam = dynamic_cast<const QgsProcessingParameterCoordinateOperation *>( definition ) )
+  {
+    initialSource = itemParam->sourceCrsParameterName();
+    initialDest = itemParam->destinationCrsParameterName();
+    sourceCrs = QgsProcessingUtils::variantToCrs( itemParam->sourceCrs(), context );
+    destCrs = QgsProcessingUtils::variantToCrs( itemParam->destinationCrs(), context );
+  }
+
+  mSourceParamComboBox->addItem( QString(), QString() );
+  mDestParamComboBox->addItem( QString(), QString() );
+  if ( widgetContext.model() )
+  {
+    // populate combo box with other model input choices
+    const QMap<QString, QgsProcessingModelParameter> components = widgetContext.model()->parameterComponents();
+    for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
+    {
+      if ( it->parameterName() == definition->name() )
+        continue;
+
+      // TODO - we should probably filter this list?
+      mSourceParamComboBox->addItem( it->parameterName(), it->parameterName() );
+      mDestParamComboBox->addItem( it->parameterName(), it->parameterName() );
+      if ( !initialSource.isEmpty() && initialSource == it->parameterName() )
+      {
+        mSourceParamComboBox->setCurrentIndex( mSourceParamComboBox->count() - 1 );
+      }
+      if ( !initialDest.isEmpty() && initialDest == it->parameterName() )
+      {
+        mDestParamComboBox->setCurrentIndex( mDestParamComboBox->count() - 1 );
+      }
+    }
+  }
+
+  if ( mSourceParamComboBox->count() == 1 && !initialSource.isEmpty() )
+  {
+    // if no source candidates found, we just add the existing one as a placeholder
+    mSourceParamComboBox->addItem( initialSource, initialSource );
+    mSourceParamComboBox->setCurrentIndex( mSourceParamComboBox->count() - 1 );
+  }
+  if ( mDestParamComboBox->count() == 1 && !initialDest.isEmpty() )
+  {
+    // if no dest candidates found, we just add the existing one as a placeholder
+    mDestParamComboBox->addItem( initialDest, initialDest );
+    mDestParamComboBox->setCurrentIndex( mDestParamComboBox->count() - 1 );
+  }
+
+  vlayout->addWidget( new QLabel( tr( "Source CRS parameter" ) ) );
+  vlayout->addWidget( mSourceParamComboBox );
+  vlayout->addWidget( new QLabel( tr( "Destination CRS parameter" ) ) );
+  vlayout->addWidget( mDestParamComboBox );
+
+  mStaticSourceWidget = new QgsProjectionSelectionWidget();
+  mStaticSourceWidget->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, true );
+  mStaticSourceWidget->setCrs( sourceCrs );
+  mStaticDestWidget = new QgsProjectionSelectionWidget();
+  mStaticDestWidget->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, true );
+  mStaticDestWidget->setCrs( destCrs );
+
+  vlayout->addWidget( new QLabel( tr( "Static source CRS" ) ) );
+  vlayout->addWidget( mStaticSourceWidget );
+  vlayout->addWidget( new QLabel( tr( "Static destination CRS" ) ) );
+  vlayout->addWidget( mStaticDestWidget );
+
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingCoordinateOperationParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  auto param = qgis::make_unique< QgsProcessingParameterCoordinateOperation >( name, description, mDefaultLineEdit->text(),
+               mSourceParamComboBox->currentText(),
+               mDestParamComboBox->currentText(),
+               mStaticSourceWidget->crs().isValid() ? QVariant::fromValue( mStaticSourceWidget->crs() ) : QVariant(),
+               mStaticDestWidget->crs().isValid() ? QVariant::fromValue( mStaticDestWidget->crs() ) : QVariant() );
+  param->setFlags( flags );
+  return param.release();
+}
+
+QgsProcessingCoordinateOperationWidgetWrapper::QgsProcessingCoordinateOperationWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingCoordinateOperationWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterCoordinateOperation *coordParam = dynamic_cast< const QgsProcessingParameterCoordinateOperation *>( parameterDefinition() );
+  QgsProcessingContext c;
+  mSourceCrs = QgsProcessingUtils::variantToCrs( coordParam->sourceCrs(), c );
+  mDestCrs = QgsProcessingUtils::variantToCrs( coordParam->destinationCrs(), c );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    {
+      mOperationWidget = new QgsCoordinateOperationWidget( nullptr );
+      mOperationWidget->setShowMakeDefault( false );
+      mOperationWidget->setToolTip( parameterDefinition()->toolTip() );
+      mOperationWidget->setSourceCrs( mSourceCrs );
+      mOperationWidget->setDestinationCrs( mDestCrs );
+      mOperationWidget->setMapCanvas( mCanvas );
+      if ( !coordParam->defaultValue().toString().isEmpty() )
+      {
+        QgsCoordinateOperationWidget::OperationDetails deets;
+        deets.proj = coordParam->defaultValue().toString();
+        mOperationWidget->setSelectedOperation( deets );
+      }
+
+      connect( mOperationWidget, &QgsCoordinateOperationWidget::operationChanged, this, [ = ]
+      {
+        emit widgetValueHasChanged( this );
+      } );
+
+      return mOperationWidget;
+    }
+
+    case QgsProcessingGui::Batch:
+    case QgsProcessingGui::Modeler:
+    {
+      mLineEdit = new QLineEdit();
+      QHBoxLayout *layout = new QHBoxLayout();
+      layout->addWidget( mLineEdit, 1 );
+      connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]
+      {
+        emit widgetValueHasChanged( this );
+      } );
+
+      QToolButton *button = new QToolButton();
+      button->setText( QString( QChar( 0x2026 ) ) );
+      connect( button, &QToolButton::clicked, this, [ = ]
+      {
+        QgsDatumTransformDialog dlg( mSourceCrs, mDestCrs, false, false, false, qMakePair( -1, -1 ), button, nullptr, mLineEdit->text(), mCanvas );
+        if ( dlg.exec() )
+        {
+          mLineEdit->setText( dlg.selectedDatumTransform().proj );
+          emit widgetValueHasChanged( this );
+        }
+      } );
+      layout->addWidget( button );
+
+      QWidget *w = new QWidget();
+      layout->setMargin( 0 );
+      layout->setContentsMargins( 0, 0, 0, 0 );
+      w->setLayout( layout );
+      return w;
+    }
+
+  }
+  return nullptr;
+}
+
+void QgsProcessingCoordinateOperationWidgetWrapper::postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers )
+{
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+    {
+      for ( const QgsAbstractProcessingParameterWidgetWrapper *wrapper : wrappers )
+      {
+        if ( wrapper->parameterDefinition()->name() == static_cast< const QgsProcessingParameterCoordinateOperation * >( parameterDefinition() )->sourceCrsParameterName() )
+        {
+          setSourceCrsParameterValue( wrapper->parameterValue() );
+          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [ = ]
+          {
+            setSourceCrsParameterValue( wrapper->parameterValue() );
+          } );
+        }
+        if ( wrapper->parameterDefinition()->name() == static_cast< const QgsProcessingParameterCoordinateOperation * >( parameterDefinition() )->destinationCrsParameterName() )
+        {
+          setDestinationCrsParameterValue( wrapper->parameterValue() );
+          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [ = ]
+          {
+            setDestinationCrsParameterValue( wrapper->parameterValue() );
+          } );
+        }
+      }
+      break;
+    }
+
+    case QgsProcessingGui::Modeler:
+      break;
+  }
+}
+
+void QgsProcessingCoordinateOperationWidgetWrapper::setWidgetContext( const QgsProcessingParameterWidgetContext &context )
+{
+  mCanvas = context.mapCanvas();
+  if ( mOperationWidget )
+    mOperationWidget->setMapCanvas( context.mapCanvas() );
+}
+
+void QgsProcessingCoordinateOperationWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext & )
+{
+  if ( mOperationWidget )
+  {
+    if ( !value.isValid() ||
+         ( value.type() == QVariant::String ) )
+    {
+      QgsCoordinateOperationWidget::OperationDetails deets;
+      deets.proj = value.toString();
+      mOperationWidget->setSelectedOperation( deets );
+    }
+  }
+  if ( mLineEdit )
+  {
+    if ( !value.isValid() ||
+         ( value.type() == QVariant::String ) )
+    {
+      mLineEdit->setText( value.toString() );
+    }
+  }
+}
+
+QVariant QgsProcessingCoordinateOperationWidgetWrapper::widgetValue() const
+{
+  if ( mOperationWidget )
+    return mOperationWidget->selectedOperation().proj;
+  else if ( mLineEdit )
+    return mLineEdit->text();
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingCoordinateOperationWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterCoordinateOperation::typeName()
+         << QgsProcessingParameterString::typeName();
+}
+
+QStringList QgsProcessingCoordinateOperationWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputString::typeName();
+}
+
+QList<int> QgsProcessingCoordinateOperationWidgetWrapper::compatibleDataTypes() const
+{
+  return QList<int>();
+}
+
+QString QgsProcessingCoordinateOperationWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "Proj coordinate operation string, e.g. '+proj=pipeline +step +inv...'" );
+}
+
+void QgsProcessingCoordinateOperationWidgetWrapper::setSourceCrsParameterValue( const QVariant &value )
+{
+  QgsProcessingContext *context = nullptr;
+  std::unique_ptr< QgsProcessingContext > tmpContext;
+  if ( mProcessingContextGenerator )
+    context = mProcessingContextGenerator->processingContext();
+
+  if ( !context )
+  {
+    tmpContext = qgis::make_unique< QgsProcessingContext >();
+    context = tmpContext.get();
+  }
+
+  mSourceCrs = QgsProcessingUtils::variantToCrs( value, *context );
+  if ( mOperationWidget )
+  {
+    mOperationWidget->setSourceCrs( mSourceCrs );
+    mOperationWidget->setSelectedOperationUsingContext( context->transformContext() );
+  }
+}
+
+void QgsProcessingCoordinateOperationWidgetWrapper::setDestinationCrsParameterValue( const QVariant &value )
+{
+  QgsProcessingContext *context = nullptr;
+  std::unique_ptr< QgsProcessingContext > tmpContext;
+  if ( mProcessingContextGenerator )
+    context = mProcessingContextGenerator->processingContext();
+
+  if ( !context )
+  {
+    tmpContext = qgis::make_unique< QgsProcessingContext >();
+    context = tmpContext.get();
+  }
+
+  mDestCrs = QgsProcessingUtils::variantToCrs( value, *context );
+  if ( mOperationWidget )
+  {
+    mOperationWidget->setDestinationCrs( mDestCrs );
+    mOperationWidget->setSelectedOperationUsingContext( context->transformContext() );
+  }
+}
+
+QString QgsProcessingCoordinateOperationWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterCoordinateOperation::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingCoordinateOperationWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingCoordinateOperationWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingCoordinateOperationWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingCoordinateOperationParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
 
 ///@endcond PRIVATE

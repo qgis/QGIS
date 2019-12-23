@@ -128,6 +128,9 @@ Returns the (possibly NULL) layer from the widget's ``config`` and ``project``
 .. versionadded:: 3.8
 %End
 
+
+    virtual QVariantList availableValues( const QVariantMap &config, int countLimit, const QgsFieldFormatterContext &context ) const;
+
 };
 
 

@@ -99,7 +99,7 @@ class APP_EXPORT QgsDatumTransformTableWidget : public QWidget, private Ui::QgsD
     void removeDatumTransform();
 
     //! edit currently selected datum transform
-    void editDatumTransform();
+    void editDatumTransform( const QModelIndex &index );
 
   private slots:
 

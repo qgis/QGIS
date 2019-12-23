@@ -324,14 +324,36 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
   public slots:
 
     /**
-     * Load sample values into the sample value area
+     * Load sample values into the sample value area.
+     * Including available values, in case the formatter can
+     * provide them (eg. RelationReference).
      */
     void loadSampleValues();
 
     /**
-     * Load all unique values from the set layer into the sample area
+     * Load all unique values from the set layer into the sample area.
+     * Including all available values, in case the formatter can
+     * provide them (eg. RelationReference).
      */
     void loadAllValues();
+
+    /**
+     * Load used sample values into the sample value area.
+     * Only the used ones. Without available values, even if the
+     * formatter can provide them (eg. RelationReference).
+     *
+     * \since QGIS 3.12
+     */
+    void loadSampleUsedValues();
+
+    /**
+     * Load all unique values from the set layer into the sample area.
+     * Only the used ones. Without available values, even if the
+     * formatter can provide them (eg. RelationReference).
+     *
+     * \since QGIS 3.12
+     */
+    void loadAllUsedValues();
 
     /**
      * Auto save the current Python function code.
@@ -419,7 +441,8 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void clearErrors();
     void runPythonCode( const QString &code );
     void updateFunctionTree();
-    void fillFieldValues( const QString &fieldName, int countLimit );
+    void fillFieldValues( const QString &fieldName, int countLimit, bool forceUsedValues = false );
+    bool formatterCanProvideAvailableValues( const QString &fieldName );
     QString getFunctionHelp( QgsExpressionFunction *function );
     QString loadFunctionHelp( QgsExpressionItem *functionName );
     QString helpStylesheet() const;

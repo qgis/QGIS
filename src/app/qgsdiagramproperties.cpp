@@ -752,8 +752,20 @@ void QgsDiagramProperties::mDiagramAttributesTreeWidget_itemDoubleClicked( QTree
 
 void QgsDiagramProperties::mEngineSettingsButton_clicked()
 {
-  QgsLabelEngineConfigDialog dlg( this );
-  dlg.exec();
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel && panel->dockMode() )
+  {
+    QgsLabelEngineConfigWidget *widget = new QgsLabelEngineConfigWidget();
+    connect( widget, &QgsLabelEngineConfigWidget::widgetChanged, widget, &QgsLabelEngineConfigWidget::apply );
+    panel->openPanel( widget );
+  }
+  else
+  {
+    QgsLabelEngineConfigDialog dialog( this );
+    dialog.exec();
+    // reactivate button's window
+    activateWindow();
+  }
 }
 
 void QgsDiagramProperties::apply()

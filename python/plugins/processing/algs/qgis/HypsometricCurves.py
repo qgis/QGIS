@@ -117,7 +117,7 @@ class HypsometricCurves(QgisAlgorithm):
         rasterGeom = QgsGeometry.fromRect(rasterBBox)
 
         crs = osr.SpatialReference()
-        crs.ImportFromProj4(str(target_crs.toProj4()))
+        crs.ImportFromProj4(str(target_crs.toProj()))
 
         memVectorDriver = ogr.GetDriverByName('Memory')
         memRasterDriver = gdal.GetDriverByName('MEM')

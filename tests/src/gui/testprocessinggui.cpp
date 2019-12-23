@@ -63,6 +63,7 @@
 #include "mesh/qgsmeshdataprovider.h"
 #include "qgscolorbutton.h"
 #include "qgsprocessingparameterdefinitionwidget.h"
+#include "qgscoordinateoperationwidget.h"
 
 class TestParamType : public QgsProcessingParameterDefinition
 {
@@ -187,6 +188,7 @@ class TestProcessingGui : public QObject
     void testPointPanel();
     void testPointWrapper();
     void testColorWrapper();
+    void testCoordinateOperationWrapper();
     void mapLayerComboBox();
     void paramConfigWidget();
 
@@ -3258,6 +3260,118 @@ void TestProcessingGui::testColorWrapper()
   QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced );
   QCOMPARE( static_cast< QgsProcessingParameterColor * >( def.get() )->defaultValue().value< QColor >(), QColor( 255, 0, 0 ) ); // (no opacity!)
   QVERIFY( !static_cast< QgsProcessingParameterColor * >( def.get() )->opacityEnabled() );
+}
+
+void TestProcessingGui::testCoordinateOperationWrapper()
+{
+#if PROJ_VERSION_MAJOR>=6
+  auto testWrapper = []( QgsProcessingGui::WidgetType type )
+  {
+    QgsProcessingParameterCoordinateOperation param( QStringLiteral( "op" ), QStringLiteral( "op" ) );
+
+    QgsProcessingCoordinateOperationWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+    QWidget *w = wrapper.createWrappedWidget( context );
+    wrapper.setSourceCrsParameterValue( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28355" ) ) );
+    wrapper.setDestinationCrsParameterValue( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:7855" ) ) );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingCoordinateOperationWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( QStringLiteral( "+proj=pipeline +step +inv +proj=utm +zone=55 +south +ellps=GRS80 +step +proj=hgridshift +grids=GDA94_GDA2020_conformal_and_distortion.gsb +step +proj=utm +zone=55 +south +ellps=GRS80" ), context );
+    QCOMPARE( spy.count(), 1 );
+    QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "+proj=pipeline +step +inv +proj=utm +zone=55 +south +ellps=GRS80 +step +proj=hgridshift +grids=GDA94_GDA2020_conformal_and_distortion.gsb +step +proj=utm +zone=55 +south +ellps=GRS80" ) );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      {
+        QCOMPARE( static_cast< QgsCoordinateOperationWidget * >( wrapper.wrappedWidget() )->selectedOperation().proj, QStringLiteral( "+proj=pipeline +step +inv +proj=utm +zone=55 +south +ellps=GRS80 +step +proj=hgridshift +grids=GDA94_GDA2020_conformal_and_distortion.gsb +step +proj=utm +zone=55 +south +ellps=GRS80" ) );
+        wrapper.setWidgetValue( QStringLiteral( "+proj=pipeline +step +inv +proj=utm +zone=55 +south +ellps=GRS80 +step +proj=push +v_3 +step +proj=cart +ellps=GRS80 +step +proj=helmert +x=0.06155 +y=-0.01087 +z=-0.04019 +rx=-0.0394924 +ry=-0.0327221 +rz=-0.0328979 +s=-0.009994 +convention=coordinate_frame +step +inv +proj=cart +ellps=GRS80 +step +proj=pop +v_3 +step +proj=utm +zone=55 +south +ellps=GRS80" ), context );
+        QCOMPARE( spy.count(), 2 );
+        QCOMPARE( static_cast< QgsCoordinateOperationWidget * >( wrapper.wrappedWidget() )->selectedOperation().proj, QStringLiteral( "+proj=pipeline +step +inv +proj=utm +zone=55 +south +ellps=GRS80 +step +proj=push +v_3 +step +proj=cart +ellps=GRS80 +step +proj=helmert +x=0.06155 +y=-0.01087 +z=-0.04019 +rx=-0.0394924 +ry=-0.0327221 +rz=-0.0328979 +s=-0.009994 +convention=coordinate_frame +step +inv +proj=cart +ellps=GRS80 +step +proj=pop +v_3 +step +proj=utm +zone=55 +south +ellps=GRS80" ) );
+
+        // check signal
+        QgsCoordinateOperationWidget::OperationDetails deets;
+        deets.proj = QStringLiteral( "+proj=pipeline +step +inv +proj=utm +zone=55 +south +ellps=GRS80 +step +proj=hgridshift +grids=GDA94_GDA2020_conformal_and_distortion.gsb +step +proj=utm +zone=55 +south +ellps=GRS80" );
+        static_cast< QgsCoordinateOperationWidget * >( wrapper.wrappedWidget() )->setSelectedOperation( deets );
+        QCOMPARE( spy.count(), 3 );
+        break;
+      }
+
+      case QgsProcessingGui::Modeler:
+      case QgsProcessingGui::Batch:
+      {
+        QCOMPARE( wrapper.mLineEdit->text(), QStringLiteral( "+proj=pipeline +step +inv +proj=utm +zone=55 +south +ellps=GRS80 +step +proj=hgridshift +grids=GDA94_GDA2020_conformal_and_distortion.gsb +step +proj=utm +zone=55 +south +ellps=GRS80" ) );
+        wrapper.setWidgetValue( QStringLiteral( "+proj=pipeline +step +inv +proj=utm +zone=55 +south +ellps=GRS80 +step +proj=push +v_3 +step +proj=cart +ellps=GRS80 +step +proj=helmert +x=0.06155 +y=-0.01087 +z=-0.04019 +rx=-0.0394924 +ry=-0.0327221 +rz=-0.0328979 +s=-0.009994 +convention=coordinate_frame +step +inv +proj=cart +ellps=GRS80 +step +proj=pop +v_3 +step +proj=utm +zone=55 +south +ellps=GRS80" ), context );
+        QCOMPARE( spy.count(), 2 );
+        QCOMPARE( wrapper.mLineEdit->text(), QStringLiteral( "+proj=pipeline +step +inv +proj=utm +zone=55 +south +ellps=GRS80 +step +proj=push +v_3 +step +proj=cart +ellps=GRS80 +step +proj=helmert +x=0.06155 +y=-0.01087 +z=-0.04019 +rx=-0.0394924 +ry=-0.0327221 +rz=-0.0328979 +s=-0.009994 +convention=coordinate_frame +step +inv +proj=cart +ellps=GRS80 +step +proj=pop +v_3 +step +proj=utm +zone=55 +south +ellps=GRS80" ) );
+
+        // check signal
+        wrapper.mLineEdit->setText( QStringLiteral( "+proj=pipeline +step +inv +proj=utm +zone=55 +south +ellps=GRS80 +step +proj=hgridshift +grids=GDA94_GDA2020_conformal_and_distortion.gsb +step +proj=utm +zone=55 +south +ellps=GRS80" ) );
+        QCOMPARE( spy.count(), 3 );
+        break;
+      }
+    }
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "op" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    delete w;
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
+
+  // config widget
+  QgsProcessingParameterWidgetContext widgetContext;
+  QgsProcessingContext context;
+  std::unique_ptr< QgsProcessingParameterDefinitionWidget > widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "coordinateoperation" ), context, widgetContext );
+  std::unique_ptr< QgsProcessingParameterDefinition > def( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) ); // should default to mandatory
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+
+  QVERIFY( !static_cast< QgsProcessingParameterCoordinateOperation * >( def.get() )->sourceCrs().isValid() ); // should default to not set
+  QVERIFY( !static_cast< QgsProcessingParameterCoordinateOperation * >( def.get() )->destinationCrs().isValid() ); // should default to not set
+  QVERIFY( static_cast< QgsProcessingParameterCoordinateOperation * >( def.get() )->sourceCrsParameterName().isEmpty() ); // should default to not set
+  QVERIFY( static_cast< QgsProcessingParameterCoordinateOperation * >( def.get() )->destinationCrsParameterName().isEmpty() ); // should default to not set
+
+  // using a parameter definition as initial values
+  QgsProcessingParameterCoordinateOperation coordParam( QStringLiteral( "n" ), QStringLiteral( "test desc" ), QStringLiteral( "+proj" ), QStringLiteral( "a" ), QStringLiteral( "b" ), QStringLiteral( "EPSG:3111" ), QStringLiteral( "EPSG:3857" ), false );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "coordinateoperation" ), context, widgetContext, &coordParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+  QCOMPARE( static_cast< QgsProcessingParameterCoordinateOperation * >( def.get() )->defaultValue().toString(), QStringLiteral( "+proj" ) );
+  QCOMPARE( static_cast< QgsProcessingParameterCoordinateOperation * >( def.get() )->sourceCrsParameterName(), QStringLiteral( "a" ) );
+  QCOMPARE( static_cast< QgsProcessingParameterCoordinateOperation * >( def.get() )->destinationCrsParameterName(), QStringLiteral( "b" ) );
+  QCOMPARE( static_cast< QgsProcessingParameterCoordinateOperation * >( def.get() )->sourceCrs().value< QgsCoordinateReferenceSystem >( ).authid(), QStringLiteral( "EPSG:3111" ) );
+  QCOMPARE( static_cast< QgsProcessingParameterCoordinateOperation * >( def.get() )->destinationCrs().value< QgsCoordinateReferenceSystem >( ).authid(), QStringLiteral( "EPSG:3857" ) );
+  coordParam.setFlags( QgsProcessingParameterDefinition::FlagAdvanced | QgsProcessingParameterDefinition::FlagOptional );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "coordinateoperation" ), context, widgetContext, &coordParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagOptional );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced );
+#endif
 }
 
 void TestProcessingGui::mapLayerComboBox()

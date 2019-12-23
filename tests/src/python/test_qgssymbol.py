@@ -507,7 +507,7 @@ class TestQgsSymbol(unittest.TestCase):
 
         painter = QPainter()
         ms = QgsMapSettings()
-        crs = QgsCoordinateReferenceSystem.fromProj4('+proj=ortho +lat_0=36.5 +lon_0=-118.8 +x_0=0 +y_0=0 +a=6371000 +b=6371000 +units=m +no_defs')
+        crs = QgsCoordinateReferenceSystem.fromProj('+proj=ortho +lat_0=36.5 +lon_0=-118.8 +x_0=0 +y_0=0 +a=6371000 +b=6371000 +units=m +no_defs')
         self.assertTrue(crs.isValid())
         ms.setDestinationCrs(crs)
         ms.setExtent(QgsRectangle(1374999.8, 3912610.7, 4724462.5, 6505499.6))

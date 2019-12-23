@@ -50,16 +50,10 @@ class APP_EXPORT QgsCustomProjectionDialog : public QDialog, private Ui::QgsCust
 
   private:
 
-    enum class Format
-    {
-      Wkt = 0,
-      Proj
-    };
-
     //helper functions
     void populateList();
     bool deleteCrs( const QString &id );
-    bool saveCrs( QgsCoordinateReferenceSystem crs, const QString &name, const QString &id, bool newEntry, Format format );
+    bool saveCrs( QgsCoordinateReferenceSystem crs, const QString &name, const QString &id, bool newEntry, QgsCoordinateReferenceSystem::Format format );
     void insertProjection( const QString &projectionAcronym );
     void showHelp();
 

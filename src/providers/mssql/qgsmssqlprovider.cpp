@@ -1880,7 +1880,7 @@ QgsVectorLayerExporter::ExportError QgsMssqlProvider::createEmptyLayer( const QS
           .arg( auth_name,
                 auth_srid,
                 srs.toWkt(),
-                srs.toProj4() );
+                srs.toProj() );
     if ( !q.exec( sql ) )
     {
       if ( errorMessage )

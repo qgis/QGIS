@@ -26,6 +26,37 @@ class QgsVectorLayer;
 
 /**
  * \ingroup core
+ * A context for field formatter containing information like the project
+ *
+ * \since QGIS 3.12
+ */
+class CORE_EXPORT QgsFieldFormatterContext
+{
+  public:
+
+    /**
+     * Constructor
+     */
+    QgsFieldFormatterContext() = default;
+
+    /**
+     * Returns the project used in field formatter
+     * \see setProject()
+     */
+    QgsProject *project() const { return mProject; }
+
+    /**
+     * Sets the \a project used in field formatter
+     * \see project()
+     */
+    void setProject( QgsProject *project ) { mProject = project; }
+
+  private:
+    QgsProject *mProject = nullptr;
+};
+
+/**
+ * \ingroup core
  * A field formatter helps to handle and display values for a field.
  *
  * It allows for using a shared configuration with the editor widgets
@@ -48,6 +79,17 @@ class CORE_EXPORT QgsFieldFormatter
     QgsFieldFormatter() = default;
 
     virtual ~QgsFieldFormatter() = default;
+
+    /**
+     * Flags for the abilities of the formatter
+     *
+     * \since QGIS 3.12
+     */
+    enum Flag
+    {
+      CanProvideAvailableValues =  1   //!< Can provide possible values
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
 
     /**
      * Returns a unique id for this field formatter.
@@ -112,7 +154,30 @@ class CORE_EXPORT QgsFieldFormatter
      */
     virtual QList< QgsVectorLayerRef > layerDependencies( const QVariantMap &config ) const SIP_SKIP;
 
+    /**
+     * Returns a list of the values that would be possible to select with this widget type
+     * On a RelationReference that would be the parents ids or on ValueMap all the configured keys
+     * according to the settings in the \a config
+     * \since QGIS 3.12
+     */
+    virtual QVariantList availableValues( const QVariantMap &config, int countLimit, const QgsFieldFormatterContext &context ) const;
 
+    /**
+     * Returns the flags
+     *
+     * \since QGIS 3.12
+     */
+    Flags flags() const { return mFlags; }
+
+    /**
+     * Sets the \a flags
+     *
+     * \since QGIS 3.12
+     */
+    void setFlags( const Flags &flags );
+
+  private:
+    Flags mFlags;
 };
 
 #endif // QGSFIELDKIT_H

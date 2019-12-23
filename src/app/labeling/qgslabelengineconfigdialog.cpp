@@ -19,23 +19,23 @@
 #include "pal/pal.h"
 #include "qgshelp.h"
 #include "qgsmessagebar.h"
-
+#include "qgisapp.h"
+#include "qgsmapcanvas.h"
+#include "qgsgui.h"
+#include "qgsapplication.h"
 #include <QPushButton>
 #include <QMessageBox>
 
-QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QWidget *parent )
-  : QDialog( parent )
+QgsLabelEngineConfigWidget::QgsLabelEngineConfigWidget( QWidget *parent )
+  : QgsPanelWidget( parent )
 {
   setupUi( this );
+
+  setPanelTitle( tr( "Placement Engine Settings" ) );
 
   mMessageBar = new QgsMessageBar();
   mMessageBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
   verticalLayout->insertWidget( 0,  mMessageBar );
-
-  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsLabelEngineConfigDialog::onOK );
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsLabelEngineConfigDialog::showHelp );
-  connect( buttonBox->button( QDialogButtonBox::RestoreDefaults ), &QAbstractButton::clicked,
-           this, &QgsLabelEngineConfigDialog::setDefaults );
 
   QgsLabelingEngineSettings engineSettings = QgsProject::instance()->labelingEngineSettings();
 
@@ -73,9 +73,38 @@ QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QWidget *parent )
   mUnplacedColorButton->setWindowTitle( tr( "Unplaced Label Color" ) );
 
   mTextRenderFormatComboBox->setCurrentIndex( mTextRenderFormatComboBox->findData( engineSettings.defaultTextRenderFormat() ) );
+
+  connect( spinCandPoint, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, &QgsLabelEngineConfigWidget::widgetChanged );
+  connect( spinCandLine, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, &QgsLabelEngineConfigWidget::widgetChanged );
+  connect( spinCandPolygon, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, &QgsLabelEngineConfigWidget::widgetChanged );
+  connect( chkShowCandidates, &QCheckBox::toggled, this, &QgsLabelEngineConfigWidget::widgetChanged );
+  connect( chkShowAllLabels, &QCheckBox::toggled, this, &QgsLabelEngineConfigWidget::widgetChanged );
+  connect( chkShowUnplaced, &QCheckBox::toggled, this, &QgsLabelEngineConfigWidget::widgetChanged );
+  connect( chkShowPartialsLabels, &QCheckBox::toggled, this, &QgsLabelEngineConfigWidget::widgetChanged );
+  connect( mTextRenderFormatComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsLabelEngineConfigWidget::widgetChanged );
+  connect( mUnplacedColorButton, &QgsColorButton::colorChanged, this, &QgsLabelEngineConfigWidget::widgetChanged );
+  connect( mPlacementVersionComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsLabelEngineConfigWidget::widgetChanged );
+
+  mWidgetMenu = new QMenu( this );
+  QAction *resetAction = new QAction( tr( "Restore Defaults" ), this );
+  mWidgetMenu->addAction( resetAction );
+  connect( resetAction, &QAction::triggered, this, &QgsLabelEngineConfigWidget::setDefaults );
+  QAction *helpAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionHelpContents.svg" ) ), tr( "Help…" ), this );
+  mWidgetMenu->addAction( helpAction );
+  connect( helpAction, &QAction::triggered, this, &QgsLabelEngineConfigWidget::showHelp );
 }
 
-void QgsLabelEngineConfigDialog::onOK()
+QMenu *QgsLabelEngineConfigWidget::menuButtonMenu()
+{
+  return mWidgetMenu;
+}
+
+QString QgsLabelEngineConfigWidget::menuButtonTooltip() const
+{
+  return tr( "Additional Options" );
+}
+
+void QgsLabelEngineConfigWidget::apply()
 {
   QgsLabelingEngineSettings engineSettings;
 
@@ -94,11 +123,10 @@ void QgsLabelEngineConfigDialog::onOK()
   engineSettings.setPlacementVersion( static_cast< QgsLabelingEngineSettings::PlacementEngineVersion >( mPlacementVersionComboBox->currentData().toInt() ) );
 
   QgsProject::instance()->setLabelingEngineSettings( engineSettings );
-
-  accept();
+  QgisApp::instance()->mapCanvas()->refreshAllLayers();
 }
 
-void QgsLabelEngineConfigDialog::setDefaults()
+void QgsLabelEngineConfigWidget::setDefaults()
 {
   pal::Pal p;
   spinCandPoint->setValue( p.maximumNumberOfPointCandidates() );
@@ -111,7 +139,37 @@ void QgsLabelEngineConfigDialog::setDefaults()
   mPlacementVersionComboBox->setCurrentIndex( mPlacementVersionComboBox->findData( QgsLabelingEngineSettings::PlacementEngineVersion2 ) );
 }
 
-void QgsLabelEngineConfigDialog::showHelp()
+void QgsLabelEngineConfigWidget::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#setting-the-automated-placement-engine" ) );
+}
+
+//
+// QgsLabelEngineConfigDialog
+//
+
+QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QWidget *parent )
+  : QDialog( parent )
+{
+  mWidget = new QgsLabelEngineConfigWidget();
+  setWindowTitle( mWidget->windowTitle() );
+  QVBoxLayout *vLayout = new QVBoxLayout();
+  vLayout->addWidget( mWidget );
+  QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::RestoreDefaults, Qt::Horizontal );
+  connect( bbox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( bbox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( bbox, &QDialogButtonBox::helpRequested, mWidget, &QgsLabelEngineConfigWidget::showHelp );
+  connect( bbox->button( QDialogButtonBox::RestoreDefaults ), &QAbstractButton::clicked,
+           mWidget, &QgsLabelEngineConfigWidget::setDefaults );
+  vLayout->addWidget( bbox );
+  setLayout( vLayout );
+
+  setObjectName( QStringLiteral( "QgsLabelSettingsWidgetDialog" ) );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
+}
+
+void QgsLabelEngineConfigDialog::accept()
+{
+  mWidget->apply();
+  QDialog::accept();
 }

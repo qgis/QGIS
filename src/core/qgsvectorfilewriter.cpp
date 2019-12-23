@@ -395,7 +395,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   // consider spatial reference system of the layer
   if ( srs.isValid() )
   {
-    QString srsWkt = srs.toWkt();
+    QString srsWkt = srs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 );
     QgsDebugMsg( "WKT to save as is " + srsWkt );
     mOgrRef = OSRNewSpatialReference( srsWkt.toLocal8Bit().constData() );
 #if GDAL_VERSION_MAJOR >= 3

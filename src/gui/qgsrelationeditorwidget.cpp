@@ -39,6 +39,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMessageBox>
+#include <QPushButton>
 
 /// @cond PRIVATE
 ///

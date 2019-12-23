@@ -112,8 +112,15 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
                               0,
                               count );
 
-    // vals could be scalar or vectors, for contour rendering we want always magnitude
-    mScalarDatasetValues = QgsMeshLayerUtils::calculateMagnitudes( vals );
+    if ( vals.isValid() )
+    {
+      // vals could be scalar or vectors, for contour rendering we want always magnitude
+      mScalarDatasetValues = QgsMeshLayerUtils::calculateMagnitudes( vals );
+    }
+    else
+    {
+      mScalarDatasetValues = QVector<double>( count, std::numeric_limits<double>::quiet_NaN() );
+    }
 
     // populate face active flag, always defined on faces
     mScalarActiveFaceFlagValues = layer->dataProvider()->areFacesActive(
@@ -201,7 +208,10 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
                                0,
                                count );
 
-      mVectorDatasetValuesMag = QgsMeshLayerUtils::calculateMagnitudes( mVectorDatasetValues );
+      if ( mVectorDatasetValues.isValid() )
+        mVectorDatasetValuesMag = QgsMeshLayerUtils::calculateMagnitudes( mVectorDatasetValues );
+      else
+        mVectorDatasetValuesMag = QVector<double>( count, std::numeric_limits<double>::quiet_NaN() );
 
       const QgsMeshDatasetMetadata datasetMetadata = layer->dataProvider()->datasetMetadata( datasetIndex );
       mVectorDatasetMagMinimum = datasetMetadata.minimum();

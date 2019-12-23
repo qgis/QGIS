@@ -127,6 +127,16 @@ if ``value`` cannot be successfully converted to a source.
 This function creates a new object and the caller takes responsibility for deleting the returned object.
 %End
 
+    static QgsCoordinateReferenceSystem variantToCrs( const QVariant &value, QgsProcessingContext &context, const QVariant &fallbackValue = QVariant() );
+%Docstring
+Converts a variant ``value`` to a coordinate reference system.
+
+The optional ``fallbackValue`` can be used to specify a "default" value which is used
+if ``value`` cannot be successfully converted to a CRS.
+
+.. versionadded:: 3.12
+%End
+
     static QString normalizeLayerSource( const QString &source );
 %Docstring
 Normalizes a layer ``source`` string for safe comparison across different

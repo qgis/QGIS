@@ -177,6 +177,7 @@ SET(TESTS
  testqgsmaptopixelgeometrysimplifier.cpp
  testqgsmaptopixel.cpp
  testqgsmarkerlinesymbol.cpp
+ testqgsmesh3daveraging.cpp
  testqgsmeshlayer.cpp
  testqgsmeshlayerinterpolator.cpp
  testqgsmeshlayerrenderer.cpp
@@ -241,6 +242,7 @@ SET(TESTS
  testqobjectuniqueptr.cpp
  testqgspostgresstringutils.cpp
  testqgsstoredexpressionmanager.cpp
+ testqgsweakrelation.cpp
 )
 
 IF(WITH_QTWEBKIT)

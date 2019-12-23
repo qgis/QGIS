@@ -43,6 +43,7 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingLayoutItemWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingPointWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingColorWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingCoordinateOperationWidgetWrapper() );
 }
 
 QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()
