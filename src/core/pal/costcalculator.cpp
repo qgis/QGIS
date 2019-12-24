@@ -159,17 +159,26 @@ void CostCalculator::setPolygonCandidatesCost( std::size_t nblp, std::vector< st
 
 void CostCalculator::setCandidateCostFromPolygon( LabelPosition *lp, PalRtree<FeaturePart> *obstacles, double bbx[4], double bby[4] )
 {
+  // NOTE: PolygonCostCalculator calculates the min distance between the CENTER of the
+  // candidate and various polygon boundaries
+
+  // TODO 1: Consider whether distance calculation should use min distance to the candidate rectangle
+  // instead of just the center
   PolygonCostCalculator pCost( lp );
 
-  // center
-  //cost = feat->getDistInside((this->x[0] + this->x[2])/2.0, (this->y[0] + this->y[2])/2.0 );
-
+  // first, check max distance to outside of polygon
+  // TODO 2: there's a bug here -- if a candidate's center falls outside the polygon, then a larger
+  // distance to the polygon boundary is being considered as the best placement. That's clearly wrong --
+  // if any part of label candidate sits outside the polygon, we should first prefer candidates which sit
+  // entirely WITHIN the polygon, or failing that, candidates which are CLOSER to the polygon boundary, not further from it!
   pCost.update( lp->feature );
 
-  // costs candidates closer to outside of map higher than those closer to inside
+  // prefer candidates further from the outside of map rather then those close to the outside of the map
+  // TODO 3: should be using the actual map boundary here, not the bounding box
   PointSet extent( 4, bbx, bby );
   pCost.update( &extent );
 
+  // prefer candidates which further from interior rings (holes) of the polygon
   obstacles->intersects( lp->feature->boundingBox(), [&pCost]( const FeaturePart * obstacle )->bool
   {
     LabelPosition *lp = pCost.getLabel();
