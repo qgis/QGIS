@@ -54,7 +54,12 @@ inline void delete_chain( Chain *chain )
   }
 }
 
-Problem::Problem() = default;
+Problem::Problem( const QgsRectangle &extent )
+  : mAllCandidatesIndex( extent )
+  , mActiveCandidatesIndex( extent )
+{
+
+}
 
 Problem::~Problem() = default;
 
