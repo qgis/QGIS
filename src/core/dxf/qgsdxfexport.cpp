@@ -1265,6 +1265,13 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
   double lblX = label->getX();
   double lblY = label->getY();
 
+  QgsLabelFeature *labelFeature = label->getFeaturePart()->feature();
+  if ( labelFeature->hasFixedPosition() )
+  {
+    lblX = labelFeature->fixedPosition().x();
+    lblY = labelFeature->fixedPosition().y();
+  }
+
   HAlign hali = HAlign::Undefined;
   VAlign vali = VAlign::Undefined;
 
@@ -1272,13 +1279,13 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
 
   if ( props.isActive( QgsPalLayerSettings::OffsetQuad ) )
   {
+    lblX -= label->dX();
+    lblY -= label->dY();
+
     const QVariant exprVal = props.value( QgsPalLayerSettings::OffsetQuad, expressionContext );
     if ( exprVal.isValid() )
     {
       int offsetQuad = exprVal.toInt();
-
-      lblX -= label->dX();
-      lblY -= label->dY();
 
       switch ( offsetQuad )
       {
@@ -1328,6 +1335,9 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
 
   if ( props.isActive( QgsPalLayerSettings::Hali ) )
   {
+    lblX -= label->dX();
+    lblY -= label->dY();
+
     hali = HAlign::HLeft;
     QVariant exprVal = props.value( QgsPalLayerSettings::Hali, expressionContext );
     if ( exprVal.isValid() )
@@ -1343,8 +1353,6 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
       }
     }
   }
-
-  std::unique_ptr<QFontMetricsF> labelFontMetrics( new QFontMetricsF( layerSettings.format().font() ) );
 
   //vertical alignment
   if ( props.isActive( QgsPalLayerSettings::Vali ) )

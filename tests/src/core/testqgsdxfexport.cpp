@@ -560,7 +560,7 @@ void TestQgsDxfExport::testTextAlign()
   valignProp.setStaticValue( vali );
   props.setProperty( QgsPalLayerSettings::Vali, valignProp );
   QgsProperty posYProp = QgsProperty();
-  posXProp.setExpressionString( QStringLiteral( "y($geometry)" ) );
+  posYProp.setExpressionString( QStringLiteral( "y($geometry)" ) );
   props.setProperty( QgsPalLayerSettings::PositionY, posYProp );
   settings.setDataDefinedProperties( props );
 

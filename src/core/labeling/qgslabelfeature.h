@@ -434,6 +434,47 @@ class CORE_EXPORT QgsLabelFeature
      */
     void setObstacleSettings( const QgsLabelObstacleSettings &settings );
 
+    /**
+     * The deltas (dX and dY) are the difference by which the fixed position deviates
+     * from the original position because of alignment.
+     *
+     * This can be used to restore the original position.
+     *
+     * \since QGIS 3.12
+     */
+    double dX() const;
+
+    /**
+     * The deltas (dX and dY) are the difference by which the fixed position deviates
+     * from the original position because of alignment.
+     *
+     * This can be used to restore the original position.
+     *
+     * \since QGIS 3.12
+     */
+    void setDX( double dX );
+
+    /**
+     * The deltas (dX and dY) are the difference by which the fixed position deviates
+     * from the original position because of alignment.
+     *
+     * This can be used to restore the original position.
+     *
+     * \since QGIS 3.12
+     */
+    double dY() const;
+
+
+    /**
+     * The deltas (dX and dY) are the difference by which the fixed position deviates
+     * from the original position because of alignment.
+     *
+     * This can be used to restore the original position.
+     *
+     * \since QGIS 3.12
+     */
+    void setDY( double dY );
+
   protected:
     //! Pointer to PAL layer (assigned when registered to PAL)
     pal::Layer *mLayer = nullptr;
@@ -508,6 +549,8 @@ class CORE_EXPORT QgsLabelFeature
 
     QgsLabelObstacleSettings mObstacleSettings;
 
+    double mDX = 0.0;
+    double mDY = 0.0;
 };
 
 #endif // QGSLABELFEATURE_H

@@ -23,7 +23,6 @@
 
 QgsTextLabelFeature::QgsTextLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QSizeF size )
   : QgsLabelFeature( id, std::move( geometry ), size )
-
 {
   mDefinedFont = QFont();
 }

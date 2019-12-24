@@ -114,3 +114,23 @@ void QgsLabelFeature::setObstacleSettings( const QgsLabelObstacleSettings &setti
 {
   mObstacleSettings = settings;
 }
+
+double QgsLabelFeature::dX() const
+{
+  return mDX;
+}
+
+void QgsLabelFeature::setDX( double dX )
+{
+  mDX = dX;
+}
+
+double QgsLabelFeature::dY() const
+{
+  return mDY;
+}
+
+void QgsLabelFeature::setDY( double dY )
+{
+  mDY = dY;
+}

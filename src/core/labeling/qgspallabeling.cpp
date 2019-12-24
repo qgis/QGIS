@@ -2013,6 +2013,10 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   double quadOffsetX = 0.0, quadOffsetY = 0.0;
   double offsetX = 0.0, offsetY = 0.0;
 
+  //x/y shift in case of alignment
+  double xdiff = 0.0;
+  double ydiff = 0.0;
+
   //data defined quadrant offset?
   bool ddFixedQuad = false;
   QuadrantPosition quadOff = quadOffset;
@@ -2167,10 +2171,6 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
             {
               angle = 0.0;
             }
-
-            //x/y shift in case of alignment
-            double xdiff = 0.0;
-            double ydiff = 0.0;
 
             //horizontal alignment
             if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Hali ) )
@@ -2331,6 +2331,8 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
 
   //  feature to the layer
   QgsTextLabelFeature *lf = new QgsTextLabelFeature( feature.id(), std::move( geos_geom_clone ), QSizeF( labelX, labelY ) );
+  lf->setDX( xdiff );
+  lf->setDY( ydiff );
   lf->setFeature( feature );
   lf->setSymbol( symbol );
   if ( !qgsDoubleNear( rotatedLabelX, 0.0 ) && !qgsDoubleNear( rotatedLabelY, 0.0 ) )
