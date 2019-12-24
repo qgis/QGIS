@@ -554,13 +554,13 @@ void TestQgsDxfExport::testTextAlign()
   halignProp.setStaticValue( hali );
   props.setProperty( QgsPalLayerSettings::Hali, halignProp );
   QgsProperty posXProp = QgsProperty();
-  posXProp.setExpressionString( QStringLiteral( "x($geometry)" ) );
+  posXProp.setExpressionString( QStringLiteral( "x($geometry) + 1" ) );
   props.setProperty( QgsPalLayerSettings::PositionX, posXProp );
   QgsProperty valignProp = QgsProperty();
   valignProp.setStaticValue( vali );
   props.setProperty( QgsPalLayerSettings::Vali, valignProp );
   QgsProperty posYProp = QgsProperty();
-  posYProp.setExpressionString( QStringLiteral( "y($geometry)" ) );
+  posYProp.setExpressionString( QStringLiteral( "y($geometry) + 1" ) );
   props.setProperty( QgsPalLayerSettings::PositionY, posYProp );
   settings.setDataDefinedProperties( props );
 
@@ -616,13 +616,13 @@ void TestQgsDxfExport::testTextAlign()
                               "420\n"
                               "**no check**\n"
                               " 10\n"
-                              "REGEX ^2684679\\.39\\d*\n"
+                              "REGEX ^2684680\\.39\\d*\n"
                               " 20\n"
-                              "REGEX ^1292182\\.52\\d*\n"
+                              "REGEX ^1292183\\.52\\d*\n"
                               " 11\n"
-                              "REGEX ^2684679\\.39\\d*\n"
+                              "REGEX ^2684680\\.39\\d*\n"
                               " 21\n"
-                              "REGEX ^1292182\\.52\\d*\n"
+                              "REGEX ^1292183\\.52\\d*\n"
                               " 40\n"
                               "**no check**\n"
                               "  1\n"
@@ -1155,7 +1155,7 @@ bool TestQgsDxfExport::fileContainsText( const QString &path, const QString &tex
           bool ok = false;
           if ( searchLine.startsWith( QLatin1String( "REGEX " ) ) )
           {
-            QRegularExpression re( searchLine.right( 7 ) );
+            QRegularExpression re( searchLine.mid( 6 ) );
             if ( re.match( line ).hasMatch() )
               ok = true;
           }
