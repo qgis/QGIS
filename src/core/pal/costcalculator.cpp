@@ -182,7 +182,13 @@ void CostCalculator::setCandidateCostFromPolygon( LabelPosition *lp, PalRtree<Fe
   obstacles->intersects( lp->feature->boundingBox(), [&pCost]( const FeaturePart * obstacle )->bool
   {
     LabelPosition *lp = pCost.getLabel();
-    if ( ( obstacle == lp->feature ) || ( obstacle->getHoleOf() && obstacle->getHoleOf() != lp->feature ) )
+
+    // we only care about obstacles which are polygon holes, AND only holes which belong to this same feature
+    // because:
+    // 1. holes for other features are a good place to put labels for this feature
+    // 2. we handle obstacle avoidance for all candidate types elsewhere -- here we are solely concerned with
+    // ranking the relative candidates for a single feature while considering that feature's shape alone.
+    if ( ( obstacle == lp->feature ) || ( !obstacle->getHoleOf() ) || ( obstacle->getHoleOf() && obstacle->getHoleOf() != lp->feature ) )
     {
       return true;
     }
