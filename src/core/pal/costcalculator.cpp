@@ -198,6 +198,8 @@ void CostCalculator::setCandidateCostFromPolygon( LabelPosition *lp, PalRtree<Fe
     return true;
   } );
 
+  // TODO 4: probably a bug here -- by calling setCost here we discard all existing candidate costs,
+  // e.g. those determined via conflicts with obstacles
   lp->setCost( pCost.getCost() );
 }
 
