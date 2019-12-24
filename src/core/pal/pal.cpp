@@ -84,11 +84,16 @@ Layer *Pal::addLayer( QgsAbstractLabelProvider *provider, const QString &layerNa
 
 std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeometry &mapBoundary )
 {
+  // expand out the incoming buffer by 1000x -- that's the visible map extent, yet we may be getting features which exceed this extent
+  // (while 1000x may seem excessive here, this value is only used for scaling coordinates in the spatial indexes
+  // and the consequence of inserting coordinates outside this extent is worse than the consequence of setting this value too large.)
+  const QgsRectangle maxCoordinateExtentForSpatialIndices = extent.buffered( std::max( extent.width(), extent.height() ) * 1000 );
+
   // to store obstacles
-  PalRtree< FeaturePart > obstacles;
-  PalRtree< LabelPosition > allCandidatesFirstRound;
+  PalRtree< FeaturePart > obstacles( maxCoordinateExtentForSpatialIndices );
+  PalRtree< LabelPosition > allCandidatesFirstRound( maxCoordinateExtentForSpatialIndices );
   std::vector< FeaturePart * > allObstacleParts;
-  std::unique_ptr< Problem > prob = qgis::make_unique< Problem >();
+  std::unique_ptr< Problem > prob = qgis::make_unique< Problem >( maxCoordinateExtentForSpatialIndices );
 
   double bbx[4];
   double bby[4];
