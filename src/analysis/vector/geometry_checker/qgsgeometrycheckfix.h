@@ -3,6 +3,7 @@
 #define QGSGEOMETRYCHECKFIX_H
 
 #include <QString>
+#include "qgis_analysis.h"
 
 class ANALYSIS_EXPORT QgsGeometryCheckFix
 {
