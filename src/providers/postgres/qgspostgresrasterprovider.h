@@ -90,8 +90,13 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     std::vector<int> mDataSizes;
     //! Nodata values for each band
     std::vector<double> mNoDataValues;
-    //! Band count
-    int mBandCount = 0;
+    <<< <<< < HEAD
+    //! Store overviews
+    QMap<int, QString> mOverViews;
+    == == == =
+      >>> >>> > fd26117653b532b352f9cce66594f045373007c6
+      //! Band count
+      int mBandCount = 0;
     //! If is tiled
     bool mIsTiled = false;
     //! If is out of DB
@@ -111,6 +116,11 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     void disconnectDb();
     //! Get SRID and data type, FALSE if it's not a valid raster table
     bool getDetails();
+    <<< <<< < HEAD
+    //! Search for overviews and store a map
+    void findOverviews();
+    == == == =
+      >>> >>> > fd26117653b532b352f9cce66594f045373007c6
 
     static QString quotedIdentifier( const QString &ident ) { return QgsPostgresConn::quotedIdentifier( ident ); }
     static QString quotedValue( const QVariant &value ) { return QgsPostgresConn::quotedValue( value ); }

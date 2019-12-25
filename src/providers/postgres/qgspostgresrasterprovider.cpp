@@ -213,17 +213,20 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
   }
   else
   {
-    // TODO: resample if width and height are different from x/y size
-    sql = QStringLiteral( "SELECT ST_AsBinary( ST_Resize( ST_Clip ( ST_Union( %1, %2 ), %2, ST_GeomFromText( %4, %5 ), %6 ), %8, %9 ) ) FROM %3 "
-                          "WHERE ST_Intersects( %1,  ST_GeomFromText( %4, %5 ) )" )
-          .arg( quotedIdentifier( mRasterColumn ) )
-          .arg( bandNo )
-          .arg( mQuery )
-          .arg( quotedValue( viewExtent.asWktPolygon() ) )
-          .arg( mCrs.postgisSrid() )
-          .arg( mNoDataValues[ static_cast<unsigned long>( bandNo - 1 ) ] )
-          .arg( width )
-          .arg( height );
+    <<< <<< < HEAD
+    == == == =
+      // TODO: resample if width and height are different from x/y size
+      >>>>>>> fd26117653b532b352f9cce66594f045373007c6
+      sql = QStringLiteral( "SELECT ST_AsBinary( ST_Resize( ST_Clip ( ST_Union( %1, %2 ), %2, ST_GeomFromText( %4, %5 ), %6 ), %8, %9 ) ) FROM %3 "
+                            "WHERE ST_Intersects( %1,  ST_GeomFromText( %4, %5 ) )" )
+            .arg( quotedIdentifier( mRasterColumn ) )
+            .arg( bandNo )
+            .arg( mQuery )
+            .arg( quotedValue( viewExtent.asWktPolygon() ) )
+            .arg( mCrs.postgisSrid() )
+            .arg( mNoDataValues[ static_cast<unsigned long>( bandNo - 1 ) ] )
+            .arg( width )
+            .arg( height );
   }
   QgsDebugMsg( QStringLiteral( "Reading raster block: %1" ).arg( sql ) );
   QgsPostgresResult result( connectionRO()->PQexec( sql ) );
@@ -461,20 +464,37 @@ bool QgsPostgresRasterProvider::getDetails()
   // Get information from metadata
   if ( mUseEstimatedMetadata )
   {
-    QString sql { QStringLiteral( "SELECT r_raster_column, srid,"
-                                  "num_bands, pixel_types, nodata_values, ST_AsBinary(extent), blocksize_x, blocksize_y,"
-                                  "out_db, scale_x, scale_y, same_alignment,"
-                                  "regular_blocking,"
-                                  "spatial_index FROM raster_columns WHERE "
-                                  "r_table_name = %1 AND r_table_schema = %2 AND r_table_catalog = %3" )
-                  .arg( quotedValue( mTableName ) )
-                  .arg( quotedValue( mSchemaName ) )
-                  .arg( quotedValue( mUri.database() ) ) };
+    <<< <<< < HEAD
+    const QString sql { QStringLiteral( "SELECT r_raster_column, srid,"
+                                        "num_bands, pixel_types, nodata_values, ST_AsBinary(extent), blocksize_x, blocksize_y,"
+                                        "out_db, scale_x, scale_y, same_alignment,"
+                                        "regular_blocking,"
+                                        "spatial_index FROM raster_columns WHERE "
+                                        "r_table_name = %1 AND r_table_schema = %2 AND r_table_catalog = %3" )
+                        .arg( quotedValue( mTableName ) )
+                        .arg( quotedValue( mSchemaName ) )
+                        .arg( quotedValue( mUri.database() ) ) };
+
+    QgsDebugMsg( QStringLiteral( "Raster information sql: %1" ).arg( sql ) );
+
+    QgsPostgresResult result( connectionRO()->PQexec( sql ) );
+    if ( PGRES_TUPLES_OK == result.PQresultStatus() && result.PQntuples() > 0 )
+      == == == =
+        QString sql { QStringLiteral( "SELECT r_raster_column, srid,"
+                                      "num_bands, pixel_types, nodata_values, ST_AsBinary(extent), blocksize_x, blocksize_y,"
+                                      "out_db, scale_x, scale_y, same_alignment,"
+                                      "regular_blocking,"
+                                      "spatial_index FROM raster_columns WHERE "
+                                      "r_table_name = %1 AND r_table_schema = %2 AND r_table_catalog = %3" )
+                      .arg( quotedValue( mTableName ) )
+                      .arg( quotedValue( mSchemaName ) )
+                      .arg( quotedValue( mUri.database() ) ) };
 
     QgsDebugMsg( QStringLiteral( "Raster information from raster_columns sql: %1" ).arg( sql ) );
 
     QgsPostgresResult result( connectionRO()->PQexec( sql ) );
     if ( PGRES_TUPLES_OK == result.PQresultStatus() )
+      >>> >>> > fd26117653b532b352f9cce66594f045373007c6
     {
       /* Pixel types
       1BB - 1-bit boolean
@@ -594,7 +614,48 @@ bool QgsPostgresRasterProvider::getDetails()
   }
 }
 
-int QgsPostgresRasterProvider::xSize() const
+<<< <<< < HEAD
+void QgsPostgresRasterProvider::findOverviews()
+{
+  const QString sql { QStringLiteral( "SELECT overview_factor, o_table_schema, o_table_name, o_raster_columnr_raster_column, srid "
+                                      "FROM raster_overviews WHERE r_table_schema = %1 AND r_table_name = %2 AND r_table_catalog = %3" )
+                      .arg( quotedIdentifier( mSchemaName ) )
+                      .arg( quotedIdentifier( mTableName ) )
+                      .arg( quotedValue( mUri.database() ) ) };
+
+  QgsDebugMsg( QStringLiteral( "Raster overview information sql: %1" ).arg( sql ) );
+
+  QgsPostgresResult result( connectionRO()->PQexec( sql ) );
+  if ( PGRES_TUPLES_OK == result.PQresultStatus() )
+  {
+    for ( int i = 0; i < result.PQntuples(); ++i )
+    {
+      bool ok;
+      const int overViewFactor { result.PQgetvalue( i, 0 ).toInt( & ok ) };
+      if ( ! ok )
+      {
+        // TODO: log
+        return;
+      }
+      const QString table { result.PQgetvalue( i, 1 ) };
+      const QString schema { result.PQgetvalue( i, 2 ) };
+      if ( table.isEmpty() || schema.isEmpty() )
+      {
+        // TODO: log
+        return;
+      }
+      mOverViews[ overViewFactor ] = QStringLiteral( "%1.%2" ).arg( quotedIdentifier( schema ) ).arg( quotedIdentifier( table ) );
+    }
+  }
+  else
+  {
+    // TODO: log
+  }
+}
+
+== == == =
+  >>> >>> > fd26117653b532b352f9cce66594f045373007c6
+  int QgsPostgresRasterProvider::xSize() const
 {
   return mWidth;
 }
