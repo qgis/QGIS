@@ -167,25 +167,20 @@ std::size_t FeaturePart::maximumLineCandidates() const
   if ( mCachedMaxLineCandidates > 0 )
     return mCachedMaxLineCandidates;
 
-  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
-  try
+  const double l = length();
+  if ( l > 0 )
   {
-    double length = 0;
-    if ( GEOSLength_r( geosctxt, geos(), &length ) == 1 )
-    {
-      const std::size_t candidatesForLineLength = static_cast< std::size_t >( std::ceil( mLF->layer()->mPal->maximumLineCandidatesPerMapUnit() * length ) );
-      const std::size_t maxForLayer = mLF->layer()->maximumLineLabelCandidates();
-      if ( maxForLayer == 0 )
-        mCachedMaxLineCandidates = candidatesForLineLength;
-      else
-        mCachedMaxLineCandidates = std::min( candidatesForLineLength, maxForLayer );
-      return mCachedMaxLineCandidates;
-    }
+    const std::size_t candidatesForLineLength = static_cast< std::size_t >( std::ceil( mLF->layer()->mPal->maximumLineCandidatesPerMapUnit() * l ) );
+    const std::size_t maxForLayer = mLF->layer()->maximumLineLabelCandidates();
+    if ( maxForLayer == 0 )
+      mCachedMaxLineCandidates = candidatesForLineLength;
+    else
+      mCachedMaxLineCandidates = std::min( candidatesForLineLength, maxForLayer );
   }
-  catch ( GEOSException & )
+  else
   {
+    mCachedMaxLineCandidates = 1;
   }
-  mCachedMaxLineCandidates = 1;
   return mCachedMaxLineCandidates;
 }
 
@@ -194,25 +189,20 @@ std::size_t FeaturePart::maximumPolygonCandidates() const
   if ( mCachedMaxPolygonCandidates > 0 )
     return mCachedMaxPolygonCandidates;
 
-  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
-  try
+  const double a = area();
+  if ( a > 0 )
   {
-    double area = 0;
-    if ( GEOSArea_r( geosctxt, geos(), &area ) == 1 )
-    {
-      const std::size_t candidatesForArea = static_cast< std::size_t >( std::ceil( mLF->layer()->mPal->maximumPolygonCandidatesPerMapUnitSquared() * area ) );
-      const std::size_t maxForLayer = mLF->layer()->maximumPolygonLabelCandidates();
-      if ( maxForLayer == 0 )
-        mCachedMaxPolygonCandidates = candidatesForArea;
-      else
-        mCachedMaxPolygonCandidates = std::min( candidatesForArea, maxForLayer );
-      return mCachedMaxPolygonCandidates;
-    }
+    const std::size_t candidatesForArea = static_cast< std::size_t >( std::ceil( mLF->layer()->mPal->maximumPolygonCandidatesPerMapUnitSquared() * a ) );
+    const std::size_t maxForLayer = mLF->layer()->maximumPolygonLabelCandidates();
+    if ( maxForLayer == 0 )
+      mCachedMaxPolygonCandidates = candidatesForArea;
+    else
+      mCachedMaxPolygonCandidates = std::min( candidatesForArea, maxForLayer );
   }
-  catch ( GEOSException & )
+  else
   {
+    mCachedMaxPolygonCandidates = 1;
   }
-  mCachedMaxPolygonCandidates = 1;
   return mCachedMaxPolygonCandidates;
 }
 
@@ -1778,46 +1768,30 @@ void FeaturePart::addSizePenalty( std::vector< std::unique_ptr< LabelPosition > 
   double sizeCost = 0;
   if ( geomType == GEOS_LINESTRING )
   {
-    double length;
-    try
-    {
-      if ( GEOSLength_r( ctxt, mGeos, &length ) != 1 )
-        return; // failed to calculate length
-    }
-    catch ( GEOSException &e )
-    {
-      QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
-      return;
-    }
+    const double l = length();
+    if ( l <= 0 )
+      return; // failed to calculate length
     double bbox_length = std::max( bbx[2] - bbx[0], bby[2] - bby[0] );
-    if ( length >= bbox_length / 4 )
+    if ( l >= bbox_length / 4 )
       return; // the line is longer than quarter of height or width - don't penalize it
 
-    sizeCost = 1 - ( length / ( bbox_length / 4 ) ); // < 0,1 >
+    sizeCost = 1 - ( l / ( bbox_length / 4 ) ); // < 0,1 >
   }
   else if ( geomType == GEOS_POLYGON )
   {
-    double area;
-    try
-    {
-      if ( GEOSArea_r( ctxt, mGeos, &area ) != 1 )
-        return;
-    }
-    catch ( GEOSException &e )
-    {
-      QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+    const double a = area();
+    if ( a <= 0 )
       return;
-    }
     double bbox_area = ( bbx[2] - bbx[0] ) * ( bby[2] - bby[0] );
-    if ( area >= bbox_area / 16 )
+    if ( a >= bbox_area / 16 )
       return; // covers more than 1/16 of our view - don't penalize it
 
-    sizeCost = 1 - ( area / ( bbox_area / 16 ) ); // < 0, 1 >
+    sizeCost = 1 - ( a / ( bbox_area / 16 ) ); // < 0, 1 >
   }
   else
     return; // no size penalty for points
 
-  // apply the penalty
+// apply the penalty
   for ( std::unique_ptr< LabelPosition > &pos : lPos )
   {
     pos->setCost( pos->cost() + sizeCost / 100 );
