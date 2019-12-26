@@ -316,9 +316,6 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
           break;
       }
 
-      // sort candidates by cost, skip less interesting ones, calculate polygon costs (if using polygons)
-      max_p = CostCalculator::finalizeCandidatesCosts( feat.get(), max_p, &obstacles, bbx, bby );
-
       if ( isCanceled() )
         return nullptr;
 
@@ -352,10 +349,16 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
         }
       }
 
+      // calculate final costs
+      CostCalculator::finalizeCandidatesCosts( feat.get(), &obstacles, bbx, bby );
+
+      // sort candidates list, best label to worst
+      std::sort( feat->candidates.begin(), feat->candidates.end(), CostCalculator::candidateSortGrow );
+
       // only keep the 'max_p' best candidates
-      while ( feat->candidates.size() > max_p )
+      if ( feat->candidates.size() > max_p )
       {
-        feat->candidates.pop_back();
+        feat->candidates.resize( max_p );
       }
 
       if ( isCanceled() )
