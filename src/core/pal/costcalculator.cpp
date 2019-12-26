@@ -112,27 +112,26 @@ void CostCalculator::addObstacleCostPenalty( LabelPosition *lp, FeaturePart *obs
   lp->setCost( lp->cost() + obstacleCost );
 }
 
-void CostCalculator::setPolygonCandidatesCost( std::size_t nblp, std::vector< std::unique_ptr< LabelPosition > > &lPos, PalRtree<FeaturePart> *obstacles, double bbx[4], double bby[4] )
+void CostCalculator::setPolygonCandidatesCost( std::vector< std::unique_ptr< LabelPosition > > &lPos, PalRtree<FeaturePart> *obstacles, double bbx[4], double bby[4] )
 {
   double normalizer;
   // compute raw cost
-  for ( std::size_t i = 0; i < nblp; ++i )
-    setCandidateCostFromPolygon( lPos[ i ].get(), obstacles, bbx, bby );
+  for ( std::unique_ptr< LabelPosition > &pos : lPos )
+    setCandidateCostFromPolygon( pos.get(), obstacles, bbx, bby );
 
   // lPos with big values came first (value = min distance from label to Polygon's Perimeter)
   // IMPORTANT - only want to sort first nblp positions. The rest have not had the cost
   // calculated so will have nonsense values
-  std::sort( lPos.begin(), lPos.begin() + nblp, candidateSortShrink );
+  std::sort( lPos.begin(), lPos.end(), candidateSortShrink );
 
   // define the value's range
-  double cost_max = lPos.front()->cost();
-  double cost_min = lPos.back()->cost();
+  const double costMin = lPos.back()->cost();
+  const double costMax = lPos.front()->cost();
+  const double costRange = costMax - costMin;
 
-  cost_max -= cost_min;
-
-  if ( cost_max > EPSILON )
+  if ( costRange > EPSILON )
   {
-    normalizer = 0.0020 / cost_max;
+    normalizer = 0.0020 / costRange;
   }
   else
   {
@@ -141,17 +140,14 @@ void CostCalculator::setPolygonCandidatesCost( std::size_t nblp, std::vector< st
 
   // adjust cost => the best is 0.0001, the worst is 0.0021
   // others are set proportionally between best and worst
-  for ( std::size_t i = 0; i < nblp; ++i )
+  for ( std::unique_ptr< LabelPosition > &pos : lPos )
   {
-    LabelPosition *pos = lPos[ i ].get();
-    //if (cost_max - cost_min < EPSILON)
-    if ( cost_max > EPSILON )
+    if ( costRange > EPSILON )
     {
-      pos->setCost( 0.0021 - ( pos->cost() - cost_min ) * normalizer );
+      pos->setCost( 0.0021 - ( pos->cost() - costMin ) * normalizer );
     }
     else
     {
-      //pos->cost = 0.0001 + (pos->cost - cost_min) * normalizer;
       pos->setCost( 0.0001 );
     }
   }
@@ -203,49 +199,18 @@ void CostCalculator::setCandidateCostFromPolygon( LabelPosition *lp, PalRtree<Fe
   lp->setCost( pCost.getCost() );
 }
 
-std::size_t CostCalculator::finalizeCandidatesCosts( Feats *feat, std::size_t max_p, PalRtree<FeaturePart> *obstacles, double bbx[4], double bby[4] )
+void CostCalculator::finalizeCandidatesCosts( Feats *feat, PalRtree<FeaturePart> *obstacles, double bbx[4], double bby[4] )
 {
-  // If candidates list is smaller than expected
-  if ( max_p == 0 || max_p > feat->candidates.size() )
-    max_p = feat->candidates.size();
-  //
-  // sort candidates list, best label to worst
-  std::sort( feat->candidates.begin(), feat->candidates.end(), candidateSortGrow );
-
-  // try to exclude all conflitual labels (good ones have cost < 1 by pruning)
-  double discrim = 0.0;
-  std::size_t stop = 0;
-  do
-  {
-    discrim += 1.0;
-    for ( stop = 0; stop < feat->candidates.size() && feat->candidates[ stop ]->cost() < discrim; stop++ )
-      ;
-  }
-  while ( stop == 0 && discrim < feat->candidates.back()->cost() + 2.0 );
-
-  // THIS LOOKS SUSPICIOUS -- it clamps all costs to a fixed value??
-  if ( discrim > 1.5 )
-  {
-    for ( std::size_t k = 0; k < stop; k++ )
-      feat->candidates[ k ]->setCost( 0.0021 );
-  }
-
-  if ( max_p > stop )
-    max_p = stop;
-
   // Sets costs for candidates of polygon
-
   if ( feat->feature->getGeosType() == GEOS_POLYGON )
   {
     int arrangement = feat->feature->layer()->arrangement();
     if ( arrangement == QgsPalLayerSettings::Free || arrangement == QgsPalLayerSettings::Horizontal )
-      setPolygonCandidatesCost( stop, feat->candidates, obstacles, bbx, bby );
+      setPolygonCandidatesCost( feat->candidates, obstacles, bbx, bby );
   }
 
   // add size penalty (small lines/polygons get higher cost)
-  feat->feature->addSizePenalty( max_p, feat->candidates, bbx, bby );
-
-  return max_p;
+  feat->feature->addSizePenalty( feat->candidates, bbx, bby );
 }
 
 PolygonCostCalculator::PolygonCostCalculator( LabelPosition *lp ) : lp( lp )

@@ -1729,7 +1729,7 @@ std::vector< std::unique_ptr< LabelPosition > > FeaturePart::createCandidates( P
   return lPos;
 }
 
-void FeaturePart::addSizePenalty( std::size_t nbp, std::vector< std::unique_ptr< LabelPosition > > &lPos, double bbx[4], double bby[4] )
+void FeaturePart::addSizePenalty( std::vector< std::unique_ptr< LabelPosition > > &lPos, double bbx[4], double bby[4] )
 {
   if ( !mGeos )
     createGeosGeom();
@@ -1780,9 +1780,8 @@ void FeaturePart::addSizePenalty( std::size_t nbp, std::vector< std::unique_ptr<
     return; // no size penalty for points
 
   // apply the penalty
-  for ( std::size_t i = 0; i < nbp; i++ )
+  for ( std::unique_ptr< LabelPosition > &pos : lPos )
   {
-    LabelPosition *pos = lPos[ i ].get();
     pos->setCost( pos->cost() + sizeCost / 100 );
   }
 }
