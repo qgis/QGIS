@@ -49,9 +49,9 @@ QString QgsLineDensityAlgorithm::groupId() const
 void QgsLineDensityAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input line layer" ), QList<int>() << QgsProcessing::TypeVectorLine ) );
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "WEIGHT" ), QObject::tr( "Weight field "), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::Numeric ) );
-  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "RADIUS" ), QObject::tr( "Search radius" ), 10, QStringLiteral( "INPUT" ), false, 0) );
-  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "PIXEL_SIZE" ), QObject::tr( "Pixel size" ), 10, QStringLiteral( "INPUT" ), false) );
+  addParameter( new QgsProcessingParameterField( QStringLiteral( "WEIGHT" ), QObject::tr( "Weight field " ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::Numeric ) );
+  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "RADIUS" ), QObject::tr( "Search radius" ), 10, QStringLiteral( "INPUT" ), false, 0 ) );
+  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "PIXEL_SIZE" ), QObject::tr( "Pixel size" ), 10, QStringLiteral( "INPUT" ), false ) );
 
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Line density raster" ) ) );
 }
@@ -71,15 +71,15 @@ QgsLineDensityAlgorithm *QgsLineDensityAlgorithm::createInstance() const
   return new QgsLineDensityAlgorithm();
 }
 
-bool QgsLineDensityAlgorithm::prepareAlgorithm(const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback)
+bool QgsLineDensityAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  Q_UNUSED(feedback);
+  Q_UNUSED( feedback );
   mSource.reset( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !mSource )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
   mWeight = parameterAsString( parameters, QStringLiteral( "WEIGHT" ), context );
-  mSearchRadius = parameterAsDouble(parameters, QStringLiteral("RADIUS"), context);
-  mPixelSize = parameterAsDouble(parameters, QStringLiteral("PIXEL_SIZE"), context);
+  mSearchRadius = parameterAsDouble( parameters, QStringLiteral( "RADIUS" ), context );
+  mPixelSize = parameterAsDouble( parameters, QStringLiteral( "PIXEL_SIZE" ), context );
 
   mExtent = mSource->sourceExtent();
   mCrs = mSource->sourceCrs();
@@ -92,9 +92,9 @@ bool QgsLineDensityAlgorithm::prepareAlgorithm(const QVariantMap &parameters, Qg
 
 
   //get cell midpoint from top left cell
-  QgsGeometry firstCellMidpoint = QgsGeometry(new QgsPoint(mExtent.xMinimum() + (mPixelSize/2), mExtent.yMaximum() - (mPixelSize/2)));
-  mSearchGeometry = firstCellMidpoint.buffer(mSearchRadius, 5);
-  mSearchGeometryArea = mDa.measureArea(mSearchGeometry);
+  QgsGeometry firstCellMidpoint = QgsGeometry( new QgsPoint( mExtent.xMinimum() + ( mPixelSize / 2 ), mExtent.yMaximum() - ( mPixelSize / 2 ) ) );
+  mSearchGeometry = firstCellMidpoint.buffer( mSearchRadius, 5 );
+  mSearchGeometryArea = mDa.measureArea( mSearchGeometry );
 
   mIndex = QgsSpatialIndex( *mSource, nullptr, QgsSpatialIndex::FlagStoreFeatureGeometries );
 
@@ -102,7 +102,7 @@ bool QgsLineDensityAlgorithm::prepareAlgorithm(const QVariantMap &parameters, Qg
   return true;
 }
 
-QVariantMap QgsLineDensityAlgorithm::processAlgorithm(const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback)
+QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   QFileInfo fi( outputFile );
@@ -113,7 +113,7 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm(const QVariantMap &paramet
 
   //build new raster extent based on number of columns and cellsize
   //this prevents output cellsize being calculated too small
-  QgsRectangle rasterExtent = QgsRectangle(mExtent.xMinimum(), mExtent.yMaximum() - (rows * mPixelSize), mExtent.xMinimum() + (cols * mPixelSize), mExtent.yMaximum());
+  QgsRectangle rasterExtent = QgsRectangle( mExtent.xMinimum(), mExtent.yMaximum() - ( rows * mPixelSize ), mExtent.xMinimum() + ( cols * mPixelSize ), mExtent.yMaximum() );
 
   std::unique_ptr< QgsRasterFileWriter > writer = qgis::make_unique< QgsRasterFileWriter >( outputFile );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
@@ -129,63 +129,63 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm(const QVariantMap &paramet
   int totalCellcnt = rows * cols;
   int cellcnt = 0;
 
-  for (int row = 0; row < rows; row++)
+  for ( int row = 0; row < rows; row++ )
   {
-  std::unique_ptr< QgsRasterBlock > rasterDataLine = qgis::make_unique< QgsRasterBlock >( Qgis::Float32, cols, 1 );
-    for (int col = 0; col < cols; col++)
+    std::unique_ptr< QgsRasterBlock > rasterDataLine = qgis::make_unique< QgsRasterBlock >( Qgis::Float32, cols, 1 );
+    for ( int col = 0; col < cols; col++ )
     {
       if ( feedback->isCanceled() )
       {
         break;
       }
 
-      if(col > 0)
+      if ( col > 0 )
         mSearchGeometry.translate( mPixelSize, 0 );
 
-      QList<QgsFeatureId> fids = mIndex.intersects(mSearchGeometry.boundingBox());
+      QList<QgsFeatureId> fids = mIndex.intersects( mSearchGeometry.boundingBox() );
 
       std::unique_ptr< QgsGeometryEngine > engine( QgsGeometry::createGeometryEngine( mSearchGeometry.constGet() ) );
       engine->prepareGeometry();
 
       //remove non-intersecting fids
       int i = 0;
-      while( i < fids.size() )
+      while ( i < fids.size() )
       {
-        QgsFeatureId fid = fids.at(i);
-        QgsGeometry lineGeom = mIndex.geometry(fid);
+        QgsFeatureId fid = fids.at( i );
+        QgsGeometry lineGeom = mIndex.geometry( fid );
 
-        if(engine->intersects(lineGeom.constGet()) == false)
+        if ( engine->intersects( lineGeom.constGet() ) == false )
         {
-          fids.removeAt(i);
+          fids.removeAt( i );
         }
         i++;
       }
 
       QgsFeatureIds isectingFids = QSet< QgsFeatureId >::fromList( fids );
-      QgsFeatureIterator fit = mSource->getFeatures(QgsFeatureRequest().setFilterFids(isectingFids));
+      QgsFeatureIterator fit = mSource->getFeatures( QgsFeatureRequest().setFilterFids( isectingFids ) );
       QgsFeature f;
       double abs_density = 0;
-      while (fit.nextFeature( f ))
+      while ( fit.nextFeature( f ) )
       {
-        double analysisLineLength =  mDa.measureLength(QgsGeometry(engine->intersection(f.geometry().constGet())));
+        double analysisLineLength =  mDa.measureLength( QgsGeometry( engine->intersection( f.geometry().constGet() ) ) );
         double analysisWeight = f.attribute( mWeight ).toDouble();
         abs_density += ( analysisLineLength * analysisWeight );
       }
 
-      double lineDensity = abs_density/mSearchGeometryArea;
-      rasterDataLine->setValue(0, col, lineDensity);
+      double lineDensity = abs_density / mSearchGeometryArea;
+      rasterDataLine->setValue( 0, col, lineDensity );
 
-      feedback->setProgress(static_cast<double>(cellcnt)/static_cast<double>(totalCellcnt) * 100);
+      feedback->setProgress( static_cast<double>( cellcnt ) / static_cast<double>( totalCellcnt ) * 100 );
       cellcnt++;
     }
-  provider->writeBlock( rasterDataLine.get(), 1, 0, row);
+    provider->writeBlock( rasterDataLine.get(), 1, 0, row );
 
-  //'carriage return and newline' for search geometry
-  mSearchGeometry.translate((cols - 1) * -mPixelSize, -mPixelSize);
+    //'carriage return and newline' for search geometry
+    mSearchGeometry.translate( ( cols - 1 ) * -mPixelSize, -mPixelSize );
   }
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), outputFile);
+  outputs.insert( QStringLiteral( "OUTPUT" ), outputFile );
   return outputs;
 }
 
