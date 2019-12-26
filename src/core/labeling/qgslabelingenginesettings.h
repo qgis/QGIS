@@ -220,7 +220,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
 
     // maximum density of line/polygon candidates per mm
     double mMaxLineCandidatesPerCm = 5;
-    double mMaxPolygonCandidatesPerCmSquared = 10;
+    double mMaxPolygonCandidatesPerCmSquared = 2.5;
 
     QColor mUnplacedLabelColor = QColor( 255, 0, 0 );
 
