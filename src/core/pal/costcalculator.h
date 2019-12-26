@@ -61,6 +61,7 @@ namespace pal
   /**
    * \ingroup core
    * \brief Calculates distance from a label candidate to nearest polygon ring.
+   * \since QGIS 3.12
    * \note not available in Python bindings
    */
   class CandidatePolygonRingDistanceCalculator
