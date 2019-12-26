@@ -269,7 +269,7 @@ void QgsStatusBarCoordinatesWidget::extentsViewToggled( bool flag )
     mToggleExtentsViewButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "tracking.svg" ) ) );
     mLineEdit->setToolTip( tr( "Map coordinates at mouse cursor position" ) );
     mLineEdit->setReadOnly( false );
-    mLabel->setText( tr( "Coordinate:" ) );
+    mLabel->setText( tr( "Coordinate" ) );
   }
 }
 
@@ -306,7 +306,7 @@ void QgsStatusBarCoordinatesWidget::showExtent()
 
   // update the statusbar with the current extents.
   QgsRectangle myExtents = mMapCanvas->extent();
-  mLabel->setText( tr( "Extents:" ) );
+  mLabel->setText( tr( "Extents" ) );
   mLineEdit->setText( myExtents.toString( true ) );
 
   ensureCoordinatesVisible();
