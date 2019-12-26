@@ -116,8 +116,7 @@ void CostCalculator::calculateCandidatePolygonRingDistanceCosts( std::vector< st
   double maxCandidateRingDistanceCost = std::numeric_limits< double >::lowest();
   for ( std::unique_ptr< LabelPosition > &pos : lPos )
   {
-    // 4* multiplier came from original pal library logic - TODO: evaluate if this is still appropriate
-    const double candidatePolygonRingDistanceCost = 4 * calculatePolygonRingDistance( pos.get(), obstacles, bbx, bby );
+    const double candidatePolygonRingDistanceCost = calculatePolygonRingDistance( pos.get(), obstacles, bbx, bby );
 
     minCandidateRingDistanceCost = std::min( minCandidateRingDistanceCost, candidatePolygonRingDistanceCost );
     maxCandidateRingDistanceCost = std::max( maxCandidateRingDistanceCost, candidatePolygonRingDistanceCost );
