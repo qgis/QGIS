@@ -30,11 +30,6 @@ bool CostCalculator::candidateSortGrow( const std::unique_ptr< LabelPosition > &
   return c1->cost() < c2->cost();
 }
 
-bool CostCalculator::candidateSortShrink( const std::unique_ptr< LabelPosition > &c1, const std::unique_ptr< LabelPosition > &c2 )
-{
-  return c1->cost() > c2->cost();
-}
-
 void CostCalculator::addObstacleCostPenalty( LabelPosition *lp, FeaturePart *obstacle, Pal *pal )
 {
   int n = 0;
@@ -112,131 +107,108 @@ void CostCalculator::addObstacleCostPenalty( LabelPosition *lp, FeaturePart *obs
   lp->setCost( lp->cost() + obstacleCost );
 }
 
-void CostCalculator::setPolygonCandidatesCost( std::vector< std::unique_ptr< LabelPosition > > &lPos, PalRtree<FeaturePart> *obstacles, double bbx[4], double bby[4] )
+void CostCalculator::calculateCandidatePolygonRingDistanceCosts( std::vector< std::unique_ptr< LabelPosition > > &lPos, PalRtree<FeaturePart> *obstacles, double bbx[4], double bby[4] )
 {
-  double normalizer;
-  // compute raw cost
+  // first we calculate the ring distance cost for all candidates for this feature. We then use the range
+  // of distance costs to calculate a standardised scaling for the costs
+  QHash< LabelPosition *, double > polygonRingDistanceCosts;
+  double minCandidateRingDistanceCost = std::numeric_limits< double >::max();
+  double maxCandidateRingDistanceCost = std::numeric_limits< double >::lowest();
   for ( std::unique_ptr< LabelPosition > &pos : lPos )
-    setCandidateCostFromPolygon( pos.get(), obstacles, bbx, bby );
-
-  // lPos with big values came first (value = min distance from label to Polygon's Perimeter)
-  // IMPORTANT - only want to sort first nblp positions. The rest have not had the cost
-  // calculated so will have nonsense values
-  std::sort( lPos.begin(), lPos.end(), candidateSortShrink );
-
-  // define the value's range
-  const double costMin = lPos.back()->cost();
-  const double costMax = lPos.front()->cost();
-  const double costRange = costMax - costMin;
-
-  if ( costRange > EPSILON )
   {
-    normalizer = 0.0020 / costRange;
+    // 4* multiplier came from original pal library logic - TODO: evaluate if this is still appropriate
+    const double candidatePolygonRingDistanceCost = 4 * calculatePolygonRingDistance( pos.get(), obstacles, bbx, bby );
+
+    minCandidateRingDistanceCost = std::min( minCandidateRingDistanceCost, candidatePolygonRingDistanceCost );
+    maxCandidateRingDistanceCost = std::max( maxCandidateRingDistanceCost, candidatePolygonRingDistanceCost );
+
+    polygonRingDistanceCosts.insert( pos.get(), candidatePolygonRingDistanceCost );
   }
-  else
-  {
-    normalizer = 1;
-  }
+
+  // define the cost's range, if range is too small, just ignore the ring distance cost
+  const double costRange = maxCandidateRingDistanceCost - minCandidateRingDistanceCost;
+  if ( costRange <= EPSILON )
+    return;
+
+  const double normalizer = 0.0020 / costRange;
 
   // adjust cost => the best is 0.0001, the worst is 0.0021
   // others are set proportionally between best and worst
   for ( std::unique_ptr< LabelPosition > &pos : lPos )
   {
-    if ( costRange > EPSILON )
-    {
-      pos->setCost( 0.0021 - ( pos->cost() - costMin ) * normalizer );
-    }
-    else
-    {
-      pos->setCost( 0.0001 );
-    }
+    const double originalPolygonRingDistanceCost = polygonRingDistanceCosts.value( pos.get() );
+    pos->setCost( pos->cost() + 0.0021 - ( originalPolygonRingDistanceCost - minCandidateRingDistanceCost ) * normalizer );
   }
 }
 
-void CostCalculator::setCandidateCostFromPolygon( LabelPosition *lp, PalRtree<FeaturePart> *obstacles, double bbx[4], double bby[4] )
+double CostCalculator::calculatePolygonRingDistance( LabelPosition *candidate, PalRtree<FeaturePart> *obstacles, double bbx[4], double bby[4] )
 {
-  // NOTE: PolygonCostCalculator calculates the min distance between the CENTER of the
-  // candidate and various polygon boundaries
-
   // TODO 1: Consider whether distance calculation should use min distance to the candidate rectangle
   // instead of just the center
-  PolygonCostCalculator pCost( lp );
+  CandidatePolygonRingDistanceCalculator ringDistanceCalculator( candidate );
 
   // first, check max distance to outside of polygon
   // TODO 2: there's a bug here -- if a candidate's center falls outside the polygon, then a larger
   // distance to the polygon boundary is being considered as the best placement. That's clearly wrong --
   // if any part of label candidate sits outside the polygon, we should first prefer candidates which sit
   // entirely WITHIN the polygon, or failing that, candidates which are CLOSER to the polygon boundary, not further from it!
-  pCost.update( lp->feature );
+  ringDistanceCalculator.update( candidate->feature );
 
   // prefer candidates further from the outside of map rather then those close to the outside of the map
   // TODO 3: should be using the actual map boundary here, not the bounding box
   PointSet extent( 4, bbx, bby );
-  pCost.update( &extent );
+  ringDistanceCalculator.update( &extent );
 
   // prefer candidates which further from interior rings (holes) of the polygon
-  obstacles->intersects( lp->feature->boundingBox(), [&pCost]( const FeaturePart * obstacle )->bool
+  obstacles->intersects( candidate->feature->boundingBox(), [&ringDistanceCalculator, candidate]( const FeaturePart * obstacle )->bool
   {
-    LabelPosition *lp = pCost.getLabel();
-
     // we only care about obstacles which are polygon holes, AND only holes which belong to this same feature
     // because:
     // 1. holes for other features are a good place to put labels for this feature
     // 2. we handle obstacle avoidance for all candidate types elsewhere -- here we are solely concerned with
     // ranking the relative candidates for a single feature while considering that feature's shape alone.
-    if ( ( obstacle == lp->feature ) || ( !obstacle->getHoleOf() ) || ( obstacle->getHoleOf() && obstacle->getHoleOf() != lp->feature ) )
+    if ( ( obstacle == candidate->feature ) || ( !obstacle->getHoleOf() ) || ( obstacle->getHoleOf() && obstacle->getHoleOf() != candidate->feature ) )
     {
       return true;
     }
 
-    pCost.update( obstacle );
+    ringDistanceCalculator.update( obstacle );
 
     return true;
   } );
 
-  // TODO 4: probably a bug here -- by calling setCost here we discard all existing candidate costs,
-  // e.g. those determined via conflicts with obstacles
-  lp->setCost( pCost.getCost() );
+  return ringDistanceCalculator.getCost();
 }
 
 void CostCalculator::finalizeCandidatesCosts( Feats *feat, PalRtree<FeaturePart> *obstacles, double bbx[4], double bby[4] )
 {
-  // Sets costs for candidates of polygon
   if ( feat->feature->getGeosType() == GEOS_POLYGON )
   {
     int arrangement = feat->feature->layer()->arrangement();
     if ( arrangement == QgsPalLayerSettings::Free || arrangement == QgsPalLayerSettings::Horizontal )
-      setPolygonCandidatesCost( feat->candidates, obstacles, bbx, bby );
+      calculateCandidatePolygonRingDistanceCosts( feat->candidates, obstacles, bbx, bby );
   }
 
   // add size penalty (small lines/polygons get higher cost)
   feat->feature->addSizePenalty( feat->candidates, bbx, bby );
 }
 
-PolygonCostCalculator::PolygonCostCalculator( LabelPosition *lp ) : lp( lp )
+CandidatePolygonRingDistanceCalculator::CandidatePolygonRingDistanceCalculator( LabelPosition *candidate )
+  : mPx( ( candidate->x[0] + candidate->x[2] ) / 2.0 )
+  , mPy( ( candidate->y[0] + candidate->y[2] ) / 2.0 )
 {
-  px = ( lp->x[0] + lp->x[2] ) / 2.0;
-  py = ( lp->y[0] + lp->y[2] ) / 2.0;
-
-  dist = std::numeric_limits<double>::max();
-  ok = false;
 }
 
-void PolygonCostCalculator::update( const pal::PointSet *pset )
+void CandidatePolygonRingDistanceCalculator::update( const pal::PointSet *pset )
 {
-  double d = pset->minDistanceToPoint( px, py );
-  if ( d < dist )
+  double d = pset->minDistanceToPoint( mPx, mPy );
+  if ( d < mMinDistance )
   {
-    dist = d;
+    mMinDistance = d;
   }
 }
 
-LabelPosition *PolygonCostCalculator::getLabel()
+double CandidatePolygonRingDistanceCalculator::getCost()
 {
-  return lp;
-}
-
-double PolygonCostCalculator::getCost()
-{
-  return ( 4 * dist );
+  return ( 4 * mMinDistance );
 }

@@ -40,11 +40,14 @@ namespace pal
       //! Increase candidate's cost according to its collision with passed feature
       static void addObstacleCostPenalty( pal::LabelPosition *lp, pal::FeaturePart *obstacle, Pal *pal );
 
-      //! Calculates the costs for polygon label candidates
-      static void setPolygonCandidatesCost( std::vector<std::unique_ptr<pal::LabelPosition> > &lPos, PalRtree< FeaturePart > *obstacles, double bbx[4], double bby[4] );
+      /**
+       * Updates the costs for polygon label candidates by considering the distance between the
+       * candidates and the nearest polygon ring (i.e. prefer labels closer to the pole of inaccessibility).
+       */
+      static void calculateCandidatePolygonRingDistanceCosts( std::vector<std::unique_ptr<pal::LabelPosition> > &lPos, PalRtree< FeaturePart > *obstacles, double bbx[4], double bby[4] );
 
-      //! Sets cost to the smallest distance between lPos's centroid and a polygon stored in geometry field
-      static void setCandidateCostFromPolygon( LabelPosition *lp, PalRtree< FeaturePart > *obstacles, double bbx[4], double bby[4] );
+      //! Calculates the distance between a label candidate and the closest ring for a polygon feature
+      static double calculatePolygonRingDistance( LabelPosition *candidate, PalRtree< FeaturePart > *obstacles, double bbx[4], double bby[4] );
 
       //! Sort candidates by costs, skip the worse ones, evaluate polygon candidates
       static void finalizeCandidatesCosts( Feats *feat, PalRtree< FeaturePart > *obstacles, double bbx[4], double bby[4] );
@@ -53,44 +56,36 @@ namespace pal
        * Sorts label candidates in ascending order of cost
        */
       static bool candidateSortGrow( const std::unique_ptr<pal::LabelPosition> &c1, const std::unique_ptr<pal::LabelPosition> &c2 );
-
-      /**
-       * Sorts label candidates in descending order of cost
-       */
-      static bool candidateSortShrink( const std::unique_ptr<pal::LabelPosition> &c1, const std::unique_ptr<pal::LabelPosition> &c2 );
   };
 
   /**
    * \ingroup core
-   * \brief Data structure to compute polygon's candidates costs
-   *
-   *  Eight segments from center of candidate to (rpx,rpy) points (0°, 45°, 90°, ..., 315°)
-   *  dist store the shortest square distance from the center to an object
-   *  ok[i] is the to TRUE whether the corresponding dist[i] is set
-   *
+   * \brief Calculates distance from a label candidate to nearest polygon ring.
    * \note not available in Python bindings
    */
-  class PolygonCostCalculator
+  class CandidatePolygonRingDistanceCalculator
   {
 
     public:
-      explicit PolygonCostCalculator( LabelPosition *lp );
 
       /**
-       * Updates cost.
+       * Constructor for PolygonRingDistanceCalculator, for the specified label \a candidate.
+       */
+      explicit CandidatePolygonRingDistanceCalculator( LabelPosition *candidate );
+
+      /**
+       * Updates distance.
        */
       void update( const pal::PointSet *pset );
 
       double getCost();
 
-      LabelPosition *getLabel();
-
     private:
 
-      LabelPosition *lp = nullptr;
-      double px, py;
-      double dist;
-      bool ok;
+      double mPx;
+      double mPy;
+      double mMinDistance = std::numeric_limits<double>::max();
+      bool mOk = false;
   };
 }
 
