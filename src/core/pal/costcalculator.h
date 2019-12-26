@@ -74,18 +74,21 @@ namespace pal
       explicit CandidatePolygonRingDistanceCalculator( LabelPosition *candidate );
 
       /**
-       * Updates distance.
+       * Adds a \a ring to the calculation, updating the minimumDistance() value if
+       * the rings is closer to the candidate then previously added rings.
        */
-      void update( const pal::PointSet *pset );
+      void addRing( const pal::PointSet *ring );
 
-      double getCost();
+      /**
+       * Returns the minimum distance between the candidate and all added rings.
+       */
+      double minimumDistance() const;
 
     private:
 
       double mPx;
       double mPy;
       double mMinDistance = std::numeric_limits<double>::max();
-      bool mOk = false;
   };
 }
 

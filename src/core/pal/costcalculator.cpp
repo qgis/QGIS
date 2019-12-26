@@ -151,12 +151,12 @@ double CostCalculator::calculatePolygonRingDistance( LabelPosition *candidate, P
   // distance to the polygon boundary is being considered as the best placement. That's clearly wrong --
   // if any part of label candidate sits outside the polygon, we should first prefer candidates which sit
   // entirely WITHIN the polygon, or failing that, candidates which are CLOSER to the polygon boundary, not further from it!
-  ringDistanceCalculator.update( candidate->feature );
+  ringDistanceCalculator.addRing( candidate->feature );
 
   // prefer candidates further from the outside of map rather then those close to the outside of the map
   // TODO 3: should be using the actual map boundary here, not the bounding box
   PointSet extent( 4, bbx, bby );
-  ringDistanceCalculator.update( &extent );
+  ringDistanceCalculator.addRing( &extent );
 
   // prefer candidates which further from interior rings (holes) of the polygon
   obstacles->intersects( candidate->feature->boundingBox(), [&ringDistanceCalculator, candidate]( const FeaturePart * obstacle )->bool
@@ -171,12 +171,12 @@ double CostCalculator::calculatePolygonRingDistance( LabelPosition *candidate, P
       return true;
     }
 
-    ringDistanceCalculator.update( obstacle );
+    ringDistanceCalculator.addRing( obstacle );
 
     return true;
   } );
 
-  return ringDistanceCalculator.getCost();
+  return ringDistanceCalculator.minimumDistance();
 }
 
 void CostCalculator::finalizeCandidatesCosts( Feats *feat, PalRtree<FeaturePart> *obstacles, double bbx[4], double bby[4] )
@@ -198,16 +198,16 @@ CandidatePolygonRingDistanceCalculator::CandidatePolygonRingDistanceCalculator( 
 {
 }
 
-void CandidatePolygonRingDistanceCalculator::update( const pal::PointSet *pset )
+void CandidatePolygonRingDistanceCalculator::addRing( const pal::PointSet *ring )
 {
-  double d = pset->minDistanceToPoint( mPx, mPy );
+  double d = ring->minDistanceToPoint( mPx, mPy );
   if ( d < mMinDistance )
   {
     mMinDistance = d;
   }
 }
 
-double CandidatePolygonRingDistanceCalculator::getCost()
+double CandidatePolygonRingDistanceCalculator::minimumDistance() const
 {
-  return ( 4 * mMinDistance );
+  return mMinDistance;
 }
