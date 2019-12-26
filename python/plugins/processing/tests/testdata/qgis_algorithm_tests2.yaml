@@ -982,6 +982,20 @@ tests:
             bottom:
               precision: 7
 
+  - algorithm: native:linedensity
+    name: Line Density
+    params:
+      INPUT:
+        name: linedensity.gml|layername=linedensity
+        type: vector
+      PIXEL_SIZE: 1.0
+      RADIUS: 2.0
+      WEIGHT: weight
+    results:
+      OUTPUT:
+        hash: 37b153a98004a6656a27a8c5dcdb8dbefcd4af4938a512ec0cf5cd43
+        type: rasterhash
+
   - algorithm: native:deleteholes
     name: Delete holes (no min)
     params:
