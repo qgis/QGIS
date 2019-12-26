@@ -171,7 +171,13 @@ void CostCalculator::setCandidateCostFromPolygon( LabelPosition *lp, RTree <Feat
 
   lp->setCost( pCost->getCost() );
 
+<<<<<<< HEAD
   delete pCost;
+=======
+  // TODO 4: probably a bug here -- by calling setCost here we discard all existing candidate costs,
+  // e.g. those determined via conflicts with obstacles
+  lp->setCost( pCost.getCost() );
+>>>>>>> 5f848be1a5... Add another TODO bug note
 }
 
 int CostCalculator::finalizeCandidatesCosts( Feats *feat, int max_p, RTree <FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] )
