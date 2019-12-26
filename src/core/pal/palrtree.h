@@ -15,6 +15,7 @@
 
 #include "RTree.h"
 #include "qgsrectangle.h"
+#include <array>
 
 #ifndef QGSPALRTREE_H
 #define QGSPALRTREE_H
