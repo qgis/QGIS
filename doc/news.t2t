@@ -4,7 +4,7 @@ Change history for the QGIS Project
 
 %! target       : html
 %! style        : style.css
-%! Options      : --toc --toc-level 1 --enum-title --css-sugar --css-inside
+%! Options      : --toc --toc-level 1 --enum-title
 %! preproc      : TUT_URL   https://qgis.org
 %! PostProc(html): '(?i)(<pre>)' '<div class="code">\1'
 %! PostProc(html): '(?i)(</pre>)' '\1</div>'

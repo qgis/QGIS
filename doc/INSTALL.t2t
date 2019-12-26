@@ -4,7 +4,7 @@ Building QGIS from source - step by step
 
 %! target       : html
 %! style        : style.css
-%! Options      : --toc --toc-level 2 --enum-title --css-sugar --css-inside
+%! Options      : --toc --toc-level 2 --enum-title
 %! preproc      : TUT_URL   https://qgis.org
 %! PostProc(html): '(?i)(<pre>)' '<div class="code">\1'
 %! PostProc(html): '(?i)(</pre>)' '\1</div>'
