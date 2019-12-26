@@ -175,21 +175,23 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
     if ( !lf->labelAllParts() && ( type == GEOS_POLYGON || type == GEOS_LINESTRING ) )
     {
       if ( type == GEOS_LINESTRING )
-        GEOSLength_r( geosctxt, geom, &geom_size );
+        geom_size = fpart->length();
       else if ( type == GEOS_POLYGON )
-        GEOSArea_r( geosctxt, geom, &geom_size );
+        geom_size = fpart->area();
 
       if ( geom_size > biggest_size )
       {
         biggest_size = geom_size;
         biggest_part.reset( fpart.release() );
       }
-      continue; // don't add the feature part now, do it later
+      // don't add the feature part now, do it later
     }
-
-    // feature part is ready!
-    addFeaturePart( fpart.release(), lf->labelText() );
-    addedFeature = true;
+    else
+    {
+      // feature part is ready!
+      addFeaturePart( fpart.release(), lf->labelText() );
+      addedFeature = true;
+    }
   }
 
   if ( lf->obstacleSettings().isObstacle() && !featureGeomIsObstacleGeom )
@@ -349,7 +351,7 @@ void Layer::chopFeaturesAtRepeatDistance()
     double featureLen = 0;
     if ( chopInterval != 0. && GEOSGeomTypeId_r( geosctxt, geom ) == GEOS_LINESTRING )
     {
-      ( void )GEOSLength_r( geosctxt, geom, &featureLen );
+      featureLen = fpart->length();
       if ( featureLen > chopInterval )
         canChop = true;
     }

@@ -213,6 +213,10 @@ namespace pal
       PointSet *holeOf = nullptr;
       PointSet *parent = nullptr;
 
+      mutable double mArea = -1;
+      mutable double mLength = -1;
+
+
       PointSet( double x, double y );
 
       PointSet( const PointSet &ps );
