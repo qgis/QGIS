@@ -188,6 +188,9 @@ void CostCalculator::finalizeCandidatesCosts( Feats *feat, PalRtree<FeaturePart>
   // "try to exclude all conflitual labels (good ones have cost < 1 by pruning)"
   // my interpretation: it appears this scans through the candidates and chooses some threshold
   // based on the candidate cost, after which all remaining candidates are simply discarded
+  // my suspicion: I don't think this is needed (or wanted) here, and is reflective of the fact
+  // that obstacle costs are too low vs inferior candidate placement costs (i.e. without this,
+  // an "around point" label would rather be placed over an obstacle then be placed in a position > 6 o'clock
   double discrim = 0.0;
   std::size_t stop = 0;
   do
