@@ -44,13 +44,13 @@ namespace pal
        * Updates the costs for polygon label candidates by considering the distance between the
        * candidates and the nearest polygon ring (i.e. prefer labels closer to the pole of inaccessibility).
        */
-      static void calculateCandidatePolygonRingDistanceCosts( std::vector<std::unique_ptr<pal::LabelPosition> > &lPos, PalRtree< FeaturePart > *obstacles, double bbx[4], double bby[4] );
+      static void calculateCandidatePolygonRingDistanceCosts( std::vector<std::unique_ptr<pal::LabelPosition> > &lPos, double bbx[4], double bby[4] );
 
       //! Calculates the distance between a label candidate and the closest ring for a polygon feature
-      static double calculatePolygonRingDistance( LabelPosition *candidate, PalRtree< FeaturePart > *obstacles, double bbx[4], double bby[4] );
+      static double calculatePolygonRingDistance( LabelPosition *candidate, double bbx[4], double bby[4] );
 
       //! Sort candidates by costs, skip the worse ones, evaluate polygon candidates
-      static void finalizeCandidatesCosts( Feats *feat, PalRtree< FeaturePart > *obstacles, double bbx[4], double bby[4] );
+      static void finalizeCandidatesCosts( Feats *feat, double bbx[4], double bby[4] );
 
       /**
        * Sorts label candidates in ascending order of cost
