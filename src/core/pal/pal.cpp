@@ -369,10 +369,10 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       prob->mTotalCandidates += static_cast< int >( feat->candidates.size() );
 
       // add all candidates into a rtree (to speed up conflicts searching)
-      for ( std::size_t j = 0; j < feat->candidates.size(); j++, idlp++ )
+      for ( std::unique_ptr< LabelPosition > &candidate : feat->candidates )
       {
-        feat->candidates[ j ]->insertIntoIndex( prob->allCandidatesIndex() );
-        feat->candidates[ j ]->setProblemIds( static_cast< int >( i ), idlp );
+        candidate->insertIntoIndex( prob->allCandidatesIndex() );
+        candidate->setProblemIds( static_cast< int >( i ), idlp++ );
       }
       features.emplace_back( std::move( feat ) );
     }
