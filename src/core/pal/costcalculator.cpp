@@ -107,7 +107,7 @@ void CostCalculator::addObstacleCostPenalty( LabelPosition *lp, FeaturePart *obs
   lp->setCost( lp->cost() + obstacleCost );
 }
 
-void CostCalculator::calculateCandidatePolygonRingDistanceCosts( std::vector< std::unique_ptr< LabelPosition > > &lPos, PalRtree<FeaturePart> *obstacles, double bbx[4], double bby[4] )
+void CostCalculator::calculateCandidatePolygonRingDistanceCosts( std::vector< std::unique_ptr< LabelPosition > > &lPos, double bbx[4], double bby[4] )
 {
   // first we calculate the ring distance cost for all candidates for this feature. We then use the range
   // of distance costs to calculate a standardised scaling for the costs
@@ -116,7 +116,7 @@ void CostCalculator::calculateCandidatePolygonRingDistanceCosts( std::vector< st
   double maxCandidateRingDistanceCost = std::numeric_limits< double >::lowest();
   for ( std::unique_ptr< LabelPosition > &pos : lPos )
   {
-    const double candidatePolygonRingDistanceCost = calculatePolygonRingDistance( pos.get(), obstacles, bbx, bby );
+    const double candidatePolygonRingDistanceCost = calculatePolygonRingDistance( pos.get(), bbx, bby );
 
     minCandidateRingDistanceCost = std::min( minCandidateRingDistanceCost, candidatePolygonRingDistanceCost );
     maxCandidateRingDistanceCost = std::max( maxCandidateRingDistanceCost, candidatePolygonRingDistanceCost );
@@ -140,7 +140,7 @@ void CostCalculator::calculateCandidatePolygonRingDistanceCosts( std::vector< st
   }
 }
 
-double CostCalculator::calculatePolygonRingDistance( LabelPosition *candidate, PalRtree<FeaturePart> *obstacles, double bbx[4], double bby[4] )
+double CostCalculator::calculatePolygonRingDistance( LabelPosition *candidate, double bbx[4], double bby[4] )
 {
   // TODO 1: Consider whether distance calculation should use min distance to the candidate rectangle
   // instead of just the center
@@ -159,27 +159,15 @@ double CostCalculator::calculatePolygonRingDistance( LabelPosition *candidate, P
   ringDistanceCalculator.addRing( &extent );
 
   // prefer candidates which further from interior rings (holes) of the polygon
-  obstacles->intersects( candidate->feature->boundingBox(), [&ringDistanceCalculator, candidate]( const FeaturePart * obstacle )->bool
+  for ( int i = 0; i < candidate->feature->getNumSelfObstacles(); ++i )
   {
-    // we only care about obstacles which are polygon holes, AND only holes which belong to this same feature
-    // because:
-    // 1. holes for other features are a good place to put labels for this feature
-    // 2. we handle obstacle avoidance for all candidate types elsewhere -- here we are solely concerned with
-    // ranking the relative candidates for a single feature while considering that feature's shape alone.
-    if ( ( obstacle == candidate->feature ) || ( !obstacle->getHoleOf() ) || ( obstacle->getHoleOf() && obstacle->getHoleOf() != candidate->feature ) )
-    {
-      return true;
-    }
-
-    ringDistanceCalculator.addRing( obstacle );
-
-    return true;
-  } );
+    ringDistanceCalculator.addRing( candidate->feature->getSelfObstacle( i ) );
+  }
 
   return ringDistanceCalculator.minimumDistance();
 }
 
-void CostCalculator::finalizeCandidatesCosts( Feats *feat, PalRtree<FeaturePart> *obstacles, double bbx[4], double bby[4] )
+void CostCalculator::finalizeCandidatesCosts( Feats *feat, double bbx[4], double bby[4] )
 {
   // sort candidates list, best label to worst
   std::sort( feat->candidates.begin(), feat->candidates.end(), candidateSortGrow );
@@ -219,7 +207,7 @@ void CostCalculator::finalizeCandidatesCosts( Feats *feat, PalRtree<FeaturePart>
   {
     int arrangement = feat->feature->layer()->arrangement();
     if ( arrangement == QgsPalLayerSettings::Free || arrangement == QgsPalLayerSettings::Horizontal )
-      calculateCandidatePolygonRingDistanceCosts( feat->candidates, obstacles, bbx, bby );
+      calculateCandidatePolygonRingDistanceCosts( feat->candidates, bbx, bby );
   }
 
   // add size penalty (small lines/polygons get higher cost)

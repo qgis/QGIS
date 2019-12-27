@@ -353,7 +353,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
         continue;
 
       // calculate final costs
-      CostCalculator::finalizeCandidatesCosts( feat.get(), &obstacles, bbx, bby );
+      CostCalculator::finalizeCandidatesCosts( feat.get(), bbx, bby );
 
       // sort candidates list, best label to worst
       std::sort( feat->candidates.begin(), feat->candidates.end(), CostCalculator::candidateSortGrow );
