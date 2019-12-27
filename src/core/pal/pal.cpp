@@ -41,12 +41,19 @@
 #include "internalexception.h"
 #include "util.h"
 #include "palrtree.h"
+#include "qgssettings.h"
 #include <cfloat>
 #include <list>
 
 using namespace pal;
 
-Pal::Pal() = default;
+Pal::Pal()
+{
+  QgsSettings settings;
+  mGlobalCandidatesLimitPoint = settings.value( QStringLiteral( "rendering/label_candidates_limit_points" ), 0, QgsSettings::Core ).toInt();
+  mGlobalCandidatesLimitLine = settings.value( QStringLiteral( "rendering/label_candidates_limit_lines" ), 0, QgsSettings::Core ).toInt();
+  mGlobalCandidatesLimitPolygon = settings.value( QStringLiteral( "rendering/label_candidates_limit_polygons" ), 0, QgsSettings::Core ).toInt();
+}
 
 Pal::~Pal() = default;
 
@@ -84,16 +91,19 @@ Layer *Pal::addLayer( QgsAbstractLabelProvider *provider, const QString &layerNa
 
 std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeometry &mapBoundary )
 {
+  // expand out the incoming buffer by 1000x -- that's the visible map extent, yet we may be getting features which exceed this extent
+  // (while 1000x may seem excessive here, this value is only used for scaling coordinates in the spatial indexes
+  // and the consequence of inserting coordinates outside this extent is worse than the consequence of setting this value too large.)
+  const QgsRectangle maxCoordinateExtentForSpatialIndices = extent.buffered( std::max( extent.width(), extent.height() ) * 1000 );
+
   // to store obstacles
-  PalRtree< FeaturePart > obstacles;
-  PalRtree< LabelPosition > allCandidatesFirstRound;
+  PalRtree< FeaturePart > obstacles( maxCoordinateExtentForSpatialIndices );
+  PalRtree< LabelPosition > allCandidatesFirstRound( maxCoordinateExtentForSpatialIndices );
   std::vector< FeaturePart * > allObstacleParts;
-  std::unique_ptr< Problem > prob = qgis::make_unique< Problem >();
+  std::unique_ptr< Problem > prob = qgis::make_unique< Problem >( maxCoordinateExtentForSpatialIndices );
 
   double bbx[4];
   double bby[4];
-
-  std::size_t max_p = 0;
 
   bbx[0] = bbx[3] = prob->mMapExtentBounds[0] = extent.xMinimum();
   bby[0] = bby[1] = prob->mMapExtentBounds[1] = extent.yMinimum();
@@ -289,16 +299,20 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       prob->mFeatStartId[i] = idlp;
       prob->mInactiveCost[i] = std::pow( 2, 10 - 10 * feat->priority );
 
+      std::size_t max_p = 0;
       switch ( feat->feature->getGeosType() )
       {
         case GEOS_POINT:
-          max_p = feat->feature->layer()->maximumPointLabelCandidates();
+          // this is usually 0, i.e. no maximum
+          max_p = feat->feature->maximumPointCandidates();
           break;
+
         case GEOS_LINESTRING:
-          max_p = feat->feature->layer()->maximumLineLabelCandidates();
+          max_p = feat->feature->maximumLineCandidates();
           break;
+
         case GEOS_POLYGON:
-          max_p = feat->feature->layer()->maximumPolygonLabelCandidates();
+          max_p = feat->feature->maximumPolygonCandidates();
           break;
       }
 
@@ -442,26 +456,6 @@ QList<LabelPosition *> Pal::solveProblem( Problem *prob, bool displayAll, QList<
   return prob->getSolution( displayAll, unlabeled );
 }
 
-
-void Pal::setMaximumNumberOfPointCandidates( int candidates )
-{
-  if ( candidates > 0 )
-    this->mMaxPointCandidates = candidates;
-}
-
-void Pal::setMaximumNumberOfLineCandidates( int line_p )
-{
-  if ( line_p > 0 )
-    this->mMaxLineCandidates = line_p;
-}
-
-void Pal::setMaximumNumberOfPolygonCandidates( int poly_p )
-{
-  if ( poly_p > 0 )
-    this->mMaxPolyCandidates = poly_p;
-}
-
-
 void Pal::setMinIt( int min_it )
 {
   if ( min_it >= 0 )
@@ -498,21 +492,6 @@ void Pal::setCandListSize( double fact )
 void Pal::setShowPartialLabels( bool show )
 {
   this->mShowPartialLabels = show;
-}
-
-int Pal::maximumNumberOfPointCandidates() const
-{
-  return mMaxPointCandidates;
-}
-
-int Pal::maximumNumberOfLineCandidates() const
-{
-  return mMaxLineCandidates;
-}
-
-int Pal::maximumNumberOfPolygonCandidates() const
-{
-  return mMaxPolyCandidates;
 }
 
 QgsLabelingEngineSettings::PlacementEngineVersion Pal::placementVersion() const

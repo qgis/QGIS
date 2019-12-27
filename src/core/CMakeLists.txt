@@ -339,6 +339,7 @@ SET(QGIS_CORE_SRCS
   qgsreadwritecontext.cpp
   qgsreadwritelocker.cpp
   qgsrelation.cpp
+  qgsrelationcontext.cpp
   qgsweakrelation.cpp
   qgsrelationmanager.cpp
   qgsrenderchecker.cpp
@@ -841,6 +842,7 @@ SET(QGIS_CORE_HDRS
   qgsreadwritecontext.h
   qgsreadwritelocker.h
   qgsrelation.h
+  qgsrelationcontext.h
   qgsweakrelation.h
   qgsrelationmanager.h
   qgsrenderchecker.h

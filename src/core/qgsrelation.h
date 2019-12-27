@@ -23,6 +23,7 @@
 #include "qgis_core.h"
 #include "qgsfields.h"
 #include "qgsreadwritecontext.h"
+#include "qgsrelationcontext.h"
 
 #include "qgis_sip.h"
 
@@ -32,7 +33,6 @@ class QgsFeatureRequest;
 class QgsAttributes;
 class QgsVectorLayer;
 class QgsRelationPrivate;
-
 
 /**
  * \ingroup core
@@ -97,6 +97,11 @@ class CORE_EXPORT QgsRelation
     ~QgsRelation();
 
     /**
+     * Constructor with context. Creates an invalid relation.
+     */
+    QgsRelation( const QgsRelationContext &context );
+
+    /**
      * Copies a relation.
      * This makes a shallow copy, relations are implicitly shared and only duplicated when the copy is
      * changed.
@@ -115,10 +120,11 @@ class CORE_EXPORT QgsRelation
      *
      * \param node The dom node containing the relation information
      * \param context to pass project translator
+     * \param relationContext a relation context
      *
      * \returns A relation
      */
-    static QgsRelation createFromXml( const QDomNode &node, QgsReadWriteContext &context );
+    static QgsRelation createFromXml( const QDomNode &node, QgsReadWriteContext &context, const QgsRelationContext &relationContext = QgsRelationContext() );
 
     /**
      * Writes a relation to an XML structure. Used for saving .qgs projects
@@ -378,6 +384,8 @@ class CORE_EXPORT QgsRelation
   private:
 
     mutable QExplicitlySharedDataPointer<QgsRelationPrivate> d;
+
+    QgsRelationContext mContext;
 };
 
 // Register QgsRelation for usage with QVariant

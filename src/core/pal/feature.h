@@ -127,6 +127,21 @@ namespace pal
       QgsFeatureId featureId() const;
 
       /**
+       * Returns the maximum number of point candidates to generate for this feature.
+       */
+      std::size_t maximumPointCandidates() const;
+
+      /**
+       * Returns the maximum number of line candidates to generate for this feature.
+       */
+      std::size_t maximumLineCandidates() const;
+
+      /**
+       * Returns the maximum number of polygon candidates to generate for this feature.
+       */
+      std::size_t maximumPolygonCandidates() const;
+
+      /**
        * Generates a list of candidate positions for labels for this feature.
        */
       std::vector<std::unique_ptr<LabelPosition> > createCandidates( Pal *pal );
@@ -349,6 +364,9 @@ namespace pal
       LabelPosition::Quadrant quadrantFromOffset() const;
 
       int mTotalRepeats = 0;
+
+      mutable std::size_t mCachedMaxLineCandidates = 0;
+      mutable std::size_t mCachedMaxPolygonCandidates = 0;
   };
 
 } // end namespace pal

@@ -44,7 +44,7 @@ using namespace pal;
 Layer::Layer( QgsAbstractLabelProvider *provider, const QString &name, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal, bool displayAll )
   : mProvider( provider )
   , mName( name )
-  , pal( pal )
+  , mPal( pal )
   , mActive( active )
   , mLabelLayer( toLabel )
   , mDisplayAll( displayAll )

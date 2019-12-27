@@ -79,7 +79,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   expressionTree->setSelectionMode( QAbstractItemView::SelectionMode::SingleSelection );
 
   // Note: must be in sync with the json help file for UserGroup
-  mUserExpressionsGroupName = tr( "User" );
+  mUserExpressionsGroupName = QgsExpression::group( QStringLiteral( "UserGroup" ) );
 
   // Set icons for tool buttons
   btnSaveExpression->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileSave.svg" ) ) );

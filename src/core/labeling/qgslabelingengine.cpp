@@ -270,12 +270,8 @@ void QgsLabelingEngine::registerLabels( QgsRenderContext &context )
 
   mPal = qgis::make_unique< pal::Pal >();
 
-  // set number of candidates generated per feature
-  int candPoint, candLine, candPolygon;
-  settings.numCandidatePositions( candPoint, candLine, candPolygon );
-  mPal->setMaximumNumberOfPointCandidates( candPoint );
-  mPal->setMaximumNumberOfLineCandidates( candLine );
-  mPal->setMaximumNumberOfPolygonCandidates( candPolygon );
+  mPal->setMaximumLineCandidatesPerMapUnit( settings.maximumLineCandidatesPerCm() / context.convertToMapUnits( 10, QgsUnitTypes::RenderMillimeters ) );
+  mPal->setMaximumPolygonCandidatesPerMapUnitSquared( settings.maximumPolygonCandidatesPerCmSquared() / std::pow( context.convertToMapUnits( 10, QgsUnitTypes::RenderMillimeters ), 2 ) );
 
   mPal->setShowPartialLabels( settings.testFlag( QgsLabelingEngineSettings::UsePartialCandidates ) );
   mPal->setPlacementVersion( settings.placementVersion() );

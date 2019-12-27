@@ -32,9 +32,8 @@ void QgsLabelingEngineSettings::readSettingsFromProject( QgsProject *prj )
 {
   bool saved = false;
   mSearchMethod = static_cast< Search >( prj->readNumEntry( QStringLiteral( "PAL" ), QStringLiteral( "/SearchMethod" ), static_cast< int >( Chain ), &saved ) );
-  mCandPoint = prj->readNumEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPoint" ), 16, &saved );
-  mCandLine = prj->readNumEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesLine" ), 50, &saved );
-  mCandPolygon = prj->readNumEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPolygon" ), 30, &saved );
+  mMaxLineCandidatesPerCm = prj->readDoubleEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesLinePerCM" ), 5, &saved );
+  mMaxPolygonCandidatesPerCmSquared = prj->readDoubleEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPolygonPerCM" ), 10, &saved );
 
   mFlags = nullptr;
   if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingCandidates" ), false, &saved ) ) mFlags |= DrawCandidates;
@@ -60,9 +59,8 @@ void QgsLabelingEngineSettings::readSettingsFromProject( QgsProject *prj )
 void QgsLabelingEngineSettings::writeSettingsToProject( QgsProject *project )
 {
   project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/SearchMethod" ), static_cast< int >( mSearchMethod ) );
-  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPoint" ), mCandPoint );
-  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesLine" ), mCandLine );
-  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPolygon" ), mCandPolygon );
+  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesLinePerCM" ), mMaxLineCandidatesPerCm );
+  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPolygonPerCM" ), mMaxPolygonCandidatesPerCmSquared );
 
   project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingCandidates" ), mFlags.testFlag( DrawCandidates ) );
   project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawRectOnly" ), mFlags.testFlag( DrawLabelRectOnly ) );

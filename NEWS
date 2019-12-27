@@ -1,6 +1,6 @@
 QGIS News
 Change history for the QGIS Project
-Friday October 25, 2019
+Wednesday December 25, 2019
 
 
 ------------------------------------------------------------------------
@@ -46,8 +46,8 @@ Friday October 25, 2019
 ------------------------------------------------------------------------
 
 
-Last Updated: Friday October 25, 2019
-Last Change : Friday October 25, 2019
+Last Updated: Wednesday December 25, 2019
+Last Change : Wednesday December 25, 2019
 
 
   1. What's new in Version 3.10 'A Coruña'?
@@ -957,7 +957,7 @@ This is the minor release sports a number of great new features:
 
 
   15. What's new in Version 2.2.0 'Valmiera'?
-  ==========================================
+  ===========================================
 
 This is the minor release sports a number of great new features:
 
@@ -998,7 +998,7 @@ This is the minor release sports a number of great new features:
 
 
   16. What's new in Version 2.0.1 'Dufour'?
-  ========================================
+  =========================================
 
 This is a small bugfix release to address the missing copyright / credits for
 our new splash screen and to update supporting documentation. The spanish 
@@ -1006,7 +1006,7 @@ translation was also updated.
 
 
   17. What's new in Version 2.0.0 'Dufour'?
-  ========================================
+  =========================================
 
 This is a new major release. Building on the foundation of
 QGIS 1.x.x releases, QGIS Dufour introduces many new features,
@@ -1092,7 +1092,7 @@ key new features.
 
 
   18. What's new in Version 1.8.0 'Lisboa'?
-  ========================================
+  =========================================
 
 This is a new feature release. Building on the foundation of
 QGIS 1.7.x releases, Lisboa introduces many new features,
@@ -1147,7 +1147,7 @@ added gdal_fillnodata to GDALTools plugin
 
 
   19. What's new in Version 1.7.2 'Wroclaw'?
-  =========================================
+  ==========================================
 
 This is a bugfix release over version 1.7.1. The following changes
 were made.
@@ -1194,7 +1194,7 @@ were made.
 
 
   20. What's new in Version 1.7.1 'Wroclaw'?
-  =========================================
+  ==========================================
 
 This is a bugfix release over version 1.7.0. The following changes 
 were made.
@@ -1257,7 +1257,7 @@ http://linfiniti.com/2011/08/improvements-to-raster-performance-in-qgis-master/]
 
 
   21. What's new in Version 1.7.0 'Wroclaw'?
-  =========================================
+  ==========================================
 
 This release is named after the town of Wroclaw in Poland. The Department of
 Climatology and Atmosphere Protection, University of Wroclaw kindly hosted our
@@ -1391,7 +1391,7 @@ changed so we will just provide a bullet list of key new features here.
 
 
   22. What's new in Version 1.6.0 'Capiapo'?
-  =========================================
+  ==========================================
 
 Please note that this is a release in our 'cutting edge' release series. As
 such it contains new features and extends the programmatic interface over QGIS
@@ -1484,7 +1484,7 @@ position dialog.
 
 
   23. What's new in Version 1.5.0?
-  ===============================
+  ================================
 
 Please note that this is a release in our 'cutting edge' release series. As
 such it contains new features and extends the programmatic interface over QGIS
@@ -1584,7 +1584,7 @@ variables. More paths can be passed, separated by semicolon.
 
 
   24. What's new in Version 1.4.0 'Enceladus'?
-  ===========================================
+  ============================================
 
 Please note that this is a release in our 'cutting edge' release series. As
 such it contains new features and extends the programmatic interface over QGIS
@@ -1642,7 +1642,7 @@ Designer dialog UIs.
 
 
   25. What's new in Version 1.3.0 'Mimas'?
-  =======================================
+  ========================================
 
 This release includes over 30 bug fixes and several useful new features:
 

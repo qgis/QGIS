@@ -103,63 +103,63 @@ namespace pal
        * Returns the maximum number of point label candidates to generate for features
        * in this layer.
        */
-      int maximumPointLabelCandidates() const
+      std::size_t maximumPointLabelCandidates() const
       {
         // when an extreme number of features exist in the layer, we limit the number of candidates
         // to avoid the engine processing endlessly...
         const int size = mHashtable.size();
         if ( size > 1000 )
-          return std::min( pal->mMaxPointCandidates, 4 );
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitPoint() > 0 ? std::min( mPal->globalCandidatesLimitPoint(), 4 ) : 4 );
         else if ( size > 500 )
-          return std::min( pal->mMaxPointCandidates, 6 );
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitPoint() > 0 ? std::min( mPal->globalCandidatesLimitPoint(), 6 ) : 6 );
         else if ( size > 200 )
-          return std::min( pal->mMaxPointCandidates, 8 );
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitPoint() > 0 ? std::min( mPal->globalCandidatesLimitPoint(), 8 ) : 8 );
         else if ( size > 100 )
-          return std::min( pal->mMaxPointCandidates, 12 );
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitPoint() > 0 ? std::min( mPal->globalCandidatesLimitPoint(), 12 ) : 12 );
         else
-          return pal->mMaxPointCandidates;
+          return static_cast< std::size_t >( std::max( mPal->globalCandidatesLimitPoint(), 0 ) );
       }
 
       /**
        * Returns the maximum number of line label candidates to generate for features
        * in this layer.
        */
-      int maximumLineLabelCandidates() const
+      std::size_t maximumLineLabelCandidates() const
       {
         // when an extreme number of features exist in the layer, we limit the number of candidates
         // to avoid the engine processing endlessly...
         const int size = mHashtable.size();
         if ( size > 1000 )
-          return std::min( pal->mMaxLineCandidates, 5 );
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitLine() > 0 ? std::min( mPal->globalCandidatesLimitLine(), 5 ) : 5 );
         else if ( size > 500 )
-          return std::min( pal->mMaxLineCandidates, 10 );
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitLine() > 0 ? std::min( mPal->globalCandidatesLimitLine(), 10 ) : 10 );
         else if ( size > 200 )
-          return std::min( pal->mMaxLineCandidates, 20 );
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitLine() > 0 ? std::min( mPal->globalCandidatesLimitLine(), 20 ) : 20 );
         else if ( size > 100 )
-          return std::min( pal->mMaxLineCandidates, 40 );
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitLine() > 0 ? std::min( mPal->globalCandidatesLimitLine(), 40 ) : 40 );
         else
-          return pal->mMaxLineCandidates;
+          return static_cast< std::size_t >( std::max( mPal->globalCandidatesLimitLine(), 0 ) );
       }
 
       /**
        * Returns the maximum number of polygon label candidates to generate for features
        * in this layer.
        */
-      int maximumPolygonLabelCandidates() const
+      std::size_t maximumPolygonLabelCandidates() const
       {
         // when an extreme number of features exist in the layer, we limit the number of candidates
         // to avoid the engine processing endlessly...
         const int size = mHashtable.size();
         if ( size > 1000 )
-          return std::min( pal->mMaxPolyCandidates, 5 );
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitPolygon() > 0 ? std::min( mPal->globalCandidatesLimitPolygon(), 5 ) : 5 );
         else if ( size > 500 )
-          return std::min( pal->mMaxPolyCandidates, 15 );
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitPolygon() > 0 ? std::min( mPal->globalCandidatesLimitPolygon(), 15 ) : 15 );
         else if ( size > 200 )
-          return std::min( pal->mMaxPolyCandidates, 20 );
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitPolygon() > 0 ? std::min( mPal->globalCandidatesLimitPolygon(), 20 ) : 20 );
         else if ( size > 100 )
-          return std::min( pal->mMaxPolyCandidates, 25 );
+          return static_cast< std::size_t >( mPal->globalCandidatesLimitPolygon() > 0 ? std::min( mPal->globalCandidatesLimitPolygon(), 25 ) : 25 );
         else
-          return pal->mMaxPolyCandidates;
+          return static_cast< std::size_t >( std::max( mPal->globalCandidatesLimitPolygon(), 0 ) );
       }
 
       //! Returns pointer to the associated provider
@@ -329,7 +329,7 @@ namespace pal
 
       std::vector< geos::unique_ptr > mGeosObstacleGeometries;
 
-      Pal *pal = nullptr;
+      Pal *mPal = nullptr;
 
       double mDefaultPriority;
 

@@ -83,10 +83,59 @@ class CORE_EXPORT QgsLabelingEngineSettings
     //! Sets whether a particual flag is enabled
     void setFlag( Flag f, bool enabled = true ) { if ( enabled ) mFlags |= f; else mFlags &= ~f; }
 
-    //! Gets number of candidate positions that will be generated for each label feature (default to 8)
-    void numCandidatePositions( int &candPoint, int &candLine, int &candPolygon ) const { candPoint = mCandPoint; candLine = mCandLine; candPolygon = mCandPolygon; }
-    //! Sets number of candidate positions that will be generated for each label feature
-    void setNumCandidatePositions( int candPoint, int candLine, int candPolygon ) { mCandPoint = candPoint; mCandLine = candLine; mCandPolygon = candPolygon; }
+    /**
+     * Returns the maximum number of line label candidate positions per centimeter.
+     *
+     * \see setMaximumLineCandidatesPerCm()
+     * \since QGIS 3.12
+     */
+    double maximumLineCandidatesPerCm() const { return mMaxLineCandidatesPerCm; }
+
+    /**
+     * Sets the maximum number of line label \a candidates per centimeter.
+     *
+     * \see maximumLineCandidatesPerCm()
+     * \since QGIS 3.12
+     */
+    void setMaximumLineCandidatesPerCm( double candidates ) { mMaxLineCandidatesPerCm = candidates; }
+
+    /**
+     * Returns the maximum number of polygon label candidate positions per centimeter squared.
+     *
+     * \see setMaximumPolygonCandidatesPerCmSquared()
+     * \since QGIS 3.12
+     */
+    double maximumPolygonCandidatesPerCmSquared() const { return mMaxPolygonCandidatesPerCmSquared; }
+
+    /**
+     * Sets the maximum number of polygon label \a candidates per centimeter squared.
+     *
+     * \see maximumPolygonCandidatesPerCmSquared()
+     * \since QGIS 3.12
+     */
+    void setMaximumPolygonCandidatesPerCmSquared( double candidates ) { mMaxPolygonCandidatesPerCmSquared = candidates; }
+
+    /**
+     * Gets number of candidate positions that will be generated for each label feature.
+     * \deprecated since QGIS 3.12 use maximumPolygonCandidatesPerCmSquared() and maximumLineCandidatesPerCm() instead.
+     */
+    Q_DECL_DEPRECATED void numCandidatePositions( int &candPoint, int &candLine, int &candPolygon ) const SIP_DEPRECATED
+    {
+      Q_UNUSED( candPoint )
+      Q_UNUSED( candLine )
+      Q_UNUSED( candPolygon )
+    }
+
+    /**
+     * Sets the number of candidate positions that will be generated for each label feature.
+     * \deprecated since QGIS 3.12 use setMaximumPolygonCandidatesPerCmSquared() and setMaximumLineCandidatesPerCm() instead.
+     */
+    Q_DECL_DEPRECATED void setNumCandidatePositions( int candPoint, int candLine, int candPolygon ) SIP_DEPRECATED
+    {
+      Q_UNUSED( candPoint )
+      Q_UNUSED( candLine )
+      Q_UNUSED( candPolygon )
+    }
 
     /**
      * Used to set which search method to use for removal collisions between labels
@@ -168,8 +217,10 @@ class CORE_EXPORT QgsLabelingEngineSettings
     Flags mFlags;
     //! search method to use for removal collisions between labels
     Search mSearchMethod = Chain;
-    //! Number of candedate positions that will be generated for features
-    int mCandPoint = 16, mCandLine = 50, mCandPolygon = 30;
+
+    // maximum density of line/polygon candidates per mm
+    double mMaxLineCandidatesPerCm = 5;
+    double mMaxPolygonCandidatesPerCmSquared = 10;
 
     QColor mUnplacedLabelColor = QColor( 255, 0, 0 );
 
