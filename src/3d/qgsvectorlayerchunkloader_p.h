@@ -25,6 +25,8 @@ class QgsVectorLayerFeatureSource;
 class QgsAbstract3DSymbol;
 class QgsFeature3DHandler;
 
+#include <QFutureWatcher>
+
 
 class QgsVectorLayerChunkLoaderFactory : public QgsChunkLoaderFactory
 {
@@ -38,7 +40,6 @@ class QgsVectorLayerChunkLoaderFactory : public QgsChunkLoaderFactory
     QgsVectorLayer *mLayer;
     std::unique_ptr<QgsAbstract3DSymbol> mSymbol;
     int mLeafLevel;
-    std::unique_ptr<QgsVectorLayerFeatureSource> mSource;
 };
 
 
@@ -46,6 +47,7 @@ class QgsVectorLayerChunkLoader : public QgsChunkLoader
 {
   public:
     QgsVectorLayerChunkLoader( const QgsVectorLayerChunkLoaderFactory *factory, QgsChunkNode *node );
+    ~QgsVectorLayerChunkLoader();
 
     virtual void cancel();
     virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent );
@@ -54,7 +56,9 @@ class QgsVectorLayerChunkLoader : public QgsChunkLoader
     const QgsVectorLayerChunkLoaderFactory *mFactory;
     QgsFeature3DHandler *mHandler = nullptr;
     Qgs3DRenderContext mContext;
+    std::unique_ptr<QgsVectorLayerFeatureSource> mSource;
     bool mCanceled = false;
+    QFutureWatcher<void> *mFutureWatcher = nullptr;
 };
 
 #include "qgschunkedentity_p.h"

@@ -17,6 +17,7 @@ class QgsRuleBasedChunkLoaderFactory : public QgsChunkLoaderFactory
 {
   public:
     QgsRuleBasedChunkLoaderFactory( const Qgs3DMapSettings &map, QgsVectorLayer *vl, QgsRuleBased3DRenderer::Rule *rootRule, int leafLevel );
+    ~QgsRuleBasedChunkLoaderFactory();
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
     virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const;
@@ -25,7 +26,6 @@ class QgsRuleBasedChunkLoaderFactory : public QgsChunkLoaderFactory
     QgsVectorLayer *mLayer;
     std::unique_ptr<QgsRuleBased3DRenderer::Rule> mRootRule;
     int mLeafLevel;
-    std::unique_ptr<QgsVectorLayerFeatureSource> mSource;
 };
 
 
@@ -35,6 +35,7 @@ class QgsRuleBasedChunkLoader : public QgsChunkLoader
 {
   public:
     QgsRuleBasedChunkLoader( const QgsRuleBasedChunkLoaderFactory *factory, QgsChunkNode *node );
+    ~QgsRuleBasedChunkLoader();
 
     virtual void cancel();
     virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent );
@@ -43,7 +44,10 @@ class QgsRuleBasedChunkLoader : public QgsChunkLoader
     const QgsRuleBasedChunkLoaderFactory *mFactory;
     QgsRuleBased3DRenderer::RuleToHandlerMap mHandlers;
     Qgs3DRenderContext mContext;
+    std::unique_ptr<QgsVectorLayerFeatureSource> mSource;
     bool mCanceled = false;
+    QFutureWatcher<void> *mFutureWatcher = nullptr;
+    std::unique_ptr<QgsRuleBased3DRenderer::Rule> mRootRule;
 };
 
 

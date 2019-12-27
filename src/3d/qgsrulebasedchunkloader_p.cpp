@@ -17,6 +17,7 @@ QgsRuleBasedChunkLoader::QgsRuleBasedChunkLoader( const QgsRuleBasedChunkLoaderF
   : QgsChunkLoader( node )
   , mFactory( factory )
   , mContext( factory->mMap )
+  , mSource( new QgsVectorLayerFeatureSource( factory->mLayer ) )
 {
   if ( node->level() < mFactory->mLeafLevel )
   {
@@ -31,10 +32,16 @@ QgsRuleBasedChunkLoader::QgsRuleBasedChunkLoader( const QgsRuleBasedChunkLoaderF
   exprContext.setFields( layer->fields() );
   mContext.setExpressionContext( exprContext );
 
-  mFactory->mRootRule->createHandlers( layer, mHandlers );
+  // factory is shared among multiple loaders which may be run at the same time
+  // so we need a local copy of our rule tree that does not intefere with others
+  // (e.g. it happened that filter expressions with invalid syntax would cause
+  // nasty crashes when trying to simultaneously record evaluation error)
+  mRootRule.reset( mFactory->mRootRule->clone() );
+
+  mRootRule->createHandlers( layer, mHandlers );
 
   QSet<QString> attributeNames;
-  mFactory->mRootRule->prepare( mContext, attributeNames, mHandlers );
+  mRootRule->prepare( mContext, attributeNames, mHandlers );
 
   // build the feature request
   QgsFeatureRequest req;
@@ -54,20 +61,32 @@ QgsRuleBasedChunkLoader::QgsRuleBasedChunkLoader( const QgsRuleBasedChunkLoaderF
     QgsEventTracing::ScopedEvent e( "3D", "RB chunk load" );
 
     QgsFeature f;
-    QgsFeatureIterator fi = mFactory->mSource->getFeatures( req );
+    QgsFeatureIterator fi = mSource->getFeatures( req );
     while ( fi.nextFeature( f ) )
     {
       if ( mCanceled )
         break;
       mContext.expressionContext().setFeature( f );
-      mFactory->mRootRule->registerFeature( f, mContext, mHandlers );
+      mRootRule->registerFeature( f, mContext, mHandlers );
     }
   } );
 
   // emit finished() as soon as the handler is populated with features
-  QFutureWatcher<void> *fw = new QFutureWatcher<void>( nullptr );
-  fw->setFuture( future );
-  connect( fw, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
+  mFutureWatcher = new QFutureWatcher<void>( this );
+  mFutureWatcher->setFuture( future );
+  connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
+}
+
+QgsRuleBasedChunkLoader::~QgsRuleBasedChunkLoader()
+{
+  if ( mFutureWatcher && !mFutureWatcher->isFinished() )
+  {
+    disconnect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
+    mFutureWatcher->waitForFinished();
+  }
+
+  qDeleteAll( mHandlers );
+  mHandlers.clear();
 }
 
 void QgsRuleBasedChunkLoader::cancel()
@@ -86,9 +105,6 @@ Qt3DCore::QEntity *QgsRuleBasedChunkLoader::createEntity( Qt3DCore::QEntity *par
   for ( QgsFeature3DHandler *handler : mHandlers.values() )
     handler->finalize( entity, mContext );
 
-  qDeleteAll( mHandlers );
-  mHandlers.clear();
-
   return entity;
 }
 
@@ -101,7 +117,10 @@ QgsRuleBasedChunkLoaderFactory::QgsRuleBasedChunkLoaderFactory( const Qgs3DMapSe
   , mLayer( vl )
   , mRootRule( rootRule->clone() )
   , mLeafLevel( leafLevel )
-  , mSource( new QgsVectorLayerFeatureSource( vl ) )
+{
+}
+
+QgsRuleBasedChunkLoaderFactory::~QgsRuleBasedChunkLoaderFactory()
 {
 }
 

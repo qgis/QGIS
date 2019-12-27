@@ -38,6 +38,7 @@ QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const QgsVectorLayerChunkL
   : QgsChunkLoader( node )
   , mFactory( factory )
   , mContext( factory->mMap )
+  , mSource( new QgsVectorLayerFeatureSource( factory->mLayer ) )
 {
   if ( node->level() < mFactory->mLeafLevel )
   {
@@ -83,7 +84,7 @@ QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const QgsVectorLayerChunkL
     QgsEventTracing::ScopedEvent e( "3D", "VL chunk load" );
 
     QgsFeature f;
-    QgsFeatureIterator fi = mFactory->mSource->getFeatures( req );
+    QgsFeatureIterator fi = mSource->getFeatures( req );
     while ( fi.nextFeature( f ) )
     {
       if ( mCanceled )
@@ -94,9 +95,21 @@ QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const QgsVectorLayerChunkL
   } );
 
   // emit finished() as soon as the handler is populated with features
-  QFutureWatcher<void> *fw = new QFutureWatcher<void>( nullptr );
-  fw->setFuture( future );
-  connect( fw, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
+  mFutureWatcher = new QFutureWatcher<void>( this );
+  mFutureWatcher->setFuture( future );
+  connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
+}
+
+QgsVectorLayerChunkLoader::~QgsVectorLayerChunkLoader()
+{
+  if ( mFutureWatcher && !mFutureWatcher->isFinished() )
+  {
+    disconnect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
+    mFutureWatcher->waitForFinished();
+  }
+
+  delete mHandler;
+  mHandler = nullptr;
 }
 
 void QgsVectorLayerChunkLoader::cancel()
@@ -113,8 +126,6 @@ Qt3DCore::QEntity *QgsVectorLayerChunkLoader::createEntity( Qt3DCore::QEntity *p
 
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );
   mHandler->finalize( entity, mContext );
-  delete mHandler;
-  mHandler = nullptr;
   return entity;
 }
 
@@ -127,7 +138,6 @@ QgsVectorLayerChunkLoaderFactory::QgsVectorLayerChunkLoaderFactory( const Qgs3DM
   , mLayer( vl )
   , mSymbol( symbol->clone() )
   , mLeafLevel( leafLevel )
-  , mSource( new QgsVectorLayerFeatureSource( vl ) )
 {
 }
 
