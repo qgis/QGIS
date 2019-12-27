@@ -349,6 +349,9 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
         }
       }
 
+      if ( feat->candidates.empty() )
+        continue;
+
       // calculate final costs
       CostCalculator::finalizeCandidatesCosts( feat.get(), &obstacles, bbx, bby );
 
