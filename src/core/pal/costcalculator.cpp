@@ -181,6 +181,37 @@ double CostCalculator::calculatePolygonRingDistance( LabelPosition *candidate, P
 
 void CostCalculator::finalizeCandidatesCosts( Feats *feat, PalRtree<FeaturePart> *obstacles, double bbx[4], double bby[4] )
 {
+  // sort candidates list, best label to worst
+  std::sort( feat->candidates.begin(), feat->candidates.end(), candidateSortGrow );
+
+  // Original nonsense comment from pal library:
+  // "try to exclude all conflitual labels (good ones have cost < 1 by pruning)"
+  // my interpretation: it appears this scans through the candidates and chooses some threshold
+  // based on the candidate cost, after which all remaining candidates are simply discarded
+  double discrim = 0.0;
+  std::size_t stop = 0;
+  do
+  {
+    discrim += 1.0;
+    for ( stop = 0; stop < feat->candidates.size() && feat->candidates[ stop ]->cost() < discrim; stop++ )
+      ;
+  }
+  while ( stop == 0 && discrim < feat->candidates.back()->cost() + 2.0 );
+
+  // THIS LOOKS SUSPICIOUS -- it clamps all costs to a fixed value??
+  if ( discrim > 1.5 )
+  {
+    for ( std::size_t k = 0; k < stop; k++ )
+      feat->candidates[ k ]->setCost( 0.0021 );
+  }
+
+  if ( feat->candidates.size() > stop )
+  {
+    feat->candidates.resize( stop );
+  }
+
+  // Sets costs for candidates of polygon
+
   if ( feat->feature->getGeosType() == GEOS_POLYGON )
   {
     int arrangement = feat->feature->layer()->arrangement();
