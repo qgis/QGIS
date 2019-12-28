@@ -2535,7 +2535,7 @@ void QgsLayoutItemMap::rotateItem( const double angle, const QPointF transformOr
   QPointF itemTransformOrigin = mapFromScene( transformOrigin );
 
   refreshItemRotation( &itemTransformOrigin );
-  
+
   emit mapRotationChanged( mMapRotation + itemRoration() );
 }
 
