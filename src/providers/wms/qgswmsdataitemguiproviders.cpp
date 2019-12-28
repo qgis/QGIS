@@ -43,6 +43,12 @@ void QgsWmsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
 {
   if ( QgsWMSConnectionItem *connItem = qobject_cast< QgsWMSConnectionItem * >( item ) )
   {
+    QAction *actionRefresh = new QAction( tr( "Refresh" ), this );
+    connect( actionRefresh, &QAction::triggered, this, [connItem] { refreshConnection( connItem ); } );
+    menu->addAction( actionRefresh );
+
+    menu->addSeparator();
+
     QAction *actionEdit = new QAction( tr( "Edit…" ), this );
     connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
     menu->addAction( actionEdit );
@@ -95,6 +101,14 @@ void QgsWmsDataItemGuiProvider::newConnection( QgsDataItem *item )
   {
     item->refreshConnections();
   }
+}
+
+void QgsWmsDataItemGuiProvider::refreshConnection( QgsDataItem *item )
+{
+  item->refresh();
+  // the parent should be updated
+  if ( item->parent() )
+    item->parent()->refreshConnections();
 }
 
 
