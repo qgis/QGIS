@@ -840,7 +840,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     friend class TestQgsLayoutMap;
     friend class QgsCompositionConverter;
     friend class QgsGeoPdfRenderedFeatureHandler;
-    
+
     void rotateItem( const double angle, const QPointF transformOrigin ) override;
 
 };
