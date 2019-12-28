@@ -111,32 +111,72 @@ void CostCalculator::calculateCandidatePolygonRingDistanceCosts( std::vector< st
 {
   // first we calculate the ring distance cost for all candidates for this feature. We then use the range
   // of distance costs to calculate a standardised scaling for the costs
-  QHash< LabelPosition *, double > polygonRingDistanceCosts;
-  double minCandidateRingDistanceCost = std::numeric_limits< double >::max();
-  double maxCandidateRingDistanceCost = std::numeric_limits< double >::lowest();
+  QHash< LabelPosition *, double > polygonRingDistances;
+  double minCandidateRingDistance = std::numeric_limits< double >::max();
+  double maxCandidateRingDistance = std::numeric_limits< double >::lowest();
   for ( std::unique_ptr< LabelPosition > &pos : lPos )
   {
-    const double candidatePolygonRingDistanceCost = calculatePolygonRingDistance( pos.get(), bbx, bby );
+    const double candidatePolygonRingDistance = calculatePolygonRingDistance( pos.get(), bbx, bby );
 
-    minCandidateRingDistanceCost = std::min( minCandidateRingDistanceCost, candidatePolygonRingDistanceCost );
-    maxCandidateRingDistanceCost = std::max( maxCandidateRingDistanceCost, candidatePolygonRingDistanceCost );
+    minCandidateRingDistance = std::min( minCandidateRingDistance, candidatePolygonRingDistance );
+    maxCandidateRingDistance = std::max( maxCandidateRingDistance, candidatePolygonRingDistance );
 
-    polygonRingDistanceCosts.insert( pos.get(), candidatePolygonRingDistanceCost );
+    polygonRingDistances.insert( pos.get(), candidatePolygonRingDistance );
   }
 
   // define the cost's range, if range is too small, just ignore the ring distance cost
-  const double costRange = maxCandidateRingDistanceCost - minCandidateRingDistanceCost;
+  const double costRange = maxCandidateRingDistance - minCandidateRingDistance;
   if ( costRange <= EPSILON )
     return;
 
   const double normalizer = 0.0020 / costRange;
 
-  // adjust cost => the best is 0.0001, the worst is 0.0021
+  // adjust cost => the best is 0, the worst is 0.002
   // others are set proportionally between best and worst
   for ( std::unique_ptr< LabelPosition > &pos : lPos )
   {
-    const double originalPolygonRingDistanceCost = polygonRingDistanceCosts.value( pos.get() );
-    pos->setCost( pos->cost() + 0.0021 - ( originalPolygonRingDistanceCost - minCandidateRingDistanceCost ) * normalizer );
+    const double polygonRingDistanceCost = polygonRingDistances.value( pos.get() );
+    pos->setCost( pos->cost() + 0.002 - ( polygonRingDistanceCost - minCandidateRingDistance ) * normalizer );
+  }
+}
+
+void CostCalculator::calculateCandidatePolygonCentroidDistanceCosts( pal::FeaturePart *feature, std::vector<std::unique_ptr<LabelPosition> > &lPos )
+{
+  double cx, cy;
+  feature->getCentroid( cx, cy );
+
+  // first we calculate the centroid distance cost for all candidates for this feature. We then use the range
+  // of distance costs to calculate a standardised scaling for the costs
+  QHash< LabelPosition *, double > polygonCentroidDistances;
+  double minCandidateCentroidDistance = std::numeric_limits< double >::max();
+  double maxCandidateCentroidDistance = std::numeric_limits< double >::lowest();
+  for ( std::unique_ptr< LabelPosition > &pos : lPos )
+  {
+    const double lPosX = ( pos->x[0] + pos->x[2] ) / 2.0;
+    const double lPosY = ( pos->y[0] + pos->y[2] ) / 2.0;
+
+    const double candidatePolygonCentroidDistance = std::sqrt( ( cx - lPosX ) * ( cx - lPosX ) + ( cy - lPosY ) * ( cy - lPosY ) );
+
+    minCandidateCentroidDistance  = std::min( minCandidateCentroidDistance, candidatePolygonCentroidDistance );
+    maxCandidateCentroidDistance = std::max( maxCandidateCentroidDistance, candidatePolygonCentroidDistance );
+
+    polygonCentroidDistances.insert( pos.get(), candidatePolygonCentroidDistance );
+  }
+
+  // define the cost's range, if range is too small, just ignore the ring distance cost
+  const double costRange = maxCandidateCentroidDistance - minCandidateCentroidDistance;
+  if ( costRange <= EPSILON )
+    return;
+
+  const double normalizer = 0.001 / costRange;
+
+  // adjust cost => the closest is 0, the furthest is 0.001
+  // others are set proportionally between best and worst
+  // NOTE: centroid cost range may need adjusting with respect to ring distance range!
+  for ( std::unique_ptr< LabelPosition > &pos : lPos )
+  {
+    const double polygonCentroidDistance = polygonCentroidDistances.value( pos.get() );
+    pos->setCost( pos->cost() + ( polygonCentroidDistance - minCandidateCentroidDistance ) * normalizer );
   }
 }
 
@@ -207,7 +247,12 @@ void CostCalculator::finalizeCandidatesCosts( Feats *feat, double bbx[4], double
   {
     int arrangement = feat->feature->layer()->arrangement();
     if ( arrangement == QgsPalLayerSettings::Free || arrangement == QgsPalLayerSettings::Horizontal )
+    {
+      // prefer positions closer to the pole of inaccessibilities
       calculateCandidatePolygonRingDistanceCosts( feat->candidates, bbx, bby );
+      // ...of these, prefer positions closer to the overall polygon centroid
+      calculateCandidatePolygonCentroidDistanceCosts( feat->feature, feat->candidates );
+    }
   }
 
   // add size penalty (small lines/polygons get higher cost)
