@@ -1183,12 +1183,6 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * Applies any present data defined size overrides to the specified layout \a size.
      */
     QgsLayoutSize applyDataDefinedSize( const QgsLayoutSize &size );
-    
-    /**
-     * Returns the roration angle of the item.
-     * \since QGIS 3.12
-     */
-    double itemRotation() const { return mItemRotation; }
 
   private:
 
