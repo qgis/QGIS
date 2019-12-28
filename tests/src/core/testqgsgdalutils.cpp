@@ -106,7 +106,7 @@ void TestQgsGdalUtils::testCreateSingleBandMemoryDataset()
   QCOMPARE( GDALGetRasterYSize( ds1.get() ), 20 );
 
 #if PROJ_VERSION_MAJOR>=6
-  QCOMPARE( GDALGetProjectionRef( ds1.get() ), QStringLiteral( R"""(GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AXIS["Latitude",NORTH],AXIS["Longitude",EAST],AUTHORITY["EPSG","4326"]])""" ) );
+  QCOMPARE( GDALGetProjectionRef( ds1.get() ),  R"""(GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AXIS["Latitude",NORTH],AXIS["Longitude",EAST],AUTHORITY["EPSG","4326"]])""" );
 #else
   QCOMPARE( GDALGetProjectionRef( ds1.get() ), EPSG_4326_WKT );
 #endif
@@ -128,7 +128,7 @@ void TestQgsGdalUtils::testCreateMultiBandMemoryDataset()
   QCOMPARE( GDALGetRasterYSize( ds1.get() ), 20 );
 
 #if PROJ_VERSION_MAJOR>=6
-  QCOMPARE( GDALGetProjectionRef( ds1.get() ), QStringLiteral( R"""(GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AXIS["Latitude",NORTH],AXIS["Longitude",EAST],AUTHORITY["EPSG","4326"]])""" ) );
+  QCOMPARE( GDALGetProjectionRef( ds1.get() ),  R"""(GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AXIS["Latitude",NORTH],AXIS["Longitude",EAST],AUTHORITY["EPSG","4326"]])""" );
 #else
   QCOMPARE( GDALGetProjectionRef( ds1.get() ), EPSG_4326_WKT );
 #endif
@@ -157,7 +157,7 @@ void TestQgsGdalUtils::testCreateSingleBandTiffDataset()
   QCOMPARE( GDALGetRasterYSize( ds1.get() ), 20 );
 
 #if PROJ_VERSION_MAJOR>=6
-  QCOMPARE( GDALGetProjectionRef( ds1.get() ), QStringLiteral( R"""(GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AXIS["Latitude",NORTH],AXIS["Longitude",EAST],AUTHORITY["EPSG","4326"]])""" ) );
+  QCOMPARE( GDALGetProjectionRef( ds1.get() ), R"""(GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AXIS["Latitude",NORTH],AXIS["Longitude",EAST],AUTHORITY["EPSG","4326"]])""" );
 #else
   QCOMPARE( GDALGetProjectionRef( ds1.get() ), EPSG_4326_WKT );
 #endif
