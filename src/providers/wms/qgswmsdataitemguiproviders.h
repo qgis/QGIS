@@ -31,6 +31,7 @@ class QgsWmsDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
     QWidget *createParamWidget( QgsDataItem *root, QgsDataItemGuiContext ) override;
 
   private:
+    static void refreshConnection( QgsDataItem *item );
     static void editConnection( QgsDataItem *item );
     static void deleteConnection( QgsDataItem *item );
     static void newConnection( QgsDataItem *item );
