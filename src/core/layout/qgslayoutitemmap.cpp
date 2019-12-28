@@ -447,7 +447,7 @@ void QgsLayoutItemMap::setMapRotation( double rotation )
   mMapRotation = rotation;
   mEvaluatedMapRotation = mMapRotation;
   invalidateCache();
-  emit mapRotationChanged( rotation + itemRoration() );
+  emit mapRotationChanged( rotation + itemRotation() );
   emit changed();
 }
 
@@ -2348,7 +2348,7 @@ void QgsLayoutItemMap::refreshMapExtents( const QgsExpressionContext *context )
   if ( !qgsDoubleNear( mEvaluatedMapRotation, mapRotation ) )
   {
     mEvaluatedMapRotation = mapRotation;
-    emit mapRotationChanged( mapRotation + itemRoration() );
+    emit mapRotationChanged( mapRotation + itemRotation() );
   }
 }
 
@@ -2536,6 +2536,6 @@ void QgsLayoutItemMap::rotateItem( const double angle, const QPointF transformOr
 
   refreshItemRotation( &itemTransformOrigin );
 
-  emit mapRotationChanged( mMapRotation + itemRoration() );
+  emit mapRotationChanged( mMapRotation + itemRotation() );
 }
 
