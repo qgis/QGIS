@@ -46,6 +46,13 @@ namespace pal
        */
       static void calculateCandidatePolygonRingDistanceCosts( std::vector<std::unique_ptr<pal::LabelPosition> > &lPos, double bbx[4], double bby[4] );
 
+      /**
+       * Updates the costs for polygon label candidates by considering the distance between the
+       * candidates and the polygon centroid (i.e. given labels at similar distances from polygon rings,
+       * prefer labels closer to the centroid).
+       */
+      static void calculateCandidatePolygonCentroidDistanceCosts( pal::FeaturePart *feature, std::vector<std::unique_ptr<pal::LabelPosition> > &lPos );
+
       //! Calculates the distance between a label candidate and the closest ring for a polygon feature
       static double calculatePolygonRingDistance( LabelPosition *candidate, double bbx[4], double bby[4] );
 
