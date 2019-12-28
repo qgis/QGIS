@@ -613,6 +613,8 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
 
+    void rotateItem( const double angle, const QPointF transformOrigin ) override;
+
   private slots:
     void layersAboutToBeRemoved( const QList<QgsMapLayer *> &layers );
 
@@ -840,8 +842,6 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     friend class TestQgsLayoutMap;
     friend class QgsCompositionConverter;
     friend class QgsGeoPdfRenderedFeatureHandler;
-
-    void rotateItem( const double angle, const QPointF transformOrigin ) override;
 
 };
 
