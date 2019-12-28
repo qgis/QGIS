@@ -4336,7 +4336,7 @@ font-style: italic;</string>
                              <item row="0" column="1">
                               <widget class="QRadioButton" name="radPolygonHorizontal">
                                <property name="text">
-                                <string>Horizontal (slow)</string>
+                                <string>Horizontal</string>
                                </property>
                               </widget>
                              </item>
@@ -4356,7 +4356,7 @@ font-style: italic;</string>
                              <item row="1" column="1">
                               <widget class="QRadioButton" name="radPolygonFree">
                                <property name="text">
-                                <string>Free (slow)</string>
+                                <string>Free</string>
                                </property>
                               </widget>
                              </item>
