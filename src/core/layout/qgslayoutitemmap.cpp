@@ -447,7 +447,7 @@ void QgsLayoutItemMap::setMapRotation( double rotation )
   mMapRotation = rotation;
   mEvaluatedMapRotation = mMapRotation;
   invalidateCache();
-  emit mapRotationChanged( rotation );
+  emit mapRotationChanged( rotation + itemRoration() );
   emit changed();
 }
 
@@ -2348,7 +2348,7 @@ void QgsLayoutItemMap::refreshMapExtents( const QgsExpressionContext *context )
   if ( !qgsDoubleNear( mEvaluatedMapRotation, mapRotation ) )
   {
     mEvaluatedMapRotation = mapRotation;
-    emit mapRotationChanged( mapRotation );
+    emit mapRotationChanged( mapRotation + itemRoration() );
   }
 }
 
@@ -2524,5 +2524,18 @@ void QgsLayoutItemMap::createStagedRenderJob( const QgsRectangle &extent, const 
                        ? QgsMapRendererStagedRenderJob::RenderLabelsByMapLayer
                        : QgsMapRendererStagedRenderJob::Flags( nullptr ) );
   mStagedRendererJob->start();
+}
+
+void QgsLayoutItemMap::rotateItem( const double angle, const QPointF transformOrigin )
+{
+  double evaluatedAngle = angle + rotation();
+  evaluatedAngle = QgsLayoutUtils::normalizedAngle( evaluatedAngle, true );
+  mItemRotation = evaluatedAngle;
+
+  QPointF itemTransformOrigin = mapFromScene( transformOrigin );
+
+  refreshItemRotation( &itemTransformOrigin );
+  
+  emit mapRotationChanged( mMapRotation + itemRoration() );
 }
 
