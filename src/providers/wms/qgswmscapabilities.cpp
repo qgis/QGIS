@@ -759,6 +759,34 @@ void QgsWmsCapabilities::parseLegendUrl( const QDomElement &element, QgsWmsLegen
   }
 }
 
+
+void QgsWmsCapabilities::parseMetadataUrl( const QDomElement &element, QgsWmsMetadataUrlProperty &metadataUrlProperty )
+{
+
+  QDomNode node = element.firstChild();
+  while ( !node.isNull() )
+  {
+    QDomElement nodeElement = node.toElement();
+    if ( !nodeElement.isNull() )
+    {
+      QString tagName = nodeElement.tagName();
+      if ( tagName.startsWith( QLatin1String( "wms:" ), Qt::CaseInsensitive ) )
+        tagName = tagName.mid( 4 );
+
+      if ( tagName.compare( QLatin1String( "Format" ), Qt::CaseInsensitive ) == 0 )
+      {
+        metadataUrlProperty.format = nodeElement.text();
+      }
+      else if ( tagName.compare( QLatin1String( "OnlineResource" ), Qt::CaseInsensitive ) == 0 )
+      {
+        parseOnlineResource( nodeElement, metadataUrlProperty.onlineResource );
+      }
+    }
+    node = node.nextSibling();
+  }
+}
+
+
 void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProperty &layerProperty,
                                      QgsWmsLayerProperty *parentProperty )
 {
@@ -948,7 +976,8 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
       }
       else if ( tagName == QLatin1String( "MetadataURL" ) )
       {
-        // TODO
+        layerProperty.metadataUrl << QgsWmsMetadataUrlProperty();
+        parseMetadataUrl( nodeElement, layerProperty.metadataUrl.last() );
       }
       else if ( tagName == QLatin1String( "DataURL" ) )
       {
