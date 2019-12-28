@@ -497,7 +497,7 @@ QVariant QgsJsonUtils::parseJson( const std::string &jsonString )
         }
         else if ( jObj.is_string() )
         {
-          if ( isPrimitive && ( jObj.get<std::string>().length() == 0 || QString::fromStdString( jObj.get<std::string>() ).at( 0 ) != "\"" ) )
+          if ( isPrimitive && jObj.get<std::string>().length() == 0 )
           {
             result = QString::fromStdString( jObj.get<std::string>() ).append( "\"" ).insert( 0, "\"" );
           }

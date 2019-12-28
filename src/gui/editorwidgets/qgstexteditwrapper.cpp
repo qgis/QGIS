@@ -281,13 +281,20 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
     if ( !( field().type() == QVariant::Int || field().type() == QVariant::Double || field().type() == QVariant::LongLong || field().type() == QVariant::Date ) )
       v = QgsApplication::nullRepresentation();
   }
-  // this has to be overridden for json which has only values (i.e. no objects or arrays), as qgsfield.cpp uses QJsonDocument which doesn't recognise
-  // this as valid JSON although it technically is
   else if ( field().type() == QVariant::Map )
   {
+    // this has to be overridden for json which has only values (i.e. no objects or arrays), as qgsfield.cpp displayString()
+    // uses QJsonDocument which doesn't recognise this as valid JSON although it technically is
     if ( field().displayString( val ).isEmpty() )
     {
-      v = val.toString();
+      if ( val.type() == QVariant::String && val.toString() != QStringLiteral( "\"\"" ) )
+      {
+        v = val.toString().append( "\"" ).insert( 0, "\"" );
+      }
+      else
+      {
+        v = val.toString();
+      }
     }
     else
     {
