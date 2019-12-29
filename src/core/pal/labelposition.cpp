@@ -153,9 +153,8 @@ LabelPosition::LabelPosition( const LabelPosition &other )
   h = other.h;
 
   if ( other.nextPart )
-    nextPart = new LabelPosition( *other.nextPart );
-  else
-    nextPart = nullptr;
+    nextPart = qgis::make_unique< LabelPosition >( *other.nextPart );
+
   partId = other.partId;
   upsideDown = other.upsideDown;
   reversed = other.reversed;
@@ -315,10 +314,10 @@ bool LabelPosition::isInConflictMultiPart( const LabelPosition *lp ) const
     {
       if ( tmp1->isInConflictSinglePart( tmp2 ) )
         return true;
-      tmp2 = tmp2->nextPart;
+      tmp2 = tmp2->getNextPart();
     }
 
-    tmp1 = tmp1->nextPart;
+    tmp1 = tmp1->getNextPart();
   }
   return false; // no conflict found
 }

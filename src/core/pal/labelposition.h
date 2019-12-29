@@ -100,8 +100,6 @@ namespace pal
       //! Copy constructor
       LabelPosition( const LabelPosition &other );
 
-      ~LabelPosition() override { delete nextPart; }
-
       /**
        * \brief Is the labelposition in the bounding-box ? (intersect or inside????)
        *
@@ -272,8 +270,8 @@ namespace pal
       bool getUpsideDown() const { return upsideDown; }
 
       Quadrant getQuadrant() const { return quadrant; }
-      LabelPosition *getNextPart() const { return nextPart; }
-      void setNextPart( LabelPosition *next ) { nextPart = next; }
+      LabelPosition *getNextPart() const { return nextPart.get(); }
+      void setNextPart( std::unique_ptr< LabelPosition > next ) { nextPart = std::move( next ); }
 
       // -1 if not multi-part
       int getPartId() const { return partId; }
@@ -324,7 +322,6 @@ namespace pal
       double w;
       double h;
 
-      LabelPosition *nextPart = nullptr;
       int partId;
 
       //True if label direction is the same as line / polygon ring direction.
@@ -337,6 +334,9 @@ namespace pal
       LabelPosition::Quadrant quadrant;
 
     private:
+
+      std::unique_ptr< LabelPosition > nextPart;
+
       double mCost;
       bool mHasObstacleConflict;
       bool mHasHardConflict = false;
