@@ -1384,7 +1384,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
       sin_avg += std::sin( tmp->getAlpha() );
       cos_avg += std::cos( tmp->getAlpha() );
       angle_last = tmp->getAlpha();
-      tmp = tmp->getNextPart();
+      tmp = tmp->nextPart();
     }
 
     double angle_diff_avg = li->char_num > 1 ? ( angle_diff / ( li->char_num - 1 ) ) : 0; // <0, pi> but pi/8 is much already
@@ -1424,7 +1424,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
         while ( within && currentPos )
         {
           within = GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), currentPos->getX(), currentPos->getY(), currentPos->getWidth(), currentPos->getHeight(), currentPos->getAlpha() );
-          currentPos = currentPos->getNextPart();
+          currentPos = currentPos->nextPart();
         }
         if ( !within )
         {

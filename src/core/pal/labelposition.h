@@ -198,7 +198,7 @@ namespace pal
       {
         probFeat = probFid;
         id = lpId;
-        if ( nextPart ) nextPart->setProblemIds( probFid, lpId );
+        if ( mNextPart ) mNextPart->setProblemIds( probFid, lpId );
       }
 
       /**
@@ -270,8 +270,20 @@ namespace pal
       bool getUpsideDown() const { return upsideDown; }
 
       Quadrant getQuadrant() const { return quadrant; }
-      LabelPosition *getNextPart() const { return nextPart.get(); }
-      void setNextPart( std::unique_ptr< LabelPosition > next ) { nextPart = std::move( next ); }
+
+      /**
+       * Returns the next part of this label position (i.e. the next character for a curved label).
+       *
+       * \see setNextPart()
+       */
+      LabelPosition *nextPart() const { return mNextPart.get(); }
+
+      /**
+       * Sets the \a next part of this label position (i.e. the next character for a curved label).
+       *
+       * \see nextPart()
+       */
+      void setNextPart( std::unique_ptr< LabelPosition > next ) { mNextPart = std::move( next ); }
 
       // -1 if not multi-part
       int getPartId() const { return partId; }
@@ -335,7 +347,7 @@ namespace pal
 
     private:
 
-      std::unique_ptr< LabelPosition > nextPart;
+      std::unique_ptr< LabelPosition > mNextPart;
 
       double mCost;
       bool mHasObstacleConflict;

@@ -4161,8 +4161,8 @@ void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition *lp, QPainter *p
     candidates->append( QgsLabelCandidate( rect, lp->cost() * 1000 ) );
 
   // show all parts of the multipart label
-  if ( lp->getNextPart() )
-    drawLabelCandidateRect( lp->getNextPart(), painter, xform, candidates );
+  if ( lp->nextPart() )
+    drawLabelCandidateRect( lp->nextPart(), painter, xform, candidates );
 }
 
 QgsLabelingResults::QgsLabelingResults()
