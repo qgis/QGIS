@@ -492,8 +492,8 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
     painter->drawRect( rect );
     painter->restore();
 
-    if ( label->getNextPart() )
-      drawLabelPrivate( label->getNextPart(), context, tmpLyr, drawType, dpiRatio );
+    if ( label->nextPart() )
+      drawLabelPrivate( label->nextPart(), context, tmpLyr, drawType, dpiRatio );
 
     return;
   }
@@ -616,8 +616,8 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
   }
 
   // NOTE: this used to be within above multi-line loop block, at end. (a mistake since 2010? [LS])
-  if ( label->getNextPart() )
-    drawLabelPrivate( label->getNextPart(), context, tmpLyr, drawType, dpiRatio );
+  if ( label->nextPart() )
+    drawLabelPrivate( label->nextPart(), context, tmpLyr, drawType, dpiRatio );
 }
 
 const QgsPalLayerSettings &QgsVectorLayerLabelProvider::settings() const

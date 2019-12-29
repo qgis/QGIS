@@ -93,7 +93,7 @@ bool QgsLabelSearchTree::insertLabel( pal::LabelPosition *labelPos, QgsFeatureId
   mSpatialIndex.insert( newEntry.get(), bounds );
   mOwnedPositions.emplace_back( std::move( newEntry ) );
 
-  if ( pal::LabelPosition *next = labelPos->getNextPart() )
+  if ( pal::LabelPosition *next = labelPos->nextPart() )
   {
     return insertLabel( next, featureId, layerName, labeltext, labelfont, diagram, pinned, providerId, isUnplaced );
   }
