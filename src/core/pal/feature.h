@@ -226,8 +226,8 @@ namespace pal
        * \param flip if TRUE label is placed on the other side of the line
        * \returns calculated label position
        */
-      LabelPosition *curvedPlacementAtOffset( PointSet *path_positions, double *path_distances,
-                                              int &orientation, double distance, bool &reversed, bool &flip );
+      std::unique_ptr< LabelPosition > curvedPlacementAtOffset( PointSet *path_positions, double *path_distances,
+          int &orientation, double distance, bool &reversed, bool &flip );
 
       /**
        * Generate curved candidates for line features.
