@@ -455,7 +455,7 @@ void QgsLayoutItemPicture::updateMapRotation()
     return;
 
   // take map rotation
-  double rotation = mRotationMap->mapRotation() + mRotationMap->itemRotation();
+  double rotation = mRotationMap->mapRotation() + mRotationMap->rotation();
 
   // handle true north
   switch ( mNorthMode )
