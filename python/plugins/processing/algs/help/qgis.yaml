@@ -84,9 +84,6 @@ qgis:delaunaytriangulation: >
 qgis:deletecolumn: >
   This algorithm takes a vector layer and generates a new one that has the exact same content but without the selected columns.
 
-qgis:deleteduplicategeometries: >
-  This algorithm finds duplicated geometries and removes them. Attributes are not checked, so in case two features have identical geometries but different attributes, only one of them will be added to the result layer.
-
 qgis:deleteholes: >
   This algorithm takes a polygon layer and removes holes in polygons. It creates a new vector layer in which polygons with holes have been replaced by polygons with only their external ring. Attributes are not modified.
 

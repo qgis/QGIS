@@ -1363,7 +1363,7 @@ tests:
         name: expected/split_linez_by_length.shp
         type: vector
 
-  - algorithm: qgis:deleteduplicategeometries
+  - algorithm: native:deleteduplicategeometries
     name: Delete Duplicates with null geometries
     params:
       INPUT:

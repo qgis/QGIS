@@ -39,7 +39,6 @@ from .Datasources2Vrt import Datasources2Vrt
 from .DefineProjection import DefineProjection
 from .Delaunay import Delaunay
 from .DeleteColumn import DeleteColumn
-from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
 from .EliminateSelection import EliminateSelection
 from .ExecuteSQL import ExecuteSQL
 from .ExportGeometryInfo import ExportGeometryInfo
@@ -123,7 +122,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 DefineProjection(),
                 Delaunay(),
                 DeleteColumn(),
-                DeleteDuplicateGeometries(),
                 EliminateSelection(),
                 ExecuteSQL(),
                 ExportGeometryInfo(),
