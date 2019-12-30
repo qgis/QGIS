@@ -698,9 +698,6 @@ Updates the bounding rect of this item. Call this function before doing any chan
     virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 
 
-    virtual void rotateItem( const double angle, const QPointF transformOrigin );
-
-
 };
 
 QFlags<QgsLayoutItemMap::MapItemFlag> operator|(QgsLayoutItemMap::MapItemFlag f1, QFlags<QgsLayoutItemMap::MapItemFlag> f2);
