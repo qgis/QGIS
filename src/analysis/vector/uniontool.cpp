@@ -19,6 +19,7 @@
 #include "uniontool.h"
 #include "qgsgeos.h"
 #include "qgsgeometry.h"
+#include "qgsoverlayutils.h"
 #include "qgsvectorlayer.h"
 
 namespace Vectoranalysis
@@ -26,10 +27,13 @@ namespace Vectoranalysis
 
   UnionTool::UnionTool( QgsFeatureSource *layerA,
                         QgsFeatureSource *layerB,
+                        const QgsAttributeList &fieldIndicesA,
+                        const QgsAttributeList &fieldIndicesB,
                         QgsFeatureSink *output,
                         QgsWkbTypes::Type outWkbType,
+                        QgsCoordinateTransformContext transformContext,
                         double precision )
-    : AbstractTool( output, outWkbType, precision ), mLayerA( layerA ), mLayerB( layerB )
+    : AbstractTool( output, outWkbType, transformContext, precision ), mLayerA( layerA ), mLayerB( layerB ), mFieldIndicesA( fieldIndicesA ), mFieldIndicesB( fieldIndicesB )
   {
   }
 
@@ -43,107 +47,33 @@ namespace Vectoranalysis
 
   void UnionTool::processFeature( const Job *job )
   {
-    QgsFeatureSource *layerCurr = 0, * layerInter = 0;
-    QgsSpatialIndex *spatialIndex = 0;
-
-    if ( job->taskFlag == ProcessLayerAFeature )
-    {
-      layerCurr = mLayerA;
-      layerInter = mLayerB;
-      spatialIndex = &mSpatialIndexB;
-    }
-    else // if(job->taskFlag == ProcessLayerBFeature)
-    {
-      layerCurr = mLayerB;
-      layerInter = mLayerA;
-      spatialIndex = &mSpatialIndexA;
-    }
-
-    // Get currently processed feature
-    QgsFeature f;
-    if ( !getFeatureAtId( f, job->featureid, layerCurr, layerCurr->fields().allAttributesList() ) ) return;
-    QgsGeometry geom = f.geometry();
-
-    int nAttA = mLayerA->fields().size();
-    int nAttB = mLayerB->fields().size();
-
-    // Get features which intersect current feature
-    QVector<QgsFeature *> featureList = getIntersects( geom.boundingBox(), *spatialIndex, layerInter, layerInter->fields().allAttributesList() );
-
-    // Cut of all parts of current feature which intersect with features from intersecting layer
-    // If processmode = ProcessLayerAFeature, add intersecting features as separate features
-    QgsGeos geos( geom.constGet() );
-    geos.prepareGeometry();
-
-    QVector<QgsFeature *> outputFeatures; // Use pointers to prevent copies
-    QgsGeometry newGeom( geom );
-    QString errorMsg;
-    for ( QgsFeature *testFeature : featureList )
-    {
-      QgsGeometry testGeom = testFeature->geometry();
-      if ( geos.intersects( testGeom.constGet() ) )
+      QgsFeature f;
+      if ( !mOutput || !mLayerA || !mLayerB )
       {
-        QgsGeometry newGeomTmp = newGeom.difference( testGeom );
-        if ( newGeomTmp.isNull() )
-        {
-          reportGeometryError( QList<ErrorFeature>() << ErrorFeature( layerCurr, f.id() ) << ErrorFeature( layerInter, testFeature->id() ), newGeomTmp.lastError() );
-        }
-        else
-        {
-          newGeom = newGeomTmp;
-        }
-        if ( job->taskFlag == ProcessLayerAFeature )
-        {
-          QgsGeometry outGeometry = geom.intersection( testGeom );
-          if ( outGeometry.isNull() )
-          {
-            reportGeometryError( QList<ErrorFeature>() << ErrorFeature( layerCurr, f.id() ) << ErrorFeature( layerInter, testFeature->id() ), outGeometry.lastError() );
-          }
-          else if ( outGeometry.isEmpty() )
-          {
-            reportGeometryError( QList<ErrorFeature>() << ErrorFeature( layerCurr, f.id() ) << ErrorFeature( layerInter, testFeature->id() ), QApplication::translate( "UnionTool", "GEOSIntersection returned empty geometry even though the geometries intersect" ) );
-          }
-          else
-          {
-            QgsFeature *outFeature = new QgsFeature();
-            outFeature->setGeometry( outGeometry );
-            QgsAttributes fAtt = f.attributes();
-            QgsAttributes testAtt = testFeature->attributes();
-            outFeature->setAttributes( fAtt + testAtt );
-            outputFeatures.append( outFeature );
-          }
-        }
+        return;
       }
-    }
-    if ( !newGeom.isEmpty() )
-    {
-      QgsFeature *outFeature = new QgsFeature();
-      outFeature->setGeometry( newGeom );
 
-      QgsAttributes fAtt;
+      QgsGeometry geom = f.geometry();
       if ( job->taskFlag == ProcessLayerAFeature )
       {
-        fAtt.append( f.attributes() );
-        for ( int i = 0; i < nAttB; ++i )
+        if( !getFeatureAtId( f, job->featureid, mLayerA, mFieldIndicesA ) )
         {
-          fAtt.append( QVariant() );
+            return;
         }
+        QgsFeatureList intersection = QgsOverlayUtils::featureIntersection( f, *mLayerA, *mLayerB, mSpatialIndexB, mTransformContext, mFieldIndicesA, mFieldIndicesB );
+        writeFeatures( intersection );
+        QgsFeatureList differenceA = QgsOverlayUtils::featureDifference( f, *mLayerA, *mLayerB, mSpatialIndexB, mTransformContext, mLayerA->fields().size(), mLayerB->fields().size(), QgsOverlayUtils::OutputAB );
+        writeFeatures( differenceA );
       }
-      else
+      else // if(job->taskFlag == ProcessLayerBFeature)
       {
-        for ( int i = 0; i < nAttA; ++i )
+        if( !getFeatureAtId( f, job->featureid, mLayerB, mFieldIndicesB ) )
         {
-          fAtt.append( QVariant() );
+            return;
         }
-        fAtt.append( f.attributes() );
+        QgsFeatureList differenceB = QgsOverlayUtils::featureDifference( f, *mLayerB, *mLayerA, mSpatialIndexA, mTransformContext, mLayerB->fields().size(), mLayerA->fields().size(), QgsOverlayUtils::OutputBA );
+        writeFeatures( differenceB );
       }
-      outFeature->setAttributes( fAtt );
-      outputFeatures.append( outFeature );
-    }
-
-    writeFeatures( outputFeatures );
-    qDeleteAll( outputFeatures );
-    qDeleteAll( featureList );
   }
 
 } // Geoprocessing

@@ -50,7 +50,7 @@ namespace Vectoranalysis
         QString errorMsg;
       };
 
-      AbstractTool( QgsFeatureSink *output, QgsWkbTypes::Type outWkbType, double precision = 1E-7 );
+      AbstractTool( QgsFeatureSink *output, QgsWkbTypes::Type outWkbType, QgsCoordinateTransformContext transformContext, double precision = 1E-7 );
       virtual ~AbstractTool();
       QFuture<void> init();
       virtual QFuture<void> execute( int task );
@@ -90,9 +90,7 @@ namespace Vectoranalysis
       void buildSpatialIndex( QgsSpatialIndex &index, QgsFeatureSource *layer ) const;
       void appendToJobQueue( QgsFeatureSource *layer, int taskFlag = 0 );
       bool getFeatureAtId( QgsFeature &feature, QgsFeatureId id, QgsFeatureSource *layer, const QgsAttributeList &attIdx );
-      QVector<QgsFeature *> getIntersects( const QgsRectangle &rect, QgsSpatialIndex &index, QgsFeatureSource *layer, const QgsAttributeList &attIdx );
-      void writeFeatures( const QVector<QgsFeature *> &outFeatures );
-      void writeFeature( const QgsGeometry &geom, const QgsAttributes &att );
+      void writeFeatures( QgsFeatureList& outFeatures );
 
       void reportInvalidFeatureError( QgsFeatureSource *layer, const QgsFeatureId &id, const QString &errorMessage )
       {
@@ -113,13 +111,12 @@ namespace Vectoranalysis
 
       QList<QString> mWriteErrors;
       QMutex mErrorMutex;
+
       QMutex mIntersectMutex;
       QMutex mWriteMutex;
       QgsFeatureSink *mOutput;
-      int mNumOutFields;
-      QgsWkbTypes::Type mOutWkbType;
-      QString mOutputDriverName;
       double mPrecision;
+      QgsCoordinateTransformContext mTransformContext;
   };
 
 } // Geoprocessing

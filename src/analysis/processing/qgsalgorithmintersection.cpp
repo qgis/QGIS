@@ -110,7 +110,7 @@ QVariantMap QgsIntersectionAlgorithm::processAlgorithm( const QVariantMap &param
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
 
-  Vectoranalysis::IntersectionTool tool( sourceA.get(), sourceB.get(), fieldIndicesA, fieldIndicesB, sink.get(), geomType );
+  Vectoranalysis::IntersectionTool tool( sourceA.get(), sourceB.get(), fieldIndicesA, fieldIndicesB, sink.get(), geomType, context.transformContext() );
   QgsOverlayUtils::runVectorAnalysisTool( tool, feedback );
 
   return outputs;

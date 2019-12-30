@@ -19,6 +19,7 @@
 #include "differencetool.h"
 #include "qgsgeometry.h"
 #include "qgsgeos.h"
+#include "qgsoverlayutils.h"
 #include "qgsvectorlayer.h"
 
 namespace Vectoranalysis
@@ -28,8 +29,9 @@ namespace Vectoranalysis
                                   QgsFeatureSource *layerB,
                                   QgsFeatureSink *output,
                                   QgsWkbTypes::Type outWkbType,
+                                  QgsCoordinateTransformContext transformContext,
                                   double precision )
-    : AbstractTool( output, outWkbType, precision ), mLayerA( layerA ), mLayerB( layerB )
+    : AbstractTool( output, outWkbType, transformContext, precision ), mLayerA( layerA ), mLayerB( layerB )
   {
   }
 
@@ -41,46 +43,14 @@ namespace Vectoranalysis
 
   void DifferenceTool::processFeature( const Job *job )
   {
-
-    // Get currently processed feature
-    QgsFeature f;
-    if ( !getFeatureAtId( f, job->featureid, mLayerA, mLayerA->fields().allAttributesList() ) ) return;
-    QgsGeometry geom = f.geometry();
-
-    // Get features which intersect current feature
-    QVector<QgsFeature *> featureList = getIntersects( geom.boundingBox(), mSpatialIndex, mLayerB, QgsAttributeList() );
-
-    // Compute difference (or add feature as is if no intersection)
-    QgsGeos geos( geom.constGet() );
-    geos.prepareGeometry();
-
-    QgsGeometry newGeom( geom );
-    for ( QgsFeature *testFeature : featureList )
-    {
-      QgsGeometry testGeom = testFeature->geometry();
-      if ( geos.intersects( testGeom.constGet() ) )
+      QgsFeature f;
+      if ( !mOutput || !mLayerA || !mLayerB || !getFeatureAtId( f, job->featureid, mLayerA, mLayerA->fields().allAttributesList() ) )
       {
-        QgsGeometry newGeomTmp = newGeom.difference( testGeom );
-        if ( newGeomTmp.isNull() )
-        {
-          reportGeometryError( QList<ErrorFeature>() << ErrorFeature( mLayerA, job->featureid ) << ErrorFeature( mLayerB, testFeature->id() ), newGeomTmp.lastError() );
-        }
-        else
-        {
-          newGeom = newGeomTmp;
-        }
+          return;
       }
-    }
 
-    if ( !newGeom.isEmpty() )
-    {
-      QgsFeature outFeature;
-      outFeature.setGeometry( newGeom );
-      outFeature.setAttributes( f.attributes() );
-      writeFeatures( QVector<QgsFeature *>() << &outFeature );
-    }
-
-    qDeleteAll( featureList );
+      QgsFeatureList difference = QgsOverlayUtils::featureDifference( f, *mLayerA, *mLayerB, mSpatialIndex, mTransformContext, mLayerA->fields().size(), mLayerB->fields().size(), QgsOverlayUtils::OutputA );
+      writeFeatures( difference );
   }
 
 } // Geoprocessing

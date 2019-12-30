@@ -20,6 +20,7 @@
 #include "qgsfeaturesource.h"
 #include "qgsgeometry.h"
 #include "qgsgeos.h"
+#include "qgsoverlayutils.h"
 #include "qgsvectorlayer.h"
 
 namespace Vectoranalysis
@@ -32,8 +33,9 @@ namespace Vectoranalysis
     const QgsAttributeList &fieldIndicesB,
     QgsFeatureSink *output,
     QgsWkbTypes::Type outWkbType,
+    QgsCoordinateTransformContext transformContext,
     double precision )
-    : AbstractTool( output, outWkbType, precision ), mLayerA( layerA ), mLayerB( layerB ), mFieldIndicesA( fieldIndicesA ), mFieldIndicesB( fieldIndicesB )
+    : AbstractTool( output, outWkbType, transformContext, precision ), mLayerA( layerA ), mLayerB( layerB ), mFieldIndicesA( fieldIndicesA ), mFieldIndicesB( fieldIndicesB )
   {
   }
 
@@ -47,14 +49,34 @@ namespace Vectoranalysis
   {
     // Get currently processed feature
     QgsFeature f;
-    if ( !getFeatureAtId( f, job->featureid, mLayerA, mFieldIndicesA ) )
+    if ( !mOutput || !mLayerA || !mLayerB || !getFeatureAtId( f, job->featureid, mLayerA, mFieldIndicesA ) )
     {
       return;
     }
+
+    QgsFeatureList intersection = QgsOverlayUtils::featureIntersection( f, *mLayerA, *mLayerB, mSpatialIndex, mTransformContext, mFieldIndicesA, mFieldIndicesB );
+    writeFeatures( intersection );
+
+#if 0
     QgsGeometry geom = f.geometry();
 
     // Get features which intersect current feature
     QVector<QgsFeature *> featureList = getIntersects( geom.boundingBox(), mSpatialIndex, mLayerB, mFieldIndicesB );
+    if ( featureList.isEmpty() )
+    {
+      return;
+    }
+
+    for ( QgsFeature *testFeature : featureList )
+    {
+        if( !testFeature )
+        {
+            return;
+        }
+
+        QgsFeatureList intersection = QgsOverlayUtils::featureIntersection( *testFeature, *mLayerA, *mLayerB, mSpatialIndex, mTransformContext, mFieldIndicesA, mFieldIndicesB );
+        writeFeatures( intersection );
+    }
 
     // Perform intersections
     QgsGeos geos( geom.constGet() );
@@ -91,6 +113,7 @@ namespace Vectoranalysis
     writeFeatures( outputFeatures );
     qDeleteAll( outputFeatures );
     qDeleteAll( featureList );
+#endif //0
   }
 
 } // Geoprocessing

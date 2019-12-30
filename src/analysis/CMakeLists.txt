@@ -398,6 +398,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/analysis
   interpolation
   network
+  processing
   vector
 )
 INCLUDE_DIRECTORIES(SYSTEM

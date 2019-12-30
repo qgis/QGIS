@@ -19,6 +19,7 @@
 #include "symdifferencetool.h"
 #include "qgsgeometry.h"
 #include "qgsgeos.h"
+#include "qgsoverlayutils.h"
 #include "qgsvectorlayer.h"
 
 namespace Vectoranalysis
@@ -29,8 +30,9 @@ namespace Vectoranalysis
     QgsFeatureSource *layerB,
     QgsFeatureSink *output,
     QgsWkbTypes::Type outWkbType,
+    QgsCoordinateTransformContext transformContext,
     double precision )
-    : AbstractTool( output, outWkbType, precision ), mLayerA( layerA ), mLayerB( layerB )
+    : AbstractTool( output, outWkbType, transformContext, precision ), mLayerA( layerA ), mLayerB( layerB )
   {
   }
 
@@ -44,85 +46,30 @@ namespace Vectoranalysis
 
   void SymDifferenceTool::processFeature( const Job *job )
   {
-    QgsFeatureSource *layerCurr = 0, * layerInter = 0;
-    QgsSpatialIndex *spatialIndex = 0;
-
-    if ( job->taskFlag == ProcessLayerAFeature )
-    {
-      layerCurr = mLayerA;
-      layerInter = mLayerB;
-      spatialIndex = &mSpatialIndexB;
-    }
-    else // if(job->taskFlag == ProcessLayerBFeature)
-    {
-      layerCurr = mLayerB;
-      layerInter = mLayerA;;
-      spatialIndex = &mSpatialIndexA;
-    }
-
-    // Get currently processed feature
-    QgsFeature f;
-    if ( !getFeatureAtId( f, job->featureid, layerCurr, layerCurr->fields().allAttributesList() ) )
-    {
-      return;
-    }
-    QgsGeometry geom = f.geometry();
-
-    int nAttA = mLayerA->fields().size();
-    int nAttB = mLayerB->fields().size();
-
-    // Get features which intersect current feature
-    QVector<QgsFeature *> featureList = getIntersects( geom.boundingBox(), *spatialIndex, layerInter, layerInter->fields().allAttributesList() );
-
-    // Cut off all parts of current feature which intersect with features from intersecting layer
-    QgsGeos geos( geom.constGet() );
-    geos.prepareGeometry();
-
-    QgsGeometry newGeom( geom );
-    for ( QgsFeature *testFeature : featureList )
-    {
-      QgsGeometry testGeom = testFeature->geometry();
-      if ( geos.intersects( testGeom.constGet() ) )
+      QgsFeature f;
+      if ( !mOutput || !mLayerA || !mLayerB )
       {
-        QgsGeometry newGeomTmp = newGeom.difference( testGeom );
-        if ( newGeomTmp.isNull() )
-        {
-          reportGeometryError( QList<ErrorFeature>() << ErrorFeature( layerCurr, f.id() ) << ErrorFeature( layerInter, testFeature->id() ), newGeomTmp.lastError() );
-          continue;
-        }
-        else
-        {
-          newGeom = newGeomTmp;
-        }
+        return;
       }
-    }
 
-    if ( !newGeom.isEmpty() )
-    {
-      QgsFeature outFeature;
-      outFeature.setGeometry( newGeom );
-      QgsAttributes fAtt;
+      QgsGeometry geom = f.geometry();
       if ( job->taskFlag == ProcessLayerAFeature )
       {
-        fAtt.append( f.attributes() );
-        for ( int i = 0; i < nAttB; ++i )
+        if( !getFeatureAtId( f, job->featureid, mLayerA, mLayerA->fields().allAttributesList() ) )
         {
-          fAtt.append( QVariant() );
+            return;
         }
+        QgsFeatureList differenceA = QgsOverlayUtils::featureDifference( f, *mLayerA, *mLayerB, mSpatialIndexB, mTransformContext, mLayerA->fields().size(), mLayerB->fields().size(), QgsOverlayUtils::OutputAB );
+        writeFeatures( differenceA );
       }
-      else
+      else // if(job->taskFlag == ProcessLayerBFeature)
       {
-        for ( int i = 0; i < nAttA; ++i )
+        if( !getFeatureAtId( f, job->featureid, mLayerB, mLayerB->fields().allAttributesList() ) )
         {
-          fAtt.append( QVariant() );
+            return;
         }
-        fAtt.append( f.attributes() );
+        QgsFeatureList differenceB = QgsOverlayUtils::featureDifference( f, *mLayerB, *mLayerA, mSpatialIndexA, mTransformContext, mLayerB->fields().size(), mLayerA->fields().size(), QgsOverlayUtils::OutputBA );
+        writeFeatures( differenceB );
       }
-      outFeature.setAttributes( fAtt );
-      writeFeatures( QVector<QgsFeature *>() << &outFeature );
-    }
-
-    qDeleteAll( featureList );
   }
-
 } // Geoprocessing

@@ -28,8 +28,11 @@ namespace Vectoranalysis
     public:
       UnionTool( QgsFeatureSource *layerA,
                  QgsFeatureSource *layerB,
+                 const QgsAttributeList &fieldIndicesA,
+                 const QgsAttributeList &fieldIndicesB,
                  QgsFeatureSink *output,
                  QgsWkbTypes::Type outWkbType,
+                 QgsCoordinateTransformContext transformContext,
                  double precision = 1E-7 );
 
     private:
@@ -43,6 +46,8 @@ namespace Vectoranalysis
       QgsSpatialIndex mSpatialIndexB;
       QgsFeatureSource *mLayerA;
       QgsFeatureSource *mLayerB;
+      QgsAttributeList mFieldIndicesA;
+      QgsAttributeList mFieldIndicesB;
 
       void prepare();
       void processFeature( const Job *job );

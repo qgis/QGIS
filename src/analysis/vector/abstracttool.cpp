@@ -48,7 +48,7 @@ namespace Vectoranalysis
     }
   }
 
-  AbstractTool::AbstractTool( QgsFeatureSink *output, QgsWkbTypes::Type outWkbType, double precision ): mOutput( output ), mOutWkbType( outWkbType ), mPrecision( precision )
+  AbstractTool::AbstractTool( QgsFeatureSink *output, QgsWkbTypes::Type outWkbType, QgsCoordinateTransformContext transformContext, double precision ): mOutput( output ), mPrecision( precision ), mTransformContext( transformContext )
   {
   }
 
@@ -104,74 +104,16 @@ namespace Vectoranalysis
     return true;
   }
 
-  QVector<QgsFeature *> AbstractTool::getIntersects( const QgsRectangle &rect, QgsSpatialIndex &index, QgsFeatureSource *layer, const QgsAttributeList &attIdx )
-  {
-    mIntersectMutex.lock();
-    QList<QgsFeatureId> intersectIds = index.intersects( rect );
-    mIntersectMutex.unlock();
-
-    QVector<QgsFeature *> featureList;
-    for ( QgsFeatureId id : intersectIds )
-    {
-      QgsFeature *feature = new QgsFeature();
-      if ( !getFeatureAtId( *feature, id, layer, attIdx ) )
-      {
-        delete feature;
-        continue;
-      }
-      featureList.append( feature );
-    }
-    return featureList;
-  }
-
-  void AbstractTool::writeFeatures( const QVector<QgsFeature *> &outFeatures )
+  void AbstractTool::writeFeatures( QgsFeatureList& outFeatures )
   {
     QMutexLocker locker( &mWriteMutex );
-    for ( QgsFeature *feature : outFeatures )
+
+    if( !mOutput )
     {
-      QgsGeometry fGeom = feature->geometry();
-      fGeom.convertGeometryCollectionToSubclass( QgsWkbTypes::geometryType( mOutWkbType ) );
-
-      // Skip incompatible geometries
-      if ( QgsWkbTypes::singleType( fGeom.wkbType() ) != QgsWkbTypes::singleType( mOutWkbType ) )
-      {
-        QgsDebugMsg( QString( "Skipping incompatible geometry: %1 %2" ).arg( fGeom.wkbType() ).arg( mOutWkbType ) );
-        continue;
-      }
-
-      // If output type is a singleType, create features for each single geometry
-      if ( mOutWkbType == QgsWkbTypes::singleType( mOutWkbType ) )
-      {
-        for ( QgsGeometry geometry : fGeom.asGeometryCollection() )
-        {
-          writeFeature( geometry, feature->attributes() );
-        }
-      }
-      else
-      {
-        if ( QgsWkbTypes::singleType( mOutWkbType ) == fGeom.wkbType() )
-        {
-          fGeom.convertToMultiType();
-        }
-        writeFeature( fGeom, feature->attributes() );
-      }
-    }
-  }
-
-  void AbstractTool::writeFeature( const QgsGeometry &geom, const QgsAttributes &att )
-  {
-    if ( !mOutput || geom.isEmpty() )
-    {
-      return;
+        return;
     }
 
-    QgsFeature f;
-    f.setGeometry( geom );
-    f.setAttributes( att );
-    if ( !mOutput->addFeature( f ) )
-    {
-      mWriteErrors.append( QObject::tr( "Failed to write feature to datasource" ) );
-    }
+    mOutput->addFeatures( outFeatures, QgsFeatureSink::FastInsert );
   }
 
 } // Geoprocessing
