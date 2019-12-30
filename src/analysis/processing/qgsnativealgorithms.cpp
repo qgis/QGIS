@@ -19,6 +19,7 @@
 #include "qgsalgorithmaddincrementalfield.h"
 #include "qgsalgorithmaddtablefield.h"
 #include "qgsalgorithmaddxyfields.h"
+#include "qgsalgorithmaffinetransform.h"
 #include "qgsalgorithmapplylayerstyle.h"
 #include "qgsalgorithmarraytranslatedfeatures.h"
 #include "qgsalgorithmaspect.h"
@@ -196,6 +197,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsAddTableFieldAlgorithm() );
   addAlgorithm( new QgsAddXYFieldsAlgorithm() );
   addAlgorithm( new QgsAddUniqueValueIndexAlgorithm() );
+  addAlgorithm( new QgsAffineTransformationAlgorithm() );
   addAlgorithm( new QgsApplyLayerStyleAlgorithm() );
   addAlgorithm( new QgsArrayTranslatedFeaturesAlgorithm() );
   addAlgorithm( new QgsAspectAlgorithm() );
