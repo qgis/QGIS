@@ -25,6 +25,8 @@ INSERT INTO qgis_test."Raster1" (name, "Rast") SELECT
     1, '8BUI', 0.0, NULL
   );
 
+
+-- in-db 1 band float 32 raster
 CREATE TABLE "aspect_clipped_gpu_mini" ("rid" serial PRIMARY KEY,"rast" raster,"filename" text);
 CREATE TABLE "o_2_aspect_clipped_gpu_mini" ("rid" serial PRIMARY KEY,"rast" raster,"filename" text);
 CREATE TABLE "o_4_aspect_clipped_gpu_mini" ("rid" serial PRIMARY KEY,"rast" raster,"filename" text);
@@ -42,5 +44,9 @@ SELECT AddRasterConstraints('','o_2_aspect_clipped_gpu_mini','rast',TRUE,TRUE,TR
 SELECT AddRasterConstraints('','o_4_aspect_clipped_gpu_mini','rast',TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE);
 SELECT AddOverviewConstraints('','o_2_aspect_clipped_gpu_mini','rast','','aspect_clipped_gpu_mini','rast',2);
 SELECT AddOverviewConstraints('','o_4_aspect_clipped_gpu_mini','rast','','aspect_clipped_gpu_mini','rast',4);
+
+-- in-db float 32 raster with no constraints
+CREATE TABLE "aspect_clipped_gpu_mini_no_constraints" ("rid" serial PRIMARY KEY,"rast" raster);
+INSERT INTO "aspect_clipped_gpu_mini_no_constraints" ("rast") VALUES ('0100000100000000000000394000000000000039C000000000D9204F41000000008F8B424100000000000000000000000000000000DB0B0000060005004A003C1CC66A610843880B0E431CC2194306342543B7633C43861858436E0A1143BBAD194359612743A12B334317BE4343DECE59432B621B43F0E42843132B3843AC824043E6CF48436E465A435C4D2D430FA63D43F87A4843B5494A4349454E4374F35B43906E41433AB54C43B056504358575243B1EC574322615F43'::raster);
 
 

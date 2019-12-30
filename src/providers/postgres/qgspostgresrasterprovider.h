@@ -21,6 +21,8 @@
 #include "qgsprovidermetadata.h"
 #include "qgspostgresconn.h"
 
+#include <exception>
+
 class QgsPostgresRasterProvider : public QgsRasterDataProvider
 {
 
@@ -54,6 +56,10 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     virtual QString lastErrorTitle() override;
     virtual QString lastError() override;
     int capabilities() const override;
+
+    // Utility functions
+    //! Parses a WKB raster and returns information as a variant map
+    static QVariantMap parseWkb( const QByteArray &wkb );
 
     static const QString PG_RASTER_PROVIDER_KEY;
     static const QString PG_RASTER_PROVIDER_DESCRIPTION;
@@ -135,6 +141,15 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     int ySize() const override;
 };
 
+
+struct QgsPostgresRasterProviderException: public std::exception
+{
+  QgsPostgresRasterProviderException( const QString &msg )
+    : message( msg )
+  {}
+
+  QString message;
+};
 
 class QgsPostgresRasterProviderMetadata: public QgsProviderMetadata
 {

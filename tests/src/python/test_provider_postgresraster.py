@@ -50,7 +50,7 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
         # Create test layers
-        cls.rl = QgsRasterLayer(cls.dbconn + ' sslmode=disable key=\'pk\' srid=9001  table="public"."aspect_clipped_gpu_mini" sql=', 'test', 'postgresraster')
+        cls.rl = QgsRasterLayer(cls.dbconn + ' sslmode=disable key=\'pk\' srid=3035  table="public"."aspect_clipped_gpu_mini" sql=', 'test', 'postgresraster')
         assert cls.rl.isValid()
         cls.source = cls.rl.dataProvider()
 
@@ -80,17 +80,17 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         actual = block.data().toHex()
         self.assertEqual(len(actual), len(expected))
         self.assertEqual(actual, expected)
-
-        from IPython import embed
-        embed()
-        print(self.rl.publicSource())
-
         extent = QgsRectangle.fromWkt('POLYGON((4080090 2430646, 4080161 2430646, 4080161 2430685, 4080090 2430685, 4080090 2430646))')
         block = self.source.block(1, extent, 2, 1)
-        expected = b'f0e42843e6cf4843'
+        expected = b'f87a4843003c1cc6'
         actual = block.data().toHex()
         self.assertEqual(len(actual), len(expected))
         self.assertEqual(actual, expected)
+
+    def testNoConstraintRaster(self):
+
+        rl = QgsRasterLayer(self.dbconn + ' sslmode=disable key=\'pk\' srid=3035  table="public"."aspect_clipped_gpu_mini_no_constraints" sql=', 'test', 'postgresraster')
+        self.assertTrue(rl.isValid())
 
 
 if __name__ == '__main__':
