@@ -69,7 +69,6 @@ namespace Vectoranalysis
 
   void AbstractTool::buildSpatialIndex( QgsSpatialIndex &index, QgsFeatureSource *layer ) const
   {
-    QgsFeature currentFeature;
     QgsFeatureRequest request;
     request.setFlags( QgsFeatureRequest::SubsetOfAttributes );
     request.setSubsetOfAttributes( QgsAttributeList() );

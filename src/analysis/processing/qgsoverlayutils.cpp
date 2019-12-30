@@ -73,327 +73,142 @@ static bool sanitizeDifferenceResult( QgsGeometry &geom )
   return true;
 }
 
-QgsFeatureList QgsOverlayUtils::featureIntersection( const QgsFeature& featA, const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsSpatialIndex& indexB, const QgsCoordinateTransformContext& transformContext, const QList<int> &fieldIndicesA, const QList<int> &fieldIndicesB )
+QgsFeatureList QgsOverlayUtils::featureIntersection( const QgsFeature &featA, const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsSpatialIndex &indexB, const QgsCoordinateTransformContext &transformContext, const QList<int> &fieldIndicesA, const QList<int> &fieldIndicesB )
 {
-    QgsFeatureList result;
-    if ( !featA.hasGeometry() )
-    {
-        return result;
-    }
-
-    QgsGeometry geom( featA.geometry() );
-    QgsFeatureIds intersects = indexB.intersects( geom.boundingBox() ).toSet();
-
-    QgsFeatureRequest request;
-    request.setFilterFids( intersects );
-    request.setDestinationCrs( sourceA.sourceCrs(), transformContext );
-    request.setSubsetOfAttributes( fieldIndicesB );
-
-    std::unique_ptr< QgsGeometryEngine > engine;
-    if ( !intersects.isEmpty() )
-    {
-      // use prepared geometries for faster intersection tests
-      engine.reset( QgsGeometry::createGeometryEngine( geom.constGet() ) );
-      engine->prepareGeometry();
-    }
-
-    QgsAttributes outAttributes( fieldIndicesA.count() + fieldIndicesB.count() );
-    const QgsAttributes attrsA( featA.attributes() );
-    for ( int i = 0; i < fieldIndicesA.count(); ++i )
-    {
-        outAttributes[i] = attrsA[fieldIndicesA[i]];
-    }
-
-    QgsFeature featB;
-    QgsFeatureIterator fitB = sourceB.getFeatures( request );
-    while ( fitB.nextFeature( featB ) )
-    {
-      QgsGeometry tmpGeom( featB.geometry() );
-      if ( !engine->intersects( tmpGeom.constGet() ) )
-        continue;
-
-      QgsGeometry intGeom = geom.intersection( tmpGeom );
-      if ( !sanitizeIntersectionResult( intGeom, QgsWkbTypes::geometryType( QgsWkbTypes::multiType( sourceA.wkbType() ) ) ) )
-        continue;
-
-      const QgsAttributes attrsB( featB.attributes() );
-      for ( int i = 0; i < fieldIndicesB.count(); ++i )
-        outAttributes[fieldIndicesA.count() + i] = attrsB[fieldIndicesB[i]];
-
-      QgsFeature outFeat;
-      outFeat.setGeometry( intGeom );
-      outFeat.setAttributes( outAttributes );
-      result.append( outFeat );
-    }
-
-    return result;
-}
-
-QgsFeatureList QgsOverlayUtils::featureDifference( const QgsFeature& featA, const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsSpatialIndex& indexB, const QgsCoordinateTransformContext& transformContext,
-                                                   int fieldsCountA, int fieldsCountB, QgsOverlayUtils::DifferenceOutput outputAttrs )
-{
-    QgsFeatureList result;
-
-    if ( !featA.hasGeometry() ) // TODO: should we write out features that do not have geometry?
-    {
-        result.append( featA );
-        return result;
-    }
-
-    QgsGeometry geom( featA.geometry() );
-    QgsFeatureIds intersects = indexB.intersects( geom.boundingBox() ).toSet();
-
-    QgsFeatureRequest request;
-    request.setFilterFids( intersects );
-    request.setNoAttributes();
-    if ( outputAttrs != OutputBA )
-      request.setDestinationCrs( sourceA.sourceCrs(), transformContext );
-
-    std::unique_ptr< QgsGeometryEngine > engine;
-    if ( !intersects.isEmpty() )
-    {
-      // use prepared geometries for faster intersection tests
-      engine.reset( QgsGeometry::createGeometryEngine( geom.constGet() ) );
-      engine->prepareGeometry();
-    }
-
-    QVector<QgsGeometry> geometriesB;
-    QgsFeature featB;
-    QgsFeatureIterator fitB = sourceB.getFeatures( request );
-    while ( fitB.nextFeature( featB ) )
-    {
-      if ( engine->intersects( featB.geometry().constGet() ) )
-        geometriesB << featB.geometry();
-    }
-
-    if ( !geometriesB.isEmpty() )
-    {
-      QgsGeometry geomB = QgsGeometry::unaryUnion( geometriesB );
-      if ( !geomB.lastError().isEmpty() )
-      {
-        // This may happen if input geometries from a layer do not line up well (for example polygons
-        // that are nearly touching each other, but there is a very tiny overlap or gap at one of the edges).
-        // It is possible to get rid of this issue in two steps:
-        // 1. snap geometries with a small tolerance (e.g. 1cm) using QgsGeometrySnapperSingleSource
-        // 2. fix geometries (removes polygons collapsed to lines etc.) using MakeValid
-        throw QgsProcessingException( QStringLiteral( "%1\n\n%2" ).arg( QObject::tr( "GEOS geoprocessing error: unary union failed." ), geomB.lastError() ) );
-      }
-      geom = geom.difference( geomB );
-    }
-
-    if ( !sanitizeDifferenceResult( geom ) )
-    {
-        return result;
-    }
-
-    QgsAttributes attrs;
-    attrs.resize( outputAttrs == OutputA ? fieldsCountA : ( fieldsCountA + fieldsCountB ) );
-    const QgsAttributes attrsA( featA.attributes() );
-    switch ( outputAttrs )
-    {
-      case OutputA:
-        attrs = attrsA;
-        break;
-      case OutputAB:
-        for ( int i = 0; i < fieldsCountA; ++i )
-          attrs[i] = attrsA[i];
-        break;
-      case OutputBA:
-        for ( int i = 0; i < fieldsCountA; ++i )
-          attrs[i + fieldsCountB] = attrsA[i];
-        break;
-    }
-
-    QgsFeature outFeat;
-    outFeat.setGeometry( geom );
-    outFeat.setAttributes( attrs );
-    result.append( outFeat );
-    return result;
-}
-
-
-void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, int &count, int totalCount, QgsOverlayUtils::DifferenceOutput outputAttrs )
-{
-  QgsFeatureRequest requestB;
-  requestB.setNoAttributes();
-  if ( outputAttrs != OutputBA )
-    requestB.setDestinationCrs( sourceA.sourceCrs(), context.transformContext() );
-  QgsSpatialIndex indexB( sourceB.getFeatures( requestB ), feedback );
-
-  int fieldsCountA = sourceA.fields().count();
-  int fieldsCountB = sourceB.fields().count();
-  QgsAttributes attrs;
-  attrs.resize( outputAttrs == OutputA ? fieldsCountA : ( fieldsCountA + fieldsCountB ) );
-
-  if ( totalCount == 0 )
-    totalCount = 1;  // avoid division by zero
-
-  QgsFeature featA;
-  QgsFeatureRequest requestA;
-  requestA.setInvalidGeometryCheck( context.invalidGeometryCheck() );
-  if ( outputAttrs == OutputBA )
-    requestA.setDestinationCrs( sourceB.sourceCrs(), context.transformContext() );
-  QgsFeatureIterator fitA = sourceA.getFeatures( requestA );
-  while ( fitA.nextFeature( featA ) )
+  QgsFeatureList result;
+  if ( !featA.hasGeometry() )
   {
-    if ( feedback->isCanceled() )
-      break;
-
-    if ( featA.hasGeometry() )
-    {
-      QgsGeometry geom( featA.geometry() );
-      QgsFeatureIds intersects = indexB.intersects( geom.boundingBox() ).toSet();
-
-      QgsFeatureRequest request;
-      request.setFilterFids( intersects );
-      request.setNoAttributes();
-      if ( outputAttrs != OutputBA )
-        request.setDestinationCrs( sourceA.sourceCrs(), context.transformContext() );
-
-      std::unique_ptr< QgsGeometryEngine > engine;
-      if ( !intersects.isEmpty() )
-      {
-        // use prepared geometries for faster intersection tests
-        engine.reset( QgsGeometry::createGeometryEngine( geom.constGet() ) );
-        engine->prepareGeometry();
-      }
-
-      QVector<QgsGeometry> geometriesB;
-      QgsFeature featB;
-      QgsFeatureIterator fitB = sourceB.getFeatures( request );
-      while ( fitB.nextFeature( featB ) )
-      {
-        if ( feedback->isCanceled() )
-          break;
-
-        if ( engine->intersects( featB.geometry().constGet() ) )
-          geometriesB << featB.geometry();
-      }
-
-      if ( !geometriesB.isEmpty() )
-      {
-        QgsGeometry geomB = QgsGeometry::unaryUnion( geometriesB );
-        if ( !geomB.lastError().isEmpty() )
-        {
-          // This may happen if input geometries from a layer do not line up well (for example polygons
-          // that are nearly touching each other, but there is a very tiny overlap or gap at one of the edges).
-          // It is possible to get rid of this issue in two steps:
-          // 1. snap geometries with a small tolerance (e.g. 1cm) using QgsGeometrySnapperSingleSource
-          // 2. fix geometries (removes polygons collapsed to lines etc.) using MakeValid
-          throw QgsProcessingException( QStringLiteral( "%1\n\n%2" ).arg( QObject::tr( "GEOS geoprocessing error: unary union failed." ), geomB.lastError() ) );
-        }
-        geom = geom.difference( geomB );
-      }
-
-      if ( !sanitizeDifferenceResult( geom ) )
-        continue;
-
-      const QgsAttributes attrsA( featA.attributes() );
-      switch ( outputAttrs )
-      {
-        case OutputA:
-          attrs = attrsA;
-          break;
-        case OutputAB:
-          for ( int i = 0; i < fieldsCountA; ++i )
-            attrs[i] = attrsA[i];
-          break;
-        case OutputBA:
-          for ( int i = 0; i < fieldsCountA; ++i )
-            attrs[i + fieldsCountB] = attrsA[i];
-          break;
-      }
-
-      QgsFeature outFeat;
-      outFeat.setGeometry( geom );
-      outFeat.setAttributes( attrs );
-      sink.addFeature( outFeat, QgsFeatureSink::FastInsert );
-    }
-    else
-    {
-      // TODO: should we write out features that do not have geometry?
-      sink.addFeature( featA, QgsFeatureSink::FastInsert );
-    }
-
-    ++count;
-    feedback->setProgress( count / ( double ) totalCount * 100. );
+    return result;
   }
-}
 
-
-void QgsOverlayUtils::intersection( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, int &count, int totalCount, const QList<int> &fieldIndicesA, const QList<int> &fieldIndicesB )
-{
-  QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::geometryType( QgsWkbTypes::multiType( sourceA.wkbType() ) );
-  int attrCount = fieldIndicesA.count() + fieldIndicesB.count();
+  QgsGeometry geom( featA.geometry() );
+  QgsFeatureIds intersects = indexB.intersects( geom.boundingBox() ).toSet();
 
   QgsFeatureRequest request;
-  request.setNoAttributes();
-  request.setDestinationCrs( sourceA.sourceCrs(), context.transformContext() );
+  request.setFilterFids( intersects );
+  request.setDestinationCrs( sourceA.sourceCrs(), transformContext );
+  request.setSubsetOfAttributes( fieldIndicesB );
 
-  QgsFeature outFeat;
-  QgsSpatialIndex indexB( sourceB.getFeatures( request ), feedback );
-
-  if ( totalCount == 0 )
-    totalCount = 1;  // avoid division by zero
-
-  QgsFeature featA;
-  QgsFeatureIterator fitA = sourceA.getFeatures( QgsFeatureRequest().setSubsetOfAttributes( fieldIndicesA ) );
-  while ( fitA.nextFeature( featA ) )
+  std::unique_ptr< QgsGeometryEngine > engine;
+  if ( !intersects.isEmpty() )
   {
-    if ( feedback->isCanceled() )
-      break;
+    // use prepared geometries for faster intersection tests
+    engine.reset( QgsGeometry::createGeometryEngine( geom.constGet() ) );
+    engine->prepareGeometry();
+  }
 
-    if ( !featA.hasGeometry() )
+  QgsAttributes outAttributes( fieldIndicesA.count() + fieldIndicesB.count() );
+  const QgsAttributes attrsA( featA.attributes() );
+  for ( int i = 0; i < fieldIndicesA.count(); ++i )
+  {
+    outAttributes[i] = attrsA[fieldIndicesA[i]];
+  }
+
+  QgsFeature featB;
+  QgsFeatureIterator fitB = sourceB.getFeatures( request );
+  while ( fitB.nextFeature( featB ) )
+  {
+    QgsGeometry tmpGeom( featB.geometry() );
+    if ( !engine->intersects( tmpGeom.constGet() ) )
       continue;
 
-    QgsGeometry geom( featA.geometry() );
-    QgsFeatureIds intersects = indexB.intersects( geom.boundingBox() ).toSet();
+    QgsGeometry intGeom = geom.intersection( tmpGeom );
+    if ( !sanitizeIntersectionResult( intGeom, QgsWkbTypes::geometryType( QgsWkbTypes::multiType( sourceA.wkbType() ) ) ) )
+      continue;
 
-    QgsFeatureRequest request;
-    request.setFilterFids( intersects );
-    request.setDestinationCrs( sourceA.sourceCrs(), context.transformContext() );
-    request.setSubsetOfAttributes( fieldIndicesB );
+    const QgsAttributes attrsB( featB.attributes() );
+    for ( int i = 0; i < fieldIndicesB.count(); ++i )
+      outAttributes[fieldIndicesA.count() + i] = attrsB[fieldIndicesB[i]];
 
-    std::unique_ptr< QgsGeometryEngine > engine;
-    if ( !intersects.isEmpty() )
-    {
-      // use prepared geometries for faster intersection tests
-      engine.reset( QgsGeometry::createGeometryEngine( geom.constGet() ) );
-      engine->prepareGeometry();
-    }
-
-    QgsAttributes outAttributes( attrCount );
-    const QgsAttributes attrsA( featA.attributes() );
-    for ( int i = 0; i < fieldIndicesA.count(); ++i )
-      outAttributes[i] = attrsA[fieldIndicesA[i]];
-
-    QgsFeature featB;
-    QgsFeatureIterator fitB = sourceB.getFeatures( request );
-    while ( fitB.nextFeature( featB ) )
-    {
-      if ( feedback->isCanceled() )
-        break;
-
-      QgsGeometry tmpGeom( featB.geometry() );
-      if ( !engine->intersects( tmpGeom.constGet() ) )
-        continue;
-
-      QgsGeometry intGeom = geom.intersection( tmpGeom );
-      if ( !sanitizeIntersectionResult( intGeom, geometryType ) )
-        continue;
-
-      const QgsAttributes attrsB( featB.attributes() );
-      for ( int i = 0; i < fieldIndicesB.count(); ++i )
-        outAttributes[fieldIndicesA.count() + i] = attrsB[fieldIndicesB[i]];
-
-      outFeat.setGeometry( intGeom );
-      outFeat.setAttributes( outAttributes );
-      sink.addFeature( outFeat, QgsFeatureSink::FastInsert );
-    }
-
-    ++count;
-    feedback->setProgress( count / ( double ) totalCount * 100. );
+    QgsFeature outFeat;
+    outFeat.setGeometry( intGeom );
+    outFeat.setAttributes( outAttributes );
+    result.append( outFeat );
   }
+
+  return result;
+}
+
+QgsFeatureList QgsOverlayUtils::featureDifference( const QgsFeature &featA, const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsSpatialIndex &indexB, const QgsCoordinateTransformContext &transformContext,
+    int fieldsCountA, int fieldsCountB, QgsOverlayUtils::DifferenceOutput outputAttrs )
+{
+  QgsFeatureList result;
+
+  if ( !featA.hasGeometry() ) // TODO: should we write out features that do not have geometry?
+  {
+    result.append( featA );
+    return result;
+  }
+
+  QgsGeometry geom( featA.geometry() );
+  QgsFeatureIds intersects = indexB.intersects( geom.boundingBox() ).toSet();
+
+  QgsFeatureRequest request;
+  request.setFilterFids( intersects );
+  request.setNoAttributes();
+  if ( outputAttrs != OutputBA )
+    request.setDestinationCrs( sourceA.sourceCrs(), transformContext );
+
+  std::unique_ptr< QgsGeometryEngine > engine;
+  if ( !intersects.isEmpty() )
+  {
+    // use prepared geometries for faster intersection tests
+    engine.reset( QgsGeometry::createGeometryEngine( geom.constGet() ) );
+    engine->prepareGeometry();
+  }
+
+  QVector<QgsGeometry> geometriesB;
+  QgsFeature featB;
+  QgsFeatureIterator fitB = sourceB.getFeatures( request );
+  while ( fitB.nextFeature( featB ) )
+  {
+    if ( engine->intersects( featB.geometry().constGet() ) )
+      geometriesB << featB.geometry();
+  }
+
+  if ( !geometriesB.isEmpty() )
+  {
+    QgsGeometry geomB = QgsGeometry::unaryUnion( geometriesB );
+    if ( !geomB.lastError().isEmpty() )
+    {
+      // This may happen if input geometries from a layer do not line up well (for example polygons
+      // that are nearly touching each other, but there is a very tiny overlap or gap at one of the edges).
+      // It is possible to get rid of this issue in two steps:
+      // 1. snap geometries with a small tolerance (e.g. 1cm) using QgsGeometrySnapperSingleSource
+      // 2. fix geometries (removes polygons collapsed to lines etc.) using MakeValid
+      throw QgsProcessingException( QStringLiteral( "%1\n\n%2" ).arg( QObject::tr( "GEOS geoprocessing error: unary union failed." ), geomB.lastError() ) );
+    }
+    geom = geom.difference( geomB );
+  }
+
+  if ( !sanitizeDifferenceResult( geom ) )
+  {
+    return result;
+  }
+
+  QgsAttributes attrs;
+  attrs.resize( outputAttrs == OutputA ? fieldsCountA : ( fieldsCountA + fieldsCountB ) );
+  const QgsAttributes attrsA( featA.attributes() );
+  switch ( outputAttrs )
+  {
+    case OutputA:
+      attrs = attrsA;
+      break;
+    case OutputAB:
+      for ( int i = 0; i < fieldsCountA; ++i )
+        attrs[i] = attrsA[i];
+      break;
+    case OutputBA:
+      for ( int i = 0; i < fieldsCountA; ++i )
+        attrs[i + fieldsCountB] = attrsA[i];
+      break;
+  }
+
+  QgsFeature outFeat;
+  outFeat.setGeometry( geom );
+  outFeat.setAttributes( attrs );
+  result.append( outFeat );
+  return result;
 }
 
 void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatureSink &sink, QgsProcessingFeedback *feedback )

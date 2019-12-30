@@ -42,13 +42,9 @@ namespace QgsOverlayUtils
     OutputBA,  //!< Write attributes of both layers, inverted (first attributes of B, then attributes of A)
   };
 
-  QgsFeatureList featureIntersection( const QgsFeature& featA, const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsSpatialIndex& indexB, const QgsCoordinateTransformContext& transformContext, const QList<int> &fieldIndicesA, const QList<int> &fieldIndicesB );
-  QgsFeatureList featureDifference( const QgsFeature& featA, const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsSpatialIndex& indexB,
-                                    const QgsCoordinateTransformContext& transformContext, int fieldsCountA, int fieldsCountB, QgsOverlayUtils::DifferenceOutput outputAttrs );
-
-  void difference( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, int &count, int totalCount, DifferenceOutput outputAttrs );
-
-  void intersection( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, int &count, int totalCount, const QList<int> &fieldIndicesA, const QList<int> &fieldIndicesB );
+  QgsFeatureList featureIntersection( const QgsFeature &featA, const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsSpatialIndex &indexB, const QgsCoordinateTransformContext &transformContext, const QList<int> &fieldIndicesA, const QList<int> &fieldIndicesB );
+  QgsFeatureList featureDifference( const QgsFeature &featA, const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsSpatialIndex &indexB,
+                                    const QgsCoordinateTransformContext &transformContext, int fieldsCountA, int fieldsCountB, QgsOverlayUtils::DifferenceOutput outputAttrs );
 
   //! Makes sure that what came out from intersection of two geometries is good to be used in the output
   bool sanitizeIntersectionResult( QgsGeometry &geom, QgsWkbTypes::GeometryType geometryType );
