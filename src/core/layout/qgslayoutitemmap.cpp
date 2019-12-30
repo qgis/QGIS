@@ -2526,10 +2526,4 @@ void QgsLayoutItemMap::createStagedRenderJob( const QgsRectangle &extent, const 
   mStagedRendererJob->start();
 }
 
-void QgsLayoutItemMap::rotateItem( const double angle, const QPointF transformOrigin )
-{
-  QgsLayoutItem::rotateItem( angle, transformOrigin );
-
-  emit mapRotationChanged( mMapRotation );
-}
 
