@@ -1,0 +1,51 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmaplayerstyleguiutils.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsMapLayerStyleGuiUtils : QObject
+{
+%Docstring
+Various GUI utility functions for dealing with map layer's style manager
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerstyleguiutils.h"
+%End
+  public:
+
+    static QgsMapLayerStyleGuiUtils *instance();
+%Docstring
+returns a singleton instance of this class
+%End
+
+    void addStyleManagerActions( QMenu *m, QgsMapLayer *layer );
+%Docstring
+adds actions to the menu in accordance to the layer
+%End
+
+  private :
+    QAction *actionAddStyle( QgsMapLayer *layer, QObject *parent = 0 );
+    QAction *actionRemoveStyle( QgsMapLayer *layer, QObject *parent = 0 );
+    QAction *actionRenameStyle( QgsMapLayer *layer, QObject *parent = 0 );
+    QList<QAction *> actionsUseStyle( QgsMapLayer *layer, QObject *parent = 0 );
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmaplayerstyleguiutils.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

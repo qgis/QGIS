@@ -27,7 +27,7 @@
 #include "qgshelp.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmaptoolemitpoint.h"
-#include "qgis_app.h"
+#include "qgis_gui.h"
 
 class QgsPointXY;
 class QgsMapLayer;
@@ -39,15 +39,23 @@ class QgsRasterRendererWidget;
 class QgsRasterHistogramWidget;
 class QgsWebView;
 
+
 /**
+ * \ingroup gui
+ * \class QgsRasterLayerProperties
  * Property sheet for a raster map layer
-  */
-class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private Ui::QgsRasterLayerPropertiesBase
+ * \since QGIS 3.10 (in the GUI API)
+ */
+
+class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private Ui::QgsRasterLayerPropertiesBase
 {
     Q_OBJECT
 
   public:
 
+    /**
+     * enumeration for the different types of style
+     */
     enum StyleType
     {
       QML,
@@ -56,19 +64,22 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     Q_ENUM( StyleType )
 
     /**
-     * \brief Constructor
-     * \param ml Map layer for which properties will be displayed
+     * Constructor
+     * \param lyr Map layer for which properties will be displayed
+     * \param canvas the QgsMapCanvas instance
+     * \param parent the parent of this widget
+     * \param fl windows flag
      */
     QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 
-    //! Synchronize state with associated raster layer
-    void sync();
+  private slots:
 
-  public slots:
-    //TODO: Verify that these all need to be public
+    //! \brief auto slot executed when the active page in the main widget stack is changed
+    void optionsStackedWidget_CurrentChanged( int index ) override;
+
     //! \brief Applies the settings made in the dialog without closing the box
     void apply();
-    //! Called when cancel button is pressed
+    //! \brief Called when cancel button is pressed
     void onCancel();
     //! \brief Slot to update layer display name as original is edited.
     void mLayerOrigNameLineEd_textEdited( const QString &text );
@@ -84,8 +95,6 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     void pbnDefaultValues_clicked();
     //! \brief slot executed when user wishes to export transparency values
     void pbnExportTransparentPixelValues_clicked();
-    //! \brief auto slot executed when the active page in the main widget stack is changed
-    void optionsStackedWidget_CurrentChanged( int index ) override;
     //! \brief slow executed when user wishes to import transparency values
     void pbnImportTransparentPixelValues_clicked();
     //! \brief slot executed when user presses "Remove Selected Row" button on the transparency page
@@ -99,7 +108,8 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
 
     void pixelSelected( const QgsPointXY &, const Qt::MouseButton & );
 
-  private slots:
+
+
     void mRenderTypeComboBox_currentIndexChanged( int index );
     //! Load the default style when appropriate button is pressed.
     void loadDefaultStyle_clicked();
@@ -232,6 +242,9 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     bool mDisableRenderTypeComboBoxCurrentIndexChanged = false;
 
     bool mMetadataFilled;
+
+    //! Synchronize state with associated raster layer
+    void sync();
 
     friend class QgsAppScreenShots;
 };

@@ -17,26 +17,41 @@
 #define QGSMAPLAYERSTYLEGUIUTILS_H
 
 #include <QObject>
+#include "qgis_gui.h"
 
 class QgsMapLayer;
 
 class QAction;
 class QMenu;
 
-//! Various GUI utility functions for dealing with map layer's style manager
-class QgsMapLayerStyleGuiUtils : public QObject
+/**
+ * \ingroup gui
+ * \class QgsMapLayerStyleGuiUtils
+ * Various GUI utility functions for dealing with map layer's style manager
+ * \since QGIS 3.10 (in the GUI API)
+ */
+
+class GUI_EXPORT QgsMapLayerStyleGuiUtils : public QObject
 {
     Q_OBJECT
 
   public:
+
+    /**
+     * \brief returns a singleton instance of this class
+     */
     static QgsMapLayerStyleGuiUtils *instance();
+
+    /**
+     * \brief adds actions to the menu in accordance to the layer
+     */
+    void addStyleManagerActions( QMenu *m, QgsMapLayer *layer );
+
+  private :
     QAction *actionAddStyle( QgsMapLayer *layer, QObject *parent = nullptr );
     QAction *actionRemoveStyle( QgsMapLayer *layer, QObject *parent = nullptr );
     QAction *actionRenameStyle( QgsMapLayer *layer, QObject *parent = nullptr );
     QList<QAction *> actionsUseStyle( QgsMapLayer *layer, QObject *parent = nullptr );
-
-    //! Add actions for the given map layer to the menu
-    void addStyleManagerActions( QMenu *m, QgsMapLayer *layer );
 
   private slots:
     void addStyle();

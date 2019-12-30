@@ -49,7 +49,7 @@
 
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
-#include "../../app/qgsrasterlayerproperties.h"
+#include "../../gui/raster/qgsrasterlayerproperties.h"
 #include "qgsproviderregistry.h"
 
 #include "qgsgeorefdatapoint.h"

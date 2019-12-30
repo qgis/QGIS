@@ -18,7 +18,6 @@
 #include <limits>
 #include <typeinfo>
 
-#include "qgisapp.h"
 #include "qgsgui.h"
 #include "qgsapplication.h"
 #include "qgsbilinearrasterresampler.h"
@@ -55,6 +54,7 @@
 #include "qgshuesaturationfilter.h"
 #include "qgshillshaderendererwidget.h"
 #include "qgssettings.h"
+#include "qgsdatumtransformdialog.h"
 #include "qgsmaplayerlegend.h"
 #include "qgsfileutils.h"
 #include "qgswebview.h"
@@ -75,6 +75,7 @@
 #include <QMouseEvent>
 #include <QVector>
 #include <QUrl>
+#include <QMenu>
 
 QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags fl )
   : QgsOptionsDialogBase( QStringLiteral( "RasterLayerProperties" ), parent, fl )
@@ -1272,7 +1273,7 @@ void QgsRasterLayerProperties::pbnAddValuesManually_clicked()
 
 void QgsRasterLayerProperties::mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
-  QgisApp::instance()->askUserForDatumTransform( crs, QgsProject::instance()->crs(), mRasterLayer );
+  QgsDatumTransformDialog::run( crs, QgsProject::instance()->crs(), this, mMapCanvas, tr( "Select Transformation for the raster layer" ) );
   mRasterLayer->setCrs( crs );
   mMetadataWidget->crsChanged();
 }
@@ -1752,7 +1753,7 @@ void QgsRasterLayerProperties::toggleColorizeControls( bool colorizeEnabled )
 QLinearGradient QgsRasterLayerProperties::redGradient()
 {
   //define a gradient
-  ///@TODO change this to actual polygon dims
+  // TODO change this to actual polygon dims
   QLinearGradient myGradient = QLinearGradient( mGradientWidth, 0, mGradientWidth, mGradientHeight );
   myGradient.setColorAt( 0.0, QColor( 242, 14, 25, 190 ) );
   myGradient.setColorAt( 0.5, QColor( 175, 29, 37, 190 ) );
@@ -1762,7 +1763,7 @@ QLinearGradient QgsRasterLayerProperties::redGradient()
 QLinearGradient QgsRasterLayerProperties::greenGradient()
 {
   //define a gradient
-  ///@TODO change this to actual polygon dims
+  // TODO change this to actual polygon dims
   QLinearGradient myGradient = QLinearGradient( mGradientWidth, 0, mGradientWidth, mGradientHeight );
   myGradient.setColorAt( 0.0, QColor( 48, 168, 5, 190 ) );
   myGradient.setColorAt( 0.8, QColor( 36, 122, 4, 190 ) );
@@ -1772,7 +1773,7 @@ QLinearGradient QgsRasterLayerProperties::greenGradient()
 QLinearGradient QgsRasterLayerProperties::blueGradient()
 {
   //define a gradient
-  ///@TODO change this to actual polygon dims
+  // TODO change this to actual polygon dims
   QLinearGradient myGradient = QLinearGradient( mGradientWidth, 0, mGradientWidth, mGradientHeight );
   myGradient.setColorAt( 0.0, QColor( 30, 0, 106, 190 ) );
   myGradient.setColorAt( 0.2, QColor( 30, 72, 128, 190 ) );
@@ -1782,7 +1783,7 @@ QLinearGradient QgsRasterLayerProperties::blueGradient()
 QLinearGradient QgsRasterLayerProperties::grayGradient()
 {
   //define a gradient
-  ///@TODO change this to actual polygon dims
+  // TODO change this to actual polygon dims
   QLinearGradient myGradient = QLinearGradient( mGradientWidth, 0, mGradientWidth, mGradientHeight );
   myGradient.setColorAt( 0.0, QColor( 5, 5, 5, 190 ) );
   myGradient.setColorAt( 0.8, QColor( 122, 122, 122, 190 ) );
@@ -1792,7 +1793,7 @@ QLinearGradient QgsRasterLayerProperties::grayGradient()
 QLinearGradient QgsRasterLayerProperties::highlightGradient()
 {
   //define another gradient for the highlight
-  ///@TODO change this to actual polygon dims
+  // TODO change this to actual polygon dims
   QLinearGradient myGradient = QLinearGradient( mGradientWidth, 0, mGradientWidth, mGradientHeight );
   myGradient.setColorAt( 1.0, QColor( 255, 255, 255, 50 ) );
   myGradient.setColorAt( 0.5, QColor( 255, 255, 255, 100 ) );

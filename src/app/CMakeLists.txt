@@ -66,7 +66,6 @@ SET(QGIS_APP_SRCS
   qgsmasksourceselectionwidget.cpp
   qgsmapcanvasdockwidget.cpp
   qgsmaplayerstylecategoriesmodel.cpp
-  qgsmaplayerstyleguiutils.cpp
   qgsmapsavedialog.cpp
   qgsprojectlistitemdelegate.cpp
   qgspuzzlewidget.cpp
@@ -145,7 +144,6 @@ SET(QGIS_APP_SRCS
   qgsprojectlayergroupdialog.cpp
   qgsprojectproperties.cpp
   qgsrastercalcdialog.cpp
-  qgsrasterlayerproperties.cpp
   qgsrelationmanagerdialog.cpp
   qgsrelationadddlg.cpp
   qgsselectbyformdialog.cpp
