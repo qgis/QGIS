@@ -484,7 +484,7 @@ void QgsLayoutItemPicture::updateMapRotation()
   }
 
   rotation += mNorthOffset;
-  setPictureRotation( rotation % 360 );
+  setPictureRotation( ( rotation > 360.0) ? rotation - 360.0 : rotation );
 }
 
 void QgsLayoutItemPicture::loadPicture( const QVariant &data )
