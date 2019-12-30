@@ -40,6 +40,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmconstantraster.cpp
   processing/qgsalgorithmconvexhull.cpp
   processing/qgsalgorithmdbscanclustering.cpp
+  processing/qgsalgorithmdeleteduplicategeometries.cpp
   processing/qgsalgorithmdensifygeometriesbycount.cpp
   processing/qgsalgorithmdensifygeometriesbyinterval.cpp
   processing/qgsalgorithmdifference.cpp
