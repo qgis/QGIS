@@ -185,6 +185,8 @@ void PointSet::invalidateGeos()
   mOwnsGeom = false;
   mGeos = nullptr;
   mPreparedGeom = nullptr;
+  mLength = -1;
+  mArea = -1;
 }
 
 PointSet::~PointSet()
@@ -944,6 +946,9 @@ const GEOSGeometry *PointSet::geos() const
 
 double PointSet::length() const
 {
+  if ( mLength >= 0 )
+    return mLength;
+
   if ( !mGeos )
     createGeosGeom();
 
@@ -954,9 +959,34 @@ double PointSet::length() const
 
   try
   {
-    double len = 0;
-    ( void )GEOSLength_r( geosctxt, mGeos, &len );
-    return len;
+    ( void )GEOSLength_r( geosctxt, mGeos, &mLength );
+    return mLength;
+  }
+  catch ( GEOSException &e )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+    return -1;
+  }
+}
+
+double PointSet::area() const
+{
+  if ( mArea >= 0 )
+    return mArea;
+
+  if ( !mGeos )
+    createGeosGeom();
+
+  if ( !mGeos )
+    return -1;
+
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
+
+  try
+  {
+    ( void )GEOSArea_r( geosctxt, mGeos, &mArea );
+    mArea = std::fabs( mArea );
+    return mArea;
   }
   catch ( GEOSException &e )
   {

@@ -299,25 +299,22 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       prob->mFeatStartId[i] = idlp;
       prob->mInactiveCost[i] = std::pow( 2, 10 - 10 * feat->priority );
 
-      std::size_t max_p = 0;
+      std::size_t maxCandidates = 0;
       switch ( feat->feature->getGeosType() )
       {
         case GEOS_POINT:
           // this is usually 0, i.e. no maximum
-          max_p = feat->feature->maximumPointCandidates();
+          maxCandidates = feat->feature->maximumPointCandidates();
           break;
 
         case GEOS_LINESTRING:
-          max_p = feat->feature->maximumLineCandidates();
+          maxCandidates = feat->feature->maximumLineCandidates();
           break;
 
         case GEOS_POLYGON:
-          max_p = feat->feature->maximumPolygonCandidates();
+          maxCandidates = feat->feature->maximumPolygonCandidates();
           break;
       }
-
-      // sort candidates by cost, skip less interesting ones, calculate polygon costs (if using polygons)
-      max_p = CostCalculator::finalizeCandidatesCosts( feat.get(), max_p, &obstacles, bbx, bby );
 
       if ( isCanceled() )
         return nullptr;
@@ -352,10 +349,19 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
         }
       }
 
-      // only keep the 'max_p' best candidates
-      while ( feat->candidates.size() > max_p )
+      if ( feat->candidates.empty() )
+        continue;
+
+      // calculate final costs
+      CostCalculator::finalizeCandidatesCosts( feat.get(), bbx, bby );
+
+      // sort candidates list, best label to worst
+      std::sort( feat->candidates.begin(), feat->candidates.end(), CostCalculator::candidateSortGrow );
+
+      // only keep the 'maxCandidates' best candidates
+      if ( maxCandidates > 0 && feat->candidates.size() > maxCandidates )
       {
-        feat->candidates.pop_back();
+        feat->candidates.resize( maxCandidates );
       }
 
       if ( isCanceled() )
@@ -366,10 +372,10 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       prob->mTotalCandidates += static_cast< int >( feat->candidates.size() );
 
       // add all candidates into a rtree (to speed up conflicts searching)
-      for ( std::size_t j = 0; j < feat->candidates.size(); j++, idlp++ )
+      for ( std::unique_ptr< LabelPosition > &candidate : feat->candidates )
       {
-        feat->candidates[ j ]->insertIntoIndex( prob->allCandidatesIndex() );
-        feat->candidates[ j ]->setProblemIds( static_cast< int >( i ), idlp );
+        candidate->insertIntoIndex( prob->allCandidatesIndex() );
+        candidate->setProblemIds( static_cast< int >( i ), idlp++ );
       }
       features.emplace_back( std::move( feat ) );
     }

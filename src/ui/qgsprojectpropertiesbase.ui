@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>857</width>
-    <height>830</height>
+    <height>730</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -1575,7 +1575,7 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-793</y>
+                <y>0</y>
                 <width>671</width>
                 <height>2614</height>
                </rect>
@@ -2907,12 +2907,6 @@
    <header>qgsfilterlineedit.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsOpacityWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsopacitywidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsColorSchemeList</class>
    <extends>QWidget</extends>
    <header location="global">qgscolorschemelist.h</header>
@@ -2934,6 +2928,12 @@
    <class>QgsDatumTransformTableWidget</class>
    <extends>QWidget</extends>
    <header>qgsdatumtransformtablewidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

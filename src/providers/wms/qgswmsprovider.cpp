@@ -1809,6 +1809,27 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
   QString::number( layer.fixedHeight ) %
   QStringLiteral( "</td></tr>" );
 
+  // Metadata URLs
+  if ( !layer.metadataUrl.isEmpty() )
+  {
+    metadata += QStringLiteral( "<tr><th>" ) %
+                tr( "Metadata URLs" ) %
+                QStringLiteral( "</th>"
+                                "<td><table class=\"tabular-view\">"
+                                "<tr><th>" ) %
+                tr( "Format" ) %
+                QStringLiteral( "</th><th>" ) %
+                tr( "URL" ) %
+                QStringLiteral( "</th></tr>" );
+
+    for ( const QgsWmsMetadataUrlProperty &l : qgis::as_const( layer.metadataUrl ) )
+    {
+      metadata += QStringLiteral( "<tr><td>" ) % l.format % QStringLiteral( "</td><td>" ) % l.onlineResource.xlinkHref % QStringLiteral( "</td></tr>" );
+    }
+    metadata += QStringLiteral( "</table>"
+                                "</td></tr>" );
+  }
+
   // Layer Coordinate Reference Systems
   for ( int j = 0; j < std::min( layer.crs.size(), 10 ); j++ )
   {

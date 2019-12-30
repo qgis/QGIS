@@ -56,7 +56,7 @@ QgsLabelEngineConfigWidget::QgsLabelEngineConfigWidget( QWidget *parent )
   } );
 
   spinCandLine->setClearValue( 5 );
-  spinCandPolygon->setClearValue( 10 );
+  spinCandPolygon->setClearValue( 2.5 );
 
   // candidate numbers
   spinCandLine->setValue( engineSettings.maximumLineCandidatesPerCm() );
