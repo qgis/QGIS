@@ -771,19 +771,19 @@ void QgsWmsCapabilities::parseDimension( const QDomElement &element, QgsWmsDimen
   if ( !element.attribute( QStringLiteral( "multipleValues" ) ).isNull() )
   {
     QString multipleValuesAttribute = element.attribute( QStringLiteral( "multipleValues" ) );
-    dimensionProperty.multipleValues = ( multipleValuesAttribute == QLatin1String( "1" ) || multipleValuesAttribute == QLatin1String( "true" ) ) ? true : false ;
+    dimensionProperty.multipleValues = ( multipleValuesAttribute == QLatin1String( "1" ) || multipleValuesAttribute == QLatin1String( "true" ) );
   }
 
   if ( !element.attribute( QStringLiteral( "nearestValue" ) ).isNull() )
   {
     QString nearestValueAttribute = element.attribute( QStringLiteral( "nearestValue" ) );
-    dimensionProperty.nearestValue = ( nearestValueAttribute == QLatin1String( "1" ) || nearestValueAttribute == QLatin1String( "true" ) ) ? true : false ;
+    dimensionProperty.nearestValue = ( nearestValueAttribute == QLatin1String( "1" ) || nearestValueAttribute == QLatin1String( "true" ) );
   }
 
   if ( !element.attribute( QStringLiteral( "current" ) ).isNull() )
   {
     QString currentAttribute = element.attribute( QStringLiteral( "current" ) );
-    dimensionProperty.current = ( currentAttribute == QLatin1String( "1" ) || currentAttribute == QLatin1String( "true" ) ) ? true : false ;
+    dimensionProperty.current = ( currentAttribute == QLatin1String( "1" ) || currentAttribute == QLatin1String( "true" ) );
   }
 
   dimensionProperty.extent = element.text();

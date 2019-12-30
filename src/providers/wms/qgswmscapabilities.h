@@ -178,13 +178,13 @@ struct QgsWmsDimensionProperty
   QString   extent;
 
   //! Optional, determines whether multiple values of the dimension can be requested
-  bool      multipleValues;
+  bool      multipleValues = false;
 
   //! Optional, whether nearest value of the dimension will be returned, if requested.
-  bool      nearestValue;
+  bool      nearestValue = false;
 
   //! Optional, valid only for temporal exents, determines whether data are normally kept current.
-  bool      current;
+  bool      current = false;
 
 };
 
