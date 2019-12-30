@@ -444,6 +444,7 @@ void QgsLayoutItemPicture::disconnectMap( QgsLayoutItemMap *map )
   if ( map )
   {
     disconnect( map, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
+    disconnect( map, &QgsLayoutItemMap::rotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
     disconnect( map, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
   }
 }
@@ -454,7 +455,7 @@ void QgsLayoutItemPicture::updateMapRotation()
     return;
 
   // take map rotation
-  double rotation = mRotationMap->mapRotation();
+  double rotation = mRotationMap->mapRotation() + mRotationMap->itemRotation();
 
   // handle true north
   switch ( mNorthMode )
@@ -483,7 +484,7 @@ void QgsLayoutItemPicture::updateMapRotation()
   }
 
   rotation += mNorthOffset;
-  setPictureRotation( rotation );
+  setPictureRotation( rotation % 360 );
 }
 
 void QgsLayoutItemPicture::loadPicture( const QVariant &data )
@@ -661,6 +662,7 @@ void QgsLayoutItemPicture::setLinkedMap( QgsLayoutItemMap *map )
   {
     mPictureRotation = map->mapRotation();
     connect( map, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
+    connect( map, &QgsLayoutItemMap::rotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
     connect( map, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
     mRotationMap = map;
     updateMapRotation();
