@@ -72,11 +72,9 @@ namespace Vectoranalysis
     QgsFeature currentFeature;
     QgsFeatureRequest request;
     request.setFlags( QgsFeatureRequest::SubsetOfAttributes );
-    QgsFeatureIterator it = layer->getFeatures();
-    while ( it.nextFeature( currentFeature ) )
-    {
-      index.addFeature( currentFeature );
-    }
+    request.setSubsetOfAttributes( QgsAttributeList() );
+    QgsFeatureIterator it = layer->getFeatures( request );
+    index = QgsSpatialIndex( it );
   }
 
   void AbstractTool::appendToJobQueue( QgsFeatureSource *layer, int taskFlag )
@@ -104,13 +102,13 @@ namespace Vectoranalysis
     return true;
   }
 
-  void AbstractTool::writeFeatures( QgsFeatureList& outFeatures )
+  void AbstractTool::writeFeatures( QgsFeatureList &outFeatures )
   {
     QMutexLocker locker( &mWriteMutex );
 
-    if( !mOutput )
+    if ( !mOutput )
     {
-        return;
+      return;
     }
 
     mOutput->addFeatures( outFeatures, QgsFeatureSink::FastInsert );
