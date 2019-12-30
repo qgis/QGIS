@@ -188,6 +188,11 @@ namespace pal
       double length() const;
 
       /**
+       * Returns area of polygon geometry.
+       */
+      double area() const;
+
+      /**
        * Returns TRUE if pointset is closed.
        */
       bool isClosed() const;
@@ -207,6 +212,10 @@ namespace pal
 
       PointSet *holeOf = nullptr;
       PointSet *parent = nullptr;
+
+      mutable double mArea = -1;
+      mutable double mLength = -1;
+
 
       PointSet( double x, double y );
 
