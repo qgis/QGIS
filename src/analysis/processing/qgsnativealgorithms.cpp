@@ -38,6 +38,7 @@
 #include "qgsalgorithmdeleteduplicategeometries.h"
 #include "qgsalgorithmdensifygeometriesbycount.h"
 #include "qgsalgorithmdensifygeometriesbyinterval.h"
+#include "qgsalgorithmdetectdatasetchanges.h"
 #include "qgsalgorithmdifference.h"
 #include "qgsalgorithmdissolve.h"
 #include "qgsalgorithmdrape.h"
@@ -221,6 +222,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsConvexHullAlgorithm() );
   addAlgorithm( new QgsDbscanClusteringAlgorithm() );
   addAlgorithm( new QgsDeleteDuplicateGeometriesAlgorithm() );
+  addAlgorithm( new QgsDetectVectorChangesAlgorithm() );
   addAlgorithm( new QgsDifferenceAlgorithm() );
   addAlgorithm( new QgsDissolveAlgorithm() );
   addAlgorithm( new QgsDrapeToMAlgorithm() );
