@@ -302,7 +302,7 @@ bool QgsJoinByLocationAlgorithm::processFeatures( QgsFeature &joinFeature, QgsPr
   if ( !joinFeature.hasGeometry() )
     return false;
   const QgsGeometry featGeom = joinFeature.geometry();
-  std::unique_ptr< QgsGeometryEngine > engine( QgsGeometry::createGeometryEngine( featGeom.constGet() ) );
+  std::unique_ptr< QgsGeometryEngine > engine = qgis::make_unique< QgsGeometryEngine >( QgsGeometry::createGeometryEngine( featGeom.constGet() ) );
   engine->prepareGeometry();
   QgsFeatureRequest req = QgsFeatureRequest().setFilterRect( featGeom.boundingBox() );
   QgsFeatureIterator it = mBaseSource->getFeatures( req );
