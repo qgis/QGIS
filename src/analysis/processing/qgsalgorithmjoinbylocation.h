@@ -50,7 +50,7 @@ class QgsJoinByLocationAlgorithm : public QgsProcessingAlgorithm
 
   protected:
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    bool processFeatures( QgsFeature &joinFeature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+    bool processFeatures( QgsFeature &joinFeature, QgsProcessingFeedback *feedback );
     bool featureFilter( const QgsFeature &feature, std::unique_ptr< QgsGeometryEngine > engine ) const;
 
   private:
