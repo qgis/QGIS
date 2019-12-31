@@ -43,6 +43,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmdeleteduplicategeometries.cpp
   processing/qgsalgorithmdensifygeometriesbycount.cpp
   processing/qgsalgorithmdensifygeometriesbyinterval.cpp
+  processing/qgsalgorithmdetectdatasetchanges.cpp
   processing/qgsalgorithmdifference.cpp
   processing/qgsalgorithmdissolve.cpp
   processing/qgsalgorithmdrape.cpp
