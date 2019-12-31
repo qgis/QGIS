@@ -201,7 +201,7 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
     if ( feedback->isCanceled() )
       break;
     feedback->setProgress( i * step );
-    if ( processFeatures( f, context, feedback ) )
+    if ( processFeatures( f, feedback ) )
       joinedCount++;
     i++;
   }
@@ -296,7 +296,7 @@ bool QgsJoinByLocationAlgorithm::featureFilter( const QgsFeature &feature, std::
   return ok;
 }
 
-bool QgsJoinByLocationAlgorithm::processFeatures( QgsFeature &joinFeature, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+bool QgsJoinByLocationAlgorithm::processFeatures( QgsFeature &joinFeature, QgsProcessingFeedback *feedback )
 {
 
   if ( !joinFeature.hasGeometry() )
