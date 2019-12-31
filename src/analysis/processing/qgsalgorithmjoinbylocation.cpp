@@ -189,8 +189,8 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
   if ( !mDiscardNonMatching && mUnjoinedFeatures )
     mUnjoinedIds = mBaseSource->allFeatureIds();
 
-  long joinedCount = 0;
-  QgsFeatureIterator joinIter = mJoinSource->getFeatures( QgsFeatureRequest().setDestinationCrs( mBaseSource->sourceCrs(), context.transformContext() ) ).setSubsetOfAttributes( mFields2Indices );
+  qlonglong joinedCount = 0;
+  QgsFeatureIterator joinIter = mJoinSource->getFeatures( QgsFeatureRequest().setDestinationCrs( mBaseSource->sourceCrs(), context.transformContext() ).setSubsetOfAttributes( mFields2Indices ) );
   QgsFeature f;
 
   // Create output vector layer with additional attributes
@@ -239,7 +239,7 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
   return outputs;
 }
 
-bool QgsJoinByLocationAlgorithm::featureFilter( const QgsFeature &feature, QgsGeometryEngine *engine ) const
+bool QgsJoinByLocationAlgorithm::featureFilter( const QgsFeature &feature, std::unique_ptr< QgsGeometryEngine > engine ) const
 {
   const QgsAbstractGeometry *geom = feature.geometry().constGet();
   bool ok = false;
