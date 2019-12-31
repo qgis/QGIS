@@ -2526,3 +2526,4 @@ void QgsLayoutItemMap::createStagedRenderJob( const QgsRectangle &extent, const 
   mStagedRendererJob->start();
 }
 
+

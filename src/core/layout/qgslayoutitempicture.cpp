@@ -444,6 +444,7 @@ void QgsLayoutItemPicture::disconnectMap( QgsLayoutItemMap *map )
   if ( map )
   {
     disconnect( map, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
+    disconnect( map, &QgsLayoutItemMap::rotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
     disconnect( map, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
   }
 }
@@ -454,7 +455,7 @@ void QgsLayoutItemPicture::updateMapRotation()
     return;
 
   // take map rotation
-  double rotation = mRotationMap->mapRotation();
+  double rotation = mRotationMap->mapRotation() + mRotationMap->rotation();
 
   // handle true north
   switch ( mNorthMode )
@@ -483,7 +484,7 @@ void QgsLayoutItemPicture::updateMapRotation()
   }
 
   rotation += mNorthOffset;
-  setPictureRotation( rotation );
+  setPictureRotation( ( rotation > 360.0 ) ? rotation - 360.0 : rotation );
 }
 
 void QgsLayoutItemPicture::loadPicture( const QVariant &data )
@@ -661,6 +662,7 @@ void QgsLayoutItemPicture::setLinkedMap( QgsLayoutItemMap *map )
   {
     mPictureRotation = map->mapRotation();
     connect( map, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
+    connect( map, &QgsLayoutItemMap::rotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
     connect( map, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
     mRotationMap = map;
     updateMapRotation();
@@ -867,6 +869,7 @@ void QgsLayoutItemPicture::finalizeRestoreFromXml()
     if ( ( mRotationMap = qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mRotationMapUuid, true ) ) ) )
     {
       connect( mRotationMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
+      connect( mRotationMap, &QgsLayoutItemMap::rotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
       connect( mRotationMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
     }
   }
