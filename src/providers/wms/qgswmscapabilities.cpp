@@ -759,6 +759,35 @@ void QgsWmsCapabilities::parseLegendUrl( const QDomElement &element, QgsWmsLegen
   }
 }
 
+void QgsWmsCapabilities::parseDimension( const QDomElement &element, QgsWmsDimensionProperty &dimensionProperty )
+{
+
+  // TODO, check for the name value if it is time, implement WMS-T support
+  dimensionProperty.name = element.attribute( QStringLiteral( "name" ) );
+  dimensionProperty.units = element.attribute( QStringLiteral( "units" ) );
+  dimensionProperty.unitSymbol = element.attribute( QStringLiteral( "unitSymbol" ) );
+  dimensionProperty.defaultValue = element.attribute( QStringLiteral( "default" ) );
+
+  if ( !element.attribute( QStringLiteral( "multipleValues" ) ).isNull() )
+  {
+    QString multipleValuesAttribute = element.attribute( QStringLiteral( "multipleValues" ) );
+    dimensionProperty.multipleValues = ( multipleValuesAttribute == QLatin1String( "1" ) || multipleValuesAttribute == QLatin1String( "true" ) );
+  }
+
+  if ( !element.attribute( QStringLiteral( "nearestValue" ) ).isNull() )
+  {
+    QString nearestValueAttribute = element.attribute( QStringLiteral( "nearestValue" ) );
+    dimensionProperty.nearestValue = ( nearestValueAttribute == QLatin1String( "1" ) || nearestValueAttribute == QLatin1String( "true" ) );
+  }
+
+  if ( !element.attribute( QStringLiteral( "current" ) ).isNull() )
+  {
+    QString currentAttribute = element.attribute( QStringLiteral( "current" ) );
+    dimensionProperty.current = ( currentAttribute == QLatin1String( "1" ) || currentAttribute == QLatin1String( "true" ) );
+  }
+
+  dimensionProperty.extent = element.text();
+}
 
 void QgsWmsCapabilities::parseMetadataUrl( const QDomElement &element, QgsWmsMetadataUrlProperty &metadataUrlProperty )
 {
@@ -960,7 +989,8 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
       }
       else if ( tagName == QLatin1String( "Dimension" ) )
       {
-        // TODO
+        layerProperty.dimensions << QgsWmsDimensionProperty();
+        parseDimension( nodeElement, layerProperty.dimensions.last() );
       }
       else if ( tagName == QLatin1String( "Attribution" ) )
       {
