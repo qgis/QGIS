@@ -112,7 +112,8 @@ class sieve(GdalAlgorithm):
 
         mask = self.parameterAsRasterLayer(parameters, self.MASK_LAYER, context)
         if mask:
-            arguments.append('-mask {}'.format(mask.source()))
+            arguments.append('-mask')
+            arguments.append(mask.source())
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, out)
