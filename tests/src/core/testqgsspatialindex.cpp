@@ -234,6 +234,51 @@ class TestQgsSpatialIndex : public QObject
       delete indexInsert;
     }
 
+    void bulkLoadWithCallback()
+    {
+      std::unique_ptr< QgsVectorLayer > vl = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Point" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+      QList< QgsFeatureId >  addedIds;
+      for ( int i = 0; i < 10; ++i )
+      {
+        QgsFeature f( i );
+        QgsGeometry g = QgsGeometry::fromPointXY( QgsPointXY( i, 1 ) );
+        f.setGeometry( g );
+        vl->dataProvider()->addFeature( f );
+        addedIds.append( f.id() );
+      }
+      QCOMPARE( vl->featureCount(), 10L );
+
+      QgsFeatureIds ids;
+      QgsSpatialIndex i( vl->getFeatures(), [ & ]( const QgsFeature & f )->bool
+      {
+        ids.insert( f.id() );
+        return true;
+      } );
+
+      QCOMPARE( ids.size(), 10 );
+      for ( int i = 0; i < 10; ++i )
+        QVERIFY( ids.contains( addedIds.at( i ) ) );
+
+      QList<QgsFeatureId> res = i.intersects( QgsRectangle( 1.5, 0, 3.5, 10 ) );
+      QCOMPARE( res.size(), 2 );
+      QVERIFY( res.contains( addedIds.at( 2 ) ) );
+      QVERIFY( res.contains( addedIds.at( 3 ) ) );
+
+      // try canceling
+      ids.clear();
+      QgsSpatialIndex i2( vl->getFeatures(), [ & ]( const QgsFeature & f )->bool
+      {
+        ids.insert( f.id() );
+        return false;
+      } );
+
+      QCOMPARE( ids.size(), 1 );
+      QVERIFY( ids.contains( addedIds.at( 0 ) ) );
+
+      res = i2.intersects( QgsRectangle( 1.5, 0, 3.5, 10 ) );
+      QVERIFY( res.isEmpty() );
+    }
+
     void testRetrieveGeometries()
     {
       QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
