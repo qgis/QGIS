@@ -17,7 +17,7 @@ class QgsRasterLayerProperties : QgsOptionsDialogBase
 %Docstring
 Property sheet for a raster map layer
 
-.. versionadded:: 3.10
+.. versionadded:: 3.12
 %End
 
 %TypeHeaderCode
@@ -25,11 +25,6 @@ Property sheet for a raster map layer
 %End
   public:
 
-    enum StyleType
-    {
-      QML,
-      SLD
-    };
 
     QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = 0, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 %Docstring
@@ -40,6 +35,8 @@ Constructor
 :param parent: the parent of this widget
 :param fl: windows flag
 %End
+
+  protected slots:
 
 };
 /************************************************************************

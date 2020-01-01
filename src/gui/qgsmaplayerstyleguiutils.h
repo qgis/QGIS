@@ -19,16 +19,20 @@
 #include <QObject>
 #include "qgis_gui.h"
 
+#define SIP_NO_FILE
+
 class QgsMapLayer;
 
 class QAction;
 class QMenu;
 
+
 /**
  * \ingroup gui
  * \class QgsMapLayerStyleGuiUtils
  * Various GUI utility functions for dealing with map layer's style manager
- * \since QGIS 3.10 (in the GUI API)
+ * \note not available in Python bindings
+ * \since QGIS 3.12 (in the GUI API)
  */
 
 class GUI_EXPORT QgsMapLayerStyleGuiUtils : public QObject

@@ -1273,7 +1273,7 @@ void QgsRasterLayerProperties::pbnAddValuesManually_clicked()
 
 void QgsRasterLayerProperties::mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
-  QgsDatumTransformDialog::run( crs, QgsProject::instance()->crs(), this, mMapCanvas, tr( "Select Transformation for the raster layer" ) );
+  QgsDatumTransformDialog::run( crs, QgsProject::instance()->crs(), this, mMapCanvas, tr( "Select Transformation" ) );
   mRasterLayer->setCrs( crs );
   mMetadataWidget->crsChanged();
 }

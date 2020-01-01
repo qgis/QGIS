@@ -44,7 +44,7 @@ class QgsWebView;
  * \ingroup gui
  * \class QgsRasterLayerProperties
  * Property sheet for a raster map layer
- * \since QGIS 3.10 (in the GUI API)
+ * \since QGIS 3.12 (in the GUI API)
  */
 
 class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private Ui::QgsRasterLayerPropertiesBase
@@ -56,12 +56,14 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     /**
      * enumeration for the different types of style
      */
+#ifndef SIP_RUN
     enum StyleType
     {
       QML,
       SLD
     };
     Q_ENUM( StyleType )
+#endif
 
     /**
      * Constructor
@@ -72,10 +74,11 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
      */
     QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 
-  private slots:
-
+  protected slots:
     //! \brief auto slot executed when the active page in the main widget stack is changed
-    void optionsStackedWidget_CurrentChanged( int index ) override;
+    void optionsStackedWidget_CurrentChanged( int index ) override SIP_SKIP ;
+
+  private slots:
 
     //! \brief Applies the settings made in the dialog without closing the box
     void apply();
