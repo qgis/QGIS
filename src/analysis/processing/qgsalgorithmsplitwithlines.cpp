@@ -102,7 +102,6 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
-  QgsSpatialIndex spatialIndex;
   QMap< QgsFeatureId, QgsGeometry > splitGeoms;
   QgsFeatureRequest request;
   request.setNoAttributes();
@@ -110,16 +109,17 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
 
   QgsFeatureIterator splitLines = linesSource->getFeatures( request );
   QgsFeature aSplitFeature;
-  while ( splitLines.nextFeature( aSplitFeature ) )
+
+  QgsSpatialIndex spatialIndex( splitLines, [&]( const QgsFeature & aSplitFeature )-> bool
   {
     if ( feedback->isCanceled() )
     {
-      break;
+      return false;
     }
 
     splitGeoms.insert( aSplitFeature.id(), aSplitFeature.geometry() );
-    spatialIndex.addFeature( aSplitFeature );
-  }
+    return true;
+  } );
 
   QgsFeature outFeat;
   QgsFeatureIterator features = source->getFeatures();
