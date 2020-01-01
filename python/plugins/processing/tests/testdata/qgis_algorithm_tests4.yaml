@@ -1991,6 +1991,7 @@ tests:
       OUTPUT:
         name: expected/nearest_lines_to_polys.gml
         type: vector
+        pk: [fid,fid_2]
 
   - algorithm: native:joinbynearest
     name: Nearest points to lines, with max distance
