@@ -241,7 +241,7 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
   return outputs;
 }
 
-bool QgsJoinByLocationAlgorithm::featureFilter( const QgsFeature &feature, QgsGeometryEngine *engine ) const;
+bool QgsJoinByLocationAlgorithm::featureFilter( const QgsFeature &feature, QgsGeometryEngine *engine ) const
 {
   const QgsAbstractGeometry *geom = feature.geometry().constGet();
   bool ok = false;
@@ -318,7 +318,7 @@ bool QgsJoinByLocationAlgorithm::processFeatures( QgsFeature &joinFeature, QgsPr
       break;
     if ( mJoinMethod == 1 && !mUnjoinedIds.contains( baseFeature.id() ) )
       continue;
-         
+
     if ( !engine )
     {
       engine.reset( QgsGeometry::createGeometryEngine( featGeom.constGet() ) );
