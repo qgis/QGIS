@@ -186,7 +186,7 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
   if ( parameters.value( QStringLiteral( "NON_MATCHING" ) ).isValid() && !mUnjoinedFeatures )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "NON_MATCHING" ) ) );
 
-  if ( !mDiscardNonMatching && mUnjoinedFeatures )
+  if ( !mDiscardNonMatching || mUnjoinedFeatures )
     mUnjoinedIds = mBaseSource->allFeatureIds();
 
   qlonglong joinedCount = 0;
@@ -206,13 +206,15 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
     i++;
   }
 
-  if ( !mDiscardNonMatching )
+  if ( !mDiscardNonMatching ||  mUnjoinedFeatures )
   {
     QgsFeature f2;
     QgsFeatureRequest remainings = QgsFeatureRequest().setFilterFids( mUnjoinedIds );
     QgsFeatureIterator remainIter = mBaseSource->getFeatures( remainings );
     while ( remainIter.nextFeature( f2 ) )
     {
+      if ( feedback->isCanceled() )
+        break;
       if ( mJoinedFeatures )
       {
         QgsAttributes attributes = f2.attributes();
@@ -239,7 +241,7 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
   return outputs;
 }
 
-bool QgsJoinByLocationAlgorithm::featureFilter( const QgsFeature &feature, std::unique_ptr< QgsGeometryEngine > engine ) const
+bool QgsJoinByLocationAlgorithm::featureFilter( const QgsFeature &feature, QgsGeometryEngine *engine ) const;
 {
   const QgsAbstractGeometry *geom = feature.geometry().constGet();
   bool ok = false;
@@ -302,18 +304,13 @@ bool QgsJoinByLocationAlgorithm::processFeatures( QgsFeature &joinFeature, QgsPr
   if ( !joinFeature.hasGeometry() )
     return false;
   const QgsGeometry featGeom = joinFeature.geometry();
-  std::unique_ptr< QgsGeometryEngine > engine = qgis::make_unique< QgsGeometryEngine >( QgsGeometry::createGeometryEngine( featGeom.constGet() ) );
-  engine->prepareGeometry();
+  std::unique_ptr< QgsGeometryEngine > engine;
   QgsFeatureRequest req = QgsFeatureRequest().setFilterRect( featGeom.boundingBox() );
   QgsFeatureIterator it = mBaseSource->getFeatures( req );
   QList<QgsFeature> filtered;
   QgsFeature baseFeature;
   bool ok = false;
   QgsAttributes joinAttributes;
-  for ( int ix : qgis::as_const( mFields2Indices ) )
-  {
-    joinAttributes.append( joinFeature.attribute( ix ) );
-  }
 
   while ( it.nextFeature( baseFeature ) )
   {
@@ -321,7 +318,17 @@ bool QgsJoinByLocationAlgorithm::processFeatures( QgsFeature &joinFeature, QgsPr
       break;
     if ( mJoinMethod == 1 && !mUnjoinedIds.contains( baseFeature.id() ) )
       continue;
-    if ( featureFilter( baseFeature, engine ) )
+         
+    if ( !engine )
+    {
+      engine.reset( QgsGeometry::createGeometryEngine( featGeom.constGet() ) );
+      engine->prepareGeometry();
+      for ( int ix : qgis::as_const( mFields2Indices ) )
+      {
+        joinAttributes.append( joinFeature.attribute( ix ) );
+      }
+    }
+    if ( featureFilter( baseFeature, engine.get() ) )
     {
       if ( mJoinedFeatures )
       {
@@ -331,7 +338,7 @@ bool QgsJoinByLocationAlgorithm::processFeatures( QgsFeature &joinFeature, QgsPr
       }
       if ( !ok )
         ok = true;
-      if ( !mDiscardNonMatching && mUnjoinedFeatures )
+      if ( !mDiscardNonMatching || mUnjoinedFeatures )
         mUnjoinedIds.remove( baseFeature.id() );
     }
   }
