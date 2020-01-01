@@ -93,13 +93,11 @@ QVariantMap QgsDeleteDuplicateGeometriesAlgorithm::processAlgorithm( const QVari
   double step = mSource->featureCount() > 0 ? 100.0 / mSource->featureCount() : 0;
   QHash< QgsFeatureId, QgsGeometry > geometries;
   QSet< QgsFeatureId > nullGeometryFeatures;
-  QgsSpatialIndex index;
-  QgsFeature f;
   long current = 0;
-  while ( it.nextFeature( f ) )
+  QgsSpatialIndex index( it, [&]( const QgsFeature & f ) ->bool
   {
     if ( feedback->isCanceled() )
-      break;
+      return false;
 
     if ( !f.hasGeometry() )
     {
@@ -108,13 +106,15 @@ QVariantMap QgsDeleteDuplicateGeometriesAlgorithm::processAlgorithm( const QVari
     else
     {
       geometries.insert( f.id(), f.geometry() );
-      index.addFeature( f );
     }
 
     // overall this loop takes about 10% of time
     current++;
     feedback->setProgress( 0.10 * current * step );
-  }
+    return true;
+  } );
+
+  QgsFeature f;
 
   // start by assuming everything is unique, and chop away at this list
   QHash< QgsFeatureId, QgsGeometry > uniqueFeatures = geometries;
