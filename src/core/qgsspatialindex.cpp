@@ -348,10 +348,12 @@ QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureIterator &fi, QgsFeedback *fee
   d = new QgsSpatialIndexData( fi, feedback, flags );
 }
 
+///@cond PRIVATE // else throws a doxygen warning?
 QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureIterator &fi, const std::function< bool( const QgsFeature & )> &callback, QgsSpatialIndex::Flags flags )
 {
   d = new QgsSpatialIndexData( fi, nullptr, flags, &callback );
 }
+///@endcond
 
 QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureSource &source, QgsFeedback *feedback, QgsSpatialIndex::Flags flags )
 {
