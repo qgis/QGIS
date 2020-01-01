@@ -163,10 +163,12 @@ class QgsFeatureIteratorDataStream : public IDataStream
 {
   public:
     //! constructor - needs to load all data to a vector for later access when bulk loading
-    explicit QgsFeatureIteratorDataStream( const QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr, QgsSpatialIndex::Flags flags = nullptr )
+    explicit QgsFeatureIteratorDataStream( const QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr, QgsSpatialIndex::Flags flags = nullptr,
+                                           const std::function< bool( const QgsFeature & ) > *callback = nullptr )
       : mFi( fi )
       , mFeedback( feedback )
       , mFlags( flags )
+      , mCallback( callback )
     {
       readNextEntry();
     }
@@ -207,6 +209,15 @@ class QgsFeatureIteratorDataStream : public IDataStream
       QgsFeatureId id;
       while ( mFi.nextFeature( f ) )
       {
+        if ( mCallback )
+        {
+          bool res = ( *mCallback )( f );
+          if ( !res )
+          {
+            mNextData = nullptr;
+            return;
+          }
+        }
         if ( QgsSpatialIndex::featureInfo( f, r, id ) )
         {
           mNextData = new RTree::Data( 0, nullptr, r, id );
@@ -222,6 +233,7 @@ class QgsFeatureIteratorDataStream : public IDataStream
     RTree::Data *mNextData = nullptr;
     QgsFeedback *mFeedback = nullptr;
     QgsSpatialIndex::Flags mFlags = nullptr;
+    const std::function< bool( const QgsFeature & ) > *mCallback = nullptr;
 
 };
 
@@ -253,10 +265,11 @@ class QgsSpatialIndexData : public QSharedData
      * of \a feedback is not transferred, and callers must take care that the lifetime of feedback exceeds
      * that of the spatial index construction.
      */
-    explicit QgsSpatialIndexData( const QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr, QgsSpatialIndex::Flags flags = nullptr )
+    explicit QgsSpatialIndexData( const QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr, QgsSpatialIndex::Flags flags = nullptr,
+                                  const std::function< bool( const QgsFeature & ) > *callback = nullptr )
       : mFlags( flags )
     {
-      QgsFeatureIteratorDataStream fids( fi, feedback, mFlags );
+      QgsFeatureIteratorDataStream fids( fi, feedback, mFlags, callback );
       initTree( &fids );
       if ( flags & QgsSpatialIndex::FlagStoreFeatureGeometries )
         mGeometries = fids.geometries;
@@ -333,6 +346,11 @@ QgsSpatialIndex::QgsSpatialIndex( QgsSpatialIndex::Flags flags )
 QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureIterator &fi, QgsFeedback *feedback, QgsSpatialIndex::Flags flags )
 {
   d = new QgsSpatialIndexData( fi, feedback, flags );
+}
+
+QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureIterator &fi, const std::function< bool( const QgsFeature & )> &callback, QgsSpatialIndex::Flags flags )
+{
+  d = new QgsSpatialIndexData( fi, nullptr, flags, &callback );
 }
 
 QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureSource &source, QgsFeedback *feedback, QgsSpatialIndex::Flags flags )
