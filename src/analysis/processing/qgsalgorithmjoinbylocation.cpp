@@ -140,17 +140,17 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
   if ( joinedFieldNames.empty() )
   {
     joinFields = joinSource->fields();
-    mFields2Indices = joinFields.allAttributesList();
+    mJoinedFieldIndices = joinFields.allAttributesList();
   }
   else
   {
-    mFields2Indices.reserve( joinedFieldNames.count() );
+    mJoinedFieldIndices.reserve( joinedFieldNames.count() );
     for ( const QString &field : joinedFieldNames )
     {
       int index = joinSource->fields().lookupField( field );
       if ( index >= 0 )
       {
-        mFields2Indices << index;
+        mJoinedFieldIndices << index;
         joinFields.append( joinSource->fields().at( index ) );
       }
     }
@@ -185,7 +185,7 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
     mUnjoinedIds = mBaseSource->allFeatureIds();
 
   qlonglong joinedCount = 0;
-  QgsFeatureIterator joinIter = joinSource->getFeatures( QgsFeatureRequest().setDestinationCrs( mBaseSource->sourceCrs(), context.transformContext() ).setSubsetOfAttributes( mFields2Indices ) );
+  QgsFeatureIterator joinIter = joinSource->getFeatures( QgsFeatureRequest().setDestinationCrs( mBaseSource->sourceCrs(), context.transformContext() ).setSubsetOfAttributes( mJoinedFieldIndices ) );
   QgsFeature f;
 
   // Create output vector layer with additional attributes
@@ -208,8 +208,8 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
     QgsFeatureIterator remainIter = mBaseSource->getFeatures( remainings );
 
     QgsAttributes emptyAttributes;
-    emptyAttributes.reserve( mFields2Indices.count() );
-    for ( int i = 0; i < mFields2Indices.count(); ++i )
+    emptyAttributes.reserve( mJoinedFieldIndices.count() );
+    for ( int i = 0; i < mJoinedFieldIndices.count(); ++i )
       emptyAttributes << QVariant();
 
     while ( remainIter.nextFeature( f2 ) )
@@ -325,7 +325,7 @@ bool QgsJoinByLocationAlgorithm::processFeatures( QgsFeature &joinFeature, QgsPr
     {
       engine.reset( QgsGeometry::createGeometryEngine( featGeom.constGet() ) );
       engine->prepareGeometry();
-      for ( int ix : qgis::as_const( mFields2Indices ) )
+      for ( int ix : qgis::as_const( mJoinedFieldIndices ) )
       {
         joinAttributes.append( joinFeature.attribute( ix ) );
       }
