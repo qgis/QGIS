@@ -855,7 +855,9 @@ tests:
         type: raster
     results:
       output:
-        hash: e76ded6a7446e26a572f2e0875ab63edcb494d18522d705b5e5f2fc4
+        hash:
+        - e76ded6a7446e26a572f2e0875ab63edcb494d18522d705b5e5f2fc4
+        - 48aa021881c74821c3ad6a5d2205ef74421814b5b2ac7bb8918d44d2
         type: rasterhash
 
   - algorithm: grass7:r.cost
@@ -1109,13 +1111,20 @@ tests:
         type: raster
     results:
       blue:
-        hash: 144242915491497a375db9818189a9ed228b678afe81afdf52f88e5f
+        hash:
+        - 144242915491497a375db9818189a9ed228b678afe81afdf52f88e5f
+        - 6ffe41469e35fcca748f4947da527a7163cd06fb3b9a916f35083d12
+        - 7fab6db4c0517dbd4a3d61181874ad0544383896ba5f4292c9418be2
         type: rasterhash
       green:
-        hash: 6ffe41469e35fcca748f4947da527a7163cd06fb3b9a916f35083d12
+        hash:
+        - 7fab6db4c0517dbd4a3d61181874ad0544383896ba5f4292c9418be2
+        - 6ffe41469e35fcca748f4947da527a7163cd06fb3b9a916f35083d12
         type: rasterhash
       red:
-        hash: 144242915491497a375db9818189a9ed228b678afe81afdf52f88e5f
+        hash:
+        - 144242915491497a375db9818189a9ed228b678afe81afdf52f88e5f
+        - 7fab6db4c0517dbd4a3d61181874ad0544383896ba5f4292c9418be2
         type: rasterhash
 
   - algorithm: grass7:r.kappa
