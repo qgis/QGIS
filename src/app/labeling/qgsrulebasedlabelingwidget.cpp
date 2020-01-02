@@ -71,9 +71,9 @@ QgsRuleBasedLabelingWidget::QgsRuleBasedLabelingWidget( QgsVectorLayer *layer, Q
   mDeleteAction = new QAction( tr( "Remove Rule" ), this );
   mDeleteAction->setShortcut( QKeySequence( QKeySequence::Delete ) );
 
-  viewRules->addAction( mDeleteAction );
   viewRules->addAction( mCopyAction );
   viewRules->addAction( mPasteAction );
+  viewRules->addAction( mDeleteAction );
 
   connect( viewRules, &QAbstractItemView::doubleClicked, this, static_cast<void ( QgsRuleBasedLabelingWidget::* )( const QModelIndex & )>( &QgsRuleBasedLabelingWidget::editRule ) );
 
