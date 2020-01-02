@@ -140,11 +140,7 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
   if ( joinedFieldNames.empty() )
   {
     joinFields = joinSource->fields();
-    mFields2Indices.reserve( joinFields.count() );
-    for ( int i = 0; i < joinFields.count(); ++i )
-    {
-      mFields2Indices << i;
-    }
+    mFields2Indices = joinFields.allAttributesList();
   }
   else
   {
@@ -168,10 +164,10 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
     }
   }
 
-  const QgsFields mOutFields = QgsProcessingUtils::combineFields( mBaseSource->fields(), joinFields );
+  const QgsFields outputFields = QgsProcessingUtils::combineFields( mBaseSource->fields(), joinFields );
 
   QString joinedSinkId;
-  mJoinedFeatures.reset( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, joinedSinkId, mOutFields,
+  mJoinedFeatures.reset( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, joinedSinkId, outputFields,
                                           mBaseSource->wkbType(), mBaseSource->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
 
   if ( parameters.value( QStringLiteral( "OUTPUT" ) ).isValid() && !mJoinedFeatures )
