@@ -67,6 +67,8 @@ class QgsJoinByLocationAlgorithm : public QgsProcessingAlgorithm
     std::unique_ptr< QgsFeatureSink > mUnjoinedFeatures;
     JoinMethod mJoinMethod = OneToMany;
     QList<int> mPredicates;
+
+    static void sortPredicates( QList<int > &predicates );
 };
 
 ///@endcond PRIVATE
