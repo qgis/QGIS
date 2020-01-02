@@ -80,8 +80,13 @@ bool QgsLineDensityAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Q
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
   mWeightField = parameterAsString( parameters, QStringLiteral( "WEIGHT" ), context );
-  mSearchRadius = parameterAsDouble( parameters, QStringLiteral( "RADIUS" ), context );
+
   mPixelSize = parameterAsDouble( parameters, QStringLiteral( "PIXEL_SIZE" ), context );
+
+  mSearchRadius = parameterAsDouble( parameters, QStringLiteral( "RADIUS" ), context );
+  if ( mSearchRadius < std::sqrt( mPixelSize ) / 2 )
+    throw QgsProcessingException( QStringLiteral( "Raster cells must be fully contained by the search circle. Therefore, "
+                                  "the search radius must not be smaller than half of the pixel diagonal (half of square root of pixel size)." ) );
 
   mExtent = mSource->sourceExtent();
   mCrs = mSource->sourceCrs();
