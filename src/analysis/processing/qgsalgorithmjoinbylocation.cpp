@@ -2,8 +2,8 @@
                          qgsalgorithmjoinbylocation.cpp
                          ---------------------
     begin                : January 2020
-    copyright            : (C) 2020 by
-    email                :
+    copyright            : (C) 2020 by Alexis Roy-Lizotte
+    email                : roya2 at premiertech dot com
  ***************************************************************************/
 
 /***************************************************************************
