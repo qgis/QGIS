@@ -1,0 +1,24 @@
+
+on:
+  pull_request:
+    types:
+      - labeled
+jobs:
+  docbot:
+    runs-on: ubuntu-latest
+    name: Create issue on doc repo for labeled issue
+    if: github.event.label.name == 'Documentation'
+    steps:
+      - name: Create Documentation issue
+        id: doc_issue
+        uses: maxkomarychev/oction-create-issue@v0.7.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN  }}
+          owner: qgis
+          repo: QGIS-Documentation
+          title: ${{ format('Request in QGIS ({1})', github.event.pull_request.number, github.event.pull_request.title) }}
+          body: ${{ format('Request for documentation in QGIS/qgis#{0} {1})', github.event.pull_request.number, github.event.pull_request.title) }}
+      - name: Print outputs
+        run: |
+          echo ${{ steps.doc_issue.outputs.id }}
+          echo ${{ steps.doc_issue.outputs.number }}
