@@ -55,21 +55,12 @@ class QgsJoinByLocationAlgorithm : public QgsProcessingAlgorithm
 
   private:
     std::unique_ptr< QgsProcessingFeatureSource > mBaseSource;
-    std::unique_ptr< QgsProcessingFeatureSource > mJoinSource;
-    QgsFeatureIds mDonefids;
-    QgsFields mOutFields2;
     QgsAttributeList mFields2Indices;
-    QStringList mFieldNames;
-    bool mDiscardNonMatching;
-    mutable QgsFields mFields;
-    mutable QgsCoordinateReferenceSystem mCrs;
+    bool mDiscardNonMatching = false;
     std::unique_ptr< QgsFeatureSink > mJoinedFeatures;
     std::unique_ptr< QgsFeatureSink > mUnjoinedFeatures;
-    QString mUnjoinedFeaturesId;
-    QString mJoinedFeaturesId;
-    int mJoinMethod;
+    int mJoinMethod = 0;
     QList<int> mPredicates;
-    QgsAttributes mEmptyAttrs;
     QgsFeatureIds mUnjoinedIds;
 
 };
