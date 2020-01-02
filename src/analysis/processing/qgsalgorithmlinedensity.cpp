@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmlinedensity.h"
+#include "qgscircle.h"
 #include "qgsgeometryengine.h"
 #include "qgsrasterfilewriter.h"
 
@@ -49,7 +50,7 @@ QString QgsLineDensityAlgorithm::groupId() const
 void QgsLineDensityAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input line layer" ), QList<int>() << QgsProcessing::TypeVectorLine ) );
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "WEIGHT" ), QObject::tr( "Weight field " ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::Numeric ) );
+  addParameter( new QgsProcessingParameterField( QStringLiteral( "WEIGHT" ), QObject::tr( "Weight field " ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::Numeric, false, true ) );
   addParameter( new QgsProcessingParameterDistance( QStringLiteral( "RADIUS" ), QObject::tr( "Search radius" ), 10, QStringLiteral( "INPUT" ), false, 0 ) );
   addParameter( new QgsProcessingParameterDistance( QStringLiteral( "PIXEL_SIZE" ), QObject::tr( "Pixel size" ), 10, QStringLiteral( "INPUT" ), false ) );
 
@@ -77,7 +78,8 @@ bool QgsLineDensityAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Q
   mSource.reset( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !mSource )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
-  mWeight = parameterAsString( parameters, QStringLiteral( "WEIGHT" ), context );
+
+  mWeightField = parameterAsString( parameters, QStringLiteral( "WEIGHT" ), context );
   mSearchRadius = parameterAsDouble( parameters, QStringLiteral( "RADIUS" ), context );
   mPixelSize = parameterAsDouble( parameters, QStringLiteral( "PIXEL_SIZE" ), context );
 
@@ -92,8 +94,9 @@ bool QgsLineDensityAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Q
 
 
   //get cell midpoint from top left cell
-  QgsGeometry firstCellMidpoint = QgsGeometry( new QgsPoint( mExtent.xMinimum() + ( mPixelSize / 2 ), mExtent.yMaximum() - ( mPixelSize / 2 ) ) );
-  mSearchGeometry = firstCellMidpoint.buffer( mSearchRadius, 5 );
+  QgsPoint firstCellMidpoint = QgsPoint( mExtent.xMinimum() + ( mPixelSize / 2 ), mExtent.yMaximum() - ( mPixelSize / 2 ) );
+  QgsCircle searchCircle = QgsCircle( firstCellMidpoint, mSearchRadius );
+  mSearchGeometry = QgsGeometry( searchCircle.toPolygon() );
   mSearchGeometryArea = mDa.measureArea( mSearchGeometry );
 
   mIndex = QgsSpatialIndex( *mSource, nullptr, QgsSpatialIndex::FlagStoreFeatureGeometries );
@@ -168,7 +171,13 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
       while ( fit.nextFeature( f ) )
       {
         double analysisLineLength =  mDa.measureLength( QgsGeometry( engine->intersection( f.geometry().constGet() ) ) );
-        double analysisWeight = f.attribute( mWeight ).toDouble();
+
+        //default weight of lines is set to 1 if no field provided
+        double analysisWeight = 1;
+        if ( !mWeightField.isEmpty() )
+        {
+          analysisWeight = f.attribute( mWeightField ).toDouble();
+        }
         abs_density += ( analysisLineLength * analysisWeight );
       }
 

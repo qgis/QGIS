@@ -58,7 +58,7 @@ class QgsLineDensityAlgorithm : public QgsProcessingAlgorithm
 
   private:
     std::unique_ptr< QgsFeatureSource > mSource;
-    QString mWeight;
+    QString mWeightField;
     double mSearchRadius;
     double mSearchGeometryArea;
     double mPixelSize;
