@@ -10,12 +10,18 @@ jobs:
     runs-on: ubuntu-latest
     name: Create issue on doc repo for labeled issue
     steps:
-      - name: Create Documentation issue
+      - name: Clear GH Token
         if: github.event.label.name == 'Documentation'
+        id: token
+        uses: opengisch/clear-token@v1.0.12
+        with:
+          bot_token_encrypted: ddbdec32940df79f1adf2369b4b10f10b5a66f65
+          bot_token_xor_key: a1b2c3d47311f8e29e204f85a81b4df4a44e252c
+      - name: Create Documentation issue
         id: doc_issue
         uses: maxkomarychev/oction-create-issue@v0.7.1
         with:
-          token: ${{ secrets.GITHUB_TOKEN  }}
+          token: ${{ steps.token.outputs.token }}
           owner: qgis
           repo: QGIS-Documentation
           title: ${{ format('Request in QGIS ({1})', github.event.pull_request.number, github.event.pull_request.title) }}
