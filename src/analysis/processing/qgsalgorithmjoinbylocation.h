@@ -59,6 +59,7 @@ class QgsJoinByLocationAlgorithm : public QgsProcessingAlgorithm
       OneToMany = 0,
       OneToOne = 1,
     };
+    long mJoinedCount = 0;
     std::unique_ptr< QgsProcessingFeatureSource > mBaseSource;
     QgsAttributeList mJoinedFieldIndices;
     bool mDiscardNonMatching = false;
