@@ -117,7 +117,6 @@ QgsJoinByLocationAlgorithm *QgsJoinByLocationAlgorithm::createInstance() const
 
 QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-
   mBaseSource.reset( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !mBaseSource )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
@@ -125,55 +124,54 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
   if ( mBaseSource->hasSpatialIndex() == QgsFeatureSource::SpatialIndexNotPresent )
     feedback->reportError( QObject::tr( "No spatial index exists for input layer, performance will be severely degraded" ) );
 
-  mJoinSource.reset( parameterAsSource( parameters, QStringLiteral( "JOIN" ), context ) );
-  if ( !mJoinSource )
+  std::unique_ptr< QgsFeatureSource > joinSource( parameterAsSource( parameters, QStringLiteral( "JOIN" ), context ) );
+  if ( !joinSource )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "JOIN" ) ) );
 
   mJoinMethod = parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context );
 
-  mFieldNames = parameterAsFields( parameters, QStringLiteral( "JOIN_FIELDS" ), context );
+  const QStringList joinedFieldNames = parameterAsFields( parameters, QStringLiteral( "JOIN_FIELDS" ), context );
 
   mPredicates = parameterAsEnums( parameters, QStringLiteral( "PREDICATE" ), context );
 
   QString prefix = parameterAsString( parameters, QStringLiteral( "PREFIX" ), context );
 
-  if ( mFieldNames.empty() )
+  QgsFields joinFields;
+  if ( joinedFieldNames.empty() )
   {
-    mOutFields2 = mJoinSource->fields();
-    mFields2Indices.reserve( mOutFields2.count() );
-    for ( int i = 0; i < mOutFields2.count(); ++i )
+    joinFields = joinSource->fields();
+    mFields2Indices.reserve( joinFields.count() );
+    for ( int i = 0; i < joinFields.count(); ++i )
     {
       mFields2Indices << i;
     }
   }
   else
   {
-    mFields2Indices.reserve( mFieldNames.count() );
-    for ( const QString &field : mFieldNames )
+    mFields2Indices.reserve( joinedFieldNames.count() );
+    for ( const QString &field : joinedFieldNames )
     {
-      int index = mJoinSource->fields().lookupField( field );
+      int index = joinSource->fields().lookupField( field );
       if ( index >= 0 )
       {
         mFields2Indices << index;
-        mOutFields2.append( mJoinSource->fields().at( index ) );
+        joinFields.append( joinSource->fields().at( index ) );
       }
     }
   }
 
   if ( !prefix.isEmpty() )
   {
-    for ( int i = 0; i < mOutFields2.count(); ++i )
+    for ( int i = 0; i < joinFields.count(); ++i )
     {
-      mOutFields2[ i ].setName( prefix + mOutFields2[ i ].name() );
+      joinFields[ i ].setName( prefix + joinFields[ i ].name() );
     }
   }
 
-  for ( int i = 0; i < mFields2Indices.count(); ++i )
-    mEmptyAttrs << QVariant();
+  const QgsFields mOutFields = QgsProcessingUtils::combineFields( mBaseSource->fields(), joinFields );
 
-  const QgsFields mOutFields = QgsProcessingUtils::combineFields( mBaseSource->fields(), mOutFields2 );
-
-  mJoinedFeatures.reset( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, mJoinedFeaturesId, mOutFields,
+  QString joinedSinkId;
+  mJoinedFeatures.reset( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, joinedSinkId, mOutFields,
                                           mBaseSource->wkbType(), mBaseSource->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
 
   if ( parameters.value( QStringLiteral( "OUTPUT" ) ).isValid() && !mJoinedFeatures )
@@ -181,7 +179,8 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
 
   mDiscardNonMatching = parameterAsBoolean( parameters, QStringLiteral( "DISCARD_NONMATCHING" ), context );
 
-  mUnjoinedFeatures.reset( parameterAsSink( parameters, QStringLiteral( "NON_MATCHING" ), context, mUnjoinedFeaturesId, mBaseSource->fields(),
+  QString nonMatchingSinkId;
+  mUnjoinedFeatures.reset( parameterAsSink( parameters, QStringLiteral( "NON_MATCHING" ), context, nonMatchingSinkId, mBaseSource->fields(),
                            mBaseSource->wkbType(), mBaseSource->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
   if ( parameters.value( QStringLiteral( "NON_MATCHING" ) ).isValid() && !mUnjoinedFeatures )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "NON_MATCHING" ) ) );
@@ -190,7 +189,7 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
     mUnjoinedIds = mBaseSource->allFeatureIds();
 
   qlonglong joinedCount = 0;
-  QgsFeatureIterator joinIter = mJoinSource->getFeatures( QgsFeatureRequest().setDestinationCrs( mBaseSource->sourceCrs(), context.transformContext() ).setSubsetOfAttributes( mFields2Indices ) );
+  QgsFeatureIterator joinIter = joinSource->getFeatures( QgsFeatureRequest().setDestinationCrs( mBaseSource->sourceCrs(), context.transformContext() ).setSubsetOfAttributes( mFields2Indices ) );
   QgsFeature f;
 
   // Create output vector layer with additional attributes
@@ -211,6 +210,12 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
     QgsFeature f2;
     QgsFeatureRequest remainings = QgsFeatureRequest().setFilterFids( mUnjoinedIds );
     QgsFeatureIterator remainIter = mBaseSource->getFeatures( remainings );
+
+    QgsAttributes emptyAttributes;
+    emptyAttributes.reserve( mFields2Indices.count() );
+    for ( int i = 0; i < mFields2Indices.count(); ++i )
+      emptyAttributes << QVariant();
+
     while ( remainIter.nextFeature( f2 ) )
     {
       if ( feedback->isCanceled() )
@@ -218,7 +223,7 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
       if ( mJoinedFeatures )
       {
         QgsAttributes attributes = f2.attributes();
-        attributes.append( mEmptyAttrs );
+        attributes.append( emptyAttributes );
         QgsFeature outputFeature( f2 );
         outputFeature.setAttributes( attributes );
         mJoinedFeatures->addFeature( outputFeature, QgsFeatureSink::FastInsert );
@@ -231,11 +236,11 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
   QVariantMap outputs;
   if ( mJoinedFeatures )
   {
-    outputs.insert( QStringLiteral( "OUTPUT" ), mJoinedFeaturesId );
+    outputs.insert( QStringLiteral( "OUTPUT" ), joinedSinkId );
   }
   if ( mUnjoinedFeatures )
   {
-    outputs.insert( QStringLiteral( "NON_MATCHING" ), mUnjoinedFeaturesId );
+    outputs.insert( QStringLiteral( "NON_MATCHING" ), nonMatchingSinkId );
   }
   outputs.insert( QStringLiteral( "JOINED_COUNT" ), joinedCount );
   return outputs;
