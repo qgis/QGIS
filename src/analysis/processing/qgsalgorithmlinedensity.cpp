@@ -85,11 +85,12 @@ bool QgsLineDensityAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Q
 
   mSearchRadius = parameterAsDouble( parameters, QStringLiteral( "RADIUS" ), context );
   if ( mSearchRadius < std::sqrt( mPixelSize ) / 2 )
-    throw QgsProcessingException( QStringLiteral( "Raster cells must be fully contained by the search circle. Therefore, "
+    throw QgsProcessingException( QObject::tr( "Raster cells must be fully contained by the search circle. Therefore, "
                                   "the search radius must not be smaller than half of the pixel diagonal (half of square root of pixel size)." ) );
 
   mExtent = mSource->sourceExtent();
   mCrs = mSource->sourceCrs();
+  mDa = QgsDistanceArea();
 
   if ( context.project() )
   {
@@ -116,10 +117,10 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
 
   while ( fit.nextFeature( f ) )
   {
-    mIndex.addFeature( f );
+    mIndex.addFeature( f, QgsFeatureSink::FastInsert );
 
-    double analysisWeight = 1;
     //default weight of lines is set to 1 if no field provided
+    double analysisWeight = 1;
     if ( !mWeightField.isEmpty() )
     {
       analysisWeight = f.attribute( mWeightField ).toDouble();
@@ -173,17 +174,16 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
         std::unique_ptr< QgsGeometryEngine > engine( QgsGeometry::createGeometryEngine( mSearchGeometry.constGet() ) );
         engine->prepareGeometry();
 
-        QgsFeatureIds intersectingLineFids = QSet< QgsFeatureId >( );
-
         double absDensity = 0;
         for ( QgsFeatureId id : fids )
         {
           QgsGeometry lineGeom = mIndex.geometry( id );
 
-          if ( !engine->intersects( lineGeom.constGet() ) )
+          if ( engine->intersects( lineGeom.constGet() ) )
           {
             double analysisLineLength =  mDa.measureLength( QgsGeometry( engine->intersection( mIndex.geometry( id ).constGet() ) ) );
-            absDensity += ( analysisLineLength * mFeatureWeights.value( id ) );
+            double weight = mFeatureWeights.value( id );
+            absDensity += ( analysisLineLength *  weight );
           }
         }
 
