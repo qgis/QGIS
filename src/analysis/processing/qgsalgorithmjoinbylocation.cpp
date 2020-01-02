@@ -195,10 +195,12 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
   {
     if ( feedback->isCanceled() )
       break;
-    feedback->setProgress( i * step );
+
     if ( processFeatures( f, feedback ) )
       joinedCount++;
+
     i++;
+    feedback->setProgress( i * step );
   }
 
   if ( !mDiscardNonMatching ||  mUnjoinedFeatures )
