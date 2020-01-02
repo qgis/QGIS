@@ -50,7 +50,7 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
         # Create test layers
-        cls.rl = QgsRasterLayer(cls.dbconn + ' sslmode=disable key=\'pk\' srid=3035  table="public"."aspect_clipped_gpu_mini" sql=', 'test', 'postgresraster')
+        cls.rl = QgsRasterLayer(cls.dbconn + ' sslmode=disable key=\'rid\' srid=3035  table="public"."aspect_clipped_gpu_mini" sql=', 'test', 'postgresraster')
         assert cls.rl.isValid()
         cls.source = cls.rl.dataProvider()
 

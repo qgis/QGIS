@@ -50,6 +50,10 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     virtual int bandCount() const override;
     virtual QgsRasterInterface *clone() const override;
     virtual Qgis::DataType sourceDataType( int bandNo ) const override;
+    //! Gets block size
+    virtual int xBlockSize() const;
+    virtual int yBlockSize() const;
+
 
     // QgsRasterDataProvider interface
     virtual QString htmlMetadata() override;
@@ -94,8 +98,6 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     std::vector<Qgis::DataType> mDataTypes;
     //! Data size in bytes for each band
     std::vector<int> mDataSizes;
-    //! Nodata values for each band
-    std::vector<double> mNoDataValues;
     //! Store overviews
     QMap<int, QString> mOverViews;
     //! Band count
@@ -106,10 +108,14 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     bool mIsOutOfDb = false;
     //! Has spatial index
     bool mHasSpatialIndex = false;
-    //! Tile size x
-    int mWidth = 0;
-    //! Tile size y
-    int mHeight = 0;
+    //! Raster size x
+    long mWidth = 0;
+    //! Raster size y
+    long mHeight = 0;
+    //! Raster tile size x
+    int mTileWidth = 0;
+    //! Raster tile size y
+    int mTileHeight = 0;
     //! Scale x
     int mScaleX = 0;
     //! Scale y
@@ -128,8 +134,6 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     bool getDetails();
     //! Search for overviews and store a map
     void findOverviews();
-    //! Find the overview table name for a given scale
-    QString overviewName( const double scale ) const;
 
     static QString quotedIdentifier( const QString &ident ) { return QgsPostgresConn::quotedIdentifier( ident ); }
     static QString quotedValue( const QVariant &value ) { return QgsPostgresConn::quotedValue( value ); }
