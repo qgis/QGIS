@@ -182,20 +182,18 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
   if ( parameters.value( QStringLiteral( "NON_MATCHING" ) ).isValid() && !mUnjoinedFeatures )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "NON_MATCHING" ) ) );
 
-  qlonglong joinedCount = 0;
   QgsFeatureIterator joinIter = joinSource->getFeatures( QgsFeatureRequest().setDestinationCrs( mBaseSource->sourceCrs(), context.transformContext() ).setSubsetOfAttributes( mJoinedFieldIndices ) );
   QgsFeature f;
 
   // Create output vector layer with additional attributes
-  const double step = mBaseSource->featureCount() > 0 ? 100.0 / mBaseSource->featureCount() : 1;
+  const double step = joinSource->featureCount() > 0 ? 100.0 / joinSource->featureCount() : 1;
   long i = 0;
   while ( joinIter.nextFeature( f ) )
   {
     if ( feedback->isCanceled() )
       break;
 
-    if ( processFeatures( f, feedback ) )
-      joinedCount++;
+    processFeatures( f, feedback );
 
     i++;
     feedback->setProgress( i * step );
@@ -243,7 +241,7 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
   {
     outputs.insert( QStringLiteral( "NON_MATCHING" ), nonMatchingSinkId );
   }
-  outputs.insert( QStringLiteral( "JOINED_COUNT" ), joinedCount );
+  outputs.insert( QStringLiteral( "JOINED_COUNT" ), static_cast< long long >( mJoinedCount ) );
   return outputs;
 }
 
@@ -376,6 +374,7 @@ bool QgsJoinByLocationAlgorithm::processFeatures( QgsFeature &joinFeature, QgsPr
         ok = true;
 
       mAddedIds.insert( baseFeature.id() );
+      mJoinedCount++;
     }
   }
   return ok;
