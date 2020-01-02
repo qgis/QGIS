@@ -378,6 +378,7 @@ class GUI_EXPORT QgsProcessingRangeWidgetWrapper : public QgsAbstractProcessingP
   private:
 
     int mBlockChangedSignal = 0;
+    bool mAllowingNull = false;
 
     friend class TestProcessingGui;
 };

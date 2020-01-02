@@ -1110,12 +1110,28 @@ QWidget *QgsProcessingRangeWidgetWrapper::createWidget()
       mMinSpinBox->setMaximum( 99999999.999999 );
       mMaxSpinBox->setMaximum( 99999999.999999 );
 
+      if ( rangeDef->flags() & QgsProcessingParameterDefinition::FlagOptional )
+      {
+        mAllowingNull = true;
+
+        const double min = mMinSpinBox->minimum() - 1;
+        mMinSpinBox->setMinimum( min );
+        mMaxSpinBox->setMinimum( min );
+        mMinSpinBox->setValue( min );
+        mMaxSpinBox->setValue( min );
+
+        mMinSpinBox->setShowClearButton( true );
+        mMaxSpinBox->setShowClearButton( true );
+        mMinSpinBox->setSpecialValueText( tr( "Not set" ) );
+        mMaxSpinBox->setSpecialValueText( tr( "Not set" ) );
+      }
+
       w->setToolTip( parameterDefinition()->toolTip() );
 
       connect( mMinSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( const double v )
       {
         mBlockChangedSignal++;
-        if ( v > mMaxSpinBox->value() )
+        if ( !mAllowingNull && v > mMaxSpinBox->value() )
           mMaxSpinBox->setValue( v );
         mBlockChangedSignal--;
 
@@ -1125,7 +1141,7 @@ QWidget *QgsProcessingRangeWidgetWrapper::createWidget()
       connect( mMaxSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( const double v )
       {
         mBlockChangedSignal++;
-        if ( v < mMinSpinBox->value() )
+        if ( !mAllowingNull && v < mMinSpinBox->value() )
           mMinSpinBox->setValue( v );
         mBlockChangedSignal--;
 
@@ -1142,14 +1158,42 @@ QWidget *QgsProcessingRangeWidgetWrapper::createWidget()
 void QgsProcessingRangeWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
 {
   const QList< double > v = QgsProcessingParameters::parameterAsRange( parameterDefinition(), value, context );
-  if ( v.empty() )
-    return;
+  if ( mAllowingNull && v.empty() )
+  {
+    mMinSpinBox->clear();
+    mMaxSpinBox->clear();
+  }
+  else
+  {
+    if ( v.empty() )
+      return;
 
-  mBlockChangedSignal++;
-  mMinSpinBox->setValue( v.at( 0 ) );
-  if ( v.count() >= 2 )
-    mMaxSpinBox->setValue( v.at( 1 ) );
-  mBlockChangedSignal--;
+    if ( mAllowingNull )
+    {
+      mBlockChangedSignal++;
+      if ( std::isnan( v.at( 0 ) ) )
+        mMinSpinBox->clear();
+      else
+        mMinSpinBox->setValue( v.at( 0 ) );
+
+      if ( v.count() >= 2 )
+      {
+        if ( std::isnan( v.at( 1 ) ) )
+          mMaxSpinBox->clear();
+        else
+          mMaxSpinBox->setValue( v.at( 1 ) );
+      }
+      mBlockChangedSignal--;
+    }
+    else
+    {
+      mBlockChangedSignal++;
+      mMinSpinBox->setValue( v.at( 0 ) );
+      if ( v.count() >= 2 )
+        mMaxSpinBox->setValue( v.at( 1 ) );
+      mBlockChangedSignal--;
+    }
+  }
 
   if ( !mBlockChangedSignal )
     emit widgetValueHasChanged( this );
@@ -1157,7 +1201,23 @@ void QgsProcessingRangeWidgetWrapper::setWidgetValue( const QVariant &value, Qgs
 
 QVariant QgsProcessingRangeWidgetWrapper::widgetValue() const
 {
-  return QStringLiteral( "%1,%2" ).arg( mMinSpinBox->value() ).arg( mMaxSpinBox->value() );
+  if ( mAllowingNull )
+  {
+    QString value;
+    if ( qgsDoubleNear( mMinSpinBox->value(), mMinSpinBox->minimum() ) )
+      value = QStringLiteral( "None" );
+    else
+      value = QStringLiteral( "%1" ).arg( mMinSpinBox->value() );
+
+    if ( qgsDoubleNear( mMaxSpinBox->value(), mMaxSpinBox->minimum() ) )
+      value += QStringLiteral( ",None" );
+    else
+      value += QStringLiteral( ",%1" ).arg( mMaxSpinBox->value() );
+
+    return value;
+  }
+  else
+    return QStringLiteral( "%1,%2" ).arg( mMinSpinBox->value() ).arg( mMaxSpinBox->value() );
 }
 
 QStringList QgsProcessingRangeWidgetWrapper::compatibleParameterTypes() const
