@@ -218,7 +218,8 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
     {
       if ( feedback->isCanceled() )
         break;
-      if ( mJoinedFeatures )
+
+      if ( mJoinedFeatures && !mDiscardNonMatching )
       {
         QgsAttributes attributes = f2.attributes();
         attributes.append( emptyAttributes );
