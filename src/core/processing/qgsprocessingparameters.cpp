@@ -1479,7 +1479,7 @@ QList<double> QgsProcessingParameters::parameterAsRange( const QgsProcessingPara
   }
 
   if ( resultStringList.size() < 2 )
-    return QList< double >() << NAN << NAN;
+    return QList< double >() << std::numeric_limits<double>::quiet_NaN()  << std::numeric_limits<double>::quiet_NaN() ;
 
   QList< double > result;
   bool ok = false;
@@ -1487,13 +1487,13 @@ QList<double> QgsProcessingParameters::parameterAsRange( const QgsProcessingPara
   if ( ok )
     result << n;
   else
-    result << NAN;
+    result << std::numeric_limits<double>::quiet_NaN() ;
   ok = false;
   n = resultStringList.at( 1 ).toDouble( &ok );
   if ( ok )
     result << n;
   else
-    result << NAN;
+    result << std::numeric_limits<double>::quiet_NaN() ;
 
   return result;
 }
