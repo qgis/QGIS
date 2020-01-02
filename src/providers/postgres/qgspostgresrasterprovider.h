@@ -128,6 +128,8 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     bool getDetails();
     //! Search for overviews and store a map
     void findOverviews();
+    //! Find the overview table name for a given scale
+    QString overviewName( const double scale ) const;
 
     static QString quotedIdentifier( const QString &ident ) { return QgsPostgresConn::quotedIdentifier( ident ); }
     static QString quotedValue( const QVariant &value ) { return QgsPostgresConn::quotedValue( value ); }

@@ -203,6 +203,12 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
     QgsMessageLog::logMessage( QStringLiteral( "Invalid band number '%1" ).arg( bandNo ), QStringLiteral( "PostGIS" ), Qgis::Warning );
     return false;
   }
+  // Find overview
+  const int minPixeSize { static_cast<int>( std::min( viewExtent.width() / width, viewExtent.height() / height ) ) };
+  qDebug() << viewExtent.width() << viewExtent.height() << width << height;
+  // Pixel size
+  qDebug() << viewExtent.width() / width << viewExtent.height() / height << minPixeSize;
+  //const int resolution { std::min( viewExtent.width(), viewExtent.height() ) };
   // Fetch data from backend
   QString sql;
   const bool isSingleValue {  width == 1 && height == 1 };
@@ -521,7 +527,7 @@ QVariantMap QgsPostgresRasterProvider::parseWkb( const QByteArray &wkb )
       break;
     default:
       QgsMessageLog::logMessage( QStringLiteral( "Unsupported pixel type: %1" )
-                                 .arg( result[ QStringLiteral( "pxType" ) ].toInt() ), QStringLiteral( "PostGIS" ), Qgis::Warning );
+                                 .arg( result[ QStringLiteral( "pxType" ) ].toInt() ), QStringLiteral( "PostGIS" ), Qgis::Critical );
       return QVariantMap();
   }
   result[ QStringLiteral( "data" )] = wkbBytes.mid( 61 + 1 + pxSize );
@@ -894,6 +900,15 @@ void QgsPostgresRasterProvider::findOverviews()
   {
     QgsMessageLog::logMessage( QStringLiteral( "No overviews found, performaces may be affected" ), QStringLiteral( "PostGIS" ), Qgis::Info );
   }
+}
+
+QString QgsPostgresRasterProvider::overviewName( const double scale ) const
+{
+  if ( mOverViews.isEmpty() )
+  {
+    return mQuery;
+  }
+  return mQuery;
 }
 
 int QgsPostgresRasterProvider::xSize() const
