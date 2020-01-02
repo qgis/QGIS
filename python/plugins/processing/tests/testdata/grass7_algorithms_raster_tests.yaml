@@ -1120,11 +1120,13 @@ tests:
         hash:
         - 7fab6db4c0517dbd4a3d61181874ad0544383896ba5f4292c9418be2
         - 6ffe41469e35fcca748f4947da527a7163cd06fb3b9a916f35083d12
+        - 144242915491497a375db9818189a9ed228b678afe81afdf52f88e5f
         type: rasterhash
       red:
         hash:
         - 144242915491497a375db9818189a9ed228b678afe81afdf52f88e5f
         - 7fab6db4c0517dbd4a3d61181874ad0544383896ba5f4292c9418be2
+        - 144242915491497a375db9818189a9ed228b678afe81afdf52f88e5f
         type: rasterhash
 
   - algorithm: grass7:r.kappa
