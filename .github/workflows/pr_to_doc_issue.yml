@@ -1,10 +1,12 @@
 
+name: Documentation issue for labeled PR
+
 on:
   pull_request:
     types:
       - labeled
 jobs:
-  docbot:
+  pr2docissue:
     runs-on: ubuntu-latest
     name: Create issue on doc repo for labeled issue
     if: github.event.label.name == 'Documentation'
