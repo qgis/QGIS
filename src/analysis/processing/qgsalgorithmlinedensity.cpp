@@ -102,16 +102,14 @@ bool QgsLineDensityAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Q
   QgsPoint firstCellMidpoint = QgsPoint( mExtent.xMinimum() + ( mPixelSize / 2 ), mExtent.yMaximum() - ( mPixelSize / 2 ) );
   QgsCircle searchCircle = QgsCircle( firstCellMidpoint, mSearchRadius );
   mSearchGeometry = QgsGeometry( searchCircle.toPolygon() );
-  mSearchGeometryArea = mDa.measureArea( mSearchGeometry );
-
-  mIndex = QgsSpatialIndex( *mSource, nullptr, QgsSpatialIndex::FlagStoreFeatureGeometries );
-
 
   return true;
 }
 
 QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  mIndex = QgsSpatialIndex( *mSource, nullptr, QgsSpatialIndex::FlagStoreFeatureGeometries );
+
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
@@ -123,10 +121,10 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
   //this prevents output cellsize being calculated too small
   QgsRectangle rasterExtent = QgsRectangle( mExtent.xMinimum(), mExtent.yMaximum() - ( rows * mPixelSize ), mExtent.xMinimum() + ( cols * mPixelSize ), mExtent.yMaximum() );
 
-  std::unique_ptr< QgsRasterFileWriter > writer = qgis::make_unique< QgsRasterFileWriter >( outputFile );
-  writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
-  writer->setOutputFormat( outputFormat );
-  std::unique_ptr<QgsRasterDataProvider > provider( writer->createOneBandRaster( Qgis::Float32, cols, rows, rasterExtent, mCrs ) );
+  QgsRasterFileWriter writer = QgsRasterFileWriter( outputFile );
+  writer.setOutputProviderKey( QStringLiteral( "gdal" ) );
+  writer.setOutputFormat( outputFormat );
+  std::unique_ptr<QgsRasterDataProvider > provider( writer.createOneBandRaster( Qgis::Float32, cols, rows, rasterExtent, mCrs ) );
   if ( !provider )
     throw QgsProcessingException( QObject::tr( "Could not create raster output: %1" ).arg( outputFile ) );
   if ( !provider->isValid() )
@@ -134,7 +132,7 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
 
   provider->setNoDataValue( 1, -9999 );
 
-  int totalCellcnt = rows * cols;
+  qgssize totalCellcnt = static_cast<qgssize>( rows ) * cols;
   int cellcnt = 0;
 
   for ( int row = 0; row < rows; row++ )
@@ -150,44 +148,52 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
       if ( col > 0 )
         mSearchGeometry.translate( mPixelSize, 0 );
 
-      QList<QgsFeatureId> fids = mIndex.intersects( mSearchGeometry.boundingBox() );
+      const QList<QgsFeatureId> fids = mIndex.intersects( mSearchGeometry.boundingBox() );
 
-      std::unique_ptr< QgsGeometryEngine > engine( QgsGeometry::createGeometryEngine( mSearchGeometry.constGet() ) );
-      engine->prepareGeometry();
-
-      //remove non-intersecting fids
-      int i = 0;
-      while ( i < fids.size() )
+      if ( !fids.isEmpty() )
       {
-        QgsFeatureId fid = fids.at( i );
-        QgsGeometry lineGeom = mIndex.geometry( fid );
+        std::unique_ptr< QgsGeometryEngine > engine( QgsGeometry::createGeometryEngine( mSearchGeometry.constGet() ) );
+        engine->prepareGeometry();
 
-        if ( engine->intersects( lineGeom.constGet() ) == false )
+        QgsFeatureIds intersectingLineFids = QSet< QgsFeatureId >( );
+        //remove non-intersecting fids
+        for ( QgsFeatureId id : fids )
         {
-          fids.removeAt( i );
-        }
-        i++;
-      }
+          QgsGeometry lineGeom = mIndex.geometry( id );
 
-      QgsFeatureIds isectingFids = QSet< QgsFeatureId >::fromList( fids );
-      QgsFeatureIterator fit = mSource->getFeatures( QgsFeatureRequest().setFilterFids( isectingFids ) );
-      QgsFeature f;
-      double abs_density = 0;
-      while ( fit.nextFeature( f ) )
+          if ( !engine->intersects( lineGeom.constGet() ) )
+          {
+            intersectingLineFids.insert( id );
+          }
+        }
+
+        QgsFeatureIterator fit = mSource->getFeatures( QgsFeatureRequest().setFilterFids( intersectingLineFids ) );
+        QgsFeature f;
+        double absDensity = 0;
+        while ( fit.nextFeature( f ) )
+        {
+          //use ellipsoidal line length
+          double analysisLineLength =  mDa.measureLength( QgsGeometry( engine->intersection( f.geometry().constGet() ) ) );
+
+          //default weight of lines is set to 1 if no field provided
+          double analysisWeight = 1;
+          if ( !mWeightField.isEmpty() )
+          {
+            analysisWeight = f.attribute( mWeightField ).toDouble();
+          }
+          absDensity += ( analysisLineLength * analysisWeight );
+        }
+        //use ellipsoidal area
+        double analysisSearchGeometryArea = mDa.measureArea( mSearchGeometry );
+        double lineDensity = absDensity / analysisSearchGeometryArea;
+
+        rasterDataLine->setValue( 0, col, lineDensity );
+      }
+      else
       {
-        double analysisLineLength =  mDa.measureLength( QgsGeometry( engine->intersection( f.geometry().constGet() ) ) );
-
-        //default weight of lines is set to 1 if no field provided
-        double analysisWeight = 1;
-        if ( !mWeightField.isEmpty() )
-        {
-          analysisWeight = f.attribute( mWeightField ).toDouble();
-        }
-        abs_density += ( analysisLineLength * analysisWeight );
+        //no lines found in search radius
+        rasterDataLine->setValue( 0, col, 0.0 );
       }
-
-      double lineDensity = abs_density / mSearchGeometryArea;
-      rasterDataLine->setValue( 0, col, lineDensity );
 
       feedback->setProgress( static_cast<double>( cellcnt ) / static_cast<double>( totalCellcnt ) * 100 );
       cellcnt++;
