@@ -133,6 +133,7 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
   const QStringList joinedFieldNames = parameterAsFields( parameters, QStringLiteral( "JOIN_FIELDS" ), context );
 
   mPredicates = parameterAsEnums( parameters, QStringLiteral( "PREDICATE" ), context );
+  sortPredicates( mPredicates );
 
   QString prefix = parameterAsString( parameters, QStringLiteral( "PREFIX" ), context );
 
@@ -301,6 +302,32 @@ bool QgsJoinByLocationAlgorithm::featureFilter( const QgsFeature &feature, QgsGe
       return ok;
   }
   return ok;
+}
+
+void QgsJoinByLocationAlgorithm::sortPredicates( QList<int> &predicates )
+{
+  // Sort predicate list so that faster predicates are earlier in the list
+  // Some predicates in GEOS do not have prepared geometry implementations, and are slow to calculate. So if users
+  // are testing multiple predicates, make sure the optimised ones are always tested first just in case we can shortcut
+  // these slower ones
+
+  std::sort( predicates.begin(), predicates.end(), []( int a, int b ) -> bool
+  {
+    // return true if predicate a is faster than b
+
+    if ( a == 0 ) // intersects is fastest
+      return true;
+    else if ( b == 0 )
+      return false;
+
+    else if ( a == 5 ) // contains is fast for polygons
+      return true;
+    else if ( b == 5 )
+      return false;
+
+    // that's it, the rest don't have optimised prepared methods (as of GEOS 3.8)
+    return a < b;
+  } );
 }
 
 bool QgsJoinByLocationAlgorithm::processFeatures( QgsFeature &joinFeature, QgsProcessingFeedback *feedback )
