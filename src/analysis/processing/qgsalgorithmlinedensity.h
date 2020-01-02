@@ -66,6 +66,7 @@ class QgsLineDensityAlgorithm : public QgsProcessingAlgorithm
     QgsCoordinateReferenceSystem mCrs;
     QgsDistanceArea mDa;
     QgsSpatialIndex mIndex;
+    QHash<QgsFeatureId, double> mFeatureWeights;
 
 };
 

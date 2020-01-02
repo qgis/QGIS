@@ -108,7 +108,25 @@ bool QgsLineDensityAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Q
 
 QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  mIndex = QgsSpatialIndex( *mSource, nullptr, QgsSpatialIndex::FlagStoreFeatureGeometries );
+  mFeatureWeights = QHash<QgsFeatureId, double>();
+  mIndex = QgsSpatialIndex( QgsSpatialIndex::FlagStoreFeatureGeometries );
+
+  QgsFeatureIterator fit = mSource->getFeatures();
+  QgsFeature f;
+
+  while ( fit.nextFeature( f ) )
+  {
+    mIndex.addFeature( f );
+
+    double analysisWeight = 1;
+    //default weight of lines is set to 1 if no field provided
+    if ( !mWeightField.isEmpty() )
+    {
+      analysisWeight = f.attribute( mWeightField ).toDouble();
+    }
+    mFeatureWeights.insert( f.id(), analysisWeight );
+  }
+
 
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   QFileInfo fi( outputFile );
@@ -156,37 +174,22 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
         engine->prepareGeometry();
 
         QgsFeatureIds intersectingLineFids = QSet< QgsFeatureId >( );
-        //remove non-intersecting fids
+
+        double absDensity = 0;
         for ( QgsFeatureId id : fids )
         {
           QgsGeometry lineGeom = mIndex.geometry( id );
 
           if ( !engine->intersects( lineGeom.constGet() ) )
           {
-            intersectingLineFids.insert( id );
+            double analysisLineLength =  mDa.measureLength( QgsGeometry( engine->intersection( mIndex.geometry( id ).constGet() ) ) );
+            absDensity += ( analysisLineLength * mFeatureWeights.value( id ) );
           }
         }
 
-        QgsFeatureIterator fit = mSource->getFeatures( QgsFeatureRequest().setFilterFids( intersectingLineFids ) );
-        QgsFeature f;
-        double absDensity = 0;
-        while ( fit.nextFeature( f ) )
-        {
-          //use ellipsoidal line length
-          double analysisLineLength =  mDa.measureLength( QgsGeometry( engine->intersection( f.geometry().constGet() ) ) );
-
-          //default weight of lines is set to 1 if no field provided
-          double analysisWeight = 1;
-          if ( !mWeightField.isEmpty() )
-          {
-            analysisWeight = f.attribute( mWeightField ).toDouble();
-          }
-          absDensity += ( analysisLineLength * analysisWeight );
-        }
         //use ellipsoidal area
         double analysisSearchGeometryArea = mDa.measureArea( mSearchGeometry );
         double lineDensity = absDensity / analysisSearchGeometryArea;
-
         rasterDataLine->setValue( 0, col, lineDensity );
       }
       else
