@@ -9,9 +9,9 @@ jobs:
   pr2docissue:
     runs-on: ubuntu-latest
     name: Create issue on doc repo for labeled issue
-    if: github.event.label.name == 'Documentation'
     steps:
       - name: Create Documentation issue
+        if: github.event.label.name == 'Documentation'
         id: doc_issue
         uses: maxkomarychev/oction-create-issue@v0.7.1
         with:
