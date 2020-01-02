@@ -181,9 +181,6 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
   if ( parameters.value( QStringLiteral( "NON_MATCHING" ) ).isValid() && !mUnjoinedFeatures )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "NON_MATCHING" ) ) );
 
-  if ( !mDiscardNonMatching || mUnjoinedFeatures )
-    mUnjoinedIds = mBaseSource->allFeatureIds();
-
   qlonglong joinedCount = 0;
   QgsFeatureIterator joinIter = joinSource->getFeatures( QgsFeatureRequest().setDestinationCrs( mBaseSource->sourceCrs(), context.transformContext() ).setSubsetOfAttributes( mJoinedFieldIndices ) );
   QgsFeature f;
@@ -203,10 +200,13 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
     feedback->setProgress( i * step );
   }
 
-  if ( !mDiscardNonMatching ||  mUnjoinedFeatures )
+  if ( !mDiscardNonMatching || mUnjoinedFeatures )
   {
+    QgsFeatureIds unjoinedIds = mBaseSource->allFeatureIds();
+    unjoinedIds.subtract( mAddedIds );
+
     QgsFeature f2;
-    QgsFeatureRequest remainings = QgsFeatureRequest().setFilterFids( mUnjoinedIds );
+    QgsFeatureRequest remainings = QgsFeatureRequest().setFilterFids( unjoinedIds );
     QgsFeatureIterator remainIter = mBaseSource->getFeatures( remainings );
 
     QgsAttributes emptyAttributes;
@@ -226,6 +226,7 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
         outputFeature.setAttributes( attributes );
         mJoinedFeatures->addFeature( outputFeature, QgsFeatureSink::FastInsert );
       }
+
       if ( mUnjoinedFeatures )
         mUnjoinedFeatures->addFeature( f2, QgsFeatureSink::FastInsert );
     }
@@ -248,7 +249,7 @@ bool QgsJoinByLocationAlgorithm::featureFilter( const QgsFeature &feature, QgsGe
 {
   const QgsAbstractGeometry *geom = feature.geometry().constGet();
   bool ok = false;
-  for ( const auto  predicate : mPredicates )
+  for ( const int predicate : mPredicates )
   {
     switch ( predicate )
     {
@@ -303,9 +304,9 @@ bool QgsJoinByLocationAlgorithm::featureFilter( const QgsFeature &feature, QgsGe
 
 bool QgsJoinByLocationAlgorithm::processFeatures( QgsFeature &joinFeature, QgsProcessingFeedback *feedback )
 {
-
   if ( !joinFeature.hasGeometry() )
     return false;
+
   const QgsGeometry featGeom = joinFeature.geometry();
   std::unique_ptr< QgsGeometryEngine > engine;
   QgsFeatureRequest req = QgsFeatureRequest().setFilterRect( featGeom.boundingBox() );
@@ -320,8 +321,11 @@ bool QgsJoinByLocationAlgorithm::processFeatures( QgsFeature &joinFeature, QgsPr
     if ( feedback->isCanceled() )
       break;
 
-    if ( mJoinMethod == OneToOne && !mUnjoinedIds.contains( baseFeature.id() ) )
+    if ( mJoinMethod == OneToOne && mAddedIds.contains( baseFeature.id() ) )
+    {
+      //  already added this feature, and user has opted to only output first match
       continue;
+    }
 
     if ( !engine )
     {
@@ -342,8 +346,8 @@ bool QgsJoinByLocationAlgorithm::processFeatures( QgsFeature &joinFeature, QgsPr
       }
       if ( !ok )
         ok = true;
-      if ( !mDiscardNonMatching || mUnjoinedFeatures )
-        mUnjoinedIds.remove( baseFeature.id() );
+
+      mAddedIds.insert( baseFeature.id() );
     }
   }
   return ok;

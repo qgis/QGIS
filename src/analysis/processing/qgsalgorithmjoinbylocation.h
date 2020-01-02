@@ -63,11 +63,10 @@ class QgsJoinByLocationAlgorithm : public QgsProcessingAlgorithm
     QgsAttributeList mJoinedFieldIndices;
     bool mDiscardNonMatching = false;
     std::unique_ptr< QgsFeatureSink > mJoinedFeatures;
+    QgsFeatureIds mAddedIds;
     std::unique_ptr< QgsFeatureSink > mUnjoinedFeatures;
     JoinMethod mJoinMethod = OneToMany;
     QList<int> mPredicates;
-    QgsFeatureIds mUnjoinedIds;
-
 };
 
 ///@endcond PRIVATE
