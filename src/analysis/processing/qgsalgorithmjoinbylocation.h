@@ -54,12 +54,17 @@ class QgsJoinByLocationAlgorithm : public QgsProcessingAlgorithm
     bool featureFilter( const QgsFeature &feature, QgsGeometryEngine *engine ) const;
 
   private:
+    enum JoinMethod
+    {
+      OneToMany = 0,
+      OneToOne = 1,
+    };
     std::unique_ptr< QgsProcessingFeatureSource > mBaseSource;
     QgsAttributeList mFields2Indices;
     bool mDiscardNonMatching = false;
     std::unique_ptr< QgsFeatureSink > mJoinedFeatures;
     std::unique_ptr< QgsFeatureSink > mUnjoinedFeatures;
-    int mJoinMethod = 0;
+    JoinMethod mJoinMethod = OneToMany;
     QList<int> mPredicates;
     QgsFeatureIds mUnjoinedIds;
 

@@ -59,7 +59,7 @@ void QgsJoinByLocationAlgorithm::initAlgorithm( const QVariantMap & )
               << QObject::tr( "Take attributes of the first matching feature only (one-to-one)" );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ),
                 QObject::tr( "Join type" ),
-                joinMethods, false, 0 ) );
+                joinMethods, false, static_cast< int >( OneToMany ) ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "DISCARD_NONMATCHING" ),
                 QObject::tr( "Discard records which could not be joined" ),
                 false ) );
@@ -128,7 +128,7 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
   if ( !joinSource )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "JOIN" ) ) );
 
-  mJoinMethod = parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context );
+  mJoinMethod = static_cast< JoinMethod >( parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context ) );
 
   const QStringList joinedFieldNames = parameterAsFields( parameters, QStringLiteral( "JOIN_FIELDS" ), context );
 
@@ -321,7 +321,8 @@ bool QgsJoinByLocationAlgorithm::processFeatures( QgsFeature &joinFeature, QgsPr
   {
     if ( feedback->isCanceled() )
       break;
-    if ( mJoinMethod == 1 && !mUnjoinedIds.contains( baseFeature.id() ) )
+
+    if ( mJoinMethod == OneToOne && !mUnjoinedIds.contains( baseFeature.id() ) )
       continue;
 
     if ( !engine )
