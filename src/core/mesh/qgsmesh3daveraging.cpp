@@ -233,11 +233,15 @@ QDomElement QgsMeshMultiLevelsAveragingMethod::writeXml( QDomDocument &doc ) con
 
 void QgsMeshMultiLevelsAveragingMethod::readXml( const QDomElement &elem )
 {
-  mStartVerticalLevel = elem.attribute( QStringLiteral( "start-layer-index" ) ).toInt();
-  mEndVerticalLevel = elem.attribute( QStringLiteral( "end-layer-index" ) ).toInt();
-  if ( mStartVerticalLevel > mEndVerticalLevel )
+  QDomElement settings = elem.firstChildElement( QStringLiteral( "multi-vertical-layers-settings" ) );
+  if ( !settings.isNull() )
   {
-    std::swap( mStartVerticalLevel, mEndVerticalLevel );
+    mStartVerticalLevel = settings.attribute( QStringLiteral( "start-layer-index" ) ).toInt();
+    mEndVerticalLevel = settings.attribute( QStringLiteral( "end-layer-index" ) ).toInt();
+    if ( mStartVerticalLevel > mEndVerticalLevel )
+    {
+      std::swap( mStartVerticalLevel, mEndVerticalLevel );
+    }
   }
 }
 
@@ -348,11 +352,15 @@ QDomElement QgsMeshSigmaAveragingMethod::writeXml( QDomDocument &doc ) const
 
 void QgsMeshSigmaAveragingMethod::readXml( const QDomElement &elem )
 {
-  mStartFraction = elem.attribute( QStringLiteral( "start-fraction" ) ).toInt();
-  mEndFraction = elem.attribute( QStringLiteral( "end-fraction" ) ).toInt();
-  if ( mStartFraction > mEndFraction )
+  QDomElement settings = elem.firstChildElement( QStringLiteral( "sigma-settings" ) );
+  if ( !settings.isNull() )
   {
-    std::swap( mStartFraction, mEndFraction );
+    mStartFraction = settings.attribute( QStringLiteral( "start-fraction" ) ).toDouble();
+    mEndFraction = settings.attribute( QStringLiteral( "end-fraction" ) ).toDouble();
+    if ( mStartFraction > mEndFraction )
+    {
+      std::swap( mStartFraction, mEndFraction );
+    }
   }
 }
 
@@ -447,11 +455,15 @@ QDomElement QgsMeshRelativeHeightAveragingMethod::writeXml( QDomDocument &doc ) 
 
 void QgsMeshRelativeHeightAveragingMethod::readXml( const QDomElement &elem )
 {
-  mStartHeight = elem.attribute( QStringLiteral( "start-height" ) ).toInt();
-  mEndHeight = elem.attribute( QStringLiteral( "end-height" ) ).toInt();
-  if ( mStartHeight > mEndHeight )
+  QDomElement settings = elem.firstChildElement( QStringLiteral( "relative-height-settings" ) );
+  if ( !settings.isNull() )
   {
-    std::swap( mStartHeight, mEndHeight );
+    mStartHeight = settings.attribute( QStringLiteral( "start-height" ) ).toDouble();
+    mEndHeight = settings.attribute( QStringLiteral( "end-height" ) ).toDouble();
+    if ( mStartHeight > mEndHeight )
+    {
+      std::swap( mStartHeight, mEndHeight );
+    }
   }
 }
 
@@ -539,11 +551,15 @@ QDomElement QgsMeshElevationAveragingMethod::writeXml( QDomDocument &doc ) const
 
 void QgsMeshElevationAveragingMethod::readXml( const QDomElement &elem )
 {
-  mStartElevation = elem.attribute( QStringLiteral( "start-elevation" ) ).toInt();
-  mEndElevation = elem.attribute( QStringLiteral( "end-elevation" ) ).toInt();
-  if ( mEndElevation > mStartElevation )
+  QDomElement settings = elem.firstChildElement( QStringLiteral( "elevation-settings" ) );
+  if ( !settings.isNull() )
   {
-    std::swap( mEndElevation, mStartElevation );
+    mStartElevation = settings.attribute( QStringLiteral( "start-elevation" ) ).toDouble();
+    mEndElevation = settings.attribute( QStringLiteral( "end-elevation" ) ).toDouble();
+    if ( mEndElevation > mStartElevation )
+    {
+      std::swap( mEndElevation, mStartElevation );
+    }
   }
 }
 

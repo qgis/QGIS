@@ -285,6 +285,7 @@ void QgsMeshRenderer3dAveragingWidget::syncToLayer( )
       }
     }
     whileBlocking( mAveragingMethodComboBox )->setCurrentIndex( pageIndex );
+    whileBlocking( mAveragingMethodStackedWidget )->setCurrentIndex( pageIndex );
   }
 }
 
