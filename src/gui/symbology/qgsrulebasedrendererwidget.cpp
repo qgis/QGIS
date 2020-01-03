@@ -143,6 +143,17 @@ QgsFeatureRenderer *QgsRuleBasedRendererWidget::renderer()
   return mRenderer;
 }
 
+void QgsRuleBasedRendererWidget::setDockMode( bool dockMode )
+{
+  if ( dockMode )
+  {
+    // when in dock mode, these shortcuts conflict with the main window shortcuts and cannot be used
+    if ( mDeleteAction )
+      mDeleteAction->setShortcut( QKeySequence() );
+  }
+  QgsRendererWidget::setDockMode( dockMode );
+}
+
 void QgsRuleBasedRendererWidget::addRule()
 {
   QgsSymbol *s = QgsSymbol::defaultSymbol( mLayer->geometryType() );

@@ -104,6 +104,8 @@ class QgsRuleBasedRendererWidget : QgsRendererWidget
 
     virtual QgsFeatureRenderer *renderer();
 
+    virtual void setDockMode( bool dockMode );
+
 
   public slots:
 

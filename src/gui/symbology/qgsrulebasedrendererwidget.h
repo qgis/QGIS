@@ -126,6 +126,7 @@ class GUI_EXPORT QgsRuleBasedRendererWidget : public QgsRendererWidget, private 
     ~QgsRuleBasedRendererWidget() override;
 
     QgsFeatureRenderer *renderer() override;
+    void setDockMode( bool dockMode ) override;
 
   public slots:
 
