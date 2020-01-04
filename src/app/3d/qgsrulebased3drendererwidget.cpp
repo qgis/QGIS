@@ -88,6 +88,21 @@ void QgsRuleBased3DRendererWidget::setLayer( QgsVectorLayer *layer )
   connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsRuleBased3DRendererWidget::widgetChanged );
 }
 
+void QgsRuleBased3DRendererWidget::setDockMode( bool dockMode )
+{
+  if ( dockMode )
+  {
+    // when in dock mode, these shortcuts conflict with the main window shortcuts and cannot be used
+    if ( mCopyAction )
+      mCopyAction->setShortcut( QKeySequence() );
+    if ( mPasteAction )
+      mPasteAction->setShortcut( QKeySequence() );
+    if ( mDeleteAction )
+      mDeleteAction->setShortcut( QKeySequence() );
+  }
+  QgsPanelWidget::setDockMode( dockMode );
+}
+
 
 void QgsRuleBased3DRendererWidget::addRule()
 {
