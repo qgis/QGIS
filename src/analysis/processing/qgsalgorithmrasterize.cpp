@@ -89,16 +89,13 @@ void QgsRasterizeAlgorithm::initAlgorithm( const QVariantMap & )
                   QStringLiteral( "MAKE_BACKGROUND_TRANSPARENT" ),
                   QObject::tr( "Make background transparent" ),
                   false ) );
-  QStringList mapThemes { QgsProject::instance()->mapThemeCollection()->mapThemes() };
-  mapThemes.prepend( QString() );
-  addParameter( new QgsProcessingParameterEnum(
-                  QStringLiteral( "MAP_THEME" ),
-                  QObject::tr( "Map theme to render" ),
-                  mapThemes,
-                  false,
-                  QString(),
-                  true
-                ) );
+
+  std::unique_ptr< QgsProcessingParameterString > mapThemeParam = qgis::make_unique< QgsProcessingParameterString >(
+        QStringLiteral( "MAP_THEME" ),
+        QObject::tr( "Map theme to render" ),
+        QVariant(), false, true );
+  addParameter( mapThemeParam.release() );
+
   QList<QgsMapLayer *> projectLayers { QgsProject::instance()->mapLayers().values() };
   addParameter( new QgsProcessingParameterMultipleLayers(
                   QStringLiteral( "LAYERS" ),
