@@ -1708,7 +1708,6 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromVariantM
     def.reset( new QgsProcessingParameterColor( name ) );
   else if ( type == QgsProcessingParameterCoordinateOperation::typeName() )
     def.reset( new QgsProcessingParameterCoordinateOperation( name ) );
-  else
   {
     QgsProcessingParameterType *paramType = QgsApplication::instance()->processingRegistry()->parameterType( type );
     if ( paramType )
@@ -1804,6 +1803,8 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromScriptCo
     return QgsProcessingParameterColor::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QStringLiteral( "coordinateoperation" ) )
     return QgsProcessingParameterCoordinateOperation::fromScriptCode( name, description, isOptional, definition );
+  else if ( type == QStringLiteral( "maptheme" ) )
+    return QgsProcessingParameterMapTheme::fromScriptCode( name, description, isOptional, definition );
 
   return nullptr;
 }
@@ -6032,4 +6033,104 @@ QgsProcessingParameterCoordinateOperation *QgsProcessingParameterCoordinateOpera
     defaultValue = QVariant();
 
   return new QgsProcessingParameterCoordinateOperation( name, description, defaultValue, QString(), QString(), QVariant(), QVariant(), isOptional );
+}
+
+
+//
+// QgsProcessingParameterMapTheme
+//
+
+QgsProcessingParameterMapTheme::QgsProcessingParameterMapTheme( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
+  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+{
+
+}
+
+
+QgsProcessingParameterDefinition *QgsProcessingParameterMapTheme::clone() const
+{
+  return new QgsProcessingParameterMapTheme( *this );
+}
+
+bool QgsProcessingParameterMapTheme::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  if ( !input.isValid() && !mDefault.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( ( input.type() == QVariant::String && input.toString().isEmpty() )
+       || ( !input.isValid() && mDefault.type() == QVariant::String && mDefault.toString().isEmpty() ) )
+    return mFlags & FlagOptional;
+
+  return true;
+}
+
+QString QgsProcessingParameterMapTheme::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
+{
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
+  if ( value.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  return QgsProcessingUtils::stringToPythonLiteral( value.toString() );
+}
+
+QString QgsProcessingParameterMapTheme::asScriptCode() const
+{
+  QString code = QStringLiteral( "##%1=" ).arg( mName );
+  if ( mFlags & FlagOptional )
+    code += QStringLiteral( "optional " );
+  code += QStringLiteral( "maptheme " );
+
+  code += mDefault.toString();
+  return code.trimmed();
+}
+
+QString QgsProcessingParameterMapTheme::asPythonString( const QgsProcessing::PythonOutputType outputType ) const
+{
+  switch ( outputType )
+  {
+    case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
+    {
+      QString code = QStringLiteral( "QgsProcessingParameterMapTheme('%1', '%2'" ).arg( name(), description() );
+      if ( mFlags & FlagOptional )
+        code += QStringLiteral( ", optional=True" );
+
+      QgsProcessingContext c;
+      code += QStringLiteral( ", defaultValue=%1)" ).arg( valueAsPythonString( mDefault, c ) );
+
+      return code;
+    }
+  }
+  return QString();
+}
+
+QVariantMap QgsProcessingParameterMapTheme::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  return map;
+}
+
+bool QgsProcessingParameterMapTheme::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  return true;
+}
+
+QgsProcessingParameterMapTheme *QgsProcessingParameterMapTheme::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+{
+  QString parent;
+
+  QString def = definition;
+  if ( def.startsWith( '"' ) || def.startsWith( '\'' ) )
+    def = def.mid( 1 );
+  if ( def.endsWith( '"' ) || def.endsWith( '\'' ) )
+    def.chop( 1 );
+
+  QVariant defaultValue = def;
+
+  if ( defaultValue == QStringLiteral( "None" ) || defaultValue.toString().isEmpty() )
+    defaultValue = QVariant();
+
+  return new QgsProcessingParameterMapTheme( name, description, defaultValue, isOptional );
 }
