@@ -64,6 +64,7 @@
 #include "qgscolorbutton.h"
 #include "qgsprocessingparameterdefinitionwidget.h"
 #include "qgscoordinateoperationwidget.h"
+#include "qgsmessagebar.h"
 
 class TestParamType : public QgsProcessingParameterDefinition
 {
@@ -417,6 +418,11 @@ void TestProcessingGui::testWrapperGeneral()
   QgsProcessingParameterWidgetContext widgetContext;
   widgetContext.setMapCanvas( mc.get() );
   QCOMPARE( widgetContext.mapCanvas(), mc.get() );
+
+  std::unique_ptr< QgsMessageBar > mb = qgis::make_unique< QgsMessageBar >();
+  widgetContext.setMessageBar( mb.get() );
+  QCOMPARE( widgetContext.messageBar(), mb.get() );
+
   QgsProject p;
   widgetContext.setProject( &p );
   QCOMPARE( widgetContext.project(), &p );
@@ -428,6 +434,7 @@ void TestProcessingGui::testWrapperGeneral()
 
   wrapper.setWidgetContext( widgetContext );
   QCOMPARE( wrapper.widgetContext().mapCanvas(), mc.get() );
+  QCOMPARE( wrapper.widgetContext().messageBar(), mb.get() );
   QCOMPARE( wrapper.widgetContext().model(), model.get() );
   QCOMPARE( wrapper.widgetContext().modelChildAlgorithmId(), QStringLiteral( "xx" ) );
 }
