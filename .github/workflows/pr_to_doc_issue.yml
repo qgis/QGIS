@@ -19,12 +19,6 @@ jobs:
           bot_token_encrypted: ddbdec32940df79f1adf2369b4b10f10b5a66f65
           bot_token_xor_key: a1b2c3d47311f8e29e204f85a81b4df4a44e252c
 
-      - name: QGIS milestone to Doc label
-        id: milestone2label
-        env:
-          MILESTONE: ${{ github.event.pull_request.milestone }}
-        run: echo "::set-output name=label::"$(sed -r 's/^([[:digit:]]\.[[:digit:]]+)(\.[[:digit:]]+)?$/\1/' <<< ${MILESTONE})
-
       - name: Create Documentation issue
         id: doc_issue
         uses: maxkomarychev/oction-create-issue@v0.7.1
@@ -35,7 +29,7 @@ jobs:
           title: ${{ format('Request in QGIS ({1})', github.event.pull_request.number, github.event.pull_request.title) }}
           body: ${{ format('Request for documentation in QGIS/qgis#{0} {1})', github.event.pull_request.number, github.event.pull_request.title) }}
           labels: ${{ steps.milestone2label.outputs.label }}
-          
+
       - name: Print outputs
         run: |
           echo ${{ steps.doc_issue.outputs.id }}
