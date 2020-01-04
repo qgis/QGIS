@@ -1572,6 +1572,9 @@ class TableFieldWidgetWrapper(WidgetWrapper):
 
         self.refreshItems()
 
+        if self.parameterDefinition().allowMultiple() and self.parameterDefinition().defaultToAllFields():
+            self.setValue(self.getFields())
+
     def refreshItems(self):
         if self.parameterDefinition().allowMultiple():
             self.widget.updateForOptions(self.getFields())

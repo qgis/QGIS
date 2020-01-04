@@ -2358,7 +2358,8 @@ A vector layer or feature source field parameter for processing algorithms.
                                  const QString &parentLayerParameterName = QString(),
                                  DataType type = Any,
                                  bool allowMultiple = false,
-                                 bool optional = false );
+                                 bool optional = false,
+                                 bool defaultToAllFields = false );
 %Docstring
 Constructor for QgsProcessingParameterField.
 %End
@@ -2421,6 +2422,26 @@ Returns whether multiple field selections are permitted.
 Sets whether multiple field selections are permitted.
 
 .. seealso:: :py:func:`allowMultiple`
+%End
+
+    bool defaultToAllFields() const;
+%Docstring
+Returns whether a parameter which allows multiple selections (see allowMultiple()) should automatically
+select all fields as the default value.
+
+.. seealso:: :py:func:`setDefaultToAllFields`
+
+.. versionadded:: 3.12
+%End
+
+    void setDefaultToAllFields( bool enabled );
+%Docstring
+Sets whether a parameter which allows multiple selections (see allowMultiple()) should automatically
+select all fields as the default value.
+
+.. seealso:: :py:func:`defaultToAllFields`
+
+.. versionadded:: 3.12
 %End
 
     virtual QVariantMap toVariantMap() const;
