@@ -3499,6 +3499,54 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingFieldWidgetWrapper::cr
 // QgsProcessingMapThemeWidgetWrapper
 //
 
+
+QgsProcessingMapThemeParameterDefinitionWidget::QgsProcessingMapThemeParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
+
+  mDefaultComboBox = new QComboBox();
+  mDefaultComboBox->addItem( QString(), QVariant( -1 ) );
+
+  const QStringList mapThemes = widgetContext.project() ? widgetContext.project()->mapThemeCollection()->mapThemes() : QgsProject::instance()->mapThemeCollection()->mapThemes();
+  for ( const QString &theme : mapThemes )
+  {
+    mDefaultComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) ), theme, theme );
+  }
+  mDefaultComboBox->setEditable( true );
+
+  if ( const QgsProcessingParameterMapTheme *themeParam = dynamic_cast<const QgsProcessingParameterMapTheme *>( definition ) )
+  {
+    if ( themeParam->defaultValue().isValid() )
+      mDefaultComboBox->setCurrentText( QgsProcessingParameters::parameterAsString( themeParam, themeParam->defaultValue(), context ) );
+    else
+      mDefaultComboBox->setCurrentIndex( mDefaultComboBox->findData( -1 ) );
+  }
+  else
+    mDefaultComboBox->setCurrentIndex( mDefaultComboBox->findData( -1 ) );
+
+  vlayout->addWidget( mDefaultComboBox );
+
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingMapThemeParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  QVariant defaultVal;
+  if ( mDefaultComboBox->currentText().isEmpty() )
+    defaultVal = QVariant();
+  else
+    defaultVal = mDefaultComboBox->currentText();
+  auto param = qgis::make_unique< QgsProcessingParameterMapTheme>( name, description, defaultVal );
+  param->setFlags( flags );
+  return param.release();
+}
+
+
 QgsProcessingMapThemeWidgetWrapper::QgsProcessingMapThemeWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
 {
@@ -3601,6 +3649,11 @@ QString QgsProcessingMapThemeWidgetWrapper::parameterType() const
 QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingMapThemeWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
 {
   return new QgsProcessingMapThemeWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingMapThemeWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingMapThemeParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
 
 
