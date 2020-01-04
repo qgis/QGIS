@@ -3964,6 +3964,53 @@ void TestQgsProcessing::parameterRange()
   QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
   QCOMPARE( fromCode->flags(), def->flags() );
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+
+  // optional, no default value
+  def.reset( new QgsProcessingParameterRange( "optional", QString(), QgsProcessingParameterNumber::Double, QVariant(), true ) );
+  QVERIFY( def->checkValueIsAcceptable( "1.1,2" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariantList() << 1.1 << 2 ) );
+  QVERIFY( def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
+
+  params.insert( "optional",  QVariant() );
+  range = QgsProcessingParameters::parameterAsRange( def.get(), params, context );
+  QVERIFY( std::isnan( range.at( 0 ) ) );
+  QVERIFY( std::isnan( range.at( 1 ) ) );
+
+  params.insert( "optional",  QStringLiteral( "None,2" ) );
+  range = QgsProcessingParameters::parameterAsRange( def.get(), params, context );
+  QVERIFY( std::isnan( range.at( 0 ) ) );
+  QGSCOMPARENEAR( range.at( 1 ), 2, 0.001 );
+
+  params.insert( "optional",  QStringLiteral( "1.2,None" ) );
+  range = QgsProcessingParameters::parameterAsRange( def.get(), params, context );
+  QGSCOMPARENEAR( range.at( 0 ), 1.2, 0.001 );
+  QVERIFY( std::isnan( range.at( 1 ) ) );
+
+  params.insert( "optional",  QStringLiteral( "None,None" ) );
+  range = QgsProcessingParameters::parameterAsRange( def.get(), params, context );
+  QVERIFY( std::isnan( range.at( 0 ) ) );
+  QVERIFY( std::isnan( range.at( 1 ) ) );
+
+  params.insert( "optional",  QStringLiteral( "None" ) );
+  range = QgsProcessingParameters::parameterAsRange( def.get(), params, context );
+  QVERIFY( std::isnan( range.at( 0 ) ) );
+  QVERIFY( std::isnan( range.at( 1 ) ) );
+
+  params.insert( "optional",  QVariant() );
+  range = QgsProcessingParameters::parameterAsRange( def.get(), params, context );
+  QVERIFY( std::isnan( range.at( 0 ) ) );
+  QVERIFY( std::isnan( range.at( 1 ) ) );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterRange('optional', '', optional=True, type=QgsProcessingParameterNumber.Double, defaultValue=None)" ) );
+
+  fromCode.reset( dynamic_cast< QgsProcessingParameterRange * >( QgsProcessingParameters::parameterFromScriptCode( QStringLiteral( "##optional=optional range None" ) ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QVERIFY( !fromCode->defaultValue().isValid() );
 }
 
 void TestQgsProcessing::parameterRasterLayer()

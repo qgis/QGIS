@@ -1974,6 +1974,28 @@ void TestProcessingGui::testRangeWrapper()
     QCOMPARE( wrapper2.parameterValue().toString(), QStringLiteral( "100,100" ) );
 
     delete w;
+
+    // optional
+    QgsProcessingParameterRange paramOptional( QStringLiteral( "range" ), QStringLiteral( "range" ), QgsProcessingParameterNumber::Double, QVariant(), true );
+
+    QgsProcessingRangeWidgetWrapper wrapperOptional( &paramOptional, type );
+
+    w = wrapperOptional.createWrappedWidget( context );
+    QCOMPARE( wrapperOptional.parameterValue().toString(), QStringLiteral( "None,None" ) );
+    wrapperOptional.setParameterValue( QStringLiteral( "1,100" ), context );
+    QCOMPARE( wrapperOptional.parameterValue().toString(), QStringLiteral( "1,100" ) );
+    wrapperOptional.setParameterValue( QStringLiteral( "None,100" ), context );
+    QCOMPARE( wrapperOptional.parameterValue().toString(), QStringLiteral( "None,100" ) );
+    wrapperOptional.setParameterValue( QStringLiteral( "1,None" ), context );
+    QCOMPARE( wrapperOptional.parameterValue().toString(), QStringLiteral( "1,None" ) );
+    wrapperOptional.setParameterValue( QStringLiteral( "None,None" ), context );
+    QCOMPARE( wrapperOptional.parameterValue().toString(), QStringLiteral( "None,None" ) );
+    wrapperOptional.setParameterValue( QStringLiteral( "None" ), context );
+    QCOMPARE( wrapperOptional.parameterValue().toString(), QStringLiteral( "None,None" ) );
+    wrapperOptional.setParameterValue( QVariant(), context );
+    QCOMPARE( wrapperOptional.parameterValue().toString(), QStringLiteral( "None,None" ) );
+
+    delete w;
   };
 
   // standard wrapper
