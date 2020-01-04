@@ -4,14 +4,15 @@ name: Documentation issue for labeled PR
 on:
   pull_request:
     types:
-      - labeled
+      - closed
+
 jobs:
   pr2docissue:
+    if: github.event.pull_request.merged && contains( github.event.pull_request.labels.*.name, 'Needs Documentation')
     runs-on: ubuntu-latest
     name: Create issue on doc repo for labeled issue
     steps:
       - name: Clear GH Token
-        if: github.event.label.name == 'Documentation'
         id: token
         uses: opengisch/clear-token@v1.0.12
         with:
