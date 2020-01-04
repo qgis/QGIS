@@ -3863,11 +3863,12 @@ QgsProcessingParameterMeshLayer *QgsProcessingParameterMeshLayer::fromScriptCode
   return new QgsProcessingParameterMeshLayer( name, description,  definition.isEmpty() ? QVariant() : definition, isOptional );
 }
 
-QgsProcessingParameterField::QgsProcessingParameterField( const QString &name, const QString &description, const QVariant &defaultValue, const QString &parentLayerParameterName, DataType type, bool allowMultiple, bool optional )
+QgsProcessingParameterField::QgsProcessingParameterField( const QString &name, const QString &description, const QVariant &defaultValue, const QString &parentLayerParameterName, DataType type, bool allowMultiple, bool optional, bool defaultToAllFields )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
   , mParentLayerParameterName( parentLayerParameterName )
   , mDataType( type )
   , mAllowMultiple( allowMultiple )
+  , mDefaultToAllFields( defaultToAllFields )
 {
 
 }
@@ -3973,6 +3974,9 @@ QString QgsProcessingParameterField::asScriptCode() const
   if ( mAllowMultiple )
     code += QStringLiteral( "multiple " );
 
+  if ( mDefaultToAllFields )
+    code += QStringLiteral( "default_to_all_fields " );
+
   code += mParentLayerParameterName + ' ';
 
   code += mDefault.toString();
@@ -4012,9 +4016,14 @@ QString QgsProcessingParameterField::asPythonString( const QgsProcessing::Python
 
       code += QStringLiteral( ", parentLayerParameterName='%1'" ).arg( mParentLayerParameterName );
       code += QStringLiteral( ", allowMultiple=%1" ).arg( mAllowMultiple ? QStringLiteral( "True" ) : QStringLiteral( "False" ) );
-
       QgsProcessingContext c;
-      code += QStringLiteral( ", defaultValue=%1)" ).arg( valueAsPythonString( mDefault, c ) );
+      code += QStringLiteral( ", defaultValue=%1" ).arg( valueAsPythonString( mDefault, c ) );
+
+      if ( mDefaultToAllFields )
+        code += QStringLiteral( ", defaultToAllFields=True" );
+
+      code += ')';
+
       return code;
     }
   }
@@ -4059,12 +4068,23 @@ void QgsProcessingParameterField::setAllowMultiple( bool allowMultiple )
   mAllowMultiple = allowMultiple;
 }
 
+bool QgsProcessingParameterField::defaultToAllFields() const
+{
+  return mDefaultToAllFields;
+}
+
+void QgsProcessingParameterField::setDefaultToAllFields( bool enabled )
+{
+  mDefaultToAllFields = enabled;
+}
+
 QVariantMap QgsProcessingParameterField::toVariantMap() const
 {
   QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
   map.insert( QStringLiteral( "parent_layer" ), mParentLayerParameterName );
   map.insert( QStringLiteral( "data_type" ), mDataType );
   map.insert( QStringLiteral( "allow_multiple" ), mAllowMultiple );
+  map.insert( QStringLiteral( "default_to_all_fields" ), mDefaultToAllFields );
   return map;
 }
 
@@ -4074,6 +4094,7 @@ bool QgsProcessingParameterField::fromVariantMap( const QVariantMap &map )
   mParentLayerParameterName = map.value( QStringLiteral( "parent_layer" ) ).toString();
   mDataType = static_cast< DataType >( map.value( QStringLiteral( "data_type" ) ).toInt() );
   mAllowMultiple = map.value( QStringLiteral( "allow_multiple" ) ).toBool();
+  mDefaultToAllFields = map.value( QStringLiteral( "default_to_all_fields" ) ).toBool();
   return true;
 }
 
@@ -4082,6 +4103,7 @@ QgsProcessingParameterField *QgsProcessingParameterField::fromScriptCode( const 
   QString parent;
   DataType type = Any;
   bool allowMultiple = false;
+  bool defaultToAllFields = false;
   QString def = definition;
 
   if ( def.startsWith( QLatin1String( "numeric " ), Qt::CaseInsensitive ) )
@@ -4106,6 +4128,12 @@ QgsProcessingParameterField *QgsProcessingParameterField::fromScriptCode( const 
     def = def.mid( 8 ).trimmed();
   }
 
+  if ( def.startsWith( QLatin1String( "default_to_all_fields" ), Qt::CaseInsensitive ) )
+  {
+    defaultToAllFields = true;
+    def = def.mid( 21 ).trimmed();
+  }
+
   QRegularExpression re( QStringLiteral( "(.*?)\\s+(.*)$" ) );
   QRegularExpressionMatch m = re.match( def );
   if ( m.hasMatch() )
@@ -4119,7 +4147,7 @@ QgsProcessingParameterField *QgsProcessingParameterField::fromScriptCode( const 
     def.clear();
   }
 
-  return new QgsProcessingParameterField( name, description, def.isEmpty() ? QVariant() : def, parent, type, allowMultiple, isOptional );
+  return new QgsProcessingParameterField( name, description, def.isEmpty() ? QVariant() : def, parent, type, allowMultiple, isOptional, defaultToAllFields );
 }
 
 QgsProcessingParameterFeatureSource::QgsProcessingParameterFeatureSource( const QString &name, const QString &description, const QList<int> &types, const QVariant &defaultValue, bool optional )

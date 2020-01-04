@@ -2255,7 +2255,8 @@ class CORE_EXPORT QgsProcessingParameterField : public QgsProcessingParameterDef
                                  const QString &parentLayerParameterName = QString(),
                                  DataType type = Any,
                                  bool allowMultiple = false,
-                                 bool optional = false );
+                                 bool optional = false,
+                                 bool defaultToAllFields = false );
 
     /**
      * Returns the type name for the parameter class.
@@ -2305,6 +2306,24 @@ class CORE_EXPORT QgsProcessingParameterField : public QgsProcessingParameterDef
      */
     void setAllowMultiple( bool allowMultiple );
 
+    /**
+     * Returns whether a parameter which allows multiple selections (see allowMultiple()) should automatically
+     * select all fields as the default value.
+     *
+     * \see setDefaultToAllFields()
+     * \since QGIS 3.12
+     */
+    bool defaultToAllFields() const;
+
+    /**
+     * Sets whether a parameter which allows multiple selections (see allowMultiple()) should automatically
+     * select all fields as the default value.
+     *
+     * \see defaultToAllFields()
+     * \since QGIS 3.12
+     */
+    void setDefaultToAllFields( bool enabled );
+
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
 
@@ -2318,6 +2337,7 @@ class CORE_EXPORT QgsProcessingParameterField : public QgsProcessingParameterDef
     QString mParentLayerParameterName;
     DataType mDataType = Any;
     bool mAllowMultiple = false;
+    bool mDefaultToAllFields = false;
 
 };
 
