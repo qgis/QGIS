@@ -94,6 +94,12 @@ void QgsRasterizeAlgorithm::initAlgorithm( const QVariantMap & )
         QStringLiteral( "MAP_THEME" ),
         QObject::tr( "Map theme to render" ),
         QVariant(), false, true );
+
+  QVariantMap metadataClass;
+  metadataClass.insert( QStringLiteral( "class" ), QStringLiteral( "processing.gui.wrappers_map_theme.MapThemeWrapper" ) );
+  QVariantMap metadata;
+  metadata.insert( QStringLiteral( "widget_wrapper" ), metadataClass );
+  mapThemeParam->setMetadata( metadata );
   addParameter( mapThemeParam.release() );
 
   QList<QgsMapLayer *> projectLayers { QgsProject::instance()->mapLayers().values() };
