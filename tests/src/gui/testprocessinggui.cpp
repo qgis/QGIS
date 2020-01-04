@@ -65,6 +65,7 @@
 #include "qgsprocessingparameterdefinitionwidget.h"
 #include "qgscoordinateoperationwidget.h"
 #include "qgsmessagebar.h"
+#include "qgsfieldcombobox.h"
 
 class TestParamType : public QgsProcessingParameterDefinition
 {
@@ -180,6 +181,8 @@ class TestProcessingGui : public QObject
     void testMatrixDialog();
     void testMatrixWrapper();
     void testExpressionWrapper();
+    void testFieldSelectionPanel();
+    void testFieldWrapper();
     void testMultipleSelectionDialog();
     void testEnumSelectionPanel();
     void testEnumCheckboxPanel();
@@ -2199,6 +2202,374 @@ void TestProcessingGui::testExpressionWrapper()
     QCOMPARE( wrapper2.mFieldExpWidget->layer()->publicSource(), pointFileName );
     // must be owned by wrapper, or layer may be deleted while still required by wrapper
     QCOMPARE( wrapper2.mParentLayer->publicSource(), pointFileName );
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
+}
+
+void TestProcessingGui::testFieldSelectionPanel()
+{
+  QgsProcessingParameterField fieldParam( QString(), QString(), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, true );
+  QgsProcessingFieldPanelWidget w( nullptr, &fieldParam );
+  QSignalSpy spy( &w, &QgsProcessingFieldPanelWidget::changed );
+
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "0 options selected" ) );
+  w.setValue( QStringLiteral( "aa" ) );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( w.value().toList(), QVariantList() << QStringLiteral( "aa" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "1 options selected" ) );
+
+  w.setValue( QVariantList() << QStringLiteral( "bb" ) << QStringLiteral( "aa" ) );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( w.value().toList(), QVariantList() << QStringLiteral( "bb" ) << QStringLiteral( "aa" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "2 options selected" ) );
+
+  w.setValue( QVariant() );
+  QCOMPARE( spy.count(), 3 );
+  QCOMPARE( w.value().toList(), QVariantList() );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "0 options selected" ) );
+
+}
+
+void TestProcessingGui::testFieldWrapper()
+{
+  const QgsProcessingAlgorithm *centroidAlg = QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:centroids" ) );
+  const QgsProcessingParameterDefinition *layerDef = centroidAlg->parameterDefinition( QStringLiteral( "INPUT" ) );
+
+  auto testWrapper = [layerDef]( QgsProcessingGui::WidgetType type )
+  {
+    TestLayerWrapper layerWrapper( layerDef );
+    QgsProject p;
+    QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "LineString?field=aaa:int&field=bbb:string" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+    p.addMapLayer( vl );
+
+    QgsProcessingParameterField param( QStringLiteral( "field" ), QStringLiteral( "field" ), QVariant(), QStringLiteral( "INPUT" ) );
+
+    QgsProcessingFieldWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+
+    QWidget *w = wrapper.createWrappedWidget( context );
+    ( void )w;
+    layerWrapper.setWidgetValue( QVariant::fromValue( vl ), context );
+    wrapper.setParentLayerWrapperValue( &layerWrapper );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingFieldWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( QStringLiteral( "bbb" ), context );
+    QCOMPARE( spy.count(), 1 );
+    QCOMPARE( wrapper.widgetValue().toString(),  QStringLiteral( "bbb" ) );
+
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( static_cast< QgsFieldComboBox * >( wrapper.wrappedWidget() )->currentField(),  QStringLiteral( "bbb" ) );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        QCOMPARE( static_cast< QLineEdit * >( wrapper.wrappedWidget() )->text(),  QStringLiteral( "bbb" ) );
+        break;
+    }
+
+    wrapper.setWidgetValue( QString(), context );
+    QCOMPARE( spy.count(), 2 );
+    QVERIFY( wrapper.widgetValue().toString().isEmpty() );
+
+    delete w;
+
+    // optional
+    param = QgsProcessingParameterField( QStringLiteral( "field" ), QStringLiteral( "field" ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, false, true );
+
+    QgsProcessingFieldWidgetWrapper wrapper2( &param, type );
+
+    w = wrapper2.createWrappedWidget( context );
+    layerWrapper.setWidgetValue( QVariant::fromValue( vl ), context );
+    wrapper2.setParentLayerWrapperValue( &layerWrapper );
+    QSignalSpy spy2( &wrapper2, &QgsProcessingFieldWidgetWrapper::widgetValueHasChanged );
+    wrapper2.setWidgetValue( QStringLiteral( "aaa" ), context );
+    QCOMPARE( spy2.count(), 1 );
+    QCOMPARE( wrapper2.widgetValue().toString(),  QStringLiteral( "aaa" ) );
+
+    wrapper2.setWidgetValue( QString(), context );
+    QCOMPARE( spy2.count(), 2 );
+    QVERIFY( wrapper2.widgetValue().toString().isEmpty() );
+
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( static_cast< QgsFieldComboBox * >( wrapper2.wrappedWidget() )->currentField(), QString() );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        QCOMPARE( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text(),  QString() );
+        break;
+    }
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "field [optional]" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    // check signal
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        static_cast< QgsFieldComboBox * >( wrapper2.wrappedWidget() )->setField( QStringLiteral( "bbb" ) );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->setText( QStringLiteral( "bbb" ) );
+        break;
+    }
+
+    QCOMPARE( spy2.count(), 3 );
+
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( wrapper2.mComboBox->layer(), vl );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        break;
+    }
+
+    // should not be owned by wrapper
+    QVERIFY( !wrapper2.mParentLayer.get() );
+    layerWrapper.setWidgetValue( QVariant(), context );
+    wrapper2.setParentLayerWrapperValue( &layerWrapper );
+
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QVERIFY( !wrapper2.mComboBox->layer() );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        break;
+    }
+
+    layerWrapper.setWidgetValue( vl->id(), context );
+    wrapper2.setParentLayerWrapperValue( &layerWrapper );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QVERIFY( !wrapper2.mComboBox->layer() );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        break;
+    }
+    QVERIFY( !wrapper2.mParentLayer.get() );
+
+    // with project layer
+    context.setProject( &p );
+    TestProcessingContextGenerator generator( context );
+    wrapper2.registerProcessingContextGenerator( &generator );
+
+    layerWrapper.setWidgetValue( vl->id(), context );
+    wrapper2.setParentLayerWrapperValue( &layerWrapper );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( wrapper2.mComboBox->layer(), vl );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        break;
+    }
+    QVERIFY( !wrapper2.mParentLayer.get() );
+
+    // non-project layer
+    QString pointFileName = TEST_DATA_DIR + QStringLiteral( "/points.shp" );
+    layerWrapper.setWidgetValue( pointFileName, context );
+    wrapper2.setParentLayerWrapperValue( &layerWrapper );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( wrapper2.mComboBox->layer()->publicSource(), pointFileName );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        break;
+    }
+
+    // must be owned by wrapper, or layer may be deleted while still required by wrapper
+    QCOMPARE( wrapper2.mParentLayer->publicSource(), pointFileName );
+
+    delete w;
+
+    // multiple
+    param = QgsProcessingParameterField( QStringLiteral( "field" ), QStringLiteral( "field" ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, true, true );
+
+    QgsProcessingFieldWidgetWrapper wrapper3( &param, type );
+
+    w = wrapper3.createWrappedWidget( context );
+    layerWrapper.setWidgetValue( QVariant::fromValue( vl ), context );
+    wrapper3.setParentLayerWrapperValue( &layerWrapper );
+    QSignalSpy spy3( &wrapper3, &QgsProcessingFieldWidgetWrapper::widgetValueHasChanged );
+    wrapper3.setWidgetValue( QStringLiteral( "aaa" ), context );
+    QCOMPARE( spy3.count(), 1 );
+    QCOMPARE( wrapper3.widgetValue().toStringList(), QStringList() << QStringLiteral( "aaa" ) );
+
+    wrapper3.setWidgetValue( QString(), context );
+    QCOMPARE( spy3.count(), 2 );
+    QVERIFY( wrapper3.widgetValue().toString().isEmpty() );
+
+    wrapper3.setWidgetValue( QStringLiteral( "aaa;bbb" ), context );
+    QCOMPARE( spy3.count(), 3 );
+    QCOMPARE( wrapper3.widgetValue().toStringList(), QStringList() << QStringLiteral( "aaa" ) << QStringLiteral( "bbb" ) );
+
+    delete w;
+
+    // filtering fields
+    QgsFields f;
+    f.append( QgsField( QStringLiteral( "string" ), QVariant::String ) );
+    f.append( QgsField( QStringLiteral( "double" ), QVariant::Double ) );
+    f.append( QgsField( QStringLiteral( "int" ), QVariant::Int ) );
+    f.append( QgsField( QStringLiteral( "date" ), QVariant::Date ) );
+    f.append( QgsField( QStringLiteral( "time" ), QVariant::Time ) );
+    f.append( QgsField( QStringLiteral( "datetime" ), QVariant::DateTime ) );
+
+    QgsFields f2 = wrapper3.filterFields( f );
+    QCOMPARE( f2, f );
+
+    // string fields
+    param = QgsProcessingParameterField( QStringLiteral( "field" ), QStringLiteral( "field" ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::String, false, true );
+    QgsProcessingFieldWidgetWrapper wrapper4( &param, type );
+    w = wrapper4.createWrappedWidget( context );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( static_cast< QgsFieldComboBox * >( wrapper4.wrappedWidget() )->filters(), QgsFieldProxyModel::String );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        break;
+    }
+    f2 = wrapper4.filterFields( f );
+    QCOMPARE( f2.size(), 1 );
+    QCOMPARE( f2.at( 0 ).name(), QStringLiteral( "string" ) );
+    delete w;
+
+    // string, multiple
+    param = QgsProcessingParameterField( QStringLiteral( "field" ), QStringLiteral( "field" ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::String, true, true );
+    QgsProcessingFieldWidgetWrapper wrapper4a( &param, type );
+    w = wrapper4a.createWrappedWidget( context );
+    wrapper4a.setParentLayerWrapperValue( &layerWrapper );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( wrapper4a.mPanel->fields().count(), 1 );
+        QCOMPARE( wrapper4a.mPanel->fields().at( 0 ).name(), QStringLiteral( "bbb" ) );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        break;
+    }
+    delete w;
+
+    // numeric fields
+    param = QgsProcessingParameterField( QStringLiteral( "field" ), QStringLiteral( "field" ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::Numeric, false, true );
+    QgsProcessingFieldWidgetWrapper wrapper5( &param, type );
+    w = wrapper5.createWrappedWidget( context );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( static_cast< QgsFieldComboBox * >( wrapper5.wrappedWidget() )->filters(), QgsFieldProxyModel::Numeric );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        break;
+    }
+    f2 = wrapper5.filterFields( f );
+    QCOMPARE( f2.size(), 2 );
+    QCOMPARE( f2.at( 0 ).name(), QStringLiteral( "double" ) );
+    QCOMPARE( f2.at( 1 ).name(), QStringLiteral( "int" ) );
+
+    delete w;
+
+    // numeric, multiple
+    param = QgsProcessingParameterField( QStringLiteral( "field" ), QStringLiteral( "field" ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::Numeric, true, true );
+    QgsProcessingFieldWidgetWrapper wrapper5a( &param, type );
+    w = wrapper5a.createWrappedWidget( context );
+    wrapper5a.setParentLayerWrapperValue( &layerWrapper );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( wrapper5a.mPanel->fields().count(), 1 );
+        QCOMPARE( wrapper5a.mPanel->fields().at( 0 ).name(), QStringLiteral( "aaa" ) );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        break;
+    }
+    delete w;
+
+    // datetime fields
+    param = QgsProcessingParameterField( QStringLiteral( "field" ), QStringLiteral( "field" ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::DateTime, false, true );
+    QgsProcessingFieldWidgetWrapper wrapper6( &param, type );
+    w = wrapper6.createWrappedWidget( context );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( static_cast< QgsFieldComboBox * >( wrapper6.wrappedWidget() )->filters(), QgsFieldProxyModel::Date | QgsFieldProxyModel::Time | QgsFieldProxyModel::DateTime );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        break;
+    }
+    f2 = wrapper6.filterFields( f );
+    QCOMPARE( f2.size(), 3 );
+    QCOMPARE( f2.at( 0 ).name(), QStringLiteral( "date" ) );
+    QCOMPARE( f2.at( 1 ).name(), QStringLiteral( "time" ) );
+    QCOMPARE( f2.at( 2 ).name(), QStringLiteral( "datetime" ) );
+
+
+    // default to all fields
+    param = QgsProcessingParameterField( QStringLiteral( "field" ), QStringLiteral( "field" ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, true, true );
+    param.setDefaultToAllFields( true );
+    QgsProcessingFieldWidgetWrapper wrapper7( &param, type );
+    w = wrapper7.createWrappedWidget( context );
+    wrapper7.setParentLayerWrapperValue( &layerWrapper );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( wrapper7.widgetValue().toList(), QVariantList() << QStringLiteral( "aaa" ) << QStringLiteral( "bbb" ) );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        break;
+    }
+    delete w;
   };
 
   // standard wrapper
