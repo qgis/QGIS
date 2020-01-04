@@ -122,8 +122,6 @@ Content-Type: text/xml; charset=utf-8
     <ogc:SpatialOperator name="Crosses"/>
     <ogc:SpatialOperator name="Intersects"/>
     <ogc:SpatialOperator name="Contains"/>
-    <ogc:SpatialOperator name="DWithin"/>
-    <ogc:SpatialOperator name="Beyond"/>
     <ogc:SpatialOperator name="BBOX"/>
    </ogc:SpatialOperators>
   </ogc:Spatial_Capabilities>

@@ -126,8 +126,7 @@ namespace QgsWfs
     QStringList spatialOperators;
     spatialOperators << QStringLiteral( "Equals" ) << QStringLiteral( "Disjoint" ) << QStringLiteral( "Touches" )
                      << QStringLiteral( "Within" ) << QStringLiteral( "Overlaps" ) << QStringLiteral( "Crosses" )
-                     << QStringLiteral( "Intersects" ) << QStringLiteral( "Contains" ) << QStringLiteral( "DWithin" )
-                     << QStringLiteral( "Beyond" ) << QStringLiteral( "BBOX" );
+                     << QStringLiteral( "Intersects" ) << QStringLiteral( "Contains" ) << QStringLiteral( "BBOX" );
     QDomElement spatialOperatorsElem = doc.createElement( QStringLiteral( "ogc:SpatialOperators" ) );
     for ( const QString &spatialOperator : spatialOperators )
     {
