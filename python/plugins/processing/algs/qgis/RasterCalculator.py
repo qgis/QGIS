@@ -259,8 +259,9 @@ class RasterCalculator(QgisAlgorithm):
                 #    Output 'varName' from algorithm 'algName'
                 # but var in expression is called simply
                 #    'varName' from algorithm 'algName'
-                # because variable description translation (issue #32753 and #33317) it's necessary to abstract translation 
-                # in some way. e.g. parsing var description
+                # because variable description translation (issue #32753 and #33317)
+                # it's necessary to abstract translation in some way.
+                # e.g. parsing var description
                 elements = varDescription.split("'")
                 if len(elements) == 5:
                     outVarName = elements[1]
