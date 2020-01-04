@@ -2429,6 +2429,8 @@ Sets whether multiple field selections are permitted.
 Returns whether a parameter which allows multiple selections (see allowMultiple()) should automatically
 select all fields as the default value.
 
+If ``True``, this will override any existing defaultValue() set on the parameter.
+
 .. seealso:: :py:func:`setDefaultToAllFields`
 
 .. versionadded:: 3.12
@@ -2438,6 +2440,8 @@ select all fields as the default value.
 %Docstring
 Sets whether a parameter which allows multiple selections (see allowMultiple()) should automatically
 select all fields as the default value.
+
+If ``True``, this will override any existing defaultValue() set on the parameter.
 
 .. seealso:: :py:func:`defaultToAllFields`
 

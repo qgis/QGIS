@@ -2310,6 +2310,8 @@ class CORE_EXPORT QgsProcessingParameterField : public QgsProcessingParameterDef
      * Returns whether a parameter which allows multiple selections (see allowMultiple()) should automatically
      * select all fields as the default value.
      *
+     * If TRUE, this will override any existing defaultValue() set on the parameter.
+     *
      * \see setDefaultToAllFields()
      * \since QGIS 3.12
      */
@@ -2318,6 +2320,8 @@ class CORE_EXPORT QgsProcessingParameterField : public QgsProcessingParameterDef
     /**
      * Sets whether a parameter which allows multiple selections (see allowMultiple()) should automatically
      * select all fields as the default value.
+     *
+     * If TRUE, this will override any existing defaultValue() set on the parameter.
      *
      * \see defaultToAllFields()
      * \since QGIS 3.12
