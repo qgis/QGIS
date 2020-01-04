@@ -15,9 +15,9 @@ import qgis  # NOQA
 from qgis.core import QgsFields, QgsVectorLayer, QgsFieldProxyModel
 from qgis.gui import QgsFieldComboBox
 from qgis.PyQt.QtCore import QVariant, Qt
+from qgis.PyQt.QtTest import QSignalSpy
 
 from qgis.testing import start_app, unittest
-
 start_app()
 
 
@@ -57,6 +57,28 @@ class TestQgsFieldComboBox(unittest.TestCase):
 
         w.setField('fldint')
         self.assertEqual(w.currentField(), 'fldint')
+
+    def testSignals(self):
+        l = create_layer()
+        w = QgsFieldComboBox()
+        w.setLayer(l)
+
+        spy = QSignalSpy(w.fieldChanged)
+        w.setField('fldint2')
+        self.assertEqual(len(spy), 1)
+        self.assertEqual(spy[-1][0], 'fldint2')
+        w.setField('fldint2')
+        self.assertEqual(len(spy), 1)
+        self.assertEqual(spy[-1][0], 'fldint2')
+        w.setField('fldint')
+        self.assertEqual(len(spy), 2)
+        self.assertEqual(spy[-1][0], 'fldint')
+        w.setField(None)
+        self.assertEqual(len(spy), 3)
+        self.assertEqual(spy[-1][0], None)
+        w.setField(None)
+        self.assertEqual(len(spy), 3)
+        self.assertEqual(spy[-1][0], None)
 
 
 if __name__ == '__main__':
