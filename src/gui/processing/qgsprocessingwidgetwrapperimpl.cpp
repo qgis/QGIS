@@ -41,9 +41,11 @@
 #include "qgsmapmouseevent.h"
 #include "qgsfilterlineedit.h"
 #include "qgsmapcanvas.h"
+#include "qgsmessagebar.h"
 #include "qgscolorbutton.h"
 #include "qgscoordinateoperationwidget.h"
 #include "qgsdatumtransformdialog.h"
+#include "qgsfieldcombobox.h"
 #include <QToolButton>
 #include <QLabel>
 #include <QHBoxLayout>
@@ -2251,6 +2253,7 @@ QWidget *QgsProcessingLayoutItemWidgetWrapper::createWidget()
 
 void QgsProcessingLayoutItemWidgetWrapper::postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers )
 {
+  QgsAbstractProcessingParameterWidgetWrapper::postInitialize( wrappers );
   switch ( type() )
   {
     case QgsProcessingGui::Standard:
@@ -2984,6 +2987,7 @@ QWidget *QgsProcessingCoordinateOperationWidgetWrapper::createWidget()
 
 void QgsProcessingCoordinateOperationWidgetWrapper::postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers )
 {
+  QgsAbstractProcessingParameterWidgetWrapper::postInitialize( wrappers );
   switch ( type() )
   {
     case QgsProcessingGui::Standard:
@@ -3133,6 +3137,361 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingCoordinateOperationWid
 QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingCoordinateOperationWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
 {
   return new QgsProcessingCoordinateOperationParameterDefinitionWidget( context, widgetContext, definition, algorithm );
+}
+
+
+
+//
+// QgsProcessingFieldPanelWidget
+//
+
+QgsProcessingFieldPanelWidget::QgsProcessingFieldPanelWidget( QWidget *parent, const QgsProcessingParameterField *param )
+  : QWidget( parent )
+  , mParam( param )
+{
+  QHBoxLayout *hl = new QHBoxLayout();
+  hl->setMargin( 0 );
+  hl->setContentsMargins( 0, 0, 0, 0 );
+
+  mLineEdit = new QLineEdit();
+  mLineEdit->setEnabled( false );
+  hl->addWidget( mLineEdit, 1 );
+
+  mToolButton = new QToolButton();
+  mToolButton->setText( QString( QChar( 0x2026 ) ) );
+  hl->addWidget( mToolButton );
+
+  setLayout( hl );
+
+  if ( mParam )
+  {
+    mLineEdit->setText( tr( "%1 options selected" ).arg( 0 ) );
+  }
+
+  connect( mToolButton, &QToolButton::clicked, this, &QgsProcessingFieldPanelWidget::showDialog );
+}
+
+void QgsProcessingFieldPanelWidget::setFields( const QgsFields &fields )
+{
+  mFields = fields;
+}
+
+void QgsProcessingFieldPanelWidget::setValue( const QVariant &value )
+{
+  if ( value.isValid() )
+    mValue = value.type() == QVariant::List ? value.toList() : QVariantList() << value;
+  else
+    mValue.clear();
+
+  updateSummaryText();
+  emit changed();
+}
+
+void QgsProcessingFieldPanelWidget::showDialog()
+{
+  QVariantList availableOptions;
+  QStringList fieldNames;
+  availableOptions.reserve( mFields.size() );
+  for ( const QgsField &field : qgis::as_const( mFields ) )
+  {
+    availableOptions << field.name();
+  }
+
+  QgsProcessingMultipleSelectionDialog dlg( availableOptions, mValue, this, nullptr );
+  dlg.setValueFormatter( []( const QVariant & v ) -> QString
+  {
+    return v.toString();
+  } );
+  if ( dlg.exec() )
+  {
+    setValue( dlg.selectedOptions() );
+  }
+}
+
+void QgsProcessingFieldPanelWidget::updateSummaryText()
+{
+  if ( mParam )
+    mLineEdit->setText( tr( "%1 options selected" ).arg( mValue.count() ) );
+}
+
+
+//
+// QgsProcessingFieldWidgetWrapper
+//
+
+QgsProcessingFieldWidgetWrapper::QgsProcessingFieldWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingFieldWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterField *fieldParam = dynamic_cast< const QgsProcessingParameterField *>( parameterDefinition() );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+    {
+      if ( fieldParam->allowMultiple() )
+      {
+        mPanel = new QgsProcessingFieldPanelWidget( nullptr, fieldParam );
+        mPanel->setToolTip( parameterDefinition()->toolTip() );
+        connect( mPanel, &QgsProcessingFieldPanelWidget::changed, this, [ = ]
+        {
+          emit widgetValueHasChanged( this );
+        } );
+        return mPanel;
+      }
+      else
+      {
+        mComboBox = new QgsFieldComboBox();
+        mComboBox->setAllowEmptyFieldName( fieldParam->flags() & QgsProcessingParameterDefinition::FlagOptional );
+
+        if ( fieldParam->dataType() == QgsProcessingParameterField::Numeric )
+          mComboBox->setFilters( QgsFieldProxyModel::Numeric );
+        else if ( fieldParam->dataType() == QgsProcessingParameterField::String )
+          mComboBox->setFilters( QgsFieldProxyModel::String );
+        else if ( fieldParam->dataType() == QgsProcessingParameterField::DateTime )
+          mComboBox->setFilters( QgsFieldProxyModel::Date | QgsFieldProxyModel::Time | QgsFieldProxyModel::DateTime );
+
+        mComboBox->setToolTip( parameterDefinition()->toolTip() );
+        connect( mComboBox, &QgsFieldComboBox::fieldChanged, this, [ = ]( const QString & )
+        {
+          emit widgetValueHasChanged( this );
+        } );
+        return mComboBox;
+      }
+    }
+
+    case QgsProcessingGui::Modeler:
+    {
+      mLineEdit = new QLineEdit();
+      mLineEdit->setToolTip( QObject::tr( "Name of field (separate field names with ; for multiple field parameters)" ) );
+      connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]
+      {
+        emit widgetValueHasChanged( this );
+      } );
+      return mLineEdit;
+    }
+
+  }
+  return nullptr;
+}
+
+void QgsProcessingFieldWidgetWrapper::postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers )
+{
+  QgsAbstractProcessingParameterWidgetWrapper::postInitialize( wrappers );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+    {
+      for ( const QgsAbstractProcessingParameterWidgetWrapper *wrapper : wrappers )
+      {
+        if ( wrapper->parameterDefinition()->name() == static_cast< const QgsProcessingParameterField * >( parameterDefinition() )->parentLayerParameterName() )
+        {
+          setParentLayerWrapperValue( wrapper );
+          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [ = ]
+          {
+            setParentLayerWrapperValue( wrapper );
+          } );
+          break;
+        }
+      }
+      break;
+    }
+
+    case QgsProcessingGui::Modeler:
+      break;
+  }
+}
+
+void QgsProcessingFieldWidgetWrapper::setParentLayerWrapperValue( const QgsAbstractProcessingParameterWidgetWrapper *parentWrapper )
+{
+  // evaluate value to layer
+  QgsProcessingContext *context = nullptr;
+  std::unique_ptr< QgsProcessingContext > tmpContext;
+  if ( mProcessingContextGenerator )
+    context = mProcessingContextGenerator->processingContext();
+
+  if ( !context )
+  {
+    tmpContext = qgis::make_unique< QgsProcessingContext >();
+    context = tmpContext.get();
+  }
+
+  QgsVectorLayer *layer = QgsProcessingParameters::parameterAsVectorLayer( parentWrapper->parameterDefinition(), parentWrapper->parameterValue(), *context );
+  if ( !layer || !layer->isValid() )
+  {
+    if ( mComboBox )
+      mComboBox->setLayer( nullptr );
+    else if ( mPanel )
+      mPanel->setFields( QgsFields() );
+
+    if ( widgetContext().messageBar() )
+    {
+      widgetContext().messageBar()->clearWidgets();
+      widgetContext().messageBar()->pushMessage( QString(), QObject::tr( "Could not load selected layer/table. Dependent field could not be populated" ),
+          Qgis::Warning, 5 );
+    }
+    return;
+  }
+
+  // need to grab ownership of layer if required - otherwise layer may be deleted when context
+  // goes out of scope
+  std::unique_ptr< QgsMapLayer > ownedLayer( context->takeResultLayer( layer->id() ) );
+  if ( ownedLayer && ownedLayer->type() == QgsMapLayerType::VectorLayer )
+  {
+    mParentLayer.reset( qobject_cast< QgsVectorLayer * >( ownedLayer.release() ) );
+    layer = mParentLayer.get();
+  }
+  else
+  {
+    // don't need ownership of this layer - it wasn't owned by context (so e.g. is owned by the project)
+  }
+
+  if ( mComboBox )
+    mComboBox->setLayer( layer );
+  else if ( mPanel )
+    mPanel->setFields( filterFields( layer->fields() ) );
+
+  const QgsProcessingParameterField *fieldParam = static_cast< const QgsProcessingParameterField * >( parameterDefinition() );
+  if ( mPanel && fieldParam->defaultToAllFields() )
+  {
+    QVariantList val;
+    val.reserve( mPanel->fields().size() );
+    for ( const QgsField &field : mPanel->fields() )
+      val << field.name();
+    setWidgetValue( val, *context );
+  }
+  else if ( fieldParam->defaultValue().isValid() )
+    setWidgetValue( parameterDefinition()->defaultValue(), *context );
+}
+
+void QgsProcessingFieldWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  if ( mComboBox )
+  {
+    if ( !value.isValid() )
+      mComboBox->setField( QString() );
+    else
+    {
+      const QString v = QgsProcessingParameters::parameterAsString( parameterDefinition(), value, context );
+      mComboBox->setField( v );
+    }
+  }
+  else if ( mPanel )
+  {
+    QVariantList opts;
+    if ( value.isValid() )
+    {
+      const QStringList v = QgsProcessingParameters::parameterAsFields( parameterDefinition(), value, context );
+      opts.reserve( v.size() );
+      for ( const QString &i : v )
+        opts << i;
+    }
+    if ( mPanel )
+      mPanel->setValue( opts );
+  }
+  else if ( mLineEdit )
+  {
+    const QgsProcessingParameterField *fieldParam = static_cast< const QgsProcessingParameterField * >( parameterDefinition() );
+    if ( fieldParam->allowMultiple() )
+    {
+      const QStringList v = QgsProcessingParameters::parameterAsFields( parameterDefinition(), value, context );
+      mLineEdit->setText( v.join( ';' ) );
+    }
+    else
+    {
+      mLineEdit->setText( QgsProcessingParameters::parameterAsString( parameterDefinition(), value, context ) );
+    }
+  }
+}
+
+QVariant QgsProcessingFieldWidgetWrapper::widgetValue() const
+{
+  if ( mComboBox )
+    return mComboBox->currentField();
+  else if ( mPanel )
+    return mPanel->value();
+  else if ( mLineEdit )
+    return mLineEdit->text().split( ';' );
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingFieldWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterField::typeName()
+         << QgsProcessingParameterString::typeName();
+}
+
+QStringList QgsProcessingFieldWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputString::typeName();
+}
+
+QList<int> QgsProcessingFieldWidgetWrapper::compatibleDataTypes() const
+{
+  return QList<int>();
+}
+
+QString QgsProcessingFieldWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "selected field names as an array of names, or semicolon separated string of options (e.g. 'fid;place_name')" );
+}
+
+const QgsVectorLayer *QgsProcessingFieldWidgetWrapper::linkedVectorLayer() const
+{
+  if ( mComboBox && mComboBox->layer() )
+    return mComboBox->layer();
+
+  return QgsAbstractProcessingParameterWidgetWrapper::linkedVectorLayer();
+}
+
+QgsFields QgsProcessingFieldWidgetWrapper::filterFields( const QgsFields &fields ) const
+{
+  const QgsProcessingParameterField *fieldParam = static_cast< const QgsProcessingParameterField * >( parameterDefinition() );
+  QgsFields res;
+  for ( const QgsField &f : fields )
+  {
+    switch ( fieldParam->dataType() )
+    {
+      case QgsProcessingParameterField::Any:
+        res.append( f );
+        break;
+
+      case QgsProcessingParameterField::Numeric:
+        if ( f.isNumeric() )
+          res.append( f );
+        break;
+
+      case QgsProcessingParameterField::String:
+        if ( f.type() == QVariant::String )
+          res.append( f );
+        break;
+
+      case QgsProcessingParameterField::DateTime:
+        if ( f.type() == QVariant::Date || f.type() == QVariant::Time || f.type() == QVariant::DateTime )
+          res.append( f );
+        break;
+    }
+  }
+
+  return res;
+}
+
+QString QgsProcessingFieldWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterField::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingFieldWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingFieldWidgetWrapper( parameter, type );
 }
 
 ///@endcond PRIVATE
