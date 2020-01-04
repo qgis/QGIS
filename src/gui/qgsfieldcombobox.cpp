@@ -56,6 +56,7 @@ QgsVectorLayer *QgsFieldComboBox::layer() const
 
 void QgsFieldComboBox::setField( const QString &fieldName )
 {
+  const QString prevField = currentField();
   QModelIndex idx = mFieldProxyModel->sourceFieldModel()->indexFromName( fieldName );
   if ( idx.isValid() )
   {
@@ -63,11 +64,19 @@ void QgsFieldComboBox::setField( const QString &fieldName )
     if ( proxyIdx.isValid() )
     {
       setCurrentIndex( proxyIdx.row() );
-      emit fieldChanged( currentField() );
-      return;
+    }
+    else
+    {
+      setCurrentIndex( -1 );
     }
   }
-  setCurrentIndex( -1 );
+  else
+  {
+    setCurrentIndex( -1 );
+  }
+
+  if ( prevField != currentField() )
+    emit fieldChanged( currentField() );
 }
 
 QString QgsFieldComboBox::currentField() const
