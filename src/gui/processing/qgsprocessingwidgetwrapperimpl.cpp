@@ -46,6 +46,7 @@
 #include "qgscoordinateoperationwidget.h"
 #include "qgsdatumtransformdialog.h"
 #include "qgsfieldcombobox.h"
+#include "qgsmapthemecollection.h"
 #include <QToolButton>
 #include <QLabel>
 #include <QHBoxLayout>
@@ -3493,5 +3494,114 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingFieldWidgetWrapper::cr
 {
   return new QgsProcessingFieldWidgetWrapper( parameter, type );
 }
+
+//
+// QgsProcessingMapThemeWidgetWrapper
+//
+
+QgsProcessingMapThemeWidgetWrapper::QgsProcessingMapThemeWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingMapThemeWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterMapTheme *themeParam = dynamic_cast< const QgsProcessingParameterMapTheme *>( parameterDefinition() );
+
+  mComboBox = new QComboBox();
+
+  if ( themeParam->flags() & QgsProcessingParameterDefinition::FlagOptional )
+    mComboBox->addItem( tr( "[Not selected]" ), QVariant( -1 ) );
+
+  const QStringList mapThemes = widgetContext().project() ? widgetContext().project()->mapThemeCollection()->mapThemes() : QgsProject::instance()->mapThemeCollection()->mapThemes();
+  for ( const QString &theme : mapThemes )
+  {
+    mComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) ), theme, theme );
+  }
+
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+      break;
+
+    case QgsProcessingGui::Modeler:
+      mComboBox->setEditable( true );
+      break;
+  }
+
+  mComboBox->setToolTip( parameterDefinition()->toolTip() );
+  connect( mComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+  {
+    emit widgetValueHasChanged( this );
+  } );
+
+  return mComboBox;
+}
+
+void QgsProcessingMapThemeWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  const QString v = QgsProcessingParameters::parameterAsString( parameterDefinition(), value, context );
+
+  if ( !value.isValid() )
+    mComboBox->setCurrentIndex( mComboBox->findData( QVariant( -1 ) ) );
+  else
+  {
+    if ( mComboBox->isEditable() && mComboBox->findData( v ) == -1 )
+    {
+      const QString prev = mComboBox->currentText();
+      mComboBox->setCurrentText( v );
+      if ( prev != v )
+        emit widgetValueHasChanged( this );
+    }
+    else
+      mComboBox->setCurrentIndex( mComboBox->findData( v ) );
+  }
+}
+
+QVariant QgsProcessingMapThemeWidgetWrapper::widgetValue() const
+{
+  if ( mComboBox )
+    return mComboBox->currentData().toInt() == -1 ? QVariant() :
+           !mComboBox->currentData().isValid() && mComboBox->isEditable() ? mComboBox->currentText().isEmpty() ? QVariant() : QVariant( mComboBox->currentText() )
+           : mComboBox->currentData();
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingMapThemeWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterString::typeName()
+         << QgsProcessingParameterExpression::typeName();
+}
+
+QStringList QgsProcessingMapThemeWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputString::typeName();
+}
+
+QList<int> QgsProcessingMapThemeWidgetWrapper::compatibleDataTypes() const
+{
+  return QList< int >();
+}
+
+QString QgsProcessingMapThemeWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "map theme as a string value (e.g. 'base maps')" );
+}
+
+QString QgsProcessingMapThemeWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterMapTheme::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingMapThemeWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingMapThemeWidgetWrapper( parameter, type );
+}
+
 
 ///@endcond PRIVATE
