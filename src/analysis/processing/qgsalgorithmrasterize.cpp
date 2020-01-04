@@ -90,17 +90,10 @@ void QgsRasterizeAlgorithm::initAlgorithm( const QVariantMap & )
                   QObject::tr( "Make background transparent" ),
                   false ) );
 
-  std::unique_ptr< QgsProcessingParameterString > mapThemeParam = qgis::make_unique< QgsProcessingParameterString >(
-        QStringLiteral( "MAP_THEME" ),
-        QObject::tr( "Map theme to render" ),
-        QVariant(), false, true );
-
-  QVariantMap metadataClass;
-  metadataClass.insert( QStringLiteral( "class" ), QStringLiteral( "processing.gui.wrappers_map_theme.MapThemeWrapper" ) );
-  QVariantMap metadata;
-  metadata.insert( QStringLiteral( "widget_wrapper" ), metadataClass );
-  mapThemeParam->setMetadata( metadata );
-  addParameter( mapThemeParam.release() );
+  addParameter( new QgsProcessingParameterMapTheme(
+                  QStringLiteral( "MAP_THEME" ),
+                  QObject::tr( "Map theme to render" ),
+                  QVariant(), true ) );
 
   QList<QgsMapLayer *> projectLayers { QgsProject::instance()->mapLayers().values() };
   addParameter( new QgsProcessingParameterMultipleLayers(
