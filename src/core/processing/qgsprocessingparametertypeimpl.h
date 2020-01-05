@@ -1733,7 +1733,7 @@ class CORE_EXPORT QgsProcessingParameterTypeCoordinateOperation : public QgsProc
 
 
 /**
- * A map themeparameter for Processing algorithms.
+ * A map theme parameter for Processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('maptheme')
