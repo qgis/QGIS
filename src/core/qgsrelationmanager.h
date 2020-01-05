@@ -44,6 +44,11 @@ class CORE_EXPORT QgsRelationManager : public QObject
     explicit QgsRelationManager( QgsProject *project = nullptr );
 
     /**
+     * Gets the relation context
+     */
+    QgsRelationContext context() const;
+
+    /**
      * Will set the specified relations and remove any relation currently set.
      *
      * \param relations A list of relations to set.
