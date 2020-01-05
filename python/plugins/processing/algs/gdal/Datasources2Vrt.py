@@ -30,27 +30,33 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingParameterVectorDestination,
                        QgsProcessingOutputString
                        )
-from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 
-class Datasources2Vrt(QgisAlgorithm):
+class Datasources2Vrt(GdalAlgorithm):
     INPUT = 'INPUT'
     UNIONED = 'UNIONED'
     OUTPUT = 'OUTPUT'
     VRT_STRING = 'VRT_STRING'
 
+    def createCustomParametersWidget(self, parent):
+        return None
+
     def group(self):
-        return self.tr('Vector general')
+        return self.tr('Vector miscellaneous')
 
     def groupId(self):
-        return 'vectorgeneral'
+        return 'vectormiscellaneous'
 
     def name(self):
         return 'buildvirtualvector'
 
     def displayName(self):
         return self.tr('Build virtual vector')
+
+    def tags(self):
+        return ['ogr', 'gdal', 'vrt', 'create']
 
     def __init__(self):
         super().__init__()
