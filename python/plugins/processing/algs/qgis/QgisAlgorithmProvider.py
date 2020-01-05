@@ -35,7 +35,6 @@ from .BoxPlot import BoxPlot
 from .CheckValidity import CheckValidity
 from .Climb import Climb
 from .ConcaveHull import ConcaveHull
-from .Datasources2Vrt import Datasources2Vrt
 from .DefineProjection import DefineProjection
 from .Delaunay import Delaunay
 from .DeleteColumn import DeleteColumn
@@ -117,7 +116,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 CheckValidity(),
                 Climb(),
                 ConcaveHull(),
-                Datasources2Vrt(),
                 DefineProjection(),
                 Delaunay(),
                 DeleteColumn(),
