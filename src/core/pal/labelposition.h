@@ -88,8 +88,6 @@ namespace pal
        * \param feature labelpos owners
        * \param isReversed label is reversed
        * \param quadrant relative position of label to feature
-       * \param dX the correction of the anchor point in x direction
-       * \param dY the correction of the anchor point in y direction
        */
       LabelPosition( int id, double x1, double y1,
                      double w, double h,
