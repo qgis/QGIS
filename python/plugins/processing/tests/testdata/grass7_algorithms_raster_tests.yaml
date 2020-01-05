@@ -774,6 +774,26 @@ tests:
         hash: 19ca3124af3dc68294f73327a0c80596eaed5fcbf46cfb7e784d17f5
         type: rasterhash
 
+  - algorithm: grass7:r.series
+    name: GRASS7 r.series (without range)
+    params:
+      -n: false
+      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
+      input:
+        params:
+        - name: custom/grass7/raster_6class.tif
+          type: raster
+        - name: custom/grass7/float_raster.tif
+          type: raster
+        type: multi
+      method: 0
+      range: None
+    results:
+      output:
+        hash: 19ca3124af3dc68294f73327a0c80596eaed5fcbf46cfb7e784d17f5
+        type: rasterhash
+
   - algorithm: grass7:r.category
     name: GRASS7 r.category
     params:
@@ -1856,4 +1876,36 @@ tests:
     results:
       forms:
         hash: e1a1fc36d53e2ac801632f9e2271922d2b1340869f2db82d5edaeb0e
+        type: rasterhash
+
+  - algorithm: grass7:r.rescale
+    name: Test (grass7:r.rescale)
+    params:
+      GRASS_RASTER_FORMAT_META: ''
+      GRASS_RASTER_FORMAT_OPT: ''
+      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+      from: '1,6'
+      input:
+        name: custom/grass7/raster_6class.tif
+        type: raster
+      to: '1,2'
+    results:
+      output:
+        hash: b07a8fd2a3ff63851d0eb123cafd8024986d22ea453f89c808765c83
+        type: rasterhash
+
+  - algorithm: grass7:r.rescale
+    name: Test (grass7:r.rescale)
+    params:
+      GRASS_RASTER_FORMAT_META: ''
+      GRASS_RASTER_FORMAT_OPT: ''
+      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+      from: None
+      input:
+        name: custom/grass7/raster_6class.tif
+        type: raster
+      to: '1,2'
+    results:
+      output:
+        hash: b07a8fd2a3ff63851d0eb123cafd8024986d22ea453f89c808765c83
         type: rasterhash
