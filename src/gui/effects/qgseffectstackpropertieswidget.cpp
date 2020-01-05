@@ -470,15 +470,15 @@ void QgsEffectStackCompactWidget::showDialog()
     return;
 
   QgsEffectStack *clone = mStack->clone();
-  QgsEffectStackPropertiesWidget *widget = new QgsEffectStackPropertiesWidget( clone, nullptr );
-  if ( mPreviewPicture )
-  {
-    widget->setPreviewPicture( *mPreviewPicture );
-  }
-
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( qobject_cast< QWidget * >( parent() ) );
   if ( panel && panel->dockMode() )
   {
+    QgsEffectStackPropertiesWidget *widget = new QgsEffectStackPropertiesWidget( clone, nullptr );
+    if ( mPreviewPicture )
+    {
+      widget->setPreviewPicture( *mPreviewPicture );
+    }
+
     connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsEffectStackCompactWidget::updateEffectLive );
     connect( widget, &QgsPanelWidget::panelAccepted, this, &QgsEffectStackCompactWidget::updateAcceptWidget );
     panel->openPanel( widget );
@@ -486,6 +486,11 @@ void QgsEffectStackCompactWidget::showDialog()
   else
   {
     QgsEffectStackPropertiesDialog dlg( clone, this );
+    if ( mPreviewPicture )
+    {
+      dlg.setPreviewPicture( *mPreviewPicture );
+    }
+
     if ( dlg.exec() == QDialog::Accepted )
     {
       *mStack = *clone;
