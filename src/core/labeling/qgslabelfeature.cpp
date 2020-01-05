@@ -80,6 +80,11 @@ QSizeF QgsLabelFeature::size( double angle ) const
   return ( angle >= 0.785398 && angle <= 2.35619 ) || ( angle >= 3.92699 && angle <= 5.49779 ) ? mRotatedSize : mSize;
 }
 
+QgsPointXY QgsLabelFeature::anchorPosition() const
+{
+  return mAnchorPosition;
+}
+
 void QgsLabelFeature::setFeature( const QgsFeature &feature )
 {
   mFeature = feature;
@@ -115,22 +120,7 @@ void QgsLabelFeature::setObstacleSettings( const QgsLabelObstacleSettings &setti
   mObstacleSettings = settings;
 }
 
-double QgsLabelFeature::dX() const
+void QgsLabelFeature::setAnchorPosition( const QgsPointXY &anchorPosition )
 {
-  return mDX;
-}
-
-void QgsLabelFeature::setDX( double dX )
-{
-  mDX = dX;
-}
-
-double QgsLabelFeature::dY() const
-{
-  return mDY;
-}
-
-void QgsLabelFeature::setDY( double dY )
-{
-  mDY = dY;
+  mAnchorPosition = anchorPosition;
 }

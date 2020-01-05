@@ -249,6 +249,8 @@ std::size_t FeaturePart::createCandidatesOverPoint( double x, double y, std::vec
   double xdiff = -labelW / 2.0;
   double ydiff = -labelH / 2.0;
 
+  feature()->setAnchorPosition( QgsPointXY( x, y ) );
+
   if ( !qgsDoubleNear( mLF->quadOffset().x(), 0.0 ) )
   {
     xdiff += labelW / 2.0 * mLF->quadOffset().x();
@@ -310,7 +312,7 @@ std::size_t FeaturePart::createCandidatesOverPoint( double x, double y, std::vec
     }
   }
 
-  lPos.emplace_back( qgis::make_unique< LabelPosition >( id, lx, ly, labelW, labelH, angle, cost, this, false, quadrantFromOffset(), xdiff, ydiff ) );
+  lPos.emplace_back( qgis::make_unique< LabelPosition >( id, lx, ly, labelW, labelH, angle, cost, this, false, quadrantFromOffset() ) );
   return nbp;
 }
 
@@ -1615,7 +1617,7 @@ std::vector< std::unique_ptr< LabelPosition > > FeaturePart::createCandidates( P
 
   if ( mLF->hasFixedPosition() )
   {
-    lPos.emplace_back( qgis::make_unique< LabelPosition> ( 0, mLF->fixedPosition().x(), mLF->fixedPosition().y(), getLabelWidth( angle ), getLabelHeight( angle ), angle, 0.0, this, false, LabelPosition::Quadrant::QuadrantOver, mLF->dX(), mLF->dY() ) );
+    lPos.emplace_back( qgis::make_unique< LabelPosition> ( 0, mLF->fixedPosition().x(), mLF->fixedPosition().y(), getLabelWidth( angle ), getLabelHeight( angle ), angle, 0.0, this, false, LabelPosition::Quadrant::QuadrantOver ) );
   }
   else
   {

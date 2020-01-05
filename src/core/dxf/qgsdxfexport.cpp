@@ -1266,11 +1266,6 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
   double lblY = label->getY();
 
   QgsLabelFeature *labelFeature = label->getFeaturePart()->feature();
-  if ( labelFeature->hasFixedPosition() )
-  {
-    lblX = labelFeature->fixedPosition().x();
-    lblY = labelFeature->fixedPosition().y();
-  }
 
   HAlign hali = HAlign::Undefined;
   VAlign vali = VAlign::Undefined;
@@ -1279,8 +1274,8 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
 
   if ( props.isActive( QgsPalLayerSettings::OffsetQuad ) )
   {
-    lblX -= label->dX();
-    lblY -= label->dY();
+    lblX = labelFeature->anchorPosition().x();
+    lblY = labelFeature->anchorPosition().y();
 
     const QVariant exprVal = props.value( QgsPalLayerSettings::OffsetQuad, expressionContext );
     if ( exprVal.isValid() )
@@ -1335,8 +1330,8 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
 
   if ( props.isActive( QgsPalLayerSettings::Hali ) )
   {
-    lblX -= label->dX();
-    lblY -= label->dY();
+    lblX = labelFeature->anchorPosition().x();
+    lblY = labelFeature->anchorPosition().y();
 
     hali = HAlign::HLeft;
     QVariant exprVal = props.value( QgsPalLayerSettings::Hali, expressionContext );

@@ -2012,6 +2012,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   bool ddXPos = false, ddYPos = false;
   double quadOffsetX = 0.0, quadOffsetY = 0.0;
   double offsetX = 0.0, offsetY = 0.0;
+  QgsPointXY anchorPosition = geom.centroid().asPoint();
 
   //x/y shift in case of alignment
   double xdiff = 0.0;
@@ -2242,11 +2243,15 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
               yPos = static_cast< const QgsPoint * >( ddPoint.constGet() )->y();
             }
 
+            anchorPosition = QgsPointXY( xPos, yPos );
+
             xPos += xdiff;
             yPos += ydiff;
           }
           else
           {
+            anchorPosition = QgsPointXY( xPos, yPos );
+
             // only rotate non-pinned OverPoint placements until other placements are supported in pal::Feature
             if ( dataDefinedRotation && placement != QgsPalLayerSettings::OverPoint )
             {
@@ -2331,8 +2336,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
 
   //  feature to the layer
   QgsTextLabelFeature *lf = new QgsTextLabelFeature( feature.id(), std::move( geos_geom_clone ), QSizeF( labelX, labelY ) );
-  lf->setDX( xdiff );
-  lf->setDY( ydiff );
+  lf->setAnchorPosition( anchorPosition );
   lf->setFeature( feature );
   lf->setSymbol( symbol );
   if ( !qgsDoubleNear( rotatedLabelX, 0.0 ) && !qgsDoubleNear( rotatedLabelY, 0.0 ) )

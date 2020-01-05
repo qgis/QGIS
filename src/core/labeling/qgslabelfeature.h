@@ -174,8 +174,25 @@ class CORE_EXPORT QgsLabelFeature
     void setHasFixedPosition( bool enabled ) { mHasFixedPosition = enabled; }
     //! Coordinates of the fixed position (relevant only if hasFixedPosition() returns TRUE)
     QgsPointXY fixedPosition() const { return mFixedPosition; }
+
     //! Sets coordinates of the fixed position (relevant only if hasFixedPosition() returns TRUE)
     void setFixedPosition( const QgsPointXY &point ) { mFixedPosition = point; }
+
+    /**
+     * In case of quadrand or aligned positioning, this is set to the anchor point.
+     * This can be used for proper vector based output like DXF.
+     *
+     * \since QGIS 3.12
+     */
+    QgsPointXY anchorPosition() const;
+
+    /**
+     * In case of quadrand or aligned positioning, this is set to the anchor point.
+     * This can be used for proper vector based output like DXF.
+     *
+     * \since QGIS 3.12
+     */
+    void setAnchorPosition( const QgsPointXY &anchorPosition );
 
     //! Whether the label should use a fixed angle instead of using angle from automatic placement
     bool hasFixedAngle() const { return mHasFixedAngle; }
@@ -434,47 +451,6 @@ class CORE_EXPORT QgsLabelFeature
      */
     void setObstacleSettings( const QgsLabelObstacleSettings &settings );
 
-    /**
-     * The deltas (dX and dY) are the difference by which the fixed position deviates
-     * from the original position because of alignment.
-     *
-     * This can be used to restore the original position.
-     *
-     * \since QGIS 3.12
-     */
-    double dX() const;
-
-    /**
-     * The deltas (dX and dY) are the difference by which the fixed position deviates
-     * from the original position because of alignment.
-     *
-     * This can be used to restore the original position.
-     *
-     * \since QGIS 3.12
-     */
-    void setDX( double dX );
-
-    /**
-     * The deltas (dX and dY) are the difference by which the fixed position deviates
-     * from the original position because of alignment.
-     *
-     * This can be used to restore the original position.
-     *
-     * \since QGIS 3.12
-     */
-    double dY() const;
-
-
-    /**
-     * The deltas (dX and dY) are the difference by which the fixed position deviates
-     * from the original position because of alignment.
-     *
-     * This can be used to restore the original position.
-     *
-     * \since QGIS 3.12
-     */
-    void setDY( double dY );
-
   protected:
     //! Pointer to PAL layer (assigned when registered to PAL)
     pal::Layer *mLayer = nullptr;
@@ -549,8 +525,7 @@ class CORE_EXPORT QgsLabelFeature
 
     QgsLabelObstacleSettings mObstacleSettings;
 
-    double mDX = 0.0;
-    double mDY = 0.0;
+    QgsPointXY mAnchorPosition;
 };
 
 #endif // QGSLABELFEATURE_H
