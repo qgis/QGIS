@@ -98,8 +98,12 @@ QgsRectangle QgsGeometryCheckError::affectedAreaBBox() const
 void QgsGeometryCheckError::setFixed( int method )
 {
   mStatus = StatusFixed;
-  const QStringList methods = mCheck->resolutionMethods();
-  mResolutionMessage = methods[method];
+  const QList<QgsGeometryCheckFix> methods = mCheck->availableResolutionMethods();
+  for ( const QgsGeometryCheckFix &fix : methods )
+  {
+    if ( fix.id() == method )
+      mResolutionMessage = fix.name();
+  }
 }
 
 void QgsGeometryCheckError::setFixFailed( const QString &reason )

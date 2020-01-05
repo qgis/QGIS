@@ -252,8 +252,9 @@ void QgsGeometryGapCheck::fixError( const QMap<QString, QgsFeaturePool *> &featu
 
       case CreateNewFeature:
       {
+        QgsGeometryGapCheckError *gapCheckError = dynamic_cast<QgsGeometryGapCheckError *>( error );
         QgsProject *project = QgsProject::instance();
-        QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( project->mapLayer( error->layerId() ) );
+        QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( project->mapLayer( gapCheckError->neighbors().keys().first() ) );
         if ( layer )
         {
           const QgsGeometry geometry = error->geometry();
@@ -377,13 +378,28 @@ QStringList QgsGeometryGapCheck::resolutionMethods() const
 {
   QStringList methods = QStringList()
                         << tr( "Add gap area to neighboring polygon with longest shared edge" )
-                        << tr( "No action" )
-                        << tr( "TODO" )
-                        << tr( "TODO" );
+                        << tr( "No action" );
   if ( mAllowedGapsSource )
     methods << tr( "Add gap to allowed exceptions" );
 
   return methods;
+}
+
+QList<QgsGeometryCheckFix> QgsGeometryGapCheck::availableResolutionMethods() const
+{
+  QList<QgsGeometryCheckFix> fixes
+  {
+    QgsGeometryCheckFix( MergeLongestEdge, tr( "Add to longest shared edge" ), tr( "Add the gap area to the neighbouring polygon with the longest shared edge." ), false ),
+    QgsGeometryCheckFix( CreateNewFeature, tr( "Create new feature" ), tr( "Create a new feature from the gap area." ), false ),
+    QgsGeometryCheckFix( MergeLargestArea, tr( "Add to largest neighbouring area" ), tr( "Add the gap area to the neighbouring polygon with the largest area." ), false )
+  };
+
+  if ( mAllowedGapsSource )
+    fixes << QgsGeometryCheckFix( AddToAllowedGaps, tr( "Add gap to allowed exceptions" ), tr( "Create a new feature from the gap geometry on the allowed exceptions layer." ), false );
+
+  fixes << QgsGeometryCheckFix( NoChange, tr( "No action" ), tr( "Do not perform any action and mark this error as fixed." ), false );
+
+  return fixes;
 }
 
 QString QgsGeometryGapCheck::description() const

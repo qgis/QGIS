@@ -9,6 +9,11 @@
 
 class QgsGeometryCheckFix
 {
+%Docstring
+This class implements a fix for problems detected in geometry checks.
+
+.. versionadded:: 3.12
+%End
 
 %TypeHeaderCode
 #include "qgsgeometrycheckfix.h"
@@ -19,10 +24,19 @@ class QgsGeometryCheckFix
     int id() const;
 
     bool isStable() const;
+%Docstring
+If this fix is stable enough to be listed by default.
+%End
 
     QString name() const;
+%Docstring
+A human readable and translated name for this fix.
+%End
 
     QString description() const;
+%Docstring
+A human readable and translated description for this fix.
+%End
 
 };
 

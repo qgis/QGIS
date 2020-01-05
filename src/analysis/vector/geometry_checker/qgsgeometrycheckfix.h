@@ -5,6 +5,11 @@
 #include <QString>
 #include "qgis_analysis.h"
 
+/**
+ * This class implements a fix for problems detected in geometry checks.
+ *
+ * \since QGIS 3.12
+ */
 class ANALYSIS_EXPORT QgsGeometryCheckFix
 {
   public:
@@ -12,10 +17,19 @@ class ANALYSIS_EXPORT QgsGeometryCheckFix
 
     int id() const;
 
+    /**
+     * If this fix is stable enough to be listed by default.
+     */
     bool isStable() const;
 
+    /**
+     * A human readable and translated name for this fix.
+     */
     QString name() const;
 
+    /**
+     * A human readable and translated description for this fix.
+     */
     QString description() const;
 
   private:
