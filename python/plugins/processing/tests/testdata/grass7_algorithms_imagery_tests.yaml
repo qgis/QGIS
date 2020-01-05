@@ -43,7 +43,7 @@ tests:
         - 358c7745aaa5d7fbc56b34a21821fdfdc61f68e6ca79fb996a2241d8
         - 8b3936d73c0a52acf7e290f1856a9d4a4959694bb8bcdfd4d1e88826
         type: rasterhash
-        
+
   - algorithm: grass7:i.eb.eta
     name: GRASS7 i.eb.eta
     params:
@@ -61,7 +61,7 @@ tests:
       output:
         hash: 23e65e4c5384b48d7151f781bab10e5caa398b36d363ff8c1049c917
         type: rasterhash
-        
+
   - algorithm: grass7:i.eb.netrad
     name: GRASS7 i.eb.netrad
     params:
@@ -122,7 +122,7 @@ tests:
       output:
         hash: a25c4b750dd1f2f2124a117c80ac3f0e3d9b353618a86389eca794e8
         type: rasterhash
-        
+
   - algorithm: grass7:i.evapo.mh
     name: GRASS7 i.evapo.mh
     params:
@@ -207,7 +207,7 @@ tests:
       output:
         hash: b08dc5b47f557ecadf0c125c99f249e49111c44e43f463c2444ab474
         type: rasterhash
-        
+
   - algorithm: grass7:i.vi
     name: GRASS7 i.vi
     params:
@@ -257,7 +257,7 @@ tests:
       group:
         hash: e1a433546cc1fdf7061adc0d9b77676c9d66ee8e0773d471bdb39a37
         type: rasterhash
-        
+
   - algorithm: grass7:i.cluster
     name: GRASS7 i.cluster
     params:
@@ -317,7 +317,7 @@ tests:
           - '4369.2930'
           - '128.6900'
 
-# this doesn't work in travis-ci environment (probably due to libfftw version).
+  # this doesn't work in travis-ci environment (probably due to libfftw version).
   - algorithm: grass7:i.fft
     name: GRASS7 i.fft
     params:
@@ -422,7 +422,7 @@ tests:
       saturation:
         hash: 07578ad38cf948473a519f040acb0235f60a592904ac8ef46aa607e1
         type: rasterhash
-        
+
   - algorithm: grass7:i.pansharpen
     name: GRASS7 i.pansharpen
     params:
@@ -554,20 +554,6 @@ tests:
       output:
         hash: cac9e91f9b5182fbad336fd46ecebcf5185327e009ae8dc4cc0367fc
         type: rasterhash
-
-#  - algorithm: grass7:i.modis.qc
-#    name: GRASS7 i.modis.qc
-#    params:
-#      GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
-#      input:
-#        name: custom/grass7/float_raster.tif
-#        type: raster
-#      productname: 8
-#      qcname: 5
-#    results:
-#      output:
-#        hash: 0439e59b8c142a7f58cdece674c058891b64aafb1273ed6ce5e3ecf9
-#        type: rasterhash
 
   - algorithm: grass7:i.image.mosaic
     name: GRASS7 i.image.mosaic
