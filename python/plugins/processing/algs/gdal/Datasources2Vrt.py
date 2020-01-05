@@ -121,3 +121,6 @@ class Datasources2Vrt(GdalAlgorithm):
             f.write(vrt)
 
         return {self.OUTPUT: vrtPath, self.VRT_STRING: vrt}
+
+    def commandName(self):
+        return ''
