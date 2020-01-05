@@ -402,6 +402,43 @@ class TestQgsSnappingUtils : public QObject
       QCOMPARE( m2.point(), QgsPointXY( 5.0, 2.5 ) );
 
     }
+    void testSnapOnCentroidAndMiddleSegment()
+    {
+      std::unique_ptr<QgsVectorLayer> vSnapCentroidMiddle( new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) ) );
+      QgsFeature f1;
+      QgsGeometry f1g = QgsGeometry::fromWkt( "LineString (0 0, 0 5, 5 5, 5 0, 0 0)" );
+      f1.setGeometry( f1g );
+
+      QgsFeatureList flist;
+      flist << f1;
+      vSnapCentroidMiddle->dataProvider()->addFeatures( flist );
+      QVERIFY( vSnapCentroidMiddle->dataProvider()->featureCount() == 1 );
+
+      QgsMapSettings mapSettings;
+      mapSettings.setOutputSize( QSize( 100, 100 ) );
+      mapSettings.setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+      QVERIFY( mapSettings.hasValidSettings() );
+
+      QgsSnappingUtils u;
+      u.setMapSettings( mapSettings );
+      QgsSnappingConfig snappingConfig = u.config();
+      snappingConfig.setEnabled( true );
+      snappingConfig.setMode( QgsSnappingConfig::AdvancedConfiguration );
+      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, static_cast<QgsSnappingConfig::SnappingType>( QgsSnappingConfig::Middle | QgsSnappingConfig::Centroid ), 0.2, QgsTolerance::ProjectUnits );
+      snappingConfig.setIndividualLayerSettings( vSnapCentroidMiddle.get(), layerSettings );
+      u.setConfig( snappingConfig );
+
+      QgsPointLocator::Match m = u.snapToMap( QgsPointXY( 0, 2.6 ) );
+      QVERIFY( m.isValid() );
+      QCOMPARE( m.type(), QgsPointLocator::Middle );
+      QCOMPARE( m.point(), QgsPointXY( 0.0, 2.5 ) );
+
+      QgsPointLocator::Match m2 = u.snapToMap( QgsPointXY( 2.5, 2.6 ) );
+      QVERIFY( m2.isValid() );
+      QCOMPARE( m2.type(), QgsPointLocator::Centroid );
+      QCOMPARE( m2.point(), QgsPointXY( 2.5, 2.5 ) );
+
+    }
 
     void testSnapOnCurrentLayer()
     {
