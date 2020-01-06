@@ -45,9 +45,6 @@ class CORE_EXPORT QgsBearingNumericFormat : public QgsBasicNumericFormat
       */
     QgsBearingNumericFormat();
 
-    QgsBearingNumericFormat( const QgsBearingNumericFormat & ) = delete;
-    QgsBearingNumericFormat &operator=( const QgsBearingNumericFormat & ) = delete;
-
     QString id() const override;
     QString formatDouble( double value, const QgsNumericFormatContext &context ) const override;
     QgsNumericFormat *clone() const override SIP_FACTORY;
@@ -69,6 +66,11 @@ class CORE_EXPORT QgsBearingNumericFormat : public QgsBasicNumericFormat
      * \see directionFormat()
      */
     void setDirectionFormat( const FormatDirectionOption &format );
+
+    //! QgsBearingNumericFormat cannot be copied
+    QgsBearingNumericFormat( const QgsBearingNumericFormat & ) = delete;
+    //! QgsBearingNumericFormat cannot be copied
+    QgsBearingNumericFormat &operator=( const QgsBearingNumericFormat & ) = delete;
 
   private:
 
