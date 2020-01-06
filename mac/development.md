@@ -1,3 +1,4 @@
+
 # (THIS DOCUMENT IS NOT UP TO DATE)
 
 # Developing QGIS using Homebrew dependencies 
