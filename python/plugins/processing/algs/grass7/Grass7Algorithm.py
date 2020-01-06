@@ -25,6 +25,7 @@ import sys
 import os
 import re
 import uuid
+import math
 import importlib
 
 from qgis.PyQt.QtCore import QCoreApplication, QUrl
@@ -48,6 +49,7 @@ from qgis.core import (Qgis,
                        QgsProcessingParameterField,
                        QgsProcessingParameterPoint,
                        QgsProcessingParameterBoolean,
+                       QgsProcessingParameterRange,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterRasterLayer,
@@ -617,6 +619,12 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             elif isinstance(param, (QgsProcessingParameterNumber,
                                     QgsProcessingParameterPoint)):
                 value = self.parameterAsString(parameters, paramName, context)
+            elif isinstance(param, QgsProcessingParameterRange):
+                v = self.parameterAsRange(parameters, paramName, context)
+                if (param.flags() & QgsProcessingParameterDefinition.FlagOptional) and (math.isnan(v[0]) or math.isnan(v[1])):
+                    continue
+                else:
+                    value = '{},{}'.format(v[0], v[1])
             # For everything else, we assume that it is a string
             else:
                 value = '"{}"'.format(
