@@ -28,6 +28,9 @@ Default constructor
 
     virtual QString id() const;
 
+%Docstring
+QgsBasicNumericFormat cannot be copied
+%End
     virtual QString formatDouble( double value, const QgsNumericFormatContext &context ) const;
 
     virtual QgsNumericFormat *clone() const /Factory/;

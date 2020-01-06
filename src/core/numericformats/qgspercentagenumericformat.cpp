@@ -1,0 +1,73 @@
+/***************************************************************************
+                             qgspercentagenumericformat.cpp
+                             ----------------------------
+    begin                : January 2020
+    copyright            : (C) 2020 by Nyall Dawson
+    email                : nyall dot dawson at gmail dot com
+
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "qgspercentagenumericformat.h"
+#include "qgis.h"
+
+
+QgsPercentageNumericFormat::QgsPercentageNumericFormat()
+{
+}
+
+QString QgsPercentageNumericFormat::id() const
+{
+  return QStringLiteral( "percentage" );
+}
+
+QString QgsPercentageNumericFormat::formatDouble( double value, const QgsNumericFormatContext &context ) const
+{
+  switch ( mInputValues )
+  {
+    case ValuesArePercentage:
+      break;
+
+    case ValuesAreFractions:
+      value *= 100;
+      break;
+  }
+
+  return QgsBasicNumericFormat::formatDouble( value, context ) + '%';
+}
+
+QgsNumericFormat *QgsPercentageNumericFormat::clone() const
+{
+  return create( configuration() );
+}
+
+QgsNumericFormat *QgsPercentageNumericFormat::create( const QVariantMap &configuration ) const
+{
+  std::unique_ptr< QgsPercentageNumericFormat > res = qgis::make_unique< QgsPercentageNumericFormat >();
+  res->setConfiguration( configuration );
+  res->mInputValues = static_cast< InputValues >( configuration.value( QStringLiteral( "input_values" ), static_cast< int >( ValuesArePercentage ) ).toInt() );
+  return res.release();
+}
+
+QVariantMap QgsPercentageNumericFormat::configuration() const
+{
+  QVariantMap res = QgsBasicNumericFormat::configuration();
+  res.insert( QStringLiteral( "input_values" ), static_cast< int >( mInputValues ) );
+  return res;
+}
+
+QgsPercentageNumericFormat::InputValues QgsPercentageNumericFormat::inputValues() const
+{
+  return mInputValues;
+}
+
+void QgsPercentageNumericFormat::setInputValues( const InputValues &inputValues )
+{
+  mInputValues = inputValues;
+}

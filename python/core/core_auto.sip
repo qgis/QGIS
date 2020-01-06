@@ -400,6 +400,7 @@
 %Include auto_generated/numericformats/qgsfallbacknumericformat.sip
 %Include auto_generated/numericformats/qgsnumericformat.sip
 %Include auto_generated/numericformats/qgsnumericformatregistry.sip
+%Include auto_generated/numericformats/qgspercentagenumericformat.sip
 %Include auto_generated/processing/models/qgsprocessingmodelalgorithm.sip
 %Include auto_generated/processing/models/qgsprocessingmodelchildalgorithm.sip
 %Include auto_generated/processing/models/qgsprocessingmodelchildparametersource.sip
