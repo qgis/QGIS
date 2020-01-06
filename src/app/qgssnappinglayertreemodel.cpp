@@ -500,7 +500,33 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
         }
         else
         {
-          return tr( "Snapping active" );
+          QString modes;
+          int activeTypes = 0;
+          std::map<QgsSnappingConfig::SnappingType, QString> types;
+          types.insert( { QgsSnappingConfig::Vertex, tr( "Vertex" ) } );
+          types.insert( { QgsSnappingConfig::Segment, tr( "Segment" ) } );
+          types.insert( { QgsSnappingConfig::Area, tr( "Area" ) } );
+          types.insert( { QgsSnappingConfig::Centroid, tr( "Centroid" ) } );
+          types.insert( { QgsSnappingConfig::Middle, tr( "Middle" ) } );
+
+          for ( auto it = types.cbegin(); it != types.cend(); ++it )
+          {
+            if ( ls.type() & it->first )
+            {
+              if ( activeTypes == 2 )
+              {
+                modes.append( tr( ", ..." ) );
+                break;
+              }
+              if ( activeTypes > 0 )
+                modes.append( tr( ", " ) );
+              modes.append( it->second );
+              activeTypes++;
+            }
+          }
+
+          return modes;
+          //return tr( "Snapping active" );
         }
       }
 
