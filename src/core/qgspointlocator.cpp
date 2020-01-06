@@ -1153,14 +1153,10 @@ QgsPointLocator::Match QgsPointLocator::nearestVertex( const QgsPointXY &point, 
   return m;
 }
 
-QgsPointLocator::Match QgsPointLocator::nearestCentroid( const QgsPointXY &point, double tolerance, MatchFilter *filter )
+QgsPointLocator::Match QgsPointLocator::nearestCentroid( const QgsPointXY &point, double tolerance, MatchFilter *filter, bool relaxed )
 {
-  if ( !mRTree )
-  {
-    init();
-    if ( !mRTree ) // still invalid?
-      return Match();
-  }
+  if ( !prepare( relaxed ) )
+    return Match();
 
   Match m;
   QgsPointLocator_VisitorNearestCentroid visitor( this, m, point, filter );
@@ -1172,14 +1168,10 @@ QgsPointLocator::Match QgsPointLocator::nearestCentroid( const QgsPointXY &point
   return m;
 }
 
-QgsPointLocator::Match QgsPointLocator::nearestMiddle( const QgsPointXY &point, double tolerance, MatchFilter *filter )
+QgsPointLocator::Match QgsPointLocator::nearestMiddle( const QgsPointXY &point, double tolerance, MatchFilter *filter, bool relaxed )
 {
-  if ( !mRTree )
-  {
-    init();
-    if ( !mRTree ) // still invalid?
-      return Match();
-  }
+  if ( !prepare( relaxed ) )
+    return Match();
 
   Match m;
   QgsPointLocator_VisitorNearestMiddle visitor( this, m, point, filter );

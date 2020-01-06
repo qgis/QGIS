@@ -194,16 +194,18 @@ Optional filter may discard unwanted matches.
 This method is either blocking or non blocking according to ``relaxed`` parameter passed
 %End
 
-    Match nearestCentroid( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
+    Match nearestCentroid( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
 %Docstring
 Find nearest centroid to the specified point - up to distance specified by tolerance
 Optional filter may discard unwanted matches.
+This method is either blocking or non blocking according to ``relaxed`` parameter passed
 %End
 
-    Match nearestMiddle( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
+    Match nearestMiddle( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
 %Docstring
 Find nearest centroid to the specified point - up to distance specified by tolerance
 Optional filter may discard unwanted matches.
+This method is either blocking or non blocking according to ``relaxed`` parameter passed
 %End
 
     Match nearestEdge( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
