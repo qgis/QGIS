@@ -2961,7 +2961,7 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
         isCompoundCurve = true;
         int compoundParts = n;
         i += 3;
-        currentPartWkbType = WKBCurvePolygon;
+        currentPartWkbType = ( nDims == 2 ? WKBCurvePolygon : WKBCurvePolygonZ );
         CurveParts parts;
         for ( int k = 0; k < compoundParts; k += 1, i += 3 )
         {
@@ -2973,7 +2973,9 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
 
           if ( etype == 2 && ( n == 1 || n == 2 ) )
           {
-            WKBType partType = ( n == 1 ) ? WKBLineString : WKBCircularString;
+            WKBType partType = ( n == 1 ) ?
+                               ( nDims == 2 ? WKBLineString : WKBLineString25D ) :
+                               ( nDims == 2 ? WKBCircularString : WKBCircularStringZ );
             PointSequence points;
             points.reserve( 1 + ( endOffset - startOffset ) / nDims );
             for ( int j = startOffset; j < endOffset; j += nDims )
