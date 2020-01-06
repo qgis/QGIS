@@ -45,6 +45,16 @@ class CORE_EXPORT QgsScientificNumericFormat : public QgsBasicNumericFormat
     QgsNumericFormat *create( const QVariantMap &configuration ) const override SIP_FACTORY;
     QVariantMap configuration() const override;
 
+    /**
+     * Sets the maximum number of decimal \a places to show.
+     *
+     * The \a places argument must be at least 1.
+     *
+     * \see numberDecimalPlaces()
+     * \see setShowTrailingZeros()
+     */
+    void setNumberDecimalPlaces( int places ) override;
+
   private:
 
 #ifdef SIP_RUN

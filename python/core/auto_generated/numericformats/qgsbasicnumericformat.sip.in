@@ -54,9 +54,9 @@ Returns the maximum number of decimal places to show.
 .. seealso:: :py:func:`showTrailingZeros`
 %End
 
-    void setNumberDecimalPlaces( int numberDecimalPlaces );
+    virtual void setNumberDecimalPlaces( int places );
 %Docstring
-Sets the maximum number of decimal places to show.
+Sets the maximum number of decimal ``places`` to show.
 
 .. seealso:: :py:func:`numberDecimalPlaces`
 
@@ -70,7 +70,7 @@ Returns ``True`` if the thousands grouping separator will be shown.
 .. seealso:: :py:func:`setShowThousandsSeparator`
 %End
 
-    void setShowThousandsSeparator( bool showThousandsSeparator );
+    void setShowThousandsSeparator( bool show );
 %Docstring
 Sets whether the thousands grouping separator will be shown.
 
@@ -84,7 +84,7 @@ Returns ``True`` if a leading plus sign will be shown for positive values.
 .. seealso:: :py:func:`setShowPlusSign`
 %End
 
-    void setShowPlusSign( bool showPlusSign );
+    void setShowPlusSign( bool show );
 %Docstring
 Sets whether a leading plus sign will be shown for positive values.
 
@@ -101,7 +101,7 @@ numberDecimalPlaces()).
 .. seealso:: :py:func:`numberDecimalPlaces`
 %End
 
-    void setShowTrailingZeros( bool showTrailingZeros );
+    void setShowTrailingZeros( bool show );
 %Docstring
 Sets whether trailing zeros will be shown (up to the specified
 numberDecimalPlaces()).

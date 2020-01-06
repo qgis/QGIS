@@ -40,6 +40,18 @@ QgsScientificNumericFormat cannot be copied
     virtual QVariantMap configuration() const;
 
 
+    virtual void setNumberDecimalPlaces( int places );
+
+%Docstring
+Sets the maximum number of decimal ``places`` to show.
+
+The ``places`` argument must be at least 1.
+
+.. seealso:: :py:func:`numberDecimalPlaces`
+
+.. seealso:: :py:func:`setShowTrailingZeros`
+%End
+
   private:
     QgsScientificNumericFormat( const QgsScientificNumericFormat &other );
 };

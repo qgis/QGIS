@@ -50,3 +50,8 @@ QVariantMap QgsScientificNumericFormat::configuration() const
   QVariantMap res = QgsBasicNumericFormat::configuration();
   return res;
 }
+
+void QgsScientificNumericFormat::setNumberDecimalPlaces( int numberDecimalPlaces )
+{
+  QgsBasicNumericFormat::setNumberDecimalPlaces( std::max( numberDecimalPlaces, 1 ) );
+}

@@ -62,12 +62,12 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
     int numberDecimalPlaces() const;
 
     /**
-     * Sets the maximum number of decimal places to show.
+     * Sets the maximum number of decimal \a places to show.
      *
      * \see numberDecimalPlaces()
      * \see setShowTrailingZeros()
      */
-    void setNumberDecimalPlaces( int numberDecimalPlaces );
+    virtual void setNumberDecimalPlaces( int places );
 
     /**
      * Returns TRUE if the thousands grouping separator will be shown.
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
      * Sets whether the thousands grouping separator will be shown.
      * \see showThousandsSeparator()
      */
-    void setShowThousandsSeparator( bool showThousandsSeparator );
+    void setShowThousandsSeparator( bool show );
 
     /**
      * Returns TRUE if a leading plus sign will be shown for positive values.
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
      * Sets whether a leading plus sign will be shown for positive values.
      * \see showPlusSign()
      */
-    void setShowPlusSign( bool showPlusSign );
+    void setShowPlusSign( bool show );
 
     /**
      * Returns TRUE if trailing zeros will be shown (up to the specified
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
      * \see showTrailingZeros()
      * \see setNumberDecimalPlaces()
      */
-    void setShowTrailingZeros( bool showTrailingZeros );
+    void setShowTrailingZeros( bool show );
 
   protected:
 
