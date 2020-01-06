@@ -894,10 +894,10 @@ void TestQgsProcessingAlgs::lineDensity_data()
    */
   QTest::newRow( "testcase 1" )
       << "/linedensity.gml"
-      << QStringLiteral("/linedensity_testcase1.tif")
+      << QStringLiteral( "/linedensity_testcase1.tif" )
       << 3.0
       << 2.0
-      << QStringLiteral("weight");
+      << QStringLiteral( "weight" );
 
   /*
    * Testcase 2
@@ -911,7 +911,7 @@ void TestQgsProcessingAlgs::lineDensity_data()
       << QStringLiteral( "/linedensity_testcase2.tif" )
       << 3.0
       << 2.0
-      << QStringLiteral("");
+      << QStringLiteral( "" );
 
 }
 
@@ -934,7 +934,7 @@ void TestQgsProcessingAlgs::lineDensity()
   QVERIFY( layer->isValid() );
 
   //set project crs and ellipsoid from input layer
-  p.setCrs( layer->crs(), true);
+  p.setCrs( layer->crs(), true );
 
   //set project after layer has been added so that transform context/ellipsoid from crs is also set
   std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
@@ -946,11 +946,11 @@ void TestQgsProcessingAlgs::lineDensity()
   parameters.insert( QStringLiteral( "WEIGHT" ), weightField );
   parameters.insert( QStringLiteral( "RADIUS" ), searchRadius );
   parameters.insert( QStringLiteral( "PIXEL_SIZE" ), pixelSize );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT);
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
 
   //prepare expectedRaster
-  std::unique_ptr<QgsRasterLayer> expectedRaster = qgis::make_unique< QgsRasterLayer >( myDataPath + "/control_images/expected_raster_linedensity" + expectedDataset , "expectedDataset", "gdal");
-  std::unique_ptr< QgsRasterInterface > expectedInterface (expectedRaster->dataProvider()->clone());
+  std::unique_ptr<QgsRasterLayer> expectedRaster = qgis::make_unique< QgsRasterLayer >( myDataPath + "/control_images/expected_raster_linedensity" + expectedDataset, "expectedDataset", "gdal" );
+  std::unique_ptr< QgsRasterInterface > expectedInterface( expectedRaster->dataProvider()->clone() );
   QgsRasterIterator expectedIter( expectedInterface.get() );
   expectedIter.startRasterRead( 1, expectedRaster->width(), expectedRaster->height(), expectedInterface->extent() );
 
@@ -964,13 +964,13 @@ void TestQgsProcessingAlgs::lineDensity()
   QVERIFY( ok );
 
   //...and check results with expected datasets
-  std::unique_ptr<QgsRasterLayer> outputRaster = qgis::make_unique< QgsRasterLayer >( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal");
-  std::unique_ptr< QgsRasterInterface > outputInterface (outputRaster->dataProvider()->clone());
+  std::unique_ptr<QgsRasterLayer> outputRaster = qgis::make_unique< QgsRasterLayer >( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
+  std::unique_ptr< QgsRasterInterface > outputInterface( outputRaster->dataProvider()->clone() );
 
   QCOMPARE( outputRaster->width(), expectedRaster->width() );
   QCOMPARE( outputRaster->height(), expectedRaster->height() );
 
-  QgsRasterIterator outputIter ( outputInterface.get() );
+  QgsRasterIterator outputIter( outputInterface.get() );
   outputIter.startRasterRead( 1, outputRaster->width(), outputRaster->height(), outputInterface->extent() );
   int outputIterLeft = 0;
   int outputIterTop = 0;
@@ -985,7 +985,7 @@ void TestQgsProcessingAlgs::lineDensity()
   std::unique_ptr< QgsRasterBlock > expectedRasterBlock;
 
   while ( outputIter.readNextRasterPart( 1, outputIterCols, outputIterRows, outputRasterBlock, outputIterLeft, outputIterTop ) &&
-          expectedIter.readNextRasterPart( 1, expectedIterCols, expectedIterRows, expectedRasterBlock, expectedIterLeft, expectedIterTop ))
+          expectedIter.readNextRasterPart( 1, expectedIterCols, expectedIterRows, expectedRasterBlock, expectedIterLeft, expectedIterTop ) )
   {
     for ( int row = 0; row < expectedIterRows; row++ )
     {
@@ -993,7 +993,7 @@ void TestQgsProcessingAlgs::lineDensity()
       {
         double expectedValue = expectedRasterBlock->value( row, column );
         double outputValue = outputRasterBlock->value( row, column );
-        QCOMPARE(outputValue, expectedValue);
+        QCOMPARE( outputValue, expectedValue );
       }
     }
   }
