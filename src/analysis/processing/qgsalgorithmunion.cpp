@@ -104,7 +104,7 @@ QVariantMap QgsUnionAlgorithm::processAlgorithm( const QVariantMap &parameters, 
     return outputs;
   }
 
-  Vectoranalysis::UnionTool tool( sourceA.get(), sourceB.get(), fieldIndicesA, fieldIndicesB, sink.get(), geomType, context.transformContext() );
+  Vectoranalysis::UnionTool tool( sourceA.get(), sourceB.get(), fieldIndicesA, fieldIndicesB, sink.get(), context.transformContext() );
   QgsOverlayUtils::runVectorAnalysisTool( tool, feedback );
 
   return outputs;

@@ -29,7 +29,6 @@ namespace Vectoranalysis
       DifferenceTool( QgsFeatureSource *layerA,
                       QgsFeatureSource *layerB,
                       QgsFeatureSink *output,
-                      QgsWkbTypes::Type outWkbType,
                       QgsCoordinateTransformContext transformContext,
                       double precision = 1E-7 );
       ~DifferenceTool() {}

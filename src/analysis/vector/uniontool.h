@@ -31,7 +31,6 @@ namespace Vectoranalysis
                  const QgsAttributeList &fieldIndicesA,
                  const QgsAttributeList &fieldIndicesB,
                  QgsFeatureSink *output,
-                 QgsWkbTypes::Type outWkbType,
                  QgsCoordinateTransformContext transformContext,
                  double precision = 1E-7 );
 

@@ -440,28 +440,10 @@ void QgsOverlayUtils::runVectorAnalysisTool( Vectoranalysis::AbstractTool &tool,
 
   tool.finalizeOutput();
 
-  if ( feedback && tool.errorsOccurred() )
+  const QList<QString> &exceptionList = tool.getExceptions();
+  for ( const QString &e : exceptionList )
   {
-    const QList<Vectoranalysis::AbstractTool::Error> &fErrorList = tool.getFeatureErrorList();
-    for ( const Vectoranalysis::AbstractTool::Error &e : fErrorList )
-    {
-      feedback->reportError( e.errorMsg );
-    }
-
-    const QList<Vectoranalysis::AbstractTool::Error> &gErrorList = tool.getGeometryErrorList();
-    for ( const Vectoranalysis::AbstractTool::Error &e : gErrorList )
-    {
-      feedback->reportError( e.errorMsg );
-    }
-
-    const QList<QString> &wErrorList = tool.getWriteErrors();
-    feedback->reportError( QString( QObject::tr( "%1 features could not be written" ) ).arg( wErrorList.size() ) );
-
-    const QList<QString> &exceptionList = tool.getExceptions();
-    for ( const QString &e : exceptionList )
-    {
-      feedback->reportError( e );
-    }
+    feedback->reportError( e );
   }
 }
 

@@ -28,10 +28,9 @@ namespace Vectoranalysis
   DifferenceTool::DifferenceTool( QgsFeatureSource *layerA,
                                   QgsFeatureSource *layerB,
                                   QgsFeatureSink *output,
-                                  QgsWkbTypes::Type outWkbType,
                                   QgsCoordinateTransformContext transformContext,
                                   double precision )
-    : AbstractTool( output, outWkbType, transformContext, precision ), mLayerA( layerA ), mLayerB( layerB )
+    : AbstractTool( output, transformContext, precision ), mLayerA( layerA ), mLayerB( layerB )
   {
   }
 
@@ -43,14 +42,14 @@ namespace Vectoranalysis
 
   void DifferenceTool::processFeature( const Job *job )
   {
-      QgsFeature f;
-      if ( !mOutput || !mLayerA || !mLayerB || !getFeatureAtId( f, job->featureid, mLayerA, mLayerA->fields().allAttributesList() ) )
-      {
-          return;
-      }
+    QgsFeature f;
+    if ( !mOutput || !mLayerA || !mLayerB || !getFeatureAtId( f, job->featureid, mLayerA, mLayerA->fields().allAttributesList() ) )
+    {
+      return;
+    }
 
-      QgsFeatureList difference = QgsOverlayUtils::featureDifference( f, *mLayerA, *mLayerB, mSpatialIndex, mTransformContext, mLayerA->fields().size(), mLayerB->fields().size(), QgsOverlayUtils::OutputA );
-      writeFeatures( difference );
+    QgsFeatureList difference = QgsOverlayUtils::featureDifference( f, *mLayerA, *mLayerB, mSpatialIndex, mTransformContext, mLayerA->fields().size(), mLayerB->fields().size(), QgsOverlayUtils::OutputA );
+    writeFeatures( difference );
   }
 
 } // Geoprocessing

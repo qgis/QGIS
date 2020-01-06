@@ -41,26 +41,12 @@ namespace Vectoranalysis
         CrsLayerB
       };
 
-      typedef QPair<QgsFeatureSource *, QgsFeatureId> ErrorFeature;
-      struct Error
-      {
-        Error( const QList<ErrorFeature> &_features, const QString &_errorMsg )
-          : features( _features ), errorMsg( _errorMsg ) {}
-        QList<ErrorFeature> features;
-        QString errorMsg;
-      };
-
-      AbstractTool( QgsFeatureSink *output, QgsWkbTypes::Type outWkbType, QgsCoordinateTransformContext transformContext, double precision = 1E-7 );
+      AbstractTool( QgsFeatureSink *output, QgsCoordinateTransformContext transformContext, double precision = 1E-7 );
       virtual ~AbstractTool();
       QFuture<void> init();
       virtual QFuture<void> execute( int task );
       virtual int getTaskCount() const { return 1; }
       void finalizeOutput() {}
-
-      bool errorsOccurred() const { return !mGeometryErrorList.isEmpty() || !mFeatureErrorList.isEmpty() || !mWriteErrors.isEmpty(); }
-      const QList<Error> &getFeatureErrorList() const { return mFeatureErrorList; }
-      const QList<Error> &getGeometryErrorList() const { return mGeometryErrorList; }
-      const QList<QString> &getWriteErrors() const { return mWriteErrors; }
       const QList<QString> &getExceptions() const { return mExceptions; }
 
 
@@ -90,27 +76,10 @@ namespace Vectoranalysis
       void buildSpatialIndex( QgsSpatialIndex &index, QgsFeatureSource *layer ) const;
       void appendToJobQueue( QgsFeatureSource *layer, int taskFlag = 0 );
       bool getFeatureAtId( QgsFeature &feature, QgsFeatureId id, QgsFeatureSource *layer, const QgsAttributeList &attIdx );
-      void writeFeatures( QgsFeatureList& outFeatures );
-
-      void reportInvalidFeatureError( QgsFeatureSource *layer, const QgsFeatureId &id, const QString &errorMessage )
-      {
-        QMutexLocker locker( &mErrorMutex );
-        mFeatureErrorList.append( Error( QList<ErrorFeature>() << ErrorFeature( layer, id ), errorMessage ) );
-      }
-
-      void reportGeometryError( const QList<ErrorFeature> &features, const QString &errorMessage )
-      {
-        QMutexLocker locker( &mErrorMutex );
-        mGeometryErrorList.append( Error( features, errorMessage ) );
-      }
+      void writeFeatures( QgsFeatureList &outFeatures );
 
       QList<Job *> mJobQueue;
-      QList<Error> mGeometryErrorList;
-      QList<Error> mFeatureErrorList;
       QList<QString> mExceptions;
-
-      QList<QString> mWriteErrors;
-      QMutex mErrorMutex;
 
       QMutex mIntersectMutex;
       QMutex mWriteMutex;

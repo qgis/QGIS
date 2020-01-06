@@ -32,10 +32,9 @@ namespace Vectoranalysis
     const QgsAttributeList &fieldIndicesA,
     const QgsAttributeList &fieldIndicesB,
     QgsFeatureSink *output,
-    QgsWkbTypes::Type outWkbType,
     QgsCoordinateTransformContext transformContext,
     double precision )
-    : AbstractTool( output, outWkbType, transformContext, precision ), mLayerA( layerA ), mLayerB( layerB ), mFieldIndicesA( fieldIndicesA ), mFieldIndicesB( fieldIndicesB )
+    : AbstractTool( output, transformContext, precision ), mLayerA( layerA ), mLayerB( layerB ), mFieldIndicesA( fieldIndicesA ), mFieldIndicesB( fieldIndicesB )
   {
   }
 
@@ -69,13 +68,13 @@ namespace Vectoranalysis
 
     for ( QgsFeature *testFeature : featureList )
     {
-        if( !testFeature )
-        {
-            return;
-        }
+      if ( !testFeature )
+      {
+        return;
+      }
 
-        QgsFeatureList intersection = QgsOverlayUtils::featureIntersection( *testFeature, *mLayerA, *mLayerB, mSpatialIndex, mTransformContext, mFieldIndicesA, mFieldIndicesB );
-        writeFeatures( intersection );
+      QgsFeatureList intersection = QgsOverlayUtils::featureIntersection( *testFeature, *mLayerA, *mLayerB, mSpatialIndex, mTransformContext, mFieldIndicesA, mFieldIndicesB );
+      writeFeatures( intersection );
     }
 
     // Perform intersections

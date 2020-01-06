@@ -100,7 +100,7 @@ QVariantMap QgsDifferenceAlgorithm::processAlgorithm( const QVariantMap &paramet
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
 
-  Vectoranalysis::DifferenceTool tool( sourceA.get(), sourceB.get(), sink.get(), geomType, context.transformContext() );
+  Vectoranalysis::DifferenceTool tool( sourceA.get(), sourceB.get(), sink.get(), context.transformContext() );
   QgsOverlayUtils::runVectorAnalysisTool( tool, feedback );
   return outputs;
 }

@@ -48,7 +48,7 @@ namespace Vectoranalysis
     }
   }
 
-  AbstractTool::AbstractTool( QgsFeatureSink *output, QgsWkbTypes::Type outWkbType, QgsCoordinateTransformContext transformContext, double precision ): mOutput( output ), mPrecision( precision ), mTransformContext( transformContext )
+  AbstractTool::AbstractTool( QgsFeatureSink *output, QgsCoordinateTransformContext transformContext, double precision ): mOutput( output ), mPrecision( precision ), mTransformContext( transformContext )
   {
   }
 
@@ -90,12 +90,10 @@ namespace Vectoranalysis
     request.setSubsetOfAttributes( attIdx );
     if ( !layer->getFeatures( request ).nextFeature( feature ) )
     {
-      reportInvalidFeatureError( layer, id, errFeatureDoesNotExist );
       return false;
     }
     else if ( !feature.hasGeometry() )
     {
-      reportInvalidFeatureError( layer, id, errFailedToFetchGeometry );
       return false;
     }
     return true;
