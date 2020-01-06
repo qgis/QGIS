@@ -23,6 +23,7 @@
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingmodelalgorithm.h"
 #include "qgsnativealgorithms.h"
+#include "qgsalgorithmlinedensity.h"
 #include "qgsalgorithmimportphotos.h"
 #include "qgsalgorithmtransform.h"
 #include "qgsalgorithmkmeansclustering.h"
@@ -83,6 +84,9 @@ class TestQgsProcessingAlgs: public QObject
 
     void densifyGeometries_data();
     void densifyGeometries();
+
+    void lineDensity_data();
+    void lineDensity();
 
     void rasterLogicOp_data();
     void rasterLogicOp();
@@ -871,6 +875,128 @@ void TestQgsProcessingAlgs::densifyGeometries()
     QVERIFY( result.geometry().isNull() );
   else
     QVERIFY2( result.geometry().equals( expectedGeometry ), QStringLiteral( "Result: %1, Expected: %2" ).arg( result.geometry().asWkt(), expectedGeometry.asWkt() ).toUtf8().constData() );
+}
+
+void TestQgsProcessingAlgs::lineDensity_data()
+{
+  QTest::addColumn<QString>( "inputDataset" );
+  QTest::addColumn<QString>( "expectedDataset" );
+  QTest::addColumn<double>( "searchRadius" );
+  QTest::addColumn<double>( "pixelSize" );
+  QTest::addColumn<QString>( "weightField" );
+
+  /*
+   * Testcase 1
+   *
+   * WGS84 data with weights
+   * searchRadius = 3
+   * pixelSize = 2
+   */
+  QTest::newRow( "testcase 1" )
+      << "/linedensity.gml"
+      << QStringLiteral("/linedensity_testcase1.tif")
+      << 3.0
+      << 2.0
+      << QStringLiteral("weight");
+
+  /*
+   * Testcase 2
+   *
+   * WGS84 data without weights
+   * searchRadius = 3
+   * pixelSize = 2
+   */
+  QTest::newRow( "testcase_2" )
+      << "/linedensity.gml"
+      << QStringLiteral( "/linedensity_testcase2.tif" )
+      << 3.0
+      << 2.0
+      << QStringLiteral("");
+
+}
+
+void TestQgsProcessingAlgs::lineDensity()
+{
+  QFETCH( QString, inputDataset );
+  QFETCH( QString, expectedDataset );
+  QFETCH( double, searchRadius );
+  QFETCH( double, pixelSize );
+  QFETCH( QString, weightField );
+
+  //prepare input params
+  QgsProject p;
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:linedensity" ) ) );
+
+  QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
+
+  QgsVectorLayer *layer = new QgsVectorLayer( myDataPath + inputDataset + "|layername=linedensity", QStringLiteral( "layer" ), QStringLiteral( "ogr" ) );
+  p.addMapLayer( layer );
+  QVERIFY( layer->isValid() );
+
+  //set project crs and ellipsoid from input layer
+  p.setCrs( layer->crs(), true);
+
+  //set project after layer has been added so that transform context/ellipsoid from crs is also set
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( &p );
+
+  QVariantMap parameters;
+
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layer ) );
+  parameters.insert( QStringLiteral( "WEIGHT" ), weightField );
+  parameters.insert( QStringLiteral( "RADIUS" ), searchRadius );
+  parameters.insert( QStringLiteral( "PIXEL_SIZE" ), pixelSize );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT);
+
+  //prepare expectedRaster
+  std::unique_ptr<QgsRasterLayer> expectedRaster = qgis::make_unique< QgsRasterLayer >( myDataPath + "/control_images/expected_raster_linedensity" + expectedDataset , "expectedDataset", "gdal");
+  std::unique_ptr< QgsRasterInterface > expectedInterface (expectedRaster->dataProvider()->clone());
+  QgsRasterIterator expectedIter( expectedInterface.get() );
+  expectedIter.startRasterRead( 1, expectedRaster->width(), expectedRaster->height(), expectedInterface->extent() );
+
+  //run alg...
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  //...and check results with expected datasets
+  std::unique_ptr<QgsRasterLayer> outputRaster = qgis::make_unique< QgsRasterLayer >( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal");
+  std::unique_ptr< QgsRasterInterface > outputInterface (outputRaster->dataProvider()->clone());
+
+  QCOMPARE( outputRaster->width(), expectedRaster->width() );
+  QCOMPARE( outputRaster->height(), expectedRaster->height() );
+
+  QgsRasterIterator outputIter ( outputInterface.get() );
+  outputIter.startRasterRead( 1, outputRaster->width(), outputRaster->height(), outputInterface->extent() );
+  int outputIterLeft = 0;
+  int outputIterTop = 0;
+  int outputIterCols = 0;
+  int outputIterRows = 0;
+  int expectedIterLeft = 0;
+  int expectedIterTop = 0;
+  int expectedIterCols = 0;
+  int expectedIterRows = 0;
+
+  std::unique_ptr< QgsRasterBlock > outputRasterBlock;
+  std::unique_ptr< QgsRasterBlock > expectedRasterBlock;
+
+  while ( outputIter.readNextRasterPart( 1, outputIterCols, outputIterRows, outputRasterBlock, outputIterLeft, outputIterTop ) &&
+          expectedIter.readNextRasterPart( 1, expectedIterCols, expectedIterRows, expectedRasterBlock, expectedIterLeft, expectedIterTop ))
+  {
+    for ( int row = 0; row < expectedIterRows; row++ )
+    {
+      for ( int column = 0; column < expectedIterCols; column++ )
+      {
+        double expectedValue = expectedRasterBlock->value( row, column );
+        double outputValue = outputRasterBlock->value( row, column );
+        QCOMPARE(outputValue, expectedValue);
+      }
+    }
+  }
 }
 
 void TestQgsProcessingAlgs::rasterLogicOp_data()
