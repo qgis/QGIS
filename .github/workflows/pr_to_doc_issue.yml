@@ -28,7 +28,7 @@ jobs:
           MILESTONE: ${{ github.event.pull_request.milestone.title }}
         run: |
           LABEL=$(sed -r 's/^([[:digit:]]\.[[:digit:]]+)(\.[[:digit:]]+)?$/\1/' <<< ${MILESTONE})
-          echo "Label: ${LABEL}"
+          echo ${LABEL}
           echo "::set-output name=label::${LABEL}"
 
       # create the documentation issue
@@ -44,7 +44,7 @@ jobs:
           # this is not possible to set labels directly due to security reasons
           # the token is in clear, so no rights are given to qgis-bot
           body: |
-            ${{ format('Request for documentation in QGIS/qgis#{0})', github.event.pull_request.number) }}
+            ${{ format('Request for documentation in QGIS/qgis#{0}', github.event.pull_request.number) }}
             ${{ github.event.pull_request.title }}
             QGIS version: ${{ steps.milestone2label.outputs.label }}
 
@@ -56,7 +56,7 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
             @${{ github.event.pull_request.user.login }}
-            A documentation ticket has been opened at https://github.com/qgis/QGIS-Documentation/issue/${{ steps.doc_issue.outputs.number }}
+            A documentation ticket has been opened at https://github.com/qgis/QGIS-Documentation/issues/${{ steps.doc_issue.outputs.number }}
             It is **your** responsibility to visit this ticket and add as much detail as possible for the documentation team to correctly document this change.
             Thank you!
           reaction-type: 'rocket'
