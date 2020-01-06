@@ -153,15 +153,11 @@ QgsEffectStackPropertiesWidget::QgsEffectStackPropertiesWidget( QgsEffectStack *
   setPanelTitle( tr( "Effects Properties" ) );
 }
 
-QgsEffectStackPropertiesWidget::~QgsEffectStackPropertiesWidget()
-{
-  delete mPreviewPicture;
-}
+QgsEffectStackPropertiesWidget::~QgsEffectStackPropertiesWidget() = default;
 
 void QgsEffectStackPropertiesWidget::setPreviewPicture( const QPicture &picture )
 {
-  delete mPreviewPicture;
-  mPreviewPicture = new QPicture( picture );
+  mPreviewPicture = picture;
   updatePreview();
 }
 
@@ -215,7 +211,7 @@ void QgsEffectStackPropertiesWidget::updatePreview()
   painter.begin( &previewImage );
   painter.setRenderHint( QPainter::Antialiasing );
   QgsRenderContext context = QgsRenderContext::fromQPainter( &painter );
-  if ( !mPreviewPicture )
+  if ( mPreviewPicture.isNull() )
   {
     QPicture previewPic;
     QPainter previewPicPainter;
@@ -229,7 +225,7 @@ void QgsEffectStackPropertiesWidget::updatePreview()
   else
   {
     context.painter()->translate( 20, 20 );
-    mStack->render( *mPreviewPicture, context );
+    mStack->render( mPreviewPicture, context );
   }
   painter.end();
 
@@ -423,10 +419,7 @@ QgsEffectStackCompactWidget::QgsEffectStackCompactWidget( QWidget *parent, QgsPa
   setPaintEffect( effect );
 }
 
-QgsEffectStackCompactWidget::~QgsEffectStackCompactWidget()
-{
-  delete mPreviewPicture;
-}
+QgsEffectStackCompactWidget::~QgsEffectStackCompactWidget() = default;
 
 void QgsEffectStackCompactWidget::setPaintEffect( QgsPaintEffect *effect )
 {
@@ -460,8 +453,7 @@ QgsPaintEffect *QgsEffectStackCompactWidget::paintEffect() const
 
 void QgsEffectStackCompactWidget::setPreviewPicture( const QPicture &picture )
 {
-  delete mPreviewPicture;
-  mPreviewPicture = new QPicture( picture );
+  mPreviewPicture = picture;
 }
 
 void QgsEffectStackCompactWidget::showDialog()
@@ -479,6 +471,12 @@ void QgsEffectStackCompactWidget::showDialog()
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( qobject_cast< QWidget * >( parent() ) );
   if ( panel && panel->dockMode() )
   {
+<<<<<<< HEAD
+=======
+    QgsEffectStackPropertiesWidget *widget = new QgsEffectStackPropertiesWidget( clone, nullptr );
+    widget->setPreviewPicture( mPreviewPicture );
+
+>>>>>>> 23f862b964... Simplify memory management
     connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsEffectStackCompactWidget::updateEffectLive );
     connect( widget, &QgsPanelWidget::panelAccepted, this, &QgsEffectStackCompactWidget::updateAcceptWidget );
     panel->openPanel( widget );
@@ -486,6 +484,11 @@ void QgsEffectStackCompactWidget::showDialog()
   else
   {
     QgsEffectStackPropertiesDialog dlg( clone, this );
+<<<<<<< HEAD
+=======
+    dlg.setPreviewPicture( mPreviewPicture );
+
+>>>>>>> 23f862b964... Simplify memory management
     if ( dlg.exec() == QDialog::Accepted )
     {
       *mStack = *clone;
