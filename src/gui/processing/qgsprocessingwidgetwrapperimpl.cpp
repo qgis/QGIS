@@ -874,12 +874,13 @@ QWidget *QgsProcessingDistanceWidgetWrapper::createWidget()
       mWarningLabel->setLayout( warningLayout );
       layout->insertWidget( 4, mWarningLabel );
 
-      setUnits( distanceDef->defaultUnit() );
-
       QWidget *w = new QWidget();
       layout->setMargin( 0 );
       layout->setContentsMargins( 0, 0, 0, 0 );
       w->setLayout( layout );
+
+      setUnits( distanceDef->defaultUnit() );
+
       return w;
     }
 
