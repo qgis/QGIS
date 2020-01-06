@@ -41,10 +41,4 @@
       <ogr:weight>3.000</ogr:weight>
     </ogr:linedensity>
   </gml:featureMember>
-  <gml:featureMember>
-    <ogr:linedensity fid="6">
-      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>1.07042253521127,-2.52394366197183 3.33943661971831,-3.81690140845071 6.34366197183099,-2.09295774647887 8.29577464788733,-2.14366197183099 9.32253521126761,-0.736619718309861</gml:coordinates></gml:LineString></ogr:geometryProperty>
-      <ogr:weight>1.000</ogr:weight>
-    </ogr:linedensity>
-  </gml:featureMember>
 </ogr:FeatureCollection>
