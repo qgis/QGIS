@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Create issue on doc repo for labeled issue
     steps:
+
       # obfuscate the github token so it can be used on jobs triggered from forks
       - name: Clear GH Token
         id: token
@@ -38,11 +39,24 @@ jobs:
           token: ${{ steps.token.outputs.token }}
           owner: qgis
           repo: QGIS-Documentation
-          title: ${{ format('Request in QGIS ({1})', github.event.pull_request.number, github.event.pull_request.title) }}
-          body: ${{ format('Request for documentation in QGIS/qgis#{0} {1})', github.event.pull_request.number, github.event.pull_request.title) }}
-          labels: ${{ steps.milestone2label.outputs.label }}
+          title: ${{ format('Request in QGIS ({0})', github.event.pull_request.title) }}
+          # do not modify the QGIS version, an action automatically creates a label in the doc repo
+          # this is not possible to set labels directly due to security reasons
+          # the token is in clear, so no rights are given to qgis-bot
+          body: |
+            ${{ format('Request for documentation in QGIS/qgis#{0})', github.event.pull_request.number) }}
+            ${{ github.event.pull_request.title }}
+            QGIS version: ${{ steps.milestone2label.outputs.label }}
 
-      - name: Print outputs
-        run: |
-          echo ${{ steps.doc_issue.outputs.id }}
-          echo ${{ steps.doc_issue.outputs.number }}
+      # write comment to ping the PR author
+      - name: Create comment
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          token: ${{ steps.token.outputs.token }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            @${{ github.event.pull_request.user.login }}
+            A documentation ticket has been opened at https://github.com/qgis/QGIS-Documentation/issue/${{ steps.doc_issue.outputs.number }}
+            It is **your** responsibility to visit this ticket and add as much detail as possible for the documentation team to correctly document this change.
+            Thank you!
+          reaction-type: 'rocket'
