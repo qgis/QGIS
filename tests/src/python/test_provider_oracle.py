@@ -402,6 +402,8 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
             compareWkt(features[12].geometry().asWkt(), 'MultiSurface (CurvePolygon (CircularString (1 3, 3 5, 4 7, 7 3, 1 3)),CurvePolygon (CircularString (11 3, 13 5, 14 7, 17 3, 11 3)))', 0.00001), features[12].geometry().asWkt())
         self.assertTrue(
             compareWkt(features[13].geometry().asWkt(), 'CurvePolygonZ(CompoundCurveZ (CircularStringZ (-1 -5 1, 5 -7 2, 17 -6 3), (17 -6 3, 13 4 4), CircularStringZ (13 4 4, 10 0.1 5, 7 2.20 6, 5 4 7, 1 2 8),(1 2 8, -1 -5 1)))', 0.00001), features[13].geometry().asWkt())
+        self.assertTrue(
+            compareWkt(features[14].geometry().asWkt(), 'MultiPolygon (((22 22, 28 22, 28 26, 22 26, 22 22)))', 0.00001), features[14].geometry().asWkt())
 
     def testEditSurfaces(self):
 
