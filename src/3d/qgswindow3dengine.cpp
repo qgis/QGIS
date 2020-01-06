@@ -19,7 +19,6 @@
 #include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DExtras/QForwardRenderer>
 
-
 QgsWindow3DEngine::QgsWindow3DEngine()
 {
   mWindow3D = new Qt3DExtras::Qt3DWindow;
@@ -73,4 +72,14 @@ Qt3DRender::QCamera *QgsWindow3DEngine::camera()
 QSize QgsWindow3DEngine::size() const
 {
   return mWindow3D->size();
+}
+
+void QgsWindow3DEngine::addFrameGraphNode( Qt3DRender::QFrameGraphNode *framegrapheNode )
+{
+  framegrapheNode->setParent( mWindow3D->activeFrameGraph() );
+}
+
+QObject *QgsWindow3DEngine::surface() const
+{
+  return mWindow3D;
 }

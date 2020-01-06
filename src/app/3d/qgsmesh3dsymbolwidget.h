@@ -23,20 +23,33 @@
 class QgsMesh3DSymbol;
 class QgsMeshLayer;
 
-//! A widget for configuration of 3D symbol for polygons
+//! A widget for configuration of 3D symbol for meshes
 class QgsMesh3DSymbolWidget : public QWidget, private Ui::Mesh3DSymbolWidget
 {
     Q_OBJECT
   public:
-    explicit QgsMesh3DSymbolWidget( QWidget *parent = nullptr );
+    explicit QgsMesh3DSymbolWidget( QgsMeshLayer *meshLayer, QWidget *parent = nullptr );
 
-    void setSymbol( const QgsMesh3DSymbol &symbol, QgsMeshLayer *layer );
     QgsMesh3DSymbol symbol() const;
+
+    void setLayer( QgsMeshLayer *meshLayer );
+    int rendererTypeComboBoxIndex() const;
+    void setRendererTypeComboBoxIndex( int index );
 
   signals:
     void changed();
 
-  public slots:
+  private slots:
+    void reloadColorRampShaderMinMax();
+    void onSymbologyTypeChanged();
+    void onColorRampShaderMinMaxChanged();
+    void onColoringTypeChanged();
+
+  private:
+    void setSymbol( const QgsMesh3DSymbol &symbol );
+    double lineEditValue( const QLineEdit *lineEdit ) const;
+
+    QgsMeshLayer *mLayer = nullptr;
 };
 
 #endif // QGSMESH3DSYMBOLWIDGET_H

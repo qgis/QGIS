@@ -22,6 +22,7 @@
 namespace Qt3DRender
 {
   class QRenderCapture;
+  class QTexture2D;
 }
 
 namespace Qt3DExtras
@@ -58,11 +59,18 @@ class _3D_EXPORT QgsWindow3DEngine : public QgsAbstract3DEngine
     Qt3DRender::QCamera *camera() override;
     QSize size() const override;
 
+    void addFrameGraphNode( Qt3DRender::QFrameGraphNode *framegrapheNode ) override;
+
+    QObject *surface() const override;
+
   private:
     //! 3D window with all the 3D magic inside
     Qt3DExtras::Qt3DWindow *mWindow3D = nullptr;
     //! Frame graph node for render capture
     Qt3DRender::QRenderCapture *mCapture = nullptr;
+
+    Qt3DRender::QTexture2D *mMeshColorBuffer;
+
 };
 
 

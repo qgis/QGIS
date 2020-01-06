@@ -92,6 +92,28 @@ void QgsTriangularMesh::triangulate( const QgsMeshFace &face, int nativeIndex )
   mTrianglesToNativeFaces.push_back( nativeIndex );
 }
 
+
+void QgsTriangularMesh::setCCW( QgsMeshFace &face )
+{
+  if ( face.size() != 3 )
+    return;
+
+  const QgsMeshVertex &v0 = mTriangularMesh.vertex( face[0] );
+  const QgsMeshVertex &v1 = mTriangularMesh.vertex( face[1] );
+  const QgsMeshVertex &v2 = mTriangularMesh.vertex( face[2] );
+
+  double ux = v1.x() - v0.x();
+  double uy = v1.y() - v0.y();
+  double vx = v2.x() - v0.x();
+  double vy = v2.y() - v0.y();
+
+  double crossProduct = ux * vy - uy * vx;
+  if ( crossProduct < 0 ) //CW -->change the orientation
+  {
+    std::swap( face[1], face[2] );
+  }
+}
+
 QgsTriangularMesh::~QgsTriangularMesh() = default;
 QgsTriangularMesh::QgsTriangularMesh() = default;
 
@@ -170,6 +192,12 @@ void QgsTriangularMesh::update( QgsMesh *nativeMesh, QgsRenderContext *context )
 
   // CALCULATE SPATIAL INDEX
   mSpatialIndex = QgsMeshSpatialIndex( mTriangularMesh );
+
+  // SET ALL TRIANGLE CCW
+  for ( int i = 0; i < mTriangularMesh.faceCount(); ++i )
+  {
+    setCCW( mTriangularMesh.faces[i] );
+  }
 }
 
 const QVector<QgsMeshVertex> &QgsTriangularMesh::vertices() const
@@ -221,6 +249,31 @@ int QgsTriangularMesh::faceIndexForPoint_v2( const QgsPointXY &point ) const
 QList<int> QgsTriangularMesh::faceIndexesForRectangle( const QgsRectangle &rectangle ) const
 {
   return mSpatialIndex.intersects( rectangle );
+}
+
+QVector<QVector3D> QgsTriangularMesh::vertexNormales( float vertScale ) const
+{
+  QVector<QVector3D> normales( vertices().count(), QVector3D( 0, 0, 0 ) );
+
+  for ( const auto &face : triangles() )
+  {
+    for ( int i = 0; i < 3; i++ )
+    {
+      int index1( face.at( i ) );
+      int index2( face.at( ( i + 1 ) % 3 ) );
+      int index3( face.at( ( i + 2 ) % 3 ) );
+
+      const QgsMeshVertex &vert( vertices().at( index1 ) );
+      const QgsMeshVertex &otherVert1( vertices().at( index2 ) );
+      const QgsMeshVertex &otherVert2( vertices().at( index3 ) );
+
+      QVector3D v1( float( otherVert1.x() - vert.x() ), float( otherVert1.y() - vert.y() ), vertScale * float( otherVert1.z() - vert.z() ) );
+      QVector3D v2( float( otherVert2.x() - vert.x() ), float( otherVert2.y() - vert.y() ), vertScale * float( otherVert2.z() - vert.z() ) );
+
+      normales[index1] += QVector3D::crossProduct( v1, v2 );
+    }
+  }
+  return normales;
 }
 
 std::unique_ptr< QgsPolygon > QgsMeshUtils::toPolygon( const QgsMeshFace &face, const QVector<QgsMeshVertex> &vertices )

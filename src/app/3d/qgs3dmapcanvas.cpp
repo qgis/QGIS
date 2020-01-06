@@ -42,6 +42,7 @@ Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
   } );
 
   mContainer = QWidget::createWindowContainer( mEngine->window() );
+  mContainer->installEventFilter( this );
   mNavigationWidget = new Qgs3DNavigationWidget( this );
 
   QHBoxLayout *hLayout = new QHBoxLayout( this );
@@ -67,8 +68,7 @@ void Qgs3DMapCanvas::resizeEvent( QResizeEvent *ev )
   if ( !mScene )
     return;
 
-  QRect viewportRect( QPoint( 0, 0 ), size() );
-  mScene->cameraController()->setViewport( viewportRect );
+  updateViewportSize();
 }
 
 void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
@@ -163,25 +163,40 @@ void Qgs3DMapCanvas::setMapTool( Qgs3DMapTool *tool )
 
 bool Qgs3DMapCanvas::eventFilter( QObject *watched, QEvent *event )
 {
-  if ( !mMapTool )
-    return false;
-
-  Q_UNUSED( watched )
-  switch ( event->type() )
+  if ( mMapTool && watched == mapTool() )
   {
-    case QEvent::MouseButtonPress:
-      mMapTool->mousePressEvent( static_cast<QMouseEvent *>( event ) );
-      break;
-    case QEvent::MouseButtonRelease:
-      mMapTool->mouseReleaseEvent( static_cast<QMouseEvent *>( event ) );
-      break;
-    case QEvent::MouseMove:
-      mMapTool->mouseMoveEvent( static_cast<QMouseEvent *>( event ) );
-      break;
-    default:
-      break;
+    switch ( event->type() )
+    {
+      case QEvent::MouseButtonPress:
+        mMapTool->mousePressEvent( static_cast<QMouseEvent *>( event ) );
+        break;
+      case QEvent::MouseButtonRelease:
+        mMapTool->mouseReleaseEvent( static_cast<QMouseEvent *>( event ) );
+        break;
+      case QEvent::MouseMove:
+        mMapTool->mouseMoveEvent( static_cast<QMouseEvent *>( event ) );
+        break;
+      default:
+        break;
+    }
   }
-  return false;
+
+  if ( mContainer && watched == mContainer )
+  {
+    if ( event->type() == QEvent::Resize )
+      updateViewportSize();
+  }
+
+  return QWidget::eventFilter( watched, event );
+}
+
+void Qgs3DMapCanvas::updateViewportSize()
+{
+  if ( !mScene )
+    return;
+
+  QRect viewportRect( QPoint( 0, 0 ), mContainer->size() );
+  mScene->setViewport( viewportRect );
 }
 
 

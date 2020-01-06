@@ -16,6 +16,7 @@
 #include "qgs3dmapscene.h"
 
 #include <Qt3DRender/QCamera>
+
 #include <Qt3DRender/QMesh>
 #include <Qt3DRender/QObjectPicker>
 #include <Qt3DRender/QPickEvent>
@@ -53,6 +54,8 @@
 #include "qgspoint3dbillboardmaterial.h"
 
 #include "qgslinematerial_p.h"
+
+#include "qgsmesh3drendercontroler.h"
 
 Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
   : mMap( map )
@@ -161,6 +164,9 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
     mEngine->setFrustumCullingEnabled( false );
   }
 
+  // create the mesh rendering controler
+  mMeshrenderControler = new QgsMesh3dRenderControler( engine );
+
   // force initial update of chunked entities
   onCameraChanged();
 }
@@ -220,6 +226,12 @@ float Qgs3DMapScene::worldSpaceError( float epsilon, float distance )
   float frustumWidthAtDistance = 2 * distance * tan( fov / 2 );
   float err = frustumWidthAtDistance * epsilon / screenSizePx;
   return err;
+}
+
+void Qgs3DMapScene::setViewport( const QRect &viewportrect )
+{
+  cameraController()->setViewport( viewportrect );
+  mMeshrenderControler->setBufferSize( viewportrect.width(), viewportrect.height() );
 }
 
 QgsChunkedEntity::SceneState _sceneState( QgsCameraController *cameraController )

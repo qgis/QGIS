@@ -9,5 +9,14 @@
         <file>shaders/billboards.geom</file>
         <file>shaders/billboards.frag</file>
         <file>shaders/billboards.vert</file>
+        <file>shaders/mesh/mesh.vert</file>
+        <file>shaders/mesh/mesh_colorRamp_uniform.frag</file>
+        <file>shaders/mesh/mesh_colorUnique_uniform.frag</file>
+        <file>shaders/mesh/mesh_lights.frag</file>
+        <file>shaders/mesh/mesh_lights.geom</file>
+        <file>shaders/mesh/mesh_wireframe.frag</file>
+        <file>shaders/mesh/mesh_wireframe.geom</file>
+        <file>shaders/mesh/mesh_wireframe.vert</file>
+        <file>shaders/mesh/mesh_wireframe_disabled.frag</file>
     </qresource>
 </RCC>

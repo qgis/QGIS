@@ -245,3 +245,13 @@ void QgsOffscreen3DEngine::requestCaptureImage()
     emit imageCaptured( image );
   } );
 }
+
+void QgsOffscreen3DEngine::addFrameGraphNode( Qt3DRender::QFrameGraphNode *framegrapheNode )
+{
+  framegrapheNode->setParent( mRenderSettings );
+}
+
+QObject *QgsOffscreen3DEngine::surface() const
+{
+  return mOffscreenSurface;
+}
