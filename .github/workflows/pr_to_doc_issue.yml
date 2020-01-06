@@ -28,7 +28,7 @@ jobs:
           MILESTONE: ${{ github.event.pull_request.milestone.title }}
         run: |
           LABEL=$(sed -r 's/^([[:digit:]]\.[[:digit:]]+)(\.[[:digit:]]+)?$/\1/' <<< ${MILESTONE})
-          echo "Label: ${LABEL}""
+          echo "Label: ${LABEL}"
           echo "::set-output name=label::${LABEL}"
 
       # create the documentation issue
