@@ -20,6 +20,7 @@
 #include "qgsmessagelog.h"
 #include "qgsrectangle.h"
 #include "qgspolygon.h"
+#include "qgspostgresprovider.h"
 
 const QString QgsPostgresRasterProvider::PG_RASTER_PROVIDER_KEY = QStringLiteral( "postgresraster" );
 const QString QgsPostgresRasterProvider::PG_RASTER_PROVIDER_DESCRIPTION =  QStringLiteral( "Postgres raster provider" );
@@ -142,6 +143,8 @@ QgsPostgresRasterProvider::QgsPostgresRasterProvider( const QgsPostgresRasterPro
   , mRequestedSrid( other.mRequestedSrid )
   , mConnectionRO( other.mConnectionRO )
   , mConnectionRW( other.mConnectionRW )
+  , mPrimaryKeyType( other.mPrimaryKeyType )
+  , mPrimaryKeyAttrs( other.mPrimaryKeyAttrs )
 {
 }
 
@@ -692,7 +695,15 @@ void QgsPostgresRasterProvider::disconnectDb()
 bool QgsPostgresRasterProvider::getDetails()
 {
 
+
   // WARNING: multiple return points!
+
+  if ( !determinePrimaryKey() )
+  {
+    QgsMessageLog::logMessage( tr( "PostgreSQL raster layer has no primary key." ), tr( "PostGIS" ) );
+    return false;
+  }
+
   // We first try to collect raster information using raster_columns information
   // unless it is a query layer (unsupported at the moment) or use estimated metadata
   // if false.
@@ -846,6 +857,8 @@ bool QgsPostgresRasterProvider::getDetails()
         // Compute raster size
         mHeight = static_cast<long>( mExtent.height() / std::abs( mScaleY ) );
         mWidth = static_cast<long>( mExtent.width() / std::abs( mScaleX ) );
+        // is tiled?
+        mIsTiled = ( mWidth != mTileWidth ) || ( mHeight != mTileHeight );
 
         findOverviews();
 
@@ -963,6 +976,7 @@ bool QgsPostgresRasterProvider::getDetails()
     // Compute raster size
     mHeight = static_cast<long>( mExtent.height() / std::abs( mScaleY ) );
     mWidth = static_cast<long>( mExtent.width() / std::abs( mScaleX ) );
+    mIsTiled = ( mWidth != mTileWidth ) || ( mHeight != mTileHeight );
 
     mCrs = QgsCoordinateReferenceSystem::fromEpsgId( result.PQgetvalue( 0, 9 ).toLong( &ok ) );
     if ( ! ok )
@@ -1031,6 +1045,360 @@ bool QgsPostgresRasterProvider::getDetails()
   }
   return true;
 }
+
+QgsPostgresProvider::Relkind QgsPostgresRasterProvider::relkind() const
+{
+  if ( mIsQuery || !connectionRO() )
+    return QgsPostgresProvider::Relkind::Unknown;
+
+  QString sql = QStringLiteral( "SELECT relkind FROM pg_class WHERE oid=regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
+  QgsPostgresResult res( connectionRO()->PQexec( sql ) );
+  QString type = res.PQgetvalue( 0, 0 );
+
+  QgsPostgresProvider::Relkind kind = QgsPostgresProvider::Relkind::Unknown;
+
+  if ( type == QLatin1String( "r" ) )
+  {
+    kind = QgsPostgresProvider::Relkind::OrdinaryTable;
+  }
+  else if ( type == QLatin1String( "i" ) )
+  {
+    kind = QgsPostgresProvider::Relkind::Index;
+  }
+  else if ( type == QLatin1String( "s" ) )
+  {
+    kind = QgsPostgresProvider::Relkind::Sequence;
+  }
+  else if ( type == QLatin1String( "v" ) )
+  {
+    kind = QgsPostgresProvider::Relkind::View;
+  }
+  else if ( type == QLatin1String( "m" ) )
+  {
+    kind = QgsPostgresProvider::Relkind::MaterializedView;
+  }
+  else if ( type == QLatin1String( "c" ) )
+  {
+    kind = QgsPostgresProvider::Relkind::CompositeType;
+  }
+  else if ( type == QLatin1String( "t" ) )
+  {
+    kind = QgsPostgresProvider::Relkind::ToastTable;
+  }
+  else if ( type == QLatin1String( "f" ) )
+  {
+    kind = QgsPostgresProvider::Relkind::ForeignTable;
+  }
+  else if ( type == QLatin1String( "p" ) )
+  {
+    kind = QgsPostgresProvider::Relkind::PartitionedTable;
+  }
+
+  return kind;
+}
+
+bool QgsPostgresRasterProvider::determinePrimaryKey()
+{
+
+  // check to see if there is an unique index on the relation, which
+  // can be used as a key into the table. Primary keys are always
+  // unique indices, so we catch them as well.
+
+  QString sql;
+  if ( !mIsQuery )
+  {
+    sql = QStringLiteral( "SELECT count(*) FROM pg_inherits WHERE inhparent=%1::regclass" ).arg( quotedValue( mQuery ) );
+    QgsDebugMsg( QStringLiteral( "Checking whether %1 is a parent table" ).arg( sql ) );
+    QgsPostgresResult res( connectionRO()->PQexec( sql ) );
+    bool isParentTable( res.PQntuples() == 0 || res.PQgetvalue( 0, 0 ).toInt() > 0 );
+
+    sql = QStringLiteral( "SELECT indexrelid FROM pg_index WHERE indrelid=%1::regclass AND (indisprimary OR indisunique) ORDER BY CASE WHEN indisprimary THEN 1 ELSE 2 END LIMIT 1" ).arg( quotedValue( mQuery ) );
+    QgsDebugMsg( QStringLiteral( "Retrieving first primary or unique index: %1" ).arg( sql ) );
+
+    res = connectionRO()->PQexec( sql );
+    QgsDebugMsg( QStringLiteral( "Got %1 rows." ).arg( res.PQntuples() ) );
+
+    QStringList log;
+
+    // no primary or unique indices found
+    if ( res.PQntuples() == 0 )
+    {
+      QgsDebugMsg( QStringLiteral( "Relation has no primary key -- investigating alternatives" ) );
+
+      // Two options here. If the relation is a table, see if there is
+      // an oid column that can be used instead.
+      // If the relation is a view try to find a suitable column to use as
+      // the primary key.
+
+      const QgsPostgresProvider::Relkind type = relkind();
+
+      if ( type == QgsPostgresProvider::Relkind::OrdinaryTable || type == QgsPostgresProvider::Relkind::PartitionedTable )
+      {
+        QgsDebugMsg( QStringLiteral( "Relation is a table. Checking to see if it has an oid column." ) );
+
+        mPrimaryKeyAttrs.clear();
+        mPrimaryKeyType = PktUnknown;
+
+        if ( connectionRO()->pgVersion() >= 100000 )
+        {
+          // If there is an generated id on the table, use that instead,
+          sql = QStringLiteral( "SELECT attname FROM pg_attribute WHERE attidentity IN ('a','d') AND attrelid=regclass(%1) LIMIT 1" ).arg( quotedValue( mQuery ) );
+          res = connectionRO()->PQexec( sql );
+          if ( res.PQntuples() == 1 )
+          {
+            // Could warn the user here that performance will suffer if
+            // attribute isn't indexed (and that they may want to add a
+            // primary key to the table)
+            mPrimaryKeyAttrs << res.PQgetvalue( 0, 0 );
+          }
+        }
+
+        if ( mPrimaryKeyType == PktUnknown )
+        {
+          // If there is an oid on the table, use that instead,
+          sql = QStringLiteral( "SELECT attname FROM pg_attribute WHERE attname='oid' AND attrelid=regclass(%1)" ).arg( quotedValue( mQuery ) );
+
+          res = connectionRO()->PQexec( sql );
+          if ( res.PQntuples() == 1 )
+          {
+            // Could warn the user here that performance will suffer if
+            // oid isn't indexed (and that they may want to add a
+            // primary key to the table)
+            mPrimaryKeyType = PktOid;
+          }
+        }
+
+        if ( mPrimaryKeyType == PktUnknown )
+        {
+          sql = QStringLiteral( "SELECT attname FROM pg_attribute WHERE attname='ctid' AND attrelid=regclass(%1)" ).arg( quotedValue( mQuery ) );
+
+          res = connectionRO()->PQexec( sql );
+          if ( res.PQntuples() == 1 )
+          {
+            mPrimaryKeyType = PktTid;
+            QgsMessageLog::logMessage( tr( "Primary key is ctid - changing of existing features disabled (%1; %2)" ).arg( mRasterColumn, mQuery ) );
+            // TODO: set capabilities to RO when writing will be implemented
+          }
+        }
+
+        if ( mPrimaryKeyType == PktUnknown )
+        {
+          QgsMessageLog::logMessage( tr( "The table has no column suitable for use as a key. QGIS requires a primary key, a PostgreSQL oid column or a ctid for tables." ), tr( "PostGIS" ) );
+        }
+      }
+      else if ( type == QgsPostgresProvider::Relkind::View || type == QgsPostgresProvider::Relkind::MaterializedView
+                || type == QgsPostgresProvider::Relkind::ForeignTable )
+      {
+        determinePrimaryKeyFromUriKeyColumn();
+      }
+      else
+      {
+        const QMetaEnum metaEnum( QMetaEnum::fromType<QgsPostgresProvider::Relkind>() );
+        QString typeName = metaEnum.valueToKey( type );
+        QgsMessageLog::logMessage( tr( "Unexpected relation type '%1'." ).arg( typeName ), tr( "PostGIS" ) );
+      }
+    }
+    else
+    {
+      // have a primary key or unique index
+      QString indrelid = res.PQgetvalue( 0, 0 );
+      sql = QStringLiteral( "SELECT attname, attnotnull FROM pg_index, pg_attribute, data_type "
+                            "JOIN information_schema.columns ON (column_name=attname AND  table_name = %1 AND table_schema = %2) "
+                            "WHERE indexrelid=%1 AND indrelid=attrelid AND pg_attribute.attnum=any(pg_index.indkey)" )
+            .arg( quotedValue( mTableName ) )
+            .arg( quotedValue( mSchemaName ) )
+            .arg( indrelid );
+
+      QgsDebugMsg( "Retrieving key columns: " + sql );
+      res = connectionRO()->PQexec( sql );
+      QgsDebugMsg( QStringLiteral( "Got %1 rows." ).arg( res.PQntuples() ) );
+
+      bool mightBeNull = false;
+      QString primaryKey;
+      QString delim;
+
+      mPrimaryKeyType = PktFidMap; // map by default, will downgrade if needed
+      for ( int i = 0; i < res.PQntuples(); i++ )
+      {
+        const QString name = res.PQgetvalue( i, 0 );
+        if ( res.PQgetvalue( i, 1 ).startsWith( 'f' ) )
+        {
+          QgsMessageLog::logMessage( tr( "Unique column '%1' doesn't have a NOT NULL constraint." ).arg( name ), tr( "PostGIS" ) );
+          mightBeNull = true;
+        }
+
+        primaryKey += delim + quotedIdentifier( name );
+        delim = ',';
+
+        QgsPostgresPrimaryKeyType pkType { QgsPostgresPrimaryKeyType::PktUnknown };
+        const QString fieldTypeName { res.PQgetvalue( i, 2 ) };
+
+        if ( fieldTypeName == QLatin1String( "oid" ) || fieldTypeName == QLatin1String( "serial8" ) )
+        {
+          pkType = QgsPostgresPrimaryKeyType::PktOid;
+        }
+        else if ( fieldTypeName == QLatin1String( "integer" ) || fieldTypeName == QLatin1String( "int2" ) || fieldTypeName == QLatin1String( "int4" ) ||
+                  fieldTypeName == QLatin1String( "int8" ) || fieldTypeName == QLatin1String( "serial" ) )
+        {
+          pkType = QgsPostgresPrimaryKeyType::PktInt;
+        }
+        else if ( fieldTypeName == QLatin1String( "varchar" ) )
+        {
+          pkType = QgsPostgresPrimaryKeyType::Pkt
+
+                   QRegExp re( "character varying\\((\\d+)\\)" );
+          if ( re.exactMatch( formattedFieldType ) )
+          {
+            fieldSize = re.cap( 1 ).toInt();
+          }
+          else
+          {
+            fieldSize = -1;
+          }
+        }
+        else if ( fieldTypeName == QLatin1String( "date" ) )
+        {
+          fieldType = QVariant::Date;
+          fieldSize = -1;
+        }
+        else if ( fieldTypeName == QLatin1String( "time" ) )
+        {
+          fieldType = QVariant::Time;
+          fieldSize = -1;
+        }
+        else if ( fieldTypeName == QLatin1String( "timestamp" ) )
+        {
+          fieldType = QVariant::DateTime;
+          fieldSize = -1;
+        }
+        else if ( fieldTypeName == QLatin1String( "bytea" ) )
+        {
+          fieldType = QVariant::ByteArray;
+          fieldSize = -1;
+        }
+        else if ( fieldTypeName == QLatin1String( "text" ) ||
+                  fieldTypeName == QLatin1String( "citext" ) ||
+                  fieldTypeName == QLatin1String( "geometry" ) ||
+                  fieldTypeName == QLatin1String( "inet" ) ||
+                  fieldTypeName == QLatin1String( "money" ) ||
+                  fieldTypeName == QLatin1String( "ltree" ) ||
+                  fieldTypeName == QLatin1String( "uuid" ) ||
+                  fieldTypeName == QLatin1String( "xml" ) ||
+                  fieldTypeName.startsWith( QLatin1String( "time" ) ) ||
+                  fieldTypeName.startsWith( QLatin1String( "date" ) ) )
+        {
+          fieldType = QVariant::String;
+          fieldSize = -1;
+        }
+        else if ( fieldTypeName == QLatin1String( "bpchar" ) )
+        {
+          // although postgres internally uses "bpchar", this is exposed to users as character in postgres
+          fieldTypeName = QStringLiteral( "character" );
+
+          fieldType = QVariant::String;
+
+          QRegExp re( "character\\((\\d+)\\)" );
+          if ( re.exactMatch( formattedFieldType ) )
+          {
+            fieldSize = re.cap( 1 ).toInt();
+          }
+          else
+          {
+            QgsDebugMsg( QStringLiteral( "Unexpected formatted field type '%1' for field %2" )
+                         .arg( formattedFieldType,
+                               fieldName ) );
+            fieldSize = -1;
+            fieldPrec = -1;
+          }
+        }
+        else if ( fieldTypeName == QLatin1String( "char" ) )
+        {
+          fieldType = QVariant::String;
+
+          QRegExp re( "char\\((\\d+)\\)" );
+          if ( re.exactMatch( formattedFieldType ) )
+          {
+            fieldSize = re.cap( 1 ).toInt();
+          }
+          else
+          {
+            QgsMessageLog::logMessage( tr( "Unexpected formatted field type '%1' for field %2" )
+                                       .arg( formattedFieldType,
+                                             fieldName ) );
+            fieldSize = -1;
+            fieldPrec = -1;
+          }
+        }
+        else if ( fieldTypeName == QLatin1String( "hstore" ) ||  fieldTypeName == QLatin1String( "json" ) || fieldTypeName == QLatin1String( "jsonb" ) )
+        {
+          fieldType = QVariant::Map;
+          fieldSubType = QVariant::String;
+          fieldSize = -1;
+        }
+        else if ( fieldTypeName == QLatin1String( "bool" ) )
+        {
+          // enum
+          fieldType = QVariant::Bool;
+          fieldSize = -1;
+        }
+        else
+        {
+          // be tolerant in case of views: this might be a field used as a key
+          const QgsPostgresProvider::Relkind type = relkind();
+          if ( ( type == Relkind::View || type == Relkind::MaterializedView ) && parseUriKey( mUri.keyColumn( ) ).contains( fieldName ) )
+          {
+            // Assume it is convertible to text
+            fieldType = QVariant::String;
+            fieldSize = -1;
+          }
+          else
+          {
+            QgsMessageLog::logMessage( tr( "Field %1 ignored, because of unsupported type %2" ).arg( fieldName, fieldTType ), tr( "PostGIS" ) );
+            continue;
+          }
+        }
+
+        if ( isArray )
+        {
+          fieldTypeName = '_' + fieldTypeName;
+          fieldSubType = fieldType;
+          fieldType = ( fieldType == QVariant::String ? QVariant::StringList : QVariant::List );
+          fieldSize = -1;
+        }
+      }
+      // Always use PktFidMap for multi-field keys
+      mPrimaryKeyType = i ? QgsPostgresPrimaryKeyType::PktFidMap : pkType;
+
+      mPrimaryKeyAttrs << name;
+    }
+
+    if ( ( mightBeNull || isParentTable ) && !mUseEstimatedMetadata && !uniqueData( primaryKey ) )
+    {
+      QgsMessageLog::logMessage( tr( "Ignoring key candidate because of NULL values or inheritance" ), tr( "PostGIS" ) );
+      mPrimaryKeyType = PktUnknown;
+      mPrimaryKeyAttrs.clear();
+    }
+  }
+}
+else
+{
+  determinePrimaryKeyFromUriKeyColumn();
+}
+
+if ( mPrimaryKeyAttrs.size() == 1 )
+{
+  //primary keys are unique, not null
+  QgsFieldConstraints constraints = mAttributeFields.at( mPrimaryKeyAttrs[0] ).constraints();
+  constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
+  constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
+  mAttributeFields[ mPrimaryKeyAttrs[0] ].setConstraints( constraints );
+}
+
+mValid = mPrimaryKeyType != PktUnknown;
+
+return mValid;
+}
+
 
 void QgsPostgresRasterProvider::findOverviews()
 {

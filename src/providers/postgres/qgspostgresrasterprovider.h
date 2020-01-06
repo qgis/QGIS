@@ -20,6 +20,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsprovidermetadata.h"
 #include "qgspostgresconn.h"
+#include "qgspostgresprovider.h"
 
 #include <exception>
 
@@ -126,8 +127,20 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     QgsPostgresConn *mConnectionRO = nullptr ; //!< Read-only database connection (initially)
     QgsPostgresConn *mConnectionRW = nullptr ; //!< Read-write database connection (on update)
 
+    /**
+     * Data type for the primary key
+     */
+    QgsPostgresPrimaryKeyType mPrimaryKeyType = PktUnknown;
+
+    /**
+     * List of primary key attributes for fetching features.
+     */
+    QList<QString> mPrimaryKeyAttrs;
+
+
     QgsPostgresConn *connectionRO() const;
     QgsPostgresConn *connectionRW();
+
     bool hasSufficientPermsAndCapabilities();
     void disconnectDb();
     //! Get SRID and data type, FALSE if it's not a valid raster table
@@ -139,6 +152,21 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     static QString quotedValue( const QVariant &value ) { return QgsPostgresConn::quotedValue( value ); }
     static QString quotedJsonValue( const QVariant &value ) { return QgsPostgresConn::quotedJsonValue( value ); }
     static QString quotedByteaValue( const QVariant &value );
+    QgsPostgresProvider::Relkind relkind() const;
+
+
+    /**
+     * Determine the fields making up the primary key
+     */
+    bool determinePrimaryKey();
+
+    /**
+     * Determine the fields making up the primary key from the uri attribute keyColumn
+     *
+     * Fills mPrimaryKeyType and mPrimaryKeyAttrs
+     * from mUri
+     */
+    void determinePrimaryKeyFromUriKeyColumn();
 
 
     // QgsRasterInterface interface
