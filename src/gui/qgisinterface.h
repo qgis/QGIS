@@ -534,6 +534,24 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionCheckQgisVersion() = 0;
     virtual QAction *actionAbout() = 0;
 
+    // Shape digitize actions
+    virtual QAction *actionCircle2Points()  = 0;
+    virtual QAction *actionCircle3Points()  = 0;
+    virtual QAction *actionCircle3Tangents()  = 0;
+    virtual QAction *actionCircle2TangentsPoint()  = 0;
+    virtual QAction *actionCircleCenterPoint()  = 0;
+    virtual QAction *actionEllipseCenter2Points()  = 0;
+    virtual QAction *actionEllipseCenterPoint()  = 0;
+    virtual QAction *actionEllipseExtent()  = 0;
+    virtual QAction *actionEllipseFoci()  = 0;
+    virtual QAction *actionRectangleCenterPoint()  = 0;
+    virtual QAction *actionRectangleExtent()  = 0;
+    virtual QAction *actionRectangle3PointsDistance()  = 0;
+    virtual QAction *actionRectangle3PointsProjected()  = 0;
+    virtual QAction *actionRegularPolygon2Points()  = 0;
+    virtual QAction *actionRegularPolygonCenterPoint()  = 0;
+    virtual QAction *actionRegularPolygonCenterCorner()  = 0;
+
     /**
      * Access the vector layer tools instance.
      * With the help of this you can access methods like addFeature, startEditing
