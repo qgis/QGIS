@@ -139,6 +139,7 @@ class QgsPointLocator_VisitorNearestVertex : public IVisitor
  * \ingroup core
  * Helper class used when traversing the index looking for centroid - builds a list of matches.
  * \note not available in Python bindings
+ * \since QGIS 3.12
 */
 class QgsPointLocator_VisitorNearestCentroid : public IVisitor
 {
@@ -183,6 +184,7 @@ class QgsPointLocator_VisitorNearestCentroid : public IVisitor
  * \ingroup core
  * Helper class used when traversing the index looking for middle segment - builds a list of matches.
  * \note not available in Python bindings
+ * \since QGIS 3.12
 */
 class QgsPointLocator_VisitorNearestMiddle: public IVisitor
 {
