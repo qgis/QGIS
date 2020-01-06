@@ -111,6 +111,10 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
      */
     void setShowTrailingZeros( bool showTrailingZeros );
 
+  protected:
+
+    bool mUseScientific = false;
+
   private:
 
 #ifdef SIP_RUN

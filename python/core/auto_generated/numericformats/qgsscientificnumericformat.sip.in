@@ -1,0 +1,53 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/numericformats/qgsscientificnumericformat.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsScientificNumericFormat : QgsBasicNumericFormat
+{
+%Docstring
+A numeric formatter which returns a scientific notation representation of a value.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsscientificnumericformat.h"
+%End
+  public:
+
+    QgsScientificNumericFormat();
+%Docstring
+Default constructor
+%End
+
+
+    virtual QString id() const;
+
+%Docstring
+QgsScientificNumericFormat cannot be copied
+%End
+    virtual QString formatDouble( double value, const QgsNumericFormatContext &context ) const;
+
+    virtual QgsNumericFormat *clone() const /Factory/;
+
+    virtual QgsNumericFormat *create( const QVariantMap &configuration ) const /Factory/;
+
+    virtual QVariantMap configuration() const;
+
+
+  private:
+    QgsScientificNumericFormat( const QgsScientificNumericFormat &other );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/numericformats/qgsscientificnumericformat.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

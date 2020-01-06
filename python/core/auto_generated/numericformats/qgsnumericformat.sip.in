@@ -64,6 +64,7 @@ Returns the decimal separator character.
 #include <qgsbearingnumericformat.h>
 #include <qgsfallbacknumericformat.h>
 #include <qgspercentagenumericformat.h>
+#include <qgsscientificnumericformat.h>
 %End
 
 class QgsNumericFormat
@@ -90,6 +91,8 @@ This is an abstract base class and will always need to be subclassed.
       sipType = sipType_QgsFallbackNumericFormat;
     else if ( dynamic_cast< QgsPercentageNumericFormat * >( sipCpp ) )
       sipType = sipType_QgsPercentageNumericFormat;
+    else if ( dynamic_cast< QgsScientificNumericFormat * >( sipCpp ) )
+      sipType = sipType_QgsScientificNumericFormat;
     else
       sipType = NULL;
 %End

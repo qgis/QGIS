@@ -17,6 +17,7 @@ from qgis.core import (QgsFallbackNumericFormat,
                        QgsNumericFormatContext,
                        QgsBearingNumericFormat,
                        QgsPercentageNumericFormat,
+                       QgsScientificNumericFormat,
                        QgsNumericFormatRegistry,
                        QgsNumericFormat)
 
@@ -315,6 +316,54 @@ class TestQgsNumericFormat(unittest.TestCase):
         self.assertEqual(f.formatDouble(-5, context), '-500.000%')
         self.assertEqual(f.formatDouble(5.5, context), '+550.000%')
         self.assertEqual(f.formatDouble(-5.5, context), '-550.000%')
+
+    def testScientificFormat(self):
+        """ test scientific formatter """
+        f = QgsScientificNumericFormat()
+        context = QgsNumericFormatContext()
+        self.assertEqual(f.formatDouble(0, context), '0e+00')
+        self.assertEqual(f.formatDouble(5, context), '5e+00')
+        self.assertEqual(f.formatDouble(5.5, context), '5.5e+00')
+        self.assertEqual(f.formatDouble(-5, context), '-5e+00')
+        self.assertEqual(f.formatDouble(-5.5, context), '-5.5e+00')
+        self.assertEqual(f.formatDouble(-55555555.5, context), '-5.555556e+07')
+        context.setDecimalSeparator('x')
+        self.assertEqual(f.formatDouble(0, context), '0e+00')
+        self.assertEqual(f.formatDouble(-5.5, context), '-5x5e+00')
+        self.assertEqual(f.formatDouble(-55555555.5, context), '-5x555556e+07')
+        context.setDecimalSeparator('.')
+        f.setNumberDecimalPlaces(0)
+        self.assertEqual(f.formatDouble(0, context), '0e+00')
+        self.assertEqual(f.formatDouble(5.5, context), '6e+00')
+        self.assertEqual(f.formatDouble(55555555.5, context), '6e+07')
+        self.assertEqual(f.formatDouble(55555555.123456, context), '6e+07')
+        self.assertEqual(f.formatDouble(-5.5, context), '-6e+00')
+        self.assertEqual(f.formatDouble(-55555555.5, context), '-6e+07')
+        f.setNumberDecimalPlaces(3)
+        self.assertEqual(f.formatDouble(0, context), '0e+00')
+        self.assertEqual(f.formatDouble(5.5, context), '5.5e+00')
+        self.assertEqual(f.formatDouble(55555555.5, context), '5.556e+07')
+        self.assertEqual(f.formatDouble(55555555.123456, context), '5.556e+07')
+        self.assertEqual(f.formatDouble(-5.5, context), '-5.5e+00')
+        self.assertEqual(f.formatDouble(-55555555.5, context), '-5.556e+07')
+        f.setShowTrailingZeros(True)
+        self.assertEqual(f.formatDouble(0, context), '0.000e+00')
+        self.assertEqual(f.formatDouble(5, context), '5.000e+00')
+        self.assertEqual(f.formatDouble(-5, context), '-5.000e+00')
+        self.assertEqual(f.formatDouble(5.5, context), '5.500e+00')
+        self.assertEqual(f.formatDouble(55555555.5, context), '5.556e+07')
+        self.assertEqual(f.formatDouble(55555555.123456, context), '5.556e+07')
+        self.assertEqual(f.formatDouble(-5.5, context), '-5.500e+00')
+        self.assertEqual(f.formatDouble(-55555555.5, context), '-5.556e+07')
+        f.setShowPlusSign(True)
+        self.assertEqual(f.formatDouble(0, context), '0.000e+00')
+        self.assertEqual(f.formatDouble(5, context), '+5.000e+00')
+        self.assertEqual(f.formatDouble(-5, context), '-5.000e+00')
+        self.assertEqual(f.formatDouble(5.5, context), '+5.500e+00')
+        self.assertEqual(f.formatDouble(55555555.5, context), '+5.556e+07')
+        self.assertEqual(f.formatDouble(55555555.123456, context), '+5.556e+07')
+        self.assertEqual(f.formatDouble(-5.5, context), '-5.500e+00')
+        self.assertEqual(f.formatDouble(-55555555.5, context), '-5.556e+07')
 
     def testRegistry(self):
         registry = QgsNumericFormatRegistry()

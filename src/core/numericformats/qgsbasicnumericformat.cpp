@@ -56,7 +56,12 @@ QString QgsBasicNumericFormat::formatDouble( double value, const QgsNumericForma
     mPrevDecimalSep = context.decimalSeparator();
   }
 
-  *mOs << std::fixed << value;
+  if ( !mUseScientific )
+    *mOs << std::fixed;
+  else
+    *mOs << std::scientific;
+
+  *mOs << value;
   QString res = QString::fromStdString( mOs->str() );
   mOs->str( "" );
   mOs->clear();
@@ -67,13 +72,25 @@ QString QgsBasicNumericFormat::formatDouble( double value, const QgsNumericForma
   if ( !mShowTrailingZeros && res.contains( context.decimalSeparator() ) )
   {
     int trimPoint = res.length() - 1;
+    int ePoint = 0;
+    if ( mUseScientific )
+    {
+      while ( res.at( trimPoint ) != 'e' && res.at( trimPoint ) != 'E' )
+        trimPoint--;
+      ePoint = trimPoint;
+      trimPoint--;
+    }
+
     while ( res.at( trimPoint ) == '0' )
       trimPoint--;
 
     if ( res.at( trimPoint ) == context.decimalSeparator() )
       trimPoint--;
 
+    QString original = res;
     res.truncate( trimPoint + 1 );
+    if ( mUseScientific )
+      res += original.mid( ePoint );
   }
 
   return res;

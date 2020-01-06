@@ -110,6 +110,7 @@ SET(QGIS_CORE_SRCS
   numericformats/qgsnumericformat.cpp
   numericformats/qgsnumericformatregistry.cpp
   numericformats/qgspercentagenumericformat.cpp
+  numericformats/qgsscientificnumericformat.cpp
 
   auth/qgsauthcertutils.cpp
   auth/qgsauthconfig.cpp
@@ -1139,6 +1140,7 @@ SET(QGIS_CORE_HDRS
   numericformats/qgsnumericformat.h
   numericformats/qgsnumericformatregistry.h
   numericformats/qgspercentagenumericformat.h
+  numericformats/qgsscientificnumericformat.h
 
   processing/models/qgsprocessingmodelalgorithm.h
   processing/models/qgsprocessingmodelchildalgorithm.h

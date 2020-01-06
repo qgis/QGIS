@@ -111,6 +111,9 @@ numberDecimalPlaces()).
 .. seealso:: :py:func:`setNumberDecimalPlaces`
 %End
 
+  protected:
+
+
   private:
     QgsBasicNumericFormat( const QgsBasicNumericFormat &other );
 };
