@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Create issue on doc repo for labeled issue
     steps:
+      # obfuscate the github token so it can be used on jobs triggered from forks
       - name: Clear GH Token
         id: token
         uses: opengisch/clear-token@v1.0.12
@@ -19,6 +20,17 @@ jobs:
           bot_token_encrypted: ddbdec32940df79f1adf2369b4b10f10b5a66f65
           bot_token_xor_key: a1b2c3d47311f8e29e204f85a81b4df4a44e252c
 
+      # transform the milestone (e.g. 3.10.4) to a doc label (3.10)
+      - name: QGIS milestone to Doc label
+        id: milestone2label
+        env:
+          MILESTONE: ${{ github.event.pull_request.milestone.title }}
+        run: |
+          LABEL=$(sed -r 's/^([[:digit:]]\.[[:digit:]]+)(\.[[:digit:]]+)?$/\1/' <<< ${MILESTONE})
+          echo "Label: ${LABEL}""
+          echo "::set-output name=label::${LABEL}"
+
+      # create the documentation issue
       - name: Create Documentation issue
         id: doc_issue
         uses: maxkomarychev/oction-create-issue@v0.7.1
