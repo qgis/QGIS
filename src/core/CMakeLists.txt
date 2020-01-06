@@ -106,6 +106,7 @@ SET(QGIS_CORE_SRCS
 
   numericformats/qgsbasicnumericformat.cpp
   numericformats/qgsbearingnumericformat.cpp
+  numericformats/qgscurrencynumericformat.cpp
   numericformats/qgsfallbacknumericformat.cpp
   numericformats/qgsnumericformat.cpp
   numericformats/qgsnumericformatregistry.cpp
@@ -1136,6 +1137,7 @@ SET(QGIS_CORE_HDRS
 
   numericformats/qgsbasicnumericformat.h
   numericformats/qgsbearingnumericformat.h
+  numericformats/qgscurrencynumericformat.h
   numericformats/qgsfallbacknumericformat.h
   numericformats/qgsnumericformat.h
   numericformats/qgsnumericformatregistry.h

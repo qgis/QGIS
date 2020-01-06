@@ -1,0 +1,80 @@
+/***************************************************************************
+                             qgscurrencynumericformat.cpp
+                             ----------------------------
+    begin                : January 2020
+    copyright            : (C) 2020 by Nyall Dawson
+    email                : nyall dot dawson at gmail dot com
+
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "qgscurrencynumericformat.h"
+#include "qgis.h"
+
+
+QgsCurrencyNumericFormat::QgsCurrencyNumericFormat()
+  : mPrefix( QStringLiteral( "$" ) )
+{
+}
+
+QString QgsCurrencyNumericFormat::id() const
+{
+  return QStringLiteral( "currency" );
+}
+
+QString QgsCurrencyNumericFormat::formatDouble( double value, const QgsNumericFormatContext &context ) const
+{
+  QString res = QgsBasicNumericFormat::formatDouble( value, context );
+  if ( value < 0 || ( value > 0 && showPlusSign() ) )
+    return res.at( 0 ) + mPrefix + res.mid( 1 ) + mSuffix;
+  else
+    return mPrefix + res + mSuffix;
+}
+
+QgsNumericFormat *QgsCurrencyNumericFormat::clone() const
+{
+  return create( configuration() );
+}
+
+QgsNumericFormat *QgsCurrencyNumericFormat::create( const QVariantMap &configuration ) const
+{
+  std::unique_ptr< QgsCurrencyNumericFormat > res = qgis::make_unique< QgsCurrencyNumericFormat >();
+  res->setConfiguration( configuration );
+  res->mPrefix = configuration.value( QStringLiteral( "prefix" ), QStringLiteral( "$" ) ).toString();
+  res->mSuffix = configuration.value( QStringLiteral( "suffix" ), QString() ).toString();
+  return res.release();
+}
+
+QVariantMap QgsCurrencyNumericFormat::configuration() const
+{
+  QVariantMap res = QgsBasicNumericFormat::configuration();
+  res.insert( QStringLiteral( "prefix" ), mPrefix );
+  res.insert( QStringLiteral( "suffix" ), mSuffix );
+  return res;
+}
+
+QString QgsCurrencyNumericFormat::prefix() const
+{
+  return mPrefix;
+}
+
+void QgsCurrencyNumericFormat::setPrefix( const QString &prefix )
+{
+  mPrefix = prefix;
+}
+
+QString QgsCurrencyNumericFormat::suffix() const
+{
+  return mSuffix;
+}
+
+void QgsCurrencyNumericFormat::setSuffix( const QString &suffix )
+{
+  mSuffix = suffix;
+}
