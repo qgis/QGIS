@@ -89,6 +89,7 @@ class CORE_EXPORT QgsNumericFormatContext
 #include <qgsbasicnumericformat.h>
 #include <qgsbearingnumericformat.h>
 #include <qgsfallbacknumericformat.h>
+#include <qgspercentagenumericformat.h>
 % End
 #endif
 
@@ -113,6 +114,8 @@ class CORE_EXPORT QgsNumericFormat
       sipType = sipType_QgsBearingNumericFormat;
     else if ( dynamic_cast< QgsFallbackNumericFormat * >( sipCpp ) )
       sipType = sipType_QgsFallbackNumericFormat;
+    else if ( dynamic_cast< QgsPercentageNumericFormat * >( sipCpp ) )
+      sipType = sipType_QgsPercentageNumericFormat;
     else
       sipType = NULL;
     SIP_END

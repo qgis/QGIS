@@ -37,7 +37,9 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
       */
     QgsBasicNumericFormat();
 
+    //! QgsBasicNumericFormat cannot be copied
     QgsBasicNumericFormat( const QgsBasicNumericFormat & ) = delete;
+    //! QgsBasicNumericFormat cannot be copied
     QgsBasicNumericFormat &operator=( const QgsBasicNumericFormat & ) = delete;
 
     QString id() const override;

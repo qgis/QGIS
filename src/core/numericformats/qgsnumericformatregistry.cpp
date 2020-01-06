@@ -18,12 +18,13 @@
 #include "qgsfallbacknumericformat.h"
 #include "qgsbasicnumericformat.h"
 #include "qgsbearingnumericformat.h"
-
+#include "qgspercentagenumericformat.h"
 
 QgsNumericFormatRegistry::QgsNumericFormatRegistry()
 {
   addFormat( new QgsBasicNumericFormat() );
   addFormat( new QgsBearingNumericFormat() );
+  addFormat( new QgsPercentageNumericFormat() );
 }
 
 QgsNumericFormatRegistry::~QgsNumericFormatRegistry()
