@@ -309,6 +309,16 @@ QgsFeatureList QgsClipboard::copyOf( const QgsFields &fields ) const
   QString text = cb->text( QClipboard::Clipboard );
 #endif
 
+  if ( text.endsWith( '\n' ) )
+  {
+    text.chop( 1 );
+    // In case Windows <EOL> marker (CRLF) makes it into the variable "text"
+    if ( text.endsWith( '\r' ) )
+    {
+      text.chop( 1 );
+    }
+  }
+
   return stringToFeatureList( text, fields );
 }
 
