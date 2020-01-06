@@ -38,11 +38,13 @@ int nmea_pack_type( const char *buff, int buff_sz );
 int nmea_find_tail( const char *buff, int buff_sz, int *res_crc );
 
 int nmea_parse_GPGGA( const char *buff, int buff_sz, nmeaGPGGA *pack );
-int nmea_parse_GPGST( const char *buff, int buff_sz, nmeaGPGST *pack );
 int nmea_parse_GPGSA( const char *buff, int buff_sz, nmeaGPGSA *pack );
 int nmea_parse_GPGSV( const char *buff, int buff_sz, nmeaGPGSV *pack );
 int nmea_parse_GPRMC( const char *buff, int buff_sz, nmeaGPRMC *pack );
 int nmea_parse_GPVTG( const char *buff, int buff_sz, nmeaGPVTG *pack );
+int nmea_parse_HCHDG( const char *buff, int buff_sz, nmeaHCHDG *pack );
+int nmea_parse_HCHDT( const char *buff, int buff_sz, nmeaHCHDT *pack );
+int nmea_parse_GPGST( const char *buff, int buff_sz, nmeaGPGST *pack );
 int nmea_parse_GPHDT( const char *buff, int buff_sz, nmeaGPHDT *pack );
 
 void nmea_GPGGA2info( nmeaGPGGA *pack, nmeaINFO *info );

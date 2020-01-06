@@ -143,6 +143,20 @@ void QgsNmeaConnection::processStringBuffer()
           mStatus = GPSDataReceived;
           QgsDebugMsgLevel( QStringLiteral( "*******************GPS data received****************" ), 2 );
         }
+        else if ( substring.startsWith( QLatin1String( "$HCHDG" ) ) )
+        {
+          QgsDebugMsgLevel( substring, 2 );
+          processHchdgSentence( ba.data(), ba.length() );
+          mStatus = GPSDataReceived;
+          QgsDebugMsgLevel( QStringLiteral( "*******************GPS data received****************" ), 2 );
+        }
+        else if ( substring.startsWith( QLatin1String( "$HCHDT" ) ) )
+        {
+          QgsDebugMsgLevel( substring, 2 );
+          processHchdtSentence( ba.data(), ba.length() );
+          mStatus = GPSDataReceived;
+          QgsDebugMsgLevel( QStringLiteral( "*******************GPS data received****************" ), 2 );
+        }
         else
         {
           QgsDebugMsgLevel( QStringLiteral( "unknown nmea sentence: %1" ).arg( substring ), 2 );
@@ -202,6 +216,28 @@ void QgsNmeaConnection::processHdtSentence( const char *data, int len )
   if ( nmea_parse_GPHDT( data, len, &result ) )
   {
     mLastGPSInformation.direction = result.heading;
+  }
+}
+
+void QgsNmeaConnection::processHchdgSentence( const char *data, int len )
+{
+  nmeaHCHDG result;
+  if ( nmea_parse_HCHDG( data, len, &result ) )
+  {
+    mLastGPSInformation.direction = result.mag_heading;
+    if ( result.ew_variation == 'E' )
+      mLastGPSInformation.direction += result.mag_variation;
+    else
+      mLastGPSInformation.direction -= result.mag_variation;
+  }
+}
+
+void QgsNmeaConnection::processHchdtSentence( const char *data, int len )
+{
+  nmeaHCHDT result;
+  if ( nmea_parse_HCHDT( data, len, &result ) )
+  {
+    mLastGPSInformation.direction = result.direction;
   }
 }
 

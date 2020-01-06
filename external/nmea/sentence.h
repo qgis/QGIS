@@ -31,7 +31,9 @@ enum nmeaPACKTYPE
   GPGSV   = 0x0004,   //!< GSV - Number of SVs in view, PRN numbers, elevation, azimuth & SNR values.
   GPRMC   = 0x0008,   //!< RMC - Recommended Minimum Specific GPS/TRANSIT Data.
   GPVTG   = 0x0010,   //!< VTG - Actual track made good and speed over ground.
-  GPGST   = 0x0012    //!< GST - GPS Pseudorange Noise Statistics
+  GPGST   = 0x0012,   //!< GST - GPS Pseudorange Noise Statistics
+  HCHDG   = 0x0020,   //!< HDG - Heading, Deviation and Variation
+  HCHDT   = 0x0100,   //!< HDT - Heading reference to true north
 };
 
 /**
@@ -139,10 +141,30 @@ typedef struct _nmeaGPVTG
 typedef struct _nmeaGPHDT
 {
   double  heading;    //!< Heading in degrees
-  char    dir_t;      //!< Fixed text 'T' indicates that heading is relative to true north
+  char    t_flag;      //!< Fixed text 'T' indicates that heading is relative to true north
 
 } nmeaGPHDT;
 
+/**
+ * HCHDG packet information structure (magnetic heading)
+ */
+typedef struct _nmeaHCHDG
+{
+  double mag_heading;   //!< Magnetic sensor heading (degrees)
+  double mag_deviation; //!< Magnetic deviation (degrees)
+  char ew_deviation;     //!< [E]ast or [W]est
+  double mag_variation; //!< Magnetic variation (degrees)
+  char ew_variation;    //!< [E]ast or [W]est
+} nmeaHCHDG;
+
+/**
+ * HDT packet information structure (Heading, )
+ */
+typedef struct _nmeaHCHDT
+{
+  double direction;   //!< Heading respect to true north (degrees)
+  char t_flag;    //!< Static text [T]
+} nmeaHCHDT;
 
 void nmea_zero_GPGGA( nmeaGPGGA *pack );
 void nmea_zero_GPGST( nmeaGPGST *pack );
