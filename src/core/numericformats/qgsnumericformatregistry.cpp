@@ -18,6 +18,7 @@
 #include "qgsfallbacknumericformat.h"
 #include "qgsbasicnumericformat.h"
 #include "qgsbearingnumericformat.h"
+#include "qgscurrencynumericformat.h"
 #include "qgspercentagenumericformat.h"
 #include "qgsscientificnumericformat.h"
 
@@ -25,6 +26,7 @@ QgsNumericFormatRegistry::QgsNumericFormatRegistry()
 {
   addFormat( new QgsBasicNumericFormat() );
   addFormat( new QgsBearingNumericFormat() );
+  addFormat( new QgsCurrencyNumericFormat() );
   addFormat( new QgsPercentageNumericFormat() );
   addFormat( new QgsScientificNumericFormat() );
 }
