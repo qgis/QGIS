@@ -59,6 +59,12 @@ SET(QGIS_3D_SRCS
   terrain/qgsterraintileloader_p.cpp
   #terrain/quantizedmeshgeometry.cpp
   #terrain/quantizedmeshterraingenerator.cpp
+
+  mesh/qgsmesh3dgeometry_p.cpp
+  mesh/qgsmesh3dentity.cpp
+  mesh/qgsmesh3dmaterial.cpp
+  mesh/qgsmesh3drendercontroler.cpp
+
 )
 
 SET(QGIS_3D_HDRS
@@ -116,6 +122,10 @@ SET(QGIS_3D_PRIVATE_HDRS
   terrain/qgsterraintexturegenerator_p.h
   terrain/qgsterraintextureimage_p.h
   terrain/qgsterraintileentity_p.h
+  mesh/qgsmesh3dentity.h
+  mesh/qgsmesh3dgeometry_p.h
+  mesh/qgsmesh3dmaterial.h
+  mesh/qgsmesh3drendercontroler.h
 )
 
 QT5_ADD_RESOURCES(QGIS_3D_RCC_SRCS shaders.qrc)
@@ -125,6 +135,7 @@ QT5_ADD_RESOURCES(QGIS_3D_RCC_SRCS shaders.qrc)
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/chunks
+  ${CMAKE_CURRENT_SOURCE_DIR}/mesh
   ${CMAKE_CURRENT_SOURCE_DIR}/symbols
   ${CMAKE_CURRENT_SOURCE_DIR}/terrain
   ${CMAKE_SOURCE_DIR}/src/core/

@@ -32,6 +32,7 @@ namespace Qt3DRender
 {
   class QRenderSettings;
   class QCamera;
+  class QFrameGraphNode;
 }
 
 /**
@@ -66,12 +67,30 @@ class _3D_EXPORT QgsAbstract3DEngine : public QObject
     //! Returns size of the engine's rendering area in pixels
     virtual QSize size() const = 0;
 
+
+
     /**
      * Starts a request for an image rendered by the engine.
      * The function does not block - when the rendered image is captured, it is returned in imageCaptured() signal.
      * Only one image request can be active at a time.
      */
     virtual void requestCaptureImage() = 0;
+
+
+    /**
+     * Adds a frame graph node to the root of the active frame graph of the engine
+     *
+     * \since QGIS 3.12
+     */
+    virtual void addFrameGraphNode( Qt3DRender::QFrameGraphNode *framegrapheNode ) = 0;
+
+    /**
+     * Returns the surface where renders the engine
+     *
+     * \since QGIS 3.12
+     */
+
+    virtual QObject *surface()const = 0;
 
   signals:
     //! Emitted after a call to requestCaptureImage() to return the captured image.

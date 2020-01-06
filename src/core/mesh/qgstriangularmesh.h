@@ -22,6 +22,7 @@
 #define SIP_NO_FILE
 
 #include <QVector>
+#include <QVector3D>
 #include <memory>
 #include "qgis_core.h"
 #include "qgsmeshdataprovider.h"
@@ -107,6 +108,16 @@ class CORE_EXPORT QgsTriangularMesh
      */
     QList<int> faceIndexesForRectangle( const QgsRectangle &rectangle ) const ;
 
+    /**
+     * Calculates and returns normale vector on each vertex
+     *
+     * \returns  all normales at vertices
+     *
+     * \since QGIS 3.12
+     */
+
+    QVector<QVector3D> vertexNormales( float vertScale ) const;
+
   private:
 
     /**
@@ -120,6 +131,9 @@ class CORE_EXPORT QgsTriangularMesh
      * with the given algorithm (e.g. only 2 vertices, polygon with holes)
      */
     void triangulate( const QgsMeshFace &face, int nativeIndex );
+
+    // check and, if needed set the indexes of the face counter clock-wise
+    void setCCW( QgsMeshFace &face );
 
     // vertices: map CRS; 0-N ... native vertices, N+1 - len ... extra vertices
     // faces are derived triangles

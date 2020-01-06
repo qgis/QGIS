@@ -21,7 +21,7 @@
 
 #include "qgsmeshlayer.h"
 #include "qgsxmlutils.h"
-
+#include "qgsmesh3dentity.h"
 
 QgsMeshLayer3DRendererMetadata::QgsMeshLayer3DRendererMetadata()
   : Qgs3DRendererAbstractMetadata( QStringLiteral( "mesh" ) )
@@ -34,9 +34,6 @@ QgsAbstract3DRenderer *QgsMeshLayer3DRendererMetadata::createRenderer( QDomEleme
   r->readXml( elem, context );
   return r;
 }
-
-
-// ---------
 
 
 QgsMeshLayer3DRenderer::QgsMeshLayer3DRenderer( QgsMesh3DSymbol *s )
@@ -75,10 +72,36 @@ Qt3DCore::QEntity *QgsMeshLayer3DRenderer::createEntity( const Qgs3DMapSettings 
 {
   QgsMeshLayer *vl = layer();
 
-  if ( !mSymbol || !vl )
+  if ( !vl )
     return nullptr;
 
-  return new QgsMesh3DSymbolEntity( map, vl, *static_cast<QgsMesh3DSymbol *>( mSymbol.get() ) );
+  Qt3DCore::QEntity *entity = nullptr;
+
+  qDebug() << QTime::currentTime();
+
+  if ( symbol() )
+  {
+    switch ( mSymbol->renderType() )
+    {
+      case QgsMesh3DSymbol::simpleSymbology:
+      {
+        entity = new QgsMesh3DSymbolEntity( map, vl, *static_cast<QgsMesh3DSymbol *>( mSymbol.get() ) );
+        break;
+      }
+      case QgsMesh3DSymbol::advancedSymbology:
+      {
+        QgsMesh3dEntity *meshEntity = new QgsMesh3dEntity( map, vl, *static_cast<QgsMesh3DSymbol *>( mSymbol.get() ) );
+        meshEntity->build();
+        entity = meshEntity;
+        break;
+      }
+    }
+  }
+
+
+
+  qDebug() << QTime::currentTime();
+  return entity;
 }
 
 void QgsMeshLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const

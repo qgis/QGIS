@@ -45,6 +45,7 @@ class Qgs3DMapScenePickHandler;
 class Qgs3DMapSettings;
 class QgsTerrainEntity;
 class QgsChunkedEntity;
+class QgsMesh3dRenderControler;
 
 /**
  * \ingroup 3d
@@ -89,6 +90,9 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
      * estimates the error in world space. Takes into account camera's field of view and the screen (3D view) size.
      */
     float worldSpaceError( float epsilon, float distance );
+
+
+    void setViewport( const QRect &viewportrect );
 
   signals:
     //! Emitted when the current terrain entity is replaced by a new one
@@ -139,6 +143,8 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     QList<Qgs3DMapScenePickHandler *> mPickHandlers;
     //! List of lights in the scene
     QList<Qt3DCore::QEntity *> mLightEntities;
+
+    QgsMesh3dRenderControler *mMeshrenderControler = nullptr;
 };
 
 #endif // QGS3DMAPSCENE_H

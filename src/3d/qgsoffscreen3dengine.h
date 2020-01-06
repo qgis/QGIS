@@ -78,6 +78,9 @@ class _3D_EXPORT QgsOffscreen3DEngine : public QgsAbstract3DEngine
 
     void requestCaptureImage() override;
 
+    void addFrameGraphNode( Qt3DRender::QFrameGraphNode *framegrapheNode ) override;
+    QObject *surface() const override;
+
   private:
     void createRenderTarget();
     void createFrameGraph();

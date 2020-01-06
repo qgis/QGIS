@@ -104,6 +104,9 @@ class Qgs3DMapCanvas : public QWidget
 
     //! On-Screen Navigation widget.
     Qgs3DNavigationWidget *mNavigationWidget = nullptr;
+
+    //! Called when the viewport is resized
+    void updateViewportSize();
 };
 
 #endif // QGS3DMAPCANVAS_H
