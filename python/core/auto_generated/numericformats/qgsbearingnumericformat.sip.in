@@ -1,0 +1,73 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/numericformats/qgsbearingnumericformat.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsBearingNumericFormat : QgsBasicNumericFormat
+{
+%Docstring
+A numeric formatter which returns a text representation of a direction/bearing.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsbearingnumericformat.h"
+%End
+  public:
+
+    enum FormatDirectionOption
+    {
+      UseRange0To180WithEWDirectionalSuffix,
+      UseRangeNegative180ToPositive180,
+      UseRange0To360,
+    };
+
+    QgsBearingNumericFormat();
+%Docstring
+Default constructor
+%End
+
+
+    virtual QString id() const;
+
+    virtual QString formatDouble( double value, const QgsNumericFormatContext &context ) const;
+
+    virtual QgsNumericFormat *clone() const /Factory/;
+
+    virtual QgsNumericFormat *create( const QVariantMap &configuration ) const /Factory/;
+
+    virtual QVariantMap configuration() const;
+
+
+    FormatDirectionOption directionFormat() const;
+%Docstring
+Returns the directional formatting option, which controls how bearing direction is
+described in the returned strings.
+
+.. seealso:: :py:func:`setDirectionFormat`
+%End
+
+    void setDirectionFormat( const FormatDirectionOption &format );
+%Docstring
+Sets the directional formatting option, which controls how bearing direction is
+described in the returned strings.
+
+.. seealso:: :py:func:`directionFormat`
+%End
+
+  private:
+    QgsBearingNumericFormat( const QgsBearingNumericFormat &other );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/numericformats/qgsbearingnumericformat.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

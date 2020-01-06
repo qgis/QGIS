@@ -104,6 +104,12 @@ SET(QGIS_CORE_SRCS
   metadata/qgslayermetadataformatter.cpp
   metadata/qgsprojectmetadata.cpp
 
+  numericformats/qgsbasicnumericformat.cpp
+  numericformats/qgsbearingnumericformat.cpp
+  numericformats/qgsfallbacknumericformat.cpp
+  numericformats/qgsnumericformat.cpp
+  numericformats/qgsnumericformatregistry.cpp
+
   auth/qgsauthcertutils.cpp
   auth/qgsauthconfig.cpp
   auth/qgsauthcrypto.cpp
@@ -1126,6 +1132,12 @@ SET(QGIS_CORE_HDRS
   metadata/qgslayermetadatavalidator.h
   metadata/qgsprojectmetadata.h
 
+  numericformats/qgsbasicnumericformat.h
+  numericformats/qgsbearingnumericformat.h
+  numericformats/qgsfallbacknumericformat.h
+  numericformats/qgsnumericformat.h
+  numericformats/qgsnumericformatregistry.h
+
   processing/models/qgsprocessingmodelalgorithm.h
   processing/models/qgsprocessingmodelchildalgorithm.h
   processing/models/qgsprocessingmodelchildparametersource.h
@@ -1322,6 +1334,7 @@ INCLUDE_DIRECTORIES(
   layout
   locator
   metadata
+  numericformats
   pal
   processing
   processing/models
@@ -1334,7 +1347,6 @@ INCLUDE_DIRECTORIES(
   renderer
   scalebar
   symbology
-  metadata
   mesh
   validity
   ${CMAKE_SOURCE_DIR}/external

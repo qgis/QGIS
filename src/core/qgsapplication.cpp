@@ -29,6 +29,7 @@
 #include "qgsactionscoperegistry.h"
 #include "qgsruntimeprofiler.h"
 #include "qgstaskmanager.h"
+#include "qgsnumericformatregistry.h"
 #include "qgsfieldformatterregistry.h"
 #include "qgssvgcache.h"
 #include "qgsimagecache.h"
@@ -2184,6 +2185,11 @@ QgsAnnotationRegistry *QgsApplication::annotationRegistry()
   return members()->mAnnotationRegistry;
 }
 
+QgsNumericFormatRegistry *QgsApplication::numericFormatRegistry()
+{
+  return members()->mNumericFormatRegistry;
+}
+
 QgsFieldFormatterRegistry *QgsApplication::fieldFormatterRegistry()
 {
   return members()->mFieldFormatterRegistry;
@@ -2207,6 +2213,7 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mProfiler = new QgsRuntimeProfiler();
   mTaskManager = new QgsTaskManager();
   mActionScopeRegistry = new QgsActionScopeRegistry();
+  mNumericFormatRegistry = new QgsNumericFormatRegistry();
   mFieldFormatterRegistry = new QgsFieldFormatterRegistry();
   mSvgCache = new QgsSvgCache();
   mImageCache = new QgsImageCache();
@@ -2258,6 +2265,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mTaskManager;
   delete mNetworkContentFetcherRegistry;
   delete mClassificationMethodRegistry;
+  delete mNumericFormatRegistry;
   delete mBookmarkManager;
 }
 

@@ -1,0 +1,141 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/numericformats/qgsnumericformat.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsNumericFormatContext
+{
+%Docstring
+A context for numeric formats
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsnumericformat.h"
+%End
+  public:
+
+    QgsNumericFormatContext();
+%Docstring
+Constructor for QgsNumericFormatContext.
+
+The context will be populated based on the user's current locale settings.
+%End
+
+
+    QChar thousandsSeparator() const;
+%Docstring
+Returns the thousands separator character.
+
+.. seealso:: :py:func:`setThousandsSeparator`
+%End
+
+    void setThousandsSeparator( const QChar &separator );
+%Docstring
+Sets the thousands ``separator`` character.
+
+.. seealso:: :py:func:`thousandsSeparator`
+%End
+
+    QChar decimalSeparator() const;
+%Docstring
+Returns the decimal separator character.
+
+.. seealso:: :py:func:`setDecimalSeparator`
+%End
+
+    void setDecimalSeparator( const QChar &separator );
+%Docstring
+Returns the decimal separator character.
+
+.. seealso:: :py:func:`setDecimalSeparator`
+%End
+
+};
+
+%ModuleHeaderCode
+#include <qgsbasicnumericformat.h>
+#include <qgsbearingnumericformat.h>
+#include <qgsfallbacknumericformat.h>
+%End
+
+class QgsNumericFormat
+{
+%Docstring
+A numeric formatter allows for formatting a numeric value for display, using
+a variety of different formatting techniques (e.g. as scientific notation, currency values,
+percentage values, etc)
+
+This is an abstract base class and will always need to be subclassed.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsnumericformat.h"
+%End
+%ConvertToSubClassCode
+    if ( dynamic_cast< QgsBasicNumericFormat * >( sipCpp ) )
+      sipType = sipType_QgsBasicNumericFormat;
+    else if ( dynamic_cast< QgsBearingNumericFormat * >( sipCpp ) )
+      sipType = sipType_QgsBearingNumericFormat;
+    else if ( dynamic_cast< QgsFallbackNumericFormat * >( sipCpp ) )
+      sipType = sipType_QgsFallbackNumericFormat;
+    else
+      sipType = NULL;
+%End
+  public:
+
+    QgsNumericFormat();
+%Docstring
+Default constructor
+%End
+
+    virtual ~QgsNumericFormat();
+
+    virtual QString id() const = 0;
+%Docstring
+Returns a unique id for this numeric format.
+
+This id is used to identify this numeric format in the registry with :py:func:`QgsNumericFormatRegistry.format()`
+%End
+
+    virtual QString formatDouble( double value, const QgsNumericFormatContext &context ) const = 0;
+%Docstring
+Returns a formatted string representation of a numeric double value.
+%End
+
+    virtual QgsNumericFormat *clone() const = 0 /Factory/;
+%Docstring
+Clones the format, returning a new object.
+
+The caller takes ownership of the returned object.
+%End
+
+    virtual QgsNumericFormat *create( const QVariantMap &configuration ) const = 0 /Factory/;
+%Docstring
+Creates a new copy of the format, using the supplied ``configuration``.
+
+The caller takes ownership of the returned object.
+%End
+
+    virtual QVariantMap configuration() const = 0;
+%Docstring
+Returns the current configuration of the formatter. This value can be used in a call to create()
+in order to recreate this formatter in its current state.
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/numericformats/qgsnumericformat.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

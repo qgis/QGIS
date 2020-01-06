@@ -1,0 +1,45 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/numericformats/qgsfallbacknumericformat.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsFallbackNumericFormat : QgsNumericFormat
+{
+%Docstring
+A basic numeric formatter which returns a simple text representation of a value.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsfallbacknumericformat.h"
+%End
+  public:
+
+    QgsFallbackNumericFormat();
+%Docstring
+Default constructor
+%End
+    virtual QString id() const;
+
+    virtual QString formatDouble( double value, const QgsNumericFormatContext &context ) const;
+
+    virtual QgsNumericFormat *clone() const /Factory/;
+
+    virtual QgsNumericFormat *create( const QVariantMap &configuration ) const /Factory/;
+
+    virtual QVariantMap configuration() const;
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/numericformats/qgsfallbacknumericformat.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
