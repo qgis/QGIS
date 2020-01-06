@@ -1511,7 +1511,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'EXTRA': '-at -add',
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdal_rasterize',
-                 '-l polys2 -a id -ts 0.0 0.0 -ot Float32 -of JPEG -at -add' +
+                 '-l polys2 -a id -ts 0.0 0.0 -ot Float32 -of JPEG -at -add ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
 
