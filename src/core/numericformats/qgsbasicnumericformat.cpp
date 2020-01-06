@@ -48,23 +48,16 @@ QString QgsBasicNumericFormat::id() const
 
 QString QgsBasicNumericFormat::formatDouble( double value, const QgsNumericFormatContext &context ) const
 {
-  if ( !mOs || mPrevThousandsSep != context.thousandsSeparator() || mPrevDecimalSep != context.decimalSeparator() )
-  {
-    mOs = qgis::make_unique< std::ostringstream >();
-    mOs->imbue( std::locale( mOs->getloc(), new formatter( context.thousandsSeparator(), mShowThousandsSeparator, context.decimalSeparator() ) ) );
-    mPrevThousandsSep = context.thousandsSeparator();
-    mPrevDecimalSep = context.decimalSeparator();
-  }
+  std::ostringstream os;
+  os.imbue( std::locale( os.getloc(), new formatter( context.thousandsSeparator(), mShowThousandsSeparator, context.decimalSeparator() ) ) );
 
   if ( !mUseScientific )
-    *mOs << std::fixed << std::setprecision( mNumberDecimalPlaces );
+    os << std::fixed << std::setprecision( mNumberDecimalPlaces );
   else
-    *mOs << std::scientific << std::setprecision( mNumberDecimalPlaces );
+    os << std::scientific << std::setprecision( mNumberDecimalPlaces );
 
-  *mOs << value;
-  QString res = QString::fromStdString( mOs->str() );
-  mOs->str( "" );
-  mOs->clear();
+  os << value;
+  QString res = QString::fromStdString( os.str() );
 
   if ( mShowPlusSign && value > 0 )
     res.prepend( '+' );
@@ -124,7 +117,6 @@ void QgsBasicNumericFormat::setConfiguration( const QVariantMap &configuration )
   mShowThousandsSeparator = configuration.value( QStringLiteral( "show_thousand_separator" ), true ).toBool();
   mShowPlusSign = configuration.value( QStringLiteral( "show_plus" ), false ).toBool();
   mShowTrailingZeros = configuration.value( QStringLiteral( "show_trailing_zeros" ), false ).toBool();
-  mOs.reset();
 }
 
 int QgsBasicNumericFormat::numberDecimalPlaces() const
@@ -135,7 +127,6 @@ int QgsBasicNumericFormat::numberDecimalPlaces() const
 void QgsBasicNumericFormat::setNumberDecimalPlaces( int numberDecimalPlaces )
 {
   mNumberDecimalPlaces = numberDecimalPlaces;
-  mOs.reset();
 }
 
 bool QgsBasicNumericFormat::showThousandsSeparator() const
@@ -146,7 +137,6 @@ bool QgsBasicNumericFormat::showThousandsSeparator() const
 void QgsBasicNumericFormat::setShowThousandsSeparator( bool showThousandsSeparator )
 {
   mShowThousandsSeparator = showThousandsSeparator;
-  mOs.reset();
 }
 
 bool QgsBasicNumericFormat::showPlusSign() const

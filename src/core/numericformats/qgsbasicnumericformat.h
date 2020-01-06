@@ -125,9 +125,6 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
     bool mShowThousandsSeparator = true;
     bool mShowPlusSign = false;
     bool mShowTrailingZeros = false;
-    mutable QChar mPrevThousandsSep;
-    mutable QChar mPrevDecimalSep;
-    mutable std::unique_ptr< std::ostringstream > mOs;
 };
 
 #endif // QGSBASICNUMERICFORMAT_H
