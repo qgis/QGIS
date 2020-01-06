@@ -395,6 +395,11 @@
 %Include auto_generated/metadata/qgslayermetadataformatter.sip
 %Include auto_generated/metadata/qgslayermetadatavalidator.sip
 %Include auto_generated/metadata/qgsprojectmetadata.sip
+%Include auto_generated/numericformats/qgsbasicnumericformat.sip
+%Include auto_generated/numericformats/qgsbearingnumericformat.sip
+%Include auto_generated/numericformats/qgsfallbacknumericformat.sip
+%Include auto_generated/numericformats/qgsnumericformat.sip
+%Include auto_generated/numericformats/qgsnumericformatregistry.sip
 %Include auto_generated/processing/models/qgsprocessingmodelalgorithm.sip
 %Include auto_generated/processing/models/qgsprocessingmodelchildalgorithm.sip
 %Include auto_generated/processing/models/qgsprocessingmodelchildparametersource.sip

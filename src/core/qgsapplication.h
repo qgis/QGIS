@@ -55,6 +55,7 @@ class QTranslator;
 class QgsCalloutRegistry;
 class QgsBookmarkManager;
 class QgsStyleModel;
+class QgsNumericFormatRegistry;
 
 /**
  * \ingroup core
@@ -750,6 +751,13 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsRuntimeProfiler *profiler();
 
     /**
+     * Gets the registry of available numeric formats.
+     *
+     * \since QGIS 3.12
+     */
+    static QgsNumericFormatRegistry *numericFormatRegistry() SIP_KEEPREFERENCE;
+
+    /**
      * Gets the registry of available field formatters.
      */
     static QgsFieldFormatterRegistry *fieldFormatterRegistry() SIP_KEEPREFERENCE;
@@ -890,6 +898,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsActionScopeRegistry *mActionScopeRegistry = nullptr;
       QgsAnnotationRegistry *mAnnotationRegistry = nullptr;
       QgsColorSchemeRegistry *mColorSchemeRegistry = nullptr;
+      QgsNumericFormatRegistry *mNumericFormatRegistry = nullptr;
       QgsFieldFormatterRegistry *mFieldFormatterRegistry = nullptr;
       QgsGpsConnectionRegistry *mGpsConnectionRegistry = nullptr;
       QgsNetworkContentFetcherRegistry *mNetworkContentFetcherRegistry = nullptr;

@@ -1,0 +1,121 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/numericformats/qgsbasicnumericformat.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsBasicNumericFormat : QgsNumericFormat
+{
+%Docstring
+A numeric formatter which returns a simple text representation of a value.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsbasicnumericformat.h"
+%End
+  public:
+
+    QgsBasicNumericFormat();
+%Docstring
+Default constructor
+%End
+
+
+    virtual QString id() const;
+
+    virtual QString formatDouble( double value, const QgsNumericFormatContext &context ) const;
+
+    virtual QgsNumericFormat *clone() const /Factory/;
+
+    virtual QgsNumericFormat *create( const QVariantMap &configuration ) const /Factory/;
+
+    virtual QVariantMap configuration() const;
+
+
+    void setConfiguration( const QVariantMap &configuration );
+%Docstring
+Sets the format's ``configuration``.
+%End
+
+    int numberDecimalPlaces() const;
+%Docstring
+Returns the maximum number of decimal places to show.
+
+.. seealso:: :py:func:`setNumberDecimalPlaces`
+
+.. seealso:: :py:func:`showTrailingZeros`
+%End
+
+    void setNumberDecimalPlaces( int numberDecimalPlaces );
+%Docstring
+Sets the maximum number of decimal places to show.
+
+.. seealso:: :py:func:`numberDecimalPlaces`
+
+.. seealso:: :py:func:`setShowTrailingZeros`
+%End
+
+    bool showThousandsSeparator() const;
+%Docstring
+Returns ``True`` if the thousands grouping separator will be shown.
+
+.. seealso:: :py:func:`setShowThousandsSeparator`
+%End
+
+    void setShowThousandsSeparator( bool showThousandsSeparator );
+%Docstring
+Sets whether the thousands grouping separator will be shown.
+
+.. seealso:: :py:func:`showThousandsSeparator`
+%End
+
+    bool showPlusSign() const;
+%Docstring
+Returns ``True`` if a leading plus sign will be shown for positive values.
+
+.. seealso:: :py:func:`setShowPlusSign`
+%End
+
+    void setShowPlusSign( bool showPlusSign );
+%Docstring
+Sets whether a leading plus sign will be shown for positive values.
+
+.. seealso:: :py:func:`showPlusSign`
+%End
+
+    bool showTrailingZeros() const;
+%Docstring
+Returns ``True`` if trailing zeros will be shown (up to the specified
+numberDecimalPlaces()).
+
+.. seealso:: :py:func:`setShowTrailingZeros`
+
+.. seealso:: :py:func:`numberDecimalPlaces`
+%End
+
+    void setShowTrailingZeros( bool showTrailingZeros );
+%Docstring
+Sets whether trailing zeros will be shown (up to the specified
+numberDecimalPlaces()).
+
+.. seealso:: :py:func:`showTrailingZeros`
+
+.. seealso:: :py:func:`setNumberDecimalPlaces`
+%End
+
+  private:
+    QgsBasicNumericFormat( const QgsBasicNumericFormat &other );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/numericformats/qgsbasicnumericformat.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
