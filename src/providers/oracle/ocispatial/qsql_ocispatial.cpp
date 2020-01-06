@@ -3008,10 +3008,11 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
 
     int wkbSize = 1 + 2 * sizeof( int );
     const int nPolygons = parts.size();
+    const bool isMultiPolygon = iType == GtMultiPolygon;
     for ( int part = 0; part < nPolygons; ++part )
     {
       SurfaceRings &rings = parts[ part ].second;
-      if ( nPolygons > 1 )
+      if ( isMultiPolygon )
         wkbSize += 1 + 2 * sizeof( int );
       for ( int ringIdx = 0; ringIdx < rings.size(); ++ringIdx )
       {
@@ -3041,7 +3042,8 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
 
     ptr.cPtr = ba.data();
     *ptr.ucPtr++ = byteorder();
-    if ( nPolygons == 1 )
+
+    if ( !isMultiPolygon )
     {
       if ( isCurved )
         *ptr.iPtr++ = nDims == 2 ? WKBCurvePolygon : WKBCurvePolygonZ;
@@ -3059,7 +3061,7 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
 
     for ( const QPair< WKBType, SurfaceRings > &rings : qAsConst( parts ) )
     {
-      if ( nPolygons > 1 )
+      if ( isMultiPolygon )
       {
         *ptr.ucPtr++ = byteorder();
         *ptr.iPtr++ = rings.first;
