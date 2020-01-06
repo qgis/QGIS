@@ -953,7 +953,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
         mMapMarker = new QgsGpsMarker( mMapCanvas );
       }
       mMapMarker->setSize( mSliderMarkerSize->value() );
-      mMapMarker->setCenter( myNewCenter );
+      mMapMarker->setGpsPosition( myNewCenter );
     }
   }
   else
