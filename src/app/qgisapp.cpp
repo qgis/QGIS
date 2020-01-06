@@ -87,6 +87,7 @@
 #include "qgssourceselectproviderregistry.h"
 #include "qgssourceselectprovider.h"
 #include "qgsprovidermetadata.h"
+#include "qgsattributedialog.h"
 
 #include "qgsanalysis.h"
 #include "qgsgeometrycheckregistry.h"
@@ -9588,6 +9589,45 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
   // now create new feature using pasted feature as a template. This automatically handles default
   // values and field constraints
   QgsFeatureList newFeatures {QgsVectorLayerUtils::createFeatures( pasteVectorLayer, newFeaturesDataList, &context )};
+
+  // check against hard constraints
+  for ( QgsFeature &f : newFeatures )
+  {
+    bool valid = true;
+    for ( int idx = 0; idx < pasteVectorLayer->fields().count(); ++idx )
+    {
+      QStringList errors;
+      valid = QgsVectorLayerUtils::validateAttribute( pasteVectorLayer, f, idx, errors, QgsFieldConstraints::ConstraintStrengthHard, QgsFieldConstraints::ConstraintOriginNotSet );
+      if ( !valid )
+      {
+        break;
+      }
+    }
+
+    //open attribute form including option "cancel copy all" / "cancel copy of invalid" / "store invalid features"
+    if ( !valid )
+    {
+      //QgsFeatureAction action( tr( "Fix feature" ), f, pasteVectorLayer, QString(), -1, QgisApp::instance() );
+      //action.editFeature( true );
+      QgsAttributeDialog *dialog = new QgsAttributeDialog( pasteVectorLayer, &f, false );
+
+      if ( !f.isValid() )
+        dialog->setMode( QgsAttributeEditorContext::AddFeatureMode );
+
+      int feedback = dialog->exec();
+
+      if ( feedback > 0 )
+      {
+        f.setAttributes( dialog->feature()->attributes() );
+      }
+      else
+      {
+        visibleMessageBar()->pushMessage( tr( "Paste features" ), tr( "Do not copy feature" ), Qgis::Warning, messageTimeout() );
+        newFeatures.removeOne( f );
+      }
+    }
+  }
+
   pasteVectorLayer->addFeatures( newFeatures );
   QgsFeatureIds newIds;
   newIds.reserve( newFeatures.size() );
@@ -9600,7 +9640,7 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
   pasteVectorLayer->endEditCommand();
   pasteVectorLayer->updateExtents();
 
-  int nCopiedFeatures = features.count();
+  int nCopiedFeatures = newFeatures.count();
   Qgis::MessageLevel level = ( nCopiedFeatures == 0 || nCopiedFeatures < nTotalFeatures || invalidGeometriesCount > 0 ) ? Qgis::Warning : Qgis::Info;
   QString message;
   if ( nCopiedFeatures == 0 )
