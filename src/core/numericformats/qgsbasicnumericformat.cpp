@@ -19,6 +19,7 @@
 #include <memory>
 #include <iostream>
 #include <locale>
+#include <iomanip>
 
 struct formatter : std::numpunct<char>
 {
@@ -51,15 +52,14 @@ QString QgsBasicNumericFormat::formatDouble( double value, const QgsNumericForma
   {
     mOs = qgis::make_unique< std::ostringstream >();
     mOs->imbue( std::locale( mOs->getloc(), new formatter( context.thousandsSeparator(), mShowThousandsSeparator, context.decimalSeparator() ) ) );
-    mOs->precision( mNumberDecimalPlaces );
     mPrevThousandsSep = context.thousandsSeparator();
     mPrevDecimalSep = context.decimalSeparator();
   }
 
   if ( !mUseScientific )
-    *mOs << std::fixed;
+    *mOs << std::fixed << std::setprecision( mNumberDecimalPlaces );
   else
-    *mOs << std::scientific;
+    *mOs << std::scientific << std::setprecision( mNumberDecimalPlaces );
 
   *mOs << value;
   QString res = QString::fromStdString( mOs->str() );
