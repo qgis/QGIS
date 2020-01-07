@@ -37,21 +37,16 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
       */
     QgsBasicNumericFormat();
 
-    //! QgsBasicNumericFormat cannot be copied
-    QgsBasicNumericFormat( const QgsBasicNumericFormat & ) = delete;
-    //! QgsBasicNumericFormat cannot be copied
-    QgsBasicNumericFormat &operator=( const QgsBasicNumericFormat & ) = delete;
-
     QString id() const override;
     QString formatDouble( double value, const QgsNumericFormatContext &context ) const override;
     QgsNumericFormat *clone() const override SIP_FACTORY;
-    QgsNumericFormat *create( const QVariantMap &configuration ) const override SIP_FACTORY;
-    QVariantMap configuration() const override;
+    QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const override SIP_FACTORY;
+    QVariantMap configuration( const QgsReadWriteContext &context ) const override;
 
     /**
      * Sets the format's \a configuration.
      */
-    void setConfiguration( const QVariantMap &configuration );
+    void setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context );
 
     /**
      * Returns the maximum number of decimal places to show.
@@ -116,10 +111,6 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
     bool mUseScientific = false;
 
   private:
-
-#ifdef SIP_RUN
-    QgsBasicNumericFormat( const QgsBasicNumericFormat &other );
-#endif
 
     int mNumberDecimalPlaces = 6;
     bool mShowThousandsSeparator = true;

@@ -35,19 +35,19 @@ QString QgsScientificNumericFormat::formatDouble( double value, const QgsNumeric
 
 QgsNumericFormat *QgsScientificNumericFormat::clone() const
 {
-  return create( configuration() );
+  return new QgsScientificNumericFormat( *this );
 }
 
-QgsNumericFormat *QgsScientificNumericFormat::create( const QVariantMap &configuration ) const
+QgsNumericFormat *QgsScientificNumericFormat::create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const
 {
   std::unique_ptr< QgsScientificNumericFormat > res = qgis::make_unique< QgsScientificNumericFormat >();
-  res->setConfiguration( configuration );
+  res->setConfiguration( configuration, context );
   return res.release();
 }
 
-QVariantMap QgsScientificNumericFormat::configuration() const
+QVariantMap QgsScientificNumericFormat::configuration( const QgsReadWriteContext &context ) const
 {
-  QVariantMap res = QgsBasicNumericFormat::configuration();
+  QVariantMap res = QgsBasicNumericFormat::configuration( context );
   return res;
 }
 

@@ -20,6 +20,10 @@
 
 #include <QString>
 #include <QVariantMap>
+#include <QDomDocument>
+
+
+class QgsReadWriteContext;
 
 /**
  * \ingroup core
@@ -110,9 +114,7 @@ class CORE_EXPORT QgsNumericFormat
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( dynamic_cast< QgsBasicNumericFormat * >( sipCpp ) )
-      sipType = sipType_QgsBasicNumericFormat;
-    else if ( dynamic_cast< QgsBearingNumericFormat * >( sipCpp ) )
+    if ( dynamic_cast< QgsBearingNumericFormat * >( sipCpp ) )
       sipType = sipType_QgsBearingNumericFormat;
     else if ( dynamic_cast< QgsFallbackNumericFormat * >( sipCpp ) )
       sipType = sipType_QgsFallbackNumericFormat;
@@ -122,6 +124,8 @@ class CORE_EXPORT QgsNumericFormat
       sipType = sipType_QgsScientificNumericFormat;
     else if ( dynamic_cast< QgsCurrencyNumericFormat * >( sipCpp ) )
       sipType = sipType_QgsCurrencyNumericFormat;
+    else if ( dynamic_cast< QgsBasicNumericFormat * >( sipCpp ) )
+      sipType = sipType_QgsBasicNumericFormat;
     else
       sipType = NULL;
     SIP_END
@@ -160,13 +164,20 @@ class CORE_EXPORT QgsNumericFormat
      *
      * The caller takes ownership of the returned object.
      */
-    virtual QgsNumericFormat *create( const QVariantMap &configuration ) const = 0 SIP_FACTORY;
+    virtual QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const = 0 SIP_FACTORY;
 
     /**
      * Returns the current configuration of the formatter. This value can be used in a call to create()
      * in order to recreate this formatter in its current state.
      */
-    virtual QVariantMap configuration() const = 0;
+    virtual QVariantMap configuration( const QgsReadWriteContext &context ) const = 0;
+
+    /**
+     * Writes the format to an XML \a element.
+     * \see readXml()
+     */
+    void writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
 };
 
 #endif // QGSNUMERICFORMAT_H

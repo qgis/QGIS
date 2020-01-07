@@ -25,22 +25,18 @@ A numeric formatter which returns a simple text representation of a value.
 Default constructor
 %End
 
-
     virtual QString id() const;
 
-%Docstring
-QgsBasicNumericFormat cannot be copied
-%End
     virtual QString formatDouble( double value, const QgsNumericFormatContext &context ) const;
 
     virtual QgsNumericFormat *clone() const /Factory/;
 
-    virtual QgsNumericFormat *create( const QVariantMap &configuration ) const /Factory/;
+    virtual QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const /Factory/;
 
-    virtual QVariantMap configuration() const;
+    virtual QVariantMap configuration( const QgsReadWriteContext &context ) const;
 
 
-    void setConfiguration( const QVariantMap &configuration );
+    void setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context );
 %Docstring
 Sets the format's ``configuration``.
 %End
@@ -114,8 +110,6 @@ numberDecimalPlaces()).
   protected:
 
 
-  private:
-    QgsBasicNumericFormat( const QgsBasicNumericFormat &other );
 };
 
 /************************************************************************

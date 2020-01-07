@@ -21,6 +21,7 @@
 #include "qgscurrencynumericformat.h"
 #include "qgspercentagenumericformat.h"
 #include "qgsscientificnumericformat.h"
+#include "qgsxmlutils.h"
 
 QgsNumericFormatRegistry::QgsNumericFormatRegistry()
 {
@@ -65,10 +66,21 @@ QgsNumericFormat *QgsNumericFormatRegistry::format( const QString &id ) const
   return new QgsFallbackNumericFormat();
 }
 
-QgsNumericFormat *QgsNumericFormatRegistry::create( const QString &id, const QVariantMap &configuration ) const
+QgsNumericFormat *QgsNumericFormatRegistry::create( const QString &id, const QVariantMap &configuration, const QgsReadWriteContext &context ) const
 {
   if ( mFormats.contains( id ) )
-    return mFormats.value( id )->create( configuration );
+    return mFormats.value( id )->create( configuration, context );
+
+  return new QgsFallbackNumericFormat();
+}
+
+QgsNumericFormat *QgsNumericFormatRegistry::createFromXml( const QDomElement &element, const QgsReadWriteContext &context ) const
+{
+  const QVariantMap configuration = QgsXmlUtils::readVariant( element.firstChildElement() ).toMap();
+  const QString id = element.attribute( QStringLiteral( "id" ) );
+
+  if ( mFormats.contains( id ) )
+    return mFormats.value( id )->create( configuration, context );
 
   return new QgsFallbackNumericFormat();
 }

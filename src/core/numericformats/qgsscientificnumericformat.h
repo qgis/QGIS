@@ -34,16 +34,11 @@ class CORE_EXPORT QgsScientificNumericFormat : public QgsBasicNumericFormat
       */
     QgsScientificNumericFormat();
 
-    //! QgsScientificNumericFormat cannot be copied
-    QgsScientificNumericFormat( const QgsScientificNumericFormat & ) = delete;
-    //! QgsScientificNumericFormat cannot be copied
-    QgsScientificNumericFormat &operator=( const QgsScientificNumericFormat & ) = delete;
-
     QString id() const override;
     QString formatDouble( double value, const QgsNumericFormatContext &context ) const override;
     QgsNumericFormat *clone() const override SIP_FACTORY;
-    QgsNumericFormat *create( const QVariantMap &configuration ) const override SIP_FACTORY;
-    QVariantMap configuration() const override;
+    QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const override SIP_FACTORY;
+    QVariantMap configuration( const QgsReadWriteContext &context ) const override;
 
     /**
      * Sets the maximum number of decimal \a places to show.
@@ -55,11 +50,6 @@ class CORE_EXPORT QgsScientificNumericFormat : public QgsBasicNumericFormat
      */
     void setNumberDecimalPlaces( int places ) override;
 
-  private:
-
-#ifdef SIP_RUN
-    QgsScientificNumericFormat( const QgsScientificNumericFormat &other );
-#endif
 
 };
 

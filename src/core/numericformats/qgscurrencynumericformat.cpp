@@ -39,21 +39,21 @@ QString QgsCurrencyNumericFormat::formatDouble( double value, const QgsNumericFo
 
 QgsNumericFormat *QgsCurrencyNumericFormat::clone() const
 {
-  return create( configuration() );
+  return new QgsCurrencyNumericFormat( *this );
 }
 
-QgsNumericFormat *QgsCurrencyNumericFormat::create( const QVariantMap &configuration ) const
+QgsNumericFormat *QgsCurrencyNumericFormat::create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const
 {
   std::unique_ptr< QgsCurrencyNumericFormat > res = qgis::make_unique< QgsCurrencyNumericFormat >();
-  res->setConfiguration( configuration );
+  res->setConfiguration( configuration, context );
   res->mPrefix = configuration.value( QStringLiteral( "prefix" ), QStringLiteral( "$" ) ).toString();
   res->mSuffix = configuration.value( QStringLiteral( "suffix" ), QString() ).toString();
   return res.release();
 }
 
-QVariantMap QgsCurrencyNumericFormat::configuration() const
+QVariantMap QgsCurrencyNumericFormat::configuration( const QgsReadWriteContext &context ) const
 {
-  QVariantMap res = QgsBasicNumericFormat::configuration();
+  QVariantMap res = QgsBasicNumericFormat::configuration( context );
   res.insert( QStringLiteral( "prefix" ), mPrefix );
   res.insert( QStringLiteral( "suffix" ), mSuffix );
   return res;

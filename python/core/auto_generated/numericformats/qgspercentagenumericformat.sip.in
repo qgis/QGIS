@@ -31,19 +31,15 @@ A numeric formatter which returns a text representation of a percentage value.
 Default constructor
 %End
 
-
     virtual QString id() const;
 
-%Docstring
-QgsPercentageNumericFormat cannot be copied
-%End
     virtual QString formatDouble( double value, const QgsNumericFormatContext &context ) const;
 
     virtual QgsNumericFormat *clone() const /Factory/;
 
-    virtual QgsNumericFormat *create( const QVariantMap &configuration ) const /Factory/;
+    virtual QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const /Factory/;
 
-    virtual QVariantMap configuration() const;
+    virtual QVariantMap configuration( const QgsReadWriteContext &context ) const;
 
 
     InputValues inputValues() const;
@@ -60,8 +56,6 @@ Sets the ``format`` of the incoming values.
 .. seealso:: :py:func:`inputValues`
 %End
 
-  private:
-    QgsPercentageNumericFormat( const QgsPercentageNumericFormat &other );
 };
 
 /************************************************************************

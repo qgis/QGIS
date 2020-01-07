@@ -41,16 +41,11 @@ class CORE_EXPORT QgsPercentageNumericFormat : public QgsBasicNumericFormat
       */
     QgsPercentageNumericFormat();
 
-    //! QgsPercentageNumericFormat cannot be copied
-    QgsPercentageNumericFormat( const QgsPercentageNumericFormat & ) = delete;
-    //! QgsPercentageNumericFormat cannot be copied
-    QgsPercentageNumericFormat &operator=( const QgsPercentageNumericFormat & ) = delete;
-
     QString id() const override;
     QString formatDouble( double value, const QgsNumericFormatContext &context ) const override;
     QgsNumericFormat *clone() const override SIP_FACTORY;
-    QgsNumericFormat *create( const QVariantMap &configuration ) const override SIP_FACTORY;
-    QVariantMap configuration() const override;
+    QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const override SIP_FACTORY;
+    QVariantMap configuration( const QgsReadWriteContext &context ) const override;
 
     /**
      * Returns the format of the incoming values.
@@ -67,10 +62,6 @@ class CORE_EXPORT QgsPercentageNumericFormat : public QgsBasicNumericFormat
     void setInputValues( const InputValues &format );
 
   private:
-
-#ifdef SIP_RUN
-    QgsPercentageNumericFormat( const QgsPercentageNumericFormat &other );
-#endif
 
     InputValues mInputValues = ValuesArePercentage;
 

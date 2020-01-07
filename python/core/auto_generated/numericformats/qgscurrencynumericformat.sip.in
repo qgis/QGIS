@@ -25,19 +25,15 @@ A numeric formatter which returns a text representation of a currency value.
 Default constructor
 %End
 
-
     virtual QString id() const;
 
-%Docstring
-QgsCurrencyNumericFormat cannot be copied
-%End
     virtual QString formatDouble( double value, const QgsNumericFormatContext &context ) const;
 
     virtual QgsNumericFormat *clone() const /Factory/;
 
-    virtual QgsNumericFormat *create( const QVariantMap &configuration ) const /Factory/;
+    virtual QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const /Factory/;
 
-    virtual QVariantMap configuration() const;
+    virtual QVariantMap configuration( const QgsReadWriteContext &context ) const;
 
 
     QString prefix() const;
@@ -68,8 +64,6 @@ Sets the currency ``suffix``, e.g. "AUD".
 .. seealso:: :py:func:`suffix`
 %End
 
-  private:
-    QgsCurrencyNumericFormat( const QgsCurrencyNumericFormat &other );
 };
 
 /************************************************************************

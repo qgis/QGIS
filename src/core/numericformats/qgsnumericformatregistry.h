@@ -23,6 +23,8 @@
 #include "qgis_core.h"
 
 class QgsNumericFormat;
+class QDomElement;
+class QgsReadWriteContext;
 
 /**
  * \ingroup core
@@ -77,7 +79,15 @@ class CORE_EXPORT QgsNumericFormatRegistry
      *
      * The caller takes ownership of the returned object.
      */
-    QgsNumericFormat *create( const QString &id, const QVariantMap &configuration ) const SIP_TRANSFERBACK;
+    QgsNumericFormat *create( const QString &id, const QVariantMap &configuration, const QgsReadWriteContext &context ) const SIP_TRANSFERBACK;
+
+    /**
+     * Creates a new numeric format from an XML \a element. If there is no matching format ID registered,
+     * a default QgsFallbackNumericFormat will be returned instead.
+     *
+     * The caller takes ownership of the returned object.
+     */
+    QgsNumericFormat *createFromXml( const QDomElement &element, const QgsReadWriteContext &context ) const SIP_TRANSFERBACK;
 
     /**
      * Returns a basic numeric formatter which can be used
