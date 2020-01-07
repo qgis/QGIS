@@ -22,9 +22,11 @@ Evaluates NMEA sentences coming from a GPS device
 %End
   public:
 
-    QgsNmeaConnection( QIODevice *device );
+    QgsNmeaConnection( QIODevice *device /Transfer/ );
 %Docstring
 Constructs a QgsNmeaConnection with given ``device``.
+
+Ownership of ``device`` is transferred to the connection.
 %End
 
   protected slots:
