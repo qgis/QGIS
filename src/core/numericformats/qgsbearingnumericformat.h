@@ -48,8 +48,8 @@ class CORE_EXPORT QgsBearingNumericFormat : public QgsBasicNumericFormat
     QString id() const override;
     QString formatDouble( double value, const QgsNumericFormatContext &context ) const override;
     QgsNumericFormat *clone() const override SIP_FACTORY;
-    QgsNumericFormat *create( const QVariantMap &configuration ) const override SIP_FACTORY;
-    QVariantMap configuration() const override;
+    QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const override SIP_FACTORY;
+    QVariantMap configuration( const QgsReadWriteContext &context ) const override;
 
     /**
      * Returns the directional formatting option, which controls how bearing direction is
@@ -67,16 +67,7 @@ class CORE_EXPORT QgsBearingNumericFormat : public QgsBasicNumericFormat
      */
     void setDirectionFormat( const FormatDirectionOption &format );
 
-    //! QgsBearingNumericFormat cannot be copied
-    QgsBearingNumericFormat( const QgsBearingNumericFormat & ) = delete;
-    //! QgsBearingNumericFormat cannot be copied
-    QgsBearingNumericFormat &operator=( const QgsBearingNumericFormat & ) = delete;
-
   private:
-
-#ifdef SIP_RUN
-    QgsBearingNumericFormat( const QgsBearingNumericFormat &other );
-#endif
 
     FormatDirectionOption mDirectionFormat = UseRange0To180WithEWDirectionalSuffix;
 

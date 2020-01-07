@@ -20,9 +20,11 @@ from qgis.core import (QgsFallbackNumericFormat,
                        QgsScientificNumericFormat,
                        QgsCurrencyNumericFormat,
                        QgsNumericFormatRegistry,
-                       QgsNumericFormat)
+                       QgsNumericFormat,
+                       QgsReadWriteContext)
 
 from qgis.testing import start_app, unittest
+from qgis.PyQt.QtXml import QDomDocument
 
 start_app()
 
@@ -38,10 +40,10 @@ class TestFormat(QgsNumericFormat):
     def clone(self):
         return TestFormat()
 
-    def create(self, configuration):
+    def create(self, configuration, context):
         return TestFormat()
 
-    def configuration(self):
+    def configuration(self, context):
         return {}
 
 
@@ -55,6 +57,16 @@ class TestQgsNumericFormat(unittest.TestCase):
         self.assertEqual(f.formatDouble(5.5, context), '5.5')
         self.assertEqual(f.formatDouble(-5, context), '-5')
         self.assertEqual(f.formatDouble(-5.5, context), '-5.5')
+
+        f2 = f.clone()
+        self.assertIsInstance(f2, QgsFallbackNumericFormat)
+
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("test")
+        f2.writeXml(elem, doc, QgsReadWriteContext())
+
+        f3 = QgsNumericFormatRegistry().createFromXml(elem, QgsReadWriteContext())
+        self.assertIsInstance(f3, QgsFallbackNumericFormat)
 
     def testBasicFormat(self):
         """ test basic formatter """
@@ -109,6 +121,26 @@ class TestQgsNumericFormat(unittest.TestCase):
         self.assertEqual(f.formatDouble(55555555.123456, context), '+55555555.123')
         self.assertEqual(f.formatDouble(-5.5, context), '-5.500')
         self.assertEqual(f.formatDouble(-55555555.5, context), '-55555555.500')
+
+        f2 = f.clone()
+        self.assertIsInstance(f2, QgsBasicNumericFormat)
+
+        self.assertEqual(f2.showTrailingZeros(), f.showTrailingZeros())
+        self.assertEqual(f2.showPlusSign(), f.showPlusSign())
+        self.assertEqual(f2.numberDecimalPlaces(), f.numberDecimalPlaces())
+        self.assertEqual(f2.showThousandsSeparator(), f.showThousandsSeparator())
+
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("test")
+        f2.writeXml(elem, doc, QgsReadWriteContext())
+
+        f3 = QgsNumericFormatRegistry().createFromXml(elem, QgsReadWriteContext())
+        self.assertIsInstance(f3, QgsBasicNumericFormat)
+
+        self.assertEqual(f3.showTrailingZeros(), f.showTrailingZeros())
+        self.assertEqual(f3.showPlusSign(), f.showPlusSign())
+        self.assertEqual(f3.numberDecimalPlaces(), f.numberDecimalPlaces())
+        self.assertEqual(f3.showThousandsSeparator(), f.showThousandsSeparator())
 
     def testCurrencyFormat(self):
         """ test currency formatter """
@@ -174,6 +206,30 @@ class TestQgsNumericFormat(unittest.TestCase):
         self.assertEqual(f.formatDouble(55555555.123456, context), '+$55555555.123AUD')
         self.assertEqual(f.formatDouble(-5.5, context), '-$5.500AUD')
         self.assertEqual(f.formatDouble(-55555555.5, context), '-$55555555.500AUD')
+
+        f2 = f.clone()
+        self.assertIsInstance(f2, QgsCurrencyNumericFormat)
+
+        self.assertEqual(f2.showTrailingZeros(), f.showTrailingZeros())
+        self.assertEqual(f2.showPlusSign(), f.showPlusSign())
+        self.assertEqual(f2.numberDecimalPlaces(), f.numberDecimalPlaces())
+        self.assertEqual(f2.showThousandsSeparator(), f.showThousandsSeparator())
+        self.assertEqual(f2.prefix(), f.prefix())
+        self.assertEqual(f2.suffix(), f.suffix())
+
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("test")
+        f2.writeXml(elem, doc, QgsReadWriteContext())
+
+        f3 = QgsNumericFormatRegistry().createFromXml(elem, QgsReadWriteContext())
+        self.assertIsInstance(f3, QgsCurrencyNumericFormat)
+
+        self.assertEqual(f3.showTrailingZeros(), f.showTrailingZeros())
+        self.assertEqual(f3.showPlusSign(), f.showPlusSign())
+        self.assertEqual(f3.numberDecimalPlaces(), f.numberDecimalPlaces())
+        self.assertEqual(f3.showThousandsSeparator(), f.showThousandsSeparator())
+        self.assertEqual(f3.prefix(), f.prefix())
+        self.assertEqual(f3.suffix(), f.suffix())
 
     def testBearingFormat(self):
         """ test bearing formatter """
@@ -277,6 +333,28 @@ class TestQgsNumericFormat(unittest.TestCase):
         self.assertEqual(f.formatDouble(5.5, context), '5.500°')
         self.assertEqual(f.formatDouble(-5.5, context), '354.500°')
         self.assertEqual(f.formatDouble(180, context), '180.000°')
+
+        f2 = f.clone()
+        self.assertIsInstance(f2, QgsBearingNumericFormat)
+
+        self.assertEqual(f2.showTrailingZeros(), f.showTrailingZeros())
+        self.assertEqual(f2.showPlusSign(), f.showPlusSign())
+        self.assertEqual(f2.numberDecimalPlaces(), f.numberDecimalPlaces())
+        self.assertEqual(f2.showThousandsSeparator(), f.showThousandsSeparator())
+        self.assertEqual(f2.directionFormat(), f.directionFormat())
+
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("test")
+        f2.writeXml(elem, doc, QgsReadWriteContext())
+
+        f3 = QgsNumericFormatRegistry().createFromXml(elem, QgsReadWriteContext())
+        self.assertIsInstance(f3, QgsBearingNumericFormat)
+
+        self.assertEqual(f3.showTrailingZeros(), f.showTrailingZeros())
+        self.assertEqual(f3.showPlusSign(), f.showPlusSign())
+        self.assertEqual(f3.numberDecimalPlaces(), f.numberDecimalPlaces())
+        self.assertEqual(f3.showThousandsSeparator(), f.showThousandsSeparator())
+        self.assertEqual(f3.directionFormat(), f.directionFormat())
 
     def testPercentageFormat(self):
         """ test percentage formatter """
@@ -383,6 +461,28 @@ class TestQgsNumericFormat(unittest.TestCase):
         self.assertEqual(f.formatDouble(5.5, context), '+550.000%')
         self.assertEqual(f.formatDouble(-5.5, context), '-550.000%')
 
+        f2 = f.clone()
+        self.assertIsInstance(f2, QgsPercentageNumericFormat)
+
+        self.assertEqual(f2.showTrailingZeros(), f.showTrailingZeros())
+        self.assertEqual(f2.showPlusSign(), f.showPlusSign())
+        self.assertEqual(f2.numberDecimalPlaces(), f.numberDecimalPlaces())
+        self.assertEqual(f2.showThousandsSeparator(), f.showThousandsSeparator())
+        self.assertEqual(f2.inputValues(), f.inputValues())
+
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("test")
+        f2.writeXml(elem, doc, QgsReadWriteContext())
+
+        f3 = QgsNumericFormatRegistry().createFromXml(elem, QgsReadWriteContext())
+        self.assertIsInstance(f3, QgsPercentageNumericFormat)
+
+        self.assertEqual(f3.showTrailingZeros(), f.showTrailingZeros())
+        self.assertEqual(f3.showPlusSign(), f.showPlusSign())
+        self.assertEqual(f3.numberDecimalPlaces(), f.numberDecimalPlaces())
+        self.assertEqual(f3.showThousandsSeparator(), f.showThousandsSeparator())
+        self.assertEqual(f3.inputValues(), f.inputValues())
+
     def testScientificFormat(self):
         """ test scientific formatter """
         f = QgsScientificNumericFormat()
@@ -435,6 +535,26 @@ class TestQgsNumericFormat(unittest.TestCase):
         self.assertEqual(f.formatDouble(-5.5, context), '-5.500e+00')
         self.assertEqual(f.formatDouble(-55555555.5, context), '-5.556e+07')
 
+        f2 = f.clone()
+        self.assertIsInstance(f2, QgsScientificNumericFormat)
+
+        self.assertEqual(f2.showTrailingZeros(), f.showTrailingZeros())
+        self.assertEqual(f2.showPlusSign(), f.showPlusSign())
+        self.assertEqual(f2.numberDecimalPlaces(), f.numberDecimalPlaces())
+        self.assertEqual(f2.showThousandsSeparator(), f.showThousandsSeparator())
+
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("test")
+        f2.writeXml(elem, doc, QgsReadWriteContext())
+
+        f3 = QgsNumericFormatRegistry().createFromXml(elem, QgsReadWriteContext())
+        self.assertIsInstance(f3, QgsScientificNumericFormat)
+
+        self.assertEqual(f3.showTrailingZeros(), f.showTrailingZeros())
+        self.assertEqual(f3.showPlusSign(), f.showPlusSign())
+        self.assertEqual(f3.numberDecimalPlaces(), f.numberDecimalPlaces())
+        self.assertEqual(f3.showThousandsSeparator(), f.showThousandsSeparator())
+
     def testRegistry(self):
         registry = QgsNumericFormatRegistry()
         self.assertTrue(registry.formats())
@@ -445,13 +565,13 @@ class TestQgsNumericFormat(unittest.TestCase):
         registry.addFormat(TestFormat())
         self.assertIn('test', registry.formats())
         self.assertTrue(isinstance(registry.format('test'), TestFormat))
-        self.assertTrue(isinstance(registry.create('test', {}), TestFormat))
+        self.assertTrue(isinstance(registry.create('test', {}, QgsReadWriteContext()), TestFormat))
 
         registry.removeFormat('test')
 
         self.assertNotIn('test', registry.formats())
         self.assertTrue(isinstance(registry.format('test'), QgsFallbackNumericFormat))
-        self.assertTrue(isinstance(registry.create('test', {}), QgsFallbackNumericFormat))
+        self.assertTrue(isinstance(registry.create('test', {}, QgsReadWriteContext()), QgsFallbackNumericFormat))
 
         self.assertTrue(isinstance(registry.fallbackFormat(), QgsFallbackNumericFormat))
 

@@ -58,10 +58,18 @@ a default QgsFallbackNumericFormat with a null id will be returned instead.
 The caller takes ownership of the returned object.
 %End
 
-    QgsNumericFormat *create( const QString &id, const QVariantMap &configuration ) const /TransferBack/;
+    QgsNumericFormat *create( const QString &id, const QVariantMap &configuration, const QgsReadWriteContext &context ) const /TransferBack/;
 %Docstring
 Creates a new numeric format by ``id``, using the supplied ``configuration``. If there is no such ``id`` registered,
 a default QgsFallbackNumericFormat with a null id will be returned instead.
+
+The caller takes ownership of the returned object.
+%End
+
+    QgsNumericFormat *createFromXml( const QDomElement &element, const QgsReadWriteContext &context ) const /TransferBack/;
+%Docstring
+Creates a new numeric format from an XML ``element``. If there is no matching format ID registered,
+a default QgsFallbackNumericFormat will be returned instead.
 
 The caller takes ownership of the returned object.
 %End

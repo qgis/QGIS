@@ -32,12 +32,12 @@ QgsNumericFormat *QgsFallbackNumericFormat::clone() const
   return new QgsFallbackNumericFormat();
 }
 
-QgsNumericFormat *QgsFallbackNumericFormat::create( const QVariantMap & ) const
+QgsNumericFormat *QgsFallbackNumericFormat::create( const QVariantMap &, const QgsReadWriteContext & ) const
 {
   return new QgsFallbackNumericFormat();
 }
 
-QVariantMap QgsFallbackNumericFormat::configuration() const
+QVariantMap QgsFallbackNumericFormat::configuration( const QgsReadWriteContext & ) const
 {
   return QVariantMap();
 }

@@ -38,9 +38,9 @@ Default constructor
 
     virtual QgsNumericFormat *clone() const /Factory/;
 
-    virtual QgsNumericFormat *create( const QVariantMap &configuration ) const /Factory/;
+    virtual QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const /Factory/;
 
-    virtual QVariantMap configuration() const;
+    virtual QVariantMap configuration( const QgsReadWriteContext &context ) const;
 
 
     FormatDirectionOption directionFormat() const;
@@ -59,9 +59,6 @@ described in the returned strings.
 .. seealso:: :py:func:`directionFormat`
 %End
 
-
-  private:
-    QgsBearingNumericFormat( const QgsBearingNumericFormat &other );
 };
 
 /************************************************************************

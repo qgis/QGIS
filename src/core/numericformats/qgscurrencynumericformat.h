@@ -34,16 +34,11 @@ class CORE_EXPORT QgsCurrencyNumericFormat : public QgsBasicNumericFormat
       */
     QgsCurrencyNumericFormat();
 
-    //! QgsCurrencyNumericFormat cannot be copied
-    QgsCurrencyNumericFormat( const QgsCurrencyNumericFormat & ) = delete;
-    //! QgsCurrencyNumericFormat cannot be copied
-    QgsCurrencyNumericFormat &operator=( const QgsCurrencyNumericFormat & ) = delete;
-
     QString id() const override;
     QString formatDouble( double value, const QgsNumericFormatContext &context ) const override;
     QgsNumericFormat *clone() const override SIP_FACTORY;
-    QgsNumericFormat *create( const QVariantMap &configuration ) const override SIP_FACTORY;
-    QVariantMap configuration() const override;
+    QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const override SIP_FACTORY;
+    QVariantMap configuration( const QgsReadWriteContext &context ) const override;
 
     /**
      * Returns the currency prefix, e.g. "$".
@@ -70,10 +65,6 @@ class CORE_EXPORT QgsCurrencyNumericFormat : public QgsBasicNumericFormat
     void setSuffix( const QString &suffix );
 
   private:
-
-#ifdef SIP_RUN
-    QgsCurrencyNumericFormat( const QgsCurrencyNumericFormat &other );
-#endif
 
     QString mPrefix;
     QString mSuffix;

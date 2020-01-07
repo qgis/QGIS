@@ -15,6 +15,8 @@
  ***************************************************************************/
 
 #include "qgsnumericformat.h"
+#include "qgsxmlutils.h"
+
 #include <QLocale>
 
 QgsNumericFormatContext::QgsNumericFormatContext()
@@ -23,3 +25,12 @@ QgsNumericFormatContext::QgsNumericFormatContext()
   mThousandsSep = l.groupSeparator();
   mDecimalSep = l.decimalPoint();
 }
+
+void QgsNumericFormat::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
+{
+  const QVariantMap config = configuration( context );
+  QDomElement configElement = QgsXmlUtils::writeVariant( config, document );
+  element.appendChild( configElement );
+  element.setAttribute( QStringLiteral( "id" ), id() );
+}
+

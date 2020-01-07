@@ -91,17 +91,17 @@ QString QgsBasicNumericFormat::formatDouble( double value, const QgsNumericForma
 
 QgsNumericFormat *QgsBasicNumericFormat::clone() const
 {
-  return create( configuration() );
+  return new QgsBasicNumericFormat( *this );
 }
 
-QgsNumericFormat *QgsBasicNumericFormat::create( const QVariantMap &configuration ) const
+QgsNumericFormat *QgsBasicNumericFormat::create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const
 {
   std::unique_ptr< QgsBasicNumericFormat > res = qgis::make_unique< QgsBasicNumericFormat >();
-  res->setConfiguration( configuration );
+  res->setConfiguration( configuration, context );
   return res.release();
 }
 
-QVariantMap QgsBasicNumericFormat::configuration() const
+QVariantMap QgsBasicNumericFormat::configuration( const QgsReadWriteContext & ) const
 {
   QVariantMap res;
   res.insert( QStringLiteral( "decimals" ), mNumberDecimalPlaces );
@@ -111,7 +111,7 @@ QVariantMap QgsBasicNumericFormat::configuration() const
   return res;
 }
 
-void QgsBasicNumericFormat::setConfiguration( const QVariantMap &configuration )
+void QgsBasicNumericFormat::setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext & )
 {
   mNumberDecimalPlaces = configuration.value( QStringLiteral( "decimals" ), 6 ).toInt();
   mShowThousandsSeparator = configuration.value( QStringLiteral( "show_thousand_separator" ), true ).toBool();
