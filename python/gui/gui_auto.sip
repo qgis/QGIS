@@ -296,6 +296,7 @@
 %Include auto_generated/locator/qgslocatorwidget.sip
 %Include auto_generated/numericformats/qgsnumericformatselectorwidget.sip
 %Include auto_generated/numericformats/qgsnumericformatwidget.sip
+%Include auto_generated/numericformats/qgsnumericformatguiregistry.sip
 %Include auto_generated/processing/qgsprocessingalgorithmconfigurationwidget.sip
 %Include auto_generated/processing/qgsprocessingalgorithmdialogbase.sip
 %Include auto_generated/processing/qgsprocessinggui.sip

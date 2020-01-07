@@ -204,6 +204,7 @@ SET(QGIS_GUI_SRCS
 
   numericformats/qgsnumericformatselectorwidget.cpp
   numericformats/qgsnumericformatwidget.cpp
+  numericformats/qgsnumericformatguiregistry.cpp
 
   ogr/qgsogrhelperfunctions.cpp
   ogr/qgsnewogrconnection.cpp
@@ -796,6 +797,7 @@ SET(QGIS_GUI_HDRS
 
   numericformats/qgsnumericformatselectorwidget.h
   numericformats/qgsnumericformatwidget.h
+  numericformats/qgsnumericformatguiregistry.h
 
   ogr/qgsnewogrconnection.h
   ogr/qgsogrhelperfunctions.h
