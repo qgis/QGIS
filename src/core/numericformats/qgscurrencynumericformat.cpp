@@ -22,6 +22,7 @@ QgsCurrencyNumericFormat::QgsCurrencyNumericFormat()
   : mPrefix( QStringLiteral( "$" ) )
 {
   setNumberDecimalPlaces( 2 );
+  setShowTrailingZeros( true );
 }
 
 QString QgsCurrencyNumericFormat::id() const
@@ -65,8 +66,9 @@ QgsNumericFormat *QgsCurrencyNumericFormat::create( const QVariantMap &configura
   res->mPrefix = configuration.value( QStringLiteral( "prefix" ), QStringLiteral( "$" ) ).toString();
   res->mSuffix = configuration.value( QStringLiteral( "suffix" ), QString() ).toString();
 
-  // override base class default for number of decimal places -- we want to default to 2
+  // override base class default for number of decimal places -- we want to default to 2, showing trailing zeros
   res->setNumberDecimalPlaces( configuration.value( QStringLiteral( "decimals" ), 2 ).toInt() );
+  res->setShowTrailingZeros( configuration.value( QStringLiteral( "show_trailing_zeros" ), true ).toBool() );
 
   return res.release();
 }

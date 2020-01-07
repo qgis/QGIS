@@ -155,7 +155,7 @@ void QgsNumericFormatSelectorWidget::updateFormatWidget()
 void QgsNumericFormatSelectorWidget::updateSampleText()
 {
   const double sampleValue = mCurrentFormat->suggestSampleValue();
-  mSampleLabel->setText( QStringLiteral( "%1 %2 %3" ).arg( mPreviewFormat->formatDouble( sampleValue, QgsNumericFormatContext() ) )
+  mSampleLabel->setText( QStringLiteral( "%1 %2 <b>%3</b>" ).arg( mPreviewFormat->formatDouble( sampleValue, QgsNumericFormatContext() ) )
                          .arg( QChar( 0x2192 ) )
                          .arg( mCurrentFormat->formatDouble( sampleValue, QgsNumericFormatContext() ) ) );
 }
