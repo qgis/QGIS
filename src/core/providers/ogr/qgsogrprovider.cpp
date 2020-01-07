@@ -2933,7 +2933,7 @@ QString createFilters( const QString &type )
       {
         sDatabaseDrivers += QObject::tr( "ESRI ArcSDE" ) + ",SDE;";
       }
-      else if ( driverName.startsWith( QLatin1String( "ESRI" ) ) )
+      else if ( driverName.startsWith( QLatin1String( "ESRI Shapefile" ) ) )
       {
         QString exts = GDALGetMetadataItem( driver, GDAL_DMD_EXTENSIONS, "" );
         sFileFilters += createFileFilter_( QObject::tr( "ESRI Shapefiles" ), exts.contains( "shz" ) ? QStringLiteral( "*.shp *.shz *.shp.zip" ) : QStringLiteral( "*.shp" ) );
