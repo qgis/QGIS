@@ -70,7 +70,7 @@ QString QgsBasicNumericFormat::formatDouble( double value, const QgsNumericForma
   QString res = QString::fromStdString( os.str() );
 
   if ( mShowPlusSign && value > 0 )
-    res.prepend( '+' );
+    res.prepend( context.positiveSign() );
 
   if ( !mShowTrailingZeros && res.contains( context.decimalSeparator() ) )
   {
@@ -78,13 +78,13 @@ QString QgsBasicNumericFormat::formatDouble( double value, const QgsNumericForma
     int ePoint = 0;
     if ( mUseScientific )
     {
-      while ( res.at( trimPoint ) != 'e' && res.at( trimPoint ) != 'E' )
+      while ( res.at( trimPoint ).toUpper() != context.exponential().toUpper() )
         trimPoint--;
       ePoint = trimPoint;
       trimPoint--;
     }
 
-    while ( res.at( trimPoint ) == '0' )
+    while ( res.at( trimPoint ) == context.zeroDigit() )
       trimPoint--;
 
     if ( res.at( trimPoint ) == context.decimalSeparator() )

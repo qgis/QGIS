@@ -124,6 +124,10 @@ class TestQgsNumericFormat(unittest.TestCase):
         self.assertEqual(f.formatDouble(55555555.123456, context), '+55555555.123')
         self.assertEqual(f.formatDouble(-5.5, context), '-5.500')
         self.assertEqual(f.formatDouble(-55555555.5, context), '-55555555.500')
+        context.setPositiveSign('w')
+        self.assertEqual(f.formatDouble(5, context), 'w5.000')
+        self.assertEqual(f.formatDouble(-5, context), '-5.000')
+        self.assertEqual(f.formatDouble(5.5, context), 'w5.500')
 
         f2 = f.clone()
         self.assertIsInstance(f2, QgsBasicNumericFormat)
@@ -464,6 +468,11 @@ class TestQgsNumericFormat(unittest.TestCase):
         self.assertEqual(f.formatDouble(-5, context), '-500.000%')
         self.assertEqual(f.formatDouble(5.5, context), '+550.000%')
         self.assertEqual(f.formatDouble(-5.5, context), '-550.000%')
+
+        context.setPercent('p')
+        self.assertEqual(f.formatDouble(0, context), '0.000p')
+        self.assertEqual(f.formatDouble(5, context), '+500.000p')
+        self.assertEqual(f.formatDouble(-5, context), '-500.000p')
 
         f2 = f.clone()
         self.assertIsInstance(f2, QgsPercentageNumericFormat)
