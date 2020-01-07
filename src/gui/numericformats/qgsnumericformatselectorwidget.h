@@ -62,6 +62,7 @@ class GUI_EXPORT QgsNumericFormatSelectorWidget : public QgsPanelWidget, private
 
   private slots:
     void formatTypeChanged();
+    void formatChanged();
 
   private:
 
