@@ -1,0 +1,83 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/numericformats/qgsnumericformatguiregistry.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsNumericFormatConfigurationWidgetFactory
+{
+%Docstring
+Interface base class for factories for numeric format configuration widgets.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsnumericformatguiregistry.h"
+%End
+  public:
+    virtual ~QgsNumericFormatConfigurationWidgetFactory();
+
+    virtual QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const = 0 /Factory/;
+%Docstring
+Create a new configuration widget for a format.
+%End
+};
+
+class QgsNumericFormatGuiRegistry
+{
+%Docstring
+The QgsNumericFormatGuiRegistry is a home for widgets for configuring QgsNumericFormat objects.
+
+QgsNumericFormatGuiRegistry is not usually directly created, but rather accessed through
+:py:func:`QgsGui.numericFormatGuiRegistry()`
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsnumericformatguiregistry.h"
+%End
+  public:
+
+    QgsNumericFormatGuiRegistry();
+%Docstring
+Constructor. Should never be called manually, is already
+created by :py:class:`QgsGui`.
+%End
+    ~QgsNumericFormatGuiRegistry();
+
+    void addFormatConfigurationWidgetFactory( const QString &id, QgsNumericFormatConfigurationWidgetFactory *factory /Transfer/ );
+%Docstring
+Add a new configuration widget factory for customizing a numeric format with the specified ``id``.
+
+Ownership is taken by the reigstry.
+%End
+
+    void removeFormatConfigurationWidgetFactory( const QString &id );
+%Docstring
+Removes the configuration widget factory for customizing numeric formats with the specified ``id``.
+%End
+
+    QgsNumericFormatWidget *formatConfigurationWidget( const QgsNumericFormat *format ) const /Factory/;
+%Docstring
+Returns a new configuration widget for an ``format``.
+
+Returns ``None`` if no configuration widgets are available for the specified ``format``.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/numericformats/qgsnumericformatguiregistry.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -37,6 +37,7 @@ class QgsWindowManagerInterface;
 class QgsDataItemGuiProviderRegistry;
 class QgsProviderGuiRegistry;
 class QgsProjectStorageGuiRegistry;
+class QgsNumericFormatGuiRegistry;
 class QgsMessageBar;
 
 /**
@@ -114,6 +115,12 @@ class GUI_EXPORT QgsGui : public QObject
      * \since QGIS 3.2
      */
     static QgsProcessingGuiRegistry *processingGuiRegistry() SIP_KEEPREFERENCE;
+
+    /**
+     * Returns the global numeric format gui registry, used for registering the GUI widgets associated with QgsNumericFormats.
+     * \since QGIS 3.12
+     */
+    static QgsNumericFormatGuiRegistry *numericFormatGuiRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the global processing recent algorithm log, used for tracking recently used processing algorithms.
@@ -219,6 +226,7 @@ class GUI_EXPORT QgsGui : public QObject
     QgsLayoutItemGuiRegistry *mLayoutItemGuiRegistry = nullptr;
     QgsProcessingGuiRegistry *mProcessingGuiRegistry = nullptr;
     QgsProcessingRecentAlgorithmLog *mProcessingRecentAlgorithmLog = nullptr;
+    QgsNumericFormatGuiRegistry *mNumericFormatGuiRegistry = nullptr;
     QgsDataItemGuiProviderRegistry *mDataItemGuiProviderRegistry = nullptr;
     QgsProjectStorageGuiRegistry *mProjectStorageGuiRegistry = nullptr;
     std::unique_ptr< QgsWindowManagerInterface > mWindowManager;
