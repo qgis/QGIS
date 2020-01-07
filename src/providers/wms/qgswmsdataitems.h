@@ -41,6 +41,11 @@ class QgsWMSConnectionItem : public QgsDataCollectionItem
     QgsWmsCapabilitiesDownload *mCapabilitiesDownload = nullptr;
 };
 
+/**
+ * \brief WMS Layer Collection.
+ *
+ *  This collection contains a WMS Layer element that can enclose other layers
+ */
 class QgsWMSLayerCollectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
@@ -52,8 +57,13 @@ class QgsWMSLayerCollectionItem : public QgsDataCollectionItem
 
     bool equal( const QgsDataItem *other ) override;
 
+    //! Stores GetCapabilities response
     QgsWmsCapabilitiesProperty mCapabilitiesProperty;
+
+    //! Stores WMS connection information
     QgsDataSourceUri mDataSourceUri;
+
+    //! WMS Layer properties, can be inherited by subsidiary layers
     QgsWmsLayerProperty mLayerProperty;
 };
 
