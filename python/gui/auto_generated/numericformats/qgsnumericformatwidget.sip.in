@@ -1,0 +1,60 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/numericformats/qgsnumericformatwidget.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsNumericFormatWidget : QgsPanelWidget
+{
+%Docstring
+Base class for widgets which allow control over the properties of QgsNumericFormat subclasses
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsnumericformatwidget.h"
+%End
+  public:
+
+    QgsNumericFormatWidget( QWidget *parent /TransferThis/ );
+%Docstring
+Constructor for QgsNumericFormatWidget.
+%End
+
+    virtual void setFormat( QgsNumericFormat *format ) = 0;
+%Docstring
+Sets the ``format`` to show in the widget. Ownership is not transferred.
+
+.. seealso:: :py:func:`format`
+%End
+
+    virtual QgsNumericFormat *format() = 0 /TransferBack/;
+%Docstring
+Returns the format defined by the current settings in the widget.
+
+Ownership of the returned object is transferred to the caller
+
+.. seealso:: :py:func:`setFormat`
+%End
+
+  signals:
+
+    void changed();
+%Docstring
+Emitted whenever the configuration of the numeric format is changed.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/numericformats/qgsnumericformatwidget.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

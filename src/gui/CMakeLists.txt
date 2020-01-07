@@ -203,6 +203,7 @@ SET(QGIS_GUI_SRCS
   locator/qgslocatorwidget.cpp
 
   numericformats/qgsnumericformatselectorwidget.cpp
+  numericformats/qgsnumericformatwidget.cpp
 
   ogr/qgsogrhelperfunctions.cpp
   ogr/qgsnewogrconnection.cpp
@@ -794,6 +795,7 @@ SET(QGIS_GUI_HDRS
   locator/qgslocatorwidget.h
 
   numericformats/qgsnumericformatselectorwidget.h
+  numericformats/qgsnumericformatwidget.h
 
   ogr/qgsnewogrconnection.h
   ogr/qgsogrhelperfunctions.h
