@@ -9590,41 +9590,64 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
   // values and field constraints
   QgsFeatureList newFeatures {QgsVectorLayerUtils::createFeatures( pasteVectorLayer, newFeaturesDataList, &context )};
 
-  // check against hard constraints
-  for ( QgsFeature &f : newFeatures )
+  // check constraints
+  QgsFeatureList validFeatures = newFeatures;
+  QgsFeatureList invalidFeatures;
+  newFeatures.clear();
+
+  for ( const QgsFeature &f : qgis::as_const( validFeatures ) )
   {
-    bool valid = true;
     for ( int idx = 0; idx < pasteVectorLayer->fields().count(); ++idx )
     {
       QStringList errors;
-      valid = QgsVectorLayerUtils::validateAttribute( pasteVectorLayer, f, idx, errors, QgsFieldConstraints::ConstraintStrengthHard, QgsFieldConstraints::ConstraintOriginNotSet );
-      if ( !valid )
+      if ( !QgsVectorLayerUtils::validateAttribute( pasteVectorLayer, f, idx, errors, QgsFieldConstraints::ConstraintStrengthHard, QgsFieldConstraints::ConstraintOriginNotSet ) )
       {
+        invalidFeatures << f;
+        validFeatures.removeOne( f );
         break;
       }
     }
+  }
 
-    //open attribute form including option "cancel copy all" / "cancel copy of invalid" / "store invalid features"
-    if ( !valid )
+  for ( const QgsFeature &f : qgis::as_const( invalidFeatures ) )
+  {
+    // open attribute form to fix invalid features and offer the options:
+    // - fix part of invalid features and save (without the unfixed) -> on cancel invalid or all fixed
+    // - fix part of invalid features and save (with the unfixed as invalid) -> on store invalid
+    // - cancel everything
+    QgsFeature feature = f;
+    QgsAttributeDialog *dialog = new QgsAttributeDialog( pasteVectorLayer, &feature, false, nullptr, true, QgsAttributeEditorContext(), true );
+
+    int feedback = dialog->exec();
+
+    if ( feedback == 0 )
     {
-      //QgsFeatureAction action( tr( "Fix feature" ), f, pasteVectorLayer, QString(), -1, QgisApp::instance() );
-      //action.editFeature( true );
-      QgsAttributeDialog *dialog = new QgsAttributeDialog( pasteVectorLayer, &f, false );
-
-      if ( !f.isValid() )
-        dialog->setMode( QgsAttributeEditorContext::AddFeatureMode );
-
-      int feedback = dialog->exec();
-
-      if ( feedback > 0 )
-      {
-        f.setAttributes( dialog->feature()->attributes() );
-      }
-      else
-      {
-        visibleMessageBar()->pushMessage( tr( "Paste features" ), tr( "Do not copy feature" ), Qgis::Warning, messageTimeout() );
-        newFeatures.removeOne( f );
-      }
+      //feature unfixed
+      continue;
+    }
+    else if ( feedback == 1 )
+    {
+      //feature fixed
+      feature.setAttributes( dialog->feature()->attributes() );
+      validFeatures << feature;
+      invalidFeatures.removeOne( f );
+    }
+    else if ( feedback == 10 )
+    {
+      //cancel all
+      break;
+    }
+    else if ( feedback == 11 )
+    {
+      //cancel all invalid
+      newFeatures << validFeatures;
+      break;
+    }
+    else if ( feedback == 12 )
+    {
+      //store all invalid
+      newFeatures << validFeatures << invalidFeatures;
+      break;
     }
   }
 

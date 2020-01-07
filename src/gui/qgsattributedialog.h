@@ -51,7 +51,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
      * \param context           The context in which this dialog is created
      *
      */
-    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent SIP_TRANSFERTHIS = nullptr, bool showDialogButtons = true, const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
+    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent SIP_TRANSFERTHIS = nullptr, bool showDialogButtons = true, const QgsAttributeEditorContext &context = QgsAttributeEditorContext(), bool showFixFeatureDialogButtons = false );
 
     ~QgsAttributeDialog() override;
 
@@ -103,7 +103,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
     void show();
 
   private:
-    void init( QgsVectorLayer *layer, QgsFeature *feature, const QgsAttributeEditorContext &context, bool showDialogButtons );
+    void init( QgsVectorLayer *layer, QgsFeature *feature, const QgsAttributeEditorContext &context, bool showDialogButtons, bool showFixFeatureDialogButtons );
 
     QString mSettingsPath;
     // Used to sync multiple widgets for the same field

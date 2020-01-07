@@ -21,12 +21,13 @@
 #include "qgshighlight.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
+#include <QtWidgets/QPushButton>
 
-QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent, bool showDialogButtons, const QgsAttributeEditorContext &context )
+QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent, bool showDialogButtons, const QgsAttributeEditorContext &context, bool showFixFeatureDialogButtons )
   : QDialog( parent )
   , mOwnedFeature( featureOwner ? thepFeature : nullptr )
 {
-  init( vl, thepFeature, context, showDialogButtons );
+  init( vl, thepFeature, context, showDialogButtons, showFixFeatureDialogButtons );
 }
 
 QgsAttributeDialog::~QgsAttributeDialog()
@@ -85,7 +86,7 @@ void QgsAttributeDialog::reject()
   QDialog::reject();
 }
 
-void QgsAttributeDialog::init( QgsVectorLayer *layer, QgsFeature *feature, const QgsAttributeEditorContext &context, bool showDialogButtons )
+void QgsAttributeDialog::init( QgsVectorLayer *layer, QgsFeature *feature, const QgsAttributeEditorContext &context, bool showDialogButtons, bool showFixFeatureDialogButtons )
 {
   QgsAttributeEditorContext trackedContext = context;
   setWindowTitle( tr( "%1 - Feature Attributes" ).arg( layer->name() ) );
@@ -100,6 +101,19 @@ void QgsAttributeDialog::init( QgsVectorLayer *layer, QgsFeature *feature, const
   mAttributeForm->disconnectButtonBox();
   layout()->addWidget( mAttributeForm );
   QDialogButtonBox *buttonBox = mAttributeForm->findChild<QDialogButtonBox *>();
+
+  if ( showFixFeatureDialogButtons )
+  {
+    QPushButton *cancelAllBtn = new QPushButton( tr( "Cancel all" ) );
+    QPushButton *cancelAllInvalidBtn = new QPushButton( tr( "Cancel all invalid" ) );
+    QPushButton *storeAllInvalidBtn = new QPushButton( tr( "Store all (even invalid)" ) );
+    buttonBox->addButton( cancelAllBtn, QDialogButtonBox::RejectRole );
+    buttonBox->addButton( cancelAllInvalidBtn, QDialogButtonBox::RejectRole );
+    buttonBox->addButton( storeAllInvalidBtn, QDialogButtonBox::RejectRole );
+    connect( cancelAllBtn, &QAbstractButton::clicked, this, [ = ]() { done( 10 ); } );
+    connect( cancelAllInvalidBtn, &QAbstractButton::clicked, this, [ = ]() { done( 11 ); } );
+    connect( storeAllInvalidBtn, &QAbstractButton::clicked, this, [ = ]() { done( 12 ); } );
+  }
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsAttributeDialog::reject );
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsAttributeDialog::accept );
   connect( layer, &QObject::destroyed, this, &QWidget::close );

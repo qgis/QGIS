@@ -18,7 +18,7 @@ class QgsAttributeDialog : QDialog
 %End
   public:
 
-    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent /TransferThis/ = 0, bool showDialogButtons = true, const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
+    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent /TransferThis/ = 0, bool showDialogButtons = true, const QgsAttributeEditorContext &context = QgsAttributeEditorContext(), bool showFixFeatureDialogButtons = false );
 %Docstring
 Create an attribute dialog for a given layer and feature
 
