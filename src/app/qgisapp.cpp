@@ -9609,46 +9609,27 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
     }
   }
 
-  for ( const QgsFeature &f : qgis::as_const( invalidFeatures ) )
+  // open attribute form to fix invalid features and offer the options:
+  // - fix part of invalid features and save (without the unfixed) -> on cancel invalid or all fixed
+  // - fix part of invalid features and save (with the unfixed as invalid) -> on store invalid
+  // - cancel everything
+  QgsAttributeDialog *dialog = new QgsAttributeDialog( pasteVectorLayer, &invalidFeatures, nullptr, QgsAttributeEditorContext() );
+  dialog->setMode( QgsAttributeEditorContext::AddFeatureMode );
+  int feedback = dialog->exec();
+
+  if ( feedback == 10 )
   {
-    // open attribute form to fix invalid features and offer the options:
-    // - fix part of invalid features and save (without the unfixed) -> on cancel invalid or all fixed
-    // - fix part of invalid features and save (with the unfixed as invalid) -> on store invalid
-    // - cancel everything
-    QgsFeature feature = f;
-    QgsAttributeDialog *dialog = new QgsAttributeDialog( pasteVectorLayer, &feature, false, nullptr, true, QgsAttributeEditorContext(), true );
-
-    int feedback = dialog->exec();
-
-    if ( feedback == 0 )
-    {
-      //feature unfixed
-      continue;
-    }
-    else if ( feedback == 1 )
-    {
-      //feature fixed
-      feature.setAttributes( dialog->feature()->attributes() );
-      validFeatures << feature;
-      invalidFeatures.removeOne( f );
-    }
-    else if ( feedback == 10 )
-    {
-      //cancel all
-      break;
-    }
-    else if ( feedback == 11 )
-    {
-      //cancel all invalid
-      newFeatures << validFeatures;
-      break;
-    }
-    else if ( feedback == 12 )
-    {
-      //store all invalid
-      newFeatures << validFeatures << invalidFeatures;
-      break;
-    }
+    //cancel all
+  }
+  else if ( feedback == 11 )
+  {
+    //cancel all invalid
+    newFeatures << validFeatures << dialog->validFeatures();
+  }
+  else if ( feedback == 12 )
+  {
+    //store all invalid
+    newFeatures << validFeatures << invalidFeatures;
   }
 
   pasteVectorLayer->addFeatures( newFeatures );
