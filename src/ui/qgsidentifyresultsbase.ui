@@ -114,7 +114,14 @@
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="cmbIdentifyMode"/>
+          <widget class="QComboBox" name="cmbIdentifyMode">
+           <property name="sizeAdjustPolicy">
+            <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+           </property>
+           <property name="minimumContentsLength">
+            <number>6</number>
+           </property>
+          </widget>
          </item>
          <item>
           <spacer name="horizontalSpacer_43">
