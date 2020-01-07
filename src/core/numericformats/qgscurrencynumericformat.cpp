@@ -33,6 +33,11 @@ QString QgsCurrencyNumericFormat::visibleName() const
   return QObject::tr( "Currency" );
 }
 
+int QgsCurrencyNumericFormat::sortKey()
+{
+  return QgsNumericFormat::sortKey();
+}
+
 QString QgsCurrencyNumericFormat::formatDouble( double value, const QgsNumericFormatContext &context ) const
 {
   QString res = QgsBasicNumericFormat::formatDouble( value, context );

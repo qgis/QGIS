@@ -33,6 +33,11 @@ QString QgsScientificNumericFormat::visibleName() const
   return QObject::tr( "Scientific" );
 }
 
+int QgsScientificNumericFormat::sortKey()
+{
+  return QgsNumericFormat::sortKey();
+}
+
 QString QgsScientificNumericFormat::formatDouble( double value, const QgsNumericFormatContext &context ) const
 {
   return QgsBasicNumericFormat::formatDouble( value, context );

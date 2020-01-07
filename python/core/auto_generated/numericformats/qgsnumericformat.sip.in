@@ -122,6 +122,13 @@ This id is used to identify this numeric format in the registry with :py:func:`Q
 Returns the translated, user-visible name for this format.
 %End
 
+    virtual int sortKey();
+%Docstring
+Returns a sorting key value, where formats with a lower sort key will be shown earlier in lists.
+
+Generally, subclasses should return QgsNumericFormat.sortKey() as their sorting key.
+%End
+
     virtual QString formatDouble( double value, const QgsNumericFormatContext &context ) const = 0;
 %Docstring
 Returns a formatted string representation of a numeric double value.

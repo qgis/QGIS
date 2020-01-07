@@ -17,16 +17,18 @@
 #include "qgsapplication.h"
 #include "qgsnumericformatregistry.h"
 #include "qgsnumericformat.h"
+#include "qgis.h"
+#include <mutex>
+
 
 static void _initWidgetFunctions()
 {
-  static bool sInitialized = false;
-  if ( sInitialized )
-    return;
+  static std::once_flag initialized;
+  std::call_once( initialized, [ = ]
+  {
 
-  sInitialized = true;
+  } );
 }
-
 
 QgsNumericFormatSelectorWidget::QgsNumericFormatSelectorWidget( QWidget *parent )
   : QgsPanelWidget( parent )
@@ -35,6 +37,7 @@ QgsNumericFormatSelectorWidget::QgsNumericFormatSelectorWidget( QWidget *parent 
   _initWidgetFunctions();
 
   populateTypes();
+  mCategoryCombo->setCurrentIndex( 0 );
 }
 
 void QgsNumericFormatSelectorWidget::setFormat( const QgsNumericFormat *format )
@@ -44,10 +47,14 @@ void QgsNumericFormatSelectorWidget::setFormat( const QgsNumericFormat *format )
 
   const QString id = format->id();
   const int index = mCategoryCombo->findData( id );
+  const QString prevId = mCategoryCombo->currentData().toString();
   if ( index < 0 )
     mCategoryCombo->setCurrentIndex( mCategoryCombo->findData( QStringLiteral( "fallback" ) ) );
   else
     mCategoryCombo->setCurrentIndex( index );
+
+  if ( prevId != id )
+    emit changed();
 }
 
 QgsNumericFormat *QgsNumericFormatSelectorWidget::format() const
@@ -57,8 +64,25 @@ QgsNumericFormat *QgsNumericFormatSelectorWidget::format() const
 
 void QgsNumericFormatSelectorWidget::populateTypes()
 {
-  const QStringList ids = QgsApplication::numericFormatRegistry()->formats();
+  QStringList ids = QgsApplication::numericFormatRegistry()->formats();
 
-  for ( const QString &id : ids )
+  std::sort( ids.begin(), ids.end(), [ = ]( const QString & a, const QString & b )->bool
+  {
+    if ( QgsApplication::numericFormatRegistry()->sortKey( a ) < QgsApplication::numericFormatRegistry()->sortKey( b ) )
+      return true;
+    else if ( QgsApplication::numericFormatRegistry()->sortKey( a ) > QgsApplication::numericFormatRegistry()->sortKey( b ) )
+      return false;
+    else
+    {
+      int res = QString::localeAwareCompare( QgsApplication::numericFormatRegistry()->visibleName( a ), QgsApplication::numericFormatRegistry()->visibleName( b ) );
+      if ( res < 0 )
+        return true;
+      else if ( res > 0 )
+        return false;
+    }
+    return false;
+  } );
+
+  for ( const QString &id : qgis::as_const( ids ) )
     mCategoryCombo->addItem( QgsApplication::numericFormatRegistry()->visibleName( id ), id );
 }

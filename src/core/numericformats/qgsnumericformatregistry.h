@@ -102,6 +102,11 @@ class CORE_EXPORT QgsNumericFormatRegistry
      */
     QString visibleName( const QString &id ) const;
 
+    /**
+     * Returns the sorting key for the format with matching \a id.
+     */
+    int sortKey( const QString &id ) const;
+
   private:
     QHash<QString, QgsNumericFormat *> mFormats;
 };

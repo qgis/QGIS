@@ -98,3 +98,11 @@ QString QgsNumericFormatRegistry::visibleName( const QString &id ) const
 
   return QString();
 }
+
+int QgsNumericFormatRegistry::sortKey( const QString &id ) const
+{
+  if ( mFormats.contains( id ) )
+    return mFormats.value( id )->sortKey();
+
+  return 0;
+}

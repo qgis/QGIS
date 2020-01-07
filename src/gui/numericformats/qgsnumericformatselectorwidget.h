@@ -50,6 +50,13 @@ class GUI_EXPORT QgsNumericFormatSelectorWidget : public QgsPanelWidget, private
      */
     QgsNumericFormat *format() const SIP_TRANSFERBACK;
 
+  signals:
+
+    /**
+     * Emitted whenever the format configured in the widget is changed.
+     */
+    void changed();
+
   private:
 
     void populateTypes();
