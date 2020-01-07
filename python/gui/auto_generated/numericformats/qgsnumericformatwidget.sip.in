@@ -55,6 +55,11 @@ Emitted whenever the configuration of the numeric format is changed.
 
 class QgsBasicNumericFormatWidget : QgsNumericFormatWidget
 {
+%Docstring
+A widget which allow control over the properties of a :py:class:`QgsBasicNumericFormat`.
+
+.. versionadded:: 3.12
+%End
 
 %TypeHeaderCode
 #include "qgsnumericformatwidget.h"
@@ -76,6 +81,11 @@ class QgsBasicNumericFormatWidget : QgsNumericFormatWidget
 
 class QgsBearingNumericFormatWidget : QgsNumericFormatWidget
 {
+%Docstring
+A widget which allow control over the properties of a :py:class:`QgsBearingNumericFormat`.
+
+.. versionadded:: 3.12
+%End
 
 %TypeHeaderCode
 #include "qgsnumericformatwidget.h"
@@ -98,6 +108,11 @@ class QgsBearingNumericFormatWidget : QgsNumericFormatWidget
 
 class QgsCurrencyNumericFormatWidget : QgsNumericFormatWidget
 {
+%Docstring
+A widget which allow control over the properties of a :py:class:`QgsCurrencyNumericFormat`.
+
+.. versionadded:: 3.12
+%End
 
 %TypeHeaderCode
 #include "qgsnumericformatwidget.h"
@@ -120,6 +135,11 @@ class QgsCurrencyNumericFormatWidget : QgsNumericFormatWidget
 
 class QgsPercentageNumericFormatWidget : QgsNumericFormatWidget
 {
+%Docstring
+A widget which allow control over the properties of a :py:class:`QgsPercentageNumericFormat`.
+
+.. versionadded:: 3.12
+%End
 
 %TypeHeaderCode
 #include "qgsnumericformatwidget.h"
@@ -143,6 +163,11 @@ class QgsPercentageNumericFormatWidget : QgsNumericFormatWidget
 
 class QgsScientificNumericFormatWidget : QgsNumericFormatWidget
 {
+%Docstring
+A widget which allow control over the properties of a :py:class:`QgsScientificNumericFormat`.
+
+.. versionadded:: 3.12
+%End
 
 %TypeHeaderCode
 #include "qgsnumericformatwidget.h"

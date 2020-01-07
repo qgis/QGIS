@@ -160,6 +160,11 @@ class CORE_EXPORT QgsNumericFormat
     virtual int sortKey();
 
     /**
+     * Returns a suggested sample value which nicely represents the current format configuration.
+     */
+    virtual double suggestSampleValue() const;
+
+    /**
      * Returns a formatted string representation of a numeric double value.
      */
     virtual QString formatDouble( double value, const QgsNumericFormatContext &context ) const = 0;

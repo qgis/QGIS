@@ -31,6 +31,11 @@ int QgsNumericFormat::sortKey()
   return 100;
 }
 
+double QgsNumericFormat::suggestSampleValue() const
+{
+  return 1234.56789123456;
+}
+
 void QgsNumericFormat::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
   const QVariantMap config = configuration( context );

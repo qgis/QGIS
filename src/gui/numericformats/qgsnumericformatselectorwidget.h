@@ -22,6 +22,7 @@
 #include <memory>
 
 class QgsNumericFormat;
+class QgsBasicNumericFormat;
 
 
 /**
@@ -68,8 +69,10 @@ class GUI_EXPORT QgsNumericFormatSelectorWidget : public QgsPanelWidget, private
 
     void populateTypes();
     void updateFormatWidget();
+    void updateSampleText();
 
     std::unique_ptr< QgsNumericFormat > mCurrentFormat;
+    std::unique_ptr< QgsBasicNumericFormat > mPreviewFormat;
 };
 
 #endif //QGSNUMERICFORMATSELECTORWIDGET_H
