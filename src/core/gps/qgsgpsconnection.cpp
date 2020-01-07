@@ -68,7 +68,9 @@ QgsGpsInformation::FixStatus QgsGpsInformation::fixStatus() const
 }
 
 
-QgsGpsConnection::QgsGpsConnection( QIODevice *dev ): QObject( nullptr ), mSource( dev ), mStatus( NotConnected )
+QgsGpsConnection::QgsGpsConnection( QIODevice *dev )
+  : QObject( nullptr )
+  , mSource( dev )
 {
   clearLastGPSInformation();
   QObject::connect( dev, &QIODevice::readyRead, this, &QgsGpsConnection::parseData );
@@ -111,14 +113,13 @@ void QgsGpsConnection::cleanupSource()
   {
     mSource->close();
   }
-  delete mSource;
-  mSource = nullptr;
+  mSource.reset();
 }
 
 void QgsGpsConnection::setSource( QIODevice *source )
 {
   cleanupSource();
-  mSource = source;
+  mSource.reset( source );
   clearLastGPSInformation();
 }
 
