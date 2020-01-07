@@ -59,6 +59,76 @@ Returns the decimal separator character.
 .. seealso:: :py:func:`setDecimalSeparator`
 %End
 
+    QChar percent() const;
+%Docstring
+Returns the percent character.
+
+.. seealso:: :py:func:`setPercent`
+%End
+
+    void setPercent( const QChar &character );
+%Docstring
+Sets the percent ``character``.
+
+.. seealso:: :py:func:`percent`
+%End
+
+    QChar zeroDigit() const;
+%Docstring
+Returns the zero digit character.
+
+.. seealso:: :py:func:`setZeroDigit`
+%End
+
+    void setZeroDigit( const QChar &character );
+%Docstring
+Returns the zero digit ``character``.
+
+.. seealso:: :py:func:`zeroDigit`
+%End
+
+    QChar negativeSign() const;
+%Docstring
+Returns the negative sign character.
+
+.. seealso:: :py:func:`setNegativeSign`
+%End
+
+    void setNegativeSign( const QChar &character );
+%Docstring
+Sets the negative sign ``character``.
+
+.. seealso:: :py:func:`negativeSign`
+%End
+
+    QChar positiveSign() const;
+%Docstring
+Returns the positive sign character.
+
+.. seealso:: :py:func:`setPositiveSign`
+%End
+
+    void setPositiveSign( const QChar &character );
+%Docstring
+Sets the positive sign ``character``.
+
+.. seealso:: :py:func:`positiveSign`
+%End
+
+    QChar exponential() const;
+%Docstring
+Returns the exponential character.
+
+.. seealso:: :py:func:`setExponential`
+%End
+
+    void setExponential( const QChar &character );
+%Docstring
+Sets the exponential ``character``.
+
+.. seealso:: :py:func:`exponential`
+%End
+
 };
 
 %ModuleHeaderCode

@@ -83,9 +83,114 @@ class CORE_EXPORT QgsNumericFormatContext
       mDecimalSep = separator;
     }
 
+    /**
+     * Returns the percent character.
+     *
+     * \see setPercent()
+     */
+    QChar percent() const
+    {
+      return mPercent;
+    }
+
+    /**
+     * Sets the percent \a character.
+     *
+     * \see percent()
+     */
+    void setPercent( const QChar &character )
+    {
+      mPercent = character;
+    }
+
+    /**
+     * Returns the zero digit character.
+     *
+     * \see setZeroDigit()
+     */
+    QChar zeroDigit() const
+    {
+      return mZeroDigit;
+    }
+
+    /**
+     * Returns the zero digit \a character.
+     *
+     * \see zeroDigit()
+     */
+    void setZeroDigit( const QChar &character )
+    {
+      mZeroDigit = character;
+    }
+
+    /**
+     * Returns the negative sign character.
+     *
+     * \see setNegativeSign()
+     */
+    QChar negativeSign() const
+    {
+      return mNegativeSign;
+    }
+
+    /**
+     * Sets the negative sign \a character.
+     *
+     * \see negativeSign()
+     */
+    void setNegativeSign( const QChar &character )
+    {
+      mNegativeSign = character;
+    }
+
+    /**
+     * Returns the positive sign character.
+     *
+     * \see setPositiveSign()
+     */
+    QChar positiveSign() const
+    {
+      return mPositiveSign;
+    }
+
+    /**
+     * Sets the positive sign \a character.
+     *
+     * \see positiveSign()
+     */
+    void setPositiveSign( const QChar &character )
+    {
+      mPositiveSign = character;
+    }
+
+    /**
+     * Returns the exponential character.
+     *
+     * \see setExponential()
+     */
+    QChar exponential() const
+    {
+      return mExponential;
+    }
+
+    /**
+     * Sets the exponential \a character.
+     *
+     * \see exponential()
+     */
+    void setExponential( const QChar &character )
+    {
+      mExponential = character;
+    }
+
   private:
     QChar mThousandsSep;
     QChar mDecimalSep;
+    QChar mPercent;
+    QChar mZeroDigit;
+    QChar mNegativeSign;
+    QChar mPositiveSign;
+    QChar mExponential;
 };
 
 #ifdef SIP_RUN

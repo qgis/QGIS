@@ -24,6 +24,11 @@ QgsNumericFormatContext::QgsNumericFormatContext()
   QLocale l;
   mThousandsSep = l.groupSeparator();
   mDecimalSep = l.decimalPoint();
+  mPercent = l.percent();
+  mZeroDigit = l.zeroDigit();
+  mNegativeSign = l.negativeSign();
+  mPositiveSign = l.positiveSign();
+  mExponential = l.exponential();
 }
 
 int QgsNumericFormat::sortKey()

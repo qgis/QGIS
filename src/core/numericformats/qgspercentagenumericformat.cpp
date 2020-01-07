@@ -62,7 +62,7 @@ QString QgsPercentageNumericFormat::formatDouble( double value, const QgsNumeric
       break;
   }
 
-  return QgsBasicNumericFormat::formatDouble( value, context ) + '%';
+  return QgsBasicNumericFormat::formatDouble( value, context ) + context.percent();
 }
 
 QgsNumericFormat *QgsPercentageNumericFormat::clone() const
