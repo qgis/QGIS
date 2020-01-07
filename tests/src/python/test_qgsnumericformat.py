@@ -37,6 +37,9 @@ class TestFormat(QgsNumericFormat):
     def formatDouble(self, value, context):
         return 'xxx' + str(value)
 
+    def visibleName(self):
+        return 'Test'
+
     def clone(self):
         return TestFormat()
 
@@ -561,7 +564,7 @@ class TestQgsNumericFormat(unittest.TestCase):
         for f in registry.formats():
             self.assertEqual(registry.format(f).id(), f)
 
-        self.assertNotIn('default', registry.formats())
+        self.assertIn('default', registry.formats())
         registry.addFormat(TestFormat())
         self.assertIn('test', registry.formats())
         self.assertTrue(isinstance(registry.format('test'), TestFormat))
@@ -574,6 +577,13 @@ class TestQgsNumericFormat(unittest.TestCase):
         self.assertTrue(isinstance(registry.create('test', {}, QgsReadWriteContext()), QgsFallbackNumericFormat))
 
         self.assertTrue(isinstance(registry.fallbackFormat(), QgsFallbackNumericFormat))
+
+        self.assertEqual(registry.visibleName('default'), 'General')
+        self.assertEqual(registry.visibleName('basic'), 'Number')
+
+        self.assertEqual(registry.sortKey('default'), 0)
+        self.assertEqual(registry.sortKey('basic'), 1)
+        self.assertEqual(registry.sortKey('currency'), 100)
 
 
 if __name__ == '__main__':
