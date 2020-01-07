@@ -105,10 +105,8 @@ void QgsWmsDataItemGuiProvider::newConnection( QgsDataItem *item )
 
 void QgsWmsDataItemGuiProvider::refreshConnection( QgsDataItem *item )
 {
+  // Updating the item and its children only
   item->refresh();
-  // the parent should be updated
-  if ( item->parent() )
-    item->parent()->refreshConnections();
 }
 
 

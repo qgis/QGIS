@@ -41,6 +41,22 @@ class QgsWMSConnectionItem : public QgsDataCollectionItem
     QgsWmsCapabilitiesDownload *mCapabilitiesDownload = nullptr;
 };
 
+class QgsWMSLayerCollectionItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsWMSLayerCollectionItem( QgsDataItem *parent, QString name, QString path,
+                               const QgsWmsCapabilitiesProperty &capabilitiesProperty,
+                               const QgsDataSourceUri &dataSourceUri,
+                               const QgsWmsLayerProperty &layerProperty );
+
+    bool equal( const QgsDataItem *other ) override;
+
+    QgsWmsCapabilitiesProperty mCapabilitiesProperty;
+    QgsDataSourceUri mDataSourceUri;
+    QgsWmsLayerProperty mLayerProperty;
+};
+
 // WMS Layers may be nested, so that they may be both QgsDataCollectionItem and QgsLayerItem
 // We have to use QgsDataCollectionItem and support layer methods if necessary
 class QgsWMSLayerItem : public QgsLayerItem
@@ -52,6 +68,7 @@ class QgsWMSLayerItem : public QgsLayerItem
                      const QgsDataSourceUri &dataSourceUri,
                      const QgsWmsLayerProperty &layerProperty );
 
+    bool equal( const QgsDataItem *other ) override;
     QString createUri();
 
     QgsWmsCapabilitiesProperty mCapabilitiesProperty;
