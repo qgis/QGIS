@@ -320,6 +320,20 @@ struct QgsWmsLayerProperty
   bool               noSubsets;
   int                fixedWidth;
   int                fixedHeight;
+
+  // TODO need to expand this to cover more of layer properties
+  bool equal( const QgsWmsLayerProperty &layerProperty )
+  {
+    if ( !( name == layerProperty.name ) )
+      return false;
+    if ( !( title == layerProperty.title ) )
+      return false;
+    if ( !( abstract == layerProperty.abstract ) )
+      return false;
+
+    return true;
+  }
+
 };
 
 struct QgsWmtsTheme
