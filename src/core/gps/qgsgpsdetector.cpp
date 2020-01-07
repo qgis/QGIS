@@ -20,7 +20,7 @@
 #include "qgsgpsconnection.h"
 #include "qgsnmeaconnection.h"
 #include "qgsgpsdconnection.h"
-
+#include "qgssettings.h"
 
 #if defined(HAVE_QT_MOBILITY_LOCATION ) || defined(QT_POSITIONING_LIB)
 #include "qgsqtlocationconnection.h"
@@ -80,6 +80,8 @@ void QgsGpsDetector::advance()
 {
   mConn.reset();
 
+  QgsSettings settings;
+
   while ( !mConn )
   {
     mBaudIndex++;
@@ -117,21 +119,18 @@ void QgsGpsDetector::advance()
     else
     {
 #if defined( HAVE_QT5SERIALPORT )
-      QSerialPort *serial = new QSerialPort( mPortList.at( mPortIndex ).first );
+      std::unique_ptr< QSerialPort > serial = qgis::make_unique< QSerialPort >( mPortList.at( mPortIndex ).first );
 
       serial->setBaudRate( mBaudList[ mBaudIndex ] );
-      serial->setFlowControl( QSerialPort::NoFlowControl );
-      serial->setParity( QSerialPort::NoParity );
-      serial->setDataBits( QSerialPort::Data8 );
-      serial->setStopBits( QSerialPort::OneStop );
+
+      serial->setFlowControl( settings.enumValue( QStringLiteral( "gps/flow_control" ), QSerialPort::NoFlowControl, QgsSettings::Core ) );
+      serial->setParity( settings.enumValue( QStringLiteral( "gps/parity" ), QSerialPort::NoParity, QgsSettings::Core ) );
+      serial->setDataBits( settings.enumValue( QStringLiteral( "gps/data_bits" ), QSerialPort::Data8, QgsSettings::Core ) );
+      serial->setStopBits( settings.enumValue( QStringLiteral( "gps/stop_bits" ), QSerialPort::OneStop, QgsSettings::Core ) );
 
       if ( serial->open( QIODevice::ReadOnly ) )
       {
-        mConn = qgis::make_unique< QgsNmeaConnection >( serial );
-      }
-      else
-      {
-        delete serial;
+        mConn = qgis::make_unique< QgsNmeaConnection >( serial.release() );
       }
 #else
       qWarning( "QT5SERIALPORT not found and mPortList matches serial port, this should never happen" );
