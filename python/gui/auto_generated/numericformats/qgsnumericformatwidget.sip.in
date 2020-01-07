@@ -20,7 +20,7 @@ Base class for widgets which allow control over the properties of QgsNumericForm
 %End
   public:
 
-    QgsNumericFormatWidget( QWidget *parent /TransferThis/ );
+    QgsNumericFormatWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsNumericFormatWidget.
 %End
@@ -47,6 +47,116 @@ Ownership of the returned object is transferred to the caller
 %Docstring
 Emitted whenever the configuration of the numeric format is changed.
 %End
+
+};
+
+
+
+
+class QgsBasicNumericFormatWidget : QgsNumericFormatWidget
+{
+
+%TypeHeaderCode
+#include "qgsnumericformatwidget.h"
+%End
+  public:
+
+    QgsBasicNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
+    ~QgsBasicNumericFormatWidget();
+
+    virtual void setFormat( QgsNumericFormat *format );
+
+
+    virtual QgsNumericFormat *format() /Factory/;
+
+
+};
+
+
+
+class QgsBearingNumericFormatWidget : QgsNumericFormatWidget
+{
+
+%TypeHeaderCode
+#include "qgsnumericformatwidget.h"
+%End
+  public:
+
+    QgsBearingNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
+    ~QgsBearingNumericFormatWidget();
+
+    virtual void setFormat( QgsNumericFormat *format );
+
+
+    virtual QgsNumericFormat *format() /Factory/;
+
+
+};
+
+
+
+
+class QgsCurrencyNumericFormatWidget : QgsNumericFormatWidget
+{
+
+%TypeHeaderCode
+#include "qgsnumericformatwidget.h"
+%End
+  public:
+
+    QgsCurrencyNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
+    ~QgsCurrencyNumericFormatWidget();
+
+    virtual void setFormat( QgsNumericFormat *format );
+
+
+    virtual QgsNumericFormat *format() /Factory/;
+
+
+};
+
+
+
+
+class QgsPercentageNumericFormatWidget : QgsNumericFormatWidget
+{
+
+%TypeHeaderCode
+#include "qgsnumericformatwidget.h"
+%End
+  public:
+
+    QgsPercentageNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
+    ~QgsPercentageNumericFormatWidget();
+
+    virtual void setFormat( QgsNumericFormat *format );
+
+
+    virtual QgsNumericFormat *format() /Factory/;
+
+
+};
+
+
+
+
+
+class QgsScientificNumericFormatWidget : QgsNumericFormatWidget
+{
+
+%TypeHeaderCode
+#include "qgsnumericformatwidget.h"
+%End
+  public:
+
+    QgsScientificNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
+    ~QgsScientificNumericFormatWidget();
+
+    virtual void setFormat( QgsNumericFormat *format );
+
+
+    virtual QgsNumericFormat *format() /Factory/;
+
 
 };
 

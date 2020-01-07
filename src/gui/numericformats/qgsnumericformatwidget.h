@@ -18,7 +18,7 @@
 #include "qgis_sip.h"
 #include "qgsnumericformat.h"
 #include "qgspanelwidget.h"
-#include <QStandardItemModel>
+#include <memory>
 
 /**
  * \ingroup gui
@@ -35,7 +35,7 @@ class GUI_EXPORT QgsNumericFormatWidget : public QgsPanelWidget
     /**
      * Constructor for QgsNumericFormatWidget.
      */
-    QgsNumericFormatWidget( QWidget *parent SIP_TRANSFERTHIS )
+    QgsNumericFormatWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr )
       : QgsPanelWidget( parent )
     {}
 
@@ -60,6 +60,126 @@ class GUI_EXPORT QgsNumericFormatWidget : public QgsPanelWidget
      * Emitted whenever the configuration of the numeric format is changed.
      */
     void changed();
+
+};
+
+
+#include "ui_qgsbasicnumericformatwidgetbase.h"
+
+class QgsBasicNumericFormat;
+
+class GUI_EXPORT QgsBasicNumericFormatWidget : public QgsNumericFormatWidget, private Ui::QgsBasicNumericFormatWidgetBase
+{
+    Q_OBJECT
+
+  public:
+
+    QgsBasicNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsBasicNumericFormatWidget() override;
+
+    void setFormat( QgsNumericFormat *format ) override;
+
+    QgsNumericFormat *format() override SIP_FACTORY;
+
+  private:
+    std::unique_ptr< QgsBasicNumericFormat > mFormat;
+    bool mBlockSignals = false;
+
+};
+
+#include "ui_qgsbearingnumericformatwidgetbase.h"
+
+class QgsBearingNumericFormat;
+
+class GUI_EXPORT QgsBearingNumericFormatWidget : public QgsNumericFormatWidget, private Ui::QgsBearingNumericFormatWidgetBase
+{
+    Q_OBJECT
+
+  public:
+
+    QgsBearingNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsBearingNumericFormatWidget() override;
+
+    void setFormat( QgsNumericFormat *format ) override;
+
+    QgsNumericFormat *format() override SIP_FACTORY;
+
+  private:
+    std::unique_ptr< QgsBearingNumericFormat > mFormat;
+    bool mBlockSignals = false;
+
+};
+
+
+#include "ui_qgscurrencynumericformatwidgetbase.h"
+
+class QgsCurrencyNumericFormat;
+
+class GUI_EXPORT QgsCurrencyNumericFormatWidget : public QgsNumericFormatWidget, private Ui::QgsCurrencyNumericFormatWidgetBase
+{
+    Q_OBJECT
+
+  public:
+
+    QgsCurrencyNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsCurrencyNumericFormatWidget() override;
+
+    void setFormat( QgsNumericFormat *format ) override;
+
+    QgsNumericFormat *format() override SIP_FACTORY;
+
+  private:
+    std::unique_ptr< QgsCurrencyNumericFormat > mFormat;
+    bool mBlockSignals = false;
+
+};
+
+
+#include "ui_qgspercentagenumericformatwidgetbase.h"
+
+class QgsPercentageNumericFormat;
+
+class GUI_EXPORT QgsPercentageNumericFormatWidget : public QgsNumericFormatWidget, private Ui::QgsPercentageNumericFormatWidgetBase
+{
+    Q_OBJECT
+
+  public:
+
+    QgsPercentageNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsPercentageNumericFormatWidget() override;
+
+    void setFormat( QgsNumericFormat *format ) override;
+
+    QgsNumericFormat *format() override SIP_FACTORY;
+
+  private:
+    std::unique_ptr< QgsPercentageNumericFormat > mFormat;
+    bool mBlockSignals = false;
+
+};
+
+
+
+#include "ui_qgsscientificnumericformatwidgetbase.h"
+
+class QgsScientificNumericFormat;
+
+class GUI_EXPORT QgsScientificNumericFormatWidget : public QgsNumericFormatWidget, private Ui::QgsScientificNumericFormatWidgetBase
+{
+    Q_OBJECT
+
+  public:
+
+    QgsScientificNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsScientificNumericFormatWidget() override;
+
+    void setFormat( QgsNumericFormat *format ) override;
+
+    QgsNumericFormat *format() override SIP_FACTORY;
+
+  private:
+    std::unique_ptr< QgsScientificNumericFormat > mFormat;
+    bool mBlockSignals = false;
 
 };
 

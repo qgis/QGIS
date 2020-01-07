@@ -21,6 +21,7 @@
 QgsCurrencyNumericFormat::QgsCurrencyNumericFormat()
   : mPrefix( QStringLiteral( "$" ) )
 {
+  setNumberDecimalPlaces( 2 );
 }
 
 QString QgsCurrencyNumericFormat::id() const
@@ -58,6 +59,10 @@ QgsNumericFormat *QgsCurrencyNumericFormat::create( const QVariantMap &configura
   res->setConfiguration( configuration, context );
   res->mPrefix = configuration.value( QStringLiteral( "prefix" ), QStringLiteral( "$" ) ).toString();
   res->mSuffix = configuration.value( QStringLiteral( "suffix" ), QString() ).toString();
+
+  // override base class default for number of decimal places -- we want to default to 2
+  res->setNumberDecimalPlaces( configuration.value( QStringLiteral( "decimals" ), 2 ).toInt() );
+
   return res.release();
 }
 

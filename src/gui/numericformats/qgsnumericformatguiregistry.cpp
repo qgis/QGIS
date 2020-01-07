@@ -19,9 +19,65 @@
 #include "qgis.h"
 #include "qgsnumericformatwidget.h"
 
+
+class QgsBasicNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
+{
+  public:
+
+    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const
+    {
+      return new QgsBasicNumericFormatWidget( format );
+    }
+};
+
+class QgsBearingNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
+{
+  public:
+
+    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const
+    {
+      return new QgsBearingNumericFormatWidget( format );
+    }
+};
+
+class QgsCurrencyNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
+{
+  public:
+
+    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const
+    {
+      return new QgsCurrencyNumericFormatWidget( format );
+    }
+};
+
+class QgsPercentageNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
+{
+  public:
+
+    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const
+    {
+      return new QgsPercentageNumericFormatWidget( format );
+    }
+};
+
+class QgsScientificNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
+{
+  public:
+
+    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const
+    {
+      return new QgsScientificNumericFormatWidget( format );
+    }
+};
+
+
 QgsNumericFormatGuiRegistry::QgsNumericFormatGuiRegistry()
 {
-  // addFormatConfigurationWidgetFactory( new QgsFilterAlgorithmConfigurationWidgetFactory() );
+  addFormatConfigurationWidgetFactory( QStringLiteral( "basic" ), new QgsBasicNumericFormatConfigurationWidgetFactory() );
+  addFormatConfigurationWidgetFactory( QStringLiteral( "bearing" ), new QgsBearingNumericFormatConfigurationWidgetFactory() );
+  addFormatConfigurationWidgetFactory( QStringLiteral( "currency" ), new QgsCurrencyNumericFormatConfigurationWidgetFactory() );
+  addFormatConfigurationWidgetFactory( QStringLiteral( "percentage" ), new QgsPercentageNumericFormatConfigurationWidgetFactory() );
+  addFormatConfigurationWidgetFactory( QStringLiteral( "scientific" ), new QgsScientificNumericFormatConfigurationWidgetFactory() );
 }
 
 QgsNumericFormatGuiRegistry::~QgsNumericFormatGuiRegistry()
