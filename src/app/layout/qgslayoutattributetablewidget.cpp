@@ -69,6 +69,7 @@ QgsLayoutAttributeTableWidget::QgsLayoutAttributeTableWidget( QgsLayoutFrame *fr
   connect( mHideEmptyBgCheckBox, &QCheckBox::toggled, this, &QgsLayoutAttributeTableWidget::mHideEmptyBgCheckBox_toggled );
   connect( mWrapBehaviorComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutAttributeTableWidget::mWrapBehaviorComboBox_currentIndexChanged );
   connect( mAdvancedCustomizationButton, &QPushButton::clicked, this, &QgsLayoutAttributeTableWidget::mAdvancedCustomizationButton_clicked );
+  connect( mUseConditionalStylingCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutAttributeTableWidget::useConditionalStylingChanged );
   setPanelTitle( tr( "Table Properties" ) );
 
   mContentFontToolButton->setMode( QgsFontButton::ModeQFont );
@@ -476,6 +477,7 @@ void QgsLayoutAttributeTableWidget::updateGuiElements()
   mFeatureFilterCheckBox->setCheckState( mTable->filterFeatures() ? Qt::Checked : Qt::Unchecked );
   mFeatureFilterEdit->setEnabled( mTable->filterFeatures() );
   mFeatureFilterButton->setEnabled( mTable->filterFeatures() );
+  mUseConditionalStylingCheckBox->setChecked( mTable->useConditionalStyling() );
 
   mHeaderHAlignmentComboBox->setCurrentIndex( static_cast<int>( mTable->headerHAlignment() ) );
   mHeaderModeComboBox->setCurrentIndex( static_cast<int>( mTable->headerMode() ) );
@@ -912,6 +914,19 @@ void QgsLayoutAttributeTableWidget::mAdvancedCustomizationButton_clicked()
 
   QgsLayoutTableBackgroundColorsDialog d( mTable, this );
   d.exec();
+}
+
+void QgsLayoutAttributeTableWidget::useConditionalStylingChanged( bool checked )
+{
+  if ( !mTable )
+  {
+    return;
+  }
+
+  mTable->beginCommand( tr( "Toggle Table Conditional Styling" ) );
+  mTable->setUseConditionalStyling( checked );
+  mTable->update();
+  mTable->endCommand();
 }
 
 void QgsLayoutAttributeTableWidget::mDrawEmptyCheckBox_toggled( bool checked )
