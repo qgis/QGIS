@@ -72,7 +72,7 @@ void QgsFieldConditionalFormatWidget::editStyle( int editIndex, const QgsConditi
   ruleWidget->loadStyle( style );
   ruleWidget->setDockMode( true );
 
-  if ( fieldRadio->isChecked() )
+  if ( fieldRadio->isChecked() && style.rule().isEmpty() )
   {
     ruleWidget->setRule( QStringLiteral( "@value " ) );
   }
