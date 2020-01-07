@@ -435,7 +435,13 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
         p->save();
         p->setClipRect( fullCell );
         const QRectF textCell = QRectF( currentX, currentY + mCellMargin, mMaxColumnWidthMap[col], rowHeight - 2 * mCellMargin );
-        QgsLayoutUtils::drawText( p, textCell, str, mContentFont, mContentFontColor, column->hAlignment(), column->vAlignment(), textFlag );
+
+        const QgsConditionalStyle style = conditionalCellStyle( row, col );
+        QColor foreColor = mContentFontColor;
+        if ( style.textColor().isValid() )
+          foreColor = style.textColor();
+
+        QgsLayoutUtils::drawText( p, textCell, str, mContentFont, foreColor, column->hAlignment(), column->vAlignment(), textFlag );
         p->restore();
 
         currentX += mMaxColumnWidthMap[ col ];
@@ -787,6 +793,11 @@ QMap<int, QString> QgsLayoutTable::headerLabels() const
     col++;
   }
   return headers;
+}
+
+QgsConditionalStyle QgsLayoutTable::conditionalCellStyle( int, int ) const
+{
+  return QgsConditionalStyle();
 }
 
 QSizeF QgsLayoutTable::fixedFrameSize( const int frameIndex ) const
@@ -1217,6 +1228,13 @@ QColor QgsLayoutTable::backgroundColor( int row, int column ) const
   if ( QgsLayoutTableStyle *style = mCellStyles.value( LastRow ) )
     if ( style->enabled && row == mTableContents.count() - 1 )
       color = style->cellBackgroundColor;
+
+  if ( row >= 0 )
+  {
+    QgsConditionalStyle conditionalStyle = conditionalCellStyle( row, column );
+    if ( conditionalStyle.backgroundColor().isValid() )
+      color = conditionalStyle.backgroundColor();
+  }
 
   return color;
 }

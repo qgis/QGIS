@@ -290,6 +290,9 @@ be replaced by a line break.
 %End
 
 
+    virtual QgsConditionalStyle conditionalCellStyle( int row, int column ) const;
+
+
     virtual QgsExpressionContext createExpressionContext() const;
 
     virtual void finalizeRestoreFromXml();
@@ -297,6 +300,26 @@ be replaced by a line break.
 
     virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 
+
+    bool useConditionalStyling() const;
+%Docstring
+Returns ``True`` if the attribute table will be rendered using the conditional styling
+properties of the linked vector layer.
+
+.. seealso:: :py:func:`setUseConditionalStyling`
+
+.. versionadded:: 3.12
+%End
+
+    void setUseConditionalStyling( bool enabled );
+%Docstring
+Sets whether the attribute table will be rendered using the conditional styling
+properties of the linked vector layer.
+
+.. seealso:: :py:func:`useConditionalStyling`
+
+.. versionadded:: 3.12
+%End
 
   protected:
 

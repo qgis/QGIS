@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgslayoutmultiframe.h"
+#include "qgsconditionalstyle.h"
 #include <QFont>
 #include <QColor>
 #include <QPair>
@@ -464,6 +465,13 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * \param contents QgsLayoutTableContents to store retrieved row data in
      */
     virtual bool getTableContents( QgsLayoutTableContents &contents ) = 0;
+
+    /**
+     * Returns the conditional style to use for the cell at \a row, \a column.
+     *
+     * \since QGIS 3.12
+     */
+    virtual QgsConditionalStyle conditionalCellStyle( int row, int column ) const;
 
     /**
      * Returns the current contents of the table. Excludes header cells.
