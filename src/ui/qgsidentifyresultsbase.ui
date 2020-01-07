@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>355</width>
-    <height>390</height>
+    <width>465</width>
+    <height>490</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -114,14 +114,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="cmbIdentifyMode">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-          </widget>
+          <widget class="QComboBox" name="cmbIdentifyMode"/>
          </item>
          <item>
           <spacer name="horizontalSpacer_43">
@@ -139,7 +132,17 @@
          <item>
           <widget class="QCheckBox" name="cbxAutoFeatureForm">
            <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="lblAutoFeatureForm">
+           <property name="text">
             <string>Auto open form</string>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
