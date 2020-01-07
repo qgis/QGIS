@@ -21,9 +21,13 @@ from qgis.core import (QgsFallbackNumericFormat,
                        QgsCurrencyNumericFormat,
                        QgsNumericFormatRegistry,
                        QgsNumericFormat,
-                       QgsReadWriteContext)
+                       QgsApplication)
 
-from qgis.gui import QgsNumericFormatSelectorWidget
+from qgis.gui import (QgsNumericFormatSelectorWidget,
+                      QgsNumericFormatGuiRegistry,
+                      QgsNumericFormatConfigurationWidgetFactory,
+                      QgsNumericFormatWidget,
+                      QgsGui)
 
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtTest import QSignalSpy
@@ -31,7 +35,78 @@ from qgis.PyQt.QtTest import QSignalSpy
 start_app()
 
 
+class TestFormat(QgsNumericFormat):
+
+    def __init__(self):
+        super().__init__()
+        self.xx = 1
+
+    def id(self):
+        return 'test'
+
+    def formatDouble(self, value, context):
+        return 'xxx' + str(value)
+
+    def visibleName(self):
+        return 'Test'
+
+    def clone(self):
+        res = TestFormat()
+        res.xx = self.xx
+        return res
+
+    def create(self, configuration, context):
+        res = TestFormat()
+        res.xx = configuration['xx']
+        return res
+
+    def configuration(self, context):
+        return {'xx': self.xx}
+
+
+class TestFormatWidget(QgsNumericFormatWidget):
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.f = None
+
+    def setFormat(self, format):
+        self.f = format.clone()
+
+    def format(self):
+        return self.f.clone()
+
+
+class TestWidgetFactory(QgsNumericFormatConfigurationWidgetFactory):
+
+    def create(self, format):
+        w = TestFormatWidget()
+        w.setFormat(format)
+        return w
+
+
 class TestQgsNumericFormatGui(unittest.TestCase):
+
+    def testRegistry(self):
+        """
+        Test the GUI registry for numeric formats
+        """
+        reg = QgsNumericFormatGuiRegistry()
+        self.assertFalse(reg.formatConfigurationWidget(None))
+        self.assertFalse(reg.formatConfigurationWidget(TestFormat()))
+
+        reg.addFormatConfigurationWidgetFactory('test', TestWidgetFactory())
+        original = TestFormat()
+        original.xx = 55
+        w = reg.formatConfigurationWidget(original)
+        self.assertTrue(w)
+
+        self.assertIsInstance(w.format(), TestFormat)
+        self.assertEqual(w.format().xx, 55)
+
+        reg.removeFormatConfigurationWidgetFactory('test')
+        self.assertFalse(reg.formatConfigurationWidget(TestFormat()))
+        reg.removeFormatConfigurationWidgetFactory('test')
 
     def testSelectorWidget(self):
         w = QgsNumericFormatSelectorWidget()
@@ -43,10 +118,20 @@ class TestQgsNumericFormatGui(unittest.TestCase):
         self.assertIsInstance(w.format(), QgsBearingNumericFormat)
         self.assertEqual(len(spy), 1)
         w.setFormat(QgsBearingNumericFormat())
-        self.assertEqual(len(spy), 1)
+        self.assertEqual(len(spy), 2)
         w.setFormat(QgsCurrencyNumericFormat())
         self.assertIsInstance(w.format(), QgsCurrencyNumericFormat)
-        self.assertEqual(len(spy), 2)
+        self.assertEqual(len(spy), 3)
+
+        QgsApplication.numericFormatRegistry().addFormat(TestFormat())
+        QgsGui.numericFormatGuiRegistry().addFormatConfigurationWidgetFactory('test', TestWidgetFactory())
+        original = TestFormat()
+        original.xx = 55
+
+        w = QgsNumericFormatSelectorWidget()
+        w.setFormat(original)
+        new = w.format()
+        self.assertEqual(new.xx, 55)
 
 
 if __name__ == '__main__':

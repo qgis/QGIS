@@ -40,7 +40,7 @@ class GUI_EXPORT QgsNumericFormatConfigurationWidgetFactory
     /**
      * Create a new configuration widget for a format.
      */
-    virtual QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const = 0 SIP_FACTORY;
+    virtual QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const = 0 SIP_TRANSFERBACK;
 };
 
 /**
@@ -80,7 +80,7 @@ class GUI_EXPORT QgsNumericFormatGuiRegistry
      *
      * Returns NULLPTR if no configuration widgets are available for the specified \a format.
      */
-    QgsNumericFormatWidget *formatConfigurationWidget( const QgsNumericFormat *format ) const SIP_FACTORY;
+    QgsNumericFormatWidget *formatConfigurationWidget( const QgsNumericFormat *format ) const SIP_TRANSFERBACK;
 
   private:
 

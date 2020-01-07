@@ -17,49 +17,71 @@
 #include "qgsapplication.h"
 #include "qgsnumericformatregistry.h"
 #include "qgsnumericformat.h"
+#include "qgsnumericformatwidget.h"
 #include "qgis.h"
+#include "qgsgui.h"
+#include "qgsnumericformatguiregistry.h"
+#include "qgsreadwritecontext.h"
 #include <mutex>
 
-
-static void _initWidgetFunctions()
-{
-  static std::once_flag initialized;
-  std::call_once( initialized, [ = ]
-  {
-
-  } );
-}
 
 QgsNumericFormatSelectorWidget::QgsNumericFormatSelectorWidget( QWidget *parent )
   : QgsPanelWidget( parent )
 {
   setupUi( this );
-  _initWidgetFunctions();
+
+  mCurrentFormat.reset( QgsApplication::numericFormatRegistry()->fallbackFormat() );
 
   populateTypes();
-  mCategoryCombo->setCurrentIndex( 0 );
+  mCategoryCombo->setCurrentIndex( mCategoryCombo->findData( mCurrentFormat->id() ) );
+
+  connect( mCategoryCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNumericFormatSelectorWidget::formatTypeChanged );
+  updateFormatWidget();
 }
+
+QgsNumericFormatSelectorWidget::~QgsNumericFormatSelectorWidget() = default;
 
 void QgsNumericFormatSelectorWidget::setFormat( const QgsNumericFormat *format )
 {
   if ( !format )
     return;
 
-  const QString id = format->id();
+  mCurrentFormat.reset( format->clone() );
+
+  const QString id = mCurrentFormat->id();
   const int index = mCategoryCombo->findData( id );
-  const QString prevId = mCategoryCombo->currentData().toString();
   if ( index < 0 )
-    mCategoryCombo->setCurrentIndex( mCategoryCombo->findData( QStringLiteral( "fallback" ) ) );
+  {
+    whileBlocking( mCategoryCombo )->setCurrentIndex( mCategoryCombo->findData( QStringLiteral( "fallback" ) ) );
+
+  }
   else
     mCategoryCombo->setCurrentIndex( index );
 
-  if ( prevId != id )
-    emit changed();
+  updateFormatWidget();
+
+  emit changed();
 }
 
 QgsNumericFormat *QgsNumericFormatSelectorWidget::format() const
 {
-  return QgsApplication::numericFormatRegistry()->format( mCategoryCombo->currentData().toString() );
+  return mCurrentFormat->clone();
+}
+
+void QgsNumericFormatSelectorWidget::formatTypeChanged()
+{
+  const QString newId = mCategoryCombo->currentData().toString();
+  if ( mCurrentFormat->id() == newId )
+  {
+    return;
+  }
+
+  // keep as much of the current format's properties as possible
+  QVariantMap props = mCurrentFormat->configuration( QgsReadWriteContext() );
+  mCurrentFormat.reset( QgsApplication::numericFormatRegistry()->create( newId, props, QgsReadWriteContext() ) );
+
+  updateFormatWidget();
+  emit changed();
 }
 
 void QgsNumericFormatSelectorWidget::populateTypes()
@@ -85,4 +107,28 @@ void QgsNumericFormatSelectorWidget::populateTypes()
 
   for ( const QString &id : qgis::as_const( ids ) )
     mCategoryCombo->addItem( QgsApplication::numericFormatRegistry()->visibleName( id ), id );
+}
+
+void QgsNumericFormatSelectorWidget::updateFormatWidget()
+{
+  if ( stackedWidget->currentWidget() != pageDummy )
+  {
+    // stop updating from the original widget
+    if ( QgsNumericFormatWidget *w = qobject_cast< QgsNumericFormatWidget * >( stackedWidget->currentWidget() ) )
+      disconnect( w, &QgsNumericFormatWidget::changed, this, &QgsNumericFormatSelectorWidget::changed );
+    stackedWidget->removeWidget( stackedWidget->currentWidget() );
+  }
+  if ( QgsNumericFormatWidget *w = QgsGui::numericFormatGuiRegistry()->formatConfigurationWidget( mCurrentFormat.get() ) )
+  {
+    w->setFormat( mCurrentFormat.get() );
+    stackedWidget->addWidget( w );
+    stackedWidget->setCurrentWidget( w );
+    // start receiving updates from widget
+    connect( w, &QgsNumericFormatWidget::changed, this, &QgsNumericFormatSelectorWidget::changed );
+    return;
+  }
+  else
+  {
+    stackedWidget->setCurrentWidget( pageDummy );
+  }
 }

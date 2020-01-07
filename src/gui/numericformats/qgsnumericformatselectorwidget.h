@@ -19,6 +19,7 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "ui_qgsnumericformatselectorbase.h"
+#include <memory>
 
 class QgsNumericFormat;
 
@@ -38,6 +39,8 @@ class GUI_EXPORT QgsNumericFormatSelectorWidget : public QgsPanelWidget, private
      */
     QgsNumericFormatSelectorWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
+    ~QgsNumericFormatSelectorWidget() override;
+
     /**
      * Sets the format to show in the widget.
      */
@@ -53,13 +56,19 @@ class GUI_EXPORT QgsNumericFormatSelectorWidget : public QgsPanelWidget, private
   signals:
 
     /**
-     * Emitted whenever the format configured in the widget is changed.
+     * Emitted whenever the format configured55 in the widget is changed.
      */
     void changed();
+
+  private slots:
+    void formatTypeChanged();
 
   private:
 
     void populateTypes();
+    void updateFormatWidget();
+
+    std::unique_ptr< QgsNumericFormat > mCurrentFormat;
 };
 
 #endif //QGSNUMERICFORMATSELECTORWIDGET_H

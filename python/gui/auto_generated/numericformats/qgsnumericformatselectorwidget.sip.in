@@ -23,6 +23,8 @@ class QgsNumericFormatSelectorWidget : QgsPanelWidget
 Constructor for QgsNumericFormatSelectorWidget with the specified ``parent`` widget.
 %End
 
+    ~QgsNumericFormatSelectorWidget();
+
     void setFormat( const QgsNumericFormat *format );
 %Docstring
 Sets the format to show in the widget.
@@ -39,7 +41,7 @@ The caller takes ownership of the returned object.
 
     void changed();
 %Docstring
-Emitted whenever the format configured in the widget is changed.
+Emitted whenever the format configured55 in the widget is changed.
 %End
 
 };
