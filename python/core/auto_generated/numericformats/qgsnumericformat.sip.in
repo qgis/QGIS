@@ -163,7 +163,7 @@ in order to recreate this formatter in its current state.
 %Docstring
 Writes the format to an XML ``element``.
 
-.. seealso:: :py:func:`readXml`
+.. seealso:: :py:func:`QgsNumericFormatRegistry.createFromXml`
 %End
 
 };

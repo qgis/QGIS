@@ -191,7 +191,7 @@ class CORE_EXPORT QgsNumericFormat
 
     /**
      * Writes the format to an XML \a element.
-     * \see readXml()
+     * \see QgsNumericFormatRegistry::createFromXml()
      */
     void writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 

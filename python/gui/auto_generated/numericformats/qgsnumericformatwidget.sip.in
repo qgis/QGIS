@@ -67,6 +67,9 @@ A widget which allow control over the properties of a :py:class:`QgsBasicNumeric
   public:
 
     QgsBasicNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsBasicNumericFormatWidget, initially showing the specified ``format``.
+%End
     ~QgsBasicNumericFormatWidget();
 
     virtual void setFormat( QgsNumericFormat *format );
@@ -93,6 +96,9 @@ A widget which allow control over the properties of a :py:class:`QgsBearingNumer
   public:
 
     QgsBearingNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsBearingNumericFormatWidget, initially showing the specified ``format``.
+%End
     ~QgsBearingNumericFormatWidget();
 
     virtual void setFormat( QgsNumericFormat *format );
@@ -120,6 +126,9 @@ A widget which allow control over the properties of a :py:class:`QgsCurrencyNume
   public:
 
     QgsCurrencyNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsCurrencyNumericFormatWidget, initially showing the specified ``format``.
+%End
     ~QgsCurrencyNumericFormatWidget();
 
     virtual void setFormat( QgsNumericFormat *format );
@@ -147,6 +156,9 @@ A widget which allow control over the properties of a :py:class:`QgsPercentageNu
   public:
 
     QgsPercentageNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsPercentageNumericFormatWidget, initially showing the specified ``format``.
+%End
     ~QgsPercentageNumericFormatWidget();
 
     virtual void setFormat( QgsNumericFormat *format );
@@ -175,6 +187,9 @@ A widget which allow control over the properties of a :py:class:`QgsScientificNu
   public:
 
     QgsScientificNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsScientificNumericFormatWidget, initially showing the specified ``format``.
+%End
     ~QgsScientificNumericFormatWidget();
 
     virtual void setFormat( QgsNumericFormat *format );
