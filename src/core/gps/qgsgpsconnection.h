@@ -156,11 +156,11 @@ class CORE_EXPORT QgsGpsConnection : public QObject
 
   protected:
     //! Data source (e.g. serial device, socket, file,...)
-    QIODevice *mSource = nullptr;
+    std::unique_ptr< QIODevice > mSource;
     //! Last state of the gps related variables (e.g. position, time, ...)
     QgsGpsInformation mLastGPSInformation;
     //! Connection status
-    Status mStatus;
+    Status mStatus = NotConnected;
 
   private:
     //! Closes and deletes mSource
