@@ -39,6 +39,11 @@ int QgsCurrencyNumericFormat::sortKey()
   return QgsNumericFormat::sortKey();
 }
 
+double QgsCurrencyNumericFormat::suggestSampleValue() const
+{
+  return 1234.56;
+}
+
 QString QgsCurrencyNumericFormat::formatDouble( double value, const QgsNumericFormatContext &context ) const
 {
   QString res = QgsBasicNumericFormat::formatDouble( value, context );

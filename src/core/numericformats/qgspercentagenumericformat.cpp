@@ -37,6 +37,19 @@ int QgsPercentageNumericFormat::sortKey()
   return QgsNumericFormat::sortKey();
 }
 
+double QgsPercentageNumericFormat::suggestSampleValue() const
+{
+  switch ( mInputValues )
+  {
+    case ValuesArePercentage:
+      return 50.1234;
+
+    case ValuesAreFractions:
+      return 0.501234;
+  }
+  return 50.1234; // no warnings
+}
+
 QString QgsPercentageNumericFormat::formatDouble( double value, const QgsNumericFormatContext &context ) const
 {
   switch ( mInputValues )

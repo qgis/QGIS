@@ -129,6 +129,11 @@ Returns a sorting key value, where formats with a lower sort key will be shown e
 Generally, subclasses should return QgsNumericFormat.sortKey() as their sorting key.
 %End
 
+    virtual double suggestSampleValue() const;
+%Docstring
+Returns a suggested sample value which nicely represents the current format configuration.
+%End
+
     virtual QString formatDouble( double value, const QgsNumericFormatContext &context ) const = 0;
 %Docstring
 Returns a formatted string representation of a numeric double value.

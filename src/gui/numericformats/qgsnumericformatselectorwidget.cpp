@@ -22,6 +22,7 @@
 #include "qgsgui.h"
 #include "qgsnumericformatguiregistry.h"
 #include "qgsreadwritecontext.h"
+#include "qgsbasicnumericformat.h"
 #include <mutex>
 
 
@@ -31,6 +32,12 @@ QgsNumericFormatSelectorWidget::QgsNumericFormatSelectorWidget( QWidget *parent 
   setupUi( this );
 
   mCurrentFormat.reset( QgsApplication::numericFormatRegistry()->fallbackFormat() );
+
+  mPreviewFormat = qgis::make_unique< QgsBasicNumericFormat >();
+  mPreviewFormat->setShowThousandsSeparator( false );
+  mPreviewFormat->setShowPlusSign( false );
+  mPreviewFormat->setShowTrailingZeros( false );
+  mPreviewFormat->setNumberDecimalPlaces( 12 );
 
   populateTypes();
   mCategoryCombo->setCurrentIndex( mCategoryCombo->findData( mCurrentFormat->id() ) );
@@ -81,6 +88,7 @@ void QgsNumericFormatSelectorWidget::formatTypeChanged()
   mCurrentFormat.reset( QgsApplication::numericFormatRegistry()->create( newId, props, QgsReadWriteContext() ) );
 
   updateFormatWidget();
+  updateSampleText();
   emit changed();
 }
 
@@ -89,6 +97,7 @@ void QgsNumericFormatSelectorWidget::formatChanged()
   if ( QgsNumericFormatWidget *w = qobject_cast< QgsNumericFormatWidget * >( stackedWidget->currentWidget() ) )
     mCurrentFormat.reset( w->format() );
 
+  updateSampleText();
   emit changed();
 }
 
@@ -139,4 +148,14 @@ void QgsNumericFormatSelectorWidget::updateFormatWidget()
   {
     stackedWidget->setCurrentWidget( pageDummy );
   }
+
+  updateSampleText();
+}
+
+void QgsNumericFormatSelectorWidget::updateSampleText()
+{
+  const double sampleValue = mCurrentFormat->suggestSampleValue();
+  mSampleLabel->setText( QStringLiteral( "%1 %2 %3" ).arg( mPreviewFormat->formatDouble( sampleValue, QgsNumericFormatContext() ) )
+                         .arg( QChar( 0x2192 ) )
+                         .arg( mCurrentFormat->formatDouble( sampleValue, QgsNumericFormatContext() ) ) );
 }

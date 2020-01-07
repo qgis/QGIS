@@ -68,6 +68,12 @@ class GUI_EXPORT QgsNumericFormatWidget : public QgsPanelWidget
 
 class QgsBasicNumericFormat;
 
+/**
+ * \ingroup gui
+ * \class QgsBasicNumericFormatWidget
+ * A widget which allow control over the properties of a QgsBasicNumericFormat.
+ * \since QGIS 3.12
+ */
 class GUI_EXPORT QgsBasicNumericFormatWidget : public QgsNumericFormatWidget, private Ui::QgsBasicNumericFormatWidgetBase
 {
     Q_OBJECT
@@ -91,6 +97,12 @@ class GUI_EXPORT QgsBasicNumericFormatWidget : public QgsNumericFormatWidget, pr
 
 class QgsBearingNumericFormat;
 
+/**
+ * \ingroup gui
+ * \class QgsBearingNumericFormatWidget
+ * A widget which allow control over the properties of a QgsBearingNumericFormat.
+ * \since QGIS 3.12
+ */
 class GUI_EXPORT QgsBearingNumericFormatWidget : public QgsNumericFormatWidget, private Ui::QgsBearingNumericFormatWidgetBase
 {
     Q_OBJECT
@@ -115,6 +127,12 @@ class GUI_EXPORT QgsBearingNumericFormatWidget : public QgsNumericFormatWidget, 
 
 class QgsCurrencyNumericFormat;
 
+/**
+ * \ingroup gui
+ * \class QgsCurrencyNumericFormatWidget
+ * A widget which allow control over the properties of a QgsCurrencyNumericFormat.
+ * \since QGIS 3.12
+ */
 class GUI_EXPORT QgsCurrencyNumericFormatWidget : public QgsNumericFormatWidget, private Ui::QgsCurrencyNumericFormatWidgetBase
 {
     Q_OBJECT
@@ -139,6 +157,12 @@ class GUI_EXPORT QgsCurrencyNumericFormatWidget : public QgsNumericFormatWidget,
 
 class QgsPercentageNumericFormat;
 
+/**
+ * \ingroup gui
+ * \class QgsPercentageNumericFormatWidget
+ * A widget which allow control over the properties of a QgsPercentageNumericFormat.
+ * \since QGIS 3.12
+ */
 class GUI_EXPORT QgsPercentageNumericFormatWidget : public QgsNumericFormatWidget, private Ui::QgsPercentageNumericFormatWidgetBase
 {
     Q_OBJECT
@@ -164,6 +188,12 @@ class GUI_EXPORT QgsPercentageNumericFormatWidget : public QgsNumericFormatWidge
 
 class QgsScientificNumericFormat;
 
+/**
+ * \ingroup gui
+ * \class QgsScientificNumericFormatWidget
+ * A widget which allow control over the properties of a QgsScientificNumericFormat.
+ * \since QGIS 3.12
+ */
 class GUI_EXPORT QgsScientificNumericFormatWidget : public QgsNumericFormatWidget, private Ui::QgsScientificNumericFormatWidgetBase
 {
     Q_OBJECT

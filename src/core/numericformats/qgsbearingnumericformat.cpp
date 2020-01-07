@@ -37,6 +37,11 @@ int QgsBearingNumericFormat::sortKey()
   return QgsNumericFormat::sortKey();
 }
 
+double QgsBearingNumericFormat::suggestSampleValue() const
+{
+  return 270.123;
+}
+
 QString QgsBearingNumericFormat::formatDouble( double value, const QgsNumericFormatContext &context ) const
 {
   switch ( mDirectionFormat )
