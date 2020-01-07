@@ -22,6 +22,11 @@ QString QgsFallbackNumericFormat::id() const
   return QStringLiteral( "default" );
 }
 
+QString QgsFallbackNumericFormat::visibleName() const
+{
+  return QObject::tr( "General" );
+}
+
 QString QgsFallbackNumericFormat::formatDouble( double value, const QgsNumericFormatContext & ) const
 {
   return QString::number( value );

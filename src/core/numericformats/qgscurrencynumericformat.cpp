@@ -28,6 +28,11 @@ QString QgsCurrencyNumericFormat::id() const
   return QStringLiteral( "currency" );
 }
 
+QString QgsCurrencyNumericFormat::visibleName() const
+{
+  return QObject::tr( "Currency" );
+}
+
 QString QgsCurrencyNumericFormat::formatDouble( double value, const QgsNumericFormatContext &context ) const
 {
   QString res = QgsBasicNumericFormat::formatDouble( value, context );

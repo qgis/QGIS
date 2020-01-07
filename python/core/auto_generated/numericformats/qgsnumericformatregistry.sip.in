@@ -82,6 +82,11 @@ to represent any number in an default manner.
 The caller takes ownership of the returned object.
 %End
 
+    QString visibleName( const QString &id ) const;
+%Docstring
+Returns the translated, user-visible name for the format with matching ``id``.
+%End
+
 };
 
 /************************************************************************

@@ -25,6 +25,7 @@
 
 QgsNumericFormatRegistry::QgsNumericFormatRegistry()
 {
+  addFormat( new QgsFallbackNumericFormat() );
   addFormat( new QgsBasicNumericFormat() );
   addFormat( new QgsBearingNumericFormat() );
   addFormat( new QgsCurrencyNumericFormat() );
@@ -88,4 +89,12 @@ QgsNumericFormat *QgsNumericFormatRegistry::createFromXml( const QDomElement &el
 QgsNumericFormat *QgsNumericFormatRegistry::fallbackFormat() const
 {
   return new QgsFallbackNumericFormat();
+}
+
+QString QgsNumericFormatRegistry::visibleName( const QString &id ) const
+{
+  if ( mFormats.contains( id ) )
+    return mFormats.value( id )->visibleName();
+
+  return QString();
 }
