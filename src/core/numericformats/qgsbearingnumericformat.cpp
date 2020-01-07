@@ -27,6 +27,11 @@ QString QgsBearingNumericFormat::id() const
   return QStringLiteral( "bearing" );
 }
 
+QString QgsBearingNumericFormat::visibleName() const
+{
+  return QObject::tr( "Bearing" );
+}
+
 QString QgsBearingNumericFormat::formatDouble( double value, const QgsNumericFormatContext &context ) const
 {
   switch ( mDirectionFormat )

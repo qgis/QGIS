@@ -148,6 +148,7 @@ IF (WITH_GUI)
     ${CMAKE_SOURCE_DIR}/src/gui/layertree
     ${CMAKE_SOURCE_DIR}/src/gui/layout
     ${CMAKE_SOURCE_DIR}/src/gui/locator
+    ${CMAKE_SOURCE_DIR}/src/gui/numericformats
     ${CMAKE_SOURCE_DIR}/src/gui/processing
 
     ${CMAKE_BINARY_DIR}/src/gui

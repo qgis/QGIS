@@ -117,6 +117,11 @@ Returns a unique id for this numeric format.
 This id is used to identify this numeric format in the registry with :py:func:`QgsNumericFormatRegistry.format()`
 %End
 
+    virtual QString visibleName() const = 0;
+%Docstring
+Returns the translated, user-visible name for this format.
+%End
+
     virtual QString formatDouble( double value, const QgsNumericFormatContext &context ) const = 0;
 %Docstring
 Returns a formatted string representation of a numeric double value.

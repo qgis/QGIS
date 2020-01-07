@@ -27,6 +27,11 @@ QString QgsPercentageNumericFormat::id() const
   return QStringLiteral( "percentage" );
 }
 
+QString QgsPercentageNumericFormat::visibleName() const
+{
+  return QObject::tr( "Perctange" );
+}
+
 QString QgsPercentageNumericFormat::formatDouble( double value, const QgsNumericFormatContext &context ) const
 {
   switch ( mInputValues )

@@ -202,6 +202,8 @@ SET(QGIS_GUI_SRCS
 
   locator/qgslocatorwidget.cpp
 
+  numericformats/qgsnumericformatselectorwidget.cpp
+
   ogr/qgsogrhelperfunctions.cpp
   ogr/qgsnewogrconnection.cpp
   ogr/qgsvectorlayersaveasdialog.cpp
@@ -791,6 +793,8 @@ SET(QGIS_GUI_HDRS
 
   locator/qgslocatorwidget.h
 
+  numericformats/qgsnumericformatselectorwidget.h
+
   ogr/qgsnewogrconnection.h
   ogr/qgsogrhelperfunctions.h
   ogr/qgsvectorlayersaveasdialog.h
@@ -964,6 +968,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/labeling
   ${CMAKE_SOURCE_DIR}/src/gui/layertree
   ${CMAKE_SOURCE_DIR}/src/gui/layout
+  ${CMAKE_SOURCE_DIR}/src/gui/numericformats
   ${CMAKE_SOURCE_DIR}/src/gui/ogr
   ${CMAKE_SOURCE_DIR}/src/gui/processing
   ${CMAKE_SOURCE_DIR}/src/gui/providers/gdal
@@ -980,6 +985,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/layout
   ${CMAKE_SOURCE_DIR}/src/core/locator
   ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/numericformats
   ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/mesh
   ${CMAKE_SOURCE_DIR}/src/core/pal

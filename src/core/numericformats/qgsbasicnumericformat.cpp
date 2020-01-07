@@ -46,6 +46,11 @@ QString QgsBasicNumericFormat::id() const
   return QStringLiteral( "basic" );
 }
 
+QString QgsBasicNumericFormat::visibleName() const
+{
+  return QObject::tr( "Number" );
+}
+
 QString QgsBasicNumericFormat::formatDouble( double value, const QgsNumericFormatContext &context ) const
 {
   std::ostringstream os;

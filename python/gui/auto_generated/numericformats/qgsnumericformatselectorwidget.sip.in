@@ -1,47 +1,46 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/numericformats/qgsfallbacknumericformat.h                   *
+ * src/gui/numericformats/qgsnumericformatselectorwidget.h              *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
 
 
-class QgsFallbackNumericFormat : QgsNumericFormat
-{
-%Docstring
-A basic numeric formatter which returns a simple text representation of a value.
 
-.. versionadded:: 3.12
-%End
+
+
+class QgsNumericFormatSelectorWidget : QgsPanelWidget
+{
 
 %TypeHeaderCode
-#include "qgsfallbacknumericformat.h"
+#include "qgsnumericformatselectorwidget.h"
 %End
   public:
 
-    QgsFallbackNumericFormat();
+    QgsNumericFormatSelectorWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Default constructor
+Constructor for QgsNumericFormatSelectorWidget with the specified ``parent`` widget.
 %End
-    virtual QString id() const;
 
-    virtual QString visibleName() const;
+    void setFormat( const QgsNumericFormat *format );
+%Docstring
+Sets the format to show in the widget.
+%End
 
-    virtual QString formatDouble( double value, const QgsNumericFormatContext &context ) const;
+    QgsNumericFormat *format() const /TransferBack/;
+%Docstring
+Returns a new format object representing the settings currently configured in the widget.
 
-    virtual QgsNumericFormat *clone() const /Factory/;
-
-    virtual QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const /Factory/;
-
-    virtual QVariantMap configuration( const QgsReadWriteContext &context ) const;
+The caller takes ownership of the returned object.
+%End
 
 };
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/numericformats/qgsfallbacknumericformat.h                   *
+ * src/gui/numericformats/qgsnumericformatselectorwidget.h              *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

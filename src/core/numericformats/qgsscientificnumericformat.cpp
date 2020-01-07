@@ -28,6 +28,11 @@ QString QgsScientificNumericFormat::id() const
   return QStringLiteral( "scientific" );
 }
 
+QString QgsScientificNumericFormat::visibleName() const
+{
+  return QObject::tr( "Scientific" );
+}
+
 QString QgsScientificNumericFormat::formatDouble( double value, const QgsNumericFormatContext &context ) const
 {
   return QgsBasicNumericFormat::formatDouble( value, context );

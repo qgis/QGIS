@@ -148,6 +148,11 @@ class CORE_EXPORT QgsNumericFormat
     virtual QString id() const = 0;
 
     /**
+     * Returns the translated, user-visible name for this format.
+     */
+    virtual QString visibleName() const = 0;
+
+    /**
      * Returns a formatted string representation of a numeric double value.
      */
     virtual QString formatDouble( double value, const QgsNumericFormatContext &context ) const = 0;

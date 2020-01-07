@@ -97,6 +97,11 @@ class CORE_EXPORT QgsNumericFormatRegistry
      */
     QgsNumericFormat *fallbackFormat() const SIP_FACTORY;
 
+    /**
+     * Returns the translated, user-visible name for the format with matching \a id.
+     */
+    QString visibleName( const QString &id ) const;
+
   private:
     QHash<QString, QgsNumericFormat *> mFormats;
 };
