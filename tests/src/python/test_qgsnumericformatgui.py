@@ -133,6 +133,104 @@ class TestQgsNumericFormatGui(unittest.TestCase):
         new = w.format()
         self.assertEqual(new.xx, 55)
 
+    def testBasicFormat(self):
+        w = QgsNumericFormatSelectorWidget()
+
+        original = QgsBasicNumericFormat()
+        original.setShowPlusSign(True)
+        original.setShowThousandsSeparator(False)
+        original.setNumberDecimalPlaces(4)
+        original.setShowTrailingZeros(True)
+
+        w.setFormat(original)
+        new = w.format()
+
+        self.assertIsInstance(new, QgsBasicNumericFormat)
+        self.assertEqual(new.showPlusSign(), original.showPlusSign())
+        self.assertEqual(new.showThousandsSeparator(), original.showThousandsSeparator())
+        self.assertEqual(new.numberDecimalPlaces(), original.numberDecimalPlaces())
+        self.assertEqual(new.showTrailingZeros(), original.showTrailingZeros())
+
+    def testCurrencyFormat(self):
+        w = QgsNumericFormatSelectorWidget()
+
+        original = QgsCurrencyNumericFormat()
+        original.setShowPlusSign(True)
+        original.setShowThousandsSeparator(False)
+        original.setNumberDecimalPlaces(4)
+        original.setShowTrailingZeros(True)
+        original.setPrefix('$$')
+        original.setSuffix('AUD')
+
+        w.setFormat(original)
+        new = w.format()
+
+        self.assertIsInstance(new, QgsCurrencyNumericFormat)
+        self.assertEqual(new.showPlusSign(), original.showPlusSign())
+        self.assertEqual(new.showThousandsSeparator(), original.showThousandsSeparator())
+        self.assertEqual(new.numberDecimalPlaces(), original.numberDecimalPlaces())
+        self.assertEqual(new.showTrailingZeros(), original.showTrailingZeros())
+        self.assertEqual(new.prefix(), original.prefix())
+        self.assertEqual(new.suffix(), original.suffix())
+
+    def testBearingFormat(self):
+        w = QgsNumericFormatSelectorWidget()
+
+        original = QgsBearingNumericFormat()
+        original.setNumberDecimalPlaces(4)
+        original.setShowTrailingZeros(True)
+        original.setDirectionFormat(QgsBearingNumericFormat.UseRange0To360)
+
+        w.setFormat(original)
+        new = w.format()
+
+        self.assertIsInstance(new, QgsBearingNumericFormat)
+        self.assertEqual(new.numberDecimalPlaces(), original.numberDecimalPlaces())
+        self.assertEqual(new.showTrailingZeros(), original.showTrailingZeros())
+        self.assertEqual(new.directionFormat(), original.directionFormat())
+
+    def testPercentageFormat(self):
+        w = QgsNumericFormatSelectorWidget()
+
+        original = QgsPercentageNumericFormat()
+        original.setNumberDecimalPlaces(4)
+        original.setShowTrailingZeros(True)
+        original.setInputValues(QgsPercentageNumericFormat.ValuesAreFractions)
+
+        w.setFormat(original)
+        new = w.format()
+
+        self.assertIsInstance(new, QgsPercentageNumericFormat)
+        self.assertEqual(new.numberDecimalPlaces(), original.numberDecimalPlaces())
+        self.assertEqual(new.showTrailingZeros(), original.showTrailingZeros())
+        self.assertEqual(new.inputValues(), original.inputValues())
+
+    def testScientificFormat(self):
+        w = QgsNumericFormatSelectorWidget()
+
+        original = QgsScientificNumericFormat()
+        original.setShowPlusSign(True)
+        original.setNumberDecimalPlaces(4)
+        original.setShowTrailingZeros(True)
+
+        w.setFormat(original)
+        new = w.format()
+
+        self.assertIsInstance(new, QgsScientificNumericFormat)
+        self.assertEqual(new.showPlusSign(), original.showPlusSign())
+        self.assertEqual(new.numberDecimalPlaces(), original.numberDecimalPlaces())
+        self.assertEqual(new.showTrailingZeros(), original.showTrailingZeros())
+
+    def testDefaultFormat(self):
+        w = QgsNumericFormatSelectorWidget()
+
+        original = QgsFallbackNumericFormat()
+
+        w.setFormat(original)
+        new = w.format()
+
+        self.assertIsInstance(new, QgsFallbackNumericFormat)
+
 
 if __name__ == '__main__':
     unittest.main()

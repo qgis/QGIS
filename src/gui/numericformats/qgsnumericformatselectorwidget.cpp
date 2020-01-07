@@ -84,6 +84,14 @@ void QgsNumericFormatSelectorWidget::formatTypeChanged()
   emit changed();
 }
 
+void QgsNumericFormatSelectorWidget::formatChanged()
+{
+  if ( QgsNumericFormatWidget *w = qobject_cast< QgsNumericFormatWidget * >( stackedWidget->currentWidget() ) )
+    mCurrentFormat.reset( w->format() );
+
+  emit changed();
+}
+
 void QgsNumericFormatSelectorWidget::populateTypes()
 {
   QStringList ids = QgsApplication::numericFormatRegistry()->formats();
@@ -115,16 +123,16 @@ void QgsNumericFormatSelectorWidget::updateFormatWidget()
   {
     // stop updating from the original widget
     if ( QgsNumericFormatWidget *w = qobject_cast< QgsNumericFormatWidget * >( stackedWidget->currentWidget() ) )
-      disconnect( w, &QgsNumericFormatWidget::changed, this, &QgsNumericFormatSelectorWidget::changed );
+      disconnect( w, &QgsNumericFormatWidget::changed, this, &QgsNumericFormatSelectorWidget::formatChanged );
     stackedWidget->removeWidget( stackedWidget->currentWidget() );
   }
   if ( QgsNumericFormatWidget *w = QgsGui::numericFormatGuiRegistry()->formatConfigurationWidget( mCurrentFormat.get() ) )
   {
-    w->setFormat( mCurrentFormat.get() );
+    w->setFormat( mCurrentFormat->clone() );
     stackedWidget->addWidget( w );
     stackedWidget->setCurrentWidget( w );
     // start receiving updates from widget
-    connect( w, &QgsNumericFormatWidget::changed, this, &QgsNumericFormatSelectorWidget::changed );
+    connect( w, &QgsNumericFormatWidget::changed, this, &QgsNumericFormatSelectorWidget::formatChanged );
     return;
   }
   else
