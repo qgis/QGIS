@@ -150,6 +150,7 @@ class TestQgsNumericFormat(unittest.TestCase):
         f = QgsCurrencyNumericFormat()
         f.setPrefix('$')
         context = QgsNumericFormatContext()
+        f.setShowTrailingZeros(False)
         self.assertEqual(f.formatDouble(0, context), '$0')
         self.assertEqual(f.formatDouble(5, context), '$5')
         self.assertEqual(f.formatDouble(5.5, context), '$5.5')

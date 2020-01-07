@@ -12,6 +12,11 @@
 
 class QgsNumericFormatSelectorWidget : QgsPanelWidget
 {
+%Docstring
+A widget which allows choice of numeric formats and the properties of them.
+
+.. versionadded:: 3.12
+%End
 
 %TypeHeaderCode
 #include "qgsnumericformatselectorwidget.h"
