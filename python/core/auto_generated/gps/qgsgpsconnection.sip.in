@@ -15,56 +15,97 @@
 #include "qgsgpsconnection.h"
 %End
 
-struct QgsSatelliteInfo
+class QgsSatelliteInfo
 {
-  int id;
-  bool inUse;
-  int elevation;
-  int azimuth;
-  int signal;
+%Docstring
+Encapsulates information relating to a GPS satellite.
+%End
+
+%TypeHeaderCode
+#include "qgsgpsconnection.h"
+%End
+  public:
+
+    int id;
+
+    bool inUse;
+
+
+    double elevation;
+
+
+    double azimuth;
+
+    int signal;
 };
 
-struct QgsGpsInformation
+class QgsGpsInformation
 {
+%Docstring
+Encapsulates information relating to a GPS position fix.
+%End
 
-  enum FixStatus
-  {
-    NoData,
-    NoFix,
-    Fix2D,
-    Fix3D
-  };
+%TypeHeaderCode
+#include "qgsgpsconnection.h"
+%End
+  public:
 
-  double latitude;
-  double longitude;
-  double elevation;
-  double speed;
-  double direction;
-  QList<QgsSatelliteInfo> satellitesInView;
-  double pdop;
-  double hdop;
-  double vdop;
-  //! Horizontal accuracy in meters
-  double hacc;
-  //! Vertical accuracy in meters
-  double vacc;
-  QDateTime utcDateTime;
-  QChar fixMode;
-  int fixType;
-  int quality;
-  int satellitesUsed;
-  QChar status; // from GPRMC A,V
-  QList<int> satPrn; // list of SVs in use; needed for QgsSatelliteInfo.inUse and other uses
-  bool satInfoComplete;
+    enum FixStatus
+    {
+      NoData,
+      NoFix,
+      Fix2D,
+      Fix3D
+    };
 
-  bool isValid() const;
+    double latitude;
+
+    double longitude;
+
+    double elevation;
+
+    double speed;
+
+
+    double direction;
+
+    QList<QgsSatelliteInfo> satellitesInView;
+
+    double pdop;
+
+    double hdop;
+
+    double vdop;
+
+    //! Horizontal accuracy in meters
+    double hacc;
+    //! Vertical accuracy in meters
+    double vacc;
+
+    QDateTime utcDateTime;
+
+    QChar fixMode;
+
+    int fixType;
+
+    int quality;
+
+    int satellitesUsed;
+
+    QChar status;
+
+    QList<int> satPrn;
+
+    bool satInfoComplete;
+
+    bool isValid() const;
 %Docstring
 Returns whether the connection information is valid
 
 .. versionadded:: 3.10
 %End
 
-  FixStatus fixStatus() const;
+    FixStatus fixStatus() const;
 %Docstring
 Returns the fix status
 
@@ -75,7 +116,7 @@ Returns the fix status
 class QgsGpsConnection : QObject
 {
 %Docstring
-Abstract base class for connection to a GPS device*
+Abstract base class for connection to a GPS device
 %End
 
 %TypeHeaderCode
