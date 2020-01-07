@@ -82,7 +82,7 @@ QVariant QgsTextEditWrapper::value() const
   else if ( field().type() == QVariant::Map )
   {
     // replace empty string (invalid) with quoted empty string
-    if ( v == "" )
+    if ( v.isEmpty() )
     {
       QVariant qjson = QgsJsonUtils::parseJson( std::string( "\"\"" ) );
       mInvalidJSON = false;
