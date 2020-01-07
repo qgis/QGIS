@@ -1092,6 +1092,9 @@ namespace QgsWms
     // enable rendering optimization
     mapSettings.setFlag( QgsMapSettings::UseRenderingOptimization );
 
+    // disable render partial output
+    mapSettings.setFlag( QgsMapSettings::RenderPartialOutput, false );
+
     // set selection color
     mapSettings.setSelectionColor( mProject->selectionColor() );
   }
