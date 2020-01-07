@@ -24,7 +24,7 @@ Interface base class for factories for numeric format configuration widgets.
   public:
     virtual ~QgsNumericFormatConfigurationWidgetFactory();
 
-    virtual QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const = 0 /Factory/;
+    virtual QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const = 0 /TransferBack/;
 %Docstring
 Create a new configuration widget for a format.
 %End
@@ -65,7 +65,7 @@ Ownership is taken by the reigstry.
 Removes the configuration widget factory for customizing numeric formats with the specified ``id``.
 %End
 
-    QgsNumericFormatWidget *formatConfigurationWidget( const QgsNumericFormat *format ) const /Factory/;
+    QgsNumericFormatWidget *formatConfigurationWidget( const QgsNumericFormat *format ) const /TransferBack/;
 %Docstring
 Returns a new configuration widget for an ``format``.
 
