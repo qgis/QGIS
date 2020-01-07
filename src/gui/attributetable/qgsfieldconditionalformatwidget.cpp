@@ -50,6 +50,7 @@ void QgsFieldConditionalFormatWidget::setLayer( QgsVectorLayer *layer )
   mLayer = layer;
   mFieldCombo->setLayer( layer );
   mFieldCombo->setCurrentIndex( 0 );
+  fieldChanged( mFieldCombo->currentField() );
 }
 
 void QgsFieldConditionalFormatWidget::ruleClicked( const QModelIndex &index )
