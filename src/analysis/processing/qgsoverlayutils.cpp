@@ -440,10 +440,17 @@ void QgsOverlayUtils::runVectorAnalysisTool( Vectoranalysis::AbstractTool &tool,
 
   tool.finalizeOutput();
 
-  const QList<QString> &exceptionList = tool.getExceptions();
-  for ( const QString &e : exceptionList )
+  const QStringList &exceptionList = tool.getExceptions();
+  if ( !exceptionList.isEmpty() )
   {
-    feedback->reportError( e );
+    QString message( QObject::tr( "Exception during execution of the analysis tool:" ) );
+    QStringList::const_iterator eIt = exceptionList.constBegin();
+    for ( ; eIt != exceptionList.constEnd(); ++eIt )
+    {
+      message.append( " " );
+      message.append( *eIt );
+    }
+    throw QgsProcessingException( message );
   }
 }
 

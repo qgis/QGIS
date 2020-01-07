@@ -33,8 +33,8 @@ namespace Vectoranalysis
     const QgsAttributeList &fieldIndicesB,
     QgsFeatureSink *output,
     QgsCoordinateTransformContext transformContext,
-    double precision )
-    : AbstractTool( output, transformContext, precision ), mLayerA( layerA ), mLayerB( layerB ), mFieldIndicesA( fieldIndicesA ), mFieldIndicesB( fieldIndicesB )
+    QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck )
+    : AbstractTool( output, transformContext, invalidGeometryCheck ), mLayerA( layerA ), mLayerB( layerB ), mFieldIndicesA( fieldIndicesA ), mFieldIndicesB( fieldIndicesB )
   {
   }
 
@@ -55,64 +55,6 @@ namespace Vectoranalysis
 
     QgsFeatureList intersection = QgsOverlayUtils::featureIntersection( f, *mLayerA, *mLayerB, mSpatialIndex, mTransformContext, mFieldIndicesA, mFieldIndicesB );
     writeFeatures( intersection );
-
-#if 0
-    QgsGeometry geom = f.geometry();
-
-    // Get features which intersect current feature
-    QVector<QgsFeature *> featureList = getIntersects( geom.boundingBox(), mSpatialIndex, mLayerB, mFieldIndicesB );
-    if ( featureList.isEmpty() )
-    {
-      return;
-    }
-
-    for ( QgsFeature *testFeature : featureList )
-    {
-      if ( !testFeature )
-      {
-        return;
-      }
-
-      QgsFeatureList intersection = QgsOverlayUtils::featureIntersection( *testFeature, *mLayerA, *mLayerB, mSpatialIndex, mTransformContext, mFieldIndicesA, mFieldIndicesB );
-      writeFeatures( intersection );
-    }
-
-    // Perform intersections
-    QgsGeos geos( geom.constGet() );
-    geos.prepareGeometry();
-
-    QVector<QgsFeature *> outputFeatures; // Use pointers to prevent copies
-    QString errorMsg;
-
-    for ( QgsFeature *testFeature : featureList )
-    {
-      QgsGeometry testGeom = testFeature->geometry();
-      if ( geos.intersects( testGeom.constGet() ) )
-      {
-        QgsGeometry outGeometry = geom.intersection( testGeom );
-        if ( outGeometry.isNull() )
-        {
-          reportGeometryError( QList<ErrorFeature>() << ErrorFeature( mLayerA, job->featureid ) << ErrorFeature( mLayerB, testFeature->id() ), outGeometry.lastError() );
-        }
-        else if ( outGeometry.isEmpty() )
-        {
-          reportGeometryError( QList<ErrorFeature>() << ErrorFeature( mLayerA, job->featureid ) << ErrorFeature( mLayerB, testFeature->id() ), QApplication::translate( "IntersectionTool", "GEOSIntersection returned empty geometry even though the geometries intersect" ) );
-        }
-        else
-        {
-          QgsFeature *outFeature = new QgsFeature();
-          outFeature->setGeometry( outGeometry );
-          QgsAttributes fAtt = f.attributes();
-          QgsAttributes testAtt = testFeature->attributes();
-          outFeature->setAttributes( fAtt + testAtt );
-          outputFeatures.append( outFeature );
-        }
-      }
-    }
-    writeFeatures( outputFeatures );
-    qDeleteAll( outputFeatures );
-    qDeleteAll( featureList );
-#endif //0
   }
 
 } // Geoprocessing

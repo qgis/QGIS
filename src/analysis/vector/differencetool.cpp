@@ -29,8 +29,8 @@ namespace Vectoranalysis
                                   QgsFeatureSource *layerB,
                                   QgsFeatureSink *output,
                                   QgsCoordinateTransformContext transformContext,
-                                  double precision )
-    : AbstractTool( output, transformContext, precision ), mLayerA( layerA ), mLayerB( layerB )
+                                  QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck )
+    : AbstractTool( output, transformContext, invalidGeometryCheck ), mLayerA( layerA ), mLayerB( layerB )
   {
   }
 

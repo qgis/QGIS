@@ -32,7 +32,7 @@ namespace Vectoranalysis
                  const QgsAttributeList &fieldIndicesB,
                  QgsFeatureSink *output,
                  QgsCoordinateTransformContext transformContext,
-                 double precision = 1E-7 );
+                 QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck );
 
     private:
       enum Task

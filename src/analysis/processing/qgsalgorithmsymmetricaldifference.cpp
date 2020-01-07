@@ -87,7 +87,7 @@ QVariantMap QgsSymmetricalDifferenceAlgorithm::processAlgorithm( const QVariantM
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
 
-  Vectoranalysis::SymDifferenceTool tool( sourceA.get(), sourceB.get(), sink.get(), context.transformContext() );
+  Vectoranalysis::SymDifferenceTool tool( sourceA.get(), sourceB.get(), sink.get(), context.transformContext(), context.invalidGeometryCheck() );
   QgsOverlayUtils::runVectorAnalysisTool( tool, feedback );
   return outputs;
 }

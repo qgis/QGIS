@@ -41,14 +41,13 @@ namespace Vectoranalysis
     {
       instance->processFeature( job );
     }
-    catch ( const std::exception &e )
+    catch ( const QgsException &e )
     {
       instance->mExceptions.append( e.what() );
-      throw e;
     }
   }
 
-  AbstractTool::AbstractTool( QgsFeatureSink *output, QgsCoordinateTransformContext transformContext, double precision ): mOutput( output ), mPrecision( precision ), mTransformContext( transformContext )
+  AbstractTool::AbstractTool( QgsFeatureSink *output, QgsCoordinateTransformContext transformContext, QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck ): mOutput( output ), mTransformContext( transformContext ), mInvalidGeometryCheck( invalidGeometryCheck )
   {
   }
 
@@ -88,6 +87,7 @@ namespace Vectoranalysis
   {
     QgsFeatureRequest request( id );
     request.setSubsetOfAttributes( attIdx );
+    request.setInvalidGeometryCheck( mInvalidGeometryCheck );
     if ( !layer->getFeatures( request ).nextFeature( feature ) )
     {
       return false;

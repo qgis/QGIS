@@ -41,13 +41,13 @@ namespace Vectoranalysis
         CrsLayerB
       };
 
-      AbstractTool( QgsFeatureSink *output, QgsCoordinateTransformContext transformContext, double precision = 1E-7 );
+      AbstractTool( QgsFeatureSink *output, QgsCoordinateTransformContext transformContext, QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck );
       virtual ~AbstractTool();
       QFuture<void> init();
       virtual QFuture<void> execute( int task );
       virtual int getTaskCount() const { return 1; }
       void finalizeOutput() {}
-      const QList<QString> &getExceptions() const { return mExceptions; }
+      const QStringList &getExceptions() const { return mExceptions; }
 
 
     protected:
@@ -79,13 +79,13 @@ namespace Vectoranalysis
       void writeFeatures( QgsFeatureList &outFeatures );
 
       QList<Job *> mJobQueue;
-      QList<QString> mExceptions;
+      QStringList mExceptions;
 
       QMutex mIntersectMutex;
       QMutex mWriteMutex;
       QgsFeatureSink *mOutput;
-      double mPrecision;
       QgsCoordinateTransformContext mTransformContext;
+      QgsFeatureRequest::InvalidGeometryCheck mInvalidGeometryCheck;
   };
 
 } // Geoprocessing

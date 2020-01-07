@@ -30,7 +30,7 @@ namespace Vectoranalysis
                       QgsFeatureSource *layerB,
                       QgsFeatureSink *output,
                       QgsCoordinateTransformContext transformContext,
-                      double precision = 1E-7 );
+                      QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck );
       ~DifferenceTool() {}
 
     private:
