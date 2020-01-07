@@ -21,6 +21,7 @@
 QgsMesh3dRenderControler::QgsMesh3dRenderControler( QgsAbstract3DEngine *engine3D ):
   QObject( engine3D ), mEngine3D( engine3D )
 {
+  createBuffer();
   createGrapheNode();
   engine3D->addFrameGraphNode( mRootFrameGraph );
 }
@@ -47,42 +48,7 @@ void QgsMesh3dRenderControler::deactivate()
 
 void QgsMesh3dRenderControler::createGrapheNode()
 {
-  QSize viewPortSize( mEngine3D->size() );
 
-  mMeshColorBuffer = new Qt3DRender::QTexture2D();
-  mMeshColorBuffer->setFormat( Qt3DRender::QAbstractTexture::RGBA32F );
-  mMeshColorBuffer->setWidth( viewPortSize.width() );
-  mMeshColorBuffer->setHeight( viewPortSize.height() );
-  mMeshColorBuffer->setWrapMode( Qt3DRender::QTextureWrapMode( Qt3DRender::QTextureWrapMode::ClampToEdge ) );
-  mMeshColorBuffer->setMinificationFilter( Qt3DRender::QAbstractTexture::Linear );
-  mMeshColorBuffer->setMagnificationFilter( Qt3DRender::QAbstractTexture::Linear );
-
-  mMeshDepthBuffer = new Qt3DRender::QTexture2D();
-  mMeshDepthBuffer->setFormat( Qt3DRender::QAbstractTexture::DepthFormat );
-  mMeshDepthBuffer->setWidth( viewPortSize.width() );
-  mMeshDepthBuffer->setHeight( viewPortSize.height() );
-  mMeshDepthBuffer->setWrapMode( Qt3DRender::QTextureWrapMode( Qt3DRender::QTextureWrapMode::ClampToEdge ) );
-  mMeshDepthBuffer->setMinificationFilter( Qt3DRender::QAbstractTexture::Linear );
-  mMeshDepthBuffer->setMagnificationFilter( Qt3DRender::QAbstractTexture::Linear );
-
-  mMeshLightedColorBuffer = new Qt3DRender::QTexture2D();
-  mMeshLightedColorBuffer->setFormat( Qt3DRender::QAbstractTexture::RGBA32F );
-  mMeshLightedColorBuffer->setWidth( viewPortSize.width() );
-  mMeshLightedColorBuffer->setHeight( viewPortSize.height() );
-  mMeshLightedColorBuffer->setWrapMode( Qt3DRender::QTextureWrapMode( Qt3DRender::QTextureWrapMode::ClampToEdge ) );
-  mMeshLightedColorBuffer->setMinificationFilter( Qt3DRender::QAbstractTexture::Linear );
-  mMeshLightedColorBuffer->setMagnificationFilter( Qt3DRender::QAbstractTexture::Linear );
-
-  mMeshLightedDepthBuffer = new Qt3DRender::QTexture2D();
-  mMeshLightedDepthBuffer->setFormat( Qt3DRender::QAbstractTexture::DepthFormat );
-  mMeshLightedDepthBuffer->setWidth( viewPortSize.width() );
-  mMeshLightedDepthBuffer->setHeight( viewPortSize.height() );
-  mMeshLightedDepthBuffer->setWrapMode( Qt3DRender::QTextureWrapMode( Qt3DRender::QTextureWrapMode::ClampToEdge ) );
-  mMeshLightedDepthBuffer->setMinificationFilter( Qt3DRender::QAbstractTexture::Linear );
-  mMeshLightedDepthBuffer->setMagnificationFilter( Qt3DRender::QAbstractTexture::Linear );
-
-  mMeshColorBufferWidthParameter = new Qt3DRender::QParameter( "colorTextureWidth", viewPortSize.width() );
-  mMeshColorBufferHeightParameter = new Qt3DRender::QParameter( "colorTextureHeight", viewPortSize.height() );
 
   mRootFrameGraph = new Qt3DRender::QFrameGraphNode;
   {
@@ -176,4 +142,44 @@ void QgsMesh3dRenderControler::createGrapheNode()
       }
     }
   }
+}
+
+void QgsMesh3dRenderControler::createBuffer()
+{
+  mViewPortSize = mEngine3D->size();
+
+  mMeshColorBuffer = new Qt3DRender::QTexture2D();
+  mMeshColorBuffer->setFormat( Qt3DRender::QAbstractTexture::RGBA32F );
+  mMeshColorBuffer->setWidth( mViewPortSize.width() );
+  mMeshColorBuffer->setHeight( mViewPortSize.height() );
+  mMeshColorBuffer->setWrapMode( Qt3DRender::QTextureWrapMode( Qt3DRender::QTextureWrapMode::ClampToEdge ) );
+  mMeshColorBuffer->setMinificationFilter( Qt3DRender::QAbstractTexture::Linear );
+  mMeshColorBuffer->setMagnificationFilter( Qt3DRender::QAbstractTexture::Linear );
+
+  mMeshDepthBuffer = new Qt3DRender::QTexture2D();
+  mMeshDepthBuffer->setFormat( Qt3DRender::QAbstractTexture::DepthFormat );
+  mMeshDepthBuffer->setWidth( mViewPortSize.width() );
+  mMeshDepthBuffer->setHeight( mViewPortSize.height() );
+  mMeshDepthBuffer->setWrapMode( Qt3DRender::QTextureWrapMode( Qt3DRender::QTextureWrapMode::ClampToEdge ) );
+  mMeshDepthBuffer->setMinificationFilter( Qt3DRender::QAbstractTexture::Linear );
+  mMeshDepthBuffer->setMagnificationFilter( Qt3DRender::QAbstractTexture::Linear );
+
+  mMeshLightedColorBuffer = new Qt3DRender::QTexture2D();
+  mMeshLightedColorBuffer->setFormat( Qt3DRender::QAbstractTexture::RGBA32F );
+  mMeshLightedColorBuffer->setWidth( mViewPortSize.width() );
+  mMeshLightedColorBuffer->setHeight( mViewPortSize.height() );
+  mMeshLightedColorBuffer->setWrapMode( Qt3DRender::QTextureWrapMode( Qt3DRender::QTextureWrapMode::ClampToEdge ) );
+  mMeshLightedColorBuffer->setMinificationFilter( Qt3DRender::QAbstractTexture::Linear );
+  mMeshLightedColorBuffer->setMagnificationFilter( Qt3DRender::QAbstractTexture::Linear );
+
+  mMeshLightedDepthBuffer = new Qt3DRender::QTexture2D();
+  mMeshLightedDepthBuffer->setFormat( Qt3DRender::QAbstractTexture::DepthFormat );
+  mMeshLightedDepthBuffer->setWidth( mViewPortSize.width() );
+  mMeshLightedDepthBuffer->setHeight( mViewPortSize.height() );
+  mMeshLightedDepthBuffer->setWrapMode( Qt3DRender::QTextureWrapMode( Qt3DRender::QTextureWrapMode::ClampToEdge ) );
+  mMeshLightedDepthBuffer->setMinificationFilter( Qt3DRender::QAbstractTexture::Linear );
+  mMeshLightedDepthBuffer->setMagnificationFilter( Qt3DRender::QAbstractTexture::Linear );
+
+  mMeshColorBufferWidthParameter = new Qt3DRender::QParameter( "colorTextureWidth", mViewPortSize.width() );
+  mMeshColorBufferHeightParameter = new Qt3DRender::QParameter( "colorTextureHeight", mViewPortSize.height() );
 }

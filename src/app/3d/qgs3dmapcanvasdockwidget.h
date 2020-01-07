@@ -17,6 +17,9 @@
 #define QGS3DMAPCANVASDOCKWIDGET_H
 
 #include "qgsdockwidget.h"
+#include "qgis_app.h"
+
+#define SIP_NO_FILE
 
 class QLabel;
 class QProgressBar;
@@ -29,7 +32,8 @@ class Qgs3DMapToolMeasureLine;
 class QgsMapCanvas;
 
 
-class Qgs3DMapCanvasDockWidget : public QgsDockWidget
+
+class APP_EXPORT Qgs3DMapCanvasDockWidget : public QgsDockWidget
 {
     Q_OBJECT
   public:

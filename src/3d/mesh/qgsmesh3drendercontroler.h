@@ -36,15 +36,15 @@ class QgsMesh3dRenderControler: public QObject
   private:
 
     void createGrapheNode();
+    void createBuffer();
 
     QgsAbstract3DEngine *mEngine3D = nullptr;
     Qt3DRender::QFrameGraphNode *mRootFrameGraph = nullptr;
+    QSize mViewPortSize;
     Qt3DRender::QTexture2D *mMeshColorBuffer;
     Qt3DRender::QTexture2D *mMeshDepthBuffer;
     Qt3DRender::QTexture2D *mMeshLightedColorBuffer;
     Qt3DRender::QTexture2D *mMeshLightedDepthBuffer;
-    int viewportWidth;
-    int viewportHeight;
     Qt3DRender::QParameter *mMeshColorTextureParameter = nullptr;
     Qt3DRender::QParameter *mMeshColorBufferWidthParameter = nullptr;
     Qt3DRender::QParameter *mMeshColorBufferHeightParameter = nullptr;
