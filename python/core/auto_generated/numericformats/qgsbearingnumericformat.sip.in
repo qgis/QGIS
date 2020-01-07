@@ -36,6 +36,8 @@ Default constructor
 
     virtual QString visibleName() const;
 
+    virtual int sortKey();
+
     virtual QString formatDouble( double value, const QgsNumericFormatContext &context ) const;
 
     virtual QgsNumericFormat *clone() const /Factory/;

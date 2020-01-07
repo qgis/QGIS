@@ -26,6 +26,11 @@ QgsNumericFormatContext::QgsNumericFormatContext()
   mDecimalSep = l.decimalPoint();
 }
 
+int QgsNumericFormat::sortKey()
+{
+  return 100;
+}
+
 void QgsNumericFormat::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
   const QVariantMap config = configuration( context );

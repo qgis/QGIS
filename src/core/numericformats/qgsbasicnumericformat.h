@@ -39,6 +39,7 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
 
     QString id() const override;
     QString visibleName() const override;
+    int sortKey() override;
     QString formatDouble( double value, const QgsNumericFormatContext &context ) const override;
     QgsNumericFormat *clone() const override SIP_FACTORY;
     QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const override SIP_FACTORY;

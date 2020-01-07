@@ -35,6 +35,13 @@ Returns a new format object representing the settings currently configured in th
 The caller takes ownership of the returned object.
 %End
 
+  signals:
+
+    void changed();
+%Docstring
+Emitted whenever the format configured in the widget is changed.
+%End
+
 };
 
 /************************************************************************

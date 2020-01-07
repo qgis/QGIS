@@ -87,6 +87,11 @@ The caller takes ownership of the returned object.
 Returns the translated, user-visible name for the format with matching ``id``.
 %End
 
+    int sortKey( const QString &id ) const;
+%Docstring
+Returns the sorting key for the format with matching ``id``.
+%End
+
 };
 
 /************************************************************************

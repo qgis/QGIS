@@ -153,6 +153,13 @@ class CORE_EXPORT QgsNumericFormat
     virtual QString visibleName() const = 0;
 
     /**
+     * Returns a sorting key value, where formats with a lower sort key will be shown earlier in lists.
+     *
+     * Generally, subclasses should return QgsNumericFormat::sortKey() as their sorting key.
+     */
+    virtual int sortKey();
+
+    /**
      * Returns a formatted string representation of a numeric double value.
      */
     virtual QString formatDouble( double value, const QgsNumericFormatContext &context ) const = 0;
