@@ -80,6 +80,9 @@ class GUI_EXPORT QgsBasicNumericFormatWidget : public QgsNumericFormatWidget, pr
 
   public:
 
+    /**
+     * Constructor for QgsBasicNumericFormatWidget, initially showing the specified \a format.
+     */
     QgsBasicNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsBasicNumericFormatWidget() override;
 
@@ -109,6 +112,9 @@ class GUI_EXPORT QgsBearingNumericFormatWidget : public QgsNumericFormatWidget, 
 
   public:
 
+    /**
+     * Constructor for QgsBearingNumericFormatWidget, initially showing the specified \a format.
+     */
     QgsBearingNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsBearingNumericFormatWidget() override;
 
@@ -139,6 +145,9 @@ class GUI_EXPORT QgsCurrencyNumericFormatWidget : public QgsNumericFormatWidget,
 
   public:
 
+    /**
+     * Constructor for QgsCurrencyNumericFormatWidget, initially showing the specified \a format.
+     */
     QgsCurrencyNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsCurrencyNumericFormatWidget() override;
 
@@ -169,6 +178,9 @@ class GUI_EXPORT QgsPercentageNumericFormatWidget : public QgsNumericFormatWidge
 
   public:
 
+    /**
+     * Constructor for QgsPercentageNumericFormatWidget, initially showing the specified \a format.
+     */
     QgsPercentageNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsPercentageNumericFormatWidget() override;
 
@@ -200,6 +212,9 @@ class GUI_EXPORT QgsScientificNumericFormatWidget : public QgsNumericFormatWidge
 
   public:
 
+    /**
+     * Constructor for QgsScientificNumericFormatWidget, initially showing the specified \a format.
+     */
     QgsScientificNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsScientificNumericFormatWidget() override;
 

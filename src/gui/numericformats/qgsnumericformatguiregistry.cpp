@@ -19,7 +19,7 @@
 #include "qgis.h"
 #include "qgsnumericformatwidget.h"
 
-
+///@cond PRIVATE
 class QgsBasicNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
@@ -69,7 +69,7 @@ class QgsScientificNumericFormatConfigurationWidgetFactory : public QgsNumericFo
       return new QgsScientificNumericFormatWidget( format );
     }
 };
-
+///@endcond
 
 QgsNumericFormatGuiRegistry::QgsNumericFormatGuiRegistry()
 {
