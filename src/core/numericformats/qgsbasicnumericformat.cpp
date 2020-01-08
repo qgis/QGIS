@@ -21,19 +21,19 @@
 #include <locale>
 #include <iomanip>
 
-struct formatter : std::numpunct<char>
+struct formatter : std::numpunct<wchar_t>
 {
   formatter( QChar thousands, bool showThousands, QChar decimal )
-    : mThousands( thousands.toLatin1() )
-    , mDecimal( decimal.toLatin1() )
+    : mThousands( thousands.unicode() )
+    , mDecimal( decimal.unicode() )
     , mShowThousands( showThousands )
   {}
-  char do_decimal_point() const override {return mDecimal;}
-  char do_thousands_sep() const override {return mThousands;}
-  string_type do_grouping() const override { return mShowThousands ? "\3" : "\0"; }
+  wchar_t do_decimal_point() const override { return mDecimal; }
+  wchar_t do_thousands_sep() const override { return mThousands; }
+  std::string do_grouping() const override { return mShowThousands ? "\3" : "\0"; }
 
-  char mThousands;
-  char mDecimal;
+  wchar_t mThousands;
+  wchar_t mDecimal;
   bool mShowThousands = true;
 };
 
@@ -58,7 +58,7 @@ int QgsBasicNumericFormat::sortKey()
 
 QString QgsBasicNumericFormat::formatDouble( double value, const QgsNumericFormatContext &context ) const
 {
-  std::ostringstream os;
+  std::basic_stringstream<wchar_t> os;
   os.imbue( std::locale( os.getloc(), new formatter( context.thousandsSeparator(), mShowThousandsSeparator, context.decimalSeparator() ) ) );
 
   if ( !mUseScientific )
@@ -67,7 +67,7 @@ QString QgsBasicNumericFormat::formatDouble( double value, const QgsNumericForma
     os << std::scientific << std::setprecision( mNumberDecimalPlaces );
 
   os << value;
-  QString res = QString::fromStdString( os.str() );
+  QString res = QString::fromStdWString( os.str() );
 
   if ( mShowPlusSign && value > 0 )
     res.prepend( context.positiveSign() );
