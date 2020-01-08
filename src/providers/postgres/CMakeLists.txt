@@ -56,6 +56,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${POSTGRES_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 IF (WITH_GUI)
@@ -96,7 +97,9 @@ ENDIF (WITH_GUI)
 # Postgres Raster
 
 SET(PGRASTER_SRCS
-  qgspostgresrasterprovider.cpp
+  raster/qgspostgresrasterprovider.cpp
+  raster/qgspostgresrastershareddata.cpp
+  raster/qgspostgresrasterutils.cpp
   qgspostgresconn.cpp
   qgspostgresconnpool.cpp
 )

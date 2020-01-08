@@ -71,7 +71,7 @@ static bool tableExists( QgsPostgresConn &conn, const QString &name )
 }
 
 QgsPostgresPrimaryKeyType
-static QgsPostgresProvider::pkType( const QgsField &f ) const
+QgsPostgresProvider::pkType( const QgsField &f ) const
 {
   switch ( f.type() )
   {

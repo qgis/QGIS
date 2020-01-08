@@ -21,9 +21,14 @@
 #include "qgsprovidermetadata.h"
 #include "qgspostgresconn.h"
 #include "qgspostgresprovider.h"
+#include "qgsogrutils.h"
+#include "qgspostgresrastershareddata.h"
 
 #include <exception>
 
+/**
+ * The QgsPostgresRasterProvider class implements a raster data provider for PostGIS
+ */
 class QgsPostgresRasterProvider : public QgsRasterDataProvider
 {
 
@@ -36,8 +41,9 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
 
     virtual ~QgsPostgresRasterProvider() override;
 
-    // QgsDataProvider interface
   public:
+
+    // QgsDataProvider interface
     virtual QgsCoordinateReferenceSystem crs() const override;
     virtual QgsRectangle extent() const override;
     virtual bool isValid() const override;
@@ -54,7 +60,7 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     //! Gets block size
     virtual int xBlockSize() const;
     virtual int yBlockSize() const;
-
+    virtual QgsRasterBandStats bandStatistics(int bandNo, int stats, const QgsRectangle& extent, int sampleSize, QgsRasterBlockFeedback* feedback) override;
 
     // QgsRasterDataProvider interface
     virtual QString htmlMetadata() override;
@@ -62,9 +68,9 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     virtual QString lastError() override;
     int capabilities() const override;
 
-    // Utility functions
-    //! Parses a WKB raster and returns information as a variant map
-    static QVariantMap parseWkb( const QByteArray &wkb );
+    // QgsRasterInterface interface
+    int xSize() const override;
+    int ySize() const override;
 
     static const QString PG_RASTER_PROVIDER_KEY;
     static const QString PG_RASTER_PROVIDER_DESCRIPTION;
@@ -100,7 +106,7 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     //! Data size in bytes for each band
     std::vector<int> mDataSizes;
     //! Store overviews
-    QMap<int, QString> mOverViews;
+    QMap<unsigned int, QString> mOverViews;
     //! Band count
     int mBandCount = 0;
     //! If is tiled
@@ -118,9 +124,9 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     //! Raster tile size y
     int mTileHeight = 0;
     //! Scale x
-    int mScaleX = 0;
+    double mScaleX = 0;
     //! Scale y
-    int mScaleY = 0;
+    double mScaleY = 0;
 
     QString mDetectedSrid;            //!< Spatial reference detected in the database
     QString mRequestedSrid;           //!< Spatial reference requested in the uri
@@ -137,16 +143,20 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
      */
     QList<QString> mPrimaryKeyAttrs;
 
+    //! Mutable data shared between provider and feature sources
+    std::shared_ptr<QgsPostgresRasterSharedData> mShared;
+
 
     QgsPostgresConn *connectionRO() const;
     QgsPostgresConn *connectionRW();
 
     bool hasSufficientPermsAndCapabilities();
     void disconnectDb();
-    //! Get SRID and data type, FALSE if it's not a valid raster table
-    bool getDetails();
+    //! Initialize the raster by fetching metadata and creating spatial indexes.
+    bool init();
     //! Search for overviews and store a map
     void findOverviews();
+    //! Initialize spatial indexes
 
     static QString quotedIdentifier( const QString &ident ) { return QgsPostgresConn::quotedIdentifier( ident ); }
     static QString quotedValue( const QVariant &value ) { return QgsPostgresConn::quotedValue( value ); }
@@ -168,13 +178,7 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
      */
     void determinePrimaryKeyFromUriKeyColumn();
 
-
-    // QgsRasterInterface interface
-  public:
-    int xSize() const override;
-    int ySize() const override;
 };
-
 
 struct QgsPostgresRasterProviderException: public std::exception
 {
