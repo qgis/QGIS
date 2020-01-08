@@ -115,7 +115,7 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
     /**
      * Returns the rounding type, which controls the behavior of the numberDecimalPlaces() setting.
      *
-     * \see setDirectionFormat()
+     * \see setRoundingType()
      */
     RoundingType roundingType() const;
 
