@@ -164,6 +164,9 @@ void QgsMesh3DSymbolWidget::reloadColorRampShaderMinMax()
     return;
 
   QgsTriangularMesh *triangleMesh = mLayer->triangularMesh();
+  if ( !triangleMesh )
+    return;
+
   double min = std::numeric_limits<double>::max();
   double max = std::numeric_limits<double>::min();
   for ( int i = 0; i < triangleMesh->vertices().count(); ++i )

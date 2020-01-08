@@ -33,12 +33,18 @@
 #include "qgsterraintextureimage_p.h"
 #include "qgsmesh3dmaterial.h"
 
+int QgsMesh3dEntity::mMesh3DEntityCount = 0;
 
 QgsMesh3dEntity::QgsMesh3dEntity( const Qgs3DMapSettings &map, QgsMeshLayer *layer, const QgsMesh3DSymbol &symbol ):
   mSymbol( symbol ),
   mMapSettings( map ),
   mLayer( layer )
 {
+  mMesh3DEntityCount++;
+  name = layer->name();
+  name.append( " " ).append( QString::number( mMesh3DEntityCount ) );
+  qDebug() << "Create mesh Entity " << name;
+  qDebug() << "Mesh 3D entity existing " << mMesh3DEntityCount;
 }
 
 void QgsMesh3dEntity::build()
@@ -63,3 +69,46 @@ void QgsMesh3dEntity::applyMaterial()
   mMaterial = new QgsMesh3dMaterial( mSymbol );
   addComponent( mMaterial );
 }
+
+///////////
+int QgsMesh3dTerrainTileEntity::mMesh3DEntityCount = 0;
+
+QgsMesh3dTerrainTileEntity::QgsMesh3dTerrainTileEntity( const Qgs3DMapSettings &map,
+    QgsMeshLayer *layer,
+    const QgsMesh3DSymbol &symbol,
+    QgsChunkNodeId nodeId,
+    Qt3DCore::QNode *parent ):  QgsTerrainTileEntity( nodeId, parent ),
+  mSymbol( symbol ),
+  mMapSettings( map ),
+  mLayer( layer )
+{
+  mMesh3DEntityCount++;
+  name = layer->name();
+  name.append( " " ).append( QString::number( mMesh3DEntityCount ) );
+  qDebug() << "Create mesh Terrain Entity " << name;
+  qDebug() << "Mesh 3D entity Terrain existing " << mMesh3DEntityCount;
+}
+
+void QgsMesh3dTerrainTileEntity::build()
+{
+  buildGeometry();
+  applyMaterial();
+}
+
+void QgsMesh3dTerrainTileEntity::buildGeometry()
+{
+  Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
+  mesh->setGeometry( new QgsMesh3dGeometry_p( *mLayer->triangularMesh(), mLayer->extent(), mSymbol.verticaleScale(), mesh ) );
+  addComponent( mesh );
+
+  Qt3DCore::QTransform *tform = new Qt3DCore::QTransform;
+  tform->setTranslation( QVector3D( float( -mMapSettings.origin().x() ), 0, float( mMapSettings.origin().y() ) ) );
+  addComponent( tform );
+}
+
+void QgsMesh3dTerrainTileEntity::applyMaterial()
+{
+  mMaterial = new QgsMesh3dMaterial( mSymbol );
+  addComponent( mMaterial );
+}
+

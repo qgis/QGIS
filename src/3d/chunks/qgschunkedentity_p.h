@@ -61,6 +61,7 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
     {
       QVector3D cameraPos;   //!< Camera position
       float cameraFov;       //!< Field of view (in degrees)
+      float nearPlanDistance;//!< Ditance of the near plan
       int screenSizePx;      //!< Size of the viewport in pixels
       QMatrix4x4 viewProjectionMatrix; //!< For frustum culling
     };
