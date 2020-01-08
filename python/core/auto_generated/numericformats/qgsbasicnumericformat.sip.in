@@ -116,7 +116,7 @@ numberDecimalPlaces()).
 %Docstring
 Returns the rounding type, which controls the behavior of the numberDecimalPlaces() setting.
 
-.. seealso:: :py:func:`setDirectionFormat`
+.. seealso:: :py:func:`setRoundingType`
 %End
 
     void setRoundingType( RoundingType type );
