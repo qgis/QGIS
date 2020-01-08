@@ -903,16 +903,22 @@ QString QgsVectorLayer::subsetString() const
   if ( !mValid || !mDataProvider )
   {
     QgsDebugMsgLevel( QStringLiteral( "invoked with invalid layer or null mDataProvider" ), 3 );
-    return QString();
+    return customProperty( QStringLiteral( "storedSubsetString" ) ).toString();
   }
   return mDataProvider->subsetString();
 }
 
 bool QgsVectorLayer::setSubsetString( const QString &subset )
 {
-  if ( !mValid || !mDataProvider || mEditBuffer )
+  if ( !mValid || !mDataProvider )
   {
     QgsDebugMsgLevel( QStringLiteral( "invoked with invalid layer or null mDataProvider or while editing" ), 3 );
+    setCustomProperty( QStringLiteral( "storedSubsetString" ), subset );
+    return false;
+  }
+  else if ( mEditBuffer )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "invoked while editing" ), 3 );
     return false;
   }
 
