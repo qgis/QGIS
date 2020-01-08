@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsScaleBarSettings
 {
 %Docstring
@@ -51,6 +53,14 @@ for scalebar drawing with QgsScaleBarRenderer.
 %Docstring
 Constructor for QgsScaleBarSettings.
 %End
+
+    ~QgsScaleBarSettings();
+
+    QgsScaleBarSettings( const QgsScaleBarSettings &other );
+%Docstring
+Copy constructor
+%End
+
 
     int numberOfSegments() const;
 %Docstring
@@ -514,6 +524,26 @@ Returns the cap style used for drawing lines in the scalebar.
 Sets the cap ``style`` used when drawing the lines in the scalebar.
 
 .. seealso:: :py:func:`lineCapStyle`
+%End
+
+    const QgsNumericFormat *numericFormat() const;
+%Docstring
+Returns the numeric format used for numbers in the scalebar.
+
+.. seealso:: :py:func:`setNumericFormat`
+
+.. versionadded:: 3.12
+%End
+
+    void setNumericFormat( QgsNumericFormat *format /Transfer/ );
+%Docstring
+Sets the numeric ``format`` used for numbers in the scalebar.
+
+Ownership of ``format`` is transferred to the settings.
+
+.. seealso:: :py:func:`numericFormat`
+
+.. versionadded:: 3.12
 %End
 
 };

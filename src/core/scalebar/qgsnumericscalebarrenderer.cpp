@@ -17,6 +17,7 @@
 #include "qgsnumericscalebarrenderer.h"
 #include "qgsscalebarsettings.h"
 #include "qgslayoututils.h"
+#include "qgsnumericformat.h"
 #include <QList>
 #include <QPainter>
 
@@ -52,7 +53,7 @@ void QgsNumericScaleBarRenderer::draw( QgsRenderContext &context, const QgsScale
   //text destination is item's rect, excluding the margin
   QRectF painterRect( margin, margin, context.convertToPainterUnits( scaleContext.size.width(), QgsUnitTypes::RenderMillimeters ) - 2 * margin,
                       context.convertToPainterUnits( scaleContext.size.height(), QgsUnitTypes::RenderMillimeters ) - 2 * margin );
-  QgsTextRenderer::drawText( painterRect, 0, hAlign, QStringList() << scaleText( scaleContext.scale ), context, settings.textFormat() );
+  QgsTextRenderer::drawText( painterRect, 0, hAlign, QStringList() << scaleText( settings, scaleContext.scale ), context, settings.textFormat() );
 
   painter->restore();
 }
@@ -62,14 +63,14 @@ QSizeF QgsNumericScaleBarRenderer::calculateBoxSize( const QgsScaleBarSettings &
 {
   QFont font = settings.textFormat().toQFont();
 
-  double textWidth = QgsLayoutUtils::textWidthMM( font, scaleText( scaleContext.scale ) );
+  double textWidth = QgsLayoutUtils::textWidthMM( font, scaleText( settings, scaleContext.scale ) );
   double textHeight = QgsLayoutUtils::fontAscentMM( font );
 
   return QSizeF( 2 * settings.boxContentSpace() + 2 * settings.pen().width() + textWidth,
                  textHeight + 2 * settings.boxContentSpace() );
 }
 
-QString QgsNumericScaleBarRenderer::scaleText( double scale ) const
+QString QgsNumericScaleBarRenderer::scaleText( const QgsScaleBarSettings &settings, double scale ) const
 {
-  return "1:" + QStringLiteral( "%L1" ).arg( scale, 0, 'f', 0 );
+  return "1:" + settings.numericFormat()->formatDouble( scale, QgsNumericFormatContext() );
 }
