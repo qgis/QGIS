@@ -34,7 +34,7 @@
 class QextSerialPort;
 class QgsGpsConnection;
 class QgsGpsTrackerThread;
-struct QgsGpsInformation;
+class QgsGpsInformation;
 class QgsMapCanvas;
 class QgsFeature;
 
