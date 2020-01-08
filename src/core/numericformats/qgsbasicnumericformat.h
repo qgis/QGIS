@@ -126,6 +126,22 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
      */
     void setRoundingType( RoundingType type );
 
+    /**
+     * Returns any override for the thousands separator character. If an invalid QChar is returned,
+     * then the QGIS locale separator is used instead.
+     *
+     * \see setThousandsSeparator()
+     */
+    QChar thousandsSeparator() const;
+
+    /**
+     * Sets an override \a character for the thousands separator character. If an invalid QChar is set,
+     * then the QGIS locale separator is used instead.
+     *
+     * \see thousandsSeparator()
+     */
+    void setThousandsSeparator( QChar character );
+
   protected:
 
     /**
@@ -143,6 +159,8 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
     bool mShowTrailingZeros = false;
 
     RoundingType mRoundingType = DecimalPlaces;
+
+    QChar mThousandsSeparator;
 };
 
 #endif // QGSBASICNUMERICFORMAT_H

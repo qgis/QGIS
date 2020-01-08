@@ -59,7 +59,7 @@ int QgsBasicNumericFormat::sortKey()
 QString QgsBasicNumericFormat::formatDouble( double value, const QgsNumericFormatContext &context ) const
 {
   std::basic_stringstream<wchar_t> os;
-  os.imbue( std::locale( os.getloc(), new formatter( context.thousandsSeparator(), mShowThousandsSeparator, context.decimalSeparator() ) ) );
+  os.imbue( std::locale( os.getloc(), new formatter( mThousandsSeparator.isNull() ? context.thousandsSeparator() : mThousandsSeparator, mShowThousandsSeparator, context.decimalSeparator() ) ) );
 
   if ( !mUseScientific )
   {
@@ -145,6 +145,7 @@ QVariantMap QgsBasicNumericFormat::configuration( const QgsReadWriteContext & ) 
   res.insert( QStringLiteral( "show_plus" ), mShowPlusSign );
   res.insert( QStringLiteral( "show_trailing_zeros" ), mShowTrailingZeros );
   res.insert( QStringLiteral( "rounding_type" ), static_cast< int >( mRoundingType ) );
+  res.insert( QStringLiteral( "thousand_separator" ), mThousandsSeparator );
   return res;
 }
 
@@ -155,6 +156,7 @@ void QgsBasicNumericFormat::setConfiguration( const QVariantMap &configuration, 
   mShowPlusSign = configuration.value( QStringLiteral( "show_plus" ), false ).toBool();
   mShowTrailingZeros = configuration.value( QStringLiteral( "show_trailing_zeros" ), false ).toBool();
   mRoundingType = static_cast< RoundingType >( configuration.value( QStringLiteral( "rounding_type" ), static_cast< int >( DecimalPlaces ) ).toInt() );
+  mThousandsSeparator = configuration.value( QStringLiteral( "thousand_separator" ), QChar() ).toChar();
 }
 
 int QgsBasicNumericFormat::numberDecimalPlaces() const
@@ -205,4 +207,14 @@ QgsBasicNumericFormat::RoundingType QgsBasicNumericFormat::roundingType() const
 void QgsBasicNumericFormat::setRoundingType( QgsBasicNumericFormat::RoundingType type )
 {
   mRoundingType = type;
+}
+
+QChar QgsBasicNumericFormat::thousandsSeparator() const
+{
+  return mThousandsSeparator;
+}
+
+void QgsBasicNumericFormat::setThousandsSeparator( QChar character )
+{
+  mThousandsSeparator = character;
 }
