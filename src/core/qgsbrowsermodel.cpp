@@ -87,41 +87,53 @@ void QgsBrowserModel::addRootItems()
 {
   updateProjectHome();
 
-  // give the home directory a prominent third place
-  QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, tr( "Home" ), QDir::homePath(), QStringLiteral( HOME_PREFIX ) + QDir::homePath() );
-  item->setSortKey( QStringLiteral( " 2" ) );
-  setupItemConnections( item );
-  mRootItems << item;
-
-  // add favorite directories
-  mFavorites = new QgsFavoritesItem( nullptr, tr( "Favorites" ) );
-  if ( mFavorites )
+  if ( shouldAddRootItem( QStringLiteral( "special:Home" ) ) )
   {
-    setupItemConnections( mFavorites );
-    mRootItems << mFavorites;
-  }
-
-  // add drives
-  const auto drives { QDir::drives() };
-  for ( const QFileInfo &drive : drives )
-  {
-    const QString path = drive.absolutePath();
-
-    if ( QgsDirectoryItem::hiddenPath( path ) )
-      continue;
-
-    QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, path, path );
-    item->setSortKey( QStringLiteral( " 3 %1" ).arg( path ) );
-    mDriveItems.insert( path, item );
-
+    // give the home directory a prominent third place
+    QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, tr( "Home" ), QDir::homePath(), QStringLiteral( HOME_PREFIX ) + QDir::homePath() );
+    item->setSortKey( QStringLiteral( " 2" ) );
     setupItemConnections( item );
     mRootItems << item;
   }
 
+  if ( shouldAddRootItem( QStringLiteral( "special:Favorites" ) ) )
+  {
+    // add favorite directories
+    mFavorites = new QgsFavoritesItem( nullptr, tr( "Favorites" ) );
+    if ( mFavorites )
+    {
+      setupItemConnections( mFavorites );
+      mRootItems << mFavorites;
+    }
+  }
+
+  if ( shouldAddRootItem( QStringLiteral( "special:Drives" ) ) )
+  {
+    // add drives
+    const auto drives { QDir::drives() };
+    for ( const QFileInfo &drive : drives )
+    {
+      const QString path = drive.absolutePath();
+
+      if ( QgsDirectoryItem::hiddenPath( path ) )
+        continue;
+
+      QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, path, path );
+      item->setSortKey( QStringLiteral( " 3 %1" ).arg( path ) );
+      mDriveItems.insert( path, item );
+
+      setupItemConnections( item );
+      mRootItems << item;
+    }
+  }
+
 #ifdef Q_OS_MAC
-  QString path = QString( "/Volumes" );
-  QgsDirectoryItem *vols = new QgsDirectoryItem( nullptr, path, path );
-  mRootItems << vols;
+  if ( shouldAddRootItem( QStringLiteral( "special:Volumes" ) ) )
+  {
+    QString path = QString( "/Volumes" );
+    QgsDirectoryItem *vols = new QgsDirectoryItem( nullptr, path, path );
+    mRootItems << vols;
+  }
 #endif
 
   // container for displaying providers as sorted groups (by QgsDataProvider::DataCapability enum)
@@ -140,11 +152,14 @@ void QgsBrowserModel::addRootItems()
     QgsDataItem *item = pr->createDataItem( QString(), nullptr );  // empty path -> top level
     if ( item )
     {
-      // Forward the signal from the root items to the model (and then to the app)
-      connect( item, &QgsDataItem::connectionsChanged, this, &QgsBrowserModel::connectionsChanged );
-      QgsDebugMsgLevel( "Add new top level item : " + item->name(), 4 );
-      setupItemConnections( item );
-      providerMap.insertMulti( capabilities, item );
+      if ( shouldAddRootItem( QStringLiteral( "provider:%1" ).arg( item->name() ) ) )
+      {
+        // Forward the signal from the root items to the model (and then to the app)
+        connect( item, &QgsDataItem::connectionsChanged, this, &QgsBrowserModel::connectionsChanged );
+        QgsDebugMsgLevel( "Add new top level item : " + item->name(), 4 );
+        setupItemConnections( item );
+        providerMap.insertMulti( capabilities, item );
+      }
     }
   }
 
@@ -178,6 +193,11 @@ void QgsBrowserModel::removeRootItems()
   mDriveItems.clear();
 }
 
+bool QgsBrowserModel::shouldAddRootItem( const QString &key ) const
+{
+  return !mDisabledDataItemsFilter.contains( key );
+}
+
 QMap<QString, QgsDirectoryItem *> QgsBrowserModel::driveItems() const
 {
   return mDriveItems;
@@ -194,6 +214,12 @@ void QgsBrowserModel::initialize()
   }
 }
 
+void QgsBrowserModel::setDisabledRootDataItems( const QStringList &filter )
+{
+  mDisabledDataItemsFilter = filter;
+  if ( initialized() )
+    reload();
+}
 
 Qt::ItemFlags QgsBrowserModel::flags( const QModelIndex &index ) const
 {
