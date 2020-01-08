@@ -7670,6 +7670,13 @@ void QgisApp::changeDataSource( QgsMapLayer *layer )
         {
           subsetString = vlayer->dataProvider()->subsetString();
         }
+        if ( subsetString.isEmpty() )
+        {
+          // actually -- the above isn't true in all situations. If a layer was invalid at the time
+          // that the subset string was set, then ONLY the layer has knowledge of this subset string!
+          subsetString = vlayer->subsetString();
+        }
+
         layer->setDataSource( uri.uri, layer->name(), uri.providerKey, QgsDataProvider::ProviderOptions() );
         // Re-apply original style and subset string  when fixing bad layers
         if ( !( layerWasValid || layer->originalXmlProperties().isEmpty() ) )
@@ -7699,6 +7706,10 @@ void QgisApp::changeDataSource( QgsMapLayer *layer )
                          .arg( layer->name( ) )
                          .arg( errorMsg ) );
           }
+        }
+        else if ( !subsetString.isEmpty() )
+        {
+          vlayer->setSubsetString( subsetString );
         }
 
         // All the following code is necessary to refresh the layer
