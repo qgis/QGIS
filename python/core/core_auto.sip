@@ -144,6 +144,7 @@
 %Include auto_generated/qgspostgresstringutils.sip
 %Include auto_generated/qgsproject.sip
 %Include auto_generated/qgsprojectbadlayerhandler.sip
+%Include auto_generated/qgsprojectdisplaysettings.sip
 %Include auto_generated/qgsprojectfiletransform.sip
 %Include auto_generated/qgsprojectproperty.sip
 %Include auto_generated/qgsprojectstorage.sip
