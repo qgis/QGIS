@@ -84,7 +84,7 @@ QString QgsBearingNumericFormat::formatDouble( double value, const QgsNumericFor
   return QgsBasicNumericFormat::formatDouble( value, context );
 }
 
-QgsNumericFormat *QgsBearingNumericFormat::clone() const
+QgsBearingNumericFormat *QgsBearingNumericFormat::clone() const
 {
   return new QgsBearingNumericFormat( *this );
 }

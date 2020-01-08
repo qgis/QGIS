@@ -19,6 +19,7 @@
 #include "qgsnumericformat.h"
 #include "qgspanelwidget.h"
 #include <memory>
+#include <QDialog>
 
 /**
  * \ingroup gui
@@ -127,6 +128,38 @@ class GUI_EXPORT QgsBearingNumericFormatWidget : public QgsNumericFormatWidget, 
     bool mBlockSignals = false;
 
 };
+
+
+/**
+ * \ingroup gui
+ * \class QgsBearingNumericFormatDialog
+ * A dialog which allow control over the properties of a QgsBearingNumericFormat.
+ * \since QGIS 3.12
+ */
+class GUI_EXPORT QgsBearingNumericFormatDialog : public QDialog
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsBearingNumericFormatDialog, initially showing the specified \a format.
+     */
+    QgsBearingNumericFormatDialog( const QgsNumericFormat *format, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Returns the format defined by the current settings in the dialog.
+     *
+     * Ownership of the returned object is transferred to the caller
+     */
+    QgsBearingNumericFormat *format() SIP_FACTORY;
+
+  private:
+
+    QgsBearingNumericFormatWidget *mWidget = nullptr;
+};
+
+
 
 
 #include "ui_qgscurrencynumericformatwidgetbase.h"
