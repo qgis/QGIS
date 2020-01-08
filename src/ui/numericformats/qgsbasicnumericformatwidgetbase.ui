@@ -6,29 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>245</width>
-    <height>297</height>
+    <width>221</width>
+    <height>285</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Decimal places</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QSpinBox" name="mDecimalsSpinBox">
-     <property name="value">
-      <number>6</number>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
+  <layout class="QGridLayout" name="gridLayout" columnstretch="0,1">
+   <item row="6" column="0">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -41,7 +27,21 @@
      </property>
     </spacer>
    </item>
-   <item row="1" column="0" colspan="2">
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Round to</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QSpinBox" name="mDecimalsSpinBox">
+     <property name="value">
+      <number>6</number>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="2">
     <widget class="QCheckBox" name="mShowThousandsCheckBox">
      <property name="text">
       <string>Show thousands separator</string>
@@ -51,17 +51,34 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0" colspan="2">
+   <item row="4" column="0" colspan="2">
     <widget class="QCheckBox" name="mShowPlusCheckBox">
      <property name="text">
       <string>Show plus sign</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="0" colspan="2">
+   <item row="5" column="0" colspan="2">
     <widget class="QCheckBox" name="mShowTrailingZerosCheckBox">
      <property name="text">
       <string>Show trailing zeros</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <widget class="QRadioButton" name="mRadDecimalPlaces">
+     <property name="text">
+      <string>Decimal places</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <widget class="QRadioButton" name="mRadSignificantFigures">
+     <property name="text">
+      <string>Significant figures</string>
      </property>
     </widget>
    </item>

@@ -59,6 +59,26 @@ QgsBasicNumericFormatWidget::QgsBasicNumericFormatWidget( const QgsNumericFormat
     if ( !mBlockSignals )
       emit changed();
   } );
+
+  connect( mRadDecimalPlaces, &QRadioButton::toggled, this, [ = ]( bool checked )
+  {
+    if ( !checked )
+      return;
+
+    mFormat->setRoundingType( QgsBasicNumericFormat::DecimalPlaces );
+    if ( !mBlockSignals )
+      emit changed();
+  } );
+
+  connect( mRadSignificantFigures, &QRadioButton::toggled, this, [ = ]( bool checked )
+  {
+    if ( !checked )
+      return;
+
+    mFormat->setRoundingType( QgsBasicNumericFormat::SignificantFigures );
+    if ( !mBlockSignals )
+      emit changed();
+  } );
 }
 
 QgsBasicNumericFormatWidget::~QgsBasicNumericFormatWidget() = default;
@@ -72,6 +92,17 @@ void QgsBasicNumericFormatWidget::setFormat( QgsNumericFormat *format )
   mShowPlusCheckBox->setChecked( mFormat->showPlusSign() );
   mShowTrailingZerosCheckBox->setChecked( mFormat->showTrailingZeros() );
   mShowThousandsCheckBox->setChecked( mFormat->showThousandsSeparator() );
+  switch ( mFormat->roundingType() )
+  {
+    case QgsBasicNumericFormat::DecimalPlaces:
+      mRadDecimalPlaces->setChecked( true );
+      break;
+
+    case QgsBasicNumericFormat::SignificantFigures:
+      mRadSignificantFigures->setChecked( true );
+      break;
+  }
+
   mBlockSignals = false;
 }
 

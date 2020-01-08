@@ -52,6 +52,7 @@ QgsNumericFormat *QgsScientificNumericFormat::create( const QVariantMap &configu
 {
   std::unique_ptr< QgsScientificNumericFormat > res = qgis::make_unique< QgsScientificNumericFormat >();
   res->setConfiguration( configuration, context );
+  res->setRoundingType( QgsBasicNumericFormat::DecimalPlaces );
   return res.release();
 }
 

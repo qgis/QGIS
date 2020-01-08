@@ -20,6 +20,12 @@ A numeric formatter which returns a simple text representation of a value.
 %End
   public:
 
+    enum RoundingType
+    {
+      DecimalPlaces,
+      SignificantFigures,
+    };
+
     QgsBasicNumericFormat();
 %Docstring
 Default constructor
@@ -104,6 +110,20 @@ numberDecimalPlaces()).
 .. seealso:: :py:func:`showTrailingZeros`
 
 .. seealso:: :py:func:`setNumberDecimalPlaces`
+%End
+
+    RoundingType roundingType() const;
+%Docstring
+Returns the rounding type, which controls the behavior of the numberDecimalPlaces() setting.
+
+.. seealso:: :py:func:`setDirectionFormat`
+%End
+
+    void setRoundingType( RoundingType type );
+%Docstring
+Sets the rounding ``type``, which controls the behavior of the numberDecimalPlaces() setting.
+
+.. seealso:: :py:func:`roundingType`
 %End
 
   protected:

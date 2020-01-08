@@ -57,7 +57,7 @@ described in the returned strings.
 .. seealso:: :py:func:`setDirectionFormat`
 %End
 
-    void setDirectionFormat( const FormatDirectionOption &format );
+    void setDirectionFormat( FormatDirectionOption format );
 %Docstring
 Sets the directional formatting option, which controls how bearing direction is
 described in the returned strings.

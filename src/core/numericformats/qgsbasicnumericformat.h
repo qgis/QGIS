@@ -33,6 +33,15 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
   public:
 
     /**
+     * Sets rounding type and behavior of the numberDecimalPlaces() setting.
+     */
+    enum RoundingType
+    {
+      DecimalPlaces, //!< Maximum number of decimal places
+      SignificantFigures, //!< Maximum number of significant figures
+    };
+
+    /**
       * Default constructor
       */
     QgsBasicNumericFormat();
@@ -103,6 +112,20 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
      */
     void setShowTrailingZeros( bool show );
 
+    /**
+     * Returns the rounding type, which controls the behavior of the numberDecimalPlaces() setting.
+     *
+     * \see setDirectionFormat()
+     */
+    RoundingType roundingType() const;
+
+    /**
+     * Sets the rounding \a type, which controls the behavior of the numberDecimalPlaces() setting.
+     *
+     * \see roundingType()
+     */
+    void setRoundingType( RoundingType type );
+
   protected:
 
     /**
@@ -118,6 +141,8 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
     bool mShowThousandsSeparator = true;
     bool mShowPlusSign = false;
     bool mShowTrailingZeros = false;
+
+    RoundingType mRoundingType = DecimalPlaces;
 };
 
 #endif // QGSBASICNUMERICFORMAT_H
