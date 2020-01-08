@@ -276,6 +276,7 @@ SET(QGIS_CORE_SRCS
   qgslegendrenderer.cpp
   qgslegendsettings.cpp
   qgslegendstyle.cpp
+  qgslocaldefaultsettings.cpp
   qgslocalec.cpp
   qgslogger.cpp
   qgsmapdecoration.cpp
@@ -773,6 +774,7 @@ SET(QGIS_CORE_HDRS
   qgslegendrenderer.h
   qgslegendsettings.h
   qgslegendstyle.h
+  qgslocaldefaultsettings.h
   qgslocalec.h
   qgslogger.h
   qgsmapdecoration.h

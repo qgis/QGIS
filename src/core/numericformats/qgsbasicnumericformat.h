@@ -46,11 +46,6 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
     QVariantMap configuration( const QgsReadWriteContext &context ) const override;
 
     /**
-     * Sets the format's \a configuration.
-     */
-    void setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context );
-
-    /**
      * Returns the maximum number of decimal places to show.
      *
      * \see setNumberDecimalPlaces()
@@ -109,6 +104,11 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
     void setShowTrailingZeros( bool show );
 
   protected:
+
+    /**
+     * Sets the format's \a configuration.
+     */
+    virtual void setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context );
 
     bool mUseScientific = false;
 

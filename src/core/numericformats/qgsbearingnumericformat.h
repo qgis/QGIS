@@ -70,6 +70,8 @@ class CORE_EXPORT QgsBearingNumericFormat : public QgsBasicNumericFormat
      */
     void setDirectionFormat( const FormatDirectionOption &format );
 
+    void setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context ) override;
+
   private:
 
     FormatDirectionOption mDirectionFormat = UseRange0To180WithEWDirectionalSuffix;

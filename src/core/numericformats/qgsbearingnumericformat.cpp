@@ -93,7 +93,6 @@ QgsNumericFormat *QgsBearingNumericFormat::create( const QVariantMap &configurat
 {
   std::unique_ptr< QgsBearingNumericFormat > res = qgis::make_unique< QgsBearingNumericFormat >();
   res->setConfiguration( configuration, context );
-  res->mDirectionFormat = static_cast< FormatDirectionOption >( configuration.value( QStringLiteral( "direction_format" ), 0 ).toInt() );
   return res.release();
 }
 
@@ -112,4 +111,10 @@ QgsBearingNumericFormat::FormatDirectionOption QgsBearingNumericFormat::directio
 void QgsBearingNumericFormat::setDirectionFormat( const FormatDirectionOption &directionFormat )
 {
   mDirectionFormat = directionFormat;
+}
+
+void QgsBearingNumericFormat::setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context )
+{
+  QgsBasicNumericFormat::setConfiguration( configuration, context );
+  mDirectionFormat = static_cast< FormatDirectionOption >( configuration.value( QStringLiteral( "direction_format" ), 0 ).toInt() );
 }

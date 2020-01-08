@@ -40,11 +40,6 @@ Default constructor
     virtual QVariantMap configuration( const QgsReadWriteContext &context ) const;
 
 
-    void setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context );
-%Docstring
-Sets the format's ``configuration``.
-%End
-
     int numberDecimalPlaces() const;
 %Docstring
 Returns the maximum number of decimal places to show.
@@ -112,6 +107,11 @@ numberDecimalPlaces()).
 %End
 
   protected:
+
+    virtual void setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context );
+%Docstring
+Sets the format's ``configuration``.
+%End
 
 
 };
