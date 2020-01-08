@@ -129,6 +129,34 @@ class TestQgsNumericFormat(unittest.TestCase):
         self.assertEqual(f.formatDouble(-5, context), '-5.000')
         self.assertEqual(f.formatDouble(5.5, context), 'w5.500')
 
+        f.setShowPlusSign(False)
+        f.setRoundingType(QgsBasicNumericFormat.SignificantFigures)
+        self.assertEqual(f.formatDouble(0, context), '0.00')
+        self.assertEqual(f.formatDouble(5, context), '5.00')
+        self.assertEqual(f.formatDouble(-5, context), '-5.00')
+        self.assertEqual(f.formatDouble(5.5, context), '5.50')
+        self.assertEqual(f.formatDouble(1231.23123123123123, context), '1230')
+        self.assertEqual(f.formatDouble(123.123123123123123, context), '123')
+        self.assertEqual(f.formatDouble(12.3123123123123123, context), '12.3')
+        self.assertEqual(f.formatDouble(1.23123123123123123, context), '1.23')
+        self.assertEqual(f.formatDouble(-1231.23123123123123, context), '-1230')
+        self.assertEqual(f.formatDouble(-123.123123123123123, context), '-123')
+        self.assertEqual(f.formatDouble(-12.3123123123123123, context), '-12.3')
+        self.assertEqual(f.formatDouble(-1.23123123123123123, context), '-1.23')
+        self.assertEqual(f.formatDouble(100, context), '100')
+        self.assertEqual(f.formatDouble(1000, context), '1000')
+        self.assertEqual(f.formatDouble(1001, context), '1000')
+        self.assertEqual(f.formatDouble(9999, context), '10000')
+        self.assertEqual(f.formatDouble(10, context), '10.0')
+        self.assertEqual(f.formatDouble(1, context), '1.00')
+        self.assertEqual(f.formatDouble(0.00000123456, context), '0.00000123')
+        self.assertEqual(f.formatDouble(55555555.5, context), '55600000')
+        self.assertEqual(f.formatDouble(55555555.123456, context), '55600000')
+        self.assertEqual(f.formatDouble(-5.5, context), '-5.50')
+        self.assertEqual(f.formatDouble(-55555555.5, context), '-55600000')
+
+        f.setShowPlusSign(True)
+
         f2 = f.clone()
         self.assertIsInstance(f2, QgsBasicNumericFormat)
 
@@ -136,6 +164,7 @@ class TestQgsNumericFormat(unittest.TestCase):
         self.assertEqual(f2.showPlusSign(), f.showPlusSign())
         self.assertEqual(f2.numberDecimalPlaces(), f.numberDecimalPlaces())
         self.assertEqual(f2.showThousandsSeparator(), f.showThousandsSeparator())
+        self.assertEqual(f2.roundingType(), f.roundingType())
 
         doc = QDomDocument("testdoc")
         elem = doc.createElement("test")
@@ -148,6 +177,7 @@ class TestQgsNumericFormat(unittest.TestCase):
         self.assertEqual(f3.showPlusSign(), f.showPlusSign())
         self.assertEqual(f3.numberDecimalPlaces(), f.numberDecimalPlaces())
         self.assertEqual(f3.showThousandsSeparator(), f.showThousandsSeparator())
+        self.assertEqual(f3.roundingType(), f.roundingType())
 
     def testCurrencyFormat(self):
         """ test currency formatter """

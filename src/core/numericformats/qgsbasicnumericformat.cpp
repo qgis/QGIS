@@ -62,11 +62,37 @@ QString QgsBasicNumericFormat::formatDouble( double value, const QgsNumericForma
   os.imbue( std::locale( os.getloc(), new formatter( context.thousandsSeparator(), mShowThousandsSeparator, context.decimalSeparator() ) ) );
 
   if ( !mUseScientific )
-    os << std::fixed << std::setprecision( mNumberDecimalPlaces );
-  else
-    os << std::scientific << std::setprecision( mNumberDecimalPlaces );
+  {
+    switch ( mRoundingType )
+    {
+      case DecimalPlaces:
+        os << std::fixed << std::setprecision( mNumberDecimalPlaces );
+        os << value;
+        break;
 
-  os << value;
+      case SignificantFigures:
+      {
+        if ( qgsDoubleNear( value, 0 ) )
+        {
+          os << std::fixed << std::setprecision( mNumberDecimalPlaces - 1 ) << value;
+        }
+        else
+        {
+          // digits before decimal point
+          const int d = std::floor( std::log10( value < 0 ? -value : value ) ) + 1;
+          double order = std::pow( 10.0, mNumberDecimalPlaces - d );
+          os << std::fixed << std::setprecision( std::max( mNumberDecimalPlaces - d, 0 ) ) << std::round( value * order ) / order;
+        }
+        break;
+      }
+    }
+  }
+  else
+  {
+    os << std::scientific << std::setprecision( mNumberDecimalPlaces );
+    os << value;
+  }
+
   QString res = QString::fromStdWString( os.str() );
 
   if ( mShowPlusSign && value > 0 )
@@ -118,6 +144,7 @@ QVariantMap QgsBasicNumericFormat::configuration( const QgsReadWriteContext & ) 
   res.insert( QStringLiteral( "show_thousand_separator" ), mShowThousandsSeparator );
   res.insert( QStringLiteral( "show_plus" ), mShowPlusSign );
   res.insert( QStringLiteral( "show_trailing_zeros" ), mShowTrailingZeros );
+  res.insert( QStringLiteral( "rounding_type" ), static_cast< int >( mRoundingType ) );
   return res;
 }
 
@@ -127,6 +154,7 @@ void QgsBasicNumericFormat::setConfiguration( const QVariantMap &configuration, 
   mShowThousandsSeparator = configuration.value( QStringLiteral( "show_thousand_separator" ), true ).toBool();
   mShowPlusSign = configuration.value( QStringLiteral( "show_plus" ), false ).toBool();
   mShowTrailingZeros = configuration.value( QStringLiteral( "show_trailing_zeros" ), false ).toBool();
+  mRoundingType = static_cast< RoundingType >( configuration.value( QStringLiteral( "rounding_type" ), static_cast< int >( DecimalPlaces ) ).toInt() );
 }
 
 int QgsBasicNumericFormat::numberDecimalPlaces() const
@@ -167,4 +195,14 @@ bool QgsBasicNumericFormat::showTrailingZeros() const
 void QgsBasicNumericFormat::setShowTrailingZeros( bool showTrailingZeros )
 {
   mShowTrailingZeros = showTrailingZeros;
+}
+
+QgsBasicNumericFormat::RoundingType QgsBasicNumericFormat::roundingType() const
+{
+  return mRoundingType;
+}
+
+void QgsBasicNumericFormat::setRoundingType( QgsBasicNumericFormat::RoundingType type )
+{
+  mRoundingType = type;
 }
