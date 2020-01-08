@@ -42,7 +42,7 @@ Default constructor
 
     virtual QString formatDouble( double value, const QgsNumericFormatContext &context ) const;
 
-    virtual QgsNumericFormat *clone() const /Factory/;
+    virtual QgsBearingNumericFormat *clone() const /Factory/;
 
     virtual QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const /Factory/;
 

@@ -19,7 +19,9 @@
 #include "qgspercentagenumericformat.h"
 #include "qgsbearingnumericformat.h"
 #include "qgsscientificnumericformat.h"
+#include "qgsgui.h"
 #include "qgis.h"
+#include <QDialogButtonBox>
 
 //
 // QgsBasicNumericFormatWidget
@@ -132,6 +134,35 @@ QgsNumericFormat *QgsBearingNumericFormatWidget::format()
 {
   return mFormat->clone();
 }
+
+//
+// QgsBearingNumericFormatDialog
+//
+
+QgsBearingNumericFormatDialog::QgsBearingNumericFormatDialog( const QgsNumericFormat *format, QWidget *parent )
+  : QDialog( parent )
+{
+  setLayout( new QVBoxLayout() );
+  mWidget = new QgsBearingNumericFormatWidget( format );
+  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Ok );
+
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+
+  layout()->addWidget( mWidget );
+  layout()->addWidget( buttonBox );
+
+  connect( mWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );
+
+  setObjectName( QStringLiteral( "QgsBearingNumericFormatDialog" ) );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
+}
+
+QgsBearingNumericFormat *QgsBearingNumericFormatDialog::format()
+{
+  return static_cast< QgsBearingNumericFormat * >( mWidget->format() );
+}
+
 
 
 //
@@ -311,4 +342,5 @@ QgsNumericFormat *QgsScientificNumericFormatWidget::format()
 {
   return mFormat->clone();
 }
+
 

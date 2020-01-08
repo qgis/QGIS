@@ -20,6 +20,8 @@
 #include "qgsprojectproperties.h"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
+#include "qgsprojectdisplaysettings.h"
+#include "qgsbearingnumericformat.h"
 
 /**
  * \ingroup UnitTests
@@ -40,6 +42,7 @@ class TestQgsProjectProperties : public QObject
     void testProjectPropertiesDirty();
     void testEllipsoidChange();
     void testEllipsoidCrsSync();
+    void testBearingFormat();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -233,6 +236,18 @@ void TestQgsProjectProperties::testEllipsoidCrsSync()
 #else
   QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "GRS80" ) );
 #endif
+}
+
+void TestQgsProjectProperties::testBearingFormat()
+{
+  QgsProject::instance()->clear();
+  std::unique_ptr< QgsBearingNumericFormat > format = qgis::make_unique< QgsBearingNumericFormat >();
+  format->setNumberDecimalPlaces( 9 );
+  QgsProject::instance()->displaySettings()->setBearingFormat( format.release() );
+
+  std::unique_ptr< QgsProjectProperties > pp = qgis::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  pp->apply();
+  QCOMPARE( QgsProject::instance()->displaySettings()->bearingFormat()->numberDecimalPlaces(), 9 );
 }
 
 QGSTEST_MAIN( TestQgsProjectProperties )
