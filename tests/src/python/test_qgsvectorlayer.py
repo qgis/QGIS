@@ -3412,6 +3412,29 @@ class TestQgsVectorLayerTransformContext(unittest.TestCase):
         self.assertTrue(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
         self.assertTrue(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
 
+    def testSubsetStringInvalidLayer(self):
+        """
+        Test that subset strings can be set on invalid layers, and retrieved later...
+        """
+        vl = QgsVectorLayer(
+            'nope',
+            'test', 'no')
+        self.assertFalse(vl.isValid())
+        self.assertIsNone(vl.dataProvider())
+        vl.setSubsetString('xxxxxxxxx')
+        self.assertEqual(vl.subsetString(), 'xxxxxxxxx')
+
+        # invalid layer subset strings must be persisted via xml
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("maplayer")
+        self.assertTrue(vl.writeXml(elem, doc, QgsReadWriteContext()))
+
+        vl2 = QgsVectorLayer(
+            'nope',
+            'test', 'no')
+        vl2.readXml(elem, QgsReadWriteContext())
+        self.assertEqual(vl2.subsetString(), 'xxxxxxxxx')
+
 
 # TODO:
 # - fetch rect: feat with changed geometry: 1. in rect, 2. out of rect
