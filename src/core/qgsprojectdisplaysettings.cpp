@@ -18,6 +18,7 @@
 #include "qgsbearingnumericformat.h"
 #include "qgsnumericformatregistry.h"
 #include "qgsapplication.h"
+#include "qgslocaldefaultsettings.h"
 
 #include <QDomElement>
 
@@ -32,7 +33,8 @@ QgsProjectDisplaySettings::~QgsProjectDisplaySettings() = default;
 
 void QgsProjectDisplaySettings::reset()
 {
-  mBearingFormat = qgis::make_unique< QgsBearingNumericFormat >();
+  // inherit local default settings
+  mBearingFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
 
   emit bearingFormatChanged();
 }

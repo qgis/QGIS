@@ -12,15 +12,16 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import (QgsProject,
-                       QgsProjectDisplaySettings,
+from qgis.core import (QgsProjectDisplaySettings,
                        QgsReadWriteContext,
-                       QgsBearingNumericFormat)
+                       QgsBearingNumericFormat,
+                       QgsSettings,
+                       QgsLocalDefaultSettings)
 
-from qgis.PyQt.QtCore import QTemporaryDir
+from qgis.PyQt.QtCore import QCoreApplication
 
 from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument, QDomElement
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.testing import start_app, unittest
 from utilities import (unitTestDataPath)
 
@@ -29,6 +30,16 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsProjectDisplaySettings(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+
+        QCoreApplication.setOrganizationName("QGIS_Test")
+        QCoreApplication.setOrganizationDomain("TestPyQgsWFSProvider.com")
+        QCoreApplication.setApplicationName("TestPyQgsWFSProvider")
+        QgsSettings().clear()
+        start_app()
 
     def testBearingFormat(self):
         p = QgsProjectDisplaySettings()
@@ -51,9 +62,31 @@ class TestQgsProjectDisplaySettings(unittest.TestCase):
         self.assertEqual(p.bearingFormat().numberDecimalPlaces(), 3)
         self.assertEqual(p.bearingFormat().directionFormat(), QgsBearingNumericFormat.UseRangeNegative180ToPositive180)
 
+    def testReset(self):
+        """
+        Test that resetting inherits local default settings
+        """
+        format = QgsBearingNumericFormat()
+        format.setNumberDecimalPlaces(3)
+        format.setDirectionFormat(QgsBearingNumericFormat.UseRangeNegative180ToPositive180)
+        p = QgsProjectDisplaySettings()
+        p.setBearingFormat(format)
+        self.assertEqual(p.bearingFormat().numberDecimalPlaces(), 3)
+        self.assertEqual(p.bearingFormat().directionFormat(), QgsBearingNumericFormat.UseRangeNegative180ToPositive180)
+
+        # setup a local default bearing format
+        s = QgsLocalDefaultSettings()
+        format = QgsBearingNumericFormat()
+        format.setNumberDecimalPlaces(9)
+        format.setDirectionFormat(QgsBearingNumericFormat.UseRange0To360)
+        s.setBearingFormat(format)
+
+        spy = QSignalSpy(p.bearingFormatChanged)
         p.reset()
-        self.assertEqual(len(spy), 3)
-        self.assertEqual(p.bearingFormat().numberDecimalPlaces(), 6)
+        self.assertEqual(len(spy), 1)
+        # project should default to local default format
+        self.assertEqual(p.bearingFormat().numberDecimalPlaces(), 9)
+        self.assertEqual(p.bearingFormat().directionFormat(), QgsBearingNumericFormat.UseRange0To360)
 
     def testReadWrite(self):
         p = QgsProjectDisplaySettings()
