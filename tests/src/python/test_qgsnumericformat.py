@@ -22,7 +22,6 @@ from qgis.core import (QgsFallbackNumericFormat,
                        QgsNumericFormatRegistry,
                        QgsNumericFormat,
                        QgsReadWriteContext)
-
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -155,6 +154,11 @@ class TestQgsNumericFormat(unittest.TestCase):
         self.assertEqual(f.formatDouble(-5.5, context), '-5.50')
         self.assertEqual(f.formatDouble(-55555555.5, context), '-55600000')
 
+        f.setThousandsSeparator('✅')
+        f.setShowThousandsSeparator(True)
+        self.assertEqual(f.formatDouble(-55555555.5, context), '-55✅600✅000')
+        f.setShowThousandsSeparator(False)
+
         f.setShowPlusSign(True)
 
         f2 = f.clone()
@@ -165,6 +169,7 @@ class TestQgsNumericFormat(unittest.TestCase):
         self.assertEqual(f2.numberDecimalPlaces(), f.numberDecimalPlaces())
         self.assertEqual(f2.showThousandsSeparator(), f.showThousandsSeparator())
         self.assertEqual(f2.roundingType(), f.roundingType())
+        self.assertEqual(f2.thousandsSeparator(), f.thousandsSeparator())
 
         doc = QDomDocument("testdoc")
         elem = doc.createElement("test")
@@ -178,6 +183,7 @@ class TestQgsNumericFormat(unittest.TestCase):
         self.assertEqual(f3.numberDecimalPlaces(), f.numberDecimalPlaces())
         self.assertEqual(f3.showThousandsSeparator(), f.showThousandsSeparator())
         self.assertEqual(f3.roundingType(), f.roundingType())
+        self.assertEqual(f3.thousandsSeparator(), f.thousandsSeparator())
 
     def testCurrencyFormat(self):
         """ test currency formatter """

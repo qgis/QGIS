@@ -126,6 +126,22 @@ Sets the rounding ``type``, which controls the behavior of the numberDecimalPlac
 .. seealso:: :py:func:`roundingType`
 %End
 
+    QChar thousandsSeparator() const;
+%Docstring
+Returns any override for the thousands separator character. If an invalid QChar is returned,
+then the QGIS locale separator is used instead.
+
+.. seealso:: :py:func:`setThousandsSeparator`
+%End
+
+    void setThousandsSeparator( QChar character );
+%Docstring
+Sets an override ``character`` for the thousands separator character. If an invalid QChar is set,
+then the QGIS locale separator is used instead.
+
+.. seealso:: :py:func:`thousandsSeparator`
+%End
+
   protected:
 
     virtual void setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context );
