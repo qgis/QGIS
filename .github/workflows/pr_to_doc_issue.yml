@@ -5,6 +5,7 @@ on:
   pull_request:
     types:
       - closed
+      - labeled
 
 jobs:
   pr2docissue:
@@ -30,6 +31,44 @@ jobs:
           LABEL=$(sed -r 's/^([[:digit:]]\.[[:digit:]]+)(\.[[:digit:]]+)?$/\1/' <<< ${MILESTONE})
           echo ${LABEL}
           echo "::set-output name=label::${LABEL}"
+            # get the PR body
+
+      # get the PR body
+      - name: Get PR body as JSON
+        id: get_pr_info
+        uses: octokit/request-action@v2.x
+        env:
+          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
+        with:
+          route: GET /repos/qgis/QGIS/pulls/:pull_number
+          pull_number: ${{ github.event.pull_request.number }}
+
+      # extract body from json output
+      - name: Get PR body as text
+        id: get_pr_body
+        uses: gr2m/get-json-paths-action@v1.x
+        with:
+          json: ${{ steps.get_pr_info.outputs.data }}
+          body: "body"
+
+      # get commits from the PR
+      - name: Get PR commits
+        uses: octokit/request-action@v2.x
+        id: get_pr_commits
+        env:
+          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
+        with:
+          route: GET /repos/qgis/QGIS/pulls/:pull_number/commits
+          pull_number: ${{ github.event.pull_request.number }}
+
+      # extracts the matching commits
+      - name: Filter commits with \[needs?.doc(umentation)?s?\]
+        id: filtered_commits
+        env:
+          JSON_DATA: ${{ steps.get_pr_commits.outputs.data }}
+        run: |
+          COMMITS_MESSAGES=$(echo ${JSON_DATA} | jq '.[].commit.message | select( . |test("\\[needs?.doc(umentation)?s?\\]"; "i")) | sub("\\[needs?.doc(umentation)?s?\\]"; "\n\n\n\n"; "i")')
+          echo "::set-output name=commits::$(echo ${COMMITS_MESSAGES} | tr -d '\n' )"
 
       # create the documentation issue
       - name: Create Documentation issue
@@ -44,9 +83,18 @@ jobs:
           # this is not possible to set labels directly due to security reasons
           # the token is in clear, so no rights are given to qgis-bot
           body: |
-            ${{ format('Request for documentation in QGIS/qgis#{0}', github.event.pull_request.number) }}
-            ${{ github.event.pull_request.title }}
+            ### Request for documentation
+            From pull request QGIS/qgis#${{ github.event.pull_request.number }}
+            Author: @${{ github.event.pull_request.user.login }}
             QGIS version: ${{ steps.milestone2label.outputs.label }}
+
+            **${{ github.event.pull_request.title }}**
+
+            ### PR Description:
+            ${{ steps.get_pr_body.outputs.body }}
+
+            ### Commits tagged with [need-docs]
+            ${{ steps.filtered_commits.outputs.commits }}
 
       # write comment to ping the PR author
       - name: Create comment
