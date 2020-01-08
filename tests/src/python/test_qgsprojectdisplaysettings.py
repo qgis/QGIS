@@ -41,13 +41,15 @@ class TestQgsProjectDisplaySettings(unittest.TestCase):
         p.setBearingFormat(format)
         self.assertEqual(len(spy), 1)
         self.assertEqual(p.bearingFormat().numberDecimalPlaces(), 9)
+        self.assertEqual(p.bearingFormat().directionFormat(), QgsBearingNumericFormat.UseRange0To360)
 
         format = QgsBearingNumericFormat()
         format.setNumberDecimalPlaces(3)
-        format.setDirectionFormat(QgsBearingNumericFormat.UseRange0To360)
+        format.setDirectionFormat(QgsBearingNumericFormat.UseRangeNegative180ToPositive180)
         p.setBearingFormat(format)
         self.assertEqual(len(spy), 2)
         self.assertEqual(p.bearingFormat().numberDecimalPlaces(), 3)
+        self.assertEqual(p.bearingFormat().directionFormat(), QgsBearingNumericFormat.UseRangeNegative180ToPositive180)
 
         p.reset()
         self.assertEqual(len(spy), 3)

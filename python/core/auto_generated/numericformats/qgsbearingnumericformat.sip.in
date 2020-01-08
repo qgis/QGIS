@@ -65,6 +65,9 @@ described in the returned strings.
 .. seealso:: :py:func:`directionFormat`
 %End
 
+    virtual void setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context );
+
+
 };
 
 /************************************************************************
