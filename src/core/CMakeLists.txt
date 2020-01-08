@@ -182,6 +182,7 @@ SET(QGIS_CORE_SRCS
   scalebar/qgsdoubleboxscalebarrenderer.cpp
   scalebar/qgsnumericscalebarrenderer.cpp
   scalebar/qgsscalebarrenderer.cpp
+  scalebar/qgsscalebarsettings.cpp
   scalebar/qgssingleboxscalebarrenderer.cpp
   scalebar/qgsticksscalebarrenderer.cpp
 

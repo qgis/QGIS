@@ -20,6 +20,7 @@
 #include "qgslayout.h"
 #include "qgsguiutils.h"
 #include "qgsvectorlayer.h"
+#include "qgsnumericformatselectorwidget.h"
 
 #include <QColorDialog>
 #include <QFontDialog>
@@ -50,7 +51,7 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   connect( mLineJoinStyleCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutScaleBarWidget::mLineJoinStyleCombo_currentIndexChanged );
   connect( mLineCapStyleCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutScaleBarWidget::mLineCapStyleCombo_currentIndexChanged );
   connect( mMinWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mMinWidthSpinBox_valueChanged );
-  connect( mMaxWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mMaxWidthSpinBox_valueChanged );
+  connect( mNumberFormatPushButton, &QPushButton::clicked, this, &QgsLayoutScaleBarWidget::changeNumberFormat );
   setPanelTitle( tr( "Scalebar Properties" ) );
 
   mFontButton->registerExpressionContextGenerator( this );
@@ -360,6 +361,29 @@ void QgsLayoutScaleBarWidget::textFormatChanged()
   connectUpdateSignal();
   mScalebar->endCommand();
   mScalebar->update();
+}
+
+void QgsLayoutScaleBarWidget::changeNumberFormat()
+{
+  if ( !mScalebar )
+  {
+    return;
+  }
+
+  QgsNumericFormatSelectorWidget *widget = new QgsNumericFormatSelectorWidget( this );
+  widget->setPanelTitle( tr( "Number Format" ) );
+  widget->setFormat( mScalebar->numericFormat() );
+  connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [ = ]
+  {
+    mScalebar->beginCommand( tr( "Set Scalebar Number Format" ) );
+    disconnectUpdateSignal();
+    mScalebar->setNumericFormat( widget->format() );
+    connectUpdateSignal();
+    mScalebar->endCommand();
+    mScalebar->update();
+  } );
+  openPanel( widget );
+  return;
 }
 
 void QgsLayoutScaleBarWidget::mFillColorButton_colorChanged( const QColor &newColor )
