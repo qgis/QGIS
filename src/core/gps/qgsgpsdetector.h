@@ -26,7 +26,7 @@
 #include "qgis_core.h"
 
 class QgsGpsConnection;
-struct QgsGpsInformation;
+class QgsGpsInformation;
 
 /**
  * \ingroup core
