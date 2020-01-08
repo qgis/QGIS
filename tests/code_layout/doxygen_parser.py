@@ -212,9 +212,9 @@ class DoxygenParser():
             # check for classes with special python doc notes (probably 'not available' or renamed classes, either way
             # they should be safe to ignore as obviously some consideration has been given to Python bindings)
             detailed_sec = elem.find('detaileddescription')
-            for p in detailed_sec.getiterator('para'):
-                for s in p.getiterator('simplesect'):
-                    for ps in s.getiterator('para'):
+            for p in detailed_sec.iter('para'):
+                for s in p.iter('simplesect'):
+                    for ps in s.iter('para'):
                         if ps.text and 'python' in ps.text.lower():
                             return False
             return True
@@ -232,7 +232,7 @@ class DoxygenParser():
         bindable_members = []
         broken_links = {}
         # loop through all members
-        for m in e.getiterator('memberdef'):
+        for m in e.iter('memberdef'):
             signature = self.memberSignature(m)
             if signature is None:
                 continue
@@ -263,10 +263,10 @@ class DoxygenParser():
         # test for "added in QGIS xxx" string
         d = e.find('detaileddescription')
         found_version_added = False
-        for para in d.getiterator('para'):
-            for s in para.getiterator('simplesect'):
+        for para in d.iter('para'):
+            for s in para.iter('simplesect'):
                 if s.get('kind') == 'since':
-                    for p in s.getiterator('para'):
+                    for p in s.iter('para'):
                         if self.version_regex.match(p.text):
                             found_version_added = True
                             break
@@ -320,9 +320,9 @@ class DoxygenParser():
         # they should be safe to ignore as obviously some consideration has been given to Python bindings)
         try:
             detailed_sec = elem.find('detaileddescription')
-            for p in detailed_sec.getiterator('para'):
-                for s in p.getiterator('simplesect'):
-                    for ps in s.getiterator('para'):
+            for p in detailed_sec.iter('para'):
+                for s in p.iter('simplesect'):
+                    for ps in s.iter('para'):
                         if ps.text and 'python' in ps.text.lower():
                             return False
         except:
@@ -525,8 +525,8 @@ class DoxygenParser():
         doxy_deprecated = False
         has_description = True
         try:
-            for p in member_elem.find('detaileddescription').getiterator('para'):
-                for s in p.getiterator('xrefsect'):
+            for p in member_elem.find('detaileddescription').iter('para'):
+                for s in p.iter('xrefsect'):
                     if s.find('xreftitle') is not None and 'Deprecated' in s.find('xreftitle').text:
                         doxy_deprecated = True
                         if s.find('xrefdescription') is None or s.find('xrefdescription').find('para') is None:
@@ -566,7 +566,7 @@ class DoxygenParser():
         for doc_type in ['briefdescription']:
             doc = member_elem.find(doc_type)
             if doc is not None:
-                for para in doc.getiterator('para'):
+                for para in doc.iter('para'):
                     if not para.text:
                         continue
                     if para.text.strip().lower().startswith('getter'):
@@ -591,12 +591,12 @@ class DoxygenParser():
         """
         broken = []
         detailed_sec = elem.find('detaileddescription')
-        for p in detailed_sec.getiterator('para'):
-            for s in p.getiterator('simplesect'):
+        for p in detailed_sec.iter('para'):
+            for s in p.iter('simplesect'):
                 if s.get('kind') != 'see':
                     continue
 
-                para = s.getchildren()[0]
+                para = list(s.iter())[1]
                 if para.find('ref') is None and para.text and (not para.text.startswith('Q') or para.text.startswith('Qgs')):
                     broken.append(para.text)
 
