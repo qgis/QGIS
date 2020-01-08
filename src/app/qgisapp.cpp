@@ -7664,7 +7664,7 @@ void QgisApp::changeDataSource( QgsMapLayer *layer )
         QString subsetString;
         // Get the subset string directly from the data provider because
         // layer's method will return a null string from invalid layers
-        if ( !layerWasValid && vlayer && vlayer->dataProvider() &&
+        if ( vlayer && vlayer->dataProvider() &&
              vlayer->dataProvider()->supportsSubsetString() &&
              !vlayer->dataProvider()->subsetString( ).isEmpty() )
         {
