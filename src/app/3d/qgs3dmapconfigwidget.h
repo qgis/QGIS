@@ -21,8 +21,8 @@
 #include <ui_map3dconfigwidget.h>
 
 class Qgs3DMapSettings;
-
 class QgsMapCanvas;
+class QgsMesh3DSymbolWidget;
 
 
 class Qgs3DMapConfigWidget : public QWidget, private Ui::Map3DConfigWidget
@@ -44,6 +44,7 @@ class Qgs3DMapConfigWidget : public QWidget, private Ui::Map3DConfigWidget
   private:
     Qgs3DMapSettings *mMap = nullptr;
     QgsMapCanvas *mMainCanvas = nullptr;
+    QgsMesh3DSymbolWidget *mMeshSymbolWidget;
 };
 
 #endif // QGS3DMAPCONFIGWIDGET_H

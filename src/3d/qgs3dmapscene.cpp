@@ -243,6 +243,7 @@ QgsChunkedEntity::SceneState _sceneState( QgsCameraController *cameraController 
   QRect rect = cameraController->viewport();
   state.screenSizePx = std::max( rect.width(), rect.height() ); // TODO: is this correct?
   state.viewProjectionMatrix = camera->projectionMatrix() * camera->viewMatrix();
+  state.nearPlanDistance = camera->nearPlane();
   return state;
 }
 

@@ -48,8 +48,6 @@ void QgsMesh3dRenderControler::deactivate()
 
 void QgsMesh3dRenderControler::createGrapheNode()
 {
-
-
   mRootFrameGraph = new Qt3DRender::QFrameGraphNode;
   {
     Qt3DRender::QRenderSurfaceSelector *surfaceSelector = new Qt3DRender::QRenderSurfaceSelector( mRootFrameGraph );

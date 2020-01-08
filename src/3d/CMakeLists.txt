@@ -64,6 +64,7 @@ SET(QGIS_3D_SRCS
   mesh/qgsmesh3dentity.cpp
   mesh/qgsmesh3dmaterial.cpp
   mesh/qgsmesh3drendercontroler.cpp
+  mesh/qgsmeshterraingenerator.cpp
 
 )
 
@@ -103,6 +104,7 @@ SET(QGIS_3D_HDRS
   terrain/qgsterraintileloader_p.h
   chunks/qgschunkloader_p.h
   chunks/qgschunkqueuejob_p.h
+  mesh/qgsmeshterraingenerator.h
 )
 
 SET(QGIS_3D_PRIVATE_HDRS
