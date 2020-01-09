@@ -109,25 +109,27 @@ bool QgsLineDensityAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Q
 
 QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  mFeatureWeights = QHash<QgsFeatureId, double>();
   mIndex = QgsSpatialIndex( QgsSpatialIndex::FlagStoreFeatureGeometries );
 
-  QgsFeatureIterator fit = mSource->getFeatures();
+  QStringList weightName = QStringList( mWeightField );
+  QgsFields attrFields = mSource->fields();
+
+  QgsFeatureRequest r = QgsFeatureRequest();
+  r.setSubsetOfAttributes( weightName, attrFields );
+  QgsFeatureIterator fit = mSource->getFeatures( r );
   QgsFeature f;
 
   while ( fit.nextFeature( f ) )
   {
     mIndex.addFeature( f, QgsFeatureSink::FastInsert );
 
-    //default weight of lines is set to 1 if no field provided
-    double analysisWeight = 1;
+    //only populate hash if weight field is given
     if ( !mWeightField.isEmpty() )
     {
-      analysisWeight = f.attribute( mWeightField ).toDouble();
+      double analysisWeight = f.attribute( mWeightField ).toDouble();
+      mFeatureWeights.insert( f.id(), analysisWeight );
     }
-    mFeatureWeights.insert( f.id(), analysisWeight );
   }
-
 
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   QFileInfo fi( outputFile );
@@ -154,9 +156,10 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
   qgssize totalCellcnt = static_cast<qgssize>( rows ) * cols;
   int cellcnt = 0;
 
+  std::unique_ptr< QgsRasterBlock > rasterDataLine = qgis::make_unique< QgsRasterBlock >( Qgis::Float32, cols, 1 );
+
   for ( int row = 0; row < rows; row++ )
   {
-    std::unique_ptr< QgsRasterBlock > rasterDataLine = qgis::make_unique< QgsRasterBlock >( Qgis::Float32, cols, 1 );
     for ( int col = 0; col < cols; col++ )
     {
       if ( feedback->isCanceled() )
@@ -182,14 +185,24 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
           if ( engine->intersects( lineGeom.constGet() ) )
           {
             double analysisLineLength =  mDa.measureLength( QgsGeometry( engine->intersection( mIndex.geometry( id ).constGet() ) ) );
-            double weight = mFeatureWeights.value( id );
+            double weight = 1;
+
+            if ( !mWeightField.isEmpty() )
+            {
+              weight = mFeatureWeights.value( id );
+            }
+
             absDensity += ( analysisLineLength *  weight );
           }
         }
 
-        //use ellipsoidal area
-        double analysisSearchGeometryArea = mDa.measureArea( mSearchGeometry );
-        double lineDensity = absDensity / analysisSearchGeometryArea;
+        double lineDensity = 0;
+        if ( absDensity > 0 )
+        {
+          //only calculate ellipsoidal area if abs density is greater 0
+          double analysisSearchGeometryArea = mDa.measureArea( mSearchGeometry );
+          lineDensity = absDensity / analysisSearchGeometryArea;
+        }
         rasterDataLine->setValue( 0, col, lineDensity );
       }
       else
