@@ -21,87 +21,129 @@
 #include "qgsrectangle.h"
 #include "qgsgenericspatialindex.h"
 
+class QgsPostgresConn;
+
+
 /**
- * The QgsPostgresRasterSharedData class is thread safe.
- * The cache owns the tiles and manages its memory.
+ * The QgsPostgresRasterSharedData class is thread safe and works as a data source
+ * by fetching and caching tiles from the backend.
+ * This class owns the tiles and manages its own memory.
  */
 class QgsPostgresRasterSharedData
 {
+
   public:
 
-    /**
-     * The Tile struct represents a raster tile with metadata and data (intially NULL).
-     */
-    struct Tile
-    {
-      Tile( long int tileId,
-            int srid,
-            QgsRectangle extent,
-            double upperLeftX,
-            double upperLeftY,
-            long int width,
-            long int height,
-            double scaleX,
-            double scaleY,
-            double skewX,
-            double skewY,
-            int numBands );
+    //! Type for tile IDs, must be in sync with DB tile id extraction logic
+    using TileIdType = int;
 
-      long int tileId;
+    //! Tile data and metadata for a single band
+    struct TileBand
+    {
+      TileIdType tileId;
       int srid;
       QgsRectangle extent;
       double upperLeftX;
       double upperLeftY;
       long int width;
       long int height;
-      double scaleX ;
+      double scaleX;
       double scaleY;
       double skewX;
       double skewY;
-      int numBands;
       QByteArray data;
+    };
 
-      /**
-       *  Returns data for specified \a bandNo
-       */
-      QByteArray bandData( int bandNo );
+    //! A tiles request
+    struct TilesRequest
+    {
+      //! Band number
+      int bandNo;
+      QgsRectangle extent;
+      unsigned int overviewFactor;
+      //! SQL command for fetching index
+      QString indexSql;
+      //! SQL command for fetching tiles data
+      QString dataSql;
+      //! RO DB connection
+      QgsPostgresConn *conn;
+    };
+
+    //! A tiles response
+    struct TilesResponse
+    {
+      //! Extent of the tiles in the response
+      QgsRectangle extent;
+      //! Tiles data
+      QList<TileBand> tiles;
     };
 
     ~QgsPostgresRasterSharedData( );
 
-
     /**
      * Returns tiles (possibly with NULL data) for a given \a extent and \a overviewFactor.
      */
-    QList<Tile *> tiles( unsigned int overviewFactor, const QgsRectangle &extent );
-
-    /**
-     * Adds a \a tile to the index corresponding to the \a overviewFactor, the index takes ownership of the tile.
-     */
-    Tile *addToIndex( unsigned int overviewFactor, Tile *tile );
-
-    /**
-     * Creates spatial indexes for full resolution data and (possibly empty) \a overviewFactors
-     */
-    void initIndexes( const std::list<unsigned int> &overviewFactors );
-
-    /**
-     * Checks if the index \a overviewFactor is empty
-     */
-    bool indexIsEmpty( unsigned int overviewFactor );
-
+    TilesResponse tiles( const TilesRequest &request );
 
   private:
 
-    //! Protect access to tile indexes
+    //! Protect access to tiles
     QMutex mMutex;
+
+    /**
+     * The Tile struct represents a raster tile with metadata and data (intially NULL).
+     */
+    struct Tile
+    {
+        Tile( TileIdType tileId,
+              int srid,
+              QgsRectangle extent,
+              double upperLeftX,
+              double upperLeftY,
+              long int width,
+              long int height,
+              double scaleX,
+              double scaleY,
+              double skewX,
+              double skewY,
+              int numBands );
+
+        TileIdType tileId;
+        int srid;
+        QgsRectangle extent;
+        double upperLeftX;
+        double upperLeftY;
+        long int width;
+        long int height;
+        double scaleX ;
+        double scaleY;
+        double skewX;
+        double skewY;
+        int numBands;
+
+        /**
+         *  Returns data for specified \a bandNo
+         */
+        QByteArray bandData( int bandNo ) const;
+
+      private:
+
+        QByteArray data;
+
+        friend class QgsPostgresRasterSharedData;
+
+    };
+
+    bool initIndex( unsigned int overviewFactor, const QString &sql, QgsPostgresConn *conn );
+    bool fetchTilesData( unsigned int overviewFactor, const QList<TileIdType> &tileIds );
+    Tile const *setTileData( unsigned int overviewFactor, int tileId, const QByteArray &data );
 
     // Note: cannot be a smart pointer because spatial index cannot be copied
     //! Tile caches, index is the overview factor (1 is the full resolution data)
     std::map<unsigned int, QgsGenericSpatialIndex<Tile>*> mSpatialIndexes;
 
-    //! Memory manager for owned tiles
-    std::list<std::unique_ptr<Tile>> mTiles;
+    //! Memory manager for owned tiles (and for tileId access)
+    std::map<unsigned int, std::map< TileIdType, std::unique_ptr<Tile>>> mTiles;
 
 };
 

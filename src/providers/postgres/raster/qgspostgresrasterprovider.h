@@ -57,10 +57,9 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     virtual int bandCount() const override;
     virtual QgsRasterInterface *clone() const override;
     virtual Qgis::DataType sourceDataType( int bandNo ) const override;
-    //! Gets block size
-    virtual int xBlockSize() const;
-    virtual int yBlockSize() const;
-    virtual QgsRasterBandStats bandStatistics(int bandNo, int stats, const QgsRectangle& extent, int sampleSize, QgsRasterBlockFeedback* feedback) override;
+    virtual int xBlockSize() const override;
+    virtual int yBlockSize() const override;
+    virtual QgsRasterBandStats bandStatistics( int bandNo, int stats, const QgsRectangle &extent, int sampleSize, QgsRasterBlockFeedback *feedback ) override;
 
     // QgsRasterDataProvider interface
     virtual QString htmlMetadata() override;
@@ -146,6 +145,7 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     //! Mutable data shared between provider and feature sources
     std::shared_ptr<QgsPostgresRasterSharedData> mShared;
 
+    // Methods
 
     QgsPostgresConn *connectionRO() const;
     QgsPostgresConn *connectionRW();
@@ -182,9 +182,8 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
 
 struct QgsPostgresRasterProviderException: public std::exception
 {
-  QgsPostgresRasterProviderException( const QString &msg )
-    : message( msg )
-  {}
+
+  QgsPostgresRasterProviderException( const QString &msg );
 
   QString message;
 };
