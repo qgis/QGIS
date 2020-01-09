@@ -27,7 +27,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsmeshlayer.h"
 #include "qgsproject.h"
-#include "qgsmesh3dsymbolwidget.h"
+#include "qgsmesh3dsymbolpropertieswidget.h"
 
 Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas *mainCanvas, QWidget *parent )
   : QWidget( parent )
@@ -39,9 +39,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   Q_ASSERT( map );
   Q_ASSERT( mainCanvas );
 
-  mMeshSymbolWidget = new QgsMesh3DSymbolWidget( nullptr, mMeshSymbolWidgetContainer );
-  mMeshSymbolWidgetContainer->layout()->addWidget( mMeshSymbolWidget );
-
+  mMeshSymbolWidget = new QgsMesh3dSymbolPropertiesWidget( nullptr, groupMeshTerrainShading );
 
   spinCameraFieldOfView->setClearValue( 45.0 );
   spinTerrainScale->setClearValue( 1.0 );
@@ -79,8 +77,10 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   else if ( terrainGen && terrainGen->type() == QgsTerrainGenerator::Mesh )
   {
     cboTerrainType->setCurrentIndex( cboTerrainType->findData( QgsTerrainGenerator::Mesh ) );
-    QgsMeshTerrainGenerator *meshTerrain = static_cast<QgsMeshTerrainGenerator *>( meshTerrain );
+    QgsMeshTerrainGenerator *meshTerrain = static_cast<QgsMeshTerrainGenerator *>( terrainGen );
     cboTerrainLayer->setFilters( QgsMapLayerProxyModel::MeshLayer );
+    cboTerrainLayer->setLayer( meshTerrain->meshLayer() );
+    mMeshSymbolWidget->setSymbol( meshTerrain->symbol() );
   }
   else
   {
@@ -118,6 +118,9 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   connect( cboTerrainLayer, static_cast<void ( QComboBox::* )( int )>( &QgsMapLayerComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::onTerrainLayerChanged );
   connect( spinMapResolution, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &Qgs3DMapConfigWidget::updateMaxZoomLevel );
   connect( spinGroundError, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DMapConfigWidget::updateMaxZoomLevel );
+
+
+  groupMeshTerrainShading->layout()->addWidget( mMeshSymbolWidget );
 
   onTerrainTypeChanged();
 }
@@ -194,9 +197,9 @@ void Qgs3DMapConfigWidget::apply()
       QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( cboTerrainLayer->currentLayer() );
       QgsMeshTerrainGenerator *newTerrainGenerator = new QgsMeshTerrainGenerator;
       newTerrainGenerator->setLayer( meshLayer );
+      newTerrainGenerator->setSymbol( mMeshSymbolWidget->symbol() );
       mMap->setTerrainGenerator( newTerrainGenerator );
       needsUpdateOrigin = true;
-
     }
     break;
   }
@@ -229,6 +232,8 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setTerrainMapTheme( cboTerrainMapTheme->currentText() );
 
   mMap->setPointLights( widgetLights->pointLights() );
+
+  mMap->setMeshterrainSymbol( mMeshSymbolWidget->symbol() );
 }
 
 void Qgs3DMapConfigWidget::onTerrainTypeChanged()
@@ -242,7 +247,7 @@ void Qgs3DMapConfigWidget::onTerrainTypeChanged()
   labelTerrainLayer->setVisible( hasElevation );
   cboTerrainLayer->setVisible( hasElevation );
 
-  mMeshSymbolWidgetContainer->setVisible( cboTerrainType->currentData() == QgsTerrainGenerator::Mesh );
+  //groupMeshTerrainShading->setVisible( cboTerrainType->currentData() == QgsTerrainGenerator::Mesh );
 
   switch ( static_cast<QgsTerrainGenerator::Type>( cboTerrainType->currentData().toInt() ) )
   {
@@ -264,6 +269,19 @@ void Qgs3DMapConfigWidget::onTerrainTypeChanged()
 void Qgs3DMapConfigWidget::onTerrainLayerChanged()
 {
   updateMaxZoomLevel();
+
+  if ( cboTerrainType->currentData() == QgsTerrainGenerator::Mesh )
+  {
+    QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( cboTerrainLayer->currentLayer() );
+    if ( meshLayer )
+    {
+      mMeshSymbolWidget->setLayer( meshLayer, false );
+      if ( mMeshSymbolWidget->symbol().colorRampShader().colorRampItemList().count() == 0 )
+      {
+        mMeshSymbolWidget->reloadColorRampShaderMinMax();
+      }
+    }
+  }
 }
 
 void Qgs3DMapConfigWidget::updateMaxZoomLevel()

@@ -17,12 +17,7 @@ Qt3DCore::QEntity *QgsMeshTerrainTileLoader::createEntity( Qt3DCore::QEntity *pa
   if ( !mMeshLayer )
     return nullptr;
 
-  QgsMeshLayer3DRenderer *renderer = static_cast<QgsMeshLayer3DRenderer *>( mMeshLayer->renderer3D() );
-  QgsMesh3DSymbol symbol;
-  if ( renderer && renderer->symbol() )
-    symbol = *renderer->symbol();
-
-  auto entity = new QgsMesh3dTerrainTileEntity( terrain()->map3D(), mMeshLayer, symbol, mNode->tileId(), parent );
+  auto entity = new QgsMesh3dTerrainTileEntity( terrain()->map3D(), mMeshLayer, mSymbol, mNode->tileId(), parent );
   entity->build();
 
   createTexture( entity );
@@ -33,23 +28,30 @@ Qt3DCore::QEntity *QgsMeshTerrainTileLoader::createEntity( Qt3DCore::QEntity *pa
 
 QgsChunkLoader *QgsMeshTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
 {
-  return new QgsMeshTerrainTileLoader( mTerrain, node, mMeshLayer );
+  return new QgsMeshTerrainTileLoader( mTerrain, node, meshLayer(), symbol() );
+}
+
+void QgsMeshTerrainGenerator::resolveReferences( const QgsProject &project )
+{
+  mLayer = QgsMapLayerRef( project.mapLayer( mLayer.layerId ) );
+  mLayer = QgsMapLayerRef( project.mapLayer( mLayer.layerId ) );
+  updateGenerator();
 }
 
 void QgsMeshTerrainGenerator::setLayer( QgsMeshLayer *layer )
 {
-  mMeshLayer = layer;
+  mLayer = QgsMapLayerRef( layer );
 }
 
 QgsMeshLayer *QgsMeshTerrainGenerator::meshLayer() const
 {
-  return mMeshLayer;
+  return qobject_cast<QgsMeshLayer *>( mLayer.layer.data() );
 }
 
 QgsTerrainGenerator *QgsMeshTerrainGenerator::clone() const
 {
   QgsMeshTerrainGenerator *cloned = new QgsMeshTerrainGenerator();
-  cloned->mMeshLayer = mMeshLayer;
+  cloned->mLayer = mLayer;
   cloned->mTerrainTilingScheme = QgsTilingScheme();
   return cloned;
 }
@@ -58,8 +60,18 @@ QgsTerrainGenerator::Type QgsMeshTerrainGenerator::type() const {return QgsTerra
 
 QgsRectangle QgsMeshTerrainGenerator::extent() const
 {
-  if ( mMeshLayer )
-    return mMeshLayer->extent();
+  if ( mLayer )
+    return mLayer->extent();
   else
     return QgsRectangle();
+}
+
+QgsMesh3DSymbol QgsMeshTerrainGenerator::symbol() const
+{
+  return mSymbol;
+}
+
+void QgsMeshTerrainGenerator::setSymbol( const QgsMesh3DSymbol &symbol )
+{
+  mSymbol = symbol;
 }

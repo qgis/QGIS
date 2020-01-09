@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>QgsMesh3dSymbolProperties</class>
+ <widget class="QWidget" name="QgsMesh3dSymbolProperties">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>370</width>
+    <width>400</width>
     <height>439</height>
    </rect>
   </property>

@@ -285,6 +285,7 @@ IF (WITH_3D)
     3d/qgssymbol3dwidget.cpp
     3d/qgsvectorlayer3drendererwidget.cpp
     3d/qgsmeshlayer3drendererwidget.cpp
+    3d/qgsmesh3dsymbolpropertieswidget.cpp
     layout/qgslayout3dmapwidget.cpp
   )
 ENDIF (WITH_3D)

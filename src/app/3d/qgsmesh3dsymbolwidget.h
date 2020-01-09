@@ -33,6 +33,7 @@ class QgsMesh3DSymbolWidget : public QWidget, private Ui::Mesh3DSymbolWidget
     QgsMesh3DSymbol symbol() const;
 
     void setLayer( QgsMeshLayer *meshLayer );
+    void setSymbol( const QgsMesh3DSymbol &symbol );
     int rendererTypeComboBoxIndex() const;
     void setRendererTypeComboBoxIndex( int index );
 
@@ -46,7 +47,6 @@ class QgsMesh3DSymbolWidget : public QWidget, private Ui::Mesh3DSymbolWidget
     void onColoringTypeChanged();
 
   private:
-    void setSymbol( const QgsMesh3DSymbol &symbol );
     double lineEditValue( const QLineEdit *lineEdit ) const;
 
     QgsMeshLayer *mLayer = nullptr;
