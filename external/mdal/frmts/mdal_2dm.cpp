@@ -98,7 +98,7 @@ bool MDAL::Driver2dm::canRead( const std::string &uri )
 {
   std::ifstream in( uri, std::ifstream::in );
   std::string line;
-  if ( !std::getline( in, line ) || !startsWith( line, "MESH2D" ) )
+  if ( !MDAL::getHeaderLine( in, line ) || !startsWith( line, "MESH2D" ) )
   {
     return false;
   }
