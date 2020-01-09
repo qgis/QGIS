@@ -16,6 +16,7 @@
 #include <limits>
 #include <sstream>
 #include <fstream>
+
 #include <algorithm>
 
 #include "mdal_data_model.hpp"
@@ -61,6 +62,9 @@ namespace MDAL
   std::string leftJustified( const std::string &str, size_t width, char fill = ' ' );
 
   std::string toLower( const std::string &std );
+
+  //! Get a first line from stream clipped to first 100 characters
+  bool getHeaderLine( std::ifstream &stream, std::string &line );
 
   /** Return 0 if not possible to convert */
   size_t toSizeT( const std::string &str );
