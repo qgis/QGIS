@@ -29,7 +29,7 @@ QgsFixAttributeDialog::QgsFixAttributeDialog( QgsVectorLayer *vl, QgsFeatureList
 void QgsFixAttributeDialog::init( QgsVectorLayer *layer )
 {
   QgsAttributeEditorContext context;
-  setWindowTitle( tr( "%1 - Fix Feature Attributes" ).arg( layer->name() ) );
+  setWindowTitle( tr( "%1 - Fix Pastet Features" ).arg( layer->name() ) );
   setLayout( new QGridLayout() );
   layout()->setMargin( 0 );
   context.setFormMode( QgsAttributeEditorContext::StandaloneDialog );
@@ -43,10 +43,12 @@ void QgsFixAttributeDialog::init( QgsVectorLayer *layer )
   layout()->addWidget( infoBox );
 
   mDescription = new QLabel( descriptionText() );
+  mDescription->setVisible( mFeatures.count() > 1 );
   infoLayout->addWidget( mDescription );
   mProgressBar = new QProgressBar();
   mProgressBar->setOrientation( Qt::Horizontal );
   mProgressBar->setRange( 0, mFeatures.count() );
+  mProgressBar->setVisible( mFeatures.count() > 1 );
   infoLayout->addWidget( mProgressBar );
   QgsFeature feature;
   mAttributeForm = new QgsAttributeForm( layer, *mCurrentFeature, context, this );
@@ -58,17 +60,25 @@ void QgsFixAttributeDialog::init( QgsVectorLayer *layer )
   QPushButton *cancelAllBtn = new QPushButton( tr( "Cancel all" ) );
   QPushButton *cancelAllInvalidBtn = new QPushButton( tr( "Cancel all invalid" ) );
   QPushButton *storeAllInvalidBtn = new QPushButton( tr( "Store all (even invalid)" ) );
-  buttonBox->addButton( cancelAllBtn, QDialogButtonBox::ActionRole );
-  buttonBox->addButton( cancelAllInvalidBtn, QDialogButtonBox::ActionRole );
+  if ( mFeatures.count() > 1 )
+  {
+    buttonBox->addButton( cancelAllBtn, QDialogButtonBox::ActionRole );
+    buttonBox->addButton( cancelAllInvalidBtn, QDialogButtonBox::ActionRole );
+    connect( cancelAllBtn, &QAbstractButton::clicked, this, [ = ]()
+    {
+      done( VanishAll );
+    } );
+    connect( cancelAllInvalidBtn, &QAbstractButton::clicked, this, [ = ]()
+    {
+      done( CopyValid );
+    } );
+    buttonBox->button( QDialogButtonBox::Cancel )->setText( tr( "Skip" ) );
+  }
+  else
+  {
+    storeAllInvalidBtn->setText( tr( "Store anyway" ) );
+  }
   buttonBox->addButton( storeAllInvalidBtn, QDialogButtonBox::ActionRole );
-  connect( cancelAllBtn, &QAbstractButton::clicked, this, [ = ]()
-  {
-    done( VanishAll );
-  } );
-  connect( cancelAllInvalidBtn, &QAbstractButton::clicked, this, [ = ]()
-  {
-    done( CopyValid );
-  } );
   connect( storeAllInvalidBtn, &QAbstractButton::clicked, this, [ = ]()
   {
     done( CopyAll );
@@ -82,7 +92,7 @@ void QgsFixAttributeDialog::init( QgsVectorLayer *layer )
 
 QString QgsFixAttributeDialog::descriptionText()
 {
-  return tr( "%1 of %2 features fixed\n%3 of %4 features canceled" ).arg( fixedFeatures().count() ).arg( mFeatures.count() ).arg( mCurrentFeature - mFeatures.begin() - fixedFeatures().count() ).arg( mFeatures.count() );
+  return tr( "%1 of %2 features processed (%3 fixed, %4 skipped)" ).arg( mCurrentFeature - mFeatures.begin() ).arg( mFeatures.count() ).arg( mFixedFeatures.count() ).arg( mCurrentFeature - mFeatures.begin() - mFixedFeatures.count() );
 }
 
 void QgsFixAttributeDialog::accept()
