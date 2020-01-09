@@ -109,7 +109,7 @@ QgsBearingNumericFormat::FormatDirectionOption QgsBearingNumericFormat::directio
   return mDirectionFormat;
 }
 
-void QgsBearingNumericFormat::setDirectionFormat( const FormatDirectionOption &directionFormat )
+void QgsBearingNumericFormat::setDirectionFormat( FormatDirectionOption directionFormat )
 {
   mDirectionFormat = directionFormat;
 }
