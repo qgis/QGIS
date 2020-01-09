@@ -12920,8 +12920,11 @@ void QgisApp::showRotation()
 
 void QgisApp::showPanMessage( double distance, QgsUnitTypes::DistanceUnit unit, double bearing )
 {
-  mStatusBar->showMessage( tr( "Pan distance %1 (%2)" ).arg( QgsDistanceArea::formatDistance( distance, 1, unit ),
-                           mBearingNumericFormat->formatDouble( bearing, QgsNumericFormatContext() ) ), 2000 );
+  const double distanceInProjectUnits = distance * QgsUnitTypes::fromUnitToUnitFactor( unit, QgsProject::instance()->distanceUnits() );
+  const int distanceDecimalPlaces = QgsSettings().value( QStringLiteral( "qgis/measure/decimalplaces" ), "3" ).toInt();
+  const QString distanceString = QgsDistanceArea::formatDistance( distanceInProjectUnits, distanceDecimalPlaces, QgsProject::instance()->distanceUnits() );
+  const QString bearingString = mBearingNumericFormat->formatDouble( bearing, QgsNumericFormatContext() );
+  mStatusBar->showMessage( tr( "Pan distance %1 (%2)" ).arg( distanceString, bearingString ), 2000 );
 }
 
 void QgisApp::selectionModeChanged( QgsMapToolSelect::Mode mode )
