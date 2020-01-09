@@ -27,33 +27,49 @@
 #include "qgsfeaturesink.h"
 #include "qgsfeaturesource.h"
 
-class QgsCoordinateReferenceSystem;
 class QgsVectorLayer;
 
 namespace Vectoranalysis
 {
+
+  /**
+   * \ingroup analysis
+   * Base class for multithreaded vector analysis tools
+   * \since QGIS 3.14
+  */
   class ANALYSIS_EXPORT QgsAbstractTool
   {
     public:
-      enum OutputCrs
-      {
-        CrsLayerA,
-        CrsLayerB
-      };
 
+      /**
+       * QgsAbstractTool constructor
+       */
       QgsAbstractTool( QgsFeatureSink *output, QgsCoordinateTransformContext transformContext, QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck );
       virtual ~QgsAbstractTool();
+
+      /**
+       * Prepares the analysis tool
+       * @return Future object
+       */
       QFuture<void> init();
-      virtual QFuture<void> execute( int task );
-      virtual int getTaskCount() const { return 1; }
-      void finalizeOutput() {}
+
+      /**
+       * Executes the analysis tool
+       */
+      virtual QFuture<void> execute();
+
+      /**
+       * Get exceptions
+       * @return List of exception messages occured during tool execution
+       */
       const QStringList &getExceptions() const { return mExceptions; }
 
 
     protected:
-      static QString errFeatureDoesNotExist;
-      static QString errFailedToFetchGeometry;
 
+      /**
+       * Job struct, contains feature id and task flag
+       */
       struct Job
       {
         Job( const QgsFeatureId &_featureid, int _taskFlag )
@@ -63,6 +79,9 @@ namespace Vectoranalysis
         int taskFlag;
       };
 
+      /**
+       * Wrapper class to execute job
+       */
       struct ProcessFeatureWrapper
       {
         QgsAbstractTool *instance;
@@ -70,12 +89,34 @@ namespace Vectoranalysis
         void operator()( const Job *job );
       };
 
+      /**
+       * Prepares analysis tool, needs to be implemented by subclasses
+       */
       virtual void prepare() = 0;
+
+      /**
+       * Process individual feature, implemented by subclasses
+       */
       virtual void processFeature( const Job *job ) = 0;
 
+      /**
+       * Builds spatial index for source
+       */
       void buildSpatialIndex( QgsSpatialIndex &index, QgsFeatureSource *layer ) const;
+
+      /**
+       * Creates jobs for each feature and adds them to the job queue
+       */
       void appendToJobQueue( QgsFeatureSource *layer, int taskFlag = 0 );
+
+      /**
+       * Fetch feature at id
+       */
       bool getFeatureAtId( QgsFeature &feature, QgsFeatureId id, QgsFeatureSource *layer, const QgsAttributeList &attIdx );
+
+      /**
+       * Writes feature to output source
+       */
       void writeFeatures( QgsFeatureList &outFeatures );
 
       QList<Job *> mJobQueue;

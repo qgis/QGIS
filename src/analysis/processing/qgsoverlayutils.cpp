@@ -425,20 +425,9 @@ void QgsOverlayUtils::runVectorAnalysisTool( Vectoranalysis::QgsAbstractTool &to
   fWatcher.setFuture( tool.init() );
   evLoop.exec();
 
-  int nTasks = tool.getTaskCount();
-  for ( int i = 0; i < nTasks; ++i )
-  {
-    if ( fWatcher.isCanceled() )
-    {
-      break;
-    }
-
-    feedback->setProgressText( QString( QObject::tr( "Executing task %1 from %2" ) ).arg( i + 1 ).arg( nTasks ) );
-    fWatcher.setFuture( tool.execute( i ) );
-    evLoop.exec();
-  }
-
-  tool.finalizeOutput();
+  feedback->setProgressText( QObject::tr( "Executing tool..." ) );
+  fWatcher.setFuture( tool.execute() );
+  evLoop.exec();
 
   const QStringList &exceptionList = tool.getExceptions();
   if ( !exceptionList.isEmpty() )

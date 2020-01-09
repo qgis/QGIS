@@ -23,14 +23,19 @@
 namespace Vectoranalysis
 {
 
+  /**
+   * \ingroup analysis
+   * Multithreaded vector difference tool
+   * \since QGIS 3.14
+  */
   class ANALYSIS_EXPORT QgsDifferenceTool : public QgsAbstractTool
   {
     public:
       QgsDifferenceTool( QgsFeatureSource *layerA,
-                      QgsFeatureSource *layerB,
-                      QgsFeatureSink *output,
-                      QgsCoordinateTransformContext transformContext,
-                      QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck );
+                         QgsFeatureSource *layerB,
+                         QgsFeatureSink *output,
+                         QgsCoordinateTransformContext transformContext,
+                         QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck );
       ~QgsDifferenceTool() {}
 
     private:
@@ -38,7 +43,14 @@ namespace Vectoranalysis
       QgsFeatureSource *mLayerA;
       QgsFeatureSource *mLayerB;
 
+      /**
+       * Prepare jobs
+       */
       void prepare();
+
+      /**
+       * Process feature
+       */
       void processFeature( const Job *job );
   };
 

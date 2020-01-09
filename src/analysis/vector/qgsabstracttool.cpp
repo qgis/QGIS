@@ -31,10 +31,6 @@
 
 namespace Vectoranalysis
 {
-
-  QString QgsAbstractTool::errFeatureDoesNotExist = QApplication::translate( "AbstractTool", "The requested feature does not exist" );
-  QString QgsAbstractTool::errFailedToFetchGeometry = QApplication::translate( "AbstractTool", "The feature geometry could not be fetched" );
-
   void QgsAbstractTool::ProcessFeatureWrapper::operator()( const Job *job )
   {
     try
@@ -61,7 +57,7 @@ namespace Vectoranalysis
     return QtConcurrent::run( this, &QgsAbstractTool::prepare );
   }
 
-  QFuture<void> QgsAbstractTool::execute( int /*task*/ )
+  QFuture<void> QgsAbstractTool::execute()
   {
     return QtConcurrent::map( mJobQueue, ProcessFeatureWrapper( this ) );
   }

@@ -23,14 +23,19 @@
 namespace Vectoranalysis
 {
 
+  /**
+   * \ingroup analysis
+   * Multithreaded vector symmetrical difference tool
+   * \since QGIS 3.14
+  */
   class ANALYSIS_EXPORT QgsSymDifferenceTool : public QgsAbstractTool
   {
     public:
       QgsSymDifferenceTool( QgsFeatureSource *layerA,
-                         QgsFeatureSource *layerB,
-                         QgsFeatureSink *output,
-                         QgsCoordinateTransformContext transformContext,
-                         QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck );
+                            QgsFeatureSource *layerB,
+                            QgsFeatureSink *output,
+                            QgsCoordinateTransformContext transformContext,
+                            QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck );
 
     private:
       enum Task
@@ -44,7 +49,14 @@ namespace Vectoranalysis
       QgsFeatureSource *mLayerA;
       QgsFeatureSource *mLayerB;
 
+      /**
+       * Prepare jobs
+       */
       void prepare();
+
+      /**
+       * Process feature
+       */
       void processFeature( const Job *job );
   };
 

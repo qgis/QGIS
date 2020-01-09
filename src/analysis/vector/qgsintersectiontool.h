@@ -25,16 +25,21 @@ class QgsFeatureSource;
 namespace Vectoranalysis
 {
 
+  /**
+   * \ingroup analysis
+   * Multithreaded vector intersection tool
+   * \since QGIS 3.14
+  */
   class ANALYSIS_EXPORT QgsIntersectionTool : public QgsAbstractTool
   {
     public:
       QgsIntersectionTool( QgsFeatureSource *layerA,
-                        QgsFeatureSource *layerB,
-                        const QgsAttributeList &fieldIndicesA,
-                        const QgsAttributeList &fieldIndicesB,
-                        QgsFeatureSink *output,
-                        QgsCoordinateTransformContext transformContext,
-                        QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck );
+                           QgsFeatureSource *layerB,
+                           const QgsAttributeList &fieldIndicesA,
+                           const QgsAttributeList &fieldIndicesB,
+                           QgsFeatureSink *output,
+                           QgsCoordinateTransformContext transformContext,
+                           QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck );
 
     private:
       QgsSpatialIndex mSpatialIndex;
@@ -43,7 +48,14 @@ namespace Vectoranalysis
       QgsAttributeList mFieldIndicesA;
       QgsAttributeList mFieldIndicesB;
 
+      /**
+       * Prepare jobs
+       */
       void prepare();
+
+      /**
+       * Process feature
+       */
       void processFeature( const Job *job );
   };
 
