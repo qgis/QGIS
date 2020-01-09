@@ -308,7 +308,6 @@ SET(QGIS_GUI_SRCS
   qgsfilewidget.cpp
   qgsfilterlineedit.cpp
   qgsfindfilesbypatternwidget.cpp
-  qgsfixattributedialog.cpp
   qgsfloatingwidget.cpp
   qgsfocuswatcher.cpp
   qgsfontbutton.cpp

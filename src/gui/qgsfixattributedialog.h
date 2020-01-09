@@ -1,3 +1,18 @@
+/***************************************************************************
+    qgsfixattributedialog.h
+    ---------------------
+    begin                : January 2020
+    copyright            : (C) 2020 by David Signer
+    email                : david at opengis dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #ifndef QGSFIXATTRIBUTEDIALOG_H
 #define QGSFIXATTRIBUTEDIALOG_H
 
@@ -12,32 +27,40 @@
 #include "qgis_gui.h"
 
 /**
-* \ingroup gui
-* \class QgsFixAttributeDialog
-* \since 3.12
-*/
+ * \ingroup gui
+ * \class QgsFixAttributeDialog
+ * \brief Dialog to fix a list of invalid feature regarding constraints
+ * \since 3.12
+ */
+
 class GUI_EXPORT QgsFixAttributeDialog : public QDialog
 {
     Q_OBJECT
 
   public:
 
+    /**
+     * Feedback code on closing the dialog
+     */
     enum Feedback
     {
-      VanishAll,
-      CopyValid,
-      CopyAll
+      VanishAll,  //!< Feedback to cancel copy of all features (even valid ones)
+      CopyValid,  //!< Feedback to copy the valid features and vanishe the invalid ones
+      CopyAll     //!< Feedback to copy all features, no matter if valid or invalid
     };
 
+    /**
+     * Constructor for QgsFixAttributeDialog
+     */
     QgsFixAttributeDialog( QgsVectorLayer *vl, QgsFeatureList &features, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    /*
-     * returns fixed features
+    /**
+     * Returns fixed features
      */
     QgsFeatureList fixedFeatures() { return mFixedFeatures; }
 
-    /*
-     * returns unfixed features
+    /**
+     * Returns unfixed features (canceled or not handeled)
      */
     QgsFeatureList unfixedFeatures() { return mUnfixedFeatures; }
 
@@ -50,11 +73,9 @@ class GUI_EXPORT QgsFixAttributeDialog : public QDialog
     QString descriptionText();
 
     QgsFeatureList mFeatures;
-    QgsFeatureList::iterator currentFeature;
+    QgsFeatureList::iterator mCurrentFeature;
 
-    //the fixed features
     QgsFeatureList mFixedFeatures;
-    //the not yet fixed and the canceled features
     QgsFeatureList mUnfixedFeatures;
 
     QgsAttributeForm *mAttributeForm = nullptr;

@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsfixattributedialog.cpp
+    ---------------------
+    begin                : January 2020
+    copyright            : (C) 2020 by David Signer
+    email                : david at opengis dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "qgsfixattributedialog.h"
 
 #include "qgsattributeform.h"
@@ -21,7 +35,7 @@ void QgsFixAttributeDialog::init( QgsVectorLayer *layer )
   context.setFormMode( QgsAttributeEditorContext::StandaloneDialog );
 
   mUnfixedFeatures = mFeatures;
-  currentFeature = mFeatures.begin();
+  mCurrentFeature = mFeatures.begin();
 
   QGridLayout *infoLayout = new QGridLayout();
   QWidget *infoBox = new QWidget();
@@ -35,7 +49,7 @@ void QgsFixAttributeDialog::init( QgsVectorLayer *layer )
   mProgressBar->setRange( 0, mFeatures.count() );
   infoLayout->addWidget( mProgressBar );
   QgsFeature feature;
-  mAttributeForm = new QgsAttributeForm( layer, *currentFeature, context, this );
+  mAttributeForm = new QgsAttributeForm( layer, *mCurrentFeature, context, this );
   mAttributeForm->setMode( QgsAttributeEditorContext::SingleEditMode );
   mAttributeForm->disconnectButtonBox();
   layout()->addWidget( mAttributeForm );
@@ -68,43 +82,43 @@ void QgsFixAttributeDialog::init( QgsVectorLayer *layer )
 
 QString QgsFixAttributeDialog::descriptionText()
 {
-  return tr( "%1 of %2 features fixed\n%3 of %4 features canceled" ).arg( fixedFeatures().count() ).arg( mFeatures.count() ).arg( currentFeature - mFeatures.begin() - fixedFeatures().count() ).arg( mFeatures.count() );
+  return tr( "%1 of %2 features fixed\n%3 of %4 features canceled" ).arg( fixedFeatures().count() ).arg( mFeatures.count() ).arg( mCurrentFeature - mFeatures.begin() - fixedFeatures().count() ).arg( mFeatures.count() );
 }
 
 void QgsFixAttributeDialog::accept()
 {
   mAttributeForm->save();
   mFixedFeatures << mAttributeForm->feature();
-  mUnfixedFeatures.removeOne( *currentFeature );
+  mUnfixedFeatures.removeOne( *mCurrentFeature );
 
   //next feature
-  ++currentFeature;
-  if ( currentFeature != mFeatures.end() )
+  ++mCurrentFeature;
+  if ( mCurrentFeature != mFeatures.end() )
   {
-    mAttributeForm->setFeature( *currentFeature );
+    mAttributeForm->setFeature( *mCurrentFeature );
   }
   else
   {
     done( CopyValid );
   }
 
-  mProgressBar->setValue( currentFeature - mFeatures.begin() );
+  mProgressBar->setValue( mCurrentFeature - mFeatures.begin() );
   mDescription->setText( descriptionText() );
 }
 
 void QgsFixAttributeDialog::reject()
 {
   //next feature
-  ++currentFeature;
-  if ( currentFeature != mFeatures.end() )
+  ++mCurrentFeature;
+  if ( mCurrentFeature != mFeatures.end() )
   {
-    mAttributeForm->setFeature( *currentFeature );
+    mAttributeForm->setFeature( *mCurrentFeature );
   }
   else
   {
     done( CopyValid );
   }
 
-  mProgressBar->setValue( currentFeature - mFeatures.begin() );
+  mProgressBar->setValue( mCurrentFeature - mFeatures.begin() );
   mDescription->setText( descriptionText() );
 }
