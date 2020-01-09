@@ -70,13 +70,6 @@ INSERT INTO QGIS.DATE_TIMES ("id", "date_field", "datetime_field" ) VALUES (1, D
 
 CREATE TABLE QGIS.POINT_DATA_IDENTITY ( "pk" NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY, GEOM SDO_GEOMETRY);
 INSERT INTO QGIS.POINT_DATA_IDENTITY (GEOM)
- SELECT SDO_GEOMETRY( 2001,4326,SDO_POINT_TYPE(1, 2, NULL), NULL, NULL) from dual
-  UNION ALL SELECT SDO_GEOMETRY( 3001,4326,SDO_POINT_TYPE(1, 2, 3), NULL, NULL) from dual
-  UNION ALL SELECT SDO_GEOMETRY( 3005,4326,NULL, sdo_elem_info_array (1,1,1, 4,1,1), sdo_ordinate_array (1,2,3, 4,5,6)) from dual
-  UNION ALL SELECT SDO_GEOMETRY( 2005,4326,NULL, sdo_elem_info_array (1,1,1, 3,1,1), sdo_ordinate_array (1,2, 3,4)) from dual
-  UNION ALL SELECT SDO_GEOMETRY( 3005,4326,NULL, sdo_elem_info_array (1,1,2), sdo_ordinate_array (1,2,3, 4,5,6)) from dual
-  UNION ALL SELECT SDO_GEOMETRY( 2001,4326,NULL, sdo_elem_info_array (1,1,1), sdo_ordinate_array (1,2)) from dual
-  UNION ALL SELECT SDO_GEOMETRY( 2001,4326, SDO_POINT_TYPE(3, 4, NULL), NULL, NULL) from dual
-  UNION ALL SELECT SDO_GEOMETRY( 2001,4326,NULL, sdo_elem_info_array (1,1,1), sdo_ordinate_array (5,6)) from dual;
+ SELECT SDO_GEOMETRY( 2001,4326,SDO_POINT_TYPE(1, 2, NULL), NULL, NULL) from dual;
 
 COMMIT;
