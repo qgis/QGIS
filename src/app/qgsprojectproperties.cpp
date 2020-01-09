@@ -66,6 +66,9 @@
 #include "qgsprojectstorage.h"
 #include "qgsprojectstorageregistry.h"
 #include "qgsprojectviewsettings.h"
+#include "qgsnumericformatwidget.h"
+#include "qgsbearingnumericformat.h"
+#include "qgsprojectdisplaysettings.h"
 
 //qt includes
 #include <QInputDialog>
@@ -115,6 +118,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   connect( pbtnStyleColorRamp, &QToolButton::clicked, this, &QgsProjectProperties::pbtnStyleColorRamp_clicked );
   connect( mButtonAddColor, &QToolButton::clicked, this, &QgsProjectProperties::mButtonAddColor_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsProjectProperties::showHelp );
+  connect( mCustomizeBearingFormatButton, &QPushButton::clicked, this, &QgsProjectProperties::customizeBearingFormat );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
@@ -954,6 +958,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   // Reading ellipsoid from settings
   setCurrentEllipsoid( QgsProject::instance()->ellipsoid() );
 
+  mBearingFormat.reset( QgsProject::instance()->displaySettings()->bearingFormat()->clone() );
+
   restoreOptionsBaseUi();
 
 #ifdef QGISDEBUG
@@ -961,10 +967,12 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 #endif
 }
 
+QgsProjectProperties::~QgsProjectProperties() = default;
+
 QString QgsProjectProperties::title() const
 {
   return titleEdit->text();
-} //  QgsProjectPropertires::title() const
+}
 
 void QgsProjectProperties::title( QString const &title )
 {
@@ -1485,6 +1493,8 @@ void QgsProjectProperties::apply()
 
   //save variables
   QgsProject::instance()->setCustomVariables( mVariableEditor->variablesInActiveScope() );
+
+  QgsProject::instance()->displaySettings()->setBearingFormat( mBearingFormat->clone() );
 
   //refresh canvases to reflect new properties, eg background color and scale bar after changing display units.
   for ( QgsMapCanvas *canvas : constMapCanvases )
@@ -2593,3 +2603,12 @@ void QgsProjectProperties::onGenerateTsFileButton() const
                             "When you open it again in QGIS having set the target language (de), the project will be translated and saved with postfix (eg. aproject_de.qgs)." ).arg( l ) ) ;
 }
 
+void QgsProjectProperties::customizeBearingFormat()
+{
+  QgsBearingNumericFormatDialog dlg( mBearingFormat.get(), this );
+  dlg.setWindowTitle( tr( "Bearing Format" ) );
+  if ( dlg.exec() )
+  {
+    mBearingFormat.reset( dlg.format() );
+  }
+}

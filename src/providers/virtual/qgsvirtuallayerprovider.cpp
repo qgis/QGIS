@@ -96,7 +96,7 @@ QgsVirtualLayerProvider::QgsVirtualLayerProvider( QString const &uri, const QgsD
   }
 }
 
-void QgsVirtualLayerProvider::reloadData()
+void QgsVirtualLayerProvider::reloadProviderData()
 {
   if ( mDefinition.sourceLayers().empty() && !mDefinition.filePath().isEmpty() && mDefinition.query().isEmpty() )
   {

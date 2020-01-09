@@ -20,6 +20,12 @@ A numeric formatter which returns a simple text representation of a value.
 %End
   public:
 
+    enum RoundingType
+    {
+      DecimalPlaces,
+      SignificantFigures,
+    };
+
     QgsBasicNumericFormat();
 %Docstring
 Default constructor
@@ -39,11 +45,6 @@ Default constructor
 
     virtual QVariantMap configuration( const QgsReadWriteContext &context ) const;
 
-
-    void setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context );
-%Docstring
-Sets the format's ``configuration``.
-%End
 
     int numberDecimalPlaces() const;
 %Docstring
@@ -111,7 +112,58 @@ numberDecimalPlaces()).
 .. seealso:: :py:func:`setNumberDecimalPlaces`
 %End
 
+    RoundingType roundingType() const;
+%Docstring
+Returns the rounding type, which controls the behavior of the numberDecimalPlaces() setting.
+
+.. seealso:: :py:func:`setRoundingType`
+%End
+
+    void setRoundingType( RoundingType type );
+%Docstring
+Sets the rounding ``type``, which controls the behavior of the numberDecimalPlaces() setting.
+
+.. seealso:: :py:func:`roundingType`
+%End
+
+    QChar thousandsSeparator() const;
+%Docstring
+Returns any override for the thousands separator character. If an invalid QChar is returned,
+then the QGIS locale separator is used instead.
+
+.. seealso:: :py:func:`setThousandsSeparator`
+%End
+
+    void setThousandsSeparator( QChar character );
+%Docstring
+Sets an override ``character`` for the thousands separator character. If an invalid QChar is set,
+then the QGIS locale separator is used instead.
+
+.. seealso:: :py:func:`thousandsSeparator`
+%End
+
+    QChar decimalSeparator() const;
+%Docstring
+Returns any override for the decimal separator character. If an invalid QChar is returned,
+then the QGIS locale separator is used instead.
+
+.. seealso:: :py:func:`setDecimalSeparator`
+%End
+
+    void setDecimalSeparator( QChar character );
+%Docstring
+Sets an override ``character`` for the decimal separator character. If an invalid QChar is set,
+then the QGIS locale separator is used instead.
+
+.. seealso:: :py:func:`decimalSeparator`
+%End
+
   protected:
+
+    virtual void setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context );
+%Docstring
+Sets the format's ``configuration``.
+%End
 
 
 };

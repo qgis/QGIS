@@ -42,7 +42,7 @@ Default constructor
 
     virtual QString formatDouble( double value, const QgsNumericFormatContext &context ) const;
 
-    virtual QgsNumericFormat *clone() const /Factory/;
+    virtual QgsBearingNumericFormat *clone() const /Factory/;
 
     virtual QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const /Factory/;
 
@@ -57,13 +57,16 @@ described in the returned strings.
 .. seealso:: :py:func:`setDirectionFormat`
 %End
 
-    void setDirectionFormat( const FormatDirectionOption &format );
+    void setDirectionFormat( FormatDirectionOption format );
 %Docstring
 Sets the directional formatting option, which controls how bearing direction is
 described in the returned strings.
 
 .. seealso:: :py:func:`directionFormat`
 %End
+
+    virtual void setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context );
+
 
 };
 

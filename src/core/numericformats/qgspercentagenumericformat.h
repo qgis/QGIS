@@ -62,7 +62,7 @@ class CORE_EXPORT QgsPercentageNumericFormat : public QgsBasicNumericFormat
      *
      * \see inputValues()
      */
-    void setInputValues( const InputValues &format );
+    void setInputValues( InputValues format );
 
   private:
 

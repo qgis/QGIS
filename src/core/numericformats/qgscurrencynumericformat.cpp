@@ -69,6 +69,7 @@ QgsNumericFormat *QgsCurrencyNumericFormat::create( const QVariantMap &configura
   // override base class default for number of decimal places -- we want to default to 2, showing trailing zeros
   res->setNumberDecimalPlaces( configuration.value( QStringLiteral( "decimals" ), 2 ).toInt() );
   res->setShowTrailingZeros( configuration.value( QStringLiteral( "show_trailing_zeros" ), true ).toBool() );
+  res->setRoundingType( QgsBasicNumericFormat::DecimalPlaces );
 
   return res.release();
 }

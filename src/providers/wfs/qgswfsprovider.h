@@ -120,19 +120,21 @@ class QgsWFSProvider : public QgsVectorDataProvider
 
     bool empty() const override;
 
-  public slots:
-
-    void reloadData() override;
-
   private slots:
 
     void featureReceivedAnalyzeOneFeature( QVector<QgsFeatureUniqueIdPair> );
 
     void pushErrorSlot( const QString &errorMsg );
 
+
   private:
     //! Mutable data shared between provider and feature sources
     std::shared_ptr<QgsWFSSharedData> mShared;
+
+    /**
+     * Invalidates cache of shared object
+    */
+    void reloadProviderData() override;
 
     friend class QgsWFSFeatureSource;
 

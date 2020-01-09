@@ -75,6 +75,7 @@ QgsNumericFormat *QgsPercentageNumericFormat::create( const QVariantMap &configu
   std::unique_ptr< QgsPercentageNumericFormat > res = qgis::make_unique< QgsPercentageNumericFormat >();
   res->setConfiguration( configuration, context );
   res->mInputValues = static_cast< InputValues >( configuration.value( QStringLiteral( "input_values" ), static_cast< int >( ValuesArePercentage ) ).toInt() );
+  res->setRoundingType( QgsBasicNumericFormat::DecimalPlaces );
   return res.release();
 }
 
@@ -90,7 +91,7 @@ QgsPercentageNumericFormat::InputValues QgsPercentageNumericFormat::inputValues(
   return mInputValues;
 }
 
-void QgsPercentageNumericFormat::setInputValues( const InputValues &inputValues )
+void QgsPercentageNumericFormat::setInputValues( InputValues inputValues )
 {
   mInputValues = inputValues;
 }

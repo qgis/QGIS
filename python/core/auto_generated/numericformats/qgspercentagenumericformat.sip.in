@@ -55,7 +55,7 @@ Returns the format of the incoming values.
 .. seealso:: :py:func:`setInputValues`
 %End
 
-    void setInputValues( const InputValues &format );
+    void setInputValues( InputValues format );
 %Docstring
 Sets the ``format`` of the incoming values.
 

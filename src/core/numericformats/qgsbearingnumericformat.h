@@ -50,7 +50,7 @@ class CORE_EXPORT QgsBearingNumericFormat : public QgsBasicNumericFormat
     int sortKey() override;
     double suggestSampleValue() const override;
     QString formatDouble( double value, const QgsNumericFormatContext &context ) const override;
-    QgsNumericFormat *clone() const override SIP_FACTORY;
+    QgsBearingNumericFormat *clone() const override SIP_FACTORY;
     QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const override SIP_FACTORY;
     QVariantMap configuration( const QgsReadWriteContext &context ) const override;
 
@@ -68,7 +68,9 @@ class CORE_EXPORT QgsBearingNumericFormat : public QgsBasicNumericFormat
      *
      * \see directionFormat()
      */
-    void setDirectionFormat( const FormatDirectionOption &format );
+    void setDirectionFormat( FormatDirectionOption format );
+
+    void setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context ) override;
 
   private:
 

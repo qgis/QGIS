@@ -213,7 +213,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QString name() const override;
     static QString providerKey();
     QString description() const override;
-    void reloadData() override;
     bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
     QList< double > nativeResolutions() const override;
 
@@ -440,7 +439,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * The error message associated with the last WMS error.
      */
     QString mError;
-
 
     /**
      * The mime type of the message

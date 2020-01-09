@@ -33,6 +33,15 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
   public:
 
     /**
+     * Sets rounding type and behavior of the numberDecimalPlaces() setting.
+     */
+    enum RoundingType
+    {
+      DecimalPlaces, //!< Maximum number of decimal places
+      SignificantFigures, //!< Maximum number of significant figures
+    };
+
+    /**
       * Default constructor
       */
     QgsBasicNumericFormat();
@@ -44,11 +53,6 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
     QgsNumericFormat *clone() const override SIP_FACTORY;
     QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const override SIP_FACTORY;
     QVariantMap configuration( const QgsReadWriteContext &context ) const override;
-
-    /**
-     * Sets the format's \a configuration.
-     */
-    void setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context );
 
     /**
      * Returns the maximum number of decimal places to show.
@@ -108,7 +112,58 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
      */
     void setShowTrailingZeros( bool show );
 
+    /**
+     * Returns the rounding type, which controls the behavior of the numberDecimalPlaces() setting.
+     *
+     * \see setRoundingType()
+     */
+    RoundingType roundingType() const;
+
+    /**
+     * Sets the rounding \a type, which controls the behavior of the numberDecimalPlaces() setting.
+     *
+     * \see roundingType()
+     */
+    void setRoundingType( RoundingType type );
+
+    /**
+     * Returns any override for the thousands separator character. If an invalid QChar is returned,
+     * then the QGIS locale separator is used instead.
+     *
+     * \see setThousandsSeparator()
+     */
+    QChar thousandsSeparator() const;
+
+    /**
+     * Sets an override \a character for the thousands separator character. If an invalid QChar is set,
+     * then the QGIS locale separator is used instead.
+     *
+     * \see thousandsSeparator()
+     */
+    void setThousandsSeparator( QChar character );
+
+    /**
+     * Returns any override for the decimal separator character. If an invalid QChar is returned,
+     * then the QGIS locale separator is used instead.
+     *
+     * \see setDecimalSeparator()
+     */
+    QChar decimalSeparator() const;
+
+    /**
+     * Sets an override \a character for the decimal separator character. If an invalid QChar is set,
+     * then the QGIS locale separator is used instead.
+     *
+     * \see decimalSeparator()
+     */
+    void setDecimalSeparator( QChar character );
+
   protected:
+
+    /**
+     * Sets the format's \a configuration.
+     */
+    virtual void setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context );
 
     bool mUseScientific = false;
 
@@ -118,6 +173,11 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
     bool mShowThousandsSeparator = true;
     bool mShowPlusSign = false;
     bool mShowTrailingZeros = false;
+
+    RoundingType mRoundingType = DecimalPlaces;
+
+    QChar mThousandsSeparator;
+    QChar mDecimalSeparator;
 };
 
 #endif // QGSBASICNUMERICFORMAT_H

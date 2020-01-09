@@ -110,6 +110,36 @@ Constructor for QgsBearingNumericFormatWidget, initially showing the specified `
 };
 
 
+class QgsBearingNumericFormatDialog : QDialog
+{
+%Docstring
+A dialog which allow control over the properties of a :py:class:`QgsBearingNumericFormat`.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsnumericformatwidget.h"
+%End
+  public:
+
+    QgsBearingNumericFormatDialog( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsBearingNumericFormatDialog, initially showing the specified ``format``.
+%End
+
+    QgsBearingNumericFormat *format() /Factory/;
+%Docstring
+Returns the format defined by the current settings in the dialog.
+
+Ownership of the returned object is transferred to the caller
+%End
+
+};
+
+
+
+
 
 
 class QgsCurrencyNumericFormatWidget : QgsNumericFormatWidget

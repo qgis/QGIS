@@ -20,6 +20,7 @@
 #include "qgslayout.h"
 #include "qgsguiutils.h"
 #include "qgsvectorlayer.h"
+#include "qgsnumericformatselectorwidget.h"
 
 #include <QColorDialog>
 #include <QFontDialog>
@@ -51,6 +52,7 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   connect( mLineCapStyleCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutScaleBarWidget::mLineCapStyleCombo_currentIndexChanged );
   connect( mMinWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mMinWidthSpinBox_valueChanged );
   connect( mMaxWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mMaxWidthSpinBox_valueChanged );
+  connect( mNumberFormatPushButton, &QPushButton::clicked, this, &QgsLayoutScaleBarWidget::changeNumberFormat );
   setPanelTitle( tr( "Scalebar Properties" ) );
 
   mFontButton->registerExpressionContextGenerator( this );
@@ -362,6 +364,29 @@ void QgsLayoutScaleBarWidget::textFormatChanged()
   mScalebar->update();
 }
 
+void QgsLayoutScaleBarWidget::changeNumberFormat()
+{
+  if ( !mScalebar )
+  {
+    return;
+  }
+
+  QgsNumericFormatSelectorWidget *widget = new QgsNumericFormatSelectorWidget( this );
+  widget->setPanelTitle( tr( "Number Format" ) );
+  widget->setFormat( mScalebar->numericFormat() );
+  connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [ = ]
+  {
+    mScalebar->beginCommand( tr( "Set Scalebar Number Format" ) );
+    disconnectUpdateSignal();
+    mScalebar->setNumericFormat( widget->format() );
+    connectUpdateSignal();
+    mScalebar->endCommand();
+    mScalebar->update();
+  } );
+  openPanel( widget );
+  return;
+}
+
 void QgsLayoutScaleBarWidget::mFillColorButton_colorChanged( const QColor &newColor )
 {
   if ( !mScalebar )
@@ -490,8 +515,12 @@ void QgsLayoutScaleBarWidget::toggleStyleSpecificControls( const QString &style 
   if ( style == QLatin1String( "Numeric" ) )
   {
     //Disable controls which don't apply to numeric scale bars
-    mGroupBoxUnits->setEnabled( false );
-    mGroupBoxUnits->setCollapsed( true );
+    mUnitsComboBox->setEnabled( false );
+    mUnitsLabel->setEnabled( false );
+    mMapUnitsPerBarUnitSpinBox->setEnabled( false );
+    mMapUnitsPerBarUnitLabel->setEnabled( false );
+    mUnitLabelLineEdit->setEnabled( false );
+    mUnitLabelLabel->setEnabled( false );
     mGroupBoxSegments->setEnabled( false );
     mGroupBoxSegments->setCollapsed( true );
     mLabelBarSpaceSpinBox->setEnabled( false );
@@ -508,7 +537,12 @@ void QgsLayoutScaleBarWidget::toggleStyleSpecificControls( const QString &style 
   else
   {
     //Enable controls
-    mGroupBoxUnits->setEnabled( true );
+    mUnitsComboBox->setEnabled( true );
+    mUnitsLabel->setEnabled( true );
+    mMapUnitsPerBarUnitSpinBox->setEnabled( true );
+    mMapUnitsPerBarUnitLabel->setEnabled( true );
+    mUnitLabelLineEdit->setEnabled( true );
+    mUnitLabelLabel->setEnabled( true );
     mGroupBoxSegments->setEnabled( true );
     mLabelBarSpaceSpinBox->setEnabled( true );
     mLineWidthSpinBox->setEnabled( true );

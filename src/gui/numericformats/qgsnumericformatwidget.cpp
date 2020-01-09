@@ -19,7 +19,9 @@
 #include "qgspercentagenumericformat.h"
 #include "qgsbearingnumericformat.h"
 #include "qgsscientificnumericformat.h"
+#include "qgsgui.h"
 #include "qgis.h"
+#include <QDialogButtonBox>
 
 //
 // QgsBasicNumericFormatWidget
@@ -29,6 +31,9 @@ QgsBasicNumericFormatWidget::QgsBasicNumericFormatWidget( const QgsNumericFormat
 {
   setupUi( this );
   setFormat( format->clone() );
+
+  mThousandsLineEdit->setShowClearButton( true );
+  mDecimalLineEdit->setShowClearButton( true );
 
   connect( mShowPlusCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
   {
@@ -57,6 +62,40 @@ QgsBasicNumericFormatWidget::QgsBasicNumericFormatWidget( const QgsNumericFormat
     if ( !mBlockSignals )
       emit changed();
   } );
+
+  connect( mRadDecimalPlaces, &QRadioButton::toggled, this, [ = ]( bool checked )
+  {
+    if ( !checked )
+      return;
+
+    mFormat->setRoundingType( QgsBasicNumericFormat::DecimalPlaces );
+    if ( !mBlockSignals )
+      emit changed();
+  } );
+
+  connect( mRadSignificantFigures, &QRadioButton::toggled, this, [ = ]( bool checked )
+  {
+    if ( !checked )
+      return;
+
+    mFormat->setRoundingType( QgsBasicNumericFormat::SignificantFigures );
+    if ( !mBlockSignals )
+      emit changed();
+  } );
+
+  connect( mThousandsLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & text )
+  {
+    mFormat->setThousandsSeparator( text.isEmpty() ? QChar() : text.at( 0 ) );
+    if ( !mBlockSignals )
+      emit changed();
+  } );
+
+  connect( mDecimalLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & text )
+  {
+    mFormat->setDecimalSeparator( text.isEmpty() ? QChar() : text.at( 0 ) );
+    if ( !mBlockSignals )
+      emit changed();
+  } );
 }
 
 QgsBasicNumericFormatWidget::~QgsBasicNumericFormatWidget() = default;
@@ -70,6 +109,19 @@ void QgsBasicNumericFormatWidget::setFormat( QgsNumericFormat *format )
   mShowPlusCheckBox->setChecked( mFormat->showPlusSign() );
   mShowTrailingZerosCheckBox->setChecked( mFormat->showTrailingZeros() );
   mShowThousandsCheckBox->setChecked( mFormat->showThousandsSeparator() );
+  mThousandsLineEdit->setText( mFormat->thousandsSeparator().isNull() ? QString() : mFormat->thousandsSeparator() );
+  mDecimalLineEdit->setText( mFormat->decimalSeparator().isNull() ? QString() : mFormat->decimalSeparator() );
+  switch ( mFormat->roundingType() )
+  {
+    case QgsBasicNumericFormat::DecimalPlaces:
+      mRadDecimalPlaces->setChecked( true );
+      break;
+
+    case QgsBasicNumericFormat::SignificantFigures:
+      mRadSignificantFigures->setChecked( true );
+      break;
+  }
+
   mBlockSignals = false;
 }
 
@@ -132,6 +184,35 @@ QgsNumericFormat *QgsBearingNumericFormatWidget::format()
 {
   return mFormat->clone();
 }
+
+//
+// QgsBearingNumericFormatDialog
+//
+
+QgsBearingNumericFormatDialog::QgsBearingNumericFormatDialog( const QgsNumericFormat *format, QWidget *parent )
+  : QDialog( parent )
+{
+  setLayout( new QVBoxLayout() );
+  mWidget = new QgsBearingNumericFormatWidget( format );
+  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Ok );
+
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+
+  layout()->addWidget( mWidget );
+  layout()->addWidget( buttonBox );
+
+  connect( mWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );
+
+  setObjectName( QStringLiteral( "QgsBearingNumericFormatDialog" ) );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
+}
+
+QgsBearingNumericFormat *QgsBearingNumericFormatDialog::format()
+{
+  return static_cast< QgsBearingNumericFormat * >( mWidget->format() );
+}
+
 
 
 //
@@ -311,4 +392,5 @@ QgsNumericFormat *QgsScientificNumericFormatWidget::format()
 {
   return mFormat->clone();
 }
+
 

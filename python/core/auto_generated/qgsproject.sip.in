@@ -575,6 +575,15 @@ relating to how a QgsProject should be viewed and behave inside a map canvas
 .. versionadded:: 3.10.1
 %End
 
+
+    QgsProjectDisplaySettings *displaySettings();
+%Docstring
+Returns the project's display settings, which settings and properties relating
+to how a QgsProject should display values such as map coordinates and bearings.
+
+.. versionadded:: 3.12
+%End
+
     QgsLayerTree *layerTreeRoot() const;
 %Docstring
 Returns pointer to the root (invisible) node of the project's layer tree

@@ -271,7 +271,7 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
       mPlainTextEdit->setPlainText( v );
   }
 
-  if ( mLineEdit )
+  if ( mLineEdit && val != value() )
     mLineEdit->setText( v );
 }
 

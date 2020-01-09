@@ -67,7 +67,7 @@ jobs:
         env:
           JSON_DATA: ${{ steps.get_pr_commits.outputs.data }}
         run: |
-          COMMITS_MESSAGES=$(echo ${JSON_DATA} | jq '.[].commit.message | select( . |test("\\[needs?.doc(umentation)?s?\\]"; "i")) | sub("\\[needs?.doc(umentation)?s?\\]"; "\n\n\n\n"; "i")')
+          COMMITS_MESSAGES=$(echo ${JSON_DATA} | jq '.[].commit.message | select( . |test("\\[(feature|needs?.doc(umentation)?s?)\\]"; "i")) | sub("\\[needs?.doc(umentation)?s?\\]"; "\n\n\n\n"; "i")')
           echo "::set-output name=commits::$(echo ${COMMITS_MESSAGES} | tr -d '\n' )"
 
       # create the documentation issue

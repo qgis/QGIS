@@ -84,7 +84,7 @@ QString QgsBearingNumericFormat::formatDouble( double value, const QgsNumericFor
   return QgsBasicNumericFormat::formatDouble( value, context );
 }
 
-QgsNumericFormat *QgsBearingNumericFormat::clone() const
+QgsBearingNumericFormat *QgsBearingNumericFormat::clone() const
 {
   return new QgsBearingNumericFormat( *this );
 }
@@ -109,7 +109,13 @@ QgsBearingNumericFormat::FormatDirectionOption QgsBearingNumericFormat::directio
   return mDirectionFormat;
 }
 
-void QgsBearingNumericFormat::setDirectionFormat( const FormatDirectionOption &directionFormat )
+void QgsBearingNumericFormat::setDirectionFormat( FormatDirectionOption directionFormat )
 {
   mDirectionFormat = directionFormat;
+}
+
+void QgsBearingNumericFormat::setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context )
+{
+  QgsBasicNumericFormat::setConfiguration( configuration, context );
+  mDirectionFormat = static_cast< FormatDirectionOption >( configuration.value( QStringLiteral( "direction_format" ), 0 ).toInt() );
 }

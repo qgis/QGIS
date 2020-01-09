@@ -343,6 +343,13 @@ void QgsPostgresProvider::setListening( bool isListening )
   }
 }
 
+void QgsPostgresProvider::reloadProviderData()
+{
+  mShared->setFeaturesCounted( -1 );
+  mLayerExtent.setMinimal();
+}
+
+
 QgsPostgresConn *QgsPostgresProvider::connectionRW()
 {
   if ( mTransaction )
@@ -3323,11 +3330,13 @@ bool QgsPostgresProvider::setSubsetString( const QString &theSQL, bool updateFea
 
   if ( updateFeatureCount )
   {
-    mShared->setFeaturesCounted( -1 );
+    reloadData();
   }
-  mLayerExtent.setMinimal();
-
-  emit dataChanged();
+  else
+  {
+    mLayerExtent.setMinimal();
+    emit dataChanged();
+  }
 
   return true;
 }

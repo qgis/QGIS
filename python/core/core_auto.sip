@@ -91,6 +91,7 @@
 %Include auto_generated/qgslegendrenderer.sip
 %Include auto_generated/qgslegendsettings.sip
 %Include auto_generated/qgslegendstyle.sip
+%Include auto_generated/qgslocaldefaultsettings.sip
 %Include auto_generated/qgslogger.sip
 %Include auto_generated/qgsmapdecoration.sip
 %Include auto_generated/qgsmaphittest.sip
@@ -144,6 +145,7 @@
 %Include auto_generated/qgspostgresstringutils.sip
 %Include auto_generated/qgsproject.sip
 %Include auto_generated/qgsprojectbadlayerhandler.sip
+%Include auto_generated/qgsprojectdisplaysettings.sip
 %Include auto_generated/qgsprojectfiletransform.sip
 %Include auto_generated/qgsprojectproperty.sip
 %Include auto_generated/qgsprojectstorage.sip

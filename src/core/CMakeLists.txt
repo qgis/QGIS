@@ -182,6 +182,7 @@ SET(QGIS_CORE_SRCS
   scalebar/qgsdoubleboxscalebarrenderer.cpp
   scalebar/qgsnumericscalebarrenderer.cpp
   scalebar/qgsscalebarrenderer.cpp
+  scalebar/qgsscalebarsettings.cpp
   scalebar/qgssingleboxscalebarrenderer.cpp
   scalebar/qgsticksscalebarrenderer.cpp
 
@@ -276,6 +277,7 @@ SET(QGIS_CORE_SRCS
   qgslegendrenderer.cpp
   qgslegendsettings.cpp
   qgslegendstyle.cpp
+  qgslocaldefaultsettings.cpp
   qgslocalec.cpp
   qgslogger.cpp
   qgsmapdecoration.cpp
@@ -332,6 +334,7 @@ SET(QGIS_CORE_SRCS
   qgsprojectbadlayerhandler.cpp
   qgsprojectfiletransform.cpp
   qgssnappingconfig.cpp
+  qgsprojectdisplaysettings.cpp
   qgsprojectproperty.cpp
   qgsprojectstorage.cpp
   qgsprojectstorageregistry.cpp
@@ -772,6 +775,7 @@ SET(QGIS_CORE_HDRS
   qgslegendrenderer.h
   qgslegendsettings.h
   qgslegendstyle.h
+  qgslocaldefaultsettings.h
   qgslocalec.h
   qgslogger.h
   qgsmapdecoration.h
@@ -832,6 +836,7 @@ SET(QGIS_CORE_HDRS
   qgspostgresstringutils.h
   qgsproject.h
   qgsprojectbadlayerhandler.h
+  qgsprojectdisplaysettings.h
   qgsprojectfiletransform.h
   qgsprojectproperty.h
   qgsprojectstorage.h

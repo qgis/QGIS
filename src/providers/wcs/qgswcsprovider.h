@@ -187,7 +187,6 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QString lastErrorFormat() override;
     QString name() const override;
     QString description() const override;
-    void reloadData() override;
     QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const override;
 
     int colorInterpretation( int bandNo ) const override;
@@ -399,6 +398,11 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     bool mFixRotate = false;
 
     QNetworkRequest::CacheLoadControl mCacheLoadControl = QNetworkRequest::PreferNetwork;
+
+    /**
+     * Clears cache
+    */
+    void reloadProviderData() override;
 
 };
 
