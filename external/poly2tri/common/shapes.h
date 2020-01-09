@@ -132,11 +132,11 @@ struct Edge {
     if (p1.y > p2.y) {
       q = &p1;
       p = &p2;
-    } else if (std::abs(p1.y - p2.y) < 1e-10) {
+    } else if (p1.y == p2.y) {
       if (p1.x > p2.x) {
         q = &p1;
         p = &p2;
-      } else if (std::abs(p1.x - p2.x) < 1e-10) {
+      } else if (p1.x == p2.x) {
         // Repeat points
         throw std::runtime_error("Edge::Edge: p1 == p2");
       }
