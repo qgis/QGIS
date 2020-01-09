@@ -22,20 +22,11 @@
 #include "qgsapplication.h"
 #include "qgssettings.h"
 
-#include <QtWidgets/QProgressBar>
-#include <QtWidgets/QPushButton>
-
-QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent, bool showDialogButtons, const QgsAttributeEditorContext &context, bool showFixFeatureDialogButtons )
+QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent, bool showDialogButtons, const QgsAttributeEditorContext &context )
   : QDialog( parent )
   , mOwnedFeature( featureOwner ? thepFeature : nullptr )
 {
   init( vl, thepFeature, context, showDialogButtons );
-}
-
-QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeatureList *features, QWidget *parent, const QgsAttributeEditorContext &context )
-  : QDialog( parent )
-{
-  initList( vl, features, context );
 }
 
 QgsAttributeDialog::~QgsAttributeDialog()
@@ -111,95 +102,6 @@ void QgsAttributeDialog::init( QgsVectorLayer *layer, QgsFeature *feature, const
   QDialogButtonBox *buttonBox = mAttributeForm->findChild<QDialogButtonBox *>();
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsAttributeDialog::reject );
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsAttributeDialog::accept );
-  connect( layer, &QObject::destroyed, this, &QWidget::close );
-
-  mMenu = new QgsActionMenu( layer, mAttributeForm->feature(), QStringLiteral( "Feature" ), this );
-  if ( !mMenu->actions().isEmpty() )
-  {
-    QMenuBar *menuBar = new QMenuBar( this );
-    menuBar->addMenu( mMenu );
-    layout()->setMenuBar( menuBar );
-  }
-
-  restoreGeometry();
-  focusNextChild();
-}
-
-void QgsAttributeDialog::initList( QgsVectorLayer *layer, QgsFeatureList *features, const QgsAttributeEditorContext &context )
-{
-
-  QgsAttributeEditorContext trackedContext = context;
-  setWindowTitle( tr( "%1 - Fix Feature Attributes" ).arg( layer->name() ) );
-  setLayout( new QGridLayout() );
-  layout()->setMargin( 0 );
-  mTrackedVectorLayerTools.setVectorLayerTools( trackedContext.vectorLayerTools() );
-  trackedContext.setVectorLayerTools( &mTrackedVectorLayerTools );
-  trackedContext.setFormMode( QgsAttributeEditorContext::StandaloneDialog );
-
-  mCurrentIndex = 0;
-  QLabel *description = new QLabel( tr( "%1 features do not fullfill the constraints. Please fix or cancel them." ).arg( features->count() ) );
-  layout()->addWidget( description );
-  QProgressBar *progressBar = new QProgressBar();
-  progressBar->setOrientation( Qt::Horizontal );
-  progressBar->setRange( 0, features->count() );
-
-  layout()->addWidget( progressBar );
-  mAttributeForm = new QgsAttributeForm( layer, features->at( mCurrentIndex ), trackedContext, this );
-  mAttributeForm->disconnectButtonBox();
-  layout()->addWidget( mAttributeForm );
-  QDialogButtonBox *buttonBox = mAttributeForm->findChild<QDialogButtonBox *>();
-
-  QPushButton *cancelAllBtn = new QPushButton( tr( "Cancel all" ) );
-  QPushButton *cancelAllInvalidBtn = new QPushButton( tr( "Cancel all invalid" ) );
-  QPushButton *storeAllInvalidBtn = new QPushButton( tr( "Store all (even invalid)" ) );
-  buttonBox->addButton( cancelAllBtn, QDialogButtonBox::RejectRole );
-  buttonBox->addButton( cancelAllInvalidBtn, QDialogButtonBox::RejectRole );
-  buttonBox->addButton( storeAllInvalidBtn, QDialogButtonBox::RejectRole );
-  connect( cancelAllBtn, &QAbstractButton::clicked, this, [ = ]()
-  {
-    done( 10 );
-  } );
-  connect( cancelAllInvalidBtn, &QAbstractButton::clicked, this, [ = ]()
-  {
-    done( 11 );
-  } );
-  connect( storeAllInvalidBtn, &QAbstractButton::clicked, this, [ = ]()
-  {
-    done( 12 );
-  } );
-  connect( buttonBox, &QDialogButtonBox::rejected, this, [ = ]()
-  {
-    //next feature
-    mCurrentIndex++;
-    progressBar->setValue( mCurrentIndex );
-    if ( mCurrentIndex < features->count() )
-    {
-      mAttributeForm->setFeature( features->at( mCurrentIndex ) );
-    }
-    else
-    {
-      done( 11 );
-    }
-  } );
-  connect( buttonBox, &QDialogButtonBox::accepted, this, [ = ]()
-  {
-    mAttributeForm->save();
-    QgsFeature feature;
-    feature.setAttributes( mAttributeForm->feature().attributes() );
-    mValidFeatures << feature;
-    //next feature
-    mCurrentIndex++;
-    progressBar->setValue( mCurrentIndex );
-    if ( mCurrentIndex < features->count() )
-    {
-      mAttributeForm->setFeature( features->at( mCurrentIndex ) );
-    }
-    else
-    {
-      done( 11 );
-    }
-  } );
-
   connect( layer, &QObject::destroyed, this, &QWidget::close );
 
   mMenu = new QgsActionMenu( layer, mAttributeForm->feature(), QStringLiteral( "Feature" ), this );

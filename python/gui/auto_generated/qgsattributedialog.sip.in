@@ -18,7 +18,7 @@ class QgsAttributeDialog : QDialog
 %End
   public:
 
-    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent /TransferThis/ = 0, bool showDialogButtons = true, const QgsAttributeEditorContext &context = QgsAttributeEditorContext(), bool showFixFeatureDialogButtons = false );
+    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent /TransferThis/ = 0, bool showDialogButtons = true, const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
 %Docstring
 Create an attribute dialog for a given layer and feature
 
@@ -27,16 +27,6 @@ Create an attribute dialog for a given layer and feature
 :param featureOwner: Set to ``True``, if the dialog should take ownership of the feature
 :param parent: A parent widget for the dialog
 :param showDialogButtons: ``True``: Show the dialog buttons accept/cancel
-:param context: The context in which this dialog is created
-%End
-
-    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeatureList *features, QWidget *parent /TransferThis/ = 0, const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
-%Docstring
-Create an attribute dialog for a given layer and a feature list
-
-:param vl: The layer for which the dialog will be generated
-:param features: A list of features handled in the dialog
-:param parent: A parent widget for the dialog
 :param context: The context in which this dialog is created
 %End
 
@@ -84,8 +74,6 @@ Intercept window activate/deactivate events to show/hide the highlighted feature
 
 :return: The same as the parent QDialog
 %End
-
-    QgsFeatureList validFeatures();
 
   public slots:
     virtual void accept();

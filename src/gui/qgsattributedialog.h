@@ -51,18 +51,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
      * \param context           The context in which this dialog is created
      *
      */
-    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent SIP_TRANSFERTHIS = nullptr, bool showDialogButtons = true, const QgsAttributeEditorContext &context = QgsAttributeEditorContext(), bool showFixFeatureDialogButtons = false );
-
-    /**
-     * Create an attribute dialog for a given layer and a feature list
-     *
-     * \param vl                The layer for which the dialog will be generated
-     * \param features          A list of features handled in the dialog
-     * \param parent            A parent widget for the dialog
-     * \param context           The context in which this dialog is created
-     *
-     */
-    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeatureList *features, QWidget *parent SIP_TRANSFERTHIS = nullptr, const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
+    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent SIP_TRANSFERTHIS = nullptr, bool showDialogButtons = true, const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
 
     ~QgsAttributeDialog() override;
 
@@ -106,8 +95,6 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
      */
     bool event( QEvent *e ) override;
 
-    QgsFeatureList validFeatures() { return mValidFeatures; }
-
   public slots:
     void accept() override;
     void reject() override;
@@ -117,7 +104,6 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
 
   private:
     void init( QgsVectorLayer *layer, QgsFeature *feature, const QgsAttributeEditorContext &context, bool showDialogButtons );
-    void initList( QgsVectorLayer *layer, QgsFeatureList *features, const QgsAttributeEditorContext &context );
 
     QString mSettingsPath;
     // Used to sync multiple widgets for the same field
@@ -134,9 +120,6 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
     bool mEditable;
 
     QgsActionMenu *mMenu;
-
-    int mCurrentIndex = 0;
-    QgsFeatureList mValidFeatures;
 
     static int sFormCounter;
 

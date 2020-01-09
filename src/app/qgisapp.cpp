@@ -87,7 +87,7 @@
 #include "qgssourceselectproviderregistry.h"
 #include "qgssourceselectprovider.h"
 #include "qgsprovidermetadata.h"
-#include "qgsattributedialog.h"
+#include "qgsfixattributedialog.h"
 
 #include "qgsanalysis.h"
 #include "qgsgeometrycheckregistry.h"
@@ -9593,8 +9593,6 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
   // check constraints
   QgsFeatureList validFeatures = newFeatures;
   QgsFeatureList invalidFeatures;
-  newFeatures.clear();
-
   for ( const QgsFeature &f : qgis::as_const( validFeatures ) )
   {
     for ( int idx = 0; idx < pasteVectorLayer->fields().count(); ++idx )
@@ -9609,27 +9607,27 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
     }
   }
 
-  // open attribute form to fix invalid features and offer the options:
-  // - fix part of invalid features and save (without the unfixed) -> on cancel invalid or all fixed
-  // - fix part of invalid features and save (with the unfixed as invalid) -> on store invalid
-  // - cancel everything
-  QgsAttributeDialog *dialog = new QgsAttributeDialog( pasteVectorLayer, &invalidFeatures, nullptr, QgsAttributeEditorContext() );
-  dialog->setMode( QgsAttributeEditorContext::AddFeatureMode );
-  int feedback = dialog->exec();
+  if ( !invalidFeatures.isEmpty() )
+  {
+    newFeatures.clear();
 
-  if ( feedback == 10 )
-  {
-    //cancel all
-  }
-  else if ( feedback == 11 )
-  {
-    //cancel all invalid
-    newFeatures << validFeatures << dialog->validFeatures();
-  }
-  else if ( feedback == 12 )
-  {
-    //store all invalid
-    newFeatures << validFeatures << invalidFeatures;
+    QgsFixAttributeDialog *dialog = new QgsFixAttributeDialog( pasteVectorLayer, invalidFeatures, this );
+    int feedback = dialog->exec();
+
+    if ( feedback == QgsFixAttributeDialog::VanishAll )
+    {
+      //vanish all
+    }
+    else if ( feedback == QgsFixAttributeDialog::CopyValid )
+    {
+      //copy valid and fixed, vanish unfixed
+      newFeatures << validFeatures << dialog->fixedFeatures();
+    }
+    else if ( feedback == QgsFixAttributeDialog::CopyAll )
+    {
+      //copy all, even unfixed
+      newFeatures << validFeatures << dialog->fixedFeatures() << dialog->unfixedFeatures();
+    }
   }
 
   pasteVectorLayer->addFeatures( newFeatures );
