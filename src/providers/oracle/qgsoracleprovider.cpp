@@ -1184,7 +1184,43 @@ bool QgsOracleProvider::isValid() const
 
 QVariant QgsOracleProvider::defaultValue( int fieldId ) const
 {
-  return mDefaultValues.value( fieldId, QVariant() );
+  QString defVal = mDefaultValues.value( fieldId, QString() ).toString();
+
+  if ( providerProperty( EvaluateDefaultValues, false ).toBool() && !defVal.isEmpty() )
+  {
+    QgsField fld = field( fieldId );
+    return evaluateDefaultExpression( defVal, fld.type() );
+  }
+
+  return defVal;
+}
+
+QString QgsOracleProvider::defaultValueClause( int fieldId ) const
+{
+  QString defVal = mDefaultValues.value( fieldId, QString() ).toString();
+
+  if ( !providerProperty( EvaluateDefaultValues, false ).toBool() && !defVal.isEmpty() )
+  {
+    return defVal;
+  }
+
+  return QString();
+}
+
+
+bool QgsOracleProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value ) const
+{
+  Q_UNUSED( constraint );
+  if ( providerProperty( EvaluateDefaultValues, false ).toBool() )
+  {
+    return !mDefaultValues.value( fieldIndex ).toString().isEmpty();
+  }
+  else
+  {
+    // stricter check - if we are evaluating default values only on commit then we can only bypass the check
+    // if the attribute values matches the original default clause
+    return mDefaultValues.value( fieldIndex ) == value.toString() && !value.isNull();
+  }
 }
 
 QVariant QgsOracleProvider::evaluateDefaultExpression( const QString &value, const QVariant::Type &fieldType ) const
@@ -1232,7 +1268,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
 
   try
   {
-    QSqlQuery ins( db ), getfid( db );
+    QSqlQuery ins( db ), getfid( db ), identitytype( db );
 
     if ( !conn->begin( db ) )
     {
@@ -1246,12 +1282,30 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
 
     QStringList defaultValues;
     QList<int> fieldId;
+    QList<int> alwaysGenerated;
 
     if ( !mGeometryColumn.isNull() )
     {
       insert += quotedIdentifier( mGeometryColumn );
       values += '?';
       delim = ',';
+    }
+    QString sql = QStringLiteral( "SELECT a.column_name "
+                                  "FROM all_tab_identity_cols a "
+                                  "WHERE a.owner = '%1' "
+                                  "AND a.table_name = '%2' "
+                                  "AND a.generation_type = 'ALWAYS'" ).arg( mOwnerName ).arg( mTableName );
+    identitytype.prepare( sql );
+
+    if ( identitytype.exec() )
+    {
+      while ( identitytype.next() )
+      {
+        if ( flist[0].fields().names().contains( identitytype.value( 0 ).toString() ) )
+        {
+          alwaysGenerated.append( flist[0].fields().indexOf( identitytype.value( 0 ).toString() ) );
+        }
+      }
     }
 
     if ( mPrimaryKeyType == PktInt || mPrimaryKeyType == PktFidMap )
@@ -1262,8 +1316,10 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
       for ( int idx : constMPrimaryKeyAttrs )
       {
         QgsField fld = field( idx );
-        insert += delim + quotedIdentifier( fld.name() );
         keys += kdelim + quotedIdentifier( fld.name() );
+        if ( alwaysGenerated.contains( idx ) )
+          continue;
+        insert += delim + quotedIdentifier( fld.name() );
         values += delim + '?';
         delim = ',';
         kdelim = ',';
@@ -1284,6 +1340,8 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
     for ( int idx = 0; idx < std::min( attributevec.size(), mAttributeFields.size() ); ++idx )
     {
       QVariant v = attributevec[idx];
+      if ( alwaysGenerated.contains( idx ) )
+        continue;
       if ( !v.isValid() )
         continue;
 
