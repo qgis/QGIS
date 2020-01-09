@@ -30,7 +30,7 @@
  * \ingroup gui
  * \class QgsFixAttributeDialog
  * \brief Dialog to fix a list of invalid feature regarding constraints
- * \since 3.12
+ * \since QGIS 3.12
  */
 
 class GUI_EXPORT QgsFixAttributeDialog : public QDialog
