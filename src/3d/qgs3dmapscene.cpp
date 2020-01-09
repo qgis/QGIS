@@ -322,8 +322,56 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
           ffar = dst;
       }
     }
-    if ( fnear < 1 )
-      fnear = 1;  // does not really make sense to use negative far plane (behind camera)
+
+    /* Handle with adapted near and fare plane to avoid z-fight :
+     * ---------------------------------------------------------
+     *
+     *  inspired by https://www.khronos.org/opengl/wiki/Depth_Buffer_Precision
+     *          and http://www.songho.ca/opengl/gl_projectionmatrix.html
+     *
+     * Simplification equation (3) of the second site :
+     * Suppostion that fnear>>1 and fnear>>p (p : precision in real world),
+     * And considering Ze=ffar to evaluate the worst precision for Z buffer
+     * The equation (3) permits to obtain :
+     *
+     * Zn: depth buffer value, dZn difference between the depth buffer values to compare :
+     *
+     * dZn=2*p / ( fnear *  (ffar/fnear)^2)
+     *
+     * To avoid z-fighting, it is necessary that dZn > pf (pf is float epsilon, e.g. 1.19e-7)
+     *
+     * So, above equation permits to have a minimal fnear to avoid z-fighting close to the far plan :
+     *
+     * fnearMini= (ffar^2) * pf / (2*p)
+     *
+     * example : if ffar=10000 m and we want to avoid z-fighting closed to the far plan for p = 1 m
+     *           --> ffnearMini=11.9 m
+     *
+     *           if p=0.1 m --> ffnearMini=59.5m
+     *
+     *           if ffar=20000 m and p=0.1 m --> ffnear = 238 m !!!
+     *           if ffar=20000 m and p=0.1 m --> ffnear = 119 m
+     *
+     *  May be that p can be more if ffar increase, so introduce a factor to have p from ffar
+     *
+     *  precFact= ffar/p
+     *
+     *  then
+     *
+     *  fnear = ffar * pf * precFactor
+     *
+     * TODO : look at https://doc.qt.io/qt-5/qopenglfunctions.html#glDepthRangef ??
+     */
+
+    float precfactor = 100000; // For now hard coded, maybe add to settings, so user can change this factor.
+    float fnearMini = ffar * std::numeric_limits<float>::epsilon() * precfactor;
+
+    if ( fnear < fnearMini )
+      fnear = fnearMini;
+
+
+
+    qDebug() << "far  :" << ffar << "   near : " << fnear << "log 2 : " << log2( ffar / fnear ) << "float precision " << std::numeric_limits<float>::epsilon();
 
     if ( fnear == 1e9 && ffar == 0 )
     {
@@ -335,8 +383,8 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
     }
 
     // set near/far plane - with some tolerance in front/behind expected near/far planes
-    float newFar = ffar * 2;
-    float newNear = fnear / 2;
+    float newFar = ffar * 1.1;
+    float newNear = fnear / 1.1;
     if ( !qgsFloatNear( newFar, camera->farPlane() ) || !qgsFloatNear( newNear, camera->nearPlane() ) )
     {
       camera->setFarPlane( newFar );

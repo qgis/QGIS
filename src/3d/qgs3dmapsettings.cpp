@@ -524,3 +524,13 @@ void Qgs3DMapSettings::setFieldOfView( const float fieldOfView )
   mFieldOfView = fieldOfView;
   emit fieldOfViewChanged();
 }
+
+QgsMesh3DSymbol Qgs3DMapSettings::meshterrainSymbol() const
+{
+  return mMeshterrainSymbol;
+}
+
+void Qgs3DMapSettings::setMeshterrainSymbol( const QgsMesh3DSymbol &meshterrainSymbol )
+{
+  mMeshterrainSymbol = meshterrainSymbol;
+}

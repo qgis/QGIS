@@ -56,12 +56,12 @@ static float screenSpaceError( float epsilon, float distance, float screenSize, 
 
 static float screenSpaceError( QgsChunkNode *node, const QgsChunkedEntity::SceneState &state )
 {
+  if ( node->error() <= 0 ) //it happens for meshes
+    return 0;
+
   float dist = node->bbox().distanceFromPoint( state.cameraPos );
 
   // TODO: what to do when distance == 0 ?
-  // --> if the distance is less the near plan of the camera, set error to zero do avoid no controled behavior
-  if ( dist < state.nearPlanDistance )
-    return 0;
 
   float sse = screenSpaceError( node->error(), dist, state.screenSizePx, state.cameraFov );
   return sse;
