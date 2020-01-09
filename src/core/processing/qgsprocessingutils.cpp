@@ -746,17 +746,31 @@ QVariant QgsProcessingUtils::generateIteratingDestination( const QVariant &input
 
 QString QgsProcessingUtils::tempFolder()
 {
+  static std::unique_ptr< QTemporaryDir > sTempFolder;
   static QString sFolder;
   static QMutex sMutex;
-  sMutex.lock();
-  if ( sFolder.isEmpty() || !sFolder.startsWith( QgsSettings().value( QStringLiteral( "Processing/Configuration/TEMP_PATH" ), QDir::tempPath() ).toString() ) )
+  QMutexLocker locker( &sMutex );
+  const QString basePath = QgsSettings().value( QStringLiteral( "Processing/Configuration/TEMP_PATH2" ) ).toString();
+  if ( basePath.isEmpty() )
   {
-    QString subPath = QUuid::createUuid().toString().remove( '-' ).remove( '{' ).remove( '}' );
-    sFolder = QgsSettings().value( QStringLiteral( "Processing/Configuration/TEMP_PATH" ), QDir::tempPath() ).toString() + QStringLiteral( "/processing_" ) + subPath;
-    if ( !QDir( sFolder ).exists() )
-      QDir().mkpath( sFolder );
+    // default setting -- automatically create a temp folder. In this case, we use QTemporaryDir so
+    // that the folder is automatically deleted when QGIS is closed
+    if ( !sTempFolder )
+    {
+      const QString templatePath = QStringLiteral( "%1/processing_XXXXXX" ).arg( QDir::tempPath() );
+      sTempFolder = qgis::make_unique< QTemporaryDir >( templatePath );
+      sFolder = sTempFolder->path();
+    }
   }
-  sMutex.unlock();
+  else if ( sFolder.isEmpty() || !sFolder.startsWith( basePath ) || !sTempFolder )
+  {
+    const QString templatePath = QStringLiteral( "%1/processing_XXXXXX" ).arg( basePath );
+    // leak the previous folder -- we don't want it to be cleaned up, we don't know what was in it that may still
+    // be required for this session!
+    sTempFolder.release();
+    sTempFolder = qgis::make_unique< QTemporaryDir >( templatePath );
+    sFolder = sTempFolder->path();
+  }
   return sFolder;
 }
 

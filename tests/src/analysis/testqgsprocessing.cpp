@@ -8538,7 +8538,7 @@ void TestQgsProcessing::tempUtils()
   // change temp folder in the settings
   QgsSettings settings;
   QString alternative_tempFolder1 = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/alternative_temp_test_one" );
-  settings.setValue( QStringLiteral( "Processing/Configuration/TEMP_PATH" ), alternative_tempFolder1 );
+  settings.setValue( QStringLiteral( "Processing/Configuration/TEMP_PATH2" ), alternative_tempFolder1 );
   // check folder and if it's constant with alternative temp folder 1
   tempFolder = QgsProcessingUtils::tempFolder();
   QVERIFY( tempFolder.startsWith( alternative_tempFolder1 ) );
@@ -8550,7 +8550,7 @@ void TestQgsProcessing::tempUtils()
   QVERIFY( alternativeTempFile1.startsWith( alternative_tempFolder1 ) );
   // change temp folder in the settings again
   QString alternative_tempFolder2 = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/alternative_temp_test_two" );
-  settings.setValue( QStringLiteral( "Processing/Configuration/TEMP_PATH" ), alternative_tempFolder2 );
+  settings.setValue( QStringLiteral( "Processing/Configuration/TEMP_PATH2" ), alternative_tempFolder2 );
   // check folder and if it's constant constant with alternative temp folder 2
   tempFolder = QgsProcessingUtils::tempFolder();
   QVERIFY( tempFolder.startsWith( alternative_tempFolder2 ) );
