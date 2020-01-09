@@ -389,7 +389,7 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         vl.rollBack()
 
     def testTransactionTuple(self):
-        # create a vector layer based on postgres
+        # create a vector layer based on oracle
         vl = QgsVectorLayer(
             self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="QGIS"."SOME_POLY_DATA" (GEOM) sql=',
             'test', 'oracle')
@@ -435,6 +435,25 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
 
         feature = vl.getFeature(2)
         self.assertTrue(feature.isValid())
+
+    def testIdentityCommit(self):
+        # create a vector layer based on oracle
+        vl = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="QGIS"."POINT_DATA_IDENTITY" (GEOM) sql=',
+            'test', 'oracle')
+        self.assertTrue(vl.isValid())
+
+        features = [f for f in vl.getFeatures()]
+
+        # add a new feature
+        newf = QgsFeature(features[0].fields())
+        success, featureAdded = vl.dataProvider().addFeatures([newf])
+        self.assertTrue(success)
+
+        # clean up
+        features = [f for f in vl.getFeatures()]
+        vl.dataProvider().deleteFeatures([features[-1].id()])
+
 
 if __name__ == '__main__':
     unittest.main()
