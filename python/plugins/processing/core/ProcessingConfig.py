@@ -22,6 +22,7 @@ __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
 import os
+import tempfile
 
 from qgis.PyQt.QtCore import QCoreApplication, QObject, pyqtSignal
 from qgis.core import (NULL,
@@ -170,7 +171,7 @@ class ProcessingConfig:
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.TEMP_PATH,
-            ProcessingConfig.tr('Temporary output folder path'), QgsProcessingUtils.tempFolder(),
+            ProcessingConfig.tr('Temporary output folder path'), tempfile.gettempdir(),
             valuetype=Setting.FOLDER))
 
     @staticmethod
