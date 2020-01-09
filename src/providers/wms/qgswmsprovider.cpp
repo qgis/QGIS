@@ -3273,10 +3273,6 @@ QString  QgsWmsProvider::description() const
   return WMS_DESCRIPTION;
 }
 
-void QgsWmsProvider::reloadData()
-{
-}
-
 bool QgsWmsProvider::renderInPreview( const QgsDataProvider::PreviewContext &context )
 {
   if ( mSettings.mTiled || mSettings.mXyz )

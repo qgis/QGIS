@@ -328,7 +328,7 @@ QString QgsAfsProvider::dataComment() const
   return mLayerDescription;
 }
 
-void QgsAfsProvider::reloadData()
+void QgsAfsProvider::reloadProviderData()
 {
   mSharedData->clearCache();
 }
