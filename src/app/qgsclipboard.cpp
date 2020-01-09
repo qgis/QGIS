@@ -270,10 +270,10 @@ QgsFields QgsClipboard::retrieveFields() const
     }
 
     //wkt?
-    QStringList lines = string.split( '\n' );
-    if ( !lines.empty() )
+    QString firstLine = string.section( '\n', 0, 0 );
+    if ( !firstLine.isEmpty() )
     {
-      QStringList fieldNames = lines.at( 0 ).split( '\t' );
+      QStringList fieldNames = firstLine.split( '\t' );
       //wkt / text always has wkt_geom as first attribute (however values can be NULL)
       if ( fieldNames.at( 0 ) != QLatin1String( "wkt_geom" ) )
       {
