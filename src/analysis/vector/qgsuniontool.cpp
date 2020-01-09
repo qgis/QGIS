@@ -1,5 +1,5 @@
 /***************************************************************************
- *  symdifferencetool.cpp                                              *
+ *  unionaytool.cpp                                                    *
  *  -------------------                                                    *
  *  begin                : Jun 10, 2014                                    *
  *  copyright            : (C) 2014 by Sandro Mani / Sourcepole AG         *
@@ -16,26 +16,27 @@
  ***************************************************************************/
 
 #include <QApplication>
-#include "symdifferencetool.h"
-#include "qgsgeometry.h"
+#include "qgsuniontool.h"
 #include "qgsgeos.h"
+#include "qgsgeometry.h"
 #include "qgsoverlayutils.h"
 #include "qgsvectorlayer.h"
 
 namespace Vectoranalysis
 {
 
-  SymDifferenceTool::SymDifferenceTool(
-    QgsFeatureSource *layerA,
-    QgsFeatureSource *layerB,
-    QgsFeatureSink *output,
-    QgsCoordinateTransformContext transformContext,
-    QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck )
-    : AbstractTool( output, transformContext, invalidGeometryCheck ), mLayerA( layerA ), mLayerB( layerB )
+  QgsUnionTool::QgsUnionTool( QgsFeatureSource *layerA,
+                        QgsFeatureSource *layerB,
+                        const QgsAttributeList &fieldIndicesA,
+                        const QgsAttributeList &fieldIndicesB,
+                        QgsFeatureSink *output,
+                        QgsCoordinateTransformContext transformContext,
+                        QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck )
+    : QgsAbstractTool( output, transformContext, invalidGeometryCheck ), mLayerA( layerA ), mLayerB( layerB ), mFieldIndicesA( fieldIndicesA ), mFieldIndicesB( fieldIndicesB )
   {
   }
 
-  void SymDifferenceTool::prepare()
+  void QgsUnionTool::prepare()
   {
     appendToJobQueue( mLayerA, ProcessLayerAFeature );
     appendToJobQueue( mLayerB, ProcessLayerBFeature );
@@ -43,7 +44,7 @@ namespace Vectoranalysis
     buildSpatialIndex( mSpatialIndexB, mLayerB );
   }
 
-  void SymDifferenceTool::processFeature( const Job *job )
+  void QgsUnionTool::processFeature( const Job *job )
   {
     QgsFeature f;
     if ( !mOutput || !mLayerA || !mLayerB )
@@ -54,16 +55,18 @@ namespace Vectoranalysis
     QgsGeometry geom = f.geometry();
     if ( job->taskFlag == ProcessLayerAFeature )
     {
-      if ( !getFeatureAtId( f, job->featureid, mLayerA, mLayerA->fields().allAttributesList() ) )
+      if ( !getFeatureAtId( f, job->featureid, mLayerA, mFieldIndicesA ) )
       {
         return;
       }
+      QgsFeatureList intersection = QgsOverlayUtils::featureIntersection( f, *mLayerA, *mLayerB, mSpatialIndexB, mTransformContext, mFieldIndicesA, mFieldIndicesB );
+      writeFeatures( intersection );
       QgsFeatureList differenceA = QgsOverlayUtils::featureDifference( f, *mLayerA, *mLayerB, mSpatialIndexB, mTransformContext, mLayerA->fields().size(), mLayerB->fields().size(), QgsOverlayUtils::OutputAB );
       writeFeatures( differenceA );
     }
     else // if(job->taskFlag == ProcessLayerBFeature)
     {
-      if ( !getFeatureAtId( f, job->featureid, mLayerB, mLayerB->fields().allAttributesList() ) )
+      if ( !getFeatureAtId( f, job->featureid, mLayerB, mFieldIndicesB ) )
       {
         return;
       }
@@ -71,4 +74,5 @@ namespace Vectoranalysis
       writeFeatures( differenceB );
     }
   }
+
 } // Geoprocessing

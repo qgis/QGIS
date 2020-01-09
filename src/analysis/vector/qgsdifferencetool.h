@@ -1,5 +1,5 @@
 /***************************************************************************
- *  unionaytool.h                                                      *
+ *  differencetool.h                                                   *
  *  -------------------                                                    *
  *  begin                : Jun 10, 2014                                    *
  *  copyright            : (C) 2014 by Sandro Mani / Sourcepole AG         *
@@ -15,38 +15,28 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef VECTORANALYSIS_UNION_TOOL_H
-#define VECTORANALYSIS_UNION_TOOL_H
+#ifndef VECTORANALYSIS_QGSDIFFERENCE_TOOL_H
+#define VECTORANALYSIS_QGSDIFFERENCE_TOOL_H
 
-#include "abstracttool.h"
+#include "qgsabstracttool.h"
 
 namespace Vectoranalysis
 {
 
-  class ANALYSIS_EXPORT UnionTool : public AbstractTool
+  class ANALYSIS_EXPORT QgsDifferenceTool : public QgsAbstractTool
   {
     public:
-      UnionTool( QgsFeatureSource *layerA,
-                 QgsFeatureSource *layerB,
-                 const QgsAttributeList &fieldIndicesA,
-                 const QgsAttributeList &fieldIndicesB,
-                 QgsFeatureSink *output,
-                 QgsCoordinateTransformContext transformContext,
-                 QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck );
+      QgsDifferenceTool( QgsFeatureSource *layerA,
+                      QgsFeatureSource *layerB,
+                      QgsFeatureSink *output,
+                      QgsCoordinateTransformContext transformContext,
+                      QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck );
+      ~QgsDifferenceTool() {}
 
     private:
-      enum Task
-      {
-        ProcessLayerAFeature,
-        ProcessLayerBFeature
-      };
-
-      QgsSpatialIndex mSpatialIndexA;
-      QgsSpatialIndex mSpatialIndexB;
+      QgsSpatialIndex mSpatialIndex;
       QgsFeatureSource *mLayerA;
       QgsFeatureSource *mLayerB;
-      QgsAttributeList mFieldIndicesA;
-      QgsAttributeList mFieldIndicesB;
 
       void prepare();
       void processFeature( const Job *job );
@@ -54,4 +44,4 @@ namespace Vectoranalysis
 
 } // Geoprocessing
 
-#endif // VECTORANALYSIS_UNION_TOOL_H
+#endif // VECTORANALYSIS_QGSDIFFERENCE_TOOL_H

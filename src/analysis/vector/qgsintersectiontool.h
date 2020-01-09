@@ -1,5 +1,5 @@
 /***************************************************************************
- *  intersectiontool.h                                                 *
+ *  qgsintersectiontool.h                                                 *
  *  -------------------                                                    *
  *  begin                : Jun 10, 2014                                    *
  *  copyright            : (C) 2014 by Sandro Mani / Sourcepole AG         *
@@ -15,20 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef VECTORANALYSIS_INTERSECTION_TOOL_H
-#define VECTORANALYSIS_INTERSECTION_TOOL_H
+#ifndef VECTORANALYSIS_QGSINTERSECTION_TOOL_H
+#define VECTORANALYSIS_QGSINTERSECTION_TOOL_H
 
-#include "abstracttool.h"
+#include "qgsabstracttool.h"
 
 class QgsFeatureSource;
 
 namespace Vectoranalysis
 {
 
-  class ANALYSIS_EXPORT IntersectionTool : public AbstractTool
+  class ANALYSIS_EXPORT QgsIntersectionTool : public QgsAbstractTool
   {
     public:
-      IntersectionTool( QgsFeatureSource *layerA,
+      QgsIntersectionTool( QgsFeatureSource *layerA,
                         QgsFeatureSource *layerB,
                         const QgsAttributeList &fieldIndicesA,
                         const QgsAttributeList &fieldIndicesB,
@@ -49,4 +49,4 @@ namespace Vectoranalysis
 
 } // Geoprocessing
 
-#endif // VECTORANALYSIS_INTERSECTION_TOOL_H
+#endif // VECTORANALYSIS_QGSINTERSECTION_TOOL_H

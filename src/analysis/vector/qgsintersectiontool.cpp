@@ -1,5 +1,5 @@
 /***************************************************************************
- *  intersectiontool.cpp                                               *
+ *  qgsintersectiontool.cpp                                               *
  *  -------------------                                                    *
  *  begin                : Jun 10, 2014                                    *
  *  copyright            : (C) 2014 by Sandro Mani / Sourcepole AG         *
@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include <QApplication>
-#include "intersectiontool.h"
+#include "qgsintersectiontool.h"
 #include "qgsfeaturesource.h"
 #include "qgsgeometry.h"
 #include "qgsgeos.h"
@@ -26,7 +26,7 @@
 namespace Vectoranalysis
 {
 
-  IntersectionTool::IntersectionTool(
+  QgsIntersectionTool::QgsIntersectionTool(
     QgsFeatureSource *layerA,
     QgsFeatureSource *layerB,
     const QgsAttributeList &fieldIndicesA,
@@ -34,17 +34,17 @@ namespace Vectoranalysis
     QgsFeatureSink *output,
     QgsCoordinateTransformContext transformContext,
     QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck )
-    : AbstractTool( output, transformContext, invalidGeometryCheck ), mLayerA( layerA ), mLayerB( layerB ), mFieldIndicesA( fieldIndicesA ), mFieldIndicesB( fieldIndicesB )
+    : QgsAbstractTool( output, transformContext, invalidGeometryCheck ), mLayerA( layerA ), mLayerB( layerB ), mFieldIndicesA( fieldIndicesA ), mFieldIndicesB( fieldIndicesB )
   {
   }
 
-  void IntersectionTool::prepare()
+  void QgsIntersectionTool::prepare()
   {
     appendToJobQueue( mLayerA );
     buildSpatialIndex( mSpatialIndex, mLayerB );
   }
 
-  void IntersectionTool::processFeature( const Job *job )
+  void QgsIntersectionTool::processFeature( const Job *job )
   {
     // Get currently processed feature
     QgsFeature f;

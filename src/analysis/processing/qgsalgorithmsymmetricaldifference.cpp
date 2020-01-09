@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmsymmetricaldifference.h"
-#include "symdifferencetool.h"
+#include "qgssymdifferencetool.h"
 #include "qgsoverlayutils.h"
 
 ///@cond PRIVATE
@@ -87,7 +87,7 @@ QVariantMap QgsSymmetricalDifferenceAlgorithm::processAlgorithm( const QVariantM
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
 
-  Vectoranalysis::SymDifferenceTool tool( sourceA.get(), sourceB.get(), sink.get(), context.transformContext(), context.invalidGeometryCheck() );
+  Vectoranalysis::QgsSymDifferenceTool tool( sourceA.get(), sourceB.get(), sink.get(), context.transformContext(), context.invalidGeometryCheck() );
   QgsOverlayUtils::runVectorAnalysisTool( tool, feedback );
   return outputs;
 }

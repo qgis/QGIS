@@ -18,7 +18,7 @@
 #include <QApplication>
 #include <QtConcurrentRun>
 #include <QtConcurrentMap>
-#include "abstracttool.h"
+#include "qgsabstracttool.h"
 #include "qgsfield.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
@@ -32,10 +32,10 @@
 namespace Vectoranalysis
 {
 
-  QString AbstractTool::errFeatureDoesNotExist = QApplication::translate( "AbstractTool", "The requested feature does not exist" );
-  QString AbstractTool::errFailedToFetchGeometry = QApplication::translate( "AbstractTool", "The feature geometry could not be fetched" );
+  QString QgsAbstractTool::errFeatureDoesNotExist = QApplication::translate( "AbstractTool", "The requested feature does not exist" );
+  QString QgsAbstractTool::errFailedToFetchGeometry = QApplication::translate( "AbstractTool", "The feature geometry could not be fetched" );
 
-  void AbstractTool::ProcessFeatureWrapper::operator()( const Job *job )
+  void QgsAbstractTool::ProcessFeatureWrapper::operator()( const Job *job )
   {
     try
     {
@@ -47,26 +47,26 @@ namespace Vectoranalysis
     }
   }
 
-  AbstractTool::AbstractTool( QgsFeatureSink *output, QgsCoordinateTransformContext transformContext, QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck ): mOutput( output ), mTransformContext( transformContext ), mInvalidGeometryCheck( invalidGeometryCheck )
+  QgsAbstractTool::QgsAbstractTool( QgsFeatureSink *output, QgsCoordinateTransformContext transformContext, QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck ): mOutput( output ), mTransformContext( transformContext ), mInvalidGeometryCheck( invalidGeometryCheck )
   {
   }
 
-  AbstractTool::~AbstractTool()
+  QgsAbstractTool::~QgsAbstractTool()
   {
     qDeleteAll( mJobQueue );
   }
 
-  QFuture<void> AbstractTool::init()
+  QFuture<void> QgsAbstractTool::init()
   {
-    return QtConcurrent::run( this, &AbstractTool::prepare );
+    return QtConcurrent::run( this, &QgsAbstractTool::prepare );
   }
 
-  QFuture<void> AbstractTool::execute( int /*task*/ )
+  QFuture<void> QgsAbstractTool::execute( int /*task*/ )
   {
     return QtConcurrent::map( mJobQueue, ProcessFeatureWrapper( this ) );
   }
 
-  void AbstractTool::buildSpatialIndex( QgsSpatialIndex &index, QgsFeatureSource *layer ) const
+  void QgsAbstractTool::buildSpatialIndex( QgsSpatialIndex &index, QgsFeatureSource *layer ) const
   {
     QgsFeatureRequest request;
     request.setFlags( QgsFeatureRequest::SubsetOfAttributes );
@@ -75,7 +75,7 @@ namespace Vectoranalysis
     index = QgsSpatialIndex( it );
   }
 
-  void AbstractTool::appendToJobQueue( QgsFeatureSource *layer, int taskFlag )
+  void QgsAbstractTool::appendToJobQueue( QgsFeatureSource *layer, int taskFlag )
   {
     for ( const QgsFeatureId &id : layer->allFeatureIds() )
     {
@@ -83,7 +83,7 @@ namespace Vectoranalysis
     }
   }
 
-  bool AbstractTool::getFeatureAtId( QgsFeature &feature, QgsFeatureId id, QgsFeatureSource *layer, const QgsAttributeList &attIdx )
+  bool QgsAbstractTool::getFeatureAtId( QgsFeature &feature, QgsFeatureId id, QgsFeatureSource *layer, const QgsAttributeList &attIdx )
   {
     QgsFeatureRequest request( id );
     request.setSubsetOfAttributes( attIdx );
@@ -99,7 +99,7 @@ namespace Vectoranalysis
     return true;
   }
 
-  void AbstractTool::writeFeatures( QgsFeatureList &outFeatures )
+  void QgsAbstractTool::writeFeatures( QgsFeatureList &outFeatures )
   {
     QMutexLocker locker( &mWriteMutex );
 

@@ -17,7 +17,7 @@
 
 #include "qgsgeometrycollection.h"
 #include "qgsgeometryengine.h"
-#include "intersectiontool.h"
+#include "qgsintersectiontool.h"
 #include "qgsoverlayutils.h"
 
 ///@cond PRIVATE
@@ -110,7 +110,7 @@ QVariantMap QgsIntersectionAlgorithm::processAlgorithm( const QVariantMap &param
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
 
-  Vectoranalysis::IntersectionTool tool( sourceA.get(), sourceB.get(), fieldIndicesA, fieldIndicesB, sink.get(), context.transformContext(), context.invalidGeometryCheck() );
+  Vectoranalysis::QgsIntersectionTool tool( sourceA.get(), sourceB.get(), fieldIndicesA, fieldIndicesB, sink.get(), context.transformContext(), context.invalidGeometryCheck() );
   QgsOverlayUtils::runVectorAnalysisTool( tool, feedback );
 
   return outputs;

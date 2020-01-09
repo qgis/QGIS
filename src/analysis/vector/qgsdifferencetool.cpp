@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include <QApplication>
-#include "differencetool.h"
+#include "qgsdifferencetool.h"
 #include "qgsgeometry.h"
 #include "qgsgeos.h"
 #include "qgsoverlayutils.h"
@@ -25,22 +25,22 @@
 namespace Vectoranalysis
 {
 
-  DifferenceTool::DifferenceTool( QgsFeatureSource *layerA,
+  QgsDifferenceTool::QgsDifferenceTool( QgsFeatureSource *layerA,
                                   QgsFeatureSource *layerB,
                                   QgsFeatureSink *output,
                                   QgsCoordinateTransformContext transformContext,
                                   QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck )
-    : AbstractTool( output, transformContext, invalidGeometryCheck ), mLayerA( layerA ), mLayerB( layerB )
+    : QgsAbstractTool( output, transformContext, invalidGeometryCheck ), mLayerA( layerA ), mLayerB( layerB )
   {
   }
 
-  void DifferenceTool::prepare()
+  void QgsDifferenceTool::prepare()
   {
     appendToJobQueue( mLayerA );
     buildSpatialIndex( mSpatialIndex, mLayerB );
   }
 
-  void DifferenceTool::processFeature( const Job *job )
+  void QgsDifferenceTool::processFeature( const Job *job )
   {
     QgsFeature f;
     if ( !mOutput || !mLayerA || !mLayerB || !getFeatureAtId( f, job->featureid, mLayerA, mLayerA->fields().allAttributesList() ) )

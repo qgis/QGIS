@@ -197,11 +197,11 @@ SET(QGIS_ANALYSIS_SRCS
   network/qgsvectorlayerdirector.cpp
   network/qgsgraphanalyzer.cpp
 
-  vector/abstracttool.cpp
-  vector/differencetool.cpp
-  vector/intersectiontool.cpp
-  vector/uniontool.cpp
-  vector/symdifferencetool.cpp
+  vector/qgsabstracttool.cpp
+  vector/qgsdifferencetool.cpp
+  vector/qgsintersectiontool.cpp
+  vector/qgsuniontool.cpp
+  vector/qgssymdifferencetool.cpp
   vector/geometry_checker/qgsfeaturepool.cpp
   vector/geometry_checker/qgsgeometryanglecheck.cpp
   vector/geometry_checker/qgsgeometryareacheck.cpp

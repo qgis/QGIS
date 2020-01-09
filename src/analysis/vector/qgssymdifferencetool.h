@@ -1,5 +1,5 @@
 /***************************************************************************
- *  differencetool.h                                                   *
+ *  symdifferencetool.h                                                *
  *  -------------------                                                    *
  *  begin                : Jun 10, 2014                                    *
  *  copyright            : (C) 2014 by Sandro Mani / Sourcepole AG         *
@@ -15,26 +15,32 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef VECTORANALYSIS_DIFFERENCE_TOOL_H
-#define VECTORANALYSIS_DIFFERENCE_TOOL_H
+#ifndef VECTORANALYSIS_QGSSYMDIFFERENCE_TOOL_H
+#define VECTORANALYSIS_QGSSYMDIFFERENCE_TOOL_H
 
-#include "abstracttool.h"
+#include "qgsabstracttool.h"
 
 namespace Vectoranalysis
 {
 
-  class ANALYSIS_EXPORT DifferenceTool : public AbstractTool
+  class ANALYSIS_EXPORT QgsSymDifferenceTool : public QgsAbstractTool
   {
     public:
-      DifferenceTool( QgsFeatureSource *layerA,
-                      QgsFeatureSource *layerB,
-                      QgsFeatureSink *output,
-                      QgsCoordinateTransformContext transformContext,
-                      QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck );
-      ~DifferenceTool() {}
+      QgsSymDifferenceTool( QgsFeatureSource *layerA,
+                         QgsFeatureSource *layerB,
+                         QgsFeatureSink *output,
+                         QgsCoordinateTransformContext transformContext,
+                         QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck );
 
     private:
-      QgsSpatialIndex mSpatialIndex;
+      enum Task
+      {
+        ProcessLayerAFeature,
+        ProcessLayerBFeature
+      };
+
+      QgsSpatialIndex mSpatialIndexA;
+      QgsSpatialIndex mSpatialIndexB;
       QgsFeatureSource *mLayerA;
       QgsFeatureSource *mLayerB;
 
@@ -44,4 +50,4 @@ namespace Vectoranalysis
 
 } // Geoprocessing
 
-#endif // VECTORANALYSIS_DIFFERENCE_TOOL_H
+#endif // VECTORANALYSIS_QGSSYMDIFFERENCE_TOOL_H

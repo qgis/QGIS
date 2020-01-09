@@ -15,7 +15,7 @@
 
 #include "qgsalgorithmunion.h"
 #include "qgsoverlayutils.h"
-#include "uniontool.h"
+#include "qgsuniontool.h"
 ///@cond PRIVATE
 
 
@@ -108,7 +108,7 @@ QVariantMap QgsUnionAlgorithm::processAlgorithm( const QVariantMap &parameters, 
     return outputs;
   }
 
-  Vectoranalysis::UnionTool tool( sourceA.get(), sourceB.get(), fieldIndicesA, fieldIndicesB, sink.get(), context.transformContext(), context.invalidGeometryCheck() );
+  Vectoranalysis::QgsUnionTool tool( sourceA.get(), sourceB.get(), fieldIndicesA, fieldIndicesB, sink.get(), context.transformContext(), context.invalidGeometryCheck() );
   QgsOverlayUtils::runVectorAnalysisTool( tool, feedback );
 
   return outputs;

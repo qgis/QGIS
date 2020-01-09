@@ -405,7 +405,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
   }
 }
 
-void QgsOverlayUtils::runVectorAnalysisTool( Vectoranalysis::AbstractTool &tool, QgsProcessingFeedback *feedback )
+void QgsOverlayUtils::runVectorAnalysisTool( Vectoranalysis::QgsAbstractTool &tool, QgsProcessingFeedback *feedback )
 {
   QFutureWatcher<void> fWatcher;
   QEventLoop evLoop;

@@ -16,7 +16,7 @@
 #include "qgsalgorithmdifference.h"
 #include "qgsoverlayutils.h"
 #include "qgsvectorlayer.h"
-#include "differencetool.h"
+#include "qgsdifferencetool.h"
 ///@cond PRIVATE
 
 
@@ -100,7 +100,7 @@ QVariantMap QgsDifferenceAlgorithm::processAlgorithm( const QVariantMap &paramet
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
 
-  Vectoranalysis::DifferenceTool tool( sourceA.get(), sourceB.get(), sink.get(), context.transformContext(), context.invalidGeometryCheck() );
+  Vectoranalysis::QgsDifferenceTool tool( sourceA.get(), sourceB.get(), sink.get(), context.transformContext(), context.invalidGeometryCheck() );
   QgsOverlayUtils::runVectorAnalysisTool( tool, feedback );
   return outputs;
 }

@@ -18,7 +18,7 @@
 
 #include <QList>
 #include "qgswkbtypes.h"
-#include "abstracttool.h"
+#include "qgsabstracttool.h"
 
 #define SIP_NO_FILE
 
@@ -61,7 +61,7 @@ namespace QgsOverlayUtils
   void resolveOverlaps( const QgsFeatureSource &source, QgsFeatureSink &sink, QgsProcessingFeedback *feedback );
 
   //! Runs multithreaded analysis tool, using feedback for cancel, progress and error report
-  void runVectorAnalysisTool( Vectoranalysis::AbstractTool &tool, QgsProcessingFeedback *feedback );
+  void runVectorAnalysisTool( Vectoranalysis::QgsAbstractTool &tool, QgsProcessingFeedback *feedback );
 }
 
 ///@endcond PRIVATE

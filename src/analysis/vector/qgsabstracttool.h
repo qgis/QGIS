@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef VECTORANALYSIS_ABSTRACT_TOOL_H
-#define VECTORANALYSIS_ABSTRACT_TOOL_H
+#ifndef VECTORANALYSIS_QGSABSTRACT_TOOL_H
+#define VECTORANALYSIS_QGSABSTRACT_TOOL_H
 
 #include "qgis_analysis.h"
 #include <QObject>
@@ -32,7 +32,7 @@ class QgsVectorLayer;
 
 namespace Vectoranalysis
 {
-  class ANALYSIS_EXPORT AbstractTool
+  class ANALYSIS_EXPORT QgsAbstractTool
   {
     public:
       enum OutputCrs
@@ -41,8 +41,8 @@ namespace Vectoranalysis
         CrsLayerB
       };
 
-      AbstractTool( QgsFeatureSink *output, QgsCoordinateTransformContext transformContext, QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck );
-      virtual ~AbstractTool();
+      QgsAbstractTool( QgsFeatureSink *output, QgsCoordinateTransformContext transformContext, QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck );
+      virtual ~QgsAbstractTool();
       QFuture<void> init();
       virtual QFuture<void> execute( int task );
       virtual int getTaskCount() const { return 1; }
@@ -65,8 +65,8 @@ namespace Vectoranalysis
 
       struct ProcessFeatureWrapper
       {
-        AbstractTool *instance;
-        ProcessFeatureWrapper( AbstractTool *_instance ) : instance( _instance ) {}
+        QgsAbstractTool *instance;
+        ProcessFeatureWrapper( QgsAbstractTool *_instance ) : instance( _instance ) {}
         void operator()( const Job *job );
       };
 
@@ -90,4 +90,4 @@ namespace Vectoranalysis
 
 } // Geoprocessing
 
-#endif // VECTORANALYSIS_ABSTRACT_TOOL_H
+#endif // VECTORANALYSIS_QGSABSTRACT_TOOL_H

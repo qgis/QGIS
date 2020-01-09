@@ -1,5 +1,5 @@
 /***************************************************************************
- *  symdifferencetool.h                                                *
+ *  unionaytool.h                                                      *
  *  -------------------                                                    *
  *  begin                : Jun 10, 2014                                    *
  *  copyright            : (C) 2014 by Sandro Mani / Sourcepole AG         *
@@ -15,22 +15,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef VECTORANALYSIS_SYMDIFFERENCE_TOOL_H
-#define VECTORANALYSIS_SYMDIFFERENCE_TOOL_H
+#ifndef VECTORANALYSIS_QGSUNION_TOOL_H
+#define VECTORANALYSIS_QGSUNION_TOOL_H
 
-#include "abstracttool.h"
+#include "qgsabstracttool.h"
 
 namespace Vectoranalysis
 {
 
-  class ANALYSIS_EXPORT SymDifferenceTool : public AbstractTool
+  class ANALYSIS_EXPORT QgsUnionTool : public QgsAbstractTool
   {
     public:
-      SymDifferenceTool( QgsFeatureSource *layerA,
-                         QgsFeatureSource *layerB,
-                         QgsFeatureSink *output,
-                         QgsCoordinateTransformContext transformContext,
-                         QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck );
+      QgsUnionTool( QgsFeatureSource *layerA,
+                 QgsFeatureSource *layerB,
+                 const QgsAttributeList &fieldIndicesA,
+                 const QgsAttributeList &fieldIndicesB,
+                 QgsFeatureSink *output,
+                 QgsCoordinateTransformContext transformContext,
+                 QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck );
 
     private:
       enum Task
@@ -43,6 +45,8 @@ namespace Vectoranalysis
       QgsSpatialIndex mSpatialIndexB;
       QgsFeatureSource *mLayerA;
       QgsFeatureSource *mLayerB;
+      QgsAttributeList mFieldIndicesA;
+      QgsAttributeList mFieldIndicesB;
 
       void prepare();
       void processFeature( const Job *job );
@@ -50,4 +54,4 @@ namespace Vectoranalysis
 
 } // Geoprocessing
 
-#endif // VECTORANALYSIS_SYMDIFFERENCE_TOOL_H
+#endif // VECTORANALYSIS_QGSUNION_TOOL_H
