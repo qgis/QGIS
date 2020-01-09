@@ -26,10 +26,10 @@ namespace Vectoranalysis
 {
 
   QgsDifferenceTool::QgsDifferenceTool( QgsFeatureSource *layerA,
-                                  QgsFeatureSource *layerB,
-                                  QgsFeatureSink *output,
-                                  QgsCoordinateTransformContext transformContext,
-                                  QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck )
+                                        QgsFeatureSource *layerB,
+                                        QgsFeatureSink *output,
+                                        QgsCoordinateTransformContext transformContext,
+                                        QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck )
     : QgsAbstractTool( output, transformContext, invalidGeometryCheck ), mLayerA( layerA ), mLayerB( layerB )
   {
   }

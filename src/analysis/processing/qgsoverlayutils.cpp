@@ -429,7 +429,7 @@ void QgsOverlayUtils::runVectorAnalysisTool( Vectoranalysis::QgsAbstractTool &to
   fWatcher.setFuture( tool.execute() );
   evLoop.exec();
 
-  const QStringList &exceptionList = tool.getExceptions();
+  const QStringList &exceptionList = tool.exceptions();
   if ( !exceptionList.isEmpty() )
   {
     QString message( QObject::tr( "Exception during execution of the analysis tool:" ) );

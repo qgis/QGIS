@@ -59,10 +59,10 @@ namespace Vectoranalysis
       virtual QFuture<void> execute();
 
       /**
-       * Get exceptions
-       * @return List of exception messages occured during tool execution
+       * Returns exceptions
+       * @return List of exception messages occurred during tool execution
        */
-      const QStringList &getExceptions() const { return mExceptions; }
+      const QStringList &exceptions() const { return mExceptions; }
 
 
     protected:

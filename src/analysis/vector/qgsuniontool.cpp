@@ -26,12 +26,12 @@ namespace Vectoranalysis
 {
 
   QgsUnionTool::QgsUnionTool( QgsFeatureSource *layerA,
-                        QgsFeatureSource *layerB,
-                        const QgsAttributeList &fieldIndicesA,
-                        const QgsAttributeList &fieldIndicesB,
-                        QgsFeatureSink *output,
-                        QgsCoordinateTransformContext transformContext,
-                        QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck )
+                              QgsFeatureSource *layerB,
+                              const QgsAttributeList &fieldIndicesA,
+                              const QgsAttributeList &fieldIndicesB,
+                              QgsFeatureSink *output,
+                              QgsCoordinateTransformContext transformContext,
+                              QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck )
     : QgsAbstractTool( output, transformContext, invalidGeometryCheck ), mLayerA( layerA ), mLayerB( layerB ), mFieldIndicesA( fieldIndicesA ), mFieldIndicesB( fieldIndicesB )
   {
   }

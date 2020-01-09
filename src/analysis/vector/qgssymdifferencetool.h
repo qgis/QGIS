@@ -31,6 +31,10 @@ namespace Vectoranalysis
   class ANALYSIS_EXPORT QgsSymDifferenceTool : public QgsAbstractTool
   {
     public:
+
+      /**
+       * QgsSymDifferenceTool constructor
+       */
       QgsSymDifferenceTool( QgsFeatureSource *layerA,
                             QgsFeatureSource *layerB,
                             QgsFeatureSink *output,

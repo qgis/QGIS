@@ -31,6 +31,10 @@ namespace Vectoranalysis
   class ANALYSIS_EXPORT QgsUnionTool : public QgsAbstractTool
   {
     public:
+
+      /**
+       * QgsUnionTool constructor
+       */
       QgsUnionTool( QgsFeatureSource *layerA,
                     QgsFeatureSource *layerB,
                     const QgsAttributeList &fieldIndicesA,

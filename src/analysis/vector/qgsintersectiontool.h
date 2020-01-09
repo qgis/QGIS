@@ -33,6 +33,10 @@ namespace Vectoranalysis
   class ANALYSIS_EXPORT QgsIntersectionTool : public QgsAbstractTool
   {
     public:
+
+      /**
+       * QgsIntersectionTool constructor
+       */
       QgsIntersectionTool( QgsFeatureSource *layerA,
                            QgsFeatureSource *layerB,
                            const QgsAttributeList &fieldIndicesA,
