@@ -352,6 +352,9 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsappcoordinateoperationhandlers.h"
 #include "qgsprojectviewsettings.h"
 #include "qgscoordinateformatter.h"
+#include "qgslocaldefaultsettings.h"
+#include "qgsbearingnumericformat.h"
+#include "qgsprojectdisplaysettings.h"
 
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
@@ -1546,6 +1549,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   std::sort( actions.begin(), actions.end(), cmpByText_ );
   mPanelMenu->insertActions( nullptr, actions );
 
+  mBearingNumericFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
+
   // update windows
   qApp->processEvents();
 
@@ -1585,6 +1590,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   connect( QgsProject::instance(), &QgsProject::isDirtyChanged, mActionRevertProject, toggleRevert );
   connect( QgsProject::instance(), &QgsProject::fileNameChanged, mActionRevertProject, toggleRevert );
 
+  connect( QgsProject::instance()->displaySettings(), &QgsProjectDisplaySettings::bearingFormatChanged, this, [ = ]
+  {
+    mBearingNumericFormat.reset( QgsProject::instance()->displaySettings()->bearingFormat()->clone() );
+  } );
   connect( mMapCanvas, &QgsMapCanvas::panDistanceBearingChanged, this, &QgisApp::showPanMessage );
 
   // the most important part of the initialization: make sure that people can play puzzle if they need
@@ -1623,6 +1632,8 @@ QgisApp::QgisApp()
   mPanelMenu = new QMenu( this );
   mProgressBar = new QProgressBar( this );
   mStatusBar = new QgsStatusBar( this );
+
+  mBearingNumericFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
   // More tests may need more members to be initialized
 }
 
@@ -12910,7 +12921,7 @@ void QgisApp::showRotation()
 void QgisApp::showPanMessage( double distance, QgsUnitTypes::DistanceUnit unit, double bearing )
 {
   mStatusBar->showMessage( tr( "Pan distance %1 (%2)" ).arg( QgsDistanceArea::formatDistance( distance, 1, unit ),
-                           QgsCoordinateFormatter::formatX( bearing, QgsCoordinateFormatter::FormatDecimalDegrees, 1, QgsCoordinateFormatter::FlagDegreesUseStringSuffix ) ), 2000 );
+                           mBearingNumericFormat->formatDouble( bearing, QgsNumericFormatContext() ) ), 2000 );
 }
 
 void QgisApp::selectionModeChanged( QgsMapToolSelect::Mode mode )

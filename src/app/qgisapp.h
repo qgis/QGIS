@@ -137,6 +137,7 @@ class QgsGeoCmsProviderRegistry;
 class QgsLayoutCustomDropHandler;
 class QgsProxyProgressTask;
 class QgsNetworkRequestParameters;
+class QgsBearingNumericFormat;
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -2406,6 +2407,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsGeometryValidationModel *mGeometryValidationModel = nullptr;
     QgsGeometryValidationDock *mGeometryValidationDock = nullptr;
     QgsHandleBadLayersHandler *mAppBadLayersHandler = nullptr;
+
+    std::unique_ptr< QgsBearingNumericFormat > mBearingNumericFormat;
 
     class QgsCanvasRefreshBlocker
     {
