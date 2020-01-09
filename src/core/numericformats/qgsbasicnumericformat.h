@@ -142,6 +142,22 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
      */
     void setThousandsSeparator( QChar character );
 
+    /**
+     * Returns any override for the decimal separator character. If an invalid QChar is returned,
+     * then the QGIS locale separator is used instead.
+     *
+     * \see setDecimalSeparator()
+     */
+    QChar decimalSeparator() const;
+
+    /**
+     * Sets an override \a character for the decimal separator character. If an invalid QChar is set,
+     * then the QGIS locale separator is used instead.
+     *
+     * \see decimalSeparator()
+     */
+    void setDecimalSeparator( QChar character );
+
   protected:
 
     /**
@@ -161,6 +177,7 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
     RoundingType mRoundingType = DecimalPlaces;
 
     QChar mThousandsSeparator;
+    QChar mDecimalSeparator;
 };
 
 #endif // QGSBASICNUMERICFORMAT_H
