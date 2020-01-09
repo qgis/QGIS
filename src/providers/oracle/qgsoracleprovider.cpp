@@ -1297,7 +1297,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
                                   "AND a.generation_type = 'ALWAYS'" ).arg( mOwnerName ).arg( mTableName );
     identitytype.prepare( sql );
 
-    if ( identitytype.exec() )
+    if ( exec( identitytype, sql, QVariantList() ) )
     {
       while ( identitytype.next() )
       {
@@ -1306,6 +1306,10 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
           alwaysGenerated.append( flist[0].fields().indexOf( identitytype.value( 0 ).toString() ) );
         }
       }
+    }
+    else
+    {
+      throw OracleException( tr( "Could not check if table has identity field" ), identitytype );
     }
 
     if ( mPrimaryKeyType == PktInt || mPrimaryKeyType == PktFidMap )
