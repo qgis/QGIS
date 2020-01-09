@@ -142,6 +142,22 @@ then the QGIS locale separator is used instead.
 .. seealso:: :py:func:`thousandsSeparator`
 %End
 
+    QChar decimalSeparator() const;
+%Docstring
+Returns any override for the decimal separator character. If an invalid QChar is returned,
+then the QGIS locale separator is used instead.
+
+.. seealso:: :py:func:`setDecimalSeparator`
+%End
+
+    void setDecimalSeparator( QChar character );
+%Docstring
+Sets an override ``character`` for the decimal separator character. If an invalid QChar is set,
+then the QGIS locale separator is used instead.
+
+.. seealso:: :py:func:`decimalSeparator`
+%End
+
   protected:
 
     virtual void setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context );

@@ -33,6 +33,7 @@ QgsBasicNumericFormatWidget::QgsBasicNumericFormatWidget( const QgsNumericFormat
   setFormat( format->clone() );
 
   mThousandsLineEdit->setShowClearButton( true );
+  mDecimalLineEdit->setShowClearButton( true );
 
   connect( mShowPlusCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
   {
@@ -88,6 +89,13 @@ QgsBasicNumericFormatWidget::QgsBasicNumericFormatWidget( const QgsNumericFormat
     if ( !mBlockSignals )
       emit changed();
   } );
+
+  connect( mDecimalLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & text )
+  {
+    mFormat->setDecimalSeparator( text.isEmpty() ? QChar() : text.at( 0 ) );
+    if ( !mBlockSignals )
+      emit changed();
+  } );
 }
 
 QgsBasicNumericFormatWidget::~QgsBasicNumericFormatWidget() = default;
@@ -102,6 +110,7 @@ void QgsBasicNumericFormatWidget::setFormat( QgsNumericFormat *format )
   mShowTrailingZerosCheckBox->setChecked( mFormat->showTrailingZeros() );
   mShowThousandsCheckBox->setChecked( mFormat->showThousandsSeparator() );
   mThousandsLineEdit->setText( mFormat->thousandsSeparator().isNull() ? QString() : mFormat->thousandsSeparator() );
+  mDecimalLineEdit->setText( mFormat->decimalSeparator().isNull() ? QString() : mFormat->decimalSeparator() );
   switch ( mFormat->roundingType() )
   {
     case QgsBasicNumericFormat::DecimalPlaces:
