@@ -1,0 +1,48 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/qgsdifferencetool.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+namespace Vectoranalysis
+{
+
+  class QgsDifferenceTool : QgsAbstractTool
+{
+%Docstring
+Multithreaded vector difference tool
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsdifferencetool.h"
+%End
+    public:
+
+      QgsDifferenceTool( QgsFeatureSource *layerA,
+                         QgsFeatureSource *layerB,
+                         QgsFeatureSink *output,
+                         QgsCoordinateTransformContext transformContext,
+                         QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck );
+%Docstring
+QgsDifferenceTool constructor
+%End
+      ~QgsDifferenceTool();
+
+  };
+
+} // Geoprocessing
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/qgsdifferencetool.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

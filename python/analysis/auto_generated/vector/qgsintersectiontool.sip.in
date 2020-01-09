@@ -1,0 +1,50 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/qgsintersectiontool.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+namespace Vectoranalysis
+{
+
+  class QgsIntersectionTool : QgsAbstractTool
+{
+%Docstring
+Multithreaded vector intersection tool
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsintersectiontool.h"
+%End
+    public:
+
+      QgsIntersectionTool( QgsFeatureSource *layerA,
+                           QgsFeatureSource *layerB,
+                           const QgsAttributeList &fieldIndicesA,
+                           const QgsAttributeList &fieldIndicesB,
+                           QgsFeatureSink *output,
+                           QgsCoordinateTransformContext transformContext,
+                           QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck );
+%Docstring
+QgsIntersectionTool constructor
+%End
+
+  };
+
+} // Geoprocessing
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/qgsintersectiontool.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

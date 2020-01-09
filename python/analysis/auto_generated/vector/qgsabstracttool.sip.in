@@ -1,0 +1,110 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/qgsabstracttool.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+namespace Vectoranalysis
+{
+
+  class QgsAbstractTool
+{
+%Docstring
+Base class for multithreaded vector analysis tools
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsabstracttool.h"
+%End
+    public:
+
+      QgsAbstractTool( QgsFeatureSink *output, QgsCoordinateTransformContext transformContext, QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck );
+%Docstring
+QgsAbstractTool constructor
+%End
+      virtual ~QgsAbstractTool();
+
+      QFuture<void> init();
+%Docstring
+Prepares the analysis tool
+@return Future object
+%End
+
+      virtual QFuture<void> execute();
+%Docstring
+Executes the analysis tool
+%End
+
+      const QStringList &exceptions() const;
+%Docstring
+Returns exceptions
+@return List of exception messages occurred during tool execution
+%End
+
+
+    protected:
+
+      struct Job
+      {
+        Job( const QgsFeatureId &_featureid, int _taskFlag );
+        QgsFeatureId featureid;
+        int taskFlag;
+      };
+
+      struct ProcessFeatureWrapper
+      {
+        QgsAbstractTool *instance;
+        ProcessFeatureWrapper( QgsAbstractTool *_instance );
+        void operator()( const Job *job );
+      };
+
+      virtual void prepare() = 0;
+%Docstring
+Prepares analysis tool, needs to be implemented by subclasses
+%End
+
+      virtual void processFeature( const Job *job ) = 0;
+%Docstring
+Process individual feature, implemented by subclasses
+%End
+
+      void buildSpatialIndex( QgsSpatialIndex &index, QgsFeatureSource *layer ) const;
+%Docstring
+Builds spatial index for source
+%End
+
+      void appendToJobQueue( QgsFeatureSource *layer, int taskFlag = 0 );
+%Docstring
+Creates jobs for each feature and adds them to the job queue
+%End
+
+      bool getFeatureAtId( QgsFeature &feature, QgsFeatureId id, QgsFeatureSource *layer, const QgsAttributeList &attIdx );
+%Docstring
+Fetch feature at id
+%End
+
+      void writeFeatures( QgsFeatureList &outFeatures );
+%Docstring
+Writes feature to output source
+%End
+
+
+  };
+
+} // Geoprocessing
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/qgsabstracttool.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
