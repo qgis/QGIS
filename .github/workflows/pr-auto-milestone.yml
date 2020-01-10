@@ -11,14 +11,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      # obfuscate the github token so it can be used on jobs triggered from forks
-      - name: Clear GH Token
-        id: token
-        uses: opengisch/clear-token@v1.0.12
-        with:
-          bot_token_encrypted: ddbdec32940df79f1adf2369b4b10f10b5a66f65
-          bot_token_xor_key: a1b2c3d47311f8e29e204f85a81b4df4a44e252c
-
       # list the tags and milestones
       - uses: octokit/graphql-action@v2.x
         id: list_tags_milestones
@@ -46,7 +38,7 @@ jobs:
           owner: ${{ github.event.pull_request.base.repo.owner.login }}
           repo: ${{ github.event.pull_request.base.repo.name }}
         env:
-          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
+          GITHUB_TOKEN: ${{ secret.GITHUB_TOKEN }}
 
       # calculate the milestone and determine if it exists
       - name: Get the latest release
@@ -82,9 +74,11 @@ jobs:
           owner: ${{ github.event.pull_request.base.repo.owner.login }}
           repo: ${{ github.event.pull_request.base.repo.name }}
         env:
-          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
+          GITHUB_TOKEN: ${{ secret.GITHUB_TOKEN }}
 
       - id: compute_milestone
+        # discard error on previous job (most likely user has no right to create milestone)
+        if: always()
         name: compute the milestone number
         env:
           MILESTONE_NUMBER_EXISTING: ${{ steps.calculate_milestone.outputs.milestone_number }}
@@ -93,26 +87,13 @@ jobs:
           FINAL_MILESTONE_NUMBER=$([[ -n ${MILESTONE_NUMBER_EXISTING} ]] && echo "${MILESTONE_NUMBER_EXISTING}" || $(echo "${MILESTONE_NUMBER_CREATED_JSON}" | jq '.number' ))
           echo "FINAL_MILESTONE_NUMBER: ${FINAL_MILESTONE_NUMBER}"
           echo "::set-output name=milestone_number::${FINAL_MILESTONE_NUMBER}"
-          echo "::set-output name=milestone_message::**Calculated milestone for the PR: ${FINAL_MILESTONE_NUMBER}**"
-
-      # if the PR author could not set the milestone due to missing rights, add a comment
-      - name: leave comment for milestone
-        if: failure()
-        uses: octokit/request-action@v2.x
-        env:
-          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
-        with:
-          route: POST /repos/:owner/:repo/issues/:pull_number/comments
-          pull_number: ${{ github.event.pull_request.number }}
-          body: ${{ steps.compute_milestone.outputs.milestone_message }}
-          owner: ${{ github.event.pull_request.base.repo.owner.login }}
-          repo: ${{ github.event.pull_request.base.repo.name }}
 
       # update PR with milestone
       - name: update PR milestone
+        if: cancelled()
         uses: octokit/request-action@v2.x
         env:
-          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
+          GITHUB_TOKEN: ${{ secret.GITHUB_TOKEN }}
         with:
           route: PATCH /repos/:owner/:repo/issues/:pull_number
           pull_number: ${{ github.event.pull_request.number }}
@@ -125,10 +106,12 @@ jobs:
         if: failure()
         uses: octokit/request-action@v2.x
         env:
-          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
+          GITHUB_TOKEN: ${{ secret.GITHUB_TOKEN }}
         with:
           route: POST /repos/:owner/:repo/issues/:pull_number/comments
           pull_number: ${{ github.event.pull_request.number }}
-          body: ${{ steps.compute_milestone.outputs.milestone_message }}
+          body: |
+            **Milestone: ${{ steps.compute_milestone.outputs.milestone_message }}**
+            (this could not be set by the bot due to missing rights)
           owner: ${{ github.event.pull_request.base.repo.owner.login }}
           repo: ${{ github.event.pull_request.base.repo.name }}
