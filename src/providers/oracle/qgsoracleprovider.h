@@ -127,6 +127,11 @@ class QgsOracleProvider : public QgsVectorDataProvider
      */
     bool determinePrimaryKey();
 
+    /**
+     * Determine the always generated identity fields
+     */
+    bool determineAlwaysGeneratedKeys();
+
     QgsFields fields() const override;
     QString dataComment() const override;
 
@@ -250,6 +255,11 @@ class QgsOracleProvider : public QgsVectorDataProvider
      */
     QList<int> mPrimaryKeyAttrs;
     QString mPrimaryKeyDefault;
+
+    /**
+     * List of always generated key attributes
+     */
+    QList<int> mAlwaysGeneratedKeyAttrs;
 
     QString mGeometryColumn;           //!< Name of the geometry column
     mutable QgsRectangle mLayerExtent; //!< Rectangle that contains the extent (bounding box) of the layer

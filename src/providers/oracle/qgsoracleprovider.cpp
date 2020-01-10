@@ -139,6 +139,14 @@ QgsOracleProvider::QgsOracleProvider( QString const &uri, const ProviderOptions 
 
   mLayerExtent.setMinimal();
 
+  // get always generated key
+  if ( !determineAlwaysGeneratedKeys() )
+  {
+    mValid = false;
+    disconnectDb();
+    return;
+  }
+
   // set the primary key
   if ( !determinePrimaryKey() )
   {
@@ -1010,6 +1018,46 @@ bool QgsOracleProvider::determinePrimaryKey()
   return mValid;
 }
 
+bool QgsOracleProvider::determineAlwaysGeneratedKeys()
+{
+  if ( !loadFields() )
+  {
+    return false;
+  }
+
+  // check to see if there is an unique index on the relation, which
+  // can be used as a key into the table. Primary keys are always
+  // unique indices, so we catch them as well.
+  QgsOracleConn *conn = connectionRO();
+  QSqlQuery qry( *conn );
+
+  QString sql = QStringLiteral( "SELECT a.column_name "
+                                "FROM all_tab_identity_cols a "
+                                "WHERE a.owner = '%1' "
+                                "AND a.table_name = '%2' "
+                                "AND a.generation_type = 'ALWAYS'" ).arg( mOwnerName ).arg( mTableName );
+
+  if ( exec( qry, sql, QVariantList() ) )
+  {
+    while ( qry.next() )
+    {
+      if ( mAttributeFields.names().contains( qry.value( 0 ).toString() ) )
+      {
+        mAlwaysGeneratedKeyAttrs.append( mAttributeFields.indexOf( qry.value( 0 ).toString() ) );
+      }
+    }
+    mValid = true;
+  }
+  else
+  {
+    QgsMessageLog::logMessage( tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" )
+                               .arg( qry.lastError().text() )
+                               .arg( qry.lastQuery() ), tr( "Oracle" ) );
+    mValid = false;
+  }
+  return mValid;
+}
+
 bool QgsOracleProvider::uniqueData( QString query, QString colName )
 {
   Q_UNUSED( query )
@@ -1282,34 +1330,12 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
 
     QStringList defaultValues;
     QList<int> fieldId;
-    QList<int> alwaysGenerated;
 
     if ( !mGeometryColumn.isNull() )
     {
       insert += quotedIdentifier( mGeometryColumn );
       values += '?';
       delim = ',';
-    }
-    QString sql = QStringLiteral( "SELECT a.column_name "
-                                  "FROM all_tab_identity_cols a "
-                                  "WHERE a.owner = '%1' "
-                                  "AND a.table_name = '%2' "
-                                  "AND a.generation_type = 'ALWAYS'" ).arg( mOwnerName ).arg( mTableName );
-    identitytype.prepare( sql );
-
-    if ( exec( identitytype, sql, QVariantList() ) )
-    {
-      while ( identitytype.next() )
-      {
-        if ( flist[0].fields().names().contains( identitytype.value( 0 ).toString() ) )
-        {
-          alwaysGenerated.append( flist[0].fields().indexOf( identitytype.value( 0 ).toString() ) );
-        }
-      }
-    }
-    else
-    {
-      throw OracleException( tr( "Could not check if table has identity field" ), identitytype );
     }
 
     if ( mPrimaryKeyType == PktInt || mPrimaryKeyType == PktFidMap )
@@ -1321,7 +1347,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
       {
         QgsField fld = field( idx );
         keys += kdelim + quotedIdentifier( fld.name() );
-        if ( alwaysGenerated.contains( idx ) )
+        if ( mAlwaysGeneratedKeyAttrs.contains( idx ) )
           continue;
         insert += delim + quotedIdentifier( fld.name() );
         values += delim + '?';
@@ -1344,7 +1370,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
     for ( int idx = 0; idx < std::min( attributevec.size(), mAttributeFields.size() ); ++idx )
     {
       QVariant v = attributevec[idx];
-      if ( alwaysGenerated.contains( idx ) )
+      if ( mAlwaysGeneratedKeyAttrs.contains( idx ) )
         continue;
       if ( !v.isValid() )
         continue;
