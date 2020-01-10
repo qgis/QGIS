@@ -115,6 +115,6 @@ jobs:
         with:
           route: POST /repos/:owner/:repo/issues/:pull_number/comments
           pull_number: ${{ github.event.pull_request.number }}
-          body: ${{ format("**Calculated milestone for the PR: {0}**", steps.compute_milestone.outputs.milestone_number) }}
+          body: ${{ format('**Calculated milestone for the PR: {0}**', steps.compute_milestone.outputs.milestone_number) }}
           owner: ${{ github.event.pull_request.base.repo.owner.login }}
           repo: ${{ github.event.pull_request.base.repo.name }}
