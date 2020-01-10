@@ -93,6 +93,20 @@ jobs:
           FINAL_MILESTONE_NUMBER=$([[ -n ${MILESTONE_NUMBER_EXISTING} ]] && echo "${MILESTONE_NUMBER_EXISTING}" || $(echo "${MILESTONE_NUMBER_CREATED_JSON}" | jq '.number' ))
           echo "FINAL_MILESTONE_NUMBER: ${FINAL_MILESTONE_NUMBER}"
           echo "::set-output name=milestone_number::${FINAL_MILESTONE_NUMBER}"
+          echo "::set-output name=milestone_message::**Calculated milestone for the PR: ${FINAL_MILESTONE_NUMBER}**"
+
+      # if the PR author could not set the milestone due to missing rights, add a comment
+      - name: leave comment for milestone
+        if: failure()
+        uses: octokit/request-action@v2.x
+        env:
+          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
+        with:
+          route: POST /repos/:owner/:repo/issues/:pull_number/comments
+          pull_number: ${{ github.event.pull_request.number }}
+          body: ${{ steps.compute_milestone.outputs.milestone_message }}
+          owner: ${{ github.event.pull_request.base.repo.owner.login }}
+          repo: ${{ github.event.pull_request.base.repo.name }}
 
       # update PR with milestone
       - name: update PR milestone
@@ -115,6 +129,6 @@ jobs:
         with:
           route: POST /repos/:owner/:repo/issues/:pull_number/comments
           pull_number: ${{ github.event.pull_request.number }}
-          body: format('**Calculated milestone for the PR: {0}**', ${{ steps.compute_milestone.outputs.milestone_number }})
+          body: ${{ steps.compute_milestone.outputs.milestone_message }}
           owner: ${{ github.event.pull_request.base.repo.owner.login }}
           repo: ${{ github.event.pull_request.base.repo.name }}
