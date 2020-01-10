@@ -64,7 +64,7 @@ jobs:
           MILESTONE_TITLE="${QGIS_MAJOR_VERSION}."$(echo "${MAX_RELEASE} + 0.1 " | bc)
           echo "MILESTONE_TITLE: ${MILESTONE_TITLE}"
           echo "::set-output name=milestone_title::${MILESTONE_TITLE}"
-          MILESTONE_NUMBER=$(echo "${JSON_DATA}" | jq ".repository.refs.edges[] | select( .node.name == \"${MILESTONE_TITLE}\" ) | .node.number")
+          MILESTONE_NUMBER=$(echo "${JSON_DATA}" | jq ".repository.milestones.edges[] | select( .node.title == \"${MILESTONE_TITLE}\" ) | .node.number")
           echo "MILESTONE_NUMBER: ${MILESTONE_NUMBER}"
           echo "::set-output name=milestone_number::${MILESTONE_NUMBER}"
           MILESTONE_EXISTS=$([[ -n $(echo "${JSON_DATA}" | jq ".repository.refs.edges[].node.name | select( . | test(\"^${MILESTONE_TITLE}\") ) ") ]] && echo "true" || echo "false" )
