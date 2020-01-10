@@ -67,7 +67,7 @@ jobs:
           MILESTONE_NUMBER=$(echo "${JSON_DATA}" | jq ".repository.refs.edges[] | select( .node.name == \"${MILESTONE_TITLE}\" ) | .node.number")
           echo "MILESTONE_NUMBER: ${MILESTONE_NUMBER}"
           echo "::set-output name=milestone_number::${MILESTONE_NUMBER}"
-          MILESTONE_EXISTS=$([[ -n $echo("${JSON_DATA} | jq ".repository.refs.edges[].node.name | select( . | test(\"^${MILESTONE_TITLE}\") )" ]] && echo "true" || echo "false")
+          MILESTONE_EXISTS=$([[ -n $(echo "${JSON_DATA}" | jq ".repository.refs.edges[].node.name | select( . | test(\"^${MILESTONE_TITLE}\") ) ") ]] && echo "true" || echo "false" )
           echo "MILESTONE_EXISTS: ${MILESTONE_EXISTS}"
           echo "::set-output name=milestone_exists::${MILESTONE_EXISTS}"
 
