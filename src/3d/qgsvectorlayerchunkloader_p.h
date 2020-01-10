@@ -33,6 +33,7 @@
 
 class Qgs3DMapSettings;
 class QgsVectorLayer;
+class QgsVectorLayer3DTilingSettings;
 class QgsVectorLayerFeatureSource;
 class QgsAbstract3DSymbol;
 class QgsFeature3DHandler;
@@ -106,7 +107,7 @@ class QgsVectorLayerChunkedEntity : public QgsChunkedEntity
     Q_OBJECT
   public:
     //! Constructs the entity. The argument maxLevel determines how deep the tree of tiles will be
-    explicit QgsVectorLayerChunkedEntity( QgsVectorLayer *vl, QgsAbstract3DSymbol *symbol, const Qgs3DMapSettings &map );
+    explicit QgsVectorLayerChunkedEntity( QgsVectorLayer *vl, const QgsVectorLayer3DTilingSettings &tilingSettings, QgsAbstract3DSymbol *symbol, const Qgs3DMapSettings &map );
 
     ~QgsVectorLayerChunkedEntity();
 };

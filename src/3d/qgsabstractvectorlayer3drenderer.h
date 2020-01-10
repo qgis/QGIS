@@ -23,6 +23,29 @@
 
 class QgsVectorLayer;
 
+/**
+ * \ingroup 3d
+ * This class defines configuration of how a vector layer gets tiled for 3D rendering.
+ *
+ * Zoom levels count tells how deep will be the quadtree and thus how many tiles will
+ * be generated ( 4 ^ (count-1) ). So for example, for count=1 there will be just
+ * a single tile for the whole layer, for count=3 there will be 16 tiles.
+ *
+ * \since QGIS 3.12
+ */
+class _3D_EXPORT QgsVectorLayer3DTilingSettings
+{
+  public:
+    int zoomLevelsCount() const { return mZoomLevelsCount; }
+    void setZoomLevelsCount( int count ) { mZoomLevelsCount = count; }
+
+    void writeXml( QDomElement &elem ) const;
+    void readXml( const QDomElement &elem );
+
+  private:
+    int mZoomLevelsCount = 3;
+};
+
 
 /**
  * \ingroup 3d
@@ -40,6 +63,9 @@ class _3D_EXPORT QgsAbstractVectorLayer3DRenderer : public QgsAbstract3DRenderer
     //! Returns vector layer associated with the renderer
     QgsVectorLayer *layer() const;
 
+    void setTilingSettings( const QgsVectorLayer3DTilingSettings &settings ) { mTilingSettings = settings; }
+    QgsVectorLayer3DTilingSettings tilingSettings() const { return mTilingSettings; }
+
     void resolveReferences( const QgsProject &project ) override;
 
   protected:
@@ -52,6 +78,7 @@ class _3D_EXPORT QgsAbstractVectorLayer3DRenderer : public QgsAbstract3DRenderer
 
   private:
     QgsMapLayerRef mLayerRef; //!< Layer used to extract polygons from
+    QgsVectorLayer3DTilingSettings mTilingSettings;  //!< How is layer tiled into chunks
 };
 
 #endif // QGSABSTRACTVECTORLAYER3DRENDERER_H

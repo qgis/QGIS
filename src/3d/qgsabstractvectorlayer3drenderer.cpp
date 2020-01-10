@@ -18,6 +18,29 @@
 #include "qgsvectorlayer.h"
 
 
+
+void QgsVectorLayer3DTilingSettings::writeXml( QDomElement &elem ) const
+{
+  QDomDocument doc = elem.ownerDocument();
+
+  QDomElement elemTiling = doc.createElement( QStringLiteral( "vector-layer-3d-tiling" ) );
+  elemTiling.setAttribute( QStringLiteral( "zoom-levels-count" ), mZoomLevelsCount );
+  elem.appendChild( elemTiling );
+}
+
+void QgsVectorLayer3DTilingSettings::readXml( const QDomElement &elem )
+{
+  QDomElement elemTiling = elem.firstChildElement( QStringLiteral( "vector-layer-3d-tiling" ) );
+  if ( !elemTiling.isNull() )
+  {
+    mZoomLevelsCount = elemTiling.attribute( QStringLiteral( "zoom-levels-count" ) ).toInt();
+  }
+}
+
+
+//////////////////
+
+
 QgsAbstractVectorLayer3DRenderer::QgsAbstractVectorLayer3DRenderer()
 {
 }
@@ -35,18 +58,21 @@ QgsVectorLayer *QgsAbstractVectorLayer3DRenderer::layer() const
 void QgsAbstractVectorLayer3DRenderer::copyBaseProperties( QgsAbstractVectorLayer3DRenderer *r ) const
 {
   r->mLayerRef = mLayerRef;
+  r->mTilingSettings = mTilingSettings;
 }
 
 void QgsAbstractVectorLayer3DRenderer::writeXmlBaseProperties( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
   Q_UNUSED( context )
   elem.setAttribute( QStringLiteral( "layer" ), mLayerRef.layerId );
+  mTilingSettings.writeXml( elem );
 }
 
 void QgsAbstractVectorLayer3DRenderer::readXmlBaseProperties( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   Q_UNUSED( context )
   mLayerRef = QgsMapLayerRef( elem.attribute( QStringLiteral( "layer" ) ) );
+  mTilingSettings.readXml( elem );
 }
 
 void QgsAbstractVectorLayer3DRenderer::resolveReferences( const QgsProject &project )

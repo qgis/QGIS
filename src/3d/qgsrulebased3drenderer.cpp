@@ -406,7 +406,7 @@ Qt3DCore::QEntity *QgsRuleBased3DRenderer::createEntity( const Qgs3DMapSettings 
   if ( !vl )
     return nullptr;
 
-  return new QgsRuleBasedChunkedEntity( vl, mRootRule, map );
+  return new QgsRuleBasedChunkedEntity( vl, tilingSettings(), mRootRule, map );
 }
 
 void QgsRuleBased3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const

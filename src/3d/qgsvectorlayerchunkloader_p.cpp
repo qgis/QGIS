@@ -16,6 +16,7 @@
 #include "qgsvectorlayerchunkloader_p.h"
 
 #include "qgs3dutils.h"
+#include "qgsabstractvectorlayer3drenderer.h"
 #include "qgschunknode_p.h"
 #include "qgspolygon3dsymbol_p.h"
 #include "qgseventtracing.h"
@@ -150,12 +151,12 @@ QgsChunkLoader *QgsVectorLayerChunkLoaderFactory::createChunkLoader( QgsChunkNod
 ///////////////
 
 
-QgsVectorLayerChunkedEntity::QgsVectorLayerChunkedEntity( QgsVectorLayer *vl, QgsAbstract3DSymbol *symbol, const Qgs3DMapSettings &map )
+QgsVectorLayerChunkedEntity::QgsVectorLayerChunkedEntity( QgsVectorLayer *vl, const QgsVectorLayer3DTilingSettings &tilingSettings, QgsAbstract3DSymbol *symbol, const Qgs3DMapSettings &map )
   : QgsChunkedEntity( Qgs3DUtils::layerToWorldExtent( vl->extent(), vl->crs(), map.origin(), map.crs(), map.transformContext() ),
                       -1,  // rootError  TODO: negative error should mean that the node does not contain anything
                       -1, // tau = max. allowed screen error. TODO: negative tau should mean that we need to go until leaves are reached
-                      2, // TODO: figure out from the number of features
-                      new QgsVectorLayerChunkLoaderFactory( map, vl, symbol, 2 ) )
+                      tilingSettings.zoomLevelsCount() - 1,
+                      new QgsVectorLayerChunkLoaderFactory( map, vl, symbol, tilingSettings.zoomLevelsCount() - 1 ) )
 {
 }
 

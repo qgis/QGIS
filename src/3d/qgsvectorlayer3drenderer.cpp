@@ -70,7 +70,7 @@ Qt3DCore::QEntity *QgsVectorLayer3DRenderer::createEntity( const Qgs3DMapSetting
   if ( !mSymbol || !vl )
     return nullptr;
 
-  return new QgsVectorLayerChunkedEntity( vl, mSymbol.get(), map );
+  return new QgsVectorLayerChunkedEntity( vl, tilingSettings(), mSymbol.get(), map );
 }
 
 void QgsVectorLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
