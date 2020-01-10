@@ -20,6 +20,7 @@
 
 #include "qgsrectangle.h"
 #include "qgsgenericspatialindex.h"
+#include "qgsgeometry.h"
 
 class QgsPostgresConn;
 
@@ -134,8 +135,9 @@ class QgsPostgresRasterSharedData
 
     };
 
-    bool initIndex( unsigned int overviewFactor, const QString &sql, QgsPostgresConn *conn );
+    //bool initIndex( unsigned int overviewFactor, const QString &sql, QgsPostgresConn *conn );
     bool fetchTilesData( unsigned int overviewFactor, const QList<TileIdType> &tileIds );
+    bool fetchTilesIndex( const QgsGeometry &requestPolygon, const TilesRequest &request );
     Tile const *setTileData( unsigned int overviewFactor, int tileId, const QByteArray &data );
 
     // Note: cannot be a smart pointer because spatial index cannot be copied
@@ -144,6 +146,9 @@ class QgsPostgresRasterSharedData
 
     //! Memory manager for owned tiles (and for tileId access)
     std::map<unsigned int, std::map< TileIdType, std::unique_ptr<Tile>>> mTiles;
+
+    //! Keeps track of loaded index bounds
+    std::map<unsigned int, QgsGeometry> mLoadedIndexBounds;
 
 };
 

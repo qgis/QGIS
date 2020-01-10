@@ -381,10 +381,21 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
                             .arg( tableToQuery )
                             .arg( quotedIdentifier( mPrimaryKeyAttrs.first() ) ) };
 
+    /*
     const QString indexSql { QStringLiteral( "SELECT %1, (ST_Metadata( %2 )).* FROM %3" )
                              .arg( quotedIdentifier( mPrimaryKeyAttrs.first() ) )
                              .arg( quotedIdentifier( mRasterColumn ) )
                              .arg( tableToQuery ) };
+    */
+    const QString indexSql { QStringLiteral( "SELECT %1, (ST_Metadata( %2 )).* FROM %3 "
+                             "WHERE %2 && ST_GeomFromText( %5, %4 )" )
+                             .arg( quotedIdentifier( mPrimaryKeyAttrs.first() ) )
+                             .arg( quotedIdentifier( mRasterColumn ) )
+                             .arg( tableToQuery )
+                             .arg( mCrs.postgisSrid() )
+                             .arg( quotedValue( QStringLiteral( "###__POLYGON_WKT__###" ) ) )
+                           };
+
 
     const QgsPostgresRasterSharedData::TilesRequest tilesRequest
     {

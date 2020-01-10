@@ -21,6 +21,7 @@
 #include "qgspostgresrasterutils.h"
 #include "qgspostgresconn.h"
 #include "qgsmessagelog.h"
+#include "qgspolygon.h"
 
 QgsPostgresRasterSharedData::~QgsPostgresRasterSharedData()
 {
@@ -39,19 +40,30 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( c
   // First check for index existence
   if ( mSpatialIndexes.find( request.overviewFactor ) == mSpatialIndexes.end() )
   {
-    // Fetch the index
-    if ( ! initIndex( request.overviewFactor, request.indexSql, request.conn ) )
+    // Create the index
+    mSpatialIndexes.emplace( request.overviewFactor, new QgsGenericSpatialIndex<Tile>() );
+    mTiles.emplace( request.overviewFactor, std::map<TileIdType, std::unique_ptr<Tile>>() );
+    mLoadedIndexBounds[ request.overviewFactor] = QgsGeometry::fromRect( QgsRectangle() );
+  }
+
+  // Now check if the requested extent was completely downloaded
+  const QgsGeometry requestedRect { QgsGeometry::fromRect( request.extent ) };
+  if ( ! mLoadedIndexBounds[ request.overviewFactor].contains( requestedRect ) )
+  {
+    // Fetch index
+    const QgsGeometry geomDiff { requestedRect.difference( mLoadedIndexBounds[ request.overviewFactor] ) };
+    if ( ! fetchTilesIndex( geomDiff.isEmpty() ? requestedRect : geomDiff, request ) )
     {
       return result;
     }
   }
 
+  // Stores tile IDs to be fetched
   QStringList missingTileIds;
 
   // Get intersecting tiles from the index
   mSpatialIndexes[ request.overviewFactor ]->intersects( request.extent, [ & ]( Tile * tilePtr ) -> bool
   {
-    // Fetch data for tile
     if ( tilePtr->data.isEmpty() )
     {
       missingTileIds.push_back( QStringLiteral( "'%1'" ).arg( tilePtr->tileId ) );
@@ -158,21 +170,23 @@ QgsPostgresRasterSharedData::Tile const *QgsPostgresRasterSharedData::setTileDat
   return mTiles[ overviewFactor ][ tileId ].get();
 }
 
-bool QgsPostgresRasterSharedData::initIndex( unsigned int overviewFactor, const QString &sql, QgsPostgresConn *conn )
+bool QgsPostgresRasterSharedData::fetchTilesIndex( const QgsGeometry &requestPolygon, const TilesRequest &request )
 {
-  Q_ASSERT( mSpatialIndexes.find( overviewFactor ) == mSpatialIndexes.end() );
-  Q_ASSERT( mTiles.find( overviewFactor ) == mTiles.end() );
+  QString indexSql { request.indexSql };
 
-  // Create the index
-  mSpatialIndexes.emplace( overviewFactor, new QgsGenericSpatialIndex<Tile>() );
-  mTiles.emplace( overviewFactor, std::map<TileIdType, std::unique_ptr<Tile>>() );
+  indexSql.replace( QStringLiteral( "###__POLYGON_WKT__###" ), requestPolygon.asWkt() );
 
-  QgsPostgresResult result( conn->PQexec( sql ) );
+  QgsPostgresResult result( request.conn->PQexec( indexSql ) );
 
   if ( result.PQresultStatus() != PGRES_TUPLES_OK )
   {
+    QgsMessageLog::logMessage( QObject::tr( "Error fetching tile index from backend.\nSQL: %1" )
+                               .arg( indexSql ), QObject::tr( "PostGIS" ), Qgis::Critical );
+
     return false;
   }
+
+  mLoadedIndexBounds[ request.overviewFactor ].addPart( requestPolygon );
 
   for ( int i = 0; i < result.PQntuples(); ++i )
   {
@@ -204,9 +218,17 @@ bool QgsPostgresRasterSharedData::initIndex( unsigned int overviewFactor, const 
           skewy,
           numbands
         );
-    mSpatialIndexes[ overviewFactor ]->insert( tile.get(), tile->extent );
-    mTiles[ overviewFactor ][ tileId ] = std::move( tile );
-    qDebug() << "Tile added:" << overviewFactor << " ID: " << tileId << "extent " << extent.toString( 4 ) << upperleftx << upperlefty << tileWidth  << tileHeight <<  extent.width() << extent.height();
+
+    if ( mTiles[ request.overviewFactor ].find( tileId ) == mTiles[ request.overviewFactor ].end() )
+    {
+      mSpatialIndexes[ request.overviewFactor ]->insert( tile.get(), tile->extent );
+      mTiles[ request.overviewFactor ][ tileId ] = std::move( tile );
+      qDebug() << "Tile added:" << request.overviewFactor << " ID: " << tileId << "extent " << extent.toString( 4 ) << upperleftx << upperlefty << tileWidth  << tileHeight <<  extent.width() << extent.height();
+    }
+    else
+    {
+      qDebug() << "Tile already indexed:" << request.overviewFactor << " ID: " << tileId << "extent " << extent.toString( 4 ) << upperleftx << upperlefty << tileWidth  << tileHeight <<  extent.width() << extent.height();
+    }
   }
   return true;
 }
