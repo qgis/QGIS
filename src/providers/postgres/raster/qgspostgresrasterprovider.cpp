@@ -480,7 +480,7 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
     if ( !  dstDS )
     {
       const QString lastError = QString::fromUtf8( CPLGetLastErrorMsg() ) ;
-      QgsMessageLog::logMessage( tr( "Unable to create detination raster for tiles from %1: %2" )
+      QgsMessageLog::logMessage( tr( "Unable to create destination raster for tiles from %1: %2" )
                                  .arg( tableToQuery, lastError ), tr( "PostGIS" ), Qgis::Critical );
       return false;
     }
@@ -567,7 +567,11 @@ Qgis::DataType QgsPostgresRasterProvider::dataType( int bandNo ) const
 {
   if ( mDataTypes.size() < static_cast<unsigned long>( bandNo ) )
   {
-    // TODO: raise or at least log!
+    QgsMessageLog::logMessage( tr( "Data type size for band %1 could not be found: num bands is: %2 and the type size map for bands contains: %3 items" )
+                               .arg( bandNo )
+                               .arg( mBandCount )
+                               .arg( mDataSizes.size() ),
+                               QStringLiteral( "PostGIS" ), Qgis::Warning );
     return Qgis::DataType::UnknownDataType;
   }
   // Band is 1-based
@@ -1343,7 +1347,7 @@ void QgsPostgresRasterProvider::findOverviews()
   }
   if ( mOverViews.isEmpty() )
   {
-    QgsMessageLog::logMessage( tr( "No overviews found, performaces may be affected" ), QStringLiteral( "PostGIS" ), Qgis::Info );
+    QgsMessageLog::logMessage( tr( "No overviews found, performances may be affected" ), QStringLiteral( "PostGIS" ), Qgis::Info );
   }
 }
 

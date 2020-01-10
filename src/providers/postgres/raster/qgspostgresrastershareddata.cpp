@@ -36,7 +36,7 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( c
 
   QgsPostgresRasterSharedData::TilesResponse result;
 
-  // First check for index existance
+  // First check for index existence
   if ( mSpatialIndexes.find( request.overviewFactor ) == mSpatialIndexes.end() )
   {
     // Fetch the index

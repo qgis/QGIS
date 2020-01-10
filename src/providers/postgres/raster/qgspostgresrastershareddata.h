@@ -91,7 +91,7 @@ class QgsPostgresRasterSharedData
     QMutex mMutex;
 
     /**
-     * The Tile struct represents a raster tile with metadata and data (intially NULL).
+     * The Tile struct represents a raster tile with metadata and data (initially NULL).
      */
     struct Tile
     {
