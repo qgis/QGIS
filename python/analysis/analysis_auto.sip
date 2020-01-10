@@ -41,8 +41,3 @@
 %Include auto_generated/vector/qgsgeometrysnapper.sip
 %Include auto_generated/vector/qgsgeometrysnappersinglesource.sip
 %Include auto_generated/vector/qgszonalstatistics.sip
-%Include auto_generated/vector/qgsabstracttool.sip
-%Include auto_generated/vector/qgsdifferencetool.sip
-%Include auto_generated/vector/qgsintersectiontool.sip
-%Include auto_generated/vector/qgsuniontool.sip
-%Include auto_generated/vector/qgssymdifferencetool.sip

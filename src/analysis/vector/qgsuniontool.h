@@ -18,6 +18,8 @@
 #ifndef VECTORANALYSIS_QGSUNION_TOOL_H
 #define VECTORANALYSIS_QGSUNION_TOOL_H
 
+#define SIP_NO_FILE
+
 #include "qgsabstracttool.h"
 
 namespace Vectoranalysis

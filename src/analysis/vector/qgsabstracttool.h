@@ -18,6 +18,8 @@
 #ifndef VECTORANALYSIS_QGSABSTRACT_TOOL_H
 #define VECTORANALYSIS_QGSABSTRACT_TOOL_H
 
+#define SIP_NO_FILE
+
 #include "qgis_analysis.h"
 #include <QObject>
 #include <QFuture>

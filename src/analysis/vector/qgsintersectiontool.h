@@ -18,6 +18,8 @@
 #ifndef VECTORANALYSIS_QGSINTERSECTION_TOOL_H
 #define VECTORANALYSIS_QGSINTERSECTION_TOOL_H
 
+#define SIP_NO_FILE
+
 #include "qgsabstracttool.h"
 
 class QgsFeatureSource;
