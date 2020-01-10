@@ -39,12 +39,7 @@ class QgsMesh3dEntity: public Qt3DCore::QEntity
 {
   public:
     QgsMesh3dEntity( const Qgs3DMapSettings &map, QgsMeshLayer *layer, const QgsMesh3DSymbol &symbol );
-    ~QgsMesh3dEntity()
-    {
-      mMesh3DEntityCount--;
-      qDebug() << "Destruct mesh 3D entity " << name;
-      qDebug() << "mesh 3D entity, existing " << mMesh3DEntityCount;
-    }
+
     void build();
 
   private:
@@ -59,37 +54,32 @@ class QgsMesh3dEntity: public Qt3DCore::QEntity
     static int mMesh3DEntityCount;
     QString name;
 };
-
 
 //! Entity that handles rendering of terrain mesh
 class QgsMesh3dTerrainTileEntity: public QgsTerrainTileEntity
 {
   public:
     QgsMesh3dTerrainTileEntity( const Qgs3DMapSettings &map,
-                                QgsMeshLayer *layer,
+                                const QgsTriangularMesh triangularMesh,
+                                const QgsRectangle &extent,
                                 const QgsMesh3DSymbol &symbol,
                                 QgsChunkNodeId nodeId,
                                 Qt3DCore::QNode *parent = nullptr );
-    ~QgsMesh3dTerrainTileEntity()
-    {
-      mMesh3DEntityCount--;
-      qDebug() << "******************* Destruct mesh 3D terrain entity " << name;
-      qDebug() << "mesh 3D terrain entity, existing " << mMesh3DEntityCount;
-    }
+
     void build();
 
   private:
     virtual void buildGeometry();
     virtual void applyMaterial();
 
+    QgsRectangle mExtent;
     QgsMesh3DSymbol mSymbol;
     Qgs3DMapSettings mMapSettings;
-    QgsMeshLayer *mLayer;
+    QgsTriangularMesh mTriangularMesh;
     QgsMesh3dMaterial *mMaterial = nullptr;
 
     static int mMesh3DEntityCount;
     QString name;
 };
-
 
 #endif // QGSMESHENTITY_H

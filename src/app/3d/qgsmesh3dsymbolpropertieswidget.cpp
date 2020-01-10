@@ -64,6 +64,11 @@ void QgsMesh3dSymbolPropertiesWidget::setSymbol( const QgsMesh3DSymbol &symbol )
   mColorRampShaderWidget->setFromShader( symbol.colorRampShader() );
 }
 
+void QgsMesh3dSymbolPropertiesWidget::enableVerticalSetting( bool isEnable )
+{
+  mGroupBoxVerticaleSettings->setVisible( isEnable );
+}
+
 double QgsMesh3dSymbolPropertiesWidget::lineEditValue( const QLineEdit *lineEdit ) const
 {
   if ( lineEdit->text().isEmpty() )

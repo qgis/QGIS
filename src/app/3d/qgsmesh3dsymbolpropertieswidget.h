@@ -21,6 +21,8 @@ class QgsMesh3dSymbolPropertiesWidget: public QWidget, private Ui::QgsMesh3dSymb
     int rendererTypeComboBoxIndex() const;
     void setRendererTypeComboBoxIndex( int index );
 
+    void enableVerticalSetting( bool isEnable );
+
   public slots:
     void reloadColorRampShaderMinMax();
 

@@ -323,6 +323,9 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
       }
     }
 
+    float fnearMini = 1;
+
+#if 0
     /* Handle with adapted near and fare plane to avoid z-fight :
      * ---------------------------------------------------------
      *
@@ -364,14 +367,11 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
      */
 
     float precfactor = 100000; // For now hard coded, maybe add to settings, so user can change this factor.
-    float fnearMini = ffar * std::numeric_limits<float>::epsilon() * precfactor;
+    fnearMini = ffar * std::numeric_limits<float>::epsilon() * precfactor;
+#endif
 
     if ( fnear < fnearMini )
       fnear = fnearMini;
-
-
-
-    qDebug() << "far  :" << ffar << "   near : " << fnear << "log 2 : " << log2( ffar / fnear ) << "float precision " << std::numeric_limits<float>::epsilon();
 
     if ( fnear == 1e9 && ffar == 0 )
     {
@@ -383,8 +383,8 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
     }
 
     // set near/far plane - with some tolerance in front/behind expected near/far planes
-    float newFar = ffar * 1.1;
-    float newNear = fnear / 1.1;
+    float newFar = ffar * 2;
+    float newNear = fnear / 2;
     if ( !qgsFloatNear( newFar, camera->farPlane() ) || !qgsFloatNear( newNear, camera->nearPlane() ) )
     {
       camera->setFarPlane( newFar );

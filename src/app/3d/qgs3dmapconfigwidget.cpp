@@ -40,6 +40,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   Q_ASSERT( mainCanvas );
 
   mMeshSymbolWidget = new QgsMesh3dSymbolPropertiesWidget( nullptr, groupMeshTerrainShading );
+  mMeshSymbolWidget->enableVerticalSetting( false );
 
   spinCameraFieldOfView->setClearValue( 45.0 );
   spinTerrainScale->setClearValue( 1.0 );
@@ -80,7 +81,9 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
     QgsMeshTerrainGenerator *meshTerrain = static_cast<QgsMeshTerrainGenerator *>( terrainGen );
     cboTerrainLayer->setFilters( QgsMapLayerProxyModel::MeshLayer );
     cboTerrainLayer->setLayer( meshTerrain->meshLayer() );
+    mMeshSymbolWidget->setLayer( meshTerrain->meshLayer() );
     mMeshSymbolWidget->setSymbol( meshTerrain->symbol() );
+    spinTerrainScale->setValue( meshTerrain->symbol().verticaleScale() );
   }
   else
   {
@@ -197,13 +200,14 @@ void Qgs3DMapConfigWidget::apply()
       QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( cboTerrainLayer->currentLayer() );
       QgsMeshTerrainGenerator *newTerrainGenerator = new QgsMeshTerrainGenerator;
       newTerrainGenerator->setLayer( meshLayer );
-      newTerrainGenerator->setSymbol( mMeshSymbolWidget->symbol() );
+      QgsMesh3DSymbol symbol = mMeshSymbolWidget->symbol();
+      symbol.setVerticaleScale( spinTerrainScale->value() );
+      newTerrainGenerator->setSymbol( symbol );
       mMap->setTerrainGenerator( newTerrainGenerator );
       needsUpdateOrigin = true;
     }
     break;
   }
-
 
   if ( needsUpdateOrigin )
   {
@@ -238,30 +242,29 @@ void Qgs3DMapConfigWidget::apply()
 
 void Qgs3DMapConfigWidget::onTerrainTypeChanged()
 {
-  bool isFlat = cboTerrainType->currentData() == QgsTerrainGenerator::Flat;
-  bool hasElevation = cboTerrainType->currentData() == QgsTerrainGenerator::Dem || QgsTerrainGenerator::Mesh;
-  labelTerrainResolution->setVisible( !isFlat );
-  spinTerrainResolution->setVisible( !isFlat );
-  labelTerrainSkirtHeight->setVisible( !isFlat );
-  spinTerrainSkirtHeight->setVisible( !isFlat );
-  labelTerrainLayer->setVisible( hasElevation );
-  cboTerrainLayer->setVisible( hasElevation );
+  QgsTerrainGenerator::Type genType = static_cast<QgsTerrainGenerator::Type>( cboTerrainType->currentData().toInt() );
 
-  //groupMeshTerrainShading->setVisible( cboTerrainType->currentData() == QgsTerrainGenerator::Mesh );
+  labelTerrainResolution->setVisible( !( genType == QgsTerrainGenerator::Flat || genType == QgsTerrainGenerator::Mesh ) );
+  spinTerrainResolution->setVisible( !( genType == QgsTerrainGenerator::Flat || genType == QgsTerrainGenerator::Mesh ) );
+  labelTerrainSkirtHeight->setVisible( !( genType == QgsTerrainGenerator::Flat || genType == QgsTerrainGenerator::Mesh ) );
+  spinTerrainSkirtHeight->setVisible( !( genType == QgsTerrainGenerator::Flat || genType == QgsTerrainGenerator::Mesh ) );
+  labelTerrainLayer->setVisible( genType == QgsTerrainGenerator::Dem || genType == QgsTerrainGenerator::Mesh );
+  cboTerrainLayer->setVisible( genType == QgsTerrainGenerator::Dem || genType == QgsTerrainGenerator::Mesh );
+  groupMeshTerrainShading->setVisible( genType == QgsTerrainGenerator::Mesh );
+  labelTerrainMapTheme->setVisible( !( genType == QgsTerrainGenerator::Mesh ) );
+  cboTerrainMapTheme->setVisible( !( genType == QgsTerrainGenerator::Mesh ) );
 
-  switch ( static_cast<QgsTerrainGenerator::Type>( cboTerrainType->currentData().toInt() ) )
+  QgsMapLayer *oldTerrainLayer = cboTerrainLayer->currentLayer();
+  if ( cboTerrainType->currentData() == QgsTerrainGenerator::Dem )
   {
-    case QgsTerrainGenerator::Flat:
-      break;
-    case QgsTerrainGenerator::Dem:
-      cboTerrainLayer->setFilters( QgsMapLayerProxyModel::RasterLayer );
-      break;
-    case QgsTerrainGenerator::Online:
-      break;
-    case QgsTerrainGenerator::Mesh:
-      cboTerrainLayer->setFilters( QgsMapLayerProxyModel::MeshLayer );
-      break;
+    cboTerrainLayer->setFilters( QgsMapLayerProxyModel::RasterLayer );
   }
+  else if ( cboTerrainType->currentData() == QgsTerrainGenerator::Mesh )
+  {
+    cboTerrainLayer->setFilters( QgsMapLayerProxyModel::MeshLayer );
+  }
+  if ( cboTerrainLayer->currentLayer() != oldTerrainLayer )
+    onTerrainLayerChanged();
 
   updateMaxZoomLevel();
 }
@@ -275,6 +278,7 @@ void Qgs3DMapConfigWidget::onTerrainLayerChanged()
     QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( cboTerrainLayer->currentLayer() );
     if ( meshLayer )
     {
+
       mMeshSymbolWidget->setLayer( meshLayer, false );
       if ( mMeshSymbolWidget->symbol().colorRampShader().colorRampItemList().count() == 0 )
       {

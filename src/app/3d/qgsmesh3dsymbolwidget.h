@@ -20,6 +20,8 @@
 
 #include "ui_mesh3dsymbolwidget.h"
 
+class QgsMesh3dSymbolPropertiesWidget;
+
 class QgsMesh3DSymbol;
 class QgsMeshLayer;
 
@@ -41,15 +43,12 @@ class QgsMesh3DSymbolWidget : public QWidget, private Ui::Mesh3DSymbolWidget
     void changed();
 
   private slots:
-    void reloadColorRampShaderMinMax();
     void onSymbologyTypeChanged();
-    void onColorRampShaderMinMaxChanged();
-    void onColoringTypeChanged();
 
   private:
     double lineEditValue( const QLineEdit *lineEdit ) const;
-
     QgsMeshLayer *mLayer = nullptr;
+    QgsMesh3dSymbolPropertiesWidget *mAdvancedSettingsWidget;
 };
 
 #endif // QGSMESH3DSYMBOLWIDGET_H
