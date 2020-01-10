@@ -458,11 +458,11 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
                                   GF_Write,
                                   xOff,
                                   yOff,
-                                  tile.width,
-                                  tile.height,
+                                  static_cast<int>( tile.width ),
+                                  static_cast<int>( tile.height ),
                                   ( void * )( tile.data.constData() ),  // old-style because of const
-                                  tile.width,
-                                  tile.height,
+                                  static_cast<int>( tile.width ),
+                                  static_cast<int>( tile.height ),
                                   gdalDataType,
                                   0,
                                   0 );
@@ -1398,7 +1398,7 @@ int QgsPostgresRasterProvider::xBlockSize() const
   }
   else
   {
-    return mWidth;
+    return static_cast<int>( mWidth );
   }
 }
 
@@ -1410,12 +1410,13 @@ int QgsPostgresRasterProvider::yBlockSize() const
   }
   else
   {
-    return mHeight;
+    return static_cast<int>( mHeight );
   }
 }
 
 QgsRasterBandStats QgsPostgresRasterProvider::bandStatistics( int bandNo, int stats, const QgsRectangle &extent, int sampleSize, QgsRasterBlockFeedback *feedback )
 {
+  Q_UNUSED( feedback )
   QgsRasterBandStats rasterBandStats;
   const auto constMStatistics = mStatistics;
   initStatistics( rasterBandStats, bandNo, stats, extent, sampleSize );
