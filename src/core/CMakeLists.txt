@@ -374,6 +374,7 @@ SET(QGIS_CORE_SRCS
   qgsstoredexpressionmanager.cpp
   qgsstringstatisticalsummary.cpp
   qgsstringutils.cpp
+  qgstablecell.cpp
   qgstaskmanager.cpp
   qgstessellator.cpp
   qgstextrenderer.cpp
@@ -882,6 +883,7 @@ SET(QGIS_CORE_HDRS
   qgsstoredexpressionmanager.h
   qgsstringstatisticalsummary.h
   qgsstringutils.h
+  qgstablecell.h
   qgstaskmanager.h
   qgstessellator.h
   qgstestutils.h
