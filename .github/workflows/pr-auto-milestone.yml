@@ -22,7 +22,7 @@ jobs:
                 pullRequests(states: OPEN, last: 100) {
                   edges {
                     node {
-                      id
+                      number
                       title
                       labels(first: 100) {
                         edges {
