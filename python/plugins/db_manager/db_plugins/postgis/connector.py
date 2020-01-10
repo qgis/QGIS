@@ -95,7 +95,10 @@ class CursorAdapter():
         if (self.sql == None):
             return
         self._debug("execute called with sql " + self.sql)
-        self.result = self._toStrResultSet(self.connection.executeSql(self.sql))
+        try:
+            self.result = self._toStrResultSet(self.connection.executeSql(self.sql))
+        except QgsProviderConnectionException as e:
+            raise DbError(e, self.sql)
         self._debug("execute returned " + str(len(self.result)) + " rows")
         self.cursor = 0
 
