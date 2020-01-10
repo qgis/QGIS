@@ -17,8 +17,8 @@ jobs:
         id: graphql_request
         with:
           query: |
-            query list_tags_milestones($owner: String!, $repo: String!) {
-              repository(owner: $owner, name: $repo) {
+            query {
+              repository(owner: "qgis", name: "QGIS") {
                 pullRequests(states: OPEN, last: 100) {
                   edges {
                     node {
@@ -39,6 +39,7 @@ jobs:
                       }
                     }
                   }
+                }
                 milestones(orderBy: {field: CREATED_AT, direction: DESC}, first: 50) {
                   edges {
                     node {
@@ -56,8 +57,6 @@ jobs:
                 }
               }
             }
-          owner: ${{ github.event.pull_request.base.repo.owner.login }}
-          repo: ${{ github.event.pull_request.base.repo.name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
