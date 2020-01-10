@@ -113,10 +113,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Get the milestone number
+      # Compute the milestone number
       - name: Compute milestone number from existing or created
         id: compute_milestone
-        if: steps.extract_data.outputs.has_milestone_to_set == true
+        if: always() && steps.extract_data.outputs.has_milestone_to_set == true
         env:
           MILESTONE_NUMBER_EXISTING: ${{ steps.calculate_milestone.outputs.milestone_number }}
           MILESTONE_NUMBER_CREATED_JSON: ${{ steps.create_milestone.outputs.data }}
