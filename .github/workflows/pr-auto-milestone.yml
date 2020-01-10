@@ -105,7 +105,7 @@ jobs:
       # create the milestone if needed
       - name: Create milestone if needed
         id: create_milestone
-        if: steps.extract_data.outputs.has_milestone_to_set == true && steps.extract_data.outputs.has_milestone_to_create == true
+        if: steps.extract_data.outputs.has_milestone_to_set == "true" && steps.extract_data.outputs.has_milestone_to_create == "true"
         uses: octokit/request-action@v2.x
         with:
           route: POST /repos/qgis/QGIS/milestones
@@ -116,7 +116,7 @@ jobs:
       # Compute the milestone number
       - name: Compute milestone number from existing or created
         id: compute_milestone
-        if: always() && steps.extract_data.outputs.has_milestone_to_set == true
+        if: always() && steps.extract_data.outputs.has_milestone_to_set == "true"
         env:
           MILESTONE_NUMBER_EXISTING: ${{ steps.calculate_milestone.outputs.milestone_number }}
           MILESTONE_NUMBER_CREATED_JSON: ${{ steps.create_milestone.outputs.data }}
@@ -127,7 +127,7 @@ jobs:
 
       # update PR with milestone
       - name: update PR milestone
-        if: steps.extract_data.outputs.has_milestone_to_set == true
+        if: steps.extract_data.outputs.has_milestone_to_set == "true"
         uses: octokit/request-action@v2.x
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
