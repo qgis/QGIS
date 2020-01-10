@@ -75,7 +75,7 @@ jobs:
           [[ ${NUMBER_OF_PRS} == 0 ]] && echo "::set-output name=has_milestone_to_set::false" && exit 0
 
           # Take the first
-          PR_NUMBER=$(echo "${PRS_TO_PROCESS}" | jq -s 'first')
+          PR_NUMBER=$(echo "${PRS_TO_PROCESS}" | jq -s '. | first')
           echo "PR_NUMBER: ${PR_NUMBER}"
 
           # Not used for now
