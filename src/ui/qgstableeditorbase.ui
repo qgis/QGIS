@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsTableEditorBase</class>
+ <widget class="QMainWindow" name="QgsTableEditorBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>2180</width>
+    <height>609</height>
+   </rect>
+  </property>
+  <property name="mouseTracking">
+   <bool>true</bool>
+  </property>
+  <property name="windowTitle">
+   <string>Main Window</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="mouseTracking">
+    <bool>true</bool>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <item row="0" column="0">
+     <widget class="QFrame" name="mViewFrame">
+      <property name="mouseTracking">
+       <bool>true</bool>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Plain</enum>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="mStatusBar"/>
+  <widget class="QToolBar" name="mToolbar">
+   <property name="windowTitle">
+    <string>Layout Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Layout Toolbar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="mActionSetForeground"/>
+   <addaction name="mActionSetBackground"/>
+   <addaction name="separator"/>
+   <addaction name="mActionSetRowHeight"/>
+   <addaction name="mActionSetColumnWidth"/>
+  </widget>
+  <widget class="QMenuBar" name="mMenuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>2180</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuCell">
+    <property name="title">
+     <string>&amp;Format</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="separator"/>
+    <addaction name="mActionSetForeground"/>
+    <addaction name="mActionSetBackground"/>
+    <addaction name="separator"/>
+    <addaction name="mActionSetRowHeight"/>
+    <addaction name="mActionSetColumnWidth"/>
+   </widget>
+   <widget class="QMenu" name="menu_Table">
+    <property name="title">
+     <string>&amp;Table</string>
+    </property>
+    <widget class="QMenu" name="menuInsert_Rows">
+     <property name="title">
+      <string>Insert Rows</string>
+     </property>
+     <addaction name="mActionInsertRowsAbove"/>
+     <addaction name="mActionInsertRowsBelow"/>
+    </widget>
+    <widget class="QMenu" name="menuInsert_Columns">
+     <property name="title">
+      <string>Insert Columns</string>
+     </property>
+     <addaction name="mActionInsertColumnsBefore"/>
+     <addaction name="mActionInsertColumnsAfter"/>
+    </widget>
+    <addaction name="menuInsert_Rows"/>
+    <addaction name="menuInsert_Columns"/>
+    <addaction name="mActionDeleteRows"/>
+    <addaction name="mActionDeleteColumns"/>
+   </widget>
+   <widget class="QMenu" name="menu_Edit">
+    <property name="title">
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="mActionSelectAll"/>
+    <addaction name="mActionSelectRow"/>
+    <addaction name="mActionSelectColumn"/>
+    <addaction name="separator"/>
+    <addaction name="mActionClear"/>
+   </widget>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="mActionClose"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menu_Edit"/>
+   <addaction name="menuCell"/>
+   <addaction name="menu_Table"/>
+  </widget>
+  <action name="mActionSetForeground">
+   <property name="text">
+    <string>Set Foreground Color…</string>
+   </property>
+  </action>
+  <action name="mActionSetBackground">
+   <property name="text">
+    <string>Set Background Color…</string>
+   </property>
+  </action>
+  <action name="mActionInsertRowsAbove">
+   <property name="text">
+    <string>Rows Above</string>
+   </property>
+  </action>
+  <action name="mActionInsertRowsBelow">
+   <property name="text">
+    <string>Rows Below</string>
+   </property>
+  </action>
+  <action name="mActionInsertColumnsBefore">
+   <property name="text">
+    <string>Columns Before</string>
+   </property>
+  </action>
+  <action name="mActionInsertColumnsAfter">
+   <property name="text">
+    <string>Columns After</string>
+   </property>
+  </action>
+  <action name="mActionDeleteRows">
+   <property name="text">
+    <string>Delete Rows</string>
+   </property>
+  </action>
+  <action name="mActionDeleteColumns">
+   <property name="text">
+    <string>Delete Columns</string>
+   </property>
+  </action>
+  <action name="mActionSelectAll">
+   <property name="text">
+    <string>Select All</string>
+   </property>
+  </action>
+  <action name="mActionSelectRow">
+   <property name="text">
+    <string>Select Row</string>
+   </property>
+  </action>
+  <action name="mActionSelectColumn">
+   <property name="text">
+    <string>Select Column</string>
+   </property>
+  </action>
+  <action name="mActionClose">
+   <property name="text">
+    <string>Close Editor</string>
+   </property>
+  </action>
+  <action name="mActionSetRowHeight">
+   <property name="text">
+    <string>Set Row Height…</string>
+   </property>
+  </action>
+  <action name="mActionSetColumnWidth">
+   <property name="text">
+    <string>Set Column Width…</string>
+   </property>
+  </action>
+  <action name="mActionClear">
+   <property name="text">
+    <string>Clear Cell(s)</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -529,6 +529,7 @@ INCLUDE_DIRECTORIES(
   ../gui/editorwidgets/core
   ../gui/layertree
   ../gui/layout
+  ../gui/tableeditor
   ../plugins
   ../python
   gps

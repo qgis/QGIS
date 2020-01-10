@@ -32,7 +32,7 @@ QgsLayoutManualTableWidget::QgsLayoutManualTableWidget( QgsLayoutFrame *frame )
 {
   setupUi( this );
   connect( mRefreshPushButton, &QPushButton::clicked, this, &QgsLayoutManualTableWidget::mRefreshPushButton_clicked );
-  connect( mAttributesPushButton, &QPushButton::clicked, this, &QgsLayoutManualTableWidget::mAttributesPushButton_clicked );
+  connect( mSetContentsButton, &QPushButton::clicked, this, &QgsLayoutManualTableWidget::setTableContents );
   connect( mMarginSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutManualTableWidget::mMarginSpinBox_valueChanged );
   connect( mGridStrokeWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutManualTableWidget::mGridStrokeWidthSpinBox_valueChanged );
   connect( mGridColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutManualTableWidget::mGridColorButton_colorChanged );
@@ -43,7 +43,6 @@ QgsLayoutManualTableWidget::QgsLayoutManualTableWidget( QgsLayoutFrame *frame )
   connect( mDrawVerticalGrid, &QCheckBox::toggled, this, &QgsLayoutManualTableWidget::mDrawVerticalGrid_toggled );
   connect( mShowGridGroupCheckBox, &QgsCollapsibleGroupBoxBasic::toggled, this, &QgsLayoutManualTableWidget::mShowGridGroupCheckBox_toggled );
   connect( mHeaderHAlignmentComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutManualTableWidget::mHeaderHAlignmentComboBox_currentIndexChanged );
-  connect( mHeaderModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutManualTableWidget::mHeaderModeComboBox_currentIndexChanged );
   connect( mAddFramePushButton, &QPushButton::clicked, this, &QgsLayoutManualTableWidget::mAddFramePushButton_clicked );
   connect( mResizeModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutManualTableWidget::mResizeModeComboBox_currentIndexChanged );
   connect( mDrawEmptyCheckBox, &QCheckBox::toggled, this, &QgsLayoutManualTableWidget::mDrawEmptyCheckBox_toggled );
@@ -123,6 +122,10 @@ bool QgsLayoutManualTableWidget::setNewItem( QgsLayoutItem *item )
   {
     disconnect( mTable, &QgsLayoutObject::changed, this, &QgsLayoutManualTableWidget::updateGuiElements );
   }
+  if ( mEditorDialog )
+  {
+    mEditorDialog->close();
+  }
 
   mTable = qobject_cast< QgsLayoutItemManualTable * >( multiFrame );
   mFrame = frame;
@@ -149,13 +152,38 @@ void QgsLayoutManualTableWidget::mRefreshPushButton_clicked()
   mTable->refreshAttributes();
 }
 
-void QgsLayoutManualTableWidget::mAttributesPushButton_clicked()
+void QgsLayoutManualTableWidget::setTableContents()
 {
   if ( !mTable )
   {
     return;
   }
 
+  if ( mEditorDialog )
+  {
+    // the unholy quadfecta
+    mEditorDialog->show();
+    mEditorDialog->raise();
+    mEditorDialog->setWindowState( windowState() & ~Qt::WindowMinimized );
+    mEditorDialog->activateWindow();
+  }
+  else
+  {
+    mEditorDialog = new QgsTableEditorDialog( this );
+    connect( this, &QWidget::destroyed, mEditorDialog, &QMainWindow::close );
+
+    mEditorDialog->setTableData( mTable->tableContents() );
+    connect( mEditorDialog, &QgsTableEditorDialog::tableChanged, this, [ = ]
+    {
+      if ( mTable )
+      {
+        mTable->beginCommand( tr( "Change Table Contents" ) );
+        mTable->setTableContents( mEditorDialog->tableData() );
+        mTable->endCommand();
+      }
+    } );
+    mEditorDialog->show();
+  }
 }
 
 void QgsLayoutManualTableWidget::mMarginSpinBox_valueChanged( double d )
@@ -318,7 +346,6 @@ void QgsLayoutManualTableWidget::updateGuiElements()
   mContentFontToolButton->setCurrentFont( mTable->contentFont() );
 
   mHeaderHAlignmentComboBox->setCurrentIndex( static_cast<int>( mTable->headerHAlignment() ) );
-  mHeaderModeComboBox->setCurrentIndex( static_cast<int>( mTable->headerMode() ) );
 
   mDrawEmptyCheckBox->setChecked( mTable->showEmptyRows() );
   mWrapBehaviorComboBox->setCurrentIndex( mWrapBehaviorComboBox->findData( mTable->wrapBehavior() ) );
@@ -342,7 +369,6 @@ void QgsLayoutManualTableWidget::blockAllSignals( bool b )
   mDrawVerticalGrid->blockSignals( b );
   mShowGridGroupCheckBox->blockSignals( b );
   mHeaderHAlignmentComboBox->blockSignals( b );
-  mHeaderModeComboBox->blockSignals( b );
   mHeaderFontColorButton->blockSignals( b );
   mContentFontColorButton->blockSignals( b );
   mResizeModeComboBox->blockSignals( b );
@@ -387,18 +413,6 @@ void QgsLayoutManualTableWidget::mHeaderHAlignmentComboBox_currentIndexChanged( 
 
   mTable->beginCommand( tr( "Change Table Alignment" ) );
   mTable->setHeaderHAlignment( static_cast<  QgsLayoutTable::HeaderHAlignment >( index ) );
-  mTable->endCommand();
-}
-
-void QgsLayoutManualTableWidget::mHeaderModeComboBox_currentIndexChanged( int index )
-{
-  if ( !mTable )
-  {
-    return;
-  }
-
-  mTable->beginCommand( tr( "Change Table Header Mode" ) );
-  mTable->setHeaderMode( ( QgsLayoutTable::HeaderMode )index );
   mTable->endCommand();
 }
 
@@ -458,6 +472,7 @@ void QgsLayoutManualTableWidget::mAdvancedCustomizationButton_clicked()
   }
 
   QgsLayoutTableBackgroundColorsDialog d( mTable, this );
+
   d.exec();
 }
 

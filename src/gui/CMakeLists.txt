@@ -237,6 +237,10 @@ SET(QGIS_GUI_SRCS
   providers/ogr/qgsogritemguiprovider.cpp
   providers/ogr/qgsgeopackageprojectstorageguiprovider.cpp
 
+  tableeditor/qgstableeditordialog.cpp
+  tableeditor/qgstableeditorformattingwidget.cpp
+  tableeditor/qgstableeditorwidget.cpp
+
   qgisinterface.cpp
   qgsactionmenu.cpp
   qgsadvanceddigitizingcanvasitem.cpp
@@ -880,6 +884,10 @@ SET(QGIS_GUI_HDRS
   symbology/qgssymbolwidgetcontext.h
   symbology/qgsvectorfieldsymbollayerwidget.h
 
+  tableeditor/qgstableeditordialog.h
+  tableeditor/qgstableeditorformattingwidget.h
+  tableeditor/qgstableeditorwidget.h
+
   qgsbrowserdockwidget_p.h
 )
 
@@ -978,6 +986,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/providers/gdal
   ${CMAKE_SOURCE_DIR}/src/gui/providers/ogr
   ${CMAKE_SOURCE_DIR}/src/gui/raster
+  ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth

@@ -29,6 +29,7 @@
 QgsLayoutItemManualTable::QgsLayoutItemManualTable( QgsLayout *layout )
   : QgsLayoutTable( layout )
 {
+  setHeaderMode( NoHeaders );
   refreshAttributes();
 }
 

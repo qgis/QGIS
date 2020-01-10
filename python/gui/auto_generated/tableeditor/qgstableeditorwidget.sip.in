@@ -1,0 +1,71 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/tableeditor/qgstableeditorwidget.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsTableEditorWidget : QTableWidget
+{
+
+%TypeHeaderCode
+#include "qgstableeditorwidget.h"
+%End
+  public:
+
+    enum Roles
+    {
+      PresetBackgroundColorRole,
+
+    };
+
+    QgsTableEditorWidget( QWidget *parent = 0 );
+    ~QgsTableEditorWidget();
+
+    void setTableData( const QgsTableContents &contents );
+    QgsTableContents tableData() const;
+
+    void setCellNumericFormat( QgsNumericFormat *format /Transfer/ );
+
+    QColor selectedCellForegroundColor();
+
+    QColor selectedCellBackgroundColor();
+
+  public slots:
+
+    void insertRowsBelow();
+    void insertRowsAbove();
+    void insertColumnsBefore();
+    void insertColumnsAfter();
+    void deleteRows();
+    void deleteColumns();
+
+    void selectRows();
+    void selectColumns();
+    void clearSelectedCells();
+
+    void setCellForegroundColor( const QColor &color );
+    void setCellBackgroundColor( const QColor &color );
+
+
+  protected:
+    virtual void keyPressEvent( QKeyEvent *event );
+
+
+  signals:
+
+    void tableChanged();
+    void activeCellChanged();
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/tableeditor/qgstableeditorwidget.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
