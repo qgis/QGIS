@@ -120,7 +120,7 @@ jobs:
         id: compute_milestone
         if: always() && steps.extract_data.outputs.has_milestone_to_set == 1
         env:
-          MILESTONE_NUMBER_EXISTING: ${{ steps.calculate_milestone.outputs.milestone_number }}
+          MILESTONE_NUMBER_EXISTING: ${{ steps.extract_data.outputs.milestone_number }}
           MILESTONE_NUMBER_CREATED_JSON: ${{ steps.create_milestone.outputs.data }}
         run: |
           FINAL_MILESTONE_NUMBER=$([[ -n ${MILESTONE_NUMBER_EXISTING} ]] && echo "${MILESTONE_NUMBER_EXISTING}" || $(echo "${MILESTONE_NUMBER_CREATED_JSON}" | jq '.number' ))
