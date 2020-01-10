@@ -49,18 +49,8 @@ QgsVectorLayer3DRenderer::QgsVectorLayer3DRenderer( QgsAbstract3DSymbol *s )
 QgsVectorLayer3DRenderer *QgsVectorLayer3DRenderer::clone() const
 {
   QgsVectorLayer3DRenderer *r = new QgsVectorLayer3DRenderer( mSymbol ? mSymbol->clone() : nullptr );
-  r->mLayerRef = mLayerRef;
+  copyBaseProperties( r );
   return r;
-}
-
-void QgsVectorLayer3DRenderer::setLayer( QgsVectorLayer *layer )
-{
-  mLayerRef = QgsMapLayerRef( layer );
-}
-
-QgsVectorLayer *QgsVectorLayer3DRenderer::layer() const
-{
-  return qobject_cast<QgsVectorLayer *>( mLayerRef.layer );
 }
 
 void QgsVectorLayer3DRenderer::setSymbol( QgsAbstract3DSymbol *symbol )
@@ -87,7 +77,7 @@ void QgsVectorLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteCo
 {
   QDomDocument doc = elem.ownerDocument();
 
-  elem.setAttribute( QStringLiteral( "layer" ), mLayerRef.layerId );
+  writeXmlBaseProperties( elem, context );
 
   QDomElement elemSymbol = doc.createElement( QStringLiteral( "symbol" ) );
   if ( mSymbol )
@@ -100,7 +90,7 @@ void QgsVectorLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteCo
 
 void QgsVectorLayer3DRenderer::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  mLayerRef = QgsMapLayerRef( elem.attribute( QStringLiteral( "layer" ) ) );
+  readXmlBaseProperties( elem, context );
 
   QDomElement elemSymbol = elem.firstChildElement( QStringLiteral( "symbol" ) );
   QString symbolType = elemSymbol.attribute( QStringLiteral( "type" ) );
@@ -115,9 +105,4 @@ void QgsVectorLayer3DRenderer::readXml( const QDomElement &elem, const QgsReadWr
   if ( symbol )
     symbol->readXml( elemSymbol, context );
   mSymbol.reset( symbol );
-}
-
-void QgsVectorLayer3DRenderer::resolveReferences( const QgsProject &project )
-{
-  mLayerRef.setLayer( project.mapLayer( mLayerRef.layerId ) );
 }

@@ -4,6 +4,7 @@
 SET(QGIS_3D_SRCS
   qgsaabb.cpp
   qgsabstract3dengine.cpp
+  qgsabstractvectorlayer3drenderer.cpp
   qgs3danimationsettings.cpp
   qgs3dmapscene.cpp
   qgs3dmapsettings.cpp
@@ -72,6 +73,7 @@ SET(QGIS_3D_HDRS
   qgs3dutils.h
   qgsaabb.h
   qgsabstract3dengine.h
+  qgsabstractvectorlayer3drenderer.h
   qgscameracontroller.h
   qgscamerapose.h
   qgslayoutitem3dmap.h

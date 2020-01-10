@@ -395,18 +395,8 @@ QgsRuleBased3DRenderer *QgsRuleBased3DRenderer::clone() const
     clonedDescendants[i]->setRuleKey( origDescendants[i]->ruleKey() );
 
   QgsRuleBased3DRenderer *r = new QgsRuleBased3DRenderer( rootRule );
-  r->mLayerRef = mLayerRef;
+  copyBaseProperties( r );
   return r;
-}
-
-void QgsRuleBased3DRenderer::setLayer( QgsVectorLayer *layer )
-{
-  mLayerRef = QgsMapLayerRef( layer );
-}
-
-QgsVectorLayer *QgsRuleBased3DRenderer::layer() const
-{
-  return qobject_cast<QgsVectorLayer *>( mLayerRef.layer );
 }
 
 Qt3DCore::QEntity *QgsRuleBased3DRenderer::createEntity( const Qgs3DMapSettings &map ) const
@@ -423,7 +413,7 @@ void QgsRuleBased3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteCont
 {
   QDomDocument doc = elem.ownerDocument();
 
-  elem.setAttribute( QStringLiteral( "layer" ), mLayerRef.layerId );
+  writeXmlBaseProperties( elem, context );
 
   QDomElement rulesElem = mRootRule->save( doc, context );
   rulesElem.setTagName( QStringLiteral( "rules" ) ); // instead of just "rule"
@@ -432,13 +422,7 @@ void QgsRuleBased3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteCont
 
 void QgsRuleBased3DRenderer::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  Q_UNUSED( context )
-  mLayerRef = QgsMapLayerRef( elem.attribute( QStringLiteral( "layer" ) ) );
+  readXmlBaseProperties( elem, context );
 
   // root rule is read before class constructed
-}
-
-void QgsRuleBased3DRenderer::resolveReferences( const QgsProject &project )
-{
-  mLayerRef.setLayer( project.mapLayer( mLayerRef.layerId ) );
 }

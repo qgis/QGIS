@@ -536,15 +536,11 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     // Fix vector layer's renderer to make sure the renderer is pointing to its layer.
     // It has happened before that renderer pointed to a different layer (probably after copying a style).
     // This is a bit of a hack and it should be handled in QgsMapLayer::setRenderer3D() but in qgis_core
-    // the vector layer 3D renderer class is not available. Maybe we need an intermediate map layer 3D renderer
-    // class in qgis_core that can be used to handle this case nicely.
-    if ( layer->type() == QgsMapLayerType::VectorLayer && renderer->type() == QLatin1String( "vector" ) )
+    // the vector layer 3D renderer classes are not available.
+    if ( layer->type() == QgsMapLayerType::VectorLayer &&
+         ( renderer->type() == QLatin1String( "vector" ) || renderer->type() == QLatin1String( "rulebased" ) ) )
     {
-      static_cast<QgsVectorLayer3DRenderer *>( renderer )->setLayer( static_cast<QgsVectorLayer *>( layer ) );
-    }
-    else if ( layer->type() == QgsMapLayerType::VectorLayer && renderer->type() == QLatin1String( "rulebased" ) )
-    {
-      static_cast<QgsRuleBased3DRenderer *>( renderer )->setLayer( static_cast<QgsVectorLayer *>( layer ) );
+      static_cast<QgsAbstractVectorLayer3DRenderer *>( renderer )->setLayer( static_cast<QgsVectorLayer *>( layer ) );
     }
     else if ( layer->type() == QgsMapLayerType::MeshLayer && renderer->type() == QLatin1String( "mesh" ) )
     {
