@@ -101,19 +101,19 @@ jobs:
           MILESTONE_NUMBER=$(echo "${JSON_DATA}" | jq ".repository.milestones.edges[] | select( .node.title == \"${MILESTONE_TITLE}\" ) | .node.number")
           echo "MILESTONE_NUMBER: ${MILESTONE_NUMBER}"
 
-          MILESTONE_EXISTS=$(echo "${JSON_DATA}" | jq ".repository.milestones.edges[] | select( .node.title == \"${MILESTONE_TITLE}\" ) ")
-          echo "MILESTONE_EXISTS: ${MILESTONE_EXISTS}"
+          HAS_MILESTONE_TO_CREATE=$(echo "${JSON_DATA}" | jq ".repository.milestones.edges[] | select( .node.title == \"${MILESTONE_TITLE}\" ) | length == 0 ")
+          echo "HAS_MILESTONE_TO_CREATE: ${HAS_MILESTONE_TO_CREATE}"
 
           echo "::set-output name=has_milestone_to_set::true"
           echo "::set-output name=pr_number::${PR_NUMBER}"
           echo "::set-output name=milestone_title::${MILESTONE_TITLE}"
           echo "::set-output name=milestone_number::${MILESTONE_NUMBER}"
-          echo "::set-output name=milestone_exists::${MILESTONE_EXISTS}"
+          echo "::set-output name=has_milestone_to_create::${HAS_MILESTONE_TO_CREATE}"
 
       # create the milestone if needed
       - name: Create milestone if needed
         id: create_milestone
-        if: steps.extract_data.outputs.has_milestone_to_set && steps.extract_data.outputs.milestone_exists == false
+        if: steps.extract_data.outputs.has_milestone_to_set && steps.extract_data.outputs.has_milestone_to_create
         uses: octokit/request-action@v2.x
         with:
           route: POST /repos/qgis/QGIS/milestones
@@ -125,7 +125,6 @@ jobs:
       - name: Compute milestone number from existing or created
         id: compute_milestone
         if: steps.extract_data.outputs.has_milestone_to_set
-        name: compute the milestone number
         env:
           MILESTONE_NUMBER_EXISTING: ${{ steps.calculate_milestone.outputs.milestone_number }}
           MILESTONE_NUMBER_CREATED_JSON: ${{ steps.create_milestone.outputs.data }}
