@@ -93,7 +93,7 @@ jobs:
             ### PR Description:
             ${{ steps.get_pr_body.outputs.body }}
 
-            ### Commits tagged with [need-docs]
+            ### Commits tagged with [need-docs] or [FEATURE]
             ${{ steps.filtered_commits.outputs.commits }}
 
       # write comment to ping the PR author

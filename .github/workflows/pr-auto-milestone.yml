@@ -87,6 +87,7 @@ jobs:
           MAX_RELEASE=$(echo "${JSON_DATA}" | jq ".repository.refs.edges[].node.name | select( . | test(\"^final-${QGIS_MAJOR_VERSION}${MINOR_VERSION}\") ) | sub(\"^final-${QGIS_MAJOR_VERSION}_(?<m>[0-9]+)_(?<p>.)\"; .m+\".\"+.p) | tonumber" | jq -s '. | max')
           echo "MAX_RELEASE: ${MAX_RELEASE}"
 
+          # increase the number to get milestone: round+2 for master, +0.1 for release_xxx branches
           INCREASE_OPERATION=$([[ -z ${MINOR_VERSION} ]] && echo "${MAX_RELEASE%.*} + 2.0" || echo "${MAX_RELEASE} + 0.1" )
           echo "INCREASE_OPERATION: ${INCREASE_OPERATION}"
           MILESTONE_TITLE="${QGIS_MAJOR_VERSION}."$(echo "${INCREASE_OPERATION}" | bc)
