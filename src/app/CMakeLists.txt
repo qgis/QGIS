@@ -209,6 +209,7 @@ SET(QGIS_APP_SRCS
   layout/qgslayoutlegendlayersdialog.cpp
   layout/qgslayoutlegendwidget.cpp
   layout/qgslayoutmanagerdialog.cpp
+  layout/qgslayoutmanualtablewidget.cpp
   layout/qgslayoutmapwidget.cpp
   layout/qgslayoutmapgridwidget.cpp
   layout/qgslayoutpagepropertieswidget.cpp

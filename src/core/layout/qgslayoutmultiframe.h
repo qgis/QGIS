@@ -50,6 +50,7 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
 #ifdef SIP_RUN
 #include "qgslayoutitemhtml.h"
 #include "qgslayoutitemattributetable.h"
+#include "qgslayoutitemmanualtable.h"
 #include "qgslayoutitemtexttable.h"
 #endif
 
@@ -74,6 +75,10 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
         case QGraphicsItem::UserType + 114:
           sipType = sipType_QgsLayoutItemTextTable;
           *sipCppRet = static_cast<QgsLayoutItemTextTable *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 116:
+          sipType = sipType_QgsLayoutItemManualTable;
+          *sipCppRet = static_cast<QgsLayoutItemManualTable *>( sipCpp );
           break;
         default:
           sipType = 0;

@@ -343,6 +343,7 @@
 %Include auto_generated/layout/qgslayoutitemhtml.sip
 %Include auto_generated/layout/qgslayoutitemlabel.sip
 %Include auto_generated/layout/qgslayoutitemlegend.sip
+%Include auto_generated/layout/qgslayoutitemmanualtable.sip
 %Include auto_generated/layout/qgslayoutitemmap.sip
 %Include auto_generated/layout/qgslayoutitemmapgrid.sip
 %Include auto_generated/layout/qgslayoutitemmapitem.sip
