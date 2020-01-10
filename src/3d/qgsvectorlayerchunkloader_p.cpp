@@ -72,7 +72,7 @@ QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const QgsVectorLayerChunkL
   req.setSubsetOfAttributes( attributeNames, layer->fields() );
 
   // only a subset of data to be queried
-  QgsRectangle rect = Qgs3DUtils::worldToMapExtent( node->bbox(), mFactory->mLayer->crs(), map.origin(), map.crs() );
+  QgsRectangle rect = Qgs3DUtils::worldToLayerExtent( node->bbox(), mFactory->mLayer->crs(), map.origin(), map.crs(), map.transformContext() );
   req.setFilterRect( rect );
 
   //
@@ -151,7 +151,7 @@ QgsChunkLoader *QgsVectorLayerChunkLoaderFactory::createChunkLoader( QgsChunkNod
 
 
 QgsVectorLayerChunkedEntity::QgsVectorLayerChunkedEntity( QgsVectorLayer *vl, QgsAbstract3DSymbol *symbol, const Qgs3DMapSettings &map )
-  : QgsChunkedEntity( Qgs3DUtils::mapToWorldExtent( vl->extent(), vl->crs(), map.origin(), map.crs() ),
+  : QgsChunkedEntity( Qgs3DUtils::layerToWorldExtent( vl->extent(), vl->crs(), map.origin(), map.crs(), map.transformContext() ),
                       -1,  // rootError  TODO: negative error should mean that the node does not contain anything
                       -1, // tau = max. allowed screen error. TODO: negative tau should mean that we need to go until leaves are reached
                       2, // TODO: figure out from the number of features

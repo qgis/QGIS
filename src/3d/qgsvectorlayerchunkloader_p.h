@@ -16,8 +16,20 @@
 #ifndef QGSVECTORLAYERCHUNKLOADER_P_H
 #define QGSVECTORLAYERCHUNKLOADER_P_H
 
+///@cond PRIVATE
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the QGIS API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
+
 #include "qgschunkloader_p.h"
 #include "qgsfeature3dhandler_p.h"
+#include "qgschunkedentity_p.h"
 
 class Qgs3DMapSettings;
 class QgsVectorLayer;
@@ -28,13 +40,21 @@ class QgsFeature3DHandler;
 #include <QFutureWatcher>
 
 
+/**
+ * \ingroup 3d
+ * This loader factory is responsible for creation of loaders for individual tiles
+ * of QgsVectorLayerChunkedEntity whenever a new tile is requested by the entity.
+ *
+ * \since QGIS 3.12
+ */
 class QgsVectorLayerChunkLoaderFactory : public QgsChunkLoaderFactory
 {
   public:
+    //! Constructs the factory
     QgsVectorLayerChunkLoaderFactory( const Qgs3DMapSettings &map, QgsVectorLayer *vl, QgsAbstract3DSymbol *symbol, int leafLevel );
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
-    virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const;
+    virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
 
     const Qgs3DMapSettings &mMap;
     QgsVectorLayer *mLayer;
@@ -43,14 +63,23 @@ class QgsVectorLayerChunkLoaderFactory : public QgsChunkLoaderFactory
 };
 
 
+/**
+ * \ingroup 3d
+ * This loader class is responsible for async loading of data for a single tile
+ * of QgsVectorLayerChunkedEntity and creation of final 3D entity from the data
+ * previously prepared in a worker thread.
+ *
+ * \since QGIS 3.12
+ */
 class QgsVectorLayerChunkLoader : public QgsChunkLoader
 {
   public:
+    //! Constructs the loader
     QgsVectorLayerChunkLoader( const QgsVectorLayerChunkLoaderFactory *factory, QgsChunkNode *node );
-    ~QgsVectorLayerChunkLoader();
+    ~QgsVectorLayerChunkLoader() override;
 
-    virtual void cancel();
-    virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent );
+    virtual void cancel() override;
+    virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
   private:
     const QgsVectorLayerChunkLoaderFactory *mFactory;
@@ -61,7 +90,17 @@ class QgsVectorLayerChunkLoader : public QgsChunkLoader
     QFutureWatcher<void> *mFutureWatcher = nullptr;
 };
 
-#include "qgschunkedentity_p.h"
+
+/**
+ * \ingroup 3d
+ * 3D entity used for rendering of vector layers with a single 3D symbol for all features.
+ *
+ * It is implemented using tiling approach with QgsChunkedEntity. Internally it uses
+ * QgsVectorLayerChunkLoaderFactory and QgsVectorLayerChunkLoader to do the actual work
+ * of loading and creating 3D sub-entities for each tile.
+ *
+ * \since QGIS 3.12
+ */
 class QgsVectorLayerChunkedEntity : public QgsChunkedEntity
 {
     Q_OBJECT
@@ -71,5 +110,7 @@ class QgsVectorLayerChunkedEntity : public QgsChunkedEntity
 
     ~QgsVectorLayerChunkedEntity();
 };
+
+/// @endcond
 
 #endif // QGSVECTORLAYERCHUNKLOADER_P_H

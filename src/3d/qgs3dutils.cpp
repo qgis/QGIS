@@ -442,11 +442,42 @@ QgsVector3D Qgs3DUtils::worldToMapCoordinates( const QgsVector3D &worldCoords, c
                       worldCoords.y() + origin.z() );
 }
 
-QgsAABB Qgs3DUtils::mapToWorldExtent( const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs, const QgsVector3D &mapOrigin, const QgsCoordinateReferenceSystem &mapCrs )
+static QgsRectangle _tryReprojectExtent2D( const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs1, const QgsCoordinateReferenceSystem &crs2, const QgsCoordinateTransformContext &context )
 {
-  // TODO: transform to map coords
-  QgsVector3D extentMin3D( extent.xMinimum(), extent.yMinimum(), 0 );  // TODO: is it OK to have zero min/max elevation?
-  QgsVector3D extentMax3D( extent.xMaximum(), extent.yMaximum(), 500 );
+  QgsRectangle extentMapCrs( extent );
+  if ( crs1 != crs2 )
+  {
+    // reproject if necessary
+    QgsCoordinateTransform ct( crs1, crs2, context );
+    try
+    {
+      extentMapCrs = ct.transformBoundingBox( extentMapCrs );
+    }
+    catch ( const QgsCsException & )
+    {
+      // bad luck, can't reproject for some reason
+    }
+  }
+  return extentMapCrs;
+}
+
+QgsAABB Qgs3DUtils::layerToWorldExtent( const QgsRectangle &extent, const QgsCoordinateReferenceSystem &layerCrs, const QgsVector3D &mapOrigin, const QgsCoordinateReferenceSystem &mapCrs, const QgsCoordinateTransformContext &context )
+{
+  QgsRectangle extentMapCrs( _tryReprojectExtent2D( extent, layerCrs, mapCrs, context ) );
+  double zMin = 0, zMax = 500;  // TODO: figure out Z range
+  return mapToWorldExtent( extentMapCrs, zMin, zMax, mapOrigin );
+}
+
+QgsRectangle Qgs3DUtils::worldToLayerExtent( const QgsAABB &bbox, const QgsCoordinateReferenceSystem &layerCrs, const QgsVector3D &mapOrigin, const QgsCoordinateReferenceSystem &mapCrs, const QgsCoordinateTransformContext &context )
+{
+  QgsRectangle extentMap = worldToMapExtent( bbox, mapOrigin );
+  return _tryReprojectExtent2D( extentMap, mapCrs, layerCrs, context );
+}
+
+QgsAABB Qgs3DUtils::mapToWorldExtent( const QgsRectangle &extent, double zMin, double zMax, const QgsVector3D &mapOrigin )
+{
+  QgsVector3D extentMin3D( extent.xMinimum(), extent.yMinimum(), zMin );
+  QgsVector3D extentMax3D( extent.xMaximum(), extent.yMaximum(), zMax );
   QgsVector3D worldExtentMin3D = mapToWorldCoordinates( extentMin3D, mapOrigin );
   QgsVector3D worldExtentMax3D = mapToWorldCoordinates( extentMax3D, mapOrigin );
   QgsAABB rootBbox( worldExtentMin3D.x(), worldExtentMin3D.y(), worldExtentMin3D.z(),
@@ -454,13 +485,13 @@ QgsAABB Qgs3DUtils::mapToWorldExtent( const QgsRectangle &extent, const QgsCoord
   return rootBbox;
 }
 
-QgsRectangle Qgs3DUtils::worldToMapExtent( const QgsAABB &bbox, const QgsCoordinateReferenceSystem &crs, const QgsVector3D &mapOrigin, const QgsCoordinateReferenceSystem &mapCrs )
+QgsRectangle Qgs3DUtils::worldToMapExtent( const QgsAABB &bbox, const QgsVector3D &mapOrigin )
 {
   QgsVector3D worldExtentMin3D = Qgs3DUtils::worldToMapCoordinates( QgsVector3D( bbox.xMin, bbox.yMin, bbox.zMin ), mapOrigin );
   QgsVector3D worldExtentMax3D = Qgs3DUtils::worldToMapCoordinates( QgsVector3D( bbox.xMax, bbox.yMax, bbox.zMax ), mapOrigin );
-  // TODO: reproject to layer CRS
-  QgsRectangle rect( worldExtentMin3D.x(), worldExtentMin3D.y(), worldExtentMax3D.x(), worldExtentMax3D.y() );
-  return rect;
+  QgsRectangle extentMap( worldExtentMin3D.x(), worldExtentMin3D.y(), worldExtentMax3D.x(), worldExtentMax3D.y() );
+  // we discard zMin/zMax here because we don't need it
+  return extentMap;
 }
 
 

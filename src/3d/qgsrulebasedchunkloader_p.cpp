@@ -1,3 +1,18 @@
+/***************************************************************************
+  qgsrulebasedchunkloader_p.cpp
+  --------------------------------------
+  Date                 : November 2019
+  Copyright            : (C) 2019 by Martin Dobias
+  Email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #include "qgsrulebasedchunkloader_p.h"
 
 #include "qgs3dutils.h"
@@ -49,7 +64,7 @@ QgsRuleBasedChunkLoader::QgsRuleBasedChunkLoader( const QgsRuleBasedChunkLoaderF
   req.setSubsetOfAttributes( attributeNames, layer->fields() );
 
   // only a subset of data to be queried
-  QgsRectangle rect = Qgs3DUtils::worldToMapExtent( node->bbox(), mFactory->mLayer->crs(), map.origin(), map.crs() );
+  QgsRectangle rect = Qgs3DUtils::worldToLayerExtent( node->bbox(), mFactory->mLayer->crs(), map.origin(), map.crs(), map.transformContext() );
   req.setFilterRect( rect );
 
   //
@@ -133,7 +148,7 @@ QgsChunkLoader *QgsRuleBasedChunkLoaderFactory::createChunkLoader( QgsChunkNode 
 ///////////////
 
 QgsRuleBasedChunkedEntity::QgsRuleBasedChunkedEntity( QgsVectorLayer *vl, QgsRuleBased3DRenderer::Rule *rootRule, const Qgs3DMapSettings &map )
-  : QgsChunkedEntity( Qgs3DUtils::mapToWorldExtent( vl->extent(), vl->crs(), map.origin(), map.crs() ),
+  : QgsChunkedEntity( Qgs3DUtils::layerToWorldExtent( vl->extent(), vl->crs(), map.origin(), map.crs(), map.transformContext() ),
                       -1,  // rootError  TODO: negative error should mean that the node does not contain anything
                       -1, // tau = max. allowed screen error. TODO: negative tau should mean that we need to go until leaves are reached
                       2, // TODO: figure out from the number of features
