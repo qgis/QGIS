@@ -83,7 +83,7 @@ jobs:
           echo "RE_RUN_JOB: ${RE_RUN_JOB}"
 
           # Get the base branch
-          BASE_BRANCH=$(echo "${JSON_DATA}" | jq ".repository.pullRequests.edges[] | select( .node.number == ${PR_NUMBER} ) | .baseRef.name"
+          BASE_BRANCH=$(echo "${JSON_DATA}" | jq ".repository.pullRequests.edges[] | select( .node.number == ${PR_NUMBER} ) | .baseRef.name")
           echo "BASE_BRANCH: ${BASE_BRANCH}"
 
           # master => NOTHING, release_3-10 => _10
