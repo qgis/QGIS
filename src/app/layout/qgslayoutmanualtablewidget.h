@@ -20,6 +20,8 @@
 
 #include "ui_qgslayoutmanualtablewidgetbase.h"
 #include "qgslayoutitemwidget.h"
+#include "qgstableeditordialog.h"
+#include <QPointer>
 
 class QgsLayoutItemManualTable;
 class QgsLayoutFrame;
@@ -41,12 +43,14 @@ class QgsLayoutManualTableWidget: public QgsLayoutItemBaseWidget, private Ui::Qg
     QPointer< QgsLayoutFrame > mFrame;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
 
+    QPointer< QgsTableEditorDialog > mEditorDialog;
+
     //! Blocks / unblocks the signals of all GUI elements
     void blockAllSignals( bool b );
 
   private slots:
     void mRefreshPushButton_clicked();
-    void mAttributesPushButton_clicked();
+    void setTableContents();
     void mMarginSpinBox_valueChanged( double d );
     void mGridStrokeWidthSpinBox_valueChanged( double d );
     void mGridColorButton_colorChanged( const QColor &newColor );
@@ -59,7 +63,6 @@ class QgsLayoutManualTableWidget: public QgsLayoutItemBaseWidget, private Ui::Qg
     void mDrawVerticalGrid_toggled( bool state );
     void mShowGridGroupCheckBox_toggled( bool state );
     void mHeaderHAlignmentComboBox_currentIndexChanged( int index );
-    void mHeaderModeComboBox_currentIndexChanged( int index );
     void mAddFramePushButton_clicked();
     void mResizeModeComboBox_currentIndexChanged( int index );
     void mDrawEmptyCheckBox_toggled( bool checked );

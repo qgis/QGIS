@@ -56,7 +56,7 @@
         <x>0</x>
         <y>0</y>
         <width>394</width>
-        <height>1009</height>
+        <height>976</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -83,9 +83,9 @@
            </widget>
           </item>
           <item row="4" column="0" colspan="2">
-           <widget class="QPushButton" name="mAttributesPushButton">
+           <widget class="QPushButton" name="mSetContentsButton">
             <property name="text">
-             <string>Attributes…</string>
+             <string>Table Contents…</string>
             </property>
            </widget>
           </item>
@@ -107,40 +107,14 @@
           <bool>false</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_6">
-          <item row="6" column="1">
+          <item row="5" column="1">
            <widget class="QPushButton" name="mAdvancedCustomizationButton">
             <property name="text">
              <string>Advanced Customization…</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_7">
-            <property name="text">
-             <string>Display header</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QComboBox" name="mHeaderModeComboBox">
-            <item>
-             <property name="text">
-              <string>On first frame</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>On all frames</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>No header</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="5" column="0">
+          <item row="4" column="0">
            <widget class="QLabel" name="label_10">
             <property name="text">
              <string>Background color</string>
@@ -180,17 +154,17 @@
             </property>
            </widget>
           </item>
-          <item row="7" column="1">
+          <item row="6" column="1">
            <widget class="QComboBox" name="mWrapBehaviorComboBox"/>
           </item>
-          <item row="7" column="0">
+          <item row="6" column="0">
            <widget class="QLabel" name="label_12">
             <property name="text">
              <string>Oversized text</string>
             </property>
            </widget>
           </item>
-          <item row="5" column="1">
+          <item row="4" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_5">
             <item>
              <widget class="QgsColorButton" name="mBackgroundColorButton">
@@ -634,11 +608,10 @@
   <tabstop>scrollArea</tabstop>
   <tabstop>groupBox</tabstop>
   <tabstop>mRefreshPushButton</tabstop>
-  <tabstop>mAttributesPushButton</tabstop>
+  <tabstop>mSetContentsButton</tabstop>
   <tabstop>groupBox_6</tabstop>
   <tabstop>mDrawEmptyCheckBox</tabstop>
   <tabstop>mMarginSpinBox</tabstop>
-  <tabstop>mHeaderModeComboBox</tabstop>
   <tabstop>mBackgroundColorButton</tabstop>
   <tabstop>mAdvancedCustomizationButton</tabstop>
   <tabstop>mWrapBehaviorComboBox</tabstop>
