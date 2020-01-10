@@ -90,7 +90,6 @@ jobs:
 
       # update PR with milestone
       - name: update PR milestone
-        if: cancelled()
         uses: octokit/request-action@v2.x
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
