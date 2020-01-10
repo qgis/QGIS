@@ -130,7 +130,7 @@ QVariantMap QgsPostgresRasterUtils::parseWkb( const QByteArray &wkb, int bandNo 
     result[ QStringLiteral( "dataSize" ) ] = static_cast<unsigned int>( pxSize * result[ QStringLiteral( "width" ) ].toInt() * result[ QStringLiteral( "height" ) ].toInt() );
   };
 
-  if ( bandNo > nBands )
+  if ( static_cast<unsigned int>( bandNo ) > nBands )
   {
     QgsMessageLog::logMessage( QStringLiteral( "Band number is not valid: %1 (nBands: %2" )
                                .arg( bandNo ).arg( nBands ), QStringLiteral( "PostGIS" ), Qgis::Critical );

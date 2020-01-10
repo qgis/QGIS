@@ -764,8 +764,13 @@ bool QgsPostgresRasterProvider::init()
           throw QgsPostgresRasterProviderException( tr( "Cannot get band count from value: '%1'" ).arg( result.PQgetvalue( 0, 2 ) ) );
         }
 
-        const QStringList pxTypes { result.PQgetvalue( 0, 3 ).chopped( 1 ).mid( 1 ).split( ',' ) };
-        const QStringList noDataValues { result.PQgetvalue( 0, 4 ).chopped( 1 ).mid( 1 ).split( ',' ) };
+        QString pxTypesArray { result.PQgetvalue( 0, 3 ) };
+        pxTypesArray.chop( 1 );
+        const QStringList pxTypes { pxTypesArray.mid( 1 ).split( ',' ) };
+
+        QString noDataValuesArray { result.PQgetvalue( 0, 4 ) };
+        noDataValuesArray.chop( 1 );
+        const QStringList noDataValues { noDataValuesArray.mid( 1 ).split( ',' ) };
 
         if ( mBandCount != pxTypes.count( ) || mBandCount != noDataValues.count() )
         {
