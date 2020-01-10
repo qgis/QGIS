@@ -1433,7 +1433,7 @@ QgsRasterBandStats QgsPostgresRasterProvider::bandStatistics( int bandNo, int st
                                       "FROM %4 %5" )
                       .arg( quotedIdentifier( mRasterColumn ) )
                       .arg( bandNo )
-                      .arg( static_cast<double>( sampleSize ) / ( mWidth * mHeight ) )
+                      .arg( std::max<double>( 0, std::min<double>( 1, static_cast<double>( sampleSize ) / ( mWidth * mHeight ) ) ) )
                       .arg( mQuery )
                       .arg( where )
                     };

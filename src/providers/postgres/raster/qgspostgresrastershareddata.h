@@ -82,7 +82,7 @@ class QgsPostgresRasterSharedData
     ~QgsPostgresRasterSharedData( );
 
     /**
-     * Returns tiles (possibly with NULL data) for a given \a extent and \a overviewFactor.
+     * Returns tiles (possibly with NULL data) for a given \a request
      */
     TilesResponse tiles( const TilesRequest &request );
 
@@ -135,7 +135,6 @@ class QgsPostgresRasterSharedData
 
     };
 
-    //bool initIndex( unsigned int overviewFactor, const QString &sql, QgsPostgresConn *conn );
     bool fetchTilesData( unsigned int overviewFactor, const QList<TileIdType> &tileIds );
     bool fetchTilesIndex( const QgsGeometry &requestPolygon, const TilesRequest &request );
     Tile const *setTileData( unsigned int overviewFactor, int tileId, const QByteArray &data );

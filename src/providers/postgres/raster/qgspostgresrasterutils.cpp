@@ -21,7 +21,7 @@
 QVariantMap QgsPostgresRasterUtils::parseWkb( const QByteArray &wkb, int bandNo )
 {
   QVariantMap result;
-  const int minWkbSize { 61 * 2 + 2 };
+  const int minWkbSize { 61 };
   if ( wkb.size() < minWkbSize )
   {
     QgsMessageLog::logMessage( QStringLiteral( "Wrong wkb size: min expected = %1, actual = %2" )
@@ -140,7 +140,7 @@ QVariantMap QgsPostgresRasterUtils::parseWkb( const QByteArray &wkb, int bandNo 
   // Read first band
   readBandHeader( );
   // Read other bands
-  for ( unsigned int i = 2; i <= bandNo; ++i )
+  for ( int i = 2; i <= bandNo; ++i )
   {
     offset += result[ QStringLiteral( "dataSize" ) ].toInt();
     readBandHeader( );
