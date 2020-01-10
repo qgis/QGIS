@@ -100,7 +100,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ steps.token.outputs.token }}
         with:
-          route: PATCH /repos/:owner/:repo/pulls/:pull_number
+          route: PATCH /repos/:owner/:repo/issues/:pull_number
           pull_number: ${{ github.event.pull_request.number }}
           milestone: ${{ steps.compute_milestone.outputs.milestone_number }}
           owner: ${{ github.event.pull_request.base.repo.owner.login }}
