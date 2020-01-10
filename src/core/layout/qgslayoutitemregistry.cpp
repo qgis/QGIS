@@ -27,6 +27,7 @@
 #include "qgslayoutitemhtml.h"
 #include "qgslayoutitemscalebar.h"
 #include "qgslayoutitemattributetable.h"
+#include "qgslayoutitemmanualtable.h"
 #include "qgslayoutitemtexttable.h"
 #include "qgslayoutframe.h"
 #include "qgsgloweffect.h"
@@ -81,6 +82,7 @@ bool QgsLayoutItemRegistry::populate()
   addLayoutMultiFrameType( new QgsLayoutMultiFrameMetadata( LayoutHtml, QObject::tr( "HTML" ), QgsLayoutItemHtml::create ) );
   addLayoutMultiFrameType( new QgsLayoutMultiFrameMetadata( LayoutAttributeTable, QObject::tr( "Attribute Table" ), QgsLayoutItemAttributeTable::create ) );
   addLayoutMultiFrameType( new QgsLayoutMultiFrameMetadata( LayoutTextTable, QObject::tr( "Text Table" ), QgsLayoutItemTextTable::create ) );
+  addLayoutMultiFrameType( new QgsLayoutMultiFrameMetadata( LayoutManualTable, QObject::tr( "Table" ), QgsLayoutItemManualTable::create ) );
 
   return true;
 }

@@ -441,6 +441,7 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutitemhtml.cpp
   layout/qgslayoutitemlabel.cpp
   layout/qgslayoutitemlegend.cpp
+  layout/qgslayoutitemmanualtable.cpp
   layout/qgslayoutitemmap.cpp
   layout/qgslayoutitemmapgrid.cpp
   layout/qgslayoutitemmapitem.cpp
@@ -1077,6 +1078,7 @@ SET(QGIS_CORE_HDRS
   layout/qgslayoutitemhtml.h
   layout/qgslayoutitemlabel.h
   layout/qgslayoutitemlegend.h
+  layout/qgslayoutitemmanualtable.h
   layout/qgslayoutitemmap.h
   layout/qgslayoutitemmapgrid.h
   layout/qgslayoutitemmapitem.h
