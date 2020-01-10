@@ -38,7 +38,7 @@ jobs:
           owner: ${{ github.event.pull_request.base.repo.owner.login }}
           repo: ${{ github.event.pull_request.base.repo.name }}
         env:
-          GITHUB_TOKEN: ${{ secret.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # calculate the milestone and determine if it exists
       - name: Get the latest release
@@ -74,7 +74,7 @@ jobs:
           owner: ${{ github.event.pull_request.base.repo.owner.login }}
           repo: ${{ github.event.pull_request.base.repo.name }}
         env:
-          GITHUB_TOKEN: ${{ secret.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - id: compute_milestone
         # discard error on previous job (most likely user has no right to create milestone)
@@ -93,7 +93,7 @@ jobs:
         if: cancelled()
         uses: octokit/request-action@v2.x
         env:
-          GITHUB_TOKEN: ${{ secret.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           route: PATCH /repos/:owner/:repo/issues/:pull_number
           pull_number: ${{ github.event.pull_request.number }}
@@ -106,7 +106,7 @@ jobs:
         if: failure()
         uses: octokit/request-action@v2.x
         env:
-          GITHUB_TOKEN: ${{ secret.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           route: POST /repos/:owner/:repo/issues/:pull_number/comments
           pull_number: ${{ github.event.pull_request.number }}
