@@ -4508,6 +4508,97 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
     }
   }
 
+  // read vendor options
+  QgsStringMap vendorOptions;
+  QDomElement vendorOptionElem = textSymbolizerElem.firstChildElement( QStringLiteral( "VendorOption" ) );
+  while ( !vendorOptionElem.isNull() && vendorOptionElem.localName() == QLatin1String( "VendorOption" ) )
+  {
+    QString optionName = vendorOptionElem.attribute( QStringLiteral( "name" ) );
+    QString optionValue;
+    if ( vendorOptionElem.firstChild().nodeType() == QDomNode::TextNode )
+    {
+      optionValue = vendorOptionElem.firstChild().nodeValue();
+    }
+    else
+    {
+      if ( vendorOptionElem.firstChild().nodeType() == QDomNode::ElementNode &&
+           vendorOptionElem.firstChild().localName() == QLatin1String( "Literal" ) )
+      {
+        QgsDebugMsg( vendorOptionElem.firstChild().localName() );
+        optionValue = vendorOptionElem.firstChild().firstChild().nodeValue();
+      }
+      else
+      {
+        QgsDebugMsg( QStringLiteral( "unexpected child of %1 named %2" ).arg( vendorOptionElem.localName(), optionName ) );
+      }
+    }
+
+    if ( !optionName.isEmpty() && !optionValue.isEmpty() )
+    {
+      vendorOptions[ optionName ] = optionValue;
+    }
+
+    vendorOptionElem = vendorOptionElem.nextSiblingElement();
+  }
+  if ( !vendorOptions.isEmpty() )
+  {
+    for ( QgsStringMap::iterator it = vendorOptions.begin(); it != vendorOptions.end(); ++it )
+    {
+      if ( it.key() == QLatin1String( "underlineText" ) && it.value() == QLatin1String( "true" ) )
+      {
+        font.setUnderline( true );
+        format.setFont( font );
+      }
+      else if ( it.key() == QLatin1String( "strikethroughText" ) && it.value() == QLatin1String( "true" ) )
+      {
+        font.setStrikeOut( true );
+        format.setFont( font );
+      }
+      else if ( it.key() == QLatin1String( "maxDisplacement" ) )
+      {
+        settings.placement = QgsPalLayerSettings::AroundPoint;
+      }
+      else if ( it.key() == QLatin1String( "followLine" ) && it.value() == QLatin1String( "true" ) )
+      {
+        if ( geometryType() == QgsWkbTypes::PolygonGeometry )
+        {
+          settings.placement = QgsPalLayerSettings::PerimeterCurved;
+        }
+        else
+        {
+          settings.placement = QgsPalLayerSettings::Curved;
+        }
+      }
+      else if ( it.key() == QLatin1String( "maxAngleDelta" ) )
+      {
+        bool ok;
+        double angle = it.value().toDouble( &ok );
+        if ( ok )
+        {
+          settings.maxCurvedCharAngleIn = angle;
+          settings.maxCurvedCharAngleOut = angle;
+        }
+      }
+      // miscellaneous options
+      else if ( it.key() == QLatin1String( "conflictResolution" ) && it.value() == QLatin1String( "false" ) )
+      {
+        settings.displayAll = true;
+      }
+      else if ( it.key() == QLatin1String( "forceLeftToRight" ) && it.value() == QLatin1String( "false" ) )
+      {
+        settings.upsidedownLabels = QgsPalLayerSettings::ShowAll;
+      }
+      else if ( it.key() == QLatin1String( "group" ) && it.value() == QLatin1String( "yes" ) )
+      {
+        settings.mergeLines = true;
+      }
+      else if ( it.key() == QLatin1String( "labelAllGroup" ) && it.value() == QLatin1String( "true" ) )
+      {
+        settings.mergeLines = true;
+      }
+    }
+  }
+
   format.setBuffer( bufferSettings );
   settings.setFormat( format );
   return true;
