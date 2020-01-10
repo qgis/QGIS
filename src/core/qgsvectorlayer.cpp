@@ -4473,7 +4473,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
           if ( ok )
           {
             settings.xOffset = xOffset;
-            settings.distUnits = QgsUnitTypes::RenderPixels;
+            settings.offsetUnits = QgsUnitTypes::RenderPixels;
           }
         }
         QDomElement anchorPointYElem = anchorPointElem.firstChildElement( QStringLiteral( "AnchorPointY" ) );
@@ -4484,7 +4484,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
           if ( ok )
           {
             settings.yOffset = yOffset;
-            settings.distUnits = QgsUnitTypes::RenderPixels;
+            settings.offsetUnits = QgsUnitTypes::RenderPixels;
           }
         }
       }
