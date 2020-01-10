@@ -72,6 +72,7 @@
          <addaction name="separator"/>
          <addaction name="mActionCopy"/>
          <addaction name="mActionPrint"/>
+         <addaction name="separator"/>
         </widget>
        </item>
        <item>
@@ -115,41 +116,17 @@
          </item>
          <item>
           <widget class="QComboBox" name="cmbIdentifyMode">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="sizeAdjustPolicy">
             <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
            </property>
            <property name="minimumContentsLength">
             <number>6</number>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_43">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="cbxAutoFeatureForm">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="lblAutoFeatureForm">
-           <property name="text">
-            <string>Auto open form</string>
-           </property>
-           <property name="wordWrap">
-            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -386,6 +363,14 @@
    </property>
    <property name="text">
     <string>Identify Features by Radius</string>
+   </property>
+  </action>
+  <action name="mActionAutoFeatureForm">
+   <property name="text">
+    <string>Auto open form for single feature results</string>
+   </property>
+   <property name="checkable">
+    <bool>true</bool>
    </property>
   </action>
  </widget>
