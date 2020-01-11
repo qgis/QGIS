@@ -19,6 +19,7 @@
 #include "qgsmessagelog.h"
 #include "qgsserverexception.h"
 #include "qgsstorebadlayerinfo.h"
+#include "qgsserverprojectutils.h"
 
 #include <QFile>
 
@@ -48,9 +49,29 @@ const QgsProject *QgsConfigCache::project( const QString &path )
     {
       if ( !badLayerHandler->badLayers().isEmpty() )
       {
-        QString errorMsg = QStringLiteral( "Layer(s) %1 not valid" ).arg( badLayerHandler->badLayers().join( ',' ) );
-        QgsMessageLog::logMessage( errorMsg, QStringLiteral( "Server" ), Qgis::Critical );
-        throw QgsServerException( QStringLiteral( "Layer(s) not valid" ) );
+        // if bad layers are not restricted layers so service failed
+        QStringList unrestrictedBadLayers;
+        // test bad layers through restrictedlayers
+        const QStringList badLayerIds = badLayerHandler->badLayers();
+        const QMap<QString, QString> badLayerNames = badLayerHandler->badLayerNames();
+        const QStringList resctrictedLayers = QgsServerProjectUtils::wmsRestrictedLayers( *prj );
+        for ( const QString &badLayerId : badLayerIds )
+        {
+          // if this bad layer is in restricted layers
+          // it doesn't need to be added to unrestricted bad layers
+          if ( badLayerNames.contains( badLayerId ) &&
+               resctrictedLayers.contains( badLayerNames.value( badLayerId ) ) )
+          {
+            continue;
+          }
+          unrestrictedBadLayers.append( badLayerId );
+        }
+        if ( !unrestrictedBadLayers.isEmpty() )
+        {
+          const QString errorMsg = QStringLiteral( "Layer(s) %1 not valid" ).arg( unrestrictedBadLayers.join( ',' ) );
+          QgsMessageLog::logMessage( errorMsg, QStringLiteral( "Server" ), Qgis::Critical );
+          throw QgsServerException( QStringLiteral( "Layer(s) not valid" ) );
+        }
       }
       mProjectCache.insert( path, prj.release() );
       mFileSystemWatcher.addPath( path );
@@ -120,4 +141,3 @@ void QgsConfigCache::removeEntry( const QString &path )
 {
   removeChangedEntry( path );
 }
-
