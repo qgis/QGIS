@@ -35,7 +35,7 @@ class QgsVectorLayer3DPropertiesWidget : public QWidget, private Ui::QgsVectorLa
     void apply( QgsAbstractVectorLayer3DRenderer *renderer );
 
   signals:
-    //! Emitted whenever any paramater gets changed
+    //! Emitted whenever any parameter gets changed
     void changed();
 };
 

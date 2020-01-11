@@ -1,0 +1,113 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgsabstractvectorlayer3drenderer.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsVectorLayer3DTilingSettings
+{
+%Docstring
+This class defines configuration of how a vector layer gets tiled for 3D rendering.
+
+Zoom levels count tells how deep will be the quadtree and thus how many tiles will
+be generated ( 4 ^ (count-1) ). So for example, for count=1 there will be just
+a single tile for the whole layer, for count=3 there will be 16 tiles.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsabstractvectorlayer3drenderer.h"
+%End
+  public:
+
+    int zoomLevelsCount() const;
+%Docstring
+Returns number of zoom levels. One zoom level means there will be one tile.
+Every extra zoom level multiplies number of tiles by four. For example, three
+zoom levels will produce 16 tiles at the highest zoom level. It is therefore
+recommended to keep the number of zoom levels low to prevent excessive number
+of tiles.
+%End
+
+    void setZoomLevelsCount( int count );
+%Docstring
+Sets number of zoom levels. See zoomLevelsCount() documentation for more details.
+%End
+
+    void writeXml( QDomElement &elem ) const;
+%Docstring
+Writes content of the object to XML
+%End
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads content of the object from XML
+%End
+
+};
+
+
+class QgsAbstractVectorLayer3DRenderer : QgsAbstract3DRenderer
+{
+%Docstring
+Base class for 3D renderers that are based on vector layers.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsabstractvectorlayer3drenderer.h"
+%End
+  public:
+    QgsAbstractVectorLayer3DRenderer();
+
+    void setLayer( QgsVectorLayer *layer );
+%Docstring
+Sets vector layer associated with the renderer
+%End
+    QgsVectorLayer *layer() const;
+%Docstring
+Returns vector layer associated with the renderer
+%End
+
+    void setTilingSettings( const QgsVectorLayer3DTilingSettings &settings );
+%Docstring
+Sets tiling settings of the renderer
+%End
+    QgsVectorLayer3DTilingSettings tilingSettings() const;
+%Docstring
+Returns tiling settings of the renderer
+%End
+
+    virtual void resolveReferences( const QgsProject &project );
+
+
+  protected:
+    void copyBaseProperties( QgsAbstractVectorLayer3DRenderer *r ) const;
+%Docstring
+copy common properties of this object to another object
+%End
+    void writeXmlBaseProperties( QDomElement &elem, const QgsReadWriteContext &context ) const;
+%Docstring
+write common properties of this object to DOM element
+%End
+    void readXmlBaseProperties( const QDomElement &elem, const QgsReadWriteContext &context );
+%Docstring
+read common properties of this object from DOM element
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgsabstractvectorlayer3drenderer.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

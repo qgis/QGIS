@@ -17,6 +17,7 @@
 #define QGSABSTRACTVECTORLAYER3DRENDERER_H
 
 #include "qgis_3d.h"
+#include "qgis_sip.h"
 
 #include "qgsabstract3drenderer.h"
 #include "qgsmaplayerref.h"
@@ -36,10 +37,24 @@ class QgsVectorLayer;
 class _3D_EXPORT QgsVectorLayer3DTilingSettings
 {
   public:
+
+    /**
+     * Returns number of zoom levels. One zoom level means there will be one tile.
+     * Every extra zoom level multiplies number of tiles by four. For example, three
+     * zoom levels will produce 16 tiles at the highest zoom level. It is therefore
+     * recommended to keep the number of zoom levels low to prevent excessive number
+     * of tiles.
+     */
     int zoomLevelsCount() const { return mZoomLevelsCount; }
+
+    /**
+     * Sets number of zoom levels. See zoomLevelsCount() documentation for more details.
+     */
     void setZoomLevelsCount( int count ) { mZoomLevelsCount = count; }
 
+    //! Writes content of the object to XML
     void writeXml( QDomElement &elem ) const;
+    //! Reads content of the object from XML
     void readXml( const QDomElement &elem );
 
   private:
@@ -63,7 +78,9 @@ class _3D_EXPORT QgsAbstractVectorLayer3DRenderer : public QgsAbstract3DRenderer
     //! Returns vector layer associated with the renderer
     QgsVectorLayer *layer() const;
 
+    //! Sets tiling settings of the renderer
     void setTilingSettings( const QgsVectorLayer3DTilingSettings &settings ) { mTilingSettings = settings; }
+    //! Returns tiling settings of the renderer
     QgsVectorLayer3DTilingSettings tilingSettings() const { return mTilingSettings; }
 
     void resolveReferences( const QgsProject &project ) override;
