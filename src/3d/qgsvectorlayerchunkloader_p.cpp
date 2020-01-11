@@ -34,6 +34,8 @@
 
 #include <QtConcurrent>
 
+///@cond PRIVATE
+
 
 QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const QgsVectorLayerChunkLoaderFactory *factory, QgsChunkNode *node )
   : QgsChunkLoader( node )
@@ -165,3 +167,5 @@ QgsVectorLayerChunkedEntity::~QgsVectorLayerChunkedEntity()
   // cancel / wait for jobs
   cancelActiveJobs();
 }
+
+/// @endcond

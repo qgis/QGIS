@@ -27,6 +27,8 @@
 
 #include <QtConcurrent>
 
+///@cond PRIVATE
+
 
 QgsRuleBasedChunkLoader::QgsRuleBasedChunkLoader( const QgsRuleBasedChunkLoaderFactory *factory, QgsChunkNode *node )
   : QgsChunkLoader( node )
@@ -154,6 +156,7 @@ QgsRuleBasedChunkedEntity::QgsRuleBasedChunkedEntity( QgsVectorLayer *vl, const 
                       tilingSettings.zoomLevelsCount() - 1,
                       new QgsRuleBasedChunkLoaderFactory( map, vl, rootRule, tilingSettings.zoomLevelsCount() - 1 ) )
 {
+  setShowBoundingBoxes( true );
 }
 
 QgsRuleBasedChunkedEntity::~QgsRuleBasedChunkedEntity()
@@ -161,3 +164,5 @@ QgsRuleBasedChunkedEntity::~QgsRuleBasedChunkedEntity()
   // cancel / wait for jobs
   cancelActiveJobs();
 }
+
+/// @endcond
