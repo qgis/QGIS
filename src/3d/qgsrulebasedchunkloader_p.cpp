@@ -169,12 +169,12 @@ QgsChunkLoader *QgsRuleBasedChunkLoaderFactory::createChunkLoader( QgsChunkNode 
 
 QgsRuleBasedChunkedEntity::QgsRuleBasedChunkedEntity( QgsVectorLayer *vl, double zMin, double zMax, const QgsVectorLayer3DTilingSettings &tilingSettings, QgsRuleBased3DRenderer::Rule *rootRule, const Qgs3DMapSettings &map )
   : QgsChunkedEntity( Qgs3DUtils::layerToWorldExtent( vl->extent(), zMin, zMax, vl->crs(), map.origin(), map.crs(), map.transformContext() ),
-                      -1,  // rootError  TODO: negative error should mean that the node does not contain anything
-                      -1, // tau = max. allowed screen error. TODO: negative tau should mean that we need to go until leaves are reached
+                      -1, // rootError (negative error means that the node does not contain anything)
+                      -1, // max. allowed screen error (negative tau means that we need to go until leaves are reached)
                       tilingSettings.zoomLevelsCount() - 1,
                       new QgsRuleBasedChunkLoaderFactory( map, vl, rootRule, tilingSettings.zoomLevelsCount() - 1 ) )
 {
-  setShowBoundingBoxes( true );
+  setShowBoundingBoxes( tilingSettings.showBoundingBoxes() );
 }
 
 QgsRuleBasedChunkedEntity::~QgsRuleBasedChunkedEntity()

@@ -52,6 +52,11 @@ class _3D_EXPORT QgsVectorLayer3DTilingSettings
      */
     void setZoomLevelsCount( int count ) { mZoomLevelsCount = count; }
 
+    //! Sets whether to display bounding boxes of entity's tiles (for debugging)
+    void setShowBoundingBoxes( bool enabled ) { mShowBoundingBoxes = enabled; }
+    //! Returns whether to display bounding boxes of entity's tiles (for debugging)
+    bool showBoundingBoxes() const { return mShowBoundingBoxes; }
+
     //! Writes content of the object to XML
     void writeXml( QDomElement &elem ) const;
     //! Reads content of the object from XML
@@ -59,6 +64,7 @@ class _3D_EXPORT QgsVectorLayer3DTilingSettings
 
   private:
     int mZoomLevelsCount = 3;
+    bool mShowBoundingBoxes = false;
 };
 
 

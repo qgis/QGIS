@@ -22,17 +22,20 @@ QgsVectorLayer3DPropertiesWidget::QgsVectorLayer3DPropertiesWidget( QWidget *par
 {
   setupUi( this );
 
+  connect( chkShowBoundingBoxes, &QCheckBox::clicked, this, &QgsVectorLayer3DPropertiesWidget::changed );
   connect( spinZoomLevelsCount, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, &QgsVectorLayer3DPropertiesWidget::changed );
 }
 
 void QgsVectorLayer3DPropertiesWidget::load( QgsAbstractVectorLayer3DRenderer *renderer )
 {
   whileBlocking( spinZoomLevelsCount )->setValue( renderer->tilingSettings().zoomLevelsCount() );
+  whileBlocking( chkShowBoundingBoxes )->setChecked( renderer->tilingSettings().showBoundingBoxes() );
 }
 
 void QgsVectorLayer3DPropertiesWidget::apply( QgsAbstractVectorLayer3DRenderer *renderer )
 {
   QgsVectorLayer3DTilingSettings tilingSettings;
   tilingSettings.setZoomLevelsCount( spinZoomLevelsCount->value() );
+  tilingSettings.setShowBoundingBoxes( chkShowBoundingBoxes->isChecked() );
   renderer->setTilingSettings( tilingSettings );
 }

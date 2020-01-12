@@ -194,7 +194,7 @@ class QgsChunkNode
 
   private:
     QgsAABB mBbox;      //!< Bounding box in world coordinates
-    float mError;    //!< Error of the node in world coordinates
+    float mError;    //!< Error of the node in world coordinates (negative error means that chunk at this level has no data, but there may be children that do)
 
     int mTileX, mTileY, mTileZ;  //!< Chunk coordinates (for use with a tiling scheme)
 

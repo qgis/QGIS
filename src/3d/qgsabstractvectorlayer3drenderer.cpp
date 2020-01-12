@@ -25,6 +25,7 @@ void QgsVectorLayer3DTilingSettings::writeXml( QDomElement &elem ) const
 
   QDomElement elemTiling = doc.createElement( QStringLiteral( "vector-layer-3d-tiling" ) );
   elemTiling.setAttribute( QStringLiteral( "zoom-levels-count" ), mZoomLevelsCount );
+  elemTiling.setAttribute( QStringLiteral( "show-bounding-boxes" ), mShowBoundingBoxes ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elem.appendChild( elemTiling );
 }
 
@@ -34,6 +35,7 @@ void QgsVectorLayer3DTilingSettings::readXml( const QDomElement &elem )
   if ( !elemTiling.isNull() )
   {
     mZoomLevelsCount = elemTiling.attribute( QStringLiteral( "zoom-levels-count" ) ).toInt();
+    mShowBoundingBoxes = elemTiling.attribute( QStringLiteral( "show-bounding-boxes" ) ).toInt();
   }
 }
 

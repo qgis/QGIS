@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>539</width>
-    <height>90</height>
+    <height>145</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -37,6 +37,13 @@
       </widget>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="chkShowBoundingBoxes">
+     <property name="text">
+      <string>Show bounding boxes of tiles</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

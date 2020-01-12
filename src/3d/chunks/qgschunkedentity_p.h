@@ -133,7 +133,14 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
     QgsChunkNode *mRootNode = nullptr;
     //! A chunk has been loaded recently? let's display it!
     bool mNeedsUpdate = false;
-    //! max. allowed screen space error
+
+    /**
+     * Maximum allowed screen space error (in pixels).
+     * If the value is negative, it means that the screen space error
+     * does not need to be taken into account. This essentially means that
+     * the chunked entity will try to go deeper into the tree of chunks until
+     * it reaches leafs.
+     */
     float mTau;
     //! maximum allowed depth of quad tree
     int mMaxLevel;

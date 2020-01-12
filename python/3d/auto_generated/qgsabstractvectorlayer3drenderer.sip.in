@@ -41,6 +41,15 @@ of tiles.
 Sets number of zoom levels. See zoomLevelsCount() documentation for more details.
 %End
 
+    void setShowBoundingBoxes( bool enabled );
+%Docstring
+Sets whether to display bounding boxes of entity's tiles (for debugging)
+%End
+    bool showBoundingBoxes() const;
+%Docstring
+Returns whether to display bounding boxes of entity's tiles (for debugging)
+%End
+
     void writeXml( QDomElement &elem ) const;
 %Docstring
 Writes content of the object to XML
