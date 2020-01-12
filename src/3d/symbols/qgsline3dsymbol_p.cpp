@@ -159,6 +159,9 @@ void QgsBufferedLine3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const 
   // create entity for selected and not selected
   makeEntity( parent, context, outNormal, false );
   makeEntity( parent, context, outSelected, true );
+
+  mZMin = std::min( outNormal.tessellator->zMinimum(), outSelected.tessellator->zMinimum() );
+  mZMax = std::max( outNormal.tessellator->zMaximum(), outSelected.tessellator->zMaximum() );
 }
 
 
@@ -267,6 +270,9 @@ void QgsSimpleLine3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qg
   // create entity for selected and not selected
   makeEntity( parent, context, outNormal, false );
   makeEntity( parent, context, outSelected, true );
+
+  updateZRangeFromPositions( outNormal.vertices );
+  updateZRangeFromPositions( outSelected.vertices );
 }
 
 
@@ -379,6 +385,9 @@ void QgsThickLine3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs
   // create entity for selected and not selected
   makeEntity( parent, context, outNormal, false );
   makeEntity( parent, context, outSelected, true );
+
+  updateZRangeFromPositions( outNormal.vertices );
+  updateZRangeFromPositions( outSelected.vertices );
 }
 
 

@@ -461,10 +461,9 @@ static QgsRectangle _tryReprojectExtent2D( const QgsRectangle &extent, const Qgs
   return extentMapCrs;
 }
 
-QgsAABB Qgs3DUtils::layerToWorldExtent( const QgsRectangle &extent, const QgsCoordinateReferenceSystem &layerCrs, const QgsVector3D &mapOrigin, const QgsCoordinateReferenceSystem &mapCrs, const QgsCoordinateTransformContext &context )
+QgsAABB Qgs3DUtils::layerToWorldExtent( const QgsRectangle &extent, double zMin, double zMax, const QgsCoordinateReferenceSystem &layerCrs, const QgsVector3D &mapOrigin, const QgsCoordinateReferenceSystem &mapCrs, const QgsCoordinateTransformContext &context )
 {
   QgsRectangle extentMapCrs( _tryReprojectExtent2D( extent, layerCrs, mapCrs, context ) );
-  double zMin = 0, zMax = 500;  // TODO: figure out Z range
   return mapToWorldExtent( extentMapCrs, zMin, zMax, mapOrigin );
 }
 
@@ -514,6 +513,43 @@ QgsVector3D Qgs3DUtils::transformWorldCoordinates( const QgsVector3D &worldPoint
     }
   }
   return mapToWorldCoordinates( mapPoint2, origin2 );
+}
+
+void Qgs3DUtils::estimateVectorLayerZRange( QgsVectorLayer *layer, double &zMin, double &zMax )
+{
+  if ( QgsWkbTypes::hasZ( layer->wkbType() ) )
+  {
+    zMin = std::numeric_limits<double>::max();
+    zMin = std::numeric_limits<double>::min();
+
+    int featureCount = 0;
+    QgsFeature f;
+    QgsFeatureIterator it = layer->getFeatures( QgsFeatureRequest().setNoAttributes() );
+    while ( it.nextFeature( f ) )
+    {
+      if ( featureCount >= 100 )
+        break;
+      QgsGeometry g = f.geometry();
+      for ( auto vit = g.vertices_begin(); vit != g.vertices_end(); ++vit )
+      {
+        double z = ( *vit ).z();
+        if ( z < zMin ) zMin = z;
+        if ( z > zMax ) zMax = z;
+      }
+      featureCount++;
+    }
+
+    if ( featureCount == 0 )
+    {
+      zMin = 0;
+      zMax = 0;
+    }
+  }
+  else
+  {
+    zMin = 0;
+    zMax = 0;
+  }
 }
 
 std::unique_ptr<QgsAbstract3DSymbol> Qgs3DUtils::symbolForGeometryType( QgsWkbTypes::GeometryType geomType )

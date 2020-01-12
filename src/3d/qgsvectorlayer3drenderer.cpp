@@ -15,6 +15,7 @@
 
 #include "qgsvectorlayer3drenderer.h"
 
+#include "qgs3dutils.h"
 #include "qgschunkedentity_p.h"
 #include "qgsline3dsymbol.h"
 #include "qgspoint3dsymbol.h"
@@ -70,7 +71,10 @@ Qt3DCore::QEntity *QgsVectorLayer3DRenderer::createEntity( const Qgs3DMapSetting
   if ( !mSymbol || !vl )
     return nullptr;
 
-  return new QgsVectorLayerChunkedEntity( vl, tilingSettings(), mSymbol.get(), map );
+  double zMin, zMax;
+  Qgs3DUtils::estimateVectorLayerZRange( vl, zMin, zMax );
+
+  return new QgsVectorLayerChunkedEntity( vl, zMin, zMax, tilingSettings(), mSymbol.get(), map );
 }
 
 void QgsVectorLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const

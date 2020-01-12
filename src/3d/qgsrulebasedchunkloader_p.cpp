@@ -118,9 +118,27 @@ Qt3DCore::QEntity *QgsRuleBasedChunkLoader::createEntity( Qt3DCore::QEntity *par
     return new Qt3DCore::QEntity( parent );  // dummy entity
   }
 
+  float zMin = std::numeric_limits<float>::max();
+  float zMax = std::numeric_limits<float>::min();
+
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );
   for ( QgsFeature3DHandler *handler : mHandlers.values() )
+  {
     handler->finalize( entity, mContext );
+    if ( handler->zMinimum() < zMin )
+      zMin = handler->zMinimum();
+    if ( handler->zMaximum() > zMax )
+      zMax = handler->zMaximum();
+  }
+
+  // fix the vertical range of the node from the estimated vertical range to the true range
+  if ( zMin != std::numeric_limits<float>::max() && zMax != std::numeric_limits<float>::min() )
+  {
+    QgsAABB box = mNode->bbox();
+    box.yMin = zMin;
+    box.yMax = zMax;
+    mNode->setExactBbox( box );
+  }
 
   return entity;
 }
@@ -149,8 +167,8 @@ QgsChunkLoader *QgsRuleBasedChunkLoaderFactory::createChunkLoader( QgsChunkNode 
 
 ///////////////
 
-QgsRuleBasedChunkedEntity::QgsRuleBasedChunkedEntity( QgsVectorLayer *vl, const QgsVectorLayer3DTilingSettings &tilingSettings, QgsRuleBased3DRenderer::Rule *rootRule, const Qgs3DMapSettings &map )
-  : QgsChunkedEntity( Qgs3DUtils::layerToWorldExtent( vl->extent(), vl->crs(), map.origin(), map.crs(), map.transformContext() ),
+QgsRuleBasedChunkedEntity::QgsRuleBasedChunkedEntity( QgsVectorLayer *vl, double zMin, double zMax, const QgsVectorLayer3DTilingSettings &tilingSettings, QgsRuleBased3DRenderer::Rule *rootRule, const Qgs3DMapSettings &map )
+  : QgsChunkedEntity( Qgs3DUtils::layerToWorldExtent( vl->extent(), zMin, zMax, vl->crs(), map.origin(), map.crs(), map.transformContext() ),
                       -1,  // rootError  TODO: negative error should mean that the node does not contain anything
                       -1, // tau = max. allowed screen error. TODO: negative tau should mean that we need to go until leaves are reached
                       tilingSettings.zoomLevelsCount() - 1,

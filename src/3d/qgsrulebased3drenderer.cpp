@@ -406,7 +406,10 @@ Qt3DCore::QEntity *QgsRuleBased3DRenderer::createEntity( const Qgs3DMapSettings 
   if ( !vl )
     return nullptr;
 
-  return new QgsRuleBasedChunkedEntity( vl, tilingSettings(), mRootRule, map );
+  double zMin, zMax;
+  Qgs3DUtils::estimateVectorLayerZRange( vl, zMin, zMax );
+
+  return new QgsRuleBasedChunkedEntity( vl, zMin, zMax, tilingSettings(), mRootRule, map );
 }
 
 void QgsRuleBased3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const

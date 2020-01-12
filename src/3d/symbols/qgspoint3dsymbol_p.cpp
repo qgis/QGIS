@@ -116,6 +116,14 @@ void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
 {
   makeEntity( parent, context, outNormal, false );
   makeEntity( parent, context, outSelected, true );
+
+  updateZRangeFromPositions( outNormal.positions );
+  updateZRangeFromPositions( outSelected.positions );
+
+  // the elevation offset is applied in the vertex shader so let's account for it as well
+  float symbolHeight = mSymbol.transform().data()[13];
+  mZMin += symbolHeight;
+  mZMax += symbolHeight;
 }
 
 void QgsInstancedPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected )
@@ -388,6 +396,14 @@ void QgsModelPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qg
 {
   makeEntity( parent, context, outNormal, false );
   makeEntity( parent, context, outSelected, true );
+
+  updateZRangeFromPositions( outNormal.positions );
+  updateZRangeFromPositions( outSelected.positions );
+
+  // the elevation offset is applied separately in QTransform added to sub-entities
+  float symbolHeight = mSymbol.transform().data()[13];
+  mZMin += symbolHeight;
+  mZMax += symbolHeight;
 }
 
 void QgsModelPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected )
@@ -520,6 +536,14 @@ void QgsPoint3DBillboardSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
 {
   makeEntity( parent, context, outNormal, false );
   makeEntity( parent, context, outSelected, true );
+
+  updateZRangeFromPositions( outNormal.positions );
+  updateZRangeFromPositions( outSelected.positions );
+
+  // the elevation offset is applied externally through a QTransform of QEntity so let's account for it
+  float billboardHeight = mSymbol.transform().data()[13];
+  mZMin += billboardHeight;
+  mZMax += billboardHeight;
 }
 
 void QgsPoint3DBillboardSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected )
