@@ -242,6 +242,10 @@ if errorlevel 1 (echo creation of registry template & goto error)
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e '/^call py3_env.bat/acall gdal-dev-env.bat' qgis.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%.bat.tmpl
 if errorlevel 1 (echo creation of desktop template failed & goto error)
 
+if not exist %OSGEO4W_ROOT%\httpd.d mkdir %OSGEO4W_ROOT%\httpd.d
+sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' httpd.conf.tmpl >%OSGEO4W_ROOT%\httpd.d\httpd_%PACKAGENAME%.conf.tmpl
+if errorlevel 1 (echo creation of httpd.conf template failed & goto error)
+
 set batches=bin/%PACKAGENAME%.bat.tmpl
 for %%g IN (%GRASS_VERSIONS%) do (
 	for /f "usebackq tokens=1" %%a in (`%%g --config version`) do set gv=%%a
@@ -290,6 +294,7 @@ if not exist %ARCH%\release\qgis\%PACKAGENAME% mkdir %ARCH%\release\qgis\%PACKAG
 	bin/%PACKAGENAME%-bin.exe ^
 	bin/%PACKAGENAME%-bin.vars ^
 	%batches% ^
+	httpd.d/httpd_%PACKAGENAME%.conf.tmpl ^
 	bin/%PACKAGENAME%-designer.bat.tmpl ^
 	bin/python-%PACKAGENAME%.bat.tmpl ^
 	etc/postinstall/%PACKAGENAME%.bat ^

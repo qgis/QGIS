@@ -48,6 +48,14 @@ path %PATH%;%OSGEO4W_ROOT%\apps\@package@\bin
 set QGIS_PREFIX_PATH=%OSGEO4W_ROOT:\=/%/apps/@package@
 "%OSGEO4W_ROOT%\apps\@package@\crssync"
 
+textreplace -std ^
+	-map @GDAL_DRIVER_PATH@ "%GDAL_DRIVER_PATH%" ^
+	-map @GDAL_DATA@ "%GDAL_DATA%" ^
+	-map @PROJ_LIB@ "%PROJ_LIB%" ^
+	-map @addpath@ "%OSGEO4W_ROOT%\apps\gdal-dev\bin;%OSGEO4W_ROOT%\apps\proj-dev\bin;" ^
+	-t httpd.d\httpd_@package@.conf
+del httpd.d\httpd_@package@.conf.tmpl
+
 del /s /q "%OSGEO4W_ROOT%\apps\@package@\*.pyc"
 exit /b 0
 
