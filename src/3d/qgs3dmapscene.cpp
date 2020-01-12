@@ -177,6 +177,14 @@ int Qgs3DMapScene::terrainPendingJobsCount() const
   return mTerrain ? mTerrain->pendingJobsCount() : 0;
 }
 
+int Qgs3DMapScene::totalPendingJobsCount() const
+{
+  int count = 0;
+  for ( QgsChunkedEntity *entity : qgis::as_const( mChunkEntities ) )
+    count += entity->pendingJobsCount();
+  return count;
+}
+
 void Qgs3DMapScene::registerPickHandler( Qgs3DMapScenePickHandler *pickHandler )
 {
   if ( mPickHandlers.isEmpty() )
@@ -420,6 +428,7 @@ void Qgs3DMapScene::createTerrainDeferred()
 
   mTerrainUpdateScheduled = false;
 
+  connect( mTerrain, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::totalPendingJobsCountChanged );
   connect( mTerrain, &QgsTerrainEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::terrainPendingJobsCountChanged );
 
   emit terrainEntityChanged();
@@ -567,6 +576,8 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
         {
           finalizeNewEntity( entity );
         } );
+
+        connect( chunkedNewEntity, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::totalPendingJobsCountChanged );
       }
     }
   }
