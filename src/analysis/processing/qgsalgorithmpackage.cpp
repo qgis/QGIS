@@ -106,9 +106,21 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
     throw QgsProcessingException( QObject::tr( "GeoPackage driver not found." ) );
   }
 
-  gdal::ogr_datasource_unique_ptr hDS( OGR_Dr_CreateDataSource( hGpkgDriver, packagePath.toUtf8().constData(), nullptr ) );
-  if ( !hDS )
-    throw QgsProcessingException( QObject::tr( "Creation of database failed (OGR error: %1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+  gdal::ogr_datasource_unique_ptr hDS;
+
+  if ( !QFile::exists( packagePath ) )
+  {
+    hDS = gdal::ogr_datasource_unique_ptr( OGR_Dr_CreateDataSource( hGpkgDriver, packagePath.toUtf8().constData(), nullptr ) );
+    if ( !hDS )
+      throw QgsProcessingException( QObject::tr( "Creation of database %1 failed (OGR error: %2)" ).arg( packagePath, QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+  }
+  else
+  {
+    hDS = gdal::ogr_datasource_unique_ptr( OGROpen( packagePath.toUtf8().constData(), true, nullptr ) );
+    if ( !hDS )
+      throw QgsProcessingException( QObject::tr( "Opening database %1 failed (OGR error: %2)" ).arg( packagePath, QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+  }
+
 
   bool errored = false;
 

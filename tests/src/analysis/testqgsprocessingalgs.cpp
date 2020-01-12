@@ -183,27 +183,34 @@ void TestQgsProcessingAlgs::cleanupTestCase()
   QgsApplication::exitQgis();
 }
 
-void TestQgsProcessingAlgs::packageAlg()
+QVariantMap pkgAlg( const QStringList &layers, const QString &outputGpkg, bool overwrite, bool *ok )
 {
   const QgsProcessingAlgorithm *package( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:package" ) ) );
-  QVERIFY( package );
 
   std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
   context->setProject( QgsProject::instance() );
 
   QgsProcessingFeedback feedback;
 
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "LAYERS" ), layers );
+  parameters.insert( QStringLiteral( "OUTPUT" ), outputGpkg );
+  parameters.insert( QStringLiteral( "OVERWRITE" ), overwrite );
+  return package->run( parameters, *context, &feedback, ok );
+}
+
+void TestQgsProcessingAlgs::packageAlg()
+{
   QString outputGpkg = QDir::tempPath() + "/package_alg.gpkg";
+
   if ( QFile::exists( outputGpkg ) )
     QFile::remove( outputGpkg );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "LAYERS" ), QStringList() << mPointsLayer->id() << mPolygonLayer->id() );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputGpkg );
+  QStringList layers = QStringList() << mPointsLayer->id() << mPolygonLayer->id();
   bool ok = false;
-  QVariantMap results = package->run( parameters, *context, &feedback, &ok );
+  QVariantMap results = pkgAlg( layers, outputGpkg, true, &ok );
   QVERIFY( ok );
-  context.reset();
 
   QVERIFY( !results.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
   std::unique_ptr< QgsVectorLayer > pointLayer = qgis::make_unique< QgsVectorLayer >( outputGpkg + "|layername=points", "points", "ogr" );
@@ -214,6 +221,36 @@ void TestQgsProcessingAlgs::packageAlg()
   QVERIFY( polygonLayer->isValid() );
   QCOMPARE( polygonLayer->wkbType(), mPolygonLayer->wkbType() );
   QCOMPARE( polygonLayer->featureCount(), mPolygonLayer->featureCount() );
+
+  std::unique_ptr<QgsVectorLayer> rectangles = qgis::make_unique<QgsVectorLayer>( QStringLiteral( TEST_DATA_DIR ) + "/rectangles.shp",
+      QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << rectangles.get() );
+
+  // Test adding an additional layer (overwrite disabled)
+  QVariantMap results2 = pkgAlg( QStringList() << rectangles->id(), outputGpkg, false, &ok );
+  QVERIFY( ok );
+
+  QVERIFY( !results2.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
+  std::unique_ptr< QgsVectorLayer > rectanglesPackagedLayer = qgis::make_unique< QgsVectorLayer >( outputGpkg + "|layername=rectangles", "points", "ogr" );
+  QVERIFY( rectanglesPackagedLayer->isValid() );
+  QCOMPARE( rectanglesPackagedLayer->wkbType(), rectanglesPackagedLayer->wkbType() );
+  QCOMPARE( rectanglesPackagedLayer->featureCount(), rectangles->featureCount() );
+
+  pointLayer = qgis::make_unique< QgsVectorLayer >( outputGpkg + "|layername=points", "points", "ogr" );
+  QVERIFY( pointLayer->isValid() );
+
+  // And finally, test with overwrite enabled
+  QVariantMap results3 = pkgAlg( QStringList() << rectangles->id(), outputGpkg, true, &ok );
+  QVERIFY( ok );
+
+  QVERIFY( !results2.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
+  rectanglesPackagedLayer = qgis::make_unique< QgsVectorLayer >( outputGpkg + "|layername=rectangles", "points", "ogr" );
+  QVERIFY( rectanglesPackagedLayer->isValid() );
+  QCOMPARE( rectanglesPackagedLayer->wkbType(), rectanglesPackagedLayer->wkbType() );
+  QCOMPARE( rectanglesPackagedLayer->featureCount(), rectangles->featureCount() );
+
+  pointLayer = qgis::make_unique< QgsVectorLayer >( outputGpkg + "|layername=points", "points", "ogr" );
+  QVERIFY( !pointLayer->isValid() ); // It's gone -- the gpkg was recreated with a single layer
 }
 
 void TestQgsProcessingAlgs::renameLayerAlg()
