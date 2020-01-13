@@ -36,7 +36,7 @@ class QgsPostgresRasterSharedData
   public:
 
     //! Type for tile IDs, must be in sync with DB tile id extraction logic
-    using TileIdType = int;
+    using TileIdType = QString;
 
     //! Tile data and metadata for a single band
     struct TileBand
@@ -137,14 +137,14 @@ class QgsPostgresRasterSharedData
 
     bool fetchTilesData( unsigned int overviewFactor, const QList<TileIdType> &tileIds );
     bool fetchTilesIndex( const QgsGeometry &requestPolygon, const TilesRequest &request );
-    Tile const *setTileData( unsigned int overviewFactor, int tileId, const QByteArray &data );
+    Tile const *setTileData( unsigned int overviewFactor, TileIdType tileId, const QByteArray &data );
 
     // Note: cannot be a smart pointer because spatial index cannot be copied
     //! Tile caches, index is the overview factor (1 is the full resolution data)
     std::map<unsigned int, QgsGenericSpatialIndex<Tile>*> mSpatialIndexes;
 
     //! Memory manager for owned tiles (and for tileId access)
-    std::map<unsigned int, std::map< TileIdType, std::unique_ptr<Tile>>> mTiles;
+    std::map<unsigned int, std::map<TileIdType, std::unique_ptr<Tile>>> mTiles;
 
     //! Keeps track of loaded index bounds
     std::map<unsigned int, QgsGeometry> mLoadedIndexBounds;

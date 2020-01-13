@@ -123,12 +123,11 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( c
 
     for ( int row = 0; row < dataResult.PQntuples(); ++row )
     {
-      bool ok;
       // Note: if we change tile id type we need to sync this
-      const int tileId { dataResult.PQgetvalue( row, 0 ).toInt( &ok ) };
-      if ( ! ok )
+      const TileIdType tileId { dataResult.PQgetvalue( row, 0 ) };
+      if ( tileId.isEmpty() )
       {
-        QgsMessageLog::logMessage( QObject::tr( "TileID (%1) could not be converted to integer while fetching tile data from backend.\nSQL: %2" )
+        QgsMessageLog::logMessage( QObject::tr( "TileID (%1) is empty while fetching tile data from backend.\nSQL: %2" )
                                    .arg( dataResult.PQgetvalue( row, 0 ) )
                                    .arg( sql ), QObject::tr( "PostGIS" ), Qgis::Critical );
       }
@@ -170,7 +169,7 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( c
 }
 
 
-QgsPostgresRasterSharedData::Tile const *QgsPostgresRasterSharedData::setTileData( unsigned int overviewFactor, int tileId, const QByteArray &data )
+QgsPostgresRasterSharedData::Tile const *QgsPostgresRasterSharedData::setTileData( unsigned int overviewFactor, TileIdType tileId, const QByteArray &data )
 {
   Q_ASSERT( ! data.isEmpty() );
   if ( mTiles.find( overviewFactor ) == mTiles.end() ||
@@ -203,7 +202,7 @@ bool QgsPostgresRasterSharedData::fetchTilesIndex( const QgsGeometry &requestPol
   for ( int i = 0; i < result.PQntuples(); ++i )
   {
     // rid | upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
-    const TileIdType tileId { result.PQgetvalue( i, 0 ).toInt( ) };
+    const TileIdType tileId { result.PQgetvalue( i, 0 ) };
     const double upperleftx { result.PQgetvalue( i, 1 ).toDouble() };
     const double upperlefty { result.PQgetvalue( i, 2 ).toDouble() };
     const long int tileWidth { result.PQgetvalue( i, 3 ).toLong( ) };
@@ -246,7 +245,7 @@ bool QgsPostgresRasterSharedData::fetchTilesIndex( const QgsGeometry &requestPol
   return true;
 }
 
-QgsPostgresRasterSharedData::Tile::Tile( int tileId, int srid, QgsRectangle extent, double upperLeftX, double upperLeftY, long width, long height, double scaleX, double scaleY, double skewX, double skewY, int numBands )
+QgsPostgresRasterSharedData::Tile::Tile( const QgsPostgresRasterSharedData::TileIdType tileId, int srid, QgsRectangle extent, double upperLeftX, double upperLeftY, long width, long height, double scaleX, double scaleY, double skewX, double skewY, int numBands )
   : tileId( tileId )
   , srid( srid )
   , extent( extent )

@@ -178,6 +178,11 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
      */
     void determinePrimaryKeyFromUriKeyColumn();
 
+    /**
+     * Returns the SQL frament to retrieve the PK from the raster table
+     */
+    QString pkSql();
+
 };
 
 struct QgsPostgresRasterProviderException: public std::exception

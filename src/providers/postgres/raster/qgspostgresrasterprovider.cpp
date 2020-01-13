@@ -394,12 +394,12 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
                                             "FROM %2 WHERE %4 %3 IN " )
                             .arg( quotedIdentifier( mRasterColumn ) )
                             .arg( tableToQuery )
-                            .arg( quotedIdentifier( mPrimaryKeyAttrs.first() ) )
+                            .arg( quotedIdentifier( pkSql() ) )
                             .arg( whereAnd )};
 
     const QString indexSql { QStringLiteral( "SELECT %1, (ST_Metadata( %2 )).* FROM %3 "
                              "WHERE %6 %2 && ST_GeomFromText( %5, %4 )" )
-                             .arg( quotedIdentifier( mPrimaryKeyAttrs.first() ) )
+                             .arg( quotedIdentifier( pkSql() ) )
                              .arg( quotedIdentifier( mRasterColumn ) )
                              .arg( tableToQuery )
                              .arg( mCrs.postgisSrid() )
@@ -1320,14 +1320,11 @@ bool QgsPostgresRasterProvider::determinePrimaryKey()
     QgsMessageLog::logMessage( tr( "Could not find a primary key for PostGIS raster table %1" ).arg( mQuery ), tr( "PostGIS" ) );
     mPrimaryKeyType = PktUnknown;
   }
-  else if ( mPrimaryKeyAttrs.size() != 1 )
-  {
-    QgsMessageLog::logMessage( tr( "Multiple keys are not supported for PostGIS rasters table %1" ).arg( mQuery ), tr( "PostGIS" ) );
-    mPrimaryKeyType = PktUnknown;
-  }
 
   return mPrimaryKeyType != PktUnknown;
 }
+
+
 
 void QgsPostgresRasterProvider::determinePrimaryKeyFromUriKeyColumn()
 {
@@ -1359,6 +1356,16 @@ void QgsPostgresRasterProvider::determinePrimaryKeyFromUriKeyColumn()
     mPrimaryKeyAttrs.push_back( mUri.keyColumn() );
     mPrimaryKeyType = pkType;
   }
+}
+
+QString QgsPostgresRasterProvider::pkSql()
+{
+  Q_ASSERT( ! mPrimaryKeyAttrs.isEmpty() );
+  if ( mPrimaryKeyAttrs.count( ) > 1 )
+  {
+    return mPrimaryKeyAttrs.join( ',' ).prepend( '(' ).append( ')' );
+  }
+  return mPrimaryKeyAttrs.first();
 }
 
 

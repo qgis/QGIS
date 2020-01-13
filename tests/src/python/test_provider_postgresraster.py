@@ -127,6 +127,20 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
 
         self.assertAlmostEqual(rl.dataProvider().identify(rl.extent().center(), QgsRaster.IdentifyFormatValue).results()[1], 223.38, 2)
 
+    def testNoPk(self):
+        """Read raster with no PK"""
+
+        rl = QgsRasterLayer(self.dbconn + ' sslmode=disable srid=3035  table="public"."raster_3035_tiled_no_pk"' +
+                            'sql=', 'test', 'postgresraster')
+        self.assertTrue(rl.isValid())
+
+    def testCompositeKey(self):
+        """Read raster with composite pks"""
+
+        rl = QgsRasterLayer(self.dbconn + ' sslmode=disable srid=3035  table="public"."raster_3035_tiled_composite_pk"' +
+                            'sql=', 'test', 'postgresraster')
+        self.assertTrue(rl.isValid())
+
 
 if __name__ == '__main__':
     unittest.main()
