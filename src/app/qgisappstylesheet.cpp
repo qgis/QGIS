@@ -126,11 +126,11 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
   {
     //sidebar style
     QString style = "QListWidget#mOptionsListWidget {"
-                    "    background-color: rgb(69, 69, 69, 0);"
+                    "    background-color: rgba(69, 69, 69, 0);"
                     "    outline: 0;"
                     "}"
                     "QFrame#mOptionsListFrame {"
-                    "    background-color: rgb(69, 69, 69, 220);"
+                    "    background-color: rgba(69, 69, 69, 220);"
                     "}"
                     "QListWidget#mOptionsListWidget::item {"
                     "    color: white;"
