@@ -576,7 +576,7 @@ QgsTaskManagerFloatingWidget::QgsTaskManagerFloatingWidget( QgsTaskManager *mana
   setMinimumSize( minWidth, minHeight );
   layout()->addWidget( w );
   setStyleSheet( ".QgsTaskManagerFloatingWidget { border-top-left-radius: 8px;"
-                 "border-top-right-radius: 8px; background-color: rgb(0, 0, 0, 70%); }" );
+                 "border-top-right-radius: 8px; background-color: rgba(0, 0, 0, 70%); }" );
 }
 
 
