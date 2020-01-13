@@ -20,7 +20,6 @@ __date__ = '2019-12-20'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import qgis  # NOQA
-
 import os
 import time
 
@@ -50,9 +49,24 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
         # Create test layers
-        cls.rl = QgsRasterLayer(cls.dbconn + ' sslmode=disable key=\'rid\' srid=3035  table="public"."aspect_clipped_gpu_mini" sql=', 'test', 'postgresraster')
+        cls.rl = QgsRasterLayer(cls.dbconn + ' sslmode=disable key=\'rid\' srid=3035  table="public"."raster_tiled_3035" sql=', 'test', 'postgresraster')
         assert cls.rl.isValid()
         cls.source = cls.rl.dataProvider()
+
+    def gdal_block_compare(self, rlayer, band, extent, width, height, value):
+        """Compare a block result with GDAL raster"""
+
+        uri = rlayer.uri()
+        gdal_uri = "PG: dbname={dbname} mode=2 host={host} port={port} table={table} schema={schema} sslmode=disable".format(**{
+            'dbname': uri.database(),
+            'host': uri.host(),
+            'port': uri.port(),
+            'table': uri.table(),
+            'schema': uri.schema()
+        })
+        gdal_rl = QgsRasterLayer(gdal_uri, "rl", "gdal")
+        self.assertTrue(gdal_rl.isValid())
+        self.assertEqual(value, gdal_rl.dataProvider().block(band, self.rl.extent(), 6, 5).data().toHex())
 
     @classmethod
     def tearDownClass(cls):
@@ -74,22 +88,24 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         expected = 192.51044
         self.assertAlmostEqual(identify.results()[1], expected, 4)
 
-    def testBlock(self):
-        expected = b"6a610843880b0e431cc2194306342543b7633c43861858436e0a1143bbad194359612743a12b334317be4343dece59432b621b43f0e42843132b3843ac824043e6cf48436e465a435c4d2d430fa63d43f87a4843b5494a4349454e4374f35b43906e41433ab54c43b056504358575243b1ec574322615f43"
+    def testBlockTiled(self):
+
+        expected = b'6a610843880b0e431cc2194306342543b7633c43861858436e0a1143bbad194359612743a12b334317be4343dece59432b621b43f0e42843132b3843ac824043e6cf48436e465a435c4d2d430fa63d43f87a4843b5494a4349454e4374f35b43906e41433ab54c43b056504358575243b1ec574322615f43'
         block = self.source.block(1, self.rl.extent(), 6, 5)
-        actual = block.data().toHex()
-        self.assertEqual(len(actual), len(expected))
-        self.assertEqual(actual, expected)
-        extent = QgsRectangle.fromWkt('POLYGON((4080090 2430646, 4080161 2430646, 4080161 2430685, 4080090 2430685, 4080090 2430646))')
-        block = self.source.block(1, extent, 2, 1)
-        expected = b'f87a4843003c1cc6'
         actual = block.data().toHex()
         self.assertEqual(len(actual), len(expected))
         self.assertEqual(actual, expected)
 
     def testNoConstraintRaster(self):
+        """Read unconstrained raster layer"""
 
-        rl = QgsRasterLayer(self.dbconn + ' sslmode=disable key=\'pk\' srid=3035  table="public"."aspect_clipped_gpu_mini_no_constraints" sql=', 'test', 'postgresraster')
+        rl = QgsRasterLayer(self.dbconn + ' sslmode=disable key=\'pk\' srid=3035  table="public"."raster_3035_no_constraints" sql=', 'test', 'postgresraster')
+        self.assertTrue(rl.isValid())
+
+    def testPkGuessing(self):
+        """Read raster layer with no pkey in uri"""
+
+        rl = QgsRasterLayer(self.dbconn + ' sslmode=disable srid=3035  table="public"."raster_tiled_3035" sql=', 'test', 'postgresraster')
         self.assertTrue(rl.isValid())
 
 

@@ -35,6 +35,10 @@ QgsPostgresRasterProvider::QgsPostgresRasterProvider( const QString &uri, const 
 
   // populate members from the uri structure
   mSchemaName = mUri.schema();
+  if ( mSchemaName.isEmpty() )
+  {
+    mSchemaName = QStringLiteral( "public" );
+  }
   mTableName = mUri.table();
 
   mRasterColumn = mUri.geometryColumn();
@@ -1186,6 +1190,7 @@ bool QgsPostgresRasterProvider::determinePrimaryKey()
             // oid isn't indexed (and that they may want to add a
             // primary key to the table)
             mPrimaryKeyType = PktOid;
+            mPrimaryKeyAttrs << QStringLiteral( "oid" );
           }
         }
 
@@ -1199,6 +1204,7 @@ bool QgsPostgresRasterProvider::determinePrimaryKey()
             mPrimaryKeyType = PktTid;
             QgsMessageLog::logMessage( tr( "Primary key is ctid - changing of existing features disabled (%1; %2)" ).arg( mRasterColumn, mQuery ) );
             // TODO: set capabilities to RO when writing will be implemented
+            mPrimaryKeyAttrs << QStringLiteral( "ctid" );
           }
         }
 
@@ -1282,9 +1288,14 @@ bool QgsPostgresRasterProvider::determinePrimaryKey()
     determinePrimaryKeyFromUriKeyColumn();
   }
 
-  if ( mPrimaryKeyAttrs.size() != 1 )
+  if ( mPrimaryKeyAttrs.size() == 0 )
   {
-    QgsMessageLog::logMessage( tr( "Multiple keys are not supported for raster" ), tr( "PostGIS" ) );
+    QgsMessageLog::logMessage( tr( "Could not find a primary key for PostGIS raster table %1" ).arg( mQuery ), tr( "PostGIS" ) );
+    mPrimaryKeyType = PktUnknown;
+  }
+  else if ( mPrimaryKeyAttrs.size() != 1 )
+  {
+    QgsMessageLog::logMessage( tr( "Multiple keys are not supported for PostGIS rasters table %1" ).arg( mQuery ), tr( "PostGIS" ) );
     mPrimaryKeyType = PktUnknown;
   }
 
