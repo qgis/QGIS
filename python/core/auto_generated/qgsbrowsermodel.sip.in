@@ -55,6 +55,7 @@ Constructor for QgsBrowserModel, with the specified ``parent`` object.
       PathRole,
       CommentRole,
       SortRole,
+      ProviderKeyRole,
     };
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
@@ -161,21 +162,6 @@ and on Linux the "/" root directory.
 
 .. versionadded:: 3.6
 %End
-
-    void setDisabledRootDataItems( const QStringList &filter );
-%Docstring
-Filters the root data items initialized in the browser
-
-By default browser model shows all items from all available data items provider and few special
-items (e.g. Favourites). To customize the behavious, set the filter to not load certain data items.
-The items that are not based on data item providers (e.g. Favourites, Home) have
-prefix "special:", data provider items have prefix "provider:"
-
-When called after the model has been initialized, the model is reloaded
-
-.. versionadded:: 3.12
-%End
-
   signals:
 
     void stateChanged( const QModelIndex &index, QgsDataItem::State oldState );

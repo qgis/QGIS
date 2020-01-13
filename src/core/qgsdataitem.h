@@ -86,8 +86,11 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     Q_ENUM( Type )
 
-    //! Create new data item.
-    QgsDataItem( QgsDataItem::Type type, QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &path );
+    /**
+     * Creates new data item
+     * \a providerKey added in QGIS 3.12
+     */
+    QgsDataItem( QgsDataItem::Type type, QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &path, const QString &providerKey = QString() );
     ~QgsDataItem() override;
 
     bool hasChildren();
@@ -308,6 +311,27 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     QString path() const { return mPath; }
     void setPath( const QString &path ) { mPath = path; }
+
+    /**
+     * Returns the provider key that created this item
+     *
+     * If key has a prefix "special:", it marks that the item was not created with a provider,
+     * but manually. For example "special: Favorites"
+     *
+     * \since QGIS 3.12
+     */
+    QString providerKey() const;
+
+    /**
+     * Sets the provider key that created this item
+     *
+     * If key has a prefix "special:", it marks that the item was not created with a provider,
+     * but manually. For example "special: Favorites"
+     *
+     * \since QGIS 3.12
+     */
+    void setProviderKey( const QString &value );
+
     //! Create path component replacing path separators
     static QString pathComponent( const QString &component );
 
@@ -369,6 +393,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     QVector<QgsDataItem *> mChildren; // easier to have it always
     State mState;
     QString mName;
+    QString mProviderKey;
     // Path is slash ('/') separated chain of item identifiers which are usually item names, but may be different if it is
     // necessary to distinguish paths of two providers to the same source (e.g GRASS location and standard directory have the same
     // name but different paths). Identifiers in path must not contain '/' characters.
@@ -537,9 +562,6 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     Q_DECL_DEPRECATED virtual bool deleteLayer() SIP_DEPRECATED;
 
   protected:
-
-    //! The provider key
-    QString mProviderKey;
     //! The URI
     QString mUri;
     //! The layer type
@@ -572,7 +594,7 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
 {
     Q_OBJECT
   public:
-    QgsDataCollectionItem( QgsDataItem *parent, const QString &name, const QString &path = QString() );
+    QgsDataCollectionItem( QgsDataItem *parent, const QString &name, const QString &path = QString(), const QString &providerKey = QString() );
     ~QgsDataCollectionItem() override;
 
     void addChild( QgsDataItem *item SIP_TRANSFER ) { mChildren.append( item ); }
@@ -621,7 +643,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
      * \param name directory name
      * \param dirPath path to directory in file system
      * \param path item path in the tree, it may be dirPath or dirPath with some prefix, e.g. favorites: */
-    QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &dirPath, const QString &path );
+    QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &dirPath, const QString &path, const QString &providerKey = QString() );
 
     void setState( State state ) override;
 
@@ -670,7 +692,7 @@ class CORE_EXPORT QgsProjectItem : public QgsDataItem
      * \param name The name of the of the project. Displayed to the user.
      * \param path The full path to the project.
      */
-    QgsProjectItem( QgsDataItem *parent, const QString &name, const QString &path );
+    QgsProjectItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &providerKey = QString() );
 
     bool hasDragEnabled() const override { return true; }
 
@@ -776,7 +798,7 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
 
   public:
     QgsZipItem( QgsDataItem *parent, const QString &name, const QString &path );
-    QgsZipItem( QgsDataItem *parent, const QString &name, const QString &filePath, const QString &path );
+    QgsZipItem( QgsDataItem *parent, const QString &name, const QString &filePath, const QString &path, const QString &providerKey = QString() );
 
     QVector<QgsDataItem *> createChildren() override;
     QStringList getZipFileList();

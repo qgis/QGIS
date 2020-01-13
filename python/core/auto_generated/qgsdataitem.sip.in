@@ -52,9 +52,10 @@ Parent/children hierarchy is not based on QObject.
     };
 
 
-    QgsDataItem( QgsDataItem::Type type, QgsDataItem *parent /TransferThis/, const QString &name, const QString &path );
+    QgsDataItem( QgsDataItem::Type type, QgsDataItem *parent /TransferThis/, const QString &name, const QString &path, const QString &providerKey = QString() );
 %Docstring
-Create new data item.
+Creates new data item
+``providerKey`` added in QGIS 3.12
 %End
     ~QgsDataItem();
 
@@ -300,6 +301,27 @@ Sets the ``name`` of the item (the displayed text for the item).
 
     QString path() const;
     void setPath( const QString &path );
+
+    QString providerKey() const;
+%Docstring
+Returns the provider key that created this item
+
+If key has a prefix "special:", it marks that the item was not created with a provider,
+but manually. For example "special: Favorites"
+
+.. versionadded:: 3.12
+%End
+
+    void setProviderKey( const QString &value );
+%Docstring
+Sets the provider key that created this item
+
+If key has a prefix "special:", it marks that the item was not created with a provider,
+but manually. For example "special: Favorites"
+
+.. versionadded:: 3.12
+%End
+
     static QString pathComponent( const QString &component );
 %Docstring
 Create path component replacing path separators
@@ -525,7 +547,6 @@ Use QgsDataItemGuiProvider.deleteLayer instead
 
   protected:
 
-
   public:
     static QIcon iconPoint();
     static QIcon iconLine();
@@ -556,7 +577,7 @@ A Collection: logical collection of layers or subcollections, e.g. GRASS locatio
 #include "qgsdataitem.h"
 %End
   public:
-    QgsDataCollectionItem( QgsDataItem *parent, const QString &name, const QString &path = QString() );
+    QgsDataCollectionItem( QgsDataItem *parent, const QString &name, const QString &path = QString(), const QString &providerKey = QString() );
     ~QgsDataCollectionItem();
 
     void addChild( QgsDataItem *item /Transfer/ );
@@ -605,7 +626,7 @@ A directory: contains subdirectories and layers
 
     QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &path );
 
-    QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &dirPath, const QString &path );
+    QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &dirPath, const QString &path, const QString &providerKey = QString() );
 %Docstring
 Constructor.
 
@@ -662,7 +683,7 @@ Data item that can be used to represent QGIS projects.
 %End
   public:
 
-    QgsProjectItem( QgsDataItem *parent, const QString &name, const QString &path );
+    QgsProjectItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &providerKey = QString() );
 %Docstring
 A data item holding a reference to a QGIS project file.
 
@@ -782,7 +803,7 @@ A zip file: contains layers, using GDAL/OGR VSIFILE mechanism
 
   public:
     QgsZipItem( QgsDataItem *parent, const QString &name, const QString &path );
-    QgsZipItem( QgsDataItem *parent, const QString &name, const QString &filePath, const QString &path );
+    QgsZipItem( QgsDataItem *parent, const QString &name, const QString &filePath, const QString &path, const QString &providerKey = QString() );
 
     virtual QVector<QgsDataItem *> createChildren();
 

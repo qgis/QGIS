@@ -146,10 +146,13 @@ bool QgsBrowserProxyModel::filterAcceptsString( const QString &value ) const
 
 bool QgsBrowserProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
 {
-  if ( ( mFilter.isEmpty() && !mFilterByLayerType ) || !mModel )
+  if ( ( mFilter.isEmpty() && !mFilterByLayerType && mHiddenDataItemsKeys.empty() ) || !mModel )
     return true;
 
   QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
+  if ( !filterAcceptsProviderKey( sourceIndex ) || !filterRootAcceptsProviderKey( sourceIndex ) )
+    return false;
+
   return filterAcceptsItem( sourceIndex ) || filterAcceptsAncestor( sourceIndex ) || filterAcceptsDescendant( sourceIndex );
 }
 
@@ -229,4 +232,36 @@ bool QgsBrowserProxyModel::filterAcceptsItem( const QModelIndex &sourceIndex ) c
   }
 
   return true;
+}
+
+bool QgsBrowserProxyModel::filterAcceptsProviderKey( const QModelIndex &sourceIndex ) const
+{
+  if ( !mModel )
+    return true;
+
+  const QString providerKey = mModel->data( sourceIndex, QgsBrowserModel::ProviderKeyRole ).toString();
+  if ( providerKey.isEmpty() )
+    return true;
+
+  return ( !mHiddenDataItemsKeys.contains( providerKey ) );
+}
+
+bool QgsBrowserProxyModel::filterRootAcceptsProviderKey( const QModelIndex &sourceIndex ) const
+{
+  if ( !mModel )
+    return true;
+
+  QModelIndex sourceParentIndex = mModel->parent( sourceIndex );
+  if ( !sourceParentIndex.isValid() )
+  {
+    return filterAcceptsProviderKey( sourceIndex );
+  }
+
+  return filterRootAcceptsProviderKey( sourceParentIndex );
+}
+
+void QgsBrowserProxyModel::setDataItemProviderKeyFilter( const QStringList &filter )
+{
+  mHiddenDataItemsKeys = filter;
+  invalidateFilter();
 }

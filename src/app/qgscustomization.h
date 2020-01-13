@@ -31,7 +31,7 @@ class QTreeWidgetItem;
 class QEvent;
 class QMouseEvent;
 class QSettings;
-class QgsBrowserGuiModel;
+class QgsBrowserDockWidget;
 
 class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCustomizationDialogBase
 {
@@ -130,7 +130,7 @@ class APP_EXPORT QgsCustomization : public QObject
     static void customizeWidget( const QString &path, QWidget *widget, QSettings *settings );
     static void removeFromLayout( QLayout *layout, QWidget *widget );
 
-    void updateBrowserModel( QgsBrowserGuiModel *model );
+    void updateBrowserWidget( QgsBrowserDockWidget *model );
     void updateMainWindow( QMenu *toolBarMenu );
 
     // make sure to enable/disable before creating QgisApp in order to get it customized (or not)

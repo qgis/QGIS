@@ -19,7 +19,7 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsstatusbar.h"
-#include "qgsbrowserguimodel.h"
+#include "qgsbrowserdockwidget.h"
 #include "qgsdataitemprovider.h"
 #include "qgsdataitemproviderregistry.h"
 #include "qgsgui.h"
@@ -711,9 +711,11 @@ void QgsCustomization::createTreeItemBrowser()
   QVector<QStringList> items;
 
   items << QStringList( {QStringLiteral( "special:Home" ), tr( "Home Folder" )} );
+  items << QStringList( {QStringLiteral( "special:ProjectHome" ), tr( "Project tHome Folder" )} );
   items << QStringList( {QStringLiteral( "special:Favorites" ), tr( "Favorites Folder" )} );
   items << QStringList( {QStringLiteral( "special:Drives" ), tr( "Drive Folders (e.g. C:\\)" )} );
   items << QStringList( {QStringLiteral( "special:Volumes" ), tr( "Volume Folder (MacOS only)" )} );
+
   const auto constProviders = QgsApplication::dataItemProviderRegistry()->providers();
   for ( QgsDataItemProvider *pr : constProviders )
   {
@@ -721,7 +723,7 @@ void QgsCustomization::createTreeItemBrowser()
     if ( capabilities != QgsDataProvider::NoDataCapabilities )
     {
       QStringList item;
-      item << QStringLiteral( "provider:%1" ).arg( pr->name() ) << QStringLiteral( "Data Item Provider: %1" ).arg( pr->name() );
+      item << QStringLiteral( "%1" ).arg( pr->name() ) << QStringLiteral( "Data Item Provider: %1" ).arg( pr->name() );
       items << item;
     }
   }
@@ -1013,11 +1015,11 @@ void QgsCustomization::removeFromLayout( QLayout *layout, QWidget *widget )
   }
 }
 
-void QgsCustomization::updateBrowserModel( QgsBrowserGuiModel *model )
+void QgsCustomization::updateBrowserWidget( QgsBrowserDockWidget *widget )
 {
   createTreeItemBrowser();
 
-  if ( !model )
+  if ( !widget )
     return;
 
   if ( !mEnabled )
@@ -1038,7 +1040,7 @@ void QgsCustomization::updateBrowserModel( QgsBrowserGuiModel *model )
   }
   mSettings->endGroup();
 
-  model->setDisabledRootDataItems( disabledDataItems );
+  widget->setDisabledDataItemsKeys( disabledDataItems );
 }
 
 void QgsCustomization::preNotify( QObject *receiver, QEvent *event, bool *done )

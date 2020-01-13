@@ -90,6 +90,7 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
       PathRole = Qt::UserRole, //!< Item path used to access path in the tree, see QgsDataItem::mPath
       CommentRole = Qt::UserRole + 1, //!< Item comment
       SortRole, //!< Custom sort role, see QgsDataItem::sortKey()
+      ProviderKeyRole, //!< Data item provider key that created the item, \since QGIS 3.12
     };
     // implemented methods from QAbstractItemModel for read-only access
 
@@ -175,21 +176,6 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
      * \since QGIS 3.6
      */
     QMap<QString, QgsDirectoryItem *> driveItems() const;
-
-    /**
-     * Filters the root data items initialized in the browser
-     *
-     * By default browser model shows all items from all available data items provider and few special
-     * items (e.g. Favourites). To customize the behavious, set the filter to not load certain data items.
-     * The items that are not based on data item providers (e.g. Favourites, Home) have
-     * prefix "special:", data provider items have prefix "provider:"
-     *
-     * When called after the model has been initialized, the model is reloaded
-     *
-     * \since QGIS 3.12
-     */
-    void setDisabledRootDataItems( const QStringList &filter );
-
   signals:
 
     //! Emitted when item children fetch was finished
@@ -267,10 +253,7 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     QgsDirectoryItem *mProjectHome = nullptr;
 
   private:
-    bool shouldAddRootItem( const QString &key ) const;
-
     bool mInitialized = false;
-    QStringList mDisabledDataItemsFilter;
     QMap< QString, QgsDirectoryItem * > mDriveItems;
 
     void setupItemConnections( QgsDataItem *item );
