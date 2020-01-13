@@ -56,7 +56,8 @@ void QgsJoinByLocationAlgorithm::initAlgorithm( const QVariantMap & )
 
   QStringList joinMethods;
   joinMethods << QObject::tr( "Create separate feature for each matching feature (one-to-many)" )
-              << QObject::tr( "Take attributes of the first matching feature only (one-to-one)" );
+              << QObject::tr( "Take attributes of the first matching feature only (one-to-one)" )
+              << QObject::tr( "Take attributes of the feature with largest overlap only (one-to-one)" );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ),
                 QObject::tr( "Join type" ),
                 joinMethods, false, static_cast< int >( OneToMany ) ) );
@@ -121,11 +122,8 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
   if ( !mBaseSource )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  if ( mBaseSource->hasSpatialIndex() == QgsFeatureSource::SpatialIndexNotPresent )
-    feedback->reportError( QObject::tr( "No spatial index exists for input layer, performance will be severely degraded" ) );
-
-  std::unique_ptr< QgsFeatureSource > joinSource( parameterAsSource( parameters, QStringLiteral( "JOIN" ), context ) );
-  if ( !joinSource )
+  mJoinSource.reset( parameterAsSource( parameters, QStringLiteral( "JOIN" ), context ) );
+  if ( !mJoinSource )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "JOIN" ) ) );
 
   mJoinMethod = static_cast< JoinMethod >( parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context ) );
@@ -140,7 +138,7 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
   QgsFields joinFields;
   if ( joinedFieldNames.empty() )
   {
-    joinFields = joinSource->fields();
+    joinFields = mJoinSource->fields();
     mJoinedFieldIndices = joinFields.allAttributesList();
   }
   else
@@ -148,11 +146,11 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
     mJoinedFieldIndices.reserve( joinedFieldNames.count() );
     for ( const QString &field : joinedFieldNames )
     {
-      int index = joinSource->fields().lookupField( field );
+      int index = mJoinSource->fields().lookupField( field );
       if ( index >= 0 )
       {
         mJoinedFieldIndices << index;
-        joinFields.append( joinSource->fields().at( index ) );
+        joinFields.append( mJoinSource->fields().at( index ) );
       }
     }
   }
@@ -182,18 +180,140 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
   if ( parameters.value( QStringLiteral( "NON_MATCHING" ) ).isValid() && !mUnjoinedFeatures )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "NON_MATCHING" ) ) );
 
-  QgsFeatureIterator joinIter = joinSource->getFeatures( QgsFeatureRequest().setDestinationCrs( mBaseSource->sourceCrs(), context.transformContext() ).setSubsetOfAttributes( mJoinedFieldIndices ) );
+  switch ( mJoinMethod )
+  {
+    case OneToMany:
+    case JoinToFirst:
+      // TODO - consider using some heuristics to determine whether it's always best to iterate over the join
+      // source. It's best when you're doing a many -> few join (e.g. an input of millions of address points joined to hundreds of locality polygons),
+      // but poor in other circumstances (e.g. an input of few polygon boundaries joined to thousands of polygon other polygon features)
+      processAlgorithmByIteratingOverJoinedSource( context, feedback );
+      break;
+
+    case JoinToLargestOverlap:
+      processAlgorithmByIteratingOverInputSource( context, feedback );
+      break;
+  }
+
+  QVariantMap outputs;
+  if ( mJoinedFeatures )
+  {
+    outputs.insert( QStringLiteral( "OUTPUT" ), joinedSinkId );
+  }
+  if ( mUnjoinedFeatures )
+  {
+    outputs.insert( QStringLiteral( "NON_MATCHING" ), nonMatchingSinkId );
+  }
+
+  // need to release sinks to finalize writing
+  mJoinedFeatures.reset();
+  mUnjoinedFeatures.reset();
+
+  outputs.insert( QStringLiteral( "JOINED_COUNT" ), static_cast< long long >( mJoinedCount ) );
+  return outputs;
+}
+
+bool QgsJoinByLocationAlgorithm::featureFilter( const QgsFeature &feature, QgsGeometryEngine *engine, bool comparingToJoinedFeature ) const
+{
+  const QgsAbstractGeometry *geom = feature.geometry().constGet();
+  bool ok = false;
+  for ( const int predicate : mPredicates )
+  {
+    switch ( predicate )
+    {
+      case 0:
+        // intersects
+        if ( engine->intersects( geom ) )
+        {
+          ok = true;
+        }
+        break;
+      case 1:
+        // contains
+        if ( comparingToJoinedFeature )
+        {
+          if ( engine->contains( geom ) )
+          {
+            ok = true;
+          }
+        }
+        else
+        {
+          if ( engine->within( geom ) )
+          {
+            ok = true;
+          }
+        }
+        break;
+      case 2:
+        // equals
+        if ( engine->isEqual( geom ) )
+        {
+          ok = true;
+        }
+        break;
+      case 3:
+        // touches
+        if ( engine->touches( geom ) )
+        {
+          ok = true;
+        }
+        break;
+      case 4:
+        // overlaps
+        if ( engine->overlaps( geom ) )
+        {
+          ok = true;
+        }
+        break;
+      case 5:
+        // within
+        if ( comparingToJoinedFeature )
+        {
+          if ( engine->within( geom ) )
+          {
+            ok = true;
+          }
+        }
+        else
+        {
+          if ( engine->contains( geom ) )
+          {
+            ok = true;
+          }
+        }
+        break;
+      case 6:
+        // crosses
+        if ( engine->crosses( geom ) )
+        {
+          ok = true;
+        }
+        break;
+    }
+    if ( ok )
+      return ok;
+  }
+  return ok;
+}
+
+void QgsJoinByLocationAlgorithm::processAlgorithmByIteratingOverJoinedSource( QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  if ( mBaseSource->hasSpatialIndex() == QgsFeatureSource::SpatialIndexNotPresent )
+    feedback->reportError( QObject::tr( "No spatial index exists for input layer, performance will be severely degraded" ) );
+
+  QgsFeatureIterator joinIter = mJoinSource->getFeatures( QgsFeatureRequest().setDestinationCrs( mBaseSource->sourceCrs(), context.transformContext() ).setSubsetOfAttributes( mJoinedFieldIndices ) );
   QgsFeature f;
 
   // Create output vector layer with additional attributes
-  const double step = joinSource->featureCount() > 0 ? 100.0 / joinSource->featureCount() : 1;
+  const double step = mJoinSource->featureCount() > 0 ? 100.0 / mJoinSource->featureCount() : 1;
   long i = 0;
   while ( joinIter.nextFeature( f ) )
   {
     if ( feedback->isCanceled() )
       break;
 
-    processFeatures( f, feedback );
+    processFeatureFromJoinSource( f, feedback );
 
     i++;
     feedback->setProgress( i * step );
@@ -231,75 +351,28 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
         mUnjoinedFeatures->addFeature( f2, QgsFeatureSink::FastInsert );
     }
   }
-
-  QVariantMap outputs;
-  if ( mJoinedFeatures )
-  {
-    outputs.insert( QStringLiteral( "OUTPUT" ), joinedSinkId );
-  }
-  if ( mUnjoinedFeatures )
-  {
-    outputs.insert( QStringLiteral( "NON_MATCHING" ), nonMatchingSinkId );
-  }
-  outputs.insert( QStringLiteral( "JOINED_COUNT" ), static_cast< long long >( mJoinedCount ) );
-  return outputs;
 }
 
-bool QgsJoinByLocationAlgorithm::featureFilter( const QgsFeature &feature, QgsGeometryEngine *engine ) const
+void QgsJoinByLocationAlgorithm::processAlgorithmByIteratingOverInputSource( QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QgsAbstractGeometry *geom = feature.geometry().constGet();
-  bool ok = false;
-  for ( const int predicate : mPredicates )
+  if ( mJoinSource->hasSpatialIndex() == QgsFeatureSource::SpatialIndexNotPresent )
+    feedback->reportError( QObject::tr( "No spatial index exists for join layer, performance will be severely degraded" ) );
+
+  QgsFeatureIterator it = mBaseSource->getFeatures();
+  QgsFeature f;
+
+  const double step = mBaseSource->featureCount() > 0 ? 100.0 / mBaseSource->featureCount() : 1;
+  long i = 0;
+  while ( it .nextFeature( f ) )
   {
-    switch ( predicate )
-    {
-      case 0:
-        if ( engine->intersects( geom ) )
-        {
-          ok = true;
-        }
-        break;
-      case 1:
-        if ( engine->within( geom ) )
-        {
-          ok = true;
-        }
-        break;
-      case 2:
-        if ( engine->isEqual( geom ) )
-        {
-          ok = true;
-        }
-        break;
-      case 3:
-        if ( engine->touches( geom ) )
-        {
-          ok = true;
-        }
-        break;
-      case 4:
-        if ( engine->overlaps( geom ) )
-        {
-          ok = true;
-        }
-        break;
-      case 5:
-        if ( engine->contains( geom ) )
-        {
-          ok = true;
-        }
-        break;
-      case 6:
-        if ( engine->crosses( geom ) )
-        {
-          ok = true;
-        }
-        break;
-    }
-    if ( ok )
-      return ok;
+    if ( feedback->isCanceled() )
+      break;
+
+    processFeatureFromInputSource( f, context, feedback );
+
+    i++;
+    feedback->setProgress( i * step );
   }
-  return ok;
 }
 
 void QgsJoinByLocationAlgorithm::sortPredicates( QList<int> &predicates )
@@ -328,7 +401,7 @@ void QgsJoinByLocationAlgorithm::sortPredicates( QList<int> &predicates )
   } );
 }
 
-bool QgsJoinByLocationAlgorithm::processFeatures( QgsFeature &joinFeature, QgsProcessingFeedback *feedback )
+bool QgsJoinByLocationAlgorithm::processFeatureFromJoinSource( QgsFeature &joinFeature, QgsProcessingFeedback *feedback )
 {
   if ( !joinFeature.hasGeometry() )
     return false;
@@ -347,10 +420,21 @@ bool QgsJoinByLocationAlgorithm::processFeatures( QgsFeature &joinFeature, QgsPr
     if ( feedback->isCanceled() )
       break;
 
-    if ( mJoinMethod == OneToOne && mAddedIds.contains( baseFeature.id() ) )
+    switch ( mJoinMethod )
     {
-      //  already added this feature, and user has opted to only output first match
-      continue;
+      case JoinToFirst:
+        if ( mAddedIds.contains( baseFeature.id() ) )
+        {
+          //  already added this feature, and user has opted to only output first match
+          continue;
+        }
+        break;
+
+      case OneToMany:
+        break;
+
+      case JoinToLargestOverlap:
+        Q_ASSERT_X( false, "QgsJoinByLocationAlgorithm::processFeatureFromJoinSource", "processFeatureFromJoinSource should not be used with join to largest overlap method" );
     }
 
     if ( !engine )
@@ -362,7 +446,7 @@ bool QgsJoinByLocationAlgorithm::processFeatures( QgsFeature &joinFeature, QgsPr
         joinAttributes.append( joinFeature.attribute( ix ) );
       }
     }
-    if ( featureFilter( baseFeature, engine.get() ) )
+    if ( featureFilter( baseFeature, engine.get(), false ) )
     {
       if ( mJoinedFeatures )
       {
@@ -377,6 +461,171 @@ bool QgsJoinByLocationAlgorithm::processFeatures( QgsFeature &joinFeature, QgsPr
       mJoinedCount++;
     }
   }
+  return ok;
+}
+
+bool QgsJoinByLocationAlgorithm::processFeatureFromInputSource( QgsFeature &baseFeature, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  if ( !baseFeature.hasGeometry() )
+  {
+    // no geometry, treat as if we didn't find a match...
+    if ( mJoinedFeatures && !mDiscardNonMatching )
+    {
+      QgsAttributes emptyAttributes;
+      emptyAttributes.reserve( mJoinedFieldIndices.count() );
+      for ( int i = 0; i < mJoinedFieldIndices.count(); ++i )
+        emptyAttributes << QVariant();
+
+      QgsAttributes attributes = baseFeature.attributes();
+      attributes.append( emptyAttributes );
+      QgsFeature outputFeature( baseFeature );
+      outputFeature.setAttributes( attributes );
+      mJoinedFeatures->addFeature( outputFeature, QgsFeatureSink::FastInsert );
+    }
+
+    if ( mUnjoinedFeatures )
+      mUnjoinedFeatures->addFeature( baseFeature, QgsFeatureSink::FastInsert );
+
+    return false;
+  }
+
+  const QgsGeometry featGeom = baseFeature.geometry();
+  std::unique_ptr< QgsGeometryEngine > engine;
+  QgsFeatureRequest req = QgsFeatureRequest().setDestinationCrs( mBaseSource->sourceCrs(), context.transformContext() ).setFilterRect( featGeom.boundingBox() ).setSubsetOfAttributes( mJoinedFieldIndices );
+
+  QgsFeatureIterator it = mJoinSource->getFeatures( req );
+  QList<QgsFeature> filtered;
+  QgsFeature joinFeature;
+  bool ok = false;
+
+  double largestOverlap  = std::numeric_limits< double >::lowest();
+  QgsFeature bestMatch;
+
+  while ( it.nextFeature( joinFeature ) )
+  {
+    if ( feedback->isCanceled() )
+      break;
+
+    if ( !engine )
+    {
+      engine.reset( QgsGeometry::createGeometryEngine( featGeom.constGet() ) );
+      engine->prepareGeometry();
+    }
+
+    if ( featureFilter( joinFeature, engine.get(), true ) )
+    {
+      switch ( mJoinMethod )
+      {
+        case JoinToFirst:
+        case OneToMany:
+          if ( mJoinedFeatures )
+          {
+            QgsAttributes joinAttributes = baseFeature.attributes();
+            joinAttributes.reserve( joinAttributes.size() + mJoinedFieldIndices.size() );
+            for ( int ix : qgis::as_const( mJoinedFieldIndices ) )
+            {
+              joinAttributes.append( joinFeature.attribute( ix ) );
+            }
+
+            QgsFeature outputFeature( baseFeature );
+            outputFeature.setAttributes( joinAttributes );
+            mJoinedFeatures->addFeature( outputFeature, QgsFeatureSink::FastInsert );
+          }
+          break;
+
+        case JoinToLargestOverlap:
+        {
+          // calculate area of overlap
+          std::unique_ptr< QgsAbstractGeometry > intersection( engine->intersection( joinFeature.geometry().constGet() ) );
+          double overlap = 0;
+          switch ( QgsWkbTypes::geometryType( intersection->wkbType() ) )
+          {
+            case QgsWkbTypes::LineGeometry:
+              overlap = intersection->length();
+              break;
+
+            case QgsWkbTypes::PolygonGeometry:
+              overlap = intersection->area();
+              break;
+
+            case QgsWkbTypes::UnknownGeometry:
+            case QgsWkbTypes::PointGeometry:
+            case QgsWkbTypes::NullGeometry:
+              break;
+          }
+
+          if ( overlap > largestOverlap )
+          {
+            largestOverlap  = overlap;
+            bestMatch = joinFeature;
+          }
+          break;
+        }
+      }
+
+      ok = true;
+
+      if ( mJoinMethod == JoinToFirst )
+        break;
+    }
+  }
+
+  switch ( mJoinMethod )
+  {
+    case OneToMany:
+    case JoinToFirst:
+      break;
+
+    case JoinToLargestOverlap:
+    {
+      if ( bestMatch.isValid() )
+      {
+        // grab attributes from feature with best match
+        if ( mJoinedFeatures )
+        {
+          QgsAttributes joinAttributes = baseFeature.attributes();
+          joinAttributes.reserve( joinAttributes.size() + mJoinedFieldIndices.size() );
+          for ( int ix : qgis::as_const( mJoinedFieldIndices ) )
+          {
+            joinAttributes.append( bestMatch.attribute( ix ) );
+          }
+
+          QgsFeature outputFeature( baseFeature );
+          outputFeature.setAttributes( joinAttributes );
+          mJoinedFeatures->addFeature( outputFeature, QgsFeatureSink::FastInsert );
+        }
+      }
+      else
+      {
+        ok = false; // shouldn't happen...
+      }
+      break;
+    }
+  }
+
+  if ( !ok )
+  {
+    // didn't find a match...
+    if ( mJoinedFeatures && !mDiscardNonMatching )
+    {
+      QgsAttributes emptyAttributes;
+      emptyAttributes.reserve( mJoinedFieldIndices.count() );
+      for ( int i = 0; i < mJoinedFieldIndices.count(); ++i )
+        emptyAttributes << QVariant();
+
+      QgsAttributes attributes = baseFeature.attributes();
+      attributes.append( emptyAttributes );
+      QgsFeature outputFeature( baseFeature );
+      outputFeature.setAttributes( attributes );
+      mJoinedFeatures->addFeature( outputFeature, QgsFeatureSink::FastInsert );
+    }
+
+    if ( mUnjoinedFeatures )
+      mUnjoinedFeatures->addFeature( baseFeature, QgsFeatureSink::FastInsert );
+  }
+  else
+    mJoinedCount++;
+
   return ok;
 }
 
