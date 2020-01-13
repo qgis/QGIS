@@ -204,7 +204,7 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
 
         md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
         conn = md.createConnection(self.uri, {})
-        self.assertEqual(conn.executeSql('SELECT NULL::bool'), [[False]])
+        self.assertEqual(conn.executeSql('SELECT NULL::bool'), [[None]])
         self.assertEqual(conn.executeSql('SELECT NULL::text'), [[None]])
         self.assertEqual(conn.executeSql('SELECT NULL::bytea'), [[None]])
 
