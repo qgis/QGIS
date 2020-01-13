@@ -62,6 +62,8 @@ void QgsMesh3dSymbolPropertiesWidget::setSymbol( const QgsMesh3DSymbol &symbol )
   mComboBoxTextureType->setCurrentIndex( symbol.meshTextureType() );
   mMeshUniqueColorButton->setColor( symbol.uniqueMeshColor() );
   mColorRampShaderWidget->setFromShader( symbol.colorRampShader() );
+
+  setColorRampMinMax( symbol.colorRampShader().minimumValue(), symbol.colorRampShader().maximumValue() );
 }
 
 void QgsMesh3dSymbolPropertiesWidget::enableVerticalSetting( bool isEnable )
@@ -77,6 +79,12 @@ double QgsMesh3dSymbolPropertiesWidget::lineEditValue( const QLineEdit *lineEdit
   }
 
   return lineEdit->text().toDouble();
+}
+
+void QgsMesh3dSymbolPropertiesWidget::setColorRampMinMax( double min, double max )
+{
+  whileBlocking( mColorRampShaderMinEdit )->setText( QString::number( min ) );
+  whileBlocking( mColorRampShaderMaxEdit )->setText( QString::number( max ) );
 }
 
 QgsMesh3DSymbol QgsMesh3dSymbolPropertiesWidget::symbol() const
@@ -139,12 +147,7 @@ void QgsMesh3dSymbolPropertiesWidget::reloadColorRampShaderMinMax()
     if ( zValue < min )
       min = zValue;
   }
-  mColorRampShaderMaxEdit->blockSignals( true );
-  mColorRampShaderMinEdit->blockSignals( true );
-  mColorRampShaderMinEdit->setText( QString::number( min ) );
-  mColorRampShaderMaxEdit->setText( QString::number( max ) );
-  mColorRampShaderMaxEdit->blockSignals( false );
-  mColorRampShaderMinEdit->blockSignals( false );
+  setColorRampMinMax( min, max );
 
   mColorRampShaderWidget->setMinimumMaximum( min, max );
   mColorRampShaderWidget->classify();

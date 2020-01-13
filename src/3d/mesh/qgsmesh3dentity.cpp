@@ -34,10 +34,14 @@
 #include "qgsmesh3dmaterial.h"
 
 
-QgsMesh3dEntity::QgsMesh3dEntity( const Qgs3DMapSettings &map, QgsMeshLayer *layer, const QgsMesh3DSymbol &symbol ):
+QgsMesh3dEntity::QgsMesh3dEntity( const Qgs3DMapSettings &map,
+                                  const QgsTriangularMesh triangularMesh,
+                                  const QgsRectangle &extent,
+                                  const QgsMesh3DSymbol &symbol ):
+  mExtent( extent ),
   mSymbol( symbol ),
   mMapSettings( map ),
-  mLayer( layer )
+  mTriangularMesh( triangularMesh )
 {}
 
 void QgsMesh3dEntity::build()
@@ -49,7 +53,27 @@ void QgsMesh3dEntity::build()
 void QgsMesh3dEntity::buildGeometry()
 {
   Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
-  mesh->setGeometry( new QgsMesh3dGeometry_p( *mLayer->triangularMesh(), mLayer->extent(), mSymbol.verticaleScale(), mesh ) );
+  QVector<double> fakeScalarMag( mTriangularMesh.vertices().count() );
+  for ( int i = 0; i < mTriangularMesh.vertices().count(); ++i )
+  {
+    fakeScalarMag[i] = mTriangularMesh.vertices().at( i ).z();
+  }
+
+#if 0
+  mesh->setGeometry( new QgsMesh3dGeometry_p( mTriangularMesh,
+                     mExtent,
+                     mSymbol.verticaleScale(),
+                     mesh ) );
+#else
+
+  mesh->setGeometry( new QgsMesh3dDatasetGeometry_p( mTriangularMesh,
+                     fakeScalarMag,
+                     fakeScalarMag,
+                     mExtent,
+                     mSymbol.verticaleScale(),
+                     mesh ) );
+#endif
+
   addComponent( mesh );
 
   Qt3DCore::QTransform *tform = new Qt3DCore::QTransform;
@@ -59,7 +83,7 @@ void QgsMesh3dEntity::buildGeometry()
 
 void QgsMesh3dEntity::applyMaterial()
 {
-  mMaterial = new QgsMesh3dMaterial( mSymbol );
+  mMaterial = new QgsMesh3dMaterial( QgsMesh3dMaterial::scalarDataSet, mSymbol );
   addComponent( mMaterial );
 }
 
@@ -96,6 +120,6 @@ void QgsMesh3dTerrainTileEntity::buildGeometry()
 
 void QgsMesh3dTerrainTileEntity::applyMaterial()
 {
-  mMaterial = new QgsMesh3dMaterial( mSymbol );
+  mMaterial = new QgsMesh3dMaterial( QgsMesh3dMaterial::zValue, mSymbol );
   addComponent( mMaterial );
 }

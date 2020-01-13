@@ -30,7 +30,13 @@
 class QgsMesh3dMaterial : public Qt3DRender::QMaterial
 {
   public:
-    QgsMesh3dMaterial( const QgsMesh3DSymbol &symbol );
+    enum MagnitudeType
+    {
+      zValue,
+      scalarDataSet
+    };
+
+    QgsMesh3dMaterial( MagnitudeType magnitudeType, const QgsMesh3DSymbol &symbol );
 
 
   private:
@@ -38,6 +44,7 @@ class QgsMesh3dMaterial : public Qt3DRender::QMaterial
     Qt3DRender::QTechnique *mLightTechnique = nullptr;
     Qt3DRender::QTechnique *mWireFrameTechnique = nullptr;
     Qt3DRender::QRenderPassFilter *mRenderPassFilter = nullptr;
+    MagnitudeType mMagnitudeType;
     QgsMesh3DSymbol mSymbol;
     Qt3DRender::QBuffer *mColorsRampBuffer = nullptr;
 

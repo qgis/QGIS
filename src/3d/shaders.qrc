@@ -18,5 +18,7 @@
         <file>shaders/mesh/mesh_wireframe.geom</file>
         <file>shaders/mesh/mesh_wireframe.vert</file>
         <file>shaders/mesh/mesh_wireframe_disabled.frag</file>
+        <file>shaders/mesh/mesh_dataset.vert</file>
+        <file>shaders/mesh/mesh_dataset_colorRamp_uniform.frag</file>
     </qresource>
 </RCC>

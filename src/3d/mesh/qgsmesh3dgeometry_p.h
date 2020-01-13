@@ -58,4 +58,34 @@ class QgsMesh3dGeometry_p: public  Qt3DRender::QGeometry
 
 };
 
+class QgsMesh3dDatasetGeometry_p : public Qt3DRender::QGeometry
+{
+  public:
+    //! Constructs a mesh layer geometry from triangular mesh.
+    explicit QgsMesh3dDatasetGeometry_p( const QgsTriangularMesh &mesh,
+                                         const QVector<double> &verticaleMagnitude,
+                                         const QVector<double> &scalarMagnitude,
+                                         const QgsRectangle &extent,
+                                         float verticaleScale, QNode *parent );
+  private:
+    void init();
+
+    QgsTriangularMesh mTriangularMesh;
+    QVector<double> mVerticaleMagnitude;
+    QVector<double> mScalarMagnitude;
+    QgsRectangle mExtent;
+    float mVertScale;
+
+    Qt3DRender::QAttribute *mPositionAttribute = nullptr;
+    Qt3DRender::QAttribute *mNormalAttribute = nullptr;
+
+    //! attribute used to store the scalarMagnitude used to render color
+    Qt3DRender::QAttribute *mVertexScalarMagnitudeAttribute = nullptr;
+
+    Qt3DRender::QAttribute *mTexCoordAttribute = nullptr;
+    Qt3DRender::QAttribute *mIndexAttribute = nullptr;
+    Qt3DRender::QBuffer *mVertexBuffer = nullptr;
+    Qt3DRender::QBuffer *mIndexBuffer = nullptr;
+};
+
 #endif // QGSMESHGEOMETRY_P_H

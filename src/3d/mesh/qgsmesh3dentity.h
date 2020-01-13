@@ -38,7 +38,10 @@ class QgsMesh3dMaterial;
 class QgsMesh3dEntity: public Qt3DCore::QEntity
 {
   public:
-    QgsMesh3dEntity( const Qgs3DMapSettings &map, QgsMeshLayer *layer, const QgsMesh3DSymbol &symbol );
+    QgsMesh3dEntity( const Qgs3DMapSettings &map,
+                     const QgsTriangularMesh triangularMesh,
+                     const QgsRectangle &extent,
+                     const QgsMesh3DSymbol &symbol );
 
     void build();
 
@@ -46,9 +49,10 @@ class QgsMesh3dEntity: public Qt3DCore::QEntity
     virtual void buildGeometry();
     virtual void applyMaterial();
 
+    QgsRectangle mExtent;
     QgsMesh3DSymbol mSymbol;
     Qgs3DMapSettings mMapSettings;
-    QgsMeshLayer *mLayer;
+    QgsTriangularMesh mTriangularMesh;
     QgsMesh3dMaterial *mMaterial = nullptr;
 
     static int mMesh3DEntityCount;

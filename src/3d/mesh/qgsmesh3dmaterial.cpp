@@ -26,7 +26,8 @@
 #include <Qt3DRender/QBuffer>
 #include <QByteArray>
 
-QgsMesh3dMaterial::QgsMesh3dMaterial( const QgsMesh3DSymbol &symbol ):
+QgsMesh3dMaterial::QgsMesh3dMaterial( MagnitudeType magnitudeType, const QgsMesh3DSymbol &symbol ):
+  mMagnitudeType( magnitudeType ),
   mSymbol( symbol )
 {
   Qt3DRender::QEffect *eff = new Qt3DRender::QEffect( this );
@@ -93,14 +94,25 @@ void QgsMesh3dMaterial::configureColorTechnique()
   Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass();
   Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram( this );
   //Load shader programs
-  QUrl urlVert( QStringLiteral( "qrc:/shaders/mesh/mesh.vert" ) );
+  QUrl urlVert;
+  switch ( mMagnitudeType )
+  {
+    case QgsMesh3dMaterial::zValue:
+      urlVert = QStringLiteral( "qrc:/shaders/mesh/mesh.vert" );
+      break;
+    case QgsMesh3dMaterial::scalarDataSet:
+      urlVert = QStringLiteral( "qrc:/shaders/mesh/mesh_dataset.vert" );
+      break;
+  }
+
   shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, shaderProgram->loadSource( urlVert ) );
 
   switch ( mSymbol.meshTextureType() )
   {
     case QgsMesh3DSymbol::uniqueColor:
     {
-      QUrl urlFrag( QStringLiteral( "qrc:/shaders/mesh/mesh_colorUnique_uniform.frag" ) );
+      QUrl urlFrag = QStringLiteral( "qrc:/shaders/mesh/mesh_colorUnique_uniform.frag" );
+
       shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Fragment, shaderProgram->loadSource( urlFrag ) );
       QColor color = mSymbol.uniqueMeshColor();
       mColorTechnique->addParameter(
@@ -120,7 +132,16 @@ void QgsMesh3dMaterial::configureColorTechnique()
       strCode.append( "\n" );
       fragCode.append( strCode.toStdString().c_str() );
 
-      QUrl urlFrag( QStringLiteral( "qrc:/shaders/mesh/mesh_colorRamp_uniform.frag" ) );
+      QUrl urlFrag;
+      switch ( mMagnitudeType )
+      {
+        case QgsMesh3dMaterial::zValue:
+          urlFrag = QStringLiteral( "qrc:/shaders/mesh/mesh_colorRamp_uniform.frag" );
+          break;
+        case QgsMesh3dMaterial::scalarDataSet:
+          urlFrag = QStringLiteral( "qrc:/shaders/mesh/mesh_dataset_colorRamp_uniform.frag" );
+          break;
+      }
       fragCode.append( shaderProgram->loadSource( urlFrag ) );
       shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Fragment, fragCode );
       setColorRampParameterUniform( colorRampShader );

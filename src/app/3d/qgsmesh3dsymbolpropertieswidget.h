@@ -36,6 +36,7 @@ class QgsMesh3dSymbolPropertiesWidget: public QWidget, private Ui::QgsMesh3dSymb
 
   private:
     double lineEditValue( const QLineEdit *lineEdit ) const;
+    void setColorRampMinMax( double min, double max );
 
     QgsMeshLayer *mLayer = nullptr;
 };

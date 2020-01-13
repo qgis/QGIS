@@ -90,7 +90,20 @@ Qt3DCore::QEntity *QgsMeshLayer3DRenderer::createEntity( const Qgs3DMapSettings 
       }
       case QgsMesh3DSymbol::advancedSymbology:
       {
-        QgsMesh3dEntity *meshEntity = new QgsMesh3dEntity( map, vl, *static_cast<QgsMesh3DSymbol *>( mSymbol.get() ) );
+        QgsCoordinateTransform coordTrans( vl->crs(), map.crs(), map.transformContext() );
+
+        QgsRectangle extentInMap;
+
+        try
+        {
+          extentInMap = coordTrans.transform( vl->extent() );
+        }
+        catch ( QgsCsException &e )
+        {
+          extentInMap = vl->extent();
+        }
+
+        QgsMesh3dEntity *meshEntity = new QgsMesh3dEntity( map, *vl->triangularMesh(), extentInMap, *static_cast<QgsMesh3DSymbol *>( mSymbol.get() ) );
         meshEntity->build();
         entity = meshEntity;
         break;
