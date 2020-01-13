@@ -517,35 +517,30 @@ QgsVector3D Qgs3DUtils::transformWorldCoordinates( const QgsVector3D &worldPoint
 
 void Qgs3DUtils::estimateVectorLayerZRange( QgsVectorLayer *layer, double &zMin, double &zMax )
 {
-  if ( QgsWkbTypes::hasZ( layer->wkbType() ) )
+  if ( !QgsWkbTypes::hasZ( layer->wkbType() ) )
   {
-    zMin = std::numeric_limits<double>::max();
-    zMin = std::numeric_limits<double>::min();
+    zMin = 0;
+    zMax = 0;
+    return;
+  }
 
-    int featureCount = 0;
-    QgsFeature f;
-    QgsFeatureIterator it = layer->getFeatures( QgsFeatureRequest().setNoAttributes() );
-    while ( it.nextFeature( f ) )
-    {
-      if ( featureCount >= 100 )
-        break;
-      QgsGeometry g = f.geometry();
-      for ( auto vit = g.vertices_begin(); vit != g.vertices_end(); ++vit )
-      {
-        double z = ( *vit ).z();
-        if ( z < zMin ) zMin = z;
-        if ( z > zMax ) zMax = z;
-      }
-      featureCount++;
-    }
+  zMin = std::numeric_limits<double>::max();
+  zMax = std::numeric_limits<double>::min();
 
-    if ( featureCount == 0 )
+  QgsFeature f;
+  QgsFeatureIterator it = layer->getFeatures( QgsFeatureRequest().setNoAttributes().setLimit( 100 ) );
+  while ( it.nextFeature( f ) )
+  {
+    QgsGeometry g = f.geometry();
+    for ( auto vit = g.vertices_begin(); vit != g.vertices_end(); ++vit )
     {
-      zMin = 0;
-      zMax = 0;
+      double z = ( *vit ).z();
+      if ( z < zMin ) zMin = z;
+      if ( z > zMax ) zMax = z;
     }
   }
-  else
+
+  if ( zMin == std::numeric_limits<double>::max() && zMax == std::numeric_limits<double>::min() )
   {
     zMin = 0;
     zMax = 0;
