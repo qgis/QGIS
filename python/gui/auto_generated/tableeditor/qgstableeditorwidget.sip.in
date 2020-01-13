@@ -63,6 +63,15 @@ If the selected cells have a mix of different formats then ``None``
 will be returned.
 
 .. seealso:: :py:func:`setSelectionNumericFormat`
+
+.. seealso:: :py:func:`hasMixedSelectionNumericFormat`
+%End
+
+    bool hasMixedSelectionNumericFormat();
+%Docstring
+Returns ``True`` if the current selection has a mix of numeric formats.
+
+.. seealso:: :py:func:`selectionNumericFormat`
 %End
 
     QColor selectionForegroundColor();

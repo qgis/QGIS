@@ -311,6 +311,20 @@ QgsPercentageNumericFormatWidget::QgsPercentageNumericFormatWidget( const QgsNum
       emit changed();
   } );
 
+  connect( mShowPlusCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
+  {
+    mFormat->setShowPlusSign( checked );
+    if ( !mBlockSignals )
+      emit changed();
+  } );
+
+  connect( mShowThousandsCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
+  {
+    mFormat->setShowThousandsSeparator( checked );
+    if ( !mBlockSignals )
+      emit changed();
+  } );
+
   connect( mDecimalsSpinBox, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, [ = ]( int value )
   {
     mFormat->setNumberDecimalPlaces( value );
@@ -334,7 +348,9 @@ void QgsPercentageNumericFormatWidget::setFormat( QgsNumericFormat *format )
 
   mBlockSignals = true;
   mDecimalsSpinBox->setValue( mFormat->numberDecimalPlaces() );
+  mShowPlusCheckBox->setChecked( mFormat->showPlusSign() );
   mShowTrailingZerosCheckBox->setChecked( mFormat->showTrailingZeros() );
+  mShowThousandsCheckBox->setChecked( mFormat->showThousandsSeparator() );
   mScalingComboBox->setCurrentIndex( mScalingComboBox->findData( static_cast< int >( mFormat->inputValues() ) ) );
   mBlockSignals = false;
 }

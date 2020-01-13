@@ -68,7 +68,7 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
       emit tableChanged();
   } );
 
-  int minDockWidth( fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" ) ) );
+  int minDockWidth( fontMetrics().boundingRect( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" ) ).width() );
 
   mPropertiesDock = new QgsDockWidget( tr( "Formatting" ), this );
   mPropertiesDock->setObjectName( QStringLiteral( "FormattingDock" ) );
@@ -93,6 +93,7 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   {
     mFormattingWidget->setForegroundColor( mTableWidget->selectionForegroundColor() );
     mFormattingWidget->setBackgroundColor( mTableWidget->selectionBackgroundColor() );
+    mFormattingWidget->setNumericFormat( mTableWidget->selectionNumericFormat(), mTableWidget->hasMixedSelectionNumericFormat() );
   } );
 
   addDockWidget( Qt::RightDockWidgetArea, mPropertiesDock );

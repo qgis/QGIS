@@ -75,8 +75,16 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
      * will be returned.
      *
      * \see setSelectionNumericFormat()
+     * \see hasMixedSelectionNumericFormat()
      */
     QgsNumericFormat *selectionNumericFormat();
+
+    /**
+     * Returns TRUE if the current selection has a mix of numeric formats.
+     *
+     * \see selectionNumericFormat()
+     */
+    bool hasMixedSelectionNumericFormat();
 
     /**
      * Returns the foreground color for the currently selected cells.

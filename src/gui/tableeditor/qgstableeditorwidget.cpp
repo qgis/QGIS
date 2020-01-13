@@ -390,6 +390,36 @@ QgsNumericFormat *QgsTableEditorWidget::selectionNumericFormat()
   return f;
 }
 
+bool QgsTableEditorWidget::hasMixedSelectionNumericFormat()
+{
+  QgsNumericFormat *f = nullptr;
+  bool first = true;
+  const QModelIndexList selection = selectedIndexes();
+  for ( const QModelIndex &index : selection )
+  {
+    if ( QTableWidgetItem *i = item( index.row(), index.column() ) )
+    {
+      if ( first )
+      {
+        f = mNumericFormats.value( i );
+        first = false;
+      }
+      else if ( ( !f && !mNumericFormats.value( i ) )
+                || ( f && mNumericFormats.value( i ) && *f == *mNumericFormats.value( i ) ) )
+        continue;
+      else
+      {
+        return true;
+      }
+    }
+    else if ( f )
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
 QColor QgsTableEditorWidget::selectionForegroundColor()
 {
   QColor c;

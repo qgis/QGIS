@@ -876,25 +876,32 @@ void TestQgsTableEditor::numericFormat()
 
   w.selectionModel()->clearSelection();
   w.setSelectionNumericFormat( new QgsBearingNumericFormat() );
+  QVERIFY( !w.hasMixedSelectionNumericFormat() );
   QCOMPARE( spy.count(), 1 );
 
   w.selectionModel()->select( w.model()->index( 0, 0 ), QItemSelectionModel::ClearAndSelect );
   QVERIFY( !w.selectionNumericFormat() );
+  QVERIFY( !w.hasMixedSelectionNumericFormat() );
   w.selectionModel()->select( w.model()->index( 0, 1 ), QItemSelectionModel::Select );
   QVERIFY( !w.selectionNumericFormat() );
+  QVERIFY( w.hasMixedSelectionNumericFormat() );
   w.selectionModel()->select( w.model()->index( 0, 1 ), QItemSelectionModel::ClearAndSelect );
   QCOMPARE( w.selectionNumericFormat()->id(), QStringLiteral( "currency" ) );
+  QVERIFY( !w.hasMixedSelectionNumericFormat() );
   w.selectionModel()->select( w.model()->index( 0, 0 ), QItemSelectionModel::Select );
   QVERIFY( !w.selectionNumericFormat() );
+  QVERIFY( w.hasMixedSelectionNumericFormat() );
   w.setSelectionNumericFormat( new QgsBearingNumericFormat() );
   QCOMPARE( spy.count(), 2 );
   QCOMPARE( w.selectionNumericFormat()->id(), QStringLiteral( "bearing" ) );
+  QVERIFY( !w.hasMixedSelectionNumericFormat() );
   QCOMPARE( w.tableContents().at( 0 ).at( 0 ).numericFormat()->id(), QStringLiteral( "bearing" ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).numericFormat()->id(), QStringLiteral( "bearing" ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 2 ).numericFormat() );
   QVERIFY( !w.tableContents().at( 0 ).at( 3 ).numericFormat() );
   w.selectionModel()->select( w.model()->index( 0, 3 ), QItemSelectionModel::Select );
   QVERIFY( !w.selectionNumericFormat() );
+  QVERIFY( w.hasMixedSelectionNumericFormat() );
 }
 
 

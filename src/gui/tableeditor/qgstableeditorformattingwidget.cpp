@@ -23,6 +23,8 @@ QgsTableEditorFormattingWidget::QgsTableEditorFormattingWidget( QWidget *parent 
   setupUi( this );
   setPanelTitle( tr( "Formatting" ) );
 
+  mFormatNumbersCheckBox->setTristate( false );
+
   mTextColorButton->setAllowOpacity( true );
   mTextColorButton->setColorDialogTitle( tr( "Text Color" ) );
   mTextColorButton->setDefaultColor( QColor( 0, 0, 0 ) );
@@ -42,10 +44,13 @@ QgsTableEditorFormattingWidget::QgsTableEditorFormattingWidget( QWidget *parent 
       emit backgroundColorChanged( mBackgroundColorButton->color() );
   } );
 
-  connect( mFormatNumbersCheckBox, &QCheckBox::toggled, this, [ = ]( bool active )
+  connect( mFormatNumbersCheckBox, &QCheckBox::stateChanged, this, [ = ]( int state )
   {
-    mCustomizeFormatButton->setEnabled( active );
-    emit numberFormatChanged();
+    mCustomizeFormatButton->setEnabled( state == Qt::Checked );
+    if ( state != Qt::PartiallyChecked )
+      mFormatNumbersCheckBox->setTristate( false );
+    if ( !mBlockSignals )
+      emit numberFormatChanged();
   } );
 
   mCustomizeFormatButton->setEnabled( false );
@@ -65,7 +70,7 @@ QgsTableEditorFormattingWidget::QgsTableEditorFormattingWidget( QWidget *parent 
 
 QgsNumericFormat *QgsTableEditorFormattingWidget::numericFormat()
 {
-  if ( !mNumericFormat || !mFormatNumbersCheckBox->isChecked() )
+  if ( !mNumericFormat || mFormatNumbersCheckBox->checkState() != Qt::Checked )
     return nullptr;
 
   return mNumericFormat->clone();
@@ -82,6 +87,15 @@ void QgsTableEditorFormattingWidget::setBackgroundColor( const QColor &color )
 {
   mBlockSignals = true;
   mBackgroundColorButton->setColor( color );
+  mBlockSignals = false;
+}
+
+void QgsTableEditorFormattingWidget::setNumericFormat( QgsNumericFormat *format, bool isMixedFormat )
+{
+  mNumericFormat.reset( format ? format->clone() : nullptr );
+  mBlockSignals = true;
+  mFormatNumbersCheckBox->setTristate( isMixedFormat );
+  mFormatNumbersCheckBox->setCheckState( isMixedFormat ? Qt::PartiallyChecked : ( mNumericFormat.get() ? Qt::Checked : Qt::Unchecked ) );
   mBlockSignals = false;
 }
 
