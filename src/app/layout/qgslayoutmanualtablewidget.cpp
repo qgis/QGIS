@@ -37,12 +37,10 @@ QgsLayoutManualTableWidget::QgsLayoutManualTableWidget( QgsLayoutFrame *frame )
   connect( mGridStrokeWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutManualTableWidget::mGridStrokeWidthSpinBox_valueChanged );
   connect( mGridColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutManualTableWidget::mGridColorButton_colorChanged );
   connect( mBackgroundColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutManualTableWidget::mBackgroundColorButton_colorChanged );
-  connect( mHeaderFontColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutManualTableWidget::mHeaderFontColorButton_colorChanged );
   connect( mContentFontColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutManualTableWidget::mContentFontColorButton_colorChanged );
   connect( mDrawHorizontalGrid, &QCheckBox::toggled, this, &QgsLayoutManualTableWidget::mDrawHorizontalGrid_toggled );
   connect( mDrawVerticalGrid, &QCheckBox::toggled, this, &QgsLayoutManualTableWidget::mDrawVerticalGrid_toggled );
   connect( mShowGridGroupCheckBox, &QgsCollapsibleGroupBoxBasic::toggled, this, &QgsLayoutManualTableWidget::mShowGridGroupCheckBox_toggled );
-  connect( mHeaderHAlignmentComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutManualTableWidget::mHeaderHAlignmentComboBox_currentIndexChanged );
   connect( mAddFramePushButton, &QPushButton::clicked, this, &QgsLayoutManualTableWidget::mAddFramePushButton_clicked );
   connect( mResizeModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutManualTableWidget::mResizeModeComboBox_currentIndexChanged );
   connect( mDrawEmptyCheckBox, &QCheckBox::toggled, this, &QgsLayoutManualTableWidget::mDrawEmptyCheckBox_toggled );
@@ -53,7 +51,6 @@ QgsLayoutManualTableWidget::QgsLayoutManualTableWidget( QgsLayoutFrame *frame )
   setPanelTitle( tr( "Table Properties" ) );
 
   mContentFontToolButton->setMode( QgsFontButton::ModeQFont );
-  mHeaderFontToolButton->setMode( QgsFontButton::ModeQFont );
 
   blockAllSignals( true );
 
@@ -64,9 +61,6 @@ QgsLayoutManualTableWidget::QgsLayoutManualTableWidget( QgsLayoutFrame *frame )
   mWrapBehaviorComboBox->addItem( tr( "Truncate text" ), QgsLayoutTable::TruncateText );
   mWrapBehaviorComboBox->addItem( tr( "Wrap text" ), QgsLayoutTable::WrapText );
 
-  mHeaderFontColorButton->setColorDialogTitle( tr( "Select Header Font Color" ) );
-  mHeaderFontColorButton->setAllowOpacity( true );
-  mHeaderFontColorButton->setContext( QStringLiteral( "composer" ) );
   mContentFontColorButton->setColorDialogTitle( tr( "Select Content Font Color" ) );
   mContentFontColorButton->setAllowOpacity( true );
   mContentFontColorButton->setContext( QStringLiteral( "composer" ) );
@@ -95,7 +89,6 @@ QgsLayoutManualTableWidget::QgsLayoutManualTableWidget( QgsLayoutFrame *frame )
     mainLayout->addWidget( mItemPropertiesWidget );
   }
 
-  connect( mHeaderFontToolButton, &QgsFontButton::changed, this, &QgsLayoutManualTableWidget::headerFontChanged );
   connect( mContentFontToolButton, &QgsFontButton::changed, this, &QgsLayoutManualTableWidget::contentFontChanged );
 }
 
@@ -195,28 +188,6 @@ void QgsLayoutManualTableWidget::mMarginSpinBox_valueChanged( double d )
 
   mTable->beginCommand( tr( "Change Table Margin" ), QgsLayoutMultiFrame::UndoTableMargin );
   mTable->setCellMargin( d );
-  mTable->endCommand();
-}
-
-void QgsLayoutManualTableWidget::headerFontChanged()
-{
-  if ( !mTable )
-    return;
-
-  mTable->beginCommand( tr( "Change Table Font" ) );
-  mTable->setHeaderFont( mHeaderFontToolButton->currentFont() );
-  mTable->endCommand();
-}
-
-void QgsLayoutManualTableWidget::mHeaderFontColorButton_colorChanged( const QColor &newColor )
-{
-  if ( !mTable )
-  {
-    return;
-  }
-
-  mTable->beginCommand( tr( "Change Font Color" ), QgsLayoutMultiFrame::UndoTableHeaderFontColor );
-  mTable->setHeaderFontColor( newColor );
   mTable->endCommand();
 }
 
@@ -340,12 +311,8 @@ void QgsLayoutManualTableWidget::updateGuiElements()
   }
   mBackgroundColorButton->setColor( mTable->backgroundColor() );
 
-  mHeaderFontColorButton->setColor( mTable->headerFontColor() );
   mContentFontColorButton->setColor( mTable->contentFontColor() );
-  mHeaderFontToolButton->setCurrentFont( mTable->headerFont() );
   mContentFontToolButton->setCurrentFont( mTable->contentFont() );
-
-  mHeaderHAlignmentComboBox->setCurrentIndex( static_cast<int>( mTable->headerHAlignment() ) );
 
   mDrawEmptyCheckBox->setChecked( mTable->showEmptyRows() );
   mWrapBehaviorComboBox->setCurrentIndex( mWrapBehaviorComboBox->findData( mTable->wrapBehavior() ) );
@@ -368,8 +335,6 @@ void QgsLayoutManualTableWidget::blockAllSignals( bool b )
   mDrawHorizontalGrid->blockSignals( b );
   mDrawVerticalGrid->blockSignals( b );
   mShowGridGroupCheckBox->blockSignals( b );
-  mHeaderHAlignmentComboBox->blockSignals( b );
-  mHeaderFontColorButton->blockSignals( b );
   mContentFontColorButton->blockSignals( b );
   mResizeModeComboBox->blockSignals( b );
   mEmptyFrameCheckBox->blockSignals( b );
@@ -377,7 +342,6 @@ void QgsLayoutManualTableWidget::blockAllSignals( bool b )
   mDrawEmptyCheckBox->blockSignals( b );
   mWrapBehaviorComboBox->blockSignals( b );
   mContentFontToolButton->blockSignals( b );
-  mHeaderFontToolButton->blockSignals( b );
 }
 
 void QgsLayoutManualTableWidget::mEmptyFrameCheckBox_toggled( bool checked )
@@ -402,18 +366,6 @@ void QgsLayoutManualTableWidget::mHideEmptyBgCheckBox_toggled( bool checked )
   mFrame->beginCommand( tr( "Toggle Background Display" ) );
   mFrame->setHideBackgroundIfEmpty( checked );
   mFrame->endCommand();
-}
-
-void QgsLayoutManualTableWidget::mHeaderHAlignmentComboBox_currentIndexChanged( int index )
-{
-  if ( !mTable )
-  {
-    return;
-  }
-
-  mTable->beginCommand( tr( "Change Table Alignment" ) );
-  mTable->setHeaderHAlignment( static_cast<  QgsLayoutTable::HeaderHAlignment >( index ) );
-  mTable->endCommand();
 }
 
 void QgsLayoutManualTableWidget::mAddFramePushButton_clicked()
