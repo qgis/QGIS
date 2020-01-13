@@ -52,6 +52,8 @@ class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, private
      * if no numeric format is set.
      *
      * The caller takes ownership of the returned object.
+     *
+     * \see setNumericFormat()
      */
     QgsNumericFormat *numericFormat() SIP_TRANSFERBACK;
 
@@ -70,6 +72,15 @@ class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, private
      * \see setForegroundColor()
      */
     void setBackgroundColor( const QColor &color );
+
+    /**
+     * Sets the numeric \a format to show in the widget, or NULLPTR if no numeric format is set.
+     *
+     * if \a isMixedFormat is TRUE then the widget will be set to indicate a "mixed format" setting.
+     *
+     * \see numericFormat()
+     */
+    void setNumericFormat( QgsNumericFormat *format, bool isMixedFormat );
 
   signals:
 
