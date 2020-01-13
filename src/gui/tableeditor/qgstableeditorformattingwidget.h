@@ -82,6 +82,22 @@ class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, private
      */
     void setNumericFormat( QgsNumericFormat *format, bool isMixedFormat );
 
+    /**
+     * Sets the row \a height to show in the widget, or 0 for automatic height.
+     *
+     * \see rowHeightChanged()
+     * \see setColumnWidth()
+     */
+    void setRowHeight( double height );
+
+    /**
+     * Sets the column \a width to show in the widget, or 0 for automatic width.
+     *
+     * \see columnWidthChanged()
+     * \see setRowHeight()
+     */
+    void setColumnWidth( double width );
+
   signals:
 
     /**
@@ -103,10 +119,20 @@ class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, private
      */
     void numberFormatChanged();
 
+    /**
+     * Emitted whenever the row \a height shown in the widget is changed.
+     */
+    void rowHeightChanged( double height );
+
+    /**
+     * Emitted whenever the column \a width shown in the widget is changed.
+     */
+    void columnWidthChanged( double width );
+
   private:
 
     std::unique_ptr< QgsNumericFormat > mNumericFormat;
-    bool mBlockSignals = false;
+    int mBlockSignals = 0;
 
 };
 

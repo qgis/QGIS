@@ -108,6 +108,54 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
      */
     QColor selectionBackgroundColor();
 
+    /**
+     * Returns the height (in millimeters) of the rows associated with the current selection,
+     * or 0 if an automatic row height is desired, or -1 if the selection has mixed row heights.
+     *
+     * \see setSelectionRowHeight()
+     */
+    double selectionRowHeight();
+
+    /**
+     * Returns the width (in millimeters) of the columns associated with the current selection,
+     * or 0 if an automatic column width is desired.
+     *
+     * \see setSelectionColumnWidth()
+     */
+    double selectionColumnWidth();
+
+    /**
+     * Returns the configured row height for the specified \a row, or 0 if an automatic height
+     * should be used for the row.
+     */
+    double tableRowHeight( int row );
+
+    /**
+     * Returns the configured column width for the specified \a column, or 0 if an automatic width
+     * should be used for the column.
+     */
+    double tableColumnWidth( int column );
+
+    /**
+     * Sets the configured row \a height for the specified \a row. Set \a height to 0
+     * if an automatic height should be used for the row.
+     *
+     * This should be called after a call to setTableContents().
+     *
+     * \see tableRowHeight()
+     */
+    void setTableRowHeight( int row, double height );
+
+    /**
+     * Sets the configured column \a width for the specified \a column. Set \a width to 0
+     * if an automatic width should be used for the column.
+     *
+     * This should be called after a call to setTableContents().
+     *
+     * \see tableColumnWidth()
+     */
+    void setTableColumnWidth( int column, double width );
+
   public slots:
 
     /**
@@ -187,6 +235,20 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
      */
     void setSelectionBackgroundColor( const QColor &color );
 
+    /**
+     * Sets the row \a height (in millimeters) for the currently selected rows, or 0 for automatic row height.
+     *
+     * \see setSelectionColumnWidth()
+     */
+    void setSelectionRowHeight( double height );
+
+    /**
+     * Sets the column \a width (in millimeters) for the currently selected columns, or 0 for automatic column width.
+     *
+     * \see setSelectionRowHeight()
+     */
+    void setSelectionColumnWidth( double height );
+
   protected:
     void keyPressEvent( QKeyEvent *event ) override;
 
@@ -208,6 +270,8 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
     enum Roles
     {
       PresetBackgroundColorRole = Qt::UserRole + 1,
+      RowHeight,
+      ColumnWidth
     };
 
     void updateHeaders();

@@ -466,6 +466,122 @@ QColor QgsTableEditorWidget::selectionBackgroundColor()
   return c;
 }
 
+double QgsTableEditorWidget::selectionRowHeight()
+{
+  double height = 0;
+  bool first = true;
+  const QModelIndexList selection = selectedIndexes();
+  for ( const QModelIndex &index : selection )
+  {
+    double thisHeight = tableRowHeight( index.row() );
+    if ( first )
+      height = thisHeight;
+    else if ( thisHeight != height )
+    {
+      return -1;
+    }
+    first = false;
+  }
+  return height;
+}
+
+double QgsTableEditorWidget::selectionColumnWidth()
+{
+  double width = 0;
+  bool first = true;
+  const QModelIndexList selection = selectedIndexes();
+  for ( const QModelIndex &index : selection )
+  {
+    double thisWidth = tableColumnWidth( index.row() );
+    if ( first )
+      width = thisWidth;
+    else if ( thisWidth != width )
+    {
+      return -1;
+    }
+    first = false;
+  }
+  return width;
+}
+
+double QgsTableEditorWidget::tableRowHeight( int row )
+{
+  double height = 0;
+  for ( int col = 0; col < columnCount(); ++col )
+  {
+    double thisHeight = model()->data( model()->index( row, col ), RowHeight ).toDouble();
+    height = std::max( thisHeight, height );
+  }
+  return height;
+}
+
+double QgsTableEditorWidget::tableColumnWidth( int column )
+{
+  double width = 0;
+  for ( int row = 0; row < rowCount(); ++row )
+  {
+    double thisWidth = model()->data( model()->index( row, column ), ColumnWidth ).toDouble();
+    width = std::max( thisWidth, width );
+  }
+  return width;
+}
+
+void QgsTableEditorWidget::setTableRowHeight( int row, double height )
+{
+  bool changed = false;
+  mBlockSignals++;
+
+  for ( int col = 0; col < columnCount(); ++col )
+  {
+    if ( QTableWidgetItem *i = item( row, col ) )
+    {
+      if ( i->data( RowHeight ).toDouble() != height )
+      {
+        i->setData( RowHeight, height );
+        changed = true;
+      }
+    }
+    else
+    {
+      QTableWidgetItem *newItem = new QTableWidgetItem();
+      newItem->setData( RowHeight, height );
+      setItem( row, col, newItem );
+      changed = true;
+    }
+  }
+
+  mBlockSignals--;
+  if ( changed && !mBlockSignals )
+    emit tableChanged();
+}
+
+void QgsTableEditorWidget::setTableColumnWidth( int col, double width )
+{
+  bool changed = false;
+  mBlockSignals++;
+  for ( int row = 0; row < rowCount(); ++row )
+  {
+    if ( QTableWidgetItem *i = item( row, col ) )
+    {
+      if ( i->data( ColumnWidth ).toDouble() != width )
+      {
+        i->setData( ColumnWidth, width );
+        changed = true;
+      }
+    }
+    else
+    {
+      QTableWidgetItem *newItem = new QTableWidgetItem();
+      newItem->setData( ColumnWidth, width );
+      setItem( row, col, newItem );
+      changed = true;
+    }
+  }
+  mBlockSignals--;
+  if ( changed && !mBlockSignals )
+    emit tableChanged();
+}
+
 void QgsTableEditorWidget::insertRowsBelow()
 {
   if ( rowCount() == 0 )
@@ -675,6 +791,70 @@ void QgsTableEditorWidget::setSelectionBackgroundColor( const QColor &color )
       newItem->setData( PresetBackgroundColorRole, color.isValid() ? color : QVariant() );
       setItem( index.row(), index.column(), newItem );
       changed = true;
+    }
+  }
+  mBlockSignals--;
+  if ( changed && !mBlockSignals )
+    emit tableChanged();
+}
+
+void QgsTableEditorWidget::setSelectionRowHeight( double height )
+{
+  const QModelIndexList selection = selectedIndexes();
+  bool changed = false;
+  mBlockSignals++;
+  const QList< int > rows = collectUniqueRows( selection );
+  for ( int row : rows )
+  {
+    for ( int col = 0; col < columnCount(); ++col )
+    {
+      if ( QTableWidgetItem *i = item( row, col ) )
+      {
+        if ( i->data( RowHeight ).toDouble() != height )
+        {
+          i->setData( RowHeight, height );
+          changed = true;
+        }
+      }
+      else
+      {
+        QTableWidgetItem *newItem = new QTableWidgetItem();
+        newItem->setData( RowHeight, height );
+        setItem( row, col, newItem );
+        changed = true;
+      }
+    }
+  }
+  mBlockSignals--;
+  if ( changed && !mBlockSignals )
+    emit tableChanged();
+}
+
+void QgsTableEditorWidget::setSelectionColumnWidth( double width )
+{
+  const QModelIndexList selection = selectedIndexes();
+  bool changed = false;
+  mBlockSignals++;
+  const QList< int > cols = collectUniqueColumns( selection );
+  for ( int col : cols )
+  {
+    for ( int row = 0; row < rowCount(); ++row )
+    {
+      if ( QTableWidgetItem *i = item( row, col ) )
+      {
+        if ( i->data( ColumnWidth ).toDouble() != width )
+        {
+          i->setData( ColumnWidth, width );
+          changed = true;
+        }
+      }
+      else
+      {
+        QTableWidgetItem *newItem = new QTableWidgetItem();
+        newItem->setData( ColumnWidth, width );
+        setItem( row, col, newItem );
+        changed = true;
+      }
     }
   }
   mBlockSignals--;

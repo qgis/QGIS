@@ -44,6 +44,42 @@ Returns the current contents of the editor widget table.
 .. seealso:: :py:func:`setTableContents`
 %End
 
+    double tableRowHeight( int row );
+%Docstring
+Returns the configured row height for the specified ``row``, or 0 if an automatic height
+should be used for the row.
+
+.. seealso:: :py:func:`setTableRowHeight`
+%End
+
+    double tableColumnWidth( int column );
+%Docstring
+Returns the configured column width for the specified ``column``, or 0 if an automatic width
+should be used for the column.
+
+.. seealso:: :py:func:`setTableColumnWidth`
+%End
+
+    void setTableRowHeight( int row, double height );
+%Docstring
+Sets the configured row ``height`` for the specified ``row``. Set ``height`` to 0
+if an automatic height should be used for the row.
+
+This should be called after a call to setTableContents().
+
+.. seealso:: :py:func:`tableRowHeight`
+%End
+
+    void setTableColumnWidth( int column, double width );
+%Docstring
+Sets the configured column ``width`` for the specified ``column``. Set ``width`` to 0
+if an automatic width should be used for the column.
+
+This should be called after a call to setTableContents().
+
+.. seealso:: :py:func:`tableColumnWidth`
+%End
+
   signals:
 
     void tableChanged();

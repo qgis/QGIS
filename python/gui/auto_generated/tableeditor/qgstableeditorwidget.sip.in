@@ -98,6 +98,54 @@ invalid color will be returned.
 .. seealso:: :py:func:`selectionForegroundColor`
 %End
 
+    double selectionRowHeight();
+%Docstring
+Returns the height (in millimeters) of the rows associated with the current selection,
+or 0 if an automatic row height is desired, or -1 if the selection has mixed row heights.
+
+.. seealso:: :py:func:`setSelectionRowHeight`
+%End
+
+    double selectionColumnWidth();
+%Docstring
+Returns the width (in millimeters) of the columns associated with the current selection,
+or 0 if an automatic column width is desired.
+
+.. seealso:: :py:func:`setSelectionColumnWidth`
+%End
+
+    double tableRowHeight( int row );
+%Docstring
+Returns the configured row height for the specified ``row``, or 0 if an automatic height
+should be used for the row.
+%End
+
+    double tableColumnWidth( int column );
+%Docstring
+Returns the configured column width for the specified ``column``, or 0 if an automatic width
+should be used for the column.
+%End
+
+    void setTableRowHeight( int row, double height );
+%Docstring
+Sets the configured row ``height`` for the specified ``row``. Set ``height`` to 0
+if an automatic height should be used for the row.
+
+This should be called after a call to setTableContents().
+
+.. seealso:: :py:func:`tableRowHeight`
+%End
+
+    void setTableColumnWidth( int column, double width );
+%Docstring
+Sets the configured column ``width`` for the specified ``column``. Set ``width`` to 0
+if an automatic width should be used for the column.
+
+This should be called after a call to setTableContents().
+
+.. seealso:: :py:func:`tableColumnWidth`
+%End
+
   public slots:
 
     void insertRowsBelow();
@@ -179,6 +227,20 @@ Sets the background color for the currently selected cells.
 .. seealso:: :py:func:`selectionBackgroundColor`
 
 .. seealso:: :py:func:`setSelectionForegroundColor`
+%End
+
+    void setSelectionRowHeight( double height );
+%Docstring
+Sets the row ``height`` (in millimeters) for the currently selected rows, or 0 for automatic row height.
+
+.. seealso:: :py:func:`setSelectionColumnWidth`
+%End
+
+    void setSelectionColumnWidth( double height );
+%Docstring
+Sets the column ``width`` (in millimeters) for the currently selected columns, or 0 for automatic column width.
+
+.. seealso:: :py:func:`setSelectionRowHeight`
 %End
 
   protected:
