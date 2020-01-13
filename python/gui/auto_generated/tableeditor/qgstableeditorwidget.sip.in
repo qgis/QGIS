@@ -50,6 +50,19 @@ Returns the current contents of the editor widget table.
 Sets the numeric ``format`` to use for the currently selected cells.
 
 Ownership of ``format`` is transferred to the widget.
+
+.. seealso:: :py:func:`selectionNumericFormat`
+%End
+
+    QgsNumericFormat *selectionNumericFormat();
+%Docstring
+Returns the numeric format used for the currently selected cells, or
+``None`` if the selection has no numeric format set.
+
+If the selected cells have a mix of different formats then ``None``
+will be returned.
+
+.. seealso:: :py:func:`setSelectionNumericFormat`
 %End
 
     QColor selectionForegroundColor();

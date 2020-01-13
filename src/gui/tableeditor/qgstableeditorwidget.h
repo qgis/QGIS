@@ -62,8 +62,21 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
      * Sets the numeric \a format to use for the currently selected cells.
      *
      * Ownership of \a format is transferred to the widget.
+     *
+     * \see selectionNumericFormat()
      */
     void setSelectionNumericFormat( QgsNumericFormat *format SIP_TRANSFER );
+
+    /**
+     * Returns the numeric format used for the currently selected cells, or
+     * NULLPTR if the selection has no numeric format set.
+     *
+     * If the selected cells have a mix of different formats then NULLPTR
+     * will be returned.
+     *
+     * \see setSelectionNumericFormat()
+     */
+    QgsNumericFormat *selectionNumericFormat();
 
     /**
      * Returns the foreground color for the currently selected cells.
