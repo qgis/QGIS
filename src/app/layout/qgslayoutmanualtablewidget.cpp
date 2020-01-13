@@ -108,7 +108,7 @@ bool QgsLayoutManualTableWidget::setNewItem( QgsLayoutItem *item )
   if ( !multiFrame )
     return false;
 
-  if ( multiFrame->type() != QgsLayoutItemRegistry::LayoutAttributeTable )
+  if ( multiFrame->type() != QgsLayoutItemRegistry::LayoutManualTable )
     return false;
 
   if ( mTable )
