@@ -50,17 +50,24 @@ class QgsJoinByLocationAlgorithm : public QgsProcessingAlgorithm
 
   protected:
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    bool processFeatures( QgsFeature &joinFeature, QgsProcessingFeedback *feedback );
-    bool featureFilter( const QgsFeature &feature, QgsGeometryEngine *engine ) const;
+    bool processFeatureFromJoinSource( QgsFeature &joinFeature, QgsProcessingFeedback *feedback );
+    bool processFeatureFromInputSource( QgsFeature &inputFeature, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+    bool featureFilter( const QgsFeature &feature, QgsGeometryEngine *engine, bool comparingToJoinedFeature ) const;
 
   private:
+
+    void processAlgorithmByIteratingOverJoinedSource( QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+    void processAlgorithmByIteratingOverInputSource( QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+
     enum JoinMethod
     {
       OneToMany = 0,
-      OneToOne = 1,
+      JoinToFirst = 1,
+      JoinToLargestOverlap = 2
     };
     long mJoinedCount = 0;
     std::unique_ptr< QgsProcessingFeatureSource > mBaseSource;
+    std::unique_ptr< QgsProcessingFeatureSource > mJoinSource;
     QgsAttributeList mJoinedFieldIndices;
     bool mDiscardNonMatching = false;
     std::unique_ptr< QgsFeatureSink > mJoinedFeatures;

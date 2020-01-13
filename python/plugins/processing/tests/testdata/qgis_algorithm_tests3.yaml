@@ -1400,6 +1400,122 @@ tests:
         name: expected/join_by_location_equals.gml
         type: vector
 
+  - algorithm: native:joinattributesbylocation
+    name: Join by location, largest overlap, polygons to lines
+    params:
+      DISCARD_NONMATCHING: false
+      INPUT:
+        name: polys.gml|layername=polys2
+        type: vector
+      JOIN:
+        name: custom/join_lines_crossing_multiple_polygons.gml|layername=join_lines_crossing_multiple_polygons
+        type: vector
+      METHOD: 2
+      PREDICATE:
+      - 0
+      PREFIX: ''
+    results:
+      OUTPUT:
+        name: expected/join_polys_to_lines_largest.gml
+        type: vector
+
+  - algorithm: native:joinattributesbylocation
+    name: Join by location, largest overlap, polygons to lines, discard no matching
+    params:
+      DISCARD_NONMATCHING: true
+      INPUT:
+        name: polys.gml|layername=polys2
+        type: vector
+      JOIN:
+        name: custom/join_lines_crossing_multiple_polygons.gml|layername=join_lines_crossing_multiple_polygons
+        type: vector
+      METHOD: 2
+      PREDICATE:
+      - 0
+      PREFIX: ''
+    results:
+      OUTPUT:
+        name: expected/join_polys_to_lines_largest_discard.gml
+        type: vector
+
+  - algorithm: native:joinattributesbylocation
+    name: Join by location, largest overlap, polygons to lines, save no matching
+    params:
+      DISCARD_NONMATCHING: true
+      INPUT:
+        name: polys.gml|layername=polys2
+        type: vector
+      JOIN:
+        name: custom/join_lines_crossing_multiple_polygons.gml|layername=join_lines_crossing_multiple_polygons
+        type: vector
+      METHOD: 2
+      PREDICATE:
+      - 0
+      PREFIX: ''
+    results:
+      NON_MATCHING:
+        name: expected/join_polys_to_lines_largest_unjoined.gml
+        type: vector
+
+  - algorithm: native:joinattributesbylocation
+    name: Join by location, largest overlap, polygons to polygons, subset of fields
+    params:
+      DISCARD_NONMATCHING: false
+      INPUT:
+        name: polys.gml|layername=polys2
+        type: vector
+      JOIN:
+        name: custom/polygons_crossing_multiple_polygons.gml|layername=polygons_crossing_multiple_polygons
+        type: vector
+      JOIN_FIELDS:
+      - name
+      METHOD: 2
+      PREDICATE:
+      - 0
+      PREFIX: ''
+    results:
+      OUTPUT:
+        name: expected/join_polys_to_polys_largest.gml
+        type: vector
+
+  - algorithm: native:joinattributesbylocation
+    name: Join by location, largest overlap, lines to polygons
+    params:
+      DISCARD_NONMATCHING: false
+      INPUT:
+        name: custom/join_lines_crossing_multiple_polygons.gml|layername=join_lines_crossing_multiple_polygons
+        type: vector
+      JOIN:
+        name: polys.gml|layername=polys2
+        type: vector
+      METHOD: 2
+      PREDICATE:
+      - 0
+      PREFIX: ''
+    results:
+      OUTPUT:
+        name: expected/join_lines_to_polys_largest.gml
+        type: vector
+
+  - algorithm: native:joinattributesbylocation
+    name: Join by location, largest overlap, lines to lines
+    params:
+      DISCARD_NONMATCHING: false
+      INPUT:
+        name: custom/join_lines_crossing_multiple_lines.gml|layername=join_lines_crossing_multiple_lines
+        type: vector
+      JOIN:
+        name: custom/join_lines_crossing_multiple_polygons.gml|layername=join_lines_crossing_multiple_polygons
+        type: vector
+      METHOD: 2
+      PREDICATE:
+      - 0
+      PREFIX: ''
+    results:
+      OUTPUT:
+        name: expected/join_lines_to_lines_largest.gml
+        type: vector
+
   - algorithm: qgis:joinbylocationsummary
     name: Join by location (summary), intersects
     params:
