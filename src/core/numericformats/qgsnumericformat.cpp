@@ -16,6 +16,7 @@
 
 #include "qgsnumericformat.h"
 #include "qgsxmlutils.h"
+#include "qgsreadwritecontext.h"
 
 #include <QLocale>
 
@@ -47,5 +48,15 @@ void QgsNumericFormat::writeXml( QDomElement &element, QDomDocument &document, c
   QDomElement configElement = QgsXmlUtils::writeVariant( config, document );
   element.appendChild( configElement );
   element.setAttribute( QStringLiteral( "id" ), id() );
+}
+
+bool QgsNumericFormat::operator==( const QgsNumericFormat &other ) const
+{
+  return id() == other.id() && configuration( QgsReadWriteContext() ) == other.configuration( QgsReadWriteContext() );
+}
+
+bool QgsNumericFormat::operator!=( const QgsNumericFormat &other ) const
+{
+  return !operator==( other );
 }
 

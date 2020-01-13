@@ -236,6 +236,9 @@ Writes the format to an XML ``element``.
 .. seealso:: :py:func:`QgsNumericFormatRegistry.createFromXml`
 %End
 
+    bool operator==( const QgsNumericFormat &other ) const;
+    bool operator!=( const QgsNumericFormat &other ) const;
+
 };
 
 /************************************************************************
