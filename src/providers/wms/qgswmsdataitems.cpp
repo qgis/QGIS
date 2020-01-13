@@ -371,7 +371,7 @@ bool QgsWMSLayerItem::equal( const QgsDataItem *other )
   {
     return false;
   }
-  const QgsWMSLayerItem *otherLayer = dynamic_cast<const QgsWMSLayerItem *>( other );
+  const QgsWMSLayerItem *otherLayer = qobject_cast<const QgsWMSLayerItem *>( other );
   if ( !otherLayer )
   {
     return false;
