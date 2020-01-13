@@ -549,32 +549,46 @@ void QgsTableEditorWidget::clearSelectedCells()
 void QgsTableEditorWidget::setSelectionForegroundColor( const QColor &color )
 {
   const QModelIndexList selection = selectedIndexes();
+  bool changed = false;
+  mBlockSignals++;
   for ( const QModelIndex &index : selection )
   {
     if ( QTableWidgetItem *i = item( index.row(), index.column() ) )
     {
-      i->setData( Qt::ForegroundRole, color.isValid() ? color : QVariant() );
+      if ( i->data( Qt::ForegroundRole ).value< QColor >() != color )
+      {
+        i->setData( Qt::ForegroundRole, color.isValid() ? color : QVariant() );
+        changed = true;
+      }
     }
     else
     {
       QTableWidgetItem *newItem = new QTableWidgetItem();
       newItem->setData( Qt::ForegroundRole, color.isValid() ? color : QVariant() );
       setItem( index.row(), index.column(), newItem );
+      changed = true;
     }
   }
-  if ( !mBlockSignals )
+  mBlockSignals--;
+  if ( changed && !mBlockSignals )
     emit tableChanged();
 }
 
 void QgsTableEditorWidget::setSelectionBackgroundColor( const QColor &color )
 {
   const QModelIndexList selection = selectedIndexes();
+  bool changed = false;
+  mBlockSignals++;
   for ( const QModelIndex &index : selection )
   {
     if ( QTableWidgetItem *i = item( index.row(), index.column() ) )
     {
-      i->setData( Qt::BackgroundRole, color.isValid() ? color : QVariant() );
-      i->setData( PresetBackgroundColorRole, color.isValid() ? color : QVariant() );
+      if ( i->data( PresetBackgroundColorRole ).value< QColor >() != color )
+      {
+        i->setData( Qt::BackgroundRole, color.isValid() ? color : QVariant() );
+        i->setData( PresetBackgroundColorRole, color.isValid() ? color : QVariant() );
+        changed = true;
+      }
     }
     else
     {
@@ -582,9 +596,11 @@ void QgsTableEditorWidget::setSelectionBackgroundColor( const QColor &color )
       newItem->setData( Qt::BackgroundRole, color.isValid() ? color : QVariant() );
       newItem->setData( PresetBackgroundColorRole, color.isValid() ? color : QVariant() );
       setItem( index.row(), index.column(), newItem );
+      changed = true;
     }
   }
-  if ( !mBlockSignals )
+  mBlockSignals--;
+  if ( changed && !mBlockSignals )
     emit tableChanged();
 }
 
