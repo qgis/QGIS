@@ -46,6 +46,7 @@ SET(QGIS_APP_SRCS
   qgsdisplayangle.cpp
   qgsfieldcalculator.cpp
   qgsfirstrundialog.cpp
+  qgsfixattributedialog.cpp
   qgsgeometryvalidationservice.cpp
   qgsgeometryvalidationdock.cpp
   qgsgeometryvalidationmodel.cpp

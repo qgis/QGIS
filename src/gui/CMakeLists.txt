@@ -300,7 +300,6 @@ SET(QGIS_GUI_SRCS
   qgsfeatureselectiondlg.cpp
   qgsfieldcombobox.cpp
   qgsfieldexpressionwidget.cpp
-  qgsfixattributedialog.cpp
   qgsfeaturelistcombobox.cpp
   qgsfieldvalidator.cpp
   qgsfieldvalueslineedit.cpp
@@ -512,7 +511,6 @@ SET(QGIS_GUI_HDRS
   qgsfilewidget.h
   qgsfilterlineedit.h
   qgsfindfilesbypatternwidget.h
-  qgsfixattributedialog.h
   qgsfloatingwidget.h
   qgsfocuswatcher.h
   qgsfontbutton.h
