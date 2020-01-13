@@ -55,14 +55,11 @@ class QgsLayoutManualTableWidget: public QgsLayoutItemBaseWidget, private Ui::Qg
     void mGridStrokeWidthSpinBox_valueChanged( double d );
     void mGridColorButton_colorChanged( const QColor &newColor );
     void mBackgroundColorButton_colorChanged( const QColor &newColor );
-    void headerFontChanged();
-    void mHeaderFontColorButton_colorChanged( const QColor &newColor );
     void contentFontChanged();
     void mContentFontColorButton_colorChanged( const QColor &newColor );
     void mDrawHorizontalGrid_toggled( bool state );
     void mDrawVerticalGrid_toggled( bool state );
     void mShowGridGroupCheckBox_toggled( bool state );
-    void mHeaderHAlignmentComboBox_currentIndexChanged( int index );
     void mAddFramePushButton_clicked();
     void mResizeModeComboBox_currentIndexChanged( int index );
     void mDrawEmptyCheckBox_toggled( bool checked );

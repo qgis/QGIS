@@ -25,7 +25,7 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   : QMainWindow( parent )
 {
   setupUi( this );
-  setWindowTitle( tr( "QGIS Table Designer" ) );
+  setWindowTitle( tr( "Table Designer" ) );
 
   setAttribute( Qt::WA_DeleteOnClose );
   setDockOptions( dockOptions() | QMainWindow::GroupedDragging );
