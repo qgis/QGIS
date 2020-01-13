@@ -86,17 +86,17 @@ Encapsulates information relating to a GPS position fix.
 
     QChar fixMode;
 
-    int fixType = 0;
+    int fixType;
 
-    int quality = -1;
+    int quality;
 
-    int satellitesUsed = 0;
+    int satellitesUsed;
 
     QChar status;
 
     QList<int> satPrn;
 
-    bool satInfoComplete = false;
+    bool satInfoComplete;
 
     bool isValid() const;
 %Docstring

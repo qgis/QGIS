@@ -177,6 +177,7 @@ class CORE_EXPORT QgsGpsInformation
     double hacc;
     //! Vertical accuracy in meters
     double vacc;
+#endif
 
     /**
      * The date and time at which this position was reported, in UTC time.
