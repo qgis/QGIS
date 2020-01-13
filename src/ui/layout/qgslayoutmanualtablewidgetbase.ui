@@ -365,7 +365,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Contents font</string>
+             <string>Contents Font</string>
             </property>
            </widget>
           </item>
