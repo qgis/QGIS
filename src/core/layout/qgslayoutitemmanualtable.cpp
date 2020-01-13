@@ -228,7 +228,7 @@ bool QgsLayoutItemManualTable::calculateMaxRowHeights()
   QMap<int, double> newHeights;
   for ( auto it = mMaxRowHeightMap.constBegin(); it != mMaxRowHeightMap.constEnd(); ++it )
   {
-    // first row in mMaxRowHeightMap correponds to header, which we ignore here
+    // first row in mMaxRowHeightMap corresponds to header, which we ignore here
     const int row = it.key() - 1;
     const double presetHeight = mRowHeights.value( row );
     double thisRowHeight = it.value();
