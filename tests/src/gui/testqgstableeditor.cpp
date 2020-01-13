@@ -36,6 +36,7 @@ class TestQgsTableEditor: public QObject
     void deleteColumns();
     void selectRows();
     void selectColumns();
+    void clearSelected();
 
   private:
 
@@ -661,6 +662,52 @@ void TestQgsTableEditor::selectColumns()
   w.selectionModel()->clearSelection();
   w.expandColumnSelection();
   QCOMPARE( w.selectionModel()->selectedIndexes().size(), 0 );
+}
+
+void TestQgsTableEditor::clearSelected()
+{
+  QgsTableEditorWidget w;
+  w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "A1" ) ) << QgsTableCell( QStringLiteral( "A2" ) ) << QgsTableCell( QStringLiteral( "A3" ) ) )
+                      << ( QgsTableRow() << QgsTableCell( QStringLiteral( "B1" ) )  << QgsTableCell( QStringLiteral( "B2" ) ) << QgsTableCell( QStringLiteral( "B3" ) ) )
+                      << ( QgsTableRow() << QgsTableCell( QStringLiteral( "C1" ) ) << QgsTableCell( QStringLiteral( "C2" ) ) << QgsTableCell( QStringLiteral( "C3" ) ) ) );
+
+  QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
+  w.selectionModel()->clearSelection();
+  w.clearSelectedCells();
+  QCOMPARE( spy.count(), 0 );
+  QCOMPARE( w.tableContents().size(), 3 );
+  QCOMPARE( w.tableContents().at( 0 ).size(), 3 );
+  QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content().toString(), QStringLiteral( "A1" ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content().toString(), QStringLiteral( "A2" ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 2 ).content().toString(), QStringLiteral( "A3" ) );
+  QCOMPARE( w.tableContents().at( 1 ).size(), 3 );
+  QCOMPARE( w.tableContents().at( 1 ).at( 0 ).content().toString(), QStringLiteral( "B1" ) );
+  QCOMPARE( w.tableContents().at( 1 ).at( 1 ).content().toString(), QStringLiteral( "B2" ) );
+  QCOMPARE( w.tableContents().at( 1 ).at( 2 ).content().toString(), QStringLiteral( "B3" ) );
+  QCOMPARE( w.tableContents().at( 2 ).size(), 3 );
+  QCOMPARE( w.tableContents().at( 2 ).at( 0 ).content().toString(), QStringLiteral( "C1" ) );
+  QCOMPARE( w.tableContents().at( 2 ).at( 1 ).content().toString(), QStringLiteral( "C2" ) );
+  QCOMPARE( w.tableContents().at( 2 ).at( 2 ).content().toString(), QStringLiteral( "C3" ) );
+
+  w.selectionModel()->select( w.model()->index( 1, 1 ), QItemSelectionModel::ClearAndSelect );
+  w.selectionModel()->select( w.model()->index( 1, 2 ), QItemSelectionModel::Select );
+  w.selectionModel()->select( w.model()->index( 0, 2 ), QItemSelectionModel::Select );
+  w.clearSelectedCells();
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( w.tableContents().size(), 3 );
+  QCOMPARE( w.tableContents().at( 0 ).size(), 3 );
+  QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content().toString(), QStringLiteral( "A1" ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content().toString(), QStringLiteral( "A2" ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 2 ).content().toString(), QString() );
+  QCOMPARE( w.tableContents().at( 1 ).size(), 3 );
+  QCOMPARE( w.tableContents().at( 1 ).at( 0 ).content().toString(), QStringLiteral( "B1" ) );
+  QCOMPARE( w.tableContents().at( 1 ).at( 1 ).content().toString(), QString() );
+  QCOMPARE( w.tableContents().at( 1 ).at( 2 ).content().toString(), QString() );
+  QCOMPARE( w.tableContents().at( 2 ).size(), 3 );
+  QCOMPARE( w.tableContents().at( 2 ).at( 0 ).content().toString(), QStringLiteral( "C1" ) );
+  QCOMPARE( w.tableContents().at( 2 ).at( 1 ).content().toString(), QStringLiteral( "C2" ) );
+  QCOMPARE( w.tableContents().at( 2 ).at( 2 ).content().toString(), QStringLiteral( "C3" ) );
+
 }
 
 

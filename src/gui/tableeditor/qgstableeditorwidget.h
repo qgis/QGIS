@@ -196,7 +196,7 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
     QList< int > collectUniqueRows( const QModelIndexList &list ) const;
     QList< int > collectUniqueColumns( const QModelIndexList &list ) const;
 
-    bool mBlockSignals = false;
+    int mBlockSignals = 0;
     QHash< QTableWidgetItem *, QgsNumericFormat * > mNumericFormats;
     QMenu *mHeaderMenu = nullptr;
 
