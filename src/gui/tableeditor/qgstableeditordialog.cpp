@@ -60,7 +60,7 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   cc.setBackgroundColor( QColor( 255, 255, 255 ) );
   cc.setForegroundColor( QColor( 255, 0, 255 ) );
   c.last() << cc << QgsTableCell( "test4" );
-  mTableWidget->setTableData( c );
+  mTableWidget->setTableContents( c );
 
   connect( mTableWidget, &QgsTableEditorWidget::tableChanged, this, [ = ]
   {
@@ -82,17 +82,17 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
 
   mPropertiesDock->setFeatures( QDockWidget::NoDockWidgetFeatures );
 
-  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::foregroundColorChanged, mTableWidget, &QgsTableEditorWidget::setCellForegroundColor );
-  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::backgroundColorChanged, mTableWidget, &QgsTableEditorWidget::setCellBackgroundColor );
+  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::foregroundColorChanged, mTableWidget, &QgsTableEditorWidget::setSelectionForegroundColor );
+  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::backgroundColorChanged, mTableWidget, &QgsTableEditorWidget::setSelectionBackgroundColor );
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::numberFormatChanged, this, [ = ]
   {
-    mTableWidget->setCellNumericFormat( mFormattingWidget->numericFormat() );
+    mTableWidget->setSelectionNumericFormat( mFormattingWidget->numericFormat() );
   } );
 
   connect( mTableWidget, &QgsTableEditorWidget::activeCellChanged, this, [ = ]
   {
-    mFormattingWidget->setForegroundColor( mTableWidget->selectedCellForegroundColor() );
-    mFormattingWidget->setBackgroundColor( mTableWidget->selectedCellBackgroundColor() );
+    mFormattingWidget->setForegroundColor( mTableWidget->selectionForegroundColor() );
+    mFormattingWidget->setBackgroundColor( mTableWidget->selectionBackgroundColor() );
   } );
 
   addDockWidget( Qt::RightDockWidgetArea, mPropertiesDock );
@@ -104,22 +104,22 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   connect( mActionInsertColumnsAfter, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::insertColumnsAfter );
   connect( mActionDeleteRows, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::deleteRows );
   connect( mActionDeleteColumns, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::deleteColumns );
-  connect( mActionSelectRow, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::selectRows );
-  connect( mActionSelectColumn, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::selectColumns );
+  connect( mActionSelectRow, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::expandRowSelection );
+  connect( mActionSelectColumn, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::expandColumnSelection );
   connect( mActionSelectAll, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::selectAll );
   connect( mActionClear, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::clearSelectedCells );
 }
 
-void QgsTableEditorDialog::setTableData( const QgsTableContents &contents )
+void QgsTableEditorDialog::setTableContents( const QgsTableContents &contents )
 {
   mBlockSignals = true;
-  mTableWidget->setTableData( contents );
+  mTableWidget->setTableContents( contents );
   mBlockSignals = false;
 }
 
-QgsTableContents QgsTableEditorDialog::tableData() const
+QgsTableContents QgsTableEditorDialog::tableContents() const
 {
-  return mTableWidget->tableData();
+  return mTableWidget->tableContents();
 }
 
 #include "qgstableeditordialog.h"

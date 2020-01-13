@@ -259,7 +259,7 @@ void QgsTableEditorWidget::keyPressEvent( QKeyEvent *event )
   }
 }
 
-void QgsTableEditorWidget::setTableData( const QgsTableContents &contents )
+void QgsTableEditorWidget::setTableContents( const QgsTableContents &contents )
 {
   mBlockSignals = true;
   qDeleteAll( mNumericFormats );
@@ -292,7 +292,7 @@ void QgsTableEditorWidget::setTableData( const QgsTableContents &contents )
   emit tableChanged();
 }
 
-QgsTableContents QgsTableEditorWidget::tableData() const
+QgsTableContents QgsTableEditorWidget::tableContents() const
 {
   QgsTableContents items;
   items.reserve( rowCount() );
@@ -323,7 +323,7 @@ QgsTableContents QgsTableEditorWidget::tableData() const
   return items;
 }
 
-void QgsTableEditorWidget::setCellNumericFormat( QgsNumericFormat *format )
+void QgsTableEditorWidget::setSelectionNumericFormat( QgsNumericFormat *format )
 {
   std::unique_ptr< QgsNumericFormat > newFormat( format );
   const QModelIndexList selection = selectedIndexes();
@@ -342,7 +342,7 @@ void QgsTableEditorWidget::setCellNumericFormat( QgsNumericFormat *format )
     emit tableChanged();
 }
 
-QColor QgsTableEditorWidget::selectedCellForegroundColor()
+QColor QgsTableEditorWidget::selectionForegroundColor()
 {
   QColor c;
   bool first = true;
@@ -365,7 +365,7 @@ QColor QgsTableEditorWidget::selectedCellForegroundColor()
   return c;
 }
 
-QColor QgsTableEditorWidget::selectedCellBackgroundColor()
+QColor QgsTableEditorWidget::selectionBackgroundColor()
 {
   QColor c;
   bool first = true;
@@ -482,12 +482,14 @@ void QgsTableEditorWidget::deleteRows()
   if ( rows.empty() )
     return;
 
+  bool changed = false;
   for ( int i = rows.size() - 1; i >= 0 && rowCount() > 1; i-- )
   {
     removeRow( rows.at( i ) );
+    changed = true;
   }
   updateHeaders();
-  if ( !mBlockSignals )
+  if ( changed &&  !mBlockSignals )
     emit tableChanged();
 }
 
@@ -497,16 +499,18 @@ void QgsTableEditorWidget::deleteColumns()
   if ( columns.empty() )
     return;
 
+  bool changed = false;
   for ( int i = columns.size() - 1; i >= 0 && columnCount() > 1; i-- )
   {
     removeColumn( columns.at( i ) );
+    changed = true;
   }
   updateHeaders();
-  if ( !mBlockSignals )
+  if ( !mBlockSignals && changed )
     emit tableChanged();
 }
 
-void QgsTableEditorWidget::selectRows()
+void QgsTableEditorWidget::expandRowSelection()
 {
   const QModelIndexList s = selectedIndexes();
   for ( const QModelIndex &index : s )
@@ -515,7 +519,7 @@ void QgsTableEditorWidget::selectRows()
   }
 }
 
-void QgsTableEditorWidget::selectColumns()
+void QgsTableEditorWidget::expandColumnSelection()
 {
   const QModelIndexList s = selectedIndexes();
   for ( const QModelIndex &index : s )
@@ -538,7 +542,7 @@ void QgsTableEditorWidget::clearSelectedCells()
     emit tableChanged();
 }
 
-void QgsTableEditorWidget::setCellForegroundColor( const QColor &color )
+void QgsTableEditorWidget::setSelectionForegroundColor( const QColor &color )
 {
   const QModelIndexList selection = selectedIndexes();
   for ( const QModelIndex &index : selection )
@@ -558,7 +562,7 @@ void QgsTableEditorWidget::setCellForegroundColor( const QColor &color )
     emit tableChanged();
 }
 
-void QgsTableEditorWidget::setCellBackgroundColor( const QColor &color )
+void QgsTableEditorWidget::setSelectionBackgroundColor( const QColor &color )
 {
   const QModelIndexList selection = selectedIndexes();
   for ( const QModelIndex &index : selection )
