@@ -226,6 +226,7 @@ QgsSymbolLegendNode::QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const Qg
 
   updateLabel();
   connect( qobject_cast<QgsVectorLayer *>( nodeLayer->layer() ), &QgsVectorLayer::symbolFeatureCountMapChanged, this, &QgsSymbolLegendNode::updateLabel );
+  connect( qobject_cast<QgsVectorLayer *>( nodeLayer->layer() ), &QgsVectorLayer::rendererChanged, nodeLayer, &QgsLayerTreeLayer::updateSymbolExpressions );
   connect( nodeLayer, &QObject::destroyed, this, [ = ]() { mLayerNode = nullptr; } );
 
   if ( mItem.symbol() )
@@ -732,6 +733,7 @@ QgsExpressionContextScope *QgsSymbolLegendNode::createSymbolScope() const
   if ( vl )
   {
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), QVariant::fromValue( vl->featureCount( mItem.ruleKey() ) ), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_expression" ), QVariant::fromValue( mLayerNode->symbolExpression( mItem.ruleKey() ) ), true ) );
   }
   return scope;
 }
