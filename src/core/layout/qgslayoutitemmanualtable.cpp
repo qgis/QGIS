@@ -107,26 +107,28 @@ void QgsLayoutItemManualTable::setTableContents( const QgsTableContents &content
 {
   mContents = contents;
 
-  // refresh columns
-  QgsLayoutTableColumns columns;
-  if ( !mContents.empty() )
-  {
-    const QgsTableRow &firstRow = mContents[ 0 ];
-    columns.reserve( firstRow.size() );
-    for ( const QgsTableCell &cell : firstRow )
-    {
-      ( void )cell;
-      columns << new QgsLayoutTableColumn( QString() );
-    }
-  }
-  setColumns( columns );
-
+  refreshColumns();
   refreshAttributes();
 }
 
 QgsTableContents QgsLayoutItemManualTable::tableContents() const
 {
   return mContents;
+}
+
+void QgsLayoutItemManualTable::setRowHeights( const QList<double> &heights )
+{
+  mRowHeights = heights;
+
+  refreshAttributes();
+}
+
+void QgsLayoutItemManualTable::setColumnWidths( const QList<double> &widths )
+{
+  mColumnWidths = widths;
+
+  refreshColumns();
+  refreshAttributes();
 }
 
 bool QgsLayoutItemManualTable::writePropertiesToElement( QDomElement &tableElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
@@ -149,6 +151,24 @@ bool QgsLayoutItemManualTable::writePropertiesToElement( QDomElement &tableElem,
   }
   tableElem.appendChild( contentsElement );
 
+  QDomElement rowHeightsElement = doc.createElement( QStringLiteral( "rowHeights" ) );
+  for ( double height : mRowHeights )
+  {
+    QDomElement rowElement = doc.createElement( QStringLiteral( "row" ) );
+    rowElement.setAttribute( QStringLiteral( "height" ), height );
+    rowHeightsElement.appendChild( rowElement );
+  }
+  tableElem.appendChild( rowHeightsElement );
+
+  QDomElement columnWidthsElement = doc.createElement( QStringLiteral( "columnWidths" ) );
+  for ( double width : mColumnWidths )
+  {
+    QDomElement columnElement = doc.createElement( QStringLiteral( "column" ) );
+    columnElement.setAttribute( QStringLiteral( "width" ), width );
+    columnWidthsElement.appendChild( columnElement );
+  }
+  tableElem.appendChild( columnWidthsElement );
+
   return true;
 }
 
@@ -156,6 +176,24 @@ bool QgsLayoutItemManualTable::readPropertiesFromElement( const QDomElement &ite
 {
   if ( !QgsLayoutTable::readPropertiesFromElement( itemElem, doc, context ) )
     return false;
+
+  mRowHeights.clear();
+  const QDomNodeList rowHeightNodeList = itemElem.firstChildElement( QStringLiteral( "rowHeights" ) ).childNodes();
+  mRowHeights.reserve( rowHeightNodeList.size() );
+  for ( int r = 0; r < rowHeightNodeList.size(); ++r )
+  {
+    const QDomElement rowHeightElement = rowHeightNodeList.at( r ).toElement();
+    mRowHeights.append( rowHeightElement.attribute( QStringLiteral( "height" ) ).toDouble() );
+  }
+
+  mColumnWidths.clear();
+  const QDomNodeList columnWidthNodeList = itemElem.firstChildElement( QStringLiteral( "columnWidths" ) ).childNodes();
+  mColumnWidths.reserve( columnWidthNodeList.size() );
+  for ( int r = 0; r < columnWidthNodeList.size(); ++r )
+  {
+    const QDomElement columnWidthElement = columnWidthNodeList.at( r ).toElement();
+    mColumnWidths.append( columnWidthElement.attribute( QStringLiteral( "width" ) ).toDouble() );
+  }
 
   QgsTableContents newContents;
   const QDomElement contentsElement = itemElem.firstChildElement( QStringLiteral( "contents" ) );
@@ -180,4 +218,45 @@ bool QgsLayoutItemManualTable::readPropertiesFromElement( const QDomElement &ite
 
   emit changed();
   return true;
+}
+
+bool QgsLayoutItemManualTable::calculateMaxRowHeights()
+{
+  if ( !QgsLayoutTable::calculateMaxRowHeights() )
+    return false;
+
+  QMap<int, double> newHeights;
+  for ( auto it = mMaxRowHeightMap.constBegin(); it != mMaxRowHeightMap.constEnd(); ++it )
+  {
+    // first row in mMaxRowHeightMap correponds to header, which we ignore here
+    const int row = it.key() - 1;
+    const double presetHeight = mRowHeights.value( row );
+    double thisRowHeight = it.value();
+    if ( presetHeight > 0 )
+      thisRowHeight = presetHeight;
+    newHeights.insert( row + 1, thisRowHeight );
+  }
+  mMaxRowHeightMap = newHeights;
+  return true;
+}
+
+void QgsLayoutItemManualTable::refreshColumns()
+{
+  // refresh columns
+  QgsLayoutTableColumns columns;
+  if ( !mContents.empty() )
+  {
+    int colIndex = 0;
+    const QgsTableRow &firstRow = mContents[ 0 ];
+    columns.reserve( firstRow.size() );
+    for ( const QgsTableCell &cell : firstRow )
+    {
+      ( void )cell;
+      std::unique_ptr< QgsLayoutTableColumn > newCol = qgis::make_unique< QgsLayoutTableColumn >( QString() );
+      newCol->setWidth( mColumnWidths.value( colIndex ) );
+      columns << newCol.release();
+      colIndex++;
+    }
+  }
+  setColumns( columns );
 }

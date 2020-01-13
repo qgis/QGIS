@@ -66,14 +66,60 @@ class CORE_EXPORT QgsLayoutItemManualTable: public QgsLayoutTable
      */
     QgsTableContents tableContents() const;
 
+    /**
+     * Returns the list of row heights (in millimeters) to use when rendering the table.
+     *
+     * A height of 0 indicates that the row height should be automatically calculated.
+     *
+     * \see setRowHeights()
+     * \see columnWidths()
+     */
+    QList< double > rowHeights() const { return mRowHeights; }
+
+    /**
+     * Sets the list of row \a heights (in millimeters) to use when rendering the table.
+     *
+     * A height of 0 indicates that the row height should be automatically calculated.
+     *
+     * \see rowHeights()
+     * \see setColumnWidths()
+     */
+    void setRowHeights( const QList< double > &heights );
+
+    /**
+     * Returns the list of column widths (in millimeters) to use when rendering the table.
+     *
+     * A width of 0 indicates that the column width should be automatically calculated.
+     *
+     * \see setColumnWidths()
+     * \see rowHeights()
+     */
+    QList< double > columnWidths() const { return mColumnWidths; }
+
+    /**
+     * Sets the list of column \a widths (in millimeters) to use when rendering the table.
+     *
+     * A width of 0 indicates that the column width should be automatically calculated.
+     *
+     * \see columnWidths()
+     * \see setColumnWidths()
+     */
+    void setColumnWidths( const QList< double > &widths );
+
   protected:
 
     bool writePropertiesToElement( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     bool readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context ) override;
+    bool calculateMaxRowHeights() override;
 
   private:
 
     QgsTableContents mContents;
+
+    QList< double > mRowHeights;
+    QList< double > mColumnWidths;
+
+    void refreshColumns();
 
 };
 
