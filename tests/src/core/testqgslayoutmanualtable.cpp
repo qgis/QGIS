@@ -24,6 +24,8 @@
 #include "qgsreadwritecontext.h"
 #include "qgsprintlayout.h"
 #include "qgscurrencynumericformat.h"
+#include "qgsmultirenderchecker.h"
+#include "qgsfontutils.h"
 
 #include <QObject>
 #include "qgstest.h"
@@ -44,6 +46,8 @@ class TestQgsLayoutManualTable : public QObject
     void setContents();
     void cellStyles();
     void cellFormat();
+    void rowHeight();
+    void columnWidth();
 
   private:
     QString mReport;
@@ -229,6 +233,9 @@ void TestQgsLayoutManualTable::setContents()
   QCOMPARE( table->tableContents().at( 1 ).at( 1 ).content().toString(), QStringLiteral( "B" ) );
   QCOMPARE( table->tableContents().at( 1 ).at( 2 ).content().toString(), QStringLiteral( "C" ) );
 
+  table->setRowHeights( QList< double >() << 5.5 << 4.0 );
+  table->setColumnWidths( QList< double >() << 15.5 << 14.0 << 13.4 );
+
   // save and restore
 
   //write to XML
@@ -253,6 +260,9 @@ void TestQgsLayoutManualTable::setContents()
   QCOMPARE( tableFromXml->tableContents().at( 1 ).at( 0 ).content().toString(), QStringLiteral( "A" ) );
   QCOMPARE( tableFromXml->tableContents().at( 1 ).at( 1 ).content().toString(), QStringLiteral( "B" ) );
   QCOMPARE( tableFromXml->tableContents().at( 1 ).at( 2 ).content().toString(), QStringLiteral( "C" ) );
+
+  QCOMPARE( tableFromXml->rowHeights(), QList< double >() << 5.5 << 4.0 );
+  QCOMPARE( tableFromXml->columnWidths(), QList< double >() << 15.5 << 14.0 << 13.4 );
 }
 
 void TestQgsLayoutManualTable::cellStyles()
@@ -312,6 +322,62 @@ void TestQgsLayoutManualTable::cellFormat()
 
   table->setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Jet" ) ) << QgsTableCell( 76 ) << c3 ) );
   compareTable( table, expectedRows );
+}
+
+void TestQgsLayoutManualTable::rowHeight()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemManualTable *table = new QgsLayoutItemManualTable( &l );
+  QgsLayoutFrame *frame1 = new QgsLayoutFrame( &l, table );
+  frame1->attemptSetSceneRect( QRectF( 5, 5, 100, 60 ) );
+  frame1->setFrameEnabled( true );
+  table->addFrame( frame1 );
+  table->setBackgroundColor( Qt::yellow );
+
+  table->setContentFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+
+  frame1->setFrameEnabled( false );
+  table->setShowGrid( true );
+  table->setHorizontalGrid( true );
+  table->setVerticalGrid( true );
+
+  table->setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Jet" ) ) << QgsTableCell( QStringLiteral( "Helicopter" ) ) << QgsTableCell( QStringLiteral( "Plane" ) ) )
+                           << ( QgsTableRow() << QgsTableCell( QStringLiteral( "A" ) ) << QgsTableCell( QStringLiteral( "B" ) ) << QgsTableCell( QStringLiteral( "C" ) ) ) );
+
+  table->setRowHeights( QList< double >() << 0 << 40.0 );
+  QgsLayoutChecker checker( QStringLiteral( "manualtable_rowheight" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "layout_manual_table" ) );
+  bool result = checker.testLayout( mReport );
+  QVERIFY( result );
+}
+
+void TestQgsLayoutManualTable::columnWidth()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemManualTable *table = new QgsLayoutItemManualTable( &l );
+  QgsLayoutFrame *frame1 = new QgsLayoutFrame( &l, table );
+  frame1->attemptSetSceneRect( QRectF( 5, 5, 100, 60 ) );
+  frame1->setFrameEnabled( true );
+  table->addFrame( frame1 );
+  table->setBackgroundColor( Qt::yellow );
+
+  table->setContentFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+
+  frame1->setFrameEnabled( false );
+  table->setShowGrid( true );
+  table->setHorizontalGrid( true );
+  table->setVerticalGrid( true );
+
+  table->setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Jet" ) ) << QgsTableCell( QStringLiteral( "Helicopter" ) ) << QgsTableCell( QStringLiteral( "Plane" ) ) )
+                           << ( QgsTableRow() << QgsTableCell( QStringLiteral( "A" ) ) << QgsTableCell( QStringLiteral( "B" ) ) << QgsTableCell( QStringLiteral( "C" ) ) ) );
+
+  table->setColumnWidths( QList< double >() << 0 << 10.0 << 30.0 );
+  QgsLayoutChecker checker( QStringLiteral( "manualtable_columnwidth" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "layout_manual_table" ) );
+  bool result = checker.testLayout( mReport );
+  QVERIFY( result );
 }
 
 QGSTEST_MAIN( TestQgsLayoutManualTable )
