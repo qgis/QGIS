@@ -300,6 +300,9 @@ class CORE_EXPORT QgsNumericFormat
      */
     void writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
+    bool operator==( const QgsNumericFormat &other ) const;
+    bool operator!=( const QgsNumericFormat &other ) const;
+
 };
 
 #endif // QGSNUMERICFORMAT_H

@@ -70,6 +70,16 @@ class TestQgsNumericFormat(unittest.TestCase):
         f3 = QgsNumericFormatRegistry().createFromXml(elem, QgsReadWriteContext())
         self.assertIsInstance(f3, QgsFallbackNumericFormat)
 
+    def testEquality(self):
+        f = QgsBasicNumericFormat()
+        f2 = QgsBasicNumericFormat()
+        self.assertEqual(f, f2)
+        f2.setShowPlusSign(True)
+        self.assertNotEqual(f, f2)
+        f.setShowPlusSign(True)
+        self.assertEqual(f, f2)
+        self.assertNotEqual(f, QgsCurrencyNumericFormat())
+
     def testBasicFormat(self):
         """ test basic formatter """
         f = QgsBasicNumericFormat()
