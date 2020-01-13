@@ -108,6 +108,25 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         rl = QgsRasterLayer(self.dbconn + ' sslmode=disable srid=3035  table="public"."raster_tiled_3035" sql=', 'test', 'postgresraster')
         self.assertTrue(rl.isValid())
 
+    def testWhereCondition(self):
+        """Read raster layer with where condition"""
+
+        rl_nowhere = QgsRasterLayer(self.dbconn + ' sslmode=disable srid=3035  table="public"."raster_3035_tiled_no_overviews"' +
+                                    'sql=', 'test', 'postgresraster')
+        self.assertTrue(rl_nowhere.isValid())
+
+        rl = QgsRasterLayer(self.dbconn + ' sslmode=disable srid=3035  table="public"."raster_3035_tiled_no_overviews"' +
+                            'sql="category" = \'cat2\'', 'test', 'postgresraster')
+        self.assertTrue(rl.isValid())
+
+        self.assertTrue(not rl.extent().isEmpty())
+        self.assertNotEqual(rl_nowhere.extent(), rl.extent())
+
+        self.assertIsNone(rl.dataProvider().identify(QgsPointXY(4080137.9, 2430687.9), QgsRaster.IdentifyFormatValue).results()[1])
+        self.assertIsNotNone(rl_nowhere.dataProvider().identify(QgsPointXY(4080137.9, 2430687.9), QgsRaster.IdentifyFormatValue).results()[1])
+
+        self.assertAlmostEqual(rl.dataProvider().identify(rl.extent().center(), QgsRaster.IdentifyFormatValue).results()[1], 223.38, 2)
+
 
 if __name__ == '__main__':
     unittest.main()

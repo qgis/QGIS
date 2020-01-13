@@ -237,18 +237,25 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
   const bool isSingleValue {  width == 1 && height == 1 };
   QString tableToQuery { mQuery };
 
+  QString whereAnd;
+  if ( ! mSqlWhereClause.isEmpty() )
+  {
+    whereAnd = QStringLiteral( "%1 AND " ).arg( mSqlWhereClause );
+  }
+
   // Identify
   if ( isSingleValue )
   {
     QString sql;
     sql = QStringLiteral( "SELECT ST_Value( ST_Band( %1, %2), ST_GeomFromText( %3, %4 ), FALSE ) "
                           "FROM %5 "
-                          "WHERE %1 && ST_GeomFromText( %3, %4 )" )
+                          "WHERE %6 %1 && ST_GeomFromText( %3, %4 )" )
           .arg( quotedIdentifier( mRasterColumn ) )
           .arg( bandNo )
           .arg( quotedValue( viewExtent.center().asWkt() ) )
           .arg( mCrs.postgisSrid() )
-          .arg( mQuery );
+          .arg( mQuery )
+          .arg( whereAnd );
 
     QgsPostgresResult result( connectionRO()->PQexec( sql ) );
     if ( result.PQresultStatus() != PGRES_TUPLES_OK )
@@ -336,7 +343,7 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
         const double _double { val.toDouble( &ok ) };
         if ( ! ok )
         {
-          QgsMessageLog::logMessage( tr( "Cannot convert identified value to unsigned double" ), QStringLiteral( "PostGIS" ), Qgis::Warning );
+          QgsMessageLog::logMessage( tr( "Cannot convert identified value to double" ), QStringLiteral( "PostGIS" ), Qgis::Warning );
           return false;
         }
         std::memcpy( data, &_double, sizeof( double ) );
@@ -362,16 +369,20 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
 
     unsigned int overviewFactor { 1 };  // no overview
 
-    const auto ovKeys { mOverViews.keys( ) };
-    QList<unsigned int>::const_reverse_iterator rit { ovKeys.rbegin() };
-    for ( ; rit != ovKeys.rend(); ++rit )
+    // Cannot use overviews if there is a where condition
+    if ( mSqlWhereClause.isEmpty() )
     {
-      if ( *rit <= desiredOverviewFactor )
+      const auto ovKeys { mOverViews.keys( ) };
+      QList<unsigned int>::const_reverse_iterator rit { ovKeys.rbegin() };
+      for ( ; rit != ovKeys.rend(); ++rit )
       {
-        tableToQuery = mOverViews[ *rit ];
-        overviewFactor = *rit;
-        QgsDebugMsgLevel( QStringLiteral( "Using overview for block read: %1" ).arg( tableToQuery ), 3 );
-        break;
+        if ( *rit <= desiredOverviewFactor )
+        {
+          tableToQuery = mOverViews[ *rit ];
+          overviewFactor = *rit;
+          QgsDebugMsgLevel( QStringLiteral( "Using overview for block read: %1" ).arg( tableToQuery ), 3 );
+          break;
+        }
       }
     }
 
@@ -380,24 +391,20 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
 
     // Get the the tiles we need to build the block
     const QString dataSql { QStringLiteral( "SELECT %3, ENCODE( ST_AsBinary( %1, TRUE ), 'hex') "
-                                            "FROM %2 WHERE %3 IN " )
+                                            "FROM %2 WHERE %4 %3 IN " )
                             .arg( quotedIdentifier( mRasterColumn ) )
                             .arg( tableToQuery )
-                            .arg( quotedIdentifier( mPrimaryKeyAttrs.first() ) ) };
+                            .arg( quotedIdentifier( mPrimaryKeyAttrs.first() ) )
+                            .arg( whereAnd )};
 
-    /*
-    const QString indexSql { QStringLiteral( "SELECT %1, (ST_Metadata( %2 )).* FROM %3" )
-                             .arg( quotedIdentifier( mPrimaryKeyAttrs.first() ) )
-                             .arg( quotedIdentifier( mRasterColumn ) )
-                             .arg( tableToQuery ) };
-    */
     const QString indexSql { QStringLiteral( "SELECT %1, (ST_Metadata( %2 )).* FROM %3 "
-                             "WHERE %2 && ST_GeomFromText( %5, %4 )" )
+                             "WHERE %6 %2 && ST_GeomFromText( %5, %4 )" )
                              .arg( quotedIdentifier( mPrimaryKeyAttrs.first() ) )
                              .arg( quotedIdentifier( mRasterColumn ) )
                              .arg( tableToQuery )
                              .arg( mCrs.postgisSrid() )
                              .arg( quotedValue( QStringLiteral( "###__POLYGON_WKT__###" ) ) )
+                             .arg( whereAnd )
                            };
 
 
@@ -629,7 +636,7 @@ int QgsPostgresRasterProvider::capabilities() const
   const int capability = QgsRasterDataProvider::Identify
                          | QgsRasterDataProvider::IdentifyValue
                          | QgsRasterDataProvider::Size
-                         | QgsRasterDataProvider::BuildPyramids
+                         // TODO:| QgsRasterDataProvider::BuildPyramids
                          | QgsRasterDataProvider::Create
                          | QgsRasterDataProvider::Remove;
   return capability;
@@ -676,8 +683,10 @@ bool QgsPostgresRasterProvider::init()
   }
 
   // We first try to collect raster information using raster_columns information
-  // unless it is a query layer (unsupported at the moment) or use estimated metadata
-  // if false.
+  // unless:
+  // - it is a query layer (unsupported at the moment)
+  // - use estimated metadata is false
+  // - there is a WHERE condition
   // If previous conditions are not met or the first method fail try to fetch information
   // directly from the raster data. This can be very slow.
 
@@ -731,7 +740,7 @@ bool QgsPostgresRasterProvider::init()
 
   // ///////////////////////////////////////////////////////////////////
   // First method: get information from metadata
-  if ( ! mIsQuery && mUseEstimatedMetadata )
+  if ( ! mIsQuery && mUseEstimatedMetadata && mSqlWhereClause.isEmpty() )
   {
     try
     {
@@ -928,10 +937,17 @@ bool QgsPostgresRasterProvider::init()
     tableToQuery = mOverViews.last();
   }
 
+  QString where;
+  if ( ! mSqlWhereClause.isEmpty() )
+  {
+    where = QStringLiteral( "WHERE %1" ).arg( mSqlWhereClause );
+  }
+
   const QString sql { QStringLiteral( "SELECT ENCODE( ST_AsBinary( ST_Envelope( foo.bar) ), 'hex'), ( ST_Metadata( foo.bar ) ).* "
-                                      "FROM ( SELECT ST_Union ( %1 ) AS bar FROM %2 ) AS foo" )
+                                      "FROM ( SELECT ST_Union ( %1 ) AS bar FROM %2 %3) AS foo" )
                       .arg( quotedIdentifier( mRasterColumn ) )
-                      .arg( tableToQuery ) };
+                      .arg( tableToQuery )
+                      .arg( where )};
 
   QgsDebugMsg( QStringLiteral( "Raster information sql: %1" ).arg( sql ) );
 
@@ -944,11 +960,19 @@ bool QgsPostgresRasterProvider::init()
     // envelope | upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
 
     // Extent
-    QgsConstWkbPtr ptr { QByteArray::fromHex( result.PQgetvalue( 0, 0 ).toAscii() ) };
-
-    if ( ! p.fromWkb( ptr ) )
+    try
     {
-      QgsMessageLog::logMessage( tr( "Cannot get extent from raster" ),
+      QgsConstWkbPtr ptr { QByteArray::fromHex( result.PQgetvalue( 0, 0 ).toAscii() ) };
+      if ( ! p.fromWkb( ptr ) )
+      {
+        QgsMessageLog::logMessage( tr( "Cannot get extent from raster" ),
+                                   QStringLiteral( "PostGIS" ), Qgis::Critical );
+        return false;
+      }
+    }
+    catch ( ... )
+    {
+      QgsMessageLog::logMessage( tr( "Cannot get metadata from raster" ),
                                  QStringLiteral( "PostGIS" ), Qgis::Critical );
       return false;
     }
@@ -1014,15 +1038,18 @@ bool QgsPostgresRasterProvider::init()
                                  QStringLiteral( "PostGIS" ), Qgis::Critical );
       return false;
     }
+
     // Fetch band data types
     for ( int band = 1; band <= mBandCount; ++band )
     {
       // pixeltype | nodatavalue | isoutdb | path
       const QString sql { QStringLiteral( "SELECT ( ST_BandMetadata( foo.bar, %1 ) ).* "
-                                          "FROM ( SELECT ST_Union ( ST_Band ( %2, %1 ) ) AS bar FROM %3 ) AS foo" )
+                                          "FROM ( SELECT ST_Union ( ST_Band ( %2, %1 ) ) AS bar FROM %3 %4 ) AS foo" )
                           .arg( band )
                           .arg( quotedIdentifier( mRasterColumn ) )
-                          .arg( mQuery ) };
+                          .arg( mQuery )
+                          .arg( where )};
+
       QgsPostgresResult result( connectionRO()->PQexec( sql ) );
       if ( PGRES_TUPLES_OK == result.PQresultStatus() && result.PQntuples() > 0 )
       {
@@ -1299,9 +1326,7 @@ bool QgsPostgresRasterProvider::determinePrimaryKey()
     mPrimaryKeyType = PktUnknown;
   }
 
-  mValid = mPrimaryKeyType != PktUnknown;
-
-  return mValid;
+  return mPrimaryKeyType != PktUnknown;
 }
 
 void QgsPostgresRasterProvider::determinePrimaryKeyFromUriKeyColumn()
@@ -1443,8 +1468,15 @@ QgsRasterBandStats QgsPostgresRasterProvider::bandStatistics( int bandNo, int st
   // Query the backend
   // TODO: mSqlWhereClause
   QString where { extent.isEmpty() ? QString() : QStringLiteral( "WHERE %1 && ST_GeomFromText( %2, %3 )" )
+                  .arg( quotedIdentifier( mRasterColumn ) )
                   .arg( extent.asWktPolygon() )
                   .arg( mCrs.postgisSrid() ) };
+
+  if ( ! mSqlWhereClause.isEmpty() )
+  {
+    where.append( where.isEmpty() ? QStringLiteral( "WHERE %1" ).arg( mSqlWhereClause ) :
+                  QStringLiteral( " AND %1" ).arg( mSqlWhereClause ) );
+  }
 
   const QString sql { QStringLiteral( "SELECT (ST_SummaryStatsAgg( %1, %2, TRUE, %3 )).* "
                                       "FROM %4 %5" )
