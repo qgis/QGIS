@@ -325,6 +325,8 @@ QgsTableContents QgsTableEditorWidget::tableContents() const
 
 void QgsTableEditorWidget::setSelectionNumericFormat( QgsNumericFormat *format )
 {
+  bool changed = false;
+  mBlockSignals++;
   std::unique_ptr< QgsNumericFormat > newFormat( format );
   const QModelIndexList selection = selectedIndexes();
   for ( const QModelIndex &index : selection )
@@ -335,11 +337,57 @@ void QgsTableEditorWidget::setSelectionNumericFormat( QgsNumericFormat *format )
       i = new QTableWidgetItem();
       setItem( index.row(), index.column(), i );
     }
-    delete mNumericFormats.value( i );
-    mNumericFormats.insert( i, newFormat ? newFormat->clone() : nullptr );
+    if ( !mNumericFormats.value( i ) && newFormat )
+    {
+      changed = true;
+      mNumericFormats.insert( i, newFormat->clone() );
+    }
+    else if ( mNumericFormats.value( i ) && !newFormat )
+    {
+      changed = true;
+      delete mNumericFormats.value( i );
+      mNumericFormats.remove( i );
+    }
+    else if ( newFormat && *newFormat != *mNumericFormats.value( i ) )
+    {
+      changed = true;
+      delete mNumericFormats.value( i );
+      mNumericFormats.insert( i, newFormat->clone() );
+    }
   }
-  if ( !mBlockSignals )
+  mBlockSignals--;
+  if ( changed && !mBlockSignals )
     emit tableChanged();
+}
+
+QgsNumericFormat *QgsTableEditorWidget::selectionNumericFormat()
+{
+  QgsNumericFormat *f = nullptr;
+  bool first = true;
+  const QModelIndexList selection = selectedIndexes();
+  for ( const QModelIndex &index : selection )
+  {
+    if ( QTableWidgetItem *i = item( index.row(), index.column() ) )
+    {
+      if ( first )
+      {
+        f = mNumericFormats.value( i );
+        first = false;
+      }
+      else if ( ( !f && !mNumericFormats.value( i ) )
+                || ( f && mNumericFormats.value( i ) && *f == *mNumericFormats.value( i ) ) )
+        continue;
+      else
+      {
+        return nullptr;
+      }
+    }
+    else
+    {
+      return nullptr;
+    }
+  }
+  return f;
 }
 
 QColor QgsTableEditorWidget::selectionForegroundColor()

@@ -18,6 +18,7 @@
 
 #include "qgstableeditorwidget.h"
 #include "qgscurrencynumericformat.h"
+#include "qgsbearingnumericformat.h"
 
 class TestQgsTableEditor: public QObject
 {
@@ -39,6 +40,7 @@ class TestQgsTableEditor: public QObject
     void clearSelected();
     void foregroundColor();
     void backgroundColor();
+    void numericFormat();
 
   private:
 
@@ -832,6 +834,67 @@ void TestQgsTableEditor::backgroundColor()
   QVERIFY( !w.tableContents().at( 0 ).at( 3 ).backgroundColor().isValid() );
   w.selectionModel()->select( w.model()->index( 0, 3 ), QItemSelectionModel::Select );
   QVERIFY( !w.selectionBackgroundColor().isValid() );
+}
+
+void TestQgsTableEditor::numericFormat()
+{
+  QgsTableEditorWidget w;
+  QVERIFY( w.tableContents().isEmpty() );
+
+  QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
+  QgsTableCell c3;
+  c3.setContent( 87 );
+  std::unique_ptr< QgsCurrencyNumericFormat > format = qgis::make_unique< QgsCurrencyNumericFormat >();
+  format->setNumberDecimalPlaces( 2 );
+  format->setPrefix( QStringLiteral( "$" ) );
+  QgsTableCell c2( 76 );
+  c2.setNumericFormat( format.release() );
+  c2.setBackgroundColor( QColor( 255, 0, 0 ) );
+  c2.setForegroundColor( QColor( 0, 255, 0 ) );
+  w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Jet" ) ) << c2 << c3 << QgsTableCell( QStringLiteral( "Jet3" ) ) ) );
+  QCOMPARE( spy.count(), 1 );
+
+  QCOMPARE( w.tableContents().size(), 1 );
+  QCOMPARE( w.tableContents().at( 0 ).size(), 4 );
+  QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content().toString(), QStringLiteral( "Jet" ) );
+  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).backgroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).numericFormat() );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content().toString(), QStringLiteral( "76" ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).backgroundColor(), QColor( 255, 0, 0 ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).foregroundColor(), QColor( 0, 255, 0 ) );
+  QVERIFY( w.tableContents().at( 0 ).at( 1 ).numericFormat() );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).numericFormat()->id(), QStringLiteral( "currency" ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 2 ).content().toString(), QStringLiteral( "87" ) );
+  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).backgroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).numericFormat() );
+  QCOMPARE( w.tableContents().at( 0 ).at( 3 ).content().toString(), QStringLiteral( "Jet3" ) );
+  QVERIFY( !w.tableContents().at( 0 ).at( 3 ).backgroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 3 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 3 ).numericFormat() );
+
+  w.selectionModel()->clearSelection();
+  w.setSelectionNumericFormat( new QgsBearingNumericFormat() );
+  QCOMPARE( spy.count(), 1 );
+
+  w.selectionModel()->select( w.model()->index( 0, 0 ), QItemSelectionModel::ClearAndSelect );
+  QVERIFY( !w.selectionNumericFormat() );
+  w.selectionModel()->select( w.model()->index( 0, 1 ), QItemSelectionModel::Select );
+  QVERIFY( !w.selectionNumericFormat() );
+  w.selectionModel()->select( w.model()->index( 0, 1 ), QItemSelectionModel::ClearAndSelect );
+  QCOMPARE( w.selectionNumericFormat()->id(), QStringLiteral( "currency" ) );
+  w.selectionModel()->select( w.model()->index( 0, 0 ), QItemSelectionModel::Select );
+  QVERIFY( !w.selectionNumericFormat() );
+  w.setSelectionNumericFormat( new QgsBearingNumericFormat() );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( w.selectionNumericFormat()->id(), QStringLiteral( "bearing" ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 0 ).numericFormat()->id(), QStringLiteral( "bearing" ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).numericFormat()->id(), QStringLiteral( "bearing" ) );
+  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).numericFormat() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 3 ).numericFormat() );
+  w.selectionModel()->select( w.model()->index( 0, 3 ), QItemSelectionModel::Select );
+  QVERIFY( !w.selectionNumericFormat() );
 }
 
 
