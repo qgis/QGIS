@@ -261,7 +261,7 @@ void QgsTableEditorWidget::keyPressEvent( QKeyEvent *event )
 
 void QgsTableEditorWidget::setTableContents( const QgsTableContents &contents )
 {
-  mBlockSignals = true;
+  mBlockSignals++;
   qDeleteAll( mNumericFormats );
   mNumericFormats.clear();
 
@@ -287,7 +287,7 @@ void QgsTableEditorWidget::setTableContents( const QgsTableContents &contents )
     rowNumber++;
   }
 
-  mBlockSignals = false;
+  mBlockSignals--;
   updateHeaders();
   emit tableChanged();
 }
@@ -531,14 +531,18 @@ void QgsTableEditorWidget::expandColumnSelection()
 void QgsTableEditorWidget::clearSelectedCells()
 {
   const QModelIndexList selection = selectedIndexes();
+  bool changed = false;
+  mBlockSignals++;
   for ( const QModelIndex &index : selection )
   {
     if ( QTableWidgetItem *i = item( index.row(), index.column() ) )
     {
       i->setText( QString() );
+      changed = true;
     }
   }
-  if ( !mBlockSignals )
+  mBlockSignals--;
+  if ( changed && !mBlockSignals )
     emit tableChanged();
 }
 
