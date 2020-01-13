@@ -22,55 +22,173 @@
 #include "qgstablecell.h"
 #include <QTableWidget>
 
+/**
+ * \ingroup gui
+ * \class QgsTableEditorWidget
+ *
+ * A reusable widget for editing simple spreadsheet-style tables.
+ *
+ * Table content is retrieved and set using the QgsTableContents class. The editor
+ * has support for table foreground and background colors, and numeric formats.
+ *
+ * \since QGIS 3.12
+ */
 class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
 {
     Q_OBJECT
   public:
 
-    enum Roles
-    {
-      PresetBackgroundColorRole = Qt::UserRole + 1,
+    /**
+     * Constructor for QgsTableEditorWidget with the specified \a parent widget.
+     */
+    QgsTableEditorWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsTableEditorWidget() override;
 
-    };
+    /**
+     * Sets the \a contents to show in the editor widget.
+     *
+     * \see tableContents()
+     */
+    void setTableContents( const QgsTableContents &contents );
 
-    QgsTableEditorWidget( QWidget *parent = nullptr );
-    ~QgsTableEditorWidget();
+    /**
+     * Returns the current contents of the editor widget table.
+     *
+     * \see setTableContents()
+     */
+    QgsTableContents tableContents() const;
 
-    void setTableData( const QgsTableContents &contents );
-    QgsTableContents tableData() const;
+    /**
+     * Sets the numeric \a format to use for the currently selected cells.
+     *
+     * Ownership of \a format is transferred to the widget.
+     */
+    void setSelectionNumericFormat( QgsNumericFormat *format SIP_TRANSFER );
 
-    void setCellNumericFormat( QgsNumericFormat *format SIP_TRANSFER );
+    /**
+     * Returns the foreground color for the currently selected cells.
+     *
+     * If the selected cells have a mix of different foreground colors then an
+     * invalid color will be returned.
+     *
+     * \see setSelectionForegroundColor()
+     * \see selectionBackgroundColor()
+     */
+    QColor selectionForegroundColor();
 
-    QColor selectedCellForegroundColor();
-
-    QColor selectedCellBackgroundColor();
+    /**
+     * Returns the background color for the currently selected cells.
+     *
+     * If the selected cells have a mix of different background colors then an
+     * invalid color will be returned.
+     *
+     * \see setSelectionBackgroundColor()
+     * \see selectionForegroundColor()
+     */
+    QColor selectionBackgroundColor();
 
   public slots:
 
+    /**
+     * Inserts new rows below the current selection.
+     *
+     * \see insertRowsAbove()
+     */
     void insertRowsBelow();
+
+    /**
+     * Inserts new rows above the current selection.
+     *
+     * \see insertRowsBelow()
+     */
     void insertRowsAbove();
+
+    /**
+     * Inserts new columns before the current selection.
+     *
+     * \see insertColumnsAfter()
+     */
     void insertColumnsBefore();
+
+    /**
+     * Inserts new columns after the current selection.
+     *
+     * \see insertColumnsBefore()
+     */
     void insertColumnsAfter();
+
+    /**
+     * Deletes all rows associated with the current selected cells.
+     *
+     * \see deleteColumns()
+     */
     void deleteRows();
+
+    /**
+     * Deletes all columns associated with the current selected cells.
+     *
+     * \see deleteRows()
+     */
     void deleteColumns();
 
-    void selectRows();
-    void selectColumns();
+    /**
+     * Expands out the selection to include whole rows associated with the
+     * current selected cells.
+     * \see expandColumnSelection()
+     */
+    void expandRowSelection();
+
+    /**
+     * Expands out the selection to include whole columns associated with the
+     * current selected cells.
+     * \see expandRowSelection()
+     */
+    void expandColumnSelection();
+
+    /**
+     * Clears the contents of the currently selected cells.
+     */
     void clearSelectedCells();
 
-    void setCellForegroundColor( const QColor &color );
-    void setCellBackgroundColor( const QColor &color );
+    /**
+     * Sets the foreground color for the currently selected cells.
+     *
+     * \see selectionForegroundColor()
+     * \see setSelectionBackgroundColor()
+     */
+    void setSelectionForegroundColor( const QColor &color );
 
+    /**
+     * Sets the background color for the currently selected cells.
+     *
+     * \see selectionBackgroundColor()
+     * \see setSelectionForegroundColor()
+     */
+    void setSelectionBackgroundColor( const QColor &color );
 
   protected:
     void keyPressEvent( QKeyEvent *event ) override;
 
   signals:
 
+    /**
+     * Emitted whenever the table contents are changed.
+     */
     void tableChanged();
+
+    /**
+     * Emitted whenever the active (or selected) cell changes in the widget.
+     */
     void activeCellChanged();
 
   private:
+
+    //! Custom roles
+    enum Roles
+    {
+      PresetBackgroundColorRole = Qt::UserRole + 1,
+    };
+
     void updateHeaders();
 
     bool collectConsecutiveRowRange( const QModelIndexList &list, int &minRow, int &maxRow ) const;
@@ -80,7 +198,6 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
 
     bool mBlockSignals = false;
     QHash< QTableWidgetItem *, QgsNumericFormat * > mNumericFormats;
-
     QMenu *mHeaderMenu = nullptr;
 
 };

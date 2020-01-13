@@ -10,46 +10,154 @@
 
 class QgsTableEditorWidget : QTableWidget
 {
+%Docstring
+
+A reusable widget for editing simple spreadsheet-style tables.
+
+Table content is retrieved and set using the QgsTableContents class. The editor
+has support for table foreground and background colors, and numeric formats.
+
+.. versionadded:: 3.12
+%End
 
 %TypeHeaderCode
 #include "qgstableeditorwidget.h"
 %End
   public:
 
-    enum Roles
-    {
-      PresetBackgroundColorRole,
-
-    };
-
-    QgsTableEditorWidget( QWidget *parent = 0 );
+    QgsTableEditorWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsTableEditorWidget with the specified ``parent`` widget.
+%End
     ~QgsTableEditorWidget();
 
-    void setTableData( const QgsTableContents &contents );
-    QgsTableContents tableData() const;
+    void setTableContents( const QgsTableContents &contents );
+%Docstring
+Sets the ``contents`` to show in the editor widget.
 
-    void setCellNumericFormat( QgsNumericFormat *format /Transfer/ );
+.. seealso:: :py:func:`tableContents`
+%End
 
-    QColor selectedCellForegroundColor();
+    QgsTableContents tableContents() const;
+%Docstring
+Returns the current contents of the editor widget table.
 
-    QColor selectedCellBackgroundColor();
+.. seealso:: :py:func:`setTableContents`
+%End
+
+    void setSelectionNumericFormat( QgsNumericFormat *format /Transfer/ );
+%Docstring
+Sets the numeric ``format`` to use for the currently selected cells.
+
+Ownership of ``format`` is transferred to the widget.
+%End
+
+    QColor selectionForegroundColor();
+%Docstring
+Returns the foreground color for the currently selected cells.
+
+If the selected cells have a mix of different foreground colors then an
+invalid color will be returned.
+
+.. seealso:: :py:func:`setSelectionForegroundColor`
+
+.. seealso:: :py:func:`selectionBackgroundColor`
+%End
+
+    QColor selectionBackgroundColor();
+%Docstring
+Returns the background color for the currently selected cells.
+
+If the selected cells have a mix of different background colors then an
+invalid color will be returned.
+
+.. seealso:: :py:func:`setSelectionBackgroundColor`
+
+.. seealso:: :py:func:`selectionForegroundColor`
+%End
 
   public slots:
 
     void insertRowsBelow();
+%Docstring
+Inserts new rows below the current selection.
+
+.. seealso:: :py:func:`insertRowsAbove`
+%End
+
     void insertRowsAbove();
+%Docstring
+Inserts new rows above the current selection.
+
+.. seealso:: :py:func:`insertRowsBelow`
+%End
+
     void insertColumnsBefore();
+%Docstring
+Inserts new columns before the current selection.
+
+.. seealso:: :py:func:`insertColumnsAfter`
+%End
+
     void insertColumnsAfter();
+%Docstring
+Inserts new columns after the current selection.
+
+.. seealso:: :py:func:`insertColumnsBefore`
+%End
+
     void deleteRows();
+%Docstring
+Deletes all rows associated with the current selected cells.
+
+.. seealso:: :py:func:`deleteColumns`
+%End
+
     void deleteColumns();
+%Docstring
+Deletes all columns associated with the current selected cells.
 
-    void selectRows();
-    void selectColumns();
+.. seealso:: :py:func:`deleteRows`
+%End
+
+    void expandRowSelection();
+%Docstring
+Expands out the selection to include whole rows associated with the
+current selected cells.
+
+.. seealso:: :py:func:`expandColumnSelection`
+%End
+
+    void expandColumnSelection();
+%Docstring
+Expands out the selection to include whole columns associated with the
+current selected cells.
+
+.. seealso:: :py:func:`expandRowSelection`
+%End
+
     void clearSelectedCells();
+%Docstring
+Clears the contents of the currently selected cells.
+%End
 
-    void setCellForegroundColor( const QColor &color );
-    void setCellBackgroundColor( const QColor &color );
+    void setSelectionForegroundColor( const QColor &color );
+%Docstring
+Sets the foreground color for the currently selected cells.
 
+.. seealso:: :py:func:`selectionForegroundColor`
+
+.. seealso:: :py:func:`setSelectionBackgroundColor`
+%End
+
+    void setSelectionBackgroundColor( const QColor &color );
+%Docstring
+Sets the background color for the currently selected cells.
+
+.. seealso:: :py:func:`selectionBackgroundColor`
+
+.. seealso:: :py:func:`setSelectionForegroundColor`
+%End
 
   protected:
     virtual void keyPressEvent( QKeyEvent *event );
@@ -58,7 +166,14 @@ class QgsTableEditorWidget : QTableWidget
   signals:
 
     void tableChanged();
+%Docstring
+Emitted whenever the table contents are changed.
+%End
+
     void activeCellChanged();
+%Docstring
+Emitted whenever the active (or selected) cell changes in the widget.
+%End
 
 };
 

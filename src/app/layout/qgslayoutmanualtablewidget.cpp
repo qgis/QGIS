@@ -172,13 +172,13 @@ void QgsLayoutManualTableWidget::setTableContents()
     mEditorDialog = new QgsTableEditorDialog( this );
     connect( this, &QWidget::destroyed, mEditorDialog, &QMainWindow::close );
 
-    mEditorDialog->setTableData( mTable->tableContents() );
+    mEditorDialog->setTableContents( mTable->tableContents() );
     connect( mEditorDialog, &QgsTableEditorDialog::tableChanged, this, [ = ]
     {
       if ( mTable )
       {
         mTable->beginCommand( tr( "Change Table Contents" ) );
-        mTable->setTableContents( mEditorDialog->tableData() );
+        mTable->setTableContents( mEditorDialog->tableContents() );
         mTable->endCommand();
       }
     } );

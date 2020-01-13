@@ -11,33 +11,45 @@
 class QgsTableEditorDialog : QMainWindow
 {
 %Docstring
-*************************************************************************
-qgstableeditordialog.h
----------------------
-begin                : January 2020
-copyright            : (C) 2020 by Nyall Dawson
-email                : nyall dot dawson at gmail dot com
-**************************************************************************
 
-This program is free software; you can redistribute it and/or modify  *
-it under the terms of the GNU General Public License as published by  *
-the Free Software Foundation; either version 2 of the License, or     *
-(at your option) any later version.                                   *
+A reusable window for editing simple spreadsheet-style tables.
 
-**************************************************************************
+Table content is retrieved and set using the QgsTableContents class. The editor
+has support for table foreground and background colors, and numeric formats.
+
+.. versionadded:: 3.12
 %End
 
 %TypeHeaderCode
 #include "qgstableeditordialog.h"
 %End
   public:
+
     QgsTableEditorDialog( QWidget *parent = 0 );
-    void setTableData( const QgsTableContents &contents );
-    QgsTableContents tableData() const;
+%Docstring
+Constructor for QgsTableEditorDialog with the specified ``parent`` widget.
+%End
+
+    void setTableContents( const QgsTableContents &contents );
+%Docstring
+Sets the ``contents`` to show in the editor widget.
+
+.. seealso:: :py:func:`tableContents`
+%End
+
+    QgsTableContents tableContents() const;
+%Docstring
+Returns the current contents of the editor widget table.
+
+.. seealso:: :py:func:`setTableContents`
+%End
 
   signals:
 
     void tableChanged();
+%Docstring
+Emitted whenever the table contents are changed.
+%End
 
 };
 
