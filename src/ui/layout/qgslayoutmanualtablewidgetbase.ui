@@ -76,16 +76,9 @@
          </property>
          <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,0">
           <item row="3" column="0" colspan="2">
-           <widget class="QPushButton" name="mRefreshPushButton">
-            <property name="text">
-             <string>Refresh Table Data</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0" colspan="2">
            <widget class="QPushButton" name="mSetContentsButton">
             <property name="text">
-             <string>Table Contents…</string>
+             <string>Edit Table…</string>
             </property>
            </widget>
           </item>
@@ -480,7 +473,6 @@
  <tabstops>
   <tabstop>scrollArea</tabstop>
   <tabstop>groupBox</tabstop>
-  <tabstop>mRefreshPushButton</tabstop>
   <tabstop>mSetContentsButton</tabstop>
   <tabstop>groupBox_6</tabstop>
   <tabstop>mDrawEmptyCheckBox</tabstop>
