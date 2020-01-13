@@ -31,7 +31,7 @@ QgsLayoutManualTableWidget::QgsLayoutManualTableWidget( QgsLayoutFrame *frame )
   , mFrame( frame )
 {
   setupUi( this );
-  connect( mRefreshPushButton, &QPushButton::clicked, this, &QgsLayoutManualTableWidget::mRefreshPushButton_clicked );
+
   connect( mSetContentsButton, &QPushButton::clicked, this, &QgsLayoutManualTableWidget::setTableContents );
   connect( mMarginSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutManualTableWidget::mMarginSpinBox_valueChanged );
   connect( mGridStrokeWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutManualTableWidget::mGridStrokeWidthSpinBox_valueChanged );
@@ -132,17 +132,6 @@ bool QgsLayoutManualTableWidget::setNewItem( QgsLayoutItem *item )
   updateGuiElements();
 
   return true;
-}
-
-
-void QgsLayoutManualTableWidget::mRefreshPushButton_clicked()
-{
-  if ( !mTable )
-  {
-    return;
-  }
-
-  mTable->refreshAttributes();
 }
 
 void QgsLayoutManualTableWidget::setTableContents()

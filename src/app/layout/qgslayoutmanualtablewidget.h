@@ -49,7 +49,7 @@ class QgsLayoutManualTableWidget: public QgsLayoutItemBaseWidget, private Ui::Qg
     void blockAllSignals( bool b );
 
   private slots:
-    void mRefreshPushButton_clicked();
+
     void setTableContents();
     void mMarginSpinBox_valueChanged( double d );
     void mGridStrokeWidthSpinBox_valueChanged( double d );
