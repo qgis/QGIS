@@ -34,6 +34,8 @@ class TestQgsTableEditor: public QObject
     void insertColumnsAfter();
     void deleteRows();
     void deleteColumns();
+    void selectRows();
+    void selectColumns();
 
   private:
 
@@ -595,6 +597,70 @@ void TestQgsTableEditor::deleteColumns()
   QCOMPARE( w.tableContents().size(), 1 );
   QCOMPARE( w.tableContents().at( 0 ).size(), 1 );
 
+}
+
+void TestQgsTableEditor::selectRows()
+{
+  QgsTableEditorWidget w;
+  w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() )
+                      << ( QgsTableRow() << QgsTableCell()  << QgsTableCell() << QgsTableCell() )
+                      << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() )
+                      << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) );
+
+  w.selectionModel()->select( w.model()->index( 0, 0 ), QItemSelectionModel::ClearAndSelect );
+  w.expandRowSelection();
+  QCOMPARE( w.selectionModel()->selectedIndexes().size(), 3 );
+  QVERIFY( w.selectionModel()->isSelected( w.model()->index( 0, 0 ) ) );
+  QVERIFY( w.selectionModel()->isSelected( w.model()->index( 0, 1 ) ) );
+  QVERIFY( w.selectionModel()->isSelected( w.model()->index( 0, 2 ) ) );
+
+
+  w.selectionModel()->select( w.model()->index( 1, 1 ), QItemSelectionModel::ClearAndSelect );
+  w.selectionModel()->select( w.model()->index( 1, 2 ), QItemSelectionModel::Select );
+  w.selectionModel()->select( w.model()->index( 2, 0 ), QItemSelectionModel::Select );
+  w.expandRowSelection();
+  QCOMPARE( w.selectionModel()->selectedIndexes().size(), 6 );
+  QVERIFY( w.selectionModel()->isSelected( w.model()->index( 1, 0 ) ) );
+  QVERIFY( w.selectionModel()->isSelected( w.model()->index( 1, 1 ) ) );
+  QVERIFY( w.selectionModel()->isSelected( w.model()->index( 1, 2 ) ) );
+  QVERIFY( w.selectionModel()->isSelected( w.model()->index( 2, 0 ) ) );
+  QVERIFY( w.selectionModel()->isSelected( w.model()->index( 2, 1 ) ) );
+  QVERIFY( w.selectionModel()->isSelected( w.model()->index( 2, 2 ) ) );
+
+  w.selectionModel()->clearSelection();
+  w.expandRowSelection();
+  QCOMPARE( w.selectionModel()->selectedIndexes().size(), 0 );
+}
+
+void TestQgsTableEditor::selectColumns()
+{
+  QgsTableEditorWidget w;
+  w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() )
+                      << ( QgsTableRow() << QgsTableCell()  << QgsTableCell() << QgsTableCell() )
+                      << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) );
+
+  w.selectionModel()->select( w.model()->index( 0, 0 ), QItemSelectionModel::ClearAndSelect );
+  w.expandColumnSelection();
+  QCOMPARE( w.selectionModel()->selectedIndexes().size(), 3 );
+  QVERIFY( w.selectionModel()->isSelected( w.model()->index( 0, 0 ) ) );
+  QVERIFY( w.selectionModel()->isSelected( w.model()->index( 1, 0 ) ) );
+  QVERIFY( w.selectionModel()->isSelected( w.model()->index( 2, 0 ) ) );
+
+  w.selectionModel()->select( w.model()->index( 1, 1 ), QItemSelectionModel::ClearAndSelect );
+  w.selectionModel()->select( w.model()->index( 2, 1 ), QItemSelectionModel::Select );
+  w.selectionModel()->select( w.model()->index( 0, 2 ), QItemSelectionModel::Select );
+  w.expandColumnSelection();
+  QCOMPARE( w.selectionModel()->selectedIndexes().size(), 6 );
+  QVERIFY( w.selectionModel()->isSelected( w.model()->index( 0, 1 ) ) );
+  QVERIFY( w.selectionModel()->isSelected( w.model()->index( 1, 1 ) ) );
+  QVERIFY( w.selectionModel()->isSelected( w.model()->index( 2, 1 ) ) );
+  QVERIFY( w.selectionModel()->isSelected( w.model()->index( 0, 2 ) ) );
+  QVERIFY( w.selectionModel()->isSelected( w.model()->index( 1, 2 ) ) );
+  QVERIFY( w.selectionModel()->isSelected( w.model()->index( 2, 2 ) ) );
+
+  w.selectionModel()->clearSelection();
+  w.expandColumnSelection();
+  QCOMPARE( w.selectionModel()->selectedIndexes().size(), 0 );
 }
 
 

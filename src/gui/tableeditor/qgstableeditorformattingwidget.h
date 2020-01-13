@@ -20,6 +20,8 @@
 #include "qgspanelwidget.h"
 #include <memory>
 
+#define SIP_NO_FILE
+
 class QgsNumericFormat;
 
 /**
@@ -29,6 +31,8 @@ class QgsNumericFormat;
  * A reusable widget for formatting the contents of a QgsTableCell.
  *
  * The editor has support for table foreground and background colors, and numeric formats.
+ *
+ * \note Not available in Python bindings
  *
  * \since QGIS 3.12
  */
