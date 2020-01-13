@@ -396,7 +396,7 @@ void QgsRelationReferenceWidget::deleteForeignKeys()
   mRemoveFKButton->setEnabled( false );
   updateAttributeEditorFrame( QgsFeature() );
 
-  emitForeignKeysChanged( foreignKeys(), true );
+  emitForeignKeysChanged( foreignKeys() );
 }
 
 QgsFeature QgsRelationReferenceWidget::referencedFeature() const
