@@ -375,8 +375,8 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
       }
     }
 
-    qDebug() << "Overview desired: " << desiredOverviewFactor << "found:" << overviewFactor << tableToQuery;
-    qDebug() << "View extent" << viewExtent.toString( 1 ) << width << height << minPixelSize;
+    //qDebug() << "Overview desired: " << desiredOverviewFactor << "found:" << overviewFactor << tableToQuery;
+    //qDebug() << "View extent" << viewExtent.toString( 1 ) << width << height << minPixelSize;
 
     // Get the the tiles we need to build the block
     const QString dataSql { QStringLiteral( "SELECT %3, ENCODE( ST_AsBinary( %1, TRUE ), 'hex') "
@@ -435,7 +435,7 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
 
     GDALDataType gdalDataType { static_cast<GDALDataType>( sourceDataType( bandNo ) ) };
 
-    qDebug() << "Creating output raster: " << tilesExtent.toString() << tmpWidth << tmpHeight;
+    //qDebug() << "Creating output raster: " << tilesExtent.toString() << tmpWidth << tmpHeight;
 
     gdal::dataset_unique_ptr tmpDS { QgsGdalUtils::createSingleBandMemoryDataset(
                                        gdalDataType, tilesExtent, tmpWidth, tmpHeight, mCrs ) };
@@ -456,7 +456,7 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
       const int xOff { static_cast<int>( std::round( ( tile.upperLeftX - tilesExtent.xMinimum() ) / tile.scaleX ) ) };
       const int yOff { static_cast<int>( std::round( ( tilesExtent.yMaximum() - tile.extent.yMaximum() ) / std::fabs( tile.scaleY ) ) )};
 
-      qDebug() << "Merging tile output raster: " << tile.tileId << xOff << yOff << tile.width << tile.height ;
+      //qDebug() << "Merging tile output raster: " << tile.tileId << xOff << yOff << tile.width << tile.height ;
 
       CPLErr err =  GDALRasterIO( GDALGetRasterBand( tmpDS.get(), 1 ),
                                   GF_Write,
@@ -799,10 +799,10 @@ bool QgsPostgresRasterProvider::init()
                                        QStringLiteral( "PostGIS" ), Qgis::Info );
             mSrcHasNoDataValue.append( false );
             mUseSrcNoDataValue.append( false );
+            nodataValue = std::numeric_limits<double>::min();
           }
           else
           {
-            mSrcNoDataValue.append( nodataValue );
             mSrcHasNoDataValue.append( true );
             mUseSrcNoDataValue.append( true );
           }

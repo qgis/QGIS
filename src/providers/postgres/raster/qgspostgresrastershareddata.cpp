@@ -37,6 +37,8 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( c
 
   QgsPostgresRasterSharedData::TilesResponse result;
 
+  bool hasIndex { true };
+
   // First check for index existence
   if ( mSpatialIndexes.find( request.overviewFactor ) == mSpatialIndexes.end() )
   {
@@ -44,11 +46,21 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( c
     mSpatialIndexes.emplace( request.overviewFactor, new QgsGenericSpatialIndex<Tile>() );
     mTiles.emplace( request.overviewFactor, std::map<TileIdType, std::unique_ptr<Tile>>() );
     mLoadedIndexBounds[ request.overviewFactor] = QgsGeometry::fromRect( QgsRectangle() );
+    hasIndex = false;
   }
 
   // Now check if the requested extent was completely downloaded
   const QgsGeometry requestedRect { QgsGeometry::fromRect( request.extent ) };
-  if ( ! mLoadedIndexBounds[ request.overviewFactor].contains( requestedRect ) )
+
+  // Fast track for first tile (where index is empty)
+  if ( ! hasIndex )
+  {
+    if ( ! fetchTilesIndex( requestedRect, request ) )
+    {
+      return result;
+    }
+  }
+  else if ( ! mLoadedIndexBounds[ request.overviewFactor].contains( requestedRect ) )
   {
     // Fetch index
     const QgsGeometry geomDiff { requestedRect.difference( mLoadedIndexBounds[ request.overviewFactor] ) };
@@ -223,11 +235,12 @@ bool QgsPostgresRasterSharedData::fetchTilesIndex( const QgsGeometry &requestPol
     {
       mSpatialIndexes[ request.overviewFactor ]->insert( tile.get(), tile->extent );
       mTiles[ request.overviewFactor ][ tileId ] = std::move( tile );
-      qDebug() << "Tile added:" << request.overviewFactor << " ID: " << tileId << "extent " << extent.toString( 4 ) << upperleftx << upperlefty << tileWidth  << tileHeight <<  extent.width() << extent.height();
+      //qDebug() << "Tile added:" << request.overviewFactor << " ID: " << tileId << "extent " << extent.toString( 4 ) << upperleftx << upperlefty << tileWidth  << tileHeight <<  extent.width() << extent.height();
     }
     else
     {
-      qDebug() << "Tile already indexed:" << request.overviewFactor << " ID: " << tileId << "extent " << extent.toString( 4 ) << upperleftx << upperlefty << tileWidth  << tileHeight <<  extent.width() << extent.height();
+      // This should never happen!
+      //qDebug() << "Tile already indexed:" << request.overviewFactor << " ID: " << tileId << "extent " << extent.toString( 4 ) << upperleftx << upperlefty << tileWidth  << tileHeight <<  extent.width() << extent.height();
     }
   }
   return true;
