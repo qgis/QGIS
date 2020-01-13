@@ -88,12 +88,16 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   {
     mTableWidget->setSelectionNumericFormat( mFormattingWidget->numericFormat() );
   } );
+  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::rowHeightChanged, mTableWidget, &QgsTableEditorWidget::setSelectionRowHeight );
+  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::columnWidthChanged, mTableWidget, &QgsTableEditorWidget::setSelectionColumnWidth );
 
   connect( mTableWidget, &QgsTableEditorWidget::activeCellChanged, this, [ = ]
   {
     mFormattingWidget->setForegroundColor( mTableWidget->selectionForegroundColor() );
     mFormattingWidget->setBackgroundColor( mTableWidget->selectionBackgroundColor() );
     mFormattingWidget->setNumericFormat( mTableWidget->selectionNumericFormat(), mTableWidget->hasMixedSelectionNumericFormat() );
+    mFormattingWidget->setRowHeight( mTableWidget->selectionRowHeight() );
+    mFormattingWidget->setColumnWidth( mTableWidget->selectionColumnWidth() );
   } );
 
   addDockWidget( Qt::RightDockWidgetArea, mPropertiesDock );
@@ -121,6 +125,26 @@ void QgsTableEditorDialog::setTableContents( const QgsTableContents &contents )
 QgsTableContents QgsTableEditorDialog::tableContents() const
 {
   return mTableWidget->tableContents();
+}
+
+double QgsTableEditorDialog::tableRowHeight( int row )
+{
+  return mTableWidget->tableRowHeight( row );
+}
+
+double QgsTableEditorDialog::tableColumnWidth( int column )
+{
+  return mTableWidget->tableColumnWidth( column );
+}
+
+void QgsTableEditorDialog::setTableRowHeight( int row, double height )
+{
+  mTableWidget->setTableRowHeight( row, height );
+}
+
+void QgsTableEditorDialog::setTableColumnWidth( int column, double width )
+{
+  mTableWidget->setTableColumnWidth( column, width );
 }
 
 #include "qgstableeditordialog.h"

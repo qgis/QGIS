@@ -61,6 +61,42 @@ class GUI_EXPORT QgsTableEditorDialog : public QMainWindow, private Ui::QgsTable
      */
     QgsTableContents tableContents() const;
 
+    /**
+     * Returns the configured row height for the specified \a row, or 0 if an automatic height
+     * should be used for the row.
+     *
+     * \see setTableRowHeight()
+     */
+    double tableRowHeight( int row );
+
+    /**
+     * Returns the configured column width for the specified \a column, or 0 if an automatic width
+     * should be used for the column.
+     *
+     * \see setTableColumnWidth()
+     */
+    double tableColumnWidth( int column );
+
+    /**
+     * Sets the configured row \a height for the specified \a row. Set \a height to 0
+     * if an automatic height should be used for the row.
+     *
+     * This should be called after a call to setTableContents().
+     *
+     * \see tableRowHeight()
+     */
+    void setTableRowHeight( int row, double height );
+
+    /**
+     * Sets the configured column \a width for the specified \a column. Set \a width to 0
+     * if an automatic width should be used for the column.
+     *
+     * This should be called after a call to setTableContents().
+     *
+     * \see tableColumnWidth()
+     */
+    void setTableColumnWidth( int column, double width );
+
   signals:
 
     /**
