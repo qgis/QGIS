@@ -492,7 +492,7 @@ double QgsTableEditorWidget::selectionColumnWidth()
   const QModelIndexList selection = selectedIndexes();
   for ( const QModelIndex &index : selection )
   {
-    double thisWidth = tableColumnWidth( index.row() );
+    double thisWidth = tableColumnWidth( index.column() );
     if ( first )
       width = thisWidth;
     else if ( thisWidth != width )

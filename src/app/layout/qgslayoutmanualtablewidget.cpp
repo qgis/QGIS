@@ -166,12 +166,49 @@ void QgsLayoutManualTableWidget::setTableContents()
     connect( this, &QWidget::destroyed, mEditorDialog, &QMainWindow::close );
 
     mEditorDialog->setTableContents( mTable->tableContents() );
+    int row = 0;
+    const QList< double > rowHeights = mTable->rowHeights();
+    for ( double height : rowHeights )
+    {
+      mEditorDialog->setTableRowHeight( row, height );
+      row++;
+    }
+    int col = 0;
+    const QList< double > columnWidths = mTable->columnWidths();
+    for ( double width : columnWidths )
+    {
+      mEditorDialog->setTableColumnWidth( col, width );
+      col++;
+    }
+
     connect( mEditorDialog, &QgsTableEditorDialog::tableChanged, this, [ = ]
     {
       if ( mTable )
       {
         mTable->beginCommand( tr( "Change Table Contents" ) );
         mTable->setTableContents( mEditorDialog->tableContents() );
+
+        const int rowCount = mTable->tableContents().size();
+        QList< double > rowHeights;
+        rowHeights.reserve( rowCount );
+        for ( int row = 0; row < rowCount; ++row )
+        {
+          rowHeights << mEditorDialog->tableRowHeight( row );
+        }
+        mTable->setRowHeights( rowHeights );
+
+        if ( !mTable->tableContents().empty() )
+        {
+          const int columnCount = mTable->tableContents().at( 0 ).size();
+          QList< double > columnWidths;
+          columnWidths.reserve( columnCount );
+          for ( int col = 0; col < columnCount; ++col )
+          {
+            columnWidths << mEditorDialog->tableColumnWidth( col );
+          }
+          mTable->setColumnWidths( columnWidths );
+        }
+
         mTable->endCommand();
       }
     } );
