@@ -22,8 +22,8 @@ QgsMesh3dRenderControler::QgsMesh3dRenderControler( QgsAbstract3DEngine *engine3
   QObject( engine3D ), mEngine3D( engine3D )
 {
   createBuffer();
-  createGrapheNode();
-  engine3D->addFrameGraphNode( mRootFrameGraph );
+  //createGrapheNode();
+  //engine3D->addFrameGraphNode( mRootFrameGraph );
 }
 
 void QgsMesh3dRenderControler::setBufferSize( int width, int height )

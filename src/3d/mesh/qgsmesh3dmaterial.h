@@ -40,18 +40,12 @@ class QgsMesh3dMaterial : public Qt3DRender::QMaterial
 
 
   private:
-    Qt3DRender::QTechnique *mColorTechnique = nullptr;
-    Qt3DRender::QTechnique *mLightTechnique = nullptr;
-    Qt3DRender::QTechnique *mWireFrameTechnique = nullptr;
-    Qt3DRender::QRenderPassFilter *mRenderPassFilter = nullptr;
     MagnitudeType mMagnitudeType;
     QgsMesh3DSymbol mSymbol;
     Qt3DRender::QBuffer *mColorsRampBuffer = nullptr;
+    Qt3DRender::QTechnique *mTechnique;
 
-    void setColorRampParameterUniform( const QgsColorRampShader &colorRampShader );
-    void configureLightsTechnique();
-    void configureColorTechnique();
-    void configureWireframeTechnique();
+    void configure();
 };
 
 #endif // QGSMESH3DMATERIAL_H
