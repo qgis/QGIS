@@ -54,12 +54,12 @@ QgsLayoutManualTableWidget::QgsLayoutManualTableWidget( QgsLayoutFrame *frame )
 
   blockAllSignals( true );
 
-  mResizeModeComboBox->addItem( tr( "Use existing frames" ), QgsLayoutMultiFrame::UseExistingFrames );
-  mResizeModeComboBox->addItem( tr( "Extend to next page" ), QgsLayoutMultiFrame::ExtendToNextPage );
-  mResizeModeComboBox->addItem( tr( "Repeat until finished" ), QgsLayoutMultiFrame::RepeatUntilFinished );
+  mResizeModeComboBox->addItem( tr( "Use Existing Frames" ), QgsLayoutMultiFrame::UseExistingFrames );
+  mResizeModeComboBox->addItem( tr( "Extend to Next Page" ), QgsLayoutMultiFrame::ExtendToNextPage );
+  mResizeModeComboBox->addItem( tr( "Repeat Until Finished" ), QgsLayoutMultiFrame::RepeatUntilFinished );
 
-  mWrapBehaviorComboBox->addItem( tr( "Truncate text" ), QgsLayoutTable::TruncateText );
-  mWrapBehaviorComboBox->addItem( tr( "Wrap text" ), QgsLayoutTable::WrapText );
+  mWrapBehaviorComboBox->addItem( tr( "Truncate Text" ), QgsLayoutTable::TruncateText );
+  mWrapBehaviorComboBox->addItem( tr( "Wrap Text" ), QgsLayoutTable::WrapText );
 
   mContentFontColorButton->setColorDialogTitle( tr( "Select Content Font Color" ) );
   mContentFontColorButton->setAllowOpacity( true );
