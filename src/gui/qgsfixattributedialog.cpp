@@ -29,7 +29,7 @@ QgsFixAttributeDialog::QgsFixAttributeDialog( QgsVectorLayer *vl, QgsFeatureList
 void QgsFixAttributeDialog::init( QgsVectorLayer *layer )
 {
   QgsAttributeEditorContext context;
-  setWindowTitle( tr( "%1 - Fix Pastet Features" ).arg( layer->name() ) );
+  setWindowTitle( tr( "%1 - Fix Pasted Features" ).arg( layer->name() ) );
   setLayout( new QGridLayout() );
   layout()->setMargin( 0 );
   context.setFormMode( QgsAttributeEditorContext::StandaloneDialog );
@@ -57,31 +57,31 @@ void QgsFixAttributeDialog::init( QgsVectorLayer *layer )
   layout()->addWidget( mAttributeForm );
 
   QDialogButtonBox *buttonBox = mAttributeForm->findChild<QDialogButtonBox *>();
-  QPushButton *cancelAllBtn = new QPushButton( tr( "Cancel all" ) );
-  QPushButton *cancelAllInvalidBtn = new QPushButton( tr( "Cancel all invalid" ) );
-  QPushButton *storeAllInvalidBtn = new QPushButton( tr( "Store all (even invalid)" ) );
+  QPushButton *cancelAllBtn = new QPushButton( tr( "Discard All" ) );
+  QPushButton *cancelAllInvalidBtn = new QPushButton( tr( "Discard All Invalid" ) );
+  QPushButton *storeAllInvalidBtn = new QPushButton( tr( "Paste All (Including Invalid)" ) );
   if ( mFeatures.count() > 1 )
   {
     buttonBox->addButton( cancelAllBtn, QDialogButtonBox::ActionRole );
     buttonBox->addButton( cancelAllInvalidBtn, QDialogButtonBox::ActionRole );
     connect( cancelAllBtn, &QAbstractButton::clicked, this, [ = ]()
     {
-      done( VanishAll );
+      done( DiscardAll );
     } );
     connect( cancelAllInvalidBtn, &QAbstractButton::clicked, this, [ = ]()
     {
-      done( CopyValid );
+      done( PasteValid );
     } );
     buttonBox->button( QDialogButtonBox::Cancel )->setText( tr( "Skip" ) );
   }
   else
   {
-    storeAllInvalidBtn->setText( tr( "Store anyway" ) );
+    storeAllInvalidBtn->setText( tr( "Paste Anyway" ) );
   }
   buttonBox->addButton( storeAllInvalidBtn, QDialogButtonBox::ActionRole );
   connect( storeAllInvalidBtn, &QAbstractButton::clicked, this, [ = ]()
   {
-    done( CopyAll );
+    done( PasteAll );
   } );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsFixAttributeDialog::reject );
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsFixAttributeDialog::accept );
@@ -109,7 +109,7 @@ void QgsFixAttributeDialog::accept()
   }
   else
   {
-    done( CopyValid );
+    done( PasteValid );
   }
 
   mProgressBar->setValue( mCurrentFeature - mFeatures.begin() );
@@ -126,7 +126,7 @@ void QgsFixAttributeDialog::reject()
   }
   else
   {
-    done( CopyValid );
+    done( PasteValid );
   }
 
   mProgressBar->setValue( mCurrentFeature - mFeatures.begin() );

@@ -9591,45 +9591,57 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
   QgsFeatureList newFeatures {QgsVectorLayerUtils::createFeatures( pasteVectorLayer, newFeaturesDataList, &context )};
 
   // check constraints
-  QgsFeatureList validFeatures = newFeatures;
-  QgsFeatureList invalidFeatures;
-  for ( const QgsFeature &f : qgis::as_const( validFeatures ) )
+  bool hasStrongConstraints = false;
+
+  for ( const QgsField &field : pasteVectorLayer->fields() )
   {
-    for ( int idx = 0; idx < pasteVectorLayer->fields().count(); ++idx )
+    if ( ( field.constraints().constraints() & QgsFieldConstraints::ConstraintUnique && !field.constraints().constraintExpression().isEmpty() && field.constraints().constraintStrength( QgsFieldConstraints::ConstraintUnique ) & QgsFieldConstraints::ConstraintStrengthHard )
+         || ( field.constraints().constraints() & QgsFieldConstraints::ConstraintNotNull && field.constraints().constraintStrength( QgsFieldConstraints::ConstraintNotNull ) & QgsFieldConstraints::ConstraintStrengthHard )
+         || ( field.constraints().constraints() & QgsFieldConstraints::ConstraintExpression && field.constraints().constraintStrength( QgsFieldConstraints::ConstraintExpression ) & QgsFieldConstraints::ConstraintStrengthHard )
+       )
+      hasStrongConstraints = true;
+  }
+
+  if ( hasStrongConstraints )
+  {
+    QgsFeatureList validFeatures = newFeatures;
+    QgsFeatureList invalidFeatures;
+    QMutableListIterator<QgsFeature> it( validFeatures );
+    while ( it.hasNext() )
     {
-      QStringList errors;
-      if ( !QgsVectorLayerUtils::validateAttribute( pasteVectorLayer, f, idx, errors, QgsFieldConstraints::ConstraintStrengthHard, QgsFieldConstraints::ConstraintOriginNotSet ) )
+      QgsFeature &f = it.next();
+      for ( int idx = 0; idx < pasteVectorLayer->fields().count(); ++idx )
       {
-        invalidFeatures << f;
-        validFeatures.removeOne( f );
-        break;
+        QStringList errors;
+        if ( !QgsVectorLayerUtils::validateAttribute( pasteVectorLayer, f, idx, errors, QgsFieldConstraints::ConstraintStrengthHard, QgsFieldConstraints::ConstraintOriginNotSet ) )
+        {
+          invalidFeatures << f;
+          it.remove();
+          break;
+        }
+      }
+    }
+
+    if ( !invalidFeatures.isEmpty() )
+    {
+      newFeatures.clear();
+
+      QgsFixAttributeDialog *dialog = new QgsFixAttributeDialog( pasteVectorLayer, invalidFeatures, this );
+      int feedback = dialog->exec();
+
+      switch ( feedback )
+      {
+        case QgsFixAttributeDialog::PasteValid:
+          //paste valid and fixed, vanish unfixed
+          newFeatures << validFeatures << dialog->fixedFeatures();
+          break;
+        case QgsFixAttributeDialog::PasteAll:
+          //paste all, even unfixed
+          newFeatures << validFeatures << dialog->fixedFeatures() << dialog->unfixedFeatures();
+          break;
       }
     }
   }
-
-  if ( !invalidFeatures.isEmpty() )
-  {
-    newFeatures.clear();
-
-    QgsFixAttributeDialog *dialog = new QgsFixAttributeDialog( pasteVectorLayer, invalidFeatures, this );
-    int feedback = dialog->exec();
-
-    if ( feedback == QgsFixAttributeDialog::VanishAll )
-    {
-      //vanish all
-    }
-    else if ( feedback == QgsFixAttributeDialog::CopyValid )
-    {
-      //copy valid and fixed, vanish unfixed
-      newFeatures << validFeatures << dialog->fixedFeatures();
-    }
-    else if ( feedback == QgsFixAttributeDialog::CopyAll )
-    {
-      //copy all, even unfixed
-      newFeatures << validFeatures << dialog->fixedFeatures() << dialog->unfixedFeatures();
-    }
-  }
-
   pasteVectorLayer->addFeatures( newFeatures );
   QgsFeatureIds newIds;
   newIds.reserve( newFeatures.size() );

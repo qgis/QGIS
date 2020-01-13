@@ -44,9 +44,9 @@ class GUI_EXPORT QgsFixAttributeDialog : public QDialog
      */
     enum Feedback
     {
-      VanishAll,  //!< Feedback to cancel copy of all features (even valid ones)
-      CopyValid,  //!< Feedback to copy the valid features and vanishe the invalid ones
-      CopyAll     //!< Feedback to copy all features, no matter if valid or invalid
+      DiscardAll, //!< Feedback to discard all features (even valid ones)
+      PasteValid, //!< Feedback to paste the valid features and vanishe the invalid ones
+      PasteAll    //!< Feedback to paste all features, no matter if valid or invalid
     };
 
     /**
