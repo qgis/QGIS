@@ -391,7 +391,7 @@ void QgsRelationReferenceWidget::deleteForeignKeys()
   }
   else
   {
-    mComboBox->setIdentifierValuesToNull();
+    mComboBox->setIdentifierValues( QVariantList() );
   }
   mRemoveFKButton->setEnabled( false );
   updateAttributeEditorFrame( QgsFeature() );
@@ -426,7 +426,7 @@ void QgsRelationReferenceWidget::showIndeterminateState()
   }
   else
   {
-    whileBlocking( mComboBox )->setIdentifierValuesToNull();
+    whileBlocking( mComboBox )->setIdentifierValues( QVariantList() );
   }
   mRemoveFKButton->setEnabled( false );
   updateAttributeEditorFrame( QgsFeature() );

@@ -116,11 +116,14 @@ identifierFields.
 .. versionadded:: 3.10
 %End
 
-    void setIdentifierValuesToNull();
+ void setIdentifierValuesToNull() /Deprecated/;
 %Docstring
 Sets the identifier values of the currently selected feature to NULL value(s).
 
 .. versionadded:: 3.10
+
+.. deprecated:: QGIS 3.12
+   use setIdentifierValues( QVariantList() ) instead
 %End
 
     QgsFeatureRequest currentFeatureRequest() const;

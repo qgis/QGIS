@@ -174,12 +174,15 @@ still be available in the model.
 .. versionadded:: 3.10
 %End
 
-    void setExtraIdentifierValuesToNull();
+ void setExtraIdentifierValuesToNull() /Deprecated/;
 %Docstring
 Allows specifying one value that does not need to match the filter criteria but will
 still be available in the model as NULL value(s).
 
 .. versionadded:: 3.10
+
+.. deprecated:: QGIS 3.12
+   use setExtraIdentifierValues( QVariantList() ) instead
 %End
 
     int extraIdentifierValueIndex() const;
