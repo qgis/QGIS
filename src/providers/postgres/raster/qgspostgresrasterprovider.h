@@ -145,6 +145,8 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     //! Mutable data shared between provider and feature sources
     std::shared_ptr<QgsPostgresRasterSharedData> mShared;
 
+    QString mDbName;
+
     // Methods
 
     QgsPostgresConn *connectionRO() const;

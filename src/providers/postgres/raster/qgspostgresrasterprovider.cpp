@@ -42,10 +42,6 @@ QgsPostgresRasterProvider::QgsPostgresRasterProvider( const QString &uri, const 
   mTableName = mUri.table();
 
   mRasterColumn = mUri.geometryColumn();
-  if ( mRasterColumn.isEmpty() )
-  {
-    mRasterColumn = QStringLiteral( "rast" );
-  }
   mSqlWhereClause = mUri.sql();
   mRequestedSrid = mUri.srid();
 
@@ -749,10 +745,9 @@ bool QgsPostgresRasterProvider::init()
                                           "out_db, spatial_index, scale_x, scale_y, same_alignment,"
                                           "regular_blocking "
                                           "FROM raster_columns WHERE "
-                                          "r_table_name = %1 AND r_table_schema = %2 AND r_table_catalog = %3" )
+                                          "r_table_name = %1 AND r_table_schema = %2" )
                           .arg( quotedValue( mTableName ) )
-                          .arg( quotedValue( mSchemaName ) )
-                          .arg( quotedValue( mUri.database() ) ) };
+                          .arg( quotedValue( mSchemaName ) )  };
 
       QgsPostgresResult result( connectionRO()->PQexec( sql ) );
 
@@ -1372,10 +1367,9 @@ QString QgsPostgresRasterProvider::pkSql()
 void QgsPostgresRasterProvider::findOverviews()
 {
   const QString sql { QStringLiteral( "SELECT overview_factor, o_table_schema, o_table_name, o_raster_column "
-                                      "FROM raster_overviews WHERE r_table_schema = %1 AND r_table_name = %2 AND r_table_catalog = %3" )
+                                      "FROM raster_overviews WHERE r_table_schema = %1 AND r_table_name = %2" )
                       .arg( quotedValue( mSchemaName ) )
-                      .arg( quotedValue( mTableName ) )
-                      .arg( quotedValue( mUri.database() ) ) };
+                      .arg( quotedValue( mTableName ) ) };
 
   //QgsDebugMsg( QStringLiteral( "Raster overview information sql: %1" ).arg( sql ) );
   QgsPostgresResult result( connectionRO()->PQexec( sql ) );
