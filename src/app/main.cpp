@@ -372,17 +372,20 @@ void qgisCrash( int signal )
  * Based on qInstallMsgHandler example code in the Qt documentation.
  *
  */
-void myMessageOutput( QtMsgType type, const char *msg )
+void myMessageOutput( QtMsgType type, const QMessageLogContext &, const QString &msg )
 {
   switch ( type )
   {
     case QtDebugMsg:
-      myPrint( "%s\n", msg );
-      if ( strncmp( msg, "Backtrace", 9 ) == 0 )
-        dumpBacktrace( atoi( msg + 9 ) );
+      myPrint( "%s\n", msg.toLocal8Bit().constData() );
+      if ( msg.startsWith( QLatin1String( "Backtrace" ) ) )
+      {
+        const QString trace = msg.mid( 9 );
+        dumpBacktrace( atoi( trace.toLocal8Bit().constData() ) );
+      }
       break;
     case QtCriticalMsg:
-      myPrint( "Critical: %s\n", msg );
+      myPrint( "Critical: %s\n", msg.toLocal8Bit().constData() );
       break;
     case QtWarningMsg:
     {
@@ -391,18 +394,18 @@ void myMessageOutput( QtMsgType type, const char *msg )
        *  we have no control over and have low value anyway);
        * - QtSVG warnings with regards to lack of implementation beyond Tiny SVG 1.2
        */
-      if ( strncmp( msg, "libpng warning: iCCP: known incorrect sRGB profile", 50 ) == 0 ||
-           strstr( msg, "Could not add child element to parent element because the types are incorrect" ) )
+      if ( msg.startsWith( QLatin1String( "libpng warning: iCCP: known incorrect sRGB profile" ), Qt::CaseInsensitive ) ||
+           msg.contains( QLatin1String( "Could not add child element to parent element because the types are incorrect" ), Qt::CaseInsensitive ) )
         break;
 
-      myPrint( "Warning: %s\n", msg );
+      myPrint( "Warning: %s\n", msg.toLocal8Bit().constData() );
 
 #ifdef QGISDEBUG
       // Print all warnings except setNamedColor.
       // Only seems to happen on windows
-      if ( 0 != strncmp( msg, "QColor::setNamedColor: Unknown color name 'param", 48 ) &&
-           0 != strncmp( msg, "Trying to create a QVariant instance of QMetaType::Void type, an invalid QVariant will be constructed instead", 109 ) &&
-           0 != strncmp( msg, "Logged warning", 14 ) )
+      if ( !msg.startsWith( QLatin1String( "QColor::setNamedColor: Unknown color name 'param" ), Qt::CaseInsensitive )
+           && !msg.startsWith( QLatin1String( "Trying to create a QVariant instance of QMetaType::Void type, an invalid QVariant will be constructed instead" ), Qt::CaseInsensitive )
+           && !msg.startsWith( QLatin1String( "Logged warning" ), Qt::CaseInsensitive ) )
       {
         // TODO: Verify this code in action.
         dumpBacktrace( 20 );
@@ -420,7 +423,7 @@ void myMessageOutput( QtMsgType type, const char *msg )
 #endif
 
       // TODO: Verify this code in action.
-      if ( 0 == strncmp( msg, "libpng error:", 13 ) )
+      if ( msg.startsWith( QLatin1String( "libpng error:" ), Qt::CaseInsensitive ) )
       {
         // Let the user know
         QgsMessageLog::logMessage( msg, QStringLiteral( "libpng" ) );
@@ -431,7 +434,7 @@ void myMessageOutput( QtMsgType type, const char *msg )
 
     case QtFatalMsg:
     {
-      myPrint( "Fatal: %s\n", msg );
+      myPrint( "Fatal: %s\n", msg.toLocal8Bit().constData() );
 #ifdef QGIS_CRASH
       qgisCrash( -1 );
 #else
@@ -442,7 +445,7 @@ void myMessageOutput( QtMsgType type, const char *msg )
     }
 
     case QtInfoMsg:
-      myPrint( "Info: %s\n", msg );
+      myPrint( "Info: %s\n", msg.toLocal8Bit().constData() );
       break;
   }
 }
@@ -510,7 +513,7 @@ int main( int argc, char *argv[] )
 
   // Set up the custom qWarning/qDebug custom handler
 #ifndef ANDROID
-  qInstallMsgHandler( myMessageOutput );
+  qInstallMessageHandler( myMessageOutput );
 #endif
 
 #ifdef QGIS_CRASH
