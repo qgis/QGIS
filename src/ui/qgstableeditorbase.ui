@@ -52,20 +52,6 @@
    </layout>
   </widget>
   <widget class="QStatusBar" name="mStatusBar"/>
-  <widget class="QToolBar" name="mToolbar">
-   <property name="windowTitle">
-    <string>Layout Toolbar</string>
-   </property>
-   <property name="toolTip">
-    <string>Layout Toolbar</string>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-  </widget>
   <widget class="QMenuBar" name="mMenuBar">
    <property name="geometry">
     <rect>
@@ -75,18 +61,6 @@
      <height>24</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuCell">
-    <property name="title">
-     <string>&amp;Format</string>
-    </property>
-    <addaction name="separator"/>
-    <addaction name="separator"/>
-    <addaction name="mActionSetForeground"/>
-    <addaction name="mActionSetBackground"/>
-    <addaction name="separator"/>
-    <addaction name="mActionSetRowHeight"/>
-    <addaction name="mActionSetColumnWidth"/>
-   </widget>
    <widget class="QMenu" name="menu_Table">
     <property name="title">
      <string>&amp;Table</string>
@@ -128,7 +102,6 @@
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menu_Edit"/>
-   <addaction name="menuCell"/>
    <addaction name="menu_Table"/>
   </widget>
   <action name="mActionSetForeground">
