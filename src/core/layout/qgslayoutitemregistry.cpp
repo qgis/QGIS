@@ -82,7 +82,7 @@ bool QgsLayoutItemRegistry::populate()
   addLayoutMultiFrameType( new QgsLayoutMultiFrameMetadata( LayoutHtml, QObject::tr( "HTML" ), QgsLayoutItemHtml::create ) );
   addLayoutMultiFrameType( new QgsLayoutMultiFrameMetadata( LayoutAttributeTable, QObject::tr( "Attribute Table" ), QgsLayoutItemAttributeTable::create ) );
   addLayoutMultiFrameType( new QgsLayoutMultiFrameMetadata( LayoutTextTable, QObject::tr( "Text Table" ), QgsLayoutItemTextTable::create ) );
-  addLayoutMultiFrameType( new QgsLayoutMultiFrameMetadata( LayoutManualTable, QObject::tr( "Table" ), QgsLayoutItemManualTable::create ) );
+  addLayoutMultiFrameType( new QgsLayoutMultiFrameMetadata( LayoutManualTable, QObject::tr( "Fixed Table" ), QgsLayoutItemManualTable::create ) );
 
   return true;
 }
