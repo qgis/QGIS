@@ -41,6 +41,8 @@ class TestQgsTableEditor: public QObject
     void foregroundColor();
     void backgroundColor();
     void numericFormat();
+    void rowHeight();
+    void columnWidth();
 
   private:
 
@@ -902,6 +904,90 @@ void TestQgsTableEditor::numericFormat()
   w.selectionModel()->select( w.model()->index( 0, 3 ), QItemSelectionModel::Select );
   QVERIFY( !w.selectionNumericFormat() );
   QVERIFY( w.hasMixedSelectionNumericFormat() );
+}
+
+void TestQgsTableEditor::rowHeight()
+{
+  QgsTableEditorWidget w;
+  QVERIFY( w.tableContents().isEmpty() );
+
+  QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
+  w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() )
+                      << ( QgsTableRow() << QgsTableCell()  << QgsTableCell() << QgsTableCell() )
+                      << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) );
+  QCOMPARE( spy.count(), 1 );
+  w.setTableRowHeight( 1, 14.0 );
+
+  QCOMPARE( w.selectionRowHeight(), 0.0 );
+  QCOMPARE( w.tableRowHeight( 0 ), 0.0 );
+  QCOMPARE( w.tableRowHeight( 1 ), 14.0 );
+  QCOMPARE( w.tableRowHeight( 2 ), 0.0 );
+  w.selectionModel()->clearSelection();
+  w.setSelectionRowHeight( 15.0 );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( w.selectionRowHeight(), 0.0 );
+  QCOMPARE( w.tableRowHeight( 0 ), 0.0 );
+  QCOMPARE( w.tableRowHeight( 1 ), 14.0 );
+  QCOMPARE( w.tableRowHeight( 2 ), 0.0 );
+
+  w.selectionModel()->select( w.model()->index( 0, 0 ), QItemSelectionModel::ClearAndSelect );
+  QCOMPARE( w.selectionRowHeight(), 0.0 );
+  w.selectionModel()->select( w.model()->index( 1, 0 ), QItemSelectionModel::Select );
+  QCOMPARE( w.selectionRowHeight(), -1.0 );
+  w.selectionModel()->select( w.model()->index( 1, 0 ), QItemSelectionModel::ClearAndSelect );
+  QCOMPARE( w.selectionRowHeight(), 14.0 );
+  w.selectionModel()->select( w.model()->index( 0, 1 ), QItemSelectionModel::Select );
+  QCOMPARE( w.selectionRowHeight(), -1.0 );
+  w.setSelectionRowHeight( 15.0 );
+  QCOMPARE( spy.count(), 3 );
+  QCOMPARE( w.selectionRowHeight(), 15.0 );
+  QCOMPARE( w.tableRowHeight( 0 ), 15.0 );
+  QCOMPARE( w.tableRowHeight( 1 ), 15.0 );
+  QCOMPARE( w.tableRowHeight( 2 ), 0.0 );
+  w.selectionModel()->select( w.model()->index( 2, 2 ), QItemSelectionModel::Select );
+  QCOMPARE( w.selectionRowHeight(), -1.0 );
+}
+
+void TestQgsTableEditor::columnWidth()
+{
+  QgsTableEditorWidget w;
+  QVERIFY( w.tableContents().isEmpty() );
+
+  QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
+  w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() )
+                      << ( QgsTableRow() << QgsTableCell()  << QgsTableCell() << QgsTableCell() )
+                      << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) );
+  QCOMPARE( spy.count(), 1 );
+  w.setTableColumnWidth( 1, 14.0 );
+
+  QCOMPARE( w.selectionColumnWidth(), 0.0 );
+  QCOMPARE( w.tableColumnWidth( 0 ), 0.0 );
+  QCOMPARE( w.tableColumnWidth( 1 ), 14.0 );
+  QCOMPARE( w.tableColumnWidth( 2 ), 0.0 );
+  w.selectionModel()->clearSelection();
+  w.setSelectionColumnWidth( 15.0 );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( w.selectionColumnWidth(), 0.0 );
+  QCOMPARE( w.tableColumnWidth( 0 ), 0.0 );
+  QCOMPARE( w.tableColumnWidth( 1 ), 14.0 );
+  QCOMPARE( w.tableColumnWidth( 2 ), 0.0 );
+
+  w.selectionModel()->select( w.model()->index( 0, 0 ), QItemSelectionModel::ClearAndSelect );
+  QCOMPARE( w.selectionColumnWidth(), 0.0 );
+  w.selectionModel()->select( w.model()->index( 0, 1 ), QItemSelectionModel::Select );
+  QCOMPARE( w.selectionColumnWidth(), -1.0 );
+  w.selectionModel()->select( w.model()->index( 0, 1 ), QItemSelectionModel::ClearAndSelect );
+  QCOMPARE( w.selectionColumnWidth(), 14.0 );
+  w.selectionModel()->select( w.model()->index( 1, 0 ), QItemSelectionModel::Select );
+  QCOMPARE( w.selectionColumnWidth(), -1.0 );
+  w.setSelectionColumnWidth( 15.0 );
+  QCOMPARE( spy.count(), 3 );
+  QCOMPARE( w.selectionColumnWidth(), 15.0 );
+  QCOMPARE( w.tableColumnWidth( 0 ), 15.0 );
+  QCOMPARE( w.tableColumnWidth( 1 ), 15.0 );
+  QCOMPARE( w.tableColumnWidth( 2 ), 0.0 );
+  w.selectionModel()->select( w.model()->index( 2, 2 ), QItemSelectionModel::Select );
+  QCOMPARE( w.selectionColumnWidth(), -1.0 );
 }
 
 
