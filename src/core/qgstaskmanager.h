@@ -357,15 +357,18 @@ class CORE_EXPORT QgsTask : public QObject
      */
     void terminated();
 
-    void processSubTasksForCompletion();
-
-    void processSubTasksForTermination();
 
     void processSubTasksForHold();
 
     friend class QgsTaskManager;
     friend class QgsTaskRunnableWrapper;
     friend class TestQgsTaskManager;
+
+  private slots:
+
+    void processSubTasksForCompletion();
+
+    void processSubTasksForTermination();
 
 };
 
