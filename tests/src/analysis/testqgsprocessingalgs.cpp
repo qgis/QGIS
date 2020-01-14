@@ -217,10 +217,12 @@ void TestQgsProcessingAlgs::packageAlg()
   QVERIFY( pointLayer->isValid() );
   QCOMPARE( pointLayer->wkbType(), mPointsLayer->wkbType() );
   QCOMPARE( pointLayer->featureCount(), mPointsLayer->featureCount() );
+  pointLayer.reset();
   std::unique_ptr< QgsVectorLayer > polygonLayer = qgis::make_unique< QgsVectorLayer >( outputGpkg + "|layername=polygons", "polygons", "ogr" );
   QVERIFY( polygonLayer->isValid() );
   QCOMPARE( polygonLayer->wkbType(), mPolygonLayer->wkbType() );
   QCOMPARE( polygonLayer->featureCount(), mPolygonLayer->featureCount() );
+  polygonLayer.reset();
 
   std::unique_ptr<QgsVectorLayer> rectangles = qgis::make_unique<QgsVectorLayer>( QStringLiteral( TEST_DATA_DIR ) + "/rectangles.shp",
       QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
@@ -235,9 +237,11 @@ void TestQgsProcessingAlgs::packageAlg()
   QVERIFY( rectanglesPackagedLayer->isValid() );
   QCOMPARE( rectanglesPackagedLayer->wkbType(), rectanglesPackagedLayer->wkbType() );
   QCOMPARE( rectanglesPackagedLayer->featureCount(), rectangles->featureCount() );
+  rectanglesPackagedLayer.reset();
 
   pointLayer = qgis::make_unique< QgsVectorLayer >( outputGpkg + "|layername=points", "points", "ogr" );
   QVERIFY( pointLayer->isValid() );
+  pointLayer.reset();
 
   // And finally, test with overwrite enabled
   QVariantMap results3 = pkgAlg( QStringList() << rectangles->id(), outputGpkg, true, &ok );
