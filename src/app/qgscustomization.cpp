@@ -723,7 +723,7 @@ void QgsCustomization::createTreeItemBrowser()
     if ( capabilities != QgsDataProvider::NoDataCapabilities )
     {
       QStringList item;
-      item << QStringLiteral( "%1" ).arg( pr->name() ) << QStringLiteral( "Data Item Provider: %1" ).arg( pr->name() );
+      item << QStringLiteral( "%1" ).arg( pr->name() ) << QObject::tr( "Data Item Provider: %1" ).arg( pr->name() );
       items << item;
     }
   }
