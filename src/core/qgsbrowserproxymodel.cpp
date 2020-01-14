@@ -243,7 +243,7 @@ bool QgsBrowserProxyModel::filterAcceptsProviderKey( const QModelIndex &sourceIn
   if ( providerKey.isEmpty() )
     return true;
 
-  return ( !mHiddenDataItemsKeys.contains( providerKey ) );
+  return !mHiddenDataItemsKeys.contains( providerKey );
 }
 
 bool QgsBrowserProxyModel::filterRootAcceptsProviderKey( const QModelIndex &sourceIndex ) const
