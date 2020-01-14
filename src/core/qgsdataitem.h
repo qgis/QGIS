@@ -313,20 +313,20 @@ class CORE_EXPORT QgsDataItem : public QObject
     void setPath( const QString &path ) { mPath = path; }
 
     /**
-     * Returns the provider key that created this item
+     * Returns the provider key that created this item (e.g. "PostGIS")
      *
      * If key has a prefix "special:", it marks that the item was not created with a provider,
-     * but manually. For example "special: Favorites"
+     * but manually. For example "special:Favorites", "special:Home"
      *
      * \since QGIS 3.12
      */
     QString providerKey() const;
 
     /**
-     * Sets the provider key that created this item
+     * Sets the provider key that created this item (e.g. "PostGIS")
      *
      * If key has a prefix "special:", it marks that the item was not created with a provider,
-     * but manually. For example "special: Favorites"
+     * but manually. For example "special:Favorites"
      *
      * \since QGIS 3.12
      */

@@ -148,8 +148,8 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
      *
      * By default browser model shows all items from all available data items provider and few special
      * items (e.g. Favourites). To customize the behavious, set the filter to not load certain data items.
-     * The items that are not based on data item providers (e.g. Favourites, Home) have
-     * prefix "special:".
+     * The items that are not based on data item providers have prefix "special:", for example
+     * "special:Favourites", "special:Home", "PostGIS", "MSSQL"
      *
      * All items created by the providers listed in filter are hidden from the layer tree.
      * This filter is always evaluated.
