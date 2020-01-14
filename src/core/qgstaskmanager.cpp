@@ -172,6 +172,7 @@ bool QgsTask::waitForFinished( int timeout )
     if ( mNotFinishedMutex.tryLock( timeout ) )
     {
       mNotFinishedMutex.unlock();
+      QCoreApplication::sendPostedEvents( this );
       rv = true;
     }
     else
@@ -254,7 +255,8 @@ void QgsTask::setProgress( double progress )
 void QgsTask::completed()
 {
   mStatus = Complete;
-  processSubTasksForCompletion();
+  QMetaObject::invokeMethod( this, &QgsTask::processSubTasksForCompletion, Qt::AutoConnection );
+  mNotFinishedMutex.unlock();
 }
 
 void QgsTask::processSubTasksForCompletion()
@@ -277,8 +279,6 @@ void QgsTask::processSubTasksForCompletion()
     setProgress( 100.0 );
     emit statusChanged( Complete );
     emit taskCompleted();
-    mNotFinishedMutex.tryLock(); // we're not guaranteed to already have the lock in place here
-    mNotFinishedMutex.unlock();
   }
   else if ( mStatus == Complete )
   {
@@ -306,8 +306,6 @@ void QgsTask::processSubTasksForTermination()
 
     emit statusChanged( Terminated );
     emit taskTerminated();
-    mNotFinishedMutex.tryLock(); // we're not guaranteed to already have the lock in place here
-    mNotFinishedMutex.unlock();
   }
   else if ( mStatus == Terminated && !subTasksTerminated )
   {
@@ -344,7 +342,8 @@ void QgsTask::processSubTasksForHold()
 void QgsTask::terminated()
 {
   mStatus = Terminated;
-  processSubTasksForTermination();
+  QMetaObject::invokeMethod( this, &QgsTask::processSubTasksForTermination, Qt::AutoConnection );
+  mNotFinishedMutex.unlock();
 }
 
 
