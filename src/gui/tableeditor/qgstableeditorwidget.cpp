@@ -122,6 +122,15 @@ QgsTableEditorWidget::QgsTableEditorWidget( QWidget *parent )
 
   setItemDelegate( new QgsTableEditorDelegate( this ) );
 
+
+  connect( this, &QTableWidget::cellDoubleClicked, this, [ = ]
+  {
+    if ( QgsTableEditorDelegate *d = qobject_cast< QgsTableEditorDelegate *>( itemDelegate( ) ) )
+    {
+      d->setWeakEditorMode( false );
+    }
+  } );
+
   connect( selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsTableEditorWidget::activeCellChanged );
 }
 
@@ -260,6 +269,10 @@ void QgsTableEditorWidget::keyPressEvent( QKeyEvent *event )
 
     default:
       QTableWidget::keyPressEvent( event );
+  }
+  if ( QgsTableEditorDelegate *d = qobject_cast< QgsTableEditorDelegate *>( itemDelegate( ) ) )
+  {
+    d->setWeakEditorMode( true );
   }
 }
 
@@ -903,9 +916,32 @@ void QgsTableEditorTextEdit::keyPressEvent( QKeyEvent *event )
       break;
     }
 
+    case Qt::Key_Right:
+    case Qt::Key_Left:
+    case Qt::Key_Up:
+    case Qt::Key_Down:
+    {
+      if ( mWeakEditorMode )
+      {
+        // close editor and defer to table
+        event->ignore();
+      }
+      else
+      {
+        QPlainTextEdit::keyPressEvent( event );
+      }
+      break;
+    }
+
     default:
       QPlainTextEdit::keyPressEvent( event );
   }
+}
+
+
+void QgsTableEditorTextEdit::setWeakEditorMode( bool weakEditorMode )
+{
+  mWeakEditorMode = weakEditorMode;
 }
 
 
@@ -915,9 +951,15 @@ QgsTableEditorDelegate::QgsTableEditorDelegate( QObject *parent )
 
 }
 
+void QgsTableEditorDelegate::setWeakEditorMode( bool weakEditorMode )
+{
+  mWeakEditorMode = weakEditorMode;
+}
+
 QWidget *QgsTableEditorDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & ) const
 {
   QgsTableEditorTextEdit *w = new QgsTableEditorTextEdit( parent );
+  w->setWeakEditorMode( mWeakEditorMode );
   return w;
 }
 
