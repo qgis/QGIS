@@ -170,7 +170,7 @@ Only for a valid edge match - obtain endpoints of the edge
 Convenient method to return a point on an edge with linear
 interpolation of the Z value.
 
-.. versionadded:: 3.12
+.. versionadded:: 3.10
 %End
 
         bool operator==( const QgsPointLocator::Match &other ) const;

@@ -207,7 +207,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
         /**
          * Convenient method to return a point on an edge with linear
          * interpolation of the Z value.
-         * \since 3.12
+         * \since 3.10
          */
         QgsPoint interpolatedPoint() const
         {
