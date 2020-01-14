@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsTableEditorWidget : QTableWidget
 {
 %Docstring

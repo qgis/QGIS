@@ -21,6 +21,27 @@
 #include "qgis_gui.h"
 #include "qgstablecell.h"
 #include <QTableWidget>
+#include <QStyledItemDelegate>
+
+
+#ifndef SIP_RUN
+///@cond PRIVATE
+///
+class QgsTableEditorDelegate : public QStyledItemDelegate
+{
+    Q_OBJECT
+  public:
+    QgsTableEditorDelegate( QObject *parent );
+  protected:
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex &index ) const override;
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
+
+};
+
+///@endcond
+
+#endif
 
 /**
  * \ingroup gui
