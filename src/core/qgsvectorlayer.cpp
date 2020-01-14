@@ -4912,6 +4912,8 @@ void QgsVectorLayer::emitDataChanged()
   if ( mDataChangedFired )
     return;
 
+  updateExtents(); // reset cached extent to reflect data changes
+
   mDataChangedFired = true;
   emit dataChanged();
   mDataChangedFired = false;
