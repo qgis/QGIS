@@ -522,7 +522,10 @@ void TestQgsTaskManager::taskFinished()
   manager.addTask( task );
 
   while ( task->status() == QgsTask::Running
-          || task->status() == QgsTask::Queued ) { }
+          || task->status() == QgsTask::Queued )
+  {
+    QCoreApplication::processEvents();
+  }
   while ( manager.countActiveTasks() > 0 )
   {
     QCoreApplication::processEvents();
@@ -533,9 +536,6 @@ void TestQgsTaskManager::taskFinished()
 
 void TestQgsTaskManager::subTask()
 {
-  if ( QgsTest::isTravis() )
-    QSKIP( "This test is disabled on Travis CI environment" );
-
   QgsTaskManager manager;
 
   // parent with one subtask
@@ -848,20 +848,19 @@ void TestQgsTaskManager::waitForFinishedBeforeStart()
   QgsTaskManager manager;
 
   // add a wait task so the test task is not started when we call waitforfinished
-  QPointer<QgsTask> waitTask = new WaitTask();
+  QPointer<QgsTask> waitTask = new WaitTask( "wait_task" );
   manager.addTask( waitTask );
 
-  QPointer<QgsTask> testTask = new TestTask();
+  QPointer<QgsTask> testTask = new TestTask( "test_task" );
   manager.addTask( testTask );
 
   testTask->waitForFinished();
 
   QgsTask::TaskStatus status = testTask->status();
-
-  Q_ASSERT( status == QgsTask::Complete );
+  QCOMPARE( status, QgsTask::Complete );
 
   waitTask->waitForFinished();
-  Q_ASSERT( waitTask->status() == QgsTask::Complete );
+  QCOMPARE( waitTask->status(), QgsTask::Complete );
 
   // wait for task to be removed from active task
   while ( manager.count() > 0 )
@@ -871,6 +870,8 @@ void TestQgsTaskManager::waitForFinishedBeforeStart()
 
   // restore max thread count (for other tests)
   QThreadPool::globalInstance()->setMaxThreadCount( maxThreadCount );
+
+  flushEvents();
 }
 
 void TestQgsTaskManager::progressChanged()
