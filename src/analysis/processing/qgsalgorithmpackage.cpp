@@ -96,7 +96,7 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
     feedback->pushInfo( QObject::tr( "Removing existing file '%1'" ).arg( packagePath ) );
     if ( !QFile( packagePath ).remove() )
     {
-      throw QgsProcessingException( QObject::tr( "Could not remove existing file '%1'" ) );
+      throw QgsProcessingException( QObject::tr( "Could not remove existing file '%1'" ).arg( packagePath ) );
     }
   }
 
