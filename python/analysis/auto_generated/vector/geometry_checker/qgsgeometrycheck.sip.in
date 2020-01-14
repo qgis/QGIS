@@ -220,7 +220,7 @@ Returns a list of available resolution methods.
 .. versionadded:: 3.12
 %End
 
- virtual QStringList resolutionMethods() const;
+ virtual QStringList resolutionMethods() const /Deprecated/;
 %Docstring
 Returns a list of descriptions for available resolutions for errors.
 The index will be passed as ``method`` to :py:func:`fixError`.

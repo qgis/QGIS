@@ -11,7 +11,7 @@
 class QgsGeometryCheckResolutionMethod
 {
 %Docstring
-This class implements a fix for problems detected in geometry checks.
+This class implements a resolution for problems detected in geometry checks.
 
 .. versionadded:: 3.12
 %End

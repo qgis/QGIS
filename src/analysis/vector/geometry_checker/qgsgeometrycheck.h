@@ -308,6 +308,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
      * Fixes the error \a error with the specified \a method.
      * Is executed on the main thread.
      *
+     * \see availableResolutionMethods()
      * \since QGIS 3.4
      */
     virtual void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes SIP_INOUT ) const SIP_SKIP;
@@ -326,7 +327,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
      * \deprecated since QGIS 3.12, use availableResolutionMethods() instead
      * \since QGIS 3.4
      */
-    Q_DECL_DEPRECATED virtual QStringList resolutionMethods() const;
+    Q_DECL_DEPRECATED virtual QStringList resolutionMethods() const SIP_DEPRECATED;
 
     /**
      * Returns a human readable description for this check.
