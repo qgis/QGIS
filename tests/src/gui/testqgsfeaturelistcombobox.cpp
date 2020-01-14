@@ -156,7 +156,7 @@ void TestQgsFeatureListComboBox::testMultipleForeignKeys()
   cb->setIdentifierValues( QVariantList() << "gold" << 777 << "rush" );
   QCOMPARE( cb->identifierValues(), QVariantList() << "gold" << 777 << "rush" );
 
-  cb->setIdentifierValues( QVariantList() );
+  cb->setIdentifierValuesToNull();
   QCOMPARE( cb->identifierValues().count(), 3 );
   QCOMPARE( cb->identifierValues(), QVariantList() << QVariant() << QVariant() << QVariant() );
 
@@ -175,7 +175,7 @@ void TestQgsFeatureListComboBox::testMultipleForeignKeys()
   QCOMPARE( cb->identifierValues().count(), 2 );
   QCOMPARE( cb->identifierValues(), QVariantList() << "gold" << "fish" );
 
-  cb->setIdentifierValues( QVariantList() );
+  cb->setIdentifierValuesToNull();
   QCOMPARE( cb->identifierValues().count(), 2 );
   QCOMPARE( cb->identifierValues(), QVariantList() << QVariant() << QVariant() );
 }

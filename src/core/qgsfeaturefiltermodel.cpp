@@ -581,7 +581,7 @@ void QgsFeatureFilterModel::setIdentifierFields( const QStringList &identifierFi
 
   mIdentifierFields = identifierFields;
   emit identifierFieldChanged();
-  setExtraIdentifierValues( QVariantList() );
+  setExtraIdentifierValuesToNull();
 }
 
 void QgsFeatureFilterModel::reload()
@@ -612,7 +612,7 @@ QVariantList QgsFeatureFilterModel::extraIdentifierValues() const
 void QgsFeatureFilterModel::setExtraIdentifierValue( const QVariant &extraIdentifierValue )
 {
   if ( extraIdentifierValue.isNull() )
-    setExtraIdentifierValues( QVariantList() );
+    setExtraIdentifierValuesToNull();
   else
     setExtraIdentifierValues( QVariantList() << extraIdentifierValue );
 }

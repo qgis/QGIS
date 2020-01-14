@@ -196,9 +196,8 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
      * Allows specifying one value that does not need to match the filter criteria but will
      * still be available in the model as NULL value(s).
      * \since QGIS 3.10
-     * \deprecated since QGIS 3.12 use setExtraIdentifierValues( QVariantList() ) instead
      */
-    Q_DECL_DEPRECATED void setExtraIdentifierValuesToNull() SIP_DEPRECATED;
+    void setExtraIdentifierValuesToNull();
 
     /**
      * The index at which the extra identifier value is available within the model.
