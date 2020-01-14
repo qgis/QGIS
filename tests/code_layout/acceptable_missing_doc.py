@@ -490,6 +490,7 @@ ACCEPTABLE_MISSING_DOCS = {
 }
 
 ACCEPTABLE_MISSING_ADDED_NOTE = [
+    'pal::PolygonCostCalculator',
     'QgsAuthConfigIdEdit',
     'QgsDial',
     'QgsMapLayerAction',
