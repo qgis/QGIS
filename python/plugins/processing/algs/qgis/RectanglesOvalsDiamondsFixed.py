@@ -29,6 +29,7 @@ from qgis.core import (QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterDistance,
                        QgsProcessingException,
+                       QgsProcessingAlgorithm,
                        QgsFeature,
                        QgsFeatureSink,
                        QgsGeometry,
@@ -57,6 +58,9 @@ class RectanglesOvalsDiamondsFixed(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagDeprecated
 
     def initAlgorithm(self, config=None):
         self.shapes = [self.tr('Rectangles'), self.tr('Diamonds'), self.tr('Ovals')]
