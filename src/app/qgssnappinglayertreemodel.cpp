@@ -526,7 +526,6 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
           }
 
           return modes;
-          //return tr( "Snapping active" );
         }
       }
 

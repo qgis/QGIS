@@ -237,19 +237,6 @@ static void _updateBestMatch( QgsPointLocator::Match &bestMatch, const QgsPointX
 
 static QgsPointLocator::Types _snappingTypeToPointLocatorType( QgsSnappingConfig::SnappingType type )
 {
-  // watch out: vertex+segment vs segment are in different order in the two enums
-  /*
-    switch ( type )
-    {
-      case QgsSnappingConfig::Vertex:
-        return QgsPointLocator::Vertex;
-      case QgsSnappingConfig::VertexAndSegment:
-        return QgsPointLocator::Types( QgsPointLocator::Vertex | QgsPointLocator::Edge | QgsPointLocator::Centroid );
-      case QgsSnappingConfig::Segment:
-        return QgsPointLocator::Edge;
-      default:
-        return QgsPointLocator::Invalid;
-    }*/
   return QgsPointLocator::Types( type );
 }
 
