@@ -430,7 +430,7 @@ class TestQgsSnappingUtils : public QObject
 
       QgsPointLocator::Match m = u.snapToMap( QgsPointXY( 0, 2.6 ) );
       QVERIFY( m.isValid() );
-      QCOMPARE( m.type(), QgsPointLocator::Middle );
+      QCOMPARE( m.type(), QgsPointLocator::MiddleOfSegment );
       QCOMPARE( m.point(), QgsPointXY( 0.0, 2.5 ) );
 
       QgsPointLocator::Match m2 = u.snapToMap( QgsPointXY( 2.5, 2.6 ) );

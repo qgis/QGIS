@@ -197,11 +197,11 @@ static void _replaceIfBetter( QgsPointLocator::Match &bestMatch, const QgsPointL
   }
 
   // prefer vertex, centroid, middle matches over edge matches (even if they are closer)
-  if ( ( bestMatch.type() & QgsPointLocator::Centroid || bestMatch.type() & QgsPointLocator::Middle ) && ( candidateMatch.type() & QgsPointLocator::Edge  || candidateMatch.type() & QgsPointLocator::Area ) )
+  if ( ( bestMatch.type() & QgsPointLocator::Centroid || bestMatch.type() & QgsPointLocator::MiddleOfSegment ) && ( candidateMatch.type() & QgsPointLocator::Edge  || candidateMatch.type() & QgsPointLocator::Area ) )
     return;
 
   // prefer middle matches over centroid matches (even if they are closer)
-  if ( ( bestMatch.type() & QgsPointLocator::Middle ) && ( candidateMatch.type() & QgsPointLocator::Centroid ) )
+  if ( ( bestMatch.type() & QgsPointLocator::MiddleOfSegment ) && ( candidateMatch.type() & QgsPointLocator::Centroid ) )
     return;
 
   bestMatch = candidateMatch; // the other match is better!
@@ -228,7 +228,7 @@ static void _updateBestMatch( QgsPointLocator::Match &bestMatch, const QgsPointX
   {
     _replaceIfBetter( bestMatch, loc->nearestCentroid( pointMap, tolerance, filter ), tolerance );
   }
-  if ( type & QgsPointLocator::Middle )
+  if ( type & QgsPointLocator::MiddleOfSegment )
   {
     _replaceIfBetter( bestMatch, loc->nearestMiddle( pointMap, tolerance, filter ), tolerance );
   }
