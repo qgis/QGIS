@@ -69,7 +69,6 @@ class CursorAdapter():
         self.result = None
         self.cursor = 0
         self.closed = False
-        self.description = None
         if (self.sql != None):
             self._execute()
 
@@ -102,30 +101,38 @@ class CursorAdapter():
         self._debug("execute returned " + str(len(self.result)) + " rows")
         self.cursor = 0
 
-        self.description = []
+        self._description = None # reset description
 
-        uri = QgsDataSourceUri(self.connection.uri())
+    @property
+    def description(self):
 
-        # TODO: make this part provider-agnostic
-        uri.setTable('(SELECT row_number() OVER () AS __rid__, * FROM (' + self.sql + ') as foo)')
-        uri.setKeyColumn('__rid__')
-        # TODO: fetch provider name from connection (QgsAbstractConnectionProvider)
-        # TODO: re-use the VectorLayer for fetching rows in batch mode
-        vl = QgsVectorLayer(uri.uri(False), 'dbmanager_cursor', 'postgres')
+        if self._description is None:
 
-        fields = vl.fields()
-        for i in range(1, len(fields)): # skip first field (__rid__)
-            f = fields[i]
-            self.description.append([
-                f.name(),                         # name
-                str,                              # type_code
-                10,                               # display_size
-                10,                               # internal_size
-                0,                                # precision
-                None,                             # scale
-                True                              # null_ok
-            ])
-        self._debug("execute returned " + str(len(self.description)) + " cols")
+            uri = QgsDataSourceUri(self.connection.uri())
+
+            # TODO: make this part provider-agnostic
+            uri.setTable('(SELECT row_number() OVER () AS __rid__, * FROM (' + self.sql + ') as foo)')
+            uri.setKeyColumn('__rid__')
+            # TODO: fetch provider name from connection (QgsAbstractConnectionProvider)
+            # TODO: re-use the VectorLayer for fetching rows in batch mode
+            vl = QgsVectorLayer(uri.uri(False), 'dbmanager_cursor', 'postgres')
+
+            fields = vl.fields()
+            self._description = []
+            for i in range(1, len(fields)): # skip first field (__rid__)
+                f = fields[i]
+                self._description.append([
+                    f.name(),                         # name
+                    str,                              # type_code
+                    10,                               # display_size
+                    10,                               # internal_size
+                    0,                                # precision
+                    None,                             # scale
+                    True                              # null_ok
+                ])
+            self._debug("get_description returned " + str(len(self._description)) + " cols")
+
+        return self._description
 
     def fetchone(self):
         self._execute()
