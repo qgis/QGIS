@@ -21,6 +21,7 @@
 #include <QKeyEvent>
 #include <QHeaderView>
 #include <QMenu>
+#include <QLineEdit>
 
 QgsTableEditorWidget::QgsTableEditorWidget( QWidget *parent )
   : QTableWidget( parent )
@@ -117,6 +118,9 @@ QgsTableEditorWidget::QgsTableEditorWidget( QWidget *parent )
 
     mHeaderMenu->popup( verticalHeader()->mapToGlobal( point ) );
   } );
+
+
+  setItemDelegate( new QgsTableEditorDelegate( this ) );
 
   connect( selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsTableEditorWidget::activeCellChanged );
 }
@@ -870,3 +874,37 @@ void QgsTableEditorWidget::setSelectionColumnWidth( double width )
     emit tableChanged();
 }
 
+/// @cond PRIVATE
+QgsTableEditorDelegate::QgsTableEditorDelegate( QObject *parent )
+  : QStyledItemDelegate( parent )
+{
+
+}
+
+QWidget *QgsTableEditorDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &index ) const
+{
+  QLineEdit *w = new QLineEdit( parent ); \
+  w->setText( index.model()->data( index, Qt::EditRole ).toString() );
+  return w;
+}
+
+void QgsTableEditorDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
+{
+  QVariant value = index.model()->data( index, Qt::EditRole );
+  if ( QLineEdit *lineEdit = qobject_cast<QLineEdit * >( editor ) )
+  {
+    lineEdit->setText( value.toString() );
+  }
+}
+
+void QgsTableEditorDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
+{
+  if ( QLineEdit *lineEdit = qobject_cast<QLineEdit * >( editor ) )
+  {
+    model->setData( index, lineEdit->text(), Qt::EditRole );
+    model->setData( index, lineEdit->text(), Qt::DisplayRole );
+  }
+}
+
+
+///@endcond

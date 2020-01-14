@@ -51,6 +51,7 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   mViewFrame->setContentsMargins( 0, 0, 0, 0 );
 
   mTableWidget->setFocus();
+  mTableWidget->setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell() ) );
 
   connect( mTableWidget, &QgsTableEditorWidget::tableChanged, this, [ = ]
   {
