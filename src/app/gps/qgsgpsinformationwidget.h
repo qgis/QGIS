@@ -39,6 +39,7 @@ class QgsGpsInformation;
 class QgsMapCanvas;
 class QgsFeature;
 class QgsGpsBearingItem;
+class QgsBearingNumericFormat;
 
 class QFile;
 class QColor;
@@ -80,6 +81,7 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, private Ui::Qgs
     void cboAcquisitionIntervalEdited();
     void cboDistanceThresholdEdited();
     void timestampFormatChanged( int index );
+    void cursorCoordinateChanged( const QgsPointXY &point );
 
     /**
      * Updates compatible fields for timestamp recording
@@ -115,6 +117,8 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, private Ui::Qgs
 #endif
     void createRubberBand();
 
+    void updateGpsDistanceStatusMessage();
+
     QgsCoordinateReferenceSystem mWgs84CRS;
     QgsCoordinateTransform mCanvasToWgs84Transform;
 
@@ -139,6 +143,9 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, private Ui::Qgs
     QMap<QString, QString> mPreferredTimestampFields;
     //! Flag when updating fields
     bool mPopulatingFields = false;
+
+    QgsPointXY mLastCursorPosWgs84;
+    std::unique_ptr< QgsBearingNumericFormat > mBearingNumericFormat;
 
     QElapsedTimer mLastRotateTimer;
 
