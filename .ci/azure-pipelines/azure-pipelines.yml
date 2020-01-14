@@ -120,31 +120,29 @@ jobs:
 #  - script: curl --location-trusted --output c:\depends.zip http://www.dependencywalker.com/depends22_%PLATFORM%.zip
 #    displayName: 'Download Dependency walker'
 
-# Too large…
-#  - task: Cache@2
-#    inputs:
-#      key: 'cygwin | $(Date:yyyyMMdd)'
-#      path: 'c:\cygwin'
-#      restoreKeys: |
-#        cygwin | $(Date:yyyyMM)
-#        cygwin | $(Date:yyyy)
-#        cygwin
-#    displayName: Cache cygwin
+  - task: Cache@2
+    inputs:
+      key: 'cygwin | $(Date:yyyyMMdd)'
+      path: 'c:\cygwin'
+      restoreKeys: |
+        cygwin | $(Date:yyyyMM)
+        cygwin | $(Date:yyyy)
+        cygwin
+    displayName: Cache cygwin
 
   - powershell: ms-windows/osgeo4w/runasadmin.ps1 c:\setup-x86.exe -qnNdO -R C:/cygwin -s http://cygwin.mirror.constant.com -l C:/temp/cygwin -P "bison,flex,git,poppler,doxygen,unzip"
     displayName: 'Installing cygwin'
 
-# Too large…
-#  - task: Cache@2
-#    inputs:
-#      key: 'osgeo4w | $(OSGEO4W_ARCH) | $(Date:yyyyMMdd)'
-#      path: '$(OSGEO4W_ROOT)'
-#      restoreKeys: |
-#        osgeo4w | $(OSGEO4W_ARCH) | $(Date:yyyyMMdd)
-#        osgeo4w | $(OSGEO4W_ARCH) | $(Date:yyyyMM)
-#        osgeo4w | $(OSGEO4W_ARCH) | $(Date:yyyy)
-#        osgeo4w | $(OSGEO4W_ARCH)
-#    displayName: Cache OSGeo4W
+  - task: Cache@2
+    inputs:
+      key: 'osgeo4w | $(OSGEO4W_ARCH) | $(Date:yyyyMMdd)'
+      path: '$(OSGEO4W_ROOT)'
+      restoreKeys: |
+        osgeo4w | $(OSGEO4W_ARCH) | $(Date:yyyyMMdd)
+        osgeo4w | $(OSGEO4W_ARCH) | $(Date:yyyyMM)
+        osgeo4w | $(OSGEO4W_ARCH) | $(Date:yyyy)
+        osgeo4w | $(OSGEO4W_ARCH)
+    displayName: Cache OSGeo4W
 
   - powershell: ms-windows/osgeo4w/runasadmin.ps1 c:\osgeo4w-setup.exe --autoaccept --advanced --arch $env:OSGEO4W_ARCH --quiet-mode --upgrade-also --root $env:OSGEO4W_ROOT --only-site -s http://download.osgeo.org/osgeo4w -l c:\temp\osgeo4w -P $env:OSGEO4W_DEPS -P python3-clcache
     displayName: 'Installing OSGeo4W'
@@ -173,18 +171,17 @@ jobs:
       ninja --version
     displayName: 'Display tool versions'
 
-# Too large…
-#  - task: Cache@2
-#    inputs:
-#      key: 'clcache | $(OSGEO4W_ARCH) | $(OSGEO4W_PKG) | $(Date:yyyyMMdd) | $(Hours)'
-#      path: '$(CLCACHE_DIR)'
-#      restoreKeys: |
-#        clcache | $(OSGEO4W_ARCH) | $(OSGEO4W_PKG) | $(Date:yyyyMMdd) | $(Hours)
-#        clcache | $(OSGEO4W_ARCH) | $(OSGEO4W_PKG) | $(Date:yyyyMMdd)
-#        clcache | $(OSGEO4W_ARCH) | $(OSGEO4W_PKG) | $(Date:yyyyMM)
-#        clcache | $(OSGEO4W_ARCH) | $(OSGEO4W_PKG) | $(Date:yyyy)
-#        clcache | $(OSGEO4W_ARCH) | $(OSGEO4W_PKG)
-#    displayName: Cache clcache
+  - task: Cache@2
+    inputs:
+      key: 'clcache | $(OSGEO4W_ARCH) | $(OSGEO4W_PKG) | $(Date:yyyyMMdd) | $(Hours)'
+      path: '$(CLCACHE_DIR)'
+      restoreKeys: |
+        clcache | $(OSGEO4W_ARCH) | $(OSGEO4W_PKG) | $(Date:yyyyMMdd) | $(Hours)
+        clcache | $(OSGEO4W_ARCH) | $(OSGEO4W_PKG) | $(Date:yyyyMMdd)
+        clcache | $(OSGEO4W_ARCH) | $(OSGEO4W_PKG) | $(Date:yyyyMM)
+        clcache | $(OSGEO4W_ARCH) | $(OSGEO4W_PKG) | $(Date:yyyy)
+        clcache | $(OSGEO4W_ARCH) | $(OSGEO4W_PKG)
+    displayName: Cache clcache
 
   - script: |
       echo on
@@ -217,14 +214,14 @@ jobs:
       failTaskOnFailedTests: true
     displayName: 'Publishing tests'
 
-#  - script: |
-#      PATH c:\cygwin\bin;%PATH%
-#      pwd
-#      du -sc c:\cygwin
-#      du -sc %OSGEO4W_ROOT%
-#      du -sc %CLCACHE_DIR%
-#      du -sc .
-#      rmdir /s /q ms-windows\osgeo4w\build-$(OSGEO4W_PKG)-$(OSGEO4W_ARCH)
-#    displayName: Clean before creating the caches
+  - script: |
+      PATH c:\cygwin\bin;%PATH%
+      pwd
+      du -sc c:\cygwin
+      du -sc %OSGEO4W_ROOT%
+      du -sc %CLCACHE_DIR%
+      du -sc .
+      rmdir /s /q ms-windows\osgeo4w\build-$(OSGEO4W_PKG)-$(OSGEO4W_ARCH)
+    displayName: Clean before creating the caches
 
 # vim: set nowrap :
