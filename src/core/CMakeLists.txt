@@ -1040,6 +1040,7 @@ SET(QGIS_CORE_HDRS
   gps/qgsnmeaconnection.h
 
   labeling/qgslabelfeature.h
+  labeling/qgslabeling.h
   labeling/qgslabelingengine.h
   labeling/qgslabelingenginesettings.h
   labeling/qgslabelobstaclesettings.h

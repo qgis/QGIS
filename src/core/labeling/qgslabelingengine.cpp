@@ -737,39 +737,39 @@ QVector<QgsPalLayerSettings::PredefinedPointPosition> QgsLabelingUtils::decodePr
   return result;
 }
 
-QString QgsLabelingUtils::encodeLinePlacementFlags( pal::LineArrangementFlags flags )
+QString QgsLabelingUtils::encodeLinePlacementFlags( QgsLabeling::LinePlacementFlags flags )
 {
   QStringList parts;
-  if ( flags & pal::FLAG_ON_LINE )
+  if ( flags & QgsLabeling::LinePlacementFlag::OnLine )
     parts << QStringLiteral( "OL" );
-  if ( flags & pal::FLAG_ABOVE_LINE )
+  if ( flags & QgsLabeling::LinePlacementFlag::AboveLine )
     parts << QStringLiteral( "AL" );
-  if ( flags & pal::FLAG_BELOW_LINE )
+  if ( flags & QgsLabeling::LinePlacementFlag::BelowLine )
     parts << QStringLiteral( "BL" );
-  if ( !( flags & pal::FLAG_MAP_ORIENTATION ) )
+  if ( !( flags & QgsLabeling::LinePlacementFlag::MapOrientation ) )
     parts << QStringLiteral( "LO" );
   return parts.join( ',' );
 }
 
-pal::LineArrangementFlags QgsLabelingUtils::decodeLinePlacementFlags( const QString &string )
+QgsLabeling::LinePlacementFlags QgsLabelingUtils::decodeLinePlacementFlags( const QString &string )
 {
-  pal::LineArrangementFlags flags = nullptr;
+  QgsLabeling::LinePlacementFlags flags = nullptr;
   const QStringList flagList = string.split( ',' );
   bool foundLineOrientationFlag = false;
   for ( const QString &flag : flagList )
   {
     QString cleaned = flag.trimmed().toUpper();
     if ( cleaned == QLatin1String( "OL" ) )
-      flags |= pal::FLAG_ON_LINE;
+      flags |= QgsLabeling::LinePlacementFlag::OnLine;
     else if ( cleaned == QLatin1String( "AL" ) )
-      flags |= pal::FLAG_ABOVE_LINE;
+      flags |= QgsLabeling::LinePlacementFlag::AboveLine;
     else if ( cleaned == QLatin1String( "BL" ) )
-      flags |= pal::FLAG_BELOW_LINE;
+      flags |= QgsLabeling::LinePlacementFlag::BelowLine;
     else if ( cleaned == QLatin1String( "LO" ) )
       foundLineOrientationFlag = true;
   }
   if ( !foundLineOrientationFlag )
-    flags |= pal::FLAG_MAP_ORIENTATION;
+    flags |= QgsLabeling::LinePlacementFlag::MapOrientation;
   return flags;
 }
 
