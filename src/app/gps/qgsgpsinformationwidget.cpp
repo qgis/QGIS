@@ -91,6 +91,16 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   connect( mBtnResetFeature, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnResetFeature_clicked );
   connect( mBtnLogFile, &QPushButton::clicked, this, &QgsGpsInformationWidget::mBtnLogFile_clicked );
 
+  mCanvasToWgs84Transform = QgsCoordinateTransform( mMapCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
+  connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, [ = ]
+  {
+    mCanvasToWgs84Transform = QgsCoordinateTransform( mMapCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
+  } );
+  connect( QgsProject::instance(), &QgsProject::transformContextChanged, this, [ = ]
+  {
+    mCanvasToWgs84Transform = QgsCoordinateTransform( mMapCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
+  } );
+
   mLastGpsPosition = QgsPointXY( 0.0, 0.0 );
   mLastNmeaPosition.lat = nmea_degree2radian( 0.0 );
   mLastNmeaPosition.lon = nmea_degree2radian( 0.0 );
@@ -882,24 +892,28 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     // Pan based on user specified behavior
     if ( radRecenterMap->isChecked() || radRecenterWhenNeeded->isChecked() )
     {
-      QgsCoordinateReferenceSystem mypSRS = mMapCanvas->mapSettings().destinationCrs();
-      QgsCoordinateTransform myTransform( mWgs84CRS, mypSRS, QgsProject::instance() ); // use existing WGS84 CRS
-
-      QgsPointXY myPoint = myTransform.transform( myNewCenter );
-      //keep the extent the same just center the map canvas in the display so our feature is in the middle
-      QgsRectangle myRect( myPoint, myPoint );  // empty rect can be used to set new extent that is centered on the point used to construct the rect
-
-      // testing if position is outside some proportion of the map extent
-      // this is a user setting - useful range: 5% to 100% (0.05 to 1.0)
-      QgsRectangle myExtentLimit( mMapCanvas->extent() );
-      myExtentLimit.scale( mSpinMapExtentMultiplier->value() * 0.01 );
-
-      // only change the extents if the point is beyond the current extents to minimize repaints
-      if ( radRecenterMap->isChecked() ||
-           ( radRecenterWhenNeeded->isChecked() && !myExtentLimit.contains( myPoint ) ) )
+      try
       {
-        mMapCanvas->setExtent( myRect );
-        mMapCanvas->refresh();
+        QgsPointXY myPoint = mCanvasToWgs84Transform.transform( myNewCenter, QgsCoordinateTransform::ReverseTransform );
+        //keep the extent the same just center the map canvas in the display so our feature is in the middle
+        QgsRectangle myRect( myPoint, myPoint );  // empty rect can be used to set new extent that is centered on the point used to construct the rect
+
+        // testing if position is outside some proportion of the map extent
+        // this is a user setting - useful range: 5% to 100% (0.05 to 1.0)
+        QgsRectangle myExtentLimit( mMapCanvas->extent() );
+        myExtentLimit.scale( mSpinMapExtentMultiplier->value() * 0.01 );
+
+        // only change the extents if the point is beyond the current extents to minimize repaints
+        if ( radRecenterMap->isChecked() ||
+             ( radRecenterWhenNeeded->isChecked() && !myExtentLimit.contains( myPoint ) ) )
+        {
+          mMapCanvas->setExtent( myRect );
+          mMapCanvas->refresh();
+        }
+      }
+      catch ( QgsCsException & )
+      {
+
       }
     } //otherwise never recenter automatically
 
@@ -971,7 +985,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
       delete mMapMarker;
       mMapMarker = nullptr;
     }
-  } // show marker
+  }
 }
 
 void QgsGpsInformationWidget::mBtnAddVertex_clicked()
@@ -998,8 +1012,7 @@ void QgsGpsInformationWidget::addVertex()
   QgsPointXY myPoint;
   if ( mMapCanvas )
   {
-    QgsCoordinateTransform t( mWgs84CRS, mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
-    myPoint = t.transform( mLastGpsPosition );
+    myPoint = mCanvasToWgs84Transform.transform( mLastGpsPosition, QgsCoordinateTransform::ReverseTransform );
   }
   else
   {

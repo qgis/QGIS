@@ -116,6 +116,8 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, private Ui::Qgs
     void createRubberBand();
 
     QgsCoordinateReferenceSystem mWgs84CRS;
+    QgsCoordinateTransform mCanvasToWgs84Transform;
+
 // not used    QPointF gpsToPixelPosition( const QgsPoint& point );
     QgsRubberBand *mRubberBand = nullptr;
     QgsPointXY mLastGpsPosition;
