@@ -45,6 +45,13 @@ constructor
     virtual bool gestureEvent( QGestureEvent *e );
 
 
+    bool isDragging() const;
+%Docstring
+Returns ``True`` if a drag operation is in progress.
+
+.. versionadded:: 3.12
+%End
+
   signals:
 
     void panDistanceBearingChanged( double distance, QgsUnitTypes::DistanceUnit unit, double bearing );

@@ -48,6 +48,13 @@ class GUI_EXPORT QgsMapToolPan : public QgsMapTool
     void canvasDoubleClickEvent( QgsMapMouseEvent *e ) override;
     bool gestureEvent( QGestureEvent *e ) override;
 
+    /**
+     * Returns TRUE if a drag operation is in progress.
+     *
+     * \since QGIS 3.12
+     */
+    bool isDragging() const { return mDragging; }
+
   signals:
 
     /**
