@@ -277,6 +277,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
      * Find nearest centroid to the specified point - up to distance specified by tolerance
      * Optional filter may discard unwanted matches.
      * This method is either blocking or non blocking according to \a relaxed parameter passed
+     * \since 3.12
      */
     Match nearestCentroid( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false );
 
@@ -284,6 +285,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
      * Find nearest centroid to the specified point - up to distance specified by tolerance
      * Optional filter may discard unwanted matches.
      * This method is either blocking or non blocking according to \a relaxed parameter passed
+     * \since 3.12
      */
     Match nearestMiddle( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false );
 
