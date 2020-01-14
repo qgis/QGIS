@@ -146,7 +146,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mSegmentAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingSegment.svg" ) ), tr( "Segment" ), typeMenu );
   mAreaAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingArea.svg" ) ), tr( "Area" ), typeMenu );
   mCentroidAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingCentroid.svg" ) ), tr( "Centroid" ), typeMenu );
-  mMiddleAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingMiddle.svg" ) ), tr( "Middle segment" ), typeMenu );
+  mMiddleAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingMiddle.svg" ) ), tr( "Middle of Segments" ), typeMenu );
   mVertexAction->setCheckable( true );
   mSegmentAction->setCheckable( true );
   mAreaAction->setCheckable( true );

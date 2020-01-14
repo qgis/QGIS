@@ -1035,11 +1035,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   //default snap mode
   mSnappingEnabledDefault->setChecked( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ),  false ).toBool() );
-  mDefaultSnapModeComboBox->addItem( tr( "No snapping" ), QgsSnappingConfig::NoSnap );
+  mDefaultSnapModeComboBox->addItem( tr( "No Snapping" ), QgsSnappingConfig::NoSnap );
   mDefaultSnapModeComboBox->addItem( tr( "Vertex" ), QgsSnappingConfig::Vertex );
   mDefaultSnapModeComboBox->addItem( tr( "Segment" ), QgsSnappingConfig::Segment );
   mDefaultSnapModeComboBox->addItem( tr( "Centroid" ), QgsSnappingConfig::Centroid );
-  mDefaultSnapModeComboBox->addItem( tr( "Middle" ), QgsSnappingConfig::Middle );
+  mDefaultSnapModeComboBox->addItem( tr( "Middle of Segments" ), QgsSnappingConfig::Middle );
   mDefaultSnapModeComboBox->addItem( tr( "Area" ), QgsSnappingConfig::Area );
   QgsSnappingConfig::SnappingType defaultSnapMode = static_cast<QgsSnappingConfig::SnappingType>( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snap_type" ), QgsSnappingConfig::NoSnap ).toInt() );
   mDefaultSnapModeComboBox->setCurrentIndex( mDefaultSnapModeComboBox->findData( defaultSnapMode ) );

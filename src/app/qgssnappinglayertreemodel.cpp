@@ -50,7 +50,7 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
     QAction *mSegmentAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingSegment.svg" ) ), tr( "Segment" ), typeMenu );
     QAction *mAreaAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingArea.svg" ) ), tr( "Area" ), typeMenu );
     QAction *mCentroidAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingCentroid.svg" ) ), tr( "Centroid" ), typeMenu );
-    QAction *mMiddleAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingMiddle.svg" ) ), tr( "Middle segment" ), typeMenu );
+    QAction *mMiddleAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingMiddle.svg" ) ), tr( "Middle of Segments" ), typeMenu );
     mVertexAction->setCheckable( true );
     mSegmentAction->setCheckable( true );
     mAreaAction->setCheckable( true );
@@ -507,7 +507,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
           types.insert( { QgsSnappingConfig::Segment, tr( "Segment" ) } );
           types.insert( { QgsSnappingConfig::Area, tr( "Area" ) } );
           types.insert( { QgsSnappingConfig::Centroid, tr( "Centroid" ) } );
-          types.insert( { QgsSnappingConfig::Middle, tr( "Middle" ) } );
+          types.insert( { QgsSnappingConfig::Middle, tr( "Middle of Segments" ) } );
 
           for ( auto it = types.cbegin(); it != types.cend(); ++it )
           {
@@ -515,7 +515,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
             {
               if ( activeTypes == 2 )
               {
-                modes.append( tr( ", ..." ) );
+                modes.append( tr( ", …" ) );
                 break;
               }
               if ( activeTypes > 0 )
