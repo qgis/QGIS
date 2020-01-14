@@ -290,6 +290,7 @@ ENDIF (WITH_DESKTOP)
 
 IF (ENABLE_PGTEST)
   ADD_PYTHON_TEST(PyQgsPostgresProvider test_provider_postgres.py)
+  ADD_PYTHON_TEST(PyQgsPostgresRasterProvider test_provider_postgresraster.py)
   ADD_PYTHON_TEST(PyQgsPostgresDomain test_qgspostgresdomain.py)
   ADD_PYTHON_TEST(PyQgsPostgresTransaction test_qgspostgrestransaction.py)
   ADD_PYTHON_TEST(PyQgsRelationEditWidget test_qgsrelationeditwidget.py)
