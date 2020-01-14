@@ -37,23 +37,20 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( c
 
   QgsPostgresRasterSharedData::TilesResponse result;
 
-  bool hasIndex { true };
-
   // First check for index existence
   if ( mSpatialIndexes.find( request.overviewFactor ) == mSpatialIndexes.end() )
   {
     // Create the index
     mSpatialIndexes.emplace( request.overviewFactor, new QgsGenericSpatialIndex<Tile>() );
     mTiles.emplace( request.overviewFactor, std::map<TileIdType, std::unique_ptr<Tile>>() );
-    mLoadedIndexBounds[ request.overviewFactor] = QgsGeometry::fromRect( QgsRectangle() );
-    hasIndex = false;
+    mLoadedIndexBounds[ request.overviewFactor] = QgsGeometry();
   }
 
   // Now check if the requested extent was completely downloaded
   const QgsGeometry requestedRect { QgsGeometry::fromRect( request.extent ) };
 
   // Fast track for first tile (where index is empty)
-  if ( ! hasIndex )
+  if ( mLoadedIndexBounds[ request.overviewFactor].isNull() )
   {
     if ( ! fetchTilesIndex( requestedRect, request ) )
     {
