@@ -118,7 +118,11 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
     mModel = new QgsStyleModel( mStyle, this );
   }
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   double iconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 10;
+#else
+  double iconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 10;
+#endif
   listItems->setIconSize( QSize( static_cast< int >( iconSize ), static_cast< int >( iconSize * 0.9 ) ) );  // ~100, 90 on low dpi
 
   mModel->addDesiredIconSize( listItems->iconSize() );
