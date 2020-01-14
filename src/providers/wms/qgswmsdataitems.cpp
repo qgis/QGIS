@@ -226,13 +226,44 @@ bool QgsWMSConnectionItem::equal( const QgsDataItem *other )
   {
     return false;
   }
-  const QgsWMSConnectionItem *o = dynamic_cast<const QgsWMSConnectionItem *>( other );
-  if ( !o )
+  const QgsWMSConnectionItem *otherConnectionItem = qobject_cast<const QgsWMSConnectionItem *>( other );
+  if ( !otherConnectionItem )
   {
     return false;
   }
 
-  return ( mPath == o->mPath && mName == o->mName );
+  bool samePathAndName = ( mPath == otherConnectionItem->mPath && mName == otherConnectionItem->mName );
+
+  if ( samePathAndName )
+  {
+    // Check if the children are not the same then they are not equal
+    if ( mChildren.size() != otherConnectionItem->mChildren.size() )
+      return false;
+
+    // compare children content, if the content differs then the parents are not equal
+    for ( QgsDataItem *child : mChildren )
+    {
+      if ( !child )
+        continue;
+      for ( QgsDataItem *otherChild : otherConnectionItem->mChildren )
+      {
+        if ( !otherChild )
+          continue;
+        // In case they have same path, check if they have same content
+        if ( child->path() == otherChild->path() )
+        {
+          if ( !child->equal( otherChild ) )
+            return false;
+        }
+        else
+        {
+          continue;
+        }
+      }
+    }
+  }
+
+  return samePathAndName;
 }
 
 // ---------------------------------------------------------------------------
