@@ -594,6 +594,7 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
 {
     Q_OBJECT
   public:
+    //! Constructor
     QgsDataCollectionItem( QgsDataItem *parent, const QString &name, const QString &path = QString(), const QString &providerKey = QString() );
     ~QgsDataCollectionItem() override;
 
@@ -797,7 +798,10 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     QStringList mZipFileList;
 
   public:
+    //! Constructor
     QgsZipItem( QgsDataItem *parent, const QString &name, const QString &path );
+
+    //! Constructor
     QgsZipItem( QgsDataItem *parent, const QString &name, const QString &filePath, const QString &path, const QString &providerKey = QString() );
 
     QVector<QgsDataItem *> createChildren() override;

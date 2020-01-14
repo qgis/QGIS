@@ -255,7 +255,7 @@ void TestQgsBrowserProxyModel::testModel()
 
   // provider filtering
   proxy.setDataItemProviderKeyFilter( QStringList( {QStringLiteral( "provider1" )} ) );
-  QCOMPARE( proxy.rowCount(), 1 );
+  QCOMPARE( proxy.rowCount(), 2 );
   root1Index = proxy.index( 0, 0 );
   QCOMPARE( proxy.rowCount( root1Index ), 1 );
   proxy.setDataItemProviderKeyFilter( QStringList( {QStringLiteral( "provider2" )} ) );

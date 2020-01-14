@@ -578,6 +578,9 @@ A Collection: logical collection of layers or subcollections, e.g. GRASS locatio
 %End
   public:
     QgsDataCollectionItem( QgsDataItem *parent, const QString &name, const QString &path = QString(), const QString &providerKey = QString() );
+%Docstring
+Constructor
+%End
     ~QgsDataCollectionItem();
 
     void addChild( QgsDataItem *item /Transfer/ );
@@ -803,7 +806,14 @@ A zip file: contains layers, using GDAL/OGR VSIFILE mechanism
 
   public:
     QgsZipItem( QgsDataItem *parent, const QString &name, const QString &path );
+%Docstring
+Constructor
+%End
+
     QgsZipItem( QgsDataItem *parent, const QString &name, const QString &filePath, const QString &path, const QString &providerKey = QString() );
+%Docstring
+Constructor
+%End
 
     virtual QVector<QgsDataItem *> createChildren();
 

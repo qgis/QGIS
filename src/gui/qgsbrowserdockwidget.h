@@ -209,6 +209,4 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     QStringList mDisabledDataItemsKeys;
 };
 
-
-
 #endif // QGSBROWSERDOCKWIDGET_H
