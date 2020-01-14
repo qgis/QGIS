@@ -65,12 +65,12 @@ QgsTableEditorWidget::QgsTableEditorWidget( QWidget *parent )
     mHeaderMenu->clear();
     if ( isConsecutive )
     {
-      QAction *insertBefore = mHeaderMenu->addAction( tr( "Insert Columns Before" ) );
+      QAction *insertBefore = mHeaderMenu->addAction( selectedColumns.size() > 1 ? tr( "Insert %1 Columns Before" ).arg( selectedColumns.size() ) : tr( "Insert Column Before" ) );
       connect( insertBefore, &QAction::triggered, this, &QgsTableEditorWidget::insertColumnsBefore );
-      QAction *insertAfter = mHeaderMenu->addAction( tr( "Insert Columns After" ) );
+      QAction *insertAfter = mHeaderMenu->addAction( selectedColumns.size() > 1 ? tr( "Insert %1 Columns After" ).arg( selectedColumns.size() ) : tr( "Insert Column After" ) );
       connect( insertAfter, &QAction::triggered, this, &QgsTableEditorWidget::insertColumnsAfter );
     }
-    QAction *deleteSelected = mHeaderMenu->addAction( tr( "Delete Columns" ) );
+    QAction *deleteSelected = mHeaderMenu->addAction( selectedColumns.size() > 1 ? tr( "Delete %1 Columns" ).arg( selectedColumns.size() ) : tr( "Delete Column" ) );
     connect( deleteSelected, &QAction::triggered, this, &QgsTableEditorWidget::deleteColumns );
 
     mHeaderMenu->popup( horizontalHeader()->mapToGlobal( point ) );
@@ -107,12 +107,12 @@ QgsTableEditorWidget::QgsTableEditorWidget( QWidget *parent )
     mHeaderMenu->clear();
     if ( isConsecutive )
     {
-      QAction *insertBefore = mHeaderMenu->addAction( tr( "Insert Rows Above" ) );
+      QAction *insertBefore = mHeaderMenu->addAction( selectedRows.size() > 1 ? tr( "Insert %1 Rows Above" ).arg( selectedRows.size() ) : tr( "Insert Row Above" ) );
       connect( insertBefore, &QAction::triggered, this, &QgsTableEditorWidget::insertRowsAbove );
-      QAction *insertAfter = mHeaderMenu->addAction( tr( "Insert Rows Below" ) );
+      QAction *insertAfter = mHeaderMenu->addAction( selectedRows.size() > 1 ? tr( "Insert %1 Rows Below" ).arg( selectedRows.size() ) : tr( "Insert Row Below" ) );
       connect( insertAfter, &QAction::triggered, this, &QgsTableEditorWidget::insertRowsBelow );
     }
-    QAction *deleteSelected = mHeaderMenu->addAction( tr( "Delete Rows" ) );
+    QAction *deleteSelected = mHeaderMenu->addAction( selectedRows.size() > 1 ? tr( "Delete %1 Rows" ).arg( selectedRows.size() ) : tr( "Delete Row" ) );
     connect( deleteSelected, &QAction::triggered, this, &QgsTableEditorWidget::deleteRows );
 
     mHeaderMenu->popup( verticalHeader()->mapToGlobal( point ) );
@@ -582,6 +582,16 @@ void QgsTableEditorWidget::setTableColumnWidth( int col, double width )
     emit tableChanged();
 }
 
+QList<int> QgsTableEditorWidget::rowsAssociatedWithSelection()
+{
+  return collectUniqueRows( selectedIndexes() );
+}
+
+QList<int> QgsTableEditorWidget::columnsAssociatedWithSelection()
+{
+  return collectUniqueColumns( selectedIndexes() );
+}
+
 void QgsTableEditorWidget::insertRowsBelow()
 {
   if ( rowCount() == 0 )
@@ -672,7 +682,7 @@ void QgsTableEditorWidget::insertColumnsAfter()
 
 void QgsTableEditorWidget::deleteRows()
 {
-  const QList< int > rows = collectUniqueRows( selectedIndexes() );
+  const QList< int > rows = rowsAssociatedWithSelection();
   if ( rows.empty() )
     return;
 
@@ -689,7 +699,7 @@ void QgsTableEditorWidget::deleteRows()
 
 void QgsTableEditorWidget::deleteColumns()
 {
-  const QList< int > columns = collectUniqueColumns( selectedIndexes() );
+  const QList< int > columns = columnsAssociatedWithSelection();
   if ( columns.empty() )
     return;
 
@@ -800,10 +810,9 @@ void QgsTableEditorWidget::setSelectionBackgroundColor( const QColor &color )
 
 void QgsTableEditorWidget::setSelectionRowHeight( double height )
 {
-  const QModelIndexList selection = selectedIndexes();
   bool changed = false;
   mBlockSignals++;
-  const QList< int > rows = collectUniqueRows( selection );
+  const QList< int > rows = rowsAssociatedWithSelection();
   for ( int row : rows )
   {
     for ( int col = 0; col < columnCount(); ++col )
@@ -832,10 +841,9 @@ void QgsTableEditorWidget::setSelectionRowHeight( double height )
 
 void QgsTableEditorWidget::setSelectionColumnWidth( double width )
 {
-  const QModelIndexList selection = selectedIndexes();
   bool changed = false;
   mBlockSignals++;
-  const QList< int > cols = collectUniqueColumns( selection );
+  const QList< int > cols = columnsAssociatedWithSelection();
   for ( int col : cols )
   {
     for ( int row = 0; row < rowCount(); ++row )

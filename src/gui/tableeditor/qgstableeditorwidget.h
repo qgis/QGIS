@@ -156,6 +156,20 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
      */
     void setTableColumnWidth( int column, double width );
 
+    /**
+     * Returns a list of the rows associated with the current table selected cells.
+     *
+     * \see columnsAssociatedWithSelection()
+     */
+    QList<int> rowsAssociatedWithSelection();
+
+    /**
+     * Returns a list of the columns associated with the current table selected cells.
+     *
+     * \see rowsAssociatedWithSelection()
+     */
+    QList<int> columnsAssociatedWithSelection();
+
   public slots:
 
     /**

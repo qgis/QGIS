@@ -52,16 +52,6 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
 
   mTableWidget->setFocus();
 
-  QgsTableContents c;
-  c << QgsTableRow();
-  c.last() << QgsTableCell( "test" ) << QgsTableCell( "test2" );
-  c << QgsTableRow();
-  QgsTableCell cc( "test3" );
-  cc.setBackgroundColor( QColor( 255, 255, 255 ) );
-  cc.setForegroundColor( QColor( 255, 0, 255 ) );
-  c.last() << cc << QgsTableCell( "test4" );
-  mTableWidget->setTableContents( c );
-
   connect( mTableWidget, &QgsTableEditorWidget::tableChanged, this, [ = ]
   {
     if ( !mBlockSignals )
@@ -98,7 +88,10 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
     mFormattingWidget->setNumericFormat( mTableWidget->selectionNumericFormat(), mTableWidget->hasMixedSelectionNumericFormat() );
     mFormattingWidget->setRowHeight( mTableWidget->selectionRowHeight() );
     mFormattingWidget->setColumnWidth( mTableWidget->selectionColumnWidth() );
+
+    updateActionNamesFromSelection();
   } );
+  updateActionNamesFromSelection();
 
   addDockWidget( Qt::RightDockWidgetArea, mPropertiesDock );
 
@@ -145,6 +138,64 @@ void QgsTableEditorDialog::setTableRowHeight( int row, double height )
 void QgsTableEditorDialog::setTableColumnWidth( int column, double width )
 {
   mTableWidget->setTableColumnWidth( column, width );
+}
+
+void QgsTableEditorDialog::updateActionNamesFromSelection()
+{
+  const int rowCount = mTableWidget->rowsAssociatedWithSelection().size();
+  const int columnCount = mTableWidget->columnsAssociatedWithSelection().size();
+
+  mActionInsertRowsAbove->setEnabled( rowCount > 0 );
+  mActionInsertRowsBelow->setEnabled( rowCount > 0 );
+  mActionDeleteRows->setEnabled( rowCount > 0 );
+  mActionSelectRow->setEnabled( rowCount > 0 );
+  if ( rowCount == 0 )
+  {
+    mActionInsertRowsAbove->setText( tr( "Rows Above" ) );
+    mActionInsertRowsBelow->setText( tr( "Rows Below" ) );
+    mActionDeleteRows->setText( tr( "Delete Rows" ) );
+    mActionSelectRow->setText( tr( "Select Rows" ) );
+  }
+  else if ( rowCount == 1 )
+  {
+    mActionInsertRowsAbove->setText( tr( "Row Above" ) );
+    mActionInsertRowsBelow->setText( tr( "Row Below" ) );
+    mActionDeleteRows->setText( tr( "Delete Row" ) );
+    mActionSelectRow->setText( tr( "Select Row" ) );
+  }
+  else
+  {
+    mActionInsertRowsAbove->setText( tr( "%1 Rows Above" ).arg( rowCount ) );
+    mActionInsertRowsBelow->setText( tr( "%1 Rows Below" ).arg( rowCount ) );
+    mActionDeleteRows->setText( tr( "Delete %1 Rows" ).arg( rowCount ) );
+    mActionSelectRow->setText( tr( "Select %1 Rows" ).arg( rowCount ) );
+  }
+
+  mActionInsertColumnsBefore->setEnabled( columnCount > 0 );
+  mActionInsertColumnsAfter->setEnabled( columnCount > 0 );
+  mActionDeleteColumns->setEnabled( columnCount > 0 );
+  mActionSelectColumn->setEnabled( columnCount > 0 );
+  if ( columnCount == 0 )
+  {
+    mActionInsertColumnsBefore->setText( tr( "Columns Before" ) );
+    mActionInsertColumnsAfter->setText( tr( "Columns After" ) );
+    mActionDeleteColumns->setText( tr( "Delete Columns" ) );
+    mActionSelectColumn->setText( tr( "Select Columns" ) );
+  }
+  else if ( columnCount == 1 )
+  {
+    mActionInsertColumnsBefore->setText( tr( "Column Before" ) );
+    mActionInsertColumnsAfter->setText( tr( "Column After" ) );
+    mActionDeleteColumns->setText( tr( "Delete Column" ) );
+    mActionSelectColumn->setText( tr( "Select Column" ) );
+  }
+  else
+  {
+    mActionInsertColumnsBefore->setText( tr( "%1 Columns Before" ).arg( columnCount ) );
+    mActionInsertColumnsAfter->setText( tr( "%1 Columns After" ).arg( columnCount ) );
+    mActionDeleteColumns->setText( tr( "Delete %1 Columns" ).arg( columnCount ) );
+    mActionSelectColumn->setText( tr( "Select %1 Columns" ).arg( columnCount ) );
+  }
 }
 
 #include "qgstableeditordialog.h"

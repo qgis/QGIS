@@ -146,6 +146,20 @@ This should be called after a call to setTableContents().
 .. seealso:: :py:func:`tableColumnWidth`
 %End
 
+    QList<int> rowsAssociatedWithSelection();
+%Docstring
+Returns a list of the rows associated with the current table selected cells.
+
+.. seealso:: :py:func:`columnsAssociatedWithSelection`
+%End
+
+    QList<int> columnsAssociatedWithSelection();
+%Docstring
+Returns a list of the columns associated with the current table selected cells.
+
+.. seealso:: :py:func:`rowsAssociatedWithSelection`
+%End
+
   public slots:
 
     void insertRowsBelow();
