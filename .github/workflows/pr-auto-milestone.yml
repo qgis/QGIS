@@ -3,7 +3,7 @@ name: Auto set milestone on PR
 # this job is scheduled to be run with proper rights
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '*/0 1 * * *'
 
 env:
   QGIS_MAJOR_VERSION: 3
