@@ -643,7 +643,9 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
      * \param parent
      * \param name directory name
      * \param dirPath path to directory in file system
-     * \param path item path in the tree, it may be dirPath or dirPath with some prefix, e.g. favorites: */
+     * \param path item path in the tree, it may be dirPath or dirPath with some prefix, e.g. favorites:
+     * \param providerKey key of the provider that created this item
+     */
     QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &dirPath, const QString &path, const QString &providerKey = QString() );
 
     void setState( State state ) override;
@@ -692,6 +694,7 @@ class CORE_EXPORT QgsProjectItem : public QgsDataItem
      * \param parent The parent data item.
      * \param name The name of the of the project. Displayed to the user.
      * \param path The full path to the project.
+     * \param providerKey key of the provider that created this item
      */
     QgsProjectItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &providerKey = QString() );
 
