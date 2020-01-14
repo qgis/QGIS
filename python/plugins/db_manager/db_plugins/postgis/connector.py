@@ -123,7 +123,7 @@ class CursorAdapter():
                 f = fields[i]
                 self._description.append([
                     f.name(),                         # name
-                    str,                              # type_code
+                    f.type(),                         # type_code
                     f.length(),                       # display_size
                     f.length(),                       # internal_size
                     f.precision(),                    # precision
