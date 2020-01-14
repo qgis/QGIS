@@ -43,6 +43,9 @@
 #include "qgsbearingutils.h"
 #include "qgsgpsbearingitem.h"
 #include "qgssymbollayerutils.h"
+#include "qgslocaldefaultsettings.h"
+#include "qgsprojectdisplaysettings.h"
+#include "qgsbearingnumericformat.h"
 
 // QWT Charting widget
 
@@ -90,6 +93,14 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   connect( mBtnCloseFeature, &QPushButton::clicked, this, &QgsGpsInformationWidget::mBtnCloseFeature_clicked );
   connect( mBtnResetFeature, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnResetFeature_clicked );
   connect( mBtnLogFile, &QPushButton::clicked, this, &QgsGpsInformationWidget::mBtnLogFile_clicked );
+  connect( mMapCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsGpsInformationWidget::cursorCoordinateChanged );
+
+  mBearingNumericFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
+  connect( QgsProject::instance()->displaySettings(), &QgsProjectDisplaySettings::bearingFormatChanged, this, [ = ]
+  {
+    mBearingNumericFormat.reset( QgsProject::instance()->displaySettings()->bearingFormat()->clone() );
+    updateGpsDistanceStatusMessage();
+  } );
 
   mCanvasToWgs84Transform = QgsCoordinateTransform( mMapCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, [ = ]
@@ -921,7 +932,9 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     {
       addVertex();
     }
-  } // mLastGpsPosition != myNewCenter
+
+    updateGpsDistanceStatusMessage();
+  }
 
   if ( !std::isnan( info.direction ) )
   {
@@ -1472,6 +1485,38 @@ void QgsGpsInformationWidget::timestampFormatChanged( int )
   const bool enabled { static_cast<Qt::TimeSpec>( mCboTimestampFormat->currentData( ).toInt() ) == Qt::TimeSpec::TimeZone };
   mCboTimeZones->setEnabled( enabled );
   mLblTimeZone->setEnabled( enabled );
+}
+
+void QgsGpsInformationWidget::cursorCoordinateChanged( const QgsPointXY &point )
+{
+  try
+  {
+    mLastCursorPosWgs84 = mCanvasToWgs84Transform.transform( point );
+    updateGpsDistanceStatusMessage();
+  }
+  catch ( QgsCsException & )
+  {
+
+  }
+}
+
+void QgsGpsInformationWidget::updateGpsDistanceStatusMessage()
+{
+  if ( !mNmea )
+    return;
+
+  QgsDistanceArea da;
+  da.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  da.setSourceCrs( mWgs84CRS, QgsProject::instance()->transformContext() );
+
+  const double distance = da.convertLengthMeasurement( da.measureLine( QVector< QgsPointXY >() << mLastCursorPosWgs84 << mLastGpsPosition ),
+                          QgsProject::instance()->distanceUnits() );
+  const double bearing = 180 * da.bearing( mLastCursorPosWgs84, mLastGpsPosition ) / M_PI;
+  const int distanceDecimalPlaces = QgsSettings().value( QStringLiteral( "qgis/measure/decimalplaces" ), "3" ).toInt();
+  const QString distanceString = QgsDistanceArea::formatDistance( distance, distanceDecimalPlaces, QgsProject::instance()->distanceUnits() );
+  const QString bearingString = mBearingNumericFormat->formatDouble( bearing, QgsNumericFormatContext() );
+
+  QgisApp::instance()->statusBarIface()->showMessage( tr( "Distance to GPS location %1 (%2)" ).arg( distanceString, bearingString ), 2000 );
 }
 
 void QgsGpsInformationWidget::updateTimestampDestinationFields( QgsMapLayer *mapLayer )
