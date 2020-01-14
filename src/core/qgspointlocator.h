@@ -445,7 +445,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
     friend class QgsPointLocator_VisitorNearestVertex;
     friend class QgsPointLocator_VisitorNearestCentroid;
-    friend class QgsPointLocator_VisitorNearestMiddle;
+    friend class QgsPointLocator_VisitorNearestMiddleOfSegment;
     friend class QgsPointLocator_VisitorNearestEdge;
     friend class QgsPointLocator_VisitorArea;
     friend class QgsPointLocator_VisitorEdgesInRect;

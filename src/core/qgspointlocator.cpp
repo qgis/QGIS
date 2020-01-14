@@ -186,10 +186,10 @@ class QgsPointLocator_VisitorNearestCentroid : public IVisitor
  * \note not available in Python bindings
  * \since QGIS 3.12
 */
-class QgsPointLocator_VisitorNearestMiddle: public IVisitor
+class QgsPointLocator_VisitorNearestMiddleOfSegment: public IVisitor
 {
   public:
-    QgsPointLocator_VisitorNearestMiddle( QgsPointLocator *pl, QgsPointLocator::Match &m, const QgsPointXY &srcPoint, QgsPointLocator::MatchFilter *filter = nullptr )
+    QgsPointLocator_VisitorNearestMiddleOfSegment( QgsPointLocator *pl, QgsPointLocator::Match &m, const QgsPointXY &srcPoint, QgsPointLocator::MatchFilter *filter = nullptr )
       : mLocator( pl )
       , mBest( m )
       , mSrcPoint( srcPoint )
@@ -1174,7 +1174,7 @@ QgsPointLocator::Match QgsPointLocator::nearestMiddle( const QgsPointXY &point, 
     return Match();
 
   Match m;
-  QgsPointLocator_VisitorNearestMiddle visitor( this, m, point, filter );
+  QgsPointLocator_VisitorNearestMiddleOfSegment visitor( this, m, point, filter );
 
   QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
   mRTree->intersectsWithQuery( rect2region( rect ), visitor );
