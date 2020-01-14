@@ -113,6 +113,8 @@ void QgsTableEditorDialog::setTableContents( const QgsTableContents &contents )
 {
   mBlockSignals = true;
   mTableWidget->setTableContents( contents );
+  mTableWidget->resizeRowsToContents();
+  mTableWidget->resizeColumnsToContents();
   mBlockSignals = false;
 }
 
