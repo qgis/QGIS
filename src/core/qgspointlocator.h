@@ -165,10 +165,15 @@ class CORE_EXPORT QgsPointLocator : public QObject
         QgsPointLocator::Type type() const { return mType; }
 
         bool isValid() const { return mType != Invalid; }
+        //! Returns true if the Match is a vertex
         bool hasVertex() const { return mType == Vertex; }
+        //! Returns true if the Match is an edge
         bool hasEdge() const { return mType == Edge; }
+        //! Returns true if the Match is a centroid
         bool hasCentroid() const { return mType == Centroid; }
+        //! Returns true if the Match is an area
         bool hasArea() const { return mType == Area; }
+        //! Returns true if the Match is the middle of a segment
         bool hasMiddleSegment() const { return mType == Middle; }
 
         /**

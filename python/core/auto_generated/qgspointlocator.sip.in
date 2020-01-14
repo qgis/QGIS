@@ -127,10 +127,25 @@ construct invalid match
 
         bool isValid() const;
         bool hasVertex() const;
+%Docstring
+Returns true if the Match is a vertex
+%End
         bool hasEdge() const;
+%Docstring
+Returns true if the Match is an edge
+%End
         bool hasCentroid() const;
+%Docstring
+Returns true if the Match is a centroid
+%End
         bool hasArea() const;
+%Docstring
+Returns true if the Match is an area
+%End
         bool hasMiddleSegment() const;
+%Docstring
+Returns true if the Match is the middle of a segment
+%End
 
         double distance() const;
 %Docstring
