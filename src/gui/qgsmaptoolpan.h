@@ -45,6 +45,30 @@ class GUI_EXPORT QgsMapToolPan : public QgsMapTool
     void canvasDoubleClickEvent( QgsMapMouseEvent *e ) override;
     bool gestureEvent( QGestureEvent *e ) override;
 
+<<<<<<< HEAD
+=======
+    /**
+     * Returns TRUE if a drag operation is in progress.
+     *
+     * \since QGIS 3.12
+     */
+    bool isDragging() const { return mDragging; }
+
+  signals:
+
+    /**
+     * Emitted whenever the distance or bearing of an in-progress panning
+     * operation is changed.
+     *
+     * This signal will be emitted during a pan operation as the user moves the map,
+     * giving the total distance and bearing between the map position at the
+     * start of the pan and the current pan position.
+     *
+     * \since QGIS 3.12
+     */
+    void panDistanceBearingChanged( double distance, QgsUnitTypes::DistanceUnit unit, double bearing );
+
+>>>>>>> 527eca9684... Fix QgsMapCanvas::xyCoordinates reports incorrect coordinates if a pan
   private:
 
     //! Flag to indicate a map canvas drag operation is taking place

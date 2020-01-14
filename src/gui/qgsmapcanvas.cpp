@@ -1728,9 +1728,12 @@ void QgsMapCanvas::mouseMoveEvent( QMouseEvent *e )
     }
   }
 
-  // show x y on status bar
-  mCursorPoint = getCoordinateTransform()->toMapCoordinates( mCanvasProperties->mouseLastXY );
-  emit xyCoordinates( mCursorPoint );
+  // show x y on status bar (if we are mid pan operation, then the cursor point hasn't changed!)
+  if ( !panOperationInProgress() )
+  {
+    mCursorPoint = getCoordinateTransform()->toMapCoordinates( mCanvasProperties->mouseLastXY );
+    emit xyCoordinates( mCursorPoint );
+  }
 }
 
 void QgsMapCanvas::setMapTool( QgsMapTool *tool, bool clean )
@@ -2485,4 +2488,18 @@ void QgsMapCanvas::schedulePreviewJob( int number )
     startPreviewJob( number );
   } );
   mPreviewTimer.start();
+}
+
+bool QgsMapCanvas::panOperationInProgress()
+{
+  if ( mCanvasProperties->panSelectorDown )
+    return true;
+
+  if ( QgsMapToolPan *panTool = qobject_cast< QgsMapToolPan *>( mMapTool ) )
+  {
+    if ( panTool->isDragging() )
+      return true;
+  }
+
+  return false;
 }
