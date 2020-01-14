@@ -22,6 +22,7 @@
 #include "qgspolygon.h"
 #include "qgspostgresprovider.h"
 #include "qgsgdalutils.h"
+#include "qgsstringutils.h"
 
 const QString QgsPostgresRasterProvider::PG_RASTER_PROVIDER_KEY = QStringLiteral( "postgresraster" );
 const QString QgsPostgresRasterProvider::PG_RASTER_PROVIDER_DESCRIPTION =  QStringLiteral( "Postgres raster provider" );
@@ -610,11 +611,65 @@ QgsRasterInterface *QgsPostgresRasterProvider::clone() const
   return provider;
 }
 
+
+static inline QString dumpVariantMap( const QVariantMap &variantMap, const QString &title = QString() )
+{
+  QString result;
+  if ( !title.isEmpty() )
+  {
+    result += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td></td></tr>" ).arg( title );
+  }
+  for ( auto it = variantMap.constBegin(); it != variantMap.constEnd(); ++it )
+  {
+    const QVariantMap childMap = it.value().toMap();
+    const QVariantList childList = it.value().toList();
+    if ( !childList.isEmpty() )
+    {
+      result += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td><ul>" ).arg( it.key() );
+      for ( const QVariant &v : childList )
+      {
+        const QVariantMap grandChildMap = v.toMap();
+        if ( !grandChildMap.isEmpty() )
+        {
+          result += QStringLiteral( "<li><table>%1</table></li>" ).arg( dumpVariantMap( grandChildMap ) );
+        }
+        else
+        {
+          result += QStringLiteral( "<li>%1</li>" ).arg( QgsStringUtils::insertLinks( v.toString() ) );
+        }
+      }
+      result += QStringLiteral( "</ul></td></tr>" );
+    }
+    else if ( !childMap.isEmpty() )
+    {
+      result += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td><table>%2</table></td></tr>" ).arg( it.key(), dumpVariantMap( childMap ) );
+    }
+    else
+    {
+      result += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>" ).arg( it.key(), QgsStringUtils::insertLinks( it.value().toString() ) );
+    }
+  }
+  return result;
+}
+
 QString QgsPostgresRasterProvider::htmlMetadata()
 {
-  // TODO: return some useful information
-  QString metadata;
-  return metadata;
+  // This must return the content of a HTML table starting by tr and ending by tr
+  QVariantMap overviews;
+  for ( auto it = mOverViews.constBegin(); it != mOverViews.constEnd(); ++it )
+  {
+    overviews.insert( QString::number( it.key() ), it.value() );
+  }
+
+  const QVariantMap additionalInformation
+  {
+    { tr( "Is Tiled" ), mIsTiled },
+    { tr( "Where Clause SQL" ), mSqlWhereClause },
+    { tr( "Pixel Size" ), QStringLiteral( "%1, %2" ).arg( mScaleX ).arg( mScaleY ) },
+    { tr( "Overviews" ),  overviews },
+    { tr( "Primary Keys SQL" ),  pkSql() },
+  };
+  return  dumpVariantMap( additionalInformation, tr( "Additional information" ) );
 }
 
 QString QgsPostgresRasterProvider::lastErrorTitle()
