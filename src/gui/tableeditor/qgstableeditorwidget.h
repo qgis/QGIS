@@ -34,9 +34,19 @@ class QgsTableEditorTextEdit : public QPlainTextEdit
   public:
     QgsTableEditorTextEdit( QWidget *parent );
 
+    /**
+     * Sets whether the editor is an a "weak" editor mode, where any
+     * cursor key presses will be ignored by the editor and deferred to the table instead.
+     */
+    void setWeakEditorMode( bool weakEditorMode );
+
   protected:
 
     void keyPressEvent( QKeyEvent *e ) override;
+
+  private:
+
+    bool mWeakEditorMode = false;
 
 };
 
@@ -45,11 +55,21 @@ class QgsTableEditorDelegate : public QStyledItemDelegate
     Q_OBJECT
   public:
     QgsTableEditorDelegate( QObject *parent );
+
+    /**
+     * Sets whether the editor is an a "weak" editor mode, where any
+     * cursor key presses will be ignored by the editor and deferred to the table instead.
+     */
+    void setWeakEditorMode( bool weakEditorMode );
+
   protected:
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex &index ) const override;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
 
+  private:
+
+    bool mWeakEditorMode = false;
 };
 
 ///@endcond
