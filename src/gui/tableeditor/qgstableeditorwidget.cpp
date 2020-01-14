@@ -21,7 +21,7 @@
 #include <QKeyEvent>
 #include <QHeaderView>
 #include <QMenu>
-#include <QLineEdit>
+#include <QPlainTextEdit>
 
 QgsTableEditorWidget::QgsTableEditorWidget( QWidget *parent )
   : QTableWidget( parent )
@@ -875,36 +875,71 @@ void QgsTableEditorWidget::setSelectionColumnWidth( double width )
 }
 
 /// @cond PRIVATE
+
+QgsTableEditorTextEdit::QgsTableEditorTextEdit( QWidget *parent )
+  : QPlainTextEdit( parent )
+{
+  // narrower default margins
+  document()->setDocumentMargin( document()->documentMargin() / 2 );
+}
+
+void QgsTableEditorTextEdit::keyPressEvent( QKeyEvent *event )
+{
+  switch ( event->key() )
+  {
+    case Qt::Key_Enter:
+    case Qt::Key_Return:
+    {
+      if ( event->modifiers() & Qt::ControlModifier )
+      {
+        // ctrl+enter inserts a line break
+        insertPlainText( QString( '\n' ) );
+      }
+      else
+      {
+        // closes editor
+        event->ignore();
+      }
+      break;
+    }
+
+    default:
+      QPlainTextEdit::keyPressEvent( event );
+  }
+}
+
+
 QgsTableEditorDelegate::QgsTableEditorDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
 {
 
 }
 
-QWidget *QgsTableEditorDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &index ) const
+QWidget *QgsTableEditorDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & ) const
 {
-  QLineEdit *w = new QLineEdit( parent ); \
-  w->setText( index.model()->data( index, Qt::EditRole ).toString() );
+  QgsTableEditorTextEdit *w = new QgsTableEditorTextEdit( parent );
   return w;
 }
 
 void QgsTableEditorDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
   QVariant value = index.model()->data( index, Qt::EditRole );
-  if ( QLineEdit *lineEdit = qobject_cast<QLineEdit * >( editor ) )
+  if ( QgsTableEditorTextEdit *lineEdit = qobject_cast<QgsTableEditorTextEdit * >( editor ) )
   {
-    lineEdit->setText( value.toString() );
+    lineEdit->setPlainText( value.toString() );
+    lineEdit->selectAll();
   }
 }
 
 void QgsTableEditorDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
-  if ( QLineEdit *lineEdit = qobject_cast<QLineEdit * >( editor ) )
+  if ( QgsTableEditorTextEdit *lineEdit = qobject_cast<QgsTableEditorTextEdit * >( editor ) )
   {
-    model->setData( index, lineEdit->text(), Qt::EditRole );
-    model->setData( index, lineEdit->text(), Qt::DisplayRole );
+    model->setData( index, lineEdit->toPlainText(), Qt::EditRole );
+    model->setData( index, lineEdit->toPlainText(), Qt::DisplayRole );
   }
 }
 
 
 ///@endcond
+

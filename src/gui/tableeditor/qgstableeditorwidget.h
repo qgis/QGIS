@@ -21,12 +21,25 @@
 #include "qgis_gui.h"
 #include "qgstablecell.h"
 #include <QTableWidget>
+#include <QPlainTextEdit>
 #include <QStyledItemDelegate>
 
 
 #ifndef SIP_RUN
 ///@cond PRIVATE
-///
+
+class QgsTableEditorTextEdit : public QPlainTextEdit
+{
+    Q_OBJECT
+  public:
+    QgsTableEditorTextEdit( QWidget *parent );
+
+  protected:
+
+    void keyPressEvent( QKeyEvent *e ) override;
+
+};
+
 class QgsTableEditorDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
