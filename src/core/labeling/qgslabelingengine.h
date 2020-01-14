@@ -23,10 +23,14 @@
 
 #include "qgspallabeling.h"
 #include "qgslabelingenginesettings.h"
-#include "pal.h"
+#include "qgslabeling.h"
 
 class QgsLabelingEngine;
 
+namespace pal
+{
+  class Problem;
+}
 
 /**
  * \ingroup core
@@ -414,13 +418,13 @@ class CORE_EXPORT QgsLabelingUtils
      * Encodes line placement \a flags to a string.
      * \see decodeLinePlacementFlags()
      */
-    static QString encodeLinePlacementFlags( pal::LineArrangementFlags flags );
+    static QString encodeLinePlacementFlags( QgsLabeling::LinePlacementFlags flags );
 
     /**
      * Decodes a \a string to set of line placement flags.
      * \see encodeLinePlacementFlags()
      */
-    static pal::LineArrangementFlags decodeLinePlacementFlags( const QString &string );
+    static QgsLabeling::LinePlacementFlags decodeLinePlacementFlags( const QString &string );
 
 };
 

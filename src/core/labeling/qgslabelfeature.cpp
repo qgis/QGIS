@@ -21,16 +21,6 @@ QgsLabelFeature::QgsLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QS
   : mId( id )
   , mGeometry( std::move( geometry ) )
   , mSize( size )
-  , mPriority( -1 )
-  , mZIndex( 0 )
-  , mHasFixedPosition( false )
-  , mHasFixedAngle( false )
-  , mFixedAngle( 0 )
-  , mHasFixedQuadrant( false )
-  , mDistLabel( 0 )
-  , mOffsetType( QgsPalLayerSettings::FromPoint )
-  , mRepeatDistance( 0 )
-  , mAlwaysShow( false )
 {
 }
 
