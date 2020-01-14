@@ -1097,6 +1097,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void stopPreviewJobs();
     void schedulePreviewJob( int number );
 
+    /**
+     * Returns TRUE if a pan operation is in progress
+     */
+    bool panOperationInProgress();
+
     friend class TestQgsMapCanvas;
 
 }; // class QgsMapCanvas
