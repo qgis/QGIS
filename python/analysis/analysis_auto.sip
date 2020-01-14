@@ -32,7 +32,7 @@
 %Include auto_generated/raster/qgstotalcurvaturefilter.sip
 %Include auto_generated/vector/geometry_checker/qgsfeaturepool.sip
 %Include auto_generated/vector/geometry_checker/qgsgeometrycheck.sip
-%Include auto_generated/vector/geometry_checker/qgsgeometrycheckfix.sip
+%Include auto_generated/vector/geometry_checker/qgsgeometrycheckresolutionmethod.sip
 %Include auto_generated/vector/geometry_checker/qgsgeometrycheckcontext.sip
 %Include auto_generated/vector/geometry_checker/qgsgeometrycheckerror.sip
 %Include auto_generated/vector/geometry_checker/qgsgeometrycheckerutils.sip

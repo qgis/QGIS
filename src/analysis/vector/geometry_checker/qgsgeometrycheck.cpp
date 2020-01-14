@@ -56,18 +56,25 @@ void QgsGeometryCheck::fixError( const QMap<QString, QgsFeaturePool *> &featureP
   Q_UNUSED( changes )
 }
 
-QList<QgsGeometryCheckFix> QgsGeometryCheck::availableResolutionMethods() const
+QList<QgsGeometryCheckResolutionMethod> QgsGeometryCheck::availableResolutionMethods() const
 {
-  QList<QgsGeometryCheckFix> fixes;
+  QList<QgsGeometryCheckResolutionMethod> fixes;
+  Q_NOWARN_DEPRECATED_PUSH
   const QStringList methods = resolutionMethods();
+  Q_NOWARN_DEPRECATED_POP
 
   int i = 0;
   for ( const QString &method : methods )
   {
-    fixes.append( QgsGeometryCheckFix( i, method, QString(), false ) );
+    fixes.append( QgsGeometryCheckResolutionMethod( i, method, QString(), false ) );
   }
 
   return fixes;
+}
+
+QStringList QgsGeometryCheck::resolutionMethods() const
+{
+  return QStringList();
 }
 
 QMap<QString, QgsFeatureIds> QgsGeometryCheck::allLayerFeatureIds( const QMap<QString, QgsFeaturePool *> &featurePools ) const

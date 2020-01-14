@@ -218,10 +218,10 @@ void QgsGeometryValidationDock::onCurrentErrorChanged( const QModelIndex &curren
 
     if ( error->status() != QgsGeometryCheckError::StatusFixed )
     {
-      const QList<QgsGeometryCheckFix> resolutionMethods = error->check()->availableResolutionMethods();
+      const QList<QgsGeometryCheckResolutionMethod> resolutionMethods = error->check()->availableResolutionMethods();
       QGridLayout *layout = new QGridLayout( mResolutionWidget );
       int resolutionIndex = 0;
-      for ( const QgsGeometryCheckFix &resolutionMethod : resolutionMethods )
+      for ( const QgsGeometryCheckResolutionMethod &resolutionMethod : resolutionMethods )
       {
         QToolButton *resolveBtn = new QToolButton( mResolutionWidget );
         resolveBtn->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCheckGeometry.svg" ) ) );

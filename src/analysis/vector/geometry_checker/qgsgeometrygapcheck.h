@@ -116,7 +116,7 @@ class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
     void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     QStringList resolutionMethods() const override;
 
-    QList<QgsGeometryCheckFix> availableResolutionMethods() const override;
+    QList<QgsGeometryCheckResolutionMethod> availableResolutionMethods() const override;
 
     QString description() const override;
     QString id() const override;

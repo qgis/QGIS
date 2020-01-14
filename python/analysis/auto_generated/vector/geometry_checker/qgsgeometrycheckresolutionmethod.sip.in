@@ -1,13 +1,14 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/analysis/vector/geometry_checker/qgsgeometrycheckfix.h           *
+ * src/analysis/vector/geometry_checker/qgsgeometrycheckresolutionmethod.h *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
 
 
-class QgsGeometryCheckFix
+
+class QgsGeometryCheckResolutionMethod
 {
 %Docstring
 This class implements a fix for problems detected in geometry checks.
@@ -16,10 +17,10 @@ This class implements a fix for problems detected in geometry checks.
 %End
 
 %TypeHeaderCode
-#include "qgsgeometrycheckfix.h"
+#include "qgsgeometrycheckresolutionmethod.h"
 %End
   public:
-    QgsGeometryCheckFix( int id, const QString &name, const QString &description, bool isStable = true );
+    QgsGeometryCheckResolutionMethod( int id, const QString &name, const QString &description, bool isStable = true );
 
     int id() const;
 
@@ -43,7 +44,7 @@ A human readable and translated description for this fix.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/analysis/vector/geometry_checker/qgsgeometrycheckfix.h           *
+ * src/analysis/vector/geometry_checker/qgsgeometrycheckresolutionmethod.h *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

@@ -419,19 +419,19 @@ QStringList QgsGeometryGapCheck::resolutionMethods() const
   return methods;
 }
 
-QList<QgsGeometryCheckFix> QgsGeometryGapCheck::availableResolutionMethods() const
+QList<QgsGeometryCheckResolutionMethod> QgsGeometryGapCheck::availableResolutionMethods() const
 {
-  QList<QgsGeometryCheckFix> fixes
+  QList<QgsGeometryCheckResolutionMethod> fixes
   {
-    QgsGeometryCheckFix( MergeLongestEdge, tr( "Add to longest shared edge" ), tr( "Add the gap area to the neighbouring polygon with the longest shared edge." ), false ),
-    QgsGeometryCheckFix( CreateNewFeature, tr( "Create new feature" ), tr( "Create a new feature from the gap area." ), false ),
-    QgsGeometryCheckFix( MergeLargestArea, tr( "Add to largest neighbouring area" ), tr( "Add the gap area to the neighbouring polygon with the largest area." ), false )
+    QgsGeometryCheckResolutionMethod( MergeLongestEdge, tr( "Add to longest shared edge" ), tr( "Add the gap area to the neighbouring polygon with the longest shared edge." ), false ),
+    QgsGeometryCheckResolutionMethod( CreateNewFeature, tr( "Create new feature" ), tr( "Create a new feature from the gap area." ), false ),
+    QgsGeometryCheckResolutionMethod( MergeLargestArea, tr( "Add to largest neighbouring area" ), tr( "Add the gap area to the neighbouring polygon with the largest area." ), false )
   };
 
   if ( mAllowedGapsSource )
-    fixes << QgsGeometryCheckFix( AddToAllowedGaps, tr( "Add gap to allowed exceptions" ), tr( "Create a new feature from the gap geometry on the allowed exceptions layer." ), false );
+    fixes << QgsGeometryCheckResolutionMethod( AddToAllowedGaps, tr( "Add gap to allowed exceptions" ), tr( "Create a new feature from the gap geometry on the allowed exceptions layer." ), false );
 
-  fixes << QgsGeometryCheckFix( NoChange, tr( "No action" ), tr( "Do not perform any action and mark this error as fixed." ), false );
+  fixes << QgsGeometryCheckResolutionMethod( NoChange, tr( "No action" ), tr( "Do not perform any action and mark this error as fixed." ), false );
 
   return fixes;
 }
