@@ -184,11 +184,24 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
   {
     case OneToMany:
     case JoinToFirst:
-      // TODO - consider using some heuristics to determine whether it's always best to iterate over the join
-      // source. It's best when you're doing a many -> few join (e.g. an input of millions of address points joined to hundreds of locality polygons),
-      // but poor in other circumstances (e.g. an input of few polygon boundaries joined to thousands of polygon other polygon features)
-      processAlgorithmByIteratingOverJoinedSource( context, feedback );
+    {
+      if ( mBaseSource->featureCount() > 0 && mJoinSource->featureCount() > 0 && mBaseSource->featureCount() < mJoinSource->featureCount() )
+      {
+        // joining FEWER features to a layer with MORE features. So we iterate over the FEW features and find matches from the MANY
+        processAlgorithmByIteratingOverInputSource( context, feedback );
+      }
+      else
+      {
+        // default -- iterate over the join source and match back to the base source. We do this on the assumption that the most common
+        // use case is joining a points layer to a polygon layer (taking polygon attributes and adding them to the points), so by iterating
+        // over the polygons we can take advantage of prepared geometries for the spatial relationship test.
+
+        // TODO - consider using more heuristics to determine whether it's always best to iterate over the join
+        // source.
+        processAlgorithmByIteratingOverJoinedSource( context, feedback );
+      }
       break;
+    }
 
     case JoinToLargestOverlap:
       processAlgorithmByIteratingOverInputSource( context, feedback );
