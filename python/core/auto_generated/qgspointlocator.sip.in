@@ -87,7 +87,7 @@ Configure render context  - if not ``None``, it will use to index only visible f
       Edge,
       Area,
       Centroid,
-      Middle,
+      MiddleOfSegment,
       All
     };
 

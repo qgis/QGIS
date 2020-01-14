@@ -385,7 +385,7 @@ void QgsSnappingWidget::projectSnapSettingsChanged()
     mTypeButton->setDefaultAction( mCentroidAction );
     mCentroidAction->setChecked( true );
   }
-  if ( config.type() & QgsSnappingConfig::Middle )
+  if ( config.type() & QgsSnappingConfig::MiddleOfSegment )
   {
     mTypeButton->setDefaultAction( mMiddleAction );
     mMiddleAction->setChecked( true );
@@ -523,7 +523,7 @@ void QgsSnappingWidget::typeButtonTriggered( QAction *action )
   }
   else if ( action == mMiddleAction )
   {
-    type ^= QgsSnappingConfig::Middle;
+    type ^= QgsSnappingConfig::MiddleOfSegment;
   }
   mConfig.setType( static_cast<QgsSnappingConfig::SnappingType>( type ) );
   mProject->setSnappingConfig( mConfig );

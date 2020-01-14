@@ -118,8 +118,8 @@ class CORE_EXPORT QgsPointLocator : public QObject
       Edge    = 2, //!< Snapped to an edge
       Area    = 4, //!< Snapped to an area
       Centroid = 8, //!< Snapped to a centroid
-      Middle = 16, //!< Snapped to the middle of a segment
-      All = Vertex | Edge | Area | Centroid | Middle//!< Combination of vertex, edge and area
+      MiddleOfSegment = 16, //!< Snapped to the middle of a segment
+      All = Vertex | Edge | Area | Centroid | MiddleOfSegment //!< Combination of all types
     };
 
     Q_DECLARE_FLAGS( Types, Type )
@@ -174,7 +174,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
         //! Returns true if the Match is an area
         bool hasArea() const { return mType == Area; }
         //! Returns true if the Match is the middle of a segment
-        bool hasMiddleSegment() const { return mType == Middle; }
+        bool hasMiddleSegment() const { return mType == MiddleOfSegment; }
 
         /**
          * for vertex / edge match
@@ -237,7 +237,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
                  mVertexIndex == other.mVertexIndex &&
                  mEdgePoints == other.mEdgePoints &&
                  mCentroid == other.mCentroid &&
-                 mMiddle == other.mMiddle;
+                 mMiddleOfSegment == other.mMiddleOfSegment;
         }
 
       protected:
@@ -249,7 +249,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
         int mVertexIndex = 0; // e.g. vertex index
         QgsPointXY mEdgePoints[2];
         QgsPointXY mCentroid;
-        QgsPointXY mMiddle;
+        QgsPointXY mMiddleOfSegment;
     };
 
 #ifndef SIP_RUN

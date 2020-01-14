@@ -424,7 +424,7 @@ class TestQgsSnappingUtils : public QObject
       QgsSnappingConfig snappingConfig = u.config();
       snappingConfig.setEnabled( true );
       snappingConfig.setMode( QgsSnappingConfig::AdvancedConfiguration );
-      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, static_cast<QgsSnappingConfig::SnappingType>( QgsSnappingConfig::Middle | QgsSnappingConfig::Centroid ), 0.2, QgsTolerance::ProjectUnits );
+      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, static_cast<QgsSnappingConfig::SnappingType>( QgsSnappingConfig::MiddleOfSegment | QgsSnappingConfig::Centroid ), 0.2, QgsTolerance::ProjectUnits );
       snappingConfig.setIndividualLayerSettings( vSnapCentroidMiddle.get(), layerSettings );
       u.setConfig( snappingConfig );
 

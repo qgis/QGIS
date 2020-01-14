@@ -1039,7 +1039,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mDefaultSnapModeComboBox->addItem( tr( "Vertex" ), QgsSnappingConfig::Vertex );
   mDefaultSnapModeComboBox->addItem( tr( "Segment" ), QgsSnappingConfig::Segment );
   mDefaultSnapModeComboBox->addItem( tr( "Centroid" ), QgsSnappingConfig::Centroid );
-  mDefaultSnapModeComboBox->addItem( tr( "Middle of Segments" ), QgsSnappingConfig::Middle );
+  mDefaultSnapModeComboBox->addItem( tr( "Middle of Segments" ), QgsSnappingConfig::MiddleOfSegment );
   mDefaultSnapModeComboBox->addItem( tr( "Area" ), QgsSnappingConfig::Area );
   QgsSnappingConfig::SnappingType defaultSnapMode = static_cast<QgsSnappingConfig::SnappingType>( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snap_type" ), QgsSnappingConfig::NoSnap ).toInt() );
   mDefaultSnapModeComboBox->setCurrentIndex( mDefaultSnapModeComboBox->findData( defaultSnapMode ) );

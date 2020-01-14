@@ -121,7 +121,7 @@ void QgsSnappingLayerDelegate::setEditorData( QWidget *editor, const QModelIndex
       actions.at( 1 )->setChecked( type & QgsSnappingConfig::Segment );
       actions.at( 2 )->setChecked( type & QgsSnappingConfig::Area );
       actions.at( 3 )->setChecked( type & QgsSnappingConfig::Centroid );
-      actions.at( 4 )->setChecked( type & QgsSnappingConfig::Middle );
+      actions.at( 4 )->setChecked( type & QgsSnappingConfig::MiddleOfSegment );
     }
   }
   else if ( index.column() == QgsSnappingLayerTreeModel::ToleranceColumn )
@@ -161,7 +161,7 @@ void QgsSnappingLayerDelegate::setModelData( QWidget *editor, QAbstractItemModel
       if ( actions.at( 3 )->isChecked() )
         type = static_cast<QgsSnappingConfig::SnappingType>( type | QgsSnappingConfig::Centroid );
       if ( actions.at( 4 )->isChecked() )
-        type = static_cast<QgsSnappingConfig::SnappingType>( type | QgsSnappingConfig::Middle );
+        type = static_cast<QgsSnappingConfig::SnappingType>( type | QgsSnappingConfig::MiddleOfSegment );
       model->setData( index, type, Qt::EditRole );
     }
 
@@ -507,7 +507,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
           types.insert( { QgsSnappingConfig::Segment, tr( "Segment" ) } );
           types.insert( { QgsSnappingConfig::Area, tr( "Area" ) } );
           types.insert( { QgsSnappingConfig::Centroid, tr( "Centroid" ) } );
-          types.insert( { QgsSnappingConfig::Middle, tr( "Middle of Segments" ) } );
+          types.insert( { QgsSnappingConfig::MiddleOfSegment, tr( "Middle of Segments" ) } );
 
           for ( auto it = types.cbegin(); it != types.cend(); ++it )
           {

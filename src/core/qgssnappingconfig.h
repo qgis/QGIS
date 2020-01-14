@@ -61,7 +61,7 @@ class CORE_EXPORT QgsSnappingConfig
       Segment = 2, //!< On segments
       Area = 4, //!< On Area
       Centroid = 8, //!< On centroid
-      Middle = 16, //!< On Middle segment
+      MiddleOfSegment = 16, //!< On Middle segment
     };
     Q_ENUM( SnappingType )
 
