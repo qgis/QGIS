@@ -1466,8 +1466,31 @@ QgsRasterBandStats QgsPostgresRasterProvider::bandStatistics( int bandNo, int st
     }
   }
 
+  QString tableToQuery { mQuery };
+  const double pixelsRatio { static_cast<double>( sampleSize ) / ( mWidth * mHeight ) };
+  double statsRatio { pixelsRatio };
+
+  // Decide if overviews can be used here
+  if ( mSqlWhereClause.isEmpty() && ! mIsQuery && mIsTiled && extent.isEmpty() )
+  {
+    const unsigned int desiredOverviewFactor { static_cast<unsigned int>( 1.0 / sqrt( pixelsRatio ) ) };
+    const auto ovKeys { mOverViews.keys( ) };
+    QList<unsigned int>::const_reverse_iterator rit { ovKeys.rbegin() };
+    for ( ; rit != ovKeys.rend(); ++rit )
+    {
+      if ( *rit <= desiredOverviewFactor )
+      {
+        tableToQuery = mOverViews[ *rit ];
+        // This should really be: *= *rit * *rit;
+        // but we are already approximating, let's get decent statistics
+        statsRatio = 1;
+        QgsDebugMsgLevel( QStringLiteral( "Using overview for statistics read: %1" ).arg( tableToQuery ), 3 );
+        break;
+      }
+    }
+  }
+
   // Query the backend
-  // TODO: mSqlWhereClause
   QString where { extent.isEmpty() ? QString() : QStringLiteral( "WHERE %1 && ST_GeomFromText( %2, %3 )" )
                   .arg( quotedIdentifier( mRasterColumn ) )
                   .arg( extent.asWktPolygon() )
@@ -1483,8 +1506,8 @@ QgsRasterBandStats QgsPostgresRasterProvider::bandStatistics( int bandNo, int st
                                       "FROM %4 %5" )
                       .arg( quotedIdentifier( mRasterColumn ) )
                       .arg( bandNo )
-                      .arg( std::max<double>( 0, std::min<double>( 1, static_cast<double>( sampleSize ) / ( mWidth * mHeight ) ) ) )
-                      .arg( mQuery )
+                      .arg( std::max<double>( 0, std::min<double>( 1, statsRatio ) ) )
+                      .arg( tableToQuery )
                       .arg( where )
                     };
 
