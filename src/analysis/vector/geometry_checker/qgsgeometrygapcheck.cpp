@@ -24,6 +24,9 @@
 #include "qgsapplication.h"
 #include "qgsproject.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgspolygon.h"
+#include "qgscurve.h"
+#include "qgssnappingutils.h"
 
 #include "geos_c.h"
 
@@ -304,6 +307,8 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
   const QgsAbstractGeometry *errGeometry = QgsGeometryCheckerUtils::getGeomPart( geometry.constGet(), 0 );
 
   const auto layerIds = err->neighbors().keys();
+  QList<QgsFeature> neighbours;
+
   // Search for touching neighboring geometries
   for ( const QString &layerId : layerIds )
   {
@@ -316,11 +321,20 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
 
     for ( QgsFeatureId testId : featureIds )
     {
-      QgsFeature testFeature;
-      if ( !featurePool->getFeature( testId, testFeature ) )
+      QgsFeature feature;
+      if ( !featurePool->getFeature( testId, feature ) )
       {
         continue;
       }
+
+      QgsGeometry transformedGeometry = feature.geometry();
+      transformedGeometry.transform( ct );
+      feature.setGeometry( transformedGeometry );
+      neighbours.append( feature );
+    }
+
+    for ( const QgsFeature &testFeature : neighbours )
+    {
       const QgsGeometry featureGeom = testFeature.geometry();
       const QgsAbstractGeometry *testGeom = featureGeom.constGet();
       for ( int iPart = 0, nParts = testGeom->partCount(); iPart < nParts; ++iPart )
@@ -353,14 +367,34 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
     return false;
   }
 
+  QgsSpatialIndex neighbourIndex( QgsSpatialIndex::Flag::FlagStoreFeatureGeometries );
+  neighbourIndex.addFeatures( neighbours );
+
+  QgsPolyline snappedRing;
+  QgsVertexIterator iterator = errGeometry->vertices();
+  while ( iterator.hasNext() )
+  {
+    QgsPoint pt = iterator.next();
+    QgsVertexId id;
+    QgsGeometry closestGeom = neighbourIndex.geometry( neighbourIndex.nearestNeighbor( QgsPointXY( pt ) ).first() );
+    if ( !closestGeom.isEmpty() )
+    {
+      QgsPoint closestPoint = QgsGeometryUtils::closestVertex( *closestGeom.constGet(), pt, id );
+      snappedRing.append( closestPoint );
+    }
+  }
+
+  std::unique_ptr<QgsPolygon> snappedErrGeom = qgis::make_unique<QgsPolygon>();
+  snappedErrGeom->setExteriorRing( new QgsLineString( snappedRing ) );
+
   // Merge geometries
   QgsFeaturePool *featurePool = featurePools[ mergeLayerId ];
-  std::unique_ptr<QgsAbstractGeometry> errLayerGeom( errGeometry->clone() );
+  std::unique_ptr<QgsAbstractGeometry> errLayerGeom( snappedErrGeom->clone() );
   QgsCoordinateTransform ct( featurePool->crs(), mContext->mapCrs, mContext->transformContext );
   errLayerGeom->transform( ct, QgsCoordinateTransform::ReverseTransform );
   const QgsGeometry mergeFeatureGeom = mergeFeature.geometry();
   const QgsAbstractGeometry *mergeGeom = mergeFeatureGeom.constGet();
-  std::unique_ptr< QgsGeometryEngine > geomEngine = QgsGeometryCheckerUtils::createGeomEngine( errLayerGeom.get(), mContext->reducedTolerance );
+  std::unique_ptr< QgsGeometryEngine > geomEngine = QgsGeometryCheckerUtils::createGeomEngine( errLayerGeom.get(), 0 );
   std::unique_ptr<QgsAbstractGeometry> combinedGeom( geomEngine->combine( QgsGeometryCheckerUtils::getGeomPart( mergeGeom, mergePartIdx ), &errMsg ) );
   if ( !combinedGeom || combinedGeom->isEmpty() || !QgsWkbTypes::isSingleType( combinedGeom->wkbType() ) )
   {
