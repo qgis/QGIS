@@ -124,9 +124,9 @@ class CursorAdapter():
                 self._description.append([
                     f.name(),                         # name
                     str,                              # type_code
-                    10,                               # display_size
-                    10,                               # internal_size
-                    0,                                # precision
+                    f.length(),                       # display_size
+                    f.length(),                       # internal_size
+                    f.precision(),                    # precision
                     None,                             # scale
                     True                              # null_ok
                 ])
