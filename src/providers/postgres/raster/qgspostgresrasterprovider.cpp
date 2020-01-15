@@ -853,9 +853,12 @@ bool QgsPostgresRasterProvider::init()
           double nodataValue { noDataValues.at( i ).toDouble( &ok ) };
           if ( ! ok )
           {
-            QgsMessageLog::logMessage( tr( "Cannot convert nodata value '%1' to double" )
-                                       .arg( noDataValues.at( i ) ),
-                                       QStringLiteral( "PostGIS" ), Qgis::Info );
+            if ( noDataValues.at( i ) != QStringLiteral( "NULL" ) )
+            {
+              QgsMessageLog::logMessage( tr( "Cannot convert nodata value '%1' to double" )
+                                         .arg( noDataValues.at( i ) ),
+                                         QStringLiteral( "PostGIS" ), Qgis::Info );
+            }
             mSrcHasNoDataValue.append( false );
             mUseSrcNoDataValue.append( false );
             nodataValue = std::numeric_limits<double>::min();
