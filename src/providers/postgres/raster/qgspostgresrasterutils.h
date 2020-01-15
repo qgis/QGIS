@@ -22,8 +22,11 @@
 struct QgsPostgresRasterUtils
 {
 
-  //! Parses a WKB raster hex and returns information as a variant map
-  static QVariantMap parseWkb( const QByteArray &wkb, int bandNo = 1 );
+  /**
+   * Parses a \a wkb raster hex and returns information as a variant map
+   * for a particular \a bandNo or for all bands if bandNo is 0
+   */
+  static QVariantMap parseWkb( const QByteArray &wkb, int bandNo = 0 );
 
 };
 

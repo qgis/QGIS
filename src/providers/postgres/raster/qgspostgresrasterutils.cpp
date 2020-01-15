@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
+
 #include "qgspostgresrasterutils.h"
 #include "qgsmessagelog.h"
 
@@ -121,6 +122,7 @@ QVariantMap QgsPostgresRasterUtils::parseWkb( const QByteArray &wkb, int bandNo 
         pxSize = 8;
         break;
       default:
+        result[ QStringLiteral( "nodata" ) ] = std::numeric_limits<double>::min();
         QgsMessageLog::logMessage( QStringLiteral( "Unsupported pixel type: %1" )
                                    .arg( result[ QStringLiteral( "pxType" ) ].toInt() ), QStringLiteral( "PostGIS" ), Qgis::Critical );
 
@@ -137,19 +139,19 @@ QVariantMap QgsPostgresRasterUtils::parseWkb( const QByteArray &wkb, int bandNo 
     return result;
   }
 
-  // Read first band
-  readBandHeader( );
-  // Read other bands
-  for ( int i = 2; i <= bandNo; ++i )
+  // Read bands (all bands if bandNo is 0)
+  for ( unsigned int bandCnt = 1; bandCnt <= ( bandNo == 0 ? nBands : static_cast<unsigned int>( bandNo ) ); ++bandCnt )
   {
-    offset += result[ QStringLiteral( "dataSize" ) ].toInt();
     readBandHeader( );
+    if ( bandNo == 0 || static_cast<unsigned int>( bandNo ) == bandCnt )
+    {
+      result[ QStringLiteral( "band%1" ).arg( bandCnt )] = wkb.mid( offset, result[ QStringLiteral( "dataSize" ) ].toInt() );
+    }
+    else
+    {
+      // Skip
+    }
+    offset += result[ QStringLiteral( "dataSize" ) ].toInt();
   }
-
-  // Check we did the math good
-  Q_ASSERT( result[ QStringLiteral( "dataSize" ) ].toInt() == result[ QStringLiteral( "width" ) ].toInt() * result[ QStringLiteral( "height" ) ].toInt() * result[ QStringLiteral( "pxSize" ) ].toInt( ) );
-
-  result[ QStringLiteral( "data" )] = wkb.mid( offset, result[ QStringLiteral( "dataSize" ) ].toInt() );
-
   return result;
 }

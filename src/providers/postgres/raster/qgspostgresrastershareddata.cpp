@@ -261,5 +261,5 @@ QgsPostgresRasterSharedData::Tile::Tile( const QgsPostgresRasterSharedData::Tile
 
 QByteArray QgsPostgresRasterSharedData::Tile::bandData( int bandNo ) const
 {
-  return QgsPostgresRasterUtils::parseWkb( data, bandNo )[ QStringLiteral( "data" )].toByteArray();
+  return QgsPostgresRasterUtils::parseWkb( data, bandNo )[ QStringLiteral( "band%1" ).arg( bandNo )].toByteArray();
 }
