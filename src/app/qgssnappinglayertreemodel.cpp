@@ -111,17 +111,17 @@ void QgsSnappingLayerDelegate::setEditorData( QWidget *editor, const QModelIndex
 
   if ( index.column() == QgsSnappingLayerTreeModel::TypeColumn )
   {
-    QgsSnappingConfig::SnappingType type = static_cast<QgsSnappingConfig::SnappingType>( val.toInt() );
+    QgsSnappingConfig::SnappingTypeV2 type = static_cast<QgsSnappingConfig::SnappingTypeV2>( val.toInt() );
     QToolButton *tb = qobject_cast<QToolButton *>( editor );
     if ( tb )
     {
       QList<QAction *>actions = tb->menu()->actions();
 
-      actions.at( 0 )->setChecked( type & QgsSnappingConfig::Vertex );
-      actions.at( 1 )->setChecked( type & QgsSnappingConfig::Segment );
-      actions.at( 2 )->setChecked( type & QgsSnappingConfig::Area );
-      actions.at( 3 )->setChecked( type & QgsSnappingConfig::Centroid );
-      actions.at( 4 )->setChecked( type & QgsSnappingConfig::MiddleOfSegment );
+      actions.at( 0 )->setChecked( type & QgsSnappingConfig::SnappingTypeV2::VertexV2 );
+      actions.at( 1 )->setChecked( type & QgsSnappingConfig::SnappingTypeV2::SegmentV2 );
+      actions.at( 2 )->setChecked( type & QgsSnappingConfig::SnappingTypeV2::Area );
+      actions.at( 3 )->setChecked( type & QgsSnappingConfig::SnappingTypeV2::Centroid );
+      actions.at( 4 )->setChecked( type & QgsSnappingConfig::SnappingTypeV2::MiddleOfSegment );
     }
   }
   else if ( index.column() == QgsSnappingLayerTreeModel::ToleranceColumn )
@@ -151,18 +151,18 @@ void QgsSnappingLayerDelegate::setModelData( QWidget *editor, QAbstractItemModel
     if ( t )
     {
       QList<QAction *> actions = t->menu()->actions();
-      QgsSnappingConfig::SnappingType type = QgsSnappingConfig::NoSnap;
+      QgsSnappingConfig::SnappingTypeV2 type = QgsSnappingConfig::SnappingTypeV2::NoSnap;
       if ( actions.at( 0 )->isChecked() )
-        type = static_cast<QgsSnappingConfig::SnappingType>( type | QgsSnappingConfig::Vertex );
+        type = static_cast<QgsSnappingConfig::SnappingTypeV2>( type | QgsSnappingConfig::SnappingTypeV2::VertexV2 );
       if ( actions.at( 1 )->isChecked() )
-        type = static_cast<QgsSnappingConfig::SnappingType>( type | QgsSnappingConfig::Segment );
+        type = static_cast<QgsSnappingConfig::SnappingTypeV2>( type | QgsSnappingConfig::SnappingTypeV2::SegmentV2 );
       if ( actions.at( 2 )->isChecked() )
-        type = static_cast<QgsSnappingConfig::SnappingType>( type | QgsSnappingConfig::Area );
+        type = static_cast<QgsSnappingConfig::SnappingTypeV2>( type | QgsSnappingConfig::SnappingTypeV2::Area );
       if ( actions.at( 3 )->isChecked() )
-        type = static_cast<QgsSnappingConfig::SnappingType>( type | QgsSnappingConfig::Centroid );
+        type = static_cast<QgsSnappingConfig::SnappingTypeV2>( type | QgsSnappingConfig::SnappingTypeV2::Centroid );
       if ( actions.at( 4 )->isChecked() )
-        type = static_cast<QgsSnappingConfig::SnappingType>( type | QgsSnappingConfig::MiddleOfSegment );
-      model->setData( index, type, Qt::EditRole );
+        type = static_cast<QgsSnappingConfig::SnappingTypeV2>( type | QgsSnappingConfig::SnappingTypeV2::MiddleOfSegment );
+      model->setData( index, static_cast<int>( type ), Qt::EditRole );
     }
 
   }
@@ -494,7 +494,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
     {
       if ( role == Qt::DisplayRole )
       {
-        if ( ls.type() == QgsSnappingConfig::NoSnap )
+        if ( ls.typeV2() == QgsSnappingConfig::SnappingTypeV2::NoSnap )
         {
           return tr( "No snapping" );
         }
@@ -502,16 +502,16 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
         {
           QString modes;
           int activeTypes = 0;
-          std::map<QgsSnappingConfig::SnappingType, QString> types;
-          types.insert( { QgsSnappingConfig::Vertex, tr( "Vertex" ) } );
-          types.insert( { QgsSnappingConfig::Segment, tr( "Segment" ) } );
-          types.insert( { QgsSnappingConfig::Area, tr( "Area" ) } );
-          types.insert( { QgsSnappingConfig::Centroid, tr( "Centroid" ) } );
-          types.insert( { QgsSnappingConfig::MiddleOfSegment, tr( "Middle of Segments" ) } );
+          std::map<QgsSnappingConfig::SnappingTypeV2, QString> types;
+          types.insert( { QgsSnappingConfig::SnappingTypeV2::VertexV2, tr( "Vertex" ) } );
+          types.insert( { QgsSnappingConfig::SnappingTypeV2::SegmentV2, tr( "Segment" ) } );
+          types.insert( { QgsSnappingConfig::SnappingTypeV2::Area, tr( "Area" ) } );
+          types.insert( { QgsSnappingConfig::SnappingTypeV2::Centroid, tr( "Centroid" ) } );
+          types.insert( { QgsSnappingConfig::SnappingTypeV2::MiddleOfSegment, tr( "Middle of Segments" ) } );
 
           for ( auto it = types.cbegin(); it != types.cend(); ++it )
           {
-            if ( ls.type() & it->first )
+            if ( ls.typeV2() & it->first )
             {
               if ( activeTypes == 2 )
               {
@@ -530,7 +530,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
       }
 
       if ( role == Qt::UserRole )
-        return ls.type();
+        return static_cast<int>( ls.typeV2() );
     }
 
     // tolerance
@@ -645,7 +645,7 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVarian
       if ( !ls.valid() )
         return false;
 
-      ls.setType( static_cast<QgsSnappingConfig::SnappingType>( value.toInt() ) );
+      ls.setTypeV2( static_cast<QgsSnappingConfig::SnappingTypeV2>( value.toInt() ) );
       QgsSnappingConfig config = mProject->snappingConfig();
       config.setIndividualLayerSettings( vl, ls );
       mProject->setSnappingConfig( config );

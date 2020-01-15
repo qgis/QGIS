@@ -235,9 +235,9 @@ static void _updateBestMatch( QgsPointLocator::Match &bestMatch, const QgsPointX
 }
 
 
-static QgsPointLocator::Types _snappingTypeToPointLocatorType( QgsSnappingConfig::SnappingType type )
+static QgsPointLocator::Types _snappingTypeToPointLocatorType( QgsSnappingConfig::SnappingTypeV2 type )
 {
-  return QgsPointLocator::Types( type );
+  return QgsPointLocator::Types( static_cast<int>( type ) );
 }
 
 QgsPointLocator::Match QgsSnappingUtils::snapToMap( QPoint point, QgsPointLocator::MatchFilter *filter, bool relaxed )
@@ -260,12 +260,12 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
 
   if ( mSnappingConfig.mode() == QgsSnappingConfig::ActiveLayer )
   {
-    if ( !mCurrentLayer || mSnappingConfig.type() == QgsSnappingConfig::NoSnap )
+    if ( !mCurrentLayer || mSnappingConfig.typeV2() == QgsSnappingConfig::SnappingTypeV2::NoSnap )
       return QgsPointLocator::Match();
 
     // data from project
     double tolerance = QgsTolerance::toleranceInProjectUnits( mSnappingConfig.tolerance(), mCurrentLayer, mMapSettings, mSnappingConfig.units() );
-    QgsPointLocator::Types type = _snappingTypeToPointLocatorType( mSnappingConfig.type() );
+    QgsPointLocator::Types type = _snappingTypeToPointLocatorType( mSnappingConfig.typeV2() );
 
     prepareIndex( QList<LayerAndAreaOfInterest>() << qMakePair( mCurrentLayer, _areaOfInterest( pointMap, tolerance ) ), relaxed );
 
@@ -327,7 +327,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
   {
     // data from project
     double tolerance = QgsTolerance::toleranceInProjectUnits( mSnappingConfig.tolerance(), nullptr, mMapSettings, mSnappingConfig.units() );
-    QgsPointLocator::Types type = _snappingTypeToPointLocatorType( mSnappingConfig.type() );
+    QgsPointLocator::Types type = _snappingTypeToPointLocatorType( mSnappingConfig.typeV2() );
     QgsRectangle aoi = _areaOfInterest( pointMap, tolerance );
 
     QList<LayerAndAreaOfInterest> layers;
@@ -561,7 +561,7 @@ QString QgsSnappingUtils::dump()
       return msg;
     }
 
-    layers << LayerConfig( mCurrentLayer, _snappingTypeToPointLocatorType( mSnappingConfig.type() ), mSnappingConfig.tolerance(), mSnappingConfig.units() );
+    layers << LayerConfig( mCurrentLayer, _snappingTypeToPointLocatorType( mSnappingConfig.typeV2() ), mSnappingConfig.tolerance(), mSnappingConfig.units() );
   }
   else if ( mSnappingConfig.mode() == QgsSnappingConfig::AllLayers )
   {
@@ -569,7 +569,7 @@ QString QgsSnappingUtils::dump()
     for ( QgsMapLayer *layer : constLayers )
     {
       if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
-        layers << LayerConfig( vl, _snappingTypeToPointLocatorType( mSnappingConfig.type() ), mSnappingConfig.tolerance(), mSnappingConfig.units() );
+        layers << LayerConfig( vl, _snappingTypeToPointLocatorType( mSnappingConfig.typeV2() ), mSnappingConfig.tolerance(), mSnappingConfig.units() );
     }
   }
   else if ( mSnappingConfig.mode() == QgsSnappingConfig::AdvancedConfiguration )
@@ -639,7 +639,7 @@ void QgsSnappingUtils::onIndividualLayerSettingsChanged( const QHash<QgsVectorLa
   {
     if ( i->enabled() )
     {
-      mLayers.append( LayerConfig( i.key(), _snappingTypeToPointLocatorType( i->type() ), i->tolerance(), i->units() ) );
+      mLayers.append( LayerConfig( i.key(), _snappingTypeToPointLocatorType( static_cast<QgsSnappingConfig::SnappingTypeV2>( i->typeV2() ) ), i->tolerance(), i->units() ) );
     }
   }
 }

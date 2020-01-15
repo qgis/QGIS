@@ -35,13 +35,21 @@ This is a container for configuration of the snapping of the project
 
     enum SnappingType
     {
-      NoSnap,
       Vertex,
+      VertexAndSegment,
       Segment,
+    };
+
+    enum class SnappingTypeV2
+    {
+      NoSnap,
+      VertexV2,
+      SegmentV2,
       Area,
       Centroid,
       MiddleOfSegment,
     };
+
 
     class IndividualLayerSettings
 {
@@ -56,7 +64,7 @@ This is a container of advanced configuration (per layer) of the snapping of the
 %End
       public:
 
-        IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, QgsTolerance::UnitType units );
+ IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, QgsTolerance::UnitType units ) /Deprecated/;
 %Docstring
 IndividualLayerSettings
 
@@ -64,6 +72,21 @@ IndividualLayerSettings
 :param type:
 :param tolerance:
 :param units:
+
+.. deprecated:: QGIS 3.12
+   use the method with SnappingTypeV2 instead.
+%End
+
+        IndividualLayerSettings( bool enabled, SnappingTypeV2 type, double tolerance, QgsTolerance::UnitType units );
+%Docstring
+IndividualLayerSettings
+
+:param enabled:
+:param type:
+:param tolerance:
+:param units:
+
+.. versionadded:: 3.12
 %End
 
         IndividualLayerSettings();
@@ -86,11 +109,34 @@ Returns if snapping is enabled
 enables the snapping
 %End
 
-        QgsSnappingConfig::SnappingType type() const;
+        QgsSnappingConfig::SnappingTypeV2 typeV2() const;
+%Docstring
+Returns the flags type (vertices | segments | area | centroid | middle)
 
-        void setType( QgsSnappingConfig::SnappingType type );
+.. versionadded:: 3.12
+%End
+
+ QgsSnappingConfig::SnappingType type() const /Deprecated/;
+%Docstring
+Returns the flags type (vertices | segments | area | centroid | middle)
+
+.. deprecated:: QGIS 3.12
+   use typeV2 instead.
+%End
+
+ void setType( QgsSnappingConfig::SnappingType type ) /Deprecated/;
 %Docstring
 define the type of snapping
+
+.. deprecated:: QGIS 3.12
+   use setTypeV2 instead.
+%End
+
+        void setTypeV2( QgsSnappingConfig::SnappingTypeV2 type );
+%Docstring
+define the type of snapping
+
+.. versionadded:: 3.12
 %End
 
         double tolerance() const;
@@ -151,14 +197,34 @@ Returns the mode (all layers, active layer, per layer settings)
 define the mode of snapping
 %End
 
-    QgsSnappingConfig::SnappingType type() const;
+    QgsSnappingConfig::SnappingTypeV2 typeV2() const;
 %Docstring
 Returns the flags type (vertices | segments | area | centroid | middle)
+
+.. versionadded:: 3.12
 %End
 
-    void setType( QgsSnappingConfig::SnappingType type );
+ QgsSnappingConfig::SnappingType type() const /Deprecated/;
+%Docstring
+Returns the flags type (vertices | segments | area | centroid | middle)
+
+.. deprecated:: QGIS 3.12
+   use typeV2 instead.
+%End
+
+ void setType( QgsSnappingConfig::SnappingType type );
 %Docstring
 define the type of snapping
+
+.. deprecated:: QGIS 3.12
+   use setTypeV2 instead.
+%End
+
+    void setTypeV2( QgsSnappingConfig::SnappingTypeV2 type );
+%Docstring
+define the type of snapping
+
+.. versionadded:: 3.12
 %End
 
     double tolerance() const;
@@ -301,6 +367,8 @@ The project from which the snapped layers should be retrieved
 
 };
 
+const QgsSnappingConfig::SnappingTypeV2 operator| ( QgsSnappingConfig::SnappingTypeV2 t1, QgsSnappingConfig::SnappingTypeV2 t2 );
+const bool operator& ( QgsSnappingConfig::SnappingTypeV2 t1, QgsSnappingConfig::SnappingTypeV2 t2 );
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

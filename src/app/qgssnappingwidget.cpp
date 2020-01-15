@@ -365,27 +365,27 @@ void QgsSnappingWidget::projectSnapSettingsChanged()
   mCentroidAction->setChecked( false );
   mMiddleAction->setChecked( false );
 
-  if ( config.type() & QgsSnappingConfig::Vertex )
+  if ( config.typeV2() & QgsSnappingConfig::SnappingTypeV2::VertexV2 )
   {
     mTypeButton->setDefaultAction( mVertexAction );
     mVertexAction->setChecked( true );
   }
-  if ( config.type() & QgsSnappingConfig::Segment )
+  if ( config.typeV2() & QgsSnappingConfig::SnappingTypeV2::SegmentV2 )
   {
     mTypeButton->setDefaultAction( mSegmentAction );
     mSegmentAction->setChecked( true );
   }
-  if ( config.type() & QgsSnappingConfig::Area )
+  if ( config.typeV2() & QgsSnappingConfig::SnappingTypeV2::Area )
   {
     mTypeButton->setDefaultAction( mAreaAction );
     mAreaAction->setChecked( true );
   }
-  if ( config.type() & QgsSnappingConfig::Centroid )
+  if ( config.typeV2() & QgsSnappingConfig::SnappingTypeV2::Centroid )
   {
     mTypeButton->setDefaultAction( mCentroidAction );
     mCentroidAction->setChecked( true );
   }
-  if ( config.type() & QgsSnappingConfig::MiddleOfSegment )
+  if ( config.typeV2() & QgsSnappingConfig::SnappingTypeV2::MiddleOfSegment )
   {
     mTypeButton->setDefaultAction( mMiddleAction );
     mMiddleAction->setChecked( true );
@@ -502,30 +502,30 @@ void QgsSnappingWidget::modeButtonTriggered( QAction *action )
 
 void QgsSnappingWidget::typeButtonTriggered( QAction *action )
 {
-  unsigned int type = mConfig.type();
+  unsigned int type = static_cast<int>( mConfig.typeV2() );
 
   mTypeButton->setDefaultAction( action );
   if ( action == mVertexAction )
   {
-    type ^= QgsSnappingConfig::Vertex;
+    type ^= static_cast<int>( QgsSnappingConfig::SnappingTypeV2::VertexV2 );
   }
   else if ( action == mSegmentAction )
   {
-    type ^= QgsSnappingConfig::Segment;
+    type ^= static_cast<int>( QgsSnappingConfig::SnappingTypeV2::SegmentV2 );
   }
   else if ( action == mAreaAction )
   {
-    type ^= QgsSnappingConfig::Area;
+    type ^= static_cast<int>( QgsSnappingConfig::SnappingTypeV2::Area );
   }
   else if ( action == mCentroidAction )
   {
-    type ^= QgsSnappingConfig::Centroid;
+    type ^= static_cast<int>( QgsSnappingConfig::SnappingTypeV2::Centroid );
   }
   else if ( action == mMiddleAction )
   {
-    type ^= QgsSnappingConfig::MiddleOfSegment;
+    type ^= static_cast<int>( QgsSnappingConfig::SnappingTypeV2::MiddleOfSegment );
   }
-  mConfig.setType( static_cast<QgsSnappingConfig::SnappingType>( type ) );
+  mConfig.setTypeV2( static_cast<QgsSnappingConfig::SnappingTypeV2>( type ) );
   mProject->setSnappingConfig( mConfig );
 }
 
