@@ -518,13 +518,13 @@ void TestQgs3DRendering::testAnimationExport()
 
 void TestQgs3DRendering::testBillboardRendering()
 {
-  QgsRectangle fullExtent( 0, 0, 1000, 1000 );
+  QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
 
   std::unique_ptr<QgsVectorLayer> layerPointsZ( new QgsVectorLayer( "PointZ?crs=EPSG:27700", "points Z", "memory" ) );
 
-  QgsPoint *p1 = new QgsPoint( 0, 0, 50 );
-  QgsPoint *p2 = new QgsPoint( 0, 1000, 100 );
-  QgsPoint *p3 = new QgsPoint( 1000, 1000, 200 );
+  QgsPoint *p1 = new QgsPoint( 1000, 1000, 50 );
+  QgsPoint *p2 = new QgsPoint( 1000, 2000, 100 );
+  QgsPoint *p3 = new QgsPoint( 2000, 2000, 200 );
 
   QgsFeature f1( layerPointsZ->fields() );
   QgsFeature f2( layerPointsZ->fields() );
