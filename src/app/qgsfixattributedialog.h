@@ -27,13 +27,13 @@
 #include "qgis_gui.h"
 
 /**
- * \ingroup gui
+ * \ingroup app
  * \class QgsFixAttributeDialog
  * \brief Dialog to fix a list of invalid feature regarding constraints
  * \since QGIS 3.12
  */
 
-class GUI_EXPORT QgsFixAttributeDialog : public QDialog
+class APP_EXPORT QgsFixAttributeDialog : public QDialog
 {
     Q_OBJECT
 
