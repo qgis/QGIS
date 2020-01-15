@@ -40,7 +40,6 @@ class GUI_EXPORT QgsGpsMarker : public QgsMapCanvasItem
 
     /**
      * Sets the current GPS heading \a direction (in degrees). Rotates the marker accordingly.
-     * \since QGIS 3.12
      */
     void setDirection( double direction );
 
