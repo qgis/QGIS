@@ -751,6 +751,20 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     void zoomToSelected( QgsVectorLayer *layer = nullptr );
 
+    /**
+     * Set a list of resolutions (map units per pixel) to which to "snap to" when zooming the map
+     * \param resolutions A list of resolutions
+     * \since QGIS 3.12
+     */
+    void setZoomResolutions( const QList<double> &resolutions ) { mZoomResolutions = resolutions; }
+
+    /**
+     * \returns List of resolutions to which to "snap to" when zooming the map
+     * \see setZoomResolutions()
+     * \since QGIS 3.12
+     */
+    const QList<double> &zoomResolutions() const { return mZoomResolutions; }
+
   private slots:
     //! called when current maptool is destroyed
     void mapToolDestroyed();
@@ -1055,6 +1069,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QVector<QPointer<QgsCustomDropHandler >> mDropHandlers;
 
     QgsDistanceArea mDa;
+    QList<double> mZoomResolutions;
 
     /**
      * Returns the last cursor position on the canvas in geographical coordinates
@@ -1101,6 +1116,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * Returns TRUE if a pan operation is in progress
      */
     bool panOperationInProgress();
+
+    int nextZoomLevel( const QList<double> &resolutions, bool zoomIn = true ) const;
+    double zoomInFactor() const;
+    double zoomOutFactor() const;
 
     friend class TestQgsMapCanvas;
 
