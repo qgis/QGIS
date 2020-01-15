@@ -30,7 +30,7 @@ bool MDAL::DriverGdalGrib::parseBandInfo( const MDAL::GdalDataset *cfGDALDataset
     MDAL::RelativeTimestamp *time, bool *is_vector, bool *is_x
                                         )
 {
-  MDAL_UNUSED( cfGDALDataset );
+  MDAL_UNUSED( cfGDALDataset )
 
   metadata_hash::const_iterator iter;
 

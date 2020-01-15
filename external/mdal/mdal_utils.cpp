@@ -296,7 +296,16 @@ std::string MDAL::ltrim( const std::string &s, const std::string &delimiters )
   if ( s.empty() )
     return s;
 
-  return s.substr( s.find_first_not_of( delimiters ) );
+  size_t found = s.find_first_not_of( delimiters );
+
+  if ( found == std::string::npos )
+  {
+    return "";
+  }
+  else
+  {
+    return s.substr( found );
+  }
 }
 
 // http://www.cplusplus.com/faq/sequences/strings/trim/
@@ -305,7 +314,15 @@ std::string MDAL::rtrim( const std::string &s, const std::string &delimiters )
   if ( s.empty() )
     return s;
 
-  return s.substr( 0, s.find_last_not_of( delimiters ) + 1 );
+  size_t found = s.find_last_not_of( delimiters );
+  if ( found == std::string::npos )
+  {
+    return "";
+  }
+  else
+  {
+    return s.substr( 0, found + 1 );
+  }
 }
 
 MDAL::BBox MDAL::computeExtent( const MDAL::Vertices &vertices )
@@ -771,4 +788,13 @@ MDAL::DateTime MDAL::parseCFReferenceTime( const std::string &timeInformation, c
     return MDAL::DateTime();
 
   return MDAL::DateTime( year, month, day, hours, minutes, seconds, calendar );
+}
+
+bool MDAL::getHeaderLine( std::ifstream &stream, std::string &line )
+{
+  if ( !stream.is_open() ) return false;
+  char b[100] = "";
+  if ( ! stream.get( b, sizeof( b ) - 1, '\n' ) ) return false;
+  line = std::string( b );
+  return true;
 }
