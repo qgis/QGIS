@@ -59,6 +59,8 @@ void QgsGeometryCheck::fixError( const QMap<QString, QgsFeaturePool *> &featureP
 QList<QgsGeometryCheckResolutionMethod> QgsGeometryCheck::availableResolutionMethods() const
 {
   QList<QgsGeometryCheckResolutionMethod> fixes;
+  // Once the deprecated `resolutionMethods()` function is gone, this default implementation
+  // should be removed and each check will need to implement this method instead of resolutionMethods().
   Q_NOWARN_DEPRECATED_PUSH
   const QStringList methods = resolutionMethods();
   Q_NOWARN_DEPRECATED_POP

@@ -29,6 +29,9 @@ class ANALYSIS_EXPORT QgsGeometryCheckResolutionMethod
   public:
     QgsGeometryCheckResolutionMethod( int id, const QString &name, const QString &description, bool isStable = true );
 
+    /**
+     * An id that is unique per check. This will be used to trigger resolutions.
+     */
     int id() const;
 
     /**

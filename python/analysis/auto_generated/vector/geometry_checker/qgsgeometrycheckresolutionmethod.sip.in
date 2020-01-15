@@ -23,6 +23,9 @@ This class implements a resolution for problems detected in geometry checks.
     QgsGeometryCheckResolutionMethod( int id, const QString &name, const QString &description, bool isStable = true );
 
     int id() const;
+%Docstring
+An id that is unique per check. This will be used to trigger resolutions.
+%End
 
     bool isStable() const;
 %Docstring

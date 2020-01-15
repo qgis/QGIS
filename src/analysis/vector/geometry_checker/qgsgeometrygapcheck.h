@@ -95,9 +95,9 @@ class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
     {
       MergeLongestEdge, //!< Merge the gap with the polygon with the longest shared edge.
       NoChange, //!< Do not handle the error.
+      AddToAllowedGaps, //!< Add gap geometry to allowed gaps layer
       CreateNewFeature, //!< Create a new feature with the gap geometry
       MergeLargestArea, //!< Merge with neighbouring polygon with largest area
-      AddToAllowedGaps, //!< Add gap geometry to allowed gaps layer
     };
     Q_ENUM( ResolutionMethod )
 

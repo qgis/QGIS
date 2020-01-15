@@ -16,11 +16,11 @@
 #include "qgsgeometrycheckresolutionmethod.h"
 
 QgsGeometryCheckResolutionMethod::QgsGeometryCheckResolutionMethod( int id, const QString &name, const QString &description, bool isStable )
+  : mId( id )
+  , mIsStable( isStable )
+  , mName( name )
+  , mDescription( description )
 {
-  mId = id;
-  mName = name;
-  mDescription = description;
-  mIsStable = isStable;
 }
 
 int QgsGeometryCheckResolutionMethod::id() const
