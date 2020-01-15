@@ -24,7 +24,7 @@
 #include <QDialog>
 #include <QGridLayout>
 #include <QProgressBar>
-#include "qgis_gui.h"
+#include "qgis_app.h"
 
 /**
  * \ingroup app
