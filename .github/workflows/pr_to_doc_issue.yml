@@ -104,7 +104,7 @@ jobs:
 
       # write comment to ping the PR author
       - name: Create comment
-        if: cancelled() == false
+        if: github.event.pull_request.merged && contains( github.event.pull_request.labels.*.name, 'Needs Documentation')
         uses: peter-evans/create-or-update-comment@v1
         with:
           token: ${{ steps.token.outputs.token }}
