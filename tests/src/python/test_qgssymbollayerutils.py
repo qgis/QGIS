@@ -211,6 +211,21 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
         self.assertTrue(symbol2 is not None)
         self.assertEqual(symbol2.color().name(), symbol.color().name())
 
+    def testEncodeSldUom(self):
+        """
+        Test Encodes a SLD unit of measure string to a render unit
+        """
+
+        # millimeter
+        encode = None
+        encode = QgsSymbolLayerUtils.encodeSldUom(QgsUnitTypes.RenderMillimeters)
+        self.assertTupleEqual(encode, ('', 3.571428571428571))
+
+        # mapunits
+        encode = None
+        encode = QgsSymbolLayerUtils.encodeSldUom(QgsUnitTypes.RenderMapUnits)
+        self.assertTupleEqual(encode, ('http://www.opengeospatial.org/se/units/metre', 0.001))
+
     def testDecodeSldUom(self):
         """
         Test Decodes a SLD unit of measure string to a render unit
