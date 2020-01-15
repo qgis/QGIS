@@ -48,7 +48,8 @@ QString QgsRectanglesOvalsDiamondsAlgorithm::groupId() const
 QString QgsRectanglesOvalsDiamondsAlgorithm::shortHelpString() const
 {
   return QObject::tr( "Creates rectangle, oval or diamond-shaped polygons from the input point layer using "
-                      "specified width, height and (optional) rotation values." );
+                      "specified width, height and (optional) rotation values. Multipart inputs should be promoted"
+                      "to singleparts first." );
 }
 
 QString QgsRectanglesOvalsDiamondsAlgorithm::outputName() const
@@ -140,6 +141,12 @@ QgsFeatureList QgsRectanglesOvalsDiamondsAlgorithm::processFeature( const QgsFea
   QgsFeature outFeature = feature;
   if ( outFeature.hasGeometry() )
   {
+    QgsGeometry geometry = outFeature.geometry();
+    if ( geometry.isMultipart() )
+    {
+      throw QgsProcessingException( QObject::tr( "Multipart geometry. Please promote input layer to singleparts first." ) );
+    }
+
     double width = mWidth;
     if ( mDynamicWidth )
       width = mWidthProperty.valueAsDouble( context.expressionContext(), width );
