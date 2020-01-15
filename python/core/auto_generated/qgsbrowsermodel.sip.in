@@ -55,6 +55,7 @@ Constructor for QgsBrowserModel, with the specified ``parent`` object.
       PathRole,
       CommentRole,
       SortRole,
+      ProviderKeyRole,
     };
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
@@ -161,7 +162,6 @@ and on Linux the "/" root directory.
 
 .. versionadded:: 3.6
 %End
-
   signals:
 
     void stateChanged( const QModelIndex &index, QgsDataItem::State oldState );
@@ -231,7 +231,6 @@ Delayed initialization, needed because the provider registry must be already pop
 
 .. seealso:: :py:func:`initialized`
 %End
-
 
   protected:
     void addRootItems();
