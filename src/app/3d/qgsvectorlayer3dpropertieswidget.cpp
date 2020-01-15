@@ -22,6 +22,8 @@ QgsVectorLayer3DPropertiesWidget::QgsVectorLayer3DPropertiesWidget( QWidget *par
 {
   setupUi( this );
 
+  groupLayerRendering->setCollapsed( true );
+
   connect( chkShowBoundingBoxes, &QCheckBox::clicked, this, &QgsVectorLayer3DPropertiesWidget::changed );
   connect( spinZoomLevelsCount, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, &QgsVectorLayer3DPropertiesWidget::changed );
 }
