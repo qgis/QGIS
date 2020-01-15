@@ -105,7 +105,7 @@ QgsPostgresRasterProvider::QgsPostgresRasterProvider( const QString &uri, const 
   }
 
   // Check if requested srid and detected srid match
-  if ( ! mDetectedSrid.isEmpty() && mRequestedSrid != mDetectedSrid )
+  if ( ! mDetectedSrid.isEmpty() && ! mRequestedSrid.isEmpty() && mRequestedSrid != mDetectedSrid )
   {
     QgsMessageLog::logMessage( tr( "Requested SRID (%1) and detected SRID (%2) differ" )
                                .arg( mRequestedSrid )
