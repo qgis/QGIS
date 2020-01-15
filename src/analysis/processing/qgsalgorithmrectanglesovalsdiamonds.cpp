@@ -17,6 +17,8 @@
 
 #include "qgsalgorithmrectanglesovalsdiamonds.h"
 #include "qgsapplication.h"
+#include "qgslinestring.h"
+#include "qgspolygon.h"
 
 ///@cond PRIVATE
 
@@ -167,47 +169,61 @@ QgsFeatureList QgsRectanglesOvalsDiamondsAlgorithm::processFeature( const QgsFea
     double phi = rotation * M_PI / 180;
     double xOffset = width / 2.0;
     double yOffset = height / 2.0;
-    QgsPointXY point = outFeature.geometry().asPoint();
+    QgsPointXY point = geometry.asPoint();
     double x = point.x();
     double y = point.y();
 
-    QgsPolylineXY ring;
+    QVector< double > ringX( 5 );
+    QVector< double > ringY( 5 );
+
     switch ( mShape )
     {
       case 0:
         // rectangle
-        ring << QgsPointXY( -xOffset, -yOffset )
-             << QgsPointXY( -xOffset, yOffset )
-             << QgsPointXY( xOffset, yOffset )
-             << QgsPointXY( xOffset, -yOffset );
+        ringX = { -xOffset, -xOffset, xOffset, xOffset, -xOffset };
+        ringY = { -yOffset, yOffset, yOffset, -yOffset, -yOffset };
         break;
       case 1:
         // diamond
-        ring << QgsPointXY( 0.0, -yOffset )
-             << QgsPointXY( -xOffset, 0.0 )
-             << QgsPointXY( 0.0, yOffset )
-             << QgsPointXY( xOffset, 0.0 );
+        ringX = { 0.0, -xOffset, 0.0, xOffset, 0.0 };
+        ringY = { -yOffset, 0.0, yOffset, 0.0, -yOffset };
         break;
       case 2:
         // oval
+        ringX.resize( mSegments + 1 );
+        ringY.resize( mSegments + 1 );
         for ( int i = 0; i < mSegments; i ++ )
         {
           double t = ( 2 * M_PI ) / mSegments * i;
-          ring << QgsPointXY( xOffset * cos( t ), yOffset * sin( t ) );
+          ringX[ i ] = xOffset * cos( t );
+          ringY[ i ] = yOffset * sin( t );
         }
+        ringX[ mSegments ] = ringX.at( 0 );
+        ringY[ mSegments ] = ringY.at( 0 );
         break;
     }
 
-    for ( int i = 0; i < ring.size(); ++i )
+    for ( int i = 0; i < ringX.size(); ++i )
     {
-      QgsPointXY p = ring[ i ];
-      double px = p.x();
-      double py = p.y();
-      ring[ i ] = QgsPointXY( px * cos( phi ) + py * sin( phi ) + x,
-                              -px * sin( phi ) + py * cos( phi ) + y );
+      double px = ringX.at( i );
+      double py = ringY.at( i );
+      ringX[ i ] = px * cos( phi ) + py * sin( phi ) + x;
+      ringY[ i ] = -px * sin( phi ) + py * cos( phi ) + y;
     }
 
-    outFeature.setGeometry( QgsGeometry::fromPolygonXY( QgsPolygonXY() << ring ) );
+    std::unique_ptr< QgsPolygon > poly = qgis::make_unique< QgsPolygon >();
+    poly->setExteriorRing( new QgsLineString( ringX, ringY ) );
+
+    if ( geometry.constGet()->is3D() )
+    {
+      poly->addZValue( 0 );
+    }
+    if ( geometry.constGet()->isMeasure() )
+    {
+      poly->addMValue( 0 );
+    }
+
+    outFeature.setGeometry( std::move( poly ) );
   }
 
   return QgsFeatureList() << outFeature;
