@@ -156,9 +156,9 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     /**
      * Emitted when the context menu is created to add the specific actions to it
      * \param menu is the already created context menu
-     * \param featureId is the ID of the current feature
+     * \param atIndex is the position of the current feature in the model
      */
-    void willShowContextMenu( QgsActionMenu *menu, const QgsFeatureId featureId );
+    void willShowContextMenu( QgsActionMenu *menu, const QModelIndex &atIndex );
 
   public slots:
 
