@@ -657,19 +657,14 @@ void QgsDualView::hideEvent( QHideEvent *event )
   saveRecentDisplayExpressions();
 }
 
-void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QgsFeatureId featureId )
+void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atIndex )
 {
   if ( !menu )
   {
     return;
   }
 
-  QModelIndex sourceIndex = mFilterModel->fidToIndex( featureId );
-
-  if ( ! sourceIndex.isValid() )
-  {
-    return;
-  }
+  QModelIndex sourceIndex = mFilterModel->mapToSource( atIndex );
 
   QAction *copyContentAction = new QAction( tr( "Copy Cell Content" ), this );
   copyContentAction->setData( QVariant::fromValue<QModelIndex>( sourceIndex ) );
@@ -705,7 +700,11 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QgsFeatureId featu
       menu->addAction( action.name(), a, &QgsAttributeTableAction::execute );
     }
   }
-
+  QModelIndex rowSourceIndex = mFilterModel->fidToIndex( mFilterModel->rowToId( atIndex ) );
+  if ( ! rowSourceIndex.isValid() )
+  {
+    return;
+  }
   //add actions from QgsMapLayerActionRegistry to context menu
   QList<QgsMapLayerAction *> registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer );
   if ( !registeredActions.isEmpty() )
@@ -716,20 +715,20 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QgsFeatureId featu
     const auto constRegisteredActions = registeredActions;
     for ( QgsMapLayerAction *action : constRegisteredActions )
     {
-      QgsAttributeTableMapLayerAction *a = new QgsAttributeTableMapLayerAction( action->text(), this, action, sourceIndex );
+      QgsAttributeTableMapLayerAction *a = new QgsAttributeTableMapLayerAction( action->text(), this, action, rowSourceIndex );
       menu->addAction( action->text(), a, &QgsAttributeTableMapLayerAction::execute );
     }
   }
 
   menu->addSeparator();
-  QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open Form" ), this, QString(), sourceIndex );
+  QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open Form" ), this, QString(), rowSourceIndex );
   menu->addAction( tr( "Open Form" ), a, &QgsAttributeTableAction::featureForm );
 }
 
 
-void QgsDualView::widgetWillShowContextMenu( QgsActionMenu *menu, const QgsFeatureId featureId )
+void QgsDualView::widgetWillShowContextMenu( QgsActionMenu *menu, const QModelIndex &atIndex )
 {
-  emit showContextMenuExternally( menu, featureId );
+  emit showContextMenuExternally( menu, mFilterModel->rowToId( atIndex ) );
 }
 
 

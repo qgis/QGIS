@@ -144,9 +144,10 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      * Emitted in order to provide a hook to add additional* menu entries to the context menu.
      *
      * \param menu     If additional QMenuItems are added, they will show up in the context menu.
-     * \param  featureId The ID of the current feature
+     * \param atIndex  The QModelIndex, to which the context menu belongs. Relative to the source model.
+     *                 In most cases, this will be a QgsAttributeTableFilterModel
      */
-    void willShowContextMenu( QMenu *menu, const QgsFeatureId featureId );
+    void willShowContextMenu( QMenu *menu, const QModelIndex &atIndex );
 
     /**
      * Emitted when a column in the view has been resized.

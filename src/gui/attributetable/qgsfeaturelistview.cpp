@@ -325,7 +325,11 @@ void QgsFeatureListView::contextMenuEvent( QContextMenuEvent *event )
 
     QgsActionMenu *menu = new QgsActionMenu( mModel->layerCache()->layer(), feature, QStringLiteral( "Feature" ), this );
 
-    emit willShowContextMenu( menu, feature.id() );
+    // Index is from feature list model, but we need an index from the
+    // filter model to be passed to listeners, using fid instead would
+    // have been much better in term of bugs (and headaches) but this
+    // belongs to the API unfortunately.
+    emit willShowContextMenu( menu, mModel->mapToSource( index ) );
 
     menu->exec( event->globalPos() );
   }
