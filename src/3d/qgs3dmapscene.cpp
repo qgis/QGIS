@@ -222,6 +222,11 @@ float Qgs3DMapScene::worldSpaceError( float epsilon, float distance )
   return err;
 }
 
+void Qgs3DMapScene::setViewport( const QRect &viewportrect )
+{
+  cameraController()->setViewport( viewportrect );
+}
+
 QgsChunkedEntity::SceneState _sceneState( QgsCameraController *cameraController )
 {
   Qt3DRender::QCamera *camera = cameraController->camera();
