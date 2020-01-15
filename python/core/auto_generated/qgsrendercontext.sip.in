@@ -109,6 +109,7 @@ Returns the destination QPainter for the render operation.
 .. seealso:: :py:func:`setPainter`
 %End
 
+
     QPainter *maskPainter( int id = 0 );
 %Docstring
 Returns a mask QPainter for the render operation.
