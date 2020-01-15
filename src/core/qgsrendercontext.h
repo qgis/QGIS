@@ -723,6 +723,31 @@ class CORE_EXPORT QgsRenderContext
      */
     bool isGuiPreview() const { return mIsGuiPreview; }
 
+    /**
+     * Gets custom rendering flags. Layers might honour these to alter their rendering.
+     * \returns a map of custom flags
+     * \see setCustomRenderingFlag()
+     * \since QGIS 3.12
+     */
+    QVariantMap customRenderingFlags() const { return mCustomRenderingFlags; }
+
+    /**
+     * Sets a custom rendering flag. Layers might honour these to alter their rendering.
+     * \param flag the flag name
+     * \param value the flag value
+     * \see customRenderingFlags()
+     * \since QGIS 3.12
+     */
+    void setCustomRenderingFlag( const QString &flag, const QVariant &value ) { mCustomRenderingFlags[flag] = value; }
+
+    /**
+     * Clears the specified custom rendering flag.
+     * \param flag the flag name
+     * \see setCustomRenderingFlag()
+     * \since QGIS 3.12
+     */
+    void clearCustomRenderingFlag( const QString &flag ) { mCustomRenderingFlags.remove( flag ); }
+
   private:
 
     Flags mFlags;
@@ -810,6 +835,7 @@ class CORE_EXPORT QgsRenderContext
     TextRenderFormat mTextRenderFormat = TextFormatAlwaysOutlines;
     QList< QgsRenderedFeatureHandlerInterface * > mRenderedFeatureHandlers;
     bool mHasRenderedFeatureHandlers = false;
+    QVariantMap mCustomRenderingFlags;
 
     QSet<const QgsSymbolLayer *> mDisabledSymbolLayers;
 

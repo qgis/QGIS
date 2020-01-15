@@ -62,6 +62,7 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mTextRenderFormat( rh.mTextRenderFormat )
   , mRenderedFeatureHandlers( rh.mRenderedFeatureHandlers )
   , mHasRenderedFeatureHandlers( rh.mHasRenderedFeatureHandlers )
+  , mCustomRenderingFlags( rh.mCustomRenderingFlags )
 #ifdef QGISDEBUG
   , mHasTransformContext( rh.mHasTransformContext )
 #endif
@@ -94,6 +95,7 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mTextRenderFormat = rh.mTextRenderFormat;
   mRenderedFeatureHandlers = rh.mRenderedFeatureHandlers;
   mHasRenderedFeatureHandlers = rh.mHasRenderedFeatureHandlers;
+  mCustomRenderingFlags = rh.mCustomRenderingFlags;
 #ifdef QGISDEBUG
   mHasTransformContext = rh.mHasTransformContext;
 #endif
@@ -197,6 +199,7 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   //this flag is only for stopping during the current rendering progress,
   //so must be false at every new render operation
   ctx.setRenderingStopped( false );
+  ctx.mCustomRenderingFlags = mapSettings.customRenderingFlags();
 
   return ctx;
 }

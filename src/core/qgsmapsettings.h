@@ -217,19 +217,46 @@ class CORE_EXPORT QgsMapSettings
 
     /**
      * Gets custom rendering flags. Layers might honour these to alter their rendering.
-     *  \returns custom flags strings, separated by ';'
+     * \returns custom flags strings, separated by ';'
      * \see setCustomRenderFlags()
      * \since QGIS 2.16
+     * \deprecated use \see customRenderingFlags().
      */
-    QString customRenderFlags() const { return mCustomRenderFlags; }
+    Q_DECL_DEPRECATED QString customRenderFlags() const { return mCustomRenderFlags; }
 
     /**
      * Sets the custom rendering flags. Layers might honour these to alter their rendering.
      * \param customRenderFlags custom flags strings, separated by ';'
      * \see customRenderFlags()
      * \since QGIS 2.16
+     * \deprecated use \see setCustomRenderingFlag() instead.
      */
-    void setCustomRenderFlags( const QString &customRenderFlags ) { mCustomRenderFlags = customRenderFlags; }
+    Q_DECL_DEPRECATED void setCustomRenderFlags( const QString &customRenderFlags ) { mCustomRenderFlags = customRenderFlags; }
+
+    /**
+     * Gets custom rendering flags. Layers might honour these to alter their rendering.
+     * \returns a map of custom flags
+     * \see setCustomRenderingFlag()
+     * \since QGIS 3.12
+     */
+    QVariantMap customRenderingFlags() const { return mCustomRenderingFlags; }
+
+    /**
+     * Sets a custom rendering flag. Layers might honour these to alter their rendering.
+     * \param flag the flag name
+     * \param value the flag value
+     * \see customRenderingFlags()
+     * \since QGIS 3.12
+     */
+    void setCustomRenderingFlag( const QString &flag, const QVariant &value ) { mCustomRenderingFlags[flag] = value; }
+
+    /**
+     * Clears the specified custom rendering flag.
+     * \param flag the flag name
+     * \see setCustomRenderingFlag()
+     * \since QGIS 3.12
+     */
+    void clearCustomRenderingFlag( const QString &flag ) { mCustomRenderingFlags.remove( flag ); }
 
     //! sets destination coordinate reference system
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
@@ -615,6 +642,7 @@ class CORE_EXPORT QgsMapSettings
     QgsWeakMapLayerPointerList mLayers;
     QMap<QString, QString> mLayerStyleOverrides;
     QString mCustomRenderFlags;
+    QVariantMap mCustomRenderingFlags;
     QgsExpressionContext mExpressionContext;
 
     QgsCoordinateReferenceSystem mDestCRS;
