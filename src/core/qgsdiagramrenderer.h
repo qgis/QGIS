@@ -32,7 +32,7 @@
 #include "qgspropertycollection.h"
 #include "qgsdatadefinedsizelegend.h"
 
-#include "diagram/qgsdiagram.h"
+#include "qgsdiagram.h"
 #include "qgsreadwritecontext.h"
 
 class QgsDiagramRenderer;

@@ -1336,14 +1336,17 @@ INCLUDE_DIRECTORIES(
   3d
   annotations
   auth
+  callouts
   classification
+  diagram
   dxf
   effects
-  ${CMAKE_SOURCE_DIR}/src/core/expression
+  expression
   fieldformatter
   geometry
   geocms
   geocms/geonode
+  gps
   labeling
   layertree
   layout
@@ -1361,6 +1364,7 @@ INCLUDE_DIRECTORIES(
   raster
   renderer
   scalebar
+  simplify
   symbology
   mesh
   validity

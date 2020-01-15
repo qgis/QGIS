@@ -160,7 +160,7 @@ class QgsBearingNumericFormat;
 #include "qgsattributetablefiltermodel.h"
 #include "qgsmasterlayoutinterface.h"
 #include "qgsmaptoolselect.h"
-#include "ogr/qgsvectorlayersaveasdialog.h"
+#include "qgsvectorlayersaveasdialog.h"
 #include "ui_qgisapp.h"
 #include "qgis_app.h"
 #include "qgsvectorlayerref.h"

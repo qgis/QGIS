@@ -26,9 +26,9 @@
 #include "qgsmaplayerstylemanager.h"
 #include "qgsvectorlayerjoininfo.h"
 #include "qgsvectorlayerserverproperties.h"
-#include "layertree/qgslayertree.h"
-#include "layertree/qgslayertreemodel.h"
-#include "layertree/qgslayertreegroup.h"
+#include "qgslayertree.h"
+#include "qgslayertreemodel.h"
+#include "qgslayertreegroup.h"
 #include "qgis_app.h"
 
 class QgsMapLayer;
