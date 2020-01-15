@@ -100,6 +100,7 @@ class TestQgsProcessingAlgs: public QObject
     void layerToBookmarks();
 
     void repairShapefile();
+    void renameField();
 
   private:
 
@@ -1034,7 +1035,7 @@ void TestQgsProcessingAlgs::lineDensity()
       {
         double expectedValue = expectedRasterBlock->value( row, column );
         double outputValue = outputRasterBlock->value( row, column );
-        QCOMPARE( outputValue, expectedValue );
+        QGSCOMPARENEAR( outputValue, expectedValue, 0.00000000001 );
       }
     }
   }
@@ -1819,6 +1820,47 @@ void TestQgsProcessingAlgs::repairShapefile()
 
   layer = qgis::make_unique< QgsVectorLayer >( tmpPath.filePath( QStringLiteral( "points.shp" ) ) );
   QVERIFY( layer->isValid() );
+}
+
+void TestQgsProcessingAlgs::renameField()
+{
+  QgsProject p;
+  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+  QVERIFY( layer->isValid() );
+  p.addMapLayer( layer );
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:renametablefield" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layer ) );
+  parameters.insert( QStringLiteral( "FIELD" ), QStringLiteral( "doesntexist" ) );
+  parameters.insert( QStringLiteral( "NEW_NAME" ), QStringLiteral( "newname" ) );
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  // field doesn't exist
+  QVERIFY( !ok );
+
+  parameters.insert( QStringLiteral( "FIELD" ), QStringLiteral( "col1" ) );
+  parameters.insert( QStringLiteral( "NEW_NAME" ), QStringLiteral( "pk" ) );
+
+  ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  // already a field with this name
+  QVERIFY( !ok );
+
+  parameters.insert( QStringLiteral( "NEW_NAME" ), QStringLiteral( "newname" ) );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) )->fields().at( 1 ).name(), QStringLiteral( "newname" ) );
+
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgs )
