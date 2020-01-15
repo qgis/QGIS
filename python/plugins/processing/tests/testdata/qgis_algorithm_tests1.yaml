@@ -637,7 +637,7 @@ tests:
             intval: skip
             floatval: skip
 
-  - algorithm: qgis:rectanglesovalsdiamondsfixed
+  - algorithm: native:rectanglesovalsdiamonds
     name: Create fixed distance rectangle buffers around points
     params:
       HEIGHT: 0.25
@@ -655,22 +655,6 @@ tests:
         compare:
           geometry:
             precision: 7
-
-  - algorithm: qgis:rectanglesovalsdiamondsvariable
-    name: Rectangles ovals diamonds variable
-    params:
-      HEIGHT: id
-      INPUT:
-        name: points.gml
-        type: vector
-      ROTATION: id2
-      SEGMENTS: 1
-      SHAPE: 0
-      WIDTH: id
-    results:
-      OUTPUT:
-        name: expected/rectanglesovalsdiamondsvariable.gml
-        type: vector
 
   - algorithm: native:mergelines
     name: Merge lines algorithm
