@@ -25,7 +25,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgswkbptr.h"
 
 #ifndef SIP_RUN
-#include <json_fwd.hpp>
+#include "json_fwd.hpp"
 using namespace nlohmann;
 #endif
 
