@@ -121,6 +121,7 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, private Ui::Qgs
 
     QgsCoordinateReferenceSystem mWgs84CRS;
     QgsCoordinateTransform mCanvasToWgs84Transform;
+    QgsDistanceArea mDistanceCalculator;
 
 // not used    QPointF gpsToPixelPosition( const QgsPoint& point );
     QgsRubberBand *mRubberBand = nullptr;

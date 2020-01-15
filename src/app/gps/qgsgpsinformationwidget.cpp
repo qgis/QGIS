@@ -95,6 +95,8 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   connect( mBtnLogFile, &QPushButton::clicked, this, &QgsGpsInformationWidget::mBtnLogFile_clicked );
   connect( mMapCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsGpsInformationWidget::cursorCoordinateChanged );
 
+  mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
+
   mBearingNumericFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
   connect( QgsProject::instance()->displaySettings(), &QgsProjectDisplaySettings::bearingFormatChanged, this, [ = ]
   {
@@ -110,6 +112,12 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   connect( QgsProject::instance(), &QgsProject::transformContextChanged, this, [ = ]
   {
     mCanvasToWgs84Transform = QgsCoordinateTransform( mMapCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
+  } );
+  mDistanceCalculator.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  mDistanceCalculator.setSourceCrs( mWgs84CRS, QgsProject::instance()->transformContext() );
+  connect( QgsProject::instance(), &QgsProject::ellipsoidChanged, this, [ = ]
+  {
+    mDistanceCalculator.setEllipsoid( QgsProject::instance()->ellipsoid() );
   } );
 
   mLastGpsPosition = QgsPointXY( 0.0, 0.0 );
@@ -305,8 +313,6 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   mRotateMapCheckBox->setChecked( mySettings.value( QStringLiteral( "gps/rotateMap" ), false ).toBool() );
   mSpinMapRotateInterval->setValue( mySettings.value( QStringLiteral( "gps/rotateMapInterval" ), 0 ).toInt() );
   mShowBearingLineCheck->setChecked( mySettings.value( QStringLiteral( "gps/showBearingLine" ), false ).toBool() );
-
-  mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
 
   mBtnDebug->setVisible( mySettings.value( QStringLiteral( "gps/showDebug" ), "false" ).toBool() );  // use a registry setting to control - power users/devs could set it
 
@@ -1505,13 +1511,9 @@ void QgsGpsInformationWidget::updateGpsDistanceStatusMessage()
   if ( !mNmea )
     return;
 
-  QgsDistanceArea da;
-  da.setEllipsoid( QgsProject::instance()->ellipsoid() );
-  da.setSourceCrs( mWgs84CRS, QgsProject::instance()->transformContext() );
-
-  const double distance = da.convertLengthMeasurement( da.measureLine( QVector< QgsPointXY >() << mLastCursorPosWgs84 << mLastGpsPosition ),
+  const double distance = mDistanceCalculator.convertLengthMeasurement( mDistanceCalculator.measureLine( QVector< QgsPointXY >() << mLastCursorPosWgs84 << mLastGpsPosition ),
                           QgsProject::instance()->distanceUnits() );
-  const double bearing = 180 * da.bearing( mLastCursorPosWgs84, mLastGpsPosition ) / M_PI;
+  const double bearing = 180 * mDistanceCalculator.bearing( mLastCursorPosWgs84, mLastGpsPosition ) / M_PI;
   const int distanceDecimalPlaces = QgsSettings().value( QStringLiteral( "qgis/measure/decimalplaces" ), "3" ).toInt();
   const QString distanceString = QgsDistanceArea::formatDistance( distance, distanceDecimalPlaces, QgsProject::instance()->distanceUnits() );
   const QString bearingString = mBearingNumericFormat->formatDouble( bearing, QgsNumericFormatContext() );
