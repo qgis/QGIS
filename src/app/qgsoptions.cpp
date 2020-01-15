@@ -1035,13 +1035,13 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   //default snap mode
   mSnappingEnabledDefault->setChecked( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ),  false ).toBool() );
-  mDefaultSnapModeComboBox->addItem( tr( "No Snapping" ), static_cast<int>( QgsSnappingConfig::SnappingTypeV2::NoSnap ) );
-  mDefaultSnapModeComboBox->addItem( tr( "Vertex" ), static_cast<int>( QgsSnappingConfig::SnappingTypeV2::VertexV2 ) );
-  mDefaultSnapModeComboBox->addItem( tr( "Segment" ), static_cast<int>( QgsSnappingConfig::SnappingTypeV2::SegmentV2 ) );
-  mDefaultSnapModeComboBox->addItem( tr( "Centroid" ), static_cast<int>( QgsSnappingConfig::SnappingTypeV2::Centroid ) );
-  mDefaultSnapModeComboBox->addItem( tr( "Middle of Segments" ), static_cast<int>( QgsSnappingConfig::SnappingTypeV2::MiddleOfSegment ) );
-  mDefaultSnapModeComboBox->addItem( tr( "Area" ), static_cast<int>( QgsSnappingConfig::SnappingTypeV2::Area ) );
-  QgsSnappingConfig::SnappingTypeV2 defaultSnapMode = static_cast<QgsSnappingConfig::SnappingTypeV2>( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snap_type" ), static_cast<int>( QgsSnappingConfig::SnappingTypeV2::NoSnap ) ).toInt() );
+  mDefaultSnapModeComboBox->addItem( tr( "No Snapping" ), static_cast<int>( QgsSnappingConfig::NoSnap ) );
+  mDefaultSnapModeComboBox->addItem( tr( "Vertex" ), static_cast<int>( QgsSnappingConfig::VertexV2 ) );
+  mDefaultSnapModeComboBox->addItem( tr( "Segment" ), static_cast<int>( QgsSnappingConfig::SegmentV2 ) );
+  mDefaultSnapModeComboBox->addItem( tr( "Centroid" ), static_cast<int>( QgsSnappingConfig::Centroid ) );
+  mDefaultSnapModeComboBox->addItem( tr( "Middle of Segments" ), static_cast<int>( QgsSnappingConfig::MiddleOfSegment ) );
+  mDefaultSnapModeComboBox->addItem( tr( "Area" ), static_cast<int>( QgsSnappingConfig::Area ) );
+  QgsSnappingConfig::SnappingTypeFlag defaultSnapMode = static_cast<QgsSnappingConfig::SnappingTypeFlag>( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snap_type" ), static_cast<int>( QgsSnappingConfig::NoSnap ) ).toInt() );
   mDefaultSnapModeComboBox->setCurrentIndex( mDefaultSnapModeComboBox->findData( static_cast<int>( defaultSnapMode ) ) );
   mDefaultSnappingToleranceSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), Qgis::DEFAULT_SNAP_TOLERANCE ).toDouble() );
   mSearchRadiusVertexEditSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit" ), 10 ).toDouble() );

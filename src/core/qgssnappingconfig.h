@@ -17,7 +17,6 @@
 #define QGSPROJECTSNAPPINGSETTINGS_H
 
 #include <QHash>
-
 #include "qgis_core.h"
 #include "qgstolerance.h"
 
@@ -52,7 +51,7 @@ class CORE_EXPORT QgsSnappingConfig
 
     /**
      * SnappingType defines on what object the snapping is performed
-     * \deprecated since QGIS 3.12 use SnappingTypeV2 instead.
+     * \deprecated since QGIS 3.12 use SnappingTypeFlag instead.
      */
     enum Q_DECL_DEPRECATED SnappingType
     {
@@ -62,10 +61,10 @@ class CORE_EXPORT QgsSnappingConfig
     };
 
     /**
-     * SnappingTypeV2 defines on what object the snapping is performed
+     * SnappingTypeFlag defines on what object the snapping is performed
      * \since QGIS 3.12
      */
-    enum class SnappingTypeV2 : int
+    enum SnappingTypes : int
     {
       NoSnap = 0, //!< No snapping
       VertexV2 = 1, //!< On vertices
@@ -74,8 +73,9 @@ class CORE_EXPORT QgsSnappingConfig
       Centroid = 8, //!< On centroid
       MiddleOfSegment = 16, //!< On Middle segment
     };
-
-    Q_ENUM( SnappingTypeV2 )
+    Q_ENUM( SnappingTypes )
+    Q_DECLARE_FLAGS( SnappingTypeFlag, SnappingTypes )
+    Q_FLAG( SnappingTypeFlag )
 
     /**
      * \ingroup core
@@ -92,7 +92,7 @@ class CORE_EXPORT QgsSnappingConfig
          * \param type
          * \param tolerance
          * \param units
-         * \deprecated since QGIS 3.12 use the method with SnappingTypeV2 instead.
+         * \deprecated since QGIS 3.12 use the method with SnappingTypeFlag instead.
          */
         Q_DECL_DEPRECATED IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, QgsTolerance::UnitType units ) SIP_DEPRECATED;
 
@@ -104,7 +104,7 @@ class CORE_EXPORT QgsSnappingConfig
          * \param units
          * \since QGIS 3.12
          */
-        IndividualLayerSettings( bool enabled, SnappingTypeV2 type, double tolerance, QgsTolerance::UnitType units );
+        IndividualLayerSettings( bool enabled, SnappingTypeFlag type, double tolerance, QgsTolerance::UnitType units );
 
         /**
          * Constructs an invalid setting
@@ -124,7 +124,7 @@ class CORE_EXPORT QgsSnappingConfig
          * Returns the flags type (vertices | segments | area | centroid | middle)
          * \since QGIS 3.12
          */
-        QgsSnappingConfig::SnappingTypeV2 typeV2() const;
+        QgsSnappingConfig::SnappingTypeFlag typeV2() const;
 
         /**
          * Returns the flags type (vertices | segments | area | centroid | middle)
@@ -142,7 +142,7 @@ class CORE_EXPORT QgsSnappingConfig
          * define the type of snapping
          * \since QGIS 3.12
          */
-        void setTypeV2( QgsSnappingConfig::SnappingTypeV2 type );
+        void setTypeV2( QgsSnappingConfig::SnappingTypeFlag type );
 
         //! Returns the tolerance
         double tolerance() const;
@@ -166,7 +166,7 @@ class CORE_EXPORT QgsSnappingConfig
       private:
         bool mValid = false;
         bool mEnabled = false;
-        QgsSnappingConfig::SnappingTypeV2 mType = SnappingTypeV2::NoSnap;
+        SnappingTypeFlag mType = NoSnap;
         double mTolerance = 0;
         QgsTolerance::UnitType mUnits = QgsTolerance::Pixels;
     };
@@ -197,7 +197,7 @@ class CORE_EXPORT QgsSnappingConfig
      * Returns the flags type (vertices | segments | area | centroid | middle)
      * \since QGIS 3.12
      */
-    QgsSnappingConfig::SnappingTypeV2 typeV2() const;
+    QgsSnappingConfig::SnappingTypeFlag typeV2() const;
 
     /**
      * Returns the flags type (vertices | segments | area | centroid | middle)
@@ -215,7 +215,7 @@ class CORE_EXPORT QgsSnappingConfig
      * define the type of snapping
      * \since QGIS 3.12
      */
-    void setTypeV2( QgsSnappingConfig::SnappingTypeV2 type );
+    void setTypeV2( QgsSnappingConfig::SnappingTypeFlag type );
 
     //! Returns the tolerance
     double tolerance() const;
@@ -351,7 +351,7 @@ class CORE_EXPORT QgsSnappingConfig
     QgsProject *mProject = nullptr;
     bool mEnabled = false;
     SnappingMode mMode = ActiveLayer;
-    QgsSnappingConfig::SnappingTypeV2 mType = SnappingTypeV2::NoSnap;
+    SnappingTypeFlag mType = NoSnap;
     double mTolerance = 0.0;
     QgsTolerance::UnitType mUnits = QgsTolerance::ProjectUnits;
     bool mIntersectionSnapping = false;
@@ -359,13 +359,15 @@ class CORE_EXPORT QgsSnappingConfig
     QHash<QgsVectorLayer *, IndividualLayerSettings> mIndividualLayerSettings;
 
 };
-
-constexpr QgsSnappingConfig::SnappingTypeV2 operator| ( QgsSnappingConfig::SnappingTypeV2 t1, QgsSnappingConfig::SnappingTypeV2 t2 )
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsSnappingConfig::SnappingTypeFlag )
+/*
+constexpr QgsSnappingConfig::SnappingTypeFlag operator| ( QgsSnappingConfig::SnappingTypeFlag t1, QgsSnappingConfig::SnappingTypeFlag t2 )
 {
-  return static_cast<QgsSnappingConfig::SnappingTypeV2>( static_cast<int>( t1 ) | static_cast<int>( t2 ) );
+  return static_cast<QgsSnappingConfig::SnappingTypeFlag>( static_cast<int>( t1 ) | static_cast<int>( t2 ) );
 }
-constexpr bool operator& ( QgsSnappingConfig::SnappingTypeV2 t1, QgsSnappingConfig::SnappingTypeV2 t2 )
+constexpr bool operator& ( QgsSnappingConfig::SnappingTypeFlag t1, QgsSnappingConfig::SnappingTypeFlag t2 )
 {
   return static_cast<int>( t1 ) & static_cast<int>( t2 );
 }
+*/
 #endif // QGSPROJECTSNAPPINGSETTINGS_H

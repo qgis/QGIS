@@ -9,7 +9,6 @@
 
 
 
-
 class QgsSnappingConfig
 {
 %Docstring
@@ -40,7 +39,7 @@ This is a container for configuration of the snapping of the project
       Segment,
     };
 
-    enum class SnappingTypeV2
+    enum SnappingTypes
     {
       NoSnap,
       VertexV2,
@@ -49,6 +48,7 @@ This is a container for configuration of the snapping of the project
       Centroid,
       MiddleOfSegment,
     };
+    typedef QFlags<QgsSnappingConfig::SnappingTypes> SnappingTypeFlag;
 
 
     class IndividualLayerSettings
@@ -74,10 +74,10 @@ IndividualLayerSettings
 :param units:
 
 .. deprecated:: QGIS 3.12
-   use the method with SnappingTypeV2 instead.
+   use the method with SnappingTypeFlag instead.
 %End
 
-        IndividualLayerSettings( bool enabled, SnappingTypeV2 type, double tolerance, QgsTolerance::UnitType units );
+        IndividualLayerSettings( bool enabled, SnappingTypeFlag type, double tolerance, QgsTolerance::UnitType units );
 %Docstring
 IndividualLayerSettings
 
@@ -109,7 +109,7 @@ Returns if snapping is enabled
 enables the snapping
 %End
 
-        QgsSnappingConfig::SnappingTypeV2 typeV2() const;
+        QgsSnappingConfig::SnappingTypeFlag typeV2() const;
 %Docstring
 Returns the flags type (vertices | segments | area | centroid | middle)
 
@@ -132,7 +132,7 @@ define the type of snapping
    use setTypeV2 instead.
 %End
 
-        void setTypeV2( QgsSnappingConfig::SnappingTypeV2 type );
+        void setTypeV2( QgsSnappingConfig::SnappingTypeFlag type );
 %Docstring
 define the type of snapping
 
@@ -197,7 +197,7 @@ Returns the mode (all layers, active layer, per layer settings)
 define the mode of snapping
 %End
 
-    QgsSnappingConfig::SnappingTypeV2 typeV2() const;
+    QgsSnappingConfig::SnappingTypeFlag typeV2() const;
 %Docstring
 Returns the flags type (vertices | segments | area | centroid | middle)
 
@@ -220,7 +220,7 @@ define the type of snapping
    use setTypeV2 instead.
 %End
 
-    void setTypeV2( QgsSnappingConfig::SnappingTypeV2 type );
+    void setTypeV2( QgsSnappingConfig::SnappingTypeFlag type );
 %Docstring
 define the type of snapping
 
@@ -366,9 +366,8 @@ The project from which the snapped layers should be retrieved
 %End
 
 };
+QFlags<QgsSnappingConfig::SnappingTypes> operator|(QgsSnappingConfig::SnappingTypes f1, QFlags<QgsSnappingConfig::SnappingTypes> f2);
 
-const QgsSnappingConfig::SnappingTypeV2 operator| ( QgsSnappingConfig::SnappingTypeV2 t1, QgsSnappingConfig::SnappingTypeV2 t2 );
-const bool operator& ( QgsSnappingConfig::SnappingTypeV2 t1, QgsSnappingConfig::SnappingTypeV2 t2 );
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

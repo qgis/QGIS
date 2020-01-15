@@ -89,7 +89,7 @@ void TestQgsCadUtils::initTestCase()
   QgsSnappingConfig snapConfig;
   snapConfig.setEnabled( true );
   snapConfig.setMode( QgsSnappingConfig::AllLayers );
-  snapConfig.setTypeV2( static_cast<QgsSnappingConfig::SnappingTypeV2>( QgsSnappingConfig::SnappingTypeV2::VertexV2 | QgsSnappingConfig::SnappingTypeV2::SegmentV2 ) );
+  snapConfig.setTypeV2( static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::VertexV2 | QgsSnappingConfig::SegmentV2 ) );
   snapConfig.setTolerance( 1.0 );
 
   mMapSettings.setExtent( QgsRectangle( 0, 0, 100, 100 ) );

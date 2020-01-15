@@ -105,7 +105,7 @@ void TestQgsMapToolMoveFeature::initTestCase()
   QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
   cfg.setMode( QgsSnappingConfig::AllLayers );
   cfg.setTolerance( 1 );
-  cfg.setType( static_cast<QgsSnappingConfig::SnappingTypeV2>( QgsSnappingConfig::SnappingTypeV2::VertexV2 | QgsSnappingConfig::SnappingTypeV2::SegmentV2 ) );
+  cfg.setTypeV2( static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::VertexV2 | QgsSnappingConfig::SegmentV2 ) );
   cfg.setEnabled( true );
   mCanvas->snappingUtils()->setConfig( cfg );
 
