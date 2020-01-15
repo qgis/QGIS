@@ -75,7 +75,6 @@ from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
 from .RasterCalculator import RasterCalculator
 from .RasterLayerHistogram import RasterLayerHistogram
 from .RasterSampling import RasterSampling
-from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
 from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
 from .RegularPoints import RegularPoints
 from .Relief import Relief
@@ -107,6 +106,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
         super().__init__()
         self.algs = []
         self.externalAlgs = []
+        QgsApplication.processingRegistry().addAlgorithmAlias('qgis:rectanglesovalsdiamondsfixed', 'native:rectanglesovalsdiamonds')
 
     def getAlgs(self):
         algs = [Aggregate(),
@@ -156,7 +156,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 RasterCalculator(),
                 RasterLayerHistogram(),
                 RasterSampling(),
-                RectanglesOvalsDiamondsFixed(),
                 RectanglesOvalsDiamondsVariable(),
                 RegularPoints(),
                 Relief(),
